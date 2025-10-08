@@ -99,15 +99,37 @@ function DashboardView() {
         </Box>
       )}
 
-      {mode === 'preview' && (
+      {(mode === 'preview' || mode === 'edit') && (
         <Box className={classes.titleSection}>
-          <Typography
-            variant="h2"
-            component="h1"
-            className={classes.previewTitle}
-          >
-            {dashboardTitle || t('Untitled Dashboard')}
-          </Typography>
+          {mode === 'preview' ? (
+            <Typography
+              variant="h2"
+              component="h1"
+              className={classes.previewTitle}
+            >
+              {dashboardTitle || t('Untitled Dashboard')}
+            </Typography>
+          ) : (
+            <Box className={classes.titleCard}>
+              <label className={classes.titleBarLabel}>
+                <Typography
+                  variant="h2"
+                  component="span"
+                  className={classes.titleBarTypography}
+                >
+                  {t('Dashboard title')}
+                </Typography>
+                <input
+                  type="text"
+                  className={classes.titleBarInput}
+                  placeholder={t('Enter dashboard title')}
+                  value={dashboardTitle}
+                  onChange={e => dispatch(setTitle(e.target.value))}
+                  name="dashboard-title"
+                />
+              </label>
+            </Box>
+          )}
         </Box>
       )}
 
@@ -125,28 +147,6 @@ function DashboardView() {
               key={`map-column-${mapIndex}`}
               className={classes.mapColumn}
             >
-              {mode === 'edit' && mapIndex === 0 && (
-                <Box className={classes.grayCard}>
-                  <label className={classes.titleBarLabel}>
-                    <Typography
-                      variant="h2"
-                      component="span"
-                      className={classes.titleBarTypography}
-                    >
-                      {t('Dashboard title')}
-                    </Typography>
-                    <input
-                      type="text"
-                      className={classes.titleBarInput}
-                      placeholder={t('Enter dashboard title')}
-                      value={dashboardTitle}
-                      onChange={e => dispatch(setTitle(e.target.value))}
-                      name="dashboard-title"
-                    />
-                  </label>
-                </Box>
-              )}
-
               <Box
                 className={
                   mode === 'preview'
@@ -237,28 +237,6 @@ function DashboardView() {
           }
         >
           <Box className={classes.leadingContentArea}>
-            {mode === 'edit' && (
-              <Box className={classes.grayCard}>
-                <label className={classes.titleBarLabel}>
-                  <Typography
-                    variant="h2"
-                    component="span"
-                    className={classes.titleBarTypography}
-                  >
-                    {t('Dashboard title')}
-                  </Typography>
-                  <input
-                    type="text"
-                    className={classes.titleBarInput}
-                    placeholder={t('Enter dashboard title')}
-                    value={dashboardTitle}
-                    onChange={e => dispatch(setTitle(e.target.value))}
-                    name="dashboard-title"
-                  />
-                </label>
-              </Box>
-            )}
-
             <div className={classes.mapsContainer}>
               {dashboardMaps.map((_, mapIndex) => (
                 <Box
@@ -377,7 +355,7 @@ const useStyles = makeStyles(() => ({
   layout: {
     display: 'flex',
     padding: 16,
-    margin: 16,
+    margin: '0 16px 16px 16px',
     gap: 16,
     flex: 1,
     overflow: 'auto',
@@ -393,6 +371,12 @@ const useStyles = makeStyles(() => ({
     background: '#F1F1F1',
     borderRadius: 8,
     marginBottom: 16,
+    padding: 12,
+  },
+  titleCard: {
+    background: '#F1F1F1',
+    borderRadius: 8,
+    marginBottom: 0, // No bottom margin for title card
     padding: 12,
   },
   titleBarLabel: {
