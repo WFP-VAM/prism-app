@@ -128,6 +128,20 @@ function DashboardView() {
                   name="dashboard-title"
                 />
               </label>
+              {isTwoMapLayout && (
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={syncEnabled}
+                      onChange={() => dispatch(toggleMapSync())}
+                      color="primary"
+                      size="medium"
+                    />
+                  }
+                  label={t('Sync maps')}
+                  className={classes.syncToggle}
+                />
+              )}
             </Box>
           )}
         </Box>
@@ -166,20 +180,6 @@ function DashboardView() {
                         : 'Map block'}{' '}
                       — {t('Choose map layers')}
                     </Typography>
-                    {isTwoMapLayout && (
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            checked={syncEnabled}
-                            onChange={() => dispatch(toggleMapSync())}
-                            color="primary"
-                            size="medium"
-                          />
-                        }
-                        label={t('Sync maps')}
-                        className={classes.syncToggle}
-                      />
-                    )}
                   </div>
                 )}
                 <div style={{ height: '700px' }}>
@@ -374,6 +374,7 @@ const useStyles = makeStyles(() => ({
     padding: 12,
   },
   titleCard: {
+    display: 'flex',
     background: '#F1F1F1',
     borderRadius: 8,
     marginBottom: 0, // No bottom margin for title card
@@ -385,6 +386,7 @@ const useStyles = makeStyles(() => ({
     marginRight: 16,
     fontWeight: 600,
     fontSize: 16,
+    flex: 1,
   },
   titleBarTypography: {
     flex: '1 0 fit-content',
@@ -488,7 +490,7 @@ const useStyles = makeStyles(() => ({
   twoMapLayout: {
     display: 'flex',
     padding: 16,
-    margin: 16,
+    margin: '0 16px 16px 16px',
     gap: 16,
     flex: 1,
     overflow: 'auto',
