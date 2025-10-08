@@ -125,16 +125,18 @@ function DashboardView() {
                   key={`map-${mapIndex}`}
                   className={classes.grayCard}
                 >
-                  <Typography
-                    variant="h3"
-                    component="h3"
-                    className={classes.blockLabel}
-                  >
-                    {dashboardMaps.length > 1
-                      ? `Map ${mapIndex + 1}`
-                      : 'Map block'}{' '}
-                    — {t('Choose map layers')}
-                  </Typography>
+                  {mode === DashboardMode.EDIT && (
+                    <Typography
+                      variant="h3"
+                      component="h3"
+                      className={classes.blockLabel}
+                    >
+                      {dashboardMaps.length > 1
+                        ? `Map ${mapIndex + 1}`
+                        : 'Map block'}{' '}
+                      — {t('Choose map layers')}
+                    </Typography>
+                  )}
                   <div style={{ height: '700px', width: '100%' }}>
                     <MapBlock mapIndex={mapIndex} mode={mode} />
                   </div>
