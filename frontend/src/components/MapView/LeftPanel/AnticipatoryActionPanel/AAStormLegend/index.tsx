@@ -228,7 +228,7 @@ function AAStormLegend() {
             className={classes.districtBox}
             style={{ border: '2px solid black' }}
           />
-          <Typography>{t('Pilot district')}</Typography>
+          <Typography>{t('Monitored district')}</Typography>
         </div>
       </div>
     </div>
