@@ -129,7 +129,7 @@ function ActivationTrigger({ dialogs }: ActivationTriggerProps) {
               key={`${category}-active`}
               className={classes.headColumnWrapper}
             >
-              {/* Affichage pour les districts actifs */}
+              {/* Active districts */}
               <div className={classes.headColumn}>
                 <CategoryText
                   color={getAAColor(category as AACategory, 'Active', true)}
