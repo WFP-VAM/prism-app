@@ -29,6 +29,8 @@ import SimpleDropdown from 'components/Common/SimpleDropdown';
 import { useAnticipatoryAction } from '../useAnticipatoryAction';
 import StationCharts from './StationCharts';
 import { TABLE_WIDTH } from './constants';
+import { getFormattedDate } from 'utils/date-utils';
+import { DateFormat } from 'utils/name-utils';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -156,7 +158,8 @@ function AnticipatoryActionFloodPanel() {
     const d = new Date(value);
     // Normalize to 12:00 UTC to avoid local timezone shifting the calendar date
     d.setUTCHours(12, 0, 0, 0);
-    return d.toLocaleDateString();
+    // format as dd-mm-yyyy
+    return getFormattedDate(d, DateFormat.DayFirstHyphen);
   };
 
   // Filter stations by selected date

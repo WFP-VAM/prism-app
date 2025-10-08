@@ -137,6 +137,7 @@ const useStyles = makeStyles(() =>
     tableHeader: {
       fontWeight: 'bold',
       fontSize: '0.8rem',
+      minWidth: '40px',
       backgroundColor: '#f5f5f5',
     },
     loadingOverlay: {
@@ -188,7 +189,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
 
     // Use valid_time dates for x-axis labels (same as probability format)
     const labels = forecast.map(
-      p => getFormattedDate(p.time, 'short') as string,
+      p => getFormattedDate(p.time, 'shortDayFirst') as string,
     );
     const { bankfull, moderate, severe } = station.thresholds;
 
@@ -214,7 +215,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       if (!arr.length) {
         return 0;
       }
-      return arr.reduce((s, v) => s + v, 0) / arr.length;
+      return (arr.reduce((s, v) => s + v, 0) / arr.length).toFixed(2);
     });
 
     return {
@@ -276,7 +277,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     p => new Date(p.time).getTime(),
   );
   const labels = sortedData.map(
-    d => getFormattedDate(d.time, 'short') as string,
+    d => getFormattedDate(d.time, 'shortDayFirst') as string,
   );
 
   const triggerProbabilityData = useMemo(() => {
@@ -494,10 +495,6 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           hitRadius: 8,
         },
       },
-      // hover: {
-      //   mode: 'index' as const,
-      //   intersect: false,
-      // },
       tooltips: {
         mode: 'index' as const,
         intersect: false,
@@ -509,6 +506,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           return !/^Member\s\d+$/i.test(datasetLabel);
         },
         callbacks: {
+          // Add min and max values to the tooltip
           afterBody: (items: any[]) => {
             if (!items || !items.length) {
               return [] as string[];
@@ -521,8 +519,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             if (!arr.length) {
               return [] as string[];
             }
-            const min = Math.min(...arr);
-            const max = Math.max(...arr);
+            const min = Math.min(...arr).toFixed(2);
+            const max = Math.max(...arr).toFixed(2);
             return [
               `${String(t('Min'))}: ${min}`,
               `${String(t('Max'))}: ${max}`,
