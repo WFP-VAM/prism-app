@@ -486,6 +486,13 @@
           "textUpdatedAt": "2025-03-01"
         },
         {
+          "type": "CHART",
+          "startDate": "2025-01-01",
+          "endDate": "2025-04-01",
+          "wmsLayerId": "precip_blended_dekad",
+          "adminUnitLevel": 1
+        },
+        {
           "type": "TABLE",
           "startDate": "2025-04-01",
           "hazardLayerId": "spi_blended_2m",

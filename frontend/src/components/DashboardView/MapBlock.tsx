@@ -26,6 +26,7 @@ import {
   WMSLayerDatesRequested,
 } from 'context/serverPreloadStateSlice';
 import { useSafeTranslation } from 'i18n';
+import { DashboardMode } from 'config/types';
 import MapComponent from '../MapView/Map';
 import DateSelector from '../MapView/DateSelector';
 import DashboardLegends from './DashboardLegends';
@@ -37,15 +38,13 @@ import DashboardLegends from './DashboardLegends';
 // eslint-disable-next-line fp/no-mutating-methods
 const displayedBoundaryLayers = getDisplayBoundaryLayers().reverse();
 
-type MapBlockMode = 'edit' | 'preview';
-
 interface MapBlockProps {
   mapIndex: number;
-  mode?: MapBlockMode;
+  mode?: DashboardMode;
 }
 
 const MapBlockContent = memo(
-  ({ mode = 'edit' }: Pick<MapBlockProps, 'mode'>) => {
+  ({ mode = DashboardMode.EDIT }: Pick<MapBlockProps, 'mode'>) => {
     const classes = useStyles();
     const { t } = useSafeTranslation();
     const { selectedLayersWithDateSupport } = useLayers();
@@ -112,15 +111,21 @@ const MapBlockContent = memo(
     }, [preselectedLayers, dispatch]);
 
     return (
-      <Box className={mode === 'preview' ? classes.rootPreview : classes.root}>
-        {mode === 'edit' && (
+      <Box
+        className={
+          mode === DashboardMode.PREVIEW ? classes.rootPreview : classes.root
+        }
+      >
+        {mode === DashboardMode.EDIT && (
           <div className={classes.leftPanel}>
             <RootAccordionItems />
           </div>
         )}
         <div
           className={
-            mode === 'preview' ? classes.rightPanelPreview : classes.rightPanel
+            mode === DashboardMode.PREVIEW
+              ? classes.rightPanelPreview
+              : classes.rightPanel
           }
         >
           <div className={classes.mapContainer}>
@@ -132,7 +137,7 @@ const MapBlockContent = memo(
             <MapComponent />
             {!datesLoading && <DashboardLegends />}
           </div>
-          {mode === 'edit' &&
+          {mode === DashboardMode.EDIT &&
             selectedLayersWithDateSupport.length > 0 &&
             !datesLoading && (
               <div className={classes.dateSelectorContainer}>
@@ -146,18 +151,20 @@ const MapBlockContent = memo(
   },
 );
 
-const MapBlock = memo(({ mapIndex, mode = 'edit' }: MapBlockProps) => {
-  const selectedDashboardIndex = useSelector(selectedDashboardIndexSelector);
+const MapBlock = memo(
+  ({ mapIndex, mode = DashboardMode.EDIT }: MapBlockProps) => {
+    const selectedDashboardIndex = useSelector(selectedDashboardIndexSelector);
 
-  return (
-    <MapInstanceProvider
-      key={`dashboard-${selectedDashboardIndex}-map-${mapIndex}`}
-      index={mapIndex}
-    >
-      <MapBlockContent mode={mode} />
-    </MapInstanceProvider>
-  );
-});
+    return (
+      <MapInstanceProvider
+        key={`dashboard-${selectedDashboardIndex}-map-${mapIndex}`}
+        index={mapIndex}
+      >
+        <MapBlockContent mode={mode} />
+      </MapInstanceProvider>
+    );
+  },
+);
 
 const useStyles = makeStyles(() =>
   createStyles({
