@@ -108,8 +108,8 @@ function AAFloodLegend() {
     },
   ];
 
-  const handleGoogleResearchClick = () => {
-    window.open('https://research.google/', '_blank');
+  const handleGlofasClick = () => {
+    window.open('https://global-flood.emergency.copernicus.eu/', '_blank');
   };
 
   return (
@@ -124,7 +124,7 @@ function AAFloodLegend() {
       </Box>
 
       <Typography className={classes.sectionTitle}>
-        {t('River discharge forecast')}
+        {t('Riverine flood forecast')}
       </Typography>
 
       {categories.map(category => (
@@ -142,21 +142,23 @@ function AAFloodLegend() {
       <Divider className={classes.divider} />
 
       <Typography className={classes.description}>
-        {t('River discharge forecast at verified gauges. Visit')}{' '}
+        {t(
+          'Probability of flooding at various severity categories based on GloFAS data. Visit',
+        )}{' '}
         <span
           className={classes.link}
-          onClick={handleGoogleResearchClick}
+          onClick={handleGlofasClick}
           role="button"
           tabIndex={0}
           onKeyDown={e => {
             if (e.key === 'Enter' || e.key === ' ') {
-              handleGoogleResearchClick();
+              handleGlofasClick();
             }
           }}
         >
-          {t('Google Research')}
+          {t('GloFAS')}
         </span>{' '}
-        {t('to learn more about their AI forecasting models.')}
+        {t('to learn more about flood forecasting models.')}
       </Typography>
     </div>
   );
