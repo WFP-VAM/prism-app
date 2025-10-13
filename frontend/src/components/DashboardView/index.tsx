@@ -80,7 +80,7 @@ function DashboardView() {
             size="medium"
             style={{ backgroundColor: cyanBlue, color: black }}
           >
-            {t('Publish')}
+            {t('Print')}
           </Button>
         </Box>
       )}
@@ -220,7 +220,7 @@ function DashboardView() {
             className={classes.previewButton}
             size="medium"
           >
-            {t('Preview')}
+            {t('Back to Dashboard')}
           </Button>
         </Box>
       )}
