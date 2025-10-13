@@ -23,7 +23,6 @@ import {
 import { Close, Opacity, SwapVert } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { LayerType, LegendDefinitionItem } from 'config/types';
-import { layersSelector } from 'context/mapStateSlice/selectors';
 import { useMapState } from 'utils/useMapState';
 import { clearDataset } from 'context/datasetStateSlice';
 import { useSafeTranslation } from 'i18n';
@@ -63,6 +62,7 @@ const LegendItem = memo(
     const dispatch = useDispatch();
     const {
       actions: { addLayer, removeLayer },
+      layers,
       ...mapState
     } = useMapState();
     const { removeLayerFromUrl } = useUrlHistory();
@@ -112,11 +112,7 @@ const LegendItem = memo(
     const open = Boolean(opacityEl);
     const opacityId = open ? 'opacity-popover' : undefined;
 
-    const selectedLayers = useSelector(layersSelector);
-    const layer = useMemo(
-      () => selectedLayers.find(l => l.id === id),
-      [id, selectedLayers],
-    );
+    const layer = useMemo(() => layers.find(l => l.id === id), [id, layers]);
 
     const renderedOpacitySlider = useMemo(
       () => (
