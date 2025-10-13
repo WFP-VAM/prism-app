@@ -131,7 +131,6 @@ function TableBlock({
     formState.analysisResult,
   ]);
 
-  // Auto-run analysis when conditions are met (for both edit and preview modes)
   useEffect(() => {
     if (!formState.hazardLayerId) {
       return;
@@ -150,7 +149,7 @@ function TableBlock({
         ),
     );
 
-    if (canRunAnalysis && !formState.analysisResult) {
+    if (canRunAnalysis && !formState.analysisResult && hasFormChanged) {
       runAnalyser().catch(console.error);
     }
   }, [
@@ -167,6 +166,7 @@ function TableBlock({
     formState.exposureValue.operator,
     formState.exposureValue.value,
     formState.analysisResult,
+    hasFormChanged,
     runAnalyser,
   ]);
 
