@@ -206,15 +206,8 @@ const useStyles = makeStyles(() =>
       top: -5,
       cursor: 'pointer',
       minWidth: TIMELINE_ITEM_WIDTH,
-      '&:hover': {
-        borderLeft: '1px solid #101010',
-      },
       borderLeft: '1px solid #101010',
       height: 36,
-    },
-    dayItem: {
-      height: 10,
-      borderLeft: '1px solid #ededed',
     },
     dateItem: {
       color: '#101010',
@@ -222,6 +215,7 @@ const useStyles = makeStyles(() =>
       top: -5,
       cursor: 'pointer',
       minWidth: TIMELINE_ITEM_WIDTH,
+      borderLeft: '1px solid transparent',
       '&:hover': {
         borderLeft: '1px solid #101010',
         '& $dayItem': {

@@ -831,7 +831,7 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'absolute',
       zIndex: 5,
       marginTop: 22,
-      left: -12,
+      left: -11,
       height: '16px',
       cursor: 'grab',
     },
