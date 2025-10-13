@@ -411,6 +411,12 @@ export const dashboardOpacitySelector =
   (state: RootState): number | undefined =>
     state.dashboardState.maps[index]?.opacityMap[layerId]?.value;
 
+export const dashboardIsEditableSelector = (state: RootState): boolean => {
+  const currentDashboardIndex = state.dashboardState.selectedDashboardIndex;
+  const dashboardConfig = getDashboardConfig(currentDashboardIndex);
+  return dashboardConfig?.isEditable ?? false;
+};
+
 // Setters
 export const {
   setSelectedDashboard,

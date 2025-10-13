@@ -503,6 +503,7 @@
     },
     {
       "title": "Summer Dashboard",
+      "isEditable": true,
       "maps": [
         {
           "defaultDate": "2025-06-01",

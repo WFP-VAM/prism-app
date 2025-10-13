@@ -83,16 +83,18 @@ function DashboardView() {
     >
       {mode === DashboardMode.PREVIEW && (
         <Box className={classes.previewActions}>
-          <Button
-            color="primary"
-            variant="outlined"
-            disableElevation
-            startIcon={<Edit />}
-            onClick={handleClosePreview}
-            size="medium"
-          >
-            {t('Edit')}
-          </Button>
+          {isEditable && (
+            <Button
+              color="primary"
+              variant="outlined"
+              disableElevation
+              startIcon={<Edit />}
+              onClick={handleClosePreview}
+              size="medium"
+            >
+              {t('Edit')}
+            </Button>
+          )}
           <Button
             color="primary"
             variant="contained"
