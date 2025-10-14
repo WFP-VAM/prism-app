@@ -117,7 +117,6 @@ function AnticipatoryActionFloodLayer({
             risk_level: avg.trigger_status || 'Below bankfull',
             avg_discharge: 0,
             max_discharge: 0,
-            thresholds: station.thresholds,
           },
         };
       }),

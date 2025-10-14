@@ -248,7 +248,9 @@ function AnticipatoryActionFloodPanel() {
       <div className={classes.container}>
         <Typography>{t('Loading flood data...')}</Typography>
         <TableContainer component={Paper} className={classes.tableContainer}>
-          <Table className={classes.table} size="small" />
+          <Table className={classes.table} size="small">
+            <TableBody />
+          </Table>
         </TableContainer>
       </div>
     );

@@ -176,6 +176,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   const probabilityChartRef = useRef<Line>(null);
 
   const floodState = useSelector(AAFloodDataSelector);
+  const probs = floodState.probabilitiesData[station.station_name];
   const avgProbStation = floodState.avgProbabilitiesData
     ? floodState.avgProbabilitiesData[station.station_name]
     : undefined;
@@ -191,7 +192,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     const labels = forecast.map(
       p => getFormattedDate(p.time, 'shortDayFirst') as string,
     );
-    const { bankfull, moderate, severe } = station.thresholds;
+    const { threshold_bankfull, threshold_moderate, threshold_severe } =
+      probs[0];
 
     const membersCount = forecast[0]?.ensemble_members?.length || 0;
     const ensembleDatasets = Array.from(
@@ -235,8 +237,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           tension: 0.4,
         },
         {
-          label: `${t('Bankfull')} (${bankfull})`,
-          data: Array.from({ length: labels.length }, () => bankfull),
+          label: `${t('Bankfull')} (${threshold_bankfull})`,
+          data: Array.from({ length: labels.length }, () => threshold_bankfull),
           borderColor: '#66BB6A',
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -245,8 +247,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           pointStyle: 'line' as any,
         },
         {
-          label: `${t('Moderate')} (${moderate})`,
-          data: Array.from({ length: labels.length }, () => moderate),
+          label: `${t('Moderate')} (${threshold_moderate})`,
+          data: Array.from({ length: labels.length }, () => threshold_moderate),
           borderColor: '#FFA726',
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -255,8 +257,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           pointStyle: 'line' as any,
         },
         {
-          label: `${t('Severe')} (${severe})`,
-          data: Array.from({ length: labels.length }, () => severe),
+          label: `${t('Severe')} (${threshold_severe})`,
+          data: Array.from({ length: labels.length }, () => threshold_severe),
           borderColor: '#EF5350',
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -267,17 +269,13 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         ...ensembleDatasets,
       ],
     };
-  }, [floodState.forecastData, station.station_name, station.thresholds, t]);
+  }, [floodState.forecastData, station.station_name, t]);
 
   const beginIdx = forecastWindow.start - 1;
   const endIdx = forecastWindow.end - 1;
 
   // Prepare trigger probability data from fetched probabilities
-  const probs = floodState.probabilitiesData[station.station_name];
-  const sortedData = sortBy(
-    floodState.probabilitiesData[station.station_name],
-    p => new Date(p.time).getTime(),
-  );
+  const sortedData = sortBy(probs, p => new Date(p.time).getTime());
   const labels = sortedData.map(
     d => getFormattedDate(d.time, 'shortDayFirst') as string,
   );

@@ -112,7 +112,6 @@ export function buildStationsFromAvgProbabilities(
           latitude !== 0
             ? { latitude, longitude }
             : undefined,
-        thresholds: { bankfull: 0, moderate: 0, severe: 0 },
       });
     }
   });

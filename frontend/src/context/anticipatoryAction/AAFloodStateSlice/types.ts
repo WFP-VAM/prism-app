@@ -31,11 +31,6 @@ export interface FloodStation {
     latitude: number;
     longitude: number;
   };
-  thresholds: {
-    bankfull: number;
-    moderate: number;
-    severe: number;
-  };
 }
 
 export interface FloodForecastData {
@@ -87,4 +82,7 @@ export interface FloodProbabilityPoint {
   bankfull_percentage: number;
   moderate_percentage: number;
   severe_percentage: number;
+  threshold_bankfull: number;
+  threshold_moderate: number;
+  threshold_severe: number;
 }

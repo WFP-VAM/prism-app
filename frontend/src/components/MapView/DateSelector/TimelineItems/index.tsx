@@ -209,6 +209,8 @@ const useStyles = makeStyles(() =>
       borderLeft: '1px solid #101010',
       height: 36,
     },
+    // dayItem is set in TimelineLabel.tsx
+    dayItem: {},
     dateItem: {
       color: '#101010',
       position: 'relative',
