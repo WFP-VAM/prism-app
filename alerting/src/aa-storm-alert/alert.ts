@@ -139,13 +139,6 @@ export function transformReportsToLastProcessed(
   return lastProcessedReports;
 }
 
-// TODO - make sure spelling is exactly the same for districts as in the report
-// or add a mapping below if needed
-const districtNameMapping: { [key: string]: string } = {
-  Maganja_Da_Costa: 'Maganja Da Costa',
-  Cidade_Da_Beira: 'Cidade Da Beira',
-};
-
 function getActivatedDistricts(report: StormDataResponseBody): {
   activated48kt: string[];
   activated64kt: string[];
@@ -156,18 +149,12 @@ function getActivatedDistricts(report: StormDataResponseBody): {
 
   const activated64kt =
     report.ready_set_results?.exposed_area_64kt?.affected_districts.filter(
-      (district) =>
-        watchedDistrictsFor64KtStorm.includes(
-          districtNameMapping[district] || district,
-        ),
+      (district) => watchedDistrictsFor64KtStorm.includes(district),
     );
 
   const activated48kt =
     report.ready_set_results?.exposed_area_48kt?.affected_districts.filter(
-      (district) =>
-        watchedDistrictsFor48ktStorm.includes(
-          districtNameMapping[district] || district,
-        ),
+      (district) => watchedDistrictsFor48ktStorm.includes(district),
     );
 
   return {
