@@ -66,11 +66,10 @@ const getDashboardConfig = (index: number) => {
   const originalConfig =
     appConfig.configuredReports[index] || appConfig.configuredReports[0];
 
-  // Create a copy to avoid mutating the original config
   const config = { ...originalConfig };
 
-  // Auto-generate path if missing
   if (!config.path) {
+    // eslint-disable-next-line fp/no-mutation
     config.path = generateSlugFromTitle(config.title);
   }
 

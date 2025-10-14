@@ -70,12 +70,12 @@ export function deepCamelCaseKeys(obj: any): any {
 // Helper function to ensure data paths are absolute
 const ensureAbsoluteDataPath = (path: string): string => {
   if (path.startsWith('/')) {
-    return path; // Already absolute
+    return path;
   }
   if (path.startsWith('data/')) {
-    return `/${path}`; // Make relative data paths absolute
+    return `/${path}`;
   }
-  return path; // Other paths unchanged
+  return path;
 };
 
 // CamelCase the keys inside the layer definition & validate config
@@ -86,6 +86,7 @@ export const getLayerByKey = (layerKey: LayerKey): LayerType => {
 
   // Ensure data paths are absolute to prevent routing conflicts
   if (processedDefinition.path) {
+    // eslint-disable-next-line fp/no-mutation
     processedDefinition.path = ensureAbsoluteDataPath(processedDefinition.path);
   }
 
@@ -378,11 +379,9 @@ export const findDashboardByPath = (
   // eslint-disable-next-line fp/no-mutation
   for (let i = 0; i < reports.length; i += 1) {
     const report = reports[i];
-    // Auto-generate path if missing, but don't mutate original
     const dashboardPath = report.path || generateSlugFromTitle(report.title);
 
     if (dashboardPath === path) {
-      // Return a copy with the computed path, don't mutate original
       return { dashboard: { ...report, path: dashboardPath }, index: i };
     }
   }
