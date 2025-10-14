@@ -1,0 +1,25 @@
+station_id,station_name,river_name,longitude,latitude,forecast_issue_date,window_begin,window_end,avg_bankfull_percentage,avg_moderate_percentage,avg_severe_percentage,trigger_bankfull,trigger_moderate,trigger_severe,trigger_status
+32,Limpopo_em_Mapai,Limpopo,31.925,-22.825,2025-09-22,2025-09-25,2025-09-27,0.0,0.0,0.0,0.1,,,below bankfull
+33,Limpopo__Combomune,Limpopo,32.425,-23.475,2025-09-22,2025-09-25,2025-09-27,0.0,0.0,0.0,0.85,,0.1,below bankfull
+35,Limpopo_em_Chokwe,Limpopo,33.025,-24.525,2025-09-22,2025-09-25,2025-09-27,0.0,0.0,0.0,0.34,,0.1,below bankfull
+36,Limpopo_em_Sicacate,Limpopo,33.525,-24.725,2025-09-22,2025-09-25,2025-09-27,0.0,0.0,0.0,0.88,,,below bankfull
+37,Limpopo_em_Mabalane,Limpopo,32.575,-23.825,2025-09-22,2025-09-25,2025-09-27,0.0,0.0,0.0,,,,below bankfull
+41,Changane_em_Chibuto,Limpopo,33.525,-24.675,2025-09-22,2025-09-25,2025-09-27,1.0,0.0,0.0,,,,below bankfull
+47,franca,Save,34.525,-21.125,2025-09-22,2025-09-25,2025-09-27,0.0,0.0,0.0,0.34,0.07,,below bankfull
+84,espungabera,Buzi,32.825,-20.475,2025-09-22,2025-09-25,2025-09-27,0.0,0.0,0.0,,,,below bankfull
+86,massangena,Save,32.975,-21.525,2025-09-22,2025-09-25,2025-09-27,0.0,0.0,0.0,0.52,0.22,0.28,below bankfull
+90,gurue,Licungo,36.925,-15.475,2025-09-22,2025-09-25,2025-09-27,0.0,0.0,0.0,,0.07,,below bankfull
+91,mocuba,Licungo,37.025,-16.825,2025-09-22,2025-09-25,2025-09-27,0.0,0.0,0.0,,0.58,0.19,below bankfull
+147,nairoto,Messalo,39.025,-12.575,2025-09-22,2025-09-25,2025-09-27,0.0,0.0,0.0,,0.34,0.28,below bankfull
+246,dombe,Lucite,33.425,-19.975,2025-09-22,2025-09-25,2025-09-27,0.0,0.0,0.0,,,,below bankfull
+285,Zambeze_em_Marromeu_Sena_Sugar,Zambeze,35.925,-18.275,2025-09-22,2025-09-25,2025-09-27,0.0,0.0,0.0,,,,below bankfull
+288,Chire_em_Vila_Bocage,Zambeze,35.325,-17.475,2025-09-22,2025-09-25,2025-09-27,0.0,0.0,0.0,,,,below bankfull
+291,Zambeze_em_Caia_SS,Zambeze,35.425,-17.825,2025-09-22,2025-09-25,2025-09-27,0.0,0.0,0.0,,,,below bankfull
+302,Revubue_em_Chingodzi,Zambeze,33.675,-16.125,2025-09-22,2025-09-25,2025-09-27,0.0,0.0,0.0,,,,below bankfull
+310,Zambeze_em_Zumbo,Zambeze,30.475,-15.625,2025-09-22,2025-09-25,2025-09-27,0.0,0.0,0.0,,,,below bankfull
+320,Zambeze_em_Tete,Zambeze,33.625,-16.125,2025-09-22,2025-09-25,2025-09-27,0.0,0.0,0.0,,,,below bankfull
+348,LuenhaLuenha_I,Zambeze,33.425,-16.525,2025-09-22,2025-09-25,2025-09-27,0.0,0.0,0.0,,,,below bankfull
+372,Limpopo_em_Macaretane,Limpopo,32.875,-24.425,2025-09-22,2025-09-25,2025-09-27,0.0,0.0,0.0,,,,below bankfull
+456,goonda,Buzi,33.875,-19.875,2025-09-22,2025-09-25,2025-09-27,0.0,0.0,0.0,,,0.28,below bankfull
+525,messalo,Messalo,40.125,-11.825,2025-09-22,2025-09-25,2025-09-27,0.0,0.0,0.0,,,,below bankfull
+654,revue,Revue,33.825,-19.775,2025-09-22,2025-09-25,2025-09-27,0.0,0.0,0.0,,,,below bankfull

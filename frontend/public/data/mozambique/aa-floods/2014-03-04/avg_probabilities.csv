@@ -1,0 +1,23 @@
+,forecast issue date,station name,lead time,bankfull,moderate,severe,trigger_status
+147,2014-03-04,chire_em_megaza_mutamba,3-5 days,0.0,0.0,0.0,Not Exceeded
+153,2014-03-04,chire_em_vila_bocage,3-5 days,,0.0,0.0,Not Exceeded
+159,2014-03-04,dombe,3-5 days,0.0,0.0,0.0,Not Exceeded
+168,2014-03-04,franca,3-5 days,0.0,0.0,0.0,Not Exceeded
+174,2014-03-04,goonda,3-5 days,0.0,0.0,0.0,Not Exceeded
+180,2014-03-04,gurue,3-5 days,0.0,0.0,0.0,Not Exceeded
+186,2014-03-04,limpopo__combomune,3-5 days,1.0,0.0,0.0,Bankfull
+192,2014-03-04,limpopo_em_chokwe,3-5 days,0.6060606060606061,0.0,0.0,Bankfull
+198,2014-03-04,limpopo_em_macaretane,3-5 days,0.42424242424242425,0.0,0.0,Not Exceeded
+204,2014-03-04,limpopo_em_mapai,3-5 days,0.6666666666666666,0.0,0.0,Bankfull
+210,2014-03-04,limpopo_em_sicacate,3-5 days,0.9090909090909092,0.0,0.0,Bankfull
+216,2014-03-04,limpopo_em_xaixai,3-5 days,0.0,0.0,0.0,Not Exceeded
+222,2014-03-04,luenhaluenha_i,3-5 days,0.0,0.0,0.0,Not Exceeded
+228,2014-03-04,massangena,3-5 days,0.0,0.0,0.0,Not Exceeded
+234,2014-03-04,messalo,3-5 days,1.0,0.0,0.0,Not Exceeded
+240,2014-03-04,mocuba,3-5 days,0.0,0.0,0.0,Not Exceeded
+246,2014-03-04,revubue_em_chingodzi,3-5 days,0.0,0.0,0.0,Not Exceeded
+252,2014-03-04,revue,3-5 days,0.0,0.0,0.0,Not Exceeded
+258,2014-03-04,zambeze_em_caia_ss,3-5 days,0.3333333333333333,0.0,0.0,Not Exceeded
+264,2014-03-04,zambeze_em_marromeu_sena_sugar,3-5 days,0.0,0.0,0.0,Not Exceeded
+270,2014-03-04,zambeze_em_tete,3-5 days,0.0,0.0,0.0,Not Exceeded
+276,2014-03-04,zambeze_em_zumbo,3-5 days,0.0,0.0,0.0,Not Exceeded

@@ -4,7 +4,7 @@
   "anticipatoryActionDroughtUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/aa_probabilities_triggers_moz.csv",
   "anticipatoryActionDroughtStagingUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/staging/aa_probabilities_triggers_moz.csv",
   "anticipatoryActionStormUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/latest.json.",
-  "anticipatoryActionFloodUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/flood/moz/dates.json",
+  "anticipatoryActionFloodUrl": "data/mozambique/aa-floods/dates.json",
   "header": {
     "title": "PRISM",
     "logo": "images/moz-flag-inam-logo.png"
