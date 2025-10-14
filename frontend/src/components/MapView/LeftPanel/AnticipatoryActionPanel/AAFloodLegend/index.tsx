@@ -99,7 +99,7 @@ function AAFloodLegend() {
       label: 'Bankfull',
     },
     {
-      color: getFloodRiskColor('Below bankfull'),
+      color: getFloodRiskColor('Not exceeded'),
       label: 'Not exceeded',
     },
     {

@@ -7,7 +7,7 @@ import {
 
 export function getFloodRiskColor(riskLevel: AAFloodRiskLevelType): string {
   switch (riskLevel?.toLowerCase()) {
-    case 'below bankfull':
+    case 'not exceeded':
       return '#4CAF50'; // Green
     case 'bankfull':
       return '#FFC107'; // Yellow
@@ -30,7 +30,7 @@ export function getFloodRiskSeverity(
       return 3;
     case 'bankfull':
       return 2;
-    case 'below bankfull':
+    case 'not exceeded':
       return 1;
     default:
       return 0;
@@ -49,7 +49,7 @@ export function normalizeFloodTriggerStatus(raw: string): AAFloodRiskLevelType {
     case s === 'bankfull' || s === 'bank full':
       return 'Bankfull';
     default:
-      return 'Below bankfull';
+      return 'Not exceeded';
   }
 }
 

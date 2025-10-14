@@ -185,7 +185,7 @@ function AnticipatoryActionFloodPanel() {
     }
     return {
       time: avg.forecast_issue_date,
-      risk_level: avg.trigger_status || 'Below bankfull',
+      risk_level: avg.trigger_status || 'Not exceeded',
     } as any;
   };
 
