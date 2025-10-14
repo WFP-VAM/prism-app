@@ -192,8 +192,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     const labels = forecast.map(
       p => getFormattedDate(p.time, 'shortDayFirst') as string,
     );
-    const { threshold_bankfull, threshold_moderate, threshold_severe } =
-      probs[0];
+    const { thresholdBankfull, thresholdModerate, thresholdSevere } = probs[0];
 
     const membersCount = forecast[0]?.ensemble_members?.length || 0;
     const ensembleDatasets = Array.from(
@@ -237,8 +236,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           tension: 0.4,
         },
         {
-          label: `${t('Bankfull')} (${threshold_bankfull})`,
-          data: Array.from({ length: labels.length }, () => threshold_bankfull),
+          label: `${t('Bankfull')} (${thresholdBankfull})`,
+          data: Array.from({ length: labels.length }, () => thresholdBankfull),
           borderColor: '#66BB6A',
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -247,8 +246,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           pointStyle: 'line' as any,
         },
         {
-          label: `${t('Moderate')} (${threshold_moderate})`,
-          data: Array.from({ length: labels.length }, () => threshold_moderate),
+          label: `${t('Moderate')} (${thresholdModerate})`,
+          data: Array.from({ length: labels.length }, () => thresholdModerate),
           borderColor: '#FFA726',
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -257,8 +256,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           pointStyle: 'line' as any,
         },
         {
-          label: `${t('Severe')} (${threshold_severe})`,
-          data: Array.from({ length: labels.length }, () => threshold_severe),
+          label: `${t('Severe')} (${thresholdSevere})`,
+          data: Array.from({ length: labels.length }, () => thresholdSevere),
           borderColor: '#EF5350',
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -269,7 +268,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         ...ensembleDatasets,
       ],
     };
-  }, [floodState.forecastData, station.station_name, t]);
+  }, [floodState.forecastData, station.station_name, probs, t]);
 
   const beginIdx = forecastWindow.start - 1;
   const endIdx = forecastWindow.end - 1;
@@ -285,9 +284,9 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       return null;
     }
 
-    const bankfullSeries = sortedData.map(d => d.bankfull_percentage);
-    const moderateSeries = sortedData.map(d => d.moderate_percentage);
-    const severeSeries = sortedData.map(d => d.severe_percentage);
+    const bankfullSeries = sortedData.map(d => d.bankfullPercentage);
+    const moderateSeries = sortedData.map(d => d.moderatePercentage);
+    const severeSeries = sortedData.map(d => d.severePercentage);
 
     // Use averaged window means and triggers from avg_probabilities.csv
     const bankfullMean = avgProbStation?.avg_bankfull_percentage ?? 0;
@@ -585,9 +584,9 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       ...triggerPcts,
       ...probs.map(d =>
         Math.max(
-          d.bankfull_percentage,
-          d.moderate_percentage,
-          d.severe_percentage,
+          d.bankfullPercentage,
+          d.moderatePercentage,
+          d.severePercentage,
         ),
       ),
     );

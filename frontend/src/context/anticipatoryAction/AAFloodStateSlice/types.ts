@@ -79,10 +79,10 @@ export type AnticipatoryActionFloodState = {
 
 export interface FloodProbabilityPoint {
   time: string;
-  bankfull_percentage: number;
-  moderate_percentage: number;
-  severe_percentage: number;
-  threshold_bankfull: number;
-  threshold_moderate: number;
-  threshold_severe: number;
+  bankfullPercentage: number;
+  moderatePercentage: number;
+  severePercentage: number;
+  thresholdBankfull: number;
+  thresholdModerate: number;
+  thresholdSevere: number;
 }
