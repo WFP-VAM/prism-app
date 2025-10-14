@@ -1,21 +1,9 @@
 {
-    "2014-02-28": {
-        "trigger_status": "severe",
-        "probabilities_file": "2014-02-28/probabilities.csv",
-        "discharge_file": "2014-02-28/discharge.csv",
-        "avg_probabilities_file": "2014-02-28/avg_probabilities.csv"
-    },
     "2014-03-04": {
-        "trigger_status": "below bankfull",
+        "trigger_status": "bankfull",
         "probabilities_file": "2014-03-04/probabilities.csv",
         "discharge_file": "2014-03-04/discharge.csv",
         "avg_probabilities_file": "2014-03-04/avg_probabilities.csv"
-    },
-    "2014-03-07": {
-        "trigger_status": "below bankfull",
-        "probabilities_file": "2014-03-07/probabilities.csv",
-        "discharge_file": "2014-03-07/discharge.csv",
-        "avg_probabilities_file": "2014-03-07/avg_probabilities.csv"
     },
     "2025-09-23": {
         "trigger_status": "Not exceeded",
