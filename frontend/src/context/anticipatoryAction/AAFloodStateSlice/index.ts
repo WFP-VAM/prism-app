@@ -118,9 +118,13 @@ export const loadAAFloodDateData = createAsyncThunk<
           bankfullPercentage: Number(row.bankfull_percentage ?? 0) * 100,
           moderatePercentage: Number(row.moderate_percentage ?? 0) * 100,
           severePercentage: Number(row.severe_percentage ?? 0) * 100,
-          thresholdBankfull: Number(row.threshold_bankfull ?? 0),
-          thresholdModerate: Number(row.threshold_moderate ?? 0),
-          thresholdSevere: Number(row.threshold_severe ?? 0),
+          thresholdBankfull: Number(
+            Number(row.threshold_bankfull ?? 0).toFixed(2),
+          ),
+          thresholdModerate: Number(
+            Number(row.threshold_moderate ?? 0).toFixed(2),
+          ),
+          thresholdSevere: Number(Number(row.threshold_severe ?? 0).toFixed(2)),
         };
         const prev = acc[key] || [];
         return {

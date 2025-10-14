@@ -363,7 +363,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
 
     const thresholdDatasets = [
       avgProbStation?.trigger_bankfull !== undefined && {
-        label: `${t('Bankfull')} (${Number(avgProbStation?.trigger_bankfull || 0).toFixed(2)}%)`,
+        label: `${t('Bankfull')} ${t('threshold')}`,
         data: Array.from(
           { length: labels.length },
           () => avgProbStation!.trigger_bankfull as number,
@@ -376,7 +376,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         fill: false,
       },
       avgProbStation?.trigger_moderate !== undefined && {
-        label: `${t('Moderate')} (${Number(avgProbStation?.trigger_moderate || 0).toFixed(2)}%)`,
+        label: `${t('Moderate')} ${t('threshold')}`,
         data: Array.from(
           { length: labels.length },
           () => avgProbStation!.trigger_moderate as number,
@@ -389,7 +389,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         fill: false,
       },
       avgProbStation?.trigger_severe !== undefined && {
-        label: `${t('Severe')} (${Number(avgProbStation?.trigger_severe || 0).toFixed(2)}%)`,
+        label: `${t('Severe')} ${t('threshold')}`,
         data: Array.from(
           { length: labels.length },
           () => avgProbStation!.trigger_severe as number,
@@ -790,7 +790,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         rowLabel ?? '',
         ...tableDatasets.map(dataset => {
           const value = dataset.data?.[rowIndex];
-          return value ? `${Number(value).toFixed(2)}%` : '-';
+          return value ? `${Number(value).toFixed(1)}%` : '-';
         }),
       ],
     );
