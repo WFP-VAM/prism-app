@@ -176,6 +176,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   const probabilityChartRef = useRef<Line>(null);
 
   const floodState = useSelector(AAFloodDataSelector);
+  const probs = floodState.probabilitiesData[station.station_name];
   const avgProbStation = floodState.avgProbabilitiesData
     ? floodState.avgProbabilitiesData[station.station_name]
     : undefined;
@@ -191,7 +192,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     const labels = forecast.map(
       p => getFormattedDate(p.time, 'shortDayFirst') as string,
     );
-    const { bankfull, moderate, severe } = station.thresholds;
+    const { thresholdBankfull, thresholdModerate, thresholdSevere } = probs[0];
 
     const membersCount = forecast[0]?.ensemble_members?.length || 0;
     const ensembleDatasets = Array.from(
@@ -235,8 +236,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           tension: 0.4,
         },
         {
-          label: `${t('Bankfull')} (${bankfull})`,
-          data: Array.from({ length: labels.length }, () => bankfull),
+          label: `${t('Bankfull')} (${thresholdBankfull})`,
+          data: Array.from({ length: labels.length }, () => thresholdBankfull),
           borderColor: '#66BB6A',
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -245,8 +246,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           pointStyle: 'line' as any,
         },
         {
-          label: `${t('Moderate')} (${moderate})`,
-          data: Array.from({ length: labels.length }, () => moderate),
+          label: `${t('Moderate')} (${thresholdModerate})`,
+          data: Array.from({ length: labels.length }, () => thresholdModerate),
           borderColor: '#FFA726',
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -255,8 +256,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           pointStyle: 'line' as any,
         },
         {
-          label: `${t('Severe')} (${severe})`,
-          data: Array.from({ length: labels.length }, () => severe),
+          label: `${t('Severe')} (${thresholdSevere})`,
+          data: Array.from({ length: labels.length }, () => thresholdSevere),
           borderColor: '#EF5350',
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -267,17 +268,13 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         ...ensembleDatasets,
       ],
     };
-  }, [floodState.forecastData, station.station_name, station.thresholds, t]);
+  }, [floodState.forecastData, station.station_name, probs, t]);
 
   const beginIdx = forecastWindow.start - 1;
   const endIdx = forecastWindow.end - 1;
 
   // Prepare trigger probability data from fetched probabilities
-  const probs = floodState.probabilitiesData[station.station_name];
-  const sortedData = sortBy(
-    floodState.probabilitiesData[station.station_name],
-    p => new Date(p.time).getTime(),
-  );
+  const sortedData = sortBy(probs, p => new Date(p.time).getTime());
   const labels = sortedData.map(
     d => getFormattedDate(d.time, 'shortDayFirst') as string,
   );
@@ -287,9 +284,9 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       return null;
     }
 
-    const bankfullSeries = sortedData.map(d => d.bankfull_percentage);
-    const moderateSeries = sortedData.map(d => d.moderate_percentage);
-    const severeSeries = sortedData.map(d => d.severe_percentage);
+    const bankfullSeries = sortedData.map(d => d.bankfullPercentage);
+    const moderateSeries = sortedData.map(d => d.moderatePercentage);
+    const severeSeries = sortedData.map(d => d.severePercentage);
 
     // Use averaged window means and triggers from avg_probabilities.csv
     const bankfullMean = avgProbStation?.avg_bankfull_percentage ?? 0;
@@ -587,9 +584,9 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       ...triggerPcts,
       ...probs.map(d =>
         Math.max(
-          d.bankfull_percentage,
-          d.moderate_percentage,
-          d.severe_percentage,
+          d.bankfullPercentage,
+          d.moderatePercentage,
+          d.severePercentage,
         ),
       ),
     );

@@ -47,7 +47,6 @@ const useStyles = makeStyles(() =>
       fontWeight: 'bold',
       zIndex: 1,
     },
-
     dayItem: {
       position: 'absolute',
       height: 10,
