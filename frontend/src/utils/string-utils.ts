@@ -1,4 +1,5 @@
 /* eslint-disable no-bitwise, fp/no-mutation */
+import { kebabCase } from 'lodash';
 
 // https://stackoverflow.com/a/7616484
 export const stringHash = (s: string): string => {
@@ -15,4 +16,12 @@ export const stringHash = (s: string): string => {
   }
 
   return hash.toString();
+};
+
+export const generateSlugFromTitle = (title: string): string => {
+  if (!title || typeof title !== 'string' || title.trim() === '') {
+    return 'untitled-dashboard';
+  }
+
+  return kebabCase(title.trim());
 };
