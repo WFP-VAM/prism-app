@@ -363,7 +363,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
 
     const thresholdDatasets = [
       avgProbStation?.trigger_bankfull !== undefined && {
-        label: `${t('Bankfull')} (${avgProbStation?.trigger_bankfull}%)`,
+        label: `${t('Bankfull')} (${Number(avgProbStation?.trigger_bankfull || 0).toFixed(2)}%)`,
         data: Array.from(
           { length: labels.length },
           () => avgProbStation!.trigger_bankfull as number,
@@ -376,7 +376,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         fill: false,
       },
       avgProbStation?.trigger_moderate !== undefined && {
-        label: `${t('Moderate')} (${avgProbStation?.trigger_moderate}%)`,
+        label: `${t('Moderate')} (${Number(avgProbStation?.trigger_moderate || 0).toFixed(2)}%)`,
         data: Array.from(
           { length: labels.length },
           () => avgProbStation!.trigger_moderate as number,
@@ -389,7 +389,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         fill: false,
       },
       avgProbStation?.trigger_severe !== undefined && {
-        label: `${t('Severe')} (${avgProbStation?.trigger_severe}%)`,
+        label: `${t('Severe')} (${Number(avgProbStation?.trigger_severe || 0).toFixed(2)}%)`,
         data: Array.from(
           { length: labels.length },
           () => avgProbStation!.trigger_severe as number,
@@ -778,17 +778,19 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       return null;
     }
 
-    const columnNames = [
-      t('Date'),
-      ...triggerProbabilityData.datasets.map(d => d.label || ''),
-    ];
+    // Filter out mean fill datasets from table view
+    const tableDatasets = triggerProbabilityData.datasets.filter(
+      dataset => !dataset.label?.includes('mean fill'),
+    );
+
+    const columnNames = [t('Date'), ...tableDatasets.map(d => d.label || '')];
 
     const tableValues = (triggerProbabilityData.labels as string[]).map(
       (rowLabel, rowIndex: number) => [
         rowLabel ?? '',
-        ...triggerProbabilityData.datasets.map(dataset => {
+        ...tableDatasets.map(dataset => {
           const value = dataset.data?.[rowIndex];
-          return value ? `${value}%` : '-';
+          return value ? `${Number(value).toFixed(2)}%` : '-';
         }),
       ],
     );
@@ -889,6 +891,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
               </div>
               <TableContainer
                 className={classes.tableContainer}
+                key={`hydrograph-table-${station.station_name}`}
                 style={{ display: viewMode === 'table' ? 'block' : 'none' }}
               >
                 <Table size="small">
@@ -947,6 +950,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
               </div>
               <TableContainer
                 className={classes.tableContainer}
+                key={`trigger-probability-table-${station.station_name}`}
                 style={{ display: viewMode === 'table' ? 'block' : 'none' }}
               >
                 <Table size="small">
@@ -964,7 +968,9 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                       )}
                     </TableRow>
                   </TableHead>
-                  <TableBody>
+                  <TableBody
+                    key={`trigger-probability-table-body-${station.station_name}`}
+                  >
                     {triggerProbabilityTableData?.tableValues.map(row => (
                       <TableRow>
                         {row.map(cellValue => (

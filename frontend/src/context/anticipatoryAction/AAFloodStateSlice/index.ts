@@ -115,9 +115,9 @@ export const loadAAFloodDateData = createAsyncThunk<
         }
         const point: FloodProbabilityPoint = {
           time: String(row.valid_time ?? row.time ?? ''),
-          bankfullPercentage: Number(row.bankfull_percentage ?? 0),
-          moderatePercentage: Number(row.moderate_percentage ?? 0),
-          severePercentage: Number(row.severe_percentage ?? 0),
+          bankfullPercentage: Number(row.bankfull_percentage ?? 0) * 100,
+          moderatePercentage: Number(row.moderate_percentage ?? 0) * 100,
+          severePercentage: Number(row.severe_percentage ?? 0) * 100,
           thresholdBankfull: Number(row.threshold_bankfull ?? 0),
           thresholdModerate: Number(row.threshold_moderate ?? 0),
           thresholdSevere: Number(row.threshold_severe ?? 0),
