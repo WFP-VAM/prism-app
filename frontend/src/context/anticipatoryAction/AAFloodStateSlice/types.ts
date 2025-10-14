@@ -7,7 +7,7 @@ export type FloodDateItem = DateItem & {
 
 // Flood risk levels based on the sample data
 export const AAFloodRiskLevels = [
-  'Below bankfull',
+  'Not exceeded',
   'Bankfull',
   'Moderate',
   'Severe',

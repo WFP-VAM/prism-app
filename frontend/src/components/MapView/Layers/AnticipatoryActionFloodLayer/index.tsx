@@ -114,7 +114,7 @@ function AnticipatoryActionFloodLayer({
             station_name: station.station_name,
             river_name: station.river_name,
             station_id: station.station_id,
-            risk_level: avg.trigger_status || 'Below bankfull',
+            risk_level: avg.trigger_status || 'Not exceeded',
             avg_discharge: 0,
             max_discharge: 0,
           },
@@ -148,7 +148,7 @@ function AnticipatoryActionFloodLayer({
         if (!avg) {
           return null;
         }
-        const riskLevel = avg.trigger_status || 'Below bankfull';
+        const riskLevel = avg.trigger_status || 'Not exceeded';
         const circleColor = getCircleColor(riskLevel);
         const borderColor = getBorderColor(riskLevel);
 
