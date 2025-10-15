@@ -49,7 +49,7 @@ function AnticipatoryActionFloodLayer({
   // Load the layer default date if no date is selected
   useDefaultDate(layer.id);
   const { AAData } = useAnticipatoryAction(AnticipatoryAction.flood);
-  const { stations, avgProbabilitiesData } = AAData;
+  const { stations, stationSummaryData } = AAData;
   const { startDate } = useSelector(dateRangeSelector);
   const dispatch = useDispatch();
 
@@ -88,7 +88,7 @@ function AnticipatoryActionFloodLayer({
       if (!selectedDateKey) {
         return true;
       }
-      const avg = avgProbabilitiesData?.[station.station_name];
+      const avg = stationSummaryData?.[station.station_name];
       const issueDate = avg?.forecast_issue_date
         ? new Date(avg.forecast_issue_date).toISOString().split('T')[0]
         : null;
@@ -98,7 +98,7 @@ function AnticipatoryActionFloodLayer({
     return {
       type: 'FeatureCollection' as const,
       features: filteredStations.map((station: any) => {
-        const avg = avgProbabilitiesData?.[station.station_name];
+        const avg = stationSummaryData?.[station.station_name];
         if (!avg) {
           return null;
         }
@@ -121,7 +121,7 @@ function AnticipatoryActionFloodLayer({
         };
       }),
     };
-  }, [stations, selectedDateKey, avgProbabilitiesData]);
+  }, [stations, selectedDateKey, stationSummaryData]);
 
   if (!floodStationsGeoJSON) {
     return null;
@@ -131,7 +131,7 @@ function AnticipatoryActionFloodLayer({
     if (!selectedDateKey) {
       return true;
     }
-    const avg = avgProbabilitiesData?.[station.station_name];
+    const avg = stationSummaryData?.[station.station_name];
     const issueDate = avg?.forecast_issue_date
       ? new Date(avg.forecast_issue_date).toISOString().split('T')[0]
       : null;
@@ -144,7 +144,7 @@ function AnticipatoryActionFloodLayer({
         if (!station.coordinates) {
           return null;
         }
-        const avg = avgProbabilitiesData?.[station.station_name];
+        const avg = stationSummaryData?.[station.station_name];
         if (!avg) {
           return null;
         }

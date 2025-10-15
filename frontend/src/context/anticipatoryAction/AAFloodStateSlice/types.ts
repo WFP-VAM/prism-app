@@ -23,6 +23,7 @@ export interface FloodStationData {
   risk_level: AAFloodRiskLevelType;
 }
 
+// TODO - merge with FloodSummaryStation
 export interface FloodStation {
   station_name: string;
   river_name: string;
@@ -39,7 +40,7 @@ export interface FloodForecastData {
   ensemble_members: number[];
 }
 
-export interface FloodAvgProbabilities {
+export interface FloodSummaryStation {
   station_name: string;
   station_id: number;
   river_name: string;
@@ -70,7 +71,7 @@ export type AnticipatoryActionFloodState = {
   selectedDate: string | null;
   forecastData: Record<string, FloodForecastData[]>;
   probabilitiesData: Record<string, FloodProbabilityPoint[]>;
-  avgProbabilitiesData: Record<string, FloodAvgProbabilities | undefined>;
+  stationSummaryData: Record<string, FloodSummaryStation | undefined>;
   availableDates: FloodDateItem[];
   view: AAFloodView;
   loading: boolean;
