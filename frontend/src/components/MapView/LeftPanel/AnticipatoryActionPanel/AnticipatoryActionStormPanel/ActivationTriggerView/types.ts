@@ -8,6 +8,6 @@ export const AAPanelCategories: AACategory[] = [
 export const AADisplayCategory: {
   [key in AACategory]?: string;
 } = {
-  [AACategory.Severe]: ' >119 KM/H',
-  [AACategory.Moderate]: ' >89 KM/H',
+  [AACategory.Severe]: 'Active >119 KM/H',
+  [AACategory.Moderate]: 'Warning >89 KM/H',
 };
