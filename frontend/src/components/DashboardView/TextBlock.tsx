@@ -11,7 +11,8 @@ import {
 interface TextBlockProps {
   label?: string;
   content: string;
-  index: number;
+  columnIndex: number;
+  elementIndex: number;
 }
 
 const createMarkdownComponents = (classes: any) => ({
@@ -59,8 +60,9 @@ const createMarkdownComponents = (classes: any) => ({
 });
 
 function TextBlock({
-  index,
-  label = `Block #${index + 1}`,
+  columnIndex,
+  elementIndex,
+  label = `Block #${elementIndex + 1}`,
   content,
 }: TextBlockProps) {
   const dispatch = useDispatch();
@@ -107,7 +109,13 @@ function TextBlock({
         placeholder="Add custom text here"
         value={content}
         onChange={e =>
-          dispatch(setTextContent({ index, content: e.target.value }))
+          dispatch(
+            setTextContent({
+              columnIndex,
+              elementIndex,
+              content: e.target.value,
+            }),
+          )
         }
       />
     </Box>

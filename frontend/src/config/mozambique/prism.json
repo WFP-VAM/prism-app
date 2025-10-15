@@ -469,8 +469,9 @@
   "configuredReports": [
     {
       "title": "Spring Dashboard",
-      "maps": [
+      "firstColumn": [
         {
+          "type": "MAP",
           "defaultDate": "2025-04-01",
           "mapPosition": "left",
           "minMapBounds": [31, -25, 40, -11],
@@ -479,7 +480,7 @@
           ]
         }
       ],
-      "flexElements": [
+      "secondColumn": [
         {
           "type": "TEXT",
           "content": "Spring Dashboard - April 2025 Analysis",
@@ -499,14 +500,16 @@
           "baselineLayerId": "admin1_boundaries",
           "stat": "mean"
         }
-      ]
+      ],
+      "thirdColumn": []
     },
     {
       "title": "Summer Dashboard",
       "path": "summer-temperature-report",
       "isEditable": true,
-      "maps": [
+      "firstColumn": [
         {
+          "type": "MAP",
           "defaultDate": "2025-06-01",
           "mapPosition": "left",
           "minMapBounds": [32, -20, 38, -15],
@@ -515,7 +518,7 @@
           ]
         }
       ],
-      "flexElements": [
+      "secondColumn": [
         {
           "type": "TEXT",
           "content": "Summer Dashboard - June 2025 Analysis",
@@ -525,20 +528,25 @@
           "type": "TEXT",
           "content": ""
         }
-      ]
+      ],
+      "thirdColumn": []
     },
     {
       "title": "Precipitation Comparison Dashboard",
-      "maps": [
+      "firstColumn": [
         {
+          "type": "MAP",
           "defaultDate": "2025-05-01",
           "mapPosition": "left",
           "minMapBounds": [31, -25, 40, -11],
           "preSelectedMapLayers": [
             { "layerId": "precip_blended_dekad", "opacity": 0.8 }
           ]
-        },
+        }
+      ],
+      "secondColumn": [
         {
+          "type": "MAP",
           "defaultDate": "2025-05-21",
           "mapPosition": "right",
           "minMapBounds": [31, -25, 40, -11],
@@ -547,12 +555,7 @@
           ]
         }
       ],
-      "flexElements": [
-        {
-          "type": "TEXT",
-          "content": "Precipitation Comparison Dashboard - May 1 2025\n\nAdditional notes here",
-          "textUpdatedAt": "2025-09-01"
-        },
+      "thirdColumn": [
         {
           "type": "TEXT",
           "content": "Precipitation Comparison Dashboard - May 21 2025\n\nAdditional notes here",
