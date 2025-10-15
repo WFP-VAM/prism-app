@@ -288,7 +288,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     const moderateSeries = sortedData.map(d => d.moderatePercentage);
     const severeSeries = sortedData.map(d => d.severePercentage);
 
-    // Use averaged window means and triggers from avg_probabilities.csv
+    // Use averaged window means and triggers from station_summary_file.csv
     const bankfullMean = avgProbStation?.avg_bankfull_percentage ?? 0;
     const moderateMean = avgProbStation?.avg_moderate_percentage ?? 0;
     const severeMean = avgProbStation?.avg_severe_percentage ?? 0;

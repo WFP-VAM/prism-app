@@ -60,7 +60,7 @@ export function buildAvailableFloodDatesFromDatesJson(
       trigger_status?: string;
       probabilities_file?: string;
       discharge_file?: string;
-      avg_probabilities_file?: string;
+      station_summary_file?: string;
     }
   >,
 ): FloodDateItem[] {

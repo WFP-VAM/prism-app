@@ -50,7 +50,7 @@ export const loadAAFloodData = createAsyncThunk<
       trigger_status?: string;
       probabilities_file?: string;
       discharge_file?: string;
-      avg_probabilities_file?: string;
+      station_summary_file?: string;
     }
   > = await resp.json();
 
@@ -100,7 +100,7 @@ export const loadAAFloodDateData = createAsyncThunk<
   const [probRows, dischargeRows, avgProbRows] = await Promise.all([
     parseCsv<any>(`${baseDir}${dateData.probabilities_file}`),
     parseCsv<any>(`${baseDir}${dateData.discharge_file}`),
-    parseCsv<any>(`${baseDir}${dateData.avg_probabilities_file}`),
+    parseCsv<any>(`${baseDir}${dateData.station_summary_file}`),
   ]);
 
   // probabilities.csv schema: station_id,station_name,river_name,longitude,latitude,forecast_issue_date,valid_time,bankfull_percentage,moderate_percentage,severe_percentage
