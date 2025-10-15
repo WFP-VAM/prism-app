@@ -12,6 +12,7 @@ import type {
   ConfiguredReport,
   LayerType,
   DashboardMapConfig,
+  DashboardMode,
 } from 'config/types';
 import type { RootState } from './store';
 
@@ -38,8 +39,14 @@ export interface DashboardMapState extends MapState {
 export interface DashboardState {
   selectedDashboardIndex: number;
   title: string;
+  mode: DashboardMode;
   flexElements: ConfiguredReport['flexElements'];
   maps: DashboardMapState[];
+  syncMapsEnabled: boolean;
+  sharedViewport?: {
+    bounds: [number, number, number, number]; // [west, south, east, north]
+    zoom: number;
+  };
 }
 
 const getDashboardConfig = (index: number) => {
@@ -84,7 +91,10 @@ const createInitialState = (dashboardIndex: number = 0): DashboardState => {
   return {
     selectedDashboardIndex: dashboardIndex,
     title: dashboardConfig?.title || 'Dashboard',
+    mode: 'preview' as DashboardMode,
     flexElements: dashboardConfig?.flexElements || [],
+    syncMapsEnabled: false,
+    sharedViewport: undefined,
     maps:
       dashboardConfig?.maps?.map((mapConfig: DashboardMapConfig) => {
         // Process pre-selected layers
@@ -153,9 +163,31 @@ export const dashboardStateSlice = createSlice({
       const dashboardIndex = action.payload;
       return createInitialState(dashboardIndex);
     },
+    toggleMapSync: state => {
+      const newSyncEnabled = !state.syncMapsEnabled;
+      return {
+        ...state,
+        syncMapsEnabled: newSyncEnabled,
+        sharedViewport: newSyncEnabled ? state.sharedViewport : undefined,
+      };
+    },
+    setSharedViewport: (
+      state,
+      action: PayloadAction<{
+        bounds: [number, number, number, number];
+        zoom: number;
+      }>,
+    ) => ({
+      ...state,
+      sharedViewport: action.payload,
+    }),
     setTitle: (state, action: PayloadAction<string>) => ({
       ...state,
       title: action.payload,
+    }),
+    setMode: (state, action: PayloadAction<DashboardMode>) => ({
+      ...state,
+      mode: action.payload,
     }),
     setTextContent: (
       state,
@@ -357,12 +389,22 @@ export const selectedDashboardIndexSelector = (state: RootState): number =>
 export const dashboardTitleSelector = (state: RootState): string =>
   state.dashboardState.title;
 
+export const dashboardModeSelector = (state: RootState): DashboardMode =>
+  state.dashboardState.mode;
+
 export const dashboardFlexElementsSelector = (
   state: RootState,
 ): ConfiguredReport['flexElements'] => state.dashboardState.flexElements;
 
 export const dashboardMapsSelector = (state: RootState): DashboardMapState[] =>
   state.dashboardState.maps;
+
+export const dashboardSyncEnabledSelector = (state: RootState): boolean =>
+  state.dashboardState.syncMapsEnabled;
+
+export const dashboardSharedViewportSelector = (
+  state: RootState,
+): DashboardState['sharedViewport'] => state.dashboardState.sharedViewport;
 
 export const dashboardOpacitySelector =
   (index: number, layerId: string) =>
@@ -372,9 +414,12 @@ export const dashboardOpacitySelector =
 // Setters
 export const {
   setSelectedDashboard,
+  toggleMapSync,
+  setSharedViewport,
   addLayerToMap,
   removeLayerFromMap,
   setTitle,
+  setMode,
   setTextContent,
   updateMapDateRange,
   setMap,

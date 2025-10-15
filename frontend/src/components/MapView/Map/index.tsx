@@ -14,7 +14,13 @@ import MapTooltip from 'components/MapView/MapTooltip';
 import { appConfig } from 'config';
 import useMapOnClick from 'components/MapView/useMapOnClick';
 import { setBounds, setLocation } from 'context/mapBoundaryInfoStateSlice';
-import { DiscriminateUnion, LayerKey, LayerType, Panel } from 'config/types';
+import {
+  DashboardMode,
+  DiscriminateUnion,
+  LayerKey,
+  LayerType,
+  Panel,
+} from 'config/types';
 import { setLoadingLayerIds } from 'context/mapTileLoadingStateSlice';
 import {
   firstBoundaryOnView,
@@ -22,6 +28,7 @@ import {
   isLayerOnView,
 } from 'utils/map-utils';
 import { useMapState } from 'utils/useMapState';
+import { dashboardModeSelector } from 'context/dashboardStateSlice';
 import {
   AdminLevelDataLayer,
   AnticipatoryActionDroughtLayer,
@@ -88,12 +95,12 @@ const MapComponent = memo(
     const mapRef = React.useRef<MapRef>(null);
 
     const dispatch = useDispatch();
-
     const { selectedLayers, boundaryLayerId } = useLayers();
 
     const mapState = useMapState();
     const selectedMap = mapState?.maplibreMap();
     const isGlobalMap = mapState?.isGlobalMap;
+    const dashboardMode = useSelector(dashboardModeSelector);
     const tabValue = useSelector(leftPanelTabValueSelector);
 
     const panelHidden = tabValue === Panel.None;
@@ -288,12 +295,19 @@ const MapComponent = memo(
       });
     }, [hideMapLabels]);
 
+    const interactionsDisabled =
+      !isGlobalMap && dashboardMode !== DashboardMode.EDIT;
+
     return (
       <MapGL
         ref={mapRef}
         // preserveDrawingBuffer is required for the map to be exported as an image. Used in reportDoc.tsx
         preserveDrawingBuffer
         dragRotate={false}
+        dragPan={!interactionsDisabled}
+        scrollZoom={!interactionsDisabled}
+        doubleClickZoom={!interactionsDisabled}
+        touchZoomRotate={!interactionsDisabled}
         minZoom={minZoom}
         maxZoom={maxZoom}
         initialViewState={{

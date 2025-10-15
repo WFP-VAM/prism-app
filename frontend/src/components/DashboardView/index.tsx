@@ -1,7 +1,14 @@
-import { Box, makeStyles, Typography, Button } from '@material-ui/core';
+import {
+  Box,
+  makeStyles,
+  Typography,
+  Button,
+  Switch,
+  FormControlLabel,
+} from '@material-ui/core';
 import { ArrowForward, Edit, VisibilityOutlined } from '@material-ui/icons';
 import { useSelector, useDispatch } from 'react-redux';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSafeTranslation } from 'i18n';
 import { black, cyanBlue } from 'muiTheme';
 import {
@@ -16,6 +23,10 @@ import {
   setTitle,
   dashboardFlexElementsSelector,
   dashboardMapsSelector,
+  dashboardSyncEnabledSelector,
+  toggleMapSync,
+  dashboardModeSelector,
+  setMode,
 } from '../../context/dashboardStateSlice';
 import { clearAnalysisResult } from '../../context/analysisResultStateSlice';
 import TextBlock from './TextBlock';
@@ -29,14 +40,16 @@ function DashboardView() {
   const dashboardTitle = useSelector(dashboardTitleSelector);
   const dashboardFlexElements = useSelector(dashboardFlexElementsSelector);
   const dashboardMaps = useSelector(dashboardMapsSelector);
+  const syncEnabled = useSelector(dashboardSyncEnabledSelector);
+  const mode = useSelector(dashboardModeSelector);
   const dispatch = useDispatch();
-  const [mode, setMode] = useState<DashboardMode>(DashboardMode.PREVIEW);
   const { t } = useSafeTranslation();
 
   // Export/Publish dialog state
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const handleOpenExport = () => setExportDialogOpen(true);
   const handleCloseExport = () => setExportDialogOpen(false);
+  const isTwoMapLayout = dashboardMaps.length === 2;
 
   // Clear any existing analysis state when component mounts
   useEffect(() => {
@@ -52,11 +65,11 @@ function DashboardView() {
   );
 
   const handlePreviewClick = () => {
-    setMode(DashboardMode.PREVIEW);
+    dispatch(setMode(DashboardMode.PREVIEW));
   };
 
   const handleClosePreview = () => {
-    setMode(DashboardMode.EDIT);
+    dispatch(setMode(DashboardMode.EDIT));
   };
 
   return (
@@ -88,7 +101,7 @@ function DashboardView() {
             style={{ backgroundColor: cyanBlue, color: black }}
             onClick={handleOpenExport}
           >
-            {t('Publish')}
+            {t('Print')}
           </Button>
         </Box>
       )}
@@ -96,110 +109,208 @@ function DashboardView() {
       {mode === DashboardMode.PREVIEW ? (
         <DashboardContent showTitle className={classes.previewLayout} />
       ) : (
-        <Box className={classes.layout}>
-          <Box className={classes.leadingContentArea}>
-            <Box className={classes.grayCard}>
-              <label className={classes.titleBarLabel}>
-                <Typography
-                  variant="h2"
-                  component="span"
-                  className={classes.titleBarTypography}
-                >
-                  {t('Dashboard title')}
-                </Typography>
-                <input
-                  type="text"
-                  className={classes.titleBarInput}
-                  placeholder={t('Enter dashboard title')}
-                  value={dashboardTitle}
-                  onChange={e => dispatch(setTitle(e.target.value))}
-                  name="dashboard-title"
-                />
-              </label>
-            </Box>
-
-            <div className={classes.mapsContainer}>
-              {dashboardMaps.map((_, mapIndex) => (
-                <Box
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={`map-${mapIndex}`}
-                  className={classes.grayCard}
-                >
-                  {mode === DashboardMode.EDIT && (
-                    <Typography
-                      variant="h3"
-                      component="h3"
-                      className={classes.blockLabel}
-                    >
-                      {dashboardMaps.length > 1
-                        ? `Map ${mapIndex + 1}`
-                        : 'Map block'}{' '}
-                      — {t('Choose map layers')}
-                    </Typography>
-                  )}
-                  <div style={{ height: '700px', width: '100%' }}>
-                    <MapBlock mapIndex={mapIndex} mode={mode} />
-                  </div>
-                </Box>
-              ))}
-            </div>
+        <Box className={classes.twoMapEditContainer}>
+          <Box className={classes.grayCard}>
+            <label className={classes.titleBarLabel}>
+              <Typography
+                variant="h2"
+                component="span"
+                className={classes.titleBarTypography}
+              >
+                {t('Dashboard title')}
+              </Typography>
+              <input
+                type="text"
+                className={classes.titleBarInput}
+                placeholder={t('Enter dashboard title')}
+                value={dashboardTitle}
+                onChange={e => dispatch(setTitle(e.target.value))}
+                name="dashboard-title"
+              />
+            </label>
+            {isTwoMapLayout && (
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={syncEnabled}
+                    onChange={() => dispatch(toggleMapSync())}
+                    color="primary"
+                    size="medium"
+                  />
+                }
+                label={t('Sync maps')}
+                className={classes.syncToggle}
+              />
+            )}
           </Box>
 
-          {dashboardFlexElements.length > 0 && (
-            <Box className={classes.trailingContentArea}>
-              {dashboardFlexElements?.map((element, index) => {
-                if (element.type === 'TEXT') {
-                  const content =
-                    (element as DashboardTextConfig)?.content || '';
-                  return (
-                    <TextBlock
+          {isTwoMapLayout ? (
+            <>
+              <Box className={classes.mapsContainer}>
+                {dashboardMaps.map((_, mapIndex) => (
+                  <Box
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={`map-${mapIndex}`}
+                    className={classes.grayCard}
+                  >
+                    <div className={classes.mapHeaderContainer}>
+                      <Typography
+                        variant="h3"
+                        component="h3"
+                        className={classes.blockLabel}
+                      >
+                        {dashboardMaps.length > 1
+                          ? `Map ${mapIndex + 1}`
+                          : 'Map block'}{' '}
+                        — {t('Choose map layers')}
+                      </Typography>
+                    </div>
+                    <div style={{ height: '700px' }}>
+                      <MapBlock mapIndex={mapIndex} mode={mode} />
+                    </div>
+                  </Box>
+                ))}
+              </Box>
+
+              {dashboardFlexElements.length > 0 && (
+                <Box className={classes.flexElementsContainer}>
+                  {dashboardFlexElements.map((element, index) => {
+                    if (element.type === 'TEXT') {
+                      const content =
+                        (element as DashboardTextConfig)?.content || '';
+                      return (
+                        <TextBlock
+                          // eslint-disable-next-line react/no-array-index-key
+                          key={`text-block-${index}`}
+                          content={content}
+                          index={index}
+                          mode={mode}
+                        />
+                      );
+                    }
+                    if (element.type === 'TABLE') {
+                      return (
+                        <TableBlock
+                          // eslint-disable-next-line react/no-array-index-key
+                          key={`table-block-${index}`}
+                          index={index}
+                          startDate={element.startDate}
+                          hazardLayerId={element.hazardLayerId}
+                          baselineLayerId={element.baselineLayerId}
+                          threshold={element.threshold}
+                          stat={element.stat}
+                          mode={mode}
+                        />
+                      );
+                    }
+                    if (element.type === 'CHART') {
+                      const chartElement = element as DashboardChartConfig;
+                      return (
+                        <ChartBlock
+                          // eslint-disable-next-line react/no-array-index-key
+                          key={`chart-block-${index}`}
+                          index={index}
+                          startDate={chartElement.startDate}
+                          endDate={chartElement.endDate}
+                          wmsLayerId={chartElement.wmsLayerId}
+                          adminUnitLevel={chartElement.adminUnitLevel}
+                          adminUnitId={chartElement.adminUnitId}
+                          mode={mode}
+                        />
+                      );
+                    }
+                    return null;
+                  })}
+                </Box>
+              )}
+            </>
+          ) : (
+            <Box className={classes.layout}>
+              <Box className={classes.leadingContentArea}>
+                <div className={classes.mapsContainer}>
+                  {dashboardMaps.map((_, mapIndex) => (
+                    <Box
                       // eslint-disable-next-line react/no-array-index-key
-                      key={`text-block-${index}`}
-                      content={content}
-                      index={index}
-                      mode={mode}
-                    />
-                  );
-                }
-                if (element.type === 'TABLE') {
-                  return (
-                    <TableBlock
-                      // eslint-disable-next-line react/no-array-index-key
-                      key={`table-block-${index}`}
-                      index={index}
-                      startDate={element.startDate}
-                      hazardLayerId={element.hazardLayerId}
-                      baselineLayerId={element.baselineLayerId}
-                      threshold={element.threshold}
-                      stat={element.stat}
-                      mode={mode}
-                    />
-                  );
-                }
-                if (element.type === 'CHART') {
-                  const chartElement = element as DashboardChartConfig;
-                  return (
-                    <ChartBlock
-                      // eslint-disable-next-line react/no-array-index-key
-                      key={`chart-block-${index}`}
-                      index={index}
-                      startDate={chartElement.startDate}
-                      endDate={chartElement.endDate}
-                      wmsLayerId={chartElement.wmsLayerId}
-                      adminUnitLevel={chartElement.adminUnitLevel}
-                      adminUnitId={chartElement.adminUnitId}
-                      mode={mode}
-                    />
-                  );
-                }
-                return null;
-              })}
+                      key={`map-${mapIndex}`}
+                      className={classes.grayCard}
+                    >
+                      <div className={classes.mapHeaderContainer}>
+                        <Typography
+                          variant="h3"
+                          component="h3"
+                          className={classes.blockLabel}
+                        >
+                          {dashboardMaps.length > 1
+                            ? `Map ${mapIndex + 1}`
+                            : 'Map block'}{' '}
+                          — {t('Choose map layers')}
+                        </Typography>
+                      </div>
+                      <div style={{ height: '700px', width: '100%' }}>
+                        <MapBlock mapIndex={mapIndex} mode={mode} />
+                      </div>
+                    </Box>
+                  ))}
+                </div>
+              </Box>
+
+              {dashboardFlexElements.length > 0 && (
+                <Box className={classes.trailingContentArea}>
+                  {dashboardFlexElements?.map((element, index) => {
+                    if (element.type === 'TEXT') {
+                      const content =
+                        (element as DashboardTextConfig)?.content || '';
+                      return (
+                        <TextBlock
+                          // eslint-disable-next-line react/no-array-index-key
+                          key={`text-block-${index}`}
+                          content={content}
+                          index={index}
+                          mode={mode}
+                        />
+                      );
+                    }
+                    if (element.type === 'TABLE') {
+                      return (
+                        <TableBlock
+                          // eslint-disable-next-line react/no-array-index-key
+                          key={`table-block-${index}`}
+                          index={index}
+                          startDate={element.startDate}
+                          hazardLayerId={element.hazardLayerId}
+                          baselineLayerId={element.baselineLayerId}
+                          threshold={element.threshold}
+                          stat={element.stat}
+                          mode={mode}
+                        />
+                      );
+                    }
+                    if (element.type === 'CHART') {
+                      const chartElement = element as DashboardChartConfig;
+                      return (
+                        <ChartBlock
+                          // eslint-disable-next-line react/no-array-index-key
+                          key={`chart-block-${index}`}
+                          index={index}
+                          startDate={chartElement.startDate}
+                          endDate={chartElement.endDate}
+                          wmsLayerId={chartElement.wmsLayerId}
+                          adminUnitLevel={chartElement.adminUnitLevel}
+                          adminUnitId={chartElement.adminUnitId}
+                          mode={mode}
+                        />
+                      );
+                    }
+                    return null;
+                  })}
+                </Box>
+              )}
             </Box>
           )}
         </Box>
       )}
 
-      {mode === 'edit' && (
+      {mode === DashboardMode.EDIT && (
         <Box className={classes.toolbar}>
           <Button
             variant="outlined"
@@ -209,7 +320,7 @@ function DashboardView() {
             className={classes.previewButton}
             size="medium"
           >
-            {t('Preview')}
+            {t('Back to Dashboard')}
           </Button>
         </Box>
       )}
@@ -237,7 +348,17 @@ const useStyles = makeStyles(() => ({
   layout: {
     display: 'flex',
     padding: 16,
-    margin: 16,
+    margin: '0 16px 16px 16px',
+    gap: 16,
+    flex: 1,
+    overflow: 'auto',
+    paddingBottom: 80, // Add extra padding to account for fixed toolbar
+  },
+  twoMapEditContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: 16,
+    margin: '0 16px 16px 16px',
     gap: 16,
     flex: 1,
     overflow: 'auto',
@@ -255,12 +376,20 @@ const useStyles = makeStyles(() => ({
     marginBottom: 16,
     padding: 12,
   },
+  titleCard: {
+    display: 'flex',
+    background: '#F1F1F1',
+    borderRadius: 8,
+    marginBottom: 0, // No bottom margin for title card
+    padding: 12,
+  },
   titleBarLabel: {
     display: 'flex',
     alignItems: 'center',
     marginRight: 16,
     fontWeight: 600,
     fontSize: 16,
+    flex: 1,
   },
   titleBarTypography: {
     flex: '1 0 fit-content',
@@ -315,6 +444,18 @@ const useStyles = makeStyles(() => ({
       minWidth: 0, // Prevents flex items from overflowing
     },
   },
+  previewContainer: {
+    background: 'white',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 16,
+  },
+  previewTitle: {
+    padding: 16,
+    fontWeight: 500,
+    fontSize: 20,
+    margin: 0,
+  },
   previewModeContainer: {
     display: 'flex',
     flexDirection: 'column',
@@ -342,6 +483,56 @@ const useStyles = makeStyles(() => ({
     gap: 16,
     flex: 1,
     overflow: 'auto',
+  },
+  twoMapLayout: {
+    display: 'flex',
+    padding: 16,
+    margin: '0 16px 16px 16px',
+    gap: 16,
+    flex: 1,
+    overflow: 'auto',
+  },
+  twoMapPreviewLayout: {
+    display: 'flex',
+    padding: 16,
+    margin: 16,
+    gap: 16,
+    flex: 1,
+    overflow: 'auto',
+  },
+  mapColumn: {
+    flex: '1',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 0,
+    minWidth: 0,
+  },
+  mapColumnFlexElements: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 16,
+  },
+  flexElementsContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 16,
+    width: '100%',
+  },
+  mapHeaderContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  syncToggle: {
+    margin: 0,
+    '& .MuiFormControlLabel-label': {
+      fontSize: '12px',
+      fontWeight: 500,
+    },
+    '& .MuiSwitch-root': {
+      marginRight: 4,
+    },
   },
 }));
 
