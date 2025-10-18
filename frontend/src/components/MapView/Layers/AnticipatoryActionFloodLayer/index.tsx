@@ -97,29 +97,33 @@ function AnticipatoryActionFloodLayer({
 
     return {
       type: 'FeatureCollection' as const,
-      features: filteredStations.map((station: any) => {
-        const avg = stationSummaryData?.[station.station_name];
-        if (!avg) {
-          return null;
-        }
-        return {
-          type: 'Feature' as const,
-          geometry: {
-            type: 'Point' as const,
-            coordinates: station.coordinates
-              ? [station.coordinates.longitude, station.coordinates.latitude]
-              : [0, 0], // Default coordinates if not available
-          },
-          properties: {
-            station_name: station.station_name,
-            river_name: station.river_name,
-            station_id: station.station_id,
-            risk_level: avg.trigger_status || 'Not exceeded',
-            avg_discharge: 0,
-            max_discharge: 0,
-          },
-        };
-      }),
+      features: filteredStations
+        .filter((station: any) =>
+          station.coordinates &&
+          typeof station.coordinates.longitude === 'number' &&
+          typeof station.coordinates.latitude === 'number'
+        )
+        .map((station: any) => {
+          const avg = stationSummaryData?.[station.station_name];
+          if (!avg) {
+            return null;
+          }
+          return {
+            type: 'Feature' as const,
+            geometry: {
+              type: 'Point' as const,
+              coordinates: [station.coordinates.longitude, station.coordinates.latitude],
+            },
+            properties: {
+              station_name: station.station_name,
+              river_name: station.river_name,
+              station_id: station.station_id,
+              risk_level: avg.trigger_status || 'Not exceeded',
+              avg_discharge: 0,
+              max_discharge: 0,
+            },
+          };
+        }),
     };
   }, [stations, selectedDateKey, stationSummaryData]);
 
