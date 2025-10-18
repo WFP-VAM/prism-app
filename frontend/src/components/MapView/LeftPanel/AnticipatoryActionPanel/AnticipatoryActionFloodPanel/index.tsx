@@ -79,6 +79,7 @@ const useStyles = makeStyles(() =>
     },
     firstCell: {
       color: `${cyanBlue}`,
+      fontWeight: 'bold',
     },
     pagination: {
       display: 'flex',
