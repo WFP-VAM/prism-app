@@ -98,10 +98,11 @@ function AnticipatoryActionFloodLayer({
     return {
       type: 'FeatureCollection' as const,
       features: filteredStations
-        .filter((station: any) =>
-          station.coordinates &&
-          typeof station.coordinates.longitude === 'number' &&
-          typeof station.coordinates.latitude === 'number'
+        .filter(
+          (station: any) =>
+            station.coordinates &&
+            typeof station.coordinates.longitude === 'number' &&
+            typeof station.coordinates.latitude === 'number',
         )
         .map((station: any) => {
           const avg = stationSummaryData?.[station.station_name];
@@ -112,7 +113,10 @@ function AnticipatoryActionFloodLayer({
             type: 'Feature' as const,
             geometry: {
               type: 'Point' as const,
-              coordinates: [station.coordinates.longitude, station.coordinates.latitude],
+              coordinates: [
+                station.coordinates.longitude,
+                station.coordinates.latitude,
+              ],
             },
             properties: {
               station_name: station.station_name,
