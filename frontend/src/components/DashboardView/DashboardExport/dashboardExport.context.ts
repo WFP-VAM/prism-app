@@ -1,6 +1,7 @@
 import React, { createContext } from 'react';
 import { AdminCodeString } from 'config/types';
 
+// Supporting ONLY A4 as of Oct 2025
 export enum PaperSize {
   BROWSER = 'browser',
   US_LETTER_LANDSCAPE = 'us-letter-landscape',
@@ -29,8 +30,6 @@ export type DashboardExportContextType = {
   exportConfig?: {
     handleClose: () => void;
     download: (format: 'pdf' | 'png') => void;
-    downloadFormat: 'pdf' | 'png';
-    setDownloadFormat: React.Dispatch<React.SetStateAction<'pdf' | 'png'>>;
     isExporting: boolean;
     printRef: React.RefObject<HTMLDivElement>;
     paperSize: PaperSize;
@@ -51,6 +50,9 @@ export type DashboardExportContextType = {
       appendMany?: boolean,
     ) => void;
     invertedAdminBoundaryLimitPolygon: any;
+    handleDownloadMenuOpen: (event: React.MouseEvent<HTMLElement>) => void;
+    handleDownloadMenuClose: () => void;
+    downloadMenuAnchorEl: HTMLElement | null;
   };
 };
 

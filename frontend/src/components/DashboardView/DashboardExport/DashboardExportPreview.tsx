@@ -1,10 +1,7 @@
 import { Box, makeStyles } from '@material-ui/core';
 import { useContext } from 'react';
 import DashboardContent from '../DashboardContent';
-import DashboardExportContext, {
-  PaperSize,
-  PAPER_SIZES,
-} from './dashboardExport.context';
+import DashboardExportContext, { PAPER_SIZES } from './dashboardExport.context';
 
 function DashboardExportPreview() {
   const classes = useStyles();
@@ -27,22 +24,14 @@ function DashboardExportPreview() {
   } = exportConfig;
 
   const dimensions = PAPER_SIZES[paperSize];
-  const useBrowserSize = paperSize === PaperSize.BROWSER;
 
-  // Container style adapted for paper sizes
-  const containerStyle = useBrowserSize
-    ? {
-        flex: 1,
-        minHeight: '100%',
-        height: '100%',
-        width: '100%',
-      }
-    : {
-        width: `${dimensions.width}px`,
-        height: `${dimensions.height}px`,
-        overflow: 'hidden',
-        flexShrink: 0,
-      };
+  // A4 container style with overflow hidden to cut off content
+  const containerStyle = {
+    width: `${dimensions.width}px`,
+    height: `${dimensions.height}px`,
+    overflow: 'hidden',
+    flexShrink: 0,
+  };
 
   const logoConfig = {
     visible: toggles.logoVisibility,

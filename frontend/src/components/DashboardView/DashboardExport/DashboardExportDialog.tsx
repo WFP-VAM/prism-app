@@ -6,7 +6,7 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
@@ -37,11 +37,12 @@ function DashboardExportDialog({
 }: DashboardExportDialogProps) {
   const classes = useStyles();
   const printRef = useRef<HTMLDivElement>(null);
-  const [downloadFormat, setDownloadFormat] = useState<'pdf' | 'png'>('pdf');
-  const [paperSize, setPaperSize] = useState<PaperSize>(PaperSize.BROWSER);
+  const [paperSize, setPaperSize] = useState<PaperSize>(PaperSize.A4_LANDSCAPE);
   const [isExporting, setIsExporting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [downloadMenuAnchorEl, setDownloadMenuAnchorEl] =
+    useState<HTMLElement | null>(null);
   const dashboardTitle = useSelector(dashboardTitleSelector);
 
   // Map display toggles and options
@@ -135,7 +136,16 @@ function DashboardExportDialog({
     setAdminBoundaryPolygon(masked as any);
   }, [boundaryData, selectedBoundaries, toggles.adminAreasVisibility]);
 
+  const handleDownloadMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setDownloadMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleDownloadMenuClose = () => {
+    setDownloadMenuAnchorEl(null);
+  };
+
   const download = async (format: 'pdf' | 'png') => {
+    handleDownloadMenuClose();
     setIsExporting(true);
 
     try {
@@ -165,25 +175,12 @@ function DashboardExportDialog({
 
       // Convert canvas to appropriate format
       if (format === 'pdf') {
-        // Determine PDF page size based on paper size selection
-        // eslint-disable-next-line fp/no-let
-        let pdfFormat: [number, number] | string;
-        if (paperSize === PaperSize.US_LETTER_LANDSCAPE) {
-          pdfFormat = 'letter'; // eslint-disable-line fp/no-mutation
-        } else if (paperSize === PaperSize.A4_LANDSCAPE) {
-          pdfFormat = 'a4'; // eslint-disable-line fp/no-mutation
-        } else {
-          // Browser mode - use canvas dimensions converted to points (96 DPI to 72 DPI)
-          const widthInPoints = (canvas.width * 72) / 96 / 2; // Divide by 2 because scale=2
-          const heightInPoints = (canvas.height * 72) / 96 / 2;
-          pdfFormat = [widthInPoints, heightInPoints]; // eslint-disable-line fp/no-mutation
-        }
-
+        // Always use A4 landscape format
         // eslint-disable-next-line new-cap
         const pdf = new jsPDF({
           orientation: 'landscape',
           unit: 'pt',
-          format: pdfFormat,
+          format: 'a4',
         });
 
         const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -263,8 +260,6 @@ function DashboardExportDialog({
     exportConfig: {
       handleClose,
       download,
-      downloadFormat,
-      setDownloadFormat,
       isExporting,
       printRef,
       paperSize,
@@ -282,6 +277,9 @@ function DashboardExportDialog({
       selectedBoundaries,
       setSelectedBoundaries: handleSetSelectedBoundaries,
       invertedAdminBoundaryLimitPolygon,
+      handleDownloadMenuOpen,
+      handleDownloadMenuClose,
+      downloadMenuAnchorEl,
     },
   };
 
@@ -334,8 +332,6 @@ const useStyles = makeStyles(() =>
       marginRight: '-15px',
       flexDirection: 'row',
       justifyContent: 'space-between',
-      width: '90vw',
-      height: '90vh',
     },
   }),
 );

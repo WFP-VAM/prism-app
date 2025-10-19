@@ -3,10 +3,8 @@ import {
   Box,
   Button,
   IconButton,
+  Menu,
   MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
   makeStyles,
   createStyles,
   Theme,
@@ -21,7 +19,7 @@ import { cyanBlue } from 'muiTheme';
 import { useSafeTranslation } from 'i18n';
 import Switch from 'components/Common/Switch';
 import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
-import DashboardExportContext, { PaperSize } from './dashboardExport.context';
+import DashboardExportContext from './dashboardExport.context';
 
 // Helper components
 interface ToggleSelectorProps {
@@ -197,11 +195,7 @@ function DashboardExportConfig() {
   const {
     handleClose,
     download,
-    downloadFormat,
-    setDownloadFormat,
     isExporting,
-    paperSize,
-    setPaperSize,
     toggles,
     setToggles,
     logoPosition,
@@ -214,6 +208,9 @@ function DashboardExportConfig() {
     setLegendScale,
     selectedBoundaries,
     setSelectedBoundaries,
+    handleDownloadMenuOpen,
+    handleDownloadMenuClose,
+    downloadMenuAnchorEl,
   } = exportConfig;
 
   return (
@@ -224,45 +221,6 @@ function DashboardExportConfig() {
           <Cancel />
         </IconButton>
       </div>
-
-      {/* Paper Size */}
-      <Box className={classes.optionWrap}>
-        <FormControl variant="outlined" size="small" fullWidth>
-          <InputLabel id="paper-size-label">{t('Paper Size')}</InputLabel>
-          <Select
-            labelId="paper-size-label"
-            value={paperSize}
-            onChange={e => setPaperSize(e.target.value as PaperSize)}
-            label={t('Paper Size')}
-          >
-            <MenuItem value={PaperSize.BROWSER}>
-              {t('Browser Dimensions')}
-            </MenuItem>
-            <MenuItem value={PaperSize.US_LETTER_LANDSCAPE}>
-              {t('US Letter Landscape')}
-            </MenuItem>
-            <MenuItem value={PaperSize.A4_LANDSCAPE}>
-              {t('A4 Landscape')}
-            </MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
-
-      {/* Format */}
-      <Box className={classes.optionWrap}>
-        <FormControl variant="outlined" size="small" fullWidth>
-          <InputLabel id="export-format-label">{t('Format')}</InputLabel>
-          <Select
-            labelId="export-format-label"
-            value={downloadFormat}
-            onChange={e => setDownloadFormat(e.target.value as 'pdf' | 'png')}
-            label={t('Format')}
-          >
-            <MenuItem value="pdf">PDF</MenuItem>
-            <MenuItem value="png">PNG</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
 
       {/* Logo */}
       <SectionToggle
@@ -394,11 +352,20 @@ function DashboardExportConfig() {
         color="primary"
         className={classes.gutter}
         endIcon={<GetApp />}
-        onClick={() => download(downloadFormat)}
+        onClick={e => handleDownloadMenuOpen(e)}
         disabled={isExporting}
       >
         {isExporting ? t('Exporting...') : t('Download')}
       </Button>
+      <Menu
+        anchorEl={downloadMenuAnchorEl}
+        keepMounted
+        open={Boolean(downloadMenuAnchorEl)}
+        onClose={handleDownloadMenuClose}
+      >
+        <MenuItem onClick={() => download('pdf')}>{t('Download PDF')}</MenuItem>
+        <MenuItem onClick={() => download('png')}>{t('Download PNG')}</MenuItem>
+      </Menu>
     </Box>
   );
 }
