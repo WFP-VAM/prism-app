@@ -32,6 +32,7 @@ export interface UnifiedMapState extends MapState {
     removeLayerData: (layer: LayerType) => void;
     setBoundaryRelationData: (data: BoundaryRelationsDict) => void;
   };
+  capturedViewport?: [number, number, number, number];
   isGlobalMap: boolean;
   mapIndex?: number;
 }
@@ -64,6 +65,12 @@ export function useMapState(): UnifiedMapState {
     mapInstanceContext && mapInstanceContext.selectors.selectMinMapBounds
       ? mapInstanceContext.selectors.selectMinMapBounds
       : (_state: any) => appConfig.map.boundingBox,
+  );
+
+  const capturedViewport = useSelector(
+    mapInstanceContext && mapInstanceContext.selectors.selectCapturedViewport
+      ? mapInstanceContext.selectors.selectCapturedViewport
+      : (_state: any) => undefined,
   );
 
   const maplibreMap = mapGetter;
@@ -116,6 +123,7 @@ export function useMapState(): UnifiedMapState {
     dateRange,
     maplibreMap,
     minMapBounds,
+    capturedViewport,
     actions,
     errors: [],
     layersData: [],

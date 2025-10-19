@@ -298,6 +298,14 @@ const MapComponent = memo(
     const interactionsDisabled =
       !isGlobalMap && dashboardMode !== DashboardMode.EDIT;
 
+    // Use captured viewport if available and not in edit mode
+    const initialBounds =
+      !isGlobalMap &&
+      dashboardMode !== DashboardMode.EDIT &&
+      mapState.capturedViewport
+        ? mapState.capturedViewport
+        : mapState.minMapBounds;
+
     return (
       <MapGL
         ref={mapRef}
@@ -311,7 +319,7 @@ const MapComponent = memo(
         minZoom={minZoom}
         maxZoom={maxZoom}
         initialViewState={{
-          bounds: mapState.minMapBounds as LngLatBoundsLike,
+          bounds: initialBounds as LngLatBoundsLike,
           fitBoundsOptions: { padding: fitBoundsOptions.padding },
         }}
         mapStyle={mapStyle.toString()}

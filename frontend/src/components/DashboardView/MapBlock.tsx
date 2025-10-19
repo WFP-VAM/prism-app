@@ -1,4 +1,4 @@
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
@@ -17,7 +17,10 @@ import { loadLayerData } from 'context/layers/layer-data';
 import { useMapState } from 'utils/useMapState';
 import { useDashboardMapSync } from 'utils/useDashboardMapSync';
 import { MapInstanceProvider } from 'components/MapView/MapInstanceContext';
-import { selectedDashboardIndexSelector } from 'context/dashboardStateSlice';
+import {
+  selectedDashboardIndexSelector,
+  setCapturedViewport,
+} from 'context/dashboardStateSlice';
 import useLayers from 'utils/layers-utils';
 import RootAccordionItems from 'components/MapView/LeftPanel/layersPanel/RootAccordionItems';
 import {
@@ -54,7 +57,7 @@ const MapBlockContent = memo(
     const classes = useStyles();
     const { t } = useSafeTranslation();
     const { selectedLayersWithDateSupport } = useLayers();
-    const { actions, maplibreMap } = useMapState();
+    const { actions, maplibreMap, mapIndex } = useMapState();
     const datesLoading = useSelector(areDatesLoading);
     useDashboardMapSync(mode);
     const map = maplibreMap();
@@ -63,6 +66,7 @@ const MapBlockContent = memo(
       pointDataLayerDatesRequested,
     );
     const dispatch = useDispatch();
+    const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
     if (mode === 'preview') {
       const canvas = map?.getCanvas();
@@ -115,6 +119,53 @@ const MapBlockContent = memo(
         });
       }
     }, [preselectedLayers, dispatch]);
+
+    // Capture viewport when map moves in edit mode
+    const captureViewport = useCallback(() => {
+      if (mode !== DashboardMode.EDIT || !map || mapIndex === undefined) {
+        return;
+      }
+
+      const bounds = map.getBounds();
+
+      // Debounce the viewport capture to avoid excessive updates
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+
+      debounceTimerRef.current = setTimeout(() => {
+        dispatch(
+          setCapturedViewport({
+            index: mapIndex,
+            bounds: [
+              bounds.getWest(),
+              bounds.getSouth(),
+              bounds.getEast(),
+              bounds.getNorth(),
+            ],
+          }),
+        );
+      }, 300); // 300ms debounce
+    }, [mode, map, mapIndex, dispatch]);
+
+    useEffect(() => {
+      if (mode !== DashboardMode.EDIT || !map) {
+        return undefined;
+      }
+
+      // Listen to map movement events
+      map.on('moveend', captureViewport);
+      map.on('zoomend', captureViewport);
+
+      // Cleanup
+      return () => {
+        map.off('moveend', captureViewport);
+        map.off('zoomend', captureViewport);
+        if (debounceTimerRef.current) {
+          clearTimeout(debounceTimerRef.current);
+        }
+      };
+    }, [mode, map, captureViewport]);
 
     return (
       <Box

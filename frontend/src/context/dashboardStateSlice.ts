@@ -34,6 +34,7 @@ interface SetDashboardOpacityParams {
 
 export interface DashboardMapState extends MapState {
   opacityMap: { [key: string]: OpacityEntry };
+  capturedViewport?: [number, number, number, number]; // [west, south, east, north]
 }
 
 export interface DashboardState {
@@ -148,6 +149,7 @@ const createInitialState = (dashboardIndex: number = 0): DashboardState => {
           boundaryRelationData: {},
           opacityMap: initialOpacityMap,
           minMapBounds: mapConfig.minMapBounds,
+          capturedViewport: undefined,
         };
       }) || [],
   };
@@ -181,6 +183,26 @@ export const dashboardStateSlice = createSlice({
       ...state,
       sharedViewport: action.payload,
     }),
+    setCapturedViewport: (
+      state,
+      action: PayloadAction<{
+        index: number;
+        bounds: [number, number, number, number];
+      }>,
+    ) => {
+      const { index, bounds } = action.payload;
+      return {
+        ...state,
+        maps: state.maps.map((mapInstance, i) =>
+          i === index
+            ? {
+                ...mapInstance,
+                capturedViewport: bounds,
+              }
+            : mapInstance,
+        ),
+      };
+    },
     setTitle: (state, action: PayloadAction<string>) => ({
       ...state,
       title: action.payload,
@@ -416,6 +438,7 @@ export const {
   setSelectedDashboard,
   toggleMapSync,
   setSharedViewport,
+  setCapturedViewport,
   addLayerToMap,
   removeLayerFromMap,
   setTitle,

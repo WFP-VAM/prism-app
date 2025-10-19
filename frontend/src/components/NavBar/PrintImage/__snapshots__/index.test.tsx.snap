@@ -992,7 +992,7 @@ exports[`renders as expected 1`] = `
         >
           <div
             class="makeStyles-exportContent-42"
-            style="flex: 1; min-height: 100%; height: 100%; width: 100%;"
+            style="width: 1123px; height: 794px; overflow: hidden; flex-shrink: 0;"
           >
             <div
               class="MuiBox-root MuiBox-root-53 makeStyles-root-45"
@@ -1061,171 +1061,6 @@ exports[`renders as expected 1`] = `
             />
           </button>
         </div>
-        <div
-          class="MuiBox-root MuiBox-root-67 makeStyles-optionWrap-60"
-        >
-          <div
-            class="MuiFormControl-root MuiFormControl-fullWidth"
-          >
-            <label
-              class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-marginDense MuiInputLabel-outlined MuiFormLabel-filled"
-              data-shrink="true"
-              id="paper-size-label"
-            >
-              Paper Size
-            </label>
-            <div
-              class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl MuiInputBase-marginDense MuiOutlinedInput-marginDense"
-            >
-              <div
-                aria-haspopup="listbox"
-                aria-labelledby="paper-size-label"
-                class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMarginDense MuiOutlinedInput-inputMarginDense"
-                role="button"
-                tabindex="0"
-              >
-                Browser Dimensions
-              </div>
-              <input
-                aria-hidden="true"
-                class="MuiSelect-nativeInput"
-                tabindex="-1"
-                value="browser"
-              />
-              <svg
-                aria-hidden="true"
-                class="MuiSvgIcon-root MuiSelect-icon MuiSelect-iconOutlined"
-                focusable="false"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M7 10l5 5 5-5z"
-                />
-              </svg>
-              <mock-menu
-                anchorel="[object HTMLDivElement]"
-                id="menu-"
-                menulistprops="[object Object]"
-                open="false"
-                paperprops="[object Object]"
-              >
-                <mock-menuitem
-                  aria-selected="true"
-                  data-value="browser"
-                  role="option"
-                  selected="true"
-                >
-                  Browser Dimensions
-                </mock-menuitem>
-                <mock-menuitem
-                  data-value="us-letter-landscape"
-                  role="option"
-                  selected="false"
-                >
-                  US Letter Landscape
-                </mock-menuitem>
-                <mock-menuitem
-                  data-value="a4-landscape"
-                  role="option"
-                  selected="false"
-                >
-                  A4 Landscape
-                </mock-menuitem>
-              </mock-menu>
-              <fieldset
-                aria-hidden="true"
-                class="PrivateNotchedOutline-root-68 MuiOutlinedInput-notchedOutline"
-              >
-                <legend
-                  class="PrivateNotchedOutline-legendLabelled-70 PrivateNotchedOutline-legendNotched-71"
-                >
-                  <span>
-                    Paper Size
-                  </span>
-                </legend>
-              </fieldset>
-            </div>
-          </div>
-        </div>
-        <div
-          class="MuiBox-root MuiBox-root-72 makeStyles-optionWrap-60"
-        >
-          <div
-            class="MuiFormControl-root MuiFormControl-fullWidth"
-          >
-            <label
-              class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-marginDense MuiInputLabel-outlined MuiFormLabel-filled"
-              data-shrink="true"
-              id="export-format-label"
-            >
-              Format
-            </label>
-            <div
-              class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl MuiInputBase-marginDense MuiOutlinedInput-marginDense"
-            >
-              <div
-                aria-haspopup="listbox"
-                aria-labelledby="export-format-label"
-                class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMarginDense MuiOutlinedInput-inputMarginDense"
-                role="button"
-                tabindex="0"
-              >
-                PDF
-              </div>
-              <input
-                aria-hidden="true"
-                class="MuiSelect-nativeInput"
-                tabindex="-1"
-                value="pdf"
-              />
-              <svg
-                aria-hidden="true"
-                class="MuiSvgIcon-root MuiSelect-icon MuiSelect-iconOutlined"
-                focusable="false"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M7 10l5 5 5-5z"
-                />
-              </svg>
-              <mock-menu
-                anchorel="[object HTMLDivElement]"
-                id="menu-"
-                menulistprops="[object Object]"
-                open="false"
-                paperprops="[object Object]"
-              >
-                <mock-menuitem
-                  aria-selected="true"
-                  data-value="pdf"
-                  role="option"
-                  selected="true"
-                >
-                  PDF
-                </mock-menuitem>
-                <mock-menuitem
-                  data-value="png"
-                  role="option"
-                  selected="false"
-                >
-                  PNG
-                </mock-menuitem>
-              </mock-menu>
-              <fieldset
-                aria-hidden="true"
-                class="PrivateNotchedOutline-root-68 MuiOutlinedInput-notchedOutline"
-              >
-                <legend
-                  class="PrivateNotchedOutline-legendLabelled-70 PrivateNotchedOutline-legendNotched-71"
-                >
-                  <span>
-                    Format
-                  </span>
-                </legend>
-              </fieldset>
-            </div>
-          </div>
-        </div>
         <div>
           <div
             class="makeStyles-collapsibleWrapper-62 makeStyles-collapsibleWrapperExpanded-63"
@@ -1255,31 +1090,31 @@ exports[`renders as expected 1`] = `
                 class="MuiCollapse-wrapperInner"
               >
                 <div
-                  class="MuiBox-root MuiBox-root-73"
+                  class="MuiBox-root MuiBox-root-67"
                 >
                   <div
-                    class="MuiBox-root MuiBox-root-74"
+                    class="MuiBox-root MuiBox-root-68"
                   >
                     <div
-                      class="MuiBox-root MuiBox-root-75"
+                      class="MuiBox-root MuiBox-root-69"
                       style="display: flex; flex-direction: row; justify-content: space-between;"
                     >
                       <div
-                        class="makeStyles-wrapper-76"
+                        class="makeStyles-wrapper-70"
                       >
                         <h4
-                          class="MuiBox-root MuiBox-root-79"
+                          class="MuiBox-root MuiBox-root-73"
                           style="margin-right: 0.5rem; color: black;"
                         >
                           Position
                         </h4>
                         <div
-                          class="MuiToggleButtonGroup-root makeStyles-buttonGroup-77"
+                          class="MuiToggleButtonGroup-root makeStyles-buttonGroup-71"
                           role="group"
                         >
                           <button
                             aria-pressed="true"
-                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-78 Mui-selected"
+                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-72 Mui-selected"
                             tabindex="0"
                             type="button"
                             value="0"
@@ -1299,7 +1134,7 @@ exports[`renders as expected 1`] = `
                           </button>
                           <button
                             aria-pressed="false"
-                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-78"
+                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-72"
                             tabindex="0"
                             type="button"
                             value="1"
@@ -1323,22 +1158,22 @@ exports[`renders as expected 1`] = `
                         style="opacity: 1; pointer-events: auto;"
                       >
                         <div
-                          class="makeStyles-wrapper-76"
+                          class="makeStyles-wrapper-70"
                         >
                           <h4
-                            class="MuiBox-root MuiBox-root-80"
+                            class="MuiBox-root MuiBox-root-74"
                             style="text-align: end; margin-right: 0.5rem; color: black;"
                           >
                             Size
                           </h4>
                           <div
-                            class="MuiToggleButtonGroup-root makeStyles-buttonGroup-77"
+                            class="MuiToggleButtonGroup-root makeStyles-buttonGroup-71"
                             role="group"
                             style="justify-content: end;"
                           >
                             <button
                               aria-pressed="false"
-                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-78"
+                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-72"
                               tabindex="0"
                               type="button"
                               value="0.5"
@@ -1358,7 +1193,7 @@ exports[`renders as expected 1`] = `
                             </button>
                             <button
                               aria-pressed="true"
-                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-78 Mui-selected"
+                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-72 Mui-selected"
                               tabindex="0"
                               type="button"
                               value="1"
@@ -1378,7 +1213,7 @@ exports[`renders as expected 1`] = `
                             </button>
                             <button
                               aria-pressed="false"
-                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-78"
+                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-72"
                               tabindex="0"
                               type="button"
                               value="1.5"
@@ -1466,7 +1301,7 @@ exports[`renders as expected 1`] = `
                 class="MuiCollapse-wrapperInner"
               >
                 <div
-                  class="MuiBox-root MuiBox-root-81 makeStyles-optionWrap-60"
+                  class="MuiBox-root MuiBox-root-75 makeStyles-optionWrap-60"
                 >
                   <mock-circularprogress
                     color="inherit"
@@ -1507,27 +1342,27 @@ exports[`renders as expected 1`] = `
                 class="MuiCollapse-wrapperInner"
               >
                 <div
-                  class="MuiBox-root MuiBox-root-82"
+                  class="MuiBox-root MuiBox-root-76"
                 >
                   <div
-                    class="MuiBox-root MuiBox-root-83"
+                    class="MuiBox-root MuiBox-root-77"
                   >
                     <div
-                      class="makeStyles-wrapper-76"
+                      class="makeStyles-wrapper-70"
                     >
                       <h4
-                        class="MuiBox-root MuiBox-root-84"
+                        class="MuiBox-root MuiBox-root-78"
                         style="margin-right: 0.5rem; color: black;"
                       >
                         Position
                       </h4>
                       <div
-                        class="MuiToggleButtonGroup-root makeStyles-buttonGroup-77"
+                        class="MuiToggleButtonGroup-root makeStyles-buttonGroup-71"
                         role="group"
                       >
                         <button
                           aria-pressed="true"
-                          class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-78 Mui-selected"
+                          class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-72 Mui-selected"
                           tabindex="0"
                           type="button"
                           value="0"
@@ -1547,7 +1382,7 @@ exports[`renders as expected 1`] = `
                         </button>
                         <button
                           aria-pressed="false"
-                          class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-78"
+                          class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-72"
                           tabindex="0"
                           type="button"
                           value="1"
@@ -1572,27 +1407,27 @@ exports[`renders as expected 1`] = `
                     style="background: rgb(255, 255, 255);"
                   />
                   <div
-                    class="MuiBox-root MuiBox-root-85"
+                    class="MuiBox-root MuiBox-root-79"
                   >
                     <div
                       style="opacity: 1; pointer-events: auto;"
                     >
                       <div
-                        class="makeStyles-wrapper-76"
+                        class="makeStyles-wrapper-70"
                       >
                         <h4
-                          class="MuiBox-root MuiBox-root-86"
+                          class="MuiBox-root MuiBox-root-80"
                           style="margin-right: 0.5rem; color: black;"
                         >
                           Size
                         </h4>
                         <div
-                          class="MuiToggleButtonGroup-root makeStyles-buttonGroup-77"
+                          class="MuiToggleButtonGroup-root makeStyles-buttonGroup-71"
                           role="group"
                         >
                           <button
                             aria-pressed="false"
-                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-78"
+                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-72"
                             tabindex="0"
                             type="button"
                             value="0.5"
@@ -1610,7 +1445,7 @@ exports[`renders as expected 1`] = `
                           </button>
                           <button
                             aria-pressed="false"
-                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-78"
+                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-72"
                             tabindex="0"
                             type="button"
                             value="0.4"
@@ -1628,7 +1463,7 @@ exports[`renders as expected 1`] = `
                           </button>
                           <button
                             aria-pressed="false"
-                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-78"
+                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-72"
                             tabindex="0"
                             type="button"
                             value="0.3"
@@ -1646,7 +1481,7 @@ exports[`renders as expected 1`] = `
                           </button>
                           <button
                             aria-pressed="false"
-                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-78"
+                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-72"
                             tabindex="0"
                             type="button"
                             value="0.2"
@@ -1664,7 +1499,7 @@ exports[`renders as expected 1`] = `
                           </button>
                           <button
                             aria-pressed="false"
-                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-78"
+                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-72"
                             tabindex="0"
                             type="button"
                             value="0.1"
@@ -1682,7 +1517,7 @@ exports[`renders as expected 1`] = `
                           </button>
                           <button
                             aria-pressed="true"
-                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-78 Mui-selected"
+                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-72 Mui-selected"
                             tabindex="0"
                             type="button"
                             value="0"
@@ -1717,6 +1552,17 @@ exports[`renders as expected 1`] = `
         >
           Download
         </mock-button>
+        <mock-menu
+          keepmounted="true"
+          open="false"
+        >
+          <mock-menuitem>
+            Download PDF
+          </mock-menuitem>
+          <mock-menuitem>
+            Download PNG
+          </mock-menuitem>
+        </mock-menu>
       </div>
     </mock-dialogcontent>
   </mock-dialog>
