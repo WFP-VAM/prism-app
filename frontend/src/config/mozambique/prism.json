@@ -503,6 +503,7 @@
     },
     {
       "title": "Summer Dashboard",
+      "path": "summer-temperature-report",
       "isEditable": true,
       "maps": [
         {

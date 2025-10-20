@@ -7,6 +7,7 @@ import { LayerDefinitions } from 'config/utils';
 import { keepLayer } from 'utils/keep-layer-utils';
 import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
 import { getLayerMapId } from 'utils/map-utils';
+import { generateSlugFromTitle } from 'utils/string-utils';
 
 import type {
   ConfiguredReport,
@@ -55,9 +56,24 @@ const getDashboardConfig = (index: number) => {
     appConfig.configuredReports.length === 0
   ) {
     // Return a fallback config object or throw an error
-    return { title: 'Dashboard', flexElements: [], maps: [] };
+    return {
+      title: 'Dashboard',
+      path: 'dashboard',
+      flexElements: [],
+      maps: [],
+    };
   }
-  return appConfig.configuredReports[index] || appConfig.configuredReports[0];
+  const originalConfig =
+    appConfig.configuredReports[index] || appConfig.configuredReports[0];
+
+  const config = { ...originalConfig };
+
+  if (!config.path) {
+    // eslint-disable-next-line fp/no-mutation
+    config.path = generateSlugFromTitle(config.title);
+  }
+
+  return config;
 };
 
 const getMapLayerOpacityConfig = (

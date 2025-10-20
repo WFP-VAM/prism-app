@@ -9,6 +9,7 @@ import {
 import { ArrowForward, Edit, VisibilityOutlined } from '@material-ui/icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
+import { useParams, useHistory } from 'react-router-dom';
 import { useSafeTranslation } from 'i18n';
 import { black, cyanBlue } from 'muiTheme';
 import {
@@ -25,7 +26,13 @@ import {
   toggleMapSync,
   dashboardModeSelector,
   setMode,
+  setSelectedDashboard,
 } from '../../context/dashboardStateSlice';
+import {
+  getDashboardIndexByPath,
+  getConfiguredReports,
+} from '../../config/utils';
+import { generateSlugFromTitle } from '../../utils/string-utils';
 import { clearAnalysisResult } from '../../context/analysisResultStateSlice';
 import TextBlock from './TextBlock';
 import TableBlock from './TableBlock';
@@ -44,6 +51,8 @@ function DashboardView() {
   const mode = useSelector(dashboardModeSelector);
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
+  const { path } = useParams<{ path?: string }>();
+  const history = useHistory();
 
   const isTwoMapLayout = dashboardMaps.length === 2;
 
@@ -66,6 +75,27 @@ function DashboardView() {
     },
     [dispatch],
   );
+
+  // Handle dashboard path parameter and redirect logic
+  useEffect(() => {
+    const reports = getConfiguredReports();
+
+    if (reports.length === 0) {
+      return;
+    }
+
+    if (path) {
+      // Find dashboard by path and set it as selected
+      const dashboardIndex = getDashboardIndexByPath(path);
+      dispatch(setSelectedDashboard(dashboardIndex));
+    } else {
+      // No path provided, redirect to first dashboard's path
+      const firstReport = reports[0];
+      const firstDashboardPath =
+        firstReport.path || generateSlugFromTitle(firstReport.title);
+      history.replace(`/dashboard/${firstDashboardPath}`);
+    }
+  }, [path, dispatch, history]);
 
   const handlePreviewClick = () => {
     dispatch(setMode(DashboardMode.PREVIEW));

@@ -61,7 +61,7 @@ const Wrapper = memo(() => (
   <div id="app">
     <NavBar />
     <Switch>
-      <Route path="/dashboard" exact>
+      <Route path="/dashboard/:path?" exact>
         <DashboardView />
       </Route>
       <Route>

@@ -101,7 +101,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
     // which runs ./scripts/preprocess-layers.js
     if (selectedBoundaries.length === 0) {
-      fetch(`data/${safeCountry}/admin-boundary-unified-polygon.json`)
+      fetch(`/data/${safeCountry}/admin-boundary-unified-polygon.json`)
         .then(response => response.json())
         .then(polygonData => {
           const maskedPolygon = mask(polygonData as any);
