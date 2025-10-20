@@ -401,19 +401,24 @@ export const dashboardStateSlice = createSlice({
 // Getters
 export const selectedDashboardIndexSelector = (state: RootState): number =>
   state.dashboardState.selectedDashboardIndex;
-
-export const dashboardTitleSelector = (state: RootState): string =>
-  state.dashboardState.title;
-
 export const dashboardModeSelector = (state: RootState): DashboardMode =>
   state.dashboardState.mode;
 
-export const dashboardFlexElementsSelector = (
+export const dashboardConfigSelector = (
   state: RootState,
-): ConfiguredReport['flexElements'] => state.dashboardState.flexElements;
+): ConfiguredReport & {
+  selectedDashboardIndex: number;
+  maps: DashboardMapState[];
+} => {
+  const currentDashboardIndex = state.dashboardState.selectedDashboardIndex;
+  const config = getDashboardConfig(currentDashboardIndex);
 
-export const dashboardMapsSelector = (state: RootState): DashboardMapState[] =>
-  state.dashboardState.maps;
+  return {
+    ...config,
+    selectedDashboardIndex: currentDashboardIndex,
+    maps: state.dashboardState.maps,
+  };
+};
 
 export const dashboardSyncEnabledSelector = (state: RootState): boolean =>
   state.dashboardState.syncMapsEnabled;

@@ -20,10 +20,8 @@ import {
 
 import MapBlock from './MapBlock';
 import {
-  dashboardTitleSelector,
+  dashboardConfigSelector,
   setTitle,
-  dashboardFlexElementsSelector,
-  dashboardMapsSelector,
   dashboardSyncEnabledSelector,
   toggleMapSync,
   dashboardModeSelector,
@@ -42,9 +40,13 @@ import ChartBlock from './ChartBlock';
 
 function DashboardView() {
   const classes = useStyles();
-  const dashboardTitle = useSelector(dashboardTitleSelector);
-  const dashboardFlexElements = useSelector(dashboardFlexElementsSelector);
-  const dashboardMaps = useSelector(dashboardMapsSelector);
+  const dashboardConfig = useSelector(dashboardConfigSelector);
+  const {
+    title: dashboardTitle,
+    flexElements: dashboardFlexElements,
+    maps: dashboardMaps,
+    isEditable,
+  } = dashboardConfig;
   const syncEnabled = useSelector(dashboardSyncEnabledSelector);
   const mode = useSelector(dashboardModeSelector);
   const dispatch = useDispatch();
@@ -113,16 +115,18 @@ function DashboardView() {
     >
       {mode === DashboardMode.PREVIEW && (
         <Box className={classes.previewActions}>
-          <Button
-            color="primary"
-            variant="outlined"
-            disableElevation
-            startIcon={<Edit />}
-            onClick={handleClosePreview}
-            size="medium"
-          >
-            {t('Edit')}
-          </Button>
+          {isEditable && (
+            <Button
+              color="primary"
+              variant="outlined"
+              disableElevation
+              startIcon={<Edit />}
+              onClick={handleClosePreview}
+              size="medium"
+            >
+              {t('Edit')}
+            </Button>
+          )}
           <Button
             color="primary"
             variant="contained"

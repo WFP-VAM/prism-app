@@ -1078,4 +1078,5 @@ export interface ConfiguredReport {
     DashboardChartConfig | DashboardTextConfig | DashboardTableConfig
   >;
   maps: Array<DashboardMapConfig>;
+  isEditable?: boolean;
 }
