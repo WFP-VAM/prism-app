@@ -169,6 +169,8 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     flexDirection: 'column',
     flex: 1,
+    height: '100%',
+    maxHeight: '100%',
   },
   titleSection: {
     position: 'relative',
@@ -190,6 +192,7 @@ const useStyles = makeStyles(() => ({
     gap: 12,
     flex: 1,
     minHeight: 0,
+    maxHeight: '100%',
     width: '100%',
     maxWidth: '100%',
     overflow: 'hidden',
@@ -198,18 +201,19 @@ const useStyles = makeStyles(() => ({
   leadingContentArea: {
     flex: '2',
     minWidth: 0,
+    minHeight: 0,
+    maxHeight: '100%',
     display: 'flex',
     flexDirection: 'column',
+    alignSelf: 'stretch',
   },
   trailingContentArea: {
     flex: '1',
     minWidth: 0,
     maxWidth: '100%',
     width: '100%',
-    display: 'flex',
     flexDirection: 'column',
     gap: 12,
-    overflow: 'hidden',
   },
   mapsContainer: {
     display: 'flex',

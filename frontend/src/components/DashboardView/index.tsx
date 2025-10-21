@@ -459,9 +459,9 @@ const useStyles = makeStyles(() => ({
   previewModeContainer: {
     display: 'flex',
     flexDirection: 'column',
-    height: '100vh',
     position: 'relative',
     background: '#F8F8F8',
+    height: '100vh',
   },
   previewActions: {
     position: 'sticky',
@@ -482,7 +482,6 @@ const useStyles = makeStyles(() => ({
     margin: 16,
     gap: 16,
     flex: 1,
-    overflow: 'auto',
   },
   twoMapLayout: {
     display: 'flex',
