@@ -12,7 +12,7 @@ import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import mask from '@turf/mask';
 import { getFormattedDate } from 'utils/date-utils';
-import { dashboardTitleSelector } from 'context/dashboardStateSlice';
+import { dashboardConfigSelector } from 'context/dashboardStateSlice';
 import { downloadToFile } from 'components/MapView/utils';
 import { AdminCodeString } from 'config/types';
 import { getBoundaryLayerSingleton } from 'config/utils';
@@ -43,7 +43,8 @@ function DashboardExportDialog({
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [downloadMenuAnchorEl, setDownloadMenuAnchorEl] =
     useState<HTMLElement | null>(null);
-  const dashboardTitle = useSelector(dashboardTitleSelector);
+  const dashboardConfig = useSelector(dashboardConfigSelector);
+  const { title: dashboardTitle } = dashboardConfig;
 
   // Map display toggles and options
   const [toggles, setToggles] = useState<ExportToggles>({

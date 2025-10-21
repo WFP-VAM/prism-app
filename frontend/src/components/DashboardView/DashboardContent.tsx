@@ -1,10 +1,6 @@
 import { Box, Typography, makeStyles } from '@material-ui/core';
 import { useSelector } from 'react-redux';
-import {
-  dashboardTitleSelector,
-  dashboardFlexElementsSelector,
-  dashboardMapsSelector,
-} from '../../context/dashboardStateSlice';
+import { dashboardConfigSelector } from '../../context/dashboardStateSlice';
 import {
   DashboardTextConfig,
   DashboardChartConfig,
@@ -55,9 +51,12 @@ function DashboardContent({
   exportConfig,
 }: DashboardContentProps) {
   const classes = useStyles();
-  const dashboardTitle = useSelector(dashboardTitleSelector);
-  const dashboardFlexElements = useSelector(dashboardFlexElementsSelector);
-  const dashboardMaps = useSelector(dashboardMapsSelector);
+  const dashboardConfig = useSelector(dashboardConfigSelector);
+  const {
+    title: dashboardTitle,
+    flexElements: dashboardFlexElements,
+    maps: dashboardMaps,
+  } = dashboardConfig;
 
   const { logo } = appConfig.header || {};
   const logoHeightMultiplier = 32;
