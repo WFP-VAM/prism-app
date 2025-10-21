@@ -26,14 +26,26 @@ const createChartColors = (baseColor: string) => ({
 const riskLevels = {
   severe: '#E63701', // Red
   moderate: '#FF8C21', // Orange
-  bankfull: '#FFCC00', // Yellow
+  bankfull: '#FFF503', // Yellow
   notExceeded: '#6EB274', // Green
   noData: '#9E9E9E', // Gray
+} as const;
+
+// Border colors for layer markers (some differ from fill colors)
+const borderColors = {
+  severe: riskLevels.severe, // Same as fill
+  moderate: riskLevels.moderate, // Same as fill
+  bankfull: '#FFCC00', // Same as fill
+  notExceeded: '#3C8B43', // Different from fill color
+  noData: riskLevels.noData, // Same as fill
 } as const;
 
 export const AAFloodColors = {
   // Risk level colors
   riskLevels,
+
+  // Border colors for layer markers
+  borderColors,
 
   // Chart colors with transparency (constructed from riskLevels)
   chart: {

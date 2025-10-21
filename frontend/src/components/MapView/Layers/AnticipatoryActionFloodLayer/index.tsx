@@ -32,13 +32,13 @@ const getCircleColor = (riskLevel: string) => {
 const getBorderColor = (riskLevel: string) => {
   switch (riskLevel) {
     case 'Severe':
-      return AAFloodColors.riskLevels.severe;
+      return AAFloodColors.borderColors.severe;
     case 'Moderate':
-      return AAFloodColors.riskLevels.moderate;
+      return AAFloodColors.borderColors.moderate;
     case 'Bankfull':
-      return AAFloodColors.riskLevels.bankfull;
+      return AAFloodColors.borderColors.bankfull;
     default:
-      return AAFloodColors.riskLevels.notExceeded;
+      return AAFloodColors.borderColors.notExceeded;
   }
 };
 
