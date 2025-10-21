@@ -822,6 +822,7 @@ export type PanelItem = {
   icon: React.ReactNode;
   children?: PanelItem[];
   reportIndex?: number;
+  reportPath?: string;
 };
 
 export enum Panel {
@@ -1072,8 +1073,10 @@ export interface DashboardMapConfig {
 
 export interface ConfiguredReport {
   title: string;
+  path: string;
   flexElements: Array<
     DashboardChartConfig | DashboardTextConfig | DashboardTableConfig
   >;
   maps: Array<DashboardMapConfig>;
+  isEditable?: boolean;
 }

@@ -9,6 +9,7 @@ import {
 import { ArrowForward, Edit, VisibilityOutlined } from '@material-ui/icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
+import { useParams, useHistory } from 'react-router-dom';
 import { useSafeTranslation } from 'i18n';
 import { black, cyanBlue } from 'muiTheme';
 import {
@@ -19,15 +20,19 @@ import {
 
 import MapBlock from './MapBlock';
 import {
-  dashboardTitleSelector,
+  dashboardConfigSelector,
   setTitle,
-  dashboardFlexElementsSelector,
-  dashboardMapsSelector,
   dashboardSyncEnabledSelector,
   toggleMapSync,
   dashboardModeSelector,
   setMode,
+  setSelectedDashboard,
 } from '../../context/dashboardStateSlice';
+import {
+  getDashboardIndexByPath,
+  getConfiguredReports,
+} from '../../config/utils';
+import { generateSlugFromTitle } from '../../utils/string-utils';
 import { clearAnalysisResult } from '../../context/analysisResultStateSlice';
 import TextBlock from './TextBlock';
 import TableBlock from './TableBlock';
@@ -37,13 +42,19 @@ import DashboardContent from './DashboardContent';
 
 function DashboardView() {
   const classes = useStyles();
-  const dashboardTitle = useSelector(dashboardTitleSelector);
-  const dashboardFlexElements = useSelector(dashboardFlexElementsSelector);
-  const dashboardMaps = useSelector(dashboardMapsSelector);
+  const dashboardConfig = useSelector(dashboardConfigSelector);
+  const {
+    title: dashboardTitle,
+    flexElements: dashboardFlexElements,
+    maps: dashboardMaps,
+    isEditable,
+  } = dashboardConfig;
   const syncEnabled = useSelector(dashboardSyncEnabledSelector);
   const mode = useSelector(dashboardModeSelector);
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
+  const { path } = useParams<{ path?: string }>();
+  const history = useHistory();
 
   // Export/Publish dialog state
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
@@ -64,6 +75,27 @@ function DashboardView() {
     [dispatch],
   );
 
+  // Handle dashboard path parameter and redirect logic
+  useEffect(() => {
+    const reports = getConfiguredReports();
+
+    if (reports.length === 0) {
+      return;
+    }
+
+    if (path) {
+      // Find dashboard by path and set it as selected
+      const dashboardIndex = getDashboardIndexByPath(path);
+      dispatch(setSelectedDashboard(dashboardIndex));
+    } else {
+      // No path provided, redirect to first dashboard's path
+      const firstReport = reports[0];
+      const firstDashboardPath =
+        firstReport.path || generateSlugFromTitle(firstReport.title);
+      history.replace(`/dashboard/${firstDashboardPath}`);
+    }
+  }, [path, dispatch, history]);
+
   const handlePreviewClick = () => {
     dispatch(setMode(DashboardMode.PREVIEW));
   };
@@ -82,16 +114,18 @@ function DashboardView() {
     >
       {mode === DashboardMode.PREVIEW && (
         <Box className={classes.previewActions}>
-          <Button
-            color="primary"
-            variant="outlined"
-            disableElevation
-            startIcon={<Edit />}
-            onClick={handleClosePreview}
-            size="medium"
-          >
-            {t('Edit')}
-          </Button>
+          {isEditable && (
+            <Button
+              color="primary"
+              variant="outlined"
+              disableElevation
+              startIcon={<Edit />}
+              onClick={handleClosePreview}
+              size="medium"
+            >
+              {t('Edit')}
+            </Button>
+          )}
           <Button
             color="primary"
             variant="contained"

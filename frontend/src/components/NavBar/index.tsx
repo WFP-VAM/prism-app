@@ -31,7 +31,6 @@ import {
   leftPanelTabValueSelector,
   setTabValue,
 } from 'context/leftPanelStateSlice';
-import { setSelectedDashboard } from 'context/dashboardStateSlice';
 import GoToBoundaryDropdown from 'components/Common/BoundaryDropdown/goto';
 import Legends from 'components/MapView/Legends';
 import {
@@ -39,6 +38,7 @@ import {
   areDashboardsAvailable,
   getConfiguredReports,
 } from 'config/utils';
+import { generateSlugFromTitle } from 'utils/string-utils';
 import {
   areTablesAvailable,
   isAnticipatoryActionDroughtAvailable,
@@ -60,6 +60,7 @@ const getAvailableDashboards = (): PanelItem[] => {
     label: report.title,
     icon: <SpeedOutlined />,
     reportIndex: index,
+    reportPath: report.path || generateSlugFromTitle(report.title),
   }));
 };
 
@@ -139,7 +140,10 @@ function NavBar() {
 
   // Sync URL with panel state
   useEffect(() => {
-    if (location.pathname === '/dashboard' && tabValue !== Panel.Dashboard) {
+    if (
+      location.pathname.startsWith('/dashboard') &&
+      tabValue !== Panel.Dashboard
+    ) {
       dispatch(setTabValue(Panel.Dashboard));
     } else if (location.pathname === '/' && tabValue === Panel.Dashboard) {
       dispatch(setTabValue(Panel.Layers));
@@ -192,18 +196,25 @@ function NavBar() {
     });
     handleMenuClose(panel.label);
 
-    if (panel.panel === Panel.Dashboard && child.reportIndex !== undefined) {
-      dispatch(setSelectedDashboard(child.reportIndex));
+    if (panel.panel === Panel.Dashboard && child.reportPath) {
       dispatch(setTabValue(Panel.Dashboard));
-      history.push('/dashboard');
+      history.push(`/dashboard/${child.reportPath}`);
     } else {
       handlePanelClick(child.panel);
     }
   };
 
-  const { title, subtitle, logo } = header || {
+  const {
+    title,
+    subtitle,
+    logo: rawLogo,
+  } = header || {
     title: 'PRISM',
   };
+
+  // Ensure logo path is absolute to prevent routing conflicts
+  const logo =
+    rawLogo && rawLogo.startsWith('images/') ? `/${rawLogo}` : rawLogo;
 
   return (
     <AppBar position="static" className={classes.appBar}>

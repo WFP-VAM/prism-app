@@ -1,4 +1,5 @@
 import { camelCase, get, map, mapKeys, isPlainObject, mapValues } from 'lodash';
+import { generateSlugFromTitle } from 'utils/string-utils';
 import { appConfig, rawLayers, rawReports, rawTables } from '.';
 import {
   AdminLevelDataLayerProps,
@@ -66,16 +67,35 @@ export function deepCamelCaseKeys(obj: any): any {
   return obj;
 }
 
+// Helper function to ensure data paths are absolute
+const ensureAbsoluteDataPath = (path: string): string => {
+  if (path.startsWith('/')) {
+    return path;
+  }
+  if (path.startsWith('data/')) {
+    return `/${path}`;
+  }
+  return path;
+};
+
 // CamelCase the keys inside the layer definition & validate config
 export const getLayerByKey = (layerKey: LayerKey): LayerType => {
   const rawDefinition = rawLayers[layerKey];
+
+  const processedDefinition = mapKeys(rawDefinition, (_v, k) => camelCase(k));
+
+  // Ensure data paths are absolute to prevent routing conflicts
+  if (processedDefinition.path) {
+    // eslint-disable-next-line fp/no-mutation
+    processedDefinition.path = ensureAbsoluteDataPath(processedDefinition.path);
+  }
 
   const definition: { id: LayerKey; type: LayerType['type'] } = {
     id: layerKey,
     type: rawDefinition.type as LayerType['type'],
     // TODO - Transition to deepCamelCaseKeys
     // but handle line-opacity and other special cases
-    ...mapKeys(rawDefinition, (_v, k) => camelCase(k)),
+    ...processedDefinition,
   };
 
   const throwInvalidLayer = () => {
@@ -349,6 +369,29 @@ export const getConfiguredReports = (): ConfiguredReport[] => {
   }
 
   return [];
+};
+
+export const findDashboardByPath = (
+  path: string,
+): { dashboard: ConfiguredReport; index: number } | null => {
+  const reports = getConfiguredReports();
+
+  // eslint-disable-next-line fp/no-mutation
+  for (let i = 0; i < reports.length; i += 1) {
+    const report = reports[i];
+    const dashboardPath = report.path || generateSlugFromTitle(report.title);
+
+    if (dashboardPath === path) {
+      return { dashboard: { ...report, path: dashboardPath }, index: i };
+    }
+  }
+
+  return null;
+};
+
+export const getDashboardIndexByPath = (path: string): number => {
+  const result = findDashboardByPath(path);
+  return result ? result.index : 0;
 };
 
 const isValidReportsDefinition = (
