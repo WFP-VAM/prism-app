@@ -13,7 +13,7 @@ import {
 } from './types';
 import {
   buildAvailableFloodDatesFromDatesJson,
-  buildStationsFromAvgProbabilities,
+  buildStationsFromSummary,
   normalizeFloodTriggerStatus,
 } from './utils';
 
@@ -23,7 +23,7 @@ const initialState: AnticipatoryActionFloodState = {
   selectedDate: null,
   forecastData: {},
   probabilitiesData: {},
-  avgProbabilitiesData: {},
+  stationSummaryData: {},
   availableDates: [],
   view: AAFloodView.Home,
   loading: false,
@@ -50,7 +50,7 @@ export const loadAAFloodData = createAsyncThunk<
       trigger_status?: string;
       probabilities_file?: string;
       discharge_file?: string;
-      avg_probabilities_file?: string;
+      station_summary_file?: string;
     }
   > = await resp.json();
 
@@ -67,7 +67,7 @@ export const loadAAFloodDateData = createAsyncThunk<
     probabilities: Record<string, FloodProbabilityPoint[]>;
     forecast: Record<string, FloodForecastData[]>;
     stations: FloodStation[];
-    avgProbabilities: Record<string, any>;
+    stationSummary: Record<string, any>;
   },
   { date: string },
   CreateAsyncThunkTypes
@@ -97,10 +97,10 @@ export const loadAAFloodDateData = createAsyncThunk<
     throw new Error(`No data entry found for date ${date}`);
   }
 
-  const [probRows, dischargeRows, avgProbRows] = await Promise.all([
+  const [probRows, dischargeRows, summaryRows] = await Promise.all([
     parseCsv<any>(`${baseDir}${dateData.probabilities_file}`),
     parseCsv<any>(`${baseDir}${dateData.discharge_file}`),
-    parseCsv<any>(`${baseDir}${dateData.avg_probabilities_file}`),
+    parseCsv<any>(`${baseDir}${dateData.station_summary_file}`),
   ]);
 
   // probabilities.csv schema: station_id,station_name,river_name,longitude,latitude,forecast_issue_date,valid_time,bankfull_percentage,moderate_percentage,severe_percentage
@@ -203,7 +203,7 @@ export const loadAAFloodDateData = createAsyncThunk<
   }, {});
 
   // Build avg probabilities per station
-  const avgProbabilities = avgProbRows.reduce(
+  const stationSummary = summaryRows.reduce(
     (acc: Record<string, any>, row: any) => {
       const key: string = startCase(String(row.station_name || '').trim());
       if (!key) {
@@ -253,8 +253,8 @@ export const loadAAFloodDateData = createAsyncThunk<
     {},
   );
 
-  const stations: FloodStation[] = buildStationsFromAvgProbabilities(
-    avgProbabilities,
+  const stations: FloodStation[] = buildStationsFromSummary(
+    stationSummary,
     date,
   );
 
@@ -263,7 +263,7 @@ export const loadAAFloodDateData = createAsyncThunk<
     probabilities,
     forecast,
     stations,
-    avgProbabilities,
+    stationSummary,
   };
 });
 
@@ -318,9 +318,9 @@ export const anticipatoryActionFloodStateSlice = createSlice({
         ...state.forecastData,
         ...payload.forecast,
       },
-      avgProbabilitiesData: {
-        ...state.avgProbabilitiesData,
-        ...payload.avgProbabilities,
+      stationSummaryData: {
+        ...state.stationSummaryData,
+        ...payload.stationSummary,
       },
     }));
 

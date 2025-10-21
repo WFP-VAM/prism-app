@@ -79,6 +79,7 @@ const useStyles = makeStyles(() =>
     },
     firstCell: {
       color: `${cyanBlue}`,
+      fontWeight: 'bold',
     },
     pagination: {
       display: 'flex',
@@ -118,7 +119,7 @@ function AnticipatoryActionFloodPanel() {
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
   const { AAData } = useAnticipatoryAction(AnticipatoryAction.flood);
-  const { stations, selectedStation, loading, error, avgProbabilitiesData } =
+  const { stations, selectedStation, loading, error, stationSummaryData } =
     AAData as any;
   const { startDate } = useSelector(dateRangeSelector);
 
@@ -169,17 +170,17 @@ function AnticipatoryActionFloodPanel() {
     }
     const selectedDateKey = new Date(startDate).toISOString().split('T')[0];
     return stations.filter((station: { station_name: string }) => {
-      const avg = avgProbabilitiesData?.[station.station_name];
+      const avg = stationSummaryData?.[station.station_name];
       const issueDate = avg?.forecast_issue_date
         ? new Date(avg.forecast_issue_date).toISOString().split('T')[0]
         : null;
       return issueDate === selectedDateKey;
     });
-  }, [stations, startDate, avgProbabilitiesData]);
+  }, [stations, startDate, stationSummaryData]);
 
   // Get station data for selected date
   const getStationDataForDate = (station: any) => {
-    const avg = avgProbabilitiesData?.[station.station_name];
+    const avg = stationSummaryData?.[station.station_name];
     if (!avg) {
       return null;
     }

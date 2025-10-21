@@ -49,7 +49,7 @@ function AnticipatoryActionFloodLayer({
   // Load the layer default date if no date is selected
   useDefaultDate(layer.id);
   const { AAData } = useAnticipatoryAction(AnticipatoryAction.flood);
-  const { stations, avgProbabilitiesData } = AAData;
+  const { stations, stationSummaryData } = AAData;
   const { startDate } = useSelector(dateRangeSelector);
   const dispatch = useDispatch();
 
@@ -88,7 +88,7 @@ function AnticipatoryActionFloodLayer({
       if (!selectedDateKey) {
         return true;
       }
-      const avg = avgProbabilitiesData?.[station.station_name];
+      const avg = stationSummaryData?.[station.station_name];
       const issueDate = avg?.forecast_issue_date
         ? new Date(avg.forecast_issue_date).toISOString().split('T')[0]
         : null;
@@ -97,31 +97,39 @@ function AnticipatoryActionFloodLayer({
 
     return {
       type: 'FeatureCollection' as const,
-      features: filteredStations.map((station: any) => {
-        const avg = avgProbabilitiesData?.[station.station_name];
-        if (!avg) {
-          return null;
-        }
-        return {
-          type: 'Feature' as const,
-          geometry: {
-            type: 'Point' as const,
-            coordinates: station.coordinates
-              ? [station.coordinates.longitude, station.coordinates.latitude]
-              : [0, 0], // Default coordinates if not available
-          },
-          properties: {
-            station_name: station.station_name,
-            river_name: station.river_name,
-            station_id: station.station_id,
-            risk_level: avg.trigger_status || 'Not exceeded',
-            avg_discharge: 0,
-            max_discharge: 0,
-          },
-        };
-      }),
+      features: filteredStations
+        .filter(
+          (station: any) =>
+            station.coordinates &&
+            typeof station.coordinates.longitude === 'number' &&
+            typeof station.coordinates.latitude === 'number',
+        )
+        .map((station: any) => {
+          const avg = stationSummaryData?.[station.station_name];
+          if (!avg) {
+            return null;
+          }
+          return {
+            type: 'Feature' as const,
+            geometry: {
+              type: 'Point' as const,
+              coordinates: [
+                station.coordinates.longitude,
+                station.coordinates.latitude,
+              ],
+            },
+            properties: {
+              station_name: station.station_name,
+              river_name: station.river_name,
+              station_id: station.station_id,
+              risk_level: avg.trigger_status || 'Not exceeded',
+              avg_discharge: 0,
+              max_discharge: 0,
+            },
+          };
+        }),
     };
-  }, [stations, selectedDateKey, avgProbabilitiesData]);
+  }, [stations, selectedDateKey, stationSummaryData]);
 
   if (!floodStationsGeoJSON) {
     return null;
@@ -131,7 +139,7 @@ function AnticipatoryActionFloodLayer({
     if (!selectedDateKey) {
       return true;
     }
-    const avg = avgProbabilitiesData?.[station.station_name];
+    const avg = stationSummaryData?.[station.station_name];
     const issueDate = avg?.forecast_issue_date
       ? new Date(avg.forecast_issue_date).toISOString().split('T')[0]
       : null;
@@ -144,7 +152,7 @@ function AnticipatoryActionFloodLayer({
         if (!station.coordinates) {
           return null;
         }
-        const avg = avgProbabilitiesData?.[station.station_name];
+        const avg = stationSummaryData?.[station.station_name];
         if (!avg) {
           return null;
         }

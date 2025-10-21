@@ -2,7 +2,7 @@ import {
   FloodStation,
   AAFloodRiskLevelType,
   FloodDateItem,
-  FloodAvgProbabilities,
+  FloodSummaryStation,
 } from './types';
 
 export function getFloodRiskColor(riskLevel: AAFloodRiskLevelType): string {
@@ -60,7 +60,7 @@ export function buildAvailableFloodDatesFromDatesJson(
       trigger_status?: string;
       probabilities_file?: string;
       discharge_file?: string;
-      avg_probabilities_file?: string;
+      station_summary_file?: string;
     }
   >,
 ): FloodDateItem[] {
@@ -86,14 +86,14 @@ export function buildAvailableFloodDatesFromDatesJson(
     .filter(Boolean) as FloodDateItem[];
 }
 
-export function buildStationsFromAvgProbabilities(
-  avgProbabilities: Record<string, FloodAvgProbabilities | undefined>,
+export function buildStationsFromSummary(
+  stationSummary: Record<string, FloodSummaryStation | undefined>,
   _date: string,
 ): FloodStation[] {
   const stationsMap = new Map<string, FloodStation>();
 
-  Object.keys(avgProbabilities).forEach(name => {
-    const row = avgProbabilities[name];
+  Object.keys(stationSummary).forEach(name => {
+    const row = stationSummary[name];
     if (!row) {
       return;
     }
