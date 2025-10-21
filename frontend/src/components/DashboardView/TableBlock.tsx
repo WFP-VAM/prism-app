@@ -5,6 +5,8 @@ import {
   Typography,
   CircularProgress,
   Button,
+  Switch,
+  FormControlLabel,
 } from '@material-ui/core';
 import {
   DashboardTableConfig,
@@ -15,6 +17,11 @@ import {
 } from 'config/types';
 import { useAnalysisForm, useAnalysisExecution } from 'utils/analysis-hooks';
 import { useAnalysisTableColumns } from 'utils/analysis-utils';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  setIsMapLayerActive,
+  isAnalysisLayerActiveSelector,
+} from 'context/analysisResultStateSlice';
 import SimpleAnalysisTable from 'components/MapView/LeftPanel/AnalysisPanel/SimpleAnalysisTable';
 import {
   HazardLayerSelector,
@@ -43,6 +50,8 @@ function TableBlock({
 }: TableBlockProps) {
   const classes = useStyles();
   const { t } = useSafeTranslation();
+  const dispatch = useDispatch();
+  const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
 
   const formState = useAnalysisForm({
     initialHazardLayerId,
@@ -72,6 +81,10 @@ function TableBlock({
       setSortColumn(columnId);
       setIsAscending(true);
     }
+  };
+
+  const handleToggleLayerVisibility = () => {
+    dispatch(setIsMapLayerActive(!isAnalysisLayerActive));
   };
 
   // Track form changes that would require rerunning analysis
@@ -266,6 +279,21 @@ function TableBlock({
         {t('Table Block')} #{index + 1}
       </Typography>
 
+      {formState.analysisResult && (
+        <Box className={classes.toggleContainer}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={isAnalysisLayerActive}
+                onChange={handleToggleLayerVisibility}
+                color="primary"
+              />
+            }
+            label={t('Show on map')}
+          />
+        </Box>
+      )}
+
       <Box className={classes.formContainer}>
         <Box className={classes.formSection}>
           <HazardLayerSelector
@@ -449,6 +477,10 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     justifyContent: 'center',
     padding: theme.spacing(4),
+  },
+  toggleContainer: {
+    padding: theme.spacing(1),
+    display: 'flex',
   },
 }));
 
