@@ -10,6 +10,7 @@ import { useMapCallback, getLayerMapId } from 'utils/map-utils';
 import { MapLayerMouseEvent } from 'maplibre-gl';
 import { hidePopup } from 'context/tooltipStateSlice';
 import { Tooltip } from '@material-ui/core';
+import { AAFloodColors } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionFloodPanel/constants';
 
 interface AnticipatoryActionFloodLayerProps {
   layer: AnticipatoryActionLayerProps;
@@ -18,26 +19,26 @@ interface AnticipatoryActionFloodLayerProps {
 const getCircleColor = (riskLevel: string) => {
   switch (riskLevel) {
     case 'Severe':
-      return '#E63701';
+      return AAFloodColors.riskLevels.severe;
     case 'Moderate':
-      return '#FF8C21';
+      return AAFloodColors.riskLevels.moderate;
     case 'Bankfull':
-      return '#FFF503';
+      return AAFloodColors.riskLevels.bankfull;
     default:
-      return '#6EB274';
+      return AAFloodColors.riskLevels.notExceeded;
   }
 };
 
 const getBorderColor = (riskLevel: string) => {
   switch (riskLevel) {
     case 'Severe':
-      return '#E63701';
+      return AAFloodColors.riskLevels.severe;
     case 'Moderate':
-      return '#FF8C21';
+      return AAFloodColors.riskLevels.moderate;
     case 'Bankfull':
-      return '#FFCC00';
+      return AAFloodColors.riskLevels.bankfull;
     default:
-      return '#3C8B43';
+      return AAFloodColors.riskLevels.notExceeded;
   }
 };
 
