@@ -6,7 +6,7 @@
   "anticipatoryActionStormUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/latest.json.",
   "header": {
     "title": "PRISM",
-    "logo": "images/moz-flag-inam-logo.png"
+    "logo": "/images/moz-flag-inam-logo.png"
   },
   "printConfig": {
     "defaultFooterText": ""
