@@ -68,7 +68,7 @@ exports[`renders as expected 1`] = `
               >
                 <img
                   alt="logo"
-                  src="images/moz-flag-inam-logo.png"
+                  src="/images/moz-flag-inam-logo.png"
                   style="position: absolute; z-index: 2; height: 32px; left: 8px; display: flex; justify-content: flex-start;"
                 />
                 <mock-typography
@@ -1002,7 +1002,7 @@ exports[`renders as expected 1`] = `
               >
                 <img
                   alt="logo"
-                  src="images/moz-flag-inam-logo.png"
+                  src="/images/moz-flag-inam-logo.png"
                   style="position: absolute; z-index: 2; height: 32px; left: 12px; top: 50%; transform: translateY(-50%);"
                 />
                 <mock-typography
