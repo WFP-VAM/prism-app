@@ -102,17 +102,17 @@ module.exports = {
   },
   settings: {
     'import/resolver': {
+      typescript: {
+        alwaysTryTypes: true,
+        project: `${__dirname}/tsconfig.json`,
+      },
       node: {
-        moduleDirectory: ['node_modules', './src'],
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        moduleDirectory: ['node_modules', './src', './public'],
+        extensions: ['.js', '.jsx', '.ts', '.tsx', '.svg', '.png', '.jpg', '.jpeg'],
       },
     },
     'import/parsers': {
       '@typescript-eslint/parser': ['.ts', '.tsx'],
-    },
-    typescript: {
-      // always try to resolve types under `<roo/>@types` directory even it doesn't contain any source code, like `@types/unist`
-      alwaysTryTypes: true,
     },
   },
   globals: {

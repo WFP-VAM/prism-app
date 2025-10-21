@@ -9,6 +9,9 @@
     "strictPropertyInitialization": false,
     "experimentalDecorators": true,
     "esModuleInterop": true,
+    "paths": {
+      "public/*": ["../public/*"]
+    },
 
     /* Bundler mode */
     "moduleResolution": "bundler",
