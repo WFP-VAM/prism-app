@@ -1361,8 +1361,8 @@ exports[`renders as expected 1`] = `
                         role="group"
                       >
                         <button
-                          aria-pressed="true"
-                          class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-72 Mui-selected"
+                          aria-pressed="false"
+                          class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-72"
                           tabindex="0"
                           type="button"
                           value="0"
@@ -1381,8 +1381,8 @@ exports[`renders as expected 1`] = `
                           />
                         </button>
                         <button
-                          aria-pressed="false"
-                          class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-72"
+                          aria-pressed="true"
+                          class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-72 Mui-selected"
                           tabindex="0"
                           type="button"
                           value="1"
