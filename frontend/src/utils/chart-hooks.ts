@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { GeoJsonProperties } from 'geojson';
 import { appConfig } from 'config';
 import {
@@ -17,13 +17,13 @@ import {
   loadAdminBoundaryDataset,
 } from 'context/datasetStateSlice';
 import { TableData } from 'context/tableStateSlice';
-import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { LayerData } from 'context/layers/layer-data';
 import { getChartAdminBoundaryParams } from 'utils/admin-utils';
 import { getTimeInMilliseconds } from 'utils/date-utils';
 import { LayerDefinitions, getBoundaryLayersByAdminLevel } from 'config/utils';
 import { getProperties } from 'components/MapView/utils';
 import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
+import { useBoundaryData } from './useBoundaryData';
 
 const { multiCountry, countryAdmin0Id } = appConfig;
 const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
@@ -125,9 +125,20 @@ export const useChartForm = (
     setAdminProperties(properties);
   };
 
-  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
-    | LayerData<BoundaryLayerProps>
-    | undefined;
+  const boundaryDataResult = useBoundaryData(boundaryLayer.id);
+
+  // Adapt to LayerData format for compatibility
+  const boundaryLayerData: LayerData<BoundaryLayerProps> | undefined =
+    useMemo(() => {
+      if (!boundaryDataResult.data) {
+        return undefined;
+      }
+      return {
+        layer: boundaryLayer,
+        data: boundaryDataResult.data,
+        date: Date.now(),
+      };
+    }, [boundaryDataResult.data]);
 
   // Derived values
   const selectedChartLayer = useMemo(

@@ -23,6 +23,7 @@ export type MapState = {
   minMapBounds: number[];
   errors: string[];
   // TODO this shouldn't be any
+  // Note: Boundary layer data is now stored in global cache (utils/boundary-cache.ts), not here
   layersData: LayerData<any>[];
   // Keep track of layer id which are currently loading its layerData.
   // Note that layerData is mainly for storing vector map data.

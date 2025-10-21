@@ -10,6 +10,7 @@ import {
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { useMapState } from 'utils/useMapState';
+import { boundaryCache } from 'utils/boundary-cache';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { getBoundaryLayers, LayerDefinitions } from 'config/utils';
 import { addNotification } from 'context/notificationStateSlice';
@@ -81,7 +82,7 @@ const AdminLevelDataLayers = memo(
           // load unique boundary only once
           // to avoid double loading which proven to be performance issue
           if (!isLayerOnView(map, boundaryId)) {
-            dispatch(loadLayerData({ layer: boundaryLayer, map }));
+            boundaryCache.getBoundaryData(boundaryLayer, dispatch, map);
           }
         } else {
           dispatch(
