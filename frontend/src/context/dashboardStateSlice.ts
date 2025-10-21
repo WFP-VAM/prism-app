@@ -7,6 +7,7 @@ import { LayerDefinitions } from 'config/utils';
 import { keepLayer } from 'utils/keep-layer-utils';
 import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
 import { getLayerMapId } from 'utils/map-utils';
+import { generateSlugFromTitle } from 'utils/string-utils';
 
 import type {
   ConfiguredReport,
@@ -56,9 +57,24 @@ const getDashboardConfig = (index: number) => {
     appConfig.configuredReports.length === 0
   ) {
     // Return a fallback config object or throw an error
-    return { title: 'Dashboard', flexElements: [], maps: [] };
+    return {
+      title: 'Dashboard',
+      path: 'dashboard',
+      flexElements: [],
+      maps: [],
+    };
   }
-  return appConfig.configuredReports[index] || appConfig.configuredReports[0];
+  const originalConfig =
+    appConfig.configuredReports[index] || appConfig.configuredReports[0];
+
+  const config = { ...originalConfig };
+
+  if (!config.path) {
+    // eslint-disable-next-line fp/no-mutation
+    config.path = generateSlugFromTitle(config.title);
+  }
+
+  return config;
 };
 
 const getMapLayerOpacityConfig = (
@@ -407,19 +423,24 @@ export const dashboardStateSlice = createSlice({
 // Getters
 export const selectedDashboardIndexSelector = (state: RootState): number =>
   state.dashboardState.selectedDashboardIndex;
-
-export const dashboardTitleSelector = (state: RootState): string =>
-  state.dashboardState.title;
-
 export const dashboardModeSelector = (state: RootState): DashboardMode =>
   state.dashboardState.mode;
 
-export const dashboardFlexElementsSelector = (
+export const dashboardConfigSelector = (
   state: RootState,
-): ConfiguredReport['flexElements'] => state.dashboardState.flexElements;
+): ConfiguredReport & {
+  selectedDashboardIndex: number;
+  maps: DashboardMapState[];
+} => {
+  const currentDashboardIndex = state.dashboardState.selectedDashboardIndex;
+  const config = getDashboardConfig(currentDashboardIndex);
 
-export const dashboardMapsSelector = (state: RootState): DashboardMapState[] =>
-  state.dashboardState.maps;
+  return {
+    ...config,
+    selectedDashboardIndex: currentDashboardIndex,
+    maps: state.dashboardState.maps,
+  };
+};
 
 export const dashboardSyncEnabledSelector = (state: RootState): boolean =>
   state.dashboardState.syncMapsEnabled;
