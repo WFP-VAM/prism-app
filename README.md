@@ -267,7 +267,7 @@ These layers are referred to as `point_data` in PRISM and represent a data value
 
 #### boundaries
 
-Boundary layers are loaded by defaul when the application starts and typically show administrative boundaries and are defined as type `boundary`. Multiple boundary files can be configured in layers.json. Multiple boundary files can be used to create different styles for each boundary, or to toggle between admin_level_data layers which correspond to a separate geographic specification; for example to use one boundary file for district level data, and another boundary file for ecological data.
+Boundary layers are loaded by default when the application starts and typically show administrative boundaries and are defined as type `boundary`. Multiple boundary files can be configured in layers.json. Multiple boundary files can be used to create different styles for each boundary, or to toggle between admin_level_data layers which correspond to a separate geographic specification; for example to use one boundary file for district level data, and another boundary file for ecological data.
 
 When more than one boundary is specified, an array of boundaries needs to also be set in `prism.json` using with the `defaultDisplayBoundaries` attribute.
 
@@ -327,6 +327,56 @@ When more than one boundary is specified, an array of boundaries needs to also b
       }
     }
   }
+```
+
+##### Accessing Boundary Data in Code
+
+Boundary data is stored in a global cache. This ensures that boundary data is loaded once and shared across all map instances.
+
+**In React Components:**
+
+Use the `useBoundaryData` hook to access boundary data:
+
+```typescript
+import { useBoundaryData } from 'utils/useBoundaryData';
+import { mapSelector } from 'context/mapStateSlice/selectors';
+import { useSelector } from 'react-redux';
+
+function MyComponent() {
+  const map = useSelector(mapSelector);
+  const { data, loading, error } = useBoundaryData('admin_boundaries', map);
+  
+  if (loading) return <div>Loading boundaries...</div>;
+  if (error) return <div>Error: {error}</div>;
+  
+  // data is a GeoJSON FeatureCollection
+  return <div>{data.features.length} boundaries loaded</div>;
+}
+```
+
+**In Redux Thunks or Async Functions:**
+
+Use the `boundaryCache` directly:
+
+```typescript
+import { boundaryCache } from 'utils/boundary-cache';
+import { getBoundaryLayerSingleton } from 'config/utils';
+
+async function myAsyncFunction(dispatch) {
+  const boundaryLayer = getBoundaryLayerSingleton();
+  const boundaryData = await boundaryCache.getBoundaryData(
+    boundaryLayer,
+    dispatch,
+    map, // optional, required for PMTiles format
+  );
+  
+  if (!boundaryData) {
+    throw new Error('Boundary data not loaded!');
+  }
+  
+  // boundaryData is a GeoJSON FeatureCollection
+  console.log(`Loaded ${boundaryData.features.length} features`);
+}
 ```
 
 #### impact
