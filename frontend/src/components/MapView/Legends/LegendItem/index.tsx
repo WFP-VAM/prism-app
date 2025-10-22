@@ -37,6 +37,7 @@ import { getLegendItemLabel } from 'components/MapView/utils';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { dashboardModeSelector } from 'context/dashboardStateSlice';
 import LayerDownloadOptions from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch/SwitchItem/LayerDownloadOptions';
 import AnalysisDownloadButton from 'components/MapView/Legends//AnalysisDownloadButton';
 import { toggleRemoveLayer } from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
@@ -75,11 +76,15 @@ const LegendItem = memo(
       opacityState.getOpacitySelector(id as string),
     );
     const tabValue = useSelector(leftPanelTabValueSelector);
+    const dashboardMode = useSelector(dashboardModeSelector);
 
     // Use opacity from state if available, otherwise fall back to the initial opacity
     const opacity =
       opacityFromState !== undefined ? opacityFromState : initialOpacity;
     const isAnalysis = type === 'analysis';
+
+    const canShowRemoveButton =
+      tabValue !== Panel.Dashboard || dashboardMode === 'edit';
 
     useEffect(() => {
       if (opacityFromState !== undefined || !map) {
@@ -330,11 +335,13 @@ const LegendItem = memo(
                   ) : (
                     layerDownloadOptions
                   )}
-                  <Tooltip title={t('Remove layer') as string}>
-                    <IconButton size="small" onClick={remove}>
-                      <Close fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
+                  {canShowRemoveButton && (
+                    <Tooltip title={t('Remove layer') as string}>
+                      <IconButton size="small" onClick={remove}>
+                        <Close fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
                 </>
               </Box>
             </>
