@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { AADataSelector } from 'context/anticipatoryAction/AAStormStateSlice';
 import { useSafeTranslation } from 'i18n';
 import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
-import { getAAColor } from '../utils';
+import { getAAColor, AAStormColors } from '../utils';
 import { useAACommonStyles } from '../../utils';
 import { AADisplayCategory, AAPanelCategories } from './types';
 
@@ -177,7 +177,7 @@ const useActivationTriggerStyles = makeStyles(() =>
     },
     ActivationTriggerWrapper: {
       width: '100%',
-      background: '#F1F1F1',
+      background: AAStormColors.categories.na.background,
     },
     headColumnWrapper: {
       display: 'flex',

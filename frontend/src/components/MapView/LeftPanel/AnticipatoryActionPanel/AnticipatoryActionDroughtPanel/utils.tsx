@@ -266,8 +266,8 @@ export function getAAColor(
   if (category === 'ny' && !forLayer) {
     return `repeating-linear-gradient(
       -45deg,
-      #F1F1F1,
-      #F1F1F1 10px,
+      ${AADroughtColors.categories.na.background},
+      ${AADroughtColors.categories.na.background} 10px,
       white 10px,
       white 20px
     )`;

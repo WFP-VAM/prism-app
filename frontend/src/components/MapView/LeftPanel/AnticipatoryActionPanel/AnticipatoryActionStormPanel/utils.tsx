@@ -54,8 +54,8 @@ export function getAAColor(
   if (!forLayer) {
     return `repeating-linear-gradient(
       -45deg,
-      #F1F1F1,
-      #F1F1F1 10px,
+      ${AAStormColors.categories.na.background},
+      ${AAStormColors.categories.na.background} 10px,
       white 10px,
       white 20px
     )`;

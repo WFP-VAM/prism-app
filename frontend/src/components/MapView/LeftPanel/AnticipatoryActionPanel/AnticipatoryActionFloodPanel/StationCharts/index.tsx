@@ -83,7 +83,7 @@ const useStyles = makeStyles(() =>
       fontSize: '12px',
       color: '#000',
       textTransform: 'none',
-      background: '#F1F1F1',
+      background: AAFloodColors.riskLevels.noData,
       minWidth: '150px',
     },
     selectedTab: {

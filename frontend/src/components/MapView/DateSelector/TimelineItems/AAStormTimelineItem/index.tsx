@@ -3,6 +3,7 @@ import { createStyles, makeStyles } from '@material-ui/core';
 import 'react-datepicker/dist/react-datepicker.css';
 import { DateRangeType } from 'config/types';
 import { WindState } from 'prism-common';
+import { AAStormColors } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
 import { TIMELINE_ITEM_WIDTH } from '../../utils';
 import { useWindStatesByTime } from '../hooks';
 
@@ -62,12 +63,12 @@ const useStyles = makeStyles(() =>
     activated1Indicator: {
       ...createTimelineItemBaseStyles(),
       height: 20,
-      backgroundColor: '#FF8934',
+      backgroundColor: AAStormColors.categories.moderate.background,
     },
     activated2Indicator: {
       ...createTimelineItemBaseStyles(),
       height: 24,
-      backgroundColor: '#E63701',
+      backgroundColor: AAStormColors.categories.severe.background,
     },
   }),
 );
