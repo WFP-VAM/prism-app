@@ -1,4 +1,4 @@
-import { BoundaryLayerProps } from 'config/types';
+import { BoundaryLayerProps, LayerKey } from 'config/types';
 import {
   BoundaryLayerData,
   fetchBoundaryLayerData,
@@ -15,11 +15,14 @@ interface BoundaryCacheEntry {
   error?: string;
 }
 
-type BoundaryCache = Map<string, BoundaryCacheEntry>;
+type BoundaryCache = Map<LayerKey, BoundaryCacheEntry>;
 
 class BoundaryCacheManager {
   private cache: BoundaryCache = new Map();
-  private loadingPromises: Map<string, Promise<BoundaryLayerData | undefined>> =
+  private loadingPromises: Map<
+    LayerKey,
+    Promise<BoundaryLayerData | undefined>
+  > =
     new Map();
 
   /**

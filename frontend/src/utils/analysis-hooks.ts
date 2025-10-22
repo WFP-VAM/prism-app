@@ -151,16 +151,13 @@ export const useAnalysisForm = (
   const boundaryDataResult = useBoundaryData(adminLevelLayer?.id || '');
 
   const adminLevelLayerData: LayerData<BoundaryLayerProps> | undefined =
-    useMemo(() => {
-      if (!boundaryDataResult.data || !adminLevelLayer) {
-        return undefined;
-      }
-      return {
-        layer: adminLevelLayer,
-        data: boundaryDataResult.data,
-        date: Date.now(),
-      };
-    }, [boundaryDataResult.data, adminLevelLayer]);
+    boundaryDataResult.data && adminLevelLayer
+      ? {
+          layer: adminLevelLayer,
+          data: boundaryDataResult.data,
+          date: Date.now(),
+        }
+      : undefined;
 
   const requiredThresholdNotSet = useMemo(
     () =>

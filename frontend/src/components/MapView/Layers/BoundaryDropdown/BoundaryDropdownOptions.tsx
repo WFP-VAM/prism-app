@@ -88,17 +88,13 @@ const BoundaryDropdownOptions = React.forwardRef(
     );
 
     // Get all boundary layer data from cache
-    const allBoundaryLayerData = useMemo(
-      () =>
-        boundaryLayers.reduce(
-          (acc, layer) => {
-            // eslint-disable-next-line fp/no-mutation
-            acc[layer.id] = boundaryCache.getCachedData(layer.id);
-            return acc;
-          },
-          {} as Record<string, BoundaryLayerData | undefined>,
-        ),
-      [],
+    const allBoundaryLayerData = boundaryLayers.reduce(
+      (acc, layer) => {
+        // eslint-disable-next-line fp/no-mutation
+        acc[layer.id] = boundaryCache.getCachedData(layer.id);
+        return acc;
+      },
+      {} as Record<LayerKey, BoundaryLayerData | undefined>,
     );
 
     // Combine the data from all layers
