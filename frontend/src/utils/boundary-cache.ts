@@ -10,7 +10,7 @@ import type { Dispatch } from '@reduxjs/toolkit';
 type DispatchFunction = Dispatch<any>;
 
 interface BoundaryCacheEntry {
-  data: BoundaryLayerData | null;
+  data?: BoundaryLayerData;
   loading: boolean;
   error?: string;
 }
@@ -22,8 +22,7 @@ class BoundaryCacheManager {
   private loadingPromises: Map<
     LayerKey,
     Promise<BoundaryLayerData | undefined>
-  > =
-    new Map();
+  > = new Map();
 
   /**
    * Get boundary data from cache or trigger load
@@ -48,7 +47,7 @@ class BoundaryCacheManager {
       return this.loadingPromises.get(cacheKey);
     }
 
-    this.cache.set(cacheKey, { data: null, loading: true });
+    this.cache.set(cacheKey, { data: undefined, loading: true });
 
     const loadPromise = this.loadBoundaryData(layer, dispatch, map);
     this.loadingPromises.set(cacheKey, loadPromise);
@@ -56,7 +55,7 @@ class BoundaryCacheManager {
     try {
       const data = await loadPromise;
       this.cache.set(cacheKey, {
-        data: data as BoundaryLayerData | null,
+        data: data as BoundaryLayerData | undefined,
         loading: false,
       });
       return data;
@@ -64,7 +63,7 @@ class BoundaryCacheManager {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
       this.cache.set(cacheKey, {
-        data: null,
+        data: undefined,
         loading: false,
         error: errorMessage,
       });

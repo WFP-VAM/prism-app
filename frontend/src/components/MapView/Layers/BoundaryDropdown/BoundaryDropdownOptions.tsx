@@ -15,6 +15,7 @@ import { BBox } from 'geojson';
 import bbox from '@turf/bbox';
 import { BoundaryLayerData } from 'context/layers/boundary';
 import { boundaryCache } from 'utils/boundary-cache';
+import { LayerKey } from 'config/types';
 import {
   BoundaryDropdownProps,
   flattenAreaTree,
