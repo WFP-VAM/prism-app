@@ -1,4 +1,4 @@
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
@@ -7,6 +7,7 @@ import {
   createStyles,
   makeStyles,
 } from '@material-ui/core';
+import { Source, Layer } from 'react-map-gl/maplibre';
 import { getDisplayBoundaryLayers } from 'config/utils';
 import {
   isLoading as areDatesLoading,
@@ -16,7 +17,10 @@ import { loadLayerData } from 'context/layers/layer-data';
 import { useMapState } from 'utils/useMapState';
 import { useDashboardMapSync } from 'utils/useDashboardMapSync';
 import { MapInstanceProvider } from 'components/MapView/MapInstanceContext';
-import { selectedDashboardIndexSelector } from 'context/dashboardStateSlice';
+import {
+  selectedDashboardIndexSelector,
+  setCapturedViewport,
+} from 'context/dashboardStateSlice';
 import useLayers from 'utils/layers-utils';
 import RootAccordionItems from 'components/MapView/LeftPanel/layersPanel/RootAccordionItems';
 import {
@@ -30,6 +34,7 @@ import { DashboardMode } from 'config/types';
 import MapComponent from '../MapView/Map';
 import DateSelector from '../MapView/DateSelector';
 import DashboardLegends from './DashboardLegends';
+import type { ExportConfig } from './DashboardContent';
 
 /*
   reverse the order off adding layers so that the first boundary layer will be placed at the very bottom,
@@ -41,14 +46,18 @@ const displayedBoundaryLayers = getDisplayBoundaryLayers().reverse();
 interface MapBlockProps {
   mapIndex: number;
   mode?: DashboardMode;
+  exportConfig?: ExportConfig;
 }
 
 const MapBlockContent = memo(
-  ({ mode = DashboardMode.EDIT }: Pick<MapBlockProps, 'mode'>) => {
+  ({
+    mode = DashboardMode.EDIT,
+    exportConfig,
+  }: Pick<MapBlockProps, 'mode' | 'exportConfig'>) => {
     const classes = useStyles();
     const { t } = useSafeTranslation();
     const { selectedLayersWithDateSupport } = useLayers();
-    const { actions, maplibreMap } = useMapState();
+    const { actions, maplibreMap, mapIndex } = useMapState();
     const datesLoading = useSelector(areDatesLoading);
     useDashboardMapSync(mode);
     const map = maplibreMap();
@@ -57,6 +66,7 @@ const MapBlockContent = memo(
       pointDataLayerDatesRequested,
     );
     const dispatch = useDispatch();
+    const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
     if (mode === 'preview') {
       const canvas = map?.getCanvas();
@@ -110,6 +120,53 @@ const MapBlockContent = memo(
       }
     }, [preselectedLayers, dispatch]);
 
+    // Capture viewport when map moves in edit mode
+    const captureViewport = useCallback(() => {
+      if (mode !== DashboardMode.EDIT || !map || mapIndex === undefined) {
+        return;
+      }
+
+      const bounds = map.getBounds();
+
+      // Debounce the viewport capture to avoid excessive updates
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+
+      debounceTimerRef.current = setTimeout(() => {
+        dispatch(
+          setCapturedViewport({
+            index: mapIndex,
+            bounds: [
+              bounds.getWest(),
+              bounds.getSouth(),
+              bounds.getEast(),
+              bounds.getNorth(),
+            ],
+          }),
+        );
+      }, 300); // 300ms debounce
+    }, [mode, map, mapIndex, dispatch]);
+
+    useEffect(() => {
+      if (mode !== DashboardMode.EDIT || !map) {
+        return undefined;
+      }
+
+      // Listen to map movement events
+      map.on('moveend', captureViewport);
+      map.on('zoomend', captureViewport);
+
+      // Cleanup
+      return () => {
+        map.off('moveend', captureViewport);
+        map.off('zoomend', captureViewport);
+        if (debounceTimerRef.current) {
+          clearTimeout(debounceTimerRef.current);
+        }
+      };
+    }, [mode, map, captureViewport]);
+
     return (
       <Box
         className={
@@ -134,8 +191,33 @@ const MapBlockContent = memo(
                 <CircularProgress size={100} />
               </div>
             )}
-            <MapComponent />
-            {!datesLoading && <DashboardLegends />}
+            <MapComponent
+              hideMapLabels={
+                exportConfig?.toggles?.mapLabelsVisibility === false
+              }
+            >
+              {exportConfig?.toggles?.adminAreasVisibility &&
+              exportConfig?.invertedAdminBoundaryLimitPolygon ? (
+                <Source
+                  key={`mask-${exportConfig.selectedBoundaries?.join('-') || 'all'}`}
+                  id="dashboard-mask-overlay"
+                  type="geojson"
+                  data={exportConfig.invertedAdminBoundaryLimitPolygon}
+                >
+                  <Layer
+                    id="dashboard-mask-layer-overlay"
+                    type="fill"
+                    source="dashboard-mask-overlay"
+                    layout={{}}
+                    paint={{
+                      'fill-color': '#000',
+                      'fill-opacity': 0.7,
+                    }}
+                  />
+                </Source>
+              ) : null}
+            </MapComponent>
+            {!datesLoading && <DashboardLegends exportConfig={exportConfig} />}
           </div>
           {mode === DashboardMode.EDIT &&
             selectedLayersWithDateSupport.length > 0 &&
@@ -152,7 +234,7 @@ const MapBlockContent = memo(
 );
 
 const MapBlock = memo(
-  ({ mapIndex, mode = DashboardMode.EDIT }: MapBlockProps) => {
+  ({ mapIndex, mode = DashboardMode.EDIT, exportConfig }: MapBlockProps) => {
     const selectedDashboardIndex = useSelector(selectedDashboardIndexSelector);
 
     return (
@@ -160,7 +242,7 @@ const MapBlock = memo(
         key={`dashboard-${selectedDashboardIndex}-map-${mapIndex}`}
         index={mapIndex}
       >
-        <MapBlockContent mode={mode} />
+        <MapBlockContent mode={mode} exportConfig={exportConfig} />
       </MapInstanceProvider>
     );
   },

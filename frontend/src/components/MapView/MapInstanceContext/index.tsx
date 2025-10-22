@@ -44,6 +44,9 @@ export type MapInstanceSelectors = {
   selectMap: (state: RootState) => MapGetter;
   selectOpacity: (layerId: string) => (state: RootState) => number | undefined;
   selectMinMapBounds: (state: RootState) => number[] | undefined;
+  selectCapturedViewport: (
+    state: RootState,
+  ) => [number, number, number, number] | undefined;
 };
 
 type MapInstanceContextType = {
@@ -115,6 +118,8 @@ export function MapInstanceProvider({
           dashboardOpacitySelector(index, layerId),
         selectMinMapBounds: (state: RootState) =>
           state.dashboardState.maps[index].minMapBounds,
+        selectCapturedViewport: (state: RootState) =>
+          state.dashboardState.maps[index].capturedViewport,
       },
       actions,
     }),
