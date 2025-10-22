@@ -14,6 +14,7 @@ import { Panel, AdminLevelDataLayerProps } from 'config/types';
 import useLayers from 'utils/layers-utils';
 import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer/utils';
 import { mapStyle } from 'components/MapView/Map/utils';
+import iconNorthArrow from 'public/images/icon_north_arrow.png';
 import {
   dateRangeSelector,
   mapSelector,
@@ -152,7 +153,7 @@ function PrintPreview() {
                 bottom: `${(footerHeight as number) + 40}px`,
                 right: '10px',
               }}
-              src="./images/icon_north_arrow.png"
+              src={iconNorthArrow}
               alt="northArrow"
             />
             {titleText && (

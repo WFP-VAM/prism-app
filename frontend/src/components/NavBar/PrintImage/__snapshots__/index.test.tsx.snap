@@ -59,7 +59,7 @@ exports[`renders as expected 1`] = `
             >
               <img
                 alt="northArrow"
-                src="./images/icon_north_arrow.png"
+                src="test-file-stub"
                 style="position: absolute; z-index: 3; width: 50px; bottom: 60px; right: 10px;"
               />
               <div
