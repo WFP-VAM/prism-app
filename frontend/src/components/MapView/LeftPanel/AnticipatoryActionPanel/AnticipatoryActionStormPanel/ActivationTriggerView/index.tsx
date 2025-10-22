@@ -107,6 +107,22 @@ function ActivationTrigger({ dialogs }: ActivationTriggerProps) {
     parsedStormData.activeDistricts?.[AACategory.Severe]?.districtNames ?? [],
   );
 
+  // Check if there are any districts to display
+  const hasActiveDistricts = filteredActiveDistricts.some(
+    ([category, data]) => {
+      const names =
+        (category as AACategory) === AACategory.Moderate
+          ? data.districtNames.filter(name => !severeDistrictsSet.has(name))
+          : data.districtNames;
+      return names.length > 0;
+    },
+  );
+
+  // Don't render anything if there are no active districts
+  if (!hasActiveDistricts) {
+    return null;
+  }
+
   return (
     <div className={classes.root}>
       <Typography className={classes.headerText}>
