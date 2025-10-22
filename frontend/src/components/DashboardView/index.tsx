@@ -199,8 +199,8 @@ function DashboardView() {
                         — {t('Choose map layers')}
                       </Typography>
                     </div>
-                    <div style={{ height: '700px' }}>
-                      <MapBlock mapIndex={mapIndex} mode={mode} />
+                    <div style={{ height: '700px', width: '100%' }}>
+                      <MapBlock mapIndex={mapIndex} />
                     </div>
                   </Box>
                 ))}
@@ -218,7 +218,6 @@ function DashboardView() {
                           key={`text-block-${index}`}
                           content={content}
                           index={index}
-                          mode={mode}
                         />
                       );
                     }
@@ -233,7 +232,6 @@ function DashboardView() {
                           baselineLayerId={element.baselineLayerId}
                           threshold={element.threshold}
                           stat={element.stat}
-                          mode={mode}
                         />
                       );
                     }
@@ -249,7 +247,6 @@ function DashboardView() {
                           wmsLayerId={chartElement.wmsLayerId}
                           adminUnitLevel={chartElement.adminUnitLevel}
                           adminUnitId={chartElement.adminUnitId}
-                          mode={mode}
                         />
                       );
                     }
@@ -281,7 +278,7 @@ function DashboardView() {
                         </Typography>
                       </div>
                       <div style={{ height: '700px', width: '100%' }}>
-                        <MapBlock mapIndex={mapIndex} mode={mode} />
+                        <MapBlock mapIndex={mapIndex} />
                       </div>
                     </Box>
                   ))}
@@ -300,7 +297,6 @@ function DashboardView() {
                           key={`text-block-${index}`}
                           content={content}
                           index={index}
-                          mode={mode}
                         />
                       );
                     }
@@ -315,7 +311,6 @@ function DashboardView() {
                           baselineLayerId={element.baselineLayerId}
                           threshold={element.threshold}
                           stat={element.stat}
-                          mode={mode}
                         />
                       );
                     }
@@ -331,7 +326,6 @@ function DashboardView() {
                           wmsLayerId={chartElement.wmsLayerId}
                           adminUnitLevel={chartElement.adminUnitLevel}
                           adminUnitId={chartElement.adminUnitId}
-                          mode={mode}
                         />
                       );
                     }
@@ -343,6 +337,116 @@ function DashboardView() {
           )}
         </Box>
       )}
+
+      {/* <Box
+        className={
+          mode === DashboardMode.PREVIEW
+            ? classes.previewLayout
+            : classes.layout
+        }
+      >
+        <Box className={classes.leadingContentArea}>
+          {mode === DashboardMode.EDIT && (
+            <Box className={classes.grayCard}>
+              <label className={classes.titleBarLabel}>
+                <Typography
+                  variant="h2"
+                  component="span"
+                  className={classes.titleBarTypography}
+                >
+                  {t('Dashboard title')}
+                </Typography>
+                <input
+                  type="text"
+                  className={classes.titleBarInput}
+                  placeholder={t('Enter dashboard title')}
+                  value={dashboardTitle}
+                  onChange={e => dispatch(setTitle(e.target.value))}
+                  name="dashboard-title"
+                />
+              </label>
+            </Box>
+          )}
+
+          <div className={classes.mapsContainer}>
+            {dashboardMaps.map((_, mapIndex) => (
+              <Box
+                // eslint-disable-next-line react/no-array-index-key
+                key={`map-${mapIndex}`}
+                className={
+                  mode === DashboardMode.PREVIEW
+                    ? classes.previewContainer
+                    : classes.grayCard
+                }
+              >
+                {mode === DashboardMode.EDIT && (
+                  <Typography
+                    variant="h3"
+                    component="h3"
+                    className={classes.blockLabel}
+                  >
+                    {dashboardMaps.length > 1
+                      ? `Map ${mapIndex + 1}`
+                      : 'Map block'}{' '}
+                    — {t('Choose map layers')}
+                  </Typography>
+                )}
+                <div style={{ height: '700px', width: '100%' }}>
+                  <MapBlock mapIndex={mapIndex} />
+                </div>
+              </Box>
+            ))}
+          </div>
+        </Box>
+
+        {dashboardFlexElements.length > 0 && (
+          <Box className={classes.trailingContentArea}>
+            {dashboardFlexElements?.map((element, index) => {
+              if (element.type === 'TEXT') {
+                const content = (element as DashboardTextConfig)?.content || '';
+                return (
+                  <TextBlock
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={`text-block-${index}`}
+                    content={content}
+                    index={index}
+                  />
+                );
+              }
+              if (element.type === 'TABLE') {
+                return (
+                  <TableBlock
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={`table-block-${index}`}
+                    index={index}
+                    startDate={element.startDate}
+                    hazardLayerId={element.hazardLayerId}
+                    baselineLayerId={element.baselineLayerId}
+                    threshold={element.threshold}
+                    stat={element.stat}
+                  />
+                );
+              }
+              if (element.type === 'CHART') {
+                const chartElement = element as DashboardChartConfig;
+                return (
+                  <ChartBlock
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={`chart-block-${index}`}
+                    index={index}
+                    startDate={chartElement.startDate}
+                    endDate={chartElement.endDate}
+                    wmsLayerId={chartElement.wmsLayerId}
+                    adminUnitLevel={chartElement.adminUnitLevel}
+                    adminUnitId={chartElement.adminUnitId}
+                  />
+                );
+              }
+              return null;
+            })}
+          </Box>
+        )}
+      </Box> */}
 
       {mode === DashboardMode.EDIT && (
         <Box className={classes.toolbar}>

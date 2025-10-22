@@ -33,10 +33,10 @@ import {
   AdminLevelSelector,
 } from 'components/Common/AnalysisFormComponents';
 import { useSafeTranslation } from 'i18n';
+import { dashboardModeSelector } from '../../context/dashboardStateSlice';
 
 interface TableBlockProps extends Partial<DashboardTableConfig> {
   index: number;
-  mode?: DashboardMode;
 }
 
 function TableBlock({
@@ -46,11 +46,11 @@ function TableBlock({
   baselineLayerId: initialBaselineLayerId,
   threshold: initialThreshold,
   stat: initialStat,
-  mode = DashboardMode.EDIT,
 }: TableBlockProps) {
   const classes = useStyles();
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
+  const mode = useSelector(dashboardModeSelector);
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
 
   const formState = useAnalysisForm({
