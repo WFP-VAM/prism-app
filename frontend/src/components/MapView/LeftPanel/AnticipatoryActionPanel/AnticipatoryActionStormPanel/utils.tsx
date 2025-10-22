@@ -10,6 +10,7 @@ export const AAStormColors = {
     risk: { background: '#FF8934', text: 'black' },
     na: { background: 'grey', text: 'white' },
   },
+  background: '#F1F1F1',
 } as const;
 
 const AACategoryPhaseMap: { [key in AACategory]?: any } = {
@@ -54,8 +55,8 @@ export function getAAColor(
   if (!forLayer) {
     return `repeating-linear-gradient(
       -45deg,
-      ${AAStormColors.categories.na.background},
-      ${AAStormColors.categories.na.background} 10px,
+      ${AAStormColors.background},
+      ${AAStormColors.background} 10px,
       white 10px,
       white 20px
     )`;

@@ -177,7 +177,7 @@ const useActivationTriggerStyles = makeStyles(() =>
     },
     ActivationTriggerWrapper: {
       width: '100%',
-      background: AAStormColors.categories.na.background,
+      background: AAStormColors.background,
     },
     headColumnWrapper: {
       display: 'flex',
