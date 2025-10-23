@@ -1,4 +1,4 @@
-import { useCallback, useState, MouseEvent, useMemo } from 'react';
+import { useCallback, useState, MouseEvent } from 'react';
 import { Button, Typography } from '@material-ui/core';
 import { snakeCase } from 'lodash';
 import { useSelector } from 'react-redux';
@@ -13,9 +13,7 @@ import {
   getCurrentDefinition,
   TableRow as AnalysisTableRow,
 } from 'context/analysisResultStateSlice';
-import ReportDialog from 'components/Common/ReportDialog';
 import { Column } from 'utils/analysis-utils';
-import { ReportsDefinitions } from 'config/utils';
 import { getExposureAnalysisCsvData } from 'utils/csv-utils';
 import LoadingBlinkingDots from '../../../../Common/LoadingBlinkingDots';
 import { safeCountry } from '../../../../../config';
@@ -32,7 +30,6 @@ function ExposureAnalysisActions({
   const analysisDefinition = useSelector(getCurrentDefinition);
   const exposureLayerId = useSelector(exposureLayerIdSelector);
 
-  const [openReport, setOpenReport] = useState(false);
   const [downloadReportIsLoading, setDownloadReportIsLoading] = useState(false);
 
   const API_URL = 'https://prism-api.ovio.org/report';
@@ -45,16 +42,6 @@ function ExposureAnalysisActions({
     exposureAnalysisColumnsToRender,
     exposureAnalysisTableRowsToRender,
   );
-
-  const reportConfig = useMemo(() => {
-    // We use find here because exposure reports and layers have 1 - 1 sync.
-    // TODO Future enhancement if exposure reports are more than one for specific layer
-    const foundReportKeyBasedOnLayerId = Object.keys(ReportsDefinitions).find(
-      reportDefinitionKey =>
-        ReportsDefinitions[reportDefinitionKey].layerId === exposureLayerId,
-    );
-    return ReportsDefinitions[foundReportKeyBasedOnLayerId as string];
-  }, [exposureLayerId]);
 
   const handleOnDownloadCsv = useCallback(
     (event: MouseEvent<HTMLButtonElement>) => {
@@ -113,10 +100,6 @@ function ExposureAnalysisActions({
     setDownloadReportIsLoading(false);
   };
 
-  const handleToggleReport = (toggle: boolean) => () => {
-    setOpenReport(toggle);
-  };
-
   return (
     <>
       <Button className={analysisButton} onClick={clearAnalysis}>
@@ -132,23 +115,17 @@ function ExposureAnalysisActions({
         <Button
           className={bottomButton}
           onClick={handleDownloadReport}
-          disabled={downloadReportIsLoading}
+          // TEMPORARILY DISABLED due to security concerns with react-pdf/renderer
+          disabled
         >
           <Typography variant="body2">{t('Download Report')}</Typography>
           {downloadReportIsLoading && <LoadingBlinkingDots dotColor="white" />}
         </Button>
       )}
-      <ReportDialog
-        open={openReport}
-        handleClose={handleToggleReport(false)}
-        reportConfig={reportConfig}
-        tableData={tableData}
-        columns={columns}
-      />
       <Button
         id="create-report"
-        // className={bottomButton}
-        onClick={handleToggleReport(true)}
+        disabled
+        onClick={() => {}}
         // Hide the preview report button for now. Report creation happens in the backend and is cached.
         style={{
           left: -0,

@@ -44,14 +44,6 @@ Object.defineProperty(global.self, 'crypto', {
   },
 });
 
-// https://github.com/diegomura/react-pdf/issues/710
-jest.mock('@react-pdf/renderer', () => ({
-  PDFDownloadLink: jest.fn(() => null),
-  PDFViewer: jest.fn(() => null),
-  StyleSheet: { create: () => {} },
-  Font: { register: () => {} },
-}));
-
 // https://github.com/remarkjs/react-markdown/issues/635
 jest.mock(
   'react-markdown',
