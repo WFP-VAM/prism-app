@@ -1,60 +1,63 @@
-import os
-import shutil
-from typing import Final
-from unittest.mock import patch
+# TEMPORARILY DISABLED due to security concerns with react-pdf/renderer
+# See https://github.com/WFP-VAM/prism-app/pull/1558
 
-import pytest
-from prism_app.caching import CACHE_DIRECTORY
-from prism_app.report import download_report
+# import os
+# import shutil
+# from typing import Final
+# from unittest.mock import patch
 
-EXPECTED_REPORT_FILEPATH: Final[str] = os.path.join(
-    CACHE_DIRECTORY, "reports/", "report-cambodia-flood_extent-en-2023-07-07.pdf"
-)
+# import pytest
+# from prism_app.caching import CACHE_DIRECTORY
+# from prism_app.report import download_report
 
-
-@pytest.mark.asyncio
-async def test_download_report():
-    """Test generate report using playwright and returns a path string"""
-    # Arrange
-    shutil.rmtree(
-        os.path.join(CACHE_DIRECTORY, "reports/"), ignore_errors=True, onerror=None
-    )
-
-    # Act
-    report_path: str = await download_report(
-        "http://frontend:3300/?hazardLayerIds=flood_extent&date=2023-07-07",
-        "flood_extent",
-        "cambodia",
-        "en",
-    )
-
-    # Assert
-    assert report_path == EXPECTED_REPORT_FILEPATH
+# EXPECTED_REPORT_FILEPATH: Final[str] = os.path.join(
+#     CACHE_DIRECTORY, "reports/", "report-cambodia-flood_extent-en-2023-07-07.pdf"
+# )
 
 
-@pytest.mark.asyncio
-@patch("playwright.async_api.async_playwright")
-async def test_should_load_report_from_cache_if_present(playwright_mock):
-    """Test generate report using cache directory and returns a path string"""
-    # Arrange
-    if not os.path.exists(os.path.join(CACHE_DIRECTORY, "reports/")):
-        # If it doesn't exist, create the directory
-        os.makedirs(os.path.join(CACHE_DIRECTORY, "reports/"))
-    with open(
-        EXPECTED_REPORT_FILEPATH,
-        "w",
-    ) as fp:
-        fp.write("Cached pdf report")
-        pass
+# @pytest.mark.asyncio
+# async def test_download_report():
+#     """Test generate report using playwright and returns a path string"""
+#     # Arrange
+#     shutil.rmtree(
+#         os.path.join(CACHE_DIRECTORY, "reports/"), ignore_errors=True, onerror=None
+#     )
 
-    # Act
-    report_path: str = await download_report(
-        "http://frontend:3300/?hazardLayerIds=flood_extent&date=2023-07-07",
-        "flood_extent",
-        "cambodia",
-        "en",
-    )
+#     # Act
+#     report_path: str = await download_report(
+#         "http://frontend:3300/?hazardLayerIds=flood_extent&date=2023-07-07",
+#         "flood_extent",
+#         "cambodia",
+#         "en",
+#     )
 
-    # Assert
-    assert report_path == EXPECTED_REPORT_FILEPATH
-    playwright_mock.assert_not_called()
+#     # Assert
+#     assert report_path == EXPECTED_REPORT_FILEPATH
+
+
+# @pytest.mark.asyncio
+# @patch("playwright.async_api.async_playwright")
+# async def test_should_load_report_from_cache_if_present(playwright_mock):
+#     """Test generate report using cache directory and returns a path string"""
+#     # Arrange
+#     if not os.path.exists(os.path.join(CACHE_DIRECTORY, "reports/")):
+#         # If it doesn't exist, create the directory
+#         os.makedirs(os.path.join(CACHE_DIRECTORY, "reports/"))
+#     with open(
+#         EXPECTED_REPORT_FILEPATH,
+#         "w",
+#     ) as fp:
+#         fp.write("Cached pdf report")
+#         pass
+
+#     # Act
+#     report_path: str = await download_report(
+#         "http://frontend:3300/?hazardLayerIds=flood_extent&date=2023-07-07",
+#         "flood_extent",
+#         "cambodia",
+#         "en",
+#     )
+
+#     # Assert
+#     assert report_path == EXPECTED_REPORT_FILEPATH
+#     playwright_mock.assert_not_called()
