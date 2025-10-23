@@ -339,12 +339,11 @@ Use the `useBoundaryData` hook to access boundary data:
 
 ```typescript
 import { useBoundaryData } from 'utils/useBoundaryData';
-import { mapSelector } from 'context/mapStateSlice/selectors';
-import { useSelector } from 'react-redux';
+import { useMapState } from 'utils/useMapState';
 
 function MyComponent() {
-  const map = useSelector(mapSelector);
-  const { data, loading, error } = useBoundaryData('admin_boundaries', map);
+  const { maplibreMap } = useMapState();
+  const { data, loading, error } = useBoundaryData('admin_boundaries', maplibreMap);
   
   if (loading) return <div>Loading boundaries...</div>;
   if (error) return <div>Error: {error}</div>;
