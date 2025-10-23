@@ -34,7 +34,7 @@
                     </p>
                     <% } %>
                     <% if (readiness) { %>
-                        <p><%= cycloneTime %> A system with severe tropical storm-force winds (or stronger) is expected to impact any of the four pilot provinces within the next 5 days, with a lead time of at least 72 hours.</p>
+                        <p><%= cycloneTime %> A system with severe tropical storm-force winds (or stronger) is expected to impact any of the coastal provinces within the next 5 days, with a lead time of at least 72 hours.</p>
                     <% } %>
                     <p class="trigger-title" style="margin: 20px 0; width: 100%; font-weight: bold; font-size: 16px;">
                         <span class="activation-icon" style="width: 24px; height: 24px; border-radius: 8px; background-color: rgba(230, 55, 1, 1); display: inline-block; vertical-align: middle; margin-right: 10px;"></span> 
@@ -46,7 +46,7 @@
                         <% } %>
                     </p>
                     <% if (activatedTriggers) { %>
-                        <p>Projected wind speeds affecting pilot districts:</p>
+                        <p>Projected wind speeds affecting monitored districts:</p>
                         <table class="table-container" style="width: 100%; border-collapse: collapse; font-size: 16px; font-weight: 700;">
                             <tr style="border: 1px solid #ddd; padding: 10px; text-align: left;">
                                 <td style="border: 1px solid #ddd; padding: 10px; text-align: left;">&gt; 89 km/h</td>
@@ -108,7 +108,7 @@
         <% } %>
     
         <% if (readiness) { %>
-            A system with severe tropical storm-force winds (or stronger) is expected to impact any of the four pilot provinces within the next 5 days, with a lead time of at least 72 hours.
+            A system with severe tropical storm-force winds (or stronger) is expected to impact any of the coastal provinces within the next 5 days, with a lead time of at least 72 hours.
         <% } %>
     
         <% if (activatedTriggers) { %>
