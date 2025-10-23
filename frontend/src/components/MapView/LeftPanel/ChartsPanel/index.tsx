@@ -30,7 +30,6 @@ import { appConfig } from 'config';
 import {
   AdminCodeString,
   AdminLevelType,
-  BoundaryLayerProps,
   PanelSize,
   WMSLayerProps,
   Panel,
@@ -39,10 +38,9 @@ import {
   getBoundaryLayersByAdminLevel,
   getWMSLayersWithChart,
 } from 'config/utils';
-import { LayerData } from 'context/layers/layer-data';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
-import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
+import { useBoundaryData } from 'utils/useBoundaryData';
 import { buildCsvFileName, getProperties } from 'components/MapView/utils';
 import DownloadCsvButton from 'components/MapView/DownloadCsvButton';
 import {
@@ -86,10 +84,7 @@ const oneYearInTicks = 34;
 const tabPanelType = Panel.Charts;
 
 const ChartsPanel = memo(() => {
-  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
-    | LayerData<BoundaryLayerProps>
-    | undefined;
-  const { data } = boundaryLayerData || {};
+  const { data } = useBoundaryData(boundaryLayer.id);
   const classes = useStyles();
   const [compareLocations, setCompareLocations] = useState(false);
   const [comparePeriods, setComparePeriods] = useState(false);

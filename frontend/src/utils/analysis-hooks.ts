@@ -23,10 +23,7 @@ import {
   requestAndStoreAnalysis,
   requestAndStorePolygonAnalysis,
 } from 'context/analysisResultStateSlice';
-import {
-  mapSelector,
-  layerDataSelector,
-} from 'context/mapStateSlice/selectors';
+import { mapSelector } from 'context/mapStateSlice/selectors';
 import {
   availableDatesSelector,
   loadAvailableDatesForLayer,
@@ -40,6 +37,7 @@ import { getDateFromList } from 'utils/data-utils';
 import { getFormattedDate } from 'utils/date-utils';
 import { LayerDefinitions, getDisplayBoundaryLayers } from 'config/utils';
 import type { AnalysisResult } from 'utils/analysis-utils';
+import { useBoundaryData } from './useBoundaryData';
 
 export interface UseAnalysisFormOptions {
   initialHazardLayerId?: LayerKey;
@@ -150,9 +148,16 @@ export const useAnalysisForm = (
     [adminLevel],
   );
 
-  const adminLevelLayerData = useSelector(
-    adminLevelLayer ? layerDataSelector(adminLevelLayer.id) : () => undefined,
-  ) as LayerData<BoundaryLayerProps> | undefined;
+  const boundaryDataResult = useBoundaryData(adminLevelLayer?.id || '');
+
+  const adminLevelLayerData: LayerData<BoundaryLayerProps> | undefined =
+    boundaryDataResult.data && adminLevelLayer
+      ? {
+          layer: adminLevelLayer,
+          data: boundaryDataResult.data,
+          date: Date.now(),
+        }
+      : undefined;
 
   const requiredThresholdNotSet = useMemo(
     () =>

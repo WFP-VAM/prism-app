@@ -17,7 +17,7 @@ import {
 } from './admin_level_data';
 import { fetchWCSLayerData, WMSLayerData } from './wms';
 import { fetchPointLayerData } from './point_data';
-import { BoundaryLayerData, fetchBoundaryLayerData } from './boundary';
+import { BoundaryLayerData } from './boundary';
 import { fetchImpactLayerData, ImpactLayerData } from './impact';
 import type { CompositeLayerData } from './composite_data';
 import { fetchCompositeLayerData } from './composite_data';
@@ -73,8 +73,9 @@ type LayerDataMap = {
 export type LayerDataTypes = LayerDataMap[keyof LayerDataMap];
 
 // Define a type for the object mapping layer type to fetch function
+// Exclude boundary since it uses global cache instead of Redux
 type LayerLoaders = {
-  [key in LayerAcceptingDataType['type']]: LazyLoader<
+  [key in Exclude<LayerAcceptingDataType['type'], 'boundary'>]: LazyLoader<
     DiscriminateUnion<LayerAcceptingDataType, 'type', key>
   >;
 };
@@ -93,8 +94,15 @@ export const loadLayerData: LoadLayerDataFuncType = createAsyncThunk<
   CreateAsyncThunkTypes
 >('mapState/loadLayerData', async (params, thunkApi) => {
   const { layer, extent, date } = params;
+
+  // Boundary layers should use the global boundary cache instead of Redux
+  if (layer.type === 'boundary') {
+    throw new Error(
+      'Boundary layers should use boundaryCache.getBoundaryData() instead of loadLayerData()',
+    );
+  }
+
   const layerLoaders: LayerLoaders = {
-    boundary: fetchBoundaryLayerData,
     impact: fetchImpactLayerData,
     wms: fetchWCSLayerData,
     admin_level_data: fetchAdminLevelDataLayerData,
