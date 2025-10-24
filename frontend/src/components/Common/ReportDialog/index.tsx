@@ -118,7 +118,7 @@ const ReportDialog = memo(
       theme,
     ]);
 
-    const renderedLoadingButtonText = useCallback(
+    const renderedLoadingButtonText: any = useCallback(
       ({ loading }: any) => {
         if (loading) {
           setDocumentIsLoading(true);

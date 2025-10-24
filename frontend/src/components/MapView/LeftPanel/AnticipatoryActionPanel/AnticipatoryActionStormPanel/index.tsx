@@ -61,7 +61,11 @@ function AnticipatoryActionStormPanel() {
         </div>
         <StyledSelect
           className={classes.select}
-          value={`${getFormattedDate(reportRefTime, 'default')} ${AAData.forecastDetails?.cyclone_name?.toUpperCase() || ''}`}
+          value={
+            reportRefTime && AAData.forecastDetails?.cyclone_name
+              ? `${getFormattedDate(reportRefTime, 'default')} ${AAData.forecastDetails.cyclone_name.toUpperCase()}`
+              : ''
+          }
           input={<Input disableUnderline />}
           renderValue={() => (
             <Typography variant="body1" className={classes.selectText}>
@@ -108,7 +112,7 @@ function AnticipatoryActionStormPanel() {
 
         <Typography>
           {t(
-            'The wind forecast shows areas with wind speeds above 89 and 118 km/h.',
+            'The wind forecast shows areas with wind speeds above 89 and 119 km/h.',
           )}
         </Typography>
       </div>
