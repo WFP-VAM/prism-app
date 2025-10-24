@@ -38,8 +38,7 @@ test('renders as expected', () => {
     },
     dashboardState: {
       dashboardTitle: 'Test Dashboard',
-      maps: [],
-      flexElements: [],
+      columns: [],
       selectedDashboardIndex: 0,
     },
   });
