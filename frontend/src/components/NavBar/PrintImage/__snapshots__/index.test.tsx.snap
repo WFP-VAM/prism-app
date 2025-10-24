@@ -1027,63 +1027,1792 @@ exports[`renders as expected 1`] = `
                   class="MuiBox-root MuiBox-root-57 makeStyles-trailingContentArea-50"
                 >
                   <div
-                    class="MuiBox-root MuiBox-root-64 makeStyles-previewContainer-61"
+                    class="MuiBox-root MuiBox-root-64 makeStyles-grayCard-58"
                   >
-                    Spring Dashboard - April 2025 Analysis
-                  </div>
-                  <div
-                    class="MuiBox-root MuiBox-root-84 makeStyles-previewContainer-66"
-                  >
-                    <div
-                      class="MuiBox-root MuiBox-root-85 makeStyles-previewHeader-67"
-                    >
-                      <mock-typography
-                        classname="makeStyles-previewTitle-68"
-                        variant="h2"
-                      >
-                        Blended rainfall aggregate (10-day)
-                      </mock-typography>
-                      <mock-typography
-                        classname="makeStyles-previewDate-69"
-                        variant="body1"
-                      >
-                        Jan 1, 2025 - Apr 1, 2025
-                      </mock-typography>
-                    </div>
-                    <div
-                      class="MuiBox-root MuiBox-root-86 makeStyles-emptyState-79"
-                    >
-                      <mock-typography
-                        color="textSecondary"
-                        variant="body1"
-                      >
-                        No chart data available
-                      </mock-typography>
-                    </div>
-                  </div>
-                  <div
-                    class="MuiBox-root MuiBox-root-102 makeStyles-previewContainer-88"
-                  >
-                    <div
-                      class="MuiBox-root MuiBox-root-103 makeStyles-previewHeader-89"
-                    >
-                      <mock-typography
-                        classname="makeStyles-previewTitle-90"
-                        variant="h2"
-                      >
-                        INAM SPI - 2-month (Mean)
-                      </mock-typography>
-                      <mock-typography
-                        classname="makeStyles-previewDate-91"
-                        variant="body1"
-                      />
-                    </div>
                     <mock-typography
-                      color="textSecondary"
-                      variant="body2"
+                      classname="makeStyles-blockLabel-59"
+                      variant="h3"
                     >
-                      Configure analysis parameters to see data
+                      Block #1
                     </mock-typography>
+                    <textarea
+                      class="makeStyles-textarea-60"
+                      name="text-block"
+                      placeholder="Add custom text here"
+                    >
+                      Spring Dashboard - April 2025 Analysis
+                    </textarea>
+                  </div>
+                  <div
+                    class="MuiBox-root MuiBox-root-84 makeStyles-grayCard-65"
+                  >
+                    <mock-typography
+                      classname="makeStyles-blockTitle-70"
+                      variant="h3"
+                    >
+                      Chart Block
+                       #
+                      2
+                    </mock-typography>
+                    <div
+                      class="MuiBox-root MuiBox-root-85 makeStyles-formContainer-71"
+                    >
+                      <div
+                        class="MuiBox-root MuiBox-root-86 makeStyles-formSection-72"
+                      >
+                        <div
+                          class="makeStyles-container-87"
+                        >
+                          <div
+                            class="MuiFormControl-root makeStyles-formControl-88"
+                          >
+                            <label
+                              class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined MuiFormLabel-filled"
+                              data-shrink="true"
+                              id="chart-layer-selector-label"
+                            >
+                              Chart Layer
+                            </label>
+                            <div
+                              class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl"
+                            >
+                              <div
+                                aria-haspopup="listbox"
+                                aria-labelledby="chart-layer-selector-label chart-layer-selector"
+                                class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input"
+                                id="chart-layer-selector"
+                                role="button"
+                                tabindex="0"
+                              >
+                                Blended rainfall aggregate (10-day)
+                              </div>
+                              <input
+                                aria-hidden="true"
+                                class="MuiSelect-nativeInput"
+                                tabindex="-1"
+                                value="precip_blended_dekad"
+                              />
+                              <svg
+                                aria-hidden="true"
+                                class="MuiSvgIcon-root MuiSelect-icon MuiSelect-iconOutlined"
+                                focusable="false"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  d="M7 10l5 5 5-5z"
+                                />
+                              </svg>
+                              <mock-menu
+                                anchorel="[object HTMLDivElement]"
+                                id="menu-"
+                                menulistprops="[object Object]"
+                                open="false"
+                                paperprops="[object Object]"
+                              >
+                                <mock-menuitem
+                                  data-value=""
+                                  role="option"
+                                  selected="false"
+                                >
+                                  <em>
+                                    Select a chart layer
+                                  </em>
+                                </mock-menuitem>
+                                <mock-menuitem
+                                  aria-selected="true"
+                                  data-value="precip_blended_dekad"
+                                  role="option"
+                                  selected="true"
+                                >
+                                  Blended rainfall aggregate (10-day)
+                                </mock-menuitem>
+                                <mock-menuitem
+                                  data-value="precip_blended_dekad_anomaly"
+                                  role="option"
+                                  selected="false"
+                                >
+                                  Blended rainfall anomaly (10-day)
+                                </mock-menuitem>
+                                <mock-menuitem
+                                  data-value="precip_blended_1m"
+                                  role="option"
+                                  selected="false"
+                                >
+                                  Blended rainfall aggregate (1-month)
+                                </mock-menuitem>
+                                <mock-menuitem
+                                  data-value="precip_blended_anomaly_1m"
+                                  role="option"
+                                  selected="false"
+                                >
+                                  Blended rainfall anomaly (1-month)
+                                </mock-menuitem>
+                                <mock-menuitem
+                                  data-value="precip_blended_3m"
+                                  role="option"
+                                  selected="false"
+                                >
+                                  Blended rainfall aggregate (3-month)
+                                </mock-menuitem>
+                                <mock-menuitem
+                                  data-value="precip_blended_anomaly_3m"
+                                  role="option"
+                                  selected="false"
+                                >
+                                  Blended rainfall anomaly (3-month)
+                                </mock-menuitem>
+                                <mock-menuitem
+                                  data-value="rainfall_dekad"
+                                  role="option"
+                                  selected="false"
+                                >
+                                  CHIRPS 10-day rainfall estimate (mm)
+                                </mock-menuitem>
+                                <mock-menuitem
+                                  data-value="rain_anomaly_dekad"
+                                  role="option"
+                                  selected="false"
+                                >
+                                  CHIRPS 10-day rainfall anomaly
+                                </mock-menuitem>
+                                <mock-menuitem
+                                  data-value="rainfall_agg_1month"
+                                  role="option"
+                                  selected="false"
+                                >
+                                  CHIRPS 1-month rainfall aggregate
+                                </mock-menuitem>
+                                <mock-menuitem
+                                  data-value="rain_anomaly_1month"
+                                  role="option"
+                                  selected="false"
+                                >
+                                  CHIRPS 1-month rainfall anomaly
+                                </mock-menuitem>
+                                <mock-menuitem
+                                  data-value="rainfall_agg_3month"
+                                  role="option"
+                                  selected="false"
+                                >
+                                  CHIRPS 3-month rainfall aggregate (mm)
+                                </mock-menuitem>
+                                <mock-menuitem
+                                  data-value="rain_anomaly_3month"
+                                  role="option"
+                                  selected="false"
+                                >
+                                  CHIRPS 3-month rainfall anomaly
+                                </mock-menuitem>
+                                <mock-menuitem
+                                  data-value="ndvi_dekad"
+                                  role="option"
+                                  selected="false"
+                                >
+                                  10-day NDVI (MODIS)
+                                </mock-menuitem>
+                                <mock-menuitem
+                                  data-value="ndvi_dekad_anomaly"
+                                  role="option"
+                                  selected="false"
+                                >
+                                  10-day NDVI anomaly (MODIS)
+                                </mock-menuitem>
+                              </mock-menu>
+                              <fieldset
+                                aria-hidden="true"
+                                class="PrivateNotchedOutline-root-89 MuiOutlinedInput-notchedOutline"
+                              >
+                                <legend
+                                  class="PrivateNotchedOutline-legendLabelled-91 PrivateNotchedOutline-legendNotched-92"
+                                >
+                                  <span>
+                                    Chart Layer
+                                  </span>
+                                </legend>
+                              </fieldset>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="MuiBox-root MuiBox-root-93 makeStyles-formSection-72"
+                      >
+                        <div
+                          class="makeStyles-container-94"
+                        >
+                          <mock-typography
+                            classname="makeStyles-label-95"
+                            variant="body2"
+                          >
+                            Date Range
+                          </mock-typography>
+                          <div
+                            class="makeStyles-dateFieldsRow-97"
+                            style="flex-direction: row;"
+                          >
+                            <div
+                              class="makeStyles-dateField-98"
+                            >
+                              <mock-typography
+                                classname="makeStyles-fieldLabel-96"
+                                variant="body2"
+                              >
+                                Start
+                              </mock-typography>
+                              <div
+                                class="react-datepicker-wrapper"
+                              >
+                                <div
+                                  class="react-datepicker__input-container"
+                                >
+                                  <div
+                                    class="MuiInputBase-root MuiInput-root MuiInput-underline makeStyles-chartPanelParamText-99"
+                                  >
+                                    <input
+                                      class="MuiInputBase-input MuiInput-input"
+                                      type="text"
+                                      value="Jan 1, 2025"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div
+                              class="makeStyles-dateField-98"
+                            >
+                              <mock-typography
+                                classname="makeStyles-fieldLabel-96"
+                                variant="body2"
+                              >
+                                End
+                              </mock-typography>
+                              <div
+                                class="react-datepicker-wrapper"
+                              >
+                                <div
+                                  class="react-datepicker__input-container"
+                                >
+                                  <div
+                                    class="MuiInputBase-root MuiInput-root MuiInput-underline makeStyles-chartPanelParamText-99"
+                                  >
+                                    <input
+                                      class="MuiInputBase-input MuiInput-input"
+                                      type="text"
+                                      value="Apr 1, 2025"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="MuiBox-root MuiBox-root-180 makeStyles-rerunRow-73"
+                        >
+                          <mock-button
+                            classname="makeStyles-rerunButton-74"
+                            color="primary"
+                            disabled="false"
+                            variant="outlined"
+                          >
+                            Rerun Chart
+                          </mock-button>
+                        </div>
+                      </div>
+                      <div
+                        class="MuiBox-root MuiBox-root-107 makeStyles-previewSection-75"
+                      >
+                        <div
+                          class="MuiBox-root MuiBox-root-108 makeStyles-smallEmptyState-83"
+                        >
+                          <mock-typography
+                            color="textSecondary"
+                            variant="body2"
+                          >
+                            Configure parameters to see chart preview
+                          </mock-typography>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="MuiBox-root MuiBox-root-125 makeStyles-grayCard-109"
+                  >
+                    <mock-typography
+                      classname="makeStyles-blockTitle-114"
+                      variant="h3"
+                    >
+                      Table Block
+                       #
+                      3
+                    </mock-typography>
+                    <div
+                      class="MuiBox-root MuiBox-root-126 makeStyles-formContainer-115"
+                    >
+                      <div
+                        class="MuiBox-root MuiBox-root-127 makeStyles-formSection-116"
+                      >
+                        <div
+                          class="makeStyles-container-128"
+                        >
+                          <div
+                            class="MuiFormControl-root makeStyles-dropdown-129"
+                          >
+                            <mock-textfield
+                              classes="[object Object]"
+                              disabled="false"
+                              inputlabelprops="[object Object]"
+                              inputprops="[object Object]"
+                              label="Hazard Layer"
+                              select="true"
+                              value="spi_blended_2m"
+                              variant="outlined"
+                            >
+                              <mock-menuitem
+                                disabled="true"
+                                value="placeholder"
+                              >
+                                Choose hazard layer
+                              </mock-menuitem>
+                              <li
+                                class="MuiListSubheader-root MuiListSubheader-sticky MuiListSubheader-gutters"
+                              >
+                                <mock-typography
+                                  color="primary"
+                                  variant="body2"
+                                >
+                                  INAM Rainfall Data
+                                </mock-typography>
+                              </li>
+                              <mock-menuitem
+                                value="precip_blended_dekad"
+                              >
+                                Blended rainfall aggregate (10-day)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="precip_blended_1m"
+                              >
+                                Blended rainfall aggregate (1-month)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="precip_blended_2m"
+                              >
+                                Blended rainfall aggregate (2-month)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="precip_blended_3m"
+                              >
+                                Blended rainfall aggregate (3-month)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="precip_blended_4m"
+                              >
+                                Blended rainfall aggregate (4-month)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="precip_blended_5m"
+                              >
+                                Blended rainfall aggregate (5-month)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="precip_blended_6m"
+                              >
+                                Blended rainfall aggregate (6-month)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="precip_blended_7m"
+                              >
+                                Blended rainfall aggregate (7-month)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="precip_blended_8m"
+                              >
+                                Blended rainfall aggregate (8-month)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="precip_blended_9m"
+                              >
+                                Blended rainfall aggregate (9-month)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="precip_blended_1y"
+                              >
+                                Blended rainfall aggregate (1-year)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="precip_blended_dekad_anomaly"
+                              >
+                                Blended rainfall anomaly (10-day)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="precip_blended_anomaly_1m"
+                              >
+                                Blended rainfall anomaly (1-month)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="precip_blended_anomaly_2m"
+                              >
+                                Blended rainfall anomaly (2-month)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="precip_blended_anomaly_3m"
+                              >
+                                Blended rainfall anomaly (3-month)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="precip_blended_anomaly_4m"
+                              >
+                                Blended rainfall anomaly (4-month)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="precip_blended_anomaly_5m"
+                              >
+                                Blended rainfall anomaly (5-month)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="precip_blended_anomaly_6m"
+                              >
+                                Blended rainfall anomaly (6-month)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="precip_blended_anomaly_7m"
+                              >
+                                Blended rainfall anomaly (7-month)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="precip_blended_anomaly_8m"
+                              >
+                                Blended rainfall anomaly (8-month)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="precip_blended_anomaly_9m"
+                              >
+                                Blended rainfall anomaly (9-month)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="precip_blended_anomaly_1y"
+                              >
+                                Blended rainfall anomaly (1-year)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="spi_blended_1m"
+                              >
+                                INAM SPI - 1-month
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="spi_blended_2m"
+                              >
+                                INAM SPI - 2-month
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="spi_blended_3m"
+                              >
+                                INAM SPI - 3-month
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="spi_blended_6m"
+                              >
+                                INAM SPI - 6-month
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="spi_blended_9m"
+                              >
+                                INAM SPI - 9-month
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="spi_blended_1y"
+                              >
+                                INAM SPI - 1-year
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="spi_blended_2y"
+                              >
+                                INAM SPI - 2-year
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="spi_blended_3y"
+                              >
+                                INAM SPI - 3-year
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="spi_blended_5y"
+                              >
+                                INAM SPI - 5-year
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <li
+                                class="MuiListSubheader-root MuiListSubheader-sticky MuiListSubheader-gutters"
+                              >
+                                <mock-typography
+                                  color="primary"
+                                  variant="body2"
+                                >
+                                  Forecasts
+                                </mock-typography>
+                              </li>
+                              <mock-menuitem
+                                value="daily_rainfall_forecast"
+                              >
+                                Rolling daily rainfall forecast
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="dekad_rainfall_forecast"
+                              >
+                                10-day rainfall forecast
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="dekad_rainfall_anomaly_forecast"
+                              >
+                                10-day rainfall forecast anomaly
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <li
+                                class="MuiListSubheader-root MuiListSubheader-sticky MuiListSubheader-gutters"
+                              >
+                                <mock-typography
+                                  color="primary"
+                                  variant="body2"
+                                >
+                                  Global Rainfall Products
+                                </mock-typography>
+                              </li>
+                              <mock-menuitem
+                                value="rainfall_daily"
+                              >
+                                CHIRPS daily rainfall estimate (mm)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="rainfall_dekad"
+                              >
+                                CHIRPS 10-day rainfall estimate (mm)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="rainfall_agg_1month"
+                              >
+                                CHIRPS 1-month rainfall aggregate
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="rainfall_agg_3month"
+                              >
+                                CHIRPS 3-month rainfall aggregate (mm)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="rainfall_agg_6month"
+                              >
+                                CHIRPS 6-month rainfall aggregate (mm)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="rainfall_agg_9month"
+                              >
+                                CHIRPS 9-month rainfall aggregate (mm)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="rainfall_agg_1year"
+                              >
+                                CHIRPS 1-year rainfall aggregate (mm)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="rain_anomaly_dekad"
+                              >
+                                CHIRPS 10-day rainfall anomaly
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="rain_anomaly_1month"
+                              >
+                                CHIRPS 1-month rainfall anomaly
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="rain_anomaly_3month"
+                              >
+                                CHIRPS 3-month rainfall anomaly
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="rain_anomaly_6month"
+                              >
+                                CHIRPS 6-month rainfall anomaly
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="rain_anomaly_9month"
+                              >
+                                CHIRPS 9-month rainfall anomaly
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="rain_anomaly_1year"
+                              >
+                                CHIRPS 1-year rainfall anomaly
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="spi_1m"
+                              >
+                                SPI - 1-month
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="spi_2m"
+                              >
+                                SPI - 2-month
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="spi_3m"
+                              >
+                                SPI - 3-month
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="spi_6m"
+                              >
+                                SPI - 6-month
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="spi_9m"
+                              >
+                                SPI - 9-month
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="spi_1y"
+                              >
+                                SPI - 1-year
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <li
+                                class="MuiListSubheader-root MuiListSubheader-sticky MuiListSubheader-gutters"
+                              >
+                                <mock-typography
+                                  color="primary"
+                                  variant="body2"
+                                >
+                                  Dry Periods
+                                </mock-typography>
+                              </li>
+                              <mock-menuitem
+                                value="days_dry"
+                              >
+                                Days since last rain
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="streak_dry_days"
+                              >
+                                Longest dry spell
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <li
+                                class="MuiListSubheader-root MuiListSubheader-sticky MuiListSubheader-gutters"
+                              >
+                                <mock-typography
+                                  color="primary"
+                                  variant="body2"
+                                >
+                                  Extreme Rain Events
+                                </mock-typography>
+                              </li>
+                              <mock-menuitem
+                                value="days_heavy_rain"
+                              >
+                                Number of days with heavy rainfall in the last 30 days
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="days_intense_rain"
+                              >
+                                Number of days with intense rainfall in the last 30 days
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="days_extreme_rain"
+                              >
+                                Number of days with extreme rainfall in the last 30 days
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="streak_heavy_rain"
+                              >
+                                Longest consecutive heavy rainfall days
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="streak_intense_rain"
+                              >
+                                Longest consecutive intense rainfall days
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="streak_extreme_rain"
+                              >
+                                Longest consecutive extreme rainfall days
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <li
+                                class="MuiListSubheader-root MuiListSubheader-sticky MuiListSubheader-gutters"
+                              >
+                                <mock-typography
+                                  color="primary"
+                                  variant="body2"
+                                >
+                                  Vegetation Conditions
+                                </mock-typography>
+                              </li>
+                              <mock-menuitem
+                                value="ndvi_dekad"
+                              >
+                                10-day NDVI (MODIS)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="ndvi_dekad_anomaly"
+                              >
+                                10-day NDVI anomaly (MODIS)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <li
+                                class="MuiListSubheader-root MuiListSubheader-sticky MuiListSubheader-gutters"
+                              >
+                                <mock-typography
+                                  color="primary"
+                                  variant="body2"
+                                >
+                                  INAM Air Temperature
+                                </mock-typography>
+                              </li>
+                              <mock-menuitem
+                                value="lst_daytime_blended"
+                              >
+                                INAM mean maximum air temperature (10-day)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="lst_day_anomaly_blended"
+                              >
+                                INAM mean maximum air temperature anomaly (10-day)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <li
+                                class="MuiListSubheader-root MuiListSubheader-sticky MuiListSubheader-gutters"
+                              >
+                                <mock-typography
+                                  color="primary"
+                                  variant="body2"
+                                >
+                                  Land Surface Temperature
+                                </mock-typography>
+                              </li>
+                              <mock-menuitem
+                                value="lst_daytime"
+                              >
+                                Daytime Land Surface Temperature - 10-day (MODIS)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="lst_day_anomaly"
+                              >
+                                Land Surface Temperature - 10-day Anomaly (MODIS)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="lst_amplitude"
+                              >
+                                Land Surface Temperature - 10-day Amplitude (MODIS)
+                                <mock-tooltip
+                                  title="raster"
+                                >
+                                  <img
+                                    alt="raster"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                              <li
+                                class="MuiListSubheader-root MuiListSubheader-sticky MuiListSubheader-gutters"
+                              >
+                                <mock-typography
+                                  color="primary"
+                                  variant="body2"
+                                >
+                                  Tropical Storms
+                                </mock-typography>
+                              </li>
+                              <mock-menuitem
+                                value="adamts_buffers"
+                              >
+                                Tropical Storms - Wind buffers
+                                <mock-tooltip
+                                  title="polygon"
+                                >
+                                  <img
+                                    alt="polygon"
+                                    src="test-file-stub"
+                                    style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
+                                  />
+                                </mock-tooltip>
+                              </mock-menuitem>
+                            </mock-textfield>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="MuiBox-root MuiBox-root-134 makeStyles-formSection-116"
+                      >
+                        <div
+                          class="makeStyles-container-135"
+                        >
+                          <div
+                            class="MuiFormControl-root makeStyles-dropdown-136"
+                          >
+                            <mock-textfield
+                              classes="[object Object]"
+                              disabled="false"
+                              inputlabelprops="[object Object]"
+                              inputprops="[object Object]"
+                              label="Baseline Layer"
+                              select="true"
+                              value="admin1_boundaries"
+                              variant="outlined"
+                            >
+                              <mock-menuitem
+                                disabled="true"
+                                value="placeholder"
+                              >
+                                Choose baseline layer
+                              </mock-menuitem>
+                              <li
+                                class="MuiListSubheader-root MuiListSubheader-sticky MuiListSubheader-gutters"
+                              >
+                                <mock-typography
+                                  color="primary"
+                                  variant="body2"
+                                >
+                                  Admin Levels
+                                </mock-typography>
+                              </li>
+                              <mock-menuitem
+                                value="admin_boundaries"
+                              >
+                                Level 3
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="admin2_boundaries"
+                              >
+                                Level 2
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="admin1_boundaries"
+                              >
+                                Level 1
+                              </mock-menuitem>
+                              <li
+                                class="MuiListSubheader-root MuiListSubheader-sticky MuiListSubheader-gutters"
+                              >
+                                <mock-typography
+                                  color="primary"
+                                  variant="body2"
+                                >
+                                  Poverty
+                                </mock-typography>
+                              </li>
+                              <mock-menuitem
+                                value="mpi"
+                              >
+                                Multidimensional Poverty Index
+                              </mock-menuitem>
+                              <li
+                                class="MuiListSubheader-root MuiListSubheader-sticky MuiListSubheader-gutters"
+                              >
+                                <mock-typography
+                                  color="primary"
+                                  variant="body2"
+                                >
+                                  Food Insecurity
+                                </mock-typography>
+                              </li>
+                              <mock-menuitem
+                                value="ipc_phase_projection_2024_2025_v2"
+                              >
+                                IPC Phase Classification Projection October 2024 to March 2025
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="ipc_phase_2024"
+                              >
+                                IPC Phase Classification April to September 2024
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="ipc_phase_2023"
+                              >
+                                IPC Phase Classification 2023
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="ipc_phase_2022"
+                              >
+                                IPC Phase Classification 2022
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="ipc_pop_ph3_2023"
+                              >
+                                Number of people in IPC Phase 3+ (2023)
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="ipc_pop_ph3_2022"
+                              >
+                                Number of people in IPC Phase 3+ (2022)
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="ipc_pop_ph4_2023"
+                              >
+                                Number of people in IPC Phase 4 (2023)
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="ipc_pop_ph4_2022"
+                              >
+                                Number of people in IPC Phase 4 (2022)
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="ipc_perc_ph3_2023"
+                              >
+                                Percent of people in IPC Phase 3+ (2023)
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="ipc_perc_ph3_2022"
+                              >
+                                Percent of people in IPC Phase 3+ (2022)
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="ipc_perc_ph4_2023"
+                              >
+                                Percent of people in IPC Phase 4 (2023)
+                              </mock-menuitem>
+                              <mock-menuitem
+                                value="ipc_perc_ph4_2022"
+                              >
+                                Percent of people in IPC Phase 4 (2022)
+                              </mock-menuitem>
+                              <li
+                                class="MuiListSubheader-root MuiListSubheader-sticky MuiListSubheader-gutters"
+                              >
+                                <mock-typography
+                                  color="primary"
+                                  variant="body2"
+                                >
+                                  Population
+                                </mock-typography>
+                              </li>
+                              <mock-menuitem
+                                value="pop_proj_2025"
+                              >
+                                Population projection 2025
+                              </mock-menuitem>
+                            </mock-textfield>
+                          </div>
+                        </div>
+                        <div
+                          class="MuiBox-root MuiBox-root-137 makeStyles-statisticThresholdRow-117"
+                        >
+                          <div
+                            class="makeStyles-container-138"
+                          >
+                            <mock-typography
+                              classname="makeStyles-colorBlack-139"
+                              variant="body2"
+                            >
+                              Statistic
+                            </mock-typography>
+                            <div
+                              class="MuiFormControl-root"
+                            >
+                              <div
+                                class="MuiFormGroup-root"
+                                role="radiogroup"
+                              >
+                                <label
+                                  class="MuiFormControlLabel-root"
+                                >
+                                  <mock-radio
+                                    classes="[object Object]"
+                                    color="default"
+                                    disabled="false"
+                                    size="small"
+                                    value="max"
+                                  />
+                                  <mock-typography
+                                    classname="MuiFormControlLabel-label"
+                                    component="span"
+                                  >
+                                    <mock-typography
+                                      classname="makeStyles-analysisPanelParamText-140"
+                                    >
+                                      Max
+                                    </mock-typography>
+                                  </mock-typography>
+                                </label>
+                                <label
+                                  class="MuiFormControlLabel-root"
+                                >
+                                  <mock-radio
+                                    classes="[object Object]"
+                                    color="default"
+                                    disabled="false"
+                                    size="small"
+                                    value="mean"
+                                  />
+                                  <mock-typography
+                                    classname="MuiFormControlLabel-label"
+                                    component="span"
+                                  >
+                                    <mock-typography
+                                      classname="makeStyles-analysisPanelParamText-140"
+                                    >
+                                      Mean
+                                    </mock-typography>
+                                  </mock-typography>
+                                </label>
+                                <label
+                                  class="MuiFormControlLabel-root"
+                                >
+                                  <mock-radio
+                                    classes="[object Object]"
+                                    color="default"
+                                    disabled="false"
+                                    size="small"
+                                    value="median"
+                                  />
+                                  <mock-typography
+                                    classname="MuiFormControlLabel-label"
+                                    component="span"
+                                  >
+                                    <mock-typography
+                                      classname="makeStyles-analysisPanelParamText-140"
+                                    >
+                                      Median
+                                    </mock-typography>
+                                  </mock-typography>
+                                </label>
+                                <label
+                                  class="MuiFormControlLabel-root"
+                                >
+                                  <mock-radio
+                                    classes="[object Object]"
+                                    color="default"
+                                    disabled="false"
+                                    size="small"
+                                    value="min"
+                                  />
+                                  <mock-typography
+                                    classname="MuiFormControlLabel-label"
+                                    component="span"
+                                  >
+                                    <mock-typography
+                                      classname="makeStyles-analysisPanelParamText-140"
+                                    >
+                                      Min
+                                    </mock-typography>
+                                  </mock-typography>
+                                </label>
+                                <label
+                                  class="MuiFormControlLabel-root"
+                                >
+                                  <mock-radio
+                                    classes="[object Object]"
+                                    color="default"
+                                    disabled="false"
+                                    size="small"
+                                    value="intersect_percentage"
+                                  />
+                                  <mock-typography
+                                    classname="MuiFormControlLabel-label"
+                                    component="span"
+                                  >
+                                    <mock-typography
+                                      classname="makeStyles-analysisPanelParamText-140"
+                                    >
+                                      Area exposed
+                                    </mock-typography>
+                                  </mock-typography>
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="makeStyles-container-146"
+                          >
+                            <mock-typography
+                              classname="makeStyles-colorBlack-147"
+                              variant="body2"
+                            >
+                              Threshold
+                            </mock-typography>
+                            <div
+                              class="makeStyles-rowInputContainer-148"
+                            >
+                              <mock-textfield
+                                classname="makeStyles-numberField-149"
+                                disabled="false"
+                                error="false"
+                                helpertext=""
+                                id="outlined-number-low"
+                                label="Below"
+                                type="number"
+                                value=""
+                                variant="outlined"
+                              />
+                              <mock-textfield
+                                classes="[object Object]"
+                                disabled="false"
+                                id="outlined-number-high"
+                                label="Above"
+                                type="number"
+                                value=""
+                                variant="outlined"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="MuiBox-root MuiBox-root-150 makeStyles-dateAnalysisRow-118"
+                        >
+                          <div
+                            class="makeStyles-datePickerContainer-151"
+                          >
+                            <mock-typography
+                              classname="makeStyles-colorBlack-152"
+                              variant="body2"
+                            >
+                              Date: 
+                            </mock-typography>
+                            <div
+                              class="react-datepicker-wrapper"
+                            >
+                              <div
+                                class="react-datepicker__input-container"
+                              >
+                                <div
+                                  class="MuiInputBase-root MuiInput-root makeStyles-analysisPanelParamText-153 MuiInputBase-adornedEnd"
+                                >
+                                  <input
+                                    class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd"
+                                    type="text"
+                                    value=""
+                                  />
+                                  <div
+                                    class="MuiInputAdornment-root MuiInputAdornment-positionEnd"
+                                  >
+                                    <svg
+                                      aria-hidden="true"
+                                      class="MuiSvgIcon-root"
+                                      focusable="false"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        d="M19 4h-1V3c0-.55-.45-1-1-1s-1 .45-1 1v1H8V3c0-.55-.45-1-1-1s-1 .45-1 1v1H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 15c0 .55-.45 1-1 1H6c-.55 0-1-.45-1-1V9h14v10zM7 11h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"
+                                      />
+                                    </svg>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <mock-button
+                            classname="makeStyles-rerunButton-119"
+                            color="primary"
+                            variant="outlined"
+                          >
+                            Rerun Analysis
+                          </mock-button>
+                        </div>
+                      </div>
+                      <div
+                        class="MuiBox-root MuiBox-root-155 makeStyles-previewSection-120"
+                      >
+                        <mock-typography
+                          color="textSecondary"
+                          variant="body2"
+                        >
+                          Configure analysis parameters to see data
+                        </mock-typography>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1092,16 +2821,16 @@ exports[`renders as expected 1`] = `
         </div>
       </div>
       <div
-        class="MuiBox-root MuiBox-root-112 makeStyles-configContainer-104"
+        class="MuiBox-root MuiBox-root-164 makeStyles-configContainer-156"
       >
         <div>
           <div
-            class="MuiBox-root MuiBox-root-113 makeStyles-title-105"
+            class="MuiBox-root MuiBox-root-165 makeStyles-title-157"
           >
             Export Options
           </div>
           <button
-            class="MuiButtonBase-root MuiIconButton-root makeStyles-closeButton-106"
+            class="MuiButtonBase-root MuiIconButton-root makeStyles-closeButton-158"
             tabindex="0"
             type="button"
           >
@@ -1126,7 +2855,7 @@ exports[`renders as expected 1`] = `
         </div>
         <div>
           <div
-            class="makeStyles-collapsibleWrapper-109 makeStyles-collapsibleWrapperExpanded-110"
+            class="makeStyles-collapsibleWrapper-161 makeStyles-collapsibleWrapperExpanded-162"
           >
             <mock-switch
               checked="true"
@@ -1153,31 +2882,31 @@ exports[`renders as expected 1`] = `
                 class="MuiCollapse-wrapperInner"
               >
                 <div
-                  class="MuiBox-root MuiBox-root-114"
+                  class="MuiBox-root MuiBox-root-166"
                 >
                   <div
-                    class="MuiBox-root MuiBox-root-115"
+                    class="MuiBox-root MuiBox-root-167"
                   >
                     <div
-                      class="MuiBox-root MuiBox-root-116"
+                      class="MuiBox-root MuiBox-root-168"
                       style="display: flex; flex-direction: row; justify-content: space-between;"
                     >
                       <div
-                        class="makeStyles-wrapper-117"
+                        class="makeStyles-wrapper-169"
                       >
                         <h4
-                          class="MuiBox-root MuiBox-root-120"
+                          class="MuiBox-root MuiBox-root-172"
                           style="margin-right: 0.5rem; color: black;"
                         >
                           Position
                         </h4>
                         <div
-                          class="MuiToggleButtonGroup-root makeStyles-buttonGroup-118"
+                          class="MuiToggleButtonGroup-root makeStyles-buttonGroup-170"
                           role="group"
                         >
                           <button
                             aria-pressed="true"
-                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-119 Mui-selected"
+                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-171 Mui-selected"
                             tabindex="0"
                             type="button"
                             value="0"
@@ -1197,7 +2926,7 @@ exports[`renders as expected 1`] = `
                           </button>
                           <button
                             aria-pressed="false"
-                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-119"
+                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-171"
                             tabindex="0"
                             type="button"
                             value="1"
@@ -1221,22 +2950,22 @@ exports[`renders as expected 1`] = `
                         style="opacity: 1; pointer-events: auto;"
                       >
                         <div
-                          class="makeStyles-wrapper-117"
+                          class="makeStyles-wrapper-169"
                         >
                           <h4
-                            class="MuiBox-root MuiBox-root-121"
+                            class="MuiBox-root MuiBox-root-173"
                             style="text-align: end; margin-right: 0.5rem; color: black;"
                           >
                             Size
                           </h4>
                           <div
-                            class="MuiToggleButtonGroup-root makeStyles-buttonGroup-118"
+                            class="MuiToggleButtonGroup-root makeStyles-buttonGroup-170"
                             role="group"
                             style="justify-content: end;"
                           >
                             <button
                               aria-pressed="false"
-                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-119"
+                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-171"
                               tabindex="0"
                               type="button"
                               value="0.5"
@@ -1256,7 +2985,7 @@ exports[`renders as expected 1`] = `
                             </button>
                             <button
                               aria-pressed="true"
-                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-119 Mui-selected"
+                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-171 Mui-selected"
                               tabindex="0"
                               type="button"
                               value="1"
@@ -1276,7 +3005,7 @@ exports[`renders as expected 1`] = `
                             </button>
                             <button
                               aria-pressed="false"
-                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-119"
+                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-171"
                               tabindex="0"
                               type="button"
                               value="1.5"
@@ -1306,7 +3035,7 @@ exports[`renders as expected 1`] = `
         </div>
         <div>
           <div
-            class="makeStyles-collapsibleWrapper-109 "
+            class="makeStyles-collapsibleWrapper-161 "
           >
             <mock-switch
               checked="true"
@@ -1337,7 +3066,7 @@ exports[`renders as expected 1`] = `
         </div>
         <div>
           <div
-            class="makeStyles-collapsibleWrapper-109 "
+            class="makeStyles-collapsibleWrapper-161 "
           >
             <mock-switch
               checked="false"
@@ -1364,7 +3093,7 @@ exports[`renders as expected 1`] = `
                 class="MuiCollapse-wrapperInner"
               >
                 <div
-                  class="MuiBox-root MuiBox-root-122 makeStyles-optionWrap-107"
+                  class="MuiBox-root MuiBox-root-174 makeStyles-optionWrap-159"
                 >
                   <mock-circularprogress
                     color="inherit"
@@ -1378,7 +3107,7 @@ exports[`renders as expected 1`] = `
         </div>
         <div>
           <div
-            class="makeStyles-collapsibleWrapper-109 makeStyles-collapsibleWrapperExpanded-110"
+            class="makeStyles-collapsibleWrapper-161 makeStyles-collapsibleWrapperExpanded-162"
           >
             <mock-switch
               checked="true"
@@ -1405,27 +3134,27 @@ exports[`renders as expected 1`] = `
                 class="MuiCollapse-wrapperInner"
               >
                 <div
-                  class="MuiBox-root MuiBox-root-123"
+                  class="MuiBox-root MuiBox-root-175"
                 >
                   <div
-                    class="MuiBox-root MuiBox-root-124"
+                    class="MuiBox-root MuiBox-root-176"
                   >
                     <div
-                      class="makeStyles-wrapper-117"
+                      class="makeStyles-wrapper-169"
                     >
                       <h4
-                        class="MuiBox-root MuiBox-root-125"
+                        class="MuiBox-root MuiBox-root-177"
                         style="margin-right: 0.5rem; color: black;"
                       >
                         Position
                       </h4>
                       <div
-                        class="MuiToggleButtonGroup-root makeStyles-buttonGroup-118"
+                        class="MuiToggleButtonGroup-root makeStyles-buttonGroup-170"
                         role="group"
                       >
                         <button
                           aria-pressed="false"
-                          class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-119"
+                          class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-171"
                           tabindex="0"
                           type="button"
                           value="0"
@@ -1445,7 +3174,7 @@ exports[`renders as expected 1`] = `
                         </button>
                         <button
                           aria-pressed="true"
-                          class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-119 Mui-selected"
+                          class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-171 Mui-selected"
                           tabindex="0"
                           type="button"
                           value="1"
@@ -1470,27 +3199,27 @@ exports[`renders as expected 1`] = `
                     style="background: rgb(255, 255, 255);"
                   />
                   <div
-                    class="MuiBox-root MuiBox-root-126"
+                    class="MuiBox-root MuiBox-root-178"
                   >
                     <div
                       style="opacity: 1; pointer-events: auto;"
                     >
                       <div
-                        class="makeStyles-wrapper-117"
+                        class="makeStyles-wrapper-169"
                       >
                         <h4
-                          class="MuiBox-root MuiBox-root-127"
+                          class="MuiBox-root MuiBox-root-179"
                           style="margin-right: 0.5rem; color: black;"
                         >
                           Size
                         </h4>
                         <div
-                          class="MuiToggleButtonGroup-root makeStyles-buttonGroup-118"
+                          class="MuiToggleButtonGroup-root makeStyles-buttonGroup-170"
                           role="group"
                         >
                           <button
                             aria-pressed="false"
-                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-119"
+                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-171"
                             tabindex="0"
                             type="button"
                             value="0.5"
@@ -1508,7 +3237,7 @@ exports[`renders as expected 1`] = `
                           </button>
                           <button
                             aria-pressed="false"
-                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-119"
+                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-171"
                             tabindex="0"
                             type="button"
                             value="0.4"
@@ -1526,7 +3255,7 @@ exports[`renders as expected 1`] = `
                           </button>
                           <button
                             aria-pressed="false"
-                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-119"
+                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-171"
                             tabindex="0"
                             type="button"
                             value="0.3"
@@ -1544,7 +3273,7 @@ exports[`renders as expected 1`] = `
                           </button>
                           <button
                             aria-pressed="false"
-                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-119"
+                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-171"
                             tabindex="0"
                             type="button"
                             value="0.2"
@@ -1562,7 +3291,7 @@ exports[`renders as expected 1`] = `
                           </button>
                           <button
                             aria-pressed="false"
-                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-119"
+                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-171"
                             tabindex="0"
                             type="button"
                             value="0.1"
@@ -1580,7 +3309,7 @@ exports[`renders as expected 1`] = `
                           </button>
                           <button
                             aria-pressed="true"
-                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-119 Mui-selected"
+                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-171 Mui-selected"
                             tabindex="0"
                             type="button"
                             value="0"
@@ -1606,7 +3335,7 @@ exports[`renders as expected 1`] = `
           </div>
         </div>
         <mock-button
-          classname="makeStyles-gutter-108"
+          classname="makeStyles-gutter-160"
           color="primary"
           disabled="false"
           endicon="[object Object]"
