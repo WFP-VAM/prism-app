@@ -782,7 +782,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       sevDs?.label || t('Severe threshold'),
     ];
 
-    const cell = (v: any) =>
+    const cell = (v: number | null | undefined) =>
       v === null || v === undefined || Number.isNaN(Number(v)) ? '-' : v;
 
     const rows = (hd.labels as string[]).map((label, i) => [
