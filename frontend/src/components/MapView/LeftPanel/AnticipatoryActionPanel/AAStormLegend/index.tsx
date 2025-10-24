@@ -119,7 +119,7 @@ function AAStormLegend() {
     {
       isVisible: !!stormData.activeDistricts?.Severe?.polygon,
       color: '#E63701',
-      label: '118 km/h impact zone',
+      label: '119 km/h impact zone',
     },
   ];
 
@@ -228,7 +228,7 @@ function AAStormLegend() {
             className={classes.districtBox}
             style={{ border: '2px solid black' }}
           />
-          <Typography>{t('Pilot district')}</Typography>
+          <Typography>{t('Monitored district')}</Typography>
         </div>
       </div>
     </div>
