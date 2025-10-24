@@ -30,6 +30,7 @@ import {
   CHART_WIDTH,
   ForecastWindowPerCountry,
   TABLE_WIDTH,
+  AAFloodColors,
 } from '../constants';
 
 const forecastWindow = ForecastWindowPerCountry.mozambique;
@@ -82,7 +83,7 @@ const useStyles = makeStyles(() =>
       fontSize: '12px',
       color: '#000',
       textTransform: 'none',
-      background: '#F1F1F1',
+      background: AAFloodColors.riskLevels.noData,
       minWidth: '150px',
     },
     selectedTab: {
@@ -200,7 +201,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       (_v, mIdx) => ({
         label: `Member ${mIdx + 1}`,
         data: forecast.map(fp => fp.ensemble_members[mIdx] ?? 0),
-        borderColor: 'rgba(0, 0, 0, 0.18)',
+        borderColor: AAFloodColors.chart.ensemble.border,
         backgroundColor: 'transparent',
         borderWidth: 1,
         pointRadius: 0,
@@ -227,7 +228,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         {
           label: t('Ensemble Mean'),
           data: meanSeries,
-          borderColor: '#212121',
+          borderColor: AAFloodColors.chart.ensemble.mean,
           backgroundColor: 'transparent',
           borderWidth: 2,
           pointRadius: 0,
@@ -238,7 +239,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         {
           label: `${t('Bankfull threshold')}`,
           data: Array.from({ length: labels.length }, () => thresholdBankfull),
-          borderColor: '#FFCC00',
+          borderColor: AAFloodColors.chart.bankfull.solid,
           backgroundColor: 'transparent',
           borderWidth: 2,
           borderDash: [6, 6],
@@ -248,7 +249,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         {
           label: `${t('Moderate threshold')}`,
           data: Array.from({ length: labels.length }, () => thresholdModerate),
-          borderColor: '#FF8C21',
+          borderColor: AAFloodColors.chart.moderate.solid,
           backgroundColor: 'transparent',
           borderWidth: 2,
           borderDash: [6, 6],
@@ -258,7 +259,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         {
           label: `${t('Severe threshold')}`,
           data: Array.from({ length: labels.length }, () => thresholdSevere),
-          borderColor: '#EF5350',
+          borderColor: AAFloodColors.chart.severe.solid,
           backgroundColor: 'transparent',
           borderWidth: 2,
           borderDash: [6, 6],
@@ -411,8 +412,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         {
           label: t('Bankfull'),
           data: bankfullSeries,
-          borderColor: 'rgba(255, 204, 0, 0.4)',
-          backgroundColor: 'rgba(255, 204, 0, 0.4)',
+          borderColor: AAFloodColors.chart.bankfull.transparent,
+          backgroundColor: AAFloodColors.chart.bankfull.transparent,
           borderWidth: 2,
           showLine: false,
           pointRadius: 3,
@@ -423,8 +424,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         {
           label: t('Moderate'),
           data: moderateSeries,
-          borderColor: 'rgba(255, 140, 33, 0.4)',
-          backgroundColor: 'rgba(255, 140, 33, 0.4)',
+          borderColor: AAFloodColors.chart.moderate.transparent,
+          backgroundColor: AAFloodColors.chart.moderate.transparent,
           borderWidth: 2,
           showLine: false,
           pointRadius: 3,
@@ -435,8 +436,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         {
           label: t('Severe'),
           data: severeSeries,
-          borderColor: 'rgba(230, 55, 1, 0.4)',
-          backgroundColor: 'rgba(230, 55, 1, 0.4)',
+          borderColor: AAFloodColors.chart.severe.transparent,
+          backgroundColor: AAFloodColors.chart.severe.transparent,
           borderWidth: 2,
           showLine: false,
           pointRadius: 3,
@@ -448,7 +449,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         {
           label: t('Bankfull mean (window)'),
           data: flatWindowSeries(bankfullMean),
-          borderColor: 'rgba(255, 204, 0, 1)',
+          borderColor: AAFloodColors.chart.bankfull.solid,
           backgroundColor: 'transparent',
           borderWidth: 2,
           pointRadius: 0,
@@ -459,7 +460,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         {
           label: t('Moderate mean (window)'),
           data: flatWindowSeries(moderateMean),
-          borderColor: 'rgba(255, 140, 33, 1)',
+          borderColor: AAFloodColors.chart.moderate.solid,
           backgroundColor: 'transparent',
           borderWidth: 2,
           pointRadius: 0,
@@ -470,7 +471,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         {
           label: t('Severe mean (window)'),
           data: flatWindowSeries(severeMean),
-          borderColor: 'rgba(230, 55, 1, 1)',
+          borderColor: AAFloodColors.chart.severe.solid,
           backgroundColor: 'transparent',
           borderWidth: 2,
           pointRadius: 0,
@@ -602,7 +603,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
               mode: 'vertical',
               scaleID: 'x-axis-0',
               value: windowBeginLabel,
-              borderColor: '#2196F3',
+              borderColor: AAFloodColors.annotation.forecastStart,
               borderDash: [4, 4],
               borderWidth: 1,
               label: {
@@ -612,7 +613,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                   day: forecastWindow.start,
                 }),
                 backgroundColor: 'rgba(0,0,0,0)',
-                fontColor: '#2196F3',
+                fontColor: AAFloodColors.annotation.forecastStart,
                 xAdjust: -50,
               },
             },
@@ -625,7 +626,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
               mode: 'vertical',
               scaleID: 'x-axis-0',
               value: windowEndLabel,
-              borderColor: '#9C27B0',
+              borderColor: AAFloodColors.annotation.forecastEnd,
               borderDash: [4, 4],
               borderWidth: 1,
               label: {
@@ -633,7 +634,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                 position: 'top',
                 content: t('{{day}}-day forecast', { day: forecastWindow.end }),
                 backgroundColor: 'rgba(0,0,0,0)',
-                fontColor: '#9C27B0',
+                fontColor: AAFloodColors.annotation.forecastEnd,
                 xAdjust: -50,
               },
             },
