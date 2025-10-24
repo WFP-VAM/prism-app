@@ -759,28 +759,32 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     if (!hd?.datasets?.length || !fc.length) {
       return null;
     }
-
-    const [meanDs, bankDs, modDs, sevDs] = hd.datasets;
-
-    const mins = fc.map(p =>
+    const [
+      ensembleMean,
+      bankfullThreshold,
+      moderateThreshold,
+      severeThreshold,
+    ] = hd.datasets;
+    // get minimum and maximum ensemble member values
+    const ensembleMin = fc.map(p =>
       p?.ensemble_members?.length
         ? Math.round(Math.min(...p.ensemble_members) * 100) / 100
         : null,
     );
-    const maxs = fc.map(p =>
+    const ensembleMax = fc.map(p =>
       p?.ensemble_members?.length
         ? Math.round(Math.max(...p.ensemble_members) * 100) / 100
         : null,
     );
-
+    // create hydrograph table
     const columns = [
       t('Day'),
-      meanDs?.label || t('Ensemble Mean'),
+      ensembleMean?.label || t('Ensemble Mean'),
       t('Min'),
       t('Max'),
-      bankDs?.label || t('Bankfull threshold'),
-      modDs?.label || t('Moderate threshold'),
-      sevDs?.label || t('Severe threshold'),
+      bankfullThreshold?.label || t('Bankfull threshold'),
+      moderateThreshold?.label || t('Moderate threshold'),
+      severeThreshold?.label || t('Severe threshold'),
     ];
 
     const cell = (v: number | null | undefined) =>
@@ -788,12 +792,12 @@ function StationCharts({ station, onClose }: StationChartsProps) {
 
     const rows = (hd.labels as string[]).map((label, i) => [
       label ?? '',
-      cell(meanDs?.data?.[i]),
-      cell(mins[i]),
-      cell(maxs[i]),
-      cell(bankDs?.data?.[i]),
-      cell(modDs?.data?.[i]),
-      cell(sevDs?.data?.[i]),
+      cell(ensembleMean?.data?.[i]),
+      cell(ensembleMin[i]),
+      cell(ensembleMax[i]),
+      cell(bankfullThreshold?.data?.[i]),
+      cell(moderateThreshold?.data?.[i]),
+      cell(severeThreshold?.data?.[i]),
     ]);
 
     return { columnNames: columns, tableValues: rows };
