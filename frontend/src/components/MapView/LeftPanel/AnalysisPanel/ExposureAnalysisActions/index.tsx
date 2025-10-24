@@ -140,8 +140,7 @@ function ExposureAnalysisActions({
         </Button>
       )}
       <ReportDialog
-        // TODO: Remove this once the report is fixed
-        open={openReport || true}
+        open={openReport}
         handleClose={handleToggleReport(false)}
         reportConfig={reportConfig}
         tableData={tableData}
