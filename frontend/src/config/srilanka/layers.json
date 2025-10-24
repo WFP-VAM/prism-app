@@ -2071,8 +2071,5 @@
       }
     ],
     "legend_text": "Number of households"
-  },
-  "adamts_buffers": {
-    "server_layer_name": "lka_gdacs_buffers"
   }
 }

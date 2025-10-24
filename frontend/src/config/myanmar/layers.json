@@ -2391,10 +2391,6 @@
     ],
     "legend_text": "Population exposed to historical storm surges per year (MUDRA)"
   },
-  "adamts_buffers": {
-    "server_layer_name": "mmr_gdacs_buffers",
-    "content_path": "data/myanmar/contents.md#tropical-storm-wind-buffers"
-  },
   "wp_pop_cicunadj": {
     "title": "population",
     "type": "wms",
