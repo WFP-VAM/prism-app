@@ -132,6 +132,7 @@ function DashboardContent({
             baselineLayerId={element.baselineLayerId}
             threshold={element.threshold}
             stat={element.stat}
+            allowDownload={!exportConfig}
           />
         );
       case DashboardElementType.CHART:
@@ -144,6 +145,7 @@ function DashboardContent({
             wmsLayerId={element.wmsLayerId}
             adminUnitLevel={element.adminUnitLevel}
             adminUnitId={element.adminUnitId}
+            allowDownload={!exportConfig}
           />
         );
       default:
@@ -371,7 +373,7 @@ const useStyles = makeStyles(() => ({
   mapContainer: {
     background: 'white',
     borderRadius: 8,
-    padding: 12,
+    padding: 16,
     width: '100%',
     height: '100%',
     display: 'flex',
