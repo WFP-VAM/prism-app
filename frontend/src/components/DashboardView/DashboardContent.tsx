@@ -241,71 +241,7 @@ function DashboardContent({
           </Box>
         )}
       </Box>
-      {/* <Box className={classes.leadingContentArea}>
-          <div className={classes.mapsContainer}>
-            {dashboardMaps.map((_, mapIndex) => (
-              <Box
-                // eslint-disable-next-line react/no-array-index-key
-                key={`map-${mapIndex}-${refreshKey || 'default'}`}
-                className={classes.mapContainer}
-              >
-                <div style={{ flex: 1, minHeight: 0, width: '100%' }}>
-                  <MapBlock mapIndex={mapIndex} exportConfig={exportConfig} />
-                </div>
-              </Box>
-            ))}
-          </div>
-        </Box>
-
-        {dashboardFlexElements.length > 0 && (
-          <Box className={classes.trailingContentArea}>
-            {dashboardFlexElements?.map((element, index) => {
-              if (element.type === 'TEXT') {
-                const content = (element as DashboardTextConfig)?.content || '';
-                return (
-                  <TextBlock
-                    // eslint-disable-next-line react/no-array-index-key
-                    key={`text-block-${index}-${refreshKey || 'default'}`}
-                    content={content}
-                    index={index}
-                  />
-                );
-              }
-              if (element.type === 'TABLE') {
-                return (
-                  <TableBlock
-                    // eslint-disable-next-line react/no-array-index-key
-                    key={`table-block-${index}-${refreshKey || 'default'}`}
-                    index={index}
-                    startDate={element.startDate}
-                    hazardLayerId={element.hazardLayerId}
-                    baselineLayerId={element.baselineLayerId}
-                    threshold={element.threshold}
-                    stat={element.stat}
-                  />
-                );
-              }
-              if (element.type === 'CHART') {
-                const chartElement = element as DashboardChartConfig;
-                return (
-                  <ChartBlock
-                    // eslint-disable-next-line react/no-array-index-key
-                    key={`chart-block-${index}-${refreshKey || 'default'}`}
-                    index={index}
-                    startDate={chartElement.startDate}
-                    endDate={chartElement.endDate}
-                    wmsLayerId={chartElement.wmsLayerId}
-                    adminUnitLevel={chartElement.adminUnitLevel}
-                    adminUnitId={chartElement.adminUnitId}
-                  />
-                );
-              }
-              return null;
-            })}
-          </Box>
-        )} */}
     </Box>
-    // </Box>
   );
 }
 
