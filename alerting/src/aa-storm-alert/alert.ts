@@ -9,6 +9,7 @@ import { StormDataResponseBody } from 'prism-common';
 import { StormAlertData } from '../types/email';
 import { captureScreenshotFromUrl } from '../utils/capture-utils';
 import { formatDate } from '../utils/date';
+import { allDistrictsInCoastalProvince } from './districs';
 
 const args = process.argv.slice(2);
 const IS_TEST = args.some((arg) => arg.startsWith('--testEmail='));
@@ -142,21 +143,9 @@ function getActivatedDistricts(report: StormDataResponseBody): {
   activated48kt: string[];
   activated64kt: string[];
 } {
-  const watchedDistrictsFor64KtStorm = [
-    'Mogincual',
-    'Namacurra',
-    'Cidade Da Beira',
-    'Buzi',
-    'Dondo',
-    'Vilankulo',
-  ];
+  const watchedDistrictsFor64KtStorm = allDistrictsInCoastalProvince;
 
-  const watchedDistrictsFor48ktStorm = [
-    'Angoche',
-    'Maganja Da Costa',
-    'Machanga',
-    'Govuro',
-  ];
+  const watchedDistrictsFor48ktStorm = ['monitoring disabled for 48kt'];
 
   const activated64kt =
     report.ready_set_results?.exposed_area_64kt?.affected_districts.filter(
