@@ -158,7 +158,7 @@ function ChartBlock({
                   }
                   notMaintainAspectRatio
                   legendAtBottom
-                  showDownloadIcons={false}
+                  showDownloadIcons={mode === DashboardMode.PREVIEW}
                 />
               </Box>
             )}
@@ -391,6 +391,7 @@ const useStyles = makeStyles(theme => ({
     flex: 1,
     minHeight: 300,
     maxWidth: '100%',
+    position: 'relative',
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
