@@ -22,9 +22,9 @@ import { updateDateRange } from 'context/mapStateSlice';
 import { useWindStatesByTime } from 'components/MapView/DateSelector/TimelineItems/hooks';
 import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
 import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
-import anticipatoryActionIcons from 'components/Common/AnticipatoryAction/icons';
 import { AAStormTimeSeriesFeature, TimeSeries } from 'prism-common/';
 import maplibregl from 'maplibre-gl';
+import { WIND_TYPE_TO_ICON_MAP, loadStormIcons } from './constants';
 import AAStormDatePopup from './AAStormDatePopup';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
 
@@ -38,25 +38,6 @@ interface AnticipatoryActionStormLayerProps {
 
 // Use admin level 2 boundary layer
 const boundaryLayer = getBoundaryLayersByAdminLevel(2);
-
-const WIND_TYPE_TO_ICON_MAP: Record<string, string> = {
-  disturbance: anticipatoryActionIcons.disturbance,
-  'tropical-disturbance': anticipatoryActionIcons.disturbance,
-  low: anticipatoryActionIcons.disturbance,
-  'tropical-depression': anticipatoryActionIcons.tropicalDepression,
-  'post-tropical-depression': anticipatoryActionIcons.postTropicalDepression,
-  'sub-tropical-depression': anticipatoryActionIcons.subTropicalDepression,
-  'extratropical-system': anticipatoryActionIcons.extraTropicalSystem,
-  'moderate-tropical-storm': anticipatoryActionIcons.moderateStorm,
-  'severe-tropical-storm': anticipatoryActionIcons.severeTropicalStorm,
-  'tropical-cyclone': anticipatoryActionIcons.tropicalCyclone,
-  'intense-tropical-cyclone': anticipatoryActionIcons.intenseTropicalCyclone,
-  'very-intense-tropical-cyclone':
-    anticipatoryActionIcons.veryIntenseTropicalCyclone,
-  inland: anticipatoryActionIcons.inland,
-  dissipating: anticipatoryActionIcons.dissipating,
-  default: anticipatoryActionIcons.default,
-};
 
 const AnticipatoryActionStormLayer = React.memo(
   ({ layer }: AnticipatoryActionStormLayerProps) => {
@@ -257,20 +238,7 @@ const AnticipatoryActionStormLayer = React.memo(
 
     // Load all images from the mapping
     const loadImages = useCallback(() => {
-      const loadImage = (url: string, name: string) => {
-        map?.loadImage(url, (error, image) => {
-          if (error) {
-            throw error;
-          }
-          if (!map.hasImage(name)) {
-            map.addImage(name, image!);
-          }
-        });
-      };
-
-      Object.entries(WIND_TYPE_TO_ICON_MAP).forEach(([name, url]) => {
-        loadImage(url, name);
-      });
+      loadStormIcons(map, true); // Throw on error for main map
     }, [map]);
 
     useEffect(() => {
@@ -373,6 +341,14 @@ const AnticipatoryActionStormLayer = React.memo(
       }
       // Check active districts
       if (
+        StormData.activeDistricts?.Severe?.districtNames.includes(districtName)
+      ) {
+        return {
+          color: getAAColor(AACategory.Severe, 'Active', true),
+          opacity: 0.8,
+        };
+      }
+      if (
         StormData.activeDistricts?.Moderate?.districtNames.includes(
           districtName,
         )
@@ -382,15 +358,6 @@ const AnticipatoryActionStormLayer = React.memo(
           opacity: 0.8,
         };
       }
-      if (
-        StormData.activeDistricts?.Severe?.districtNames.includes(districtName)
-      ) {
-        return {
-          color: getAAColor(AACategory.Severe, 'Active', true),
-          opacity: 0.8,
-        };
-      }
-
       // Check NA districts
       const isNADistrict = [
         ...(StormData.naDistricts?.Severe?.districtNames || []),
@@ -400,7 +367,7 @@ const AnticipatoryActionStormLayer = React.memo(
       if (isNADistrict) {
         return {
           color: getAAColor(AACategory.Severe, 'na', true),
-          opacity: 0.4,
+          opacity: 0.1,
         };
       }
 

@@ -3,6 +3,7 @@ import { DateRangeType } from 'config/types';
 import { MouseEvent } from 'react';
 import { formatInUTC } from 'components/MapView/Layers/AnticipatoryActionStormLayer/utils';
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
+import { WindState } from 'prism-common';
 import {
   AADataSelector,
   loadStormReport,
@@ -43,15 +44,16 @@ function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
 
   const getButtonColor = (status: string | undefined) => {
     switch (status) {
-      case 'monitoring':
+      case WindState.monitoring:
         return '#e0e0e0';
-      case 'ready':
+      case WindState.ready:
         return '#63B2BD';
-      case 'activated_48kt':
+      case WindState.activated_48kt:
         return '#FF8934';
-      case 'activated_68kt':
+      case WindState.activated_64kt:
         return '#E63701';
       default:
+        console.warn('status not found', status);
         return '#ffff';
     }
   };
