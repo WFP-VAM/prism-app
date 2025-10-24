@@ -777,9 +777,9 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       meanDs?.label || t('Ensemble Mean'),
       t('Min'),
       t('Max'),
-      bankDs?.label || t('Bankfull'),
-      modDs?.label || t('Moderate'),
-      sevDs?.label || t('Severe'),
+      bankDs?.label || t('Bankfull threshold'),
+      modDs?.label || t('Moderate threshold'),
+      sevDs?.label || t('Severe threshold'),
     ];
 
     const cell = (v: any) =>
