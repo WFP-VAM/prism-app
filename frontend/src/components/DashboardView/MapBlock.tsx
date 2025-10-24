@@ -248,77 +248,100 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
         }
       >
         {mode === DashboardMode.EDIT && (
-          <div className={classes.leftPanel}>
-            <RootAccordionItems />
-          </div>
+          <Box className={classes.titleInputContainer}>
+            <Typography variant="h3" className={classes.titleLabel}>
+              {t('Map Title')}
+            </Typography>
+            <TextField
+              value={mapTitle || ''}
+              onChange={handleTitleChange}
+              placeholder={t('Enter map title') as string}
+              variant="outlined"
+              size="small"
+              fullWidth
+              className={classes.titleInput}
+            />
+          </Box>
         )}
-        <div
+        <Box
           className={
-            mode === DashboardMode.PREVIEW
-              ? classes.rightPanelPreview
-              : classes.rightPanel
+            mode === DashboardMode.PREVIEW ? classes.rootPreview : classes.root
           }
         >
-          {mode === DashboardMode.PREVIEW && (
-            <div className={classes.previewHeaderContainer}>
-              <BlockPreviewHeader
-                title={title || ''}
-                subtitle={formatMapDate()}
-                downloadActions={
-                  !exportConfig && (
-                    <Tooltip title={t('Download PNG') as string}>
-                      <IconButton onClick={handleDownloadMap} size="small">
-                        <ImageIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  )
-                }
-              />
+          {mode === DashboardMode.EDIT && (
+            <div className={classes.leftPanel}>
+              <RootAccordionItems />
             </div>
           )}
-          <div className={classes.mapContainer}>
-            {datesLoading && (
-              <div className={classes.loading}>
-                <CircularProgress size={100} />
+          <div
+            className={
+              mode === DashboardMode.PREVIEW
+                ? classes.rightPanelPreview
+                : classes.rightPanel
+            }
+          >
+            {mode === DashboardMode.PREVIEW && (
+              <div className={classes.previewHeaderContainer}>
+                <BlockPreviewHeader
+                  title={title || ''}
+                  subtitle={formatMapDate()}
+                  downloadActions={
+                    !exportConfig && (
+                      <Tooltip title={t('Download PNG') as string}>
+                        <IconButton onClick={handleDownloadMap} size="small">
+                          <ImageIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    )
+                  }
+                />
               </div>
             )}
-            <MapComponent
-              hideMapLabels={
-                exportConfig?.toggles?.mapLabelsVisibility === false
-              }
-            >
-              {exportConfig?.toggles?.adminAreasVisibility &&
-              exportConfig?.invertedAdminBoundaryLimitPolygon ? (
-                <Source
-                  key={`mask-${exportConfig.selectedBoundaries?.join('-') || 'all'}`}
-                  id="dashboard-mask-overlay"
-                  type="geojson"
-                  data={exportConfig.invertedAdminBoundaryLimitPolygon}
-                >
-                  <Layer
-                    id="dashboard-mask-layer-overlay"
-                    type="fill"
-                    source="dashboard-mask-overlay"
-                    layout={{}}
-                    paint={{
-                      'fill-color': '#000',
-                      'fill-opacity': 0.7,
-                    }}
-                  />
-                </Source>
-              ) : null}
-            </MapComponent>
-            {!datesLoading && <DashboardLegends exportConfig={exportConfig} />}
+            <div ref={mapContainerRef} className={classes.mapContainer}>
+              {datesLoading && (
+                <div className={classes.loading}>
+                  <CircularProgress size={100} />
+                </div>
+              )}
+              <MapComponent
+                hideMapLabels={
+                  exportConfig?.toggles?.mapLabelsVisibility === false
+                }
+              >
+                {exportConfig?.toggles?.adminAreasVisibility &&
+                exportConfig?.invertedAdminBoundaryLimitPolygon ? (
+                  <Source
+                    key={`mask-${exportConfig.selectedBoundaries?.join('-') || 'all'}`}
+                    id="dashboard-mask-overlay"
+                    type="geojson"
+                    data={exportConfig.invertedAdminBoundaryLimitPolygon}
+                  >
+                    <Layer
+                      id="dashboard-mask-layer-overlay"
+                      type="fill"
+                      source="dashboard-mask-overlay"
+                      layout={{}}
+                      paint={{
+                        'fill-color': '#000',
+                        'fill-opacity': 0.7,
+                      }}
+                    />
+                  </Source>
+                ) : null}
+              </MapComponent>
+              {!datesLoading && (
+                <DashboardLegends exportConfig={exportConfig} />
+              )}
+            </div>
+            {mode === DashboardMode.EDIT &&
+              selectedLayersWithDateSupport.length > 0 &&
+              !datesLoading && (
+                <div className={classes.dateSelectorContainer}>
+                  <DateSelector />
+                </div>
+              )}
           </div>
-          {mode === DashboardMode.EDIT &&
-            selectedLayersWithDateSupport.length > 0 &&
-            !datesLoading && (
-              <div className={classes.dateSelectorContainer}>
-                <Typography variant="h3">{t('Map date')}</Typography>
-                <DateSelector />
-              </div>
-            )}
-        </div>
+        </Box>
       </Box>
     </>
   );

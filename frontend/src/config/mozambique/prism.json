@@ -475,6 +475,7 @@
           "defaultDate": "2025-04-01",
           "mapPosition": "left",
           "minMapBounds": [31, -25, 40, -11],
+          "title": "Spring Dashboard - April 2025 Analysis",
           "preSelectedMapLayers": [
             { "layerId": "lst_day_anomaly", "opacity": 0.7 }
           ]
@@ -513,6 +514,7 @@
           "defaultDate": "2025-06-01",
           "mapPosition": "left",
           "minMapBounds": [32, -20, 38, -15],
+          "title": "Summer Dashboard - June 2025 Analysis",
           "preSelectedMapLayers": [
             { "layerId": "lst_day_anomaly", "opacity": 0.7 }
           ]
