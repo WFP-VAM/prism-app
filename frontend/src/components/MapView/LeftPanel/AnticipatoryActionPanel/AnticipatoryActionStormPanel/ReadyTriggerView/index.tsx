@@ -28,7 +28,7 @@ function ReadyTrigger() {
           <div className={classes.rowWrapper}>
             <Typography>
               {t(
-                `A system with severe tropical storm-force winds (or stronger) is expected to impact any of the 4 pilot provinces within the next five days, with a lead time of at least 72 hours.`,
+                `A system with severe tropical storm-force winds (or stronger) is expected to impact any of the coastal provinces within the next five days, with a lead time of at least 72 hours.`,
               )}
             </Typography>
           </div>

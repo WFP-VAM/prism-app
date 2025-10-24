@@ -9,22 +9,11 @@ import {
   MergedFeatures,
   ResultType,
 } from './parsedStormDataTypes';
-
-const districtNameMapping: { [key: string]: string } = {
-  Maganja_Da_Costa: 'Maganja Da Costa',
-  Cidade_Da_Beira: 'Cidade Da Beira',
-};
+import { allDistrictsInCoastalProvince } from './districs';
 
 const watchedDistricts: { [key in AACategory]: string[] } = {
-  [AACategory.Severe]: [
-    'Mogincual',
-    'Namacurra',
-    'Cidade Da Beira',
-    'Buzi',
-    'Dondo',
-    'Vilankulo',
-  ],
-  [AACategory.Moderate]: ['Angoche', 'Maganja Da Costa', 'Machanga', 'Govuro'],
+  [AACategory.Moderate]: allDistrictsInCoastalProvince,
+  [AACategory.Severe]: allDistrictsInCoastalProvince,
   [AACategory.Risk]: [],
 };
 
@@ -138,9 +127,7 @@ export function parseAndTransformAA(data: StormDataResponseBody): ResultType {
       const area = exposedAreas?.[categoryKey];
 
       // Convert affected districts into a Set for fast lookups
-      const affectedDistricts = new Set(
-        area?.affected_districts?.map(d => districtNameMapping[d] || d) || [],
-      );
+      const affectedDistricts = new Set(area?.affected_districts || []);
 
       // Retrieve the watched districts for this category
       const watched = watchedDistricts[category] || [];
