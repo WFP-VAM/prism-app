@@ -4,7 +4,6 @@ import { dashboardConfigSelector } from '../../context/dashboardStateSlice';
 import {
   DashboardTextConfig,
   DashboardChartConfig,
-  DashboardMode,
   AdminCodeString,
 } from '../../config/types';
 import { appConfig } from '../../config';
@@ -97,11 +96,7 @@ function DashboardContent({
                 className={classes.mapContainer}
               >
                 <div style={{ flex: 1, minHeight: 0, width: '100%' }}>
-                  <MapBlock
-                    mapIndex={mapIndex}
-                    mode={DashboardMode.PREVIEW}
-                    exportConfig={exportConfig}
-                  />
+                  <MapBlock mapIndex={mapIndex} exportConfig={exportConfig} />
                 </div>
               </Box>
             ))}
@@ -119,7 +114,6 @@ function DashboardContent({
                     key={`text-block-${index}-${refreshKey || 'default'}`}
                     content={content}
                     index={index}
-                    mode={DashboardMode.PREVIEW}
                   />
                 );
               }
@@ -134,7 +128,6 @@ function DashboardContent({
                     baselineLayerId={element.baselineLayerId}
                     threshold={element.threshold}
                     stat={element.stat}
-                    mode={DashboardMode.PREVIEW}
                   />
                 );
               }
@@ -150,7 +143,6 @@ function DashboardContent({
                     wmsLayerId={chartElement.wmsLayerId}
                     adminUnitLevel={chartElement.adminUnitLevel}
                     adminUnitId={chartElement.adminUnitId}
-                    mode={DashboardMode.PREVIEW}
                   />
                 );
               }

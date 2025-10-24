@@ -199,8 +199,8 @@ function DashboardView() {
                         — {t('Choose map layers')}
                       </Typography>
                     </div>
-                    <div style={{ height: '700px' }}>
-                      <MapBlock mapIndex={mapIndex} mode={mode} />
+                    <div style={{ height: '700px', width: '100%' }}>
+                      <MapBlock mapIndex={mapIndex} />
                     </div>
                   </Box>
                 ))}
@@ -218,7 +218,6 @@ function DashboardView() {
                           key={`text-block-${index}`}
                           content={content}
                           index={index}
-                          mode={mode}
                         />
                       );
                     }
@@ -233,7 +232,6 @@ function DashboardView() {
                           baselineLayerId={element.baselineLayerId}
                           threshold={element.threshold}
                           stat={element.stat}
-                          mode={mode}
                         />
                       );
                     }
@@ -249,7 +247,6 @@ function DashboardView() {
                           wmsLayerId={chartElement.wmsLayerId}
                           adminUnitLevel={chartElement.adminUnitLevel}
                           adminUnitId={chartElement.adminUnitId}
-                          mode={mode}
                         />
                       );
                     }
@@ -281,7 +278,7 @@ function DashboardView() {
                         </Typography>
                       </div>
                       <div style={{ height: '700px', width: '100%' }}>
-                        <MapBlock mapIndex={mapIndex} mode={mode} />
+                        <MapBlock mapIndex={mapIndex} />
                       </div>
                     </Box>
                   ))}
@@ -300,7 +297,6 @@ function DashboardView() {
                           key={`text-block-${index}`}
                           content={content}
                           index={index}
-                          mode={mode}
                         />
                       );
                     }
@@ -315,7 +311,6 @@ function DashboardView() {
                           baselineLayerId={element.baselineLayerId}
                           threshold={element.threshold}
                           stat={element.stat}
-                          mode={mode}
                         />
                       );
                     }
@@ -331,7 +326,6 @@ function DashboardView() {
                           wmsLayerId={chartElement.wmsLayerId}
                           adminUnitLevel={chartElement.adminUnitLevel}
                           adminUnitId={chartElement.adminUnitId}
-                          mode={mode}
                         />
                       );
                     }

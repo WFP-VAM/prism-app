@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   makeStyles,
@@ -19,10 +20,10 @@ import {
   ChartLocationSelector,
 } from 'components/Common/ChartFormComponents';
 import { useSafeTranslation } from 'i18n';
+import { dashboardModeSelector } from '../../context/dashboardStateSlice';
 
 interface ChartBlockProps extends Partial<DashboardChartConfig> {
   index: number;
-  mode?: DashboardMode;
 }
 
 function ChartBlock({
@@ -31,10 +32,10 @@ function ChartBlock({
   endDate: initialEndDate,
   wmsLayerId: initialChartLayerId,
   adminUnitLevel: initialAdminLevel,
-  mode = DashboardMode.EDIT,
 }: ChartBlockProps) {
   const classes = useStyles();
   const { t } = useSafeTranslation();
+  const mode = useSelector(dashboardModeSelector);
 
   const formState = useChartForm({
     initialChartLayerId,

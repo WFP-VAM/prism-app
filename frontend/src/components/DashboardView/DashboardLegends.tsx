@@ -1,5 +1,8 @@
 import { createStyles, makeStyles } from '@material-ui/core';
 import { memo } from 'react';
+import { DashboardMode } from 'config/types';
+import { dashboardModeSelector } from 'context/dashboardStateSlice';
+import { useSelector } from 'react-redux';
 import LegendItemsList from '../MapView/Legends/LegendItemsList';
 import type { ExportConfig } from './DashboardContent';
 
@@ -9,7 +12,7 @@ interface DashboardLegendsProps {
 
 const DashboardLegends = memo(({ exportConfig }: DashboardLegendsProps) => {
   const classes = useStyles();
-
+  const mode = useSelector(dashboardModeSelector);
   // Use export config if available, otherwise show normally
   const isVisible = exportConfig?.toggles?.legendVisibility ?? true;
   const position = exportConfig?.legendPosition ?? 1; // default right (1)
@@ -29,7 +32,7 @@ const DashboardLegends = memo(({ exportConfig }: DashboardLegendsProps) => {
         transformOrigin: position % 2 === 0 ? 'top left' : 'top right',
       }}
     >
-      <LegendItemsList forPrinting />
+      <LegendItemsList forPrinting={mode !== DashboardMode.EDIT} />
     </aside>
   );
 });

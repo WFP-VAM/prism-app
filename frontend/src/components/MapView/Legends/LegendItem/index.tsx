@@ -22,20 +22,22 @@ import {
 } from '@material-ui/core';
 import { Close, Opacity, SwapVert } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { LayerType, LegendDefinitionItem } from 'config/types';
-import { layersSelector } from 'context/mapStateSlice/selectors';
+import { LayerType, LegendDefinitionItem, Panel } from 'config/types';
 import { useMapState } from 'utils/useMapState';
 import { clearDataset } from 'context/datasetStateSlice';
 import { useSafeTranslation } from 'i18n';
 import {
   clearAnalysisResult,
   analysisLayerInvertColors,
+  setIsMapLayerActive,
 } from 'context/analysisResultStateSlice';
 import LayerContentPreview from 'components/MapView/Legends/layerContentPreview';
 import ColorIndicator from 'components/MapView/Legends/ColorIndicator';
 import { getLegendItemLabel } from 'components/MapView/utils';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
+import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { dashboardModeSelector } from 'context/dashboardStateSlice';
 import LayerDownloadOptions from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch/SwitchItem/LayerDownloadOptions';
 import AnalysisDownloadButton from 'components/MapView/Legends//AnalysisDownloadButton';
 import { toggleRemoveLayer } from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
@@ -63,6 +65,7 @@ const LegendItem = memo(
     const dispatch = useDispatch();
     const {
       actions: { addLayer, removeLayer },
+      layers,
       ...mapState
     } = useMapState();
     const { removeLayerFromUrl } = useUrlHistory();
@@ -72,11 +75,16 @@ const LegendItem = memo(
     const opacityFromState = useSelector(
       opacityState.getOpacitySelector(id as string),
     );
+    const tabValue = useSelector(leftPanelTabValueSelector);
+    const dashboardMode = useSelector(dashboardModeSelector);
 
     // Use opacity from state if available, otherwise fall back to the initial opacity
     const opacity =
       opacityFromState !== undefined ? opacityFromState : initialOpacity;
     const isAnalysis = type === 'analysis';
+
+    const canShowRemoveButton =
+      tabValue !== Panel.Dashboard || dashboardMode === 'edit';
 
     useEffect(() => {
       if (opacityFromState !== undefined || !map) {
@@ -112,11 +120,7 @@ const LegendItem = memo(
     const open = Boolean(opacityEl);
     const opacityId = open ? 'opacity-popover' : undefined;
 
-    const selectedLayers = useSelector(layersSelector);
-    const layer = useMemo(
-      () => selectedLayers.find(l => l.id === id),
-      [id, selectedLayers],
-    );
+    const layer = useMemo(() => layers.find(l => l.id === id), [id, layers]);
 
     const renderedOpacitySlider = useMemo(
       () => (
@@ -180,7 +184,12 @@ const LegendItem = memo(
 
     const remove = useCallback(() => {
       if (isAnalysis) {
-        dispatch(clearAnalysisResult());
+        // In dashboard mode, just toggle layer visibility instead of clearing analysis
+        if (tabValue === Panel.Dashboard) {
+          dispatch(setIsMapLayerActive(false));
+        } else {
+          dispatch(clearAnalysisResult());
+        }
       }
       if (layer) {
         // clear previous table dataset loaded first
@@ -204,6 +213,7 @@ const LegendItem = memo(
       removeLayerFromUrl,
       addLayer,
       removeLayer,
+      tabValue,
     ]);
 
     const getColorIndicatorKey = useCallback(
@@ -325,11 +335,13 @@ const LegendItem = memo(
                   ) : (
                     layerDownloadOptions
                   )}
-                  <Tooltip title={t('Remove layer') as string}>
-                    <IconButton size="small" onClick={remove}>
-                      <Close fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
+                  {canShowRemoveButton && (
+                    <Tooltip title={t('Remove layer') as string}>
+                      <IconButton size="small" onClick={remove}>
+                        <Close fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
                 </>
               </Box>
             </>

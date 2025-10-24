@@ -20,6 +20,7 @@ import { boundaryCache } from 'utils/boundary-cache';
 import {
   selectedDashboardIndexSelector,
   setCapturedViewport,
+  dashboardModeSelector,
 } from 'context/dashboardStateSlice';
 import useLayers from 'utils/layers-utils';
 import RootAccordionItems from 'components/MapView/LeftPanel/layersPanel/RootAccordionItems';
@@ -45,20 +46,17 @@ const displayedBoundaryLayers = getDisplayBoundaryLayers().reverse();
 
 interface MapBlockProps {
   mapIndex: number;
-  mode?: DashboardMode;
   exportConfig?: ExportConfig;
 }
 
 const MapBlockContent = memo(
-  ({
-    mode = DashboardMode.EDIT,
-    exportConfig,
-  }: Pick<MapBlockProps, 'mode' | 'exportConfig'>) => {
+  ({ exportConfig }: Pick<MapBlockProps, 'exportConfig'>) => {
     const classes = useStyles();
     const { t } = useSafeTranslation();
     const { selectedLayersWithDateSupport } = useLayers();
     const { actions, maplibreMap, mapIndex } = useMapState();
     const datesLoading = useSelector(areDatesLoading);
+    const mode = useSelector(dashboardModeSelector);
     useDashboardMapSync(mode);
     const map = maplibreMap();
     const datesPreloadingForWMS = useSelector(WMSLayerDatesRequested);
@@ -68,7 +66,7 @@ const MapBlockContent = memo(
     const dispatch = useDispatch();
     const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-    if (mode === 'preview') {
+    if (mode === DashboardMode.PREVIEW) {
       const canvas = map?.getCanvas();
       if (canvas) {
         // eslint-disable-next-line fp/no-mutation
@@ -76,7 +74,7 @@ const MapBlockContent = memo(
       }
     }
 
-    if (mode === 'edit') {
+    if (mode === DashboardMode.EDIT) {
       const canvas = map?.getCanvas();
       if (canvas) {
         // eslint-disable-next-line fp/no-mutation
@@ -106,7 +104,6 @@ const MapBlockContent = memo(
       map,
     ]);
 
-    // Load dates for preselected layers from dashboard configuration
     const { layers: preselectedLayers } = useMapState();
     useEffect(() => {
       if (preselectedLayers.length > 0) {
@@ -118,7 +115,6 @@ const MapBlockContent = memo(
       }
     }, [preselectedLayers, dispatch]);
 
-    // Capture viewport when map moves in edit mode
     const captureViewport = useCallback(() => {
       if (mode !== DashboardMode.EDIT || !map || mapIndex === undefined) {
         return;
@@ -126,7 +122,6 @@ const MapBlockContent = memo(
 
       const bounds = map.getBounds();
 
-      // Debounce the viewport capture to avoid excessive updates
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current);
       }
@@ -231,20 +226,18 @@ const MapBlockContent = memo(
   },
 );
 
-const MapBlock = memo(
-  ({ mapIndex, mode = DashboardMode.EDIT, exportConfig }: MapBlockProps) => {
-    const selectedDashboardIndex = useSelector(selectedDashboardIndexSelector);
+const MapBlock = memo(({ mapIndex, exportConfig }: MapBlockProps) => {
+  const selectedDashboardIndex = useSelector(selectedDashboardIndexSelector);
 
-    return (
-      <MapInstanceProvider
-        key={`dashboard-${selectedDashboardIndex}-map-${mapIndex}`}
-        index={mapIndex}
-      >
-        <MapBlockContent mode={mode} exportConfig={exportConfig} />
-      </MapInstanceProvider>
-    );
-  },
-);
+  return (
+    <MapInstanceProvider
+      key={`dashboard-${selectedDashboardIndex}-map-${mapIndex}`}
+      index={mapIndex}
+    >
+      <MapBlockContent exportConfig={exportConfig} />
+    </MapInstanceProvider>
+  );
+});
 
 const useStyles = makeStyles(() =>
   createStyles({
