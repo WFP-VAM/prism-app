@@ -1,3 +1,4 @@
+import { AAFloodColors } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionFloodPanel/constants';
 import {
   FloodStation,
   AAFloodRiskLevelType,
@@ -8,15 +9,15 @@ import {
 export function getFloodRiskColor(riskLevel: AAFloodRiskLevelType): string {
   switch (riskLevel?.toLowerCase()) {
     case 'not exceeded':
-      return '#4CAF50'; // Green
+      return AAFloodColors.riskLevels.notExceeded;
     case 'bankfull':
-      return '#FFC107'; // Yellow
+      return AAFloodColors.riskLevels.bankfull;
     case 'moderate':
-      return '#FF9800'; // Orange
+      return AAFloodColors.riskLevels.moderate;
     case 'severe':
-      return '#F44336'; // Red
+      return AAFloodColors.riskLevels.severe;
     default:
-      return '#9E9E9E'; // Gray
+      return AAFloodColors.riskLevels.noData;
   }
 }
 

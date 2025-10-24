@@ -9,6 +9,7 @@ import { black } from 'muiTheme';
 import { Visibility } from '@material-ui/icons';
 import { useSafeTranslation } from 'i18n';
 import { getFloodRiskColor } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
+import { AAFloodColors } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionFloodPanel/constants';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -103,7 +104,7 @@ function AAFloodLegend() {
       label: 'Not exceeded',
     },
     {
-      color: '#9E9E9E', // Gray for no data
+      color: AAFloodColors.riskLevels.noData,
       label: 'No data',
     },
   ];
