@@ -763,12 +763,12 @@ function StationCharts({ station, onClose }: StationChartsProps) {
 
     const mins = fc.map(p =>
       p?.ensemble_members?.length
-        ? Number(Math.min(...p.ensemble_members).toFixed(2))
+        ? Math.round(Math.min(...p.ensemble_members) * 100) / 100
         : null,
     );
     const maxs = fc.map(p =>
       p?.ensemble_members?.length
-        ? Number(Math.max(...p.ensemble_members).toFixed(2))
+        ? Math.round(Math.max(...p.ensemble_members) * 100) / 100
         : null,
     );
 
