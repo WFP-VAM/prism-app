@@ -7,6 +7,7 @@ import {
   Button,
   Switch,
   FormControlLabel,
+  TextField,
 } from '@material-ui/core';
 import {
   DashboardTableConfig,
@@ -65,6 +66,8 @@ function TableBlock({
     // TableBlock doesn't need URL history updates
     onUrlUpdate: undefined,
   });
+
+  const [maxRows, setMaxRows] = useState(8);
 
   // Sorting state
   const [sortColumn, setSortColumn] = useState<string | number>('name');
@@ -208,7 +211,7 @@ function TableBlock({
         sortColumn={sortColumn}
         isAscending={isAscending}
         onSort={handleSort}
-        maxRows={mode === DashboardMode.PREVIEW ? 16 : 8}
+        maxRows={maxRows}
       />
     );
   };
@@ -373,6 +376,18 @@ function TableBlock({
                 </Button>
               )}
             </Box>
+            <TextField
+              label={t('Max rows')}
+              type="number"
+              value={maxRows}
+              onChange={e =>
+                setMaxRows(Math.max(1, parseInt(e.target.value, 10) || 1))
+              }
+              inputProps={{ min: 1, max: 25 }}
+              className={classes.maxRowsInput}
+              size="small"
+              variant="outlined"
+            />
           </Box>
         )}
 
@@ -390,6 +405,10 @@ const useStyles = makeStyles(theme => ({
     background: '#F1F1F1',
     borderRadius: 8,
     padding: 16,
+    marginBottom: 16,
+  },
+  maxRowsInput: {
+    width: 100,
     marginBottom: 16,
   },
   previewContainer: {
