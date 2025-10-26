@@ -165,6 +165,7 @@ function AnticipatoryActionFloodLayer({
                   cursor: 'pointer',
                 }}
                 type="button"
+                aria-label={`${station.station_name} flood station - ${riskLevel} risk level`}
                 onClick={() => {
                   handleFloodStationEvent(station.station_name);
                 }}

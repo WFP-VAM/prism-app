@@ -10,6 +10,7 @@ import {
   FloodDateItem,
   FloodProbabilityPoint,
   FloodForecastData,
+  FloodSummaryStation,
 } from './types';
 import {
   buildAvailableFloodDatesFromDatesJson,
@@ -67,7 +68,7 @@ export const loadAAFloodDateData = createAsyncThunk<
     probabilities: Record<string, FloodProbabilityPoint[]>;
     forecast: Record<string, FloodForecastData[]>;
     stations: FloodStation[];
-    stationSummary: Record<string, any>;
+    stationSummary: Record<string, FloodSummaryStation>;
   },
   { date: string },
   CreateAsyncThunkTypes
@@ -204,7 +205,7 @@ export const loadAAFloodDateData = createAsyncThunk<
 
   // Build avg probabilities per station
   const stationSummary = summaryRows.reduce(
-    (acc: Record<string, any>, row: any) => {
+    (acc: Record<string, FloodSummaryStation>, row: any) => {
       const key: string = startCase(String(row.station_name || '').trim());
       if (!key) {
         return acc;
