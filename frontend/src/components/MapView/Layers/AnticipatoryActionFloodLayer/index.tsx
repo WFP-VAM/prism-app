@@ -6,8 +6,7 @@ import { useDefaultDate } from 'utils/useDefaultDate';
 import { useSelector, useDispatch } from 'react-redux';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { setAAFloodSelectedStation } from 'context/anticipatoryAction/AAFloodStateSlice';
-import { useMapCallback, getLayerMapId } from 'utils/map-utils';
-import { MapLayerMouseEvent } from 'maplibre-gl';
+import { getLayerMapId } from 'utils/map-utils';
 import { hidePopup } from 'context/tooltipStateSlice';
 import { Tooltip } from '@material-ui/core';
 import { AAFloodColors } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionFloodPanel/constants';
@@ -60,20 +59,6 @@ function AnticipatoryActionFloodLayer({
       dispatch(setAAFloodSelectedStation(stationName));
     }
   };
-
-  // Handle click events on flood stations
-  const onFloodStationClick = () => (e: MapLayerMouseEvent) => {
-    e.preventDefault();
-    const feature = e.features?.[0];
-    handleFloodStationEvent(feature?.properties?.station_name);
-  };
-
-  useMapCallback<'click', null>(
-    'click',
-    getLayerMapId(`${layer.id}-circles`),
-    null,
-    onFloodStationClick,
-  );
 
   const selectedDateKey = startDate
     ? new Date(startDate).toISOString().split('T')[0]
@@ -195,7 +180,7 @@ function AnticipatoryActionFloodLayer({
         data={floodStationsGeoJSON}
       >
         <Layer
-          id={getLayerMapId(`${layer.id}-labels`)}
+          id={`${layer.id}-labels`}
           type="symbol"
           layout={{
             'text-field': ['get', 'station_name'],
