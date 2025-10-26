@@ -120,7 +120,7 @@ function AnticipatoryActionFloodPanel() {
   const { t } = useSafeTranslation();
   const { AAData } = useAnticipatoryAction(AnticipatoryAction.flood);
   const { stations, selectedStation, loading, error, stationSummaryData } =
-    AAData as any;
+    AAData;
   const { startDate } = useSelector(dateRangeSelector);
 
   const [sortField, setSortField] = useState<SortField>('risk_level');
