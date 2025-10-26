@@ -1,5 +1,4 @@
 import { useSelector } from 'react-redux';
-import { useState } from 'react';
 import { RootState } from 'context/store';
 import { DateRangeType } from 'config/types';
 import { datesAreEqualWithoutTime } from 'utils/date-utils';
@@ -13,7 +12,6 @@ function AAFloodTimelineItem({ currentDate }: AAFloodTimelineItemProps) {
   const { availableDates } = useSelector(
     (state: RootState) => state.anticipatoryActionFloodState,
   );
-  const [isHovered, setIsHovered] = useState(false);
 
   // Find the date info for this date
   const dateInfo = availableDates.find(d =>
@@ -36,10 +34,7 @@ function AAFloodTimelineItem({ currentDate }: AAFloodTimelineItemProps) {
         backgroundColor: severityColor,
         borderRadius: '2px',
         transition: 'opacity 0.2s ease',
-        opacity: isHovered ? 0.8 : 1,
       }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     />
   );
 }
