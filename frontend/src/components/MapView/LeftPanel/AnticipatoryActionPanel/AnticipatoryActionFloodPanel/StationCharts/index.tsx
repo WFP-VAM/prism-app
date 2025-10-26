@@ -209,7 +209,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         backgroundColor: 'transparent',
         borderWidth: 1,
         pointRadius: 0,
-        pointStyle: 'line' as any,
+        pointStyle: 'line',
         hoverRadius: 0,
         fill: false,
         tension: 0.35,
@@ -236,7 +236,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           backgroundColor: 'transparent',
           borderWidth: 2,
           pointRadius: 0,
-          pointStyle: 'line' as any,
+          pointStyle: 'line',
           fill: false,
           tension: 0.4,
         },
@@ -248,7 +248,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           borderWidth: 2,
           borderDash: [6, 6],
           pointRadius: 0,
-          pointStyle: 'line' as any,
+          pointStyle: 'line',
         },
         {
           label: `${t('Moderate threshold')}`,
@@ -258,7 +258,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           borderWidth: 2,
           borderDash: [6, 6],
           pointRadius: 0,
-          pointStyle: 'line' as any,
+          pointStyle: 'line',
         },
         {
           label: `${t('Severe threshold')}`,
@@ -268,7 +268,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           borderWidth: 2,
           borderDash: [6, 6],
           pointRadius: 0,
-          pointStyle: 'line' as any,
+          pointStyle: 'line',
         },
         ...ensembleDatasets,
       ],
@@ -692,67 +692,48 @@ function StationCharts({ station, onClose }: StationChartsProps) {
 
   const closeDownloadMenu = () => setDownloadMenuAnchor(null);
 
-  const downloadChart = async () => {
-    // chartjs needs to render the chart instance and have ctx ready to be used in Base64 conversion
-    const maxAttempts = 50; // Max 5 seconds
-    // eslint-disable-next-line fp/no-mutation
-    // Use hidden, always-mounted charts to ensure availability
-    // eslint-disable-next-line fp/no-mutation
-    for (let attempts = 0; attempts < maxAttempts; attempts += 1) {
-      const chartRef =
-        activeTab === 1 ? hydrographChartRef : probabilityChartRef;
-      const { chartInstance } = chartRef.current ?? ({} as any);
-      if (chartInstance && chartInstance.ctx) {
-        const base64Image = chartInstance.toBase64Image();
-        const link = document.createElement('a');
-        link.setAttribute('href', base64Image);
-        const chartName =
-          activeTab === 1 ? 'Hydrograph' : 'Trigger Probability';
-        link.setAttribute(
-          'download',
-          `${station.station_name}_${chartName}.png`,
-        );
-        link.click();
-        return;
-      }
-      // eslint-disable-next-line no-await-in-loop, no-promise-executor-return
-      await new Promise(resolve => setTimeout(resolve, 100));
+  const downloadChart = () => {
+    const chartRef = activeTab === 1 ? hydrographChartRef : probabilityChartRef;
+    const chartName = activeTab === 1 ? 'Hydrograph' : 'Trigger Probability';
+    const { chartInstance } = chartRef.current ?? ({} as any);
+
+    if (chartInstance && chartInstance.ctx) {
+      const base64Image = chartInstance.toBase64Image();
+      const link = document.createElement('a');
+      link.setAttribute('href', base64Image);
+      link.setAttribute('download', `${station.station_name}_${chartName}.png`);
+      link.click();
+    } else {
+      console.error('Chart instance not available for download');
     }
   };
 
-  const downloadTable = async () => {
-    const maxAttempts = 50; // Max 5 seconds
-    // eslint-disable-next-line fp/no-mutation
-    for (let attempts = 0; attempts < maxAttempts; attempts += 1) {
-      const tableData =
-        activeTab === 1 ? hydrographTableData : triggerProbabilityTableData;
+  const downloadTable = () => {
+    const tableName = activeTab === 1 ? 'Hydrograph' : 'Trigger_Probability';
+    const tableData =
+      activeTab === 1 ? hydrographTableData : triggerProbabilityTableData;
 
-      if (tableData) {
-        const csvContent = [
-          tableData.columnNames.join(','),
-          ...tableData.tableValues.map(row =>
-            row.map(cell => `"${cell}"`).join(','),
-          ),
-        ].join('\n');
+    if (tableData) {
+      const csvContent = [
+        tableData.columnNames.join(','),
+        ...tableData.tableValues.map(row =>
+          row.map(cell => `"${cell}"`).join(','),
+        ),
+      ].join('\n');
 
-        const blob = new Blob([csvContent], {
-          type: 'text/csv;charset=utf-8;',
-        });
-        const link = document.createElement('a');
-        const url = URL.createObjectURL(blob);
-        link.setAttribute('href', url);
-        const tableName =
-          activeTab === 1 ? 'Hydrograph' : 'Trigger_Probability';
-        link.setAttribute(
-          'download',
-          `${station.station_name}_${tableName}.csv`,
-        );
-        document.body.appendChild(link);
-        link.click();
-        return;
-      }
-      // eslint-disable-next-line no-await-in-loop, no-promise-executor-return
-      await new Promise(resolve => setTimeout(resolve, 100));
+      const blob = new Blob([csvContent], {
+        type: 'text/csv;charset=utf-8;',
+      });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `${station.station_name}_${tableName}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } else {
+      console.error('Table data not available for download');
     }
   };
 
