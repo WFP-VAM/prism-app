@@ -58,6 +58,7 @@ const removeFilesPlugin = (): Plugin => ({
       let files = fs.readdirSync(dir);
 
       // Process subdirectories first
+      // eslint-disable-next-line no-restricted-syntax
       for (const file of files) {
         const absPath = path.join(dir, file);
         if (fs.statSync(absPath).isDirectory()) {
@@ -66,6 +67,7 @@ const removeFilesPlugin = (): Plugin => ({
       }
 
       // Re-read to see if directory is now empty after removing subdirs
+      // eslint-disable-next-line fp/no-mutation
       files = fs.readdirSync(dir);
       if (files.length === 0) {
         fs.rmdirSync(dir);
