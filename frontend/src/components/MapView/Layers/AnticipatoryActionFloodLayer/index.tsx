@@ -85,9 +85,8 @@ function AnticipatoryActionFloodLayer({
       features: filteredStations
         .filter(
           (station: any) =>
-            station.coordinates &&
-            typeof station.coordinates.longitude === 'number' &&
-            typeof station.coordinates.latitude === 'number',
+            typeof station.longitude === 'number' &&
+            typeof station.latitude === 'number',
         )
         .map((station: any) => {
           const avg = stationSummaryData?.[station.station_name];
@@ -98,10 +97,7 @@ function AnticipatoryActionFloodLayer({
             type: 'Feature' as const,
             geometry: {
               type: 'Point' as const,
-              coordinates: [
-                station.coordinates.longitude,
-                station.coordinates.latitude,
-              ],
+              coordinates: [station.longitude, station.latitude],
             },
             properties: {
               station_name: station.station_name,
@@ -134,7 +130,10 @@ function AnticipatoryActionFloodLayer({
   return (
     <>
       {filteredStations.map(station => {
-        if (!station.coordinates) {
+        if (
+          typeof station.longitude !== 'number' ||
+          typeof station.latitude !== 'number'
+        ) {
           return null;
         }
         const avg = stationSummaryData?.[station.station_name];
@@ -148,8 +147,8 @@ function AnticipatoryActionFloodLayer({
         return (
           <Marker
             key={`flood-station-${station.station_id}`}
-            longitude={station.coordinates.longitude}
-            latitude={station.coordinates.latitude}
+            longitude={station.longitude}
+            latitude={station.latitude}
             anchor="center"
           >
             <Tooltip title={station.station_name} arrow>

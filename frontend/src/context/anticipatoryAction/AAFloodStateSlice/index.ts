@@ -10,11 +10,9 @@ import {
   FloodDateItem,
   FloodProbabilityPoint,
   FloodForecastData,
-  FloodSummaryStation,
 } from './types';
 import {
   buildAvailableFloodDatesFromDatesJson,
-  buildStationsFromSummary,
   normalizeFloodTriggerStatus,
 } from './utils';
 
@@ -68,7 +66,7 @@ export const loadAAFloodDateData = createAsyncThunk<
     probabilities: Record<string, FloodProbabilityPoint[]>;
     forecast: Record<string, FloodForecastData[]>;
     stations: FloodStation[];
-    stationSummary: Record<string, FloodSummaryStation>;
+    stationSummary: Record<string, FloodStation>;
   },
   { date: string },
   CreateAsyncThunkTypes
@@ -203,9 +201,9 @@ export const loadAAFloodDateData = createAsyncThunk<
     return { ...acc, [station]: data };
   }, {});
 
-  // Build avg probabilities per station
+  // Build stations with summary data
   const stationSummary = summaryRows.reduce(
-    (acc: Record<string, FloodSummaryStation>, row: any) => {
+    (acc: Record<string, FloodStation>, row: any) => {
       const key: string = startCase(String(row.station_name || '').trim());
       if (!key) {
         return acc;
@@ -224,15 +222,15 @@ export const loadAAFloodDateData = createAsyncThunk<
           avg_bankfull_percentage:
             typeof row.avg_bankfull_percentage === 'number'
               ? Number(row.avg_bankfull_percentage) * 100
-              : 0,
+              : undefined,
           avg_moderate_percentage:
             typeof row.avg_moderate_percentage === 'number'
               ? Number(row.avg_moderate_percentage) * 100
-              : 0,
+              : undefined,
           avg_severe_percentage:
             typeof row.avg_severe_percentage === 'number'
               ? Number(row.avg_severe_percentage) * 100
-              : 0,
+              : undefined,
           trigger_bankfull:
             typeof row.trigger_bankfull === 'number'
               ? Number(row.trigger_bankfull) * 100
@@ -254,9 +252,15 @@ export const loadAAFloodDateData = createAsyncThunk<
     {},
   );
 
-  const stations: FloodStation[] = buildStationsFromSummary(
-    stationSummary,
-    date,
+  // Extract basic station info for the stations array
+  const stations: FloodStation[] = Object.values(stationSummary).map(
+    station => ({
+      station_name: station.station_name,
+      station_id: station.station_id,
+      river_name: station.river_name,
+      longitude: station.longitude,
+      latitude: station.latitude,
+    }),
   );
 
   return {

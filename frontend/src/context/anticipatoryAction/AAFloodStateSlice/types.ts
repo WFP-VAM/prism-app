@@ -23,39 +23,30 @@ export interface FloodStationData {
   risk_level: AAFloodRiskLevelType;
 }
 
-// TODO - merge with FloodSummaryStation
 export interface FloodStation {
+  // Core station information (always present)
   station_name: string;
-  river_name: string;
   station_id: number;
-  coordinates?: {
-    latitude: number;
-    longitude: number;
-  };
+  river_name: string;
+  longitude: number;
+  latitude: number;
+  // Optional forecast/summary data (present when loaded from summary data)
+  forecast_issue_date?: string;
+  window_begin?: string; // ISO date string
+  window_end?: string; // ISO date string
+  avg_bankfull_percentage?: number;
+  avg_moderate_percentage?: number;
+  avg_severe_percentage?: number;
+  trigger_bankfull?: number | null;
+  trigger_moderate?: number | null;
+  trigger_severe?: number | null;
+  trigger_status?: string | null;
 }
 
 export interface FloodForecastData {
   station_name: string;
   time: string;
   ensemble_members: number[];
-}
-
-export interface FloodSummaryStation {
-  station_name: string;
-  station_id: number;
-  river_name: string;
-  longitude: number;
-  latitude: number;
-  forecast_issue_date: string;
-  window_begin: string; // ISO date string
-  window_end: string; // ISO date string
-  avg_bankfull_percentage: number;
-  avg_moderate_percentage: number;
-  avg_severe_percentage: number;
-  trigger_bankfull?: number | null;
-  trigger_moderate?: number | null;
-  trigger_severe?: number | null;
-  trigger_status?: string | null;
 }
 
 export enum AAFloodView {
@@ -71,7 +62,7 @@ export type AnticipatoryActionFloodState = {
   selectedDate: string | null;
   forecastData: Record<string, FloodForecastData[]>;
   probabilitiesData: Record<string, FloodProbabilityPoint[]>;
-  stationSummaryData: Record<string, FloodSummaryStation | undefined>;
+  stationSummaryData: Record<string, FloodStation | undefined>;
   availableDates: FloodDateItem[];
   view: AAFloodView;
   loading: boolean;

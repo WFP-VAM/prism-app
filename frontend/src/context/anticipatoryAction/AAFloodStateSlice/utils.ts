@@ -1,10 +1,5 @@
 import { AAFloodColors } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionFloodPanel/constants';
-import {
-  FloodStation,
-  AAFloodRiskLevelType,
-  FloodDateItem,
-  FloodSummaryStation,
-} from './types';
+import { AAFloodRiskLevelType, FloodDateItem } from './types';
 
 export function getFloodRiskColor(riskLevel: AAFloodRiskLevelType): string {
   switch (riskLevel?.toLowerCase()) {
@@ -85,37 +80,4 @@ export function buildAvailableFloodDatesFromDatesJson(
       } as FloodDateItem;
     })
     .filter(Boolean) as FloodDateItem[];
-}
-
-export function buildStationsFromSummary(
-  stationSummary: Record<string, FloodSummaryStation | undefined>,
-  _date: string,
-): FloodStation[] {
-  const stationsMap = new Map<string, FloodStation>();
-
-  Object.keys(stationSummary).forEach(name => {
-    const row = stationSummary[name];
-    if (!row) {
-      return;
-    }
-    const longitude = Number(row.longitude ?? 0);
-    const latitude = Number(row.latitude ?? 0);
-
-    if (!stationsMap.has(name)) {
-      stationsMap.set(name, {
-        station_name: name,
-        river_name: String(row.river_name || ''),
-        station_id: Number(row.station_id || 0),
-        coordinates:
-          Number.isFinite(longitude) &&
-          Number.isFinite(latitude) &&
-          longitude !== 0 &&
-          latitude !== 0
-            ? { latitude, longitude }
-            : undefined,
-      });
-    }
-  });
-
-  return Array.from(stationsMap.values());
 }
