@@ -243,100 +243,83 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
         }
       >
         {mode === DashboardMode.EDIT && (
-          <Box className={classes.titleInputContainer}>
-            <Typography variant="h3" className={classes.titleLabel}>
-              {t('Map Title')}
-            </Typography>
-            <TextField
-              value={mapTitle || ''}
-              onChange={handleTitleChange}
-              placeholder={t('Enter map title') as string}
-              variant="outlined"
-              size="small"
-              fullWidth
-              className={classes.titleInput}
-            />
-          </Box>
+          <div className={classes.leftPanel}>
+            <RootAccordionItems />
+          </div>
         )}
-        <Box
+        <div
           className={
-            mode === DashboardMode.PREVIEW ? classes.rootPreview : classes.root
+            mode === DashboardMode.PREVIEW
+              ? classes.rightPanelPreview
+              : classes.rightPanel
           }
         >
-          {mode === DashboardMode.EDIT && (
-            <div className={classes.leftPanel}>
-              <RootAccordionItems />
+          {mode === DashboardMode.PREVIEW && (
+            <div className={classes.previewHeaderContainer}>
+              <BlockPreviewHeader
+                title={title || ''}
+                subtitle={formatMapDate()}
+                downloadActions={
+                  !exportConfig && (
+                    <Tooltip title={t('Download PNG') as string}>
+                      <IconButton onClick={handleDownloadMap} size="small">
+                        <ImageIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )
+                }
+              />
             </div>
           )}
           <div
+            ref={mapContainerRef}
             className={
               mode === DashboardMode.PREVIEW
-                ? classes.rightPanelPreview
-                : classes.rightPanel
+                ? classes.mapContainerPreview
+                : classes.mapContainerEdit
             }
           >
-            {mode === DashboardMode.PREVIEW && (
-              <div className={classes.previewHeaderContainer}>
-                <BlockPreviewHeader
-                  title={title || ''}
-                  subtitle={formatMapDate()}
-                  downloadActions={
-                    !exportConfig && (
-                      <Tooltip title={t('Download PNG') as string}>
-                        <IconButton onClick={handleDownloadMap} size="small">
-                          <ImageIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                    )
-                  }
-                />
+            {datesLoading && (
+              <div className={classes.loading}>
+                <CircularProgress size={100} />
               </div>
             )}
-            <div ref={mapContainerRef} className={classes.mapContainer}>
-              {datesLoading && (
-                <div className={classes.loading}>
-                  <CircularProgress size={100} />
-                </div>
-              )}
-              <MapComponent
-                hideMapLabels={
-                  exportConfig?.toggles?.mapLabelsVisibility === false
-                }
-              >
-                {exportConfig?.toggles?.adminAreasVisibility &&
-                exportConfig?.invertedAdminBoundaryLimitPolygon ? (
-                  <Source
-                    key={`mask-${exportConfig.selectedBoundaries?.join('-') || 'all'}`}
-                    id="dashboard-mask-overlay"
-                    type="geojson"
-                    data={exportConfig.invertedAdminBoundaryLimitPolygon}
-                  >
-                    <Layer
-                      id="dashboard-mask-layer-overlay"
-                      type="fill"
-                      source="dashboard-mask-overlay"
-                      layout={{}}
-                      paint={{
-                        'fill-color': '#000',
-                        'fill-opacity': 0.7,
-                      }}
-                    />
-                  </Source>
-                ) : null}
-              </MapComponent>
-              {!datesLoading && (
-                <DashboardLegends exportConfig={exportConfig} />
-              )}
-            </div>
-            {mode === DashboardMode.EDIT &&
-              selectedLayersWithDateSupport.length > 0 &&
-              !datesLoading && (
-                <div className={classes.dateSelectorContainer}>
-                  <DateSelector />
-                </div>
-              )}
+            <MapComponent
+              hideMapLabels={
+                exportConfig?.toggles?.mapLabelsVisibility === false
+              }
+            >
+              {exportConfig?.toggles?.adminAreasVisibility &&
+              exportConfig?.invertedAdminBoundaryLimitPolygon ? (
+                <Source
+                  key={`mask-${exportConfig.selectedBoundaries?.join('-') || 'all'}`}
+                  id="dashboard-mask-overlay"
+                  type="geojson"
+                  data={exportConfig.invertedAdminBoundaryLimitPolygon}
+                >
+                  <Layer
+                    id="dashboard-mask-layer-overlay"
+                    type="fill"
+                    source="dashboard-mask-overlay"
+                    layout={{}}
+                    paint={{
+                      'fill-color': '#000',
+                      'fill-opacity': 0.7,
+                    }}
+                  />
+                </Source>
+              ) : null}
+            </MapComponent>
+            {!datesLoading && <DashboardLegends exportConfig={exportConfig} />}
           </div>
-        </Box>
+          {mode === DashboardMode.EDIT &&
+            selectedLayersWithDateSupport.length > 0 &&
+            !datesLoading && (
+              <div className={classes.dateSelectorContainer}>
+                <DateSelector />
+              </div>
+            )}
+        </div>
       </Box>
     </>
   );
@@ -359,11 +342,12 @@ const useStyles = makeStyles(() =>
   createStyles({
     root: {
       display: 'flex',
-      height: '100%',
+      minHeight: 0,
       width: '100%',
       position: 'relative',
       gap: '16px',
       overflow: 'hidden',
+      flex: 1,
     },
     rootPreview: {
       display: 'flex',
@@ -372,6 +356,7 @@ const useStyles = makeStyles(() =>
       position: 'relative',
       gap: 0,
       overflow: 'hidden',
+      flex: 1,
     },
     loading: {
       position: 'absolute',
@@ -425,9 +410,19 @@ const useStyles = makeStyles(() =>
       background: 'white',
       borderRadius: 8,
     },
-    mapContainer: {
+    mapContainerEdit: {
+      flex: '0 0 550px',
+      height: '550px',
+      position: 'relative',
+      '& > div': {
+        height: '100%',
+        width: '100%',
+      },
+    },
+    mapContainerPreview: {
       flex: '1',
-      minHeight: 0, // Allows flex item to shrink
+      height: '700px',
+      minHeight: 0,
       position: 'relative',
       '& > div': {
         height: '100%',
