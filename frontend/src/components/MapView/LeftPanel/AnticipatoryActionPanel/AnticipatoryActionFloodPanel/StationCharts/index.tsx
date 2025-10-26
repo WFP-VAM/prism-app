@@ -237,7 +237,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           tension: 0.4,
         },
         {
-          label: `${t('Bankfull')} (${thresholdBankfull})`,
+          label: `${t('Bankfull threshold')}`,
           data: Array.from({ length: labels.length }, () => thresholdBankfull),
           borderColor: AAFloodColors.chart.bankfull.solid,
           backgroundColor: 'transparent',
@@ -247,7 +247,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           pointStyle: 'line' as any,
         },
         {
-          label: `${t('Moderate')} (${thresholdModerate})`,
+          label: `${t('Moderate threshold')}`,
           data: Array.from({ length: labels.length }, () => thresholdModerate),
           borderColor: AAFloodColors.chart.moderate.solid,
           backgroundColor: 'transparent',
@@ -257,7 +257,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           pointStyle: 'line' as any,
         },
         {
-          label: `${t('Severe')} (${thresholdSevere})`,
+          label: `${t('Severe threshold')}`,
           data: Array.from({ length: labels.length }, () => thresholdSevere),
           borderColor: AAFloodColors.chart.severe.solid,
           backgroundColor: 'transparent',
@@ -753,26 +753,55 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   };
 
   const hydrographTableData = useMemo(() => {
-    if (!hydrographData || !hydrographData.datasets) {
+    const fc = floodState.forecastData[station.station_name] ?? [];
+    const hd = hydrographData;
+
+    if (!hd?.datasets?.length || !fc.length) {
       return null;
     }
-
-    const tableDatasets = hydrographData.datasets.slice(0, 4);
-
-    const columnNames = [t('Day'), ...tableDatasets.map(d => d.label || '')];
-
-    const tableValues = (hydrographData.labels as string[]).map(
-      (rowLabel, rowIndex: number) => [
-        rowLabel ?? '',
-        ...tableDatasets.map(dataset => dataset.data?.[rowIndex] ?? '-'),
-      ],
+    const [
+      ensembleMean,
+      bankfullThreshold,
+      moderateThreshold,
+      severeThreshold,
+    ] = hd.datasets;
+    // get minimum and maximum ensemble member values
+    const ensembleMin = fc.map(p =>
+      p?.ensemble_members?.length
+        ? Math.round(Math.min(...p.ensemble_members) * 100) / 100
+        : null,
     );
+    const ensembleMax = fc.map(p =>
+      p?.ensemble_members?.length
+        ? Math.round(Math.max(...p.ensemble_members) * 100) / 100
+        : null,
+    );
+    // create hydrograph table
+    const columns = [
+      t('Day'),
+      ensembleMean?.label || t('Ensemble Mean'),
+      t('Min'),
+      t('Max'),
+      bankfullThreshold?.label || t('Bankfull threshold'),
+      moderateThreshold?.label || t('Moderate threshold'),
+      severeThreshold?.label || t('Severe threshold'),
+    ];
 
-    return {
-      columnNames,
-      tableValues,
-    };
-  }, [hydrographData, t]);
+    const cell = (v: number | null | undefined) =>
+      v === null || v === undefined || Number.isNaN(Number(v)) ? '-' : v;
+
+    const rows = (hd.labels as string[]).map((label, i) => [
+      label ?? '',
+      cell(ensembleMean?.data?.[i]),
+      cell(ensembleMin[i]),
+      cell(ensembleMax[i]),
+      cell(bankfullThreshold?.data?.[i]),
+      cell(moderateThreshold?.data?.[i]),
+      cell(severeThreshold?.data?.[i]),
+    ]);
+
+    return { columnNames: columns, tableValues: rows };
+  }, [hydrographData, floodState.forecastData, station.station_name, t]);
 
   const triggerProbabilityTableData = useMemo(() => {
     if (!triggerProbabilityData || !triggerProbabilityData.datasets) {
