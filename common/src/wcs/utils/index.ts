@@ -70,7 +70,7 @@ export function findCoverageName(xml: string): string | undefined {
 
 export function findLayerId(
   xml: string,
-  { normalize = true }: { normalize?: boolean } = { normalize: true },
+  { normalize = true }: { normalize?: boolean } = { normalize: true }
 ): string {
   // version 2.x
   const coverageId = findCoverageId(xml);
@@ -119,27 +119,27 @@ export function findCoverageDisplayName(xml: string): string | undefined {
 
 export function findCoverage(
   xml: string,
-  layerIdOrName: string,
+  layerIdOrName: string
 ): string | undefined {
   const normalized = normalizeCoverageId(layerIdOrName);
   return findCoverages(xml).find(
     (layer) =>
       findLayerId(layer, { normalize: true }) === normalized ||
-      findCoverageDisplayName(layer) === layerIdOrName,
+      findCoverageDisplayName(layer) === layerIdOrName
   );
 }
 
 export function findCoverageDisplayNames(xml: string): string[] {
   const coverages = findCoverages(xml);
   const displayNames = coverages.map((coverage) =>
-    findCoverageDisplayName(coverage),
+    findCoverageDisplayName(coverage)
   );
   return displayNames.filter((name) => name !== undefined).map((name) => name!);
 }
 
 export function findLayerIds(
   xml: string,
-  { normalize }: { normalize?: boolean } = {},
+  { normalize }: { normalize?: boolean } = {}
 ): string[] {
   return findCoverages(xml).map((layer) => findLayerId(layer, { normalize }));
 }
@@ -148,7 +148,7 @@ export function findCoverageSubType(xml: string): string | undefined {
   return findTagText(xml, "wcs:CoverageSubtype");
 }
 export function findAndParseLonLatEnvelope(
-  xml: string,
+  xml: string
 ): Readonly<[number, number, number, number] | undefined> {
   const envelope = findTagText(xml, "lonLatEnvelope");
   if (!envelope) {
@@ -171,7 +171,7 @@ export function findAndParseLonLatEnvelope(
 
 // for CoverageDescription
 export function findAndParseExtent(
-  xml: string,
+  xml: string
 ): Readonly<[number, number, number, number]> | undefined {
   return findAndParseLonLatEnvelope(xml) || findAndParseEnvelope(xml);
 }
@@ -214,14 +214,14 @@ export function createGetCoverageUrl({
   crs?: string;
   date?: Date | string;
   format?: WCS_FORMAT | string;
-  height: number;
+  height?: number;
   layerId: string;
   maxPixels?: number;
   needExtent?: boolean;
-  resolution?: 256;
+  resolution?: number;
   url?: string;
   version?: string;
-  width: number;
+  width?: number;
 }): string {
   const base = (() => {
     if (url) {
@@ -248,8 +248,8 @@ export function createGetCoverageUrl({
   const { height, width } = (() => {
     if (
       (typeof givenHeight !== "number" && typeof givenWidth !== "number") ||
-      givenHeight > maxPixels ||
-      givenWidth > maxPixels
+      (givenHeight && givenHeight > maxPixels) ||
+      (givenWidth && givenWidth > maxPixels)
     ) {
       return scaleImage(bbox, { maxPixels, resolution });
     }
@@ -302,13 +302,13 @@ export function createGetCoverageUrl({
     return `${formattedUrl}&${formattedSubsets}`;
   }
   throw new Error(
-    "[prism-common] createGetCoverageUrl was called with an unexpected version",
+    "[prism-common] createGetCoverageUrl was called with an unexpected version"
   );
 }
 
 export function createDescribeCoverageUrl(
   xml: string,
-  layerId: string,
+  layerId: string
 ): string {
   const base = findDescribeCoverageUrl(xml);
   if (!base) {
@@ -338,21 +338,21 @@ export function createDescribeCoverageUrl(
 export async function fetchCoverageDescriptionFromCapabilities(
   capabilities: string,
   layerId: string,
-  options: { debug?: boolean; fetch?: any; wait?: number } = {},
+  options: { debug?: boolean; fetch?: any; wait?: number } = {}
 ) {
   const run = async () => {
     const url = createDescribeCoverageUrl(capabilities, layerId);
     const response = await (options.fetch || fetch)(url);
     if (response.status !== 200) {
       throw new Error(
-        `failed to fetch CoverageDescription from "${url}". status was ${response.status}`,
+        `failed to fetch CoverageDescription from "${url}". status was ${response.status}`
       );
     }
     const text = await response.text();
     const exception = findException(text);
     if (exception) {
       throw new Error(
-        `couldn't fetch coverage description because of the following error:\n${exception}`,
+        `couldn't fetch coverage description because of the following error:\n${exception}`
       );
     }
     return text;
@@ -427,7 +427,7 @@ export async function fetchCoverageLayerDays(
   {
     errorStrategy = "throw",
     fetch,
-  }: { errorStrategy?: string; fetch?: any } = {},
+  }: { errorStrategy?: string; fetch?: any } = {}
 ): Promise<{ [layerId: string]: number[] }> {
   try {
     const capabilities = await getCapabilities(url, {
