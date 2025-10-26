@@ -25,7 +25,7 @@ function AAFloodTooltipContent({ date }: AAFloodTooltipContentProps) {
     );
   }
 
-  const dateString = new Date(date.value).toLocaleDateString();
+  const dateString = formatInUTC(new Date(date.value), 'MM/dd/yy');
   const severityColor = dateInfo?.color || '#4CAF50';
 
   return (
