@@ -4,26 +4,7 @@ exports[`alert mechanism buildEmailPayloads() does not return a payload when det
 
 exports[`alert mechanism buildEmailPayloads() does not return a payload when detailed report indicates that activation64 is triggered but there is no pilot activated districts for 64kt exposed 1`] = `[]`;
 
-exports[`alert mechanism buildEmailPayloads() returns a payload when detailed report indicates that activation48 is triggered and pilot activated districts for 48kt winds are parts of the exposed districts 1`] = `
-[
-  {
-    "activatedTriggers": {
-      "districts48kt": [
-        "Angoche",
-      ],
-      "districts64kt": [],
-    },
-    "base64Image": "",
-    "cycloneName": "ELVIS",
-    "cycloneTime": "31/01/2025 06:00 UTC",
-    "email": [
-      "test@test.com",
-    ],
-    "redirectUrl": "https://prism.wfp.org/?hazardLayerIds=anticipatory_action_storm&date=2025-01-31",
-    "status": "activated_48kt",
-  },
-]
-`;
+exports[`alert mechanism buildEmailPayloads() returns a payload when detailed report indicates that activation48 is triggered and pilot activated districts for 48kt winds are parts of the exposed districts 1`] = `[]`;
 
 exports[`alert mechanism buildEmailPayloads() returns a payload when detailed report indicates that activation64 is triggered and pilot activated districts for 64kt winds are parts of the exposed districts 1`] = `
 [

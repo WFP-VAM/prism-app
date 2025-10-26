@@ -1,22 +1,18 @@
-import {
-  FloodStation,
-  AAFloodRiskLevelType,
-  FloodDateItem,
-  FloodAvgProbabilities,
-} from './types';
+import { AAFloodColors } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionFloodPanel/constants';
+import { AAFloodRiskLevelType, FloodDateItem } from './types';
 
 export function getFloodRiskColor(riskLevel: AAFloodRiskLevelType): string {
   switch (riskLevel?.toLowerCase()) {
-    case 'below bankfull':
-      return '#4CAF50'; // Green
+    case 'not exceeded':
+      return AAFloodColors.riskLevels.notExceeded;
     case 'bankfull':
-      return '#FFC107'; // Yellow
+      return AAFloodColors.riskLevels.bankfull;
     case 'moderate':
-      return '#FF9800'; // Orange
+      return AAFloodColors.riskLevels.moderate;
     case 'severe':
-      return '#F44336'; // Red
+      return AAFloodColors.riskLevels.severe;
     default:
-      return '#9E9E9E'; // Gray
+      return AAFloodColors.riskLevels.noData;
   }
 }
 
@@ -30,7 +26,7 @@ export function getFloodRiskSeverity(
       return 3;
     case 'bankfull':
       return 2;
-    case 'below bankfull':
+    case 'not exceeded':
       return 1;
     default:
       return 0;
@@ -49,7 +45,7 @@ export function normalizeFloodTriggerStatus(raw: string): AAFloodRiskLevelType {
     case s === 'bankfull' || s === 'bank full':
       return 'Bankfull';
     default:
-      return 'Below bankfull';
+      return 'Not exceeded';
   }
 }
 
@@ -60,7 +56,7 @@ export function buildAvailableFloodDatesFromDatesJson(
       trigger_status?: string;
       probabilities_file?: string;
       discharge_file?: string;
-      avg_probabilities_file?: string;
+      station_summary_file?: string;
     }
   >,
 ): FloodDateItem[] {
@@ -84,38 +80,4 @@ export function buildAvailableFloodDatesFromDatesJson(
       } as FloodDateItem;
     })
     .filter(Boolean) as FloodDateItem[];
-}
-
-export function buildStationsFromAvgProbabilities(
-  avgProbabilities: Record<string, FloodAvgProbabilities | undefined>,
-  _date: string,
-): FloodStation[] {
-  const stationsMap = new Map<string, FloodStation>();
-
-  Object.keys(avgProbabilities).forEach(name => {
-    const row = avgProbabilities[name];
-    if (!row) {
-      return;
-    }
-    const longitude = Number(row.longitude ?? 0);
-    const latitude = Number(row.latitude ?? 0);
-
-    if (!stationsMap.has(name)) {
-      stationsMap.set(name, {
-        station_name: name,
-        river_name: String(row.river_name || ''),
-        station_id: Number(row.station_id || 0),
-        coordinates:
-          Number.isFinite(longitude) &&
-          Number.isFinite(latitude) &&
-          longitude !== 0 &&
-          latitude !== 0
-            ? { latitude, longitude }
-            : undefined,
-        thresholds: { bankfull: 0, moderate: 0, severe: 0 },
-      });
-    }
-  });
-
-  return Array.from(stationsMap.values());
 }

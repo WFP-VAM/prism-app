@@ -9,6 +9,7 @@ import { black } from 'muiTheme';
 import { Visibility } from '@material-ui/icons';
 import { useSafeTranslation } from 'i18n';
 import { getFloodRiskColor } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
+import { AAFloodColors } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionFloodPanel/constants';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -99,17 +100,17 @@ function AAFloodLegend() {
       label: 'Bankfull',
     },
     {
-      color: getFloodRiskColor('Below bankfull'),
+      color: getFloodRiskColor('Not exceeded'),
       label: 'Not exceeded',
     },
     {
-      color: '#9E9E9E', // Gray for no data
+      color: AAFloodColors.riskLevels.noData,
       label: 'No data',
     },
   ];
 
-  const handleGoogleResearchClick = () => {
-    window.open('https://research.google/', '_blank');
+  const handleGlofasClick = () => {
+    window.open('https://global-flood.emergency.copernicus.eu/', '_blank');
   };
 
   return (
@@ -124,7 +125,7 @@ function AAFloodLegend() {
       </Box>
 
       <Typography className={classes.sectionTitle}>
-        {t('River discharge forecast')}
+        {t('Riverine flood forecast')}
       </Typography>
 
       {categories.map(category => (
@@ -142,21 +143,23 @@ function AAFloodLegend() {
       <Divider className={classes.divider} />
 
       <Typography className={classes.description}>
-        {t('River discharge forecast at verified gauges. Visit')}{' '}
+        {t(
+          'Probability of flooding at various severity categories based on GloFAS data. Visit',
+        )}{' '}
         <span
           className={classes.link}
-          onClick={handleGoogleResearchClick}
+          onClick={handleGlofasClick}
           role="button"
           tabIndex={0}
           onKeyDown={e => {
             if (e.key === 'Enter' || e.key === ' ') {
-              handleGoogleResearchClick();
+              handleGlofasClick();
             }
           }}
         >
-          {t('Google Research')}
+          {t('GloFAS')}
         </span>{' '}
-        {t('to learn more about their AI forecasting models.')}
+        {t('to learn more about flood forecasting models.')}
       </Typography>
     </div>
   );

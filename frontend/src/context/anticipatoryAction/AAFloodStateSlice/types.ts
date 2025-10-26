@@ -7,7 +7,7 @@ export type FloodDateItem = DateItem & {
 
 // Flood risk levels based on the sample data
 export const AAFloodRiskLevels = [
-  'Below bankfull',
+  'Not exceeded',
   'Bankfull',
   'Moderate',
   'Severe',
@@ -24,42 +24,29 @@ export interface FloodStationData {
 }
 
 export interface FloodStation {
+  // Core station information (always present)
   station_name: string;
-  river_name: string;
   station_id: number;
-  coordinates?: {
-    latitude: number;
-    longitude: number;
-  };
-  thresholds: {
-    bankfull: number;
-    moderate: number;
-    severe: number;
-  };
+  river_name: string;
+  longitude: number;
+  latitude: number;
+  // Optional forecast/summary data (present when loaded from summary data)
+  forecast_issue_date?: string;
+  window_begin?: string; // ISO date string
+  window_end?: string; // ISO date string
+  avg_bankfull_percentage?: number;
+  avg_moderate_percentage?: number;
+  avg_severe_percentage?: number;
+  trigger_bankfull?: number | null;
+  trigger_moderate?: number | null;
+  trigger_severe?: number | null;
+  trigger_status?: string | null;
 }
 
 export interface FloodForecastData {
   station_name: string;
   time: string;
   ensemble_members: number[];
-}
-
-export interface FloodAvgProbabilities {
-  station_name: string;
-  station_id: number;
-  river_name: string;
-  longitude: number;
-  latitude: number;
-  forecast_issue_date: string;
-  window_begin: string; // ISO date string
-  window_end: string; // ISO date string
-  avg_bankfull_percentage: number;
-  avg_moderate_percentage: number;
-  avg_severe_percentage: number;
-  trigger_bankfull?: number | null;
-  trigger_moderate?: number | null;
-  trigger_severe?: number | null;
-  trigger_status?: string | null;
 }
 
 export enum AAFloodView {
@@ -75,7 +62,7 @@ export type AnticipatoryActionFloodState = {
   selectedDate: string | null;
   forecastData: Record<string, FloodForecastData[]>;
   probabilitiesData: Record<string, FloodProbabilityPoint[]>;
-  avgProbabilitiesData: Record<string, FloodAvgProbabilities | undefined>;
+  stationSummaryData: Record<string, FloodStation | undefined>;
   availableDates: FloodDateItem[];
   view: AAFloodView;
   loading: boolean;
@@ -84,7 +71,10 @@ export type AnticipatoryActionFloodState = {
 
 export interface FloodProbabilityPoint {
   time: string;
-  bankfull_percentage: number;
-  moderate_percentage: number;
-  severe_percentage: number;
+  bankfullPercentage: number;
+  moderatePercentage: number;
+  severePercentage: number;
+  thresholdBankfull: number;
+  thresholdModerate: number;
+  thresholdSevere: number;
 }

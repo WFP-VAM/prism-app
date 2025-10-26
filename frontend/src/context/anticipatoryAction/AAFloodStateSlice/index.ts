@@ -13,7 +13,6 @@ import {
 } from './types';
 import {
   buildAvailableFloodDatesFromDatesJson,
-  buildStationsFromAvgProbabilities,
   normalizeFloodTriggerStatus,
 } from './utils';
 
@@ -23,7 +22,7 @@ const initialState: AnticipatoryActionFloodState = {
   selectedDate: null,
   forecastData: {},
   probabilitiesData: {},
-  avgProbabilitiesData: {},
+  stationSummaryData: {},
   availableDates: [],
   view: AAFloodView.Home,
   loading: false,
@@ -50,7 +49,7 @@ export const loadAAFloodData = createAsyncThunk<
       trigger_status?: string;
       probabilities_file?: string;
       discharge_file?: string;
-      avg_probabilities_file?: string;
+      station_summary_file?: string;
     }
   > = await resp.json();
 
@@ -67,7 +66,7 @@ export const loadAAFloodDateData = createAsyncThunk<
     probabilities: Record<string, FloodProbabilityPoint[]>;
     forecast: Record<string, FloodForecastData[]>;
     stations: FloodStation[];
-    avgProbabilities: Record<string, any>;
+    stationSummary: Record<string, FloodStation>;
   },
   { date: string },
   CreateAsyncThunkTypes
@@ -97,10 +96,10 @@ export const loadAAFloodDateData = createAsyncThunk<
     throw new Error(`No data entry found for date ${date}`);
   }
 
-  const [probRows, dischargeRows, avgProbRows] = await Promise.all([
+  const [probRows, dischargeRows, summaryRows] = await Promise.all([
     parseCsv<any>(`${baseDir}${dateData.probabilities_file}`),
     parseCsv<any>(`${baseDir}${dateData.discharge_file}`),
-    parseCsv<any>(`${baseDir}${dateData.avg_probabilities_file}`),
+    parseCsv<any>(`${baseDir}${dateData.station_summary_file}`),
   ]);
 
   // probabilities.csv schema: station_id,station_name,river_name,longitude,latitude,forecast_issue_date,valid_time,bankfull_percentage,moderate_percentage,severe_percentage
@@ -115,13 +114,16 @@ export const loadAAFloodDateData = createAsyncThunk<
         }
         const point: FloodProbabilityPoint = {
           time: String(row.valid_time ?? row.time ?? ''),
-          bankfull_percentage: Number(
-            row.bankfull_percentage ?? row.bankfull ?? 0,
+          bankfullPercentage: Number(row.bankfull_percentage ?? 0) * 100,
+          moderatePercentage: Number(row.moderate_percentage ?? 0) * 100,
+          severePercentage: Number(row.severe_percentage ?? 0) * 100,
+          thresholdBankfull: Number(
+            Number(row.threshold_bankfull ?? 0).toFixed(2),
           ),
-          moderate_percentage: Number(
-            row.moderate_percentage ?? row.moderate ?? 0,
+          thresholdModerate: Number(
+            Number(row.threshold_moderate ?? 0).toFixed(2),
           ),
-          severe_percentage: Number(row.severe_percentage ?? row.severe ?? 0),
+          thresholdSevere: Number(Number(row.threshold_severe ?? 0).toFixed(2)),
         };
         const prev = acc[key] || [];
         return {
@@ -199,9 +201,9 @@ export const loadAAFloodDateData = createAsyncThunk<
     return { ...acc, [station]: data };
   }, {});
 
-  // Build avg probabilities per station
-  const avgProbabilities = avgProbRows.reduce(
-    (acc: Record<string, any>, row: any) => {
+  // Build stations with summary data
+  const stationSummary = summaryRows.reduce(
+    (acc: Record<string, FloodStation>, row: any) => {
       const key: string = startCase(String(row.station_name || '').trim());
       if (!key) {
         return acc;
@@ -217,21 +219,30 @@ export const loadAAFloodDateData = createAsyncThunk<
           forecast_issue_date: String(row.forecast_issue_date || date),
           window_begin: String(row.window_begin || ''),
           window_end: String(row.window_end || ''),
-          avg_bankfull_percentage: Number(row.avg_bankfull_percentage || 0),
-          avg_moderate_percentage: Number(row.avg_moderate_percentage || 0),
-          avg_severe_percentage: Number(row.avg_severe_percentage || 0),
+          avg_bankfull_percentage:
+            typeof row.avg_bankfull_percentage === 'number'
+              ? Number(row.avg_bankfull_percentage) * 100
+              : undefined,
+          avg_moderate_percentage:
+            typeof row.avg_moderate_percentage === 'number'
+              ? Number(row.avg_moderate_percentage) * 100
+              : undefined,
+          avg_severe_percentage:
+            typeof row.avg_severe_percentage === 'number'
+              ? Number(row.avg_severe_percentage) * 100
+              : undefined,
           trigger_bankfull:
-            row.trigger_bankfull !== undefined && row.trigger_bankfull !== ''
-              ? Number(row.trigger_bankfull)
-              : null,
+            typeof row.trigger_bankfull === 'number'
+              ? Number(row.trigger_bankfull) * 100
+              : undefined,
           trigger_moderate:
-            row.trigger_moderate !== undefined && row.trigger_moderate !== ''
-              ? Number(row.trigger_moderate)
-              : null,
+            typeof row.trigger_moderate === 'number'
+              ? Number(row.trigger_moderate) * 100
+              : undefined,
           trigger_severe:
-            row.trigger_severe !== undefined && row.trigger_severe !== ''
-              ? Number(row.trigger_severe)
-              : null,
+            typeof row.trigger_severe === 'number'
+              ? Number(row.trigger_severe) * 100
+              : undefined,
           trigger_status: normalizeFloodTriggerStatus(
             String(row.trigger_status ?? ''),
           ),
@@ -241,9 +252,15 @@ export const loadAAFloodDateData = createAsyncThunk<
     {},
   );
 
-  const stations: FloodStation[] = buildStationsFromAvgProbabilities(
-    avgProbabilities,
-    date,
+  // Extract basic station info for the stations array
+  const stations: FloodStation[] = Object.values(stationSummary).map(
+    station => ({
+      station_name: station.station_name,
+      station_id: station.station_id,
+      river_name: station.river_name,
+      longitude: station.longitude,
+      latitude: station.latitude,
+    }),
   );
 
   return {
@@ -251,7 +268,7 @@ export const loadAAFloodDateData = createAsyncThunk<
     probabilities,
     forecast,
     stations,
-    avgProbabilities,
+    stationSummary,
   };
 });
 
@@ -306,9 +323,9 @@ export const anticipatoryActionFloodStateSlice = createSlice({
         ...state.forecastData,
         ...payload.forecast,
       },
-      avgProbabilitiesData: {
-        ...state.avgProbabilitiesData,
-        ...payload.avgProbabilities,
+      stationSummaryData: {
+        ...state.stationSummaryData,
+        ...payload.stationSummary,
       },
     }));
 

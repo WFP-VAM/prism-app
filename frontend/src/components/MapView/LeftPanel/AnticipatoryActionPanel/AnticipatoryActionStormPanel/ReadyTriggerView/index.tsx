@@ -2,6 +2,7 @@ import { Typography, createStyles, makeStyles } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { AADataSelector } from 'context/anticipatoryAction/AAStormStateSlice';
 import { useSafeTranslation } from 'i18n';
+import { AAStormColors } from '../utils';
 
 function ReadyTrigger() {
   const { t } = useSafeTranslation();
@@ -28,7 +29,7 @@ function ReadyTrigger() {
           <div className={classes.rowWrapper}>
             <Typography>
               {t(
-                `A system with severe tropical storm-force winds (or stronger) is expected to impact any of the 4 pilot provinces within the next five days, with a lead time of at least 72 hours.`,
+                `A system with severe tropical storm-force winds (or stronger) is expected to impact any of the coastal provinces within the next five days, with a lead time of at least 72 hours.`,
               )}
             </Typography>
           </div>
@@ -47,7 +48,7 @@ const useActivationTriggerStyles = makeStyles(() =>
     },
     Wrapper: {
       width: '100%',
-      background: '#F1F1F1',
+      background: AAStormColors.background,
     },
     headColumnWrapper: {
       display: 'flex',

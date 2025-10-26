@@ -6,10 +6,9 @@ import { useDefaultDate } from 'utils/useDefaultDate';
 import { useSelector, useDispatch } from 'react-redux';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { setAAFloodSelectedStation } from 'context/anticipatoryAction/AAFloodStateSlice';
-import { useMapCallback, getLayerMapId } from 'utils/map-utils';
-import { MapLayerMouseEvent } from 'maplibre-gl';
 import { hidePopup } from 'context/tooltipStateSlice';
 import { Tooltip } from '@material-ui/core';
+import { AAFloodColors } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionFloodPanel/constants';
 
 interface AnticipatoryActionFloodLayerProps {
   layer: AnticipatoryActionLayerProps;
@@ -18,26 +17,26 @@ interface AnticipatoryActionFloodLayerProps {
 const getCircleColor = (riskLevel: string) => {
   switch (riskLevel) {
     case 'Severe':
-      return '#E63701';
+      return AAFloodColors.riskLevels.severe;
     case 'Moderate':
-      return '#FF8C21';
+      return AAFloodColors.riskLevels.moderate;
     case 'Bankfull':
-      return '#FFF503';
+      return AAFloodColors.riskLevels.bankfull;
     default:
-      return '#6EB274';
+      return AAFloodColors.riskLevels.notExceeded;
   }
 };
 
 const getBorderColor = (riskLevel: string) => {
   switch (riskLevel) {
     case 'Severe':
-      return '#E63701';
+      return AAFloodColors.borderColors.severe;
     case 'Moderate':
-      return '#FF8C21';
+      return AAFloodColors.borderColors.moderate;
     case 'Bankfull':
-      return '#FFCC00';
+      return AAFloodColors.borderColors.bankfull;
     default:
-      return '#3C8B43';
+      return AAFloodColors.borderColors.notExceeded;
   }
 };
 
@@ -49,7 +48,7 @@ function AnticipatoryActionFloodLayer({
   // Load the layer default date if no date is selected
   useDefaultDate(layer.id);
   const { AAData } = useAnticipatoryAction(AnticipatoryAction.flood);
-  const { stations, avgProbabilitiesData } = AAData;
+  const { stations, stationSummaryData } = AAData;
   const { startDate } = useSelector(dateRangeSelector);
   const dispatch = useDispatch();
 
@@ -59,20 +58,6 @@ function AnticipatoryActionFloodLayer({
       dispatch(setAAFloodSelectedStation(stationName));
     }
   };
-
-  // Handle click events on flood stations
-  const onFloodStationClick = () => (e: MapLayerMouseEvent) => {
-    e.preventDefault();
-    const feature = e.features?.[0];
-    handleFloodStationEvent(feature?.properties?.station_name);
-  };
-
-  useMapCallback<'click', null>(
-    'click',
-    getLayerMapId(`${layer.id}-circles`),
-    null,
-    onFloodStationClick,
-  );
 
   const selectedDateKey = startDate
     ? new Date(startDate).toISOString().split('T')[0]
@@ -88,7 +73,7 @@ function AnticipatoryActionFloodLayer({
       if (!selectedDateKey) {
         return true;
       }
-      const avg = avgProbabilitiesData?.[station.station_name];
+      const avg = stationSummaryData?.[station.station_name];
       const issueDate = avg?.forecast_issue_date
         ? new Date(avg.forecast_issue_date).toISOString().split('T')[0]
         : null;
@@ -97,32 +82,35 @@ function AnticipatoryActionFloodLayer({
 
     return {
       type: 'FeatureCollection' as const,
-      features: filteredStations.map((station: any) => {
-        const avg = avgProbabilitiesData?.[station.station_name];
-        if (!avg) {
-          return null;
-        }
-        return {
-          type: 'Feature' as const,
-          geometry: {
-            type: 'Point' as const,
-            coordinates: station.coordinates
-              ? [station.coordinates.longitude, station.coordinates.latitude]
-              : [0, 0], // Default coordinates if not available
-          },
-          properties: {
-            station_name: station.station_name,
-            river_name: station.river_name,
-            station_id: station.station_id,
-            risk_level: avg.trigger_status || 'Below bankfull',
-            avg_discharge: 0,
-            max_discharge: 0,
-            thresholds: station.thresholds,
-          },
-        };
-      }),
+      features: filteredStations
+        .filter(
+          (station: any) =>
+            typeof station.longitude === 'number' &&
+            typeof station.latitude === 'number',
+        )
+        .map((station: any) => {
+          const avg = stationSummaryData?.[station.station_name];
+          if (!avg) {
+            return null;
+          }
+          return {
+            type: 'Feature' as const,
+            geometry: {
+              type: 'Point' as const,
+              coordinates: [station.longitude, station.latitude],
+            },
+            properties: {
+              station_name: station.station_name,
+              river_name: station.river_name,
+              station_id: station.station_id,
+              risk_level: avg.trigger_status || 'Not exceeded',
+              avg_discharge: 0,
+              max_discharge: 0,
+            },
+          };
+        }),
     };
-  }, [stations, selectedDateKey, avgProbabilitiesData]);
+  }, [stations, selectedDateKey, stationSummaryData]);
 
   if (!floodStationsGeoJSON) {
     return null;
@@ -132,7 +120,7 @@ function AnticipatoryActionFloodLayer({
     if (!selectedDateKey) {
       return true;
     }
-    const avg = avgProbabilitiesData?.[station.station_name];
+    const avg = stationSummaryData?.[station.station_name];
     const issueDate = avg?.forecast_issue_date
       ? new Date(avg.forecast_issue_date).toISOString().split('T')[0]
       : null;
@@ -142,22 +130,25 @@ function AnticipatoryActionFloodLayer({
   return (
     <>
       {filteredStations.map(station => {
-        if (!station.coordinates) {
+        if (
+          typeof station.longitude !== 'number' ||
+          typeof station.latitude !== 'number'
+        ) {
           return null;
         }
-        const avg = avgProbabilitiesData?.[station.station_name];
+        const avg = stationSummaryData?.[station.station_name];
         if (!avg) {
           return null;
         }
-        const riskLevel = avg.trigger_status || 'Below bankfull';
+        const riskLevel = avg.trigger_status || 'Not exceeded';
         const circleColor = getCircleColor(riskLevel);
         const borderColor = getBorderColor(riskLevel);
 
         return (
           <Marker
             key={`flood-station-${station.station_id}`}
-            longitude={station.coordinates.longitude}
-            latitude={station.coordinates.latitude}
+            longitude={station.longitude}
+            latitude={station.latitude}
             anchor="center"
           >
             <Tooltip title={station.station_name} arrow>
@@ -173,7 +164,10 @@ function AnticipatoryActionFloodLayer({
                   cursor: 'pointer',
                 }}
                 type="button"
-                onClick={() => {
+                aria-label={`${station.station_name} flood station - ${riskLevel} risk level`}
+                onClick={event => {
+                  event.stopPropagation();
+                  event.preventDefault();
                   handleFloodStationEvent(station.station_name);
                 }}
               />
@@ -187,7 +181,7 @@ function AnticipatoryActionFloodLayer({
         data={floodStationsGeoJSON}
       >
         <Layer
-          id={getLayerMapId(`${layer.id}-labels`)}
+          id={`${layer.id}-labels`}
           type="symbol"
           layout={{
             'text-field': ['get', 'station_name'],

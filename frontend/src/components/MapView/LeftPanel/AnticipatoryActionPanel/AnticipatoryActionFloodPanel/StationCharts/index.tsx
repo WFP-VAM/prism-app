@@ -1,4 +1,5 @@
 import { useMemo, useState, useRef } from 'react';
+import type { MouseEvent as ReactMouseEvent } from 'react';
 import {
   Typography,
   makeStyles,
@@ -13,8 +14,10 @@ import {
   TableHead,
   TableRow,
   CircularProgress,
+  Menu,
+  MenuItem,
 } from '@material-ui/core';
-import { Close, Fullscreen, TableChart, GetApp } from '@material-ui/icons';
+import { Close, TableChart, GetApp } from '@material-ui/icons';
 import { Line } from 'react-chartjs-2';
 import 'chartjs-plugin-annotation';
 import { useSafeTranslation } from 'i18n';
@@ -27,6 +30,7 @@ import {
   CHART_WIDTH,
   ForecastWindowPerCountry,
   TABLE_WIDTH,
+  AAFloodColors,
 } from '../constants';
 
 const forecastWindow = ForecastWindowPerCountry.mozambique;
@@ -127,13 +131,14 @@ const useStyles = makeStyles(() =>
       color: '#000',
     },
     tableCell: {
-      fontFamily: 'monospace',
-      fontSize: '0.875rem',
+      fontSize: '0.8rem',
       padding: '8px',
       color: '#000000',
     },
     tableHeader: {
       fontWeight: 'bold',
+      fontSize: '0.8rem',
+      minWidth: '40px',
       backgroundColor: '#f5f5f5',
     },
     loadingOverlay: {
@@ -166,12 +171,15 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   const [activeTab, setActiveTab] = useState(0);
   const [viewMode, setViewMode] = useState<'chart' | 'table'>('chart');
   const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadMenuAnchor, setDownloadMenuAnchor] =
+    useState<null | HTMLElement>(null);
   const hydrographChartRef = useRef<Line>(null);
   const probabilityChartRef = useRef<Line>(null);
 
   const floodState = useSelector(AAFloodDataSelector);
-  const avgProbStation = floodState.avgProbabilitiesData
-    ? floodState.avgProbabilitiesData[station.station_name]
+  const probs = floodState.probabilitiesData[station.station_name];
+  const stationSummary = floodState.stationSummaryData
+    ? floodState.stationSummaryData[station.station_name]
     : undefined;
 
   // Prepare hydrograph data using fetched forecast (discharge) data
@@ -183,9 +191,13 @@ function StationCharts({ station, onClose }: StationChartsProps) {
 
     // Use valid_time dates for x-axis labels (same as probability format)
     const labels = forecast.map(
-      p => getFormattedDate(p.time, 'short') as string,
+      p => getFormattedDate(p.time, 'shortDayFirst') as string,
     );
-    const { bankfull, moderate, severe } = station.thresholds;
+    // Guard against missing or empty probs array
+    if (!probs || !Array.isArray(probs) || probs.length === 0) {
+      return null;
+    }
+    const { thresholdBankfull, thresholdModerate, thresholdSevere } = probs[0];
 
     const membersCount = forecast[0]?.ensemble_members?.length || 0;
     const ensembleDatasets = Array.from(
@@ -193,11 +205,11 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       (_v, mIdx) => ({
         label: `Member ${mIdx + 1}`,
         data: forecast.map(fp => fp.ensemble_members[mIdx] ?? 0),
-        borderColor: 'rgba(0, 0, 0, 0.18)',
+        borderColor: AAFloodColors.chart.ensemble.border,
         backgroundColor: 'transparent',
         borderWidth: 1,
         pointRadius: 0,
-        pointStyle: 'line' as any,
+        pointStyle: 'line' as const,
         hoverRadius: 0,
         fill: false,
         tension: 0.35,
@@ -209,7 +221,9 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       if (!arr.length) {
         return 0;
       }
-      return arr.reduce((s, v) => s + v, 0) / arr.length;
+      const avg = arr.reduce((s, v) => s + v, 0) / arr.length;
+      // round to 2 decimal places
+      return Math.round(avg * 100) / 100;
     });
 
     return {
@@ -218,60 +232,56 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         {
           label: t('Ensemble Mean'),
           data: meanSeries,
-          borderColor: '#212121',
+          borderColor: AAFloodColors.chart.ensemble.mean,
           backgroundColor: 'transparent',
           borderWidth: 2,
           pointRadius: 0,
-          pointStyle: 'line' as any,
+          pointStyle: 'line' as const,
           fill: false,
           tension: 0.4,
         },
         {
-          label: `${t('Bankfull')} (${bankfull})`,
-          data: Array.from({ length: labels.length }, () => bankfull),
-          borderColor: '#66BB6A',
+          label: `${t('Bankfull threshold')}`,
+          data: Array.from({ length: labels.length }, () => thresholdBankfull),
+          borderColor: AAFloodColors.chart.bankfull.solid,
           backgroundColor: 'transparent',
           borderWidth: 2,
           borderDash: [6, 6],
           pointRadius: 0,
-          pointStyle: 'line' as any,
+          pointStyle: 'line' as const,
         },
         {
-          label: `${t('Moderate')} (${moderate})`,
-          data: Array.from({ length: labels.length }, () => moderate),
-          borderColor: '#FFA726',
+          label: `${t('Moderate threshold')}`,
+          data: Array.from({ length: labels.length }, () => thresholdModerate),
+          borderColor: AAFloodColors.chart.moderate.solid,
           backgroundColor: 'transparent',
           borderWidth: 2,
           borderDash: [6, 6],
           pointRadius: 0,
-          pointStyle: 'line' as any,
+          pointStyle: 'line' as const,
         },
         {
-          label: `${t('Severe')} (${severe})`,
-          data: Array.from({ length: labels.length }, () => severe),
-          borderColor: '#EF5350',
+          label: `${t('Severe threshold')}`,
+          data: Array.from({ length: labels.length }, () => thresholdSevere),
+          borderColor: AAFloodColors.chart.severe.solid,
           backgroundColor: 'transparent',
           borderWidth: 2,
           borderDash: [6, 6],
           pointRadius: 0,
-          pointStyle: 'line' as any,
+          pointStyle: 'line' as const,
         },
         ...ensembleDatasets,
       ],
     };
-  }, [floodState.forecastData, station.station_name, station.thresholds, t]);
+  }, [floodState.forecastData, station.station_name, probs, t]);
 
   const beginIdx = forecastWindow.start - 1;
   const endIdx = forecastWindow.end - 1;
 
   // Prepare trigger probability data from fetched probabilities
-  const probs = floodState.probabilitiesData[station.station_name];
-  const sortedData = sortBy(
-    floodState.probabilitiesData[station.station_name],
-    p => new Date(p.time).getTime(),
-  );
+  const sortedData = sortBy(probs, p => new Date(p.time).getTime());
   const labels = sortedData.map(
-    d => getFormattedDate(d.time, 'short') as string,
+    d => getFormattedDate(d.time, 'shortDayFirst') as string,
   );
 
   const triggerProbabilityData = useMemo(() => {
@@ -279,14 +289,14 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       return null;
     }
 
-    const bankfullSeries = sortedData.map(d => d.bankfull_percentage);
-    const moderateSeries = sortedData.map(d => d.moderate_percentage);
-    const severeSeries = sortedData.map(d => d.severe_percentage);
+    const bankfullSeries = sortedData.map(d => d.bankfullPercentage);
+    const moderateSeries = sortedData.map(d => d.moderatePercentage);
+    const severeSeries = sortedData.map(d => d.severePercentage);
 
-    // Use averaged window means and triggers from avg_probabilities.csv
-    const bankfullMean = avgProbStation?.avg_bankfull_percentage ?? 0;
-    const moderateMean = avgProbStation?.avg_moderate_percentage ?? 0;
-    const severeMean = avgProbStation?.avg_severe_percentage ?? 0;
+    // Use averaged window means and triggers from station_summary_file.csv
+    const bankfullMean = stationSummary?.avg_bankfull_percentage ?? 0;
+    const moderateMean = stationSummary?.avg_moderate_percentage ?? 0;
+    const severeMean = stationSummary?.avg_severe_percentage ?? 0;
 
     // Build flat series over the window only (NaN elsewhere)
     const flatWindowSeries = (value: number | null) =>
@@ -298,23 +308,23 @@ function StationCharts({ station, onClose }: StationChartsProps) {
 
     // Only show mean fill for the highest severity exceeded
     const bankfullExceeded =
-      typeof avgProbStation?.trigger_bankfull === 'number' &&
-      bankfullMean > (avgProbStation?.trigger_bankfull as number);
+      typeof stationSummary?.trigger_bankfull === 'number' &&
+      bankfullMean > stationSummary.trigger_bankfull;
     const moderateExceeded =
-      typeof avgProbStation?.trigger_moderate === 'number' &&
-      moderateMean > (avgProbStation?.trigger_moderate as number);
+      typeof stationSummary?.trigger_moderate === 'number' &&
+      moderateMean > stationSummary.trigger_moderate;
     const severeExceeded =
-      typeof avgProbStation?.trigger_severe === 'number' &&
-      severeMean > (avgProbStation?.trigger_severe as number);
+      typeof stationSummary?.trigger_severe === 'number' &&
+      severeMean > stationSummary.trigger_severe;
 
     const fillDatasets: any[] = (() => {
       if (severeExceeded) {
         return [
           {
             label: t('Severe mean fill'),
-            data: flatWindowSeries(severeMean * 100),
+            data: flatWindowSeries(severeMean),
             borderColor: 'rgba(0,0,0,0)',
-            backgroundColor: 'rgba(239, 83, 80, 0.25)',
+            backgroundColor: 'rgba(230, 55, 1, 0.25)',
             borderWidth: 0,
             pointRadius: 0,
             fill: 2, // fill to Severe threshold dataset
@@ -327,9 +337,9 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         return [
           {
             label: t('Moderate mean fill'),
-            data: flatWindowSeries(moderateMean * 100),
+            data: flatWindowSeries(moderateMean),
             borderColor: 'rgba(0,0,0,0)',
-            backgroundColor: 'rgba(255, 167, 38, 0.25)',
+            backgroundColor: 'rgba(255, 140, 33, 0.25)',
             borderWidth: 0,
             pointRadius: 0,
             fill: 1, // fill to Moderate threshold dataset
@@ -342,9 +352,9 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         return [
           {
             label: t('Bankfull mean fill'),
-            data: flatWindowSeries(bankfullMean * 100),
+            data: flatWindowSeries(bankfullMean),
             borderColor: 'rgba(0,0,0,0)',
-            backgroundColor: 'rgba(102, 187, 106, 0.25)',
+            backgroundColor: 'rgba(255, 204, 0, 0.25)',
             borderWidth: 0,
             pointRadius: 0,
             fill: 0, // fill to Bankfull threshold dataset
@@ -357,39 +367,39 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     })();
 
     const thresholdDatasets = [
-      typeof avgProbStation?.trigger_bankfull && {
-        label: `${t('Bankfull')} (${avgProbStation?.trigger_bankfull}%)`,
+      stationSummary?.trigger_bankfull !== undefined && {
+        label: `${t('Bankfull')} ${t('threshold')}`,
         data: Array.from(
           { length: labels.length },
-          () => (avgProbStation?.trigger_bankfull as number) * 100,
+          () => stationSummary!.trigger_bankfull as number,
         ),
-        borderColor: 'rgba(102, 187, 106, 0.7)',
+        borderColor: 'rgba(255, 204, 0, 0.8)',
         backgroundColor: 'transparent',
         borderWidth: 2,
         borderDash: [6, 6],
         pointRadius: 0,
         fill: false,
       },
-      typeof avgProbStation?.trigger_moderate && {
-        label: `${t('Moderate')} (${avgProbStation?.trigger_moderate}%)`,
+      stationSummary?.trigger_moderate !== undefined && {
+        label: `${t('Moderate')} ${t('threshold')}`,
         data: Array.from(
           { length: labels.length },
-          () => (avgProbStation?.trigger_moderate as number) * 100,
+          () => stationSummary!.trigger_moderate as number,
         ),
-        borderColor: 'rgba(255, 167, 38, 0.8)',
+        borderColor: 'rgba(255, 140, 33, 0.8)',
         backgroundColor: 'transparent',
         borderWidth: 2,
         borderDash: [6, 6],
         pointRadius: 0,
         fill: false,
       },
-      typeof avgProbStation?.trigger_severe && {
-        label: `${t('Severe')} (${avgProbStation?.trigger_severe}%)`,
+      stationSummary?.trigger_severe !== undefined && {
+        label: `${t('Severe')} ${t('threshold')}`,
         data: Array.from(
           { length: labels.length },
-          () => (avgProbStation?.trigger_severe as number) * 100,
+          () => stationSummary!.trigger_severe as number,
         ),
-        borderColor: 'rgba(239, 83, 80, 0.8)',
+        borderColor: 'rgba(230, 55, 1, 0.8)',
         backgroundColor: 'transparent',
         borderWidth: 2,
         borderDash: [6, 6],
@@ -406,8 +416,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         {
           label: t('Bankfull'),
           data: bankfullSeries,
-          borderColor: 'rgba(102, 187, 106, 0.4)',
-          backgroundColor: 'rgba(102, 187, 106, 0.4)',
+          borderColor: AAFloodColors.chart.bankfull.transparent,
+          backgroundColor: AAFloodColors.chart.bankfull.transparent,
           borderWidth: 2,
           showLine: false,
           pointRadius: 3,
@@ -418,8 +428,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         {
           label: t('Moderate'),
           data: moderateSeries,
-          borderColor: 'rgba(255, 167, 38, 0.4)',
-          backgroundColor: 'rgba(255, 167, 38, 0.4)',
+          borderColor: AAFloodColors.chart.moderate.transparent,
+          backgroundColor: AAFloodColors.chart.moderate.transparent,
           borderWidth: 2,
           showLine: false,
           pointRadius: 3,
@@ -430,8 +440,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         {
           label: t('Severe'),
           data: severeSeries,
-          borderColor: 'rgba(239, 83, 80, 0.4)',
-          backgroundColor: 'rgba(239, 83, 80, 0.4)',
+          borderColor: AAFloodColors.chart.severe.transparent,
+          backgroundColor: AAFloodColors.chart.severe.transparent,
           borderWidth: 2,
           showLine: false,
           pointRadius: 3,
@@ -442,8 +452,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         // Mean lines over window only (no fill)
         {
           label: t('Bankfull mean (window)'),
-          data: flatWindowSeries(bankfullMean * 100),
-          borderColor: 'rgba(102, 187, 106, 1)',
+          data: flatWindowSeries(bankfullMean),
+          borderColor: AAFloodColors.chart.bankfull.solid,
           backgroundColor: 'transparent',
           borderWidth: 2,
           pointRadius: 0,
@@ -453,8 +463,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         },
         {
           label: t('Moderate mean (window)'),
-          data: flatWindowSeries(moderateMean * 100),
-          borderColor: 'rgba(255, 167, 38, 1)',
+          data: flatWindowSeries(moderateMean),
+          borderColor: AAFloodColors.chart.moderate.solid,
           backgroundColor: 'transparent',
           borderWidth: 2,
           pointRadius: 0,
@@ -464,8 +474,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         },
         {
           label: t('Severe mean (window)'),
-          data: flatWindowSeries(severeMean * 100),
-          borderColor: 'rgba(239, 83, 80, 1)',
+          data: flatWindowSeries(severeMean),
+          borderColor: AAFloodColors.chart.severe.solid,
           backgroundColor: 'transparent',
           borderWidth: 2,
           pointRadius: 0,
@@ -477,25 +487,51 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         ...fillDatasets,
       ],
     };
-  }, [
-    probs,
-    sortedData,
-    avgProbStation?.avg_bankfull_percentage,
-    avgProbStation?.avg_moderate_percentage,
-    avgProbStation?.avg_severe_percentage,
-    avgProbStation?.trigger_bankfull,
-    avgProbStation?.trigger_moderate,
-    avgProbStation?.trigger_severe,
-    t,
-    labels,
-    beginIdx,
-    endIdx,
-  ]);
+  }, [probs, stationSummary, sortedData, t, labels, beginIdx, endIdx]);
 
   const hydrographOptions = useMemo(
     () => ({
       responsive: true,
       maintainAspectRatio: false,
+      elements: {
+        point: {
+          // Improve hoverability without showing points
+          hitRadius: 8,
+        },
+      },
+      tooltips: {
+        mode: 'index' as const,
+        intersect: false,
+        // Hide ensemble members from tooltips
+        filter: (tooltipItem: any, data: any) => {
+          const datasetLabel = String(
+            data?.datasets?.[tooltipItem.datasetIndex]?.label ?? '',
+          );
+          return !/^Member\s\d+$/i.test(datasetLabel);
+        },
+        callbacks: {
+          // Add min and max values to the tooltip
+          afterBody: (items: any[]) => {
+            if (!items || !items.length) {
+              return [] as string[];
+            }
+            const idx = items[0].index as number;
+            const p = (floodState.forecastData[station.station_name] || [])[
+              idx
+            ];
+            const arr: number[] = p?.ensemble_members || [];
+            if (!arr.length) {
+              return [] as string[];
+            }
+            const min = Math.min(...arr).toFixed(2);
+            const max = Math.max(...arr).toFixed(2);
+            return [
+              `${String(t('Min'))}: ${min}`,
+              `${String(t('Max'))}: ${max}`,
+            ];
+          },
+        },
+      },
       legend: {
         position: 'right' as const,
         labels: {
@@ -534,7 +570,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         ],
       },
     }),
-    [t],
+    [t, floodState.forecastData, station.station_name],
   );
 
   const probabilityOptions = useMemo(() => {
@@ -543,18 +579,20 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     }
 
     // Compute y-axis max rounded up to the next dizaine (multiple of 10)
+    const triggerPcts = [
+      stationSummary?.trigger_bankfull,
+      stationSummary?.trigger_moderate,
+      stationSummary?.trigger_severe,
+    ].filter((v): v is number => typeof v === 'number');
     const maxPct = Math.max(
       50,
-      (avgProbStation?.trigger_bankfull || 0) * 100,
-      (avgProbStation?.trigger_moderate || 0) * 100,
-      (avgProbStation?.trigger_severe || 0) * 100,
-      ...probs.map(
-        d =>
-          Math.max(
-            d.bankfull_percentage,
-            d.moderate_percentage,
-            d.severe_percentage,
-          ) * 100,
+      ...triggerPcts,
+      ...probs.map(d =>
+        Math.max(
+          d.bankfullPercentage,
+          d.moderatePercentage,
+          d.severePercentage,
+        ),
       ),
     );
     const maxTick = Math.ceil((maxPct + 10) / 10) * 10;
@@ -569,7 +607,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
               mode: 'vertical',
               scaleID: 'x-axis-0',
               value: windowBeginLabel,
-              borderColor: '#2196F3',
+              borderColor: AAFloodColors.annotation.forecastStart,
               borderDash: [4, 4],
               borderWidth: 1,
               label: {
@@ -579,7 +617,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                   day: forecastWindow.start,
                 }),
                 backgroundColor: 'rgba(0,0,0,0)',
-                fontColor: '#2196F3',
+                fontColor: AAFloodColors.annotation.forecastStart,
                 xAdjust: -50,
               },
             },
@@ -592,7 +630,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
               mode: 'vertical',
               scaleID: 'x-axis-0',
               value: windowEndLabel,
-              borderColor: '#9C27B0',
+              borderColor: AAFloodColors.annotation.forecastEnd,
               borderDash: [4, 4],
               borderWidth: 1,
               label: {
@@ -600,7 +638,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                 position: 'top',
                 content: t('{{day}}-day forecast', { day: forecastWindow.end }),
                 backgroundColor: 'rgba(0,0,0,0)',
-                fontColor: '#9C27B0',
+                fontColor: AAFloodColors.annotation.forecastEnd,
                 xAdjust: -50,
               },
             },
@@ -637,17 +675,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         annotations,
       },
     } as any;
-  }, [
-    probs,
-    avgProbStation?.trigger_bankfull,
-    avgProbStation?.trigger_moderate,
-    avgProbStation?.trigger_severe,
-    labels,
-    beginIdx,
-    endIdx,
-    t,
-    hydrographOptions,
-  ]);
+  }, [probs, stationSummary, labels, beginIdx, endIdx, t, hydrographOptions]);
 
   const handleTabChange = (newValue: number) => {
     setActiveTab(newValue);
@@ -658,120 +686,126 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     setViewMode(prev => (prev === 'chart' ? 'table' : 'chart'));
   };
 
-  const download = async () => {
-    if (isDownloading) {
-      return;
-    }
+  const openDownloadMenu = (event: ReactMouseEvent<HTMLElement>) => {
+    setDownloadMenuAnchor(event.currentTarget);
+  };
 
-    setIsDownloading(true);
-    if (viewMode === 'chart') {
-      await downloadChart();
+  const closeDownloadMenu = () => setDownloadMenuAnchor(null);
+
+  const downloadChart = () => {
+    const chartRef = activeTab === 1 ? hydrographChartRef : probabilityChartRef;
+    const chartName = activeTab === 1 ? 'Hydrograph' : 'Trigger Probability';
+    const { chartInstance } = chartRef.current ?? ({} as any);
+
+    if (chartInstance && chartInstance.ctx) {
+      const base64Image = chartInstance.toBase64Image();
+      const link = document.createElement('a');
+      link.setAttribute('href', base64Image);
+      link.setAttribute('download', `${station.station_name}_${chartName}.png`);
+      link.click();
     } else {
-      await downloadTable();
-    }
-    setIsDownloading(false);
-  };
-
-  const downloadChart = async () => {
-    // chartjs needs to render the chart instance and have ctx ready to be used in Base64 conversion
-    const maxAttempts = 50; // Max 5 seconds
-    // eslint-disable-next-line fp/no-mutation
-    for (let attempts = 0; attempts < maxAttempts; attempts += 1) {
-      const chartRef =
-        activeTab === 1 ? hydrographChartRef : probabilityChartRef;
-      const chartInstance = chartRef.current?.chartInstance;
-      if (chartInstance && chartInstance.ctx) {
-        const base64Image = chartInstance.toBase64Image();
-        const link = document.createElement('a');
-        link.setAttribute('href', base64Image);
-        const chartName =
-          activeTab === 1 ? 'Hydrograph' : 'Trigger Probability';
-        link.setAttribute(
-          'download',
-          `${station.station_name}_${chartName}.png`,
-        );
-        link.click();
-        return;
-      }
-      // eslint-disable-next-line no-await-in-loop, no-promise-executor-return
-      await new Promise(resolve => setTimeout(resolve, 100));
+      console.error('Chart instance not available for download');
     }
   };
 
-  const downloadTable = async () => {
-    const maxAttempts = 50; // Max 5 seconds
-    // eslint-disable-next-line fp/no-mutation
-    for (let attempts = 0; attempts < maxAttempts; attempts += 1) {
-      const tableData =
-        activeTab === 1 ? hydrographTableData : triggerProbabilityTableData;
+  const downloadTable = () => {
+    const tableName = activeTab === 1 ? 'Hydrograph' : 'Trigger_Probability';
+    const tableData =
+      activeTab === 1 ? hydrographTableData : triggerProbabilityTableData;
 
-      if (tableData) {
-        const csvContent = [
-          tableData.columnNames.join(','),
-          ...tableData.tableValues.map(row =>
-            row.map(cell => `"${cell}"`).join(','),
-          ),
-        ].join('\n');
+    if (tableData) {
+      const csvContent = [
+        tableData.columnNames.join(','),
+        ...tableData.tableValues.map(row =>
+          row.map(cell => `"${cell}"`).join(','),
+        ),
+      ].join('\n');
 
-        const blob = new Blob([csvContent], {
-          type: 'text/csv;charset=utf-8;',
-        });
-        const link = document.createElement('a');
-        const url = URL.createObjectURL(blob);
-        link.setAttribute('href', url);
-        const tableName =
-          activeTab === 1 ? 'Hydrograph' : 'Trigger_Probability';
-        link.setAttribute(
-          'download',
-          `${station.station_name}_${tableName}.csv`,
-        );
-        document.body.appendChild(link);
-        link.click();
-        return;
-      }
-      // eslint-disable-next-line no-await-in-loop, no-promise-executor-return
-      await new Promise(resolve => setTimeout(resolve, 100));
+      const blob = new Blob([csvContent], {
+        type: 'text/csv;charset=utf-8;',
+      });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `${station.station_name}_${tableName}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } else {
+      console.error('Table data not available for download');
     }
   };
 
   const hydrographTableData = useMemo(() => {
-    if (!hydrographData || !hydrographData.datasets) {
+    const fc = floodState.forecastData[station.station_name] ?? [];
+    const hd = hydrographData;
+
+    if (!hd?.datasets?.length || !fc.length) {
       return null;
     }
-
-    const tableDatasets = hydrographData.datasets.slice(0, 4);
-
-    const columnNames = [t('Day'), ...tableDatasets.map(d => d.label || '')];
-
-    const tableValues = (hydrographData.labels as string[]).map(
-      (rowLabel, rowIndex: number) => [
-        rowLabel ?? '',
-        ...tableDatasets.map(dataset => dataset.data?.[rowIndex] ?? '-'),
-      ],
+    const [
+      ensembleMean,
+      bankfullThreshold,
+      moderateThreshold,
+      severeThreshold,
+    ] = hd.datasets;
+    // get minimum and maximum ensemble member values
+    const ensembleMin = fc.map(p =>
+      p?.ensemble_members?.length
+        ? Math.round(Math.min(...p.ensemble_members) * 100) / 100
+        : null,
     );
+    const ensembleMax = fc.map(p =>
+      p?.ensemble_members?.length
+        ? Math.round(Math.max(...p.ensemble_members) * 100) / 100
+        : null,
+    );
+    // create hydrograph table
+    const columns = [
+      t('Day'),
+      ensembleMean?.label || t('Ensemble Mean'),
+      t('Min'),
+      t('Max'),
+      bankfullThreshold?.label || t('Bankfull threshold'),
+      moderateThreshold?.label || t('Moderate threshold'),
+      severeThreshold?.label || t('Severe threshold'),
+    ];
 
-    return {
-      columnNames,
-      tableValues,
-    };
-  }, [hydrographData, t]);
+    const cell = (v: number | null | undefined) =>
+      v === null || v === undefined || Number.isNaN(Number(v)) ? '-' : v;
+
+    const rows = (hd.labels as string[]).map((label, i) => [
+      label ?? '',
+      cell(ensembleMean?.data?.[i]),
+      cell(ensembleMin[i]),
+      cell(ensembleMax[i]),
+      cell(bankfullThreshold?.data?.[i]),
+      cell(moderateThreshold?.data?.[i]),
+      cell(severeThreshold?.data?.[i]),
+    ]);
+
+    return { columnNames: columns, tableValues: rows };
+  }, [hydrographData, floodState.forecastData, station.station_name, t]);
 
   const triggerProbabilityTableData = useMemo(() => {
     if (!triggerProbabilityData || !triggerProbabilityData.datasets) {
       return null;
     }
 
-    const columnNames = [
-      t('Date'),
-      ...triggerProbabilityData.datasets.map(d => d.label || ''),
-    ];
+    // Filter out mean fill datasets from table view
+    const tableDatasets = triggerProbabilityData.datasets.filter(
+      dataset => !dataset.label?.includes('mean fill'),
+    );
+
+    const columnNames = [t('Date'), ...tableDatasets.map(d => d.label || '')];
 
     const tableValues = (triggerProbabilityData.labels as string[]).map(
       (rowLabel, rowIndex: number) => [
         rowLabel ?? '',
-        ...triggerProbabilityData.datasets.map(dataset => {
+        ...tableDatasets.map(dataset => {
           const value = dataset.data?.[rowIndex];
-          return value ? `${value}%` : '-';
+          return value ? `${Number(value).toFixed(1)}%` : '-';
         }),
       ],
     );
@@ -848,9 +882,12 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         </div>
 
         <div className={classes.tabPanel}>
-          {activeTab === 1 &&
-            (viewMode === 'chart' ? (
-              <div className={classes.chartContainer}>
+          {activeTab === 1 && (
+            <>
+              <div
+                className={classes.chartContainer}
+                style={{ display: viewMode === 'chart' ? 'block' : 'none' }}
+              >
                 {hydrographData && (
                   <Line
                     ref={hydrographChartRef}
@@ -867,8 +904,11 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                   </div>
                 )}
               </div>
-            ) : (
-              <TableContainer className={classes.tableContainer}>
+              <TableContainer
+                className={classes.tableContainer}
+                key={`hydrograph-table-${station.station_name}`}
+                style={{ display: viewMode === 'table' ? 'block' : 'none' }}
+              >
                 <Table size="small">
                   <TableHead>
                     <TableRow>
@@ -883,11 +923,12 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {hydrographTableData?.tableValues.map(row => (
-                      <TableRow>
-                        {row.map(cellValue => (
+                    {hydrographTableData?.tableValues.map((row, rowIndex) => (
+                      <TableRow key={`hydrograph-row-${row[0] || rowIndex}`}>
+                        {row.map((cellValue, cellIndex) => (
                           <TableCell
-                            key={`${cellValue}`}
+                            // eslint-disable-next-line react/no-array-index-key
+                            key={`hydrograph-cell-${row[0] || rowIndex}-${cellIndex}`}
                             className={classes.tableCell}
                           >
                             {cellValue}
@@ -898,11 +939,15 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                   </TableBody>
                 </Table>
               </TableContainer>
-            ))}
+            </>
+          )}
 
-          {activeTab === 0 &&
-            (viewMode === 'chart' ? (
-              <div className={classes.chartContainer}>
+          {activeTab === 0 && (
+            <>
+              <div
+                className={classes.chartContainer}
+                style={{ display: viewMode === 'chart' ? 'block' : 'none' }}
+              >
                 {triggerProbabilityData && (
                   <Line
                     ref={probabilityChartRef}
@@ -919,8 +964,11 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                   </div>
                 )}
               </div>
-            ) : (
-              <TableContainer className={classes.tableContainer}>
+              <TableContainer
+                className={classes.tableContainer}
+                key={`trigger-probability-table-${station.station_name}`}
+                style={{ display: viewMode === 'table' ? 'block' : 'none' }}
+              >
                 <Table size="small">
                   <TableHead>
                     <TableRow>
@@ -936,33 +984,32 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                       )}
                     </TableRow>
                   </TableHead>
-                  <TableBody>
-                    {triggerProbabilityTableData?.tableValues.map(row => (
-                      <TableRow>
-                        {row.map(cellValue => (
-                          <TableCell
-                            key={cellValue}
-                            className={classes.tableCell}
-                          >
-                            {cellValue}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    ))}
+                  <TableBody
+                    key={`trigger-probability-table-body-${station.station_name}`}
+                  >
+                    {triggerProbabilityTableData?.tableValues.map(
+                      (row, rowIndex) => (
+                        <TableRow key={`probability-row-${row[0] || rowIndex}`}>
+                          {row.map((cellValue, cellIndex) => (
+                            <TableCell
+                              // eslint-disable-next-line react/no-array-index-key
+                              key={`probability-cell-${row[0] || rowIndex}-${cellIndex}`}
+                              className={classes.tableCell}
+                            >
+                              {cellValue}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      ),
+                    )}
                   </TableBody>
                 </Table>
               </TableContainer>
-            ))}
+            </>
+          )}
         </div>
 
         <div className={classes.actionButtons}>
-          <Button
-            className={classes.actionButton}
-            type="button"
-            startIcon={<Fullscreen />}
-          >
-            {t('Expand')}
-          </Button>
           <Button
             className={classes.actionButton}
             type="button"
@@ -977,11 +1024,44 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             startIcon={
               isDownloading ? <CircularProgress size={16} /> : <GetApp />
             }
-            onClick={download}
+            onClick={openDownloadMenu}
             disabled={isDownloading}
           >
             {isDownloading ? t('Downloading...') : t('Download')}
           </Button>
+          <Menu
+            anchorEl={downloadMenuAnchor}
+            keepMounted
+            open={Boolean(downloadMenuAnchor)}
+            onClose={closeDownloadMenu}
+          >
+            <MenuItem
+              onClick={async () => {
+                if (isDownloading) {
+                  return;
+                }
+                setIsDownloading(true);
+                closeDownloadMenu();
+                await downloadChart();
+                setIsDownloading(false);
+              }}
+            >
+              {t('Download PNG')}
+            </MenuItem>
+            <MenuItem
+              onClick={async () => {
+                if (isDownloading) {
+                  return;
+                }
+                setIsDownloading(true);
+                closeDownloadMenu();
+                await downloadTable();
+                setIsDownloading(false);
+              }}
+            >
+              {t('Download CSV')}
+            </MenuItem>
+          </Menu>
         </div>
       </Paper>
     </div>

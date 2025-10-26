@@ -25,6 +25,8 @@ import {
 import { useSafeTranslation } from 'i18n';
 import { AnticipatoryAction } from 'config/types';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
+import { getFormattedDate } from 'utils/date-utils';
+import { DateFormat } from 'utils/name-utils';
 import SimpleDropdown from 'components/Common/SimpleDropdown';
 import { useAnticipatoryAction } from '../useAnticipatoryAction';
 import StationCharts from './StationCharts';
@@ -77,6 +79,7 @@ const useStyles = makeStyles(() =>
     },
     firstCell: {
       color: `${cyanBlue}`,
+      fontWeight: 'bold',
     },
     pagination: {
       display: 'flex',
@@ -116,8 +119,8 @@ function AnticipatoryActionFloodPanel() {
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
   const { AAData } = useAnticipatoryAction(AnticipatoryAction.flood);
-  const { stations, selectedStation, loading, error, avgProbabilitiesData } =
-    AAData as any;
+  const { stations, selectedStation, loading, error, stationSummaryData } =
+    AAData;
   const { startDate } = useSelector(dateRangeSelector);
 
   const [sortField, setSortField] = useState<SortField>('risk_level');
@@ -152,6 +155,14 @@ function AnticipatoryActionFloodPanel() {
     setCurrentPage(prev => Math.min(maxPage, prev + 1));
   };
 
+  const formatDateForDisplay = (value: string | number | Date) => {
+    const d = new Date(value);
+    // Normalize to 12:00 UTC to avoid local timezone shifting the calendar date
+    d.setUTCHours(12, 0, 0, 0);
+    // format as dd-mm-yyyy
+    return getFormattedDate(d, DateFormat.DayFirstHyphen);
+  };
+
   // Filter stations by selected date
   const filteredStations = useMemo(() => {
     if (!startDate) {
@@ -159,23 +170,23 @@ function AnticipatoryActionFloodPanel() {
     }
     const selectedDateKey = new Date(startDate).toISOString().split('T')[0];
     return stations.filter((station: { station_name: string }) => {
-      const avg = avgProbabilitiesData?.[station.station_name];
+      const avg = stationSummaryData?.[station.station_name];
       const issueDate = avg?.forecast_issue_date
         ? new Date(avg.forecast_issue_date).toISOString().split('T')[0]
         : null;
       return issueDate === selectedDateKey;
     });
-  }, [stations, startDate, avgProbabilitiesData]);
+  }, [stations, startDate, stationSummaryData]);
 
   // Get station data for selected date
   const getStationDataForDate = (station: any) => {
-    const avg = avgProbabilitiesData?.[station.station_name];
+    const avg = stationSummaryData?.[station.station_name];
     if (!avg) {
       return null;
     }
     return {
       time: avg.forecast_issue_date,
-      risk_level: avg.trigger_status || 'Below bankfull',
+      risk_level: avg.trigger_status || 'Not exceeded',
     } as any;
   };
 
@@ -238,7 +249,9 @@ function AnticipatoryActionFloodPanel() {
       <div className={classes.container}>
         <Typography>{t('Loading flood data...')}</Typography>
         <TableContainer component={Paper} className={classes.tableContainer}>
-          <Table className={classes.table} size="small" />
+          <Table className={classes.table} size="small">
+            <TableBody />
+          </Table>
         </TableContainer>
       </div>
     );
@@ -311,9 +324,7 @@ function AnticipatoryActionFloodPanel() {
                     {station.station_name || '-'}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
-                    {stationData
-                      ? new Date(stationData.time).toLocaleDateString()
-                      : '-'}
+                    {stationData ? formatDateForDisplay(stationData.time) : '-'}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
                     {stationData ? (

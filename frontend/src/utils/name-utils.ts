@@ -32,4 +32,5 @@ export enum DateFormat {
   DayFirstSnakeCase = 'DD_MM_YYYY',
   MiddleEndian = 'MM/DD/YYYY',
   TimeOnly = 'HH:mm',
+  DayFirstHyphen = 'DD-MM-YYYY',
 }
