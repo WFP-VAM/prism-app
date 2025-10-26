@@ -1067,6 +1067,7 @@ export interface DashboardMapConfig {
   defaultDate?: string;
   mapPosition?: DashboardMapPosition;
   minMapBounds?: number[];
+  title?: string;
   preSelectedMapLayers: Array<{
     layerId: string;
     opacity?: number;

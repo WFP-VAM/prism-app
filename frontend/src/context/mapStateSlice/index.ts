@@ -30,6 +30,7 @@ export type MapState = {
   // Tile image loading for raster layer is tracked separately on mapTileLoadingStateSlice
   loadingLayerIds: LayerKey[];
   boundaryRelationData: BoundaryRelationsDict;
+  title?: string;
 };
 
 // Maplibre's map type contains some kind of cyclic dependency that causes an infinite loop in immers's change

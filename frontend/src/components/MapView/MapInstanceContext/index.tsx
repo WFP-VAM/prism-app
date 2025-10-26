@@ -16,6 +16,7 @@ import {
   setDashboardOpacity,
   dashboardOpacitySelector,
   dashboardMapStateSelector,
+  setMapTitle,
 } from 'context/dashboardStateSlice';
 
 type MapGetter = () => MaplibreMap | undefined;
@@ -37,6 +38,7 @@ export type MapInstanceActions = {
   setBoundaryRelationData: (data: BoundaryRelationsDict) => void;
   dismissError: (error: string) => void;
   setOpacity: (params: SetOpacityParams) => void;
+  updateMapTitle: (title: string) => void;
 };
 
 export type MapInstanceSelectors = {
@@ -48,6 +50,7 @@ export type MapInstanceSelectors = {
   selectCapturedViewport: (
     state: RootState,
   ) => [number, number, number, number] | undefined;
+  selectMapTitle: (state: RootState) => string | undefined;
 };
 
 type MapInstanceContextType = {
@@ -100,6 +103,9 @@ export function MapInstanceProvider({
       setOpacity: (params: SetOpacityParams) => {
         dispatch(setDashboardOpacity({ elementId, ...params }));
       },
+      updateMapTitle: (title: string) => {
+        dispatch(setMapTitle({ elementId, title }));
+      },
     }),
     [dispatch, elementId],
   );
@@ -121,6 +127,8 @@ export function MapInstanceProvider({
           dashboardMapStateSelector(elementId)(state)?.minMapBounds || [],
         selectCapturedViewport: (state: RootState) =>
           dashboardMapStateSelector(elementId)(state)?.capturedViewport,
+        selectMapTitle: (state: RootState) =>
+          dashboardMapStateSelector(elementId)(state)?.title,
       },
       actions,
     }),

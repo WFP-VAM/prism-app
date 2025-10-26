@@ -7,7 +7,10 @@ import {
   Button,
   Switch,
   FormControlLabel,
+  IconButton,
+  Tooltip,
 } from '@material-ui/core';
+import GetAppIcon from '@material-ui/icons/GetApp';
 import {
   DashboardTableConfig,
   AggregationOperations,
@@ -16,12 +19,17 @@ import {
   DashboardMode,
 } from 'config/types';
 import { useAnalysisForm, useAnalysisExecution } from 'utils/analysis-hooks';
-import { useAnalysisTableColumns } from 'utils/analysis-utils';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   setIsMapLayerActive,
   isAnalysisLayerActiveSelector,
 } from 'context/analysisResultStateSlice';
+import {
+  useAnalysisTableColumns,
+  downloadCSVFromTableData,
+  BaselineLayerResult,
+  PolygonAnalysisResult,
+} from 'utils/analysis-utils';
 import SimpleAnalysisTable from 'components/MapView/LeftPanel/AnalysisPanel/SimpleAnalysisTable';
 import {
   HazardLayerSelector,
@@ -34,9 +42,11 @@ import {
 } from 'components/Common/AnalysisFormComponents';
 import { useSafeTranslation } from 'i18n';
 import { dashboardModeSelector } from '../../context/dashboardStateSlice';
+import BlockPreviewHeader from './BlockPreviewHeader';
 
 interface TableBlockProps extends Partial<DashboardTableConfig> {
   index: number;
+  allowDownload?: boolean;
 }
 
 function TableBlock({
@@ -46,6 +56,7 @@ function TableBlock({
   baselineLayerId: initialBaselineLayerId,
   threshold: initialThreshold,
   stat: initialStat,
+  allowDownload,
 }: TableBlockProps) {
   const classes = useStyles();
   const { t } = useSafeTranslation();
@@ -85,6 +96,22 @@ function TableBlock({
 
   const handleToggleLayerVisibility = () => {
     dispatch(setIsMapLayerActive(!isAnalysisLayerActive));
+  };
+
+  const handleDownloadCSV = () => {
+    if (
+      formState.analysisResult &&
+      (formState.analysisResult instanceof BaselineLayerResult ||
+        formState.analysisResult instanceof PolygonAnalysisResult)
+    ) {
+      downloadCSVFromTableData(
+        formState.analysisResult,
+        translatedColumns,
+        formState.selectedDate,
+        sortColumn,
+        isAscending ? 'asc' : 'desc',
+      );
+    }
   };
 
   // Track form changes that would require rerunning analysis
@@ -245,14 +272,21 @@ function TableBlock({
       <Box className={classes.previewContainer}>
         {formState.selectedHazardLayer ? (
           <>
-            <Box className={classes.previewHeader}>
-              <Typography variant="h2" className={classes.previewTitle}>
-                {generatePreviewTitle()}
-              </Typography>
-              <Typography variant="body1" className={classes.previewDate}>
-                {formatPreviewDate()}
-              </Typography>
-            </Box>
+            <BlockPreviewHeader
+              title={generatePreviewTitle()}
+              subtitle={formatPreviewDate()}
+              downloadActions={
+                allowDownload &&
+                formState.analysisResult &&
+                analysisTableData.length > 0 && (
+                  <Tooltip title={t('Download CSV') as string}>
+                    <IconButton onClick={handleDownloadCSV} size="small">
+                      <GetAppIcon />
+                    </IconButton>
+                  </Tooltip>
+                )
+              }
+            />
             {renderPreviewTable()}
           </>
         ) : (
@@ -402,22 +436,6 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     overflow: 'hidden',
-  },
-  previewHeader: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    alignItems: 'baseline',
-    marginBottom: theme.spacing(2),
-    gap: theme.spacing(1),
-  },
-  previewTitle: {
-    flex: '1 1 auto',
-    minWidth: '60%',
-  },
-  previewDate: {
-    flex: '0 0 auto',
-    fontSize: '0.875rem',
   },
   blockTitle: {
     fontWeight: 600,
