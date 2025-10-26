@@ -6,6 +6,10 @@ import {
   Typography,
   CircularProgress,
   Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@material-ui/core';
 import {
   DashboardChartConfig,
@@ -25,6 +29,18 @@ import { dashboardModeSelector } from '../../context/dashboardStateSlice';
 interface ChartBlockProps extends Partial<DashboardChartConfig> {
   index: number;
 }
+
+enum ChartHeight {
+  TALL = 'tall',
+  MEDIUM = 'medium',
+  SHORT = 'short',
+}
+
+const CHART_HEIGHTS = {
+  [ChartHeight.TALL]: 400,
+  [ChartHeight.MEDIUM]: 275,
+  [ChartHeight.SHORT]: 240,
+};
 
 function ChartBlock({
   index,
@@ -64,6 +80,9 @@ function ChartBlock({
   // Form changes tracking for edit mode
   const [hasFormChanged, setHasFormChanged] = useState(false);
   const [wasChartLoading, setWasChartLoading] = useState(false);
+  const [chartHeightOption, setChartHeightOption] = useState<ChartHeight>(
+    ChartHeight.TALL,
+  );
 
   useEffect(() => {
     if (!formState.chartLayerId) {
@@ -159,6 +178,8 @@ function ChartBlock({
                   notMaintainAspectRatio
                   legendAtBottom
                   showDownloadIcons={false}
+                  responsive
+                  height={CHART_HEIGHTS[chartHeightOption]}
                 />
               </Box>
             )}
@@ -231,6 +252,7 @@ function ChartBlock({
           notMaintainAspectRatio
           legendAtBottom
           showDownloadIcons={false}
+          height={CHART_HEIGHTS[chartHeightOption]}
         />
       </Box>
     );
@@ -296,6 +318,22 @@ function ChartBlock({
             {renderEditPreviewChart()}
           </Box>
         )}
+        <FormControl
+          variant="outlined"
+          size="small"
+          className={classes.heightSelector}
+        >
+          <InputLabel>{t('Chart Height')}</InputLabel>
+          <Select
+            value={chartHeightOption}
+            onChange={e => setChartHeightOption(e.target.value as ChartHeight)}
+            label={t('Chart Height')}
+          >
+            <MenuItem value={ChartHeight.TALL}>{t('Tall')}</MenuItem>
+            <MenuItem value={ChartHeight.MEDIUM}>{t('Medium')}</MenuItem>
+            <MenuItem value={ChartHeight.SHORT}>{t('Short')}</MenuItem>
+          </Select>
+        </FormControl>
       </Box>
     </Box>
   );
@@ -313,7 +351,6 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 8,
     padding: 16,
     marginBottom: 16,
-    minHeight: 400,
     maxWidth: '100%',
     display: 'flex',
     flexDirection: 'column',
@@ -334,6 +371,10 @@ const useStyles = makeStyles(theme => ({
   previewDate: {
     flex: '0 0 auto',
     fontSize: '0.875rem',
+  },
+  heightSelector: {
+    minWidth: 120,
+    marginTop: theme.spacing(1),
   },
   blockTitle: {
     fontWeight: 600,
@@ -389,7 +430,6 @@ const useStyles = makeStyles(theme => ({
   },
   chartWrapper: {
     flex: 1,
-    minHeight: 300,
     maxWidth: '100%',
     width: '100%',
     display: 'flex',
@@ -397,10 +437,6 @@ const useStyles = makeStyles(theme => ({
     overflow: 'hidden',
     '& > *': {
       maxWidth: '100%',
-    },
-    '& canvas': {
-      maxWidth: '100% !important',
-      height: 'auto !important',
     },
   },
   emptyState: {
