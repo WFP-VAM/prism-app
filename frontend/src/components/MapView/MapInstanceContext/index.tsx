@@ -15,6 +15,7 @@ import {
   dismissError,
   setDashboardOpacity,
   dashboardOpacitySelector,
+  dashboardMapStateSelector,
 } from 'context/dashboardStateSlice';
 
 type MapGetter = () => MaplibreMap | undefined;
@@ -50,7 +51,7 @@ export type MapInstanceSelectors = {
 };
 
 type MapInstanceContextType = {
-  index: number;
+  elementId: string;
   selectors: Partial<MapInstanceSelectors>;
   actions: MapInstanceActions;
 };
@@ -62,68 +63,68 @@ export const MapInstanceContext = createContext<MapInstanceContextType | null>(
 /**
  * MapInstanceProvider wraps individual map instances to provide read/write utils
  * Map children within this provider can then safely manipulate layers and other pieces of state without affecting other maps
- * @param index - Position of map instance in an array of maps (e.g. in a dashboard config)
+ * @param elementId - Unique identifier for the map element (e.g. "0-1" for column 0, element 1)
  * @returns React element that provides map instance context to its children
  */
 export function MapInstanceProvider({
-  index,
+  elementId,
   children,
 }: {
-  index: number;
-  // initial?: Partial<MapState>;
+  elementId: string;
   children: React.ReactNode;
 }) {
   const dispatch = useDispatch();
   const actions: MapInstanceActions = useMemo(
     () => ({
       addLayer: (layer: LayerType) => {
-        dispatch(addLayerToMap({ index, layer }));
+        dispatch(addLayerToMap({ elementId, layer }));
       },
       removeLayer: (layer: LayerType) => {
-        dispatch(removeLayerFromMap({ index, layer }));
+        dispatch(removeLayerFromMap({ elementId, layer }));
       },
       updateDateRange: (dateRange: DateRange) => {
-        dispatch(updateMapDateRange({ index, dateRange }));
+        dispatch(updateMapDateRange({ elementId, dateRange }));
       },
       setMap: (mapGetter: MapGetter) => {
-        dispatch(setMap({ index, maplibreMap: mapGetter }));
+        dispatch(setMap({ elementId, maplibreMap: mapGetter }));
       },
       removeLayerData: (layer: LayerType) => {
-        dispatch(removeLayerData({ index, layer }));
+        dispatch(removeLayerData({ elementId, layer }));
       },
       setBoundaryRelationData: (data: BoundaryRelationsDict) => {
-        dispatch(setBoundaryRelationData({ index, data }));
+        dispatch(setBoundaryRelationData({ elementId, data }));
       },
       dismissError: (error: string) => {
-        dispatch(dismissError({ index, error }));
+        dispatch(dismissError({ elementId, error }));
       },
       setOpacity: (params: SetOpacityParams) => {
-        dispatch(setDashboardOpacity({ index, ...params }));
+        dispatch(setDashboardOpacity({ elementId, ...params }));
       },
     }),
-    [dispatch, index],
+    [dispatch, elementId],
   );
 
   const value = useMemo(
     () => ({
-      index,
+      elementId,
       selectors: {
         selectLayers: (state: RootState) =>
-          state.dashboardState.maps[index].layers,
+          dashboardMapStateSelector(elementId)(state)?.layers || [],
         selectDateRange: (state: RootState) =>
-          state.dashboardState.maps[index].dateRange,
+          dashboardMapStateSelector(elementId)(state)?.dateRange || {},
         selectMap: (state: RootState) =>
-          state.dashboardState.maps[index].maplibreMap,
+          dashboardMapStateSelector(elementId)(state)?.maplibreMap ||
+          (() => undefined),
         selectOpacity: (layerId: string) =>
-          dashboardOpacitySelector(index, layerId),
+          dashboardOpacitySelector(elementId, layerId),
         selectMinMapBounds: (state: RootState) =>
-          state.dashboardState.maps[index].minMapBounds,
+          dashboardMapStateSelector(elementId)(state)?.minMapBounds || [],
         selectCapturedViewport: (state: RootState) =>
-          state.dashboardState.maps[index].capturedViewport,
+          dashboardMapStateSelector(elementId)(state)?.capturedViewport,
       },
       actions,
     }),
-    [index, actions],
+    [elementId, actions],
   );
   return (
     <MapInstanceContext.Provider value={value}>

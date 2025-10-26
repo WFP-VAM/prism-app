@@ -1029,6 +1029,7 @@ export enum DashboardElementType {
   CHART = 'CHART',
   TEXT = 'TEXT',
   TABLE = 'TABLE',
+  MAP = 'MAP',
 }
 
 export enum DashboardMode {
@@ -1062,6 +1063,7 @@ export interface DashboardTableConfig {
 }
 
 export interface DashboardMapConfig {
+  type: DashboardElementType.MAP;
   defaultDate?: string;
   mapPosition?: DashboardMapPosition;
   minMapBounds?: number[];
@@ -1071,12 +1073,17 @@ export interface DashboardMapConfig {
   }>;
 }
 
+export type DashboardElements =
+  | DashboardMapConfig
+  | DashboardChartConfig
+  | DashboardTextConfig
+  | DashboardTableConfig;
+
 export interface ConfiguredReport {
   title: string;
   path: string;
-  flexElements: Array<
-    DashboardChartConfig | DashboardTextConfig | DashboardTableConfig
-  >;
-  maps: Array<DashboardMapConfig>;
   isEditable?: boolean;
+  firstColumn: DashboardElements[];
+  secondColumn?: DashboardElements[];
+  thirdColumn?: DashboardElements[];
 }

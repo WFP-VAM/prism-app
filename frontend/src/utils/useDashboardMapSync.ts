@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   dashboardSyncEnabledSelector,
   dashboardSharedViewportSelector,
-  dashboardConfigSelector,
+  dashboardMapElementsSelector,
   setSharedViewport,
 } from 'context/dashboardStateSlice';
 import { useMapState } from 'utils/useMapState';
@@ -12,14 +12,14 @@ export const useDashboardMapSync = (mode?: string) => {
   const dispatch = useDispatch();
   const syncEnabled = useSelector(dashboardSyncEnabledSelector);
   const sharedViewport = useSelector(dashboardSharedViewportSelector);
-  const dashboardMaps = useSelector(dashboardConfigSelector).maps;
-  const { maplibreMap, mapIndex } = useMapState();
+  const dashboardMaps = useSelector(dashboardMapElementsSelector);
+  const { maplibreMap, elementId } = useMapState();
   const isUpdatingRef = useRef(false);
   // Track layout changes to prevent sync during mode transitions
   const previousModeRef = useRef(mode);
   const layoutChangeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const shouldSync =
-    mapIndex !== undefined && syncEnabled && dashboardMaps.length > 1;
+    elementId !== undefined && syncEnabled && dashboardMaps.length > 1;
 
   // Detect mode changes and temporarily disable sync during layout transitions
   useEffect(() => {

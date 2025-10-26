@@ -61,7 +61,6 @@ function DashboardExportPreview() {
         >
           <DashboardContent
             showTitle
-            refreshKey={paperSize}
             logoConfig={logoConfig}
             exportConfig={exportConfigForContent}
           />

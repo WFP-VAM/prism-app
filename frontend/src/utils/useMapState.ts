@@ -34,7 +34,7 @@ export interface UnifiedMapState extends MapState {
   };
   capturedViewport?: [number, number, number, number];
   isGlobalMap: boolean;
-  mapIndex?: number;
+  elementId?: string;
 }
 
 export function useMapState(): UnifiedMapState {
@@ -130,6 +130,6 @@ export function useMapState(): UnifiedMapState {
     loadingLayerIds: [],
     boundaryRelationData: {},
     isGlobalMap: !mapInstanceContext,
-    mapIndex: mapInstanceContext?.index,
+    elementId: mapInstanceContext?.elementId,
   };
 }

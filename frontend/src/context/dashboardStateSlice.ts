@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { appConfig } from 'config';
-import { DashboardElementType } from 'config/types';
+
 import { Map as MaplibreMap } from 'maplibre-gl';
 import { MapState, DateRange } from 'context/mapStateSlice';
 import { LayerDefinitions } from 'config/utils';
@@ -10,11 +10,13 @@ import { getLayerMapId } from 'utils/map-utils';
 import { generateSlugFromTitle } from 'utils/string-utils';
 
 import type {
-  ConfiguredReport,
   LayerType,
   DashboardMapConfig,
   DashboardMode,
+  DashboardElements,
+  ConfiguredReport,
 } from 'config/types';
+import { DashboardElementType } from 'config/types';
 import type { RootState } from './store';
 
 type MapGetter = () => MaplibreMap | undefined;
@@ -42,8 +44,8 @@ export interface DashboardState {
   selectedDashboardIndex: number;
   title: string;
   mode: DashboardMode;
-  flexElements: ConfiguredReport['flexElements'];
-  maps: DashboardMapState[];
+  columns: DashboardElements[][];
+  mapStates: { [elementId: string]: DashboardMapState };
   syncMapsEnabled: boolean;
   sharedViewport?: {
     bounds: [number, number, number, number]; // [west, south, east, north]
@@ -60,8 +62,9 @@ const getDashboardConfig = (index: number) => {
     return {
       title: 'Dashboard',
       path: 'dashboard',
-      flexElements: [],
-      maps: [],
+      firstColumn: [],
+      secondColumn: [],
+      thirdColumn: [],
     };
   }
   const originalConfig =
@@ -102,72 +105,87 @@ const getMapLayerOpacityConfig = (
   }
 };
 
+const createMapStateFromConfig = (
+  mapConfig: DashboardMapConfig,
+): DashboardMapState => {
+  // Process pre-selected layers
+  const preSelectedLayers: LayerType[] = [];
+  const initialOpacityMap: { [key: string]: OpacityEntry } = {};
+
+  if (mapConfig.preSelectedMapLayers) {
+    mapConfig.preSelectedMapLayers.forEach(layerConfig => {
+      const layerId =
+        typeof layerConfig === 'string' ? layerConfig : layerConfig.layerId;
+      const opacity =
+        typeof layerConfig === 'string' ? 1.0 : (layerConfig.opacity ?? 1.0);
+
+      const layer = LayerDefinitions[layerId];
+      if (layer) {
+        // eslint-disable-next-line fp/no-mutating-methods
+        preSelectedLayers.push(layer);
+        const [mapLayerId, opacityType] = getMapLayerOpacityConfig(
+          layerId,
+          layer.type,
+        );
+        // eslint-disable-next-line fp/no-mutation
+        initialOpacityMap[layerId] = {
+          mapLayerId,
+          opacityType,
+          value: opacity,
+        };
+      } else {
+        console.warn(
+          `Pre-selected layer "${layerId}" not found in LayerDefinitions`,
+        );
+      }
+    });
+  }
+
+  return {
+    layers: preSelectedLayers,
+    dateRange: {
+      startDate: mapConfig.defaultDate
+        ? new Date(mapConfig.defaultDate).getTime()
+        : undefined,
+    },
+    maplibreMap: () => undefined,
+    errors: [],
+    layersData: [],
+    loadingLayerIds: [],
+    boundaryRelationData: {},
+    opacityMap: initialOpacityMap,
+    minMapBounds: mapConfig.minMapBounds || [],
+  };
+};
+
 const createInitialState = (dashboardIndex: number = 0): DashboardState => {
   const dashboardConfig = getDashboardConfig(dashboardIndex);
+
+  const allColumns = [
+    dashboardConfig?.firstColumn || [],
+    dashboardConfig?.secondColumn || [],
+    dashboardConfig?.thirdColumn || [],
+  ];
+
+  const mapStates: { [elementId: string]: DashboardMapState } = {};
+  allColumns.forEach((column: DashboardElements[], columnIndex: number) => {
+    column.forEach((element: DashboardElements, elementIndex: number) => {
+      if (element.type === DashboardElementType.MAP) {
+        const elementId = `${columnIndex}-${elementIndex}`;
+        // eslint-disable-next-line fp/no-mutation
+        mapStates[elementId] = createMapStateFromConfig(element);
+      }
+    });
+  });
 
   return {
     selectedDashboardIndex: dashboardIndex,
     title: dashboardConfig?.title || 'Dashboard',
     mode: 'preview' as DashboardMode,
-    flexElements: dashboardConfig?.flexElements || [],
+    columns: allColumns,
+    mapStates,
     syncMapsEnabled: false,
     sharedViewport: undefined,
-    maps:
-      dashboardConfig?.maps?.map((mapConfig: DashboardMapConfig) => {
-        // Process pre-selected layers
-        const preSelectedLayers: LayerType[] = [];
-        const initialOpacityMap: { [key: string]: OpacityEntry } = {};
-
-        if (mapConfig.preSelectedMapLayers) {
-          mapConfig.preSelectedMapLayers.forEach(layerConfig => {
-            const layerId =
-              typeof layerConfig === 'string'
-                ? layerConfig
-                : layerConfig.layerId;
-            const opacity =
-              typeof layerConfig === 'string'
-                ? 1.0
-                : (layerConfig.opacity ?? 1.0);
-
-            const layer = LayerDefinitions[layerId];
-            if (layer) {
-              // eslint-disable-next-line fp/no-mutating-methods
-              preSelectedLayers.push(layer);
-              const [mapLayerId, opacityType] = getMapLayerOpacityConfig(
-                layerId,
-                layer.type,
-              );
-              // eslint-disable-next-line fp/no-mutation
-              initialOpacityMap[layerId] = {
-                mapLayerId,
-                opacityType,
-                value: opacity,
-              };
-            } else {
-              console.warn(
-                `Pre-selected layer "${layerId}" not found in LayerDefinitions`,
-              );
-            }
-          });
-        }
-
-        return {
-          layers: preSelectedLayers,
-          dateRange: {
-            startDate: mapConfig.defaultDate
-              ? new Date(mapConfig.defaultDate).getTime()
-              : undefined,
-          },
-          maplibreMap: () => undefined,
-          errors: [],
-          layersData: [],
-          loadingLayerIds: [],
-          boundaryRelationData: {},
-          opacityMap: initialOpacityMap,
-          minMapBounds: mapConfig.minMapBounds,
-          capturedViewport: undefined,
-        };
-      }) || [],
   };
 };
 
@@ -202,21 +220,20 @@ export const dashboardStateSlice = createSlice({
     setCapturedViewport: (
       state,
       action: PayloadAction<{
-        index: number;
+        elementId: string;
         bounds: [number, number, number, number];
       }>,
     ) => {
-      const { index, bounds } = action.payload;
+      const { elementId, bounds } = action.payload;
       return {
         ...state,
-        maps: state.maps.map((mapInstance, i) =>
-          i === index
-            ? {
-                ...mapInstance,
-                capturedViewport: bounds,
-              }
-            : mapInstance,
-        ),
+        mapStates: {
+          ...state.mapStates,
+          [elementId]: {
+            ...state.mapStates[elementId],
+            capturedViewport: bounds,
+          },
+        },
       };
     },
     setTitle: (state, action: PayloadAction<string>) => ({
@@ -229,29 +246,43 @@ export const dashboardStateSlice = createSlice({
     }),
     setTextContent: (
       state,
-      action: PayloadAction<{ index: number; content: string }>,
+      action: PayloadAction<{
+        columnIndex: number;
+        elementIndex: number;
+        content: string;
+      }>,
     ) => {
-      const { index, content } = action.payload;
+      const { columnIndex, elementIndex, content } = action.payload;
       return {
         ...state,
-        flexElements: state.flexElements.map((element, i) =>
-          i === index ? { type: DashboardElementType.TEXT, content } : element,
+        columns: state.columns.map((column, colIdx) =>
+          colIdx === columnIndex
+            ? column.map((element, elemIdx) =>
+                elemIdx === elementIndex &&
+                element.type === DashboardElementType.TEXT
+                  ? { ...element, content }
+                  : element,
+              )
+            : column,
         ),
       };
     },
     addLayerToMap: (
       state,
-      action: PayloadAction<{ index: number; layer: LayerType }>,
+      action: PayloadAction<{ elementId: string; layer: LayerType }>,
     ) => {
-      const { index, layer } = action.payload;
+      const { elementId, layer } = action.payload;
+      const mapState = state.mapStates[elementId];
+      if (!mapState) {
+        return state;
+      }
+
       const layersToAdd = layer?.group?.activateAll
         ? Object.values(LayerDefinitions).filter(l =>
             layer?.group?.layers?.map(subLayer => subLayer.id).includes(l.id),
           )
         : [layer];
-      const filteredLayers = state.maps[index].layers.filter(l =>
-        keepLayer(l, layer),
-      );
+      const filteredLayers = mapState.layers.filter(l => keepLayer(l, layer));
 
       const newLayers =
         layer.type === 'boundary'
@@ -265,117 +296,158 @@ export const dashboardStateSlice = createSlice({
 
       return {
         ...state,
-        maps: state.maps.map((mapInstance, i) =>
-          i === index
-            ? {
-                ...mapInstance,
-                layers: dedupedLayers,
-              }
-            : mapInstance,
-        ),
+        mapStates: {
+          ...state.mapStates,
+          [elementId]: {
+            ...mapState,
+            layers: dedupedLayers,
+          },
+        },
       };
     },
     removeLayerFromMap: (
       state,
-      action: PayloadAction<{ index: number; layer: LayerType }>,
+      action: PayloadAction<{ elementId: string; layer: LayerType }>,
     ) => {
-      const { index, layer } = action.payload;
-      const filteredLayers = state.maps[index].layers.filter(l =>
-        keepLayer(l, layer),
-      );
+      const { elementId, layer } = action.payload;
+      const mapState = state.mapStates[elementId];
+      if (!mapState) {
+        return state;
+      }
+
+      const filteredLayers = mapState.layers.filter(l => keepLayer(l, layer));
 
       return {
         ...state,
-        maps: state.maps.map((mapInstance, i) =>
-          i === index
-            ? { ...mapInstance, layers: filteredLayers }
-            : mapInstance,
-        ),
+        mapStates: {
+          ...state.mapStates,
+          [elementId]: {
+            ...mapState,
+            layers: filteredLayers,
+          },
+        },
       };
     },
     updateMapDateRange: (
       state,
-      action: PayloadAction<{ index: number; dateRange: DateRange }>,
+      action: PayloadAction<{ elementId: string; dateRange: DateRange }>,
     ) => {
-      const { index, dateRange } = action.payload;
+      const { elementId, dateRange } = action.payload;
+      const mapState = state.mapStates[elementId];
+      if (!mapState) {
+        return state;
+      }
 
       return {
         ...state,
-        maps: state.maps.map((mapInstance, i) =>
-          i === index ? { ...mapInstance, dateRange } : mapInstance,
-        ),
+        mapStates: {
+          ...state.mapStates,
+          [elementId]: {
+            ...mapState,
+            dateRange,
+          },
+        },
       };
     },
     setMap: (
       state,
-      action: PayloadAction<{ index: number; maplibreMap: MapGetter }>,
+      action: PayloadAction<{ elementId: string; maplibreMap: MapGetter }>,
     ) => {
-      const { index, maplibreMap } = action.payload;
+      const { elementId, maplibreMap } = action.payload;
+      const mapState = state.mapStates[elementId];
+      if (!mapState) {
+        return state;
+      }
+
       return {
         ...state,
-        maps: state.maps.map((mapInstance, i) =>
-          i === index ? { ...mapInstance, maplibreMap } : mapInstance,
-        ),
+        mapStates: {
+          ...state.mapStates,
+          [elementId]: {
+            ...mapState,
+            maplibreMap,
+          },
+        },
       };
     },
     removeLayerData: (
       state,
-      action: PayloadAction<{ index: number; layer: LayerType }>,
+      action: PayloadAction<{ elementId: string; layer: LayerType }>,
     ) => {
-      const { index, layer } = action.payload;
+      const { elementId, layer } = action.payload;
+      const mapState = state.mapStates[elementId];
+      if (!mapState) {
+        return state;
+      }
+
       return {
         ...state,
-        maps: state.maps.map((mapInstance, i) =>
-          i === index
-            ? {
-                ...mapInstance,
-                layersData: mapInstance.layersData.filter(
-                  ({ layer: dataLayer }) => dataLayer.id !== layer.id,
-                ),
-              }
-            : mapInstance,
-        ),
+        mapStates: {
+          ...state.mapStates,
+          [elementId]: {
+            ...mapState,
+            layersData: mapState.layersData.filter(
+              ({ layer: dataLayer }) => dataLayer.id !== layer.id,
+            ),
+          },
+        },
       };
     },
     setBoundaryRelationData: (
       state,
-      action: PayloadAction<{ index: number; data: BoundaryRelationsDict }>,
+      action: PayloadAction<{ elementId: string; data: BoundaryRelationsDict }>,
     ) => {
-      const { index, data } = action.payload;
+      const { elementId, data } = action.payload;
+      const mapState = state.mapStates[elementId];
+      if (!mapState) {
+        return state;
+      }
+
       return {
         ...state,
-        maps: state.maps.map((mapInstance, i) =>
-          i === index
-            ? { ...mapInstance, boundaryRelationData: data }
-            : mapInstance,
-        ),
+        mapStates: {
+          ...state.mapStates,
+          [elementId]: {
+            ...mapState,
+            boundaryRelationData: data,
+          },
+        },
       };
     },
     dismissError: (
       state,
-      action: PayloadAction<{ index: number; error: string }>,
+      action: PayloadAction<{ elementId: string; error: string }>,
     ) => {
-      const { index, error } = action.payload;
+      const { elementId, error } = action.payload;
+      const mapState = state.mapStates[elementId];
+      if (!mapState) {
+        return state;
+      }
+
       return {
         ...state,
-        maps: state.maps.map((mapInstance, i) =>
-          i === index
-            ? {
-                ...mapInstance,
-                errors: mapInstance.errors.filter(msg => msg !== error),
-              }
-            : mapInstance,
-        ),
+        mapStates: {
+          ...state.mapStates,
+          [elementId]: {
+            ...mapState,
+            errors: mapState.errors.filter(msg => msg !== error),
+          },
+        },
       };
     },
     setDashboardOpacity: (
       state,
-      action: PayloadAction<{ index: number } & SetDashboardOpacityParams>,
+      action: PayloadAction<{ elementId: string } & SetDashboardOpacityParams>,
     ) => {
-      const { index, map, layerId, layerType, value, callback } =
+      const { elementId, map, layerId, layerType, value, callback } =
         action.payload;
 
       if (!map || !layerId || value === undefined || !layerType) {
+        return state;
+      }
+
+      const mapState = state.mapStates[elementId];
+      if (!mapState) {
         return state;
       }
 
@@ -400,21 +472,20 @@ export const dashboardStateSlice = createSlice({
 
       return {
         ...state,
-        maps: state.maps.map((mapInstance, i) =>
-          i === index
-            ? {
-                ...mapInstance,
-                opacityMap: {
-                  ...mapInstance.opacityMap,
-                  [layerId]: {
-                    mapLayerId,
-                    opacityType,
-                    value,
-                  },
-                },
-              }
-            : mapInstance,
-        ),
+        mapStates: {
+          ...state.mapStates,
+          [elementId]: {
+            ...mapState,
+            opacityMap: {
+              ...mapState.opacityMap,
+              [layerId]: {
+                mapLayerId,
+                opacityType,
+                value,
+              },
+            },
+          },
+        },
       };
     },
   },
@@ -425,7 +496,6 @@ export const selectedDashboardIndexSelector = (state: RootState): number =>
   state.dashboardState.selectedDashboardIndex;
 export const dashboardModeSelector = (state: RootState): DashboardMode =>
   state.dashboardState.mode;
-
 export const dashboardConfigSelector = (
   state: RootState,
 ): ConfiguredReport & {
@@ -438,9 +508,35 @@ export const dashboardConfigSelector = (
   return {
     ...config,
     selectedDashboardIndex: currentDashboardIndex,
-    maps: state.dashboardState.maps,
+    maps: state.dashboardState.mapStates,
   };
 };
+export const dashboardColumnsSelector = (
+  state: RootState,
+): DashboardElements[][] => {
+  const { columns } = state.dashboardState;
+  return columns.filter(column => column.length > 0);
+};
+
+export const dashboardMapElementsSelector = (
+  state: RootState,
+): DashboardMapConfig[] => {
+  const allMapElements: DashboardMapConfig[] = [];
+  state.dashboardState.columns.forEach(column => {
+    column.forEach(element => {
+      if (element.type === DashboardElementType.MAP) {
+        // eslint-disable-next-line fp/no-mutating-methods
+        allMapElements.push(element);
+      }
+    });
+  });
+  return allMapElements;
+};
+
+export const dashboardMapStateSelector =
+  (elementId: string) =>
+  (state: RootState): DashboardMapState | undefined =>
+    state.dashboardState.mapStates[elementId];
 
 export const dashboardSyncEnabledSelector = (state: RootState): boolean =>
   state.dashboardState.syncMapsEnabled;
@@ -450,9 +546,9 @@ export const dashboardSharedViewportSelector = (
 ): DashboardState['sharedViewport'] => state.dashboardState.sharedViewport;
 
 export const dashboardOpacitySelector =
-  (index: number, layerId: string) =>
+  (elementId: string, layerId: string) =>
   (state: RootState): number | undefined =>
-    state.dashboardState.maps[index]?.opacityMap[layerId]?.value;
+    state.dashboardState.mapStates[elementId]?.opacityMap[layerId]?.value;
 
 // Setters
 export const {

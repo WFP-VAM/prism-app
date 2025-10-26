@@ -45,196 +45,190 @@ import type { ExportConfig } from './DashboardContent';
 const displayedBoundaryLayers = getDisplayBoundaryLayers().reverse();
 
 interface MapBlockProps {
-  mapIndex: number;
   exportConfig?: ExportConfig;
+  elementId: string;
 }
 
-const MapBlockContent = memo(
-  ({ exportConfig }: Pick<MapBlockProps, 'exportConfig'>) => {
-    const classes = useStyles();
-    const { t } = useSafeTranslation();
-    const { selectedLayersWithDateSupport } = useLayers();
-    const { actions, maplibreMap, mapIndex } = useMapState();
-    const datesLoading = useSelector(areDatesLoading);
-    const mode = useSelector(dashboardModeSelector);
-    useDashboardMapSync(mode);
-    const map = maplibreMap();
-    const datesPreloadingForWMS = useSelector(WMSLayerDatesRequested);
-    const datesPreloadingForPointData = useSelector(
-      pointDataLayerDatesRequested,
-    );
-    const dispatch = useDispatch();
-    const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
+  const classes = useStyles();
+  const { t } = useSafeTranslation();
+  const { selectedLayersWithDateSupport } = useLayers();
+  const { actions, maplibreMap } = useMapState();
+  const datesLoading = useSelector(areDatesLoading);
+  const mode = useSelector(dashboardModeSelector);
+  useDashboardMapSync(mode);
+  const map = maplibreMap();
+  const datesPreloadingForWMS = useSelector(WMSLayerDatesRequested);
+  const datesPreloadingForPointData = useSelector(pointDataLayerDatesRequested);
+  const dispatch = useDispatch();
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-    if (mode === DashboardMode.PREVIEW) {
-      const canvas = map?.getCanvas();
-      if (canvas) {
-        // eslint-disable-next-line fp/no-mutation
-        canvas.style.cursor = 'default';
-      }
+  if (mode === DashboardMode.PREVIEW) {
+    const canvas = map?.getCanvas();
+    if (canvas) {
+      // eslint-disable-next-line fp/no-mutation
+      canvas.style.cursor = 'default';
+    }
+  }
+
+  if (mode === DashboardMode.EDIT) {
+    const canvas = map?.getCanvas();
+    if (canvas) {
+      // eslint-disable-next-line fp/no-mutation
+      canvas.style.cursor = 'inherit';
+    }
+  }
+
+  useEffect(() => {
+    if (!datesPreloadingForPointData) {
+      dispatch(preloadLayerDatesArraysForPointData());
+    }
+    if (!datesPreloadingForWMS) {
+      dispatch(preloadLayerDatesArraysForWMS());
+    }
+    // we must load boundary layer here for two reasons
+    // 1. Stop showing two loading screens on startup - maplibre renders its children very late, so we can't rely on BoundaryLayer to load internally
+    // 2. Prevent situations where a user can toggle a layer like NSO (depends on Boundaries) before Boundaries finish loading.
+    displayedBoundaryLayers.forEach(l => actions.addLayer(l));
+    // Load boundary data into global cache (shared across all maps)
+    boundaryCache.preloadBoundaries(displayedBoundaryLayers, dispatch, map);
+  }, [
+    actions,
+    datesPreloadingForPointData,
+    datesPreloadingForWMS,
+    dispatch,
+    mode,
+    map,
+  ]);
+
+  const { layers: preselectedLayers } = useMapState();
+  useEffect(() => {
+    if (preselectedLayers.length > 0) {
+      preselectedLayers.forEach(layer => {
+        if (layer.type === 'wms' || layer.type === 'point_data') {
+          dispatch(loadAvailableDatesForLayer(layer.id));
+        }
+      });
+    }
+  }, [preselectedLayers, dispatch]);
+
+  const captureViewport = useCallback(() => {
+    if (mode !== DashboardMode.EDIT || !map || elementId === undefined) {
+      return;
     }
 
-    if (mode === DashboardMode.EDIT) {
-      const canvas = map?.getCanvas();
-      if (canvas) {
-        // eslint-disable-next-line fp/no-mutation
-        canvas.style.cursor = 'inherit';
-      }
+    const bounds = map.getBounds();
+
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
     }
 
-    useEffect(() => {
-      if (!datesPreloadingForPointData) {
-        dispatch(preloadLayerDatesArraysForPointData());
-      }
-      if (!datesPreloadingForWMS) {
-        dispatch(preloadLayerDatesArraysForWMS());
-      }
-      // we must load boundary layer here for two reasons
-      // 1. Stop showing two loading screens on startup - maplibre renders its children very late, so we can't rely on BoundaryLayer to load internally
-      // 2. Prevent situations where a user can toggle a layer like NSO (depends on Boundaries) before Boundaries finish loading.
-      displayedBoundaryLayers.forEach(l => actions.addLayer(l));
-      // Load boundary data into global cache (shared across all maps)
-      boundaryCache.preloadBoundaries(displayedBoundaryLayers, dispatch, map);
-    }, [
-      actions,
-      datesPreloadingForPointData,
-      datesPreloadingForWMS,
-      dispatch,
-      mode,
-      map,
-    ]);
+    debounceTimerRef.current = setTimeout(() => {
+      dispatch(
+        setCapturedViewport({
+          elementId,
+          bounds: [
+            bounds.getWest(),
+            bounds.getSouth(),
+            bounds.getEast(),
+            bounds.getNorth(),
+          ],
+        }),
+      );
+    }, 300); // 300ms debounce
+  }, [mode, map, dispatch, elementId]);
 
-    const { layers: preselectedLayers } = useMapState();
-    useEffect(() => {
-      if (preselectedLayers.length > 0) {
-        preselectedLayers.forEach(layer => {
-          if (layer.type === 'wms' || layer.type === 'point_data') {
-            dispatch(loadAvailableDatesForLayer(layer.id));
-          }
-        });
-      }
-    }, [preselectedLayers, dispatch]);
+  useEffect(() => {
+    if (mode !== DashboardMode.EDIT || !map) {
+      return undefined;
+    }
 
-    const captureViewport = useCallback(() => {
-      if (mode !== DashboardMode.EDIT || !map || mapIndex === undefined) {
-        return;
-      }
+    // Listen to map movement events
+    map.on('moveend', captureViewport);
+    map.on('zoomend', captureViewport);
 
-      const bounds = map.getBounds();
-
+    // Cleanup
+    return () => {
+      map.off('moveend', captureViewport);
+      map.off('zoomend', captureViewport);
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current);
       }
+    };
+  }, [mode, map, captureViewport]);
 
-      debounceTimerRef.current = setTimeout(() => {
-        dispatch(
-          setCapturedViewport({
-            index: mapIndex,
-            bounds: [
-              bounds.getWest(),
-              bounds.getSouth(),
-              bounds.getEast(),
-              bounds.getNorth(),
-            ],
-          }),
-        );
-      }, 300); // 300ms debounce
-    }, [mode, map, mapIndex, dispatch]);
-
-    useEffect(() => {
-      if (mode !== DashboardMode.EDIT || !map) {
-        return undefined;
+  return (
+    <Box
+      className={
+        mode === DashboardMode.PREVIEW ? classes.rootPreview : classes.root
       }
-
-      // Listen to map movement events
-      map.on('moveend', captureViewport);
-      map.on('zoomend', captureViewport);
-
-      // Cleanup
-      return () => {
-        map.off('moveend', captureViewport);
-        map.off('zoomend', captureViewport);
-        if (debounceTimerRef.current) {
-          clearTimeout(debounceTimerRef.current);
-        }
-      };
-    }, [mode, map, captureViewport]);
-
-    return (
-      <Box
+    >
+      {mode === DashboardMode.EDIT && (
+        <div className={classes.leftPanel}>
+          <RootAccordionItems />
+        </div>
+      )}
+      <div
         className={
-          mode === DashboardMode.PREVIEW ? classes.rootPreview : classes.root
+          mode === DashboardMode.PREVIEW
+            ? classes.rightPanelPreview
+            : classes.rightPanel
         }
       >
-        {mode === DashboardMode.EDIT && (
-          <div className={classes.leftPanel}>
-            <RootAccordionItems />
-          </div>
-        )}
-        <div
-          className={
-            mode === DashboardMode.PREVIEW
-              ? classes.rightPanelPreview
-              : classes.rightPanel
-          }
-        >
-          <div className={classes.mapContainer}>
-            {datesLoading && (
-              <div className={classes.loading}>
-                <CircularProgress size={100} />
-              </div>
-            )}
-            <MapComponent
-              hideMapLabels={
-                exportConfig?.toggles?.mapLabelsVisibility === false
-              }
-            >
-              {exportConfig?.toggles?.adminAreasVisibility &&
-              exportConfig?.invertedAdminBoundaryLimitPolygon ? (
-                <Source
-                  key={`mask-${exportConfig.selectedBoundaries?.join('-') || 'all'}`}
-                  id="dashboard-mask-overlay"
-                  type="geojson"
-                  data={exportConfig.invertedAdminBoundaryLimitPolygon}
-                >
-                  <Layer
-                    id="dashboard-mask-layer-overlay"
-                    type="fill"
-                    source="dashboard-mask-overlay"
-                    layout={{}}
-                    paint={{
-                      'fill-color': '#000',
-                      'fill-opacity': 0.7,
-                    }}
-                  />
-                </Source>
-              ) : null}
-            </MapComponent>
-            {!datesLoading && <DashboardLegends exportConfig={exportConfig} />}
-          </div>
-          {mode === DashboardMode.EDIT &&
-            selectedLayersWithDateSupport.length > 0 &&
-            !datesLoading && (
-              <div className={classes.dateSelectorContainer}>
-                <Typography variant="h3">{t('Map date')}</Typography>
-                <DateSelector />
-              </div>
-            )}
+        <div className={classes.mapContainer}>
+          {datesLoading && (
+            <div className={classes.loading}>
+              <CircularProgress size={100} />
+            </div>
+          )}
+          <MapComponent
+            hideMapLabels={exportConfig?.toggles?.mapLabelsVisibility === false}
+          >
+            {exportConfig?.toggles?.adminAreasVisibility &&
+            exportConfig?.invertedAdminBoundaryLimitPolygon ? (
+              <Source
+                key={`mask-${exportConfig.selectedBoundaries?.join('-') || 'all'}`}
+                id="dashboard-mask-overlay"
+                type="geojson"
+                data={exportConfig.invertedAdminBoundaryLimitPolygon}
+              >
+                <Layer
+                  id="dashboard-mask-layer-overlay"
+                  type="fill"
+                  source="dashboard-mask-overlay"
+                  layout={{}}
+                  paint={{
+                    'fill-color': '#000',
+                    'fill-opacity': 0.7,
+                  }}
+                />
+              </Source>
+            ) : null}
+          </MapComponent>
+          {!datesLoading && <DashboardLegends exportConfig={exportConfig} />}
         </div>
-      </Box>
-    );
-  },
-);
+        {mode === DashboardMode.EDIT &&
+          selectedLayersWithDateSupport.length > 0 &&
+          !datesLoading && (
+            <div className={classes.dateSelectorContainer}>
+              <Typography variant="h3">{t('Map date')}</Typography>
+              <DateSelector />
+            </div>
+          )}
+      </div>
+    </Box>
+  );
+});
 
-const MapBlock = memo(({ mapIndex, exportConfig }: MapBlockProps) => {
+const MapBlock = memo(({ elementId, exportConfig }: MapBlockProps) => {
   const selectedDashboardIndex = useSelector(selectedDashboardIndexSelector);
 
   return (
     <MapInstanceProvider
-      key={`dashboard-${selectedDashboardIndex}-map-${mapIndex}`}
-      index={mapIndex}
+      key={`dashboard-${selectedDashboardIndex}-map-${elementId}`}
+      elementId={elementId}
     >
-      <MapBlockContent exportConfig={exportConfig} />
+      <MapBlockContent exportConfig={exportConfig} elementId={elementId} />
     </MapInstanceProvider>
   );
 });
