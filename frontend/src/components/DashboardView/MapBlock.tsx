@@ -28,6 +28,7 @@ import {
   dashboardModeSelector,
 } from 'context/dashboardStateSlice';
 import useLayers from 'utils/layers-utils';
+import { getNonBoundaryLayers } from 'utils/boundary-layers-utils';
 import RootAccordionItems from 'components/MapView/LeftPanel/layersPanel/RootAccordionItems';
 import {
   pointDataLayerDatesRequested,
@@ -78,13 +79,7 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
 
-  // Get non-boundary layers for title display
-  const nonBoundaryLayers = layers.filter(
-    layer =>
-      layer.type !== 'boundary' &&
-      layer.type !== 'admin_level_data' &&
-      !layer.id.includes('admin'),
-  );
+  const nonBoundaryLayers = getNonBoundaryLayers(layers);
 
   const title =
     mapTitle ||
