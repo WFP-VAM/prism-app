@@ -39,7 +39,8 @@
     "deploy:tests": "./scripts/deploy_to_firebase.sh",
     "precommit": "lint-staged",
     "check-boundary-keys": "node ./scripts/check-boundary-keys-validity.js",
-    "preprocess-layers": "ts-node --compilerOptions \"{\\\"module\\\":\\\"commonjs\\\"}\" ./scripts/preprocess-layers.ts"
+    "preprocess-layers": "ts-node --compilerOptions \"{\\\"module\\\":\\\"commonjs\\\"}\" ./scripts/preprocess-layers.ts",
+    "setup:instance": "ts-node --compilerOptions \"{\\\"module\\\":\\\"commonjs\\\"}\" ./scripts/setup-new-instance.ts"
   },
   "dependencies": {
     "@azure/msal-browser": "^2.19.0",

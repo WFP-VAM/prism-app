@@ -16,6 +16,28 @@ The new PRISM frontend is built as a static website to minimize cross dependenci
 
 To chose which country to run PRISM for, you can set the environment variable `REACT_APP_COUNTRY`. The current default country is `mozambique`
 
+## Creating a New PRISM Instance
+
+To create a new PRISM instance for a country, we've automated the setup process with a command-line tool:
+
+```bash
+cd frontend
+yarn setup:instance
+```
+
+This interactive tool will prompt you for:
+- Country name and slug
+- Languages to support
+- Layers to include from the shared library
+- Map bounding box coordinates
+- WMS server URLs
+- Alert form activation
+- Boundary file name
+
+The tool generates all necessary configuration files. See `SETUP_TOOL_GUIDE.md` for detailed instructions.
+
+**Quick Setup Time**: Previously 4-8 hours → Now 15-20 minutes
+
 ## Configuration
 
 The configuration is split into three files that you can find in `src/config`:
