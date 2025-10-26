@@ -6,7 +6,6 @@ import { useDefaultDate } from 'utils/useDefaultDate';
 import { useSelector, useDispatch } from 'react-redux';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { setAAFloodSelectedStation } from 'context/anticipatoryAction/AAFloodStateSlice';
-import { getLayerMapId } from 'utils/map-utils';
 import { hidePopup } from 'context/tooltipStateSlice';
 import { Tooltip } from '@material-ui/core';
 import { AAFloodColors } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionFloodPanel/constants';

@@ -193,6 +193,10 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     const labels = forecast.map(
       p => getFormattedDate(p.time, 'shortDayFirst') as string,
     );
+    // Guard against missing or empty probs array
+    if (!probs || !Array.isArray(probs) || probs.length === 0) {
+      return null;
+    }
     const { thresholdBankfull, thresholdModerate, thresholdSevere } = probs[0];
 
     const membersCount = forecast[0]?.ensemble_members?.length || 0;
@@ -938,11 +942,12 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {hydrographTableData?.tableValues.map(row => (
-                      <TableRow>
-                        {row.map(cellValue => (
+                    {hydrographTableData?.tableValues.map((row, rowIndex) => (
+                      <TableRow key={`hydrograph-row-${row[0] || rowIndex}`}>
+                        {row.map((cellValue, cellIndex) => (
                           <TableCell
-                            key={`${cellValue}`}
+                            // eslint-disable-next-line react/no-array-index-key
+                            key={`hydrograph-cell-${row[0] || rowIndex}-${cellIndex}`}
                             className={classes.tableCell}
                           >
                             {cellValue}
@@ -1001,18 +1006,21 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                   <TableBody
                     key={`trigger-probability-table-body-${station.station_name}`}
                   >
-                    {triggerProbabilityTableData?.tableValues.map(row => (
-                      <TableRow>
-                        {row.map(cellValue => (
-                          <TableCell
-                            key={cellValue}
-                            className={classes.tableCell}
-                          >
-                            {cellValue}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    ))}
+                    {triggerProbabilityTableData?.tableValues.map(
+                      (row, rowIndex) => (
+                        <TableRow key={`probability-row-${row[0] || rowIndex}`}>
+                          {row.map((cellValue, cellIndex) => (
+                            <TableCell
+                              // eslint-disable-next-line react/no-array-index-key
+                              key={`probability-cell-${row[0] || rowIndex}-${cellIndex}`}
+                              className={classes.tableCell}
+                            >
+                              {cellValue}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      ),
+                    )}
                   </TableBody>
                 </Table>
               </TableContainer>
