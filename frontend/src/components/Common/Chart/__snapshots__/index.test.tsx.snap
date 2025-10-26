@@ -2,9 +2,13 @@
 
 exports[`Renders as expected 1`] = `
 <div>
-  <canvas
-    height="150"
-    width="300"
-  />
+  <div
+    style="position: relative; height: 100%; width: 100%;"
+  >
+    <canvas
+      height="150"
+      width="300"
+    />
+  </div>
 </div>
 `;
