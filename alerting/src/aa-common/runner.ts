@@ -11,7 +11,7 @@ type WorkerParams<TPayload, TShared> = {
       AnticipatoryActionAlerts,
       'id' | 'country' | 'emails' | 'prismUrl' | 'lastStates'
     >,
-    shared: TShared,
+    context: TShared,
     isTest: boolean,
     overrideEmails: string[],
   ) => Promise<{
@@ -66,12 +66,12 @@ export async function runAAWorker<TPayload, TShared>({
     return;
   }
 
-  const shared = await prepare();
+  const context = await prepare();
 
   for (const alert of alerts) {
     const { payloads, updatedLastStates } = await buildForAlert(
       alert,
-      shared,
+      context,
       IS_TEST,
       overrideEmails,
     );

@@ -47,12 +47,12 @@ export async function run() {
       const latestAvailableReports = await getLatestAvailableReports();
       return { latestAvailableReports };
     },
-    buildForAlert: async (alert, shared, isTest, emailsOverride) => {
+    buildForAlert: async (alert, context, isTest, emailsOverride) => {
       const lastStates = (isTest ? undefined : alert.lastStates) as unknown as
         | import('../types/aa-storm-email').LastStates
         | undefined;
       const filteredAvailableReports = filterOutAlreadyProcessedReports(
-        shared.latestAvailableReports,
+        context.latestAvailableReports,
         lastStates,
       );
       const emails = isTest ? emailsOverride : alert.emails;
@@ -62,7 +62,7 @@ export async function run() {
         emails,
       );
       const updatedLastStates = transformReportsToLastProcessed(
-        shared.latestAvailableReports,
+        context.latestAvailableReports,
       );
       return { payloads, updatedLastStates };
     },

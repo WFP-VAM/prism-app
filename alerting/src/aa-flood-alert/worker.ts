@@ -29,28 +29,27 @@ export async function run() {
         'https://data.earthobservation.vam.wfp.org/public-share/aa/flood/moz/dates.json';
       const dates = await fetchFloodDatesJson(datesUrl);
       const latestDate = getLatestFloodDate(dates);
-      console.log('latestDate', latestDate);
       const triggerStatus = latestDate
         ? dates[latestDate]?.trigger_status
         : null;
       return { dates, latestDate, triggerStatus };
     },
-    buildForAlert: async (alert, shared, isTest, emailsOverride) => {
-      if (!shared.latestDate) {
+    buildForAlert: async (alert, context, isTest, emailsOverride) => {
+      if (!context.latestDate) {
         return { payloads: [], updatedLastStates: alert.lastStates || {} };
       }
-      console.log('shared', shared);
+      console.log('context', context);
       console.log('alert', alert);
       const emails = isTest ? emailsOverride : alert.emails;
       const payload = await buildFloodEmailPayload(
-        shared.latestDate,
-        shared.triggerStatus || '',
+        context.latestDate,
+        context.triggerStatus || '',
         alert.prismUrl,
         emails,
       );
       const updatedLastStates = transformLastProcessedFlood(
-        shared.latestDate,
-        shared.triggerStatus || '',
+        context.latestDate,
+        context.triggerStatus || '',
       );
       return { payloads: payload ? [payload] : [], updatedLastStates };
     },
