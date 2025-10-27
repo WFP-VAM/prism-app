@@ -37,8 +37,9 @@ export function getLatestFloodDate(
 
 export function shouldSendFloodEmail(trigger?: string): boolean {
   if (!trigger) return false;
-  const allowed = ['not exceeded', 'bankfull', 'moderate', 'severe'];
-  return allowed.includes(trigger.toLowerCase());
+  // TODO: remove "not exceeded" once we have a proper trigger status
+  const warningLevels = ['not exceeded', 'bankfull', 'moderate', 'severe'];
+  return warningLevels.includes(trigger.toLowerCase());
 }
 
 export function transformLastProcessedFlood(
