@@ -6,6 +6,7 @@ import {
 } from './alert';
 import { sendFloodAlertEmail } from '../utils/email';
 import { runAAWorker } from '../aa-common/runner';
+import { TriggerStatus } from '../types/flood-email';
 
 const args = process.argv.slice(2);
 const testEmailArg = args.find((arg) => arg.startsWith('--testEmail='));
@@ -38,14 +39,22 @@ export async function run() {
       if (!context.latestDate) {
         return { payloads: [], updatedLastStates: alert.lastStates || {} };
       }
-      console.log('context', context);
       console.log('alert', alert);
       const emails = isTest ? emailsOverride : alert.emails;
+
+      // Get station summary URL from dates data
+      const stationSummaryFile =
+        context.dates[context.latestDate]?.station_summary_file;
+      const stationSummaryUrl = stationSummaryFile
+        ? `https://data.earthobservation.vam.wfp.org/public-share/aa/flood/moz/${stationSummaryFile}`
+        : undefined;
+
       const payload = await buildFloodEmailPayload(
         context.latestDate,
-        context.triggerStatus || '',
+        context.triggerStatus || ('not exceeded' as TriggerStatus),
         alert.prismUrl,
         emails,
+        stationSummaryUrl,
       );
       const updatedLastStates = transformLastProcessedFlood(
         context.latestDate,
