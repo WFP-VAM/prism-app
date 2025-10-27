@@ -20,6 +20,7 @@ interface LayerInfo {
   id: string;
   title: string;
   category: string;
+  type?: string;
 }
 
 interface SetupConfig {
@@ -47,150 +48,91 @@ const LANGUAGES: Record<string, string> = {
   so: 'Somali',
 };
 
+// Load shared layers dynamically
+function loadSharedLayers(): LayerInfo[] {
+  const sharedLayersPath = path.join(
+    __dirname,
+    '../src/config/shared/layers.json',
+  );
+  const sharedLayers = JSON.parse(fs.readFileSync(sharedLayersPath, 'utf-8'));
+
+  const layers: LayerInfo[] = [];
+
+  Object.entries(sharedLayers).forEach(([id, layerData]: [string, any]) => {
+    // Skip boundary layers
+    if (layerData.type === 'boundary') {
+      return;
+    }
+
+    // Determine category based on layer data
+    let category = 'Other';
+    const title = layerData.title || id;
+
+    // Categorize based on layer properties and naming
+    if (
+      id.includes('rain') ||
+      id.includes('precip') ||
+      id.includes('spi') ||
+      id.includes('dry') ||
+      id.includes('rfh') ||
+      id.includes('rfq')
+    ) {
+      category = 'Rainfall';
+    } else if (
+      id.includes('ndvi') ||
+      id.includes('vegetation') ||
+      id.includes('veg')
+    ) {
+      category = 'Vegetation';
+    } else if (
+      id.includes('lst') ||
+      id.includes('temp') ||
+      id.includes('temperature')
+    ) {
+      category = 'Temperature';
+    } else if (
+      id.includes('storm') ||
+      id.includes('adamts') ||
+      id.includes('tc') ||
+      id.includes('cyclone') ||
+      id.includes('hurricane')
+    ) {
+      category = 'Hazards';
+    } else if (
+      id.includes('pop') ||
+      id.includes('population') ||
+      id.includes('exposure')
+    ) {
+      category = 'Exposure';
+    } else if (
+      id.includes('vulnerability') ||
+      id.includes('vuln') ||
+      id.includes('poverty')
+    ) {
+      category = 'Vulnerability';
+    } else if (id.includes('capacity') || id.includes('preparedness')) {
+      category = 'Capacity';
+    } else if (
+      id.includes('risk') ||
+      id.includes('impact') ||
+      id.includes('damage')
+    ) {
+      category = 'Risk';
+    }
+
+    layers.push({
+      id,
+      title,
+      category,
+      type: layerData.type,
+    });
+  });
+
+  return layers;
+}
+
 // Shared layers organized by category
-const SHARED_LAYERS: LayerInfo[] = [
-  {
-    id: 'daily_rainfall_forecast',
-    title: 'Daily rainfall forecast',
-    category: 'Rainfall',
-  },
-  {
-    id: 'dekad_rainfall_forecast',
-    title: '10-day rainfall forecast',
-    category: 'Rainfall',
-  },
-  {
-    id: 'dekad_rainfall_anomaly_forecast',
-    title: '10-day rainfall forecast anomaly',
-    category: 'Rainfall',
-  },
-  {
-    id: 'rainfall_daily',
-    title: 'Daily rainfall estimate (mm)',
-    category: 'Rainfall',
-  },
-  {
-    id: 'rainfall_dekad',
-    title: '10-day rainfall estimate (mm)',
-    category: 'Rainfall',
-  },
-  {
-    id: 'rain_anomaly_dekad',
-    title: '10-day rainfall anomaly',
-    category: 'Rainfall',
-  },
-  {
-    id: 'rainfall_agg_1month',
-    title: '1-month rainfall aggregate (mm)',
-    category: 'Rainfall',
-  },
-  {
-    id: 'rain_anomaly_1month',
-    title: 'Monthly rainfall anomaly',
-    category: 'Rainfall',
-  },
-  {
-    id: 'rainfall_agg_3month',
-    title: '3-month rainfall aggregate (mm)',
-    category: 'Rainfall',
-  },
-  {
-    id: 'rain_anomaly_3month',
-    title: '3-month rainfall anomaly',
-    category: 'Rainfall',
-  },
-  {
-    id: 'rainfall_agg_6month',
-    title: '6-month rainfall aggregate (mm)',
-    category: 'Rainfall',
-  },
-  {
-    id: 'rain_anomaly_6month',
-    title: '6-month rainfall anomaly',
-    category: 'Rainfall',
-  },
-  {
-    id: 'rainfall_agg_9month',
-    title: '9-month rainfall aggregate (mm)',
-    category: 'Rainfall',
-  },
-  {
-    id: 'rain_anomaly_9month',
-    title: '9-month rainfall anomaly',
-    category: 'Rainfall',
-  },
-  {
-    id: 'rainfall_agg_1year',
-    title: '1-year rainfall aggregate (mm)',
-    category: 'Rainfall',
-  },
-  {
-    id: 'rain_anomaly_1year',
-    title: '1-year rainfall anomaly',
-    category: 'Rainfall',
-  },
-  { id: 'spi_1m', title: 'SPI - 1-month', category: 'Rainfall' },
-  { id: 'spi_2m', title: 'SPI - 2-month', category: 'Rainfall' },
-  { id: 'spi_3m', title: 'SPI - 3-month', category: 'Rainfall' },
-  { id: 'spi_6m', title: 'SPI - 6-month', category: 'Rainfall' },
-  { id: 'spi_9m', title: 'SPI - 9-month', category: 'Rainfall' },
-  { id: 'spi_1y', title: 'SPI - 1-year', category: 'Rainfall' },
-  { id: 'days_dry', title: 'Days since last rain', category: 'Rainfall' },
-  { id: 'streak_dry_days', title: 'Longest dry spell', category: 'Rainfall' },
-  {
-    id: 'days_heavy_rain',
-    title: 'Number of days with heavy rainfall',
-    category: 'Rainfall',
-  },
-  {
-    id: 'days_intense_rain',
-    title: 'Number of days with intense rainfall',
-    category: 'Rainfall',
-  },
-  {
-    id: 'days_extreme_rain',
-    title: 'Number of days with extreme rainfall',
-    category: 'Rainfall',
-  },
-  { id: 'ndvi_dekad', title: '10-day NDVI (MODIS)', category: 'Vegetation' },
-  {
-    id: 'ndvi_dekad_anomaly',
-    title: '10-day NDVI anomaly (MODIS)',
-    category: 'Vegetation',
-  },
-  {
-    id: 'lst_amplitude',
-    title: 'Land Surface Temperature - 10-day Amplitude',
-    category: 'Temperature',
-  },
-  {
-    id: 'lst_daytime',
-    title: 'Daytime Land Surface Temperature',
-    category: 'Temperature',
-  },
-  {
-    id: 'lst_nighttime',
-    title: 'Nighttime Land Surface Temperature',
-    category: 'Temperature',
-  },
-  {
-    id: 'lst_anomaly',
-    title: 'Land Surface Temperature Anomaly',
-    category: 'Temperature',
-  },
-  { id: 'wp_pop_cicunadj', title: 'Population', category: 'Exposure' },
-  {
-    id: 'adamts_buffers',
-    title: 'Tropical Storms - Wind buffers',
-    category: 'Hazards',
-  },
-  { id: 'adamts_nodes', title: 'Tropical Storms - Nodes', category: 'Hazards' },
-  {
-    id: 'adamts_tracks',
-    title: 'Tropical Storms - Tracks',
-    category: 'Hazards',
-  },
-];
+const SHARED_LAYERS: LayerInfo[] = loadSharedLayers();
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -501,7 +443,7 @@ async function updateMainConfig(config: SetupConfig): Promise<void> {
     return;
   }
 
-  const mainConfigContent = fs.readFileSync(mainConfigPath, 'utf-8');
+  let mainConfigContent = fs.readFileSync(mainConfigPath, 'utf-8');
 
   // Check if already added
   if (mainConfigContent.includes(`import ${config.countrySlug} from`)) {
@@ -511,20 +453,60 @@ async function updateMainConfig(config: SetupConfig): Promise<void> {
     return;
   }
 
-  console.log(
-    `\n⚠️  IMPORTANT: You need to manually add the following to frontend/src/config/index.ts:`,
+  // Add import statement before countriesWithPreprocessedDates
+  const preprocessedImportIndex = mainConfigContent.indexOf(
+    'import countriesWithPreprocessedDates',
   );
-  console.log(
-    `\n1. Add this import line (before the countriesWithPreprocessedDates import):`,
+
+  if (preprocessedImportIndex === -1) {
+    console.log(
+      '⚠️  Could not find countriesWithPreprocessedDates import. Skipping auto-update.',
+    );
+    console.log(
+      `\nPlease manually add:\nimport ${config.countrySlug} from './${config.countrySlug}';`,
+    );
+    return;
+  }
+
+  // Insert import line
+  const importLine = `import ${config.countrySlug} from './${config.countrySlug}';\n`;
+  mainConfigContent =
+    mainConfigContent.slice(0, preprocessedImportIndex) +
+    importLine +
+    mainConfigContent.slice(preprocessedImportIndex);
+
+  // Add to configMap - find the closing bracket
+  const configMapIndex = mainConfigContent.indexOf(
+    'export const configMap = {',
   );
+  if (configMapIndex !== -1) {
+    // Find the } as const; that closes configMap
+    const configMapContent = mainConfigContent.substring(configMapIndex);
+    const closingBraceIndex = configMapContent.indexOf('} as const;');
+
+    if (closingBraceIndex !== -1) {
+      // Find the last entry before the closing brace
+      const beforeClose = configMapContent.substring(0, closingBraceIndex);
+      const lastCommaIndex = beforeClose.lastIndexOf(',');
+      const indentMatch = beforeClose.substring(lastCommaIndex).match(/^(\s+)/);
+      const indent = indentMatch ? indentMatch[1] : '  ';
+
+      // Insert new entry
+      const newEntry = `\n${indent}${config.countrySlug},`;
+      const insertPosition = configMapIndex + lastCommaIndex + 1;
+
+      mainConfigContent =
+        mainConfigContent.slice(0, insertPosition) +
+        newEntry +
+        mainConfigContent.slice(insertPosition);
+    }
+  }
+
+  // Write updated content
+  fs.writeFileSync(mainConfigPath, mainConfigContent, 'utf-8');
   console.log(
-    `   import ${config.countrySlug} from './${config.countrySlug}';`,
+    `\n✓ Automatically updated main config to include ${config.countrySlug}`,
   );
-  console.log(
-    `\n2. Add ${config.countrySlug} to the configMap object (before the closing brace):`,
-  );
-  console.log(`   ${config.countrySlug},`);
-  console.log(`\nThis is a manual step to ensure proper formatting.`);
 }
 
 async function main(): Promise<void> {
