@@ -12,5 +12,5 @@ export default {
   rawTables,
   rawReports,
   translation,
-  defaultBoundariesFile: 'mng_adm2_revised.json',
+  defaultBoundariesFile: 'mng_adm2_boundaries.json',
 };
