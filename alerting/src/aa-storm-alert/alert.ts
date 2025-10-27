@@ -172,7 +172,7 @@ function hasLandfallOccured(report: StormDataResponseBody): boolean {
   return false;
 }
 
-function shouldSendEmail(
+function shouldSendStormEmail(
   status: WindState,
   activated48kt: string[],
   activated64kt: string[],
@@ -225,7 +225,12 @@ export async function buildEmailPayloads(
           : hasLandfallOccured(detailedStormReport);
 
         const isEmailNeeded = status
-          ? shouldSendEmail(status, activated48kt, activated64kt, pastLandfall)
+          ? shouldSendStormEmail(
+              status,
+              activated48kt,
+              activated64kt,
+              pastLandfall,
+            )
           : false;
         console.debug(
           `Storm ${stormName} - Status: ${status}, Email needed: ${isEmailNeeded}, Past landfall: ${pastLandfall}`,
