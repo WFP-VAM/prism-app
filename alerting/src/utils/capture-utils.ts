@@ -89,7 +89,7 @@ export async function captureScreenshotFromUrl(
     screenshotTargetSelector = DEFAULT_TARGET,
     elementsToHide = [],
     maxRetry = MAX_RETRY,
-    extraWaitMs = 8000,
+    extraWaitMs = 20000,
   } = options;
 
   let browser: Browser | null = null;
