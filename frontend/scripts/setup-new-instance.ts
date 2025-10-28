@@ -436,17 +436,6 @@ function generatePrismJson(config: SetupConfig): any {
     country: config.countryName,
     defaultLanguage: config.languages[0],
     alertFormActive: config.alertFormActive,
-    icons: {
-      vulnerability: 'icon_vulnerable.png',
-      exposure: 'icon_basemap.png',
-      hazards: 'icon_climate.png',
-      risk: 'icon_impact.png',
-      capacity: 'icon_capacity.png',
-      tables: 'icon_table.png',
-      rainfall: 'icon_rain.png',
-      vegetation: 'icon_veg.png',
-      temperature: 'icon_climate.png',
-    },
     serversUrls: {
       wms: config.wmsServers,
     },
