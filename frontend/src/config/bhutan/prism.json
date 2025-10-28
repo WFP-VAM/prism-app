@@ -10,7 +10,6 @@
   ],
   "map": {
     "boundingBox": [88.8, 26.7, 92.1, 28.3]
-    
   },
   "categories": {
     "rainfall": {
@@ -118,10 +117,7 @@
           ]
         }
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
           "group_title": "Rainfall categories:",
@@ -168,11 +164,8 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": [
-        "ndvi_dekad",
-        "ndvi_dekad_anomaly"
-      ]
-    }, 
+      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
+    },
     "temperature": {
       "land_surface_temperature": [
         "lst_daytime",
@@ -180,7 +173,7 @@
         "lst_amplitude",
         "lst_anomaly"
       ]
-    },  
+    },
     "demographics": {
       "census_data": [
         "population",
@@ -193,18 +186,10 @@
       ]
     },
     "food_consumption": {
-      "minimum_food_requirements": [
-        "rice",
-        "oil",
-        "salt",
-        "lentils"
-      ]
+      "minimum_food_requirements": ["rice", "oil", "salt", "lentils"]
     },
     "vulnerability": {
-      "vulnerability_indices": [
-        "total_vuln",
-        "fs_vuln"
-      ]
+      "vulnerability_indices": ["total_vuln", "fs_vuln"]
     }
   }
 }

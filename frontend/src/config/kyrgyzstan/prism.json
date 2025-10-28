@@ -1,20 +1,6 @@
 {
   "country": "Kyrgyzstan",
   "countryAdmin0Id": 138,
-  "icons": {
-    "exposure": "icon_basemap.png",
-    "hazards": "icon_flood.png",
-    "floods_and_mudflows": "icon_flood.png",
-    "risk": "icon_impact.png",
-    "capacity": "icon_capacity.png",
-    "tables": "icon_table.png",
-    "rainfall": "icon_rain.png",
-    "snow": "icon_snow.png",
-    "vegetation": "icon_veg.png",
-    "temperature": "icon_climate.png",
-    "tropical_storms": "icon_tropical_storm.png",
-    "vulnerability": "icon_vulnerable.png"
-  },
   "alertFormActive": false,
   "map": {
     "boundingBox": [68, 39.28, 80.26, 43.3]
