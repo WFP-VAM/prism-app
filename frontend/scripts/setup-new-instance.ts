@@ -14,6 +14,9 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+
+import { findClosestCountry } from './utils/country-bounding-boxes';
+
 // no readline - using enquirer for all prompts
 // Interactive prompts
 // eslint-disable-next-line import/no-extraneous-dependencies, @typescript-eslint/no-var-requires
@@ -238,21 +241,49 @@ async function collectCountryInfo(): Promise<SetupConfig> {
 
   // 4. Bounding box
   console.log('\n--- Map Configuration ---');
-  console.log(
-    'Enter bounding box coordinates [minLon, minLat, maxLon, maxLat]',
-  );
-  const minLon = parseFloat(
-    await new Input({ message: 'Min Longitude:' }).run(),
-  );
-  const minLat = parseFloat(
-    await new Input({ message: 'Min Latitude:' }).run(),
-  );
-  const maxLon = parseFloat(
-    await new Input({ message: 'Max Longitude:' }).run(),
-  );
-  const maxLat = parseFloat(
-    await new Input({ message: 'Max Latitude:' }).run(),
-  );
+
+  // Try to find suggested bounding box
+  const suggestedCountry = await findClosestCountry(countryName);
+  let useSuggested = false;
+
+  if (suggestedCountry) {
+    const [matchedName, bbox] = suggestedCountry;
+    console.log(`\n📍 Found suggested bounding box for "${matchedName}":`);
+    console.log(`   Min Longitude: ${bbox[0]}`);
+    console.log(`   Min Latitude: ${bbox[1]}`);
+    console.log(`   Max Longitude: ${bbox[2]}`);
+    console.log(`   Max Latitude: ${bbox[3]}`);
+
+    useSuggested = await new Confirm({
+      message: 'Use these suggested coordinates?',
+      initial: true,
+    }).run();
+
+    if (useSuggested) {
+      console.log('Using suggested bounding box coordinates.');
+    } else {
+      console.log('Please enter custom bounding box coordinates:');
+    }
+  } else {
+    console.log(
+      'No matching country found. Please enter bounding box coordinates manually:',
+    );
+  }
+
+  let minLon: number;
+  let minLat: number;
+  let maxLon: number;
+  let maxLat: number;
+
+  if (useSuggested && suggestedCountry) {
+    const [, bbox] = suggestedCountry;
+    [minLon, minLat, maxLon, maxLat] = bbox;
+  } else {
+    minLon = parseFloat(await new Input({ message: 'Min Longitude:' }).run());
+    minLat = parseFloat(await new Input({ message: 'Min Latitude:' }).run());
+    maxLon = parseFloat(await new Input({ message: 'Max Longitude:' }).run());
+    maxLat = parseFloat(await new Input({ message: 'Max Latitude:' }).run());
+  }
 
   // 5. WMS Servers
   console.log('\n--- WMS Server Configuration ---');
