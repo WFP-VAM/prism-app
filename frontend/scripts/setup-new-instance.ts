@@ -31,7 +31,13 @@ interface SetupConfig {
   boundingBox: [number, number, number, number];
   wmsServers: string[];
   alertFormActive: boolean;
-  boundaryFile?: string;
+  boundaryFile?: string; // default admin3 file basename
+  boundaryFiles?: {
+    admin1?: string; // absolute or relative source path
+    admin2?: string;
+    admin3?: string;
+  };
+  defaultDisplayBoundaries?: string[];
 }
 
 // Available languages with their display names
@@ -246,7 +252,7 @@ async function collectCountryInfo(): Promise<SetupConfig> {
   // 5. WMS Servers
   console.log('\n--- WMS Server Configuration ---');
   const wmsServersInput = await question(
-    'Enter WMS server URLs (comma-separated, or press Enter for default): ',
+    'Enter WMS server URLs (comma-separated, or press Enter for default, https://api.earthobservation.vam.wfp.org/ows/wms): ',
   );
   const wmsServers = wmsServersInput.trim()
     ? wmsServersInput
@@ -259,10 +265,44 @@ async function collectCountryInfo(): Promise<SetupConfig> {
   const alertFormInput = await question('\nEnable alert form? (yes/no): ');
   const alertFormActive = alertFormInput.toLowerCase() === 'yes';
 
-  // 7. Boundary file
-  const boundaryFile = await question(
-    'Enter boundary filename (e.g., "boundary.json", or press Enter to skip): ',
+  // 7. Boundary files (paths)
+  console.log('\n--- Boundary Files ---');
+  console.log(
+    'Provide paths to admin boundary files. If left empty, Mozambique defaults are used temporarily.',
   );
+  const admin1Path = await question(
+    'Path to admin1 boundary file (e.g., /abs/path/adm1.json), or Enter to skip: ',
+  );
+  const admin2Path = await question(
+    'Path to admin2 boundary file (e.g., /abs/path/adm2.json), or Enter to skip: ',
+  );
+  const admin3Path = await question(
+    'Path to admin3 boundary file (e.g., /abs/path/adm3.json), or Enter to skip: ',
+  );
+  const boundaryFiles = {
+    admin1: admin1Path.trim() || undefined,
+    admin2: admin2Path.trim() || undefined,
+    admin3: admin3Path.trim() || undefined,
+  };
+  const boundaryFile = boundaryFiles.admin3
+    ? path.basename(boundaryFiles.admin3)
+    : 'moz_bnd_adm3_WFP.json';
+
+  // 8. Default display boundaries
+  console.log('\n--- Boundary Layers Configuration ---');
+  console.log(
+    'Available boundary layers:\n  admin0 (country level)\n  admin1 (province/state)\n  admin2 (district)\n  admin3 (sub-district)',
+  );
+  const boundariesInput = await question(
+    'Enter boundary layers to display by default (comma-separated, e.g., "admin1,admin2", or press Enter for admin1,admin2): ',
+  );
+  const defaultDisplayBoundaries = boundariesInput.trim()
+    ? boundariesInput
+        .split(',')
+        .map(b => b.trim())
+        .filter(Boolean)
+        .map(b => `${b}_boundaries`)
+    : ['admin1_boundaries', 'admin2_boundaries'];
 
   return {
     countryName,
@@ -272,7 +312,9 @@ async function collectCountryInfo(): Promise<SetupConfig> {
     boundingBox: [minLon, minLat, maxLon, maxLat],
     wmsServers,
     alertFormActive,
-    boundaryFile: boundaryFile.trim() || undefined,
+    boundaryFile: boundaryFile || undefined,
+    boundaryFiles,
+    defaultDisplayBoundaries,
   };
 }
 
@@ -366,6 +408,10 @@ function generatePrismJson(config: SetupConfig): any {
     map: {
       boundingBox: config.boundingBox,
     },
+    ...(config.defaultDisplayBoundaries &&
+    config.defaultDisplayBoundaries.length > 0
+      ? { defaultDisplayBoundaries: config.defaultDisplayBoundaries }
+      : {}),
     categories: generateCategories(config.layers),
   };
 }
@@ -391,8 +437,7 @@ export default {
 }
 
 function generateLayersJson(): any {
-  // Return empty object as country-specific layers would go here
-  // Shared layers are automatically available
+  // Boundary layers will be injected during writeFiles based on provided paths
   return {};
 }
 
@@ -408,6 +453,113 @@ async function writeFiles(config: SetupConfig): Promise<void> {
   const prismJson = generatePrismJson(config);
   const indexContent = generateIndexTs(config);
   const layersJson = generateLayersJson();
+  // If boundary files were provided, copy them into public/data/{countrySlug}
+  const publicDataDir = path.join(
+    __dirname,
+    '../public/data',
+    config.countrySlug,
+  );
+  if (!fs.existsSync(publicDataDir)) {
+    fs.mkdirSync(publicDataDir, { recursive: true });
+  }
+
+  const copiedBoundaries: {
+    admin1?: string;
+    admin2?: string;
+    admin3?: string;
+  } = {};
+  (['admin1', 'admin2', 'admin3'] as const).forEach(level => {
+    const src = config.boundaryFiles?.[level];
+    if (src && fs.existsSync(src)) {
+      const destName = path.basename(src);
+      const destPath = path.join(publicDataDir, destName);
+      try {
+        fs.copyFileSync(src, destPath);
+        copiedBoundaries[level] = `data/${config.countrySlug}/${destName}`;
+      } catch (err) {
+        console.warn(`Warning: failed to copy ${level} boundary file:`, err);
+      }
+    }
+  });
+
+  // Build boundary layers; if not provided, copy Mozambique defaults into the new country folder and reference them there
+  const mozDefaults = {
+    admin1: path.join(
+      __dirname,
+      '../public/data/mozambique/moz_bnd_adm1_WFP.json',
+    ),
+    admin2: path.join(
+      __dirname,
+      '../public/data/mozambique/moz_bnd_adm2_WFP.json',
+    ),
+    admin3: path.join(
+      __dirname,
+      '../public/data/mozambique/moz_bnd_adm3_WFP.json',
+    ),
+  } as const;
+
+  (['admin1', 'admin2', 'admin3'] as const).forEach(level => {
+    if (!copiedBoundaries[level]) {
+      const mozSrc = mozDefaults[level];
+      if (fs.existsSync(mozSrc)) {
+        const destName = path.basename(mozSrc);
+        const destPath = path.join(publicDataDir, destName);
+        try {
+          fs.copyFileSync(mozSrc, destPath);
+          copiedBoundaries[level] = `data/${config.countrySlug}/${destName}`;
+        } catch (err) {
+          console.warn(
+            `Warning: failed to copy Mozambique default ${level} file:`,
+            err,
+          );
+        }
+      }
+    }
+  });
+
+  const boundaryLayers = {
+    admin1_boundaries: {
+      type: 'boundary',
+      path: copiedBoundaries.admin1!,
+      opacity: 0.8,
+      admin_code: 'adm1_source_id',
+      admin_level_codes: ['adm1_source_id'],
+      admin_level_names: ['adm1_name'],
+      admin_level_local_names: ['adm1_name'],
+      'styles:': {
+        fill: { 'fill-opacity': 0 },
+        line: { 'line-color': 'gray', 'line-width': 2, 'line-opacity': 0.8 },
+      },
+    },
+    admin2_boundaries: {
+      type: 'boundary',
+      path: copiedBoundaries.admin2!,
+      opacity: 0.8,
+      admin_code: 'adm2_source_id',
+      admin_level_codes: ['adm1_source_id', 'adm2_source_id'],
+      admin_level_names: ['adm1_name', 'adm2_name'],
+      admin_level_local_names: ['adm1_name', 'adm2_name'],
+      'styles:': {
+        fill: { 'fill-opacity': 0 },
+        line: { 'line-color': 'gray', 'line-width': 1, 'line-opacity': 0.8 },
+      },
+    },
+    admin_boundaries: {
+      type: 'boundary',
+      path: copiedBoundaries.admin3!,
+      opacity: 0.8,
+      admin_code: 'adm3_source_id',
+      admin_level_codes: ['adm1_source_id', 'adm2_source_id', 'adm3_source_id'],
+      admin_level_names: ['adm1_name', 'adm2_name', 'adm3_name'],
+      admin_level_local_names: ['adm1_name', 'adm2_name', 'adm3_name'],
+      'styles:': {
+        fill: { 'fill-opacity': 0 },
+        line: { 'line-color': 'gray', 'line-width': 0.2, 'line-opacity': 0.8 },
+      },
+    },
+  } as Record<string, any>;
+
+  const layersWithBoundaries = { ...boundaryLayers, ...layersJson };
 
   fs.writeFileSync(
     path.join(countryDir, 'prism.json'),
@@ -418,7 +570,7 @@ async function writeFiles(config: SetupConfig): Promise<void> {
 
   fs.writeFileSync(
     path.join(countryDir, 'layers.json'),
-    JSON.stringify(layersJson, null, 2),
+    JSON.stringify(layersWithBoundaries, null, 2),
   );
 
   // Create empty tables.json and reports.json
@@ -433,6 +585,13 @@ async function writeFiles(config: SetupConfig): Promise<void> {
   );
 
   console.log(`\n✓ Files created in: ${countryDir}`);
+  console.log(
+    '\nNote: Review boundary layer configuration in layers.json. You will likely need to adjust:',
+  );
+  console.log('  - admin_code');
+  console.log('  - admin_level_codes');
+  console.log('  - admin_level_names');
+  console.log('  - admin_level_local_names');
 }
 
 async function updateMainConfig(config: SetupConfig): Promise<void> {

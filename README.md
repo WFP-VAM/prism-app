@@ -28,15 +28,22 @@ yarn setup:instance
 This interactive tool will prompt you for:
 - Country name and slug
 - Languages to support
-- Layers to include from the shared library
+- Layers to include from the shared library (automatically loaded from shared layers)
 - Map bounding box coordinates
 - WMS server URLs
 - Alert form activation
 - Boundary file name
 
-The tool generates all necessary configuration files. See `SETUP_TOOL_GUIDE.md` for detailed instructions.
+The tool automatically:
+- ✅ Generates all necessary configuration files
+- ✅ Loads shared layers dynamically from the shared layers file
+- ✅ Adds the new country to the main config index automatically
+- ✅ Organizes layers by category
 
-**Quick Setup Time**: Previously 4-8 hours → Now 15-20 minutes
+After running the tool, you'll only need to:
+1. Upload the boundary file to S3
+2. Run `REACT_APP_COUNTRY=newcountry yarn start` to test
+3. Build and deploy.
 
 ## Configuration
 
