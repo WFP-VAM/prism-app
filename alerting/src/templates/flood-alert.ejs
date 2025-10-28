@@ -30,6 +30,10 @@
                     <p class="content-subtitle" style="margin: 0 0 20px; font-size: 14px;">
                         Flood Anticipatory Action Alert for Mozambique – forecast by GloFAS with data processing by WFP
                     </p>
+                    <p class="trigger-title"
+                        style="margin: 10px 0 20px; width: 100%; font-weight: bold; font-size: 16px;">
+                        Trigger status: <%= triggerStatus %>
+                    </p>
                     <% if (stationsByStatus && Object.keys(stationsByStatus).length> 0) { %>
                         <% Object.keys(stationsByStatus).forEach((status)=> { %>
                             <% const stationList=stationsByStatus[status]; %>
@@ -39,10 +43,6 @@
                             </p>
                         <% }); %>
                     <% } %>
-                            <p class="trigger-title"
-                                style="margin: 10px 0 20px; width: 100%; font-weight: bold; font-size: 16px;">
-                                Trigger status: <%= triggerStatus %>
-                            </p>
 
                             <div class="button-container" style="text-align: center; margin: 20px 0;">
                                 <a href="<%= redirectUrl %>" target="_blank" rel="noopener noreferrer"
@@ -96,14 +96,14 @@
 
             Flood Anticipatory Action Alert for Mozambique – forecast by GloFAS with data processing by WFP
 
+            Trigger status: <%= triggerStatus %>
+
             <% if (stationsByStatus && Object.keys(stationsByStatus).length > 0) { %>
                 <% Object.keys(stationsByStatus).forEach((status) => { %>
                     <% const stationList = stationsByStatus[status]; %>
                     River discharge levels may exceed the <%= status %> threshold at <%= stationList.join(' , ') %> in Mozambique within the next 3 to 5 days.
                 <% }); %>
             <% } %>
-
-                                Trigger status: <%= triggerStatus %>
 
                                     Access PRISM Flood Dashboard: <%= redirectUrl %>
 
