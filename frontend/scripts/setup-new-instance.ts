@@ -175,9 +175,10 @@ async function collectCountryInfo(): Promise<SetupConfig> {
   const configDir = path.join(__dirname, '../src/config', countrySlug);
   if (fs.existsSync(configDir)) {
     const overwrite = await question(
-      '\n⚠️  Country configuration already exists. Overwrite? (yes/no): ',
+      '\n⚠️  Country configuration already exists. Overwrite? (y/N): ',
     );
-    if (overwrite.toLowerCase() !== 'yes') {
+    const overwriteAffirmative = overwrite.trim().toLowerCase().startsWith('y');
+    if (!overwriteAffirmative) {
       console.log('Aborted.');
       process.exit(0);
     }
@@ -262,8 +263,8 @@ async function collectCountryInfo(): Promise<SetupConfig> {
     : ['https://api.earthobservation.vam.wfp.org/ows/wms'];
 
   // 6. Alert Form
-  const alertFormInput = await question('\nEnable alert form? (yes/no): ');
-  const alertFormActive = alertFormInput.toLowerCase() === 'yes';
+  const alertFormInput = await question('\nEnable alert form? (y/N): ');
+  const alertFormActive = alertFormInput.trim().toLowerCase().startsWith('y');
 
   // 7. Boundary files (paths)
   console.log('\n--- Boundary Files ---');
