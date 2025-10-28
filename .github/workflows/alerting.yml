@@ -42,3 +42,6 @@ jobs:
          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true yarn add puppeteer puppeteer-core
          yarn lint
          yarn test
+
+      - name: Security audit
+        run: cd alerting && yarn run audit
