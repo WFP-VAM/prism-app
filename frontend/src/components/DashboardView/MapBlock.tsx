@@ -1,4 +1,4 @@
-import { memo, useEffect, useCallback, useRef } from 'react';
+import React, { memo, useEffect, useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
@@ -6,9 +6,14 @@ import {
   CircularProgress,
   createStyles,
   makeStyles,
+  IconButton,
+  Tooltip,
+  TextField,
 } from '@material-ui/core';
+import ImageIcon from '@material-ui/icons/Image';
 import { Source, Layer } from 'react-map-gl/maplibre';
-import { getDisplayBoundaryLayers } from 'config/utils';
+import html2canvas from 'html2canvas';
+import { getDisplayBoundaryLayers, LayerDefinitions } from 'config/utils';
 import {
   isLoading as areDatesLoading,
   loadAvailableDatesForLayer,
@@ -23,6 +28,7 @@ import {
   dashboardModeSelector,
 } from 'context/dashboardStateSlice';
 import useLayers from 'utils/layers-utils';
+import { getNonBoundaryLayers } from 'utils/boundary-layers-utils';
 import RootAccordionItems from 'components/MapView/LeftPanel/layersPanel/RootAccordionItems';
 import {
   pointDataLayerDatesRequested,
@@ -32,9 +38,11 @@ import {
 } from 'context/serverPreloadStateSlice';
 import { useSafeTranslation } from 'i18n';
 import { DashboardMode } from 'config/types';
+import { downloadToFile } from 'components/MapView/utils';
 import MapComponent from '../MapView/Map';
 import DateSelector from '../MapView/DateSelector';
 import DashboardLegends from './DashboardLegends';
+import BlockPreviewHeader from './BlockPreviewHeader';
 import type { ExportConfig } from './DashboardContent';
 
 /*
@@ -49,11 +57,18 @@ interface MapBlockProps {
   elementId: string;
 }
 
+const formatDateString = (date: number | string | Date) =>
+  new Date(date).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+
 const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
   const classes = useStyles();
   const { t } = useSafeTranslation();
   const { selectedLayersWithDateSupport } = useLayers();
-  const { actions, maplibreMap } = useMapState();
+  const { actions, maplibreMap, layers, dateRange, mapTitle } = useMapState();
   const datesLoading = useSelector(areDatesLoading);
   const mode = useSelector(dashboardModeSelector);
   useDashboardMapSync(mode);
@@ -62,6 +77,47 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
   const datesPreloadingForPointData = useSelector(pointDataLayerDatesRequested);
   const dispatch = useDispatch();
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+
+  const nonBoundaryLayers = getNonBoundaryLayers(layers);
+
+  const title =
+    mapTitle ||
+    (mode === DashboardMode.PREVIEW && nonBoundaryLayers.length === 1
+      ? t(
+          LayerDefinitions[nonBoundaryLayers[0].id]?.title ||
+            nonBoundaryLayers[0].id,
+        )
+      : null);
+
+  const formatMapDate = () => {
+    const { startDate, endDate } = dateRange;
+    if (!startDate) {
+      return '';
+    }
+
+    const startDateStr = formatDateString(startDate);
+
+    if (endDate) {
+      const endDateStr = formatDateString(endDate);
+      return `${startDateStr} - ${endDateStr}`;
+    }
+    return startDateStr;
+  };
+
+  const handleDownloadMap = async () => {
+    if (!mapContainerRef.current) {
+      return;
+    }
+    try {
+      const canvas = await html2canvas(mapContainerRef.current);
+      const dataUrl = canvas.toDataURL('image/png');
+      const filename = `map-${mapTitle || 'export'}-${formatMapDate() || 'snapshot'}.png`;
+      downloadToFile({ content: dataUrl, isUrl: true }, filename, 'image/png');
+    } catch (error) {
+      console.error('Error downloading map:', error);
+    }
+  };
 
   if (mode === DashboardMode.PREVIEW) {
     const canvas = map?.getCanvas();
@@ -157,66 +213,115 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
     };
   }, [mode, map, captureViewport]);
 
+  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (actions.updateMapTitle) {
+      actions.updateMapTitle(event.target.value);
+    }
+  };
+
   return (
-    <Box
-      className={
-        mode === DashboardMode.PREVIEW ? classes.rootPreview : classes.root
-      }
-    >
+    <>
       {mode === DashboardMode.EDIT && (
-        <div className={classes.leftPanel}>
-          <RootAccordionItems />
-        </div>
+        <Box className={classes.titleInputContainer}>
+          <Typography variant="h3" className={classes.titleLabel}>
+            {t('Map Title')}
+          </Typography>
+          <TextField
+            value={mapTitle || ''}
+            onChange={handleTitleChange}
+            placeholder={t('Enter map title') as string}
+            variant="outlined"
+            size="small"
+            fullWidth
+            className={classes.titleInput}
+          />
+        </Box>
       )}
-      <div
+      <Box
         className={
-          mode === DashboardMode.PREVIEW
-            ? classes.rightPanelPreview
-            : classes.rightPanel
+          mode === DashboardMode.PREVIEW ? classes.rootPreview : classes.root
         }
       >
-        <div className={classes.mapContainer}>
-          {datesLoading && (
-            <div className={classes.loading}>
-              <CircularProgress size={100} />
+        {mode === DashboardMode.EDIT && (
+          <div className={classes.leftPanel}>
+            <RootAccordionItems />
+          </div>
+        )}
+        <div
+          className={
+            mode === DashboardMode.PREVIEW
+              ? classes.rightPanelPreview
+              : classes.rightPanel
+          }
+        >
+          {mode === DashboardMode.PREVIEW && (
+            <div className={classes.previewHeaderContainer}>
+              <BlockPreviewHeader
+                title={title || ''}
+                subtitle={formatMapDate()}
+                downloadActions={
+                  !exportConfig && (
+                    <Tooltip title={t('Download PNG') as string}>
+                      <IconButton onClick={handleDownloadMap} size="small">
+                        <ImageIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )
+                }
+              />
             </div>
           )}
-          <MapComponent
-            hideMapLabels={exportConfig?.toggles?.mapLabelsVisibility === false}
+          <div
+            ref={mapContainerRef}
+            className={
+              mode === DashboardMode.PREVIEW
+                ? classes.mapContainerPreview
+                : classes.mapContainerEdit
+            }
           >
-            {exportConfig?.toggles?.adminAreasVisibility &&
-            exportConfig?.invertedAdminBoundaryLimitPolygon ? (
-              <Source
-                key={`mask-${exportConfig.selectedBoundaries?.join('-') || 'all'}`}
-                id="dashboard-mask-overlay"
-                type="geojson"
-                data={exportConfig.invertedAdminBoundaryLimitPolygon}
-              >
-                <Layer
-                  id="dashboard-mask-layer-overlay"
-                  type="fill"
-                  source="dashboard-mask-overlay"
-                  layout={{}}
-                  paint={{
-                    'fill-color': '#000',
-                    'fill-opacity': 0.7,
-                  }}
-                />
-              </Source>
-            ) : null}
-          </MapComponent>
-          {!datesLoading && <DashboardLegends exportConfig={exportConfig} />}
+            {datesLoading && (
+              <div className={classes.loading}>
+                <CircularProgress size={100} />
+              </div>
+            )}
+            <MapComponent
+              hideMapLabels={
+                exportConfig?.toggles?.mapLabelsVisibility === false
+              }
+            >
+              {exportConfig?.toggles?.adminAreasVisibility &&
+              exportConfig?.invertedAdminBoundaryLimitPolygon ? (
+                <Source
+                  key={`mask-${exportConfig.selectedBoundaries?.join('-') || 'all'}`}
+                  id="dashboard-mask-overlay"
+                  type="geojson"
+                  data={exportConfig.invertedAdminBoundaryLimitPolygon}
+                >
+                  <Layer
+                    id="dashboard-mask-layer-overlay"
+                    type="fill"
+                    source="dashboard-mask-overlay"
+                    layout={{}}
+                    paint={{
+                      'fill-color': '#000',
+                      'fill-opacity': 0.7,
+                    }}
+                  />
+                </Source>
+              ) : null}
+            </MapComponent>
+            {!datesLoading && <DashboardLegends exportConfig={exportConfig} />}
+          </div>
+          {mode === DashboardMode.EDIT &&
+            selectedLayersWithDateSupport.length > 0 &&
+            !datesLoading && (
+              <div className={classes.dateSelectorContainer}>
+                <DateSelector />
+              </div>
+            )}
         </div>
-        {mode === DashboardMode.EDIT &&
-          selectedLayersWithDateSupport.length > 0 &&
-          !datesLoading && (
-            <div className={classes.dateSelectorContainer}>
-              <Typography variant="h3">{t('Map date')}</Typography>
-              <DateSelector />
-            </div>
-          )}
-      </div>
-    </Box>
+      </Box>
+    </>
   );
 });
 
@@ -237,11 +342,12 @@ const useStyles = makeStyles(() =>
   createStyles({
     root: {
       display: 'flex',
-      height: '100%',
+      minHeight: 0,
       width: '100%',
       position: 'relative',
       gap: '16px',
       overflow: 'hidden',
+      flex: 1,
     },
     rootPreview: {
       display: 'flex',
@@ -250,6 +356,7 @@ const useStyles = makeStyles(() =>
       position: 'relative',
       gap: 0,
       overflow: 'hidden',
+      flex: 1,
     },
     loading: {
       position: 'absolute',
@@ -268,12 +375,27 @@ const useStyles = makeStyles(() =>
       overflow: 'auto',
       maxHeight: '100%',
     },
+    titleInputContainer: {
+      padding: '12px',
+      marginBottom: '8px',
+      borderBottom: '1px solid #e0e0e0',
+      backgroundColor: '#fff',
+    },
+    titleLabel: {
+      marginBottom: '6px',
+      fontSize: '14px',
+      fontWeight: 600,
+    },
+    titleInput: {
+      '& .MuiOutlinedInput-input': {
+        padding: '8px 12px',
+      },
+    },
     rightPanel: {
       flex: '0 0 66.667%',
       minWidth: 0,
       display: 'flex',
       flexDirection: 'column',
-      gap: '12px',
       overflow: 'hidden',
     },
     rightPanelPreview: {
@@ -281,12 +403,26 @@ const useStyles = makeStyles(() =>
       minWidth: 0,
       display: 'flex',
       flexDirection: 'column',
-      gap: '12px',
       overflow: 'hidden',
     },
-    mapContainer: {
+    previewHeaderContainer: {
+      flex: '0 0 auto',
+      background: 'white',
+      borderRadius: 8,
+    },
+    mapContainerEdit: {
+      flex: '0 0 550px',
+      height: '550px',
+      position: 'relative',
+      '& > div': {
+        height: '100%',
+        width: '100%',
+      },
+    },
+    mapContainerPreview: {
       flex: '1',
-      minHeight: 0, // Allows flex item to shrink
+      height: '700px',
+      minHeight: 0,
       position: 'relative',
       '& > div': {
         height: '100%',

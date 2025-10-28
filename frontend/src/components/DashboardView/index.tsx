@@ -114,7 +114,14 @@ function DashboardView() {
           </Button>
         </Box>
       )}
-      <DashboardContent showTitle className={classes.previewLayout} />
+      <DashboardContent
+        showTitle
+        className={
+          mode === DashboardMode.EDIT
+            ? classes.editLayout
+            : classes.previewLayout
+        }
+      />
       {mode === DashboardMode.EDIT && (
         <Box className={classes.toolbar}>
           <Button
@@ -287,6 +294,11 @@ const useStyles = makeStyles(() => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 12,
+  },
+  editLayout: {
+    display: 'flex',
+    gap: 16,
+    flex: 1,
   },
   previewLayout: {
     display: 'flex',
