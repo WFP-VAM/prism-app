@@ -19,6 +19,7 @@ import {
   DashboardChartConfig,
   AdminLevelType,
   DashboardMode,
+  ChartHeight,
 } from 'config/types';
 import { useChartForm, useChartData } from 'utils/chart-hooks';
 import Chart from 'components/Common/Chart';
@@ -41,12 +42,7 @@ import BlockPreviewHeader from './BlockPreviewHeader';
 interface ChartBlockProps extends Partial<DashboardChartConfig> {
   index: number;
   allowDownload?: boolean;
-}
-
-enum ChartHeight {
-  TALL = 'tall',
-  MEDIUM = 'medium',
-  SHORT = 'short',
+  chartHeight?: ChartHeight;
 }
 
 const CHART_HEIGHTS = {
@@ -62,6 +58,7 @@ function ChartBlock({
   wmsLayerId: initialChartLayerId,
   adminUnitLevel: initialAdminLevel,
   allowDownload,
+  chartHeight: initialChartHeight,
 }: ChartBlockProps) {
   const classes = useStyles();
   const { t } = useSafeTranslation();
@@ -96,7 +93,7 @@ function ChartBlock({
   const [hasFormChanged, setHasFormChanged] = useState(false);
   const [wasChartLoading, setWasChartLoading] = useState(false);
   const [chartHeightOption, setChartHeightOption] = useState<ChartHeight>(
-    ChartHeight.TALL,
+    initialChartHeight || ChartHeight.TALL,
   );
 
   const downloadFilename = buildCsvFileName([

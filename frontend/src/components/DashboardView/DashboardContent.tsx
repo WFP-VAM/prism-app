@@ -145,6 +145,7 @@ function DashboardContent({
             wmsLayerId={element.wmsLayerId}
             adminUnitLevel={element.adminUnitLevel}
             adminUnitId={element.adminUnitId}
+            chartHeight={element.chartHeight}
             allowDownload={!exportConfig}
           />
         );
