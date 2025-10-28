@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -10,7 +10,11 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  IconButton,
+  Tooltip,
 } from '@material-ui/core';
+import ImageIcon from '@material-ui/icons/Image';
+import GetAppIcon from '@material-ui/icons/GetApp';
 import {
   DashboardChartConfig,
   AdminLevelType,
@@ -24,10 +28,19 @@ import {
   ChartLocationSelector,
 } from 'components/Common/ChartFormComponents';
 import { useSafeTranslation } from 'i18n';
+
+import { buildCsvFileName, downloadToFile } from 'components/MapView/utils';
+import {
+  createCsvDataFromDataKeyMap,
+  createDataKeyMap,
+  downloadChartsToCsv,
+} from 'utils/csv-utils';
 import { dashboardModeSelector } from '../../context/dashboardStateSlice';
+import BlockPreviewHeader from './BlockPreviewHeader';
 
 interface ChartBlockProps extends Partial<DashboardChartConfig> {
   index: number;
+  allowDownload?: boolean;
 }
 
 enum ChartHeight {
@@ -48,10 +61,12 @@ function ChartBlock({
   endDate: initialEndDate,
   wmsLayerId: initialChartLayerId,
   adminUnitLevel: initialAdminLevel,
+  allowDownload,
 }: ChartBlockProps) {
   const classes = useStyles();
   const { t } = useSafeTranslation();
   const mode = useSelector(dashboardModeSelector);
+  const chartRef = useRef<any>(null);
 
   const formState = useChartForm({
     initialChartLayerId,
@@ -83,6 +98,48 @@ function ChartBlock({
   const [chartHeightOption, setChartHeightOption] = useState<ChartHeight>(
     ChartHeight.TALL,
   );
+
+  const downloadFilename = buildCsvFileName([
+    ...(chartTitle ? chartTitle.split(' ') : []),
+  ]);
+
+  const handleDownloadPng = () => {
+    const chart = chartRef.current;
+    if (!chart) {
+      return;
+    }
+    const { canvas } = chart.chartInstance;
+    if (!canvas) {
+      return;
+    }
+    const file = canvas.toDataURL('image/png');
+    downloadToFile(
+      { content: file, isUrl: true },
+      downloadFilename,
+      'image/png',
+    );
+  };
+
+  const handleDownloadCsv = () => {
+    if (!chartDataset) {
+      return;
+    }
+    const keyMap = formState.selectedChartLayer?.chartData?.fields
+      ? createDataKeyMap(
+          chartDataset,
+          formState.selectedChartLayer.chartData.fields,
+        )
+      : {};
+
+    downloadChartsToCsv([
+      [
+        {
+          [chartTitle]: createCsvDataFromDataKeyMap(chartDataset, keyMap),
+        },
+        downloadFilename,
+      ],
+    ])();
+  };
 
   useEffect(() => {
     if (!formState.chartLayerId) {
@@ -136,18 +193,32 @@ function ChartBlock({
   };
 
   if (mode === DashboardMode.PREVIEW) {
+    const canDownload =
+      allowDownload && !isLoading && !error && chartDataset && chartConfig;
     return (
       <Box className={classes.previewContainer}>
         {formState.selectedChartLayer ? (
           <>
-            <Box className={classes.previewHeader}>
-              <Typography variant="h2" className={classes.previewTitle}>
-                {t(chartTitle)}
-              </Typography>
-              <Typography variant="body1" className={classes.previewDate}>
-                {formatDateRange()}
-              </Typography>
-            </Box>
+            <BlockPreviewHeader
+              title={t(chartTitle)}
+              subtitle={formatDateRange()}
+              downloadActions={
+                canDownload && (
+                  <>
+                    <Tooltip title={t('Download PNG') as string}>
+                      <IconButton onClick={handleDownloadPng} size="small">
+                        <ImageIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title={t('Download CSV') as string}>
+                      <IconButton onClick={handleDownloadCsv} size="small">
+                        <GetAppIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </>
+                )
+              }
+            />
 
             {isLoading && (
               <Box className={classes.loadingContainer}>
@@ -169,6 +240,7 @@ function ChartBlock({
             {!isLoading && !error && chartDataset && chartConfig && (
               <Box className={classes.chartWrapper}>
                 <Chart
+                  ref={chartRef}
                   title={t(chartSubtitle)}
                   config={chartConfig}
                   data={chartDataset}
@@ -431,6 +503,7 @@ const useStyles = makeStyles(theme => ({
   chartWrapper: {
     flex: 1,
     maxWidth: '100%',
+    position: 'relative',
     width: '100%',
     display: 'flex',
     flexDirection: 'column',

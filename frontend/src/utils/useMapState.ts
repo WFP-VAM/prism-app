@@ -31,10 +31,12 @@ export interface UnifiedMapState extends MapState {
     setMap: (mapGetter: MapGetter) => void;
     removeLayerData: (layer: LayerType) => void;
     setBoundaryRelationData: (data: BoundaryRelationsDict) => void;
+    updateMapTitle?: (title: string) => void;
   };
   capturedViewport?: [number, number, number, number];
   isGlobalMap: boolean;
   elementId?: string;
+  mapTitle?: string;
 }
 
 export function useMapState(): UnifiedMapState {
@@ -73,6 +75,12 @@ export function useMapState(): UnifiedMapState {
       : (_state: any) => undefined,
   );
 
+  const mapTitle = useSelector(
+    mapInstanceContext && mapInstanceContext.selectors.selectMapTitle
+      ? mapInstanceContext.selectors.selectMapTitle
+      : (_state: any) => undefined,
+  );
+
   const maplibreMap = mapGetter;
 
   const actions = useMemo(() => {
@@ -108,6 +116,11 @@ export function useMapState(): UnifiedMapState {
         : (data: BoundaryRelationsDict) =>
             dispatch(setGlobalMapBoundaryRelationData(data));
 
+    const updateMapTitle =
+      mapInstanceContext && mapInstanceContext.actions.updateMapTitle
+        ? mapInstanceContext.actions.updateMapTitle
+        : undefined;
+
     return {
       addLayer,
       removeLayer,
@@ -115,6 +128,7 @@ export function useMapState(): UnifiedMapState {
       setMap,
       removeLayerData,
       setBoundaryRelationData,
+      updateMapTitle,
     };
   }, [mapInstanceContext, dispatch]);
 
@@ -125,6 +139,7 @@ export function useMapState(): UnifiedMapState {
     minMapBounds,
     capturedViewport,
     actions,
+    mapTitle,
     errors: [],
     layersData: [],
     loadingLayerIds: [],
