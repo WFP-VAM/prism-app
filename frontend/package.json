@@ -36,7 +36,8 @@
     "deploy:staging": "firebase deploy --only hosting:staging-target",
     "deploy:firebase": "firebase hosting:channel:deploy preview --project prism-frontend --only staging-target",
     "delete:firebase": "firebase hosting:channel:delete preview --project prism-frontend",
-    "deploy:tests": "./scripts/deploy_to_firebase.sh",
+    "deploy:tests": "./scripts/country_build.sh deploy",
+    "batch:build": "./scripts/country_build.sh build",
     "precommit": "lint-staged",
     "check-boundary-keys": "node ./scripts/check-boundary-keys-validity.js",
     "preprocess-layers": "ts-node --compilerOptions \"{\\\"module\\\":\\\"commonjs\\\"}\" ./scripts/preprocess-layers.ts",
@@ -186,7 +187,7 @@
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.2.2",
-    "vite": "^6.3.6",
+    "vite": "^6.4.1",
     "vite-plugin-node-polyfills": "^0.21.0"
   },
   "engines": {
