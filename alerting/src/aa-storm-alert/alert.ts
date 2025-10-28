@@ -2,11 +2,11 @@ import {
   LastStates,
   ShortReport,
   ShortReportsResponseBody,
-} from '../types/aa-storm-email';
+} from '../types/storm-reports';
 import nodeFetch from 'node-fetch';
 import { WindState } from 'prism-common';
 import { StormDataResponseBody } from 'prism-common';
-import { StormAlertData } from '../types/email';
+import { StormAlertData } from '../types/storm-email';
 import { captureScreenshotFromUrl } from '../utils/capture-utils';
 import { formatDate } from '../utils/date';
 import { allDistrictsInCoastalProvince } from './districs';

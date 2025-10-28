@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import { StormAlertData, StormAlertEmail } from '../types/email';
+import { StormAlertData, StormAlertEmail } from '../types/storm-email';
 import { FloodAlertEmailData } from '../types/flood-email';
 import ejs from 'ejs';
 import path from 'path';
