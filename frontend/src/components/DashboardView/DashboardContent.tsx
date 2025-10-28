@@ -132,6 +132,7 @@ function DashboardContent({
             baselineLayerId={element.baselineLayerId}
             threshold={element.threshold}
             stat={element.stat}
+            maxRows={element.maxRows}
             allowDownload={!exportConfig}
           />
         );

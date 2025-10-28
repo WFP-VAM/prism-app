@@ -1060,6 +1060,7 @@ export interface DashboardTableConfig {
   baselineLayerId: string;
   threshold?: ThresholdDefinition;
   stat: AggregationOperations;
+  maxRows?: number;
 }
 
 export interface DashboardMapConfig {

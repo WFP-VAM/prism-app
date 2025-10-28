@@ -48,6 +48,7 @@ import BlockPreviewHeader from './BlockPreviewHeader';
 interface TableBlockProps extends Partial<DashboardTableConfig> {
   index: number;
   allowDownload?: boolean;
+  maxRows?: number;
 }
 
 function TableBlock({
@@ -57,6 +58,7 @@ function TableBlock({
   baselineLayerId: initialBaselineLayerId,
   threshold: initialThreshold,
   stat: initialStat,
+  maxRows: initialMaxRows,
   allowDownload,
 }: TableBlockProps) {
   const classes = useStyles();
@@ -78,7 +80,7 @@ function TableBlock({
     onUrlUpdate: undefined,
   });
 
-  const [maxRows, setMaxRows] = useState(8);
+  const [maxRows, setMaxRows] = useState(initialMaxRows || 8);
 
   // Sorting state
   const [sortColumn, setSortColumn] = useState<string | number>('name');
