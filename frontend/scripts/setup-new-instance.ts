@@ -692,18 +692,15 @@ async function main(): Promise<void> {
     console.log('\n✅ Configuration complete!');
     console.log(`\nNext steps:`);
     console.log(
-      `1. Update the language translations in frontend/src/config/${config.countrySlug}/index.ts`,
+      `1. Add country-specific layers if needed in frontend/src/config/${config.countrySlug}/layers.json`,
     );
     console.log(
-      `2. Add country-specific layers if needed in frontend/src/config/${config.countrySlug}/layers.json`,
+      `2. Upload boundary file to S3: prism-admin-boundaries/${config.boundaryFile || config.countrySlug}`,
     );
     console.log(
-      `3. Upload boundary file to S3: prsm-admin-boundaries/${config.boundaryFile || config.countrySlug}.json`,
+      `3. Set REACT_APP_COUNTRY=${config.countrySlug} environment variable`,
     );
-    console.log(
-      `4. Set REACT_APP_COUNTRY=${config.countrySlug} environment variable`,
-    );
-    console.log(`5. Build and deploy`);
+    console.log(`4. Build and deploy`);
 
     // done
   } catch (error) {
