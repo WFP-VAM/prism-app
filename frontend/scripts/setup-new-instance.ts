@@ -14,7 +14,10 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import * as readline from 'readline';
+// no readline - using enquirer for all prompts
+// Interactive prompts
+// eslint-disable-next-line import/no-extraneous-dependencies, @typescript-eslint/no-var-requires
+const { MultiSelect, Input, Confirm } = require('enquirer');
 
 interface LayerInfo {
   id: string;
@@ -140,20 +143,7 @@ function loadSharedLayers(): LayerInfo[] {
 // Shared layers organized by category
 const SHARED_LAYERS: LayerInfo[] = loadSharedLayers();
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
-
-function question(query: string): Promise<string> {
-  return new Promise(resolve => {
-    rl.question(query, resolve);
-  });
-}
-
-function close(): void {
-  rl.close();
-}
+// no readline helpers
 
 // Helper function to create slug from country name
 function createSlug(countryName: string): string {
@@ -164,9 +154,9 @@ async function collectCountryInfo(): Promise<SetupConfig> {
   console.log('\n=== PRISM Instance Setup Tool ===\n');
 
   // 1. Country name
-  const countryName = await question(
-    'Enter country name (e.g., "South Africa"): ',
-  );
+  const countryName: string = await new Input({
+    message: 'Enter country name (e.g., "South Africa"):',
+  }).run();
   const countrySlug = createSlug(countryName);
 
   console.log(`\nCountry slug: ${countrySlug}`);
@@ -174,10 +164,10 @@ async function collectCountryInfo(): Promise<SetupConfig> {
   // Check if country already exists
   const configDir = path.join(__dirname, '../src/config', countrySlug);
   if (fs.existsSync(configDir)) {
-    const overwrite = await question(
-      '\n⚠️  Country configuration already exists. Overwrite? (y/N): ',
-    );
-    const overwriteAffirmative = overwrite.trim().toLowerCase().startsWith('y');
+    const overwriteAffirmative: boolean = await new Confirm({
+      message: '⚠️  Country configuration already exists. Overwrite?',
+      initial: false,
+    }).run();
     if (!overwriteAffirmative) {
       console.log('Aborted.');
       process.exit(0);
@@ -186,18 +176,18 @@ async function collectCountryInfo(): Promise<SetupConfig> {
 
   // 2. Languages
   console.log('\n--- Language Selection ---');
-  console.log('Available languages:');
-  Object.entries(LANGUAGES).forEach(([code, name]) => {
-    console.log(`  ${code}: ${name}`);
+  const languagePrompt = new MultiSelect({
+    name: 'languages',
+    message: 'Select languages (space to toggle, enter to confirm)',
+    hint: 'Use arrow keys to navigate',
+    choices: Object.entries(LANGUAGES).map(([code, name]) => ({
+      name: code,
+      message: `${name} (${code})`,
+      value: code,
+    })),
+    initial: ['en'],
   });
-
-  const languagesInput = await question(
-    '\nEnter language codes (comma-separated, e.g., "en,fr,pt"): ',
-  );
-  const languages = languagesInput
-    .split(',')
-    .map(l => l.trim())
-    .filter(Boolean);
+  const languages: string[] = (await languagePrompt.run()) as string[];
 
   if (languages.length === 0) {
     console.log('Using default language: en');
@@ -206,8 +196,7 @@ async function collectCountryInfo(): Promise<SetupConfig> {
 
   // 3. Layers
   console.log('\n--- Layer Selection ---');
-  console.log('Available layers by category:');
-
+  // Group by category and build a flat list with category labels
   const layersByCategory = SHARED_LAYERS.reduce(
     (acc, layer) => {
       if (!acc[layer.category]) {
@@ -219,25 +208,32 @@ async function collectCountryInfo(): Promise<SetupConfig> {
     {} as Record<string, LayerInfo[]>,
   );
 
-  Object.entries(layersByCategory).forEach(([category, layers]) => {
-    console.log(`\n${category}:`);
-    layers.forEach(layer => {
-      console.log(`  [${layer.id}] ${layer.title}`);
-    });
+  const choices = [
+    // Special ALL option
+    { name: '__ALL_LAYERS__', message: 'All layers', value: '__ALL_LAYERS__' },
+    { role: 'separator', message: '' },
+    // Grouped by category
+    ...Object.entries(layersByCategory).flatMap(([category, layers]) => [
+      { role: 'separator', message: `\n${category}` },
+      ...layers.map(l => ({ name: l.id, message: l.title, value: l.id })),
+    ]),
+  ];
+
+  const layerPrompt = new MultiSelect({
+    name: 'layers',
+    message:
+      'Select layers to include (space to toggle, enter to confirm). Use search to filter.',
+    hint: 'Use arrow keys to navigate',
+    choices,
+    // Large lists usability
+    footer: false,
+    multiple: true,
+    // @ts-ignore enquirer supports search option
+    searchable: true,
   });
-
-  const layersInput = await question(
-    '\nEnter layer IDs to include (comma-separated, or "all" for all): ',
-  );
-  let selectedLayers: string[];
-
-  if (layersInput.trim().toLowerCase() === 'all') {
+  let selectedLayers: string[] = (await layerPrompt.run()) as string[];
+  if (selectedLayers.includes('__ALL_LAYERS__')) {
     selectedLayers = SHARED_LAYERS.map(l => l.id);
-  } else {
-    selectedLayers = layersInput
-      .split(',')
-      .map(l => l.trim())
-      .filter(Boolean);
   }
 
   // 4. Bounding box
@@ -245,41 +241,55 @@ async function collectCountryInfo(): Promise<SetupConfig> {
   console.log(
     'Enter bounding box coordinates [minLon, minLat, maxLon, maxLat]',
   );
-  const minLon = parseFloat(await question('Min Longitude: '));
-  const minLat = parseFloat(await question('Min Latitude: '));
-  const maxLon = parseFloat(await question('Max Longitude: '));
-  const maxLat = parseFloat(await question('Max Latitude: '));
+  const minLon = parseFloat(
+    await new Input({ message: 'Min Longitude:' }).run(),
+  );
+  const minLat = parseFloat(
+    await new Input({ message: 'Min Latitude:' }).run(),
+  );
+  const maxLon = parseFloat(
+    await new Input({ message: 'Max Longitude:' }).run(),
+  );
+  const maxLat = parseFloat(
+    await new Input({ message: 'Max Latitude:' }).run(),
+  );
 
   // 5. WMS Servers
   console.log('\n--- WMS Server Configuration ---');
-  const wmsServersInput = await question(
-    'Enter WMS server URLs (comma-separated, or press Enter for default, https://api.earthobservation.vam.wfp.org/ows/wms): ',
-  );
+  const wmsServersInput = await new Input({
+    message:
+      'Enter WMS server URLs (comma-separated, or press Enter for default, https://api.earthobservation.vam.wfp.org/ows/wms):',
+  }).run();
   const wmsServers = wmsServersInput.trim()
     ? wmsServersInput
         .split(',')
-        .map(s => s.trim())
-        .filter(Boolean)
+        .map((serverUrl: string) => serverUrl.trim())
+        .filter((url: string) => Boolean(url))
     : ['https://api.earthobservation.vam.wfp.org/ows/wms'];
 
   // 6. Alert Form
-  const alertFormInput = await question('\nEnable alert form? (y/N): ');
-  const alertFormActive = alertFormInput.trim().toLowerCase().startsWith('y');
+  const alertFormActive: boolean = await new Confirm({
+    message: 'Enable alert form?',
+    initial: false,
+  }).run();
 
   // 7. Boundary files (paths)
   console.log('\n--- Boundary Files ---');
   console.log(
     'Provide paths to admin boundary files. If left empty, Mozambique defaults are used temporarily.',
   );
-  const admin1Path = await question(
-    'Path to admin1 boundary file (e.g., /abs/path/adm1.json), or Enter to skip: ',
-  );
-  const admin2Path = await question(
-    'Path to admin2 boundary file (e.g., /abs/path/adm2.json), or Enter to skip: ',
-  );
-  const admin3Path = await question(
-    'Path to admin3 boundary file (e.g., /abs/path/adm3.json), or Enter to skip: ',
-  );
+  const admin1Path = await new Input({
+    message:
+      'Path to admin1 boundary file (e.g., /abs/path/adm1.json), or Enter to skip:',
+  }).run();
+  const admin2Path = await new Input({
+    message:
+      'Path to admin2 boundary file (e.g., /abs/path/adm2.json), or Enter to skip:',
+  }).run();
+  const admin3Path = await new Input({
+    message:
+      'Path to admin3 boundary file (e.g., /abs/path/adm3.json), or Enter to skip:',
+  }).run();
   const boundaryFiles = {
     admin1: admin1Path.trim() || undefined,
     admin2: admin2Path.trim() || undefined,
@@ -291,19 +301,19 @@ async function collectCountryInfo(): Promise<SetupConfig> {
 
   // 8. Default display boundaries
   console.log('\n--- Boundary Layers Configuration ---');
-  console.log(
-    'Available boundary layers:\n  admin0 (country level)\n  admin1 (province/state)\n  admin2 (district)\n  admin3 (sub-district)',
-  );
-  const boundariesInput = await question(
-    'Enter boundary layers to display by default (comma-separated, e.g., "admin1,admin2", or press Enter for admin1,admin2): ',
-  );
-  const defaultDisplayBoundaries = boundariesInput.trim()
-    ? boundariesInput
-        .split(',')
-        .map(b => b.trim())
-        .filter(Boolean)
-        .map(b => `${b}_boundaries`)
-    : ['admin1_boundaries', 'admin2_boundaries'];
+  const boundaryChoice = new MultiSelect({
+    name: 'defaultBoundaries',
+    message:
+      'Select boundary layers to display by default (space to toggle, enter to confirm)',
+    choices: [
+      { name: 'admin1_boundaries', message: 'admin1' },
+      { name: 'admin2_boundaries', message: 'admin2' },
+      { name: 'admin3_boundaries', message: 'admin3' },
+    ],
+    initial: ['admin1_boundaries', 'admin2_boundaries'],
+  });
+  const defaultDisplayBoundaries: string[] =
+    (await boundaryChoice.run()) as string[];
 
   return {
     countryName,
@@ -695,10 +705,9 @@ async function main(): Promise<void> {
     );
     console.log(`5. Build and deploy`);
 
-    close();
+    // done
   } catch (error) {
     console.error('Error:', error);
-    close();
     process.exit(1);
   }
 }

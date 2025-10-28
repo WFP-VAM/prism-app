@@ -163,6 +163,7 @@
     "cross-fetch": "^4.0.0",
     "cypress": "^15.1.0",
     "dotenv": "^16.4.5",
+    "enquirer": "2.4.1",
     "eslint": "^8.45.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^9.1.0",
