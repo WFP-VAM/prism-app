@@ -278,6 +278,9 @@ async function collectCountryInfo(): Promise<SetupConfig> {
   console.log(
     'Provide paths to admin boundary files. If left empty, Mozambique defaults are used temporarily.',
   );
+  console.log(
+    "💡 Tip: If you don't have boundary files, you can download them from https://www.geoboundaries.org/",
+  );
   const admin1Path = await new Input({
     message:
       'Path to admin1 boundary file (e.g., /abs/path/adm1.json), or Enter to skip:',
