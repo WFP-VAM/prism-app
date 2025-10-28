@@ -71,3 +71,12 @@ sudo docker compose run --entrypoint "yarn aa-flood-alert-worker --testEmail='em
 - The flood worker reads `dates.json`: `https://data.earthobservation.vam.wfp.org/public-share/aa/flood/moz/dates.json`.
 - Email triggers when `trigger_status` is one of: `bankfull`, `moderate`, `severe`.
 - Email content follows the AA Flood design and includes a map screenshot and CTA link.
+
+## Server crons
+Alert workers are running as crons on the server. Edit with: `crontab -e`
+Crontab examples :
+```
+0 * * * *  ~/prism-app/alerting/crons/cron_aa_storm_alert_run.sh
+5 * * * *  ~/prism-app/alerting/crons/cron_aa_flood_alert_run.sh
+0 1 * * *  ~/prism-app/alerting/crons/cron_alert_run.sh
+```
