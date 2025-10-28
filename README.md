@@ -465,3 +465,12 @@ By default, a pre-commit hook is defined to run linting tasks on all _staged_ co
 ### Creating pull requests and deploying to Firebase
 
 By default, everytime a pull request is created, a CI/CD pipeline will run tests and deploy the code to a Firebase channel preview (http://staging-prism-frontend--prism-[pr number]-[random hash].web.app). To specify a country that the build will be run on, start your pull request title with `COUNTRY=[country name]`. For example: `COUNTRY=cambodia Add new config options`.
+
+### Batch builds and test deploys (multi-country)
+
+Use `frontend/scripts/country_build.sh` from the `frontend` folder:
+
+- `yarn batch:build`: build zips for chosen countries into `frontend/builds/`
+- `yarn deploy:tests`: deploy Firebase preview channels for chosen countries
+
+You’ll be prompted for a list of countries (or select `all`). For deploys, ensure Firebase CLI is installed and authenticated.
