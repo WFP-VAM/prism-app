@@ -134,6 +134,9 @@ function DashboardContent({
             stat={element.stat}
             maxRows={element.maxRows}
             allowDownload={!exportConfig}
+            addResultToMap={element.addResultToMap}
+            sortColumn={element.sortColumn}
+            sortOrder={element.sortOrder}
           />
         );
       case DashboardElementType.CHART:
@@ -143,7 +146,7 @@ function DashboardContent({
             index={elementIndex}
             startDate={element.startDate}
             endDate={element.endDate}
-            wmsLayerId={element.wmsLayerId}
+            layerId={element.layerId}
             adminUnitLevel={element.adminUnitLevel}
             adminUnitId={element.adminUnitId}
             allowDownload={!exportConfig}
@@ -175,7 +178,7 @@ function DashboardContent({
           )}
           {mode !== DashboardMode.EDIT ? (
             <Typography variant="h2" component="h1" className={classes.title}>
-              {dashboardTitle || 'Untitled Dashboard'}
+              {t(dashboardTitle || 'Untitled Dashboard')}
             </Typography>
           ) : (
             <Box className={classes.grayCard}>

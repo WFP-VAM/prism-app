@@ -31,6 +31,7 @@ import {
   createDataKeyMap,
   downloadChartsToCsv,
 } from 'utils/csv-utils';
+import { getFormattedDate } from 'utils/date-utils';
 import { dashboardModeSelector } from '../../context/dashboardStateSlice';
 import BlockPreviewHeader from './BlockPreviewHeader';
 
@@ -43,7 +44,7 @@ function ChartBlock({
   index,
   startDate: initialStartDate,
   endDate: initialEndDate,
-  wmsLayerId: initialChartLayerId,
+  layerId: initialChartLayerId,
   adminUnitLevel: initialAdminLevel,
   allowDownload,
 }: ChartBlockProps) {
@@ -153,22 +154,8 @@ function ChartBlock({
       return '';
     }
 
-    const startDate = new Date(start);
-    const endDate = new Date(end);
-
-    const startStr = startDate.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      timeZone: 'UTC',
-    });
-
-    const endStr = endDate.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      timeZone: 'UTC',
-    });
+    const startStr = getFormattedDate(start, 'localeShortUTC');
+    const endStr = getFormattedDate(end, 'localeShortUTC');
 
     return `${startStr} - ${endStr}`;
   };

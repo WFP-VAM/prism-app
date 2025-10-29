@@ -192,6 +192,8 @@ const AnalysisPanel = memo(() => {
         dispatch(setIsMapLayerActive(true));
       }
     },
+    // Don't clear on unmount for the main analysis panel - preserve results when navigating away
+    clearOnUnmount: false,
   });
 
   const BASELINE_URL_LAYER_KEY = 'baselineLayerId';

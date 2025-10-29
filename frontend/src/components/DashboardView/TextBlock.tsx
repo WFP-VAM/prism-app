@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, makeStyles, Typography } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import Markdown from 'react-markdown';
+import { useSafeTranslation } from 'i18n';
 import { DashboardMode } from 'config/types';
 import {
   setTextContent,
@@ -67,6 +68,7 @@ function TextBlock({
 }: TextBlockProps) {
   const dispatch = useDispatch();
   const classes = useStyles();
+  const { t } = useSafeTranslation();
   const mode = useSelector(dashboardModeSelector);
 
   if (mode === DashboardMode.PREVIEW) {
@@ -92,7 +94,7 @@ function TextBlock({
             'li',
           ]}
         >
-          {content}
+          {t(content)}
         </Markdown>
       </Box>
     );
@@ -101,12 +103,12 @@ function TextBlock({
   return (
     <Box className={classes.grayCard}>
       <Typography variant="h3" className={classes.blockLabel}>
-        {label}
+        {t(label)}
       </Typography>
       <textarea
         name="text-block"
         className={classes.textarea}
-        placeholder="Add custom text here"
+        placeholder={t('Add custom text here')}
         value={content}
         onChange={e =>
           dispatch(

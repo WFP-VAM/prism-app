@@ -177,16 +177,16 @@ const logoPositionOptions = [
   },
 ];
 
-const logoScaleSelectorOptions = [
-  { value: 0.5, comp: <div style={{ fontSize: '0.75rem' }}>S</div> },
-  { value: 1, comp: <div style={{ fontSize: '1rem' }}>M</div> },
-  { value: 1.5, comp: <div style={{ fontSize: '1.25rem' }}>L</div> },
-];
-
 function DashboardExportConfig() {
   const classes = useStyles();
   const { t } = useSafeTranslation();
   const { exportConfig } = useContext(DashboardExportContext);
+
+  const logoScaleSelectorOptions = [
+    { value: 0.5, comp: <div style={{ fontSize: '0.75rem' }}>{t('S')}</div> },
+    { value: 1, comp: <div style={{ fontSize: '1rem' }}>{t('M')}</div> },
+    { value: 1.5, comp: <div style={{ fontSize: '1.25rem' }}>{t('L')}</div> },
+  ];
 
   if (!exportConfig) {
     return null;
