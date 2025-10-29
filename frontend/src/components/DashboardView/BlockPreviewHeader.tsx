@@ -8,8 +8,8 @@ interface BlockPreviewHeaderProps {
 }
 
 function BlockPreviewHeader({
-  title,
-  subtitle,
+  title, // Expects translated title
+  subtitle, // Expects translated subtitle
   downloadActions,
 }: BlockPreviewHeaderProps) {
   const classes = useStyles();

@@ -177,7 +177,7 @@ function DashboardContent({
           )}
           {mode !== DashboardMode.EDIT ? (
             <Typography variant="h2" component="h1" className={classes.title}>
-              {dashboardTitle || 'Untitled Dashboard'}
+              {t(dashboardTitle || 'Untitled Dashboard')}
             </Typography>
           ) : (
             <Box className={classes.grayCard}>

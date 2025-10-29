@@ -251,7 +251,7 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
           {mode === DashboardMode.PREVIEW && (
             <div className={classes.previewHeaderContainer}>
               <BlockPreviewHeader
-                title={title || ''}
+                title={t(title || '')}
                 subtitle={formatMapDate()}
                 downloadActions={
                   !exportConfig && (
