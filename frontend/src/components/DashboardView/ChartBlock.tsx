@@ -353,6 +353,20 @@ function ChartBlock({
               );
             }}
           />
+          <FormControl variant="outlined" className={classes.formControl}>
+            <InputLabel>{t('Chart Height')}</InputLabel>
+            <Select
+              value={chartHeightOption}
+              onChange={e =>
+                setChartHeightOption(e.target.value as ChartHeight)
+              }
+              label={t('Chart Height')}
+            >
+              <MenuItem value={ChartHeight.TALL}>{t('Tall')}</MenuItem>
+              <MenuItem value={ChartHeight.MEDIUM}>{t('Medium')}</MenuItem>
+              <MenuItem value={ChartHeight.SHORT}>{t('Short')}</MenuItem>
+            </Select>
+          </FormControl>
           {hasFormChanged && formState.chartLayerId && (
             <Box className={classes.rerunRow}>
               <Button
@@ -374,22 +388,6 @@ function ChartBlock({
             {renderEditPreviewChart()}
           </Box>
         )}
-        <FormControl
-          variant="outlined"
-          size="small"
-          className={classes.heightSelector}
-        >
-          <InputLabel>{t('Chart Height')}</InputLabel>
-          <Select
-            value={chartHeightOption}
-            onChange={e => setChartHeightOption(e.target.value as ChartHeight)}
-            label={t('Chart Height')}
-          >
-            <MenuItem value={ChartHeight.TALL}>{t('Tall')}</MenuItem>
-            <MenuItem value={ChartHeight.MEDIUM}>{t('Medium')}</MenuItem>
-            <MenuItem value={ChartHeight.SHORT}>{t('Short')}</MenuItem>
-          </Select>
-        </FormControl>
       </Box>
     </Box>
   );
@@ -427,10 +425,6 @@ const useStyles = makeStyles(theme => ({
   previewDate: {
     flex: '0 0 auto',
     fontSize: '0.875rem',
-  },
-  heightSelector: {
-    minWidth: 120,
-    marginTop: theme.spacing(1),
   },
   blockTitle: {
     fontWeight: 600,
@@ -530,6 +524,11 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     height: 240,
     textAlign: 'center',
+  },
+  formControl: {
+    width: '90%',
+    marginLeft: 10,
+    marginBottom: 8,
   },
 }));
 
