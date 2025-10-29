@@ -44,7 +44,7 @@ function ChartBlock({
   index,
   startDate: initialStartDate,
   endDate: initialEndDate,
-  wmsLayerId: initialChartLayerId,
+  layerId: initialChartLayerId,
   adminUnitLevel: initialAdminLevel,
   allowDownload,
 }: ChartBlockProps) {

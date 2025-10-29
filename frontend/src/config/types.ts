@@ -1042,7 +1042,7 @@ export interface DashboardChartConfig {
   type: DashboardElementType.CHART;
   startDate: string;
   endDate?: string;
-  wmsLayerId: string;
+  layerId: string;
   adminUnitLevel?: number;
   adminUnitId?: number;
 }

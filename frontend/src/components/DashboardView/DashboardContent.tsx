@@ -142,7 +142,7 @@ function DashboardContent({
             index={elementIndex}
             startDate={element.startDate}
             endDate={element.endDate}
-            wmsLayerId={element.wmsLayerId}
+            layerId={element.layerId}
             adminUnitLevel={element.adminUnitLevel}
             adminUnitId={element.adminUnitId}
             allowDownload={!exportConfig}
