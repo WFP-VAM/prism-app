@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import mask from '@turf/mask';
+import { useSafeTranslation } from 'i18n';
 import { getFormattedDate } from 'utils/date-utils';
 import { dashboardConfigSelector } from 'context/dashboardStateSlice';
 import { downloadToFile } from 'components/MapView/utils';
@@ -36,6 +37,7 @@ function DashboardExportDialog({
   handleClose,
 }: DashboardExportDialogProps) {
   const classes = useStyles();
+  const { t } = useSafeTranslation();
   const printRef = useRef<HTMLDivElement>(null);
   const [paperSize, setPaperSize] = useState<PaperSize>(PaperSize.A4_LANDSCAPE);
   const [isExporting, setIsExporting] = useState(false);
@@ -230,7 +232,7 @@ function DashboardExportDialog({
       }
 
       setSuccessMessage(
-        `Dashboard exported successfully as ${format.toUpperCase()}`,
+        t(`Dashboard exported successfully as ${format.toUpperCase()}`),
       );
 
       // Close dialog after successful export
@@ -239,8 +241,8 @@ function DashboardExportDialog({
       }, 500);
     } catch (error) {
       setErrorMessage(
-        `Failed to export dashboard. ${
-          error instanceof Error ? error.message : 'Unknown error'
+        `${t('Failed to export dashboard')}. ${
+          error instanceof Error ? error.message : t('Unknown error')
         }`,
       );
     } finally {

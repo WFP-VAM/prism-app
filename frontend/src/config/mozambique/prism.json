@@ -525,7 +525,10 @@
           "startDate": "2025-03-21",
           "hazardLayerId": "spi_blended_6m",
           "baselineLayerId": "admin_boundaries",
-          "stat": "mean"
+          "stat": "mean",
+          "addResultToMap": false,
+          "sortColumn": "mean",
+          "sortOrder": "asc"
         }
       ],
       "thirdColumn": []
@@ -549,7 +552,7 @@
           "type": "CHART",
           "startDate": "2023-12-21",
           "endDate": "2024-12-21",
-          "wmsLayerId": "precip_blended_anomaly_3m",
+          "layerId": "precip_blended_anomaly_3m",
           "adminUnitLevel": 0
         },
         {

@@ -1048,7 +1048,7 @@ export interface DashboardChartConfig {
   type: DashboardElementType.CHART;
   startDate: string;
   endDate?: string;
-  wmsLayerId: string;
+  layerId: string;
   adminUnitLevel?: number;
   adminUnitId?: number;
   chartHeight?: ChartHeight;
@@ -1067,6 +1067,9 @@ export interface DashboardTableConfig {
   baselineLayerId: string;
   threshold?: ThresholdDefinition;
   stat: AggregationOperations;
+  addResultToMap?: boolean;
+  sortColumn?: string | number;
+  sortOrder?: 'asc' | 'desc';
 }
 
 export interface DashboardMapConfig {
