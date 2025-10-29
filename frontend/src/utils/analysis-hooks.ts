@@ -197,13 +197,16 @@ export const useAnalysisForm = (
 
   // Set default dates when hazard layer changes
   useEffect(() => {
+    // Normalize initialStartDate to 12:00:00 UTC to match how availableHazardDates are created
+    const normalizedInitialDate = initialStartDate
+      ? new Date(new Date(initialStartDate).setUTCHours(12, 0, 0, 0)).getTime()
+      : null;
     if (availableHazardDates.length > 0) {
       const lastAvailableDate =
         getDateFromList(
-          initialStartDate ? new Date(initialStartDate) : null,
-          availableHazardDates,
-        )?.getTime() ||
-        availableHazardDates[availableHazardDates.length - 1].getTime();
+          normalizedInitialDate,
+          availableHazardDates.map(d => d.getTime()),
+        ) || availableHazardDates[availableHazardDates.length - 1].getTime();
 
       if (hazardDataType === GeometryType.Polygon) {
         setStartDate(lastAvailableDate);
