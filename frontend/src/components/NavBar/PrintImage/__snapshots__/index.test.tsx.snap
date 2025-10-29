@@ -1010,7 +1010,7 @@ exports[`renders as expected 1`] = `
                   component="h1"
                   variant="h2"
                 >
-                  Spring Dashboard
+                  Rainfall anomaly - 2024/2025 rainy season
                 </mock-typography>
               </div>
               <div

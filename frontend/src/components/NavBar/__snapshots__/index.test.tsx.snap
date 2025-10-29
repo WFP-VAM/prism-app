@@ -120,17 +120,17 @@ exports[`renders as expected 1`] = `
               <mock-menuitem
                 selected="false"
               >
-                Spring Dashboard
+                Rainfall anomaly - 2024/2025 rainy season
               </mock-menuitem>
               <mock-menuitem
                 selected="false"
               >
-                Summer Dashboard
+                SPI - 2024/2025 rainy season
               </mock-menuitem>
               <mock-menuitem
                 selected="false"
               >
-                Precipitation Comparison Dashboard
+                Oct - Dec 2024 rainfall anomaly
               </mock-menuitem>
             </mock-menu>
             <button
