@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   AdminLevelDataLayerProps,
@@ -254,6 +254,7 @@ export const useAnalysisForm = (
 export interface UseAnalysisExecutionOptions {
   onUrlUpdate?: (params: any) => void;
   clearAnalysisFunction?: () => void;
+  clearOnUnmount: boolean; // Whether to clear analysis results on component unmount
 }
 
 export interface UseAnalysisExecutionReturn {
@@ -267,12 +268,41 @@ export interface UseAnalysisExecutionReturn {
  */
 export const useAnalysisExecution = (
   formState: UseAnalysisFormReturn,
-  options: UseAnalysisExecutionOptions = {},
+  options: UseAnalysisExecutionOptions,
 ): UseAnalysisExecutionReturn => {
-  const { onUrlUpdate, clearAnalysisFunction } = options;
+  const { onUrlUpdate, clearAnalysisFunction, clearOnUnmount } = options;
   const dispatch = useDispatch();
   const map = useSelector(mapSelector);
   const { adminBoundariesExtent: extent } = useLayers();
+
+  // Track if component is mounted to prevent updates after unmount
+  const isMountedRef = useRef(true);
+
+  // Store the current analysis request promise (which has an abort method added by Redux Toolkit)
+  const analysisRequestRef = useRef<any>(null);
+
+  // Cleanup on unmount - abort any pending analysis and clear results
+  useEffect(
+    () => () => {
+      isMountedRef.current = false;
+
+      // Abort any pending analysis request
+      if (analysisRequestRef.current) {
+        analysisRequestRef.current.abort();
+        analysisRequestRef.current = null;
+      }
+
+      // Only clear if clearOnUnmount is enabled
+      if (clearOnUnmount) {
+        if (clearAnalysisFunction) {
+          clearAnalysisFunction();
+        } else {
+          dispatch(clearAnalysisResult());
+        }
+      }
+    },
+    [dispatch, clearAnalysisFunction, clearOnUnmount],
+  );
 
   const scaleThreshold = useCallback(
     (threshold: number) =>
@@ -383,7 +413,10 @@ export const useAnalysisExecution = (
         });
       }
 
-      dispatch(requestAndStorePolygonAnalysis(params));
+      // Dispatch and store the request so we can abort it if needed
+      analysisRequestRef.current = dispatch(
+        requestAndStorePolygonAnalysis(params),
+      );
     } else {
       if (!formState.selectedDate) {
         throw new Error('Date must be given to run analysis');
@@ -425,7 +458,8 @@ export const useAnalysisExecution = (
         });
       }
 
-      dispatch(requestAndStoreAnalysis(params));
+      // Dispatch and store the request so we can abort it if needed
+      analysisRequestRef.current = dispatch(requestAndStoreAnalysis(params));
     }
   }, [
     formState,
