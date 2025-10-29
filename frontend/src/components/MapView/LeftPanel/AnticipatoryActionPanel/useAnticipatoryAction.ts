@@ -139,9 +139,6 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
       );
       updateHistory(getUrlKey(layer), updatedUrl);
       dispatch(updateDateRange({ startDate: undefined }));
-
-      // Add the layer to selected layers for proper timeline integration
-      dispatch(addLayer(layer));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
