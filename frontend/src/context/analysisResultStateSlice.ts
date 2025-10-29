@@ -69,6 +69,7 @@ import { fetchWMSLayerAsGeoJSON } from 'utils/server-utils';
 import { isLocalhost } from 'serviceWorker';
 import { ANALYSIS_API_URL } from 'utils/constants';
 import { getFormattedDate } from 'utils/date-utils';
+import { boundaryCache } from 'utils/boundary-cache';
 import { layerDataSelector } from './mapStateSlice/selectors';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord } from './layers/admin_level_data';
@@ -139,9 +140,13 @@ function getAdminBoundariesURL(adminBoundariesPath: string) {
   if (isLocalhost) {
     return defaultBoundariesPath;
   }
-  return (
-    window.location.origin + window.location.pathname + adminBoundariesPath
+  // remove the dashboard (and future subpaths) path from the pathname
+  const pathsToRemove = ['dashboard'];
+  const pathname = window.location.pathname.replace(
+    new RegExp(pathsToRemove.join('|')),
+    '',
   );
+  return window.location.origin + pathname + adminBoundariesPath;
 }
 
 const generateTableColumnsFromApiData = (
@@ -508,13 +513,17 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
 
     const adminBoundaries = getBoundaryLayerSingleton();
 
-    const adminBoundariesData = layerDataSelector(adminBoundaries.id)(
-      api.getState(),
-    ) as LayerData<BoundaryLayerProps>;
-
-    const boundaryData = layerDataSelector(adminBoundaries.id)(
-      api.getState(),
-    ) as LayerData<BoundaryLayerProps> | undefined;
+    const boundaryData = await boundaryCache.getBoundaryData(
+      adminBoundaries,
+      api.dispatch,
+    );
+    if (!boundaryData) {
+      throw new Error('Boundary Layer not loaded!');
+    }
+    const adminBoundariesData = {
+      data: boundaryData,
+      layer: adminBoundaries,
+    } as LayerData<BoundaryLayerProps>;
     const { id, key, calc } = exposure;
 
     const wfsLayer =
@@ -601,7 +610,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
     const featuresWithBoundaryProps = appendBoundaryProperties(
       adminBoundaries.adminCode,
       features,
-      boundaryData!.data.features,
+      boundaryData.features,
     );
 
     const collection: FeatureCollection = {
@@ -658,6 +667,13 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   AnalysisDispatchParams,
   CreateAsyncThunkTypes
 >('analysisResultState/requestAndStoreAnalysis', async (params, api) => {
+  // Check if the request was aborted before making the expensive API call
+  const checkIfRequestWasAborted = () => {
+    if (api.signal.aborted) {
+      throw new Error('Analysis request was cancelled');
+    }
+  };
+
   const {
     hazardLayer,
     date,
@@ -675,13 +691,20 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     (baselineLayer as AdminLevelDataLayerProps)?.adminLevel ||
     (baselineLayer as BoundaryLayerProps)?.adminLevelCodes?.length;
   const adminBoundaries = getBoundaryLayersByAdminLevel(adminLevel);
-  const adminBoundariesData = layerDataSelector(adminBoundaries.id)(
-    api.getState(),
-  ) as LayerData<BoundaryLayerProps>;
 
-  if (!adminBoundariesData && adminBoundaries.format !== 'pmtiles') {
+  const boundaryData = await boundaryCache.getBoundaryData(
+    adminBoundaries,
+    api.dispatch,
+  );
+  if (!boundaryData && adminBoundaries.format !== 'pmtiles') {
     throw new Error('Boundary Layer not loaded!');
   }
+  const adminBoundariesData = boundaryData
+    ? ({
+        data: boundaryData,
+        layer: adminBoundaries,
+      } as LayerData<BoundaryLayerProps>)
+    : undefined;
 
   const apiRequest = await createAPIRequestParams(
     hazardLayer,
@@ -694,6 +717,8 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     exposureValue,
   );
 
+  checkIfRequestWasAborted();
+
   const statsByAdminId = scaleAndFilterAggregateData(
     await fetchApiData(ANALYSIS_API_URL, apiRequest, api.dispatch),
     hazardLayer,
@@ -701,10 +726,15 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     threshold,
   ) as KeyValueResponse[];
 
+  checkIfRequestWasAborted();
+
   const getCheckedBaselineData = async (): Promise<BaselineLayerData> => {
     // if the baselineData doesn't exist, lets load it, otherwise check then load existing data.
     // similar code can be found at impact.ts
     if (baselineLayer.type === 'boundary') {
+      if (!adminBoundariesData) {
+        throw new Error('Boundary data required for boundary baseline layer');
+      }
       return { ...adminBoundariesData.data, layerData: [] };
     }
     if (!baselineData && baselineLayer) {
@@ -722,11 +752,16 @@ export const requestAndStoreAnalysis = createAsyncThunk<
       return checkBaselineDataLayer(baselineLayer.id, baselineData.data);
     }
 
+    if (!adminBoundariesData) {
+      throw new Error('Boundary data required for baseline layer');
+    }
     return { ...adminBoundariesData.data, layerData: [] };
   };
 
   const loadedAndCheckedBaselineData: BaselineLayerData =
     await getCheckedBaselineData();
+
+  checkIfRequestWasAborted();
 
   const features = generateFeaturesFromApiData(
     statsByAdminId,
@@ -744,6 +779,10 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   if (statistic === AggregationOperations['Area exposed']) {
     /* eslint-disable-next-line fp/no-mutating-methods */
     enrichedStatistics.push('stats_intersect_area');
+  }
+
+  if (!adminBoundariesData) {
+    throw new Error('Boundary data required for analysis result');
   }
 
   const tableRows: TableRow[] = generateTableFromApiData(

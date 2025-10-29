@@ -1,11 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useCallback } from 'react';
-import {
-  dateRangeSelector,
-  layerDataSelector,
-} from 'context/mapStateSlice/selectors';
-import { LayerData } from 'context/layers/layer-data';
-import { BoundaryLayerProps } from 'config/types';
+import { dateRangeSelector } from 'context/mapStateSlice/selectors';
+import { useBoundaryData } from 'utils/useBoundaryData';
 import {
   addPopupData,
   hidePopup,
@@ -21,9 +17,10 @@ import { getActiveFeatureInfoLayers, getFeatureInfoParams } from './utils';
 const useMapOnClick = (boundaryLayerId: string, mapRef: MapRef | null) => {
   const dispatch = useDispatch();
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
-  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayerId)) as
-    | LayerData<BoundaryLayerProps>
-    | undefined;
+  const { data: boundaryLayerData } = useBoundaryData(
+    boundaryLayerId,
+    mapRef?.getMap(),
+  );
 
   // TODO: maplibre: fix feature
   const getFeatureInfoLayers = useCallback(

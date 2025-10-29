@@ -5,9 +5,8 @@ import {
   getSelectedBoundaries,
 } from 'context/mapSelectionLayerStateSlice';
 import { getBoundaryLayerSingleton } from 'config/utils';
-import { layerDataSelector } from 'context/mapStateSlice/selectors';
-import { LayerData } from 'context/layers/layer-data';
-import { BoundaryLayerProps } from 'config/types';
+import { mapSelector } from 'context/mapStateSlice/selectors';
+import { useBoundaryData } from 'utils/useBoundaryData';
 import { LineLayerSpecification } from 'maplibre-gl';
 
 const boundaryLayer = getBoundaryLayerSingleton();
@@ -24,10 +23,8 @@ const LINE_PAINT_DATA: LineLayerSpecification['paint'] = {
 function SelectionLayer({ before }: { before?: string }) {
   const isSelectionMode = useSelector(getIsSelectionMode);
   const selectedBoundaries = useSelector(getSelectedBoundaries);
-  const boundaryLayerState = useSelector(
-    layerDataSelector(boundaryLayer.id),
-  ) as LayerData<BoundaryLayerProps> | undefined;
-  const { data } = boundaryLayerState || {};
+  const map = useSelector(mapSelector);
+  const { data } = useBoundaryData(boundaryLayer.id, map);
   if (!data || !isSelectionMode) {
     return null;
   }

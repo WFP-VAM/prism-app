@@ -7,6 +7,7 @@ import { Font } from '@react-pdf/renderer';
 import { authRequired } from 'config';
 import NavBar from 'components/NavBar';
 import MapView from 'components/MapView';
+import DashboardView from 'components/DashboardView';
 import Login from 'components/Login';
 import muiTheme from 'muiTheme';
 import Notifier from 'components/Notifier';
@@ -60,6 +61,9 @@ const Wrapper = memo(() => (
   <div id="app">
     <NavBar />
     <Switch>
+      <Route path="/dashboard/:path?" exact>
+        <DashboardView />
+      </Route>
       <Route>
         <MapView />
         <AuthModal />

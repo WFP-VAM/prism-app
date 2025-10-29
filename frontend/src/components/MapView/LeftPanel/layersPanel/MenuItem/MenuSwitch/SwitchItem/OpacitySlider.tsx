@@ -7,9 +7,9 @@ import {
 } from '@material-ui/core';
 import { LayerType } from 'config/types';
 import { useMapState } from 'utils/useMapState';
-import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
+import { useOpacityState } from 'utils/useOpacityState';
 import { ChangeEvent, memo, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -35,23 +35,24 @@ interface OpacitySliderProps {
 const OpacitySlider = memo(
   ({ activeLayerId, layerId, layerType }: OpacitySliderProps) => {
     const classes = useStyles();
-    const dispatch = useDispatch();
-    const opacity = useSelector(opacitySelector(activeLayerId || layerId));
+    const opacityState = useOpacityState();
+    const currentLayerId = activeLayerId || layerId;
+    const opacity = useSelector(
+      opacityState.getOpacitySelector(currentLayerId),
+    );
     const mapState = useMapState();
     const map = mapState.maplibreMap();
 
     const handleOnChangeSliderValue = useCallback(
       (_event: ChangeEvent<{}>, newValue: number | number[]) => {
-        dispatch(
-          setOpacity({
-            map,
-            value: newValue as number,
-            layerId: activeLayerId || layerId,
-            layerType,
-          }),
-        );
+        opacityState.setOpacity({
+          map,
+          value: newValue as number,
+          layerId: currentLayerId,
+          layerType,
+        });
       },
-      [activeLayerId, dispatch, layerId, layerType, map],
+      [currentLayerId, layerType, map, opacityState],
     );
 
     return (
