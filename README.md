@@ -405,6 +405,148 @@ Impact layers are computed by combining a raster layer with a vector layer based
 To display additional metadata about a layer, you can add a `content_path` attribute to any layer. The attribute expects a path to a `.md` or `.html` file that is stored in `public/data/${REACT_APP_COUNTRY}/filename.ext` directory. For example: `public/data/myanmar/contents.md`
 The application will show an icon next to the layer in the legend if this attribute is configured, and will display the content in a modal window if the icon is clicked.
 
+## Dashboards
+
+Dashboards are customizable reports that combine maps, charts, tables, and text blocks in a flexible layout. They are configured in `prism.json` under the `configuredReports` array.
+
+### Dashboard Configuration Structure
+
+Each dashboard is defined as an object with the following properties:
+
+```json
+{
+  "title": "Dashboard Title",
+  "path": "url-friendly-path",
+  "isEditable": true,
+  "firstColumn": [...],
+  "secondColumn": [...],
+  "thirdColumn": [...]
+}
+```
+
+**Dashboard-level properties:**
+- `title` (required): Display name of the dashboard
+- `path` (optional): URL path for the dashboard. If omitted, it will be auto-generated from the title
+- `isEditable` (optional): If `true`, users can edit the dashboard in the UI. Defaults to `false`
+- `firstColumn`, `secondColumn`, `thirdColumn` (required): Arrays of dashboard elements. At least `firstColumn` must be defined
+
+### Dashboard Elements
+
+Each column contains an array of elements. There are four types of elements:
+
+#### 1. MAP Element
+
+Displays an interactive map with pre-selected layers.
+
+```json
+{
+  "type": "MAP",
+  "defaultDate": "2025-04-01",
+  "mapPosition": "left",
+  "minMapBounds": [31, -25, 40, -11],
+  "title": "Temperature Anomaly Map",
+  "preSelectedMapLayers": [
+    { "layerId": "lst_day_anomaly", "opacity": 0.7 },
+    { "layerId": "rainfall_dekad", "opacity": 0.8 }
+  ]
+}
+```
+
+**Properties:**
+- `type`: Must be `"MAP"`
+- `preSelectedMapLayers` (required): Array of layer objects to display on the map
+  - `layerId`: Layer ID from `layers.json`
+  - `opacity` (optional): Layer opacity (0.0 to 1.0). Defaults to 1.0
+- `defaultDate` (optional): Initial date for the map in `YYYY-MM-DD` format
+- `mapPosition` (optional): `"left"` or `"right"` - used for side-by-side map comparison
+- `minMapBounds` (optional): Map extent as `[west, south, east, north]`
+- `title` (optional): Custom title for the map
+
+#### 2. CHART Element
+
+Displays time-series chart data for a WMS layer.
+
+```json
+{
+  "type": "CHART",
+  "startDate": "2025-01-01",
+  "endDate": "2025-04-01",
+  "wmsLayerId": "precip_blended_dekad",
+  "adminUnitLevel": 1,
+  "adminUnitId": 12345
+}
+```
+
+**Properties:**
+- `type`: Must be `"CHART"`
+- `startDate` (required): Start date for chart data in `YYYY-MM-DD` format
+- `wmsLayerId` (required): Layer ID from `layers.json` (must have `chartData` configured)
+- `endDate` (optional): End date for chart data. If omitted, only `startDate` is used
+- `adminUnitLevel` (optional): Administrative level (0, 1, 2, etc.) to aggregate data by
+- `adminUnitId` (optional): Specific admin unit ID to filter chart data
+
+#### 3. TABLE Element
+
+Displays analysis results in a table format, combining a hazard layer with a baseline layer.
+
+```json
+{
+  "type": "TABLE",
+  "startDate": "2025-04-01",
+  "hazardLayerId": "spi_blended_2m",
+  "baselineLayerId": "admin1_boundaries",
+  "threshold": { "below": -1.5, "above": 1.5 },
+  "stat": "mean"
+}
+```
+
+**Properties:**
+- `type`: Must be `"TABLE"`
+- `startDate` (required): Date for analysis in `YYYY-MM-DD` format
+- `hazardLayerId` (required): Hazard layer ID from `layers.json`
+- `baselineLayerId` (required): Baseline layer ID (typically a boundary or admin level layer)
+- `stat` (required): Aggregation statistic. Options:
+  - `"mean"` - Average value
+  - `"median"` - Median value
+  - `"max"` - Maximum value
+  - `"min"` - Minimum value
+  - `"sum"` - Sum of values
+  - `"intersect_percentage"` - Percent of area exposed
+- `threshold` (optional): Object with `below` and/or `above` numeric values to filter results
+
+#### 4. TEXT Element
+
+Displays formatted text content (supports markdown).
+
+```json
+{
+  "type": "TEXT",
+  "content": "# Analysis Summary\n\nThis dashboard shows precipitation patterns for April 2025.",
+  "textUpdatedAt": "2025-03-01"
+}
+```
+
+**Properties:**
+- `type`: Must be `"TEXT"`
+- `content` (required): Text content (supports markdown formatting)
+- `textUpdatedAt` (optional): Date when content was last updated in `YYYY-MM-DD` format
+
+### Dashboard Layout
+
+Dashboards use a flexible column layout:
+- **Columns with MAP elements** are wider (take up more space)
+- **Columns without MAP elements** are narrower
+- Elements within a column stack vertically
+- Empty columns are not displayed
+
+### Tips for Creating Dashboards
+
+1. **Layer IDs**: All layer IDs (`layerId`, `wmsLayerId`, `hazardLayerId`, `baselineLayerId`) must exist in your `layers.json` file
+2. **Date formats**: Always use `YYYY-MM-DD` format for dates
+3. **Column balance**: Place MAP elements in their own column for better layout
+4. **Chart layers**: Only layers with `chartData` configuration can be used in CHART elements
+5. **Empty columns**: You can use empty arrays `[]` for columns you don't need
+
 ## Technical - Packages/Dependencies
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template with TypeScript.
