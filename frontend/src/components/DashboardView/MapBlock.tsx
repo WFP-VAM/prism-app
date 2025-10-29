@@ -39,6 +39,7 @@ import {
 import { useSafeTranslation } from 'i18n';
 import { DashboardMode } from 'config/types';
 import { downloadToFile } from 'components/MapView/utils';
+import { getFormattedDate } from 'utils/date-utils';
 import MapComponent from '../MapView/Map';
 import DateSelector from '../MapView/DateSelector';
 import DashboardLegends from './DashboardLegends';
@@ -56,14 +57,6 @@ interface MapBlockProps {
   exportConfig?: ExportConfig;
   elementId: string;
 }
-
-const formatDateString = (date: number | string | Date) =>
-  new Date(date).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-    timeZone: 'UTC',
-  });
 
 const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
   const classes = useStyles();
@@ -97,10 +90,10 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
       return '';
     }
 
-    const startDateStr = formatDateString(startDate);
+    const startDateStr = getFormattedDate(startDate, 'localeShortUTC');
 
     if (endDate) {
-      const endDateStr = formatDateString(endDate);
+      const endDateStr = getFormattedDate(endDate, 'localeShortUTC');
       return `${startDateStr} - ${endDateStr}`;
     }
     return startDateStr;

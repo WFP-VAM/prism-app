@@ -41,6 +41,7 @@ import {
   AdminLevelSelector,
 } from 'components/Common/AnalysisFormComponents';
 import { useSafeTranslation } from 'i18n';
+import { getFormattedDate } from 'utils/date-utils';
 import { dashboardModeSelector } from '../../context/dashboardStateSlice';
 import BlockPreviewHeader from './BlockPreviewHeader';
 
@@ -260,12 +261,7 @@ function TableBlock({
       return '';
     }
 
-    return new Date(date).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      timeZone: 'UTC',
-    });
+    return getFormattedDate(date, 'localeShortUTC') || '';
   };
 
   if (mode === DashboardMode.PREVIEW) {
