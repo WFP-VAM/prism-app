@@ -8,37 +8,14 @@ import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { setAAFloodSelectedStation } from 'context/anticipatoryAction/AAFloodStateSlice';
 import { hidePopup } from 'context/tooltipStateSlice';
 import { Tooltip } from '@material-ui/core';
-import { AAFloodColors } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionFloodPanel/constants';
+import {
+  getCircleBorderColor,
+  getFloodRiskColor,
+} from 'context/anticipatoryAction/AAFloodStateSlice/utils';
 
 interface AnticipatoryActionFloodLayerProps {
   layer: AnticipatoryActionLayerProps;
 }
-
-const getCircleColor = (riskLevel: string) => {
-  switch (riskLevel) {
-    case 'Severe':
-      return AAFloodColors.riskLevels.severe;
-    case 'Moderate':
-      return AAFloodColors.riskLevels.moderate;
-    case 'Bankfull':
-      return AAFloodColors.riskLevels.bankfull;
-    default:
-      return AAFloodColors.riskLevels.notExceeded;
-  }
-};
-
-const getBorderColor = (riskLevel: string) => {
-  switch (riskLevel) {
-    case 'Severe':
-      return AAFloodColors.borderColors.severe;
-    case 'Moderate':
-      return AAFloodColors.borderColors.moderate;
-    case 'Bankfull':
-      return AAFloodColors.borderColors.bankfull;
-    default:
-      return AAFloodColors.borderColors.notExceeded;
-  }
-};
 
 const CIRCLE_SIZE = 16;
 
@@ -141,8 +118,8 @@ function AnticipatoryActionFloodLayer({
           return null;
         }
         const riskLevel = avg.trigger_status || 'Not exceeded';
-        const circleColor = getCircleColor(riskLevel);
-        const borderColor = getBorderColor(riskLevel);
+        const circleColor = getFloodRiskColor(riskLevel);
+        const borderColor = getCircleBorderColor(riskLevel);
 
         return (
           <Marker

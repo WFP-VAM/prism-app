@@ -40,7 +40,7 @@ export interface FloodStation {
   trigger_bankfull?: number | null;
   trigger_moderate?: number | null;
   trigger_severe?: number | null;
-  trigger_status?: string | null;
+  trigger_status?: AAFloodRiskLevelType | null;
 }
 
 export interface FloodForecastData {

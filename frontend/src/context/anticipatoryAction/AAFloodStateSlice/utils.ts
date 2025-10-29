@@ -16,6 +16,19 @@ export function getFloodRiskColor(riskLevel: AAFloodRiskLevelType): string {
   }
 }
 
+export const getCircleBorderColor = (riskLevel: AAFloodRiskLevelType) => {
+  switch (riskLevel?.toLowerCase()) {
+    case 'severe':
+      return AAFloodColors.borderColors.severe;
+    case 'moderate':
+      return AAFloodColors.borderColors.moderate;
+    case 'Bankfull':
+      return AAFloodColors.borderColors.bankfull;
+    default:
+      return AAFloodColors.borderColors.notExceeded;
+  }
+};
+
 export function getFloodRiskSeverity(
   riskLevel: AAFloodRiskLevelType | string | undefined,
 ): number {
