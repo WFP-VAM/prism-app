@@ -667,6 +667,13 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   AnalysisDispatchParams,
   CreateAsyncThunkTypes
 >('analysisResultState/requestAndStoreAnalysis', async (params, api) => {
+  // Check if the request was aborted before making the expensive API call
+  const checkIfRequestWasAborted = () => {
+    if (api.signal.aborted) {
+      throw new Error('Analysis request was cancelled');
+    }
+  };
+
   const {
     hazardLayer,
     date,
@@ -710,12 +717,16 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     exposureValue,
   );
 
+  checkIfRequestWasAborted();
+
   const statsByAdminId = scaleAndFilterAggregateData(
     await fetchApiData(ANALYSIS_API_URL, apiRequest, api.dispatch),
     hazardLayer,
     statistic,
     threshold,
   ) as KeyValueResponse[];
+
+  checkIfRequestWasAborted();
 
   const getCheckedBaselineData = async (): Promise<BaselineLayerData> => {
     // if the baselineData doesn't exist, lets load it, otherwise check then load existing data.
@@ -749,6 +760,8 @@ export const requestAndStoreAnalysis = createAsyncThunk<
 
   const loadedAndCheckedBaselineData: BaselineLayerData =
     await getCheckedBaselineData();
+
+  checkIfRequestWasAborted();
 
   const features = generateFeaturesFromApiData(
     statsByAdminId,

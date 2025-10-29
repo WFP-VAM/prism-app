@@ -76,6 +76,7 @@ function TableBlock({
   const { runAnalyser } = useAnalysisExecution(formState, {
     // TableBlock doesn't need URL history updates
     onUrlUpdate: undefined,
+    clearOnUnmount: true,
   });
 
   // Sorting state
