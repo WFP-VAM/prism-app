@@ -1038,6 +1038,12 @@ export enum DashboardMode {
   EXPORT = 'export',
 }
 
+export enum ChartHeight {
+  TALL = 'tall',
+  MEDIUM = 'medium',
+  SHORT = 'short',
+}
+
 export interface DashboardChartConfig {
   type: DashboardElementType.CHART;
   startDate: string;
@@ -1045,6 +1051,7 @@ export interface DashboardChartConfig {
   layerId: string;
   adminUnitLevel?: number;
   adminUnitId?: number;
+  chartHeight?: ChartHeight;
 }
 
 export interface DashboardTextConfig {
