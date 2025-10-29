@@ -62,6 +62,7 @@ const formatDateString = (date: number | string | Date) =>
     month: 'short',
     day: 'numeric',
     year: 'numeric',
+    timeZone: 'UTC',
   });
 
 const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
