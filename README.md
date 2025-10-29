@@ -471,7 +471,7 @@ Displays time-series chart data for a WMS layer.
   "type": "CHART",
   "startDate": "2025-01-01",
   "endDate": "2025-04-01",
-  "wmsLayerId": "precip_blended_dekad",
+  "layerId": "precip_blended_dekad",
   "adminUnitLevel": 1,
   "adminUnitId": 12345
 }
@@ -480,7 +480,7 @@ Displays time-series chart data for a WMS layer.
 **Properties:**
 - `type`: Must be `"CHART"`
 - `startDate` (required): Start date for chart data in `YYYY-MM-DD` format
-- `wmsLayerId` (required): Layer ID from `layers.json` (must have `chartData` configured)
+- `layerId` (required): Layer ID from `layers.json` (must have `chartData` configured)
 - `endDate` (optional): End date for chart data. If omitted, only `startDate` is used
 - `adminUnitLevel` (optional): Administrative level (0, 1, 2, etc.) to aggregate data by
 - `adminUnitId` (optional): Specific admin unit ID to filter chart data
@@ -541,7 +541,7 @@ Dashboards use a flexible column layout:
 
 ### Tips for Creating Dashboards
 
-1. **Layer IDs**: All layer IDs (`layerId`, `wmsLayerId`, `hazardLayerId`, `baselineLayerId`) must exist in your `layers.json` file
+1. **Layer IDs**: All layer IDs (`layerId`, `layerId`, `hazardLayerId`, `baselineLayerId`) must exist in your `layers.json` file
 2. **Date formats**: Always use `YYYY-MM-DD` format for dates
 3. **Column balance**: Place MAP elements in their own column for better layout
 4. **Chart layers**: Only layers with `chartData` configuration can be used in CHART elements
