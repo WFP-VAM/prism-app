@@ -35,7 +35,7 @@ enum EWSLevelStatus {
 
 /* eslint-disable camelcase */
 export type EWSSensorData = {
-  station_id: number;
+  location_id: number;
   value: [string, number];
 };
 
@@ -160,7 +160,7 @@ export const fetchEWSData = async (
       }
 
       const locationValues: number[] = values
-        .filter(v => v.station_id === properties.id)
+        .filter(v => v.location_id === properties.id)
         .map(v => v.value[1]);
 
       if (locationValues.length === 0) {
