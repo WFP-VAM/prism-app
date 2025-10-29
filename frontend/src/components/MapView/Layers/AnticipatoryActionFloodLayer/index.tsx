@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { AnticipatoryActionLayerProps, AnticipatoryAction } from 'config/types';
 import { useAnticipatoryAction } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/useAnticipatoryAction';
-import { Layer, Source, Marker } from 'react-map-gl/maplibre';
+import { Marker } from 'react-map-gl/maplibre';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { useSelector, useDispatch } from 'react-redux';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
@@ -12,6 +12,7 @@ import {
   getCircleBorderColor,
   getFloodRiskColor,
 } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
+import { FloodStation } from 'context/anticipatoryAction/AAFloodStateSlice/types';
 
 interface AnticipatoryActionFloodLayerProps {
   layer: AnticipatoryActionLayerProps;
@@ -46,46 +47,42 @@ function AnticipatoryActionFloodLayer({
     }
 
     // Filter stations by selected date if available
-    const filteredStations = stations.filter((station: any) => {
+    const filteredStations = stations.filter((station: FloodStation) => {
       if (!selectedDateKey) {
         return true;
       }
-      const avg = stationSummaryData?.[station.station_name];
-      const issueDate = avg?.forecast_issue_date
-        ? new Date(avg.forecast_issue_date).toISOString().split('T')[0]
+      const stationSummary = stationSummaryData?.[station.station_name];
+      const issueDate = stationSummary?.forecast_issue_date
+        ? new Date(stationSummary.forecast_issue_date)
+            .toISOString()
+            .split('T')[0]
         : null;
       return issueDate === selectedDateKey;
     });
 
     return {
       type: 'FeatureCollection' as const,
-      features: filteredStations
-        .filter(
-          (station: any) =>
-            typeof station.longitude === 'number' &&
-            typeof station.latitude === 'number',
-        )
-        .map((station: any) => {
-          const avg = stationSummaryData?.[station.station_name];
-          if (!avg) {
-            return null;
-          }
-          return {
-            type: 'Feature' as const,
-            geometry: {
-              type: 'Point' as const,
-              coordinates: [station.longitude, station.latitude],
-            },
-            properties: {
-              station_name: station.station_name,
-              river_name: station.river_name,
-              station_id: station.station_id,
-              risk_level: avg.trigger_status || 'Not exceeded',
-              avg_discharge: 0,
-              max_discharge: 0,
-            },
-          };
-        }),
+      features: filteredStations.map((station: FloodStation) => {
+        const stationSummary = stationSummaryData?.[station.station_name];
+        if (!stationSummary) {
+          return null;
+        }
+        return {
+          type: 'Feature' as const,
+          geometry: {
+            type: 'Point' as const,
+            coordinates: [station.longitude, station.latitude],
+          },
+          properties: {
+            station_name: station.station_name,
+            river_name: station.river_name,
+            station_id: station.station_id,
+            risk_level: stationSummary.trigger_status || 'Not exceeded',
+            avg_discharge: 0,
+            max_discharge: 0,
+          },
+        };
+      }),
     };
   }, [stations, selectedDateKey, stationSummaryData]);
 
@@ -93,7 +90,7 @@ function AnticipatoryActionFloodLayer({
     return null;
   }
 
-  const filteredStations = stations.filter((station: any) => {
+  const filteredStations = stations.filter((station: FloodStation) => {
     if (!selectedDateKey) {
       return true;
     }
@@ -107,17 +104,11 @@ function AnticipatoryActionFloodLayer({
   return (
     <>
       {filteredStations.map(station => {
-        if (
-          typeof station.longitude !== 'number' ||
-          typeof station.latitude !== 'number'
-        ) {
+        const stationSummary = stationSummaryData?.[station.station_name];
+        if (!stationSummary) {
           return null;
         }
-        const avg = stationSummaryData?.[station.station_name];
-        if (!avg) {
-          return null;
-        }
-        const riskLevel = avg.trigger_status || 'Not exceeded';
+        const riskLevel = stationSummary.trigger_status || 'Not exceeded';
         const circleColor = getFloodRiskColor(riskLevel);
         const borderColor = getCircleBorderColor(riskLevel);
 
@@ -152,28 +143,6 @@ function AnticipatoryActionFloodLayer({
           </Marker>
         );
       })}
-      <Source
-        id={`${layer.id}-source`}
-        type="geojson"
-        data={floodStationsGeoJSON}
-      >
-        <Layer
-          id={`${layer.id}-labels`}
-          type="symbol"
-          layout={{
-            'text-field': ['get', 'station_name'],
-            'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular'],
-            'text-size': 12,
-            'text-offset': [0, 2],
-            'text-anchor': 'top',
-          }}
-          paint={{
-            'text-color': '#000000',
-            'text-halo-color': '#ffffff',
-            'text-halo-width': 1,
-          }}
-        />
-      </Source>
     </>
   );
 }
