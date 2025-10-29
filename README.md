@@ -496,7 +496,10 @@ Displays analysis results in a table format, combining a hazard layer with a bas
   "hazardLayerId": "spi_blended_2m",
   "baselineLayerId": "admin1_boundaries",
   "threshold": { "below": -1.5, "above": 1.5 },
-  "stat": "mean"
+  "stat": "mean",
+  "addResultToMap": false,
+  "sortColumn": "mean",
+  "sortOrder": "desc"
 }
 ```
 
@@ -513,6 +516,9 @@ Displays analysis results in a table format, combining a hazard layer with a bas
   - `"sum"` - Sum of values
   - `"intersect_percentage"` - Percent of area exposed
 - `threshold` (optional): Object with `below` and/or `above` numeric values to filter results
+- `addResultToMap` (optional): Whether to add the analysis result layer to the map. Set to `false` to show only the table without displaying the layer on the map. Defaults to `true`
+- `sortColumn` (optional): Column to sort the table by. Can be `"name"` for the name column, or any statistic name like `"mean"`, `"max"`, `"min"`, etc. Defaults to `"name"`
+- `sortOrder` (optional): Sort order for the table. Options are `"asc"` (ascending) or `"desc"` (descending). Defaults to `"asc"`
 
 #### 4. TEXT Element
 

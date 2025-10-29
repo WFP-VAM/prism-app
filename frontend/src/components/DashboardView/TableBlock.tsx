@@ -58,6 +58,9 @@ function TableBlock({
   threshold: initialThreshold,
   stat: initialStat,
   allowDownload,
+  addResultToMap = true,
+  sortColumn: initialSortColumn = 'name',
+  sortOrder: initialSortOrder = 'asc',
 }: TableBlockProps) {
   const classes = useStyles();
   const { t } = useSafeTranslation();
@@ -79,9 +82,10 @@ function TableBlock({
     clearOnUnmount: true,
   });
 
-  // Sorting state
-  const [sortColumn, setSortColumn] = useState<string | number>('name');
-  const [isAscending, setIsAscending] = useState(true);
+  const [sortColumn, setSortColumn] = useState<string | number>(
+    initialSortColumn,
+  );
+  const [isAscending, setIsAscending] = useState(initialSortOrder === 'asc');
 
   // Form updates state
   const [hasFormChanged, setHasFormChanged] = useState(false);
@@ -159,6 +163,14 @@ function TableBlock({
     wasAnalysisLoading,
     formState.analysisResult,
   ]);
+
+  // Disable map layer when addResultToMap is false
+  // Run whenever analysis result changes or on mount
+  useEffect(() => {
+    if (!addResultToMap) {
+      dispatch(setIsMapLayerActive(false));
+    }
+  }, [addResultToMap, formState.analysisResult, dispatch]);
 
   // Auto-run analysis when conditions are met (for both edit and preview modes)
   useEffect(() => {
@@ -311,7 +323,7 @@ function TableBlock({
         {t('Table Block')} #{index + 1}
       </Typography>
 
-      {formState.analysisResult && (
+      {formState.analysisResult && addResultToMap && (
         <Box className={classes.toggleContainer}>
           <FormControlLabel
             control={
