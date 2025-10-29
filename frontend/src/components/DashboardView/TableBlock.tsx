@@ -8,6 +8,7 @@ import {
   Switch,
   FormControlLabel,
   IconButton,
+  TextField,
   Tooltip,
 } from '@material-ui/core';
 import GetAppIcon from '@material-ui/icons/GetApp';
@@ -48,6 +49,7 @@ import BlockPreviewHeader from './BlockPreviewHeader';
 interface TableBlockProps extends Partial<DashboardTableConfig> {
   index: number;
   allowDownload?: boolean;
+  maxRows?: number;
 }
 
 function TableBlock({
@@ -57,6 +59,7 @@ function TableBlock({
   baselineLayerId: initialBaselineLayerId,
   threshold: initialThreshold,
   stat: initialStat,
+  maxRows: initialMaxRows,
   allowDownload,
   addResultToMap = true,
   sortColumn: initialSortColumn = 'name',
@@ -82,6 +85,7 @@ function TableBlock({
     clearOnUnmount: true,
   });
 
+  const [maxRows, setMaxRows] = useState(initialMaxRows || 8);
   const [sortColumn, setSortColumn] = useState<string | number>(
     initialSortColumn,
   );
@@ -249,7 +253,7 @@ function TableBlock({
         sortColumn={sortColumn}
         isAscending={isAscending}
         onSort={handleSort}
-        maxRows={mode === DashboardMode.PREVIEW ? 16 : 8}
+        maxRows={maxRows}
       />
     );
   };
@@ -417,6 +421,18 @@ function TableBlock({
                 </Button>
               )}
             </Box>
+            <TextField
+              label={t('Max rows')}
+              type="number"
+              value={maxRows}
+              onChange={e =>
+                setMaxRows(Math.max(1, parseInt(e.target.value, 10) || 1))
+              }
+              inputProps={{ min: 1, max: 25 }}
+              className={classes.maxRowsInput}
+              size="small"
+              variant="outlined"
+            />
           </Box>
         )}
 
@@ -436,16 +452,18 @@ const useStyles = makeStyles(theme => ({
     padding: 16,
     marginBottom: 16,
   },
+  maxRowsInput: {
+    width: 100,
+    marginBottom: 16,
+  },
   previewContainer: {
     background: 'white',
     borderRadius: 8,
     padding: 16,
     marginBottom: 16,
-    minHeight: 200,
     maxWidth: '100%',
     display: 'flex',
     flexDirection: 'column',
-    overflow: 'hidden',
   },
   blockTitle: {
     fontWeight: 600,

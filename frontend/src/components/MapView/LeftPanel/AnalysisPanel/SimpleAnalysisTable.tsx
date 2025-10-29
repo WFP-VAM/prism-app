@@ -192,7 +192,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.divider,
     border: 'none',
     borderBottom: `1px solid ${theme.palette.divider}`,
-    padding: '8px 16px',
+    padding: '4px 8px',
     '&:first-child': {
       paddingLeft: 16,
     },
@@ -234,7 +234,7 @@ const useStyles = makeStyles(theme => ({
   },
   bodyCell: {
     border: 'none',
-    padding: '8px 16px',
+    padding: '2px',
     '&:first-child': {
       paddingLeft: 16,
     },
