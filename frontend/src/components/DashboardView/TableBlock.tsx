@@ -461,11 +461,9 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 8,
     padding: 16,
     marginBottom: 16,
-    minHeight: 200,
     maxWidth: '100%',
     display: 'flex',
     flexDirection: 'column',
-    overflow: 'hidden',
   },
   blockTitle: {
     fontWeight: 600,
