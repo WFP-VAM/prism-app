@@ -126,11 +126,11 @@ const TimelineItems = memo(
               classes={{
                 tooltip:
                   isShowingAAStormLayer || isShowingAAFloodLayer
-                    ? classes.AASTooltip
+                    ? classes.AAStormTooltip
                     : classes.defaultTooltip,
                 arrow:
                   isShowingAAStormLayer || isShowingAAFloodLayer
-                    ? classes.AASTooltipArrow
+                    ? classes.AAStormTooltipArrow
                     : undefined,
               }}
             >
@@ -232,7 +232,7 @@ const useStyles = makeStyles(() =>
       opacity: '0.85 !important',
       maxWidth: 'none',
     },
-    AATooltip: {
+    AAStormTooltip: {
       backgroundColor: '#FFFFFF',
       border: '1px solid #D3D3D3',
       maxWidth: 'none',
@@ -260,7 +260,7 @@ const useStyles = makeStyles(() =>
       },
     },
 
-    AATooltipArrow: {
+    AAStormTooltipArrow: {
       width: '11px',
       height: '11px',
       bottom: '-1px !important',
