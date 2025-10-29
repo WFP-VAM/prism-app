@@ -13,6 +13,7 @@ export const AAStormColors = {
   background: '#F1F1F1',
 } as const;
 
+// TODO - remove unecessary AACategoryPhaseMap
 const AACategoryPhaseMap: { [key in AACategory]?: any } = {
   [AACategory.Severe]: {
     Active: {
@@ -46,6 +47,7 @@ const AACategoryPhaseMap: { [key in AACategory]?: any } = {
   },
 };
 
+// TODO - rename to getAAStormColor
 export function getAAColor(
   severity: AACategory,
   phase: AAPhaseType,

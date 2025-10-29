@@ -217,6 +217,8 @@ const useStyles = makeStyles(() =>
       top: -5,
       cursor: 'pointer',
       minWidth: TIMELINE_ITEM_WIDTH,
+      // Set a transparent border to prevent layout shifts when the border color changes on hover.
+      // Do not remove this unless you are sure layout shifts will not occur.
       borderLeft: '1px solid transparent',
       '&:hover': {
         borderLeft: '1px solid #101010',

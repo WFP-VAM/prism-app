@@ -207,7 +207,7 @@ function NavBar() {
                     panel.children.some(child => tabValue === child.panel));
 
                 const buttonText = selectedChild[panel.label]
-                  ? selectedChild[panel.label].label
+                  ? t(selectedChild[panel.label].label)
                   : t(panel.label);
 
                 return (
