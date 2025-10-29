@@ -205,7 +205,7 @@ export const loadAAFloodDateData = createAsyncThunk<
   const stationSummary = summaryRows.reduce(
     (acc: Record<string, FloodStation>, row: any) => {
       const key: string = startCase(String(row.station_name || '').trim());
-      if (!key) {
+      if (!key || !row.longitude || !row.latitude) {
         return acc;
       }
       return {
@@ -214,8 +214,8 @@ export const loadAAFloodDateData = createAsyncThunk<
           station_name: key,
           station_id: Number(row.station_id || 0),
           river_name: String(row.river_name || ''),
-          longitude: Number(row.longitude ?? row.lon ?? 0),
-          latitude: Number(row.latitude ?? row.lat ?? 0),
+          longitude: Number(row.longitude ?? 0),
+          latitude: Number(row.latitude ?? 0),
           forecast_issue_date: String(row.forecast_issue_date || date),
           window_begin: String(row.window_begin || ''),
           window_end: String(row.window_end || ''),
