@@ -1060,6 +1060,9 @@ export interface DashboardTableConfig {
   baselineLayerId: string;
   threshold?: ThresholdDefinition;
   stat: AggregationOperations;
+  addResultToMap?: boolean;
+  sortColumn?: string | number;
+  sortOrder?: 'asc' | 'desc';
 }
 
 export interface DashboardMapConfig {

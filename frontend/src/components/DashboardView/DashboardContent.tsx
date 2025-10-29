@@ -133,6 +133,9 @@ function DashboardContent({
             threshold={element.threshold}
             stat={element.stat}
             allowDownload={!exportConfig}
+            addResultToMap={element.addResultToMap}
+            sortColumn={element.sortColumn}
+            sortOrder={element.sortOrder}
           />
         );
       case DashboardElementType.CHART:

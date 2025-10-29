@@ -525,7 +525,10 @@
           "startDate": "2025-03-21",
           "hazardLayerId": "spi_blended_6m",
           "baselineLayerId": "admin_boundaries",
-          "stat": "mean"
+          "stat": "mean",
+          "addResultToMap": false,
+          "sortColumn": "mean",
+          "sortOrder": "asc"
         }
       ],
       "thirdColumn": []
