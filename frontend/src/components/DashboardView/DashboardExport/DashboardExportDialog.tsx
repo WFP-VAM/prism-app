@@ -242,7 +242,7 @@ function DashboardExportDialog({
     } catch (error) {
       setErrorMessage(
         `${t('Failed to export dashboard')}. ${
-          error instanceof Error ? error.message : 'Unknown error'
+          error instanceof Error ? error.message : t('Unknown error')
         }`,
       );
     } finally {
