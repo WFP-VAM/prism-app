@@ -7,7 +7,7 @@ import {
 } from '@material-ui/core';
 import { LayerType, MenuGroupItem } from 'config/types';
 import React, { memo, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useSafeTranslation } from 'i18n';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -70,7 +70,7 @@ const SwitchItemTitle = memo(
     disabledMenuSelection = false,
   }: SwitchTitleProps) => {
     const classes = useStyles();
-    const { t } = useTranslation();
+    const { t } = useSafeTranslation();
     const { group } = layer;
 
     const handleSelect = useCallback(

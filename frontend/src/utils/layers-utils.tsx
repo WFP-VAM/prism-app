@@ -38,7 +38,7 @@ import {
 } from 'utils/server-utils';
 import { UrlLayerKey, getUrlKey, useUrlHistory } from 'utils/url-utils';
 
-import { useTranslation } from 'react-i18next';
+import { useSafeTranslation } from 'i18n';
 
 import { getAAConfig } from 'context/anticipatoryAction/config';
 import { RootState } from 'context/store';
@@ -62,7 +62,7 @@ const dateSupportLayerTypes: Array<LayerType['type']> = [
 
 const useLayers = () => {
   const dispatch = useDispatch();
-  const { t } = useTranslation();
+  const { t } = useSafeTranslation();
   const [defaultLayerAttempted, setDefaultLayerAttempted] = useState(false);
 
   const { urlParams, updateHistory, removeLayerFromUrl } = useUrlHistory();
