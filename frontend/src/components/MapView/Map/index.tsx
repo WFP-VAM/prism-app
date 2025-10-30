@@ -41,6 +41,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { mapStyle } from './utils';
 import GeojsonDataLayer from '../Layers/GeojsonDataLayer';
+import AnticipatoryActionFloodLayer from '../Layers/AnticipatoryActionFloodLayer';
 
 type LayerComponentsMap<U extends LayerType> = {
   [T in U['type']]: {
@@ -65,6 +66,9 @@ const componentTypes: LayerComponentsMap<LayerType> = {
   },
   anticipatory_action_storm: {
     component: AnticipatoryActionStormLayer,
+  },
+  anticipatory_action_flood: {
+    component: AnticipatoryActionFloodLayer,
   },
 };
 
