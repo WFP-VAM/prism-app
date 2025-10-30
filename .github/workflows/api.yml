@@ -43,9 +43,8 @@ jobs:
         run: |
           cd api
           # Ignore these vulnerabilities for now as they are not relevant to the project:
-          # GHSA-4xh5-x5gv-qwph pip tar
           # GHSA-pq67-6m6q-mj2v urllib3
-          poetry run pip-audit --ignore-vuln GHSA-pq67-6m6q-mj2v --ignore-vuln GHSA-4xh5-x5gv-qwph
+          poetry run pip-audit --ignore-vuln GHSA-pq67-6m6q-mj2v
 
   api_build:
     name: build and test api
