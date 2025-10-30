@@ -41,8 +41,7 @@ export async function runAAWorker<TPayload, TShared>({
   let alertRepository;
 
   if (IS_TEST) {
-    const prismUrl =
-      'https://staging-prism-frontend--prism-1530-b0ikbia7.web.app/';
+    const prismUrl = 'https://prism.moz.wfp.org';
     alerts = [
       {
         id: 1,
