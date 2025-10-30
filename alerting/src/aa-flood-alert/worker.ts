@@ -39,8 +39,19 @@ export async function run() {
       if (!context.latestDate) {
         return { payloads: [], updatedLastStates: alert.lastStates || {} };
       }
-      console.log('alert', alert);
       const emails = isTest ? emailsOverride : alert.emails;
+
+      // Avoid sending duplicates: compare last processed date with latest available date
+      const lastProcessedRefTime =
+        !isTest && alert.lastStates
+          ? alert.lastStates['moz_flood']?.refTime
+          : undefined;
+      const isNewDate =
+        !lastProcessedRefTime ||
+        new Date(context.latestDate) > new Date(lastProcessedRefTime);
+      if (!isNewDate) {
+        return { payloads: [], updatedLastStates: alert.lastStates || {} };
+      }
 
       // Get station summary URL from dates data
       const stationSummaryFile =
