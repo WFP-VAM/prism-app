@@ -49,7 +49,7 @@ export async function run() {
     },
     buildForAlert: async (alert, context, isTest, emailsOverride) => {
       const lastStates = (isTest ? undefined : alert.lastStates) as unknown as
-        | import('../types/aa-storm-email').LastStates
+        | import('../types/storm-reports').LastStates
         | undefined;
       const filteredAvailableReports = filterOutAlreadyProcessedReports(
         context.latestAvailableReports,
