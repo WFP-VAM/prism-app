@@ -1,5 +1,6 @@
 import { Menu, MenuItem } from '@material-ui/core';
 import { PanelItem } from 'config/types';
+import { useSafeTranslation } from 'i18n';
 
 function PanelMenu({
   panel,
@@ -18,6 +19,8 @@ function PanelMenu({
     (child: PanelItem) => child.panel === selected,
   );
 
+  const { t } = useSafeTranslation();
+
   return (
     <Menu
       anchorEl={menuAnchor}
@@ -33,7 +36,7 @@ function PanelMenu({
           }}
           selected={validSelected?.panel === child.panel}
         >
-          {child.label}
+          {t(child.label)}
         </MenuItem>
       ))}
     </Menu>
