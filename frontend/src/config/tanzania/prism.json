@@ -1,6 +1,8 @@
 {
   "country": "Tanzania",
   "countryAdmin0Id": 257,
+  "anticipatoryActionDroughtUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/staging/aa_probabilities_triggers_tza.csv",
+  "anticipatoryActionDroughtStagingUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/staging/aa_probabilities_triggers_tza.csv",
   "alertFormActive": false,
   "enableNavigationDropdown": true,
   "serversUrls": {
