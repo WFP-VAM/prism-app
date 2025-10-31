@@ -183,6 +183,22 @@ const AADROUGHT_COUNTRY_CONFIGS: Record<string, AADroughtCountryConfig> = {
         'uses seasonal forecasts from ECMWF with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
     },
   }),
+  tanzania: createCountryConfig({
+    categories: [
+      { label: 'Severe', id: 'Severe' },
+      { label: 'Moderate', id: 'Moderate' },
+      { label: 'Mild', id: 'Mild' },
+      { label: 'Below Normal', id: 'Normal' },
+    ],
+    seasonStartMonth: 6,
+    forecastSource: 'ECMWF',
+    customContent: {
+      howToReadContent: [
+        { title: 'OND', text: 'October to December' },
+        { title: 'MAM', text: 'March to May' },
+      ],
+    },
+  }),
   zambia: createCountryConfig({
     singleWindowMode: true,
     categories: [{ label: 'Moderate', id: 'Moderate' }],
@@ -274,15 +290,6 @@ export const calculateSeason = (date: string | undefined): string => {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
   const config = getAADroughtCountryConfig();
-
-  // eslint-disable-next-line no-console
-  console.log({
-    date,
-    currentDate,
-    year,
-    month,
-    startMonth: config.seasonStartMonth,
-  });
 
   // month is 0-indexed, so we add 1 to make it 1-indexed
   if (month + 1 >= config.seasonStartMonth) {

@@ -131,6 +131,7 @@ export const getLayerByKey = (layerKey: LayerKey): LayerType => {
       return definition;
     case 'anticipatory_action_drought':
     case 'anticipatory_action_storm':
+    case 'anticipatory_action_flood':
       if (
         checkRequiredKeys(CompositeLayerProps, definition, true) &&
         isAnticipatoryActionLayer(definition.type)
@@ -176,6 +177,7 @@ export const AALayerIds = Object.values(AnticipatoryAction);
 export const LayerDefinitions: LayersMap = (() => {
   const droughtUrl = appConfig.anticipatoryActionDroughtUrl;
   const stormUrl = appConfig.anticipatoryActionStormUrl;
+  const floodUrl = appConfig.anticipatoryActionFloodUrl;
 
   const AALayers: AnticipatoryActionLayerProps[] = [
     {
@@ -188,6 +190,12 @@ export const LayerDefinitions: LayersMap = (() => {
       id: AnticipatoryAction.storm,
       title: 'Anticipatory Action Storm',
       type: AnticipatoryAction.storm,
+      opacity: 0.9,
+    },
+    {
+      id: AnticipatoryAction.flood,
+      title: 'Anticipatory Action Flood',
+      type: AnticipatoryAction.flood,
       opacity: 0.9,
     },
   ];
@@ -206,6 +214,9 @@ export const LayerDefinitions: LayersMap = (() => {
       : {}),
     ...(stormUrl
       ? { [AnticipatoryAction.storm]: AALayersById[AnticipatoryAction.storm] }
+      : {}),
+    ...(floodUrl
+      ? { [AnticipatoryAction.flood]: AALayersById[AnticipatoryAction.flood] }
       : {}),
   };
 

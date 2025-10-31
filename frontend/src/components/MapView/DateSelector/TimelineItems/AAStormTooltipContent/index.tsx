@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateDateRange } from 'context/mapStateSlice';
 import { getFormattedDate } from 'utils/date-utils';
 import { useUrlHistory } from 'utils/url-utils';
+import { AAStormColors } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
 import { useWindStatesByTime } from '../hooks';
 
 function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
@@ -49,9 +50,9 @@ function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
       case WindState.ready:
         return '#63B2BD';
       case WindState.activated_48kt:
-        return '#FF8934';
+        return AAStormColors.categories.moderate.background;
       case WindState.activated_64kt:
-        return '#E63701';
+        return AAStormColors.categories.severe.background;
       default:
         console.warn('status not found', status);
         return '#ffff';

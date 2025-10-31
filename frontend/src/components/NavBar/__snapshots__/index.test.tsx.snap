@@ -148,6 +148,11 @@ exports[`renders as expected 1`] = `
               >
                 A. Action Storm
               </mock-menuitem>
+              <mock-menuitem
+                selected="false"
+              >
+                A. Action Flood
+              </mock-menuitem>
             </mock-menu>
             <mock-button
               starticon="[object Object]"

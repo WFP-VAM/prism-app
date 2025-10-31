@@ -248,8 +248,6 @@ export function calculateMapRenderedDistricts({
 }: CalculateMapRenderedDistrictsParams) {
   const { selectedDate, categories } = filters;
   const season = calculateSeason(selectedDate);
-  // eslint-disable-next-line no-console
-  console.log({ season, selectedDate });
 
   const res = Object.entries(data)
     .map(([winKey, districts]) => {
