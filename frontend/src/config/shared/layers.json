@@ -1173,7 +1173,7 @@
       "styles": "tdd_21_m12_12"
     }
   },
-  "wp_pop_cicunadj": {
+  "wp_pop_icunadj": {
     "title": "population",
     "type": "wms",
     "wcsConfig": {
@@ -1182,7 +1182,7 @@
       "scale": 1,
       "offset": 0
     },
-    "server_layer_name": "wp_pop_cicunadj",
+    "server_layer_name": "wp_pop_icunadj",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "opacity": 0,
     "legend_text": "",
