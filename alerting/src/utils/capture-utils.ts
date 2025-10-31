@@ -14,6 +14,7 @@ interface ScreenshotOptions {
   screenshotTargetSelector?: string;
   elementsToHide?: string[];
   maxRetry?: number;
+  extraWaitMs?: number;
 }
 
 const DEFAULT_CROP: CropRegion = {
@@ -88,6 +89,7 @@ export async function captureScreenshotFromUrl(
     screenshotTargetSelector = DEFAULT_TARGET,
     elementsToHide = [],
     maxRetry = MAX_RETRY,
+    extraWaitMs = 8000,
   } = options;
 
   let browser: Browser | null = null;
@@ -120,7 +122,11 @@ export async function captureScreenshotFromUrl(
     // Wait for the element to be visible in the DOM
     await page.waitForSelector(screenshotTargetSelector, { visible: true });
 
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+    // Give time for map tiles and layers to render
+    console.log(
+      `Waiting for map tiles and layers to render... ${extraWaitMs}ms`,
+    );
+    await new Promise((resolve) => setTimeout(resolve, extraWaitMs));
 
     // Check if the target element is a canvas
     const isCanvas = await page.evaluate((selector) => {
@@ -277,14 +283,29 @@ export async function captureScreenshotFromUrl(
       });
 
       isBlank = await isBlankScreenshot(base64Image);
-      if (isBlank && retry <= maxRetry) {
+      if (isBlank) {
         retry++;
-        console.log('Screenshot is probably blank, retrying... ', retry);
-      } else {
-        break;
+        if (retry >= maxRetry) break;
+        // wait a bit more and yield two frames to allow rendering
+        const backoff = Math.min(2000 * retry, 6000);
+        console.log(
+          `Screenshot likely blank, retrying (${retry}/${maxRetry}) after ${backoff}ms...`,
+        );
+        await new Promise((resolve) => setTimeout(resolve, backoff));
+        await page.evaluate(
+          () =>
+            new Promise((r) =>
+              requestAnimationFrame(() => requestAnimationFrame(r)),
+            ),
+        );
       }
     }
-    console.log('Screenshot captured');
+    if (!isBlank) {
+      console.log('Screenshot captured');
+    } else {
+      console.warn('Screenshot appears blank after retries');
+      console.log('Check url: ', url);
+    }
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error(`Failed to capture screenshot: ${error.message}`);
