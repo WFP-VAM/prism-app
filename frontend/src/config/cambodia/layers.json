@@ -1495,6 +1495,9 @@
       "scale": "1"
     },
     "server_layer_name": "wp_pop_icunadj",
+    "additional_query_params": {
+      "styles": "wp_pop_icunadj_khm_2020"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "opacity": 0,
     "legend_text": "",
