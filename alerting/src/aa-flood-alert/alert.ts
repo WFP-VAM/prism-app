@@ -90,7 +90,11 @@ export async function fetchStationSummary(
 
 export function shouldSendFloodEmail(trigger?: string): boolean {
   if (!trigger) return false;
-  return TRIGGER_STATUSES.includes(trigger as TriggerStatus);
+  // exclude 'not exceeded' status
+  return (
+    TRIGGER_STATUSES.includes(trigger as TriggerStatus) &&
+    trigger !== 'not exceeded'
+  );
 }
 
 export function transformLastProcessedFlood(
