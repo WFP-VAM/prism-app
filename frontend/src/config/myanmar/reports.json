@@ -34,57 +34,5 @@
     "map_footer_sub_text": "The designations employed and the presentation of material in the map(s) do not imply the expression of any opinion on the part of WFP concerning the legal or constitutional status of any country, territory, city or sea, or concerning the delimitation of its frontiers or boundaries.",
     "table_name": "Population Exposure",
     "signature_text": "PRISM automated report"
-  },
-  "adamts_buffers_report": {
-    "layer_id": "adamts_buffers",
-    "title": "Event name: Storm Report",
-    "publication_date_label": "Publication Date",
-    "sub_text": "This is an automated report. Information should be treated as preliminary",
-    "areas_legend_definition": {
-      "title": "Areas",
-      "items": [
-        {
-          "title": "Province",
-          "color": "#000000"
-        },
-        {
-          "title": "District",
-          "color": "#999797"
-        },
-        {
-          "title": "Township",
-          "color": "#D8D6D6"
-        }
-      ]
-    },
-    "type_legend_definition": {
-      "title": "Tropical Storms - Wind buffers",
-      "items": [
-        {
-          "title": "Uncertainty Cones",
-          "color": "#ffffff",
-          "border": "#b8b1b1"
-        },
-        {
-          "title": "Wind Buffer 60 km/h",
-          "color": "#fffcf1",
-          "border": "#f7e705"
-        },
-        {
-          "title": "Wind Buffer 90 km/h",
-          "color": "#ffeed8",
-          "border": "#f99408"
-        },
-        {
-          "title": "Wind Buffer 120 km/h",
-          "color": "#fcd4ce",
-          "border": "#f90c08"
-        }
-      ]
-    },
-    "map_footer_text": "Sources WFP, UNGIWG, OCHA, GAUL, USGS, NASA, UCSB",
-    "map_footer_sub_text": "The designations employed and the presentation of material in the map(s) do not imply the expression of any opinion on the part of WFP concerning the legal or constitutional status of any country, territory, city or sea, or concerning the delimitation of its frontiers or boundaries.",
-    "table_name": "Population Exposure",
-    "signature_text": "PRISM automated report"
   }
 }
