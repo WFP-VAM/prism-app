@@ -20,21 +20,27 @@ import {
   updateLayersCapabilities,
 } from 'context/serverStateSlice';
 import { AnticipatoryActionData } from 'context/anticipatoryAction/AADroughtStateSlice/types';
+import { ParsedStormData } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
+import { AnticipatoryActionFloodState } from 'context/anticipatoryAction/AAFloodStateSlice/types';
+import { loadAAFloodDateData } from 'context/anticipatoryAction/AAFloodStateSlice';
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
-import { ParsedStormData } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import { useMapState } from 'utils/useMapState';
 import { toggleRemoveLayer } from '../layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 
 type AADataByAction<T extends AnticipatoryAction> =
   T extends AnticipatoryAction.storm
     ? ParsedStormData
-    : Record<'Window 1' | 'Window 2', AnticipatoryActionData>;
+    : T extends AnticipatoryAction.flood
+      ? AnticipatoryActionFloodState
+      : Record<'Window 1' | 'Window 2', AnticipatoryActionData>;
 
 type AAAvailableDatesByAction<T extends AnticipatoryAction> =
   T extends AnticipatoryAction.storm
     ? DateItem[]
-    : Record<'Window 1' | 'Window 2', DateItem[]>;
+    : T extends AnticipatoryAction.flood
+      ? DateItem[]
+      : Record<'Window 1' | 'Window 2', DateItem[]>;
 
 export function useAnticipatoryAction<T extends AnticipatoryAction>(
   actionType: T,
@@ -101,6 +107,10 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
         const queryDate = getRequestDate(combinedAvailableDates, selectedDate);
         const date = getFormattedDate(queryDate, DateFormat.Default) as string;
         dispatch(setFilters({ selectedDate: date }));
+      } else if (actionType === AnticipatoryAction.flood) {
+        const queryDate = getRequestDate(combinedAvailableDates, selectedDate);
+        const date = getFormattedDate(queryDate, DateFormat.Default) as string;
+        dispatch(loadAAFloodDateData({ date }));
       }
     }
 

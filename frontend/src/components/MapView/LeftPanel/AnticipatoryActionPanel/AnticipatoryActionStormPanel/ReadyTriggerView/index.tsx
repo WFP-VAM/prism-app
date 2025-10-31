@@ -2,6 +2,7 @@ import { Typography, createStyles, makeStyles } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { AADataSelector } from 'context/anticipatoryAction/AAStormStateSlice';
 import { useSafeTranslation } from 'i18n';
+import { AAStormColors } from '../utils';
 
 function ReadyTrigger() {
   const { t } = useSafeTranslation();
@@ -47,7 +48,7 @@ const useActivationTriggerStyles = makeStyles(() =>
     },
     Wrapper: {
       width: '100%',
-      background: '#F1F1F1',
+      background: AAStormColors.background,
     },
     headColumnWrapper: {
       display: 'flex',
