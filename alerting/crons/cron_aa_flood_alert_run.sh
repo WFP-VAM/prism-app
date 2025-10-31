@@ -9,5 +9,5 @@ docker compose run --rm --entrypoint 'yarn aa-flood-alert-worker' alerting-node 
 ## To set up the cron job, run the following command on the server:
 # crontab -e
 ## and then add the following line to the crontab file:
-# 10 * * * * ~/prism-app/alerting/crons/cron_aa_flood_alert_run.sh
 ## This will run the flood AA alerting script every hour at minute 10.
+# 10 * * * * ~/prism-app/alerting/crons/cron_aa_flood_alert_run.sh
