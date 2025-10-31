@@ -35,12 +35,15 @@ jobs:
 
       # Lint and test
       - run: |
-          cd alerting
-          yarn install
-          yarn setup:common
-          # Install puppeteer dependencies
-          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true yarn add puppeteer puppeteer-core
-          yarn lint
-          yarn test
-          # Run flood alert worker with test email
-          yarn aa-flood-alert-worker --testEmail='hello@ovio.org'
+         cd alerting
+         yarn install
+         yarn setup:common
+         # Install puppeteer dependencies
+         PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true yarn add puppeteer puppeteer-core
+         yarn lint
+         yarn test
+         # Run flood alert worker with test email
+         yarn aa-flood-alert-worker --testEmail='hello@ovio.org'
+
+      - name: Security audit
+        run: cd alerting && yarn run audit

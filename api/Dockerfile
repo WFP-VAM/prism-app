@@ -6,7 +6,7 @@ FROM ghcr.io/osgeo/gdal:ubuntu-full-3.11.1
 
 ENV PYTHONPATH=/
 
-ENV POETRY_VERSION=2.1.3
+ENV POETRY_VERSION=2.2.1
 # install poetry in this location
 ENV POETRY_HOME="/opt/poetry"
 

@@ -214,14 +214,14 @@ export function createGetCoverageUrl({
   crs?: string;
   date?: Date | string;
   format?: WCS_FORMAT | string;
-  height: number;
+  height?: number;
   layerId: string;
   maxPixels?: number;
   needExtent?: boolean;
-  resolution?: 256;
+  resolution?: number;
   url?: string;
   version?: string;
-  width: number;
+  width?: number;
 }): string {
   const base = (() => {
     if (url) {
@@ -248,8 +248,8 @@ export function createGetCoverageUrl({
   const { height, width } = (() => {
     if (
       (typeof givenHeight !== "number" && typeof givenWidth !== "number") ||
-      givenHeight > maxPixels ||
-      givenWidth > maxPixels
+      (givenHeight && givenHeight > maxPixels) ||
+      (givenWidth && givenWidth > maxPixels)
     ) {
       return scaleImage(bbox, { maxPixels, resolution });
     }
