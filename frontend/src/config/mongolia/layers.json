@@ -1,10 +1,10 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "data/mongolia/admin_boundaries.json",
+    "path": "data/mongolia/mng_adm2_boundaries.json",
     "opacity": 0.8,
-    "admin_code": "NSO_ADM2_CODE",
-    "admin_level_codes": ["NSO_ADM1_CODE", "NSO_ADM2_CODE"],
+    "admin_code": "ADM2_PCODE_RE",
+    "admin_level_codes": ["ADM1_PCODE_RE", "ADM2_PCODE_RE"],
     "admin_level_names": ["ADM1_EN", "ADM2_EN"],
     "admin_level_local_names": ["ADM1_MN", "ADM2_MN"],
     "styles:": {
@@ -22,8 +22,8 @@
     "type": "boundary",
     "path": "data/mongolia/mng_adm1_nso_match_1212_mn.json",
     "opacity": 0.8,
-    "admin_code": "NSO_CODE",
-    "admin_level_codes": ["NSO_CODE"],
+    "admin_code": "ADM1_PCODE_RE",
+    "admin_level_codes": ["ADM1_PCODE_RE"],
     "admin_level_names": ["ADM1_EN"],
     "admin_level_local_names": ["ADM1_MN"],
     "styles:": {
