@@ -1,13 +1,5 @@
 {
   "country": "Mongolia",
-  "icons": {
-    "vulnerability": "icon_vulnerable.png",
-    "exposure": "icon_basemap.png",
-    "hazards": "icon_climate.png",
-    "risk": "icon_impact.png",
-    "capacity": "icon_capacity.png",
-    "tables": "icon_table.png"
-  },
   "alertFormActive": false,
   "serversUrls": {
     "wms": ["https://mongolia.sibelius-datacube.org:5000/wms"]

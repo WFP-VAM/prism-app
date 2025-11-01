@@ -1,14 +1,6 @@
 {
   "country": "Colombia",
   "alertFormActive": false,
-  "icons": {
-    "rainfall": "icon_rain.png",
-    "vegetation": "icon_veg.png",
-    "temperature": "icon_climate.png",
-    "risk": "icon_impact.png",
-    "tropical_storms": "icon_tropical_storm.png",
-    "vulnerability": "icon_vulnerable.png"
-  },
   "serversUrls": {
     "wms": [
       "https://ogcserver.gis.wfp.org/geoserver/prism/wms",
