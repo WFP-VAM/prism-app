@@ -19,11 +19,25 @@ const env = Object.keys(process.env)
   );
 
 const country = env.REACT_APP_COUNTRY || 'mozambique';
+// Option to preserve all country data for multi-country builds
+const preserveAllData = env.REACT_APP_PRESERVE_ALL_DATA === 'true';
+const isGlobalBuild = country.toLowerCase() === 'global';
+
 if (country) {
   // eslint-disable-next-line no-console
-  console.log(
-    `Building for country ${country}. Removing data for other countries.`,
-  );
+  if (preserveAllData) {
+    console.log(
+      `Building for country ${country} with multi-country support. Preserving all data files.`,
+    );
+  } else if (isGlobalBuild) {
+    console.log(
+      `Building for global/multi-country mode. Preserving global and all country data.`,
+    );
+  } else {
+    console.log(
+      `Building for country ${country}. Removing data for other countries.`,
+    );
+  }
 }
 
 // In case GIT_HASH is not set we are in github actions environment
@@ -37,12 +51,28 @@ const removeFilesPlugin = (): Plugin => ({
   name: 'vite-plugin-remove-files',
   closeBundle() {
     const root = path.resolve(__dirname, 'build', 'data');
+    
+    // If preserving all data (multi-country build) or global build, skip removal
+    if (preserveAllData || isGlobalBuild) {
+      // eslint-disable-next-line no-console
+      console.log('Skipping data file removal - preserving all country data files.');
+      return;
+    }
+
     const regex = new RegExp(country.toLowerCase(), 'm');
 
     const removeFiles = (dir: string) => {
+      if (!fs.existsSync(dir)) {
+        return;
+      }
+      
       fs.readdirSync(dir).forEach(file => {
         const absPath = path.join(dir, file);
         if (fs.statSync(absPath).isDirectory()) {
+          // Always preserve the 'global' directory for /country route support
+          if (file === 'global') {
+            return;
+          }
           removeFiles(absPath);
         } else if (!regex.test(absPath)) {
           fs.unlinkSync(absPath);
@@ -62,6 +92,10 @@ const removeFilesPlugin = (): Plugin => ({
       for (const file of files) {
         const absPath = path.join(dir, file);
         if (fs.statSync(absPath).isDirectory()) {
+          // Don't remove the 'global' directory even if empty (for /country route)
+          if (file === 'global') {
+            continue;
+          }
           removeEmptyDirs(absPath);
         }
       }
@@ -69,7 +103,7 @@ const removeFilesPlugin = (): Plugin => ({
       // Re-read to see if directory is now empty after removing subdirs
       // eslint-disable-next-line fp/no-mutation
       files = fs.readdirSync(dir);
-      if (files.length === 0) {
+      if (files.length === 0 && path.basename(dir) !== 'global') {
         fs.rmdirSync(dir);
       }
     };

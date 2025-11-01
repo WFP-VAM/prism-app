@@ -85,20 +85,36 @@ const {
   REACT_APP_QA_MODE: QA_MODE,
 } = process.env;
 
-const safeCountry =
-  COUNTRY && has(configMap, COUNTRY.toLocaleLowerCase())
+/**
+ * Determines the current country based on environment variable or URL path.
+ * If the URL path starts with '/country', returns 'global' for multi-country mode.
+ */
+function getCurrentCountry(): Country {
+  // Check if we're on the /country route (multi-country mode)
+  if (
+    typeof window !== 'undefined' &&
+    window.location.pathname.startsWith('/country')
+  ) {
+    return 'global';
+  }
+
+  // Otherwise use the environment variable or default
+  return COUNTRY && has(configMap, COUNTRY.toLocaleLowerCase())
     ? (COUNTRY.toLocaleLowerCase() as Country)
     : DEFAULT;
+}
 
-const {
-  defaultBoundariesFile,
-  rawTables,
-  rawReports,
-}: {
-  defaultBoundariesFile: string;
-  rawTables: Record<string, any>;
-  rawReports: Record<string, any>;
-} = configMap[safeCountry];
+/**
+ * Gets the current safe country (reactive to URL changes).
+ * Export as a getter function for reactivity.
+ */
+function getSafeCountry(): Country {
+  return getCurrentCountry();
+}
+
+// For backward compatibility, create a getter that can be used as a value
+// Note: Components will need to call this function when route changes
+const safeCountry = getSafeCountry();
 
 const {
   defaultConfig,
@@ -107,12 +123,23 @@ const {
   sharedLegends,
 } = shared;
 
-// Perform deep merges between shared and country-specific configurations
-const appConfig: Record<string, any> = merge(
-  {},
-  defaultConfig,
-  configMap[safeCountry].appConfig,
-);
+/**
+ * Gets the current country config based on the URL path.
+ * Returns the appropriate config object.
+ */
+function getCurrentCountryConfig() {
+  const currentCountry = getCurrentCountry();
+  return configMap[currentCountry];
+}
+
+/**
+ * Gets appConfig for the current country (based on URL or env var).
+ * This is reactive to URL changes.
+ */
+function getAppConfig(): Record<string, any> {
+  const currentCountry = getCurrentCountry();
+  return merge({}, defaultConfig, configMap[currentCountry].appConfig);
+}
 
 export function getRawLayers(
   country: Country,
@@ -161,8 +188,105 @@ export function getTranslation(country: Country): Record<string, any> {
   );
 }
 
-const rawLayers = getRawLayers(safeCountry);
-const translation = getTranslation(safeCountry);
+/**
+ * Gets raw layers for the current country (based on URL or env var).
+ */
+function getCurrentRawLayers() {
+  const currentCountry = getCurrentCountry();
+  return getRawLayers(currentCountry);
+}
+
+/**
+ * Gets translation for the current country (based on URL or env var).
+ */
+function getCurrentTranslation() {
+  const currentCountry = getCurrentCountry();
+  return getTranslation(currentCountry);
+}
+
+// Create getters for backward compatibility and reactivity
+// These will re-evaluate when accessed, checking the current URL
+const rawLayers = new Proxy({} as ReturnType<typeof getRawLayers>, {
+  get: (_, prop) => {
+    const currentLayers = getCurrentRawLayers();
+    return currentLayers[prop as keyof typeof currentLayers];
+  },
+  ownKeys: () => Reflect.ownKeys(getCurrentRawLayers()),
+  getOwnPropertyDescriptor: (_, prop) => {
+    const currentLayers = getCurrentRawLayers();
+    return Reflect.getOwnPropertyDescriptor(currentLayers, prop);
+  },
+});
+
+const translation = new Proxy({} as ReturnType<typeof getTranslation>, {
+  get: (_, prop) => {
+    const currentTranslation = getCurrentTranslation();
+    return currentTranslation[prop as keyof typeof currentTranslation];
+  },
+  ownKeys: () => Reflect.ownKeys(getCurrentTranslation()),
+  getOwnPropertyDescriptor: (_, prop) => {
+    const currentTranslation = getCurrentTranslation();
+    return Reflect.getOwnPropertyDescriptor(currentTranslation, prop);
+  },
+});
+
+const appConfig = new Proxy({} as ReturnType<typeof getAppConfig>, {
+  get: (_, prop) => {
+    const currentConfig = getAppConfig();
+    return currentConfig[prop as keyof typeof currentConfig];
+  },
+  ownKeys: () => Reflect.ownKeys(getAppConfig()),
+  getOwnPropertyDescriptor: (_, prop) => {
+    const currentConfig = getAppConfig();
+    return Reflect.getOwnPropertyDescriptor(currentConfig, prop);
+  },
+});
+
+/**
+ * Gets default boundaries file for current country (reactive to URL).
+ */
+function getDefaultBoundariesFile(): string {
+  return getCurrentCountryConfig().defaultBoundariesFile;
+}
+
+/**
+ * Gets raw tables for current country (reactive to URL).
+ */
+function getCurrentRawTables(): Record<string, any> {
+  return getCurrentCountryConfig().rawTables;
+}
+
+/**
+ * Gets raw reports for current country (reactive to URL).
+ */
+function getCurrentRawReports(): Record<string, any> {
+  return getCurrentCountryConfig().rawReports;
+}
+
+// Create reactive proxies for these values
+const rawTables = new Proxy({} as Record<string, any>, {
+  get: (_, prop) => {
+    const currentTables = getCurrentRawTables();
+    return currentTables[prop as keyof typeof currentTables];
+  },
+  ownKeys: () => Reflect.ownKeys(getCurrentRawTables()),
+  getOwnPropertyDescriptor: (_, prop) => {
+    const currentTables = getCurrentRawTables();
+    return Reflect.getOwnPropertyDescriptor(currentTables, prop);
+  },
+});
+
+const rawReports = new Proxy({} as Record<string, any>, {
+  get: (_, prop) => {
+    const currentReports = getCurrentRawReports();
+    return currentReports[prop as keyof typeof currentReports];
+  },
+  ownKeys: () => Reflect.ownKeys(getCurrentRawReports()),
+  getOwnPropertyDescriptor: (_, prop) => {
+    const currentReports = getCurrentRawReports();
+    return Reflect.getOwnPropertyDescriptor(currentReports, prop);
+  },
+});
 
 const msalConfig = {
   auth: {
@@ -178,16 +302,81 @@ const msalRequest = {
 
 const msalInstance = new PublicClientApplication(msalConfig);
 
-const authRequired: boolean =
-  !TESTING && get(appConfig, 'WFPAuthRequired', false);
+/**
+ * Gets auth required status for current country (reactive to URL).
+ */
+function getAuthRequiredValue(): boolean {
+  return !TESTING && get(getAppConfig(), 'WFPAuthRequired', false);
+}
 
-const enableNavigationDropdown: boolean = get(
-  appConfig,
-  'enableNavigationDropdown',
-  false,
-);
+/**
+ * Gets enable navigation dropdown status for current country (reactive to URL).
+ */
+function getEnableNavigationDropdownValue(): boolean {
+  return get(getAppConfig(), 'enableNavigationDropdown', false);
+}
 
-const defaultBoundariesPath = `${DEFAULT_BOUNDARIES_FOLDER}/${defaultBoundariesFile}`;
+// Create reactive proxies for boolean values
+// These need special handling to work properly as booleans
+const authRequired = (() => {
+  const proxy = new Proxy({} as { valueOf(): boolean; toString(): string }, {
+    get: (_, prop) => {
+      const value = getAuthRequiredValue();
+      if (prop === 'valueOf' || prop === Symbol.toPrimitive) {
+        return () => value;
+      }
+      if (prop === 'toString') {
+        return () => String(value);
+      }
+      return (Boolean.prototype as any)[prop];
+    },
+    valueOf: () => getAuthRequiredValue(),
+  });
+  return proxy;
+})() as unknown as boolean;
+
+const enableNavigationDropdown = (() => {
+  const proxy = new Proxy({} as { valueOf(): boolean; toString(): string }, {
+    get: (_, prop) => {
+      const value = getEnableNavigationDropdownValue();
+      if (prop === 'valueOf' || prop === Symbol.toPrimitive) {
+        return () => value;
+      }
+      if (prop === 'toString') {
+        return () => String(value);
+      }
+      return (Boolean.prototype as any)[prop];
+    },
+    valueOf: () => getEnableNavigationDropdownValue(),
+  });
+  return proxy;
+})() as unknown as boolean;
+
+/**
+ * Gets default boundaries path for current country (reactive to URL).
+ */
+function getDefaultBoundariesPath(): string {
+  return `${DEFAULT_BOUNDARIES_FOLDER}/${getDefaultBoundariesFile()}`;
+}
+
+// Create a reactive proxy for defaultBoundariesPath
+const defaultBoundariesPath = new Proxy(
+  {} as { toString(): string; valueOf(): string },
+  {
+    get: (_, prop) => {
+      const path = getDefaultBoundariesPath();
+      if (prop === 'toString' || prop === Symbol.toPrimitive) {
+        return () => path;
+      }
+      if (prop === 'valueOf') {
+        return () => path;
+      }
+      return (path as any)[prop];
+    },
+    toString: () => getDefaultBoundariesPath(),
+    valueOf: () => getDefaultBoundariesPath(),
+  },
+) as unknown as string;
 
 export {
   appConfig,
@@ -202,4 +391,5 @@ export {
   msalRequest,
   enableNavigationDropdown,
   translation,
+  getSafeCountry,
 };
