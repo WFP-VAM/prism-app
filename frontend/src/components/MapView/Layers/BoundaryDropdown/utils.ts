@@ -136,39 +136,35 @@ export function flattenAreaTree(
   tree: AdminBoundaryTree,
   search: string = '',
 ): FlattenedAdminBoundary[] {
-  const searchLower = search.toLowerCase();
-
   function flattenSubTree(
     localSearch: string,
     subTree: AdminBoundaryTree,
   ): FlattenedAdminBoundary[] {
     const { children, ...node } = subTree;
-    const isRoot =
-      node.key === ('root' as AdminCodeString) &&
-      node.level === (0 as AdminLevelType);
+    // Skip the root placeholder node (it's just a container)
+    const isRootPlaceholder = node.adminCode === 'top' && node.key === 'root';
 
-    const labelLower = (node.label ?? '').toLowerCase();
-    const matchesNode =
-      labelLower !== '' && labelLower.includes(localSearch.toLowerCase());
-
-    // If the current node matches, drop the filter for its descendants
-    const nextSearch = matchesNode ? '' : localSearch;
-
+    // if current node matches the search string, include it and all its children
+    // without filtering them, otherwise keep searching through the children
+    const boundFlatten = node.label
+      .toLowerCase()
+      .includes(localSearch.toLowerCase())
+      ? flattenSubTree.bind(null, '')
+      : flattenSubTree.bind(null, localSearch);
     const childrenToShow: FlattenedAdminBoundary[] = sortBy(
       Object.values(children),
       'label',
-    ).flatMap(child => flattenSubTree(nextSearch, child));
-
-    // Never include the artificial root node in the output
-    if (isRoot) {
-      return childrenToShow;
+    ).flatMap(boundFlatten);
+    if (
+      childrenToShow.length > 0 ||
+      node.label.toLowerCase().includes(localSearch.toLowerCase())
+    ) {
+      // Don't include the root placeholder node in the result
+      return isRootPlaceholder
+        ? childrenToShow.flat()
+        : [node, childrenToShow].flat();
     }
-
-    if (childrenToShow.length > 0 || matchesNode) {
-      return [node as FlattenedAdminBoundary, ...childrenToShow];
-    }
-    return childrenToShow;
+    return childrenToShow.flat();
   }
-
-  return flattenSubTree(searchLower, tree);
+  return flattenSubTree(search, tree);
 }
