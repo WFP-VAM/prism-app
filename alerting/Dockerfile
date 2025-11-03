@@ -2,7 +2,7 @@ FROM --platform=linux/amd64 node:20
 
 ARG CHROME_VERSION
 
-COPY ./alerting /app
+COPY ./alerting /prism_app
 COPY ./common /common
 
 # Install dependencies and Chrome for puppeteer
@@ -19,6 +19,6 @@ RUN npx @puppeteer/browsers install chrome@$CHROME_VERSION && \
 WORKDIR /common
 RUN yarn --frozen-lockfile --production=false
 
-WORKDIR /app
+WORKDIR /prism_app
 RUN yarn --frozen-lockfile --production=false
 RUN yarn setup:common
