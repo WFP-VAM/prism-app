@@ -2,11 +2,11 @@ import {
   LastStates,
   ShortReport,
   ShortReportsResponseBody,
-} from '../types/aa-storm-email';
+} from '../types/storm-reports';
 import nodeFetch from 'node-fetch';
 import { WindState } from 'prism-common';
 import { StormDataResponseBody } from 'prism-common';
-import { StormAlertData } from '../types/email';
+import { StormAlertData } from '../types/storm-email';
 import { captureScreenshotFromUrl } from '../utils/capture-utils';
 import { formatDate } from '../utils/date';
 import { allDistrictsInCoastalProvince } from './districs';
@@ -172,7 +172,7 @@ function hasLandfallOccured(report: StormDataResponseBody): boolean {
   return false;
 }
 
-function shouldSendEmail(
+function shouldSendStormEmail(
   status: WindState,
   activated48kt: string[],
   activated64kt: string[],
@@ -225,7 +225,12 @@ export async function buildEmailPayloads(
           : hasLandfallOccured(detailedStormReport);
 
         const isEmailNeeded = status
-          ? shouldSendEmail(status, activated48kt, activated64kt, pastLandfall)
+          ? shouldSendStormEmail(
+              status,
+              activated48kt,
+              activated64kt,
+              pastLandfall,
+            )
           : false;
         console.debug(
           `Storm ${stormName} - Status: ${status}, Email needed: ${isEmailNeeded}, Past landfall: ${pastLandfall}`,

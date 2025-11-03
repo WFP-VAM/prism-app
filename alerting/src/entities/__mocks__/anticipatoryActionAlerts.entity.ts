@@ -1,4 +1,4 @@
-import { LastStates } from '../../types/aa-storm-email';
+import { LastStates } from '../../types/storm-reports';
 
 export class AnticipatoryActionAlerts {
   id: number;

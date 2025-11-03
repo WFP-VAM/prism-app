@@ -831,6 +831,7 @@ export enum Panel {
   Tables = 'tables',
   AnticipatoryActionDrought = 'anticipatory_action_drought',
   AnticipatoryActionStorm = 'anticipatory_action_storm',
+  AnticipatoryActionFlood = 'anticipatory_action_flood',
   Alerts = 'alerts',
 }
 
@@ -1008,6 +1009,7 @@ export type MapEventWrapFunction<T> = (
 export enum AnticipatoryAction {
   storm = 'anticipatory_action_storm',
   drought = 'anticipatory_action_drought',
+  flood = 'anticipatory_action_flood',
 }
 
 export class AnticipatoryActionLayerProps extends CommonLayerProps {

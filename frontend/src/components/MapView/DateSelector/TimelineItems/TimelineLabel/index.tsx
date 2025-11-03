@@ -47,10 +47,12 @@ const useStyles = makeStyles(() =>
       fontWeight: 'bold',
       zIndex: 1,
     },
-
     dayItem: {
+      position: 'absolute',
       height: 10,
+      marginLeft: '-1px',
       borderLeft: '1px solid #ededed',
+      zIndex: -1,
     },
   }),
 );

@@ -9,7 +9,7 @@ export function formatDate(date: string | Date, format: string): string {
   const dateObj = new Date(date);
 
   if (isNaN(dateObj.getTime())) {
-    throw new Error("Invalid date format");
+    throw new Error('Invalid date format');
   }
 
   const day = dateObj.getUTCDate().toString().padStart(2, '0');
@@ -19,9 +19,26 @@ export function formatDate(date: string | Date, format: string): string {
   const minutes = dateObj.getUTCMinutes().toString().padStart(2, '0');
   const seconds = dateObj.getUTCSeconds().toString().padStart(2, '0');
 
+  const monthNames = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+
   switch (format) {
     case 'YYYY-MM-DD':
       return `${year}-${month}-${day}`;
+    case 'DD-Month-YYYY':
+      return `${day}-${monthNames[dateObj.getUTCMonth()]}-${year}`;
     case 'YYYY-MM-DD HH:mm':
       return `${year}-${month}-${day} ${hours}:${minutes}`;
     case 'YYYY-MM-DD HH:mm:ss':
@@ -29,6 +46,6 @@ export function formatDate(date: string | Date, format: string): string {
     case 'DD/MM/YYYY HH:mm UTC':
       return `${day}/${month}/${year} ${hours}:${minutes} UTC`;
     default:
-      throw new Error("Unsupported date format");
+      throw new Error('Unsupported date format');
   }
 }
