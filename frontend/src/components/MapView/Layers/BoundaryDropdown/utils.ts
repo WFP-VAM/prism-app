@@ -136,29 +136,39 @@ export function flattenAreaTree(
   tree: AdminBoundaryTree,
   search: string = '',
 ): FlattenedAdminBoundary[] {
+  const searchLower = search.toLowerCase();
+
   function flattenSubTree(
     localSearch: string,
     subTree: AdminBoundaryTree,
   ): FlattenedAdminBoundary[] {
     const { children, ...node } = subTree;
-    // if current node matches the search string, include it and all its children
-    // without filtering them, otherwise keep searching through the children
-    const boundFlatten = node.label
-      .toLowerCase()
-      .includes(localSearch.toLowerCase())
-      ? flattenSubTree.bind(null, '')
-      : flattenSubTree.bind(null, localSearch);
+    const isRoot =
+      node.key === ('root' as AdminCodeString) &&
+      node.level === (0 as AdminLevelType);
+
+    const labelLower = (node.label ?? '').toLowerCase();
+    const matchesNode =
+      labelLower !== '' && labelLower.includes(localSearch.toLowerCase());
+
+    // If the current node matches, drop the filter for its descendants
+    const nextSearch = matchesNode ? '' : localSearch;
+
     const childrenToShow: FlattenedAdminBoundary[] = sortBy(
       Object.values(children),
       'label',
-    ).flatMap(boundFlatten);
-    if (
-      childrenToShow.length > 0 ||
-      node.label.toLowerCase().includes(localSearch.toLowerCase())
-    ) {
-      return [node, childrenToShow].flat();
+    ).flatMap(child => flattenSubTree(nextSearch, child));
+
+    // Never include the artificial root node in the output
+    if (isRoot) {
+      return childrenToShow;
     }
-    return childrenToShow.flat();
+
+    if (childrenToShow.length > 0 || matchesNode) {
+      return [node as FlattenedAdminBoundary, ...childrenToShow];
+    }
+    return childrenToShow;
   }
-  return flattenSubTree(search, tree);
+
+  return flattenSubTree(searchLower, tree);
 }
