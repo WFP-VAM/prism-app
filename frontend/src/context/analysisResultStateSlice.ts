@@ -421,7 +421,7 @@ async function createAPIRequestParams(
   const geotiffUrl =
     baseUrl.includes('api.earthobservation.vam.wfp.org/ows') &&
     // use WCS for flood exposure analysis because of a bug with gdal_calc
-    !serverLayerName.includes('wp_pop_cicunadj')
+    !serverLayerName.includes('wp_pop_icunadj')
       ? await getDownloadGeotiffURL(
           serverLayerName,
           band,
