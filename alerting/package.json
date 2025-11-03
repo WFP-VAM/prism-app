@@ -44,7 +44,7 @@
     "pg": "^8.5.1",
     "prism-common": "file:../common",
     "puppeteer": "^24.1.1",
-    "typeorm": "^0.3.20",
+    "typeorm": "^0.3.27",
     "typeorm-naming-strategies": "^1.1.0",
     "xml-js": "^1.6.11"
   },
