@@ -236,9 +236,9 @@ const PointDataLayer = memo(({ layer, before }: LayersProps) => {
     );
   }
 
-  // Use icons: 'point', 'square', 'triangle', or 'diamond'
+  // Use icons: 'point' (default), 'square', 'triangle', or 'diamond'
   // These support icon-color which will be applied from circlePaint
-  const iconShape: IconShape = 'diamond'; // Change to 'point', 'triangle', or 'diamond' as needed
+  const iconShape: IconShape = (layer.iconShape || 'point') as IconShape;
 
   return (
     <Source data={data} type="geojson">

@@ -210,9 +210,14 @@ const LegendItem = memo(
             color={item.color as string}
             opacity={opacity as number}
             fillPattern={fillPattern || item.fillPattern}
+            iconShape={
+              type === 'point_data' && layer?.iconShape
+                ? layer.iconShape
+                : undefined
+            }
           />
         )),
-      [fillPattern, getColorIndicatorKey, legend, opacity, t],
+      [fillPattern, getColorIndicatorKey, legend, opacity, t, type, layer],
     );
 
     const renderedLegendUrl = useMemo(() => {
