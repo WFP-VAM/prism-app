@@ -59,7 +59,7 @@ export const opacityStateSlice = createSlice({
             if (layerId?.includes('_report')) {
               return [getLayerMapId(layerId), 'fill-opacity'];
             }
-            return [getLayerMapId(layerId), 'circle-opacity'];
+            return [getLayerMapId(layerId), 'icon-opacity'];
           case 'analysis':
             return ['layer-analysis', 'fill-opacity'];
           default:
