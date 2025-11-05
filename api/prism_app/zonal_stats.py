@@ -5,13 +5,18 @@ import os
 from collections import defaultdict
 from datetime import datetime
 from json import dump, load
-from pathlib import Path
 from typing import Any, NewType, Optional
 from urllib.parse import urlencode
 
 import rasterio  # type: ignore
 from fastapi import HTTPException
-from prism_app.caching import CACHE_DIRECTORY, cache_file, get_json_file, is_file_valid
+from prism_app.caching import (
+    CACHE_DIRECTORY,
+    _hash_value,
+    cache_file,
+    get_json_file,
+    is_file_valid,
+)
 from prism_app.duckdb_utils import setup_duckdb_connection
 from prism_app.models import (
     FilePath,
@@ -361,23 +366,23 @@ def calculate_stats(
 
     # Add mask option for flood exposure analysis
     if mask_geotiff:
-        # quick hack to create "readable" filenames for caching.
-        geotiff_hash = Path(geotiff).name.replace("raster_", "").replace(".tif", "")
-        mask_hash = Path(mask_geotiff).name.replace("raster_", "").replace(".tif", "")
+        # Combine all inputs to create a unique cache key
+        cache_key = f"{geotiff}_{mask_geotiff}_{mask_calc_expr or 'no_calc'}"
+        cache_hash = _hash_value(cache_key)
 
-        # Slugify the calc expression into a reasonable filename
-        slugified_calc = "default"
+        slugified_calc = "no_calc"
         if mask_calc_expr is not None:
             slugified_calc = mask_calc_expr
             for symbol, operator in VALID_OPERATORS.items():
                 slugified_calc = slugified_calc.replace(symbol, operator.__name__)
 
+            # Limit to 20 chars to prevent long filenames
             slugified_calc = "".join(
                 [x if x.isalnum() else "" for x in (slugified_calc)]
-            )
+            )[:20]
 
         masked_pop_geotiff: FilePath = (
-            f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}_masked_by_{mask_hash}_{slugified_calc}.tif"
+            f"{CACHE_DIRECTORY}raster_masked_{slugified_calc}_{cache_hash}.tif"
         )
 
         if not is_file_valid(masked_pop_geotiff):
@@ -395,8 +400,10 @@ def calculate_stats(
                 logger.warning(
                     "gdal_calc failed, trying to reproject geotiff and retry..."
                 )
+                reproj_cache_key = f"{geotiff}_reproj_on_{mask_geotiff}"
+                reproj_hash = _hash_value(reproj_cache_key)
                 reproj_pop_geotiff: FilePath = (
-                    f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}_on_{mask_hash}.tif"
+                    f"{CACHE_DIRECTORY}raster_reproj_{reproj_hash}.tif"
                 )
                 if not is_file_valid(reproj_pop_geotiff):
                     reproj_match(
