@@ -1,38 +1,5 @@
-import React, { createContext, useMemo } from 'react';
-import { Map as MaplibreMap } from 'maplibre-gl';
-import { LayerType } from 'config/types';
-import { DateRange } from 'context/mapStateSlice';
-import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
-import { RootState } from 'context/store';
-
-type MapGetter = () => MaplibreMap | undefined;
-
-export type MapInstanceActions = {
-  addLayer: (layer: LayerType) => void;
-  removeLayer: (layer: LayerType) => void;
-  updateDateRange: (dateRange: DateRange) => void;
-  setMap: (mapGetter: MapGetter) => void;
-  removeLayerData: (layer: LayerType) => void;
-  setBoundaryRelationData: (data: BoundaryRelationsDict) => void;
-  dismissError: (error: string) => void;
-};
-
-export type MapInstanceSelectors = {
-  selectLayers: (state: RootState) => LayerType[];
-  selectDateRange: (state: RootState) => DateRange;
-  selectMap: (state: RootState) => MapGetter;
-};
-
-type MapInstanceContextType = {
-  index: number;
-  selectors: Partial<MapInstanceSelectors>;
-  actions: MapInstanceActions;
-};
-
-export const MapInstanceContext = createContext<MapInstanceContextType | null>(
-  null,
-);
-
+import React, { useMemo } from 'react';
+import MapInstanceContext, { MapInstanceActions } from './mapInstance.context';
 /**
  * MapInstanceProvider wraps individual map instances to provide read/write utils
  * Map children within this provider can then safely manipulate layers and other pieces of state without affecting other maps
