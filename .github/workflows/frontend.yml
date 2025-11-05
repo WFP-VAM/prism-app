@@ -243,7 +243,7 @@ jobs:
 
   cleanup_preview_channel:
     # Run only when a PR is closed and merged to clean up its preview channel
-    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+    if: github.event_name == 'pull_request'
     name: cleanup_preview_channel
     runs-on: ubuntu-latest
     timeout-minutes: 10
