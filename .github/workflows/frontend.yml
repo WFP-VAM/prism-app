@@ -249,10 +249,17 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - uses: w9jds/firebase-action@v12.4.0
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v3
         with:
-          args: hosting:channel:delete ${{ github.event.pull_request.number }} --site staging-prism-frontend --force
-          project_path: frontend
+          node-version: 20
+      - name: Install Firebase CLI
+        run: npm i -g firebase-tools
+      - name: Delete Firebase preview channel
         env:
-          GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_PRISM_FRONTEND }}
-          PROJECT_ID: prism-frontend
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_PRISM_FRONTEND }}
+        run: |
+          echo "$FIREBASE_SERVICE_ACCOUNT" > ${HOME}/gcloud.json
+          export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/gcloud.json"
+          cd frontend
+          firebase --project prism-frontend hosting:channel:delete ${{ github.event.pull_request.number }} --site staging-prism-frontend --force
