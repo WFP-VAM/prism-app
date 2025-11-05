@@ -69,7 +69,6 @@ import { fetchWMSLayerAsGeoJSON } from 'utils/server-utils';
 import { isLocalhost } from 'serviceWorker';
 import { ANALYSIS_API_URL } from 'utils/constants';
 import { getFormattedDate } from 'utils/date-utils';
-import { mockExposedPopulationData } from './__mocks__/exposedPopulationMockData';
 import { layerDataSelector } from './mapStateSlice/selectors';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord } from './layers/admin_level_data';
