@@ -59,6 +59,8 @@ export type ChartProps = {
   downloadFilenamePrefix?: string[];
   units?: string;
   yAxisLabel?: string;
+  responsive?: boolean;
+  height?: number;
 };
 
 const Chart = memo(
@@ -79,6 +81,8 @@ const Chart = memo(
         downloadFilenamePrefix = [],
         units,
         yAxisLabel,
+        responsive = true,
+        height,
       },
       forwardedRef,
     ) => {
@@ -354,6 +358,7 @@ const Chart = memo(
               text: subtitle ? [title, subtitle] : title,
               fontSize: 14,
             },
+            responsive,
             scales: {
               xAxes: [
                 {
@@ -492,6 +497,7 @@ const Chart = memo(
           }) as ChartOptions,
         [
           notMaintainAspectRatio,
+          responsive,
           subtitle,
           title,
           config?.stacked,
@@ -511,7 +517,13 @@ const Chart = memo(
 
       return useMemo(
         () => (
-          <>
+          <div
+            style={{
+              position: 'relative',
+              height: height ? `${height}px` : '100%',
+              width: '100%',
+            }}
+          >
             {showDownloadIcons && (
               <>
                 <Tooltip title={t('Download PNG') as string}>
@@ -572,7 +584,7 @@ const Chart = memo(
                   return null;
               }
             })()}
-          </>
+          </div>
         ),
         [
           chartConfig,
@@ -584,6 +596,7 @@ const Chart = memo(
           data,
           datasetFields,
           downloadFilename,
+          height,
           iconStyles,
           showDownloadIcons,
           t,
