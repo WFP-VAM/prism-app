@@ -252,6 +252,7 @@ jobs:
       - uses: w9jds/firebase-action@v12.4.0
         with:
           args: hosting:channel:delete ${{ github.event.pull_request.number }} --site staging-prism-frontend --force
+          project_path: frontend
         env:
           GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_PRISM_FRONTEND }}
           PROJECT_ID: prism-frontend
