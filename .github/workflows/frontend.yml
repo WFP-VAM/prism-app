@@ -132,7 +132,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GIT_HASH: ${{ github.event.pull_request.head.sha }}
-      firebase_channel: prism-${{ github.event.pull_request.number }}
+      firebase_channel: ${{ github.event.pull_request.number }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -240,3 +240,18 @@ jobs:
           entryPoint: "frontend"
           channelId: ${{ env.firebase_channel }}
           expires: 30d
+
+  cleanup_preview_channel:
+    # Run only when a PR is closed and merged to clean up its preview channel
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+    name: cleanup_preview_channel
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: w9jds/firebase-action@v12.4.0
+        with:
+          args: hosting:channel:delete ${{ github.event.pull_request.number }} --site staging-prism-frontend --force
+        env:
+          GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_PRISM_FRONTEND }}
+          PROJECT_ID: prism-frontend
