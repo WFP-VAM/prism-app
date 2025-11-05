@@ -39,7 +39,7 @@ import { getAdminLevelLayer, getAdminNameProperty } from 'utils/admin-utils';
 import {
   AnalysisResult,
   ApiData,
-  // appendBoundaryProperties,
+  appendBoundaryProperties,
   BaselineLayerData,
   BaselineLayerResult,
   checkBaselineDataLayer,
@@ -51,15 +51,15 @@ import {
   KeyValueResponse,
   PolygonAnalysisResult,
   scaleAndFilterAggregateData,
-  // scaleFeatureStat,
+  scaleFeatureStat,
 } from 'utils/analysis-utils';
 import { getRoundedData } from 'utils/data-utils';
 import { getFullLocationName } from 'utils/name-utils';
 import {
   getBoundaryLayersByAdminLevel,
-  // getBoundaryLayerSingleton,
+  getBoundaryLayerSingleton,
   getStacBand,
-  // LayerDefinitions,
+  LayerDefinitions,
 } from 'config/utils';
 import {
   Extent,
@@ -504,12 +504,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
 >(
   'analysisResultState/requestAndStoreExposedPopulation',
   // eslint-disable-next-line arrow-body-style
-  async (_params, _api) => {
-    // Mock data for testing purposes - replace with actual API call when fixed
-    return mockExposedPopulationData;
-  },
-
-  /* Original API call - commented out for testing
+  async (params, api) => {
     const { exposure, date, extent, statistic, wfsLayerId, maskLayerId } =
       params;
 
@@ -657,7 +652,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       date,
       tableColumns,
     );
-    */
+  },
 );
 
 export const requestAndStoreAnalysis = createAsyncThunk<
