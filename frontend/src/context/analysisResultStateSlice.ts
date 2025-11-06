@@ -44,6 +44,7 @@ import {
   BaselineLayerResult,
   checkBaselineDataLayer,
   Column,
+  createAreaExposedLegend,
   createLegendFromFeatureArray,
   ExposedPopulationResult,
   fetchApiData,
@@ -609,7 +610,12 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       features: featuresWithBoundaryProps,
     };
 
-    const legend = createLegendFromFeatureArray(features, statistic);
+    // For "Area exposed", always use a fixed percentage-based legend with standard classification
+    // instead of dynamically creating one from feature values.
+    const legend =
+      statistic === AggregationOperations['Area exposed']
+        ? createAreaExposedLegend()
+        : createLegendFromFeatureArray(features, statistic);
     // TODO - use raster legend title
     const legendText = wfsLayer ? wfsLayer.title : 'Exposure Analysis';
 
@@ -736,8 +742,13 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   );
 
   // Create a legend based on statistic data to be used for admin level analsysis.
+  // For "Area exposed", always use a fixed percentage-based legend with standard classification
+  // instead of the hazard layer's legend (which is for hazard values, not percentages).
   const legend =
-    hazardLayer.legend ?? createLegendFromFeatureArray(features, statistic);
+    statistic === AggregationOperations['Area exposed']
+      ? createAreaExposedLegend()
+      : (hazardLayer.legend ??
+        createLegendFromFeatureArray(features, statistic));
 
   const enrichedStatistics: (AggregationOperations | 'stats_intersect_area')[] =
     [statistic];
