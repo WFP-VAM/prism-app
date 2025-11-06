@@ -358,17 +358,21 @@ def _extract_layer_identifier(filepath: FilePath, max_length: int = 100) -> str:
 
     # Try to extract meaningful layer name patterns - only keep alphabetic words connected by underscores
     if "stac_s3_" in filename:
-        # Extract only alphabetic layer name (letters and underscores only)
-        match = re.search(r"stac_s3_([a-z]+(?:_[a-z]+)*)", filename)
+        # Extract only alphabetic layer name (letters and underscores only), keep stac_s3_ prefix
+        match = re.search(r"(stac_s3_[a-z]+(?:_[a-z]+)*)", filename)
         if match:
             return match.group(1)[:max_length]
 
     # For VAM OWS: extract coverage name like hf_water_khm - only keep alphabetic words connected by underscores
     if "vam_ows_" in filename:
-        # Extract only alphabetic layer name after coverage_
-        match = re.search(r"coverage_([a-z]+(?:_[a-z]+)*)", filename)
+        # Extract only alphabetic layer name after coverage_, keep vam_ows_ prefix
+        match = re.search(r"coverage_(vam_ows_[a-z]+(?:_[a-z]+)*)", filename)
         if match:
             return match.group(1)[:max_length]
+        # If no match with vam_ows_ in coverage, try extracting and prepending
+        match = re.search(r"coverage_([a-z]+(?:_[a-z]+)*)", filename)
+        if match:
+            return f"vam_ows_{match.group(1)}"[:max_length]
 
     # Fallback
     return filename[:max_length]
