@@ -2,6 +2,7 @@
 
 import logging
 import os
+import re
 from collections import defaultdict
 from datetime import datetime
 from json import dump, load
@@ -344,6 +345,35 @@ def get_intersected_wfs_polygons(
     return output_filename
 
 
+def _extract_layer_identifier(filepath: FilePath, max_length: int = 100) -> str:
+    """Extract a readable layer identifier from a cached raster filepath."""
+    filename = os.path.basename(filepath).replace("raster_", "").replace(".tif", "")
+    url_replacements = {
+        "https___prism-stac-geotiff_s3_amazonaws_com_": "stac_s3_",
+        "https___api_earthobservation_vam_wfp_org_ows__": "vam_ows_",
+    }
+
+    for old_prefix, new_prefix in url_replacements.items():
+        filename = filename.replace(old_prefix, new_prefix)
+
+    # Try to extract meaningful layer name patterns - only keep alphabetic words connected by underscores
+    if "stac_s3_" in filename:
+        # Extract only alphabetic layer name (letters and underscores only)
+        match = re.search(r"stac_s3_([a-z]+(?:_[a-z]+)*)", filename)
+        if match:
+            return match.group(1)[:max_length]
+
+    # For VAM OWS: extract coverage name like hf_water_khm - only keep alphabetic words connected by underscores
+    if "vam_ows_" in filename:
+        # Extract only alphabetic layer name after coverage_
+        match = re.search(r"coverage_([a-z]+(?:_[a-z]+)*)", filename)
+        if match:
+            return match.group(1)[:max_length]
+
+    # Fallback
+    return filename[:max_length]
+
+
 @timed
 def calculate_stats(
     zones_filepath: FilePath,  # list or FilePath??
@@ -366,6 +396,10 @@ def calculate_stats(
 
     # Add mask option for flood exposure analysis
     if mask_geotiff:
+        # Extract readable layer identifiers
+        geotiff_layer = _extract_layer_identifier(geotiff)
+        mask_layer = _extract_layer_identifier(mask_geotiff)
+
         # Combine all inputs to create a unique cache key
         cache_key = f"{geotiff}_{mask_geotiff}_{mask_calc_expr or 'no_calc'}"
         cache_hash = _hash_value(cache_key)
@@ -382,7 +416,7 @@ def calculate_stats(
             )[:20]
 
         masked_pop_geotiff: FilePath = (
-            f"{CACHE_DIRECTORY}raster_masked_{slugified_calc}_{cache_hash}.tif"
+            f"{CACHE_DIRECTORY}raster_masked_{geotiff_layer}_{slugified_calc}_{cache_hash}.tif"
         )
 
         if not is_file_valid(masked_pop_geotiff):
@@ -403,7 +437,7 @@ def calculate_stats(
                 reproj_cache_key = f"{geotiff}_reproj_on_{mask_geotiff}"
                 reproj_hash = _hash_value(reproj_cache_key)
                 reproj_pop_geotiff: FilePath = (
-                    f"{CACHE_DIRECTORY}raster_reproj_{reproj_hash}.tif"
+                    f"{CACHE_DIRECTORY}raster_reproj_{geotiff_layer}_on_{mask_layer}_{reproj_hash}.tif"
                 )
                 if not is_file_valid(reproj_pop_geotiff):
                     reproj_match(
