@@ -22,7 +22,11 @@ import {
 } from '@material-ui/core';
 import { Close, Opacity, SwapVert } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { LayerType, LegendDefinitionItem } from 'config/types';
+import {
+  LayerType,
+  LegendDefinitionItem,
+  PointDataLayerProps,
+} from 'config/types';
 import { layersSelector } from 'context/mapStateSlice/selectors';
 import { useMapState } from 'utils/useMapState';
 import { clearDataset } from 'context/datasetStateSlice';
@@ -210,9 +214,14 @@ const LegendItem = memo(
             color={item.color as string}
             opacity={opacity as number}
             fillPattern={fillPattern || item.fillPattern}
+            iconShape={
+              type === 'point_data' && (layer as PointDataLayerProps)?.iconShape
+                ? (layer as PointDataLayerProps).iconShape
+                : undefined
+            }
           />
         )),
-      [fillPattern, getColorIndicatorKey, legend, opacity, t],
+      [fillPattern, getColorIndicatorKey, legend, opacity, t, type, layer],
     );
 
     const renderedLegendUrl = useMemo(() => {
