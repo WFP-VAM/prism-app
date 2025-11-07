@@ -4,7 +4,9 @@ import {
   Switch,
   Typography,
   makeStyles,
+  Button,
 } from '@material-ui/core';
+import { Edit } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSafeTranslation } from 'i18n';
 import {
@@ -51,6 +53,8 @@ interface DashboardContentProps {
   className?: string;
   logoConfig?: LogoConfig;
   exportConfig?: ExportConfig;
+  isEditable?: boolean;
+  onEditClick?: () => void;
 }
 
 /**
@@ -62,6 +66,8 @@ function DashboardContent({
   className,
   logoConfig,
   exportConfig,
+  isEditable,
+  onEditClick,
 }: DashboardContentProps) {
   const classes = useStyles();
   const dashboardConfig = useSelector(dashboardConfigSelector);
@@ -159,66 +165,99 @@ function DashboardContent({
 
   return (
     <Box className={classes.root}>
-      {showTitle && (
-        <Box className={classes.titleSection}>
-          {logoConfig?.visible && logo && (
-            <img
-              style={{
-                position: 'absolute',
-                zIndex: 2,
-                height: logoHeight,
-                left: logoConfig.position % 2 === 0 ? '12px' : 'auto',
-                right: logoConfig.position % 2 === 0 ? 'auto' : '12px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-              }}
-              src={logo}
-              alt="logo"
-            />
-          )}
-          {mode !== DashboardMode.EDIT ? (
-            <Typography variant="h2" component="h1" className={classes.title}>
-              {t(dashboardTitle || 'Untitled Dashboard')}
-            </Typography>
-          ) : (
-            <Box className={classes.grayCard}>
-              <label className={classes.titleBarLabel}>
+      <Box
+        className={className || classes.layout}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        {showTitle && (
+          <Box
+            className={
+              mode === DashboardMode.EDIT
+                ? classes.titleSectionEdit
+                : classes.titleSection
+            }
+          >
+            {logoConfig?.visible && logo && (
+              <img
+                style={{
+                  position: 'absolute',
+                  zIndex: 2,
+                  height: logoHeight,
+                  left: logoConfig.position % 2 === 0 ? '12px' : 'auto',
+                  right: logoConfig.position % 2 === 0 ? 'auto' : '12px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                }}
+                src={logo}
+                alt="logo"
+              />
+            )}
+            {mode !== DashboardMode.EDIT ? (
+              <>
                 <Typography
                   variant="h2"
-                  component="span"
-                  className={classes.titleBarTypography}
+                  component="h1"
+                  className={classes.title}
                 >
-                  {t('Dashboard title')}
+                  {t(dashboardTitle || 'Untitled Dashboard')}
                 </Typography>
-                <input
-                  type="text"
-                  className={classes.titleBarInput}
-                  placeholder={t('Enter dashboard title')}
-                  value={dashboardTitle}
-                  onChange={e => dispatch(setTitle(e.target.value))}
-                  name="dashboard-title"
-                />
-              </label>
-            </Box>
-          )}
-          {mode === DashboardMode.EDIT && mapElements.length > 1 && (
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={syncEnabled}
-                  onChange={() => dispatch(toggleMapSync())}
-                  color="primary"
-                  size="medium"
-                />
-              }
-              label={t('Sync maps')}
-              className={classes.syncToggle}
-            />
-          )}
-        </Box>
-      )}
-
-      <Box className={className || classes.layout}>
+                {mode === DashboardMode.PREVIEW && (
+                  <Box className={classes.titleActions}>
+                    {isEditable && onEditClick && (
+                      <Button
+                        color="primary"
+                        variant="outlined"
+                        disableElevation
+                        startIcon={<Edit />}
+                        onClick={onEditClick}
+                        size="medium"
+                      >
+                        {t('Edit')}
+                      </Button>
+                    )}
+                  </Box>
+                )}
+              </>
+            ) : (
+              <Box className={classes.grayCard}>
+                <label className={classes.titleBarLabel}>
+                  <Typography
+                    variant="h2"
+                    component="span"
+                    className={classes.titleBarTypography}
+                  >
+                    {t('Dashboard title')}
+                  </Typography>
+                  <input
+                    type="text"
+                    className={classes.titleBarInput}
+                    placeholder={t('Enter dashboard title')}
+                    value={dashboardTitle}
+                    onChange={e => dispatch(setTitle(e.target.value))}
+                    name="dashboard-title"
+                  />
+                </label>
+              </Box>
+            )}
+            {mode === DashboardMode.EDIT && mapElements.length > 1 && (
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={syncEnabled}
+                    onChange={() => dispatch(toggleMapSync())}
+                    color="primary"
+                    size="medium"
+                  />
+                }
+                label={t('Sync maps')}
+                className={classes.syncToggle}
+              />
+            )}
+          </Box>
+        )}
         {columns.length > 0 && (
           <Box
             className={
@@ -282,8 +321,8 @@ const useStyles = makeStyles(() => ({
   },
   dynamicColumnPreviewLayout: {
     display: 'flex',
-    padding: 16,
-    margin: 16,
+    padding: 0,
+    margin: 0,
     gap: 16,
     flex: 1,
     overflow: 'auto',
@@ -308,18 +347,33 @@ const useStyles = makeStyles(() => ({
     marginBottom: 12,
   },
   titleSection: {
-    position: 'relative',
-    padding: 12,
-    marginBottom: 0,
-    backgroundColor: 'white',
     display: 'flex',
+    margin: '16px 0 8px',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    gap: '16px',
+    flexWrap: 'wrap',
+  },
+  titleSectionEdit: {
+    display: 'flex',
+    padding: 16,
+    margin: '16px 16px -48px 16px',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: '16px',
+    flexWrap: 'wrap',
   },
   title: {
-    fontWeight: 500,
-    fontSize: 18,
+    fontWeight: 'bold',
+    fontSize: 24,
     margin: 0,
+    flex: '1 1 auto',
+    minWidth: 0,
+  },
+  titleActions: {
+    display: 'flex',
+    gap: '12px',
+    flexShrink: 0,
   },
   layout: {
     display: 'flex',
