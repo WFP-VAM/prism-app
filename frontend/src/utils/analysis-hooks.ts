@@ -289,14 +289,12 @@ export const useAnalysisExecution = (
     () => () => {
       isMountedRef.current = false;
 
-      // Abort any pending analysis request
-      if (analysisRequestRef.current) {
-        analysisRequestRef.current.abort();
-        analysisRequestRef.current = null;
-      }
-
       // Only clear if clearOnUnmount is enabled
       if (clearOnUnmount) {
+        if (analysisRequestRef.current) {
+          analysisRequestRef.current.abort();
+          analysisRequestRef.current = null;
+        }
         if (clearAnalysisFunction) {
           clearAnalysisFunction();
         } else {
