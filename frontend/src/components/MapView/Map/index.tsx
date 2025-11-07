@@ -299,9 +299,6 @@ const MapComponent = memo(
       });
     }, [hideMapLabels]);
 
-    const interactionsDisabled =
-      !isGlobalMap && dashboardMode !== DashboardMode.EDIT;
-
     // Use captured viewport if available and not in edit mode
     const initialBounds =
       !isGlobalMap &&
@@ -316,10 +313,6 @@ const MapComponent = memo(
         // preserveDrawingBuffer is required for the map to be exported as an image. Used in reportDoc.tsx
         preserveDrawingBuffer
         dragRotate={false}
-        dragPan={!interactionsDisabled}
-        scrollZoom={!interactionsDisabled}
-        doubleClickZoom={!interactionsDisabled}
-        touchZoomRotate={!interactionsDisabled}
         minZoom={minZoom}
         maxZoom={maxZoom}
         initialViewState={{
