@@ -149,6 +149,7 @@ function DashboardContent({
             layerId={element.layerId}
             adminUnitLevel={element.adminUnitLevel}
             adminUnitId={element.adminUnitId}
+            chartHeight={element.chartHeight}
             allowDownload={!exportConfig}
           />
         );

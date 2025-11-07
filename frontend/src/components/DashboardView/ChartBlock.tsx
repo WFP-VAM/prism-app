@@ -6,6 +6,10 @@ import {
   Typography,
   CircularProgress,
   Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
   IconButton,
   Tooltip,
 } from '@material-ui/core';
@@ -15,6 +19,7 @@ import {
   DashboardChartConfig,
   AdminLevelType,
   DashboardMode,
+  ChartHeight,
 } from 'config/types';
 import { useChartForm, useChartData } from 'utils/chart-hooks';
 import Chart from 'components/Common/Chart';
@@ -38,7 +43,14 @@ import BlockPreviewHeader from './BlockPreviewHeader';
 interface ChartBlockProps extends Partial<DashboardChartConfig> {
   index: number;
   allowDownload?: boolean;
+  chartHeight?: ChartHeight;
 }
+
+const CHART_HEIGHTS = {
+  [ChartHeight.TALL]: 400,
+  [ChartHeight.MEDIUM]: 275,
+  [ChartHeight.SHORT]: 240,
+};
 
 function ChartBlock({
   index,
@@ -47,6 +59,7 @@ function ChartBlock({
   layerId: initialChartLayerId,
   adminUnitLevel: initialAdminLevel,
   allowDownload,
+  chartHeight: initialChartHeight,
 }: ChartBlockProps) {
   const classes = useStyles();
   const { t } = useSafeTranslation();
@@ -80,6 +93,9 @@ function ChartBlock({
   // Form changes tracking for edit mode
   const [hasFormChanged, setHasFormChanged] = useState(false);
   const [wasChartLoading, setWasChartLoading] = useState(false);
+  const [chartHeightOption, setChartHeightOption] = useState<ChartHeight>(
+    initialChartHeight || ChartHeight.TALL,
+  );
 
   const downloadFilename = buildCsvFileName([
     ...(chartTitle ? chartTitle.split(' ') : []),
@@ -218,6 +234,8 @@ function ChartBlock({
                   notMaintainAspectRatio
                   legendAtBottom
                   showDownloadIcons={false}
+                  responsive
+                  height={CHART_HEIGHTS[chartHeightOption]}
                 />
               </Box>
             )}
@@ -290,6 +308,7 @@ function ChartBlock({
           notMaintainAspectRatio
           legendAtBottom
           showDownloadIcons={false}
+          height={CHART_HEIGHTS[chartHeightOption]}
         />
       </Box>
     );
@@ -334,6 +353,20 @@ function ChartBlock({
               );
             }}
           />
+          <FormControl variant="outlined" className={classes.formControl}>
+            <InputLabel>{t('Chart Height')}</InputLabel>
+            <Select
+              value={chartHeightOption}
+              onChange={e =>
+                setChartHeightOption(e.target.value as ChartHeight)
+              }
+              label={t('Chart Height')}
+            >
+              <MenuItem value={ChartHeight.TALL}>{t('Tall')}</MenuItem>
+              <MenuItem value={ChartHeight.MEDIUM}>{t('Medium')}</MenuItem>
+              <MenuItem value={ChartHeight.SHORT}>{t('Short')}</MenuItem>
+            </Select>
+          </FormControl>
           {hasFormChanged && formState.chartLayerId && (
             <Box className={classes.rerunRow}>
               <Button
@@ -372,11 +405,26 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 8,
     padding: 16,
     marginBottom: 16,
-    minHeight: 400,
     maxWidth: '100%',
     display: 'flex',
     flexDirection: 'column',
     overflow: 'hidden',
+  },
+  previewHeader: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+    marginBottom: theme.spacing(2),
+    gap: theme.spacing(1),
+  },
+  previewTitle: {
+    flex: '1 1 auto',
+    minWidth: '60%',
+  },
+  previewDate: {
+    flex: '0 0 auto',
+    fontSize: '0.875rem',
   },
   blockTitle: {
     fontWeight: 600,
@@ -432,7 +480,6 @@ const useStyles = makeStyles(theme => ({
   },
   chartWrapper: {
     flex: 1,
-    minHeight: 300,
     maxWidth: '100%',
     position: 'relative',
     width: '100%',
@@ -441,10 +488,6 @@ const useStyles = makeStyles(theme => ({
     overflow: 'hidden',
     '& > *': {
       maxWidth: '100%',
-    },
-    '& canvas': {
-      maxWidth: '100% !important',
-      height: 'auto !important',
     },
   },
   emptyState: {
@@ -481,6 +524,11 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     height: 240,
     textAlign: 'center',
+  },
+  formControl: {
+    width: '90%',
+    marginLeft: 10,
+    marginBottom: 8,
   },
 }));
 
