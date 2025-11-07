@@ -141,6 +141,9 @@ export function flattenAreaTree(
     subTree: AdminBoundaryTree,
   ): FlattenedAdminBoundary[] {
     const { children, ...node } = subTree;
+    // Skip the root placeholder node (it's just a container)
+    const isRootPlaceholder = node.adminCode === 'top' && node.key === 'root';
+
     // if current node matches the search string, include it and all its children
     // without filtering them, otherwise keep searching through the children
     const boundFlatten = node.label
@@ -156,7 +159,10 @@ export function flattenAreaTree(
       childrenToShow.length > 0 ||
       node.label.toLowerCase().includes(localSearch.toLowerCase())
     ) {
-      return [node, childrenToShow].flat();
+      // Don't include the root placeholder node in the result
+      return isRootPlaceholder
+        ? childrenToShow.flat()
+        : [node, childrenToShow].flat();
     }
     return childrenToShow.flat();
   }

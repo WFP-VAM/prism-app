@@ -128,10 +128,13 @@ export const getFormattedDate = (
     | 'locale'
     | 'monthDay'
     | 'localeShortUTC'
+    | 'short'
+    | 'shortDayFirst'
     | DateFormat.DefaultSnakeCase
     | DateFormat.Default
     | DateFormat.DateTime
     | DateFormat.DayFirstSnakeCase
+    | DateFormat.DayFirstHyphen
     | DateFormat.ISO
     | DateFormat.MiddleEndian
     | DateFormat.TimeOnly,
@@ -153,8 +156,14 @@ export const getFormattedDate = (
     case 'snake':
     case DateFormat.DefaultSnakeCase:
       return `${year}_${month}_${day}`;
+    case 'short':
+      return `${month}/${day}`;
+    case 'shortDayFirst':
+      return `${day}-${month}`;
     case DateFormat.DayFirstSnakeCase:
       return `${day}_${month}_${year}`;
+    case DateFormat.DayFirstHyphen:
+      return `${day}-${month}-${year}`;
     case DateFormat.MiddleEndian:
       return `${month}/${day}/${year}`;
     case DateFormat.TimeOnly:

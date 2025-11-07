@@ -2391,11 +2391,7 @@
     ],
     "legend_text": "Population exposed to historical storm surges per year (MUDRA)"
   },
-  "adamts_buffers": {
-    "server_layer_name": "mmr_gdacs_buffers",
-    "content_path": "data/myanmar/contents.md#tropical-storm-wind-buffers"
-  },
-  "wp_pop_cicunadj": {
+  "wp_pop_icunadj": {
     "title": "population",
     "type": "wms",
     "wcsConfig": {
@@ -2403,36 +2399,8 @@
       "version": "2.0.0",
       "scale": "1"
     },
-    "server_layer_name": "wp_pop_cicunadj",
+    "server_layer_name": "wp_pop_icunadj",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "opacity": 0,
-    "legend_text": "",
-    "legend": []
-  },
-  "wp_unconstrained_s3": {
-    "title": "population",
-    "type": "wms",
-    "wcsConfig": {
-      "disableDateParam": true,
-      "version": "2.0.0",
-      "scale": "1"
-    },
-    "server_layer_name": "wp_pop_cicunadj",
-    "base_url": "https://prism-worldpop-rasters.s3.us-east-2.amazonaws.com/mmr_ppp_2020_UNadj.tif",
-    "opacity": 0,
-    "legend_text": "",
-    "legend": []
-  },
-  "wp_constrained_s3": {
-    "title": "population",
-    "type": "wms",
-    "wcsConfig": {
-      "disableDateParam": true,
-      "version": "2.0.0",
-      "scale": "1"
-    },
-    "server_layer_name": "wp_pop_cicunadj",
-    "base_url": "https://prism-worldpop-rasters.s3.us-east-2.amazonaws.com/mmr_ppp_2020_UNadj_constrained.tif",
     "opacity": 0,
     "legend_text": "",
     "legend": []
@@ -2466,7 +2434,7 @@
       }
     ],
     "exposure": {
-      "id": "wp_unconstrained_s3",
+      "id": "wp_pop_icunadj",
       "calc": "A*(B>=3)"
     }
   },

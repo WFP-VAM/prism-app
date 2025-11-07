@@ -15,7 +15,9 @@ import useLayers from 'utils/layers-utils';
 import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer/utils';
 import { mapStyle } from 'components/MapView/Map/utils';
 import { loadStormIcons } from 'components/MapView/Layers/AnticipatoryActionStormLayer/constants';
+import { ensureSDFIconsLoaded } from 'components/MapView/Layers/icon-utils';
 import iconNorthArrow from 'public/images/icon_north_arrow.png';
+
 import {
   dateRangeSelector,
   mapSelector,
@@ -278,6 +280,9 @@ function PrintPreview() {
 
                     // Load storm icons for anticipatory action storm layers
                     loadStormIcons(mapRef.current?.getMap(), false); // Don't throw on error for print preview
+
+                    // Load SDF icons for point data layers
+                    ensureSDFIconsLoaded(mapRef.current?.getMap());
                   }}
                   mapStyle={selectedMapStyle || mapStyle.toString()}
                   maxBounds={selectedMap.getMaxBounds() ?? undefined}

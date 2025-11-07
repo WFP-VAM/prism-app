@@ -43,6 +43,7 @@ import {
   areTablesAvailable,
   isAnticipatoryActionDroughtAvailable,
   isAnticipatoryActionStormAvailable,
+  isAnticipatoryActionFloodAvailable,
 } from 'components/MapView/LeftPanel/utils';
 import { Panel, PanelItem } from 'config/types';
 import About from './About';
@@ -87,7 +88,9 @@ const panels: PanelItem[] = [
   ...(areTablesAvailable
     ? [{ panel: Panel.Tables, label: 'Tables', icon: <TableChartOutlined /> }]
     : []),
-  ...(isAnticipatoryActionDroughtAvailable || isAnticipatoryActionStormAvailable
+  ...(isAnticipatoryActionDroughtAvailable ||
+  isAnticipatoryActionStormAvailable ||
+  isAnticipatoryActionFloodAvailable
     ? [
         {
           label: 'A. Actions',
@@ -107,6 +110,15 @@ const panels: PanelItem[] = [
                   {
                     panel: Panel.AnticipatoryActionStorm,
                     label: 'A. Action Storm',
+                    icon: <TimerOutlined />,
+                  },
+                ]
+              : []),
+            ...(isAnticipatoryActionFloodAvailable
+              ? [
+                  {
+                    panel: Panel.AnticipatoryActionFlood,
+                    label: 'A. Action Flood',
                     icon: <TimerOutlined />,
                   },
                 ]
