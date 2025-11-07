@@ -7,7 +7,10 @@ import { getFormattedDate } from 'utils/date-utils';
 import { appConfig } from 'config';
 import { lightGrey } from 'muiTheme';
 import { AAMarkersSelector } from 'context/anticipatoryAction/AADroughtStateSlice';
+import { AAFloodDataSelector } from 'context/anticipatoryAction/AAFloodStateSlice';
 import { useAAMarkerScalePercent } from 'utils/map-utils';
+import { useFilteredFloodStations } from 'components/MapView/Layers/AnticipatoryActionFloodLayer/useFilteredFloodStations';
+import { FloodStationMarker } from 'components/MapView/Layers/AnticipatoryActionFloodLayer/FloodStationMarker';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { Panel, AdminLevelDataLayerProps } from 'config/types';
@@ -30,6 +33,7 @@ function PrintPreview() {
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
   const AAMarkers = useSelector(AAMarkersSelector);
+  const floodState = useSelector(AAFloodDataSelector);
   const tabValue = useSelector(leftPanelTabValueSelector);
   const northArrowRef = useRef<HTMLImageElement>(null);
 
@@ -71,6 +75,12 @@ function PrintPreview() {
       layer.type === 'admin_level_data' &&
       (layer.fillPattern || layer.legend.some(legend => legend.fillPattern)),
   ) as AdminLevelDataLayerProps[];
+
+  const filteredFloodStations = useFilteredFloodStations(
+    floodState.stations,
+    floodState.stationSummaryData,
+    dateRange.startDate,
+  );
 
   const dateText = `${t('Publication date')}: ${getFormattedDate(
     Date.now(),
@@ -294,6 +304,23 @@ function PrintPreview() {
                         </div>
                       </Marker>
                     ))}
+                  {tabValue === Panel.AnticipatoryActionFlood &&
+                    filteredFloodStations.map(station => {
+                      const stationSummary =
+                        floodState.stationSummaryData?.[station.station_name];
+                      if (!stationSummary) {
+                        return null;
+                      }
+
+                      return (
+                        <FloodStationMarker
+                          key={`flood-station-${station.station_id}`}
+                          station={station}
+                          stationSummary={stationSummary}
+                          interactive={false}
+                        />
+                      );
+                    })}
                   {toggles.countryMask && (
                     <Source
                       id="mask-overlay"
