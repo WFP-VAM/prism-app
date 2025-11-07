@@ -480,7 +480,8 @@ const DateSelector = memo(() => {
         visibleLayers.map(l =>
           l.filter(
             (d: DateItem) =>
-              d.queryDate > stateStartDate && d.queryDate === d.displayDate,
+              d.queryDate > stateStartDate &&
+              (d.queryDate as number) === (d.displayDate as number),
           ),
         ),
         'forward',
@@ -503,7 +504,8 @@ const DateSelector = memo(() => {
           // eslint- disable-next-line fp/no-mutating-methods
           l.filter(
             (d: DateItem) =>
-              d.queryDate < stateStartDate && d.queryDate === d.displayDate,
+              d.queryDate < stateStartDate &&
+              (d.queryDate as number) === (d.displayDate as number),
           ),
         ),
         'back',

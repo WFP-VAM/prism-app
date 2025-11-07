@@ -339,6 +339,9 @@ export class CommonLayerProps {
   validity?: Validity; // Include additional dates in the calendar based on the number provided.
 
   @optional
+  coverageWindow?: CoverageWindow; // see docs/dates.md for explanations
+
+  @optional
   disableAnalysis?: boolean; // Hide layer in Analysis feature
 }
 
@@ -454,9 +457,9 @@ export enum DatesPropagation {
 
 export type ValidityPeriod = {
   // eslint-disable-next-line camelcase
-  start_date_field: string;
+  start_date_field: string; // name of the attribute to use for start date
   // eslint-disable-next-line camelcase
-  end_date_field: string;
+  end_date_field: string; // name of the attribute to use for end date
 };
 
 export type SeasonBoundsConfig = {
@@ -474,6 +477,12 @@ export type Validity = {
   backward?: number; // Number of days/dekades backward.
   forward?: number; // Number of days/dekades forward.
   seasons?: SeasonBoundsConfig[];
+};
+
+export type CoverageWindow = {
+  mode: DatesPropagation;
+  backward?: number; // Number of days/dekades backward.
+  forward?: number; // Number of days/dekades forward.
 };
 
 export class WMSLayerProps extends CommonLayerProps {
@@ -840,12 +849,27 @@ export type LeftPanelState = {
   panelSize: PanelSize;
 };
 
+// these "nominal" types help clarify what type of date we have
+// around the code base, as they are incompatible.
+// The second part of the type (after &) is discarded by the
+// typescript compiler, so there is no runtime impact.
+// refer to docs/dates.md for conceptual explanations
+export type ReferenceDateTimestamp = number & { ReferenceDateTimestamp: {} };
+export type QueryDateTimestamp = number & { QueryDateTimestamp: {} };
+export type DisplayDateTimestamp = number & { DisplayDateTimestamp: {} };
+export type CoverageStartDateTimestamp = number & {
+  CoverageStartDateTimestamp: {};
+};
+export type CoverageEndDateTimestamp = number & {
+  CoverageEndDateTimestamp: {};
+};
+
 export type DateItem = {
-  displayDate: number; // Date that will be rendered in the calendar.
-  queryDate: number; // Date that will be used in the WMS request.
+  displayDate: DisplayDateTimestamp; // Date that will be rendered in the calendar.
+  queryDate: QueryDateTimestamp; // Date that will be used in the WMS request.
   // start and end dates of the date range.
-  startDate?: number;
-  endDate?: number;
+  startDate?: CoverageStartDateTimestamp;
+  endDate?: CoverageEndDateTimestamp;
 };
 
 export type AvailableDates = {

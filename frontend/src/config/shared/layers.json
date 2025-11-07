@@ -183,8 +183,12 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
-      "backward": 2,
       "mode": "dekad"
+    },
+    "coverage_window": {
+        "backward": 2,
+        "forward": 1,
+        "mode": "dekad"
     },
     "opacity": 0.7,
     "legend_text": "Estimate of precipitation over a 1-month period derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
@@ -678,7 +682,11 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
+      "mode": "dekad"
+    },
+    "reference_window": {
       "backward": 17,
+      "forward": 1,
       "mode": "dekad"
     },
     "opacity": 0.7,

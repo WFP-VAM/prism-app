@@ -1,4 +1,8 @@
-import { DatesPropagation, SeasonBounds } from 'config/types';
+import {
+  DatesPropagation,
+  ReferenceDateTimestamp,
+  SeasonBounds,
+} from 'config/types';
 import timezoneMock from 'timezone-mock';
 import {
   generateIntermediateDateItemFromValidity,
@@ -27,7 +31,7 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
     };
 
     const output = generateIntermediateDateItemFromValidity(
-      layer.dates,
+      layer.dates as ReferenceDateTimestamp[],
       layer.validity,
     );
 
@@ -246,7 +250,7 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
       },
     };
     const output = generateIntermediateDateItemFromValidity(
-      layer.dates,
+      layer.dates as ReferenceDateTimestamp[],
       layer.validity,
     );
     expect(output).toEqual([
@@ -398,7 +402,7 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
       },
     };
     const output = generateIntermediateDateItemFromValidity(
-      layer.dates,
+      layer.dates as ReferenceDateTimestamp[],
       layer.validity,
     );
     expect(output).toEqual([
@@ -547,7 +551,7 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
       },
     };
     const output = generateIntermediateDateItemFromValidity(
-      layer.dates,
+      layer.dates as ReferenceDateTimestamp[],
       layer.validity,
     );
     const startOfWinter = new Date(
@@ -611,7 +615,7 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
       },
     };
     const output = generateIntermediateDateItemFromValidity(
-      layer.dates,
+      layer.dates as ReferenceDateTimestamp[],
       layer.validity,
     );
     const startOfWetSeason = new Date(

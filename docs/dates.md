@@ -50,7 +50,7 @@ Its config in `layers.json` would look like:
       "forward": 1,
       "mode": "dekad"
     },
-    "reference_window": {
+    "coverage_window": {
       "backward": 8,
       "forward": 1,
       "mode": "dekad",

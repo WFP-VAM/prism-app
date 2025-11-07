@@ -11,9 +11,14 @@ import type {
   AnticipatoryActionLayerProps,
   AvailableDates,
   CompositeLayerProps,
+  CoverageEndDateTimestamp,
+  CoverageStartDateTimestamp,
+  DisplayDateTimestamp,
   LayerType,
   PathLayer,
   PointDataLayerProps,
+  QueryDateTimestamp,
+  ReferenceDateTimestamp,
   RequestFeatureInfo,
   SeasonBounds,
   Validity,
@@ -219,7 +224,7 @@ const loadPointLayerDataFromURL = async (
 const getPointDataCoverage = async (
   layer: PointDataLayerProps,
   dispatch: AppDispatch,
-) => {
+): Promise<ReferenceDateTimestamp[]> => {
   const {
     dateUrl: url,
     fallbackData: fallbackUrl,
@@ -256,7 +261,9 @@ const getPointDataCoverage = async (
       // adding 12 hours to avoid  errors due to daylight saving, and convert to number
       .map(item => new Date(item.date).setUTCHours(12, 0, 0, 0))
       // remove duplicate dates - indexOf returns first index of item
-      .filter((date, index, arr) => arr.indexOf(date) === index)
+      .filter(
+        (date, index, arr) => arr.indexOf(date) === index,
+      ) as ReferenceDateTimestamp[]
   );
 };
 
@@ -266,7 +273,7 @@ export const getAdminLevelDataCoverage = (layer: AdminLevelDataLayerProps) => {
     return [];
   }
   // raw data comes in as {"dates": ["YYYY-MM-DD"]}
-  return dates.map(v => new Date(v).getTime());
+  return dates.map(v => new Date(v).getTime() as ReferenceDateTimestamp);
 };
 
 export const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
@@ -275,7 +282,7 @@ export const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
     return [];
   }
   // raw data comes in as {"dates": ["YYYY-MM-DD"]}
-  return dates.map(v => new Date(v).getTime());
+  return dates.map(v => new Date(v).getTime() as ReferenceDateTimestamp);
 };
 
 /**
@@ -286,8 +293,8 @@ export const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
 const generateDefaultDateItem = (date: number, baseItem?: Object): DateItem => {
   const newDate = new Date(date).setUTCHours(12, 0, 0, 0);
   const r = {
-    displayDate: newDate,
-    queryDate: newDate,
+    displayDate: newDate as DisplayDateTimestamp,
+    queryDate: newDate as QueryDateTimestamp,
   };
   if (baseItem) {
     return {
@@ -344,9 +351,9 @@ async function generateIntermediateDateItemFromDataFile(
 }
 
 export function generateIntermediateDateItemFromValidity(
-  dates: number[],
+  dates: ReferenceDateTimestamp[], // reference dates
   validity: Validity,
-) {
+): DateItem[] {
   const { forward, backward, mode } = validity;
 
   // eslint-disable-next-line fp/no-mutating-methods
@@ -361,7 +368,7 @@ export function generateIntermediateDateItemFromValidity(
     .map(d => {
       const date = new Date(d);
       date.setUTCHours(12, 0, 0, 0);
-      return date;
+      return date; // like a QueryDate, but in Date format iso number format
     })
     .reduce((acc: DateItem[], date: Date) => {
       // caching this value seems to reduce memory use substantially
@@ -372,10 +379,10 @@ export function generateIntermediateDateItemFromValidity(
         return [
           ...acc,
           {
-            displayDate: dateGetTime,
-            queryDate: dateGetTime,
-            startDate: dateGetTime,
-            endDate: dateGetTime,
+            displayDate: dateGetTime as DisplayDateTimestamp,
+            queryDate: dateGetTime as QueryDateTimestamp,
+            startDate: dateGetTime as CoverageStartDateTimestamp,
+            endDate: dateGetTime as CoverageEndDateTimestamp,
           },
         ] as DateItem[];
       }
@@ -392,15 +399,15 @@ export function generateIntermediateDateItemFromValidity(
         // Dekads are 10-day periods, so we adjust dates accordingly
       } else if (mode === DatesPropagation.DEKAD) {
         const DekadStartingDays = [1, 11, 21];
-        const startDayOfTheMonth = startDate.getDate();
-        if (!DekadStartingDays.includes(startDayOfTheMonth)) {
+        const startDayOfTheDekad = startDate.getDate();
+        if (!DekadStartingDays.includes(startDayOfTheDekad)) {
           throw Error(
             'publishing day for dekad layers is expected to be 1, 11, 21.',
           );
         }
         // find the index so that we can use a modulo to find the new dekad start and end date.
         const dekadStartIndex = DekadStartingDays.findIndex(
-          x => x === startDayOfTheMonth,
+          x => x === startDayOfTheDekad,
         );
 
         if (forward) {
@@ -438,17 +445,17 @@ export function generateIntermediateDateItemFromValidity(
       }
 
       // We create an array with the diff between the endDate and startDate and we create an array with the addition of the days in the startDate
-      const daysToAdd = generateDatesRange(startDate, endDate);
+      const daysToAdd: number[] = generateDatesRange(startDate, endDate);
 
       // convert the available days for a specific day to the DefaultDate format
-      const dateItemsToAdd = daysToAdd.map(dateToAdd => ({
-        displayDate: dateToAdd,
+      const dateItemsToAdd: DateItem[] = daysToAdd.map(dateToAdd => ({
+        displayDate: dateToAdd as DisplayDateTimestamp,
         queryDate:
           mode === DatesPropagation.SEASON
-            ? startDate.getTime()
-            : date.getTime(),
-        startDate: startDate.getTime(),
-        endDate: endDate.getTime(),
+            ? (startDate.getTime() as QueryDateTimestamp)
+            : (date.getTime() as QueryDateTimestamp),
+        startDate: startDate.getTime() as CoverageStartDateTimestamp,
+        endDate: endDate.getTime() as CoverageEndDateTimestamp,
       }));
 
       return [...acc, ...dateItemsToAdd];
@@ -533,13 +540,13 @@ const localWMSGetLayerDates = async (
 const mapServerDatesToLayerIds = (
   serverDates: Record<string, number[]>,
   layers: (WMSLayerProps | CompositeLayerProps)[],
-): Record<string, number[]> =>
-  layers.reduce((acc: Record<string, number[]>, layer) => {
+): Record<string, ReferenceDateTimestamp[]> =>
+  layers.reduce((acc: Record<string, ReferenceDateTimestamp[]>, layer) => {
     const serverLayerName =
       layer.type === 'composite'
         ? (LayerDefinitions[layer.dateLayer] as WMSLayerProps).serverLayerName
         : layer.serverLayerName;
-    const layerDates = serverDates[serverLayerName];
+    const layerDates = serverDates[serverLayerName] as ReferenceDateTimestamp[];
     if (layerDates) {
       // Filter WMS layers by startDate, used for forecast layers in particular.
       if (layer.startDate) {
@@ -585,7 +592,7 @@ const compositeLayersWithDateLayerTypeMap: {
  */
 export async function preloadLayerDatesForWMS(
   dispatch: AppDispatch,
-): Promise<Record<string, number[]>> {
+): Promise<Record<string, ReferenceDateTimestamp[]>> {
   const wmsServerUrls: string[] = get(appConfig, 'serversUrls.wms', []);
   const wcsServerUrls: string[] = get(appConfig, 'serversUrls.wcs', []);
 
@@ -609,7 +616,7 @@ export async function preloadLayerDatesForWMS(
 
 export async function preloadLayerDatesForPointData(
   dispatch: AppDispatch,
-): Promise<Record<string, number[]>> {
+): Promise<Record<string, ReferenceDateTimestamp[]>> {
   const pointDataLayers = Object.values(LayerDefinitions).filter(
     (layer): layer is PointDataLayerProps =>
       (layer.type === 'point_data' && Boolean(layer.dateUrl)) ||
@@ -700,7 +707,9 @@ export async function getAvailableDatesForLayer(
   // At this point, all network data should have been preloaded in
   // the redux state, so we just need to process it into the right
   // format now for the layer that's being activated
-  const getPreloadedLayerDates = (lId: string): Record<string, number[]> => {
+  const getPreloadedLayerDates = (
+    lId: string,
+  ): Record<string, ReferenceDateTimestamp[]> => {
     const layer = LayerDefinitions[lId];
     const state = getState();
 
@@ -732,7 +741,9 @@ export async function getAvailableDatesForLayer(
         return { [lId]: [] };
     }
   };
-  const layerDates = getPreloadedLayerDates(layerId);
+
+  // the list of available dates from the server
+  const layerAvailableDates = getPreloadedLayerDates(layerId);
 
   // Retrieve layers that have a validity object
   const layersWithValidity: ValidityLayer[] = Object.values(
@@ -744,7 +755,7 @@ export async function getAvailableDatesForLayer(
 
       return {
         name: lId,
-        dates: layerDates[lId],
+        dates: layerAvailableDates[lId] as ReferenceDateTimestamp[],
         validity: layer.validity!,
       };
     });
@@ -756,7 +767,7 @@ export async function getAvailableDatesForLayer(
     .filter(layer => !!(layer as AdminLevelDataLayerProps).validityPeriod)
     .map(layer => ({
       name: layer.id,
-      dates: layerDates[layer.id],
+      dates: layerAvailableDates[layer.id],
       path: (layer as AdminLevelDataLayerProps).path,
       validityPeriod: (layer as AdminLevelDataLayerProps)
         .validityPeriod as ValidityPeriod,
@@ -780,7 +791,7 @@ export async function getAvailableDatesForLayer(
     if (matchingValidityLayer) {
       const r = {
         [layerName]: generateIntermediateDateItemFromValidity(
-          matchingValidityLayer.dates,
+          matchingValidityLayer.dates as ReferenceDateTimestamp[],
           matchingValidityLayer.validity,
         ),
       };
@@ -817,11 +828,12 @@ export async function getAvailableDatesForLayer(
 
   const layerDateItemsForLayer = await buildLayerDateItems(
     layerId,
-    layerDates[layerId] || [],
+    layerAvailableDates[layerId] || [], // available reference dates from server
   );
 
   return layerDateItemsForLayer;
 }
+
 /**
  * Format value from featureInfo response based on DataType provided
  *

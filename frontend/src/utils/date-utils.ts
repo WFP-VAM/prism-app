@@ -1,4 +1,12 @@
-import { DateItem, SeasonBounds, SeasonBoundsConfig } from '../config/types';
+import {
+  CoverageEndDateTimestamp,
+  CoverageStartDateTimestamp,
+  DateItem,
+  DisplayDateTimestamp,
+  QueryDateTimestamp,
+  SeasonBounds,
+  SeasonBoundsConfig,
+} from '../config/types';
 import { DateFormat } from './name-utils';
 
 export interface StartEndDate {
@@ -47,6 +55,9 @@ function diffInDays(date1: Date, date2: Date) {
   return diff;
 }
 
+/**
+ * Returns an array of timestamps (one per day) between startDate and endDate.
+ */
 export const generateDatesRange = (startDate: Date, endDate: Date): number[] =>
   Array.from({ length: diffInDays(startDate, endDate) + 1 }, (_, index) => {
     const clone = new Date(startDate.getTime());
@@ -68,10 +79,10 @@ export const generateDateItemsRange = (
     );
 
     const dateItems: DateItem[] = datesInTime.map(dateInTime => ({
-      displayDate: dateInTime,
-      queryDate: range.startDate!,
-      startDate: range.startDate!,
-      endDate: range.endDate!,
+      displayDate: dateInTime as DisplayDateTimestamp,
+      queryDate: range.startDate! as QueryDateTimestamp,
+      startDate: range.startDate! as CoverageStartDateTimestamp,
+      endDate: range.endDate! as CoverageEndDateTimestamp,
     }));
 
     return dateItems;
