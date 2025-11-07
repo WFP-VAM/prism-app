@@ -18,7 +18,7 @@ function AnticipatoryActionFloodLayer({
   // Load the layer default date if no date is selected
   useDefaultDate(layer.id);
   const { AAData } = useAnticipatoryAction(AnticipatoryAction.flood);
-  const { stations, stationSummaryData } = AAData;
+  const { stationSummaryData } = AAData;
   const { startDate } = useSelector(dateRangeSelector);
   const dispatch = useDispatch();
 
@@ -30,29 +30,21 @@ function AnticipatoryActionFloodLayer({
   };
 
   const filteredStations = useFilteredFloodStations(
-    stations,
     stationSummaryData,
     startDate,
   );
 
   return (
     <>
-      {filteredStations.map(station => {
-        const stationSummary = stationSummaryData?.[station.station_name];
-        if (!stationSummary) {
-          return null;
-        }
-
-        return (
-          <FloodStationMarker
-            key={`flood-station-${station.station_id}`}
-            station={station}
-            stationSummary={stationSummary}
-            interactive
-            onClick={handleFloodStationEvent}
-          />
-        );
-      })}
+      {filteredStations.map(station => (
+        <FloodStationMarker
+          key={`flood-station-${station.station_id}`}
+          station={station}
+          stationSummary={station}
+          interactive
+          onClick={handleFloodStationEvent}
+        />
+      ))}
     </>
   );
 }

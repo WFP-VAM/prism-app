@@ -77,7 +77,6 @@ function PrintPreview() {
   ) as AdminLevelDataLayerProps[];
 
   const filteredFloodStations = useFilteredFloodStations(
-    floodState.stations,
     floodState.stationSummaryData,
     dateRange.startDate,
   );
@@ -305,22 +304,14 @@ function PrintPreview() {
                       </Marker>
                     ))}
                   {tabValue === Panel.AnticipatoryActionFlood &&
-                    filteredFloodStations.map(station => {
-                      const stationSummary =
-                        floodState.stationSummaryData?.[station.station_name];
-                      if (!stationSummary) {
-                        return null;
-                      }
-
-                      return (
-                        <FloodStationMarker
-                          key={`flood-station-${station.station_id}`}
-                          station={station}
-                          stationSummary={stationSummary}
-                          interactive={false}
-                        />
-                      );
-                    })}
+                    filteredFloodStations.map(station => (
+                      <FloodStationMarker
+                        key={`flood-station-${station.station_id}`}
+                        station={station}
+                        stationSummary={station}
+                        interactive={false}
+                      />
+                    ))}
                   {toggles.countryMask && (
                     <Source
                       id="mask-overlay"
