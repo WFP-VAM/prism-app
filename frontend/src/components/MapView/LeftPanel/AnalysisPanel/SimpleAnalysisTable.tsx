@@ -234,7 +234,7 @@ const useStyles = makeStyles(theme => ({
   },
   bodyCell: {
     border: 'none',
-    padding: '2px',
+    padding: '4px',
     '&:first-child': {
       paddingLeft: 16,
     },
