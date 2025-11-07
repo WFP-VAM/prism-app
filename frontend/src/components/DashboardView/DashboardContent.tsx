@@ -180,23 +180,18 @@ function DashboardContent({
                 : classes.titleSection
             }
           >
-            {logoConfig?.visible && logo && (
-              <img
-                style={{
-                  position: 'absolute',
-                  zIndex: 2,
-                  height: logoHeight,
-                  left: logoConfig.position % 2 === 0 ? '12px' : 'auto',
-                  right: logoConfig.position % 2 === 0 ? 'auto' : '12px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                }}
-                src={logo}
-                alt="logo"
-              />
-            )}
             {mode !== DashboardMode.EDIT ? (
               <>
+                {logoConfig?.visible && logo && (
+                  <img
+                    className={classes.logo}
+                    style={{
+                      height: logoHeight,
+                    }}
+                    src={logo}
+                    alt="logo"
+                  />
+                )}
                 <Typography
                   variant="h2"
                   component="h1"
@@ -347,6 +342,7 @@ const useStyles = makeStyles(() => ({
     marginBottom: 12,
   },
   titleSection: {
+    position: 'relative',
     display: 'flex',
     margin: '16px 0 8px',
     alignItems: 'center',
@@ -362,6 +358,10 @@ const useStyles = makeStyles(() => ({
     justifyContent: 'space-between',
     gap: '16px',
     flexWrap: 'wrap',
+  },
+  logo: {
+    flexShrink: 0,
+    objectFit: 'contain',
   },
   title: {
     fontWeight: 'bold',
