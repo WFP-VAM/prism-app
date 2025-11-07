@@ -53,10 +53,16 @@ const getShapeStyles = (
     };
   }
 
-  // default to point
+  if (iconShape === 'point') {
+    return {
+      backgroundColor: baseColor,
+      borderRadius: '50%',
+    };
+  }
+  // fallback for non-point layers
   return {
     backgroundColor: baseColor,
-    borderRadius: '50%',
+    borderRadius: 0,
   };
 };
 
