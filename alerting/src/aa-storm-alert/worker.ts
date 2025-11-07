@@ -1,5 +1,3 @@
-import { createConnection } from 'typeorm';
-import { AnticipatoryActionAlerts } from '../entities/anticipatoryActionAlerts.entity';
 import {
   buildEmailPayloads,
   filterOutAlreadyProcessedReports,
@@ -7,7 +5,7 @@ import {
   transformReportsToLastProcessed,
 } from './alert';
 import { sendStormAlertEmail } from '../utils/email';
-import { ILike } from 'typeorm';
+import { runAAWorker } from '../aa-common/runner';
 
 const args = process.argv.slice(2);
 const testEmailArg = args.find((arg) => arg.startsWith('--testEmail='));
@@ -41,87 +39,33 @@ export const COUNTRY = 'mozambique';
  * @throws {Error} If no alert is found for the specified country in the database.
  */
 export async function run() {
-  let alerts;
-  let connection;
-  let alertRepository;
-
-  if (IS_TEST) {
-    // TODO - replace with a more stable URL
-    const prismUrl =
-      'https://staging-prism-frontend--prism-1420-p60j4if0.web.app';
-    console.log(
-      `Test mode: Using fake Mozambique alert with prismUrl: ${prismUrl}`,
-    );
-    alerts = [
-      {
-        id: 1,
-        country: COUNTRY,
-        emails: overrideEmails,
-        prismUrl,
-        lastStates: undefined,
-      },
-    ];
-  } else {
-    // create a connection to the remote db
-    connection = await createConnection();
-    alertRepository = connection.getRepository(AnticipatoryActionAlerts);
-
-    // get the last alert which has been processed for email alert system
-    alerts = await alertRepository.find({
-      where: { country: ILike(COUNTRY) },
-    });
-  }
-
-  if (alerts.length === 0) {
-    console.error(`Error: No alert found for ${COUNTRY}`);
-    return;
-  }
-
-  const latestAvailableReports = await getLatestAvailableReports();
-
-  for (const alert of alerts) {
-    // filter reports which have been already processed
-    const lastStates = IS_TEST ? undefined : alert.lastStates;
-    const filteredAvailableReports = filterOutAlreadyProcessedReports(
-      latestAvailableReports,
-      lastStates,
-    );
-
-    const basicPrismUrl = alert.prismUrl;
-
-    const emails = IS_TEST ? overrideEmails : alert.emails;
-
-    // check whether an email should be sent
-    const emailPayloads = await buildEmailPayloads(
-      filteredAvailableReports,
-      basicPrismUrl,
-      emails,
-    );
-
-    // send emails
-    await Promise.all(
-      emailPayloads.map((emailPayload) => sendStormAlertEmail(emailPayload)),
-    );
-
-    // format last states object
-    const updatedLastStates = transformReportsToLastProcessed(
-      latestAvailableReports,
-    );
-
-    if (!IS_TEST && alertRepository) {
-      // Update the country last processed reports
-      await alertRepository.update(
-        { id: alert.id },
-        {
-          lastStates: updatedLastStates,
-          lastRanAt: new Date(),
-          ...(emailPayloads.length > 0 ? { lastTriggeredAt: new Date() } : {}),
-        },
+  await runAAWorker({
+    country: COUNTRY,
+    type: 'storm',
+    overrideEmails,
+    prepare: async () => {
+      const latestAvailableReports = await getLatestAvailableReports();
+      return { latestAvailableReports };
+    },
+    buildForAlert: async (alert, context, isTest, emailsOverride) => {
+      const lastStates = (isTest ? undefined : alert.lastStates) as unknown as
+        | import('../types/storm-reports').LastStates
+        | undefined;
+      const filteredAvailableReports = filterOutAlreadyProcessedReports(
+        context.latestAvailableReports,
+        lastStates,
       );
-    }
-  }
-
-  if (connection) {
-    await connection.close();
-  }
+      const emails = isTest ? emailsOverride : alert.emails;
+      const payloads = await buildEmailPayloads(
+        filteredAvailableReports,
+        alert.prismUrl,
+        emails,
+      );
+      const updatedLastStates = transformReportsToLastProcessed(
+        context.latestAvailableReports,
+      );
+      return { payloads, updatedLastStates };
+    },
+    send: sendStormAlertEmail,
+  });
 }

@@ -2,6 +2,7 @@ import { Menu, MenuItem } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { PanelItem, Panel } from 'config/types';
 import { selectedDashboardIndexSelector } from 'context/dashboardStateSlice';
+import { useSafeTranslation } from 'i18n';
 
 function PanelMenu({
   panel,
@@ -30,6 +31,8 @@ function PanelMenu({
     return child.panel === selected;
   };
 
+  const { t } = useSafeTranslation();
+
   return (
     <Menu
       anchorEl={menuAnchor}
@@ -49,7 +52,7 @@ function PanelMenu({
           }}
           selected={getIsChildSelected(child)}
         >
-          {child.label}
+          {t(child.label)}
         </MenuItem>
       ))}
     </Menu>
