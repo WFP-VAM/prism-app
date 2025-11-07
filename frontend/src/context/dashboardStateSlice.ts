@@ -12,6 +12,7 @@ import { generateSlugFromTitle } from 'utils/string-utils';
 import type {
   LayerType,
   DashboardMapConfig,
+  DashboardTableConfig,
   DashboardMode,
   DashboardElements,
   ConfiguredReport,
@@ -41,12 +42,19 @@ export interface DashboardMapState extends MapState {
   title?: string;
 }
 
+export interface DashboardTableState {
+  maxRows: number;
+  sortColumn: string | number;
+  sortOrder: 'asc' | 'desc';
+}
+
 export interface DashboardState {
   selectedDashboardIndex: number;
   title: string;
   mode: DashboardMode;
   columns: DashboardElements[][];
   mapStates: { [elementId: string]: DashboardMapState };
+  tableStates: { [elementId: string]: DashboardTableState };
   syncMapsEnabled: boolean;
   sharedViewport?: {
     bounds: [number, number, number, number]; // [west, south, east, north]
@@ -160,6 +168,14 @@ const createMapStateFromConfig = (
   };
 };
 
+const createTableStateFromConfig = (
+  tableConfig: DashboardTableConfig,
+): DashboardTableState => ({
+  maxRows: tableConfig.maxRows || 10,
+  sortColumn: tableConfig.sortColumn || 'name',
+  sortOrder: tableConfig.sortOrder || 'asc',
+});
+
 const createInitialState = (dashboardIndex: number = 0): DashboardState => {
   const dashboardConfig = getDashboardConfig(dashboardIndex);
 
@@ -170,12 +186,18 @@ const createInitialState = (dashboardIndex: number = 0): DashboardState => {
   ];
 
   const mapStates: { [elementId: string]: DashboardMapState } = {};
+  const tableStates: { [elementId: string]: DashboardTableState } = {};
+
   allColumns.forEach((column: DashboardElements[], columnIndex: number) => {
     column.forEach((element: DashboardElements, elementIndex: number) => {
+      const elementId = `${columnIndex}-${elementIndex}`;
+
       if (element.type === DashboardElementType.MAP) {
-        const elementId = `${columnIndex}-${elementIndex}`;
         // eslint-disable-next-line fp/no-mutation
         mapStates[elementId] = createMapStateFromConfig(element);
+      } else if (element.type === DashboardElementType.TABLE) {
+        // eslint-disable-next-line fp/no-mutation
+        tableStates[elementId] = createTableStateFromConfig(element);
       }
     });
   });
@@ -186,6 +208,7 @@ const createInitialState = (dashboardIndex: number = 0): DashboardState => {
     mode: 'preview' as DashboardMode,
     columns: allColumns,
     mapStates,
+    tableStates,
     syncMapsEnabled: false,
     sharedViewport: undefined,
   };
@@ -506,6 +529,30 @@ export const dashboardStateSlice = createSlice({
         },
       };
     },
+    updateTableState: (
+      state,
+      action: PayloadAction<{
+        elementId: string;
+        updates: Partial<DashboardTableState>;
+      }>,
+    ) => {
+      const { elementId, updates } = action.payload;
+      const tableState = state.tableStates[elementId];
+      if (!tableState) {
+        return state;
+      }
+
+      return {
+        ...state,
+        tableStates: {
+          ...state.tableStates,
+          [elementId]: {
+            ...tableState,
+            ...updates,
+          },
+        },
+      };
+    },
   },
 });
 
@@ -568,6 +615,11 @@ export const dashboardOpacitySelector =
   (state: RootState): number | undefined =>
     state.dashboardState.mapStates[elementId]?.opacityMap[layerId]?.value;
 
+export const dashboardTableStateSelector =
+  (elementId: string) =>
+  (state: RootState): DashboardTableState | undefined =>
+    state.dashboardState.tableStates[elementId];
+
 // Setters
 export const {
   setSelectedDashboard,
@@ -586,6 +638,7 @@ export const {
   dismissError,
   setDashboardOpacity,
   setMapTitle,
+  updateTableState,
 } = dashboardStateSlice.actions;
 
 export default dashboardStateSlice.reducer;

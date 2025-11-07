@@ -127,6 +127,8 @@ function DashboardContent({
           <TableBlock
             key={`table-${elementId}`}
             index={elementIndex}
+            columnIndex={columnIndex}
+            elementIndex={elementIndex}
             startDate={element.startDate}
             hazardLayerId={element.hazardLayerId}
             baselineLayerId={element.baselineLayerId}
