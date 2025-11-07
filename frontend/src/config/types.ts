@@ -767,6 +767,9 @@ export class PointDataLayerProps extends CommonLayerProps {
 
   @optional
   detailUrl?: string;
+
+  @optional
+  iconShape?: 'point' | 'square' | 'triangle' | 'diamond';
 }
 
 export class GeojsonDataLayerProps extends CommonLayerProps {
