@@ -22,13 +22,12 @@ import {
 } from '@material-ui/core';
 import { Close, Opacity, SwapVert } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { LayerType, LegendDefinitionItem, Panel } from 'config/types';
 import {
   LayerType,
   LegendDefinitionItem,
+  Panel,
   PointDataLayerProps,
 } from 'config/types';
-import { layersSelector } from 'context/mapStateSlice/selectors';
 import { useMapState } from 'utils/useMapState';
 import { clearDataset } from 'context/datasetStateSlice';
 import { useSafeTranslation } from 'i18n';
