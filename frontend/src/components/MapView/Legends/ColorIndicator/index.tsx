@@ -24,13 +24,6 @@ const getShapeStyles = (
   const baseColor = alpha(color, opacity);
   const size = 10;
 
-  if (iconShape === 'square') {
-    return {
-      backgroundColor: baseColor,
-      borderRadius: 0,
-    };
-  }
-
   if (iconShape === 'triangle') {
     return {
       width: 0,
@@ -59,7 +52,7 @@ const getShapeStyles = (
       borderRadius: '50%',
     };
   }
-  // fallback for non-point layers
+  // default to square
   return {
     backgroundColor: baseColor,
     borderRadius: 0,
