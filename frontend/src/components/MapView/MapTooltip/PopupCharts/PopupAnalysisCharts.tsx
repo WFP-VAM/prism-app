@@ -100,6 +100,11 @@ function PopupAnalysisCharts({
     return null;
   }
 
+  // Don't render charts if adminProperties is null to prevent errors
+  if (!adminProperties) {
+    return null;
+  }
+
   return (
     <PopupChartWrapper>
       {filteredChartLayers.map(filteredChartLayer => (
