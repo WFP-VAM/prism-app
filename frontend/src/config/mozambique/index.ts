@@ -2,7 +2,7 @@ import appConfig from './prism.json';
 import rawLayers from './layers.json';
 import rawTables from './tables.json';
 
-const translation = { pt: {}, en: {} };
+const translation = { pt: {}, en: { 'Admin 1': 'Province' } };
 const rawReports = {};
 
 export default {
