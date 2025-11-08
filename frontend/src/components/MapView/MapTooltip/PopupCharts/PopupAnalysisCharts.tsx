@@ -91,7 +91,7 @@ function PopupAnalysisCharts({
   const features = map?.queryRenderedFeatures(undefined, { layers: [layerId] });
 
   const adminProperties =
-    data && layer?.format === 'geojson'
+    data && layer?.format !== 'pmtiles'
       ? getProperties(data as BoundaryLayerData, adminCode, adminSelectorKey)
       : (features?.find(f => f.properties?.[adminSelectorKey] === adminCode)
           ?.properties ?? null);
