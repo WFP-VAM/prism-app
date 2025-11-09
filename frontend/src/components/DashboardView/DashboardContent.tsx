@@ -298,7 +298,7 @@ function DashboardContent({
       case DashboardElementType.CHART:
         return (
           <Box
-            key={`chart-${elementId}`}
+            key={`chart-${elementId}-${needsEqualHeight}`}
             style={
               mode === DashboardMode.DASHBOARD &&
               !exportConfig &&
