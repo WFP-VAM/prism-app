@@ -183,7 +183,7 @@ const createInitialState = (dashboardIndex: number = 0): DashboardState => {
   return {
     selectedDashboardIndex: dashboardIndex,
     title: dashboardConfig?.title || 'Dashboard',
-    mode: 'preview' as DashboardMode,
+    mode: 'dashboard' as DashboardMode,
     columns: allColumns,
     mapStates,
     syncMapsEnabled: false,

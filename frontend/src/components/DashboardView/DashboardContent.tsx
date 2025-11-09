@@ -9,6 +9,7 @@ import {
 import { Edit } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSafeTranslation } from 'i18n';
+import { useEffect, useRef, useState } from 'react';
 import {
   dashboardConfigSelector,
   dashboardColumnsSelector,
@@ -82,10 +83,119 @@ function DashboardContent({
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const syncEnabled = useSelector(dashboardSyncEnabledSelector);
+
+  // Track which columns need equal height distribution due to overflow
+  const [columnsNeedingEqualHeight, setColumnsNeedingEqualHeight] = useState<
+    Set<number>
+  >(new Set());
+  const columnRefs = useRef<Map<number, HTMLDivElement>>(new Map());
+  const checkTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Check for overflow in columns and update equal height state
+  useEffect(() => {
+    if (
+      mode !== DashboardMode.DASHBOARD ||
+      exportConfig ||
+      columns.length === 0
+    ) {
+      setColumnsNeedingEqualHeight(new Set());
+      return;
+    }
+
+    const checkOverflow = () => {
+      const newSet = new Set<number>();
+
+      columnRefs.current.forEach((element, columnIndex) => {
+        if (!element) {
+          return;
+        }
+
+        const column = columns[columnIndex];
+        if (!column || column.length <= 1) {
+          return;
+        }
+
+        // Check if column content overflows
+        const { scrollHeight, clientHeight } = element;
+        const threshold = 50;
+        const isOverflowing = scrollHeight > clientHeight + threshold;
+        const isCloseToFitting =
+          Math.abs(scrollHeight - clientHeight) <= threshold;
+
+        if (isOverflowing) {
+          // Definitely needs equal height
+          newSet.add(columnIndex);
+        } else if (
+          isCloseToFitting &&
+          columnsNeedingEqualHeight.has(columnIndex)
+        ) {
+          // Close call - maintain equal heights
+          newSet.add(columnIndex);
+        }
+        // Otherwise don't add (content clearly fits)
+      });
+
+      // Only update state if the set actually changed
+      setColumnsNeedingEqualHeight(prevSet => {
+        // eslint-disable-next-line fp/no-mutating-methods
+        const prevArray = [...Array.from(prevSet)].sort();
+        // eslint-disable-next-line fp/no-mutating-methods
+        const newArray = [...Array.from(newSet)].sort();
+        const hasChanged =
+          prevArray.length !== newArray.length ||
+          prevArray.some((val, idx) => val !== newArray[idx]);
+
+        return hasChanged ? newSet : prevSet;
+      });
+    };
+
+    // Debounced check function
+    const debouncedCheck = () => {
+      if (checkTimeoutRef.current) {
+        clearTimeout(checkTimeoutRef.current);
+      }
+      checkTimeoutRef.current = setTimeout(checkOverflow, 100);
+    };
+
+    // Initial check with multiple delays to catch async content loading
+    const timeoutIds: NodeJS.Timeout[] = [];
+    [100, 500, 1000].forEach(delay => {
+      const timeoutId = setTimeout(checkOverflow, delay);
+      // eslint-disable-next-line fp/no-mutating-methods
+      timeoutIds.push(timeoutId);
+    });
+
+    // Set up ResizeObserver for dynamic checking (catches content loading too)
+    const observers: ResizeObserver[] = [];
+    columnRefs.current.forEach(element => {
+      if (!element) {
+        return;
+      }
+      const observer = new ResizeObserver(debouncedCheck);
+      observer.observe(element);
+      // eslint-disable-next-line fp/no-mutating-methods
+      observers.push(observer);
+    });
+
+    // eslint-disable-next-line consistent-return
+    return () => {
+      timeoutIds.forEach(timeoutId => {
+        clearTimeout(timeoutId);
+      });
+      if (checkTimeoutRef.current) {
+        clearTimeout(checkTimeoutRef.current);
+      }
+      observers.forEach(observer => {
+        observer.disconnect();
+      });
+    };
+  }, [mode, exportConfig, columns, columnsNeedingEqualHeight]);
+
   const renderElement = (
     element: DashboardElements,
     columnIndex: number,
     elementIndex: number,
+    needsEqualHeight: boolean,
   ) => {
     const elementId = `${columnIndex}-${elementIndex}`;
 
@@ -95,10 +205,16 @@ function DashboardContent({
           <Box
             key={`map-${elementId}`}
             className={
-              mode === DashboardMode.PREVIEW
+              mode === DashboardMode.DASHBOARD
                 ? classes.previewContainer
                 : classes.grayCard
             }
+            style={{
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              minHeight: 0,
+            }}
           >
             {mode === 'edit' && (
               <div className={classes.mapHeaderContainer}>
@@ -114,49 +230,97 @@ function DashboardContent({
                 </Typography>
               </div>
             )}
-            <div style={{ height: '700px' }}>
+            <div style={{ height: '100%', flex: 1, minHeight: 0 }}>
               <MapBlock elementId={elementId} exportConfig={exportConfig} />
             </div>
           </Box>
         );
       case DashboardElementType.TEXT:
         return (
-          <TextBlock
+          <Box
             key={`text-${elementId}`}
-            content={element.content || ''}
-            columnIndex={columnIndex}
-            elementIndex={elementIndex}
-          />
+            style={
+              mode === DashboardMode.DASHBOARD &&
+              !exportConfig &&
+              needsEqualHeight
+                ? {
+                    flex: 1,
+                    minHeight: 0,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    overflow: 'hidden',
+                  }
+                : undefined
+            }
+          >
+            <TextBlock
+              content={element.content || ''}
+              columnIndex={columnIndex}
+              elementIndex={elementIndex}
+            />
+          </Box>
         );
       case DashboardElementType.TABLE:
         return (
-          <TableBlock
+          <Box
             key={`table-${elementId}`}
-            index={elementIndex}
-            startDate={element.startDate}
-            hazardLayerId={element.hazardLayerId}
-            baselineLayerId={element.baselineLayerId}
-            threshold={element.threshold}
-            stat={element.stat}
-            allowDownload={!exportConfig}
-            addResultToMap={element.addResultToMap}
-            sortColumn={element.sortColumn}
-            sortOrder={element.sortOrder}
-          />
+            style={
+              mode === DashboardMode.DASHBOARD &&
+              !exportConfig &&
+              needsEqualHeight
+                ? {
+                    flex: 1,
+                    minHeight: 0,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    overflow: 'hidden',
+                  }
+                : undefined
+            }
+          >
+            <TableBlock
+              index={elementIndex}
+              startDate={element.startDate}
+              hazardLayerId={element.hazardLayerId}
+              baselineLayerId={element.baselineLayerId}
+              threshold={element.threshold}
+              stat={element.stat}
+              allowDownload={!exportConfig}
+              addResultToMap={element.addResultToMap}
+              sortColumn={element.sortColumn}
+              sortOrder={element.sortOrder}
+            />
+          </Box>
         );
       case DashboardElementType.CHART:
         return (
-          <ChartBlock
+          <Box
             key={`chart-${elementId}`}
-            index={elementIndex}
-            startDate={element.startDate}
-            endDate={element.endDate}
-            layerId={element.layerId}
-            adminUnitLevel={element.adminUnitLevel}
-            adminUnitId={element.adminUnitId}
-            chartHeight={element.chartHeight}
-            allowDownload={!exportConfig}
-          />
+            style={
+              mode === DashboardMode.DASHBOARD &&
+              !exportConfig &&
+              needsEqualHeight
+                ? {
+                    flex: 1,
+                    minHeight: 0,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    overflow: 'hidden',
+                  }
+                : undefined
+            }
+          >
+            <ChartBlock
+              index={elementIndex}
+              startDate={element.startDate}
+              endDate={element.endDate}
+              layerId={element.layerId}
+              adminUnitLevel={element.adminUnitLevel}
+              adminUnitId={element.adminUnitId}
+              chartHeight={element.chartHeight}
+              allowDownload={!exportConfig}
+            />
+          </Box>
         );
       default:
         return null;
@@ -199,7 +363,7 @@ function DashboardContent({
                 >
                   {t(dashboardTitle || 'Untitled Dashboard')}
                 </Typography>
-                {mode === DashboardMode.PREVIEW && (
+                {mode === DashboardMode.DASHBOARD && (
                   <Box className={classes.titleActions}>
                     {isEditable && onEditClick && (
                       <Button
@@ -256,7 +420,7 @@ function DashboardContent({
         {columns.length > 0 && (
           <Box
             className={
-              mode === 'preview'
+              mode === DashboardMode.DASHBOARD
                 ? classes.dynamicColumnPreviewLayout
                 : classes.dynamicColumnLayout
             }
@@ -268,13 +432,42 @@ function DashboardContent({
               const columnClass = hasMapElements
                 ? classes.mapColumn
                 : classes.contentColumn;
+              const needsEqualHeight =
+                mode === DashboardMode.DASHBOARD &&
+                !exportConfig &&
+                columnsNeedingEqualHeight.has(columnIndex);
 
               return (
-                // eslint-disable-next-line react/no-array-index-key
-                <Box key={`column-${columnIndex}`} className={columnClass}>
-                  {column.map((element, elementIndex) =>
-                    renderElement(element, columnIndex, elementIndex),
-                  )}
+                <Box
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={`column-${columnIndex}`}
+                  className={columnClass}
+                  component="div"
+                >
+                  <div
+                    ref={(el: HTMLDivElement | null) => {
+                      if (el) {
+                        columnRefs.current.set(columnIndex, el);
+                      } else {
+                        columnRefs.current.delete(columnIndex);
+                      }
+                    }}
+                    style={{
+                      height: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 16,
+                    }}
+                  >
+                    {column.map((element, elementIndex) =>
+                      renderElement(
+                        element,
+                        columnIndex,
+                        elementIndex,
+                        needsEqualHeight,
+                      ),
+                    )}
+                  </div>
                 </Box>
               );
             })}
@@ -304,6 +497,8 @@ const useStyles = makeStyles(() => ({
     flexDirection: 'column',
     gap: 16,
     minWidth: 0,
+    minHeight: 0,
+    overflow: 'hidden',
   },
   dynamicColumnLayout: {
     display: 'flex',
@@ -320,13 +515,13 @@ const useStyles = makeStyles(() => ({
     margin: 0,
     gap: 16,
     flex: 1,
-    overflow: 'auto',
+    overflow: 'hidden',
+    minHeight: 0,
   },
   previewContainer: {
     background: 'white',
     borderRadius: 8,
     padding: 16,
-    marginBottom: 16,
   },
   grayCard: {
     background: '#F1F1F1',
@@ -344,7 +539,7 @@ const useStyles = makeStyles(() => ({
   titleSection: {
     position: 'relative',
     display: 'flex',
-    margin: '16px 0 8px',
+    margin: '16px 0',
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: '16px',
@@ -422,6 +617,8 @@ const useStyles = makeStyles(() => ({
     flexDirection: 'column',
     gap: 0,
     minWidth: 0,
+    minHeight: 0,
+    overflow: 'hidden',
   },
   mapColumnFlexElements: {
     display: 'flex',
