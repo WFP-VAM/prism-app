@@ -1,10 +1,9 @@
 import { Box, makeStyles, Button } from '@material-ui/core';
-import { ArrowForward, Edit, VisibilityOutlined } from '@material-ui/icons';
+import { VisibilityOutlined } from '@material-ui/icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { useSafeTranslation } from 'i18n';
-import { black, cyanBlue } from 'muiTheme';
 import { DashboardMode } from 'config/types';
 
 import {
@@ -34,7 +33,6 @@ function DashboardView() {
 
   // Export/Publish dialog state
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
-  const handleOpenExport = () => setExportDialogOpen(true);
   const handleCloseExport = () => setExportDialogOpen(false);
 
   // Clear any existing analysis state when component mounts
@@ -87,33 +85,6 @@ function DashboardView() {
           : classes.container
       }
     >
-      {mode === DashboardMode.PREVIEW && (
-        <Box className={classes.previewActions}>
-          {isEditable && (
-            <Button
-              color="primary"
-              variant="outlined"
-              disableElevation
-              startIcon={<Edit />}
-              onClick={handleClosePreview}
-              size="medium"
-            >
-              {t('Edit')}
-            </Button>
-          )}
-          <Button
-            color="primary"
-            variant="contained"
-            disableElevation
-            endIcon={<ArrowForward />}
-            size="medium"
-            style={{ backgroundColor: cyanBlue, color: black }}
-            onClick={handleOpenExport}
-          >
-            {t('Print')}
-          </Button>
-        </Box>
-      )}
       <DashboardContent
         showTitle
         className={
@@ -121,6 +92,8 @@ function DashboardView() {
             ? classes.editLayout
             : classes.previewLayout
         }
+        isEditable={isEditable}
+        onEditClick={handleClosePreview}
       />
       {mode === DashboardMode.EDIT && (
         <Box className={classes.toolbar}>

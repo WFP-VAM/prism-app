@@ -113,22 +113,6 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
     }
   };
 
-  if (mode === DashboardMode.PREVIEW) {
-    const canvas = map?.getCanvas();
-    if (canvas) {
-      // eslint-disable-next-line fp/no-mutation
-      canvas.style.cursor = 'default';
-    }
-  }
-
-  if (mode === DashboardMode.EDIT) {
-    const canvas = map?.getCanvas();
-    if (canvas) {
-      // eslint-disable-next-line fp/no-mutation
-      canvas.style.cursor = 'inherit';
-    }
-  }
-
   useEffect(() => {
     if (!datesPreloadingForPointData) {
       dispatch(preloadLayerDatesArraysForPointData());
