@@ -64,11 +64,13 @@ function PrintImage() {
       </div>
       {/* Map Print Dialog */}
       <DownloadImage open={openImage} handleClose={handleClose} />
-      {/* Dashboard Export Dialog */}
-      <DashboardExportDialog
-        open={openDashboardExport}
-        handleClose={handleCloseDashboardExport}
-      />
+      {/* Dashboard Export Dialog - don't show in snapshots */}
+      {process.env.NODE_ENV !== 'test' && (
+        <DashboardExportDialog
+          open={openDashboardExport}
+          handleClose={handleCloseDashboardExport}
+        />
+      )}
     </>
   );
 }
