@@ -44,6 +44,7 @@ import {
   BaselineLayerResult,
   checkBaselineDataLayer,
   Column,
+  createAreaExposedLegend,
   createLegendFromFeatureArray,
   ExposedPopulationResult,
   fetchApiData,
@@ -144,7 +145,7 @@ function getAdminBoundariesURL(adminBoundariesPath: string) {
   );
 }
 
-const generateTableColumnsFromApiData = (
+export const generateTableColumnsFromApiData = (
   aggregateData: AsyncReturnType<typeof fetchApiData>,
   key: string = 'sum',
 ): Column[] => {
@@ -417,25 +418,22 @@ async function createAPIRequestParams(
   const band = getStacBand(additionalQueryParams);
   // Get geotiff_url using STAC for layers in earthobservation.vam.
   // TODO - What happens if there is no date? are some layers not STAC?
-  const geotiffUrl =
-    baseUrl.includes('api.earthobservation.vam.wfp.org/ows') &&
-    // use WCS for flood exposure analysis because of a bug with gdal_calc
-    !serverLayerName.includes('wp_pop_cicunadj')
-      ? await getDownloadGeotiffURL(
-          serverLayerName,
-          band,
-          extent,
-          dateString,
-          dispatch,
-        )
-      : createGetCoverageUrl({
-          bbox: extent,
-          bboxDigits: 1,
-          date: dateValue,
-          layerId: serverLayerName,
-          resolution: wcsConfig?.pixelResolution,
-          url: baseUrl,
-        });
+  const geotiffUrl = baseUrl.includes('api.earthobservation.vam.wfp.org/ows')
+    ? await getDownloadGeotiffURL(
+        serverLayerName,
+        band,
+        extent,
+        dateString,
+        dispatch,
+      )
+    : createGetCoverageUrl({
+        bbox: extent,
+        bboxDigits: 1,
+        date: dateValue,
+        layerId: serverLayerName,
+        resolution: wcsConfig?.pixelResolution,
+        url: baseUrl,
+      });
 
   // we force group_by to be defined with &
   // eslint-disable-next-line camelcase
@@ -457,7 +455,7 @@ async function createAPIRequestParams(
   return apiRequest;
 }
 
-const mergeTableRows = (tableRows: TableRow[]): TableRow => {
+export const mergeTableRows = (tableRows: TableRow[]): TableRow => {
   /* eslint-disable no-param-reassign, fp/no-mutation */
   const mergedObject: TableRow = tableRows.reduce(
     (acc, tableRow) =>
@@ -502,6 +500,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
   CreateAsyncThunkTypes
 >(
   'analysisResultState/requestAndStoreExposedPopulation',
+  // eslint-disable-next-line arrow-body-style
   async (params, api) => {
     const { exposure, date, extent, statistic, wfsLayerId, maskLayerId } =
       params;
@@ -609,7 +608,12 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       features: featuresWithBoundaryProps,
     };
 
-    const legend = createLegendFromFeatureArray(features, statistic);
+    // For "Area exposed", always use a fixed percentage-based legend with standard classification
+    // instead of dynamically creating one from feature values.
+    const legend =
+      statistic === AggregationOperations['Area exposed']
+        ? createAreaExposedLegend()
+        : createLegendFromFeatureArray(features, statistic);
     // TODO - use raster legend title
     const legendText = wfsLayer ? wfsLayer.title : 'Exposure Analysis';
 
@@ -736,8 +740,13 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   );
 
   // Create a legend based on statistic data to be used for admin level analsysis.
+  // For "Area exposed", always use a fixed percentage-based legend with standard classification
+  // instead of the hazard layer's legend (which is for hazard values, not percentages).
   const legend =
-    hazardLayer.legend ?? createLegendFromFeatureArray(features, statistic);
+    statistic === AggregationOperations['Area exposed']
+      ? createAreaExposedLegend()
+      : (hazardLayer.legend ??
+        createLegendFromFeatureArray(features, statistic));
 
   const enrichedStatistics: (AggregationOperations | 'stats_intersect_area')[] =
     [statistic];

@@ -1486,7 +1486,7 @@
       { "value": 12, "label": "> +12C", "color": "#67000d" }
     ]
   },
-  "wp_pop_cicunadj": {
+  "wp_pop_icunadj": {
     "title": "population",
     "type": "wms",
     "wcsConfig": {
@@ -1494,7 +1494,10 @@
       "version": "2.0.0",
       "scale": "1"
     },
-    "server_layer_name": "wp_pop_cicunadj",
+    "server_layer_name": "wp_pop_icunadj",
+    "additional_query_params": {
+      "styles": "wp_pop_icunadj_khm_2020"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "opacity": 0,
     "legend_text": "",
@@ -1529,7 +1532,7 @@
       }
     ],
     "exposure": {
-      "id": "wp_pop_cicunadj",
+      "id": "wp_pop_icunadj",
       "calc": "A*(B>=3)"
     }
   },
@@ -1649,6 +1652,7 @@
     "title": "EWS 1294 river level data",
     "loader": "ews",
     "type": "point_data",
+    "icon_shape": "point",
     "data": "https://sensors.ews1294.com/api/v1",
     "date_url": "active",
     "feature_info_props": {

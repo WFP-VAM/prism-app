@@ -1,5 +1,4 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { LastStates } from '../types/aa-storm-email';
 
 @Entity()
 export class AnticipatoryActionAlerts {
@@ -8,6 +7,13 @@ export class AnticipatoryActionAlerts {
 
   @Column()
   country: string;
+
+  @Column({
+    type: 'enum',
+    enum: ['storm', 'flood', 'drought'],
+    default: 'storm',
+  })
+  type: 'storm' | 'flood' | 'drought';
 
   @Column({ type: 'text', array: true })
   emails: string[];
@@ -22,5 +28,5 @@ export class AnticipatoryActionAlerts {
   lastRanAt: Date;
 
   @Column({ type: 'jsonb', nullable: true })
-  lastStates?: LastStates;
+  lastStates?: Record<string, { status: string; refTime: string }>;
 }

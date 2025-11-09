@@ -26,9 +26,11 @@ import {
   areTablesAvailable,
   isAnticipatoryActionDroughtAvailable,
   isAnticipatoryActionStormAvailable,
+  isAnticipatoryActionFloodAvailable,
 } from './utils';
 import AlertsPanel from './AlertsPanel';
 import { toggleRemoveLayer } from './layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
+import AnticipatoryActionFloodPanel from './AnticipatoryActionPanel/AnticipatoryActionFloodPanel';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -137,6 +139,8 @@ const LeftPanel = memo(() => {
         dispatch(setTabValue(Panel.AnticipatoryActionDrought));
       } else if (AALayerInUrl.id === AnticipatoryAction.storm) {
         dispatch(setTabValue(Panel.AnticipatoryActionStorm));
+      } else if (AALayerInUrl.id === AnticipatoryAction.flood) {
+        dispatch(setTabValue(Panel.AnticipatoryActionFlood));
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -164,6 +168,17 @@ const LeftPanel = memo(() => {
       return (
         <TabPanel value={tabValue} index={Panel.AnticipatoryActionStorm}>
           <AnticipatoryActionStormPanel />
+        </TabPanel>
+      );
+    }
+    if (
+      isAnticipatoryActionFloodAvailable &&
+      tabValue === Panel.AnticipatoryActionFlood &&
+      shouldLoadAAPanel
+    ) {
+      return (
+        <TabPanel value={tabValue} index={Panel.AnticipatoryActionFlood}>
+          <AnticipatoryActionFloodPanel />
         </TabPanel>
       );
     }

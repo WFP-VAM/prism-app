@@ -25,7 +25,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: '20'
+          node-version: "20"
 
       # Install Chrome for Puppeteer
       - name: Install Chrome
@@ -42,3 +42,8 @@ jobs:
          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true yarn add puppeteer puppeteer-core
          yarn lint
          yarn test
+         # Run flood alert worker with test email
+         yarn aa-flood-alert-worker --testEmail='hello@ovio.org'
+
+      - name: Security audit
+        run: cd alerting && yarn run audit

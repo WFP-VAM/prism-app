@@ -7,7 +7,10 @@ import { getFormattedDate } from 'utils/date-utils';
 import { appConfig } from 'config';
 import { lightGrey } from 'muiTheme';
 import { AAMarkersSelector } from 'context/anticipatoryAction/AADroughtStateSlice';
+import { AAFloodDataSelector } from 'context/anticipatoryAction/AAFloodStateSlice';
 import { useAAMarkerScalePercent } from 'utils/map-utils';
+import { useFilteredFloodStations } from 'components/MapView/Layers/AnticipatoryActionFloodLayer/useFilteredFloodStations';
+import { FloodStationMarker } from 'components/MapView/Layers/AnticipatoryActionFloodLayer/FloodStationMarker';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { Panel, AdminLevelDataLayerProps } from 'config/types';
@@ -15,6 +18,7 @@ import useLayers from 'utils/layers-utils';
 import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer/utils';
 import { mapStyle } from 'components/MapView/Map/utils';
 import { loadStormIcons } from 'components/MapView/Layers/AnticipatoryActionStormLayer/constants';
+import { ensureSDFIconsLoaded } from 'components/MapView/Layers/icon-utils';
 import {
   dateRangeSelector,
   mapSelector,
@@ -30,6 +34,7 @@ function PrintPreview() {
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
   const AAMarkers = useSelector(AAMarkersSelector);
+  const floodState = useSelector(AAFloodDataSelector);
   const tabValue = useSelector(leftPanelTabValueSelector);
   const northArrowRef = useRef<HTMLImageElement>(null);
 
@@ -71,6 +76,11 @@ function PrintPreview() {
       layer.type === 'admin_level_data' &&
       (layer.fillPattern || layer.legend.some(legend => legend.fillPattern)),
   ) as AdminLevelDataLayerProps[];
+
+  const filteredFloodStations = useFilteredFloodStations(
+    floodState.stationSummaryData,
+    dateRange.startDate,
+  );
 
   const dateText = `${t('Publication date')}: ${getFormattedDate(
     Date.now(),
@@ -277,6 +287,9 @@ function PrintPreview() {
 
                     // Load storm icons for anticipatory action storm layers
                     loadStormIcons(mapRef.current?.getMap(), false); // Don't throw on error for print preview
+
+                    // Load SDF icons for point data layers
+                    ensureSDFIconsLoaded(mapRef.current?.getMap());
                   }}
                   mapStyle={selectedMapStyle || mapStyle.toString()}
                   maxBounds={selectedMap.getMaxBounds() ?? undefined}
@@ -293,6 +306,15 @@ function PrintPreview() {
                           {marker.icon}
                         </div>
                       </Marker>
+                    ))}
+                  {tabValue === Panel.AnticipatoryActionFlood &&
+                    filteredFloodStations.map(station => (
+                      <FloodStationMarker
+                        key={`flood-station-${station.station_id}`}
+                        station={station}
+                        stationSummary={station}
+                        interactive={false}
+                      />
                     ))}
                   {toggles.countryMask && (
                     <Source
