@@ -264,7 +264,22 @@ export interface UseAnalysisExecutionReturn {
   runAnalyser: () => Promise<void>;
   scaleThreshold: (threshold: number) => number;
   activateUniqueBoundary: (forceAdminLevel?: BoundaryLayerProps) => void;
+  hasFormChanged: boolean;
 }
+
+const getFormStateSnapshot = (formState: UseAnalysisFormReturn) =>
+  JSON.stringify({
+    hazardLayerId: formState.hazardLayerId,
+    baselineLayerId: formState.baselineLayerId,
+    selectedDate: formState.selectedDate,
+    startDate: formState.startDate,
+    endDate: formState.endDate,
+    statistic: formState.statistic,
+    aboveThreshold: formState.aboveThreshold,
+    belowThreshold: formState.belowThreshold,
+    exposureValue: formState.exposureValue,
+    adminLevel: formState.adminLevel,
+  });
 
 /**
  * Shared hook for analysis execution logic
@@ -283,6 +298,9 @@ export const useAnalysisExecution = (
 
   // Store the current analysis request promise (which has an abort method added by Redux Toolkit)
   const analysisRequestRef = useRef<any>(null);
+
+  // Track form state at last execution
+  const lastExecutedFormRef = useRef<string | null>(null);
 
   // Cleanup on unmount - abort any pending analysis and clear results
   useEffect(
@@ -304,6 +322,16 @@ export const useAnalysisExecution = (
     },
     [dispatch, clearAnalysisFunction, clearOnUnmount],
   );
+
+  // Check if form has changed since last execution
+  const hasFormChanged = useMemo(() => {
+    const currentFormSnapshot = getFormStateSnapshot(formState);
+
+    return (
+      lastExecutedFormRef.current === null ||
+      lastExecutedFormRef.current !== currentFormSnapshot
+    );
+  }, [formState]);
 
   const scaleThreshold = useCallback(
     (threshold: number) =>
@@ -365,6 +393,9 @@ export const useAnalysisExecution = (
   );
 
   const runAnalyser = useCallback(async () => {
+    // Capture current form state at execution
+    lastExecutedFormRef.current = getFormStateSnapshot(formState);
+
     if (formState.analysisResult) {
       if (clearAnalysisFunction) {
         clearAnalysisFunction();
@@ -494,5 +525,6 @@ export const useAnalysisExecution = (
     runAnalyser,
     scaleThreshold,
     activateUniqueBoundary,
+    hasFormChanged,
   };
 };

@@ -171,7 +171,7 @@ const AnalysisPanel = memo(() => {
     isAnalysisLoading,
   } = formState;
 
-  const { runAnalyser } = useAnalysisExecution(formState, {
+  const { runAnalyser, hasFormChanged } = useAnalysisExecution(formState, {
     onUrlUpdate: updateAnalysisParams,
     clearAnalysisFunction: () => {
       const isClearingExposureAnalysis =
@@ -576,6 +576,7 @@ const AnalysisPanel = memo(() => {
           startIcon={<BarChartOutlined style={{ color: black }} />}
           disabled={
             isAnalysisLoading ||
+            !hasFormChanged ||
             requiredThresholdNotSet ||
             !hazardLayerId ||
             (hazardDataType === GeometryType.Polygon
@@ -592,6 +593,7 @@ const AnalysisPanel = memo(() => {
   }, [
     analysisResult,
     isAnalysisLoading,
+    hasFormChanged,
     requiredThresholdNotSet,
     hazardLayerId,
     hazardDataType,
@@ -834,15 +836,18 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     bottomButton: {
       backgroundColor: cyanBlue,
-      '&:hover': {
-        backgroundColor: cyanBlue,
-      },
       marginTop: 10,
       marginBottom: 10,
       marginLeft: '25%',
       marginRight: '25%',
       width: '50%',
-      '&.Mui-disabled': { opacity: 0.5 },
+      '&.Mui-disabled': {
+        opacity: 0.5,
+        backgroundColor: '#788489',
+        '&:hover': {
+          backgroundColor: '#788489',
+        },
+      },
     },
     numberField: {
       paddingRight: '10px',
