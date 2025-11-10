@@ -296,8 +296,15 @@ const AnalysisPanel = memo(() => {
       dispatch(removeLayer(preSelectedBaselineLayer));
     }
 
+    // Only clear the analysis result, don't reset form values
+    // This allows users to change parameters and run new analysis without losing their changes
     if (analysisResult) {
-      clearAnalysis();
+      const isClearingExposureAnalysis =
+        analysisResult instanceof ExposedPopulationResult;
+      dispatch(clearAnalysisResult());
+      if (isClearingExposureAnalysis) {
+        dispatch(setTabValue(Panel.Layers));
+      }
     }
 
     await runAnalyser();
@@ -306,7 +313,6 @@ const AnalysisPanel = memo(() => {
     analysisResult,
     removeKeyFromUrl,
     dispatch,
-    clearAnalysis,
     runAnalyser,
   ]);
 
@@ -557,7 +563,8 @@ const AnalysisPanel = memo(() => {
   ]);
 
   const renderedRunAnalysisButton = useMemo(() => {
-    if (analysisResult) {
+    // Hide button only for exposure analysis (which has its own action buttons)
+    if (analysisResult instanceof ExposedPopulationResult) {
       return null;
     }
     return (
