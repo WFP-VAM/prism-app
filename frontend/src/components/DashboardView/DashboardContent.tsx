@@ -84,7 +84,9 @@ function DashboardContent({
   const dispatch = useDispatch();
   const syncEnabled = useSelector(dashboardSyncEnabledSelector);
 
-  // Track which columns need equal height distribution due to overflow
+  // Column Height Management
+  //  - if column exceeds the height of the container, set all components in the column to the same height
+  //  - if column doesn't exceed the height of the container, allow each component to be a different height
   const [columnsNeedingEqualHeight, setColumnsNeedingEqualHeight] = useState<
     Set<number>
   >(new Set());
@@ -149,7 +151,6 @@ function DashboardContent({
       });
     };
 
-    // Debounced check function
     const debouncedCheck = () => {
       if (checkTimeoutRef.current) {
         clearTimeout(checkTimeoutRef.current);
@@ -157,7 +158,7 @@ function DashboardContent({
       checkTimeoutRef.current = setTimeout(checkOverflow, 100);
     };
 
-    // Initial check with multiple delays to catch async content loading
+    // Initial checks with multiple delays to catch async content loading
     const timeoutIds: NodeJS.Timeout[] = [];
     [100, 500, 1000].forEach(delay => {
       const timeoutId = setTimeout(checkOverflow, delay);
@@ -165,7 +166,7 @@ function DashboardContent({
       timeoutIds.push(timeoutId);
     });
 
-    // Set up ResizeObserver for dynamic checking (catches content loading too)
+    // ResizeObserver for to check for overflow (catches content loading too)
     const observers: ResizeObserver[] = [];
     columnRefs.current.forEach(element => {
       if (!element) {
