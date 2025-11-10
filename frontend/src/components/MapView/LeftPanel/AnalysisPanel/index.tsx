@@ -730,13 +730,15 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column',
       width: PanelSize.medium,
       height: '100%',
+      overflow: 'hidden',
     },
     analysisPanel: {
       display: 'flex',
       flexDirection: 'column',
       width: PanelSize.medium,
-      height: '100%',
-      overflow: 'scroll',
+      flex: 1,
+      minHeight: 0,
+      overflow: 'auto',
     },
     exposureAnalysisLoadingContainer: {
       display: 'flex',
@@ -777,7 +779,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     analysisPanelParams: {
       padding: '30px 10px 10px 10px',
-      height: 'calc(100% - 90px)',
+      flex: 1,
+      minHeight: 0,
       overflow: 'auto',
     },
     colorBlack: {
