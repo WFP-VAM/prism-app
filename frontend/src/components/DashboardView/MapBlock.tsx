@@ -230,7 +230,7 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
   };
 
   const handleLegendVisibleChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    _event: React.ChangeEvent<HTMLInputElement>,
     checked: boolean,
   ) => {
     dispatch(setLegendVisible({ elementId, visible: checked }));
