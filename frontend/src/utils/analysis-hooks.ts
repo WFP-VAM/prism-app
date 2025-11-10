@@ -33,7 +33,7 @@ import { getAdminLevelLayer } from 'utils/admin-utils';
 import { safeDispatchAddLayer, safeDispatchRemoveLayer } from 'utils/map-utils';
 import useLayers from 'utils/layers-utils';
 import { getPossibleDatesForLayer } from 'utils/server-utils';
-import { getDateFromList } from 'utils/data-utils';
+import { getDateFromList, parseNumberOrUndefined } from 'utils/data-utils';
 import { getFormattedDate } from 'utils/date-utils';
 import { LayerDefinitions, getDisplayBoundaryLayers } from 'config/utils';
 import type { AnalysisResult } from 'utils/analysis-utils';
@@ -433,6 +433,14 @@ export const useAnalysisExecution = (
 
       activateUniqueBoundary();
 
+      // Parse and scale thresholds, handling 0 as a valid value
+      const aboveThresholdValue = parseNumberOrUndefined(
+        formState.aboveThreshold,
+      );
+      const belowThresholdValue = parseNumberOrUndefined(
+        formState.belowThreshold,
+      );
+
       const params: AnalysisDispatchParams = {
         hazardLayer: formState.selectedHazardLayer,
         baselineLayer: selectedBaselineLayer,
@@ -442,9 +450,13 @@ export const useAnalysisExecution = (
         extent,
         threshold: {
           above:
-            scaleThreshold(parseFloat(formState.aboveThreshold)) || undefined,
+            aboveThresholdValue !== undefined
+              ? scaleThreshold(aboveThresholdValue)
+              : undefined,
           below:
-            scaleThreshold(parseFloat(formState.belowThreshold)) || undefined,
+            belowThresholdValue !== undefined
+              ? scaleThreshold(belowThresholdValue)
+              : undefined,
         },
       };
 
@@ -454,8 +466,14 @@ export const useAnalysisExecution = (
           analysisBaselineLayerId: formState.baselineLayerId,
           analysisDate: getFormattedDate(formState.selectedDate, 'default'),
           analysisStatistic: formState.statistic,
-          analysisThresholdAbove: formState.aboveThreshold || undefined,
-          analysisThresholdBelow: formState.belowThreshold || undefined,
+          analysisThresholdAbove:
+            aboveThresholdValue !== undefined
+              ? formState.aboveThreshold
+              : undefined,
+          analysisThresholdBelow:
+            belowThresholdValue !== undefined
+              ? formState.belowThreshold
+              : undefined,
         });
       }
 
