@@ -162,7 +162,9 @@ export function checkRequiredKeys<T extends Record<string, any>>(
     Object.keys(maybeType)
       .filter(key => !allKeys.includes(key))
       .forEach(key =>
-        console.warn(`Found unknown key '${key}' on config for ${id}`),
+        console.warn(
+          `Found unknown key '${key}' on config for ${id || maybeType.id}`,
+        ),
       );
   }
   return !missingKey;
