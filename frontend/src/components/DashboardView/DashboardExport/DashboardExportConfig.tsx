@@ -241,6 +241,8 @@ function DashboardExportConfig() {
                 display: 'flex',
                 flexDirection: 'row',
                 justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: '12px',
               }}
             >
               <ToggleSelector
@@ -376,12 +378,14 @@ const useToggleSelectorStyles = makeStyles(() => ({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: '8px',
     '& h4': {
       fontSize: '14px',
       margin: 0,
     },
   },
-  buttonGroup: { display: 'flex' },
+  buttonGroup: { display: 'flex', flexWrap: 'wrap' },
   button: {
     backgroundColor: 'white',
     height: '32px',
@@ -400,10 +404,8 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column',
       gap: '0.5rem',
       minHeight: '740px',
-      width: '19.2rem',
       scrollbarGutter: 'stable',
       overflow: 'auto',
-      paddingRight: '15px',
       zIndex: 4,
       backgroundColor: 'white',
     },

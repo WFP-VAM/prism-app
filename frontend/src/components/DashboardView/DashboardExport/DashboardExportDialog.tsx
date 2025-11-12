@@ -332,7 +332,6 @@ const useStyles = makeStyles(() =>
       scrollbarGutter: 'stable',
       display: 'flex',
       gap: '1rem',
-      marginRight: '-15px',
       flexDirection: 'row',
       justifyContent: 'space-between',
     },

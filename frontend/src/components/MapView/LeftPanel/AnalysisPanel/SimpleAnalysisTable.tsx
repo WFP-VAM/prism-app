@@ -187,6 +187,7 @@ const useStyles = makeStyles(theme => ({
     overflow: 'hidden',
     boxShadow: 'none',
     border: `1px solid ${theme.palette.divider}`,
+    width: 'auto',
   },
   headerCell: {
     backgroundColor: theme.palette.divider,
