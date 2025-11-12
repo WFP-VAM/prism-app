@@ -95,11 +95,7 @@ function DashboardContent({
 
   // Check for overflow in columns and update equal height state
   useEffect(() => {
-    if (
-      mode !== DashboardMode.DASHBOARD ||
-      exportConfig ||
-      columns.length === 0
-    ) {
+    if (mode === DashboardMode.EDIT || columns.length === 0) {
       setColumnsNeedingEqualHeight(new Set());
       return;
     }
@@ -241,15 +237,13 @@ function DashboardContent({
           <Box
             key={`text-${elementId}`}
             style={
-              mode === DashboardMode.DASHBOARD &&
-              !exportConfig &&
-              needsEqualHeight
+              mode !== DashboardMode.EDIT && needsEqualHeight
                 ? {
-                    flex: 1,
+                    flex: '0 1 auto',
                     minHeight: 0,
                     display: 'flex',
                     flexDirection: 'column',
-                    overflow: 'hidden',
+                    overflow: 'auto',
                   }
                 : undefined
             }
@@ -266,15 +260,13 @@ function DashboardContent({
           <Box
             key={`table-${elementId}`}
             style={
-              mode === DashboardMode.DASHBOARD &&
-              !exportConfig &&
-              needsEqualHeight
+              mode !== DashboardMode.EDIT && needsEqualHeight
                 ? {
-                    flex: 1,
+                    flex: '0 1 auto',
                     minHeight: 0,
                     display: 'flex',
                     flexDirection: 'column',
-                    overflow: 'hidden',
+                    overflow: 'auto',
                   }
                 : undefined
             }
@@ -301,15 +293,13 @@ function DashboardContent({
           <Box
             key={`chart-${elementId}-${needsEqualHeight}`}
             style={
-              mode === DashboardMode.DASHBOARD &&
-              !exportConfig &&
-              needsEqualHeight
+              mode !== DashboardMode.EDIT && needsEqualHeight
                 ? {
-                    flex: 1,
+                    flex: '0 1 auto',
                     minHeight: 0,
                     display: 'flex',
                     flexDirection: 'column',
-                    overflow: 'hidden',
+                    overflow: 'auto',
                   }
                 : undefined
             }
@@ -424,7 +414,7 @@ function DashboardContent({
         {columns.length > 0 && (
           <Box
             className={
-              mode === DashboardMode.DASHBOARD
+              mode !== DashboardMode.EDIT
                 ? classes.dynamicColumnPreviewLayout
                 : classes.dynamicColumnLayout
             }
@@ -437,8 +427,7 @@ function DashboardContent({
                 ? classes.mapColumn
                 : classes.contentColumn;
               const needsEqualHeight =
-                mode === DashboardMode.DASHBOARD &&
-                !exportConfig &&
+                mode !== DashboardMode.EDIT &&
                 columnsNeedingEqualHeight.has(columnIndex);
 
               return (

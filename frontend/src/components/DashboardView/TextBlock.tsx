@@ -158,6 +158,9 @@ const useStyles = makeStyles(() => ({
     flexDirection: 'column',
     flex: 1,
     minHeight: 0,
+    '& *:last-child': {
+      marginBottom: 0,
+    },
   },
   previewText: {
     fontSize: 14,
