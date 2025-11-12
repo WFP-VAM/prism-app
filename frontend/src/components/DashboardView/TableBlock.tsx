@@ -96,6 +96,7 @@ function TableBlock({
     initialStartDate,
     initialThreshold,
     initialStat,
+    useCache: true,
   });
 
   const { runAnalyser } = useAnalysisExecution(formState, {

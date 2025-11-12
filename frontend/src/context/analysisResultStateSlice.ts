@@ -83,6 +83,16 @@ export type TableData = {
   rows: TableRowType[];
 };
 
+type CachedAnalysisResult = {
+  result: AnalysisResult;
+  timestamp: number;
+  config: AnalysisDispatchParams | PolygonAnalysisDispatchParams;
+};
+
+type AnalysisCache = {
+  [cacheKey: string]: CachedAnalysisResult;
+};
+
 type AnalysisResultState = {
   definition?: TableType;
   tableData?: TableData;
@@ -99,6 +109,8 @@ type AnalysisResultState = {
   exposureAnalysisResultDataSortByKey: Column['id'];
   exposureAnalysisResultDataSortOrder: 'asc' | 'desc';
   invertedColors?: boolean;
+  cache: AnalysisCache;
+  currentCacheKey?: string;
 };
 
 export type TableRow = {
@@ -123,6 +135,8 @@ const initialState: AnalysisResultState = {
   exposureAnalysisResultDataSortOrder: 'asc',
   opacity: 0.5,
   invertedColors: false,
+  cache: {},
+  currentCacheKey: undefined,
 };
 
 /* Gets a public URL for the admin boundaries used by this application.
@@ -351,6 +365,7 @@ export type AnalysisDispatchParams = {
   date: ReturnType<Date['getTime']>; // just a hint to developers that we give a date number here, not just any number
   statistic: AggregationOperations; // we might have to deviate from this if analysis accepts more than what this enum provides
   exposureValue: ExposureValue;
+  useCache?: boolean; // If true, use cache if available, otherwise fetch fresh data
 };
 
 export type PolygonAnalysisDispatchParams = {
@@ -362,6 +377,46 @@ export type PolygonAnalysisDispatchParams = {
   // just a hint to developers that we give a date number here, not just any number
   startDate: ReturnType<Date['getTime']>;
   endDate: ReturnType<Date['getTime']>;
+  useCache?: boolean; // If true, use cache if available, otherwise fetch fresh data
+};
+
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+const MAX_CACHE_SIZE = 4;
+
+export function generateRasterCacheKey(params: AnalysisDispatchParams): string {
+  const {
+    hazardLayer,
+    baselineLayer,
+    date,
+    statistic,
+    threshold,
+    exposureValue,
+  } = params;
+  return `raster_${hazardLayer.id}_${baselineLayer.id}_${date}_${statistic}_${threshold.above ?? ''}_${threshold.below ?? ''}_${exposureValue.operator}_${exposureValue.value}`;
+}
+
+export function generatePolygonCacheKey(
+  params: PolygonAnalysisDispatchParams,
+): string {
+  const { hazardLayer, adminLevel, startDate, endDate } = params;
+  return `polygon_${hazardLayer.id}_${adminLevel}_${startDate}_${endDate}`;
+}
+
+const isCacheStale = (timestamp: number): boolean =>
+  Date.now() - timestamp > CACHE_TTL_MS;
+
+const evictOldestCacheEntry = (cache: AnalysisCache): AnalysisCache => {
+  const entries = Object.entries(cache);
+  if (entries.length < MAX_CACHE_SIZE) {
+    return cache;
+  }
+
+  const oldestEntry = entries.reduce((oldest, current) =>
+    current[1].timestamp < oldest[1].timestamp ? current : oldest,
+  );
+  const oldestKey = oldestEntry[0];
+  const { [oldestKey]: _, ...rest } = cache;
+  return rest;
 };
 
 export type ExposedPopulationDispatchParams = {
@@ -666,6 +721,16 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   AnalysisDispatchParams,
   CreateAsyncThunkTypes
 >('analysisResultState/requestAndStoreAnalysis', async (params, api) => {
+  if (params.useCache) {
+    const cacheKey = generateRasterCacheKey(params);
+    const state = api.getState();
+    const cached = state.analysisResultState.cache[cacheKey];
+
+    if (cached && !isCacheStale(cached.timestamp)) {
+      return cached.result;
+    }
+  }
+
   // Check if the request was aborted before making the expensive API call
   const checkIfRequestWasAborted = () => {
     if (api.signal.aborted) {
@@ -821,7 +886,17 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
   PolygonAnalysisResult,
   PolygonAnalysisDispatchParams,
   CreateAsyncThunkTypes
->('analysisResultState/requestAndStorePolygonAnalysis', async params => {
+>('analysisResultState/requestAndStorePolygonAnalysis', async (params, api) => {
+  if (params.useCache) {
+    const cacheKey = generatePolygonCacheKey(params);
+    const state = api.getState();
+    const cached = state.analysisResultState.cache[cacheKey];
+
+    if (cached && !isCacheStale(cached.timestamp)) {
+      return cached.result as PolygonAnalysisResult;
+    }
+  }
+
   const {
     adminLevel,
     adminLevelLayer,
@@ -923,73 +998,62 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
 export const analysisResultSlice = createSlice({
   name: 'analysisResultState',
   initialState,
+  /* eslint-disable no-param-reassign, fp/no-mutation */
   reducers: {
     setAnalysisResultSortByKey: (
       state,
       { payload }: PayloadAction<string | number>,
-    ) => ({
-      ...state,
-      analysisResultDataSortByKey: payload,
-    }),
+    ) => {
+      state.analysisResultDataSortByKey = payload;
+    },
     setAnalysisResultSortOrder: (
       state,
       { payload }: PayloadAction<'asc' | 'desc'>,
-    ) => ({
-      ...state,
-      analysisResultDataSortOrder: payload,
-    }),
+    ) => {
+      state.analysisResultDataSortOrder = payload;
+    },
     setExposureAnalysisResultSortByKey: (
       state,
       { payload }: PayloadAction<string | number>,
-    ) => ({
-      ...state,
-      exposureAnalysisResultDataSortByKey: payload,
-    }),
+    ) => {
+      state.exposureAnalysisResultDataSortByKey = payload;
+    },
     setExposureAnalysisResultSortOrder: (
       state,
       { payload }: PayloadAction<'asc' | 'desc'>,
-    ) => ({
-      ...state,
-      exposureAnalysisResultDataSortOrder: payload,
-    }),
-    setAnalysisLayerOpacity: (state, { payload }: PayloadAction<number>) => ({
-      ...state,
-      opacity: payload,
-    }),
-    setIsMapLayerActive: (state, { payload }: PayloadAction<boolean>) => ({
-      ...state,
-      isMapLayerActive: payload,
-    }),
-    setExposureLayerId: (state, { payload }: PayloadAction<string>) => ({
-      ...state,
-      exposureLayerId: payload,
-    }),
+    ) => {
+      state.exposureAnalysisResultDataSortOrder = payload;
+    },
+    setAnalysisLayerOpacity: (state, { payload }: PayloadAction<number>) => {
+      state.opacity = payload;
+    },
+    setIsMapLayerActive: (state, { payload }: PayloadAction<boolean>) => {
+      state.isMapLayerActive = payload;
+    },
+    setExposureLayerId: (state, { payload }: PayloadAction<string>) => {
+      state.exposureLayerId = payload;
+    },
     setIsDataTableDrawerActive: (
       state,
       { payload }: PayloadAction<boolean>,
-    ) => ({
-      ...state,
-      isDataTableDrawerActive: payload,
-    }),
+    ) => {
+      state.isDataTableDrawerActive = payload;
+    },
     setCurrentDataDefinition: (
       state,
       { payload }: PayloadAction<TableType>,
-    ) => ({
-      ...state,
-      definition: payload,
-    }),
-    hideDataTableDrawer: state => ({
-      ...state,
-      isDataTableDrawerActive: false,
-    }),
-    analysisLayerInvertColors: state => ({
-      ...state,
-      invertedColors: !state.invertedColors,
-    }),
-    clearAnalysisResult: state => ({
-      ...state,
-      result: undefined,
-    }),
+    ) => {
+      state.definition = payload;
+    },
+    hideDataTableDrawer: state => {
+      state.isDataTableDrawerActive = false;
+    },
+    analysisLayerInvertColors: state => {
+      state.invertedColors = !state.invertedColors;
+    },
+    clearAnalysisResult: state => {
+      state.result = undefined;
+    },
   },
   extraReducers: builder => {
     builder.addCase(
@@ -997,7 +1061,7 @@ export const analysisResultSlice = createSlice({
       (
         { result: _result, ...rest },
         { payload }: PayloadAction<AnalysisResult>,
-      ): AnalysisResultState => ({
+      ) => ({
         ...rest,
         result: payload as ExposedPopulationResult,
         isExposureLoading: false,
@@ -1006,7 +1070,7 @@ export const analysisResultSlice = createSlice({
 
     builder.addCase(
       requestAndStoreExposedPopulation.rejected,
-      (state, action): AnalysisResultState => ({
+      (state, action) => ({
         ...state,
         isExposureLoading: false,
         error: action.error.message
@@ -1015,60 +1079,100 @@ export const analysisResultSlice = createSlice({
       }),
     );
 
-    builder.addCase(
-      requestAndStoreExposedPopulation.pending,
-      (state): AnalysisResultState => ({
-        ...state,
-        isExposureLoading: true,
-      }),
-    );
+    builder.addCase(requestAndStoreExposedPopulation.pending, state => ({
+      ...state,
+      isExposureLoading: true,
+    }));
 
-    builder.addCase(
-      requestAndStoreAnalysis.fulfilled,
-      (
-        { result: _result, ...rest },
-        { payload }: PayloadAction<AnalysisResult>,
-      ): AnalysisResultState => ({
-        ...rest,
+    builder.addCase(requestAndStoreAnalysis.fulfilled, (state, action) => {
+      const { payload, meta } = action;
+      const currentCache = state.cache;
+      const cacheKey = generateRasterCacheKey(meta.arg);
+      const existingCached = currentCache[cacheKey];
+      const isAlreadyCached =
+        existingCached && !isCacheStale(existingCached.timestamp);
+
+      if (isAlreadyCached) {
+        return {
+          ...state,
+          isLoading: false,
+          result: payload,
+          currentCacheKey: cacheKey,
+        };
+      }
+
+      // New result - update cache
+      const evictedCache = evictOldestCacheEntry(currentCache);
+      return {
+        ...state,
+        cache: {
+          ...evictedCache,
+          [cacheKey]: {
+            result: payload,
+            timestamp: Date.now(),
+            config: meta.arg,
+          },
+        },
         isLoading: false,
-        result: payload as BaselineLayerResult,
-      }),
-    );
+        result: payload,
+        currentCacheKey: cacheKey,
+      };
+    });
 
-    builder.addCase(
-      requestAndStoreAnalysis.rejected,
-      (state, action): AnalysisResultState => ({
-        ...state,
-        isLoading: false,
-        error: action.error.message
-          ? action.error.message
-          : action.error.toString(),
-      }),
-    );
+    builder.addCase(requestAndStoreAnalysis.rejected, (state, action) => ({
+      ...state,
+      isLoading: false,
+      error: action.error.message
+        ? action.error.message
+        : action.error.toString(),
+    }));
 
-    builder.addCase(
-      requestAndStoreAnalysis.pending,
-      (state): AnalysisResultState => ({
-        ...state,
-        isLoading: true,
-      }),
-    );
+    builder.addCase(requestAndStoreAnalysis.pending, state => ({
+      ...state,
+      isLoading: true,
+    }));
 
     builder.addCase(
       requestAndStorePolygonAnalysis.fulfilled,
-      (
-        { result: _result, ...rest },
-        { payload }: PayloadAction<PolygonAnalysisResult>,
-      ): AnalysisResultState => ({
-        ...rest,
-        isLoading: false,
-        result: payload as PolygonAnalysisResult,
-      }),
+      (state, action) => {
+        const { payload, meta } = action;
+        const currentCache = state.cache;
+        const cacheKey = generatePolygonCacheKey(meta.arg);
+        const existingCached = currentCache[cacheKey];
+        const isAlreadyCached =
+          existingCached && !isCacheStale(existingCached.timestamp);
+
+        if (isAlreadyCached) {
+          return {
+            ...state,
+            isLoading: false,
+            result: payload,
+            currentCacheKey: cacheKey,
+          };
+        }
+
+        // New result - update cache
+        const evictedCache = evictOldestCacheEntry(currentCache);
+        return {
+          ...state,
+          cache: {
+            ...evictedCache,
+            [cacheKey]: {
+              result: payload,
+              timestamp: Date.now(),
+              config: meta.arg,
+            },
+          },
+          isLoading: false,
+          result: payload,
+          currentCacheKey: cacheKey,
+        };
+      },
     );
 
     builder.addCase(
       requestAndStorePolygonAnalysis.rejected,
-      (state, action): AnalysisResultState => ({
+      (state, action) => ({
         ...state,
         isLoading: false,
         error: action.error.message
@@ -1077,14 +1181,12 @@ export const analysisResultSlice = createSlice({
       }),
     );
 
-    builder.addCase(
-      requestAndStorePolygonAnalysis.pending,
-      (state): AnalysisResultState => ({
-        ...state,
-        isLoading: true,
-      }),
-    );
+    builder.addCase(requestAndStorePolygonAnalysis.pending, state => ({
+      ...state,
+      isLoading: true,
+    }));
   },
+  /* eslint-enable no-param-reassign, fp/no-mutation */
 });
 
 // Getters
@@ -1097,6 +1199,19 @@ export const getCurrentData = (state: RootState): TableData =>
 export const analysisResultSelector = (
   state: RootState,
 ): AnalysisResult | undefined => state.analysisResultState.result;
+
+export const getCachedAnalysisResult =
+  (cacheKey: string | undefined) =>
+  (state: RootState): AnalysisResult | undefined => {
+    if (!cacheKey) {
+      return undefined;
+    }
+    const cached = state.analysisResultState.cache[cacheKey];
+    if (!cached || isCacheStale(cached.timestamp)) {
+      return undefined;
+    }
+    return cached.result;
+  };
 
 export const analysisResultSortByKeySelector = (
   state: RootState,
