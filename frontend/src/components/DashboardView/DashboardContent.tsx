@@ -58,6 +58,8 @@ interface DashboardContentProps {
   onEditClick?: () => void;
 }
 
+const GAP = 16;
+
 /**
  * Shared component for rendering dashboard content in preview mode.
  * Used by both DashboardView (preview mode) and DashboardExportPreview.
@@ -84,87 +86,197 @@ function DashboardContent({
   const dispatch = useDispatch();
   const syncEnabled = useSelector(dashboardSyncEnabledSelector);
 
-  // Column Height Management
-  //  - if column exceeds the height of the container, set all components in the column to the same height
-  //  - if column doesn't exceed the height of the container, allow each component to be a different height
-  const [columnsNeedingEqualHeight, setColumnsNeedingEqualHeight] = useState<
-    Set<number>
-  >(new Set());
+  // Column Height Management with dynamic redistribution
+  // Logic:
+  // 1. If components fit naturally, use natural heights
+  // 2. If components overflow, distribute space intelligently:
+  //    - Components needing less than equal share get their natural height
+  //    - Unused space is redistributed to larger components
+  //    - Only overflowing components get scroll
+  const [componentHeights, setComponentHeights] = useState<
+    Map<string, { flex: string; overflow: 'auto' | 'visible' }>
+  >(new Map());
   const columnRefs = useRef<Map<number, HTMLDivElement>>(new Map());
+  const componentRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const checkTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const previousHeightsRef = useRef<
+    Map<string, { flex: string; overflow: 'auto' | 'visible' }>
+  >(new Map());
 
-  // Check for overflow in columns and update equal height state
+  // Calculate dynamic component heights based on content and available space
   useEffect(() => {
     if (mode === DashboardMode.EDIT || columns.length === 0) {
-      setColumnsNeedingEqualHeight(new Set());
+      setComponentHeights(new Map());
+      previousHeightsRef.current = new Map();
       return;
     }
 
-    const checkOverflow = () => {
-      const newSet = new Set<number>();
+    const calculateHeights = () => {
+      const newHeights = new Map<
+        string,
+        { flex: string; overflow: 'auto' | 'visible' }
+      >();
 
-      columnRefs.current.forEach((element, columnIndex) => {
-        if (!element) {
-          return;
-        }
-
-        const column = columns[columnIndex];
+      columnRefs.current.forEach((columnElement, columnIndex) => {
+        const column = columns?.[columnIndex];
+        // Single component (including maps) takes natural height
         if (!column || column.length <= 1) {
           return;
         }
 
-        // Check if column content overflows
-        const { scrollHeight, clientHeight } = element;
-        const threshold = 50;
-        const isOverflowing = scrollHeight > clientHeight + threshold;
-        const isCloseToFitting =
-          Math.abs(scrollHeight - clientHeight) <= threshold;
+        const columnHeight = columnElement.clientHeight;
+        const availableHeight = columnHeight - GAP * (column.length - 1);
 
-        if (isOverflowing) {
-          // Definitely needs equal height
-          newSet.add(columnIndex);
-        } else if (
-          isCloseToFitting &&
-          columnsNeedingEqualHeight.has(columnIndex)
-        ) {
-          // Close call - maintain equal heights
-          newSet.add(columnIndex);
+        // Measure natural heights of all components in this column
+        const tempComponentHeights: Array<{
+          id: string;
+          naturalHeight: number;
+        }> = [];
+
+        let totalNaturalHeight = 0;
+
+        column.forEach((_, elementIndex) => {
+          const componentId = `${columnIndex}-${elementIndex}`;
+          const componentElement = componentRefs.current.get(componentId);
+
+          if (componentElement) {
+            // Temporarily remove constraints to get true natural height
+            const currentStyle = componentElement.style.cssText;
+            componentElement.style.flex = ''; // eslint-disable-line fp/no-mutation
+            componentElement.style.overflow = ''; // eslint-disable-line fp/no-mutation
+            componentElement.style.minHeight = ''; // eslint-disable-line fp/no-mutation
+            const naturalHeight = componentElement.scrollHeight;
+
+            // Restore original styles
+            // eslint-disable-next-line fp/no-mutation
+            componentElement.style.cssText = currentStyle;
+
+            // eslint-disable-next-line fp/no-mutating-methods
+            tempComponentHeights.push({
+              id: componentId,
+              naturalHeight,
+            });
+            // eslint-disable-next-line fp/no-mutation
+            totalNaturalHeight += naturalHeight;
+          }
+        });
+
+        // If total natural height fits, let components use natural heights
+        if (totalNaturalHeight <= availableHeight) {
+          return;
         }
-        // Otherwise don't add (content clearly fits)
+
+        // COMPONENTS EXCEED COLUMN HEIGHT - apply distribution logic
+        const numComponents = column.length;
+        const equalShare = availableHeight / numComponents;
+
+        // First pass: identify which components need less than equal share
+        const smallComponents: Array<{ id: string; height: number }> = [];
+        const largeComponents: Array<{ id: string; height: number }> = [];
+        let unusedSpace = 0;
+
+        tempComponentHeights.forEach(({ id, naturalHeight }) => {
+          if (naturalHeight <= equalShare) {
+            // eslint-disable-next-line fp/no-mutating-methods
+            smallComponents.push({ id, height: naturalHeight });
+            // eslint-disable-next-line fp/no-mutation
+            unusedSpace += equalShare - naturalHeight;
+          } else {
+            // eslint-disable-next-line fp/no-mutating-methods
+            largeComponents.push({ id, height: naturalHeight });
+          }
+        });
+
+        const redistributedHeight =
+          largeComponents.length > 0
+            ? equalShare + unusedSpace / largeComponents.length
+            : equalShare;
+
+        // Set flex values for each component
+        tempComponentHeights.forEach(({ id, naturalHeight }) => {
+          if (naturalHeight <= equalShare) {
+            // Small component: use natural height (no scroll)
+            const flexBasis = `${naturalHeight}px`;
+            newHeights.set(id, {
+              flex: `0 0 ${flexBasis}`,
+              overflow: 'visible',
+            });
+          } else {
+            // Large component: use redistributed height (with scroll)
+            const flexBasis = `${redistributedHeight}px`;
+            newHeights.set(id, {
+              flex: `0 0 ${flexBasis}`,
+              overflow: 'auto',
+            });
+          }
+        });
       });
 
-      // Only update state if the set actually changed
-      setColumnsNeedingEqualHeight(prevSet => {
-        // eslint-disable-next-line fp/no-mutating-methods
-        const prevArray = [...Array.from(prevSet)].sort();
-        // eslint-disable-next-line fp/no-mutating-methods
-        const newArray = [...Array.from(newSet)].sort();
-        const hasChanged =
-          prevArray.length !== newArray.length ||
-          prevArray.some((val, idx) => val !== newArray[idx]);
+      const prevHeights = previousHeightsRef.current;
 
-        return hasChanged ? newSet : prevSet;
-      });
+      // Helper to extract numeric value from flex string (e.g., "0 0 500px" -> 500)
+      const getFlexBasis = (flexStr: string): number => {
+        const match = flexStr.match(/(\d+(?:\.\d+)?)px/);
+        return match ? parseFloat(match[1]) : 0;
+      };
+
+      // Check if heights meaningfully changed
+      const threshold = 5;
+      const hasChanged =
+        newHeights.size !== prevHeights.size ||
+        Array.from(newHeights.entries()).some(([id, config]) => {
+          const oldConfig = prevHeights.get(id);
+          if (!oldConfig) {
+            return true;
+          }
+          if (oldConfig.overflow !== config.overflow) {
+            return true;
+          }
+          // Compare flex-basis values with threshold
+          const oldBasis = getFlexBasis(oldConfig.flex);
+          const newBasis = getFlexBasis(config.flex);
+          return Math.abs(oldBasis - newBasis) > threshold;
+        });
+
+      if (hasChanged) {
+        previousHeightsRef.current = newHeights;
+        setComponentHeights(newHeights);
+      }
     };
 
     const debouncedCheck = () => {
       if (checkTimeoutRef.current) {
         clearTimeout(checkTimeoutRef.current);
       }
-      checkTimeoutRef.current = setTimeout(checkOverflow, 100);
+      checkTimeoutRef.current = setTimeout(calculateHeights, 100);
     };
 
     // Initial checks with multiple delays to catch async content loading
     const timeoutIds: NodeJS.Timeout[] = [];
     [100, 500, 1000].forEach(delay => {
-      const timeoutId = setTimeout(checkOverflow, delay);
+      const timeoutId = setTimeout(calculateHeights, delay);
       // eslint-disable-next-line fp/no-mutating-methods
       timeoutIds.push(timeoutId);
     });
 
-    // ResizeObserver for to check for overflow (catches content loading too)
+    // Observe COLUMNS for resize events (skip map columns)
     const observers: ResizeObserver[] = [];
-    columnRefs.current.forEach(element => {
+    columnRefs.current.forEach((element, columnIndex) => {
+      if (!element) {
+        return;
+      }
+      const column = columns[columnIndex];
+      if (!column || column.length <= 1) {
+        return;
+      }
+      const observer = new ResizeObserver(debouncedCheck);
+      observer.observe(element);
+      // eslint-disable-next-line fp/no-mutating-methods
+      observers.push(observer);
+    });
+
+    // Observe COMPONENTS for content changes
+    componentRefs.current.forEach(element => {
       if (!element) {
         return;
       }
@@ -186,15 +298,39 @@ function DashboardContent({
         observer.disconnect();
       });
     };
-  }, [mode, exportConfig, columns, columnsNeedingEqualHeight]);
+  }, [mode, exportConfig, columns]);
 
   const renderElement = (
     element: DashboardElements,
     columnIndex: number,
     elementIndex: number,
-    needsEqualHeight: boolean,
   ) => {
     const elementId = `${columnIndex}-${elementIndex}`;
+    const heightConfig = componentHeights.get(elementId);
+
+    // Common wrapper style for non-map elements
+    const getWrapperStyle = () => {
+      if (mode === DashboardMode.EDIT || !heightConfig) {
+        return undefined;
+      }
+
+      return {
+        flex: heightConfig.flex,
+        minHeight: 0,
+        display: 'flex',
+        flexDirection: 'column' as const,
+        overflow: heightConfig.overflow,
+      };
+    };
+
+    // Common ref handler
+    const handleRef = (el: HTMLDivElement | null) => {
+      if (el) {
+        componentRefs.current.set(elementId, el);
+      } else {
+        componentRefs.current.delete(elementId);
+      }
+    };
 
     switch (element.type) {
       case DashboardElementType.MAP:
@@ -234,42 +370,24 @@ function DashboardContent({
         );
       case DashboardElementType.TEXT:
         return (
-          <Box
+          <div
             key={`text-${elementId}`}
-            style={
-              mode !== DashboardMode.EDIT && needsEqualHeight
-                ? {
-                    flex: '0 1 auto',
-                    minHeight: 0,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    overflow: 'auto',
-                  }
-                : undefined
-            }
+            ref={handleRef}
+            style={getWrapperStyle()}
           >
             <TextBlock
               content={element.content || ''}
               columnIndex={columnIndex}
               elementIndex={elementIndex}
             />
-          </Box>
+          </div>
         );
       case DashboardElementType.TABLE:
         return (
-          <Box
+          <div
             key={`table-${elementId}`}
-            style={
-              mode !== DashboardMode.EDIT && needsEqualHeight
-                ? {
-                    flex: '0 1 auto',
-                    minHeight: 0,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    overflow: 'auto',
-                  }
-                : undefined
-            }
+            ref={handleRef}
+            style={getWrapperStyle()}
           >
             <TableBlock
               index={elementIndex}
@@ -286,23 +404,14 @@ function DashboardContent({
               sortColumn={element.sortColumn}
               sortOrder={element.sortOrder}
             />
-          </Box>
+          </div>
         );
       case DashboardElementType.CHART:
         return (
-          <Box
-            key={`chart-${elementId}-${needsEqualHeight}`}
-            style={
-              mode !== DashboardMode.EDIT && needsEqualHeight
-                ? {
-                    flex: '0 1 auto',
-                    minHeight: 0,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    overflow: 'auto',
-                  }
-                : undefined
-            }
+          <div
+            key={`chart-${elementId}`}
+            ref={handleRef}
+            style={getWrapperStyle()}
           >
             <ChartBlock
               index={elementIndex}
@@ -314,7 +423,7 @@ function DashboardContent({
               chartHeight={element.chartHeight}
               allowDownload={!exportConfig}
             />
-          </Box>
+          </div>
         );
       default:
         return null;
@@ -426,9 +535,6 @@ function DashboardContent({
               const columnClass = hasMapElements
                 ? classes.mapColumn
                 : classes.contentColumn;
-              const needsEqualHeight =
-                mode !== DashboardMode.EDIT &&
-                columnsNeedingEqualHeight.has(columnIndex);
 
               return (
                 <Box
@@ -453,12 +559,7 @@ function DashboardContent({
                     }}
                   >
                     {column.map((element, elementIndex) =>
-                      renderElement(
-                        element,
-                        columnIndex,
-                        elementIndex,
-                        needsEqualHeight,
-                      ),
+                      renderElement(element, columnIndex, elementIndex),
                     )}
                   </div>
                 </Box>
@@ -488,7 +589,7 @@ const useStyles = makeStyles(() => ({
     flex: 1, // Smaller for columns without maps
     display: 'flex',
     flexDirection: 'column',
-    gap: 16,
+    gap: GAP,
     minWidth: 0,
     minHeight: 0,
     overflow: 'hidden',
@@ -497,7 +598,7 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     padding: 16,
     margin: '0 16px 16px 16px',
-    gap: 16,
+    gap: GAP,
     flex: 1,
     overflow: 'auto',
     paddingBottom: 80, // Add extra padding to account for fixed toolbar
@@ -506,7 +607,7 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     padding: 0,
     margin: 0,
-    gap: 16,
+    gap: GAP,
     flex: 1,
     overflow: 'hidden',
     minHeight: 0,
@@ -535,7 +636,7 @@ const useStyles = makeStyles(() => ({
     margin: '16px 0',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: '16px',
+    gap: GAP,
     flexWrap: 'wrap',
   },
   titleSectionEdit: {
@@ -544,7 +645,7 @@ const useStyles = makeStyles(() => ({
     margin: '16px 16px -48px 16px',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: '16px',
+    gap: GAP,
     flexWrap: 'wrap',
   },
   logo: {
