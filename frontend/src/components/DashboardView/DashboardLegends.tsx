@@ -22,13 +22,7 @@ const DashboardLegends = memo(
       exportConfig?.toggles?.legendVisibility ?? legendVisible ?? true;
     // Convert position: exportConfig uses 0=left/1=right, map state uses 'left'/'right'
     const exportPosition = exportConfig?.legendPosition;
-    const position =
-      // eslint-disable-next-line no-nested-ternary
-      exportPosition !== undefined
-        ? exportPosition
-        : legendPosition === 'left'
-          ? 0
-          : 1; // default right (1)
+    const position = exportPosition ?? (legendPosition === 'left' ? 0 : 1); // default right (1)
     const scale = exportConfig?.legendScale ?? 0; // default 100% (0 means no reduction)
 
     if (!isVisible) {
@@ -39,8 +33,8 @@ const DashboardLegends = memo(
       <aside
         className={classes.container}
         style={{
-          left: position % 2 === 0 ? '8px' : 'auto',
-          right: position % 2 === 0 ? 'auto' : '24px',
+          left: position % 2 === 0 ? '12px' : 'auto',
+          right: position % 2 === 0 ? 'auto' : '12px',
           transform: `scale(${1 - scale})`,
           transformOrigin: position % 2 === 0 ? 'top left' : 'top right',
         }}
