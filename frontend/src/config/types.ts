@@ -1084,6 +1084,8 @@ export interface DashboardMapConfig {
   mapPosition?: DashboardMapPosition;
   minMapBounds?: number[];
   title?: string;
+  legendVisible?: boolean; // default: true - can be set in prism.json
+  legendPosition?: 'left' | 'right'; // default: 'right' - can be set in prism.json
   preSelectedMapLayers: Array<{
     layerId: string;
     opacity?: number;

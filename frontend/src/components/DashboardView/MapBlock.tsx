@@ -9,7 +9,11 @@ import {
   IconButton,
   Tooltip,
   TextField,
+  Icon,
 } from '@material-ui/core';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import Switch from 'components/Common/Switch';
 import ImageIcon from '@material-ui/icons/Image';
 import { Source, Layer } from 'react-map-gl/maplibre';
 import html2canvas from 'html2canvas';
@@ -26,6 +30,9 @@ import {
   selectedDashboardIndexSelector,
   setCapturedViewport,
   dashboardModeSelector,
+  dashboardMapStateSelector,
+  setLegendVisible,
+  setLegendPosition,
 } from 'context/dashboardStateSlice';
 import useLayers from 'utils/layers-utils';
 import { getNonBoundaryLayers } from 'utils/boundary-layers-utils';
@@ -53,6 +60,25 @@ import type { ExportConfig } from './DashboardContent';
 // eslint-disable-next-line fp/no-mutating-methods
 const displayedBoundaryLayers = getDisplayBoundaryLayers().reverse();
 
+const legendPositionOptions = [
+  {
+    value: 0,
+    comp: (
+      <Icon style={{ color: 'black', transform: 'rotate(90deg)' }}>
+        vertical_align_bottom
+      </Icon>
+    ),
+  },
+  {
+    value: 1,
+    comp: (
+      <Icon style={{ color: 'black', transform: 'rotate(270deg)' }}>
+        vertical_align_bottom
+      </Icon>
+    ),
+  },
+];
+
 interface MapBlockProps {
   exportConfig?: ExportConfig;
   elementId: string;
@@ -65,6 +91,7 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
   const { actions, maplibreMap, layers, dateRange, mapTitle } = useMapState();
   const datesLoading = useSelector(areDatesLoading);
   const mode = useSelector(dashboardModeSelector);
+  const mapState = useSelector(dashboardMapStateSelector(elementId));
   useDashboardMapSync(mode);
   const map = maplibreMap();
   const datesPreloadingForWMS = useSelector(WMSLayerDatesRequested);
@@ -72,6 +99,11 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
   const dispatch = useDispatch();
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
+
+  const legendVisible = mapState?.legendVisible ?? true;
+  const legendPosition = mapState?.legendPosition ?? 'right';
+  // Convert 'left'/'right' to 0/1 for ToggleButtonGroup
+  const legendPositionValue = legendPosition === 'left' ? 0 : 1;
 
   const nonBoundaryLayers = getNonBoundaryLayers(layers);
 
@@ -112,22 +144,6 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
       console.error('Error downloading map:', error);
     }
   };
-
-  if (mode === DashboardMode.PREVIEW) {
-    const canvas = map?.getCanvas();
-    if (canvas) {
-      // eslint-disable-next-line fp/no-mutation
-      canvas.style.cursor = 'default';
-    }
-  }
-
-  if (mode === DashboardMode.EDIT) {
-    const canvas = map?.getCanvas();
-    if (canvas) {
-      // eslint-disable-next-line fp/no-mutation
-      canvas.style.cursor = 'inherit';
-    }
-  }
 
   useEffect(() => {
     if (!datesPreloadingForPointData) {
@@ -213,6 +229,27 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
     }
   };
 
+  const handleLegendVisibleChange = (
+    _event: React.ChangeEvent<HTMLInputElement>,
+    checked: boolean,
+  ) => {
+    dispatch(setLegendVisible({ elementId, visible: checked }));
+  };
+
+  const handleLegendPositionChange = (
+    _event: React.MouseEvent<HTMLElement>,
+    value: number,
+  ) => {
+    if (value !== null) {
+      dispatch(
+        setLegendPosition({
+          elementId,
+          position: value === 0 ? 'left' : 'right',
+        }),
+      );
+    }
+  };
+
   return (
     <>
       {mode === DashboardMode.EDIT && (
@@ -238,6 +275,54 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
       >
         {mode === DashboardMode.EDIT && (
           <div className={classes.leftPanel}>
+            <Box className={classes.legendSettingsContainer}>
+              <Box className={classes.legendToggleWrapper}>
+                <Box
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Switch
+                    checked={legendVisible}
+                    onChange={handleLegendVisibleChange}
+                    title={t('Legend')}
+                  />
+                </Box>
+
+                {legendVisible && (
+                  <Box className={classes.legendPositionWrapper}>
+                    <Typography
+                      component="h4"
+                      style={{
+                        textAlign: 'start',
+                        marginRight: '0.5rem',
+                        color: 'black',
+                      }}
+                    >
+                      {t('Position')}
+                    </Typography>
+                    <ToggleButtonGroup
+                      value={legendPositionValue}
+                      exclusive
+                      onChange={handleLegendPositionChange}
+                      className={classes.toggleButtonGroup}
+                    >
+                      {legendPositionOptions.map(option => (
+                        <ToggleButton
+                          key={option.value}
+                          className={classes.toggleButton}
+                          value={option.value}
+                        >
+                          {option.comp}
+                        </ToggleButton>
+                      ))}
+                    </ToggleButtonGroup>
+                  </Box>
+                )}
+              </Box>
+            </Box>
             <RootAccordionItems />
           </div>
         )}
@@ -304,7 +389,13 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
                 </Source>
               ) : null}
             </MapComponent>
-            {!datesLoading && <DashboardLegends exportConfig={exportConfig} />}
+            {!datesLoading && (
+              <DashboardLegends
+                exportConfig={exportConfig}
+                legendVisible={legendVisible}
+                legendPosition={legendPosition}
+              />
+            )}
           </div>
           {mode === DashboardMode.EDIT &&
             selectedLayersWithDateSupport.length > 0 &&
@@ -375,6 +466,12 @@ const useStyles = makeStyles(() =>
       borderBottom: '1px solid #e0e0e0',
       backgroundColor: '#fff',
     },
+    legendSettingsContainer: {
+      padding: '12px',
+      marginBottom: '8px',
+      borderBottom: '1px solid #e0e0e0',
+      backgroundColor: '#fff',
+    },
     titleLabel: {
       marginBottom: '6px',
       fontSize: '14px',
@@ -384,6 +481,36 @@ const useStyles = makeStyles(() =>
       '& .MuiOutlinedInput-input': {
         padding: '8px 12px',
       },
+    },
+    legendToggleWrapper: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      '& h4': {
+        fontSize: '13px',
+      },
+    },
+    legendPositionWrapper: {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginLeft: '16px',
+      '& h4': {
+        fontSize: '13px',
+        margin: 0,
+        marginRight: '0.5rem',
+      },
+    },
+    toggleButtonGroup: {
+      display: 'flex',
+    },
+    toggleButton: {
+      backgroundColor: 'white',
+      height: '32px',
+      width: '36px',
+      padding: '4px',
+      fontSize: '0.8rem',
+      borderLeft: '1px solid rgba(0, 0, 0, 0.12) !important',
     },
     rightPanel: {
       flex: '0 0 66.667%',

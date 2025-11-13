@@ -16,16 +16,18 @@ function BlockPreviewHeader({
 
   return (
     <Box className={classes.previewHeader}>
-      <Typography variant="h2" className={classes.previewTitle}>
-        {title}
-      </Typography>
+      <Box className={classes.leftColumn}>
+        <Typography variant="h3" className={classes.previewTitle}>
+          {title}
+        </Typography>
+        {subtitle && (
+          <Typography variant="body1" className={classes.previewSubtitle}>
+            - {subtitle}
+          </Typography>
+        )}
+      </Box>
       {downloadActions && (
         <Box className={classes.downloadActions}>{downloadActions}</Box>
-      )}
-      {subtitle && (
-        <Typography variant="body1" className={classes.previewDate}>
-          {subtitle}
-        </Typography>
       )}
     </Box>
   );
@@ -34,25 +36,34 @@ function BlockPreviewHeader({
 const useStyles = makeStyles(theme => ({
   previewHeader: {
     display: 'flex',
-    flexWrap: 'wrap',
     alignItems: 'center',
     marginBottom: theme.spacing(2),
-    rowGap: theme.spacing(0.5),
-    columnGap: theme.spacing(0.5),
+    gap: theme.spacing(1),
+  },
+  leftColumn: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    flex: '1 1 auto',
+    minWidth: 0,
+    gap: theme.spacing(1),
   },
   previewTitle: {
+    fontWeight: 'bold',
+    wordWrap: 'break-word',
     flex: '0 1 auto',
-    minWidth: 0,
+  },
+  previewSubtitle: {
+    fontSize: '0.875rem',
+    wordWrap: 'break-word',
+    flex: '0 1 auto',
   },
   downloadActions: {
     display: 'flex',
     alignItems: 'center',
     flex: '0 0 auto',
-  },
-  previewDate: {
-    flex: '0 1 auto',
-    fontSize: '0.875rem',
-    marginLeft: 'auto',
+    flexShrink: 0,
   },
 }));
 
