@@ -50,7 +50,7 @@ function diffInDays(date1: Date, date2: Date) {
 
   const differenceInMs = Math.abs(date1InMs - date2InMs);
 
-  const diff = Math.floor(differenceInMs / (1000 * 60 * 60 * 24));
+  const diff = Math.floor(differenceInMs / millisecondsInADay);
 
   return diff;
 }

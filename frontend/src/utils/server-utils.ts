@@ -353,6 +353,11 @@ async function generateIntermediateDateItemFromDataFile(
   return generateDateItemsRange(rangesWithoutMissing);
 }
 
+/**
+ * Returns the start and end date for the given reference date
+ * and Validity or CoverageWindow. Do not use this function
+ * directly, instead use one of the strongly typed ones below.
+ */
 function getStartAndEndDateFromValidityOrCoverageDefinition(
   date: ReferenceDateTimestamp,
   definition: CoverageWindow | Validity,
@@ -372,7 +377,6 @@ function getStartAndEndDateFromValidityOrCoverageDefinition(
     // Dekads are 10-day periods, so we adjust dates accordingly
   } else if (mode === DatesPropagation.DEKAD) {
     const DekadStartingDays = [1, 11, 21];
-    // this is not the month, but the dekad
     const startDayOfTheDekad = startDate.getDate();
     if (!DekadStartingDays.includes(startDayOfTheDekad)) {
       throw Error(
@@ -392,9 +396,9 @@ function getStartAndEndDateFromValidityOrCoverageDefinition(
       endDate.setDate(endDate.getDate() - 1);
     }
     if (backward) {
-      const newDekadStartIndex = (dekadStartIndex - backward + 3) % 3;
+      const newDekadStartIndex: number = (dekadStartIndex - backward + 3) % 3;
       const nMonthsBackward = Math.floor((dekadStartIndex - backward) / 3);
-      startDate.setDate(DekadStartingDays[newDekadStartIndex]);
+      startDate.setDate(DekadStartingDays.at(newDekadStartIndex)!);
       startDate.setMonth(startDate.getMonth() + nMonthsBackward);
     }
   } else if (mode === DatesPropagation.SEASON) {
@@ -405,8 +409,7 @@ function getStartAndEndDateFromValidityOrCoverageDefinition(
         endDate.setTime(seasonBounds.end.getTime());
       } else {
         console.warn(`No season found for date: ${startDate.toISOString()}`);
-        // TODO: how do we handle this properly?
-        // return [];
+        throw Error('No season found');
       }
     } else {
       const { start, end } = getSeasonBounds(startDate) as SeasonBounds;
@@ -462,12 +465,12 @@ export function generateIntermediateDateItemFromValidity(
   // eslint-disable-next-line fp/no-mutating-methods
   const sortedDates = [...dates].sort((a, b) => a - b);
 
-  // only calculate validity for dates that are less than 5 years old
+  // only calculate validity and coverage for dates that are less than 5 years old
   const EXTENDED_VALIDITY_YEARS = 5;
   const fiveYearsInMs = EXTENDED_VALIDITY_YEARS * 365 * oneDayInMs;
   const earliestDate = Date.now() - fiveYearsInMs;
 
-  const dateItemsWithValidity = sortedDates
+  const dateItems = sortedDates
     .map(d => {
       const date = new Date(d);
       date.setUTCHours(12, 0, 0, 0);
@@ -498,10 +501,20 @@ export function generateIntermediateDateItemFromValidity(
       );
 
       // Determine the start and end of the validity period
-      const { validityStart, validityEnd } = getStartAndEndDateFromValidity(
-        dateGetTime as ReferenceDateTimestamp,
-        validity,
-      );
+      let validityStart;
+      let validityEnd;
+      try {
+        // eslint-disable-next-line fp/no-mutation
+        ({ validityStart, validityEnd } = getStartAndEndDateFromValidity(
+          dateGetTime as ReferenceDateTimestamp,
+          validity,
+        ));
+      } catch (e) {
+        if (e instanceof Error && e.message === 'No season found') {
+          return [];
+        }
+        throw e;
+      }
       // We create an array with the diff between the endDate and startDate and we create an array with the addition of the days in the startDate
       const daysToAdd: number[] = generateDatesRange(
         new Date(validityStart),
@@ -522,10 +535,10 @@ export function generateIntermediateDateItemFromValidity(
       return [...acc, ...dateItemsToAdd];
     }, []);
 
-  // We sort the defaultDateItems and the dateItemsWithValidity and we order by displayDate to filter the duplicates
+  // We sort the defaultDateItems and the dateItems and we order by displayDate to filter the duplicates
   // or the overlapping dates
   // eslint-disable-next-line fp/no-mutating-methods
-  return dateItemsWithValidity.sort((a, b) => {
+  return dateItems.sort((a, b) => {
     if (a.displayDate < b.displayDate) {
       return -1;
     }

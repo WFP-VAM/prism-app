@@ -99,6 +99,7 @@ test('calculates correct coverageWindow for a date array', async () => {
   expect(res.at(-1)!.endDate).toEqual(
     new Date('2024-09-20T12:00:00Z').getTime(),
   );
+  expect(res).toMatchSnapshot();
 });
 
 test('renders correct dates for rainfall_agg_6month over 2025', async () => {
@@ -155,6 +156,7 @@ test('renders correct dates for rainfall_agg_6month over 2025', async () => {
     // last available date + 1 dekad
     new Date('2025-11-10T12:00:00Z').getTime(),
   );
+
   expect(availableDates).toMatchSnapshot();
 
   // eslint-disable-next-line fp/no-mutation
@@ -207,6 +209,7 @@ test('renders correct dates for rainfall_agg_1month over 2025', async () => {
   // per day over the entire duration.
   expect(ad.length).toEqual(396);
 
+  // check start/endDates
   expect(ad.at(0)?.startDate).toEqual(
     new Date('2024-09-21T12:00:00Z').getTime(),
   );
