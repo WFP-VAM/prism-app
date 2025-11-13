@@ -1,8 +1,17 @@
 import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
-import { PanelSize } from 'config/types';
-import { getAvailableDatesForLayer } from 'utils/server-utils';
+import {
+  CoverageWindow,
+  DatesPropagation,
+  PanelSize,
+  ReferenceDateTimestamp,
+  Validity,
+} from 'config/types';
+import {
+  generateIntermediateDateItemFromValidity,
+  getAvailableDatesForLayer,
+} from 'utils/server-utils';
 import DateSelector from '.';
 
 jest.mock('react-router-dom', () => ({
@@ -58,25 +67,53 @@ test('renders as expected with a single date', () => {
   global.Date.now = realDateNow;
 });
 
+test('calculates correct coverageWindow for a date array', async () => {
+  const dates = [
+    new Date('2024-09-01T12:00:00Z').getTime() as ReferenceDateTimestamp,
+    new Date('2024-09-11T12:00:00Z').getTime() as ReferenceDateTimestamp,
+  ];
+  const val: Validity = {
+    forward: 1,
+    mode: DatesPropagation.DEKAD,
+  };
+  const cv: CoverageWindow = {
+    forward: 1,
+    backward: 2,
+    mode: DatesPropagation.DEKAD,
+  };
+  const res = generateIntermediateDateItemFromValidity(dates, val, cv);
+  expect(res.length).toEqual(20);
+
+  expect(res.at(0)!.startDate).toEqual(
+    new Date('2024-08-11T12:00:00Z').getTime(),
+  );
+  expect(res.at(0)!.queryDate).toEqual(dates.at(0));
+  expect(res.at(0)!.endDate).toEqual(
+    new Date('2024-09-10T12:00:00Z').getTime(),
+  );
+
+  expect(res.at(-1)!.startDate).toEqual(
+    new Date('2024-08-21T12:00:00Z').getTime(),
+  );
+  expect(res.at(-1)!.queryDate).toEqual(dates.at(-1));
+  expect(res.at(-1)!.endDate).toEqual(
+    new Date('2024-09-20T12:00:00Z').getTime(),
+  );
+});
+
 test('renders correct dates for rainfall_agg_6month over 2025', async () => {
   const realDateNow = Date.now.bind(global.Date);
   const dateNowStub = jest.fn(() => 1530518207007);
   // eslint-disable-next-line fp/no-mutation
   global.Date.now = dateNowStub;
 
-  const store = mockStore({
+  // eslint-disable-next-line fp/no-mutation
+  const mockState = {
     mapState: {
       layers: [],
       dateRange: { startDate: 1678528800000 },
-      maplibreMap: () => {},
-      errors: [],
-      layersData: [],
-      loadingLayerIds: [],
-      boundaryRelationData: {},
     },
-    leftPanelState: {
-      panelSize: PanelSize.medium,
-    },
+    serverState: { availableDates: {}, loading: false },
     serverPreloadState: {
       WMSLayerDates: {
         // availableDates dates from 11/oct/2024 to 01/nov/2025
@@ -98,14 +135,8 @@ test('renders correct dates for rainfall_agg_6month over 2025', async () => {
         ],
       },
     },
-    serverState: { availableDates: {}, loading: false },
-    anticipatoryActionDroughtState: {
-      availableDates: undefined,
-    },
-    anticipatoryActionStormState: {
-      availableDates: undefined,
-    },
-  });
+  };
+  const store = mockStore(mockState);
 
   const availableDates = await getAvailableDatesForLayer(
     // @ts-ignore
@@ -114,21 +145,17 @@ test('renders correct dates for rainfall_agg_6month over 2025', async () => {
   );
   // array starts on 01/may/2024 until 31/oct/2025
   const ad = availableDates.rainfall_agg_6month;
-  // TODO: AvailableDates should only be the dates offered by the server
-  // so length should match that (39 here)
   expect(ad.length).toEqual(396);
   // @ts-ignore
-  expect(ad.at(0).displayDate).toEqual(1728648000000);
+  expect(ad.at(0).displayDate).toEqual(
+    mockState.serverPreloadState.WMSLayerDates.rainfall_agg_6month.at(0),
+  );
   // @ts-ignore
   expect(ad.at(-1).displayDate).toEqual(
     // last available date + 1 dekad
     new Date('2025-11-10T12:00:00Z').getTime(),
   );
   expect(availableDates).toMatchSnapshot();
-  // ad is way too long because it contains up to 6 or 7 times each
-  // displayDate, with different queryDates.
-  // eg for 30/09/2025, it has 2 queryDate of 21/9 and 21/10
-  // and 2 periods from 01/04 to 30/9 and 01/05 to 31/10, why?
 
   // eslint-disable-next-line fp/no-mutation
   global.Date.now = realDateNow;
@@ -140,19 +167,13 @@ test('renders correct dates for rainfall_agg_1month over 2025', async () => {
   // eslint-disable-next-line fp/no-mutation
   global.Date.now = dateNowStub;
 
-  const store = mockStore({
+  // eslint-disable-next-line fp/no-mutation
+  const mockState = {
     mapState: {
       layers: [],
       dateRange: { startDate: 1678528800000 },
-      maplibreMap: () => {},
-      errors: [],
-      layersData: [],
-      loadingLayerIds: [],
-      boundaryRelationData: {},
     },
-    leftPanelState: {
-      panelSize: PanelSize.medium,
-    },
+    serverState: { availableDates: {}, loading: false },
     serverPreloadState: {
       WMSLayerDates: {
         // availableDates dates from 11/oct/2024 to 01/nov/2025
@@ -171,14 +192,8 @@ test('renders correct dates for rainfall_agg_1month over 2025', async () => {
         ],
       },
     },
-    serverState: { availableDates: {}, loading: false },
-    anticipatoryActionDroughtState: {
-      availableDates: undefined,
-    },
-    anticipatoryActionStormState: {
-      availableDates: undefined,
-    },
-  });
+  };
+  const store = mockStore(mockState);
 
   const availableDates = await getAvailableDatesForLayer(
     // @ts-ignore
@@ -187,12 +202,15 @@ test('renders correct dates for rainfall_agg_1month over 2025', async () => {
   );
   // array starts on 01/may/2024 until 31/oct/2025
   const ad = availableDates.rainfall_agg_1month;
+  // 396 is the number of days between the 2 ends of WMSLayerDates
+  // defined in the mock above. The array should have a single element
+  // per day over the entire duration.
   expect(ad.length).toEqual(396);
+
+  expect(ad.at(0)?.startDate).toEqual(
+    new Date('2024-09-21T12:00:00Z').getTime(),
+  );
   expect(availableDates).toMatchSnapshot();
-  // ad is way too long because it contains up to 6 or 7 times each
-  // displayDate, with different queryDates.
-  // eg for 30/09/2025, it has 2 queryDate of 21/9 and 21/10
-  // and 2 periods from 01/04 to 30/9 and 01/05 to 31/10, why?
 
   // eslint-disable-next-line fp/no-mutation
   global.Date.now = realDateNow;

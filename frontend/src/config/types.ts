@@ -485,6 +485,7 @@ export type CoverageWindow = {
   mode: DatesPropagation;
   backward?: number; // Number of days/dekades backward.
   forward?: number; // Number of days/dekades forward.
+  seasons?: SeasonBoundsConfig[];
 };
 
 export class WMSLayerProps extends CommonLayerProps {
@@ -865,6 +866,12 @@ export type CoverageStartDateTimestamp = number & {
 export type CoverageEndDateTimestamp = number & {
   CoverageEndDateTimestamp: {};
 };
+export type ValidityStartDateTimestamp = number & {
+  ValidityStartDateTimestamp: {};
+};
+export type ValidityEndDateTimestamp = number & {
+  ValidityEndDateTimestamp: {};
+};
 
 export type DateItem = {
   displayDate: DisplayDateTimestamp; // Date that will be rendered in the calendar.
@@ -1000,6 +1007,7 @@ export interface BaseLayer {
 }
 
 export interface ValidityLayer extends BaseLayer {
+  coverageWindow: CoverageWindow;
   validity: Validity;
 }
 

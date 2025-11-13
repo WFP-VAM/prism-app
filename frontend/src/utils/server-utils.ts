@@ -13,6 +13,7 @@ import type {
   CompositeLayerProps,
   CoverageEndDateTimestamp,
   CoverageStartDateTimestamp,
+  CoverageWindow,
   DisplayDateTimestamp,
   LayerType,
   PathLayer,
@@ -22,8 +23,10 @@ import type {
   RequestFeatureInfo,
   SeasonBounds,
   Validity,
+  ValidityEndDateTimestamp,
   ValidityLayer,
   ValidityPeriod,
+  ValidityStartDateTimestamp,
 } from '../config/types';
 import {
   AdminLevelDataLayerProps,
@@ -350,12 +353,112 @@ async function generateIntermediateDateItemFromDataFile(
   return generateDateItemsRange(rangesWithoutMissing);
 }
 
+function getStartAndEndDateFromValidityOrCoverageDefinition(
+  date: ReferenceDateTimestamp,
+  definition: CoverageWindow | Validity,
+): {
+  startDate: number;
+  endDate: number;
+} {
+  const { mode, backward, forward, seasons } = definition;
+  const startDate = new Date(date);
+  const endDate = new Date(date);
+
+  if (mode === DatesPropagation.DAYS) {
+    // If mode is "days", adjust dates directly based on the duration
+    startDate.setDate(startDate.getDate() - (backward || 0));
+    endDate.setDate(endDate.getDate() + (forward || 0));
+    // For "dekad" mode, calculate start and end dates based on backward and forward dekads
+    // Dekads are 10-day periods, so we adjust dates accordingly
+  } else if (mode === DatesPropagation.DEKAD) {
+    const DekadStartingDays = [1, 11, 21];
+    // this is not the month, but the dekad
+    const startDayOfTheDekad = startDate.getDate();
+    if (!DekadStartingDays.includes(startDayOfTheDekad)) {
+      throw Error(
+        'publishing day for dekad layers is expected to be 1, 11, 21.',
+      );
+    }
+    // find the index so that we can use a modulo to find the new dekad start and end date.
+    const dekadStartIndex = DekadStartingDays.findIndex(
+      x => x === startDayOfTheDekad,
+    );
+
+    if (forward) {
+      const newDekadEndIndex = (dekadStartIndex + forward) % 3;
+      const nMonthsForward = Math.floor((dekadStartIndex + forward) / 3);
+      endDate.setDate(DekadStartingDays[newDekadEndIndex]);
+      endDate.setMonth(endDate.getMonth() + nMonthsForward);
+      endDate.setDate(endDate.getDate() - 1);
+    }
+    if (backward) {
+      const newDekadStartIndex = (dekadStartIndex - backward + 3) % 3;
+      const nMonthsBackward = Math.floor((dekadStartIndex - backward) / 3);
+      startDate.setDate(DekadStartingDays[newDekadStartIndex]);
+      startDate.setMonth(startDate.getMonth() + nMonthsBackward);
+    }
+  } else if (mode === DatesPropagation.SEASON) {
+    if (seasons) {
+      const seasonBounds = getSeasonBounds(startDate, seasons);
+      if (seasonBounds) {
+        startDate.setTime(seasonBounds.start.getTime());
+        endDate.setTime(seasonBounds.end.getTime());
+      } else {
+        console.warn(`No season found for date: ${startDate.toISOString()}`);
+        // TODO: how do we handle this properly?
+        // return [];
+      }
+    } else {
+      const { start, end } = getSeasonBounds(startDate) as SeasonBounds;
+      startDate.setTime(start.getTime());
+      endDate.setTime(end.getTime() - oneDayInMs);
+    }
+  } else {
+    throw Error(`Invalid coverage window mode: ${mode}`);
+  }
+
+  return { startDate: startDate.getTime(), endDate: endDate.getTime() };
+}
+
+function getStartAndEndDateFromValidity(
+  date: ReferenceDateTimestamp,
+  definition: Validity,
+): {
+  validityStart: ValidityStartDateTimestamp;
+  validityEnd: ValidityEndDateTimestamp;
+} {
+  const r = getStartAndEndDateFromValidityOrCoverageDefinition(
+    date,
+    definition,
+  );
+  return {
+    validityStart: r.startDate as ValidityStartDateTimestamp,
+    validityEnd: r.endDate as ValidityEndDateTimestamp,
+  };
+}
+
+function getStartAndEndDateFromCoverage(
+  date: ReferenceDateTimestamp,
+  definition: CoverageWindow,
+): {
+  coverageStart: CoverageStartDateTimestamp;
+  coverageEnd: CoverageEndDateTimestamp;
+} {
+  const r = getStartAndEndDateFromValidityOrCoverageDefinition(
+    date,
+    definition,
+  );
+  return {
+    coverageStart: r.startDate as CoverageStartDateTimestamp,
+    coverageEnd: r.endDate as CoverageEndDateTimestamp,
+  };
+}
+
 export function generateIntermediateDateItemFromValidity(
   dates: ReferenceDateTimestamp[], // reference dates
   validity: Validity,
+  coverageWindow?: CoverageWindow,
 ): DateItem[] {
-  const { forward, backward, mode } = validity;
-
   // eslint-disable-next-line fp/no-mutating-methods
   const sortedDates = [...dates].sort((a, b) => a - b);
 
@@ -387,75 +490,33 @@ export function generateIntermediateDateItemFromValidity(
         ] as DateItem[];
       }
 
-      // We create the start and the end date for every date
-      const startDate = new Date(dateGetTime);
-      const endDate = new Date(dateGetTime);
+      // We create the coverage start and the end date for every date
+      const { coverageStart, coverageEnd } = getStartAndEndDateFromCoverage(
+        dateGetTime as ReferenceDateTimestamp,
+        // if no coverage is defined for the layer, we use its validity instead
+        coverageWindow || validity,
+      );
 
-      if (mode === DatesPropagation.DAYS) {
-        // If mode is "days", adjust dates directly based on the duration
-        startDate.setDate(startDate.getDate() - (backward || 0));
-        endDate.setDate(endDate.getDate() + (forward || 0));
-        // For "dekad" mode, calculate start and end dates based on backward and forward dekads
-        // Dekads are 10-day periods, so we adjust dates accordingly
-      } else if (mode === DatesPropagation.DEKAD) {
-        const DekadStartingDays = [1, 11, 21];
-        const startDayOfTheDekad = startDate.getDate();
-        if (!DekadStartingDays.includes(startDayOfTheDekad)) {
-          throw Error(
-            'publishing day for dekad layers is expected to be 1, 11, 21.',
-          );
-        }
-        // find the index so that we can use a modulo to find the new dekad start and end date.
-        const dekadStartIndex = DekadStartingDays.findIndex(
-          x => x === startDayOfTheDekad,
-        );
-
-        if (forward) {
-          const newDekadEndIndex = (dekadStartIndex + forward) % 3;
-          const nMonthsForward = Math.floor((dekadStartIndex + forward) / 3);
-          endDate.setDate(DekadStartingDays[newDekadEndIndex]);
-          endDate.setMonth(endDate.getMonth() + nMonthsForward);
-          endDate.setDate(endDate.getDate() - 1);
-        }
-        if (backward) {
-          const newDekadStartIndex = (dekadStartIndex - backward + 3) % 3;
-          const nMonthsBackward = Math.floor((dekadStartIndex - backward) / 3);
-          startDate.setDate(DekadStartingDays[newDekadStartIndex]);
-          startDate.setMonth(startDate.getMonth() + nMonthsBackward);
-        }
-      } else if (mode === DatesPropagation.SEASON) {
-        if (validity.seasons) {
-          const seasonBounds = getSeasonBounds(startDate, validity.seasons);
-          if (seasonBounds) {
-            startDate.setTime(seasonBounds.start.getTime());
-            endDate.setTime(seasonBounds.end.getTime());
-          } else {
-            console.warn(
-              `No season found for date: ${startDate.toISOString()}`,
-            );
-            return [];
-          }
-        } else {
-          const { start, end } = getSeasonBounds(startDate) as SeasonBounds;
-          startDate.setTime(start.getTime());
-          endDate.setTime(end.getTime() - oneDayInMs);
-        }
-      } else {
-        throw Error(`Invalid validity mode: ${mode}`);
-      }
-
+      // Determine the start and end of the validity period
+      const { validityStart, validityEnd } = getStartAndEndDateFromValidity(
+        dateGetTime as ReferenceDateTimestamp,
+        validity,
+      );
       // We create an array with the diff between the endDate and startDate and we create an array with the addition of the days in the startDate
-      const daysToAdd: number[] = generateDatesRange(startDate, endDate);
+      const daysToAdd: number[] = generateDatesRange(
+        new Date(validityStart),
+        new Date(validityEnd),
+      );
 
       // convert the available days for a specific day to the DefaultDate format
       const dateItemsToAdd: DateItem[] = daysToAdd.map(dateToAdd => ({
         displayDate: dateToAdd as DisplayDateTimestamp,
         queryDate:
-          mode === DatesPropagation.SEASON
-            ? (startDate.getTime() as QueryDateTimestamp)
-            : (date.getTime() as QueryDateTimestamp),
-        startDate: startDate.getTime() as CoverageStartDateTimestamp,
-        endDate: endDate.getTime() as CoverageEndDateTimestamp,
+          validity.mode === DatesPropagation.SEASON
+            ? (validityStart as unknown as QueryDateTimestamp)
+            : (dateGetTime as QueryDateTimestamp),
+        startDate: coverageStart,
+        endDate: coverageEnd,
       }));
 
       return [...acc, ...dateItemsToAdd];
@@ -749,7 +810,10 @@ export async function getAvailableDatesForLayer(
   const layersWithValidity: ValidityLayer[] = Object.values(
     relevantLayerDefinitions,
   )
-    .filter(layer => layer.validity !== undefined)
+    .filter(
+      layer =>
+        layer.validity !== undefined && layer.coverageWindow !== undefined,
+    )
     .map(layer => {
       const lId = layer.id;
 
@@ -757,6 +821,7 @@ export async function getAvailableDatesForLayer(
         name: lId,
         dates: layerAvailableDates[lId] as ReferenceDateTimestamp[],
         validity: layer.validity!,
+        coverageWindow: layer.coverageWindow!,
       };
     });
 
@@ -793,6 +858,7 @@ export async function getAvailableDatesForLayer(
         [layerName]: generateIntermediateDateItemFromValidity(
           matchingValidityLayer.dates as ReferenceDateTimestamp[],
           matchingValidityLayer.validity,
+          matchingValidityLayer.coverageWindow,
         ),
       };
       return r;

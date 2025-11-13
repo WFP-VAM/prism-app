@@ -684,7 +684,7 @@
       "forward": 1,
       "mode": "dekad"
     },
-    "reference_window": {
+    "coverage_window": {
       "backward": 17,
       "forward": 1,
       "mode": "dekad"
