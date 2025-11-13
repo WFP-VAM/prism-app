@@ -39,6 +39,8 @@ export interface DashboardMapState extends MapState {
   opacityMap: { [key: string]: OpacityEntry };
   capturedViewport?: [number, number, number, number]; // [west, south, east, north]
   title?: string;
+  legendVisible?: boolean; // default: true
+  legendPosition?: 'left' | 'right'; // default: 'right'
 }
 
 export interface DashboardState {
@@ -157,6 +159,8 @@ const createMapStateFromConfig = (
     opacityMap: initialOpacityMap,
     minMapBounds: mapConfig.minMapBounds || [],
     title: mapConfig.title || '',
+    legendVisible: mapConfig.legendVisible ?? true,
+    legendPosition: mapConfig.legendPosition ?? 'right',
   };
 };
 
@@ -506,6 +510,46 @@ export const dashboardStateSlice = createSlice({
         },
       };
     },
+    setLegendVisible: (
+      state,
+      action: PayloadAction<{ elementId: string; visible: boolean }>,
+    ) => {
+      const { elementId, visible } = action.payload;
+      const mapState = state.mapStates[elementId];
+      if (!mapState) {
+        return state;
+      }
+      return {
+        ...state,
+        mapStates: {
+          ...state.mapStates,
+          [elementId]: {
+            ...mapState,
+            legendVisible: visible,
+          },
+        },
+      };
+    },
+    setLegendPosition: (
+      state,
+      action: PayloadAction<{ elementId: string; position: 'left' | 'right' }>,
+    ) => {
+      const { elementId, position } = action.payload;
+      const mapState = state.mapStates[elementId];
+      if (!mapState) {
+        return state;
+      }
+      return {
+        ...state,
+        mapStates: {
+          ...state.mapStates,
+          [elementId]: {
+            ...mapState,
+            legendPosition: position,
+          },
+        },
+      };
+    },
   },
 });
 
@@ -586,6 +630,8 @@ export const {
   dismissError,
   setDashboardOpacity,
   setMapTitle,
+  setLegendVisible,
+  setLegendPosition,
 } = dashboardStateSlice.actions;
 
 export default dashboardStateSlice.reducer;

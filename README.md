@@ -445,6 +445,8 @@ Displays an interactive map with pre-selected layers.
   "mapPosition": "left",
   "minMapBounds": [31, -25, 40, -11],
   "title": "Temperature Anomaly Map",
+  "legendVisible": true,
+  "legendPosition": "right",
   "preSelectedMapLayers": [
     { "layerId": "lst_day_anomaly", "opacity": 0.7 },
     { "layerId": "rainfall_dekad", "opacity": 0.8 }
@@ -461,6 +463,8 @@ Displays an interactive map with pre-selected layers.
 - `mapPosition` (optional): `"left"` or `"right"` - used for side-by-side map comparison
 - `minMapBounds` (optional): Map extent as `[west, south, east, north]`
 - `title` (optional): Custom title for the map
+- `legendVisible` (optional): Whether to show the legend. Defaults to `true`
+- `legendPosition` (optional): Legend position - `"left"` or `"right"`. Defaults to `"right"`
 
 #### 2. CHART Element
 
