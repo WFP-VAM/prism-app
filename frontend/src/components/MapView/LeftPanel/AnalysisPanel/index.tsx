@@ -740,7 +740,7 @@ const AnalysisPanel = memo(() => {
             value={adminLevel}
             options={range(getAdminLevelCount()).map(i => [
               (i + 1) as AdminLevelType,
-              `Admin ${i + 1}`,
+              t(`Admin ${i + 1}`),
             ])}
             onChange={setAdminLevel}
             textClass={classes.colorBlack}
