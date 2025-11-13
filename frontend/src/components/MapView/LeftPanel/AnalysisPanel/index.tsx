@@ -171,7 +171,7 @@ const AnalysisPanel = memo(() => {
     isAnalysisLoading,
   } = formState;
 
-  const { runAnalyser } = useAnalysisExecution(formState, {
+  const { runAnalyser, hasFormChanged } = useAnalysisExecution(formState, {
     onUrlUpdate: updateAnalysisParams,
     clearAnalysisFunction: () => {
       const isClearingExposureAnalysis =
@@ -296,8 +296,15 @@ const AnalysisPanel = memo(() => {
       dispatch(removeLayer(preSelectedBaselineLayer));
     }
 
+    // Only clear the analysis result, don't reset form values
+    // This allows users to change parameters and run new analysis without losing their changes
     if (analysisResult) {
-      clearAnalysis();
+      const isClearingExposureAnalysis =
+        analysisResult instanceof ExposedPopulationResult;
+      dispatch(clearAnalysisResult());
+      if (isClearingExposureAnalysis) {
+        dispatch(setTabValue(Panel.Layers));
+      }
     }
 
     await runAnalyser();
@@ -306,7 +313,6 @@ const AnalysisPanel = memo(() => {
     analysisResult,
     removeKeyFromUrl,
     dispatch,
-    clearAnalysis,
     runAnalyser,
   ]);
 
@@ -557,7 +563,8 @@ const AnalysisPanel = memo(() => {
   ]);
 
   const renderedRunAnalysisButton = useMemo(() => {
-    if (analysisResult) {
+    // Hide button only for exposure analysis (which has its own action buttons)
+    if (analysisResult instanceof ExposedPopulationResult) {
       return null;
     }
     return (
@@ -569,6 +576,7 @@ const AnalysisPanel = memo(() => {
           startIcon={<BarChartOutlined style={{ color: black }} />}
           disabled={
             isAnalysisLoading ||
+            !hasFormChanged ||
             requiredThresholdNotSet ||
             !hazardLayerId ||
             (hazardDataType === GeometryType.Polygon
@@ -585,6 +593,7 @@ const AnalysisPanel = memo(() => {
   }, [
     analysisResult,
     isAnalysisLoading,
+    hasFormChanged,
     requiredThresholdNotSet,
     hazardLayerId,
     hazardDataType,
@@ -721,13 +730,15 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column',
       width: PanelSize.medium,
       height: '100%',
+      overflow: 'hidden',
     },
     analysisPanel: {
       display: 'flex',
       flexDirection: 'column',
       width: PanelSize.medium,
-      height: '100%',
-      overflow: 'scroll',
+      flex: 1,
+      minHeight: 0,
+      overflow: 'auto',
     },
     exposureAnalysisLoadingContainer: {
       display: 'flex',
@@ -768,7 +779,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     analysisPanelParams: {
       padding: '30px 10px 10px 10px',
-      height: 'calc(100% - 90px)',
+      flex: 1,
+      minHeight: 0,
       overflow: 'auto',
     },
     colorBlack: {
@@ -827,15 +839,18 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     bottomButton: {
       backgroundColor: cyanBlue,
-      '&:hover': {
-        backgroundColor: cyanBlue,
-      },
       marginTop: 10,
       marginBottom: 10,
       marginLeft: '25%',
       marginRight: '25%',
       width: '50%',
-      '&.Mui-disabled': { opacity: 0.5 },
+      '&.Mui-disabled': {
+        opacity: 0.5,
+        backgroundColor: '#788489',
+        '&:hover': {
+          backgroundColor: '#788489',
+        },
+      },
     },
     numberField: {
       paddingRight: '10px',

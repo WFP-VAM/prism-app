@@ -33,7 +33,7 @@ import { getAdminLevelLayer } from 'utils/admin-utils';
 import { safeDispatchAddLayer, safeDispatchRemoveLayer } from 'utils/map-utils';
 import useLayers from 'utils/layers-utils';
 import { getPossibleDatesForLayer } from 'utils/server-utils';
-import { getDateFromList } from 'utils/data-utils';
+import { getDateFromList, parseNumberOrUndefined } from 'utils/data-utils';
 import { getFormattedDate } from 'utils/date-utils';
 import { LayerDefinitions, getDisplayBoundaryLayers } from 'config/utils';
 import type { AnalysisResult } from 'utils/analysis-utils';
@@ -264,7 +264,22 @@ export interface UseAnalysisExecutionReturn {
   runAnalyser: () => Promise<void>;
   scaleThreshold: (threshold: number) => number;
   activateUniqueBoundary: (forceAdminLevel?: BoundaryLayerProps) => void;
+  hasFormChanged: boolean;
 }
+
+const getFormStateSnapshot = (formState: UseAnalysisFormReturn) =>
+  JSON.stringify({
+    hazardLayerId: formState.hazardLayerId,
+    baselineLayerId: formState.baselineLayerId,
+    selectedDate: formState.selectedDate,
+    startDate: formState.startDate,
+    endDate: formState.endDate,
+    statistic: formState.statistic,
+    aboveThreshold: formState.aboveThreshold,
+    belowThreshold: formState.belowThreshold,
+    exposureValue: formState.exposureValue,
+    adminLevel: formState.adminLevel,
+  });
 
 /**
  * Shared hook for analysis execution logic
@@ -283,6 +298,9 @@ export const useAnalysisExecution = (
 
   // Store the current analysis request promise (which has an abort method added by Redux Toolkit)
   const analysisRequestRef = useRef<any>(null);
+
+  // Track form state at last execution
+  const lastExecutedFormRef = useRef<string | null>(null);
 
   // Cleanup on unmount - abort any pending analysis and clear results
   useEffect(
@@ -304,6 +322,16 @@ export const useAnalysisExecution = (
     },
     [dispatch, clearAnalysisFunction, clearOnUnmount],
   );
+
+  // Check if form has changed since last execution
+  const hasFormChanged = useMemo(() => {
+    const currentFormSnapshot = getFormStateSnapshot(formState);
+
+    return (
+      lastExecutedFormRef.current === null ||
+      lastExecutedFormRef.current !== currentFormSnapshot
+    );
+  }, [formState]);
 
   const scaleThreshold = useCallback(
     (threshold: number) =>
@@ -365,6 +393,9 @@ export const useAnalysisExecution = (
   );
 
   const runAnalyser = useCallback(async () => {
+    // Capture current form state at execution
+    lastExecutedFormRef.current = getFormStateSnapshot(formState);
+
     if (formState.analysisResult) {
       if (clearAnalysisFunction) {
         clearAnalysisFunction();
@@ -433,6 +464,14 @@ export const useAnalysisExecution = (
 
       activateUniqueBoundary();
 
+      // Parse and scale thresholds, handling 0 as a valid value
+      const aboveThresholdValue = parseNumberOrUndefined(
+        formState.aboveThreshold,
+      );
+      const belowThresholdValue = parseNumberOrUndefined(
+        formState.belowThreshold,
+      );
+
       const params: AnalysisDispatchParams = {
         hazardLayer: formState.selectedHazardLayer,
         baselineLayer: selectedBaselineLayer,
@@ -442,9 +481,13 @@ export const useAnalysisExecution = (
         extent,
         threshold: {
           above:
-            scaleThreshold(parseFloat(formState.aboveThreshold)) || undefined,
+            aboveThresholdValue !== undefined
+              ? scaleThreshold(aboveThresholdValue)
+              : undefined,
           below:
-            scaleThreshold(parseFloat(formState.belowThreshold)) || undefined,
+            belowThresholdValue !== undefined
+              ? scaleThreshold(belowThresholdValue)
+              : undefined,
         },
       };
 
@@ -454,8 +497,14 @@ export const useAnalysisExecution = (
           analysisBaselineLayerId: formState.baselineLayerId,
           analysisDate: getFormattedDate(formState.selectedDate, 'default'),
           analysisStatistic: formState.statistic,
-          analysisThresholdAbove: formState.aboveThreshold || undefined,
-          analysisThresholdBelow: formState.belowThreshold || undefined,
+          analysisThresholdAbove:
+            aboveThresholdValue !== undefined
+              ? formState.aboveThreshold
+              : undefined,
+          analysisThresholdBelow:
+            belowThresholdValue !== undefined
+              ? formState.belowThreshold
+              : undefined,
         });
       }
 
@@ -476,5 +525,6 @@ export const useAnalysisExecution = (
     runAnalyser,
     scaleThreshold,
     activateUniqueBoundary,
+    hasFormChanged,
   };
 };

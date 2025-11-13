@@ -81,3 +81,17 @@ export function getDateFromList(
   const foundDate = availableDates.find(date => date === checkingDate);
   return foundDate || availableDates[availableDates.length - 1];
 }
+
+/**
+ * Parse a number from a string, handling 0 as a valid value.
+ * Returns undefined if the string is empty or not a valid number.
+ * @param value - String value to parse
+ * @returns Parsed number or undefined if invalid/empty
+ */
+export function parseNumberOrUndefined(value: string): number | undefined {
+  if (!value) {
+    return undefined;
+  }
+  const parsed = parseFloat(value);
+  return Number.isNaN(parsed) ? undefined : parsed;
+}
