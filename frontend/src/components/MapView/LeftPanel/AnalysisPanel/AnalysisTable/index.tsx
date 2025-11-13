@@ -329,11 +329,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     backButton: {
       flex: '1 1 5%',
-      maxWidth: '10%',
     },
     nextButton: {
       flex: '1 1 5%',
-      maxWidth: '10%',
     },
     spacer: {
       flex: '1 1 5%',
