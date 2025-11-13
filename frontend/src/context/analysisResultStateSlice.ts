@@ -145,7 +145,7 @@ function getAdminBoundariesURL(adminBoundariesPath: string) {
   );
 }
 
-const generateTableColumnsFromApiData = (
+export const generateTableColumnsFromApiData = (
   aggregateData: AsyncReturnType<typeof fetchApiData>,
   key: string = 'sum',
 ): Column[] => {
@@ -455,7 +455,7 @@ async function createAPIRequestParams(
   return apiRequest;
 }
 
-const mergeTableRows = (tableRows: TableRow[]): TableRow => {
+export const mergeTableRows = (tableRows: TableRow[]): TableRow => {
   /* eslint-disable no-param-reassign, fp/no-mutation */
   const mergedObject: TableRow = tableRows.reduce(
     (acc, tableRow) =>
@@ -500,6 +500,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
   CreateAsyncThunkTypes
 >(
   'analysisResultState/requestAndStoreExposedPopulation',
+  // eslint-disable-next-line arrow-body-style
   async (params, api) => {
     const { exposure, date, extent, statistic, wfsLayerId, maskLayerId } =
       params;
