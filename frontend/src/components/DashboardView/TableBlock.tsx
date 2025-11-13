@@ -307,7 +307,6 @@ function TableBlock({
         sortColumn={sortColumn}
         isAscending={isAscending}
         handleChangeOrderBy={handleSort}
-        hidePagination={!allowDownload}
         disableHighZIndex
         maxRows={maxRows}
         compact

@@ -27,7 +27,6 @@ const AnalysisTable = memo(
     sortColumn,
     isAscending,
     handleChangeOrderBy,
-    hidePagination = false,
     compact = false,
     maxRows,
     disableHighZIndex = false,
@@ -207,42 +206,40 @@ const AnalysisTable = memo(
             <TableBody>{renderedTableBodyRows}</TableBody>
           </Table>
         </TableContainer>
-        {!hidePagination && (
-          <TablePagination
-            rowsPerPageOptions={maxRows !== undefined ? [] : [10, 25, 100]}
-            component="div"
-            count={tableData.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            labelRowsPerPage={t('Rows Per Page')}
-            // Temporary manual translation before we upgrade to MUI 5.
-            labelDisplayedRows={({ from, to, count }) =>
-              `${from}–${to} ${t('of')} ${
-                count !== -1 ? count : `${t('more than')} ${to}`
-              }`
-            }
-            classes={{
-              root: compact
-                ? classes.tablePaginationCompact
-                : classes.tablePagination,
-              select: classes.select,
-              caption: classes.caption,
-              spacer: classes.spacer,
-            }}
-            nextIconButtonProps={{
-              classes: {
-                root: classes.nextButton,
-              },
-            }}
-            backIconButtonProps={{
-              classes: {
-                root: classes.backButton,
-              },
-            }}
-          />
-        )}
+        <TablePagination
+          rowsPerPageOptions={maxRows !== undefined ? [] : [10, 25, 100]}
+          component="div"
+          count={tableData.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          labelRowsPerPage={t('Rows Per Page')}
+          // Temporary manual translation before we upgrade to MUI 5.
+          labelDisplayedRows={({ from, to, count }) =>
+            `${from}–${to} ${t('of')} ${
+              count !== -1 ? count : `${t('more than')} ${to}`
+            }`
+          }
+          classes={{
+            root: compact
+              ? classes.tablePaginationCompact
+              : classes.tablePagination,
+            select: classes.select,
+            caption: classes.caption,
+            spacer: classes.spacer,
+          }}
+          nextIconButtonProps={{
+            classes: {
+              root: classes.nextButton,
+            },
+          }}
+          backIconButtonProps={{
+            classes: {
+              root: classes.backButton,
+            },
+          }}
+        />
       </>
     );
   },
@@ -346,7 +343,6 @@ interface AnalysisTableProps {
   sortColumn: string | number | undefined;
   isAscending: boolean;
   handleChangeOrderBy: (newAnalysisColumn: Column['id']) => void;
-  hidePagination?: boolean;
   compact?: boolean;
   disableHighZIndex?: boolean;
   maxRows?: number;
