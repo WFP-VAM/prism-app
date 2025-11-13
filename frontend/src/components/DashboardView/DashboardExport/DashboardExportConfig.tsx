@@ -206,6 +206,8 @@ function DashboardExportConfig() {
     setLegendPosition,
     legendScale,
     setLegendScale,
+    fontScale,
+    setFontScale,
     selectedBoundaries,
     setSelectedBoundaries,
     handleDownloadMenuOpen,
@@ -347,6 +349,19 @@ function DashboardExportConfig() {
           </GreyContainerSection>
         </GreyContainer>
       </SectionToggle>
+
+      {/* Font Size */}
+
+      <GreyContainer>
+        <GreyContainerSection isLast>
+          <ToggleSelector
+            value={fontScale}
+            options={legendScaleSelectorOptions}
+            setValue={setFontScale}
+            title={t('Font Scale')}
+          />
+        </GreyContainerSection>
+      </GreyContainer>
 
       <Button
         style={{ backgroundColor: cyanBlue, color: 'black' }}

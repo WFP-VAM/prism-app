@@ -59,6 +59,7 @@ function DashboardExportDialog({
   const [logoScale, setLogoScale] = useState(1);
   const [legendPosition, setLegendPosition] = useState(1);
   const [legendScale, setLegendScale] = useState(0);
+  const [fontScale, setFontScale] = useState(0);
   const [selectedBoundaries, setSelectedBoundaries] = useState<
     AdminCodeString[]
   >([]);
@@ -277,6 +278,8 @@ function DashboardExportDialog({
       setLegendPosition,
       legendScale,
       setLegendScale,
+      fontScale,
+      setFontScale,
       selectedBoundaries,
       setSelectedBoundaries: handleSetSelectedBoundaries,
       invertedAdminBoundaryLimitPolygon,

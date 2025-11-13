@@ -44,6 +44,8 @@ export type DashboardExportContextType = {
     setLegendPosition: React.Dispatch<React.SetStateAction<number>>;
     legendScale: number;
     setLegendScale: React.Dispatch<React.SetStateAction<number>>;
+    fontScale: number;
+    setFontScale: React.Dispatch<React.SetStateAction<number>>;
     selectedBoundaries: AdminCodeString[];
     setSelectedBoundaries: (
       boundaries: AdminCodeString[],

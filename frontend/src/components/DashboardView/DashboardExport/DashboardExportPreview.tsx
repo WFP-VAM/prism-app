@@ -1,5 +1,5 @@
 import { Box, makeStyles } from '@material-ui/core';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import DashboardContent from '../DashboardContent';
 import DashboardExportContext, { PAPER_SIZES } from './dashboardExport.context';
 
@@ -7,12 +7,48 @@ function DashboardExportPreview() {
   const classes = useStyles();
   const { exportConfig } = useContext(DashboardExportContext);
 
+  const fontScale = exportConfig?.fontScale ?? 0;
+  const printRef = exportConfig?.printRef;
+
+  // Apply font scaling when fontScale changes
+  useEffect(() => {
+    if (!printRef?.current) {
+      return;
+    }
+
+    const container = printRef.current;
+    const elements = container.querySelectorAll('*');
+
+    // First, reset all inline font-size styles to get back to original CSS values
+    elements.forEach(el => {
+      if (el instanceof HTMLElement) {
+        // eslint-disable-next-line no-param-reassign
+        el.style.fontSize = '';
+      }
+    });
+
+    // Then apply scaling if fontScale > 0 (not at 100%)
+    if (fontScale > 0) {
+      // Apply scaling: scaleFactor = 1 - fontScale (0.5 = 50%, 0.4 = 60%, etc.)
+      const scaleFactor = 1 - fontScale;
+      elements.forEach(el => {
+        if (el instanceof HTMLElement) {
+          const style = window.getComputedStyle(el);
+          const fontSize = parseFloat(style.fontSize);
+          if (!Number.isNaN(fontSize) && fontSize > 0) {
+            // eslint-disable-next-line no-param-reassign
+            el.style.fontSize = `${fontSize * scaleFactor}px`;
+          }
+        }
+      });
+    }
+  }, [fontScale, printRef]);
+
   if (!exportConfig) {
     return null;
   }
 
   const {
-    printRef,
     paperSize,
     toggles,
     logoPosition,
