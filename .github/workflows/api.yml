@@ -26,7 +26,7 @@ jobs:
         uses: snok/install-poetry@v1
         with:
           # Version of Poetry to use
-          version: 2.1.3
+          version: 2.2.1
           virtualenvs-create: true
           virtualenvs-in-project: true
       - name: Install dependencies
@@ -39,6 +39,12 @@ jobs:
           cd api
           poetry run black --check .
           poetry run isort --check .
+      - name: Security audit
+        run: |
+          cd api
+          # Ignore these vulnerabilities for now as they are not relevant to the project:
+          # GHSA-pq67-6m6q-mj2v urllib3
+          poetry run pip-audit --ignore-vuln GHSA-pq67-6m6q-mj2v
 
   api_build:
     name: build and test api

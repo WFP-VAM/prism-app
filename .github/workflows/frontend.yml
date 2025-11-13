@@ -73,6 +73,11 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: cd frontend && yarn check-boundary-keys
 
+      - name: Security audit
+        run: |
+          cd frontend && yarn run audit
+          cd ../common && yarn run audit
+
       - name: Build
         run: cd frontend && yarn build
 
@@ -132,7 +137,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GIT_HASH: ${{ github.event.pull_request.head.sha }}
-      firebase_channel: prism-${{ github.event.pull_request.number }}
+      firebase_channel: ${{ github.event.pull_request.number }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -240,3 +245,26 @@ jobs:
           entryPoint: "frontend"
           channelId: ${{ env.firebase_channel }}
           expires: 30d
+
+  cleanup_preview_channel:
+    # Run only when a PR is closed and merged to clean up its preview channel
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    name: cleanup_preview_channel
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Install Firebase CLI
+        run: npm i -g firebase-tools
+      - name: Delete Firebase preview channel
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_PRISM_FRONTEND }}
+        run: |
+          echo "$FIREBASE_SERVICE_ACCOUNT" > ${HOME}/gcloud.json
+          export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/gcloud.json"
+          cd frontend
+          firebase --project prism-frontend hosting:channel:delete ${{ github.event.pull_request.number }} --site staging-prism-frontend --force
