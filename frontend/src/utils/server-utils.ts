@@ -15,8 +15,8 @@ import type {
   CoverageStartDateTimestamp,
   CoverageWindow,
   DisplayDateTimestamp,
+  LayerKey,
   LayerType,
-  PathLayer,
   PointDataLayerProps,
   QueryDateTimestamp,
   ReferenceDateTimestamp,
@@ -24,7 +24,6 @@ import type {
   SeasonBounds,
   Validity,
   ValidityEndDateTimestamp,
-  ValidityLayer,
   ValidityPeriod,
   ValidityStartDateTimestamp,
 } from '../config/types';
@@ -480,7 +479,7 @@ export function generateIntermediateDateItemFromValidity(
       // caching this value seems to reduce memory use substantially
       const dateGetTime = date.getTime();
 
-      // only calculate validity for dates that are less than 5 years old
+      // only calculate validity/coverage for dates that are less than 5 years old
       if (dateGetTime < earliestDate) {
         return [
           ...acc,
@@ -774,143 +773,77 @@ export const getLayerType = (
  */
 export async function getAvailableDatesForLayer(
   getState: () => RootState,
-  layerId: string,
+  layerId: LayerKey,
 ): Promise<AvailableDates> {
-  const relevantLayerDefinitions = { [layerId]: LayerDefinitions[layerId] };
+  const LayerDefinition = LayerDefinitions[layerId];
 
   // At this point, all network data should have been preloaded in
   // the redux state, so we just need to process it into the right
-  // format now for the layer that's being activated
-  const getPreloadedLayerDates = (
-    lId: string,
-  ): Record<string, ReferenceDateTimestamp[]> => {
+  // format for the layer that's being activated
+  const getPreloadedLayerDates = (lId: string): ReferenceDateTimestamp[] => {
     const layer = LayerDefinitions[lId];
     const state = getState();
 
     switch (getLayerType(layer)) {
       case 'WMSLayer':
-        return {
-          [layer.id]: state.serverPreloadState.WMSLayerDates[layer.id],
-        };
+        return state.serverPreloadState.WMSLayerDates[layer.id];
       case 'pointDataLayer':
-        return {
-          [layer.id]: state.serverPreloadState.pointDataLayerDates[layer.id],
-        };
+        return state.serverPreloadState.pointDataLayerDates[layer.id];
       case 'adminWithDataLayer':
-        return {
-          [layer.id]: getAdminLevelDataCoverage(
-            layer as AdminLevelDataLayerProps,
-          ),
-        };
+        return getAdminLevelDataCoverage(layer as AdminLevelDataLayerProps);
       case 'staticRasterLayer':
-        return {
-          [layer.id]: getStaticRasterDataCoverage(
-            layer as StaticRasterLayerProps,
-          ),
-        };
+        return getStaticRasterDataCoverage(layer as StaticRasterLayerProps);
       default:
         console.warn(
           `Layer ${lId} has unhandled layer type ${getLayerType(layer)}`,
         );
-        return { [lId]: [] };
+        return [];
     }
   };
 
-  // the list of available dates from the server
-  const layerAvailableDates = getPreloadedLayerDates(layerId);
+  // the list of available reference dates from the server
+  const layerAvailableDates = getPreloadedLayerDates(layerId) || [];
 
-  // Retrieve layers that have a validity object
-  const layersWithValidity: ValidityLayer[] = Object.values(
-    relevantLayerDefinitions,
-  )
-    .filter(
-      layer =>
-        layer.validity !== undefined && layer.coverageWindow !== undefined,
-    )
-    .map(layer => {
-      const lId = layer.id;
-
-      return {
-        name: lId,
-        dates: layerAvailableDates[lId] as ReferenceDateTimestamp[],
-        validity: layer.validity!,
-        coverageWindow: layer.coverageWindow!,
-      };
-    });
-
-  // Retrieve layers that have validityPeriod
-  const layersWithValidityStartEndDate: PathLayer[] = Object.values(
-    relevantLayerDefinitions,
-  )
-    .filter(layer => !!(layer as AdminLevelDataLayerProps).validityPeriod)
-    .map(layer => ({
-      name: layer.id,
-      dates: layerAvailableDates[layer.id],
-      path: (layer as AdminLevelDataLayerProps).path,
-      validityPeriod: (layer as AdminLevelDataLayerProps)
-        .validityPeriod as ValidityPeriod,
-    }));
-
-  // Use preprocessed dates for layers with dates path
-  const preprocessedDates = countriesWithPreprocessedDates.includes(safeCountry)
-    ? await fetchPreprocessedDates()
-    : {};
-
-  // Generate and replace date items for layers with all intermediates dates
-  const buildLayerDateItems = async (
-    layerName: string,
-    dateArray: number[],
-  ) => {
-    // Generate dates for layers with validity and no path
-    const matchingValidityLayer = layersWithValidity.find(
-      validityLayer => validityLayer.name === layerName,
-    );
-
-    if (matchingValidityLayer) {
-      const r = {
-        [layerName]: generateIntermediateDateItemFromValidity(
-          matchingValidityLayer.dates as ReferenceDateTimestamp[],
-          matchingValidityLayer.validity,
-          matchingValidityLayer.coverageWindow,
-        ),
-      };
-      return r;
-    }
-
-    // Generate dates for layers with path
-    const matchingPathLayer = layersWithValidityStartEndDate.find(
-      validityLayer => validityLayer.name === layerName,
-    );
-
-    if (matchingPathLayer) {
-      if (layerName in preprocessedDates) {
-        return {
-          [layerName]: generateDateItemsRange(preprocessedDates[layerName]),
-        };
-      }
-      return {
-        [layerName]: await generateIntermediateDateItemFromDataFile(
-          matchingPathLayer.dates,
-          matchingPathLayer.path,
-          matchingPathLayer.validityPeriod,
-        ),
-      };
-    }
-
-    // Generate dates for layers with validity but not an admin_level_data type
+  // Generate dates for layers with validity and no path
+  if (LayerDefinition.validity !== undefined) {
     return {
-      [layerName]: dateArray.map((d: number) =>
-        generateDefaultDateItem(new Date(d).setUTCHours(12, 0, 0, 0)),
+      [LayerDefinition.id]: generateIntermediateDateItemFromValidity(
+        layerAvailableDates,
+        LayerDefinition.validity,
+        LayerDefinition.coverageWindow,
       ),
     };
+  }
+
+  // Generate dates for layers with path
+  if ((LayerDefinition as AdminLevelDataLayerProps).validityPeriod) {
+    // Use preprocessed dates for layers with dates path
+    const preprocessedDates = countriesWithPreprocessedDates.includes(
+      safeCountry,
+    )
+      ? await fetchPreprocessedDates()
+      : {};
+
+    if (layerId in preprocessedDates) {
+      return {
+        [layerId]: generateDateItemsRange(preprocessedDates[layerId]),
+      };
+    }
+    return {
+      [layerId]: await generateIntermediateDateItemFromDataFile(
+        layerAvailableDates,
+        (LayerDefinition as AdminLevelDataLayerProps).path,
+        (LayerDefinition as AdminLevelDataLayerProps).validityPeriod!,
+      ),
+    };
+  }
+
+  // Generate dates for layers with validity but not an admin_level_data type
+  return {
+    [layerId]: layerAvailableDates.map((d: number) =>
+      generateDefaultDateItem(new Date(d).setUTCHours(12, 0, 0, 0)),
+    ),
   };
-
-  const layerDateItemsForLayer = await buildLayerDateItems(
-    layerId,
-    layerAvailableDates[layerId] || [], // available reference dates from server
-  );
-
-  return layerDateItemsForLayer;
 }
 
 /**

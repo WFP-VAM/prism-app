@@ -1006,11 +1006,6 @@ export interface BaseLayer {
   dates: number[];
 }
 
-export interface ValidityLayer extends BaseLayer {
-  coverageWindow: CoverageWindow;
-  validity: Validity;
-}
-
 export interface PathLayer extends BaseLayer {
   path: string;
   validityPeriod: ValidityPeriod;
