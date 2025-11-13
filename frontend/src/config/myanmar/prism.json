@@ -3,20 +3,6 @@
   "countryAdmin0Id": 273,
   "WFPAuthRequired": false,
   "alertFormActive": false,
-  "icons": {
-    "vulnerability": "icon_vulnerable.png",
-    "exposure": "icon_basemap.png",
-    "hazards": "icon_climate.png",
-    "flood": "icon_flood.png",
-    "risk": "icon_impact.png",
-    "capacity": "icon_capacity.png",
-    "tropical_storms": "icon_tropical_storm.png",
-    "storms_and_floods": "icon_tropical_storm.png",
-    "tables": "icon_table.png",
-    "rainfall": "icon_rain.png",
-    "vegetation": "icon_veg.png",
-    "temperature": "icon_climate.png"
-  },
   "map": {
     "latitude": 19.467,
     "longitude": 96.371,
