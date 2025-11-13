@@ -9,6 +9,9 @@
   "aboutPath": "data/somalia/about.md",
   "alertFormActive": false,
   "hidePanel": false,
+  "printConfig": {
+    "bottomLogo": "images/somalia-bottom-logo.png"
+  },
   "enableNavigationDropdown": true,
   "icons": {
     "rainfall": "icon_rain.png",

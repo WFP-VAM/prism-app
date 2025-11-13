@@ -8,6 +8,7 @@ export type Toggles = {
   logoVisibility: boolean;
   legendVisibility: boolean;
   footerVisibility: boolean;
+  bottomLogoVisibility: boolean;
 };
 
 export type MapDimensions = { width: number; height: number };
@@ -28,6 +29,9 @@ export type PrintConfigContextType = {
     setLogoPosition: React.Dispatch<React.SetStateAction<number>>;
     logoScale: number;
     setLogoScale: React.Dispatch<React.SetStateAction<number>>;
+    bottomLogo: string | undefined;
+    bottomLogoScale: number;
+    setBottomLogoScale: React.Dispatch<React.SetStateAction<number>>;
     toggles: Toggles;
     setToggles: React.Dispatch<React.SetStateAction<Toggles>>;
     legendPosition: number;
