@@ -559,10 +559,6 @@
     "additional_query_params": {
       "styles": "rfh_16_0_800"
     },
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
-    },
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
