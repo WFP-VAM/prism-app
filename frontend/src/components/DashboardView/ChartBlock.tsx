@@ -176,7 +176,7 @@ function ChartBlock({
     return `${startStr} - ${endStr}`;
   };
 
-  if (mode === DashboardMode.DASHBOARD) {
+  if (mode === DashboardMode.VIEW) {
     const canDownload =
       allowDownload && !isLoading && !error && chartDataset && chartConfig;
     return (

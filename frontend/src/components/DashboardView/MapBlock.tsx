@@ -109,7 +109,7 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
 
   const title =
     mapTitle ||
-    (mode === DashboardMode.DASHBOARD && nonBoundaryLayers.length === 1
+    (mode === DashboardMode.VIEW && nonBoundaryLayers.length === 1
       ? t(
           LayerDefinitions[nonBoundaryLayers[0].id]?.title ||
             nonBoundaryLayers[0].id,
@@ -270,7 +270,7 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
       )}
       <Box
         className={
-          mode === DashboardMode.DASHBOARD ? classes.rootPreview : classes.root
+          mode === DashboardMode.VIEW ? classes.rootPreview : classes.root
         }
       >
         {mode === DashboardMode.EDIT && (
@@ -328,12 +328,12 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
         )}
         <div
           className={
-            mode === DashboardMode.DASHBOARD
+            mode === DashboardMode.VIEW
               ? classes.rightPanelPreview
               : classes.rightPanel
           }
         >
-          {mode === DashboardMode.DASHBOARD && (
+          {mode === DashboardMode.VIEW && (
             <div className={classes.previewHeaderContainer}>
               <BlockPreviewHeader
                 title={t(title || '')}
@@ -353,7 +353,7 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
           <div
             ref={mapContainerRef}
             className={
-              mode === DashboardMode.DASHBOARD
+              mode === DashboardMode.VIEW
                 ? classes.mapContainerPreview
                 : classes.mapContainerEdit
             }

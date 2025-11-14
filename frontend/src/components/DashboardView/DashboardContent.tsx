@@ -29,7 +29,7 @@ import MapBlock from './MapBlock';
 import TextBlock from './TextBlock';
 import TableBlock from './TableBlock';
 import ChartBlock from './ChartBlock';
-import { useColumnHeightManagement } from './useColumnHeightManagement';
+import { useColumnHeightManagement, GAP } from './useColumnHeightManagement';
 
 interface LogoConfig {
   visible: boolean;
@@ -57,8 +57,6 @@ interface DashboardContentProps {
   isEditable?: boolean;
   onEditClick?: () => void;
 }
-
-const GAP = 16;
 
 /**
  * Shared component for rendering dashboard content in preview mode.
@@ -132,7 +130,7 @@ function DashboardContent({
           <Box
             key={`map-${elementId}`}
             className={
-              mode === DashboardMode.DASHBOARD
+              mode === DashboardMode.VIEW
                 ? classes.previewContainer
                 : classes.grayCard
             }
@@ -260,7 +258,7 @@ function DashboardContent({
                 >
                   {t(dashboardTitle || 'Untitled Dashboard')}
                 </Typography>
-                {mode === DashboardMode.DASHBOARD && (
+                {mode === DashboardMode.VIEW && (
                   <Box className={classes.titleActions}>
                     {isEditable && onEditClick && (
                       <Button

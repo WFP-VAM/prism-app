@@ -70,7 +70,7 @@ function DashboardView() {
   }, [path, dispatch, history]);
 
   const handlePreviewClick = () => {
-    dispatch(setMode(DashboardMode.DASHBOARD));
+    dispatch(setMode(DashboardMode.VIEW));
   };
 
   const handleClosePreview = () => {
@@ -80,7 +80,7 @@ function DashboardView() {
   return (
     <Box
       className={
-        mode === DashboardMode.DASHBOARD
+        mode === DashboardMode.VIEW
           ? classes.previewModeContainer
           : classes.container
       }

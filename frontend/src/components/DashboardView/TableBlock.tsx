@@ -414,7 +414,7 @@ function TableBlock({
     return getFormattedDate(date, 'localeShortUTC') || '';
   };
 
-  if (mode === DashboardMode.DASHBOARD) {
+  if (mode === DashboardMode.VIEW) {
     return (
       <Box className={classes.previewContainer}>
         {formState.selectedHazardLayer ? (

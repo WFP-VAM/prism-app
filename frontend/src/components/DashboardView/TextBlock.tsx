@@ -71,7 +71,7 @@ function TextBlock({
   const { t } = useSafeTranslation();
   const mode = useSelector(dashboardModeSelector);
 
-  if (mode === DashboardMode.DASHBOARD) {
+  if (mode === DashboardMode.VIEW) {
     if (!content || content.trim() === '') {
       return null;
     }

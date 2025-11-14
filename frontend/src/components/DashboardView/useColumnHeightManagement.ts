@@ -3,7 +3,8 @@ import type React from 'react';
 import { DashboardMode, DashboardElements } from '../../config/types';
 import type { ExportConfig } from './DashboardContent';
 
-const GAP = 16;
+// A constant for the gap between various columns and padding
+export const GAP = 16;
 
 interface HeightConfig {
   flex: string;
