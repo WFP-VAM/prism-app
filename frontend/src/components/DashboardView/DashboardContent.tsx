@@ -29,6 +29,7 @@ import MapBlock from './MapBlock';
 import TextBlock from './TextBlock';
 import TableBlock from './TableBlock';
 import ChartBlock from './ChartBlock';
+import { useColumnHeightManagement, GAP } from './useColumnHeightManagement';
 
 interface LogoConfig {
   visible: boolean;
@@ -82,12 +83,46 @@ function DashboardContent({
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const syncEnabled = useSelector(dashboardSyncEnabledSelector);
+
+  // Column Height Management - extracted to custom hook
+  const { componentHeights, columnRefs, componentRefs } =
+    useColumnHeightManagement({
+      mode,
+      exportConfig,
+      columns,
+    });
+
   const renderElement = (
     element: DashboardElements,
     columnIndex: number,
     elementIndex: number,
   ) => {
     const elementId = `${columnIndex}-${elementIndex}`;
+    const heightConfig = componentHeights.get(elementId);
+
+    // Common wrapper style for non-map elements
+    const getWrapperStyle = () => {
+      if (mode === DashboardMode.EDIT || !heightConfig) {
+        return undefined;
+      }
+
+      return {
+        flex: heightConfig.flex,
+        minHeight: 0,
+        display: 'flex',
+        flexDirection: 'column' as const,
+        overflow: heightConfig.overflow,
+      };
+    };
+
+    // Common ref handler
+    const handleRef = (el: HTMLDivElement | null) => {
+      if (el) {
+        componentRefs.current.set(elementId, el);
+      } else {
+        componentRefs.current.delete(elementId);
+      }
+    };
 
     switch (element.type) {
       case DashboardElementType.MAP:
@@ -95,10 +130,16 @@ function DashboardContent({
           <Box
             key={`map-${elementId}`}
             className={
-              mode === DashboardMode.PREVIEW
+              mode === DashboardMode.VIEW
                 ? classes.previewContainer
                 : classes.grayCard
             }
+            style={{
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              minHeight: 0,
+            }}
           >
             {mode === 'edit' && (
               <div className={classes.mapHeaderContainer}>
@@ -114,52 +155,67 @@ function DashboardContent({
                 </Typography>
               </div>
             )}
-            <div style={{ height: '700px' }}>
+            <div style={{ height: '100%', flex: 1, minHeight: 0 }}>
               <MapBlock elementId={elementId} exportConfig={exportConfig} />
             </div>
           </Box>
         );
       case DashboardElementType.TEXT:
         return (
-          <TextBlock
+          <div
             key={`text-${elementId}`}
-            content={element.content || ''}
-            columnIndex={columnIndex}
-            elementIndex={elementIndex}
-          />
+            ref={handleRef}
+            style={getWrapperStyle()}
+          >
+            <TextBlock
+              content={element.content || ''}
+              columnIndex={columnIndex}
+              elementIndex={elementIndex}
+            />
+          </div>
         );
       case DashboardElementType.TABLE:
         return (
-          <TableBlock
+          <div
             key={`table-${elementId}`}
-            index={elementIndex}
-            columnIndex={columnIndex}
-            elementIndex={elementIndex}
-            startDate={element.startDate}
-            hazardLayerId={element.hazardLayerId}
-            baselineLayerId={element.baselineLayerId}
-            threshold={element.threshold}
-            stat={element.stat}
-            maxRows={element.maxRows}
-            allowDownload={!exportConfig}
-            addResultToMap={element.addResultToMap}
-            sortColumn={element.sortColumn}
-            sortOrder={element.sortOrder}
-          />
+            ref={handleRef}
+            style={getWrapperStyle()}
+          >
+            <TableBlock
+              index={elementIndex}
+              columnIndex={columnIndex}
+              elementIndex={elementIndex}
+              startDate={element.startDate}
+              hazardLayerId={element.hazardLayerId}
+              baselineLayerId={element.baselineLayerId}
+              threshold={element.threshold}
+              stat={element.stat}
+              maxRows={element.maxRows}
+              allowDownload={!exportConfig}
+              addResultToMap={element.addResultToMap}
+              sortColumn={element.sortColumn}
+              sortOrder={element.sortOrder}
+            />
+          </div>
         );
       case DashboardElementType.CHART:
         return (
-          <ChartBlock
+          <div
             key={`chart-${elementId}`}
-            index={elementIndex}
-            startDate={element.startDate}
-            endDate={element.endDate}
-            layerId={element.layerId}
-            adminUnitLevel={element.adminUnitLevel}
-            adminUnitId={element.adminUnitId}
-            chartHeight={element.chartHeight}
-            allowDownload={!exportConfig}
-          />
+            ref={handleRef}
+            style={getWrapperStyle()}
+          >
+            <ChartBlock
+              index={elementIndex}
+              startDate={element.startDate}
+              endDate={element.endDate}
+              layerId={element.layerId}
+              adminUnitLevel={element.adminUnitLevel}
+              adminUnitId={element.adminUnitId}
+              chartHeight={element.chartHeight}
+              allowDownload={!exportConfig}
+            />
+          </div>
         );
       default:
         return null;
@@ -202,7 +258,7 @@ function DashboardContent({
                 >
                   {t(dashboardTitle || 'Untitled Dashboard')}
                 </Typography>
-                {mode === DashboardMode.PREVIEW && (
+                {mode === DashboardMode.VIEW && (
                   <Box className={classes.titleActions}>
                     {isEditable && onEditClick && (
                       <Button
@@ -259,7 +315,7 @@ function DashboardContent({
         {columns.length > 0 && (
           <Box
             className={
-              mode === 'preview'
+              mode !== DashboardMode.EDIT
                 ? classes.dynamicColumnPreviewLayout
                 : classes.dynamicColumnLayout
             }
@@ -273,11 +329,31 @@ function DashboardContent({
                 : classes.contentColumn;
 
               return (
-                // eslint-disable-next-line react/no-array-index-key
-                <Box key={`column-${columnIndex}`} className={columnClass}>
-                  {column.map((element, elementIndex) =>
-                    renderElement(element, columnIndex, elementIndex),
-                  )}
+                <Box
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={`column-${columnIndex}`}
+                  className={columnClass}
+                  component="div"
+                >
+                  <div
+                    ref={(el: HTMLDivElement | null) => {
+                      if (el) {
+                        columnRefs.current.set(columnIndex, el);
+                      } else {
+                        columnRefs.current.delete(columnIndex);
+                      }
+                    }}
+                    style={{
+                      height: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 16,
+                    }}
+                  >
+                    {column.map((element, elementIndex) =>
+                      renderElement(element, columnIndex, elementIndex),
+                    )}
+                  </div>
                 </Box>
               );
             })}
@@ -305,14 +381,16 @@ const useStyles = makeStyles(() => ({
     flex: 1, // Smaller for columns without maps
     display: 'flex',
     flexDirection: 'column',
-    gap: 16,
+    gap: GAP,
     minWidth: 0,
+    minHeight: 0,
+    overflow: 'hidden',
   },
   dynamicColumnLayout: {
     display: 'flex',
     padding: 16,
     margin: '0 16px 16px 16px',
-    gap: 16,
+    gap: GAP,
     flex: 1,
     overflow: 'auto',
     paddingBottom: 80, // Add extra padding to account for fixed toolbar
@@ -321,15 +399,15 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     padding: 0,
     margin: 0,
-    gap: 16,
+    gap: GAP,
     flex: 1,
-    overflow: 'auto',
+    overflow: 'hidden',
+    minHeight: 0,
   },
   previewContainer: {
     background: 'white',
     borderRadius: 8,
     padding: 16,
-    marginBottom: 16,
   },
   grayCard: {
     background: '#F1F1F1',
@@ -347,10 +425,10 @@ const useStyles = makeStyles(() => ({
   titleSection: {
     position: 'relative',
     display: 'flex',
-    margin: '16px 0 8px',
+    margin: '16px 0',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: '16px',
+    gap: GAP,
     flexWrap: 'wrap',
   },
   titleSectionEdit: {
@@ -359,7 +437,7 @@ const useStyles = makeStyles(() => ({
     margin: '16px 16px -48px 16px',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: '16px',
+    gap: GAP,
     flexWrap: 'wrap',
   },
   logo: {
@@ -425,6 +503,8 @@ const useStyles = makeStyles(() => ({
     flexDirection: 'column',
     gap: 0,
     minWidth: 0,
+    minHeight: 0,
+    overflow: 'hidden',
   },
   mapColumnFlexElements: {
     display: 'flex',

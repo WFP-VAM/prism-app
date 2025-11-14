@@ -71,7 +71,7 @@ function TextBlock({
   const { t } = useSafeTranslation();
   const mode = useSelector(dashboardModeSelector);
 
-  if (mode === DashboardMode.PREVIEW) {
+  if (mode === DashboardMode.VIEW) {
     if (!content || content.trim() === '') {
       return null;
     }
@@ -152,9 +152,15 @@ const useStyles = makeStyles(() => ({
     background: 'white',
     borderRadius: 8,
     padding: 16,
-    marginBottom: 16,
     maxWidth: '100%',
-    overflow: 'hidden',
+    overflow: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1,
+    minHeight: 0,
+    '& *:last-child': {
+      marginBottom: 0,
+    },
   },
   previewText: {
     fontSize: 14,

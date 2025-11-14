@@ -13,11 +13,10 @@ import type {
   LayerType,
   DashboardMapConfig,
   DashboardTableConfig,
-  DashboardMode,
   DashboardElements,
   ConfiguredReport,
 } from 'config/types';
-import { DashboardElementType } from 'config/types';
+import { DashboardMode, DashboardElementType } from 'config/types';
 import type { RootState } from './store';
 
 type MapGetter = () => MaplibreMap | undefined;
@@ -209,7 +208,7 @@ const createInitialState = (dashboardIndex: number = 0): DashboardState => {
   return {
     selectedDashboardIndex: dashboardIndex,
     title: dashboardConfig?.title || 'Dashboard',
-    mode: 'preview' as DashboardMode,
+    mode: DashboardMode.VIEW,
     columns: allColumns,
     mapStates,
     tableStates,

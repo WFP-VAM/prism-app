@@ -80,11 +80,10 @@ const useStyles = makeStyles(() => ({
   },
   previewWrapper: {
     display: 'flex',
-    justifyContent: 'center',
     alignItems: 'flex-start',
     padding: 24,
     minHeight: '100%',
-    width: '100%',
+    minWidth: 'fit-content',
     boxSizing: 'border-box',
   },
   exportContent: {

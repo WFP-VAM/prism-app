@@ -176,7 +176,7 @@ function ChartBlock({
     return `${startStr} - ${endStr}`;
   };
 
-  if (mode === DashboardMode.PREVIEW) {
+  if (mode === DashboardMode.VIEW) {
     const canDownload =
       allowDownload && !isLoading && !error && chartDataset && chartConfig;
     return (
@@ -404,11 +404,12 @@ const useStyles = makeStyles(theme => ({
     background: 'white',
     borderRadius: 8,
     padding: 16,
-    marginBottom: 16,
     maxWidth: '100%',
     display: 'flex',
     flexDirection: 'column',
     overflow: 'hidden',
+    flex: 1,
+    minHeight: 0,
   },
   previewHeader: {
     display: 'flex',

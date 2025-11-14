@@ -414,27 +414,31 @@ function TableBlock({
     return getFormattedDate(date, 'localeShortUTC') || '';
   };
 
-  if (mode === DashboardMode.PREVIEW) {
+  if (mode === DashboardMode.VIEW) {
     return (
       <Box className={classes.previewContainer}>
         {formState.selectedHazardLayer ? (
           <>
-            <BlockPreviewHeader
-              title={generatePreviewTitle()}
-              subtitle={formatPreviewDate()}
-              downloadActions={
-                allowDownload &&
-                formState.analysisResult &&
-                analysisTableData.length > 0 && (
-                  <Tooltip title={t('Download CSV') as string}>
-                    <IconButton onClick={handleDownloadCSV} size="small">
-                      <GetAppIcon />
-                    </IconButton>
-                  </Tooltip>
-                )
-              }
-            />
-            {renderPreviewTable()}
+            <Box className={classes.previewHeaderWrapper}>
+              <BlockPreviewHeader
+                title={generatePreviewTitle()}
+                subtitle={formatPreviewDate()}
+                downloadActions={
+                  allowDownload &&
+                  formState.analysisResult &&
+                  analysisTableData.length > 0 && (
+                    <Tooltip title={t('Download CSV') as string}>
+                      <IconButton onClick={handleDownloadCSV} size="small">
+                        <GetAppIcon />
+                      </IconButton>
+                    </Tooltip>
+                  )
+                }
+              />
+            </Box>
+            <Box className={classes.previewTableWrapper}>
+              {renderPreviewTable()}
+            </Box>
           </>
         ) : (
           <Box
@@ -595,10 +599,21 @@ const useStyles = makeStyles(theme => ({
     background: 'white',
     borderRadius: 8,
     padding: 16,
-    marginBottom: 16,
     maxWidth: '100%',
     display: 'flex',
     flexDirection: 'column',
+    overflow: 'hidden',
+    flex: 1,
+    minHeight: 0,
+  },
+  previewHeaderWrapper: {
+    flexShrink: 0,
+  },
+  previewTableWrapper: {
+    flex: 1,
+    minHeight: 0,
+    overflow: 'auto',
+    marginTop: 8,
   },
   blockTitle: {
     fontWeight: 600,

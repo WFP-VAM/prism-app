@@ -70,7 +70,7 @@ function DashboardView() {
   }, [path, dispatch, history]);
 
   const handlePreviewClick = () => {
-    dispatch(setMode(DashboardMode.PREVIEW));
+    dispatch(setMode(DashboardMode.VIEW));
   };
 
   const handleClosePreview = () => {
@@ -80,7 +80,7 @@ function DashboardView() {
   return (
     <Box
       className={
-        mode === DashboardMode.PREVIEW
+        mode === DashboardMode.VIEW
           ? classes.previewModeContainer
           : classes.container
       }
@@ -230,7 +230,6 @@ const useStyles = makeStyles(() => ({
     background: 'white',
     borderRadius: 8,
     padding: 16,
-    marginBottom: 16,
   },
   previewTitle: {
     padding: 16,
@@ -243,7 +242,9 @@ const useStyles = makeStyles(() => ({
     flexDirection: 'column',
     position: 'relative',
     background: '#F8F8F8',
-    height: '100vh',
+    height: 'calc(100vh - 6vh)',
+    padding: '32px',
+    boxSizing: 'border-box',
   },
   previewActions: {
     position: 'sticky',
@@ -275,10 +276,9 @@ const useStyles = makeStyles(() => ({
   },
   previewLayout: {
     display: 'flex',
-    padding: 16,
-    margin: 16,
-    gap: 16,
+    flexDirection: 'column',
     flex: 1,
+    minHeight: 0,
   },
   syncToggle: {
     margin: 0,

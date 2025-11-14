@@ -1039,8 +1039,7 @@ export enum DashboardElementType {
 
 export enum DashboardMode {
   EDIT = 'edit',
-  PREVIEW = 'preview',
-  EXPORT = 'export',
+  VIEW = 'view',
 }
 
 export enum ChartHeight {
