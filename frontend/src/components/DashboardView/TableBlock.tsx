@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Box,
   makeStyles,
@@ -23,6 +23,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   setIsMapLayerActive,
   isAnalysisLayerActiveSelector,
+  analysisResultErrorSelector,
 } from 'context/analysisResultStateSlice';
 import {
   useAnalysisTableColumns,
@@ -67,6 +68,7 @@ function TableBlock({
   const dispatch = useDispatch();
   const mode = useSelector(dashboardModeSelector);
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
+  const analysisError = useSelector(analysisResultErrorSelector);
 
   const formState = useAnalysisForm({
     initialHazardLayerId,
@@ -90,6 +92,12 @@ function TableBlock({
   // Form updates state
   const [hasFormChanged, setHasFormChanged] = useState(false);
   const [wasAnalysisLoading, setWasAnalysisLoading] = useState(false);
+
+  // Retry tracking state
+  const MAX_RETRIES = 3;
+  const [retryCount, setRetryCount] = useState(0);
+  const [hasInitiatedAnalysis, setHasInitiatedAnalysis] = useState(false);
+  const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleSort = (columnId: string | number) => {
     if (sortColumn === columnId) {
@@ -120,6 +128,11 @@ function TableBlock({
     }
   };
 
+  const handleManualRetry = () => {
+    setRetryCount(0);
+    runAnalyser();
+  };
+
   // Track form changes that would require rerunning analysis
   useEffect(() => {
     // Don't mark as changed on initial mount
@@ -129,6 +142,7 @@ function TableBlock({
 
     // Mark form as changed whenever analysis-relevant fields change
     setHasFormChanged(true);
+    setRetryCount(0);
   }, [
     formState.hazardLayerId,
     formState.startDate,
@@ -156,6 +170,7 @@ function TableBlock({
         formState.analysisResult
       ) {
         setHasFormChanged(false);
+        setRetryCount(0);
       }
     }
   }, [
@@ -171,6 +186,23 @@ function TableBlock({
       dispatch(setIsMapLayerActive(false));
     }
   }, [addResultToMap, formState.analysisResult, dispatch]);
+
+  // Track analysis failures and handle retries
+  useEffect(() => {
+    if (analysisError && hasInitiatedAnalysis && retryCount < MAX_RETRIES) {
+      setRetryCount(retryCount + 1);
+      retryTimeoutRef.current = setTimeout(() => {
+        runAnalyser();
+      }, 500);
+    }
+
+    return () => {
+      if (retryTimeoutRef.current) {
+        clearTimeout(retryTimeoutRef.current);
+        retryTimeoutRef.current = null;
+      }
+    };
+  }, [analysisError, hasInitiatedAnalysis, retryCount, runAnalyser]);
 
   // Auto-run analysis when conditions are met (for both edit and preview modes)
   useEffect(() => {
@@ -191,8 +223,13 @@ function TableBlock({
         ),
     );
 
-    if (canRunAnalysis && !formState.analysisResult) {
-      runAnalyser().catch(console.error);
+    if (
+      canRunAnalysis &&
+      !formState.analysisResult &&
+      retryCount < MAX_RETRIES
+    ) {
+      setHasInitiatedAnalysis(true);
+      runAnalyser();
     }
   }, [
     formState.hazardLayerId,
@@ -208,6 +245,7 @@ function TableBlock({
     formState.exposureValue.operator,
     formState.exposureValue.value,
     formState.analysisResult,
+    retryCount,
     runAnalyser,
   ]);
 
@@ -221,17 +259,55 @@ function TableBlock({
   );
 
   const renderPreviewTable = () => {
-    if (formState.isAnalysisLoading) {
+    if (
+      (!hasInitiatedAnalysis &&
+        !formState.isAnalysisLoading &&
+        !formState.analysisResult) ||
+      formState.isAnalysisLoading
+    ) {
+      const message =
+        !hasInitiatedAnalysis &&
+        !formState.isAnalysisLoading &&
+        !formState.analysisResult
+          ? t('Preparing to load analysis...')
+          : t('Loading analysis data...');
       return (
         <Box className={classes.loadingContainer}>
           <CircularProgress size={40} />
           <Typography variant="body2" style={{ marginTop: 16 }}>
-            {t('Loading analysis data...')}
+            {message}
           </Typography>
         </Box>
       );
     }
 
+    if (
+      retryCount >= MAX_RETRIES &&
+      !formState.isAnalysisLoading &&
+      !formState.analysisResult &&
+      hasInitiatedAnalysis
+    ) {
+      return (
+        <Box className={classes.loadingContainer}>
+          <Typography
+            variant="body2"
+            color="error"
+            style={{ marginBottom: 16 }}
+          >
+            {t('Failed to load results')}
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleManualRetry}
+          >
+            {t('Retry Analysis')}
+          </Button>
+        </Box>
+      );
+    }
+
+    // Empty/Configure state
     if (!formState.analysisResult || !analysisTableData.length) {
       return (
         <Typography variant="body2" color="textSecondary">
@@ -242,6 +318,7 @@ function TableBlock({
       );
     }
 
+    // Success state - show table
     return (
       <SimpleAnalysisTable
         tableData={analysisTableData}
@@ -364,7 +441,7 @@ function TableBlock({
                 <Button
                   variant="outlined"
                   color="primary"
-                  onClick={() => runAnalyser().catch(console.error)}
+                  onClick={() => runAnalyser()}
                   disabled={formState.isAnalysisLoading}
                   className={classes.rerunButton}
                 >
@@ -409,7 +486,7 @@ function TableBlock({
                 <Button
                   variant="outlined"
                   color="primary"
-                  onClick={() => runAnalyser().catch(console.error)}
+                  onClick={() => runAnalyser()}
                   disabled={formState.isAnalysisLoading}
                   className={classes.rerunButton}
                 >

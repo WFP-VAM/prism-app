@@ -1137,6 +1137,10 @@ export const isDataTableDrawerActiveSelector = (state: RootState): boolean =>
 export const invertedColorsSelector = (state: RootState): boolean =>
   state.analysisResultState.invertedColors!!;
 
+export const analysisResultErrorSelector = (
+  state: RootState,
+): string | undefined => state.analysisResultState.error;
+
 // Setters
 export const {
   setIsMapLayerActive,
