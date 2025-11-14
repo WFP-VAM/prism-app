@@ -8,6 +8,7 @@ import {
   Switch,
   FormControlLabel,
   IconButton,
+  TextField,
   Tooltip,
 } from '@material-ui/core';
 import GetAppIcon from '@material-ui/icons/GetApp';
@@ -31,7 +32,7 @@ import {
   BaselineLayerResult,
   PolygonAnalysisResult,
 } from 'utils/analysis-utils';
-import SimpleAnalysisTable from 'components/MapView/LeftPanel/AnalysisPanel/SimpleAnalysisTable';
+import AnalysisTable from 'components/MapView/LeftPanel/AnalysisPanel/AnalysisTable';
 import {
   HazardLayerSelector,
   BaselineLayerSelector,
@@ -43,25 +44,35 @@ import {
 } from 'components/Common/AnalysisFormComponents';
 import { useSafeTranslation } from 'i18n';
 import { getFormattedDate } from 'utils/date-utils';
-import { dashboardModeSelector } from '../../context/dashboardStateSlice';
+import {
+  dashboardModeSelector,
+  dashboardTableStateSelector,
+  updateTableState,
+} from '../../context/dashboardStateSlice';
 import BlockPreviewHeader from './BlockPreviewHeader';
 
 interface TableBlockProps extends Partial<DashboardTableConfig> {
   index: number;
+  columnIndex: number;
+  elementIndex: number;
   allowDownload?: boolean;
+  maxRows?: number;
 }
 
 function TableBlock({
   index,
+  columnIndex,
+  elementIndex,
   startDate: initialStartDate,
   hazardLayerId: initialHazardLayerId,
   baselineLayerId: initialBaselineLayerId,
   threshold: initialThreshold,
   stat: initialStat,
+  maxRows: initialMaxRows,
   allowDownload,
   addResultToMap = true,
   sortColumn: initialSortColumn = 'name',
-  sortOrder: initialSortOrder = 'asc',
+  sortOrder: _initialSortOrder = 'asc',
 }: TableBlockProps) {
   const classes = useStyles();
   const { t } = useSafeTranslation();
@@ -69,6 +80,15 @@ function TableBlock({
   const mode = useSelector(dashboardModeSelector);
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
   const analysisError = useSelector(analysisResultErrorSelector);
+
+  // Create element ID for Redux state
+  const elementId = `${columnIndex}-${elementIndex}`;
+
+  // Get table state from Redux (or use initial values)
+  const tableState = useSelector(dashboardTableStateSelector(elementId));
+  const maxRows = tableState?.maxRows ?? initialMaxRows ?? 8;
+  const sortColumn = tableState?.sortColumn ?? initialSortColumn ?? 'name';
+  const isAscending = tableState?.sortOrder === 'asc';
 
   const formState = useAnalysisForm({
     initialHazardLayerId,
@@ -84,11 +104,6 @@ function TableBlock({
     clearOnUnmount: true,
   });
 
-  const [sortColumn, setSortColumn] = useState<string | number>(
-    initialSortColumn,
-  );
-  const [isAscending, setIsAscending] = useState(initialSortOrder === 'asc');
-
   // Form updates state
   const [hasFormChanged, setHasFormChanged] = useState(false);
   const [wasAnalysisLoading, setWasAnalysisLoading] = useState(false);
@@ -101,11 +116,29 @@ function TableBlock({
 
   const handleSort = (columnId: string | number) => {
     if (sortColumn === columnId) {
-      setIsAscending(!isAscending);
+      dispatch(
+        updateTableState({
+          elementId,
+          updates: { sortOrder: isAscending ? 'desc' : 'asc' },
+        }),
+      );
     } else {
-      setSortColumn(columnId);
-      setIsAscending(true);
+      dispatch(
+        updateTableState({
+          elementId,
+          updates: { sortColumn: columnId, sortOrder: 'asc' },
+        }),
+      );
     }
+  };
+
+  const handleSetMaxRows = (newMaxRows: number) => {
+    dispatch(
+      updateTableState({
+        elementId,
+        updates: { maxRows: newMaxRows },
+      }),
+    );
   };
 
   const handleToggleLayerVisibility = () => {
@@ -185,7 +218,13 @@ function TableBlock({
     if (!addResultToMap) {
       dispatch(setIsMapLayerActive(false));
     }
-  }, [addResultToMap, formState.analysisResult, dispatch]);
+    return () => {
+      // Only restore if we actually changed it
+      if (!addResultToMap) {
+        dispatch(setIsMapLayerActive(true));
+      }
+    };
+  }, [addResultToMap, dispatch]);
 
   // Track analysis failures and handle retries
   useEffect(() => {
@@ -253,10 +292,29 @@ function TableBlock({
   const { translatedColumns } = useAnalysisTableColumns(
     formState.analysisResult || undefined,
   );
-  const analysisTableData = useMemo(
-    () => formState.analysisResult?.tableData || [],
-    [formState.analysisResult],
-  );
+
+  const analysisTableData = useMemo(() => {
+    const rawData = formState.analysisResult?.tableData || [];
+    if (!sortColumn || rawData.length === 0) {
+      return rawData;
+    }
+
+    // eslint-disable-next-line fp/no-mutating-methods
+    const sortedData = [...rawData].sort((a, b) => {
+      const aValue = a[sortColumn];
+      const bValue = b[sortColumn];
+
+      if (aValue < bValue) {
+        return isAscending ? -1 : 1;
+      }
+      if (aValue > bValue) {
+        return isAscending ? 1 : -1;
+      }
+      return 0;
+    });
+
+    return sortedData;
+  }, [formState.analysisResult, sortColumn, isAscending]);
 
   const renderPreviewTable = () => {
     if (
@@ -320,13 +378,15 @@ function TableBlock({
 
     // Success state - show table
     return (
-      <SimpleAnalysisTable
+      <AnalysisTable
         tableData={analysisTableData}
         columns={translatedColumns}
         sortColumn={sortColumn}
         isAscending={isAscending}
-        onSort={handleSort}
-        maxRows={mode === DashboardMode.PREVIEW ? 16 : 8}
+        handleChangeOrderBy={handleSort}
+        disableHighZIndex
+        maxRows={maxRows}
+        compact
       />
     );
   };
@@ -482,6 +542,20 @@ function TableBlock({
                 onDateChange={formState.setSelectedDate}
                 availableDates={formState.availableHazardDates}
               />
+              <TextField
+                label={t('Max rows')}
+                type="number"
+                value={maxRows}
+                onChange={e =>
+                  handleSetMaxRows(
+                    Math.max(1, parseInt(e.target.value, 10) || 1),
+                  )
+                }
+                inputProps={{ min: 1, max: 25 }}
+                className={classes.maxRowsInput}
+                size="small"
+                variant="outlined"
+              />
               {hasFormChanged && (
                 <Button
                   variant="outlined"
@@ -513,16 +587,18 @@ const useStyles = makeStyles(theme => ({
     padding: 16,
     marginBottom: 16,
   },
+  maxRowsInput: {
+    width: 100,
+    marginBottom: 16,
+  },
   previewContainer: {
     background: 'white',
     borderRadius: 8,
     padding: 16,
     marginBottom: 16,
-    minHeight: 200,
     maxWidth: '100%',
     display: 'flex',
     flexDirection: 'column',
-    overflow: 'hidden',
   },
   blockTitle: {
     fontWeight: 600,
@@ -568,9 +644,6 @@ const useStyles = makeStyles(theme => ({
     whiteSpace: 'nowrap',
   },
   previewSection: {},
-  tableContainer: {
-    marginTop: theme.spacing(2),
-  },
   tableTitle: {
     marginBottom: theme.spacing(2),
     fontWeight: 600,

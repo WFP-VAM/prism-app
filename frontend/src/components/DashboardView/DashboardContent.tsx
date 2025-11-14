@@ -133,11 +133,14 @@ function DashboardContent({
           <TableBlock
             key={`table-${elementId}`}
             index={elementIndex}
+            columnIndex={columnIndex}
+            elementIndex={elementIndex}
             startDate={element.startDate}
             hazardLayerId={element.hazardLayerId}
             baselineLayerId={element.baselineLayerId}
             threshold={element.threshold}
             stat={element.stat}
+            maxRows={element.maxRows}
             allowDownload={!exportConfig}
             addResultToMap={element.addResultToMap}
             sortColumn={element.sortColumn}
