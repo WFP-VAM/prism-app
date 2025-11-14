@@ -141,13 +141,9 @@ function getAdminBoundariesURL(adminBoundariesPath: string) {
   if (isLocalhost) {
     return defaultBoundariesPath;
   }
-  // remove the dashboard (and future subpaths) path from the pathname
-  const pathsToRemove = ['dashboard'];
-  const pathname = window.location.pathname.replace(
-    new RegExp(pathsToRemove.join('|')),
-    '',
-  );
-  return window.location.origin + pathname + adminBoundariesPath;
+  // Use the configured PUBLIC_URL (base path from router config) to construct the full URL
+  const publicUrl = import.meta.PUBLIC_URL || '';
+  return window.location.origin + publicUrl + adminBoundariesPath;
 }
 
 const generateTableColumnsFromApiData = (
@@ -1140,6 +1136,10 @@ export const isDataTableDrawerActiveSelector = (state: RootState): boolean =>
 
 export const invertedColorsSelector = (state: RootState): boolean =>
   state.analysisResultState.invertedColors!!;
+
+export const analysisResultErrorSelector = (
+  state: RootState,
+): string | undefined => state.analysisResultState.error;
 
 // Setters
 export const {
