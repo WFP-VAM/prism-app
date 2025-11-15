@@ -103,6 +103,11 @@ export const errorToNotificationMiddleware: Middleware<{}, RootState> =
     const thunkRejectedRegex = /^[A-z]+\/[A-z]+\/rejected$/;
 
     if (thunkRejectedRegex.test(action.type)) {
+      // Don't show error notifications for aborted requests (intentional cancellations)
+      if (action.meta?.aborted) {
+        return dispatchResult;
+      }
+
       const errorMessage = action.error.message || action.error;
 
       dispatch(

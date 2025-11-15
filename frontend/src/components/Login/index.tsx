@@ -9,6 +9,7 @@ import { useMsal } from '@azure/msal-react';
 import { msalRequest } from 'config';
 
 import { colors } from 'muiTheme';
+import wfpLogo from 'public/images/wfp_logo.png';
 
 function Login() {
   const classes = useStyles();
@@ -37,7 +38,7 @@ function Login() {
         <Grid item>
           <img
             className={classes.image}
-            src="images/wfp_logo.png"
+            src={wfpLogo}
             alt="World Food Programme logo"
           />
         </Grid>

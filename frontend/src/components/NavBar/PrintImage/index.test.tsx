@@ -3,9 +3,11 @@ import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { Panel } from 'config/types';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import thunk from 'redux-thunk';
 import Download from '.';
 
-const mockStore = configureStore([]);
+const mockStore = configureStore([thunk]);
 
 test('renders as expected', () => {
   const realDateNow = Date.now.bind(global.Date);
@@ -45,6 +47,11 @@ test('renders as expected', () => {
     },
     leftPanelState: {
       tabValue: Panel.AnticipatoryActionDrought,
+    },
+    dashboardState: {
+      dashboardTitle: 'Test Dashboard',
+      columns: [],
+      selectedDashboardIndex: 0,
     },
   });
 

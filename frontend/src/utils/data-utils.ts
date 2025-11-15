@@ -69,17 +69,29 @@ export function coordFirst(data: GeoJSON): number[] {
 
 // check if a date is in a list of given available date (ignoring times)
 export function getDateFromList(
-  checkingDate: Date | null,
-  availableDates: Date[],
-): Date | null {
+  checkingDate: number | null,
+  availableDates: number[],
+): number | null {
   if (availableDates.length === 0) {
     return null;
   }
   if (!checkingDate) {
     return availableDates[availableDates.length - 1];
   }
-  const foundDate = availableDates.find(
-    date => date.toDateString() === checkingDate.toDateString(),
-  );
+  const foundDate = availableDates.find(date => date === checkingDate);
   return foundDate || availableDates[availableDates.length - 1];
+}
+
+/**
+ * Parse a number from a string, handling 0 as a valid value.
+ * Returns undefined if the string is empty or not a valid number.
+ * @param value - String value to parse
+ * @returns Parsed number or undefined if invalid/empty
+ */
+export function parseNumberOrUndefined(value: string): number | undefined {
+  if (!value) {
+    return undefined;
+  }
+  const parsed = parseFloat(value);
+  return Number.isNaN(parsed) ? undefined : parsed;
 }

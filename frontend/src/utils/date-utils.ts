@@ -127,6 +127,7 @@ export const getFormattedDate = (
     | 'snake'
     | 'locale'
     | 'monthDay'
+    | 'localeShortUTC'
     | 'short'
     | 'shortDayFirst'
     | DateFormat.DefaultSnakeCase
@@ -188,6 +189,13 @@ export const getFormattedDate = (
         year: undefined,
         month: 'short',
         day: 'numeric',
+      });
+    case 'localeShortUTC':
+      return new Date(date).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        timeZone: 'UTC',
       });
     case 'locale':
       return new Date(date).toLocaleString(dateLocale, {
