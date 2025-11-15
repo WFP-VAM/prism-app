@@ -172,7 +172,7 @@ export const useAnalysisForm = (
     initialStartDate,
     initialThreshold,
     initialStat,
-    useCache = false,
+    useCache = true,
   } = options;
 
   const dispatch = useDispatch();

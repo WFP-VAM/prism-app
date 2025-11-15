@@ -365,7 +365,7 @@ export type AnalysisDispatchParams = {
   date: ReturnType<Date['getTime']>; // just a hint to developers that we give a date number here, not just any number
   statistic: AggregationOperations; // we might have to deviate from this if analysis accepts more than what this enum provides
   exposureValue: ExposureValue;
-  useCache?: boolean; // If true, use cache if available, otherwise fetch fresh data
+  useCache?: boolean; // Optional bypass, defaults to true
 };
 
 export type PolygonAnalysisDispatchParams = {
@@ -377,7 +377,7 @@ export type PolygonAnalysisDispatchParams = {
   // just a hint to developers that we give a date number here, not just any number
   startDate: ReturnType<Date['getTime']>;
   endDate: ReturnType<Date['getTime']>;
-  useCache?: boolean; // If true, use cache if available, otherwise fetch fresh data
+  useCache?: boolean; // Optional bypass, defaults to true
 };
 
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
