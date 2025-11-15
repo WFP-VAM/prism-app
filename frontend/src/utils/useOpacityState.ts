@@ -2,7 +2,7 @@ import { useContext, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { Map as MaplibreMap } from 'maplibre-gl';
 import { LayerType } from 'config/types';
-import { MapInstanceContext } from 'components/MapView/MapInstanceContext';
+import MapInstanceContext from 'components/MapView/MapInstanceContext/mapInstance.context';
 import {
   opacitySelector,
   setOpacity as setGlobalOpacity,

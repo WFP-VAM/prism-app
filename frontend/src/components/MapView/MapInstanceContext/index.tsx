@@ -1,4 +1,4 @@
-import React, { createContext, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Map as MaplibreMap } from 'maplibre-gl';
 import { LayerType } from 'config/types';
 import { DateRange } from 'context/mapStateSlice';
@@ -18,6 +18,7 @@ import {
   dashboardMapStateSelector,
   setMapTitle,
 } from 'context/dashboardStateSlice';
+import MapInstanceContext, { MapInstanceActions } from './mapInstance.context';
 
 type MapGetter = () => MaplibreMap | undefined;
 
@@ -28,18 +29,6 @@ interface SetOpacityParams {
   value: number;
   callback?: (v: number) => void;
 }
-
-export type MapInstanceActions = {
-  addLayer: (layer: LayerType) => void;
-  removeLayer: (layer: LayerType) => void;
-  updateDateRange: (dateRange: DateRange) => void;
-  setMap: (mapGetter: MapGetter) => void;
-  removeLayerData: (layer: LayerType) => void;
-  setBoundaryRelationData: (data: BoundaryRelationsDict) => void;
-  dismissError: (error: string) => void;
-  setOpacity: (params: SetOpacityParams) => void;
-  updateMapTitle: (title: string) => void;
-};
 
 export type MapInstanceSelectors = {
   selectLayers: (state: RootState) => LayerType[];
@@ -52,16 +41,6 @@ export type MapInstanceSelectors = {
   ) => [number, number, number, number] | undefined;
   selectMapTitle: (state: RootState) => string | undefined;
 };
-
-type MapInstanceContextType = {
-  elementId: string;
-  selectors: Partial<MapInstanceSelectors>;
-  actions: MapInstanceActions;
-};
-
-export const MapInstanceContext = createContext<MapInstanceContextType | null>(
-  null,
-);
 
 /**
  * MapInstanceProvider wraps individual map instances to provide read/write utils

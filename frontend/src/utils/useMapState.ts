@@ -13,7 +13,7 @@ import {
   setBoundaryRelationData as setGlobalMapBoundaryRelationData,
 } from 'context/mapStateSlice';
 import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
-import { MapInstanceContext } from 'components/MapView/MapInstanceContext';
+import MapInstanceContext from 'components/MapView/MapInstanceContext/mapInstance.context';
 import {
   layersSelector,
   dateRangeSelector,

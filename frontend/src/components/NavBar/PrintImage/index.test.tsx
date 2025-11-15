@@ -30,6 +30,18 @@ test('renders as expected', () => {
       renderedDistricts: { 'Window 1': {}, 'Window 2': {} },
       filters: { selectedWindow: 'All' },
     },
+    anticipatoryActionFloodState: {
+      stations: [],
+      selectedStation: null,
+      selectedDate: null,
+      forecastData: {},
+      probabilitiesData: {},
+      stationSummaryData: {},
+      availableDates: [],
+      view: 'home',
+      loading: false,
+      error: null,
+    },
     analysisResultState: {
       isMapLayerActive: false,
     },
