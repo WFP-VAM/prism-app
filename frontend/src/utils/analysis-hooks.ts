@@ -22,6 +22,9 @@ import {
   isAnalysisLoadingSelector,
   requestAndStoreAnalysis,
   requestAndStorePolygonAnalysis,
+  getCachedAnalysisResult,
+  generateRasterCacheKey,
+  generatePolygonCacheKey,
 } from 'context/analysisResultStateSlice';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import {
@@ -46,6 +49,7 @@ export interface UseAnalysisFormOptions {
   initialEndDate?: string;
   initialThreshold?: ThresholdDefinition;
   initialStat?: AggregationOperations;
+  useCache?: boolean; // If true, use cache if available, otherwise fetch fresh data
 }
 
 export interface UseAnalysisFormReturn {
@@ -82,7 +86,79 @@ export interface UseAnalysisFormReturn {
   // Analysis state
   analysisResult: AnalysisResult | null | undefined;
   isAnalysisLoading: boolean;
+  // Cache control
+  useCache: boolean;
 }
+
+const getCacheKey = (
+  useCache: boolean,
+  hazardLayerId: LayerKey | undefined,
+  hazardDataType: HazardDataType | null,
+  startDate: number | null,
+  endDate: number | null,
+  adminLevel: AdminLevelType,
+  adminLevelLayer: BoundaryLayerProps | null,
+  adminLevelLayerData: LayerData<BoundaryLayerProps> | undefined,
+  baselineLayerId: LayerKey | undefined,
+  selectedDate: number | null,
+  statistic: AggregationOperations,
+  aboveThreshold: string,
+  belowThreshold: string,
+  exposureValue: ExposureValue,
+) => {
+  // Skip cache key generation if bypassing cache or no hazard layer selected
+  if (!useCache || !hazardLayerId) {
+    return undefined;
+  }
+
+  if (hazardDataType === GeometryType.Polygon) {
+    // Polygon analysis cache key
+    if (
+      !startDate ||
+      !endDate ||
+      !adminLevel ||
+      !adminLevelLayer ||
+      !adminLevelLayerData
+    ) {
+      return undefined;
+    }
+    const hazardLayer = LayerDefinitions[hazardLayerId];
+    if (!hazardLayer) {
+      return undefined;
+    }
+    return generatePolygonCacheKey({
+      hazardLayer: hazardLayer as any,
+      adminLevel,
+      adminLevelLayer,
+      adminLevelData: adminLevelLayerData.data as any,
+      extent: [0, 0, 0, 0], // Placeholder - actual extent is constant (appConfig.map.boundingBox)
+      startDate,
+      endDate,
+    });
+  }
+
+  // Raster analysis cache key
+  if (!baselineLayerId || !selectedDate || !statistic) {
+    return undefined;
+  }
+  const hazardLayer = LayerDefinitions[hazardLayerId];
+  const baselineLayer = LayerDefinitions[baselineLayerId];
+  if (!hazardLayer || !baselineLayer) {
+    return undefined;
+  }
+  return generateRasterCacheKey({
+    hazardLayer: hazardLayer as any,
+    baselineLayer: baselineLayer as any,
+    date: selectedDate,
+    statistic,
+    threshold: {
+      above: aboveThreshold ? parseFloat(aboveThreshold) : undefined,
+      below: belowThreshold ? parseFloat(belowThreshold) : undefined,
+    },
+    exposureValue,
+    extent: [0, 0, 0, 0], // Placeholder - actual extent is constant (appConfig.map.boundingBox)
+  });
+};
 
 /**
  * Shared hook for analysis form state management and derived calculations
@@ -96,11 +172,12 @@ export const useAnalysisForm = (
     initialStartDate,
     initialThreshold,
     initialStat,
+    useCache = true,
   } = options;
 
   const dispatch = useDispatch();
   const availableDates = useSelector(availableDatesSelector);
-  const analysisResult = useSelector(analysisResultSelector);
+  const currentResult = useSelector(analysisResultSelector);
   const isAnalysisLoading = useSelector(isAnalysisLoadingSelector);
 
   // Form state
@@ -217,6 +294,25 @@ export const useAnalysisForm = (
     }
   }, [availableHazardDates, hazardDataType, initialStartDate]);
 
+  const cacheKey = getCacheKey(
+    useCache,
+    hazardLayerId,
+    hazardDataType,
+    startDate,
+    endDate,
+    adminLevel,
+    adminLevelLayer,
+    adminLevelLayerData,
+    baselineLayerId,
+    selectedDate,
+    statistic,
+    aboveThreshold,
+    belowThreshold,
+    exposureValue,
+  );
+  const cachedResult = useSelector(getCachedAnalysisResult(cacheKey));
+  const analysisResult = cachedResult || currentResult;
+
   return {
     // Form state
     hazardLayerId,
@@ -251,6 +347,7 @@ export const useAnalysisForm = (
     // Analysis state
     analysisResult,
     isAnalysisLoading,
+    useCache,
   };
 };
 
@@ -430,6 +527,7 @@ export const useAnalysisExecution = (
         adminLevelData: formState.adminLevelLayerData.data,
         startDate: formState.startDate,
         endDate: formState.endDate,
+        useCache: formState.useCache,
         extent,
       };
 
@@ -478,6 +576,7 @@ export const useAnalysisExecution = (
         date: formState.selectedDate,
         statistic: formState.statistic,
         exposureValue: formState.exposureValue,
+        useCache: formState.useCache,
         extent,
         threshold: {
           above:
