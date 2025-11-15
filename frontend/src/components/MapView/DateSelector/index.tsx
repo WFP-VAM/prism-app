@@ -475,10 +475,11 @@ const DateSelector = memo(() => {
     // find the next observation date to jump to
     // if multiple layers are active, we pick the first observation date
     // for any layer
+    // Use orderedLayers to access all dates, not just those in the current timeline
     const nextObservationDateItem: DateItem | undefined =
       findMatchingDateBetweenLayers(
-        visibleLayers.map(l =>
-          l.filter(
+        orderedLayers.map(l =>
+          l.dateItems.filter(
             (d: DateItem) =>
               d.queryDate > stateStartDate &&
               (d.queryDate as number) === (d.displayDate as number),
@@ -489,7 +490,7 @@ const DateSelector = memo(() => {
     if (nextObservationDateItem !== undefined) {
       setDatePosition(nextObservationDateItem.displayDate, 0, true);
     }
-  }, [setDatePosition, stateStartDate, visibleLayers]);
+  }, [setDatePosition, stateStartDate, orderedLayers]);
 
   const decrementDate = useCallback(() => {
     if (stateStartDate === undefined) {
@@ -498,11 +499,12 @@ const DateSelector = memo(() => {
     // find the previous observation date to jump to
     // if multiple layers are active, pick the first date for any layer
     // use filter+pop as findLast is not widely available yet
+    // Use orderedLayers to access all dates, not just those in the current timeline
     const previousObservationDateItem: DateItem | undefined =
       findMatchingDateBetweenLayers(
-        visibleLayers.map(l =>
+        orderedLayers.map(l =>
           // eslint- disable-next-line fp/no-mutating-methods
-          l.filter(
+          l.dateItems.filter(
             (d: DateItem) =>
               d.queryDate < stateStartDate &&
               (d.queryDate as number) === (d.displayDate as number),
@@ -513,7 +515,7 @@ const DateSelector = memo(() => {
     if (previousObservationDateItem !== undefined) {
       setDatePosition(previousObservationDateItem.displayDate, 0, true);
     }
-  }, [setDatePosition, stateStartDate, visibleLayers]);
+  }, [setDatePosition, stateStartDate, orderedLayers]);
 
   const clickDate = useCallback(
     (index: number) => {
