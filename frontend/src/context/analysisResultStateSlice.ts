@@ -380,7 +380,7 @@ export type PolygonAnalysisDispatchParams = {
   useCache?: boolean; // If true, use cache if available, otherwise fetch fresh data
 };
 
-const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 const MAX_CACHE_SIZE = 4;
 
 export function generateRasterCacheKey(params: AnalysisDispatchParams): string {
