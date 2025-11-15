@@ -183,8 +183,12 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
-      "backward": 2,
       "mode": "dekad"
+    },
+    "coverage_window": {
+        "backward": 2,
+        "forward": 1,
+        "mode": "dekad"
     },
     "opacity": 0.7,
     "legend_text": "Estimate of precipitation over a 1-month period derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
@@ -201,8 +205,12 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
-      "backward": 2,
       "mode": "dekad"
+    },
+    "coverage_window": {
+        "backward": 2,
+        "forward": 1,
+        "mode": "dekad"
     },
     "opacity": 0.7,
     "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
@@ -218,6 +226,10 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
       "forward": 1,
       "backward": 8,
       "mode": "dekad"
@@ -236,6 +248,10 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
       "forward": 1,
       "backward": 8,
       "mode": "dekad"
@@ -678,7 +694,11 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
       "backward": 17,
+      "forward": 1,
       "mode": "dekad"
     },
     "opacity": 0.7,
@@ -696,7 +716,11 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
       "backward": 17,
+      "forward": 1,
       "mode": "dekad"
     },
     "opacity": 0.7,
@@ -714,7 +738,11 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
       "backward": 26,
+      "forward": 1,
       "mode": "dekad"
     },
     "opacity": 0.7,
@@ -750,7 +778,11 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
       "backward": 35,
+      "forward": 1,
       "mode": "dekad"
     },
     "opacity": 0.7,
@@ -768,7 +800,11 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
       "backward": 35,
+      "forward": 1,
       "mode": "dekad"
     },
     "opacity": 0.7,
@@ -786,7 +822,11 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
       "backward": 2,
+      "forward": 1,
       "mode": "dekad"
     },
     "wcsConfig": {
@@ -806,7 +846,11 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
       "backward": 5,
+      "forward": 1,
       "mode": "dekad"
     },
     "wcsConfig": {
@@ -826,7 +870,11 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
       "backward": 8,
+      "forward": 1,
       "mode": "dekad"
     },
     "wcsConfig": {
@@ -846,7 +894,11 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
       "backward": 17,
+      "forward": 1,
       "mode": "dekad"
     },
     "wcsConfig": {
@@ -866,7 +918,11 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
       "backward": 26,
+      "forward": 1,
       "mode": "dekad"
     },
     "wcsConfig": {
@@ -886,7 +942,11 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
       "backward": 35,
+      "forward": 1,
       "mode": "dekad"
     },
     "wcsConfig": {

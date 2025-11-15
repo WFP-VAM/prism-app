@@ -1,20 +1,29 @@
 import { render } from '@testing-library/react';
-import { DateItem } from 'config/types';
+import {
+  DateItem,
+  DisplayDateTimestamp,
+  QueryDateTimestamp,
+} from 'config/types';
 import StandardTimelineItem, { StandardTimelineItemProps } from '.';
 
 test('StandardTimelineItem renders as expected', () => {
   // Arrange
   const currentDateTime = new Date().getTime();
   const concatenatedLayers = [
-    [{ displayDate: currentDateTime, queryDate: currentDateTime }],
     [
       {
-        displayDate: currentDateTime,
-        queryDate: currentDateTime,
+        displayDate: currentDateTime as DisplayDateTimestamp,
+        queryDate: currentDateTime as QueryDateTimestamp,
+      },
+    ],
+    [
+      {
+        displayDate: currentDateTime as DisplayDateTimestamp,
+        queryDate: currentDateTime as QueryDateTimestamp,
       },
       {
-        displayDate: currentDateTime,
-        queryDate: currentDateTime,
+        displayDate: currentDateTime as DisplayDateTimestamp,
+        queryDate: currentDateTime as QueryDateTimestamp,
       },
     ],
   ];
@@ -56,12 +65,12 @@ test('StandardTimelineItem renders as expected with data point starting after Ti
 
   const layerDates: DateItem[] = [
     {
-      displayDate: firstLayerDataPoint,
-      queryDate: firstLayerDataPoint,
+      displayDate: firstLayerDataPoint as DisplayDateTimestamp,
+      queryDate: firstLayerDataPoint as QueryDateTimestamp,
     },
     {
-      displayDate: secondLayerDataPoint,
-      queryDate: secondLayerDataPoint,
+      displayDate: secondLayerDataPoint as DisplayDateTimestamp,
+      queryDate: secondLayerDataPoint as QueryDateTimestamp,
     },
   ];
 
