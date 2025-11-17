@@ -1,9 +1,5 @@
 import { render } from '@testing-library/react';
-import {
-  DateItem,
-  DisplayDateTimestamp,
-  QueryDateTimestamp,
-} from 'config/types';
+import { DateItem } from 'config/types';
 import StandardTimelineItem, { StandardTimelineItemProps } from '.';
 
 test('StandardTimelineItem renders as expected', () => {
@@ -12,21 +8,21 @@ test('StandardTimelineItem renders as expected', () => {
   const concatenatedLayers = [
     [
       {
-        displayDate: currentDateTime as DisplayDateTimestamp,
-        queryDate: currentDateTime as QueryDateTimestamp,
+        displayDate: currentDateTime,
+        queryDate: currentDateTime,
       },
     ],
     [
       {
-        displayDate: currentDateTime as DisplayDateTimestamp,
-        queryDate: currentDateTime as QueryDateTimestamp,
+        displayDate: currentDateTime,
+        queryDate: currentDateTime,
       },
       {
-        displayDate: currentDateTime as DisplayDateTimestamp,
-        queryDate: currentDateTime as QueryDateTimestamp,
+        displayDate: currentDateTime,
+        queryDate: currentDateTime,
       },
     ],
-  ];
+  ] as DateItem[][];
 
   const props: Omit<StandardTimelineItemProps, 'classes'> = {
     isDateAvailable: false,
@@ -63,16 +59,16 @@ test('StandardTimelineItem renders as expected with data point starting after Ti
   const firstLayerDataPoint = 1669896000000; // 01-12-2022
   const secondLayerDataPoint = 1670756400000; // 12-12-2022
 
-  const layerDates: DateItem[] = [
+  const layerDates = [
     {
-      displayDate: firstLayerDataPoint as DisplayDateTimestamp,
-      queryDate: firstLayerDataPoint as QueryDateTimestamp,
+      displayDate: firstLayerDataPoint,
+      queryDate: firstLayerDataPoint,
     },
     {
-      displayDate: secondLayerDataPoint as DisplayDateTimestamp,
-      queryDate: secondLayerDataPoint as QueryDateTimestamp,
+      displayDate: secondLayerDataPoint,
+      queryDate: secondLayerDataPoint,
     },
-  ];
+  ] as DateItem[];
 
   const concatenatedLayers = [layerDates, layerDates];
 
