@@ -80,6 +80,10 @@
     "server_layer_name": "rfh_daily_forecast",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "days"
+    },
     "opacity": 0.7,
     "legend_text": "CHIRPS-GEFS daily forecasts (16-day rolling)",
     "legend": "rfh_16_0_300",
@@ -760,7 +764,11 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
       "backward": 26,
+      "forward": 1,
       "mode": "dekad"
     },
     "opacity": 0.7,

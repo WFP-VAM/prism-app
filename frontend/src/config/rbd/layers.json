@@ -89,10 +89,6 @@
       ],
       "type": "bar"
     },
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
-    },
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Estimate of precipitation over a 10-day period derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
@@ -185,10 +181,6 @@
     "server_layer_name": "rfq_dekad",
     "additional_query_params": {
       "styles": "rfq_14_20_400"
-    },
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
     },
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
@@ -311,10 +303,6 @@
     "additional_query_params": {
       "styles": "rfh_16_0_400"
     },
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
-    },
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
@@ -434,10 +422,6 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "additional_query_params": {
       "styles": "rfq_14_20_400"
-    },
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
     },
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
@@ -678,10 +662,6 @@
     "additional_query_params": {
       "styles": "rfq_14_20_400"
     },
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
-    },
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
@@ -803,10 +783,6 @@
     "additional_query_params": {
       "styles": "rfh_16_0_1600"
     },
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
-    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -901,10 +877,6 @@
     "additional_query_params": {
       "styles": "ryq_14_50_200"
     },
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
-    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -988,10 +960,6 @@
     "server_layer_name": "r9h_dekad",
     "additional_query_params": {
       "styles": "rfh_16_0_2400"
-    },
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -1087,10 +1055,6 @@
     "additional_query_params": {
       "styles": "ryq_14_50_200"
     },
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
-    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -1174,10 +1138,6 @@
     "server_layer_name": "ryh_dekad",
     "additional_query_params": {
       "styles": "rfh_16_0_2400"
-    },
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -1273,10 +1233,6 @@
     "additional_query_params": {
       "styles": "ryq_14_50_200"
     },
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
-    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -1365,10 +1321,6 @@
       "offset": 0,
       "pixelResolution": 64
     },
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
-    },
     "opacity": 0.7,
     "legend_text": "1-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
@@ -1439,10 +1391,6 @@
       "scale": 0.001,
       "offset": 0,
       "pixelResolution": 64
-    },
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
     },
     "opacity": 0.7,
     "legend_text": "3-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
@@ -1515,10 +1463,6 @@
       "offset": 0,
       "pixelResolution": 64
     },
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
-    },
     "opacity": 0.7,
     "legend_text": "6-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
@@ -1590,10 +1534,6 @@
       "offset": 0,
       "pixelResolution": 64
     },
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
-    },
     "opacity": 0.7,
     "legend_text": "9-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
@@ -1664,10 +1604,6 @@
       "scale": 0.001,
       "offset": 0,
       "pixelResolution": 64
-    },
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
     },
     "opacity": 0.7,
     "legend_text": "1-year Standardized Precipitation Index calculated from dekadal CHIRPS data",
@@ -2338,10 +2274,6 @@
     "additional_query_params": {
       "styles": "vim_14_01_09"
     },
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
-    },
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
@@ -2458,10 +2390,6 @@
     "additional_query_params": {
       "styles": "viq_13_50_150"
     },
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
-    },
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
@@ -2575,10 +2503,6 @@
     "server_layer_name": "myd11a2_taa_dekad",
     "additional_query_params": {
       "styles": "taa_21_1_48"
-    },
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "wcsConfig": {
@@ -2708,10 +2632,6 @@
       "offset": -273,
       "pixelResolution": 64
     },
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
-    },
     "opacity": 0.7,
     "legend_text": "Daytime land surface temperature",
     "additional_query_params": {
@@ -2827,10 +2747,6 @@
     "additional_query_params": {
       "styles": "tna_42_n24_70"
     },
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
-    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "wcsConfig": {
@@ -2942,10 +2858,6 @@
     "opacity": 0.7,
     "additional_query_params": {
       "styles": "tdd_21_m12_12"
-    },
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
     },
     "legend_text": "Daytime land surface temperature anomaly when compared to long-term average",
     "legend": [
@@ -5363,10 +5275,6 @@
     "date_interval": "days",
     "additional_query_params": {
       "styles": "rfh_16_0_300"
-    },
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
     },
     "opacity": 0.7,
     "legend_text": "CHIRPS-GEFS global dekadal rainfall forecasts",
