@@ -18,6 +18,7 @@ import {
   AnticipatoryAction,
   DateItem,
   DateRangeType,
+  DisplayDateTimestamp,
   Panel,
 } from 'config/types';
 import { useMapState } from 'utils/useMapState';
@@ -476,7 +477,7 @@ const DateSelector = memo(() => {
     // if multiple layers are active, we pick the first observation date
     // for any layer
     // Use orderedLayers to access all dates, not just those in the current timeline
-    const nextObservationDateItem: DateItem | undefined =
+    const nextObservationDateItem: DisplayDateTimestamp | undefined =
       findMatchingDateBetweenLayers(
         orderedLayers.map(l =>
           l.dateItems.filter(
@@ -488,7 +489,7 @@ const DateSelector = memo(() => {
         'forward',
       );
     if (nextObservationDateItem !== undefined) {
-      setDatePosition(nextObservationDateItem.displayDate, 0, true);
+      setDatePosition(nextObservationDateItem, 0, true);
     }
   }, [setDatePosition, stateStartDate, orderedLayers]);
 
@@ -500,7 +501,7 @@ const DateSelector = memo(() => {
     // if multiple layers are active, pick the first date for any layer
     // use filter+pop as findLast is not widely available yet
     // Use orderedLayers to access all dates, not just those in the current timeline
-    const previousObservationDateItem: DateItem | undefined =
+    const previousObservationDateItem: DisplayDateTimestamp | undefined =
       findMatchingDateBetweenLayers(
         orderedLayers.map(l =>
           // eslint- disable-next-line fp/no-mutating-methods
@@ -513,7 +514,7 @@ const DateSelector = memo(() => {
         'back',
       );
     if (previousObservationDateItem !== undefined) {
-      setDatePosition(previousObservationDateItem.displayDate, 0, true);
+      setDatePosition(previousObservationDateItem, 0, true);
     }
   }, [setDatePosition, stateStartDate, orderedLayers]);
 

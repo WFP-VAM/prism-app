@@ -1,5 +1,5 @@
 import { DateCompatibleLayer } from 'utils/server-utils';
-import { DateItem } from 'config/types';
+import { DateItem, DisplayDateTimestamp } from 'config/types';
 import { datesAreEqualWithoutTime } from 'utils/date-utils';
 
 export const TIMELINE_ITEM_WIDTH = 4;
@@ -57,13 +57,14 @@ export function findDateIndex(
 }
 
 // Finds the first DateItem that is available on all layers
-// layerDates must contain only observation dates for each layer
+// layerDates must contain only observation dates:
+// ie. queryDate === displayDate
 // and already be filtered before/after the current selected date.
-// Returns undefined if not match is found
+// Returns undefined if no match is found
 export const findMatchingDateBetweenLayers = (
   layerDates: DateItem[][],
   direction: 'forward' | 'back',
-): DateItem | undefined => {
+): DisplayDateTimestamp | undefined => {
   // one of the layers has no more dates to check: there will be no match
   if (layerDates.some(ld => ld.length === 0)) {
     return undefined;
@@ -72,32 +73,13 @@ export const findMatchingDateBetweenLayers = (
   const firstDates: DateItem[] = layerDates.map(
     l => l[direction === 'forward' ? 0 : l.length - 1],
   );
-  const minmaxFirstDateItem: DateItem = firstDates.reduce(
-    (max, di) =>
-      (
-        direction === 'forward'
-          ? di?.displayDate > max?.displayDate
-          : di?.displayDate < max?.displayDate
-      )
-        ? di
-        : max,
-    firstDates.slice(0, 1)[0],
-  );
 
-  if (
-    firstDates.every(di => di?.displayDate === minmaxFirstDateItem?.displayDate)
-  ) {
-    return minmaxFirstDateItem;
+  if (direction === 'forward') {
+    return Math.min(
+      ...firstDates.map(di => di.displayDate),
+    ) as DisplayDateTimestamp;
   }
-  const tail = (l: DateItem[]): DateItem[] =>
-    direction === 'forward' ? l.slice(1) : l.slice(0, -1);
-  return findMatchingDateBetweenLayers(
-    layerDates.map(l =>
-      l[direction === 'forward' ? 0 : l.length - 1]?.displayDate ===
-      minmaxFirstDateItem?.displayDate
-        ? l
-        : tail(l),
-    ),
-    direction,
-  );
+  return Math.max(
+    ...firstDates.map(di => di.displayDate),
+  ) as DisplayDateTimestamp;
 };

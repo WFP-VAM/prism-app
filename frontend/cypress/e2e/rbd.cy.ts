@@ -94,4 +94,56 @@ describe('Checks on dates', () => {
       'The closest date 2024-09-30 has been loaded instead',
     );
   });
+
+  it('should scroll to the "smaller" intervals when multiple layers are selected', () => {
+    // mock tiles as we don't really need them here
+    cy.intercept(
+      {
+        method: 'GET',
+        url: /^https:\/\/api\.earthobservation\.vam\.wfp\.org\/ows\/\/wms\?bboxsr=.*/,
+      },
+      { fixture: 'mocks/vam_empty_tile.png' },
+    ).as('mockVAMtiles');
+
+    cy.visit(
+      `${frontendUrl}/?hazardLayerIds=rainfall_agg_3month&date=2024-02-07&baselineLayerId=ch_phase`,
+    );
+    cy.get('.react-datepicker-wrapper button span', { timeout: 15000 }).should(
+      'have.text',
+      'Feb 7, 2024',
+    );
+    // wait for both layers to be loaded, so we scroll as expected
+    cy.get('#level1-Rainfall .MuiChip-label', { timeout: 30000 }).should(
+      'have.text',
+      '1',
+    );
+
+    cy.scrollLeft();
+    cy.get('.react-datepicker-wrapper button span', { timeout: 15000 }).should(
+      'have.text',
+      'Feb 1, 2024',
+    );
+    cy.url().should('include', 'date=2024-02-01');
+
+    cy.scrollLeft();
+    cy.get('.react-datepicker-wrapper button span', { timeout: 15000 }).should(
+      'have.text',
+      'Jan 21, 2024',
+    );
+    cy.url().should('include', 'date=2024-01-21');
+
+    cy.scrollRight();
+    cy.get('.react-datepicker-wrapper button span', { timeout: 15000 }).should(
+      'have.text',
+      'Feb 1, 2024',
+    );
+    cy.url().should('include', 'date=2024-02-01');
+
+    cy.scrollRight();
+    cy.get('.react-datepicker-wrapper button span', { timeout: 15000 }).should(
+      'have.text',
+      'Feb 11, 2024',
+    );
+    cy.url().should('include', 'date=2024-02-11');
+  });
 });
