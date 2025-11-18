@@ -44,6 +44,7 @@ interface ChartBlockProps extends Partial<DashboardChartConfig> {
   index: number;
   allowDownload?: boolean;
   chartHeight?: ChartHeight;
+  isOverflowing?: boolean;
 }
 
 const CHART_HEIGHTS = {
@@ -60,6 +61,7 @@ function ChartBlock({
   adminUnitLevel: initialAdminLevel,
   allowDownload,
   chartHeight: initialChartHeight,
+  isOverflowing,
 }: ChartBlockProps) {
   const classes = useStyles();
   const { t } = useSafeTranslation();
@@ -235,7 +237,9 @@ function ChartBlock({
                   legendAtBottom
                   showDownloadIcons={false}
                   responsive
-                  height={CHART_HEIGHTS[chartHeightOption]}
+                  height={
+                    isOverflowing ? undefined : CHART_HEIGHTS[chartHeightOption]
+                  }
                 />
               </Box>
             )}

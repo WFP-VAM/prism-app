@@ -214,6 +214,7 @@ function DashboardContent({
               adminUnitId={element.adminUnitId}
               chartHeight={element.chartHeight}
               allowDownload={!exportConfig}
+              isOverflowing={heightConfig?.overflow === 'auto'}
             />
           </div>
         );
