@@ -31,9 +31,7 @@
     "admin1_boundaries"
   ],
   "serversUrls": {
-    "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms"
-    ]
+    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
     "boundingBox": [31, -25, 40, -11]
@@ -444,7 +442,7 @@
     }
   },
   "configuredReports": [
-        {
+    {
       "title": "Rainfall anomaly - 2024/2025 rainy season",
       "firstColumn": [
         {
@@ -480,6 +478,7 @@
     },
     {
       "title": "SPI - 2024/2025 rainy season",
+      "isEditable": true,
       "firstColumn": [
         {
           "type": "MAP",

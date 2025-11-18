@@ -13,9 +13,13 @@ import { jsPDF } from 'jspdf';
 import mask from '@turf/mask';
 import { useSafeTranslation } from 'i18n';
 import { getFormattedDate } from 'utils/date-utils';
-import { dashboardConfigSelector } from 'context/dashboardStateSlice';
+import {
+  dashboardConfigSelector,
+  dashboardMapStateSelector,
+  dashboardColumnsSelector,
+} from 'context/dashboardStateSlice';
 import { downloadToFile } from 'components/MapView/utils';
-import { AdminCodeString } from 'config/types';
+import { AdminCodeString, DashboardElementType } from 'config/types';
 import { getBoundaryLayerSingleton } from 'config/utils';
 import { safeCountry } from 'config';
 import DashboardExportContext, {
@@ -47,8 +51,30 @@ function DashboardExportDialog({
     useState<HTMLElement | null>(null);
   const dashboardConfig = useSelector(dashboardConfigSelector);
   const { title: dashboardTitle } = dashboardConfig;
+  const columns = useSelector(dashboardColumnsSelector);
 
-  // Map display toggles and options
+  // Find the first map element to get initial legend settings
+  const getFirstMapElementId = (): string | null => {
+    const columnIndex = columns.findIndex(column =>
+      column.some(element => element.type === DashboardElementType.MAP),
+    );
+
+    if (columnIndex === -1) {
+      return null;
+    }
+
+    const elementIndex = columns[columnIndex].findIndex(
+      element => element.type === DashboardElementType.MAP,
+    );
+
+    return `${columnIndex}-${elementIndex}`;
+  };
+
+  const firstMapState = useSelector(
+    dashboardMapStateSelector(getFirstMapElementId() || ''),
+  );
+
+  // Map display toggles and options - initialize from first map's state
   const [toggles, setToggles] = useState<ExportToggles>({
     logoVisibility: true,
     mapLabelsVisibility: true,
@@ -74,6 +100,17 @@ function DashboardExportDialog({
   const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] =
     useState(null);
   const [boundaryData, setBoundaryData] = useState<any>(null);
+
+  // Update export config when dialog opens to sync with current map state
+  useEffect(() => {
+    if (open && firstMapState) {
+      setToggles(prev => ({
+        ...prev,
+        legendVisibility: firstMapState.legendVisible ?? true,
+      }));
+      setLegendPosition(firstMapState.legendPosition === 'left' ? 0 : 1);
+    }
+  }, [open, firstMapState]);
 
   // Load boundary layer data directly
   useEffect(() => {
