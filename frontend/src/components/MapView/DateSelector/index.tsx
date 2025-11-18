@@ -787,13 +787,16 @@ const useStyles = makeStyles((theme: Theme) =>
     },
 
     chevronDate: {
-      padding: 0,
-      minWidth: '24px',
-      marginBottom: 'auto',
-      marginTop: 'auto',
-      marginRight: '10px',
-      marginLeft: '10px',
-      color: '#101010',
+      // Use && to increase specificity — bypassing MUI dev environment issue
+      '&&': {
+        padding: 0,
+        minWidth: '24px',
+        marginBottom: 'auto',
+        marginTop: 'auto',
+        marginRight: '10px',
+        marginLeft: '10px',
+        color: '#101010',
+      },
       '&:hover': {
         backgroundColor: 'rgba(211,211,211, 0.3)',
       },
