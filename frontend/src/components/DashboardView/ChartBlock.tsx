@@ -486,7 +486,7 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
-    overflow: 'hidden',
+    overflow: 'auto',
     '& > *': {
       maxWidth: '100%',
     },
