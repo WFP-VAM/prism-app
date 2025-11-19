@@ -20,6 +20,7 @@ import {
   DateRangeType,
   DisplayDateTimestamp,
   Panel,
+  SelectedDateTimestamp,
 } from 'config/types';
 import { useMapState } from 'utils/useMapState';
 import { locales, useSafeTranslation } from 'i18n';
@@ -251,7 +252,7 @@ const DateSelector = memo(() => {
       truncatedLayers.map((layer, index) => {
         const layerQueryDate = getRequestDate(
           layer,
-          dateSelector.startDate,
+          dateSelector.startDate as SelectedDateTimestamp,
           // Do not default to most recent for anticpatory action layers.
           // TODO - what about other layers?
           !orderedLayers[index].id.includes('anticipatory_action'),

@@ -218,9 +218,3 @@ test('renders correct dates for rainfall_agg_1month over 2025', async () => {
   // eslint-disable-next-line fp/no-mutation
   global.Date.now = realDateNow;
 });
-
-// add test for layer with no validity defined
-// add test for coverage window
-// why are these tests so slow?
-// fix bug about scrolling dates backwards
-// and variant activation of layer

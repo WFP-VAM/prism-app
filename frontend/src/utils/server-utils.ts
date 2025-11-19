@@ -22,6 +22,7 @@ import type {
   ReferenceDateTimestamp,
   RequestFeatureInfo,
   SeasonBounds,
+  SelectedDateTimestamp,
   Validity,
   ValidityEndDateTimestamp,
   ValidityPeriod,
@@ -56,13 +57,14 @@ import { fetchWithTimeout } from './fetch-with-timeout';
 import { queryParamsToString } from './url-utils';
 
 /**
- * Function that gets the correct date item.
+ * Get the DateItem to use for querying the backend from the selected date
+ * Optionally default to the most recent date available if no good match
  *
- * @return DateItem
+ * @return DateItem | undefined
  */
 export const getRequestDateItem = (
   layerAvailableDates: DateItem[] | undefined,
-  selectedDate?: number,
+  selectedDate?: SelectedDateTimestamp,
   defaultToMostRecent: boolean = true,
 ): DateItem | undefined => {
   if (!selectedDate) {
@@ -84,15 +86,15 @@ export const getRequestDateItem = (
 };
 
 /**
- * Function that gets the correct date used to make the request. If available dates is undefined. Return selectedDate as default.
+ * Get the correct date used to make the request. If available dates is undefined. Return selectedDate as default.
  *
  * @return unix timestamp
  */
 export const getRequestDate = (
   layerAvailableDates: DateItem[] | undefined,
-  selectedDate?: number,
+  selectedDate?: SelectedDateTimestamp,
   defaultToMostRecent = true,
-): number | undefined => {
+): QueryDateTimestamp | undefined => {
   const dateItem = getRequestDateItem(
     layerAvailableDates,
     selectedDate,
@@ -100,7 +102,7 @@ export const getRequestDate = (
   );
 
   if (!dateItem) {
-    return selectedDate;
+    return selectedDate as unknown as QueryDateTimestamp;
   }
 
   return dateItem.queryDate;
@@ -551,7 +553,7 @@ export function generateIntermediateDateItemFromValidity(
 const localFetchCoverageLayerDays = async (
   url: string,
   dispatch: AppDispatch,
-): Promise<{ [layerId: string]: number[] }> => {
+): Promise<{ [layerId: LayerKey]: number[] }> => {
   try {
     return await fetchCoverageLayerDays(url, { fetch: fetchWithTimeout });
   } catch (error) {
@@ -580,7 +582,7 @@ const localFetchCoverageLayerDays = async (
 const localWMSGetLayerDates = async (
   url: string,
   dispatch: AppDispatch,
-): Promise<{ [layerId: string]: number[] }> => {
+): Promise<{ [layerId: LayerKey]: number[] }> => {
   try {
     return await new WMS(url, { fetch: fetchWithTimeout }).getLayerDays();
   } catch (error) {
@@ -613,7 +615,7 @@ const localWMSGetLayerDates = async (
 const mapServerDatesToLayerIds = (
   serverDates: Record<string, number[]>,
   layers: (WMSLayerProps | CompositeLayerProps)[],
-): Record<string, ReferenceDateTimestamp[]> =>
+): Record<LayerKey, ReferenceDateTimestamp[]> =>
   layers.reduce((acc: Record<string, ReferenceDateTimestamp[]>, layer) => {
     const serverLayerName =
       layer.type === 'composite'
@@ -769,7 +771,7 @@ export const getLayerType = (
 /**
  * Load available dates for WMS and WCS using a serverUri defined in prism.json and for GeoJSONs (point data) using their API endpoint.
  *
- * @return a Promise of Map<LayerID (not always id from LayerProps but can be), availableDates[]>
+ * @return a Promise of Map<LayerID (not always id from LayerProps but can be), DateItem[]>
  */
 export async function getAvailableDatesForLayer(
   getState: () => RootState,

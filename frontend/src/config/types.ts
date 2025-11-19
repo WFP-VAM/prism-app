@@ -860,6 +860,7 @@ export type LeftPanelState = {
 // The second part of the type (after &) is discarded by the
 // typescript compiler, so there is no runtime impact.
 // refer to docs/dates.md for conceptual explanations
+export type SelectedDateTimestamp = number & { SelectedDateTimestamp: {} };
 export type ReferenceDateTimestamp = number & { ReferenceDateTimestamp: {} };
 export type QueryDateTimestamp = number & { QueryDateTimestamp: {} };
 export type DisplayDateTimestamp = number & { DisplayDateTimestamp: {} };
