@@ -4,6 +4,14 @@ const frontendUrl = 'http://localhost:3000';
 
 describe('Date picker', () => {
   it('should move to the previous/next observation date when clicking back/forward on the timeline, with rainfall then EWS layer active', () => {
+    // mock tiles as we don't really need them here
+    cy.intercept(
+      {
+        method: 'GET',
+        url: /^https:\/\/api\.earthobservation\.vam\.wfp\.org\/ows\/\/wms\?bboxsr=.*/,
+      },
+      { fixture: 'mocks/vam_empty_tile.png' },
+    ).as('mockVAMtiles');
     cy.visit(frontendUrl);
 
     cy.contains('MapTiler', { timeout: 20000 }).should('be.visible');
@@ -37,6 +45,8 @@ describe('Date picker', () => {
     );
 
     cy.activateLayer('Flood', 'Early Warning', 'EWS 1294 river level data');
+    // wait on the url to prevent the scrollLeft action from happening too quickly in CI
+    cy.url({ timeout: 20000 }).should('include', 'ews_remote');
     cy.get('.react-datepicker-wrapper button span', { timeout: 20000 }).then(
       span1 => {
         cy.wrap(span1)
