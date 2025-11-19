@@ -25,7 +25,7 @@ describe('Date picker', () => {
           cy.wrap(span)
             .invoke('text')
             .as('newDate')
-            .then(function() {
+            .then(function () {
               const dekadStartDates = [1, 11, 21];
               // const firstDate = new Date(this.initialDate).getDate();
               const secondDate = new Date(this.newDate).getDate();
@@ -43,27 +43,24 @@ describe('Date picker', () => {
           .invoke('text')
           .should('match', /^[A-Z][a-z]{2} \d{1,2}, \d{4}$/)
           .as('initialDate');
-        // scroll backwards once
-        cy.get('button#chevronLeftButton').click();
+        cy.scrollLeft();
         cy.get('.react-datepicker-wrapper button span', {
           timeout: 20000,
         }).then(span => {
           cy.wrap(span)
             .invoke('text')
             .as('newDate')
-            .then(function() {
+            .then(function () {
               const dekadStartDates = [1, 11, 21];
               const firstDate = new Date(this.initialDate).getDate();
-              // const secondDate = new Date(this.newDate).getDate();
+              const secondDate = new Date(this.newDate).getDate();
               expect(dekadStartDates).to.include(firstDate);
-              // TODO: do we want the scroll to move 1 day or 1 dekad?
-              // expect(dekadStartDates).to.include(secondDate);
-              // expect(
-              //   (dekadStartDates.indexOf(secondDate) -
-              //     dekadStartDates.indexOf(firstDate) +
-              //     3) %
-              //   3,
-              // ).to.equal(1);
+              // we should only move by one day as EWS has data every day
+              expect(
+                new Date(
+                  new Date(this.initialDate).getTime() - 60 * 60 * 24,
+                ).getDate(),
+              ).to.equal(secondDate);
             });
         });
       },
@@ -102,7 +99,7 @@ describe('Date picker', () => {
       // validate that a dekad date is selected
       cy.wrap(span).should('contain.text', 'Aug 25, 2025');
     });
-    cy.get('#chevronLeftButton').click();
+    cy.scrollLeft();
     cy.get('.react-datepicker-wrapper button span', {
       timeout: 20000,
     }).then(span => {
