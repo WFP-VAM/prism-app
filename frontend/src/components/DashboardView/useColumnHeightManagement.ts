@@ -21,6 +21,7 @@ interface UseColumnHeightManagementReturn {
   componentHeights: Map<string, HeightConfig>;
   columnRefs: React.MutableRefObject<Map<number, HTMLDivElement>>;
   componentRefs: React.MutableRefObject<Map<string, HTMLDivElement>>;
+  recalculationCount: number;
 }
 
 /**
@@ -41,6 +42,7 @@ export function useColumnHeightManagement({
   const [componentHeights, setComponentHeights] = useState<
     Map<string, HeightConfig>
   >(new Map());
+  const [recalculationCount, setRecalculationCount] = useState(0);
   const columnRefs = useRef<Map<number, HTMLDivElement>>(new Map());
   const componentRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const checkTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -80,16 +82,27 @@ export function useColumnHeightManagement({
           const componentElement = componentRefs.current.get(componentId);
 
           if (componentElement) {
-            // Temporarily remove constraints to get true natural height
-            const currentStyle = componentElement.style.cssText;
-            componentElement.style.flex = ''; // eslint-disable-line fp/no-mutation
-            componentElement.style.overflow = ''; // eslint-disable-line fp/no-mutation
-            componentElement.style.minHeight = ''; // eslint-disable-line fp/no-mutation
-            const naturalHeight = componentElement.scrollHeight;
+            // Check if component has an intended height (for charts)
+            const intendedHeightAttr = componentElement.getAttribute(
+              'data-intended-height',
+            );
 
-            // Restore original styles
-            // eslint-disable-next-line fp/no-mutation
-            componentElement.style.cssText = currentStyle;
+            const naturalHeight = intendedHeightAttr
+              ? // Use the intended height from data attribute
+                parseInt(intendedHeightAttr, 10)
+              : // Temporarily remove constraints to get true natural height
+                (() => {
+                  const currentStyle = componentElement.style.cssText;
+                  componentElement.style.flex = ''; // eslint-disable-line fp/no-mutation
+                  componentElement.style.overflow = ''; // eslint-disable-line fp/no-mutation
+                  componentElement.style.minHeight = ''; // eslint-disable-line fp/no-mutation
+                  const height = componentElement.scrollHeight;
+
+                  // Restore original styles
+                  // eslint-disable-next-line fp/no-mutation
+                  componentElement.style.cssText = currentStyle;
+                  return height;
+                })();
 
             // eslint-disable-next-line fp/no-mutating-methods
             tempComponentHeights.push({
@@ -181,6 +194,9 @@ export function useColumnHeightManagement({
       if (hasChanged) {
         previousHeightsRef.current = newHeights;
         setComponentHeights(newHeights);
+        // Increment recalculation count only when heights meaningfully changed
+        // This signals to components (like ChartBlock) to reset their state
+        setRecalculationCount(prev => prev + 1);
       }
     };
 
@@ -244,5 +260,6 @@ export function useColumnHeightManagement({
     componentHeights,
     columnRefs,
     componentRefs,
+    recalculationCount,
   };
 }

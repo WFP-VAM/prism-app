@@ -39,19 +39,15 @@ import {
 import { getFormattedDate } from 'utils/date-utils';
 import { dashboardModeSelector } from '../../context/dashboardStateSlice';
 import BlockPreviewHeader from './BlockPreviewHeader';
+import { CHART_HEIGHTS } from './chartConstants';
 
 interface ChartBlockProps extends Partial<DashboardChartConfig> {
   index: number;
   allowDownload?: boolean;
   chartHeight?: ChartHeight;
   isOverflowing?: boolean;
+  recalculationCount?: number;
 }
-
-const CHART_HEIGHTS = {
-  [ChartHeight.TALL]: 400,
-  [ChartHeight.MEDIUM]: 275,
-  [ChartHeight.SHORT]: 240,
-};
 
 function ChartBlock({
   index,
@@ -62,6 +58,7 @@ function ChartBlock({
   allowDownload,
   chartHeight: initialChartHeight,
   isOverflowing,
+  recalculationCount,
 }: ChartBlockProps) {
   const classes = useStyles();
   const { t } = useSafeTranslation();
@@ -98,6 +95,9 @@ function ChartBlock({
   const [chartHeightOption, setChartHeightOption] = useState<ChartHeight>(
     initialChartHeight || ChartHeight.TALL,
   );
+
+  // Overflow state management - lock once triggered, reset on recalculation
+  const [isOverflowLocked, setIsOverflowLocked] = useState(false);
 
   const downloadFilename = buildCsvFileName([
     ...(chartTitle ? chartTitle.split(' ') : []),
@@ -163,6 +163,24 @@ function ChartBlock({
       }
     }
   }, [isLoading, wasChartLoading, chartDataset]);
+
+  // Staged lock management: reset on recalculation, then lock if needed after measurement
+  useEffect(() => {
+    if (recalculationCount !== undefined && recalculationCount > 0) {
+      // Reset lock to allow new measurement
+      setIsOverflowLocked(false);
+
+      // After small delay, lock if overflow detected
+      const timeoutId = setTimeout(() => {
+        if (isOverflowing) {
+          setIsOverflowLocked(true);
+        }
+      }, 50);
+
+      return () => clearTimeout(timeoutId);
+    }
+    return undefined;
+  }, [recalculationCount, isOverflowing]);
 
   const formatDateRange = () => {
     const start = formState.startDate;
@@ -238,7 +256,9 @@ function ChartBlock({
                   showDownloadIcons={false}
                   responsive
                   height={
-                    isOverflowing ? undefined : CHART_HEIGHTS[chartHeightOption]
+                    isOverflowing || isOverflowLocked
+                      ? undefined
+                      : CHART_HEIGHTS[chartHeightOption]
                   }
                 />
               </Box>

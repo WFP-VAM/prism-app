@@ -23,6 +23,7 @@ import {
   AdminCodeString,
   DashboardElementType,
   DashboardElements,
+  ChartHeight,
 } from '../../config/types';
 import { appConfig } from '../../config';
 import MapBlock from './MapBlock';
@@ -30,6 +31,7 @@ import TextBlock from './TextBlock';
 import TableBlock from './TableBlock';
 import ChartBlock from './ChartBlock';
 import { useColumnHeightManagement, GAP } from './useColumnHeightManagement';
+import { CHART_HEIGHTS } from './chartConstants';
 
 interface LogoConfig {
   visible: boolean;
@@ -85,7 +87,7 @@ function DashboardContent({
   const syncEnabled = useSelector(dashboardSyncEnabledSelector);
 
   // Column Height Management - extracted to custom hook
-  const { componentHeights, columnRefs, componentRefs } =
+  const { componentHeights, columnRefs, componentRefs, recalculationCount } =
     useColumnHeightManagement({
       mode,
       exportConfig,
@@ -198,12 +200,17 @@ function DashboardContent({
             />
           </div>
         );
-      case DashboardElementType.CHART:
+      case DashboardElementType.CHART: {
+        // Calculate intended height: chart height + padding + header + margins
+        const chartHeight = element.chartHeight || ChartHeight.TALL;
+        const intendedHeight = CHART_HEIGHTS[chartHeight] + 100;
+
         return (
           <div
             key={`chart-${elementId}`}
             ref={handleRef}
             style={getWrapperStyle()}
+            data-intended-height={intendedHeight}
           >
             <ChartBlock
               index={elementIndex}
@@ -215,9 +222,11 @@ function DashboardContent({
               chartHeight={element.chartHeight}
               allowDownload={!exportConfig}
               isOverflowing={heightConfig?.overflow === 'auto'}
+              recalculationCount={recalculationCount}
             />
           </div>
         );
+      }
       default:
         return null;
     }
