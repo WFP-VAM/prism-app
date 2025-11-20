@@ -29,13 +29,27 @@ export const loadAvailableDatesForLayer = createAsyncThunk<
   {
     condition: (layerId: string, { getState }) => {
       const alreadyLoading = layersLoadingDatesIdsSelector(getState());
+      const layerDefinition = LayerDefinitions[layerId];
+      const hazardLayer =
+        layerDefinition.type === 'impact'
+          ? LayerDefinitions[layerDefinition.hazardLayer]
+          : undefined;
+      const layerType = getLayerType(layerDefinition);
+      const hazardLayerType = hazardLayer
+        ? getLayerType(hazardLayer)
+        : undefined;
+      const isWMSBased =
+        layerType === 'WMSLayer' || hazardLayerType === 'WMSLayer';
+      const isPointDataBased =
+        layerType === 'pointDataLayer' || hazardLayerType === 'pointDataLayer';
+
       // for layer types that depend on preloaded data, make sure that data is
       // ready before we try calculating available dates. The condition can return
       // a promise, in which case the action above will only be dispatched once
       // that promise has resolved. This effectively allows waiting for the data
       // preloading to complete, which can happen in cypress tests where a layer
       // is activated very early on, or for slow networks.
-      if (getLayerType(LayerDefinitions[layerId]) === 'WMSLayer') {
+      if (isWMSBased) {
         // action already dispatched, don't do it twice
         if (alreadyLoading.includes(layerId)) {
           return false;
@@ -60,7 +74,7 @@ export const loadAvailableDatesForLayer = createAsyncThunk<
           check();
         });
       }
-      if (getLayerType(LayerDefinitions[layerId]) === 'pointDataLayer') {
+      if (isPointDataBased) {
         if (alreadyLoading.includes(layerId)) {
           return false;
         }

@@ -825,30 +825,35 @@
       "below": -25
     },
     "api": {
-      "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json",
-      "group_by": "ADM2_PCODE"
+      "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_adm2_boundaries.json",
+      "group_by": "ADM2_PCODE_RE"
     },
     "opacity": 0.7,
     "legend_text": "Number of herder households within a soum where the median pasture anomaly is <= -25%",
     "legend": [
       {
         "value": 200,
+        "label": "200 - 299",
         "color": "#fef0d9"
       },
       {
         "value": 300,
+        "label": "300 - 399",
         "color": "#fdcc8a"
       },
       {
         "value": 400,
+        "label": "400 - 499",
         "color": "#fc8d59"
       },
       {
         "value": 500,
+        "label": "500 - 599",
         "color": "#e34a33"
       },
       {
         "value": 600,
+        "label": ">= 600",
         "color": "#b30000"
       }
     ]
@@ -863,7 +868,7 @@
       "above": 3
     },
     "api": {
-      "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json",
+      "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_adm2_boundaries.json",
       "group_by": "ADM1_PCODE"
     },
     "opacity": 0.7,
@@ -887,7 +892,7 @@
     "title": "Livestock exposed to very high dzud risk (soum)",
     "type": "impact",
     "api": {
-      "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json",
+      "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_adm2_boundaries.json",
       "group_by": "ADM2_PCODE"
     },
     "hazard_layer": "DzudRiskMap",
@@ -916,7 +921,7 @@
     "title": "Livestock exposed to drought in thousands (soum)",
     "type": "impact",
     "api": {
-      "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json",
+      "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_adm2_boundaries.json",
       "group_by": "ADM2_PCODE"
     },
     "hazard_layer": "ModisVHI",

@@ -140,9 +140,15 @@ export const getPossibleDatesForLayer = (
           .sort((a, b) => a.displayDate - b.displayDate)
       );
     case 'impact':
-      return serverAvailableDates[
-        (LayerDefinitions[layer.hazardLayer] as WMSLayerProps).id
-      ];
+      // Fallback to the impact layer id in case the hazard layer
+      // dates have not been stored yet.
+      return (
+        serverAvailableDates[
+          (LayerDefinitions[layer.hazardLayer] as WMSLayerProps).id
+        ] ||
+        serverAvailableDates[layer.id] ||
+        []
+      );
     case 'composite': {
       // Filter dates that are after layer.startDate
       const startDateTimestamp = Date.parse(layer.startDate);
@@ -695,7 +701,18 @@ export async function getAvailableDatesForLayer(
   getState: () => RootState,
   layerId: string,
 ): Promise<AvailableDates> {
-  const relevantLayerDefinitions = { [layerId]: LayerDefinitions[layerId] };
+  const layerDefinition = LayerDefinitions[layerId];
+  const hazardLayerId =
+    layerDefinition.type === 'impact' ? layerDefinition.hazardLayer : undefined;
+  const hazardLayerDefinition = hazardLayerId
+    ? LayerDefinitions[hazardLayerId]
+    : undefined;
+  const relevantLayerDefinitions = {
+    [layerId]: layerDefinition,
+    ...(hazardLayerDefinition
+      ? { [hazardLayerId]: hazardLayerDefinition }
+      : {}),
+  };
 
   // At this point, all network data should have been preloaded in
   // the redux state, so we just need to process it into the right
@@ -703,6 +720,21 @@ export async function getAvailableDatesForLayer(
   const getPreloadedLayerDates = (lId: string): Record<string, number[]> => {
     const layer = LayerDefinitions[lId];
     const state = getState();
+
+    if (layer.type === 'impact') {
+      const hazardLayerId = layer.hazardLayer;
+
+      if (hazardLayerId === layer.id) {
+        console.warn(
+          `Layer ${layer.id} references itself as hazard layer. Unable to derive dates.`,
+        );
+        return { [layer.id]: [] };
+      }
+
+      const hazardLayerDates =
+        getPreloadedLayerDates(hazardLayerId)[hazardLayerId] || [];
+      return { [layer.id]: hazardLayerDates };
+    }
 
     switch (getLayerType(layer)) {
       case 'WMSLayer':
@@ -733,6 +765,9 @@ export async function getAvailableDatesForLayer(
     }
   };
   const layerDates = getPreloadedLayerDates(layerId);
+  const hazardLayerDates = hazardLayerId
+    ? getPreloadedLayerDates(hazardLayerId)
+    : undefined;
 
   // Retrieve layers that have a validity object
   const layersWithValidity: ValidityLayer[] = Object.values(
@@ -819,6 +854,19 @@ export async function getAvailableDatesForLayer(
     layerId,
     layerDates[layerId] || [],
   );
+
+  if (hazardLayerId) {
+    const hazardDateArray =
+      hazardLayerDates?.[hazardLayerId] || layerDates[hazardLayerId] || [];
+    const hazardDateItems = await buildLayerDateItems(
+      hazardLayerId,
+      hazardDateArray,
+    );
+    return {
+      ...hazardDateItems,
+      ...layerDateItemsForLayer,
+    };
+  }
 
   return layerDateItemsForLayer;
 }

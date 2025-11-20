@@ -257,6 +257,13 @@ export async function loadFeaturesFromApi(
   extent?: Extent,
   date?: number,
 ): Promise<GeoJsonBoundary[]> {
+  const statsApi = layer.api as StatsApi | undefined;
+
+  if (!statsApi) {
+    throw new Error(
+      `Impact layer ${layer.id} missing stats API configuration. Please define 'api' in layers.json.`,
+    );
+  }
   const wcsUrl = createGetCoverageUrl({
     bbox: extent,
     bboxDigits: 1,
@@ -266,7 +273,6 @@ export async function loadFeaturesFromApi(
     version: hazardLayerDef.wcsConfig?.version,
   });
 
-  const statsApi = layer.api as StatsApi;
   const apiUrl = statsApi.url || ANALYSIS_API_URL;
 
   const apiData = {

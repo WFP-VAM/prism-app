@@ -625,8 +625,13 @@ export class AdminLevelDataLayerProps extends CommonLayerProps {
 }
 
 export class StatsApi {
-  url: string;
+  @optional
+  url?: string;
+
+  @makeRequired
   zonesUrl: string;
+
+  @makeRequired
   groupBy: string;
 }
 
