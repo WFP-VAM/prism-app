@@ -470,6 +470,7 @@ const DateSelector = memo(() => {
     [availableDates, updateStartDate],
   );
 
+  // scroll right with the `>` button
   const incrementDate = useCallback(() => {
     if (stateStartDate === undefined) {
       return;
@@ -494,6 +495,7 @@ const DateSelector = memo(() => {
     }
   }, [setDatePosition, stateStartDate, orderedLayers]);
 
+  // scroll left with the `<` button
   const decrementDate = useCallback(() => {
     if (stateStartDate === undefined) {
       return;

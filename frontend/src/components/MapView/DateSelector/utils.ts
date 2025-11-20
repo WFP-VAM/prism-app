@@ -56,23 +56,24 @@ export function findDateIndex(
   return -1;
 }
 
-// Finds the first DateItem that is available on all layers
+// Finds the first DateItem that is available on all layers, as
+// the query date for at least one layer, and in the validity of other layers
 // layerDates must contain only observation dates:
 // ie. queryDate === displayDate
 // and already be filtered before/after the current selected date.
-// Returns undefined if no match is found
+// Returns undefined if no date is available at all.
 export const findMatchingDateBetweenLayers = (
   layerDates: DateItem[][],
   direction: 'forward' | 'back',
 ): DisplayDateTimestamp | undefined => {
   // one of the layers has no more dates to check: there will be no match
-  if (layerDates.some(ld => ld.length === 0)) {
+  if (layerDates.every(ld => ld.length === 0)) {
     return undefined;
   }
 
-  const firstDates: DateItem[] = layerDates.map(
-    l => l[direction === 'forward' ? 0 : l.length - 1],
-  );
+  const firstDates: DateItem[] = layerDates
+    .map(l => l[direction === 'forward' ? 0 : l.length - 1])
+    .filter(l => l); // remove undefined elements, which break min/max below
 
   if (direction === 'forward') {
     return Math.min(
