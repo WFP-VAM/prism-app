@@ -11,7 +11,7 @@
   "license": "MIT",
   "packageManager": "yarn@1.22.22",
   "_resolutions": {
-    "glob": ">=10.5.0 because of https://github.com/typeorm/typeorm/, try to remove once in a while."
+    "glob": ">=10.5.0 because of jest and typeorm-seeding ; try to remove once in a while."
   },
   "resolutions": {
     "glob": ">=10.5.0"
