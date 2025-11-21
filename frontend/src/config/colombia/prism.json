@@ -1,6 +1,8 @@
 {
   "country": "Colombia",
+  "countryAdmin0Id": 57,
   "alertFormActive": false,
+  "enableNavigationDropdown": true,
   "icons": {
     "rainfall": "icon_rain.png",
     "vegetation": "icon_veg.png",
@@ -20,6 +22,11 @@
   "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "categories": {
     "rainfall": {
+      "forecasts": [
+        "daily_rainfall_forecast",
+        "dekad_rainfall_forecast",
+        "dekad_rainfall_anomaly_forecast"
+      ],
       "rainfall_amount": [
         {
           "group_title": "Rainfall Aggregate",
