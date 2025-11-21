@@ -133,7 +133,7 @@ export async function buildFloodEmailPayload(
 
   // Format date as DD-Month-YYYY for title
   const formattedDate = formatDate(dateIso, 'DD-Month-YYYY');
-  const title = `Flood Anticipatory Actions Triggered in Mozambique (${formattedDate})`;
+  const title = `Flood Anticipatory Actions Trigger detected in Mozambique (${formattedDate})`;
 
   // Fetch station data if available
   let stations: FloodAlertEmailData['stations'] = [];

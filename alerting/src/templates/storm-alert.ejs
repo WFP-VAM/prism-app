@@ -38,6 +38,8 @@
                     <% } %>
                     <p class="trigger-title" style="margin: 20px 0; width: 100%; font-weight: bold; font-size: 16px;">
                         <span class="activation-icon" style="width: 24px; height: 24px; border-radius: 8px; background-color: rgba(230, 55, 1, 1); display: inline-block; vertical-align: middle; margin-right: 10px;"></span> 
+                        Wind speeds above the threshold of 119 km/h are forecasted. This is not an official activation.<br>
+                        
                         Activation Triggers: 
                         <% if (activatedTriggers) { %>
                             Activated
@@ -100,7 +102,7 @@
         Forecast by Regional Specialized Meteorological Center La Reunion.
     
         <% if (readiness) { %>
-            Readiness Trigger: Activated
+            Readiness Trigger: Detected
         <% } %>
     
         <% if (readiness) { %>
@@ -108,12 +110,14 @@
         <% } %>
     
         <% if (activatedTriggers) { %>
-            Activation Triggers: Activated
+            Wind speeds above the threshold of 119 km/h are forecasted. This is not an official activation.
+            
+            Activation Triggers: Detected
     
             Projected wind speeds affecting pilot districts:
             - > 119 km/h: <%= activatedTriggers.districts64kt %>
         <% } else { %>
-            Activation Triggers: Not Activated
+            Activation Triggers: Not Detected
         <% } %>
     
         Access PRISM Tropical Storm Dashboard: <%= redirectUrl %>
