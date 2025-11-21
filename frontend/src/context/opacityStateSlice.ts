@@ -16,7 +16,7 @@ export interface MapOpacityState {
   error: string | null;
 }
 
-interface SetOpacityParams {
+export interface SetOpacityParams {
   map: MaplibreMap | undefined;
   layerId: LayerType['id'] | undefined;
   layerType: LayerType['type'] | 'analysis' | undefined;

@@ -78,6 +78,8 @@ const calculateStartAndEndDates = (startDate: Date, selectedTab: string) => {
 };
 
 const DateSelector = memo(() => {
+  const mapState = useMapState();
+  const isGlobalMap = mapState?.isGlobalMap;
   const classes = useStyles();
   const {
     selectedLayerDates: availableDates,
@@ -85,7 +87,6 @@ const DateSelector = memo(() => {
     checkSelectedDateForLayerSupport,
   } = useLayers();
 
-  const mapState = useMapState();
   const { startDate: stateStartDate } = mapState.dateRange;
   const tabValue = useSelector(leftPanelTabValueSelector);
   const [dateRange, setDateRange] = useState<DateRangeType[]>([
@@ -435,13 +436,16 @@ const DateSelector = memo(() => {
       ) {
         return;
       }
-      updateHistory('date', getFormattedDate(time, 'default') as string);
+      if (isGlobalMap) {
+        updateHistory('date', getFormattedDate(time, 'default') as string);
+      }
       mapState.actions.updateDateRange({ startDate: time });
     },
     [
       availableDates,
       checkSelectedDateForLayerSupport,
       stateStartDate,
+      isGlobalMap,
       updateHistory,
       mapState.actions,
     ],
@@ -634,7 +638,11 @@ const DateSelector = memo(() => {
         container
         alignItems="center"
         justifyContent="center"
-        className={classes.datePickerContainer}
+        className={
+          isGlobalMap
+            ? classes.datePickerContainer
+            : classes.datePickerContainerDashboard
+        }
       >
         {/* Mobile */}
         <Grid item xs={12} sm={1} className={classes.datePickerGrid}>
@@ -648,7 +656,19 @@ const DateSelector = memo(() => {
             locale={t('date_locale')}
             dateFormat="PP"
             className={classes.datePickerInput}
-            selected={stateStartDate ? new Date(stateStartDate) : new Date()}
+            selected={
+              stateStartDate
+                ? (() => {
+                    // Force to UTC to avoid any timezone issues when setting a pre-configured date in dashboards
+                    const utcDate = new Date(stateStartDate);
+                    return new Date(
+                      utcDate.getUTCFullYear(),
+                      utcDate.getUTCMonth(),
+                      utcDate.getUTCDate(),
+                    );
+                  })()
+                : new Date()
+            }
             onChange={handleOnDatePickerChange}
             maxDate={maxDate}
             todayButton={t('Today')}
@@ -767,13 +787,16 @@ const useStyles = makeStyles((theme: Theme) =>
     },
 
     chevronDate: {
-      padding: 0,
-      minWidth: '24px',
-      marginBottom: 'auto',
-      marginTop: 'auto',
-      marginRight: '10px',
-      marginLeft: '10px',
-      color: '#101010',
+      // Use && to increase specificity — bypassing MUI dev environment issue
+      '&&': {
+        padding: 0,
+        minWidth: '24px',
+        marginBottom: 'auto',
+        marginTop: 'auto',
+        marginRight: '10px',
+        marginLeft: '10px',
+        color: '#101010',
+      },
       '&:hover': {
         backgroundColor: 'rgba(211,211,211, 0.3)',
       },
@@ -787,6 +810,15 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: '8px',
       width: '90%',
       margin: 'auto',
+      textAlign: 'center',
+    },
+    datePickerContainerDashboard: {
+      border: '1px solid #D4D4D4',
+      boxShadow: 'none',
+      backgroundColor: 'white',
+      color: '#101010',
+      borderRadius: '8px',
+      width: 'calc(100% - 16px)',
       textAlign: 'center',
     },
 

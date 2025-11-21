@@ -16,16 +16,10 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  BoundaryLayerProps,
-  LayerKey,
-  PanelSize,
-  WMSLayerProps,
-} from 'config/types';
+import { LayerKey, PanelSize, WMSLayerProps } from 'config/types';
 import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
-import { LayerData } from 'context/layers/layer-data';
-import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { AlertRequest, fetchApiData, getPrismUrl } from 'utils/analysis-utils';
+import { useBoundaryData } from 'utils/useBoundaryData';
 import LayerDropdown from 'components/MapView/Layers/LayerDropdown';
 import BoundaryDropdown from 'components/MapView/Layers/BoundaryDropdown';
 import { getSelectedBoundaries } from 'context/mapSelectionLayerStateSlice';
@@ -42,9 +36,7 @@ const boundaryLayer = getBoundaryLayerSingleton();
 
 function AlertsPanel() {
   const classes = useStyles();
-  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
-    | LayerData<BoundaryLayerProps>
-    | undefined;
+  const boundaryLayerData = useBoundaryData(boundaryLayer.id);
   const regionsList = useSelector(getSelectedBoundaries);
   const dispatch = useDispatch();
   // form elements
@@ -65,12 +57,12 @@ function AlertsPanel() {
     }
 
     return Object.fromEntries(
-      boundaryLayerData.data.features
-        .filter(feature => feature.properties !== null)
+      boundaryLayerData.data?.features
+        ?.filter(feature => feature.properties !== null)
         .map(feature => [
           feature.properties?.[boundaryLayer.adminCode],
           feature,
-        ]),
+        ]) ?? [],
     );
   }, [boundaryLayerData]);
 
@@ -328,9 +320,6 @@ const useStyles = makeStyles((theme: Theme) =>
     numberField: {
       paddingRight: '10px',
       maxWidth: '140px',
-      '& .MuiInputBase-root': {
-        color: 'black',
-      },
       '& label': {
         color: '#333333',
       },

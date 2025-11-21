@@ -8,16 +8,15 @@ import {
 } from '@material-ui/core';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { BoundaryLayerProps, AdminCodeString } from 'config/types';
+import { AdminCodeString } from 'config/types';
 import {
   getSelectedBoundaries,
   setIsSelectionMode,
   setSelectedBoundaries as setSelectedBoundariesRedux,
 } from 'context/mapSelectionLayerStateSlice';
 import { getBoundaryLayerSingleton } from 'config/utils';
-import { layerDataSelector } from 'context/mapStateSlice/selectors';
-import { LayerData } from 'context/layers/layer-data';
 import { useSafeTranslation } from 'i18n';
+import { useBoundaryData } from 'utils/useBoundaryData';
 import {
   BoundaryDropdownProps,
   flattenAreaTree,
@@ -47,10 +46,7 @@ export function SimpleBoundaryDropdown({
   const { i18n: i18nLocale } = useSafeTranslation();
   const [search, setSearch] = React.useState('');
 
-  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
-    | LayerData<BoundaryLayerProps>
-    | undefined;
-  const { data } = boundaryLayerData || {};
+  const { data } = useBoundaryData(boundaryLayer.id);
 
   if (!data) {
     // padding is used to make sure the loading spinner doesn't shift the menu size

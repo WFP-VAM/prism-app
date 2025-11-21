@@ -14,6 +14,9 @@ import { i18nTranslator } from 'i18n';
 import { getFeatureInfoPropsData } from 'components/MapView/utils';
 import { MapLayerMouseEvent } from 'maplibre-gl';
 import { LayerDefinitions } from 'config/utils';
+import iconPoint from 'public/images/icon_point.svg';
+import iconRaster from 'public/images/icon_raster.svg';
+import iconPolygon from 'public/images/icon_polygon.svg';
 
 export function legendToStops(
   legend: LegendDefinition = [],
@@ -63,11 +66,10 @@ export function getLayerGeometry(
   return 'unknown';
 }
 
-// TODO - load icons from within "src" to leverage compiler saftey
 const geometryIconSrc = {
-  point: 'images/icon_point.svg',
-  raster: 'images/icon_raster.svg',
-  polygon: 'images/icon_polygon.svg',
+  point: iconPoint,
+  raster: iconRaster,
+  polygon: iconPolygon,
 };
 
 export function getLayerGeometryIcon(layer: LayerType) {
