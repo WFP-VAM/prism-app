@@ -62,6 +62,8 @@ export function findDateIndex(
 // ie. queryDate === displayDate
 // and already be filtered before/after the current selected date.
 // Returns undefined if no date is available at all.
+// For forward: returns the beginning of the next validity period (minimum of first dates).
+// For back: returns the beginning of the previous validity period closest to current date (maximum of last dates).
 export const findMatchingDateBetweenLayers = (
   layerDates: DateItem[][],
   direction: 'forward' | 'back',
@@ -71,15 +73,19 @@ export const findMatchingDateBetweenLayers = (
     return undefined;
   }
 
+  // For forward: take the first element (index 0) from each layer's filtered dates
+  // For back: take the last element (index length - 1) from each layer's filtered dates
   const firstDates: DateItem[] = layerDates
     .map(l => l[direction === 'forward' ? 0 : l.length - 1])
     .filter(l => l); // remove undefined elements, which break min/max below
 
   if (direction === 'forward') {
+    // Return the minimum date to get the beginning of the next validity period
     return Math.min(
       ...firstDates.map(di => di.displayDate),
     ) as DisplayDateTimestamp;
   }
+  // Return the maximum date to get the beginning of the previous validity period closest to current date
   return Math.max(
     ...firstDates.map(di => di.displayDate),
   ) as DisplayDateTimestamp;

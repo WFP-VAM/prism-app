@@ -502,18 +502,27 @@ const DateSelector = memo(() => {
     }
     // find the previous observation date to jump to
     // if multiple layers are active, pick the first date for any layer
-    // use filter+pop as findLast is not widely available yet
+    // Skip the current validity period by excluding dates with the same queryDate
     // Use orderedLayers to access all dates, not just those in the current timeline
     const previousObservationDateItem: DisplayDateTimestamp | undefined =
       findMatchingDateBetweenLayers(
-        orderedLayers.map(l =>
-          // eslint- disable-next-line fp/no-mutating-methods
-          l.dateItems.filter(
+        orderedLayers.map(l => {
+          // Get the current queryDate for this layer
+          const currentQueryDate = getRequestDate(
+            l.dateItems,
+            stateStartDate as SelectedDateTimestamp,
+            !l.id.includes('anticipatory_action'),
+          );
+          // Filter to observation dates before current date, excluding current validity period
+          // eslint-disable-next-line fp/no-mutating-methods
+          return l.dateItems.filter(
             (d: DateItem) =>
               d.queryDate < stateStartDate &&
-              (d.queryDate as number) === (d.displayDate as number),
-          ),
-        ),
+              (d.queryDate as number) === (d.displayDate as number) &&
+              (currentQueryDate === undefined ||
+                !datesAreEqualWithoutTime(d.queryDate, currentQueryDate)),
+          );
+        }),
         'back',
       );
     if (previousObservationDateItem !== undefined) {
