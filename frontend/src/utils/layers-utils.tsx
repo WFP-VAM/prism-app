@@ -469,12 +469,21 @@ const useLayers = () => {
       layersLoadingDates.includes(layer.id),
     );
 
+    // Check if all layers with date support have their dates loaded
+    // This prevents removing a layer before its dates are fully loaded
+    // selectedLayersWithDateSupport already has dateItems calculated via getPossibleDatesForLayer
+    // so we can simply check if dateItems is not empty
+    const allLayersHaveDatesLoaded = selectedLayersWithDateSupport.every(
+      layer => layer.dateItems && layer.dateItems.length > 0,
+    );
+
     if (
       selectedLayerDates.length !== 0 ||
       selectedLayersWithDateSupport.length === 0 ||
       !selectedDate ||
       nonBoundaryLayers.length < 2 ||
-      hasLayersLoadingDates
+      hasLayersLoadingDates ||
+      !allLayersHaveDatesLoaded
     ) {
       return;
     }
@@ -501,8 +510,10 @@ const useLayers = () => {
     selectedDate,
     selectedLayerDates.length,
     selectedLayers,
+    selectedLayersWithDateSupport,
     selectedLayersWithDateSupport.length,
     layersLoadingDates,
+    serverAvailableDates,
     t,
   ]);
 
