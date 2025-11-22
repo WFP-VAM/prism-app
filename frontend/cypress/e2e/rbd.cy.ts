@@ -121,11 +121,18 @@ describe('Checks on dates', () => {
     cy.scrollLeft();
     cy.get('.react-datepicker-wrapper button span', { timeout: 15000 }).should(
       'have.text',
-      'Feb 1, 2024',
+      'Jan 21, 2024',
     );
-    cy.url().should('include', 'date=2024-02-01');
+    cy.url().should('include', 'date=2024-01-21');
 
     cy.scrollLeft();
+    cy.get('.react-datepicker-wrapper button span', { timeout: 15000 }).should(
+      'have.text',
+      'Jan 11, 2024',
+    );
+    cy.url().should('include', 'date=2024-01-11');
+
+    cy.scrollRight();
     cy.get('.react-datepicker-wrapper button span', { timeout: 15000 }).should(
       'have.text',
       'Jan 21, 2024',
@@ -138,12 +145,5 @@ describe('Checks on dates', () => {
       'Feb 1, 2024',
     );
     cy.url().should('include', 'date=2024-02-01');
-
-    cy.scrollRight();
-    cy.get('.react-datepicker-wrapper button span', { timeout: 15000 }).should(
-      'have.text',
-      'Feb 11, 2024',
-    );
-    cy.url().should('include', 'date=2024-02-11');
   });
 });
