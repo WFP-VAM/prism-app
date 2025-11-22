@@ -1,7 +1,11 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'context/store';
-import { AnticipatoryAction, DateItem } from 'config/types';
+import {
+  AnticipatoryAction,
+  DateItem,
+  SelectedDateTimestamp,
+} from 'config/types';
 import { getAAConfig } from 'context/anticipatoryAction/config';
 import {
   dateRangeSelector,
@@ -104,11 +108,17 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
           dispatch(updateDateRange({ startDate: mostRecentDate }));
         }
       } else if (actionType === AnticipatoryAction.drought) {
-        const queryDate = getRequestDate(combinedAvailableDates, selectedDate);
+        const queryDate = getRequestDate(
+          combinedAvailableDates,
+          selectedDate as SelectedDateTimestamp,
+        );
         const date = getFormattedDate(queryDate, DateFormat.Default) as string;
         dispatch(setFilters({ selectedDate: date }));
       } else if (actionType === AnticipatoryAction.flood) {
-        const queryDate = getRequestDate(combinedAvailableDates, selectedDate);
+        const queryDate = getRequestDate(
+          combinedAvailableDates,
+          selectedDate as SelectedDateTimestamp,
+        );
         const date = getFormattedDate(queryDate, DateFormat.Default) as string;
         dispatch(loadAAFloodDateData({ date }));
       }
