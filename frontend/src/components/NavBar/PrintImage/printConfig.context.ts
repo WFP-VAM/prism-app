@@ -8,6 +8,7 @@ export type Toggles = {
   logoVisibility: boolean;
   legendVisibility: boolean;
   footerVisibility: boolean;
+  multipleMapsVisibility: boolean;
 };
 
 export type MapDimensions = { width: number; height: number };
@@ -58,6 +59,17 @@ export type PrintConfigContextType = {
     titleHeight: number;
     invertedAdminBoundaryLimitPolygon: any;
     printRef: React.RefObject<HTMLDivElement>;
+    dateRange: {
+      startDate: number | null;
+      endDate: number | null;
+    };
+    setDateRange: React.Dispatch<
+      React.SetStateAction<{
+        startDate: number | null;
+        endDate: number | null;
+      }>
+    >;
+    mapCount: number;
   };
 };
 

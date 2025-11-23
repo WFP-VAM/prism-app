@@ -8,7 +8,7 @@ import mask from '@turf/mask';
 import html2canvas from 'html2canvas';
 import { debounce, get } from 'lodash';
 import { jsPDF } from 'jspdf';
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
 import { appConfig, safeCountry } from 'config';
@@ -16,12 +16,15 @@ import { AdminCodeString, BoundaryLayerProps } from 'config/types';
 import { getBoundaryLayerSingleton } from 'config/utils';
 import { LayerData } from 'context/layers/layer-data';
 import useResizeObserver from 'utils/useOnResizeObserver';
+import useLayers from 'utils/layers-utils';
+import { availableDatesSelector } from 'context/serverStateSlice';
+import { getPossibleDatesForLayer } from 'utils/server-utils';
+import { downloadToFile } from '../../MapView/utils';
 import {
   dateRangeSelector,
   layerDataSelector,
   mapSelector,
 } from '../../../context/mapStateSlice/selectors';
-import { downloadToFile } from '../../MapView/utils';
 import PrintConfig from './printConfig';
 import PrintPreview from './printPreview';
 import PrintConfigContext, {
@@ -96,6 +99,35 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
   const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] =
     useState(null);
+
+  const [dateRangeForMultipleMaps, setDateRangeForMultipleMaps] = useState<{
+    startDate: number | null;
+    endDate: number | null;
+  }>({
+    startDate: null,
+    endDate: null,
+  });
+
+  const { selectedLayersWithDateSupport } = useLayers();
+  const availableDates = useSelector(availableDatesSelector);
+  const mapCount = useMemo(() => {
+    const { startDate, endDate } = dateRangeForMultipleMaps;
+    if (!startDate || !endDate || selectedLayersWithDateSupport.length === 0) {
+      return 0;
+    }
+
+    const allDateItems = selectedLayersWithDateSupport.flatMap(layer =>
+      getPossibleDatesForLayer(layer, availableDates),
+    );
+
+    const uniqueQueryDates = [
+      ...new Set(allDateItems.map(item => item.queryDate)),
+    ];
+
+    return uniqueQueryDates.filter(
+      queryDate => queryDate >= startDate && queryDate <= endDate,
+    ).length;
+  }, [availableDates, selectedLayersWithDateSupport, dateRangeForMultipleMaps]);
 
   React.useEffect(() => {
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
@@ -214,6 +246,9 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       defaultFooterText,
       setSelectedBoundaries,
       setLegendScale,
+      dateRange: dateRangeForMultipleMaps,
+      setDateRange: setDateRangeForMultipleMaps,
+      mapCount,
     },
   };
 
