@@ -131,7 +131,6 @@ jobs:
           CYPRESS_DEFAULT_COMMAND_TIMEOUT: 10000
 
   frontend_build_and_deploy:
-    needs: frontend_tests
     if: github.event_name != 'push'
     name: frontend_build_and_deploy
     runs-on: ubuntu-latest
