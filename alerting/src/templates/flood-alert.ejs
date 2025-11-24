@@ -32,7 +32,7 @@
                     </p>
                     <p class="trigger-title"
                         style="margin: 10px 0 20px; width: 100%; font-weight: bold; font-size: 16px;">
-                        Trigger status: <%= triggerStatus %>
+                        Trigger detection: <%= triggerStatus %>. This is not an official activation. 
                     </p>
                     <% if (stationsByStatus && Object.keys(stationsByStatus).length> 0) { %>
                         <% Object.keys(stationsByStatus).forEach((status)=> { %>
@@ -70,11 +70,9 @@
 
                             <p class="gray-box"
                                 style="background-color: rgba(241, 241, 241, 1); padding: 20px; margin-top: 20px; color: black;">
-                                <strong>Disclaimer</strong>: please note, this is not an official forecast. For accurate
-                                and
-                                official updates, please refer to alerts issued by <strong>INAM (Mozambique
-                                    Meteorological
-                                    Service)</strong>.
+                                <strong>Disclaimer</strong>: This alert is automatically generated based on an evaluation of the latest forecast. 
+                                It does not represent an official activation. The official decision regarding Anticipatory Action activation will be 
+                                made and communicated by <strong>INGD (Instituto Nacional de Gestão e Redução do Risco de Desastres)</strong>.
                             </p>
                 </div>
             </main>
@@ -96,7 +94,7 @@
 
             Flood Anticipatory Action Alert for Mozambique – forecast by GloFAS with data processing by WFP
 
-            Trigger status: <%= triggerStatus %>
+            Trigger detection: <%= triggerStatus %>. This is not an official activation. 
 
             <% if (stationsByStatus && Object.keys(stationsByStatus).length > 0) { %>
                 <% Object.keys(stationsByStatus).forEach((status) => { %>
@@ -109,7 +107,7 @@
 
                                         Map: (image unavailable in plain text format)
 
-                                        Disclaimer: Please note, this is not an official forecast. For accurate and
-                                        official updates,
-                                        please refer to alerts issued by INAM (Mozambique Meteorological Service).
+                                        Disclaimer: This alert is automatically generated based on an evaluation of the latest forecast. 
+                                        It does not represent an official activation. The official decision regarding Anticipatory Action 
+                                        activation will be made and communicated by INGD (Instituto Nacional de Gestão e Redução do Risco de Desastres).
                                         <% } %>
