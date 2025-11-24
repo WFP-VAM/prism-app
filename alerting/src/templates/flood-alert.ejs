@@ -36,11 +36,13 @@
                     </p>
                     <% if (stationsByStatus && Object.keys(stationsByStatus).length> 0) { %>
                         <% Object.keys(stationsByStatus).forEach((status)=> { %>
+                            <% if (status !== 'not exceeded') { %>
                             <% const stationList=stationsByStatus[status]; %>
                                 <p style="margin: 0 0 10px; line-height: 1.6;">
                                     River discharge levels may exceed the <%= status %> threshold at <%=
                                             stationList.join(', ') %> in Mozambique within the next 3 to 5 days.
                             </p>
+                            <% } %>
                         <% }); %>
                     <% } %>
 
@@ -98,8 +100,10 @@
 
             <% if (stationsByStatus && Object.keys(stationsByStatus).length > 0) { %>
                 <% Object.keys(stationsByStatus).forEach((status) => { %>
+                    <% if (status !== 'not exceeded') { %>
                     <% const stationList = stationsByStatus[status]; %>
                     River discharge levels may exceed the <%= status %> threshold at <%= stationList.join(' , ') %> in Mozambique within the next 3 to 5 days.
+                    <% } %>
                 <% }); %>
             <% } %>
 
