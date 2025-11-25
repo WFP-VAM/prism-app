@@ -152,7 +152,7 @@ export async function buildFloodEmailPayload(
     stationsByStatus = {};
 
     stationData.forEach((station) => {
-      if (station.trigger_status) {
+      if (station.trigger_status && station.trigger_status !== 'not exceeded') {
         const status = station.trigger_status.toLowerCase();
         if (!stationsByStatus[status]) {
           stationsByStatus[status] = [];
