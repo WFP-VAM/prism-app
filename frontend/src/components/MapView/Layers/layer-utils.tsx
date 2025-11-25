@@ -18,10 +18,33 @@ import { LayerDefinitions } from 'config/utils';
 export function legendToStops(
   legend: LegendDefinition = [],
 ): [number, string][] {
-  return legend.map(({ value, color }) => [
-    typeof value === 'string' ? parseFloat(value.replace('< ', '')) : value,
-    color,
-  ]);
+  return legend
+    .map(({ value, label, color }) => {
+      // Use value if available, otherwise fall back to label
+      const valueToParse =
+        value ?? (typeof label === 'string' ? label : label?.value);
+
+      if (valueToParse === null || valueToParse === undefined) {
+        return [NaN, color];
+      }
+
+      // Parse the value, handling strings with special characters like %, +, <
+      const parsedValue =
+        typeof valueToParse === 'string'
+          ? parseFloat(
+              valueToParse
+                .replace(/< /g, '')
+                .replace(/%/g, '')
+                .replace(/\+/g, '')
+                .trim(),
+            )
+          : valueToParse;
+
+      return [parsedValue, color];
+    })
+    .filter(
+      ([numValue]) => typeof numValue === 'number' && !Number.isNaN(numValue),
+    ) as [number, string][];
 }
 
 export function getLayerGeometry(

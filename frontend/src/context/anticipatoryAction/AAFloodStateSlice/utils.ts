@@ -22,7 +22,7 @@ export const getCircleBorderColor = (riskLevel: AAFloodRiskLevelType) => {
       return AAFloodColors.borderColors.severe;
     case 'moderate':
       return AAFloodColors.borderColors.moderate;
-    case 'Bankfull':
+    case 'bankfull':
       return AAFloodColors.borderColors.bankfull;
     default:
       return AAFloodColors.borderColors.notExceeded;
