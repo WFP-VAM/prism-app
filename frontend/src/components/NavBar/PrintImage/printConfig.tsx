@@ -278,6 +278,7 @@ function PrintConfig() {
     handleDownloadMenuClose,
     downloadMenuAnchorEl,
     mapCount,
+    shouldEnableBatchMaps,
   } = printConfig;
 
   return (
@@ -525,43 +526,50 @@ function PrintConfig() {
           </GreyContainer>
         </SectionToggle>
 
-        {/* Multiple Maps */}
-        <SectionToggle
-          title={t('Multiple maps')}
-          expanded={toggles.multipleMapsVisibility}
-          handleChange={() => {
-            setToggles(prev => ({
-              ...prev,
-              multipleMapsVisibility: !prev.multipleMapsVisibility,
-            }));
-          }}
-        />
-        <GreyContainer>
-          <GreyContainerSection isLast={!toggles.multipleMapsVisibility}>
-            <Typography variant="body1">
-              {t(
-                'Selecting this option will apply the template above to create multiple maps over a time period of your choice.',
+        {/* Batch Maps */}
+        {shouldEnableBatchMaps && (
+          <>
+            <SectionToggle
+              title={t('Multiple maps')}
+              expanded={toggles.multipleMapsVisibility}
+              handleChange={() => {
+                setToggles(prev => ({
+                  ...prev,
+                  multipleMapsVisibility: !prev.multipleMapsVisibility,
+                }));
+              }}
+            />
+            <GreyContainer>
+              <GreyContainerSection isLast={!toggles.multipleMapsVisibility}>
+                <Typography variant="body1">
+                  {t(
+                    'Selecting this option will apply the template above to create multiple maps over a time period of your choice.',
+                  )}
+                </Typography>
+              </GreyContainerSection>
+              {toggles.multipleMapsVisibility && (
+                <>
+                  <GreyContainerSection>
+                    <DateRangePicker />
+                  </GreyContainerSection>
+                  <GreyContainerSection isLast>
+                    <Box className={classes.mapCountContainer}>
+                      <Typography variant="body1">
+                        {t('Nb of maps generated')}
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        className={classes.mapCountValue}
+                      >
+                        {mapCount}
+                      </Typography>
+                    </Box>
+                  </GreyContainerSection>
+                </>
               )}
-            </Typography>
-          </GreyContainerSection>
-          {toggles.multipleMapsVisibility && (
-            <>
-              <GreyContainerSection>
-                <DateRangePicker />
-              </GreyContainerSection>
-              <GreyContainerSection isLast>
-                <Box className={classes.mapCountContainer}>
-                  <Typography variant="body1">
-                    {t('Nb of maps generated')}
-                  </Typography>
-                  <Typography variant="body1" className={classes.mapCountValue}>
-                    {mapCount}
-                  </Typography>
-                </Box>
-              </GreyContainerSection>
-            </>
-          )}
-        </GreyContainer>
+            </GreyContainer>
+          </>
+        )}
 
         <Button
           style={{ backgroundColor: cyanBlue, color: 'black' }}

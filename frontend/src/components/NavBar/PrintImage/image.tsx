@@ -61,6 +61,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     logoVisibility: !!logo,
     legendVisibility: true,
     footerVisibility: true,
+    multipleMapsVisibility: false,
   });
 
   const [downloadMenuAnchorEl, setDownloadMenuAnchorEl] =
@@ -110,6 +111,8 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
   const { selectedLayersWithDateSupport } = useLayers();
   const availableDates = useSelector(availableDatesSelector);
+  const shouldEnableBatchMaps = selectedLayersWithDateSupport.length > 0;
+
   const mapCount = useMemo(() => {
     const { startDate, endDate } = dateRangeForMultipleMaps;
     if (!startDate || !endDate || selectedLayersWithDateSupport.length === 0) {
@@ -246,6 +249,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       defaultFooterText,
       setSelectedBoundaries,
       setLegendScale,
+      shouldEnableBatchMaps,
       dateRange: dateRangeForMultipleMaps,
       setDateRange: setDateRangeForMultipleMaps,
       mapCount,

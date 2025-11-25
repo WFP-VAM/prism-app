@@ -70,6 +70,7 @@ export type PrintConfigContextType = {
       }>
     >;
     mapCount: number;
+    shouldEnableBatchMaps: boolean;
   };
 };
 
