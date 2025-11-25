@@ -209,7 +209,7 @@ const LocationSelector = memo(
             disabled={!multiCountry}
           >
             <MenuItem key={country} value={country} disabled>
-              {country}
+              {t(country)}
             </MenuItem>
             {renderMenuItemList(orderedAdmin0areas())}
           </TextField>
