@@ -22,7 +22,7 @@ type StationSummaryEntry = {
   station_name: string;
   station_id: number | string;
   river_name?: string;
-  trigger_status?: string;
+  trigger_status?: TriggerStatus;
 };
 
 function transformStationName(name: string): string {
