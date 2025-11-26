@@ -49,6 +49,7 @@ import {
   dateWithoutTime,
   findClosestDate,
 } from './date-utils';
+import { getNonBoundaryLayers } from './boundary-layers-utils';
 
 const dateSupportLayerTypes: Array<LayerType['type']> = [
   'impact',
@@ -462,9 +463,7 @@ const useLayers = () => {
 
   // let users know if the selected layers cannot be viewed together.
   useEffect(() => {
-    const nonBoundaryLayers = selectedLayers.filter(
-      layer => layer.type !== 'boundary',
-    );
+    const nonBoundaryLayers = getNonBoundaryLayers(selectedLayers);
 
     // Check if any of the selected layers are currently loading their dates
     const hasLayersLoadingDates = nonBoundaryLayers.some(layer =>

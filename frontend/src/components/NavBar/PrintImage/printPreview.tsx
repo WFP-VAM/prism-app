@@ -19,6 +19,8 @@ import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelD
 import { mapStyle } from 'components/MapView/Map/utils';
 import { loadStormIcons } from 'components/MapView/Layers/AnticipatoryActionStormLayer/constants';
 import { ensureSDFIconsLoaded } from 'components/MapView/Layers/icon-utils';
+import iconNorthArrow from 'public/images/icon_north_arrow.png';
+
 import {
   dateRangeSelector,
   mapSelector,
@@ -163,7 +165,7 @@ function PrintPreview() {
                 bottom: `${(footerHeight as number) + 40}px`,
                 right: '10px',
               }}
-              src="./images/icon_north_arrow.png"
+              src={iconNorthArrow}
               alt="northArrow"
             />
             {titleText && (
