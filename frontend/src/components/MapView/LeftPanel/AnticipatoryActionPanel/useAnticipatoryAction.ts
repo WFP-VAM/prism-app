@@ -129,7 +129,11 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
               updateDateRange({ startDate: fallbackDateItem.displayDate }),
             );
           }
-        } else if (actionType === AnticipatoryAction.drought) {
+          // Return early - the effect will re-run with the new date
+          return;
+        }
+
+        if (actionType === AnticipatoryAction.drought) {
           const queryDate = getRequestDate(
             combinedAvailableDates,
             selectedDate as SelectedDateTimestamp,
