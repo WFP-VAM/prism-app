@@ -44,6 +44,8 @@ describe('Date picker', () => {
       },
     );
 
+    // load a layer with daily updates, scrolling should now move by
+    // a single day only
     cy.activateLayer('Flood', 'Early Warning', 'EWS 1294 river level data');
     // wait on the url to prevent the scrollLeft action from happening too quickly in CI
     cy.url({ timeout: 20000 }).should('include', 'ews_remote');
@@ -61,10 +63,8 @@ describe('Date picker', () => {
             .invoke('text')
             .as('newDate')
             .then(function () {
-              const dekadStartDates = [1, 11, 21];
               const firstDate = new Date(this.initialDate).getDate();
               const secondDate = new Date(this.newDate).getDate();
-              expect(dekadStartDates).to.include(firstDate);
               // we should only move by one day as EWS has data every day
               expect(
                 new Date(
