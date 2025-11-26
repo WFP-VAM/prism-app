@@ -1,14 +1,9 @@
 /* eslint-disable react/prop-types */
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   AppBar,
-  Box,
   createStyles,
   Theme,
   Toolbar,
-  Typography,
-  IconButton,
   makeStyles,
   useTheme,
   useMediaQuery,
@@ -39,13 +34,12 @@ import {
   isAnticipatoryActionFloodAvailable,
 } from 'components/MapView/LeftPanel/utils';
 import { Panel, PanelItem } from 'config/types';
-import About from './About';
-import LanguageSelector from './LanguageSelector';
-import PrintImage from './PrintImage';
 import PanelMenu from './PanelMenu';
 import PanelButton from './PanelButton';
+import RightSideMenu from './RightSideMenu';
+import Title from './Title';
 
-const { alertFormActive, header } = appConfig;
+const { alertFormActive } = appConfig;
 
 const panels: PanelItem[] = [
   { panel: Panel.Layers, label: 'Layers', icon: <LayersOutlined /> },
@@ -110,7 +104,6 @@ function NavBar() {
   const classes = useStyles();
   const tabValue = useSelector(leftPanelTabValueSelector);
   const theme = useTheme();
-  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
   const [menuAnchor, setMenuAnchor] = useState<{
     [key: string]: HTMLElement | null;
@@ -118,26 +111,6 @@ function NavBar() {
   const [selectedChild, setSelectedChild] = useState<Record<string, PanelItem>>(
     {},
   );
-
-  const rightSideLinks = [
-    {
-      title: 'GitHub',
-      icon: faGithub,
-      href: 'https://github.com/wfp-VAM/prism-app',
-    },
-  ];
-
-  const buttons = rightSideLinks.map(({ title, icon, href }) => (
-    <IconButton
-      key={title}
-      component="a"
-      target="_blank"
-      href={href}
-      style={{ color: 'white' }}
-    >
-      <FontAwesomeIcon fontSize={mdUp ? '1.25rem' : '1.5rem'} icon={icon} />
-    </IconButton>
-  ));
 
   const handleMenuOpen = (
     key: string,
@@ -162,43 +135,12 @@ function NavBar() {
     handlePanelClick(child.panel);
   };
 
-  const { title, subtitle, logo } = header || {
-    title: 'PRISM',
-  };
-
   return (
     <AppBar position="static" className={classes.appBar}>
       <Toolbar variant="dense">
         <div className={classes.navbarContainer}>
           <div className={classes.leftSideContainer}>
-            <div className={classes.titleContainer}>
-              {logo && <img className={classes.logo} src={logo} alt="logo" />}
-              <Box
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                }}
-              >
-                {title && (
-                  <Typography
-                    color="secondary"
-                    variant="h6"
-                    className={classes.title}
-                  >
-                    {t(title)}
-                  </Typography>
-                )}
-                {subtitle && !smDown && (
-                  <Typography
-                    color="secondary"
-                    variant="subtitle2"
-                    className={classes.subtitle}
-                  >
-                    {t(subtitle)}
-                  </Typography>
-                )}
-              </Box>
-            </div>
+            <Title />
             <div className={classes.panelsContainer}>
               {panels.map(panel => {
                 const selected =
@@ -244,10 +186,7 @@ function NavBar() {
           </div>
           <div className={classes.rightSideContainer}>
             <Legends />
-            <PrintImage />
-            {buttons}
-            <About />
-            <LanguageSelector />
+            <RightSideMenu />
           </div>
         </div>
       </Toolbar>
@@ -257,53 +196,11 @@ function NavBar() {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    logo: {
-      height: 32,
-      marginRight: 15,
-    },
     appBar: {
       backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
       height: '6vh',
       display: 'flex',
       justifyContent: 'center',
-    },
-    panelButton: {
-      height: '2.5em',
-    },
-    title: {
-      letterSpacing: '.3rem',
-      fontSize: '1.25rem',
-      lineHeight: '1.5rem',
-      textTransform: 'uppercase',
-      padding: 0,
-    },
-    subtitle: {
-      fontSize: '.8rem',
-      fontWeight: 300,
-      letterSpacing: '.1rem',
-      lineHeight: '.8rem',
-      padding: 0,
-    },
-    menuContainer: {
-      textAlign: 'center',
-    },
-    mobileDrawerContent: {
-      backgroundColor: theme.palette.primary.main,
-      paddingTop: 16,
-      width: '80vw',
-      height: '100vh',
-      overflowX: 'hidden',
-      display: 'flex',
-      flexDirection: 'column',
-      paddingLeft: '1em',
-    },
-    menuBars: {
-      height: '100%',
-      fontSize: 20,
-      color: theme.palette.text.primary,
-    },
-    mobileMenuContainer: {
-      textAlign: 'right',
     },
     navbarContainer: {
       display: 'flex',
@@ -316,13 +213,9 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'row',
       justifyContent: 'start',
       gap: '5rem',
-    },
-    titleContainer: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'start',
-      gap: '1rem',
-      alignItems: 'center',
+      [theme.breakpoints.down('sm')]: {
+        gap: '1rem',
+      },
     },
     panelsContainer: {
       display: 'flex',
@@ -330,6 +223,9 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'start',
       gap: '1rem',
       alignItems: 'center',
+      [theme.breakpoints.down('sm')]: {
+        gap: '0.5rem',
+      },
     },
     rightSideContainer: {
       display: 'flex',
