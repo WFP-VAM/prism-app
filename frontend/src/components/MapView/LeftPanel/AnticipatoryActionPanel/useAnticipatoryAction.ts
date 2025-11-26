@@ -18,6 +18,7 @@ import { AALayerIds, LayerDefinitions, isWindowedDates } from 'config/utils';
 import {
   getAAAvailableDatesCombined,
   getRequestDate,
+  getRequestDateItem,
 } from 'utils/server-utils';
 import {
   availableDatesSelector,
@@ -89,17 +90,17 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
         ? getAAAvailableDatesCombined(AAAvailableDates)
         : AAAvailableDates;
 
+      // Update layer capabilities
+      const updatedCapabilities = AALayerIds.reduce(
+        (acc, layerId) => ({
+          ...acc,
+          [layerId]: combinedAvailableDates,
+        }),
+        { ...serverAvailableDates },
+      );
+      dispatch(updateLayersCapabilities(updatedCapabilities));
+
       if (!selectedDate) {
-        const updatedCapabilities = AALayerIds.reduce(
-          (acc, layerId) => ({
-            ...acc,
-            [layerId]: combinedAvailableDates,
-          }),
-          { ...serverAvailableDates },
-        );
-
-        dispatch(updateLayersCapabilities(updatedCapabilities));
-
         // Set the most recent date as the default date for timeline advancement
         if (combinedAvailableDates && combinedAvailableDates.length > 0) {
           const mostRecentDate =
@@ -107,20 +108,48 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
               .displayDate;
           dispatch(updateDateRange({ startDate: mostRecentDate }));
         }
-      } else if (actionType === AnticipatoryAction.drought) {
-        const queryDate = getRequestDate(
+      } else {
+        // Check if selected date is valid for AA dates
+        // getRequestDateItem with defaultToMostRecent=false returns undefined if date is not found
+        const exactDateItem = getRequestDateItem(
           combinedAvailableDates,
           selectedDate as SelectedDateTimestamp,
+          false,
         );
-        const date = getFormattedDate(queryDate, DateFormat.Default) as string;
-        dispatch(setFilters({ selectedDate: date }));
-      } else if (actionType === AnticipatoryAction.flood) {
-        const queryDate = getRequestDate(
-          combinedAvailableDates,
-          selectedDate as SelectedDateTimestamp,
-        );
-        const date = getFormattedDate(queryDate, DateFormat.Default) as string;
-        dispatch(loadAAFloodDateData({ date }));
+
+        if (!exactDateItem) {
+          // Selected date is not in AA available dates, advance to the closest valid date
+          const fallbackDateItem = getRequestDateItem(
+            combinedAvailableDates,
+            selectedDate as SelectedDateTimestamp,
+            true,
+          );
+          if (fallbackDateItem) {
+            dispatch(
+              updateDateRange({ startDate: fallbackDateItem.displayDate }),
+            );
+          }
+        } else if (actionType === AnticipatoryAction.drought) {
+          const queryDate = getRequestDate(
+            combinedAvailableDates,
+            selectedDate as SelectedDateTimestamp,
+          );
+          const date = getFormattedDate(
+            queryDate,
+            DateFormat.Default,
+          ) as string;
+          dispatch(setFilters({ selectedDate: date }));
+        } else if (actionType === AnticipatoryAction.flood) {
+          const queryDate = getRequestDate(
+            combinedAvailableDates,
+            selectedDate as SelectedDateTimestamp,
+          );
+          const date = getFormattedDate(
+            queryDate,
+            DateFormat.Default,
+          ) as string;
+          dispatch(loadAAFloodDateData({ date }));
+        }
       }
     }
 
