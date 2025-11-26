@@ -10,7 +10,7 @@ exports[`renders as expected 1`] = `
       class="MuiGrid-root makeStyles-datePickerContainer-3 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-content-xs-center"
     >
       <div
-        class="MuiGrid-root makeStyles-datePickerGrid-5 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-1"
+        class="MuiGrid-root makeStyles-datePickerGrid-6 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-1"
       >
         <mock-button>
           <mock-chevronleft
@@ -24,7 +24,7 @@ exports[`renders as expected 1`] = `
             class="react-datepicker__input-container"
           >
             <mock-button
-              classname="makeStyles-buttonStyle-11"
+              classname="makeStyles-buttonStyle-12"
               variant="outlined"
             >
               Mar 11, 2023
@@ -38,7 +38,7 @@ exports[`renders as expected 1`] = `
         </mock-button>
       </div>
       <div
-        class="MuiGrid-root makeStyles-slider-6 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-true"
+        class="MuiGrid-root makeStyles-slider-7 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-true"
       >
         <mock-button
           classname="makeStyles-chevronDate-2"
@@ -47,26 +47,26 @@ exports[`renders as expected 1`] = `
           <mock-chevronleft />
         </mock-button>
         <div
-          class="MuiGrid-root makeStyles-dateContainer-7"
+          class="MuiGrid-root makeStyles-dateContainer-8"
         >
           <div
-            class="makeStyles-timeline-9 react-draggable"
+            class="makeStyles-timeline-10 react-draggable"
             id="dateTimelineSelector"
             style="transform: translate(-276px,0px);"
           >
             <div
-              class="MuiGrid-root makeStyles-dateLabelContainer-8 MuiGrid-container"
+              class="MuiGrid-root makeStyles-dateLabelContainer-9 MuiGrid-container"
             >
               mock-timelineitems
             </div>
             <div
-              class="makeStyles-pointer-10 react-draggable"
+              class="makeStyles-pointer-11 react-draggable"
               id="datePointerSelector"
               style="transform: translate(276px,0px);"
             >
               <img
                 alt="Tick Svg"
-                src="[object Object]"
+                src="test-file-stub"
                 style="pointer-events: none; margin-top: -29px;"
               />
             </div>

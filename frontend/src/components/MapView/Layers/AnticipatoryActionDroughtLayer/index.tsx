@@ -2,16 +2,12 @@ import React from 'react';
 import {
   AdminLevelDataLayerProps,
   AnticipatoryActionLayerProps,
-  BoundaryLayerProps,
   MapEventWrapFunctionProps,
 } from 'config/types';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  layerDataSelector,
-  mapSelector,
-} from 'context/mapStateSlice/selectors';
-import { LayerData } from 'context/layers/layer-data';
+import { mapSelector } from 'context/mapStateSlice/selectors';
+import { useBoundaryData } from 'utils/useBoundaryData';
 import {
   Layer,
   MapLayerMouseEvent,
@@ -58,11 +54,8 @@ const onDistrictClick =
 const AnticipatoryActionDroughtLayer = React.memo(
   ({ layer, before }: LayersProps) => {
     useDefaultDate(layer.id);
-    const boundaryLayerState = useSelector(
-      layerDataSelector(boundaryLayer.id),
-    ) as LayerData<BoundaryLayerProps> | undefined;
-    const { data } = boundaryLayerState || {};
     const map = useSelector(mapSelector);
+    const { data } = useBoundaryData(boundaryLayer.id, map);
     const dispatch = useDispatch();
     const renderedDistricts = useSelector(AARenderedDistrictsSelector);
     const { selectedWindow } = useSelector(AAFiltersSelector);

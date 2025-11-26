@@ -23,8 +23,11 @@ const DateSelectorInput = forwardRef(
 const useStyles = makeStyles(() =>
   createStyles({
     buttonStyle: {
-      color: '#101010',
-      fontWeight: 'bold',
+      // Use && to increase specificity — bypassing MUI dev environment issue
+      '&&': {
+        color: '#101010',
+        fontWeight: 'bold',
+      },
     },
   }),
 );

@@ -20,14 +20,17 @@ export type MapState = {
   layers: LayerType[];
   dateRange: DateRange;
   maplibreMap: MapGetter;
+  minMapBounds: number[];
   errors: string[];
   // TODO this shouldn't be any
+  // Note: Boundary layer data is now stored in global cache (utils/boundary-cache.ts), not here
   layersData: LayerData<any>[];
   // Keep track of layer id which are currently loading its layerData.
   // Note that layerData is mainly for storing vector map data.
   // Tile image loading for raster layer is tracked separately on mapTileLoadingStateSlice
   loadingLayerIds: LayerKey[];
   boundaryRelationData: BoundaryRelationsDict;
+  title?: string;
 };
 
 // Maplibre's map type contains some kind of cyclic dependency that causes an infinite loop in immers's change
@@ -39,6 +42,7 @@ const initialState: MapState = {
   layers: [],
   dateRange: {} as DateRange,
   maplibreMap: (() => {}) as MapGetter,
+  minMapBounds: [] as number[],
   errors: [],
   layersData: [],
   loadingLayerIds: [],
