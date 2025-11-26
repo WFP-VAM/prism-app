@@ -8,8 +8,8 @@ import {
   preloadLayerDatesArraysForPointData,
   preloadLayerDatesArraysForWMS,
 } from 'context/serverPreloadStateSlice';
-import { loadLayerData } from 'context/layers/layer-data';
 import { useMapState } from 'utils/useMapState';
+import { boundaryCache } from 'utils/boundary-cache';
 import LeftPanel from './LeftPanel';
 import MapComponent from './Map';
 import OtherFeatures from './OtherFeatures';
@@ -41,10 +41,8 @@ const MapView = memo(() => {
     // 1. Stop showing two loading screens on startup - maplibre renders its children very late, so we can't rely on BoundaryLayer to load internally
     // 2. Prevent situations where a user can toggle a layer like NSO (depends on Boundaries) before Boundaries finish loading.
     displayedBoundaryLayers.forEach(l => actions.addLayer(l));
-    // TODO: Look into deduping this. It's not currently triggered multiple times but it could easily be.
-    displayedBoundaryLayers.forEach(l =>
-      dispatch(loadLayerData({ layer: l, map })),
-    );
+    // Load boundary data into global cache (shared across all maps)
+    boundaryCache.preloadBoundaries(displayedBoundaryLayers, dispatch, map);
   }, [
     dispatch,
     datesPreloadingForWMS,
