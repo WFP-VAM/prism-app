@@ -65,7 +65,7 @@ const LeftPanel = memo(() => {
   } = useMapState();
   const selectedLayers = mapState.layers;
   const map = mapState.maplibreMap();
-  const { removeLayerFromUrl, urlParams, updateHistory } = useUrlHistory();
+  const { removeLayerFromUrl } = useUrlHistory();
 
   const AALayerInUrl = selectedLayers.find(x =>
     AALayerIds.includes(x.id as AnticipatoryAction),
@@ -113,10 +113,6 @@ const LeftPanel = memo(() => {
       tabValue !== Panel.None &&
       AALayerInUrl !== undefined
     ) {
-      // Preserve the date in URL when removing AA layer
-      // so it can be used by the next hazard layer that gets added
-      const currentDate = urlParams.get('date');
-
       toggleRemoveLayer(
         AALayerInUrl,
         map,
@@ -125,21 +121,7 @@ const LeftPanel = memo(() => {
         removeLayerFromUrl,
         addLayer,
       );
-
-      // Restore the date if it was removed (it gets deleted when removing the last hazard layer)
-      // The date is needed for the next hazard layer that will be added
-      if (currentDate) {
-        // Use a small delay to ensure URL update from toggleRemoveLayer completes
-        const timeoutId = setTimeout(() => {
-          const updatedParams = new URLSearchParams(window.location.search);
-          if (!updatedParams.get('date')) {
-            updateHistory('date', currentDate);
-          }
-        }, 10);
-        return () => clearTimeout(timeoutId);
-      }
     }
-    return undefined;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tabValue]);
 
