@@ -407,7 +407,7 @@ The application will show an icon next to the layer in the legend if this attrib
 
 ## Dashboards
 
-Dashboards are customizable reports that combine maps, charts, tables, and text blocks in a flexible layout. They are configured in `prism.json` under the `configuredReports` array.
+Dashboards are customizable reports that combine maps, charts, tables, and text blocks in a flexible layout. They are configured in a `dashboards.json` file in your country's config folder (e.g., `src/config/mozambique/dashboards.json`).
 
 ### Dashboard Configuration Structure
 
@@ -428,7 +428,9 @@ Each dashboard is defined as an object with the following properties:
 - `title` (required): Display name of the dashboard
 - `path` (optional): URL path for the dashboard. If omitted, it will be auto-generated from the title
 - `isEditable` (optional): If `true`, users can edit the dashboard in the UI. Defaults to `false`
-- `firstColumn`, `secondColumn`, `thirdColumn` (required): Arrays of dashboard elements. At least `firstColumn` must be defined
+- `firstColumn` (required): Array of dashboard elements
+- `secondColumn` (optional): Array of dashboard elements for the second column
+- `thirdColumn` (optional): Array of dashboard elements for the third column
 
 ### Dashboard Elements
 
@@ -477,7 +479,8 @@ Displays time-series chart data for a WMS layer.
   "endDate": "2025-04-01",
   "layerId": "precip_blended_dekad",
   "adminUnitLevel": 1,
-  "adminUnitId": 12345
+  "adminUnitId": 12345,
+  "chartHeight": "tall"
 }
 ```
 
@@ -488,6 +491,7 @@ Displays time-series chart data for a WMS layer.
 - `endDate` (optional): End date for chart data. If omitted, only `startDate` is used
 - `adminUnitLevel` (optional): Administrative level (0, 1, 2, etc.) to aggregate data by
 - `adminUnitId` (optional): Specific admin unit ID to filter chart data
+- `chartHeight` (optional): Height of the chart. Options: `"tall"`, `"medium"`, `"short"`. Defaults to `"tall"`
 
 #### 3. TABLE Element
 
@@ -501,6 +505,7 @@ Displays analysis results in a table format, combining a hazard layer with a bas
   "baselineLayerId": "admin1_boundaries",
   "threshold": { "below": -1.5, "above": 1.5 },
   "stat": "mean",
+  "maxRows": 10,
   "addResultToMap": false,
   "sortColumn": "mean",
   "sortOrder": "desc"
@@ -520,6 +525,7 @@ Displays analysis results in a table format, combining a hazard layer with a bas
   - `"sum"` - Sum of values
   - `"intersect_percentage"` - Percent of area exposed
 - `threshold` (optional): Object with `below` and/or `above` numeric values to filter results
+- `maxRows` (optional): Maximum number of rows to display in the table. Defaults to `10`
 - `addResultToMap` (optional): Whether to add the analysis result layer to the map. Set to `false` to show only the table without displaying the layer on the map. Defaults to `true`
 - `sortColumn` (optional): Column to sort the table by. Can be `"name"` for the name column, or any statistic name like `"mean"`, `"max"`, `"min"`, etc. Defaults to `"name"`
 - `sortOrder` (optional): Sort order for the table. Options are `"asc"` (ascending) or `"desc"` (descending). Defaults to `"asc"`
