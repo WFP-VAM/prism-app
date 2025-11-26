@@ -169,7 +169,7 @@ class UserInfoPydanticModel(BaseModel):
         orm_mode = True
 
 
-AspectRatio = Literal["1:1", "3:4", "4:3"]
+AspectRatio = Literal["1:1", "2:3", "3:2", "3:4", "4:3"]
 ExportFormat = Literal["pdf", "zip"]
 
 

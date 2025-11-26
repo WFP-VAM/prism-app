@@ -145,6 +145,8 @@ async def render_single_map(
     """
     Render a single map using Playwright and return the image/PDF bytes.
 
+    TODO: Add handling for 400 style errors in PRISM frontend and remove from bundled export.
+
     Args:
         url: URL to render (should include all map parameters)
         viewport_width: Browser viewport width in pixels
