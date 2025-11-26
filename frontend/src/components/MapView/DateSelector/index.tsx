@@ -8,7 +8,7 @@ import {
   useTheme,
 } from '@material-ui/core';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
-import { findIndex, get, isEqual } from 'lodash';
+import { findIndex, get } from 'lodash';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -112,7 +112,6 @@ const DateSelector = memo(() => {
   const today = new Date();
   today.setUTCHours(12, 0, 0, 0); // Normalize today's date
 
-  const dateRef = useRef(availableDates);
   const timeLine = useRef(null);
 
   const { t } = useSafeTranslation();
@@ -360,15 +359,6 @@ const DateSelector = memo(() => {
     });
   }, [dateIndex, range]);
 
-  // move pointer to closest date when change map layer
-  useEffect(() => {
-    if (isEqual(dateRef.current, availableDates)) {
-      return;
-    }
-    setDatePosition(stateStartDate, 0, false);
-    dateRef.current = availableDates;
-  });
-
   const includedDates = useMemo(
     () => availableDates?.map(d => new Date(d)) ?? [],
     [availableDates],
@@ -469,6 +459,11 @@ const DateSelector = memo(() => {
     },
     [availableDates, updateStartDate],
   );
+
+  // move pointer to closest date when change map layer
+  useEffect(() => {
+    setDatePosition(stateStartDate, 0, false);
+  }, [setDatePosition, stateStartDate]);
 
   // scroll right with the `>` button
   const incrementDate = useCallback(() => {

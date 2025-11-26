@@ -50,6 +50,8 @@ type EWSTriggerLevels = {
 };
 /* eslint-enable camelcase */
 
+// generate an array with every day since the beginning
+// of January 2021.
 // input parameter is used here only for testing
 export const createEWSDatesArray = (
   testEndDate?: number,
