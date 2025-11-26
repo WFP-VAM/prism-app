@@ -458,7 +458,7 @@ const useLayers = () => {
     ],
   );
 
-  // let users know if the layers selected are not possible to view together.
+  // let users know if the selected layers cannot be viewed together.
   useEffect(() => {
     const nonBoundaryLayers = selectedLayers.filter(
       layer => layer.type !== 'boundary',
@@ -479,9 +479,12 @@ const useLayers = () => {
 
     if (
       selectedLayerDates.length !== 0 ||
+      // no layers using dates are active, date overlap is meaningless
       selectedLayersWithDateSupport.length === 0 ||
       !selectedDate ||
+      // there are fewer than 2 layers, there can't be an overlap
       nonBoundaryLayers.length < 2 ||
+      // not all dates have been loaded, we can't decide on overlaps yet
       hasLayersLoadingDates ||
       !allLayersHaveDatesLoaded
     ) {
@@ -511,9 +514,7 @@ const useLayers = () => {
     selectedLayerDates.length,
     selectedLayers,
     selectedLayersWithDateSupport,
-    selectedLayersWithDateSupport.length,
     layersLoadingDates,
-    serverAvailableDates,
     t,
   ]);
 
