@@ -139,7 +139,7 @@ const useLayers = () => {
   const adminBoundariesExtent = expandBoundingBox(
     appConfig.map.boundingBox as Extent,
     2,
-  ) as Extent;
+  );
 
   const selectedLayersWithDateSupport = useMemo(
     () =>
@@ -212,6 +212,8 @@ const useLayers = () => {
   );
 
   // calculate possible dates user can pick from the currently selected layers
+  // TODO: this function and selectedLayerDatesDupCount are executed about 20 times
+  // when layer selection changes!
   const selectedLayerDates: number[] = useMemo(() => {
     if (selectedLayersWithDateSupport.length === 0) {
       return [];

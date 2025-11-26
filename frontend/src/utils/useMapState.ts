@@ -1,5 +1,5 @@
 import { useContext, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { Map as MaplibreMap } from 'maplibre-gl';
 import { LayerType } from 'config/types';
 import {
@@ -42,6 +42,13 @@ export function useMapState(): UnifiedMapState {
     mapInstanceContext && mapInstanceContext.selectors.selectLayers
       ? mapInstanceContext.selectors.selectLayers
       : layersSelector,
+    // compare the names of active layers, as individual layer objects
+    // do not change over time, to save some useless rendering
+    (a, c) =>
+      shallowEqual(
+        a.map(o => o.id),
+        c.map(o => o.id),
+      ),
   );
 
   const dateRange = useSelector(
