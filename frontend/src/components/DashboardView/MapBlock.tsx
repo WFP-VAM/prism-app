@@ -486,6 +486,8 @@ const useStyles = makeStyles(() =>
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
+      flexWrap: 'wrap',
+      gap: '8px',
       '& h4': {
         fontSize: '13px',
       },
@@ -494,7 +496,7 @@ const useStyles = makeStyles(() =>
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
-      marginLeft: '16px',
+      marginLeft: 0,
       '& h4': {
         fontSize: '13px',
         margin: 0,

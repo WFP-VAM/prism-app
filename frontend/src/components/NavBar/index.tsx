@@ -36,7 +36,7 @@ import Legends from 'components/MapView/Legends';
 import {
   areChartLayersAvailable,
   areDashboardsAvailable,
-  getConfiguredReports,
+  getDashboards,
 } from 'config/utils';
 import { generateSlugFromTitle } from 'utils/string-utils';
 import {
@@ -55,13 +55,13 @@ import PanelButton from './PanelButton';
 const { alertFormActive, header } = appConfig;
 
 const getAvailableDashboards = (): PanelItem[] => {
-  const configuredReports = getConfiguredReports();
-  return configuredReports.map((report, index) => ({
+  const dashboards = getDashboards();
+  return dashboards.map((dashboard, index) => ({
     panel: Panel.Dashboard,
-    label: report.title,
+    label: dashboard.title,
     icon: <SpeedOutlined />,
     reportIndex: index,
-    reportPath: report.path || generateSlugFromTitle(report.title),
+    reportPath: dashboard.path || generateSlugFromTitle(dashboard.title),
   }));
 };
 

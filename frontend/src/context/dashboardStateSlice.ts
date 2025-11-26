@@ -14,7 +14,7 @@ import type {
   DashboardMapConfig,
   DashboardTableConfig,
   DashboardElements,
-  ConfiguredReport,
+  Dashboard,
 } from 'config/types';
 import { DashboardMode, DashboardElementType } from 'config/types';
 import type { RootState } from './store';
@@ -65,8 +65,8 @@ export interface DashboardState {
 
 const getDashboardConfig = (index: number) => {
   if (
-    !Array.isArray(appConfig.configuredReports) ||
-    appConfig.configuredReports.length === 0
+    !Array.isArray(appConfig.dashboards) ||
+    appConfig.dashboards.length === 0
   ) {
     // Return a fallback config object or throw an error
     return {
@@ -77,8 +77,7 @@ const getDashboardConfig = (index: number) => {
       thirdColumn: [],
     };
   }
-  const originalConfig =
-    appConfig.configuredReports[index] || appConfig.configuredReports[0];
+  const originalConfig = appConfig.dashboards[index] || appConfig.dashboards[0];
 
   const config = { ...originalConfig };
 
@@ -606,7 +605,7 @@ export const dashboardModeSelector = (state: RootState): DashboardMode =>
   state.dashboardState.mode;
 export const dashboardConfigSelector = (
   state: RootState,
-): ConfiguredReport & {
+): Dashboard & {
   selectedDashboardIndex: number;
   maps: DashboardMapState[];
 } => {

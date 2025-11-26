@@ -9,7 +9,7 @@ import {
   BoundaryLayerProps,
   checkRequiredKeys,
   CompositeLayerProps,
-  ConfiguredReport,
+  Dashboard,
   DateItem,
   GeojsonDataLayerProps,
   ImpactLayerProps,
@@ -366,17 +366,16 @@ export const isWindowedDates = (
 
 export const areChartLayersAvailable = getWMSLayersWithChart().length > 0;
 
-export const areDashboardsAvailable = (): boolean =>
-  'configuredReports' in appConfig;
+export const areDashboardsAvailable = (): boolean => 'dashboards' in appConfig;
 
-export const getConfiguredReports = (): ConfiguredReport[] => {
+export const getDashboards = (): Dashboard[] => {
   if (!areDashboardsAvailable()) {
     return [];
   }
 
-  const { configuredReports } = appConfig;
-  if (Array.isArray(configuredReports)) {
-    return configuredReports;
+  const { dashboards } = appConfig;
+  if (Array.isArray(dashboards)) {
+    return dashboards;
   }
 
   return [];
@@ -384,16 +383,17 @@ export const getConfiguredReports = (): ConfiguredReport[] => {
 
 export const findDashboardByPath = (
   path: string,
-): { dashboard: ConfiguredReport; index: number } | null => {
-  const reports = getConfiguredReports();
+): { dashboard: Dashboard; index: number } | null => {
+  const dashboards = getDashboards();
 
   // eslint-disable-next-line fp/no-mutation
-  for (let i = 0; i < reports.length; i += 1) {
-    const report = reports[i];
-    const dashboardPath = report.path || generateSlugFromTitle(report.title);
+  for (let i = 0; i < dashboards.length; i += 1) {
+    const dashboard = dashboards[i];
+    const dashboardPath =
+      dashboard.path || generateSlugFromTitle(dashboard.title);
 
     if (dashboardPath === path) {
-      return { dashboard: { ...report, path: dashboardPath }, index: i };
+      return { dashboard: { ...dashboard, path: dashboardPath }, index: i };
     }
   }
 

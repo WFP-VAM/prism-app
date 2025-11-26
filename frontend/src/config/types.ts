@@ -1097,7 +1097,7 @@ export type DashboardElements =
   | DashboardTextConfig
   | DashboardTableConfig;
 
-export interface ConfiguredReport {
+export interface Dashboard {
   title: string;
   path: string;
   isEditable?: boolean;
