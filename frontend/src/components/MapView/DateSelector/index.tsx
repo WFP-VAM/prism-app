@@ -733,6 +733,9 @@ const DateSelector = memo(() => {
                   container
                   alignItems="stretch"
                   className={classes.dateLabelContainer}
+                  style={{
+                    minWidth: `${dateRange.length * TIMELINE_ITEM_WIDTH}px`,
+                  }}
                 >
                   {stateStartDate && (
                     <TimelineItems
