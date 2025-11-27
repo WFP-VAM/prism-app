@@ -68,7 +68,6 @@ describe('Date picker', () => {
             .invoke('text')
             .as('newDate')
             .then(function () {
-              const firstDate = new Date(this.initialDate).getDate();
               const secondDate = new Date(this.newDate).getDate();
               // we should only move by one day as EWS has data every day
               expect(
