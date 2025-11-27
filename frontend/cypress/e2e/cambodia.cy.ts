@@ -49,9 +49,11 @@ describe('Date picker', () => {
     cy.activateLayer('Flood', 'Early Warning', 'EWS 1294 river level data');
     // wait on the url to prevent the scrollLeft action from happening too quickly in CI
     cy.url({ timeout: 20000 }).should('include', 'ews_remote');
-    // wait 10 seconds to ensure the layer is loaded
-    // TODO - consider mocking the dates for this layer to avoid waiting
-    cy.wait(10000);
+    // wait for the timeline to show layer data (indicated by layerOneEmphasis element)
+    // This ensures the layer dates are loaded before proceeding
+    cy.get('[role="presentation"][class*="layerOneEmphasis"]', {
+      timeout: 20000,
+    }).should('be.visible');
     cy.get('.react-datepicker-wrapper button span', { timeout: 20000 }).then(
       span1 => {
         cy.wrap(span1)
