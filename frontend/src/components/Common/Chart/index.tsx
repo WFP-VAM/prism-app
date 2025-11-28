@@ -1,10 +1,8 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
 import { makeStyles } from '@mui/styles';
 import colormap from 'colormap';
-import { ChartOptions, Chart as ChartJS } from 'chart.js';
 import 'chartjs-plugin-annotation';
 import { Bar, Line } from 'react-chartjs-2';
-import type { ChartJSOrUndefined } from 'react-chartjs-2/dist/types';
 import { ChartConfig, DatasetField } from 'config/types';
 import { TableData } from 'context/tableStateSlice';
 import { useSafeTranslation } from 'i18n';
@@ -18,9 +16,7 @@ import {
   downloadChartsToCsv,
 } from 'utils/csv-utils';
 
-type ChartRefType = ChartJSOrUndefined<'bar' | 'line'>;
-
-function downloadChartPng(ref: React.RefObject<ChartRefType>, filename: string) {
+function downloadChartPng(ref: React.RefObject<any>, filename: string) {
   const chart = ref.current;
   if (!chart) {
     throw new Error('chart is undefined');
@@ -68,7 +64,7 @@ export type ChartProps = {
 };
 
 const Chart = memo(
-  React.forwardRef<ChartRefType, ChartProps>(
+  React.forwardRef<any, ChartProps>(
     (
       {
         title,
@@ -92,7 +88,7 @@ const Chart = memo(
     ) => {
       const { t } = useSafeTranslation();
       const classes = useStyles();
-      const localChartRef = React.useRef<Bar | Line>(null);
+      const localChartRef = React.useRef<any>(null);
       const chartRef = (forwardedRef || localChartRef) as React.RefObject<
         Bar | Line
       >;
