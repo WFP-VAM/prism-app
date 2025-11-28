@@ -1,6 +1,7 @@
 """Map export functionality using Playwright for server-side rendering."""
 
 import asyncio
+import fnmatch
 import io
 import zipfile
 from typing import Final, Tuple
@@ -8,6 +9,8 @@ from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
 from playwright.async_api import async_playwright
 from pypdf import PdfReader, PdfWriter
+
+from .models import AspectRatio, ExportFormat
 
 # Timeouts
 PAGE_TIMEOUT: Final[int] = 60000
@@ -21,6 +24,7 @@ DEVICE_SCALE_FACTOR: Final[int] = 2
 # Add domains to this list to allow them for map exports
 EXPORT_ALLOWED_DOMAINS: Final[list[str]] = [
     "*.wfp.org",
+    "staging-prism-frontend--*.web.app",  # Firebase preview builds
 ]
 
 
@@ -35,9 +39,7 @@ def validate_export_url(url: str) -> None:
     - Requires hostname for non-file URLs
     - Allows localhost with any port (localhost, 127.0.0.1, ::1)
     - Checks against EXPORT_ALLOWED_DOMAINS list
-    - Supports wildcard patterns like *.wfp.org (matches all subdomains)
-    - Supports exact domain matches (e.g., "wfp.org" matches "wfp.org" and "example.wfp.org")
-    - For wildcard patterns, extracts base domain (e.g., "wfp.org" from "*.wfp.org")
+    - Supports glob patterns
     - Matches if hostname equals base domain or ends with ".{base_domain}"
 
     Args: url: URL to validate (must be absolute URL with scheme)
@@ -70,13 +72,20 @@ def validate_export_url(url: str) -> None:
     for domain in EXPORT_ALLOWED_DOMAINS:
         domain_lower = domain.lower()
 
-        if domain_lower.startswith("*."):
+        # Handle glob patterns with wildcards anywhere (e.g., staging-prism-frontend--*.web.app)
+        if "*" in domain_lower and not domain_lower.startswith("*."):
+            if fnmatch.fnmatch(hostname_lower, domain_lower):
+                is_allowed = True
+                break
+        # Handle subdomain wildcards (e.g., *.wfp.org)
+        elif domain_lower.startswith("*."):
             base_domain = domain_lower[2:]
             if hostname_lower == base_domain or hostname_lower.endswith(
                 f".{base_domain}"
             ):
                 is_allowed = True
                 break
+        # Handle exact domain matches
         else:
             if hostname_lower == domain_lower or hostname_lower.endswith(
                 f".{domain_lower}"
@@ -90,25 +99,29 @@ def validate_export_url(url: str) -> None:
         )
 
 
-def get_viewport_dimensions(aspect_ratio: str) -> Tuple[int, int]:
+def get_viewport_dimensions(aspect_ratio: AspectRatio) -> Tuple[int, int]:
     """
     Convert aspect ratio string to pixel dimensions.
 
-    Args: aspect_ratio: Aspect ratio string ('1:1', '3:4', or '4:3')
+    Dynamically parses aspect ratio strings in "W:H" format
+
+    Args: aspect_ratio: Aspect ratio string in "W:H" format
     Returns: Tuple of (width, height) in pixels
     """
-    ratio_map = {
-        "1:1": (1, 1),
-        "3:4": (3, 4),
-        "4:3": (4, 3),
-    }
+    try:
+        parts = aspect_ratio.split(":")
+        if len(parts) != 2:
+            raise ValueError("Invalid format")
+        width_ratio = int(parts[0])
+        height_ratio = int(parts[1])
+        if width_ratio <= 0 or height_ratio <= 0:
+            raise ValueError("Ratios must be positive")
+    except (ValueError, AttributeError):
+        raise ValueError(
+            f"Invalid aspect ratio: {aspect_ratio}. Expected format 'W:H' (e.g., '3:4')"
+        )
 
-    if aspect_ratio not in ratio_map:
-        raise ValueError(f"Invalid aspect ratio: {aspect_ratio}")
-
-    width_ratio, height_ratio = ratio_map[aspect_ratio]
     height = int(BASE_WIDTH * (height_ratio / width_ratio))
-
     return (BASE_WIDTH, height)
 
 
@@ -194,7 +207,7 @@ async def render_single_map(
 
 
 async def export_maps(
-    url: str, dates: list[str], aspect_ratio: str, format_type: str
+    url: str, dates: list[str], aspect_ratio: AspectRatio, format_type: ExportFormat
 ) -> Tuple[bytes, str]:
     """
     Export maps for multiple dates and return packaged file.

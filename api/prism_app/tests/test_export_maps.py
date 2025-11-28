@@ -130,31 +130,19 @@ def test_validate_export_url(url, should_raise, error_keyword):
         validate_export_url(url)
 
 
-def test_validate_export_url_wildcard_support():
+def test_validate_export_url_support():
     """Test that wildcard patterns like *.wfp.org are supported."""
-    # Mock the EXPORT_ALLOWED_DOMAINS to include a wildcard
-    from prism_app import export_maps
+    # These should be allowed
+    validate_export_url("http://wfp.org/?test=1")
+    validate_export_url("https://prism.wfp.org/?test=1")
+    validate_export_url("http://prism.example.wfp.org/?test=1")
+    validate_export_url("https://staging-prism-frontend--1622-38oautsx.web.app/?test=1")
 
-    # Save original
-    original_domains = export_maps.EXPORT_ALLOWED_DOMAINS.copy()
-
-    # Temporarily set to include wildcard
-    export_maps.EXPORT_ALLOWED_DOMAINS = ["*.wfp.org"]
-
-    try:
-        # These should be allowed
-        validate_export_url("http://wfp.org/?test=1")
-        validate_export_url("http://prism.wfp.org/?test=1")
-        validate_export_url("http://prism.example.wfp.org/?test=1")
-
-        # These should not be allowed
-        with pytest.raises(ValueError, match="not allowed"):
-            validate_export_url("http://evil.com/?test=1")
-        with pytest.raises(ValueError, match="not allowed"):
-            validate_export_url("http://wfp.org.evil.com/?test=1")
-    finally:
-        # Restore original
-        export_maps.EXPORT_ALLOWED_DOMAINS = original_domains
+    # These should not be allowed
+    with pytest.raises(ValueError, match="not allowed"):
+        validate_export_url("http://evil.com/?test=1")
+    with pytest.raises(ValueError, match="not allowed"):
+        validate_export_url("http://wfp.org.evil.com/?test=1")
 
 
 # API endpoint tests - focus on HTTP layer, not re-testing all business logic
