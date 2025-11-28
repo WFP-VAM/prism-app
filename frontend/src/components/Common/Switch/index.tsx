@@ -1,7 +1,6 @@
 import React from 'react';
 import { makeStyles, createStyles } from '@mui/styles';
-import {Switch as SwitchUI,
-  Typography} from '@mui/material';
+import { Switch as SwitchUI, Typography } from '@mui/material';
 import { cyanBlue } from 'muiTheme';
 
 function Switch({ checked, onChange, title, ariaLabel }: PrintConfigProps) {

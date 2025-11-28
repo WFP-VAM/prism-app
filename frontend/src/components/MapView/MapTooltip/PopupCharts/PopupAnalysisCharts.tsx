@@ -1,4 +1,3 @@
-;
 import ChartSection from 'components/MapView/LeftPanel/ChartsPanel/ChartSection';
 import { makeStyles, createStyles } from '@mui/styles';
 import { oneYearInMs } from 'components/MapView/LeftPanel/utils';

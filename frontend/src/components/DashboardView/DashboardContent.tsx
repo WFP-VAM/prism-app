@@ -1,8 +1,10 @@
-import {Box,
+import {
+  Box,
   FormControlLabel,
   Switch,
   Typography,
-  Button} from '@mui/material';
+  Button,
+} from '@mui/material';
 import { Edit } from '@mui/icons-material';
 import { makeStyles } from '@mui/styles';
 import { useDispatch, useSelector } from 'context/hooks';

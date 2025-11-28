@@ -1,6 +1,4 @@
-import {Paper,
-  Theme,
-  TextField} from '@mui/material';
+import { Paper, Theme, TextField } from '@mui/material';
 import { useSelector } from 'context/hooks';
 import { makeStyles, createStyles } from '@mui/styles';
 import {

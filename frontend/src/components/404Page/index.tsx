@@ -1,6 +1,4 @@
-import {Typography,
-  Button,
-  Grid} from '@mui/material';
+import { Typography, Button, Grid } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 import { makeStyles, createStyles } from '@mui/styles';

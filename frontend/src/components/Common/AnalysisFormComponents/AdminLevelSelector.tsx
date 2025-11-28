@@ -1,4 +1,4 @@
-import {Typography} from '@mui/material';
+import { Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { range } from 'lodash';
 import { AdminLevelType } from 'config/types';

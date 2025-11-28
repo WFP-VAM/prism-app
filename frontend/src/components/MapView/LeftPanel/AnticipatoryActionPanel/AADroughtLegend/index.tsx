@@ -1,5 +1,4 @@
-import {Divider,
-  Typography} from '@mui/material';
+import { Divider, Typography } from '@mui/material';
 import { useSafeTranslation } from 'i18n';
 import { makeStyles, createStyles } from '@mui/styles';
 import { borderGray } from 'muiTheme';

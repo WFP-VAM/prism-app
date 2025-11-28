@@ -1,8 +1,10 @@
-import {FormControl,
+import {
+  FormControl,
   ListSubheader,
   MenuItem,
   TextField,
-  Typography} from '@mui/material';
+  Typography,
+} from '@mui/material';
 import { ReactElement } from 'react';
 import { makeStyles, createStyles } from '@mui/styles';
 import { menuList } from 'components/MapView/LeftPanel/utils';

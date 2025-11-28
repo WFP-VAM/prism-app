@@ -1,6 +1,4 @@
-import {Typography,
-  Divider,
-  Box} from '@mui/material';
+import { Typography, Divider, Box } from '@mui/material';
 import { black } from 'muiTheme';
 import { makeStyles, createStyles } from '@mui/styles';
 import { Visibility } from '@mui/icons-material';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@mui/styles';
-import {Box, Typography} from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'context/hooks';
 import Markdown from 'react-markdown';
 import { useSafeTranslation } from 'i18n';

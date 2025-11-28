@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { makeStyles } from '@mui/styles';
-import {Box,
+import {
+  Box,
   Typography,
   CircularProgress,
   Button,
@@ -8,7 +9,8 @@ import {Box,
   FormControlLabel,
   IconButton,
   TextField,
-  Tooltip} from '@mui/material';
+  Tooltip,
+} from '@mui/material';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import {
   DashboardTableConfig,
@@ -249,15 +251,15 @@ function TableBlock({
 
     const canRunAnalysis = Boolean(
       !formState.isAnalysisLoading &&
-        !formState.requiredThresholdNotSet &&
-        formState.hazardLayerId &&
-        (formState.hazardDataType === GeometryType.Polygon
-          ? formState.startDate && formState.adminLevelLayerData
-          : formState.selectedDate && formState.baselineLayerId) &&
-        !(
-          formState.statistic === AggregationOperations['Area exposed'] &&
-          (!formState.exposureValue.operator || !formState.exposureValue.value)
-        ),
+      !formState.requiredThresholdNotSet &&
+      formState.hazardLayerId &&
+      (formState.hazardDataType === GeometryType.Polygon
+        ? formState.startDate && formState.adminLevelLayerData
+        : formState.selectedDate && formState.baselineLayerId) &&
+      !(
+        formState.statistic === AggregationOperations['Area exposed'] &&
+        (!formState.exposureValue.operator || !formState.exposureValue.value)
+      ),
     );
 
     if (

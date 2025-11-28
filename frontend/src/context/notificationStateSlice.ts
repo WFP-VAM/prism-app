@@ -1,8 +1,4 @@
-import {
-  createSlice,
-  Middleware,
-  PayloadAction,
-} from '@reduxjs/toolkit';
+import { createSlice, Middleware, PayloadAction } from '@reduxjs/toolkit';
 import { AlertColor } from '@mui/material';
 import { stringHash } from 'utils/string-utils';
 import type { RootState } from './store';

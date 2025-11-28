@@ -2,7 +2,7 @@ import { Popup } from 'react-map-gl/maplibre';
 import { makeStyles, createStyles } from '@mui/styles';
 import { ParsedStormData } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import _React from 'react';
-import {Typography} from '@mui/material';
+import { Typography } from '@mui/material';
 import { findLandfallWindPoint, hasLandfallOccured } from '../utils';
 import { formatWindPointDate } from '../../utils';
 

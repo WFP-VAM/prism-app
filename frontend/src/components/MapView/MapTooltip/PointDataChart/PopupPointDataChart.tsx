@@ -9,7 +9,6 @@ import {
 import { t } from 'i18next';
 import { memo } from 'react';
 import { useSelector } from 'react-redux';
-;
 import { isAdminBoundary } from 'utils/admin-utils';
 import { GoogleFloodParams } from 'utils/google-flood-utils';
 

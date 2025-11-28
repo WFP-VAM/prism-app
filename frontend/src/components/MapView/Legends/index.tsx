@@ -1,8 +1,10 @@
-import {Button,
+import {
+  Button,
   IconButton,
   Typography,
   useTheme,
-  useMediaQuery} from '@mui/material';
+  useMediaQuery,
+} from '@mui/material';
 import { VisibilityOutlined, VisibilityOffOutlined } from '@mui/icons-material';
 import { makeStyles, createStyles } from '@mui/styles';
 import { useState, memo, useCallback } from 'react';

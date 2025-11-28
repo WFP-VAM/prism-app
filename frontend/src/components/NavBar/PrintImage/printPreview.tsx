@@ -1,4 +1,4 @@
-import {Typography} from '@mui/material';
+import { Typography } from '@mui/material';
 import { makeStyles, createStyles } from '@mui/styles';
 import maplibregl from 'maplibre-gl';
 import React, { useContext, useRef } from 'react';

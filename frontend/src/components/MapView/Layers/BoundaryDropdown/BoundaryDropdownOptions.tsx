@@ -1,7 +1,9 @@
-import {InputAdornment,
+import {
+  InputAdornment,
   MenuItem,
   TextField,
-  TextFieldProps} from '@mui/material';
+  TextFieldProps,
+} from '@mui/material';
 import React, { useMemo } from 'react';
 import { makeStyles } from '@mui/styles';
 import { Map as MaplibreMap } from 'maplibre-gl';

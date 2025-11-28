@@ -1,4 +1,4 @@
-import {Chip} from '@mui/material';
+import { Chip } from '@mui/material';
 import { makeStyles, createStyles } from '@mui/styles';
 import { LayerType } from 'config/types';
 import { useSafeTranslation } from 'i18n';

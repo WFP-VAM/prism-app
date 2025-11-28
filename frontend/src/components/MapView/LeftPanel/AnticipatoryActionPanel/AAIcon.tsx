@@ -1,7 +1,7 @@
-;
 import { useSafeTranslation } from 'i18n';
 
 import { makeStyles, createStyles } from '@mui/styles';
+
 export interface AAIconProps {
   background?: string;
   topText: string;

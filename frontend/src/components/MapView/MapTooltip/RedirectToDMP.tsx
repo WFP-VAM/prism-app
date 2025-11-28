@@ -1,7 +1,7 @@
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import { makeStyles, createStyles } from '@mui/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {Link, Typography} from '@mui/material';
+import { Link, Typography } from '@mui/material';
 import { memo } from 'react';
 
 const useStyles = makeStyles(() =>

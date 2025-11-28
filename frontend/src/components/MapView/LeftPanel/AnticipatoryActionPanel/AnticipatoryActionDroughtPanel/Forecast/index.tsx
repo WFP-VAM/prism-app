@@ -1,5 +1,4 @@
-import {Button,
-  Typography} from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { makeStyles, createStyles } from '@mui/styles';
 import { Scatter } from 'react-chartjs-2';

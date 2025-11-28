@@ -1,9 +1,6 @@
 import React from 'react';
 import { makeStyles, createStyles } from '@mui/styles';
-import {Button,
-  Menu,
-  MenuItem,
-  Typography} from '@mui/material';
+import { Button, Menu, MenuItem, Typography } from '@mui/material';
 import { languages, useSafeTranslation } from 'i18n';
 import { appConfig } from 'config';
 import { get } from 'lodash';

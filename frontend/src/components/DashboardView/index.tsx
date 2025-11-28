@@ -1,4 +1,4 @@
-import {Box, Button} from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { VisibilityOutlined } from '@mui/icons-material';
 import { useSelector, useDispatch } from 'context/hooks';

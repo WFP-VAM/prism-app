@@ -1,5 +1,4 @@
-import {Typography,
-  Divider} from '@mui/material';
+import { Typography, Divider } from '@mui/material';
 import anticipatoryActionIcons from 'components/Common/AnticipatoryAction/icons';
 
 import { makeStyles, createStyles } from '@mui/styles';

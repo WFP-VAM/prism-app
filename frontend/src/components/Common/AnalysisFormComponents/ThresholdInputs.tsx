@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { makeStyles } from '@mui/styles';
-import {TextField, Typography} from '@mui/material';
+import { TextField, Typography } from '@mui/material';
 import { AggregationOperations } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 

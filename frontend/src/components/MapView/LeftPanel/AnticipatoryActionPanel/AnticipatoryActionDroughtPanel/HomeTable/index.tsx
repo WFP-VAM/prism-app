@@ -1,5 +1,4 @@
-import {Button,
-  Typography} from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import { useSafeTranslation } from 'i18n';
 import { makeStyles, createStyles } from '@mui/styles';
 import { borderGray, grey, lightGrey } from 'muiTheme';

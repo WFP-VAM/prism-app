@@ -6,7 +6,8 @@ import React, {
   useState,
   useMemo,
 } from 'react';
-import {Box,
+import {
+  Box,
   Divider,
   Grid,
   IconButton,
@@ -15,7 +16,8 @@ import {Box,
   Popover,
   Slider,
   Tooltip,
-  Typography} from '@mui/material';
+  Typography,
+} from '@mui/material';
 import { Close, Opacity, SwapVert } from '@mui/icons-material';
 import { makeStyles, createStyles } from '@mui/styles';
 import { useDispatch, useSelector } from 'context/hooks';

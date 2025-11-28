@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { makeStyles, createStyles } from '@mui/styles';
-import {Box,
+import {
+  Box,
   Button,
   IconButton,
   Menu,
@@ -8,7 +9,8 @@ import {Box,
   Theme,
   Collapse,
   Divider,
-  Icon} from '@mui/material';
+  Icon,
+} from '@mui/material';
 import { Cancel, GetApp } from '@mui/icons-material';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';

@@ -1,6 +1,4 @@
-import {Typography,
-  MenuItem,
-  Input} from '@mui/material';
+import { Typography, MenuItem, Input } from '@mui/material';
 import React from 'react';
 import { makeStyles, createStyles } from '@mui/styles';
 import { useSafeTranslation } from 'i18n';

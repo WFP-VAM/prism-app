@@ -1,6 +1,4 @@
-import {Box,
-  Slider,
-  Typography} from '@mui/material';
+import { Box, Slider, Typography } from '@mui/material';
 import { LayerType } from 'config/types';
 import { makeStyles, createStyles } from '@mui/styles';
 import { useMapState } from 'utils/useMapState';

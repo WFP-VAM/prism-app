@@ -1,8 +1,4 @@
-import {Button,
-  Grid,
-  Theme,
-  useMediaQuery,
-  useTheme} from '@mui/material';
+import { Button, Grid, Theme, useMediaQuery, useTheme } from '@mui/material';
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import { makeStyles, createStyles } from '@mui/styles';
 import { findIndex, get } from 'lodash';
@@ -629,7 +625,9 @@ const DateSelector = memo(() => {
 
   const handleOnDatePickerChange = useCallback(
     (date: Date | null) => {
-      if (!date) return;
+      if (!date) {
+        return;
+      }
       updateStartDate(date, true);
     },
     [updateStartDate],
@@ -701,7 +699,7 @@ const DateSelector = memo(() => {
         </Grid>
 
         {/* Desktop */}
-        <Grid size={{ xs: 12, sm: "grow" }} className={classes.slider}>
+        <Grid size={{ xs: 12, sm: 'grow' }} className={classes.slider}>
           {!xsDown && (
             <Button
               id="chevronLeftButton"

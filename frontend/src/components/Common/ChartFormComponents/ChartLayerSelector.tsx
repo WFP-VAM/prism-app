@@ -1,9 +1,5 @@
-
 import { makeStyles } from '@mui/styles';
-import {FormControl,
-  InputLabel,
-  MenuItem,
-  Select} from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import { LayerKey, WMSLayerProps } from 'config/types';
 import { getWMSLayersWithChart } from 'config/utils';
 import { useSafeTranslation } from 'i18n';

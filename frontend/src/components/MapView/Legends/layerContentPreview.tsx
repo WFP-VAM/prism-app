@@ -1,8 +1,6 @@
 import { useState, memo, useMemo, useCallback } from 'react';
 import { makeStyles, createStyles } from '@mui/styles';
-import {IconButton,
-  Grid,
-  Theme} from '@mui/material';
+import { IconButton, Grid, Theme } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 import { useDispatch } from 'context/hooks';
 import { LayerType } from 'config/types';

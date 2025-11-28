@@ -1,4 +1,4 @@
-import {Typography, Input} from '@mui/material';
+import { Typography, Input } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import DatePicker from 'react-datepicker';
 import { useSafeTranslation } from 'i18n';

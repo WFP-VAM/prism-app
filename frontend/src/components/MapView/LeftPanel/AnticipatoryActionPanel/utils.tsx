@@ -1,9 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { black, cyanBlue } from 'muiTheme';
 import { makeStyles, createStyles } from '@mui/styles';
-import {Select,
-  
-  styled} from '@mui/material';
+import { Select, styled } from '@mui/material';
 
 export const StyledSelect = styled(Select)({
   '&:focus': {

@@ -6,7 +6,7 @@ import { Bar, Line } from 'react-chartjs-2';
 import { ChartConfig, DatasetField } from 'config/types';
 import { TableData } from 'context/tableStateSlice';
 import { useSafeTranslation } from 'i18n';
-import {IconButton, Tooltip} from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 import ImageIcon from '@mui/icons-material/Image';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import { buildCsvFileName, downloadToFile } from 'components/MapView/utils';
@@ -21,7 +21,7 @@ function downloadChartPng(ref: React.RefObject<any>, filename: string) {
   if (!chart) {
     throw new Error('chart is undefined');
   }
-  const canvas = chart.canvas;
+  const { canvas } = chart;
   if (!canvas) {
     throw new Error('canvas is undefined');
   }
@@ -432,17 +432,19 @@ const Chart = memo(
                       ?.data?.[tooltipItem.index as number];
 
                   // Check if any label is present in the tooltip
-                  const labelPresent = labelData.datasets?.some((dataset: any) => {
-                    const { label } = dataset;
-                    if (tooltipItem.index !== undefined) {
-                      const indexData = dataset.data?.[tooltipItem.index];
-                      return (
-                        label === datasetLabel.replace(' (Future)', '') &&
-                        indexData !== null
-                      );
-                    }
-                    return false;
-                  });
+                  const labelPresent = labelData.datasets?.some(
+                    (dataset: any) => {
+                      const { label } = dataset;
+                      if (tooltipItem.index !== undefined) {
+                        const indexData = dataset.data?.[tooltipItem.index];
+                        return (
+                          label === datasetLabel.replace(' (Future)', '') &&
+                          indexData !== null
+                        );
+                      }
+                      return false;
+                    },
+                  );
 
                   // Hide "{label} (Future)" if "{label}" is present
                   if (labelPresent && datasetLabel.includes(' (Future)')) {
@@ -492,7 +494,7 @@ const Chart = memo(
                   },
                 }
               : {}),
-          }) as any,  // Cast to any to handle Chart.js v2 to v4 API differences
+          }) as any, // Cast to any to handle Chart.js v2 to v4 API differences
         [
           notMaintainAspectRatio,
           responsive,

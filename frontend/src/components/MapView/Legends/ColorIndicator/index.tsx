@@ -1,4 +1,4 @@
-import {Typography} from '@mui/material';
+import { Typography } from '@mui/material';
 import { makeStyles, createStyles } from '@mui/styles';
 import { alpha } from '@mui/material/styles';
 

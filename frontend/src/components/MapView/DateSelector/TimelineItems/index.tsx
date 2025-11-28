@@ -1,8 +1,6 @@
 import { CSSProperties, memo, useCallback, useMemo } from 'react';
 import { makeStyles, createStyles } from '@mui/styles';
-import {Fade,
-  Grid,
-  Tooltip} from '@mui/material';
+import { Fade, Grid, Tooltip } from '@mui/material';
 import { AnticipatoryAction, DateItem, DateRangeType } from 'config/types';
 import { grey } from 'muiTheme';
 import {

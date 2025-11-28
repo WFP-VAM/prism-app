@@ -1,4 +1,5 @@
-import {Box,
+import {
+  Box,
   Button,
   Checkbox,
   FormControl,
@@ -11,7 +12,8 @@ import {Box,
   MenuProps,
   Select,
   Switch,
-  Typography} from '@mui/material';
+  Typography,
+} from '@mui/material';
 import { GeoJsonProperties } from 'geojson';
 import { makeStyles, createStyles } from '@mui/styles';
 import React, {

@@ -1,4 +1,3 @@
-;
 import { memo } from 'react';
 import { makeStyles, createStyles } from '@mui/styles';
 import { DashboardMode } from 'config/types';

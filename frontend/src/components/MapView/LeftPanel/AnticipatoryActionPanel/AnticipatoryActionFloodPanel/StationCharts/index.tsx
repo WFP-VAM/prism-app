@@ -1,7 +1,8 @@
 import { useMemo, useState, useRef } from 'react';
 import { makeStyles, createStyles } from '@mui/styles';
 import type { MouseEvent as ReactMouseEvent } from 'react';
-import {Typography,
+import {
+  Typography,
   IconButton,
   Paper,
   Button,
@@ -13,7 +14,8 @@ import {Typography,
   TableRow,
   CircularProgress,
   Menu,
-  MenuItem} from '@mui/material';
+  MenuItem,
+} from '@mui/material';
 import { Close, TableChart, GetApp } from '@mui/icons-material';
 import { Line } from 'react-chartjs-2';
 import 'chartjs-plugin-annotation';

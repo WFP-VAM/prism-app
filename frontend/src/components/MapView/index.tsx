@@ -1,7 +1,7 @@
 import { memo, useEffect } from 'react';
 import { makeStyles, createStyles } from '@mui/styles';
 import { useDispatch, useSelector } from 'context/hooks';
-import {Box} from '@mui/material';
+import { Box } from '@mui/material';
 import { getDisplayBoundaryLayers } from 'config/utils';
 import {
   WMSLayerDatesRequested,

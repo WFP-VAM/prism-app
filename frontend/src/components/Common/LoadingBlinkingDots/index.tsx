@@ -1,6 +1,5 @@
 import { memo } from 'react';
 import { makeStyles, createStyles } from '@mui/styles';
-;
 
 const LoadingBlinkingDots = memo(({ dotColor }: LoadingBlinkingDotsProps) => {
   const classes = useStyles();

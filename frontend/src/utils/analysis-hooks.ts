@@ -240,9 +240,9 @@ export const useAnalysisForm = (
     () =>
       Boolean(
         baselineLayerId &&
-          LayerDefinitions[baselineLayerId]?.type === 'admin_level_data' &&
-          !belowThreshold &&
-          !aboveThreshold,
+        LayerDefinitions[baselineLayerId]?.type === 'admin_level_data' &&
+        !belowThreshold &&
+        !aboveThreshold,
       ),
     [baselineLayerId, belowThreshold, aboveThreshold],
   );

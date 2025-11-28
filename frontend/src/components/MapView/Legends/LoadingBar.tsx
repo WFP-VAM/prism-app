@@ -1,4 +1,4 @@
-import {LinearProgress} from '@mui/material';
+import { LinearProgress } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { useSelector } from 'react-redux';
 import { LayerKey } from 'config/types';

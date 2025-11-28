@@ -1,4 +1,4 @@
-import {Typography} from '@mui/material';
+import { Typography } from '@mui/material';
 import { makeStyles, createStyles } from '@mui/styles';
 import { DateRangeType } from 'config/types';
 import { DateFormat } from 'utils/name-utils';

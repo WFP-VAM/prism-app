@@ -1,4 +1,4 @@
-import {Box} from '@mui/material';
+import { Box } from '@mui/material';
 import { makeStyles, createStyles } from '@mui/styles';
 import { memo, useMemo } from 'react';
 import useLayers from 'utils/layers-utils';

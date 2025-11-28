@@ -1,4 +1,3 @@
-;
 import { LayerKey } from 'config/types';
 import { makeStyles } from '@mui/styles';
 import LayerDropdown from 'components/MapView/Layers/LayerDropdown';

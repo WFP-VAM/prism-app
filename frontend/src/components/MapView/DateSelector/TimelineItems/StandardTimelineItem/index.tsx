@@ -1,4 +1,3 @@
-;
 import React, { memo, useMemo } from 'react';
 import { makeStyles, createStyles } from '@mui/styles';
 import 'react-datepicker/dist/react-datepicker.css';

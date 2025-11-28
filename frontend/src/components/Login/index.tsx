@@ -1,6 +1,4 @@
-import {Typography,
-  Button,
-  Grid} from '@mui/material';
+import { Typography, Button, Grid } from '@mui/material';
 import { useMsal } from '@azure/msal-react';
 import { makeStyles, createStyles } from '@mui/styles';
 import { msalRequest } from 'config';

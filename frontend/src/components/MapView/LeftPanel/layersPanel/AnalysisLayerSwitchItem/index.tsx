@@ -1,16 +1,12 @@
+import { memo, useState, useCallback, useMemo, useEffect } from 'react';
 import {
-  memo,
-  useState,
-  useCallback,
-  useMemo,
-  useEffect,
-} from 'react';
-import {Box,
+  Box,
   IconButton,
   Slider,
   Switch,
   Tooltip,
-  Typography} from '@mui/material';
+  Typography,
+} from '@mui/material';
 
 import { createStyles, makeStyles } from '@mui/styles';
 import { useDispatch, useSelector } from 'context/hooks';

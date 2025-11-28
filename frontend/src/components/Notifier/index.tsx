@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { makeStyles, createStyles } from '@mui/styles';
 import { useDispatch, useSelector } from 'context/hooks';
 import omit from 'lodash/omit';
-;
 import { Alert } from '@mui/material';
 import {
   Notification,

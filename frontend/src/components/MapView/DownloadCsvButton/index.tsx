@@ -1,5 +1,4 @@
-import {Button,
-  Typography} from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import { t } from 'i18next';
 import { makeStyles, createStyles } from '@mui/styles';
 import { downloadChartsToCsv } from 'utils/csv-utils';

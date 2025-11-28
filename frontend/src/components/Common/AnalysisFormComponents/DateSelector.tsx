@@ -1,6 +1,4 @@
-import {Typography,
-  Input,
-  InputAdornment} from '@mui/material';
+import { Typography, Input, InputAdornment } from '@mui/material';
 import { DateRangeRounded } from '@mui/icons-material';
 import { makeStyles } from '@mui/styles';
 import DatePicker from 'react-datepicker';

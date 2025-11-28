@@ -1,6 +1,4 @@
-import {MenuItem,
-  Select,
-  Typography} from '@mui/material';
+import { MenuItem, Select, Typography } from '@mui/material';
 import { LayerType, MenuGroupItem } from 'config/types';
 import { makeStyles, createStyles } from '@mui/styles';
 import { memo, useCallback } from 'react';

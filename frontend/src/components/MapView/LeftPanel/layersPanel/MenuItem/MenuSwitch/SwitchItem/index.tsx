@@ -1,6 +1,4 @@
-import {Box,
-  IconButton,
-  Tooltip} from '@mui/material';
+import { Box, IconButton, Tooltip } from '@mui/material';
 import type { AppDispatch } from 'context/store';
 import { makeStyles, createStyles } from '@mui/styles';
 import OpacityIcon from '@mui/icons-material/Opacity';

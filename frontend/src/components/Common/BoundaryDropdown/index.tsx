@@ -1,10 +1,12 @@
 import { useState, useMemo, useCallback, memo } from 'react';
 import { makeStyles } from '@mui/styles';
-import {FormControl,
+import {
+  FormControl,
   InputLabel,
   MenuItem,
   Select,
-  Theme} from '@mui/material';
+  Theme,
+} from '@mui/material';
 import { useSelector } from 'react-redux';
 import { uniq } from 'lodash';
 import {

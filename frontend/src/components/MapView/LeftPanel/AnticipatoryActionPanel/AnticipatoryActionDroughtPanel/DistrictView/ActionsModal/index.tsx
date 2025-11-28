@@ -1,10 +1,12 @@
-import {Button,
+import {
+  Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
-  Typography} from '@mui/material';
+  Typography,
+} from '@mui/material';
 import { Cancel, Close } from '@mui/icons-material';
 import { makeStyles, createStyles } from '@mui/styles';
 import { useSafeTranslation } from 'i18n';

@@ -1,4 +1,4 @@
-import {ListItem, Paper} from '@mui/material';
+import { ListItem, Paper } from '@mui/material';
 import { makeStyles, createStyles } from '@mui/styles';
 import { lightGrey } from 'muiTheme';
 import { useSelector } from 'react-redux';

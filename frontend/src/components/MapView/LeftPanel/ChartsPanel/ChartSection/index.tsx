@@ -1,6 +1,4 @@
-import {CircularProgress,
-  Typography,
-  Box} from '@mui/material';
+import { CircularProgress, Typography, Box } from '@mui/material';
 
 import { GeoJsonProperties } from 'geojson';
 import { makeStyles, createStyles } from '@mui/styles';

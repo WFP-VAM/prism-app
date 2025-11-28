@@ -1,6 +1,6 @@
 import { forwardRef, Ref } from 'react';
 import { makeStyles, createStyles } from '@mui/styles';
-import {Button} from '@mui/material';
+import { Button } from '@mui/material';
 
 const DateSelectorInput = forwardRef(
   (

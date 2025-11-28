@@ -1,4 +1,3 @@
-;
 import { Offset } from 'maplibre-gl';
 import { makeStyles, createStyles } from '@mui/styles';
 import { Popup } from 'react-map-gl/maplibre';

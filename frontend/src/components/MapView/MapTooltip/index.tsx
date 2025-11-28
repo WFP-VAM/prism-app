@@ -3,8 +3,7 @@ import { makeStyles, createStyles } from '@mui/styles';
 import { omit } from 'lodash';
 import { useDispatch, useSelector } from 'context/hooks';
 import { Popup } from 'react-map-gl/maplibre';
-import {Typography,
-  IconButton} from '@mui/material';
+import { Typography, IconButton } from '@mui/material';
 import {
   hidePopup,
   PopupData,

@@ -1,12 +1,14 @@
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { makeStyles, createStyles } from '@mui/styles';
-import {Button,
+import {
+  Button,
   LinearProgress,
   Typography,
   IconButton,
   Theme,
   CircularProgress,
-  Box} from '@mui/material';
+  Box,
+} from '@mui/material';
 import { BarChartOutlined, CloseRounded } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'context/hooks';
 import { orderBy } from 'lodash';

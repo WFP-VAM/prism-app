@@ -1,9 +1,7 @@
 import { forwardRef, Ref } from 'react';
 import { makeStyles } from '@mui/styles';
 import { Search } from '@mui/icons-material';
-import {TextField,
-  InputAdornment,
-  Theme} from '@mui/material';
+import { TextField, InputAdornment, Theme } from '@mui/material';
 
 const useStyles = makeStyles((theme: Theme) => ({
   searchField: {

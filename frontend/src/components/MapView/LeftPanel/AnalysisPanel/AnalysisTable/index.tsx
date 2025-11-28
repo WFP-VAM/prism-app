@@ -1,6 +1,7 @@
 import React, { memo, useCallback, useMemo, useState, useEffect } from 'react';
 import { makeStyles, createStyles } from '@mui/styles';
-import {Table,
+import {
+  Table,
   TableBody,
   TableCell,
   TableContainer,
@@ -9,7 +10,8 @@ import {Table,
   TableRow,
   TableSortLabel,
   Theme,
-  Typography} from '@mui/material';
+  Typography,
+} from '@mui/material';
 import { useDispatch, useSelector } from 'context/hooks';
 import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
 import { Column } from 'utils/analysis-utils';

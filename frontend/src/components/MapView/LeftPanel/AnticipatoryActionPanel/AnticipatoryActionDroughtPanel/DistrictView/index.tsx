@@ -1,6 +1,4 @@
-import {Button,
-  Tooltip,
-  Typography} from '@mui/material';
+import { Button, Tooltip, Typography } from '@mui/material';
 import { lightGrey } from 'muiTheme';
 import { makeStyles, createStyles } from '@mui/styles';
 import React from 'react';

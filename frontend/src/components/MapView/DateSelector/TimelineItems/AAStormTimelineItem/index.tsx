@@ -1,5 +1,3 @@
-;
-
 import 'react-datepicker/dist/react-datepicker.css';
 import { makeStyles, createStyles } from '@mui/styles';
 import { DateRangeType } from 'config/types';

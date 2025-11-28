@@ -1,9 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@mui/styles';
-import {Box,
-  MenuItem,
-  TextField,
-  Typography} from '@mui/material';
+import { Box, MenuItem, TextField, Typography } from '@mui/material';
 import { sortBy } from 'lodash';
 import {
   AdminCodeString,

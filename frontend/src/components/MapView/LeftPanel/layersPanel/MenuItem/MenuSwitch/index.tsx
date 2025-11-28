@@ -1,9 +1,11 @@
-import {Accordion,
+import {
+  Accordion,
   AccordionDetails,
   AccordionSummary,
   Chip,
   Grid,
-  Typography} from '@mui/material';
+  Typography,
+} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { makeStyles, createStyles } from '@mui/styles';
 import RemoveIcon from '@mui/icons-material/Remove';

@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
 import { makeStyles } from '@mui/styles';
 import { useSelector } from 'react-redux';
-import {Box,
+import {
+  Box,
   Typography,
   CircularProgress,
   Button,
@@ -10,7 +11,8 @@ import {Box,
   Select,
   MenuItem,
   IconButton,
-  Tooltip} from '@mui/material';
+  Tooltip,
+} from '@mui/material';
 import ImageIcon from '@mui/icons-material/Image';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import {

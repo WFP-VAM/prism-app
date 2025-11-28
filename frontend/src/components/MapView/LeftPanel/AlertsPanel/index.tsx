@@ -1,8 +1,4 @@
-import {Box,
-  Button,
-  TextField,
-  Theme,
-  Typography} from '@mui/material';
+import { Box, Button, TextField, Theme, Typography } from '@mui/material';
 
 import React, {
   Dispatch,

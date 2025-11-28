@@ -1,7 +1,4 @@
-import {Box,
-  MenuItem,
-  TextField,
-  Typography} from '@mui/material';
+import { Box, MenuItem, TextField, Typography } from '@mui/material';
 import { sortBy } from 'lodash';
 import { makeStyles, createStyles } from '@mui/styles';
 import React, { memo, ReactNode } from 'react';

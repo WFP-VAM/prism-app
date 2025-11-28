@@ -2,14 +2,16 @@
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { makeStyles, createStyles } from '@mui/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {AppBar,
+import {
+  AppBar,
   Box,
   Theme,
   Toolbar,
   Typography,
   IconButton,
   useTheme,
-  useMediaQuery} from '@mui/material';
+  useMediaQuery,
+} from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSafeTranslation } from 'i18n';

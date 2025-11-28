@@ -2,7 +2,7 @@ import { memo, useEffect } from 'react';
 import { makeStyles, createStyles } from '@mui/styles';
 import { useSelector, useDispatch } from 'context/hooks';
 import { get } from 'lodash';
-import {Theme} from '@mui/material';
+import { Theme } from '@mui/material';
 import { getExtent, Extent } from 'components/MapView/Layers/raster-utils';
 import { legendToStops } from 'components/MapView/Layers/layer-utils';
 import { ImpactLayerProps, MapEventWrapFunctionProps } from 'config/types';

@@ -1,13 +1,15 @@
 import React, { memo, useEffect, useCallback, useRef } from 'react';
 import { makeStyles, createStyles } from '@mui/styles';
 import { useDispatch, useSelector } from 'context/hooks';
-import {Box,
+import {
+  Box,
   Typography,
   CircularProgress,
   IconButton,
   Tooltip,
   TextField,
-  Icon} from '@mui/material';
+  Icon,
+} from '@mui/material';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import Switch from 'components/Common/Switch';

@@ -1,6 +1,7 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { createStyles, makeStyles } from '@mui/styles';
-import {Box,
+import {
+  Box,
   CircularProgress,
   Table,
   TableBody,
@@ -11,7 +12,8 @@ import {Box,
   TableRow,
   TableSortLabel,
   Theme,
-  Typography} from '@mui/material';
+  Typography,
+} from '@mui/material';
 import { orderBy } from 'lodash';
 import { useSafeTranslation } from 'i18n';
 import { ChartConfig } from 'config/types';
