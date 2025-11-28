@@ -8,13 +8,15 @@ import {
 } from 'react';
 import { useDispatch, useSelector } from 'context/hooks';
 import { makeStyles, createStyles } from '@mui/styles';
-import {Box,
+import {
+  Box,
   Button,
   Dialog,
   DialogTitle,
   TextField,
   Theme,
-  Typography} from '@mui/material';
+  Typography,
+} from '@mui/material';
 import { useSafeTranslation } from 'i18n';
 import { layersSelector } from 'context/mapStateSlice/selectors';
 import { setUserAuthGlobal, userAuthSelector } from 'context/serverStateSlice';

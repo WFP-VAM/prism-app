@@ -131,7 +131,7 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
         selectedDate as SelectedDateTimestamp,
       );
       const date = getFormattedDate(queryDate, DateFormat.Default) as string;
-      dispatch(setFilters({ selectedDate: date }));
+      dispatch(setFilters({ selectedDate: date }) as any);
     } else if (actionType === AnticipatoryAction.flood) {
       // Only load date data if we have a valid date item in the available dates
       // This prevents loading with an invalid date from a previous layer
