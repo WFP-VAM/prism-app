@@ -1,7 +1,7 @@
 import {Box, Button} from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { VisibilityOutlined } from '@mui/icons-material';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'context/hooks';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSafeTranslation } from 'i18n';

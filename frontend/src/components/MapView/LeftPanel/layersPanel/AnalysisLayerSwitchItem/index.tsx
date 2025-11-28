@@ -14,7 +14,7 @@ import {Box,
   Typography} from '@mui/material';
 
 import { createStyles, makeStyles } from '@mui/styles';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import OpacityIcon from '@mui/icons-material/Opacity';
 import { useSafeTranslation } from 'i18n';
 import { clearAnalysisResult } from 'context/analysisResultStateSlice';

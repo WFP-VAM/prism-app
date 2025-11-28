@@ -1,7 +1,7 @@
 import { AnticipatoryActionLayerProps, AnticipatoryAction } from 'config/types';
 import { useAnticipatoryAction } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/useAnticipatoryAction';
 import { useDefaultDate } from 'utils/useDefaultDate';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'context/hooks';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { setAAFloodSelectedStation } from 'context/anticipatoryAction/AAFloodStateSlice';
 import { hidePopup } from 'context/tooltipStateSlice';

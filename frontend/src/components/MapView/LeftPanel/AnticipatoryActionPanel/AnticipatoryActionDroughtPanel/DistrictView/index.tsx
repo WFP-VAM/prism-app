@@ -4,7 +4,7 @@ import {Button,
 import { lightGrey } from 'muiTheme';
 import { makeStyles, createStyles } from '@mui/styles';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import {
   AAView,
   AnticipatoryActionDataRow,

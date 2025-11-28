@@ -18,7 +18,7 @@ import {
   DashboardMode,
 } from 'config/types';
 import { useAnalysisForm, useAnalysisExecution } from 'utils/analysis-hooks';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import {
   setIsMapLayerActive,
   isAnalysisLayerActiveSelector,

@@ -13,7 +13,7 @@ import {
 } from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { lightGrey } from 'muiTheme';
 import { makeStyles, createStyles } from '@mui/styles';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import { useSafeTranslation } from 'i18n';
 import { Equalizer, Reply } from '@mui/icons-material';
 import { getAAColor, getAAIcon } from '../utils';

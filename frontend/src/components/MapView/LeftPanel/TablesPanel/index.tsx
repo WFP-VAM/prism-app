@@ -12,7 +12,7 @@ import {LinearProgress,
   TextField,
   Theme,
   Typography} from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import { createStyles, makeStyles } from '@mui/styles';
 import {
   LayersCategoryType,

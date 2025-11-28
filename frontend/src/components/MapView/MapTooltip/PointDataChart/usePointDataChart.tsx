@@ -5,7 +5,7 @@ import {
 } from 'context/datasetStateSlice';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import { appConfig } from 'config';
 import {
   GoogleFloodParams,

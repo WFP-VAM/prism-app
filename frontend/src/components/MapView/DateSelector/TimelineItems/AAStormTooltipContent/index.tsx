@@ -10,7 +10,7 @@ import {
   loadStormReport,
   setSelectedStormName,
 } from 'context/anticipatoryAction/AAStormStateSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import { updateDateRange } from 'context/mapStateSlice';
 import { getFormattedDate } from 'utils/date-utils';
 import { useUrlHistory } from 'utils/url-utils';

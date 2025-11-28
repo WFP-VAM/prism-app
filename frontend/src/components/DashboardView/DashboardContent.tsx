@@ -5,7 +5,7 @@ import {Box,
   Button} from '@mui/material';
 import { Edit } from '@mui/icons-material';
 import { makeStyles } from '@mui/styles';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import { useSafeTranslation } from 'i18n';
 import {
   dashboardConfigSelector,

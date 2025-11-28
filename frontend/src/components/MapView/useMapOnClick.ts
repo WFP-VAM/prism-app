@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import { useCallback } from 'react';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { useBoundaryData } from 'utils/useBoundaryData';

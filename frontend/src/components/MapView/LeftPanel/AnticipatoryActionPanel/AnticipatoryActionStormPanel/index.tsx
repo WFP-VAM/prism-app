@@ -4,7 +4,7 @@ import {Typography,
 import React from 'react';
 import { makeStyles, createStyles } from '@mui/styles';
 import { useSafeTranslation } from 'i18n';
-import { useDispatch } from 'react-redux';
+import { useDispatch } from 'context/hooks';
 import { updateDateRange } from 'context/mapStateSlice';
 import {
   setSelectedStormName,

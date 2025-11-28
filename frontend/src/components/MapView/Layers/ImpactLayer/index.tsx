@@ -1,6 +1,6 @@
 import { memo, useEffect } from 'react';
 import { makeStyles, createStyles } from '@mui/styles';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'context/hooks';
 import { get } from 'lodash';
 import {Theme} from '@mui/material';
 import { getExtent, Extent } from 'components/MapView/Layers/raster-utils';

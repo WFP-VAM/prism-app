@@ -1,5 +1,5 @@
 import { memo, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch } from 'context/hooks';
 import { BoundaryLayerProps, MapEventWrapFunctionProps } from 'config/types';
 import { showPopup } from 'context/tooltipStateSlice';
 import { Source, Layer, MapLayerMouseEvent } from 'react-map-gl/maplibre';

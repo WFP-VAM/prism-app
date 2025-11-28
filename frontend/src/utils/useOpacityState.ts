@@ -1,5 +1,5 @@
 import { useContext, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch } from 'context/hooks';
 import { Map as MaplibreMap } from 'maplibre-gl';
 import { LayerType } from 'config/types';
 import MapInstanceContext from 'components/MapView/MapInstanceContext/mapInstance.context';

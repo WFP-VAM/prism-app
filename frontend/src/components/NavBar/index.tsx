@@ -23,7 +23,7 @@ import {
   Notifications,
   SpeedOutlined,
 } from '@mui/icons-material';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import {
   leftPanelTabValueSelector,
   setTabValue,

@@ -6,7 +6,7 @@ import {
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { memo, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import { Source, Layer } from 'react-map-gl/maplibre';
 import {
   findFeature,

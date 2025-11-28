@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useCallback, useRef } from 'react';
 import { makeStyles, createStyles } from '@mui/styles';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import {Box,
   Typography,
   CircularProgress,

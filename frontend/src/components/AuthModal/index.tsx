@@ -6,7 +6,7 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import { makeStyles, createStyles } from '@mui/styles';
 import {Box,
   Button,

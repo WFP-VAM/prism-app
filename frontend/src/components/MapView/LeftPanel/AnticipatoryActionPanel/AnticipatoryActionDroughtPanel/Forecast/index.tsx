@@ -3,7 +3,7 @@ import {Button,
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { makeStyles, createStyles } from '@mui/styles';
 import { Scatter } from 'react-chartjs-2';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import { lightGrey } from 'muiTheme';
 import {
   AADataSelector,

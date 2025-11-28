@@ -110,6 +110,7 @@ const theme: any = createTheme({
     },
   },
   spacing: 6,
+  // Note: 'overrides' is deprecated in MUI v5, but we cast as any for backward compatibility
   overrides: {
     MuiToolbar: {
       dense: {
@@ -263,7 +264,7 @@ const theme: any = createTheme({
       },
     },
   },
-});
+} as any);
 
 // eslint-disable-next-line fp/no-mutation
 theme.overrides.MuiToggleButton = {

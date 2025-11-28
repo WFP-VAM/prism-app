@@ -15,7 +15,7 @@ import {
 } from 'config/utils';
 import React, { useRef } from 'react';
 import simplify from '@turf/simplify';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
 import maxInscribedCircle from 'max-inscribed-circle'; // ts-ignore

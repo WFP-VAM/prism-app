@@ -7,7 +7,7 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import { AdminCodeString } from 'config/types';
 import {
   getSelectedBoundaries,

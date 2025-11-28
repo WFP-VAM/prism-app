@@ -4,7 +4,7 @@ import { useSafeTranslation } from 'i18n';
 import { makeStyles, createStyles } from '@mui/styles';
 import { borderGray, grey, lightGrey } from 'muiTheme';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import { AAView } from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { AAWindowKeys } from 'config/utils';
 import {

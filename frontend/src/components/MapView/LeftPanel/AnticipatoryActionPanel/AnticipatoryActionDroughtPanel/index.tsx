@@ -9,7 +9,7 @@ import { makeStyles, createStyles } from '@mui/styles';
 import React from 'react';
 import { useSafeTranslation } from 'i18n';
 import { ArrowBackIos } from '@mui/icons-material';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import {
   AAView,
   allWindowsKey,

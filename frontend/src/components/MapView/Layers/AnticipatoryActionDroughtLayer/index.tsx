@@ -5,7 +5,7 @@ import {
   MapEventWrapFunctionProps,
 } from 'config/types';
 import { useDefaultDate } from 'utils/useDefaultDate';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import { useBoundaryData } from 'utils/useBoundaryData';
 import {

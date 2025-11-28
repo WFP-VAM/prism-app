@@ -4,7 +4,7 @@ import {IconButton,
   Grid,
   Theme} from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
-import { useDispatch } from 'react-redux';
+import { useDispatch } from 'context/hooks';
 import { LayerType } from 'config/types';
 import { LayerDefinitions, getBoundaryLayerSingleton } from 'config/utils';
 import ContentDialog from 'components/NavBar/ContentDialog';

@@ -3,7 +3,7 @@ import { AnticipatoryActionLayerProps } from 'config/types';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { Source, Layer, MapLayerMouseEvent } from 'react-map-gl/maplibre';
 import { Feature, Point } from 'geojson';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import {
   dateRangeSelector,
   mapSelector,

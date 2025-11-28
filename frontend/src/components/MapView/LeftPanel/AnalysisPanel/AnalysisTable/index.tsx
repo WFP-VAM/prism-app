@@ -10,7 +10,7 @@ import {Table,
   TableSortLabel,
   Theme,
   Typography} from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
 import { Column } from 'utils/analysis-utils';
 import { useSafeTranslation } from 'i18n';

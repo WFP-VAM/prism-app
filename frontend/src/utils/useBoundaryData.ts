@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch } from 'context/hooks';
 import { Map as MaplibreMap } from 'maplibre-gl';
 import { BoundaryLayerProps } from 'config/types';
 import { BoundaryLayerData } from 'context/layers/boundary';

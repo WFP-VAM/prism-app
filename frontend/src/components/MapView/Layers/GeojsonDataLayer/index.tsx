@@ -1,7 +1,7 @@
 import { memo, useEffect } from 'react';
 import { Layer, Source } from 'react-map-gl/maplibre';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import { GeojsonDataLayerProps, LegendDefinition } from 'config/types';
 
 import { LayerData, loadLayerData } from 'context/layers/layer-data';

@@ -7,7 +7,7 @@ import {
   Tooltip,
 } from '@mui/material';
 import React, { useCallback, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import { mapValues } from 'lodash';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import {
