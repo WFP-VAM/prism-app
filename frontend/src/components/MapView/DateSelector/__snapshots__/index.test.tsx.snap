@@ -181,6 +181,7 @@ exports[`renders as expected with a single date 1`] = `
           >
             <div
               class="MuiGrid-root makeStyles-dateLabelContainer-9 MuiGrid-container"
+              style="min-width: 1460px;"
             >
               mock-timelineitems
             </div>
