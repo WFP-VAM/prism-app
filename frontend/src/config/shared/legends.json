@@ -362,5 +362,25 @@
     { "value": 3, "label": "3 - Crisis", "color": "#E67800" },
     { "value": 4, "label": "4 - Emergency", "color": "#C80000" },
     { "value": 5, "label": "5 - Famine", "color": "#640000" }
+  ],
+  "tropical_storm_buffers": [
+    { "label": "Uncertainty Cone", "value": "uncertainty", "color": "#ffffff" },
+    { "label": "Tropical depression (< 63 km/h)", "value": "tropical_depression", "color": "#00faf4" },
+    { "label": "Moderate tropical storm (63-88 km/h)", "value": "moderate_tropical_storm", "color": "#ffffcc" },
+    { "label": "Severe tropical storm (89-118 km/h)", "value": "severe_tropical_storm", "color": "#ffe775" },
+    { "label": "Tropical cyclone (119-165 km/h)", "value": "tropical_cyclone", "color": "#ffc140" },
+    { "label": "Intense tropical cyclone (166-212 km/h)", "value": "intense_tropical_cyclone", "color": "#ff8f20" },
+    { "label": "Very intense tropical cyclone (> 212 km/h)", "value": "very_intense_tropical_cyclone", "color": "#ff6060" }
+  ],
+  "tropical_storm_intensity": [
+    { "label": "Tropical depression (< 63 km/h)", "value": "tropical_depression", "color": "#00faf4" },
+    { "label": "Moderate tropical storm (63-88 km/h)", "value": "moderate_tropical_storm", "color": "#ffffcc" },
+    { "label": "Severe tropical storm (89-118 km/h)", "value": "severe_tropical_storm", "color": "#ffe775" },
+    { "label": "Tropical cyclone (119-165 km/h)", "value": "tropical_cyclone", "color": "#ffc140" },
+    { "label": "Intense tropical cyclone (166-212 km/h)", "value": "intense_tropical_cyclone", "color": "#ff8f20" },
+    { "label": "Very intense tropical cyclone (> 212 km/h)", "value": "very_intense_tropical_cyclone", "color": "#ff6060" }
+  ],
+  "tropical_storm_track": [
+    { "label": "Storm Track", "value": "track", "color": "#333333" }
   ]
 }

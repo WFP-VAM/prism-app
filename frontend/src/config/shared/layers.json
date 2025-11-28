@@ -1255,5 +1255,50 @@
     "opacity": 0,
     "legend_text": "",
     "legend": []
+  },
+  "adamts_buffers": {
+    "title": "Tropical storm wind buffers",
+    "type": "wms",
+    "server_layer_name": "CHANGE_ME",
+    "base_url": "https://geonode.wfp.org/geoserver/wms",
+    "geometry": "polygon",
+    "opacity": 0.7,
+    "legend_text": "Wind speed buffers around tropical storm tracks showing areas potentially affected by different wind intensities",
+    "legend": "tropical_storm_buffers",
+    "feature_info_props": {
+      "event_name": { "type": "text", "dataTitle": "Event Name" },
+      "wind_speed": { "type": "number", "dataTitle": "Wind Speed (km/h)" },
+      "buffer_type": { "type": "text", "dataTitle": "Buffer Type" }
+    }
+  },
+  "adamts_nodes": {
+    "title": "Tropical storm positions",
+    "type": "wms",
+    "server_layer_name": "CHANGE_ME",
+    "base_url": "https://geonode.wfp.org/geoserver/wms",
+    "geometry": "point",
+    "opacity": 0.9,
+    "legend_text": "Tropical storm positions showing the track nodes with wind speed intensity",
+    "legend": "tropical_storm_intensity",
+    "feature_info_props": {
+      "event_name": { "type": "text", "dataTitle": "Event Name" },
+      "wind_speed": { "type": "number", "dataTitle": "Wind Speed (km/h)" },
+      "timestamp": { "type": "date", "dataTitle": "Timestamp" }
+    }
+  },
+  "adamts_tracks": {
+    "title": "Tropical storm tracks",
+    "type": "wms",
+    "server_layer_name": "CHANGE_ME",
+    "base_url": "https://geonode.wfp.org/geoserver/wms",
+    "geometry": "linestring",
+    "opacity": 0.9,
+    "legend_text": "Tropical storm track lines showing the path of the storm",
+    "legend": "tropical_storm_track",
+    "feature_info_props": {
+      "event_name": { "type": "text", "dataTitle": "Event Name" },
+      "start_date": { "type": "date", "dataTitle": "Start Date" },
+      "end_date": { "type": "date", "dataTitle": "End Date" }
+    }
   }
 }
