@@ -63,9 +63,14 @@ export const fetchWithTimeout = async (
         }),
       );
     } else {
+      const errorMessage =
+        fetchErrorMessage ||
+        (error as HTTPError).message ||
+        (error as Error).message ||
+        `Failed to fetch from ${resource}`;
       dispatch(
         addNotification({
-          message: (error as HTTPError).message,
+          message: errorMessage,
           type: 'warning',
         }),
       );
