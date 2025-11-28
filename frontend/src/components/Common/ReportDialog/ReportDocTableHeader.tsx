@@ -1,10 +1,9 @@
 import { memo, useMemo } from 'react';
-import { makeStyles } from '@mui/styles';
 import { StyleSheet, Text, View } from '@react-pdf/renderer';
 import { Theme } from '@mui/material';
 import { Column } from 'utils/analysis-utils';
 
-const makeStyles = (theme: Theme) =>
+const createPdfStyles = (theme: Theme) =>
   StyleSheet.create({
     tableName: {
       padding: 6,
@@ -37,7 +36,7 @@ interface TableHeaderProps {
 
 const ReportDocTableHeader = memo(
   ({ theme, name, cellWidth, columns, showTotalsColumn }: TableHeaderProps) => {
-    const styles = makeStyles(theme);
+    const styles = createPdfStyles(theme);
 
     // The rendered table header columns
     const renderedTableHeaderColumns = useMemo(

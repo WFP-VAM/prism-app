@@ -12,8 +12,8 @@ import {Box,
 import { GetApp, Cancel } from '@mui/icons-material';
 import { makeStyles, createStyles } from '@mui/styles';
 import React, { useContext } from 'react';
-import ToggleButtonGroup from '@mui/lab/ToggleButtonGroup';
-import ToggleButton from '@mui/lab/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import ToggleButton from '@mui/material/ToggleButton';
 import { cyanBlue } from 'muiTheme';
 import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
 import Switch from 'components/Common/Switch';

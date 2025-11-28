@@ -10,8 +10,8 @@ import {Box,
   Divider,
   Icon} from '@mui/material';
 import { Cancel, GetApp } from '@mui/icons-material';
-import ToggleButtonGroup from '@mui/lab/ToggleButtonGroup';
-import ToggleButton from '@mui/lab/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import ToggleButton from '@mui/material/ToggleButton';
 import { cyanBlue } from 'muiTheme';
 import { useSafeTranslation } from 'i18n';
 import Switch from 'components/Common/Switch';

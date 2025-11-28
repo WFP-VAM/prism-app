@@ -1,7 +1,6 @@
 import {
   combineReducers,
   configureStore,
-  getDefaultMiddleware,
   PayloadAction,
 } from '@reduxjs/toolkit';
 import mapStateReduce from './mapStateSlice';
@@ -111,7 +110,7 @@ export const store = configureStore({
             },
           }),
         },
-  middleware: getDefaultMiddleware({
+  middleware: getDefaultMiddleware => getDefaultMiddleware({
     // TODO: Instead of snoozing this check, we might want to
     // serialize the state
     serializableCheck: false,

@@ -8,8 +8,8 @@ import {Box,
   Tooltip,
   TextField,
   Icon} from '@mui/material';
-import ToggleButtonGroup from '@mui/lab/ToggleButtonGroup';
-import ToggleButton from '@mui/lab/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import ToggleButton from '@mui/material/ToggleButton';
 import Switch from 'components/Common/Switch';
 import ImageIcon from '@mui/icons-material/Image';
 import { Source, Layer } from 'react-map-gl/maplibre';

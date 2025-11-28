@@ -1,5 +1,4 @@
 import { memo, useMemo } from 'react';
-import { makeStyles } from '@mui/styles';
 import {
   Document,
   Image,
@@ -19,7 +18,7 @@ import ReportDocLegend from './ReportDocLegend';
 import ReportDocTable from './ReportDocTable';
 import { getReportFontFamily } from './utils';
 
-const makeStyles = (theme: Theme, selectedLanguage: string) =>
+const createPdfStyles = (theme: Theme, selectedLanguage: string) =>
   StyleSheet.create({
     page: {
       flexDirection: 'column',
@@ -90,7 +89,7 @@ const ReportDoc = memo(
   }: ReportDocProps) => {
     const { t, i18n } = useSafeTranslation();
 
-    const styles = makeStyles(theme, i18n.language);
+    const styles = createPdfStyles(theme, i18n.language);
 
     const date = useMemo(() => new Date().toUTCString(), []);
 

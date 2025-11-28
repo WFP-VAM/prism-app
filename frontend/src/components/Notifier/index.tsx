@@ -3,7 +3,7 @@ import { makeStyles, createStyles } from '@mui/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import omit from 'lodash/omit';
 ;
-import { Alert } from '@mui/lab';
+import { Alert } from '@mui/material';
 import {
   Notification,
   notificationsSelector,

@@ -14,7 +14,7 @@ export const cyanBlue = '#63B2BD';
 
 export const colors = { skyBlue, greyBlue, darkGreyBlue };
 
-declare module '@mui/material/styles/createTheme' {
+declare module '@mui/material/styles' {
   interface ThemeOptions {
     dialog?: {
       border?: React.CSSProperties['color'];

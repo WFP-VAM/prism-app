@@ -1,4 +1,4 @@
-import { ToggleButton, ToggleButtonGroup } from '@mui/lab';
+import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { makeStyles, createStyles } from '@mui/styles';
 import { DateRangeType } from 'config/types';
 import { MouseEvent } from 'react';
