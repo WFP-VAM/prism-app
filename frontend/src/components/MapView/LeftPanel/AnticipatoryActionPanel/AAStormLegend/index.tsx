@@ -3,7 +3,7 @@ import anticipatoryActionIcons from 'components/Common/AnticipatoryAction/icons'
 
 import { makeStyles, createStyles } from '@mui/styles';
 import { AADataSelector } from 'context/anticipatoryAction/AAStormStateSlice';
-import { TimeSeries } from 'prism-common/';
+import { TimeSeries, AAStormTimeSeriesFeature } from 'prism-common/';
 import { useSafeTranslation } from 'i18n';
 import { useSelector } from 'react-redux';
 
@@ -76,8 +76,9 @@ function getUniqueReportDevelopments(timeSeries: TimeSeries | undefined) {
   if (!timeSeries) {
     return [];
   }
-  const allReportDeveloments = timeSeries.features.map(feature =>
-    feature.properties.development.split(' ').join('-').toLowerCase(),
+  const allReportDeveloments = timeSeries.features.map(
+    (feature: AAStormTimeSeriesFeature) =>
+      feature.properties.development.split(' ').join('-').toLowerCase(),
   );
   return [...new Set(allReportDeveloments)];
 }

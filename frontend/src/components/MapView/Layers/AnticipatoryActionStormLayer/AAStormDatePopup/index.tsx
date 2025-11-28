@@ -56,7 +56,7 @@ function AAStormDatePopup({ timeSeries }: AAStormDatePopupProps) {
     timeSeries?.features
       .slice()
       .find(
-        feature =>
+        (feature: AAStormTimeSeriesFeature) =>
           feature.properties.data_type === FeaturePropertyDataType.forecast,
       );
 
