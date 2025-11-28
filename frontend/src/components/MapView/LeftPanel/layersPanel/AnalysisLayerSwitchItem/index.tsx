@@ -3,7 +3,6 @@ import {
   useState,
   useCallback,
   useMemo,
-  ChangeEvent,
   useEffect,
 } from 'react';
 import {Box,
@@ -113,7 +112,7 @@ const AnalysisLayerSwitchItem = memo(
                 root: classes.opacitySliderRoot,
                 thumb: classes.opacitySliderThumb,
               }}
-              onChange={(_event: ChangeEvent<{}>, value: number | number[]) => {
+              onChange={(_event: Event, value: number | number[]) => {
                 setOpacity(value as number);
               }}
             />

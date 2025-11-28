@@ -58,7 +58,6 @@ const AnalysisLayerMenuItem = memo(
           expandIcon={<ExpandMoreIcon />}
           classes={{
             root: classes.rootSummary,
-            expandIcon: classes.expandIcon,
             content: classes.summaryContent,
           }}
           aria-controls={title}

@@ -110,23 +110,25 @@ export const store = configureStore({
             },
           }),
         },
-  middleware: getDefaultMiddleware => getDefaultMiddleware({
-    // TODO: Instead of snoozing this check, we might want to
-    // serialize the state
-    serializableCheck: false,
-    immutableCheck: {
-      // do not check the following state branches for accidental
-      // mutations. This saves a lot of time in dev mode (but has no
-      // impact on production builds).
-      ignoredPaths: [
-        'mapState.boundaryRelations',
-        'mapState.layersData',
-        'analysisResultState.result',
-        'serverState.availableDates',
-        'serverPreloadState.layerDates',
-      ],
-    },
-  }).concat(errorToNotificationMiddleware),
+  // @ts-expect-error - middleware type mismatch between RTK versions
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({
+      // TODO: Instead of snoozing this check, we might want to
+      // serialize the state
+      serializableCheck: false,
+      immutableCheck: {
+        // do not check the following state branches for accidental
+        // mutations. This saves a lot of time in dev mode (but has no
+        // impact on production builds).
+        ignoredPaths: [
+          'mapState.boundaryRelations',
+          'mapState.layersData',
+          'analysisResultState.result',
+          'serverState.availableDates',
+          'serverPreloadState.layerDates',
+        ],
+      },
+    }).concat(errorToNotificationMiddleware),
 });
 
 export type AppStore = typeof store;

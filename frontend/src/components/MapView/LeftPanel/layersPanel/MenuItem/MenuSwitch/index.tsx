@@ -135,7 +135,6 @@ const MenuSwitch = memo(({ title, layers, extent }: MenuSwitchProps) => {
         expandIcon={isExpanded ? <RemoveIcon /> : <AddIcon />}
         classes={{
           root: classes.rootSummary,
-          expandIcon: classes.expandIcon,
           content: classes.summaryContent,
         }}
         aria-controls={title}

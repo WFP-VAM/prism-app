@@ -52,12 +52,12 @@ export type PrintConfigContextType = {
     footerHeight: number;
     setDownloadMenuAnchorEl: (anchorEl: HTMLElement | null) => void;
     titleText: string;
-    titleRef: React.RefObject<HTMLDivElement>;
+    titleRef: React.RefObject<HTMLDivElement | null>;
     footerText: string;
-    footerRef: React.RefObject<HTMLDivElement>;
+    footerRef: React.RefObject<HTMLDivElement | null>;
     titleHeight: number;
     invertedAdminBoundaryLimitPolygon: any;
-    printRef: React.RefObject<HTMLDivElement>;
+    printRef: React.RefObject<HTMLDivElement | null>;
   };
 };
 

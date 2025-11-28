@@ -79,7 +79,7 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
 
   // Load data when component mounts
   useEffect(() => {
-    dispatch(loadAAData());
+    dispatch(loadAAData() as any);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -113,14 +113,17 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
           selectedDate as SelectedDateTimestamp,
         );
         const date = getFormattedDate(queryDate, DateFormat.Default) as string;
-        dispatch(setFilters({ selectedDate: date }));
+        const filterAction = setFilters({ selectedDate: date });
+        if (filterAction) {
+          dispatch(filterAction as any);
+        }
       } else if (actionType === AnticipatoryAction.flood) {
         const queryDate = getRequestDate(
           combinedAvailableDates,
           selectedDate as SelectedDateTimestamp,
         );
         const date = getFormattedDate(queryDate, DateFormat.Default) as string;
-        dispatch(loadAAFloodDateData({ date }));
+        dispatch(loadAAFloodDateData({ date }) as any);
       }
     }
 

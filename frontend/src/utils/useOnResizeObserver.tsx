@@ -5,7 +5,7 @@ const initialState = { width: 0, height: 0 };
 function useResizeObserver<T extends HTMLElement>(
   ...depArray: unknown[]
 ): [
-  React.RefObject<T>,
+  React.RefObject<T | null>,
   {
     width: number;
     height: number;

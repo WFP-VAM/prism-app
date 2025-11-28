@@ -52,7 +52,6 @@ const MenuItem = memo(({ title, layersCategories, extent }: MenuItemProps) => {
         expandIcon={<ExpandMoreIcon />}
         classes={{
           root: classes.rootSummary,
-          expandIcon: classes.expandIcon,
           content: classes.summaryContent,
         }}
         aria-controls={title}

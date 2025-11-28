@@ -1,12 +1,11 @@
 import {
-  AnyAction,
   createSlice,
   Middleware,
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { AlertColor } from '@mui/material';
 import { stringHash } from 'utils/string-utils';
-import type { AppDispatch, RootState } from './store';
+import type { RootState } from './store';
 
 // to test notification reaction to various error codes, http://httpstat.us/404 can be used where 404 is the status to test.
 type NotificationConstructor = {
@@ -82,13 +81,15 @@ export const { addNotification, removeNotification } =
 
 // middleware to add error as notifications to this slice
 // Typing could improve?
-export const errorToNotificationMiddleware: Middleware<{}, RootState> =
-  () => (dispatch: AppDispatch) => (action: AnyAction) => {
+export const errorToNotificationMiddleware: Middleware =
+  ({ dispatch }) =>
+  next =>
+  (action: any) => {
     let dispatchResult;
     try {
       // catch sync errors
       // eslint-disable-next-line fp/no-mutation
-      dispatchResult = dispatch(action);
+      dispatchResult = next(action);
     } catch (err) {
       dispatch(
         addNotification({
@@ -108,7 +109,7 @@ export const errorToNotificationMiddleware: Middleware<{}, RootState> =
         return dispatchResult;
       }
 
-      const errorMessage = action.error.message || action.error;
+      const errorMessage = action.error?.message || action.error;
 
       dispatch(
         addNotification({

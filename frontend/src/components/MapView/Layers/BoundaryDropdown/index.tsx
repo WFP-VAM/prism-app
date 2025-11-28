@@ -66,7 +66,6 @@ export function SimpleBoundaryDropdown({
       <Select
         style={{ color: 'black' }}
         multiple
-        placeholder={labelMessage}
         onClose={() => {
           // empty search so that component shows correct options
           // otherwise, we would only show selected options which satisfy the search
