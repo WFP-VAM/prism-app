@@ -1,7 +1,8 @@
 import { memo, useMemo } from 'react';
 import * as Sentry from '@sentry/browser';
 import { useIsAuthenticated } from '@azure/msal-react';
-import { ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
+import { ThemeProvider as StylesThemeProvider } from '@mui/styles';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Font } from '@react-pdf/renderer';
 import { authRequired } from 'config';
@@ -87,11 +88,13 @@ function App() {
   }, [isAuthenticated]);
 
   return (
-    <ThemeProvider theme={muiTheme}>
-      {/* Used to show notifications from redux as a snackbar. Notifications are stored in notificationState */}
-      <Notifier />
-      <Router>{renderedContent}</Router>
-    </ThemeProvider>
+    <MuiThemeProvider theme={muiTheme}>
+      <StylesThemeProvider theme={muiTheme}>
+        {/* Used to show notifications from redux as a snackbar. Notifications are stored in notificationState */}
+        <Notifier />
+        <Router>{renderedContent}</Router>
+      </StylesThemeProvider>
+    </MuiThemeProvider>
   );
 }
 
