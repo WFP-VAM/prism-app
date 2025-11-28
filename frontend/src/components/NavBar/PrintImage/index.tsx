@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
-import { IconButton, useMediaQuery, useTheme } from '@material-ui/core';
+import { IconButton, useMediaQuery, useTheme } from '@mui/material';
 import { useSelector } from 'react-redux';
-import PrintOutlined from '@material-ui/icons/PrintOutlined';
+import PrintOutlined from '@mui/icons-material/PrintOutlined';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { Panel } from 'config/types';

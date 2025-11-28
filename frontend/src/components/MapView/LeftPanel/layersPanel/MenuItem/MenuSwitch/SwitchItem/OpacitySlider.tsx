@@ -1,11 +1,8 @@
-import {
-  Box,
+import {Box,
   Slider,
-  Typography,
-  createStyles,
-  makeStyles,
-} from '@material-ui/core';
+  Typography} from '@mui/material';
 import { LayerType } from 'config/types';
+import { makeStyles, createStyles } from '@mui/styles';
 import { useMapState } from 'utils/useMapState';
 import { useOpacityState } from 'utils/useOpacityState';
 import { ChangeEvent, memo, useCallback } from 'react';

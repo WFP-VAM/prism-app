@@ -1,6 +1,6 @@
 import { useCallback, useState, MouseEvent, memo, useMemo } from 'react';
-import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
-import { Button, Typography, useMediaQuery, useTheme } from '@material-ui/core';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { Button, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { appConfig } from 'config';
 import ContentDialog from 'components/NavBar/ContentDialog';

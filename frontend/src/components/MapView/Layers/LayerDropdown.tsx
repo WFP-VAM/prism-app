@@ -1,13 +1,10 @@
-import {
-  createStyles,
-  FormControl,
+import {FormControl,
   ListSubheader,
-  makeStyles,
   MenuItem,
   TextField,
-  Typography,
-} from '@material-ui/core';
+  Typography} from '@mui/material';
 import { ReactElement } from 'react';
+import { makeStyles, createStyles } from '@mui/styles';
 import { menuList } from 'components/MapView/LeftPanel/utils';
 import { LayerKey, LayerType } from 'config/types';
 import { getDisplayBoundaryLayers, LayerDefinitions } from 'config/utils';

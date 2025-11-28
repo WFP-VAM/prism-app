@@ -1,5 +1,6 @@
 import Chart from 'components/Common/Chart';
 
+import { makeStyles, createStyles } from '@mui/styles';
 import { ChartConfig } from 'config/types';
 import {
   CHART_DATA_PREFIXES,
@@ -8,7 +9,7 @@ import {
 import { t } from 'i18next';
 import { memo } from 'react';
 import { useSelector } from 'react-redux';
-import { createStyles, makeStyles } from '@material-ui/core';
+;
 import { isAdminBoundary } from 'utils/admin-utils';
 import { GoogleFloodParams } from 'utils/google-flood-utils';
 

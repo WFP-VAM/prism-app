@@ -1,5 +1,6 @@
 import { memo, useMemo } from 'react';
-import { Theme } from '@material-ui/core';
+import { makeStyles } from '@mui/styles';
+import { Theme } from '@mui/material';
 import { StyleSheet, Text, View } from '@react-pdf/renderer';
 import { PDFLegendDefinition } from './types';
 

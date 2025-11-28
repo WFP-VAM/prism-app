@@ -1,12 +1,9 @@
 /* eslint-disable react-refresh/only-export-components */
 import { black, cyanBlue } from 'muiTheme';
-import {
-  createStyles,
-  makeStyles,
-  Select,
+import { makeStyles, createStyles } from '@mui/styles';
+import {Select,
   SelectProps,
-  withStyles,
-} from '@material-ui/core';
+  withStyles} from '@mui/material';
 
 export const StyledSelect = withStyles({
   root: {

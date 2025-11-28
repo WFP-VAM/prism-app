@@ -1,13 +1,10 @@
-import {
-  Button,
+import {Button,
   Grid,
   Theme,
-  createStyles,
-  makeStyles,
   useMediaQuery,
-  useTheme,
-} from '@material-ui/core';
-import { ChevronLeft, ChevronRight } from '@material-ui/icons';
+  useTheme} from '@mui/material';
+import { ChevronLeft, ChevronRight } from '@mui/icons-material';
+import { makeStyles, createStyles } from '@mui/styles';
 import { findIndex, get } from 'lodash';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import DatePicker from 'react-datepicker';

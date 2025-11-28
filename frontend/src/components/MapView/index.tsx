@@ -1,6 +1,7 @@
 import { memo, useEffect } from 'react';
+import { makeStyles, createStyles } from '@mui/styles';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, createStyles, makeStyles } from '@material-ui/core';
+import {Box} from '@mui/material';
 import { getDisplayBoundaryLayers } from 'config/utils';
 import {
   WMSLayerDatesRequested,

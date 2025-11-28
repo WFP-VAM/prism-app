@@ -1,5 +1,6 @@
-import { createStyles, makeStyles, Typography } from '@material-ui/core';
+import {Typography} from '@mui/material';
 
+import { makeStyles, createStyles } from '@mui/styles';
 import { LandfallInfo } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import { useSafeTranslation } from 'i18n';
 import {

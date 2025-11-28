@@ -1,12 +1,9 @@
-import {
-  createStyles,
-  Typography,
+import {Typography,
   Button,
-  Grid,
-  makeStyles,
-} from '@material-ui/core';
+  Grid} from '@mui/material';
 import { Link } from 'react-router-dom';
 
+import { makeStyles, createStyles } from '@mui/styles';
 import { colors } from 'muiTheme';
 import wfpLogo from 'public/images/wfp_logo.png';
 

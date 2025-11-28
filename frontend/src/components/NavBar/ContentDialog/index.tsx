@@ -1,7 +1,7 @@
 import { memo, useEffect, useRef, useState } from 'react';
 import parse from 'html-react-parser';
 import { marked } from 'marked';
-import { Dialog, DialogContent, Typography } from '@material-ui/core';
+import { Dialog, DialogContent, Typography } from '@mui/material';
 
 type ContentDialogProps = {
   content: string;

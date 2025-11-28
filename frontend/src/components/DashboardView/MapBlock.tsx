@@ -1,20 +1,17 @@
 import React, { memo, useEffect, useCallback, useRef } from 'react';
+import { makeStyles, createStyles } from '@mui/styles';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Box,
+import {Box,
   Typography,
   CircularProgress,
-  createStyles,
-  makeStyles,
   IconButton,
   Tooltip,
   TextField,
-  Icon,
-} from '@material-ui/core';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import ToggleButton from '@material-ui/lab/ToggleButton';
+  Icon} from '@mui/material';
+import ToggleButtonGroup from '@mui/lab/ToggleButtonGroup';
+import ToggleButton from '@mui/lab/ToggleButton';
 import Switch from 'components/Common/Switch';
-import ImageIcon from '@material-ui/icons/Image';
+import ImageIcon from '@mui/icons-material/Image';
 import { Source, Layer } from 'react-map-gl/maplibre';
 import html2canvas from 'html2canvas';
 import { getDisplayBoundaryLayers, LayerDefinitions } from 'config/utils';

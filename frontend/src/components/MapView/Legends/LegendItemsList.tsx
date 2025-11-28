@@ -11,7 +11,7 @@ import { BaselineLayerResult } from 'utils/analysis-utils';
 import useLayers from 'utils/layers-utils';
 import { createGetLegendGraphicUrl } from 'prism-common';
 import { useSafeTranslation } from 'i18n';
-import { List } from '@material-ui/core';
+import { List } from '@mui/material';
 import { AALayerIds } from 'config/utils';
 import AALegend from '../LeftPanel/AnticipatoryActionPanel/AALegend';
 import LegendItem from './LegendItem';

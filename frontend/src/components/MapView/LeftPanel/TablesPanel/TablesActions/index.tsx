@@ -1,6 +1,6 @@
 import { memo, useCallback, useMemo } from 'react';
-import { createStyles } from '@material-ui/styles';
-import { Button, Typography, makeStyles } from '@material-ui/core';
+import { createStyles, makeStyles } from '@mui/styles';
+import {Button, Typography} from '@mui/material';
 import { useSafeTranslation } from 'i18n';
 import { cyanBlue } from 'muiTheme';
 

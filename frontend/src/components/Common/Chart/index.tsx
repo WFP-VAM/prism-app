@@ -1,4 +1,5 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
+import { makeStyles } from '@mui/styles';
 import colormap from 'colormap';
 import { ChartOptions } from 'chart.js';
 import 'chartjs-plugin-annotation';
@@ -6,9 +7,9 @@ import { Bar, Line } from 'react-chartjs-2';
 import { ChartConfig, DatasetField } from 'config/types';
 import { TableData } from 'context/tableStateSlice';
 import { useSafeTranslation } from 'i18n';
-import { IconButton, Tooltip, makeStyles } from '@material-ui/core';
-import ImageIcon from '@material-ui/icons/Image';
-import GetAppIcon from '@material-ui/icons/GetApp';
+import {IconButton, Tooltip} from '@mui/material';
+import ImageIcon from '@mui/icons-material/Image';
+import GetAppIcon from '@mui/icons-material/GetApp';
 import { buildCsvFileName, downloadToFile } from 'components/MapView/utils';
 import {
   createCsvDataFromDataKeyMap,

@@ -1,11 +1,8 @@
-import {
-  Typography,
-  createStyles,
-  makeStyles,
+import {Typography,
   MenuItem,
-  Input,
-} from '@material-ui/core';
+  Input} from '@mui/material';
 import React from 'react';
+import { makeStyles, createStyles } from '@mui/styles';
 import { useSafeTranslation } from 'i18n';
 import { useDispatch } from 'react-redux';
 import { updateDateRange } from 'context/mapStateSlice';

@@ -1,4 +1,4 @@
-import { FormControl, MenuItem, Select, Typography } from '@material-ui/core';
+import { FormControl, MenuItem, Select, Typography } from '@mui/material';
 import { useSafeTranslation } from 'i18n';
 
 type OptionLabel = string;

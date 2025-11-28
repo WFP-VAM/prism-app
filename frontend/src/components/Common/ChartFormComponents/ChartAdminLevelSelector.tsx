@@ -1,4 +1,5 @@
-import { Typography, makeStyles } from '@material-ui/core';
+import {Typography} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { range } from 'lodash';
 import { AdminLevelType } from 'config/types';
 import { getAdminLevelCount } from 'utils/admin-utils';

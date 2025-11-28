@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { makeStyles, createStyles } from '@mui/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import omit from 'lodash/omit';
-import { createStyles, makeStyles } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
+;
+import { Alert } from '@mui/lab';
 import {
   Notification,
   notificationsSelector,

@@ -1,22 +1,19 @@
-import {
-  Box,
+import {Box,
   Button,
   Checkbox,
-  createStyles,
   FormControl,
   FormControlLabel,
   FormGroup,
   Input,
   InputLabel,
   ListItemText,
-  makeStyles,
   MenuItem,
   MenuProps,
   Select,
   Switch,
-  Typography,
-} from '@material-ui/core';
+  Typography} from '@mui/material';
 import { GeoJsonProperties } from 'geojson';
+import { makeStyles, createStyles } from '@mui/styles';
 import React, {
   memo,
   useCallback,

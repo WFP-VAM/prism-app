@@ -1,4 +1,5 @@
-import { Typography, createStyles, makeStyles } from '@material-ui/core';
+import {Typography} from '@mui/material';
+import { makeStyles, createStyles } from '@mui/styles';
 import { useSelector } from 'react-redux';
 import { AADataSelector } from 'context/anticipatoryAction/AAStormStateSlice';
 import { useSafeTranslation } from 'i18n';

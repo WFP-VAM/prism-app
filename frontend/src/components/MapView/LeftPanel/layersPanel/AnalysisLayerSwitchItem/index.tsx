@@ -6,19 +6,16 @@ import {
   ChangeEvent,
   useEffect,
 } from 'react';
-import {
-  makeStyles,
-  Box,
+import {Box,
   IconButton,
   Slider,
   Switch,
   Tooltip,
-  Typography,
-} from '@material-ui/core';
+  Typography} from '@mui/material';
 
-import { createStyles } from '@material-ui/styles';
+import { createStyles, makeStyles } from '@mui/styles';
 import { useDispatch, useSelector } from 'react-redux';
-import OpacityIcon from '@material-ui/icons/Opacity';
+import OpacityIcon from '@mui/icons-material/Opacity';
 import { useSafeTranslation } from 'i18n';
 import { clearAnalysisResult } from 'context/analysisResultStateSlice';
 import {

@@ -1,4 +1,5 @@
 import { memo, useMemo } from 'react';
+import { makeStyles } from '@mui/styles';
 import {
   Document,
   Image,
@@ -7,7 +8,7 @@ import {
   Text,
   View,
 } from '@react-pdf/renderer';
-import { Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
 import { getLegendItemLabel } from 'components/MapView/utils';
 import { LegendDefinition, ReportType } from 'config/types';

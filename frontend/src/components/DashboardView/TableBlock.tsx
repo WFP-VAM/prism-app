@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import {
-  Box,
-  makeStyles,
+import { makeStyles } from '@mui/styles';
+import {Box,
   Typography,
   CircularProgress,
   Button,
@@ -9,9 +8,8 @@ import {
   FormControlLabel,
   IconButton,
   TextField,
-  Tooltip,
-} from '@material-ui/core';
-import GetAppIcon from '@material-ui/icons/GetApp';
+  Tooltip} from '@mui/material';
+import GetAppIcon from '@mui/icons-material/GetApp';
 import {
   DashboardTableConfig,
   AggregationOperations,

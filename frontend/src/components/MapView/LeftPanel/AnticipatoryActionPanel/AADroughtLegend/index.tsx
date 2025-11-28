@@ -1,10 +1,7 @@
-import {
-  Divider,
-  Typography,
-  createStyles,
-  makeStyles,
-} from '@material-ui/core';
+import {Divider,
+  Typography} from '@mui/material';
 import { useSafeTranslation } from 'i18n';
+import { makeStyles, createStyles } from '@mui/styles';
 import { borderGray } from 'muiTheme';
 import React from 'react';
 import { useAACommonStyles } from '../utils';

@@ -1,4 +1,4 @@
-import { createTheme } from '@material-ui/core/styles';
+import { createTheme } from '@mui/material/styles';
 import React from 'react';
 
 const skyBlue: string = '#009EE0';
@@ -14,7 +14,7 @@ export const cyanBlue = '#63B2BD';
 
 export const colors = { skyBlue, greyBlue, darkGreyBlue };
 
-declare module '@material-ui/core/styles/createTheme' {
+declare module '@mui/material/styles/createTheme' {
   interface ThemeOptions {
     dialog?: {
       border?: React.CSSProperties['color'];

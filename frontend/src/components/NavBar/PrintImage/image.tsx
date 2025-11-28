@@ -1,10 +1,7 @@
-import {
-  Dialog,
-  DialogContent,
-  createStyles,
-  makeStyles,
-} from '@material-ui/core';
+import {Dialog,
+  DialogContent} from '@mui/material';
 import mask from '@turf/mask';
+import { makeStyles, createStyles } from '@mui/styles';
 import html2canvas from 'html2canvas';
 import { debounce, get } from 'lodash';
 import { jsPDF } from 'jspdf';

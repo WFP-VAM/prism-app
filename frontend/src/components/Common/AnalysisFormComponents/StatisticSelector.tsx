@@ -1,14 +1,12 @@
 import React, { useMemo } from 'react';
-import {
-  FormControl,
+import { makeStyles } from '@mui/styles';
+import {FormControl,
   FormControlLabel,
   Radio,
   RadioGroup,
   Typography,
   TextField,
-  MenuItem,
-  makeStyles,
-} from '@material-ui/core';
+  MenuItem} from '@mui/material';
 import {
   AggregationOperations,
   ExposureOperator,

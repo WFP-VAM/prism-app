@@ -1,4 +1,5 @@
-import { Box, createStyles, makeStyles } from '@material-ui/core';
+import {Box} from '@mui/material';
+import { makeStyles, createStyles } from '@mui/styles';
 import { memo, useMemo } from 'react';
 import useLayers from 'utils/layers-utils';
 import DateSelector from '../DateSelector';

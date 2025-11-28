@@ -1,15 +1,13 @@
-import {
-  InputAdornment,
-  makeStyles,
+import {InputAdornment,
   MenuItem,
   TextField,
-  TextFieldProps,
-} from '@material-ui/core';
+  TextFieldProps} from '@mui/material';
 import React, { useMemo } from 'react';
+import { makeStyles } from '@mui/styles';
 import { Map as MaplibreMap } from 'maplibre-gl';
 import { useSafeTranslation } from 'i18n';
 import { getDisplayBoundaryLayers } from 'config/utils';
-import { Search } from '@material-ui/icons';
+import { Search } from '@mui/icons-material';
 import { FixedSizeList as List } from 'react-window';
 import { BBox } from 'geojson';
 import bbox from '@turf/bbox';

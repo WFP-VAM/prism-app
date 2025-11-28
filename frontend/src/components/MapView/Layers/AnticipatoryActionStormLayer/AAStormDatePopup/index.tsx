@@ -1,6 +1,7 @@
 import { MapLayerMouseEvent, Popup } from 'react-map-gl/maplibre';
+import { makeStyles, createStyles } from '@mui/styles';
 import _React, { useCallback, useState } from 'react';
-import { createStyles, makeStyles, Typography } from '@material-ui/core';
+import {Typography} from '@mui/material';
 import { useMapCallback } from 'utils/map-utils';
 import {
   AAStormTimeSeriesFeature,

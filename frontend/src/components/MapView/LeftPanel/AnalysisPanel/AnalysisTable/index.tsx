@@ -1,8 +1,6 @@
 import React, { memo, useCallback, useMemo, useState, useEffect } from 'react';
-import {
-  createStyles,
-  makeStyles,
-  Table,
+import { makeStyles, createStyles } from '@mui/styles';
+import {Table,
   TableBody,
   TableCell,
   TableContainer,
@@ -11,8 +9,7 @@ import {
   TableRow,
   TableSortLabel,
   Theme,
-  Typography,
-} from '@material-ui/core';
+  Typography} from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
 import { Column } from 'utils/analysis-utils';

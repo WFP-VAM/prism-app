@@ -1,6 +1,6 @@
 import React, { memo, useMemo, useCallback, useState } from 'react';
-import { IconButton, Menu, MenuItem, Tooltip } from '@material-ui/core';
-import GetAppIcon from '@material-ui/icons/GetApp';
+import { IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
+import GetAppIcon from '@mui/icons-material/GetApp';
 import { useSafeTranslation } from 'i18n';
 import {
   downloadToFile,

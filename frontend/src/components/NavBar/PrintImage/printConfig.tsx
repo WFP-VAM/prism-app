@@ -1,5 +1,4 @@
-import {
-  Box,
+import {Box,
   Button,
   Collapse,
   Divider,
@@ -9,14 +8,12 @@ import {
   MenuItem,
   TextField,
   Theme,
-  Typography,
-  createStyles,
-  makeStyles,
-} from '@material-ui/core';
-import { GetApp, Cancel } from '@material-ui/icons';
+  Typography} from '@mui/material';
+import { GetApp, Cancel } from '@mui/icons-material';
+import { makeStyles, createStyles } from '@mui/styles';
 import React, { useContext } from 'react';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@mui/lab/ToggleButtonGroup';
+import ToggleButton from '@mui/lab/ToggleButton';
 import { cyanBlue } from 'muiTheme';
 import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
 import Switch from 'components/Common/Switch';

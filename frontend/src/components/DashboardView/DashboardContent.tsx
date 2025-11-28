@@ -1,12 +1,10 @@
-import {
-  Box,
+import {Box,
   FormControlLabel,
   Switch,
   Typography,
-  makeStyles,
-  Button,
-} from '@material-ui/core';
-import { Edit } from '@material-ui/icons';
+  Button} from '@mui/material';
+import { Edit } from '@mui/icons-material';
+import { makeStyles } from '@mui/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSafeTranslation } from 'i18n';
 import {

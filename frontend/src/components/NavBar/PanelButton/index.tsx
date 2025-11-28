@@ -1,6 +1,6 @@
-import { Button, IconButton, Badge, Typography } from '@material-ui/core';
+import { Button, IconButton, Badge, Typography } from '@mui/material';
 import React from 'react';
-import { ExpandMore } from '@material-ui/icons';
+import { ExpandMore } from '@mui/icons-material';
 import { black, cyanBlue } from 'muiTheme';
 import useLayers from 'utils/layers-utils';
 import { useSelector } from 'react-redux';

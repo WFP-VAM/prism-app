@@ -1,17 +1,14 @@
-import {
-  FormControl,
+import {FormControl,
   IconButton,
   Input,
   MenuItem,
   RadioGroup,
-  Typography,
-  createStyles,
-  makeStyles,
-} from '@material-ui/core';
+  Typography} from '@mui/material';
 import { black, cyanBlue } from 'muiTheme';
+import { makeStyles, createStyles } from '@mui/styles';
 import React from 'react';
 import { useSafeTranslation } from 'i18n';
-import { ArrowBackIos } from '@material-ui/icons';
+import { ArrowBackIos } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   AAView,

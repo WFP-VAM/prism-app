@@ -69,7 +69,7 @@ jest.mock('max-inscribed-circle', () => ({}));
 
 function stubMuiComponent(componentName: string) {
   jest.doMock(
-    `@material-ui/core/${componentName}/${componentName}`,
+    `@mui/material/${componentName}`,
     () => `mock-${componentName}`,
   );
 }
@@ -133,7 +133,7 @@ stubMuiComponent('Icon');
 stubMuiComponent('Radio');
 
 function stubMuiIcon(iconName: any) {
-  jest.doMock(`@material-ui/icons/${iconName}`, () => `mock-${iconName}`);
+  jest.doMock(`@mui/icons-material/${iconName}`, () => `mock-${iconName}`);
 }
 
 stubMuiIcon('ArrowDropDown');

@@ -1,4 +1,5 @@
-import { ListItem, Paper, createStyles, makeStyles } from '@material-ui/core';
+import {ListItem, Paper} from '@mui/material';
+import { makeStyles, createStyles } from '@mui/styles';
 import { lightGrey } from 'muiTheme';
 import { useSelector } from 'react-redux';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';

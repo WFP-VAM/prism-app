@@ -6,17 +6,14 @@ import {
   useMemo,
   useState,
 } from 'react';
-import {
-  LinearProgress,
+import {LinearProgress,
   ListSubheader,
   MenuItem,
   TextField,
   Theme,
-  Typography,
-  makeStyles,
-} from '@material-ui/core';
+  Typography} from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { createStyles } from '@material-ui/styles';
+import { createStyles, makeStyles } from '@mui/styles';
 import {
   LayersCategoryType,
   MenuItemType,

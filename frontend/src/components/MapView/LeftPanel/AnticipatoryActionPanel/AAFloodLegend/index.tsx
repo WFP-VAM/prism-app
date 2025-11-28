@@ -1,12 +1,9 @@
-import {
-  Typography,
-  makeStyles,
-  createStyles,
+import {Typography,
   Divider,
-  Box,
-} from '@material-ui/core';
+  Box} from '@mui/material';
 import { black } from 'muiTheme';
-import { Visibility } from '@material-ui/icons';
+import { makeStyles, createStyles } from '@mui/styles';
+import { Visibility } from '@mui/icons-material';
 import { useSafeTranslation } from 'i18n';
 import { getFloodRiskColor } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
 import { AAFloodColors } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionFloodPanel/constants';

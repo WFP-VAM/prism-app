@@ -1,6 +1,7 @@
 import { memo, useMemo } from 'react';
+import { makeStyles } from '@mui/styles';
 import { StyleSheet, Text, View } from '@react-pdf/renderer';
-import { Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import { Column } from 'utils/analysis-utils';
 
 const makeStyles = (theme: Theme) =>

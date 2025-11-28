@@ -1,8 +1,8 @@
 import { memo, useMemo } from 'react';
 import * as Sentry from '@sentry/browser';
 import { useIsAuthenticated } from '@azure/msal-react';
-import { ThemeProvider } from '@material-ui/core/styles';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { ThemeProvider } from '@mui/material/styles';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Font } from '@react-pdf/renderer';
 import { authRequired } from 'config';
 import NavBar from 'components/NavBar';
@@ -60,15 +60,18 @@ Font.register({
 const Wrapper = memo(() => (
   <div id="app">
     <NavBar />
-    <Switch>
-      <Route path="/dashboard/:path?" exact>
-        <DashboardView />
-      </Route>
-      <Route>
-        <MapView />
-        <AuthModal />
-      </Route>
-    </Switch>
+    <Routes>
+      <Route path="/dashboard/:path?" element={<DashboardView />} />
+      <Route
+        path="*"
+        element={
+          <>
+            <MapView />
+            <AuthModal />
+          </>
+        }
+      />
+    </Routes>
   </div>
 ));
 

@@ -1,6 +1,7 @@
-import { createStyles, makeStyles } from '@material-ui/core';
+;
 
 import 'react-datepicker/dist/react-datepicker.css';
+import { makeStyles, createStyles } from '@mui/styles';
 import { DateRangeType } from 'config/types';
 import { WindState } from 'prism-common';
 import { AAStormColors } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';

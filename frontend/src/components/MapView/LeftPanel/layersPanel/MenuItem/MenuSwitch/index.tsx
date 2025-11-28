@@ -1,15 +1,12 @@
-import {
-  Accordion,
+import {Accordion,
   AccordionDetails,
   AccordionSummary,
   Chip,
-  createStyles,
   Grid,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Remove';
+  Typography} from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import { makeStyles, createStyles } from '@mui/styles';
+import RemoveIcon from '@mui/icons-material/Remove';
 import {
   ChangeEvent,
   memo,

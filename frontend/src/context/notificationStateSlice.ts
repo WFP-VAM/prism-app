@@ -4,7 +4,7 @@ import {
   Middleware,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import { Color } from '@material-ui/lab';
+import { Color } from '@mui/lab';
 import { stringHash } from 'utils/string-utils';
 import type { AppDispatch, RootState } from './store';
 

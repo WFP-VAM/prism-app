@@ -1,11 +1,9 @@
 import React from 'react';
-import {
-  FormControl,
+import { makeStyles } from '@mui/styles';
+import {FormControl,
   InputLabel,
   MenuItem,
-  Select,
-  makeStyles,
-} from '@material-ui/core';
+  Select} from '@mui/material';
 import { LayerKey, WMSLayerProps } from 'config/types';
 import { getWMSLayersWithChart } from 'config/utils';
 import { useSafeTranslation } from 'i18n';

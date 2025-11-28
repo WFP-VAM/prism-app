@@ -1,10 +1,7 @@
-import {
-  Button,
-  Typography,
-  createStyles,
-  makeStyles,
-} from '@material-ui/core';
+import {Button,
+  Typography} from '@mui/material';
 import { useSafeTranslation } from 'i18n';
+import { makeStyles, createStyles } from '@mui/styles';
 import { borderGray, grey, lightGrey } from 'muiTheme';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,7 +15,7 @@ import {
   setAASelectedDistrict,
   setAAView,
 } from 'context/anticipatoryAction/AADroughtStateSlice';
-import { GetApp, BarChartOutlined } from '@material-ui/icons';
+import { GetApp, BarChartOutlined } from '@mui/icons-material';
 import { appConfig } from 'config';
 import { PanelSize } from 'config/types';
 import { getCurrentDateTimeForUrl } from 'utils/date-utils';

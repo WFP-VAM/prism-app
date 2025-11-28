@@ -1,10 +1,7 @@
 import React from 'react';
-import {
-  Switch as SwitchUI,
-  Typography,
-  createStyles,
-  makeStyles,
-} from '@material-ui/core';
+import { makeStyles, createStyles } from '@mui/styles';
+import {Switch as SwitchUI,
+  Typography} from '@mui/material';
 import { cyanBlue } from 'muiTheme';
 
 function Switch({ checked, onChange, title, ariaLabel }: PrintConfigProps) {

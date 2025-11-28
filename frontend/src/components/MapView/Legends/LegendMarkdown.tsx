@@ -1,5 +1,5 @@
-import { Typography, createStyles, makeStyles } from '@material-ui/core';
-import { ClassNameMap } from '@material-ui/styles';
+import {Typography} from '@mui/material';
+import { ClassNameMap, makeStyles, createStyles } from '@mui/styles';
 import React from 'react';
 import Markdown from 'react-markdown';
 

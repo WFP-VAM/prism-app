@@ -1,4 +1,5 @@
-import { Box, Typography, createStyles, makeStyles } from '@material-ui/core';
+import {Box, Typography} from '@mui/material';
+import { makeStyles, createStyles } from '@mui/styles';
 import React from 'react';
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';

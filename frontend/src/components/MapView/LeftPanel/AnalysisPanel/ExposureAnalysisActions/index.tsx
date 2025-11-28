@@ -1,5 +1,5 @@
 import { useCallback, useState, MouseEvent, useMemo } from 'react';
-import { Button, Typography } from '@material-ui/core';
+import { Button, Typography } from '@mui/material';
 import { snakeCase } from 'lodash';
 import { useSelector } from 'react-redux';
 import {

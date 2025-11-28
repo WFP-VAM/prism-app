@@ -1,4 +1,5 @@
-import { Typography, createStyles, makeStyles } from '@material-ui/core';
+import {Typography} from '@mui/material';
+import { makeStyles, createStyles } from '@mui/styles';
 import maplibregl from 'maplibre-gl';
 import React, { useContext, useRef } from 'react';
 import MapGL, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';

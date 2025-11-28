@@ -1,11 +1,8 @@
-import {
-  Typography,
-  makeStyles,
-  createStyles,
-  Divider,
-} from '@material-ui/core';
+import {Typography,
+  Divider} from '@mui/material';
 import anticipatoryActionIcons from 'components/Common/AnticipatoryAction/icons';
 
+import { makeStyles, createStyles } from '@mui/styles';
 import { AADataSelector } from 'context/anticipatoryAction/AAStormStateSlice';
 import { TimeSeries } from 'prism-common/';
 import { useSafeTranslation } from 'i18n';

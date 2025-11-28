@@ -1,12 +1,9 @@
-import {
-  CircularProgress,
-  createStyles,
+import {CircularProgress,
   Typography,
-  Box,
-  makeStyles,
-} from '@material-ui/core';
+  Box} from '@mui/material';
 
 import { GeoJsonProperties } from 'geojson';
+import { makeStyles, createStyles } from '@mui/styles';
 import { omit } from 'lodash';
 import React, { memo, useEffect, useMemo, useState } from 'react';
 import { AdminLevelType, WMSLayerProps } from 'config/types';

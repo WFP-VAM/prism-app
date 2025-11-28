@@ -1,8 +1,9 @@
-import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
+import { ToggleButton, ToggleButtonGroup } from '@mui/lab';
+import { makeStyles, createStyles } from '@mui/styles';
 import { DateRangeType } from 'config/types';
 import { MouseEvent } from 'react';
 import { formatInUTC } from 'components/MapView/Layers/AnticipatoryActionStormLayer/utils';
-import { createStyles, makeStyles, Typography } from '@material-ui/core';
+import {Typography} from '@mui/material';
 import { WindState } from 'prism-common';
 import {
   AADataSelector,

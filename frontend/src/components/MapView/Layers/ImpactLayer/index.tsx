@@ -1,7 +1,8 @@
 import { memo, useEffect } from 'react';
+import { makeStyles, createStyles } from '@mui/styles';
 import { useSelector, useDispatch } from 'react-redux';
 import { get } from 'lodash';
-import { createStyles, Theme, makeStyles } from '@material-ui/core';
+import {Theme} from '@mui/material';
 import { getExtent, Extent } from 'components/MapView/Layers/raster-utils';
 import { legendToStops } from 'components/MapView/Layers/layer-utils';
 import { ImpactLayerProps, MapEventWrapFunctionProps } from 'config/types';

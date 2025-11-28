@@ -1,5 +1,6 @@
-import { createStyles, makeStyles } from '@material-ui/core';
+;
 import React, { memo, useMemo } from 'react';
+import { makeStyles, createStyles } from '@mui/styles';
 import 'react-datepicker/dist/react-datepicker.css';
 import { DateItem, DateRangeType } from 'config/types';
 import { datesAreEqualWithoutTime } from 'utils/date-utils';

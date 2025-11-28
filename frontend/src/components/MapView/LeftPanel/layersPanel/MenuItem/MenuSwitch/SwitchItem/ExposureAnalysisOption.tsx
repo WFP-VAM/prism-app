@@ -1,5 +1,5 @@
-import { IconButton, Tooltip } from '@material-ui/core';
-import { ImageAspectRatioOutlined } from '@material-ui/icons';
+import { IconButton, Tooltip } from '@mui/material';
+import { ImageAspectRatioOutlined } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   AggregationOperations,

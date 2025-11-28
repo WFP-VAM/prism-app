@@ -1,11 +1,8 @@
-import {
-  createStyles,
-  Typography,
+import {Typography,
   Button,
-  Grid,
-  makeStyles,
-} from '@material-ui/core';
+  Grid} from '@mui/material';
 import { useMsal } from '@azure/msal-react';
+import { makeStyles, createStyles } from '@mui/styles';
 import { msalRequest } from 'config';
 
 import { colors } from 'muiTheme';

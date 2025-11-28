@@ -35,7 +35,7 @@ import {
   calculateCombinedAAMapData,
 } from 'context/anticipatoryAction/AADroughtStateSlice/utils';
 import { AAView } from 'context/anticipatoryAction/AADroughtStateSlice/types';
-import { Tooltip } from '@material-ui/core';
+import { Tooltip } from '@mui/material';
 
 // Use admin level 2 boundary layer for Anticipatory Action
 const boundaryLayer = getBoundaryLayersByAdminLevel(2);

@@ -8,7 +8,7 @@ import {
   RadioProps,
   useRadioGroup,
   withStyles,
-} from '@material-ui/core';
+} from '@mui/material';
 import { black, borderGray, lightGrey } from 'muiTheme';
 import { useSafeTranslation } from 'i18n';
 import {

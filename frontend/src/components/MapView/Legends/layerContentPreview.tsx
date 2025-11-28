@@ -1,12 +1,9 @@
 import { useState, memo, useMemo, useCallback } from 'react';
-import {
-  IconButton,
-  createStyles,
+import { makeStyles, createStyles } from '@mui/styles';
+import {IconButton,
   Grid,
-  Theme,
-  makeStyles,
-} from '@material-ui/core';
-import InfoIcon from '@material-ui/icons/Info';
+  Theme} from '@mui/material';
+import InfoIcon from '@mui/icons-material/Info';
 import { useDispatch } from 'react-redux';
 import { LayerType } from 'config/types';
 import { LayerDefinitions, getBoundaryLayerSingleton } from 'config/utils';

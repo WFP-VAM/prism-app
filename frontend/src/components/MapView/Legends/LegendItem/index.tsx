@@ -6,9 +6,7 @@ import React, {
   useState,
   useMemo,
 } from 'react';
-import {
-  Box,
-  createStyles,
+import {Box,
   Divider,
   Grid,
   IconButton,
@@ -17,10 +15,9 @@ import {
   Popover,
   Slider,
   Tooltip,
-  Typography,
-  makeStyles,
-} from '@material-ui/core';
-import { Close, Opacity, SwapVert } from '@material-ui/icons';
+  Typography} from '@mui/material';
+import { Close, Opacity, SwapVert } from '@mui/icons-material';
+import { makeStyles, createStyles } from '@mui/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   LayerType,
