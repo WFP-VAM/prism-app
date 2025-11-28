@@ -1,17 +1,16 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { AnticipatoryActionLayerProps, BoundaryLayerProps } from 'config/types';
+import { AnticipatoryActionLayerProps } from 'config/types';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { Source, Layer, MapLayerMouseEvent } from 'react-map-gl/maplibre';
 import { Feature, Point } from 'geojson';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   dateRangeSelector,
-  layerDataSelector,
   mapSelector,
 } from 'context/mapStateSlice/selectors';
 import { useMapCallback } from 'utils/map-utils';
 import { hidePopup } from 'context/tooltipStateSlice';
-import { LayerData } from 'context/layers/layer-data';
+import { useBoundaryData } from 'utils/useBoundaryData';
 import { getBoundaryLayersByAdminLevel } from 'config/utils';
 import {
   AADataSelector,
@@ -95,10 +94,7 @@ const AnticipatoryActionStormLayer = React.memo(
       startDate,
     ]);
 
-    const boundaryLayerState = useSelector(
-      layerDataSelector(boundaryLayer.id),
-    ) as LayerData<BoundaryLayerProps> | undefined;
-    const { data: boundaryData } = boundaryLayerState || {};
+    const { data: boundaryData } = useBoundaryData(boundaryLayer.id, map);
 
     const [selectedFeature, setSelectedFeature] = useState<{
       feature: AAStormTimeSeriesFeature | null;

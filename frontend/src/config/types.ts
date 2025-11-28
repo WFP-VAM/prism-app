@@ -824,12 +824,15 @@ export type PanelItem = {
   label: string;
   icon: React.ReactNode;
   children?: PanelItem[];
+  reportIndex?: number;
+  reportPath?: string;
 };
 
 export enum Panel {
   None = 'none',
   Layers = 'layers',
   Charts = 'charts',
+  Dashboard = 'dashboard',
   Analysis = 'analysis',
   Tables = 'tables',
   AnticipatoryActionDrought = 'anticipatory_action_drought',
@@ -1020,4 +1023,85 @@ export class AnticipatoryActionLayerProps extends CommonLayerProps {
 
   @makeRequired
   declare title: string;
+}
+
+export enum DashboardMapPosition {
+  left = 'left',
+  right = 'right',
+}
+
+export enum DashboardElementType {
+  CHART = 'CHART',
+  TEXT = 'TEXT',
+  TABLE = 'TABLE',
+  MAP = 'MAP',
+}
+
+export enum DashboardMode {
+  EDIT = 'edit',
+  VIEW = 'view',
+}
+
+export enum ChartHeight {
+  TALL = 'tall',
+  MEDIUM = 'medium',
+  SHORT = 'short',
+}
+
+export interface DashboardChartConfig {
+  type: DashboardElementType.CHART;
+  startDate: string;
+  endDate?: string;
+  layerId: string;
+  adminUnitLevel?: number;
+  adminUnitId?: number;
+  chartHeight?: ChartHeight;
+}
+
+export interface DashboardTextConfig {
+  type: DashboardElementType.TEXT;
+  content: string;
+  textUpdatedAt?: string;
+}
+
+export interface DashboardTableConfig {
+  type: DashboardElementType.TABLE;
+  startDate: string;
+  hazardLayerId: string;
+  baselineLayerId: string;
+  threshold?: ThresholdDefinition;
+  stat: AggregationOperations;
+  maxRows?: number;
+  addResultToMap?: boolean;
+  sortColumn?: string | number;
+  sortOrder?: 'asc' | 'desc';
+}
+
+export interface DashboardMapConfig {
+  type: DashboardElementType.MAP;
+  defaultDate?: string;
+  mapPosition?: DashboardMapPosition;
+  minMapBounds?: number[];
+  title?: string;
+  legendVisible?: boolean; // default: true - can be set in prism.json
+  legendPosition?: 'left' | 'right'; // default: 'right' - can be set in prism.json
+  preSelectedMapLayers: Array<{
+    layerId: string;
+    opacity?: number;
+  }>;
+}
+
+export type DashboardElements =
+  | DashboardMapConfig
+  | DashboardChartConfig
+  | DashboardTextConfig
+  | DashboardTableConfig;
+
+export interface Dashboard {
+  title: string;
+  path: string;
+  isEditable?: boolean;
+  firstColumn: DashboardElements[];
+  secondColumn?: DashboardElements[];
+  thirdColumn?: DashboardElements[];
 }

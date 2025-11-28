@@ -5,12 +5,12 @@ import {
   AdminLevelDataLayerProps,
   LayerKey,
 } from 'config/types';
-import type { RootState, ThunkApi } from 'context/store';
+import type { AppDispatch, ThunkApi } from 'context/store';
 import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
-import { layerDataSelector } from 'context/mapStateSlice/selectors';
+import { boundaryCache } from 'utils/boundary-cache';
 import { fetchWithTimeout } from 'utils/fetch-with-timeout';
 import { getFormattedDate } from 'utils/date-utils';
-import type { LayerData, LayerDataParams, LazyLoader } from './layer-data';
+import type { LayerDataParams, LazyLoader } from './layer-data';
 
 export type DataRecord = {
   adminKey: string; // refers to a specific admin boundary feature (cell on map). Could be several based off admin level
@@ -26,7 +26,7 @@ export async function getAdminLevelDataLayerData({
   fallbackLayersData,
   fallbackLayers,
   adminLevelDataLayerProps,
-  getState,
+  dispatch,
 }: {
   data: { [key: string]: any }[];
   fallbackLayersData?: { [key: string]: any }[][];
@@ -37,7 +37,7 @@ export async function getAdminLevelDataLayerData({
       'boundary' | 'adminCode' | 'dataField' | 'featureInfoProps' | 'adminLevel'
     >
   >;
-  getState: () => RootState;
+  dispatch: AppDispatch;
 }) {
   const { adminCode, boundary, dataField, featureInfoProps, adminLevel } =
     adminLevelDataLayerProps;
@@ -49,26 +49,14 @@ export async function getAdminLevelDataLayerData({
       ? (LayerDefinitions[boundary as LayerKey] as BoundaryLayerProps)
       : getBoundaryLayerSingleton();
 
-  let adminBoundariesLayer = layerDataSelector(adminBoundaryLayer.id)(
-    getState(),
-  ) as LayerData<BoundaryLayerProps> | undefined;
-  // TEMP - add a 15s wait time to load admin boundaries which are very large
-  // WARNING - This is a hack and should be replaced by a better handling of admin boundaries.
-  // TODO - make sure we only run this once.
-  if (!adminBoundariesLayer || !adminBoundariesLayer.data) {
-    await new Promise(resolve => {
-      setTimeout(resolve, 15000);
-    });
-    // eslint-disable-next-line fp/no-mutation
-    adminBoundariesLayer = layerDataSelector(adminBoundaryLayer.id)(
-      getState(),
-    ) as LayerData<BoundaryLayerProps> | undefined;
-  }
-  if (!adminBoundariesLayer || !adminBoundariesLayer.data) {
-    // TODO we are assuming here it's already loaded. In the future if layers can be preloaded like boundary this will break.
+  // Use global boundary cache
+  const adminBoundaries = await boundaryCache.getBoundaryData(
+    adminBoundaryLayer,
+    dispatch,
+  );
+  if (!adminBoundaries) {
     throw new Error('Boundary Layer not loaded!');
   }
-  const adminBoundaries = adminBoundariesLayer.data;
   const adminBoundaryFeatureProps = adminBoundaries.features.map(feature =>
     pick(feature.properties, [
       adminBoundaryLayer.adminCode,
@@ -285,6 +273,6 @@ export const fetchAdminLevelDataLayerData: LazyLoader<
         featureInfoProps,
         adminLevel,
       },
-      getState: api.getState,
+      dispatch: api.dispatch,
     });
   };

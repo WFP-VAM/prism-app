@@ -4,7 +4,7 @@
   "countryAdmin0Id": 226,
   "header": {
     "title": "PRISM Somalia",
-    "logo": "images/somalia-header.png"
+    "logo": "/images/somalia-header.png"
   },
   "aboutPath": "data/somalia/about.md",
   "alertFormActive": false,
