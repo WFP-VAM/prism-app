@@ -3,7 +3,7 @@ import {MenuItem,
   Typography} from '@mui/material';
 import { LayerType, MenuGroupItem } from 'config/types';
 import { makeStyles, createStyles } from '@mui/styles';
-import React, { memo, useCallback } from 'react';
+import { memo, useCallback } from 'react';
 import { useSafeTranslation } from 'i18n';
 
 const useStyles = makeStyles(() =>
