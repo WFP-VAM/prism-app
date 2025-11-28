@@ -189,6 +189,7 @@ const AuthModal = () => {
                 <Button
                   type="reset"
                   variant="outlined"
+                  color="secondary"
                   onClick={onCancelClick}
                   startIcon={<Close />}
                 >
