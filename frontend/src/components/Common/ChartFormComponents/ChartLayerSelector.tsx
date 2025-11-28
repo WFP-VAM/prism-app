@@ -26,7 +26,7 @@ function ChartLayerSelector({
 
   const chartLayers = getWMSLayersWithChart();
 
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleChange = (event: any) => {
     onChange(event.target.value as LayerKey);
   };
 

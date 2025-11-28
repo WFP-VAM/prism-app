@@ -170,8 +170,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadMenuAnchor, setDownloadMenuAnchor] =
     useState<null | HTMLElement>(null);
-  const hydrographChartRef = useRef<Line>(null);
-  const probabilityChartRef = useRef<Line>(null);
+  const hydrographChartRef = useRef<any>(null);
+  const probabilityChartRef = useRef<any>(null);
 
   const floodState = useSelector(AAFloodDataSelector);
   const probs = floodState.probabilitiesData[station.station_name];

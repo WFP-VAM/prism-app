@@ -3,12 +3,11 @@ import {
   Grid,
   ListItemText,
   MenuItem,
-  Theme,
   useMediaQuery,
   useTheme,
   styled,
 } from '@mui/material';
-import Menu, { MenuProps } from '@mui/material/Menu';
+import Menu from '@mui/material/Menu';
 import { ArrowDropDown } from '@mui/icons-material';
 import React, { useState } from 'react';
 import { useSafeTranslation } from 'i18n';
@@ -55,7 +54,7 @@ function MultiOptionsButton({ mainLabel, options }: IProps) {
   };
 
   return (
-    <Grid item>
+    <Grid>
       <StyledButton
         variant="contained"
         color="primary"

@@ -71,7 +71,7 @@ const SwitchItemTitle = memo(
     const { group } = layer;
 
     const handleSelect = useCallback(
-      (event: React.ChangeEvent<{ value: string | unknown }>) => {
+      (event: any) => {
         const selectedId = event.target.value;
         setActiveLayerId(selectedId as string);
         toggleLayerValue(selectedId as string, true);

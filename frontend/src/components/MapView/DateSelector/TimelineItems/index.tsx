@@ -133,8 +133,7 @@ const TimelineItems = memo(
             >
               <Grid
                 key={`Root-${date.label}-${date.value}`}
-                item
-                xs
+                size="grow"
                 className={`${
                   date.isFirstDay ? classes.dateItemFull : classes.dateItem
                 }`}

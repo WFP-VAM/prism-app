@@ -627,7 +627,8 @@ const DateSelector = memo(() => {
   );
 
   const handleOnDatePickerChange = useCallback(
-    (date: Date) => {
+    (date: Date | null) => {
+      if (!date) return;
       updateStartDate(date, true);
     },
     [updateStartDate],
@@ -654,7 +655,7 @@ const DateSelector = memo(() => {
         }
       >
         {/* Mobile */}
-        <Grid item xs={12} sm={1} className={classes.datePickerGrid}>
+        <Grid size={{ xs: 12, sm: 1 }} className={classes.datePickerGrid}>
           {!smUp && (
             <Button onClick={decrementDate}>
               <ChevronLeft style={{ color: '#101010' }} />
@@ -699,7 +700,7 @@ const DateSelector = memo(() => {
         </Grid>
 
         {/* Desktop */}
-        <Grid item xs={12} sm className={classes.slider}>
+        <Grid size={{ xs: 12, sm: "grow" }} className={classes.slider}>
           {!xsDown && (
             <Button
               id="chevronLeftButton"

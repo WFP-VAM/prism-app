@@ -255,7 +255,7 @@ const LegendItem = memo(
       if (!legend) {
         return null;
       }
-      return <Grid item>{renderedLegendUrl}</Grid>;
+      return <Grid>{renderedLegendUrl}</Grid>;
     }, [legend, renderedLegendUrl]);
 
     const renderedChildren = useMemo(() => {
@@ -263,7 +263,7 @@ const LegendItem = memo(
         return null;
       }
       return (
-        <Grid item>
+        <Grid>
           {typeof children === 'string' ? (
             <LegendMarkdown>{children}</LegendMarkdown>
           ) : (
@@ -286,7 +286,7 @@ const LegendItem = memo(
               : undefined
           }
         >
-          <Grid item style={{ display: 'flex' }}>
+          <Grid style={{ display: 'flex' }}>
             <Typography style={{ flexGrow: 1 }} variant="h4">
               {title}
             </Typography>

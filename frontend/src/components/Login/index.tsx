@@ -15,7 +15,7 @@ function Login() {
   return (
     <div className={classes.container}>
       <Grid container spacing={3} className={classes.content}>
-        <Grid item>
+        <Grid size="auto">
           <Typography variant="h3" color="textPrimary" gutterBottom>
             Login Required
           </Typography>
@@ -32,7 +32,7 @@ function Login() {
           </Button>
         </Grid>
 
-        <Grid item>
+        <Grid size="auto">
           <img
             className={classes.image}
             src={wfpLogo}

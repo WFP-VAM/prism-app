@@ -2,16 +2,14 @@
 import { black, cyanBlue } from 'muiTheme';
 import { makeStyles, createStyles } from '@mui/styles';
 import {Select,
-  SelectProps,
-  withStyles} from '@mui/material';
+  
+  styled} from '@mui/material';
 
-export const StyledSelect = withStyles({
-  root: {
-    '&:focus': {
-      backgroundColor: 'transparent',
-    },
+export const StyledSelect = styled(Select)({
+  '&:focus': {
+    backgroundColor: 'transparent',
   },
-})((props: SelectProps) => <Select {...props} />);
+});
 
 export const useAACommonStyles = makeStyles(() =>
   createStyles({

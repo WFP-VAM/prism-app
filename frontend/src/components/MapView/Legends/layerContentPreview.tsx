@@ -59,7 +59,7 @@ const LayerContentPreview = memo(({ layerId }: PreviewProps) => {
       return null;
     }
     return (
-      <Grid item>
+      <Grid>
         <IconButton
           onClick={handleIconButtonClick}
           size="small"

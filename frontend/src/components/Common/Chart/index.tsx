@@ -89,9 +89,7 @@ const Chart = memo(
       const { t } = useSafeTranslation();
       const classes = useStyles();
       const localChartRef = React.useRef<any>(null);
-      const chartRef = (forwardedRef || localChartRef) as React.RefObject<
-        Bar | Line
-      >;
+      const chartRef = (forwardedRef || localChartRef) as React.RefObject<any>;
       // This isChartReady state allows us to trigger a render after the chart is ready to update the saved ref
       const [_isChartReady, setIsChartReady] = useState(false);
 
