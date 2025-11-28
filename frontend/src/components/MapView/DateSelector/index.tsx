@@ -84,6 +84,7 @@ const DateSelector = memo(() => {
   const isGlobalMap = mapState?.isGlobalMap;
   const classes = useStyles();
   const {
+    areLayerDatesLoading,
     selectedLayerDates: availableDates,
     selectedLayersWithDateSupport: selectedLayers,
     checkSelectedDateForLayerSupport,
@@ -636,8 +637,15 @@ const DateSelector = memo(() => {
     [updateStartDate],
   );
 
-  // Only display the date selector once dates are loaded
-  if (dateRange.length <= 1) {
+  // Don't display the date selector if:
+  // - Dates are still loading for the selected layers
+  // - The dateRange hasn't been computed yet
+  // - Available dates failed to load (selectedLayers has items but availableDates is empty)
+  if (
+    areLayerDatesLoading ||
+    dateRange.length <= 1 ||
+    (selectedLayers.length > 0 && availableDates.length === 0)
+  ) {
     return null;
   }
 
