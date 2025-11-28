@@ -112,10 +112,10 @@ stubMuiComponent('MenuItem');
 stubMuiComponent('Modal');
 stubMuiComponent('Popover');
 stubMuiComponent('CircularProgress');
-stubMuiComponent('Hidden');
-stubMuiComponent('ExpansionPanel');
-stubMuiComponent('ExpansionPanelSummary');
-stubMuiComponent('ExpansionPanelDetails');
+// Hidden was removed in MUI v5
+stubMuiComponent('Accordion');
+stubMuiComponent('AccordionSummary');
+stubMuiComponent('AccordionDetails');
 stubMuiComponent('Checkbox');
 stubMuiComponent('Drawer');
 stubMuiComponent('Divider');
