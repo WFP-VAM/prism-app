@@ -17,6 +17,7 @@ from prism_app.caching import FilePath, cache_file, cache_geojson
 from prism_app.database.alert_model import AlchemyEncoder, AlertModel
 from prism_app.database.database import AlertsDataBase
 from prism_app.database.user_info_model import UserInfoModel
+from prism_app.export_maps import export_maps
 from prism_app.googleflood import (
     get_google_flood_dates,
     get_google_floods_gauge_forecast,
@@ -25,7 +26,7 @@ from prism_app.googleflood import (
 )
 from prism_app.hdc import get_hdc_stats
 from prism_app.kobo import get_form_dates, get_form_responses, parse_datetime_params
-from prism_app.models import AcledRequest, RasterGeotiffModel
+from prism_app.models import AcledRequest, ExportRequestModel, RasterGeotiffModel
 from prism_app.report import download_report
 from prism_app.timer import timed
 from prism_app.validation import validate_intersect_parameter
@@ -532,3 +533,56 @@ def get_google_floods_inundations_api(
     iso2_codes = [region_code.upper() for region_code in region_codes]
 
     return get_google_floods_inundations(iso2_codes, run_sequentially)
+
+
+@timed
+@app.post(
+    "/export",
+    responses={
+        400: {
+            "description": "Bad request - malformed request body or invalid parameters"
+        },
+        500: {"description": "Internal server error"},
+    },
+)
+async def export_maps_endpoint(export_request: ExportRequestModel) -> Response:
+    """
+    Export maps for multiple dates using server-side rendering.
+
+    Accepts a URL with map parameters and a list of dates, renders maps using
+    Playwright, and returns either a merged PDF or ZIP archive of PNGs.
+    """
+    try:
+        file_bytes, content_type = await export_maps(
+            url=export_request.url,
+            dates=export_request.dates,
+            aspect_ratio=export_request.aspectRatio,
+            format_type=export_request.format,
+        )
+
+        # Generate filename based on format and date range
+        if export_request.format == "pdf":
+            filename = (
+                f"maps_{export_request.dates[0]}_to_{export_request.dates[-1]}.pdf"
+            )
+        else:
+            filename = (
+                f"maps_{export_request.dates[0]}_to_{export_request.dates[-1]}.zip"
+            )
+
+        return Response(
+            content=file_bytes,
+            media_type=content_type,
+            headers={
+                "Content-Disposition": f'attachment; filename="{filename}"',
+            },
+        )
+
+    except ValueError as e:
+        logger.error(f"Invalid export request: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error(f"Error during map export: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=500, detail="Internal server error during map export"
+        )
