@@ -127,9 +127,9 @@ const DateSelector = memo(() => {
     if (closestDate) {
       updateStartDate(new Date(closestDate), true);
     }
-    // Only run this check when selectedLayers changes
+    // Recalculate when layers or available dates change
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedLayers]);
+  }, [selectedLayers, availableDates]);
 
   const maxDate = useMemo(
     () => new Date(Math.max(...availableDates, new Date().getTime())),
@@ -353,13 +353,14 @@ const DateSelector = memo(() => {
   );
 
   // Create timeline range and set pointer position
+  // Recalculate when availableDates changes to ensure timeline updates when dates are loaded
   useEffect(() => {
     setDateRange(range);
     setPointerPosition({
       x: dateIndex * TIMELINE_ITEM_WIDTH,
       y: 0,
     });
-  }, [dateIndex, range]);
+  }, [dateIndex, range, availableDates]);
 
   const includedDates = useMemo(
     () => availableDates?.map(d => new Date(d)) ?? [],
@@ -740,6 +741,9 @@ const DateSelector = memo(() => {
                   container
                   alignItems="stretch"
                   className={classes.dateLabelContainer}
+                  style={{
+                    minWidth: `${dateRange.length * TIMELINE_ITEM_WIDTH}px`,
+                  }}
                 >
                   {stateStartDate && (
                     <TimelineItems

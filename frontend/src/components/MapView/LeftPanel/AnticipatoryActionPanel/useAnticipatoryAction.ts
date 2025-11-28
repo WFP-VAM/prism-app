@@ -13,11 +13,17 @@ import {
   mapSelector,
 } from 'context/mapStateSlice/selectors';
 import { updateDateRange } from 'context/mapStateSlice';
-import { getUrlKey, useUrlHistory } from 'utils/url-utils';
-import { AALayerIds, LayerDefinitions, isWindowedDates } from 'config/utils';
+import { getUrlKey, useUrlHistory, UrlLayerKey } from 'utils/url-utils';
+import {
+  AALayerIds,
+  LayerDefinitions,
+  isWindowedDates,
+  isAnticipatoryActionLayer,
+} from 'config/utils';
 import {
   getAAAvailableDatesCombined,
   getRequestDate,
+  getRequestDateItem,
 } from 'utils/server-utils';
 import {
   availableDatesSelector,
@@ -30,6 +36,7 @@ import { loadAAFloodDateData } from 'context/anticipatoryAction/AAFloodStateSlic
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
 import { useMapState } from 'utils/useMapState';
+import { isBoundaryLayer } from 'utils/boundary-layers-utils';
 import { toggleRemoveLayer } from '../layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 
 type AADataByAction<T extends AnticipatoryAction> =
@@ -59,8 +66,7 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
   const {
     actions: { addLayer, removeLayer },
   } = useMapState();
-  const { updateHistory, appendLayerToUrl, removeLayerFromUrl } =
-    useUrlHistory();
+  const { updateHistory, removeLayerFromUrl } = useUrlHistory();
 
   const AALayerInUrl = selectedLayers.find(x =>
     AALayerIds.includes(x.id as AnticipatoryAction),
@@ -84,42 +90,62 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
   }, []);
 
   useEffect(() => {
-    if (AAAvailableDates) {
-      const combinedAvailableDates = isWindowedDates(AAAvailableDates)
-        ? getAAAvailableDatesCombined(AAAvailableDates)
-        : AAAvailableDates;
+    // Wait for AAAvailableDates to be loaded and have data
+    if (!AAAvailableDates) {
+      return;
+    }
 
-      if (!selectedDate) {
-        const updatedCapabilities = AALayerIds.reduce(
-          (acc, layerId) => ({
-            ...acc,
-            [layerId]: combinedAvailableDates,
-          }),
-          { ...serverAvailableDates },
-        );
+    const combinedAvailableDates = isWindowedDates(AAAvailableDates)
+      ? getAAAvailableDatesCombined(AAAvailableDates)
+      : AAAvailableDates;
 
-        dispatch(updateLayersCapabilities(updatedCapabilities));
+    // Ensure we have valid dates before processing
+    if (
+      !combinedAvailableDates ||
+      (Array.isArray(combinedAvailableDates) &&
+        combinedAvailableDates.length === 0)
+    ) {
+      return;
+    }
 
-        // Set the most recent date as the default date for timeline advancement
-        if (combinedAvailableDates && combinedAvailableDates.length > 0) {
-          const mostRecentDate =
-            combinedAvailableDates[combinedAvailableDates.length - 1]
-              .displayDate;
-          dispatch(updateDateRange({ startDate: mostRecentDate }));
-        }
-      } else if (actionType === AnticipatoryAction.drought) {
-        const queryDate = getRequestDate(
-          combinedAvailableDates,
-          selectedDate as SelectedDateTimestamp,
-        );
-        const date = getFormattedDate(queryDate, DateFormat.Default) as string;
-        dispatch(setFilters({ selectedDate: date }));
-      } else if (actionType === AnticipatoryAction.flood) {
-        const queryDate = getRequestDate(
-          combinedAvailableDates,
-          selectedDate as SelectedDateTimestamp,
-        );
-        const date = getFormattedDate(queryDate, DateFormat.Default) as string;
+    if (!selectedDate) {
+      const updatedCapabilities = AALayerIds.reduce(
+        (acc, layerId) => ({
+          ...acc,
+          [layerId]: combinedAvailableDates,
+        }),
+        { ...serverAvailableDates },
+      );
+
+      dispatch(updateLayersCapabilities(updatedCapabilities));
+
+      // Set the most recent date as the default date for timeline advancement
+      if (combinedAvailableDates && combinedAvailableDates.length > 0) {
+        const mostRecentDate =
+          combinedAvailableDates[combinedAvailableDates.length - 1].displayDate;
+        dispatch(updateDateRange({ startDate: mostRecentDate }));
+      }
+    } else if (actionType === AnticipatoryAction.drought) {
+      const queryDate = getRequestDate(
+        combinedAvailableDates,
+        selectedDate as SelectedDateTimestamp,
+      );
+      const date = getFormattedDate(queryDate, DateFormat.Default) as string;
+      dispatch(setFilters({ selectedDate: date }));
+    } else if (actionType === AnticipatoryAction.flood) {
+      // Only load date data if we have a valid date item in the available dates
+      // This prevents loading with an invalid date from a previous layer
+      const requestDateItem = getRequestDateItem(
+        combinedAvailableDates,
+        selectedDate as SelectedDateTimestamp,
+        true, // defaultToMostRecent
+      );
+
+      if (requestDateItem && requestDateItem.queryDate) {
+        const date = getFormattedDate(
+          requestDateItem.queryDate,
+          DateFormat.Default,
+        ) as string;
         dispatch(loadAAFloodDateData({ date }));
       }
     }
@@ -132,6 +158,7 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
     const layer = LayerDefinitions[actionType];
 
     if (AALayerInUrl?.id !== layer.id) {
+      // Remove any existing AA layer
       if (AALayerInUrl) {
         toggleRemoveLayer(
           AALayerInUrl,
@@ -142,13 +169,43 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
           addLayer,
         );
       }
-      const updatedUrl = appendLayerToUrl(
-        getUrlKey(layer),
-        selectedLayers,
-        layer,
-      );
-      updateHistory(getUrlKey(layer), updatedUrl);
-      dispatch(updateDateRange({ startDate: undefined }));
+
+      // Remove all non-AA hazard layers (they share the HAZARD URL key with AA layers)
+      // But preserve boundary layers
+      const layerUrlKey = getUrlKey(layer);
+      if (layerUrlKey === UrlLayerKey.HAZARD) {
+        const nonAALayers = selectedLayers.filter(
+          l =>
+            getUrlKey(l) === UrlLayerKey.HAZARD &&
+            !isAnticipatoryActionLayer(l.type) &&
+            !isBoundaryLayer(l) &&
+            l.id !== layer.id,
+        );
+
+        nonAALayers.forEach(layerToRemove => {
+          toggleRemoveLayer(
+            layerToRemove,
+            map,
+            getUrlKey(layerToRemove),
+            removeLayer,
+            removeLayerFromUrl,
+            addLayer,
+          );
+        });
+      }
+
+      // Add the new AA layer to state
+      addLayer(layer);
+
+      // Update URL to only contain this layer
+      // since we've already removed all other hazard layers
+      updateHistory(getUrlKey(layer), layer.id);
+
+      // Only reset date if there's no selected date
+      // This preserves the timeline when switching between AA layers
+      if (!selectedDate) {
+        dispatch(updateDateRange({ startDate: undefined }));
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
