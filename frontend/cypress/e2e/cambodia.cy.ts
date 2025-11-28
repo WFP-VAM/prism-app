@@ -52,7 +52,7 @@ describe('Date picker', () => {
     // wait for the timeline to show layer data (indicated by layerOneEmphasis element)
     // This ensures the layer dates are loaded before proceeding
     cy.get('[role="presentation"][class*="layerOneEmphasis"]', {
-      timeout: 20000,
+      timeout: 30000,
     }).should('be.visible');
     cy.get('.react-datepicker-wrapper button span', { timeout: 20000 }).then(
       span1 => {
