@@ -13,10 +13,9 @@ import {
   TextField,
   Theme,
   Typography,
-  makeStyles,
-} from '@material-ui/core';
-import { useDispatch, useSelector } from 'react-redux';
-import { createStyles } from '@material-ui/styles';
+} from '@mui/material';
+import { useDispatch, useSelector } from 'context/hooks';
+import { createStyles, makeStyles } from '@mui/styles';
 import {
   LayersCategoryType,
   MenuItemType,

@@ -69,7 +69,7 @@ jest.mock('max-inscribed-circle', () => ({}));
 
 function stubMuiComponent(componentName: string) {
   jest.doMock(
-    `@material-ui/core/${componentName}/${componentName}`,
+    `@mui/material/${componentName}`,
     () => `mock-${componentName}`,
   );
 }
@@ -112,10 +112,10 @@ stubMuiComponent('MenuItem');
 stubMuiComponent('Modal');
 stubMuiComponent('Popover');
 stubMuiComponent('CircularProgress');
-stubMuiComponent('Hidden');
-stubMuiComponent('ExpansionPanel');
-stubMuiComponent('ExpansionPanelSummary');
-stubMuiComponent('ExpansionPanelDetails');
+// Hidden was removed in MUI v5
+stubMuiComponent('Accordion');
+stubMuiComponent('AccordionSummary');
+stubMuiComponent('AccordionDetails');
 stubMuiComponent('Checkbox');
 stubMuiComponent('Drawer');
 stubMuiComponent('Divider');
@@ -133,7 +133,7 @@ stubMuiComponent('Icon');
 stubMuiComponent('Radio');
 
 function stubMuiIcon(iconName: any) {
-  jest.doMock(`@material-ui/icons/${iconName}`, () => `mock-${iconName}`);
+  jest.doMock(`@mui/icons-material/${iconName}`, () => `mock-${iconName}`);
 }
 
 stubMuiIcon('ArrowDropDown');

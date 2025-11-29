@@ -1,8 +1,6 @@
 import {
-  makeStyles,
   Box,
   Button,
-  createStyles,
   Dialog,
   DialogActions,
   DialogContent,
@@ -11,11 +9,12 @@ import {
   Theme,
   Typography,
   useTheme,
-} from '@material-ui/core';
+} from '@mui/material';
 
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { makeStyles, createStyles } from '@mui/styles';
 import { useSelector } from 'react-redux';
-import { ArrowBack } from '@material-ui/icons';
+import { ArrowBack } from '@mui/icons-material';
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
 import { snakeCase } from 'lodash';
 import { useSafeTranslation } from 'i18n';

@@ -1,12 +1,6 @@
-import {
-  Box,
-  createStyles,
-  Input,
-  InputAdornment,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
-import { DateRangeRounded } from '@material-ui/icons';
+import { Box, Input, InputAdornment, Typography } from '@mui/material';
+import { DateRangeRounded } from '@mui/icons-material';
+import { makeStyles, createStyles } from '@mui/styles';
 import DatePicker from 'react-datepicker';
 import React, { memo } from 'react';
 import { useSafeTranslation } from 'i18n';

@@ -1,12 +1,7 @@
-import {
-  Box,
-  createStyles,
-  IconButton,
-  Tooltip,
-  makeStyles,
-} from '@material-ui/core';
+import { Box, IconButton, Tooltip } from '@mui/material';
 import type { AppDispatch } from 'context/store';
-import OpacityIcon from '@material-ui/icons/Opacity';
+import { makeStyles, createStyles } from '@mui/styles';
+import OpacityIcon from '@mui/icons-material/Opacity';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'context/hooks';
 

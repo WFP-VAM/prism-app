@@ -1,8 +1,9 @@
-import { Box, makeStyles, Button } from '@material-ui/core';
-import { VisibilityOutlined } from '@material-ui/icons';
-import { useSelector, useDispatch } from 'react-redux';
+import { Box, Button } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { VisibilityOutlined } from '@mui/icons-material';
+import { useSelector, useDispatch } from 'context/hooks';
 import { useEffect, useState } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useSafeTranslation } from 'i18n';
 import { DashboardMode } from 'config/types';
 
@@ -26,7 +27,7 @@ function DashboardView() {
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
   const { path } = useParams<{ path?: string }>();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   // Export/Publish dialog state
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
@@ -62,9 +63,9 @@ function DashboardView() {
       const firstDashboard = dashboards[0];
       const firstDashboardPath =
         firstDashboard.path || generateSlugFromTitle(firstDashboard.title);
-      history.replace(`/dashboard/${firstDashboardPath}`);
+      navigate(`/dashboard/${firstDashboardPath}`, { replace: true });
     }
-  }, [path, dispatch, history]);
+  }, [path, dispatch, navigate]);
 
   const handlePreviewClick = () => {
     dispatch(setMode(DashboardMode.VIEW));

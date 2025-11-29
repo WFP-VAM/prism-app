@@ -1,7 +1,6 @@
 import React, { memo, useCallback, useMemo, useState, useEffect } from 'react';
+import { makeStyles, createStyles } from '@mui/styles';
 import {
-  createStyles,
-  makeStyles,
   Table,
   TableBody,
   TableCell,
@@ -12,8 +11,8 @@ import {
   TableSortLabel,
   Theme,
   Typography,
-} from '@material-ui/core';
-import { useDispatch, useSelector } from 'react-redux';
+} from '@mui/material';
+import { useDispatch, useSelector } from 'context/hooks';
 import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
 import { Column } from 'utils/analysis-utils';
 import { useSafeTranslation } from 'i18n';
@@ -225,18 +224,15 @@ const AnalysisTable = memo(
             root: compact
               ? classes.tablePaginationCompact
               : classes.tablePagination,
-            select: classes.select,
-            caption: classes.caption,
-            spacer: classes.spacer,
           }}
-          nextIconButtonProps={{
-            classes: {
-              root: classes.nextButton,
-            },
-          }}
-          backIconButtonProps={{
-            classes: {
-              root: classes.backButton,
+          slotProps={{
+            actions: {
+              nextButton: {
+                className: classes.nextButton,
+              },
+              previousButton: {
+                className: classes.backButton,
+              },
             },
           }}
         />

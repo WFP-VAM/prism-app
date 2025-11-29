@@ -7,8 +7,8 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
-} from '@material-ui/core';
-import RoomOutlinedIcon from '@material-ui/icons/RoomOutlined';
+} from '@mui/material';
+import RoomOutlinedIcon from '@mui/icons-material/RoomOutlined';
 import { useSafeTranslation } from 'i18n';
 import BoundaryDropdownOptions from 'components/MapView/Layers/BoundaryDropdown/BoundaryDropdownOptions';
 import { mapSelector } from 'context/mapStateSlice/selectors';

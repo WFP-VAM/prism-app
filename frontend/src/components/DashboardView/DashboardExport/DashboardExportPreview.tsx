@@ -1,4 +1,5 @@
-import { Box, makeStyles } from '@material-ui/core';
+import { Box } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { useContext } from 'react';
 import DashboardContent from '../DashboardContent';
 import DashboardExportContext, { PAPER_SIZES } from './dashboardExport.context';

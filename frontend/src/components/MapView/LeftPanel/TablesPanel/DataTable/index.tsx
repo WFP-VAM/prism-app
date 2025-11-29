@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { createStyles } from '@material-ui/styles';
+import { createStyles, makeStyles } from '@mui/styles';
 import {
   Box,
   CircularProgress,
@@ -13,8 +13,7 @@ import {
   TableSortLabel,
   Theme,
   Typography,
-  makeStyles,
-} from '@material-ui/core';
+} from '@mui/material';
 import { orderBy } from 'lodash';
 import { useSafeTranslation } from 'i18n';
 import { ChartConfig } from 'config/types';

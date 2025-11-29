@@ -1,20 +1,19 @@
 /* eslint-disable react/prop-types */
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import { makeStyles, createStyles } from '@mui/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   AppBar,
   Box,
-  createStyles,
   Theme,
   Toolbar,
   Typography,
   IconButton,
-  makeStyles,
   useTheme,
   useMediaQuery,
-} from '@material-ui/core';
+} from '@mui/material';
 import React, { useState, useEffect } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useSafeTranslation } from 'i18n';
 import { appConfig } from 'config';
 import {
@@ -25,8 +24,8 @@ import {
   TimerOutlined,
   Notifications,
   SpeedOutlined,
-} from '@material-ui/icons';
-import { useDispatch, useSelector } from 'react-redux';
+} from '@mui/icons-material';
+import { useDispatch, useSelector } from 'context/hooks';
 import {
   leftPanelTabValueSelector,
   setTabValue,
@@ -135,7 +134,7 @@ const panels: PanelItem[] = [
 function NavBar() {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   const classes = useStyles();
   const tabValue = useSelector(leftPanelTabValueSelector);
@@ -196,9 +195,9 @@ function NavBar() {
   const handlePanelClick = (panel: Panel) => {
     dispatch(setTabValue(panel));
     if (panel === Panel.Dashboard) {
-      history.push('/dashboard');
+      navigate('/dashboard');
     } else if (location.pathname !== '/') {
-      history.push('/');
+      navigate('/');
     }
   };
 
@@ -210,7 +209,7 @@ function NavBar() {
 
     if (panel.panel === Panel.Dashboard && child.reportPath) {
       dispatch(setTabValue(Panel.Dashboard));
-      history.push(`/dashboard/${child.reportPath}`);
+      navigate(`/dashboard/${child.reportPath}`);
     } else {
       handlePanelClick(child.panel);
     }

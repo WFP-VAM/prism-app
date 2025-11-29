@@ -1,12 +1,7 @@
-import {
-  createStyles,
-  Typography,
-  Button,
-  Grid,
-  makeStyles,
-} from '@material-ui/core';
+import { Typography, Button, Grid } from '@mui/material';
 import { Link } from 'react-router-dom';
 
+import { makeStyles, createStyles } from '@mui/styles';
 import { colors } from 'muiTheme';
 import wfpLogo from 'public/images/wfp_logo.png';
 
@@ -15,7 +10,7 @@ function NotFound() {
   return (
     <div className={classes.container}>
       <Grid container spacing={3} className={classes.content}>
-        <Grid item>
+        <Grid size="auto">
           <Typography variant="h3" color="textPrimary" gutterBottom>
             404 Page Not Found
           </Typography>
@@ -31,13 +26,13 @@ function NotFound() {
           </Typography>
         </Grid>
 
-        <Grid item>
+        <Grid size="auto">
           <Link to="/">
             <Button variant="contained">Back To Home</Button>
           </Link>
         </Grid>
 
-        <Grid item>
+        <Grid size="auto">
           <img
             className={classes.image}
             src={wfpLogo}

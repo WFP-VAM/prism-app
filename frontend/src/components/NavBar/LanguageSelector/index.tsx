@@ -1,16 +1,10 @@
 import React from 'react';
-import {
-  Button,
-  createStyles,
-  Menu,
-  MenuItem,
-  Typography,
-  makeStyles,
-} from '@material-ui/core';
+import { makeStyles, createStyles } from '@mui/styles';
+import { Button, Menu, MenuItem, Typography } from '@mui/material';
 import { languages, useSafeTranslation } from 'i18n';
 import { appConfig } from 'config';
 import { get } from 'lodash';
-import ArrowDownward from '@material-ui/icons/ArrowDropDown';
+import ArrowDownward from '@mui/icons-material/ArrowDropDown';
 
 function LanguageSelector() {
   const classes = useStyles();

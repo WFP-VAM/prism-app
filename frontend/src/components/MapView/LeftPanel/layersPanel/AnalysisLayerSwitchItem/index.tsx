@@ -1,24 +1,16 @@
+import { memo, useState, useCallback, useMemo, useEffect } from 'react';
 import {
-  memo,
-  useState,
-  useCallback,
-  useMemo,
-  ChangeEvent,
-  useEffect,
-} from 'react';
-import {
-  makeStyles,
   Box,
   IconButton,
   Slider,
   Switch,
   Tooltip,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 
-import { createStyles } from '@material-ui/styles';
-import { useDispatch, useSelector } from 'react-redux';
-import OpacityIcon from '@material-ui/icons/Opacity';
+import { createStyles, makeStyles } from '@mui/styles';
+import { useDispatch, useSelector } from 'context/hooks';
+import OpacityIcon from '@mui/icons-material/Opacity';
 import { useSafeTranslation } from 'i18n';
 import { clearAnalysisResult } from 'context/analysisResultStateSlice';
 import {
@@ -116,7 +108,7 @@ const AnalysisLayerSwitchItem = memo(
                 root: classes.opacitySliderRoot,
                 thumb: classes.opacitySliderThumb,
               }}
-              onChange={(_event: ChangeEvent<{}>, value: number | number[]) => {
+              onChange={(_event: Event, value: number | number[]) => {
                 setOpacity(value as number);
               }}
             />

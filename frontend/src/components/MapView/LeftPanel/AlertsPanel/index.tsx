@@ -1,12 +1,4 @@
-import {
-  makeStyles,
-  Box,
-  Button,
-  createStyles,
-  TextField,
-  Theme,
-  Typography,
-} from '@material-ui/core';
+import { Box, Button, TextField, Theme, Typography } from '@mui/material';
 
 import React, {
   Dispatch,
@@ -15,7 +7,8 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
+import { makeStyles, createStyles } from '@mui/styles';
 import { LayerKey, PanelSize, WMSLayerProps } from 'config/types';
 import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
 import { AlertRequest, fetchApiData, getPrismUrl } from 'utils/analysis-utils';

@@ -1,4 +1,5 @@
-import { makeStyles, LinearProgress } from '@material-ui/core';
+import { LinearProgress } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { useSelector } from 'react-redux';
 import { LayerKey } from 'config/types';
 import { loadingLayerIdsSelector as tileLayerIdsSelector } from 'context/mapTileLoadingStateSlice';

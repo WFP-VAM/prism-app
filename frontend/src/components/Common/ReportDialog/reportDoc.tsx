@@ -7,7 +7,7 @@ import {
   Text,
   View,
 } from '@react-pdf/renderer';
-import { Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
 import { getLegendItemLabel } from 'components/MapView/utils';
 import { LegendDefinition, ReportType } from 'config/types';
@@ -18,7 +18,7 @@ import ReportDocLegend from './ReportDocLegend';
 import ReportDocTable from './ReportDocTable';
 import { getReportFontFamily } from './utils';
 
-const makeStyles = (theme: Theme, selectedLanguage: string) =>
+const createPdfStyles = (theme: Theme, selectedLanguage: string) =>
   StyleSheet.create({
     page: {
       flexDirection: 'column',
@@ -89,7 +89,7 @@ const ReportDoc = memo(
   }: ReportDocProps) => {
     const { t, i18n } = useSafeTranslation();
 
-    const styles = makeStyles(theme, i18n.language);
+    const styles = createPdfStyles(theme, i18n.language);
 
     const date = useMemo(() => new Date().toUTCString(), []);
 

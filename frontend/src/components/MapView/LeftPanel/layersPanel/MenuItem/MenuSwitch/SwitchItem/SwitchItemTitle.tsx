@@ -1,12 +1,7 @@
-import {
-  MenuItem,
-  Select,
-  Typography,
-  createStyles,
-  makeStyles,
-} from '@material-ui/core';
+import { MenuItem, Select, Typography } from '@mui/material';
 import { LayerType, MenuGroupItem } from 'config/types';
-import React, { memo, useCallback } from 'react';
+import { makeStyles, createStyles } from '@mui/styles';
+import { memo, useCallback } from 'react';
 import { useSafeTranslation } from 'i18n';
 
 const useStyles = makeStyles(() =>
@@ -74,7 +69,7 @@ const SwitchItemTitle = memo(
     const { group } = layer;
 
     const handleSelect = useCallback(
-      (event: React.ChangeEvent<{ value: string | unknown }>) => {
+      (event: any) => {
         const selectedId = event.target.value;
         setActiveLayerId(selectedId as string);
         toggleLayerValue(selectedId as string, true);

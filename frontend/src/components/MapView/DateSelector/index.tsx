@@ -1,13 +1,6 @@
-import {
-  Button,
-  Grid,
-  Theme,
-  createStyles,
-  makeStyles,
-  useMediaQuery,
-  useTheme,
-} from '@material-ui/core';
-import { ChevronLeft, ChevronRight } from '@material-ui/icons';
+import { Button, Grid, Theme, useMediaQuery, useTheme } from '@mui/material';
+import { ChevronLeft, ChevronRight } from '@mui/icons-material';
+import { makeStyles, createStyles } from '@mui/styles';
 import { findIndex, get } from 'lodash';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import DatePicker from 'react-datepicker';
@@ -114,6 +107,8 @@ const DateSelector = memo(() => {
   today.setUTCHours(12, 0, 0, 0); // Normalize today's date
 
   const timeLine = useRef(null);
+  const timelineDraggableRef = useRef<HTMLDivElement>(null);
+  const pointerDraggableRef = useRef<HTMLDivElement>(null);
 
   const { t } = useSafeTranslation();
   const { updateHistory } = useUrlHistory();
@@ -631,7 +626,10 @@ const DateSelector = memo(() => {
   );
 
   const handleOnDatePickerChange = useCallback(
-    (date: Date) => {
+    (date: Date | null) => {
+      if (!date) {
+        return;
+      }
       updateStartDate(date, true);
     },
     [updateStartDate],
@@ -658,7 +656,7 @@ const DateSelector = memo(() => {
         }
       >
         {/* Mobile */}
-        <Grid item xs={12} sm={1} className={classes.datePickerGrid}>
+        <Grid size={{ xs: 12, sm: 1 }} className={classes.datePickerGrid}>
           {!smUp && (
             <Button onClick={decrementDate}>
               <ChevronLeft style={{ color: '#101010' }} />
@@ -703,7 +701,7 @@ const DateSelector = memo(() => {
         </Grid>
 
         {/* Desktop */}
-        <Grid item xs={12} sm className={classes.slider}>
+        <Grid size={{ xs: 12, sm: 'grow' }} className={classes.slider}>
           {!xsDown && (
             <Button
               id="chevronLeftButton"
@@ -727,8 +725,13 @@ const DateSelector = memo(() => {
               }}
               position={timelinePosition}
               onStop={onTimelineStop}
+              nodeRef={timelineDraggableRef}
             >
-              <div className={classes.timeline} id={TIMELINE_ID}>
+              <div
+                className={classes.timeline}
+                id={TIMELINE_ID}
+                ref={timelineDraggableRef}
+              >
                 <Grid
                   container
                   alignItems="stretch"
@@ -767,8 +770,13 @@ const DateSelector = memo(() => {
                   onStart={onPointerStart}
                   onStop={onPointerStop}
                   onDrag={onPointerDrag}
+                  nodeRef={pointerDraggableRef}
                 >
-                  <div className={classes.pointer} id={POINTER_ID}>
+                  <div
+                    className={classes.pointer}
+                    id={POINTER_ID}
+                    ref={pointerDraggableRef}
+                  >
                     <img
                       src={TickSvg}
                       alt="Tick Svg"

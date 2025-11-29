@@ -16,7 +16,7 @@ export function findLandfallWindPoint(stormData: ParsedStormData) {
   const landfallEstimatedtime = getLandfallEstimatedTime(stormData);
 
   const windpoints = stormData.timeSeries?.features;
-  const foundWindPoint = windpoints?.find(windpoint =>
+  const foundWindPoint = windpoints?.find((windpoint: AAStormTimeSeriesFeature) =>
     isFeatureAtLandfallEstimateTime(windpoint, landfallEstimatedtime),
   );
 

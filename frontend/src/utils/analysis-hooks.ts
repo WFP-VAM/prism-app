@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import {
   AdminLevelDataLayerProps,
   AdminLevelType,
@@ -240,9 +240,9 @@ export const useAnalysisForm = (
     () =>
       Boolean(
         baselineLayerId &&
-          LayerDefinitions[baselineLayerId]?.type === 'admin_level_data' &&
-          !belowThreshold &&
-          !aboveThreshold,
+        LayerDefinitions[baselineLayerId]?.type === 'admin_level_data' &&
+        !belowThreshold &&
+        !aboveThreshold,
       ),
     [baselineLayerId, belowThreshold, aboveThreshold],
   );

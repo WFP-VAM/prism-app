@@ -3,13 +3,12 @@ import {
   AccordionDetails,
   AccordionSummary,
   Chip,
-  createStyles,
   Grid,
-  makeStyles,
   Typography,
-} from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Remove';
+} from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import { makeStyles, createStyles } from '@mui/styles';
+import RemoveIcon from '@mui/icons-material/Remove';
 import {
   ChangeEvent,
   memo,
@@ -138,7 +137,6 @@ const MenuSwitch = memo(({ title, layers, extent }: MenuSwitchProps) => {
         expandIcon={isExpanded ? <RemoveIcon /> : <AddIcon />}
         classes={{
           root: classes.rootSummary,
-          expandIcon: classes.expandIcon,
           content: classes.summaryContent,
         }}
         aria-controls={title}

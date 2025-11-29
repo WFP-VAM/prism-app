@@ -6,10 +6,9 @@ import {
   DialogTitle,
   IconButton,
   Typography,
-  createStyles,
-  makeStyles,
-} from '@material-ui/core';
-import { Cancel, Close } from '@material-ui/icons';
+} from '@mui/material';
+import { Cancel, Close } from '@mui/icons-material';
+import { makeStyles, createStyles } from '@mui/styles';
 import { useSafeTranslation } from 'i18n';
 import { black, cyanBlue } from 'muiTheme';
 import { Action } from './actions';

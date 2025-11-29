@@ -8,7 +8,6 @@ import React, {
 } from 'react';
 import {
   Box,
-  createStyles,
   Divider,
   Grid,
   IconButton,
@@ -18,10 +17,10 @@ import {
   Slider,
   Tooltip,
   Typography,
-  makeStyles,
-} from '@material-ui/core';
-import { Close, Opacity, SwapVert } from '@material-ui/icons';
-import { useDispatch, useSelector } from 'react-redux';
+} from '@mui/material';
+import { Close, Opacity, SwapVert } from '@mui/icons-material';
+import { makeStyles, createStyles } from '@mui/styles';
+import { useDispatch, useSelector } from 'context/hooks';
 import {
   LayerType,
   LegendDefinitionItem,
@@ -258,7 +257,7 @@ const LegendItem = memo(
       if (!legend) {
         return null;
       }
-      return <Grid item>{renderedLegendUrl}</Grid>;
+      return <Grid>{renderedLegendUrl}</Grid>;
     }, [legend, renderedLegendUrl]);
 
     const renderedChildren = useMemo(() => {
@@ -266,7 +265,7 @@ const LegendItem = memo(
         return null;
       }
       return (
-        <Grid item>
+        <Grid>
           {typeof children === 'string' ? (
             <LegendMarkdown>{children}</LegendMarkdown>
           ) : (
@@ -289,7 +288,7 @@ const LegendItem = memo(
               : undefined
           }
         >
-          <Grid item style={{ display: 'flex' }}>
+          <Grid style={{ display: 'flex' }}>
             <Typography style={{ flexGrow: 1 }} variant="h4">
               {title}
             </Typography>

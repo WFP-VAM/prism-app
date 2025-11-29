@@ -5,7 +5,7 @@ import {
   MapEventWrapFunctionProps,
 } from 'config/types';
 import { useDefaultDate } from 'utils/useDefaultDate';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import { useBoundaryData } from 'utils/useBoundaryData';
 import {
@@ -35,7 +35,7 @@ import {
   calculateCombinedAAMapData,
 } from 'context/anticipatoryAction/AADroughtStateSlice/utils';
 import { AAView } from 'context/anticipatoryAction/AADroughtStateSlice/types';
-import { Tooltip } from '@material-ui/core';
+import { Tooltip } from '@mui/material';
 
 // Use admin level 2 boundary layer for Anticipatory Action
 const boundaryLayer = getBoundaryLayersByAdminLevel(2);

@@ -1,13 +1,12 @@
 import {
   Button,
-  createStyles,
   IconButton,
   Typography,
-  makeStyles,
   useTheme,
   useMediaQuery,
-} from '@material-ui/core';
-import { VisibilityOutlined, VisibilityOffOutlined } from '@material-ui/icons';
+} from '@mui/material';
+import { VisibilityOutlined, VisibilityOffOutlined } from '@mui/icons-material';
+import { makeStyles, createStyles } from '@mui/styles';
 import { useState, memo, useCallback } from 'react';
 import { useSafeTranslation } from 'i18n';
 import { black, cyanBlue } from 'muiTheme';

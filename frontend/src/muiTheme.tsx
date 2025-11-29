@@ -1,4 +1,4 @@
-import { createTheme } from '@material-ui/core/styles';
+import { createTheme } from '@mui/material/styles';
 import React from 'react';
 
 const skyBlue: string = '#009EE0';
@@ -14,7 +14,7 @@ export const cyanBlue = '#63B2BD';
 
 export const colors = { skyBlue, greyBlue, darkGreyBlue };
 
-declare module '@material-ui/core/styles/createTheme' {
+declare module '@mui/material/styles' {
   interface ThemeOptions {
     dialog?: {
       border?: React.CSSProperties['color'];
@@ -68,10 +68,35 @@ declare module '@material-ui/core/styles/createTheme' {
   }
 }
 
-const theme: any = createTheme({
+const theme = createTheme({
   typography: {
     fontFamily:
       'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif',
+    h2: {
+      fontSize: 20,
+      fontWeight: 'bold',
+    },
+    h3: {
+      fontSize: 16,
+      fontWeight: 400,
+    },
+    h4: {
+      fontSize: 13,
+      fontWeight: 400,
+    },
+    h5: {
+      fontSize: 11,
+      color: greyBlue,
+    },
+    body1: {
+      fontSize: 13,
+      fontWeight: 300,
+    },
+    body2: {
+      fontSize: 11,
+      letterSpacing: 3.5,
+      textTransform: 'uppercase',
+    },
   },
   dialog: {
     border: '#2E6EAF',
@@ -110,205 +135,174 @@ const theme: any = createTheme({
     },
   },
   spacing: 6,
-  overrides: {
+  components: {
     MuiToolbar: {
-      dense: {
-        minHeight: 40,
+      styleOverrides: {
+        dense: {
+          minHeight: 40,
+        },
       },
     },
     MuiTypography: {
-      h2: {
-        fontSize: 20,
-        fontWeight: 'bold',
-      },
-      h3: {
-        fontSize: 16,
-        fontWeight: 400,
-      },
-      h4: {
-        fontSize: 13,
-        fontWeight: 400,
-      },
-      h5: {
-        fontSize: 11,
-        color: greyBlue,
-      },
-      body1: {
-        fontSize: 13,
-        fontWeight: 300,
-      },
-      body2: {
-        fontSize: 11,
-        letterSpacing: 3.5,
-        textTransform: 'uppercase',
-      },
-      root: {
-        color: black,
-      },
-      colorSecondary: {
-        color: white,
+      styleOverrides: {
+        root: {
+          color: black,
+        },
       },
     },
-    MuiListItem: {
-      button: {
-        // dropdowns in Analyser Table are white on white background without this rule.
-        color: black,
+    MuiListItemButton: {
+      styleOverrides: {
+        root: {
+          // dropdowns in Analyser Table are white on white background without this rule.
+          color: black,
+        },
       },
     },
     MuiMenuItem: {
-      root: {
-        color: black,
-        paddingLeft: 25,
+      styleOverrides: {
+        root: {
+          color: black,
+          paddingLeft: 25,
+        },
       },
     },
     MuiAccordion: {
-      root: {
-        '&$expanded': {
-          margin: 0, // remove additional padding when expanded
-          '&:before': {
-            opacity: 1, // to keep the border when expanded
+      styleOverrides: {
+        root: {
+          '&.Mui-expanded': {
+            margin: 0, // remove additional padding when expanded
+            '&:before': {
+              opacity: 1, // to keep the border when expanded
+            },
           },
         },
       },
     },
     MuiAccordionSummary: {
-      root: {
-        backgroundColor: greyBlue,
-        minHeight: 56,
-        '&$expanded': {
-          minHeight: 56,
+      styleOverrides: {
+        root: {
+          minHeight: '2.5rem',
+          '&.Mui-expanded': {
+            minHeight: '2.5rem',
+          },
         },
-      },
-      content: {
-        '&$expanded': {
-          margin: '12px 0px', // keep height the same before/after expanded
+        content: {
+          margin: 0,
+          '&.Mui-expanded': {
+            margin: 0,
+          },
+        },
+        expandIconWrapper: {
+          paddingTop: 0,
+          paddingBottom: 0,
         },
       },
     },
     MuiAccordionDetails: {
-      root: {
-        backgroundColor: darkGreyBlue,
-        opacity: 0.9,
-        padding: 16,
+      styleOverrides: {
+        root: {
+          marginLeft: '12px',
+        },
       },
     },
     // For <Select/> subheadings
     MuiListSubheader: {
-      root: {
-        pointerEvents: 'none',
-        padding: 10,
-      },
-      sticky: {
-        backgroundColor: 'white',
+      styleOverrides: {
+        root: {
+          pointerEvents: 'none',
+          padding: 10,
+        },
+        sticky: {
+          backgroundColor: 'white',
+        },
       },
     },
     MuiFormLabel: {
-      root: {
-        // Make form label white since we normally have a dark background.
-        color: 'white',
+      styleOverrides: {
+        root: {
+          // Make form label white since we normally have a dark background.
+          color: 'white',
+        },
       },
     },
     MuiTableSortLabel: {
-      root: {
-        color: white,
-        '&:hover': {
+      styleOverrides: {
+        root: {
           color: white,
-          opacity: 0.5,
-        },
-        '&$active': {
-          '&& $icon': {
-            opacity: 1,
+          '&:hover': {
             color: white,
+            opacity: 0.5,
+          },
+          '&.Mui-active': {
+            color: white,
+            '& .MuiTableSortLabel-icon': {
+              opacity: 1,
+              color: white,
+            },
           },
         },
-      },
-      icon: {
-        color: white,
-        opacity: 0.2,
-        '&:hover': {
-          opacity: 0.5,
+        icon: {
+          color: white,
+          opacity: 0.2,
+          '&:hover': {
+            opacity: 0.5,
+          },
         },
       },
     },
     MuiButton: {
-      root: {
-        '&.Mui-disabled': {
-          pointerEvents: 'auto',
+      styleOverrides: {
+        root: {
+          '&.Mui-disabled': {
+            pointerEvents: 'auto',
+          },
+          borderRadius: '4px',
         },
-        borderRadius: '4px',
-      },
-      startIcon: {
-        marginLeft: 0,
-      },
-      text: {
-        padding: '6px 12px',
+        startIcon: {
+          marginLeft: 0,
+        },
+        text: {
+          padding: '6px 12px',
+        },
       },
     },
     MuiIconButton: {
-      root: {
-        color: black,
+      styleOverrides: {
+        root: {
+          color: black,
+        },
       },
     },
     MuiInputLabel: {
-      root: {
-        color: black,
+      styleOverrides: {
+        root: {
+          color: black,
+        },
       },
     },
     MuiInputBase: {
-      input: {
-        color: black,
+      styleOverrides: {
+        input: {
+          color: black,
+        },
+        root: {
+          color: black,
+        },
       },
-      root: {
-        color: black,
+    },
+    MuiToggleButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          color: black,
+          '&.Mui-selected, &.Mui-selected:hover': {
+            backgroundColor: `${cyanBlue} !important`,
+            color: 'initial',
+          },
+        },
       },
     },
   },
 });
-
-// eslint-disable-next-line fp/no-mutation
-theme.overrides.MuiToggleButton = {
-  root: {
-    textTransform: 'none',
-    color: black,
-    '&.Mui-selected, &.Mui-selected:hover': {
-      backgroundColor: `${cyanBlue} !important`,
-      color: 'initial',
-    },
-  },
-};
-
-// eslint-disable-next-line fp/no-mutation
-theme.overrides.MuiTableSortLabel = {
-  icon: {
-    color: black,
-  },
-};
-
-// eslint-disable-next-line fp/no-mutation
-theme.overrides.MuiAccordionSummary = {
-  root: {
-    minHeight: '2.5rem',
-    '&.Mui-expanded': {
-      minHeight: '2.5rem',
-    },
-  },
-  content: {
-    margin: 0,
-    '&.Mui-expanded': {
-      margin: 0,
-    },
-  },
-  expandIcon: {
-    paddingTop: 0,
-    paddingBottom: 0,
-  },
-};
-
-// eslint-disable-next-line fp/no-mutation
-theme.overrides.MuiAccordionDetails = {
-  root: {
-    marginLeft: '12px',
-  },
-};
 
 export default theme;

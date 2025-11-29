@@ -5,8 +5,8 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-} from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+} from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { LayersCategoryType } from 'config/types';
 import MenuSwitch from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch';
 import { useSafeTranslation } from 'i18n';
@@ -52,7 +52,6 @@ const MenuItem = memo(({ title, layersCategories, extent }: MenuItemProps) => {
         expandIcon={<ExpandMoreIcon />}
         classes={{
           root: classes.rootSummary,
-          expandIcon: classes.expandIcon,
           content: classes.summaryContent,
         }}
         aria-controls={title}

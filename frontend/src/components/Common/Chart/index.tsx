@@ -1,14 +1,14 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
+import { makeStyles } from '@mui/styles';
 import colormap from 'colormap';
-import { ChartOptions } from 'chart.js';
 import 'chartjs-plugin-annotation';
 import { Bar, Line } from 'react-chartjs-2';
 import { ChartConfig, DatasetField } from 'config/types';
 import { TableData } from 'context/tableStateSlice';
 import { useSafeTranslation } from 'i18n';
-import { IconButton, Tooltip, makeStyles } from '@material-ui/core';
-import ImageIcon from '@material-ui/icons/Image';
-import GetAppIcon from '@material-ui/icons/GetApp';
+import { IconButton, Tooltip } from '@mui/material';
+import ImageIcon from '@mui/icons-material/Image';
+import GetAppIcon from '@mui/icons-material/GetApp';
 import { buildCsvFileName, downloadToFile } from 'components/MapView/utils';
 import {
   createCsvDataFromDataKeyMap,
@@ -16,12 +16,12 @@ import {
   downloadChartsToCsv,
 } from 'utils/csv-utils';
 
-function downloadChartPng(ref: React.RefObject<Bar | Line>, filename: string) {
+function downloadChartPng(ref: React.RefObject<any>, filename: string) {
   const chart = ref.current;
   if (!chart) {
     throw new Error('chart is undefined');
   }
-  const { canvas } = chart.chartInstance;
+  const { canvas } = chart;
   if (!canvas) {
     throw new Error('canvas is undefined');
   }
@@ -64,7 +64,7 @@ export type ChartProps = {
 };
 
 const Chart = memo(
-  React.forwardRef<Bar | Line, ChartProps>(
+  React.forwardRef<any, ChartProps>(
     (
       {
         title,
@@ -88,10 +88,8 @@ const Chart = memo(
     ) => {
       const { t } = useSafeTranslation();
       const classes = useStyles();
-      const localChartRef = React.useRef<Bar | Line>(null);
-      const chartRef = (forwardedRef || localChartRef) as React.RefObject<
-        Bar | Line
-      >;
+      const localChartRef = React.useRef<any>(null);
+      const chartRef = (forwardedRef || localChartRef) as React.RefObject<any>;
       // This isChartReady state allows us to trigger a render after the chart is ready to update the saved ref
       const [_isChartReady, setIsChartReady] = useState(false);
 
@@ -367,7 +365,7 @@ const Chart = memo(
                     display: false,
                   },
                   ticks: {
-                    callback: value =>
+                    callback: (value: any) =>
                       // for EWS charts, we only want to display the time
                       isEWSChart ? String(value).split(' ')[1] : value,
                     fontColor: '#CCC',
@@ -398,7 +396,7 @@ const Chart = memo(
                   gridLines: {
                     display: false,
                   },
-                  afterDataLimits: axis => {
+                  afterDataLimits: (axis: any) => {
                     // Increase y-axis by 20% for Google Flood charts to make space for the annotation label
                     if (isGoogleFloodChart) {
                       const range = axis.max - axis.min;
@@ -421,7 +419,7 @@ const Chart = memo(
             tooltips: {
               mode: 'index',
               callbacks: {
-                label: (tooltipItem, labelData) => {
+                label: (tooltipItem: any, labelData: any) => {
                   const datasetLabel =
                     labelData.datasets?.[tooltipItem.datasetIndex as number]
                       ?.label || '';
@@ -434,17 +432,19 @@ const Chart = memo(
                       ?.data?.[tooltipItem.index as number];
 
                   // Check if any label is present in the tooltip
-                  const labelPresent = labelData.datasets?.some(dataset => {
-                    const { label } = dataset;
-                    if (tooltipItem.index !== undefined) {
-                      const indexData = dataset.data?.[tooltipItem.index];
-                      return (
-                        label === datasetLabel.replace(' (Future)', '') &&
-                        indexData !== null
-                      );
-                    }
-                    return false;
-                  });
+                  const labelPresent = labelData.datasets?.some(
+                    (dataset: any) => {
+                      const { label } = dataset;
+                      if (tooltipItem.index !== undefined) {
+                        const indexData = dataset.data?.[tooltipItem.index];
+                        return (
+                          label === datasetLabel.replace(' (Future)', '') &&
+                          indexData !== null
+                        );
+                      }
+                      return false;
+                    },
+                  );
 
                   // Hide "{label} (Future)" if "{label}" is present
                   if (labelPresent && datasetLabel.includes(' (Future)')) {
@@ -494,7 +494,7 @@ const Chart = memo(
                   },
                 }
               : {}),
-          }) as ChartOptions,
+          }) as any, // Cast to any to handle Chart.js v2 to v4 API differences
         [
           notMaintainAspectRatio,
           responsive,

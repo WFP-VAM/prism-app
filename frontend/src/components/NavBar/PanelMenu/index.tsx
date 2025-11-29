@@ -1,4 +1,4 @@
-import { Menu, MenuItem } from '@material-ui/core';
+import { Menu, MenuItem } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { PanelItem, Panel } from 'config/types';
 import { selectedDashboardIndexSelector } from 'context/dashboardStateSlice';

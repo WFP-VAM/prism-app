@@ -1,12 +1,6 @@
-import {
-  Box,
-  createStyles,
-  makeStyles,
-  MenuItem,
-  TextField,
-  Typography,
-} from '@material-ui/core';
+import { Box, MenuItem, TextField, Typography } from '@mui/material';
 import { sortBy } from 'lodash';
+import { makeStyles, createStyles } from '@mui/styles';
 import React, { memo, ReactNode } from 'react';
 import { BoundaryLayerProps, PanelSize, AdminCodeString } from 'config/types';
 import {

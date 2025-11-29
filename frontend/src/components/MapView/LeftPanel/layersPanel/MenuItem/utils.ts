@@ -1,4 +1,4 @@
-import { createStyles, makeStyles } from '@material-ui/core';
+import { makeStyles, createStyles } from '@mui/styles';
 
 export const useLayerMenuItemStyles = makeStyles(() =>
   createStyles({

@@ -1,11 +1,5 @@
-import {
-  Dialog,
-  DialogContent,
-  Snackbar,
-  createStyles,
-  makeStyles,
-} from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
+import { Dialog, DialogContent, Snackbar, Alert } from '@mui/material';
+import { makeStyles, createStyles } from '@mui/styles';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import html2canvas from 'html2canvas';

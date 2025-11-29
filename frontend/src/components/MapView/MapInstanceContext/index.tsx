@@ -4,7 +4,7 @@ import { LayerType } from 'config/types';
 import { DateRange } from 'context/mapStateSlice';
 import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
 import { RootState } from 'context/store';
-import { useDispatch } from 'react-redux';
+import { useDispatch } from 'context/hooks';
 import {
   addLayerToMap,
   removeLayerFromMap,

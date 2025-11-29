@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import { useEffect } from 'react';
 import { isMainLayer, LayerKey, SelectedDateTimestamp } from 'config/types';
 import { availableDatesSelector } from 'context/serverStateSlice';

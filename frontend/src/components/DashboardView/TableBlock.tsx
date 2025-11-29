@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { makeStyles } from '@mui/styles';
 import {
   Box,
-  makeStyles,
   Typography,
   CircularProgress,
   Button,
@@ -10,8 +10,8 @@ import {
   IconButton,
   TextField,
   Tooltip,
-} from '@material-ui/core';
-import GetAppIcon from '@material-ui/icons/GetApp';
+} from '@mui/material';
+import GetAppIcon from '@mui/icons-material/GetApp';
 import {
   DashboardTableConfig,
   AggregationOperations,
@@ -20,7 +20,7 @@ import {
   DashboardMode,
 } from 'config/types';
 import { useAnalysisForm, useAnalysisExecution } from 'utils/analysis-hooks';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import {
   setIsMapLayerActive,
   isAnalysisLayerActiveSelector,
@@ -251,15 +251,15 @@ function TableBlock({
 
     const canRunAnalysis = Boolean(
       !formState.isAnalysisLoading &&
-        !formState.requiredThresholdNotSet &&
-        formState.hazardLayerId &&
-        (formState.hazardDataType === GeometryType.Polygon
-          ? formState.startDate && formState.adminLevelLayerData
-          : formState.selectedDate && formState.baselineLayerId) &&
-        !(
-          formState.statistic === AggregationOperations['Area exposed'] &&
-          (!formState.exposureValue.operator || !formState.exposureValue.value)
-        ),
+      !formState.requiredThresholdNotSet &&
+      formState.hazardLayerId &&
+      (formState.hazardDataType === GeometryType.Polygon
+        ? formState.startDate && formState.adminLevelLayerData
+        : formState.selectedDate && formState.baselineLayerId) &&
+      !(
+        formState.statistic === AggregationOperations['Area exposed'] &&
+        (!formState.exposureValue.operator || !formState.exposureValue.value)
+      ),
     );
 
     if (

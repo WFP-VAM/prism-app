@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { makeStyles, createStyles } from '@mui/styles';
+import { useDispatch, useSelector } from 'context/hooks';
 import {
   Typography,
   Table,
@@ -9,14 +10,12 @@ import {
   TableHead,
   TableRow,
   Paper,
-  createStyles,
-  makeStyles,
   TableSortLabel,
   Box,
   IconButton,
-} from '@material-ui/core';
+} from '@mui/material';
 import { cyanBlue } from 'muiTheme';
-import { ChevronLeft, ChevronRight } from '@material-ui/icons';
+import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import { setAAFloodSelectedStation } from 'context/anticipatoryAction/AAFloodStateSlice';
 import {
   getFloodRiskColor,

@@ -1,5 +1,5 @@
 import { memo, useCallback, useMemo } from 'react';
-import { Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import { StyleSheet, Text, View } from '@react-pdf/renderer';
 import { chunk } from 'lodash';
 import { getRoundedData } from 'utils/data-utils';
@@ -8,7 +8,7 @@ import { Column } from 'utils/analysis-utils';
 import { FIRST_PAGE_TABLE_ROWS, MAX_TABLE_ROWS_PER_PAGE } from './types';
 import ReportDocTableHeader from './ReportDocTableHeader';
 
-const makeStyles = (theme: Theme) =>
+const createPdfStyles = (theme: Theme) =>
   StyleSheet.create({
     tableCell: {
       padding: 8,
@@ -46,7 +46,7 @@ const ReportDocTable = memo(
     showTotal,
     showRowTotal,
   }: TableProps) => {
-    const styles = makeStyles(theme);
+    const styles = createPdfStyles(theme);
 
     const totals = useMemo(
       () =>

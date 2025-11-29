@@ -2,7 +2,7 @@ import { memo, useEffect } from 'react';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { Point } from 'geojson';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import {
   MapEventWrapFunctionProps,
   PointDataLayerProps,

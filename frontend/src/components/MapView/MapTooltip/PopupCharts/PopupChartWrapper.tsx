@@ -1,5 +1,6 @@
-import { createStyles, makeStyles } from '@material-ui/core';
 import { ReactNode, memo } from 'react';
+
+import { makeStyles, createStyles } from '@mui/styles';
 
 const useStyles = makeStyles(() =>
   createStyles({

@@ -1,7 +1,7 @@
 import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
-import { ThemeProvider } from '@material-ui/styles';
-import { createTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@mui/styles';
+import { createTheme } from '@mui/material/styles';
 import { store } from 'context/store';
 import AlertsPanel from '.';
 

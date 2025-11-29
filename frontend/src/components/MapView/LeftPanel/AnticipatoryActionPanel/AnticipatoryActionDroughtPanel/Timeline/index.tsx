@@ -1,9 +1,4 @@
-import {
-  Button,
-  Typography,
-  createStyles,
-  makeStyles,
-} from '@material-ui/core';
+import { Button, Typography } from '@mui/material';
 import {
   AADataSelector,
   AAFiltersSelector,
@@ -16,9 +11,10 @@ import {
   AnticipatoryActionDataRow,
 } from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { lightGrey } from 'muiTheme';
-import { useDispatch, useSelector } from 'react-redux';
+import { makeStyles, createStyles } from '@mui/styles';
+import { useDispatch, useSelector } from 'context/hooks';
 import { useSafeTranslation } from 'i18n';
-import { Equalizer, Reply } from '@material-ui/icons';
+import { Equalizer, Reply } from '@mui/icons-material';
 import { getAAColor, getAAIcon } from '../utils';
 import { useAACommonStyles } from '../../utils';
 import { dateSorter } from '../DistrictView/utils';

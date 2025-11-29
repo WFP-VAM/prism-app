@@ -1,5 +1,5 @@
 import { memo, useMemo } from 'react';
-import { Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import { StyleSheet, Text, View } from '@react-pdf/renderer';
 import { PDFLegendDefinition } from './types';
 
@@ -9,7 +9,7 @@ interface LegendProps {
   definition: PDFLegendDefinition[];
 }
 
-const makeStyles = (theme: Theme) =>
+const createPdfStyles = (theme: Theme) =>
   StyleSheet.create({
     legend: {
       height: 130,
@@ -43,7 +43,7 @@ const makeStyles = (theme: Theme) =>
   });
 
 const ReportDocLegend = memo(({ theme, title, definition }: LegendProps) => {
-  const styles = makeStyles(theme);
+  const styles = createPdfStyles(theme);
 
   // The rendered definitions
   const renderedDefinitions = useMemo(

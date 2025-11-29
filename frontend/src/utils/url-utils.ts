@@ -1,12 +1,12 @@
 import { camelCase } from 'lodash';
-import { useHistory } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { LayerType } from 'config/types';
 import { useCallback, useMemo } from 'react';
 import { AnalysisParams } from './types';
 import { keepLayer } from './keep-layer-utils';
 
 /*
-  This custom hook tracks the browser url string, which is defined by the useHistory hook.
+  This custom hook tracks the browser url string, which is defined by the useNavigate hook.
   We created additional functions to update the url based on user events, such as select date
   or select layer.
 */
@@ -34,7 +34,8 @@ export const getUrlKey = (layer: LayerType): UrlLayerKey =>
     : UrlLayerKey.HAZARD;
 
 export const useUrlHistory = () => {
-  const { replace, location } = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
   // urlParams is very far down the react dependency tree, so needs
   // to be memoized to prevent a lot of unwanted rerendering
   const urlParams = useMemo(
@@ -43,7 +44,7 @@ export const useUrlHistory = () => {
   );
 
   const clearHistory = () => {
-    replace({ search: '' });
+    navigate({ search: '' }, { replace: true });
   };
 
   const appendLayerToUrl = useCallback(
@@ -90,9 +91,9 @@ export const useUrlHistory = () => {
         urlParams.set(layerKey, filteredSelectedLayers);
       }
 
-      replace({ search: urlParams.toString() });
+      navigate({ search: urlParams.toString() }, { replace: true });
     },
-    [replace, urlParams],
+    [navigate, urlParams],
   );
 
   const updateAnalysisParams = (analysisParams: AnalysisParams) => {
@@ -101,7 +102,7 @@ export const useUrlHistory = () => {
         urlParams.set(key, value);
       }
     });
-    replace({ search: urlParams.toString() });
+    navigate({ search: urlParams.toString() }, { replace: true });
   };
 
   const getAnalysisParams = (): AnalysisParams => {
@@ -116,15 +117,15 @@ export const useUrlHistory = () => {
     Object.keys(dummyAnalysisParams).forEach(key => {
       urlParams.delete(key);
     });
-    replace({ search: urlParams.toString() });
+    navigate({ search: urlParams.toString() }, { replace: true });
   };
 
   const updateHistory = useCallback(
     (key: string, value: string) => {
       urlParams.set(key, value);
-      replace({ search: urlParams.toString() });
+      navigate({ search: urlParams.toString() }, { replace: true });
     },
-    [replace, urlParams],
+    [navigate, urlParams],
   );
 
   const removeKeyFromUrl = useCallback(
@@ -135,9 +136,9 @@ export const useUrlHistory = () => {
         urlParams.delete('date');
       }
 
-      replace({ search: urlParams.toString() });
+      navigate({ search: urlParams.toString() }, { replace: true });
     },
-    [replace, urlParams],
+    [navigate, urlParams],
   );
 
   return {

@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
-import { Box, Typography, makeStyles } from '@material-ui/core';
+import { makeStyles } from '@mui/styles';
+import { Box, Typography } from '@mui/material';
 
 interface BlockPreviewHeaderProps {
   title: string;

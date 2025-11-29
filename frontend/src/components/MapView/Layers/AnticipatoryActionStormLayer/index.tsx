@@ -3,7 +3,7 @@ import { AnticipatoryActionLayerProps } from 'config/types';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { Source, Layer, MapLayerMouseEvent } from 'react-map-gl/maplibre';
 import { Feature, Point } from 'geojson';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import {
   dateRangeSelector,
   mapSelector,
@@ -107,12 +107,24 @@ const AnticipatoryActionStormLayer = React.memo(
 
       // Create coordinates arrays for past and future lines based on data_type
       const pastLineCoordinates = features
-        .filter(feature => feature.properties.data_type === 'analysis')
-        .map(feature => (feature.geometry as Point).coordinates);
+        .filter(
+          (feature: AAStormTimeSeriesFeature) =>
+            feature.properties.data_type === 'analysis',
+        )
+        .map(
+          (feature: AAStormTimeSeriesFeature) =>
+            (feature.geometry as Point).coordinates,
+        );
 
       const futureLineCoordinates = features
-        .filter(feature => feature.properties.data_type === 'forecast')
-        .map(feature => (feature.geometry as Point).coordinates);
+        .filter(
+          (feature: AAStormTimeSeriesFeature) =>
+            feature.properties.data_type === 'forecast',
+        )
+        .map(
+          (feature: AAStormTimeSeriesFeature) =>
+            (feature.geometry as Point).coordinates,
+        );
 
       // Add the first point of the future line to the past line to ensure they connect
       if (futureLineCoordinates.length > 0 && pastLineCoordinates.length > 0) {
@@ -143,7 +155,7 @@ const AnticipatoryActionStormLayer = React.memo(
         pastLineFeature,
         futureLineFeature,
         // Then add all the point features with icons
-        ...features.map(feature => ({
+        ...features.map((feature: AAStormTimeSeriesFeature) => ({
           ...feature,
           properties: {
             ...feature.properties,

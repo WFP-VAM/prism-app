@@ -1,12 +1,8 @@
-import {
-  Button,
-  Typography,
-  createStyles,
-  makeStyles,
-} from '@material-ui/core';
+import { Button, Typography } from '@mui/material';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { makeStyles, createStyles } from '@mui/styles';
 import { Scatter } from 'react-chartjs-2';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import { lightGrey } from 'muiTheme';
 import {
   AADataSelector,
@@ -21,7 +17,7 @@ import {
 } from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
-import { ClearAll, Reply } from '@material-ui/icons';
+import { ClearAll, Reply } from '@mui/icons-material';
 import { getFormattedDate } from 'utils/date-utils';
 import { getAAColor } from '../utils';
 import { useAACommonStyles } from '../../utils';

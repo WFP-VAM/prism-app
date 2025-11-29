@@ -4,10 +4,10 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { Panel } from 'config/types';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import thunk from 'redux-thunk';
+import { thunk } from 'redux-thunk';
 import Download from '.';
 
-const mockStore = configureStore([thunk]);
+const mockStore = configureStore([thunk as any]);
 
 test('renders as expected', () => {
   const realDateNow = Date.now.bind(global.Date);

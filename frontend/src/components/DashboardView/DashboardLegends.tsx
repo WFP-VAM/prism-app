@@ -1,5 +1,5 @@
-import { createStyles, makeStyles } from '@material-ui/core';
 import { memo } from 'react';
+import { makeStyles, createStyles } from '@mui/styles';
 import { DashboardMode } from 'config/types';
 import { dashboardModeSelector } from 'context/dashboardStateSlice';
 import { useSelector } from 'react-redux';

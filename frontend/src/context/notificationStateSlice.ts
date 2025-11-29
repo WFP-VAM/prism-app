@@ -1,22 +1,17 @@
-import {
-  AnyAction,
-  createSlice,
-  Middleware,
-  PayloadAction,
-} from '@reduxjs/toolkit';
-import { Color } from '@material-ui/lab';
+import { createSlice, Middleware, PayloadAction } from '@reduxjs/toolkit';
+import { AlertColor } from '@mui/material';
 import { stringHash } from 'utils/string-utils';
-import type { AppDispatch, RootState } from './store';
+import type { RootState } from './store';
 
 // to test notification reaction to various error codes, http://httpstat.us/404 can be used where 404 is the status to test.
 type NotificationConstructor = {
   message: string;
-  type: Color;
+  type: AlertColor;
 };
 
 export class Notification {
   readonly message: string;
-  readonly type: Color;
+  readonly type: AlertColor;
   readonly key: string; // each notification needs a unique ID. We generate a hash from the notification message
 
   constructor({ message, type }: NotificationConstructor) {
@@ -82,13 +77,15 @@ export const { addNotification, removeNotification } =
 
 // middleware to add error as notifications to this slice
 // Typing could improve?
-export const errorToNotificationMiddleware: Middleware<{}, RootState> =
-  () => (dispatch: AppDispatch) => (action: AnyAction) => {
+export const errorToNotificationMiddleware: Middleware =
+  ({ dispatch }) =>
+  next =>
+  (action: any) => {
     let dispatchResult;
     try {
       // catch sync errors
       // eslint-disable-next-line fp/no-mutation
-      dispatchResult = dispatch(action);
+      dispatchResult = next(action);
     } catch (err) {
       dispatch(
         addNotification({
@@ -108,7 +105,7 @@ export const errorToNotificationMiddleware: Middleware<{}, RootState> =
         return dispatchResult;
       }
 
-      const errorMessage = action.error.message || action.error;
+      const errorMessage = action.error?.message || action.error;
 
       dispatch(
         addNotification({

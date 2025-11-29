@@ -1,4 +1,4 @@
-import { Typography, Box } from '@material-ui/core';
+import { Typography, Box } from '@mui/material';
 import { DateRangeType } from 'config/types';
 import { useSelector } from 'react-redux';
 import { RootState } from 'context/store';

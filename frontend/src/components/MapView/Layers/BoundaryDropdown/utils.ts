@@ -1,4 +1,4 @@
-import { SelectProps } from '@material-ui/core';
+import { SelectProps } from '@mui/material';
 import {
   AdminCodeString,
   AdminLevelType,

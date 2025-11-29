@@ -1,5 +1,5 @@
-import { Typography, createStyles, makeStyles } from '@material-ui/core';
-import { ClassNameMap } from '@material-ui/styles';
+import { Typography } from '@mui/material';
+import { ClassNameMap, makeStyles, createStyles } from '@mui/styles';
 import { PopupData, PopupMetaData } from 'context/tooltipStateSlice';
 import { Position } from 'geojson';
 import { useSafeTranslation } from 'i18n';

@@ -1,11 +1,6 @@
 import React from 'react';
-import {
-  Box,
-  makeStyles,
-  MenuItem,
-  TextField,
-  Typography,
-} from '@material-ui/core';
+import { makeStyles } from '@mui/styles';
+import { Box, MenuItem, TextField, Typography } from '@mui/material';
 import { sortBy } from 'lodash';
 import {
   AdminCodeString,

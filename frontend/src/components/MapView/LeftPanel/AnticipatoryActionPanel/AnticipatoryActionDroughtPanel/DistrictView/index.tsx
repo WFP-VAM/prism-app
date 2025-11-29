@@ -1,13 +1,8 @@
-import {
-  Button,
-  Tooltip,
-  Typography,
-  createStyles,
-  makeStyles,
-} from '@material-ui/core';
+import { Button, Tooltip, Typography } from '@mui/material';
 import { lightGrey } from 'muiTheme';
+import { makeStyles, createStyles } from '@mui/styles';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import {
   AAView,
   AnticipatoryActionDataRow,
@@ -21,7 +16,7 @@ import {
   setAAView,
 } from 'context/anticipatoryAction/AADroughtStateSlice';
 import { useSafeTranslation } from 'i18n';
-import { ClearAll, Equalizer, Reply } from '@material-ui/icons';
+import { ClearAll, Equalizer, Reply } from '@mui/icons-material';
 import { AADataSeverityOrder, getAAIcon } from '../utils';
 import { useAACommonStyles } from '../../utils';
 import {

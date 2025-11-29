@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import { RootState } from 'context/store';
 import {
   AnticipatoryAction,
@@ -85,7 +85,7 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
 
   // Load data when component mounts
   useEffect(() => {
-    dispatch(loadAAData());
+    dispatch(loadAAData() as any);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -131,7 +131,7 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
         selectedDate as SelectedDateTimestamp,
       );
       const date = getFormattedDate(queryDate, DateFormat.Default) as string;
-      dispatch(setFilters({ selectedDate: date }));
+      dispatch(setFilters({ selectedDate: date }) as any);
     } else if (actionType === AnticipatoryAction.flood) {
       // Only load date data if we have a valid date item in the available dates
       // This prevents loading with an invalid date from a previous layer

@@ -1,5 +1,6 @@
-import { makeStyles, createStyles } from '@material-ui/core';
 import { useSafeTranslation } from 'i18n';
+
+import { makeStyles, createStyles } from '@mui/styles';
 
 export interface AAIconProps {
   background?: string;

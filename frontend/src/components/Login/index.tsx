@@ -1,11 +1,6 @@
-import {
-  createStyles,
-  Typography,
-  Button,
-  Grid,
-  makeStyles,
-} from '@material-ui/core';
+import { Typography, Button, Grid } from '@mui/material';
 import { useMsal } from '@azure/msal-react';
+import { makeStyles, createStyles } from '@mui/styles';
 import { msalRequest } from 'config';
 
 import { colors } from 'muiTheme';
@@ -18,7 +13,7 @@ function Login() {
   return (
     <div className={classes.container}>
       <Grid container spacing={3} className={classes.content}>
-        <Grid item>
+        <Grid size="auto">
           <Typography variant="h3" color="textPrimary" gutterBottom>
             Login Required
           </Typography>
@@ -35,7 +30,7 @@ function Login() {
           </Button>
         </Grid>
 
-        <Grid item>
+        <Grid size="auto">
           <img
             className={classes.image}
             src={wfpLogo}

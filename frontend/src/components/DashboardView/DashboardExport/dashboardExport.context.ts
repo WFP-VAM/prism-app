@@ -31,7 +31,7 @@ export type DashboardExportContextType = {
     handleClose: () => void;
     download: (format: 'pdf' | 'png') => void;
     isExporting: boolean;
-    printRef: React.RefObject<HTMLDivElement>;
+    printRef: React.RefObject<HTMLDivElement | null>;
     paperSize: PaperSize;
     setPaperSize: React.Dispatch<React.SetStateAction<PaperSize>>;
     toggles: ExportToggles;

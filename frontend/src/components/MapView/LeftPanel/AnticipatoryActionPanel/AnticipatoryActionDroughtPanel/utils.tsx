@@ -5,10 +5,9 @@ import {
   FormControlLabel,
   FormControlLabelProps,
   Radio,
-  RadioProps,
   useRadioGroup,
-  withStyles,
-} from '@material-ui/core';
+  styled,
+} from '@mui/material';
 import { black, borderGray, lightGrey } from 'muiTheme';
 import { useSafeTranslation } from 'i18n';
 import {
@@ -47,24 +46,25 @@ export const AADroughtColors = {
   },
 } as const;
 
-const StyledRadio = withStyles({
-  root: {
-    '&$checked': {
-      color: black,
-    },
-    padding: '0.25rem',
+const StyledRadio = styled(Radio)({
+  '&.Mui-checked': {
+    color: black,
   },
-})((props: RadioProps) => <Radio color="default" {...props} />);
+  padding: '0.25rem',
+});
 
-export const StyledRadioLabel = withStyles({
-  root: {
-    border: `1px solid ${borderGray}`,
-    borderRadius: '32px',
-    height: '1.75rem',
-    marginLeft: 0,
-    marginRight: '0.5rem',
-  },
-})(({ label, ...props }: Omit<FormControlLabelProps, 'control'>) => {
+const StyledFormControlLabel = styled(FormControlLabel)({
+  border: `1px solid ${borderGray}`,
+  borderRadius: '32px',
+  height: '1.75rem',
+  marginLeft: 0,
+  marginRight: '0.5rem',
+});
+
+export function StyledRadioLabel({
+  label,
+  ...props
+}: Omit<FormControlLabelProps, 'control'>) {
   const { t } = useSafeTranslation();
   const radioGroup = useRadioGroup();
   const checked = radioGroup?.value === props.value;
@@ -77,7 +77,7 @@ export const StyledRadioLabel = withStyles({
   const color = colorTags[label as string] || undefined;
 
   return (
-    <FormControlLabel
+    <StyledFormControlLabel
       style={{ background: checked ? lightGrey : undefined }}
       label={
         <span style={{ marginRight: '1rem' }}>
@@ -99,40 +99,38 @@ export const StyledRadioLabel = withStyles({
       {...props}
     />
   );
+}
+
+const StyledCheckbox = styled(Checkbox)({
+  '&.Mui-checked': {
+    color: black,
+  },
+  padding: '0.2rem',
 });
 
-const StyledCheckbox = withStyles({
-  root: {
-    '&$checked': {
-      color: black,
-    },
-    padding: '0.2rem',
-  },
-})((props: CheckboxProps) => <Checkbox color="default" {...props} />);
+const StyledCheckboxFormControlLabel = styled(FormControlLabel)({
+  border: `1px solid ${borderGray}`,
+  borderRadius: '2px',
+  height: '1.75rem',
+  marginLeft: 0,
+});
 
-export const StyledCheckboxLabel = withStyles({
-  root: {
-    border: `1px solid ${borderGray}`,
-    borderRadius: '2px',
-    height: '1.75rem',
-    marginLeft: 0,
-  },
-})(
-  ({
-    label,
-    checkBoxProps,
-    ...props
-  }: Omit<FormControlLabelProps, 'control'> & {
-    checkBoxProps: CheckboxProps;
-  }) => (
-    <FormControlLabel
+export function StyledCheckboxLabel({
+  label,
+  checkBoxProps,
+  ...props
+}: Omit<FormControlLabelProps, 'control'> & {
+  checkBoxProps: CheckboxProps;
+}) {
+  return (
+    <StyledCheckboxFormControlLabel
       style={{ background: checkBoxProps.checked ? lightGrey : undefined }}
       label={<span style={{ marginRight: '0.5rem' }}>{label}</span>}
       control={<StyledCheckbox {...checkBoxProps} />}
       {...props}
     />
-  ),
-);
+  );
+}
 
 const AACategoryPhaseMap: { [key: string]: any } = {
   na: {

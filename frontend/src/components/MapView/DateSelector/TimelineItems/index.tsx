@@ -1,11 +1,6 @@
 import { CSSProperties, memo, useCallback, useMemo } from 'react';
-import {
-  Fade,
-  Grid,
-  Tooltip,
-  createStyles,
-  makeStyles,
-} from '@material-ui/core';
+import { makeStyles, createStyles } from '@mui/styles';
+import { Fade, Grid, Tooltip } from '@mui/material';
 import { AnticipatoryAction, DateItem, DateRangeType } from 'config/types';
 import { grey } from 'muiTheme';
 import {
@@ -136,8 +131,7 @@ const TimelineItems = memo(
             >
               <Grid
                 key={`Root-${date.label}-${date.value}`}
-                item
-                xs
+                size="grow"
                 className={`${
                   date.isFirstDay ? classes.dateItemFull : classes.dateItem
                 }`}

@@ -5,9 +5,9 @@ import {
   Select,
   Theme,
   useMediaQuery,
-} from '@material-ui/core';
+} from '@mui/material';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import { AdminCodeString } from 'config/types';
 import {
   getSelectedBoundaries,
@@ -66,7 +66,6 @@ export function SimpleBoundaryDropdown({
       <Select
         style={{ color: 'black' }}
         multiple
-        placeholder={labelMessage}
         onClose={() => {
           // empty search so that component shows correct options
           // otherwise, we would only show selected options which satisfy the search

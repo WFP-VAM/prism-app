@@ -1,4 +1,4 @@
-import { IconButton, Menu, MenuItem, Tooltip } from '@material-ui/core';
+import { IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -27,7 +27,7 @@ import {
 } from 'components/MapView/utils';
 import { snakeCase } from 'lodash';
 import { getExposureAnalysisCsvData } from 'utils/csv-utils';
-import GetAppIcon from '@material-ui/icons/GetApp';
+import GetAppIcon from '@mui/icons-material/GetApp';
 
 function AnalysisDownloadButton() {
   const analysisResult = useSelector(analysisResultSelector);

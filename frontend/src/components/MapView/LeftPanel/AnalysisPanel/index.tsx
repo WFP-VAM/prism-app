@@ -1,16 +1,15 @@
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { makeStyles, createStyles } from '@mui/styles';
 import {
   Button,
-  createStyles,
   LinearProgress,
   Typography,
   IconButton,
   Theme,
   CircularProgress,
   Box,
-  makeStyles,
-} from '@material-ui/core';
-import { BarChartOutlined, CloseRounded } from '@material-ui/icons';
+} from '@mui/material';
+import { BarChartOutlined, CloseRounded } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'context/hooks';
 import { orderBy } from 'lodash';
 import { mapSelector, layersSelector } from 'context/mapStateSlice/selectors';

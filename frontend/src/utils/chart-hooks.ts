@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch } from 'context/hooks';
 import { GeoJsonProperties } from 'geojson';
 import { appConfig } from 'config';
 import {

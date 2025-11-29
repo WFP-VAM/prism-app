@@ -15,7 +15,7 @@ import {
 } from 'config/utils';
 import React, { useRef } from 'react';
 import simplify from '@turf/simplify';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
 import maxInscribedCircle from 'max-inscribed-circle'; // ts-ignore
@@ -123,7 +123,8 @@ export function useMapCallback<T extends keyof MapLayerEventType, U>(
   const dispatch = useDispatch();
   const map = useSelector(mapSelector);
   const { t } = useSafeTranslation();
-  const savedListener = useRef<(ev: MapLayerEventType[T] & Object) => void>();
+  const savedListener =
+    useRef<(ev: MapLayerEventType[T] & Object) => void>(undefined);
 
   React.useEffect(() => {
     if (!map) {

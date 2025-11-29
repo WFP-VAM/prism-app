@@ -1,5 +1,6 @@
 import { useContext, useMemo } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { shallowEqual } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import { Map as MaplibreMap } from 'maplibre-gl';
 import { LayerType } from 'config/types';
 import {

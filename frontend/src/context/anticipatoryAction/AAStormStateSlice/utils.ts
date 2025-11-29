@@ -1,4 +1,4 @@
-import { WindState, StormDataResponseBody } from 'prism-common/';
+import { WindState, StormDataResponseBody, AAStormTimeSeriesFeature } from 'prism-common/';
 import {
   AACategory,
   AACategoryDataToLandfallMap,
@@ -63,7 +63,7 @@ function createMergedGeoJSON(data: StormDataResponseBody) {
 
   // Add time series features if they exist
   if (data.time_series) {
-    data.time_series.features.forEach(feature => {
+    data.time_series.features.forEach((feature: AAStormTimeSeriesFeature) => {
       // eslint-disable-next-line fp/no-mutating-methods
       features.push(feature);
     });

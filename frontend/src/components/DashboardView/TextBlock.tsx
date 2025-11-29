@@ -1,6 +1,7 @@
 import React from 'react';
-import { Box, makeStyles, Typography } from '@material-ui/core';
-import { useDispatch, useSelector } from 'react-redux';
+import { makeStyles } from '@mui/styles';
+import { Box, Typography } from '@mui/material';
+import { useDispatch, useSelector } from 'context/hooks';
 import Markdown from 'react-markdown';
 import { useSafeTranslation } from 'i18n';
 import { DashboardMode } from 'config/types';
@@ -16,18 +17,18 @@ interface TextBlockProps {
   elementIndex: number;
 }
 
-const createMarkdownComponents = (classes: any) => ({
-  p: ({ children }: { children: React.ReactNode }) => (
+const createMarkdownComponents = (classes: any): any => ({
+  p: ({ children }: { children?: React.ReactNode }) => (
     <Typography variant="body1" className={classes.previewText}>
       {children}
     </Typography>
   ),
-  h1: ({ children }: { children: React.ReactNode }) => (
+  h1: ({ children }: { children?: React.ReactNode }) => (
     <Typography variant="h4" className={classes.previewHeading}>
       {children}
     </Typography>
   ),
-  h2: ({ children }: { children: React.ReactNode }) => (
+  h2: ({ children }: { children?: React.ReactNode }) => (
     <Typography variant="h5" className={classes.previewHeading}>
       {children}
     </Typography>
@@ -79,7 +80,6 @@ function TextBlock({
     return (
       <Box className={classes.previewContainer}>
         <Markdown
-          linkTarget="_blank"
           components={createMarkdownComponents(classes)}
           allowedElements={[
             'p',

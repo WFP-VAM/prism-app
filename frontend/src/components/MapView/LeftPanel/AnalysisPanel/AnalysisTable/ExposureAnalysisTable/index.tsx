@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
+import { makeStyles, createStyles } from '@mui/styles';
 import {
-  createStyles,
   Table,
   TableBody,
   TableCell,
@@ -11,10 +11,9 @@ import {
   TableSortLabel,
   Theme,
   Typography,
-  makeStyles,
-} from '@material-ui/core';
+} from '@mui/material';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
 
 import { useSafeTranslation } from 'i18n';
@@ -196,18 +195,15 @@ const ExposureAnalysisTable = memo(
           }
           classes={{
             root: classes.tablePagination,
-            select: classes.select,
-            caption: classes.caption,
-            spacer: classes.spacer,
           }}
-          nextIconButtonProps={{
-            classes: {
-              root: classes.nextButton,
-            },
-          }}
-          backIconButtonProps={{
-            classes: {
-              root: classes.backButton,
+          slotProps={{
+            actions: {
+              nextButton: {
+                className: classes.nextButton,
+              },
+              previousButton: {
+                className: classes.backButton,
+              },
             },
           }}
         />

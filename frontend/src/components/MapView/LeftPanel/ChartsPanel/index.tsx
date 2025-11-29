@@ -2,21 +2,20 @@ import {
   Box,
   Button,
   Checkbox,
-  createStyles,
   FormControl,
   FormControlLabel,
   FormGroup,
   Input,
   InputLabel,
   ListItemText,
-  makeStyles,
   MenuItem,
   MenuProps,
   Select,
   Switch,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import { GeoJsonProperties } from 'geojson';
+import { makeStyles, createStyles } from '@mui/styles';
 import React, {
   memo,
   useCallback,
@@ -62,7 +61,10 @@ import {
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const menuProps: Partial<MenuProps> = {
-  getContentAnchorEl: null,
+  anchorOrigin: {
+    vertical: 'bottom',
+    horizontal: 'left',
+  },
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
@@ -195,7 +197,7 @@ const ChartsPanel = memo(() => {
   const tabValue = useSelector(leftPanelTabValueSelector);
 
   const onChangeChartLayers = useCallback(
-    (event: React.ChangeEvent<{ value: unknown }>) => {
+    (event: any) => {
       if (compareLocations || comparePeriods) {
         setSelectedLayerTitles([event.target.value] as string[]);
       } else {

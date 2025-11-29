@@ -3,50 +3,31 @@ import {
   Grid,
   ListItemText,
   MenuItem,
-  Theme,
   useMediaQuery,
   useTheme,
-  withStyles,
-} from '@material-ui/core';
-import Menu, { MenuProps } from '@material-ui/core/Menu';
-import { ArrowDropDown } from '@material-ui/icons';
+  styled,
+} from '@mui/material';
+import Menu from '@mui/material/Menu';
+import { ArrowDropDown } from '@mui/icons-material';
 import React, { useState } from 'react';
 import { useSafeTranslation } from 'i18n';
 
-const StyledMenu = withStyles((theme: Theme) => ({
-  paper: {
+const StyledMenu = styled(Menu)(({ theme }) => ({
+  '& .MuiPaper-root': {
     border: '1px solid #d3d4d5',
     backgroundColor: theme.palette.primary.main,
   },
-}))((props: MenuProps) => (
-  <Menu
-    elevation={0}
-    getContentAnchorEl={null}
-    anchorOrigin={{
-      vertical: 'bottom',
-      horizontal: 'center',
-    }}
-    transformOrigin={{
-      vertical: 'top',
-      horizontal: 'center',
-    }}
-    {...props}
-  />
-));
+}));
 
-const StyledButton = withStyles(() => ({
-  root: {
-    marginTop: '0.4rem',
-    marginBottom: '0.1rem',
-    fontSize: '0.7rem',
-  },
-}))(Button);
+const StyledButton = styled(Button)({
+  marginTop: '0.4rem',
+  marginBottom: '0.1rem',
+  fontSize: '0.7rem',
+});
 
-const StyledMenuItem = withStyles((theme: Theme) => ({
-  root: {
-    color: theme.palette.common.white,
-  },
-}))(MenuItem);
+const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
+  color: theme.palette.common.white,
+}));
 
 interface IProps {
   mainLabel: string;
@@ -73,7 +54,7 @@ function MultiOptionsButton({ mainLabel, options }: IProps) {
   };
 
   return (
-    <Grid item>
+    <Grid>
       <StyledButton
         variant="contained"
         color="primary"

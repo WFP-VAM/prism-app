@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { createStyles, makeStyles } from '@material-ui/core';
+import { makeStyles, createStyles } from '@mui/styles';
 
 const TooltipItem = memo(({ layerTitle, color }: TooltipItemProps) => {
   const classes = useStyles();

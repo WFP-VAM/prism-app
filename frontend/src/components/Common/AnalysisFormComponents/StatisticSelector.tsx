@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { makeStyles } from '@mui/styles';
 import {
   FormControl,
   FormControlLabel,
@@ -7,8 +8,7 @@ import {
   Typography,
   TextField,
   MenuItem,
-  makeStyles,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   AggregationOperations,
   ExposureOperator,

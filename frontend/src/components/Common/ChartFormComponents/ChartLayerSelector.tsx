@@ -1,11 +1,5 @@
-import React from 'react';
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  makeStyles,
-} from '@material-ui/core';
+import { makeStyles } from '@mui/styles';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import { LayerKey, WMSLayerProps } from 'config/types';
 import { getWMSLayersWithChart } from 'config/utils';
 import { useSafeTranslation } from 'i18n';
@@ -28,7 +22,7 @@ function ChartLayerSelector({
 
   const chartLayers = getWMSLayersWithChart();
 
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleChange = (event: any) => {
     onChange(event.target.value as LayerKey);
   };
 

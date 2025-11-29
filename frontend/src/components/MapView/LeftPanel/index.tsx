@@ -1,6 +1,7 @@
-import { Drawer, Theme, createStyles, makeStyles } from '@material-ui/core';
+import { Drawer, Theme } from '@mui/material';
+import { makeStyles, createStyles } from '@mui/styles';
 import React, { memo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import {
   leftPanelTabValueSelector,
   setTabValue,

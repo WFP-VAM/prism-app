@@ -1,9 +1,8 @@
 import { useMemo, useState, useRef } from 'react';
+import { makeStyles, createStyles } from '@mui/styles';
 import type { MouseEvent as ReactMouseEvent } from 'react';
 import {
   Typography,
-  makeStyles,
-  createStyles,
   IconButton,
   Paper,
   Button,
@@ -16,8 +15,8 @@ import {
   CircularProgress,
   Menu,
   MenuItem,
-} from '@material-ui/core';
-import { Close, TableChart, GetApp } from '@material-ui/icons';
+} from '@mui/material';
+import { Close, TableChart, GetApp } from '@mui/icons-material';
 import { Line } from 'react-chartjs-2';
 import 'chartjs-plugin-annotation';
 import { useSafeTranslation } from 'i18n';
@@ -173,8 +172,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadMenuAnchor, setDownloadMenuAnchor] =
     useState<null | HTMLElement>(null);
-  const hydrographChartRef = useRef<Line>(null);
-  const probabilityChartRef = useRef<Line>(null);
+  const hydrographChartRef = useRef<any>(null);
+  const probabilityChartRef = useRef<any>(null);
 
   const floodState = useSelector(AAFloodDataSelector);
   const probs = floodState.probabilitiesData[station.station_name];

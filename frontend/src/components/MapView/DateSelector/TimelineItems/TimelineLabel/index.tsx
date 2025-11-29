@@ -1,4 +1,5 @@
-import { createStyles, Typography, makeStyles } from '@material-ui/core';
+import { Typography } from '@mui/material';
+import { makeStyles, createStyles } from '@mui/styles';
 import { DateRangeType } from 'config/types';
 import { DateFormat } from 'utils/name-utils';
 import { format } from 'date-fns';

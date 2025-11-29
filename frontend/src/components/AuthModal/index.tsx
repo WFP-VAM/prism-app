@@ -6,18 +6,17 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
+import { makeStyles, createStyles } from '@mui/styles';
 import {
   Box,
   Button,
-  createStyles,
   Dialog,
   DialogTitle,
   TextField,
   Theme,
   Typography,
-  makeStyles,
-} from '@material-ui/core';
+} from '@mui/material';
 import { useSafeTranslation } from 'i18n';
 import { layersSelector } from 'context/mapStateSlice/selectors';
 import { setUserAuthGlobal, userAuthSelector } from 'context/serverStateSlice';

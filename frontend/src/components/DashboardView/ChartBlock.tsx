@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
+import { makeStyles } from '@mui/styles';
 import { useSelector } from 'react-redux';
 import {
   Box,
-  makeStyles,
   Typography,
   CircularProgress,
   Button,
@@ -12,9 +12,9 @@ import {
   MenuItem,
   IconButton,
   Tooltip,
-} from '@material-ui/core';
-import ImageIcon from '@material-ui/icons/Image';
-import GetAppIcon from '@material-ui/icons/GetApp';
+} from '@mui/material';
+import ImageIcon from '@mui/icons-material/Image';
+import GetAppIcon from '@mui/icons-material/GetApp';
 import {
   DashboardChartConfig,
   AdminLevelType,

@@ -1,5 +1,5 @@
-import { Typography, createStyles, makeStyles } from '@material-ui/core';
-import { ClassNameMap } from '@material-ui/styles';
+import { Typography } from '@mui/material';
+import { ClassNameMap, makeStyles, createStyles } from '@mui/styles';
 import React from 'react';
 import Markdown from 'react-markdown';
 
@@ -8,7 +8,7 @@ interface LegendMarkdownProps {
 }
 
 const p = (classes: ClassNameMap<'legendTextMarkdown'>) =>
-  function _p({ children: pChildren }: { children: React.ReactNode }) {
+  function _p({ children: pChildren }: { children?: React.ReactNode }) {
     return (
       <Typography variant="h5" className={classes.legendTextMarkdown}>
         {pChildren}
@@ -20,9 +20,8 @@ function LegendMarkdown({ children }: LegendMarkdownProps) {
   const classes = useStyles();
   return (
     <Markdown
-      linkTarget="_blank"
       components={{
-        p: p(classes),
+        p: p(classes) as any,
       }}
       allowedElements={['p', 'h5', 'strong', 'em', 'a']}
     >
