@@ -4,7 +4,10 @@ import rawTables from './tables.json';
 import rawDashboards from './dashboards.json';
 
 // Country-specific translation overrides shared translation
-const translation = { pt: {}, en: { 'Admin 1': 'Province' } };
+const translation = {
+  pt: {},
+  en: { 'Admin 1': 'Province', 'Admin 2': 'District' },
+};
 const rawReports = {};
 
 export default {

@@ -1,11 +1,11 @@
 import appConfig from './prism.json';
 import rawLayers from './layers.json';
 import rawTables from './tables.json';
-import mongoliaTranslation from './translation.json';
 
 const rawReports = {};
 // Country-specific translation overrides shared translation
-const translation = { mn: mongoliaTranslation };
+// Using empty object since translation.json is already used as the source for shared mongolian translations
+const translation = { mn: {} };
 
 export default {
   appConfig,
