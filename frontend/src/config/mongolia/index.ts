@@ -4,6 +4,7 @@ import rawTables from './tables.json';
 import mongoliaTranslation from './translation.json';
 
 const rawReports = {};
+// Country-specific translation overrides shared translation
 const translation = { mn: mongoliaTranslation };
 
 export default {
