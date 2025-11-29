@@ -107,6 +107,8 @@ const DateSelector = memo(() => {
   today.setUTCHours(12, 0, 0, 0); // Normalize today's date
 
   const timeLine = useRef(null);
+  const timelineDraggableRef = useRef<HTMLDivElement>(null);
+  const pointerDraggableRef = useRef<HTMLDivElement>(null);
 
   const { t } = useSafeTranslation();
   const { updateHistory } = useUrlHistory();
@@ -723,8 +725,13 @@ const DateSelector = memo(() => {
               }}
               position={timelinePosition}
               onStop={onTimelineStop}
+              nodeRef={timelineDraggableRef}
             >
-              <div className={classes.timeline} id={TIMELINE_ID}>
+              <div
+                className={classes.timeline}
+                id={TIMELINE_ID}
+                ref={timelineDraggableRef}
+              >
                 <Grid
                   container
                   alignItems="stretch"
@@ -763,8 +770,13 @@ const DateSelector = memo(() => {
                   onStart={onPointerStart}
                   onStop={onPointerStop}
                   onDrag={onPointerDrag}
+                  nodeRef={pointerDraggableRef}
                 >
-                  <div className={classes.pointer} id={POINTER_ID}>
+                  <div
+                    className={classes.pointer}
+                    id={POINTER_ID}
+                    ref={pointerDraggableRef}
+                  >
                     <img
                       src={TickSvg}
                       alt="Tick Svg"
