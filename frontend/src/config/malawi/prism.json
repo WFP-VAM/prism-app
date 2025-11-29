@@ -10,7 +10,7 @@
   },
   "header": {
     "title": "PRISM",
-    "logo": "images/mwi-met.png"
+    "logo": "/images/mwi-met.png"
   },
   "map": {
     "boundingBox": [32.67, -17.13, 35.92, -9.37]

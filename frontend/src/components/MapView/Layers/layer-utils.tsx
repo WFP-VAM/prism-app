@@ -14,14 +14,40 @@ import { i18nTranslator } from 'i18n';
 import { getFeatureInfoPropsData } from 'components/MapView/utils';
 import { MapLayerMouseEvent } from 'maplibre-gl';
 import { LayerDefinitions } from 'config/utils';
+import iconPoint from 'public/images/icon_point.svg';
+import iconRaster from 'public/images/icon_raster.svg';
+import iconPolygon from 'public/images/icon_polygon.svg';
 
 export function legendToStops(
   legend: LegendDefinition = [],
 ): [number, string][] {
-  return legend.map(({ value, color }) => [
-    typeof value === 'string' ? parseFloat(value.replace('< ', '')) : value,
-    color,
-  ]);
+  return legend
+    .map(({ value, label, color }) => {
+      // Use value if available, otherwise fall back to label
+      const valueToParse =
+        value ?? (typeof label === 'string' ? label : label?.value);
+
+      if (valueToParse === null || valueToParse === undefined) {
+        return [NaN, color];
+      }
+
+      // Parse the value, handling strings with special characters like %, +, <
+      const parsedValue =
+        typeof valueToParse === 'string'
+          ? parseFloat(
+              valueToParse
+                .replace(/< /g, '')
+                .replace(/%/g, '')
+                .replace(/\+/g, '')
+                .trim(),
+            )
+          : valueToParse;
+
+      return [parsedValue, color];
+    })
+    .filter(
+      ([numValue]) => typeof numValue === 'number' && !Number.isNaN(numValue),
+    ) as [number, string][];
 }
 
 export function getLayerGeometry(
@@ -40,11 +66,10 @@ export function getLayerGeometry(
   return 'unknown';
 }
 
-// TODO - load icons from within "src" to leverage compiler saftey
 const geometryIconSrc = {
-  point: 'images/icon_point.svg',
-  raster: 'images/icon_raster.svg',
-  polygon: 'images/icon_polygon.svg',
+  point: iconPoint,
+  raster: iconRaster,
+  polygon: iconPolygon,
 };
 
 export function getLayerGeometryIcon(layer: LayerType) {

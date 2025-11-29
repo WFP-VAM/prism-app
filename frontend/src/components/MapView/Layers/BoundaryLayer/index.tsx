@@ -1,14 +1,13 @@
 import { memo, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { BoundaryLayerProps, MapEventWrapFunctionProps } from 'config/types';
-import { LayerData } from 'context/layers/layer-data';
 import { showPopup } from 'context/tooltipStateSlice';
 import { Source, Layer, MapLayerMouseEvent } from 'react-map-gl/maplibre';
 import { isPrimaryBoundaryLayer } from 'config/utils';
 import { toggleSelectedBoundary } from 'context/mapSelectionLayerStateSlice';
-import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { useMapState } from 'utils/useMapState';
 import { getFullLocationName } from 'utils/name-utils';
+import { useBoundaryData } from 'utils/useBoundaryData';
 
 import { Map as MaplibreMap } from 'maplibre-gl';
 import {
@@ -85,10 +84,7 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
     !layer.minZoom,
   );
 
-  const boundaryLayer = useSelector(layerDataSelector(layer.id)) as
-    | LayerData<BoundaryLayerProps>
-    | undefined;
-  const { data } = boundaryLayer || {};
+  const { data } = useBoundaryData(layer.id, selectedMap);
 
   const layerId = getLayerMapId(layer.id, 'fill');
 

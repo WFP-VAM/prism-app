@@ -1,5 +1,11 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { DateItem } from 'config/types';
+import {
+  CoverageEndDateTimestamp,
+  CoverageStartDateTimestamp,
+  DateItem,
+  DisplayDateTimestamp,
+  QueryDateTimestamp,
+} from 'config/types';
 import { StormDataResponseBody } from 'prism-common/';
 import type { CreateAsyncThunkTypes, RootState } from '../../store';
 import { AAStormWindStateReports, AnticipatoryActionState } from './types';
@@ -102,10 +108,10 @@ export const loadWindStateReports = createAsyncThunk<
         const utcDate = new Date(dateStr + 'T12:00:00.000Z');
         const timestamp = utcDate.getTime();
         return {
-          displayDate: timestamp,
-          queryDate: timestamp,
-          startDate: timestamp,
-          endDate: timestamp,
+          displayDate: timestamp as DisplayDateTimestamp,
+          queryDate: timestamp as QueryDateTimestamp,
+          startDate: timestamp as CoverageStartDateTimestamp,
+          endDate: timestamp as CoverageEndDateTimestamp,
           stormNames: Object.keys(responseData[dateStr]),
         };
       });

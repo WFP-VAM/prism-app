@@ -109,6 +109,7 @@ export default defineConfig({
       serviceWorker: '/src/serviceWorker',
       src: '/src',
       test: '/test',
+      public: '/public',
     },
   },
 });

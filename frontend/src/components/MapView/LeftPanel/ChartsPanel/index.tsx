@@ -30,7 +30,6 @@ import { appConfig } from 'config';
 import {
   AdminCodeString,
   AdminLevelType,
-  BoundaryLayerProps,
   PanelSize,
   WMSLayerProps,
   Panel,
@@ -39,14 +38,16 @@ import {
   getBoundaryLayersByAdminLevel,
   getWMSLayersWithChart,
 } from 'config/utils';
-import { LayerData } from 'context/layers/layer-data';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
-import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
+import { useBoundaryData } from 'utils/useBoundaryData';
 import { buildCsvFileName, getProperties } from 'components/MapView/utils';
 import DownloadCsvButton from 'components/MapView/DownloadCsvButton';
+import {
+  ChartLocationSelector,
+  ChartDateRangeSelector,
+} from 'components/Common/ChartFormComponents';
 import ChartSection from './ChartSection';
-import LocationSelector from './LocationSelector';
 import TimePeriodSelector from './TimePeriodSelector';
 import DateSlider from './DateSlider';
 import {
@@ -71,7 +72,7 @@ const menuProps: Partial<MenuProps> = {
 };
 
 // Chart configuration
-const { multiCountry, country, countryAdmin0Id } = appConfig;
+const { multiCountry, countryAdmin0Id } = appConfig;
 const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
 const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 const chartLayers = getWMSLayersWithChart();
@@ -83,18 +84,13 @@ const oneYearInTicks = 34;
 const tabPanelType = Panel.Charts;
 
 const ChartsPanel = memo(() => {
-  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
-    | LayerData<BoundaryLayerProps>
-    | undefined;
-  const { data } = boundaryLayerData || {};
+  const { data } = useBoundaryData(boundaryLayer.id);
   const classes = useStyles();
   const [compareLocations, setCompareLocations] = useState(false);
   const [comparePeriods, setComparePeriods] = useState(false);
 
   // first location state
-  const [admin0Key, setAdmin0Key] = useState<AdminCodeString>(
-    '' as AdminCodeString,
-  );
+  const [admin0Key] = useState<AdminCodeString>('' as AdminCodeString);
   const [admin1Key, setAdmin1Key] = useState<AdminCodeString>(
     '' as AdminCodeString,
   );
@@ -629,45 +625,95 @@ const ChartsPanel = memo(() => {
             checked={compareLocations}
           />
 
-          <LocationSelector
-            admin0Key={admin0Key}
-            admin1Key={admin1Key}
-            admin2Key={admin2Key}
-            boundaryLayer={boundaryLayer}
-            country={country}
-            countryAdmin0Id={countryAdmin0Id}
-            data={data}
-            getProperties={getProperties}
-            multiCountry={multiCountry}
-            setAdmin0Key={setAdmin0Key}
-            setAdmin1Key={setAdmin1Key}
-            setAdmin2Key={setAdmin2Key}
-            setAdminLevel={setAdminLevel}
-            setAdminProperties={setAdminProperties}
-            setSelectedAdmin1Area={setSelectedAdmin1Area}
-            setSelectedAdmin2Area={setSelectedAdmin2Area}
-            title={compareLocations ? t('Location 1') : null}
-          />
-          {compareLocations && (
-            <LocationSelector
-              admin0Key={secondAdmin0Key}
-              admin1Key={secondAdmin1Key}
-              admin2Key={secondAdmin2Key}
+          <Box style={{ paddingLeft: 20, paddingRight: 20 }}>
+            {compareLocations && (
+              <Typography
+                style={{
+                  color: 'black',
+                  fontWeight: 600,
+                  marginBottom: 8,
+                  marginLeft: 10,
+                }}
+                variant="body2"
+              >
+                {t('Location 1')}
+              </Typography>
+            )}
+            <ChartLocationSelector
+              boundaryLayerData={data}
               boundaryLayer={boundaryLayer}
-              country={country}
-              countryAdmin0Id={countryAdmin0Id}
-              data={data}
-              getProperties={getProperties}
-              multiCountry={multiCountry}
-              setAdmin0Key={setSecondAdmin0Key}
-              setAdmin1Key={setSecondAdmin1Key}
-              setAdmin2Key={setSecondAdmin2Key}
-              setAdminLevel={setSecondAdminLevel}
-              setAdminProperties={setSecondAdminProperties}
-              setSelectedAdmin1Area={setSecondSelectedAdmin1Area}
-              setSelectedAdmin2Area={setSecondSelectedAdmin2Area}
-              title={compareLocations ? t('Location 2') : null}
+              admin1Key={admin1Key}
+              admin2Key={admin2Key}
+              stacked
+              hideLabel={compareLocations}
+              onAdmin1Change={(key, properties, level) => {
+                setAdmin1Key(key);
+                setAdmin2Key('' as AdminCodeString);
+                setAdminLevel(level);
+                setAdminProperties(properties);
+                const admin1Name =
+                  data &&
+                  boundaryLayer?.adminLevelNames?.[level - 1] &&
+                  properties?.[boundaryLayer.adminLevelNames[level - 1]];
+                setSelectedAdmin1Area(admin1Name || '');
+                setSelectedAdmin2Area('');
+              }}
+              onAdmin2Change={(key, properties, level) => {
+                setAdmin2Key(key);
+                setAdminLevel(level);
+                setAdminProperties(properties);
+                const admin2Name =
+                  data &&
+                  boundaryLayer?.adminLevelNames?.[level - 1] &&
+                  properties?.[boundaryLayer.adminLevelNames[level - 1]];
+                setSelectedAdmin2Area(admin2Name || '');
+              }}
             />
+          </Box>
+          {compareLocations && (
+            <Box style={{ paddingLeft: 20, paddingRight: 20 }}>
+              <Typography
+                style={{
+                  color: 'black',
+                  fontWeight: 600,
+                  marginBottom: 8,
+                  marginLeft: 10,
+                }}
+                variant="body2"
+              >
+                {t('Location 2')}
+              </Typography>
+              <ChartLocationSelector
+                boundaryLayerData={data}
+                boundaryLayer={boundaryLayer}
+                admin1Key={secondAdmin1Key}
+                admin2Key={secondAdmin2Key}
+                stacked
+                hideLabel
+                onAdmin1Change={(key, properties, level) => {
+                  setSecondAdmin1Key(key);
+                  setSecondAdmin2Key('' as AdminCodeString);
+                  setSecondAdminLevel(level);
+                  setSecondAdminProperties(properties);
+                  const admin1Name =
+                    data &&
+                    boundaryLayer?.adminLevelNames?.[level - 1] &&
+                    properties?.[boundaryLayer.adminLevelNames[level - 1]];
+                  setSecondSelectedAdmin1Area(admin1Name || '');
+                  setSecondSelectedAdmin2Area('');
+                }}
+                onAdmin2Change={(key, properties, level) => {
+                  setSecondAdmin2Key(key);
+                  setSecondAdminLevel(level);
+                  setSecondAdminProperties(properties);
+                  const admin2Name =
+                    data &&
+                    boundaryLayer?.adminLevelNames?.[level - 1] &&
+                    properties?.[boundaryLayer.adminLevelNames[level - 1]];
+                  setSecondSelectedAdmin2Area(admin2Name || '');
+                }}
+              />
+            </Box>
           )}
         </FormGroup>
 
@@ -705,24 +751,48 @@ const ChartsPanel = memo(() => {
 
           {comparePeriods && (
             <>
-              <TimePeriodSelector
-                startDate={startDate1}
-                setStartDate={setStartDate1}
-                endDate={endDate1}
-                setEndDate={setEndDate1}
-                title={comparePeriods ? t('Period 1') : null}
-                startLabel="Start"
-                endLabel="End"
-              />
-              <TimePeriodSelector
-                startDate={startDate2}
-                setStartDate={setStartDate2}
-                endDate={endDate2}
-                setEndDate={setEndDate2}
-                title={comparePeriods ? t('Period 2') : null}
-                startLabel="Start"
-                endLabel="End"
-              />
+              <Box style={{ paddingLeft: 20, paddingRight: 20 }}>
+                <Typography
+                  style={{
+                    color: 'black',
+                    fontWeight: 600,
+                    marginBottom: 8,
+                    marginLeft: 10,
+                  }}
+                  variant="body2"
+                >
+                  {t('Period 1')}
+                </Typography>
+                <ChartDateRangeSelector
+                  startDate={startDate1}
+                  endDate={endDate1}
+                  onStartDateChange={setStartDate1}
+                  onEndDateChange={setEndDate1}
+                  stacked
+                  hideLabel
+                />
+              </Box>
+              <Box style={{ paddingLeft: 20, paddingRight: 20 }}>
+                <Typography
+                  style={{
+                    color: 'black',
+                    fontWeight: 600,
+                    marginBottom: 8,
+                    marginLeft: 10,
+                  }}
+                  variant="body2"
+                >
+                  {t('Period 2')}
+                </Typography>
+                <ChartDateRangeSelector
+                  startDate={startDate2}
+                  endDate={endDate2}
+                  onStartDateChange={setStartDate2}
+                  onEndDateChange={setEndDate2}
+                  stacked
+                  hideLabel
+                />
+              </Box>
             </>
           )}
         </FormGroup>
@@ -889,6 +959,7 @@ const useStyles = makeStyles(() =>
     },
     switch: {
       marginRight: 2,
+      marginBottom: 10,
     },
     switchTrack: {
       backgroundColor: '#E0E0E0',

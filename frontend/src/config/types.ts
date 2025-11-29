@@ -162,7 +162,9 @@ export function checkRequiredKeys<T extends Record<string, any>>(
     Object.keys(maybeType)
       .filter(key => !allKeys.includes(key))
       .forEach(key =>
-        console.warn(`Found unknown key '${key}' on config for ${id}`),
+        console.warn(
+          `Found unknown key '${key}' on config for ${id || maybeType.id}`,
+        ),
       );
   }
   return !missingKey;
@@ -339,6 +341,9 @@ export class CommonLayerProps {
   validity?: Validity; // Include additional dates in the calendar based on the number provided.
 
   @optional
+  coverageWindow?: CoverageWindow; // see docs/dates.md for explanations
+
+  @optional
   disableAnalysis?: boolean; // Hide layer in Analysis feature
 }
 
@@ -454,9 +459,9 @@ export enum DatesPropagation {
 
 export type ValidityPeriod = {
   // eslint-disable-next-line camelcase
-  start_date_field: string;
+  start_date_field: string; // name of the attribute to use for start date
   // eslint-disable-next-line camelcase
-  end_date_field: string;
+  end_date_field: string; // name of the attribute to use for end date
 };
 
 export type SeasonBoundsConfig = {
@@ -471,6 +476,13 @@ export type SeasonBounds = {
 
 export type Validity = {
   mode: DatesPropagation; // Propagation mode for dates.
+  backward?: number; // Number of days/dekades backward.
+  forward?: number; // Number of days/dekades forward.
+  seasons?: SeasonBoundsConfig[];
+};
+
+export type CoverageWindow = {
+  mode: DatesPropagation;
   backward?: number; // Number of days/dekades backward.
   forward?: number; // Number of days/dekades forward.
   seasons?: SeasonBoundsConfig[];
@@ -824,12 +836,15 @@ export type PanelItem = {
   label: string;
   icon: React.ReactNode;
   children?: PanelItem[];
+  reportIndex?: number;
+  reportPath?: string;
 };
 
 export enum Panel {
   None = 'none',
   Layers = 'layers',
   Charts = 'charts',
+  Dashboard = 'dashboard',
   Analysis = 'analysis',
   Tables = 'tables',
   AnticipatoryActionDrought = 'anticipatory_action_drought',
@@ -843,12 +858,34 @@ export type LeftPanelState = {
   panelSize: PanelSize;
 };
 
+// these "nominal" types help clarify what type of date we have
+// around the code base, as they are incompatible.
+// The second part of the type (after &) is discarded by the
+// typescript compiler, so there is no runtime impact.
+// refer to docs/dates.md for conceptual explanations
+export type SelectedDateTimestamp = number & { SelectedDateTimestamp: {} };
+export type ReferenceDateTimestamp = number & { ReferenceDateTimestamp: {} };
+export type QueryDateTimestamp = number & { QueryDateTimestamp: {} };
+export type DisplayDateTimestamp = number & { DisplayDateTimestamp: {} };
+export type CoverageStartDateTimestamp = number & {
+  CoverageStartDateTimestamp: {};
+};
+export type CoverageEndDateTimestamp = number & {
+  CoverageEndDateTimestamp: {};
+};
+export type ValidityStartDateTimestamp = number & {
+  ValidityStartDateTimestamp: {};
+};
+export type ValidityEndDateTimestamp = number & {
+  ValidityEndDateTimestamp: {};
+};
+
 export type DateItem = {
-  displayDate: number; // Date that will be rendered in the calendar.
-  queryDate: number; // Date that will be used in the WMS request.
+  displayDate: DisplayDateTimestamp; // Date that will be rendered in the calendar.
+  queryDate: QueryDateTimestamp; // Date that will be used in the WMS request.
   // start and end dates of the date range.
-  startDate?: number;
-  endDate?: number;
+  startDate?: CoverageStartDateTimestamp;
+  endDate?: CoverageEndDateTimestamp;
 };
 
 export type AvailableDates = {
@@ -976,10 +1013,6 @@ export interface BaseLayer {
   dates: number[];
 }
 
-export interface ValidityLayer extends BaseLayer {
-  validity: Validity;
-}
-
 export interface PathLayer extends BaseLayer {
   path: string;
   validityPeriod: ValidityPeriod;
@@ -1020,4 +1053,85 @@ export class AnticipatoryActionLayerProps extends CommonLayerProps {
 
   @makeRequired
   declare title: string;
+}
+
+export enum DashboardMapPosition {
+  left = 'left',
+  right = 'right',
+}
+
+export enum DashboardElementType {
+  CHART = 'CHART',
+  TEXT = 'TEXT',
+  TABLE = 'TABLE',
+  MAP = 'MAP',
+}
+
+export enum DashboardMode {
+  EDIT = 'edit',
+  VIEW = 'view',
+}
+
+export enum ChartHeight {
+  TALL = 'tall',
+  MEDIUM = 'medium',
+  SHORT = 'short',
+}
+
+export interface DashboardChartConfig {
+  type: DashboardElementType.CHART;
+  startDate: string;
+  endDate?: string;
+  layerId: string;
+  adminUnitLevel?: number;
+  adminUnitId?: number;
+  chartHeight?: ChartHeight;
+}
+
+export interface DashboardTextConfig {
+  type: DashboardElementType.TEXT;
+  content: string;
+  textUpdatedAt?: string;
+}
+
+export interface DashboardTableConfig {
+  type: DashboardElementType.TABLE;
+  startDate: string;
+  hazardLayerId: string;
+  baselineLayerId: string;
+  threshold?: ThresholdDefinition;
+  stat: AggregationOperations;
+  maxRows?: number;
+  addResultToMap?: boolean;
+  sortColumn?: string | number;
+  sortOrder?: 'asc' | 'desc';
+}
+
+export interface DashboardMapConfig {
+  type: DashboardElementType.MAP;
+  defaultDate?: string;
+  mapPosition?: DashboardMapPosition;
+  minMapBounds?: number[];
+  title?: string;
+  legendVisible?: boolean; // default: true - can be set in prism.json
+  legendPosition?: 'left' | 'right'; // default: 'right' - can be set in prism.json
+  preSelectedMapLayers: Array<{
+    layerId: string;
+    opacity?: number;
+  }>;
+}
+
+export type DashboardElements =
+  | DashboardMapConfig
+  | DashboardChartConfig
+  | DashboardTextConfig
+  | DashboardTableConfig;
+
+export interface Dashboard {
+  title: string;
+  path: string;
+  isEditable?: boolean;
+  firstColumn: DashboardElements[];
+  secondColumn?: DashboardElements[];
+  thirdColumn?: DashboardElements[];
 }

@@ -7,7 +7,7 @@
   "anticipatoryActionFloodUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/flood/moz/dates.json",
   "header": {
     "title": "PRISM",
-    "logo": "images/moz-flag-inam-logo.png"
+    "logo": "/images/moz-flag-inam-logo.png"
   },
   "printConfig": {
     "defaultFooterText": ""
@@ -22,9 +22,7 @@
     "admin1_boundaries"
   ],
   "serversUrls": {
-    "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms"
-    ]
+    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
     "boundingBox": [31, -25, 40, -11]
