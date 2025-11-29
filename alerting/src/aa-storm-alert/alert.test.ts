@@ -165,6 +165,7 @@ describe('alert mechanism', () => {
         ],
         data: buildDetailedReport({
           status: WindState.ready,
+          affected64ktDistrict: ['Namacurra'],
         }),
       },
       {

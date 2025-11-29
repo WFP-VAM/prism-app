@@ -12,9 +12,9 @@ import { BoundaryLayerData } from 'context/layers/boundary';
 import { LayerData } from 'context/layers/layer-data';
 import {
   dateRangeSelector,
-  layerDataSelector,
   mapSelector,
 } from 'context/mapStateSlice/selectors';
+import { useBoundaryData } from 'utils/useBoundaryData';
 import { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { appConfig } from 'config';
@@ -77,10 +77,7 @@ function PopupAnalysisCharts({
   const classes = useStyles();
   const { t } = useSafeTranslation();
   const dataForCsv = useRef<{ [key: string]: any[] }>({});
-  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
-    | LayerData<BoundaryLayerProps>
-    | undefined;
-  const { data, layer } = boundaryLayerData || {};
+  const { data } = useBoundaryData(boundaryLayer.id);
   const map = useSelector(mapSelector);
 
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
@@ -91,7 +88,7 @@ function PopupAnalysisCharts({
   const features = map?.queryRenderedFeatures(undefined, { layers: [layerId] });
 
   const adminProperties =
-    data && layer?.format !== 'pmtiles'
+    data && boundaryLayer?.format !== 'pmtiles'
       ? getProperties(data as BoundaryLayerData, adminCode, adminSelectorKey)
       : (features?.find(f => f.properties?.[adminSelectorKey] === adminCode)
           ?.properties ?? null);

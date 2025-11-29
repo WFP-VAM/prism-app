@@ -11,16 +11,16 @@ PyJWT = "2.4.0"
 python = ">=3.12,<3.13"
 requests = "^2.32.4"
 playwright = "1.53.0"
-fastapi = "^0.114.0"
+fastapi = "^0.120.2"
 httpx = "^0.28.0"
 uvicorn = { extras = ["standard"], version = "^0.23.2" }
 sqlalchemy = "^1.4.40"
 pydantic = { version = "1.10.22", extras = ["email"] }
 python-dateutil = "2.8.2"
 types-python-dateutil = "2.8.19"
-psycopg2 = "^2.9.9"
+psycopg2-binary = "^2.9.9"
 rasterstats = "0.20.0"
-boto3 = "^1.28.61"
+boto3 = "^1.40.1"
 cachetools = "^5.3.1"
 odc-geo = "^0.4.1"
 odc-stac = "^0.4.0"
@@ -40,13 +40,13 @@ vcrpy = "6.0.1"
 # some package isn't updated for numpy 2.x yet
 numpy = "<2.0"
 
-
 [tool.poetry.group.dev.dependencies]
 black = "^24.3.0"
 isort = "^5.12.0"
-mypy = "^1.5.1"
+mypy = "^1.18.2"
 pytest = "^8.4.0"
 pytest-cov = "^6.2.0"
+pip-audit = "^2.6.0"
 
 [[tool.mypy.overrides]]
 module = ["backoff"]
@@ -59,6 +59,9 @@ line-length = 88
 profile = "black"
 multi_line_output = 3       # Vertical Hanging Indent
 src_paths = "prism-app/api"
+
+[tool.poetry.scripts]
+audit = "pip_audit:main"
 
 [build-system]
 requires = ["poetry-core>=1.0.8"]

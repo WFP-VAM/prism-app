@@ -94,10 +94,12 @@ const {
   defaultBoundariesFile,
   rawTables,
   rawReports,
+  rawDashboards,
 }: {
   defaultBoundariesFile: string;
   rawTables: Record<string, any>;
   rawReports: Record<string, any>;
+  rawDashboards?: any[];
 } = configMap[safeCountry];
 
 const {
@@ -112,6 +114,10 @@ const appConfig: Record<string, any> = merge(
   {},
   defaultConfig,
   configMap[safeCountry].appConfig,
+  // Add dashboards to appConfig if available
+  rawDashboards && rawDashboards.length > 0
+    ? { dashboards: rawDashboards }
+    : {},
 );
 
 export function getRawLayers(
@@ -198,6 +204,7 @@ export {
   rawLayers,
   rawTables,
   rawReports,
+  rawDashboards,
   msalInstance,
   msalRequest,
   enableNavigationDropdown,

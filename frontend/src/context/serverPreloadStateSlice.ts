@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { UserAuth } from 'config/types';
+import { ReferenceDateTimestamp, UserAuth } from 'config/types';
 import {
   preloadLayerDatesForPointData,
   preloadLayerDatesForWMS,
@@ -7,8 +7,10 @@ import {
 import type { CreateAsyncThunkTypes, RootState } from './store';
 
 type ServerPreloadState = {
-  WMSLayerDates: Record<string, number[]>;
-  pointDataLayerDates: Record<string, number[]>;
+  // these are reference dates
+  WMSLayerDates: Record<string, ReferenceDateTimestamp[]>;
+  // these are reference dates
+  pointDataLayerDates: Record<string, ReferenceDateTimestamp[]>;
   loadingWMS: boolean;
   loadingPointData: boolean;
   loadedWMS: boolean;
@@ -27,7 +29,7 @@ const initialState: ServerPreloadState = {
 };
 
 export const preloadLayerDatesArraysForWMS = createAsyncThunk<
-  Record<string, number[]>,
+  Record<string, ReferenceDateTimestamp[]>,
   void,
   CreateAsyncThunkTypes
 >(
@@ -39,7 +41,7 @@ export const preloadLayerDatesArraysForWMS = createAsyncThunk<
 );
 
 export const preloadLayerDatesArraysForPointData = createAsyncThunk<
-  Record<string, number[]>,
+  Record<string, ReferenceDateTimestamp[]>,
   void,
   CreateAsyncThunkTypes
 >(
@@ -57,7 +59,10 @@ export const serverPreloadStateSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(
       preloadLayerDatesArraysForWMS.fulfilled,
-      (state, { payload }: PayloadAction<Record<string, number[]>>) => ({
+      (
+        state,
+        { payload }: PayloadAction<Record<string, ReferenceDateTimestamp[]>>,
+      ) => ({
         ...state,
         loadingWMS: false,
         loadedWMS: true,
@@ -87,7 +92,10 @@ export const serverPreloadStateSlice = createSlice({
 
     builder.addCase(
       preloadLayerDatesArraysForPointData.fulfilled,
-      (state, { payload }: PayloadAction<Record<string, number[]>>) => ({
+      (
+        state,
+        { payload }: PayloadAction<Record<string, ReferenceDateTimestamp[]>>,
+      ) => ({
         ...state,
         loadingPointData: false,
         loadedPointData: true,

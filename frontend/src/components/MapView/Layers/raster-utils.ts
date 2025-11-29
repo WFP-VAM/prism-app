@@ -159,7 +159,7 @@ export function pixelsInFeature(
 export function expandBoundingBox(
   boundingBox: Extent,
   extraDegrees: number,
-): [number, number, number, number] {
+): Extent {
   const currentXDistance = boundingBox[2] - boundingBox[0];
   const currentYDistance = boundingBox[3] - boundingBox[1];
   const newXDistance = currentXDistance + 2 * extraDegrees;

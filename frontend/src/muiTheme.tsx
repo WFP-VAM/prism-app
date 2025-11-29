@@ -249,6 +249,19 @@ const theme: any = createTheme({
         color: black,
       },
     },
+    MuiInputLabel: {
+      root: {
+        color: black,
+      },
+    },
+    MuiInputBase: {
+      input: {
+        color: black,
+      },
+      root: {
+        color: black,
+      },
+    },
   },
 });
 

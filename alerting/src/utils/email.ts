@@ -141,10 +141,10 @@ export const sendStormAlertEmail = async (
       : null;
 
   if (windspeed) {
-    alertTitle = `Activation Triggers activated ${windspeed} for ${data.cycloneName}`;
+    alertTitle = `Activation Triggers detected for windspeed ${windspeed} for ${data.cycloneName}`;
   } else if (data.status === WindState.ready) {
     readiness = true;
-    alertTitle = `Readiness Triggers activated for ${data.cycloneName}`;
+    alertTitle = `Readiness Triggers detected for ${data.cycloneName}`;
   } else {
     throw new Error('No windspeed found');
   }

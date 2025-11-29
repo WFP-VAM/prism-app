@@ -4,7 +4,7 @@ import { ZonalOptions } from 'config/types';
 // instantiate worker to handle zonal statistics requests
 // comlink version here should match the one in package.json
 const text = `
-importScripts("https://unpkg.com/comlink@4.4.1/dist/umd/comlink.js");
+importScripts("https://unpkg.com/comlink@4.4.2/dist/umd/comlink.js");
 importScripts("https://unpkg.com/zonal@0.7.3/zonal.min.js");
 
 Comlink.expose(zonal);

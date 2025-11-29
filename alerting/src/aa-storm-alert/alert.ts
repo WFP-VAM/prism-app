@@ -139,27 +139,27 @@ export function transformReportsToLastProcessed(
   return lastProcessedReports;
 }
 
-function getActivatedDistricts(report: StormDataResponseBody): {
-  activated48kt: string[];
-  activated64kt: string[];
+function getExposedDistricts(report: StormDataResponseBody): {
+  exposed48kt: string[];
+  exposed64kt: string[];
 } {
   const watchedDistrictsFor64KtStorm = allDistrictsInCoastalProvince;
 
   const watchedDistrictsFor48ktStorm = ['monitoring disabled for 48kt'];
 
-  const activated64kt =
+  const exposed64kt =
     report.ready_set_results?.exposed_area_64kt?.affected_districts.filter(
       (district) => watchedDistrictsFor64KtStorm.includes(district),
     );
 
-  const activated48kt =
+  const exposed48kt =
     report.ready_set_results?.exposed_area_48kt?.affected_districts.filter(
       (district) => watchedDistrictsFor48ktStorm.includes(district),
     );
 
   return {
-    activated48kt: activated48kt || [],
-    activated64kt: activated64kt || [],
+    exposed48kt: exposed48kt || [],
+    exposed64kt: exposed64kt || [],
   };
 }
 
@@ -172,19 +172,18 @@ function hasLandfallOccured(report: StormDataResponseBody): boolean {
   return false;
 }
 
+/**
+ * Send email if the storm has exposed districts (filtered on districts of interest),
+ * is not in monitoring state and the landfall has not already occurred.
+ */
 function shouldSendStormEmail(
   status: WindState,
-  activated48kt: string[],
-  activated64kt: string[],
+  exposed48kt: string[],
+  exposed64kt: string[],
   pastLandfall: boolean,
 ): boolean {
-  const hasActivated =
-    (status === WindState.activated_64kt ||
-      status === WindState.activated_48kt) &&
-    (activated48kt.length > 0 || activated64kt.length > 0);
-
-  const isReady = status === WindState.ready;
-  return !pastLandfall && (hasActivated || isReady);
+  const hasExposed = exposed48kt.length > 0 || exposed64kt.length > 0;
+  return !pastLandfall && hasExposed && status !== WindState.monitoring;
 }
 
 /**
@@ -217,20 +216,15 @@ export async function buildEmailPayloads(
           `https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/${shortReport.path}?v2`,
         ).then((data) => data.json());
 
-        const { activated48kt, activated64kt } =
-          getActivatedDistricts(detailedStormReport);
+        const { exposed48kt, exposed64kt } =
+          getExposedDistricts(detailedStormReport);
         const status = detailedStormReport.ready_set_results?.status;
         const pastLandfall = IS_TEST
           ? false
           : hasLandfallOccured(detailedStormReport);
 
         const isEmailNeeded = status
-          ? shouldSendStormEmail(
-              status,
-              activated48kt,
-              activated64kt,
-              pastLandfall,
-            )
+          ? shouldSendStormEmail(status, exposed48kt, exposed64kt, pastLandfall)
           : false;
         console.debug(
           `Storm ${stormName} - Status: ${status}, Email needed: ${isEmailNeeded}, Past landfall: ${pastLandfall}`,
@@ -250,8 +244,8 @@ export async function buildEmailPayloads(
               'DD/MM/YYYY HH:mm UTC',
             ),
             activatedTriggers: {
-              districts48kt: activated48kt,
-              districts64kt: activated64kt,
+              districts48kt: exposed48kt,
+              districts64kt: exposed64kt,
             },
             redirectUrl: prismUrl,
             base64Image: await captureScreenshotFromUrl({
