@@ -48,10 +48,8 @@ export const AACategoryKeyToCategoryMap: {
   [AACategoryKey.Proba]: AACategory.Risk,
 };
 
-export interface MergedFeatures<P = GeoJsonProperties> extends Feature<
-  Geometry | null,
-  P
-> {
+export interface MergedFeatures<P = GeoJsonProperties>
+  extends Feature<Geometry | null, P> {
   geometry: Geometry | null;
 }
 
