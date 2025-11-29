@@ -212,6 +212,8 @@
     "Location": "Расположение",
     "Compare Periods": "Сравнить периоды",
     "Admin 1": "Админ 1",
+    "Admin 2": "Админ 2",
+    "Remove {{adminLevel}}": "Удалить {{adminLevel}}",
     "Select Charts": "Выберите графики",
     "Clear all": "Очистить все",
     "Period": "Период",

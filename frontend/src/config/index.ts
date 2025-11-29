@@ -153,6 +153,9 @@ export function getRawLayers(
   );
 }
 
+// Translation priority order (later values override earlier):
+// 1. Base: sharedTranslation[key] (shared language files from config/shared)
+// 2. Override: value (country-specific translation overrides shared)
 export function getTranslation(country: Country): Record<string, any> {
   const countryTranslation = get(configMap[country], 'translation', {});
   return Object.fromEntries(

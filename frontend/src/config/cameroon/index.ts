@@ -1,10 +1,11 @@
 import appConfig from './prism.json';
 import rawLayers from './layers.json';
-import frTranslation from './translation.json';
 
 const rawTables = {};
 const rawReports = {};
-const translation = { fr: frTranslation };
+// Country-specific translation overrides shared translation
+// Using empty object since all translations are identical to shared french.json
+const translation = { fr: {} };
 
 export default {
   appConfig,

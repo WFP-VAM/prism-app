@@ -2,6 +2,7 @@ import appConfig from './prism.json';
 import indonesiaRawLayers from './layers.json';
 
 const rawReports = {};
+// Country-specific translation overrides shared translation
 const translation = {};
 
 export default {

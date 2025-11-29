@@ -208,7 +208,7 @@ const LocationSelector = memo(
             disabled={!multiCountry}
           >
             <MenuItem key={country} value={country} disabled>
-              {country}
+              {t(country)}
             </MenuItem>
             {renderMenuItemList(orderedAdmin0areas())}
           </TextField>
@@ -227,7 +227,10 @@ const LocationSelector = memo(
             disabled={orderedAdmin1areas().length === 0}
           >
             <MenuItem divider>
-              <Box className={styles.removeAdmin}> {t('Remove Admin 1')}</Box>
+              <Box className={styles.removeAdmin}>
+                {' '}
+                {t('Remove {{adminLevel}}', { adminLevel: t('Admin 1') })}
+              </Box>
             </MenuItem>
             {renderMenuItemList(orderedAdmin1areas())}
           </TextField>
@@ -245,7 +248,10 @@ const LocationSelector = memo(
               variant="outlined"
             >
               <MenuItem divider>
-                <Box className={styles.removeAdmin}> {t('Remove Admin 2')}</Box>
+                <Box className={styles.removeAdmin}>
+                  {' '}
+                  {t('Remove {{adminLevel}}', { adminLevel: t('Admin 2') })}
+                </Box>
               </MenuItem>
               {renderMenuItemList(orderedAdmin2areas())}
             </TextField>

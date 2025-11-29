@@ -1,8 +1,10 @@
 import appConfig from './prism.json';
 import rawLayers from './layers.json';
-import frTranslation from './translation.json';
 
-const translation = { fr: frTranslation };
+// Country-specific translation overrides shared translation
+const translation = {
+  fr: { 'Regional Bureau Dakar': 'Bureau Régional Dakar' },
+};
 
 const rawTables = {};
 const rawReports = {};

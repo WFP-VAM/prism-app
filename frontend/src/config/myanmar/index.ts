@@ -4,6 +4,7 @@ import rawReports from './reports.json';
 // import myanmarTranslation from './translation.json';
 
 const rawTables = {};
+// Country-specific translation overrides shared translation
 const translation = {};
 
 export default {

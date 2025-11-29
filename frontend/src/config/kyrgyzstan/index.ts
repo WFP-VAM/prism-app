@@ -1,6 +1,7 @@
 import appConfig from './prism.json';
 import rawLayers from './layers.json';
 
+// Country-specific translation overrides shared translation
 const translation = { ru: {}, ky: {} };
 
 const rawTables = {};

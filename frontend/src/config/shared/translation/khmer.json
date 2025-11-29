@@ -142,8 +142,6 @@
   "Menu": "ម៉ឺនុយ",
   "Early Warning": "ការព្រមានជាមុន",
   "Percentile": "ភាគរយ",
-  "Select Admin 1": "ជ្រើសរើសអ្នកគ្រប់គ្រង ១",
-  "Select Admin 2": "ជ្រើសរើសអ្នកគ្រប់គ្រង ២",
   "Select Charts": "ជ្រើសរើសគំនូសតាង",
   "Download CSV": "ទាញយក CSV",
   "Download as CSV": "ទាញយក CSV",
@@ -209,14 +207,15 @@
   "Heavy (>75th percentile)": "ធ្ងន់ (75th ភាគរយ)",
   "Intense (>90th percentile)": "ខ្លាំង (90th ភាគរយ)",
   "Extreme (>95th percentile)": "ខ្លាំង (95th ភាគរយ)",
-  "Longest consecutive intense rainfall days": "ថ្ងៃភ្លៀងធ្លាក់ខ្លាំងជាប់គ្នាយូរបំផុត", 
+  "Longest consecutive intense rainfall days": "ថ្ងៃភ្លៀងធ្លាក់ខ្លាំងជាប់គ្នាយូរបំផុត",
   "Longest consecutive extreme rainfall days": "ថ្ងៃភ្លៀងធ្លាក់ខ្លាំងជាប់គ្នាយូរជាងគេ",
   "Population exposure": "ផលប៉ះពាល់លើប្រជាជន",
   "Create report": "ការបង្កើតរបាយការណ៍",
   "Sum": "បិទ",
-  "Hide Table":	"លាក់តារាង",
+  "Hide Table": "លាក់តារាង",
   "Above Threshold": "លើសកម្រិត/លើសការកំណត់",
   "Below Threshold": "ក្រោមកម្រិត/ក្រោមការកំណត់",
   "Admin 1": "ជ្រើសរើសអ្នកគ្រប់គ្រង ១",
-  "Admin 2":"ជ្រើសរើសអ្នកគ្រប់គ្រង ២"
+  "Admin 2": "ជ្រើសរើសអ្នកគ្រប់គ្រង ២",
+  "Remove {{adminLevel}}": "លាក់ {{adminLevel}}"
 }
