@@ -108,6 +108,8 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     endDate: null,
   });
 
+  const [isDownloading, setIsDownloading] = useState(false);
+
   const { selectedLayersWithDateSupport } = useLayers();
   const availableDates = useSelector(availableDatesSelector);
   const shouldEnableBatchMaps = selectedLayersWithDateSupport.length > 0;
@@ -208,6 +210,86 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     handleDownloadMenuClose();
   };
 
+  const downloadBatch = async (format: 'pdf' | 'zip') => {
+    const { startDate, endDate } = dateRangeForMultipleMaps;
+
+    if (!startDate || !endDate) {
+      console.error('Date range not set for batch download');
+      return;
+    }
+
+    setIsDownloading(true);
+
+    try {
+      const allDateItems = selectedLayersWithDateSupport.flatMap(layer =>
+        getPossibleDatesForLayer(layer, availableDates),
+      );
+
+      const uniqueQueryDates = [
+        ...new Set(allDateItems.map(item => item.queryDate)),
+      ];
+
+      const filteredDates = uniqueQueryDates.filter(
+        queryDate => queryDate >= startDate && queryDate <= endDate,
+      );
+
+      // Convert timestamps to YYYY-MM-DD format
+      const formattedDates = filteredDates.map(timestamp =>
+        getFormattedDate(timestamp, 'default'),
+      );
+
+      if (formattedDates.length === 0) {
+        console.error('No dates found in the selected range');
+        setIsDownloading(false);
+        return;
+      }
+
+      const url = new URL(window.location.href);
+      // Remove the date parameter if it exists, as the server will add it for each map
+      url.searchParams.delete('date');
+
+      const response = await fetch('/api/export', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          url: `${url.pathname}${url.search}`,
+          dates: formattedDates,
+          // TODO: Adjust to dynamic aspect ratio based on config
+          aspectRatio: '3:4',
+          format,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Export failed: ${response.statusText}`);
+      }
+
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const startDateStr = getFormattedDate(startDate, 'snake');
+      const endDateStr = getFormattedDate(endDate, 'snake');
+      const filename = `${titleText || country}_${startDateStr}_to_${endDateStr}`;
+      const contentType =
+        format === 'pdf' ? 'application/pdf' : 'application/zip';
+
+      downloadToFile(
+        { content: downloadUrl, isUrl: true },
+        filename,
+        contentType,
+      );
+
+      handleClose();
+      handleDownloadMenuClose();
+    } catch (error) {
+      console.error('Batch download failed:', error);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   // eslint-disable-next-line react/jsx-no-constructed-context-values
   const printContext = {
     printConfig: {
@@ -248,6 +330,8 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       downloadMenuAnchorEl,
       handleDownloadMenuClose,
       download,
+      downloadBatch,
+      isDownloading,
       defaultFooterText,
       setSelectedBoundaries,
       setLegendScale,
