@@ -30,12 +30,9 @@ export const fetchACLEDDates = async (
 
     const datesUrl = `${url}?${queryParamsToString(queryParams)}`;
 
-    const resp = await fetchWithTimeout(
-      datesUrl,
-      dispatch,
-      {},
-      `Request failed for fetching ACLED Dates at ${datesUrl}`,
-    );
+    const errorMessage = `Request failed for fetching ACLED Dates`;
+
+    const resp = await fetchWithTimeout(datesUrl, dispatch, {}, errorMessage);
     const respJson = await resp.json();
 
     /* eslint-disable camelcase */
