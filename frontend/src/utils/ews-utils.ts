@@ -1,6 +1,10 @@
 import GeoJSON, { FeatureCollection, Point } from 'geojson';
 import { Dispatch } from 'redux';
-import { PointData, PointLayerData } from 'config/types';
+import {
+  PointData,
+  PointLayerData,
+  ReferenceDateTimestamp,
+} from 'config/types';
 import { oneDayInMs } from 'components/MapView/LeftPanel/utils';
 import { FloodChartConfigObject } from 'context/tableStateSlice';
 import { fetchWithTimeout } from './fetch-with-timeout';
@@ -46,9 +50,13 @@ type EWSTriggerLevels = {
 };
 /* eslint-enable camelcase */
 
+// generate an array with every day since the beginning
+// of January 2021.
 // input parameter is used here only for testing
-export const createEWSDatesArray = (testEndDate?: number): number[] => {
-  const datesArray = [];
+export const createEWSDatesArray = (
+  testEndDate?: number,
+): ReferenceDateTimestamp[] => {
+  const datesArray: ReferenceDateTimestamp[] = [];
 
   const now = new Date();
 
@@ -61,7 +69,7 @@ export const createEWSDatesArray = (testEndDate?: number): number[] => {
 
   while (tempDate.getTime() <= endDate) {
     // eslint-disable-next-line fp/no-mutating-methods
-    datesArray.push(tempDate.getTime());
+    datesArray.push(tempDate.getTime() as ReferenceDateTimestamp);
 
     tempDate.setTime(tempDate.getTime() + oneDayInMs);
   }
