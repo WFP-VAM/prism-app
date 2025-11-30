@@ -1,0 +1,288 @@
+import { Provider } from 'react-redux';
+import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import { createTheme, ThemeProvider } from '@material-ui/core';
+import { store } from 'context/store';
+import MapExportLayout from './MapExportLayout';
+import { MapExportToggles } from './types';
+
+jest.mock('react-map-gl/maplibre', () => {
+  // eslint-disable-next-line global-require
+  const React = require('react');
+  return {
+    __esModule: true,
+    default: ({ children }: any) =>
+      React.createElement('div', { 'data-testid': 'map-gl' }, children),
+    Layer: () => 'mock-Layer',
+    Source: () => 'mock-Source',
+    Marker: () => 'mock-Marker',
+  };
+});
+
+jest.mock('components/MapView/Legends/LegendItemsList', () => {
+  // eslint-disable-next-line global-require
+  const React = require('react');
+  return {
+    __esModule: true,
+    default: () =>
+      React.createElement(
+        'div',
+        { 'data-testid': 'legend-items' },
+        'mock-LegendItemsList',
+      ),
+  };
+});
+
+jest.mock('utils/map-utils', () => ({
+  useAAMarkerScalePercent: () => 1,
+}));
+
+jest.mock(
+  'components/MapView/Layers/AnticipatoryActionFloodLayer/FloodStationMarker',
+  () => ({
+    FloodStationMarker: () => 'mock-FloodStationMarker',
+  }),
+);
+
+const defaultToggles: MapExportToggles = {
+  fullLayerDescription: false,
+  countryMask: false,
+  mapLabelsVisibility: true,
+  logoVisibility: true,
+  legendVisibility: true,
+  footerVisibility: true,
+};
+
+const defaultProps = {
+  toggles: defaultToggles,
+  mapWidth: 100,
+  titleText: '',
+  footerText: '',
+  footerTextSize: 12,
+  logoPosition: 0,
+  logoScale: 1,
+  legendPosition: 0,
+  legendScale: 0,
+  initialViewState: {
+    longitude: 0,
+    latitude: 0,
+    zoom: 5,
+  },
+  mapStyle: 'mock-style',
+};
+
+describe('MapExportLayout', () => {
+  beforeAll(() => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date('2024-12-01'));
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+
+  test('renders with default/minimal props', () => {
+    const { container } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout {...defaultProps} />
+        </ThemeProvider>
+      </Provider>,
+    );
+    expect(container).toMatchSnapshot();
+  });
+
+  test('shows title when titleText provided', () => {
+    const { getByText } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout {...defaultProps} titleText="Test Export Title" />
+        </ThemeProvider>
+      </Provider>,
+    );
+    expect(getByText('Test Export Title')).toBeInTheDocument();
+  });
+
+  test('hides title when titleText empty', () => {
+    const { container } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout {...defaultProps} titleText="" />
+        </ThemeProvider>
+      </Provider>,
+    );
+    expect(container.querySelector('.titleOverlay')).not.toBeInTheDocument();
+  });
+
+  test('shows logo when logoVisibility is true and logo provided', () => {
+    const { container } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout
+            {...defaultProps}
+            logo="test-logo.png"
+            titleText="Test Title"
+          />
+        </ThemeProvider>
+      </Provider>,
+    );
+    const logoImg = container.querySelector('img[alt="logo"]');
+    expect(logoImg).toBeInTheDocument();
+  });
+
+  test('hides logo when logoVisibility is false', () => {
+    const toggles = { ...defaultToggles, logoVisibility: false };
+    const { container } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout
+            {...defaultProps}
+            toggles={toggles}
+            logo="test-logo.png"
+            titleText="Test Title"
+          />
+        </ThemeProvider>
+      </Provider>,
+    );
+    const logoImg = container.querySelector('img[alt="logo"]');
+    expect(logoImg).not.toBeInTheDocument();
+  });
+
+  test('positions logo left when logoPosition is 0', () => {
+    const { container } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout
+            {...defaultProps}
+            logo="test-logo.png"
+            logoPosition={0}
+            titleText="Test Title"
+          />
+        </ThemeProvider>
+      </Provider>,
+    );
+    const logoImg = container.querySelector('img[alt="logo"]') as HTMLElement;
+    expect(logoImg?.style.left).toBe('8px');
+    // right is 'auto' which is an unset value, so it appears as empty string
+    expect(logoImg?.style.right).toBeFalsy();
+  });
+
+  test('positions logo right when logoPosition is 1', () => {
+    const { container } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout
+            {...defaultProps}
+            logo="test-logo.png"
+            logoPosition={1}
+            titleText="Test Title"
+          />
+        </ThemeProvider>
+      </Provider>,
+    );
+    const logoImg = container.querySelector('img[alt="logo"]') as HTMLElement;
+    // left is 'auto' which is an unset value, so it appears as empty string
+    expect(logoImg?.style.left).toBeFalsy();
+    expect(logoImg?.style.right).toBe('8px');
+  });
+
+  test('shows legend when legendVisibility is true', () => {
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout {...defaultProps} />
+        </ThemeProvider>
+      </Provider>,
+    );
+    expect(getByTestId('legend-items')).toBeInTheDocument();
+  });
+
+  test('hides legend when legendVisibility is false', () => {
+    const toggles = { ...defaultToggles, legendVisibility: false };
+    const { queryByTestId } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout {...defaultProps} toggles={toggles} />
+        </ThemeProvider>
+      </Provider>,
+    );
+    expect(queryByTestId('legend-items')).not.toBeInTheDocument();
+  });
+
+  test('shows footer when footerVisibility is true and footerText provided', () => {
+    const { getByText } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout
+            {...defaultProps}
+            footerText="Test Footer"
+            dateText="Publication date: 2024-12-01"
+          />
+        </ThemeProvider>
+      </Provider>,
+    );
+    expect(getByText('Test Footer')).toBeInTheDocument();
+  });
+
+  test('hides footer when footerVisibility is false', () => {
+    const toggles = { ...defaultToggles, footerVisibility: false };
+    const { container } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout
+            {...defaultProps}
+            toggles={toggles}
+            footerText="Test Footer"
+          />
+        </ThemeProvider>
+      </Provider>,
+    );
+    expect(container.querySelector('.footerOverlay')).not.toBeInTheDocument();
+  });
+
+  test('applies map width percentage', () => {
+    const { container } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout {...defaultProps} mapWidth={80} />
+        </ThemeProvider>
+      </Provider>,
+    );
+    const widthContainer = container.querySelector('[style*="width: 80%"]');
+    expect(widthContainer).toBeInTheDocument();
+  });
+
+  test('renders country mask when countryMask is true and polygon provided', () => {
+    const toggles = { ...defaultToggles, countryMask: true };
+    const mockPolygon = {
+      type: 'Feature',
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [0, 0],
+            [1, 0],
+            [1, 1],
+            [0, 1],
+            [0, 0],
+          ],
+        ],
+      },
+      properties: {},
+    };
+
+    const { container } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout
+            {...defaultProps}
+            toggles={toggles}
+            invertedAdminBoundaryLimitPolygon={mockPolygon as any}
+          />
+        </ThemeProvider>
+      </Provider>,
+    );
+    // Source should be rendered for mask
+    expect(container.textContent).toContain('mock-Source');
+  });
+});

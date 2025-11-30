@@ -63,6 +63,13 @@ type LayerComponentsMap<U extends LayerType> = {
   };
 };
 
+/**
+ * Layer component mapping - KEEP IN SYNC with MapExport/MapExportLayout.tsx
+ *
+ * If you add a new layer type, ensure it's also added to MapExportLayout
+ * so that layer rendering works correctly in both the main map view and
+ * the export/print preview.
+ */
 const componentTypes: LayerComponentsMap<LayerType> = {
   boundary: { component: BoundaryLayer },
   wms: { component: WMSLayer },
