@@ -74,3 +74,10 @@ Cypress.Commands.add('switchLanguage', (langcode: string) => {
   ).click();
   cy.contains('Layers').should('be.visible');
 });
+
+Cypress.Commands.add('scrollLeft', () => {
+  cy.get('button#chevronLeftButton').click();
+});
+Cypress.Commands.add('scrollRight', () => {
+  cy.get('button#chevronRightButton').click();
+});
