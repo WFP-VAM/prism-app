@@ -23,7 +23,7 @@ const WMSLayers = memo(
     const opacityState = useSelector(opacitySelector(id));
 
     const expansionFactor = 2;
-    // @ts-expect-error #TS6133 see TODO bellow
+    // @ts-expect-error #TS6133 see TODO below
     const _expandedBoundingBox = expandBoundingBox(
       appConfig.map.boundingBox,
       expansionFactor,
