@@ -8,7 +8,7 @@ export type Toggles = {
   logoVisibility: boolean;
   legendVisibility: boolean;
   footerVisibility: boolean;
-  multipleMapsVisibility: boolean;
+  batchMapsVisibility: boolean;
 };
 
 export type MapDimensions = { width: number; height: number };

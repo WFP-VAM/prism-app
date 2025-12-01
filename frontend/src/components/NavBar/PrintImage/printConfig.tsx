@@ -530,24 +530,24 @@ function PrintConfig() {
         {shouldEnableBatchMaps && (
           <>
             <SectionToggle
-              title={t('Multiple maps')}
-              expanded={toggles.multipleMapsVisibility}
+              title={t('Create a sequence of maps')}
+              expanded={toggles.batchMapsVisibility}
               handleChange={() => {
                 setToggles(prev => ({
                   ...prev,
-                  multipleMapsVisibility: !prev.multipleMapsVisibility,
+                  batchMapsVisibility: !prev.batchMapsVisibility,
                 }));
               }}
             />
             <GreyContainer>
-              <GreyContainerSection isLast={!toggles.multipleMapsVisibility}>
+              <GreyContainerSection isLast={!toggles.batchMapsVisibility}>
                 <Typography variant="body1">
                   {t(
                     'Selecting this option will apply the template above to create multiple maps over a time period of your choice.',
                   )}
                 </Typography>
               </GreyContainerSection>
-              {toggles.multipleMapsVisibility && (
+              {toggles.batchMapsVisibility && (
                 <>
                   <GreyContainerSection>
                     <DateRangePicker />

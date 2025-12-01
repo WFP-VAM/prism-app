@@ -18,8 +18,8 @@ import useResizeObserver from 'utils/useOnResizeObserver';
 import useLayers from 'utils/layers-utils';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { getPossibleDatesForLayer } from 'utils/server-utils';
-import { downloadToFile } from '../../MapView/utils';
 import { useBoundaryData } from 'utils/useBoundaryData';
+import { downloadToFile } from '../../MapView/utils';
 import {
   dateRangeSelector,
   mapSelector,
@@ -57,7 +57,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     logoVisibility: !!logo,
     legendVisibility: true,
     footerVisibility: true,
-    multipleMapsVisibility: false,
+    batchMapsVisibility: false,
   });
 
   const [downloadMenuAnchorEl, setDownloadMenuAnchorEl] =
@@ -97,7 +97,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] =
     useState(null);
 
-  const [dateRangeForMultipleMaps, setDateRangeForMultipleMaps] = useState<{
+  const [dateRangeForBatchMaps, setDateRangeForBatchMaps] = useState<{
     startDate: number | null;
     endDate: number | null;
   }>({
@@ -110,7 +110,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const shouldEnableBatchMaps = selectedLayersWithDateSupport.length > 0;
 
   const mapCount = useMemo(() => {
-    const { startDate, endDate } = dateRangeForMultipleMaps;
+    const { startDate, endDate } = dateRangeForBatchMaps;
     if (!startDate || !endDate || selectedLayersWithDateSupport.length === 0) {
       return 0;
     }
@@ -126,7 +126,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     return uniqueQueryDates.filter(
       queryDate => queryDate >= startDate && queryDate <= endDate,
     ).length;
-  }, [availableDates, selectedLayersWithDateSupport, dateRangeForMultipleMaps]);
+  }, [availableDates, selectedLayersWithDateSupport, dateRangeForBatchMaps]);
 
   React.useEffect(() => {
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
@@ -246,8 +246,8 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       setSelectedBoundaries,
       setLegendScale,
       shouldEnableBatchMaps,
-      dateRange: dateRangeForMultipleMaps,
-      setDateRange: setDateRangeForMultipleMaps,
+      dateRange: dateRangeForBatchMaps,
+      setDateRange: setDateRangeForBatchMaps,
       mapCount,
     },
   };
