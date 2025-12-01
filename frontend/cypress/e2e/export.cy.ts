@@ -17,6 +17,11 @@ describe('Export View', () => {
     exportUrl.searchParams.set('mapWidth', '90');
     exportUrl.searchParams.set('bounds', '32,-27,41,-10');
     exportUrl.searchParams.set('zoom', '6');
+    exportUrl.searchParams.set('logoPosition', '1');
+    exportUrl.searchParams.set('logoScale', '1.5');
+    exportUrl.searchParams.set('legendPosition', '1');
+    exportUrl.searchParams.set('legendScale', '0.7');
+    exportUrl.searchParams.set('footerTextSize', '16');
 
     cy.visit(exportUrl.toString());
 
@@ -33,7 +38,13 @@ describe('Export View', () => {
     cy.contains('Mozambique NDVI Export').should('be.visible');
 
     // ─────────────────────────────────────────────────────────────────────────
-    // 3. FOOTER
+    // 3. LOGO
+    // ─────────────────────────────────────────────────────────────────────────
+    cy.log('**Checking logo**');
+    cy.get('img[alt="logo"]').should('be.visible');
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // 4. FOOTER
     // ─────────────────────────────────────────────────────────────────────────
     cy.log('**Checking footer**');
     cy.contains('Custom Footer Text').should('be.visible');
@@ -41,26 +52,26 @@ describe('Export View', () => {
     cy.contains('Layer selection date').should('be.visible');
 
     // ─────────────────────────────────────────────────────────────────────────
-    // 4. LEGEND
+    // 5. LEGEND
     // ─────────────────────────────────────────────────────────────────────────
     cy.log('**Checking legend**');
     // Legend should show the NDVI layer name
     cy.contains('NDVI', { matchCase: false }).should('be.visible');
 
     // ─────────────────────────────────────────────────────────────────────────
-    // 5. NORTH ARROW
+    // 6. NORTH ARROW
     // ─────────────────────────────────────────────────────────────────────────
     cy.log('**Checking north arrow**');
     cy.get('img[alt="northArrow"]').should('be.visible');
 
     // ─────────────────────────────────────────────────────────────────────────
-    // 6. SCALE BAR
+    // 7. SCALE BAR
     // ─────────────────────────────────────────────────────────────────────────
     cy.log('**Checking scale bar**');
     cy.get('.maplibregl-ctrl-scale').should('exist');
 
     // ─────────────────────────────────────────────────────────────────────────
-    // 7. MAP CONTAINER DIMENSIONS
+    // 8. MAP CONTAINER DIMENSIONS
     // ─────────────────────────────────────────────────────────────────────────
     cy.log('**Checking map container**');
     // Map container should exist and have reasonable dimensions

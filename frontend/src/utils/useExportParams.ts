@@ -124,7 +124,7 @@ export const useExportParams = (): ExportParams => {
       logoPosition: getNum('logoPosition', 0),
       logoScale: getNum('logoScale', 1),
       legendPosition: getNum('legendPosition', 0),
-      legendScale: getNum('legendScale', 0),
+      legendScale: getNum('legendScale', 1),
 
       // Toggles
       toggles,

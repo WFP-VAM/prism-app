@@ -316,7 +316,7 @@ function MapExportLayout({
                     legendPosition % 2 === 0 ? 'flex-start' : 'flex-end',
                   width: '20px',
                   // Use transform scale to adjust size based on legendScale
-                  transform: `scale(${1 - legendScale})`,
+                  transform: `scale(${legendScale})`,
                 }}
               >
                 <LegendItemsList

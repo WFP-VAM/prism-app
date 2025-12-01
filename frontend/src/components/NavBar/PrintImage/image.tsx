@@ -64,7 +64,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const [titleText, setTitleText] = React.useState<string>(country);
   const [footerText, setFooterText] = React.useState(defaultFooterText);
   const [footerTextSize, setFooterTextSize] = React.useState(12);
-  const [legendScale, setLegendScale] = React.useState(0);
+  const [legendScale, setLegendScale] = React.useState(1);
   const [legendPosition, setLegendPosition] = React.useState(0);
   const [logoPosition, setLogoPosition] = React.useState(0);
   const [logoScale, setLogoScale] = React.useState(1);

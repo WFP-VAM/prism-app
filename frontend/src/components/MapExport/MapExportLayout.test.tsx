@@ -62,7 +62,7 @@ const defaultProps = {
   logoPosition: 0,
   logoScale: 1,
   legendPosition: 0,
-  legendScale: 0,
+  legendScale: 1,
   initialViewState: {
     longitude: 0,
     latitude: 0,
@@ -284,5 +284,53 @@ describe('MapExportLayout', () => {
     );
     // Source should be rendered for mask
     expect(container.textContent).toContain('mock-Source');
+  });
+
+  test('applies logo scale correctly', () => {
+    const { container } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout
+            {...defaultProps}
+            logo="test-logo.png"
+            logoScale={1.5}
+            titleText="Test Title"
+          />
+        </ThemeProvider>
+      </Provider>,
+    );
+    const logoImg = container.querySelector('img[alt="logo"]') as HTMLElement;
+    // logoHeight = 32 * 1.5 = 48
+    expect(logoImg?.style.height).toBe('48px');
+  });
+
+  test('applies legend scale correctly', () => {
+    const { container } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout {...defaultProps} legendScale={0.7} />
+        </ThemeProvider>
+      </Provider>,
+    );
+    const legendContainer = container.querySelector(
+      '[data-testid="legend-items"]',
+    )?.parentElement;
+    expect(legendContainer?.style.transform).toBe('scale(0.7)');
+  });
+
+  test('applies footer text size correctly', () => {
+    const { getByText } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout
+            {...defaultProps}
+            footerText="Test Footer"
+            footerTextSize={16}
+          />
+        </ThemeProvider>
+      </Provider>,
+    );
+    const footerText = getByText('Test Footer');
+    expect(footerText).toHaveStyle({ fontSize: '16px' });
   });
 });
