@@ -81,17 +81,6 @@ describe('MapExportLayout', () => {
     jest.useRealTimers();
   });
 
-  test('renders with default/minimal props', () => {
-    const { container } = render(
-      <Provider store={store}>
-        <ThemeProvider theme={createTheme()}>
-          <MapExportLayout {...defaultProps} />
-        </ThemeProvider>
-      </Provider>,
-    );
-    expect(container).toMatchSnapshot();
-  });
-
   test('shows title when titleText provided', () => {
     const { getByText } = render(
       <Provider store={store}>

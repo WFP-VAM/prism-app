@@ -1,5 +1,5 @@
 import React from 'react';
-import maplibregl from 'maplibre-gl';
+import type { StyleSpecification, LngLatBoundsLike } from 'maplibre-gl';
 import { AdminCodeString, LayerType } from 'config/types';
 
 export interface MapExportToggles {
@@ -79,10 +79,10 @@ export interface MapExportLayoutProps {
   };
 
   // Map style (from existing map or base style)
-  mapStyle: maplibregl.StyleSpecification | string;
+  mapStyle: StyleSpecification | string;
 
   // Optional bounds constraint
-  maxBounds?: maplibregl.LngLatBoundsLike;
+  maxBounds?: LngLatBoundsLike;
 
   // Country mask polygon (computed from selected boundaries)
   invertedAdminBoundaryLimitPolygon?: GeoJSON.Feature | null;
