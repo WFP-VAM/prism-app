@@ -8,19 +8,22 @@ import mask from '@turf/mask';
 import html2canvas from 'html2canvas';
 import { debounce, get } from 'lodash';
 import { jsPDF } from 'jspdf';
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
 import { appConfig, safeCountry } from 'config';
 import { AdminCodeString } from 'config/types';
 import { getBoundaryLayerSingleton } from 'config/utils';
 import useResizeObserver from 'utils/useOnResizeObserver';
+import useLayers from 'utils/layers-utils';
+import { availableDatesSelector } from 'context/serverStateSlice';
+import { getPossibleDatesForLayer } from 'utils/server-utils';
 import { useBoundaryData } from 'utils/useBoundaryData';
+import { downloadToFile } from '../../MapView/utils';
 import {
   dateRangeSelector,
   mapSelector,
 } from '../../../context/mapStateSlice/selectors';
-import { downloadToFile } from '../../MapView/utils';
 import PrintConfig from './printConfig';
 import PrintPreview from './printPreview';
 import PrintConfigContext, {
@@ -54,6 +57,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     logoVisibility: !!logo,
     legendVisibility: true,
     footerVisibility: true,
+    batchMapsVisibility: false,
   });
 
   const [downloadMenuAnchorEl, setDownloadMenuAnchorEl] =
@@ -92,6 +96,37 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
   const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] =
     useState(null);
+
+  const [dateRangeForBatchMaps, setDateRangeForBatchMaps] = useState<{
+    startDate: number | null;
+    endDate: number | null;
+  }>({
+    startDate: null,
+    endDate: null,
+  });
+
+  const { selectedLayersWithDateSupport } = useLayers();
+  const availableDates = useSelector(availableDatesSelector);
+  const shouldEnableBatchMaps = selectedLayersWithDateSupport.length > 0;
+
+  const mapCount = useMemo(() => {
+    const { startDate, endDate } = dateRangeForBatchMaps;
+    if (!startDate || !endDate || selectedLayersWithDateSupport.length === 0) {
+      return 0;
+    }
+
+    const allDateItems = selectedLayersWithDateSupport.flatMap(layer =>
+      getPossibleDatesForLayer(layer, availableDates),
+    );
+
+    const uniqueQueryDates = [
+      ...new Set(allDateItems.map(item => item.queryDate)),
+    ];
+
+    return uniqueQueryDates.filter(
+      queryDate => queryDate >= startDate && queryDate <= endDate,
+    ).length;
+  }, [availableDates, selectedLayersWithDateSupport, dateRangeForBatchMaps]);
 
   React.useEffect(() => {
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
@@ -210,6 +245,10 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       defaultFooterText,
       setSelectedBoundaries,
       setLegendScale,
+      shouldEnableBatchMaps,
+      dateRange: dateRangeForBatchMaps,
+      setDateRange: setDateRangeForBatchMaps,
+      mapCount,
     },
   };
 

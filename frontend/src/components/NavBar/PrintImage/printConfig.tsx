@@ -22,6 +22,7 @@ import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdo
 import Switch from 'components/Common/Switch';
 import { useSafeTranslation } from '../../../i18n';
 import PrintConfigContext, { MapDimensions } from './printConfig.context';
+import DateRangePicker from './DateRangePicker';
 
 interface ToggleSelectorProps {
   title: string;
@@ -276,6 +277,8 @@ function PrintConfig() {
     handleDownloadMenuOpen,
     handleDownloadMenuClose,
     downloadMenuAnchorEl,
+    mapCount,
+    shouldEnableBatchMaps,
   } = printConfig;
 
   return (
@@ -523,6 +526,51 @@ function PrintConfig() {
           </GreyContainer>
         </SectionToggle>
 
+        {/* Batch Maps */}
+        {shouldEnableBatchMaps && (
+          <>
+            <SectionToggle
+              title={t('Create a sequence of maps')}
+              expanded={toggles.batchMapsVisibility}
+              handleChange={() => {
+                setToggles(prev => ({
+                  ...prev,
+                  batchMapsVisibility: !prev.batchMapsVisibility,
+                }));
+              }}
+            />
+            <GreyContainer>
+              <GreyContainerSection isLast={!toggles.batchMapsVisibility}>
+                <Typography variant="body1">
+                  {t(
+                    'Selecting this option will apply the template above to create multiple maps over a time period of your choice.',
+                  )}
+                </Typography>
+              </GreyContainerSection>
+              {toggles.batchMapsVisibility && (
+                <>
+                  <GreyContainerSection>
+                    <DateRangePicker />
+                  </GreyContainerSection>
+                  <GreyContainerSection isLast>
+                    <Box className={classes.mapCountContainer}>
+                      <Typography variant="body1">
+                        {t('Nb of maps generated')}
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        className={classes.mapCountValue}
+                      >
+                        {mapCount}
+                      </Typography>
+                    </Box>
+                  </GreyContainerSection>
+                </>
+              )}
+            </GreyContainer>
+          </>
+        )}
+
         <Button
           style={{ backgroundColor: cyanBlue, color: 'black' }}
           variant="contained"
@@ -613,6 +661,17 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'space-between',
+    },
+    mapCountContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    mapCountValue: {
+      border: '1px solid rgba(0, 0, 0, 0.23)',
+      borderRadius: '4px',
+      padding: '8px 12px',
+      backgroundColor: '#f5f5f5',
     },
   }),
 );
