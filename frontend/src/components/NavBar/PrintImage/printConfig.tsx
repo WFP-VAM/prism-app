@@ -285,11 +285,7 @@ function PrintConfig() {
   } = printConfig;
 
   return (
-    <Box
-      style={{
-        overflow: 'scroll',
-      }}
-    >
+    <Box>
       <div className={classes.optionsContainer}>
         <div>
           <Box
