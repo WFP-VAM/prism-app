@@ -238,6 +238,17 @@ const useLayers = () => {
       .sort((a, b) => a - b);
   }, [selectedLayerDatesDupCount, selectedLayersWithDateSupport]);
 
+  // Check if any selected layers with date support are still loading their dates
+  const areLayerDatesLoading = useMemo(() => {
+    if (selectedLayersWithDateSupport.length === 0) {
+      return false;
+    }
+    // Check if any selected layer is in the loading state
+    return selectedLayersWithDateSupport.some(layer =>
+      layersLoadingDates.includes(layer.id),
+    );
+  }, [selectedLayersWithDateSupport, layersLoadingDates]);
+
   const defaultLayer = useMemo(() => get(appConfig, 'defaultLayer'), []);
 
   const layerDefinitionsIncludeDefaultLayer = useMemo(
@@ -612,6 +623,7 @@ const useLayers = () => {
 
   return {
     adminBoundariesExtent,
+    areLayerDatesLoading,
     boundaryLayerId,
     numberOfActiveLayers,
     selectedLayerDates,
