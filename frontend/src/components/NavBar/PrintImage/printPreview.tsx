@@ -117,6 +117,8 @@ function PrintPreview() {
     legendScale,
     invertedAdminBoundaryLimitPolygon,
     printRef,
+    bottomLogo,
+    bottomLogoScale,
   } = printConfig;
 
   // Get the style and layers of the old map
@@ -156,6 +158,21 @@ function PrintPreview() {
           }}
         >
           <div ref={printRef} className={classes.printContainer}>
+            {toggles.bottomLogoVisibility && bottomLogo && (
+              <img
+                style={{
+                  position: 'absolute',
+                  zIndex: 3,
+                  height: `${32 * bottomLogoScale}px`,
+                  bottom: `${(footerHeight as number) + 10}px`,
+                  left: '10px',
+                  maxWidth: '150px',
+                  objectFit: 'contain',
+                }}
+                src={bottomLogo}
+                alt="bottomLogo"
+              />
+            )}
             <img
               ref={northArrowRef}
               style={{
