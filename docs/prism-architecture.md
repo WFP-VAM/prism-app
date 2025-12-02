@@ -1,8 +1,9 @@
-# **PRISM Architecture**
 
-*Repository-based Technical Overview*
+# PRISM Architecture
 
-This document provides a high-level, source-of-truth architecture overview of the **PRISM** application. It is intended for developers, maintainers, and technical reviewers.
+Repository-based Technical Overview
+
+This document provides a clean, accurate architecture description of the PRISM application. It is intended for developers, maintainers, and technical reviewers.
 
 PRISM consists of two main runtime components:
 
@@ -14,345 +15,234 @@ Additional supporting packages exist for shared code and alerting.
 
 ---
 
-# **1\. Repository Structure**
+## 1. Repository Structure
 
-`prism-app/`
-
-`│`
-
-`├── frontend/        # React-based SPA viewer (static build)`
-
-`├── api/             # Lightweight Flask API (zonal stats, alerts, Kobo, ACLED, STAC exports)`
-
-`├── alerting/        # Alert processing (integrated via docker-compose)`
-
-`├── common/          # Shared code used across packages`
-
-`├── docs/            # Documentation (this directory)`
-
-`└── docker-compose.* # Local/dev deployment configurations`
+```
+prism-app/
+├── frontend/         # React-based web application (SPA)
+├── api/              # Flask API for stats, alerts, Kobo, ACLED, STAC exports
+├── alerting/         # Alert processing (via docker-compose)
+├── common/           # Shared utilities and types
+├── docs/             # Documentation
+└── docker-compose.*  # Deployment definitions
+```
 
 ---
 
-# **2\. System Overview**
+## 2. System Overview
 
-PRISM is a **web-based geospatial application** that allows users to visualize hazard layers, administrative boundaries, tables, and point data through a browser-based map interface.  
- It also exposes backend services for:
+PRISM is a web-based geospatial system consisting of:
 
-* Zonal statistics
+- A **frontend**: configurable React SPA for geospatial visualization.
+- A **backend API**: lightweight Flask service providing:
+  - Zonal statistics
+  - Alert CRUD operations
+  - KoboToolbox data access
+  - ACLED conflict data
+  - Raster export using STAC + S3
 
-* Alerts (CRUD)
-
-* KoboToolbox form access
-
-* ACLED incident access
-
-* Raster export via STAC \+ S3
-
-PRISM **does not include** a map server, database, or ingestion pipeline inside this repo.  
- Instead, it interoperates with **external WMS/OGC services**, **external STAC APIs**, **S3**, and **external vector/raster sources** via URLs defined in configuration.
-
-This repo therefore contains the **application core**, not the entire operational ecosystem.
-
----
-
-# **3\. C4 Level 1 — System Context**
-
-`flowchart LR`
-
-    `user[User (Analyst / Operator)]`
-
-    `user --> FE[PRISM Frontend (React SPA)]`
-
-    `FE --> API[PRISM API (Flask)]`
-
-    `FE --> OGC[OGC Map Services (WMS/WFS/WMTS)\nExternal]`
-
-    `API --> DB[(Alert Database)\nExternal]`
-
-    `API --> S3[(S3 Bucket for Raster Exports)\nExternal]`
-
-    `API --> STAC[STAC API\nExternal]`
-
-    `API --> ACLED[ACLED API\nExternal]`
-
-    `API --> KOBO[KoboToolbox API\nExternal]`
-
-    `classDef ext fill:#eee,stroke:#888;`
-
-    `class OGC,DB,S3,STAC,ACLED,KOBO ext;`
-
-**PRISM (software system)** consists of:
-
-* **Frontend SPA**
-
-* **Backend API \+ alerting**  
-   Everything else (WMS/OGC, STAC, S3, external APIs, database) is **outside** this repository.
+External systems provide:
+- OGC map services (WMS/WMTS/WFS)
+- Remote raster/vector files
+- STAC API
+- S3 for export output
+- ACLED and Kobo APIs
+- External alert database
 
 ---
 
-# **4\. C4 Level 2 — Container View**
+## 3. System Context (C4 Level 1)
 
-### **4.1 Frontend (Container)**
+```mermaid
+flowchart LR
 
-**Directory:** `frontend/`  
- **Type:** Static React single-page application (SPA)  
- **Responsibilities:**
+    user[User (Analyst / Operator)]
+    user --> FE[PRISM Frontend (React SPA)]
 
-* Load map, UI, boundaries, legends, layer lists, and tables
+    FE --> API[PRISM API]
 
-* Display raster layers via **WMS/OGC endpoints** configured in `prism.json`
+    FE --> OGC[OGC Map Services]
 
-* Load point layers, boundary files, CSVs, PMTiles, and other static assets
+    API --> DB[(Alert Database)]
+    API --> S3[(S3 Bucket for Raster Exports)]
+    API --> STAC[STAC API]
+    API --> ACLED[ACLED API]
+    API --> KOBO[KoboToolbox API]
 
-* Provide UI for alerts (optional via `alertFormActive`)
-
-* Communicate with the backend API for:
-
-  * Zonal statistics
-
-  * Alerts
-
-  * ACLED and Kobo data
-
-  * Raster downloads
-
-**Key design principle:**  
- PRISM frontend is **configuration-driven**, not hardcoded. Country deployments only override JSON configs.
+    classDef ext fill:#eeeeee,stroke:#999999;
+    class OGC,DB,S3,STAC,ACLED,KOBO ext;
+```
 
 ---
 
-### **4.2 API (Container)**
+## 4. Container View (C4 Level 2)
 
-**Directory:** `api/`  
- **Type:** Lightweight **Flask** API  
- **Responsibilities:**
+### 4.1 Frontend
 
-#### **1\. Zonal statistics (`/stats`)**
+- Static React SPA
+- Loads configs and static data
+- Displays layers from OGC map services
+- Calls backend API for:
+  - Stats
+  - Alerts
+  - Kobo
+  - ACLED
+  - Raster exports
 
-* Compute zonal statistics using:
+### 4.2 Backend API
 
-  * **Remote GeoTIFFs** (via URL)
+- Flask service
+- Implements:
+  - `/stats`
+  - `/alerts`, `/alerts-all`
+  - `/acled`
+  - `/kobo/forms`
+  - `/raster_geotiff`
+- Uses external:
+  - STAC API
+  - S3
+  - ACLED API
+  - KoboToolbox API
+  - Alert DB
 
-  * **GeoJSON boundaries** (inline or via URL)
+### 4.3 Supporting Modules
 
-  * Optional **WFS feature intersections**
-
-* Return list or GeoJSON results
-
-* Support grouping, filtering, and intersection thresholds
-
-#### **2\. Alerts (`/alerts`, `/alerts-all`)**
-
-* CRUD operations for alert records in an external database (`alert` table)
-
-* JSON validation via `AlertModel`
-
-#### **3\. ACLED Integration (`/acled`)**
-
-* Proxy to ACLED API using API key \+ email
-
-* Optional filters for fields and event dates
-
-#### **4\. KoboToolbox Integration (`/kobo/forms`)**
-
-* Retrieve form submissions from Kobo using username/password
-
-* Filter by date, status, and selected fields
-
-#### **5\. Raster Export (`/raster_geotiff`)**
-
-* Query external STAC API for source raster
-
-* Clip to a bounding box
-
-* Save resulting GeoTIFF to **S3**
-
-* Return pre-signed S3 URL
-
-**Key architectural traits:**
-
-* Stateless for `/stats`, `/acled`, `/kobo`, `/raster_geotiff`
-
-* Stateful only via alert CRUD (external DB)
-
-* Runs under **Traefik** reverse proxy in deployments
-
-* Uses **AWS IAM** \+ **Secrets Manager** for credentials
+- `alerting/`: alert execution logic
+- `common/`: shared utilities
 
 ---
 
-### **4.3 Alerting Service (Container)**
+## 5. Frontend Component Diagram (C4 Level 3)
 
-**Directory:** `alerting/`  
- **Type:** Python service integrated via docker-compose  
- **Responsibilities (inferred from repository structure):**
+```mermaid
+flowchart LR
 
-* Operates on the same Docker network as the API
+    subgraph FE["PRISM Frontend (React SPA)"]
+        ConfigLoader["Config Loader (prism.json, layers.json, tables.json, boundaries)"]
+        MapShell["Map Shell and Layout"]
+        LayerCatalog["Layer Catalog and Legends"]
+        BoundaryManager["Boundary and Zones Manager"]
+        TableView["Table and Chart View"]
+        AlertsUI["Alerts UI"]
+        ApiClient["API Client"]
+        OgcClient["OGC Client"]
+    end
 
-* Uses the same external database containing the `alert` table
+    ConfigLoader --> MapShell
+    ConfigLoader --> LayerCatalog
+    ConfigLoader --> BoundaryManager
+    ConfigLoader --> TableView
+    ConfigLoader --> AlertsUI
 
-* Performs alert evaluation and/or scheduling tasks
+    MapShell --> LayerCatalog
+    MapShell --> BoundaryManager
+    MapShell --> TableView
+    MapShell --> AlertsUI
 
-This README does not include internal details, so this remains high-level.
+    LayerCatalog --> OgcClient
+    BoundaryManager --> OgcClient
 
----
+    AlertsUI --> ApiClient
+    TableView --> ApiClient
+    MapShell --> ApiClient
 
-### **4.4 Common Library (Module)**
+    OGC["OGC Map Services"]
+    API["PRISM API"]
 
-**Directory:** `common/`  
- Contains shared utilities, types, or logic used by multiple packages.  
- (Contents not visible in upstream README.)
+    OgcClient --> OGC
+    ApiClient --> API
 
----
-
-# **5\. External Dependencies (Documented in Repo)**
-
-The following systems are **not implemented or bundled** in this repo but are explicitly referenced by the frontend config and API README:
-
-| External Service | Used By | Purpose |
-| ----- | ----- | ----- |
-| **WMS / OGC services** | Frontend | Loading raster map layers |
-| **GeoJSON / PMTiles (HTTP/S3)** | Frontend | Admin boundaries, point layers |
-| **KoboToolbox API** | API | Fetching form responses |
-| **ACLED API** | API | Conflict incident data |
-| **STAC API** | API | Locating rasters for export |
-| **AWS S3** | API | Storing generated GeoTIFF exports |
-| **Alert Database** | API/alerting | Storing alert records |
-| **Traefik** | Deployment | Reverse proxy / routing |
-
----
-
-# **6\. Data Flow Overview**
-
-A simplified ingestion → processing → visualization → export workflow **based on this repo**:
-
-`flowchart TD`
-
-    `FE[Frontend (React SPA)]`
-
-    `API[PRISM API (Flask)]`
-
-    `OGC[WMS/OGC Services\n(External)]`
-
-    `GEO[(GeoJSON / PMTiles\nStatic Assets)]`
-
-    `DB[(Alert DB\nExternal)]`
-
-    `ACLED[ACLED API\nExternal]`
-
-    `KOBO[Kobo API\nExternal]`
-
-    `STAC[STAC API\nExternal]`
-
-    `S3[(S3 Bucket\nExternal)]`
-
-    `FE -->|Load layers| OGC`
-
-    `FE -->|Load boundaries / tables| GEO`
-
-    `FE -->|Zonal Stats| API`
-
-    `FE -->|Alerts UI| API`
-
-    `FE -->|Request ACLED / Kobo data| API`
-
-    `FE -->|Download Raster| API`
-
-    `API --> DB`
-
-    `API --> ACLED`
-
-    `API --> KOBO`
-
-    `API --> STAC`
-
-    `API --> S3`
+    classDef ext fill:#eeeeee,stroke:#999999;
+    class OGC,API ext;
+```
 
 ---
 
-# **7\. Deployment Architecture**
+## 6. API Component Diagram (C4 Level 3)
 
-The repo describes a **Traefik-based deployment** on a single EC2 instance:
+```mermaid
+flowchart LR
 
-* `docker-compose.deploy.yml` defines containers for:
+    subgraph API["PRISM API (Flask)"]
 
-  * PRISM API
+        StatsController["Stats Controller (/stats, /demo)"]
+        StatsEngine["Zonal Stats Engine"]
+        RasterClient["Raster Client"]
+        ZonesClient["Zones Client"]
+        WfsClient["WFS Client"]
 
-  * Frontend (static assets served through Traefik)
+        AlertsController["Alerts Controller (/alerts)"]
+        AlertsRepository["Alerts Repository (alert table)"]
 
-  * Alerting service
+        AcledController["ACLED Controller (/acled)"]
+        AcledClient["ACLED Client"]
 
-* AWS integrations:
+        KoboController["Kobo Controller (/kobo/forms)"]
+        KoboClient["Kobo Client"]
 
-  * IAM role on EC2 for S3 access
+        RasterExportController["Raster Export Controller (/raster_geotiff)"]
+        StacClient["STAC Client"]
+        S3Client["S3 Client"]
+    end
 
-  * Secrets in AWS Secrets Manager
+    StatsController --> StatsEngine
+    StatsEngine --> RasterClient
+    StatsEngine --> ZonesClient
+    StatsEngine --> WfsClient
 
-* Operations guidance included:
+    AlertsController --> AlertsRepository
 
-  * Fixing AppArmor conflicts
+    AcledController --> AcledClient
+    KoboController --> KoboClient
 
-  * Freeing disk space (`docker system prune`)
+    RasterExportController --> StacClient
+    RasterExportController --> S3Client
 
-  * Killing bound ports
+    RasterSource["Remote GeoTIFF URLs"]
+    ZonesSource["GeoJSON Sources"]
+    WFS["WFS Services"]
+    AlertsDB["Alert Database"]
+    ACLED["ACLED API"]
+    KOBO["KoboToolbox API"]
+    STAC["STAC API"]
+    S3["S3 Bucket"]
 
-This is a **self-contained, Docker-based deployment** model suitable for:
+    RasterClient --> RasterSource
+    ZonesClient --> ZonesSource
+    WfsClient --> WFS
 
-* WFP-managed infrastructure
+    AlertsRepository --> AlertsDB
 
-* Government-hosted servers
+    AcledClient --> ACLED
+    KoboClient --> KOBO
 
-* Low-dependency environments
+    StacClient --> STAC
+    S3Client --> S3
+
+    classDef ext fill:#eeeeee,stroke:#999999;
+    class RasterSource,ZonesSource,WFS,AlertsDB,ACLED,KOBO,STAC,S3 ext;
+```
 
 ---
 
-# **8\. Security Overview**
+## 7. Deployment Overview
 
-From deployment documentation, the following are enforced:
+As documented:
 
-* **Secrets stored in AWS Secrets Manager**, not in code
+- Traefik proxy on EC2
+- Docker Compose deployment
+- Environment variables stored in AWS Secrets Manager
+- EC2 with IAM role for S3 access
 
-* **IAM role** used for S3 read/write
-
-* **EC2 security rules / whitelisting** for operator access
-
-* **Traefik reverse proxy** handling TLS/HTTPS termination
-
-* **API credentials** required for:
-
-  * ACLED API
-
-  * KoboToolbox
-
-  * STAC access (implicitly via environment variables)
-
-Authentication/authorization for API endpoints is **not defined** in the repo and should be documented separately if required.
+Common operational issues and fixes are documented in `api/README.md`.
 
 ---
 
-# **9\. Summary**
+## 8. Summary
 
-This repository defines the **application core** of PRISM:
+The system is modular, configurable, and suitable for deployment across WFP and partner infrastructures with these key elements:
 
-* A **config-driven React frontend** for geospatial visualization
-
-* A **lightweight Flask backend** for zonal statistics, alerts, ACLED+Kobo access, and raster exports
-
-* Supporting modules (`alerting`, `common`) and Docker-based deployment scripts
-
-The repo explicitly **does not** include:
-
-* A database
-
-* A map server/WMS service
-
-* A STAC server
-
-* Data ingestion pipelines
-
-* Raster preprocessing code
-
-These are external dependencies configured via JSON files and environment variables.
-
-This architecture allows PRISM to be portable, configurable, and deployable across diverse partner environments—including government servers, WFP cloud infrastructure, or local development machines.
+- React frontend  
+- Flask API backend  
+- Modular alerting  
+- External OGC, STAC, S3, ACLED, Kobo integrations  
