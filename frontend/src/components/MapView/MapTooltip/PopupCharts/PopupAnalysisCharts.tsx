@@ -103,7 +103,7 @@ function PopupAnalysisCharts({
   }
 
   return (
-    <PopupChartWrapper>
+    <PopupChartWrapper key={adminProperties?.id}>
       {filteredChartLayers.map(filteredChartLayer => (
         <div key={filteredChartLayer.id} className={classes.chartContainer}>
           <div className={classes.chartSection}>
