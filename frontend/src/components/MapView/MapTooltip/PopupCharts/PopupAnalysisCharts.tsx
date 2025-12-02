@@ -46,11 +46,13 @@ const getProperties = (
   adminCode: AdminCodeString,
   adminSelectorKey: string,
 ) => {
+  // Normalize both values to strings for comparison (admin codes might be stored as numbers)
+  const normalizedAdminCode = String(adminCode);
   const features = layerData.features.find(
     elem =>
       elem.properties &&
       elem.properties[adminSelectorKey] &&
-      elem.properties[adminSelectorKey] === adminCode,
+      String(elem.properties[adminSelectorKey]) === normalizedAdminCode,
   );
 
   if (!features) {
@@ -87,11 +89,16 @@ function PopupAnalysisCharts({
   const layerId = getLayerMapId(boundaryLayer.id, 'fill');
   const features = map?.queryRenderedFeatures(undefined, { layers: [layerId] });
 
+  // Normalize adminCode to string for comparison
+  const normalizedAdminCode = String(adminCode);
   const adminProperties =
     data && boundaryLayer?.format !== 'pmtiles'
       ? getProperties(data as BoundaryLayerData, adminCode, adminSelectorKey)
-      : (features?.find(f => f.properties?.[adminSelectorKey] === adminCode)
-          ?.properties ?? null);
+      : (features?.find(
+          f =>
+            f.properties?.[adminSelectorKey] &&
+            String(f.properties[adminSelectorKey]) === normalizedAdminCode,
+        )?.properties ?? null);
 
   if (filteredChartLayers.length < 1) {
     return null;
