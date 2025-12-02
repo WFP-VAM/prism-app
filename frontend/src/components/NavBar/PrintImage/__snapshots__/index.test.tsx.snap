@@ -47,7 +47,6 @@ exports[`renders as expected 1`] = `
     >
       <div
         class="MuiBox-root MuiBox-root-13"
-        style="overflow: scroll;"
       >
         <div
           class="makeStyles-optionsContainer-5"
