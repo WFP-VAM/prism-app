@@ -9,6 +9,9 @@
   "aboutPath": "data/somalia/about.md",
   "alertFormActive": false,
   "hidePanel": false,
+  "printConfig": {
+    "bottomLogo": "images/somalia-bottom-logo.png"
+  },
   "enableNavigationDropdown": true,
   "defaultDisplayBoundaries": ["admin2_boundaries", "admin1_boundaries"],
   "serversUrls": {

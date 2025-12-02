@@ -73,7 +73,7 @@ function LayerDropdown({
     layers: adminBoundaries
       .map((aboundary, _index) => ({
         title: t(
-          `Level ${aboundary.adminLevelCodes.length - (multiCountry ? 1 : 0)}`,
+          `Admin ${aboundary.adminLevelCodes.length - (multiCountry ? 1 : 0)}`,
         ),
         boundary: aboundary.id,
         ...aboundary,
