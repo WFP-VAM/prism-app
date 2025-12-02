@@ -43,6 +43,7 @@ const boundaryLayer = getBoundaryLayerSingleton();
 function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const { country, header } = appConfig;
   const logo = header?.logo;
+  const bottomLogo = get(appConfig, 'printConfig.bottomLogo', undefined);
   const classes = useStyles();
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
@@ -58,6 +59,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     legendVisibility: true,
     footerVisibility: true,
     batchMapsVisibility: false,
+    bottomLogoVisibility: !!bottomLogo,
   });
 
   const [downloadMenuAnchorEl, setDownloadMenuAnchorEl] =
@@ -72,6 +74,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const [legendPosition, setLegendPosition] = React.useState(0);
   const [logoPosition, setLogoPosition] = React.useState(0);
   const [logoScale, setLogoScale] = React.useState(1);
+  const [bottomLogoScale, setBottomLogoScale] = React.useState(1);
   // the % value of the original dimensions
   const [mapDimensions, setMapDimensions] = React.useState<MapDimensions>({
     width: 100,
@@ -234,6 +237,9 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       logo,
       setLogoPosition,
       setLogoScale,
+      bottomLogo,
+      bottomLogoScale,
+      setBottomLogoScale,
       setToggles,
       setLegendPosition,
       setFooterText,

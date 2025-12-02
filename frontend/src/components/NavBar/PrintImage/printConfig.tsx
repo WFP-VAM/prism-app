@@ -261,6 +261,9 @@ function PrintConfig() {
     setLogoPosition,
     logoScale,
     setLogoScale,
+    bottomLogo,
+    bottomLogoScale,
+    setBottomLogoScale,
     toggles,
     setToggles,
     legendPosition,
@@ -380,6 +383,40 @@ function PrintConfig() {
                       title={t('Size')}
                     />
                   </div>
+                </Box>
+              </GreyContainerSection>
+            </GreyContainer>
+          </SectionToggle>
+        )}
+
+        {/* Bottom Logo */}
+        {bottomLogo && (
+          <SectionToggle
+            title={t('Bottom Logo')}
+            expanded={toggles.bottomLogoVisibility}
+            handleChange={({ target }) => {
+              setToggles(prev => ({
+                ...prev,
+                bottomLogoVisibility: Boolean(target.checked),
+              }));
+            }}
+          >
+            <GreyContainer>
+              <GreyContainerSection isLast>
+                <Box
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'flex-end',
+                  }}
+                >
+                  <ToggleSelector
+                    align="end"
+                    value={bottomLogoScale}
+                    options={logoScaleSelectorOptions}
+                    setValue={setBottomLogoScale}
+                    title={t('Size')}
+                  />
                 </Box>
               </GreyContainerSection>
             </GreyContainer>
