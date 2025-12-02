@@ -49,6 +49,7 @@ import {
   dateWithoutTime,
   findClosestDate,
 } from './date-utils';
+import { getNonBoundaryLayers } from './boundary-layers-utils';
 
 const dateSupportLayerTypes: Array<LayerType['type']> = [
   'impact',
@@ -139,7 +140,7 @@ const useLayers = () => {
   const adminBoundariesExtent = expandBoundingBox(
     appConfig.map.boundingBox as Extent,
     2,
-  ) as Extent;
+  );
 
   const selectedLayersWithDateSupport = useMemo(
     () =>
@@ -212,6 +213,8 @@ const useLayers = () => {
   );
 
   // calculate possible dates user can pick from the currently selected layers
+  // TODO: this function and selectedLayerDatesDupCount are executed about 20 times
+  // when layer selection changes!
   const selectedLayerDates: number[] = useMemo(() => {
     if (selectedLayersWithDateSupport.length === 0) {
       return [];
@@ -458,23 +461,33 @@ const useLayers = () => {
     ],
   );
 
-  // let users know if the layers selected are not possible to view together.
+  // let users know if the selected layers cannot be viewed together.
   useEffect(() => {
-    const nonBoundaryLayers = selectedLayers.filter(
-      layer => layer.type !== 'boundary',
-    );
+    const nonBoundaryLayers = getNonBoundaryLayers(selectedLayers);
 
     // Check if any of the selected layers are currently loading their dates
     const hasLayersLoadingDates = nonBoundaryLayers.some(layer =>
       layersLoadingDates.includes(layer.id),
     );
 
+    // Check if all layers with date support have their dates loaded
+    // This prevents removing a layer before its dates are fully loaded
+    // selectedLayersWithDateSupport already has dateItems calculated via getPossibleDatesForLayer
+    // so we can simply check if dateItems is not empty
+    const allLayersHaveDatesLoaded = selectedLayersWithDateSupport.every(
+      layer => layer.dateItems && layer.dateItems.length > 0,
+    );
+
     if (
       selectedLayerDates.length !== 0 ||
+      // no layers using dates are active, date overlap is meaningless
       selectedLayersWithDateSupport.length === 0 ||
       !selectedDate ||
+      // there are fewer than 2 layers, there can't be an overlap
       nonBoundaryLayers.length < 2 ||
-      hasLayersLoadingDates
+      // not all dates have been loaded, we can't decide on overlaps yet
+      hasLayersLoadingDates ||
+      !allLayersHaveDatesLoaded
     ) {
       return;
     }
@@ -501,7 +514,7 @@ const useLayers = () => {
     selectedDate,
     selectedLayerDates.length,
     selectedLayers,
-    selectedLayersWithDateSupport.length,
+    selectedLayersWithDateSupport,
     layersLoadingDates,
     t,
   ]);

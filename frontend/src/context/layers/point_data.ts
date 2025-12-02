@@ -46,7 +46,7 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> =
         authRequired,
       },
     },
-    { getState, dispatch },
+    { dispatch },
   ) => {
     // This function fetches point data from the API.
     // If this endpoint is not available or we run into an error,
@@ -145,7 +145,7 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> =
           dataField,
           featureInfoProps,
         },
-        getState,
+        dispatch,
       });
     }
     if ((data as any)?.type === 'FeatureCollection') {

@@ -12,7 +12,7 @@
   },
   "header": {
     "title": "PRISM",
-    "logo": "images/mwi-met.png"
+    "logo": "/images/mwi-met.png"
   },
   "icons": {
     "rainfall": "icon_rain.png",
