@@ -212,6 +212,8 @@
   "Location": "Жайгашкан жер",
   "Compare Periods": "Мезгилдерди салыштыруу",
   "Admin 1": "Админ 1",
+  "Admin 2": "Админ 2",
+  "Remove {{adminLevel}}": "{{adminLevel}} тазалоо",
   "Select Charts": "Диаграммаларды тандаңыз",
   "Clear all": "Баарын тазалоо",
   "Period": "Мезгил",
