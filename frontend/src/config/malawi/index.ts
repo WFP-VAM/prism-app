@@ -4,6 +4,7 @@ import rawLayers from './layers.json';
 const rawTables = {};
 const rawReports = {};
 
+// Country-specific translation overrides shared translation
 // Temp: hack for Malawi window labels
 const translation = {
   en: {

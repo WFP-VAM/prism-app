@@ -100,6 +100,8 @@ function MapExportLayout({
   titleRef,
   footerRef,
   footerHeight,
+  bottomLogo,
+  bottomLogoScale = 1,
   aaMarkers = [],
   floodStations = [],
   activePanel,
@@ -222,6 +224,21 @@ function MapExportLayout({
           }}
         >
           <div ref={printRef} className={classes.printContainer}>
+            {toggles.bottomLogoVisibility && bottomLogo && (
+              <img
+                style={{
+                  position: 'absolute',
+                  zIndex: 3,
+                  height: `${32 * bottomLogoScale}px`,
+                  bottom: `${(footerHeight || 20) + 10}px`,
+                  left: '10px',
+                  maxWidth: '150px',
+                  objectFit: 'contain',
+                }}
+                src={bottomLogo}
+                alt="bottomLogo"
+              />
+            )}
             <img
               ref={northArrowRef}
               style={{

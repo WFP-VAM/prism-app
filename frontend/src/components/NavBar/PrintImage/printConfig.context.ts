@@ -8,6 +8,8 @@ export type Toggles = {
   logoVisibility: boolean;
   legendVisibility: boolean;
   footerVisibility: boolean;
+  batchMapsVisibility: boolean;
+  bottomLogoVisibility: boolean;
 };
 
 export type MapDimensions = { width: number; height: number };
@@ -28,6 +30,9 @@ export type PrintConfigContextType = {
     setLogoPosition: React.Dispatch<React.SetStateAction<number>>;
     logoScale: number;
     setLogoScale: React.Dispatch<React.SetStateAction<number>>;
+    bottomLogo: string | undefined;
+    bottomLogoScale: number;
+    setBottomLogoScale: React.Dispatch<React.SetStateAction<number>>;
     toggles: Toggles;
     setToggles: React.Dispatch<React.SetStateAction<Toggles>>;
     legendPosition: number;
@@ -58,6 +63,18 @@ export type PrintConfigContextType = {
     titleHeight: number;
     invertedAdminBoundaryLimitPolygon: any;
     printRef: React.RefObject<HTMLDivElement>;
+    dateRange: {
+      startDate: number | null;
+      endDate: number | null;
+    };
+    setDateRange: React.Dispatch<
+      React.SetStateAction<{
+        startDate: number | null;
+        endDate: number | null;
+      }>
+    >;
+    mapCount: number;
+    shouldEnableBatchMaps: boolean;
   };
 };
 

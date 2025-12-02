@@ -74,6 +74,8 @@ function PrintPreview() {
     invertedAdminBoundaryLimitPolygon,
     printRef,
     footerHeight,
+    bottomLogo,
+    bottomLogoScale,
   } = printConfig;
 
   // Get the style and layers of the old map
@@ -117,6 +119,8 @@ function PrintPreview() {
       titleRef={titleRef}
       footerRef={footerRef}
       footerHeight={footerHeight}
+      bottomLogo={bottomLogo}
+      bottomLogoScale={bottomLogoScale}
       aaMarkers={AAMarkers}
       floodStations={filteredFloodStations}
       activePanel={activePanel}

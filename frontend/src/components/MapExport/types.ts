@@ -9,6 +9,7 @@ export interface MapExportToggles {
   logoVisibility: boolean;
   legendVisibility: boolean;
   footerVisibility: boolean;
+  bottomLogoVisibility?: boolean;
 }
 
 export interface ExportMapBounds {
@@ -66,6 +67,10 @@ export interface MapExportLayoutProps {
   logoPosition: number;
   logoScale: number;
   titleHeight?: number; // Height of title bar (for logo positioning when no title)
+
+  // Bottom Logo (e.g., for Somalia country-specific branding)
+  bottomLogo?: string;
+  bottomLogoScale?: number;
 
   // Legend
   legendPosition: number;
