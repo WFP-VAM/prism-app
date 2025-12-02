@@ -36,8 +36,8 @@ describe('Loading dates', () => {
           .should('match', /^[A-Z][a-z]{2} \d{1,2}, \d{4}$/)
           .as('aaDate')
           .then(function () {
-            const firstDate = new Date(this.initialDate).getDate();
-            const secondDate = new Date(this.aaDate).getDate();
+            const firstDate = new Date(this.initialDate).getTime();
+            const secondDate = new Date(this.aaDate).getTime();
             expect(secondDate).to.be.greaterThan(firstDate);
           });
       },
