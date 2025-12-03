@@ -17,8 +17,7 @@
   "alertFormActive": false,
   "serversUrls": {
     "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms",
-      "https://sparc.wfp.org/geoserver/prism/wms"
+      "https://api.earthobservation.vam.wfp.org/ows/wms"
     ]
   },
   "map": {
@@ -195,7 +194,6 @@
       ]
     },
     "hazards": {
-      "earthquakes": ["usgs_shakemaps"],
       "floods": ["Flood_freq"]
     },
     "exposure": {

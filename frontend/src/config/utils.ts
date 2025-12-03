@@ -1,4 +1,5 @@
 import { camelCase, get, map, mapKeys, isPlainObject, mapValues } from 'lodash';
+import { generateSlugFromTitle } from 'utils/string-utils';
 import { appConfig, rawLayers, rawReports, rawTables } from '.';
 import {
   AdminLevelDataLayerProps,
@@ -8,6 +9,7 @@ import {
   BoundaryLayerProps,
   checkRequiredKeys,
   CompositeLayerProps,
+  Dashboard,
   DateItem,
   GeojsonDataLayerProps,
   ImpactLayerProps,
@@ -65,16 +67,35 @@ export function deepCamelCaseKeys(obj: any): any {
   return obj;
 }
 
+// Helper function to ensure data paths are absolute
+const ensureAbsoluteDataPath = (path: string): string => {
+  if (path.startsWith('/')) {
+    return path;
+  }
+  if (path.startsWith('data/')) {
+    return `/${path}`;
+  }
+  return path;
+};
+
 // CamelCase the keys inside the layer definition & validate config
 export const getLayerByKey = (layerKey: LayerKey): LayerType => {
   const rawDefinition = rawLayers[layerKey];
+
+  const processedDefinition = mapKeys(rawDefinition, (_v, k) => camelCase(k));
+
+  // Ensure data paths are absolute to prevent routing conflicts
+  if (processedDefinition.path) {
+    // eslint-disable-next-line fp/no-mutation
+    processedDefinition.path = ensureAbsoluteDataPath(processedDefinition.path);
+  }
 
   const definition: { id: LayerKey; type: LayerType['type'] } = {
     id: layerKey,
     type: rawDefinition.type as LayerType['type'],
     // TODO - Transition to deepCamelCaseKeys
     // but handle line-opacity and other special cases
-    ...mapKeys(rawDefinition, (_v, k) => camelCase(k)),
+    ...processedDefinition,
   };
 
   const throwInvalidLayer = () => {
@@ -131,6 +152,7 @@ export const getLayerByKey = (layerKey: LayerKey): LayerType => {
       return definition;
     case 'anticipatory_action_drought':
     case 'anticipatory_action_storm':
+    case 'anticipatory_action_flood':
       if (
         checkRequiredKeys(CompositeLayerProps, definition, true) &&
         isAnticipatoryActionLayer(definition.type)
@@ -176,6 +198,7 @@ export const AALayerIds = Object.values(AnticipatoryAction);
 export const LayerDefinitions: LayersMap = (() => {
   const droughtUrl = appConfig.anticipatoryActionDroughtUrl;
   const stormUrl = appConfig.anticipatoryActionStormUrl;
+  const floodUrl = appConfig.anticipatoryActionFloodUrl;
 
   const AALayers: AnticipatoryActionLayerProps[] = [
     {
@@ -188,6 +211,12 @@ export const LayerDefinitions: LayersMap = (() => {
       id: AnticipatoryAction.storm,
       title: 'Anticipatory Action Storm',
       type: AnticipatoryAction.storm,
+      opacity: 0.9,
+    },
+    {
+      id: AnticipatoryAction.flood,
+      title: 'Anticipatory Action Flood',
+      type: AnticipatoryAction.flood,
       opacity: 0.9,
     },
   ];
@@ -206,6 +235,9 @@ export const LayerDefinitions: LayersMap = (() => {
       : {}),
     ...(stormUrl
       ? { [AnticipatoryAction.storm]: AALayersById[AnticipatoryAction.storm] }
+      : {}),
+    ...(floodUrl
+      ? { [AnticipatoryAction.flood]: AALayersById[AnticipatoryAction.flood] }
       : {}),
   };
 
@@ -333,6 +365,45 @@ export const isWindowedDates = (
   'Window 2' in dates;
 
 export const areChartLayersAvailable = getWMSLayersWithChart().length > 0;
+
+export const areDashboardsAvailable = (): boolean => 'dashboards' in appConfig;
+
+export const getDashboards = (): Dashboard[] => {
+  if (!areDashboardsAvailable()) {
+    return [];
+  }
+
+  const { dashboards } = appConfig;
+  if (Array.isArray(dashboards)) {
+    return dashboards;
+  }
+
+  return [];
+};
+
+export const findDashboardByPath = (
+  path: string,
+): { dashboard: Dashboard; index: number } | null => {
+  const dashboards = getDashboards();
+
+  // eslint-disable-next-line fp/no-mutation
+  for (let i = 0; i < dashboards.length; i += 1) {
+    const dashboard = dashboards[i];
+    const dashboardPath =
+      dashboard.path || generateSlugFromTitle(dashboard.title);
+
+    if (dashboardPath === path) {
+      return { dashboard: { ...dashboard, path: dashboardPath }, index: i };
+    }
+  }
+
+  return null;
+};
+
+export const getDashboardIndexByPath = (path: string): number => {
+  const result = findDashboardByPath(path);
+  return result ? result.index : 0;
+};
 
 const isValidReportsDefinition = (
   maybeReport: object,

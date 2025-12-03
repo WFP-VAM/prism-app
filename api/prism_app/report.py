@@ -70,9 +70,9 @@ async def download_report(
         flood_extent_checkbox = page.get_by_role("checkbox", name="Flood extent")
         await expect(flood_extent_checkbox).to_be_visible(timeout=20_000)
 
-        # the switch status is flaky (sometimes checked, sometimes not)
-        # FIXME: this fails because the layer is not activated even though it appears in the url
-        await expect(flood_extent_checkbox).to_be_checked(timeout=20_000)
+        # very long timeout to prevent flakiness in this step that relies heavily
+        # on network bandwidth.
+        await expect(flood_extent_checkbox).to_be_checked(timeout=60_000)
         await expect(
             page.get_by_role("button", name="Exposure Analysis")
         ).not_to_be_disabled()

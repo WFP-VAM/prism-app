@@ -73,6 +73,11 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: cd frontend && yarn check-boundary-keys
 
+      - name: Security audit
+        run: |
+          cd frontend && yarn run audit
+          cd ../common && yarn run audit
+
       - name: Build
         run: cd frontend && yarn build
 
@@ -126,13 +131,12 @@ jobs:
           CYPRESS_DEFAULT_COMMAND_TIMEOUT: 10000
 
   frontend_build_and_deploy:
-    needs: frontend_tests
     if: github.event_name != 'push'
     name: frontend_build_and_deploy
     runs-on: ubuntu-latest
     env:
       GIT_HASH: ${{ github.event.pull_request.head.sha }}
-      firebase_channel: prism-${{ github.event.pull_request.number }}
+      firebase_channel: ${{ github.event.pull_request.number }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2

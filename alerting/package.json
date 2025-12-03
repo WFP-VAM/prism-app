@@ -9,6 +9,13 @@
   "author": "",
   "private": true,
   "license": "MIT",
+  "packageManager": "yarn@1.22.22",
+  "_resolutions": {
+    "glob": ">=10.5.0 because of jest and typeorm-seeding ; try to remove once in a while."
+  },
+  "resolutions": {
+    "glob": ">=10.5.0"
+  },
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc -p tsconfig.json",
@@ -27,7 +34,9 @@
     "typeorm-seeding": "ts-node $(yarn bin typeorm-seeding)",
     "alert-worker": "yarn ts-node src/alert-worker.ts",
     "aa-storm-alert-worker": "yarn ts-node src/aa-storm-alert-runner.ts",
-    "docker-alert": "source ../api/set_envs.sh && docker compose run --entrypoint 'yarn alert-worker' alerting-node"
+    "aa-flood-alert-worker": "yarn ts-node src/aa-flood-alert-runner.ts",
+    "docker-alert": "source ../api/set_envs.sh && docker compose run --entrypoint 'yarn alert-worker' alerting-node",
+    "audit": "audit-ci --config .audit-ci.json"
   },
   "dependencies": {
     "@turf/bbox": "^6.3.0",
@@ -37,11 +46,11 @@
     "jimp": "^1.6.0",
     "lodash": "^4.17.21",
     "node-fetch": "^2.6.7",
-    "nodemailer": "^6.9.9",
+    "nodemailer": "^7.0.11",
     "pg": "^8.5.1",
     "prism-common": "file:../common",
     "puppeteer": "^24.1.1",
-    "typeorm": "^0.3.20",
+    "typeorm": "^0.3.27",
     "typeorm-naming-strategies": "^1.1.0",
     "xml-js": "^1.6.11"
   },
@@ -51,12 +60,13 @@
     "@types/jimp": "^0.2.28",
     "@types/node": "20.14.8",
     "@types/node-fetch": "^2.5.8",
-    "@types/nodemailer": "^6.4.1",
+    "@types/nodemailer": "^7.0.3",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
+    "audit-ci": "^7.1.0",
     "eslint": "^8.45.0",
     "faker": "^4.1.0",
-    "glob": "^7.1.6",
+    "glob": "^10.5.0",
     "jest": "29.7.0",
     "rimraf": "^3.0.2",
     "supertest": "^4.0.2",
@@ -65,7 +75,7 @@
     "ts-node": "^8.10.2",
     "tsconfig-paths": "^3.9.0",
     "typeorm-seeding": "^1.6.1",
-    "typescript": "4.4.4",
+    "typescript": "5.9.3",
     "yargs": "^15.4.1"
   },
   "jest": {

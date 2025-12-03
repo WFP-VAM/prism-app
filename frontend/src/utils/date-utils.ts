@@ -1,4 +1,12 @@
-import { DateItem, SeasonBounds, SeasonBoundsConfig } from '../config/types';
+import {
+  CoverageEndDateTimestamp,
+  CoverageStartDateTimestamp,
+  DateItem,
+  DisplayDateTimestamp,
+  QueryDateTimestamp,
+  SeasonBounds,
+  SeasonBoundsConfig,
+} from '../config/types';
 import { DateFormat } from './name-utils';
 
 export interface StartEndDate {
@@ -42,11 +50,14 @@ function diffInDays(date1: Date, date2: Date) {
 
   const differenceInMs = Math.abs(date1InMs - date2InMs);
 
-  const diff = Math.floor(differenceInMs / (1000 * 60 * 60 * 24));
+  const diff = Math.floor(differenceInMs / millisecondsInADay);
 
   return diff;
 }
 
+/**
+ * Returns an array of timestamps (one per day) between startDate and endDate.
+ */
 export const generateDatesRange = (startDate: Date, endDate: Date): number[] =>
   Array.from({ length: diffInDays(startDate, endDate) + 1 }, (_, index) => {
     const clone = new Date(startDate.getTime());
@@ -68,10 +79,10 @@ export const generateDateItemsRange = (
     );
 
     const dateItems: DateItem[] = datesInTime.map(dateInTime => ({
-      displayDate: dateInTime,
-      queryDate: range.startDate!,
-      startDate: range.startDate!,
-      endDate: range.endDate!,
+      displayDate: dateInTime as DisplayDateTimestamp,
+      queryDate: range.startDate! as QueryDateTimestamp,
+      startDate: range.startDate! as CoverageStartDateTimestamp,
+      endDate: range.endDate! as CoverageEndDateTimestamp,
     }));
 
     return dateItems;
@@ -127,10 +138,14 @@ export const getFormattedDate = (
     | 'snake'
     | 'locale'
     | 'monthDay'
+    | 'localeShortUTC'
+    | 'short'
+    | 'shortDayFirst'
     | DateFormat.DefaultSnakeCase
     | DateFormat.Default
     | DateFormat.DateTime
     | DateFormat.DayFirstSnakeCase
+    | DateFormat.DayFirstHyphen
     | DateFormat.ISO
     | DateFormat.MiddleEndian
     | DateFormat.TimeOnly,
@@ -152,8 +167,14 @@ export const getFormattedDate = (
     case 'snake':
     case DateFormat.DefaultSnakeCase:
       return `${year}_${month}_${day}`;
+    case 'short':
+      return `${month}/${day}`;
+    case 'shortDayFirst':
+      return `${day}-${month}`;
     case DateFormat.DayFirstSnakeCase:
       return `${day}_${month}_${year}`;
+    case DateFormat.DayFirstHyphen:
+      return `${day}-${month}-${year}`;
     case DateFormat.MiddleEndian:
       return `${month}/${day}/${year}`;
     case DateFormat.TimeOnly:
@@ -179,6 +200,13 @@ export const getFormattedDate = (
         year: undefined,
         month: 'short',
         day: 'numeric',
+      });
+    case 'localeShortUTC':
+      return new Date(date).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        timeZone: 'UTC',
       });
     case 'locale':
       return new Date(date).toLocaleString(dateLocale, {

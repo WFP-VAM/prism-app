@@ -11,12 +11,12 @@ exports[`renders as expected 1`] = `
     transitionprops="[object Object]"
   >
     <div
-      class="MuiGrid-root makeStyles-dateItem-2 MuiGrid-item MuiGrid-grid-xs-true"
+      class="MuiGrid-root makeStyles-dateItem-3 MuiGrid-item MuiGrid-grid-xs-true"
       data-date-index="0"
     >
       <div />
       <div
-        class="makeStyles-dayItem-20"
+        class="makeStyles-dayItem-21"
       />
     </div>
   </mock-tooltip>

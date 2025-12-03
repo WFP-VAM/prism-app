@@ -1,5 +1,5 @@
 import { useContext, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { Map as MaplibreMap } from 'maplibre-gl';
 import { LayerType } from 'config/types';
 import {
@@ -13,11 +13,12 @@ import {
   setBoundaryRelationData as setGlobalMapBoundaryRelationData,
 } from 'context/mapStateSlice';
 import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
-import { MapInstanceContext } from 'components/MapView/MapInstanceContext';
+import MapInstanceContext from 'components/MapView/MapInstanceContext/mapInstance.context';
 import {
   layersSelector,
   dateRangeSelector,
 } from 'context/mapStateSlice/selectors';
+import { appConfig } from 'config';
 
 type MapGetter = () => MaplibreMap | undefined;
 
@@ -30,7 +31,12 @@ export interface UnifiedMapState extends MapState {
     setMap: (mapGetter: MapGetter) => void;
     removeLayerData: (layer: LayerType) => void;
     setBoundaryRelationData: (data: BoundaryRelationsDict) => void;
+    updateMapTitle?: (title: string) => void;
   };
+  capturedViewport?: [number, number, number, number];
+  isGlobalMap: boolean;
+  elementId?: string;
+  mapTitle?: string;
 }
 
 export function useMapState(): UnifiedMapState {
@@ -42,6 +48,13 @@ export function useMapState(): UnifiedMapState {
     mapInstanceContext && mapInstanceContext.selectors.selectLayers
       ? mapInstanceContext.selectors.selectLayers
       : layersSelector,
+    // compare the names of active layers, as individual layer objects
+    // do not change over time, to save some useless rendering
+    (a, c) =>
+      shallowEqual(
+        a.map(o => o.id),
+        c.map(o => o.id),
+      ),
   );
 
   const dateRange = useSelector(
@@ -55,6 +68,24 @@ export function useMapState(): UnifiedMapState {
     mapInstanceContext && mapInstanceContext.selectors.selectMap
       ? mapInstanceContext.selectors.selectMap
       : (state: any) => state.mapState.maplibreMap,
+  );
+
+  const minMapBounds = useSelector(
+    mapInstanceContext && mapInstanceContext.selectors.selectMinMapBounds
+      ? mapInstanceContext.selectors.selectMinMapBounds
+      : (_state: any) => appConfig.map.boundingBox,
+  );
+
+  const capturedViewport = useSelector(
+    mapInstanceContext && mapInstanceContext.selectors.selectCapturedViewport
+      ? mapInstanceContext.selectors.selectCapturedViewport
+      : (_state: any) => undefined,
+  );
+
+  const mapTitle = useSelector(
+    mapInstanceContext && mapInstanceContext.selectors.selectMapTitle
+      ? mapInstanceContext.selectors.selectMapTitle
+      : (_state: any) => undefined,
   );
 
   const maplibreMap = mapGetter;
@@ -92,6 +123,11 @@ export function useMapState(): UnifiedMapState {
         : (data: BoundaryRelationsDict) =>
             dispatch(setGlobalMapBoundaryRelationData(data));
 
+    const updateMapTitle =
+      mapInstanceContext && mapInstanceContext.actions.updateMapTitle
+        ? mapInstanceContext.actions.updateMapTitle
+        : undefined;
+
     return {
       addLayer,
       removeLayer,
@@ -99,6 +135,7 @@ export function useMapState(): UnifiedMapState {
       setMap,
       removeLayerData,
       setBoundaryRelationData,
+      updateMapTitle,
     };
   }, [mapInstanceContext, dispatch]);
 
@@ -106,10 +143,15 @@ export function useMapState(): UnifiedMapState {
     layers,
     dateRange,
     maplibreMap,
+    minMapBounds,
+    capturedViewport,
     actions,
+    mapTitle,
     errors: [],
     layersData: [],
     loadingLayerIds: [],
     boundaryRelationData: {},
+    isGlobalMap: !mapInstanceContext,
+    elementId: mapInstanceContext?.elementId,
   };
 }

@@ -4,7 +4,11 @@ import {
   LegendDefinitionItem,
   PointDataLayerProps,
 } from 'config/types';
-import { CircleLayerSpecification, FillLayerSpecification } from 'maplibre-gl';
+import {
+  CircleLayerSpecification,
+  FillLayerSpecification,
+  SymbolLayerSpecification,
+} from 'maplibre-gl';
 import { legendToStops } from './layer-utils';
 
 export const circleLayout: CircleLayerSpecification['layout'] = {
@@ -40,12 +44,11 @@ export const circlePaint = ({
   legend,
   dataField,
   dataFieldType,
-}: PointDataLayerProps): CircleLayerSpecification['paint'] => {
+}: PointDataLayerProps): SymbolLayerSpecification['paint'] => {
   const circleColor = dataFieldColor(legend, dataField, dataFieldType);
   return {
-    'circle-radius': 5,
-    'circle-opacity': opacity || 0.3,
-    'circle-color': circleColor as any,
+    'icon-opacity': opacity || 0.3,
+    'icon-color': circleColor as any,
   };
 };
 

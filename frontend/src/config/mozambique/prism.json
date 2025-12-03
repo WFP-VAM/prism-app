@@ -4,9 +4,10 @@
   "anticipatoryActionDroughtUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/aa_probabilities_triggers_moz.csv",
   "anticipatoryActionDroughtStagingUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/staging/aa_probabilities_triggers_moz.csv",
   "anticipatoryActionStormUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/latest.json.",
+  "anticipatoryActionFloodUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/flood/moz/dates.json",
   "header": {
     "title": "PRISM",
-    "logo": "images/moz-flag-inam-logo.png"
+    "logo": "/images/moz-flag-inam-logo.png"
   },
   "printConfig": {
     "defaultFooterText": ""
@@ -30,10 +31,7 @@
     "admin1_boundaries"
   ],
   "serversUrls": {
-    "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms",
-      "https://ogcserver.gis.wfp.org/geoserver/prism/wms"
-    ]
+    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
     "boundingBox": [31, -25, 40, -11]
@@ -349,29 +347,6 @@
         "lst_daytime",
         "lst_day_anomaly",
         "lst_amplitude"
-      ]
-    },
-    "tropical_storms": {
-      "tropical_storms": [
-        {
-          "group_title": "Tropical Storms",
-          "activate_all": true,
-          "layers": [
-            {
-              "id": "adamts_buffers",
-              "label": "Wind buffers",
-              "main": true
-            },
-            {
-              "id": "adamts_nodes",
-              "label": "Nodes"
-            },
-            {
-              "id": "adamts_tracks",
-              "label": "Tracks"
-            }
-          ]
-        }
       ]
     },
     "vulnerability": {

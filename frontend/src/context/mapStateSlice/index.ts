@@ -20,14 +20,17 @@ export type MapState = {
   layers: LayerType[];
   dateRange: DateRange;
   maplibreMap: MapGetter;
+  minMapBounds: number[];
   errors: string[];
   // TODO this shouldn't be any
+  // Note: Boundary layer data is now stored in global cache (utils/boundary-cache.ts), not here
   layersData: LayerData<any>[];
   // Keep track of layer id which are currently loading its layerData.
   // Note that layerData is mainly for storing vector map data.
   // Tile image loading for raster layer is tracked separately on mapTileLoadingStateSlice
   loadingLayerIds: LayerKey[];
   boundaryRelationData: BoundaryRelationsDict;
+  title?: string;
 };
 
 // Maplibre's map type contains some kind of cyclic dependency that causes an infinite loop in immers's change
@@ -39,6 +42,7 @@ const initialState: MapState = {
   layers: [],
   dateRange: {} as DateRange,
   maplibreMap: (() => {}) as MapGetter,
+  minMapBounds: [] as number[],
   errors: [],
   layersData: [],
   loadingLayerIds: [],
@@ -73,7 +77,8 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
       | 'polygon'
       | 'static_raster'
       | 'anticipatory_action_drought'
-      | 'anticipatory_action_storm']: number;
+      | 'anticipatory_action_storm'
+      | 'anticipatory_action_flood']: number;
   } = {
     point_data: 0,
     geojson_polygon: 1,
@@ -87,6 +92,7 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
     static_raster: 8,
     anticipatory_action_drought: 9,
     anticipatory_action_storm: 10,
+    anticipatory_action_flood: 11,
   };
 
   const typeA = getTypeOrder(a);

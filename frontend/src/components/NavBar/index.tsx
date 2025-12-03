@@ -8,7 +8,8 @@ import {
   useTheme,
   useMediaQuery,
 } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useSafeTranslation } from 'i18n';
 import { appConfig } from 'config';
 import {
@@ -18,6 +19,7 @@ import {
   TableChartOutlined,
   TimerOutlined,
   Notifications,
+  SpeedOutlined,
 } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -26,11 +28,17 @@ import {
 } from 'context/leftPanelStateSlice';
 import GoToBoundaryDropdown from 'components/Common/BoundaryDropdown/goto';
 import Legends from 'components/MapView/Legends';
-import { areChartLayersAvailable } from 'config/utils';
+import {
+  areChartLayersAvailable,
+  areDashboardsAvailable,
+  getDashboards,
+} from 'config/utils';
+import { generateSlugFromTitle } from 'utils/string-utils';
 import {
   areTablesAvailable,
   isAnticipatoryActionDroughtAvailable,
   isAnticipatoryActionStormAvailable,
+  isAnticipatoryActionFloodAvailable,
 } from 'components/MapView/LeftPanel/utils';
 import { Panel, PanelItem } from 'config/types';
 import PanelMenu from './PanelMenu';
@@ -40,10 +48,31 @@ import Title from './Title';
 
 const { alertFormActive } = appConfig;
 
+const getAvailableDashboards = (): PanelItem[] => {
+  const dashboards = getDashboards();
+  return dashboards.map((dashboard, index) => ({
+    panel: Panel.Dashboard,
+    label: dashboard.title,
+    icon: <SpeedOutlined />,
+    reportIndex: index,
+    reportPath: dashboard.path || generateSlugFromTitle(dashboard.title),
+  }));
+};
+
 const panels: PanelItem[] = [
   { panel: Panel.Layers, label: 'Layers', icon: <LayersOutlined /> },
   ...(areChartLayersAvailable
     ? [{ panel: Panel.Charts, label: 'Charts', icon: <BarChartOutlined /> }]
+    : []),
+  ...(areDashboardsAvailable()
+    ? [
+        {
+          panel: Panel.Dashboard,
+          label: 'Dashboard',
+          icon: <SpeedOutlined />,
+          children: getAvailableDashboards(),
+        },
+      ]
     : []),
   {
     panel: Panel.Analysis,
@@ -53,7 +82,9 @@ const panels: PanelItem[] = [
   ...(areTablesAvailable
     ? [{ panel: Panel.Tables, label: 'Tables', icon: <TableChartOutlined /> }]
     : []),
-  ...(isAnticipatoryActionDroughtAvailable || isAnticipatoryActionStormAvailable
+  ...(isAnticipatoryActionDroughtAvailable ||
+  isAnticipatoryActionStormAvailable ||
+  isAnticipatoryActionFloodAvailable
     ? [
         {
           label: 'A. Actions',
@@ -77,6 +108,15 @@ const panels: PanelItem[] = [
                   },
                 ]
               : []),
+            ...(isAnticipatoryActionFloodAvailable
+              ? [
+                  {
+                    panel: Panel.AnticipatoryActionFlood,
+                    label: 'A. Action Flood',
+                    icon: <TimerOutlined />,
+                  },
+                ]
+              : []),
           ],
         },
       ]
@@ -89,8 +129,11 @@ const panels: PanelItem[] = [
 function NavBar() {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
+  const history = useHistory();
+  const location = useLocation();
   const classes = useStyles();
   const tabValue = useSelector(leftPanelTabValueSelector);
+  const isDashboardMode = tabValue === Panel.Dashboard;
   const theme = useTheme();
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
   const [menuAnchor, setMenuAnchor] = useState<{
@@ -99,6 +142,18 @@ function NavBar() {
   const [selectedChild, setSelectedChild] = useState<Record<string, PanelItem>>(
     {},
   );
+
+  // Sync URL with panel state
+  useEffect(() => {
+    if (
+      location.pathname.startsWith('/dashboard') &&
+      tabValue !== Panel.Dashboard
+    ) {
+      dispatch(setTabValue(Panel.Dashboard));
+    } else if (location.pathname === '/' && tabValue === Panel.Dashboard) {
+      dispatch(setTabValue(Panel.Layers));
+    }
+  }, [location.pathname, tabValue, dispatch]);
 
   const handleMenuOpen = (
     key: string,
@@ -113,6 +168,11 @@ function NavBar() {
 
   const handlePanelClick = (panel: Panel) => {
     dispatch(setTabValue(panel));
+    if (panel === Panel.Dashboard) {
+      history.push('/dashboard');
+    } else if (location.pathname !== '/') {
+      history.push('/');
+    }
   };
 
   const handleChildSelection = (panel: any, child: any) => {
@@ -120,7 +180,13 @@ function NavBar() {
       [panel.label]: child,
     });
     handleMenuClose(panel.label);
-    handlePanelClick(child.panel);
+
+    if (panel.panel === Panel.Dashboard && child.reportPath) {
+      dispatch(setTabValue(Panel.Dashboard));
+      history.push(`/dashboard/${child.reportPath}`);
+    } else {
+      handlePanelClick(child.panel);
+    }
   };
 
   return (
@@ -136,9 +202,10 @@ function NavBar() {
                   (panel.children &&
                     panel.children.some(child => tabValue === child.panel));
 
-                const buttonText = selectedChild[panel.label]
-                  ? selectedChild[panel.label].label
-                  : t(panel.label);
+                const buttonText =
+                  selectedChild[panel.label] && panel.panel !== Panel.Dashboard
+                    ? selectedChild[panel.label].label
+                    : t(panel.label);
 
                 return (
                   <React.Fragment key={panel.label}>
@@ -173,7 +240,7 @@ function NavBar() {
             </div>
           </div>
           <div className={classes.rightSideContainer}>
-            <Legends />
+            {!isDashboardMode && <Legends />}
             <RightSideMenu />
           </div>
         </div>

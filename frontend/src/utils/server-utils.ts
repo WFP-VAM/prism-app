@@ -11,14 +11,22 @@ import type {
   AnticipatoryActionLayerProps,
   AvailableDates,
   CompositeLayerProps,
+  CoverageEndDateTimestamp,
+  CoverageStartDateTimestamp,
+  CoverageWindow,
+  DisplayDateTimestamp,
+  LayerKey,
   LayerType,
-  PathLayer,
   PointDataLayerProps,
+  QueryDateTimestamp,
+  ReferenceDateTimestamp,
   RequestFeatureInfo,
   SeasonBounds,
+  SelectedDateTimestamp,
   Validity,
-  ValidityLayer,
+  ValidityEndDateTimestamp,
   ValidityPeriod,
+  ValidityStartDateTimestamp,
 } from '../config/types';
 import {
   AdminLevelDataLayerProps,
@@ -49,13 +57,14 @@ import { fetchWithTimeout } from './fetch-with-timeout';
 import { queryParamsToString } from './url-utils';
 
 /**
- * Function that gets the correct date item.
+ * Get the DateItem to use for querying the backend from the selected date
+ * Optionally default to the most recent date available if no good match
  *
- * @return DateItem
+ * @return DateItem | undefined
  */
 export const getRequestDateItem = (
   layerAvailableDates: DateItem[] | undefined,
-  selectedDate?: number,
+  selectedDate?: SelectedDateTimestamp,
   defaultToMostRecent: boolean = true,
 ): DateItem | undefined => {
   if (!selectedDate) {
@@ -77,15 +86,15 @@ export const getRequestDateItem = (
 };
 
 /**
- * Function that gets the correct date used to make the request. If available dates is undefined. Return selectedDate as default.
+ * Get the correct date used to make the request. If available dates is undefined. Return selectedDate as default.
  *
  * @return unix timestamp
  */
 export const getRequestDate = (
   layerAvailableDates: DateItem[] | undefined,
-  selectedDate?: number,
+  selectedDate?: SelectedDateTimestamp,
   defaultToMostRecent = true,
-): number | undefined => {
+): QueryDateTimestamp | undefined => {
   const dateItem = getRequestDateItem(
     layerAvailableDates,
     selectedDate,
@@ -93,7 +102,7 @@ export const getRequestDate = (
   );
 
   if (!dateItem) {
-    return selectedDate;
+    return selectedDate as unknown as QueryDateTimestamp;
   }
 
   return dateItem.queryDate;
@@ -156,6 +165,7 @@ export const getPossibleDatesForLayer = (
     }
     case 'anticipatory_action_drought':
     case 'anticipatory_action_storm':
+    case 'anticipatory_action_flood':
       return serverAvailableDates[layer.id] || [];
     default:
       return [];
@@ -218,7 +228,7 @@ const loadPointLayerDataFromURL = async (
 const getPointDataCoverage = async (
   layer: PointDataLayerProps,
   dispatch: AppDispatch,
-) => {
+): Promise<ReferenceDateTimestamp[]> => {
   const {
     dateUrl: url,
     fallbackData: fallbackUrl,
@@ -255,7 +265,9 @@ const getPointDataCoverage = async (
       // adding 12 hours to avoid  errors due to daylight saving, and convert to number
       .map(item => new Date(item.date).setUTCHours(12, 0, 0, 0))
       // remove duplicate dates - indexOf returns first index of item
-      .filter((date, index, arr) => arr.indexOf(date) === index)
+      .filter(
+        (date, index, arr) => arr.indexOf(date) === index,
+      ) as ReferenceDateTimestamp[]
   );
 };
 
@@ -265,7 +277,7 @@ export const getAdminLevelDataCoverage = (layer: AdminLevelDataLayerProps) => {
     return [];
   }
   // raw data comes in as {"dates": ["YYYY-MM-DD"]}
-  return dates.map(v => new Date(v).getTime());
+  return dates.map(v => new Date(v).getTime() as ReferenceDateTimestamp);
 };
 
 export const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
@@ -274,7 +286,7 @@ export const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
     return [];
   }
   // raw data comes in as {"dates": ["YYYY-MM-DD"]}
-  return dates.map(v => new Date(v).getTime());
+  return dates.map(v => new Date(v).getTime() as ReferenceDateTimestamp);
 };
 
 /**
@@ -285,8 +297,8 @@ export const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
 const generateDefaultDateItem = (date: number, baseItem?: Object): DateItem => {
   const newDate = new Date(date).setUTCHours(12, 0, 0, 0);
   const r = {
-    displayDate: newDate,
-    queryDate: newDate,
+    displayDate: newDate as DisplayDateTimestamp,
+    queryDate: newDate as QueryDateTimestamp,
   };
   if (baseItem) {
     return {
@@ -342,121 +354,192 @@ async function generateIntermediateDateItemFromDataFile(
   return generateDateItemsRange(rangesWithoutMissing);
 }
 
-export function generateIntermediateDateItemFromValidity(
-  dates: number[],
-  validity: Validity,
-) {
-  const { forward, backward, mode } = validity;
+/**
+ * Returns the start and end date for the given reference date
+ * and Validity or CoverageWindow. Do not use this function
+ * directly, instead use one of the strongly typed ones below.
+ */
+function getStartAndEndDateFromValidityOrCoverageDefinition(
+  date: ReferenceDateTimestamp,
+  definition: CoverageWindow | Validity,
+): {
+  startDate: number;
+  endDate: number;
+} {
+  const { mode, backward, forward, seasons } = definition;
+  const startDate = new Date(date);
+  const endDate = new Date(date);
 
+  if (mode === DatesPropagation.DAYS) {
+    // If mode is "days", adjust dates directly based on the duration
+    startDate.setDate(startDate.getDate() - (backward || 0));
+    endDate.setDate(endDate.getDate() + (forward || 0));
+    // For "dekad" mode, calculate start and end dates based on backward and forward dekads
+    // Dekads are 10-day periods, so we adjust dates accordingly
+  } else if (mode === DatesPropagation.DEKAD) {
+    const DekadStartingDays = [1, 11, 21];
+    const startDayOfTheDekad = startDate.getDate();
+    if (!DekadStartingDays.includes(startDayOfTheDekad)) {
+      throw Error(
+        'publishing day for dekad layers is expected to be 1, 11, 21.',
+      );
+    }
+    // find the index so that we can use a modulo to find the new dekad start and end date.
+    const dekadStartIndex = DekadStartingDays.findIndex(
+      x => x === startDayOfTheDekad,
+    );
+
+    if (forward) {
+      const newDekadEndIndex = (dekadStartIndex + forward) % 3;
+      const nMonthsForward = Math.floor((dekadStartIndex + forward) / 3);
+      endDate.setDate(DekadStartingDays[newDekadEndIndex]);
+      endDate.setMonth(endDate.getMonth() + nMonthsForward);
+      endDate.setDate(endDate.getDate() - 1);
+    }
+    if (backward) {
+      const newDekadStartIndex: number = (dekadStartIndex - backward + 3) % 3;
+      const nMonthsBackward = Math.floor((dekadStartIndex - backward) / 3);
+      startDate.setDate(DekadStartingDays.at(newDekadStartIndex)!);
+      startDate.setMonth(startDate.getMonth() + nMonthsBackward);
+    }
+  } else if (mode === DatesPropagation.SEASON) {
+    if (seasons) {
+      const seasonBounds = getSeasonBounds(startDate, seasons);
+      if (seasonBounds) {
+        startDate.setTime(seasonBounds.start.getTime());
+        endDate.setTime(seasonBounds.end.getTime());
+      } else {
+        console.warn(`No season found for date: ${startDate.toISOString()}`);
+        throw Error('No season found');
+      }
+    } else {
+      const { start, end } = getSeasonBounds(startDate) as SeasonBounds;
+      startDate.setTime(start.getTime());
+      endDate.setTime(end.getTime() - oneDayInMs);
+    }
+  } else {
+    throw Error(`Invalid coverage window mode: ${mode}`);
+  }
+
+  return { startDate: startDate.getTime(), endDate: endDate.getTime() };
+}
+
+function getStartAndEndDateFromValidity(
+  date: ReferenceDateTimestamp,
+  definition: Validity,
+): {
+  validityStart: ValidityStartDateTimestamp;
+  validityEnd: ValidityEndDateTimestamp;
+} {
+  const r = getStartAndEndDateFromValidityOrCoverageDefinition(
+    date,
+    definition,
+  );
+  return {
+    validityStart: r.startDate as ValidityStartDateTimestamp,
+    validityEnd: r.endDate as ValidityEndDateTimestamp,
+  };
+}
+
+function getStartAndEndDateFromCoverage(
+  date: ReferenceDateTimestamp,
+  definition: CoverageWindow,
+): {
+  coverageStart: CoverageStartDateTimestamp;
+  coverageEnd: CoverageEndDateTimestamp;
+} {
+  const r = getStartAndEndDateFromValidityOrCoverageDefinition(
+    date,
+    definition,
+  );
+  return {
+    coverageStart: r.startDate as CoverageStartDateTimestamp,
+    coverageEnd: r.endDate as CoverageEndDateTimestamp,
+  };
+}
+
+export function generateIntermediateDateItemFromValidity(
+  dates: ReferenceDateTimestamp[], // reference dates
+  validity: Validity,
+  coverageWindow?: CoverageWindow,
+): DateItem[] {
   // eslint-disable-next-line fp/no-mutating-methods
   const sortedDates = [...dates].sort((a, b) => a - b);
 
-  // only calculate validity for dates that are less than 5 years old
+  // only calculate validity and coverage for dates that are less than 5 years old
   const EXTENDED_VALIDITY_YEARS = 5;
   const fiveYearsInMs = EXTENDED_VALIDITY_YEARS * 365 * oneDayInMs;
   const earliestDate = Date.now() - fiveYearsInMs;
 
-  const dateItemsWithValidity = sortedDates
+  const dateItems = sortedDates
     .map(d => {
       const date = new Date(d);
       date.setUTCHours(12, 0, 0, 0);
-      return date;
+      return date; // like a QueryDate, but in Date format iso number format
     })
     .reduce((acc: DateItem[], date: Date) => {
       // caching this value seems to reduce memory use substantially
       const dateGetTime = date.getTime();
 
-      // only calculate validity for dates that are less than 5 years old
+      // only calculate validity/coverage for dates that are less than 5 years old
       if (dateGetTime < earliestDate) {
         return [
           ...acc,
           {
-            displayDate: dateGetTime,
-            queryDate: dateGetTime,
-            startDate: dateGetTime,
-            endDate: dateGetTime,
+            displayDate: dateGetTime as DisplayDateTimestamp,
+            queryDate: dateGetTime as QueryDateTimestamp,
+            startDate: dateGetTime as CoverageStartDateTimestamp,
+            endDate: dateGetTime as CoverageEndDateTimestamp,
           },
         ] as DateItem[];
       }
 
-      // We create the start and the end date for every date
-      const startDate = new Date(dateGetTime);
-      const endDate = new Date(dateGetTime);
+      // We create the coverage start and the end date for every date
+      const { coverageStart, coverageEnd } = getStartAndEndDateFromCoverage(
+        dateGetTime as ReferenceDateTimestamp,
+        // if no coverage is defined for the layer, we use its validity instead
+        coverageWindow || validity,
+      );
 
-      if (mode === DatesPropagation.DAYS) {
-        // If mode is "days", adjust dates directly based on the duration
-        startDate.setDate(startDate.getDate() - (backward || 0));
-        endDate.setDate(endDate.getDate() + (forward || 0));
-        // For "dekad" mode, calculate start and end dates based on backward and forward dekads
-        // Dekads are 10-day periods, so we adjust dates accordingly
-      } else if (mode === DatesPropagation.DEKAD) {
-        const DekadStartingDays = [1, 11, 21];
-        const startDayOfTheMonth = startDate.getDate();
-        if (!DekadStartingDays.includes(startDayOfTheMonth)) {
-          throw Error(
-            'publishing day for dekad layers is expected to be 1, 11, 21.',
-          );
+      // Determine the start and end of the validity period
+      let validityStart;
+      let validityEnd;
+      try {
+        // eslint-disable-next-line fp/no-mutation
+        ({ validityStart, validityEnd } = getStartAndEndDateFromValidity(
+          dateGetTime as ReferenceDateTimestamp,
+          validity,
+        ));
+      } catch (e) {
+        if (e instanceof Error && e.message === 'No season found') {
+          return [];
         }
-        // find the index so that we can use a modulo to find the new dekad start and end date.
-        const dekadStartIndex = DekadStartingDays.findIndex(
-          x => x === startDayOfTheMonth,
-        );
-
-        if (forward) {
-          const newDekadEndIndex = (dekadStartIndex + forward) % 3;
-          const nMonthsForward = Math.floor((dekadStartIndex + forward) / 3);
-          endDate.setDate(DekadStartingDays[newDekadEndIndex]);
-          endDate.setMonth(endDate.getMonth() + nMonthsForward);
-          endDate.setDate(endDate.getDate() - 1);
-        }
-        if (backward) {
-          const newDekadStartIndex = (dekadStartIndex - backward + 3) % 3;
-          const nMonthsBackward = Math.floor((dekadStartIndex - backward) / 3);
-          startDate.setDate(DekadStartingDays[newDekadStartIndex]);
-          startDate.setMonth(startDate.getMonth() + nMonthsBackward);
-        }
-      } else if (mode === DatesPropagation.SEASON) {
-        if (validity.seasons) {
-          const seasonBounds = getSeasonBounds(startDate, validity.seasons);
-          if (seasonBounds) {
-            startDate.setTime(seasonBounds.start.getTime());
-            endDate.setTime(seasonBounds.end.getTime());
-          } else {
-            console.warn(
-              `No season found for date: ${startDate.toISOString()}`,
-            );
-            return [];
-          }
-        } else {
-          const { start, end } = getSeasonBounds(startDate) as SeasonBounds;
-          startDate.setTime(start.getTime());
-          endDate.setTime(end.getTime() - oneDayInMs);
-        }
-      } else {
-        throw Error(`Invalid validity mode: ${mode}`);
+        throw e;
       }
-
       // We create an array with the diff between the endDate and startDate and we create an array with the addition of the days in the startDate
-      const daysToAdd = generateDatesRange(startDate, endDate);
+      const daysToAdd: number[] = generateDatesRange(
+        new Date(validityStart),
+        new Date(validityEnd),
+      );
 
       // convert the available days for a specific day to the DefaultDate format
-      const dateItemsToAdd = daysToAdd.map(dateToAdd => ({
-        displayDate: dateToAdd,
+      const dateItemsToAdd: DateItem[] = daysToAdd.map(dateToAdd => ({
+        displayDate: dateToAdd as DisplayDateTimestamp,
         queryDate:
-          mode === DatesPropagation.SEASON
-            ? startDate.getTime()
-            : date.getTime(),
-        startDate: startDate.getTime(),
-        endDate: endDate.getTime(),
+          validity.mode === DatesPropagation.SEASON
+            ? (validityStart as unknown as QueryDateTimestamp)
+            : (dateGetTime as QueryDateTimestamp),
+        startDate: coverageStart,
+        endDate: coverageEnd,
       }));
 
       return [...acc, ...dateItemsToAdd];
     }, []);
 
-  // We sort the defaultDateItems and the dateItemsWithValidity and we order by displayDate to filter the duplicates
+  // We sort the defaultDateItems and the dateItems and we order by displayDate to filter the duplicates
   // or the overlapping dates
   // eslint-disable-next-line fp/no-mutating-methods
-  return dateItemsWithValidity.sort((a, b) => {
+  return dateItems.sort((a, b) => {
     if (a.displayDate < b.displayDate) {
       return -1;
     }
@@ -470,7 +553,7 @@ export function generateIntermediateDateItemFromValidity(
 const localFetchCoverageLayerDays = async (
   url: string,
   dispatch: AppDispatch,
-): Promise<{ [layerId: string]: number[] }> => {
+): Promise<{ [layerId: LayerKey]: number[] }> => {
   try {
     return await fetchCoverageLayerDays(url, { fetch: fetchWithTimeout });
   } catch (error) {
@@ -499,7 +582,7 @@ const localFetchCoverageLayerDays = async (
 const localWMSGetLayerDates = async (
   url: string,
   dispatch: AppDispatch,
-): Promise<{ [layerId: string]: number[] }> => {
+): Promise<{ [layerId: LayerKey]: number[] }> => {
   try {
     return await new WMS(url, { fetch: fetchWithTimeout }).getLayerDays();
   } catch (error) {
@@ -532,13 +615,13 @@ const localWMSGetLayerDates = async (
 const mapServerDatesToLayerIds = (
   serverDates: Record<string, number[]>,
   layers: (WMSLayerProps | CompositeLayerProps)[],
-): Record<string, number[]> =>
-  layers.reduce((acc: Record<string, number[]>, layer) => {
+): Record<LayerKey, ReferenceDateTimestamp[]> =>
+  layers.reduce((acc: Record<string, ReferenceDateTimestamp[]>, layer) => {
     const serverLayerName =
       layer.type === 'composite'
         ? (LayerDefinitions[layer.dateLayer] as WMSLayerProps).serverLayerName
         : layer.serverLayerName;
-    const layerDates = serverDates[serverLayerName];
+    const layerDates = serverDates[serverLayerName] as ReferenceDateTimestamp[];
     if (layerDates) {
       // Filter WMS layers by startDate, used for forecast layers in particular.
       if (layer.startDate) {
@@ -584,7 +667,7 @@ const compositeLayersWithDateLayerTypeMap: {
  */
 export async function preloadLayerDatesForWMS(
   dispatch: AppDispatch,
-): Promise<Record<string, number[]>> {
+): Promise<Record<string, ReferenceDateTimestamp[]>> {
   const wmsServerUrls: string[] = get(appConfig, 'serversUrls.wms', []);
   const wcsServerUrls: string[] = get(appConfig, 'serversUrls.wcs', []);
 
@@ -608,7 +691,7 @@ export async function preloadLayerDatesForWMS(
 
 export async function preloadLayerDatesForPointData(
   dispatch: AppDispatch,
-): Promise<Record<string, number[]>> {
+): Promise<Record<string, ReferenceDateTimestamp[]>> {
   const pointDataLayers = Object.values(LayerDefinitions).filter(
     (layer): layer is PointDataLayerProps =>
       (layer.type === 'point_data' && Boolean(layer.dateUrl)) ||
@@ -688,139 +771,83 @@ export const getLayerType = (
 /**
  * Load available dates for WMS and WCS using a serverUri defined in prism.json and for GeoJSONs (point data) using their API endpoint.
  *
- * @return a Promise of Map<LayerID (not always id from LayerProps but can be), availableDates[]>
+ * @return a Promise of Map<LayerID (not always id from LayerProps but can be), DateItem[]>
  */
 export async function getAvailableDatesForLayer(
   getState: () => RootState,
-  layerId: string,
+  layerId: LayerKey,
 ): Promise<AvailableDates> {
-  const relevantLayerDefinitions = { [layerId]: LayerDefinitions[layerId] };
+  const LayerDefinition = LayerDefinitions[layerId];
 
   // At this point, all network data should have been preloaded in
   // the redux state, so we just need to process it into the right
-  // format now for the layer that's being activated
-  const getPreloadedLayerDates = (lId: string): Record<string, number[]> => {
+  // format for the layer that's being activated
+  const getPreloadedLayerDates = (lId: string): ReferenceDateTimestamp[] => {
     const layer = LayerDefinitions[lId];
     const state = getState();
 
     switch (getLayerType(layer)) {
       case 'WMSLayer':
-        return {
-          [layer.id]: state.serverPreloadState.WMSLayerDates[layer.id],
-        };
+        return state.serverPreloadState.WMSLayerDates[layer.id];
       case 'pointDataLayer':
-        return {
-          [layer.id]: state.serverPreloadState.pointDataLayerDates[layer.id],
-        };
+        return state.serverPreloadState.pointDataLayerDates[layer.id];
       case 'adminWithDataLayer':
-        return {
-          [layer.id]: getAdminLevelDataCoverage(
-            layer as AdminLevelDataLayerProps,
-          ),
-        };
+        return getAdminLevelDataCoverage(layer as AdminLevelDataLayerProps);
       case 'staticRasterLayer':
-        return {
-          [layer.id]: getStaticRasterDataCoverage(
-            layer as StaticRasterLayerProps,
-          ),
-        };
+        return getStaticRasterDataCoverage(layer as StaticRasterLayerProps);
       default:
         console.warn(
           `Layer ${lId} has unhandled layer type ${getLayerType(layer)}`,
         );
-        return { [lId]: [] };
+        return [];
     }
   };
-  const layerDates = getPreloadedLayerDates(layerId);
 
-  // Retrieve layers that have a validity object
-  const layersWithValidity: ValidityLayer[] = Object.values(
-    relevantLayerDefinitions,
-  )
-    .filter(layer => layer.validity !== undefined)
-    .map(layer => {
-      const lId = layer.id;
+  // the list of available reference dates from the server
+  const layerAvailableDates = getPreloadedLayerDates(layerId) || [];
 
-      return {
-        name: lId,
-        dates: layerDates[lId],
-        validity: layer.validity!,
-      };
-    });
-
-  // Retrieve layers that have validityPeriod
-  const layersWithValidityStartEndDate: PathLayer[] = Object.values(
-    relevantLayerDefinitions,
-  )
-    .filter(layer => !!(layer as AdminLevelDataLayerProps).validityPeriod)
-    .map(layer => ({
-      name: layer.id,
-      dates: layerDates[layer.id],
-      path: (layer as AdminLevelDataLayerProps).path,
-      validityPeriod: (layer as AdminLevelDataLayerProps)
-        .validityPeriod as ValidityPeriod,
-    }));
-
-  // Use preprocessed dates for layers with dates path
-  const preprocessedDates = countriesWithPreprocessedDates.includes(safeCountry)
-    ? await fetchPreprocessedDates()
-    : {};
-
-  // Generate and replace date items for layers with all intermediates dates
-  const buildLayerDateItems = async (
-    layerName: string,
-    dateArray: number[],
-  ) => {
-    // Generate dates for layers with validity and no path
-    const matchingValidityLayer = layersWithValidity.find(
-      validityLayer => validityLayer.name === layerName,
-    );
-
-    if (matchingValidityLayer) {
-      const r = {
-        [layerName]: generateIntermediateDateItemFromValidity(
-          matchingValidityLayer.dates,
-          matchingValidityLayer.validity,
-        ),
-      };
-      return r;
-    }
-
-    // Generate dates for layers with path
-    const matchingPathLayer = layersWithValidityStartEndDate.find(
-      validityLayer => validityLayer.name === layerName,
-    );
-
-    if (matchingPathLayer) {
-      if (layerName in preprocessedDates) {
-        return {
-          [layerName]: generateDateItemsRange(preprocessedDates[layerName]),
-        };
-      }
-      return {
-        [layerName]: await generateIntermediateDateItemFromDataFile(
-          matchingPathLayer.dates,
-          matchingPathLayer.path,
-          matchingPathLayer.validityPeriod,
-        ),
-      };
-    }
-
-    // Generate dates for layers with validity but not an admin_level_data type
+  // Generate dates for layers with validity and no path
+  if (LayerDefinition.validity !== undefined) {
     return {
-      [layerName]: dateArray.map((d: number) =>
-        generateDefaultDateItem(new Date(d).setUTCHours(12, 0, 0, 0)),
+      [LayerDefinition.id]: generateIntermediateDateItemFromValidity(
+        layerAvailableDates,
+        LayerDefinition.validity,
+        LayerDefinition.coverageWindow,
       ),
     };
+  }
+
+  // Generate dates for layers with path
+  if ((LayerDefinition as AdminLevelDataLayerProps).validityPeriod) {
+    // Use preprocessed dates for layers with dates path
+    const preprocessedDates = countriesWithPreprocessedDates.includes(
+      safeCountry,
+    )
+      ? await fetchPreprocessedDates()
+      : {};
+
+    if (layerId in preprocessedDates) {
+      return {
+        [layerId]: generateDateItemsRange(preprocessedDates[layerId]),
+      };
+    }
+    return {
+      [layerId]: await generateIntermediateDateItemFromDataFile(
+        layerAvailableDates,
+        (LayerDefinition as AdminLevelDataLayerProps).path,
+        (LayerDefinition as AdminLevelDataLayerProps).validityPeriod!,
+      ),
+    };
+  }
+
+  // Generate dates for layers with validity but not an admin_level_data type
+  return {
+    [layerId]: layerAvailableDates.map((d: number) =>
+      generateDefaultDateItem(new Date(d).setUTCHours(12, 0, 0, 0)),
+    ),
   };
-
-  const layerDateItemsForLayer = await buildLayerDateItems(
-    layerId,
-    layerDates[layerId] || [],
-  );
-
-  return layerDateItemsForLayer;
 }
+
 /**
  * Format value from featureInfo response based on DataType provided
  *

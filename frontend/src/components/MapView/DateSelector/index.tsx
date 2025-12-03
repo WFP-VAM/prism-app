@@ -8,7 +8,7 @@ import {
   useTheme,
 } from '@material-ui/core';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
-import { findIndex, get, isEqual } from 'lodash';
+import { findIndex, get } from 'lodash';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -18,7 +18,9 @@ import {
   AnticipatoryAction,
   DateItem,
   DateRangeType,
+  DisplayDateTimestamp,
   Panel,
+  SelectedDateTimestamp,
 } from 'config/types';
 import { useMapState } from 'utils/useMapState';
 import { locales, useSafeTranslation } from 'i18n';
@@ -78,14 +80,16 @@ const calculateStartAndEndDates = (startDate: Date, selectedTab: string) => {
 };
 
 const DateSelector = memo(() => {
+  const mapState = useMapState();
+  const isGlobalMap = mapState?.isGlobalMap;
   const classes = useStyles();
   const {
+    areLayerDatesLoading,
     selectedLayerDates: availableDates,
     selectedLayersWithDateSupport: selectedLayers,
     checkSelectedDateForLayerSupport,
   } = useLayers();
 
-  const mapState = useMapState();
   const { startDate: stateStartDate } = mapState.dateRange;
   const tabValue = useSelector(leftPanelTabValueSelector);
   const [dateRange, setDateRange] = useState<DateRangeType[]>([
@@ -108,9 +112,8 @@ const DateSelector = memo(() => {
     y: 0,
   });
   const today = new Date();
-  today.setHours(12, 0, 0, 0); // Normalize today's date
+  today.setUTCHours(12, 0, 0, 0); // Normalize today's date
 
-  const dateRef = useRef(availableDates);
   const timeLine = useRef(null);
 
   const { t } = useSafeTranslation();
@@ -124,9 +127,9 @@ const DateSelector = memo(() => {
     if (closestDate) {
       updateStartDate(new Date(closestDate), true);
     }
-    // Only run this check when selectedLayers changes
+    // Recalculate when layers or available dates change
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedLayers]);
+  }, [selectedLayers, availableDates]);
 
   const maxDate = useMemo(
     () => new Date(Math.max(...availableDates, new Date().getTime())),
@@ -178,6 +181,13 @@ const DateSelector = memo(() => {
         title: 'Anticipatory Action Storm',
         dateItems: AAAvailableDates,
         type: AnticipatoryAction.storm,
+        opacity: 1,
+      },
+      {
+        id: 'anticipatory_action_flood',
+        title: 'Anticipatory Action Flood',
+        dateItems: AAAvailableDates,
+        type: AnticipatoryAction.flood,
         opacity: 1,
       },
     ];
@@ -243,7 +253,7 @@ const DateSelector = memo(() => {
       truncatedLayers.map((layer, index) => {
         const layerQueryDate = getRequestDate(
           layer,
-          dateSelector.startDate,
+          dateSelector.startDate as SelectedDateTimestamp,
           // Do not default to most recent for anticpatory action layers.
           // TODO - what about other layers?
           !orderedLayers[index].id.includes('anticipatory_action'),
@@ -343,22 +353,14 @@ const DateSelector = memo(() => {
   );
 
   // Create timeline range and set pointer position
+  // Recalculate when availableDates changes to ensure timeline updates when dates are loaded
   useEffect(() => {
     setDateRange(range);
     setPointerPosition({
       x: dateIndex * TIMELINE_ITEM_WIDTH,
       y: 0,
     });
-  }, [dateIndex, range]);
-
-  // move pointer to closest date when change map layer
-  useEffect(() => {
-    if (isEqual(dateRef.current, availableDates)) {
-      return;
-    }
-    setDatePosition(stateStartDate, 0, false);
-    dateRef.current = availableDates;
-  });
+  }, [dateIndex, range, availableDates]);
 
   const includedDates = useMemo(
     () => availableDates?.map(d => new Date(d)) ?? [],
@@ -428,13 +430,16 @@ const DateSelector = memo(() => {
       ) {
         return;
       }
-      updateHistory('date', getFormattedDate(time, 'default') as string);
+      if (isGlobalMap) {
+        updateHistory('date', getFormattedDate(time, 'default') as string);
+      }
       mapState.actions.updateDateRange({ startDate: time });
     },
     [
       availableDates,
       checkSelectedDateForLayerSupport,
       stateStartDate,
+      isGlobalMap,
       updateHistory,
       mapState.actions,
     ],
@@ -461,6 +466,12 @@ const DateSelector = memo(() => {
     [availableDates, updateStartDate],
   );
 
+  // move pointer to closest date when change map layer
+  useEffect(() => {
+    setDatePosition(stateStartDate, 0, false);
+  }, [setDatePosition, stateStartDate]);
+
+  // scroll right with the `>` button
   const incrementDate = useCallback(() => {
     if (stateStartDate === undefined) {
       return;
@@ -468,43 +479,57 @@ const DateSelector = memo(() => {
     // find the next observation date to jump to
     // if multiple layers are active, we pick the first observation date
     // for any layer
-    const nextObservationDateItem: DateItem | undefined =
+    // Use orderedLayers to access all dates, not just those in the current timeline
+    const nextObservationDateItem: DisplayDateTimestamp | undefined =
       findMatchingDateBetweenLayers(
-        visibleLayers.map(l =>
-          l.filter(
+        orderedLayers.map(l =>
+          l.dateItems.filter(
             (d: DateItem) =>
-              d.queryDate > stateStartDate && d.queryDate === d.displayDate,
+              d.queryDate > stateStartDate &&
+              (d.queryDate as number) === (d.displayDate as number),
           ),
         ),
         'forward',
       );
     if (nextObservationDateItem !== undefined) {
-      setDatePosition(nextObservationDateItem.displayDate, 0, true);
+      setDatePosition(nextObservationDateItem, 0, true);
     }
-  }, [setDatePosition, stateStartDate, visibleLayers]);
+  }, [setDatePosition, stateStartDate, orderedLayers]);
 
+  // scroll left with the `<` button
   const decrementDate = useCallback(() => {
     if (stateStartDate === undefined) {
       return;
     }
     // find the previous observation date to jump to
     // if multiple layers are active, pick the first date for any layer
-    // use filter+pop as findLast is not widely available yet
-    const previousObservationDateItem: DateItem | undefined =
+    // Skip the current validity period by excluding dates with the same queryDate
+    // Use orderedLayers to access all dates, not just those in the current timeline
+    const previousObservationDateItem: DisplayDateTimestamp | undefined =
       findMatchingDateBetweenLayers(
-        visibleLayers.map(l =>
-          // eslint- disable-next-line fp/no-mutating-methods
-          l.filter(
+        orderedLayers.map(l => {
+          // Get the current queryDate for this layer
+          const currentQueryDate = getRequestDate(
+            l.dateItems,
+            stateStartDate as SelectedDateTimestamp,
+            !l.id.includes('anticipatory_action'),
+          );
+          // Filter to observation dates before current date, excluding current validity period
+          // eslint-disable-next-line fp/no-mutating-methods
+          return l.dateItems.filter(
             (d: DateItem) =>
-              d.queryDate < stateStartDate && d.queryDate === d.displayDate,
-          ),
-        ),
+              d.queryDate < stateStartDate &&
+              (d.queryDate as number) === (d.displayDate as number) &&
+              (currentQueryDate === undefined ||
+                !datesAreEqualWithoutTime(d.queryDate, currentQueryDate)),
+          );
+        }),
         'back',
       );
     if (previousObservationDateItem !== undefined) {
-      setDatePosition(previousObservationDateItem.displayDate, 0, true);
+      setDatePosition(previousObservationDateItem, 0, true);
     }
-  }, [setDatePosition, stateStartDate, visibleLayers]);
+  }, [setDatePosition, stateStartDate, orderedLayers]);
 
   const clickDate = useCallback(
     (index: number) => {
@@ -613,8 +638,15 @@ const DateSelector = memo(() => {
     [updateStartDate],
   );
 
-  // Only display the date selector once dates are loaded
-  if (dateRange.length <= 1) {
+  // Don't display the date selector if:
+  // - Dates are still loading for the selected layers
+  // - The dateRange hasn't been computed yet
+  // - Available dates failed to load (selectedLayers has items but availableDates is empty)
+  if (
+    areLayerDatesLoading ||
+    dateRange.length <= 1 ||
+    (selectedLayers.length > 0 && availableDates.length === 0)
+  ) {
     return null;
   }
 
@@ -627,7 +659,11 @@ const DateSelector = memo(() => {
         container
         alignItems="center"
         justifyContent="center"
-        className={classes.datePickerContainer}
+        className={
+          isGlobalMap
+            ? classes.datePickerContainer
+            : classes.datePickerContainerDashboard
+        }
       >
         {/* Mobile */}
         <Grid item xs={12} sm={1} className={classes.datePickerGrid}>
@@ -641,7 +677,19 @@ const DateSelector = memo(() => {
             locale={t('date_locale')}
             dateFormat="PP"
             className={classes.datePickerInput}
-            selected={stateStartDate ? new Date(stateStartDate) : new Date()}
+            selected={
+              stateStartDate
+                ? (() => {
+                    // Force to UTC to avoid any timezone issues when setting a pre-configured date in dashboards
+                    const utcDate = new Date(stateStartDate);
+                    return new Date(
+                      utcDate.getUTCFullYear(),
+                      utcDate.getUTCMonth(),
+                      utcDate.getUTCDate(),
+                    );
+                  })()
+                : new Date()
+            }
             onChange={handleOnDatePickerChange}
             maxDate={maxDate}
             todayButton={t('Today')}
@@ -693,6 +741,9 @@ const DateSelector = memo(() => {
                   container
                   alignItems="stretch"
                   className={classes.dateLabelContainer}
+                  style={{
+                    minWidth: `${dateRange.length * TIMELINE_ITEM_WIDTH}px`,
+                  }}
                 >
                   {stateStartDate && (
                     <TimelineItems
@@ -760,13 +811,16 @@ const useStyles = makeStyles((theme: Theme) =>
     },
 
     chevronDate: {
-      padding: 0,
-      minWidth: '24px',
-      marginBottom: 'auto',
-      marginTop: 'auto',
-      marginRight: '10px',
-      marginLeft: '10px',
-      color: '#101010',
+      // Use && to increase specificity — bypassing MUI dev environment issue
+      '&&': {
+        padding: 0,
+        minWidth: '24px',
+        marginBottom: 'auto',
+        marginTop: 'auto',
+        marginRight: '10px',
+        marginLeft: '10px',
+        color: '#101010',
+      },
       '&:hover': {
         backgroundColor: 'rgba(211,211,211, 0.3)',
       },
@@ -780,6 +834,15 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: '8px',
       width: '90%',
       margin: 'auto',
+      textAlign: 'center',
+    },
+    datePickerContainerDashboard: {
+      border: '1px solid #D4D4D4',
+      boxShadow: 'none',
+      backgroundColor: 'white',
+      color: '#101010',
+      borderRadius: '8px',
+      width: 'calc(100% - 16px)',
       textAlign: 'center',
     },
 
@@ -824,7 +887,7 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'absolute',
       zIndex: 5,
       marginTop: 22,
-      left: -12,
+      left: -11,
       height: '16px',
       cursor: 'grab',
     },

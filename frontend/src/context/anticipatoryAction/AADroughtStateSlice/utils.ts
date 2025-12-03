@@ -4,7 +4,11 @@ import {
   getAAIcon,
 } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils';
 import { calculateSeason } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
-import { DatesPropagation, Validity } from 'config/types';
+import {
+  DatesPropagation,
+  ReferenceDateTimestamp,
+  Validity,
+} from 'config/types';
 import { generateIntermediateDateItemFromValidity } from 'utils/server-utils';
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
@@ -120,8 +124,10 @@ export function parseAndTransformAA(data: any[]) {
     const filtered = parsed.filter(x => x.window === windowKey && x.date);
 
     // eslint-disable-next-line fp/no-mutating-methods
-    const dates = [
-      ...new Set(filtered.map(x => new Date(x.date).getTime())),
+    const dates: ReferenceDateTimestamp[] = [
+      ...new Set(
+        filtered.map(x => new Date(x.date).getTime() as ReferenceDateTimestamp),
+      ),
     ].sort();
 
     const availableDates = generateIntermediateDateItemFromValidity(
@@ -248,8 +254,6 @@ export function calculateMapRenderedDistricts({
 }: CalculateMapRenderedDistrictsParams) {
   const { selectedDate, categories } = filters;
   const season = calculateSeason(selectedDate);
-  // eslint-disable-next-line no-console
-  console.log({ season, selectedDate });
 
   const res = Object.entries(data)
     .map(([winKey, districts]) => {

@@ -267,7 +267,7 @@ These layers are referred to as `point_data` in PRISM and represent a data value
 
 #### boundaries
 
-Boundary layers are loaded by defaul when the application starts and typically show administrative boundaries and are defined as type `boundary`. Multiple boundary files can be configured in layers.json. Multiple boundary files can be used to create different styles for each boundary, or to toggle between admin_level_data layers which correspond to a separate geographic specification; for example to use one boundary file for district level data, and another boundary file for ecological data.
+Boundary layers are loaded by default when the application starts and typically show administrative boundaries and are defined as type `boundary`. Multiple boundary files can be configured in layers.json. Multiple boundary files can be used to create different styles for each boundary, or to toggle between admin_level_data layers which correspond to a separate geographic specification; for example to use one boundary file for district level data, and another boundary file for ecological data.
 
 When more than one boundary is specified, an array of boundaries needs to also be set in `prism.json` using with the `defaultDisplayBoundaries` attribute.
 
@@ -329,6 +329,55 @@ When more than one boundary is specified, an array of boundaries needs to also b
   }
 ```
 
+##### Accessing Boundary Data in Code
+
+Boundary data is stored in a global cache. This ensures that boundary data is loaded once and shared across all map instances.
+
+**In React Components:**
+
+Use the `useBoundaryData` hook to access boundary data:
+
+```typescript
+import { useBoundaryData } from 'utils/useBoundaryData';
+import { useMapState } from 'utils/useMapState';
+
+function MyComponent() {
+  const { maplibreMap } = useMapState();
+  const { data, loading, error } = useBoundaryData('admin_boundaries', maplibreMap);
+  
+  if (loading) return <div>Loading boundaries...</div>;
+  if (error) return <div>Error: {error}</div>;
+  
+  // data is a GeoJSON FeatureCollection
+  return <div>{data.features.length} boundaries loaded</div>;
+}
+```
+
+**In Redux Thunks or Async Functions:**
+
+Use the `boundaryCache` directly:
+
+```typescript
+import { boundaryCache } from 'utils/boundary-cache';
+import { getBoundaryLayerSingleton } from 'config/utils';
+
+async function myAsyncFunction(dispatch) {
+  const boundaryLayer = getBoundaryLayerSingleton();
+  const boundaryData = await boundaryCache.getBoundaryData(
+    boundaryLayer,
+    dispatch,
+    map, // optional, required for PMTiles format
+  );
+  
+  if (!boundaryData) {
+    throw new Error('Boundary data not loaded!');
+  }
+  
+  // boundaryData is a GeoJSON FeatureCollection
+  console.log(`Loaded ${boundaryData.features.length} features`);
+}
+```
+
 #### impact
 
 Impact layers are computed by combining a raster layer with a vector layer based on raster values bound by the zones of the vector layer. The impact layer computes zonal statistics for the raster, and based on a configured threshold, will display zones where the threshold has been exceeded.
@@ -355,6 +404,164 @@ Impact layers are computed by combining a raster layer with a vector layer based
 
 To display additional metadata about a layer, you can add a `content_path` attribute to any layer. The attribute expects a path to a `.md` or `.html` file that is stored in `public/data/${REACT_APP_COUNTRY}/filename.ext` directory. For example: `public/data/myanmar/contents.md`
 The application will show an icon next to the layer in the legend if this attribute is configured, and will display the content in a modal window if the icon is clicked.
+
+## Dashboards
+
+Dashboards are customizable reports that combine maps, charts, tables, and text blocks in a flexible layout. They are configured in a `dashboards.json` file in your country's config folder (e.g., `src/config/mozambique/dashboards.json`).
+
+### Dashboard Configuration Structure
+
+Each dashboard is defined as an object with the following properties:
+
+```json
+{
+  "title": "Dashboard Title",
+  "path": "url-friendly-path",
+  "isEditable": true,
+  "firstColumn": [...],
+  "secondColumn": [...],
+  "thirdColumn": [...]
+}
+```
+
+**Dashboard-level properties:**
+- `title` (required): Display name of the dashboard
+- `path` (optional): URL path for the dashboard. If omitted, it will be auto-generated from the title
+- `isEditable` (optional): If `true`, users can edit the dashboard in the UI. Defaults to `false`
+- `firstColumn` (required): Array of dashboard elements
+- `secondColumn` (optional): Array of dashboard elements for the second column
+- `thirdColumn` (optional): Array of dashboard elements for the third column
+
+### Dashboard Elements
+
+Each column contains an array of elements. There are four types of elements:
+
+#### 1. MAP Element
+
+Displays an interactive map with pre-selected layers.
+
+```json
+{
+  "type": "MAP",
+  "defaultDate": "2025-04-01",
+  "mapPosition": "left",
+  "minMapBounds": [31, -25, 40, -11],
+  "title": "Temperature Anomaly Map",
+  "legendVisible": true,
+  "legendPosition": "right",
+  "preSelectedMapLayers": [
+    { "layerId": "lst_day_anomaly", "opacity": 0.7 },
+    { "layerId": "rainfall_dekad", "opacity": 0.8 }
+  ]
+}
+```
+
+**Properties:**
+- `type`: Must be `"MAP"`
+- `preSelectedMapLayers` (required): Array of layer objects to display on the map
+  - `layerId`: Layer ID from `layers.json`
+  - `opacity` (optional): Layer opacity (0.0 to 1.0). Defaults to 1.0
+- `defaultDate` (optional): Initial date for the map in `YYYY-MM-DD` format
+- `mapPosition` (optional): `"left"` or `"right"` - used for side-by-side map comparison
+- `minMapBounds` (optional): Map extent as `[west, south, east, north]`
+- `title` (optional): Custom title for the map
+- `legendVisible` (optional): Whether to show the legend. Defaults to `true`
+- `legendPosition` (optional): Legend position - `"left"` or `"right"`. Defaults to `"right"`
+
+#### 2. CHART Element
+
+Displays time-series chart data for a WMS layer.
+
+```json
+{
+  "type": "CHART",
+  "startDate": "2025-01-01",
+  "endDate": "2025-04-01",
+  "layerId": "precip_blended_dekad",
+  "adminUnitLevel": 1,
+  "adminUnitId": 12345,
+  "chartHeight": "tall"
+}
+```
+
+**Properties:**
+- `type`: Must be `"CHART"`
+- `startDate` (required): Start date for chart data in `YYYY-MM-DD` format
+- `layerId` (required): Layer ID from `layers.json` (must have `chartData` configured)
+- `endDate` (optional): End date for chart data. If omitted, only `startDate` is used
+- `adminUnitLevel` (optional): Administrative level (0, 1, 2, etc.) to aggregate data by
+- `adminUnitId` (optional): Specific admin unit ID to filter chart data
+- `chartHeight` (optional): Height of the chart. Options: `"tall"`, `"medium"`, `"short"`. Defaults to `"tall"`
+
+#### 3. TABLE Element
+
+Displays analysis results in a table format, combining a hazard layer with a baseline layer.
+
+```json
+{
+  "type": "TABLE",
+  "startDate": "2025-04-01",
+  "hazardLayerId": "spi_blended_2m",
+  "baselineLayerId": "admin1_boundaries",
+  "threshold": { "below": -1.5, "above": 1.5 },
+  "stat": "mean",
+  "maxRows": 10,
+  "addResultToMap": false,
+  "sortColumn": "mean",
+  "sortOrder": "desc"
+}
+```
+
+**Properties:**
+- `type`: Must be `"TABLE"`
+- `startDate` (required): Date for analysis in `YYYY-MM-DD` format
+- `hazardLayerId` (required): Hazard layer ID from `layers.json`
+- `baselineLayerId` (required): Baseline layer ID (typically a boundary or admin level layer)
+- `stat` (required): Aggregation statistic. Options:
+  - `"mean"` - Average value
+  - `"median"` - Median value
+  - `"max"` - Maximum value
+  - `"min"` - Minimum value
+  - `"sum"` - Sum of values
+  - `"intersect_percentage"` - Percent of area exposed
+- `threshold` (optional): Object with `below` and/or `above` numeric values to filter results
+- `maxRows` (optional): Maximum number of rows to display in the table. Defaults to `10`
+- `addResultToMap` (optional): Whether to add the analysis result layer to the map. Set to `false` to show only the table without displaying the layer on the map. Defaults to `true`
+- `sortColumn` (optional): Column to sort the table by. Can be `"name"` for the name column, or any statistic name like `"mean"`, `"max"`, `"min"`, etc. Defaults to `"name"`
+- `sortOrder` (optional): Sort order for the table. Options are `"asc"` (ascending) or `"desc"` (descending). Defaults to `"asc"`
+
+#### 4. TEXT Element
+
+Displays formatted text content (supports markdown).
+
+```json
+{
+  "type": "TEXT",
+  "content": "# Analysis Summary\n\nThis dashboard shows precipitation patterns for April 2025.",
+  "textUpdatedAt": "2025-03-01"
+}
+```
+
+**Properties:**
+- `type`: Must be `"TEXT"`
+- `content` (required): Text content (supports markdown formatting)
+- `textUpdatedAt` (optional): Date when content was last updated in `YYYY-MM-DD` format
+
+### Dashboard Layout
+
+Dashboards use a flexible column layout:
+- **Columns with MAP elements** are wider (take up more space)
+- **Columns without MAP elements** are narrower
+- Elements within a column stack vertically
+- Empty columns are not displayed
+
+### Tips for Creating Dashboards
+
+1. **Layer IDs**: All layer IDs (`layerId`, `layerId`, `hazardLayerId`, `baselineLayerId`) must exist in your `layers.json` file
+2. **Date formats**: Always use `YYYY-MM-DD` format for dates
+3. **Column balance**: Place MAP elements in their own column for better layout
+4. **Chart layers**: Only layers with `chartData` configuration can be used in CHART elements
+5. **Empty columns**: You can use empty arrays `[]` for columns you don't need
 
 ## Technical - Packages/Dependencies
 
@@ -436,3 +643,12 @@ By default, a pre-commit hook is defined to run linting tasks on all _staged_ co
 ### Creating pull requests and deploying to Firebase
 
 By default, everytime a pull request is created, a CI/CD pipeline will run tests and deploy the code to a Firebase channel preview (http://staging-prism-frontend--prism-[pr number]-[random hash].web.app). To specify a country that the build will be run on, start your pull request title with `COUNTRY=[country name]`. For example: `COUNTRY=cambodia Add new config options`.
+
+### Batch builds and test deploys (multi-country)
+
+Use `frontend/scripts/country_build.sh` from the `frontend` folder:
+
+- `yarn batch:build`: build zips for chosen countries into `frontend/builds/`
+- `yarn deploy:tests`: deploy Firebase preview channels for chosen countries
+
+You’ll be prompted for a list of countries (or select `all`). For deploys, ensure Firebase CLI is installed and authenticated.

@@ -337,6 +337,50 @@ export function scaleFeatureStat(
 }
 
 /**
+ * Standard percentage-based legend definition for exposure level analysis.
+ * Used for area exposed and polygon analysis with percentage-based exposure statistics.
+ * Uses fixed breakpoints as requested in https://github.com/WFP-VAM/prism-app/issues/1381
+ * Color breaks from https://colorbrewer2.org/#type=sequential&scheme=Reds&n=5
+ */
+export const EXPOSURE_LEVEL_LEGEND: LegendDefinition = [
+  {
+    value: 0.2,
+    color: '#fee5d9', // very light red-orange
+    label: '<20%',
+  },
+  {
+    value: 0.4,
+    color: '#fcae91', // rose bud
+    label: '20 - 39%',
+  },
+  {
+    value: 0.6,
+    color: '#fb6a4a', // red-orange
+    label: '40 - 59%',
+  },
+  {
+    value: 0.8,
+    color: '#de2d26', // medium red-orange
+    label: '60 - 79%',
+  },
+  {
+    value: 1.0,
+    color: '#a50f15', // dark tamarillo red
+    label: '>=80%',
+  },
+];
+
+/**
+ * Creates a standard percentage-based legend for "Area exposed" analysis.
+ * Uses fixed breakpoints as requested in https://github.com/WFP-VAM/prism-app/issues/1381
+ *
+ * @return LegendDefinition
+ */
+export function createAreaExposedLegend(): LegendDefinition {
+  return EXPOSURE_LEVEL_LEGEND;
+}
+
+/**
  * Creates Analysis result legend based on data returned from API.
  *
  * The equal interval method takes the maximum values minus the minimum
@@ -653,15 +697,8 @@ export class PolygonAnalysisResult {
     this.boundaryId = boundaryId;
     this.startDate = startDate;
     this.endDate = endDate;
-    // color breaks from https://colorbrewer2.org/#type=sequential&scheme=Reds&n=5
-    // this legend of red-like colors goes from very light to dark
-    this.legend = [
-      { label: '20%', value: 0.2, color: '#fee5d9' }, // very light red-orange, HSL: 0.05, 0.95, 0.92,
-      { label: '40%', value: 0.4, color: '#fcae91' }, // rose bud, HSL: 0.05, 0.95, 0.78,
-      { label: '60%', value: 0.6, color: '#fb6a4a' }, // red-orange, HSL: 0.03, 0.96, 0.64
-      { label: '80%', value: 0.8, color: '#de2d26' }, // medium red-orange HSL: 0.01, 0.74, 0.51
-      { label: '100%', value: 1, color: '#a50f15' }, // dark tamarillo red: 0.99 0.83 0.35, dark red
-    ];
+    // Use the shared percentage-based legend for consistency
+    this.legend = EXPOSURE_LEVEL_LEGEND;
 
     this.legendText = hazardLayer.legendText;
     this.hazardLayerId = hazardLayer.id;

@@ -1,7 +1,11 @@
 import { sortBy } from 'lodash';
 import GeoJSON from 'geojson';
 import { Dispatch } from 'redux';
-import { PointLayerData, PointDataLayerProps } from 'config/types';
+import {
+  PointLayerData,
+  PointDataLayerProps,
+  ReferenceDateTimestamp,
+} from 'config/types';
 import { addNotification } from 'context/notificationStateSlice';
 import { queryParamsToString } from './url-utils';
 import { fetchWithTimeout } from './fetch-with-timeout';
@@ -12,7 +16,7 @@ export const fetchACLEDDates = async (
   url: string,
   dispatch: Dispatch,
   additionalQueryParams?: PointDataLayerProps['additionalQueryParams'],
-): Promise<number[]> => {
+): Promise<ReferenceDateTimestamp[]> => {
   try {
     if (
       additionalQueryParams &&
@@ -26,17 +30,14 @@ export const fetchACLEDDates = async (
 
     const datesUrl = `${url}?${queryParamsToString(queryParams)}`;
 
-    const resp = await fetchWithTimeout(
-      datesUrl,
-      dispatch,
-      {},
-      `Request failed for fetching ACLED Dates at ${datesUrl}`,
-    );
+    const errorMessage = `Request failed for fetching ACLED Dates`;
+
+    const resp = await fetchWithTimeout(datesUrl, dispatch, {}, errorMessage);
     const respJson = await resp.json();
 
     /* eslint-disable camelcase */
-    const dates: number[] = respJson.data.map((item: { event_date: string }) =>
-      getTimeInMilliseconds(item.event_date),
+    const dates: ReferenceDateTimestamp[] = respJson.data.map(
+      (item: { event_date: string }) => getTimeInMilliseconds(item.event_date),
     );
     /* eslint-enable camelcase */
 

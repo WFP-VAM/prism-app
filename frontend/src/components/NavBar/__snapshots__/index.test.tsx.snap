@@ -20,8 +20,8 @@ exports[`renders as expected 1`] = `
           >
             <img
               alt="logo"
-              class="makeStyles-logo-8"
-              src="images/moz-flag-inam-logo.png"
+              class="makeStyles-logo-1"
+              src="/images/moz-flag-inam-logo.png"
             />
             <div
               class="MuiBox-root MuiBox-root-11 makeStyles-titleBox-7"
@@ -146,6 +146,11 @@ exports[`renders as expected 1`] = `
                 selected="false"
               >
                 A. Action Storm
+              </mock-menuitem>
+              <mock-menuitem
+                selected="false"
+              >
+                A. Action Flood
               </mock-menuitem>
             </mock-menu>
             <mock-button

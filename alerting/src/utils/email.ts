@@ -1,11 +1,9 @@
 import nodemailer from 'nodemailer';
-import { StormAlertData, StormAlertEmail } from '../types/email';
+import { StormAlertData, StormAlertEmail } from '../types/storm-email';
+import { FloodAlertEmailData } from '../types/flood-email';
 import ejs from 'ejs';
 import path from 'path';
-import {
-  displayWindState,
-  WindState,
-} from 'prism-common';
+import { displayWindState, WindState } from 'prism-common';
 
 /**
  *
@@ -136,16 +134,17 @@ export const sendStormAlertEmail = async (
 
   let alertTitle = '';
   let readiness = false;
-  const windspeed = 
-  data.status === WindState.activated_64kt || data.status === WindState.activated_48kt
-    ? displayWindState[data.status]
-    : null;
+  const windspeed =
+    data.status === WindState.activated_64kt ||
+    data.status === WindState.activated_48kt
+      ? displayWindState[data.status]
+      : null;
 
   if (windspeed) {
-    alertTitle = `Activation Triggers activated ${windspeed} for ${data.cycloneName}`;
+    alertTitle = `Activation Triggers detected for windspeed ${windspeed} for ${data.cycloneName}`;
   } else if (data.status === WindState.ready) {
     readiness = true;
-    alertTitle = `Readiness Triggers activated for ${data.cycloneName}`;
+    alertTitle = `Readiness Triggers detected for ${data.cycloneName}`;
   } else {
     throw new Error('No windspeed found');
   }
@@ -216,6 +215,58 @@ export const sendStormAlertEmail = async (
     await sendEmail(mailOptions);
   } catch (error) {
     console.error('Error sending storm alert email:', error);
+    throw error;
+  }
+};
+
+export const sendFloodAlertEmail = async (
+  data: FloodAlertEmailData,
+): Promise<void> => {
+  const alertTitle = data.title;
+  const mailOptions = {
+    from: 'wfp.prism@wfp.org',
+    to: '',
+    bcc: data.email,
+    subject: alertTitle,
+    html: '',
+    text: '',
+    attachments: [
+      {
+        filename: 'map-icon.png',
+        path: path.join(__dirname, '../images/mapIcon.png'),
+        cid: 'map-icon',
+      },
+      {
+        filename: 'arrow-forward-icon.png',
+        path: path.join(__dirname, '../images/arrowForwardIcon.png'),
+        cid: 'arrow-forward-icon',
+      },
+      {
+        filename: 'flood-image.png',
+        content: data.base64Image,
+        encoding: 'base64',
+        cid: 'flood-image-cid',
+      },
+    ],
+  };
+
+  try {
+    const [htmlOutput, textOutput] = await Promise.all([
+      ejs.renderFile(path.join(__dirname, '../templates', 'flood-alert.ejs'), {
+        ...data,
+        isPlainText: false,
+      }),
+      ejs.renderFile(path.join(__dirname, '../templates', 'flood-alert.ejs'), {
+        ...data,
+        isPlainText: true,
+      }),
+    ]);
+
+    mailOptions.html = htmlOutput;
+    mailOptions.text = textOutput;
+    await sendEmail(mailOptions);
+  } catch (error) {
+    console.error('Error sending flood alert email:', error);
     throw error;
   }
 };

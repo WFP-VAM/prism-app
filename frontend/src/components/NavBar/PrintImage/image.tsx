@@ -12,13 +12,12 @@ import React, { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
 import { appConfig, safeCountry } from 'config';
-import { AdminCodeString, BoundaryLayerProps } from 'config/types';
+import { AdminCodeString } from 'config/types';
 import { getBoundaryLayerSingleton } from 'config/utils';
-import { LayerData } from 'context/layers/layer-data';
 import useResizeObserver from 'utils/useOnResizeObserver';
+import { useBoundaryData } from 'utils/useBoundaryData';
 import {
   dateRangeSelector,
-  layerDataSelector,
   mapSelector,
 } from '../../../context/mapStateSlice/selectors';
 import { downloadToFile } from '../../MapView/utils';
@@ -41,14 +40,12 @@ const boundaryLayer = getBoundaryLayerSingleton();
 function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const { country, header } = appConfig;
   const logo = header?.logo;
+  const bottomLogo = get(appConfig, 'printConfig.bottomLogo', undefined);
   const classes = useStyles();
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
   const printRef = useRef<HTMLDivElement>(null);
-  const boundaryLayerState = useSelector(
-    layerDataSelector(boundaryLayer.id),
-  ) as LayerData<BoundaryLayerProps> | undefined;
-  const { data } = boundaryLayerState || {};
+  const { data } = useBoundaryData(boundaryLayer.id);
 
   // list of toggles
   const [toggles, setToggles] = React.useState<Toggles>({
@@ -58,6 +55,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     logoVisibility: !!logo,
     legendVisibility: true,
     footerVisibility: true,
+    bottomLogoVisibility: !!bottomLogo,
   });
 
   const [downloadMenuAnchorEl, setDownloadMenuAnchorEl] =
@@ -72,6 +70,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const [legendPosition, setLegendPosition] = React.useState(0);
   const [logoPosition, setLogoPosition] = React.useState(0);
   const [logoScale, setLogoScale] = React.useState(1);
+  const [bottomLogoScale, setBottomLogoScale] = React.useState(1);
   // the % value of the original dimensions
   const [mapDimensions, setMapDimensions] = React.useState<MapDimensions>({
     width: 100,
@@ -101,7 +100,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
     // which runs ./scripts/preprocess-layers.js
     if (selectedBoundaries.length === 0) {
-      fetch(`data/${safeCountry}/admin-boundary-unified-polygon.json`)
+      fetch(`/data/${safeCountry}/admin-boundary-unified-polygon.json`)
         .then(response => response.json())
         .then(polygonData => {
           const maskedPolygon = mask(polygonData as any);
@@ -203,6 +202,9 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       logo,
       setLogoPosition,
       setLogoScale,
+      bottomLogo,
+      bottomLogoScale,
+      setBottomLogoScale,
       setToggles,
       setLegendPosition,
       setFooterText,

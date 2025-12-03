@@ -12,9 +12,9 @@ import { BoundaryLayerData } from 'context/layers/boundary';
 import { LayerData } from 'context/layers/layer-data';
 import {
   dateRangeSelector,
-  layerDataSelector,
   mapSelector,
 } from 'context/mapStateSlice/selectors';
+import { useBoundaryData } from 'utils/useBoundaryData';
 import { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { appConfig } from 'config';
@@ -46,11 +46,13 @@ const getProperties = (
   adminCode: AdminCodeString,
   adminSelectorKey: string,
 ) => {
+  // Normalize both values to strings for comparison (admin codes might be stored as numbers)
+  const normalizedAdminCode = String(adminCode);
   const features = layerData.features.find(
     elem =>
       elem.properties &&
       elem.properties[adminSelectorKey] &&
-      elem.properties[adminSelectorKey] === adminCode,
+      String(elem.properties[adminSelectorKey]) === normalizedAdminCode,
   );
 
   if (!features) {
@@ -77,10 +79,7 @@ function PopupAnalysisCharts({
   const classes = useStyles();
   const { t } = useSafeTranslation();
   const dataForCsv = useRef<{ [key: string]: any[] }>({});
-  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
-    | LayerData<BoundaryLayerProps>
-    | undefined;
-  const { data, layer } = boundaryLayerData || {};
+  const { data } = useBoundaryData(boundaryLayer.id);
   const map = useSelector(mapSelector);
 
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
@@ -90,18 +89,28 @@ function PopupAnalysisCharts({
   const layerId = getLayerMapId(boundaryLayer.id, 'fill');
   const features = map?.queryRenderedFeatures(undefined, { layers: [layerId] });
 
+  // Normalize adminCode to string for comparison
+  const normalizedAdminCode = String(adminCode);
   const adminProperties =
-    data && layer?.format === 'geojson'
+    data && boundaryLayer?.format !== 'pmtiles'
       ? getProperties(data as BoundaryLayerData, adminCode, adminSelectorKey)
-      : (features?.find(f => f.properties?.[adminSelectorKey] === adminCode)
-          ?.properties ?? null);
+      : (features?.find(
+          f =>
+            f.properties?.[adminSelectorKey] &&
+            String(f.properties[adminSelectorKey]) === normalizedAdminCode,
+        )?.properties ?? null);
 
   if (filteredChartLayers.length < 1) {
     return null;
   }
 
+  // Don't render charts if adminProperties is null to prevent errors
+  if (!adminProperties) {
+    return null;
+  }
+
   return (
-    <PopupChartWrapper>
+    <PopupChartWrapper key={adminProperties?.id}>
       {filteredChartLayers.map(filteredChartLayer => (
         <div key={filteredChartLayer.id} className={classes.chartContainer}>
           <div className={classes.chartSection}>

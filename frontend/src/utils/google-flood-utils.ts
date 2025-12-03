@@ -47,7 +47,7 @@ export const GoogleFloodTriggersConfig: FloodChartConfigObject = {
 
 /* eslint-disable camelcase */
 export type FloodSensorData = {
-  location_id: number;
+  station_id: number;
   value: [string, number];
 };
 

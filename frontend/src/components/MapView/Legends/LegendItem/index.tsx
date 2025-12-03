@@ -22,24 +22,31 @@ import {
 } from '@material-ui/core';
 import { Close, Opacity, SwapVert } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { LayerType, LegendDefinitionItem } from 'config/types';
-import { layersSelector } from 'context/mapStateSlice/selectors';
+import {
+  LayerType,
+  LegendDefinitionItem,
+  Panel,
+  PointDataLayerProps,
+} from 'config/types';
 import { useMapState } from 'utils/useMapState';
 import { clearDataset } from 'context/datasetStateSlice';
 import { useSafeTranslation } from 'i18n';
 import {
   clearAnalysisResult,
   analysisLayerInvertColors,
+  setIsMapLayerActive,
 } from 'context/analysisResultStateSlice';
 import LayerContentPreview from 'components/MapView/Legends/layerContentPreview';
 import ColorIndicator from 'components/MapView/Legends/ColorIndicator';
 import { getLegendItemLabel } from 'components/MapView/utils';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
+import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { dashboardModeSelector } from 'context/dashboardStateSlice';
 import LayerDownloadOptions from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch/SwitchItem/LayerDownloadOptions';
 import AnalysisDownloadButton from 'components/MapView/Legends//AnalysisDownloadButton';
 import { toggleRemoveLayer } from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
-import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
+import { useOpacityState } from 'utils/useOpacityState';
 import { lightGrey } from 'muiTheme';
 import LoadingBar from '../LoadingBar';
 import LegendMarkdown from '../LegendMarkdown';
@@ -63,27 +70,47 @@ const LegendItem = memo(
     const dispatch = useDispatch();
     const {
       actions: { addLayer, removeLayer },
+      layers,
       ...mapState
     } = useMapState();
     const { removeLayerFromUrl } = useUrlHistory();
     const map = mapState.maplibreMap();
     const [opacityEl, setOpacityEl] = useState<HTMLButtonElement | null>(null);
-    const opacity = useSelector(opacitySelector(id as string));
+    const opacityState = useOpacityState();
+    const opacityFromState = useSelector(
+      opacityState.getOpacitySelector(id as string),
+    );
+    const tabValue = useSelector(leftPanelTabValueSelector);
+    const dashboardMode = useSelector(dashboardModeSelector);
+
+    // Use opacity from state if available, otherwise fall back to the initial opacity
+    const opacity =
+      opacityFromState !== undefined ? opacityFromState : initialOpacity;
     const isAnalysis = type === 'analysis';
 
+    const canShowRemoveButton =
+      tabValue !== Panel.Dashboard || dashboardMode === 'edit';
+
     useEffect(() => {
-      if (opacity !== undefined) {
+      if (opacityFromState !== undefined || !map) {
         return;
       }
-      dispatch(
-        setOpacity({
-          map,
-          value: initialOpacity || 0,
-          layerId: id,
-          layerType: type,
-        }),
-      );
-    }, [dispatch, id, initialOpacity, map, opacity, type]);
+
+      opacityState.setOpacity({
+        map,
+        value: initialOpacity || 0.8, // Better default than 0 for dashboard context
+        layerId: id,
+        layerType: type,
+      });
+    }, [
+      id,
+      initialOpacity,
+      map,
+      opacityFromState,
+      type,
+      opacityState,
+      mapState.isGlobalMap,
+    ]);
 
     const { t } = useSafeTranslation();
 
@@ -98,11 +125,7 @@ const LegendItem = memo(
     const open = Boolean(opacityEl);
     const opacityId = open ? 'opacity-popover' : undefined;
 
-    const selectedLayers = useSelector(layersSelector);
-    const layer = useMemo(
-      () => selectedLayers.find(l => l.id === id),
-      [id, selectedLayers],
-    );
+    const layer = useMemo(() => layers.find(l => l.id === id), [id, layers]);
 
     const renderedOpacitySlider = useMemo(
       () => (
@@ -128,14 +151,12 @@ const LegendItem = memo(
               thumb: classes.opacitySliderThumb,
             }}
             onChange={(_e, newValue) =>
-              dispatch(
-                setOpacity({
-                  map,
-                  value: newValue as number,
-                  layerId: id,
-                  layerType: type,
-                }),
-              )
+              opacityState.setOpacity({
+                map,
+                value: newValue as number,
+                layerId: id,
+                layerType: type,
+              })
             }
           />
         </Box>
@@ -145,7 +166,7 @@ const LegendItem = memo(
         classes.opacitySliderRoot,
         classes.opacitySliderThumb,
         classes.opacityText,
-        dispatch,
+        opacityState,
         id,
         map,
         opacity,
@@ -168,7 +189,12 @@ const LegendItem = memo(
 
     const remove = useCallback(() => {
       if (isAnalysis) {
-        dispatch(clearAnalysisResult());
+        // In dashboard mode, just toggle layer visibility instead of clearing analysis
+        if (tabValue === Panel.Dashboard) {
+          dispatch(setIsMapLayerActive(false));
+        } else {
+          dispatch(clearAnalysisResult());
+        }
       }
       if (layer) {
         // clear previous table dataset loaded first
@@ -192,6 +218,7 @@ const LegendItem = memo(
       removeLayerFromUrl,
       addLayer,
       removeLayer,
+      tabValue,
     ]);
 
     const getColorIndicatorKey = useCallback(
@@ -210,9 +237,14 @@ const LegendItem = memo(
             color={item.color as string}
             opacity={opacity as number}
             fillPattern={fillPattern || item.fillPattern}
+            iconShape={
+              type === 'point_data' && (layer as PointDataLayerProps)?.iconShape
+                ? (layer as PointDataLayerProps).iconShape
+                : undefined
+            }
           />
         )),
-      [fillPattern, getColorIndicatorKey, legend, opacity, t],
+      [fillPattern, getColorIndicatorKey, legend, opacity, t, type, layer],
     );
 
     const renderedLegendUrl = useMemo(() => {
@@ -313,11 +345,13 @@ const LegendItem = memo(
                   ) : (
                     layerDownloadOptions
                   )}
-                  <Tooltip title={t('Remove layer') as string}>
-                    <IconButton size="small" onClick={remove}>
-                      <Close fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
+                  {canShowRemoveButton && (
+                    <Tooltip title={t('Remove layer') as string}>
+                      <IconButton size="small" onClick={remove}>
+                        <Close fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
                 </>
               </Box>
             </>

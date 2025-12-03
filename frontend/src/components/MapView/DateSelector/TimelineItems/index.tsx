@@ -26,6 +26,8 @@ import AAStormTooltipContent from './AAStormTooltipContent';
 import { DateItemStyle } from './types';
 import AAStormTimelineItem from './AAStormTimelineItem';
 import StandardTimelineItem from './StandardTimelineItem';
+import AAFloodTooltipContent from './AAFloodTooltipContent';
+import AAFloodTimelineItem from './AAFloodTimelineItem';
 
 const TimelineItems = memo(
   ({
@@ -69,18 +71,32 @@ const TimelineItems = memo(
       layer => layer.id === AnticipatoryAction.storm,
     );
 
+    const isShowingAAFloodLayer = orderedLayers.some(
+      layer => layer.id === AnticipatoryAction.flood,
+    );
+
     const getTooltipContent = useCallback(
-      (date: DateRangeType) =>
-        isShowingAAStormLayer ? (
-          <AAStormTooltipContent date={date} />
-        ) : (
+      (date: DateRangeType) => {
+        if (isShowingAAStormLayer) {
+          return <AAStormTooltipContent date={date} />;
+        }
+        if (isShowingAAFloodLayer) {
+          return <AAFloodTooltipContent date={date} />;
+        }
+        return (
           <StandardTooltipContent
             date={date}
             orderedLayers={orderedLayers}
             dateItemStyling={DATE_ITEM_STYLING}
           />
-        ),
-      [isShowingAAStormLayer, DATE_ITEM_STYLING, orderedLayers],
+        );
+      },
+      [
+        isShowingAAStormLayer,
+        isShowingAAFloodLayer,
+        DATE_ITEM_STYLING,
+        orderedLayers,
+      ],
     );
 
     const availableDatesToDisplay = availableDates.filter(
@@ -108,12 +124,14 @@ const TimelineItems = memo(
                   }
                 : null)}
               classes={{
-                tooltip: isShowingAAStormLayer
-                  ? classes.AAStormTooltip
-                  : classes.defaultTooltip,
-                arrow: isShowingAAStormLayer
-                  ? classes.AAStormTooltipArrow
-                  : undefined,
+                tooltip:
+                  isShowingAAStormLayer || isShowingAAFloodLayer
+                    ? classes.AAStormTooltip
+                    : classes.defaultTooltip,
+                arrow:
+                  isShowingAAStormLayer || isShowingAAFloodLayer
+                    ? classes.AAStormTooltipArrow
+                    : undefined,
               }}
             >
               <Grid
@@ -127,16 +145,22 @@ const TimelineItems = memo(
                 data-date-index={index}
               >
                 <div>
-                  {isShowingAAStormLayer ? (
-                    <AAStormTimelineItem currentDate={date} />
-                  ) : (
-                    <StandardTimelineItem
-                      concatenatedLayers={truncatedLayers}
-                      currentDate={date}
-                      dateItemStyling={DATE_ITEM_STYLING}
-                      isDateAvailable={isDateAvailable}
-                    />
-                  )}
+                  {(() => {
+                    if (isShowingAAStormLayer) {
+                      return <AAStormTimelineItem currentDate={date} />;
+                    }
+                    if (isShowingAAFloodLayer) {
+                      return <AAFloodTimelineItem currentDate={date} />;
+                    }
+                    return (
+                      <StandardTimelineItem
+                        concatenatedLayers={truncatedLayers}
+                        currentDate={date}
+                        dateItemStyling={DATE_ITEM_STYLING}
+                        isDateAvailable={isDateAvailable}
+                      />
+                    );
+                  })()}
                 </div>
 
                 <TimelineLabel
@@ -182,18 +206,20 @@ const useStyles = makeStyles(() =>
       top: -5,
       cursor: 'pointer',
       minWidth: TIMELINE_ITEM_WIDTH,
-      '&:hover': {
-        borderLeft: '1px solid #101010',
-      },
       borderLeft: '1px solid #101010',
       height: 36,
     },
+    // dayItem is set in TimelineLabel.tsx
+    dayItem: {},
     dateItem: {
       color: '#101010',
       position: 'relative',
       top: -5,
       cursor: 'pointer',
       minWidth: TIMELINE_ITEM_WIDTH,
+      // Set a transparent border to prevent layout shifts when the border color changes on hover.
+      // Do not remove this unless you are sure layout shifts will not occur.
+      borderLeft: '1px solid transparent',
       '&:hover': {
         borderLeft: '1px solid #101010',
         '& $dayItem': {

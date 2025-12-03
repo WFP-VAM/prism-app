@@ -18,6 +18,7 @@ import {
   Typography,
   makeStyles,
 } from '@material-ui/core';
+import { Close, Send } from '@material-ui/icons';
 import { useSafeTranslation } from 'i18n';
 import { layersSelector } from 'context/mapStateSlice/selectors';
 import { setUserAuthGlobal, userAuthSelector } from 'context/serverStateSlice';
@@ -185,16 +186,22 @@ const AuthModal = () => {
               }}
             >
               <div className={classes.buttonWrapper}>
-                <Button type="submit" variant="contained" color="primary">
-                  {t('Send')}
-                </Button>
                 <Button
                   type="reset"
-                  variant="contained"
+                  variant="outlined"
                   color="secondary"
                   onClick={onCancelClick}
+                  startIcon={<Close />}
                 >
                   {t('Cancel')}
+                </Button>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  startIcon={<Send />}
+                >
+                  {t('Send')}
                 </Button>
               </div>
             </Box>

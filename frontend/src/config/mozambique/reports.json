@@ -1,3 +1,8 @@
+/**
+ * Mozambique tropical storm reports - ADAM integration decommissioned.
+ * Replaced by Anticipatory Action tropical storm module.
+ * This report is no longer used and will be removed in the future.
+ */
 {
   "adamts_buffers_report": {
     "layer_id": "adamts_buffers",

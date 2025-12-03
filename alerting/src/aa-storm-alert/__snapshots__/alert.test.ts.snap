@@ -32,7 +32,9 @@ exports[`alert mechanism buildEmailPayloads() returns a payload when detailed re
   {
     "activatedTriggers": {
       "districts48kt": [],
-      "districts64kt": [],
+      "districts64kt": [
+        "Namacurra",
+      ],
     },
     "base64Image": "",
     "cycloneName": "ELVIS",

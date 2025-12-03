@@ -18,7 +18,7 @@ const env = Object.keys(process.env)
     {} as { [key: string]: string | undefined },
   );
 
-const country = process.env.REACT_APP_COUNTRY || 'mozambique';
+const country = env.REACT_APP_COUNTRY || 'mozambique';
 if (country) {
   // eslint-disable-next-line no-console
   console.log(
@@ -32,7 +32,7 @@ process.env.REACT_APP_GIT_HASH = (
   process.env.GITHUB_SHA || process.env.GIT_HASH
 )?.slice(0, 8);
 
-// Custom plugin to remove files
+// Custom plugin to remove files and empty directories
 const removeFilesPlugin = (): Plugin => ({
   name: 'vite-plugin-remove-files',
   closeBundle() {
@@ -50,8 +50,33 @@ const removeFilesPlugin = (): Plugin => ({
       });
     };
 
+    const removeEmptyDirs = (dir: string): void => {
+      if (!fs.existsSync(dir)) {
+        return;
+      }
+
+      let files = fs.readdirSync(dir);
+
+      // Process subdirectories first
+      // eslint-disable-next-line no-restricted-syntax
+      for (const file of files) {
+        const absPath = path.join(dir, file);
+        if (fs.statSync(absPath).isDirectory()) {
+          removeEmptyDirs(absPath);
+        }
+      }
+
+      // Re-read to see if directory is now empty after removing subdirs
+      // eslint-disable-next-line fp/no-mutation
+      files = fs.readdirSync(dir);
+      if (files.length === 0) {
+        fs.rmdirSync(dir);
+      }
+    };
+
     if (fs.existsSync(root)) {
       removeFiles(root);
+      removeEmptyDirs(root);
     }
   },
 });
@@ -84,6 +109,7 @@ export default defineConfig({
       serviceWorker: '/src/serviceWorker',
       src: '/src',
       test: '/test',
+      public: '/public',
     },
   },
 });

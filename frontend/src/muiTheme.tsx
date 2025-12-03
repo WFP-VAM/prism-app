@@ -69,6 +69,10 @@ declare module '@material-ui/core/styles/createTheme' {
 }
 
 const theme: any = createTheme({
+  typography: {
+    fontFamily:
+      'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif',
+  },
   dialog: {
     border: '#2E6EAF',
     actionButton: '#6F9FD2',
@@ -241,6 +245,19 @@ const theme: any = createTheme({
       },
     },
     MuiIconButton: {
+      root: {
+        color: black,
+      },
+    },
+    MuiInputLabel: {
+      root: {
+        color: black,
+      },
+    },
+    MuiInputBase: {
+      input: {
+        color: black,
+      },
       root: {
         color: black,
       },

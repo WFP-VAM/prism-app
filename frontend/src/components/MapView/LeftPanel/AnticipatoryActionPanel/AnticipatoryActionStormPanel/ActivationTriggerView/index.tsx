@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { AADataSelector } from 'context/anticipatoryAction/AAStormStateSlice';
 import { useSafeTranslation } from 'i18n';
 import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
-import { getAAColor } from '../utils';
+import { getAAColor, AAStormColors } from '../utils';
 import { useAACommonStyles } from '../../utils';
 import { AADisplayCategory, AAPanelCategories } from './types';
 
@@ -107,6 +107,22 @@ function ActivationTrigger({ dialogs }: ActivationTriggerProps) {
     parsedStormData.activeDistricts?.[AACategory.Severe]?.districtNames ?? [],
   );
 
+  // Check if there are any districts to display
+  const hasActiveDistricts = filteredActiveDistricts.some(
+    ([category, data]) => {
+      const names =
+        (category as AACategory) === AACategory.Moderate
+          ? data.districtNames.filter(name => !severeDistrictsSet.has(name))
+          : data.districtNames;
+      return names.length > 0;
+    },
+  );
+
+  // Don't render anything if there are no active districts
+  if (!hasActiveDistricts) {
+    return null;
+  }
+
   return (
     <div className={classes.root}>
       <Typography className={classes.headerText}>
@@ -177,7 +193,7 @@ const useActivationTriggerStyles = makeStyles(() =>
     },
     ActivationTriggerWrapper: {
       width: '100%',
-      background: '#F1F1F1',
+      background: AAStormColors.background,
     },
     headColumnWrapper: {
       display: 'flex',

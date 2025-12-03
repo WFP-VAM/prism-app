@@ -34,10 +34,12 @@
                     </p>
                     <% } %>
                     <% if (readiness) { %>
-                        <p><%= cycloneTime %> A system with severe tropical storm-force winds (or stronger) is expected to impact any of the coastal provinces within the next 5 days, with a lead time of at least 72 hours.</p>
+                        <p><%= cycloneTime %> A system with severe tropical storm-force winds (or stronger) is expected to impact any of the coastal provinces within the next 5 days, with a lead time of at least 96 hours.</p>
                     <% } %>
                     <p class="trigger-title" style="margin: 20px 0; width: 100%; font-weight: bold; font-size: 16px;">
                         <span class="activation-icon" style="width: 24px; height: 24px; border-radius: 8px; background-color: rgba(230, 55, 1, 1); display: inline-block; vertical-align: middle; margin-right: 10px;"></span> 
+                        Wind speeds above the threshold of 119 km/h are forecasted. This is not an official activation.<br>
+                        
                         Activation Triggers: 
                         <% if (activatedTriggers) { %>
                             Activated
@@ -49,11 +51,7 @@
                         <p>Projected wind speeds affecting monitored districts:</p>
                         <table class="table-container" style="width: 100%; border-collapse: collapse; font-size: 16px; font-weight: 700;">
                             <tr style="border: 1px solid #ddd; padding: 10px; text-align: left;">
-                                <td style="border: 1px solid #ddd; padding: 10px; text-align: left;">&gt; 89 km/h</td>
-                                <td style="border: 1px solid #ddd; padding: 10px; text-align: left;"><%= activatedTriggers.districts48kt %></td>
-                            </tr>
-                            <tr style="border: 1px solid #ddd; padding: 10px; text-align: left;">
-                                <td style="border: 1px solid #ddd; padding: 10px; text-align: left;">&gt; 118 km/h</td>
+                                <td style="border: 1px solid #ddd; padding: 10px; text-align: left;">&gt; 119 km/h</td>
                                 <td style="border: 1px solid #ddd; padding: 10px; text-align: left;"><%= activatedTriggers.districts64kt %></td>
                             </tr>
                         </table>
@@ -83,7 +81,7 @@
                     <p>We will continue to closely monitor the situation and provide timely updates as more information becomes available.</p>
                     
                     <p class="gray-box" style="background-color: rgba(241, 241, 241, 1); padding: 20px; margin-top: 20px; color: black;">
-                        <strong>Disclaimer</strong>: please note, this is not an official forecast. For accurate and official updates, please refer to alerts issued by <strong>INAM (Mozambique Meteorological Service)</strong>.
+                        <strong>Disclaimer</strong>: This alert is automatically generated based on an evaluation of the latest forecast. It does not represent an official activation. The official decision regarding Anticipatory Action activation will be made and communicated by <strong>INGD (Instituto Nacional de Gestão e Redução do Risco de Desastres)</strong>.
                     </p>
                 </div>
             </main>
@@ -104,21 +102,22 @@
         Forecast by Regional Specialized Meteorological Center La Reunion.
     
         <% if (readiness) { %>
-            Readiness Trigger: Activated
+            Readiness Trigger: Detected
         <% } %>
     
         <% if (readiness) { %>
-            A system with severe tropical storm-force winds (or stronger) is expected to impact any of the coastal provinces within the next 5 days, with a lead time of at least 72 hours.
+            A system with severe tropical storm-force winds (or stronger) is expected to impact any of the coastal provinces within the next 5 days, with a lead time of at least 96 hours.
         <% } %>
     
         <% if (activatedTriggers) { %>
-            Activation Triggers: Activated
+            Wind speeds above the threshold of 119 km/h are forecasted. This is not an official activation.
+            
+            Activation Triggers: Detected
     
             Projected wind speeds affecting pilot districts:
-            - > 89 km/h: <%= activatedTriggers.districts48kt %>
-            - > 118 km/h: <%= activatedTriggers.districts64kt %>
+            - > 119 km/h: <%= activatedTriggers.districts64kt %>
         <% } else { %>
-            Activation Triggers: Not Activated
+            Activation Triggers: Not Detected
         <% } %>
     
         Access PRISM Tropical Storm Dashboard: <%= redirectUrl %>
@@ -128,5 +127,5 @@
     
         We will continue to monitor the situation and provide timely updates.
     
-        Disclaimer: Please note, this is not an official forecast. For accurate and official updates, please refer to alerts issued by INAM (Mozambique Meteorological Service).
+        Disclaimer: This alert is automatically generated based on an evaluation of the latest forecast. It does not represent an official activation. The official decision regarding Anticipatory Action activation will be made and communicated by INGD (Instituto Nacional de Gestão e Redução do Risco de Desastres).
     <% } %>

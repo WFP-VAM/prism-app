@@ -80,6 +80,10 @@
     "server_layer_name": "rfh_daily_forecast",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "days"
+    },
     "opacity": 0.7,
     "legend_text": "CHIRPS-GEFS daily forecasts (16-day rolling)",
     "legend": "rfh_16_0_300",
@@ -183,8 +187,12 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
-      "backward": 2,
       "mode": "dekad"
+    },
+    "coverage_window": {
+        "backward": 2,
+        "forward": 1,
+        "mode": "dekad"
     },
     "opacity": 0.7,
     "legend_text": "Estimate of precipitation over a 1-month period derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
@@ -201,8 +209,12 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
-      "backward": 2,
       "mode": "dekad"
+    },
+    "coverage_window": {
+        "backward": 2,
+        "forward": 1,
+        "mode": "dekad"
     },
     "opacity": 0.7,
     "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
@@ -218,6 +230,10 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
       "forward": 1,
       "backward": 8,
       "mode": "dekad"
@@ -236,6 +252,10 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
       "forward": 1,
       "backward": 8,
       "mode": "dekad"
@@ -678,7 +698,11 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
       "backward": 17,
+      "forward": 1,
       "mode": "dekad"
     },
     "opacity": 0.7,
@@ -696,7 +720,11 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
       "backward": 17,
+      "forward": 1,
       "mode": "dekad"
     },
     "opacity": 0.7,
@@ -714,7 +742,11 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
       "backward": 26,
+      "forward": 1,
       "mode": "dekad"
     },
     "opacity": 0.7,
@@ -732,7 +764,11 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
       "backward": 26,
+      "forward": 1,
       "mode": "dekad"
     },
     "opacity": 0.7,
@@ -750,7 +786,11 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
       "backward": 35,
+      "forward": 1,
       "mode": "dekad"
     },
     "opacity": 0.7,
@@ -768,7 +808,11 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
       "backward": 35,
+      "forward": 1,
       "mode": "dekad"
     },
     "opacity": 0.7,
@@ -786,7 +830,11 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
       "backward": 2,
+      "forward": 1,
       "mode": "dekad"
     },
     "wcsConfig": {
@@ -806,7 +854,11 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
       "backward": 5,
+      "forward": 1,
       "mode": "dekad"
     },
     "wcsConfig": {
@@ -826,7 +878,11 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
       "backward": 8,
+      "forward": 1,
       "mode": "dekad"
     },
     "wcsConfig": {
@@ -846,7 +902,11 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
       "backward": 17,
+      "forward": 1,
       "mode": "dekad"
     },
     "wcsConfig": {
@@ -866,7 +926,11 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
       "backward": 26,
+      "forward": 1,
       "mode": "dekad"
     },
     "wcsConfig": {
@@ -886,7 +950,11 @@
     "date_interval": "days",
     "validity": {
       "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
       "backward": 35,
+      "forward": 1,
       "mode": "dekad"
     },
     "wcsConfig": {
@@ -1173,7 +1241,7 @@
       "styles": "tdd_21_m12_12"
     }
   },
-  "wp_pop_cicunadj": {
+  "wp_pop_icunadj": {
     "title": "population",
     "type": "wms",
     "wcsConfig": {
@@ -1182,54 +1250,10 @@
       "scale": 1,
       "offset": 0
     },
-    "server_layer_name": "wp_pop_cicunadj",
+    "server_layer_name": "wp_pop_icunadj",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "opacity": 0,
     "legend_text": "",
     "legend": []
-  },
-  "adamts_buffers": {
-    "title": "Tropical Storms - Wind buffers",
-    "type": "wms",
-    "server_layer_name": "moz_gdacs_buffers",
-    "opacity": 0.9,
-    "legend": [],
-    "legend_text": "Wind buffers (radii) estimate potential wind speeds along the path of a storm with a buffer estimating the area exposed to each wind speed category. Source: GDACS",
-    "base_url": "https://ogcserver.gis.wfp.org/geoserver",
-    "feature_info_props": {
-      "event_name": {
-        "type": "text",
-        "dataTitle": "Event name"
-      },
-      "timestamp": {
-        "type": "date",
-        "dataTitle": "Publication date"
-      }
-    },
-    "exposure": {
-      "id": "wp_pop_cicunadj",
-      "key": "label"
-    },
-    "geometry": "polygon"
-  },
-  "adamts_nodes": {
-    "title": "Tropical Storms - Nodes",
-    "type": "wms",
-    "server_layer_name": "wld_gdacs_tc_events_nodes",
-    "opacity": 0.9,
-    "legend": [],
-    "legend_text": "Nodes visualize estimated maximum wind speed along a storm's path at various points in time. Source: GDACS",
-    "base_url": "https://ogcserver.gis.wfp.org/geoserver",
-    "geometry": "point"
-  },
-  "adamts_tracks": {
-    "title": "Tropical Storms - Tracks",
-    "type": "wms",
-    "server_layer_name": "wld_gdacs_tc_events_tracks",
-    "opacity": 0.9,
-    "legend": [],
-    "legend_text": "Tracks visualize the projected path of a storm based on the forecasted position of it's center at various points in time. Source: GDACS",
-    "base_url": "https://ogcserver.gis.wfp.org/geoserver",
-    "geometry": "linestring"
   }
 }
