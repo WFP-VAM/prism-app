@@ -4,7 +4,7 @@ exports[`renders as expected 1`] = `
 <div>
   <mock-appbar
     classname="makeStyles-appBar-1"
-    position="static"
+    position="fixed"
   >
     <mock-toolbar
       variant="dense"
@@ -20,7 +20,7 @@ exports[`renders as expected 1`] = `
           >
             <img
               alt="logo"
-              class="makeStyles-logo-1"
+              class="makeStyles-logo-8"
               src="/images/moz-flag-inam-logo.png"
             />
             <div

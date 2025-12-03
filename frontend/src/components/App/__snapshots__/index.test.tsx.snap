@@ -7,8 +7,12 @@ exports[`renders as expected 1`] = `
     id="app"
   >
     <mock-navbar />
-    <mock-mapview />
-    <mock-authmodal />
+    <div
+      style="padding-top: 56px; height: calc(100% - 56px);"
+    >
+      <mock-mapview />
+      <mock-authmodal />
+    </div>
   </div>
 </div>
 `;
