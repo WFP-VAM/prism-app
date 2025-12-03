@@ -219,6 +219,7 @@ function MapExportLayout({
             position: 'relative',
             zIndex: 3,
             border: '1px solid black',
+            boxSizing: 'border-box',
             height: `${mapHeight}%`,
             width: `${mapWidth}%`,
           }}

@@ -22,6 +22,8 @@ describe('Export View', () => {
     exportUrl.searchParams.set('legendPosition', '1');
     exportUrl.searchParams.set('legendScale', '0.7');
     exportUrl.searchParams.set('footerTextSize', '16');
+    exportUrl.searchParams.set('bottomLogoVisibility', 'true');
+    exportUrl.searchParams.set('bottomLogoScale', '1.5');
 
     cy.visit(exportUrl.toString());
 
@@ -65,6 +67,7 @@ describe('Export View', () => {
     exportUrl.searchParams.set('legendVisibility', 'false');
     exportUrl.searchParams.set('footerVisibility', 'false');
     exportUrl.searchParams.set('logoVisibility', 'false');
+    exportUrl.searchParams.set('bottomLogoVisibility', 'false');
 
     cy.visit(exportUrl.toString());
 
@@ -76,6 +79,9 @@ describe('Export View', () => {
 
     // Footer should NOT be visible (no Publication date text)
     cy.contains('Publication date').should('not.exist');
+
+    // Bottom logo should NOT be visible when toggle is false
+    cy.get('img[alt="bottomLogo"]').should('not.exist');
 
     // North arrow should still be visible (not controlled by toggles)
     cy.get('img[alt="northArrow"]').should('be.visible');

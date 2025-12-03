@@ -40,6 +40,7 @@ export interface ExportParams {
   logoScale: number; // 0.5, 1, 1.5
   legendPosition: number; // 0 = left, 1 = right
   legendScale: number; // 0.5 to 1 (50% to 100%)
+  bottomLogoScale: number; // 0.5, 1, 1.5
 
   // Toggles
   toggles: MapExportToggles;

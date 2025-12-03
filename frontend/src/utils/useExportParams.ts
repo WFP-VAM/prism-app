@@ -14,6 +14,7 @@ const DEFAULT_TOGGLES: MapExportToggles = {
   logoVisibility: true,
   legendVisibility: true,
   footerVisibility: true,
+  bottomLogoVisibility: true,
 };
 
 export const useExportParams = (): ExportParams => {
@@ -93,6 +94,10 @@ export const useExportParams = (): ExportParams => {
           'footerVisibility',
           DEFAULT_TOGGLES.footerVisibility,
         ),
+        bottomLogoVisibility: getBool(
+          'bottomLogoVisibility',
+          DEFAULT_TOGGLES.bottomLogoVisibility,
+        ),
       };
     };
     const toggles = parseToggles();
@@ -125,6 +130,7 @@ export const useExportParams = (): ExportParams => {
       logoScale: getNum('logoScale', 1),
       legendPosition: getNum('legendPosition', 0),
       legendScale: getNum('legendScale', 1),
+      bottomLogoScale: getNum('bottomLogoScale', 1),
 
       // Toggles
       toggles,

@@ -225,6 +225,7 @@ const ExportView = memo(() => {
   }, [dateRange.startDate, t]);
 
   const { logo } = appConfig.header || {};
+  const bottomLogo = appConfig?.printConfig?.bottomLogo;
 
   const adminLevelLayersWithFillPattern = useMemo(
     () =>
@@ -268,6 +269,8 @@ const ExportView = memo(() => {
         titleRef={titleRef}
         footerRef={footerRef}
         footerHeight={footerHeight}
+        bottomLogo={bottomLogo}
+        bottomLogoScale={exportParams.bottomLogoScale}
         adminLevelLayersWithFillPattern={adminLevelLayersWithFillPattern}
         selectedLayers={selectedLayers}
       />

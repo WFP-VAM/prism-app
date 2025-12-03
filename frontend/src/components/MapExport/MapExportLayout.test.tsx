@@ -322,4 +322,72 @@ describe('MapExportLayout', () => {
     const footerText = getByText('Test Footer');
     expect(footerText).toHaveStyle({ fontSize: '16px' });
   });
+
+  test('shows bottom logo when bottomLogoVisibility is true and bottomLogo provided', () => {
+    const toggles = { ...defaultToggles, bottomLogoVisibility: true };
+    const { container } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout
+            {...defaultProps}
+            toggles={toggles}
+            bottomLogo="test-bottom-logo.png"
+          />
+        </ThemeProvider>
+      </Provider>,
+    );
+    const bottomLogoImg = container.querySelector('img[alt="bottomLogo"]');
+    expect(bottomLogoImg).toBeInTheDocument();
+  });
+
+  test('hides bottom logo when bottomLogoVisibility is false', () => {
+    const toggles = { ...defaultToggles, bottomLogoVisibility: false };
+    const { container } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout
+            {...defaultProps}
+            toggles={toggles}
+            bottomLogo="test-bottom-logo.png"
+          />
+        </ThemeProvider>
+      </Provider>,
+    );
+    const bottomLogoImg = container.querySelector('img[alt="bottomLogo"]');
+    expect(bottomLogoImg).not.toBeInTheDocument();
+  });
+
+  test('hides bottom logo when bottomLogo is not provided', () => {
+    const toggles = { ...defaultToggles, bottomLogoVisibility: true };
+    const { container } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout {...defaultProps} toggles={toggles} />
+        </ThemeProvider>
+      </Provider>,
+    );
+    const bottomLogoImg = container.querySelector('img[alt="bottomLogo"]');
+    expect(bottomLogoImg).not.toBeInTheDocument();
+  });
+
+  test('applies bottom logo scale correctly', () => {
+    const toggles = { ...defaultToggles, bottomLogoVisibility: true };
+    const { container } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout
+            {...defaultProps}
+            toggles={toggles}
+            bottomLogo="test-bottom-logo.png"
+            bottomLogoScale={1.5}
+          />
+        </ThemeProvider>
+      </Provider>,
+    );
+    const bottomLogoImg = container.querySelector(
+      'img[alt="bottomLogo"]',
+    ) as HTMLElement;
+    // bottomLogoHeight = 32 * 1.5 = 48
+    expect(bottomLogoImg?.style.height).toBe('48px');
+  });
 });
