@@ -46,7 +46,7 @@
     "jimp": "^1.6.0",
     "lodash": "^4.17.21",
     "node-fetch": "^2.6.7",
-    "nodemailer": "^7.0.10",
+    "nodemailer": "^7.0.11",
     "pg": "^8.5.1",
     "prism-common": "file:../common",
     "puppeteer": "^24.1.1",
