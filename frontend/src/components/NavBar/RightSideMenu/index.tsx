@@ -71,7 +71,6 @@ function RightSideMenu() {
         anchor="right"
         open={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
-        className={classes.mobileDrawer}
       >
         <div className={classes.mobileDrawerContent}>
           <RightSideMenuContent buttons={buttons} />
@@ -85,17 +84,14 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     mobileDrawerContent: {
       backgroundColor: theme.palette.primary.main,
-      paddingTop: 16,
-      width: '80vw',
+      width: '80px',
       height: '100vh',
       overflowX: 'hidden',
       display: 'flex',
       flexDirection: 'column',
-      alignItems: 'flex-start',
-      paddingLeft: '1em',
-    },
-    mobileDrawer: {
-      width: '80vw',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      gap: '0.5rem',
     },
   }),
 );
