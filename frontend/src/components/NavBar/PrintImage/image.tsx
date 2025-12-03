@@ -70,7 +70,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const [titleText, setTitleText] = React.useState<string>(country);
   const [footerText, setFooterText] = React.useState(defaultFooterText);
   const [footerTextSize, setFooterTextSize] = React.useState(12);
-  const [legendScale, setLegendScale] = React.useState(0);
+  const [legendScale, setLegendScale] = React.useState(1);
   const [legendPosition, setLegendPosition] = React.useState(0);
   const [logoPosition, setLogoPosition] = React.useState(0);
   const [logoScale, setLogoScale] = React.useState(1);
@@ -280,11 +280,8 @@ const useStyles = makeStyles(() =>
   createStyles({
     contentContainer: {
       fontFamily: 'Roboto',
-      scrollbarGutter: 'stable',
       display: 'flex',
       gap: '1rem',
-      // Adjust for the printConfig scroll bar
-      marginRight: '-15px',
       flexDirection: 'row',
       justifyContent: 'space-between',
       width: '90vw',

@@ -161,11 +161,11 @@ function GreyContainerSection({
 
 const legendScaleSelectorOptions = [
   { value: 0.5, comp: <div>50%</div> },
-  { value: 0.4, comp: <div>60%</div> },
-  { value: 0.3, comp: <div>70%</div> },
-  { value: 0.2, comp: <div>80%</div> },
-  { value: 0.1, comp: <div>90%</div> },
-  { value: 0, comp: <div>100%</div> },
+  { value: 0.6, comp: <div>60%</div> },
+  { value: 0.7, comp: <div>70%</div> },
+  { value: 0.8, comp: <div>80%</div> },
+  { value: 0.9, comp: <div>90%</div> },
+  { value: 1, comp: <div>100%</div> },
 ];
 
 const legendPositionOptions = [
@@ -285,11 +285,7 @@ function PrintConfig() {
   } = printConfig;
 
   return (
-    <Box
-      style={{
-        overflow: 'scroll',
-      }}
-    >
+    <Box>
       <div className={classes.optionsContainer}>
         <div>
           <Box
@@ -659,9 +655,7 @@ const useStyles = makeStyles((theme: Theme) =>
       gap: '0.5rem',
       minHeight: '740px',
       width: '19.2rem',
-      scrollbarGutter: 'stable',
       overflow: 'auto',
-      paddingRight: '15px',
       zIndex: 4,
       backgroundColor: 'white',
     },

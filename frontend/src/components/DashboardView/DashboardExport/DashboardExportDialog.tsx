@@ -84,7 +84,7 @@ function DashboardExportDialog({
   const [logoPosition, setLogoPosition] = useState(0);
   const [logoScale, setLogoScale] = useState(1);
   const [legendPosition, setLegendPosition] = useState(1);
-  const [legendScale, setLegendScale] = useState(0);
+  const [legendScale, setLegendScale] = useState(1);
   const [selectedBoundaries, setSelectedBoundaries] = useState<
     AdminCodeString[]
   >([]);
