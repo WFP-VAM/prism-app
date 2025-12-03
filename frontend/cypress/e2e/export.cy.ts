@@ -1,6 +1,4 @@
-// run cypress tests with:
-// - `yarn cypress open` to run interactively/debug
-// - `npx cypress run` for a headless run (like in CI)
+// Tests specific to the export view
 
 describe('Export View', () => {
   const frontendUrl = 'http://localhost:3000';

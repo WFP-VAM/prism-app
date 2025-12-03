@@ -280,11 +280,8 @@ const useStyles = makeStyles(() =>
   createStyles({
     contentContainer: {
       fontFamily: 'Roboto',
-      scrollbarGutter: 'stable',
       display: 'flex',
       gap: '1rem',
-      // Adjust for the printConfig scroll bar
-      marginRight: '-15px',
       flexDirection: 'row',
       justifyContent: 'space-between',
       width: '90vw',
