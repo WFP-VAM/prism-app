@@ -19,6 +19,7 @@ import useLayers from 'utils/layers-utils';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { getPossibleDatesForLayer } from 'utils/server-utils';
 import { useBoundaryData } from 'utils/useBoundaryData';
+import { EXPORT_API_URL } from 'utils/constants';
 import { downloadToFile } from '../../MapView/utils';
 import {
   dateRangeSelector,
@@ -210,8 +211,8 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     handleDownloadMenuClose();
   };
 
-  const downloadBatch = async (format: 'pdf' | 'zip') => {
-    const { startDate, endDate } = dateRangeForMultipleMaps;
+  const downloadBatch = async (format: 'pdf' | 'png') => {
+    const { startDate, endDate } = dateRangeForBatchMaps;
 
     if (!startDate || !endDate) {
       console.error('Date range not set for batch download');
@@ -244,18 +245,23 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         return;
       }
 
-      const url = new URL(window.location.href);
-      // Remove the date parameter if it exists, as the server will add it for each map
-      url.searchParams.delete('date');
+      // Construct URLs for each date by updating the date query parameter
+      const baseUrl = new URL(window.location.href);
+      const constructedUrls = formattedDates
+        .filter((date): date is string => date !== undefined)
+        .map(date => {
+          const urlWithDate = new URL(baseUrl);
+          urlWithDate.searchParams.set('date', date);
+          return urlWithDate.toString();
+        });
 
-      const response = await fetch('/api/export', {
+      const response = await fetch(`${EXPORT_API_URL}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          url: `${url.pathname}${url.search}`,
-          dates: formattedDates,
+          urls: constructedUrls,
           // TODO: Adjust to dynamic aspect ratio based on config
           aspectRatio: '3:4',
           format,
@@ -268,10 +274,11 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
       const blob = await response.blob();
       const downloadUrl = window.URL.createObjectURL(blob);
-
+      // TODO: De-duplicate file-naming logic (probably better to do it on the frontend)
       const startDateStr = getFormattedDate(startDate, 'snake');
       const endDateStr = getFormattedDate(endDate, 'snake');
       const filename = `${titleText || country}_${startDateStr}_to_${endDateStr}`;
+      // Server returns ZIP file when format is 'png'
       const contentType =
         format === 'pdf' ? 'application/pdf' : 'application/zip';
 

@@ -46,7 +46,7 @@ export type PrintConfigContextType = {
     ) => void;
     handleDownloadMenuClose: () => void;
     download: (format: 'pdf' | 'jpeg' | 'png') => void;
-    downloadBatch: (format: 'pdf' | 'zip') => Promise<void>;
+    downloadBatch: (format: 'pdf' | 'png') => Promise<void>;
     isDownloading: boolean;
     defaultFooterText: string;
     selectedBoundaries: AdminCodeString[];

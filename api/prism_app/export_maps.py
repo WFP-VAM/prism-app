@@ -60,9 +60,7 @@ def validate_export_url(url: str) -> None:
         raise ValueError(f"URL missing 'date' parameter: {url}")
     date_value = query_params["date"][0]
     try:
-        print("YOU ARE HERE")
         datetime.strptime(date_value, "%Y-%m-%d")
-        print("YOU ARE HERE 2")
     except ValueError:
         raise ValueError(f"Date parameter '{date_value}' is not in YYYY-MM-DD format")
 

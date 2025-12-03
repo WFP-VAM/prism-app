@@ -616,7 +616,7 @@ function PrintConfig() {
           onClick={e => handleDownloadMenuOpen(e)}
           disabled={
             isDownloading ||
-            (toggles.multipleMapsVisibility &&
+            (toggles.batchMapsVisibility &&
               (!dateRange.startDate || !dateRange.endDate))
           }
         >
@@ -628,12 +628,12 @@ function PrintConfig() {
           open={Boolean(downloadMenuAnchorEl)}
           onClose={handleDownloadMenuClose}
         >
-          {toggles.multipleMapsVisibility ? (
+          {toggles.batchMapsVisibility ? (
             <>
               <MenuItem onClick={() => downloadBatch('pdf')}>
                 {t('Download maps as PDF')}
               </MenuItem>
-              <MenuItem onClick={() => downloadBatch('zip')}>
+              <MenuItem onClick={() => downloadBatch('png')}>
                 {t('Download maps as PNGs')}
               </MenuItem>
             </>
