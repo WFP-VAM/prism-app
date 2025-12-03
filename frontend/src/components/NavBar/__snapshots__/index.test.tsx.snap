@@ -274,34 +274,20 @@ exports[`renders as expected 1`] = `
               class="MuiTouchRipple-root"
             />
           </a>
-          <a
-            aria-disabled="false"
-            aria-label="About"
-            class="MuiButtonBase-root MuiIconButton-root"
+          <mock-button
+            component="a"
             href="https://innovation.wfp.org/project/prism"
-            style="color: white;"
-            tabindex="0"
+            starticon="[object Object]"
+            style="font-size: 1.25rem; color: white;"
             target="_blank"
           >
-            <span
-              class="MuiIconButton-label"
+            <mock-typography
+              color="secondary"
+              style="text-transform: none;"
             >
-              <svg
-                aria-hidden="true"
-                class="MuiSvgIcon-root"
-                focusable="false"
-                style="font-size: 1.5rem;"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
-                />
-              </svg>
-            </span>
-            <span
-              class="MuiTouchRipple-root"
-            />
-          </a>
+              About
+            </mock-typography>
+          </mock-button>
           <mock-button
             aria-label="language-select-dropdown-button"
             endicon="[object Object]"
@@ -374,34 +360,20 @@ exports[`renders as expected 1`] = `
                   class="MuiTouchRipple-root"
                 />
               </a>
-              <a
-                aria-disabled="false"
-                aria-label="About"
-                class="MuiButtonBase-root MuiIconButton-root"
+              <mock-button
+                component="a"
                 href="https://innovation.wfp.org/project/prism"
-                style="color: white;"
-                tabindex="0"
+                starticon="[object Object]"
+                style="font-size: 1.25rem; color: white;"
                 target="_blank"
               >
-                <span
-                  class="MuiIconButton-label"
+                <mock-typography
+                  color="secondary"
+                  style="text-transform: none;"
                 >
-                  <svg
-                    aria-hidden="true"
-                    class="MuiSvgIcon-root"
-                    focusable="false"
-                    style="font-size: 1.5rem;"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
-                    />
-                  </svg>
-                </span>
-                <span
-                  class="MuiTouchRipple-root"
-                />
-              </a>
+                  About
+                </mock-typography>
+              </mock-button>
               <mock-button
                 aria-label="language-select-dropdown-button"
                 endicon="[object Object]"

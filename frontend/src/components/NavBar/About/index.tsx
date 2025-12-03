@@ -1,6 +1,12 @@
 import { useCallback, useState, MouseEvent, memo, useMemo } from 'react';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
-import { IconButton, useMediaQuery, useTheme } from '@material-ui/core';
+import {
+  Button,
+  IconButton,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import { appConfig } from 'config';
 import ContentDialog from 'components/NavBar/ContentDialog';
@@ -13,6 +19,7 @@ const About = memo(() => {
   const { aboutPath } = appConfig;
   const dispatch = useDispatch();
   const theme = useTheme();
+  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
 
   const href = aboutPath ? '' : 'https://innovation.wfp.org/project/prism';
@@ -40,19 +47,39 @@ const About = memo(() => {
     return <ContentDialog content={content} handleClose={handleDialogClose} />;
   }, [content, handleDialogClose]);
 
+  const icon = (
+    <InfoOutlinedIcon style={{ fontSize: mdUp ? '1.25rem' : '1.5rem' }} />
+  );
+
   return (
     <>
-      <IconButton
-        key="About"
-        component={aboutPath ? 'button' : 'a'}
-        target={aboutPath ? undefined : '_blank'}
-        href={aboutPath ? undefined : href}
-        onClick={handler}
-        style={{ color: 'white' }}
-        aria-label={t('About')}
-      >
-        <InfoOutlinedIcon style={{ fontSize: mdUp ? '1.25rem' : '1.5rem' }} />
-      </IconButton>
+      {smDown ? (
+        <IconButton
+          key="About"
+          component={aboutPath ? 'button' : 'a'}
+          target={aboutPath ? undefined : '_blank'}
+          href={aboutPath ? undefined : href}
+          onClick={handler}
+          style={{ color: 'white' }}
+          aria-label={t('About')}
+        >
+          {icon}
+        </IconButton>
+      ) : (
+        <Button
+          key="About"
+          style={{ fontSize: '1.25rem', color: 'white' }}
+          component={aboutPath ? 'button' : 'a'}
+          target={aboutPath ? undefined : '_blank'}
+          href={aboutPath ? undefined : href}
+          onClick={handler}
+          startIcon={icon}
+        >
+          <Typography color="secondary" style={{ textTransform: 'none' }}>
+            {t('About')}
+          </Typography>
+        </Button>
+      )}
       {renderedContentDialog}
     </>
   );
