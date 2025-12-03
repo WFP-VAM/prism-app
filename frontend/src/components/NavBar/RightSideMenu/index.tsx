@@ -73,7 +73,11 @@ function RightSideMenu() {
           const IconComp =
             rightSideIconMap[iconKey] || rightSideIconMap.external;
           const iconNode = (
-            <IconComp style={{ fontSize: mdUp ? '1.25rem' : '1.5rem' }} />
+            <IconComp
+              style={{
+                fontSize: mdUp ? '1.25rem' : '1.5rem',
+              }}
+            />
           );
           return {
             title: link.title,
@@ -93,15 +97,7 @@ function RightSideMenu() {
         style={{ color: 'white' }}
         aria-label={title}
       >
-        <IconButton
-          key={title}
-          component="a"
-          target="_blank"
-          href={href}
-          style={{ color: 'white' }}
-        >
-          {icon}
-        </IconButton>
+        {icon}
       </IconButton>
     ),
   );
@@ -119,15 +115,17 @@ function RightSideMenu() {
           <Menu />
         </IconButton>
       )}
-      <Drawer
-        anchor="right"
-        open={mobileMenuOpen}
-        onClose={() => setMobileMenuOpen(false)}
-      >
-        <div className={classes.mobileDrawerContent}>
-          <RightSideMenuContent buttons={buttons} />
-        </div>
-      </Drawer>
+      {mobileMenuOpen && (
+        <Drawer
+          anchor="right"
+          open={mobileMenuOpen}
+          onClose={() => setMobileMenuOpen(false)}
+        >
+          <div className={classes.mobileDrawerContent}>
+            <RightSideMenuContent buttons={buttons} />
+          </div>
+        </Drawer>
+      )}
     </>
   );
 }

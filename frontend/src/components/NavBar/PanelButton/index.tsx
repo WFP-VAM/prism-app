@@ -58,7 +58,12 @@ function PanelButton({
   );
 
   return isMobile ? (
-    <IconButton size="small" style={commonStyles} onClick={handleClick}>
+    <IconButton
+      size="small"
+      style={commonStyles}
+      onClick={handleClick}
+      aria-label={buttonText}
+    >
       <Wrap>{panel.icon}</Wrap>
     </IconButton>
   ) : (
