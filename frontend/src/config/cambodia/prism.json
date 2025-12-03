@@ -5,6 +5,12 @@
   "alertFormActive": false,
   "aboutPath": "data/cambodia/about.md",
   "enableNavigationDropdown": true,
+  "rightSideLinks": [
+    {
+      "title": "Disaster impact field reports",
+      "href": "https://dmp.ovio.org"
+    }
+  ],
   "icons": {
     "vulnerability": "icon_vulnerable.png",
     "exposure": "icon_basemap.png",
