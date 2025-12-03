@@ -1,5 +1,7 @@
 /* eslint-disable react/prop-types */
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   AppBar,
@@ -132,6 +134,23 @@ const panels: PanelItem[] = [
     : []),
 ];
 
+type ConfigRightSideLink = {
+  title: string;
+  href: string;
+  icon?: string;
+};
+
+type RightSideLink = {
+  title: string;
+  href: string;
+  icon: React.ReactNode;
+};
+
+const rightSideIconMap: Record<string, IconDefinition> = {
+  github: faGithub,
+  external: faExternalLinkAlt,
+};
+
 function NavBar() {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
@@ -143,6 +162,27 @@ function NavBar() {
   const theme = useTheme();
   const smDown = useMediaQuery(theme.breakpoints.down('sm'));
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
+  const configuredRightSideLinks: RightSideLink[] = Array.isArray(
+    (appConfig as Record<string, any>).rightSideLinks,
+  )
+    ? (appConfig.rightSideLinks as ConfigRightSideLink[])
+        .filter(link => link?.title && link?.href)
+        .map(link => {
+          const iconKey = (link.icon || '').toLowerCase();
+          const mappedIcon = rightSideIconMap[iconKey];
+          const iconNode = (
+            <FontAwesomeIcon
+              fontSize={mdUp ? '1.25rem' : '1.5rem'}
+              icon={mappedIcon || rightSideIconMap.external}
+            />
+          );
+          return {
+            title: link.title,
+            href: link.href,
+            icon: iconNode,
+          };
+        })
+    : [];
   const [menuAnchor, setMenuAnchor] = useState<{
     [key: string]: HTMLElement | null;
   }>({});
@@ -162,23 +202,29 @@ function NavBar() {
     }
   }, [location.pathname, tabValue, dispatch]);
 
-  const rightSideLinks = [
+  const rightSideLinks: RightSideLink[] = [
     {
       title: 'GitHub',
-      icon: faGithub,
+      icon: (
+        <FontAwesomeIcon
+          fontSize={mdUp ? '1.25rem' : '1.5rem'}
+          icon={faGithub}
+        />
+      ),
       href: 'https://github.com/wfp-VAM/prism-app',
     },
+    ...configuredRightSideLinks,
   ];
 
   const buttons = rightSideLinks.map(({ title, icon, href }) => (
     <IconButton
       key={title}
-      component="a"
-      target="_blank"
-      href={href}
-      style={{ color: 'white' }}
-    >
-      <FontAwesomeIcon fontSize={mdUp ? '1.25rem' : '1.5rem'} icon={icon} />
+    component="a"
+    target="_blank"
+    href={href}
+    style={{ color: 'white' }}
+  >
+      {icon}
     </IconButton>
   ));
 
