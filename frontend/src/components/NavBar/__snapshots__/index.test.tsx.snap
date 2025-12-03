@@ -274,20 +274,34 @@ exports[`renders as expected 1`] = `
               class="MuiTouchRipple-root"
             />
           </a>
-          <mock-button
-            component="a"
+          <a
+            aria-disabled="false"
+            aria-label="About"
+            class="MuiButtonBase-root MuiIconButton-root"
             href="https://innovation.wfp.org/project/prism"
-            starticon="[object Object]"
-            style="font-size: 1.25rem;"
+            style="color: white;"
+            tabindex="0"
             target="_blank"
           >
-            <mock-typography
-              color="secondary"
-              style="text-transform: none;"
+            <span
+              class="MuiIconButton-label"
             >
-              About
-            </mock-typography>
-          </mock-button>
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root"
+                focusable="false"
+                style="font-size: 1.5rem;"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
+                />
+              </svg>
+            </span>
+            <span
+              class="MuiTouchRipple-root"
+            />
+          </a>
           <mock-button
             aria-label="language-select-dropdown-button"
             endicon="[object Object]"
@@ -301,7 +315,7 @@ exports[`renders as expected 1`] = `
             </mock-typography>
           </mock-button>
           <mock-menu
-            classname="makeStyles-block-24"
+            classname="makeStyles-block-23"
             open="false"
           >
             <mock-menuitem
@@ -321,7 +335,6 @@ exports[`renders as expected 1`] = `
           </mock-menu>
           <mock-drawer
             anchor="right"
-            classname="makeStyles-mobileDrawer-23"
             open="false"
           >
             <div
@@ -361,20 +374,34 @@ exports[`renders as expected 1`] = `
                   class="MuiTouchRipple-root"
                 />
               </a>
-              <mock-button
-                component="a"
+              <a
+                aria-disabled="false"
+                aria-label="About"
+                class="MuiButtonBase-root MuiIconButton-root"
                 href="https://innovation.wfp.org/project/prism"
-                starticon="[object Object]"
-                style="font-size: 1.25rem;"
+                style="color: white;"
+                tabindex="0"
                 target="_blank"
               >
-                <mock-typography
-                  color="secondary"
-                  style="text-transform: none;"
+                <span
+                  class="MuiIconButton-label"
                 >
-                  About
-                </mock-typography>
-              </mock-button>
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-root"
+                    focusable="false"
+                    style="font-size: 1.5rem;"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="MuiTouchRipple-root"
+                />
+              </a>
               <mock-button
                 aria-label="language-select-dropdown-button"
                 endicon="[object Object]"
@@ -388,7 +415,7 @@ exports[`renders as expected 1`] = `
                 </mock-typography>
               </mock-button>
               <mock-menu
-                classname="makeStyles-block-24"
+                classname="makeStyles-block-23"
                 open="false"
               >
                 <mock-menuitem
