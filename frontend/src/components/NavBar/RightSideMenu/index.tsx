@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   IconButton,
   makeStyles,
@@ -10,18 +8,34 @@ import {
   createStyles,
   Theme,
 } from '@material-ui/core';
-import { Menu } from '@material-ui/icons';
+import {
+  Menu,
+  GitHub as GitHubIcon,
+  OpenInNew as OpenInNewIcon,
+} from '@material-ui/icons';
+import { appConfig } from 'config';
 import About from '../About';
 import LanguageSelector from '../LanguageSelector';
 import PrintImage from '../PrintImage';
 
-const rightSideLinks = [
-  {
-    title: 'GitHub',
-    icon: faGithub,
-    href: 'https://github.com/wfp-VAM/prism-app',
-  },
-];
+type ConfigRightSideLink = {
+  title: string;
+  href: string;
+  icon?: string;
+};
+
+type RightSideLink = {
+  title: string;
+  href: string;
+  icon: React.ReactNode;
+};
+
+type IconComponent = typeof GitHubIcon;
+
+const rightSideIconMap: Record<string, IconComponent> = {
+  github: GitHubIcon,
+  external: OpenInNewIcon,
+};
 
 function RightSideMenuContent({ buttons }: { buttons: React.ReactNode }) {
   return (
@@ -41,18 +55,56 @@ function RightSideMenu() {
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const buttons = rightSideLinks.map(({ title, icon, href }) => (
-    <IconButton
-      key={title}
-      component="a"
-      target="_blank"
-      href={href}
-      style={{ color: 'white' }}
-      aria-label={title}
-    >
-      <FontAwesomeIcon fontSize={mdUp ? '1.25rem' : '1.5rem'} icon={icon} />
-    </IconButton>
-  ));
+  const defaultRightSideLinks = [
+    {
+      title: 'GitHub',
+      icon: <GitHubIcon style={{ fontSize: mdUp ? '1.25rem' : '1.5rem' }} />,
+      href: 'https://github.com/wfp-VAM/prism-app',
+    },
+  ];
+
+  const configuredRightSideLinks: RightSideLink[] = Array.isArray(
+    (appConfig as Record<string, any>).rightSideLinks,
+  )
+    ? (appConfig.rightSideLinks as ConfigRightSideLink[])
+        .filter(link => link?.title && link?.href)
+        .map(link => {
+          const iconKey = (link.icon || '').toLowerCase();
+          const IconComp =
+            rightSideIconMap[iconKey] || rightSideIconMap.external;
+          const iconNode = (
+            <IconComp style={{ fontSize: mdUp ? '1.25rem' : '1.5rem' }} />
+          );
+          return {
+            title: link.title,
+            href: link.href,
+            icon: iconNode,
+          };
+        })
+    : [];
+
+  const buttons = [...defaultRightSideLinks, ...configuredRightSideLinks].map(
+    ({ title, icon, href }) => (
+      <IconButton
+        key={title}
+        component="a"
+        target="_blank"
+        href={href}
+        style={{ color: 'white' }}
+        aria-label={title}
+      >
+        <IconButton
+          key={title}
+          component="a"
+          target="_blank"
+          href={href}
+          style={{ color: 'white' }}
+        >
+          {icon}
+        </IconButton>
+      </IconButton>
+    ),
+  );
 
   return (
     <>
