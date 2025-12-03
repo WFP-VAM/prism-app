@@ -169,7 +169,8 @@ function NavBar() {
         .filter(link => link?.title && link?.href)
         .map(link => {
           const iconKey = (link.icon || '').toLowerCase();
-          const IconComp = rightSideIconMap[iconKey] || rightSideIconMap.external;
+          const IconComp =
+            rightSideIconMap[iconKey] || rightSideIconMap.external;
           const iconNode = (
             <IconComp style={{ fontSize: mdUp ? '1.25rem' : '1.5rem' }} />
           );
@@ -202,9 +203,7 @@ function NavBar() {
   const rightSideLinks: RightSideLink[] = [
     {
       title: 'GitHub',
-      icon: (
-        <GitHubIcon style={{ fontSize: mdUp ? '1.25rem' : '1.5rem' }} />
-      ),
+      icon: <GitHubIcon style={{ fontSize: mdUp ? '1.25rem' : '1.5rem' }} />,
       href: 'https://github.com/wfp-VAM/prism-app',
     },
     ...configuredRightSideLinks,
@@ -213,11 +212,11 @@ function NavBar() {
   const buttons = rightSideLinks.map(({ title, icon, href }) => (
     <IconButton
       key={title}
-    component="a"
-    target="_blank"
-    href={href}
-    style={{ color: 'white' }}
-  >
+      component="a"
+      target="_blank"
+      href={href}
+      style={{ color: 'white' }}
+    >
       {icon}
     </IconButton>
   ));
