@@ -124,7 +124,7 @@ const useStyles = makeStyles(() => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
-    height: '100vh',
+    height: 'calc(100vh - 56px)',
     position: 'relative',
   },
   dynamicColumnLayout: {
@@ -239,7 +239,7 @@ const useStyles = makeStyles(() => ({
     flexDirection: 'column',
     position: 'relative',
     background: '#F8F8F8',
-    height: 'calc(100vh - 6vh)',
+    height: 'calc(100vh - 56px)',
     padding: '32px',
     boxSizing: 'border-box',
   },

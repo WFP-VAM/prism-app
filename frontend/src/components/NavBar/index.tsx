@@ -190,7 +190,7 @@ function NavBar() {
   };
 
   return (
-    <AppBar position="static" className={classes.appBar}>
+    <AppBar position="fixed" className={classes.appBar}>
       <Toolbar variant="dense">
         <div className={classes.navbarContainer}>
           <div className={classes.leftSideContainer}>
@@ -253,9 +253,13 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     appBar: {
       backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
-      height: '6vh',
+      height: '56px',
+      minHeight: '56px',
+      maxHeight: '56px',
       display: 'flex',
       justifyContent: 'center',
+      top: 0,
+      zIndex: theme.zIndex.drawer + 1,
     },
     navbarContainer: {
       display: 'flex',
