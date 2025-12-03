@@ -1,8 +1,4 @@
 /* eslint-disable react/prop-types */
-import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   AppBar,
   Box,
@@ -27,6 +23,8 @@ import {
   TimerOutlined,
   Notifications,
   SpeedOutlined,
+  GitHub as GitHubIcon,
+  OpenInNew as OpenInNewIcon,
 } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -146,9 +144,11 @@ type RightSideLink = {
   icon: React.ReactNode;
 };
 
-const rightSideIconMap: Record<string, IconDefinition> = {
-  github: faGithub,
-  external: faExternalLinkAlt,
+type IconComponent = typeof GitHubIcon;
+
+const rightSideIconMap: Record<string, IconComponent> = {
+  github: GitHubIcon,
+  external: OpenInNewIcon,
 };
 
 function NavBar() {
@@ -169,12 +169,9 @@ function NavBar() {
         .filter(link => link?.title && link?.href)
         .map(link => {
           const iconKey = (link.icon || '').toLowerCase();
-          const mappedIcon = rightSideIconMap[iconKey];
+          const IconComp = rightSideIconMap[iconKey] || rightSideIconMap.external;
           const iconNode = (
-            <FontAwesomeIcon
-              fontSize={mdUp ? '1.25rem' : '1.5rem'}
-              icon={mappedIcon || rightSideIconMap.external}
-            />
+            <IconComp style={{ fontSize: mdUp ? '1.25rem' : '1.5rem' }} />
           );
           return {
             title: link.title,
@@ -206,10 +203,7 @@ function NavBar() {
     {
       title: 'GitHub',
       icon: (
-        <FontAwesomeIcon
-          fontSize={mdUp ? '1.25rem' : '1.5rem'}
-          icon={faGithub}
-        />
+        <GitHubIcon style={{ fontSize: mdUp ? '1.25rem' : '1.5rem' }} />
       ),
       href: 'https://github.com/wfp-VAM/prism-app',
     },
