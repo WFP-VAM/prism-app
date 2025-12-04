@@ -245,14 +245,16 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         return;
       }
 
-      // Construct URLs for each date by updating the date query parameter
-      const baseUrl = new URL(window.location.href);
+      // Construct URLs for each date by adding `/export` to the pathname and setting the date param
+      const { origin, pathname, search } = new URL(window.location.href);
+      const exportPath = `${pathname.replace(/\/$/, '')}/export`;
+      const baseParams = new URLSearchParams(search);
       const constructedUrls = formattedDates
         .filter((date): date is string => date !== undefined)
         .map(date => {
-          const urlWithDate = new URL(baseUrl);
-          urlWithDate.searchParams.set('date', date);
-          return urlWithDate.toString();
+          const params = new URLSearchParams(baseParams);
+          params.set('date', date);
+          return `${origin}${exportPath}?${params.toString()}`;
         });
 
       const response = await fetch(`${EXPORT_API_URL}`, {

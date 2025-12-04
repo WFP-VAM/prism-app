@@ -6,9 +6,8 @@ import io
 import zipfile
 from datetime import datetime
 from typing import Final, Tuple
-from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
-
-from playwright.async_api import async_playwright
+from urllib.parse import parse_qs, urlparse
+from playwright.async_api import async_playwright, Browser
 from pypdf import PdfReader, PdfWriter
 
 from .models import AspectRatio, ExportFormat
@@ -136,31 +135,6 @@ def get_viewport_dimensions(aspect_ratio: AspectRatio) -> Tuple[int, int]:
     return (BASE_WIDTH, height)
 
 
-# def modify_url_for_date(url: str, date: str) -> str:
-#     """
-#     Modify URL to include or update the date parameter.
-
-#     Args:
-#         url: Base URL with query parameters
-#         date: Date string in YYYY-MM-DD format
-#     Returns: Modified URL with date parameter
-#     """
-#     parsed = urlparse(url)
-#     query_params = parse_qs(parsed.query, keep_blank_values=True)
-#     query_params["date"] = [date]
-
-#     # Reconstruct URL
-#     new_query = urlencode(query_params, doseq=True)
-#     return urlunparse(
-#         (
-#             parsed.scheme,
-#             parsed.netloc,
-#             parsed.path,
-#             parsed.params,
-#             new_query,
-#             parsed.fragment,
-#         )
-#     )
 def extract_dates_from_urls(urls: list[str]) -> list[str]:
     """
     Extract dates from URLs.
@@ -172,15 +146,21 @@ def extract_dates_from_urls(urls: list[str]) -> list[str]:
         dates.append(query_params["date"][0])
     return dates
 
+
 async def render_single_map(
-    url: str, viewport_width: int, viewport_height: int, render_format: str
+    browser: Browser,
+    url: str,
+    viewport_width: int,
+    viewport_height: int,
+    render_format: str,
 ) -> bytes:
     """
-    Render a single map using Playwright and return the image/PDF bytes.
+    Render a single map using an existing browser instance and return the image/PDF bytes.
 
     TODO: Add handling for 400 style errors in PRISM frontend and remove from bundled export.
 
     Args:
+        browser: Playwright browser instance to use for rendering
         url: URL to render (should include all map parameters)
         viewport_width: Browser viewport width in pixels
         viewport_height: Browser viewport height in pixels
@@ -189,42 +169,35 @@ async def render_single_map(
     Returns:
         Bytes of the rendered map (PNG or PDF)
     """
-    async with async_playwright() as p:
-        browser = await p.chromium.launch()
-        page = await browser.new_page()
-        page.set_default_timeout(PAGE_TIMEOUT)
-        await page.set_viewport_size(
-            {"width": viewport_width, "height": viewport_height}
+    page = await browser.new_page()
+    page.set_default_timeout(PAGE_TIMEOUT)
+    await page.set_viewport_size({"width": viewport_width, "height": viewport_height})
+    await page.emulate_media(media="screen")
+
+    url = url.replace("localhost:3000", "host.docker.internal:3000")
+    await page.goto(url)
+
+    # Wait for PRISM_READY flag (set by frontend after map tiles are loaded)
+    await page.wait_for_function(
+        "window.PRISM_READY === true",
+        timeout=PRISM_READY_TIMEOUT,
+    )
+
+    # Capture screenshot or PDF
+    if render_format == "pdf":
+        result = await page.pdf(
+            width=f"{viewport_width}px",
+            height=f"{viewport_height}px",
+            print_background=True,
         )
-        await page.emulate_media(media="screen")
-        url = url.replace("localhost:3000", "host.docker.internal:3000")        
-        await page.goto(url)
-
-        # Wait for PRISM_READY flag
-        await page.wait_for_function(
-            "window.PRISM_READY === true",
-            timeout=PRISM_READY_TIMEOUT,
+    else:  # PNG
+        result = await page.screenshot(
+            type="png",
+            full_page=True,
         )
 
-        # Additional wait for network to be idle to ensure tiles are loaded
-        await page.wait_for_load_state("networkidle", timeout=PAGE_TIMEOUT)
-
-        # Capture screenshot or PDF
-        if render_format == "pdf":
-            pdf_bytes = await page.pdf(
-                width=f"{viewport_width}px",
-                height=f"{viewport_height}px",
-                print_background=True,
-            )
-            await browser.close()
-            return pdf_bytes
-        else:  # PNG
-            screenshot_bytes = await page.screenshot(
-                type="png",
-                full_page=True,
-            )
-            await browser.close()
-            return screenshot_bytes
+    await page.close()
+    return result
 
 
 async def export_maps(
@@ -233,7 +206,7 @@ async def export_maps(
     """
     Export maps for multiple dates and return packaged file.
 
-    Renders maps in parallel for better performance when processing multiple dates.
+    Uses a single browser instance and renders maps in parallel for better performance.
 
     Args:
         urls: List of base URLs with map parameters
@@ -243,16 +216,24 @@ async def export_maps(
     """
     dates = extract_dates_from_urls(urls)
     viewport_width, viewport_height = get_viewport_dimensions(aspect_ratio)
-    bytes_list = await asyncio.gather(
-        *[
-            render_single_map(
-                url, viewport_width, viewport_height, format_type
-            )
-            for url in urls
-        ]
-    )
 
-    if format_type == "pdf":        
+    async with async_playwright() as p:
+        browser = await p.chromium.launch()
+
+        # Render all maps in parallel using the same browser instance
+        bytes_list = await asyncio.gather(
+            *[
+                render_single_map(
+                    browser, url, viewport_width, viewport_height, format_type
+                )
+                for url in urls
+            ]
+        )
+
+        await browser.close()
+
+    # Package results
+    if format_type == "pdf":
         # Merge PDFs
         pdf_writer = PdfWriter()
         for pdf_bytes in bytes_list:
@@ -263,8 +244,7 @@ async def export_maps(
         # Write merged PDF to bytes
         output_buffer = io.BytesIO()
         pdf_writer.write(output_buffer)
-        return (output_buffer.getvalue(), "application/pdf")
-
+        result = (output_buffer.getvalue(), "application/pdf")
     else:  # png format
         # Create ZIP
         zip_buffer = io.BytesIO()
@@ -272,5 +252,6 @@ async def export_maps(
             for date, png_bytes in zip(dates, bytes_list):
                 filename = f"map_{date}.png"
                 zip_file.writestr(filename, png_bytes)
+        result = (zip_buffer.getvalue(), "application/zip")
 
-        return (zip_buffer.getvalue(), "application/zip")
+    return result
