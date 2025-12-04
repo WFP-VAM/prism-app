@@ -63,7 +63,7 @@ def mock_page_url():
 async def test_export_maps(urls, format_type, expected_files):
     """Test export_maps function with various date counts and formats."""
     file_bytes, content_type = await export_maps(
-        urls=urls,        
+        urls=urls,
         aspect_ratio="3:4",
         format_type=format_type,
     )
@@ -81,13 +81,13 @@ async def test_export_maps(urls, format_type, expected_files):
     elif format_type == "png":  # png
         # Extract dates from URLs for verification
         from urllib.parse import parse_qs, urlparse
-        
+
         dates = []
         for url in urls:
             parsed = urlparse(url)
             query_params = parse_qs(parsed.query, keep_blank_values=True)
             dates.append(query_params["date"][0])
-        
+
         with zipfile.ZipFile(io.BytesIO(file_bytes), "r") as zip_file:
             file_list = zip_file.namelist()
             assert len(file_list) == expected_files
@@ -118,6 +118,7 @@ async def test_export_different_aspect_ratios():
     # Verify they're different
     assert dimensions["1:1"] != dimensions["3:4"]
     assert dimensions["3:4"] != dimensions["4:3"]
+
 
 # URL validation tests - parameterized
 @pytest.mark.parametrize(
@@ -151,7 +152,9 @@ def test_validate_export_url_support():
     validate_export_url(f"http://wfp.org/?test=1&date={TEST_DATE}")
     validate_export_url(f"https://prism.wfp.org/?test=1&date={TEST_DATE}")
     validate_export_url(f"http://prism.example.wfp.org/?test=1&date={TEST_DATE}")
-    validate_export_url(f"https://staging-prism-frontend--1622-38oautsx.web.app/?test=1&date={TEST_DATE}")
+    validate_export_url(
+        f"https://staging-prism-frontend--1622-38oautsx.web.app/?test=1&date={TEST_DATE}"
+    )
 
     # These should not be allowed
     with pytest.raises(ValueError, match="not allowed"):
@@ -170,7 +173,7 @@ def test_export_endpoint_success(mock_page_url, format_type, expected_content_ty
     response = client.post(
         "/export",
         json={
-            "urls": [mock_page_url],            
+            "urls": [mock_page_url],
             "aspectRatio": "3:4",
             "format": format_type,
         },
@@ -179,7 +182,9 @@ def test_export_endpoint_success(mock_page_url, format_type, expected_content_ty
     assert response.status_code == 200
     assert response.headers["content-type"] == expected_content_type
     assert "attachment" in response.headers["content-disposition"]
-    assert response.headers["content-disposition"].endswith(f'.{format_type if format_type == "pdf" else "zip"}"')
+    assert response.headers["content-disposition"].endswith(
+        f'.{format_type if format_type == "pdf" else "zip"}"'
+    )
 
 
 def test_export_endpoint_multiple_dates(mock_page_url):
@@ -206,7 +211,10 @@ def test_export_endpoint_multiple_dates(mock_page_url):
         ({"aspectRatio": "16:9"}, 422),  # Invalid aspect ratio
         ({"format": "jpg"}, 422),  # Invalid format
         ({"urls": []}, 422),  # Empty urls
-        ({"urls": ["http://localhost/?test=1&date=2025/01/01"]}, 422),  # Invalid date format
+        (
+            {"urls": ["http://localhost/?test=1&date=2025/01/01"]},
+            422,
+        ),  # Invalid date format
         ({"urls": ["http://localhost/?test=1"]}, 422),  # Missing date parameter
         ({"urls": ["http://evil.com/?test=1"]}, 422),  # Disallowed domain
         ({"urls": ["/?hazardLayerIds=test_layer"]}, 422),  # Relative URL
@@ -233,7 +241,9 @@ def test_export_endpoint_localhost_allowed():
     response = client.post(
         "/export",
         json={
-            "urls": [f"http://localhost:3000/?hazardLayerIds=test_layer&date={TEST_DATE}"],
+            "urls": [
+                f"http://localhost:3000/?hazardLayerIds=test_layer&date={TEST_DATE}"
+            ],
             "aspectRatio": "3:4",
             "format": "pdf",
         },

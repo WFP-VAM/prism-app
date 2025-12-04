@@ -7,7 +7,8 @@ import zipfile
 from datetime import datetime
 from typing import Final, Tuple
 from urllib.parse import parse_qs, urlparse
-from playwright.async_api import async_playwright, Browser
+
+from playwright.async_api import Browser, async_playwright
 from pypdf import PdfReader, PdfWriter
 
 from .models import AspectRatio, ExportFormat

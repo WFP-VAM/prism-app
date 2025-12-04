@@ -563,13 +563,9 @@ async def export_maps_endpoint(export_request: ExportRequestModel) -> Response:
         # Generate filename based on format and date range
         # TODO: get dates from URLs
         if export_request.format == "pdf":
-            filename = (
-                f"maps_{dates[0]}_to_{dates[-1]}.pdf"
-            )
+            filename = f"maps_{dates[0]}_to_{dates[-1]}.pdf"
         else:
-            filename = (
-                f"maps_{dates[0]}_to_{dates[-1]}.zip"
-            )
+            filename = f"maps_{dates[0]}_to_{dates[-1]}.zip"
 
         return Response(
             content=file_bytes,
