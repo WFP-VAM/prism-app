@@ -894,6 +894,7 @@ exports[`renders as expected 1`] = `
           <mock-button
             classname="makeStyles-gutter-3"
             color="primary"
+            disabled="false"
             endicon="[object Object]"
             style="background-color: rgb(99, 178, 189); color: black;"
             variant="contained"
