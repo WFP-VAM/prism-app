@@ -274,7 +274,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
       const blob = await response.blob();
       const downloadUrl = window.URL.createObjectURL(blob);
-      // TODO: De-duplicate file-naming logic (probably better to do it on the frontend)
       const startDateStr = getFormattedDate(startDate, 'snake');
       const endDateStr = getFormattedDate(endDate, 'snake');
       const filename = `${titleText || country}_${startDateStr}_to_${endDateStr}`;

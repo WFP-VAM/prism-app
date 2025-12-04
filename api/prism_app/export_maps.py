@@ -189,7 +189,6 @@ async def render_single_map(
     Returns:
         Bytes of the rendered map (PNG or PDF)
     """
-    print(f"Rendering single map: {url}")
     async with async_playwright() as p:
         browser = await p.chromium.launch()
         page = await browser.new_page()
@@ -198,6 +197,7 @@ async def render_single_map(
             {"width": viewport_width, "height": viewport_height}
         )
         await page.emulate_media(media="screen")
+        url = url.replace("localhost:3000", "host.docker.internal:3000")        
         await page.goto(url)
 
         # Wait for PRISM_READY flag
