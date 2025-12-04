@@ -33,6 +33,7 @@ const Legends = memo(() => {
           className={classes.triggerButton}
           style={{ backgroundColor: open ? cyanBlue : undefined }}
           onClick={toggleLegendVisibility}
+          aria-label={t('Legend')}
           startIcon={
             open ? (
               <VisibilityOffOutlined
@@ -54,8 +55,10 @@ const Legends = memo(() => {
 
       {!mdUp && (
         <IconButton
+          size="small"
           style={{ backgroundColor: open ? cyanBlue : undefined }}
           onClick={toggleLegendVisibility}
+          aria-label={t('Legend')}
         >
           {open ? (
             <VisibilityOffOutlined
@@ -84,7 +87,7 @@ const useStyles = makeStyles(() =>
       maxHeight: '78vh', // same size as the left panel
       position: 'absolute',
       right: '1rem',
-      top: 'calc(6vh + 16px)',
+      top: 'calc(56px + 16px)',
     },
     icon: { color: 'white', fontSize: '1.5rem' },
   }),

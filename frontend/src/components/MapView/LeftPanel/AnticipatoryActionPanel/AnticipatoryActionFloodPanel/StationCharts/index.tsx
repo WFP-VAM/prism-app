@@ -39,7 +39,7 @@ const useStyles = makeStyles(() =>
   createStyles({
     container: {
       position: 'fixed',
-      top: '6vh',
+      top: '56px',
       left: TABLE_WIDTH + 16,
       width: CHART_WIDTH,
       marginLeft: '2rem',
