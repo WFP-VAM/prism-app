@@ -35,8 +35,8 @@ geopandas = "^1.0.1"
 s3fs = "^2025.2.0"
 pyarrow = "^19.0.1"
 duckdb = "^1.2.0"
-# pin vcrpy to prevent breakage in v7.0.0
-vcrpy = "6.0.1"
+vcrpy = "^8.0.0"
+urllib3 = "^2.6.0"
 # some package isn't updated for numpy 2.x yet
 numpy = "<2.0"
 
