@@ -9,7 +9,7 @@ import html2canvas from 'html2canvas';
 import { debounce, get } from 'lodash';
 import { jsPDF } from 'jspdf';
 import React, { useMemo, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
 import { appConfig, safeCountry } from 'config';
 import { AdminCodeString } from 'config/types';
@@ -20,6 +20,7 @@ import { availableDatesSelector } from 'context/serverStateSlice';
 import { getPossibleDatesForLayer } from 'utils/server-utils';
 import { useBoundaryData } from 'utils/useBoundaryData';
 import { EXPORT_API_URL } from 'utils/constants';
+import { addNotification } from 'context/notificationStateSlice';
 import { downloadToFile } from '../../MapView/utils';
 import {
   dateRangeSelector,
@@ -50,6 +51,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const dateRange = useSelector(dateRangeSelector);
   const printRef = useRef<HTMLDivElement>(null);
   const { data } = useBoundaryData(boundaryLayer.id);
+  const dispatch = useDispatch();
 
   // list of toggles
   const [toggles, setToggles] = React.useState<Toggles>({
@@ -220,6 +222,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     }
 
     setIsDownloading(true);
+    handleDownloadMenuClose();
 
     try {
       const allDateItems = selectedLayersWithDateSupport.flatMap(layer =>
@@ -288,13 +291,24 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         filename,
         contentType,
       );
-
-      handleClose();
-      handleDownloadMenuClose();
     } catch (error) {
+      dispatch(
+        addNotification({
+          type: 'error',
+          message:
+            'Something went wrong with the batch download. Please try again.',
+        }),
+      );
       console.error('Batch download failed:', error);
     } finally {
       setIsDownloading(false);
+      handleClose();
+      dispatch(
+        addNotification({
+          type: 'success',
+          message: 'Batch download completed successfully.',
+        }),
+      );
     }
   };
 

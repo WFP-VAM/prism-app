@@ -620,7 +620,7 @@ function PrintConfig() {
               (!dateRange.startDate || !dateRange.endDate))
           }
         >
-          {t('Download')}
+          {isDownloading ? t('Downloading...') : t('Download')}
         </Button>
         <Menu
           anchorEl={downloadMenuAnchorEl}
