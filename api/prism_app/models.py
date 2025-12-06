@@ -170,24 +170,17 @@ class UserInfoPydanticModel(BaseModel):
 
 
 AspectRatio = Literal["1:1", "2:3", "3:2", "3:4", "4:3"]
-ExportFormat = Literal["pdf", "zip"]
+ExportFormat = Literal["pdf", "png"]
 
 
 class ExportRequestModel(BaseModel):
     """Schema for export request data to be passed to /export endpoint."""
 
-    url: str = Field(
+    urls: list[str] = Field(
         ...,
-        description="Map URL containing all parameters necessary to render print view "
+        description="Map URLs containing all parameters necessary to render print view "
         "including layer ID(s), layer opacity, bounding box, legend config, etc.",
-        example="/?hazardLayerIds=daily_rainfall_forecast&layerOpacity=0.7&boundingBox=",
-    )
-    dates: list[str] = Field(
-        ...,
-        description="List of dates in YYYY-MM-DD format representing all query dates "
-        "within the selected range",
-        example=["2025-01-01", "2025-01-11", "2025-01-21"],
-        min_items=1,
+        example="/?hazardLayerIds=daily_rainfall_forecast&date=2025-01-01&layerOpacity=0.7&boundingBox=",
     )
     aspectRatio: AspectRatio = Field(
         ...,
@@ -196,32 +189,21 @@ class ExportRequestModel(BaseModel):
     )
     format: ExportFormat = Field(
         ...,
-        description="Output format: 'pdf' for merged PDF, 'zip' for ZIP archive of PNGs",
-        example="zip",
+        description="Output format: 'pdf' for merged PDF, 'png' for ZIP archive of PNGs",
+        example="png",
     )
 
     @root_validator
-    def validate_dates(cls, values):
-        """Validate that dates are in YYYY-MM-DD format."""
-        dates = values.get("dates", [])
-        for date_str in dates:
-            try:
-                datetime.fromisoformat(date_str.replace("Z", "+00:00"))
-            except ValueError:
-                raise ValueError(
-                    f"Invalid date format: {date_str}. Dates must be in YYYY-MM-DD format."
-                )
-        return values
-
-    @root_validator
-    def validate_url(cls, values):
-        """Validate that the URL is from an allowed domain."""
+    def validate_urls(cls, values):
+        """Validate that the URL is from an allowed domain"""
         from prism_app.export_maps import validate_export_url
 
-        url = values.get("url")
-        if url:
+        urls = values.get("urls")
+        if not urls:
+            raise ValueError("URLs are required")
+        for url in urls:
             try:
                 validate_export_url(url)
             except ValueError as e:
-                raise ValueError(str(e))
+                raise ValueError(f"Invalid URL: {url}. {str(e)}")
         return values

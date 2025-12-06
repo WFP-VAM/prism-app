@@ -3,14 +3,20 @@
 import asyncio
 import fnmatch
 import io
+import logging
 import zipfile
+from datetime import datetime
 from typing import Final, Tuple
-from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
+from urllib.parse import parse_qs, urlparse
 
+from playwright.async_api import Browser
+from playwright.async_api import TimeoutError as PlaywrightTimeoutError
 from playwright.async_api import async_playwright
 from pypdf import PdfReader, PdfWriter
 
 from .models import AspectRatio, ExportFormat
+
+logger = logging.getLogger(__name__)
 
 # Timeouts
 PAGE_TIMEOUT: Final[int] = 60000
@@ -30,7 +36,7 @@ EXPORT_ALLOWED_DOMAINS: Final[list[str]] = [
 
 def validate_export_url(url: str) -> None:
     """
-    Validate that the export URL is from an allowed domain.
+    Validate that the export URL is from an allowed domain and includes a date parameter.
 
     Validation rules:
     - Requires absolute URLs (must have scheme like http:// or https://)
@@ -41,9 +47,10 @@ def validate_export_url(url: str) -> None:
     - Checks against EXPORT_ALLOWED_DOMAINS list
     - Supports glob patterns
     - Matches if hostname equals base domain or ends with ".{base_domain}"
+    - Requires date parameter (in YYYY-MM-DD format) in the URL
 
-    Args: url: URL to validate (must be absolute URL with scheme)
-    Raises: ValueError: If the URL is from a disallowed domain or is not absolute
+    Args: url: URL to validate (must be absolute URL with scheme and date parameter)
+    Raises: ValueError: If the URL is from a disallowed domain or is not absolute or does not include a date parameter
     """
     parsed = urlparse(url)
 
@@ -52,6 +59,15 @@ def validate_export_url(url: str) -> None:
             "URL must be absolute (include scheme like http:// or https://). "
             "Relative URLs are not allowed for security reasons."
         )
+
+    query_params = parse_qs(parsed.query, keep_blank_values=True)
+    if "date" not in query_params:
+        raise ValueError(f"URL missing 'date' parameter: {url}")
+    date_value = query_params["date"][0]
+    try:
+        datetime.strptime(date_value, "%Y-%m-%d")
+    except ValueError:
+        raise ValueError(f"Date parameter '{date_value}' is not in YYYY-MM-DD format")
 
     hostname = parsed.hostname
 
@@ -125,42 +141,32 @@ def get_viewport_dimensions(aspect_ratio: AspectRatio) -> Tuple[int, int]:
     return (BASE_WIDTH, height)
 
 
-def modify_url_for_date(url: str, date: str) -> str:
+def extract_dates_from_urls(urls: list[str]) -> list[str]:
     """
-    Modify URL to include or update the date parameter.
-
-    Args:
-        url: Base URL with query parameters
-        date: Date string in YYYY-MM-DD format
-    Returns: Modified URL with date parameter
+    Extract dates from URLs.
     """
-    parsed = urlparse(url)
-    query_params = parse_qs(parsed.query, keep_blank_values=True)
-    query_params["date"] = [date]
-
-    # Reconstruct URL
-    new_query = urlencode(query_params, doseq=True)
-    return urlunparse(
-        (
-            parsed.scheme,
-            parsed.netloc,
-            parsed.path,
-            parsed.params,
-            new_query,
-            parsed.fragment,
-        )
-    )
+    dates = []
+    for url in urls:
+        parsed = urlparse(url)
+        query_params = parse_qs(parsed.query, keep_blank_values=True)
+        dates.append(query_params["date"][0])
+    return dates
 
 
 async def render_single_map(
-    url: str, viewport_width: int, viewport_height: int, render_format: str
+    browser: Browser,
+    url: str,
+    viewport_width: int,
+    viewport_height: int,
+    render_format: str,
 ) -> bytes:
     """
-    Render a single map using Playwright and return the image/PDF bytes.
+    Render a single map using an existing browser instance and return the image/PDF bytes.
 
     TODO: Add handling for 400 style errors in PRISM frontend and remove from bundled export.
 
     Args:
+        browser: Playwright browser instance to use for rendering
         url: URL to render (should include all map parameters)
         viewport_width: Browser viewport width in pixels
         viewport_height: Browser viewport height in pixels
@@ -169,76 +175,80 @@ async def render_single_map(
     Returns:
         Bytes of the rendered map (PNG or PDF)
     """
-    async with async_playwright() as p:
-        browser = await p.chromium.launch()
-        page = await browser.new_page()
-        page.set_default_timeout(PAGE_TIMEOUT)
-        await page.set_viewport_size(
-            {"width": viewport_width, "height": viewport_height}
-        )
-        await page.emulate_media(media="screen")
-        await page.goto(url)
+    console_messages: list[str] = []
+    page = await browser.new_page()
+    page.on("console", lambda msg: console_messages.append(f"[{msg.type}] {msg.text}"))
+    page.set_default_timeout(PAGE_TIMEOUT)
+    await page.set_viewport_size({"width": viewport_width, "height": viewport_height})
+    await page.emulate_media(media="screen")
+    url = url.replace("localhost:3000", "host.docker.internal:3000")
+    await page.goto(url)
 
-        # Wait for PRISM_READY flag
+    # Wait for PRISM_READY flag (set by frontend after map tiles are loaded)
+    try:
         await page.wait_for_function(
-            "window.PRISM_READY === true",
-            timeout=PRISM_READY_TIMEOUT,
+            "window.PRISM_READY === true", timeout=PRISM_READY_TIMEOUT
+        )
+    except PlaywrightTimeoutError:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        await page.screenshot(path=f"/tmp/prism_debug_{timestamp}.png", full_page=True)
+        logger.error(
+            f"Timeout on {url}. Console: {console_messages}. Screenshot: /tmp/prism_debug_{timestamp}.png"
+        )
+        await page.close()
+        raise
+
+    # Capture screenshot or PDF
+    if render_format == "pdf":
+        result = await page.pdf(
+            width=f"{viewport_width}px",
+            height=f"{viewport_height}px",
+            print_background=True,
+        )
+    else:  # PNG
+        result = await page.screenshot(
+            type="png",
+            full_page=True,
         )
 
-        # Additional wait for network to be idle to ensure tiles are loaded
-        await page.wait_for_load_state("networkidle", timeout=PAGE_TIMEOUT)
-
-        # Capture screenshot or PDF
-        if render_format == "pdf":
-            pdf_bytes = await page.pdf(
-                width=f"{viewport_width}px",
-                height=f"{viewport_height}px",
-                print_background=True,
-            )
-            await browser.close()
-            return pdf_bytes
-        else:  # PNG
-            screenshot_bytes = await page.screenshot(
-                type="png",
-                full_page=True,
-            )
-            await browser.close()
-            return screenshot_bytes
+    await page.close()
+    return result
 
 
 async def export_maps(
-    url: str, dates: list[str], aspect_ratio: AspectRatio, format_type: ExportFormat
+    urls: list[str], aspect_ratio: AspectRatio, format_type: ExportFormat
 ) -> Tuple[bytes, str]:
     """
     Export maps for multiple dates and return packaged file.
 
-    Renders maps in parallel for better performance when processing multiple dates.
+    Uses a single browser instance and renders maps with limited concurrency.
 
     Args:
-        url: Base URL with map parameters (date will be added/modified per date)
-        dates: List of ISO-8601 date strings
+        urls: List of base URLs with map parameters
         aspect_ratio: Aspect ratio string ('1:1', '3:4', or '4:3')
         format_type: Output format ('pdf' or 'zip')
     Returns: Tuple of (file_bytes, content_type)
     """
+    dates = extract_dates_from_urls(urls)
     viewport_width, viewport_height = get_viewport_dimensions(aspect_ratio)
-    date_urls = [modify_url_for_date(url, date_str) for date_str in dates]
+    semaphore = asyncio.Semaphore(4)  # Limit to 4 concurrent renders
 
+    async def render_with_limit(url: str) -> bytes:
+        async with semaphore:
+            return await render_single_map(
+                browser, url, viewport_width, viewport_height, format_type
+            )
+
+    async with async_playwright() as p:
+        browser = await p.chromium.launch()
+        bytes_list = await asyncio.gather(*[render_with_limit(url) for url in urls])
+        await browser.close()
+
+    # Package results
     if format_type == "pdf":
-        # Render all dates in parallel
-        render_format = "pdf"
-        pdf_bytes_list = await asyncio.gather(
-            *[
-                render_single_map(
-                    date_url, viewport_width, viewport_height, render_format
-                )
-                for date_url in date_urls
-            ]
-        )
-
         # Merge PDFs
         pdf_writer = PdfWriter()
-        for pdf_bytes in pdf_bytes_list:
+        for pdf_bytes in bytes_list:
             pdf_reader = PdfReader(io.BytesIO(pdf_bytes))
             for page in pdf_reader.pages:
                 pdf_writer.add_page(page)
@@ -246,25 +256,14 @@ async def export_maps(
         # Write merged PDF to bytes
         output_buffer = io.BytesIO()
         pdf_writer.write(output_buffer)
-        return (output_buffer.getvalue(), "application/pdf")
-
-    else:  # zip format
-        # Render all dates in parallel
-        render_format = "png"
-        png_bytes_list = await asyncio.gather(
-            *[
-                render_single_map(
-                    date_url, viewport_width, viewport_height, render_format
-                )
-                for date_url in date_urls
-            ]
-        )
-
+        result = (output_buffer.getvalue(), "application/pdf")
+    else:  # png format
         # Create ZIP
         zip_buffer = io.BytesIO()
         with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
-            for date_str, png_bytes in zip(dates, png_bytes_list):
-                filename = f"map_{date_str}.png"
+            for date, png_bytes in zip(dates, bytes_list):
+                filename = f"map_{date}.png"
                 zip_file.writestr(filename, png_bytes)
+        result = (zip_buffer.getvalue(), "application/zip")
 
-        return (zip_buffer.getvalue(), "application/zip")
+    return result

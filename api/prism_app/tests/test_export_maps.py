@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
-from prism_app.export_maps import export_maps, modify_url_for_date, validate_export_url
+from prism_app.export_maps import export_maps, validate_export_url
 from prism_app.main import app
 from pypdf import PdfReader
 
@@ -20,29 +20,50 @@ client = TestClient(app)
 # Path to mock HTML fixture
 MOCK_PAGE_PATH = Path(__file__).parent / "fixtures" / "mock_prism_page.html"
 
+# Base URL for mock page - use this directly in parametrize instead of fixture
+MOCK_PAGE_URL = f"file://{MOCK_PAGE_PATH.absolute()}"
+
+# Test date constant for consistent date values across tests
+TEST_DATE = "2025-01-01"
+
 
 @pytest.fixture
 def mock_page_url():
     """Return file:// URL for the mock HTML page."""
-    return f"file://{MOCK_PAGE_PATH.absolute()}"
+    return f"{MOCK_PAGE_URL}?date={TEST_DATE}"
 
 
 # Core functionality tests - test export_maps function directly
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "dates,format_type,expected_files",
+    "urls,format_type,expected_files",
     [
-        (["2025-01-01"], "pdf", 1),
-        (["2025-01-01", "2025-01-11", "2025-01-21"], "pdf", 3),
-        (["2025-01-01"], "zip", 1),
-        (["2025-01-01", "2025-01-11", "2025-01-21"], "zip", 3),
+        ([f"{MOCK_PAGE_URL}?date={TEST_DATE}"], "pdf", 1),
+        (
+            [
+                f"{MOCK_PAGE_URL}?date={TEST_DATE}",
+                f"{MOCK_PAGE_URL}?date=2025-01-11",
+                f"{MOCK_PAGE_URL}?date=2025-01-21",
+            ],
+            "pdf",
+            3,
+        ),
+        ([f"{MOCK_PAGE_URL}?date={TEST_DATE}"], "png", 1),
+        (
+            [
+                f"{MOCK_PAGE_URL}?date={TEST_DATE}",
+                f"{MOCK_PAGE_URL}?date=2025-01-11",
+                f"{MOCK_PAGE_URL}?date=2025-01-21",
+            ],
+            "png",
+            3,
+        ),
     ],
 )
-async def test_export_maps(mock_page_url, dates, format_type, expected_files):
+async def test_export_maps(urls, format_type, expected_files):
     """Test export_maps function with various date counts and formats."""
     file_bytes, content_type = await export_maps(
-        url=mock_page_url,
-        dates=dates,
+        urls=urls,
         aspect_ratio="3:4",
         format_type=format_type,
     )
@@ -57,7 +78,16 @@ async def test_export_maps(mock_page_url, dates, format_type, expected_files):
     if format_type == "pdf":
         pdf_reader = PdfReader(io.BytesIO(file_bytes))
         assert len(pdf_reader.pages) == expected_files
-    elif format_type == "zip":  # zip
+    elif format_type == "png":  # png
+        # Extract dates from URLs for verification
+        from urllib.parse import parse_qs, urlparse
+
+        dates = []
+        for url in urls:
+            parsed = urlparse(url)
+            query_params = parse_qs(parsed.query, keep_blank_values=True)
+            dates.append(query_params["date"][0])
+
         with zipfile.ZipFile(io.BytesIO(file_bytes), "r") as zip_file:
             file_list = zip_file.namelist()
             assert len(file_list) == expected_files
@@ -90,31 +120,17 @@ async def test_export_different_aspect_ratios():
     assert dimensions["3:4"] != dimensions["4:3"]
 
 
-def test_modify_url_for_date():
-    """Test that URL modification correctly adds/updates date parameter."""
-    # Test adding date to URL without date param
-    url = "/?hazardLayerIds=test_layer"
-    modified = modify_url_for_date(url, "2025-01-01")
-    assert "date=2025-01-01" in modified
-
-    # Test updating existing date param
-    url_with_date = "/?hazardLayerIds=test_layer&date=2025-01-01"
-    modified = modify_url_for_date(url_with_date, "2025-01-11")
-    assert "date=2025-01-11" in modified
-    assert "date=2025-01-01" not in modified
-
-
 # URL validation tests - parameterized
 @pytest.mark.parametrize(
     "url,should_raise,error_keyword",
     [
         # Allowed URLs
-        ("http://localhost/?test=1", False, None),
-        ("http://127.0.0.1/?test=1", False, None),
-        ("http://localhost:3000/?test=1", False, None),
-        ("file:///path/to/file.html", False, None),
+        (f"http://localhost/?test=1&date={TEST_DATE}", False, None),
+        (f"http://127.0.0.1/?test=1&date={TEST_DATE}", False, None),
+        (f"http://localhost:3000/?test=1&date={TEST_DATE}", False, None),
+        (f"file:///path/to/file.html?date={TEST_DATE}", False, None),
         # Disallowed URLs
-        ("http://evil.com/?test=1", True, "not allowed"),
+        (f"http://evil.com/?test=1&date={TEST_DATE}", True, "not allowed"),
         ("/?hazardLayerIds=test_layer", True, "absolute"),
     ],
 )
@@ -133,30 +149,31 @@ def test_validate_export_url(url, should_raise, error_keyword):
 def test_validate_export_url_support():
     """Test that wildcard patterns like *.wfp.org are supported."""
     # These should be allowed
-    validate_export_url("http://wfp.org/?test=1")
-    validate_export_url("https://prism.wfp.org/?test=1")
-    validate_export_url("http://prism.example.wfp.org/?test=1")
-    validate_export_url("https://staging-prism-frontend--1622-38oautsx.web.app/?test=1")
+    validate_export_url(f"http://wfp.org/?test=1&date={TEST_DATE}")
+    validate_export_url(f"https://prism.wfp.org/?test=1&date={TEST_DATE}")
+    validate_export_url(f"http://prism.example.wfp.org/?test=1&date={TEST_DATE}")
+    validate_export_url(
+        f"https://staging-prism-frontend--1622-38oautsx.web.app/?test=1&date={TEST_DATE}"
+    )
 
     # These should not be allowed
     with pytest.raises(ValueError, match="not allowed"):
-        validate_export_url("http://evil.com/?test=1")
+        validate_export_url(f"http://evil.com/?test=1&date={TEST_DATE}")
     with pytest.raises(ValueError, match="not allowed"):
-        validate_export_url("http://wfp.org.evil.com/?test=1")
+        validate_export_url(f"http://wfp.org.evil.com/?test=1&date={TEST_DATE}")
 
 
 # API endpoint tests - focus on HTTP layer, not re-testing all business logic
 @pytest.mark.parametrize(
     "format_type,expected_content_type",
-    [("pdf", "application/pdf"), ("zip", "application/zip")],
+    [("pdf", "application/pdf"), ("png", "application/zip")],
 )
 def test_export_endpoint_success(mock_page_url, format_type, expected_content_type):
     """Test POST /export endpoint returns correct content type and headers."""
     response = client.post(
         "/export",
         json={
-            "url": mock_page_url,
-            "dates": ["2025-01-01"],
+            "urls": [mock_page_url],
             "aspectRatio": "3:4",
             "format": format_type,
         },
@@ -165,17 +182,18 @@ def test_export_endpoint_success(mock_page_url, format_type, expected_content_ty
     assert response.status_code == 200
     assert response.headers["content-type"] == expected_content_type
     assert "attachment" in response.headers["content-disposition"]
-    assert response.headers["content-disposition"].endswith(f'.{format_type}"')
+    assert response.headers["content-disposition"].endswith(
+        f'.{format_type if format_type == "pdf" else "zip"}"'
+    )
 
 
 def test_export_endpoint_multiple_dates(mock_page_url):
     """Test POST /export endpoint with multiple dates returns correct page count."""
-    dates = ["2025-01-01", "2025-01-11", "2025-01-21"]
+    dates = [TEST_DATE, "2025-01-11", "2025-01-21"]
     response = client.post(
         "/export",
         json={
-            "url": mock_page_url,
-            "dates": dates,
+            "urls": [f"{MOCK_PAGE_URL}?date={date}" for date in dates],
             "aspectRatio": "3:4",
             "format": "pdf",
         },
@@ -192,10 +210,14 @@ def test_export_endpoint_multiple_dates(mock_page_url):
     [
         ({"aspectRatio": "16:9"}, 422),  # Invalid aspect ratio
         ({"format": "jpg"}, 422),  # Invalid format
-        ({"dates": []}, 422),  # Empty dates
-        ({"dates": ["2025/01/01"]}, 422),  # Invalid date format
-        ({"url": "http://evil.com/?test=1"}, 422),  # Disallowed domain
-        ({"url": "/?hazardLayerIds=test_layer"}, 422),  # Relative URL
+        ({"urls": []}, 422),  # Empty urls
+        (
+            {"urls": ["http://localhost/?test=1&date=2025/01/01"]},
+            422,
+        ),  # Invalid date format
+        ({"urls": ["http://localhost/?test=1"]}, 422),  # Missing date parameter
+        ({"urls": ["http://evil.com/?test=1"]}, 422),  # Disallowed domain
+        ({"urls": ["/?hazardLayerIds=test_layer"]}, 422),  # Relative URL
     ],
 )
 def test_export_endpoint_validation_errors(
@@ -204,8 +226,7 @@ def test_export_endpoint_validation_errors(
     """Test POST /export endpoint validation errors."""
     # Build request with defaults
     default_request = {
-        "url": mock_page_url,
-        "dates": ["2025-01-01"],
+        "urls": [f"http://localhost/?test=1&date={TEST_DATE}"],
         "aspectRatio": "3:4",
         "format": "pdf",
     }
@@ -220,8 +241,9 @@ def test_export_endpoint_localhost_allowed():
     response = client.post(
         "/export",
         json={
-            "url": "http://localhost:3000/?hazardLayerIds=test_layer",
-            "dates": ["2025-01-01"],
+            "urls": [
+                f"http://localhost:3000/?hazardLayerIds=test_layer&date={TEST_DATE}"
+            ],
             "aspectRatio": "3:4",
             "format": "pdf",
         },
