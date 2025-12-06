@@ -625,7 +625,7 @@ function PrintConfig() {
             <>
               <CircularProgress size={16} />{' '}
               <span style={{ marginLeft: '0.5rem' }}>
-                {t('Downloading...')}
+                {t('Generating maps...')}
               </span>
             </>
           ) : (

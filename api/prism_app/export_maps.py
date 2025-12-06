@@ -3,15 +3,18 @@
 import asyncio
 import fnmatch
 import io
+import logging
 import zipfile
 from datetime import datetime
 from typing import Final, Tuple
 from urllib.parse import parse_qs, urlparse
 
-from playwright.async_api import Browser, async_playwright
+from playwright.async_api import Browser, TimeoutError as PlaywrightTimeoutError, async_playwright
 from pypdf import PdfReader, PdfWriter
 
 from .models import AspectRatio, ExportFormat
+
+logger = logging.getLogger(__name__)
 
 # Timeouts
 PAGE_TIMEOUT: Final[int] = 60000
@@ -170,19 +173,24 @@ async def render_single_map(
     Returns:
         Bytes of the rendered map (PNG or PDF)
     """
+    console_messages: list[str] = []
     page = await browser.new_page()
+    page.on("console", lambda msg: console_messages.append(f"[{msg.type}] {msg.text}"))
     page.set_default_timeout(PAGE_TIMEOUT)
     await page.set_viewport_size({"width": viewport_width, "height": viewport_height})
     await page.emulate_media(media="screen")
-
     url = url.replace("localhost:3000", "host.docker.internal:3000")
     await page.goto(url)
 
     # Wait for PRISM_READY flag (set by frontend after map tiles are loaded)
-    await page.wait_for_function(
-        "window.PRISM_READY === true",
-        timeout=PRISM_READY_TIMEOUT,
-    )
+    try:
+        await page.wait_for_function("window.PRISM_READY === true", timeout=PRISM_READY_TIMEOUT)
+    except PlaywrightTimeoutError:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        await page.screenshot(path=f"/tmp/prism_debug_{timestamp}.png", full_page=True)
+        logger.error(f"Timeout on {url}. Console: {console_messages}. Screenshot: /tmp/prism_debug_{timestamp}.png")
+        await page.close()
+        raise
 
     # Capture screenshot or PDF
     if render_format == "pdf":
@@ -207,7 +215,7 @@ async def export_maps(
     """
     Export maps for multiple dates and return packaged file.
 
-    Uses a single browser instance and renders maps in parallel for better performance.
+    Uses a single browser instance and renders maps with limited concurrency.
 
     Args:
         urls: List of base URLs with map parameters
@@ -217,20 +225,15 @@ async def export_maps(
     """
     dates = extract_dates_from_urls(urls)
     viewport_width, viewport_height = get_viewport_dimensions(aspect_ratio)
+    semaphore = asyncio.Semaphore(4)  # Limit to 4 concurrent renders
+
+    async def render_with_limit(url: str) -> bytes:
+        async with semaphore:
+            return await render_single_map(browser, url, viewport_width, viewport_height, format_type)
 
     async with async_playwright() as p:
         browser = await p.chromium.launch()
-
-        # Render all maps in parallel using the same browser instance
-        bytes_list = await asyncio.gather(
-            *[
-                render_single_map(
-                    browser, url, viewport_width, viewport_height, format_type
-                )
-                for url in urls
-            ]
-        )
-
+        bytes_list = await asyncio.gather(*[render_with_limit(url) for url in urls])
         await browser.close()
 
     # Package results
