@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  CircularProgress,
   Collapse,
   Divider,
   Icon,
@@ -620,8 +621,18 @@ function PrintConfig() {
               (!dateRange.startDate || !dateRange.endDate))
           }
         >
-          {isDownloading ? t('Downloading...') : t('Download')}
+          {isDownloading ? (
+            <>
+              <CircularProgress size={16} />{' '}
+              <span style={{ marginLeft: '0.5rem' }}>
+                {t('Downloading...')}
+              </span>
+            </>
+          ) : (
+            <span>{t('Download')}</span>
+          )}
         </Button>
+
         <Menu
           anchorEl={downloadMenuAnchorEl}
           keepMounted

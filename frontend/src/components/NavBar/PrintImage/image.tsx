@@ -302,7 +302,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       console.error('Batch download failed:', error);
     } finally {
       setIsDownloading(false);
-      handleClose();
       dispatch(
         addNotification({
           type: 'success',
