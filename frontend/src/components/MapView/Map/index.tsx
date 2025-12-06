@@ -231,11 +231,6 @@ const MapComponent = memo(
           watchBoundaryChange(map);
         }
         trackLoadingLayers(map);
-
-        map.once('idle', () => {
-          // eslint-disable-next-line fp/no-mutation
-          (window as any).PRISM_READY = true;
-        });
       },
       [mapState, showBoundaryInfo, watchBoundaryChange, trackLoadingLayers],
     );
