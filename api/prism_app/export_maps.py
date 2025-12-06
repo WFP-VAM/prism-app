@@ -9,7 +9,9 @@ from datetime import datetime
 from typing import Final, Tuple
 from urllib.parse import parse_qs, urlparse
 
-from playwright.async_api import Browser, TimeoutError as PlaywrightTimeoutError, async_playwright
+from playwright.async_api import Browser
+from playwright.async_api import TimeoutError as PlaywrightTimeoutError
+from playwright.async_api import async_playwright
 from pypdf import PdfReader, PdfWriter
 
 from .models import AspectRatio, ExportFormat
@@ -184,11 +186,15 @@ async def render_single_map(
 
     # Wait for PRISM_READY flag (set by frontend after map tiles are loaded)
     try:
-        await page.wait_for_function("window.PRISM_READY === true", timeout=PRISM_READY_TIMEOUT)
+        await page.wait_for_function(
+            "window.PRISM_READY === true", timeout=PRISM_READY_TIMEOUT
+        )
     except PlaywrightTimeoutError:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         await page.screenshot(path=f"/tmp/prism_debug_{timestamp}.png", full_page=True)
-        logger.error(f"Timeout on {url}. Console: {console_messages}. Screenshot: /tmp/prism_debug_{timestamp}.png")
+        logger.error(
+            f"Timeout on {url}. Console: {console_messages}. Screenshot: /tmp/prism_debug_{timestamp}.png"
+        )
         await page.close()
         raise
 
@@ -229,7 +235,9 @@ async def export_maps(
 
     async def render_with_limit(url: str) -> bytes:
         async with semaphore:
-            return await render_single_map(browser, url, viewport_width, viewport_height, format_type)
+            return await render_single_map(
+                browser, url, viewport_width, viewport_height, format_type
+            )
 
     async with async_playwright() as p:
         browser = await p.chromium.launch()
