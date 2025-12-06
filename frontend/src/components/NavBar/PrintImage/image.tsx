@@ -248,6 +248,10 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         return;
       }
 
+      // Extract map bounds and zoom from selectedMap
+      const mapBounds = selectedMap?.getBounds();
+      const mapZoom = selectedMap?.getZoom();
+
       // Construct URLs for each date by adding `/export` to the pathname and setting the date param
       const { origin, pathname, search } = new URL(window.location.href);
       const exportPath = `${pathname.replace(/\/$/, '')}/export`;
@@ -257,6 +261,46 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         .map(date => {
           const params = new URLSearchParams(baseParams);
           params.set('date', date);
+
+          // Map bounds and zoom
+          if (mapBounds) {
+            const bounds = `${mapBounds.getWest()},${mapBounds.getSouth()},${mapBounds.getEast()},${mapBounds.getNorth()}`;
+            params.set('bounds', bounds);
+          }
+          if (mapZoom !== undefined) {
+            params.set('zoom', String(mapZoom));
+          }
+
+          // Print config options
+          params.set('mapWidth', String(mapDimensions.width));
+          params.set('title', titleText);
+          params.set('footer', footerText);
+          params.set('footerTextSize', String(footerTextSize));
+
+          // Position/scale
+          params.set('logoPosition', String(logoPosition));
+          params.set('logoScale', String(logoScale));
+          params.set('legendPosition', String(legendPosition));
+          params.set('legendScale', String(legendScale));
+          params.set('bottomLogoScale', String(bottomLogoScale));
+
+          // Toggles (as JSON, excluding batchMapsVisibility)
+          const exportToggles = {
+            fullLayerDescription: toggles.fullLayerDescription,
+            countryMask: toggles.countryMask,
+            mapLabelsVisibility: toggles.mapLabelsVisibility,
+            logoVisibility: toggles.logoVisibility,
+            legendVisibility: toggles.legendVisibility,
+            footerVisibility: toggles.footerVisibility,
+            bottomLogoVisibility: toggles.bottomLogoVisibility,
+          };
+          params.set('toggles', JSON.stringify(exportToggles));
+
+          // Selected boundaries
+          if (selectedBoundaries.length > 0) {
+            params.set('selectedBoundaries', selectedBoundaries.join(','));
+          }
+
           return `${origin}${exportPath}?${params.toString()}`;
         });
 
