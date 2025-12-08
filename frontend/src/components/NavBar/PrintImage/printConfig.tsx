@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  CircularProgress,
   Collapse,
   Divider,
   Icon,
@@ -272,6 +273,8 @@ function PrintConfig() {
     footerTextSize,
     setFooterTextSize,
     download,
+    downloadBatch,
+    isDownloading,
     defaultFooterText,
     selectedBoundaries,
     setSelectedBoundaries,
@@ -282,6 +285,7 @@ function PrintConfig() {
     downloadMenuAnchorEl,
     mapCount,
     shouldEnableBatchMaps,
+    dateRange,
   } = printConfig;
 
   return (
@@ -611,24 +615,52 @@ function PrintConfig() {
           className={classes.gutter}
           endIcon={<GetApp />}
           onClick={e => handleDownloadMenuOpen(e)}
+          disabled={
+            isDownloading ||
+            (toggles.batchMapsVisibility &&
+              (!dateRange.startDate || !dateRange.endDate))
+          }
         >
-          {t('Download')}
+          {isDownloading ? (
+            <>
+              <CircularProgress size={16} />{' '}
+              <span style={{ marginLeft: '0.5rem' }}>
+                {t('Generating maps...')}
+              </span>
+            </>
+          ) : (
+            <span>{t('Download')}</span>
+          )}
         </Button>
+
         <Menu
           anchorEl={downloadMenuAnchorEl}
           keepMounted
           open={Boolean(downloadMenuAnchorEl)}
           onClose={handleDownloadMenuClose}
         >
-          <MenuItem onClick={() => download('png')}>
-            {t('Download PNG')}
-          </MenuItem>
-          <MenuItem onClick={() => download('jpeg')}>
-            {t('Download JPEG')}
-          </MenuItem>
-          <MenuItem onClick={() => download('pdf')}>
-            {t('Download PDF')}
-          </MenuItem>
+          {toggles.batchMapsVisibility ? (
+            <>
+              <MenuItem onClick={() => downloadBatch('pdf')}>
+                {t('Download maps as PDF')}
+              </MenuItem>
+              <MenuItem onClick={() => downloadBatch('png')}>
+                {t('Download maps as PNGs')}
+              </MenuItem>
+            </>
+          ) : (
+            <>
+              <MenuItem onClick={() => download('png')}>
+                {t('Download PNG')}
+              </MenuItem>
+              <MenuItem onClick={() => download('jpeg')}>
+                {t('Download JPEG')}
+              </MenuItem>
+              <MenuItem onClick={() => download('pdf')}>
+                {t('Download PDF')}
+              </MenuItem>
+            </>
+          )}
         </Menu>
       </div>
     </Box>

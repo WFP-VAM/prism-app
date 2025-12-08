@@ -17,7 +17,7 @@ from prism_app.caching import FilePath, cache_file, cache_geojson
 from prism_app.database.alert_model import AlchemyEncoder, AlertModel
 from prism_app.database.database import AlertsDataBase
 from prism_app.database.user_info_model import UserInfoModel
-from prism_app.export_maps import export_maps
+from prism_app.export_maps import export_maps, extract_dates_from_urls
 from prism_app.googleflood import (
     get_google_flood_dates,
     get_google_floods_gauge_forecast,
@@ -553,22 +553,19 @@ async def export_maps_endpoint(export_request: ExportRequestModel) -> Response:
     Playwright, and returns either a merged PDF or ZIP archive of PNGs.
     """
     try:
+        dates = extract_dates_from_urls(export_request.urls)
         file_bytes, content_type = await export_maps(
-            url=export_request.url,
-            dates=export_request.dates,
+            urls=export_request.urls,
             aspect_ratio=export_request.aspectRatio,
             format_type=export_request.format,
         )
 
         # Generate filename based on format and date range
+        # TODO: get dates from URLs
         if export_request.format == "pdf":
-            filename = (
-                f"maps_{export_request.dates[0]}_to_{export_request.dates[-1]}.pdf"
-            )
+            filename = f"maps_{dates[0]}_to_{dates[-1]}.pdf"
         else:
-            filename = (
-                f"maps_{export_request.dates[0]}_to_{export_request.dates[-1]}.zip"
-            )
+            filename = f"maps_{dates[0]}_to_{dates[-1]}.zip"
 
         return Response(
             content=file_bytes,
