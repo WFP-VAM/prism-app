@@ -209,17 +209,20 @@ export const loadGoogleFloodDataset = async (
 
   const tableData = createTableData(results, TableDataFormat.DATE);
 
-  const GoogleFloodConfig = Object.entries(triggerLevels).reduce(
-    (acc, [key, value]) => {
-      const obj = {
-        ...GoogleFloodTriggersConfig[key],
-        values: tableData.rows.map(() => value),
-      };
+  // Handle null triggerLevels (some gauges don't have gauge model data)
+  const GoogleFloodConfig = triggerLevels
+    ? Object.entries(triggerLevels).reduce((acc, [key, value]) => {
+        if (value === null) {
+          return acc;
+        }
+        const obj = {
+          ...GoogleFloodTriggersConfig[key],
+          values: tableData.rows.map(() => value),
+        };
 
-      return { ...acc, [key]: obj };
-    },
-    {},
-  );
+        return { ...acc, [key]: obj };
+      }, {})
+    : {};
 
   const tableDataWithGoogleFloodConfig: TableData = {
     ...tableData,

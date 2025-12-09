@@ -13,85 +13,325 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - python-requests/2.32.0
+      - python-requests/2.32.5
     method: POST
     uri: https://floodforecasting.googleapis.com/v1/floodStatus:searchLatestFloodStatusByArea
   response:
     body:
-      string: !!binary |
-        H4sIAAAAAAAC/+1dbU8cRxL+7l9h+bPTqqqu7uryN/wa7jBENol1F0XWAovPEgEfL4l8kf/7VS8Q
-        lsCMpj29693JrCxkMc3ObO8zNU899fbHg4cPHx0enZwcvD2fnF+cTc8ePXn4s/3y4cM/Zj/t8IfJ
-        xYfp5oEdePT03fOn79++I4FHj68Pfzw7u5ge7H78dZpXEBB/h/AdyC7qk8BPPLuowCr/vvmTw5PT
-        6f7k7Dz/0ZvJ8Yf8l9ens8Nn55PT81tvprugTwDs38272MLp8UHjsqtVX+6c9Nl/7p7xt8nRxfSe
-        A3bo6OT36enTk4vZqb4Dh3D5QlZAjEiP51dffPp0sxr+PPJl7qJPp4fT0+nx/vT+T3/v55d7P/89
-        OyB3d8DO3rgXu6dXb/ByY2vr5vs5m/42Pf14/jkf2d55/3JrZ+f55varuQUnF6f702tE3Px+BpWt
-        k/3J+ceT49tbfGS/O784yH9EGRIYmed25ejk+MP1cUXnk0ZNd677vxeTI7uun+zqDj9O85Wfn15M
-        H8wtakMtpRLUhkBe0hBQC4OAqAHx2fcb269eLBOn4oUgNeEUHHuEWBmnqQCm6ISF0A8BpmZcQzNS
-        7ai/sryoBEpmIdYHvMu2rz6mRE32NSUzbj6qVravSEX2lQV9L+CmXfAdgDu/bLSvq2RfvSMDTdBm
-        HsA+kce6OEUpwKm3WwUoxH44RemE05tl38bA3uG264PeZRvYJMQamoBLjlOITHWB6zdK7KsweOqF
-        2xUiBhgukRk0ApvnkFpxDFerQThASDAShUYDrCFqjM0G2MgW18axbVIJkImRGPoAWXapC1GYX7YY
-        olCkHriwPrB9s/l2qX4Zq1nXFv1AhJPEyrDlIv0gknmOPXkDhG78Noy8YS3sLdmDTBSbaQNEb/58
-        XdwmLtETONPdXtZ2dMvu+7hr5JaR05iQGmUvM6/gNXBdmGL4R3ecgouMOMqzf2ucmhemGL00yVzq
-        MvevjVOKsYgGJBLqZU/XAKfGARj+4qGtD3SXywGCA2CWRtGLHMWAWln0Il+E2qBid1ZPFkDdWAAt
-        mryOIdsaqI1JqdnWJhfRPK7aSkEKRZIXok89UYvdXC5crMs1coKvxGl04EWbBC2DKUdIKpWpK3eH
-        KanTHPnSIVCCHJRlnb04uwQ+hBbjOiqzJdw2Z8hgC5CFmbhyCBdjUWjMsz1aeyV2pV3CTvb2Ztlo
-        b1fJ3npjV5hik1ZgPhholOgr4xQLEhApW50gYSBstszg0pW9JU1AnojXB83LDoXZUxmkRfRCTb6y
-        vbV31TdFflkE4+FDoA6jxf1qoEpMkanZ4oqkVDuIQAbVUARVwZigl9FdFaiW5R+sEXqXa2GjQwok
-        jZTWqEJOt61sYn1ZsoGEGLRv+KsbpYXFUtoxa2aBFjixQmP6gXE0H0NtLcx4dkkcN5nzSDwQ83uH
-        xbYCeUxH6Azk4DU1BnpzAM1AFCrn0QgW5DEa7eaYsG8ArYvzpktw3kKYL2HQVhgvtNwhdoVxXAsY
-        R4qNATVwnGwbK/NhCa4oNhEMxvP7vYxdSRyaAja2K3FWZFd5W6Ag2YgdswTpmyN3D5TvY1t/BfJ6
-        urOLvW+/gTubczVvq1h3cuJEhSsLiFp27yph7xyOLk6BLsEpaE/lXKheOKyHjidA8i1PHa/ga8sw
-        0RclHwXsWcO8BgHxMfmoO2qDM8gao29hBTGnKFdGLWIhWQqQwlA6RoxFzVcL+kbEg2rAlgykXJFH
-        tYs+pMjgSjJ3NS6R5bMDDoEbSwrAqRp3qb0rIGW3M6oOpUfBGAqoQZ4iBx+b6mftXk5MSqEuapGl
-        5DFEjgJoGkSNwZgFe7Wgf+GhSGqJvaJPUlswjQWgzfkhiH4ocdc77KiVS40RrO6VMx5JmyRTw7FX
-        DFhZM2UtEP7BiTkBMgjWMOa6fH2jOB9So7RvOI1JU6jdKE6KRGxj39RbHewiYuuiRez7lJRWg3uH
-        C68PmpfeaANT5BbdRSiG2iK3d7xVhOQoEWgIFnfku1cLescQ0fausc9RjhdEr5VFbi4KrULuJAcw
-        JsWuDEa/AVEwxDCTNEVjZkQhYm0DG8CVVdUyxmGkxLYBdZ1ZwXL7GHmXkrlhLQ0MREhqp3JLgXaL
-        zgewKxgCZovlhDGPsLP1TQSNMYhsfKMErazmlpQqkhNz0noXzkA3GMPCqe2Y172gHgdiXLIxKqEO
-        IgWurTZE7woyu8khI4g2xBh/3P7n9s677Yp7ApJbkjV7ACmpxMr3NmsJ/08cIw/iETXSqssFvaM0
-        AtqYUphpFSafKjeBICrMB0bPo7q9MhD9Juq2ktHrFpzm0vnq6jaU+qzQLwqzKimEoyZ4taB/9ZtA
-        asnDSsGOV8/dKBo5JYLUr8XOOnQmWWcPdbmUIDpvvj81uqgp64cMlUFLsShNLkYztYPgsTmQeNmm
-        JCXzVUAQ2ks2xzYl3TM37OVbWp8nVg61IzJFbaESSwTf4KAuKJ1Qo33uZieV0TalciPYkpsbHYSs
-        9C41M9gHu5CW4TqJQ6pdn+LLeuSDbcpQZpSUNWZaY29+6RaPQJtzLpPzmIRr51wWpP17B4zIQ0kU
-        HlOAFlV6lXuPtoSovdirdrOFgic3zkbt9AtQj27TkNwmc6TNaWrsIZDHQwGn2k1Iy1or5FoSZMIh
-        WN9RSv36RGFKHlqQGhPGWLvvc0lxoHez8GtfnK5KovA4EepqQf8ZJiCNwpSSQ0XAyolrBEVVreZI
-        htS3Kd5KzITKUlM7csdsie6NW9S83EYlipy5bb52LRxKUWqAOWaQ+kqqXYb3zi8bqcEqUQPvxJOk
-        lm6NrNHXlv4RC9RBcmyOV++2oythYUecfvXUvZQzbduGmmL9TCsq6SrKWe2J3DOu2snVSqOrtaI4
-        ZceUILXEFdRLWEAtWyirZRMEHUowdew5UoMHsLT1bKaY48+VrSuXJQBQTNpLIJBd6tLqdn7ZojA7
-        1losaoS0cmqeU2JuV278Xdvt8kUd3MhFjoJDaT9eFhH7s23RiN2Hd0Jgajd4C3WgkA1GbezaPVGC
-        3RCQoa8Z7uKMzS9bFHbH1vkLmzMJoXU+H9jTvDYLLkiCRRcDiB9Kdk2hDR7zCTv3j4wSm2hxLnnz
-        vnY2IcUCDTc3MY4a5z25JUzoztOvW5QYBnNwK3fHQi7reoEBU7+n1KrkaoyFGVcL+vcYQtA2F9fb
-        M6lyFixpUbMsIbvGvkL3SgiIYx324uyvmIPb9lBiL752T2P0UtCekFwy+0tjAefKYPSbhBZTJE4t
-        Ew013+eVCzi1gD2hXQEkHIoTMOrgVUCbi99bmg6ZXUtaWYTpTm1J8+xC4Z7UdjWi4SO1vVrQe8q8
-        MQJoaZ+ZS0Rqd2bhIn+Mg/dxEHygvJZpVA27MlsliLFl4KbEWD12EwoIg8+6gvq+HtpKzOQb1e9F
-        4ZidV5LmoX3oGMFzbd2wpHMhZ39bqUk3rN0nyzvy2DaDNPoctq38gIpOC5JiwCmblzsIZ2D0Wb8+
-        BgusjbXy+RFktq+yth1T6bBc4X7PoHXA6TrXzi69Ua6kFFqGbQIFr5XNa0pFg8rzHIi+ubGd0gbS
-        EtIG4qUDIBFDQjbvqpU4jfM3u9cpMlMjkFNyEJPWDi36go5vlDVLjT1xjF2yEOeXLQrHf5MyxV8n
-        nzaPr6/y86fZd7v5euPVi/fPtjbevt18uflsY3dzZ/t+pG883fnpxfvtnTevN+bp5LHt0wzPryef
-        3k7Pb38Ht46e2bGf5z7l/ObkL8XOdZRP9P3mq+9vbcfsQk4/Grb/Nz344eTo84eT40vo7h3q3vSQ
-        cYKBeUJm/vdoD+VAAx8cTnX/0dy7fHnc4dyvXzzf/PF1x7ODTKYH5gaD7glPDqYpYKA9AokHYkxe
-        is++tfOu46n3VfdgEtOenYsPA+5pHoVonx1hP3qCW6f+8/+/PG76apYH2qZLuAbkD292nm483dza
-        3P3X3fu9f84GqEibAxYoda6jnbtNrr+k7ZNzW3F5Hbe+MH9IfgogU0HmQ2GdHO6rP9xPB4B7ezJ5
-        1NFKYyhwb83f5DyqeSgi+RjYqZHKpSlQ47AeY6hqiKlLLdAXtUBQRu5XSb4qjt1YSV4RuIkZtKU5
-        p9pzz1fOpcUSNdE7CQhxECPpR+msx6x18NySYBftRve1Ve+SfA+eDTrpl/S9QsULY+y8P2pnQ6ZE
-        WyZ4cPX+MohaNtPE59rMnl3mZ99EBzILi7WuJZUKawTa5Qq+5EKExsS6We/ayFS7nRdTCWo5B+uH
-        09BrTGZeVDJzlEAtiq94TLGy4kuhCMjRo33vyxsplUSak7nsJsRUm+1T1LIQZFQ0EzR0vr/OCvjS
-        W6GmYK/mR5IXLS0Ks5+/PPjy4P/Z4amKhs8AAA==
+      string: "{\n  \"floodStatuses\": [\n    {\n      \"gaugeId\": \"BWDB_SW270\",\n
+        \     \"issuedTime\": \"2025-12-09T15:54:22.052412Z\",\n      \"severity\":
+        \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\":
+        24.691644,\n        \"longitude\": 91.389698\n      },\n      \"qualityVerified\":
+        true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW228\",\n      \"issuedTime\":
+        \"2025-12-09T15:56:55.082424Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 24.737208,\n
+        \       \"longitude\": 90.431068\n      },\n      \"qualityVerified\": true\n
+        \   },\n    {\n      \"gaugeId\": \"BWDB_SW34\",\n      \"issuedTime\": \"2025-12-09T15:54:18.666005Z\",\n
+        \     \"severity\": \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\":
+        {\n        \"latitude\": 25.189811,\n        \"longitude\": 90.215824\n      },\n
+        \     \"qualityVerified\": true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW88\",\n
+        \     \"issuedTime\": \"2025-12-09T15:54:19.052472Z\",\n      \"severity\":
+        \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\":
+        24.368824,\n        \"longitude\": 88.553699\n      },\n      \"qualityVerified\":
+        true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW212\",\n      \"issuedTime\":
+        \"2025-12-09T15:55:16.931692Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 23.221259,\n
+        \       \"longitude\": 91.438231\n      },\n      \"qualityVerified\": true\n
+        \   },\n    {\n      \"gaugeId\": \"BWDB_SW172\",\n      \"issuedTime\": \"2025-12-09T15:56:17.770428Z\",\n
+        \     \"severity\": \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\":
+        {\n        \"latitude\": 24.872495,\n        \"longitude\": 92.485642\n      },\n
+        \     \"qualityVerified\": true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW3A\",\n
+        \     \"issuedTime\": \"2025-12-09T15:54:22.262847Z\",\n      \"severity\":
+        \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\":
+        23.956966,\n        \"longitude\": 91.119442\n      },\n      \"qualityVerified\":
+        true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW202\",\n      \"issuedTime\":
+        \"2025-12-09T15:54:18.247590Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 24.496424,\n
+        \       \"longitude\": 91.774876\n      },\n      \"qualityVerified\": true\n
+        \   },\n    {\n      \"gaugeId\": \"BWDB_SW248\",\n      \"issuedTime\": \"2025-12-09T15:54:21.662812Z\",\n
+        \     \"severity\": \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\":
+        {\n        \"latitude\": 22.15791,\n        \"longitude\": 92.063472\n      },\n
+        \     \"qualityVerified\": true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW84\",\n
+        \     \"issuedTime\": \"2025-12-09T15:55:11.676451Z\",\n      \"severity\":
+        \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\":
+        22.968128,\n        \"longitude\": 91.703954\n      },\n      \"qualityVerified\":
+        true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW15J\",\n      \"issuedTime\":
+        \"2025-12-09T15:56:16.990314Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 24.891637,\n
+        \       \"longitude\": 89.580654\n      },\n      \"qualityVerified\": true\n
+        \   },\n    {\n      \"gaugeId\": \"BWDB_SW266\",\n      \"issuedTime\": \"2025-12-09T15:55:31.427265Z\",\n
+        \     \"severity\": \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\":
+        {\n        \"latitude\": 25.004479,\n        \"longitude\": 92.265191\n      },\n
+        \     \"qualityVerified\": true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW236\",\n
+        \     \"issuedTime\": \"2025-12-09T15:56:59.533427Z\",\n      \"severity\":
+        \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\":
+        25.689237,\n        \"longitude\": 88.618762\n      },\n      \"qualityVerified\":
+        true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW285\",\n      \"issuedTime\":
+        \"2025-12-09T15:54:18.247705Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 26.03796,\n        \"longitude\":
+        88.460897\n      },\n      \"qualityVerified\": true\n    },\n    {\n      \"gaugeId\":
+        \"BWDB_SW145\",\n      \"issuedTime\": \"2025-12-09T15:54:18.459718Z\",\n
+        \     \"severity\": \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\":
+        {\n        \"latitude\": 24.916416,\n        \"longitude\": 88.744249\n      },\n
+        \     \"qualityVerified\": true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW162\",\n
+        \     \"issuedTime\": \"2025-12-09T15:55:38.075188Z\",\n      \"severity\":
+        \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\":
+        23.101868,\n        \"longitude\": 89.096763\n      },\n      \"qualityVerified\":
+        true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW110\",\n      \"issuedTime\":
+        \"2025-12-09T15:54:19.353134Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 23.471078,\n
+        \       \"longitude\": 91.19839\n      },\n      \"qualityVerified\": true\n
+        \   },\n    {\n      \"gaugeId\": \"BWDB_SW91.9R\",\n      \"issuedTime\":
+        \"2025-12-09T15:56:10.295913Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 23.768642,\n
+        \       \"longitude\": 89.778872\n      },\n      \"qualityVerified\": true\n
+        \   },\n    {\n      \"gaugeId\": \"BWDB_SW291.5R\",\n      \"issuedTime\":
+        \"2025-12-09T15:54:22.152617Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 26.125276,\n
+        \       \"longitude\": 89.073729\n      },\n      \"qualityVerified\": true\n
+        \   },\n    {\n      \"gaugeId\": \"BWDB_SW302\",\n      \"issuedTime\": \"2025-12-09T15:55:49.996450Z\",\n
+        \     \"severity\": \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\":
+        {\n        \"latitude\": 23.784904,\n        \"longitude\": 90.336562\n      },\n
+        \     \"qualityVerified\": true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW101\",\n
+        \     \"issuedTime\": \"2025-12-09T15:54:19.152442Z\",\n      \"severity\":
+        \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\":
+        23.539828,\n        \"longitude\": 89.516256\n      },\n      \"qualityVerified\":
+        true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW71A\",\n      \"issuedTime\":
+        \"2025-12-09T15:56:47.378861Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 23.56269,\n        \"longitude\":
+        90.48001\n      },\n      \"qualityVerified\": true\n    },\n    {\n      \"gaugeId\":
+        \"BWDB_SW275.5\",\n      \"issuedTime\": \"2025-12-09T15:55:32.068366Z\",\n
+        \     \"severity\": \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\":
+        {\n        \"latitude\": 23.58457,\n        \"longitude\": 90.638969\n      },\n
+        \     \"qualityVerified\": true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW204\",\n
+        \     \"issuedTime\": \"2025-12-09T15:54:20.852534Z\",\n      \"severity\":
+        \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\":
+        21.773552,\n        \"longitude\": 92.079743\n      },\n      \"qualityVerified\":
+        true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW95\",\n      \"issuedTime\":
+        \"2025-12-09T15:56:04.714375Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 23.320123,\n
+        \       \"longitude\": 90.439032\n      },\n      \"qualityVerified\": true\n
+        \   },\n    {\n      \"gaugeId\": \"BWDB_SW263\",\n      \"issuedTime\": \"2025-12-09T15:54:18.260376Z\",\n
+        \     \"severity\": \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\":
+        {\n        \"latitude\": 25.123256,\n        \"longitude\": 90.661579\n      },\n
+        \     \"qualityVerified\": true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW211.5\",\n
+        \     \"issuedTime\": \"2025-12-09T15:54:21.152624Z\",\n      \"severity\":
+        \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\":
+        24.599517,\n        \"longitude\": 88.249526\n      },\n      \"qualityVerified\":
+        true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW273\",\n      \"issuedTime\":
+        \"2025-12-09T15:55:53.969547Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 24.045541,\n
+        \       \"longitude\": 90.991206\n      },\n      \"qualityVerified\": true\n
+        \   },\n    {\n      \"gaugeId\": \"BWDB_SW207\",\n      \"issuedTime\": \"2025-12-09T15:54:20.952663Z\",\n
+        \     \"severity\": \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\":
+        {\n        \"latitude\": 23.645365,\n        \"longitude\": 88.842925\n      },\n
+        \     \"qualityVerified\": true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW147.5\",\n
+        \     \"issuedTime\": \"2025-12-09T15:25:33.840005Z\",\n      \"severity\":
+        \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\":
+        24.497782,\n        \"longitude\": 89.138756\n      },\n      \"qualityVerified\":
+        true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW65\",\n      \"issuedTime\":
+        \"2025-12-09T15:54:18.752545Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 24.831299,\n
+        \       \"longitude\": 89.391511\n      },\n      \"qualityVerified\": true\n
+        \   },\n    {\n      \"gaugeId\": \"BWDB_SW49A\",\n      \"issuedTime\": \"2025-12-09T15:24:30.710986Z\",\n
+        \     \"severity\": \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\":
+        {\n        \"latitude\": 24.635869,\n        \"longitude\": 89.689858\n      },\n
+        \     \"qualityVerified\": true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW274\",\n
+        \     \"issuedTime\": \"2025-12-09T15:55:59.180780Z\",\n      \"severity\":
+        \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\":
+        23.918646,\n        \"longitude\": 90.72653\n      },\n      \"qualityVerified\":
+        true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW93.4L\",\n      \"issuedTime\":
+        \"2025-12-09T15:57:08.773323Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 23.511165,\n
+        \       \"longitude\": 90.206392\n      },\n      \"qualityVerified\": true\n
+        \   },\n    {\n      \"gaugeId\": \"BWDB_SW45.5\",\n      \"issuedTime\":
+        \"2025-12-09T15:56:05.526362Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 25.544273,\n
+        \       \"longitude\": 89.686153\n      },\n      \"qualityVerified\": true\n
+        \   },\n    {\n      \"gaugeId\": \"BWDB_SW50.6\",\n      \"issuedTime\":
+        \"2025-12-09T15:55:23.587720Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 23.881297,\n
+        \       \"longitude\": 89.772772\n      },\n      \"qualityVerified\": true\n
+        \   },\n    {\n      \"gaugeId\": \"BWDB_SW77\",\n      \"issuedTime\": \"2025-12-09T15:54:18.853457Z\",\n
+        \     \"severity\": \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\":
+        {\n        \"latitude\": 25.82041,\n        \"longitude\": 89.667595\n      },\n
+        \     \"qualityVerified\": true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW62\",\n
+        \     \"issuedTime\": \"2025-12-09T15:54:19.863311Z\",\n      \"severity\":
+        \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\":
+        25.675475,\n        \"longitude\": 89.062548\n      },\n      \"qualityVerified\":
+        true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW263.1\",\n      \"issuedTime\":
+        \"2025-12-09T15:54:19.462551Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 25.073472,\n
+        \       \"longitude\": 90.889765\n      },\n      \"qualityVerified\": true\n
+        \   },\n    {\n      \"gaugeId\": \"BWDB_SW49\",\n      \"issuedTime\": \"2025-12-09T15:57:04.143982Z\",\n
+        \     \"severity\": \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\":
+        {\n        \"latitude\": 24.470952,\n        \"longitude\": 89.718387\n      },\n
+        \     \"qualityVerified\": true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW225\",\n
+        \     \"issuedTime\": \"2025-12-09T15:54:21.252566Z\",\n      \"severity\":
+        \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\":
+        24.923502,\n        \"longitude\": 89.967658\n      },\n      \"qualityVerified\":
+        true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW206\",\n      \"issuedTime\":
+        \"2025-12-09T15:54:21.063326Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 23.787087,\n
+        \       \"longitude\": 88.857085\n      },\n      \"qualityVerified\": true\n
+        \   },\n    {\n      \"gaugeId\": \"BWDB_SW140\",\n      \"issuedTime\": \"2025-12-09T15:54:22.565722Z\",\n
+        \     \"severity\": \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\":
+        {\n        \"latitude\": 26.330021,\n        \"longitude\": 88.544405\n      },\n
+        \     \"qualityVerified\": true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW267\",\n
+        \     \"issuedTime\": \"2025-12-09T15:54:21.968542Z\",\n      \"severity\":
+        \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\":
+        24.888834,\n        \"longitude\": 91.849452\n      },\n      \"qualityVerified\":
+        true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW42\",\n      \"issuedTime\":
+        \"2025-12-09T15:54:20.352491Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 23.696849,\n
+        \       \"longitude\": 90.419454\n      },\n      \"qualityVerified\": true\n
+        \   },\n    {\n      \"gaugeId\": \"BWDB_SW67\",\n      \"issuedTime\": \"2025-12-09T15:56:54.916248Z\",\n
+        \     \"severity\": \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\":
+        {\n        \"latitude\": 24.352029,\n        \"longitude\": 91.84582\n      },\n
+        \     \"qualityVerified\": true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW238\",\n
+        \     \"issuedTime\": \"2025-12-09T15:54:21.552610Z\",\n      \"severity\":
+        \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\":
+        24.820982,\n        \"longitude\": 88.318746\n      },\n      \"qualityVerified\":
+        true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW63\",\n      \"issuedTime\":
+        \"2025-12-09T15:54:20.052627Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 25.146083,\n
+        \       \"longitude\": 89.377776\n      },\n      \"qualityVerified\": true\n
+        \   },\n    {\n      \"gaugeId\": \"BWDB_SW72\",\n      \"issuedTime\": \"2025-12-09T15:57:04.474950Z\",\n
+        \     \"severity\": \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\":
+        {\n        \"latitude\": 24.70217,\n        \"longitude\": 91.110489\n      },\n
+        \     \"qualityVerified\": true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW175.5\",\n
+        \     \"issuedTime\": \"2025-12-09T15:57:01.217196Z\",\n      \"severity\":
+        \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\":
+        24.628307,\n        \"longitude\": 91.681667\n      },\n      \"qualityVerified\":
+        true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW173\",\n      \"issuedTime\":
+        \"2025-12-09T15:54:20.166369Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 24.890721,\n
+        \       \"longitude\": 92.191013\n      },\n      \"qualityVerified\": true\n
+        \   },\n    {\n      \"gaugeId\": \"BWDB_SW203\",\n      \"issuedTime\": \"2025-12-09T15:54:20.765591Z\",\n
+        \     \"severity\": \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\":
+        {\n        \"latitude\": 21.793554,\n        \"longitude\": 92.209356\n      },\n
+        \     \"qualityVerified\": true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW179\",\n
+        \     \"issuedTime\": \"2025-12-09T15:54:18.552431Z\",\n      \"severity\":
+        \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\":
+        23.732784,\n        \"longitude\": 90.496305\n      },\n      \"qualityVerified\":
+        true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW117\",\n      \"issuedTime\":
+        \"2025-12-09T15:54:19.565861Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 22.807724,\n
+        \       \"longitude\": 91.719765\n      },\n      \"qualityVerified\": true\n
+        \   },\n    {\n      \"gaugeId\": \"BWDB_SW201\",\n      \"issuedTime\": \"2025-12-09T15:54:20.652673Z\",\n
+        \     \"severity\": \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\":
+        {\n        \"latitude\": 24.428089,\n        \"longitude\": 91.937553\n      },\n
+        \     \"qualityVerified\": true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW93.5L\",\n
+        \     \"issuedTime\": \"2025-12-09T15:54:21.452709Z\",\n      \"severity\":
+        \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\":
+        23.4704,\n        \"longitude\": 90.260002\n      },\n      \"qualityVerified\":
+        true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW247\",\n      \"issuedTime\":
+        \"2025-12-09T15:54:21.752867Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 22.194878,\n
+        \       \"longitude\": 92.216246\n      },\n      \"qualityVerified\": true\n
+        \   },\n    {\n      \"gaugeId\": \"BWDB_SW131.5\",\n      \"issuedTime\":
+        \"2025-12-09T15:54:19.752734Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 25.191499,\n
+        \       \"longitude\": 91.250119\n      },\n      \"qualityVerified\": true\n
+        \   },\n    {\n      \"gaugeId\": \"BWDB_SW132.2\",\n      \"issuedTime\":
+        \"2025-12-09T15:54:19.652480Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 26.030516,\n
+        \       \"longitude\": 88.702683\n      },\n      \"qualityVerified\": true\n
+        \   },\n    {\n      \"gaugeId\": \"BWDB_SW90\",\n      \"issuedTime\": \"2025-12-09T15:56:52.674081Z\",\n
+        \     \"severity\": \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\":
+        {\n        \"latitude\": 24.06764,\n        \"longitude\": 89.03352\n      },\n
+        \     \"qualityVerified\": true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW269\",\n
+        \     \"issuedTime\": \"2025-12-09T15:54:21.852441Z\",\n      \"severity\":
+        \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\":
+        25.071634,\n        \"longitude\": 91.405531\n      },\n      \"qualityVerified\":
+        true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW14.5\",\n      \"issuedTime\":
+        \"2025-12-09T15:56:04.746938Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 23.911094,\n
+        \       \"longitude\": 90.230264\n      },\n      \"qualityVerified\": true\n
+        \   },\n    {\n      \"gaugeId\": \"BWDB_SW294\",\n      \"issuedTime\": \"2025-12-09T15:55:27.555270Z\",\n
+        \     \"severity\": \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\":
+        {\n        \"latitude\": 25.787864,\n        \"longitude\": 89.437306\n      },\n
+        \     \"qualityVerified\": true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW137A\",\n
+        \     \"issuedTime\": \"2025-12-09T15:54:19.952719Z\",\n      \"severity\":
+        \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\":
+        23.862486,\n        \"longitude\": 89.958068\n      },\n      \"qualityVerified\":
+        true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW99\",\n      \"issuedTime\":
+        \"2025-12-09T15:54:19.265399Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 23.883877,\n
+        \       \"longitude\": 89.182899\n      },\n      \"qualityVerified\": true\n
+        \   },\n    {\n      \"gaugeId\": \"BWDB_SW5\",\n      \"issuedTime\": \"2025-12-09T15:56:05.164392Z\",\n
+        \     \"severity\": \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\":
+        {\n        \"latitude\": 23.187806,\n        \"longitude\": 90.209848\n      },\n
+        \     \"qualityVerified\": true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW45\",\n
+        \     \"issuedTime\": \"2025-12-09T15:56:52.733488Z\",\n      \"severity\":
+        \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\":
+        25.920668,\n        \"longitude\": 89.76646\n      },\n      \"qualityVerified\":
+        true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW159\",\n      \"issuedTime\":
+        \"2025-12-09T15:55:05.696939Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 24.392752,\n
+        \       \"longitude\": 91.410342\n      },\n      \"qualityVerified\": true\n
+        \   },\n    {\n      \"gaugeId\": \"BWDB_SW277\",\n      \"issuedTime\": \"2025-12-09T15:54:20.552640Z\",\n
+        \     \"severity\": \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\":
+        {\n        \"latitude\": 23.23169,\n        \"longitude\": 90.639487\n      },\n
+        \     \"qualityVerified\": true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW46.9L\",\n
+        \     \"issuedTime\": \"2025-12-09T15:56:56.310217Z\",\n      \"severity\":
+        \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\":
+        25.104949,\n        \"longitude\": 89.70111\n      },\n      \"qualityVerified\":
+        true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW68.5\",\n      \"issuedTime\":
+        \"2025-12-09T15:54:21.365838Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 23.878853,\n
+        \       \"longitude\": 90.025397\n      },\n      \"qualityVerified\": true\n
+        \   },\n    {\n      \"gaugeId\": \"BWDB_SW88A\",\n      \"issuedTime\": \"2025-12-09T15:54:18.968747Z\",\n
+        \     \"severity\": \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\":
+        {\n        \"latitude\": 24.644253,\n        \"longitude\": 88.068931\n      },\n
+        \     \"qualityVerified\": true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW36\",\n
+        \     \"issuedTime\": \"2025-12-09T15:56:25.571120Z\",\n      \"severity\":
+        \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\":
+        25.009779,\n        \"longitude\": 90.652813\n      },\n      \"qualityVerified\":
+        true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW157\",\n      \"issuedTime\":
+        \"2025-12-09T15:25:46.706499Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 24.098525,\n
+        \       \"longitude\": 91.59615\n      },\n      \"qualityVerified\": true\n
+        \   },\n    {\n      \"gaugeId\": \"BWDB_SW133\",\n      \"issuedTime\": \"2025-12-09T15:54:20.462939Z\",\n
+        \     \"severity\": \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\":
+        {\n        \"latitude\": 24.844091,\n        \"longitude\": 88.932033\n      },\n
+        \     \"qualityVerified\": true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW177\",\n
+        \     \"issuedTime\": \"2025-12-09T15:54:20.252545Z\",\n      \"severity\":
+        \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\":
+        24.040344,\n        \"longitude\": 90.650532\n      },\n      \"qualityVerified\":
+        true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW299\",\n      \"issuedTime\":
+        \"2025-12-09T15:54:22.352654Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 23.881792,\n
+        \       \"longitude\": 90.4013\n      },\n      \"qualityVerified\": true\n
+        \   },\n    {\n      \"gaugeId\": \"BWDB_SW119.1\",\n      \"issuedTime\":
+        \"2025-12-09T15:55:24.934505Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 22.56086,\n        \"longitude\":
+        91.846427\n      },\n      \"qualityVerified\": true\n    },\n    {\n      \"gaugeId\":
+        \"BWDB_SW142.1\",\n      \"issuedTime\": \"2025-12-09T15:54:22.452562Z\",\n
+        \     \"severity\": \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\":
+        {\n        \"latitude\": 25.767523,\n        \"longitude\": 88.731861\n      },\n
+        \     \"qualityVerified\": true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW251\",\n
+        \     \"issuedTime\": \"2025-12-09T15:56:57.586841Z\",\n      \"severity\":
+        \"UNKNOWN\",\n      \"source\": \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\":
+        25.087706,\n        \"longitude\": 92.11833\n      },\n      \"qualityVerified\":
+        true\n    },\n    {\n      \"gaugeId\": \"BWDB_SW269.5\",\n      \"issuedTime\":
+        \"2025-12-09T15:55:08.791782Z\",\n      \"severity\": \"UNKNOWN\",\n      \"source\":
+        \"BWDB\",\n      \"gaugeLocation\": {\n        \"latitude\": 24.785555,\n
+        \       \"longitude\": 91.379531\n      },\n      \"qualityVerified\": true\n
+        \   }\n  ],\n  \"nextPageToken\": \"CFESZApcdHlwZS5nb29nbGVhcGlzLmNvbS9nb29nbGUucmVzZWFyY2guZmxvb2Rmb3JlY2FzdGluZy52MS5TZWFyY2hMYXRlc3RGbG9vZFN0YXR1c0J5QXJlYVJlcXVlc3QSBAoCQkQ=\"\n}\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Cache-Control:
-      - private
       Content-Encoding:
       - gzip
       Content-Type:
       - application/json; charset=UTF-8
       Date:
-      - Mon, 07 Oct 2024 20:22:06 GMT
+      - Tue, 09 Dec 2025 15:57:49 GMT
       Server:
       - ESF
       Server-Timing:
-      - gfet4t7; dur=1000
+      - gfet4t7; dur=546
       Transfer-Encoding:
       - chunked
       Vary:
@@ -117,71 +357,335 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - python-requests/2.32.0
+      - python-requests/2.32.5
     method: GET
-    uri: https://floodforecasting.googleapis.com/v1/gauges:batchGet?names=gauges%2FBWDB_SW101&names=gauges%2FBWDB_SW110&names=gauges%2FBWDB_SW117&names=gauges%2FBWDB_SW119.1&names=gauges%2FBWDB_SW131.5&names=gauges%2FBWDB_SW132.2&names=gauges%2FBWDB_SW133&names=gauges%2FBWDB_SW137A&names=gauges%2FBWDB_SW14.5&names=gauges%2FBWDB_SW140&names=gauges%2FBWDB_SW142.1&names=gauges%2FBWDB_SW145&names=gauges%2FBWDB_SW147.5&names=gauges%2FBWDB_SW157&names=gauges%2FBWDB_SW159&names=gauges%2FBWDB_SW15J&names=gauges%2FBWDB_SW162&names=gauges%2FBWDB_SW172&names=gauges%2FBWDB_SW173&names=gauges%2FBWDB_SW175.5&names=gauges%2FBWDB_SW177&names=gauges%2FBWDB_SW179&names=gauges%2FBWDB_SW201&names=gauges%2FBWDB_SW202&names=gauges%2FBWDB_SW203&names=gauges%2FBWDB_SW204&names=gauges%2FBWDB_SW206&names=gauges%2FBWDB_SW207&names=gauges%2FBWDB_SW211.5&names=gauges%2FBWDB_SW212&names=gauges%2FBWDB_SW225&names=gauges%2FBWDB_SW228&names=gauges%2FBWDB_SW236&names=gauges%2FBWDB_SW238&names=gauges%2FBWDB_SW247&names=gauges%2FBWDB_SW248&names=gauges%2FBWDB_SW251&names=gauges%2FBWDB_SW263&names=gauges%2FBWDB_SW263.1&names=gauges%2FBWDB_SW266&names=gauges%2FBWDB_SW267&names=gauges%2FBWDB_SW269&names=gauges%2FBWDB_SW269.5&names=gauges%2FBWDB_SW270&names=gauges%2FBWDB_SW273&names=gauges%2FBWDB_SW274&names=gauges%2FBWDB_SW275.5&names=gauges%2FBWDB_SW277&names=gauges%2FBWDB_SW285&names=gauges%2FBWDB_SW291.5R&names=gauges%2FBWDB_SW294&names=gauges%2FBWDB_SW299&names=gauges%2FBWDB_SW302&names=gauges%2FBWDB_SW36&names=gauges%2FBWDB_SW3A&names=gauges%2FBWDB_SW42&names=gauges%2FBWDB_SW45&names=gauges%2FBWDB_SW45.5&names=gauges%2FBWDB_SW46.9L&names=gauges%2FBWDB_SW49&names=gauges%2FBWDB_SW49A&names=gauges%2FBWDB_SW5&names=gauges%2FBWDB_SW50.6&names=gauges%2FBWDB_SW62&names=gauges%2FBWDB_SW63&names=gauges%2FBWDB_SW65&names=gauges%2FBWDB_SW67&names=gauges%2FBWDB_SW68.5&names=gauges%2FBWDB_SW71A&names=gauges%2FBWDB_SW72&names=gauges%2FBWDB_SW77&names=gauges%2FBWDB_SW84&names=gauges%2FBWDB_SW88&names=gauges%2FBWDB_SW88A&names=gauges%2FBWDB_SW90&names=gauges%2FBWDB_SW91.9R&names=gauges%2FBWDB_SW93.4L&names=gauges%2FBWDB_SW93.5L&names=gauges%2FBWDB_SW95&names=gauges%2FBWDB_SW99
+    uri: https://floodforecasting.googleapis.com/v1/gauges:batchGet?names=gauges%2FBWDB_SW101&names=gauges%2FBWDB_SW110&names=gauges%2FBWDB_SW117&names=gauges%2FBWDB_SW119.1&names=gauges%2FBWDB_SW131.5&names=gauges%2FBWDB_SW132.2&names=gauges%2FBWDB_SW133&names=gauges%2FBWDB_SW137A&names=gauges%2FBWDB_SW14.5&names=gauges%2FBWDB_SW140&names=gauges%2FBWDB_SW142.1&names=gauges%2FBWDB_SW145&names=gauges%2FBWDB_SW147.5&names=gauges%2FBWDB_SW157&names=gauges%2FBWDB_SW159&names=gauges%2FBWDB_SW15J&names=gauges%2FBWDB_SW162&names=gauges%2FBWDB_SW172&names=gauges%2FBWDB_SW173&names=gauges%2FBWDB_SW175.5&names=gauges%2FBWDB_SW177&names=gauges%2FBWDB_SW179&names=gauges%2FBWDB_SW201&names=gauges%2FBWDB_SW202&names=gauges%2FBWDB_SW203&names=gauges%2FBWDB_SW204&names=gauges%2FBWDB_SW206&names=gauges%2FBWDB_SW207&names=gauges%2FBWDB_SW211.5&names=gauges%2FBWDB_SW212&names=gauges%2FBWDB_SW225&names=gauges%2FBWDB_SW228&names=gauges%2FBWDB_SW236&names=gauges%2FBWDB_SW238&names=gauges%2FBWDB_SW247&names=gauges%2FBWDB_SW248&names=gauges%2FBWDB_SW251&names=gauges%2FBWDB_SW263&names=gauges%2FBWDB_SW263.1&names=gauges%2FBWDB_SW266&names=gauges%2FBWDB_SW267&names=gauges%2FBWDB_SW269&names=gauges%2FBWDB_SW269.5&names=gauges%2FBWDB_SW270&names=gauges%2FBWDB_SW273&names=gauges%2FBWDB_SW274&names=gauges%2FBWDB_SW275.5&names=gauges%2FBWDB_SW277&names=gauges%2FBWDB_SW285&names=gauges%2FBWDB_SW291.5R&names=gauges%2FBWDB_SW294&names=gauges%2FBWDB_SW299&names=gauges%2FBWDB_SW302&names=gauges%2FBWDB_SW34&names=gauges%2FBWDB_SW36&names=gauges%2FBWDB_SW3A&names=gauges%2FBWDB_SW42&names=gauges%2FBWDB_SW45&names=gauges%2FBWDB_SW45.5&names=gauges%2FBWDB_SW46.9L&names=gauges%2FBWDB_SW49&names=gauges%2FBWDB_SW49A&names=gauges%2FBWDB_SW5&names=gauges%2FBWDB_SW50.6&names=gauges%2FBWDB_SW62&names=gauges%2FBWDB_SW63&names=gauges%2FBWDB_SW65&names=gauges%2FBWDB_SW67&names=gauges%2FBWDB_SW68.5&names=gauges%2FBWDB_SW71A&names=gauges%2FBWDB_SW72&names=gauges%2FBWDB_SW77&names=gauges%2FBWDB_SW84&names=gauges%2FBWDB_SW88&names=gauges%2FBWDB_SW88A&names=gauges%2FBWDB_SW90&names=gauges%2FBWDB_SW91.9R&names=gauges%2FBWDB_SW93.4L&names=gauges%2FBWDB_SW93.5L&names=gauges%2FBWDB_SW95&names=gauges%2FBWDB_SW99
   response:
     body:
-      string: !!binary |
-        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
-        p0Mb2pKQXnJgfxlk+P3PV3+8+i/GTg1MQU0AAA==
+      string: "{\n  \"gauges\": [\n    {\n      \"location\": {\n        \"latitude\":
+        24.368824,\n        \"longitude\": 88.553699\n      },\n      \"siteName\":
+        \"Rajshahi\",\n      \"source\": \"BWDB\",\n      \"river\": \"Ganges\",\n
+        \     \"gaugeId\": \"BWDB_SW88\",\n      \"qualityVerified\": true,\n      \"hasModel\":
+        true\n    },\n    {\n      \"location\": {\n        \"latitude\": 23.221259,\n
+        \       \"longitude\": 91.438231\n      },\n      \"siteName\": \"Parshuram\",\n
+        \     \"source\": \"BWDB\",\n      \"river\": \"Muhuri\",\n      \"gaugeId\":
+        \"BWDB_SW212\",\n      \"qualityVerified\": true,\n      \"hasModel\": true\n
+        \   },\n    {\n      \"location\": {\n        \"latitude\": 24.470952,\n        \"longitude\":
+        89.718387\n      },\n      \"siteName\": \"Serajganj\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Jamuna\",\n      \"gaugeId\": \"BWDB_SW49\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 23.878853,\n        \"longitude\":
+        90.025397\n      },\n      \"siteName\": \"Jagir\",\n      \"source\": \"BWDB\",\n
+        \     \"river\": \"Old Dhaleswari\",\n      \"gaugeId\": \"BWDB_SW68.5\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 24.635869,\n        \"longitude\":
+        89.689858\n      },\n      \"siteName\": \"Kazipur\",\n      \"source\": \"BWDB\",\n
+        \     \"river\": \"Jamuna\",\n      \"gaugeId\": \"BWDB_SW49A\",\n      \"qualityVerified\":
+        true,\n      \"hasModel\": true\n    },\n    {\n      \"location\": {\n        \"latitude\":
+        24.916416,\n        \"longitude\": 88.744249\n      },\n      \"siteName\":
+        \"Mohadebpur\",\n      \"source\": \"BWDB\",\n      \"river\": \"Atrai\",\n
+        \     \"gaugeId\": \"BWDB_SW145\",\n      \"qualityVerified\": true,\n      \"hasModel\":
+        true\n    },\n    {\n      \"location\": {\n        \"latitude\": 23.881297,\n
+        \       \"longitude\": 89.772772\n      },\n      \"siteName\": \"Aricha\",\n
+        \     \"source\": \"BWDB\",\n      \"river\": \"Jamuna\",\n      \"gaugeId\":
+        \"BWDB_SW50.6\",\n      \"qualityVerified\": true,\n      \"hasModel\": true\n
+        \   },\n    {\n      \"location\": {\n        \"latitude\": 26.125276,\n        \"longitude\":
+        89.073729\n      },\n      \"siteName\": \"Dalia\",\n      \"source\": \"BWDB\",\n
+        \     \"river\": \"Teesta\",\n      \"gaugeId\": \"BWDB_SW291.5R\",\n      \"qualityVerified\":
+        true,\n      \"hasModel\": true\n    },\n    {\n      \"location\": {\n        \"latitude\":
+        24.352029,\n        \"longitude\": 91.84582\n      },\n      \"siteName\":
+        \"Kamalganj\",\n      \"source\": \"BWDB\",\n      \"river\": \"Dhalai\",\n
+        \     \"gaugeId\": \"BWDB_SW67\",\n      \"qualityVerified\": true,\n      \"hasModel\":
+        true\n    },\n    {\n      \"location\": {\n        \"latitude\": 23.787087,\n
+        \       \"longitude\": 88.857085\n      },\n      \"siteName\": \"Hatboalia\",\n
+        \     \"source\": \"BWDB\",\n      \"river\": \"Mathabhanga\",\n      \"gaugeId\":
+        \"BWDB_SW206\",\n      \"qualityVerified\": true,\n      \"hasModel\": true\n
+        \   },\n    {\n      \"location\": {\n        \"latitude\": 24.70217,\n        \"longitude\":
+        91.110489\n      },\n      \"siteName\": \"Khaliajuri\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Dhanu\",\n      \"gaugeId\": \"BWDB_SW72\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 25.004479,\n        \"longitude\":
+        92.265191\n      },\n      \"siteName\": \"Kanaighat\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Surma\",\n      \"gaugeId\": \"BWDB_SW266\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 25.009779,\n        \"longitude\":
+        90.652813\n      },\n      \"siteName\": \"Jariajanjail\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Kangsha\",\n      \"gaugeId\": \"BWDB_SW36\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 24.890721,\n        \"longitude\":
+        92.191013\n      },\n      \"siteName\": \"Sheola\",\n      \"source\": \"BWDB\",\n
+        \     \"river\": \"Kushiyara\",\n      \"gaugeId\": \"BWDB_SW173\",\n      \"qualityVerified\":
+        true,\n      \"hasModel\": true\n    },\n    {\n      \"location\": {\n        \"latitude\":
+        24.428089,\n        \"longitude\": 91.937553\n      },\n      \"siteName\":
+        \"Manu-RB\",\n      \"source\": \"BWDB\",\n      \"river\": \"Manu\",\n      \"gaugeId\":
+        \"BWDB_SW201\",\n      \"qualityVerified\": true,\n      \"hasModel\": true\n
+        \   },\n    {\n      \"location\": {\n        \"latitude\": 21.793554,\n        \"longitude\":
+        92.209356\n      },\n      \"siteName\": \"Lama\",\n      \"source\": \"BWDB\",\n
+        \     \"river\": \"Matamuhuri\",\n      \"gaugeId\": \"BWDB_SW203\",\n      \"qualityVerified\":
+        true,\n      \"hasModel\": true\n    },\n    {\n      \"location\": {\n        \"latitude\":
+        23.539828,\n        \"longitude\": 89.516256\n      },\n      \"siteName\":
+        \"Kamarkhali (Transit)\",\n      \"source\": \"BWDB\",\n      \"river\": \"Gorai\",\n
+        \     \"gaugeId\": \"BWDB_SW101\",\n      \"qualityVerified\": true,\n      \"hasModel\":
+        true\n    },\n    {\n      \"location\": {\n        \"latitude\": 23.56269,\n
+        \       \"longitude\": 90.48001\n      },\n      \"siteName\": \"Rekabi-Bazar\",\n
+        \     \"source\": \"BWDB\",\n      \"river\": \"Dhaleswari\",\n      \"gaugeId\":
+        \"BWDB_SW71A\",\n      \"qualityVerified\": true,\n      \"hasModel\": true\n
+        \   },\n    {\n      \"location\": {\n        \"latitude\": 22.968128,\n        \"longitude\":
+        91.703954\n      },\n      \"siteName\": \"Ramgarh\",\n      \"source\": \"BWDB\",\n
+        \     \"river\": \"Feni\",\n      \"gaugeId\": \"BWDB_SW84\",\n      \"qualityVerified\":
+        true,\n      \"hasModel\": true\n    },\n    {\n      \"location\": {\n        \"latitude\":
+        25.82041,\n        \"longitude\": 89.667595\n      },\n      \"siteName\":
+        \"Kurigram\",\n      \"source\": \"BWDB\",\n      \"river\": \"Dharla\",\n
+        \     \"gaugeId\": \"BWDB_SW77\",\n      \"qualityVerified\": true,\n      \"hasModel\":
+        true\n    },\n    {\n      \"location\": {\n        \"latitude\": 24.098525,\n
+        \       \"longitude\": 91.59615\n      },\n      \"siteName\": \"Ballah\",\n
+        \     \"source\": \"BWDB\",\n      \"river\": \"Khowai\",\n      \"gaugeId\":
+        \"BWDB_SW157\",\n      \"qualityVerified\": true,\n      \"hasModel\": true\n
+        \   },\n    {\n      \"location\": {\n        \"latitude\": 22.807724,\n        \"longitude\":
+        91.719765\n      },\n      \"siteName\": \"Narayanhat\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Halda\",\n      \"gaugeId\": \"BWDB_SW117\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 25.071634,\n        \"longitude\":
+        91.405531\n      },\n      \"siteName\": \"Sunamganj\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Surma\",\n      \"gaugeId\": \"BWDB_SW269\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 23.101868,\n        \"longitude\":
+        89.096763\n      },\n      \"siteName\": \"Jhikargacha\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Kobadak\",\n      \"gaugeId\": \"BWDB_SW162\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 24.06764,\n        \"longitude\":
+        89.03352\n      },\n      \"siteName\": \"Hardinge-RB\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Ganges\",\n      \"gaugeId\": \"BWDB_SW90\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 25.767523,\n        \"longitude\":
+        88.731861\n      },\n      \"siteName\": \"Bhusirbandar\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Upper Atrai\",\n      \"gaugeId\": \"BWDB_SW142.1\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 24.888834,\n        \"longitude\":
+        91.849452\n      },\n      \"siteName\": \"Sylhet\",\n      \"source\": \"BWDB\",\n
+        \     \"river\": \"Surma\",\n      \"gaugeId\": \"BWDB_SW267\",\n      \"qualityVerified\":
+        true,\n      \"hasModel\": true\n    },\n    {\n      \"location\": {\n        \"latitude\":
+        24.045541,\n        \"longitude\": 90.991206\n      },\n      \"siteName\":
+        \"Bhairab Bazar\",\n      \"source\": \"BWDB\",\n      \"river\": \"Upper
+        Meghna\",\n      \"gaugeId\": \"BWDB_SW273\",\n      \"qualityVerified\":
+        true,\n      \"hasModel\": true\n    },\n    {\n      \"location\": {\n        \"latitude\":
+        23.4704,\n        \"longitude\": 90.260002\n      },\n      \"siteName\":
+        \"Mawa\",\n      \"source\": \"BWDB\",\n      \"river\": \"Padma\",\n      \"gaugeId\":
+        \"BWDB_SW93.5L\",\n      \"qualityVerified\": true,\n      \"hasModel\": true\n
+        \   },\n    {\n      \"location\": {\n        \"latitude\": 23.881792,\n        \"longitude\":
+        90.4013\n      },\n      \"siteName\": \"Tongi\",\n      \"source\": \"BWDB\",\n
+        \     \"river\": \"Tongi Khal\",\n      \"gaugeId\": \"BWDB_SW299\",\n      \"qualityVerified\":
+        true,\n      \"hasModel\": true\n    },\n    {\n      \"location\": {\n        \"latitude\":
+        24.872495,\n        \"longitude\": 92.485642\n      },\n      \"siteName\":
+        \"Amalshid\",\n      \"source\": \"BWDB\",\n      \"river\": \"Kushiyara\",\n
+        \     \"gaugeId\": \"BWDB_SW172\",\n      \"qualityVerified\": true,\n      \"hasModel\":
+        true\n    },\n    {\n      \"location\": {\n        \"latitude\": 25.087706,\n
+        \       \"longitude\": 92.11833\n      },\n      \"siteName\": \"Sarighat\",\n
+        \     \"source\": \"BWDB\",\n      \"river\": \"Sarigowain\",\n      \"gaugeId\":
+        \"BWDB_SW251\",\n      \"qualityVerified\": true,\n      \"hasModel\": true\n
+        \   },\n    {\n      \"location\": {\n        \"latitude\": 25.191499,\n        \"longitude\":
+        91.250119\n      },\n      \"siteName\": \"Lorergorh\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Jadukata\",\n      \"gaugeId\": \"BWDB_SW131.5\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 25.123256,\n        \"longitude\":
+        90.661579\n      },\n      \"siteName\": \"Durgapur\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Someswari\",\n      \"gaugeId\": \"BWDB_SW263\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 26.030516,\n        \"longitude\":
+        88.702683\n      },\n      \"siteName\": \"Phulbari\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Ichamati-Jamuna\",\n      \"gaugeId\": \"BWDB_SW132.2\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 23.58457,\n        \"longitude\":
+        90.638969\n      },\n      \"siteName\": \"Meghna Bridge\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Meghna\",\n      \"gaugeId\": \"BWDB_SW275.5\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 23.645365,\n        \"longitude\":
+        88.842925\n      },\n      \"siteName\": \"Chuadanga\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Mathabhanga\",\n      \"gaugeId\": \"BWDB_SW207\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 25.189811,\n        \"longitude\":
+        90.215824\n      },\n      \"siteName\": \"Nakuagaon\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Bhugai\",\n      \"gaugeId\": \"BWDB_SW34\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": false\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 21.773552,\n        \"longitude\":
+        92.079743\n      },\n      \"siteName\": \"Chiringa\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Matamuhuri\",\n      \"gaugeId\": \"BWDB_SW204\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 24.599517,\n        \"longitude\":
+        88.249526\n      },\n      \"siteName\": \"Chapai-Nawabganj\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Mohananda\",\n      \"gaugeId\": \"BWDB_SW211.5\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 25.787864,\n        \"longitude\":
+        89.437306\n      },\n      \"siteName\": \"Kaunia\",\n      \"source\": \"BWDB\",\n
+        \     \"river\": \"Teesta\",\n      \"gaugeId\": \"BWDB_SW294\",\n      \"qualityVerified\":
+        true,\n      \"hasModel\": true\n    },\n    {\n      \"location\": {\n        \"latitude\":
+        23.732784,\n        \"longitude\": 90.496305\n      },\n      \"siteName\":
+        \"Demra\",\n      \"source\": \"BWDB\",\n      \"river\": \"Balu\",\n      \"gaugeId\":
+        \"BWDB_SW179\",\n      \"qualityVerified\": true,\n      \"hasModel\": true\n
+        \   },\n    {\n      \"location\": {\n        \"latitude\": 24.737208,\n        \"longitude\":
+        90.431068\n      },\n      \"siteName\": \"Mymensingh\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Old Brahmaputra\",\n      \"gaugeId\": \"BWDB_SW228\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 24.691644,\n        \"longitude\":
+        91.389698\n      },\n      \"siteName\": \"Markuli\",\n      \"source\": \"BWDB\",\n
+        \     \"river\": \"Surma-Meghna\",\n      \"gaugeId\": \"BWDB_SW270\",\n      \"qualityVerified\":
+        true,\n      \"hasModel\": true\n    },\n    {\n      \"location\": {\n        \"latitude\":
+        24.785555,\n        \"longitude\": 91.379531\n      },\n      \"siteName\":
+        \"Derai\",\n      \"source\": \"BWDB\",\n      \"river\": \"Surma Old Course\",\n
+        \     \"gaugeId\": \"BWDB_SW269.5\",\n      \"qualityVerified\": true,\n      \"hasModel\":
+        true\n    },\n    {\n      \"location\": {\n        \"latitude\": 24.831299,\n
+        \       \"longitude\": 89.391511\n      },\n      \"siteName\": \"Bogura\",\n
+        \     \"source\": \"BWDB\",\n      \"river\": \"Karatoa\",\n      \"gaugeId\":
+        \"BWDB_SW65\",\n      \"qualityVerified\": true,\n      \"hasModel\": true\n
+        \   },\n    {\n      \"location\": {\n        \"latitude\": 24.392752,\n        \"longitude\":
+        91.410342\n      },\n      \"siteName\": \"Habiganj\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Khowai\",\n      \"gaugeId\": \"BWDB_SW159\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 24.040344,\n        \"longitude\":
+        90.650532\n      },\n      \"siteName\": \"Lakhpur\",\n      \"source\": \"BWDB\",\n
+        \     \"river\": \"Lakhya\",\n      \"gaugeId\": \"BWDB_SW177\",\n      \"qualityVerified\":
+        true,\n      \"hasModel\": true\n    },\n    {\n      \"location\": {\n        \"latitude\":
+        23.956966,\n        \"longitude\": 91.119442\n      },\n      \"siteName\":
+        \"B. Baria\",\n      \"source\": \"BWDB\",\n      \"river\": \"Titas\",\n
+        \     \"gaugeId\": \"BWDB_SW3A\",\n      \"qualityVerified\": true,\n      \"hasModel\":
+        true\n    },\n    {\n      \"location\": {\n        \"latitude\": 25.073472,\n
+        \       \"longitude\": 90.889765\n      },\n      \"siteName\": \"Kalmakanda\",\n
+        \     \"source\": \"BWDB\",\n      \"river\": \"Someswari\",\n      \"gaugeId\":
+        \"BWDB_SW263.1\",\n      \"qualityVerified\": true,\n      \"hasModel\": true\n
+        \   },\n    {\n      \"location\": {\n        \"latitude\": 24.844091,\n        \"longitude\":
+        88.932033\n      },\n      \"siteName\": \"Naogaon\",\n      \"source\": \"BWDB\",\n
+        \     \"river\": \"Little Jamuna\",\n      \"gaugeId\": \"BWDB_SW133\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 24.497782,\n        \"longitude\":
+        89.138756\n      },\n      \"siteName\": \"Singra\",\n      \"source\": \"BWDB\",\n
+        \     \"river\": \"Atrai Gur\",\n      \"gaugeId\": \"BWDB_SW147.5\",\n      \"qualityVerified\":
+        true,\n      \"hasModel\": true\n    },\n    {\n      \"location\": {\n        \"latitude\":
+        23.320123,\n        \"longitude\": 90.439032\n      },\n      \"siteName\":
+        \"Sureshswar\",\n      \"source\": \"BWDB\",\n      \"river\": \"Padma\",\n
+        \     \"gaugeId\": \"BWDB_SW95\",\n      \"qualityVerified\": true,\n      \"hasModel\":
+        true\n    },\n    {\n      \"location\": {\n        \"latitude\": 26.03796,\n
+        \       \"longitude\": 88.460897\n      },\n      \"siteName\": \"Thakurgaon\",\n
+        \     \"source\": \"BWDB\",\n      \"river\": \"Tangon\",\n      \"gaugeId\":
+        \"BWDB_SW285\",\n      \"qualityVerified\": true,\n      \"hasModel\": true\n
+        \   },\n    {\n      \"location\": {\n        \"latitude\": 24.496424,\n        \"longitude\":
+        91.774876\n      },\n      \"siteName\": \"Moulvibazar\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Manu\",\n      \"gaugeId\": \"BWDB_SW202\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 23.911094,\n        \"longitude\":
+        90.230264\n      },\n      \"siteName\": \"Nayarhat\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Bangshi\",\n      \"gaugeId\": \"BWDB_SW14.5\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 25.675475,\n        \"longitude\":
+        89.062548\n      },\n      \"siteName\": \"Badarganj\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Jamuneswari\",\n      \"gaugeId\": \"BWDB_SW62\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 23.511165,\n        \"longitude\":
+        90.206392\n      },\n      \"siteName\": \"Bhagyakul\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Padma\",\n      \"gaugeId\": \"BWDB_SW93.4L\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 23.768642,\n        \"longitude\":
+        89.778872\n      },\n      \"siteName\": \"Goalondo (Transit)\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Padma\",\n      \"gaugeId\": \"BWDB_SW91.9R\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 24.644253,\n        \"longitude\":
+        88.068931\n      },\n      \"siteName\": \"Pankha\",\n      \"source\": \"BWDB\",\n
+        \     \"river\": \"Ganges\",\n      \"gaugeId\": \"BWDB_SW88A\",\n      \"qualityVerified\":
+        true,\n      \"hasModel\": true\n    },\n    {\n      \"location\": {\n        \"latitude\":
+        22.15791,\n        \"longitude\": 92.063472\n      },\n      \"siteName\":
+        \"Dohazari\",\n      \"source\": \"BWDB\",\n      \"river\": \"Sangu\",\n
+        \     \"gaugeId\": \"BWDB_SW248\",\n      \"qualityVerified\": true,\n      \"hasModel\":
+        true\n    },\n    {\n      \"location\": {\n        \"latitude\": 25.689237,\n
+        \       \"longitude\": 88.618762\n      },\n      \"siteName\": \"Dinajpur\",\n
+        \     \"source\": \"BWDB\",\n      \"river\": \"Punarbhaba\",\n      \"gaugeId\":
+        \"BWDB_SW236\",\n      \"qualityVerified\": true,\n      \"hasModel\": true\n
+        \   },\n    {\n      \"location\": {\n        \"latitude\": 24.891637,\n        \"longitude\":
+        89.580654\n      },\n      \"siteName\": \"Sariakandi (Mathurapara)\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Jamuna\",\n      \"gaugeId\": \"BWDB_SW15J\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 22.56086,\n        \"longitude\":
+        91.846427\n      },\n      \"siteName\": \"Panchpukuria\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Halda\",\n      \"gaugeId\": \"BWDB_SW119.1\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 25.920668,\n        \"longitude\":
+        89.76646\n      },\n      \"siteName\": \"Noonkhawa\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Brahmaputra\",\n      \"gaugeId\": \"BWDB_SW45\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 24.923502,\n        \"longitude\":
+        89.967658\n      },\n      \"siteName\": \"Jamalpur\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Old Brahmaputra\",\n      \"gaugeId\": \"BWDB_SW225\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 23.883877,\n        \"longitude\":
+        89.182899\n      },\n      \"siteName\": \"Gorai-RB\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Gorai\",\n      \"gaugeId\": \"BWDB_SW99\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 23.862486,\n        \"longitude\":
+        89.958068\n      },\n      \"siteName\": \"Taraghat\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Kaliganga\",\n      \"gaugeId\": \"BWDB_SW137A\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 23.23169,\n        \"longitude\":
+        90.639487\n      },\n      \"siteName\": \"Chandpur\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Lower Meghna\",\n      \"gaugeId\": \"BWDB_SW277\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 23.696849,\n        \"longitude\":
+        90.419454\n      },\n      \"siteName\": \"Dhaka (MilBarack)\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Buriganga\",\n      \"gaugeId\": \"BWDB_SW42\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 22.194878,\n        \"longitude\":
+        92.216246\n      },\n      \"siteName\": \"Bandarban\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Sangu\",\n      \"gaugeId\": \"BWDB_SW247\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 24.820982,\n        \"longitude\":
+        88.318746\n      },\n      \"siteName\": \"Rohanpur\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Punarvaba\",\n      \"gaugeId\": \"BWDB_SW238\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 26.330021,\n        \"longitude\":
+        88.544405\n      },\n      \"siteName\": \"Panchagarh\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Upper Karatoa\",\n      \"gaugeId\": \"BWDB_SW140\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 25.104949,\n        \"longitude\":
+        89.70111\n      },\n      \"siteName\": \"Bahadurabad (Transit)\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Jamuna\",\n      \"gaugeId\": \"BWDB_SW46.9L\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 23.471078,\n        \"longitude\":
+        91.19839\n      },\n      \"siteName\": \"Cumilla\",\n      \"source\": \"BWDB\",\n
+        \     \"river\": \"Gumti\",\n      \"gaugeId\": \"BWDB_SW110\",\n      \"qualityVerified\":
+        true,\n      \"hasModel\": true\n    },\n    {\n      \"location\": {\n        \"latitude\":
+        23.784904,\n        \"longitude\": 90.336562\n      },\n      \"siteName\":
+        \"Mirpur\",\n      \"source\": \"BWDB\",\n      \"river\": \"Turag\",\n      \"gaugeId\":
+        \"BWDB_SW302\",\n      \"qualityVerified\": true,\n      \"hasModel\": true\n
+        \   },\n    {\n      \"location\": {\n        \"latitude\": 23.187806,\n        \"longitude\":
+        90.209848\n      },\n      \"siteName\": \"Madaripur\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Arialkhan\",\n      \"gaugeId\": \"BWDB_SW5\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 25.146083,\n        \"longitude\":
+        89.377776\n      },\n      \"siteName\": \"Chakrahimpur\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Karatoa\",\n      \"gaugeId\": \"BWDB_SW63\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 24.628307,\n        \"longitude\":
+        91.681667\n      },\n      \"siteName\": \"Sherpur-Sylhet\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Kushiyara\",\n      \"gaugeId\": \"BWDB_SW175.5\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 25.544273,\n        \"longitude\":
+        89.686153\n      },\n      \"siteName\": \"Chilmari\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Brahmaputra\",\n      \"gaugeId\": \"BWDB_SW45.5\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    },\n    {\n
+        \     \"location\": {\n        \"latitude\": 23.918646,\n        \"longitude\":
+        90.72653\n      },\n      \"siteName\": \"Narsingdi\",\n      \"source\":
+        \"BWDB\",\n      \"river\": \"Meghna\",\n      \"gaugeId\": \"BWDB_SW274\",\n
+        \     \"qualityVerified\": true,\n      \"hasModel\": true\n    }\n  ]\n}\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Cache-Control:
-      - private
       Content-Encoding:
       - gzip
       Content-Type:
       - application/json; charset=UTF-8
       Date:
-      - Mon, 07 Oct 2024 20:22:06 GMT
+      - Tue, 09 Dec 2025 15:57:49 GMT
       Server:
       - ESF
       Server-Timing:
-      - gfet4t7; dur=222
+      - gfet4t7; dur=157
       Transfer-Encoding:
       - chunked
       Vary:
@@ -207,55 +711,26 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - python-requests/2.32.0
+      - python-requests/2.32.5
     method: GET
-    uri: https://floodforecasting.googleapis.com/v1/gaugeModels:batchGet?names=gaugeModels%2FBWDB_SW101&names=gaugeModels%2FBWDB_SW110&names=gaugeModels%2FBWDB_SW117&names=gaugeModels%2FBWDB_SW119.1&names=gaugeModels%2FBWDB_SW131.5&names=gaugeModels%2FBWDB_SW132.2&names=gaugeModels%2FBWDB_SW133&names=gaugeModels%2FBWDB_SW137A&names=gaugeModels%2FBWDB_SW14.5&names=gaugeModels%2FBWDB_SW140&names=gaugeModels%2FBWDB_SW142.1&names=gaugeModels%2FBWDB_SW145&names=gaugeModels%2FBWDB_SW147.5&names=gaugeModels%2FBWDB_SW157&names=gaugeModels%2FBWDB_SW159&names=gaugeModels%2FBWDB_SW15J&names=gaugeModels%2FBWDB_SW162&names=gaugeModels%2FBWDB_SW172&names=gaugeModels%2FBWDB_SW173&names=gaugeModels%2FBWDB_SW175.5&names=gaugeModels%2FBWDB_SW177&names=gaugeModels%2FBWDB_SW179&names=gaugeModels%2FBWDB_SW201&names=gaugeModels%2FBWDB_SW202&names=gaugeModels%2FBWDB_SW203&names=gaugeModels%2FBWDB_SW204&names=gaugeModels%2FBWDB_SW206&names=gaugeModels%2FBWDB_SW207&names=gaugeModels%2FBWDB_SW211.5&names=gaugeModels%2FBWDB_SW212&names=gaugeModels%2FBWDB_SW225&names=gaugeModels%2FBWDB_SW228&names=gaugeModels%2FBWDB_SW236&names=gaugeModels%2FBWDB_SW238&names=gaugeModels%2FBWDB_SW247&names=gaugeModels%2FBWDB_SW248&names=gaugeModels%2FBWDB_SW251&names=gaugeModels%2FBWDB_SW263&names=gaugeModels%2FBWDB_SW263.1&names=gaugeModels%2FBWDB_SW266&names=gaugeModels%2FBWDB_SW267&names=gaugeModels%2FBWDB_SW269&names=gaugeModels%2FBWDB_SW269.5&names=gaugeModels%2FBWDB_SW270&names=gaugeModels%2FBWDB_SW273&names=gaugeModels%2FBWDB_SW274&names=gaugeModels%2FBWDB_SW275.5&names=gaugeModels%2FBWDB_SW277&names=gaugeModels%2FBWDB_SW285&names=gaugeModels%2FBWDB_SW291.5R&names=gaugeModels%2FBWDB_SW294&names=gaugeModels%2FBWDB_SW299&names=gaugeModels%2FBWDB_SW302&names=gaugeModels%2FBWDB_SW36&names=gaugeModels%2FBWDB_SW3A&names=gaugeModels%2FBWDB_SW42&names=gaugeModels%2FBWDB_SW45&names=gaugeModels%2FBWDB_SW45.5&names=gaugeModels%2FBWDB_SW46.9L&names=gaugeModels%2FBWDB_SW49&names=gaugeModels%2FBWDB_SW49A&names=gaugeModels%2FBWDB_SW5&names=gaugeModels%2FBWDB_SW50.6&names=gaugeModels%2FBWDB_SW62&names=gaugeModels%2FBWDB_SW63&names=gaugeModels%2FBWDB_SW65&names=gaugeModels%2FBWDB_SW67&names=gaugeModels%2FBWDB_SW68.5&names=gaugeModels%2FBWDB_SW71A&names=gaugeModels%2FBWDB_SW72&names=gaugeModels%2FBWDB_SW77&names=gaugeModels%2FBWDB_SW84&names=gaugeModels%2FBWDB_SW88&names=gaugeModels%2FBWDB_SW88A&names=gaugeModels%2FBWDB_SW90&names=gaugeModels%2FBWDB_SW91.9R&names=gaugeModels%2FBWDB_SW93.4L&names=gaugeModels%2FBWDB_SW93.5L&names=gaugeModels%2FBWDB_SW95&names=gaugeModels%2FBWDB_SW99
+    uri: https://floodforecasting.googleapis.com/v1/gaugeModels:batchGet?names=gaugeModels%2FBWDB_SW101&names=gaugeModels%2FBWDB_SW110&names=gaugeModels%2FBWDB_SW117&names=gaugeModels%2FBWDB_SW119.1&names=gaugeModels%2FBWDB_SW131.5&names=gaugeModels%2FBWDB_SW132.2&names=gaugeModels%2FBWDB_SW133&names=gaugeModels%2FBWDB_SW137A&names=gaugeModels%2FBWDB_SW14.5&names=gaugeModels%2FBWDB_SW140&names=gaugeModels%2FBWDB_SW142.1&names=gaugeModels%2FBWDB_SW145&names=gaugeModels%2FBWDB_SW147.5&names=gaugeModels%2FBWDB_SW157&names=gaugeModels%2FBWDB_SW159&names=gaugeModels%2FBWDB_SW15J&names=gaugeModels%2FBWDB_SW162&names=gaugeModels%2FBWDB_SW172&names=gaugeModels%2FBWDB_SW173&names=gaugeModels%2FBWDB_SW175.5&names=gaugeModels%2FBWDB_SW177&names=gaugeModels%2FBWDB_SW179&names=gaugeModels%2FBWDB_SW201&names=gaugeModels%2FBWDB_SW202&names=gaugeModels%2FBWDB_SW203&names=gaugeModels%2FBWDB_SW204&names=gaugeModels%2FBWDB_SW206&names=gaugeModels%2FBWDB_SW207&names=gaugeModels%2FBWDB_SW211.5&names=gaugeModels%2FBWDB_SW212&names=gaugeModels%2FBWDB_SW225&names=gaugeModels%2FBWDB_SW228&names=gaugeModels%2FBWDB_SW236&names=gaugeModels%2FBWDB_SW238&names=gaugeModels%2FBWDB_SW247&names=gaugeModels%2FBWDB_SW248&names=gaugeModels%2FBWDB_SW251&names=gaugeModels%2FBWDB_SW263&names=gaugeModels%2FBWDB_SW263.1&names=gaugeModels%2FBWDB_SW266&names=gaugeModels%2FBWDB_SW267&names=gaugeModels%2FBWDB_SW269&names=gaugeModels%2FBWDB_SW269.5&names=gaugeModels%2FBWDB_SW270&names=gaugeModels%2FBWDB_SW273&names=gaugeModels%2FBWDB_SW274&names=gaugeModels%2FBWDB_SW275.5&names=gaugeModels%2FBWDB_SW277&names=gaugeModels%2FBWDB_SW285&names=gaugeModels%2FBWDB_SW291.5R&names=gaugeModels%2FBWDB_SW294&names=gaugeModels%2FBWDB_SW299&names=gaugeModels%2FBWDB_SW302&names=gaugeModels%2FBWDB_SW34&names=gaugeModels%2FBWDB_SW36&names=gaugeModels%2FBWDB_SW3A&names=gaugeModels%2FBWDB_SW42&names=gaugeModels%2FBWDB_SW45&names=gaugeModels%2FBWDB_SW45.5&names=gaugeModels%2FBWDB_SW46.9L&names=gaugeModels%2FBWDB_SW49&names=gaugeModels%2FBWDB_SW49A&names=gaugeModels%2FBWDB_SW5&names=gaugeModels%2FBWDB_SW50.6&names=gaugeModels%2FBWDB_SW62&names=gaugeModels%2FBWDB_SW63&names=gaugeModels%2FBWDB_SW65&names=gaugeModels%2FBWDB_SW67&names=gaugeModels%2FBWDB_SW68.5&names=gaugeModels%2FBWDB_SW71A&names=gaugeModels%2FBWDB_SW72&names=gaugeModels%2FBWDB_SW77&names=gaugeModels%2FBWDB_SW84&names=gaugeModels%2FBWDB_SW88&names=gaugeModels%2FBWDB_SW88A&names=gaugeModels%2FBWDB_SW90&names=gaugeModels%2FBWDB_SW91.9R&names=gaugeModels%2FBWDB_SW93.4L&names=gaugeModels%2FBWDB_SW93.5L&names=gaugeModels%2FBWDB_SW95&names=gaugeModels%2FBWDB_SW99
   response:
     body:
-      string: !!binary |
-        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
-        A1p7ShNzVAAA
+      string: "{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"Request contains
+        an invalid argument.\",\n    \"status\": \"INVALID_ARGUMENT\"\n  }\n}\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Cache-Control:
-      - private
       Content-Encoding:
       - gzip
       Content-Type:
       - application/json; charset=UTF-8
       Date:
-      - Mon, 07 Oct 2024 20:22:06 GMT
+      - Tue, 09 Dec 2025 15:57:50 GMT
       Server:
       - ESF
       Server-Timing:
-      - gfet4t7; dur=267
+      - gfet4t7; dur=165
       Transfer-Encoding:
       - chunked
       Vary:
@@ -269,6 +744,6 @@ interactions:
       X-XSS-Protection:
       - '0'
     status:
-      code: 200
-      message: OK
+      code: 400
+      message: Bad Request
 version: 1

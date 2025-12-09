@@ -1,6 +1,4 @@
 /* eslint-disable react/prop-types */
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   AppBar,
   Box,
@@ -25,6 +23,8 @@ import {
   TimerOutlined,
   Notifications,
   SpeedOutlined,
+  GitHub as GitHubIcon,
+  OpenInNew as OpenInNewIcon,
 } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -132,6 +132,25 @@ const panels: PanelItem[] = [
     : []),
 ];
 
+type ConfigRightSideLink = {
+  title: string;
+  href: string;
+  icon?: string;
+};
+
+type RightSideLink = {
+  title: string;
+  href: string;
+  icon: React.ReactNode;
+};
+
+type IconComponent = typeof GitHubIcon;
+
+const rightSideIconMap: Record<string, IconComponent> = {
+  github: GitHubIcon,
+  external: OpenInNewIcon,
+};
+
 function NavBar() {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
@@ -143,6 +162,25 @@ function NavBar() {
   const theme = useTheme();
   const smDown = useMediaQuery(theme.breakpoints.down('sm'));
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
+  const configuredRightSideLinks: RightSideLink[] = Array.isArray(
+    (appConfig as Record<string, any>).rightSideLinks,
+  )
+    ? (appConfig.rightSideLinks as ConfigRightSideLink[])
+        .filter(link => link?.title && link?.href)
+        .map(link => {
+          const iconKey = (link.icon || '').toLowerCase();
+          const IconComp =
+            rightSideIconMap[iconKey] || rightSideIconMap.external;
+          const iconNode = (
+            <IconComp style={{ fontSize: mdUp ? '1.25rem' : '1.5rem' }} />
+          );
+          return {
+            title: link.title,
+            href: link.href,
+            icon: iconNode,
+          };
+        })
+    : [];
   const [menuAnchor, setMenuAnchor] = useState<{
     [key: string]: HTMLElement | null;
   }>({});
@@ -162,12 +200,13 @@ function NavBar() {
     }
   }, [location.pathname, tabValue, dispatch]);
 
-  const rightSideLinks = [
+  const rightSideLinks: RightSideLink[] = [
     {
       title: 'GitHub',
-      icon: faGithub,
+      icon: <GitHubIcon style={{ fontSize: mdUp ? '1.25rem' : '1.5rem' }} />,
       href: 'https://github.com/wfp-VAM/prism-app',
     },
+    ...configuredRightSideLinks,
   ];
 
   const buttons = rightSideLinks.map(({ title, icon, href }) => (
@@ -178,7 +217,7 @@ function NavBar() {
       href={href}
       style={{ color: 'white' }}
     >
-      <FontAwesomeIcon fontSize={mdUp ? '1.25rem' : '1.5rem'} icon={icon} />
+      {icon}
     </IconButton>
   ));
 
