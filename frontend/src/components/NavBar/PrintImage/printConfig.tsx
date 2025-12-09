@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  CircularProgress,
   Collapse,
   Divider,
   Icon,
@@ -22,6 +23,7 @@ import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdo
 import Switch from 'components/Common/Switch';
 import { useSafeTranslation } from '../../../i18n';
 import PrintConfigContext, { MapDimensions } from './printConfig.context';
+import DateRangePicker from './DateRangePicker';
 
 interface ToggleSelectorProps {
   title: string;
@@ -160,11 +162,11 @@ function GreyContainerSection({
 
 const legendScaleSelectorOptions = [
   { value: 0.5, comp: <div>50%</div> },
-  { value: 0.4, comp: <div>60%</div> },
-  { value: 0.3, comp: <div>70%</div> },
-  { value: 0.2, comp: <div>80%</div> },
-  { value: 0.1, comp: <div>90%</div> },
-  { value: 0, comp: <div>100%</div> },
+  { value: 0.6, comp: <div>60%</div> },
+  { value: 0.7, comp: <div>70%</div> },
+  { value: 0.8, comp: <div>80%</div> },
+  { value: 0.9, comp: <div>90%</div> },
+  { value: 1, comp: <div>100%</div> },
 ];
 
 const legendPositionOptions = [
@@ -271,6 +273,8 @@ function PrintConfig() {
     footerTextSize,
     setFooterTextSize,
     download,
+    downloadBatch,
+    isDownloading,
     defaultFooterText,
     selectedBoundaries,
     setSelectedBoundaries,
@@ -279,14 +283,13 @@ function PrintConfig() {
     handleDownloadMenuOpen,
     handleDownloadMenuClose,
     downloadMenuAnchorEl,
+    mapCount,
+    shouldEnableBatchMaps,
+    dateRange,
   } = printConfig;
 
   return (
-    <Box
-      style={{
-        overflow: 'scroll',
-      }}
-    >
+    <Box>
       <div className={classes.optionsContainer}>
         <div>
           <Box
@@ -560,6 +563,51 @@ function PrintConfig() {
           </GreyContainer>
         </SectionToggle>
 
+        {/* Batch Maps */}
+        {shouldEnableBatchMaps && (
+          <>
+            <SectionToggle
+              title={t('Create a sequence of maps')}
+              expanded={toggles.batchMapsVisibility}
+              handleChange={() => {
+                setToggles(prev => ({
+                  ...prev,
+                  batchMapsVisibility: !prev.batchMapsVisibility,
+                }));
+              }}
+            />
+            <GreyContainer>
+              <GreyContainerSection isLast={!toggles.batchMapsVisibility}>
+                <Typography variant="body1">
+                  {t(
+                    'Selecting this option will apply the template above to create multiple maps over a time period of your choice.',
+                  )}
+                </Typography>
+              </GreyContainerSection>
+              {toggles.batchMapsVisibility && (
+                <>
+                  <GreyContainerSection>
+                    <DateRangePicker />
+                  </GreyContainerSection>
+                  <GreyContainerSection isLast>
+                    <Box className={classes.mapCountContainer}>
+                      <Typography variant="body1">
+                        {t('Nb of maps generated')}
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        className={classes.mapCountValue}
+                      >
+                        {mapCount}
+                      </Typography>
+                    </Box>
+                  </GreyContainerSection>
+                </>
+              )}
+            </GreyContainer>
+          </>
+        )}
+
         <Button
           style={{ backgroundColor: cyanBlue, color: 'black' }}
           variant="contained"
@@ -567,24 +615,52 @@ function PrintConfig() {
           className={classes.gutter}
           endIcon={<GetApp />}
           onClick={e => handleDownloadMenuOpen(e)}
+          disabled={
+            isDownloading ||
+            (toggles.batchMapsVisibility &&
+              (!dateRange.startDate || !dateRange.endDate))
+          }
         >
-          {t('Download')}
+          {isDownloading ? (
+            <>
+              <CircularProgress size={16} />{' '}
+              <span style={{ marginLeft: '0.5rem' }}>
+                {t('Generating maps...')}
+              </span>
+            </>
+          ) : (
+            <span>{t('Download')}</span>
+          )}
         </Button>
+
         <Menu
           anchorEl={downloadMenuAnchorEl}
           keepMounted
           open={Boolean(downloadMenuAnchorEl)}
           onClose={handleDownloadMenuClose}
         >
-          <MenuItem onClick={() => download('png')}>
-            {t('Download PNG')}
-          </MenuItem>
-          <MenuItem onClick={() => download('jpeg')}>
-            {t('Download JPEG')}
-          </MenuItem>
-          <MenuItem onClick={() => download('pdf')}>
-            {t('Download PDF')}
-          </MenuItem>
+          {toggles.batchMapsVisibility ? (
+            <>
+              <MenuItem onClick={() => downloadBatch('pdf')}>
+                {t('Download maps as PDF')}
+              </MenuItem>
+              <MenuItem onClick={() => downloadBatch('png')}>
+                {t('Download maps as PNGs')}
+              </MenuItem>
+            </>
+          ) : (
+            <>
+              <MenuItem onClick={() => download('png')}>
+                {t('Download PNG')}
+              </MenuItem>
+              <MenuItem onClick={() => download('jpeg')}>
+                {t('Download JPEG')}
+              </MenuItem>
+              <MenuItem onClick={() => download('pdf')}>
+                {t('Download PDF')}
+              </MenuItem>
+            </>
+          )}
         </Menu>
       </div>
     </Box>
@@ -611,9 +687,7 @@ const useStyles = makeStyles((theme: Theme) =>
       gap: '0.5rem',
       minHeight: '740px',
       width: '19.2rem',
-      scrollbarGutter: 'stable',
       overflow: 'auto',
-      paddingRight: '15px',
       zIndex: 4,
       backgroundColor: 'white',
     },
@@ -650,6 +724,17 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'space-between',
+    },
+    mapCountContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    mapCountValue: {
+      border: '1px solid rgba(0, 0, 0, 0.23)',
+      borderRadius: '4px',
+      padding: '8px 12px',
+      backgroundColor: '#f5f5f5',
     },
   }),
 );

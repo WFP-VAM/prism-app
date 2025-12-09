@@ -8,19 +8,24 @@ import mask from '@turf/mask';
 import html2canvas from 'html2canvas';
 import { debounce, get } from 'lodash';
 import { jsPDF } from 'jspdf';
-import React, { useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useMemo, useRef, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
 import { appConfig, safeCountry } from 'config';
 import { AdminCodeString } from 'config/types';
 import { getBoundaryLayerSingleton } from 'config/utils';
 import useResizeObserver from 'utils/useOnResizeObserver';
+import useLayers from 'utils/layers-utils';
+import { availableDatesSelector } from 'context/serverStateSlice';
+import { getPossibleDatesForLayer } from 'utils/server-utils';
 import { useBoundaryData } from 'utils/useBoundaryData';
+import { EXPORT_API_URL } from 'utils/constants';
+import { addNotification } from 'context/notificationStateSlice';
+import { downloadToFile } from '../../MapView/utils';
 import {
   dateRangeSelector,
   mapSelector,
 } from '../../../context/mapStateSlice/selectors';
-import { downloadToFile } from '../../MapView/utils';
 import PrintConfig from './printConfig';
 import PrintPreview from './printPreview';
 import PrintConfigContext, {
@@ -46,6 +51,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const dateRange = useSelector(dateRangeSelector);
   const printRef = useRef<HTMLDivElement>(null);
   const { data } = useBoundaryData(boundaryLayer.id);
+  const dispatch = useDispatch();
 
   // list of toggles
   const [toggles, setToggles] = React.useState<Toggles>({
@@ -55,6 +61,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     logoVisibility: !!logo,
     legendVisibility: true,
     footerVisibility: true,
+    batchMapsVisibility: false,
     bottomLogoVisibility: !!bottomLogo,
   });
 
@@ -66,7 +73,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const [titleText, setTitleText] = React.useState<string>(country);
   const [footerText, setFooterText] = React.useState(defaultFooterText);
   const [footerTextSize, setFooterTextSize] = React.useState(12);
-  const [legendScale, setLegendScale] = React.useState(0);
+  const [legendScale, setLegendScale] = React.useState(1);
   const [legendPosition, setLegendPosition] = React.useState(0);
   const [logoPosition, setLogoPosition] = React.useState(0);
   const [logoScale, setLogoScale] = React.useState(1);
@@ -95,6 +102,39 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
   const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] =
     useState(null);
+
+  const [dateRangeForBatchMaps, setDateRangeForBatchMaps] = useState<{
+    startDate: number | null;
+    endDate: number | null;
+  }>({
+    startDate: null,
+    endDate: null,
+  });
+
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const { selectedLayersWithDateSupport } = useLayers();
+  const availableDates = useSelector(availableDatesSelector);
+  const shouldEnableBatchMaps = selectedLayersWithDateSupport.length > 0;
+
+  const mapCount = useMemo(() => {
+    const { startDate, endDate } = dateRangeForBatchMaps;
+    if (!startDate || !endDate || selectedLayersWithDateSupport.length === 0) {
+      return 0;
+    }
+
+    const allDateItems = selectedLayersWithDateSupport.flatMap(layer =>
+      getPossibleDatesForLayer(layer, availableDates),
+    );
+
+    const uniqueQueryDates = [
+      ...new Set(allDateItems.map(item => item.queryDate)),
+    ];
+
+    return uniqueQueryDates.filter(
+      queryDate => queryDate >= startDate && queryDate <= endDate,
+    ).length;
+  }, [availableDates, selectedLayersWithDateSupport, dateRangeForBatchMaps]);
 
   React.useEffect(() => {
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
@@ -173,6 +213,148 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     handleDownloadMenuClose();
   };
 
+  const downloadBatch = async (format: 'pdf' | 'png') => {
+    const { startDate, endDate } = dateRangeForBatchMaps;
+
+    if (!startDate || !endDate) {
+      console.error('Date range not set for batch download');
+      return;
+    }
+
+    setIsDownloading(true);
+    handleDownloadMenuClose();
+
+    try {
+      const allDateItems = selectedLayersWithDateSupport.flatMap(layer =>
+        getPossibleDatesForLayer(layer, availableDates),
+      );
+
+      const uniqueQueryDates = [
+        ...new Set(allDateItems.map(item => item.queryDate)),
+      ];
+
+      const filteredDates = uniqueQueryDates.filter(
+        queryDate => queryDate >= startDate && queryDate <= endDate,
+      );
+
+      // Convert timestamps to YYYY-MM-DD format
+      const formattedDates = filteredDates.map(timestamp =>
+        getFormattedDate(timestamp, 'default'),
+      );
+
+      if (formattedDates.length === 0) {
+        console.error('No dates found in the selected range');
+        setIsDownloading(false);
+        return;
+      }
+
+      // Extract map bounds and zoom from selectedMap
+      const mapBounds = selectedMap?.getBounds();
+      const mapZoom = selectedMap?.getZoom();
+
+      // Construct URLs for each date by adding `/export` to the pathname and setting the date param
+      const { origin, pathname, search } = new URL(window.location.href);
+      const exportPath = `${pathname.replace(/\/$/, '')}/export`;
+      const baseParams = new URLSearchParams(search);
+      const constructedUrls = formattedDates
+        .filter((date): date is string => date !== undefined)
+        .map(date => {
+          const params = new URLSearchParams(baseParams);
+          params.set('date', date);
+
+          // Map bounds and zoom
+          if (mapBounds) {
+            const bounds = `${mapBounds.getWest()},${mapBounds.getSouth()},${mapBounds.getEast()},${mapBounds.getNorth()}`;
+            params.set('bounds', bounds);
+          }
+          if (mapZoom !== undefined) {
+            params.set('zoom', String(mapZoom));
+          }
+
+          // Print config options
+          params.set('mapWidth', String(mapDimensions.width));
+          params.set('title', titleText);
+          params.set('footer', footerText);
+          params.set('footerTextSize', String(footerTextSize));
+
+          // Position/scale
+          params.set('logoPosition', String(logoPosition));
+          params.set('logoScale', String(logoScale));
+          params.set('legendPosition', String(legendPosition));
+          params.set('legendScale', String(legendScale));
+          params.set('bottomLogoScale', String(bottomLogoScale));
+
+          // Toggles (as JSON, excluding batchMapsVisibility)
+          const exportToggles = {
+            fullLayerDescription: toggles.fullLayerDescription,
+            countryMask: toggles.countryMask,
+            mapLabelsVisibility: toggles.mapLabelsVisibility,
+            logoVisibility: toggles.logoVisibility,
+            legendVisibility: toggles.legendVisibility,
+            footerVisibility: toggles.footerVisibility,
+            bottomLogoVisibility: toggles.bottomLogoVisibility,
+          };
+          params.set('toggles', JSON.stringify(exportToggles));
+
+          // Selected boundaries
+          if (selectedBoundaries.length > 0) {
+            params.set('selectedBoundaries', selectedBoundaries.join(','));
+          }
+
+          return `${origin}${exportPath}?${params.toString()}`;
+        });
+
+      const response = await fetch(`${EXPORT_API_URL}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          urls: constructedUrls,
+          // TODO: Adjust to dynamic aspect ratio based on config
+          aspectRatio: '3:4',
+          format,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Export failed: ${response.statusText}`);
+      }
+
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const startDateStr = getFormattedDate(startDate, 'snake');
+      const endDateStr = getFormattedDate(endDate, 'snake');
+      const filename = `${titleText || country}_${startDateStr}_to_${endDateStr}`;
+      // Server returns ZIP file when format is 'png'
+      const contentType =
+        format === 'pdf' ? 'application/pdf' : 'application/zip';
+
+      downloadToFile(
+        { content: downloadUrl, isUrl: true },
+        filename,
+        contentType,
+      );
+    } catch (error) {
+      dispatch(
+        addNotification({
+          type: 'error',
+          message:
+            'Something went wrong with the batch download. Please try again.',
+        }),
+      );
+      console.error('Batch download failed:', error);
+    } finally {
+      setIsDownloading(false);
+      dispatch(
+        addNotification({
+          type: 'success',
+          message: 'Batch download completed successfully.',
+        }),
+      );
+    }
+  };
+
   // eslint-disable-next-line react/jsx-no-constructed-context-values
   const printContext = {
     printConfig: {
@@ -213,9 +395,15 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       downloadMenuAnchorEl,
       handleDownloadMenuClose,
       download,
+      downloadBatch,
+      isDownloading,
       defaultFooterText,
       setSelectedBoundaries,
       setLegendScale,
+      shouldEnableBatchMaps,
+      dateRange: dateRangeForBatchMaps,
+      setDateRange: setDateRangeForBatchMaps,
+      mapCount,
     },
   };
 
@@ -241,11 +429,8 @@ const useStyles = makeStyles(() =>
   createStyles({
     contentContainer: {
       fontFamily: 'Roboto',
-      scrollbarGutter: 'stable',
       display: 'flex',
       gap: '1rem',
-      // Adjust for the printConfig scroll bar
-      marginRight: '-15px',
       flexDirection: 'row',
       justifyContent: 'space-between',
       width: '90vw',
