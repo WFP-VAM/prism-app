@@ -52,10 +52,10 @@ export type FloodSensorData = {
 };
 
 type GoogleFloodTriggerLevels = {
-  warning: number;
-  danger: number;
-  extremeDanger: number;
-};
+  warning: number | null;
+  danger: number | null;
+  extremeDanger: number | null;
+} | null;
 /* eslint-enable camelcase */
 
 // input parameter is used here only for testing
@@ -94,19 +94,36 @@ export const createGoogleFloodDatasetParams = (
       featureProperties,
     ) || featureProperties.gaugeId;
 
-  const parsedLevels = JSON.parse(thresholds);
-  const triggerLevels = {
-    warning: parsedLevels.warningLevel.toFixed(2),
-    danger: parsedLevels.dangerLevel.toFixed(2),
-    extremeDanger: parsedLevels.extremeDangerLevel.toFixed(2),
+  // Handle missing thresholds (some gauges don't have gauge model data)
+  const parseTriggerLevels = (): GoogleFloodTriggerLevels => {
+    if (!thresholds) {
+      return null;
+    }
+    try {
+      const parsedLevels = JSON.parse(thresholds);
+      return {
+        warning: parsedLevels.warningLevel?.toFixed(2) ?? null,
+        danger: parsedLevels.dangerLevel?.toFixed(2) ?? null,
+        extremeDanger: parsedLevels.extremeDangerLevel?.toFixed(2) ?? null,
+      };
+    } catch (e) {
+      console.warn(`Failed to parse thresholds for gauge ${gaugeId}:`, e);
+      return null;
+    }
   };
-  const unit =
-    GOOGLE_FLOOD_UNITS[gaugeValueUnit as keyof typeof GOOGLE_FLOOD_UNITS];
-  const yAxisLabel = t(
-    GOOGLE_FLOOD_Y_AXIS_LABEL[
-      gaugeValueUnit as keyof typeof GOOGLE_FLOOD_Y_AXIS_LABEL
-    ],
-  );
+  const triggerLevels = parseTriggerLevels();
+
+  // Handle missing gaugeValueUnit
+  const unit = gaugeValueUnit
+    ? GOOGLE_FLOOD_UNITS[gaugeValueUnit as keyof typeof GOOGLE_FLOOD_UNITS]
+    : '';
+  const yAxisLabel = gaugeValueUnit
+    ? t(
+        GOOGLE_FLOOD_Y_AXIS_LABEL[
+          gaugeValueUnit as keyof typeof GOOGLE_FLOOD_Y_AXIS_LABEL
+        ],
+      )
+    : '';
 
   return {
     gaugeId,

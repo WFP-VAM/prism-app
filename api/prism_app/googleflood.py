@@ -207,7 +207,17 @@ def get_google_floods_gauges(
 
     # Run both requests
     details_response = make_request_with_retries(gauges_details_url)
-    models_response = make_request_with_retries(gauges_models_url)
+
+    # Gauge models request may fail if some gauges don't have models
+    # Continue without model data in that case (thresholds, gaugeValueUnit will be None)
+    try:
+        models_response = make_request_with_retries(gauges_models_url)
+    except HTTPException:
+        logger.warning(
+            "Failed to fetch gauge models, continuing without model data. "
+            "Some gauges may be missing thresholds and gaugeValueUnit."
+        )
+        models_response = {}
 
     # Create maps for quick lookup
     gauge_details_map = {
