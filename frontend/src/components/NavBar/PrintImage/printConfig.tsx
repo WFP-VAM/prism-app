@@ -21,21 +21,23 @@ import ToggleButton from '@material-ui/lab/ToggleButton';
 import { cyanBlue } from 'muiTheme';
 import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
 import Switch from 'components/Common/Switch';
+import { AspectRatio } from 'components/MapExport/types';
 import { useSafeTranslation } from '../../../i18n';
-import PrintConfigContext, { MapDimensions } from './printConfig.context';
+import PrintConfigContext from './printConfig.context';
 import DateRangePicker from './DateRangePicker';
+import { calculateMapDimensions } from './mapDimensionsUtils';
 
 interface ToggleSelectorProps {
   title: string;
-  value: number;
+  value: number | string;
   options: {
-    value: number;
+    value: number | string;
     comp: React.JSX.Element;
     disabled?: boolean;
   }[];
   iconProp?: number;
   align?: 'start' | 'end';
-  setValue: (v: number) => void;
+  setValue: (v: number | string) => void;
 }
 
 const toggleSelectorStyles = makeStyles(() => ({
@@ -232,6 +234,14 @@ const mapWidthSelectorOptions = [
   { value: 100, comp: <div>100%</div> },
 ];
 
+const aspectRatioSelectorOptions = [
+  { value: '4:3', comp: <div>4:3</div> },
+  { value: '1:1', comp: <div>1:1</div> },
+  { value: '3:2', comp: <div>3:2</div> },
+  { value: '6:5', comp: <div>6:5</div> },
+  { value: '2:3', comp: <div>2:3</div> },
+];
+
 const footerTextSelectorOptions = [
   { value: 8, comp: <div style={{ fontSize: '8px' }}>Aa</div> },
   { value: 10, comp: <div style={{ fontSize: '10px' }}>Aa</div> },
@@ -329,13 +339,36 @@ function PrintConfig() {
         <ToggleSelector
           value={mapDimensions.width}
           options={mapWidthSelectorOptions}
-          setValue={val =>
-            setMapDimensions((prev: MapDimensions) => ({
-              ...(prev || {}),
-              width: val as number,
-            }))
-          }
+          setValue={val => {
+            const newWidth = val as number;
+            setMapDimensions(prev =>
+              calculateMapDimensions(prev, {
+                newWidth,
+                availableWidths: mapWidthSelectorOptions.map(
+                  opt => opt.value as number,
+                ),
+              }),
+            );
+          }}
           title={t('Map Width')}
+        />
+
+        {/* Aspect Ratio */}
+        <ToggleSelector
+          value={mapDimensions.aspectRatio}
+          options={aspectRatioSelectorOptions}
+          setValue={val => {
+            const newAspectRatio = val as AspectRatio;
+            setMapDimensions(prev =>
+              calculateMapDimensions(prev, {
+                newAspectRatio,
+                availableWidths: mapWidthSelectorOptions.map(
+                  opt => opt.value as number,
+                ),
+              }),
+            );
+          }}
+          title={t('Aspect Ratio')}
         />
 
         {/* Logo */}
@@ -364,7 +397,9 @@ function PrintConfig() {
                     value={logoPosition}
                     options={logoPositionOptions}
                     iconProp={logoPosition}
-                    setValue={setLogoPosition}
+                    setValue={(v: number | string) =>
+                      setLogoPosition(Number(v))
+                    }
                     title={t('Position')}
                   />
 
@@ -379,7 +414,7 @@ function PrintConfig() {
                       align="end"
                       value={logoScale}
                       options={logoScaleSelectorOptions}
-                      setValue={setLogoScale}
+                      setValue={(v: number | string) => setLogoScale(Number(v))}
                       title={t('Size')}
                     />
                   </div>
@@ -414,7 +449,9 @@ function PrintConfig() {
                     align="end"
                     value={bottomLogoScale}
                     options={logoScaleSelectorOptions}
-                    setValue={setBottomLogoScale}
+                    setValue={(v: number | string) =>
+                      setBottomLogoScale(Number(v))
+                    }
                     title={t('Size')}
                   />
                 </Box>
@@ -487,7 +524,9 @@ function PrintConfig() {
                   value={legendPosition > -1 ? legendPosition : -1}
                   options={legendPositionOptions}
                   iconProp={legendPosition}
-                  setValue={setLegendPosition}
+                  setValue={(v: number | string) =>
+                    setLegendPosition(Number(v))
+                  }
                   title={t('Position')}
                 />
                 <div className={classes.collapsibleWrapper}>
@@ -515,7 +554,7 @@ function PrintConfig() {
                 <ToggleSelector
                   value={legendScale}
                   options={legendScaleSelectorOptions}
-                  setValue={setLegendScale}
+                  setValue={(v: number | string) => setLegendScale(Number(v))}
                   title={t('Size')}
                 />
               </div>
@@ -539,7 +578,7 @@ function PrintConfig() {
               <ToggleSelector
                 value={footerTextSize}
                 options={footerTextSelectorOptions}
-                setValue={setFooterTextSize}
+                setValue={(v: number | string) => setFooterTextSize(Number(v))}
                 title={t('Size')}
               />
             </GreyContainerSection>

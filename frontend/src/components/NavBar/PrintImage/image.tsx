@@ -82,6 +82,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const [mapDimensions, setMapDimensions] = React.useState<MapDimensions>({
     width: 100,
     height: 100,
+    aspectRatio: '4:3',
   });
   const [footerRef, { height: footerHeight }] =
     useResizeObserver<HTMLDivElement>(footerText, open);
@@ -273,6 +274,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
           // Print config options
           params.set('mapWidth', String(mapDimensions.width));
+          params.set('aspectRatio', mapDimensions.aspectRatio);
           params.set('title', titleText);
           params.set('footer', footerText);
           params.set('footerTextSize', String(footerTextSize));
@@ -311,8 +313,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         },
         body: JSON.stringify({
           urls: constructedUrls,
-          // TODO: Adjust to dynamic aspect ratio based on config
-          aspectRatio: '3:4',
+          aspectRatio: mapDimensions.aspectRatio,
           format,
         }),
       });

@@ -1,5 +1,6 @@
 import React, { createContext } from 'react';
 import { AdminCodeString } from 'config/types';
+import { AspectRatio } from 'components/MapExport/types';
 
 export type Toggles = {
   fullLayerDescription: boolean;
@@ -12,7 +13,11 @@ export type Toggles = {
   bottomLogoVisibility: boolean;
 };
 
-export type MapDimensions = { width: number; height: number };
+export type MapDimensions = {
+  width: number;
+  height: number;
+  aspectRatio: AspectRatio;
+};
 
 export type PrintConfigContextType = {
   printConfig?: {

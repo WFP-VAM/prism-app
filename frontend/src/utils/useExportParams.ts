@@ -121,6 +121,7 @@ export const useExportParams = (): ExportParams => {
 
       // Print config
       mapWidth: getNum('mapWidth', 100),
+      aspectRatio: params.get('aspectRatio') ?? '4:3',
       titleText: params.get('title') ?? '',
       footerText: params.get('footer') ?? '',
       footerTextSize: getNum('footerTextSize', 12),

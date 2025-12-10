@@ -250,11 +250,16 @@ const ExportView = memo(() => {
       ? 60
       : 0);
 
+  // Calculate map height based on aspect ratio
+  const [w, h] = exportParams.aspectRatio.split(':').map(Number);
+  const mapHeight = Math.round((exportParams.mapWidth * h) / w);
+
   return (
     <Box className={classes.root}>
       <MapExportLayout
         toggles={exportParams.toggles}
         mapWidth={exportParams.mapWidth}
+        mapHeight={mapHeight}
         titleText={exportParams.titleText}
         footerText={exportParams.footerText}
         footerTextSize={exportParams.footerTextSize}

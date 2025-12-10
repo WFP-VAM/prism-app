@@ -2,6 +2,8 @@ import React from 'react';
 import type { StyleSpecification, LngLatBoundsLike } from 'maplibre-gl';
 import { AdminCodeString, LayerType } from 'config/types';
 
+export type AspectRatio = '4:3' | '1:1' | '3:2' | '6:5' | '2:3';
+
 export interface MapExportToggles {
   fullLayerDescription: boolean;
   countryMask: boolean;
@@ -31,6 +33,7 @@ export interface ExportParams {
 
   // Print config options
   mapWidth: number; // 50-100
+  aspectRatio: AspectRatio;
   titleText: string;
   footerText: string;
   footerTextSize: number; // 8, 10, 12, 16, 20
