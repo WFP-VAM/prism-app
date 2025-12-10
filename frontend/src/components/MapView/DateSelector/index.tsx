@@ -735,6 +735,7 @@ const DateSelector = memo(() => {
               }}
               position={timelinePosition}
               onStop={onTimelineStop}
+              enableUserSelectHack={false}
             >
               <div className={classes.timeline} id={TIMELINE_ID}>
                 <Grid
@@ -775,6 +776,7 @@ const DateSelector = memo(() => {
                   onStart={onPointerStart}
                   onStop={onPointerStop}
                   onDrag={onPointerDrag}
+                  enableUserSelectHack={false}
                 >
                   <div className={classes.pointer} id={POINTER_ID}>
                     <img
@@ -881,6 +883,10 @@ const useStyles = makeStyles((theme: Theme) =>
     timeline: {
       position: 'absolute',
       top: 8,
+      touchAction: 'pan-x',
+      WebkitTouchCallout: 'none',
+      WebkitUserSelect: 'none',
+      userSelect: 'none',
     },
 
     pointer: {

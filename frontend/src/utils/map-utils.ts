@@ -27,10 +27,13 @@ import { BoundaryLayerData } from 'context/layers/boundary';
  * @param layerId the LayerKey
  */
 export function isLayerOnView(map: MaplibreMap | undefined, layerId: LayerKey) {
-  return map
-    ?.getStyle()
-    .layers?.map(l => l.id)
-    .includes(getLayerMapId(layerId));
+  if (!map) {
+    return false;
+  }
+  const style = map.getStyle();
+  return (
+    style?.layers?.map(l => l.id).includes(getLayerMapId(layerId)) ?? false
+  );
 }
 
 export function safeDispatchAddLayer(
