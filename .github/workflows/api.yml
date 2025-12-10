@@ -42,9 +42,7 @@ jobs:
       - name: Security audit
         run: |
           cd api
-          # Ignore these vulnerabilities for now as they are not relevant to the project:
-          # GHSA-pq67-6m6q-mj2v urllib3
-          poetry run pip-audit --ignore-vuln GHSA-pq67-6m6q-mj2v
+          poetry run pip-audit
 
   api_build:
     name: build and test api

@@ -9,65 +9,355 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - python-requests/2.32.0
+      - python-requests/2.32.5
     method: GET
     uri: https://floodforecasting.googleapis.com/v1/gauges:queryGaugeForecasts?gaugeIds=hybas_1121465590&gaugeIds=hybas_1121499110
   response:
     body:
-      string: !!binary |
-        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
-        ZjW2ZwAA
+      string: "{\n  \"forecasts\": {\n    \"hybas_1121465590\": {\n      \"forecasts\":
+        [\n        {\n          \"issuedTime\": \"2025-12-03T14:01:11.544086Z\",\n
+        \         \"forecastRanges\": [\n            {\n              \"value\": 486.43243408203125,\n
+        \             \"forecastStartTime\": \"2025-12-01T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-02T00:00:00Z\"\n            },\n            {\n              \"value\":
+        485.821044921875,\n              \"forecastStartTime\": \"2025-12-02T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-03T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 483.80557250976562,\n              \"forecastStartTime\":
+        \"2025-12-03T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-04T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 485.41696166992188,\n
+        \             \"forecastStartTime\": \"2025-12-04T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-05T00:00:00Z\"\n            },\n            {\n              \"value\":
+        486.91748046875,\n              \"forecastStartTime\": \"2025-12-05T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-06T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 489.1136474609375,\n              \"forecastStartTime\":
+        \"2025-12-06T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-07T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 488.06509399414062,\n
+        \             \"forecastStartTime\": \"2025-12-07T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-08T00:00:00Z\"\n            },\n            {\n              \"value\":
+        484.72451782226562,\n              \"forecastStartTime\": \"2025-12-08T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-09T00:00:00Z\"\n            }\n
+        \         ],\n          \"gaugeId\": \"hybas_1121465590\"\n        },\n        {\n
+        \         \"issuedTime\": \"2025-12-04T13:40:34.032862Z\",\n          \"forecastRanges\":
+        [\n            {\n              \"value\": 474.92507934570312,\n              \"forecastStartTime\":
+        \"2025-12-02T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-03T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 474.39151000976562,\n
+        \             \"forecastStartTime\": \"2025-12-03T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-04T00:00:00Z\"\n            },\n            {\n              \"value\":
+        473.03494262695312,\n              \"forecastStartTime\": \"2025-12-04T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-05T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 473.71151733398438,\n              \"forecastStartTime\":
+        \"2025-12-05T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-06T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 475.27822875976562,\n
+        \             \"forecastStartTime\": \"2025-12-06T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-07T00:00:00Z\"\n            },\n            {\n              \"value\":
+        480.83499145507812,\n              \"forecastStartTime\": \"2025-12-07T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-08T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 481.36410522460938,\n              \"forecastStartTime\":
+        \"2025-12-08T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-09T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 484.56027221679688,\n
+        \             \"forecastStartTime\": \"2025-12-09T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-10T00:00:00Z\"\n            }\n          ],\n          \"gaugeId\":
+        \"hybas_1121465590\"\n        },\n        {\n          \"issuedTime\": \"2025-12-05T13:56:14.142202Z\",\n
+        \         \"forecastRanges\": [\n            {\n              \"value\": 476.72219848632812,\n
+        \             \"forecastStartTime\": \"2025-12-03T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-04T00:00:00Z\"\n            },\n            {\n              \"value\":
+        477.6339111328125,\n              \"forecastStartTime\": \"2025-12-04T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-05T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 479.28945922851562,\n              \"forecastStartTime\":
+        \"2025-12-05T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-06T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 479.22372436523438,\n
+        \             \"forecastStartTime\": \"2025-12-06T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-07T00:00:00Z\"\n            },\n            {\n              \"value\":
+        482.44378662109375,\n              \"forecastStartTime\": \"2025-12-07T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-08T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 486.06561279296875,\n              \"forecastStartTime\":
+        \"2025-12-08T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-09T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 490.82321166992188,\n
+        \             \"forecastStartTime\": \"2025-12-09T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-10T00:00:00Z\"\n            },\n            {\n              \"value\":
+        500.94256591796875,\n              \"forecastStartTime\": \"2025-12-10T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-11T00:00:00Z\"\n            }\n
+        \         ],\n          \"gaugeId\": \"hybas_1121465590\"\n        },\n        {\n
+        \         \"issuedTime\": \"2025-12-06T14:09:49.166073Z\",\n          \"forecastRanges\":
+        [\n            {\n              \"value\": 476.627197265625,\n              \"forecastStartTime\":
+        \"2025-12-04T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-05T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 476.47686767578125,\n
+        \             \"forecastStartTime\": \"2025-12-05T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-06T00:00:00Z\"\n            },\n            {\n              \"value\":
+        478.04730224609375,\n              \"forecastStartTime\": \"2025-12-06T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-07T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 476.94515991210938,\n              \"forecastStartTime\":
+        \"2025-12-07T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-08T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 482.16799926757812,\n
+        \             \"forecastStartTime\": \"2025-12-08T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-09T00:00:00Z\"\n            },\n            {\n              \"value\":
+        490.6688232421875,\n              \"forecastStartTime\": \"2025-12-09T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-10T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 502.02301025390625,\n              \"forecastStartTime\":
+        \"2025-12-10T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-11T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 513.18896484375,\n
+        \             \"forecastStartTime\": \"2025-12-11T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-12T00:00:00Z\"\n            }\n          ],\n          \"gaugeId\":
+        \"hybas_1121465590\"\n        },\n        {\n          \"issuedTime\": \"2025-12-07T19:27:30.347566Z\",\n
+        \         \"forecastRanges\": [\n            {\n              \"value\": 467.9512939453125,\n
+        \             \"forecastStartTime\": \"2025-12-05T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-06T00:00:00Z\"\n            },\n            {\n              \"value\":
+        463.92208862304688,\n              \"forecastStartTime\": \"2025-12-06T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-07T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 465.42324829101562,\n              \"forecastStartTime\":
+        \"2025-12-07T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-08T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 468.88433837890625,\n
+        \             \"forecastStartTime\": \"2025-12-08T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-09T00:00:00Z\"\n            },\n            {\n              \"value\":
+        471.63809204101562,\n              \"forecastStartTime\": \"2025-12-09T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-10T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 487.62506103515625,\n              \"forecastStartTime\":
+        \"2025-12-10T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-11T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 498.65744018554688,\n
+        \             \"forecastStartTime\": \"2025-12-11T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-12T00:00:00Z\"\n            },\n            {\n              \"value\":
+        513.7471923828125,\n              \"forecastStartTime\": \"2025-12-12T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-13T00:00:00Z\"\n            }\n
+        \         ],\n          \"gaugeId\": \"hybas_1121465590\"\n        },\n        {\n
+        \         \"issuedTime\": \"2025-12-08T14:11:44.388687Z\",\n          \"forecastRanges\":
+        [\n            {\n              \"value\": 456.73626708984375,\n              \"forecastStartTime\":
+        \"2025-12-06T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-07T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 459.4739990234375,\n
+        \             \"forecastStartTime\": \"2025-12-07T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-08T00:00:00Z\"\n            },\n            {\n              \"value\":
+        460.78616333007812,\n              \"forecastStartTime\": \"2025-12-08T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-09T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 465.29483032226562,\n              \"forecastStartTime\":
+        \"2025-12-09T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-10T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 475.4207763671875,\n
+        \             \"forecastStartTime\": \"2025-12-10T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-11T00:00:00Z\"\n            },\n            {\n              \"value\":
+        488.94952392578125,\n              \"forecastStartTime\": \"2025-12-11T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-12T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 502.74429321289062,\n              \"forecastStartTime\":
+        \"2025-12-12T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-13T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 501.42214965820312,\n
+        \             \"forecastStartTime\": \"2025-12-13T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-14T00:00:00Z\"\n            }\n          ],\n          \"gaugeId\":
+        \"hybas_1121465590\"\n        },\n        {\n          \"issuedTime\": \"2025-12-09T13:54:45.905321Z\",\n
+        \         \"forecastRanges\": [\n            {\n              \"value\": 456.4146728515625,\n
+        \             \"forecastStartTime\": \"2025-12-07T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-08T00:00:00Z\"\n            },\n            {\n              \"value\":
+        456.12673950195312,\n              \"forecastStartTime\": \"2025-12-08T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-09T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 463.32098388671875,\n              \"forecastStartTime\":
+        \"2025-12-09T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-10T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 472.84506225585938,\n
+        \             \"forecastStartTime\": \"2025-12-10T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-11T00:00:00Z\"\n            },\n            {\n              \"value\":
+        481.371337890625,\n              \"forecastStartTime\": \"2025-12-11T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-12T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 494.50115966796875,\n              \"forecastStartTime\":
+        \"2025-12-12T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-13T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 499.410400390625,\n
+        \             \"forecastStartTime\": \"2025-12-13T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-14T00:00:00Z\"\n            },\n            {\n              \"value\":
+        503.70782470703125,\n              \"forecastStartTime\": \"2025-12-14T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-15T00:00:00Z\"\n            }\n
+        \         ],\n          \"gaugeId\": \"hybas_1121465590\"\n        },\n        {\n
+        \         \"issuedTime\": \"2025-12-09T15:57:08.911046Z\",\n          \"forecastRanges\":
+        [\n            {\n              \"value\": 445.0462646484375,\n              \"forecastStartTime\":
+        \"2025-12-08T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-09T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 450.2127685546875,\n
+        \             \"forecastStartTime\": \"2025-12-09T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-10T00:00:00Z\"\n            },\n            {\n              \"value\":
+        460.47335815429688,\n              \"forecastStartTime\": \"2025-12-10T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-11T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 471.292724609375,\n              \"forecastStartTime\":
+        \"2025-12-11T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-12T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 484.14993286132812,\n
+        \             \"forecastStartTime\": \"2025-12-12T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-13T00:00:00Z\"\n            },\n            {\n              \"value\":
+        491.03567504882812,\n              \"forecastStartTime\": \"2025-12-13T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-14T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 493.57980346679688,\n              \"forecastStartTime\":
+        \"2025-12-14T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-15T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 496.56405639648438,\n
+        \             \"forecastStartTime\": \"2025-12-15T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-16T00:00:00Z\"\n            }\n          ],\n          \"gaugeId\":
+        \"hybas_1121465590\"\n        }\n      ]\n    },\n    \"hybas_1121499110\":
+        {\n      \"forecasts\": [\n        {\n          \"issuedTime\": \"2025-12-03T13:56:22.898713Z\",\n
+        \         \"forecastRanges\": [\n            {\n              \"value\": 6.588341236114502,\n
+        \             \"forecastStartTime\": \"2025-12-01T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-02T00:00:00Z\"\n            },\n            {\n              \"value\":
+        7.9429850578308105,\n              \"forecastStartTime\": \"2025-12-02T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-03T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 17.398298263549805,\n              \"forecastStartTime\":
+        \"2025-12-03T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-04T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 52.27117919921875,\n
+        \             \"forecastStartTime\": \"2025-12-04T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-05T00:00:00Z\"\n            },\n            {\n              \"value\":
+        88.376541137695312,\n              \"forecastStartTime\": \"2025-12-05T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-06T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 50.386623382568359,\n              \"forecastStartTime\":
+        \"2025-12-06T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-07T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 28.917716979980469,\n
+        \             \"forecastStartTime\": \"2025-12-07T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-08T00:00:00Z\"\n            },\n            {\n              \"value\":
+        28.347213745117188,\n              \"forecastStartTime\": \"2025-12-08T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-09T00:00:00Z\"\n            }\n
+        \         ],\n          \"gaugeId\": \"hybas_1121499110\"\n        },\n        {\n
+        \         \"issuedTime\": \"2025-12-04T13:40:34.087893Z\",\n          \"forecastRanges\":
+        [\n            {\n              \"value\": 9.46705436706543,\n              \"forecastStartTime\":
+        \"2025-12-02T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-03T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 18.208404541015625,\n
+        \             \"forecastStartTime\": \"2025-12-03T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-04T00:00:00Z\"\n            },\n            {\n              \"value\":
+        46.647453308105469,\n              \"forecastStartTime\": \"2025-12-04T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-05T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 81.113052368164062,\n              \"forecastStartTime\":
+        \"2025-12-05T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-06T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 47.686576843261719,\n
+        \             \"forecastStartTime\": \"2025-12-06T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-07T00:00:00Z\"\n            },\n            {\n              \"value\":
+        30.262929916381836,\n              \"forecastStartTime\": \"2025-12-07T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-08T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 26.135293960571289,\n              \"forecastStartTime\":
+        \"2025-12-08T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-09T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 18.83740234375,\n
+        \             \"forecastStartTime\": \"2025-12-09T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-10T00:00:00Z\"\n            }\n          ],\n          \"gaugeId\":
+        \"hybas_1121499110\"\n        },\n        {\n          \"issuedTime\": \"2025-12-05T13:57:27.766397Z\",\n
+        \         \"forecastRanges\": [\n            {\n              \"value\": 19.030460357666016,\n
+        \             \"forecastStartTime\": \"2025-12-03T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-04T00:00:00Z\"\n            },\n            {\n              \"value\":
+        39.259830474853516,\n              \"forecastStartTime\": \"2025-12-04T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-05T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 43.142173767089844,\n              \"forecastStartTime\":
+        \"2025-12-05T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-06T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 32.903877258300781,\n
+        \             \"forecastStartTime\": \"2025-12-06T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-07T00:00:00Z\"\n            },\n            {\n              \"value\":
+        21.927736282348633,\n              \"forecastStartTime\": \"2025-12-07T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-08T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 17.20359992980957,\n              \"forecastStartTime\":
+        \"2025-12-08T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-09T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 13.838431358337402,\n
+        \             \"forecastStartTime\": \"2025-12-09T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-10T00:00:00Z\"\n            },\n            {\n              \"value\":
+        21.580427169799805,\n              \"forecastStartTime\": \"2025-12-10T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-11T00:00:00Z\"\n            }\n
+        \         ],\n          \"gaugeId\": \"hybas_1121499110\"\n        },\n        {\n
+        \         \"issuedTime\": \"2025-12-06T13:40:02.109060Z\",\n          \"forecastRanges\":
+        [\n            {\n              \"value\": 45.628089904785156,\n              \"forecastStartTime\":
+        \"2025-12-04T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-05T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 48.713626861572266,\n
+        \             \"forecastStartTime\": \"2025-12-05T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-06T00:00:00Z\"\n            },\n            {\n              \"value\":
+        38.399116516113281,\n              \"forecastStartTime\": \"2025-12-06T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-07T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 22.563608169555664,\n              \"forecastStartTime\":
+        \"2025-12-07T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-08T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 16.682859420776367,\n
+        \             \"forecastStartTime\": \"2025-12-08T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-09T00:00:00Z\"\n            },\n            {\n              \"value\":
+        13.077033996582031,\n              \"forecastStartTime\": \"2025-12-09T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-10T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 12.491313934326172,\n              \"forecastStartTime\":
+        \"2025-12-10T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-11T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 14.0820894241333,\n
+        \             \"forecastStartTime\": \"2025-12-11T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-12T00:00:00Z\"\n            }\n          ],\n          \"gaugeId\":
+        \"hybas_1121499110\"\n        },\n        {\n          \"issuedTime\": \"2025-12-07T19:27:30.422261Z\",\n
+        \         \"forecastRanges\": [\n            {\n              \"value\": 53.847225189208984,\n
+        \             \"forecastStartTime\": \"2025-12-05T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-06T00:00:00Z\"\n            },\n            {\n              \"value\":
+        37.662368774414062,\n              \"forecastStartTime\": \"2025-12-06T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-07T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 22.705739974975586,\n              \"forecastStartTime\":
+        \"2025-12-07T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-08T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 17.620607376098633,\n
+        \             \"forecastStartTime\": \"2025-12-08T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-09T00:00:00Z\"\n            },\n            {\n              \"value\":
+        12.419901847839355,\n              \"forecastStartTime\": \"2025-12-09T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-10T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 13.658625602722168,\n              \"forecastStartTime\":
+        \"2025-12-10T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-11T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 15.483842849731445,\n
+        \             \"forecastStartTime\": \"2025-12-11T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-12T00:00:00Z\"\n            },\n            {\n              \"value\":
+        11.507937431335449,\n              \"forecastStartTime\": \"2025-12-12T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-13T00:00:00Z\"\n            }\n
+        \         ],\n          \"gaugeId\": \"hybas_1121499110\"\n        },\n        {\n
+        \         \"issuedTime\": \"2025-12-08T14:09:26.969867Z\",\n          \"forecastRanges\":
+        [\n            {\n              \"value\": 33.354095458984375,\n              \"forecastStartTime\":
+        \"2025-12-06T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-07T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 26.848934173583984,\n
+        \             \"forecastStartTime\": \"2025-12-07T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-08T00:00:00Z\"\n            },\n            {\n              \"value\":
+        25.983852386474609,\n              \"forecastStartTime\": \"2025-12-08T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-09T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 23.8852481842041,\n              \"forecastStartTime\":
+        \"2025-12-09T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-10T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 26.150016784667969,\n
+        \             \"forecastStartTime\": \"2025-12-10T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-11T00:00:00Z\"\n            },\n            {\n              \"value\":
+        25.1895694732666,\n              \"forecastStartTime\": \"2025-12-11T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-12T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 15.27656078338623,\n              \"forecastStartTime\":
+        \"2025-12-12T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-13T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 10.623855590820312,\n
+        \             \"forecastStartTime\": \"2025-12-13T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-14T00:00:00Z\"\n            }\n          ],\n          \"gaugeId\":
+        \"hybas_1121499110\"\n        },\n        {\n          \"issuedTime\": \"2025-12-09T13:56:05.030879Z\",\n
+        \         \"forecastRanges\": [\n            {\n              \"value\": 21.450132369995117,\n
+        \             \"forecastStartTime\": \"2025-12-07T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-08T00:00:00Z\"\n            },\n            {\n              \"value\":
+        21.1968936920166,\n              \"forecastStartTime\": \"2025-12-08T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-09T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 23.686697006225586,\n              \"forecastStartTime\":
+        \"2025-12-09T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-10T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 33.603958129882812,\n
+        \             \"forecastStartTime\": \"2025-12-10T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-11T00:00:00Z\"\n            },\n            {\n              \"value\":
+        38.878467559814453,\n              \"forecastStartTime\": \"2025-12-11T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-12T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 23.715627670288086,\n              \"forecastStartTime\":
+        \"2025-12-12T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-13T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 13.881340026855469,\n
+        \             \"forecastStartTime\": \"2025-12-13T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-14T00:00:00Z\"\n            },\n            {\n              \"value\":
+        11.547143936157227,\n              \"forecastStartTime\": \"2025-12-14T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-15T00:00:00Z\"\n            }\n
+        \         ],\n          \"gaugeId\": \"hybas_1121499110\"\n        },\n        {\n
+        \         \"issuedTime\": \"2025-12-09T15:55:34.138400Z\",\n          \"forecastRanges\":
+        [\n            {\n              \"value\": 18.823207855224609,\n              \"forecastStartTime\":
+        \"2025-12-08T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-09T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 17.323221206665039,\n
+        \             \"forecastStartTime\": \"2025-12-09T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-10T00:00:00Z\"\n            },\n            {\n              \"value\":
+        23.285921096801758,\n              \"forecastStartTime\": \"2025-12-10T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-11T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 25.880617141723633,\n              \"forecastStartTime\":
+        \"2025-12-11T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-12T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 15.294075012207031,\n
+        \             \"forecastStartTime\": \"2025-12-12T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-13T00:00:00Z\"\n            },\n            {\n              \"value\":
+        10.48029613494873,\n              \"forecastStartTime\": \"2025-12-13T00:00:00Z\",\n
+        \             \"forecastEndTime\": \"2025-12-14T00:00:00Z\"\n            },\n
+        \           {\n              \"value\": 10.486689567565918,\n              \"forecastStartTime\":
+        \"2025-12-14T00:00:00Z\",\n              \"forecastEndTime\": \"2025-12-15T00:00:00Z\"\n
+        \           },\n            {\n              \"value\": 11.965582847595215,\n
+        \             \"forecastStartTime\": \"2025-12-15T00:00:00Z\",\n              \"forecastEndTime\":
+        \"2025-12-16T00:00:00Z\"\n            }\n          ],\n          \"gaugeId\":
+        \"hybas_1121499110\"\n        }\n      ]\n    }\n  }\n}\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Cache-Control:
-      - private
       Content-Encoding:
       - gzip
       Content-Type:
       - application/json; charset=UTF-8
       Date:
-      - Mon, 07 Oct 2024 20:22:09 GMT
+      - Tue, 09 Dec 2025 15:57:52 GMT
       Server:
       - ESF
       Server-Timing:
-      - gfet4t7; dur=277
+      - gfet4t7; dur=272
       Transfer-Encoding:
       - chunked
       Vary:
