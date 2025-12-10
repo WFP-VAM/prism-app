@@ -3,6 +3,10 @@
 const frontendUrl = 'http://localhost:3000';
 
 describe('Date picker', () => {
+  beforeEach(() => {
+    cy.viewport(1280, 720); // Ensure desktop viewport
+  });
+
   it('should move to the previous/next observation date when clicking back/forward on the timeline, with rainfall then EWS layer active', () => {
     // mock tiles as we don't really need them here
     cy.intercept(
