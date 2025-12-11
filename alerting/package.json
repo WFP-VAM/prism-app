@@ -11,10 +11,17 @@
   "license": "MIT",
   "packageManager": "yarn@1.22.22",
   "_resolutions": {
-    "glob": ">=10.5.0 because of jest and typeorm-seeding ; try to remove once in a while."
+    "glob": ">=11.1.0 because of jest and typeorm-seeding ; try to remove once in a while."
   },
   "resolutions": {
-    "glob": ">=10.5.0"
+    "glob": "^11.1.0",
+    "sha.js": "^2.4.12",
+    "form-data": "^3.0.4",
+    "js-yaml": "^4.1.1",
+    "@babel/helpers": "^7.26.10",
+    "brace-expansion": "^2.0.2",
+    "minimist": "^1.2.6",
+    "tar-fs": "^3.1.1"
   },
   "scripts": {
     "prebuild": "rimraf dist",
@@ -66,7 +73,7 @@
     "audit-ci": "^7.1.0",
     "eslint": "^8.45.0",
     "faker": "^4.1.0",
-    "glob": "^10.5.0",
+    "glob": "^11.1.0",
     "jest": "29.7.0",
     "rimraf": "^3.0.2",
     "supertest": "^4.0.2",

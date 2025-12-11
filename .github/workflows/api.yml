@@ -42,7 +42,7 @@ jobs:
       - name: Security audit
         run: |
           cd api
-          poetry run pip-audit
+          poetry run pip-audit --desc --format json || exit 1
 
   api_build:
     name: build and test api

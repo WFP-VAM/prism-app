@@ -59,5 +59,13 @@
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "xml-utils": "^1.6.0-0"
+  },
+  "resolutions": {
+    "brace-expansion": "^2.0.2",
+    "sha.js": "^2.4.12",
+    "form-data": "^3.0.4",
+    "minimist": "^1.2.6",
+    "js-yaml": "^4.1.1",
+    "@babel/helpers": "^7.26.10"
   }
 }
