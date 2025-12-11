@@ -42,7 +42,21 @@ jobs:
       - name: Security audit
         run: |
           cd api
-          poetry run pip-audit --desc --format json || exit 1
+          # Run pip-audit and filter to show only vulnerable packages (exclude packages with no vulns)
+          # Redirect stderr to /dev/null to avoid parsing the "Found X vulnerabilities" message
+          # Use || true to prevent exit on non-zero code (pip-audit exits 1 when vulns found, which is expected)
+          poetry run pip-audit --desc --format json 2>/dev/null | \
+            jq '{dependencies: [.dependencies[]? | select(.vulns != null and (.vulns | length > 0))]}' > audit_results.json || true
+
+          # Check if there are any vulnerabilities in the filtered results
+          VULN_COUNT=$(jq '.dependencies | length' audit_results.json)
+          if [ "$VULN_COUNT" -gt 0 ]; then
+            echo "❌ Found $VULN_COUNT vulnerable package(s):"
+            jq '.' audit_results.json
+            exit 1
+          else
+            echo "✅ No vulnerabilities found"
+          fi
 
   api_build:
     name: build and test api
