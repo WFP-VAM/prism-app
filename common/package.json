@@ -21,7 +21,8 @@
     "test:wms": "tsx ./src/wms/utils/test.ts && tsx ./src/wms/WMS/test.ts",
     "test:utils": "tsx ./src/utils/test.ts",
     "test": "npm run test:base && npm run test:gml && npm run test:ows && npm run test:tsc && npm run test:utils && npm run test:wcs && npm run test:wfs && npm run test:wms",
-    "audit": "audit-ci --config .audit-ci.json --skip-dev"
+    "audit": "audit-ci --config .audit-ci.json --skip-dev",
+    "check-resolutions": "node ../scripts/check-resolutions.js package.json"
   },
   "repository": {
     "type": "git",
@@ -67,5 +68,13 @@
     "minimist": "^1.2.6",
     "js-yaml": "^4.1.1",
     "@babel/helpers": "^7.26.10"
+  },
+  "_resolutionsNotes": {
+    "brace-expansion": "CVE-2025-5889 - Security fix - Parent: rimraf → glob → minimatch - Check if removable when rimraf/glob updates",
+    "sha.js": "CVE-2025-9288 - Security fix - Parent: (transitive, check with yarn why) - Check if removable when parent packages update",
+    "form-data": "CVE-2025-7783 - Security fix - Parent: (transitive, check with yarn why) - Check if removable when parent packages update",
+    "minimist": "CVE-2021-44906 - Security fix - Parent: (transitive, check with yarn why) - Check if removable when parent packages update",
+    "js-yaml": "CVE-2025-64718 - Security fix - Parent: (transitive, check with yarn why) - Check if removable when parent packages update",
+    "@babel/helpers": "CVE-2025-27789 - Security fix - Parent: (transitive, check with yarn why) - Check if removable when parent packages update"
   }
 }

@@ -23,6 +23,16 @@
     "minimist": "^1.2.6",
     "tar-fs": "^3.1.1"
   },
+  "_resolutionsNotes": {
+    "glob": "CVE-2025-64756 + jest/typeorm-seeding compatibility - Parent: (direct devDependency), typeorm-seeding, typeorm, rimraf, jest - Review periodically and check when these update",
+    "sha.js": "CVE-2025-9288 - Security fix - Parent: typeorm - Check if removable when typeorm updates",
+    "form-data": "CVE-2025-7783 - Security fix - Parent: @types/node-fetch, supertest - Check if removable when these packages update",
+    "js-yaml": "CVE-2025-64718 - Security fix - Parent: eslint - Check if removable when eslint updates",
+    "@babel/helpers": "CVE-2025-27789 - Security fix - Parent: jest → @babel/core - Check if removable when jest/@babel packages update",
+    "brace-expansion": "CVE-2025-5889 - Security fix - Parent: minimatch, ejs - Check if removable when these packages update",
+    "minimist": "CVE-2021-44906 - Security fix - Parent: json5, tsconfig-paths - Check if removable when these packages update",
+    "tar-fs": "CVE-2025-59343 - Security fix - Parent: puppeteer → @puppeteer/browsers - Check if removable when puppeteer updates"
+  },
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc -p tsconfig.json",
@@ -43,7 +53,8 @@
     "aa-storm-alert-worker": "yarn ts-node src/aa-storm-alert-runner.ts",
     "aa-flood-alert-worker": "yarn ts-node src/aa-flood-alert-runner.ts",
     "docker-alert": "source ../api/set_envs.sh && docker compose run --entrypoint 'yarn alert-worker' alerting-node",
-    "audit": "audit-ci --config .audit-ci.json"
+    "audit": "audit-ci --config .audit-ci.json",
+    "check-resolutions": "node ../scripts/check-resolutions.js package.json"
   },
   "dependencies": {
     "@turf/bbox": "^6.3.0",
