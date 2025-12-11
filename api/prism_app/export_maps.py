@@ -14,7 +14,7 @@ from playwright.async_api import TimeoutError as PlaywrightTimeoutError
 from playwright.async_api import async_playwright
 from pypdf import PdfReader, PdfWriter
 
-from .models import AspectRatio, ExportFormat
+from .models import ExportFormat
 
 logger = logging.getLogger(__name__)
 
@@ -115,32 +115,6 @@ def validate_export_url(url: str) -> None:
         )
 
 
-def get_viewport_dimensions(aspect_ratio: AspectRatio) -> Tuple[int, int]:
-    """
-    Convert aspect ratio string to pixel dimensions.
-
-    Dynamically parses aspect ratio strings in "W:H" format
-
-    Args: aspect_ratio: Aspect ratio string in "W:H" format
-    Returns: Tuple of (width, height) in pixels
-    """
-    try:
-        parts = aspect_ratio.split(":")
-        if len(parts) != 2:
-            raise ValueError("Invalid format")
-        width_ratio = int(parts[0])
-        height_ratio = int(parts[1])
-        if width_ratio <= 0 or height_ratio <= 0:
-            raise ValueError("Ratios must be positive")
-    except (ValueError, AttributeError):
-        raise ValueError(
-            f"Invalid aspect ratio: {aspect_ratio}. Expected format 'W:H' (e.g., '3:4')"
-        )
-
-    height = int(BASE_WIDTH * (height_ratio / width_ratio))
-    return (BASE_WIDTH, height)
-
-
 def extract_dates_from_urls(urls: list[str]) -> list[str]:
     """
     Extract dates from URLs.
@@ -216,7 +190,10 @@ async def render_single_map(
 
 
 async def export_maps(
-    urls: list[str], aspect_ratio: AspectRatio, format_type: ExportFormat
+    urls: list[str],
+    viewport_width: int,
+    viewport_height: int,
+    format_type: ExportFormat,
 ) -> Tuple[bytes, str]:
     """
     Export maps for multiple dates and return packaged file.
@@ -225,12 +202,12 @@ async def export_maps(
 
     Args:
         urls: List of base URLs with map parameters
-        aspect_ratio: Aspect ratio string ('1:1', '3:4', or '4:3')
+        viewport_width: Browser viewport width in pixels
+        viewport_height: Browser viewport height in pixels
         format_type: Output format ('pdf' or 'zip')
     Returns: Tuple of (file_bytes, content_type)
     """
     dates = extract_dates_from_urls(urls)
-    viewport_width, viewport_height = get_viewport_dimensions(aspect_ratio)
     semaphore = asyncio.Semaphore(4)  # Limit to 4 concurrent renders
 
     async def render_with_limit(url: str) -> bytes:

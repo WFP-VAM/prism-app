@@ -182,10 +182,17 @@ class ExportRequestModel(BaseModel):
         "including layer ID(s), layer opacity, bounding box, legend config, etc.",
         example="/?hazardLayerIds=daily_rainfall_forecast&date=2025-01-01&layerOpacity=0.7&boundingBox=",
     )
-    aspectRatio: AspectRatio = Field(
-        ...,
-        description="Selected dimensions of the map - will be used to determine viewport size",
-        example="3:4",
+    viewportWidth: int = Field(
+        default=1200,
+        ge=800,
+        le=2400,
+        description="Canvas width in pixels for rendering",
+    )
+    viewportHeight: int = Field(
+        default=849,
+        ge=400,
+        le=2400,
+        description="Canvas height in pixels for rendering",
     )
     format: ExportFormat = Field(
         ...,
