@@ -8,6 +8,7 @@ import mask from '@turf/mask';
 import html2canvas from 'html2canvas';
 import { debounce, get } from 'lodash';
 import { jsPDF } from 'jspdf';
+import type { LngLatBounds } from 'maplibre-gl';
 import React, { useMemo, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
@@ -32,8 +33,27 @@ import PrintConfigContext, {
   MapDimensions,
   Toggles,
 } from './printConfig.context';
+import {
+  getRecommendedAspectRatio,
+  calculateExportDimensions,
+} from './mapDimensionsUtils';
 
 const defaultFooterText = get(appConfig, 'printConfig.defaultFooterText', '');
+
+// Calculate recommended aspect ratio from bounding box
+const { boundingBox } = appConfig.map;
+const {
+  recommended: recommendedAspectRatio,
+  options: defaultAspectRatioOptions,
+} = getRecommendedAspectRatio(boundingBox);
+
+// Initial dimensions: unconstrained (aspect ratio toggle starts disabled)
+// Store the recommended aspect ratio for when user enables it
+const initialMapDimensions: MapDimensions = {
+  width: 100,
+  height: 100,
+  aspectRatio: recommendedAspectRatio,
+};
 
 // Debounce changes so that we don't redraw on every keystroke.
 const debounceCallback = debounce((callback: any, ...args: any[]) => {
@@ -63,6 +83,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     footerVisibility: true,
     batchMapsVisibility: false,
     bottomLogoVisibility: !!bottomLogo,
+    aspectRatioEnabled: false,
   });
 
   const [downloadMenuAnchorEl, setDownloadMenuAnchorEl] =
@@ -79,17 +100,17 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const [logoScale, setLogoScale] = React.useState(1);
   const [bottomLogoScale, setBottomLogoScale] = React.useState(1);
   // the % value of the original dimensions
-  const [mapDimensions, setMapDimensions] = React.useState<MapDimensions>({
-    width: 100,
-    height: 100,
-    aspectRatio: '4:3',
-  });
+  const [mapDimensions, setMapDimensions] =
+    React.useState<MapDimensions>(initialMapDimensions);
   const [footerRef, { height: footerHeight }] =
     useResizeObserver<HTMLDivElement>(footerText, open);
   const [titleRef, { height: titleHeight }] = useResizeObserver<HTMLDivElement>(
     titleText,
     open,
   );
+  // Bounds and zoom captured from the preview map (no extra padding like main map)
+  const [previewBounds, setPreviewBounds] = useState<LngLatBounds | null>(null);
+  const [previewZoom, setPreviewZoom] = useState<number | null>(null);
 
   // Get the style and layers of the old map
   const selectedMapStyle = selectedMap?.getStyle();
@@ -249,14 +270,23 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         return;
       }
 
-      // Extract map bounds and zoom from selectedMap
-      const mapBounds = selectedMap?.getBounds();
-      const mapZoom = selectedMap?.getZoom();
-
+      // Use preview map bounds and zoom (captured from MapExportLayout via onBoundsChange)
+      // This ensures we get the exact bounds/zoom shown in the preview, without the
+      // extra left padding that the main map has for UI elements
+      const mapBounds = previewBounds;
+      const mapZoom = previewZoom;
+      console.log('mapBounds', mapBounds);
       // Construct URLs for each date by adding `/export` to the pathname and setting the date param
       const { origin, pathname, search } = new URL(window.location.href);
       const exportPath = `${pathname.replace(/\/$/, '')}/export`;
       const baseParams = new URLSearchParams(search);
+
+      // Calculate viewport dimensions for export
+      const exportDims = calculateExportDimensions(
+        mapDimensions.aspectRatio,
+        mapDimensions.width,
+      );
+
       const constructedUrls = formattedDates
         .filter((date): date is string => date !== undefined)
         .map(date => {
@@ -268,12 +298,15 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
             const bounds = `${mapBounds.getWest()},${mapBounds.getSouth()},${mapBounds.getEast()},${mapBounds.getNorth()}`;
             params.set('bounds', bounds);
           }
-          if (mapZoom !== undefined) {
+          if (mapZoom != null) {
             params.set('zoom', String(mapZoom));
           }
 
           // Print config options
-          params.set('mapWidth', String(mapDimensions.width));
+          // Use calculated map percentages that maintain aspect ratio
+          // within the viewport dimensions (prevents overflow)
+          params.set('mapWidth', String(exportDims.mapWidthPercent));
+          params.set('mapHeight', String(exportDims.mapHeightPercent));
           params.set('aspectRatio', mapDimensions.aspectRatio);
           params.set('title', titleText);
           params.set('footer', footerText);
@@ -313,7 +346,8 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         },
         body: JSON.stringify({
           urls: constructedUrls,
-          aspectRatio: mapDimensions.aspectRatio,
+          viewportWidth: exportDims.canvasWidth,
+          viewportHeight: exportDims.canvasHeight,
           format,
         }),
       });
@@ -405,6 +439,11 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       dateRange: dateRangeForBatchMaps,
       setDateRange: setDateRangeForBatchMaps,
       mapCount,
+      aspectRatioOptions: defaultAspectRatioOptions,
+      previewBounds,
+      setPreviewBounds,
+      previewZoom,
+      setPreviewZoom,
     },
   };
 

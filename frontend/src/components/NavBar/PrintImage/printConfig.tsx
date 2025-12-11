@@ -109,6 +109,7 @@ function SectionToggle({
   children,
   expanded,
   handleChange,
+  disabled,
 }: {
   title: string;
   children?: React.ReactNode;
@@ -117,6 +118,7 @@ function SectionToggle({
     event: React.ChangeEvent<HTMLInputElement>,
     checked: boolean,
   ) => void;
+  disabled?: boolean;
 }) {
   const classes = useStyles();
   return (
@@ -126,7 +128,12 @@ function SectionToggle({
           expanded && children ? classes.collapsibleWrapperExpanded : ''
         }`}
       >
-        <Switch checked={expanded} onChange={handleChange} title={title} />
+        <Switch
+          checked={expanded}
+          onChange={handleChange}
+          title={title}
+          disabled={disabled}
+        />
       </div>
       <Collapse in={expanded}>{children}</Collapse>
     </div>
@@ -225,7 +232,27 @@ const logoScaleSelectorOptions = [
   { value: 1.5, comp: <div style={{ fontSize: '1.25rem' }}>L</div> },
 ];
 
-const mapWidthSelectorOptions = [
+/**
+ * Map Width and Aspect Ratio Rules:
+ *
+ * WHEN ASPECT RATIO IS DISABLED (single map download, no batch):
+ * - Width options: 50%, 60%, 70%, 80%, 90%, 100%
+ * - Width controls the percentage of the browser viewport the map takes up
+ * - No A4 paper constraints - map fills available space
+ *
+ * WHEN ASPECT RATIO IS ENABLED (required for batch maps):
+ * - Width options: 50%, 100% only
+ * - Map is rendered on an A4 paper canvas (white) with gray backdrop
+ * - 100% width: Map takes maximum width while fitting within A4 height
+ *   - For portrait ratios (2:3): height fills A4, width is constrained
+ *   - For landscape ratios (3:2): width fills A4, height is constrained
+ * - 50% width: Map takes 50% of canvas width, blank space on right
+ *   - Useful for side-by-side comparisons or adding notes
+ * - Intermediate widths (60-90%) are not useful because:
+ *   - Portrait maps are height-constrained, so width doesn't change appearance
+ *   - Results in confusing UI where 50%, 70%, 90% all look the same
+ */
+const mapWidthOptionsDefault = [
   { value: 50, comp: <div>50%</div> },
   { value: 60, comp: <div>60%</div> },
   { value: 70, comp: <div>70%</div> },
@@ -234,12 +261,10 @@ const mapWidthSelectorOptions = [
   { value: 100, comp: <div>100%</div> },
 ];
 
-const aspectRatioSelectorOptions = [
-  { value: '4:3', comp: <div>4:3</div> },
-  { value: '1:1', comp: <div>1:1</div> },
-  { value: '3:2', comp: <div>3:2</div> },
-  { value: '6:5', comp: <div>6:5</div> },
-  { value: '2:3', comp: <div>2:3</div> },
+// Limited options when aspect ratio is enabled (for batch maps or locked aspect ratio)
+const mapWidthOptionsWithAspectRatio = [
+  { value: 50, comp: <div>50%</div> },
+  { value: 100, comp: <div>100%</div> },
 ];
 
 const footerTextSelectorOptions = [
@@ -296,7 +321,14 @@ function PrintConfig() {
     mapCount,
     shouldEnableBatchMaps,
     dateRange,
+    aspectRatioOptions,
   } = printConfig;
+
+  // Build selector options from the filtered aspect ratio options
+  const aspectRatioSelectorOptions = aspectRatioOptions.map(ratio => ({
+    value: ratio,
+    comp: <div>{ratio}</div>,
+  }));
 
   return (
     <Box>
@@ -338,38 +370,48 @@ function PrintConfig() {
         {/* Width */}
         <ToggleSelector
           value={mapDimensions.width}
-          options={mapWidthSelectorOptions}
+          options={
+            toggles.aspectRatioEnabled || toggles.batchMapsVisibility
+              ? mapWidthOptionsWithAspectRatio
+              : mapWidthOptionsDefault
+          }
           setValue={val => {
             const newWidth = val as number;
             setMapDimensions(prev =>
-              calculateMapDimensions(prev, {
-                newWidth,
-                availableWidths: mapWidthSelectorOptions.map(
-                  opt => opt.value as number,
-                ),
-              }),
+              calculateMapDimensions(prev, { newWidth }),
             );
           }}
           title={t('Map Width')}
         />
 
         {/* Aspect Ratio */}
-        <ToggleSelector
-          value={mapDimensions.aspectRatio}
-          options={aspectRatioSelectorOptions}
-          setValue={val => {
-            const newAspectRatio = val as AspectRatio;
-            setMapDimensions(prev =>
-              calculateMapDimensions(prev, {
-                newAspectRatio,
-                availableWidths: mapWidthSelectorOptions.map(
-                  opt => opt.value as number,
-                ),
-              }),
-            );
-          }}
+        <SectionToggle
           title={t('Aspect Ratio')}
-        />
+          expanded={toggles.aspectRatioEnabled || toggles.batchMapsVisibility}
+          disabled={toggles.batchMapsVisibility}
+          handleChange={({ target }) => {
+            setToggles(prev => ({
+              ...prev,
+              aspectRatioEnabled: Boolean(target.checked),
+            }));
+          }}
+        >
+          <GreyContainer>
+            <GreyContainerSection isLast>
+              <ToggleSelector
+                value={mapDimensions.aspectRatio}
+                options={aspectRatioSelectorOptions}
+                setValue={val => {
+                  const newAspectRatio = val as AspectRatio;
+                  setMapDimensions(prev =>
+                    calculateMapDimensions(prev, { newAspectRatio }),
+                  );
+                }}
+                title={t('Ratio')}
+              />
+            </GreyContainerSection>
+          </GreyContainer>
+        </SectionToggle>
 
         {/* Logo */}
         {logo && (
@@ -678,28 +720,26 @@ function PrintConfig() {
           open={Boolean(downloadMenuAnchorEl)}
           onClose={handleDownloadMenuClose}
         >
-          {toggles.batchMapsVisibility ? (
-            <>
-              <MenuItem onClick={() => downloadBatch('pdf')}>
-                {t('Download maps as PDF')}
-              </MenuItem>
-              <MenuItem onClick={() => downloadBatch('png')}>
-                {t('Download maps as PNGs')}
-              </MenuItem>
-            </>
-          ) : (
-            <>
-              <MenuItem onClick={() => download('png')}>
-                {t('Download PNG')}
-              </MenuItem>
-              <MenuItem onClick={() => download('jpeg')}>
-                {t('Download JPEG')}
-              </MenuItem>
-              <MenuItem onClick={() => download('pdf')}>
-                {t('Download PDF')}
-              </MenuItem>
-            </>
-          )}
+          {toggles.batchMapsVisibility
+            ? [
+                <MenuItem key="pdf" onClick={() => downloadBatch('pdf')}>
+                  {t('Download maps as PDF')}
+                </MenuItem>,
+                <MenuItem key="png" onClick={() => downloadBatch('png')}>
+                  {t('Download maps as PNGs')}
+                </MenuItem>,
+              ]
+            : [
+                <MenuItem key="png" onClick={() => download('png')}>
+                  {t('Download PNG')}
+                </MenuItem>,
+                <MenuItem key="jpeg" onClick={() => download('jpeg')}>
+                  {t('Download JPEG')}
+                </MenuItem>,
+                <MenuItem key="pdf" onClick={() => download('pdf')}>
+                  {t('Download PDF')}
+                </MenuItem>,
+              ]}
         </Menu>
       </div>
     </Box>

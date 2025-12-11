@@ -4,6 +4,7 @@ import {
   ExportParams,
   ExportMapBounds,
   MapExportToggles,
+  AspectRatio,
 } from 'components/MapExport/types';
 import { AdminCodeString } from 'config/types';
 
@@ -121,7 +122,8 @@ export const useExportParams = (): ExportParams => {
 
       // Print config
       mapWidth: getNum('mapWidth', 100),
-      aspectRatio: params.get('aspectRatio') ?? '4:3',
+      mapHeight: getNum('mapHeight', 100),
+      aspectRatio: (params.get('aspectRatio') ?? '4:3') as AspectRatio,
       titleText: params.get('title') ?? '',
       footerText: params.get('footer') ?? '',
       footerTextSize: getNum('footerTextSize', 12),

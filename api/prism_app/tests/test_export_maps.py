@@ -174,7 +174,8 @@ def test_export_endpoint_success(mock_page_url, format_type, expected_content_ty
         "/export",
         json={
             "urls": [mock_page_url],
-            "aspectRatio": "3:4",
+            "viewportWidth": 1200,
+            "viewportHeight": 1600,
             "format": format_type,
         },
     )
@@ -194,7 +195,8 @@ def test_export_endpoint_multiple_dates(mock_page_url):
         "/export",
         json={
             "urls": [f"{MOCK_PAGE_URL}?date={date}" for date in dates],
-            "aspectRatio": "3:4",
+            "viewportWidth": 1200,
+            "viewportHeight": 1600,
             "format": "pdf",
         },
     )
@@ -208,7 +210,8 @@ def test_export_endpoint_multiple_dates(mock_page_url):
 @pytest.mark.parametrize(
     "request_data,expected_status",
     [
-        ({"aspectRatio": "16:9"}, 422),  # Invalid aspect ratio
+        ({"viewportWidth": 100}, 422),  # Width too small
+        ({"viewportHeight": 100}, 422),  # Height too small
         ({"format": "jpg"}, 422),  # Invalid format
         ({"urls": []}, 422),  # Empty urls
         (
@@ -227,7 +230,8 @@ def test_export_endpoint_validation_errors(
     # Build request with defaults
     default_request = {
         "urls": [f"http://localhost/?test=1&date={TEST_DATE}"],
-        "aspectRatio": "3:4",
+        "viewportWidth": 1200,
+        "viewportHeight": 849,
         "format": "pdf",
     }
     default_request.update(request_data)
@@ -244,7 +248,8 @@ def test_export_endpoint_localhost_allowed():
             "urls": [
                 f"http://localhost:3000/?hazardLayerIds=test_layer&date={TEST_DATE}"
             ],
-            "aspectRatio": "3:4",
+            "viewportWidth": 1200,
+            "viewportHeight": 1600,
             "format": "pdf",
         },
     )

@@ -52,6 +52,12 @@ function PrintPreview() {
       : ''
   }.`;
 
+  // Only apply aspect ratio dimensions when aspect ratio is enabled
+  const aspectRatioEnabled =
+    printConfig?.toggles?.aspectRatioEnabled ||
+    printConfig?.toggles?.batchMapsVisibility ||
+    false;
+
   // Appease TS by ensuring printConfig is defined
   if (!printConfig || !selectedMap) {
     return null;
@@ -76,6 +82,8 @@ function PrintPreview() {
     footerHeight,
     bottomLogo,
     bottomLogoScale,
+    setPreviewBounds,
+    setPreviewZoom,
   } = printConfig;
 
   // Get the style and layers of the old map
@@ -95,8 +103,9 @@ function PrintPreview() {
   return (
     <MapExportLayout
       toggles={toggles}
-      mapWidth={mapDimensions.width}
-      mapHeight={mapDimensions.height}
+      mapWidth={aspectRatioEnabled ? mapDimensions.width : 100}
+      mapHeight={aspectRatioEnabled ? mapDimensions.height : undefined}
+      aspectRatio={aspectRatioEnabled ? mapDimensions.aspectRatio : undefined}
       titleText={titleText}
       footerText={footerText}
       footerTextSize={footerTextSize}
@@ -125,6 +134,10 @@ function PrintPreview() {
       floodStations={filteredFloodStations}
       activePanel={activePanel}
       adminLevelLayersWithFillPattern={adminLevelLayersWithFillPattern}
+      onBoundsChange={(bounds, zoom) => {
+        setPreviewBounds(bounds);
+        setPreviewZoom(zoom);
+      }}
     />
   );
 }

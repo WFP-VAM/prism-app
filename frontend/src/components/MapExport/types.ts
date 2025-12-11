@@ -1,5 +1,9 @@
 import React from 'react';
-import type { StyleSpecification, LngLatBoundsLike } from 'maplibre-gl';
+import type {
+  StyleSpecification,
+  LngLatBoundsLike,
+  LngLatBounds,
+} from 'maplibre-gl';
 import { AdminCodeString, LayerType } from 'config/types';
 
 export type AspectRatio = '4:3' | '1:1' | '3:2' | '6:5' | '2:3';
@@ -33,6 +37,7 @@ export interface ExportParams {
 
   // Print config options
   mapWidth: number; // 50-100
+  mapHeight: number; // percentage (defaults to 100)
   aspectRatio: AspectRatio;
   titleText: string;
   footerText: string;
@@ -59,6 +64,9 @@ export interface MapExportLayoutProps {
   // Dimensions
   mapWidth: number; // percentage 50-100
   mapHeight?: number; // percentage (defaults to 100)
+
+  // Aspect ratio - when provided, map maintains this ratio with gray backdrop
+  aspectRatio?: AspectRatio;
 
   // Title/Footer
   titleText: string;
@@ -123,4 +131,7 @@ export interface MapExportLayoutProps {
 
   // Callback for map load
   onMapLoad?: (e: any) => void;
+
+  // Callback when map bounds/zoom change (for capturing preview state)
+  onBoundsChange?: (bounds: LngLatBounds, zoom: number) => void;
 }

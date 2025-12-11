@@ -556,7 +556,8 @@ async def export_maps_endpoint(export_request: ExportRequestModel) -> Response:
         dates = extract_dates_from_urls(export_request.urls)
         file_bytes, content_type = await export_maps(
             urls=export_request.urls,
-            aspect_ratio=export_request.aspectRatio,
+            viewport_width=export_request.viewportWidth,
+            viewport_height=export_request.viewportHeight,
             format_type=export_request.format,
         )
 
