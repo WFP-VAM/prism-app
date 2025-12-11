@@ -139,8 +139,8 @@
     "minimist": "CVE-2021-44906 - Security fix - Parent: cypress, max-inscribed-circle, maplibre-gl, eslint-plugin-import - Check if removable when these packages update",
     "glob": "CVE-2025-64756 - Security fix - Parent: rimraf, jest - Check if removable when these packages update",
     "tar-fs": "CVE-2025-59343 - Security fix - Parent: (not found in dependency tree, may be transitive) - Check if removable when parent packages update",
-    "strip-ansi": "Compatibility fix - Parent: glob → jackspeak - Forces v6 (CommonJS) for string-length compatibility - Check if removable when string-length/jest update to support strip-ansi v7",
-    "string-width": "Compatibility fix - Parent: glob → jackspeak → cliui - Forces v4 (CommonJS) to work with strip-ansi v6 - Check if removable when glob/jackspeak update to versions compatible with strip-ansi v7"
+    "strip-ansi": "Compatibility fix - Forces v6 (CommonJS) for string-length/jest compatibility - Also added as direct devDependency for Cypress - Check if removable when string-length/jest/cypress update to support strip-ansi v7",
+    "string-width": "Compatibility fix - Forces v4 (CommonJS) to work with strip-ansi v6 - Also added as direct devDependency for Cypress/cli-truncate - Check if removable when glob/jackspeak/cypress update to versions compatible with strip-ansi v7"
   },
   "_comment": "The 'defaults' and 'not ie 11' are needed to avoid build issues with maplibre-gl.",
   "browserslist": {
@@ -215,7 +215,9 @@
     "ts-node": "^10.9.2",
     "typescript": "5.9.3",
     "vite": "^6.4.1",
-    "vite-plugin-node-polyfills": "^0.21.0"
+    "vite-plugin-node-polyfills": "^0.21.0",
+    "string-width": "^4.2.3",
+    "strip-ansi": "^6.0.1"
   },
   "engines": {
     "node": ">=20.6.0"
