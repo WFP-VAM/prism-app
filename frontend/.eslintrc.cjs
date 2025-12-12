@@ -1,13 +1,19 @@
 module.exports = {
   extends: [
-    'react-app',
     'airbnb',
     'plugin:jsx-a11y/recommended',
     'prettier',
     'plugin:react/jsx-runtime',
   ],
   parser: '@typescript-eslint/parser',
-  plugins: ['jsx-a11y', 'fp', 'prettier', 'import', 'react-refresh'],
+  plugins: [
+    'jsx-a11y',
+    'fp',
+    'prettier',
+    'import',
+    'react-refresh',
+    '@typescript-eslint',
+  ],
   rules: {
     'react-refresh/only-export-components': 'error',
     // Allow JSX within .js files
@@ -60,7 +66,10 @@ module.exports = {
       },
     ],
     // temp: remove before merging PR
-    'no-console': ['warn', { allow: ['warn', 'error', 'time', 'timeEnd', 'timeLog'] }],
+    'no-console': [
+      'warn',
+      { allow: ['warn', 'error', 'time', 'timeEnd', 'timeLog'] },
+    ],
     'lines-between-class-members': 'off',
     'max-classes-per-file': 'off',
     'spaced-comment': 'warn',
@@ -108,7 +117,16 @@ module.exports = {
       },
       node: {
         moduleDirectory: ['node_modules', './src', './public'],
-        extensions: ['.js', '.jsx', '.ts', '.tsx', '.svg', '.png', '.jpg', '.jpeg'],
+        extensions: [
+          '.js',
+          '.jsx',
+          '.ts',
+          '.tsx',
+          '.svg',
+          '.png',
+          '.jpg',
+          '.jpeg',
+        ],
       },
     },
     'import/parsers': {
