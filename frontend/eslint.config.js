@@ -107,7 +107,7 @@ export default [
       ],
       'prettier/prettier': ['warn', { endOfLine: 'auto' }],
       'react/require-default-props': ['off'],
-      'react/jsx-no-bind': ['warn'],
+      'react/jsx-no-bind': ['off'], // Temporarily disabled - 190+ instances need fixing
       'import/extensions': [
         'error',
         'ignorePackages',
