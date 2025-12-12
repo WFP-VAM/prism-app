@@ -71,7 +71,6 @@ if (TRANSLATION_DEBUG || isDevelopment) {
       item !== '' &&
       !Object.prototype.hasOwnProperty.call(resources.en.translation, item)
     ) {
-      // eslint-disable-next-line fp/no-mutating-methods
       missingKeys.en.push(item);
     }
   });
@@ -82,14 +81,11 @@ if (TRANSLATION_DEBUG || isDevelopment) {
 
 function logMissingKey(lng: string, key: string) {
   if (TRANSLATION_DEBUG || isDevelopment) {
-    // eslint-disable-next-line no-console
     if (!missingKeys[lng]) {
-      // eslint-disable-next-line fp/no-mutation
       missingKeys[lng] = [];
     }
 
     if (!missingKeys[lng].includes(key) && key !== '') {
-      // eslint-disable-next-line fp/no-mutating-methods
       missingKeys[lng].push(key);
       // eslint-disable-next-line no-console
       console.log('Missing keys:', missingKeys[lng]);

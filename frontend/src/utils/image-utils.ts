@@ -16,11 +16,11 @@ const createSvgNode = (svg: Node | string): Node | string | null => {
   if (typeof svg === 'string') {
     // Create a non-visible node to render the SVG string
     const SVGContainer = document.createElement('div');
-    // eslint-disable-next-line fp/no-mutation
+
     SVGContainer.style.display = 'none';
-    // eslint-disable-next-line fp/no-mutation
+
     SVGContainer.innerHTML = svg;
-    // eslint-disable-next-line fp/no-mutation
+
     return SVGContainer.firstElementChild;
   }
   return svg;
@@ -79,7 +79,6 @@ const SVGToImage = (settings: SVGToImageSettings): Promise<string | Blob> =>
 
     const image = new Image();
 
-    // eslint-disable-next-line fp/no-mutation
     image.onload = () => {
       const finalWidth = calculateImageWidth(
         settings.width,
@@ -94,9 +93,9 @@ const SVGToImage = (settings: SVGToImageSettings): Promise<string | Blob> =>
       );
 
       // Define the canvas intrinsic size
-      // eslint-disable-next-line fp/no-mutation
+
       canvas.width = finalWidth;
-      // eslint-disable-next-line fp/no-mutation
+
       canvas.height = finalHeight;
 
       if (!context) {
@@ -122,7 +121,7 @@ const SVGToImage = (settings: SVGToImageSettings): Promise<string | Blob> =>
     };
 
     // Load the SVG in Base64 to the image
-    // eslint-disable-next-line fp/no-mutation
+
     image.src = svgBase64;
   });
 

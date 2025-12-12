@@ -52,7 +52,6 @@ function PrintPreview() {
     const baseHeight = footerHeight || 20;
 
     if (elem) {
-      // eslint-disable-next-line fp/no-mutating-assign
       Object.assign(elem.style, {
         position: 'absolute',
         right: '10px',
@@ -125,7 +124,6 @@ function PrintPreview() {
   const selectedMapStyle = selectedMap?.getStyle();
 
   if (selectedMapStyle && !toggles.mapLabelsVisibility) {
-    // eslint-disable-next-line fp/no-mutation
     selectedMapStyle.layers = selectedMapStyle?.layers.filter(
       x => !x.id.includes('label'),
     );

@@ -571,10 +571,8 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
       daysInSeason[daysInSeason.length - 1] < endOfWinter
     ) {
       if (daysInSeason.length === 0) {
-        // eslint-disable-next-line fp/no-mutating-methods
         daysInSeason.push(startOfWinter);
       } else {
-        // eslint-disable-next-line fp/no-mutating-methods
         daysInSeason.push(
           new Date(
             new Date(startOfWinter).setDate(
@@ -631,10 +629,8 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
       daysInSeason[daysInSeason.length - 1] < endOfWetSeason
     ) {
       if (daysInSeason.length === 0) {
-        // eslint-disable-next-line fp/no-mutating-methods
         daysInSeason.push(startOfWetSeason);
       } else {
-        // eslint-disable-next-line fp/no-mutating-methods
         daysInSeason.push(
           new Date(
             new Date(startOfWetSeason).setDate(

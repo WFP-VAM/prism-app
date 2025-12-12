@@ -299,7 +299,6 @@ function TableBlock({
       return rawData;
     }
 
-    // eslint-disable-next-line fp/no-mutating-methods
     const sortedData = [...rawData].sort((a, b) => {
       const aValue = a[sortColumn];
       const bValue = b[sortColumn];
