@@ -14,14 +14,15 @@
     "glob": ">=11.1.0 because of jest and typeorm-seeding ; try to remove once in a while."
   },
   "resolutions": {
-    "glob": "^11.1.0",
+    "glob": "^13.0.0",
     "sha.js": "^2.4.12",
     "form-data": "^3.0.4",
     "js-yaml": "^4.1.1",
     "@babel/helpers": "^7.26.10",
     "brace-expansion": "^2.0.2",
     "minimist": "^1.2.6",
-    "tar-fs": "^3.1.1"
+    "tar-fs": "^3.1.1",
+    "string-width": "^8.1.0"
   },
   "_resolutionsNotes": {
     "glob": "CVE-2025-64756 + jest/typeorm-seeding compatibility - Parent: (direct devDependency), typeorm-seeding, typeorm, rimraf, jest - Review periodically and check when these update",
