@@ -17,7 +17,7 @@
   },
   "scripts": {
     "start": "cross-env vite",
-    "test": "cross-env REACT_APP_TESTING=true NODE_OPTIONS=\"--experimental-vm-modules\" && jest --maxWorkers=8",
+    "test": "cross-env REACT_APP_TESTING=true && jest --maxWorkers=8",
     "test:watch": "yarn test --watch",
     "build": "export GIT_HASH=$(git rev-parse --short HEAD) || true && tsc && cross-env vite build",
     "lint:ci": "yarn lint --max-warnings 0",
