@@ -22,6 +22,7 @@
     "build": "export GIT_HASH=$(git rev-parse --short HEAD) || true && tsc && cross-env vite build",
     "lint": "eslint ./src ../common/src --ext js,jsx,ts,tsx -c .eslintrc.cjs",
     "lint:ci": "yarn lint --max-warnings 0",
+    "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
     "preview": "vite preview",
     "setup:common": "rimraf ./node_modules/prism-common && cd ../common && yarn install --network-timeout 600000 && yarn build && cd ../frontend && yarn install --check-files",
     "setup:common_in_ci": "rm -rf ./node_modules/prism-common && cd ../common && yarn install --network-timeout 600000 && yarn build_in_ci && cd ../frontend",
