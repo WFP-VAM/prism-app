@@ -123,9 +123,7 @@
     "form-data": "^3.0.4",
     "minimist": "^1.2.6",
     "glob": "^11.1.0",
-    "tar-fs": "^3.1.1",
-    "strip-ansi": "6.0.1",
-    "string-width": "4.2.3"
+    "tar-fs": "^3.1.1"
   },
   "_resolutionsNotes": {
     "node-notifier": "Build compatibility - keep",
@@ -138,9 +136,7 @@
     "form-data": "CVE-2025-7783 - Security fix - Parent: jest-environment-jsdom → jsdom, cypress - Check if removable when these packages update",
     "minimist": "CVE-2021-44906 - Security fix - Parent: cypress, max-inscribed-circle, maplibre-gl, eslint-plugin-import - Check if removable when these packages update",
     "glob": "CVE-2025-64756 - Security fix - Parent: rimraf, jest - Check if removable when these packages update",
-    "tar-fs": "CVE-2025-59343 - Security fix - Parent: (not found in dependency tree, may be transitive) - Check if removable when parent packages update",
-    "strip-ansi": "Required for Jest compatibility - Jest's string-length dependency requires CommonJS strip-ansi v6. Using exact version (6.0.1) ensures it's available without postinstall script",
-    "string-width": "Required for Jest compatibility - Works with strip-ansi v6. Using exact version (4.2.3) ensures it's available without postinstall script"
+    "tar-fs": "CVE-2025-59343 - Security fix - Parent: (not found in dependency tree, may be transitive) - Check if removable when parent packages update"
   },
   "_comment": "The 'defaults' and 'not ie 11' are needed to avoid build issues with maplibre-gl.",
   "browserslist": {
@@ -212,7 +208,6 @@
     "prettier": "^3.6.0",
     "redux-mock-store": "^1.5.4",
     "string-width": "^4.2.3",
-    "strip-ansi": "^6.0.1",
     "timezone-mock": "^1.3.6",
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.2",
