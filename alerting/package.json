@@ -22,7 +22,7 @@
     "brace-expansion": "^2.0.2",
     "minimist": "^1.2.6",
     "tar-fs": "^3.1.1",
-    "string-width": "^8.1.0"
+    "string-width": "4.2.3"
   },
   "_resolutionsNotes": {
     "glob": "CVE-2025-64756 + jest/typeorm-seeding compatibility - Parent: (direct devDependency), typeorm-seeding, typeorm, rimraf, jest - Review periodically and check when these update",
