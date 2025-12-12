@@ -20,7 +20,6 @@
     "test": "cross-env REACT_APP_TESTING=true NODE_OPTIONS=\"--experimental-vm-modules\" && jest --maxWorkers=8",
     "test:watch": "yarn test --watch",
     "build": "export GIT_HASH=$(git rev-parse --short HEAD) || true && tsc && cross-env vite build",
-    "lint": "eslint ./src ../common/src --ext js,jsx,ts,tsx -c .eslintrc.cjs",
     "lint:ci": "yarn lint --max-warnings 0",
     "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
     "preview": "vite preview",
