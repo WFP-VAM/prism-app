@@ -70,7 +70,7 @@ async function generateIntermediateDateItemFromDataFile(
       const completeFilePath = path.join(__dirname, '../public/', filePath);
 
       if (!fs.existsSync(completeFilePath)) {
-        console.log(`Warning: File ${filePath} does not exist.`);
+        console.warn(`Warning: File ${filePath} does not exist.`);
         return {};
       }
 
