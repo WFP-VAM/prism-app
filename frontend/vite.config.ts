@@ -11,7 +11,6 @@ const env = Object.keys(process.env)
   .filter(key => key.startsWith('REACT_APP_'))
   .reduce(
     (obj, key) => {
-      // eslint-disable-next-line fp/no-mutation, no-param-reassign
       obj[key] = process.env[key];
       return obj;
     },
@@ -27,7 +26,7 @@ if (country) {
 }
 
 // In case GIT_HASH is not set we are in github actions environment
-// eslint-disable-next-line fp/no-mutation
+
 process.env.REACT_APP_GIT_HASH = (
   process.env.GITHUB_SHA || process.env.GIT_HASH
 )?.slice(0, 8);
@@ -58,7 +57,7 @@ const removeFilesPlugin = (): Plugin => ({
       let files = fs.readdirSync(dir);
 
       // Process subdirectories first
-      // eslint-disable-next-line no-restricted-syntax
+
       for (const file of files) {
         const absPath = path.join(dir, file);
         if (fs.statSync(absPath).isDirectory()) {
@@ -67,7 +66,7 @@ const removeFilesPlugin = (): Plugin => ({
       }
 
       // Re-read to see if directory is now empty after removing subdirs
-      // eslint-disable-next-line fp/no-mutation
+
       files = fs.readdirSync(dir);
       if (files.length === 0) {
         fs.rmdirSync(dir);

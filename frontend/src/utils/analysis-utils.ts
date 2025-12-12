@@ -135,7 +135,6 @@ export const checkBaselineDataLayer = (
   );
 };
 
-/* eslint-disable camelcase */
 export type ApiData = {
   geotiff_url: ReturnType<typeof createGetCoverageUrl>; // helps developers get an understanding of what might go here, despite the type eventually being a string.
   zones_url: string;
@@ -144,7 +143,6 @@ export type ApiData = {
   wfs_params?: WfsRequestParams;
 };
 
-/* eslint-disable camelcase */
 export type AlertRequest = {
   alert_name: string;
   alert_config: WMSLayerProps;
@@ -197,7 +195,7 @@ export const fetchApiData = async (
     .then(message => {
       try {
         return JSON.parse(message);
-      } catch (e) {
+      } catch (_e) {
         // In some cases the response isn't valid JSON.
         // In those cases, just wrap the full response in an object.
         return {
@@ -417,7 +415,7 @@ export function createLegendFromFeatureArray(
 
     // Make sure you don't have a value greater than maxNum.
     const value = Math.min(breakpoint, maxNum);
-    /* eslint-disable fp/no-mutation */
+
     let formattedValue;
     if (statistic === AggregationOperations['Area exposed']) {
       formattedValue = `${(value * 100).toFixed(2)} %`;
@@ -428,7 +426,6 @@ export function createLegendFromFeatureArray(
         ? `(${value.toFixed(1)})`
         : `(${Math.round(value).toLocaleString('en-US')})`;
     }
-    /* eslint-enable fp/no-mutation */
 
     return {
       value,
@@ -452,7 +449,6 @@ export class ExposedPopulationResult {
   analysisDate: ReturnType<Date['getTime']>;
   tableColumns: any;
 
-  // eslint-disable-next-line class-methods-use-this
   getTitle = (t: i18nTranslator): string => t('Population Exposure');
 
   getLayerTitle = (t: i18nTranslator): string => this.getTitle(t);
@@ -607,7 +603,6 @@ export function getAnalysisTableColumns(
   ];
 
   if (statistic === AggregationOperations['Area exposed']) {
-    /* eslint-disable-next-line fp/no-mutating-methods */
     analysisTableColumns.push({
       id: 'stats_intersect_area',
       label: 'Area exposed in km²',

@@ -87,7 +87,7 @@ export const errorToNotificationMiddleware: Middleware<{}, RootState> =
     let dispatchResult;
     try {
       // catch sync errors
-      // eslint-disable-next-line fp/no-mutation
+
       dispatchResult = dispatch(action);
     } catch (err) {
       dispatch(

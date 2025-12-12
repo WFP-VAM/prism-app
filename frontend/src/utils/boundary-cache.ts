@@ -73,7 +73,6 @@ class BoundaryCacheManager {
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private async loadBoundaryData(
     layer: BoundaryLayerProps,
     dispatch: DispatchFunction,

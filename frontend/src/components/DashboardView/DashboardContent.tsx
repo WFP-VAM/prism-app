@@ -340,7 +340,6 @@ function DashboardContent({
 
               return (
                 <Box
-                  // eslint-disable-next-line react/no-array-index-key
                   key={`column-${columnIndex}`}
                   className={columnClass}
                   component="div"

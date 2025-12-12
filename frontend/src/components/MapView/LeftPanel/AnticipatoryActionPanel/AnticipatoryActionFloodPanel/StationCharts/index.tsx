@@ -927,7 +927,6 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                       <TableRow key={`hydrograph-row-${row[0] || rowIndex}`}>
                         {row.map((cellValue, cellIndex) => (
                           <TableCell
-                            // eslint-disable-next-line react/no-array-index-key
                             key={`hydrograph-cell-${row[0] || rowIndex}-${cellIndex}`}
                             className={classes.tableCell}
                           >
@@ -992,7 +991,6 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                         <TableRow key={`probability-row-${row[0] || rowIndex}`}>
                           {row.map((cellValue, cellIndex) => (
                             <TableCell
-                              // eslint-disable-next-line react/no-array-index-key
                               key={`probability-cell-${row[0] || rowIndex}-${cellIndex}`}
                               className={classes.tableCell}
                             >

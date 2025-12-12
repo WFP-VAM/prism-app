@@ -87,7 +87,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const selectedMapStyle = selectedMap?.getStyle();
 
   if (selectedMapStyle && !toggles.mapLabelsVisibility) {
-    // eslint-disable-next-line fp/no-mutation
     selectedMapStyle.layers = selectedMapStyle?.layers.filter(
       x => !x.id.includes('label'),
     );
@@ -144,7 +143,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       if (format === 'pdf') {
         const orientation =
           canvas.width > canvas.height ? 'landscape' : 'portrait';
-        // eslint-disable-next-line new-cap
+
         const pdf = new jsPDF({
           orientation,
           unit: 'px',
@@ -173,7 +172,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     handleDownloadMenuClose();
   };
 
-  // eslint-disable-next-line react/jsx-no-constructed-context-values
   const printContext = {
     printConfig: {
       open,

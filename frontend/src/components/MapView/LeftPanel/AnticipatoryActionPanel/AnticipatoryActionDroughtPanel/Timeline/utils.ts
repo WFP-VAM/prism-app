@@ -71,7 +71,7 @@ export function timelineTransform({
       const val = categoriesMap.get(key);
       if (val) {
         // Sort the new data based on validity
-        // eslint-disable-next-line fp/no-mutating-methods
+
         const sortedData = [
           x,
           ...val.data.filter(item => item.date === x.date),
@@ -95,7 +95,7 @@ export function timelineTransform({
         const highestPriorityItem = sortedData[0];
 
         // Update the data array
-        // eslint-disable-next-line fp/no-mutation
+
         val.data = [
           ...val.data.filter(item => item.date !== x.date),
           highestPriorityItem,

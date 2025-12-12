@@ -45,7 +45,6 @@ export const GoogleFloodTriggersConfig: FloodChartConfigObject = {
   },
 };
 
-/* eslint-disable camelcase */
 export type FloodSensorData = {
   station_id: number;
   value: [string, number];
@@ -56,7 +55,6 @@ type GoogleFloodTriggerLevels = {
   danger: number | null;
   extremeDanger: number | null;
 } | null;
-/* eslint-enable camelcase */
 
 // input parameter is used here only for testing
 export const createGoogleFloodDatesArray = (testEndDate?: number): number[] => {
@@ -72,7 +70,6 @@ export const createGoogleFloodDatesArray = (testEndDate?: number): number[] => {
   tempDate.setUTCHours(12, 0, 0, 0);
 
   while (tempDate.getTime() <= endDate) {
-    // eslint-disable-next-line fp/no-mutating-methods
     datesArray.push(tempDate.getTime());
 
     tempDate.setTime(tempDate.getTime() + oneDayInMs);

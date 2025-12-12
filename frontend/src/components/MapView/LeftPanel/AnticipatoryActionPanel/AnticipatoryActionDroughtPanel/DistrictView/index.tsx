@@ -84,28 +84,25 @@ function WindowColumn({
               </div>
             ))}
           </div>
-          {
-            // eslint-disable-next-line fp/no-mutating-methods
-            Object.entries(extendedTransformed)
-              .sort(dateSorter)
-              .map(x => (
-                <div key={x[0]} className={classes.rowWrapper}>
-                  {Object.entries(transformed?.months || {}).map(y => {
-                    const elem = x[1].find(z => z.date === y[0]);
-                    if (!elem) {
-                      return <div key={y[0]} className={classes.column} />;
-                    }
-                    return (
-                      <div key={y[0]} className={classes.column}>
-                        <div className={classes.iconWrapper}>
-                          {getAAIcon(elem.category, elem.phase)}
-                        </div>
+          {Object.entries(extendedTransformed)
+            .sort(dateSorter)
+            .map(x => (
+              <div key={x[0]} className={classes.rowWrapper}>
+                {Object.entries(transformed?.months || {}).map(y => {
+                  const elem = x[1].find(z => z.date === y[0]);
+                  if (!elem) {
+                    return <div key={y[0]} className={classes.column} />;
+                  }
+                  return (
+                    <div key={y[0]} className={classes.column}>
+                      <div className={classes.iconWrapper}>
+                        {getAAIcon(elem.category, elem.phase)}
                       </div>
-                    );
-                  })}
-                </div>
-              ))
-          }
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
         </div>
       )}
       {hasWindowData && (

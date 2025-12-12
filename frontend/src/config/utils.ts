@@ -86,7 +86,6 @@ export const getLayerByKey = (layerKey: LayerKey): LayerType => {
 
   // Ensure data paths are absolute to prevent routing conflicts
   if (processedDefinition.path) {
-    // eslint-disable-next-line fp/no-mutation
     processedDefinition.path = ensureAbsoluteDataPath(processedDefinition.path);
   }
 
@@ -168,7 +167,7 @@ export const getLayerByKey = (layerKey: LayerKey): LayerType => {
     default:
       // doesn't do anything, but it helps catch any layer type cases we forgot above compile time via TS.
       // https://stackoverflow.com/questions/39419170/how-do-i-check-that-a-switch-block-is-exhaustive-in-typescript
-      // eslint-disable-next-line no-unused-vars
+
       ((_: never | AnticipatoryAction) => {})(definition.type);
       throw new Error(
         `Found invalid layer definition for layer '${layerKey}' (Unknown type '${definition.type}'). Check config/layers.json.`,
@@ -258,12 +257,9 @@ export const LayerDefinitions: LayersMap = (() => {
 })();
 
 export function getBoundaryLayers(): BoundaryLayerProps[] {
-  return (
-    // eslint-disable-next-line fp/no-mutating-methods
-    Object.values(LayerDefinitions)
-      .filter((layer): layer is BoundaryLayerProps => layer.type === 'boundary')
-      .sort((a, b) => a.adminLevelCodes.length - b.adminLevelCodes.length)
-  );
+  return Object.values(LayerDefinitions)
+    .filter((layer): layer is BoundaryLayerProps => layer.type === 'boundary')
+    .sort((a, b) => a.adminLevelCodes.length - b.adminLevelCodes.length);
 }
 
 // TODO - is this still relevant? @Amit do we have boundary files that we do not want displayed?
@@ -299,7 +295,7 @@ export function getDisplayBoundaryLayers(): BoundaryLayerProps[] {
     // get override layers from override names without
     // disrupting the order of which they are defined
     // since the first is considered as default
-    // eslint-disable-next-line fp/no-mutating-methods
+
     const defaultDisplayBoundaries = defaultBoundaries
       .map(
         // TODO - use a find?
@@ -386,7 +382,6 @@ export const findDashboardByPath = (
 ): { dashboard: Dashboard; index: number } | null => {
   const dashboards = getDashboards();
 
-  // eslint-disable-next-line fp/no-mutation
   for (let i = 0; i < dashboards.length; i += 1) {
     const dashboard = dashboards[i];
     const dashboardPath =

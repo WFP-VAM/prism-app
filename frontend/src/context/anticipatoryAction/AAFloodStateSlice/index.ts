@@ -173,7 +173,7 @@ export const loadAAFloodDateData = createAsyncThunk<
     dischargeByStation,
   ).reduce((acc: Record<string, FloodForecastData[]>, station) => {
     const series = dischargeByStation[station];
-    // eslint-disable-next-line fp/no-mutating-methods
+
     const seriesSorted = [...series].sort((a, b) => {
       const ta = new Date(a.time).getTime();
       const tb = new Date(b.time).getTime();
@@ -183,7 +183,7 @@ export const loadAAFloodDateData = createAsyncThunk<
       return a.member - b.member;
     });
     const times = Array.from(new Set(seriesSorted.map(s => s.time)));
-    // eslint-disable-next-line fp/no-mutating-methods
+
     const members = Array.from(new Set(seriesSorted.map(s => s.member))).sort(
       (a, b) => a - b,
     );

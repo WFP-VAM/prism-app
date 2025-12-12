@@ -94,7 +94,6 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> =
     let response: Response;
     // TODO - Better error handling, esp. for unauthorized requests.
     try {
-      // eslint-disable-next-line fp/no-mutation
       response = await fetchWithTimeout(
         requestUrl,
         dispatch,
@@ -107,19 +106,19 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> =
         },
         `Request failed for fetching point layer data at ${requestUrl}`,
       );
-      // eslint-disable-next-line fp/no-mutation
+
       data = (await response.json()) as PointData[];
     } catch (error) {
       if (fallbackData) {
         // fallback data isn't filtered, therefore we must filter it.
-        // eslint-disable-next-line fp/no-mutation
+
         response = await fetchWithTimeout(
           fallbackData || '',
           dispatch,
           {},
           `Request failed for fetching point layer data at fallback url ${fallbackData}`,
         );
-        // eslint-disable-next-line fp/no-mutation
+
         data = ((await response.json()) as PointData[]).filter(
           // we cant do a string comparison here because sometimes the date in json is stored as YYYY-M-D instead of YYYY-MM-DD
           obj =>

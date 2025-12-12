@@ -104,10 +104,8 @@ export function binaryFind<T extends any>(
     const testIdx = Math.floor((left + right) / 2);
     const val = cb(arr[testIdx]);
     if (val < ts) {
-      // eslint-disable-next-line fp/no-mutation
       left = testIdx + 1;
     } else if (val > ts) {
-      // eslint-disable-next-line fp/no-mutation
       right = testIdx - 1;
     } else {
       return testIdx;
@@ -246,7 +244,6 @@ export const constructDateFromSeason = (
     `${date.getUTCFullYear() + 1}-${season.end}T12:00:00Z`,
   ).getTime();
 
-  // eslint-disable-next-line no-nested-ternary
   return endCurrentYear >= startCurrentYear
     ? { start: new Date(startCurrentYear), end: new Date(endCurrentYear) }
     : date.getTime() >= startCurrentYear

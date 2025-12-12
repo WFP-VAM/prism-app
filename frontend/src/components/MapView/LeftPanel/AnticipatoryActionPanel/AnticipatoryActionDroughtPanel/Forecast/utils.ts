@@ -9,7 +9,6 @@ const indexOrder = ['SPI', 'DRY'];
 const monthsOrder = ['O', 'N', 'D', 'J', 'F', 'M', 'A', 'M', 'J'];
 
 function sortIndexes(indexes: string[]): string[] {
-  // eslint-disable-next-line fp/no-mutating-methods
   return indexes.sort((a, b) => {
     const [typeA, monthA] = a.split(' ');
     const [typeB, monthB] = b.split(' ');
@@ -70,7 +69,6 @@ export function forecastTransform({
     x => !selectedDate || (x.date <= selectedDate && x.season === season),
   );
 
-  // eslint-disable-next-line fp/no-mutating-methods
   const indexes = sortIndexes([...new Set(dateData.map(x => x.index))]);
 
   const sevMap = new Map<AACategoryType, AnticipatoryActionDataRow[]>();
@@ -88,7 +86,7 @@ export function forecastTransform({
         );
         if (indexData.length > 0) {
           // Sort by date in descending order to get the latest date first
-          // eslint-disable-next-line fp/no-mutating-methods
+
           indexData.sort((a, b) => b.date.localeCompare(a.date));
           // Take the probability of the first element (latest date)
           const latest = parseFloat(

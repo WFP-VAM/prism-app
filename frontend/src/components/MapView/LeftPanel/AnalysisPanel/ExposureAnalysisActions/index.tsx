@@ -107,7 +107,7 @@ function ExposureAnalysisActions({
       // Clean up the temporary URL and link element
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-    } catch (e) {
+    } catch (_e) {
       setDownloadReportIsLoading(false);
     }
     setDownloadReportIsLoading(false);

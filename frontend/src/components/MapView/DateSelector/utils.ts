@@ -46,10 +46,8 @@ export function findDateIndex(
         : endIndex;
     }
     if (date < availableDates[midIndex]) {
-      // eslint-disable-next-line fp/no-mutation
       endIndex = midIndex - 1;
     } else {
-      // eslint-disable-next-line fp/no-mutation
       startIndex = midIndex + 1;
     }
   }

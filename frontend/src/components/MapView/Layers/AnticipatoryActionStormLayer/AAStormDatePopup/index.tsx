@@ -51,7 +51,6 @@ function AAStormDatePopup({ timeSeries }: AAStormDatePopupProps) {
   );
 
   const firstForecastPoint: AAStormTimeSeriesFeature | undefined =
-    // eslint-disable-next-line fp/no-mutating-methods
     timeSeries?.features
       .slice()
       .find(

@@ -172,7 +172,6 @@ const buildRelationTree = (
         children: sortedChildren,
       };
 
-      // eslint-disable-next-line fp/no-mutating-methods
       relations.push(relation);
     });
   });

@@ -130,9 +130,7 @@ const useLayers = () => {
 
   // Prioritize boundary and point_data layers
   const selectedLayers: LayerType[] = useMemo(
-    () =>
-      // eslint-disable-next-line fp/no-mutating-methods
-      [...unsortedSelectedLayers].sort(layerOrdering),
+    () => [...unsortedSelectedLayers].sort(layerOrdering),
     [unsortedSelectedLayers],
   );
 
@@ -226,7 +224,7 @@ const useLayers = () => {
     /*
       Only keep the dates which were duplicated the same amount of times as the amount of layers active...and convert back to array.
      */
-    // eslint-disable-next-line fp/no-mutating-methods
+
     return Object.keys(
       pickBy(
         selectedLayerDatesDupCount,
@@ -350,7 +348,6 @@ const useLayers = () => {
         }
         let datesReady: boolean = false;
         try {
-          // eslint-disable-next-line fp/no-mutation
           datesReady = checkLayerAvailableDatesAndContinueOrRemove(
             layer,
             serverAvailableDates,
@@ -563,7 +560,6 @@ const useLayers = () => {
           return;
         }
 
-        // eslint-disable-next-line fp/no-mutation
         closestDate = findClosestDate(providedSelectedDate, selectedLayerDates);
 
         if (

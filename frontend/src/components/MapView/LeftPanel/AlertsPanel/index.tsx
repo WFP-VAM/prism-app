@@ -88,7 +88,7 @@ function AlertsPanel() {
     const mutableFeatureCollection = JSON.parse(
       JSON.stringify(boundaryLayerData.data),
     );
-    // eslint-disable-next-line fp/no-mutation
+
     mutableFeatureCollection.features = features;
 
     return mutableFeatureCollection;

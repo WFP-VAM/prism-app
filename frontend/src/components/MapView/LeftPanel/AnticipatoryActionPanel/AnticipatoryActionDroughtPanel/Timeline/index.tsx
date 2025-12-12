@@ -173,34 +173,29 @@ function Timeline({ dialogs }: TimelineProps) {
                     </div>
                   ))}
                 </div>
-                {
-                  // eslint-disable-next-line fp/no-mutating-methods
-                  Object.entries({ ...allRows, ...rows })
-                    .sort(dateSorter)
-                    .map(([rowId, rowData]) => (
-                      <div key={rowId} className={classes.rowWrapper}>
-                        <div className={classes.iconColumn}>
-                          {getAAIcon(
-                            rowData.status.category,
-                            rowData.status.phase,
-                          )}
-                        </div>
-                        {months.map(([date, _label]) => {
-                          const elem = rowData.data.find(z => z.date === date);
-                          if (!elem) {
-                            return (
-                              <div key={date} className={classes.column} />
-                            );
-                          }
-                          return (
-                            <div key={date} className={classes.column}>
-                              <TimelineItem item={elem} />
-                            </div>
-                          );
-                        })}
+                {Object.entries({ ...allRows, ...rows })
+                  .sort(dateSorter)
+                  .map(([rowId, rowData]) => (
+                    <div key={rowId} className={classes.rowWrapper}>
+                      <div className={classes.iconColumn}>
+                        {getAAIcon(
+                          rowData.status.category,
+                          rowData.status.phase,
+                        )}
                       </div>
-                    ))
-                }
+                      {months.map(([date, _label]) => {
+                        const elem = rowData.data.find(z => z.date === date);
+                        if (!elem) {
+                          return <div key={date} className={classes.column} />;
+                        }
+                        return (
+                          <div key={date} className={classes.column}>
+                            <TimelineItem item={elem} />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ))}
               </div>
             </div>
           );

@@ -10,11 +10,10 @@ export type TFunction = _TFunction;
 export function getRoundedData(
   data: number | string | null,
   t?: i18nTranslator,
-  // eslint-disable-next-line default-param-last
+
   decimals: number = 2,
   statistic?: AggregationOperations | string,
 ): string {
-  /* eslint-disable fp/no-mutation */
   let result = data;
   if (isNumber(result) && Number.isNaN(result)) {
     return '-';
@@ -27,7 +26,6 @@ export function getRoundedData(
   } else {
     // TODO - investigate why we received string 'null' values in data.
     result = result && result !== 'null' ? result : 'No Data';
-    /* eslint-enable fp/no-mutation */
   }
   const unit = statistic && units[statistic];
   return `${t ? t(result) : result} ${unit || ''}`;

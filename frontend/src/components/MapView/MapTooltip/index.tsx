@@ -123,7 +123,7 @@ const MapTooltip = memo(() => {
         ? availableAdminLevels.length
         : adminLevel + (multiCountry ? 1 : 0);
     // If adminLevel is undefined, return the whole array
-    // eslint-disable-next-line fp/no-mutating-methods
+
     return splitNames.splice(0, adminLevelLimit);
   }, [adminLevel, i18n, popup]);
 

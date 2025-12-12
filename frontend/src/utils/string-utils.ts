@@ -1,4 +1,3 @@
-/* eslint-disable no-bitwise, fp/no-mutation */
 import { kebabCase } from 'lodash';
 
 // https://stackoverflow.com/a/7616484

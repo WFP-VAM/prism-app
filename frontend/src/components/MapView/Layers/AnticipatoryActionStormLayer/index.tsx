@@ -116,7 +116,6 @@ const AnticipatoryActionStormLayer = React.memo(
 
       // Add the first point of the future line to the past line to ensure they connect
       if (futureLineCoordinates.length > 0 && pastLineCoordinates.length > 0) {
-        // eslint-disable-next-line fp/no-mutating-methods
         pastLineCoordinates.push(futureLineCoordinates[0]);
       }
 
@@ -248,7 +247,6 @@ const AnticipatoryActionStormLayer = React.memo(
     // Display a pointer cursor when hovering over the wind points
     const onMouseEnter = () => () => {
       if (map) {
-        // eslint-disable-next-line fp/no-mutation
         map.getCanvas().style.cursor = 'pointer';
       }
     };
@@ -262,7 +260,6 @@ const AnticipatoryActionStormLayer = React.memo(
 
     const onMouseLeave = () => () => {
       if (map) {
-        // eslint-disable-next-line fp/no-mutation
         map.getCanvas().style.cursor = '';
       }
     };

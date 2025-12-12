@@ -62,7 +62,6 @@ export const loadStormReport = createAsyncThunk<
   'anticipatoryActionStormState/loadStormReport',
   async ({ stormName, date }, { rejectWithValue }) => {
     if (!stormName || !date) {
-      // eslint-disable-next-line no-console
       console.warn('Storm name and date are required');
       return rejectWithValue(new Error('Storm name and date are required'));
     }
@@ -104,7 +103,7 @@ export const loadWindStateReports = createAsyncThunk<
       const responseData = await response.json();
       const availableDates = Object.keys(responseData).map(dateStr => {
         // Parse the date string as UTC
-        // eslint-disable-next-line prefer-template
+
         const utcDate = new Date(dateStr + 'T12:00:00.000Z');
         const timestamp = utcDate.getTime();
         return {

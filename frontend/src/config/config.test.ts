@@ -11,7 +11,7 @@ function loadTranslationKeys(): Set<string> {
   files.forEach(file => {
     const content = fs.readFileSync(file, 'utf8');
     let match;
-    // eslint-disable-next-line fp/no-mutation, no-cond-assign
+
     while ((match = translationKeyRegex.exec(content)) !== null) {
       translationKeys.add(match[1]);
     }
@@ -52,13 +52,13 @@ describe('Config Map', () => {
       let itemsToTranslate: string[] = [];
 
       // const legendLabels = jp.query(layers, '$..legend[*].label');
-      // eslint-disable-next-line fp/no-mutation
+
       itemsToTranslate = [
         ...Array.from(translationKeys),
         ...extractTranslationItems(config.appConfig, layers),
       ];
       // Deduplicate items using a Set
-      // eslint-disable-next-line fp/no-mutation
+
       itemsToTranslate = Array.from(new Set(itemsToTranslate));
 
       Object.entries(translation).forEach(([key, value]) => {
@@ -67,7 +67,6 @@ describe('Config Map', () => {
           return;
         }
         if (key === 'en') {
-          // eslint-disable-next-line fp/no-mutation
           itemsToTranslate = Array.from(new Set(translationKeys));
         }
         // compare translation with itemsToTranslate
@@ -77,7 +76,6 @@ describe('Config Map', () => {
             item !== '' &&
             !Object.prototype.hasOwnProperty.call(value, item)
           ) {
-            // eslint-disable-next-line fp/no-mutating-methods
             missingFields.push(item);
           }
         });
@@ -90,7 +88,7 @@ describe('Config Map', () => {
             const row: { [key: string]: string } = {
               [`Missing Fields: ${country} - ${key}`]: `${field.slice(0, 64)}${field.length > 64 ? '...' : ''}`,
             };
-            // eslint-disable-next-line fp/no-mutating-methods
+
             tableData.push(row);
           });
 

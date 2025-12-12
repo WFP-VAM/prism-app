@@ -91,7 +91,6 @@ const BoundaryDropdownOptions = React.forwardRef(
     // Get all boundary layer data from cache
     const allBoundaryLayerData = boundaryLayers.reduce(
       (acc, layer) => {
-        // eslint-disable-next-line fp/no-mutation
         acc[layer.id] = boundaryCache.getCachedData(layer.id);
         return acc;
       },
@@ -209,10 +208,8 @@ const BoundaryDropdownOptions = React.forwardRef(
                     area.adminCode,
                   );
                   if (itemIndex === -1) {
-                    // eslint-disable-next-line fp/no-mutating-methods
                     newSelectedBoundaries.push(area.adminCode);
                   } else {
-                    // eslint-disable-next-line fp/no-mutating-methods
                     newSelectedBoundaries.splice(itemIndex, 1);
                   }
                   if (setSelectedBoundaries !== undefined) {

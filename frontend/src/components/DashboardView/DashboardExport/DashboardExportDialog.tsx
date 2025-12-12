@@ -216,7 +216,7 @@ function DashboardExportDialog({
       // Convert canvas to appropriate format
       if (format === 'pdf') {
         // Always use A4 landscape format
-        // eslint-disable-next-line new-cap
+
         const pdf = new jsPDF({
           orientation: 'landscape',
           unit: 'pt',
@@ -295,7 +295,6 @@ function DashboardExportDialog({
     setSuccessMessage(null);
   };
 
-  // eslint-disable-next-line react/jsx-no-constructed-context-values
   const exportContext = {
     exportConfig: {
       handleClose,

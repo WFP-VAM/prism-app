@@ -122,7 +122,6 @@ const LeftPanel = memo(() => {
         addLayer,
       );
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tabValue]);
 
   // Reset selected boundaries when tab changes from Alerts
@@ -143,7 +142,6 @@ const LeftPanel = memo(() => {
         dispatch(setTabValue(Panel.AnticipatoryActionFlood));
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [AALayerInUrl]);
 
   const renderedAnticipatoryActionPanel = React.useMemo(() => {

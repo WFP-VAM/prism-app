@@ -42,7 +42,7 @@ const StandardTooltipContent: FC<StandardTooltipContentProps> = ({
       );
     }),
   );
-  // eslint-disable-next-line fp/no-mutating-methods
+
   tooltipTitleArray.unshift(<div key={date.label}>{date.label}</div>);
   return tooltipTitleArray;
 };

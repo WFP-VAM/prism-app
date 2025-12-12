@@ -65,7 +65,7 @@ export const fillPaintCategorical = ({
 // We use the legend values from the config to define "intervals".
 export const fillPaintData = (
   { opacity, legend, id }: CommonLayerProps,
-  // eslint-disable-next-line default-param-last
+
   property: string = 'data',
   fillPattern?: 'right' | 'left',
 ): FillLayerSpecification['paint'] => {
@@ -78,7 +78,6 @@ export const fillPaintData = (
     },
   };
   if (fillPattern || legend?.some(l => l.fillPattern)) {
-    // eslint-disable-next-line fp/no-mutation
     fillPaint = {
       ...fillPaint,
       'fill-pattern': [

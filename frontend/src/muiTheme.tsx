@@ -265,7 +265,6 @@ const theme: any = createTheme({
   },
 });
 
-// eslint-disable-next-line fp/no-mutation
 theme.overrides.MuiToggleButton = {
   root: {
     textTransform: 'none',
@@ -277,14 +276,12 @@ theme.overrides.MuiToggleButton = {
   },
 };
 
-// eslint-disable-next-line fp/no-mutation
 theme.overrides.MuiTableSortLabel = {
   icon: {
     color: black,
   },
 };
 
-// eslint-disable-next-line fp/no-mutation
 theme.overrides.MuiAccordionSummary = {
   root: {
     minHeight: '2.5rem',
@@ -304,7 +301,6 @@ theme.overrides.MuiAccordionSummary = {
   },
 };
 
-// eslint-disable-next-line fp/no-mutation
 theme.overrides.MuiAccordionDetails = {
   root: {
     marginLeft: '12px',

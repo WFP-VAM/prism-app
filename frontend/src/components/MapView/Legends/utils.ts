@@ -4,7 +4,6 @@ import { LegendDefinitionItem } from 'config/types';
 export const invertLegendColors = (
   legendItems: LegendDefinitionItem[],
 ): LegendDefinitionItem[] => {
-  // eslint-disable-next-line fp/no-mutating-methods
   const reversedColors = legendItems.map(item => item.color).reverse();
   return legendItems.map((item, index) => ({
     ...item,

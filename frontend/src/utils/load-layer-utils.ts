@@ -13,7 +13,7 @@ export const loadLayerContent = async (
       `Request failed for loading layer content at ${path}`,
     );
     return resp.text();
-  } catch (error) {
+  } catch (_error) {
     return '';
   }
 };

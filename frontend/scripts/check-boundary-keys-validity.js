@@ -20,7 +20,7 @@ function checkKeysExistence(layer, filePath) {
   keysToCheck.forEach(key => {
     if (!fileContent.includes(`"${key}":`)) {
       const relativePath = path.relative(__dirname, filePath);
-      console.log(`Key ${key} does not exist in file ${relativePath}`);
+      console.warn(`Key ${key} does not exist in file ${relativePath}`);
       missingKeys = true; // Set the flag to true if a key is missing
     }
   });
@@ -55,7 +55,7 @@ countryDirs.forEach(country => {
     if (fs.existsSync(filePath)) {
       checkKeysExistence(layer, filePath);
     } else {
-      console.log(`File ${filePath} does not exist.`);
+      console.warn(`File ${filePath} does not exist.`);
     }
   });
 });

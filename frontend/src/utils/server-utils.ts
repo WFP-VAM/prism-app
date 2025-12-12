@@ -124,7 +124,6 @@ export type DateCompatibleLayer =
 export const getPossibleDatesForLayer = (
   layer: DateCompatibleLayer,
   serverAvailableDates: AvailableDates,
-  // eslint-disable-next-line consistent-return
 ): DateItem[] => {
   switch (layer.type) {
     case 'admin_level_data':
@@ -137,17 +136,14 @@ export const getPossibleDatesForLayer = (
       if (!fallbackLayerKeys?.length) {
         return serverAvailableDates[layer.id] || [];
       }
-      return (
-        // eslint-disable-next-line fp/no-mutating-methods
-        [layer.id, ...(fallbackLayerKeys || [])]
-          .reduce((acc: DateItem[], key) => {
-            if (serverAvailableDates[key]) {
-              return [...acc, ...serverAvailableDates[key]];
-            }
-            return acc;
-          }, [])
-          .sort((a, b) => a.displayDate - b.displayDate)
-      );
+      return [layer.id, ...(fallbackLayerKeys || [])]
+        .reduce((acc: DateItem[], key) => {
+          if (serverAvailableDates[key]) {
+            return [...acc, ...serverAvailableDates[key]];
+          }
+          return acc;
+        }, [])
+        .sort((a, b) => a.displayDate - b.displayDate);
     case 'impact':
       return serverAvailableDates[
         (LayerDefinitions[layer.hazardLayer] as WMSLayerProps).id
@@ -255,7 +251,6 @@ const getPointDataCoverage = async (
       break;
   }
 
-  // eslint-disable-next-line fp/no-mutation
   const data = await (pointDataFetchPromises[fetchUrlWithParams] =
     pointDataFetchPromises[fetchUrlWithParams] ||
     loadPointLayerDataFromURL(fetchUrlWithParams, id, dispatch, fallbackUrl));
@@ -463,7 +458,6 @@ export function generateIntermediateDateItemFromValidity(
   validity: Validity,
   coverageWindow?: CoverageWindow,
 ): DateItem[] {
-  // eslint-disable-next-line fp/no-mutating-methods
   const sortedDates = [...dates].sort((a, b) => a - b);
 
   // only calculate validity and coverage for dates that are less than 5 years old
@@ -505,7 +499,6 @@ export function generateIntermediateDateItemFromValidity(
       let validityStart;
       let validityEnd;
       try {
-        // eslint-disable-next-line fp/no-mutation
         ({ validityStart, validityEnd } = getStartAndEndDateFromValidity(
           dateGetTime as ReferenceDateTimestamp,
           validity,
@@ -538,7 +531,7 @@ export function generateIntermediateDateItemFromValidity(
 
   // We sort the defaultDateItems and the dateItems and we order by displayDate to filter the duplicates
   // or the overlapping dates
-  // eslint-disable-next-line fp/no-mutating-methods
+
   return dateItems.sort((a, b) => {
     if (a.displayDate < b.displayDate) {
       return -1;
@@ -633,12 +626,11 @@ const mapServerDatesToLayerIds = (
           date => date >= limitStartDate,
         );
         // If there are no dates after filtering, get the last data available
-        // eslint-disable-next-line fp/no-mutation
+
         acc[layer.id as string] = availableDates.length
           ? availableDates
           : [layerDates[layerDates.length - 1]];
       } else {
-        // eslint-disable-next-line fp/no-mutation
         acc[layer.id] = layerDates;
       }
     }
@@ -712,7 +704,6 @@ let cachedPreprocessedDates: Record<string, StartEndDate[]>;
 async function fetchPreprocessedDates(): Promise<
   Record<string, StartEndDate[]>
 > {
-  /* eslint-disable fp/no-mutation */
   if (cachedPreprocessedDates === undefined) {
     try {
       // preprocessed-layer-dates.json is generated using "yarn preprocess-layers"
@@ -725,11 +716,11 @@ async function fetchPreprocessedDates(): Promise<
         cachedPreprocessedDates = {};
       }
       cachedPreprocessedDates = await response.json();
-    } catch (error) {
+    } catch (_error) {
       cachedPreprocessedDates = {};
     }
   }
-  /* eslint-enable fp/no-mutation */
+
   return cachedPreprocessedDates;
 }
 
@@ -930,7 +921,7 @@ const runFeatureInfoRequest = async (
     });
 
     return parsedProps.reduce((obj, item) => ({ ...obj, ...item }), {});
-  } catch (error) {
+  } catch (_error) {
     return {};
   }
 };
@@ -1021,7 +1012,6 @@ export async function fetchWMSLayerAsGeoJSON(options: {
 }
 
 export function getAAAvailableDatesCombined(AAAvailableDates: AvailableDates) {
-  // eslint-disable-next-line fp/no-mutation, fp/no-mutating-methods
   return Object.values(AAAvailableDates)
     .filter(Boolean) // Filter out undefined or null values
     .flat()

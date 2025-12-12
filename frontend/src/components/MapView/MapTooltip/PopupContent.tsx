@@ -55,7 +55,7 @@ const generatePhasePopulationTable = (
   }
 
   // calculate total population
-  // eslint-disable-next-line no-param-reassign, fp/no-mutation
+
   phasePopulations.Total =
     sum(Object.values(phasePopulations)) - phasePopulations['3 to 5'];
 

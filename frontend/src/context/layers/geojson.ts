@@ -19,7 +19,6 @@ export const fetchGeojsonLayerData: LazyLoader<GeojsonDataLayerProps> =
     let response: Response;
     // TODO - Better error handling, esp. for unauthorized requests.
     try {
-      // eslint-disable-next-line fp/no-mutation
       response = await fetchWithTimeout(
         requestUrl,
         dispatch,
@@ -28,7 +27,7 @@ export const fetchGeojsonLayerData: LazyLoader<GeojsonDataLayerProps> =
         },
         `Request failed for fetching point layer data at ${requestUrl}`,
       );
-      // eslint-disable-next-line fp/no-mutation
+
       data = (await response.json()) as GeoJSON.FeatureCollection;
     } catch (error) {
       if ((error as HTTPError)?.statusCode === 401) {

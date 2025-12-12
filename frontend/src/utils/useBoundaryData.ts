@@ -58,7 +58,6 @@ export function useBoundaryData(
     loadData();
 
     return () => {
-      // eslint-disable-next-line fp/no-mutation
       cancelled = true;
     };
   }, [layerId, map, dispatch]);

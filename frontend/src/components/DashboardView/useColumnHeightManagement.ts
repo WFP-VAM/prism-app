@@ -93,23 +93,22 @@ export function useColumnHeightManagement({
               : // Temporarily remove constraints to get true natural height
                 (() => {
                   const currentStyle = componentElement.style.cssText;
-                  componentElement.style.flex = ''; // eslint-disable-line fp/no-mutation
-                  componentElement.style.overflow = ''; // eslint-disable-line fp/no-mutation
-                  componentElement.style.minHeight = ''; // eslint-disable-line fp/no-mutation
+                  componentElement.style.flex = '';
+                  componentElement.style.overflow = '';
+                  componentElement.style.minHeight = '';
                   const height = componentElement.scrollHeight;
 
                   // Restore original styles
-                  // eslint-disable-next-line fp/no-mutation
+
                   componentElement.style.cssText = currentStyle;
                   return height;
                 })();
 
-            // eslint-disable-next-line fp/no-mutating-methods
             tempComponentHeights.push({
               id: componentId,
               naturalHeight,
             });
-            // eslint-disable-next-line fp/no-mutation
+
             totalNaturalHeight += naturalHeight;
           }
         });
@@ -130,12 +129,10 @@ export function useColumnHeightManagement({
 
         tempComponentHeights.forEach(({ id, naturalHeight }) => {
           if (naturalHeight <= equalShare) {
-            // eslint-disable-next-line fp/no-mutating-methods
             smallComponents.push({ id, height: naturalHeight });
-            // eslint-disable-next-line fp/no-mutation
+
             unusedSpace += equalShare - naturalHeight;
           } else {
-            // eslint-disable-next-line fp/no-mutating-methods
             largeComponents.push({ id, height: naturalHeight });
           }
         });
@@ -211,7 +208,7 @@ export function useColumnHeightManagement({
     const timeoutIds: NodeJS.Timeout[] = [];
     [100, 500, 1000].forEach(delay => {
       const timeoutId = setTimeout(calculateHeights, delay);
-      // eslint-disable-next-line fp/no-mutating-methods
+
       timeoutIds.push(timeoutId);
     });
 
@@ -227,7 +224,7 @@ export function useColumnHeightManagement({
       }
       const observer = new ResizeObserver(debouncedCheck);
       observer.observe(element);
-      // eslint-disable-next-line fp/no-mutating-methods
+
       observers.push(observer);
     });
 
@@ -238,11 +235,10 @@ export function useColumnHeightManagement({
       }
       const observer = new ResizeObserver(debouncedCheck);
       observer.observe(element);
-      // eslint-disable-next-line fp/no-mutating-methods
+
       observers.push(observer);
     });
 
-    // eslint-disable-next-line consistent-return
     return () => {
       timeoutIds.forEach(timeoutId => {
         clearTimeout(timeoutId);

@@ -155,12 +155,11 @@ export const addPopupParams = (
   // Add feature_info_props as extra fields to the tooltip
   let featureInfoPropsWithFallback = featureInfoProps || {};
   if ('fallbackLayerKeys' in layer) {
-    // eslint-disable-next-line
     layer.fallbackLayerKeys?.forEach(backupLayerKey => {
       const layerDef = LayerDefinitions[
         backupLayerKey
       ] as AdminLevelDataLayerProps;
-      // eslint-disable-next-line fp/no-mutation
+
       featureInfoPropsWithFallback = {
         ...layerDef.featureInfoProps,
         ...featureInfoPropsWithFallback,
