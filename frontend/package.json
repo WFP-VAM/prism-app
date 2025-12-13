@@ -137,7 +137,8 @@
     "form-data": "CVE-2025-7783 - Security fix - Parent: jest-environment-jsdom → jsdom, cypress - Check if removable when these packages update",
     "minimist": "CVE-2021-44906 - Security fix - Parent: cypress, max-inscribed-circle, maplibre-gl, eslint-plugin-import - Check if removable when these packages update",
     "glob": "CVE-2025-64756 - Security fix - Parent: rimraf, jest - Check if removable when these packages update",
-    "tar-fs": "CVE-2025-59343 - Security fix - Parent: (not found in dependency tree, may be transitive) - Check if removable when parent packages update"
+    "tar-fs": "CVE-2025-59343 - Security fix - Parent: (not found in dependency tree, may be transitive) - Check if removable when parent packages update",
+    "string-width": "Compatibility fix - Parent: glob → jackspeak → cliui, cypress → listr2 - Forces v4 (CommonJS) for compatibility. Also installed as devDependency to ensure availability - Check if removable when these packages update"
   },
   "_comment": "The 'defaults' and 'not ie 11' are needed to avoid build issues with maplibre-gl.",
   "browserslist": {
