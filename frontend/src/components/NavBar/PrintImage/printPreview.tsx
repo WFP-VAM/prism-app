@@ -78,6 +78,8 @@ function PrintPreview() {
     bottomLogoScale,
     setPreviewBounds,
     setPreviewZoom,
+    setPreviewMapWidth,
+    setPreviewMapHeight,
   } = printConfig;
 
   // Get the style and layers of the old map
@@ -95,42 +97,48 @@ function PrintPreview() {
   }
 
   return (
-    <MapExportLayout
-      toggles={toggles}
-      aspectRatio={mapDimensions.aspectRatio}
-      titleText={titleText}
-      footerText={footerText}
-      footerTextSize={footerTextSize}
-      dateText={dateText}
-      logo={logo}
-      logoPosition={logoPosition}
-      logoScale={logoScale}
-      titleHeight={titleHeight}
-      legendPosition={legendPosition}
-      legendScale={legendScale}
-      initialViewState={{
-        longitude: selectedMap.getCenter().lng,
-        latitude: selectedMap.getCenter().lat,
-        zoom: selectedMap.getZoom(),
-      }}
-      mapStyle={selectedMapStyle}
-      maxBounds={selectedMap.getMaxBounds() ?? undefined}
-      invertedAdminBoundaryLimitPolygon={invertedAdminBoundaryLimitPolygon}
-      printRef={printRef}
-      titleRef={titleRef}
-      footerRef={footerRef}
-      footerHeight={footerHeight}
-      bottomLogo={bottomLogo}
-      bottomLogoScale={bottomLogoScale}
-      aaMarkers={AAMarkers}
-      floodStations={filteredFloodStations}
-      activePanel={activePanel}
-      adminLevelLayersWithFillPattern={adminLevelLayersWithFillPattern}
-      onBoundsChange={(bounds, zoom) => {
-        setPreviewBounds(bounds);
-        setPreviewZoom(zoom);
-      }}
-    />
+    <div style={{ flex: 1, minWidth: 0, minHeight: 0, display: 'flex' }}>
+      <MapExportLayout
+        toggles={toggles}
+        aspectRatio={mapDimensions.aspectRatio}
+        titleText={titleText}
+        footerText={footerText}
+        footerTextSize={footerTextSize}
+        dateText={dateText}
+        logo={logo}
+        logoPosition={logoPosition}
+        logoScale={logoScale}
+        titleHeight={titleHeight}
+        legendPosition={legendPosition}
+        legendScale={legendScale}
+        initialViewState={{
+          longitude: selectedMap.getCenter().lng,
+          latitude: selectedMap.getCenter().lat,
+          zoom: selectedMap.getZoom(),
+        }}
+        mapStyle={selectedMapStyle}
+        maxBounds={selectedMap.getMaxBounds() ?? undefined}
+        invertedAdminBoundaryLimitPolygon={invertedAdminBoundaryLimitPolygon}
+        printRef={printRef}
+        titleRef={titleRef}
+        footerRef={footerRef}
+        footerHeight={footerHeight}
+        bottomLogo={bottomLogo}
+        bottomLogoScale={bottomLogoScale}
+        aaMarkers={AAMarkers}
+        floodStations={filteredFloodStations}
+        activePanel={activePanel}
+        adminLevelLayersWithFillPattern={adminLevelLayersWithFillPattern}
+        onBoundsChange={(bounds, zoom) => {
+          setPreviewBounds(bounds);
+          setPreviewZoom(zoom);
+        }}
+        onMapDimensionsChange={(width, height) => {
+          setPreviewMapWidth(width);
+          setPreviewMapHeight(height);
+        }}
+      />
+    </div>
   );
 }
 

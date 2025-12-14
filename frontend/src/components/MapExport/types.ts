@@ -6,7 +6,7 @@ import type {
 } from 'maplibre-gl';
 import { AdminCodeString, LayerType } from 'config/types';
 
-export type AspectRatio = '4:3' | '1:1' | '3:2' | '6:5' | '2:3';
+export type AspectRatio = 'Auto' | '4:3' | '1:1' | '3:2' | '6:5' | '2:3';
 
 export interface MapExportToggles {
   fullLayerDescription: boolean;
@@ -130,4 +130,7 @@ export interface MapExportLayoutProps {
 
   // Callback when map bounds/zoom change (for capturing preview state)
   onBoundsChange?: (bounds: LngLatBounds, zoom: number) => void;
+
+  // Callback when map dimensions change (for capturing dimensions when aspectRatio is 'Auto')
+  onMapDimensionsChange?: (width: number, height: number) => void;
 }

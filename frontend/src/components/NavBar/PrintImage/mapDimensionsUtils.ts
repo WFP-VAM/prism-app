@@ -76,14 +76,29 @@ export interface ExportDimensions {
  * The map always fills 100% of the viewport, and the viewport dimensions
  * are calculated to maintain the specified aspect ratio.
  *
- * @param aspectRatio - The aspect ratio string (e.g., "2:3")
+ * @param aspectRatio - The aspect ratio string (e.g., "2:3" or "Auto")
+ * @param customWidth - Optional custom width (used when aspectRatio is 'Auto')
+ * @param customHeight - Optional custom height (used when aspectRatio is 'Auto')
  * @returns Export dimensions with viewport and map percentage values
  */
 export function calculateExportDimensions(
   aspectRatio: AspectRatio,
+  customWidth?: number,
+  customHeight?: number,
 ): ExportDimensions {
-  const [w, h] = aspectRatio.split(':').map(Number);
-  const ratioValue = w / h;
+  let ratioValue: number;
+  if (aspectRatio === 'Auto' && customWidth && customHeight) {
+    // eslint-disable-next-line fp/no-mutation
+    ratioValue = customWidth / customHeight;
+  } else if (aspectRatio === 'Auto') {
+    throw new Error(
+      'Custom dimensions required when aspectRatio is "Auto" for batch exports',
+    );
+  } else {
+    const [w, h] = aspectRatio.split(':').map(Number);
+    // eslint-disable-next-line fp/no-mutation
+    ratioValue = w / h;
+  }
 
   const baseWidth = 1200;
   const canvasHeight = Math.round(baseWidth / ratioValue);

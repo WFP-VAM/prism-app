@@ -37,19 +37,18 @@ import {
   getRecommendedAspectRatio,
   calculateExportDimensions,
 } from './mapDimensionsUtils';
+import { AspectRatio } from '../../MapExport/types';
 
 const defaultFooterText = get(appConfig, 'printConfig.defaultFooterText', '');
 
 // Calculate recommended aspect ratio from bounding box
 const { boundingBox } = appConfig.map;
-const {
-  recommended: recommendedAspectRatio,
-  options: defaultAspectRatioOptions,
-} = getRecommendedAspectRatio(boundingBox);
+const { options: defaultAspectRatioOptions } =
+  getRecommendedAspectRatio(boundingBox);
 
-// Initial dimensions with recommended aspect ratio
+// Initial dimensions with 'Auto' aspect ratio (fills container)
 const initialMapDimensions: MapDimensions = {
-  aspectRatio: recommendedAspectRatio,
+  aspectRatio: 'Auto',
 };
 
 // Debounce changes so that we don't redraw on every keystroke.
@@ -107,6 +106,9 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   // Bounds and zoom captured from the preview map (no extra padding like main map)
   const [previewBounds, setPreviewBounds] = useState<LngLatBounds | null>(null);
   const [previewZoom, setPreviewZoom] = useState<number | null>(null);
+  // Map dimensions captured from the preview (used for 'Auto' aspect ratio in batch exports)
+  const [previewMapWidth, setPreviewMapWidth] = useState<number | null>(null);
+  const [previewMapHeight, setPreviewMapHeight] = useState<number | null>(null);
 
   // Get the style and layers of the old map
   const selectedMapStyle = selectedMap?.getStyle();
@@ -271,14 +273,22 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       // extra left padding that the main map has for UI elements
       const mapBounds = previewBounds;
       const mapZoom = previewZoom;
-      console.log('mapBounds', mapBounds);
       // Construct URLs for each date by adding `/export` to the pathname and setting the date param
       const { origin, pathname, search } = new URL(window.location.href);
       const exportPath = `${pathname.replace(/\/$/, '')}/export`;
       const baseParams = new URLSearchParams(search);
 
       // Calculate viewport dimensions for export
-      const exportDims = calculateExportDimensions(mapDimensions.aspectRatio);
+      // For 'Auto' aspect ratio, use the actual map dimensions from the preview
+      const exportDims = calculateExportDimensions(
+        mapDimensions.aspectRatio,
+        mapDimensions.aspectRatio === 'Auto'
+          ? (previewMapWidth ?? undefined)
+          : undefined,
+        mapDimensions.aspectRatio === 'Auto'
+          ? (previewMapHeight ?? undefined)
+          : undefined,
+      );
 
       const constructedUrls = formattedDates
         .filter((date): date is string => date !== undefined)
@@ -431,11 +441,18 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       dateRange: dateRangeForBatchMaps,
       setDateRange: setDateRangeForBatchMaps,
       mapCount,
-      aspectRatioOptions: defaultAspectRatioOptions,
+      aspectRatioOptions: [
+        'Auto',
+        ...defaultAspectRatioOptions,
+      ] as AspectRatio[],
       previewBounds,
       setPreviewBounds,
       previewZoom,
       setPreviewZoom,
+      previewMapWidth,
+      setPreviewMapWidth,
+      previewMapHeight,
+      setPreviewMapHeight,
     },
   };
 

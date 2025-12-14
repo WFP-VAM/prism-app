@@ -108,6 +108,7 @@ function MapExportLayout({
   selectedLayers = [],
   onMapLoad,
   onBoundsChange,
+  onMapDimensionsChange,
 }: MapExportLayoutProps) {
   const classes = useStyles();
   const northArrowRef = useRef<HTMLImageElement>(null);
@@ -224,14 +225,24 @@ function MapExportLayout({
 
   // Calculate map dimensions based on container size and aspect ratio
   const mapDimensions = useMemo(() => {
-    const [w, h] = aspectRatio.split(':').map(Number);
-    const targetRatio = w / h;
     const { width: containerWidth, height: containerHeight } =
       containerDimensions;
 
     if (containerWidth === 0 || containerHeight === 0) {
       return { width: 0, height: 0 };
     }
+
+    // When aspect ratio is 'Auto', fill the container completely
+    if (aspectRatio === 'Auto') {
+      return {
+        width: containerWidth,
+        height: containerHeight,
+      };
+    }
+
+    // For preset aspect ratios, calculate constrained dimensions
+    const [w, h] = aspectRatio.split(':').map(Number);
+    const targetRatio = w / h;
 
     // Try filling width first
     const widthConstrainedHeight = containerWidth / targetRatio;
@@ -249,6 +260,16 @@ function MapExportLayout({
       height: containerHeight,
     };
   }, [aspectRatio, containerDimensions]);
+
+  useEffect(() => {
+    if (
+      onMapDimensionsChange &&
+      mapDimensions.width > 0 &&
+      mapDimensions.height > 0
+    ) {
+      onMapDimensionsChange(mapDimensions.width, mapDimensions.height);
+    }
+  }, [mapDimensions, onMapDimensionsChange]);
 
   // The map content (title, legend, footer, map itself)
   const mapContent = (
@@ -445,10 +466,13 @@ function MapExportLayout({
         style={{
           width: '100%',
           height: '100%',
+          minWidth: 0,
+          minHeight: 0,
           position: 'relative',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          overflow: 'hidden',
         }}
       >
         {mapDimensions.width > 0 && mapDimensions.height > 0 && (
@@ -539,6 +563,11 @@ const useStyles = makeStyles(() =>
     previewContainer: {
       height: '100%',
       width: '100%',
+      minWidth: 0,
+      minHeight: 0,
+      flex: 1,
+      display: 'flex',
+      overflow: 'hidden',
     },
   }),
 );

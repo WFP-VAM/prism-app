@@ -86,6 +86,10 @@ export type PrintConfigContextType = {
     setPreviewBounds: React.Dispatch<React.SetStateAction<LngLatBounds | null>>;
     previewZoom: number | null;
     setPreviewZoom: React.Dispatch<React.SetStateAction<number | null>>;
+    previewMapWidth: number | null;
+    setPreviewMapWidth: React.Dispatch<React.SetStateAction<number | null>>;
+    previewMapHeight: number | null;
+    setPreviewMapHeight: React.Dispatch<React.SetStateAction<number | null>>;
   };
 };
 
