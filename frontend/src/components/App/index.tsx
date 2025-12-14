@@ -60,10 +60,13 @@ Font.register({
 const Wrapper = memo(() => (
   <div id="app">
     <NavBar />
+    {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
     <Switch>
+      {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
       <Route path="/dashboard/:path?" exact>
         <DashboardView />
       </Route>
+      {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
       <Route>
         <MapView />
         <AuthModal />
@@ -87,6 +90,7 @@ function App() {
     <ThemeProvider theme={muiTheme}>
       {/* Used to show notifications from redux as a snackbar. Notifications are stored in notificationState */}
       <Notifier />
+      {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
       <Router>{renderedContent}</Router>
     </ThemeProvider>
   );
