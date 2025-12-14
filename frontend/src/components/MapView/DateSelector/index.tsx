@@ -623,8 +623,10 @@ const DateSelector = memo(() => {
   );
 
   const handleOnDatePickerChange = useCallback(
-    (date: Date) => {
-      updateStartDate(date, true);
+    (date: Date | null) => {
+      if (date) {
+        updateStartDate(date, true);
+      }
     },
     [updateStartDate],
   );
@@ -664,7 +666,6 @@ const DateSelector = memo(() => {
             </Button>
           )}
 
-          {/* @ts-expect-error - react-datepicker v2 types incompatible with React 18 */}
           <DatePicker
             locale={t('date_locale')}
             dateFormat="PP"
