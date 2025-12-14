@@ -228,8 +228,7 @@ const ExportView = memo(() => {
     <Box className={classes.root}>
       <MapExportLayout
         toggles={exportParams.toggles}
-        mapWidth={exportParams.mapWidth}
-        mapHeight={exportParams.mapHeight}
+        aspectRatio={exportParams.aspectRatio}
         titleText={exportParams.titleText}
         footerText={exportParams.footerText}
         footerTextSize={exportParams.footerTextSize}

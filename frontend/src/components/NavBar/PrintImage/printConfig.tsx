@@ -25,7 +25,6 @@ import { AspectRatio } from 'components/MapExport/types';
 import { useSafeTranslation } from '../../../i18n';
 import PrintConfigContext from './printConfig.context';
 import DateRangePicker from './DateRangePicker';
-import { calculateMapDimensions } from './mapDimensionsUtils';
 
 interface ToggleSelectorProps {
   title: string;
@@ -232,41 +231,6 @@ const logoScaleSelectorOptions = [
   { value: 1.5, comp: <div style={{ fontSize: '1.25rem' }}>L</div> },
 ];
 
-/**
- * Map Width and Aspect Ratio Rules:
- *
- * WHEN ASPECT RATIO IS DISABLED (single map download, no batch):
- * - Width options: 50%, 60%, 70%, 80%, 90%, 100%
- * - Width controls the percentage of the browser viewport the map takes up
- * - No A4 paper constraints - map fills available space
- *
- * WHEN ASPECT RATIO IS ENABLED (required for batch maps):
- * - Width options: 50%, 100% only
- * - Map is rendered on an A4 paper canvas (white) with gray backdrop
- * - 100% width: Map takes maximum width while fitting within A4 height
- *   - For portrait ratios (2:3): height fills A4, width is constrained
- *   - For landscape ratios (3:2): width fills A4, height is constrained
- * - 50% width: Map takes 50% of canvas width, blank space on right
- *   - Useful for side-by-side comparisons or adding notes
- * - Intermediate widths (60-90%) are not useful because:
- *   - Portrait maps are height-constrained, so width doesn't change appearance
- *   - Results in confusing UI where 50%, 70%, 90% all look the same
- */
-const mapWidthOptionsDefault = [
-  { value: 50, comp: <div>50%</div> },
-  { value: 60, comp: <div>60%</div> },
-  { value: 70, comp: <div>70%</div> },
-  { value: 80, comp: <div>80%</div> },
-  { value: 90, comp: <div>90%</div> },
-  { value: 100, comp: <div>100%</div> },
-];
-
-// Limited options when aspect ratio is enabled (for batch maps or locked aspect ratio)
-const mapWidthOptionsWithAspectRatio = [
-  { value: 50, comp: <div>50%</div> },
-  { value: 100, comp: <div>100%</div> },
-];
-
 const footerTextSelectorOptions = [
   { value: 8, comp: <div style={{ fontSize: '8px' }}>Aa</div> },
   { value: 10, comp: <div style={{ fontSize: '10px' }}>Aa</div> },
@@ -367,51 +331,15 @@ function PrintConfig() {
           />
         </div>
 
-        {/* Width */}
+        {/* Aspect Ratio - always visible */}
         <ToggleSelector
-          value={mapDimensions.width}
-          options={
-            toggles.aspectRatioEnabled || toggles.batchMapsVisibility
-              ? mapWidthOptionsWithAspectRatio
-              : mapWidthOptionsDefault
-          }
+          value={mapDimensions.aspectRatio}
+          options={aspectRatioSelectorOptions}
           setValue={val => {
-            const newWidth = val as number;
-            setMapDimensions(prev =>
-              calculateMapDimensions(prev, { newWidth }),
-            );
+            setMapDimensions({ aspectRatio: val as AspectRatio });
           }}
-          title={t('Map Width')}
-        />
-
-        {/* Aspect Ratio */}
-        <SectionToggle
           title={t('Aspect Ratio')}
-          expanded={toggles.aspectRatioEnabled || toggles.batchMapsVisibility}
-          disabled={toggles.batchMapsVisibility}
-          handleChange={({ target }) => {
-            setToggles(prev => ({
-              ...prev,
-              aspectRatioEnabled: Boolean(target.checked),
-            }));
-          }}
-        >
-          <GreyContainer>
-            <GreyContainerSection isLast>
-              <ToggleSelector
-                value={mapDimensions.aspectRatio}
-                options={aspectRatioSelectorOptions}
-                setValue={val => {
-                  const newAspectRatio = val as AspectRatio;
-                  setMapDimensions(prev =>
-                    calculateMapDimensions(prev, { newAspectRatio }),
-                  );
-                }}
-                title={t('Ratio')}
-              />
-            </GreyContainerSection>
-          </GreyContainer>
-        </SectionToggle>
+        />
 
         {/* Logo */}
         {logo && (

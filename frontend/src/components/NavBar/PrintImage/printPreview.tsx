@@ -52,12 +52,6 @@ function PrintPreview() {
       : ''
   }.`;
 
-  // Only apply aspect ratio dimensions when aspect ratio is enabled
-  const aspectRatioEnabled =
-    printConfig?.toggles?.aspectRatioEnabled ||
-    printConfig?.toggles?.batchMapsVisibility ||
-    false;
-
   // Appease TS by ensuring printConfig is defined
   if (!printConfig || !selectedMap) {
     return null;
@@ -103,9 +97,7 @@ function PrintPreview() {
   return (
     <MapExportLayout
       toggles={toggles}
-      mapWidth={aspectRatioEnabled ? mapDimensions.width : 100}
-      mapHeight={aspectRatioEnabled ? mapDimensions.height : undefined}
-      aspectRatio={aspectRatioEnabled ? mapDimensions.aspectRatio : undefined}
+      aspectRatio={mapDimensions.aspectRatio}
       titleText={titleText}
       footerText={footerText}
       footerTextSize={footerTextSize}

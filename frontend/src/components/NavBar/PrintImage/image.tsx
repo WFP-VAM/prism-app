@@ -47,11 +47,8 @@ const {
   options: defaultAspectRatioOptions,
 } = getRecommendedAspectRatio(boundingBox);
 
-// Initial dimensions: unconstrained (aspect ratio toggle starts disabled)
-// Store the recommended aspect ratio for when user enables it
+// Initial dimensions with recommended aspect ratio
 const initialMapDimensions: MapDimensions = {
-  width: 100,
-  height: 100,
   aspectRatio: recommendedAspectRatio,
 };
 
@@ -83,7 +80,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     footerVisibility: true,
     batchMapsVisibility: false,
     bottomLogoVisibility: !!bottomLogo,
-    aspectRatioEnabled: false,
   });
 
   const [downloadMenuAnchorEl, setDownloadMenuAnchorEl] =
@@ -282,10 +278,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       const baseParams = new URLSearchParams(search);
 
       // Calculate viewport dimensions for export
-      const exportDims = calculateExportDimensions(
-        mapDimensions.aspectRatio,
-        mapDimensions.width,
-      );
+      const exportDims = calculateExportDimensions(mapDimensions.aspectRatio);
 
       const constructedUrls = formattedDates
         .filter((date): date is string => date !== undefined)
@@ -303,10 +296,9 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
           }
 
           // Print config options
-          // Use calculated map percentages that maintain aspect ratio
-          // within the viewport dimensions (prevents overflow)
-          params.set('mapWidth', String(exportDims.mapWidthPercent));
-          params.set('mapHeight', String(exportDims.mapHeightPercent));
+          // Map always fills viewport (100%), viewport dimensions maintain aspect ratio
+          params.set('mapWidth', '100');
+          params.set('mapHeight', '100');
           params.set('aspectRatio', mapDimensions.aspectRatio);
           params.set('title', titleText);
           params.set('footer', footerText);

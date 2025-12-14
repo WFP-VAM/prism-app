@@ -10,6 +10,7 @@ import React, {
   ComponentType,
 } from 'react';
 import MapGL, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';
+import useResizeObserver from 'utils/useOnResizeObserver';
 import { lightGrey } from 'muiTheme';
 import { FloodStationMarker } from 'components/MapView/Layers/AnticipatoryActionFloodLayer/FloodStationMarker';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
@@ -80,8 +81,6 @@ const componentTypes: LayerComponentsMap<LayerType> = {
 
 function MapExportLayout({
   toggles,
-  mapWidth,
-  mapHeight = 100,
   aspectRatio,
   titleText,
   footerText,
@@ -113,6 +112,10 @@ function MapExportLayout({
   const classes = useStyles();
   const northArrowRef = useRef<HTMLImageElement>(null);
   const mapRef = React.useRef<MapRef>(null);
+
+  // Track container dimensions to calculate proper map size
+  const [containerRef, containerDimensions] =
+    useResizeObserver<HTMLDivElement>(aspectRatio);
 
   // Track the first symbol layer ID for proper layer ordering
   // Layers should be inserted below symbols/labels to keep labels visible
@@ -219,55 +222,33 @@ function MapExportLayout({
     }
   };
 
-  // A4 ratio ≈ 1.414 (297mm / 210mm)
-  const A4_RATIO = 1.414;
+  // Calculate map dimensions based on container size and aspect ratio
+  const mapDimensions = useMemo(() => {
+    const [w, h] = aspectRatio.split(':').map(Number);
+    const targetRatio = w / h;
+    const { width: containerWidth, height: containerHeight } =
+      containerDimensions;
 
-  // Calculate constrained map dimensions and A4 paper dimensions when aspectRatio is provided
-  const { constrainedWidth, constrainedHeight, paperWidth, paperHeight } =
-    useMemo(() => {
-      if (!aspectRatio) {
-        return {
-          constrainedWidth: mapWidth,
-          constrainedHeight: mapHeight,
-          paperWidth: 100,
-          paperHeight: 100,
-        };
-      }
+    if (containerWidth === 0 || containerHeight === 0) {
+      return { width: 0, height: 0 };
+    }
 
-      const [w, h] = aspectRatio.split(':').map(Number);
-      const ratio = w / h;
+    // Try filling width first
+    const widthConstrainedHeight = containerWidth / targetRatio;
 
-      // Determine page orientation: portrait if aspect ratio is portrait AND width = 100%
-      const isPortraitPage = ratio < 1 && mapWidth === 100;
-
-      // Calculate A4 paper dimensions (as percentage of container)
-      // Paper width is always 100%, height depends on orientation
-      const paperWidthPct = 100;
-      const paperHeightPct = isPortraitPage ? 100 * A4_RATIO : 100 / A4_RATIO;
-
-      // Calculate map dimensions within the A4 paper
-      // Map height maintains aspect ratio based on width
-      const mapHeightInPaper = mapWidth / ratio;
-
-      // If map height exceeds paper height, constrain by height
-      const needsHeightConstraint = mapHeightInPaper > paperHeightPct;
-      const calcHeight = needsHeightConstraint
-        ? paperHeightPct
-        : mapHeightInPaper;
-      const calcWidth = needsHeightConstraint
-        ? paperHeightPct * ratio
-        : mapWidth;
-
+    if (widthConstrainedHeight <= containerHeight) {
+      // Fits when filling width
       return {
-        constrainedWidth: Math.round(calcWidth * 100) / 100,
-        constrainedHeight: Math.round(calcHeight * 100) / 100,
-        paperWidth: paperWidthPct,
-        paperHeight: Math.round(paperHeightPct * 100) / 100,
+        width: containerWidth,
+        height: widthConstrainedHeight,
       };
-    }, [aspectRatio, mapWidth, mapHeight]);
-
-  // Show A4 paper container when aspect ratio is enabled
-  const showA4Container = !!aspectRatio;
+    }
+    // Need to constrain by height instead
+    return {
+      width: containerHeight * targetRatio,
+      height: containerHeight,
+    };
+  }, [aspectRatio, containerDimensions]);
 
   // The map content (title, legend, footer, map itself)
   const mapContent = (
@@ -460,49 +441,25 @@ function MapExportLayout({
   return (
     <div className={classes.previewContainer}>
       <div
+        ref={containerRef}
         style={{
           width: '100%',
           height: '100%',
-          // Gray backdrop when showing A4 container
-          backgroundColor: showA4Container ? '#E0E0E0' : undefined,
+          position: 'relative',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
         }}
       >
-        {showA4Container ? (
-          // A4 paper container (white) with map inside
-          <div
-            style={{
-              position: 'relative',
-              backgroundColor: 'white',
-              width: `${paperWidth}%`,
-              height: `${paperHeight}%`,
-              padding: '16px',
-              boxSizing: 'border-box',
-            }}
-          >
-            {/* Map container inside A4 paper */}
-            <div
-              style={{
-                position: 'relative',
-                zIndex: 3,
-                border: '1px solid #9E9E9E',
-                boxSizing: 'border-box',
-                height: `${(constrainedHeight / paperHeight) * 100}%`,
-                width: `${(constrainedWidth / paperWidth) * 100}%`,
-              }}
-            >
-              {mapContent}
-            </div>
-          </div>
-        ) : (
-          // Standard container without A4 paper (aspect ratio disabled)
+        {mapDimensions.width > 0 && mapDimensions.height > 0 && (
           <div
             style={{
               position: 'relative',
               zIndex: 3,
               border: '1px solid #9E9E9E',
               boxSizing: 'border-box',
-              height: `${constrainedHeight}%`,
-              width: `${constrainedWidth}%`,
+              width: `${mapDimensions.width}px`,
+              height: `${mapDimensions.height}px`,
             }}
           >
             {mapContent}

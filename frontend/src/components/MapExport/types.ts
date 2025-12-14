@@ -61,12 +61,8 @@ export interface MapExportLayoutProps {
   // Display toggles
   toggles: MapExportToggles;
 
-  // Dimensions
-  mapWidth: number; // percentage 50-100
-  mapHeight?: number; // percentage (defaults to 100)
-
-  // Aspect ratio - when provided, map maintains this ratio with gray backdrop
-  aspectRatio?: AspectRatio;
+  // Aspect ratio - map always maintains this ratio
+  aspectRatio: AspectRatio;
 
   // Title/Footer
   titleText: string;

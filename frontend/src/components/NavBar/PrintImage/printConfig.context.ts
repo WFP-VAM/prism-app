@@ -12,12 +12,9 @@ export type Toggles = {
   footerVisibility: boolean;
   batchMapsVisibility: boolean;
   bottomLogoVisibility: boolean;
-  aspectRatioEnabled: boolean;
 };
 
 export type MapDimensions = {
-  width: number;
-  height: number;
   aspectRatio: AspectRatio;
 };
 
