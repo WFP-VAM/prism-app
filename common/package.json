@@ -50,7 +50,7 @@
     "cross-fetch": "^3.1.5",
     "find-and-read": "^1.2.0",
     "flug": "^2.3.1",
-    "rimraf": "^3.0.2",
+    "rimraf": "^6.1.2",
     "srvd": "^0.4.0",
     "tsx": "^4.19.2",
     "typescript": "5.9.3"
@@ -62,19 +62,9 @@
     "xml-utils": "^1.6.0-0"
   },
   "resolutions": {
-    "brace-expansion": "^2.0.2",
-    "sha.js": "^2.4.12",
-    "form-data": "^3.0.4",
-    "minimist": "^1.2.6",
-    "js-yaml": "^4.1.1",
-    "@babel/helpers": "^7.26.10"
+    "brace-expansion": "^2.0.2"
   },
   "_resolutionsNotes": {
-    "brace-expansion": "CVE-2025-5889 - Security fix - Parent: rimraf → glob → minimatch - Check if removable when rimraf/glob updates",
-    "sha.js": "CVE-2025-9288 - Security fix - Parent: (transitive, check with yarn why) - Check if removable when parent packages update",
-    "form-data": "CVE-2025-7783 - Security fix - Parent: (transitive, check with yarn why) - Check if removable when parent packages update",
-    "minimist": "CVE-2021-44906 - Security fix - Parent: (transitive, check with yarn why) - Check if removable when parent packages update",
-    "js-yaml": "CVE-2025-64718 - Security fix - Parent: (transitive, check with yarn why) - Check if removable when parent packages update",
-    "@babel/helpers": "CVE-2025-27789 - Security fix - Parent: (transitive, check with yarn why) - Check if removable when parent packages update"
+    "brace-expansion": "CVE-2025-5889 - Security fix - Keep resolution: rimraf 6.1.2 → glob → minimatch still uses v2, cannot upgrade to v4 (breaks eslint/minimatch)"
   }
 }

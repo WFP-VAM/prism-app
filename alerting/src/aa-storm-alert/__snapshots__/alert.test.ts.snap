@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`alert mechanism buildEmailPayloads() does not return a payload when detailed report indicates that activation48 is triggered but there is no pilot activated districts for 48kt exposed 1`] = `[]`;
 
