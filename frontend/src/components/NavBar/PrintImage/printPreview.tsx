@@ -308,7 +308,7 @@ function PrintPreview() {
                     // Load SDF icons for point data layers
                     ensureSDFIconsLoaded(mapRef.current?.getMap());
                   }}
-                  mapStyle={selectedMapStyle || mapStyle.toString()}
+                  mapStyle={selectedMapStyle || mapStyle}
                   maxBounds={selectedMap.getMaxBounds() ?? undefined}
                 >
                   {tabValue === Panel.AnticipatoryActionDrought &&
