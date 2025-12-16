@@ -14,7 +14,6 @@ process.env.TZ = 'UTC';
 const mergeBoundaryData = boundaryData => {
   let mergedBoundaryData = null;
   if ((boundaryData?.features.length || 0) > 0) {
-    // eslint-disable-next-line fp/no-mutation
     mergedBoundaryData =
       boundaryData?.features.reduce((acc, feature) => {
         if (acc === null) {
@@ -47,7 +46,10 @@ async function preprocessBoundaryLayer(country, boundaryLayer) {
       const preprocessedData = mergeBoundaryData(boundaryData);
       fs.writeFileSync(outputFilePath, JSON.stringify(preprocessedData));
     } catch (error) {
-      console.warn(`Warning: Failed to merge boundary data for ${country}.`, error);
+      console.warn(
+        `Warning: Failed to merge boundary data for ${country}.`,
+        error,
+      );
       return;
     }
   }
@@ -68,7 +70,7 @@ async function generateIntermediateDateItemFromDataFile(
       const completeFilePath = path.join(__dirname, '../public/', filePath);
 
       if (!fs.existsSync(completeFilePath)) {
-        console.log(`Warning: File ${filePath} does not exist.`);
+        console.warn(`Warning: File ${filePath} does not exist.`);
         return {};
       }
 

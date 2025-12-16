@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`renders as expected 1`] = `
 <div>
@@ -492,7 +492,7 @@ exports[`renders as expected 1`] = `
           class="makeStyles-itemWrapper-2"
         >
           <div
-            style="min-width: 2.2rem; border: 1px solid #a4a4a4; border-radius: 2px;"
+            style="min-width: 2.2rem; border: 1px solid rgb(164, 164, 164); border-radius: 2px;"
           />
           <mock-typography>
             District

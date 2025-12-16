@@ -77,7 +77,6 @@ export const useDashboardMapSync = (mode?: string) => {
     map.on('moveend', handleViewportChange);
     map.on('zoomend', handleViewportChange);
 
-    // eslint-disable-next-line consistent-return
     return () => {
       map.off('moveend', handleViewportChange);
       map.off('zoomend', handleViewportChange);
@@ -113,7 +112,6 @@ export const useDashboardMapSync = (mode?: string) => {
       isUpdatingRef.current = false;
     }, 250);
 
-    // eslint-disable-next-line consistent-return
     return () => clearTimeout(resetTimeout);
   }, [shouldSync, sharedViewport, maplibreMap]);
 };

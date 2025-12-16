@@ -12,9 +12,9 @@ export const createSDFIcon = (
   size: number = 11,
 ): HTMLCanvasElement => {
   const canvas = document.createElement('canvas');
-  // eslint-disable-next-line fp/no-mutation
+
   canvas.width = size;
-  // eslint-disable-next-line fp/no-mutation
+
   canvas.height = size;
   const ctx = canvas.getContext('2d', { willReadFrequently: false });
   if (!ctx) {
@@ -22,7 +22,7 @@ export const createSDFIcon = (
   }
 
   // SDF icons use white color so icon-color can tint them
-  // eslint-disable-next-line fp/no-mutation
+
   ctx.fillStyle = '#FFFFFF';
 
   const padding = 1;

@@ -319,7 +319,7 @@ const MapComponent = memo(
           bounds: initialBounds as LngLatBoundsLike,
           fitBoundsOptions: { padding: fitBoundsOptions.padding },
         }}
-        mapStyle={mapStyle.toString()}
+        mapStyle={mapStyle}
         onLoad={onMapLoadWithLabelFilter}
         onClick={mapOnClick}
         maxBounds={maxBounds}

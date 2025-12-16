@@ -106,7 +106,7 @@ function Row({ iconContent, windows, header }: RowProps) {
         return (
           <div
             // we can actually use the index as key here, since we know each index is a window
-            // eslint-disable-next-line react/no-array-index-key
+
             key={index}
             style={{
               width:
