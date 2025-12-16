@@ -52,8 +52,35 @@ else
 fi
 log ""
 
-# 3. Check Docker containers
-log "${GREEN}=== 3. Docker Containers ===${NC}"
+# 3. Check Docker API version compatibility
+log "${GREEN}=== 3. Docker API Version Compatibility ===${NC}"
+if docker info &> /dev/null; then
+    DOCKER_API_VERSION=$(docker version --format '{{.Server.APIVersion}}' 2>/dev/null || echo "unknown")
+    log "Docker API version: $DOCKER_API_VERSION"
+    
+    if [[ "$DOCKER_API_VERSION" != "unknown" ]]; then
+        # Check if API version is 1.44 or higher (requires Traefik 2.11+)
+        if command -v bc &> /dev/null; then
+            if [[ $(echo "$DOCKER_API_VERSION >= 1.44" | bc -l 2>/dev/null || echo "0") == "1" ]]; then
+                log "${YELLOW}[WARN]${NC} Docker API 1.44+ requires Traefik 2.11+"
+                if docker ps | grep -q "traefik"; then
+                    TRAEFIK_VERSION=$(docker inspect traefik --format '{{.Config.Image}}' 2>/dev/null | sed 's/.*://' || echo "unknown")
+                    log "Traefik version: $TRAEFIK_VERSION"
+                    if [[ "$TRAEFIK_VERSION" == "v2.10"* ]] || [[ "$TRAEFIK_VERSION" == "2.10"* ]]; then
+                        log "${RED}[ISSUE]${NC} Traefik 2.10.x is incompatible with Docker API 1.44+"
+                        log "${YELLOW}[FIX]${NC} Run: sudo ./scripts/fix-traefik-docker-api.sh"
+                    fi
+                fi
+            fi
+        fi
+    fi
+else
+    log "${RED}[SKIP]${NC} Cannot check Docker API version - Docker not running"
+fi
+log ""
+
+# 4. Check Docker containers
+log "${GREEN}=== 4. Docker Containers ===${NC}"
 if docker info &> /dev/null; then
     log "Running containers:"
     docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}" || log "${RED}[ERROR]${NC} Failed to list containers"
@@ -74,8 +101,8 @@ else
 fi
 log ""
 
-# 4. Check Traefik network
-log "${GREEN}=== 4. Docker Networks ===${NC}"
+# 5. Check Traefik network
+log "${GREEN}=== 5. Docker Networks ===${NC}"
 if docker info &> /dev/null; then
     log "Docker networks:"
     docker network ls || log "${RED}[ERROR]${NC} Failed to list networks"
@@ -93,8 +120,8 @@ else
 fi
 log ""
 
-# 5. Check Traefik logs
-log "${GREEN}=== 5. Traefik Logs (last 20 lines) ===${NC}"
+# 6. Check Traefik logs
+log "${GREEN}=== 6. Traefik Logs (last 20 lines) ===${NC}"
 if docker ps | grep -q "traefik"; then
     log "Traefik container logs:"
     docker logs traefik --tail 20 2>&1 | tail -20 || log "${RED}[ERROR]${NC} Failed to get Traefik logs"
@@ -103,8 +130,8 @@ else
 fi
 log ""
 
-# 6. Check API container logs
-log "${GREEN}=== 6. API Container Logs (last 20 lines) ===${NC}"
+# 7. Check API container logs
+log "${GREEN}=== 7. API Container Logs (last 20 lines) ===${NC}"
 if docker ps | grep -q "api"; then
     log "API container logs:"
     docker logs api --tail 20 2>&1 | tail -20 || log "${RED}[ERROR]${NC} Failed to get API logs"
@@ -113,8 +140,8 @@ else
 fi
 log ""
 
-# 7. Check port bindings
-log "${GREEN}=== 7. Port Bindings ===${NC}"
+# 8. Check port bindings
+log "${GREEN}=== 8. Port Bindings ===${NC}"
 log "Port 80 (HTTP):"
 sudo lsof -i :80 -P -n 2>/dev/null || log "No process listening on port 80"
 log "\nPort 443 (HTTPS):"
@@ -123,8 +150,8 @@ log "\nPort 8080 (Traefik dashboard):"
 sudo lsof -i :8080 -P -n 2>/dev/null || log "No process listening on port 8080"
 log ""
 
-# 8. Check Traefik routing configuration
-log "${GREEN}=== 8. Traefik Configuration Check ===${NC}"
+# 9. Check Traefik routing configuration
+log "${GREEN}=== 9. Traefik Configuration Check ===${NC}"
 if [[ -f "/home/ubuntu/prism-app/api/docker-compose.deploy.yml" ]]; then
     log "Checking docker-compose.deploy.yml..."
     if grep -q "traefik.http.routers.whoami" /home/ubuntu/prism-app/api/docker-compose.deploy.yml; then
@@ -143,8 +170,8 @@ else
 fi
 log ""
 
-# 9. Test API connectivity
-log "${GREEN}=== 9. API Connectivity Test ===${NC}"
+# 10. Test API connectivity
+log "${GREEN}=== 10. API Connectivity Test ===${NC}"
 if docker ps | grep -q "api"; then
     log "Testing API container connectivity..."
     if docker exec api curl -s http://localhost:80/healthcheck 2>/dev/null | grep -q "All good"; then
@@ -178,6 +205,23 @@ if ! docker ps | grep -q "traefik\|api"; then
     log "        source set_envs.sh"
     log "        docker compose -f docker-compose.yml -f docker-compose.deploy.yml up -d"
     ISSUES_FOUND=$((ISSUES_FOUND + 1))
+fi
+
+# Check for Docker API version mismatch
+if docker info &> /dev/null; then
+    DOCKER_API_VERSION=$(docker version --format '{{.Server.APIVersion}}' 2>/dev/null || echo "unknown")
+    if [[ "$DOCKER_API_VERSION" != "unknown" ]] && command -v bc &> /dev/null; then
+        if [[ $(echo "$DOCKER_API_VERSION >= 1.44" | bc -l 2>/dev/null || echo "0") == "1" ]]; then
+            if docker ps | grep -q "traefik"; then
+                TRAEFIK_VERSION=$(docker inspect traefik --format '{{.Config.Image}}' 2>/dev/null | sed 's/.*://' || echo "unknown")
+                if [[ "$TRAEFIK_VERSION" == "v2.10"* ]] || [[ "$TRAEFIK_VERSION" == "2.10"* ]]; then
+                    log "${RED}[CRITICAL]${NC} Traefik version incompatible with Docker API 1.44+"
+                    log "  Fix: sudo ./scripts/fix-traefik-docker-api.sh"
+                    ISSUES_FOUND=$((ISSUES_FOUND + 1))
+                fi
+            fi
+        fi
+    fi
 fi
 
 if [[ $ISSUES_FOUND -eq 0 ]]; then
