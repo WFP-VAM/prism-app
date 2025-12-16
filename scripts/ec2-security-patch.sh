@@ -150,36 +150,60 @@ else
     run_cmd "apt-get autoclean" "Clean package cache"
 fi
 
-# 7. Disable IP forwarding (security hardening)
-log "\n${GREEN}=== Step 7: Security hardening ===${NC}"
-if [[ "$DRY_RUN" == "true" ]]; then
-    CURRENT_IP_FORWARD=$(sysctl net.ipv4.ip_forward 2>/dev/null | awk '{print $3}' || echo "unknown")
-    log "${YELLOW}[INFO]${NC} Current IP forwarding status: $CURRENT_IP_FORWARD"
-    if [[ "$CURRENT_IP_FORWARD" == "1" ]]; then
-        log "${YELLOW}[DRY-RUN]${NC} Would disable IP forwarding (set net.ipv4.ip_forward=0)"
-        log "${YELLOW}[NOTE]${NC} This requires editing /etc/sysctl.conf"
+# 7. Check IP forwarding (Docker requires it for networking)
+log "\n${GREEN}=== Step 7: IP forwarding check ===${NC}"
+CURRENT_IP_FORWARD=$(sysctl net.ipv4.ip_forward 2>/dev/null | awk '{print $3}' || echo "0")
+
+# Check if Docker is installed and running
+DOCKER_RUNNING=false
+if command -v docker &> /dev/null; then
+    if docker info &> /dev/null; then
+        DOCKER_RUNNING=true
+        log "${YELLOW}[INFO]${NC} Docker is installed and running"
+    else
+        log "${YELLOW}[INFO]${NC} Docker is installed but not running"
     fi
-else
-    CURRENT_IP_FORWARD=$(sysctl net.ipv4.ip_forward 2>/dev/null | awk '{print $3}' || echo "0")
-    if [[ "$CURRENT_IP_FORWARD" == "1" ]]; then
-        log "${YELLOW}[WARN]${NC} IP forwarding is enabled. Disabling..."
-        run_cmd "sysctl -w net.ipv4.ip_forward=0" "Disable IP forwarding temporarily"
-        
-        # Make it permanent
-        if ! grep -q "^net.ipv4.ip_forward=0" /etc/sysctl.conf 2>/dev/null; then
-            if grep -q "^net.ipv4.ip_forward=" /etc/sysctl.conf; then
-                # Replace existing line
-                sed -i 's/^net.ipv4.ip_forward=.*/net.ipv4.ip_forward=0/' /etc/sysctl.conf
-            else
-                # Add new line
-                echo "net.ipv4.ip_forward=0" >> /etc/sysctl.conf
-            fi
-            log "${GREEN}[SUCCESS]${NC} Added net.ipv4.ip_forward=0 to /etc/sysctl.conf"
-        else
-            log "${GREEN}[INFO]${NC} IP forwarding is already disabled in /etc/sysctl.conf"
+fi
+
+if [[ "$DRY_RUN" == "true" ]]; then
+    log "${YELLOW}[INFO]${NC} Current IP forwarding status: $CURRENT_IP_FORWARD"
+    if [[ "$DOCKER_RUNNING" == "true" ]]; then
+        log "${YELLOW}[WARN]${NC} Docker requires IP forwarding for container networking"
+        if [[ "$CURRENT_IP_FORWARD" == "0" ]]; then
+            log "${YELLOW}[DRY-RUN]${NC} Would enable IP forwarding for Docker"
         fi
     else
-        log "${GREEN}[INFO]${NC} IP forwarding is already disabled"
+        if [[ "$CURRENT_IP_FORWARD" == "1" ]]; then
+            log "${YELLOW}[DRY-RUN]${NC} Would check if IP forwarding is needed before disabling"
+        fi
+    fi
+else
+    if [[ "$DOCKER_RUNNING" == "true" ]]; then
+        # Docker needs IP forwarding - ensure it's enabled
+        if [[ "$CURRENT_IP_FORWARD" == "0" ]]; then
+            log "${YELLOW}[WARN]${NC} IP forwarding is disabled but Docker requires it. Enabling..."
+            run_cmd "sysctl -w net.ipv4.ip_forward=1" "Enable IP forwarding for Docker"
+            
+            # Make it permanent
+            if grep -q "^net.ipv4.ip_forward=0" /etc/sysctl.conf 2>/dev/null; then
+                sed -i 's/^net.ipv4.ip_forward=0/net.ipv4.ip_forward=1/' /etc/sysctl.conf
+                log "${GREEN}[SUCCESS]${NC} Updated /etc/sysctl.conf to enable IP forwarding"
+            elif ! grep -q "^net.ipv4.ip_forward=" /etc/sysctl.conf 2>/dev/null; then
+                echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
+                log "${GREEN}[SUCCESS]${NC} Added net.ipv4.ip_forward=1 to /etc/sysctl.conf"
+            fi
+        else
+            log "${GREEN}[INFO]${NC} IP forwarding is enabled (required for Docker)"
+        fi
+    else
+        # Docker not running - can safely disable IP forwarding if enabled
+        if [[ "$CURRENT_IP_FORWARD" == "1" ]]; then
+            log "${YELLOW}[INFO]${NC} IP forwarding is enabled but Docker is not running"
+            log "${YELLOW}[NOTE]${NC} Keeping IP forwarding enabled in case Docker is used later"
+            log "${YELLOW}[NOTE]${NC} To disable manually: sysctl -w net.ipv4.ip_forward=0"
+        else
+            log "${GREEN}[INFO]${NC} IP forwarding is disabled (Docker not in use)"
+        fi
     fi
 fi
 
