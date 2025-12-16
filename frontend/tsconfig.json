@@ -28,7 +28,6 @@
     /* Linting */
     "strict": true,
     /* Allow legacy React component types for compatibility with older libraries */
-    "skipLibCheck": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
