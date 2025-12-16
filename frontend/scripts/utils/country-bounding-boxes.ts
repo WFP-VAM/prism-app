@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 /**
  * Utility to fetch country bounding boxes from the country-bounding-boxes repository
  * Source: https://github.com/sandstrom/country-bounding-boxes/blob/master/bounding-boxes.json

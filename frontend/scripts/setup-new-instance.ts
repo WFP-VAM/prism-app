@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-/* eslint-disable no-console, fp/no-mutation, fp/no-delete, fp/no-mutating-methods */
+/* eslint-disable no-console */
 
 /**
  * PRISM Instance Setup Tool
@@ -19,7 +19,6 @@ import { findClosestCountry } from './utils/country-bounding-boxes';
 
 // no readline - using enquirer for all prompts
 // Interactive prompts
-// eslint-disable-next-line import/no-extraneous-dependencies, @typescript-eslint/no-var-requires
 const { MultiSelect, Input, Confirm } = require('enquirer');
 
 interface LayerInfo {
