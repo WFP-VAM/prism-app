@@ -40,7 +40,6 @@ export function districtViewTransform(
     monthsMap.set(x.date, val ? [...val, x] : [x]);
   });
 
-  // eslint-disable-next-line fp/no-mutating-methods
   const months = Array.from(monthsMap.keys()).sort();
 
   const topFiltered = months

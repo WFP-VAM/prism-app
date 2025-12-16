@@ -76,7 +76,7 @@ export function buildAvailableFloodDatesFromDatesJson(
   const dateKeys = Object.keys(datesData).filter(
     d => d && !Number.isNaN(new Date(`${d}T12:00:00Z`).getTime()),
   );
-  // eslint-disable-next-line fp/no-mutating-methods
+
   const sortedDateKeys = [...dateKeys].sort();
 
   return sortedDateKeys

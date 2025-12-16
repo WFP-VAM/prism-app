@@ -56,10 +56,8 @@ export const fetchImpactLayerData: LazyLoader<ImpactLayerProps> =
         } as LayerDataParams<AdminLevelDataLayerProps>),
       )) as { payload: { data: unknown } };
 
-      // eslint-disable-next-line fp/no-mutation
       baselineData = checkBaselineDataLayer(layer.baselineLayer, data);
     } else {
-      // eslint-disable-next-line fp/no-mutation
       baselineData = checkBaselineDataLayer(
         layer.baselineLayer,
         baselineLayer.data,

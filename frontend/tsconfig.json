@@ -14,9 +14,10 @@
     "experimentalDecorators": true,
     "esModuleInterop": true,
     "paths": {
-      "public/*": ["../public/*"]
+      "public/*": [
+        "../public/*"
+      ]
     },
-
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
@@ -26,11 +27,25 @@
     "jsx": "react-jsx",
     /* Linting */
     "strict": true,
+    /* Allow legacy React component types for compatibility with older libraries */
+    "skipLibCheck": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
-  "exclude": ["cypress.config.ts", "cypress", "node_modules"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "cypress.config.ts",
+    "cypress",
+    "node_modules",
+    "**/*.test.tsx",
+    "**/*.test.ts"
+  ],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
 }

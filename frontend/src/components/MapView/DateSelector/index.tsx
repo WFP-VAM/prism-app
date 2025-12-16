@@ -64,11 +64,10 @@ const calculateStartAndEndDates = (startDate: Date, selectedTab: string) => {
 
   if (selectedTab === Panel.AnticipatoryActionDrought) {
     // Use country-specific timeline offset for AA drought
-    // eslint-disable-next-line fp/no-mutation
+
     startMonth = getTimelineOffset();
     // Adjust year if we're before the timeline start month
     if (startDate.getMonth() < startMonth) {
-      // eslint-disable-next-line fp/no-mutation
       year -= 1;
     }
   }
@@ -128,7 +127,6 @@ const DateSelector = memo(() => {
       updateStartDate(new Date(closestDate), true);
     }
     // Recalculate when layers or available dates change
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLayers, availableDates]);
 
   const maxDate = useMemo(
@@ -197,7 +195,6 @@ const DateSelector = memo(() => {
   // Keep anticipatory actions at the top of the timeline
   const orderedLayers: DateCompatibleLayerWithDateItems[] = useMemo(
     () =>
-      // eslint-disable-next-line fp/no-mutating-methods
       selectedLayers
         .sort((a, b) => {
           const aIsAnticipatory = a.id.includes('anticipatory_action_drought');
@@ -242,7 +239,7 @@ const DateSelector = memo(() => {
           return layer.dateItems;
         }
         // truncate the date item array at index matching timeline first date with a buffer of 1 day decrements
-        // eslint-disable-next-line fp/no-mutating-methods
+
         return layer.dateItems.slice(firstIndex - 1);
       }),
     ];
@@ -287,16 +284,15 @@ const DateSelector = memo(() => {
       dateRange.length * TIMELINE_ITEM_WIDTH - timeLineWidth
     ) {
       // compute the maximum timeline offset necessary so that the 31/12 is visible. Consequently the cursor will be visible as well (it moves together with the timeline)
-      // eslint-disable-next-line fp/no-mutation
+
       timelineXOffset = timeLineWidth - dateRange.length * TIMELINE_ITEM_WIDTH;
     } else if (pointerPosition.x > timeLineWidth) {
       // shift the timeline to the left by an arbitrary value to make sure the cursor is visible
-      // eslint-disable-next-line fp/no-mutation
+
       timelineXOffset = -pointerPosition.x + timeLineWidth / 2;
     }
 
     setTimelinePosition({ x: timelineXOffset, y: 0 });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pointerPosition.x, dateRange.length]);
 
   const locale = useMemo(
@@ -314,10 +310,8 @@ const DateSelector = memo(() => {
     for (
       let currentDate = start;
       currentDate <= end;
-      // eslint-disable-next-line fp/no-mutation
       currentDate = new Date(currentDate.getTime() + 1 * oneDayInMs)
     ) {
-      // eslint-disable-next-line fp/no-mutating-methods
       daysArray.push(new Date(currentDate));
     }
 
@@ -380,17 +374,14 @@ const DateSelector = memo(() => {
     // All dates in AA windows should be selectable, regardless of overlap
     if (isAnticipatoryActionLayer(panelTab) && AAAvailableDates) {
       if (isWindowedDates(AAAvailableDates)) {
-        // eslint-disable-next-line fp/no-mutating-methods
         dates.push(
           AAAvailableDates?.['Window 1']?.map(d => d.displayDate) ?? [],
           AAAvailableDates?.['Window 2']?.map(d => d.displayDate) ?? [],
         );
       } else {
-        // eslint-disable-next-line fp/no-mutating-methods
         dates.push(AAAvailableDates?.map(d => d.displayDate) ?? []);
       }
 
-      // eslint-disable-next-line fp/no-mutating-methods
       return dates
         .reduce((acc, currentArray) => [
           ...acc,
@@ -515,7 +506,7 @@ const DateSelector = memo(() => {
             !l.id.includes('anticipatory_action'),
           );
           // Filter to observation dates before current date, excluding current validity period
-          // eslint-disable-next-line fp/no-mutating-methods
+
           return l.dateItems.filter(
             (d: DateItem) =>
               d.queryDate < stateStartDate &&
@@ -673,6 +664,7 @@ const DateSelector = memo(() => {
             </Button>
           )}
 
+          {/* @ts-expect-error - react-datepicker v2 types incompatible with React 18 */}
           <DatePicker
             locale={t('date_locale')}
             dateFormat="PP"

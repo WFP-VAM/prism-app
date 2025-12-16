@@ -190,7 +190,6 @@ function AnticipatoryActionFloodPanel() {
     } as any;
   };
 
-  // eslint-disable-next-line fp/no-mutating-methods
   const sortedStations = [...filteredStations].sort((a, b) => {
     const aData = getStationDataForDate(a);
     const bData = getStationDataForDate(b);

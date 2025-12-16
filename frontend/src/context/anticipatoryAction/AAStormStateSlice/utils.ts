@@ -33,7 +33,6 @@ function createMergedGeoJSON(data: StormDataResponseBody) {
   ) => {
     const exposedArea = data.ready_set_results?.[key];
     if (exposedArea) {
-      // eslint-disable-next-line fp/no-mutating-methods
       features.push({
         type: 'Feature',
         properties: {
@@ -51,7 +50,6 @@ function createMergedGeoJSON(data: StormDataResponseBody) {
 
   // Add uncertainty cone if it exists
   if (data.uncertainty_cone) {
-    // eslint-disable-next-line fp/no-mutating-methods
     features.push({
       type: 'Feature',
       properties: {
@@ -64,13 +62,12 @@ function createMergedGeoJSON(data: StormDataResponseBody) {
   // Add time series features if they exist
   if (data.time_series) {
     data.time_series.features.forEach(feature => {
-      // eslint-disable-next-line fp/no-mutating-methods
       features.push(feature);
     });
   }
 
   // Create metadata feature
-  // eslint-disable-next-line fp/no-mutating-methods
+
   features.push({
     type: 'Feature',
     properties: {

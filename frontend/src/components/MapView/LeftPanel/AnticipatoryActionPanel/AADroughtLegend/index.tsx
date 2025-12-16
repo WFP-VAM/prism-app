@@ -59,7 +59,7 @@ function AADroughtLegend({ showDescription = true }: AADroughtLegendProps) {
           <Typography>
             {
               // TODO: handle onKeyDown
-              // eslint-disable-next-line jsx-a11y/click-events-have-key-events
+
               <span
                 className={classes.dialogButton}
                 onClick={() => setOpen(true)}

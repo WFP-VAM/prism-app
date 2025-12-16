@@ -34,7 +34,6 @@ function useResizeObserver<T extends HTMLElement>(
     return () => {
       resizeObserver.disconnect();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...depArray]);
 
   return [targetRef, size];

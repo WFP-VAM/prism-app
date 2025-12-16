@@ -1,4 +1,3 @@
-/* eslint-disable fp/no-mutating-methods, fp/no-mutation */
 import React from 'react';
 import {
   AACategoryType,
@@ -247,13 +246,10 @@ export const getLegendPhases = () => {
     )?.id;
 
     if (category) {
-      // eslint-disable-next-line fp/no-mutation
       icon = getAAIcon(category, phase.phase as 'Ready' | 'Set', true);
     } else if (phase.phase === 'No Action') {
-      // eslint-disable-next-line fp/no-mutation
       icon = getAAIcon('na', 'na', true);
     } else {
-      // eslint-disable-next-line fp/no-mutation
       icon = getAAIcon('ny', 'ny', true);
     }
 

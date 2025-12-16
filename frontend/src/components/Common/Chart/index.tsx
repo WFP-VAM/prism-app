@@ -402,7 +402,7 @@ const Chart = memo(
                     // Increase y-axis by 20% for Google Flood charts to make space for the annotation label
                     if (isGoogleFloodChart) {
                       const range = axis.max - axis.min;
-                      axis.max += range * 0.25; // eslint-disable-line no-param-reassign, fp/no-mutation
+                      axis.max += range * 0.25;
                     }
                   },
                   ...(yAxisLabel

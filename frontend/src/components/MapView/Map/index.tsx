@@ -324,7 +324,7 @@ const MapComponent = memo(
             ? undefined
             : { padding: fitBoundsOptions.padding },
         }}
-        mapStyle={mapStyle.toString()}
+        mapStyle={mapStyle}
         onLoad={onMapLoadWithLabelFilter}
         onClick={mapOnClick}
         maxBounds={maxBounds}

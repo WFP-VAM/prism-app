@@ -35,11 +35,9 @@ export const fetchACLEDDates = async (
     const resp = await fetchWithTimeout(datesUrl, dispatch, {}, errorMessage);
     const respJson = await resp.json();
 
-    /* eslint-disable camelcase */
     const dates: ReferenceDateTimestamp[] = respJson.data.map(
       (item: { event_date: string }) => getTimeInMilliseconds(item.event_date),
     );
-    /* eslint-enable camelcase */
 
     const datesSet = [...new Set(dates)];
 
@@ -91,7 +89,7 @@ export const fetchACLEDIncidents = async (
     return GeoJSON.parse(incidents, {
       Point: ['lat', 'lon'],
     }) as any as PointLayerData;
-  } catch (error) {
+  } catch (_error) {
     return {
       type: 'FeatureCollection',
       features: [],

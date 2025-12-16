@@ -25,8 +25,7 @@ function PanelButton({
   const badgeContent = numberOfActiveLayers + Number(Boolean(analysisData));
   const Wrap =
     badgeContent >= 1 && panel.panel === Panel.Layers
-      ? // eslint-disable-next-line react/no-unused-prop-types
-        ({ children }: { children: React.ReactNode }) => (
+      ? ({ children }: { children: React.ReactNode }) => (
           <Badge
             anchorOrigin={{
               horizontal: 'left',
