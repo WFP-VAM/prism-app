@@ -168,25 +168,6 @@ const ExportView = memo(() => {
 
   // Use default map style - MapExportLayout handles label filtering
   const processedMapStyle = mapStyle.toString();
-  const initialViewState = useMemo(() => {
-    if (exportParams.bounds) {
-      const centerLng =
-        (exportParams.bounds.west + exportParams.bounds.east) / 2;
-      const centerLat =
-        (exportParams.bounds.south + exportParams.bounds.north) / 2;
-      return {
-        longitude: centerLng,
-        latitude: centerLat,
-        zoom: exportParams.zoom ?? 5,
-      };
-    }
-    const [west, south, east, north] = appConfig.map.boundingBox;
-    return {
-      longitude: (west + east) / 2,
-      latitude: (south + north) / 2,
-      zoom: exportParams.zoom ?? 5,
-    };
-  }, [exportParams.bounds, exportParams.zoom]);
 
   const dateText = useMemo(() => {
     const pubDate = `${t('Publication date')}: ${getFormattedDate(
@@ -239,7 +220,7 @@ const ExportView = memo(() => {
         titleHeight={titleHeight}
         legendPosition={exportParams.legendPosition}
         legendScale={exportParams.legendScale}
-        initialViewState={initialViewState}
+        bounds={exportParams.bounds ?? undefined}
         mapStyle={processedMapStyle}
         invertedAdminBoundaryLimitPolygon={invertedAdminBoundaryLimitPolygon}
         printRef={printRef}

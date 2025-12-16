@@ -91,6 +91,9 @@ export interface MapExportLayoutProps {
     zoom: number;
   };
 
+  // Bounds to fit map to
+  bounds?: ExportMapBounds;
+
   // Map style (from existing map or base style)
   mapStyle: StyleSpecification | string;
 

@@ -93,6 +93,7 @@ function MapExportLayout({
   legendPosition,
   legendScale,
   initialViewState,
+  bounds,
   mapStyle: mapStyleProp,
   invertedAdminBoundaryLimitPolygon,
   printRef,
@@ -178,6 +179,21 @@ function MapExportLayout({
     ? `calc(100% - ${logoHeight * 8}px)`
     : '100%';
 
+  // Calculate fallback initial view state from bounds if not provided
+  const effectiveInitialViewState = useMemo(() => {
+    if (initialViewState) {
+      return initialViewState;
+    }
+    if (bounds) {
+      return {
+        longitude: (bounds.west + bounds.east) / 2,
+        latitude: (bounds.south + bounds.north) / 2,
+        zoom: 5,
+      };
+    }
+    return { longitude: 0, latitude: 0, zoom: 2 };
+  }, [initialViewState, bounds]);
+
   const handleMapLoad = (e: any) => {
     e.target.addControl(new maplibregl.ScaleControl({}), 'bottom-right');
     updateScaleBarAndNorthArrow();
@@ -206,6 +222,21 @@ function MapExportLayout({
     // Load SDF icons for point data layers
     ensureSDFIconsLoaded(mapRef.current?.getMap());
 
+    // If bounds are provided, fit the map to those bounds
+    // This ensures precise geographic extent matching (e.g., for exports)
+    if (bounds && map) {
+      map.fitBounds(
+        [
+          [bounds.west, bounds.south],
+          [bounds.east, bounds.north],
+        ],
+        {
+          padding: 0,
+          animate: false,
+        },
+      );
+    }
+
     if (onMapLoad) {
       onMapLoad(e);
     }
@@ -214,10 +245,10 @@ function MapExportLayout({
     // Use 'idle' event to ensure map has fully settled
     if (onBoundsChange && map) {
       map.on('idle', () => {
-        const bounds = map.getBounds();
+        const mapBounds = map.getBounds();
         const zoom = map.getZoom();
-        if (bounds) {
-          onBoundsChange(bounds, zoom);
+        if (mapBounds) {
+          onBoundsChange(mapBounds, zoom);
         }
       });
     }
@@ -398,7 +429,7 @@ function MapExportLayout({
           dragRotate={false}
           // preserveDrawingBuffer is required for the map to be exported as an image
           preserveDrawingBuffer
-          initialViewState={initialViewState}
+          initialViewState={effectiveInitialViewState}
           onLoad={handleMapLoad}
           mapStyle={processedMapStyle || mapStyle.toString()}
         >
