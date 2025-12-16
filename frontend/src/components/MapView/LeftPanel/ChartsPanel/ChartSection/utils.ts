@@ -7,13 +7,11 @@ export function generateDateStrings(startDate: Date, endDate: Date) {
   endDate.setUTCHours(12, 0, 0, 0);
 
   while (currentDate <= endDate) {
-    // eslint-disable-next-line fp/no-mutation, no-plusplus
     for (let i = 0; i < 3; i++) {
       currentDate.setDate(interval[i]);
       const formattedDate = currentDate.toISOString().split('T')[0];
 
       if (currentDate > startDate && currentDate <= endDate) {
-        // eslint-disable-next-line fp/no-mutating-methods
         result.push(formattedDate);
       }
     }

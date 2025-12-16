@@ -251,15 +251,15 @@ function TableBlock({
 
     const canRunAnalysis = Boolean(
       !formState.isAnalysisLoading &&
-        !formState.requiredThresholdNotSet &&
-        formState.hazardLayerId &&
-        (formState.hazardDataType === GeometryType.Polygon
-          ? formState.startDate && formState.adminLevelLayerData
-          : formState.selectedDate && formState.baselineLayerId) &&
-        !(
-          formState.statistic === AggregationOperations['Area exposed'] &&
-          (!formState.exposureValue.operator || !formState.exposureValue.value)
-        ),
+      !formState.requiredThresholdNotSet &&
+      formState.hazardLayerId &&
+      (formState.hazardDataType === GeometryType.Polygon
+        ? formState.startDate && formState.adminLevelLayerData
+        : formState.selectedDate && formState.baselineLayerId) &&
+      !(
+        formState.statistic === AggregationOperations['Area exposed'] &&
+        (!formState.exposureValue.operator || !formState.exposureValue.value)
+      ),
     );
 
     if (
@@ -299,7 +299,6 @@ function TableBlock({
       return rawData;
     }
 
-    // eslint-disable-next-line fp/no-mutating-methods
     const sortedData = [...rawData].sort((a, b) => {
       const aValue = a[sortColumn];
       const bValue = b[sortColumn];
