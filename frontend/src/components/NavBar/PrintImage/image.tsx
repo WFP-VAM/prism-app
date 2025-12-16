@@ -335,6 +335,14 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         filename,
         contentType,
       );
+
+      // TODO: Translate messages
+      dispatch(
+        addNotification({
+          type: 'success',
+          message: 'Batch download completed successfully.',
+        }),
+      );
     } catch (error) {
       dispatch(
         addNotification({
@@ -346,12 +354,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       console.error('Batch download failed:', error);
     } finally {
       setIsDownloading(false);
-      dispatch(
-        addNotification({
-          type: 'success',
-          message: 'Batch download completed successfully.',
-        }),
-      );
     }
   };
 

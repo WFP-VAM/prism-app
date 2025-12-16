@@ -1,5 +1,5 @@
 import { Typography, createStyles, makeStyles } from '@material-ui/core';
-import maplibregl from 'maplibre-gl';
+import maplibregl, { MapSourceDataEvent } from 'maplibre-gl';
 import React, {
   useRef,
   useCallback,
@@ -108,6 +108,7 @@ function MapExportLayout({
   adminLevelLayersWithFillPattern = [],
   selectedLayers = [],
   onMapLoad,
+  signalExportReady = false,
 }: MapExportLayoutProps) {
   const classes = useStyles();
   const northArrowRef = useRef<HTMLImageElement>(null);
@@ -201,7 +202,76 @@ function MapExportLayout({
     // Load SDF icons for point data layers
     ensureSDFIconsLoaded(mapRef.current?.getMap());
 
-    if (onMapLoad) {
+    // Track source loading to ensure all tiles are loaded before signaling ready
+    // Only needed when signalExportReady is true or onMapLoad is provided
+    const shouldTrackSources = signalExportReady || onMapLoad;
+
+    if (shouldTrackSources && map) {
+      const loadingSources = new Set<string>();
+      let hasSignaledReady = false;
+      let checkReadyTimeout: ReturnType<typeof setTimeout> | null = null;
+
+      const signalReady = () => {
+        if (hasSignaledReady) {
+          return;
+        }
+        // eslint-disable-next-line fp/no-mutation
+        hasSignaledReady = true;
+        map.off('sourcedata', sourceDataHandler);
+        // Set PRISM_READY for server-side rendering (Playwright)
+        if (signalExportReady) {
+          // eslint-disable-next-line fp/no-mutation
+          (window as any).PRISM_READY = true;
+        }
+
+        // Call optional callback
+        if (onMapLoad) {
+          onMapLoad(e);
+        }
+      };
+
+      // Check if all sources are loaded and signal ready after a brief stabilization period
+      const checkAllSourcesLoaded = () => {
+        if (checkReadyTimeout) {
+          clearTimeout(checkReadyTimeout);
+        }
+        // Wait a brief moment after the last source finishes to ensure tiles are rendered
+        // eslint-disable-next-line fp/no-mutation
+        checkReadyTimeout = setTimeout(() => {
+          if (loadingSources.size === 0 && !hasSignaledReady) {
+            signalReady();
+          }
+        }, 500);
+      };
+
+      const sourceDataHandler = (event: MapSourceDataEvent) => {
+        if (!event.sourceId?.startsWith('source-')) {
+          return;
+        }
+
+        if (!event.isSourceLoaded) {
+          loadingSources.add(event.sourceId);
+        } else if (loadingSources.has(event.sourceId)) {
+          loadingSources.delete(event.sourceId);
+          checkAllSourcesLoaded();
+        }
+      };
+
+      map.on('sourcedata', sourceDataHandler);
+
+      // If there are no data layers, signal ready after initial render settles
+      // Use a longer timeout to ensure any async layer additions have a chance to start
+      setTimeout(() => {
+        if (loadingSources.size === 0 && !hasSignaledReady) {
+          // eslint-disable-next-line no-console
+          console.log(
+            '[MapExport] No sources detected after timeout, signaling ready',
+          );
+          signalReady();
+        }
+      }, 1000);
+    } else if (onMapLoad) {
+      // No map reference, fall back to immediate callback
       onMapLoad(e);
     }
   };
