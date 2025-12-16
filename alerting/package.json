@@ -44,8 +44,7 @@
     "aa-storm-alert-worker": "yarn ts-node src/aa-storm-alert-runner.ts",
     "aa-flood-alert-worker": "yarn ts-node src/aa-flood-alert-runner.ts",
     "docker-alert": "source ../api/set_envs.sh && docker compose run --entrypoint 'yarn alert-worker' alerting-node",
-    "audit": "audit-ci --config .audit-ci.json",
-    "check-resolutions": "node ../scripts/check-resolutions.js package.json"
+    "audit": "audit-ci --config .audit-ci.json"
   },
   "dependencies": {
     "@turf/bbox": "^6.3.0",

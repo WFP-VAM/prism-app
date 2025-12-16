@@ -41,8 +41,7 @@
     "precommit": "lint-staged",
     "check-boundary-keys": "node ./scripts/check-boundary-keys-validity.js",
     "preprocess-layers": "ts-node --compilerOptions \"{\\\"module\\\":\\\"commonjs\\\"}\" ./scripts/preprocess-layers.ts",
-    "audit": "audit-ci --config .audit-ci.json",
-    "check-resolutions": "node ../scripts/check-resolutions.js package.json"
+    "audit": "audit-ci --config .audit-ci.json"
   },
   "dependencies": {
     "@azure/msal-browser": "^2.19.0",
