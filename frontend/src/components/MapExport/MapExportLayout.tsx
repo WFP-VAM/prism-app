@@ -203,7 +203,6 @@ function MapExportLayout({
     ensureSDFIconsLoaded(mapRef.current?.getMap());
 
     // Track source loading to ensure all tiles are loaded before signaling ready
-    // Only needed when signalExportReady is true or onMapLoad is provided
     const shouldTrackSources = signalExportReady || onMapLoad;
 
     if (shouldTrackSources && map) {
@@ -224,18 +223,16 @@ function MapExportLayout({
           (window as any).PRISM_READY = true;
         }
 
-        // Call optional callback
         if (onMapLoad) {
           onMapLoad(e);
         }
       };
 
-      // Check if all sources are loaded and signal ready after a brief stabilization period
       const checkAllSourcesLoaded = () => {
         if (checkReadyTimeout) {
           clearTimeout(checkReadyTimeout);
         }
-        // Wait a brief moment after the last source finishes to ensure tiles are rendered
+
         // eslint-disable-next-line fp/no-mutation
         checkReadyTimeout = setTimeout(() => {
           if (loadingSources.size === 0 && !hasSignaledReady) {
@@ -260,18 +257,12 @@ function MapExportLayout({
       map.on('sourcedata', sourceDataHandler);
 
       // If there are no data layers, signal ready after initial render settles
-      // Use a longer timeout to ensure any async layer additions have a chance to start
       setTimeout(() => {
         if (loadingSources.size === 0 && !hasSignaledReady) {
-          // eslint-disable-next-line no-console
-          console.log(
-            '[MapExport] No sources detected after timeout, signaling ready',
-          );
           signalReady();
         }
-      }, 1000);
+      }, 500);
     } else if (onMapLoad) {
-      // No map reference, fall back to immediate callback
       onMapLoad(e);
     }
   };
