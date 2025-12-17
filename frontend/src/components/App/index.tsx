@@ -85,10 +85,13 @@ function App() {
   const renderedContent = useMemo(() => {
     if (isAuthenticated || !authRequired) {
       return (
+        // @ts-expect-error - react-router-dom v5 types incompatible with React 18
         <Switch>
+          {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
           <Route path="/export" exact>
             <ExportView />
           </Route>
+          {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
           <Route>
             <Wrapper />
           </Route>

@@ -60,6 +60,7 @@ function DateRangePicker() {
           <Typography variant="body1" className={classes.label}>
             {t('Start date')}
           </Typography>
+          {/* @ts-expect-error - react-datepicker v2 types incompatible with React 18 */}
           <DatePicker
             locale={t('date_locale')}
             dateFormat="dd/MM/yyyy"
@@ -80,6 +81,7 @@ function DateRangePicker() {
           <Typography variant="body1" className={classes.label}>
             {t('End date')}
           </Typography>
+          {/* @ts-expect-error - react-datepicker v2 types incompatible with React 18 */}
           <DatePicker
             locale={t('date_locale')}
             dateFormat="dd/MM/yyyy"

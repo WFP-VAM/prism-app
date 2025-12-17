@@ -36,7 +36,7 @@ import useResizeObserver from 'utils/useOnResizeObserver';
   reverse the order off adding layers so that the first boundary layer will be placed at the very bottom,
   to prevent other boundary layers being covered by any layers
 */
-// eslint-disable-next-line fp/no-mutating-methods
+
 const displayedBoundaryLayers = getDisplayBoundaryLayers().reverse();
 
 const ExportView = memo(() => {
