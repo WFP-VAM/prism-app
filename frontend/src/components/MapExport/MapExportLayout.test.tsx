@@ -7,7 +7,6 @@ import MapExportLayout from './MapExportLayout';
 import { MapExportToggles } from './types';
 
 jest.mock('react-map-gl/maplibre', () => {
-  // eslint-disable-next-line global-require
   const React = require('react');
   return {
     __esModule: true,
@@ -20,7 +19,6 @@ jest.mock('react-map-gl/maplibre', () => {
 });
 
 jest.mock('components/MapView/Legends/LegendItemsList', () => {
-  // eslint-disable-next-line global-require
   const React = require('react');
   return {
     __esModule: true,
@@ -171,7 +169,7 @@ describe('MapExportLayout', () => {
     );
     const logoImg = container.querySelector('img[alt="logo"]') as HTMLElement;
     // left is 'auto' which is an unset value, so it appears as empty string
-    expect(logoImg?.style.left).toBeFalsy();
+    expect(logoImg?.style.left).toBe('auto');
     expect(logoImg?.style.right).toBe('8px');
   });
 

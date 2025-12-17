@@ -132,7 +132,6 @@ function MapExportLayout({
     const baseHeight = footerHeight || 20;
 
     if (elem) {
-      // eslint-disable-next-line fp/no-mutating-assign
       Object.assign(elem.style, {
         position: 'absolute',
         right: '10px',
@@ -214,12 +213,11 @@ function MapExportLayout({
         if (hasSignaledReady) {
           return;
         }
-        // eslint-disable-next-line fp/no-mutation
+
         hasSignaledReady = true;
         map.off('sourcedata', sourceDataHandler);
         // Set PRISM_READY for server-side rendering (Playwright)
         if (signalExportReady) {
-          // eslint-disable-next-line fp/no-mutation
           (window as any).PRISM_READY = true;
         }
 
@@ -233,7 +231,6 @@ function MapExportLayout({
           clearTimeout(checkReadyTimeout);
         }
 
-        // eslint-disable-next-line fp/no-mutation
         checkReadyTimeout = setTimeout(() => {
           if (loadingSources.size === 0 && !hasSignaledReady) {
             signalReady();
