@@ -1,4 +1,7 @@
 {
+  "moderate": true,
   "high": true,
-  "skip-dev": true
+  "critical": true,
+  "skip-dev": true,
+  "report-type": "summary"
 }

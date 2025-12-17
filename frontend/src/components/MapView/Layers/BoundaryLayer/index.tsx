@@ -25,7 +25,6 @@ import {
 import { setBoundaryRelationData } from 'context/mapStateSlice';
 
 function onToggleHover(cursor: string, targetMap: MaplibreMap) {
-  // eslint-disable-next-line no-param-reassign, fp/no-mutation
   targetMap.getCanvas().style.cursor = cursor;
 }
 

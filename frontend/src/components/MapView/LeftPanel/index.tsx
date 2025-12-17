@@ -46,7 +46,7 @@ const TabPanel = memo(({ children, value, index, ...other }: TabPanelProps) => (
     style={{
       display: index === value ? 'block' : 'none',
       flexGrow: 1,
-      height: 'calc(94vh - 48px)',
+      height: 'calc(100vh - 56px - 48px)',
       order: index === value ? -1 : undefined,
       overflowX: index === value ? 'hidden' : 'auto',
     }}
@@ -122,7 +122,6 @@ const LeftPanel = memo(() => {
         addLayer,
       );
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tabValue]);
 
   // Reset selected boundaries when tab changes from Alerts
@@ -143,7 +142,6 @@ const LeftPanel = memo(() => {
         dispatch(setTabValue(Panel.AnticipatoryActionFlood));
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [AALayerInUrl]);
 
   const renderedAnticipatoryActionPanel = React.useMemo(() => {
@@ -190,8 +188,8 @@ const LeftPanel = memo(() => {
       PaperProps={{
         elevation: 1,
         style: {
-          marginTop: '6vh',
-          height: tabValue === Panel.Charts ? '94vh' : '80vh',
+          marginTop: '56px',
+          height: tabValue === Panel.Charts ? 'calc(100vh - 56px)' : '80vh',
           backgroundColor: 'white',
           maxWidth: '100%',
           borderRadius: '0 8px 8px 8px',

@@ -460,7 +460,6 @@ async function createAPIRequestParams(
   // will default to the boundary layer hosted in S3.
   const zonesUrl = zonesPath ?? getAdminBoundariesURL(adminBoundariesPath);
 
-  // eslint-disable-next-line camelcase
   const wfsParams = (params as WfsRequestParams)?.layer_name
     ? { wfs_params: params as WfsRequestParams }
     : undefined;
@@ -492,7 +491,7 @@ async function createAPIRequestParams(
       });
 
   // we force group_by to be defined with &
-  // eslint-disable-next-line camelcase
+
   const apiRequest: ApiData = {
     geotiff_url: geotiffUrl,
     zones_url: zonesUrl,
@@ -512,7 +511,6 @@ async function createAPIRequestParams(
 }
 
 export const mergeTableRows = (tableRows: TableRow[]): TableRow => {
-  /* eslint-disable no-param-reassign, fp/no-mutation */
   const mergedObject: TableRow = tableRows.reduce(
     (acc, tableRow) =>
       Object.keys(tableRow).reduce((tableRowAcc, tableRowKey) => {
@@ -546,7 +544,6 @@ export const mergeTableRows = (tableRows: TableRow[]): TableRow => {
   mergedObject['90 km/h'] = ninety;
   mergedObject['60 km/h'] = sixty;
 
-  /* eslint-enable no-param-reassign, fp/no-mutation */
   return mergedObject;
 };
 
@@ -556,7 +553,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
   CreateAsyncThunkTypes
 >(
   'analysisResultState/requestAndStoreExposedPopulation',
-  // eslint-disable-next-line arrow-body-style
+
   async (params, api) => {
     const { exposure, date, extent, statistic, wfsLayerId, maskLayerId } =
       params;
@@ -605,7 +602,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       const dateString = getFormattedDate(dateValue, 'default');
 
       // Get geotiff_url using STAC for layers in earthobservation.vam.
-      // eslint-disable-next-line
+
       maskUrl =
         baseUrl.includes('api.earthobservation.vam.wfp.org/ows') &&
         !serverLayerName.includes('hf_water')
@@ -697,7 +694,6 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
     // We need to merge the data returned by the API as it will be split
     // by category for each admin boundary.
     if (key) {
-      // eslint-disable-next-line fp/no-mutation
       tableRows = Object.values(_groupBy(tableRows, 'name')).map(adminRows =>
         mergeTableRows(adminRows),
       );
@@ -847,7 +843,6 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   const enrichedStatistics: (AggregationOperations | 'stats_intersect_area')[] =
     [statistic];
   if (statistic === AggregationOperations['Area exposed']) {
-    /* eslint-disable-next-line fp/no-mutating-methods */
     enrichedStatistics.push('stats_intersect_area');
   }
 
@@ -915,7 +910,7 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
 
   const adminLevelName = getAdminNameProperty(adminLevel);
 
-  const classProperties = hazardLayer?.zonal?.class_properties || ['label']; // eslint-disable-line camelcase
+  const classProperties = hazardLayer?.zonal?.class_properties || ['label'];
 
   const result = await calculate({
     // clone the data, so zone, class and stats properties can be safely added
@@ -999,7 +994,7 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
 export const analysisResultSlice = createSlice({
   name: 'analysisResultState',
   initialState,
-  /* eslint-disable no-param-reassign, fp/no-mutation */
+
   reducers: {
     setAnalysisResultSortByKey: (
       state,
@@ -1187,7 +1182,6 @@ export const analysisResultSlice = createSlice({
       isLoading: true,
     }));
   },
-  /* eslint-enable no-param-reassign, fp/no-mutation */
 });
 
 // Getters

@@ -92,6 +92,12 @@ function PrintPreview() {
     return null;
   }
 
+  if (selectedMapStyle && !toggles.mapLabelsVisibility) {
+    selectedMapStyle.layers = selectedMapStyle?.layers.filter(
+      x => !x.id.includes('label'),
+    );
+  }
+
   return (
     <MapExportLayout
       toggles={toggles}

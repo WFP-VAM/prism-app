@@ -35,6 +35,5 @@ declare global {
 
 // @ts-ignore
 if (window.Cypress) {
-  // eslint-disable-next-line fp/no-mutation
   window.store = store;
 }

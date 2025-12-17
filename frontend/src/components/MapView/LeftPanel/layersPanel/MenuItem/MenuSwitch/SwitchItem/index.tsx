@@ -111,7 +111,7 @@ const SwitchItem = memo(
     const initialActiveLayerId = useMemo(
       () =>
         selectedActiveLayer.length > 0 ? selectedActiveLayer[0].id : layer.id,
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+
       [layer.id],
     );
 
