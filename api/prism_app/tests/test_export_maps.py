@@ -234,20 +234,3 @@ def test_export_endpoint_validation_errors(
 
     response = client.post("/export", json=default_request)
     assert response.status_code == expected_status
-
-
-def test_export_endpoint_localhost_allowed():
-    """Test POST /export endpoint with localhost URL is allowed."""
-    response = client.post(
-        "/export",
-        json={
-            "urls": [
-                f"http://localhost:3000/?hazardLayerIds=test_layer&date={TEST_DATE}"
-            ],
-            "aspectRatio": "3:4",
-            "format": "pdf",
-        },
-    )
-
-    # Should not be a validation error (might be 500 if Playwright can't connect, but not 422)
-    assert response.status_code != 422

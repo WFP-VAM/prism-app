@@ -29,7 +29,7 @@ BASE_WIDTH: Final[int] = 1200
 DEVICE_SCALE_FACTOR: Final[int] = 2
 
 # Concurrency settings
-MAX_CONCURRENT_RENDERS: Final[int] = 2
+MAX_CONCURRENT_RENDERS: Final[int] = 2  # consider increasing this in AWS
 MAX_RENDER_RETRIES: Final[int] = 3
 
 # Browser launch arguments for reduced memory usage
@@ -45,62 +45,65 @@ BROWSER_LAUNCH_ARGS: Final[list[str]] = [
 ]
 
 
-class BrowserPool:
-    """Singleton browser pool for reusing Playwright browser instances."""
+# Module-level browser state (singleton via module)
+Playwright_instance: Optional[Playwright] = None
+Browser_instance: Optional[Browser] = None
+Browser_lock: Optional[asyncio.Lock] = None
 
-    _instance: Optional["BrowserPool"] = None
-    _lock: asyncio.Lock = asyncio.Lock()
 
-    def __init__(self) -> None:
-        self._playwright: Optional[Playwright] = None
-        self._browser: Optional[Browser] = None
-        self._browser_lock: asyncio.Lock = asyncio.Lock()
+def _get_lock() -> asyncio.Lock:
+    """Get or create the browser lock, ensuring it's created in a running event loop."""
+    global Browser_lock
+    if Browser_lock is None:
+        Browser_lock = asyncio.Lock()
+    return Browser_lock
 
-    @classmethod
-    async def get_instance(cls) -> "BrowserPool":
-        """Get or create the singleton BrowserPool instance."""
-        async with cls._lock:
-            if cls._instance is None:
-                cls._instance = cls()
-            return cls._instance
 
-    async def get_browser(self) -> Browser:
-        async with self._browser_lock:
-            if self._browser is None or not self._browser.is_connected():
-                await self._ensure_browser()
-            return self._browser  # type: ignore
+async def get_browser() -> Browser:
+    """Get or create a shared browser instance."""
+    global Playwright_instance, Browser_instance
+    async with _get_lock():
+        if Browser_instance is None or not Browser_instance.is_connected():
+            # Clean up existing browser if disconnected
+            if Browser_instance is not None:
+                try:
+                    await Browser_instance.close()
+                except Exception:
+                    pass
 
-    async def _ensure_browser(self) -> None:
-        # Clean up existing instances if any
-        if self._browser is not None:
+            if Playwright_instance is None:
+                Playwright_instance = await async_playwright().start()
+
+            Browser_instance = await Playwright_instance.chromium.launch(
+                args=BROWSER_LAUNCH_ARGS
+            )
+            logger.info("Browser: new instance created")
+
+        return Browser_instance
+
+
+async def close_browser() -> None:
+    """Close the shared browser instance and playwright."""
+    global Playwright_instance, Browser_instance, Browser_lock
+    async with _get_lock():
+        if Browser_instance is not None:
             try:
-                await self._browser.close()
+                await Browser_instance.close()
             except Exception:
                 pass
+            Browser_instance = None
 
-        if self._playwright is None:
-            self._playwright = await async_playwright().start()
+        if Playwright_instance is not None:
+            try:
+                await Playwright_instance.stop()
+            except Exception:
+                pass
+            Playwright_instance = None
 
-        self._browser = await self._playwright.chromium.launch(args=BROWSER_LAUNCH_ARGS)
-        logger.info("Browser pool: new browser instance created")
+        # Reset lock so next event loop gets a fresh one
+        Browser_lock = None
 
-    async def close(self) -> None:
-        async with self._browser_lock:
-            if self._browser is not None:
-                try:
-                    await self._browser.close()
-                except Exception:
-                    pass
-                self._browser = None
-
-            if self._playwright is not None:
-                try:
-                    await self._playwright.stop()
-                except Exception:
-                    pass
-                self._playwright = None
-
-            logger.info("Browser pool: closed")
+        logger.info("Browser: closed")
 
 
 # Allowed domains for export URLs
@@ -255,11 +258,7 @@ async def render_single_map(
     last_error: Optional[PlaywrightTimeoutError] = None
 
     for attempt in range(1, MAX_RENDER_RETRIES + 1):
-        console_messages: list[str] = []
         page = await browser.new_page()
-        page.on(
-            "console", lambda msg: console_messages.append(f"[{msg.type}] {msg.text}")
-        )
         page.set_default_timeout(PAGE_TIMEOUT)
         await page.set_viewport_size(
             {"width": viewport_width, "height": viewport_height}
@@ -279,7 +278,7 @@ async def render_single_map(
             )
             logger.warning(
                 f"Timeout on {url} (attempt {attempt}/{MAX_RENDER_RETRIES}). "
-                f"Console: {console_messages}. Screenshot: /tmp/prism_debug_{timestamp}.png"
+                f"Screenshot: /tmp/prism_debug_{timestamp}.png"
             )
             await page.close()
             last_error = e
@@ -311,7 +310,7 @@ async def render_single_map(
         return result
 
     # This should never be reached, but satisfies type checker
-    raise last_error  # type: ignore
+    raise last_error
 
 
 async def render_to_file(
@@ -360,8 +359,7 @@ async def export_maps(
     viewport_width, viewport_height = get_viewport_dimensions(aspect_ratio)
     semaphore = asyncio.Semaphore(MAX_CONCURRENT_RENDERS)
 
-    pool = await BrowserPool.get_instance()
-    browser = await pool.get_browser()
+    browser = await get_browser()
 
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir_path = Path(tmpdir)
