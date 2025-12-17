@@ -483,9 +483,24 @@ const DateSelector = memo(() => {
         'forward',
       );
     if (nextObservationDateItem !== undefined) {
-      setDatePosition(nextObservationDateItem, 0, true);
+      // Directly update to the new date, bypassing availableDates intersection check
+      checkSelectedDateForLayerSupport(nextObservationDateItem);
+      if (isGlobalMap) {
+        updateHistory(
+          'date',
+          getFormattedDate(nextObservationDateItem, 'default') as string,
+        );
+      }
+      mapState.actions.updateDateRange({ startDate: nextObservationDateItem });
     }
-  }, [setDatePosition, stateStartDate, orderedLayers]);
+  }, [
+    stateStartDate,
+    orderedLayers,
+    checkSelectedDateForLayerSupport,
+    isGlobalMap,
+    updateHistory,
+    mapState.actions,
+  ]);
 
   // scroll left with the `<` button
   const decrementDate = useCallback(() => {
@@ -518,9 +533,26 @@ const DateSelector = memo(() => {
         'back',
       );
     if (previousObservationDateItem !== undefined) {
-      setDatePosition(previousObservationDateItem, 0, true);
+      // Directly update to the new date, bypassing availableDates intersection check
+      checkSelectedDateForLayerSupport(previousObservationDateItem);
+      if (isGlobalMap) {
+        updateHistory(
+          'date',
+          getFormattedDate(previousObservationDateItem, 'default') as string,
+        );
+      }
+      mapState.actions.updateDateRange({
+        startDate: previousObservationDateItem,
+      });
     }
-  }, [setDatePosition, stateStartDate, orderedLayers]);
+  }, [
+    stateStartDate,
+    orderedLayers,
+    checkSelectedDateForLayerSupport,
+    isGlobalMap,
+    updateHistory,
+    mapState.actions,
+  ]);
 
   const clickDate = useCallback(
     (index: number) => {
