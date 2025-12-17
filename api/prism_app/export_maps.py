@@ -47,6 +47,7 @@ BROWSER_LAUNCH_ARGS: Final[list[str]] = [
 
 class BrowserPool:
     """Singleton browser pool for reusing Playwright browser instances."""
+
     _instance: Optional["BrowserPool"] = None
     _lock: asyncio.Lock = asyncio.Lock()
 
