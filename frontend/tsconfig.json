@@ -8,7 +8,6 @@
       "DOM.Iterable"
     ],
     "module": "ESNext",
-    "skipLibCheck": true,
     "baseUrl": "./src",
     "strictPropertyInitialization": false,
     "experimentalDecorators": true,

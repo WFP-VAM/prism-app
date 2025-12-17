@@ -7,7 +7,7 @@ networks:
 services:
   traefik:
     # https://docs.traefik.io/user-guides/docker-compose/acme-tls/
-    image: "traefik:v2.10.5"
+    image: "traefik:v2.11"
     container_name: "traefik"
     command:
       - "--log.level=INFO"

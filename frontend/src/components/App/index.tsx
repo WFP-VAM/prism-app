@@ -60,18 +60,20 @@ Font.register({
 const Wrapper = memo(() => (
   <div id="app">
     <NavBar />
-    {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
-    <Switch>
+    <div style={{ paddingTop: '56px', height: 'calc(100% - 56px)' }}>
       {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
-      <Route path="/dashboard/:path?" exact>
-        <DashboardView />
-      </Route>
-      {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
-      <Route>
-        <MapView />
-        <AuthModal />
-      </Route>
-    </Switch>
+      <Switch>
+        {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
+        <Route path="/dashboard/:path?" exact>
+          <DashboardView />
+        </Route>
+        {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
+        <Route>
+          <MapView />
+          <AuthModal />
+        </Route>
+      </Switch>
+    </div>
   </div>
 ));
 
