@@ -3,6 +3,7 @@
 exports[`renders as expected 1`] = `
 <div>
   <mock-button
+    aria-label="Legend"
     classname="makeStyles-triggerButton-1"
     starticon="[object Object]"
     style="background-color: rgb(99, 178, 189);"
@@ -14,7 +15,8 @@ exports[`renders as expected 1`] = `
     </mock-typography>
   </mock-button>
   <button
-    class="MuiButtonBase-root MuiIconButton-root"
+    aria-label="Legend"
+    class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall"
     style="background-color: rgb(99, 178, 189);"
     tabindex="0"
     type="button"

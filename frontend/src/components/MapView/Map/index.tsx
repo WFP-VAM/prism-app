@@ -49,6 +49,7 @@ import {
 } from 'maplibre-gl';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
+import { useMediaQuery, useTheme } from '@material-ui/core';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { mapStyle } from './utils';
 import GeojsonDataLayer from '../Layers/GeojsonDataLayer';
@@ -97,7 +98,8 @@ interface MapComponentProps {
 const MapComponent = memo(
   ({ children, hideMapLabels = false }: MapComponentProps = {}) => {
     const mapRef = React.useRef<MapRef>(null);
-
+    const theme = useTheme();
+    const smDown = useMediaQuery(theme.breakpoints.down('sm'));
     const dispatch = useDispatch();
     const { selectedLayers, boundaryLayerId } = useLayers();
 
@@ -309,6 +311,7 @@ const MapComponent = memo(
 
     return (
       <MapGL
+        key={smDown ? 'mobile' : 'desktop'}
         ref={mapRef}
         // preserveDrawingBuffer is required for the map to be exported as an image. Used in reportDoc.tsx
         preserveDrawingBuffer
@@ -317,7 +320,9 @@ const MapComponent = memo(
         maxZoom={maxZoom}
         initialViewState={{
           bounds: initialBounds as LngLatBoundsLike,
-          fitBoundsOptions: { padding: fitBoundsOptions.padding },
+          fitBoundsOptions: smDown
+            ? undefined
+            : { padding: fitBoundsOptions.padding },
         }}
         mapStyle={mapStyle}
         onLoad={onMapLoadWithLabelFilter}
