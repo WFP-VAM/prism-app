@@ -1,5 +1,5 @@
 import { Typography, createStyles, makeStyles } from '@material-ui/core';
-import maplibregl from 'maplibre-gl';
+import maplibregl, { MapSourceDataEvent } from 'maplibre-gl';
 import React, {
   useRef,
   useCallback,
@@ -110,6 +110,7 @@ function MapExportLayout({
   onMapLoad,
   onBoundsChange,
   onMapDimensionsChange,
+  signalExportReady = false,
 }: MapExportLayoutProps) {
   const classes = useStyles();
   const northArrowRef = useRef<HTMLImageElement>(null);
@@ -237,7 +238,67 @@ function MapExportLayout({
       );
     }
 
-    if (onMapLoad) {
+    // Track source loading to ensure all tiles are loaded before signaling ready
+    const shouldTrackSources = signalExportReady || onMapLoad;
+
+    if (shouldTrackSources && map) {
+      const loadingSources = new Set<string>();
+      let hasSignaledReady = false;
+      let checkReadyTimeout: ReturnType<typeof setTimeout> | null = null;
+
+      const signalReady = () => {
+        if (hasSignaledReady) {
+          return;
+        }
+        // eslint-disable-next-line fp/no-mutation
+        hasSignaledReady = true;
+        map.off('sourcedata', sourceDataHandler);
+        // Set PRISM_READY for server-side rendering (Playwright)
+        if (signalExportReady) {
+          // eslint-disable-next-line fp/no-mutation
+          (window as any).PRISM_READY = true;
+        }
+
+        if (onMapLoad) {
+          onMapLoad(e);
+        }
+      };
+
+      const checkAllSourcesLoaded = () => {
+        if (checkReadyTimeout) {
+          clearTimeout(checkReadyTimeout);
+        }
+
+        // eslint-disable-next-line fp/no-mutation
+        checkReadyTimeout = setTimeout(() => {
+          if (loadingSources.size === 0 && !hasSignaledReady) {
+            signalReady();
+          }
+        }, 500);
+      };
+
+      const sourceDataHandler = (event: MapSourceDataEvent) => {
+        if (!event.sourceId?.startsWith('source-')) {
+          return;
+        }
+
+        if (!event.isSourceLoaded) {
+          loadingSources.add(event.sourceId);
+        } else if (loadingSources.has(event.sourceId)) {
+          loadingSources.delete(event.sourceId);
+          checkAllSourcesLoaded();
+        }
+      };
+
+      map.on('sourcedata', sourceDataHandler);
+
+      // If there are no data layers, signal ready after initial render settles
+      setTimeout(() => {
+        if (loadingSources.size === 0 && !hasSignaledReady) {
+          signalReady();
+        }
+      }, 500);
+    } else if (onMapLoad) {
       onMapLoad(e);
     }
 

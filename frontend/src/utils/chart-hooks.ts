@@ -361,7 +361,6 @@ export const useChartData = (
     return adminLocalName || appConfig.country;
 
     // i18nLocale does not trigger a refresh. resolvedLanguage does
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     adminProperties,
     requestParams,

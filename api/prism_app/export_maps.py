@@ -4,12 +4,14 @@ import asyncio
 import fnmatch
 import io
 import logging
+import tempfile
 import zipfile
 from datetime import datetime
-from typing import Final, Tuple
+from pathlib import Path
+from typing import Final, Optional, Tuple
 from urllib.parse import parse_qs, urlparse
 
-from playwright.async_api import Browser
+from playwright.async_api import Browser, Playwright
 from playwright.async_api import TimeoutError as PlaywrightTimeoutError
 from playwright.async_api import async_playwright
 from pypdf import PdfReader, PdfWriter
@@ -25,6 +27,84 @@ PRISM_READY_TIMEOUT: Final[int] = 30000
 # Viewport settings
 BASE_WIDTH: Final[int] = 1200
 DEVICE_SCALE_FACTOR: Final[int] = 2
+
+# Concurrency settings
+MAX_CONCURRENT_RENDERS: Final[int] = 2  # consider increasing this in AWS
+MAX_RENDER_RETRIES: Final[int] = 3
+
+# Browser launch arguments for reduced memory usage
+BROWSER_LAUNCH_ARGS: Final[list[str]] = [
+    "--disable-dev-shm-usage",  # Critical for Docker environments
+    "--disable-gpu",
+    "--no-sandbox",
+    "--disable-setuid-sandbox",
+    "--disable-accelerated-2d-canvas",
+    "--disable-background-networking",
+    "--disable-extensions",
+    "--js-flags=--max-old-space-size=512",
+]
+
+
+# Module-level browser state (singleton via module)
+Playwright_instance: Optional[Playwright] = None
+Browser_instance: Optional[Browser] = None
+Browser_lock: Optional[asyncio.Lock] = None
+
+
+def _get_lock() -> asyncio.Lock:
+    """Get or create the browser lock, ensuring it's created in a running event loop."""
+    global Browser_lock
+    if Browser_lock is None:
+        Browser_lock = asyncio.Lock()
+    return Browser_lock
+
+
+async def get_browser() -> Browser:
+    """Get or create a shared browser instance."""
+    global Playwright_instance, Browser_instance
+    async with _get_lock():
+        if Browser_instance is None or not Browser_instance.is_connected():
+            # Clean up existing browser if disconnected
+            if Browser_instance is not None:
+                try:
+                    await Browser_instance.close()
+                except Exception:
+                    pass
+
+            if Playwright_instance is None:
+                Playwright_instance = await async_playwright().start()
+
+            Browser_instance = await Playwright_instance.chromium.launch(
+                args=BROWSER_LAUNCH_ARGS
+            )
+            logger.info("Browser: new instance created")
+
+        return Browser_instance
+
+
+async def close_browser() -> None:
+    """Close the shared browser instance and playwright."""
+    global Playwright_instance, Browser_instance, Browser_lock
+    async with _get_lock():
+        if Browser_instance is not None:
+            try:
+                await Browser_instance.close()
+            except Exception:
+                pass
+            Browser_instance = None
+
+        if Playwright_instance is not None:
+            try:
+                await Playwright_instance.stop()
+            except Exception:
+                pass
+            Playwright_instance = None
+
+        # Reset lock so next event loop gets a fresh one
+        Browser_lock = None
+
+        logger.info("Browser: closed")
+
 
 # Allowed domains for export URLs
 # Add domains to this list to allow them for map exports
@@ -136,9 +216,7 @@ async def render_single_map(
 ) -> bytes:
     """
     Render a single map using an existing browser instance and return the image/PDF bytes.
-
-    TODO: Add handling for 400 style errors in PRISM frontend and remove from bundled export.
-
+    Retries up to MAX_RENDER_RETRIES times on timeout before raising an error.
     Args:
         browser: Playwright browser instance to use for rendering
         url: URL to render (should include all map parameters)
@@ -146,47 +224,97 @@ async def render_single_map(
         viewport_height: Browser viewport height in pixels
         render_format: Render format ('pdf' for PDF, 'png' for PNG screenshot)
 
-    Returns:
-        Bytes of the rendered map (PNG or PDF)
+    Returns: Bytes of the rendered map (PNG or PDF)
+
+    Raises: PlaywrightTimeoutError: If rendering times out after all retries
     """
-    console_messages: list[str] = []
-    page = await browser.new_page()
-    page.on("console", lambda msg: console_messages.append(f"[{msg.type}] {msg.text}"))
-    page.set_default_timeout(PAGE_TIMEOUT)
-    await page.set_viewport_size({"width": viewport_width, "height": viewport_height})
-    await page.emulate_media(media="screen")
     url = url.replace("localhost:3000", "host.docker.internal:3000")
-    await page.goto(url)
+    last_error: Optional[PlaywrightTimeoutError] = None
 
-    # Wait for PRISM_READY flag (set by frontend after map tiles are loaded)
-    try:
-        await page.wait_for_function(
-            "window.PRISM_READY === true", timeout=PRISM_READY_TIMEOUT
+    for attempt in range(1, MAX_RENDER_RETRIES + 1):
+        page = await browser.new_page()
+        page.set_default_timeout(PAGE_TIMEOUT)
+        await page.set_viewport_size(
+            {"width": viewport_width, "height": viewport_height}
         )
-    except PlaywrightTimeoutError:
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        await page.screenshot(path=f"/tmp/prism_debug_{timestamp}.png", full_page=True)
-        logger.error(
-            f"Timeout on {url}. Console: {console_messages}. Screenshot: /tmp/prism_debug_{timestamp}.png"
-        )
+        await page.emulate_media(media="screen")
+        await page.goto(url)
+
+        # Wait for PRISM_READY flag (set by frontend after map tiles are loaded)
+        try:
+            await page.wait_for_function(
+                "window.PRISM_READY === true", timeout=PRISM_READY_TIMEOUT
+            )
+        except PlaywrightTimeoutError as e:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            await page.screenshot(
+                path=f"/tmp/prism_debug_{timestamp}.png", full_page=True
+            )
+            logger.warning(
+                f"Timeout on {url} (attempt {attempt}/{MAX_RENDER_RETRIES}). "
+                f"Screenshot: /tmp/prism_debug_{timestamp}.png"
+            )
+            await page.close()
+            last_error = e
+
+            if attempt < MAX_RENDER_RETRIES:
+                # Wait briefly before retrying
+                await asyncio.sleep(1)
+                continue
+            else:
+                logger.error(
+                    f"All {MAX_RENDER_RETRIES} render attempts failed for {url}"
+                )
+                raise
+
+        # Capture screenshot or PDF
+        if render_format == "pdf":
+            result = await page.pdf(
+                width=f"{viewport_width}px",
+                height=f"{viewport_height}px",
+                print_background=True,
+            )
+        else:  # PNG
+            result = await page.screenshot(
+                type="png",
+                full_page=True,
+            )
+
         await page.close()
-        raise
+        return result
 
-    # Capture screenshot or PDF
-    if render_format == "pdf":
-        result = await page.pdf(
-            width=f"{viewport_width}px",
-            height=f"{viewport_height}px",
-            print_background=True,
-        )
-    else:  # PNG
-        result = await page.screenshot(
-            type="png",
-            full_page=True,
-        )
+    # This should never be reached, but satisfies type checker
+    raise last_error
 
-    await page.close()
-    return result
+
+async def render_to_file(
+    browser: Browser,
+    url: str,
+    viewport_width: int,
+    viewport_height: int,
+    render_format: str,
+    output_path: Path,
+    semaphore: asyncio.Semaphore,
+) -> None:
+    """
+    Render a single map and write directly to a file.
+
+    This reduces memory pressure by not holding all rendered bytes in memory.
+
+    Args:
+        browser: Playwright browser instance to use for rendering
+        url: URL to render (should include all map parameters)
+        viewport_width: Browser viewport width in pixels
+        viewport_height: Browser viewport height in pixels
+        render_format: Render format ('pdf' for PDF, 'png' for PNG screenshot)
+        output_path: Path to write the rendered output
+        semaphore: Semaphore for limiting concurrent renders
+    """
+    async with semaphore:
+        result_bytes = await render_single_map(
+            browser, url, viewport_width, viewport_height, render_format
+        )
+        output_path.write_bytes(result_bytes)
 
 
 async def export_maps(
@@ -198,8 +326,6 @@ async def export_maps(
     """
     Export maps for multiple dates and return packaged file.
 
-    Uses a single browser instance and renders maps with limited concurrency.
-
     Args:
         urls: List of base URLs with map parameters
         viewport_width: Browser viewport width in pixels
@@ -208,39 +334,50 @@ async def export_maps(
     Returns: Tuple of (file_bytes, content_type)
     """
     dates = extract_dates_from_urls(urls)
-    semaphore = asyncio.Semaphore(4)  # Limit to 4 concurrent renders
+    viewport_width, viewport_height = get_viewport_dimensions(aspect_ratio)
+    semaphore = asyncio.Semaphore(MAX_CONCURRENT_RENDERS)
 
-    async def render_with_limit(url: str) -> bytes:
-        async with semaphore:
-            return await render_single_map(
-                browser, url, viewport_width, viewport_height, format_type
+    browser = await get_browser()
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmpdir_path = Path(tmpdir)
+        file_extension = "pdf" if format_type == "pdf" else "png"
+
+        output_paths = [
+            tmpdir_path / f"map_{i}_{date}.{file_extension}"
+            for i, date in enumerate(dates)
+        ]
+
+        render_tasks = [
+            render_to_file(
+                browser,
+                url,
+                viewport_width,
+                viewport_height,
+                format_type,
+                output_path,
+                semaphore,
             )
+            for url, output_path in zip(urls, output_paths)
+        ]
+        await asyncio.gather(*render_tasks)
 
-    async with async_playwright() as p:
-        browser = await p.chromium.launch()
-        bytes_list = await asyncio.gather(*[render_with_limit(url) for url in urls])
-        await browser.close()
+        if format_type == "pdf":
+            pdf_writer = PdfWriter()
+            for output_path in output_paths:
+                pdf_reader = PdfReader(output_path)
+                for page in pdf_reader.pages:
+                    pdf_writer.add_page(page)
 
-    # Package results
-    if format_type == "pdf":
-        # Merge PDFs
-        pdf_writer = PdfWriter()
-        for pdf_bytes in bytes_list:
-            pdf_reader = PdfReader(io.BytesIO(pdf_bytes))
-            for page in pdf_reader.pages:
-                pdf_writer.add_page(page)
-
-        # Write merged PDF to bytes
-        output_buffer = io.BytesIO()
-        pdf_writer.write(output_buffer)
-        result = (output_buffer.getvalue(), "application/pdf")
-    else:  # png format
-        # Create ZIP
-        zip_buffer = io.BytesIO()
-        with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
-            for date, png_bytes in zip(dates, bytes_list):
-                filename = f"map_{date}.png"
-                zip_file.writestr(filename, png_bytes)
-        result = (zip_buffer.getvalue(), "application/zip")
+            output_buffer = io.BytesIO()
+            pdf_writer.write(output_buffer)
+            result = (output_buffer.getvalue(), "application/pdf")
+        else:  # png format
+            zip_buffer = io.BytesIO()
+            with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
+                for date, output_path in zip(dates, output_paths):
+                    filename = f"map_{date}.png"
+                    zip_file.write(output_path, filename)
+            result = (zip_buffer.getvalue(), "application/zip")
 
     return result

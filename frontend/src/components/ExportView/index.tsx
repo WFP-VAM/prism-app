@@ -60,10 +60,6 @@ const ExportView = memo(() => {
       setMeasuredFooterHeight(entry.contentRect.height),
     [],
   );
-  const onMapLoad = useCallback(() => {
-    // eslint-disable-next-line fp/no-mutation
-    (window as any).PRISM_READY = true;
-  }, []);
   useResizeObserver(footerRef, onFooterResize);
 
   // Selectors
@@ -231,7 +227,7 @@ const ExportView = memo(() => {
         bottomLogoScale={exportParams.bottomLogoScale}
         adminLevelLayersWithFillPattern={adminLevelLayersWithFillPattern}
         selectedLayers={selectedLayers}
-        onMapLoad={onMapLoad}
+        signalExportReady
       />
     </Box>
   );

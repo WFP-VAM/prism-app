@@ -82,7 +82,6 @@ const getDashboardConfig = (index: number) => {
   const config = { ...originalConfig };
 
   if (!config.path) {
-    // eslint-disable-next-line fp/no-mutation
     config.path = generateSlugFromTitle(config.title);
   }
 
@@ -130,13 +129,12 @@ const createMapStateFromConfig = (
 
       const layer = LayerDefinitions[layerId];
       if (layer) {
-        // eslint-disable-next-line fp/no-mutating-methods
         preSelectedLayers.push(layer);
         const [mapLayerId, opacityType] = getMapLayerOpacityConfig(
           layerId,
           layer.type,
         );
-        // eslint-disable-next-line fp/no-mutation
+
         initialOpacityMap[layerId] = {
           mapLayerId,
           opacityType,
@@ -195,10 +193,8 @@ const createInitialState = (dashboardIndex: number = 0): DashboardState => {
       const elementId = `${columnIndex}-${elementIndex}`;
 
       if (element.type === DashboardElementType.MAP) {
-        // eslint-disable-next-line fp/no-mutation
         mapStates[elementId] = createMapStateFromConfig(element);
       } else if (element.type === DashboardElementType.TABLE) {
-        // eslint-disable-next-line fp/no-mutation
         tableStates[elementId] = createTableStateFromConfig(element);
       }
     });
@@ -489,7 +485,7 @@ export const dashboardStateSlice = createSlice({
         // force a update of the map style to ensure the change is reflected
         // see https://github.com/maplibre/maplibre-gl-js/issues/3373
         // TODO - check if the above issue got resolved from time to time.
-        // eslint-disable-next-line no-underscore-dangle
+
         map.style._updateLayer(mapLayerId as any);
       }
 
@@ -632,7 +628,6 @@ export const dashboardMapElementsSelector = (
   state.dashboardState.columns.forEach(column => {
     column.forEach(element => {
       if (element.type === DashboardElementType.MAP) {
-        // eslint-disable-next-line fp/no-mutating-methods
         allMapElements.push(element);
       }
     });

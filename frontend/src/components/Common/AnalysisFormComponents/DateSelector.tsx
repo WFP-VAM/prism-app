@@ -35,6 +35,7 @@ function DateSelector({
       <Typography className={classes.colorBlack} variant="body2">
         {`${label || t('Date')}: `}
       </Typography>
+      {/* @ts-expect-error - react-datepicker v2 types incompatible with React 18 */}
       <DatePicker
         locale={t('date_locale')}
         dateFormat="PP"

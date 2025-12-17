@@ -30,7 +30,7 @@ const mockStore = configureStore([]);
 test('renders as expected with a single date', () => {
   const realDateNow = Date.now.bind(global.Date);
   const dateNowStub = jest.fn(() => 1530518207007);
-  // eslint-disable-next-line fp/no-mutation
+
   global.Date.now = dateNowStub;
 
   const store = mockStore({
@@ -63,7 +63,6 @@ test('renders as expected with a single date', () => {
 
   expect(container).toMatchSnapshot();
 
-  // eslint-disable-next-line fp/no-mutation
   global.Date.now = realDateNow;
 });
 
@@ -105,10 +104,9 @@ test('calculates correct coverageWindow for a date array', async () => {
 test('renders correct dates for rainfall_agg_6month over 2025', async () => {
   const realDateNow = Date.now.bind(global.Date);
   const dateNowStub = jest.fn(() => 1530518207007);
-  // eslint-disable-next-line fp/no-mutation
+
   global.Date.now = dateNowStub;
 
-  // eslint-disable-next-line fp/no-mutation
   const mockState = {
     mapState: {
       layers: [],
@@ -159,17 +157,15 @@ test('renders correct dates for rainfall_agg_6month over 2025', async () => {
 
   expect(availableDates).toMatchSnapshot();
 
-  // eslint-disable-next-line fp/no-mutation
   global.Date.now = realDateNow;
 });
 
 test('renders correct dates for rainfall_agg_1month over 2025', async () => {
   const realDateNow = Date.now.bind(global.Date);
   const dateNowStub = jest.fn(() => 1530518207007);
-  // eslint-disable-next-line fp/no-mutation
+
   global.Date.now = dateNowStub;
 
-  // eslint-disable-next-line fp/no-mutation
   const mockState = {
     mapState: {
       layers: [],
@@ -215,6 +211,5 @@ test('renders correct dates for rainfall_agg_1month over 2025', async () => {
   );
   expect(availableDates).toMatchSnapshot();
 
-  // eslint-disable-next-line fp/no-mutation
   global.Date.now = realDateNow;
 });

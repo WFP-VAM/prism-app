@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`MapView renders as expected 1`] = `
 <div>
@@ -21,7 +21,7 @@ exports[`MapView renders as expected 1`] = `
             aria-labelledby="full-width-tab-layers"
             id="full-width-tabpanel-layers"
             role="tabpanel"
-            style="display: block; flex-grow: 1; height: calc(94vh - 48px); order: -1; overflow-x: hidden;"
+            style="display: block; flex-grow: 1; height: calc(100vh - 48px + 56px); order: -1; overflow-x: hidden;"
           >
             <div
               class="MuiBox-root MuiBox-root-7"
@@ -280,25 +280,25 @@ exports[`MapView renders as expected 1`] = `
             aria-labelledby="full-width-tab-charts"
             id="full-width-tabpanel-charts"
             role="tabpanel"
-            style="display: none; flex-grow: 1; height: calc(94vh - 48px); overflow-x: auto;"
+            style="display: none; flex-grow: 1; height: calc(100vh - 48px + 56px); overflow-x: auto;"
           />
           <div
             aria-labelledby="full-width-tab-analysis"
             id="full-width-tabpanel-analysis"
             role="tabpanel"
-            style="display: none; flex-grow: 1; height: calc(94vh - 48px); overflow-x: auto;"
+            style="display: none; flex-grow: 1; height: calc(100vh - 48px + 56px); overflow-x: auto;"
           />
           <div
             aria-labelledby="full-width-tab-alerts"
             id="full-width-tabpanel-alerts"
             role="tabpanel"
-            style="display: none; flex-grow: 1; height: calc(94vh - 48px); overflow-x: auto;"
+            style="display: none; flex-grow: 1; height: calc(100vh - 48px + 56px); overflow-x: auto;"
           />
           <div
             aria-labelledby="full-width-tab-none"
             id="full-width-tabpanel-none"
             role="tabpanel"
-            style="display: none; flex-grow: 1; height: calc(94vh - 48px); overflow-x: auto;"
+            style="display: none; flex-grow: 1; height: calc(100vh - 48px + 56px); overflow-x: auto;"
           />
         </div>
       </div>

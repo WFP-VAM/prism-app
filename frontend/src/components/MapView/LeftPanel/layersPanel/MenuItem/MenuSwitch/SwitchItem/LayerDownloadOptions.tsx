@@ -228,13 +228,13 @@ function LayerDownloadOptions({
             ? (legend[index + Number(shouldShiftIndex)]?.value as number) *
               scalingFactor
             : 'INF';
-        // eslint-disable-next-line fp/no-mutation
+
         qml += `
                     <item color="${item.color}" value="${value}" alpha="255" label="${label}" />`;
       });
 
       // End of QML file content
-      // eslint-disable-next-line fp/no-mutation
+
       qml += `
                 </colorrampshader>
             </rastershader>

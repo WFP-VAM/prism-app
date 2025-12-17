@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import {
   createStyles,
   Typography,
@@ -15,6 +16,10 @@ function Login() {
   const classes = useStyles();
   const { instance } = useMsal();
 
+  const handleLogin = useCallback(() => {
+    instance.loginPopup(msalRequest).catch(() => {});
+  }, [instance]);
+
   return (
     <div className={classes.container}>
       <Grid container spacing={3} className={classes.content}>
@@ -27,10 +32,7 @@ function Login() {
             credentials.
           </Typography>
           <br />
-          <Button
-            variant="contained"
-            onClick={() => instance.loginPopup(msalRequest).catch(() => {})}
-          >
+          <Button variant="contained" onClick={handleLogin}>
             Login
           </Button>
         </Grid>

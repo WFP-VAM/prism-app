@@ -9,7 +9,7 @@ import html2canvas from 'html2canvas';
 import { debounce, get } from 'lodash';
 import { jsPDF } from 'jspdf';
 import type { LngLatBounds } from 'maplibre-gl';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
 import { appConfig, safeCountry } from 'config';
@@ -38,6 +38,7 @@ import {
   calculateExportDimensions,
 } from './mapDimensionsUtils';
 import { AspectRatio } from '../../MapExport/types';
+import { useSafeTranslation } from '../../../i18n';
 
 const defaultFooterText = get(appConfig, 'printConfig.defaultFooterText', '');
 
@@ -68,9 +69,10 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const printRef = useRef<HTMLDivElement>(null);
   const { data } = useBoundaryData(boundaryLayer.id);
   const dispatch = useDispatch();
+  const { t } = useSafeTranslation();
 
   // list of toggles
-  const [toggles, setToggles] = React.useState<Toggles>({
+  const [toggles, setToggles] = useState<Toggles>({
     fullLayerDescription: true,
     countryMask: false,
     mapLabelsVisibility: true,
@@ -82,18 +84,18 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   });
 
   const [downloadMenuAnchorEl, setDownloadMenuAnchorEl] =
-    React.useState<HTMLElement | null>(null);
-  const [selectedBoundaries, setSelectedBoundaries] = React.useState<
+    useState<HTMLElement | null>(null);
+  const [selectedBoundaries, setSelectedBoundaries] = useState<
     AdminCodeString[]
   >([]);
-  const [titleText, setTitleText] = React.useState<string>(country);
-  const [footerText, setFooterText] = React.useState(defaultFooterText);
-  const [footerTextSize, setFooterTextSize] = React.useState(12);
-  const [legendScale, setLegendScale] = React.useState(1);
-  const [legendPosition, setLegendPosition] = React.useState(0);
-  const [logoPosition, setLogoPosition] = React.useState(0);
-  const [logoScale, setLogoScale] = React.useState(1);
-  const [bottomLogoScale, setBottomLogoScale] = React.useState(1);
+  const [titleText, setTitleText] = useState<string>(country);
+  const [footerText, setFooterText] = useState(defaultFooterText);
+  const [footerTextSize, setFooterTextSize] = useState(12);
+  const [legendScale, setLegendScale] = useState(1);
+  const [legendPosition, setLegendPosition] = useState(0);
+  const [logoPosition, setLogoPosition] = useState(0);
+  const [logoScale, setLogoScale] = useState(1);
+  const [bottomLogoScale, setBottomLogoScale] = useState(1);
   // the % value of the original dimensions
   const [mapDimensions, setMapDimensions] =
     React.useState<MapDimensions>(initialMapDimensions);
@@ -114,7 +116,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const selectedMapStyle = selectedMap?.getStyle();
 
   if (selectedMapStyle && !toggles.mapLabelsVisibility) {
-    // eslint-disable-next-line fp/no-mutation
     selectedMapStyle.layers = selectedMapStyle?.layers.filter(
       x => !x.id.includes('label'),
     );
@@ -156,7 +157,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     ).length;
   }, [availableDates, selectedLayersWithDateSupport, dateRangeForBatchMaps]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
     // which runs ./scripts/preprocess-layers.js
     if (selectedBoundaries.length === 0) {
@@ -204,7 +205,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       if (format === 'pdf') {
         const orientation =
           canvas.width > canvas.height ? 'landscape' : 'portrait';
-        // eslint-disable-next-line new-cap
+
         const pdf = new jsPDF({
           orientation,
           unit: 'px',
@@ -372,27 +373,28 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         filename,
         contentType,
       );
+
+      dispatch(
+        addNotification({
+          type: 'success',
+          message: t('Batch download completed successfully.'),
+        }),
+      );
     } catch (error) {
       dispatch(
         addNotification({
           type: 'error',
-          message:
+          message: t(
             'Something went wrong with the batch download. Please try again.',
+          ),
         }),
       );
       console.error('Batch download failed:', error);
     } finally {
       setIsDownloading(false);
-      dispatch(
-        addNotification({
-          type: 'success',
-          message: 'Batch download completed successfully.',
-        }),
-      );
     }
   };
 
-  // eslint-disable-next-line react/jsx-no-constructed-context-values
   const printContext = {
     printConfig: {
       open,

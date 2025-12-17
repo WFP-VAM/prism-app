@@ -96,6 +96,12 @@ function PrintPreview() {
     return null;
   }
 
+  if (selectedMapStyle && !toggles.mapLabelsVisibility) {
+    selectedMapStyle.layers = selectedMapStyle?.layers.filter(
+      x => !x.id.includes('label'),
+    );
+  }
+
   return (
     <div style={{ flex: 1, minWidth: 0, minHeight: 0, display: 'flex' }}>
       <MapExportLayout
