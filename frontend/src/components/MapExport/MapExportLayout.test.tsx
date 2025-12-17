@@ -150,8 +150,7 @@ describe('MapExportLayout', () => {
     );
     const logoImg = container.querySelector('img[alt="logo"]') as HTMLElement;
     expect(logoImg?.style.left).toBe('8px');
-    // right is 'auto' which is an unset value, so it appears as empty string
-    expect(logoImg?.style.right).toBeFalsy();
+    expect(logoImg?.style.right).toBe('auto');
   });
 
   test('positions logo right when logoPosition is 1', () => {
@@ -168,7 +167,6 @@ describe('MapExportLayout', () => {
       </Provider>,
     );
     const logoImg = container.querySelector('img[alt="logo"]') as HTMLElement;
-    // left is 'auto' which is an unset value, so it appears as empty string
     expect(logoImg?.style.left).toBe('auto');
     expect(logoImg?.style.right).toBe('8px');
   });
