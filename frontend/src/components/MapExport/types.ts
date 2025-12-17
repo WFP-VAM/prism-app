@@ -118,6 +118,10 @@ export interface MapExportLayoutProps {
   // NOTE: Layer rendering logic must be kept in sync with MapView/Map/index.tsx
   selectedLayers?: LayerType[];
 
-  // Callback for map load
+  // Callback for map load (called after all sources are loaded)
   onMapLoad?: (e: any) => void;
+
+  // When true, automatically sets window.PRISM_READY = true after all sources load.
+  // Used by ExportView for server-side rendering with Playwright.
+  signalExportReady?: boolean;
 }
