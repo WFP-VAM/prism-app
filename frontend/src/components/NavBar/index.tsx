@@ -1,12 +1,8 @@
-/* eslint-disable react/prop-types */
 import {
   AppBar,
-  Box,
   createStyles,
   Theme,
   Toolbar,
-  Typography,
-  IconButton,
   makeStyles,
   useTheme,
   useMediaQuery,
@@ -23,8 +19,6 @@ import {
   TimerOutlined,
   Notifications,
   SpeedOutlined,
-  GitHub as GitHubIcon,
-  OpenInNew as OpenInNewIcon,
 } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -46,13 +40,12 @@ import {
   isAnticipatoryActionFloodAvailable,
 } from 'components/MapView/LeftPanel/utils';
 import { Panel, PanelItem } from 'config/types';
-import About from './About';
-import LanguageSelector from './LanguageSelector';
-import PrintImage from './PrintImage';
 import PanelMenu from './PanelMenu';
 import PanelButton from './PanelButton';
+import RightSideMenu from './RightSideMenu';
+import Title from './Title';
 
-const { alertFormActive, header } = appConfig;
+const { alertFormActive } = appConfig;
 
 const getAvailableDashboards = (): PanelItem[] => {
   const dashboards = getDashboards();
@@ -132,25 +125,6 @@ const panels: PanelItem[] = [
     : []),
 ];
 
-type ConfigRightSideLink = {
-  title: string;
-  href: string;
-  icon?: string;
-};
-
-type RightSideLink = {
-  title: string;
-  href: string;
-  icon: React.ReactNode;
-};
-
-type IconComponent = typeof GitHubIcon;
-
-const rightSideIconMap: Record<string, IconComponent> = {
-  github: GitHubIcon,
-  external: OpenInNewIcon,
-};
-
 function NavBar() {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
@@ -160,27 +134,7 @@ function NavBar() {
   const tabValue = useSelector(leftPanelTabValueSelector);
   const isDashboardMode = tabValue === Panel.Dashboard;
   const theme = useTheme();
-  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
-  const configuredRightSideLinks: RightSideLink[] = Array.isArray(
-    (appConfig as Record<string, any>).rightSideLinks,
-  )
-    ? (appConfig.rightSideLinks as ConfigRightSideLink[])
-        .filter(link => link?.title && link?.href)
-        .map(link => {
-          const iconKey = (link.icon || '').toLowerCase();
-          const IconComp =
-            rightSideIconMap[iconKey] || rightSideIconMap.external;
-          const iconNode = (
-            <IconComp style={{ fontSize: mdUp ? '1.25rem' : '1.5rem' }} />
-          );
-          return {
-            title: link.title,
-            href: link.href,
-            icon: iconNode,
-          };
-        })
-    : [];
   const [menuAnchor, setMenuAnchor] = useState<{
     [key: string]: HTMLElement | null;
   }>({});
@@ -199,27 +153,6 @@ function NavBar() {
       dispatch(setTabValue(Panel.Layers));
     }
   }, [location.pathname, tabValue, dispatch]);
-
-  const rightSideLinks: RightSideLink[] = [
-    {
-      title: 'GitHub',
-      icon: <GitHubIcon style={{ fontSize: mdUp ? '1.25rem' : '1.5rem' }} />,
-      href: 'https://github.com/wfp-VAM/prism-app',
-    },
-    ...configuredRightSideLinks,
-  ];
-
-  const buttons = rightSideLinks.map(({ title, icon, href }) => (
-    <IconButton
-      key={title}
-      component="a"
-      target="_blank"
-      href={href}
-      style={{ color: 'white' }}
-    >
-      {icon}
-    </IconButton>
-  ));
 
   const handleMenuOpen = (
     key: string,
@@ -255,51 +188,12 @@ function NavBar() {
     }
   };
 
-  const {
-    title,
-    subtitle,
-    logo: rawLogo,
-  } = header || {
-    title: 'PRISM',
-  };
-
-  // Ensure logo path is absolute to prevent routing conflicts
-  const logo =
-    rawLogo && rawLogo.startsWith('images/') ? `/${rawLogo}` : rawLogo;
-
   return (
-    <AppBar position="static" className={classes.appBar}>
+    <AppBar position="fixed" className={classes.appBar}>
       <Toolbar variant="dense">
         <div className={classes.navbarContainer}>
           <div className={classes.leftSideContainer}>
-            <div className={classes.titleContainer}>
-              {logo && <img className={classes.logo} src={logo} alt="logo" />}
-              <Box
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                }}
-              >
-                {title && (
-                  <Typography
-                    color="secondary"
-                    variant="h6"
-                    className={classes.title}
-                  >
-                    {t(title)}
-                  </Typography>
-                )}
-                {subtitle && !smDown && (
-                  <Typography
-                    color="secondary"
-                    variant="subtitle2"
-                    className={classes.subtitle}
-                  >
-                    {t(subtitle)}
-                  </Typography>
-                )}
-              </Box>
-            </div>
+            <Title />
             <div className={classes.panelsContainer}>
               {panels.map(panel => {
                 const selected =
@@ -346,10 +240,7 @@ function NavBar() {
           </div>
           <div className={classes.rightSideContainer}>
             {!isDashboardMode && <Legends />}
-            <PrintImage />
-            {buttons}
-            <About />
-            <LanguageSelector />
+            <RightSideMenu />
           </div>
         </div>
       </Toolbar>
@@ -359,53 +250,15 @@ function NavBar() {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    logo: {
-      height: 32,
-      marginRight: 15,
-    },
     appBar: {
       backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
-      height: '6vh',
+      height: '56px',
+      minHeight: '56px',
+      maxHeight: '56px',
       display: 'flex',
       justifyContent: 'center',
-    },
-    panelButton: {
-      height: '2.5em',
-    },
-    title: {
-      letterSpacing: '.3rem',
-      fontSize: '1.25rem',
-      lineHeight: '1.5rem',
-      textTransform: 'uppercase',
-      padding: 0,
-    },
-    subtitle: {
-      fontSize: '.8rem',
-      fontWeight: 300,
-      letterSpacing: '.1rem',
-      lineHeight: '.8rem',
-      padding: 0,
-    },
-    menuContainer: {
-      textAlign: 'center',
-    },
-    mobileDrawerContent: {
-      backgroundColor: theme.palette.primary.main,
-      paddingTop: 16,
-      width: '80vw',
-      height: '100vh',
-      overflowX: 'hidden',
-      display: 'flex',
-      flexDirection: 'column',
-      paddingLeft: '1em',
-    },
-    menuBars: {
-      height: '100%',
-      fontSize: 20,
-      color: theme.palette.text.primary,
-    },
-    mobileMenuContainer: {
-      textAlign: 'right',
+      top: 0,
+      zIndex: theme.zIndex.drawer + 1,
     },
     navbarContainer: {
       display: 'flex',
@@ -418,13 +271,9 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'row',
       justifyContent: 'start',
       gap: '5rem',
-    },
-    titleContainer: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'start',
-      gap: '1rem',
-      alignItems: 'center',
+      [theme.breakpoints.down('sm')]: {
+        gap: '1rem',
+      },
     },
     panelsContainer: {
       display: 'flex',
@@ -432,6 +281,9 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'start',
       gap: '1rem',
       alignItems: 'center',
+      [theme.breakpoints.down('sm')]: {
+        gap: '0.5rem',
+      },
     },
     rightSideContainer: {
       display: 'flex',

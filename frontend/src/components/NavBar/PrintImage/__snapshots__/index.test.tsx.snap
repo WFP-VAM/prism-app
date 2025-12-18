@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`renders as expected 1`] = `
 <div>
@@ -69,7 +69,7 @@ exports[`renders as expected 1`] = `
                 <img
                   alt="logo"
                   src="/images/moz-flag-inam-logo.png"
-                  style="position: absolute; z-index: 2; height: 32px; left: 8px; display: flex; justify-content: flex-start;"
+                  style="position: absolute; z-index: 2; height: 32px; left: 8px; right: auto; display: flex; justify-content: flex-start;"
                 />
                 <mock-typography
                   style="max-width: calc(100% - 256px);"
@@ -88,7 +88,7 @@ exports[`renders as expected 1`] = `
                 </mock-typography>
               </div>
               <div
-                style="position: absolute; z-index: 2; top: 0px; left: 8px; display: flex; justify-content: flex-start; width: 20px; transform: scale(1);"
+                style="position: absolute; z-index: 2; top: 0px; left: 8px; right: auto; display: flex; justify-content: flex-start; width: 20px; transform: scale(1);"
               >
                 <mock-list
                   classname="makeStyles-legendListStyle-8"

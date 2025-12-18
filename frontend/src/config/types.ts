@@ -138,7 +138,7 @@ export function requiredKeysForClassType(constructor: ClassType<any>) {
 export function checkRequiredKeys<T extends Record<string, any>>(
   classType: ClassType<T>,
   maybeType: Record<string, any>,
-  // eslint-disable-next-line default-param-last
+
   logErrors = false,
   id?: string,
 ): maybeType is T {
@@ -156,7 +156,7 @@ export function checkRequiredKeys<T extends Record<string, any>>(
     }
 
     // Log warnings for keys that aren't a part of this definition
-    // eslint-disable-next-line new-cap
+
     const target = new classType();
     const allKeys = Object.getOwnPropertyNames(target);
     Object.keys(maybeType)
@@ -222,11 +222,10 @@ export type HazardDataType = GeometryType | RasterType;
 
 export type ZonalConfig = {
   // we're keeping snakecase here because that is what zonal uses
-  // eslint-disable-next-line camelcase
+
   class_properties?: string[];
 };
 
-/* eslint-disable camelcase */
 export type ZonalOptions = {
   zones: GeoJSON;
   zone_properties?: string[];
@@ -239,7 +238,6 @@ export type ZonalOptions = {
   include_null_class_rows?: boolean;
   on_after_each_zone_feature?: Function;
 };
-/* eslint-enable camelcase */
 
 // this is the row object found in the table.rows array
 // of the result object returned by zonal.calculate
@@ -458,9 +456,8 @@ export enum DatesPropagation {
 }
 
 export type ValidityPeriod = {
-  // eslint-disable-next-line camelcase
   start_date_field: string; // name of the attribute to use for start date
-  // eslint-disable-next-line camelcase
+
   end_date_field: string; // name of the attribute to use for end date
 };
 
@@ -894,14 +891,12 @@ export type AvailableDates = {
     | PointDataLayerProps['id']]: DateItem[];
 };
 
-/* eslint-disable camelcase */
 export interface WfsRequestParams {
   url: string;
   layer_name: string;
   time?: string;
   key: string;
 }
-/* eslint-enable camelcase */
 
 export interface ChartConfig {
   type: string;

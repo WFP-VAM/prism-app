@@ -97,7 +97,6 @@ export const downloadChartsToCsv =
       // The blueprint of objects array data
       const initialObjectsArrayBlueprintData = Object.keys(columnsNames).reduce(
         (acc: { [key: string]: string }, key) => {
-          // eslint-disable-next-line fp/no-mutation
           acc[key] = '';
           return acc;
         },

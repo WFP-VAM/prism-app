@@ -145,7 +145,7 @@ export function getRawLayers(
               `Legend '${layer.legend}' could not be found in shared legends.`,
             );
           }
-          // eslint-disable-next-line no-param-reassign, fp/no-mutation
+
           layer.legend = sharedLegends[layer.legend] || layer.legend;
         }
         return [key, layer];

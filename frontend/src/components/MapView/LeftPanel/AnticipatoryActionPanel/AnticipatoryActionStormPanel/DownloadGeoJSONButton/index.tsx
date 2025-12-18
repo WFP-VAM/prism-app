@@ -18,11 +18,11 @@ function DownloadGeoJSONButton() {
     const dataBlob = new Blob([dataStr], { type: 'application/json' });
     const url = URL.createObjectURL(dataBlob);
     const link = document.createElement('a');
-    // eslint-disable-next-line fp/no-mutation
+
     link.href = url;
     const date =
       parsedStormData.forecastDetails.reference_time.split(':00Z')[0];
-    // eslint-disable-next-line fp/no-mutation
+
     link.download = `${parsedStormData.forecastDetails?.cyclone_name || 'cyclone'}_${date}.geojson`;
     document.body.appendChild(link);
     link.click();

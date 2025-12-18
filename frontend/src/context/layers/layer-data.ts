@@ -32,9 +32,9 @@ type LayerSpecificDataTypes = {
   boundary: BoundaryLayerData;
   wms: WMSLayerData;
   impact: ImpactLayerData;
-  // eslint-disable-next-line camelcase
+
   admin_level_data: AdminLevelDataLayerData;
-  // eslint-disable-next-line camelcase
+
   point_data: PointLayerData | AdminLevelDataLayerData;
   composite: CompositeLayerData;
   geojson_polygon: GeojsonLayerData;

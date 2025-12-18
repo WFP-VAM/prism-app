@@ -1,6 +1,12 @@
 import { useCallback, useState, MouseEvent, memo, useMemo } from 'react';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
-import { Button, Typography, useMediaQuery, useTheme } from '@material-ui/core';
+import {
+  Button,
+  IconButton,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import { appConfig } from 'config';
 import ContentDialog from 'components/NavBar/ContentDialog';
@@ -41,25 +47,41 @@ const About = memo(() => {
     return <ContentDialog content={content} handleClose={handleDialogClose} />;
   }, [content, handleDialogClose]);
 
+  const icon = (
+    <InfoOutlinedIcon style={{ fontSize: mdUp ? '1.25rem' : '1.5rem' }} />
+  );
+
   return (
-    <Button
-      key="About"
-      style={{ fontSize: '1.25rem' }}
-      component="a"
-      target="_blank"
-      href={href}
-      onClick={handler}
-      startIcon={
-        <InfoOutlinedIcon style={{ fontSize: mdUp ? '1.25rem' : '1.5rem' }} />
-      }
-    >
-      {!smDown && (
-        <Typography color="secondary" style={{ textTransform: 'none' }}>
-          {t('About')}
-        </Typography>
+    <>
+      {smDown ? (
+        <IconButton
+          key="About"
+          component={aboutPath ? 'button' : 'a'}
+          target={aboutPath ? undefined : '_blank'}
+          href={aboutPath ? undefined : href}
+          onClick={handler}
+          style={{ color: 'white' }}
+          aria-label={t('About')}
+        >
+          {icon}
+        </IconButton>
+      ) : (
+        <Button
+          key="About"
+          style={{ fontSize: '1.25rem', color: 'white' }}
+          component={aboutPath ? 'button' : 'a'}
+          target={aboutPath ? undefined : '_blank'}
+          href={aboutPath ? undefined : href}
+          onClick={handler}
+          startIcon={icon}
+        >
+          <Typography color="secondary" style={{ textTransform: 'none' }}>
+            {t('About')}
+          </Typography>
+        </Button>
       )}
       {renderedContentDialog}
-    </Button>
+    </>
   );
 });
 

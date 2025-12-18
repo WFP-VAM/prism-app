@@ -1,34 +1,33 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`renders as expected 1`] = `
 <div>
   <mock-appbar
-    classname="makeStyles-appBar-2"
-    position="static"
+    classname="makeStyles-appBar-1"
+    position="fixed"
   >
     <mock-toolbar
       variant="dense"
     >
       <div
-        class="makeStyles-navbarContainer-10"
+        class="makeStyles-navbarContainer-2"
       >
         <div
-          class="makeStyles-leftSideContainer-11"
+          class="makeStyles-leftSideContainer-3"
         >
           <div
-            class="makeStyles-titleContainer-12"
+            class="makeStyles-titleContainer-6"
           >
             <img
               alt="logo"
-              class="makeStyles-logo-1"
+              class="makeStyles-logo-8"
               src="/images/moz-flag-inam-logo.png"
             />
             <div
-              class="MuiBox-root MuiBox-root-15"
-              style="display: flex; flex-direction: column;"
+              class="MuiBox-root MuiBox-root-11 makeStyles-titleBox-7"
             >
               <mock-typography
-                classname="makeStyles-title-4"
+                classname="makeStyles-title-9"
                 color="secondary"
                 variant="h6"
               >
@@ -37,10 +36,11 @@ exports[`renders as expected 1`] = `
             </div>
           </div>
           <div
-            class="makeStyles-panelsContainer-13"
+            class="makeStyles-panelsContainer-4"
           >
             <button
-              class="MuiButtonBase-root MuiIconButton-root"
+              aria-label="Layers"
+              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall"
               style="background-color: rgb(99, 178, 189); color: rgb(16, 16, 16);"
               tabindex="0"
               type="button"
@@ -64,7 +64,8 @@ exports[`renders as expected 1`] = `
               />
             </button>
             <button
-              class="MuiButtonBase-root MuiIconButton-root"
+              aria-label="Charts"
+              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall"
               style="color: white;"
               tabindex="0"
               type="button"
@@ -88,7 +89,8 @@ exports[`renders as expected 1`] = `
               />
             </button>
             <button
-              class="MuiButtonBase-root MuiIconButton-root"
+              aria-label="Analysis"
+              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall"
               style="color: white;"
               tabindex="0"
               type="button"
@@ -112,7 +114,8 @@ exports[`renders as expected 1`] = `
               />
             </button>
             <button
-              class="MuiButtonBase-root MuiIconButton-root"
+              aria-label="A. Actions"
+              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall"
               style="color: white;"
               tabindex="0"
               type="button"
@@ -199,10 +202,11 @@ exports[`renders as expected 1`] = `
           </div>
         </div>
         <div
-          class="makeStyles-rightSideContainer-14"
+          class="makeStyles-rightSideContainer-5"
         >
           <mock-button
-            classname="makeStyles-triggerButton-23"
+            aria-label="Legend"
+            classname="makeStyles-triggerButton-19"
             starticon="[object Object]"
             style="background-color: rgb(99, 178, 189);"
           >
@@ -213,7 +217,8 @@ exports[`renders as expected 1`] = `
             </mock-typography>
           </mock-button>
           <button
-            class="MuiButtonBase-root MuiIconButton-root"
+            aria-label="Legend"
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall"
             style="background-color: rgb(99, 178, 189);"
             tabindex="0"
             type="button"
@@ -223,7 +228,7 @@ exports[`renders as expected 1`] = `
             >
               <svg
                 aria-hidden="true"
-                class="MuiSvgIcon-root makeStyles-icon-25"
+                class="MuiSvgIcon-root makeStyles-icon-21"
                 focusable="false"
                 style="color: rgb(16, 16, 16);"
                 viewBox="0 0 24 24"
@@ -238,12 +243,13 @@ exports[`renders as expected 1`] = `
             />
           </button>
           <mock-list
-            classname="makeStyles-list-24"
+            classname="makeStyles-list-20"
             disablepadding="true"
           />
           <mock-printimage />
           <a
             aria-disabled="false"
+            aria-label="GitHub"
             class="MuiButtonBase-root MuiIconButton-root"
             href="https://github.com/wfp-VAM/prism-app"
             style="color: white;"
@@ -273,7 +279,7 @@ exports[`renders as expected 1`] = `
             component="a"
             href="https://innovation.wfp.org/project/prism"
             starticon="[object Object]"
-            style="font-size: 1.25rem;"
+            style="font-size: 1.25rem; color: white;"
             target="_blank"
           >
             <mock-typography
@@ -296,7 +302,7 @@ exports[`renders as expected 1`] = `
             </mock-typography>
           </mock-button>
           <mock-menu
-            classname="makeStyles-block-26"
+            classname="makeStyles-block-23"
             open="false"
           >
             <mock-menuitem

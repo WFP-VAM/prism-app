@@ -49,7 +49,7 @@ function extendDatasetRows(
 
   if (minDate && minDate < datasetMin) {
     const result = generateDateStrings(new Date(minDate), new Date(datasetMin));
-    // eslint-disable-next-line fp/no-mutation
+
     lowerDates = result.slice(0, result.length - 1);
   }
 
@@ -58,7 +58,7 @@ function extendDatasetRows(
       new Date(datasetMax),
       new Date(maxDate),
     );
-    // eslint-disable-next-line fp/no-mutation
+
     upperDates = result;
   }
 
@@ -259,14 +259,13 @@ const ChartSection = memo(
         chartLayer.chartData.fields,
       );
       const csvData = createCsvDataFromDataKeyMap(chartDataset, keyMap);
-      // eslint-disable-next-line no-param-reassign
+
       dataForCsv.current = {
         ...dataForCsv.current,
         [chartLayer.title]: csvData,
       };
 
       return () => {
-        // eslint-disable-next-line no-param-reassign
         dataForCsv.current = omit(dataForCsv.current, chartLayer.title);
       };
     }, [
