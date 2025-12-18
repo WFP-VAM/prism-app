@@ -1,5 +1,5 @@
 [
-        {
+    {
       "title": "Rainfall anomaly - 2024/2025 rainy season",
       "isEditable": true,
       "firstColumn": [
@@ -39,6 +39,7 @@
       "firstColumn": [
         {
           "type": "MAP",
+          "title": "SPI - Oct 2024 - March 2025",
           "defaultDate": "2025-03-21",
           "mapPosition": "left",
           "minMapBounds": [31, -25, 40, -11],
@@ -68,6 +69,7 @@
     },
     {
       "title": "Oct - Dec 2024 rainfall anomaly",
+      "isEditable": true,
       "firstColumn": [
         {
           "type": "MAP",
