@@ -6,7 +6,26 @@ import type {
 } from 'maplibre-gl';
 import { AdminCodeString, LayerType } from 'config/types';
 
-export type AspectRatio = 'Auto' | '4:3' | '1:1' | '3:2' | '6:5' | '2:3';
+export type AspectRatio =
+  | 'Auto'
+  | '4:3'
+  | '1:1'
+  | '3:2'
+  | '6:5'
+  | '2:3'
+  | 'A4-P'
+  | 'A4-L'
+  | { w: number; h: number };
+
+export function isCustomRatio(
+  ratio: AspectRatio,
+): ratio is { w: number; h: number } {
+  return typeof ratio === 'object';
+}
+
+export function isAutoRatio(ratio: AspectRatio): ratio is 'Auto' {
+  return ratio === 'Auto';
+}
 
 export interface MapExportToggles {
   fullLayerDescription: boolean;

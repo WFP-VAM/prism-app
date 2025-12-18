@@ -110,6 +110,19 @@ export const useExportParams = (): ExportParams => {
         ?.split(',')
         .filter(Boolean) as AdminCodeString[]) ?? [];
 
+    // Parse aspect ratio - could be string or custom object
+    const aspectRatioParam = params.get('aspectRatio') ?? '4:3';
+    let aspectRatio: AspectRatio;
+
+    if (aspectRatioParam === 'Custom' || params.has('customWidth')) {
+      // Custom ratio - construct object
+      const w = getNum('customWidth', 1);
+      const h = getNum('customHeight', 1);
+      aspectRatio = { w, h };
+    } else {
+      aspectRatio = aspectRatioParam as AspectRatio;
+    }
+
     return {
       // Layer state
       hazardLayerIds,
@@ -123,7 +136,7 @@ export const useExportParams = (): ExportParams => {
       // Print config
       mapWidth: getNum('mapWidth', 100),
       mapHeight: getNum('mapHeight', 100),
-      aspectRatio: (params.get('aspectRatio') ?? '4:3') as AspectRatio,
+      aspectRatio,
       titleText: params.get('title') ?? '',
       footerText: params.get('footer') ?? '',
       footerTextSize: getNum('footerTextSize', 12),

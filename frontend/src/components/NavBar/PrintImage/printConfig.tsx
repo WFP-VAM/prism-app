@@ -25,6 +25,7 @@ import { AspectRatio } from 'components/MapExport/types';
 import { useSafeTranslation } from '../../../i18n';
 import PrintConfigContext from './printConfig.context';
 import DateRangePicker from './DateRangePicker';
+import AspectRatioSelector from './AspectRatioSelector';
 
 interface ToggleSelectorProps {
   title: string;
@@ -288,12 +289,6 @@ function PrintConfig() {
     aspectRatioOptions,
   } = printConfig;
 
-  // Build selector options from the filtered aspect ratio options
-  const aspectRatioSelectorOptions = aspectRatioOptions.map(ratio => ({
-    value: ratio,
-    comp: <div>{ratio}</div>,
-  }));
-
   return (
     <Box>
       <div className={classes.optionsContainer}>
@@ -331,14 +326,13 @@ function PrintConfig() {
           />
         </div>
 
-        {/* Aspect Ratio - always visible */}
-        <ToggleSelector
+        {/* Aspect Ratio */}
+        <AspectRatioSelector
           value={mapDimensions.aspectRatio}
-          options={aspectRatioSelectorOptions}
+          options={aspectRatioOptions}
           setValue={val => {
             setMapDimensions({ aspectRatio: val as AspectRatio });
           }}
-          title={t('Aspect Ratio')}
         />
 
         {/* Logo */}

@@ -35,6 +35,7 @@ import {
 } from 'components/MapView/Layers';
 import GeojsonDataLayer from 'components/MapView/Layers/GeojsonDataLayer';
 import AnticipatoryActionFloodLayer from 'components/MapView/Layers/AnticipatoryActionFloodLayer';
+import { resolveAspectRatioValue } from 'components/NavBar/PrintImage/mapDimensionsUtils';
 import { MapExportLayoutProps } from './types';
 
 /**
@@ -329,9 +330,12 @@ function MapExportLayout({
       };
     }
 
-    // For preset aspect ratios, calculate constrained dimensions
-    const [w, h] = aspectRatio.split(':').map(Number);
-    const targetRatio = w / h;
+    // For all other aspect ratios (preset, A4, Custom), use the resolver
+    const targetRatio = resolveAspectRatioValue(
+      aspectRatio,
+      containerWidth,
+      containerHeight,
+    );
 
     // Try filling width first
     const widthConstrainedHeight = containerWidth / targetRatio;

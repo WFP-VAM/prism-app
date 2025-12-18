@@ -30,22 +30,28 @@ import {
 import PrintConfig from './printConfig';
 import PrintPreview from './printPreview';
 import PrintConfigContext, {
+  AspectRatioOption,
   MapDimensions,
   Toggles,
 } from './printConfig.context';
-import {
-  getRecommendedAspectRatio,
-  calculateExportDimensions,
-} from './mapDimensionsUtils';
-import { AspectRatio } from '../../MapExport/types';
+import { calculateExportDimensions } from './mapDimensionsUtils';
+import { isCustomRatio } from '../../MapExport/types';
 import { useSafeTranslation } from '../../../i18n';
 
 const defaultFooterText = get(appConfig, 'printConfig.defaultFooterText', '');
 
-// Calculate recommended aspect ratio from bounding box
-const { boundingBox } = appConfig.map;
-const { options: defaultAspectRatioOptions } =
-  getRecommendedAspectRatio(boundingBox);
+// All aspect ratio options including 'Custom' for UI
+const allAspectRatioOptions: AspectRatioOption[] = [
+  'Auto',
+  '4:3',
+  '1:1',
+  '3:2',
+  '6:5',
+  '2:3',
+  'A4-P',
+  'A4-L',
+  'Custom',
+];
 
 // Initial dimensions with 'Auto' aspect ratio (fills container)
 const initialMapDimensions: MapDimensions = {
@@ -310,7 +316,14 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
           // Map always fills viewport (100%), viewport dimensions maintain aspect ratio
           params.set('mapWidth', '100');
           params.set('mapHeight', '100');
-          params.set('aspectRatio', mapDimensions.aspectRatio);
+          // Handle aspect ratio - could be string or object
+          if (isCustomRatio(mapDimensions.aspectRatio)) {
+            params.set('aspectRatio', 'Custom');
+            params.set('customWidth', String(mapDimensions.aspectRatio.w));
+            params.set('customHeight', String(mapDimensions.aspectRatio.h));
+          } else {
+            params.set('aspectRatio', mapDimensions.aspectRatio);
+          }
           params.set('title', titleText);
           params.set('footer', footerText);
           params.set('footerTextSize', String(footerTextSize));
@@ -443,10 +456,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       dateRange: dateRangeForBatchMaps,
       setDateRange: setDateRangeForBatchMaps,
       mapCount,
-      aspectRatioOptions: [
-        'Auto',
-        ...defaultAspectRatioOptions,
-      ] as AspectRatio[],
+      aspectRatioOptions: allAspectRatioOptions,
       previewBounds,
       setPreviewBounds,
       previewZoom,

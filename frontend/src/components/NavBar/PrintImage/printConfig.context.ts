@@ -3,6 +3,9 @@ import type { LngLatBounds } from 'maplibre-gl';
 import { AdminCodeString } from 'config/types';
 import { AspectRatio } from 'components/MapExport/types';
 
+// AspectRatioOption includes 'Custom' as a UI-only option
+export type AspectRatioOption = AspectRatio | 'Custom';
+
 export type Toggles = {
   fullLayerDescription: boolean;
   countryMask: boolean;
@@ -81,7 +84,7 @@ export type PrintConfigContextType = {
     >;
     mapCount: number;
     shouldEnableBatchMaps: boolean;
-    aspectRatioOptions: AspectRatio[];
+    aspectRatioOptions: AspectRatioOption[];
     previewBounds: LngLatBounds | null;
     setPreviewBounds: React.Dispatch<React.SetStateAction<LngLatBounds | null>>;
     previewZoom: number | null;
