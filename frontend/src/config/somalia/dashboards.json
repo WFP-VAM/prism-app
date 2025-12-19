@@ -1,0 +1,65 @@
+[
+  {
+    "title": "Rainfall anomaly - Oct & Nov 2025",
+    "isEditable": false,
+    "firstColumn": [
+      {
+        "type": "MAP",
+        "defaultDate": "2025-10-21",
+        "title": "Rainfall anomaly - October 2025",
+        "mapPosition": "left",
+        "minMapBounds": [40.98, -1.683, 51.13, 12.02],
+        "preSelectedMapLayers": [
+          { "layerId": "rain_anomaly_1month", "opacity": 0.8 }
+        ]
+      }
+    ],
+    "secondColumn": [
+      {
+        "type": "MAP",
+        "defaultDate": "2025-11-21",
+        "title": "Rainfall anomaly - November 2025",
+        "mapPosition": "left",
+        "minMapBounds": [40.98, -1.683, 51.13, 12.02],
+        "preSelectedMapLayers": [
+          { "layerId": "rain_anomaly_1month", "opacity": 0.8 }
+        ]
+      }
+    ],
+    "thirdColumn": [
+      {
+        "type": "TEXT",
+        "content": "![Somalia header](/images/somalia-header.png)\n\nOn 10 November, the Federal Government of Somalia declared a drought emergency and appealed for international assistance as conditions continued to deteriorate across northern, central and southern regions. Rainfall was well below average for the month of October (left), leading up to the drought declaration and has further deteriorated in November (right). The chart below shows rainfall anomaly since the beginning of the year, with a sharp decline beginning in September",
+        "textUpdatedAt": "2025-12-09"
+      },
+      {
+        "type": "CHART",
+        "startDate": "2025-01-01",
+        "endDate": "2025-12-21",
+        "layerId": "rain_anomaly_1month",
+        "adminUnitLevel": 0
+      }
+    ]
+  },
+  {
+    "title": "IPC: July - Dec 2025",
+    "firstColumn": [
+      {
+        "type": "MAP",
+        "mapPosition": "left",
+        "minMapBounds": [40.98, -1.683, 51.13, 12.02],
+        "preSelectedMapLayers": [
+          { "layerId": "ipc_phase_2025_06", "opacity": 0.7 }
+        ]
+      }
+    ],
+    "secondColumn": [
+      {
+        "type": "TEXT",
+        "content": "Poor rainfall, flooding and persistent conflict are driving 3.4 million people into high levels of acute food insecurity between July and September 2025. This includes around 624,000 people (3 percent of the population) experiencing Emergency (IPC Phase 4) levels of acute food insecurity, and 2.8 million people (15 percent of the population) in IPC Phase 3 (Crisis). In northern regions, poor rainfall and drought conditions have led to failed crop production and poor livestock production and reproduction. In central and southern Somalia, conflict and flooding disrupted crop production in some agropastoral and riverine communities, triggering population displacement and undermining both livelihood activities and access to markets. The most affected households include farmers with low agricultural production that have exhausted their food stocks, internally displaced people (IDPs), and poor pastoralists who own few animals with below-average income from livestock. These vulnerable groups require urgent humanitarian food assistance aimed at saving lives, reducing food consumption deficits and protecting livelihoods. In comparison to the same period last year, when approximately 3.6 million people were classified in Phase 3 or above, the current figure of 3.4 million people represents a 5 percent reduction in populations facing Crisis or worse conditions. This is attributed to the positive impact of average to above-average rainfall in most parts of southern Somalia and continued humanitarian assistance, albeit at a much-reduced level.",
+        "textUpdatedAt": "2025-03-01"
+      }
+    ],
+    "thirdColumn": []
+  }
+]
