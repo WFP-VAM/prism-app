@@ -104,7 +104,7 @@ export interface MapExportLayoutProps {
   legendScale: number;
 
   // Map view state
-  initialViewState: {
+  initialViewState?: {
     longitude: number;
     latitude: number;
     zoom: number;
