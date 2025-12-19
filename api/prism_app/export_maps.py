@@ -6,6 +6,7 @@ import fnmatch
 import io
 import logging
 import tempfile
+import time
 import zipfile
 from datetime import datetime
 from pathlib import Path
@@ -356,12 +357,21 @@ async def export_maps(
         format_type: Output format ('pdf' or 'zip')
     Returns: Tuple of (file_bytes, content_type)
     """
+    export_start = time.time()
+    logger.info(f"Timing: Starting export_maps for {len(urls)} maps")
+    
+    # Step 1: Extract dates and setup
+    setup_start = time.time()
     dates = extract_dates_from_urls(urls)
     viewport_width, viewport_height = get_viewport_dimensions(aspect_ratio)
     logger.info(f"Rendering {len(urls)} maps with {MAX_CONCURRENT_RENDERS} concurrent renders")
     semaphore = asyncio.Semaphore(MAX_CONCURRENT_RENDERS)
+    logger.info(f"Timing: Setup completed in {time.time() - setup_start:.2f}s")
 
+    # Step 2: Get browser instance
+    browser_start = time.time()
     browser = await get_browser()
+    logger.info(f"Timing: Browser ready in {time.time() - browser_start:.2f}s")
 
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir_path = Path(tmpdir)
@@ -372,6 +382,8 @@ async def export_maps(
             for i, date in enumerate(dates)
         ]
 
+        # Step 3: Render all maps
+        render_start = time.time()
         render_tasks = [
             render_to_file(
                 browser,
@@ -385,7 +397,10 @@ async def export_maps(
             for url, output_path in zip(urls, output_paths)
         ]
         await asyncio.gather(*render_tasks)
+        logger.info(f"Timing: All {len(urls)} maps rendered in {time.time() - render_start:.2f}s")
 
+        # Step 4: Package results
+        package_start = time.time()
         if format_type == "pdf":
             pdf_writer = PdfWriter()
             for output_path in output_paths:
@@ -396,6 +411,7 @@ async def export_maps(
             output_buffer = io.BytesIO()
             pdf_writer.write(output_buffer)
             result = (output_buffer.getvalue(), "application/pdf")
+            logger.info(f"Timing: PDF packaging completed in {time.time() - package_start:.2f}s")
         else:  # png format
             zip_buffer = io.BytesIO()
             with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
@@ -403,5 +419,7 @@ async def export_maps(
                     filename = f"map_{date}.png"
                     zip_file.write(output_path, filename)
             result = (zip_buffer.getvalue(), "application/zip")
+            logger.info(f"Timing: ZIP packaging completed in {time.time() - package_start:.2f}s")
 
+    logger.info(f"Timing: Total export_maps completed in {time.time() - export_start:.2f}s")
     return result

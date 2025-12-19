@@ -45,7 +45,7 @@ services:
       - "traefik.http.routers.whoami.tls.certresolver=myresolver"
     environment:
       - "RUN=uvicorn prism_app.main:app --host 0.0.0.0 --port 80"
-      - MAX_CONCURRENT_RENDERS=4
+      - MAX_CONCURRENT_RENDERS=6
       # make sure that the alert password is properly set
       - PRISM_ALERTS_DATABASE_URL=${PRISM_ALERTS_DATABASE_URL:?"Provide a URL for the alerts database."}
       - KOBO_PASSWORD=${KOBO_PASSWORD:?"Add a password to access KOBO data."}
