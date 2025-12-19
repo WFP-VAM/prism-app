@@ -341,7 +341,6 @@ async def export_maps(
     # Step 1: Extract dates and setup
     setup_start = time.time()
     dates = extract_dates_from_urls(urls)
-    viewport_width, viewport_height = get_viewport_dimensions(aspect_ratio)
     logger.info(
         f"Rendering {len(urls)} maps with {MAX_CONCURRENT_RENDERS} concurrent renders"
     )

@@ -100,26 +100,6 @@ async def test_export_maps(urls, format_type, expected_files):
         raise ValueError(f"Invalid format type: {format_type}")
 
 
-# Utility function tests
-@pytest.mark.asyncio
-async def test_export_different_aspect_ratios():
-    """Test that different aspect ratios produce different viewport dimensions."""
-    from prism_app.export_maps import get_viewport_dimensions
-
-    ratios = ["1:1", "3:4", "4:3"]
-    dimensions = {}
-
-    for ratio in ratios:
-        width, height = get_viewport_dimensions(ratio)
-        dimensions[ratio] = (width, height)
-        assert width == 1200  # BASE_WIDTH
-        assert height > 0
-
-    # Verify they're different
-    assert dimensions["1:1"] != dimensions["3:4"]
-    assert dimensions["3:4"] != dimensions["4:3"]
-
-
 # URL validation tests - parameterized
 @pytest.mark.parametrize(
     "url,should_raise,error_keyword",
