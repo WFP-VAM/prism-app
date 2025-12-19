@@ -8,6 +8,7 @@ import {
 } from '@material-ui/core';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
+import TuneIcon from '@material-ui/icons/Tune';
 import {
   AspectRatio,
   isCustomRatio,
@@ -46,9 +47,9 @@ const useStyles = makeStyles(() =>
     },
     autoButton: {
       backgroundColor: 'white',
-      height: 'auto',
-      padding: '4px 12px',
-      fontSize: '0.875rem',
+      height: '32px',
+      fontSize: '0.7rem',
+      padding: '4px 8px',
       border: '1px solid rgba(0, 0, 0, 0.12) !important',
       textTransform: 'none',
       justifyContent: 'flex-start',
@@ -66,14 +67,14 @@ const useStyles = makeStyles(() =>
     },
     buttonGroup: {
       display: 'flex',
-      flexWrap: 'wrap',
-      gap: '4px',
+      flexWrap: 'nowrap',
+      gap: '3px',
     },
     button: {
       backgroundColor: 'white',
       height: '32px',
-      minWidth: '60px',
-      padding: '4px 8px',
+      minWidth: '52px',
+      padding: '4px 6px',
       fontSize: '0.7rem',
       border: '1px solid rgba(0, 0, 0, 0.12) !important',
       '&.Mui-selected': {
@@ -88,13 +89,13 @@ const useStyles = makeStyles(() =>
     },
     customButton: {
       backgroundColor: 'white',
-      height: 'auto',
-      minHeight: '48px',
-      padding: '8px 12px',
-      fontSize: '0.875rem',
+      height: '32px',
+      padding: '4px 8px',
+      fontSize: '0.7rem',
       border: '1px solid rgba(0, 0, 0, 0.12) !important',
       textTransform: 'none',
       justifyContent: 'flex-start',
+      width: '100%',
       '&.Mui-selected': {
         backgroundColor: 'rgba(0, 0, 0, 0.08)',
       },
@@ -103,7 +104,7 @@ const useStyles = makeStyles(() =>
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
-      gap: '8px',
+      gap: '4px',
       width: '100%',
     },
     customInputs: {
@@ -129,32 +130,22 @@ const useStyles = makeStyles(() =>
 );
 
 /**
- * Get display label for each aspect ratio option
+ * Check if an option is a string preset (not Auto, Custom, A4, or object)
  */
-function getAspectRatioLabel(ratio: AspectRatioOption): string {
-  if (ratio === 'Auto') {
-    return 'Auto';
-  }
-  if (ratio === 'A4-P') {
-    return 'A4-P';
-  }
-  if (ratio === 'A4-L') {
-    return 'A4-L';
-  }
-  if (ratio === 'Custom') {
-    return 'Custom';
-  }
-  if (typeof ratio === 'object') {
-    return 'Custom';
-  }
-  return ratio;
+function isStringPreset(option: AspectRatioOption): boolean {
+  return (
+    typeof option === 'string' &&
+    option !== 'Auto' &&
+    option !== 'Custom' &&
+    !/A4/.test(option)
+  );
 }
 
 /**
- * Check if an option is a string preset (not Auto, Custom, or object)
+ * Check if an option is an A4 option
  */
-function isStringPreset(option: AspectRatioOption): boolean {
-  return typeof option === 'string' && option !== 'Auto' && option !== 'Custom';
+function isA4Option(option: AspectRatioOption): boolean {
+  return typeof option === 'string' && /A4/.test(option);
 }
 
 export function AspectRatioSelector({
@@ -169,11 +160,19 @@ export function AspectRatioSelector({
   const isCustomActive = isCustomRatio(value);
 
   const stringPresets = options.filter(isStringPreset) as string[];
+  const a4Options = options.filter(isA4Option) as string[];
 
   const selectedPreset =
     isAutoActive || isCustomActive
       ? null
-      : typeof value === 'string'
+      : typeof value === 'string' && !/A4/.test(value)
+        ? value
+        : null;
+
+  const selectedA4 =
+    isAutoActive || isCustomActive
+      ? null
+      : typeof value === 'string' && /A4/.test(value)
         ? value
         : null;
 
@@ -184,7 +183,39 @@ export function AspectRatioSelector({
     setValue('Auto');
   };
 
+  /**
+   * Get display label for each aspect ratio option
+   */
+  function getAspectRatioLabel(ratio: AspectRatioOption): string {
+    if (ratio === 'Auto') {
+      return t('Auto');
+    }
+    if (ratio === 'A4-P') {
+      return t('A4 (Portrait)');
+    }
+    if (ratio === 'A4-L') {
+      return t('A4 (Landscape)');
+    }
+    if (ratio === 'Custom') {
+      return t('Custom');
+    }
+    if (typeof ratio === 'object') {
+      return t('Custom');
+    }
+    return ratio;
+  }
+
   const handlePresetChange = (
+    _event: React.MouseEvent<HTMLElement>,
+    newValue: string | null,
+  ) => {
+    if (newValue === null) {
+      return; // Don't allow deselection
+    }
+    setValue(newValue as AspectRatio);
+  };
+
+  const handleA4Change = (
     _event: React.MouseEvent<HTMLElement>,
     newValue: string | null,
   ) => {
@@ -227,17 +258,23 @@ export function AspectRatioSelector({
         {t('Aspect Ratio')}
       </Typography>
 
-      <div className={classes.section} style={{ flexDirection: 'row' }}>
+      <div
+        className={classes.section}
+        style={{ flexDirection: 'row', alignItems: 'center' }}
+      >
         <ToggleButton
           value="auto"
           selected={isAutoActive}
           onClick={handleAutoToggle}
           className={classes.autoButton}
         >
-          {t('Auto')}
+          <div className={classes.buttonContent}>
+            <AspectRatioGlyph aspectRatio="Auto" size={16} />
+            {t('Auto')}
+          </div>
         </ToggleButton>
         <div className={classes.autoButtonDescription}>
-          Map resizes based on your browser window
+          {t('Map resizes based on browser window')}
         </div>
       </div>
 
@@ -271,6 +308,36 @@ export function AspectRatioSelector({
         </div>
       )}
 
+      {/* A4 options */}
+      {a4Options.length > 0 && (
+        <div className={classes.section}>
+          <ToggleButtonGroup
+            value={selectedA4}
+            exclusive
+            onChange={handleA4Change}
+            className={classes.buttonGroup}
+          >
+            {a4Options.map(a4Option => (
+              <ToggleButton
+                key={a4Option}
+                value={a4Option}
+                className={classes.button}
+              >
+                <div className={classes.buttonContent}>
+                  <AspectRatioGlyph
+                    aspectRatio={a4Option as AspectRatio}
+                    size={16}
+                  />
+                  <span>
+                    {getAspectRatioLabel(a4Option as AspectRatioOption)}
+                  </span>
+                </div>
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+        </div>
+      )}
+
       <div className={classes.section}>
         <ToggleButton
           value="custom"
@@ -279,11 +346,8 @@ export function AspectRatioSelector({
           className={classes.customButton}
         >
           <div className={classes.customButtonContent}>
-            <AspectRatioGlyph
-              aspectRatio={isCustomActive ? value : { w: 1, h: 1 }}
-              size={16}
-            />
-            <span>Custom</span>
+            <TuneIcon fontSize="small" />
+            <span>{t('Custom')}</span>
           </div>
         </ToggleButton>
       </div>

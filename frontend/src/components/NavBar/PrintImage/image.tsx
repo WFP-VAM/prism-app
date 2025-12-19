@@ -40,13 +40,12 @@ import { useSafeTranslation } from '../../../i18n';
 
 const defaultFooterText = get(appConfig, 'printConfig.defaultFooterText', '');
 
-// All aspect ratio options including 'Custom' for UI
 const allAspectRatioOptions: AspectRatioOption[] = [
   'Auto',
-  '4:3',
-  '1:1',
   '3:2',
+  '4:3',
   '6:5',
+  '1:1',
   '2:3',
   'A4-P',
   'A4-L',
