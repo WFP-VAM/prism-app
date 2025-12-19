@@ -134,7 +134,7 @@ playwright can run in debug mode, with a visible browser.
 ```bash
 cd api/app
 mv tests/conftest.py-template tests/conftest.py
-KOBO_USERNAME=ovio KOBO_PW=pwd PWDEBUG=1 poetry run pytest -s tests -k test_download_report
+KOBO_USERNAME=ovio KOBO_PASSWORD=pwd PWDEBUG=1 poetry run pytest -s tests -k test_download_report
 ```
 
 This should open playwright in debug mode, with a browser window and a debugging one. More info: https://playwright.dev/python/docs/debug
