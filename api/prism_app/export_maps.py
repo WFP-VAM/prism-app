@@ -1,6 +1,7 @@
 """Map export functionality using Playwright for server-side rendering."""
 
 import asyncio
+import os
 import fnmatch
 import io
 import logging
@@ -29,7 +30,7 @@ BASE_WIDTH: Final[int] = 1200
 DEVICE_SCALE_FACTOR: Final[int] = 2
 
 # Concurrency settings
-MAX_CONCURRENT_RENDERS: Final[int] = 2  # consider increasing this in AWS
+MAX_CONCURRENT_RENDERS: Final[int] = int(os.getenv("MAX_CONCURRENT_RENDERS", "2"))
 MAX_RENDER_RETRIES: Final[int] = 3
 
 # Browser launch arguments for reduced memory usage
@@ -357,6 +358,7 @@ async def export_maps(
     """
     dates = extract_dates_from_urls(urls)
     viewport_width, viewport_height = get_viewport_dimensions(aspect_ratio)
+    logger.info(f"Rendering {len(urls)} maps with {MAX_CONCURRENT_RENDERS} concurrent renders")
     semaphore = asyncio.Semaphore(MAX_CONCURRENT_RENDERS)
 
     browser = await get_browser()
