@@ -104,7 +104,7 @@ exports[`renders as expected 1`] = `
             </mock-typography>
             <div
               class="makeStyles-section-17"
-              style="flex-direction: row;"
+              style="flex-direction: row; align-items: center;"
             >
               <button
                 aria-pressed="true"
@@ -116,7 +116,29 @@ exports[`renders as expected 1`] = `
                 <span
                   class="MuiToggleButton-label"
                 >
-                  Auto
+                  <div
+                    class="makeStyles-buttonContent-24"
+                  >
+                    <svg
+                      height="16"
+                      style="display: block;"
+                      viewBox="0 0 16 16"
+                      width="16"
+                    >
+                      <rect
+                        fill="none"
+                        height="8.533333333333333"
+                        rx="2"
+                        stroke="currentColor"
+                        stroke-dasharray="2,1"
+                        stroke-width="1.5"
+                        width="12.8"
+                        x="1.5999999999999996"
+                        y="3.7333333333333334"
+                      />
+                    </svg>
+                    Auto
+                  </div>
                 </span>
                 <span
                   class="MuiTouchRipple-root"
@@ -125,7 +147,7 @@ exports[`renders as expected 1`] = `
               <div
                 class="makeStyles-autoButtonDescription-21"
               >
-                Map resizes based on your browser window
+                Map resizes based on browser window
               </div>
             </div>
             <div
@@ -135,84 +157,6 @@ exports[`renders as expected 1`] = `
                 class="MuiToggleButtonGroup-root makeStyles-buttonGroup-22"
                 role="group"
               >
-                <button
-                  aria-pressed="false"
-                  class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-23"
-                  tabindex="0"
-                  type="button"
-                  value="4:3"
-                >
-                  <span
-                    class="MuiToggleButton-label"
-                  >
-                    <div
-                      class="makeStyles-buttonContent-24"
-                    >
-                      <svg
-                        height="16"
-                        style="display: block;"
-                        viewBox="0 0 16 16"
-                        width="16"
-                      >
-                        <rect
-                          fill="none"
-                          height="9.602400600150037"
-                          rx="2"
-                          stroke="currentColor"
-                          stroke-width="1.5"
-                          width="12.8"
-                          x="1.5999999999999996"
-                          y="3.1987996999249813"
-                        />
-                      </svg>
-                      <span>
-                        4:3
-                      </span>
-                    </div>
-                  </span>
-                  <span
-                    class="MuiTouchRipple-root"
-                  />
-                </button>
-                <button
-                  aria-pressed="false"
-                  class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-23"
-                  tabindex="0"
-                  type="button"
-                  value="1:1"
-                >
-                  <span
-                    class="MuiToggleButton-label"
-                  >
-                    <div
-                      class="makeStyles-buttonContent-24"
-                    >
-                      <svg
-                        height="16"
-                        style="display: block;"
-                        viewBox="0 0 16 16"
-                        width="16"
-                      >
-                        <rect
-                          fill="none"
-                          height="12.8"
-                          rx="2"
-                          stroke="currentColor"
-                          stroke-width="1.5"
-                          width="12.8"
-                          x="1.5999999999999996"
-                          y="1.5999999999999996"
-                        />
-                      </svg>
-                      <span>
-                        1:1
-                      </span>
-                    </div>
-                  </span>
-                  <span
-                    class="MuiTouchRipple-root"
-                  />
-                </button>
                 <button
                   aria-pressed="false"
                   class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-23"
@@ -245,6 +189,45 @@ exports[`renders as expected 1`] = `
                       </svg>
                       <span>
                         3:2
+                      </span>
+                    </div>
+                  </span>
+                  <span
+                    class="MuiTouchRipple-root"
+                  />
+                </button>
+                <button
+                  aria-pressed="false"
+                  class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-23"
+                  tabindex="0"
+                  type="button"
+                  value="4:3"
+                >
+                  <span
+                    class="MuiToggleButton-label"
+                  >
+                    <div
+                      class="makeStyles-buttonContent-24"
+                    >
+                      <svg
+                        height="16"
+                        style="display: block;"
+                        viewBox="0 0 16 16"
+                        width="16"
+                      >
+                        <rect
+                          fill="none"
+                          height="9.602400600150037"
+                          rx="2"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          width="12.8"
+                          x="1.5999999999999996"
+                          y="3.1987996999249813"
+                        />
+                      </svg>
+                      <span>
+                        4:3
                       </span>
                     </div>
                   </span>
@@ -296,6 +279,45 @@ exports[`renders as expected 1`] = `
                   class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-23"
                   tabindex="0"
                   type="button"
+                  value="1:1"
+                >
+                  <span
+                    class="MuiToggleButton-label"
+                  >
+                    <div
+                      class="makeStyles-buttonContent-24"
+                    >
+                      <svg
+                        height="16"
+                        style="display: block;"
+                        viewBox="0 0 16 16"
+                        width="16"
+                      >
+                        <rect
+                          fill="none"
+                          height="12.8"
+                          rx="2"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          width="12.8"
+                          x="1.5999999999999996"
+                          y="1.5999999999999996"
+                        />
+                      </svg>
+                      <span>
+                        1:1
+                      </span>
+                    </div>
+                  </span>
+                  <span
+                    class="MuiTouchRipple-root"
+                  />
+                </button>
+                <button
+                  aria-pressed="false"
+                  class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-23"
+                  tabindex="0"
+                  type="button"
                   value="2:3"
                 >
                   <span
@@ -330,6 +352,15 @@ exports[`renders as expected 1`] = `
                     class="MuiTouchRipple-root"
                   />
                 </button>
+              </div>
+            </div>
+            <div
+              class="makeStyles-section-17"
+            >
+              <div
+                class="MuiToggleButtonGroup-root makeStyles-buttonGroup-22"
+                role="group"
+              >
                 <button
                   aria-pressed="false"
                   class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-23"
@@ -361,7 +392,7 @@ exports[`renders as expected 1`] = `
                         />
                       </svg>
                       <span>
-                        A4-P
+                        A4 (Portrait)
                       </span>
                     </div>
                   </span>
@@ -400,7 +431,7 @@ exports[`renders as expected 1`] = `
                         />
                       </svg>
                       <span>
-                        A4-L
+                        A4 (Landscape)
                       </span>
                     </div>
                   </span>
@@ -427,20 +458,13 @@ exports[`renders as expected 1`] = `
                     class="makeStyles-customButtonContent-26"
                   >
                     <svg
-                      height="16"
-                      style="display: block;"
-                      viewBox="0 0 16 16"
-                      width="16"
+                      aria-hidden="true"
+                      class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall"
+                      focusable="false"
+                      viewBox="0 0 24 24"
                     >
-                      <rect
-                        fill="none"
-                        height="12.8"
-                        rx="2"
-                        stroke="currentColor"
-                        stroke-width="1.5"
-                        width="12.8"
-                        x="1.5999999999999996"
-                        y="1.5999999999999996"
+                      <path
+                        d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"
                       />
                     </svg>
                     <span>
