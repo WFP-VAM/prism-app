@@ -825,8 +825,8 @@
       "below": -25
     },
     "api": {
-      "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json",
-      "group_by": "ADM2_PCODE"
+      "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_adm2_boundaries.json",
+      "group_by": "ADM2_PCODE_RE"
     },
     "opacity": 0.7,
     "legend_text": "Number of herder households within a soum where the median pasture anomaly is <= -25%",
