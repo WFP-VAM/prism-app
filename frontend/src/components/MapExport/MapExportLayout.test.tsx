@@ -36,7 +36,6 @@ jest.mock('utils/map-utils', () => ({
 }));
 
 jest.mock('utils/useOnResizeObserver', () => {
-  // eslint-disable-next-line global-require
   const React = require('react');
   return {
     __esModule: true,
