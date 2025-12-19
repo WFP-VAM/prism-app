@@ -10,6 +10,7 @@ import {
   isMainLayer,
   DateItem,
   AnticipatoryAction,
+  WMSLayerProps,
 } from 'config/types';
 import {
   AALayerIds,
@@ -164,6 +165,11 @@ const useLayers = () => {
               layer.id in serverAvailableDates ||
               layer.dateLayer in serverAvailableDates
             );
+          }
+          if (layer.type === 'impact') {
+            // Impact layers derive their dates from the hazard layer
+            // Check if dates have been loaded for this impact layer
+            return layer.id in serverAvailableDates;
           }
           return dateSupportLayerTypes.includes(layer.type);
         })

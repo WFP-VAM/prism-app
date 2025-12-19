@@ -264,13 +264,13 @@ export async function loadFeaturesFromApi(
     version: hazardLayerDef.wcsConfig?.version,
   });
 
-  const statsApi = layer.api as StatsApi;
-  const apiUrl = statsApi.url || ANALYSIS_API_URL;
+  const statsApi = layer.api;
+  const apiUrl = statsApi?.url || ANALYSIS_API_URL;
 
   const apiData = {
     geotiff_url: wcsUrl,
-    zones_url: statsApi.zonesUrl,
-    group_by: statsApi.groupBy,
+    zones_url: statsApi?.zonesUrl,
+    group_by: statsApi?.groupBy,
     geojson_out: false,
   };
 
