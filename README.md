@@ -537,15 +537,29 @@ Displays formatted text content (supports markdown).
 ```json
 {
   "type": "TEXT",
-  "content": "# Analysis Summary\n\nThis dashboard shows precipitation patterns for April 2025.",
+  "content": "![Header](/images/header.png)\n\n# Analysis Summary\n\nThis dashboard shows **precipitation patterns** for April 2025.",
   "textUpdatedAt": "2025-03-01"
 }
 ```
 
 **Properties:**
 - `type`: Must be `"TEXT"`
-- `content` (required): Text content (supports markdown formatting)
+- `content` (required): Text content with markdown formatting (see supported syntax below)
 - `textUpdatedAt` (optional): Date when content was last updated in `YYYY-MM-DD` format
+
+**Supported Markdown Syntax:**
+
+| Element | Syntax | Example |
+|---------|--------|---------|
+| Heading 1 | `# Text` | `# Main Title` |
+| Heading 2 | `## Text` | `## Section` |
+| Heading 3 | `### Text` | `### Subsection` |
+| Bold | `**text**` | `**important**` |
+| Italic | `*text*` | `*emphasis*` |
+| Link | `[text](url)` | `[WFP](https://wfp.org)` |
+| Image | `![alt](url)` | `![Map](/images/map.png)` |
+| Bullet list | `- item` | `- First item` |
+| Numbered list | `1. item` | `1. First step` |
 
 ### Dashboard Layout
 

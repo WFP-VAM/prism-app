@@ -58,6 +58,13 @@ const createMarkdownComponents = (classes: any) => ({
       {children}
     </Typography>
   ),
+  img: ({ src, alt }: { src?: string; alt?: string }) => (
+    <img
+      src={src}
+      alt={alt || ''}
+      style={{ maxWidth: '100%', height: 'auto' }}
+    />
+  ),
 });
 
 function TextBlock({
@@ -92,6 +99,7 @@ function TextBlock({
             'ul',
             'ol',
             'li',
+            'img',
           ]}
         >
           {t(content)}
