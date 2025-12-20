@@ -3,6 +3,7 @@ import { ReferenceDateTimestamp, UserAuth } from 'config/types';
 import {
   preloadLayerDatesForPointData,
   preloadLayerDatesForWMS,
+  clearPointDataFetchCache,
 } from 'utils/server-utils';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 
@@ -46,9 +47,29 @@ export const preloadLayerDatesArraysForPointData = createAsyncThunk<
   CreateAsyncThunkTypes
 >(
   'serverState/preloadLayerDatesForPointData',
-  async (_, { dispatch }) => preloadLayerDatesForPointData(dispatch),
+  async (_, { dispatch, getState }) => {
+    const state = getState();
+    const userAuth = state.serverState.userAuth;
+    return preloadLayerDatesForPointData(dispatch, userAuth);
+  },
   {
     condition: (_, { getState }) => !pointDataLayerDatesRequested(getState()),
+  },
+);
+
+// Thunk to re-fetch dates when user logs in (bypasses condition check)
+export const refetchLayerDatesArraysForPointData = createAsyncThunk<
+  Record<string, ReferenceDateTimestamp[]>,
+  void,
+  CreateAsyncThunkTypes
+>(
+  'serverState/refetchLayerDatesForPointData',
+  async (_, { dispatch, getState }) => {
+    const state = getState();
+    const userAuth = state.serverState.userAuth;
+    // Clear cache to force re-fetch with new authentication
+    clearPointDataFetchCache();
+    return preloadLayerDatesForPointData(dispatch, userAuth);
   },
 );
 
@@ -119,6 +140,40 @@ export const serverPreloadStateSlice = createSlice({
     );
 
     builder.addCase(preloadLayerDatesArraysForPointData.pending, state => ({
+      ...state,
+      loadingPointData: true,
+    }));
+
+    // Handle refetch action (same as fulfilled/pending/rejected but clears cache first)
+    builder.addCase(
+      refetchLayerDatesArraysForPointData.fulfilled,
+      (
+        state,
+        { payload }: PayloadAction<Record<string, ReferenceDateTimestamp[]>>,
+      ) => ({
+        ...state,
+        loadingPointData: false,
+        loadedPointData: true,
+        pointDataLayerDates: {
+          ...state.pointDataLayerDates,
+          ...payload,
+        },
+      }),
+    );
+
+    builder.addCase(
+      refetchLayerDatesArraysForPointData.rejected,
+      (state, action) => ({
+        ...state,
+        loadingPointData: false,
+        loadedPointData: true,
+        error: action.error.message
+          ? action.error.message
+          : action.error.toString(),
+      }),
+    );
+
+    builder.addCase(refetchLayerDatesArraysForPointData.pending, state => ({
       ...state,
       loadingPointData: true,
     }));

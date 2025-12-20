@@ -22,6 +22,7 @@ import { Close, Send } from '@material-ui/icons';
 import { useSafeTranslation } from 'i18n';
 import { layersSelector } from 'context/mapStateSlice/selectors';
 import { setUserAuthGlobal, userAuthSelector } from 'context/serverStateSlice';
+import { refetchLayerDatesArraysForPointData } from 'context/serverPreloadStateSlice';
 import { UserAuth } from 'config/types';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
 import { removeLayer } from 'context/mapStateSlice';
@@ -65,6 +66,8 @@ const AuthModal = () => {
     (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       dispatch(setUserAuthGlobal(auth));
+      // Re-fetch dates with new authentication to filter by province if applicable
+      dispatch(refetchLayerDatesArraysForPointData());
       setOpen(false);
     },
     [auth, dispatch],

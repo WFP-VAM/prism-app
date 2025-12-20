@@ -246,11 +246,19 @@ def get_kobo_form_dates(
     formId: str,
     datetimeField: str,
     filters: Optional[str] = None,
+    user_info: Annotated[UserInfoPydanticModel, Depends(validate_user)] = None,
 ):
     """Get all form response dates."""
     # cache responses for 24h as they're unlikely to change
     response.headers["Cache-Control"] = "max-age=86400"
-    return get_form_dates(koboUrl, formId, datetimeField, filters)
+
+    # Extract province access information if user is authenticated
+    province = None
+    if user_info and hasattr(user_info, "access") and user_info.access:
+        if isinstance(user_info.access, dict):
+            province = user_info.access.get("province", None)
+
+    return get_form_dates(koboUrl, formId, datetimeField, filters, province)
 
 
 @app.get("/kobo/forms")
