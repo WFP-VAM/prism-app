@@ -64,7 +64,8 @@ async def test_export_maps(urls, format_type, expected_files):
     """Test export_maps function with various date counts and formats."""
     file_bytes, content_type = await export_maps(
         urls=urls,
-        aspect_ratio="3:4",
+        viewport_width=1200,
+        viewport_height=1600,
         format_type=format_type,
     )
 
