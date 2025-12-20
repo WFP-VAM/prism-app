@@ -1,5 +1,10 @@
 import React, { createContext } from 'react';
+import type { LngLatBounds } from 'maplibre-gl';
 import { AdminCodeString } from 'config/types';
+import { AspectRatio } from 'components/MapExport/types';
+
+// AspectRatioOption includes 'Custom' as a UI-only option
+export type AspectRatioOption = AspectRatio | 'Custom';
 
 export type Toggles = {
   fullLayerDescription: boolean;
@@ -12,7 +17,9 @@ export type Toggles = {
   bottomLogoVisibility: boolean;
 };
 
-export type MapDimensions = { width: number; height: number };
+export type MapDimensions = {
+  aspectRatio: AspectRatio;
+};
 
 export type PrintConfigContextType = {
   printConfig?: {
@@ -77,6 +84,15 @@ export type PrintConfigContextType = {
     >;
     mapCount: number;
     shouldEnableBatchMaps: boolean;
+    aspectRatioOptions: AspectRatioOption[];
+    previewBounds: LngLatBounds | null;
+    setPreviewBounds: React.Dispatch<React.SetStateAction<LngLatBounds | null>>;
+    previewZoom: number | null;
+    setPreviewZoom: React.Dispatch<React.SetStateAction<number | null>>;
+    previewMapWidth: number | null;
+    setPreviewMapWidth: React.Dispatch<React.SetStateAction<number | null>>;
+    previewMapHeight: number | null;
+    setPreviewMapHeight: React.Dispatch<React.SetStateAction<number | null>>;
   };
 };
 

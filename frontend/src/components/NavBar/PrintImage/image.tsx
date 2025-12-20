@@ -8,6 +8,7 @@ import mask from '@turf/mask';
 import html2canvas from 'html2canvas';
 import { debounce, get } from 'lodash';
 import { jsPDF } from 'jspdf';
+import type { LngLatBounds } from 'maplibre-gl';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
@@ -29,12 +30,32 @@ import {
 import PrintConfig from './printConfig';
 import PrintPreview from './printPreview';
 import PrintConfigContext, {
+  AspectRatioOption,
   MapDimensions,
   Toggles,
 } from './printConfig.context';
+import { calculateExportDimensions } from './mapDimensionsUtils';
+import { isCustomRatio } from '../../MapExport/types';
 import { useSafeTranslation } from '../../../i18n';
 
 const defaultFooterText = get(appConfig, 'printConfig.defaultFooterText', '');
+
+const allAspectRatioOptions: AspectRatioOption[] = [
+  'Auto',
+  '3:2',
+  '4:3',
+  '6:5',
+  '1:1',
+  '2:3',
+  'A4-P',
+  'A4-L',
+  'Custom',
+];
+
+// Initial dimensions with 'Auto' aspect ratio (fills container)
+const initialMapDimensions: MapDimensions = {
+  aspectRatio: 'Auto',
+};
 
 // Debounce changes so that we don't redraw on every keystroke.
 const debounceCallback = debounce((callback: any, ...args: any[]) => {
@@ -81,16 +102,20 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const [logoScale, setLogoScale] = useState(1);
   const [bottomLogoScale, setBottomLogoScale] = useState(1);
   // the % value of the original dimensions
-  const [mapDimensions, setMapDimensions] = useState<MapDimensions>({
-    width: 100,
-    height: 100,
-  });
+  const [mapDimensions, setMapDimensions] =
+    React.useState<MapDimensions>(initialMapDimensions);
   const [footerRef, { height: footerHeight }] =
     useResizeObserver<HTMLDivElement>(footerText, open);
   const [titleRef, { height: titleHeight }] = useResizeObserver<HTMLDivElement>(
     titleText,
     open,
   );
+  // Bounds and zoom captured from the preview map (no extra padding like main map)
+  const [previewBounds, setPreviewBounds] = useState<LngLatBounds | null>(null);
+  const [previewZoom, setPreviewZoom] = useState<number | null>(null);
+  // Map dimensions captured from the preview (used for 'Auto' aspect ratio in batch exports)
+  const [previewMapWidth, setPreviewMapWidth] = useState<number | null>(null);
+  const [previewMapHeight, setPreviewMapHeight] = useState<number | null>(null);
 
   // Get the style and layers of the old map
   const selectedMapStyle = selectedMap?.getStyle();
@@ -249,14 +274,28 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         return;
       }
 
-      // Extract map bounds and zoom from selectedMap
-      const mapBounds = selectedMap?.getBounds();
-      const mapZoom = selectedMap?.getZoom();
-
+      // Use preview map bounds and zoom (captured from MapExportLayout via onBoundsChange)
+      // This ensures we get the exact bounds/zoom shown in the preview, without the
+      // extra left padding that the main map has for UI elements
+      const mapBounds = previewBounds;
+      const mapZoom = previewZoom;
       // Construct URLs for each date by adding `/export` to the pathname and setting the date param
       const { origin, pathname, search } = new URL(window.location.href);
       const exportPath = `${pathname.replace(/\/$/, '')}/export`;
       const baseParams = new URLSearchParams(search);
+
+      // Calculate viewport dimensions for export
+      // For 'Auto' aspect ratio, use the actual map dimensions from the preview
+      const exportDims = calculateExportDimensions(
+        mapDimensions.aspectRatio,
+        mapDimensions.aspectRatio === 'Auto'
+          ? (previewMapWidth ?? undefined)
+          : undefined,
+        mapDimensions.aspectRatio === 'Auto'
+          ? (previewMapHeight ?? undefined)
+          : undefined,
+      );
+
       const constructedUrls = formattedDates
         .filter((date): date is string => date !== undefined)
         .map(date => {
@@ -268,12 +307,22 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
             const bounds = `${mapBounds.getWest()},${mapBounds.getSouth()},${mapBounds.getEast()},${mapBounds.getNorth()}`;
             params.set('bounds', bounds);
           }
-          if (mapZoom !== undefined) {
+          if (mapZoom != null) {
             params.set('zoom', String(mapZoom));
           }
 
           // Print config options
-          params.set('mapWidth', String(mapDimensions.width));
+          // Map always fills viewport (100%), viewport dimensions maintain aspect ratio
+          params.set('mapWidth', '100');
+          params.set('mapHeight', '100');
+          // Handle aspect ratio - could be string or object
+          if (isCustomRatio(mapDimensions.aspectRatio)) {
+            params.set('aspectRatio', 'Custom');
+            params.set('customWidth', String(mapDimensions.aspectRatio.w));
+            params.set('customHeight', String(mapDimensions.aspectRatio.h));
+          } else {
+            params.set('aspectRatio', mapDimensions.aspectRatio);
+          }
           params.set('title', titleText);
           params.set('footer', footerText);
           params.set('footerTextSize', String(footerTextSize));
@@ -312,8 +361,8 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         },
         body: JSON.stringify({
           urls: constructedUrls,
-          // TODO: Adjust to dynamic aspect ratio based on config
-          aspectRatio: '3:4',
+          viewportWidth: exportDims.canvasWidth,
+          viewportHeight: exportDims.canvasHeight,
           format,
         }),
       });
@@ -406,6 +455,15 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       dateRange: dateRangeForBatchMaps,
       setDateRange: setDateRangeForBatchMaps,
       mapCount,
+      aspectRatioOptions: allAspectRatioOptions,
+      previewBounds,
+      setPreviewBounds,
+      previewZoom,
+      setPreviewZoom,
+      previewMapWidth,
+      setPreviewMapWidth,
+      previewMapHeight,
+      setPreviewMapHeight,
     },
   };
 

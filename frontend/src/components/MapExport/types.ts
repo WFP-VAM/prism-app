@@ -1,6 +1,31 @@
 import React from 'react';
-import type { StyleSpecification, LngLatBoundsLike } from 'maplibre-gl';
+import type {
+  StyleSpecification,
+  LngLatBoundsLike,
+  LngLatBounds,
+} from 'maplibre-gl';
 import { AdminCodeString, LayerType } from 'config/types';
+
+export type AspectRatio =
+  | 'Auto'
+  | '4:3'
+  | '1:1'
+  | '3:2'
+  | '6:5'
+  | '2:3'
+  | 'A4-P'
+  | 'A4-L'
+  | { w: number; h: number };
+
+export function isCustomRatio(
+  ratio: AspectRatio,
+): ratio is { w: number; h: number } {
+  return typeof ratio === 'object';
+}
+
+export function isAutoRatio(ratio: AspectRatio): ratio is 'Auto' {
+  return ratio === 'Auto';
+}
 
 export interface MapExportToggles {
   fullLayerDescription: boolean;
@@ -31,6 +56,8 @@ export interface ExportParams {
 
   // Print config options
   mapWidth: number; // 50-100
+  mapHeight: number; // percentage (defaults to 100)
+  aspectRatio: AspectRatio;
   titleText: string;
   footerText: string;
   footerTextSize: number; // 8, 10, 12, 16, 20
@@ -53,9 +80,8 @@ export interface MapExportLayoutProps {
   // Display toggles
   toggles: MapExportToggles;
 
-  // Dimensions
-  mapWidth: number; // percentage 50-100
-  mapHeight?: number; // percentage (defaults to 100)
+  // Aspect ratio - map always maintains this ratio
+  aspectRatio: AspectRatio;
 
   // Title/Footer
   titleText: string;
@@ -78,11 +104,14 @@ export interface MapExportLayoutProps {
   legendScale: number;
 
   // Map view state
-  initialViewState: {
+  initialViewState?: {
     longitude: number;
     latitude: number;
     zoom: number;
   };
+
+  // Bounds to fit map to
+  bounds?: ExportMapBounds;
 
   // Map style (from existing map or base style)
   mapStyle: StyleSpecification | string;
@@ -121,7 +150,13 @@ export interface MapExportLayoutProps {
   // Callback for map load (called after all sources are loaded)
   onMapLoad?: (e: any) => void;
 
-  // When true, automatically sets window.PRISM_READY = true after all sources load.
+  // Callback when map bounds/zoom change (for capturing preview state)
+  onBoundsChange?: (bounds: LngLatBounds, zoom: number) => void;
+
+  // Callback when map dimensions change (for capturing dimensions when aspectRatio is 'Auto')
+  onMapDimensionsChange?: (width: number, height: number) => void;
+
+  // When true, sets window.PRISM_READY = true after all sources load.
   // Used by ExportView for server-side rendering with Playwright.
   signalExportReady?: boolean;
 }

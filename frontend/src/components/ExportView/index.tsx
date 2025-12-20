@@ -164,51 +164,6 @@ const ExportView = memo(() => {
 
   // Use default map style - MapExportLayout handles label filtering
   const processedMapStyle = mapStyle.toString();
-  const initialViewState = useMemo(() => {
-    if (exportParams.bounds) {
-      const centerLng =
-        (exportParams.bounds.west + exportParams.bounds.east) / 2;
-      const centerLat =
-        (exportParams.bounds.south + exportParams.bounds.north) / 2;
-      return {
-        longitude: centerLng,
-        latitude: centerLat,
-        zoom: exportParams.zoom ?? 5,
-      };
-    }
-    const configBounds = appConfig.map?.boundingBox;
-    if (configBounds) {
-      const [west, south, east, north] = configBounds;
-      return {
-        longitude: (west + east) / 2,
-        latitude: (south + north) / 2,
-        zoom: exportParams.zoom ?? 5,
-      };
-    }
-    return {
-      longitude: 35,
-      latitude: -18,
-      zoom: 5,
-    };
-  }, [exportParams.bounds, exportParams.zoom]);
-
-  const maxBounds = useMemo(() => {
-    if (exportParams.bounds) {
-      return [
-        [exportParams.bounds.west, exportParams.bounds.south],
-        [exportParams.bounds.east, exportParams.bounds.north],
-      ] as [[number, number], [number, number]];
-    }
-    const configBounds = appConfig.map?.boundingBox;
-    if (configBounds) {
-      const [west, south, east, north] = configBounds;
-      return [
-        [west, south],
-        [east, north],
-      ] as [[number, number], [number, number]];
-    }
-    return undefined;
-  }, [exportParams.bounds]);
 
   const dateText = useMemo(() => {
     const pubDate = `${t('Publication date')}: ${getFormattedDate(
@@ -250,7 +205,7 @@ const ExportView = memo(() => {
     <Box className={classes.root}>
       <MapExportLayout
         toggles={exportParams.toggles}
-        mapWidth={exportParams.mapWidth}
+        aspectRatio={exportParams.aspectRatio}
         titleText={exportParams.titleText}
         footerText={exportParams.footerText}
         footerTextSize={exportParams.footerTextSize}
@@ -261,9 +216,8 @@ const ExportView = memo(() => {
         titleHeight={titleHeight}
         legendPosition={exportParams.legendPosition}
         legendScale={exportParams.legendScale}
-        initialViewState={initialViewState}
+        bounds={exportParams.bounds ?? undefined}
         mapStyle={processedMapStyle}
-        maxBounds={maxBounds}
         invertedAdminBoundaryLimitPolygon={invertedAdminBoundaryLimitPolygon}
         printRef={printRef}
         titleRef={titleRef}

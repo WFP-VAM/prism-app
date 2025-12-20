@@ -10,6 +10,7 @@ import React, {
   ComponentType,
 } from 'react';
 import MapGL, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';
+import useResizeObserver from 'utils/useOnResizeObserver';
 import { lightGrey } from 'muiTheme';
 import { FloodStationMarker } from 'components/MapView/Layers/AnticipatoryActionFloodLayer/FloodStationMarker';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
@@ -34,6 +35,7 @@ import {
 } from 'components/MapView/Layers';
 import GeojsonDataLayer from 'components/MapView/Layers/GeojsonDataLayer';
 import AnticipatoryActionFloodLayer from 'components/MapView/Layers/AnticipatoryActionFloodLayer';
+import { resolveAspectRatioValue } from 'components/NavBar/PrintImage/mapDimensionsUtils';
 import { MapExportLayoutProps } from './types';
 
 /**
@@ -80,8 +82,7 @@ const componentTypes: LayerComponentsMap<LayerType> = {
 
 function MapExportLayout({
   toggles,
-  mapWidth,
-  mapHeight = 100,
+  aspectRatio,
   titleText,
   footerText,
   footerTextSize,
@@ -93,8 +94,8 @@ function MapExportLayout({
   legendPosition,
   legendScale,
   initialViewState,
+  bounds,
   mapStyle: mapStyleProp,
-  maxBounds,
   invertedAdminBoundaryLimitPolygon,
   printRef,
   titleRef,
@@ -108,11 +109,17 @@ function MapExportLayout({
   adminLevelLayersWithFillPattern = [],
   selectedLayers = [],
   onMapLoad,
+  onBoundsChange,
+  onMapDimensionsChange,
   signalExportReady = false,
 }: MapExportLayoutProps) {
   const classes = useStyles();
   const northArrowRef = useRef<HTMLImageElement>(null);
   const mapRef = React.useRef<MapRef>(null);
+
+  // Track container dimensions to calculate proper map size
+  const [containerRef, containerDimensions] =
+    useResizeObserver<HTMLDivElement>(aspectRatio);
 
   // Track the first symbol layer ID for proper layer ordering
   // Layers should be inserted below symbols/labels to keep labels visible
@@ -173,6 +180,21 @@ function MapExportLayout({
     ? `calc(100% - ${logoHeight * 8}px)`
     : '100%';
 
+  // Calculate fallback initial view state from bounds if not provided
+  const effectiveInitialViewState = useMemo(() => {
+    if (initialViewState) {
+      return initialViewState;
+    }
+    if (bounds) {
+      return {
+        longitude: (bounds.west + bounds.east) / 2,
+        latitude: (bounds.south + bounds.north) / 2,
+        zoom: 5,
+      };
+    }
+    return { longitude: 0, latitude: 0, zoom: 2 };
+  }, [initialViewState, bounds]);
+
   const handleMapLoad = (e: any) => {
     e.target.addControl(new maplibregl.ScaleControl({}), 'bottom-right');
     updateScaleBarAndNorthArrow();
@@ -200,6 +222,21 @@ function MapExportLayout({
 
     // Load SDF icons for point data layers
     ensureSDFIconsLoaded(mapRef.current?.getMap());
+
+    // If bounds are provided, fit the map to those bounds
+    // This ensures precise geographic extent matching (e.g., for exports)
+    if (bounds && map) {
+      map.fitBounds(
+        [
+          [bounds.west, bounds.south],
+          [bounds.east, bounds.north],
+        ],
+        {
+          padding: 0,
+          animate: false,
+        },
+      );
+    }
 
     // Track source loading to ensure all tiles are loaded before signaling ready
     const shouldTrackSources = signalExportReady || onMapLoad;
@@ -262,213 +299,289 @@ function MapExportLayout({
     } else if (onMapLoad) {
       onMapLoad(e);
     }
+
+    // Capture and report map bounds and zoom after load
+    // Use 'idle' event to ensure map has fully settled
+    if (onBoundsChange && map) {
+      map.on('idle', () => {
+        const mapBounds = map.getBounds();
+        const zoom = map.getZoom();
+        if (mapBounds) {
+          onBoundsChange(mapBounds, zoom);
+        }
+      });
+    }
   };
+
+  // Calculate map dimensions based on container size and aspect ratio
+  const mapDimensions = useMemo(() => {
+    const { width: containerWidth, height: containerHeight } =
+      containerDimensions;
+
+    if (containerWidth === 0 || containerHeight === 0) {
+      return { width: 0, height: 0 };
+    }
+
+    // When aspect ratio is 'Auto', fill the container completely
+    if (aspectRatio === 'Auto') {
+      return {
+        width: containerWidth,
+        height: containerHeight,
+      };
+    }
+
+    // For all other aspect ratios (preset, A4, Custom), use the resolver
+    const targetRatio = resolveAspectRatioValue(
+      aspectRatio,
+      containerWidth,
+      containerHeight,
+    );
+
+    // Try filling width first
+    const widthConstrainedHeight = containerWidth / targetRatio;
+
+    if (widthConstrainedHeight <= containerHeight) {
+      // Fits when filling width
+      return {
+        width: containerWidth,
+        height: widthConstrainedHeight,
+      };
+    }
+    // Need to constrain by height instead
+    return {
+      width: containerHeight * targetRatio,
+      height: containerHeight,
+    };
+  }, [aspectRatio, containerDimensions]);
+
+  useEffect(() => {
+    if (
+      onMapDimensionsChange &&
+      mapDimensions.width > 0 &&
+      mapDimensions.height > 0
+    ) {
+      onMapDimensionsChange(mapDimensions.width, mapDimensions.height);
+    }
+  }, [mapDimensions, onMapDimensionsChange]);
+
+  // The map content (title, legend, footer, map itself)
+  const mapContent = (
+    <div ref={printRef} className={classes.printContainer}>
+      {toggles.bottomLogoVisibility && bottomLogo && (
+        <img
+          style={{
+            position: 'absolute',
+            zIndex: 3,
+            height: `${32 * bottomLogoScale}px`,
+            bottom: `${(footerHeight || 20) + 10}px`,
+            left: '10px',
+            maxWidth: '150px',
+            objectFit: 'contain',
+          }}
+          src={bottomLogo}
+          alt="bottomLogo"
+        />
+      )}
+      <img
+        ref={northArrowRef}
+        style={{
+          position: 'absolute',
+          zIndex: 3,
+          width: '50px',
+          bottom: `${(footerHeight || 20) + 40}px`,
+          right: '10px',
+        }}
+        src={iconNorthArrow}
+        alt="northArrow"
+      />
+      {titleText && (
+        <div
+          ref={titleRef}
+          className={classes.titleOverlay}
+          style={{ minHeight: `${titleMinHeight}px` }}
+        >
+          {toggles.logoVisibility && logo && (
+            <img
+              style={{
+                position: 'absolute',
+                zIndex: 2,
+                height: logoHeight,
+                left: logoPosition % 2 === 0 ? '8px' : 'auto',
+                right: logoPosition % 2 === 0 ? 'auto' : '8px',
+                display: 'flex',
+                justifyContent:
+                  logoPosition % 2 === 0 ? 'flex-start' : 'flex-end',
+              }}
+              src={logo}
+              alt="logo"
+            />
+          )}
+          <Typography variant="h6" style={{ maxWidth: titleMaxWidth }}>
+            {titleText}
+          </Typography>
+        </div>
+      )}
+      {toggles.footerVisibility && (footerText || dateText) && (
+        <div ref={footerRef} className={classes.footerOverlay}>
+          {footerText && (
+            <Typography
+              style={{
+                fontSize: `${footerTextSize}px`,
+                whiteSpace: 'pre-line',
+              }}
+            >
+              {footerText}
+            </Typography>
+          )}
+          {dateText && (
+            <Typography style={{ fontSize: `${footerTextSize}px` }}>
+              {dateText}
+            </Typography>
+          )}
+        </div>
+      )}
+      {toggles.logoVisibility && !titleText && logo && (
+        <img
+          style={{
+            position: 'absolute',
+            zIndex: 2,
+            top: titleHeight + 8,
+            height: logoHeight,
+            left: logoPosition % 2 === 0 ? '8px' : 'auto',
+            right: logoPosition % 2 === 0 ? 'auto' : '8px',
+            display: 'flex',
+            justifyContent: logoPosition % 2 === 0 ? 'flex-start' : 'flex-end',
+          }}
+          src={logo}
+          alt="logo"
+        />
+      )}
+      {toggles.legendVisibility && (
+        <div
+          style={{
+            position: 'absolute',
+            zIndex: 2,
+            // Position legend below title bar (use measured height or fallback)
+            // When titleText exists but titleHeight hasn't been measured yet, use a minimum offset
+            top:
+              (titleText ? Math.max(titleHeight, 48) : titleHeight) +
+              (!titleText && logoPosition === legendPosition
+                ? logoHeight + 4
+                : 0),
+            left: legendPosition % 2 === 0 ? '8px' : 'auto',
+            right: legendPosition % 2 === 0 ? 'auto' : '8px',
+            display: 'flex',
+            justifyContent:
+              legendPosition % 2 === 0 ? 'flex-start' : 'flex-end',
+            width: '20px',
+            // Use transform scale to adjust size based on legendScale
+            transform: `scale(${legendScale})`,
+          }}
+        >
+          <LegendItemsList
+            forPrinting
+            listStyle={classes.legendListStyle}
+            showDescription={toggles.fullLayerDescription}
+          />
+        </div>
+      )}
+      <div className={classes.mapContainer}>
+        <MapGL
+          ref={mapRef}
+          dragRotate={false}
+          // preserveDrawingBuffer is required for the map to be exported as an image
+          preserveDrawingBuffer
+          initialViewState={effectiveInitialViewState}
+          onLoad={handleMapLoad}
+          mapStyle={processedMapStyle || mapStyle.toString()}
+        >
+          {/* Render selected layers - KEEP IN SYNC with MapView/Map/index.tsx */}
+          {/* Pass 'before' prop to insert layers below labels/symbols */}
+          {selectedLayers.map(layer => {
+            const { component } = componentTypes[layer.type];
+            return createElement(component as any, {
+              key: layer.id,
+              layer,
+              before: firstSymbolId,
+            });
+          })}
+          {/* AA Drought markers */}
+          {activePanel === Panel.AnticipatoryActionDrought &&
+            aaMarkers.map(marker => (
+              <Marker
+                key={`marker-${marker.district}`}
+                longitude={marker.longitude}
+                latitude={marker.latitude}
+                anchor="center"
+              >
+                <div style={{ transform: `scale(${scalePercent})` }}>
+                  {marker.icon}
+                </div>
+              </Marker>
+            ))}
+          {/* AA Flood station markers */}
+          {activePanel === Panel.AnticipatoryActionFlood &&
+            floodStations.map(station => (
+              <FloodStationMarker
+                key={`flood-station-${station.station_id}`}
+                station={station}
+                stationSummary={station}
+                interactive={false}
+              />
+            ))}
+          {toggles.countryMask && invertedAdminBoundaryLimitPolygon && (
+            <Source
+              id="mask-overlay"
+              type="geojson"
+              data={invertedAdminBoundaryLimitPolygon}
+            >
+              <Layer
+                id="mask-layer-overlay"
+                type="fill"
+                source="mask-overlay"
+                layout={{}}
+                paint={{
+                  'fill-color': '#000',
+                  'fill-opacity': 0.7,
+                }}
+              />
+            </Source>
+          )}
+        </MapGL>
+      </div>
+    </div>
+  );
 
   return (
     <div className={classes.previewContainer}>
       <div
+        ref={containerRef}
         style={{
           width: '100%',
           height: '100%',
+          minWidth: 0,
+          minHeight: 0,
+          position: 'relative',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          overflow: 'hidden',
         }}
       >
-        <div
-          style={{
-            position: 'relative',
-            zIndex: 3,
-            border: '1px solid black',
-            boxSizing: 'border-box',
-            height: `${mapHeight}%`,
-            width: `${mapWidth}%`,
-          }}
-        >
-          <div ref={printRef} className={classes.printContainer}>
-            {toggles.bottomLogoVisibility && bottomLogo && (
-              <img
-                style={{
-                  position: 'absolute',
-                  zIndex: 3,
-                  height: `${32 * bottomLogoScale}px`,
-                  bottom: `${(footerHeight || 20) + 10}px`,
-                  left: '10px',
-                  maxWidth: '150px',
-                  objectFit: 'contain',
-                }}
-                src={bottomLogo}
-                alt="bottomLogo"
-              />
-            )}
-            <img
-              ref={northArrowRef}
-              style={{
-                position: 'absolute',
-                zIndex: 3,
-                width: '50px',
-                bottom: `${(footerHeight || 20) + 40}px`,
-                right: '10px',
-              }}
-              src={iconNorthArrow}
-              alt="northArrow"
-            />
-            {titleText && (
-              <div
-                ref={titleRef}
-                className={classes.titleOverlay}
-                style={{ minHeight: `${titleMinHeight}px` }}
-              >
-                {toggles.logoVisibility && logo && (
-                  <img
-                    style={{
-                      position: 'absolute',
-                      zIndex: 2,
-                      height: logoHeight,
-                      left: logoPosition % 2 === 0 ? '8px' : 'auto',
-                      right: logoPosition % 2 === 0 ? 'auto' : '8px',
-                      display: 'flex',
-                      justifyContent:
-                        logoPosition % 2 === 0 ? 'flex-start' : 'flex-end',
-                    }}
-                    src={logo}
-                    alt="logo"
-                  />
-                )}
-                <Typography variant="h6" style={{ maxWidth: titleMaxWidth }}>
-                  {titleText}
-                </Typography>
-              </div>
-            )}
-            {toggles.footerVisibility && (footerText || dateText) && (
-              <div ref={footerRef} className={classes.footerOverlay}>
-                {footerText && (
-                  <Typography
-                    style={{
-                      fontSize: `${footerTextSize}px`,
-                      whiteSpace: 'pre-line',
-                    }}
-                  >
-                    {footerText}
-                  </Typography>
-                )}
-                {dateText && (
-                  <Typography style={{ fontSize: `${footerTextSize}px` }}>
-                    {dateText}
-                  </Typography>
-                )}
-              </div>
-            )}
-            {toggles.logoVisibility && !titleText && logo && (
-              <img
-                style={{
-                  position: 'absolute',
-                  zIndex: 2,
-                  top: titleHeight + 8,
-                  height: logoHeight,
-                  left: logoPosition % 2 === 0 ? '8px' : 'auto',
-                  right: logoPosition % 2 === 0 ? 'auto' : '8px',
-                  display: 'flex',
-                  justifyContent:
-                    logoPosition % 2 === 0 ? 'flex-start' : 'flex-end',
-                }}
-                src={logo}
-                alt="logo"
-              />
-            )}
-            {toggles.legendVisibility && (
-              <div
-                style={{
-                  position: 'absolute',
-                  zIndex: 2,
-                  // Position legend below title bar (use measured height or fallback)
-                  // When titleText exists but titleHeight hasn't been measured yet, use a minimum offset
-                  top:
-                    (titleText ? Math.max(titleHeight, 48) : titleHeight) +
-                    (!titleText && logoPosition === legendPosition
-                      ? logoHeight + 4
-                      : 0),
-                  left: legendPosition % 2 === 0 ? '8px' : 'auto',
-                  right: legendPosition % 2 === 0 ? 'auto' : '8px',
-                  display: 'flex',
-                  justifyContent:
-                    legendPosition % 2 === 0 ? 'flex-start' : 'flex-end',
-                  width: '20px',
-                  // Use transform scale to adjust size based on legendScale
-                  transform: `scale(${legendScale})`,
-                }}
-              >
-                <LegendItemsList
-                  forPrinting
-                  listStyle={classes.legendListStyle}
-                  showDescription={toggles.fullLayerDescription}
-                />
-              </div>
-            )}
-            <div className={classes.mapContainer}>
-              <MapGL
-                ref={mapRef}
-                dragRotate={false}
-                // preserveDrawingBuffer is required for the map to be exported as an image
-                preserveDrawingBuffer
-                initialViewState={initialViewState}
-                onLoad={handleMapLoad}
-                mapStyle={processedMapStyle || mapStyle.toString()}
-                maxBounds={maxBounds}
-              >
-                {/* Render selected layers - KEEP IN SYNC with MapView/Map/index.tsx */}
-                {/* Pass 'before' prop to insert layers below labels/symbols */}
-                {selectedLayers.map(layer => {
-                  const { component } = componentTypes[layer.type];
-                  return createElement(component as any, {
-                    key: layer.id,
-                    layer,
-                    before: firstSymbolId,
-                  });
-                })}
-                {/* AA Drought markers */}
-                {activePanel === Panel.AnticipatoryActionDrought &&
-                  aaMarkers.map(marker => (
-                    <Marker
-                      key={`marker-${marker.district}`}
-                      longitude={marker.longitude}
-                      latitude={marker.latitude}
-                      anchor="center"
-                    >
-                      <div style={{ transform: `scale(${scalePercent})` }}>
-                        {marker.icon}
-                      </div>
-                    </Marker>
-                  ))}
-                {/* AA Flood station markers */}
-                {activePanel === Panel.AnticipatoryActionFlood &&
-                  floodStations.map(station => (
-                    <FloodStationMarker
-                      key={`flood-station-${station.station_id}`}
-                      station={station}
-                      stationSummary={station}
-                      interactive={false}
-                    />
-                  ))}
-                {toggles.countryMask && invertedAdminBoundaryLimitPolygon && (
-                  <Source
-                    id="mask-overlay"
-                    type="geojson"
-                    data={invertedAdminBoundaryLimitPolygon}
-                  >
-                    <Layer
-                      id="mask-layer-overlay"
-                      type="fill"
-                      source="mask-overlay"
-                      layout={{}}
-                      paint={{
-                        'fill-color': '#000',
-                        'fill-opacity': 0.7,
-                      }}
-                    />
-                  </Source>
-                )}
-              </MapGL>
-            </div>
+        {mapDimensions.width > 0 && mapDimensions.height > 0 && (
+          <div
+            style={{
+              position: 'relative',
+              zIndex: 3,
+              border: '1px solid #9E9E9E',
+              boxSizing: 'border-box',
+              width: `${mapDimensions.width}px`,
+              height: `${mapDimensions.height}px`,
+            }}
+          >
+            {mapContent}
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
@@ -543,6 +656,11 @@ const useStyles = makeStyles(() =>
     previewContainer: {
       height: '100%',
       width: '100%',
+      minWidth: 0,
+      minHeight: 0,
+      flex: 1,
+      display: 'flex',
+      overflow: 'hidden',
     },
   }),
 );

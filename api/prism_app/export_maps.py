@@ -1,10 +1,10 @@
 """Map export functionality using Playwright for server-side rendering."""
 
 import asyncio
-import os
 import fnmatch
 import io
 import logging
+import os
 import tempfile
 import time
 import zipfile
@@ -18,7 +18,7 @@ from playwright.async_api import TimeoutError as PlaywrightTimeoutError
 from playwright.async_api import async_playwright
 from pypdf import PdfReader, PdfWriter
 
-from .models import AspectRatio, ExportFormat
+from .models import ExportFormat
 
 logger = logging.getLogger(__name__)
 
@@ -197,32 +197,6 @@ def validate_export_url(url: str) -> None:
         )
 
 
-def get_viewport_dimensions(aspect_ratio: AspectRatio) -> Tuple[int, int]:
-    """
-    Convert aspect ratio string to pixel dimensions.
-
-    Dynamically parses aspect ratio strings in "W:H" format
-
-    Args: aspect_ratio: Aspect ratio string in "W:H" format
-    Returns: Tuple of (width, height) in pixels
-    """
-    try:
-        parts = aspect_ratio.split(":")
-        if len(parts) != 2:
-            raise ValueError("Invalid format")
-        width_ratio = int(parts[0])
-        height_ratio = int(parts[1])
-        if width_ratio <= 0 or height_ratio <= 0:
-            raise ValueError("Ratios must be positive")
-    except (ValueError, AttributeError):
-        raise ValueError(
-            f"Invalid aspect ratio: {aspect_ratio}. Expected format 'W:H' (e.g., '3:4')"
-        )
-
-    height = int(BASE_WIDTH * (height_ratio / width_ratio))
-    return (BASE_WIDTH, height)
-
-
 def extract_dates_from_urls(urls: list[str]) -> list[str]:
     """
     Extract dates from URLs.
@@ -346,25 +320,30 @@ async def render_to_file(
 
 
 async def export_maps(
-    urls: list[str], aspect_ratio: AspectRatio, format_type: ExportFormat
+    urls: list[str],
+    viewport_width: int,
+    viewport_height: int,
+    format_type: ExportFormat,
 ) -> Tuple[bytes, str]:
     """
     Export maps for multiple dates and return packaged file.
 
     Args:
         urls: List of base URLs with map parameters
-        aspect_ratio: Aspect ratio string ('1:1', '3:4', or '4:3')
+        viewport_width: Browser viewport width in pixels
+        viewport_height: Browser viewport height in pixels
         format_type: Output format ('pdf' or 'zip')
     Returns: Tuple of (file_bytes, content_type)
     """
     export_start = time.time()
     logger.info(f"Timing: Starting export_maps for {len(urls)} maps")
-    
+
     # Step 1: Extract dates and setup
     setup_start = time.time()
     dates = extract_dates_from_urls(urls)
-    viewport_width, viewport_height = get_viewport_dimensions(aspect_ratio)
-    logger.info(f"Rendering {len(urls)} maps with {MAX_CONCURRENT_RENDERS} concurrent renders")
+    logger.info(
+        f"Rendering {len(urls)} maps with {MAX_CONCURRENT_RENDERS} concurrent renders"
+    )
     semaphore = asyncio.Semaphore(MAX_CONCURRENT_RENDERS)
     logger.info(f"Timing: Setup completed in {time.time() - setup_start:.2f}s")
 
@@ -397,7 +376,9 @@ async def export_maps(
             for url, output_path in zip(urls, output_paths)
         ]
         await asyncio.gather(*render_tasks)
-        logger.info(f"Timing: All {len(urls)} maps rendered in {time.time() - render_start:.2f}s")
+        logger.info(
+            f"Timing: All {len(urls)} maps rendered in {time.time() - render_start:.2f}s"
+        )
 
         # Step 4: Package results
         package_start = time.time()
@@ -411,7 +392,9 @@ async def export_maps(
             output_buffer = io.BytesIO()
             pdf_writer.write(output_buffer)
             result = (output_buffer.getvalue(), "application/pdf")
-            logger.info(f"Timing: PDF packaging completed in {time.time() - package_start:.2f}s")
+            logger.info(
+                f"Timing: PDF packaging completed in {time.time() - package_start:.2f}s"
+            )
         else:  # png format
             zip_buffer = io.BytesIO()
             with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
@@ -419,7 +402,11 @@ async def export_maps(
                     filename = f"map_{date}.png"
                     zip_file.write(output_path, filename)
             result = (zip_buffer.getvalue(), "application/zip")
-            logger.info(f"Timing: ZIP packaging completed in {time.time() - package_start:.2f}s")
+            logger.info(
+                f"Timing: ZIP packaging completed in {time.time() - package_start:.2f}s"
+            )
 
-    logger.info(f"Timing: Total export_maps completed in {time.time() - export_start:.2f}s")
+    logger.info(
+        f"Timing: Total export_maps completed in {time.time() - export_start:.2f}s"
+    )
     return result

@@ -21,21 +21,23 @@ import ToggleButton from '@material-ui/lab/ToggleButton';
 import { cyanBlue } from 'muiTheme';
 import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
 import Switch from 'components/Common/Switch';
+import { AspectRatio } from 'components/MapExport/types';
 import { useSafeTranslation } from '../../../i18n';
-import PrintConfigContext, { MapDimensions } from './printConfig.context';
+import PrintConfigContext from './printConfig.context';
 import DateRangePicker from './DateRangePicker';
+import AspectRatioSelector from './AspectRatioSelector';
 
 interface ToggleSelectorProps {
   title: string;
-  value: number;
+  value: number | string;
   options: {
-    value: number;
+    value: number | string;
     comp: React.JSX.Element;
     disabled?: boolean;
   }[];
   iconProp?: number;
   align?: 'start' | 'end';
-  setValue: (v: number) => void;
+  setValue: (v: number | string) => void;
 }
 
 const toggleSelectorStyles = makeStyles(() => ({
@@ -107,6 +109,7 @@ function SectionToggle({
   children,
   expanded,
   handleChange,
+  disabled,
 }: {
   title: string;
   children?: React.ReactNode;
@@ -115,6 +118,7 @@ function SectionToggle({
     event: React.ChangeEvent<HTMLInputElement>,
     checked: boolean,
   ) => void;
+  disabled?: boolean;
 }) {
   const classes = useStyles();
   return (
@@ -124,7 +128,12 @@ function SectionToggle({
           expanded && children ? classes.collapsibleWrapperExpanded : ''
         }`}
       >
-        <Switch checked={expanded} onChange={handleChange} title={title} />
+        <Switch
+          checked={expanded}
+          onChange={handleChange}
+          title={title}
+          disabled={disabled}
+        />
       </div>
       <Collapse in={expanded}>{children}</Collapse>
     </div>
@@ -223,15 +232,6 @@ const logoScaleSelectorOptions = [
   { value: 1.5, comp: <div style={{ fontSize: '1.25rem' }}>L</div> },
 ];
 
-const mapWidthSelectorOptions = [
-  { value: 50, comp: <div>50%</div> },
-  { value: 60, comp: <div>60%</div> },
-  { value: 70, comp: <div>70%</div> },
-  { value: 80, comp: <div>80%</div> },
-  { value: 90, comp: <div>90%</div> },
-  { value: 100, comp: <div>100%</div> },
-];
-
 const footerTextSelectorOptions = [
   { value: 8, comp: <div style={{ fontSize: '8px' }}>Aa</div> },
   { value: 10, comp: <div style={{ fontSize: '10px' }}>Aa</div> },
@@ -286,6 +286,7 @@ function PrintConfig() {
     mapCount,
     shouldEnableBatchMaps,
     dateRange,
+    aspectRatioOptions,
   } = printConfig;
 
   return (
@@ -325,17 +326,13 @@ function PrintConfig() {
           />
         </div>
 
-        {/* Width */}
-        <ToggleSelector
-          value={mapDimensions.width}
-          options={mapWidthSelectorOptions}
-          setValue={val =>
-            setMapDimensions((prev: MapDimensions) => ({
-              ...(prev || {}),
-              width: val as number,
-            }))
-          }
-          title={t('Map Width')}
+        {/* Aspect Ratio */}
+        <AspectRatioSelector
+          value={mapDimensions.aspectRatio}
+          options={aspectRatioOptions}
+          setValue={val => {
+            setMapDimensions({ aspectRatio: val as AspectRatio });
+          }}
         />
 
         {/* Logo */}
@@ -364,7 +361,9 @@ function PrintConfig() {
                     value={logoPosition}
                     options={logoPositionOptions}
                     iconProp={logoPosition}
-                    setValue={setLogoPosition}
+                    setValue={(v: number | string) =>
+                      setLogoPosition(Number(v))
+                    }
                     title={t('Position')}
                   />
 
@@ -379,7 +378,7 @@ function PrintConfig() {
                       align="end"
                       value={logoScale}
                       options={logoScaleSelectorOptions}
-                      setValue={setLogoScale}
+                      setValue={(v: number | string) => setLogoScale(Number(v))}
                       title={t('Size')}
                     />
                   </div>
@@ -414,7 +413,9 @@ function PrintConfig() {
                     align="end"
                     value={bottomLogoScale}
                     options={logoScaleSelectorOptions}
-                    setValue={setBottomLogoScale}
+                    setValue={(v: number | string) =>
+                      setBottomLogoScale(Number(v))
+                    }
                     title={t('Size')}
                   />
                 </Box>
@@ -487,7 +488,9 @@ function PrintConfig() {
                   value={legendPosition > -1 ? legendPosition : -1}
                   options={legendPositionOptions}
                   iconProp={legendPosition}
-                  setValue={setLegendPosition}
+                  setValue={(v: number | string) =>
+                    setLegendPosition(Number(v))
+                  }
                   title={t('Position')}
                 />
                 <div className={classes.collapsibleWrapper}>
@@ -515,7 +518,7 @@ function PrintConfig() {
                 <ToggleSelector
                   value={legendScale}
                   options={legendScaleSelectorOptions}
-                  setValue={setLegendScale}
+                  setValue={(v: number | string) => setLegendScale(Number(v))}
                   title={t('Size')}
                 />
               </div>
@@ -539,7 +542,7 @@ function PrintConfig() {
               <ToggleSelector
                 value={footerTextSize}
                 options={footerTextSelectorOptions}
-                setValue={setFooterTextSize}
+                setValue={(v: number | string) => setFooterTextSize(Number(v))}
                 title={t('Size')}
               />
             </GreyContainerSection>
@@ -639,28 +642,26 @@ function PrintConfig() {
           open={Boolean(downloadMenuAnchorEl)}
           onClose={handleDownloadMenuClose}
         >
-          {toggles.batchMapsVisibility ? (
-            <>
-              <MenuItem onClick={() => downloadBatch('pdf')}>
-                {t('Download maps as PDF')}
-              </MenuItem>
-              <MenuItem onClick={() => downloadBatch('png')}>
-                {t('Download maps as PNGs')}
-              </MenuItem>
-            </>
-          ) : (
-            <>
-              <MenuItem onClick={() => download('png')}>
-                {t('Download PNG')}
-              </MenuItem>
-              <MenuItem onClick={() => download('jpeg')}>
-                {t('Download JPEG')}
-              </MenuItem>
-              <MenuItem onClick={() => download('pdf')}>
-                {t('Download PDF')}
-              </MenuItem>
-            </>
-          )}
+          {toggles.batchMapsVisibility
+            ? [
+                <MenuItem key="pdf" onClick={() => downloadBatch('pdf')}>
+                  {t('Download maps as PDF')}
+                </MenuItem>,
+                <MenuItem key="png" onClick={() => downloadBatch('png')}>
+                  {t('Download maps as PNGs')}
+                </MenuItem>,
+              ]
+            : [
+                <MenuItem key="png" onClick={() => download('png')}>
+                  {t('Download PNG')}
+                </MenuItem>,
+                <MenuItem key="jpeg" onClick={() => download('jpeg')}>
+                  {t('Download JPEG')}
+                </MenuItem>,
+                <MenuItem key="pdf" onClick={() => download('pdf')}>
+                  {t('Download PDF')}
+                </MenuItem>,
+              ]}
         </Menu>
       </div>
     </Box>

@@ -64,7 +64,8 @@ async def test_export_maps(urls, format_type, expected_files):
     """Test export_maps function with various date counts and formats."""
     file_bytes, content_type = await export_maps(
         urls=urls,
-        aspect_ratio="3:4",
+        viewport_width=1200,
+        viewport_height=1600,
         format_type=format_type,
     )
 
@@ -98,26 +99,6 @@ async def test_export_maps(urls, format_type, expected_files):
                 assert png_data.startswith(b"\x89PNG")
     else:
         raise ValueError(f"Invalid format type: {format_type}")
-
-
-# Utility function tests
-@pytest.mark.asyncio
-async def test_export_different_aspect_ratios():
-    """Test that different aspect ratios produce different viewport dimensions."""
-    from prism_app.export_maps import get_viewport_dimensions
-
-    ratios = ["1:1", "3:4", "4:3"]
-    dimensions = {}
-
-    for ratio in ratios:
-        width, height = get_viewport_dimensions(ratio)
-        dimensions[ratio] = (width, height)
-        assert width == 1200  # BASE_WIDTH
-        assert height > 0
-
-    # Verify they're different
-    assert dimensions["1:1"] != dimensions["3:4"]
-    assert dimensions["3:4"] != dimensions["4:3"]
 
 
 # URL validation tests - parameterized
@@ -174,7 +155,8 @@ def test_export_endpoint_success(mock_page_url, format_type, expected_content_ty
         "/export",
         json={
             "urls": [mock_page_url],
-            "aspectRatio": "3:4",
+            "viewportWidth": 1200,
+            "viewportHeight": 1600,
             "format": format_type,
         },
     )
@@ -194,7 +176,8 @@ def test_export_endpoint_multiple_dates(mock_page_url):
         "/export",
         json={
             "urls": [f"{MOCK_PAGE_URL}?date={date}" for date in dates],
-            "aspectRatio": "3:4",
+            "viewportWidth": 1200,
+            "viewportHeight": 1600,
             "format": "pdf",
         },
     )
@@ -208,7 +191,8 @@ def test_export_endpoint_multiple_dates(mock_page_url):
 @pytest.mark.parametrize(
     "request_data,expected_status",
     [
-        ({"aspectRatio": "16:9"}, 422),  # Invalid aspect ratio
+        ({"viewportWidth": 100}, 422),  # Width too small
+        ({"viewportHeight": 100}, 422),  # Height too small
         ({"format": "jpg"}, 422),  # Invalid format
         ({"urls": []}, 422),  # Empty urls
         (
@@ -227,7 +211,8 @@ def test_export_endpoint_validation_errors(
     # Build request with defaults
     default_request = {
         "urls": [f"http://localhost/?test=1&date={TEST_DATE}"],
-        "aspectRatio": "3:4",
+        "viewportWidth": 1200,
+        "viewportHeight": 849,
         "format": "pdf",
     }
     default_request.update(request_data)

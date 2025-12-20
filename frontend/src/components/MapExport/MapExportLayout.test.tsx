@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import { createTheme, ThemeProvider } from '@material-ui/core';
 import { store } from 'context/store';
 import MapExportLayout from './MapExportLayout';
-import { MapExportToggles } from './types';
+import { AspectRatio, MapExportToggles } from './types';
 
 jest.mock('react-map-gl/maplibre', () => {
   const React = require('react');
@@ -35,6 +35,17 @@ jest.mock('utils/map-utils', () => ({
   useAAMarkerScalePercent: () => 1,
 }));
 
+jest.mock('utils/useOnResizeObserver', () => {
+  const React = require('react');
+  return {
+    __esModule: true,
+    default: () => [
+      React.createRef(),
+      { width: 800, height: 600 }, // Mock container dimensions for tests
+    ],
+  };
+});
+
 jest.mock(
   'components/MapView/Layers/AnticipatoryActionFloodLayer/FloodStationMarker',
   () => ({
@@ -53,7 +64,9 @@ const defaultToggles: MapExportToggles = {
 
 const defaultProps = {
   toggles: defaultToggles,
-  mapWidth: 100,
+  aspectRatio: 'Auto' as AspectRatio,
+  onMapDimensionsChange: jest.fn(),
+  onBoundsChange: jest.fn(),
   titleText: '',
   footerText: '',
   footerTextSize: 12,
@@ -223,18 +236,6 @@ describe('MapExportLayout', () => {
       </Provider>,
     );
     expect(container.querySelector('.footerOverlay')).not.toBeInTheDocument();
-  });
-
-  test('applies map width percentage', () => {
-    const { container } = render(
-      <Provider store={store}>
-        <ThemeProvider theme={createTheme()}>
-          <MapExportLayout {...defaultProps} mapWidth={80} />
-        </ThemeProvider>
-      </Provider>,
-    );
-    const widthContainer = container.querySelector('[style*="width: 80%"]');
-    expect(widthContainer).toBeInTheDocument();
   });
 
   test('renders country mask when countryMask is true and polygon provided', () => {
