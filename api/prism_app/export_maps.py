@@ -1,7 +1,6 @@
 """Map export functionality using Playwright for server-side rendering."""
 
 import asyncio
-import fnmatch
 import io
 import logging
 import os
@@ -11,7 +10,6 @@ import zipfile
 from datetime import datetime
 from pathlib import Path
 from typing import Final, Optional, Tuple
-from urllib.parse import parse_qs, urlparse
 
 from playwright.async_api import Browser, Playwright
 from playwright.async_api import TimeoutError as PlaywrightTimeoutError
@@ -19,6 +17,7 @@ from playwright.async_api import async_playwright
 from pypdf import PdfReader, PdfWriter
 
 from .models import ExportFormat
+from .utils import extract_dates_from_urls
 
 logger = logging.getLogger(__name__)
 
@@ -106,107 +105,6 @@ async def close_browser() -> None:
         Browser_lock = None
 
         logger.info("Browser: closed")
-
-
-# Allowed domains for export URLs
-# Add domains to this list to allow them for map exports
-EXPORT_ALLOWED_DOMAINS: Final[list[str]] = [
-    "*.wfp.org",
-    "staging-prism-frontend--*.web.app",  # Firebase preview builds
-]
-
-
-def validate_export_url(url: str) -> None:
-    """
-    Validate that the export URL is from an allowed domain and includes a date parameter.
-
-    Validation rules:
-    - Requires absolute URLs (must have scheme like http:// or https://)
-    - Relative URLs are not allowed for security reasons
-    - Allows file:// URLs (for local testing)
-    - Requires hostname for non-file URLs
-    - Allows localhost with any port (localhost, 127.0.0.1, ::1)
-    - Checks against EXPORT_ALLOWED_DOMAINS list
-    - Supports glob patterns
-    - Matches if hostname equals base domain or ends with ".{base_domain}"
-    - Requires date parameter (in YYYY-MM-DD format) in the URL
-
-    Args: url: URL to validate (must be absolute URL with scheme and date parameter)
-    Raises: ValueError: If the URL is from a disallowed domain or is not absolute or does not include a date parameter
-    """
-    parsed = urlparse(url)
-
-    if not parsed.scheme:
-        raise ValueError(
-            "URL must be absolute (include scheme like http:// or https://). "
-            "Relative URLs are not allowed for security reasons."
-        )
-
-    query_params = parse_qs(parsed.query, keep_blank_values=True)
-    if "date" not in query_params:
-        raise ValueError(f"URL missing 'date' parameter: {url}")
-    date_value = query_params["date"][0]
-    try:
-        datetime.strptime(date_value, "%Y-%m-%d")
-    except ValueError:
-        raise ValueError(f"Date parameter '{date_value}' is not in YYYY-MM-DD format")
-
-    hostname = parsed.hostname
-
-    if parsed.scheme == "file":
-        return
-    if not hostname:
-        raise ValueError("URL must include a hostname.")
-    if hostname in ("localhost", "127.0.0.1", "::1"):
-        return
-    if not EXPORT_ALLOWED_DOMAINS:
-        raise ValueError(
-            "No allowed domains configured. Contact administrator to add domains to EXPORT_ALLOWED_DOMAINS constant."
-        )
-
-    hostname_lower = hostname.lower()
-    is_allowed = False
-
-    for domain in EXPORT_ALLOWED_DOMAINS:
-        domain_lower = domain.lower()
-
-        # Handle glob patterns with wildcards anywhere (e.g., staging-prism-frontend--*.web.app)
-        if "*" in domain_lower and not domain_lower.startswith("*."):
-            if fnmatch.fnmatch(hostname_lower, domain_lower):
-                is_allowed = True
-                break
-        # Handle subdomain wildcards (e.g., *.wfp.org)
-        elif domain_lower.startswith("*."):
-            base_domain = domain_lower[2:]
-            if hostname_lower == base_domain or hostname_lower.endswith(
-                f".{base_domain}"
-            ):
-                is_allowed = True
-                break
-        # Handle exact domain matches
-        else:
-            if hostname_lower == domain_lower or hostname_lower.endswith(
-                f".{domain_lower}"
-            ):
-                is_allowed = True
-                break
-
-    if not is_allowed:
-        raise ValueError(
-            f"Domain '{hostname}' is not allowed. Allowed domains: {', '.join(EXPORT_ALLOWED_DOMAINS)}"
-        )
-
-
-def extract_dates_from_urls(urls: list[str]) -> list[str]:
-    """
-    Extract dates from URLs.
-    """
-    dates = []
-    for url in urls:
-        parsed = urlparse(url)
-        query_params = parse_qs(parsed.query, keep_blank_values=True)
-        dates.append(query_params["date"][0])
-    return dates
 
 
 async def render_single_map(

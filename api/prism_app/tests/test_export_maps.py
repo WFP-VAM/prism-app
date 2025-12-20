@@ -11,8 +11,9 @@ from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
-from prism_app.export_maps import export_maps, validate_export_url
+from prism_app.export_maps import export_maps
 from prism_app.main import app
+from prism_app.utils import validate_export_url
 from pypdf import PdfReader
 
 client = TestClient(app)

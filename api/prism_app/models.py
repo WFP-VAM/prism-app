@@ -173,7 +173,7 @@ AspectRatio = Literal["1:1", "2:3", "3:2", "3:4", "4:3"]
 ExportFormat = Literal["pdf", "png"]
 
 
-class ExportRequestModel(BaseModel):
+class MapExportRequestModel(BaseModel):
     """Schema for export request data to be passed to /export endpoint."""
 
     urls: list[str] = Field(
@@ -203,7 +203,7 @@ class ExportRequestModel(BaseModel):
     @root_validator
     def validate_urls(cls, values):
         """Validate that the URL is from an allowed domain"""
-        from prism_app.export_maps import validate_export_url
+        from prism_app.utils import validate_export_url
 
         urls = values.get("urls")
         if not urls:
