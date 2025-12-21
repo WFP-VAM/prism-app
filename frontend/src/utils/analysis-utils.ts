@@ -265,12 +265,18 @@ export async function loadFeaturesFromApi(
   });
 
   const statsApi = layer.api;
-  const apiUrl = statsApi?.url || ANALYSIS_API_URL;
+  if (!statsApi || !statsApi.zonesUrl || !statsApi.groupBy) {
+    throw new Error(
+      `StatsApi configuration is missing required properties (zonesUrl, groupBy) for layer '${layer.id}'`,
+    );
+  }
 
-  const apiData = {
+  const apiUrl = statsApi.url || ANALYSIS_API_URL;
+
+  const apiData: ApiData = {
     geotiff_url: wcsUrl,
-    zones_url: statsApi?.zonesUrl,
-    group_by: statsApi?.groupBy,
+    zones_url: statsApi.zonesUrl,
+    group_by: statsApi.groupBy,
     geojson_out: false,
   };
 
