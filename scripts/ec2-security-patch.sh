@@ -232,6 +232,113 @@ else
     fi
 fi
 
+# 9. Update dependency lock files
+log "\n${GREEN}=== Step 9: Updating dependency lock files ===${NC}"
+
+# Try to find the project root directory
+PROJECT_ROOT=""
+if [[ -d "/home/ubuntu/prism-app" ]]; then
+    PROJECT_ROOT="/home/ubuntu/prism-app"
+elif [[ -d "/opt/prism-app" ]]; then
+    PROJECT_ROOT="/opt/prism-app"
+elif [[ -d "$HOME/prism-app" ]]; then
+    PROJECT_ROOT="$HOME/prism-app"
+else
+    log "${YELLOW}[WARN]${NC} Could not find project root directory. Skipping lock file updates."
+    log "${YELLOW}[INFO]${NC} Searched: /home/ubuntu/prism-app, /opt/prism-app, $HOME/prism-app"
+fi
+
+if [[ -n "$PROJECT_ROOT" ]]; then
+    # Update Python lock file (poetry.lock)
+    if [[ -f "$PROJECT_ROOT/api/pyproject.toml" ]] && command -v poetry &> /dev/null; then
+        log "${YELLOW}[INFO]${NC} Updating Python dependencies (poetry.lock)..."
+        if [[ "$DRY_RUN" == "true" ]]; then
+            log "${YELLOW}[DRY-RUN]${NC} Would run: cd $PROJECT_ROOT/api && poetry lock"
+        else
+            if run_cmd "cd $PROJECT_ROOT/api && poetry lock --no-interaction" "Update poetry.lock"; then
+                log "${GREEN}[SUCCESS]${NC} poetry.lock updated"
+            else
+                log "${RED}[WARN]${NC} Failed to update poetry.lock (this may be expected if dependencies haven't changed)"
+            fi
+        fi
+    else
+        log "${YELLOW}[INFO]${NC} Skipping poetry.lock update (poetry not found or pyproject.toml missing)"
+    fi
+    
+    # Update Node.js lock files (yarn.lock)
+    if command -v yarn &> /dev/null; then
+        for dir in "frontend" "alerting" "common"; do
+            if [[ -f "$PROJECT_ROOT/$dir/package.json" ]]; then
+                log "${YELLOW}[INFO]${NC} Updating $dir dependencies (yarn.lock)..."
+                if [[ "$DRY_RUN" == "true" ]]; then
+                    log "${YELLOW}[DRY-RUN]${NC} Would run: cd $PROJECT_ROOT/$dir && yarn install"
+                else
+                    # yarn install will update yarn.lock if package.json or resolutions changed
+                    if run_cmd "cd $PROJECT_ROOT/$dir && yarn install" "Update $dir/yarn.lock"; then
+                        log "${GREEN}[SUCCESS]${NC} $dir/yarn.lock updated"
+                    else
+                        log "${RED}[WARN]${NC} Failed to update $dir/yarn.lock"
+                    fi
+                fi
+            fi
+        done
+    else
+        log "${YELLOW}[INFO]${NC} Skipping yarn.lock updates (yarn not found)"
+    fi
+fi
+
+# 10. Rebuild Docker images
+log "\n${GREEN}=== Step 10: Rebuilding Docker images ===${NC}"
+
+if ! command -v docker &> /dev/null; then
+    log "${YELLOW}[INFO]${NC} Docker not found. Skipping Docker image rebuild."
+elif ! docker info &> /dev/null; then
+    log "${YELLOW}[WARN]${NC} Docker is not running. Skipping Docker image rebuild."
+elif [[ -z "$PROJECT_ROOT" ]]; then
+    log "${YELLOW}[WARN]${NC} Project root not found. Skipping Docker image rebuild."
+else
+    # Rebuild API Docker image
+    if [[ -f "$PROJECT_ROOT/api/docker-compose.yml" ]] && command -v docker-compose &> /dev/null; then
+        log "${YELLOW}[INFO]${NC} Rebuilding API Docker image..."
+        if [[ "$DRY_RUN" == "true" ]]; then
+            log "${YELLOW}[DRY-RUN]${NC} Would run: cd $PROJECT_ROOT/api && docker compose build --no-cache"
+        else
+            if run_cmd "cd $PROJECT_ROOT/api && docker compose build --no-cache" "Rebuild API Docker image"; then
+                log "${GREEN}[SUCCESS]${NC} API Docker image rebuilt"
+            else
+                log "${RED}[WARN]${NC} Failed to rebuild API Docker image"
+            fi
+        fi
+    elif [[ -f "$PROJECT_ROOT/api/Dockerfile" ]]; then
+        log "${YELLOW}[INFO]${NC} Found API Dockerfile but docker-compose not available"
+        log "${YELLOW}[INFO]${NC} You may need to rebuild manually: cd $PROJECT_ROOT/api && docker build -t prism-api ."
+    fi
+    
+    # Rebuild Frontend Docker image
+    if [[ -f "$PROJECT_ROOT/frontend/docker-compose.yml" ]] && command -v docker-compose &> /dev/null; then
+        log "${YELLOW}[INFO]${NC} Rebuilding Frontend Docker image..."
+        if [[ "$DRY_RUN" == "true" ]]; then
+            log "${YELLOW}[DRY-RUN]${NC} Would run: cd $PROJECT_ROOT/frontend && docker compose build --no-cache"
+        else
+            if run_cmd "cd $PROJECT_ROOT/frontend && docker compose build --no-cache" "Rebuild Frontend Docker image"; then
+                log "${GREEN}[SUCCESS]${NC} Frontend Docker image rebuilt"
+            else
+                log "${RED}[WARN]${NC} Failed to rebuild Frontend Docker image"
+            fi
+        fi
+    elif [[ -f "$PROJECT_ROOT/frontend/Dockerfile" ]]; then
+        log "${YELLOW}[INFO]${NC} Found Frontend Dockerfile but docker-compose not available"
+        log "${YELLOW}[INFO]${NC} You may need to rebuild manually: cd $PROJECT_ROOT/frontend && docker build -t prism-frontend ."
+    fi
+    
+    # Note about restarting containers
+    if [[ "$DRY_RUN" != "true" ]]; then
+        log "\n${YELLOW}[NOTE]${NC} After rebuilding images, restart containers to use updated dependencies:"
+        log "${YELLOW}  cd $PROJECT_ROOT/api && docker compose up -d${NC}"
+        log "${YELLOW}  cd $PROJECT_ROOT/frontend && docker compose up -d${NC}"
+    fi
+fi
+
 # Summary
 log "\n${GREEN}========================================${NC}"
 log "${GREEN}System Security Patching Complete${NC}"
@@ -247,6 +354,10 @@ else
     log "  - System packages updated"
     log "  - Security patches applied"
     log "  - Vulnerable packages updated"
+    if [[ -n "$PROJECT_ROOT" ]]; then
+        log "  - Dependency lock files updated"
+        log "  - Docker images rebuilt"
+    fi
     log "  - Log file: $LOG_FILE"
     
     if [[ -f /var/run/reboot-required ]]; then
