@@ -10,7 +10,6 @@ import {
   isMainLayer,
   DateItem,
   AnticipatoryAction,
-  WMSLayerProps,
 } from 'config/types';
 import {
   AALayerIds,
