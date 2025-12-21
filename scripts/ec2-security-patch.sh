@@ -297,8 +297,14 @@ elif ! docker info &> /dev/null; then
 elif [[ -z "$PROJECT_ROOT" ]]; then
     log "${YELLOW}[WARN]${NC} Project root not found. Skipping Docker image rebuild."
 else
+    # Check if docker compose (plugin) is available
+    DOCKER_COMPOSE_AVAILABLE=false
+    if docker compose version &> /dev/null; then
+        DOCKER_COMPOSE_AVAILABLE=true
+    fi
+    
     # Rebuild API Docker image
-    if [[ -f "$PROJECT_ROOT/api/docker-compose.yml" ]] && command -v docker-compose &> /dev/null; then
+    if [[ -f "$PROJECT_ROOT/api/docker-compose.yml" ]] && [[ "$DOCKER_COMPOSE_AVAILABLE" == "true" ]]; then
         log "${YELLOW}[INFO]${NC} Rebuilding API Docker image..."
         if [[ "$DRY_RUN" == "true" ]]; then
             log "${YELLOW}[DRY-RUN]${NC} Would run: cd $PROJECT_ROOT/api && docker compose build --no-cache"
@@ -310,12 +316,16 @@ else
             fi
         fi
     elif [[ -f "$PROJECT_ROOT/api/Dockerfile" ]]; then
-        log "${YELLOW}[INFO]${NC} Found API Dockerfile but docker-compose not available"
+        if [[ "$DOCKER_COMPOSE_AVAILABLE" == "false" ]]; then
+            log "${YELLOW}[INFO]${NC} Found API Dockerfile but 'docker compose' not available"
+        else
+            log "${YELLOW}[INFO]${NC} Found API Dockerfile but docker-compose.yml not found"
+        fi
         log "${YELLOW}[INFO]${NC} You may need to rebuild manually: cd $PROJECT_ROOT/api && docker build -t prism-api ."
     fi
     
     # Rebuild Frontend Docker image
-    if [[ -f "$PROJECT_ROOT/frontend/docker-compose.yml" ]] && command -v docker-compose &> /dev/null; then
+    if [[ -f "$PROJECT_ROOT/frontend/docker-compose.yml" ]] && [[ "$DOCKER_COMPOSE_AVAILABLE" == "true" ]]; then
         log "${YELLOW}[INFO]${NC} Rebuilding Frontend Docker image..."
         if [[ "$DRY_RUN" == "true" ]]; then
             log "${YELLOW}[DRY-RUN]${NC} Would run: cd $PROJECT_ROOT/frontend && docker compose build --no-cache"
@@ -327,7 +337,11 @@ else
             fi
         fi
     elif [[ -f "$PROJECT_ROOT/frontend/Dockerfile" ]]; then
-        log "${YELLOW}[INFO]${NC} Found Frontend Dockerfile but docker-compose not available"
+        if [[ "$DOCKER_COMPOSE_AVAILABLE" == "false" ]]; then
+            log "${YELLOW}[INFO]${NC} Found Frontend Dockerfile but 'docker compose' not available"
+        else
+            log "${YELLOW}[INFO]${NC} Found Frontend Dockerfile but docker-compose.yml not found"
+        fi
         log "${YELLOW}[INFO]${NC} You may need to rebuild manually: cd $PROJECT_ROOT/frontend && docker build -t prism-frontend ."
     fi
     
