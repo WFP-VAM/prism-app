@@ -7,7 +7,13 @@ import {
 } from '@material-ui/core';
 import { cyanBlue } from 'muiTheme';
 
-function Switch({ checked, onChange, title, ariaLabel }: PrintConfigProps) {
+function Switch({
+  checked,
+  onChange,
+  title,
+  ariaLabel,
+  disabled,
+}: PrintConfigProps) {
   const classes = useStyles();
   return (
     <>
@@ -16,6 +22,7 @@ function Switch({ checked, onChange, title, ariaLabel }: PrintConfigProps) {
         onChange={onChange}
         className={classes.switch}
         color="primary"
+        disabled={disabled}
         classes={{
           switchBase: classes.switchBase,
           track: classes.switchTrack,
@@ -61,6 +68,9 @@ const useStyles = makeStyles(() =>
         backgroundColor: cyanBlue,
         opacity: 1,
       },
+      '&.Mui-checked.Mui-disabled + .MuiSwitch-track': {
+        opacity: 0.5,
+      },
     },
   }),
 );
@@ -73,6 +83,7 @@ export interface PrintConfigProps {
   ) => void;
   title?: string;
   ariaLabel?: string;
+  disabled?: boolean;
 }
 
 export default Switch;
