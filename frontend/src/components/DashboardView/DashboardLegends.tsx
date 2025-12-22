@@ -23,7 +23,7 @@ const DashboardLegends = memo(
     // Convert position: exportConfig uses 0=left/1=right, map state uses 'left'/'right'
     const exportPosition = exportConfig?.legendPosition;
     const position = exportPosition ?? (legendPosition === 'left' ? 0 : 1); // default right (1)
-    const scale = exportConfig?.legendScale ?? 0; // default 100% (0 means no reduction)
+    const scale = exportConfig?.legendScale ?? 1; // default 100% (1 means 100%)
 
     if (!isVisible) {
       return null;
@@ -35,7 +35,7 @@ const DashboardLegends = memo(
         style={{
           left: position % 2 === 0 ? '12px' : 'auto',
           right: position % 2 === 0 ? 'auto' : '12px',
-          transform: `scale(${1 - scale})`,
+          transform: `scale(${scale})`,
           transformOrigin: position % 2 === 0 ? 'top left' : 'top right',
         }}
       >
