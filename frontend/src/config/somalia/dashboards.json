@@ -29,7 +29,7 @@
       "thirdColumn": [
         {
           "type": "TEXT",
-          "content": "On 10 November, the Federal Government of Somalia declared a drought emergency and appealed for international assistance as conditions continued to deteriorate across northern, central and southern regions. Rainfall was well below average for the month of October (left), leading up to the drought declaration and has further deteriorated in November (right). The chart below shows rainfall anomaly since the beginning of the year, with a sharp decline beginning in September",
+          "content": "On 10 November, the Federal Government of Somalia declared a drought emergency and appealed for international assistance as conditions continued to deteriorate across northern, central and southern regions. Rainfall was well below average for the month of October (left), leading up to the drought declaration and has further deteriorated in November (right). The chart below shows rainfall anomaly since the beginning of the year, with a sharp decline beginning in September.",
           "textUpdatedAt": "2025-12-09"
         },
         {
@@ -60,7 +60,12 @@
           "textUpdatedAt": "2025-03-01"
         }
       ],
-      "thirdColumn": []
+      "thirdColumn": [
+        {
+          "type": "TEXT",
+          "content": "![Header](/data/somalia/somalia-ipc-projected-2025-09-12.png)",          "textUpdatedAt": "2025-03-01"
+        }
+      ]
     }
   ]
 
