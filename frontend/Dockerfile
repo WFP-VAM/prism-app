@@ -3,6 +3,12 @@
 # against the frontend using playwright
 FROM node:20
 
+# Update and upgrade system packages
+RUN --mount=type=cache,target=/var/cache/apt \
+    apt-get update && \
+    apt-get upgrade -y && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
 # copy dependencies definitions for better caching
 WORKDIR /common/
 
