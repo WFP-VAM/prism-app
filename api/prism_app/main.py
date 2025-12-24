@@ -246,15 +246,19 @@ def get_kobo_form_dates(
     formId: str,
     datetimeField: str,
     filters: Optional[str] = None,
+    allDates: bool = Query(
+        default=False,
+        description="If True, return all dates regardless of user province access",
+    ),
     user_info: Annotated[UserInfoPydanticModel, Depends(validate_user)] = None,
 ):
-    """Get all form response dates."""
+    """Get all form response dates. By default, filters by user's province access if available."""
     # cache responses for 24h as they're unlikely to change
     response.headers["Cache-Control"] = "max-age=86400"
 
-    # Extract province access information if user is authenticated
+    # Extract province access information if user is authenticated and allDates flag is False
     province = None
-    if user_info and hasattr(user_info, "access") and user_info.access:
+    if not allDates and user_info and hasattr(user_info, "access") and user_info.access:
         if isinstance(user_info.access, dict):
             province = user_info.access.get("province", None)
 
