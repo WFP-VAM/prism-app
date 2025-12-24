@@ -233,6 +233,7 @@ def get_form_dates(
     form_id: str,
     datetime_field: str,
     filters: Optional[str],
+    province: Optional[str] = None,
 ) -> list[dict[str, Any]]:
     """Get all form responses dates using Kobo api."""
     auth, form_fields = get_kobo_params(form_id, datetime_field, None, filters)
@@ -246,12 +247,42 @@ def get_form_dates(
     # TODO - implement filtering utils between "get_form_dates" and "get_form_responses".
     filtered_forms = []
     for form in forms:
-        conditions = [form.get(k) == v for k, v in form_fields["filters"].items()]
-        if all(conditions) is False:
+        # Apply filters: check that all filter conditions match
+        conditions = []
+        for k, v in form_fields["filters"].items():
+            form_value = form.get(k)
+            # Explicitly check if the filter field exists and matches
+            if form_value is None or str(form_value) != str(v):
+                conditions.append(False)
+            else:
+                conditions.append(True)
+
+        # Geospatial filter by admin area
+        if province is not None:
+            admin_condition = False
+            if "Province" in form and form["Province"] == province:
+                admin_condition = True
+            elif (
+                "Commune" in form
+                and form.get("Commune")
+                and str(form["Commune"])[0:2] == province
+            ):
+                admin_condition = True
+            conditions.append(admin_condition)
+
+        # If any condition fails, skip this form
+        if conditions and not all(conditions):
             continue
         filtered_forms.append(form)
 
-    dates_list = set([f.get("date").date().isoformat() for f in filtered_forms])
+    # Filter out forms with None dates and extract date strings
+    dates_list = set(
+        [
+            f.get("date").date().isoformat()
+            for f in filtered_forms
+            if f.get("date") is not None
+        ]
+    )
     sorted_dates_list = sorted(dates_list)
 
     return [{"date": d} for d in sorted_dates_list]
