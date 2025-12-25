@@ -87,7 +87,7 @@ export interface MapExportLayoutProps {
   titleText: string;
   footerText: string;
   footerTextSize: number;
-  dateText?: string; // Formatted date string for footer
+  layerDate?: number | string | null; // Date for {date} placeholder substitution in title and footer
 
   // Logo
   logo?: string;

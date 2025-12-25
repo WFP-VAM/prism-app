@@ -90,6 +90,7 @@ exports[`renders as expected 1`] = `
               inputprops="[object Object]"
               placeholder="Title"
               size="small"
+              value="Mozambique"
               variant="outlined"
             />
           </div>

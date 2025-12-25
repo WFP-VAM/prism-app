@@ -211,11 +211,7 @@ describe('MapExportLayout', () => {
     const { getByText } = render(
       <Provider store={store}>
         <ThemeProvider theme={createTheme()}>
-          <MapExportLayout
-            {...defaultProps}
-            footerText="Test Footer"
-            dateText="Publication date: 2024-12-01"
-          />
+          <MapExportLayout {...defaultProps} footerText="Test Footer" />
         </ThemeProvider>
       </Provider>,
     );
@@ -386,5 +382,21 @@ describe('MapExportLayout', () => {
     ) as HTMLElement;
     // bottomLogoHeight = 32 * 1.5 = 48
     expect(bottomLogoImg?.style.height).toBe('48px');
+  });
+
+  test('replaces {date} placeholder in title with formatted date when layerDate provided', () => {
+    const { getByText } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout
+            {...defaultProps}
+            titleText="Test Title - {date}"
+            layerDate="2024-09-30"
+          />
+        </ThemeProvider>
+      </Provider>,
+    );
+    // The {date} placeholder should be replaced with the locale-formatted date
+    expect(getByText(/Test Title - September 30, 2024/)).toBeInTheDocument();
   });
 });

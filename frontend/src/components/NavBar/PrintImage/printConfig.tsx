@@ -240,6 +240,9 @@ const footerTextSelectorOptions = [
   { value: 20, comp: <div style={{ fontSize: '20px' }}>Aa</div> },
 ];
 
+// Suffix appended to title when batch maps is enabled
+const DATE_PLACEHOLDER_SUFFIX = ' - {date}';
+
 function PrintConfig() {
   const classes = useStyles();
   const { t } = useSafeTranslation();
@@ -252,9 +255,9 @@ function PrintConfig() {
 
   const {
     handleClose,
+    titleText,
     setTitleText,
     debounceCallback,
-    country,
     mapDimensions,
     setMapDimensions,
     logo,
@@ -314,13 +317,13 @@ function PrintConfig() {
         {/* Title */}
         <div className={classes.optionWrap}>
           <TextField
-            defaultValue={country}
+            value={titleText}
             placeholder={t('Title')}
             fullWidth
             size="small"
             inputProps={{ label: t('Title'), style: { color: 'black' } }}
             onChange={event => {
-              debounceCallback(setTitleText, event.target.value);
+              setTitleText(event.target.value);
             }}
             variant="outlined"
           />
@@ -573,9 +576,24 @@ function PrintConfig() {
               title={t('Create a sequence of maps')}
               expanded={toggles.batchMapsVisibility}
               handleChange={() => {
+                const willBeEnabled = !toggles.batchMapsVisibility;
+
+                if (willBeEnabled && !titleText.includes('{date}')) {
+                  // Append date placeholder
+                  setTitleText(prev => `${prev}${DATE_PLACEHOLDER_SUFFIX}`);
+                } else if (
+                  !willBeEnabled &&
+                  titleText.endsWith(DATE_PLACEHOLDER_SUFFIX)
+                ) {
+                  // Remove date placeholder suffix
+                  setTitleText(prev =>
+                    prev.slice(0, -DATE_PLACEHOLDER_SUFFIX.length),
+                  );
+                }
+
                 setToggles(prev => ({
                   ...prev,
-                  batchMapsVisibility: !prev.batchMapsVisibility,
+                  batchMapsVisibility: willBeEnabled,
                 }));
               }}
             />

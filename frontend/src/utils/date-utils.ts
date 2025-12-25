@@ -135,6 +135,7 @@ export const getFormattedDate = (
     | 'default'
     | 'snake'
     | 'locale'
+    | 'localeUTC'
     | 'monthDay'
     | 'localeShortUTC'
     | 'short'
@@ -204,6 +205,13 @@ export const getFormattedDate = (
         month: 'short',
         day: 'numeric',
         year: 'numeric',
+        timeZone: 'UTC',
+      });
+    case 'localeUTC':
+      return new Date(date).toLocaleDateString(dateLocale, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
         timeZone: 'UTC',
       });
     case 'locale':

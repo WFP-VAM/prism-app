@@ -10,7 +10,9 @@ import React, {
   ComponentType,
 } from 'react';
 import MapGL, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';
+import { useTranslation } from 'react-i18next';
 import useResizeObserver from 'utils/useOnResizeObserver';
+import { getFormattedDate } from 'utils/date-utils';
 import { lightGrey } from 'muiTheme';
 import { FloodStationMarker } from 'components/MapView/Layers/AnticipatoryActionFloodLayer/FloodStationMarker';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
@@ -86,7 +88,7 @@ function MapExportLayout({
   titleText,
   footerText,
   footerTextSize,
-  dateText,
+  layerDate,
   logo,
   logoPosition,
   logoScale,
@@ -129,6 +131,28 @@ function MapExportLayout({
 
   // Scale percent for AA markers based on map zoom
   const scalePercent = useAAMarkerScalePercent(mapRef.current?.getMap());
+
+  const { t } = useTranslation();
+
+  // Process title text to replace {date} placeholder with formatted date
+  const processedTitleText = useMemo(() => {
+    if (!titleText || !layerDate) {
+      return titleText;
+    }
+    return titleText.replace(
+      /\{date\}/g,
+      getFormattedDate(layerDate, 'localeUTC') ?? '',
+    );
+  }, [titleText, layerDate]);
+
+  // Compute footer date text from layerDate
+  const footerDateText = useMemo(() => {
+    const pubDate = `${t('Publication date')}: ${getFormattedDate(Date.now(), 'default')}`;
+    if (layerDate) {
+      return `${pubDate}. ${t('Layer selection date')}: ${getFormattedDate(layerDate, 'default')}.`;
+    }
+    return `${pubDate}.`;
+  }, [layerDate, t]);
 
   const updateScaleBarAndNorthArrow = useCallback(() => {
     const elem = document.querySelector(
@@ -419,11 +443,11 @@ function MapExportLayout({
             />
           )}
           <Typography variant="h6" style={{ maxWidth: titleMaxWidth }}>
-            {titleText}
+            {processedTitleText}
           </Typography>
         </div>
       )}
-      {toggles.footerVisibility && (footerText || dateText) && (
+      {toggles.footerVisibility && (footerText || footerDateText) && (
         <div ref={footerRef} className={classes.footerOverlay}>
           {footerText && (
             <Typography
@@ -435,9 +459,9 @@ function MapExportLayout({
               {footerText}
             </Typography>
           )}
-          {dateText && (
+          {footerDateText && (
             <Typography style={{ fontSize: `${footerTextSize}px` }}>
-              {dateText}
+              {footerDateText}
             </Typography>
           )}
         </div>

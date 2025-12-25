@@ -14,13 +14,10 @@ import {
 import { useMapState } from 'utils/useMapState';
 import { boundaryCache } from 'utils/boundary-cache';
 import { useExportParams } from 'utils/useExportParams';
-import { getFormattedDate } from 'utils/date-utils';
 import { appConfig, safeCountry } from 'config';
 import { useBoundaryData } from 'utils/useBoundaryData';
-import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { mapStyle } from 'components/MapView/Map/utils';
 import mask from '@turf/mask';
-import { useSafeTranslation } from 'i18n';
 import MapExportLayout from 'components/MapExport/MapExportLayout';
 import useLayers from 'utils/layers-utils';
 import useResizeObserver from 'utils/useOnResizeObserver';
@@ -41,7 +38,6 @@ const displayedBoundaryLayers = getDisplayBoundaryLayers().reverse();
 
 const ExportView = memo(() => {
   const classes = useStyles();
-  const { t } = useSafeTranslation();
   const exportParams = useExportParams();
   const printRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
@@ -67,7 +63,6 @@ const ExportView = memo(() => {
   const map = maplibreMap();
   const datesPreloadingForWMS = useSelector(WMSLayerDatesRequested);
   const datesPreloadingForPointData = useSelector(pointDataLayerDatesRequested);
-  const dateRange = useSelector(dateRangeSelector);
   const dispatch = useDispatch();
 
   // Load layers from URL params - useLayers already handles this
@@ -165,20 +160,6 @@ const ExportView = memo(() => {
   // Use default map style - MapExportLayout handles label filtering
   const processedMapStyle = mapStyle.toString();
 
-  const dateText = useMemo(() => {
-    const pubDate = `${t('Publication date')}: ${getFormattedDate(
-      Date.now(),
-      'default',
-    )}`;
-    if (dateRange.startDate) {
-      return `${pubDate}. ${t('Layer selection date')}: ${getFormattedDate(
-        dateRange.startDate,
-        'default',
-      )}.`;
-    }
-    return `${pubDate}.`;
-  }, [dateRange.startDate, t]);
-
   const { logo } = appConfig.header || {};
   const bottomLogo = appConfig?.printConfig?.bottomLogo;
 
@@ -194,12 +175,9 @@ const ExportView = memo(() => {
   );
 
   // Use measured footer height, or estimate if not yet measured
+  // Footer always shows date text when visible, so just check footerVisibility
   const footerHeight =
-    measuredFooterHeight ||
-    (exportParams.toggles.footerVisibility &&
-    (exportParams.footerText || dateText)
-      ? 60
-      : 0);
+    measuredFooterHeight || (exportParams.toggles.footerVisibility ? 60 : 0);
 
   return (
     <Box className={classes.root}>
@@ -209,7 +187,7 @@ const ExportView = memo(() => {
         titleText={exportParams.titleText}
         footerText={exportParams.footerText}
         footerTextSize={exportParams.footerTextSize}
-        dateText={dateText}
+        layerDate={exportParams.date}
         logo={logo}
         logoPosition={exportParams.logoPosition}
         logoScale={exportParams.logoScale}
