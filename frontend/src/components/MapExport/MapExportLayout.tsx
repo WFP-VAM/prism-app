@@ -255,6 +255,8 @@ function MapExportLayout({
         map.off('sourcedata', sourceDataHandler);
         // Set PRISM_READY for server-side rendering (Playwright)
         if (signalExportReady) {
+          // eslint-disable-next-line no-console
+          console.info('Data loaded, setting PRISM_READY to true');
           (window as any).PRISM_READY = true;
         }
 
