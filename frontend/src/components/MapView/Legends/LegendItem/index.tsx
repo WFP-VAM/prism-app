@@ -48,6 +48,7 @@ import AnalysisDownloadButton from 'components/MapView/Legends//AnalysisDownload
 import { toggleRemoveLayer } from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 import { useOpacityState } from 'utils/useOpacityState';
 import { lightGrey } from 'muiTheme';
+import { formatCoverageRange } from 'utils/date-utils';
 import LoadingBar from '../LoadingBar';
 import LegendMarkdown from '../LegendMarkdown';
 
@@ -65,6 +66,7 @@ const LegendItem = memo(
     extent,
     forPrinting = false,
     showDescription = true,
+    dateCoverage,
   }: LegendItemProps) => {
     const classes = useStyles();
     const dispatch = useDispatch();
@@ -276,6 +278,12 @@ const LegendItem = memo(
       );
     }, [children]);
 
+    // Format the date coverage range for display
+    const coverageText = useMemo(
+      () => formatCoverageRange(dateCoverage?.startDate, dateCoverage?.endDate),
+      [dateCoverage],
+    );
+
     return (
       <ListItem disableGutters dense>
         <Paper
@@ -301,6 +309,13 @@ const LegendItem = memo(
             <>
               <LoadingBar layerId={id} />
               {renderedChildren}
+              {coverageText && (
+                <Typography variant="h5" style={{ marginTop: 8 }}>
+                  {t('Coverage')}:
+                  <br />
+                  {coverageText}
+                </Typography>
+              )}
             </>
           )}
           {!forPrinting && (
@@ -394,6 +409,11 @@ const useStyles = makeStyles(() =>
   }),
 );
 
+export interface DateCoverage {
+  startDate?: number;
+  endDate?: number;
+}
+
 interface LegendItemProps extends PropsWithChildren<{}> {
   id: LayerType['id'];
   title: LayerType['title'];
@@ -405,6 +425,7 @@ interface LegendItemProps extends PropsWithChildren<{}> {
   extent?: Extent;
   forPrinting?: boolean;
   showDescription?: boolean;
+  dateCoverage?: DateCoverage;
 }
 
 export default LegendItem;

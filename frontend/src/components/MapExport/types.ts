@@ -5,6 +5,10 @@ import type {
   LngLatBounds,
 } from 'maplibre-gl';
 import { AdminCodeString, LayerType } from 'config/types';
+import { LayerDateCoverage } from 'utils/server-utils';
+
+// Re-export for backwards compatibility
+export type { LayerDateCoverage as LayerCoverage } from 'utils/server-utils';
 
 export type AspectRatio =
   | 'Auto'
@@ -159,4 +163,7 @@ export interface MapExportLayoutProps {
   // When true, sets window.PRISM_READY = true after all sources load.
   // Used by ExportView for server-side rendering with Playwright.
   signalExportReady?: boolean;
+
+  // Layer coverage information for displaying in the footer
+  layersCoverage?: LayerDateCoverage[];
 }

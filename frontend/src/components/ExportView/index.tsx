@@ -21,6 +21,8 @@ import mask from '@turf/mask';
 import MapExportLayout from 'components/MapExport/MapExportLayout';
 import useLayers from 'utils/layers-utils';
 import useResizeObserver from 'utils/useOnResizeObserver';
+import { getLayersCoverage } from 'utils/server-utils';
+import { SelectedDateTimestamp } from 'config/types';
 
 /**
  * ExportView is a component that displays a map and allows the user to export it as a PDF or ZIP file.
@@ -66,7 +68,7 @@ const ExportView = memo(() => {
   const dispatch = useDispatch();
 
   // Load layers from URL params - useLayers already handles this
-  const { selectedLayers } = useLayers();
+  const { selectedLayers, selectedLayersWithDateSupport } = useLayers();
 
   // Get boundary layer for mask computation
   const boundaryLayer = getBoundaryLayerSingleton();
@@ -174,6 +176,20 @@ const ExportView = memo(() => {
     [selectedLayers],
   );
 
+  // Compute layer coverage for the footer
+  // exportParams.date is a string like "2024-10-15", convert to timestamp
+  const layersCoverage = useMemo(() => {
+    if (!exportParams.date) {
+      return [];
+    }
+    // Parse date string to timestamp (set to noon UTC to avoid timezone issues)
+    const dateTimestamp = new Date(
+      `${exportParams.date}T12:00:00Z`,
+    ).getTime() as SelectedDateTimestamp;
+
+    return getLayersCoverage(selectedLayersWithDateSupport, dateTimestamp);
+  }, [exportParams.date, selectedLayersWithDateSupport]);
+
   // Use measured footer height, or estimate if not yet measured
   // Footer always shows date text when visible, so just check footerVisibility
   const footerHeight =
@@ -205,6 +221,7 @@ const ExportView = memo(() => {
         bottomLogoScale={exportParams.bottomLogoScale}
         adminLevelLayersWithFillPattern={adminLevelLayersWithFillPattern}
         selectedLayers={selectedLayers}
+        layersCoverage={layersCoverage}
         signalExportReady
       />
     </Box>
