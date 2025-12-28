@@ -17,12 +17,14 @@
     "glob": "^13.0.0",
     "js-yaml": "^4.1.1",
     "brace-expansion": "^2.0.2",
-    "string-width": "4.2.3"
+    "string-width": "4.2.3",
+    "form-data": "^3.0.4"
   },
   "_resolutionsNotes": {
     "glob": "CVE-2025-64756 + jest/typeorm-seeding compatibility - Parent: (direct devDependency), typeorm-seeding, typeorm, rimraf, jest - Already at latest (13.0.0) - Review periodically",
     "js-yaml": "CVE-2025-64718 - Security fix - Parent: eslint - Already at latest (4.1.1) - Keep resolution until eslint updates",
-    "brace-expansion": "CVE-2025-5889 - Security fix - Parent: minimatch (via eslint), ejs - Cannot upgrade to v4 (breaks eslint) - Keep at v2 until eslint/minimatch support v4"
+    "brace-expansion": "CVE-2025-5889 - Security fix - Parent: minimatch (via eslint), ejs - Cannot upgrade to v4 (breaks eslint) - Keep at v2 until eslint/minimatch support v4",
+    "form-data": "CVE-2025-7783 - Security fix - GHSA-fjxv-7rqg-78g4 - Forces v3.0.4+ for transitive dependencies"
   },
   "scripts": {
     "prebuild": "rimraf dist",
