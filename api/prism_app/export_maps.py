@@ -28,7 +28,7 @@ PRISM_READY_TIMEOUT: Final[int] = 30000
 
 # Viewport settings
 BASE_WIDTH: Final[int] = 1200
-DEVICE_SCALE_FACTOR: Final[float] = 1.5
+DEVICE_SCALE_FACTOR: Final[float] = 2
 
 # Pool settings
 BROWSER_POOL_SIZE: Final[int] = int(os.getenv("BROWSER_POOL_SIZE", "2"))
