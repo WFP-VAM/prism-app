@@ -502,6 +502,10 @@ const useStyles = makeStyles(() =>
       justifyContent: 'space-between',
       width: '90vw',
       height: '90vh',
+      maxWidth: '100%',
+      maxHeight: '100%',
+      boxSizing: 'border-box',
+      paddingBottom: '20px',
     },
   }),
 );
