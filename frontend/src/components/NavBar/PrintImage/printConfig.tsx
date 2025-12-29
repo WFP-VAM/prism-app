@@ -592,48 +592,56 @@ function PrintConfig() {
 
         {/* Batch Maps */}
         {shouldEnableBatchMaps && (
-          <SectionToggle
-            title={t('Create a sequence of maps')}
-            expanded={toggles.batchMapsVisibility}
-            tooltip={t(
-              'Selecting this option will apply the template above to create multiple maps over a time period of your choice.',
+          <>
+            <SectionToggle
+              title={t('Create a sequence of maps')}
+              expanded={toggles.batchMapsVisibility}
+              tooltip={t(
+                'Selecting this option will apply the template above to create multiple maps over a time period of your choice.',
+              )}
+              handleChange={() => {
+                const willBeEnabled = !toggles.batchMapsVisibility;
+
+                if (willBeEnabled && !titleText.includes('{date}')) {
+                  // Append date placeholder
+                  setTitleText(prev => `${prev}${DATE_PLACEHOLDER_SUFFIX}`);
+                } else if (
+                  !willBeEnabled &&
+                  titleText.endsWith(DATE_PLACEHOLDER_SUFFIX)
+                ) {
+                  // Remove date placeholder suffix
+                  setTitleText(prev =>
+                    prev.slice(0, -DATE_PLACEHOLDER_SUFFIX.length),
+                  );
+                }
+
+                setToggles(prev => ({
+                  ...prev,
+                  batchMapsVisibility: willBeEnabled,
+                }));
+              }}
+            />
+            {toggles.batchMapsVisibility && (
+              <GreyContainer>
+                <GreyContainerSection>
+                  <DateRangePicker />
+                </GreyContainerSection>
+                <GreyContainerSection isLast>
+                  <Box className={classes.mapCountContainer}>
+                    <Typography variant="body1">
+                      {t('Nb of maps generated')}
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      className={classes.mapCountValue}
+                    >
+                      {mapCount}
+                    </Typography>
+                  </Box>
+                </GreyContainerSection>
+              </GreyContainer>
             )}
-            handleChange={() => {
-              const willBeEnabled = !toggles.batchMapsVisibility;
-
-              if (willBeEnabled && !titleText.includes('{date}')) {
-                setTitleText(prev => `${prev}${DATE_PLACEHOLDER_SUFFIX}`);
-              } else if (
-                !willBeEnabled &&
-                titleText.endsWith(DATE_PLACEHOLDER_SUFFIX)
-              ) {
-                setTitleText(prev =>
-                  prev.slice(0, -DATE_PLACEHOLDER_SUFFIX.length),
-                );
-              }
-
-              setToggles(prev => ({
-                ...prev,
-                batchMapsVisibility: willBeEnabled,
-              }));
-            }}
-          >
-            <GreyContainer>
-              <GreyContainerSection>
-                <DateRangePicker />
-              </GreyContainerSection>
-              <GreyContainerSection isLast>
-                <Box className={classes.mapCountContainer}>
-                  <Typography variant="body1">
-                    {t('Nb of maps generated')}
-                  </Typography>
-                  <Typography variant="body1" className={classes.mapCountValue}>
-                    {mapCount}
-                  </Typography>
-                </Box>
-              </GreyContainerSection>
-            </GreyContainer>
-          </SectionToggle>
+          </>
         )}
 
         <Button
