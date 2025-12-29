@@ -7,11 +7,12 @@ import os
 import tempfile
 import time
 import zipfile
+from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Final, Optional, Tuple
 
-from playwright.async_api import Browser, Playwright
+from playwright.async_api import Browser, BrowserContext, Playwright
 from playwright.async_api import TimeoutError as PlaywrightTimeoutError
 from playwright.async_api import async_playwright
 from pypdf import PdfReader, PdfWriter
@@ -29,8 +30,8 @@ PRISM_READY_TIMEOUT: Final[int] = 30000
 BASE_WIDTH: Final[int] = 1200
 DEVICE_SCALE_FACTOR: Final[int] = 2
 
-# Concurrency settings
-MAX_CONCURRENT_RENDERS: Final[int] = int(os.getenv("MAX_CONCURRENT_RENDERS", "2"))
+# Pool settings
+BROWSER_POOL_SIZE: Final[int] = int(os.getenv("BROWSER_POOL_SIZE", "2"))
 MAX_RENDER_RETRIES: Final[int] = 3
 
 # Browser launch arguments for reduced memory usage
@@ -46,79 +47,111 @@ BROWSER_LAUNCH_ARGS: Final[list[str]] = [
 ]
 
 
-# Module-level browser state (singleton via module)
-Playwright_instance: Optional[Playwright] = None
-Browser_instance: Optional[Browser] = None
-Browser_lock: Optional[asyncio.Lock] = None
+@dataclass
+class BrowserPool:
+    """Pool of browser instances with persistent contexts for caching."""
+
+    playwright: Playwright
+    browsers: list[Browser] = field(default_factory=list)
+    contexts: list[BrowserContext] = field(default_factory=list)
+    available: asyncio.Queue = field(default_factory=asyncio.Queue)
+    size: int = 0
+
+    @classmethod
+    async def create(cls, size: int) -> "BrowserPool":
+        """Create a new browser pool with persistent contexts for caching."""
+        playwright = await async_playwright().start()
+        pool = cls(playwright=playwright, size=size)
+
+        for i in range(size):
+            browser = await playwright.chromium.launch(args=BROWSER_LAUNCH_ARGS)
+            context = await browser.new_context(device_scale_factor=DEVICE_SCALE_FACTOR)
+            pool.browsers.append(browser)
+            pool.contexts.append(context)
+            await pool.available.put(context)
+            logger.info(f"Browser pool: created instance {i + 1}/{size}")
+
+        return pool
+
+    async def acquire(self) -> BrowserContext:
+        """Acquire a browser context from the pool (blocks if none available)."""
+        return await self.available.get()
+
+    async def release(self, context: BrowserContext) -> None:
+        """Return a browser context to the pool."""
+        await self.available.put(context)
+
+    async def close(self) -> None:
+        """Close all contexts, browsers, and playwright."""
+        for context in self.contexts:
+            try:
+                await context.close()
+            except Exception:
+                pass
+        for browser in self.browsers:
+            try:
+                await browser.close()
+            except Exception:
+                pass
+        try:
+            await self.playwright.stop()
+        except Exception:
+            pass
+        logger.info("Browser pool: closed all instances")
 
 
-def _get_lock() -> asyncio.Lock:
-    """Get or create the browser lock, ensuring it's created in a running event loop."""
-    global Browser_lock
-    if Browser_lock is None:
-        Browser_lock = asyncio.Lock()
-    return Browser_lock
+# Module-level pool state
+_pool: Optional[BrowserPool] = None
+_pool_lock: Optional[asyncio.Lock] = None
 
 
-async def get_browser() -> Browser:
-    """Get or create a shared browser instance."""
-    global Playwright_instance, Browser_instance
-    async with _get_lock():
-        if Browser_instance is None or not Browser_instance.is_connected():
-            # Clean up existing browser if disconnected
-            if Browser_instance is not None:
-                try:
-                    await Browser_instance.close()
-                except Exception:
-                    pass
-
-            if Playwright_instance is None:
-                Playwright_instance = await async_playwright().start()
-
-            Browser_instance = await Playwright_instance.chromium.launch(
-                args=BROWSER_LAUNCH_ARGS
-            )
-            logger.info("Browser: new instance created")
-
-        return Browser_instance
+def _get_pool_lock() -> asyncio.Lock:
+    """Get or create the pool lock, ensuring it's created in a running event loop."""
+    global _pool_lock
+    if _pool_lock is None:
+        _pool_lock = asyncio.Lock()
+    return _pool_lock
 
 
+async def get_browser_pool() -> BrowserPool:
+    """Get or create the shared browser pool."""
+    global _pool
+    async with _get_pool_lock():
+        if _pool is None:
+            _pool = await BrowserPool.create(BROWSER_POOL_SIZE)
+            logger.info(f"Browser pool: initialized with {BROWSER_POOL_SIZE} instances")
+        return _pool
+
+
+async def close_browser_pool() -> None:
+    """Close the shared browser pool."""
+    global _pool, _pool_lock
+    async with _get_pool_lock():
+        if _pool is not None:
+            await _pool.close()
+            _pool = None
+        _pool_lock = None
+        logger.info("Browser pool: closed")
+
+
+# Legacy aliases for backwards compatibility with tests
 async def close_browser() -> None:
-    """Close the shared browser instance and playwright."""
-    global Playwright_instance, Browser_instance, Browser_lock
-    async with _get_lock():
-        if Browser_instance is not None:
-            try:
-                await Browser_instance.close()
-            except Exception:
-                pass
-            Browser_instance = None
-
-        if Playwright_instance is not None:
-            try:
-                await Playwright_instance.stop()
-            except Exception:
-                pass
-            Playwright_instance = None
-
-        # Reset lock so next event loop gets a fresh one
-        Browser_lock = None
-
-        logger.info("Browser: closed")
+    """Alias for close_browser_pool for backwards compatibility."""
+    await close_browser_pool()
 
 
 async def render_single_map(
-    browser: Browser,
+    context: BrowserContext,
     url: str,
     viewport_width: int,
     viewport_height: int,
     render_format: str,
 ) -> bytes:
     """
-    Render a single map using an existing browser instance and return the image/PDF bytes.
-    Retries up to MAX_RENDER_RETRIES times on timeout before raising an error.
+    Render a single map using an existing browser context and return the image/PDF bytes.
+
     Args:
-        browser: Playwright browser instance to use for rendering
+        context: Playwright browser context (shares cache with other pages in same context)
         url: URL to render (should include all map parameters)
         viewport_width: Browser viewport width in pixels
         viewport_height: Browser viewport height in pixels
@@ -132,7 +165,7 @@ async def render_single_map(
     last_error: Optional[PlaywrightTimeoutError] = None
 
     for attempt in range(1, MAX_RENDER_RETRIES + 1):
-        page = await browser.new_page(device_scale_factor=DEVICE_SCALE_FACTOR)
+        page = await context.new_page()
         page.set_default_timeout(PAGE_TIMEOUT)
         await page.set_viewport_size(
             {"width": viewport_width, "height": viewport_height}
@@ -188,33 +221,32 @@ async def render_single_map(
 
 
 async def render_to_file(
-    browser: Browser,
+    pool: BrowserPool,
     url: str,
     viewport_width: int,
     viewport_height: int,
     render_format: str,
     output_path: Path,
-    semaphore: asyncio.Semaphore,
 ) -> None:
     """
-    Render a single map and write directly to a file.
-
-    This reduces memory pressure by not holding all rendered bytes in memory.
+    Render a single map using a browser from the pool and write to file.
 
     Args:
-        browser: Playwright browser instance to use for rendering
+        pool: Browser pool to acquire context from
         url: URL to render (should include all map parameters)
         viewport_width: Browser viewport width in pixels
         viewport_height: Browser viewport height in pixels
         render_format: Render format ('pdf' for PDF, 'png' for PNG screenshot)
         output_path: Path to write the rendered output
-        semaphore: Semaphore for limiting concurrent renders
     """
-    async with semaphore:
+    context = await pool.acquire()
+    try:
         result_bytes = await render_single_map(
-            browser, url, viewport_width, viewport_height, render_format
+            context, url, viewport_width, viewport_height, render_format
         )
         output_path.write_bytes(result_bytes)
+    finally:
+        await pool.release(context)
 
 
 async def export_maps(
@@ -239,16 +271,15 @@ async def export_maps(
     # Step 1: Extract dates and setup
     setup_start = time.time()
     dates = extract_dates_from_urls(urls)
-    logger.info(
-        f"Rendering {len(urls)} maps with {MAX_CONCURRENT_RENDERS} concurrent renders"
-    )
-    semaphore = asyncio.Semaphore(MAX_CONCURRENT_RENDERS)
     logger.info(f"Timing: Setup completed in {time.time() - setup_start:.2f}s")
 
-    # Step 2: Get browser instance
-    browser_start = time.time()
-    browser = await get_browser()
-    logger.info(f"Timing: Browser ready in {time.time() - browser_start:.2f}s")
+    # Step 2: Get browser pool
+    pool_start = time.time()
+    pool = await get_browser_pool()
+    logger.info(
+        f"Timing: Browser pool ready in {time.time() - pool_start:.2f}s "
+        f"(pool size: {pool.size})"
+    )
 
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir_path = Path(tmpdir)
@@ -259,17 +290,16 @@ async def export_maps(
             for i, date in enumerate(dates)
         ]
 
-        # Step 3: Render all maps
+        # Step 3: Render all maps - pool handles concurrency via acquire/release
         render_start = time.time()
         render_tasks = [
             render_to_file(
-                browser,
+                pool,
                 url,
                 viewport_width,
                 viewport_height,
                 format_type,
                 output_path,
-                semaphore,
             )
             for url, output_path in zip(urls, output_paths)
         ]
