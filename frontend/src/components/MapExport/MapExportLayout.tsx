@@ -320,15 +320,17 @@ function MapExportLayout({
       // Listen for idle events - fires when map finishes rendering
       map.on('idle', idleHandler);
 
-      // Fallback timeout in case idle fires but tiles aren't ready yet
-      setTimeout(() => {
+      // Poll for ready state
+      const pollInterval = setInterval(() => {
         if (!hasSignaledReady && checkFullyLoaded()) {
+          clearInterval(pollInterval);
           signalReady();
         }
-      }, 3000);
+      }, 500);
 
       // Safety timeout to prevent infinite waiting
       setTimeout(() => {
+        clearInterval(pollInterval);
         if (!hasSignaledReady) {
           console.warn('Safety timeout reached, forcing PRISM_READY');
           signalReady();

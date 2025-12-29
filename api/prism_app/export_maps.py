@@ -34,9 +34,8 @@ DEVICE_SCALE_FACTOR: Final[int] = 2
 BROWSER_POOL_SIZE: Final[int] = int(os.getenv("BROWSER_POOL_SIZE", "2"))
 MAX_RENDER_RETRIES: Final[int] = 3
 
-# Browser launch arguments for reduced memory usage
+# Browser launch arguments optimized for Docker with proper shm_size
 BROWSER_LAUNCH_ARGS: Final[list[str]] = [
-    "--disable-dev-shm-usage",  # Critical for Docker environments
     "--disable-gpu",
     "--no-sandbox",
     "--disable-setuid-sandbox",
