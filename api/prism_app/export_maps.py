@@ -64,7 +64,8 @@ class BrowserPool:
 
         for i in range(size):
             browser = await playwright.chromium.launch(args=BROWSER_LAUNCH_ARGS)
-            context = await browser.new_context(device_scale_factor=DEVICE_SCALE_FACTOR)
+            # context = await browser.new_context(device_scale_factor=DEVICE_SCALE_FACTOR)
+            context = await browser.new_context()
             pool.browsers.append(browser)
             pool.contexts.append(context)
             await pool.available.put(context)
