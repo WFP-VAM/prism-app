@@ -113,7 +113,7 @@ function PrintPreview() {
         printRef={printRef}
         titleRef={titleRef}
         footerRef={footerRef}
-        footerHeight={footerHeight + 8}
+        footerHeight={footerHeight}
         bottomLogo={bottomLogo}
         bottomLogoScale={bottomLogoScale}
         aaMarkers={AAMarkers}

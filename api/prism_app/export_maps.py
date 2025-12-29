@@ -178,7 +178,6 @@ async def render_single_map(
             result = await page.screenshot(
                 type="png",
                 full_page=True,
-                scale="css",
             )
 
         await page.close()
