@@ -39,10 +39,10 @@ BROWSER_LAUNCH_ARGS: Final[list[str]] = [
     "--disable-gpu",
     "--no-sandbox",
     "--disable-setuid-sandbox",
-    "--disable-accelerated-2d-canvas",
     "--disable-background-networking",
     "--disable-extensions",
-    "--js-flags=--max-old-space-size=512",
+    "--disable-dev-shm-usage",
+    "--js-flags=--max-old-space-size=1024",
 ]
 
 
@@ -64,8 +64,8 @@ class BrowserPool:
 
         for i in range(size):
             browser = await playwright.chromium.launch(args=BROWSER_LAUNCH_ARGS)
-            # context = await browser.new_context(device_scale_factor=DEVICE_SCALE_FACTOR)
-            context = await browser.new_context()
+            context = await browser.new_context(device_scale_factor=DEVICE_SCALE_FACTOR)
+            # context = await browser.new_context()
             pool.browsers.append(browser)
             pool.contexts.append(context)
             await pool.available.put(context)
