@@ -132,7 +132,7 @@ async def render_single_map(
     last_error: Optional[PlaywrightTimeoutError] = None
 
     for attempt in range(1, MAX_RENDER_RETRIES + 1):
-        page = await browser.new_page()
+        page = await browser.new_page(device_scale_factor=DEVICE_SCALE_FACTOR)
         page.set_default_timeout(PAGE_TIMEOUT)
         await page.set_viewport_size(
             {"width": viewport_width, "height": viewport_height}
@@ -178,6 +178,7 @@ async def render_single_map(
             result = await page.screenshot(
                 type="png",
                 full_page=True,
+                scale="css",
             )
 
         await page.close()
