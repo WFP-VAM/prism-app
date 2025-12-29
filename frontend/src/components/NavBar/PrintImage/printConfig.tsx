@@ -10,6 +10,7 @@ import {
   MenuItem,
   TextField,
   Theme,
+  Tooltip,
   Typography,
   createStyles,
   makeStyles,
@@ -110,6 +111,7 @@ function SectionToggle({
   expanded,
   handleChange,
   disabled,
+  tooltip,
 }: {
   title: string;
   children?: React.ReactNode;
@@ -119,23 +121,42 @@ function SectionToggle({
     checked: boolean,
   ) => void;
   disabled?: boolean;
+  tooltip?: string;
 }) {
   const classes = useStyles();
+
+  const switchElement = (
+    <div
+      className={`${classes.collapsibleWrapper} ${
+        expanded && children ? classes.collapsibleWrapperExpanded : ''
+      }`}
+    >
+      <Switch
+        checked={expanded}
+        onChange={handleChange}
+        title={title}
+        disabled={disabled}
+      />
+    </div>
+  );
+
   return (
     <div>
-      <div
-        className={`${classes.collapsibleWrapper} ${
-          expanded && children ? classes.collapsibleWrapperExpanded : ''
-        }`}
-      >
-        <Switch
-          checked={expanded}
-          onChange={handleChange}
-          title={title}
-          disabled={disabled}
-        />
-      </div>
-      <Collapse in={expanded}>{children}</Collapse>
+      {tooltip ? (
+        <Tooltip
+          title={tooltip}
+          arrow
+          placement="top"
+          classes={{ tooltip: classes.tooltip }}
+        >
+          {switchElement}
+        </Tooltip>
+      ) : (
+        switchElement
+      )}
+      <Collapse in={expanded} style={{ paddingLeft: '8px' }}>
+        {children}
+      </Collapse>
     </div>
   );
 }
@@ -575,6 +596,9 @@ function PrintConfig() {
             <SectionToggle
               title={t('Create a sequence of maps')}
               expanded={toggles.batchMapsVisibility}
+              tooltip={t(
+                'Selecting this option will apply the template above to create multiple maps over a time period of your choice.',
+              )}
               handleChange={() => {
                 const willBeEnabled = !toggles.batchMapsVisibility;
 
@@ -597,35 +621,26 @@ function PrintConfig() {
                 }));
               }}
             />
-            <GreyContainer>
-              <GreyContainerSection isLast={!toggles.batchMapsVisibility}>
-                <Typography variant="body1">
-                  {t(
-                    'Selecting this option will apply the template above to create multiple maps over a time period of your choice.',
-                  )}
-                </Typography>
-              </GreyContainerSection>
-              {toggles.batchMapsVisibility && (
-                <>
-                  <GreyContainerSection>
-                    <DateRangePicker />
-                  </GreyContainerSection>
-                  <GreyContainerSection isLast>
-                    <Box className={classes.mapCountContainer}>
-                      <Typography variant="body1">
-                        {t('Nb of maps generated')}
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        className={classes.mapCountValue}
-                      >
-                        {mapCount}
-                      </Typography>
-                    </Box>
-                  </GreyContainerSection>
-                </>
-              )}
-            </GreyContainer>
+            {toggles.batchMapsVisibility && (
+              <GreyContainer>
+                <GreyContainerSection>
+                  <DateRangePicker />
+                </GreyContainerSection>
+                <GreyContainerSection isLast>
+                  <Box className={classes.mapCountContainer}>
+                    <Typography variant="body1">
+                      {t('Nb of maps generated')}
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      className={classes.mapCountValue}
+                    >
+                      {mapCount}
+                    </Typography>
+                  </Box>
+                </GreyContainerSection>
+              </GreyContainer>
+            )}
           </>
         )}
 
@@ -724,6 +739,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     collapsibleWrapperExpanded: {
       marginBottom: '0.25rem',
+    },
+    tooltip: {
+      fontSize: '0.75em',
     },
     formControl: {
       width: '100%',

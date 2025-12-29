@@ -104,8 +104,13 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   // the % value of the original dimensions
   const [mapDimensions, setMapDimensions] =
     React.useState<MapDimensions>(initialMapDimensions);
-  const [footerRef, { height: footerHeight }] =
+  const [footerRef, { height: measuredFooterHeight }] =
     useResizeObserver<HTMLDivElement>(footerText, open);
+
+  // Use measured footer height, or estimate if not yet measured
+  // This prevents overlap between footer and scale/legend elements during initial render
+  const footerHeight =
+    measuredFooterHeight || (toggles.footerVisibility ? 60 : 0);
   const [titleRef, { height: titleHeight }] = useResizeObserver<HTMLDivElement>(
     titleText,
     open,
@@ -497,6 +502,10 @@ const useStyles = makeStyles(() =>
       justifyContent: 'space-between',
       width: '90vw',
       height: '90vh',
+      maxWidth: '100%',
+      maxHeight: '100%',
+      boxSizing: 'border-box',
+      paddingBottom: '20px',
     },
   }),
 );
