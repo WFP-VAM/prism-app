@@ -278,7 +278,6 @@ const LegendItem = memo(
       );
     }, [children]);
 
-    // Format the date coverage range for display
     const coverageText = useMemo(
       () => formatCoverageRange(dateCoverage?.startDate, dateCoverage?.endDate),
       [dateCoverage],

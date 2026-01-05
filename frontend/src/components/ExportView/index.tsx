@@ -176,13 +176,11 @@ const ExportView = memo(() => {
     [selectedLayers],
   );
 
-  // Compute layer coverage for the footer
-  // exportParams.date is a string like "2024-10-15", convert to timestamp
   const layersCoverage = useMemo(() => {
     if (!exportParams.date) {
       return [];
     }
-    // Parse date string to timestamp (set to noon UTC to avoid timezone issues)
+
     const dateTimestamp = new Date(
       `${exportParams.date}T12:00:00Z`,
     ).getTime() as SelectedDateTimestamp;

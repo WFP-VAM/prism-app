@@ -108,7 +108,6 @@ export const getRequestDate = (
   return dateItem.queryDate;
 };
 
-/** Coverage information for a single layer */
 export interface LayerDateCoverage {
   layerId: string;
   layerTitle: string;

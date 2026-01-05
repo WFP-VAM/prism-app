@@ -7,9 +7,6 @@ import type {
 import { AdminCodeString, LayerType } from 'config/types';
 import { LayerDateCoverage } from 'utils/server-utils';
 
-// Re-export for backwards compatibility
-export type { LayerDateCoverage as LayerCoverage } from 'utils/server-utils';
-
 export type AspectRatio =
   | 'Auto'
   | '4:3'
