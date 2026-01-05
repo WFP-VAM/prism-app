@@ -12,11 +12,6 @@ import {
 const AUTO_CLOSE_TIME = 10 * 1000;
 
 function Notifier() {
-  // Don't show notifications on export view
-  if (window.location.pathname === '/export') {
-    return null;
-  }
-
   const dispatch = useDispatch();
   const classes = useStyles();
   const notifications = useSelector(notificationsSelector);
@@ -71,6 +66,11 @@ function Notifier() {
       }
     });
   }, [autoClose, notifications]);
+
+  // Don't show notifications on export view
+  if (window.location.pathname === '/export') {
+    return null;
+  }
 
   return (
     <div className={classes.notificationsContainer} style={{ top: topOffset }}>
