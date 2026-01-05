@@ -136,6 +136,12 @@ export const layerDatesPreloadedSelector = (state: RootState): boolean =>
   state.serverPreloadState?.loadedWMS &&
   state.serverPreloadState?.loadedPointData;
 
+// Separating point and WMS layer loading for #1452
+export const wmsLayerDatesLoadedSelector = (state: RootState): boolean =>
+  state.serverPreloadState?.loadedWMS;
+export const pointDataLayerDatesLoadedSelector = (state: RootState): boolean =>
+  state.serverPreloadState?.loadedPointData;
+
 export const datesErrorSelector = (state: RootState): string | undefined =>
   state.serverPreloadState.error;
 

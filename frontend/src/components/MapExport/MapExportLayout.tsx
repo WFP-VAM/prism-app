@@ -1,5 +1,5 @@
 import { Typography, createStyles, makeStyles } from '@material-ui/core';
-import maplibregl, { MapSourceDataEvent } from 'maplibre-gl';
+import maplibregl from 'maplibre-gl';
 import React, {
   useRef,
   useCallback,
@@ -10,7 +10,9 @@ import React, {
   ComponentType,
 } from 'react';
 import MapGL, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';
+import { useTranslation } from 'react-i18next';
 import useResizeObserver from 'utils/useOnResizeObserver';
+import { getFormattedDate } from 'utils/date-utils';
 import { lightGrey } from 'muiTheme';
 import { FloodStationMarker } from 'components/MapView/Layers/AnticipatoryActionFloodLayer/FloodStationMarker';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
@@ -86,7 +88,7 @@ function MapExportLayout({
   titleText,
   footerText,
   footerTextSize,
-  dateText,
+  layerDate,
   logo,
   logoPosition,
   logoScale,
@@ -130,13 +132,35 @@ function MapExportLayout({
   // Scale percent for AA markers based on map zoom
   const scalePercent = useAAMarkerScalePercent(mapRef.current?.getMap());
 
+  const { t } = useTranslation();
+
+  // Process title text to replace {date} placeholder with formatted date
+  const processedTitleText = useMemo(() => {
+    if (!titleText || !layerDate) {
+      return titleText;
+    }
+    return titleText.replace(
+      /\{date\}/g,
+      getFormattedDate(layerDate, 'localeUTC') ?? '',
+    );
+  }, [titleText, layerDate]);
+
+  // Compute footer date text from layerDate
+  const footerDateText = useMemo(() => {
+    const pubDate = `${t('Publication date')}: ${getFormattedDate(Date.now(), 'default')}`;
+    if (layerDate) {
+      return `${pubDate}. ${t('Layer selection date')}: ${getFormattedDate(layerDate, 'default')}.`;
+    }
+    return `${pubDate}.`;
+  }, [layerDate, t]);
+
   const updateScaleBarAndNorthArrow = useCallback(() => {
     const elem = document.querySelector(
       '.maplibregl-ctrl-scale',
     ) as HTMLElement;
 
     // this takes into account the watermark
-    const baseHeight = footerHeight || 20;
+    const baseHeight = (footerHeight || 12) + 8;
 
     if (elem) {
       Object.assign(elem.style, {
@@ -238,13 +262,13 @@ function MapExportLayout({
       );
     }
 
-    // Track source loading to ensure all tiles are loaded before signaling ready
-    const shouldTrackSources = signalExportReady || onMapLoad;
+    // Track tile loading using idle event and areTilesLoaded() for robust detection
+    const shouldTrackTileLoading = signalExportReady || onMapLoad;
 
-    if (shouldTrackSources && map) {
-      const loadingSources = new Set<string>();
+    if (shouldTrackTileLoading && map) {
       let hasSignaledReady = false;
-      let checkReadyTimeout: ReturnType<typeof setTimeout> | null = null;
+      let idleCheckCount = 0;
+      const MAX_IDLE_CHECKS = 3;
 
       const signalReady = () => {
         if (hasSignaledReady) {
@@ -252,9 +276,12 @@ function MapExportLayout({
         }
 
         hasSignaledReady = true;
-        map.off('sourcedata', sourceDataHandler);
+        map.off('idle', idleHandler);
+
         // Set PRISM_READY for server-side rendering (Playwright)
         if (signalExportReady) {
+          // eslint-disable-next-line no-console
+          console.info('All tiles loaded, setting PRISM_READY to true');
           (window as any).PRISM_READY = true;
         }
 
@@ -263,39 +290,52 @@ function MapExportLayout({
         }
       };
 
-      const checkAllSourcesLoaded = () => {
-        if (checkReadyTimeout) {
-          clearTimeout(checkReadyTimeout);
-        }
+      const checkFullyLoaded = (): boolean => {
+        // areTilesLoaded() can return void
+        const areTilesLoaded = Boolean(map.areTilesLoaded());
+        const isStyleLoaded = map.isStyleLoaded();
+        const isLoaded = map.loaded();
 
-        checkReadyTimeout = setTimeout(() => {
-          if (loadingSources.size === 0 && !hasSignaledReady) {
-            signalReady();
-          }
-        }, 500);
+        return Boolean(isStyleLoaded && areTilesLoaded && isLoaded);
       };
 
-      const sourceDataHandler = (event: MapSourceDataEvent) => {
-        if (!event.sourceId?.startsWith('source-')) {
+      const idleHandler = () => {
+        if (hasSignaledReady) {
           return;
         }
 
-        if (!event.isSourceLoaded) {
-          loadingSources.add(event.sourceId);
-        } else if (loadingSources.has(event.sourceId)) {
-          loadingSources.delete(event.sourceId);
-          checkAllSourcesLoaded();
+        if (checkFullyLoaded()) {
+          idleCheckCount += 1;
+
+          // Require multiple consecutive idle states to ensure stability
+          if (idleCheckCount >= MAX_IDLE_CHECKS) {
+            signalReady();
+          }
+        } else {
+          // Reset counter if not fully loaded
+          idleCheckCount = 0;
         }
       };
 
-      map.on('sourcedata', sourceDataHandler);
+      // Listen for idle events - fires when map finishes rendering
+      map.on('idle', idleHandler);
 
-      // If there are no data layers, signal ready after initial render settles
-      setTimeout(() => {
-        if (loadingSources.size === 0 && !hasSignaledReady) {
+      // Poll for ready state
+      const pollInterval = setInterval(() => {
+        if (!hasSignaledReady && checkFullyLoaded()) {
+          clearInterval(pollInterval);
           signalReady();
         }
       }, 500);
+
+      // Safety timeout to prevent infinite waiting
+      setTimeout(() => {
+        clearInterval(pollInterval);
+        if (!hasSignaledReady) {
+          console.warn('Safety timeout reached, forcing PRISM_READY');
+          signalReady();
+        }
+      }, 25000);
     } else if (onMapLoad) {
       onMapLoad(e);
     }
@@ -388,7 +428,7 @@ function MapExportLayout({
           position: 'absolute',
           zIndex: 3,
           width: '50px',
-          bottom: `${(footerHeight || 20) + 40}px`,
+          bottom: `${(footerHeight || 20) + 42}px`,
           right: '10px',
         }}
         src={iconNorthArrow}
@@ -417,11 +457,11 @@ function MapExportLayout({
             />
           )}
           <Typography variant="h6" style={{ maxWidth: titleMaxWidth }}>
-            {titleText}
+            {processedTitleText}
           </Typography>
         </div>
       )}
-      {toggles.footerVisibility && (footerText || dateText) && (
+      {toggles.footerVisibility && (footerText || footerDateText) && (
         <div ref={footerRef} className={classes.footerOverlay}>
           {footerText && (
             <Typography
@@ -433,9 +473,9 @@ function MapExportLayout({
               {footerText}
             </Typography>
           )}
-          {dateText && (
+          {footerDateText && (
             <Typography style={{ fontSize: `${footerTextSize}px` }}>
-              {dateText}
+              {footerDateText}
             </Typography>
           )}
         </div>
