@@ -542,5 +542,7 @@
   "Landfall estimated time": "Hora estimada de chegada à costa",
   "Landfall estimated leadtime": "Tempo estimado de antecedência da chegada à costa",
   "District impacted by landfall": "Distrito de entrada do ciclone",
-  "Overland": "Em terra"
+  "Overland": "Em terra",
+  "Data coverage": "Abrangência de dados",
+  "Coverage": "Abrangência"
 }

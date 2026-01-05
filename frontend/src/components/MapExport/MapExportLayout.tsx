@@ -16,6 +16,7 @@ import { getFormattedDate } from 'utils/date-utils';
 import { lightGrey } from 'muiTheme';
 import { FloodStationMarker } from 'components/MapView/Layers/AnticipatoryActionFloodLayer/FloodStationMarker';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
+import { formatCoverageRange } from 'utils/date-utils';
 import { DiscriminateUnion, LayerType, Panel } from 'config/types';
 import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer/utils';
 import { mapStyle } from 'components/MapView/Map/utils';
@@ -114,6 +115,7 @@ function MapExportLayout({
   onBoundsChange,
   onMapDimensionsChange,
   signalExportReady = false,
+  layersCoverage = [],
 }: MapExportLayoutProps) {
   const classes = useStyles();
   const northArrowRef = useRef<HTMLImageElement>(null);
@@ -153,6 +155,34 @@ function MapExportLayout({
     }
     return `${pubDate}.`;
   }, [layerDate, t]);
+
+  const footerCoverageText = useMemo(() => {
+    if (!layersCoverage || layersCoverage.length === 0) {
+      return null;
+    }
+
+    const layersWithCoverage = layersCoverage
+      .map(coverage => ({
+        title: coverage.layerTitle,
+        range: formatCoverageRange(coverage.startDate, coverage.endDate),
+      }))
+      .filter(item => item.range !== null);
+
+    if (layersWithCoverage.length === 0) {
+      return null;
+    }
+
+    // If only one layer, don't show the layer title
+    if (layersWithCoverage.length === 1) {
+      return `${t('Data coverage')}: ${layersWithCoverage[0].range}`;
+    }
+
+    // Multiple layers: show layer titles
+    const coverageLines = layersWithCoverage.map(
+      item => `${t(item.title)}: ${item.range}`,
+    );
+    return `${t('Data coverage')}: ${coverageLines.join('; ')}`;
+  }, [layersCoverage, t]);
 
   const updateScaleBarAndNorthArrow = useCallback(() => {
     const elem = document.querySelector(
@@ -461,25 +491,26 @@ function MapExportLayout({
           </Typography>
         </div>
       )}
-      {toggles.footerVisibility && (footerText || footerDateText) && (
-        <div ref={footerRef} className={classes.footerOverlay}>
-          {footerText && (
-            <Typography
-              style={{
-                fontSize: `${footerTextSize}px`,
-                whiteSpace: 'pre-line',
-              }}
-            >
-              {footerText}
-            </Typography>
-          )}
-          {footerDateText && (
-            <Typography style={{ fontSize: `${footerTextSize}px` }}>
-              {footerDateText}
-            </Typography>
-          )}
-        </div>
-      )}
+      {toggles.footerVisibility &&
+        (footerText || footerDateText || footerCoverageText) && (
+          <div ref={footerRef} className={classes.footerOverlay}>
+            {footerText && (
+              <Typography
+                style={{
+                  fontSize: `${footerTextSize}px`,
+                  whiteSpace: 'pre-line',
+                }}
+              >
+                {footerText}
+              </Typography>
+            )}
+            {footerDateText && (
+              <Typography style={{ fontSize: `${footerTextSize}px` }}>
+                {footerDateText} {footerCoverageText ? footerCoverageText : ''}
+              </Typography>
+            )}
+          </div>
+        )}
       {toggles.logoVisibility && !titleText && logo && (
         <img
           style={{

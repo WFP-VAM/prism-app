@@ -33,4 +33,5 @@ export enum DateFormat {
   MiddleEndian = 'MM/DD/YYYY',
   TimeOnly = 'HH:mm',
   DayFirstHyphen = 'DD-MM-YYYY',
+  DayFirstHyphenMonthName = 'DD-MMM-YYYY',
 }

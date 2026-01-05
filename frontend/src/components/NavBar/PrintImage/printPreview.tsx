@@ -1,12 +1,17 @@
-import { useContext } from 'react';
+import { useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { appConfig } from 'config';
 import { AAMarkersSelector } from 'context/anticipatoryAction/AADroughtStateSlice';
 import { AAFloodDataSelector } from 'context/anticipatoryAction/AAFloodStateSlice';
 import { useFilteredFloodStations } from 'components/MapView/Layers/AnticipatoryActionFloodLayer/useFilteredFloodStations';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
-import { Panel, AdminLevelDataLayerProps } from 'config/types';
+import {
+  Panel,
+  AdminLevelDataLayerProps,
+  SelectedDateTimestamp,
+} from 'config/types';
 import useLayers from 'utils/layers-utils';
+import { getLayersCoverage } from 'utils/server-utils';
 
 import {
   dateRangeSelector,
@@ -25,12 +30,21 @@ function PrintPreview() {
   const tabValue = useSelector(leftPanelTabValueSelector);
 
   const { logo } = appConfig.header || {};
-  const { selectedLayers } = useLayers();
+  const { selectedLayers, selectedLayersWithDateSupport } = useLayers();
   const adminLevelLayersWithFillPattern = selectedLayers.filter(
     layer =>
       layer.type === 'admin_level_data' &&
       (layer.fillPattern || layer.legend.some(legend => legend.fillPattern)),
   ) as AdminLevelDataLayerProps[];
+
+  const layersCoverage = useMemo(
+    () =>
+      getLayersCoverage(
+        selectedLayersWithDateSupport,
+        dateRange.startDate as SelectedDateTimestamp,
+      ),
+    [dateRange.startDate, selectedLayersWithDateSupport],
+  );
 
   const filteredFloodStations = useFilteredFloodStations(
     floodState.stationSummaryData,
@@ -120,6 +134,7 @@ function PrintPreview() {
         floodStations={filteredFloodStations}
         activePanel={activePanel}
         adminLevelLayersWithFillPattern={adminLevelLayersWithFillPattern}
+        layersCoverage={layersCoverage}
         onBoundsChange={(bounds, zoom) => {
           setPreviewBounds(bounds);
           setPreviewZoom(zoom);

@@ -147,7 +147,8 @@ export const getFormattedDate = (
     | DateFormat.DayFirstHyphen
     | DateFormat.ISO
     | DateFormat.MiddleEndian
-    | DateFormat.TimeOnly,
+    | DateFormat.TimeOnly
+    | DateFormat.DayFirstHyphenMonthName,
   dateLocale: string = 'default',
 ) => {
   if (date === undefined) {
@@ -157,6 +158,10 @@ export const getFormattedDate = (
   const jsDate = new Date(date);
   const year = jsDate.getUTCFullYear();
   const month = String(jsDate.getUTCMonth() + 1).padStart(2, '0');
+  const monthName = jsDate.toLocaleString('en-US', {
+    month: 'short',
+    timeZone: 'UTC',
+  });
   const day = String(jsDate.getUTCDate()).padStart(2, '0');
 
   switch (format) {
@@ -174,6 +179,8 @@ export const getFormattedDate = (
       return `${day}_${month}_${year}`;
     case DateFormat.DayFirstHyphen:
       return `${day}-${month}-${year}`;
+    case DateFormat.DayFirstHyphenMonthName:
+      return `${day}-${monthName}-${year}`;
     case DateFormat.MiddleEndian:
       return `${month}/${day}/${year}`;
     case DateFormat.TimeOnly:
@@ -227,6 +234,35 @@ export const getFormattedDate = (
 
 export const getTimeInMilliseconds = (date: string | number) =>
   new Date(date).getTime();
+
+/**
+ * Format a date coverage range for display.
+ * Returns "11-Sept-2025 - 10-Oct-2025" or just "11-Sept-2025" if dates are the same.
+ */
+export function formatCoverageRange(
+  startDate?: number,
+  endDate?: number,
+): string | null {
+  if (!startDate || !endDate) {
+    return null;
+  }
+
+  const startFormatted = getFormattedDate(
+    startDate,
+    DateFormat.DayFirstHyphenMonthName,
+  ) as string;
+  const endFormatted = getFormattedDate(
+    endDate,
+    DateFormat.DayFirstHyphenMonthName,
+  ) as string;
+
+  // If start and end are the same day, just show one date
+  if (startFormatted === endFormatted) {
+    return startFormatted ?? '';
+  }
+
+  return `${startFormatted} – ${endFormatted}`;
+}
 
 export const SEASON_MAP: [number, number][] = [
   [0, 2],
