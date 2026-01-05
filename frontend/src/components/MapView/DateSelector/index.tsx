@@ -305,11 +305,28 @@ const DateSelector = memo(() => {
   const range = useMemo(() => {
     const startDate = stateStartDate ? new Date(stateStartDate) : new Date();
     const { start, end } = calculateStartAndEndDates(startDate, panelTab);
+
+    // Normalize end date to 12:00 UTC to ensure December 31st is included
+    // This fixes timezone issues where end date at 00:00 local time becomes previous day in UTC
+    const normalizedEnd = new Date(
+      Date.UTC(end.getFullYear(), end.getMonth(), end.getDate(), 12, 0, 0),
+    );
+    const normalizedStart = new Date(
+      Date.UTC(
+        start.getFullYear(),
+        start.getMonth(),
+        start.getDate(),
+        12,
+        0,
+        0,
+      ),
+    );
+
     const daysArray: Date[] = [];
 
     for (
-      let currentDate = start;
-      currentDate <= end;
+      let currentDate = normalizedStart;
+      currentDate <= normalizedEnd;
       currentDate = new Date(currentDate.getTime() + 1 * oneDayInMs)
     ) {
       daysArray.push(new Date(currentDate));
