@@ -217,5 +217,7 @@
   "Below Threshold": "ក្រោមកម្រិត/ក្រោមការកំណត់",
   "Admin 1": "ជ្រើសរើសអ្នកគ្រប់គ្រង ១",
   "Admin 2": "ជ្រើសរើសអ្នកគ្រប់គ្រង ២",
-  "Remove {{adminLevel}}": "លាក់ {{adminLevel}}"
+  "Remove {{adminLevel}}": "លាក់ {{adminLevel}}",
+  "Data coverage": "វិសាលភាពទិន្នន័យ",
+  "Coverage": "គ្របដណ្តប់"
 }
