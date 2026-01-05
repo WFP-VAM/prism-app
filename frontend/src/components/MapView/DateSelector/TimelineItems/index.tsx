@@ -215,13 +215,12 @@ const createCoverageBarStyles = (
   top: CSSProperties['top'],
 ): CoverageBarStyle => ({
   position: 'absolute',
-  height: 8,
+  height: 10,
   pointerEvents: 'none',
-  opacity: 0.35,
+  opacity: 0.25,
   top,
   left: 0,
   backgroundColor,
-  borderRadius: 2,
 });
 
 const createValidityTickStyles = (
@@ -230,11 +229,10 @@ const createValidityTickStyles = (
 ): TickStyle => ({
   position: 'absolute',
   height: 10,
-  width: 2,
+  width: TIMELINE_ITEM_WIDTH,
   pointerEvents: 'none',
-  opacity: 0.7,
+  opacity: 0.6,
   top,
-  left: 1,
   backgroundColor,
 });
 
@@ -243,14 +241,12 @@ const createQueryDateTickStyles = (
   top: CSSProperties['top'],
 ): TickStyle => ({
   position: 'absolute',
-  height: 12,
-  width: 3,
+  height: 10,
+  width: TIMELINE_ITEM_WIDTH,
   pointerEvents: 'none',
   opacity: 1,
-  top: (top as number) - 1,
-  left: 0.5,
+  top,
   backgroundColor,
-  borderRadius: 1,
 });
 
 const useStyles = makeStyles(() =>
@@ -371,7 +367,6 @@ type CoverageBarStyle = {
   top: CSSProperties['top'];
   left: CSSProperties['left'];
   backgroundColor: CSSProperties['backgroundColor'];
-  borderRadius: CSSProperties['borderRadius'];
 };
 
 type TickStyle = {
@@ -381,9 +376,7 @@ type TickStyle = {
   pointerEvents: CSSProperties['pointerEvents'];
   opacity: CSSProperties['opacity'];
   top: CSSProperties['top'];
-  left: CSSProperties['left'];
   backgroundColor: CSSProperties['backgroundColor'];
-  borderRadius?: CSSProperties['borderRadius'];
 };
 
 export interface TimelineItemsProps {
