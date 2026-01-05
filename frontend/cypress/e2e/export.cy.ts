@@ -84,4 +84,24 @@ describe('Export View', () => {
     // North arrow should still be visible (not controlled by toggles)
     cy.get('img[alt="northArrow"]').should('be.visible');
   });
+
+  it('replaces {date} placeholder in title with formatted date', () => {
+    // Test that the {date} placeholder in the title is replaced with the actual date
+    const exportUrl = new URL(`${frontendUrl}/export`);
+    exportUrl.searchParams.set('hazardLayerIds', 'ndvi_dekad');
+    exportUrl.searchParams.set('date', '2024-09-30');
+    exportUrl.searchParams.set('title', 'Mozambique NDVI - {date}');
+    exportUrl.searchParams.set('bounds', '32,-27,41,-10');
+
+    cy.visit(exportUrl.toString());
+
+    // Wait for map to load
+    cy.contains('MapTiler', { timeout: 30000 }).should('be.visible');
+
+    // Title should show the formatted date instead of {date} placeholder
+    cy.contains('Mozambique NDVI - September 30, 2024').should('be.visible');
+
+    // The raw {date} placeholder should NOT be visible
+    cy.contains('{date}').should('not.exist');
+  });
 });

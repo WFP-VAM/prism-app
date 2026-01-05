@@ -1,4 +1,4 @@
-import { useMemo, useContext } from 'react';
+import { useMemo, useContext, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -10,12 +10,24 @@ import DatePicker from 'react-datepicker';
 import { useTranslation } from 'react-i18next';
 import useLayers from 'utils/layers-utils';
 import PrintConfigContext from './printConfig.context';
+import { useMapState } from 'utils/useMapState';
 
 function DateRangePicker() {
   const classes = useStyles();
   const { t } = useTranslation();
   const { printConfig } = useContext(PrintConfigContext);
   const { selectedLayerDates } = useLayers();
+  const mapState = useMapState();
+  const selectedDateFromMap = mapState?.dateRange?.startDate;
+
+  useEffect(() => {
+    if (selectedDateFromMap) {
+      setDateRange({
+        startDate: selectedDateFromMap,
+        endDate: new Date().getTime(),
+      });
+    }
+  }, [selectedDateFromMap]);
 
   const includedDates = useMemo(
     () => selectedLayerDates.map(timestamp => new Date(timestamp)),
@@ -64,7 +76,13 @@ function DateRangePicker() {
           <DatePicker
             locale={t('date_locale')}
             dateFormat="dd/MM/yyyy"
-            selected={startDate ? new Date(startDate) : null}
+            selected={
+              startDate
+                ? new Date(startDate)
+                : selectedDateFromMap
+                  ? new Date(selectedDateFromMap)
+                  : null
+            }
             onChange={handleStartDateChange}
             maxDate={endDate ? new Date(endDate) : maxDate}
             includeDates={includedDates}
@@ -85,7 +103,13 @@ function DateRangePicker() {
           <DatePicker
             locale={t('date_locale')}
             dateFormat="dd/MM/yyyy"
-            selected={endDate ? new Date(endDate) : null}
+            selected={
+              endDate
+                ? new Date(endDate)
+                : selectedDateFromMap
+                  ? new Date()
+                  : null
+            }
             onChange={handleEndDateChange}
             minDate={startDate ? new Date(startDate) : minDate}
             includeDates={includedDates}

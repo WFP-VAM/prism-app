@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
+  MenuItem,
+  Select,
   TextField,
+  Tooltip,
   Typography,
   makeStyles,
   createStyles,
@@ -29,54 +32,25 @@ const useStyles = makeStyles(() =>
     wrapper: {
       display: 'flex',
       flexDirection: 'column',
-      gap: '0.75rem',
+      gap: '0.5rem',
     },
     header: {
       fontSize: '14px',
       fontWeight: 400,
     },
-    section: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '0.5rem',
-    },
-    sectionLabel: {
-      fontSize: '12px',
-      color: 'rgba(0, 0, 0, 0.6)',
-      marginBottom: '0.25rem',
-    },
-    autoButton: {
-      backgroundColor: 'white',
-      height: '32px',
-      fontSize: '0.7rem',
-      padding: '4px 8px',
-      border: '1px solid rgba(0, 0, 0, 0.12) !important',
-      textTransform: 'none',
-      justifyContent: 'flex-start',
-      '&.Mui-selected': {
-        backgroundColor: 'rgba(0, 0, 0, 0.08)',
-      },
-    },
-    autoButtonLabel: {
-      fontWeight: 500,
-    },
-    autoButtonDescription: {
-      fontSize: '0.75rem',
-      color: 'rgba(0, 0, 0, 0.6)',
-      textAlign: 'left',
-    },
     buttonGroup: {
       display: 'flex',
       flexWrap: 'nowrap',
-      gap: '3px',
+      width: '100%',
     },
     button: {
       backgroundColor: 'white',
       height: '32px',
-      minWidth: '52px',
+      flex: 1,
       padding: '4px 6px',
       fontSize: '0.7rem',
       border: '1px solid rgba(0, 0, 0, 0.12) !important',
+      textTransform: 'none',
       '&.Mui-selected': {
         backgroundColor: 'rgba(0, 0, 0, 0.08)',
       },
@@ -86,26 +60,23 @@ const useStyles = makeStyles(() =>
       flexDirection: 'row',
       alignItems: 'center',
       gap: '4px',
+      justifyContent: 'center',
     },
-    customButton: {
+    tooltip: {
+      fontSize: '0.75em',
+    },
+    select: {
       backgroundColor: 'white',
-      height: '32px',
-      padding: '4px 8px',
-      fontSize: '0.7rem',
-      border: '1px solid rgba(0, 0, 0, 0.12) !important',
-      textTransform: 'none',
-      justifyContent: 'flex-start',
-      width: '100%',
-      '&.Mui-selected': {
-        backgroundColor: 'rgba(0, 0, 0, 0.08)',
+      '& .MuiOutlinedInput-input': {
+        padding: '8px 12px',
+        fontSize: '0.875rem',
       },
     },
-    customButtonContent: {
+    menuItem: {
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
-      gap: '4px',
-      width: '100%',
+      gap: '8px',
     },
     customInputs: {
       display: 'flex',
@@ -129,28 +100,9 @@ const useStyles = makeStyles(() =>
   }),
 );
 
-/**
- * Check if an option is a string preset (not Auto, Custom, A4, or object)
- */
-function isStringPreset(option: AspectRatioOption): boolean {
-  return (
-    typeof option === 'string' &&
-    option !== 'Auto' &&
-    option !== 'Custom' &&
-    !/A4/.test(option)
-  );
-}
-
-/**
- * Check if an option is an A4 option
- */
-function isA4Option(option: AspectRatioOption): boolean {
-  return typeof option === 'string' && /A4/.test(option);
-}
-
 export function AspectRatioSelector({
   value,
-  options,
+  options: _options,
   setValue,
 }: AspectRatioSelectorProps) {
   const classes = useStyles();
@@ -158,98 +110,85 @@ export function AspectRatioSelector({
 
   const isAutoActive = isAutoRatio(value);
   const isCustomActive = isCustomRatio(value);
-
-  const stringPresets = options.filter(isStringPreset) as string[];
-  const a4Options = options.filter(isA4Option) as string[];
-
-  const selectedPreset =
-    isAutoActive || isCustomActive
-      ? null
-      : typeof value === 'string' && !/A4/.test(value)
-        ? value
-        : null;
-
-  const selectedA4 =
-    isAutoActive || isCustomActive
-      ? null
-      : typeof value === 'string' && /A4/.test(value)
-        ? value
-        : null;
-
-  const handleAutoToggle = () => {
-    if (isAutoActive) {
-      return;
-    }
-    setValue('Auto');
-  };
-
-  /**
-   * Get display label for each aspect ratio option
-   */
-  function getAspectRatioLabel(ratio: AspectRatioOption): string {
-    if (ratio === 'Auto') {
-      return t('Auto');
-    }
-    if (ratio === 'A4-P') {
-      return t('A4 (Portrait)');
-    }
-    if (ratio === 'A4-L') {
-      return t('A4 (Landscape)');
-    }
-    if (ratio === 'Custom') {
-      return t('Custom');
-    }
-    if (typeof ratio === 'object') {
-      return t('Custom');
-    }
-    return ratio;
-  }
-
-  const handlePresetChange = (
-    _event: React.MouseEvent<HTMLElement>,
-    newValue: string | null,
-  ) => {
-    if (newValue === null) {
-      return; // Don't allow deselection
-    }
-    setValue(newValue as AspectRatio);
-  };
-
-  const handleA4Change = (
-    _event: React.MouseEvent<HTMLElement>,
-    newValue: string | null,
-  ) => {
-    if (newValue === null) {
-      return; // Don't allow deselection
-    }
-    setValue(newValue as AspectRatio);
-  };
-
-  const handleCustomToggle = () => {
+  const presetRatios: string[] = ['3:2', '4:3', '6:5', '1:1', '2:3'];
+  const isPresetRatio =
+    typeof value === 'string' && !['Auto', 'A4-P', 'A4-L'].includes(value);
+  const isOtherActive = isPresetRatio || isCustomActive;
+  const [dropdownValue, setDropdownValue] = useState<string>(() => {
     if (isCustomActive) {
-      return;
+      return 'Custom';
     }
-    setValue({ w: 1, h: 1 });
+    if (isPresetRatio) {
+      return value as string;
+    }
+    return '3:2'; // default
+  });
+
+  // Update dropdown value when external value changes
+  useEffect(() => {
+    if (isCustomActive) {
+      setDropdownValue('Custom');
+    } else if (isPresetRatio) {
+      setDropdownValue(value as string);
+    }
+  }, [value, isCustomActive, isPresetRatio]);
+
+  const labels: Record<string, string> = {
+    Auto: t('Auto'),
+    'A4-P': t('A4 Port'),
+    'A4-L': t('A4 Land'),
+    Other: t('Other'),
+    Custom: t('Custom'),
   };
 
-  const handleCustomWidthChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    if (!isCustomRatio(value)) {
-      return;
+  const getLabel = (ratio: string) => labels[ratio] ?? ratio;
+
+  const getCurrentValue = (): string => {
+    if (isAutoActive) {
+      return 'Auto';
     }
-    const w = parseFloat(event.target.value) || 1;
-    setValue({ w, h: value.h });
+    if (value === 'A4-P' || value === 'A4-L') {
+      return value;
+    }
+    return 'Other';
   };
 
-  const handleCustomHeightChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
+  const handleChange = (
+    _event: React.MouseEvent<HTMLElement>,
+    newValue: string | null,
   ) => {
-    if (!isCustomRatio(value)) {
+    if (!newValue) {
       return;
     }
-    const h = parseFloat(event.target.value) || 1;
-    setValue({ w: value.w, h });
+    if (newValue === 'Auto' || newValue === 'A4-P' || newValue === 'A4-L') {
+      setValue(newValue as AspectRatio);
+    } else if (newValue === 'Other') {
+      setValue(
+        dropdownValue === 'Custom'
+          ? { w: 1, h: 1 }
+          : (dropdownValue as AspectRatio),
+      );
+    }
+  };
+
+  const handleDropdownChange = (
+    event: React.ChangeEvent<{ value: unknown }>,
+  ) => {
+    const newValue = event.target.value as string;
+    setDropdownValue(newValue);
+    setValue(
+      newValue === 'Custom' ? { w: 1, h: 1 } : (newValue as AspectRatio),
+    );
+  };
+
+  const handleCustomChange = (dimension: 'w' | 'h') => {
+    return (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (!isCustomRatio(value)) {
+        return;
+      }
+      const num = parseFloat(event.target.value) || 1;
+      setValue({ ...value, [dimension]: num });
+    };
   };
 
   return (
@@ -258,129 +197,93 @@ export function AspectRatioSelector({
         {t('Aspect Ratio')}
       </Typography>
 
-      <div
-        className={classes.section}
-        style={{ flexDirection: 'row', alignItems: 'center' }}
+      {/* Single row of buttons: Auto, A4-P, A4-L, Other */}
+      <ToggleButtonGroup
+        value={getCurrentValue()}
+        exclusive
+        onChange={handleChange}
+        className={classes.buttonGroup}
       >
-        <ToggleButton
-          value="auto"
-          selected={isAutoActive}
-          onClick={handleAutoToggle}
-          className={classes.autoButton}
-        >
+        <ToggleButton value="Auto" className={classes.button}>
+          <Tooltip
+            title={t('Map resizes based on browser window')}
+            arrow
+            classes={{ tooltip: classes.tooltip }}
+          >
+            <div className={classes.buttonContent}>
+              <AspectRatioGlyph aspectRatio="Auto" size={16} />
+              <span>{getLabel('Auto')}</span>
+            </div>
+          </Tooltip>
+        </ToggleButton>
+        <ToggleButton value="A4-P" className={classes.button}>
           <div className={classes.buttonContent}>
-            <AspectRatioGlyph aspectRatio="Auto" size={16} />
-            {t('Auto')}
+            <AspectRatioGlyph aspectRatio="A4-P" size={16} />
+            <span>{getLabel('A4-P')}</span>
           </div>
         </ToggleButton>
-        <div className={classes.autoButtonDescription}>
-          {t('Map resizes based on browser window')}
-        </div>
-      </div>
-
-      {/* Aspect ratio presets */}
-      {stringPresets.length > 0 && (
-        <div className={classes.section}>
-          <ToggleButtonGroup
-            value={selectedPreset}
-            exclusive
-            onChange={handlePresetChange}
-            className={classes.buttonGroup}
-          >
-            {stringPresets.map(preset => (
-              <ToggleButton
-                key={preset}
-                value={preset}
-                className={classes.button}
-              >
-                <div className={classes.buttonContent}>
-                  <AspectRatioGlyph
-                    aspectRatio={preset as AspectRatio}
-                    size={16}
-                  />
-                  <span>
-                    {getAspectRatioLabel(preset as AspectRatioOption)}
-                  </span>
-                </div>
-              </ToggleButton>
-            ))}
-          </ToggleButtonGroup>
-        </div>
-      )}
-
-      {/* A4 options */}
-      {a4Options.length > 0 && (
-        <div className={classes.section}>
-          <ToggleButtonGroup
-            value={selectedA4}
-            exclusive
-            onChange={handleA4Change}
-            className={classes.buttonGroup}
-          >
-            {a4Options.map(a4Option => (
-              <ToggleButton
-                key={a4Option}
-                value={a4Option}
-                className={classes.button}
-              >
-                <div className={classes.buttonContent}>
-                  <AspectRatioGlyph
-                    aspectRatio={a4Option as AspectRatio}
-                    size={16}
-                  />
-                  <span>
-                    {getAspectRatioLabel(a4Option as AspectRatioOption)}
-                  </span>
-                </div>
-              </ToggleButton>
-            ))}
-          </ToggleButtonGroup>
-        </div>
-      )}
-
-      <div className={classes.section}>
-        <ToggleButton
-          value="custom"
-          selected={isCustomActive}
-          onClick={handleCustomToggle}
-          className={classes.customButton}
-        >
-          <div className={classes.customButtonContent}>
+        <ToggleButton value="A4-L" className={classes.button}>
+          <div className={classes.buttonContent}>
+            <AspectRatioGlyph aspectRatio="A4-L" size={16} />
+            <span>{getLabel('A4-L')}</span>
+          </div>
+        </ToggleButton>
+        <ToggleButton value="Other" className={classes.button}>
+          <div className={classes.buttonContent}>
             <TuneIcon fontSize="small" />
-            <span>{t('Custom')}</span>
+            <span>{getLabel('Other')}</span>
           </div>
         </ToggleButton>
-      </div>
+      </ToggleButtonGroup>
 
-      {/* Custom Inputs */}
+      {isOtherActive && (
+        <Select
+          value={dropdownValue}
+          onChange={handleDropdownChange}
+          variant="outlined"
+          fullWidth
+          className={classes.select}
+        >
+          {presetRatios.map(ratio => (
+            <MenuItem key={ratio} value={ratio}>
+              <div className={classes.menuItem}>
+                <AspectRatioGlyph
+                  aspectRatio={ratio as AspectRatio}
+                  size={16}
+                />
+                <span>{ratio}</span>
+              </div>
+            </MenuItem>
+          ))}
+          <MenuItem value="Custom">
+            <div className={classes.menuItem}>
+              <TuneIcon fontSize="small" />
+              <span>{getLabel('Custom')}</span>
+            </div>
+          </MenuItem>
+        </Select>
+      )}
+
       {isCustomActive && (
         <Box className={classes.customInputs}>
           <TextField
             type="number"
             label={t('Width')}
             value={value.w}
-            onChange={handleCustomWidthChange}
+            onChange={handleCustomChange('w')}
             variant="outlined"
             size="small"
-            inputProps={{
-              min: 0.1,
-              max: 100,
-              step: 0.1,
-            }}
+            inputProps={{ min: 0.1, max: 100, step: 0.1 }}
           />
           <span className={classes.colon}>:</span>
           <TextField
             type="number"
             label={t('Height')}
             value={value.h}
-            onChange={handleCustomHeightChange}
+            onChange={handleCustomChange('h')}
             variant="outlined"
             size="small"
-            inputProps={{
-              min: 0.1,
-              max: 100,
-              step: 0.1,
-            }}
+            inputProps={{ min: 0.1, max: 100, step: 0.1 }}
           />
         </Box>
       )}

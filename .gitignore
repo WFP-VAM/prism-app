@@ -40,3 +40,7 @@ yarn-error.log*
 packages/*/dist/
 
 packages/common/pnpm-lock.yaml
+
+# ignore cypress artifacts
+frontend/cypress/screenshots/
+frontend/cypress/videos/

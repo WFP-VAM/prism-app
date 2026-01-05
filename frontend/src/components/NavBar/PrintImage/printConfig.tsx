@@ -10,6 +10,7 @@ import {
   MenuItem,
   TextField,
   Theme,
+  Tooltip,
   Typography,
   createStyles,
   makeStyles,
@@ -110,6 +111,7 @@ function SectionToggle({
   expanded,
   handleChange,
   disabled,
+  tooltip,
 }: {
   title: string;
   children?: React.ReactNode;
@@ -119,23 +121,42 @@ function SectionToggle({
     checked: boolean,
   ) => void;
   disabled?: boolean;
+  tooltip?: string;
 }) {
   const classes = useStyles();
+
+  const switchElement = (
+    <div
+      className={`${classes.collapsibleWrapper} ${
+        expanded && children ? classes.collapsibleWrapperExpanded : ''
+      }`}
+    >
+      <Switch
+        checked={expanded}
+        onChange={handleChange}
+        title={title}
+        disabled={disabled}
+      />
+    </div>
+  );
+
   return (
     <div>
-      <div
-        className={`${classes.collapsibleWrapper} ${
-          expanded && children ? classes.collapsibleWrapperExpanded : ''
-        }`}
-      >
-        <Switch
-          checked={expanded}
-          onChange={handleChange}
-          title={title}
-          disabled={disabled}
-        />
-      </div>
-      <Collapse in={expanded}>{children}</Collapse>
+      {tooltip ? (
+        <Tooltip
+          title={tooltip}
+          arrow
+          placement="top"
+          classes={{ tooltip: classes.tooltip }}
+        >
+          {switchElement}
+        </Tooltip>
+      ) : (
+        switchElement
+      )}
+      <Collapse in={expanded} style={{ paddingLeft: '8px' }}>
+        {children}
+      </Collapse>
     </div>
   );
 }
@@ -240,6 +261,9 @@ const footerTextSelectorOptions = [
   { value: 20, comp: <div style={{ fontSize: '20px' }}>Aa</div> },
 ];
 
+// Suffix appended to title when batch maps is enabled
+const DATE_PLACEHOLDER_SUFFIX = ' - {date}';
+
 function PrintConfig() {
   const classes = useStyles();
   const { t } = useSafeTranslation();
@@ -252,9 +276,9 @@ function PrintConfig() {
 
   const {
     handleClose,
+    titleText,
     setTitleText,
     debounceCallback,
-    country,
     mapDimensions,
     setMapDimensions,
     logo,
@@ -314,13 +338,13 @@ function PrintConfig() {
         {/* Title */}
         <div className={classes.optionWrap}>
           <TextField
-            defaultValue={country}
+            value={titleText}
             placeholder={t('Title')}
             fullWidth
             size="small"
             inputProps={{ label: t('Title'), style: { color: 'black' } }}
             onChange={event => {
-              debounceCallback(setTitleText, event.target.value);
+              setTitleText(event.target.value);
             }}
             variant="outlined"
           />
@@ -572,42 +596,51 @@ function PrintConfig() {
             <SectionToggle
               title={t('Create a sequence of maps')}
               expanded={toggles.batchMapsVisibility}
+              tooltip={t(
+                'Selecting this option will apply the template above to create multiple maps over a time period of your choice.',
+              )}
               handleChange={() => {
+                const willBeEnabled = !toggles.batchMapsVisibility;
+
+                if (willBeEnabled && !titleText.includes('{date}')) {
+                  // Append date placeholder
+                  setTitleText(prev => `${prev}${DATE_PLACEHOLDER_SUFFIX}`);
+                } else if (
+                  !willBeEnabled &&
+                  titleText.endsWith(DATE_PLACEHOLDER_SUFFIX)
+                ) {
+                  // Remove date placeholder suffix
+                  setTitleText(prev =>
+                    prev.slice(0, -DATE_PLACEHOLDER_SUFFIX.length),
+                  );
+                }
+
                 setToggles(prev => ({
                   ...prev,
-                  batchMapsVisibility: !prev.batchMapsVisibility,
+                  batchMapsVisibility: willBeEnabled,
                 }));
               }}
             />
-            <GreyContainer>
-              <GreyContainerSection isLast={!toggles.batchMapsVisibility}>
-                <Typography variant="body1">
-                  {t(
-                    'Selecting this option will apply the template above to create multiple maps over a time period of your choice.',
-                  )}
-                </Typography>
-              </GreyContainerSection>
-              {toggles.batchMapsVisibility && (
-                <>
-                  <GreyContainerSection>
-                    <DateRangePicker />
-                  </GreyContainerSection>
-                  <GreyContainerSection isLast>
-                    <Box className={classes.mapCountContainer}>
-                      <Typography variant="body1">
-                        {t('Nb of maps generated')}
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        className={classes.mapCountValue}
-                      >
-                        {mapCount}
-                      </Typography>
-                    </Box>
-                  </GreyContainerSection>
-                </>
-              )}
-            </GreyContainer>
+            {toggles.batchMapsVisibility && (
+              <GreyContainer>
+                <GreyContainerSection>
+                  <DateRangePicker />
+                </GreyContainerSection>
+                <GreyContainerSection isLast>
+                  <Box className={classes.mapCountContainer}>
+                    <Typography variant="body1">
+                      {t('Nb of maps generated')}
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      className={classes.mapCountValue}
+                    >
+                      {mapCount}
+                    </Typography>
+                  </Box>
+                </GreyContainerSection>
+              </GreyContainer>
+            )}
           </>
         )}
 
@@ -706,6 +739,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     collapsibleWrapperExpanded: {
       marginBottom: '0.25rem',
+    },
+    tooltip: {
+      fontSize: '0.75em',
     },
     formControl: {
       width: '100%',
