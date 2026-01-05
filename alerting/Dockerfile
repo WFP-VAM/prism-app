@@ -7,7 +7,9 @@ COPY ./common /common
 
 # Install dependencies and Chrome for puppeteer
 RUN set -e && \
-    apt-get update && apt-get install -y \
+    apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y \
     libnss3 libdbus-1-3 libatk1.0-0 libatk-bridge2.0-0 \
     libcups2 libxcomposite1 libxdamage1 libgbm1 libxkbcommon-x11-0 \
     libasound2 libxfixes3 libxrandr2 && \
