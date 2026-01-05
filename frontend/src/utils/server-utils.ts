@@ -108,6 +108,74 @@ export const getRequestDate = (
   return dateItem.queryDate;
 };
 
+export interface LayerDateCoverage {
+  layerId: string;
+  layerTitle: string;
+  startDate?: number;
+  endDate?: number;
+}
+
+/**
+ * Compute date coverage for layers that support dates.
+ * Returns an array of coverage info for each layer that has coverage data.
+ *
+ * @param layersWithDateSupport - Layers with dateItems attached
+ * @param selectedDate - The currently selected date
+ * @returns Array of layer coverage information
+ */
+export function getLayersCoverage(
+  layersWithDateSupport: Array<{
+    id: string;
+    title?: string;
+    dateItems: DateItem[];
+  }>,
+  selectedDate: SelectedDateTimestamp | null | undefined,
+): LayerDateCoverage[] {
+  if (!selectedDate) {
+    return [];
+  }
+
+  return layersWithDateSupport
+    .map((layer): LayerDateCoverage | null => {
+      const dateItem = getRequestDateItem(layer.dateItems, selectedDate);
+      if (dateItem?.startDate || dateItem?.endDate) {
+        return {
+          layerId: layer.id,
+          layerTitle: layer.title || layer.id,
+          startDate: dateItem.startDate,
+          endDate: dateItem.endDate,
+        };
+      }
+      return null;
+    })
+    .filter((item): item is LayerDateCoverage => item !== null);
+}
+
+/**
+ * Convert layer coverage array to a map keyed by layer ID.
+ * Useful for quick lookups when rendering legend items.
+ */
+export function getLayersCoverageMap(
+  layersWithDateSupport: Array<{
+    id: string;
+    title?: string;
+    dateItems: DateItem[];
+  }>,
+  selectedDate: SelectedDateTimestamp | null | undefined,
+): Record<string, { startDate?: number; endDate?: number }> {
+  const coverageArray = getLayersCoverage(layersWithDateSupport, selectedDate);
+  return coverageArray.reduce(
+    (map, coverage) => {
+      map[coverage.layerId] = {
+        startDate: coverage.startDate,
+        endDate: coverage.endDate,
+      };
+      return map;
+    },
+    {} as Record<string, { startDate?: number; endDate?: number }>,
+  );
+}
+
 // Note: PRISM's date picker is designed to work with dates in the UTC timezone
 // Therefore, ambiguous dates (dates passed as string e.g 2020-08-01) shouldn't be calculated from the user's timezone and instead be converted directly to UTC.
 // plain JS Date `new Date('2020-08-01').toISOString()`, yields: '2020-08-01T00:00:00.000Z'.
