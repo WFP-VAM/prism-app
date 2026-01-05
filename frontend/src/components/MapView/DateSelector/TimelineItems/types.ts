@@ -9,6 +9,9 @@ export type DateItemStyle = {
   color: string;
   layerDirectionClass?: string;
   emphasis?: string;
+  coverageBar?: string;
+  validityTick?: string;
+  queryTick?: string;
 };
 
 export type DateJSON = Record<ShortDate, Record<CycloneName, TimeAndState[]>>;

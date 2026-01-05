@@ -38,6 +38,7 @@ const TimelineItems = memo(
     truncatedLayers,
     availableDates,
     showDraggingCursor,
+    selectedDate,
   }: TimelineItemsProps) => {
     const classes = useStyles();
 
@@ -49,18 +50,27 @@ const TimelineItems = memo(
           color: LIGHT_BLUE_HEX,
           layerDirectionClass: classes.layerOneDirection,
           emphasis: classes.layerOneEmphasis,
+          coverageBar: classes.layerOneCoverageBar,
+          validityTick: classes.layerOneValidityTick,
+          queryTick: classes.layerOneQueryTick,
         },
         {
           class: classes.layerTwoDate,
           color: LIGHT_GREEN_HEX,
           layerDirectionClass: classes.layerTwoDirection,
           emphasis: classes.layerTwoEmphasis,
+          coverageBar: classes.layerTwoCoverageBar,
+          validityTick: classes.layerTwoValidityTick,
+          queryTick: classes.layerTwoQueryTick,
         },
         {
           class: classes.layerThreeDate,
           color: LIGHT_ORANGE_HEX,
           layerDirectionClass: classes.layerThreeDirection,
           emphasis: classes.layerThreeEmphasis,
+          coverageBar: classes.layerThreeCoverageBar,
+          validityTick: classes.layerThreeValidityTick,
+          queryTick: classes.layerThreeQueryTick,
         },
         { class: classes.availabilityDate, color: LIGHT_ORANGE_HEX },
       ],
@@ -158,6 +168,8 @@ const TimelineItems = memo(
                         currentDate={date}
                         dateItemStyling={DATE_ITEM_STYLING}
                         isDateAvailable={isDateAvailable}
+                        dateRange={dateRange}
+                        selectedDate={selectedDate}
                       />
                     );
                   })()}
@@ -196,6 +208,49 @@ const createDirectionStyles = (
 ): DirectionStyle => ({
   top,
   borderLeft: `6px solid ${borderColor}`,
+});
+
+const createCoverageBarStyles = (
+  backgroundColor: CSSProperties['backgroundColor'],
+  top: CSSProperties['top'],
+): CoverageBarStyle => ({
+  position: 'absolute',
+  height: 8,
+  pointerEvents: 'none',
+  opacity: 0.35,
+  top,
+  left: 0,
+  backgroundColor,
+  borderRadius: 2,
+});
+
+const createValidityTickStyles = (
+  backgroundColor: CSSProperties['backgroundColor'],
+  top: CSSProperties['top'],
+): TickStyle => ({
+  position: 'absolute',
+  height: 10,
+  width: 2,
+  pointerEvents: 'none',
+  opacity: 0.7,
+  top,
+  left: 1,
+  backgroundColor,
+});
+
+const createQueryDateTickStyles = (
+  backgroundColor: CSSProperties['backgroundColor'],
+  top: CSSProperties['top'],
+): TickStyle => ({
+  position: 'absolute',
+  height: 12,
+  width: 3,
+  pointerEvents: 'none',
+  opacity: 1,
+  top: (top as number) - 1,
+  left: 0.5,
+  backgroundColor,
+  borderRadius: 1,
 });
 
 const useStyles = makeStyles(() =>
@@ -250,6 +305,21 @@ const useStyles = makeStyles(() =>
     layerTwoDirection: createDirectionStyles(DARK_GREEN_HEX, 10),
     layerThreeDirection: createDirectionStyles(DARK_ORANGE_HEX, 20),
 
+    // Coverage bars
+    layerOneCoverageBar: createCoverageBarStyles(LIGHT_BLUE_HEX, 0),
+    layerTwoCoverageBar: createCoverageBarStyles(LIGHT_GREEN_HEX, 10),
+    layerThreeCoverageBar: createCoverageBarStyles(LIGHT_ORANGE_HEX, 20),
+
+    // Validity ticks
+    layerOneValidityTick: createValidityTickStyles(LIGHT_BLUE_HEX, 0),
+    layerTwoValidityTick: createValidityTickStyles(LIGHT_GREEN_HEX, 10),
+    layerThreeValidityTick: createValidityTickStyles(LIGHT_ORANGE_HEX, 20),
+
+    // Query date ticks (bold)
+    layerOneQueryTick: createQueryDateTickStyles(DARK_BLUE_HEX, 0),
+    layerTwoQueryTick: createQueryDateTickStyles(DARK_GREEN_HEX, 10),
+    layerThreeQueryTick: createQueryDateTickStyles(DARK_ORANGE_HEX, 20),
+
     currentDate: {
       border: '2px solid black',
       top: '-7px',
@@ -293,6 +363,29 @@ type DirectionStyle = {
   borderLeft: CSSProperties['borderLeft'];
 };
 
+type CoverageBarStyle = {
+  position: CSSProperties['position'];
+  height: CSSProperties['height'];
+  pointerEvents: CSSProperties['pointerEvents'];
+  opacity: CSSProperties['opacity'];
+  top: CSSProperties['top'];
+  left: CSSProperties['left'];
+  backgroundColor: CSSProperties['backgroundColor'];
+  borderRadius: CSSProperties['borderRadius'];
+};
+
+type TickStyle = {
+  position: CSSProperties['position'];
+  height: CSSProperties['height'];
+  width: CSSProperties['width'];
+  pointerEvents: CSSProperties['pointerEvents'];
+  opacity: CSSProperties['opacity'];
+  top: CSSProperties['top'];
+  left: CSSProperties['left'];
+  backgroundColor: CSSProperties['backgroundColor'];
+  borderRadius?: CSSProperties['borderRadius'];
+};
+
 export interface TimelineItemsProps {
   dateRange: DateRangeType[];
   clickDate: (arg: number) => void;
@@ -301,6 +394,7 @@ export interface TimelineItemsProps {
   orderedLayers: DateCompatibleLayerWithDateItems[];
   truncatedLayers: DateItem[][];
   showDraggingCursor: boolean;
+  selectedDate: number;
 }
 
 export default TimelineItems;

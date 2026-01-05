@@ -1,8 +1,25 @@
-import { createStyles, makeStyles } from '@material-ui/core';
 import React, { memo, useMemo } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import { DateItem, DateRangeType } from 'config/types';
 import { datesAreEqualWithoutTime } from 'utils/date-utils';
+import { TIMELINE_ITEM_WIDTH } from '../../utils';
+
+// Helper: Calculate how many dates in the timeline fall within this coverage window
+const getCoverageWidthInDates = (
+  dateItem: DateItem,
+  dateRange: DateRangeType[],
+): number => {
+  if (!dateItem.startDate || !dateItem.endDate) {
+    return 1; // Fallback to single date if no coverage defined
+  }
+
+  // Find all dates in the timeline between startDate and endDate
+  return dateRange.filter(
+    date =>
+      date.value >= (dateItem.startDate || 0) &&
+      date.value <= (dateItem.endDate || 0),
+  ).length;
+};
 
 const StandardTimelineItem = memo(
   ({
@@ -10,10 +27,10 @@ const StandardTimelineItem = memo(
     currentDate,
     dateItemStyling,
     isDateAvailable,
+    dateRange,
+    selectedDate,
   }: StandardTimelineItemProps) => {
     // Pre-compute the matching indices for all layers
-    const classes = useStyles();
-
     const displayDateMatches = useMemo(
       () =>
         concatenatedLayers.map(layerDates =>
@@ -42,16 +59,6 @@ const StandardTimelineItem = memo(
       );
     }, [concatenatedLayers, currentDate.value, displayDateMatches]);
 
-    const hasNextItemDirectionForward = (
-      _matchingDate: DateItem,
-      _layerDates: DateItem[],
-    ): boolean => false;
-
-    const hasNextItemDirectionBackward = (
-      _matchingDate: DateItem,
-      _layerDates: DateItem[],
-    ): boolean => false;
-
     const isQueryDate = (date: DateItem): boolean =>
       datesAreEqualWithoutTime(date.queryDate, date.displayDate);
 
@@ -75,67 +82,72 @@ const StandardTimelineItem = memo(
           const matchingDateItemInLayer: DateItem | undefined =
             idx > -1 ? layerDates[idx] : undefined;
 
-          if (!matchingDateItemInLayer) {
+          // Find the coverage window for the selected date
+          const selectedDateItem = layerDates.find(item =>
+            datesAreEqualWithoutTime(item.displayDate, selectedDate),
+          );
+
+          // Check if current timeline date falls within the selected date's coverage window
+          const isInSelectedCoverage =
+            selectedDateItem &&
+            currentDate.value >= (selectedDateItem.startDate || 0) &&
+            currentDate.value <= (selectedDateItem.endDate || 0);
+
+          // Check if this is the first date in timeline that falls within selected coverage
+          const isFirstDateInTimeline =
+            selectedDateItem &&
+            isInSelectedCoverage &&
+            dateRange.findIndex(
+              d => d.value >= (selectedDateItem.startDate || 0),
+            ) === dateRange.findIndex(d => d.value === currentDate.value);
+
+          // Calculate coverage width using the SELECTED date's coverage window
+          const coverageWidth =
+            selectedDateItem && isInSelectedCoverage
+              ? getCoverageWidthInDates(selectedDateItem, dateRange)
+              : 0;
+
+          // Determine what to render
+          const shouldRenderCoverageBar =
+            isFirstDateInTimeline && coverageWidth > 0;
+          const shouldRenderValidityTick =
+            matchingDateItemInLayer !== undefined;
+
+          // Skip if nothing to render
+          if (!shouldRenderCoverageBar && !shouldRenderValidityTick) {
             return null;
           }
 
           return (
-            <React.Fragment key={Math.random()}>
-              {/* Add a directional arrow forward if previous item is a start date */}
-              {hasNextItemDirectionForward(
-                matchingDateItemInLayer,
-                layerDates,
-              ) && (
+            <React.Fragment key={`layer-${layerIndex}-${currentDate.value}`}>
+              {/* Render coverage bar only for the selected date's coverage period */}
+              {shouldRenderCoverageBar && (
                 <div
-                  className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase}`}
+                  className={dateItemStyling[layerIndex].coverageBar}
+                  style={{
+                    width: coverageWidth * TIMELINE_ITEM_WIDTH,
+                  }}
+                  role="presentation"
                 />
               )}
 
-              {/* Add a directional arrow backward if next item is an end date */}
-              {hasNextItemDirectionBackward(
-                matchingDateItemInLayer,
-                layerDates,
-              ) && (
+              {/* Render validity tick only if date has data */}
+              {shouldRenderValidityTick && (
                 <div
-                  className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase} ${classes.layerDirectionBackwardBase}`}
+                  className={
+                    isQueryDate(matchingDateItemInLayer!)
+                      ? dateItemStyling[layerIndex].queryTick // Bold tick
+                      : dateItemStyling[layerIndex].validityTick // Normal tick
+                  }
+                  role="presentation"
                 />
               )}
-
-              {/* Add a bold square if queryDate (emphasis), normal otherwise */}
-              <div
-                className={`${
-                  isQueryDate(matchingDateItemInLayer)
-                    ? dateItemStyling[layerIndex].emphasis
-                    : dateItemStyling[layerIndex].class
-                }`}
-                role="presentation"
-              />
             </React.Fragment>
           );
         })}
       </>
     );
   },
-);
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    layerDirectionBase: {
-      display: 'block',
-      position: 'absolute',
-      borderTop: '5px solid transparent',
-      borderBottom: '5px solid transparent',
-      height: '0px',
-      zIndex: 1,
-      left: 0,
-      pointerEvents: 'none',
-    },
-
-    layerDirectionBackwardBase: {
-      right: 0,
-      transform: 'rotate(180deg)',
-    },
-  }),
 );
 
 export interface StandardTimelineItemProps {
@@ -146,8 +158,13 @@ export interface StandardTimelineItemProps {
     color: string;
     layerDirectionClass?: string;
     emphasis?: string;
+    coverageBar?: string;
+    validityTick?: string;
+    queryTick?: string;
   }[];
   isDateAvailable: boolean;
+  dateRange: DateRangeType[];
+  selectedDate: number;
 }
 
 export default StandardTimelineItem;

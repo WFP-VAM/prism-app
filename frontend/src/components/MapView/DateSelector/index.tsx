@@ -768,6 +768,7 @@ const DateSelector = memo(() => {
                           dateRange.length * TIMELINE_ITEM_WIDTH <
                         0
                       }
+                      selectedDate={stateStartDate}
                     />
                   )}
                 </Grid>
