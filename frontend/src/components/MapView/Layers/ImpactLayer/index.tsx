@@ -26,6 +26,7 @@ import {
   useMapCallback,
 } from 'utils/map-utils';
 import { opacitySelector } from 'context/opacityStateSlice';
+import { useDefaultDate } from 'utils/useDefaultDate';
 
 const linePaint: LineLayerSpecification['paint'] = {
   'line-color': 'grey',
@@ -84,6 +85,8 @@ const ImpactLayer = memo(({ layer, before }: ComponentProps) => {
   const classes = useStyles();
   const { maplibreMap, dateRange } = useMapState();
   const map = maplibreMap();
+  // Load the layer default date if no date is selected
+  useDefaultDate(layer.id);
   const { startDate: selectedDate } = dateRange;
   const { data, date } =
     (useSelector(
