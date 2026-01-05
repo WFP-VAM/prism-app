@@ -1,6 +1,5 @@
 import { useContext } from 'react';
 import { useSelector } from 'react-redux';
-import { getFormattedDate } from 'utils/date-utils';
 import { appConfig } from 'config';
 import { AAMarkersSelector } from 'context/anticipatoryAction/AADroughtStateSlice';
 import { AAFloodDataSelector } from 'context/anticipatoryAction/AAFloodStateSlice';
@@ -13,12 +12,10 @@ import {
   dateRangeSelector,
   mapSelector,
 } from '../../../context/mapStateSlice/selectors';
-import { useSafeTranslation } from '../../../i18n';
 import PrintConfigContext from './printConfig.context';
 import MapExportLayout from '../../MapExport/MapExportLayout';
 
 function PrintPreview() {
-  const { t } = useSafeTranslation();
   const { printConfig } = useContext(PrintConfigContext);
 
   const selectedMap = useSelector(mapSelector);
@@ -39,18 +36,6 @@ function PrintPreview() {
     floodState.stationSummaryData,
     dateRange.startDate,
   );
-
-  const dateText = `${t('Publication date')}: ${getFormattedDate(
-    Date.now(),
-    'default',
-  )}${
-    dateRange.startDate
-      ? `. ${t('Layer selection date')}: ${getFormattedDate(
-          dateRange.startDate,
-          'default',
-        )}`
-      : ''
-  }.`;
 
   // Appease TS by ensuring printConfig is defined
   if (!printConfig || !selectedMap) {
@@ -110,7 +95,7 @@ function PrintPreview() {
         titleText={titleText}
         footerText={footerText}
         footerTextSize={footerTextSize}
-        dateText={dateText}
+        layerDate={dateRange.startDate}
         logo={logo}
         logoPosition={logoPosition}
         logoScale={logoScale}
