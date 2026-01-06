@@ -217,7 +217,7 @@ const createCoverageBarStyles = (
   position: 'absolute',
   height: 10,
   pointerEvents: 'none',
-  opacity: 0.25,
+  opacity: 0.8,
   top,
   left: 0,
   backgroundColor,
@@ -231,7 +231,7 @@ const createValidityTickStyles = (
   height: 10,
   width: TIMELINE_ITEM_WIDTH,
   pointerEvents: 'none',
-  opacity: 0.6,
+  opacity: 0.8,
   top,
   backgroundColor,
 });
