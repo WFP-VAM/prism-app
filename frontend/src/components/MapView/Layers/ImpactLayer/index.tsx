@@ -1,4 +1,4 @@
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { get } from 'lodash';
 import { createStyles, Theme, makeStyles } from '@material-ui/core';
@@ -26,6 +26,8 @@ import {
   useMapCallback,
 } from 'utils/map-utils';
 import { opacitySelector } from 'context/opacityStateSlice';
+import { useDefaultDate } from 'utils/useDefaultDate';
+import { loadingLayerIdsSelector } from 'context/mapStateSlice/selectors';
 
 const linePaint: LineLayerSpecification['paint'] = {
   'line-color': 'grey',
@@ -84,6 +86,8 @@ const ImpactLayer = memo(({ layer, before }: ComponentProps) => {
   const classes = useStyles();
   const { maplibreMap, dateRange } = useMapState();
   const map = maplibreMap();
+  // Load the layer default date if no date is selected
+  useDefaultDate(layer.id);
   const { startDate: selectedDate } = dateRange;
   const { data, date } =
     (useSelector(
@@ -92,6 +96,14 @@ const ImpactLayer = memo(({ layer, before }: ComponentProps) => {
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
   const opacityState = useSelector(opacitySelector(layer.id));
+  const loadingLayerIds = useSelector(loadingLayerIdsSelector);
+  const isLayerLoading = loadingLayerIds.includes(layer.id);
+
+  // Track the last attempted date/extent to prevent infinite retry loops on failure
+  const lastAttemptedRef = useRef<{
+    date?: number;
+    extent?: Extent;
+  }>({});
 
   useMapCallback('click', getLayerMapId(layer.id), layer, onClick);
 
@@ -100,16 +112,44 @@ const ImpactLayer = memo(({ layer, before }: ComponentProps) => {
     // For now, assume that if we have layer data, we don't need to refetch. This could change down the line if we
     // want to dynamically re-fetch data based on changing map bounds.
     // Only fetch once we actually know the extent
+    // Also check if a request is already pending to prevent duplicate requests
+    // And check if we've already attempted this exact date/extent combination to prevent infinite retries on failure
     const [minX, , maxX] = extent;
+    const extentKey = `${minX},${maxX}`;
+    const lastAttemptedKey =
+      lastAttemptedRef.current.date === selectedDate &&
+      lastAttemptedRef.current.extent &&
+      `${lastAttemptedRef.current.extent[0]},${lastAttemptedRef.current.extent[2]}` ===
+        extentKey;
+
+    // Reset the ref if date or extent changes (allowing new attempts for new combinations)
+    if (
+      lastAttemptedRef.current.date !== selectedDate ||
+      (lastAttemptedRef.current.extent &&
+        `${lastAttemptedRef.current.extent[0]},${lastAttemptedRef.current.extent[2]}` !==
+          extentKey)
+    ) {
+      lastAttemptedRef.current = {};
+    }
+
     if (
       selectedDate &&
       (!data || date !== selectedDate) &&
       minX !== 0 &&
-      maxX !== 0
+      maxX !== 0 &&
+      !isLayerLoading &&
+      !lastAttemptedKey
     ) {
+      // Track this attempt
+      lastAttemptedRef.current = { date: selectedDate, extent };
       dispatch(loadLayerData({ layer, extent, date: selectedDate }));
     }
-  }, [dispatch, layer, extent, data, selectedDate, date]);
+
+    // Reset the ref if we successfully loaded data
+    if (data && date === selectedDate) {
+      lastAttemptedRef.current = {};
+    }
+  }, [dispatch, layer, extent, data, selectedDate, date, isLayerLoading]);
 
   if (!data) {
     return selectedDate ? null : (
