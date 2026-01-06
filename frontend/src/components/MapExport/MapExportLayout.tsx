@@ -12,11 +12,10 @@ import React, {
 import MapGL, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';
 import { useTranslation } from 'react-i18next';
 import useResizeObserver from 'utils/useOnResizeObserver';
-import { getFormattedDate } from 'utils/date-utils';
+import { getFormattedDate, formatCoverageText } from 'utils/date-utils';
 import { lightGrey } from 'muiTheme';
 import { FloodStationMarker } from 'components/MapView/Layers/AnticipatoryActionFloodLayer/FloodStationMarker';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
-import { formatCoverageRange } from 'utils/date-utils';
 import { DiscriminateUnion, LayerType, Panel } from 'config/types';
 import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer/utils';
 import { mapStyle } from 'components/MapView/Map/utils';
@@ -136,16 +135,30 @@ function MapExportLayout({
 
   const { t } = useTranslation();
 
-  // Process title text to replace {date} placeholder with formatted date
+  // Process title text to replace {date} and {coverage} placeholders
   const processedTitleText = useMemo(() => {
-    if (!titleText || !layerDate) {
+    if (!titleText) {
       return titleText;
     }
-    return titleText.replace(
-      /\{date\}/g,
-      getFormattedDate(layerDate, 'localeUTC') ?? '',
-    );
-  }, [titleText, layerDate]);
+
+    let result = titleText;
+
+    // Replace {date} with formatted layer date
+    if (layerDate && result.includes('{date}')) {
+      result = result.replace(
+        /\{date\}/g,
+        getFormattedDate(layerDate, 'localeUTC') ?? '',
+      );
+    }
+
+    // Replace {coverage} with formatted coverage ranges
+    if (layersCoverage && result.includes('{coverage}')) {
+      const coverageText = formatCoverageText(layersCoverage, t) ?? '';
+      result = result.replace(/\{coverage\}/g, coverageText);
+    }
+
+    return result;
+  }, [titleText, layerDate, layersCoverage, t]);
 
   // Compute footer date text from layerDate
   const footerDateText = useMemo(() => {
@@ -157,31 +170,11 @@ function MapExportLayout({
   }, [layerDate, t]);
 
   const footerCoverageText = useMemo(() => {
-    if (!layersCoverage || layersCoverage.length === 0) {
+    const coverageText = formatCoverageText(layersCoverage, t);
+    if (!coverageText) {
       return null;
     }
-
-    const layersWithCoverage = layersCoverage
-      .map(coverage => ({
-        title: coverage.layerTitle,
-        range: formatCoverageRange(coverage.startDate, coverage.endDate),
-      }))
-      .filter(item => item.range !== null);
-
-    if (layersWithCoverage.length === 0) {
-      return null;
-    }
-
-    // If only one layer, don't show the layer title
-    if (layersWithCoverage.length === 1) {
-      return `${t('Data coverage')}: ${layersWithCoverage[0].range}`;
-    }
-
-    // Multiple layers: show layer titles
-    const coverageLines = layersWithCoverage.map(
-      item => `${t(item.title)}: ${item.range}`,
-    );
-    return `${t('Data coverage')}: ${coverageLines.join('; ')}`;
+    return `${t('Data coverage')}: ${coverageText}`;
   }, [layersCoverage, t]);
 
   const updateScaleBarAndNorthArrow = useCallback(() => {
@@ -372,17 +365,26 @@ function MapExportLayout({
 
     // Capture and report map bounds and zoom after load
     // Use 'idle' event to ensure map has fully settled
+    // Only report when bounds actually change to avoid infinite re-render loops
     if (onBoundsChange && map) {
+      let lastBoundsStr: string | null = null;
+      let lastZoom: number | null = null;
+
       map.on('idle', () => {
         const mapBounds = map.getBounds();
         const zoom = map.getZoom();
         if (mapBounds) {
-          onBoundsChange(mapBounds, zoom);
+          // Only call onBoundsChange if bounds or zoom actually changed
+          const boundsStr = `${mapBounds.getWest()},${mapBounds.getSouth()},${mapBounds.getEast()},${mapBounds.getNorth()}`;
+          if (boundsStr !== lastBoundsStr || zoom !== lastZoom) {
+            lastBoundsStr = boundsStr;
+            lastZoom = zoom;
+            onBoundsChange(mapBounds, zoom);
+          }
         }
       });
     }
   };
-
   // Calculate map dimensions based on container size and aspect ratio
   const mapDimensions = useMemo(() => {
     const { width: containerWidth, height: containerHeight } =

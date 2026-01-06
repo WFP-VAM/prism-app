@@ -382,7 +382,11 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       const downloadUrl = window.URL.createObjectURL(blob);
       const startDateStr = getFormattedDate(startDate, 'snake');
       const endDateStr = getFormattedDate(endDate, 'snake');
-      const filename = `${titleText || country}_${startDateStr}_to_${endDateStr}`;
+      const cleanedTitle = (titleText || country).replace(
+        /(\s*-\s*)?\{(date|coverage)\}/gi,
+        '',
+      );
+      const filename = `${cleanedTitle}_${startDateStr}_to_${endDateStr}`;
       // Server returns ZIP file when format is 'png'
       const contentType =
         format === 'pdf' ? 'application/pdf' : 'application/zip';
