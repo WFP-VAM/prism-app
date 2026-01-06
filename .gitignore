@@ -40,3 +40,4 @@ yarn-error.log*
 packages/*/dist/
 
 packages/common/pnpm-lock.yaml
+frontend/package-lock.json
