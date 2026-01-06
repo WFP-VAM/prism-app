@@ -152,9 +152,9 @@ function MapExportLayout({
     }
 
     // Replace {coverage} with formatted coverage ranges
-    if (layersCoverage && result.includes('{coverage}')) {
+    if (layersCoverage && result.includes('{date_coverage}')) {
       const coverageText = formatCoverageText(layersCoverage, t) ?? '';
-      result = result.replace(/\{coverage\}/g, coverageText);
+      result = result.replace(/\{date_coverage\}/g, coverageText);
     }
 
     return result;
