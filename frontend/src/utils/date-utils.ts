@@ -138,6 +138,7 @@ export const getFormattedDate = (
     | 'localeUTC'
     | 'monthDay'
     | 'localeShortUTC'
+    | 'localeNumericUTC'
     | 'short'
     | 'shortDayFirst'
     | DateFormat.DefaultSnakeCase
@@ -148,7 +149,8 @@ export const getFormattedDate = (
     | DateFormat.ISO
     | DateFormat.MiddleEndian
     | DateFormat.TimeOnly
-    | DateFormat.DayFirstHyphenMonthName,
+    | DateFormat.DayFirstHyphenMonthName
+    | DateFormat.LocaleNumeric,
   dateLocale: string = 'default',
 ) => {
   if (date === undefined) {
@@ -164,35 +166,55 @@ export const getFormattedDate = (
   });
   const day = String(jsDate.getUTCDate()).padStart(2, '0');
 
+  // Example for June 30th, 1999
   switch (format) {
+    // Example: "1999-06-30"
     case 'default':
     case DateFormat.Default:
       return `${year}-${month}-${day}`;
+
+    // Example: "1999_06_30"
     case 'snake':
     case DateFormat.DefaultSnakeCase:
       return `${year}_${month}_${day}`;
+
+    // Example: "06/30"
     case 'short':
       return `${month}/${day}`;
+
+    // Example: "30-06"
     case 'shortDayFirst':
       return `${day}-${month}`;
+
+    // Example: "30_06_1999"
     case DateFormat.DayFirstSnakeCase:
       return `${day}_${month}_${year}`;
+
+    // Example: "30-06-1999"
     case DateFormat.DayFirstHyphen:
       return `${day}-${month}-${year}`;
+
+    // Example: "30-Jun-1999"
     case DateFormat.DayFirstHyphenMonthName:
       return `${day}-${monthName}-${year}`;
+
+    // Example: "06/30/1999"
     case DateFormat.MiddleEndian:
       return `${month}/${day}/${year}`;
+
     case DateFormat.TimeOnly:
     case DateFormat.DateTime:
     case DateFormat.ISO: {
       const hours = String(jsDate.getUTCHours()).padStart(2, '0');
       const minutes = String(jsDate.getUTCMinutes()).padStart(2, '0');
       switch (format) {
+        // Example: "00:00"
         case DateFormat.TimeOnly:
           return `${hours}:${minutes}`;
+        // Example: "1999-06-30 00:00"
         case DateFormat.DateTime:
           return `${year}-${month}-${day} ${hours}:${minutes}`;
+        // Example: "1999-06-30T00:00:00"
         case DateFormat.ISO: {
           const seconds = String(jsDate.getUTCSeconds()).padStart(2, '0');
           return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
@@ -201,12 +223,16 @@ export const getFormattedDate = (
           throw new Error(`Invalid format: ${format}`);
       }
     }
-    case 'monthDay': // Handle the new format
+
+    // Example: "Jun 30"
+    case 'monthDay':
       return new Date(date).toLocaleString('default', {
         year: undefined,
         month: 'short',
         day: 'numeric',
       });
+
+    // Example: "Jun 30, 1999"
     case 'localeShortUTC':
       return new Date(date).toLocaleDateString('en-US', {
         month: 'short',
@@ -214,6 +240,26 @@ export const getFormattedDate = (
         year: 'numeric',
         timeZone: 'UTC',
       });
+
+    // Example: "06-30-1999" (US) or "30-06-1999" (Europe)
+    case 'localeNumericUTC':
+    case DateFormat.LocaleNumeric: {
+      const parts = new Intl.DateTimeFormat(
+        dateLocale === 'default' ? undefined : dateLocale,
+        {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          timeZone: 'UTC',
+        },
+      ).formatToParts(new Date(date));
+      return parts
+        .filter(p => p.type !== 'literal')
+        .map(p => p.value)
+        .join('-');
+    }
+
+    // Example: "June 30, 1999" (US) or "30 June 1999" (Europe, etc)
     case 'localeUTC':
       return new Date(date).toLocaleDateString(dateLocale, {
         year: 'numeric',
@@ -221,12 +267,15 @@ export const getFormattedDate = (
         day: 'numeric',
         timeZone: 'UTC',
       });
+
+    // Example: "June 30, 1999" (US) or "30 June 1999" (Europe, etc)
     case 'locale':
       return new Date(date).toLocaleString(dateLocale, {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
       });
+
     default:
       throw new Error(`Invalid format: ${format}`);
   }
@@ -237,7 +286,8 @@ export const getTimeInMilliseconds = (date: string | number) =>
 
 /**
  * Format a date coverage range for display.
- * Returns "11-Sept-2025 - 10-Oct-2025" or just "11-Sept-2025" if dates are the same.
+ * Returns "01/11/2025 - 10/10/2025" or just "01/11/2025" if dates are the same.
+ * Uses locale-aware formatting (MM/DD/YYYY in US, DD/MM/YYYY in Europe, etc.)
  */
 export function formatCoverageRange(
   startDate?: number,
@@ -249,12 +299,9 @@ export function formatCoverageRange(
 
   const startFormatted = getFormattedDate(
     startDate,
-    DateFormat.DayFirstHyphenMonthName,
+    'localeNumericUTC',
   ) as string;
-  const endFormatted = getFormattedDate(
-    endDate,
-    DateFormat.DayFirstHyphenMonthName,
-  ) as string;
+  const endFormatted = getFormattedDate(endDate, 'localeNumericUTC') as string;
 
   // If start and end are the same day, just show one date
   if (startFormatted === endFormatted) {

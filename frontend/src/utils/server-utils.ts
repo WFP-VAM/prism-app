@@ -146,6 +146,14 @@ export function getLayersCoverage(
           endDate: dateItem.endDate,
         };
       }
+      if (dateItem?.displayDate) {
+        return {
+          layerId: layer.id,
+          layerTitle: layer.title || layer.id,
+          startDate: dateItem.displayDate,
+          endDate: dateItem.displayDate,
+        };
+      }
       return null;
     })
     .filter((item): item is LayerDateCoverage => item !== null);

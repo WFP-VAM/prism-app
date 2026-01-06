@@ -147,7 +147,7 @@ function MapExportLayout({
     if (layerDate && result.includes('{date}')) {
       result = result.replace(
         /\{date\}/g,
-        getFormattedDate(layerDate, 'localeUTC') ?? '',
+        getFormattedDate(layerDate, 'localeNumericUTC') ?? '',
       );
     }
 
@@ -162,9 +162,9 @@ function MapExportLayout({
 
   // Compute footer date text from layerDate
   const footerDateText = useMemo(() => {
-    const pubDate = `${t('Publication date')}: ${getFormattedDate(Date.now(), 'default')}`;
+    const pubDate = `${t('Publication date')}: ${getFormattedDate(Date.now(), 'localeNumericUTC')}`;
     if (layerDate) {
-      return `${pubDate}. ${t('Layer selection date')}: ${getFormattedDate(layerDate, 'default')}.`;
+      return `${pubDate}. ${t('Layer selection date')}: ${getFormattedDate(layerDate, 'localeNumericUTC')}.`;
     }
     return `${pubDate}.`;
   }, [layerDate, t]);
