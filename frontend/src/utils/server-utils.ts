@@ -145,9 +145,9 @@ export const getPossibleDatesForLayer = (
         }, [])
         .sort((a, b) => a.displayDate - b.displayDate);
     case 'impact':
-      return serverAvailableDates[
-        (LayerDefinitions[layer.hazardLayer] as WMSLayerProps).id
-      ];
+      // Impact layer dates are stored under the impact layer's own ID
+      // (they are loaded from the hazard layer in getAvailableDatesForLayer)
+      return serverAvailableDates[layer.id] || [];
     case 'composite': {
       // Filter dates that are after layer.startDate
       const startDateTimestamp = Date.parse(layer.startDate);
@@ -756,6 +756,9 @@ export const getLayerType = (
   if (l.type === 'wms') {
     return 'WMSLayer';
   }
+  if (l.type === 'impact') {
+    return getLayerType(LayerDefinitions[l.hazardLayer]);
+  }
   return 'invalidType';
 };
 
@@ -779,6 +782,11 @@ export async function getAvailableDatesForLayer(
 
     switch (getLayerType(layer)) {
       case 'WMSLayer':
+        // Impact layers get their dates from their hazard layer
+        if (layer.type === 'impact') {
+          const hazardLayer = LayerDefinitions[layer.hazardLayer];
+          return state.serverPreloadState.WMSLayerDates[hazardLayer.id];
+        }
         return state.serverPreloadState.WMSLayerDates[layer.id];
       case 'pointDataLayer':
         return state.serverPreloadState.pointDataLayerDates[layer.id];
