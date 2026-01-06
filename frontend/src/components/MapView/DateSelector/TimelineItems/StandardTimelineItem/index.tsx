@@ -32,7 +32,10 @@ const StandardTimelineItem = memo(
       );
 
       return displayDateMatches.map((displayDateMatch, layerIndex) =>
+        // Check if both matches are valid (> -1) to prevent array access errors
+        // findIndex returns -1 when no match is found
         queryDateMatches[layerIndex] > -1 &&
+        displayDateMatch > -1 &&
         !datesAreEqualWithoutTime(
           concatenatedLayers[layerIndex][displayDateMatch].queryDate,
           currentDate.value,

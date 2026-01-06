@@ -61,7 +61,7 @@ function diffInDays(date1: Date, date2: Date) {
 export const generateDatesRange = (startDate: Date, endDate: Date): number[] =>
   Array.from({ length: diffInDays(startDate, endDate) + 1 }, (_, index) => {
     const clone = new Date(startDate.getTime());
-    clone.setDate(startDate.getDate() + index);
+    clone.setUTCDate(startDate.getUTCDate() + index);
     return clone.getTime();
   });
 
@@ -271,13 +271,13 @@ export const getSeasonBounds = (
     }
     return null;
   }
-  const monthIndex = date.getMonth();
+  const monthIndex = date.getUTCMonth();
   const foundSeason = SEASON_MAP.find(
     season => season[0] <= monthIndex && monthIndex <= season[1],
   ) as [number, number];
   return {
-    start: new Date(date.getFullYear(), foundSeason[0], 1),
-    end: new Date(date.getFullYear(), foundSeason[1] + 1, 1),
+    start: new Date(Date.UTC(date.getUTCFullYear(), foundSeason[0], 1, 12, 0, 0, 0)),
+    end: new Date(Date.UTC(date.getUTCFullYear(), foundSeason[1] + 1, 1, 12, 0, 0, 0)),
   };
 };
 

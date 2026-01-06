@@ -367,13 +367,13 @@ function getStartAndEndDateFromValidityOrCoverageDefinition(
 
   if (mode === DatesPropagation.DAYS) {
     // If mode is "days", adjust dates directly based on the duration
-    startDate.setDate(startDate.getDate() - (backward || 0));
-    endDate.setDate(endDate.getDate() + (forward || 0));
-    // For "dekad" mode, calculate start and end dates based on backward and forward dekads
-    // Dekads are 10-day periods, so we adjust dates accordingly
+    startDate.setUTCDate(startDate.getUTCDate() - (backward || 0));
+    endDate.setUTCDate(endDate.getUTCDate() + (forward || 0));
   } else if (mode === DatesPropagation.DEKAD) {
+    // For "dekad" mode, calculate start and end dates based on backward and forward dekads
+    // Dekads are 10-day periods starting on the 1st, 11th, and 21st of each month
     const DekadStartingDays = [1, 11, 21];
-    const startDayOfTheDekad = startDate.getDate();
+    const startDayOfTheDekad = startDate.getUTCDate();
     if (!DekadStartingDays.includes(startDayOfTheDekad)) {
       throw Error(
         'publishing day for dekad layers is expected to be 1, 11, 21.',
@@ -387,15 +387,15 @@ function getStartAndEndDateFromValidityOrCoverageDefinition(
     if (forward) {
       const newDekadEndIndex = (dekadStartIndex + forward) % 3;
       const nMonthsForward = Math.floor((dekadStartIndex + forward) / 3);
-      endDate.setDate(DekadStartingDays[newDekadEndIndex]);
-      endDate.setMonth(endDate.getMonth() + nMonthsForward);
-      endDate.setDate(endDate.getDate() - 1);
+      endDate.setUTCDate(DekadStartingDays[newDekadEndIndex]);
+      endDate.setUTCMonth(endDate.getUTCMonth() + nMonthsForward);
+      endDate.setUTCDate(endDate.getUTCDate() - 1);
     }
     if (backward) {
       const newDekadStartIndex: number = (dekadStartIndex - backward + 3) % 3;
       const nMonthsBackward = Math.floor((dekadStartIndex - backward) / 3);
-      startDate.setDate(DekadStartingDays.at(newDekadStartIndex)!);
-      startDate.setMonth(startDate.getMonth() + nMonthsBackward);
+      startDate.setUTCDate(DekadStartingDays.at(newDekadStartIndex)!);
+      startDate.setUTCMonth(startDate.getUTCMonth() + nMonthsBackward);
     }
   } else if (mode === DatesPropagation.SEASON) {
     if (seasons) {
@@ -505,7 +505,8 @@ export function generateIntermediateDateItemFromValidity(
         ));
       } catch (e) {
         if (e instanceof Error && e.message === 'No season found') {
-          return [];
+          // Skip this date but preserve accumulated items
+          return acc;
         }
         throw e;
       }
@@ -532,12 +533,14 @@ export function generateIntermediateDateItemFromValidity(
   // We sort the defaultDateItems and the dateItems and we order by displayDate to filter the duplicates
   // or the overlapping dates
 
-  return dateItems.sort((a, b) => {
+  const result = dateItems.sort((a, b) => {
     if (a.displayDate < b.displayDate) {
       return -1;
     }
     return 1;
   });
+
+  return result;
 }
 
 /**
@@ -620,13 +623,37 @@ const mapServerDatesToLayerIds = (
       if (layer.startDate) {
         const limitStartDate =
           layer.startDate === 'today'
-            ? new Date().setUTCHours(0, 0).valueOf()
-            : new Date(layer.startDate).setUTCHours(0, 0).valueOf();
-        const availableDates = layerDates.filter(
-          date => date >= limitStartDate,
-        );
-        // If there are no dates after filtering, get the last data available
+            ? new Date().setUTCHours(0, 0, 0, 0).valueOf()
+            : new Date(layer.startDate).setUTCHours(0, 0, 0, 0).valueOf();
 
+        let availableDates: ReferenceDateTimestamp[];
+
+        // If layer has validity, we need to consider the validity end date
+        // to ensure we include dates whose validity period covers today
+        if (layer.validity) {
+          availableDates = layerDates.filter(date => {
+            try {
+              // Calculate the validity end date for this reference date
+              const { validityEnd } = getStartAndEndDateFromValidity(
+                date,
+                layer.validity!,
+              );
+              // Include this date if its validity period covers or extends past limitStartDate
+              return validityEnd >= limitStartDate;
+            } catch (e) {
+              // If there's an error calculating validity (e.g., season not found),
+              // fall back to the original logic
+              return date >= limitStartDate;
+            }
+          });
+        } else {
+          // No validity period, use original logic
+          availableDates = layerDates.filter(
+            date => date >= limitStartDate,
+          );
+        }
+
+        // If there are no dates after filtering, get the last data available
         acc[layer.id as string] = availableDates.length
           ? availableDates
           : [layerDates[layerDates.length - 1]];

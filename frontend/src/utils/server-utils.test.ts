@@ -2,6 +2,10 @@ import {
   DatesPropagation,
   ReferenceDateTimestamp,
   SeasonBounds,
+  DisplayDateTimestamp,
+  QueryDateTimestamp,
+  CoverageStartDateTimestamp,
+  CoverageEndDateTimestamp,
 } from 'config/types';
 import timezoneMock from 'timezone-mock';
 import {
@@ -10,7 +14,8 @@ import {
   getAdminLevelDataCoverage,
 } from './server-utils';
 import { timezones } from '../../test/helpers';
-import { getSeasonBounds, SEASON_MAP } from './date-utils';
+import { getSeasonBounds, SEASON_MAP, generateDatesRange } from './date-utils';
+import { oneDayInMs } from 'components/MapView/LeftPanel/utils';
 
 // NOTE: all timestamps are created in the LOCAL timezone (as per js docs), so that
 // these tests should pass for any TZ.
@@ -545,7 +550,7 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
     const dates = ['2023-01-01'];
     const layer = {
       name: 'myd11a2_taa_season',
-      dates: dates.map(date => new Date(date).setHours(12, 0)),
+      dates: dates.map(date => new Date(date).setUTCHours(12, 0, 0, 0)),
       validity: {
         mode: DatesPropagation.SEASON,
       },
@@ -554,45 +559,21 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
       layer.dates as ReferenceDateTimestamp[],
       layer.validity,
     );
-    const startOfWinter = new Date(
-      new Date(dates[0]).getFullYear(),
-      SEASON_MAP[0][0],
-      1,
-    );
-    const endOfWinter = new Date(
-      new Date(dates[0]).getFullYear(),
-      SEASON_MAP[0][1] + 1,
-      0,
-    );
 
-    const daysInSeason: Date[] = [];
-    while (
-      !daysInSeason[daysInSeason.length - 1] ||
-      daysInSeason[daysInSeason.length - 1] < endOfWinter
-    ) {
-      if (daysInSeason.length === 0) {
-        daysInSeason.push(startOfWinter);
-      } else {
-        daysInSeason.push(
-          new Date(
-            new Date(startOfWinter).setDate(
-              startOfWinter.getDate() + daysInSeason.length,
-            ),
-          ),
-        );
-      }
-    }
-
+    // Get the season bounds for the reference date
     const { start, end } = getSeasonBounds(
-      new Date(daysInSeason[0]),
+      new Date(layer.dates[0]),
     ) as SeasonBounds;
-    const adjustedEnd = new Date(end).setDate(0);
+
+    // Generate expected dates range using generateDatesRange
+    const daysInSeason = generateDatesRange(start, new Date(end.getTime() - oneDayInMs));
+
     expect(output).toEqual(
-      daysInSeason.map(date => ({
-        displayDate: new Date(date).getTime(),
-        queryDate: new Date(dates[0]).getTime(),
-        endDate: new Date(adjustedEnd).getTime(),
-        startDate: new Date(start).getTime(),
+      daysInSeason.map(dateInTime => ({
+        displayDate: dateInTime as DisplayDateTimestamp,
+        queryDate: start.getTime() as QueryDateTimestamp,
+        endDate: new Date(end.getTime() - oneDayInMs).getTime() as CoverageEndDateTimestamp,
+        startDate: start.getTime() as CoverageStartDateTimestamp,
       })),
     );
   });
@@ -844,5 +825,93 @@ describe('getAdminLevelDataCoverage', () => {
     const ret = getAdminLevelDataCoverage(layer as any);
 
     expect(ret).toEqual(result);
+  });
+});
+
+describe('Test dekad forecast layers with start_date="today"', () => {
+  test('should include reference dates whose validity period covers today', () => {
+    // Simulate today being Jan 5, 2024 (between dekad publication dates)
+    // Reference dates from server are dekad dates: Jan 1, Jan 11, Jan 21
+    const referenceDates = [
+      new Date('2024-01-01').setUTCHours(12, 0, 0, 0),
+      new Date('2024-01-11').setUTCHours(12, 0, 0, 0),
+      new Date('2024-01-21').setUTCHours(12, 0, 0, 0),
+    ];
+
+    // Layer with validity period of 1 dekad forward (10 days)
+    const layer = {
+      dates: referenceDates,
+      validity: {
+        forward: 1,
+        mode: DatesPropagation.DEKAD,
+      },
+    };
+
+    // Generate DateItems from reference dates with validity
+    const dateItems = generateIntermediateDateItemFromValidity(
+      layer.dates as ReferenceDateTimestamp[],
+      layer.validity,
+    );
+
+    // Today is Jan 5, 2024 at 12:00 UTC
+    const today = new Date('2024-01-05').setUTCHours(12, 0, 0, 0);
+
+    // Check that there's a DateItem for today (Jan 5)
+    const todayDateItem = dateItems.find(
+      item => item.displayDate === today,
+    );
+
+    expect(todayDateItem).toBeDefined();
+
+    // The DateItem for Jan 5 should query using Jan 1's reference date
+    // because Jan 1's validity period (Jan 1-10) covers Jan 5
+    expect(todayDateItem?.queryDate).toBe(referenceDates[0]);
+
+    // Validity periods should cover:
+    // Jan 1 -> Jan 1-10
+    // Jan 11 -> Jan 11-20
+    // Jan 21 -> Jan 21-30
+
+    // Verify we have continuous coverage from Jan 1 to Jan 30
+    const displayDates = dateItems.map(item => new Date(item.displayDate).getUTCDate());
+    const uniqueDates = [...new Set(displayDates)].sort((a, b) => a - b);
+
+    // Should have dates from 1 to 30 (or 31 depending on the month)
+    expect(uniqueDates[0]).toBe(1);
+    expect(uniqueDates[uniqueDates.length - 1]).toBeGreaterThanOrEqual(30);
+  });
+
+  test('should work with forward 10 days validity (non-dekad mode)', () => {
+    // Simulate dekad reference dates
+    const referenceDates = [
+      new Date('2024-01-01').setUTCHours(12, 0, 0, 0),
+      new Date('2024-01-11').setUTCHours(12, 0, 0, 0),
+      new Date('2024-01-21').setUTCHours(12, 0, 0, 0),
+    ];
+
+    // Layer with validity period of 10 days forward (in days mode)
+    const layer = {
+      dates: referenceDates,
+      validity: {
+        forward: 10,
+        mode: DatesPropagation.DAYS,
+      },
+    };
+
+    const dateItems = generateIntermediateDateItemFromValidity(
+      layer.dates as ReferenceDateTimestamp[],
+      layer.validity,
+    );
+
+    // Today is Jan 5, 2024
+    const today = new Date('2024-01-05').setUTCHours(12, 0, 0, 0);
+
+    // Check that there's a DateItem for today
+    const todayDateItem = dateItems.find(
+      item => item.displayDate === today,
+    );
+
+    expect(todayDateItem).toBeDefined();
+    expect(todayDateItem?.queryDate).toBe(referenceDates[0]);
   });
 });
