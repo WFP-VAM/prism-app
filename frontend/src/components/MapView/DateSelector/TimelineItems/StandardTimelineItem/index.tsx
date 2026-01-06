@@ -136,6 +136,10 @@ const StandardTimelineItem = memo(
             return null;
           }
 
+          // Get layer styles once to avoid redundant calls
+          const layerStyles = getLayerStyles(layerIndex);
+          const isQuery = isQueryDate(matchingDateItemInLayer!);
+
           return (
             <React.Fragment key={`layer-${layerIndex}-${currentDate.value}`}>
               {/* Render coverage bar only for the selected date's coverage period */}
@@ -146,9 +150,9 @@ const StandardTimelineItem = memo(
                     height: 10,
                     pointerEvents: 'none',
                     opacity: 0.8,
-                    top: getLayerStyles(layerIndex).top,
+                    top: layerStyles.top,
                     left: 0,
-                    backgroundColor: getLayerStyles(layerIndex).color,
+                    backgroundColor: layerStyles.color,
                     width: coverageWidth * TIMELINE_ITEM_WIDTH,
                   }}
                   role="presentation"
@@ -163,11 +167,11 @@ const StandardTimelineItem = memo(
                     height: 10,
                     width: TIMELINE_ITEM_WIDTH,
                     pointerEvents: 'none',
-                    opacity: isQueryDate(matchingDateItemInLayer!) ? 1 : 0.8,
-                    top: getLayerStyles(layerIndex).top,
-                    backgroundColor: isQueryDate(matchingDateItemInLayer!)
-                      ? getLayerStyles(layerIndex).emphasisColor
-                      : getLayerStyles(layerIndex).color,
+                    opacity: isQuery ? 1 : 0.8,
+                    top: layerStyles.top,
+                    backgroundColor: isQuery
+                      ? layerStyles.emphasisColor
+                      : layerStyles.color,
                   }}
                   role="presentation"
                 />
