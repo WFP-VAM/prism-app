@@ -264,6 +264,49 @@ export function formatCoverageRange(
   return `${startFormatted} – ${endFormatted}`;
 }
 
+/**
+ * Format layer coverage information as a single text string.
+ * Used for both title placeholders and footer text.
+ *
+ * - Single layer: returns just the range (e.g., "11-Sept-2025 – 10-Oct-2025")
+ * - Multiple layers: includes layer titles (e.g., "Rainfall: 11-Sept-2025 – 10-Oct-2025; IPC: 15-Sept-2025 – 20-Oct-2025")
+ *
+ * @param layersCoverage - Array of layer coverage objects
+ * @param t - Optional translation function for layer titles
+ * @returns Formatted coverage string or null if no valid coverage
+ */
+export function formatCoverageText(
+  layersCoverage: Array<{
+    layerTitle?: string;
+    startDate?: number;
+    endDate?: number;
+  }>,
+  t?: (key: string) => string,
+): string | null {
+  const translate = t ?? ((s: string) => s);
+
+  const layersWithCoverage = layersCoverage
+    .map(coverage => ({
+      title: coverage.layerTitle,
+      range: formatCoverageRange(coverage.startDate, coverage.endDate),
+    }))
+    .filter(item => item.range !== null);
+
+  if (layersWithCoverage.length === 0) {
+    return null;
+  }
+
+  // Single layer: just show the range
+  if (layersWithCoverage.length === 1) {
+    return layersWithCoverage[0].range;
+  }
+
+  // Multiple layers: show layer titles with ranges
+  return layersWithCoverage
+    .map(item => `${translate(item.title ?? '')}: ${item.range}`)
+    .join('; ');
+}
+
 export const SEASON_MAP: [number, number][] = [
   [0, 2],
   [3, 5],
