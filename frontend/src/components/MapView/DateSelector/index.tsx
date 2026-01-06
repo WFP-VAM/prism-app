@@ -238,9 +238,10 @@ const DateSelector = memo(() => {
         if (firstIndex === -1) {
           return layer.dateItems;
         }
-        // truncate the date item array at index matching timeline first date with a buffer of 1 day decrements
-
-        return layer.dateItems.slice(firstIndex - 1);
+        // Truncate the date item array at index matching timeline first date with a buffer of 1 day.
+        // Use Math.max to prevent negative indices - when firstIndex is 0, slice(-1) would
+        // incorrectly return only the last element instead of the full array.
+        return layer.dateItems.slice(Math.max(firstIndex - 1, 0));
       }),
     ];
   }, [orderedLayers, timelineStartDate]);
