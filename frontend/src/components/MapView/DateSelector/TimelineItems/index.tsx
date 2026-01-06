@@ -192,15 +192,34 @@ const TimelineItems = memo(
 const createLayerStyles = (
   backgroundColor: CSSProperties['backgroundColor'],
   top: CSSProperties['top'],
-): LayerStyle => ({
-  position: 'absolute',
-  height: 10,
-  width: TIMELINE_ITEM_WIDTH,
-  pointerEvents: 'none',
-  opacity: 0.6,
-  top,
-  backgroundColor,
-});
+  options?: {
+    opacity?: number;
+    includeLeft?: boolean;
+  },
+): LayerStyle | CoverageBarStyle | TickStyle => {
+  const baseStyles = {
+    position: 'absolute' as const,
+    height: 10,
+    pointerEvents: 'none' as const,
+    opacity: options?.opacity ?? 0.6,
+    top,
+    backgroundColor,
+  };
+
+  // Coverage bars have left: 0 and no width
+  if (options?.includeLeft) {
+    return {
+      ...baseStyles,
+      left: 0,
+    };
+  }
+
+  // Regular layer styles and tick styles have width
+  return {
+    ...baseStyles,
+    width: TIMELINE_ITEM_WIDTH,
+  };
+};
 
 const createDirectionStyles = (
   borderColor: CSSProperties['borderColor'],
@@ -208,45 +227,6 @@ const createDirectionStyles = (
 ): DirectionStyle => ({
   top,
   borderLeft: `6px solid ${borderColor}`,
-});
-
-const createCoverageBarStyles = (
-  backgroundColor: CSSProperties['backgroundColor'],
-  top: CSSProperties['top'],
-): CoverageBarStyle => ({
-  position: 'absolute',
-  height: 10,
-  pointerEvents: 'none',
-  opacity: 0.8,
-  top,
-  left: 0,
-  backgroundColor,
-});
-
-const createValidityTickStyles = (
-  backgroundColor: CSSProperties['backgroundColor'],
-  top: CSSProperties['top'],
-): TickStyle => ({
-  position: 'absolute',
-  height: 10,
-  width: TIMELINE_ITEM_WIDTH,
-  pointerEvents: 'none',
-  opacity: 0.8,
-  top,
-  backgroundColor,
-});
-
-const createQueryDateTickStyles = (
-  backgroundColor: CSSProperties['backgroundColor'],
-  top: CSSProperties['top'],
-): TickStyle => ({
-  position: 'absolute',
-  height: 10,
-  width: TIMELINE_ITEM_WIDTH,
-  pointerEvents: 'none',
-  opacity: 1,
-  top,
-  backgroundColor,
 });
 
 const useStyles = makeStyles(() =>
@@ -302,19 +282,34 @@ const useStyles = makeStyles(() =>
     layerThreeDirection: createDirectionStyles(DARK_ORANGE_HEX, 20),
 
     // Coverage bars
-    layerOneCoverageBar: createCoverageBarStyles(LIGHT_BLUE_HEX, 0),
-    layerTwoCoverageBar: createCoverageBarStyles(LIGHT_GREEN_HEX, 10),
-    layerThreeCoverageBar: createCoverageBarStyles(LIGHT_ORANGE_HEX, 20),
+    layerOneCoverageBar: createLayerStyles(LIGHT_BLUE_HEX, 0, {
+      opacity: 0.8,
+      includeLeft: true,
+    }),
+    layerTwoCoverageBar: createLayerStyles(LIGHT_GREEN_HEX, 10, {
+      opacity: 0.8,
+      includeLeft: true,
+    }),
+    layerThreeCoverageBar: createLayerStyles(LIGHT_ORANGE_HEX, 20, {
+      opacity: 0.8,
+      includeLeft: true,
+    }),
 
     // Validity ticks
-    layerOneValidityTick: createValidityTickStyles(LIGHT_BLUE_HEX, 0),
-    layerTwoValidityTick: createValidityTickStyles(LIGHT_GREEN_HEX, 10),
-    layerThreeValidityTick: createValidityTickStyles(LIGHT_ORANGE_HEX, 20),
+    layerOneValidityTick: createLayerStyles(LIGHT_BLUE_HEX, 0, {
+      opacity: 0.8,
+    }),
+    layerTwoValidityTick: createLayerStyles(LIGHT_GREEN_HEX, 10, {
+      opacity: 0.8,
+    }),
+    layerThreeValidityTick: createLayerStyles(LIGHT_ORANGE_HEX, 20, {
+      opacity: 0.8,
+    }),
 
     // Query date ticks (bold)
-    layerOneQueryTick: createQueryDateTickStyles(DARK_BLUE_HEX, 0),
-    layerTwoQueryTick: createQueryDateTickStyles(DARK_GREEN_HEX, 10),
-    layerThreeQueryTick: createQueryDateTickStyles(DARK_ORANGE_HEX, 20),
+    layerOneQueryTick: createLayerStyles(DARK_BLUE_HEX, 0, { opacity: 1 }),
+    layerTwoQueryTick: createLayerStyles(DARK_GREEN_HEX, 10, { opacity: 1 }),
+    layerThreeQueryTick: createLayerStyles(DARK_ORANGE_HEX, 20, { opacity: 1 }),
 
     currentDate: {
       border: '2px solid black',
