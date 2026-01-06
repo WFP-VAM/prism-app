@@ -1,92 +1,92 @@
-{"DataList":
-    [
-        {
-          "CODE1": "181",
-          "DTVAL_CO": 7825
-        },
-        {
-          "CODE1": "182",
-          "DTVAL_CO": 5108
-        },
-        {
-          "CODE1": "183",
-          "DTVAL_CO": 11659
-        },
-        {
-          "CODE1": "184",
-          "DTVAL_CO": 6497
-        },
-        {
-          "CODE1": "185",
-          "DTVAL_CO": 7544
-        },
-        {
-          "CODE1": "261",
-          "DTVAL_CO": 989
-        },
-        {
-          "CODE1": "262",
-          "DTVAL_CO": 11805
-        },
-        {
-          "CODE1": "263",
-          "DTVAL_CO": 5529
-        },
-        {
-          "CODE1": "264",
-          "DTVAL_CO": 8429
-        },
-        {
-          "CODE1": "265",
-          "DTVAL_CO": 10473
-        },
-        {
-          "CODE1": "267",
-          "DTVAL_CO": 11994
-        },
-        {
-          "CODE1": "341",
-          "DTVAL_CO": 8909
-        },
-        {
-          "CODE1": "342",
-          "DTVAL_CO": 472
-        },
-        {
-          "CODE1": "343",
-          "DTVAL_CO": 7268
-        },
-        {
-          "CODE1": "344",
-          "DTVAL_CO": 2071
-        },
-        {
-          "CODE1": "345",
-          "DTVAL_CO": 1769
-        },
-        {
-          "CODE1": "346",
-          "DTVAL_CO": 3510
-        },
-        {
-          "CODE1": "348",
-          "DTVAL_CO": 3215
-        },
-        {
-          "CODE1": "421",
-          "DTVAL_CO": 4372
-        },
-        {
-          "CODE1": "422",
-          "DTVAL_CO": 4863
-        },
-        {
-          "CODE1": "423",
-          "DTVAL_CO": 4854
-        },
-        {
-          "CODE1": "511",
-          "DTVAL_CO": 4386
-        }
-       ]
+{
+  "DataList": [
+    {
+      "CODE1": "MN181",
+      "DTVAL_CO": 7825
+    },
+    {
+      "CODE1": "MN182",
+      "DTVAL_CO": 5108
+    },
+    {
+      "CODE1": "MN183",
+      "DTVAL_CO": 11659
+    },
+    {
+      "CODE1": "MN184",
+      "DTVAL_CO": 6497
+    },
+    {
+      "CODE1": "MN185",
+      "DTVAL_CO": 7544
+    },
+    {
+      "CODE1": "MN261",
+      "DTVAL_CO": 989
+    },
+    {
+      "CODE1": "MN262",
+      "DTVAL_CO": 11805
+    },
+    {
+      "CODE1": "MN263",
+      "DTVAL_CO": 5529
+    },
+    {
+      "CODE1": "MN264",
+      "DTVAL_CO": 8429
+    },
+    {
+      "CODE1": "MN265",
+      "DTVAL_CO": 10473
+    },
+    {
+      "CODE1": "MN267",
+      "DTVAL_CO": 11994
+    },
+    {
+      "CODE1": "MN341",
+      "DTVAL_CO": 8909
+    },
+    {
+      "CODE1": "MN342",
+      "DTVAL_CO": 472
+    },
+    {
+      "CODE1": "MN343",
+      "DTVAL_CO": 7268
+    },
+    {
+      "CODE1": "MN344",
+      "DTVAL_CO": 2071
+    },
+    {
+      "CODE1": "MN345",
+      "DTVAL_CO": 1769
+    },
+    {
+      "CODE1": "MN346",
+      "DTVAL_CO": 3510
+    },
+    {
+      "CODE1": "MN348",
+      "DTVAL_CO": 3215
+    },
+    {
+      "CODE1": "MN421",
+      "DTVAL_CO": 4372
+    },
+    {
+      "CODE1": "MN422",
+      "DTVAL_CO": 4863
+    },
+    {
+      "CODE1": "MN423",
+      "DTVAL_CO": 4854
+    },
+    {
+      "CODE1": "MN511",
+      "DTVAL_CO": 4386
     }
+  ]
+}
