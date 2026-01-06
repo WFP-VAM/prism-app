@@ -286,22 +286,22 @@ export const getTimeInMilliseconds = (date: string | number) =>
 
 /**
  * Format a date coverage range for display.
- * Returns "01/11/2025 - 10/10/2025" or just "01/11/2025" if dates are the same.
- * Uses locale-aware formatting (MM/DD/YYYY in US, DD/MM/YYYY in Europe, etc.)
+ * @param startDate - Start date timestamp
+ * @param endDate - End date timestamp
+ * @param format - Date format to use (default: 'localeNumericUTC')
+ * @returns Formatted range string or null if dates are missing
  */
 export function formatCoverageRange(
   startDate?: number,
   endDate?: number,
+  format: Parameters<typeof getFormattedDate>[1] = 'localeNumericUTC',
 ): string | null {
   if (!startDate || !endDate) {
     return null;
   }
 
-  const startFormatted = getFormattedDate(
-    startDate,
-    'localeNumericUTC',
-  ) as string;
-  const endFormatted = getFormattedDate(endDate, 'localeNumericUTC') as string;
+  const startFormatted = getFormattedDate(startDate, format) as string;
+  const endFormatted = getFormattedDate(endDate, format) as string;
 
   // If start and end are the same day, just show one date
   if (startFormatted === endFormatted) {
@@ -320,6 +320,7 @@ export function formatCoverageRange(
  *
  * @param layersCoverage - Array of layer coverage objects
  * @param t - Optional translation function for layer titles
+ * @param format - Date format to use (default: 'localeNumericUTC')
  * @returns Formatted coverage string or null if no valid coverage
  */
 export function formatCoverageText(
@@ -329,13 +330,14 @@ export function formatCoverageText(
     endDate?: number;
   }>,
   t?: (key: string) => string,
+  format?: Parameters<typeof getFormattedDate>[1],
 ): string | null {
   const translate = t ?? ((s: string) => s);
 
   const layersWithCoverage = layersCoverage
     .map(coverage => ({
       title: coverage.layerTitle,
-      range: formatCoverageRange(coverage.startDate, coverage.endDate),
+      range: formatCoverageRange(coverage.startDate, coverage.endDate, format),
     }))
     .filter(item => item.range !== null);
 

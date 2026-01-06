@@ -13,6 +13,7 @@ import MapGL, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';
 import { useTranslation } from 'react-i18next';
 import useResizeObserver from 'utils/useOnResizeObserver';
 import { getFormattedDate, formatCoverageText } from 'utils/date-utils';
+import { DateFormat } from 'utils/name-utils';
 import { lightGrey } from 'muiTheme';
 import { FloodStationMarker } from 'components/MapView/Layers/AnticipatoryActionFloodLayer/FloodStationMarker';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
@@ -151,9 +152,14 @@ function MapExportLayout({
       );
     }
 
-    // Replace {coverage} with formatted coverage ranges
+    // Replace {coverage} with formatted coverage ranges (using DayFirstHyphenMonthName)
     if (layersCoverage && result.includes('{date_coverage}')) {
-      const coverageText = formatCoverageText(layersCoverage, t) ?? '';
+      const coverageText =
+        formatCoverageText(
+          layersCoverage,
+          t,
+          DateFormat.DayFirstHyphenMonthName,
+        ) ?? '';
       result = result.replace(/\{date_coverage\}/g, coverageText);
     }
 
