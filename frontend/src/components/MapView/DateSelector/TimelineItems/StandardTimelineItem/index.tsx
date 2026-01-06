@@ -3,6 +3,24 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { DateItem, DateRangeType } from 'config/types';
 import { datesAreEqualWithoutTime } from 'utils/date-utils';
 import { TIMELINE_ITEM_WIDTH } from '../../utils';
+import {
+  LIGHT_BLUE_HEX,
+  LIGHT_GREEN_HEX,
+  LIGHT_ORANGE_HEX,
+  DARK_BLUE_HEX,
+  DARK_GREEN_HEX,
+  DARK_ORANGE_HEX,
+} from '../utils';
+
+// Helper: Get the color and top position for a given layer index
+const getLayerStyles = (layerIndex: number) => {
+  const styles = [
+    { color: LIGHT_BLUE_HEX, emphasisColor: DARK_BLUE_HEX, top: 0 },
+    { color: LIGHT_GREEN_HEX, emphasisColor: DARK_GREEN_HEX, top: 10 },
+    { color: LIGHT_ORANGE_HEX, emphasisColor: DARK_ORANGE_HEX, top: 20 },
+  ];
+  return styles[layerIndex] || styles[0];
+};
 
 // Helper: Calculate how many dates in the timeline fall within this coverage window
 const getCoverageWidthInDates = (
@@ -123,8 +141,14 @@ const StandardTimelineItem = memo(
               {/* Render coverage bar only for the selected date's coverage period */}
               {shouldRenderCoverageBar && (
                 <div
-                  className={dateItemStyling[layerIndex].coverageBar}
                   style={{
+                    position: 'absolute',
+                    height: 10,
+                    pointerEvents: 'none',
+                    opacity: 0.8,
+                    top: getLayerStyles(layerIndex).top,
+                    left: 0,
+                    backgroundColor: getLayerStyles(layerIndex).color,
                     width: coverageWidth * TIMELINE_ITEM_WIDTH,
                   }}
                   role="presentation"
@@ -134,11 +158,17 @@ const StandardTimelineItem = memo(
               {/* Render validity tick only if date has data */}
               {shouldRenderValidityTick && (
                 <div
-                  className={
-                    isQueryDate(matchingDateItemInLayer!)
-                      ? dateItemStyling[layerIndex].queryTick // Bold tick
-                      : dateItemStyling[layerIndex].validityTick // Normal tick
-                  }
+                  style={{
+                    position: 'absolute',
+                    height: 10,
+                    width: TIMELINE_ITEM_WIDTH,
+                    pointerEvents: 'none',
+                    opacity: isQueryDate(matchingDateItemInLayer!) ? 1 : 0.8,
+                    top: getLayerStyles(layerIndex).top,
+                    backgroundColor: isQueryDate(matchingDateItemInLayer!)
+                      ? getLayerStyles(layerIndex).emphasisColor
+                      : getLayerStyles(layerIndex).color,
+                  }}
                   role="presentation"
                 />
               )}
@@ -158,9 +188,6 @@ export interface StandardTimelineItemProps {
     color: string;
     layerDirectionClass?: string;
     emphasis?: string;
-    coverageBar?: string;
-    validityTick?: string;
-    queryTick?: string;
   }[];
   isDateAvailable: boolean;
   dateRange: DateRangeType[];

@@ -50,27 +50,18 @@ const TimelineItems = memo(
           color: LIGHT_BLUE_HEX,
           layerDirectionClass: classes.layerOneDirection,
           emphasis: classes.layerOneEmphasis,
-          coverageBar: classes.layerOneCoverageBar,
-          validityTick: classes.layerOneValidityTick,
-          queryTick: classes.layerOneQueryTick,
         },
         {
           class: classes.layerTwoDate,
           color: LIGHT_GREEN_HEX,
           layerDirectionClass: classes.layerTwoDirection,
           emphasis: classes.layerTwoEmphasis,
-          coverageBar: classes.layerTwoCoverageBar,
-          validityTick: classes.layerTwoValidityTick,
-          queryTick: classes.layerTwoQueryTick,
         },
         {
           class: classes.layerThreeDate,
           color: LIGHT_ORANGE_HEX,
           layerDirectionClass: classes.layerThreeDirection,
           emphasis: classes.layerThreeEmphasis,
-          coverageBar: classes.layerThreeCoverageBar,
-          validityTick: classes.layerThreeValidityTick,
-          queryTick: classes.layerThreeQueryTick,
         },
         { class: classes.availabilityDate, color: LIGHT_ORANGE_HEX },
       ],
@@ -280,36 +271,6 @@ const useStyles = makeStyles(() =>
     layerOneDirection: createDirectionStyles(DARK_BLUE_HEX, 0),
     layerTwoDirection: createDirectionStyles(DARK_GREEN_HEX, 10),
     layerThreeDirection: createDirectionStyles(DARK_ORANGE_HEX, 20),
-
-    // Coverage bars
-    layerOneCoverageBar: createLayerStyles(LIGHT_BLUE_HEX, 0, {
-      opacity: 0.8,
-      includeLeft: true,
-    }),
-    layerTwoCoverageBar: createLayerStyles(LIGHT_GREEN_HEX, 10, {
-      opacity: 0.8,
-      includeLeft: true,
-    }),
-    layerThreeCoverageBar: createLayerStyles(LIGHT_ORANGE_HEX, 20, {
-      opacity: 0.8,
-      includeLeft: true,
-    }),
-
-    // Validity ticks
-    layerOneValidityTick: createLayerStyles(LIGHT_BLUE_HEX, 0, {
-      opacity: 0.8,
-    }),
-    layerTwoValidityTick: createLayerStyles(LIGHT_GREEN_HEX, 10, {
-      opacity: 0.8,
-    }),
-    layerThreeValidityTick: createLayerStyles(LIGHT_ORANGE_HEX, 20, {
-      opacity: 0.8,
-    }),
-
-    // Query date ticks (bold)
-    layerOneQueryTick: createLayerStyles(DARK_BLUE_HEX, 0, { opacity: 1 }),
-    layerTwoQueryTick: createLayerStyles(DARK_GREEN_HEX, 10, { opacity: 1 }),
-    layerThreeQueryTick: createLayerStyles(DARK_ORANGE_HEX, 20, { opacity: 1 }),
 
     currentDate: {
       border: '2px solid black',
