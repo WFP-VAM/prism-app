@@ -240,7 +240,6 @@ export const fetchAdminLevelDataLayerData: LazyLoader<
             adminLevelDataLayer.path.includes('http') ? 'cors' : 'same-origin';
 
           // Suppress notifications for fallback layers (index > 0) since they're expected to potentially fail
-          const isFallbackLayer = index > 0;
           const options = {
             method: requestBody ? 'POST' : 'GET',
             headers: requestBody
@@ -248,7 +247,7 @@ export const fetchAdminLevelDataLayerData: LazyLoader<
               : undefined,
             body: requestBody ? JSON.stringify(requestBody) : undefined,
             mode: requestMode,
-            suppressNotification: isFallbackLayer,
+            suppressNotification: index > 0,
           };
 
           try {
