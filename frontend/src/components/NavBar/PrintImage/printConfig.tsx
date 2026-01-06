@@ -16,7 +16,7 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import { GetApp, Cancel } from '@material-ui/icons';
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import { cyanBlue } from 'muiTheme';
@@ -262,12 +262,18 @@ const footerTextSelectorOptions = [
 ];
 
 // Suffix appended to title when batch maps is enabled
-const DATE_PLACEHOLDER_SUFFIX = ' - {date}';
+const DATE_PLACEHOLDER_SUFFIX = ': {coverage}';
 
 function PrintConfig() {
   const classes = useStyles();
   const { t } = useSafeTranslation();
   const { printConfig } = useContext(PrintConfigContext);
+
+  // Local state for responsive input - syncs to parent with debounce
+  const [localTitle, setLocalTitle] = useState(printConfig?.titleText ?? '');
+  useEffect(() => {
+    setLocalTitle(printConfig?.titleText ?? '');
+  }, [printConfig?.titleText]);
 
   // Appease TS by ensuring printConfig is defined
   if (!printConfig) {
@@ -338,13 +344,14 @@ function PrintConfig() {
         {/* Title */}
         <div className={classes.optionWrap}>
           <TextField
-            value={titleText}
+            value={localTitle}
             placeholder={t('Title')}
             fullWidth
             size="small"
             inputProps={{ label: t('Title'), style: { color: 'black' } }}
             onChange={event => {
-              setTitleText(event.target.value);
+              setLocalTitle(event.target.value);
+              debounceCallback(setTitleText, event.target.value);
             }}
             variant="outlined"
           />
