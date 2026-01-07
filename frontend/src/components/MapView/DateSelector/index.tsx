@@ -238,9 +238,10 @@ const DateSelector = memo(() => {
         if (firstIndex === -1) {
           return layer.dateItems;
         }
-        // truncate the date item array at index matching timeline first date with a buffer of 1 day decrements
-
-        return layer.dateItems.slice(firstIndex - 1);
+        // Truncate the date item array at index matching timeline first date with a buffer of 1 day.
+        // Use Math.max to prevent negative indices - when firstIndex is 0, slice(-1) would
+        // incorrectly return only the last element instead of the full array.
+        return layer.dateItems.slice(Math.max(firstIndex - 1, 0));
       }),
     ];
   }, [orderedLayers, timelineStartDate]);
@@ -755,46 +756,46 @@ const DateSelector = memo(() => {
                     minWidth: `${dateRange.length * TIMELINE_ITEM_WIDTH}px`,
                   }}
                 >
-                  {stateStartDate && (
-                    <TimelineItems
-                      dateRange={dateRange}
-                      clickDate={clickDate}
-                      locale={locale}
-                      orderedLayers={orderedLayers}
-                      truncatedLayers={visibleLayers}
-                      availableDates={availableDates}
-                      showDraggingCursor={
-                        get(timeLine.current, 'offsetWidth', 0) -
-                          dateRange.length * TIMELINE_ITEM_WIDTH <
-                        0
-                      }
-                    />
-                  )}
+                  <TimelineItems
+                    dateRange={dateRange}
+                    clickDate={clickDate}
+                    locale={locale}
+                    orderedLayers={orderedLayers}
+                    truncatedLayers={visibleLayers}
+                    availableDates={availableDates}
+                    showDraggingCursor={
+                      get(timeLine.current, 'offsetWidth', 0) -
+                        dateRange.length * TIMELINE_ITEM_WIDTH <
+                      0
+                    }
+                  />
                 </Grid>
-                <Draggable
-                  axis="x"
-                  handle={`#${POINTER_ID}`}
-                  bounds={{
-                    top: 0,
-                    bottom: 0,
-                    left: 0,
-                    right: dateRange.length * TIMELINE_ITEM_WIDTH,
-                  }}
-                  grid={[TIMELINE_ITEM_WIDTH, 1]}
-                  position={pointerPosition}
-                  onStart={onPointerStart}
-                  onStop={onPointerStop}
-                  onDrag={onPointerDrag}
-                  enableUserSelectHack={false}
-                >
-                  <div className={classes.pointer} id={POINTER_ID}>
-                    <img
-                      src={TickSvg}
-                      alt="Tick Svg"
-                      style={{ pointerEvents: 'none', marginTop: -29 }}
-                    />
-                  </div>
-                </Draggable>
+                {stateStartDate && (
+                  <Draggable
+                    axis="x"
+                    handle={`#${POINTER_ID}`}
+                    bounds={{
+                      top: 0,
+                      bottom: 0,
+                      left: 0,
+                      right: dateRange.length * TIMELINE_ITEM_WIDTH,
+                    }}
+                    grid={[TIMELINE_ITEM_WIDTH, 1]}
+                    position={pointerPosition}
+                    onStart={onPointerStart}
+                    onStop={onPointerStop}
+                    onDrag={onPointerDrag}
+                    enableUserSelectHack={false}
+                  >
+                    <div className={classes.pointer} id={POINTER_ID}>
+                      <img
+                        src={TickSvg}
+                        alt="Tick Svg"
+                        style={{ pointerEvents: 'none', marginTop: -29 }}
+                      />
+                    </div>
+                  </Draggable>
+                )}
               </div>
             </Draggable>
           </Grid>
