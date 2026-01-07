@@ -9,29 +9,45 @@ const StandardTimelineItem = memo(
     currentDate,
     dateItemStyling,
     isDateAvailable,
+    selectedDate,
   }: StandardTimelineItemProps) => {
     // Find dates with priority: Query > Validity > Coverage
+    // Validity periods are only shown for the active/selected date
+    const isActiveDate = useMemo(
+      () =>
+        selectedDate !== undefined &&
+        datesAreEqualWithoutTime(currentDate.value, selectedDate),
+      [currentDate.value, selectedDate],
+    );
+
     const layerMatches = useMemo(() => {
       return concatenatedLayers.map(layerDates => {
-        // Priority 1: Query date - check if queryDate matches currentDate
-        const queryMatch = layerDates.findIndex(i =>
-          datesAreEqualWithoutTime(i.queryDate, currentDate.value),
+        // Priority 1: Query date - only show when queryDate matches currentDate AND it's an observation date
+        // Observation dates (queryDate === displayDate) show as individual ticks
+        const queryMatch = layerDates.findIndex(
+          i =>
+            datesAreEqualWithoutTime(i.queryDate, currentDate.value) &&
+            datesAreEqualWithoutTime(i.queryDate, i.displayDate),
         );
 
         if (queryMatch > -1) {
           return { index: queryMatch, type: 'query' as const };
         }
 
-        // Priority 2: Validity period - check if displayDate matches currentDate
-        const validityMatch = layerDates.findIndex(i =>
-          datesAreEqualWithoutTime(i.displayDate, currentDate.value),
-        );
+        // Priority 2: Validity period - only show for active date
+        // Check if displayDate matches currentDate (for the active date only)
+        if (isActiveDate) {
+          const validityMatch = layerDates.findIndex(i =>
+            datesAreEqualWithoutTime(i.displayDate, currentDate.value),
+          );
 
-        if (validityMatch > -1) {
-          return { index: validityMatch, type: 'validity' as const };
+          if (validityMatch > -1) {
+            return { index: validityMatch, type: 'validity' as const };
+          }
         }
 
         // Priority 3: Coverage window - check if currentDate falls within startDate/endDate
+        // This creates continuous bars instead of individual ticks
         const coverageMatch = layerDates.findIndex(i => {
           if (i.startDate && i.endDate) {
             return (
@@ -47,7 +63,7 @@ const StandardTimelineItem = memo(
 
         return { index: -1, type: 'none' as const };
       });
-    }, [concatenatedLayers, currentDate.value]);
+    }, [concatenatedLayers, currentDate.value, isActiveDate]);
 
     return (
       <>
@@ -58,13 +74,8 @@ const StandardTimelineItem = memo(
               className={dateItemStyling[3].validityClass}
               style={{
                 height: 4,
-                // TODO - handle more than 3 layers
-                top:
-                  10 *
-                  Math.min(
-                    layerMatches.filter(m => m.index > -1).length + 1,
-                    3,
-                  ),
+                // Position below all layers - each layer is 10px tall, so position at 10 * number of layers
+                top: 10 * Math.min((layerMatches?.length || 0) + 1, 3),
               }}
               key={Math.random()}
               role="presentation"
@@ -117,6 +128,7 @@ export interface StandardTimelineItemProps {
     coverageClass: string;
   }[];
   isDateAvailable: boolean;
+  selectedDate?: number;
 }
 
 export default StandardTimelineItem;

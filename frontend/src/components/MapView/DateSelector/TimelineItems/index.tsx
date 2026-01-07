@@ -38,6 +38,7 @@ const TimelineItems = memo(
     truncatedLayers,
     availableDates,
     showDraggingCursor,
+    selectedDate,
   }: TimelineItemsProps) => {
     const classes = useStyles();
 
@@ -162,6 +163,7 @@ const TimelineItems = memo(
                         currentDate={date}
                         dateItemStyling={DATE_ITEM_STYLING}
                         isDateAvailable={isDateAvailable}
+                        selectedDate={selectedDate}
                       />
                     );
                   })()}
@@ -309,6 +311,7 @@ export interface TimelineItemsProps {
   orderedLayers: DateCompatibleLayerWithDateItems[];
   truncatedLayers: DateItem[][];
   showDraggingCursor: boolean;
+  selectedDate?: number;
 }
 
 export default TimelineItems;
