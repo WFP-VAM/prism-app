@@ -61,6 +61,44 @@ const StandardTimelineItem = memo(
       );
     }, [concatenatedLayers, currentDate.value, displayDateMatches]);
 
+    // Pre-compute coverage data for each layer's selected date (computed once per render)
+    const layerCoverageData = useMemo(() => {
+      return concatenatedLayers.map(layerDates => {
+        const selectedDateItem = layerDates.find(item =>
+          datesAreEqualWithoutTime(item.displayDate, selectedDate),
+        );
+
+        if (
+          !selectedDateItem ||
+          !selectedDateItem.startDate ||
+          !selectedDateItem.endDate
+        ) {
+          return {
+            selectedDateItem: null,
+            coverageWidth: 0,
+            firstDateIndex: -1,
+          };
+        }
+
+        // Calculate coverage width once per layer
+        const coverageWidth = getCoverageWidthInDates(
+          selectedDateItem,
+          dateRange,
+        );
+
+        // Find the first date index in the timeline that falls within coverage window
+        const firstDateIndex = dateRange.findIndex(
+          d => d.value >= selectedDateItem.startDate!,
+        );
+
+        return {
+          selectedDateItem,
+          coverageWidth,
+          firstDateIndex,
+        };
+      });
+    }, [concatenatedLayers, selectedDate, dateRange]);
+
     const isQueryDate = (date: DateItem): boolean =>
       datesAreEqualWithoutTime(date.queryDate, date.displayDate);
 
@@ -84,10 +122,9 @@ const StandardTimelineItem = memo(
           const matchingDateItemInLayer: DateItem | undefined =
             idx > -1 ? layerDates[idx] : undefined;
 
-          // Find the coverage window for the selected date
-          const selectedDateItem = layerDates.find(item =>
-            datesAreEqualWithoutTime(item.displayDate, selectedDate),
-          );
+          const coverageData = layerCoverageData[layerIndex];
+          const { selectedDateItem, coverageWidth, firstDateIndex } =
+            coverageData;
 
           // Check if current timeline date falls within the selected date's coverage window
           const isInSelectedCoverage =
@@ -96,18 +133,14 @@ const StandardTimelineItem = memo(
             currentDate.value <= (selectedDateItem.endDate || 0);
 
           // Check if this is the first date in timeline that falls within selected coverage
+          const currentDateIndex = dateRange.findIndex(
+            d => d.value === currentDate.value,
+          );
           const isFirstDateInTimeline =
             selectedDateItem &&
             isInSelectedCoverage &&
-            dateRange.findIndex(
-              d => d.value >= (selectedDateItem.startDate || 0),
-            ) === dateRange.findIndex(d => d.value === currentDate.value);
-
-          // Calculate coverage width using the SELECTED date's coverage window
-          const coverageWidth =
-            selectedDateItem && isInSelectedCoverage
-              ? getCoverageWidthInDates(selectedDateItem, dateRange)
-              : 0;
+            firstDateIndex !== -1 &&
+            firstDateIndex === currentDateIndex;
 
           // Determine what to render
           const shouldRenderCoverageBar =
