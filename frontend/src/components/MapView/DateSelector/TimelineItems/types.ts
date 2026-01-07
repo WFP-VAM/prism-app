@@ -5,10 +5,10 @@ import {
 } from 'context/anticipatoryAction/AAStormStateSlice/types';
 
 export type DateItemStyle = {
-  class: string;
+  validityClass: string;
   color: string;
-  layerDirectionClass?: string;
-  emphasis?: string;
+  queryClass?: string;
+  coverageClass: string;
 };
 
 export type DateJSON = Record<ShortDate, Record<CycloneName, TimeAndState[]>>;

@@ -1,3 +1,4 @@
+import React from 'react';
 import { render } from '@testing-library/react';
 import { DateItem } from 'config/types';
 import StandardTimelineItem, { StandardTimelineItemProps } from '.';
@@ -35,14 +36,26 @@ test('StandardTimelineItem renders as expected', () => {
       date: '',
     },
     dateItemStyling: [
-      { class: 'intersectionDate', color: 'White' },
       {
-        class: 'layerOneDate',
-        color: '',
-        layerDirectionClass: 'layerDirectionClass',
+        validityClass: 'intersectionDate',
+        color: 'White',
+        coverageClass: 'intersectionDate',
       },
-      { class: 'intersectionDate', color: 'White' },
-      { class: 'intersectionDate', color: 'White' },
+      {
+        validityClass: 'layerOneDate',
+        color: '',
+        coverageClass: 'layerOneDate',
+      },
+      {
+        validityClass: 'intersectionDate',
+        color: 'White',
+        coverageClass: 'intersectionDate',
+      },
+      {
+        validityClass: 'intersectionDate',
+        color: 'White',
+        coverageClass: 'intersectionDate',
+      },
     ],
   };
 
@@ -83,14 +96,26 @@ test('StandardTimelineItem renders as expected with data point starting after Ti
       date: '',
     },
     dateItemStyling: [
-      { class: 'intersectionDate', color: 'White' },
       {
-        class: 'layerOneDate',
-        color: '',
-        layerDirectionClass: 'layerDirectionClass',
+        validityClass: 'intersectionDate',
+        color: 'White',
+        coverageClass: 'intersectionDate',
       },
-      { class: 'intersectionDate', color: 'White' },
-      { class: 'intersectionDate', color: 'White' },
+      {
+        validityClass: 'layerOneDate',
+        color: '',
+        coverageClass: 'layerOneDate',
+      },
+      {
+        validityClass: 'intersectionDate',
+        color: 'White',
+        coverageClass: 'intersectionDate',
+      },
+      {
+        validityClass: 'intersectionDate',
+        color: 'White',
+        coverageClass: 'intersectionDate',
+      },
     ],
   };
 

@@ -10,74 +10,95 @@ const StandardTimelineItem = memo(
     dateItemStyling,
     isDateAvailable,
   }: StandardTimelineItemProps) => {
-    // Pre-compute the matching indices for all layers
-
-    const displayDateMatches = useMemo(
-      () =>
-        concatenatedLayers.map(layerDates =>
-          layerDates.findIndex(i =>
-            datesAreEqualWithoutTime(i.displayDate, currentDate.value),
-          ),
-        ),
-      [concatenatedLayers, currentDate.value],
-    );
-
+    // Find dates with priority: Query > Validity > Coverage
     const layerMatches = useMemo(() => {
-      const queryDateMatches = concatenatedLayers.map(layerDates =>
-        layerDates.findIndex(i =>
+      return concatenatedLayers.map(layerDates => {
+        // Priority 1: Query date - check if queryDate matches currentDate
+        const queryMatch = layerDates.findIndex(i =>
           datesAreEqualWithoutTime(i.queryDate, currentDate.value),
-        ),
-      );
+        );
 
-      return displayDateMatches.map((displayDateMatch, layerIndex) =>
-        queryDateMatches[layerIndex] > -1 &&
-        !datesAreEqualWithoutTime(
-          concatenatedLayers[layerIndex][displayDateMatch].queryDate,
-          currentDate.value,
-        )
-          ? queryDateMatches[layerIndex]
-          : displayDateMatch,
-      );
-    }, [concatenatedLayers, currentDate.value, displayDateMatches]);
+        if (queryMatch > -1) {
+          return { index: queryMatch, type: 'query' as const };
+        }
 
-    const isQueryDate = (date: DateItem): boolean =>
-      datesAreEqualWithoutTime(date.queryDate, date.displayDate);
+        // Priority 2: Validity period - check if displayDate matches currentDate
+        const validityMatch = layerDates.findIndex(i =>
+          datesAreEqualWithoutTime(i.displayDate, currentDate.value),
+        );
+
+        if (validityMatch > -1) {
+          return { index: validityMatch, type: 'validity' as const };
+        }
+
+        // Priority 3: Coverage window - check if currentDate falls within startDate/endDate
+        const coverageMatch = layerDates.findIndex(i => {
+          if (i.startDate && i.endDate) {
+            return (
+              currentDate.value >= i.startDate && currentDate.value <= i.endDate
+            );
+          }
+          return false;
+        });
+
+        if (coverageMatch > -1) {
+          return { index: coverageMatch, type: 'coverage' as const };
+        }
+
+        return { index: -1, type: 'none' as const };
+      });
+    }, [concatenatedLayers, currentDate.value]);
 
     return (
       <>
         {/* Add a small grey line to indicate where dates are overlapping */}
-        {layerMatches.length >= 1 && isDateAvailable && (
-          <div
-            className={dateItemStyling[3].class}
-            style={{
-              height: 4,
-              // TODO - handle more than 3 layers
-              top: 10 * Math.min((layerMatches?.length || 0) + 1, 3),
-            }}
-            key={Math.random()}
-            role="presentation"
-          />
-        )}
-        {layerMatches.map((idx, layerIndex) => {
+        {layerMatches.filter(m => m.index > -1).length >= 1 &&
+          isDateAvailable && (
+            <div
+              className={dateItemStyling[3].validityClass}
+              style={{
+                height: 4,
+                // TODO - handle more than 3 layers
+                top:
+                  10 *
+                  Math.min(
+                    layerMatches.filter(m => m.index > -1).length + 1,
+                    3,
+                  ),
+              }}
+              key={Math.random()}
+              role="presentation"
+            />
+          )}
+        {layerMatches.map((match, layerIndex) => {
+          if (match.index === -1) {
+            return null;
+          }
+
           const layerDates = concatenatedLayers[layerIndex];
           const matchingDateItemInLayer: DateItem | undefined =
-            idx > -1 ? layerDates[idx] : undefined;
+            layerDates[match.index];
 
           if (!matchingDateItemInLayer) {
             return null;
           }
 
+          // Determine which class to use based on priority: Query > Validity > Coverage
+          let className: string;
+          if (
+            match.type === 'query' &&
+            dateItemStyling[layerIndex].queryClass
+          ) {
+            className = dateItemStyling[layerIndex].queryClass;
+          } else if (match.type === 'validity') {
+            className = dateItemStyling[layerIndex].validityClass;
+          } else {
+            className = dateItemStyling[layerIndex].coverageClass;
+          }
+
           return (
             <React.Fragment key={Math.random()}>
-              {/* Add a bold square if queryDate (emphasis), normal otherwise */}
-              <div
-                className={`${
-                  isQueryDate(matchingDateItemInLayer)
-                    ? dateItemStyling[layerIndex].emphasis
-                    : dateItemStyling[layerIndex].class
-                }`}
-                role="presentation"
-              />
+              <div className={className} role="presentation" />
             </React.Fragment>
           );
         })}
@@ -90,10 +111,10 @@ export interface StandardTimelineItemProps {
   concatenatedLayers: DateItem[][];
   currentDate: DateRangeType;
   dateItemStyling: {
-    class: string;
+    validityClass: string;
     color: string;
-    layerDirectionClass?: string;
-    emphasis?: string;
+    queryClass?: string;
+    coverageClass: string;
   }[];
   isDateAvailable: boolean;
 }

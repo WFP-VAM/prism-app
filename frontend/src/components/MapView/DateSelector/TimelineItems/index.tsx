@@ -45,24 +45,28 @@ const TimelineItems = memo(
     const DATE_ITEM_STYLING: DateItemStyle[] = useMemo(
       () => [
         {
-          class: classes.layerOneDate,
+          validityClass: classes.layerOneDate,
           color: LIGHT_BLUE_HEX,
-          layerDirectionClass: classes.layerOneDirection,
-          emphasis: classes.layerOneEmphasis,
+          queryClass: classes.layerOneEmphasis,
+          coverageClass: classes.layerOneCoverage,
         },
         {
-          class: classes.layerTwoDate,
+          validityClass: classes.layerTwoDate,
           color: LIGHT_GREEN_HEX,
-          layerDirectionClass: classes.layerTwoDirection,
-          emphasis: classes.layerTwoEmphasis,
+          queryClass: classes.layerTwoEmphasis,
+          coverageClass: classes.layerTwoCoverage,
         },
         {
-          class: classes.layerThreeDate,
+          validityClass: classes.layerThreeDate,
           color: LIGHT_ORANGE_HEX,
-          layerDirectionClass: classes.layerThreeDirection,
-          emphasis: classes.layerThreeEmphasis,
+          queryClass: classes.layerThreeEmphasis,
+          coverageClass: classes.layerThreeCoverage,
         },
-        { class: classes.availabilityDate, color: LIGHT_ORANGE_HEX },
+        {
+          validityClass: classes.availabilityDate,
+          color: LIGHT_ORANGE_HEX,
+          coverageClass: classes.availabilityDate,
+        },
       ],
       [classes],
     );
@@ -245,6 +249,10 @@ const useStyles = makeStyles(() =>
     layerOneEmphasis: createLayerStyles(DARK_BLUE_HEX, 0),
     layerTwoEmphasis: createLayerStyles(DARK_GREEN_HEX, 10),
     layerThreeEmphasis: createLayerStyles(DARK_ORANGE_HEX, 20),
+
+    layerOneCoverage: createLayerStyles(LIGHT_BLUE_HEX, 0),
+    layerTwoCoverage: createLayerStyles(LIGHT_GREEN_HEX, 10),
+    layerThreeCoverage: createLayerStyles(LIGHT_ORANGE_HEX, 20),
 
     layerOneDirection: createDirectionStyles(DARK_BLUE_HEX, 0),
     layerTwoDirection: createDirectionStyles(DARK_GREEN_HEX, 10),
