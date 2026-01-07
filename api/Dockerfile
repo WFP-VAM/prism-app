@@ -48,7 +48,7 @@ RUN poetry run playwright install chromium
 RUN --mount=type=cache,target=/root/.cache \
     --mount=type=cache,target=/var/lib/apt \
     --mount=type=cache,target=/var/cache/apt \
-    poetry run playwright install-deps
+    apt-get update && poetry run playwright install-deps
 
 # keep this copy towards the end to help with caching previous layers
 COPY ./prism_app /prism_app
