@@ -145,9 +145,9 @@ export const getPossibleDatesForLayer = (
         }, [])
         .sort((a, b) => a.displayDate - b.displayDate);
     case 'impact':
-      return serverAvailableDates[
-        (LayerDefinitions[layer.hazardLayer] as WMSLayerProps).id
-      ];
+      // Impact layer dates are stored under the impact layer's own ID
+      // (they are loaded from the hazard layer in getAvailableDatesForLayer)
+      return serverAvailableDates[layer.id] || [];
     case 'composite': {
       // Filter dates that are after layer.startDate
       const startDateTimestamp = Date.parse(layer.startDate);
@@ -176,11 +176,19 @@ const pointDataFetchPromises: {
   [k in string]: Promise<PointDataDates>;
 } = {};
 
+// Function to clear the cache (useful when re-fetching with different auth)
+export const clearPointDataFetchCache = (): void => {
+  Object.keys(pointDataFetchPromises).forEach(key => {
+    delete pointDataFetchPromises[key];
+  });
+};
+
 const loadPointLayerDataFromURL = async (
   fetchUrl: string,
   layerId: string,
   dispatch: AppDispatch,
   fallbackUrl?: string,
+  userAuth?: { username: string; password: string },
 ): Promise<PointDataDates> => {
   try {
     if (!fetchUrl) {
@@ -188,10 +196,19 @@ const loadPointLayerDataFromURL = async (
         'load point layer data from url failed because fetchUrl is missing',
       );
     }
+    // Add authentication headers if user is logged in
+    const headers = userAuth
+      ? {
+          Authorization: `Basic ${btoa(`${userAuth.username}:${userAuth.password}`)}`,
+        }
+      : undefined;
+
     const response = await fetchWithTimeout(
       fetchUrl,
       dispatch,
-      {},
+      {
+        headers,
+      },
       `Impossible to get point data dates for ${layerId}`,
     );
     return (await response.json()) as PointDataDates;
@@ -224,6 +241,7 @@ const loadPointLayerDataFromURL = async (
 const getPointDataCoverage = async (
   layer: PointDataLayerProps,
   dispatch: AppDispatch,
+  userAuth?: { username: string; password: string },
 ): Promise<ReferenceDateTimestamp[]> => {
   const {
     dateUrl: url,
@@ -251,9 +269,20 @@ const getPointDataCoverage = async (
       break;
   }
 
-  const data = await (pointDataFetchPromises[fetchUrlWithParams] =
-    pointDataFetchPromises[fetchUrlWithParams] ||
-    loadPointLayerDataFromURL(fetchUrlWithParams, id, dispatch, fallbackUrl));
+  // Include userAuth in cache key to ensure dates are re-fetched when auth changes
+  const cacheKey = userAuth
+    ? `${fetchUrlWithParams}:${userAuth.username}`
+    : fetchUrlWithParams;
+
+  const data = await (pointDataFetchPromises[cacheKey] =
+    pointDataFetchPromises[cacheKey] ||
+    loadPointLayerDataFromURL(
+      fetchUrlWithParams,
+      id,
+      dispatch,
+      fallbackUrl,
+      userAuth,
+    ));
 
   return (
     data
@@ -683,6 +712,7 @@ export async function preloadLayerDatesForWMS(
 
 export async function preloadLayerDatesForPointData(
   dispatch: AppDispatch,
+  userAuth?: { username: string; password: string },
 ): Promise<Record<string, ReferenceDateTimestamp[]>> {
   const pointDataLayers = Object.values(LayerDefinitions).filter(
     (layer): layer is PointDataLayerProps =>
@@ -691,7 +721,7 @@ export async function preloadLayerDatesForPointData(
   );
   const r = await Promise.all([
     ...pointDataLayers.map(async layer => ({
-      [layer.id]: await getPointDataCoverage(layer, dispatch),
+      [layer.id]: await getPointDataCoverage(layer, dispatch, userAuth),
     })),
   ]);
   return r.reduce((acc, item) => ({ ...acc, ...item }), {});
@@ -756,6 +786,9 @@ export const getLayerType = (
   if (l.type === 'wms') {
     return 'WMSLayer';
   }
+  if (l.type === 'impact') {
+    return getLayerType(LayerDefinitions[l.hazardLayer]);
+  }
   return 'invalidType';
 };
 
@@ -779,6 +812,11 @@ export async function getAvailableDatesForLayer(
 
     switch (getLayerType(layer)) {
       case 'WMSLayer':
+        // Impact layers get their dates from their hazard layer
+        if (layer.type === 'impact') {
+          const hazardLayer = LayerDefinitions[layer.hazardLayer];
+          return state.serverPreloadState.WMSLayerDates[hazardLayer.id];
+        }
         return state.serverPreloadState.WMSLayerDates[layer.id];
       case 'pointDataLayer':
         return state.serverPreloadState.pointDataLayerDates[layer.id];

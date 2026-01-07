@@ -264,10 +264,16 @@ export async function loadFeaturesFromApi(
     version: hazardLayerDef.wcsConfig?.version,
   });
 
-  const statsApi = layer.api as StatsApi;
+  const statsApi = layer.api;
+  if (!statsApi || !statsApi.zonesUrl || !statsApi.groupBy) {
+    throw new Error(
+      `StatsApi configuration is missing required properties (zonesUrl, groupBy) for layer '${layer.id}'`,
+    );
+  }
+
   const apiUrl = statsApi.url || ANALYSIS_API_URL;
 
-  const apiData = {
+  const apiData: ApiData = {
     geotiff_url: wcsUrl,
     zones_url: statsApi.zonesUrl,
     group_by: statsApi.groupBy,
