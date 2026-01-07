@@ -3,6 +3,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { DateItem, DateRangeType } from 'config/types';
 import { datesAreEqualWithoutTime } from 'utils/date-utils';
 import { TIMELINE_ITEM_WIDTH } from '../../utils';
+import { DateItemStyle } from '../types';
 
 // Helper: Calculate how many dates in the timeline fall within this coverage window
 const getCoverageWidthInDates = (
@@ -26,6 +27,7 @@ const StandardTimelineItem = memo(
     concatenatedLayers,
     currentDate,
     dateItemStyling,
+    availabilityClass,
     isDateAvailable,
     dateRange,
     selectedDate,
@@ -67,7 +69,7 @@ const StandardTimelineItem = memo(
         {/* Add a small grey line to indicate where dates are overlapping */}
         {layerMatches.length >= 1 && isDateAvailable && (
           <div
-            className={dateItemStyling[3].class}
+            className={availabilityClass}
             style={{
               height: 4,
               // TODO - handle more than 3 layers
@@ -153,15 +155,8 @@ const StandardTimelineItem = memo(
 export interface StandardTimelineItemProps {
   concatenatedLayers: DateItem[][];
   currentDate: DateRangeType;
-  dateItemStyling: {
-    class: string;
-    color: string;
-    layerDirectionClass?: string;
-    emphasis?: string;
-    coverageBar?: string;
-    validityTick?: string;
-    queryTick?: string;
-  }[];
+  dateItemStyling: DateItemStyle[];
+  availabilityClass?: string;
   isDateAvailable: boolean;
   dateRange: DateRangeType[];
   selectedDate: number;

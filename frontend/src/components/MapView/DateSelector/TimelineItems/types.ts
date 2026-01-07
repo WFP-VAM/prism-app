@@ -5,10 +5,7 @@ import {
 } from 'context/anticipatoryAction/AAStormStateSlice/types';
 
 export type DateItemStyle = {
-  class: string;
   color: string;
-  layerDirectionClass?: string;
-  emphasis?: string;
   coverageBar?: string;
   validityTick?: string;
   queryTick?: string;

@@ -46,33 +46,23 @@ const TimelineItems = memo(
     const DATE_ITEM_STYLING: DateItemStyle[] = useMemo(
       () => [
         {
-          class: classes.layerOneDate,
           color: LIGHT_BLUE_HEX,
-          layerDirectionClass: classes.layerOneDirection,
-          emphasis: classes.layerOneEmphasis,
           coverageBar: classes.layerOneCoverageBar,
           validityTick: classes.layerOneValidityTick,
           queryTick: classes.layerOneQueryTick,
         },
         {
-          class: classes.layerTwoDate,
           color: LIGHT_GREEN_HEX,
-          layerDirectionClass: classes.layerTwoDirection,
-          emphasis: classes.layerTwoEmphasis,
           coverageBar: classes.layerTwoCoverageBar,
           validityTick: classes.layerTwoValidityTick,
           queryTick: classes.layerTwoQueryTick,
         },
         {
-          class: classes.layerThreeDate,
           color: LIGHT_ORANGE_HEX,
-          layerDirectionClass: classes.layerThreeDirection,
-          emphasis: classes.layerThreeEmphasis,
           coverageBar: classes.layerThreeCoverageBar,
           validityTick: classes.layerThreeValidityTick,
           queryTick: classes.layerThreeQueryTick,
         },
-        { class: classes.availabilityDate, color: LIGHT_ORANGE_HEX },
       ],
       [classes],
     );
@@ -167,6 +157,7 @@ const TimelineItems = memo(
                         concatenatedLayers={truncatedLayers}
                         currentDate={date}
                         dateItemStyling={DATE_ITEM_STYLING}
+                        availabilityClass={classes.availabilityDate}
                         isDateAvailable={isDateAvailable}
                         dateRange={dateRange}
                         selectedDate={selectedDate}
@@ -200,14 +191,6 @@ const createLayerStyles = (
   opacity: 0.6,
   top,
   backgroundColor,
-});
-
-const createDirectionStyles = (
-  borderColor: CSSProperties['borderColor'],
-  top: CSSProperties['top'],
-): DirectionStyle => ({
-  top,
-  borderLeft: `6px solid ${borderColor}`,
 });
 
 const createCoverageBarStyles = (
@@ -288,18 +271,7 @@ const useStyles = makeStyles(() =>
       border: '1px solid #D3D3D3',
       maxWidth: 'none',
     },
-    layerOneDate: createLayerStyles(LIGHT_BLUE_HEX, 0),
-    layerTwoDate: createLayerStyles(LIGHT_GREEN_HEX, 10),
-    layerThreeDate: createLayerStyles(LIGHT_ORANGE_HEX, 20),
     availabilityDate: createLayerStyles(grey, 0),
-
-    layerOneEmphasis: createLayerStyles(DARK_BLUE_HEX, 0),
-    layerTwoEmphasis: createLayerStyles(DARK_GREEN_HEX, 10),
-    layerThreeEmphasis: createLayerStyles(DARK_ORANGE_HEX, 20),
-
-    layerOneDirection: createDirectionStyles(DARK_BLUE_HEX, 0),
-    layerTwoDirection: createDirectionStyles(DARK_GREEN_HEX, 10),
-    layerThreeDirection: createDirectionStyles(DARK_ORANGE_HEX, 20),
 
     // Coverage bars
     layerOneCoverageBar: createCoverageBarStyles(LIGHT_BLUE_HEX, 0),
@@ -352,11 +324,6 @@ type LayerStyle = {
   opacity: CSSProperties['opacity'];
   top: CSSProperties['top'];
   backgroundColor: CSSProperties['backgroundColor'];
-};
-
-type DirectionStyle = {
-  top: CSSProperties['top'];
-  borderLeft: CSSProperties['borderLeft'];
 };
 
 type CoverageBarStyle = {
