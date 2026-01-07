@@ -224,49 +224,57 @@ export const fetchAdminLevelDataLayerData: LazyLoader<
     );
 
     const [layerData, ...fallbackLayersData] = await Promise.all(
-      [layer, ...(fallbackLayers ?? [])].map(
-        async (adminLevelDataLayer, index) => {
-          // format brackets inside config URL
-          // example: "&date={YYYY-MM-DD}" will turn into "&date=2021-04-27"
-          const datedPath = adminLevelDataLayer.path.replace(
-            /{.*?}/g,
-            match => {
-              const format = match.slice(1, -1);
-              return getFormattedDate(date, format as any) as string;
-            },
+      [layer, ...(fallbackLayers ?? [])].map(async adminLevelDataLayer => {
+        // format brackets inside config URL
+        // example: "&date={YYYY-MM-DD}" will turn into "&date=2021-04-27"
+        // Check if path contains date format patterns (e.g., {YYYY-MM-DD})
+        const hasDateFormatPattern = /{.*?}/.test(adminLevelDataLayer.path);
+
+        // If path has date format patterns but date is undefined, skip fetching
+        if (hasDateFormatPattern && date === undefined) {
+          return [{}];
+        }
+
+        const datedPath = adminLevelDataLayer.path.replace(/{.*?}/g, match => {
+          const format = match.slice(1, -1);
+          const formattedDate = getFormattedDate(date, format as any);
+          // This should never happen due to the check above, but adding safety check
+          if (formattedDate === undefined) {
+            throw new Error(
+              `Date is required for path with date format: ${adminLevelDataLayer.path}`,
+            );
+          }
+          return formattedDate as string;
+        });
+
+        const requestMode: 'cors' | 'same-origin' =
+          adminLevelDataLayer.path.includes('http') ? 'cors' : 'same-origin';
+
+        const options = {
+          method: requestBody ? 'POST' : 'GET',
+          headers: requestBody
+            ? { 'Content-Type': 'application/json' }
+            : undefined,
+          body: requestBody ? JSON.stringify(requestBody) : undefined,
+          mode: requestMode,
+        };
+
+        try {
+          // TODO avoid any use, the json should be typed. See issue #307
+          const response = await fetchWithTimeout(
+            datedPath,
+            api.dispatch,
+            options,
+            `Request failed for fetching admin level data at ${adminLevelDataLayer.path}`,
           );
 
-          const requestMode: 'cors' | 'same-origin' =
-            adminLevelDataLayer.path.includes('http') ? 'cors' : 'same-origin';
-
-          // Suppress notifications for fallback layers (index > 0) since they're expected to potentially fail
-          const options = {
-            method: requestBody ? 'POST' : 'GET',
-            headers: requestBody
-              ? { 'Content-Type': 'application/json' }
-              : undefined,
-            body: requestBody ? JSON.stringify(requestBody) : undefined,
-            mode: requestMode,
-            suppressNotification: index > 0,
-          };
-
-          try {
-            // TODO avoid any use, the json should be typed. See issue #307
-            const response = await fetchWithTimeout(
-              datedPath,
-              api.dispatch,
-              options,
-              `Request failed for fetching admin level data at ${adminLevelDataLayer.path}`,
-            );
-
-            const data: { [key: string]: any }[] = (await response.json())
-              ?.DataList;
-            return data;
-          } catch {
-            return [{}];
-          }
-        },
-      ),
+          const data: { [key: string]: any }[] = (await response.json())
+            ?.DataList;
+          return data;
+        } catch {
+          return [{}];
+        }
+      }),
     );
 
     return getAdminLevelDataLayerData({
