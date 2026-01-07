@@ -4,7 +4,6 @@ import { HTTPError } from './error-utils';
 
 interface FetchWithTimeoutOptions extends RequestInit {
   timeout?: number;
-  suppressNotification?: boolean;
 }
 
 export const ANALYSIS_REQUEST_TIMEOUT = 60000;
@@ -46,7 +45,7 @@ export const fetchWithTimeout = async (
     return res;
   } catch (error) {
     console.error(error);
-    if (!dispatch || options?.suppressNotification) {
+    if (!dispatch) {
       throw error;
     }
     if ((error as any).name === 'AbortError') {
