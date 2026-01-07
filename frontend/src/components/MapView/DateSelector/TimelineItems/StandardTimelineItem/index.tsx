@@ -1,4 +1,3 @@
-import { createStyles, makeStyles } from '@material-ui/core';
 import React, { memo, useMemo } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import { DateItem, DateRangeType } from 'config/types';
@@ -12,7 +11,6 @@ const StandardTimelineItem = memo(
     isDateAvailable,
   }: StandardTimelineItemProps) => {
     // Pre-compute the matching indices for all layers
-    const classes = useStyles();
 
     const displayDateMatches = useMemo(
       () =>
@@ -41,16 +39,6 @@ const StandardTimelineItem = memo(
           : displayDateMatch,
       );
     }, [concatenatedLayers, currentDate.value, displayDateMatches]);
-
-    const hasNextItemDirectionForward = (
-      _matchingDate: DateItem,
-      _layerDates: DateItem[],
-    ): boolean => false;
-
-    const hasNextItemDirectionBackward = (
-      _matchingDate: DateItem,
-      _layerDates: DateItem[],
-    ): boolean => false;
 
     const isQueryDate = (date: DateItem): boolean =>
       datesAreEqualWithoutTime(date.queryDate, date.displayDate);
@@ -81,26 +69,6 @@ const StandardTimelineItem = memo(
 
           return (
             <React.Fragment key={Math.random()}>
-              {/* Add a directional arrow forward if previous item is a start date */}
-              {hasNextItemDirectionForward(
-                matchingDateItemInLayer,
-                layerDates,
-              ) && (
-                <div
-                  className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase}`}
-                />
-              )}
-
-              {/* Add a directional arrow backward if next item is an end date */}
-              {hasNextItemDirectionBackward(
-                matchingDateItemInLayer,
-                layerDates,
-              ) && (
-                <div
-                  className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase} ${classes.layerDirectionBackwardBase}`}
-                />
-              )}
-
               {/* Add a bold square if queryDate (emphasis), normal otherwise */}
               <div
                 className={`${
@@ -116,26 +84,6 @@ const StandardTimelineItem = memo(
       </>
     );
   },
-);
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    layerDirectionBase: {
-      display: 'block',
-      position: 'absolute',
-      borderTop: '5px solid transparent',
-      borderBottom: '5px solid transparent',
-      height: '0px',
-      zIndex: 1,
-      left: 0,
-      pointerEvents: 'none',
-    },
-
-    layerDirectionBackwardBase: {
-      right: 0,
-      transform: 'rotate(180deg)',
-    },
-  }),
 );
 
 export interface StandardTimelineItemProps {
