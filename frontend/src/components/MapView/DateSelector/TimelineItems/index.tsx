@@ -193,44 +193,27 @@ const createLayerStyles = (
   backgroundColor,
 });
 
-const createCoverageBarStyles = (
+const createTimelineItemStyles = (
   backgroundColor: CSSProperties['backgroundColor'],
   top: CSSProperties['top'],
-): CoverageBarStyle => ({
-  position: 'absolute',
-  height: 10,
-  pointerEvents: 'none',
-  opacity: 0.8,
-  top,
-  left: 0,
-  backgroundColor,
-});
-
-const createValidityTickStyles = (
-  backgroundColor: CSSProperties['backgroundColor'],
-  top: CSSProperties['top'],
-): TickStyle => ({
-  position: 'absolute',
-  height: 10,
-  width: TIMELINE_ITEM_WIDTH,
-  pointerEvents: 'none',
-  opacity: 0.8,
-  top,
-  backgroundColor,
-});
-
-const createQueryDateTickStyles = (
-  backgroundColor: CSSProperties['backgroundColor'],
-  top: CSSProperties['top'],
-): TickStyle => ({
-  position: 'absolute',
-  height: 10,
-  width: TIMELINE_ITEM_WIDTH,
-  pointerEvents: 'none',
-  opacity: 1,
-  top,
-  backgroundColor,
-});
+  options?: {
+    width?: CSSProperties['width'];
+    left?: CSSProperties['left'];
+    opacity?: CSSProperties['opacity'];
+  },
+): TimelineItemStyle => {
+  const { width, left, opacity = 0.8 } = options || {};
+  return {
+    position: 'absolute',
+    height: 10,
+    pointerEvents: 'none',
+    opacity,
+    top,
+    backgroundColor,
+    ...(width !== undefined && { width }),
+    ...(left !== undefined && { left }),
+  };
+};
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -274,19 +257,40 @@ const useStyles = makeStyles(() =>
     availabilityDate: createLayerStyles(grey, 0),
 
     // Coverage bars
-    layerOneCoverageBar: createCoverageBarStyles(LIGHT_BLUE_HEX, 0),
-    layerTwoCoverageBar: createCoverageBarStyles(LIGHT_GREEN_HEX, 10),
-    layerThreeCoverageBar: createCoverageBarStyles(LIGHT_ORANGE_HEX, 20),
+    layerOneCoverageBar: createTimelineItemStyles(LIGHT_BLUE_HEX, 0, {
+      left: 0,
+    }),
+    layerTwoCoverageBar: createTimelineItemStyles(LIGHT_GREEN_HEX, 10, {
+      left: 0,
+    }),
+    layerThreeCoverageBar: createTimelineItemStyles(LIGHT_ORANGE_HEX, 20, {
+      left: 0,
+    }),
 
     // Validity ticks
-    layerOneValidityTick: createValidityTickStyles(LIGHT_BLUE_HEX, 0),
-    layerTwoValidityTick: createValidityTickStyles(LIGHT_GREEN_HEX, 10),
-    layerThreeValidityTick: createValidityTickStyles(LIGHT_ORANGE_HEX, 20),
+    layerOneValidityTick: createTimelineItemStyles(LIGHT_BLUE_HEX, 0, {
+      width: TIMELINE_ITEM_WIDTH,
+    }),
+    layerTwoValidityTick: createTimelineItemStyles(LIGHT_GREEN_HEX, 10, {
+      width: TIMELINE_ITEM_WIDTH,
+    }),
+    layerThreeValidityTick: createTimelineItemStyles(LIGHT_ORANGE_HEX, 20, {
+      width: TIMELINE_ITEM_WIDTH,
+    }),
 
     // Query date ticks (bold)
-    layerOneQueryTick: createQueryDateTickStyles(DARK_BLUE_HEX, 0),
-    layerTwoQueryTick: createQueryDateTickStyles(DARK_GREEN_HEX, 10),
-    layerThreeQueryTick: createQueryDateTickStyles(DARK_ORANGE_HEX, 20),
+    layerOneQueryTick: createTimelineItemStyles(DARK_BLUE_HEX, 0, {
+      width: TIMELINE_ITEM_WIDTH,
+      opacity: 1,
+    }),
+    layerTwoQueryTick: createTimelineItemStyles(DARK_GREEN_HEX, 10, {
+      width: TIMELINE_ITEM_WIDTH,
+      opacity: 1,
+    }),
+    layerThreeQueryTick: createTimelineItemStyles(DARK_ORANGE_HEX, 20, {
+      width: TIMELINE_ITEM_WIDTH,
+      opacity: 1,
+    }),
 
     currentDate: {
       border: '2px solid black',
@@ -326,24 +330,15 @@ type LayerStyle = {
   backgroundColor: CSSProperties['backgroundColor'];
 };
 
-type CoverageBarStyle = {
+type TimelineItemStyle = {
   position: CSSProperties['position'];
   height: CSSProperties['height'];
   pointerEvents: CSSProperties['pointerEvents'];
   opacity: CSSProperties['opacity'];
   top: CSSProperties['top'];
-  left: CSSProperties['left'];
   backgroundColor: CSSProperties['backgroundColor'];
-};
-
-type TickStyle = {
-  position: CSSProperties['position'];
-  height: CSSProperties['height'];
-  width: CSSProperties['width'];
-  pointerEvents: CSSProperties['pointerEvents'];
-  opacity: CSSProperties['opacity'];
-  top: CSSProperties['top'];
-  backgroundColor: CSSProperties['backgroundColor'];
+  width?: CSSProperties['width'];
+  left?: CSSProperties['left'];
 };
 
 export interface TimelineItemsProps {
