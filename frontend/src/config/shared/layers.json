@@ -973,7 +973,12 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "validity": {
-      "backward": 3,
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 2,
+      "forward": 1,
       "mode": "dekad"
     },
     "opacity": 0.7,
@@ -990,7 +995,12 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "validity": {
-      "backward": 3,
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 2,
+      "forward": 1,
       "mode": "dekad"
     },
     "opacity": 0.7,
@@ -1007,7 +1017,12 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "validity": {
-      "backward": 3,
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 2,
+      "forward": 1,
       "mode": "dekad"
     },
     "opacity": 0.7,
@@ -1024,7 +1039,12 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "validity": {
-      "backward": 3,
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 2,
+      "forward": 1,
       "mode": "dekad"
     },
     "opacity": 0.7,
@@ -1041,7 +1061,12 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "validity": {
-      "backward": 3,
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 2,
+      "forward": 1,
       "mode": "dekad"
     },
     "opacity": 0.7,
@@ -1058,7 +1083,12 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "validity": {
-      "backward": 3,
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 2,
+      "forward": 1,
       "mode": "dekad"
     },
     "opacity": 0.7,
@@ -1075,7 +1105,12 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "validity": {
-      "backward": 3,
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 2,
+      "forward": 1,
       "mode": "dekad"
     },
     "opacity": 0.7,
@@ -1092,7 +1127,12 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "validity": {
-      "backward": 3,
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 2,
+      "forward": 1,
       "mode": "dekad"
     },
     "opacity": 0.7,
