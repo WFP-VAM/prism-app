@@ -33,7 +33,7 @@ COPY pyproject.toml /
 COPY poetry.lock /
 
 RUN --mount=type=cache,target=/var/cache/apt \
-    apt-get update && \
+    apt-get update --fix-missing && \
     apt-get upgrade -y && \
     apt-get --no-install-recommends install -y python3-pip libpq-dev curl python3-dev build-essential
 
@@ -48,7 +48,7 @@ RUN poetry run playwright install chromium
 RUN --mount=type=cache,target=/root/.cache \
     --mount=type=cache,target=/var/lib/apt \
     --mount=type=cache,target=/var/cache/apt \
-    apt-get update && poetry run playwright install-deps
+    poetry run playwright install-deps
 
 # keep this copy towards the end to help with caching previous layers
 COPY ./prism_app /prism_app
