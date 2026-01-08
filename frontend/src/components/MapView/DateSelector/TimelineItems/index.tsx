@@ -47,19 +47,19 @@ const TimelineItems = memo(
       () => [
         {
           color: LIGHT_BLUE_HEX,
-          coverageBar: classes.layerOneCoverageBar,
+          coverageTick: classes.layerOneCoverageTick,
           validityTick: classes.layerOneValidityTick,
           queryTick: classes.layerOneQueryTick,
         },
         {
           color: LIGHT_GREEN_HEX,
-          coverageBar: classes.layerTwoCoverageBar,
+          coverageTick: classes.layerTwoCoverageTick,
           validityTick: classes.layerTwoValidityTick,
           queryTick: classes.layerTwoQueryTick,
         },
         {
           color: LIGHT_ORANGE_HEX,
-          coverageBar: classes.layerThreeCoverageBar,
+          coverageTick: classes.layerThreeCoverageTick,
           validityTick: classes.layerThreeValidityTick,
           queryTick: classes.layerThreeQueryTick,
         },
@@ -196,22 +196,16 @@ const createLayerStyles = (
 const createTimelineItemStyles = (
   backgroundColor: CSSProperties['backgroundColor'],
   top: CSSProperties['top'],
-  options?: {
-    width?: CSSProperties['width'];
-    left?: CSSProperties['left'];
-    opacity?: CSSProperties['opacity'];
-  },
+  opacity: CSSProperties['opacity'] = 0.8,
 ): TimelineItemStyle => {
-  const { width, left, opacity = 0.8 } = options || {};
   return {
     position: 'absolute',
     height: 10,
+    width: TIMELINE_ITEM_WIDTH,
     pointerEvents: 'none',
     opacity,
     top,
     backgroundColor,
-    ...(width !== undefined && { width }),
-    ...(left !== undefined && { left }),
   };
 };
 
@@ -256,41 +250,20 @@ const useStyles = makeStyles(() =>
     },
     availabilityDate: createLayerStyles(grey, 0),
 
-    // Coverage bars
-    layerOneCoverageBar: createTimelineItemStyles(LIGHT_BLUE_HEX, 0, {
-      left: 0,
-    }),
-    layerTwoCoverageBar: createTimelineItemStyles(LIGHT_GREEN_HEX, 10, {
-      left: 0,
-    }),
-    layerThreeCoverageBar: createTimelineItemStyles(LIGHT_ORANGE_HEX, 20, {
-      left: 0,
-    }),
+    // Coverage ticks
+    layerOneCoverageTick: createTimelineItemStyles(LIGHT_BLUE_HEX, 0, 0.6),
+    layerTwoCoverageTick: createTimelineItemStyles(LIGHT_GREEN_HEX, 10, 0.6),
+    layerThreeCoverageTick: createTimelineItemStyles(LIGHT_ORANGE_HEX, 20, 0.6),
 
     // Validity ticks
-    layerOneValidityTick: createTimelineItemStyles(LIGHT_BLUE_HEX, 0, {
-      width: TIMELINE_ITEM_WIDTH,
-    }),
-    layerTwoValidityTick: createTimelineItemStyles(LIGHT_GREEN_HEX, 10, {
-      width: TIMELINE_ITEM_WIDTH,
-    }),
-    layerThreeValidityTick: createTimelineItemStyles(LIGHT_ORANGE_HEX, 20, {
-      width: TIMELINE_ITEM_WIDTH,
-    }),
+    layerOneValidityTick: createTimelineItemStyles(LIGHT_BLUE_HEX, 0),
+    layerTwoValidityTick: createTimelineItemStyles(LIGHT_GREEN_HEX, 10),
+    layerThreeValidityTick: createTimelineItemStyles(LIGHT_ORANGE_HEX, 20),
 
     // Query date ticks (bold)
-    layerOneQueryTick: createTimelineItemStyles(DARK_BLUE_HEX, 0, {
-      width: TIMELINE_ITEM_WIDTH,
-      opacity: 1,
-    }),
-    layerTwoQueryTick: createTimelineItemStyles(DARK_GREEN_HEX, 10, {
-      width: TIMELINE_ITEM_WIDTH,
-      opacity: 1,
-    }),
-    layerThreeQueryTick: createTimelineItemStyles(DARK_ORANGE_HEX, 20, {
-      width: TIMELINE_ITEM_WIDTH,
-      opacity: 1,
-    }),
+    layerOneQueryTick: createTimelineItemStyles(DARK_BLUE_HEX, 0, 1),
+    layerTwoQueryTick: createTimelineItemStyles(DARK_GREEN_HEX, 10, 1),
+    layerThreeQueryTick: createTimelineItemStyles(DARK_ORANGE_HEX, 20, 1),
 
     currentDate: {
       border: '2px solid black',
@@ -333,12 +306,11 @@ type LayerStyle = {
 type TimelineItemStyle = {
   position: CSSProperties['position'];
   height: CSSProperties['height'];
+  width: CSSProperties['width'];
   pointerEvents: CSSProperties['pointerEvents'];
   opacity: CSSProperties['opacity'];
   top: CSSProperties['top'];
   backgroundColor: CSSProperties['backgroundColor'];
-  width?: CSSProperties['width'];
-  left?: CSSProperties['left'];
 };
 
 export interface TimelineItemsProps {

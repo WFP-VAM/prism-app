@@ -6,7 +6,7 @@ import {
 
 export type DateItemStyle = {
   color: string;
-  coverageBar?: string;
+  coverageTick?: string;
   validityTick?: string;
   queryTick?: string;
 };

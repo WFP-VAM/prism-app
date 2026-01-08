@@ -2,25 +2,7 @@ import React, { memo, useMemo } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import { DateItem, DateRangeType } from 'config/types';
 import { datesAreEqualWithoutTime } from 'utils/date-utils';
-import { TIMELINE_ITEM_WIDTH } from '../../utils';
 import { DateItemStyle } from '../types';
-
-// Helper: Calculate how many dates in the timeline fall within this coverage window
-const getCoverageWidthInDates = (
-  dateItem: DateItem,
-  dateRange: DateRangeType[],
-): number => {
-  if (!dateItem.startDate || !dateItem.endDate) {
-    return 1; // Fallback to single date if no coverage defined
-  }
-
-  // Find all dates in the timeline between startDate and endDate
-  return dateRange.filter(
-    date =>
-      date.value >= (dateItem.startDate || 0) &&
-      date.value <= (dateItem.endDate || 0),
-  ).length;
-};
 
 const StandardTimelineItem = memo(
   ({
@@ -63,7 +45,18 @@ const StandardTimelineItem = memo(
 
     // Pre-compute coverage data for each layer's selected date (computed once per render)
     const layerCoverageData = useMemo(() => {
+      if (dateRange.length === 0) {
+        return concatenatedLayers.map(() => ({
+          clampedStartDate: null,
+          clampedEndDate: null,
+        }));
+      }
+
+      const timelineStart = dateRange[0].value;
+      const timelineEnd = dateRange[dateRange.length - 1].value;
+
       return concatenatedLayers.map(layerDates => {
+        // Find selectedDateItem once per layer (not per date)
         const selectedDateItem = layerDates.find(item =>
           datesAreEqualWithoutTime(item.displayDate, selectedDate),
         );
@@ -74,27 +67,29 @@ const StandardTimelineItem = memo(
           !selectedDateItem.endDate
         ) {
           return {
-            selectedDateItem: null,
-            coverageWidth: 0,
-            firstDateIndex: -1,
+            clampedStartDate: null,
+            clampedEndDate: null,
           };
         }
 
-        // Calculate coverage width once per layer
-        const coverageWidth = getCoverageWidthInDates(
-          selectedDateItem,
-          dateRange,
+        // Clamp coverage window to visible timeline bounds
+        const clampedStartDate = Math.max(
+          selectedDateItem.startDate,
+          timelineStart,
         );
+        const clampedEndDate = Math.min(selectedDateItem.endDate, timelineEnd);
 
-        // Find the first date index in the timeline that falls within coverage window
-        const firstDateIndex = dateRange.findIndex(
-          d => d.value >= selectedDateItem.startDate!,
-        );
+        // Only return valid coverage if clamped window is valid
+        if (clampedStartDate > clampedEndDate) {
+          return {
+            clampedStartDate: null,
+            clampedEndDate: null,
+          };
+        }
 
         return {
-          selectedDateItem,
-          coverageWidth,
-          firstDateIndex,
+          clampedStartDate,
+          clampedEndDate,
         };
       });
     }, [concatenatedLayers, selectedDate, dateRange]);
@@ -123,59 +118,43 @@ const StandardTimelineItem = memo(
             idx > -1 ? layerDates[idx] : undefined;
 
           const coverageData = layerCoverageData[layerIndex];
-          const { selectedDateItem, coverageWidth, firstDateIndex } =
-            coverageData;
+          const { clampedStartDate, clampedEndDate } = coverageData;
 
-          // Check if current timeline date falls within the selected date's coverage window
+          // Check if current timeline date falls within the clamped coverage window
           const isInSelectedCoverage =
-            selectedDateItem &&
-            currentDate.value >= (selectedDateItem.startDate || 0) &&
-            currentDate.value <= (selectedDateItem.endDate || 0);
+            clampedStartDate !== null &&
+            clampedEndDate !== null &&
+            currentDate.value >= clampedStartDate &&
+            currentDate.value <= clampedEndDate;
 
-          // Check if this is the first date in timeline that falls within selected coverage
-          const currentDateIndex = dateRange.findIndex(
-            d => d.value === currentDate.value,
-          );
-          const isFirstDateInTimeline =
-            selectedDateItem &&
-            isInSelectedCoverage &&
-            firstDateIndex !== -1 &&
-            firstDateIndex === currentDateIndex;
-
-          // Determine what to render
-          const shouldRenderCoverageBar =
-            isFirstDateInTimeline && coverageWidth > 0;
-          const shouldRenderValidityTick =
-            matchingDateItemInLayer !== undefined;
+          // Determine what to render with priority: query > validity > coverage
+          const hasQueryTick =
+            matchingDateItemInLayer !== undefined &&
+            isQueryDate(matchingDateItemInLayer);
+          const hasValidityTick =
+            matchingDateItemInLayer !== undefined && !hasQueryTick;
+          const hasCoverageTick =
+            isInSelectedCoverage && !hasQueryTick && !hasValidityTick;
 
           // Skip if nothing to render
-          if (!shouldRenderCoverageBar && !shouldRenderValidityTick) {
+          if (!hasQueryTick && !hasValidityTick && !hasCoverageTick) {
             return null;
+          }
+
+          // Determine which tick class to use based on priority
+          let tickClassName: string | undefined;
+          if (hasQueryTick) {
+            tickClassName = dateItemStyling[layerIndex].queryTick;
+          } else if (hasValidityTick) {
+            tickClassName = dateItemStyling[layerIndex].validityTick;
+          } else if (hasCoverageTick) {
+            tickClassName = dateItemStyling[layerIndex].coverageTick;
           }
 
           return (
             <React.Fragment key={`layer-${layerIndex}-${currentDate.value}`}>
-              {/* Render coverage bar only for the selected date's coverage period */}
-              {shouldRenderCoverageBar && (
-                <div
-                  className={dateItemStyling[layerIndex].coverageBar}
-                  style={{
-                    width: coverageWidth * TIMELINE_ITEM_WIDTH,
-                  }}
-                  role="presentation"
-                />
-              )}
-
-              {/* Render validity tick only if date has data */}
-              {shouldRenderValidityTick && (
-                <div
-                  className={
-                    isQueryDate(matchingDateItemInLayer!)
-                      ? dateItemStyling[layerIndex].queryTick // Bold tick
-                      : dateItemStyling[layerIndex].validityTick // Normal tick
-                  }
-                  role="presentation"
-                />
+              {tickClassName && (
+                <div className={tickClassName} role="presentation" />
               )}
             </React.Fragment>
           );
