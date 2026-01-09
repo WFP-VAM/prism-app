@@ -312,5 +312,7 @@
   "Estimate of precipitation over a 6-month period derived from CHIRPS (UCSB Climate Hazards Group).": "تقدير الهطول المطري لفترة 6 اشهر مشتق من بيانات CHIRPS",
   "Estimate of precipitation over a 9-month period derived from CHIRPS (UCSB Climate Hazards Group).": "تقدير الهطول المطري لفترة 9 اشهر مشتق من بيانات CHIRPS",
   "Estimate of precipitation over a 1-year period derived from CHIRPS (UCSB Climate Hazards Group).": "تقدير الهطول المطري لفترة 12 اشهر مشتق من بيانات CHIRPS",
-  "Number of days of rainfall": "عدد ايام الهطول المطري"
+  "Number of days of rainfall": "عدد ايام الهطول المطري",
+  "Data coverage": "فترة تغطية البيانات",
+  "Coverage": "تغطية"
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import {
   analysisResultOpacitySelector,
@@ -6,15 +6,21 @@ import {
   invertedColorsSelector,
   isAnalysisLayerActiveSelector,
 } from 'context/analysisResultStateSlice';
-import { AnticipatoryAction, LayerType } from 'config/types';
+import {
+  AnticipatoryAction,
+  LayerType,
+  SelectedDateTimestamp,
+} from 'config/types';
 import { BaselineLayerResult } from 'utils/analysis-utils';
 import useLayers from 'utils/layers-utils';
 import { createGetLegendGraphicUrl } from 'prism-common';
 import { useSafeTranslation } from 'i18n';
 import { List } from '@material-ui/core';
 import { AALayerIds } from 'config/utils';
+import { dateRangeSelector } from 'context/mapStateSlice/selectors';
+import { getLayersCoverageMap } from 'utils/server-utils';
 import AALegend from '../LeftPanel/AnticipatoryActionPanel/AALegend';
-import LegendItem from './LegendItem';
+import LegendItem, { DateCoverage } from './LegendItem';
 import LegendImpactResult from './LegendImpactResult';
 import { invertLegendColors } from './utils';
 
@@ -34,16 +40,31 @@ function LegendItemsList({
   const analysisResult = useSelector(analysisResultSelector);
   const invertedColorsForAnalysis = useSelector(invertedColorsSelector);
   const analysisLayerOpacity = useSelector(analysisResultOpacitySelector);
-  const { selectedLayers, adminBoundariesExtent } = useLayers();
+  const dateRange = useSelector(dateRangeSelector);
+  const {
+    selectedLayers,
+    adminBoundariesExtent,
+    selectedLayersWithDateSupport,
+  } = useLayers();
 
-  const AALayerInUrl = React.useMemo(
+  // Create a mapping of layer id to date coverage for the current selected date
+  const layerCoverageMap = useMemo(
+    (): Record<string, DateCoverage> =>
+      getLayersCoverageMap(
+        selectedLayersWithDateSupport,
+        dateRange.startDate as SelectedDateTimestamp,
+      ),
+    [dateRange.startDate, selectedLayersWithDateSupport],
+  );
+
+  const AALayerInUrl = useMemo(
     () =>
       selectedLayers.find(x => AALayerIds.includes(x.id as AnticipatoryAction)),
     [selectedLayers],
   );
 
   // If legend array is empty, we fetch from remote server the legend as GetLegendGraphic request.
-  const getLayerLegendUrl = React.useCallback(
+  const getLayerLegendUrl = useCallback(
     (layer: LayerType) =>
       layer.type === 'wms' && layer.legend.length === 0
         ? createGetLegendGraphicUrl({
@@ -55,12 +76,12 @@ function LegendItemsList({
   );
 
   // memoized values from selectors
-  const featureCollection = React.useMemo(
+  const featureCollection = useMemo(
     () => analysisResult?.featureCollection,
     [analysisResult],
   );
 
-  const hasData = React.useMemo(
+  const hasData = useMemo(
     () =>
       featureCollection?.features
         ? featureCollection.features.length > 0
@@ -68,7 +89,7 @@ function LegendItemsList({
     [featureCollection],
   );
 
-  const renderedLegendImpactResult = React.useMemo(() => {
+  const renderedLegendImpactResult = useMemo(() => {
     if (!(analysisResult instanceof BaselineLayerResult)) {
       return null;
     }
@@ -88,7 +109,7 @@ function LegendItemsList({
   }, [analysisResult]);
 
   // add analysis legend item if layer is active and analysis result exists
-  const analysisLegendItem = React.useMemo(() => {
+  const analysisLegendItem = useMemo(() => {
     if (!isAnalysisLayerActive || !hasData) {
       return [];
     }
@@ -122,7 +143,7 @@ function LegendItemsList({
     renderedLegendImpactResult,
   ]);
 
-  const layersLegendItems = React.useMemo(
+  const layersLegendItems = useMemo(
     () =>
       selectedLayers.map(layer => {
         if (!layer.legend || !layer.legendText) {
@@ -144,6 +165,7 @@ function LegendItemsList({
             extent={adminBoundariesExtent}
             forPrinting={forPrinting}
             showDescription={showDescription}
+            dateCoverage={layerCoverageMap[layer.id]}
           >
             {t(layer.legendText)}
           </LegendItem>
@@ -156,10 +178,11 @@ function LegendItemsList({
       adminBoundariesExtent,
       forPrinting,
       showDescription,
+      layerCoverageMap,
     ],
   );
 
-  const legendItems = React.useMemo(() => {
+  const legendItems = useMemo(() => {
     const AALegends = AALayerInUrl
       ? [
           <AALegend

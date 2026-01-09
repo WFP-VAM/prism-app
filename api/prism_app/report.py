@@ -62,10 +62,10 @@ async def download_report(
 
         # expand the first main and first sub dropdowns
         # XPath to match a button whose name starts with "Flood" followed by a space and any number
-        await page.click('p.MuiTypography-body1:text("Flood")')
+        # expand the first main and first sub dropdowns
+        await page.get_by_role("button", name="Flood").first.click()
 
-        await page.click('p.MuiTypography-body1:text("Flood Monitoring")')
-
+        await page.get_by_role("button", name="Flood Monitoring").click()
         # Enable flood extent buttons
         flood_extent_checkbox = page.get_by_role("checkbox", name="Flood extent")
         await expect(flood_extent_checkbox).to_be_visible(timeout=20_000)

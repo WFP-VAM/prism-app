@@ -67,6 +67,11 @@ function Notifier() {
     });
   }, [autoClose, notifications]);
 
+  // Don't show notifications on export view
+  if (window.location.pathname === '/export') {
+    return null;
+  }
+
   return (
     <div className={classes.notificationsContainer} style={{ top: topOffset }}>
       {notifications.map(notification => (
