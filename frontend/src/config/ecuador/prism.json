@@ -2,14 +2,6 @@
   "country": "Ecuador",
   "alertFormActive": false,
   "enableNavigationDropdown": true,
-  "icons": {
-    "rainfall": "icon_rain.png",
-    "vegetation": "icon_veg.png",
-    "temperature": "icon_climate.png",
-    "risk": "icon_impact.png",
-    "tropical_storms": "icon_tropical_storm.png",
-    "vulnerability": "icon_vulnerable.png"
-  },
   "serversUrls": {
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
