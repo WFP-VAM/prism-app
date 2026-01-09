@@ -262,7 +262,7 @@ const footerTextSelectorOptions = [
 ];
 
 // Suffix appended to title when batch maps is enabled
-const DATE_PLACEHOLDER_SUFFIX = ': {coverage}';
+const DATE_PLACEHOLDER_SUFFIX = ': {date_coverage}';
 
 function PrintConfig() {
   const classes = useStyles();

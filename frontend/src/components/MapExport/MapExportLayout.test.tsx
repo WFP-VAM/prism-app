@@ -396,7 +396,6 @@ describe('MapExportLayout', () => {
         </ThemeProvider>
       </Provider>,
     );
-    // The {date} placeholder should be replaced with the locale-formatted date
-    expect(getByText(/Test Title - September 30, 2024/)).toBeInTheDocument();
+    expect(getByText(/Test Title - 09-30-2024/)).toBeInTheDocument();
   });
 });

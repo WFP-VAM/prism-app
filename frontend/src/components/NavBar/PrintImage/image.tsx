@@ -383,7 +383,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       const startDateStr = getFormattedDate(startDate, 'snake');
       const endDateStr = getFormattedDate(endDate, 'snake');
       const cleanedTitle = (titleText || country).replace(
-        /(\s*-\s*)?\{(date|coverage)\}/gi,
+        /(\s*-\s*)?\{(date|date_coverage)\}/gi,
         '',
       );
       const filename = `${cleanedTitle}_${startDateStr}_to_${endDateStr}`;

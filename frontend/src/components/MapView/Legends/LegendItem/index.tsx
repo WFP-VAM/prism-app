@@ -49,6 +49,7 @@ import { toggleRemoveLayer } from 'components/MapView/LeftPanel/layersPanel/Menu
 import { useOpacityState } from 'utils/useOpacityState';
 import { lightGrey } from 'muiTheme';
 import { formatCoverageRange } from 'utils/date-utils';
+import { DateFormat } from 'utils/name-utils';
 import LoadingBar from '../LoadingBar';
 import LegendMarkdown from '../LegendMarkdown';
 
@@ -279,7 +280,12 @@ const LegendItem = memo(
     }, [children]);
 
     const coverageText = useMemo(
-      () => formatCoverageRange(dateCoverage?.startDate, dateCoverage?.endDate),
+      () =>
+        formatCoverageRange(
+          dateCoverage?.startDate,
+          dateCoverage?.endDate,
+          DateFormat.DayFirstHyphenMonthName,
+        ),
       [dateCoverage],
     );
 
