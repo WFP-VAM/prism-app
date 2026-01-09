@@ -227,9 +227,24 @@ export const fetchAdminLevelDataLayerData: LazyLoader<
       [layer, ...(fallbackLayers ?? [])].map(async adminLevelDataLayer => {
         // format brackets inside config URL
         // example: "&date={YYYY-MM-DD}" will turn into "&date=2021-04-27"
+        // Check if path contains date format patterns (e.g., {YYYY-MM-DD})
+        const hasDateFormatPattern = /{.*?}/.test(adminLevelDataLayer.path);
+
+        // If path has date format patterns but date is undefined, skip fetching
+        if (hasDateFormatPattern && date === undefined) {
+          return [{}];
+        }
+
         const datedPath = adminLevelDataLayer.path.replace(/{.*?}/g, match => {
           const format = match.slice(1, -1);
-          return getFormattedDate(date, format as any) as string;
+          const formattedDate = getFormattedDate(date, format as any);
+          // This should never happen due to the check above, but adding safety check
+          if (formattedDate === undefined) {
+            throw new Error(
+              `Date is required for path with date format: ${adminLevelDataLayer.path}`,
+            );
+          }
+          return formattedDate as string;
         });
 
         const requestMode: 'cors' | 'same-origin' =
