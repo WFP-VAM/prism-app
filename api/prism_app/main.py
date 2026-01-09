@@ -12,7 +12,7 @@ import rasterio  # type: ignore
 from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
-from prism_app.auth import validate_user
+from prism_app.auth import optional_validate_user, validate_user
 from prism_app.caching import FilePath, cache_file, cache_geojson
 from prism_app.database.alert_model import AlchemyEncoder, AlertModel
 from prism_app.database.database import AlertsDataBase
@@ -252,9 +252,16 @@ def get_kobo_form_dates(
         default=False,
         description="If True, return all dates regardless of user province access",
     ),
-    user_info: Annotated[UserInfoPydanticModel, Depends(validate_user)] = None,
+    user_info: Annotated[
+        Optional[UserInfoPydanticModel], Depends(optional_validate_user)
+    ] = None,
 ):
     """Get all form response dates. By default, filters by user's province access if available."""
+    # Return empty list if no user/auth provided
+    if user_info is None:
+        logger.warning("No user/auth provided, returning empty list")
+        return []
+
     # cache responses for 24h as they're unlikely to change
     response.headers["Cache-Control"] = "max-age=86400"
 
