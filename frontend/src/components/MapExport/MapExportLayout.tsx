@@ -13,6 +13,7 @@ import MapGL, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';
 import { useTranslation } from 'react-i18next';
 import useResizeObserver from 'utils/useOnResizeObserver';
 import { getFormattedDate, formatCoverageText } from 'utils/date-utils';
+import { DateFormat } from 'utils/name-utils';
 import { lightGrey } from 'muiTheme';
 import { FloodStationMarker } from 'components/MapView/Layers/AnticipatoryActionFloodLayer/FloodStationMarker';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
@@ -147,14 +148,19 @@ function MapExportLayout({
     if (layerDate && result.includes('{date}')) {
       result = result.replace(
         /\{date\}/g,
-        getFormattedDate(layerDate, 'localeUTC') ?? '',
+        getFormattedDate(layerDate, 'localeNumericUTC') ?? '',
       );
     }
 
-    // Replace {coverage} with formatted coverage ranges
-    if (layersCoverage && result.includes('{coverage}')) {
-      const coverageText = formatCoverageText(layersCoverage, t) ?? '';
-      result = result.replace(/\{coverage\}/g, coverageText);
+    // Replace {coverage} with formatted coverage ranges (using DayFirstHyphenMonthName)
+    if (layersCoverage && result.includes('{date_coverage}')) {
+      const coverageText =
+        formatCoverageText(
+          layersCoverage,
+          t,
+          DateFormat.DayFirstHyphenMonthName,
+        ) ?? '';
+      result = result.replace(/\{date_coverage\}/g, coverageText);
     }
 
     return result;
@@ -162,9 +168,9 @@ function MapExportLayout({
 
   // Compute footer date text from layerDate
   const footerDateText = useMemo(() => {
-    const pubDate = `${t('Publication date')}: ${getFormattedDate(Date.now(), 'default')}`;
+    const pubDate = `${t('Publication date')}: ${getFormattedDate(Date.now(), 'localeNumericUTC')}`;
     if (layerDate) {
-      return `${pubDate}. ${t('Layer selection date')}: ${getFormattedDate(layerDate, 'default')}.`;
+      return `${pubDate}. ${t('Layer selection date')}: ${getFormattedDate(layerDate, 'localeNumericUTC')}.`;
     }
     return `${pubDate}.`;
   }, [layerDate, t]);
