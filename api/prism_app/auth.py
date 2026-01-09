@@ -6,8 +6,8 @@ import logging
 import secrets
 from typing import Annotated, Optional
 
-from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBasic, HTTPBasicCredentials, Security
+from fastapi import Depends, HTTPException, Security, status
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from prism_app.database.database import AuthDataBase
 from prism_app.database.user_info_model import UserInfoModel
 from prism_app.models import UserInfoPydanticModel
