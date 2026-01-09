@@ -39,7 +39,7 @@ vcrpy = "^8.0.0"
 urllib3 = "^2.6.3"
 # Force updates for vulnerable transitive dependencies
 starlette = "^0.49.1"
-werkzeug = "^3.1.4"
+werkzeug = "^3.1.5"
 h11 = "^0.16.0"
 setuptools = "^78.1.1"
 fiona = "^1.10b2"
