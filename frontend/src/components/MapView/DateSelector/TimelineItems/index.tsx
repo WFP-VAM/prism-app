@@ -38,6 +38,7 @@ const TimelineItems = memo(
     truncatedLayers,
     availableDates,
     showDraggingCursor,
+    selectedDate,
   }: TimelineItemsProps) => {
     const classes = useStyles();
 
@@ -45,24 +46,23 @@ const TimelineItems = memo(
     const DATE_ITEM_STYLING: DateItemStyle[] = useMemo(
       () => [
         {
-          class: classes.layerOneDate,
           color: LIGHT_BLUE_HEX,
-          layerDirectionClass: classes.layerOneDirection,
-          emphasis: classes.layerOneEmphasis,
+          coverageTick: classes.layerOneCoverageTick,
+          validityTick: classes.layerOneValidityTick,
+          queryTick: classes.layerOneQueryTick,
         },
         {
-          class: classes.layerTwoDate,
           color: LIGHT_GREEN_HEX,
-          layerDirectionClass: classes.layerTwoDirection,
-          emphasis: classes.layerTwoEmphasis,
+          coverageTick: classes.layerTwoCoverageTick,
+          validityTick: classes.layerTwoValidityTick,
+          queryTick: classes.layerTwoQueryTick,
         },
         {
-          class: classes.layerThreeDate,
           color: LIGHT_ORANGE_HEX,
-          layerDirectionClass: classes.layerThreeDirection,
-          emphasis: classes.layerThreeEmphasis,
+          coverageTick: classes.layerThreeCoverageTick,
+          validityTick: classes.layerThreeValidityTick,
+          queryTick: classes.layerThreeQueryTick,
         },
-        { class: classes.availabilityDate, color: LIGHT_ORANGE_HEX },
       ],
       [classes],
     );
@@ -157,7 +157,10 @@ const TimelineItems = memo(
                         concatenatedLayers={truncatedLayers}
                         currentDate={date}
                         dateItemStyling={DATE_ITEM_STYLING}
+                        availabilityClass={classes.availabilityDate}
                         isDateAvailable={isDateAvailable}
+                        dateRange={dateRange}
+                        selectedDate={selectedDate}
                       />
                     );
                   })()}
@@ -190,13 +193,21 @@ const createLayerStyles = (
   backgroundColor,
 });
 
-const createDirectionStyles = (
-  borderColor: CSSProperties['borderColor'],
+const createTimelineItemStyles = (
+  backgroundColor: CSSProperties['backgroundColor'],
   top: CSSProperties['top'],
-): DirectionStyle => ({
-  top,
-  borderLeft: `6px solid ${borderColor}`,
-});
+  opacity: CSSProperties['opacity'] = 0.8,
+): TimelineItemStyle => {
+  return {
+    position: 'absolute',
+    height: 10,
+    width: TIMELINE_ITEM_WIDTH,
+    pointerEvents: 'none',
+    opacity,
+    top,
+    backgroundColor,
+  };
+};
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -237,18 +248,22 @@ const useStyles = makeStyles(() =>
       border: '1px solid #D3D3D3',
       maxWidth: 'none',
     },
-    layerOneDate: createLayerStyles(LIGHT_BLUE_HEX, 0),
-    layerTwoDate: createLayerStyles(LIGHT_GREEN_HEX, 10),
-    layerThreeDate: createLayerStyles(LIGHT_ORANGE_HEX, 20),
     availabilityDate: createLayerStyles(grey, 0),
 
-    layerOneEmphasis: createLayerStyles(DARK_BLUE_HEX, 0),
-    layerTwoEmphasis: createLayerStyles(DARK_GREEN_HEX, 10),
-    layerThreeEmphasis: createLayerStyles(DARK_ORANGE_HEX, 20),
+    // Coverage ticks
+    layerOneCoverageTick: createTimelineItemStyles(LIGHT_BLUE_HEX, 0, 0.6),
+    layerTwoCoverageTick: createTimelineItemStyles(LIGHT_GREEN_HEX, 10, 0.6),
+    layerThreeCoverageTick: createTimelineItemStyles(LIGHT_ORANGE_HEX, 20, 0.6),
 
-    layerOneDirection: createDirectionStyles(DARK_BLUE_HEX, 0),
-    layerTwoDirection: createDirectionStyles(DARK_GREEN_HEX, 10),
-    layerThreeDirection: createDirectionStyles(DARK_ORANGE_HEX, 20),
+    // Validity ticks
+    layerOneValidityTick: createTimelineItemStyles(LIGHT_BLUE_HEX, 0),
+    layerTwoValidityTick: createTimelineItemStyles(LIGHT_GREEN_HEX, 10),
+    layerThreeValidityTick: createTimelineItemStyles(LIGHT_ORANGE_HEX, 20),
+
+    // Query date ticks (bold)
+    layerOneQueryTick: createTimelineItemStyles(DARK_BLUE_HEX, 0, 1),
+    layerTwoQueryTick: createTimelineItemStyles(DARK_GREEN_HEX, 10, 1),
+    layerThreeQueryTick: createTimelineItemStyles(DARK_ORANGE_HEX, 20, 1),
 
     currentDate: {
       border: '2px solid black',
@@ -288,9 +303,14 @@ type LayerStyle = {
   backgroundColor: CSSProperties['backgroundColor'];
 };
 
-type DirectionStyle = {
+type TimelineItemStyle = {
+  position: CSSProperties['position'];
+  height: CSSProperties['height'];
+  width: CSSProperties['width'];
+  pointerEvents: CSSProperties['pointerEvents'];
+  opacity: CSSProperties['opacity'];
   top: CSSProperties['top'];
-  borderLeft: CSSProperties['borderLeft'];
+  backgroundColor: CSSProperties['backgroundColor'];
 };
 
 export interface TimelineItemsProps {
@@ -301,6 +321,7 @@ export interface TimelineItemsProps {
   orderedLayers: DateCompatibleLayerWithDateItems[];
   truncatedLayers: DateItem[][];
   showDraggingCursor: boolean;
+  selectedDate: number;
 }
 
 export default TimelineItems;

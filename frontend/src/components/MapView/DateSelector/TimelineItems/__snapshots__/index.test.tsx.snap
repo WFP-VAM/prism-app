@@ -16,7 +16,7 @@ exports[`renders as expected 1`] = `
     >
       <div />
       <div
-        class="makeStyles-dayItem-21"
+        class="makeStyles-dayItem-19"
       />
     </div>
   </mock-tooltip>

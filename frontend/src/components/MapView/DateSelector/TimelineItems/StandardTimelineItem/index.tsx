@@ -1,19 +1,20 @@
-import { createStyles, makeStyles } from '@material-ui/core';
 import React, { memo, useMemo } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import { DateItem, DateRangeType } from 'config/types';
 import { datesAreEqualWithoutTime } from 'utils/date-utils';
+import { DateItemStyle } from '../types';
 
 const StandardTimelineItem = memo(
   ({
     concatenatedLayers,
     currentDate,
     dateItemStyling,
+    availabilityClass,
     isDateAvailable,
+    dateRange,
+    selectedDate,
   }: StandardTimelineItemProps) => {
     // Pre-compute the matching indices for all layers
-    const classes = useStyles();
-
     const displayDateMatches = useMemo(
       () =>
         concatenatedLayers.map(layerDates =>
@@ -42,15 +43,56 @@ const StandardTimelineItem = memo(
       );
     }, [concatenatedLayers, currentDate.value, displayDateMatches]);
 
-    const hasNextItemDirectionForward = (
-      _matchingDate: DateItem,
-      _layerDates: DateItem[],
-    ): boolean => false;
+    // Pre-compute coverage data for each layer's selected date (computed once per render)
+    const layerCoverageData = useMemo(() => {
+      if (dateRange.length === 0) {
+        return concatenatedLayers.map(() => ({
+          clampedStartDate: null,
+          clampedEndDate: null,
+        }));
+      }
 
-    const hasNextItemDirectionBackward = (
-      _matchingDate: DateItem,
-      _layerDates: DateItem[],
-    ): boolean => false;
+      const timelineStart = dateRange[0].value;
+      const timelineEnd = dateRange[dateRange.length - 1].value;
+
+      return concatenatedLayers.map(layerDates => {
+        // Find selectedDateItem once per layer (not per date)
+        const selectedDateItem = layerDates.find(item =>
+          datesAreEqualWithoutTime(item.displayDate, selectedDate),
+        );
+
+        if (
+          !selectedDateItem ||
+          !selectedDateItem.startDate ||
+          !selectedDateItem.endDate
+        ) {
+          return {
+            clampedStartDate: null,
+            clampedEndDate: null,
+          };
+        }
+
+        // Clamp coverage window to visible timeline bounds
+        const clampedStartDate = Math.max(
+          selectedDateItem.startDate,
+          timelineStart,
+        );
+        const clampedEndDate = Math.min(selectedDateItem.endDate, timelineEnd);
+
+        // Only return valid coverage if clamped window is valid
+        if (clampedStartDate > clampedEndDate) {
+          return {
+            clampedStartDate: null,
+            clampedEndDate: null,
+          };
+        }
+
+        return {
+          clampedStartDate,
+          clampedEndDate,
+        };
+      });
+    }, [concatenatedLayers, selectedDate, dateRange]);
 
     const isQueryDate = (date: DateItem): boolean =>
       datesAreEqualWithoutTime(date.queryDate, date.displayDate);
@@ -60,7 +102,7 @@ const StandardTimelineItem = memo(
         {/* Add a small grey line to indicate where dates are overlapping */}
         {layerMatches.length >= 1 && isDateAvailable && (
           <div
-            className={dateItemStyling[3].class}
+            className={availabilityClass}
             style={{
               height: 4,
               // TODO - handle more than 3 layers
@@ -75,41 +117,45 @@ const StandardTimelineItem = memo(
           const matchingDateItemInLayer: DateItem | undefined =
             idx > -1 ? layerDates[idx] : undefined;
 
-          if (!matchingDateItemInLayer) {
+          const coverageData = layerCoverageData[layerIndex];
+          const { clampedStartDate, clampedEndDate } = coverageData;
+
+          // Check if current timeline date falls within the clamped coverage window
+          const isInSelectedCoverage =
+            clampedStartDate !== null &&
+            clampedEndDate !== null &&
+            currentDate.value >= clampedStartDate &&
+            currentDate.value <= clampedEndDate;
+
+          // Determine what to render with priority: query > validity > coverage
+          const hasQueryTick =
+            matchingDateItemInLayer !== undefined &&
+            isQueryDate(matchingDateItemInLayer);
+          const hasValidityTick =
+            matchingDateItemInLayer !== undefined && !hasQueryTick;
+          const hasCoverageTick =
+            isInSelectedCoverage && !hasQueryTick && !hasValidityTick;
+
+          // Skip if nothing to render
+          if (!hasQueryTick && !hasValidityTick && !hasCoverageTick) {
             return null;
           }
 
+          // Determine which tick class to use based on priority
+          let tickClassName: string | undefined;
+          if (hasQueryTick) {
+            tickClassName = dateItemStyling[layerIndex].queryTick;
+          } else if (hasValidityTick) {
+            tickClassName = dateItemStyling[layerIndex].validityTick;
+          } else if (hasCoverageTick) {
+            tickClassName = dateItemStyling[layerIndex].coverageTick;
+          }
+
           return (
-            <React.Fragment key={Math.random()}>
-              {/* Add a directional arrow forward if previous item is a start date */}
-              {hasNextItemDirectionForward(
-                matchingDateItemInLayer,
-                layerDates,
-              ) && (
-                <div
-                  className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase}`}
-                />
+            <React.Fragment key={`layer-${layerIndex}-${currentDate.value}`}>
+              {tickClassName && (
+                <div className={tickClassName} role="presentation" />
               )}
-
-              {/* Add a directional arrow backward if next item is an end date */}
-              {hasNextItemDirectionBackward(
-                matchingDateItemInLayer,
-                layerDates,
-              ) && (
-                <div
-                  className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase} ${classes.layerDirectionBackwardBase}`}
-                />
-              )}
-
-              {/* Add a bold square if queryDate (emphasis), normal otherwise */}
-              <div
-                className={`${
-                  isQueryDate(matchingDateItemInLayer)
-                    ? dateItemStyling[layerIndex].emphasis
-                    : dateItemStyling[layerIndex].class
-                }`}
-                role="presentation"
-              />
             </React.Fragment>
           );
         })}
@@ -118,36 +164,14 @@ const StandardTimelineItem = memo(
   },
 );
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    layerDirectionBase: {
-      display: 'block',
-      position: 'absolute',
-      borderTop: '5px solid transparent',
-      borderBottom: '5px solid transparent',
-      height: '0px',
-      zIndex: 1,
-      left: 0,
-      pointerEvents: 'none',
-    },
-
-    layerDirectionBackwardBase: {
-      right: 0,
-      transform: 'rotate(180deg)',
-    },
-  }),
-);
-
 export interface StandardTimelineItemProps {
   concatenatedLayers: DateItem[][];
   currentDate: DateRangeType;
-  dateItemStyling: {
-    class: string;
-    color: string;
-    layerDirectionClass?: string;
-    emphasis?: string;
-  }[];
+  dateItemStyling: DateItemStyle[];
+  availabilityClass?: string;
   isDateAvailable: boolean;
+  dateRange: DateRangeType[];
+  selectedDate: number;
 }
 
 export default StandardTimelineItem;
