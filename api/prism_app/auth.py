@@ -7,9 +7,10 @@ import secrets
 from typing import Annotated, Optional
 
 from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from fastapi.security import HTTPBasic, HTTPBasicCredentials, Security
 from prism_app.database.database import AuthDataBase
 from prism_app.database.user_info_model import UserInfoModel
+from prism_app.models import UserInfoPydanticModel
 from sqlalchemy.exc import SQLAlchemyError
 
 logger = logging.getLogger(__name__)
@@ -89,3 +90,26 @@ def validate_user(
             headers={"WWW-Authenticate": "Basic"},
         )
     return user_info
+
+
+def optional_validate_user(
+    credentials: Annotated[
+        Optional[HTTPBasicCredentials], Security(HTTPBasic(auto_error=False))
+    ] = None,
+) -> Optional[UserInfoPydanticModel]:
+    """Optional user validation that returns None instead of raising on auth failure."""
+    # If auth_db is not active, return None
+    if not auth_db.active:
+        return None
+
+    # If no credentials provided, return None
+    if credentials is None:
+        return None
+
+    # Try to validate user, return None on auth failure
+    try:
+        return validate_user(credentials)
+    except HTTPException as e:
+        if e.status_code == status.HTTP_401_UNAUTHORIZED:
+            return None
+        raise
