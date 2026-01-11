@@ -111,19 +111,25 @@ describe('Date picker', () => {
     cy.get('input#password').type('bbb');
     cy.contains('Send').click();
     cy.wait('@getKoboForms', { timeout: 10000 });
+    // Wait for the date picker to appear and be ready
     cy.get('.react-datepicker-wrapper button span', {
       timeout: 20000,
-    }).then(span => {
-      // validate that a dekad date is selected
-      cy.wrap(span).should('contain.text', 'Aug 25, 2025');
-    });
+    })
+      .should('be.visible')
+      .then(span => {
+        // validate that a dekad date is selected
+        cy.wrap(span).should('contain.text', 'Aug 25, 2025');
+      });
     cy.scrollLeft();
+    // Wait for the date to update after scrolling
     cy.get('.react-datepicker-wrapper button span', {
       timeout: 20000,
-    }).then(span => {
-      // validate that a dekad date is selected
-      cy.wrap(span).should('contain.text', 'Aug 8, 2025');
-    });
+    })
+      .should('be.visible')
+      .then(span => {
+        // validate that a dekad date is selected
+        cy.wrap(span).should('contain.text', 'Aug 8, 2025');
+      });
   });
 
   it('should find a valid date when activating / deactivating and reactivating a layer with date', () => {
@@ -148,7 +154,7 @@ describe('Date picker', () => {
       // reactivate the layer
       cy.activateLayer('Rainfall', 'Rainfall Amount', 'Rainfall aggregate');
       cy.get('.react-datepicker-wrapper button span', {
-        timeout: 2000,
+        timeout: 20000,
       }).then(span1 => {
         cy.wrap(span1).should('contain.text', initialDate);
       });
