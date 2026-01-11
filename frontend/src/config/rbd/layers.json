@@ -1665,6 +1665,608 @@
       }
     ]
   },
+  "days_dry": {
+    "title": "Days since last rain",
+    "type": "wms",
+    "server_layer_name": "dlc_dekad",
+    "additional_query_params": {
+      "styles": "dlx_13_0_26"
+    },
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Number of consecutive days with less than 2 mm precipitation in the last 30 days",
+    "legend": [
+      {
+        "value": 0,
+        "label": "None",
+        "color": "#6c9fa4"
+      },
+      {
+        "value": 4,
+        "label": "1-4 Days",
+        "color": "#57bec1"
+      },
+      {
+        "value": 6,
+        "label": "5-6 Days",
+        "color": "#aee0c4"
+      },
+      {
+        "value": 8,
+        "label": "7-8 Days",
+        "color": "#dcf1b2"
+      },
+      {
+        "value": 10,
+        "label": "9-10 Days",
+        "color": "#ffffbf"
+      },
+      {
+        "value": 12,
+        "label": "11-12 Days",
+        "color": "#ffeebd"
+      },
+      {
+        "value": 14,
+        "label": "13-14 Days",
+        "color": "#ffec81"
+      },
+      {
+        "value": 16,
+        "label": "15-16 Days",
+        "color": "#fed380"
+      },
+      {
+        "value": 18,
+        "label": "17-18 Days",
+        "color": "#fec754"
+      },
+      {
+        "value": 20,
+        "label": "19-20 Days",
+        "color": "#f5af28"
+      },
+      {
+        "value": 22,
+        "label": "21-22 Days",
+        "color": "#d79b0b"
+      },
+      {
+        "value": 26,
+        "label": "23-26 Days",
+        "color": "#c98a4b"
+      },
+      {
+        "value": 27,
+        "label": "> 26 Days",
+        "color": "#aa5a00"
+      }
+    ]
+  },
+  "streak_dry_days": {
+    "title": "Longest number of consecutive dry days",
+    "type": "wms",
+    "server_layer_name": "dlx_dekad",
+    "additional_query_params": {
+      "styles": "dlx_13_0_26"
+    },
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Longest number of consecutive days with less than 2 mm precipitation in the last 30 days",
+    "legend": [
+      {
+        "value": 0,
+        "label": "None",
+        "color": "#6c9fa4"
+      },
+      {
+        "value": 4,
+        "label": "1-4 Days",
+        "color": "#57bec1"
+      },
+      {
+        "value": 6,
+        "label": "5-6 Days",
+        "color": "#aee0c4"
+      },
+      {
+        "value": 8,
+        "label": "7-8 Days",
+        "color": "#dcf1b2"
+      },
+      {
+        "value": 10,
+        "label": "9-10 Days",
+        "color": "#ffffbf"
+      },
+      {
+        "value": 12,
+        "label": "11-12 Days",
+        "color": "#ffeebd"
+      },
+      {
+        "value": 14,
+        "label": "13-14 Days",
+        "color": "#ffec81"
+      },
+      {
+        "value": 16,
+        "label": "15-16 Days",
+        "color": "#fed380"
+      },
+      {
+        "value": 18,
+        "label": "17-18 Days",
+        "color": "#fec754"
+      },
+      {
+        "value": 20,
+        "label": "19-20 Days",
+        "color": "#f5af28"
+      },
+      {
+        "value": 22,
+        "label": "21-22 Days",
+        "color": "#d79b0b"
+      },
+      {
+        "value": 26,
+        "label": "23-26 Days",
+        "color": "#c98a4b"
+      },
+      {
+        "value": 27,
+        "label": "> 26 Days",
+        "color": "#aa5a00"
+      }
+    ]
+  },
+  "days_heavy_rain": {
+    "title": "Number of days with heavy rainfall in the last 30 days",
+    "type": "wms",
+    "server_layer_name": "xnh_dekad",
+    "additional_query_params": {
+      "styles": "xnhie_12_0_14"
+    },
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Total number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad",
+    "legend": [
+      {
+        "value": 0,
+        "label": "None",
+        "color": "#fafafa"
+      },
+      {
+        "value": 1,
+        "label": "1 Day",
+        "color": "#d3f9d0"
+      },
+      {
+        "value": 2,
+        "label": "2 Days",
+        "color": "#a9e4a3"
+      },
+      {
+        "value": 3,
+        "label": "3 Days",
+        "color": "#5eab91"
+      },
+      {
+        "value": 4,
+        "label": "4 Days",
+        "color": "#9fffe8"
+      },
+      {
+        "value": 5,
+        "label": "5 Days",
+        "color": "#90e0ef"
+      },
+      {
+        "value": 6,
+        "label": "6 Days",
+        "color": "#00b1de"
+      },
+      {
+        "value": 8,
+        "label": "7-8 Days",
+        "color": "#0083f3"
+      },
+      {
+        "value": 10,
+        "label": "9-10 Days",
+        "color": "#0052cd"
+      },
+      {
+        "value": 12,
+        "label": "11-12 Days",
+        "color": "#0031ac"
+      },
+      {
+        "value": 14,
+        "label": "13-14 Days",
+        "color": "#a002fa"
+      },
+      {
+        "value": 15,
+        "label": "> 14 Days",
+        "color": "#ffc4ee"
+      }
+    ]
+  },
+  "days_intense_rain": {
+    "title": "Number of days with intense rainfall in the last 30 days",
+    "type": "wms",
+    "server_layer_name": "xni_dekad",
+    "additional_query_params": {
+      "styles": "xnhie_12_0_14"
+    },
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Total number of heavy rain days (rainfall > 90th percentile) within last 30 days of dekad",
+    "legend": [
+      {
+        "value": 0,
+        "label": "None",
+        "color": "#fafafa"
+      },
+      {
+        "value": 1,
+        "label": "1 Day",
+        "color": "#d3f9d0"
+      },
+      {
+        "value": 2,
+        "label": "2 Days",
+        "color": "#a9e4a3"
+      },
+      {
+        "value": 3,
+        "label": "3 Days",
+        "color": "#5eab91"
+      },
+      {
+        "value": 4,
+        "label": "4 Days",
+        "color": "#9fffe8"
+      },
+      {
+        "value": 5,
+        "label": "5 Days",
+        "color": "#90e0ef"
+      },
+      {
+        "value": 6,
+        "label": "6 Days",
+        "color": "#00b1de"
+      },
+      {
+        "value": 8,
+        "label": "7-8 Days",
+        "color": "#0083f3"
+      },
+      {
+        "value": 10,
+        "label": "9-10 Days",
+        "color": "#0052cd"
+      },
+      {
+        "value": 12,
+        "label": "11-12 Days",
+        "color": "#0031ac"
+      },
+      {
+        "value": 14,
+        "label": "13-14 Days",
+        "color": "#a002fa"
+      },
+      {
+        "value": 15,
+        "label": "> 14 Days",
+        "color": "#ffc4ee"
+      }
+    ]
+  },
+  "days_extreme_rain": {
+    "title": "Number of days with extreme rainfall in the last 30 days",
+    "type": "wms",
+    "server_layer_name": "xne_dekad",
+    "additional_query_params": {
+      "styles": "xnhie_12_0_14"
+    },
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Total number of heavy rain days (rainfall > 95th percentile) within last 30 days of dekad",
+    "legend": [
+      {
+        "value": 0,
+        "label": "None",
+        "color": "#fafafa"
+      },
+      {
+        "value": 1,
+        "label": "1 Day",
+        "color": "#d3f9d0"
+      },
+      {
+        "value": 2,
+        "label": "2 Days",
+        "color": "#a9e4a3"
+      },
+      {
+        "value": 3,
+        "label": "3 Days",
+        "color": "#5eab91"
+      },
+      {
+        "value": 4,
+        "label": "4 Days",
+        "color": "#9fffe8"
+      },
+      {
+        "value": 5,
+        "label": "5 Days",
+        "color": "#90e0ef"
+      },
+      {
+        "value": 6,
+        "label": "6 Days",
+        "color": "#00b1de"
+      },
+      {
+        "value": 8,
+        "label": "7-8 Days",
+        "color": "#0083f3"
+      },
+      {
+        "value": 10,
+        "label": "9-10 Days",
+        "color": "#0052cd"
+      },
+      {
+        "value": 12,
+        "label": "11-12 Days",
+        "color": "#0031ac"
+      },
+      {
+        "value": 14,
+        "label": "13-14 Days",
+        "color": "#a002fa"
+      },
+      {
+        "value": 15,
+        "label": "> 14 Days",
+        "color": "#ffc4ee"
+      }
+    ]
+  },
+  "streak_heavy_rain": {
+    "title": "Longest consecutive number of days with heavy rainfall in the last 30 days",
+    "type": "wms",
+    "server_layer_name": "xlh_dekad",
+    "additional_query_params": {
+      "styles": "xnhie_12_0_14"
+    },
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Longest consecutive number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad",
+    "legend": [
+      {
+        "value": 0,
+        "label": "None",
+        "color": "#fafafa"
+      },
+      {
+        "value": 1,
+        "label": "1 Day",
+        "color": "#d3f9d0"
+      },
+      {
+        "value": 2,
+        "label": "2 Days",
+        "color": "#a9e4a3"
+      },
+      {
+        "value": 3,
+        "label": "3 Days",
+        "color": "#5eab91"
+      },
+      {
+        "value": 4,
+        "label": "4 Days",
+        "color": "#9fffe8"
+      },
+      {
+        "value": 5,
+        "label": "5 Days",
+        "color": "#90e0ef"
+      },
+      {
+        "value": 6,
+        "label": "6 Days",
+        "color": "#00b1de"
+      },
+      {
+        "value": 8,
+        "label": "7-8 Days",
+        "color": "#0083f3"
+      },
+      {
+        "value": 10,
+        "label": "9-10 Days",
+        "color": "#0052cd"
+      },
+      {
+        "value": 12,
+        "label": "11-12 Days",
+        "color": "#0031ac"
+      },
+      {
+        "value": 14,
+        "label": "13-14 Days",
+        "color": "#a002fa"
+      },
+      {
+        "value": 15,
+        "label": "> 14 Days",
+        "color": "#ffc4ee"
+      }
+    ]
+  },
+  "streak_intense_rain": {
+    "title": "Longest consecutive intense rainfall days",
+    "type": "wms",
+    "server_layer_name": "xli_dekad",
+    "additional_query_params": {
+      "styles": "xnhie_12_0_14"
+    },
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Longest consecutive number of intense rain days (rainfall > 90th percentile) within last 30 days of dekad",
+    "legend": [
+      {
+        "value": 0,
+        "label": "None",
+        "color": "#fafafa"
+      },
+      {
+        "value": 1,
+        "label": "1 Day",
+        "color": "#d3f9d0"
+      },
+      {
+        "value": 2,
+        "label": "2 Days",
+        "color": "#a9e4a3"
+      },
+      {
+        "value": 3,
+        "label": "3 Days",
+        "color": "#5eab91"
+      },
+      {
+        "value": 4,
+        "label": "4 Days",
+        "color": "#9fffe8"
+      },
+      {
+        "value": 5,
+        "label": "5 Days",
+        "color": "#90e0ef"
+      },
+      {
+        "value": 6,
+        "label": "6 Days",
+        "color": "#00b1de"
+      },
+      {
+        "value": 8,
+        "label": "7-8 Days",
+        "color": "#0083f3"
+      },
+      {
+        "value": 10,
+        "label": "9-10 Days",
+        "color": "#0052cd"
+      },
+      {
+        "value": 12,
+        "label": "11-12 Days",
+        "color": "#0031ac"
+      },
+      {
+        "value": 14,
+        "label": "13-14 Days",
+        "color": "#a002fa"
+      },
+      {
+        "value": 15,
+        "label": "> 14 Days",
+        "color": "#ffc4ee"
+      }
+    ]
+  },
+  "streak_extreme_rain": {
+    "title": "Longest consecutive extreme rainfall days",
+    "type": "wms",
+    "server_layer_name": "xle_dekad",
+    "additional_query_params": {
+      "styles": "xnhie_12_0_14"
+    },
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Longest consecutive number of extreme rain days (rainfall > 95th percentile) within last 30 days of dekad",
+    "legend": [
+      {
+        "value": 0,
+        "label": "None",
+        "color": "#fafafa"
+      },
+      {
+        "value": 1,
+        "label": "1 Day",
+        "color": "#d3f9d0"
+      },
+      {
+        "value": 2,
+        "label": "2 Days",
+        "color": "#a9e4a3"
+      },
+      {
+        "value": 3,
+        "label": "3 Days",
+        "color": "#5eab91"
+      },
+      {
+        "value": 4,
+        "label": "4 Days",
+        "color": "#9fffe8"
+      },
+      {
+        "value": 5,
+        "label": "5 Days",
+        "color": "#90e0ef"
+      },
+      {
+        "value": 6,
+        "label": "6 Days",
+        "color": "#00b1de"
+      },
+      {
+        "value": 8,
+        "label": "7-8 Days",
+        "color": "#0083f3"
+      },
+      {
+        "value": 10,
+        "label": "9-10 Days",
+        "color": "#0052cd"
+      },
+      {
+        "value": 12,
+        "label": "11-12 Days",
+        "color": "#0031ac"
+      },
+      {
+        "value": 14,
+        "label": "13-14 Days",
+        "color": "#a002fa"
+      },
+      {
+        "value": 15,
+        "label": "> 14 Days",
+        "color": "#ffc4ee"
+      }
+    ]
+  },
   "ndvi_dekad": {
     "title": "10-day NDVI (MODIS)",
     "type": "wms",
