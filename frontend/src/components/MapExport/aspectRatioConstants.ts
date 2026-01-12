@@ -91,6 +91,44 @@ export function isValidAspectRatioParam(param: string): boolean {
   return param in ASPECT_RATIO_CONFIG;
 }
 
+/**
+ * Parse an aspect ratio from URL parameters.
+ * Handles 'Auto', preset ratios, and custom w/h values with case-insensitive matching.
+ */
+export function parseAspectRatio(
+  param: string | null,
+  customWidth?: number,
+  customHeight?: number,
+  defaultRatio: PresetAspectRatio = '4:3',
+): AspectRatio {
+  if (!param) {
+    return defaultRatio;
+  }
+
+  const lower = param.toLowerCase();
+
+  // Custom ratio - when explicitly set or when custom dimensions provided
+  if (
+    lower === 'custom' ||
+    (customWidth !== undefined && customHeight !== undefined)
+  ) {
+    return { w: customWidth ?? 1, h: customHeight ?? 1 };
+  }
+
+  // Auto mode (case-insensitive)
+  if (lower === 'auto') {
+    return 'Auto';
+  }
+
+  // Preset ratio (case-sensitive, must match exactly)
+  if (param in ASPECT_RATIO_CONFIG) {
+    return param as PresetAspectRatio;
+  }
+
+  // Unknown value - return default
+  return defaultRatio;
+}
+
 export const PRESET_RATIOS: PresetAspectRatio[] = (
   Object.entries(ASPECT_RATIO_CONFIG) as [
     PresetAspectRatio,
