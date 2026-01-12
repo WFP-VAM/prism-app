@@ -15,6 +15,27 @@ declare global {
         group2: string,
         layerName: string,
       ): Chainable<JQuery<HTMLElement>>;
+      /**
+       * Custom command to deactivate a layer
+       * @example cy.deactivateLayer('Rainfall', 'Rainfall Amount', 'Rainfall aggregate');
+       */
+      deactivateLayer(
+        group1: string,
+        group2: string,
+        layerName: string,
+      ): Chainable<JQuery<HTMLElement>>;
+      /**
+       * Custom command to scroll left in the timeline
+       * @example cy.scrollLeft();
+       */
+      scrollLeft(): Chainable<JQuery<HTMLElement>>;
+      /**
+       * Custom command to scroll right in the timeline
+       * @example cy.scrollRight();
+       */
+      scrollRight(): Chainable<JQuery<HTMLElement>>;
     }
   }
 }
+
+export {};
