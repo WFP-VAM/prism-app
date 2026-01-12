@@ -169,12 +169,11 @@ class UserInfoPydanticModel(BaseModel):
         orm_mode = True
 
 
-AspectRatio = Literal["1:1", "2:3", "3:2", "3:4", "4:3"]
 ExportFormat = Literal["pdf", "png"]
 
 
 class MapExportRequestModel(BaseModel):
-    """Schema for export request data to be passed to /export endpoint."""
+    """Schema for export request data to be passed to /export-map endpoint."""
 
     urls: list[str] = Field(
         ...,

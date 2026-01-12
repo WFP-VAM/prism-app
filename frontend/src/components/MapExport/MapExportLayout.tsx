@@ -38,8 +38,8 @@ import {
 } from 'components/MapView/Layers';
 import GeojsonDataLayer from 'components/MapView/Layers/GeojsonDataLayer';
 import AnticipatoryActionFloodLayer from 'components/MapView/Layers/AnticipatoryActionFloodLayer';
-import { resolveAspectRatioValue } from 'components/NavBar/PrintImage/mapDimensionsUtils';
 import { MapExportLayoutProps } from './types';
+import { getAspectRatioDecimal } from './aspectRatioConstants';
 
 /**
  * MapExportLayout - Shared component for rendering map exports
@@ -409,7 +409,7 @@ function MapExportLayout({
     }
 
     // For all other aspect ratios (preset, A4, Custom), use the resolver
-    const targetRatio = resolveAspectRatioValue(
+    const targetRatio = getAspectRatioDecimal(
       aspectRatio,
       containerWidth,
       containerHeight,
@@ -444,7 +444,7 @@ function MapExportLayout({
 
   // The map content (title, legend, footer, map itself)
   const mapContent = (
-    <div ref={printRef} className={classes.printContainer}>
+    <div className={classes.printContainer}>
       {toggles.bottomLogoVisibility && bottomLogo && (
         <img
           style={{
@@ -649,6 +649,7 @@ function MapExportLayout({
       >
         {mapDimensions.width > 0 && mapDimensions.height > 0 && (
           <div
+            ref={printRef}
             style={{
               position: 'relative',
               zIndex: 3,
@@ -719,7 +720,8 @@ const useStyles = makeStyles(() =>
       zIndex: 3,
       color: 'black',
       backgroundColor: 'white',
-      width: 'calc(100% - 16px)',
+      width: '100%',
+      boxSizing: 'border-box',
       borderTop: `1px solid ${lightGrey}`,
     },
     legendListStyle: {

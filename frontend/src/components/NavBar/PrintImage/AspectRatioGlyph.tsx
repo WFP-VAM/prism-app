@@ -1,5 +1,5 @@
 import { AspectRatio, isCustomRatio } from 'components/MapExport/types';
-import { resolveAspectRatioValue } from './mapDimensionsUtils';
+import { getAspectRatioDecimal } from 'components/MapExport/aspectRatioConstants';
 
 interface AspectRatioGlyphProps {
   aspectRatio: AspectRatio;
@@ -19,7 +19,7 @@ function getAspectRatioValue(aspectRatio: AspectRatio): number {
   }
 
   // Use the centralized resolver for preset ratios
-  return resolveAspectRatioValue(aspectRatio);
+  return getAspectRatioDecimal(aspectRatio);
 }
 
 /**

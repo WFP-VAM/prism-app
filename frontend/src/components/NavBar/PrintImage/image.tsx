@@ -30,27 +30,17 @@ import {
 import PrintConfig from './printConfig';
 import PrintPreview from './printPreview';
 import PrintConfigContext, {
-  AspectRatioOption,
   MapDimensions,
   Toggles,
 } from './printConfig.context';
 import { calculateExportDimensions } from './mapDimensionsUtils';
-import { isCustomRatio } from '../../MapExport/types';
+import {
+  isCustomRatio,
+  ALL_ASPECT_RATIO_OPTIONS,
+} from '../../MapExport/aspectRatioConstants';
 import { useSafeTranslation } from '../../../i18n';
 
 const defaultFooterText = get(appConfig, 'printConfig.defaultFooterText', '');
-
-const allAspectRatioOptions: AspectRatioOption[] = [
-  'Auto',
-  '3:2',
-  '4:3',
-  '6:5',
-  '1:1',
-  '2:3',
-  'A4-P',
-  'A4-L',
-  'Custom',
-];
 
 // Initial dimensions with 'Auto' aspect ratio (fills container)
 const initialMapDimensions: MapDimensions = {
@@ -466,7 +456,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       dateRange: dateRangeForBatchMaps,
       setDateRange: setDateRangeForBatchMaps,
       mapCount,
-      aspectRatioOptions: allAspectRatioOptions,
+      aspectRatioOptions: ALL_ASPECT_RATIO_OPTIONS,
       previewBounds,
       setPreviewBounds,
       previewZoom,

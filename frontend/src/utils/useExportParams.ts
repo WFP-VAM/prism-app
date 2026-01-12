@@ -4,8 +4,11 @@ import {
   ExportParams,
   ExportMapBounds,
   MapExportToggles,
-  AspectRatio,
 } from 'components/MapExport/types';
+import {
+  AspectRatio,
+  isValidAspectRatioParam,
+} from 'components/MapExport/aspectRatioConstants';
 import { AdminCodeString } from 'config/types';
 
 const DEFAULT_TOGGLES: MapExportToggles = {
@@ -118,16 +121,24 @@ export const useExportParams = (): ExportParams => {
         .filter(Boolean) as AdminCodeString[]) ?? [];
 
     // Parse aspect ratio - could be string or custom object
+    // Use case-insensitive comparison for 'custom' param
     const aspectRatioParam = params.get('aspectRatio') ?? '4:3';
     let aspectRatio: AspectRatio;
 
-    if (aspectRatioParam === 'Custom' || params.has('customWidth')) {
-      // Custom ratio - construct object
+    if (
+      aspectRatioParam.toLowerCase() === 'custom' ||
+      params.has('customWidth')
+    ) {
+      // Custom ratio - construct object from w/h params
       const w = getNum('customWidth', 1);
       const h = getNum('customHeight', 1);
       aspectRatio = { w, h };
-    } else {
+    } else if (isValidAspectRatioParam(aspectRatioParam)) {
+      // Valid preset or 'Auto' ratio
       aspectRatio = aspectRatioParam as AspectRatio;
+    } else {
+      // Fallback to default if unknown param value
+      aspectRatio = '4:3';
     }
 
     return {
