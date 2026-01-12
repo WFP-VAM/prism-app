@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  CircularProgress,
   Collapse,
   Divider,
   Icon,
@@ -9,31 +10,35 @@ import {
   MenuItem,
   TextField,
   Theme,
+  Tooltip,
   Typography,
   createStyles,
   makeStyles,
 } from '@material-ui/core';
 import { GetApp, Cancel } from '@material-ui/icons';
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import { cyanBlue } from 'muiTheme';
 import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
 import Switch from 'components/Common/Switch';
+import { AspectRatio } from 'components/MapExport/types';
 import { useSafeTranslation } from '../../../i18n';
-import PrintConfigContext, { MapDimensions } from './printConfig.context';
+import PrintConfigContext from './printConfig.context';
+import DateRangePicker from './DateRangePicker';
+import AspectRatioSelector from './AspectRatioSelector';
 
 interface ToggleSelectorProps {
   title: string;
-  value: number;
+  value: number | string;
   options: {
-    value: number;
+    value: number | string;
     comp: React.JSX.Element;
     disabled?: boolean;
   }[];
   iconProp?: number;
   align?: 'start' | 'end';
-  setValue: (v: number) => void;
+  setValue: (v: number | string) => void;
 }
 
 const toggleSelectorStyles = makeStyles(() => ({
@@ -105,6 +110,8 @@ function SectionToggle({
   children,
   expanded,
   handleChange,
+  disabled,
+  tooltip,
 }: {
   title: string;
   children?: React.ReactNode;
@@ -113,18 +120,43 @@ function SectionToggle({
     event: React.ChangeEvent<HTMLInputElement>,
     checked: boolean,
   ) => void;
+  disabled?: boolean;
+  tooltip?: string;
 }) {
   const classes = useStyles();
+
+  const switchElement = (
+    <div
+      className={`${classes.collapsibleWrapper} ${
+        expanded && children ? classes.collapsibleWrapperExpanded : ''
+      }`}
+    >
+      <Switch
+        checked={expanded}
+        onChange={handleChange}
+        title={title}
+        disabled={disabled}
+      />
+    </div>
+  );
+
   return (
     <div>
-      <div
-        className={`${classes.collapsibleWrapper} ${
-          expanded && children ? classes.collapsibleWrapperExpanded : ''
-        }`}
-      >
-        <Switch checked={expanded} onChange={handleChange} title={title} />
-      </div>
-      <Collapse in={expanded}>{children}</Collapse>
+      {tooltip ? (
+        <Tooltip
+          title={tooltip}
+          arrow
+          placement="top"
+          classes={{ tooltip: classes.tooltip }}
+        >
+          {switchElement}
+        </Tooltip>
+      ) : (
+        switchElement
+      )}
+      <Collapse in={expanded} style={{ paddingLeft: '8px' }}>
+        {children}
+      </Collapse>
     </div>
   );
 }
@@ -160,11 +192,11 @@ function GreyContainerSection({
 
 const legendScaleSelectorOptions = [
   { value: 0.5, comp: <div>50%</div> },
-  { value: 0.4, comp: <div>60%</div> },
-  { value: 0.3, comp: <div>70%</div> },
-  { value: 0.2, comp: <div>80%</div> },
-  { value: 0.1, comp: <div>90%</div> },
-  { value: 0, comp: <div>100%</div> },
+  { value: 0.6, comp: <div>60%</div> },
+  { value: 0.7, comp: <div>70%</div> },
+  { value: 0.8, comp: <div>80%</div> },
+  { value: 0.9, comp: <div>90%</div> },
+  { value: 1, comp: <div>100%</div> },
 ];
 
 const legendPositionOptions = [
@@ -221,15 +253,6 @@ const logoScaleSelectorOptions = [
   { value: 1.5, comp: <div style={{ fontSize: '1.25rem' }}>L</div> },
 ];
 
-const mapWidthSelectorOptions = [
-  { value: 50, comp: <div>50%</div> },
-  { value: 60, comp: <div>60%</div> },
-  { value: 70, comp: <div>70%</div> },
-  { value: 80, comp: <div>80%</div> },
-  { value: 90, comp: <div>90%</div> },
-  { value: 100, comp: <div>100%</div> },
-];
-
 const footerTextSelectorOptions = [
   { value: 8, comp: <div style={{ fontSize: '8px' }}>Aa</div> },
   { value: 10, comp: <div style={{ fontSize: '10px' }}>Aa</div> },
@@ -238,10 +261,19 @@ const footerTextSelectorOptions = [
   { value: 20, comp: <div style={{ fontSize: '20px' }}>Aa</div> },
 ];
 
+// Suffix appended to title when batch maps is enabled
+const DATE_PLACEHOLDER_SUFFIX = ': {date_coverage}';
+
 function PrintConfig() {
   const classes = useStyles();
   const { t } = useSafeTranslation();
   const { printConfig } = useContext(PrintConfigContext);
+
+  // Local state for responsive input - syncs to parent with debounce
+  const [localTitle, setLocalTitle] = useState(printConfig?.titleText ?? '');
+  useEffect(() => {
+    setLocalTitle(printConfig?.titleText ?? '');
+  }, [printConfig?.titleText]);
 
   // Appease TS by ensuring printConfig is defined
   if (!printConfig) {
@@ -250,9 +282,9 @@ function PrintConfig() {
 
   const {
     handleClose,
+    titleText,
     setTitleText,
     debounceCallback,
-    country,
     mapDimensions,
     setMapDimensions,
     logo,
@@ -271,6 +303,8 @@ function PrintConfig() {
     footerTextSize,
     setFooterTextSize,
     download,
+    downloadBatch,
+    isDownloading,
     defaultFooterText,
     selectedBoundaries,
     setSelectedBoundaries,
@@ -279,14 +313,14 @@ function PrintConfig() {
     handleDownloadMenuOpen,
     handleDownloadMenuClose,
     downloadMenuAnchorEl,
+    mapCount,
+    shouldEnableBatchMaps,
+    dateRange,
+    aspectRatioOptions,
   } = printConfig;
 
   return (
-    <Box
-      style={{
-        overflow: 'scroll',
-      }}
-    >
+    <Box>
       <div className={classes.optionsContainer}>
         <div>
           <Box
@@ -310,29 +344,26 @@ function PrintConfig() {
         {/* Title */}
         <div className={classes.optionWrap}>
           <TextField
-            defaultValue={country}
+            value={localTitle}
             placeholder={t('Title')}
             fullWidth
             size="small"
             inputProps={{ label: t('Title'), style: { color: 'black' } }}
             onChange={event => {
+              setLocalTitle(event.target.value);
               debounceCallback(setTitleText, event.target.value);
             }}
             variant="outlined"
           />
         </div>
 
-        {/* Width */}
-        <ToggleSelector
-          value={mapDimensions.width}
-          options={mapWidthSelectorOptions}
-          setValue={val =>
-            setMapDimensions((prev: MapDimensions) => ({
-              ...(prev || {}),
-              width: val as number,
-            }))
-          }
-          title={t('Map Width')}
+        {/* Aspect Ratio */}
+        <AspectRatioSelector
+          value={mapDimensions.aspectRatio}
+          options={aspectRatioOptions}
+          setValue={val => {
+            setMapDimensions({ aspectRatio: val as AspectRatio });
+          }}
         />
 
         {/* Logo */}
@@ -361,7 +392,9 @@ function PrintConfig() {
                     value={logoPosition}
                     options={logoPositionOptions}
                     iconProp={logoPosition}
-                    setValue={setLogoPosition}
+                    setValue={(v: number | string) =>
+                      setLogoPosition(Number(v))
+                    }
                     title={t('Position')}
                   />
 
@@ -376,7 +409,7 @@ function PrintConfig() {
                       align="end"
                       value={logoScale}
                       options={logoScaleSelectorOptions}
-                      setValue={setLogoScale}
+                      setValue={(v: number | string) => setLogoScale(Number(v))}
                       title={t('Size')}
                     />
                   </div>
@@ -411,7 +444,9 @@ function PrintConfig() {
                     align="end"
                     value={bottomLogoScale}
                     options={logoScaleSelectorOptions}
-                    setValue={setBottomLogoScale}
+                    setValue={(v: number | string) =>
+                      setBottomLogoScale(Number(v))
+                    }
                     title={t('Size')}
                   />
                 </Box>
@@ -484,7 +519,9 @@ function PrintConfig() {
                   value={legendPosition > -1 ? legendPosition : -1}
                   options={legendPositionOptions}
                   iconProp={legendPosition}
-                  setValue={setLegendPosition}
+                  setValue={(v: number | string) =>
+                    setLegendPosition(Number(v))
+                  }
                   title={t('Position')}
                 />
                 <div className={classes.collapsibleWrapper}>
@@ -512,7 +549,7 @@ function PrintConfig() {
                 <ToggleSelector
                   value={legendScale}
                   options={legendScaleSelectorOptions}
-                  setValue={setLegendScale}
+                  setValue={(v: number | string) => setLegendScale(Number(v))}
                   title={t('Size')}
                 />
               </div>
@@ -536,7 +573,7 @@ function PrintConfig() {
               <ToggleSelector
                 value={footerTextSize}
                 options={footerTextSelectorOptions}
-                setValue={setFooterTextSize}
+                setValue={(v: number | string) => setFooterTextSize(Number(v))}
                 title={t('Size')}
               />
             </GreyContainerSection>
@@ -560,6 +597,60 @@ function PrintConfig() {
           </GreyContainer>
         </SectionToggle>
 
+        {/* Batch Maps */}
+        {shouldEnableBatchMaps && (
+          <>
+            <SectionToggle
+              title={t('Create a sequence of maps')}
+              expanded={toggles.batchMapsVisibility}
+              tooltip={t(
+                'Selecting this option will apply the template above to create multiple maps over a time period of your choice.',
+              )}
+              handleChange={() => {
+                const willBeEnabled = !toggles.batchMapsVisibility;
+
+                if (willBeEnabled && !titleText.includes('{date}')) {
+                  // Append date placeholder
+                  setTitleText(prev => `${prev}${DATE_PLACEHOLDER_SUFFIX}`);
+                } else if (
+                  !willBeEnabled &&
+                  titleText.endsWith(DATE_PLACEHOLDER_SUFFIX)
+                ) {
+                  // Remove date placeholder suffix
+                  setTitleText(prev =>
+                    prev.slice(0, -DATE_PLACEHOLDER_SUFFIX.length),
+                  );
+                }
+
+                setToggles(prev => ({
+                  ...prev,
+                  batchMapsVisibility: willBeEnabled,
+                }));
+              }}
+            />
+            {toggles.batchMapsVisibility && (
+              <GreyContainer>
+                <GreyContainerSection>
+                  <DateRangePicker />
+                </GreyContainerSection>
+                <GreyContainerSection isLast>
+                  <Box className={classes.mapCountContainer}>
+                    <Typography variant="body1">
+                      {t('Nb of maps generated')}
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      className={classes.mapCountValue}
+                    >
+                      {mapCount}
+                    </Typography>
+                  </Box>
+                </GreyContainerSection>
+              </GreyContainer>
+            )}
+          </>
+        )}
+
         <Button
           style={{ backgroundColor: cyanBlue, color: 'black' }}
           variant="contained"
@@ -567,24 +658,50 @@ function PrintConfig() {
           className={classes.gutter}
           endIcon={<GetApp />}
           onClick={e => handleDownloadMenuOpen(e)}
+          disabled={
+            isDownloading ||
+            (toggles.batchMapsVisibility &&
+              (!dateRange.startDate || !dateRange.endDate))
+          }
         >
-          {t('Download')}
+          {isDownloading ? (
+            <>
+              <CircularProgress size={16} />{' '}
+              <span style={{ marginLeft: '0.5rem' }}>
+                {t('Generating maps...')}
+              </span>
+            </>
+          ) : (
+            <span>{t('Download')}</span>
+          )}
         </Button>
+
         <Menu
           anchorEl={downloadMenuAnchorEl}
           keepMounted
           open={Boolean(downloadMenuAnchorEl)}
           onClose={handleDownloadMenuClose}
         >
-          <MenuItem onClick={() => download('png')}>
-            {t('Download PNG')}
-          </MenuItem>
-          <MenuItem onClick={() => download('jpeg')}>
-            {t('Download JPEG')}
-          </MenuItem>
-          <MenuItem onClick={() => download('pdf')}>
-            {t('Download PDF')}
-          </MenuItem>
+          {toggles.batchMapsVisibility
+            ? [
+                <MenuItem key="pdf" onClick={() => downloadBatch('pdf')}>
+                  {t('Download maps as PDF')}
+                </MenuItem>,
+                <MenuItem key="png" onClick={() => downloadBatch('png')}>
+                  {t('Download maps as PNGs')}
+                </MenuItem>,
+              ]
+            : [
+                <MenuItem key="png" onClick={() => download('png')}>
+                  {t('Download PNG')}
+                </MenuItem>,
+                <MenuItem key="jpeg" onClick={() => download('jpeg')}>
+                  {t('Download JPEG')}
+                </MenuItem>,
+                <MenuItem key="pdf" onClick={() => download('pdf')}>
+                  {t('Download PDF')}
+                </MenuItem>,
+              ]}
         </Menu>
       </div>
     </Box>
@@ -611,9 +728,7 @@ const useStyles = makeStyles((theme: Theme) =>
       gap: '0.5rem',
       minHeight: '740px',
       width: '19.2rem',
-      scrollbarGutter: 'stable',
       overflow: 'auto',
-      paddingRight: '15px',
       zIndex: 4,
       backgroundColor: 'white',
     },
@@ -631,6 +746,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     collapsibleWrapperExpanded: {
       marginBottom: '0.25rem',
+    },
+    tooltip: {
+      fontSize: '0.75em',
     },
     formControl: {
       width: '100%',
@@ -650,6 +768,17 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'space-between',
+    },
+    mapCountContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    mapCountValue: {
+      border: '1px solid rgba(0, 0, 0, 0.23)',
+      borderRadius: '4px',
+      padding: '8px 12px',
+      backgroundColor: '#f5f5f5',
     },
   }),
 );

@@ -1,7 +1,7 @@
 import json
 from datetime import date, datetime
 from os import getenv
-from typing import Any, NewType, Optional, TypedDict
+from typing import Any, Literal, NewType, Optional, TypedDict
 
 from pydantic import BaseModel, EmailStr, Field, HttpUrl, root_validator, validator
 
@@ -167,3 +167,49 @@ class UserInfoPydanticModel(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+ExportFormat = Literal["pdf", "png"]
+
+
+class MapExportRequestModel(BaseModel):
+    """Schema for export request data to be passed to /export-map endpoint."""
+
+    urls: list[str] = Field(
+        ...,
+        description="Map URLs containing all parameters necessary to render print view "
+        "including layer ID(s), layer opacity, bounding box, legend config, etc.",
+        example="/?hazardLayerIds=daily_rainfall_forecast&date=2025-01-01&layerOpacity=0.7&boundingBox=",
+    )
+    viewportWidth: int = Field(
+        default=1200,
+        ge=800,
+        le=2400,
+        description="Canvas width in pixels for rendering",
+    )
+    viewportHeight: int = Field(
+        default=849,
+        ge=400,
+        le=2400,
+        description="Canvas height in pixels for rendering",
+    )
+    format: ExportFormat = Field(
+        ...,
+        description="Output format: 'pdf' for merged PDF, 'png' for ZIP archive of PNGs",
+        example="png",
+    )
+
+    @root_validator
+    def validate_urls(cls, values):
+        """Validate that the URL is from an allowed domain"""
+        from prism_app.utils import validate_export_url
+
+        urls = values.get("urls")
+        if not urls:
+            raise ValueError("URLs are required")
+        for url in urls:
+            try:
+                validate_export_url(url)
+            except ValueError as e:
+                raise ValueError(f"Invalid URL: {url}. {str(e)}")
+        return values
