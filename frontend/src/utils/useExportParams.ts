@@ -18,6 +18,13 @@ const DEFAULT_TOGGLES: MapExportToggles = {
   bottomLogoVisibility: true,
 };
 
+/**
+ * Custom hook that extracts and parses map export parameters from the URL search params.
+ * Parses various export configuration options including layer IDs, map bounds, toggles,
+ * aspect ratio, text content, and positioning/scaling values.
+ *
+ * @returns {ExportParams} An object containing all parsed export parameters with defaults applied
+ */
 export const useExportParams = (): ExportParams => {
   const { search } = useLocation();
 
