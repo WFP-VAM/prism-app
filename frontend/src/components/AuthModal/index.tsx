@@ -63,11 +63,15 @@ const AuthModal = () => {
   }, [isUserAuthenticated, layersWithAuthRequired]);
 
   const validateToken = useCallback(
-    (event: FormEvent<HTMLFormElement>) => {
+    async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
+      // Set auth in state first - Redux actions are synchronous so state updates immediately
       dispatch(setUserAuthGlobal(auth));
-      // Re-fetch dates with new authentication to filter by province if applicable
-      dispatch(refetchLayerDatesArraysForPointData());
+      // Wait a tick to ensure state is fully updated, then re-fetch dates with new authentication
+      // The refetch thunk will read auth from state, which is now updated
+      await Promise.resolve();
+      // Await the refetch to ensure dates are reloaded before closing modal
+      await dispatch(refetchLayerDatesArraysForPointData());
       setOpen(false);
     },
     [auth, dispatch],
