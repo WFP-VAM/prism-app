@@ -70,7 +70,8 @@ const AuthModal = () => {
       // Wait a tick to ensure state is fully updated, then re-fetch dates with new authentication
       // The refetch thunk will read auth from state, which is now updated
       await Promise.resolve();
-      dispatch(refetchLayerDatesArraysForPointData());
+      // Await the refetch to ensure dates are reloaded before closing modal
+      await dispatch(refetchLayerDatesArraysForPointData());
       setOpen(false);
     },
     [auth, dispatch],
