@@ -106,10 +106,4 @@ def optional_validate_user(
     if credentials is None:
         return None
 
-    # Try to validate user, return None on auth failure
-    try:
-        return validate_user(credentials)
-    except HTTPException as e:
-        if e.status_code == status.HTTP_401_UNAUTHORIZED:
-            return None
-        raise
+    return validate_user(credentials)
