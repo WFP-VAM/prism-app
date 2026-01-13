@@ -178,8 +178,8 @@ exports[`renders as expected 1`] = `
                         rx="2"
                         stroke="currentColor"
                         stroke-width="1.5"
-                        width="9.0496"
-                        x="3.4752"
+                        width="9.052333804809052"
+                        x="3.473833097595474"
                         y="1.5999999999999996"
                       />
                     </svg>

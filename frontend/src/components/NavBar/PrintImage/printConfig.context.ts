@@ -1,10 +1,13 @@
 import React, { createContext } from 'react';
 import type { LngLatBounds } from 'maplibre-gl';
 import { AdminCodeString } from 'config/types';
-import { AspectRatio } from 'components/MapExport/types';
+import {
+  AspectRatio,
+  AspectRatioOption,
+} from 'components/MapExport/aspectRatioConstants';
 
-// AspectRatioOption includes 'Custom' as a UI-only option
-export type AspectRatioOption = AspectRatio | 'Custom';
+// Re-export for backwards compatibility
+export type { AspectRatioOption };
 
 export type Toggles = {
   fullLayerDescription: boolean;

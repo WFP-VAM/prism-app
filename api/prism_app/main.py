@@ -557,7 +557,7 @@ def get_google_floods_inundations_api(
 
 @timed
 @app.post(
-    "/export",
+    "/export-map",
     responses={
         400: {
             "description": "Bad request - malformed request body or invalid parameters"

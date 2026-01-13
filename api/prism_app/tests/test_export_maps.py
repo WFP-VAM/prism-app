@@ -151,9 +151,9 @@ def test_validate_export_url_support():
     [("pdf", "application/pdf"), ("png", "application/zip")],
 )
 def test_export_endpoint_success(mock_page_url, format_type, expected_content_type):
-    """Test POST /export endpoint returns correct content type and headers."""
+    """Test POST /export-map endpoint returns correct content type and headers."""
     response = client.post(
-        "/export",
+        "/export-map",
         json={
             "urls": [mock_page_url],
             "viewportWidth": 1200,
@@ -171,10 +171,10 @@ def test_export_endpoint_success(mock_page_url, format_type, expected_content_ty
 
 
 def test_export_endpoint_multiple_dates(mock_page_url):
-    """Test POST /export endpoint with multiple dates returns correct page count."""
+    """Test POST /export-map endpoint with multiple dates returns correct page count."""
     dates = [TEST_DATE, "2025-01-11", "2025-01-21"]
     response = client.post(
-        "/export",
+        "/export-map",
         json={
             "urls": [f"{MOCK_PAGE_URL}?date={date}" for date in dates],
             "viewportWidth": 1200,
@@ -208,7 +208,7 @@ def test_export_endpoint_multiple_dates(mock_page_url):
 def test_export_endpoint_validation_errors(
     mock_page_url, request_data, expected_status
 ):
-    """Test POST /export endpoint validation errors."""
+    """Test POST /export-map endpoint validation errors."""
     # Build request with defaults
     default_request = {
         "urls": [f"http://localhost/?test=1&date={TEST_DATE}"],
@@ -218,5 +218,5 @@ def test_export_endpoint_validation_errors(
     }
     default_request.update(request_data)
 
-    response = client.post("/export", json=default_request)
+    response = client.post("/export-map", json=default_request)
     assert response.status_code == expected_status

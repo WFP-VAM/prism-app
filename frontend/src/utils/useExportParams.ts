@@ -4,9 +4,16 @@ import {
   ExportParams,
   ExportMapBounds,
   MapExportToggles,
-  AspectRatio,
 } from 'components/MapExport/types';
+import { parseAspectRatio } from 'components/MapExport/aspectRatioConstants';
 import { AdminCodeString } from 'config/types';
+import {
+  param,
+  defineParam,
+  parseUrlParams,
+  getBoolParam,
+  getNumParam,
+} from './urlParamSchema';
 
 const DEFAULT_TOGGLES: MapExportToggles = {
   fullLayerDescription: false,
@@ -19,147 +26,126 @@ const DEFAULT_TOGGLES: MapExportToggles = {
 };
 
 /**
- * Custom hook that extracts and parses map export parameters from the URL search params.
- * Parses various export configuration options including layer IDs, map bounds, toggles,
- * aspect ratio, text content, and positioning/scaling values.
- *
- * @returns {ExportParams} An object containing all parsed export parameters with defaults applied
+ * Schema defining all export URL parameters.
+ * Each entry maps a result property to its URL key and parser.
  */
-export const useExportParams = (): ExportParams => {
-  const { search } = useLocation();
+const exportParamsSchema = {
+  // Layer state
+  hazardLayerIds: defineParam('hazardLayerIds', param.stringArray()),
+  baselineLayerIds: defineParam('baselineLayerId', param.stringArray()),
+  date: defineParam('date', param.stringOrNull()),
 
-  return useMemo(() => {
-    const params = new URLSearchParams(search);
-
-    // Helper to parse boolean (defaults to false)
-    const getBool = (key: string, defaultVal = false): boolean => {
-      const val = params.get(key);
-      if (val === null) {
-        return defaultVal;
-      }
-      return val === 'true' || val === '1';
-    };
-
-    // Helper to parse number with default
-    const getNum = (key: string, defaultVal: number): number => {
-      const val = params.get(key);
-      if (val === null) {
-        return defaultVal;
-      }
-      const num = parseFloat(val);
-      return Number.isNaN(num) ? defaultVal : num;
-    };
-
-    // Parse bounds from comma-separated string: "west,south,east,north"
-    const parseBounds = (): ExportMapBounds | null => {
-      const boundsStr = params.get('bounds');
-      if (!boundsStr) {
+  // Map bounds
+  zoom: defineParam('zoom', param.number(5)),
+  bounds: defineParam(
+    'bounds',
+    param.custom<ExportMapBounds | null>(v => {
+      if (!v) {
         return null;
       }
-      const [west, south, east, north] = boundsStr.split(',').map(parseFloat);
+      const [west, south, east, north] = v.split(',').map(parseFloat);
       if ([west, south, east, north].every(n => !Number.isNaN(n))) {
         return { west, south, east, north };
       }
       return null;
-    };
-    const bounds = parseBounds();
+    }),
+  ),
 
-    // Parse layer IDs (comma-separated)
-    const hazardLayerIds =
-      params.get('hazardLayerIds')?.split(',').filter(Boolean) ?? [];
-    const baselineLayerIds =
-      params.get('baselineLayerId')?.split(',').filter(Boolean) ?? [];
+  // Print config
+  mapWidth: defineParam('mapWidth', param.number(100)),
+  mapHeight: defineParam('mapHeight', param.number(100)),
+  titleText: defineParam('title', param.string('')),
+  footerText: defineParam('footer', param.string('')),
+  footerTextSize: defineParam('footerTextSize', param.number(12)),
 
-    // Parse toggles - can be passed as individual params or as JSON
-    const parseToggles = (): MapExportToggles => {
-      const togglesJson = params.get('toggles');
-      if (togglesJson) {
+  // Position/scale
+  logoPosition: defineParam('logoPosition', param.number(0)),
+  logoScale: defineParam('logoScale', param.number(1)),
+  legendPosition: defineParam('legendPosition', param.number(0)),
+  legendScale: defineParam('legendScale', param.number(1)),
+  bottomLogoScale: defineParam('bottomLogoScale', param.number(1)),
+
+  toggles: defineParam(
+    'toggles',
+    param.custom<MapExportToggles>((v, params) => {
+      // Try JSON first (used in NavBar/PrintImage/image.tsx)
+      if (v) {
         try {
-          return { ...DEFAULT_TOGGLES, ...JSON.parse(togglesJson) };
+          return { ...DEFAULT_TOGGLES, ...JSON.parse(v) };
         } catch {
-          return DEFAULT_TOGGLES;
+          // Fall through to individual params (human-readable params)
         }
       }
+
       return {
-        fullLayerDescription: getBool(
+        fullLayerDescription: getBoolParam(
+          params,
           'fullLayerDescription',
           DEFAULT_TOGGLES.fullLayerDescription,
         ),
-        countryMask: getBool('countryMask', DEFAULT_TOGGLES.countryMask),
-        mapLabelsVisibility: getBool(
+        countryMask: getBoolParam(
+          params,
+          'countryMask',
+          DEFAULT_TOGGLES.countryMask,
+        ),
+        mapLabelsVisibility: getBoolParam(
+          params,
           'mapLabelsVisibility',
           DEFAULT_TOGGLES.mapLabelsVisibility,
         ),
-        logoVisibility: getBool(
+        logoVisibility: getBoolParam(
+          params,
           'logoVisibility',
           DEFAULT_TOGGLES.logoVisibility,
         ),
-        legendVisibility: getBool(
+        legendVisibility: getBoolParam(
+          params,
           'legendVisibility',
           DEFAULT_TOGGLES.legendVisibility,
         ),
-        footerVisibility: getBool(
+        footerVisibility: getBoolParam(
+          params,
           'footerVisibility',
           DEFAULT_TOGGLES.footerVisibility,
         ),
-        bottomLogoVisibility: getBool(
+        bottomLogoVisibility: getBoolParam(
+          params,
           'bottomLogoVisibility',
           DEFAULT_TOGGLES.bottomLogoVisibility,
         ),
       };
-    };
-    const toggles = parseToggles();
+    }),
+  ),
 
-    // Parse selected boundaries (comma-separated admin codes)
-    const selectedBoundaries =
-      (params
-        .get('selectedBoundaries')
-        ?.split(',')
-        .filter(Boolean) as AdminCodeString[]) ?? [];
+  selectedBoundaries: defineParam(
+    'selectedBoundaries',
+    param.stringArray<AdminCodeString>(),
+  ),
 
-    // Parse aspect ratio - could be string or custom object
-    const aspectRatioParam = params.get('aspectRatio') ?? '4:3';
-    let aspectRatio: AspectRatio;
+  aspectRatio: defineParam(
+    'aspectRatio',
+    param.custom((v, params) =>
+      parseAspectRatio(
+        v,
+        params.has('customWidth')
+          ? getNumParam(params, 'customWidth', 1)
+          : undefined,
+        params.has('customHeight')
+          ? getNumParam(params, 'customHeight', 1)
+          : undefined,
+      ),
+    ),
+  ),
+};
 
-    if (aspectRatioParam === 'Custom' || params.has('customWidth')) {
-      // Custom ratio - construct object
-      const w = getNum('customWidth', 1);
-      const h = getNum('customHeight', 1);
-      aspectRatio = { w, h };
-    } else {
-      aspectRatio = aspectRatioParam as AspectRatio;
-    }
-
-    return {
-      // Layer state
-      hazardLayerIds,
-      baselineLayerIds,
-      date: params.get('date'),
-
-      // Map bounds
-      bounds,
-      zoom: getNum('zoom', 5),
-
-      // Print config
-      mapWidth: getNum('mapWidth', 100),
-      mapHeight: getNum('mapHeight', 100),
-      aspectRatio,
-      titleText: params.get('title') ?? '',
-      footerText: params.get('footer') ?? '',
-      footerTextSize: getNum('footerTextSize', 12),
-
-      // Position/scale
-      logoPosition: getNum('logoPosition', 0),
-      logoScale: getNum('logoScale', 1),
-      legendPosition: getNum('legendPosition', 0),
-      legendScale: getNum('legendScale', 1),
-      bottomLogoScale: getNum('bottomLogoScale', 1),
-
-      // Toggles
-      toggles,
-
-      // Boundaries
-      selectedBoundaries,
-    };
-  }, [search]);
+/**
+ * Custom hook that extracts and parses map export parameters from the URL.
+ * Uses a declarative schema for type-safe parsing with defaults.
+ */
+export const useExportParams = (): ExportParams => {
+  const { search } = useLocation();
+  return useMemo(
+    () => parseUrlParams(search, exportParamsSchema) as ExportParams,
+    [search],
+  );
 };

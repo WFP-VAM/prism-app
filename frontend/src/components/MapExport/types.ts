@@ -7,26 +7,23 @@ import type {
 import { AdminCodeString, LayerType } from 'config/types';
 import { LayerDateCoverage } from 'utils/server-utils';
 
-export type AspectRatio =
-  | 'Auto'
-  | '4:3'
-  | '1:1'
-  | '3:2'
-  | '6:5'
-  | '2:3'
-  | 'A4-P'
-  | 'A4-L'
-  | { w: number; h: number };
+// Re-export aspect ratio types and utilities from the single source of truth
+// Types must use `export type` for isolatedModules compatibility
+export type {
+  AspectRatio,
+  AspectRatioOption,
+  PresetAspectRatio,
+  CustomAspectRatio,
+} from './aspectRatioConstants';
+// Re-export type guard functions (values, not types)
+export {
+  isAutoRatio,
+  isCustomRatio,
+  isPresetRatio,
+} from './aspectRatioConstants';
 
-export function isCustomRatio(
-  ratio: AspectRatio,
-): ratio is { w: number; h: number } {
-  return typeof ratio === 'object';
-}
-
-export function isAutoRatio(ratio: AspectRatio): ratio is 'Auto' {
-  return ratio === 'Auto';
-}
+// Import AspectRatio for local use in this file's interfaces
+import type { AspectRatio } from './aspectRatioConstants';
 
 export interface MapExportToggles {
   fullLayerDescription: boolean;
