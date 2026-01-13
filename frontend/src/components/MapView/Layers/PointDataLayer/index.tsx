@@ -19,6 +19,8 @@ import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { addNotification } from 'context/notificationStateSlice';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { getRequestDate } from 'utils/server-utils';
+import { loadAvailableDatesForLayer } from 'context/serverStateSlice';
+import { pointDataLayerDatesSelector } from 'context/serverPreloadStateSlice';
 import { useUrlHistory } from 'utils/url-utils';
 import {
   circlePaint,
@@ -87,10 +89,12 @@ const PointDataLayer = memo(({ layer, before }: LayersProps) => {
   const serverAvailableDates = useSelector(availableDatesSelector);
   const layerAvailableDates = serverAvailableDates[layer.id];
   const userAuth = useSelector(userAuthSelector);
+  const preloadedDates = useSelector(pointDataLayerDatesSelector)[layer.id];
   const {
     actions: { removeLayerData },
   } = useMapState();
   const map = useMapState()?.maplibreMap();
+  const dispatch = useDispatch();
 
   useMapCallback('click', layerId, layer, onClick);
 
@@ -107,9 +111,20 @@ const PointDataLayer = memo(({ layer, before }: LayersProps) => {
   const layerData = useSelector(layerDataSelector(layer.id, queryDate)) as
     | LayerData<PointDataLayerProps>
     | undefined;
-  const dispatch = useDispatch();
   const { updateHistory, removeKeyFromUrl, removeLayerFromUrl } =
     useUrlHistory();
+
+  // Reload available dates when preloaded dates change (e.g., after login/refetch)
+  useEffect(() => {
+    if (
+      layer.dateUrl &&
+      preloadedDates &&
+      preloadedDates.length > 0 &&
+      (!layerAvailableDates || layerAvailableDates.length === 0)
+    ) {
+      dispatch(loadAvailableDatesForLayer(layer.id));
+    }
+  }, [preloadedDates, layer.id, layer.dateUrl, layerAvailableDates, dispatch]);
 
   const { data } = layerData || {};
 

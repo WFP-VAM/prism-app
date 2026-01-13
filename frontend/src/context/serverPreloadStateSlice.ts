@@ -1,10 +1,16 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { ReferenceDateTimestamp, UserAuth } from 'config/types';
+import {
+  ReferenceDateTimestamp,
+  UserAuth,
+  PointDataLayerProps,
+} from 'config/types';
 import {
   preloadLayerDatesForPointData,
   preloadLayerDatesForWMS,
   clearPointDataFetchCache,
 } from 'utils/server-utils';
+import { layersSelector } from './mapStateSlice/selectors';
+import { loadAvailableDatesForLayer } from './serverStateSlice';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 
 type ServerPreloadState = {
@@ -69,7 +75,23 @@ export const refetchLayerDatesArraysForPointData = createAsyncThunk<
     const userAuth = state.serverState.userAuth;
     // Clear cache to force re-fetch with new authentication
     clearPointDataFetchCache();
-    return preloadLayerDatesForPointData(dispatch, userAuth);
+    const dates = await preloadLayerDatesForPointData(dispatch, userAuth);
+
+    // Get fresh state after refetch to ensure we have the latest active layers
+    const freshState = getState();
+    // Reload available dates for all active point data layers to propagate the new dates throughout the app
+    const activeLayers = layersSelector(freshState);
+    const activePointDataLayers = activeLayers.filter(
+      (layer): layer is PointDataLayerProps =>
+        layer.type === 'point_data' && Boolean(layer.dateUrl),
+    );
+
+    // Reload available dates for all active point data layers
+    activePointDataLayers.forEach(layer => {
+      dispatch(loadAvailableDatesForLayer(layer.id));
+    });
+
+    return dates;
   },
 );
 
@@ -199,5 +221,10 @@ export const pointDataLayerDatesLoadedSelector = (state: RootState): boolean =>
 
 export const datesErrorSelector = (state: RootState): string | undefined =>
   state.serverPreloadState.error;
+
+export const pointDataLayerDatesSelector = (
+  state: RootState,
+): Record<string, ReferenceDateTimestamp[]> =>
+  state.serverPreloadState.pointDataLayerDates;
 
 export default serverPreloadStateSlice.reducer;
