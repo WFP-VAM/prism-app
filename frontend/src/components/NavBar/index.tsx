@@ -1,19 +1,14 @@
-/* eslint-disable react/prop-types */
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   AppBar,
-  Box,
   createStyles,
   Theme,
   Toolbar,
-  Typography,
-  IconButton,
   makeStyles,
   useTheme,
   useMediaQuery,
 } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useSafeTranslation } from 'i18n';
 import { appConfig } from 'config';
 import {
@@ -23,6 +18,7 @@ import {
   TableChartOutlined,
   TimerOutlined,
   Notifications,
+  SpeedOutlined,
 } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -31,25 +27,51 @@ import {
 } from 'context/leftPanelStateSlice';
 import GoToBoundaryDropdown from 'components/Common/BoundaryDropdown/goto';
 import Legends from 'components/MapView/Legends';
-import { areChartLayersAvailable } from 'config/utils';
+import {
+  areChartLayersAvailable,
+  areDashboardsAvailable,
+  getDashboards,
+} from 'config/utils';
+import { generateSlugFromTitle } from 'utils/string-utils';
 import {
   areTablesAvailable,
   isAnticipatoryActionDroughtAvailable,
   isAnticipatoryActionStormAvailable,
+  isAnticipatoryActionFloodAvailable,
 } from 'components/MapView/LeftPanel/utils';
 import { Panel, PanelItem } from 'config/types';
-import About from './About';
-import LanguageSelector from './LanguageSelector';
-import PrintImage from './PrintImage';
 import PanelMenu from './PanelMenu';
 import PanelButton from './PanelButton';
+import RightSideMenu from './RightSideMenu';
+import Title from './Title';
 
-const { alertFormActive, header } = appConfig;
+const { alertFormActive } = appConfig;
+
+const getAvailableDashboards = (): PanelItem[] => {
+  const dashboards = getDashboards();
+  return dashboards.map((dashboard, index) => ({
+    panel: Panel.Dashboard,
+    label: dashboard.title,
+    icon: <SpeedOutlined />,
+    reportIndex: index,
+    reportPath: dashboard.path || generateSlugFromTitle(dashboard.title),
+  }));
+};
 
 const panels: PanelItem[] = [
   { panel: Panel.Layers, label: 'Layers', icon: <LayersOutlined /> },
   ...(areChartLayersAvailable
     ? [{ panel: Panel.Charts, label: 'Charts', icon: <BarChartOutlined /> }]
+    : []),
+  ...(areDashboardsAvailable()
+    ? [
+        {
+          panel: Panel.Dashboard,
+          label: 'Dashboard',
+          icon: <SpeedOutlined />,
+          children: getAvailableDashboards(),
+        },
+      ]
     : []),
   {
     panel: Panel.Analysis,
@@ -59,7 +81,9 @@ const panels: PanelItem[] = [
   ...(areTablesAvailable
     ? [{ panel: Panel.Tables, label: 'Tables', icon: <TableChartOutlined /> }]
     : []),
-  ...(isAnticipatoryActionDroughtAvailable || isAnticipatoryActionStormAvailable
+  ...(isAnticipatoryActionDroughtAvailable ||
+  isAnticipatoryActionStormAvailable ||
+  isAnticipatoryActionFloodAvailable
     ? [
         {
           label: 'A. Actions',
@@ -83,6 +107,15 @@ const panels: PanelItem[] = [
                   },
                 ]
               : []),
+            ...(isAnticipatoryActionFloodAvailable
+              ? [
+                  {
+                    panel: Panel.AnticipatoryActionFlood,
+                    label: 'A. Action Flood',
+                    icon: <TimerOutlined />,
+                  },
+                ]
+              : []),
           ],
         },
       ]
@@ -95,10 +128,12 @@ const panels: PanelItem[] = [
 function NavBar() {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
+  const history = useHistory();
+  const location = useLocation();
   const classes = useStyles();
   const tabValue = useSelector(leftPanelTabValueSelector);
+  const isDashboardMode = tabValue === Panel.Dashboard;
   const theme = useTheme();
-  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
   const [menuAnchor, setMenuAnchor] = useState<{
     [key: string]: HTMLElement | null;
@@ -107,25 +142,17 @@ function NavBar() {
     {},
   );
 
-  const rightSideLinks = [
-    {
-      title: 'GitHub',
-      icon: faGithub,
-      href: 'https://github.com/wfp-VAM/prism-app',
-    },
-  ];
-
-  const buttons = rightSideLinks.map(({ title, icon, href }) => (
-    <IconButton
-      key={title}
-      component="a"
-      target="_blank"
-      href={href}
-      style={{ color: 'white' }}
-    >
-      <FontAwesomeIcon fontSize={mdUp ? '1.25rem' : '1.5rem'} icon={icon} />
-    </IconButton>
-  ));
+  // Sync URL with panel state
+  useEffect(() => {
+    if (
+      location.pathname.startsWith('/dashboard') &&
+      tabValue !== Panel.Dashboard
+    ) {
+      dispatch(setTabValue(Panel.Dashboard));
+    } else if (location.pathname === '/' && tabValue === Panel.Dashboard) {
+      dispatch(setTabValue(Panel.Layers));
+    }
+  }, [location.pathname, tabValue, dispatch]);
 
   const handleMenuOpen = (
     key: string,
@@ -140,6 +167,11 @@ function NavBar() {
 
   const handlePanelClick = (panel: Panel) => {
     dispatch(setTabValue(panel));
+    if (panel === Panel.Dashboard) {
+      history.push('/dashboard');
+    } else if (location.pathname !== '/') {
+      history.push('/');
+    }
   };
 
   const handleChildSelection = (panel: any, child: any) => {
@@ -147,46 +179,21 @@ function NavBar() {
       [panel.label]: child,
     });
     handleMenuClose(panel.label);
-    handlePanelClick(child.panel);
-  };
 
-  const { title, subtitle, logo } = header || {
-    title: 'PRISM',
+    if (panel.panel === Panel.Dashboard && child.reportPath) {
+      dispatch(setTabValue(Panel.Dashboard));
+      history.push(`/dashboard/${child.reportPath}`);
+    } else {
+      handlePanelClick(child.panel);
+    }
   };
 
   return (
-    <AppBar position="static" className={classes.appBar}>
+    <AppBar position="fixed" className={classes.appBar}>
       <Toolbar variant="dense">
         <div className={classes.navbarContainer}>
           <div className={classes.leftSideContainer}>
-            <div className={classes.titleContainer}>
-              {logo && <img className={classes.logo} src={logo} alt="logo" />}
-              <Box
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                }}
-              >
-                {title && (
-                  <Typography
-                    color="secondary"
-                    variant="h6"
-                    className={classes.title}
-                  >
-                    {t(title)}
-                  </Typography>
-                )}
-                {subtitle && !smDown && (
-                  <Typography
-                    color="secondary"
-                    variant="subtitle2"
-                    className={classes.subtitle}
-                  >
-                    {t(subtitle)}
-                  </Typography>
-                )}
-              </Box>
-            </div>
+            <Title />
             <div className={classes.panelsContainer}>
               {panels.map(panel => {
                 const selected =
@@ -194,9 +201,10 @@ function NavBar() {
                   (panel.children &&
                     panel.children.some(child => tabValue === child.panel));
 
-                const buttonText = selectedChild[panel.label]
-                  ? selectedChild[panel.label].label
-                  : t(panel.label);
+                const buttonText =
+                  selectedChild[panel.label] && panel.panel !== Panel.Dashboard
+                    ? selectedChild[panel.label].label
+                    : t(panel.label);
 
                 return (
                   <React.Fragment key={panel.label}>
@@ -231,11 +239,8 @@ function NavBar() {
             </div>
           </div>
           <div className={classes.rightSideContainer}>
-            <Legends />
-            <PrintImage />
-            {buttons}
-            <About />
-            <LanguageSelector />
+            {!isDashboardMode && <Legends />}
+            <RightSideMenu />
           </div>
         </div>
       </Toolbar>
@@ -245,53 +250,15 @@ function NavBar() {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    logo: {
-      height: 32,
-      marginRight: 15,
-    },
     appBar: {
       backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
-      height: '6vh',
+      height: '56px',
+      minHeight: '56px',
+      maxHeight: '56px',
       display: 'flex',
       justifyContent: 'center',
-    },
-    panelButton: {
-      height: '2.5em',
-    },
-    title: {
-      letterSpacing: '.3rem',
-      fontSize: '1.25rem',
-      lineHeight: '1.5rem',
-      textTransform: 'uppercase',
-      padding: 0,
-    },
-    subtitle: {
-      fontSize: '.8rem',
-      fontWeight: 300,
-      letterSpacing: '.1rem',
-      lineHeight: '.8rem',
-      padding: 0,
-    },
-    menuContainer: {
-      textAlign: 'center',
-    },
-    mobileDrawerContent: {
-      backgroundColor: theme.palette.primary.main,
-      paddingTop: 16,
-      width: '80vw',
-      height: '100vh',
-      overflowX: 'hidden',
-      display: 'flex',
-      flexDirection: 'column',
-      paddingLeft: '1em',
-    },
-    menuBars: {
-      height: '100%',
-      fontSize: 20,
-      color: theme.palette.text.primary,
-    },
-    mobileMenuContainer: {
-      textAlign: 'right',
+      top: 0,
+      zIndex: theme.zIndex.drawer + 1,
     },
     navbarContainer: {
       display: 'flex',
@@ -304,13 +271,9 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'row',
       justifyContent: 'start',
       gap: '5rem',
-    },
-    titleContainer: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'start',
-      gap: '1rem',
-      alignItems: 'center',
+      [theme.breakpoints.down('sm')]: {
+        gap: '1rem',
+      },
     },
     panelsContainer: {
       display: 'flex',
@@ -318,6 +281,9 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'start',
       gap: '1rem',
       alignItems: 'center',
+      [theme.breakpoints.down('sm')]: {
+        gap: '0.5rem',
+      },
     },
     rightSideContainer: {
       display: 'flex',

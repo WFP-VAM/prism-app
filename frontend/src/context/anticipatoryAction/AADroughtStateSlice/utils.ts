@@ -4,7 +4,11 @@ import {
   getAAIcon,
 } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils';
 import { calculateSeason } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
-import { DatesPropagation, Validity } from 'config/types';
+import {
+  DatesPropagation,
+  ReferenceDateTimestamp,
+  Validity,
+} from 'config/types';
 import { generateIntermediateDateItemFromValidity } from 'utils/server-utils';
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
@@ -93,11 +97,9 @@ export function parseAndTransformAA(data: any[]) {
 
       const result = [];
       if (x.prob_ready !== undefined && x.prob_ready !== '') {
-        // eslint-disable-next-line fp/no-mutating-methods
         result.push({ ...common, ...ready });
       }
       if (x.prob_set !== undefined && x.prob_set !== '') {
-        // eslint-disable-next-line fp/no-mutating-methods
         result.push({ ...common, ...set });
       }
       return result;
@@ -119,9 +121,10 @@ export function parseAndTransformAA(data: any[]) {
   const windowData = AAWindowKeys.map(windowKey => {
     const filtered = parsed.filter(x => x.window === windowKey && x.date);
 
-    // eslint-disable-next-line fp/no-mutating-methods
-    const dates = [
-      ...new Set(filtered.map(x => new Date(x.date).getTime())),
+    const dates: ReferenceDateTimestamp[] = [
+      ...new Set(
+        filtered.map(x => new Date(x.date).getTime() as ReferenceDateTimestamp),
+      ),
     ].sort();
 
     const availableDates = generateIntermediateDateItemFromValidity(
@@ -136,12 +139,10 @@ export function parseAndTransformAA(data: any[]) {
       groupedByDistrict.set(district, rows ? [...rows, x] : [x]);
     });
 
-    // eslint-disable-next-line fp/no-mutating-methods
     const windowDates = [...new Set(filtered.map(x => x.date))].sort();
 
     const computedExtraRows: [string, AnticipatoryActionDataRow[]][] =
       Array.from(groupedByDistrict.entries()).map(([district, aaData]) => {
-        // eslint-disable-next-line fp/no-mutating-methods
         const sorted = aaData.sort((a, b) => -sortFn(a, b));
         let setElementsToPropagate = [] as AnticipatoryActionDataRow[];
         let newRows = [] as AnticipatoryActionDataRow[];
@@ -156,7 +157,6 @@ export function parseAndTransformAA(data: any[]) {
             .filter(x => x.phase === 'Set' && x.isValid)
             .map(x => x.category);
           if (setCategories.length > 0) {
-            // eslint-disable-next-line fp/no-mutation
             filteredDateData = dateData.filter(
               x => !(x.phase === 'Ready' && setCategories.includes(x.category)),
             );
@@ -174,14 +174,12 @@ export function parseAndTransformAA(data: any[]) {
           filteredDateData.forEach(x => {
             // reset prevMax when entering a new season
             if (prevMax && x.season !== prevMax.season) {
-              // eslint-disable-next-line fp/no-mutation
               prevMax = undefined;
             }
             if (!x.isValid) {
               return;
             }
             if (x.phase === 'Set') {
-              // eslint-disable-next-line fp/no-mutation
               setElementsToPropagate = [...setElementsToPropagate, x];
             }
             // set new parameter
@@ -190,25 +188,19 @@ export function parseAndTransformAA(data: any[]) {
               AADataSeverityOrder(x.category, x.phase) >
                 AADataSeverityOrder(prevMax.category, prevMax.phase)
             ) {
-              // eslint-disable-next-line fp/no-mutation
               prevMax = x;
-              // eslint-disable-next-line fp/no-mutation, no-param-reassign
+
               x.new = true;
             }
           });
 
-          // eslint-disable-next-line no-const-assign, fp/no-mutation
           newRows = [...newRows, ...filteredDateData, ...propagatedSetElements];
         });
         return [district, newRows];
       });
 
     const result = Object.fromEntries(
-      computedExtraRows.map(x => [
-        x[0],
-        // eslint-disable-next-line fp/no-mutating-methods
-        x[1].sort((a, b) => -sortFn(a, b)),
-      ]),
+      computedExtraRows.map(x => [x[0], x[1].sort((a, b) => -sortFn(a, b))]),
     );
 
     return {
@@ -248,8 +240,6 @@ export function calculateMapRenderedDistricts({
 }: CalculateMapRenderedDistrictsParams) {
   const { selectedDate, categories } = filters;
   const season = calculateSeason(selectedDate);
-  // eslint-disable-next-line no-console
-  console.log({ season, selectedDate });
 
   const res = Object.entries(data)
     .map(([winKey, districts]) => {
@@ -285,7 +275,6 @@ export function calculateMapRenderedDistricts({
 
           // If no exact match found, look for SET phases with date <= selected date and take the last one
           if (dateData.length === 0) {
-            // eslint-disable-next-line fp/no-mutation
             dateData = districtData
               .filter(
                 x =>
@@ -308,7 +297,6 @@ export function calculateMapRenderedDistricts({
             ];
           }
 
-          // eslint-disable-next-line fp/no-mutating-methods
           const sorted = validData.sort(sortFn);
           return [
             districtName,

@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`renders as expected 1`] = `
 <div>
@@ -46,78 +46,20 @@ exports[`renders as expected 1`] = `
       classname="makeStyles-contentContainer-1"
     >
       <div
-        class="makeStyles-previewContainer-10"
+        class="MuiBox-root MuiBox-root-14"
       >
         <div
-          style="width: 100%; height: 100%;"
-        >
-          <div
-            style="position: relative; z-index: 3; border: 1px solid black; height: 100%; width: 100%;"
-          >
-            <div
-              class="makeStyles-printContainer-4"
-            >
-              <img
-                alt="northArrow"
-                src="./images/icon_north_arrow.png"
-                style="position: absolute; z-index: 3; width: 50px; bottom: 60px; right: 10px;"
-              />
-              <div
-                class="makeStyles-titleOverlay-6"
-                style="min-height: 32px;"
-              >
-                <img
-                  alt="logo"
-                  src="images/moz-flag-inam-logo.png"
-                  style="position: absolute; z-index: 2; height: 32px; left: 8px; display: flex; justify-content: flex-start;"
-                />
-                <mock-typography
-                  style="max-width: calc(100% - 256px);"
-                  variant="h6"
-                >
-                  Mozambique
-                </mock-typography>
-              </div>
-              <div
-                class="makeStyles-footerOverlay-7"
-              >
-                <mock-typography
-                  style="font-size: 12px;"
-                >
-                  Publication date: 2018-07-02. Layer selection date: 2018-07-02.
-                </mock-typography>
-              </div>
-              <div
-                style="position: absolute; z-index: 2; top: 0px; left: 8px; display: flex; justify-content: flex-start; width: 20px; transform: scale(1);"
-              >
-                <mock-list
-                  classname="makeStyles-legendListStyle-8"
-                  disablepadding="true"
-                />
-              </div>
-              <div
-                class="makeStyles-mapContainer-5"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="MuiBox-root MuiBox-root-20"
-        style="overflow: scroll;"
-      >
-        <div
-          class="makeStyles-optionsContainer-14"
+          class="makeStyles-optionsContainer-5"
         >
           <div>
             <div
-              class="MuiBox-root MuiBox-root-21 makeStyles-title-11"
+              class="MuiBox-root MuiBox-root-15 makeStyles-title-2"
               style="font-size: 14px; font-weight: 900; margin-bottom: 1em;"
             >
               Map Options
             </div>
             <button
-              class="MuiButtonBase-root MuiIconButton-root makeStyles-closeButton-13"
+              class="MuiButtonBase-root MuiIconButton-root makeStyles-closeButton-4"
               tabindex="0"
               type="button"
             >
@@ -141,131 +83,180 @@ exports[`renders as expected 1`] = `
             </button>
           </div>
           <div
-            class="makeStyles-optionWrap-15"
+            class="makeStyles-optionWrap-6"
           >
             <mock-textfield
               fullwidth="true"
               inputprops="[object Object]"
               placeholder="Title"
               size="small"
+              value="Mozambique"
               variant="outlined"
             />
           </div>
           <div
-            class="makeStyles-wrapper-22"
+            class="makeStyles-wrapper-16"
           >
             <mock-typography
-              style="margin-right: 0.5rem;"
+              classname="makeStyles-header-17"
               variant="h4"
             >
-              Map Width
+              Aspect Ratio
             </mock-typography>
             <div
-              class="MuiToggleButtonGroup-root makeStyles-buttonGroup-23"
+              class="MuiToggleButtonGroup-root makeStyles-buttonGroup-18"
               role="group"
             >
               <button
-                aria-pressed="false"
-                class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
-                tabindex="0"
-                type="button"
-                value="50"
-              >
-                <span
-                  class="MuiToggleButton-label"
-                >
-                  <div>
-                    50%
-                  </div>
-                </span>
-                <span
-                  class="MuiTouchRipple-root"
-                />
-              </button>
-              <button
-                aria-pressed="false"
-                class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
-                tabindex="0"
-                type="button"
-                value="60"
-              >
-                <span
-                  class="MuiToggleButton-label"
-                >
-                  <div>
-                    60%
-                  </div>
-                </span>
-                <span
-                  class="MuiTouchRipple-root"
-                />
-              </button>
-              <button
-                aria-pressed="false"
-                class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
-                tabindex="0"
-                type="button"
-                value="70"
-              >
-                <span
-                  class="MuiToggleButton-label"
-                >
-                  <div>
-                    70%
-                  </div>
-                </span>
-                <span
-                  class="MuiTouchRipple-root"
-                />
-              </button>
-              <button
-                aria-pressed="false"
-                class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
-                tabindex="0"
-                type="button"
-                value="80"
-              >
-                <span
-                  class="MuiToggleButton-label"
-                >
-                  <div>
-                    80%
-                  </div>
-                </span>
-                <span
-                  class="MuiTouchRipple-root"
-                />
-              </button>
-              <button
-                aria-pressed="false"
-                class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
-                tabindex="0"
-                type="button"
-                value="90"
-              >
-                <span
-                  class="MuiToggleButton-label"
-                >
-                  <div>
-                    90%
-                  </div>
-                </span>
-                <span
-                  class="MuiTouchRipple-root"
-                />
-              </button>
-              <button
                 aria-pressed="true"
-                class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24 Mui-selected"
+                class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-19 Mui-selected"
                 tabindex="0"
                 type="button"
-                value="100"
+                value="Auto"
               >
                 <span
                   class="MuiToggleButton-label"
                 >
-                  <div>
-                    100%
+                  <mock-tooltip
+                    arrow="true"
+                    classes="[object Object]"
+                    title="Map resizes based on browser window"
+                  >
+                    <div
+                      class="makeStyles-buttonContent-20"
+                    >
+                      <svg
+                        height="16"
+                        style="display: block;"
+                        viewBox="0 0 16 16"
+                        width="16"
+                      >
+                        <rect
+                          fill="none"
+                          height="8.533333333333333"
+                          rx="2"
+                          stroke="currentColor"
+                          stroke-dasharray="2,1"
+                          stroke-width="1.5"
+                          width="12.8"
+                          x="1.5999999999999996"
+                          y="3.7333333333333334"
+                        />
+                      </svg>
+                      <span>
+                        Auto
+                      </span>
+                    </div>
+                  </mock-tooltip>
+                </span>
+                <span
+                  class="MuiTouchRipple-root"
+                />
+              </button>
+              <button
+                aria-pressed="false"
+                class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-19"
+                tabindex="0"
+                type="button"
+                value="A4-P"
+              >
+                <span
+                  class="MuiToggleButton-label"
+                >
+                  <div
+                    class="makeStyles-buttonContent-20"
+                  >
+                    <svg
+                      height="16"
+                      style="display: block;"
+                      viewBox="0 0 16 16"
+                      width="16"
+                    >
+                      <rect
+                        fill="none"
+                        height="12.8"
+                        rx="2"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        width="9.052333804809052"
+                        x="3.473833097595474"
+                        y="1.5999999999999996"
+                      />
+                    </svg>
+                    <span>
+                      A4 Port
+                    </span>
+                  </div>
+                </span>
+                <span
+                  class="MuiTouchRipple-root"
+                />
+              </button>
+              <button
+                aria-pressed="false"
+                class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-19"
+                tabindex="0"
+                type="button"
+                value="A4-L"
+              >
+                <span
+                  class="MuiToggleButton-label"
+                >
+                  <div
+                    class="makeStyles-buttonContent-20"
+                  >
+                    <svg
+                      height="16"
+                      style="display: block;"
+                      viewBox="0 0 16 16"
+                      width="16"
+                    >
+                      <rect
+                        fill="none"
+                        height="9.052333804809054"
+                        rx="2"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        width="12.8"
+                        x="1.5999999999999996"
+                        y="3.473833097595473"
+                      />
+                    </svg>
+                    <span>
+                      A4 Land
+                    </span>
+                  </div>
+                </span>
+                <span
+                  class="MuiTouchRipple-root"
+                />
+              </button>
+              <button
+                aria-pressed="false"
+                class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-19"
+                tabindex="0"
+                type="button"
+                value="Other"
+              >
+                <span
+                  class="MuiToggleButton-label"
+                >
+                  <div
+                    class="makeStyles-buttonContent-20"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall"
+                      focusable="false"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"
+                      />
+                    </svg>
+                    <span>
+                      Other
+                    </span>
                   </div>
                 </span>
                 <span
@@ -276,12 +267,12 @@ exports[`renders as expected 1`] = `
           </div>
           <div>
             <div
-              class="makeStyles-collapsibleWrapper-16 makeStyles-collapsibleWrapperExpanded-17"
+              class="makeStyles-collapsibleWrapper-7 makeStyles-collapsibleWrapperExpanded-8"
             >
               <mock-switch
                 checked="true"
                 classes="[object Object]"
-                classname="makeStyles-switch-25"
+                classname="makeStyles-switch-26"
                 color="primary"
                 inputprops="[object Object]"
               />
@@ -294,7 +285,7 @@ exports[`renders as expected 1`] = `
             </div>
             <div
               class="MuiCollapse-root MuiCollapse-entered"
-              style="min-height: 0px;"
+              style="min-height: 0px; padding-left: 8px;"
             >
               <div
                 class="MuiCollapse-wrapper"
@@ -303,17 +294,17 @@ exports[`renders as expected 1`] = `
                   class="MuiCollapse-wrapperInner"
                 >
                   <div
-                    class="MuiBox-root MuiBox-root-29"
+                    class="MuiBox-root MuiBox-root-30"
                   >
                     <div
-                      class="MuiBox-root MuiBox-root-30"
+                      class="MuiBox-root MuiBox-root-31"
                     >
                       <div
-                        class="MuiBox-root MuiBox-root-31"
+                        class="MuiBox-root MuiBox-root-32"
                         style="display: flex; flex-direction: row; justify-content: space-between;"
                       >
                         <div
-                          class="makeStyles-wrapper-22"
+                          class="makeStyles-wrapper-33"
                         >
                           <mock-typography
                             style="margin-right: 0.5rem;"
@@ -322,12 +313,12 @@ exports[`renders as expected 1`] = `
                             Position
                           </mock-typography>
                           <div
-                            class="MuiToggleButtonGroup-root makeStyles-buttonGroup-23"
+                            class="MuiToggleButtonGroup-root makeStyles-buttonGroup-34"
                             role="group"
                           >
                             <button
                               aria-pressed="true"
-                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24 Mui-selected"
+                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-35 Mui-selected"
                               tabindex="0"
                               type="button"
                               value="0"
@@ -347,7 +338,7 @@ exports[`renders as expected 1`] = `
                             </button>
                             <button
                               aria-pressed="false"
-                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-35"
                               tabindex="0"
                               type="button"
                               value="1"
@@ -371,7 +362,7 @@ exports[`renders as expected 1`] = `
                           style="opacity: 1; pointer-events: auto;"
                         >
                           <div
-                            class="makeStyles-wrapper-22"
+                            class="makeStyles-wrapper-33"
                           >
                             <mock-typography
                               style="text-align: end; margin-right: 0.5rem;"
@@ -380,13 +371,13 @@ exports[`renders as expected 1`] = `
                               Size
                             </mock-typography>
                             <div
-                              class="MuiToggleButtonGroup-root makeStyles-buttonGroup-23"
+                              class="MuiToggleButtonGroup-root makeStyles-buttonGroup-34"
                               role="group"
                               style="justify-content: end;"
                             >
                               <button
                                 aria-pressed="false"
-                                class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                                class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-35"
                                 tabindex="0"
                                 type="button"
                                 value="0.5"
@@ -406,7 +397,7 @@ exports[`renders as expected 1`] = `
                               </button>
                               <button
                                 aria-pressed="true"
-                                class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24 Mui-selected"
+                                class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-35 Mui-selected"
                                 tabindex="0"
                                 type="button"
                                 value="1"
@@ -426,7 +417,7 @@ exports[`renders as expected 1`] = `
                               </button>
                               <button
                                 aria-pressed="false"
-                                class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                                class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-35"
                                 tabindex="0"
                                 type="button"
                                 value="1.5"
@@ -456,12 +447,12 @@ exports[`renders as expected 1`] = `
           </div>
           <div>
             <div
-              class="makeStyles-collapsibleWrapper-16 "
+              class="makeStyles-collapsibleWrapper-7 "
             >
               <mock-switch
                 checked="true"
                 classes="[object Object]"
-                classname="makeStyles-switch-25"
+                classname="makeStyles-switch-26"
                 color="primary"
                 inputprops="[object Object]"
               />
@@ -474,7 +465,7 @@ exports[`renders as expected 1`] = `
             </div>
             <div
               class="MuiCollapse-root MuiCollapse-entered"
-              style="min-height: 0px;"
+              style="min-height: 0px; padding-left: 8px;"
             >
               <div
                 class="MuiCollapse-wrapper"
@@ -487,12 +478,12 @@ exports[`renders as expected 1`] = `
           </div>
           <div>
             <div
-              class="makeStyles-collapsibleWrapper-16 "
+              class="makeStyles-collapsibleWrapper-7 "
             >
               <mock-switch
                 checked="false"
                 classes="[object Object]"
-                classname="makeStyles-switch-25"
+                classname="makeStyles-switch-26"
                 color="primary"
                 inputprops="[object Object]"
               />
@@ -505,7 +496,7 @@ exports[`renders as expected 1`] = `
             </div>
             <div
               class="MuiCollapse-root MuiCollapse-hidden"
-              style="min-height: 0px;"
+              style="min-height: 0px; padding-left: 8px;"
             >
               <div
                 class="MuiCollapse-wrapper"
@@ -514,7 +505,7 @@ exports[`renders as expected 1`] = `
                   class="MuiCollapse-wrapperInner"
                 >
                   <div
-                    class="makeStyles-optionWrap-15"
+                    class="makeStyles-optionWrap-6"
                   >
                     <mock-circularprogress
                       color="inherit"
@@ -528,12 +519,12 @@ exports[`renders as expected 1`] = `
           </div>
           <div>
             <div
-              class="makeStyles-collapsibleWrapper-16 makeStyles-collapsibleWrapperExpanded-17"
+              class="makeStyles-collapsibleWrapper-7 makeStyles-collapsibleWrapperExpanded-8"
             >
               <mock-switch
                 checked="true"
                 classes="[object Object]"
-                classname="makeStyles-switch-25"
+                classname="makeStyles-switch-26"
                 color="primary"
                 inputprops="[object Object]"
               />
@@ -546,7 +537,7 @@ exports[`renders as expected 1`] = `
             </div>
             <div
               class="MuiCollapse-root MuiCollapse-entered"
-              style="min-height: 0px;"
+              style="min-height: 0px; padding-left: 8px;"
             >
               <div
                 class="MuiCollapse-wrapper"
@@ -555,17 +546,17 @@ exports[`renders as expected 1`] = `
                   class="MuiCollapse-wrapperInner"
                 >
                   <div
-                    class="MuiBox-root MuiBox-root-32"
+                    class="MuiBox-root MuiBox-root-36"
                   >
                     <div
-                      class="MuiBox-root MuiBox-root-33"
+                      class="MuiBox-root MuiBox-root-37"
                     >
                       <div
-                        class="MuiBox-root MuiBox-root-34"
+                        class="MuiBox-root MuiBox-root-38"
                         style="display: flex; flex-direction: row; justify-content: space-between;"
                       >
                         <div
-                          class="makeStyles-wrapper-22"
+                          class="makeStyles-wrapper-33"
                         >
                           <mock-typography
                             style="margin-right: 0.5rem;"
@@ -574,12 +565,12 @@ exports[`renders as expected 1`] = `
                             Position
                           </mock-typography>
                           <div
-                            class="MuiToggleButtonGroup-root makeStyles-buttonGroup-23"
+                            class="MuiToggleButtonGroup-root makeStyles-buttonGroup-34"
                             role="group"
                           >
                             <button
                               aria-pressed="true"
-                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24 Mui-selected"
+                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-35 Mui-selected"
                               tabindex="0"
                               type="button"
                               value="0"
@@ -599,7 +590,7 @@ exports[`renders as expected 1`] = `
                             </button>
                             <button
                               aria-pressed="false"
-                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-35"
                               tabindex="0"
                               type="button"
                               value="1"
@@ -620,12 +611,12 @@ exports[`renders as expected 1`] = `
                           </div>
                         </div>
                         <div
-                          class="makeStyles-collapsibleWrapper-16"
+                          class="makeStyles-collapsibleWrapper-7"
                         >
                           <mock-switch
                             checked="true"
                             classes="[object Object]"
-                            classname="makeStyles-switch-25"
+                            classname="makeStyles-switch-26"
                             color="primary"
                             inputprops="[object Object]"
                           />
@@ -642,13 +633,13 @@ exports[`renders as expected 1`] = `
                       style="background: rgb(255, 255, 255);"
                     />
                     <div
-                      class="MuiBox-root MuiBox-root-35"
+                      class="MuiBox-root MuiBox-root-39"
                     >
                       <div
                         style="opacity: 1; pointer-events: auto;"
                       >
                         <div
-                          class="makeStyles-wrapper-22"
+                          class="makeStyles-wrapper-33"
                         >
                           <mock-typography
                             style="margin-right: 0.5rem;"
@@ -657,12 +648,12 @@ exports[`renders as expected 1`] = `
                             Size
                           </mock-typography>
                           <div
-                            class="MuiToggleButtonGroup-root makeStyles-buttonGroup-23"
+                            class="MuiToggleButtonGroup-root makeStyles-buttonGroup-34"
                             role="group"
                           >
                             <button
                               aria-pressed="false"
-                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-35"
                               tabindex="0"
                               type="button"
                               value="0.5"
@@ -680,10 +671,10 @@ exports[`renders as expected 1`] = `
                             </button>
                             <button
                               aria-pressed="false"
-                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-35"
                               tabindex="0"
                               type="button"
-                              value="0.4"
+                              value="0.6"
                             >
                               <span
                                 class="MuiToggleButton-label"
@@ -698,10 +689,10 @@ exports[`renders as expected 1`] = `
                             </button>
                             <button
                               aria-pressed="false"
-                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-35"
                               tabindex="0"
                               type="button"
-                              value="0.3"
+                              value="0.7"
                             >
                               <span
                                 class="MuiToggleButton-label"
@@ -716,10 +707,10 @@ exports[`renders as expected 1`] = `
                             </button>
                             <button
                               aria-pressed="false"
-                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-35"
                               tabindex="0"
                               type="button"
-                              value="0.2"
+                              value="0.8"
                             >
                               <span
                                 class="MuiToggleButton-label"
@@ -734,10 +725,10 @@ exports[`renders as expected 1`] = `
                             </button>
                             <button
                               aria-pressed="false"
-                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-35"
                               tabindex="0"
                               type="button"
-                              value="0.1"
+                              value="0.9"
                             >
                               <span
                                 class="MuiToggleButton-label"
@@ -752,10 +743,10 @@ exports[`renders as expected 1`] = `
                             </button>
                             <button
                               aria-pressed="true"
-                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24 Mui-selected"
+                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-35 Mui-selected"
                               tabindex="0"
                               type="button"
-                              value="0"
+                              value="1"
                             >
                               <span
                                 class="MuiToggleButton-label"
@@ -779,12 +770,12 @@ exports[`renders as expected 1`] = `
           </div>
           <div>
             <div
-              class="makeStyles-collapsibleWrapper-16 makeStyles-collapsibleWrapperExpanded-17"
+              class="makeStyles-collapsibleWrapper-7 makeStyles-collapsibleWrapperExpanded-8"
             >
               <mock-switch
                 checked="true"
                 classes="[object Object]"
-                classname="makeStyles-switch-25"
+                classname="makeStyles-switch-26"
                 color="primary"
                 inputprops="[object Object]"
               />
@@ -797,7 +788,7 @@ exports[`renders as expected 1`] = `
             </div>
             <div
               class="MuiCollapse-root MuiCollapse-entered"
-              style="min-height: 0px;"
+              style="min-height: 0px; padding-left: 8px;"
             >
               <div
                 class="MuiCollapse-wrapper"
@@ -806,13 +797,13 @@ exports[`renders as expected 1`] = `
                   class="MuiCollapse-wrapperInner"
                 >
                   <div
-                    class="MuiBox-root MuiBox-root-36"
+                    class="MuiBox-root MuiBox-root-40"
                   >
                     <div
-                      class="MuiBox-root MuiBox-root-37"
+                      class="MuiBox-root MuiBox-root-41"
                     >
                       <div
-                        class="makeStyles-wrapper-22"
+                        class="makeStyles-wrapper-33"
                       >
                         <mock-typography
                           style="margin-right: 0.5rem;"
@@ -821,12 +812,12 @@ exports[`renders as expected 1`] = `
                           Size
                         </mock-typography>
                         <div
-                          class="MuiToggleButtonGroup-root makeStyles-buttonGroup-23"
+                          class="MuiToggleButtonGroup-root makeStyles-buttonGroup-34"
                           role="group"
                         >
                           <button
                             aria-pressed="false"
-                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-35"
                             tabindex="0"
                             type="button"
                             value="8"
@@ -846,7 +837,7 @@ exports[`renders as expected 1`] = `
                           </button>
                           <button
                             aria-pressed="false"
-                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-35"
                             tabindex="0"
                             type="button"
                             value="10"
@@ -866,7 +857,7 @@ exports[`renders as expected 1`] = `
                           </button>
                           <button
                             aria-pressed="true"
-                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24 Mui-selected"
+                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-35 Mui-selected"
                             tabindex="0"
                             type="button"
                             value="12"
@@ -886,7 +877,7 @@ exports[`renders as expected 1`] = `
                           </button>
                           <button
                             aria-pressed="false"
-                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-35"
                             tabindex="0"
                             type="button"
                             value="16"
@@ -906,7 +897,7 @@ exports[`renders as expected 1`] = `
                           </button>
                           <button
                             aria-pressed="false"
-                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-35"
                             tabindex="0"
                             type="button"
                             value="20"
@@ -931,7 +922,7 @@ exports[`renders as expected 1`] = `
                       style="background: rgb(255, 255, 255);"
                     />
                     <div
-                      class="MuiBox-root MuiBox-root-38"
+                      class="MuiBox-root MuiBox-root-42"
                     >
                       <mock-textfield
                         fullwidth="true"
@@ -950,13 +941,16 @@ exports[`renders as expected 1`] = `
             </div>
           </div>
           <mock-button
-            classname="makeStyles-gutter-12"
+            classname="makeStyles-gutter-3"
             color="primary"
+            disabled="false"
             endicon="[object Object]"
             style="background-color: rgb(99, 178, 189); color: black;"
             variant="contained"
           >
-            Download
+            <span>
+              Download
+            </span>
           </mock-button>
           <mock-menu
             keepmounted="true"

@@ -5,6 +5,7 @@ import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { Panel } from 'config/types';
 import AADroughtLegend from '../AADroughtLegend';
 import AAStormLegend from '../AAStormLegend';
+import AAFloodLegend from '../AAFloodLegend';
 
 export interface AALegendProps {
   forPrinting?: boolean;
@@ -20,6 +21,7 @@ function AALegend({
   const tabPanel = useSelector(leftPanelTabValueSelector);
   const isStormAA = tabPanel === Panel.AnticipatoryActionStorm;
   const isDroughtAA = tabPanel === Panel.AnticipatoryActionDrought;
+  const isFloodAA = tabPanel === Panel.AnticipatoryActionFlood;
 
   return (
     <ListItem disableGutters dense>
@@ -36,6 +38,7 @@ function AALegend({
       >
         {isDroughtAA && <AADroughtLegend showDescription={showDescription} />}
         {isStormAA && <AAStormLegend />}
+        {isFloodAA && <AAFloodLegend />}
       </Paper>
     </ListItem>
   );

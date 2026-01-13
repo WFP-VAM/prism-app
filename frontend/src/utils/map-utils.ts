@@ -22,15 +22,26 @@ import maxInscribedCircle from 'max-inscribed-circle'; // ts-ignore
 import { BoundaryLayerData } from 'context/layers/boundary';
 
 /**
+ * Gets the map layer ID for a given layer key
+ * @param layerId the LayerKey
+ * @param type optional layer type ('fill' | 'line')
+ */
+export const getLayerMapId = (layerId: string, type?: 'fill' | 'line') =>
+  `layer-${layerId}${type ? `-${type}` : ''}`;
+
+/**
  * Checks weither given layer is on view
  * @param map the Maplibre Map object
  * @param layerId the LayerKey
  */
 export function isLayerOnView(map: MaplibreMap | undefined, layerId: LayerKey) {
-  return map
-    ?.getStyle()
-    .layers?.map(l => l.id)
-    .includes(getLayerMapId(layerId));
+  if (!map) {
+    return false;
+  }
+  const style = map.getStyle();
+  return (
+    style?.layers?.map(l => l.id).includes(getLayerMapId(layerId)) ?? false
+  );
 }
 
 export function safeDispatchAddLayer(
@@ -105,9 +116,6 @@ export function refreshBoundaries(
   boundaryLayers.map(l => safeDispatchAddLayer(map, l, mapActions.addLayer));
 }
 
-export const getLayerMapId = (layerId: string, type?: 'fill' | 'line') =>
-  `layer-${layerId}${type ? `-${type}` : ''}`;
-
 // evt emitted by map.fire has array of coordinates, but other events have an object
 export const getEvtCoords = (evt: MapLayerMouseEvent) =>
   Array.isArray(evt.lngLat) ? evt.lngLat : [evt.lngLat.lng, evt.lngLat.lat];
@@ -150,7 +158,6 @@ export const findFeature = (layerId: string, evt: MapLayerMouseEvent) => {
 
   // Sort features by label if it exists (assuming wind speed format "XXX km/h")
   if (features?.[0]?.properties?.label) {
-    // eslint-disable-next-line fp/no-mutating-methods
     features.sort((a, b) => {
       const speedA = parseInt(a.properties.label, 10);
       const speedB = parseInt(b.properties.label, 10);
@@ -170,8 +177,7 @@ const districtCentroidOverride: { [key: string]: [number, number] } = {
 
 export function calculateCentroids(data: BoundaryLayerData | undefined) {
   const centroids: { [key: string]: any } = {};
-  /* eslint-disable fp/no-mutation */
-  // eslint-disable-next-line no-unused-expressions
+
   data?.features.forEach(feature => {
     const districtName =
       feature.properties?.[boundaryLayer.adminLevelLocalNames[1]];
@@ -192,7 +198,7 @@ export function calculateCentroids(data: BoundaryLayerData | undefined) {
           feature.geometry.coordinates[0].length === 1
         ) {
           mutableFeature.geometry.type = 'Polygon';
-          // eslint-disable-next-line prefer-destructuring
+
           mutableFeature.geometry.coordinates = feature.geometry.coordinates[0];
           mutableFeature.properties = feature.properties;
           mutableFeature.type = feature.type;
@@ -214,7 +220,6 @@ export function calculateCentroids(data: BoundaryLayerData | undefined) {
     }
   });
   return centroids;
-  /* eslint-enable */
 }
 
 export function useAAMarkerScalePercent(map: MaplibreMap | undefined) {

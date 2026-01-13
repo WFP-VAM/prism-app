@@ -135,7 +135,6 @@ export const checkBaselineDataLayer = (
   );
 };
 
-/* eslint-disable camelcase */
 export type ApiData = {
   geotiff_url: ReturnType<typeof createGetCoverageUrl>; // helps developers get an understanding of what might go here, despite the type eventually being a string.
   zones_url: string;
@@ -144,7 +143,6 @@ export type ApiData = {
   wfs_params?: WfsRequestParams;
 };
 
-/* eslint-disable camelcase */
 export type AlertRequest = {
   alert_name: string;
   alert_config: WMSLayerProps;
@@ -197,7 +195,7 @@ export const fetchApiData = async (
     .then(message => {
       try {
         return JSON.parse(message);
-      } catch (e) {
+      } catch (_e) {
         // In some cases the response isn't valid JSON.
         // In those cases, just wrap the full response in an object.
         return {
@@ -266,10 +264,16 @@ export async function loadFeaturesFromApi(
     version: hazardLayerDef.wcsConfig?.version,
   });
 
-  const statsApi = layer.api as StatsApi;
+  const statsApi = layer.api;
+  if (!statsApi || !statsApi.zonesUrl || !statsApi.groupBy) {
+    throw new Error(
+      `StatsApi configuration is missing required properties (zonesUrl, groupBy) for layer '${layer.id}'`,
+    );
+  }
+
   const apiUrl = statsApi.url || ANALYSIS_API_URL;
 
-  const apiData = {
+  const apiData: ApiData = {
     geotiff_url: wcsUrl,
     zones_url: statsApi.zonesUrl,
     group_by: statsApi.groupBy,
@@ -337,6 +341,50 @@ export function scaleFeatureStat(
 }
 
 /**
+ * Standard percentage-based legend definition for exposure level analysis.
+ * Used for area exposed and polygon analysis with percentage-based exposure statistics.
+ * Uses fixed breakpoints as requested in https://github.com/WFP-VAM/prism-app/issues/1381
+ * Color breaks from https://colorbrewer2.org/#type=sequential&scheme=Reds&n=5
+ */
+export const EXPOSURE_LEVEL_LEGEND: LegendDefinition = [
+  {
+    value: 0.2,
+    color: '#fee5d9', // very light red-orange
+    label: '<20%',
+  },
+  {
+    value: 0.4,
+    color: '#fcae91', // rose bud
+    label: '20 - 39%',
+  },
+  {
+    value: 0.6,
+    color: '#fb6a4a', // red-orange
+    label: '40 - 59%',
+  },
+  {
+    value: 0.8,
+    color: '#de2d26', // medium red-orange
+    label: '60 - 79%',
+  },
+  {
+    value: 1.0,
+    color: '#a50f15', // dark tamarillo red
+    label: '>=80%',
+  },
+];
+
+/**
+ * Creates a standard percentage-based legend for "Area exposed" analysis.
+ * Uses fixed breakpoints as requested in https://github.com/WFP-VAM/prism-app/issues/1381
+ *
+ * @return LegendDefinition
+ */
+export function createAreaExposedLegend(): LegendDefinition {
+  return EXPOSURE_LEVEL_LEGEND;
+}
+
+/**
  * Creates Analysis result legend based on data returned from API.
  *
  * The equal interval method takes the maximum values minus the minimum
@@ -373,7 +421,7 @@ export function createLegendFromFeatureArray(
 
     // Make sure you don't have a value greater than maxNum.
     const value = Math.min(breakpoint, maxNum);
-    /* eslint-disable fp/no-mutation */
+
     let formattedValue;
     if (statistic === AggregationOperations['Area exposed']) {
       formattedValue = `${(value * 100).toFixed(2)} %`;
@@ -384,7 +432,6 @@ export function createLegendFromFeatureArray(
         ? `(${value.toFixed(1)})`
         : `(${Math.round(value).toLocaleString('en-US')})`;
     }
-    /* eslint-enable fp/no-mutation */
 
     return {
       value,
@@ -408,7 +455,6 @@ export class ExposedPopulationResult {
   analysisDate: ReturnType<Date['getTime']>;
   tableColumns: any;
 
-  // eslint-disable-next-line class-methods-use-this
   getTitle = (t: i18nTranslator): string => t('Population Exposure');
 
   getLayerTitle = (t: i18nTranslator): string => this.getTitle(t);
@@ -563,7 +609,6 @@ export function getAnalysisTableColumns(
   ];
 
   if (statistic === AggregationOperations['Area exposed']) {
-    /* eslint-disable-next-line fp/no-mutating-methods */
     analysisTableColumns.push({
       id: 'stats_intersect_area',
       label: 'Area exposed in km²',
@@ -653,15 +698,8 @@ export class PolygonAnalysisResult {
     this.boundaryId = boundaryId;
     this.startDate = startDate;
     this.endDate = endDate;
-    // color breaks from https://colorbrewer2.org/#type=sequential&scheme=Reds&n=5
-    // this legend of red-like colors goes from very light to dark
-    this.legend = [
-      { label: '20%', value: 0.2, color: '#fee5d9' }, // very light red-orange, HSL: 0.05, 0.95, 0.92,
-      { label: '40%', value: 0.4, color: '#fcae91' }, // rose bud, HSL: 0.05, 0.95, 0.78,
-      { label: '60%', value: 0.6, color: '#fb6a4a' }, // red-orange, HSL: 0.03, 0.96, 0.64
-      { label: '80%', value: 0.8, color: '#de2d26' }, // medium red-orange HSL: 0.01, 0.74, 0.51
-      { label: '100%', value: 1, color: '#a50f15' }, // dark tamarillo red: 0.99 0.83 0.35, dark red
-    ];
+    // Use the shared percentage-based legend for consistency
+    this.legend = EXPOSURE_LEVEL_LEGEND;
 
     this.legendText = hazardLayer.legendText;
     this.hazardLayerId = hazardLayer.id;

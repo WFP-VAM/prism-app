@@ -1,6 +1,8 @@
 {
   "country": "Colombia",
+  "countryAdmin0Id": 57,
   "alertFormActive": false,
+  "enableNavigationDropdown": true,
   "icons": {
     "rainfall": "icon_rain.png",
     "vegetation": "icon_veg.png",
@@ -11,7 +13,6 @@
   },
   "serversUrls": {
     "wms": [
-      "https://ogcserver.gis.wfp.org/geoserver/prism/wms",
       "https://api.earthobservation.vam.wfp.org/ows/wms"
     ]
   },
@@ -20,30 +21,12 @@
   },
   "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "categories": {
-    "tropical_storms": {
-      "tropical_storms": [
-        {
-          "group_title": "Tropical Storms",
-          "activate_all": true,
-          "layers": [
-            {
-              "id": "adamts_buffers",
-              "label": "Wind buffers",
-              "main": true
-            },
-            {
-              "id": "adamts_nodes",
-              "label": "Nodes"
-            },
-            {
-              "id": "adamts_tracks",
-              "label": "Tracks"
-            }
-          ]
-        }
-      ]
-    },
     "rainfall": {
+      "forecasts": [
+        "daily_rainfall_forecast",
+        "dekad_rainfall_forecast",
+        "dekad_rainfall_anomaly_forecast"
+      ],
       "rainfall_amount": [
         {
           "group_title": "Rainfall Aggregate",

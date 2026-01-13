@@ -273,15 +273,11 @@ export const filterActiveLayers = (
   selectedLayer.id === categoryLayer.id ||
   filterActiveGroupedLayers(selectedLayer, categoryLayer);
 
-export const formatIntersectPercentageAttribute = (
-  /* eslint-disable camelcase */
-  data: {
-    intersect_percentage?: string | number;
-    stats_intersect_area?: string | number;
-    [key: string]: any;
-  },
-) => {
-  /* eslint-disable fp/no-mutation */
+export const formatIntersectPercentageAttribute = (data: {
+  intersect_percentage?: string | number;
+  stats_intersect_area?: string | number;
+  [key: string]: any;
+}) => {
   let transformedData = data;
   if (parseInt(data.intersect_percentage as unknown as string, 10) >= 0) {
     transformedData = {
@@ -295,7 +291,7 @@ export const formatIntersectPercentageAttribute = (
       stats_intersect_area: data.stats_intersect_area,
     };
   }
-  /* eslint-enable fp/no-mutation */
+
   return transformedData;
 };
 

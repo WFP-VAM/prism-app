@@ -3,7 +3,15 @@ import rawLayers from './layers.json';
 
 const rawTables = {};
 const rawReports = {};
-const translation = {};
+
+// Country-specific translation overrides shared translation
+// Temp: hack for window labels
+const translation = {
+  en: {
+    'Window 1': 'OND',
+    'Window 2': 'MAM',
+  },
+};
 
 export default {
   appConfig,

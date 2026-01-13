@@ -1,10 +1,10 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "data/mongolia/admin_boundaries.json",
+    "path": "data/mongolia/mng_adm2_boundaries.json",
     "opacity": 0.8,
-    "admin_code": "NSO_ADM2_CODE",
-    "admin_level_codes": ["NSO_ADM1_CODE", "NSO_ADM2_CODE"],
+    "admin_code": "ADM2_PCODE_RE",
+    "admin_level_codes": ["ADM1_PCODE_RE", "ADM2_PCODE_RE"],
     "admin_level_names": ["ADM1_EN", "ADM2_EN"],
     "admin_level_local_names": ["ADM1_MN", "ADM2_MN"],
     "styles:": {
@@ -22,8 +22,8 @@
     "type": "boundary",
     "path": "data/mongolia/mng_adm1_nso_match_1212_mn.json",
     "opacity": 0.8,
-    "admin_code": "NSO_CODE",
-    "admin_level_codes": ["NSO_CODE"],
+    "admin_code": "ADM1_PCODE_RE",
+    "admin_level_codes": ["ADM1_PCODE_RE"],
     "admin_level_names": ["ADM1_EN"],
     "admin_level_local_names": ["ADM1_MN"],
     "styles:": {
@@ -522,6 +522,7 @@
     "wcsConfig": {
       "scale": 0.02,
       "offset": -273,
+      "no_data": 65535,
       "pixelResolution": 64
     },
     "date_interval": "day",
@@ -575,6 +576,7 @@
     "type": "wms",
     "server_layer_name": "ModisVHI",
     "wcsConfig": {
+      "no_data": 65535,
       "scale": 0.0001,
       "offset": 0,
       "pixelResolution": 64
@@ -825,8 +827,8 @@
       "below": -25
     },
     "api": {
-      "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json",
-      "group_by": "ADM2_PCODE"
+      "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_adm2_boundaries.json",
+      "group_by": "ADM2_PCODE_RE"
     },
     "opacity": 0.7,
     "legend_text": "Number of herder households within a soum where the median pasture anomaly is <= -25%",
@@ -863,8 +865,8 @@
       "above": 3
     },
     "api": {
-      "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json",
-      "group_by": "ADM1_PCODE"
+      "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_adm2_boundaries.json",
+      "group_by": "ADM1_PCODE_RE"
     },
     "opacity": 0.7,
     "legend_text": "Number of small herder households within an aimag with very high risk of dzud",
@@ -886,9 +888,10 @@
   "livestock_dzud_risk": {
     "title": "Livestock exposed to very high dzud risk (soum)",
     "type": "impact",
+    "operation": "median",
     "api": {
-      "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json",
-      "group_by": "ADM2_PCODE"
+      "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_adm2_boundaries.json",
+      "group_by": "ADM2_PCODE_RE"
     },
     "hazard_layer": "DzudRiskMap",
     "baseline_layer": "livestock",
@@ -916,11 +919,12 @@
     "title": "Livestock exposed to drought in thousands (soum)",
     "type": "impact",
     "api": {
-      "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json",
-      "group_by": "ADM2_PCODE"
+      "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_adm2_boundaries.json",
+      "group_by": "ADM2_PCODE_RE"
     },
     "hazard_layer": "ModisVHI",
     "baseline_layer": "livestock",
+    "operation": "median",
     "threshold": {
       "below": 0.25
     },
@@ -953,16 +957,17 @@
     "title": "Livestock exposed to extreme cold temperatures in thousands (soum)",
     "type": "impact",
     "hazard_layer": "ModisLST",
+    "operation": "median",
     "baseline_layer": "livestock",
     "threshold": {
-      "below": -25
+      "below": -15
     },
     "api": {
-      "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json",
-      "group_by": "ADM2_PCODE"
+      "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_adm2_boundaries.json",
+      "group_by": "ADM2_PCODE_RE"
     },
     "opacity": 0.7,
-    "legend_text": "Number of livestock (in thousands) within a soum with average temperatures below -25 Celsius",
+    "legend_text": "Number of livestock (in thousands) within a soum with average temperatures below -15 Celsius",
     "legend": [
       {
         "value": 100,

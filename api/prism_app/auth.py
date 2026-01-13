@@ -4,28 +4,25 @@ import base64
 import hashlib
 import logging
 import secrets
-from typing import Annotated
+from typing import Annotated, Optional
 
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, Security, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from prism_app.database.database import AuthDataBase
 from prism_app.database.user_info_model import UserInfoModel
+from prism_app.models import UserInfoPydanticModel
 from sqlalchemy.exc import SQLAlchemyError
 
 logger = logging.getLogger(__name__)
 
 security = HTTPBasic()
-depends = Depends(security)
-
 auth_db = AuthDataBase()
 
+# When auth_db is not active (local dev), make credentials optional
 if not auth_db.active:
-    # in local development, this condition might be true
-    # in which case the openapi introspection can generate
-    # strange results in the openapi.json output.
-    # eg. /kobo/forms might require a body in a GET request
-    # which is invalid.
-    depends = lambda *_: True
+    depends = Depends(lambda: None)
+else:
+    depends = Depends(security)
 
 
 def verify_hash(password: str, saved_salt: str) -> bytes:
@@ -44,11 +41,18 @@ def verify_hash(password: str, saved_salt: str) -> bytes:
 
 
 def validate_user(
-    credentials: Annotated[HTTPBasicCredentials, depends],
+    credentials: Annotated[Optional[HTTPBasicCredentials], depends] = None,
 ) -> UserInfoModel:
     """Validate user info."""
     if not auth_db.active:
         return UserInfoModel(access={})
+
+    if credentials is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication required",
+            headers={"WWW-Authenticate": "Basic"},
+        )
 
     try:
         user_info = auth_db.get_by_username(username=credentials.username)
@@ -86,3 +90,20 @@ def validate_user(
             headers={"WWW-Authenticate": "Basic"},
         )
     return user_info
+
+
+def optional_validate_user(
+    credentials: Annotated[
+        Optional[HTTPBasicCredentials], Security(HTTPBasic(auto_error=False))
+    ] = None,
+) -> Optional[UserInfoPydanticModel]:
+    """Optional user validation that returns None instead of raising on auth failure."""
+    # If auth_db is not active, return None
+    if not auth_db.active:
+        return None
+
+    # If no credentials provided, return None
+    if credentials is None:
+        return None
+
+    return validate_user(credentials)

@@ -107,7 +107,7 @@ function ExposureAnalysisActions({
       // Clean up the temporary URL and link element
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-    } catch (e) {
+    } catch (_e) {
       setDownloadReportIsLoading(false);
     }
     setDownloadReportIsLoading(false);
@@ -132,7 +132,8 @@ function ExposureAnalysisActions({
         <Button
           className={bottomButton}
           onClick={handleDownloadReport}
-          disabled={downloadReportIsLoading}
+          // FIXME - Temporarily disabled due to the unavailability of the population data
+          disabled={downloadReportIsLoading || true} // TEMPORARILY DISABLED due to security concerns with react-pdf/renderer
         >
           <Typography variant="body2">{t('Download Report')}</Typography>
           {downloadReportIsLoading && <LoadingBlinkingDots dotColor="white" />}

@@ -8,6 +8,7 @@ import {
 import { Link } from 'react-router-dom';
 
 import { colors } from 'muiTheme';
+import wfpLogo from 'public/images/wfp_logo.png';
 
 function NotFound() {
   const classes = useStyles();
@@ -31,6 +32,7 @@ function NotFound() {
         </Grid>
 
         <Grid item>
+          {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
           <Link to="/">
             <Button variant="contained">Back To Home</Button>
           </Link>
@@ -39,7 +41,7 @@ function NotFound() {
         <Grid item>
           <img
             className={classes.image}
-            src="images/wfp_logo.png"
+            src={wfpLogo}
             alt="World Food Programme logo"
           />
         </Grid>

@@ -26,6 +26,8 @@ import AAStormTooltipContent from './AAStormTooltipContent';
 import { DateItemStyle } from './types';
 import AAStormTimelineItem from './AAStormTimelineItem';
 import StandardTimelineItem from './StandardTimelineItem';
+import AAFloodTooltipContent from './AAFloodTooltipContent';
+import AAFloodTimelineItem from './AAFloodTimelineItem';
 
 const TimelineItems = memo(
   ({
@@ -36,6 +38,7 @@ const TimelineItems = memo(
     truncatedLayers,
     availableDates,
     showDraggingCursor,
+    selectedDate,
   }: TimelineItemsProps) => {
     const classes = useStyles();
 
@@ -43,24 +46,23 @@ const TimelineItems = memo(
     const DATE_ITEM_STYLING: DateItemStyle[] = useMemo(
       () => [
         {
-          class: classes.layerOneDate,
           color: LIGHT_BLUE_HEX,
-          layerDirectionClass: classes.layerOneDirection,
-          emphasis: classes.layerOneEmphasis,
+          coverageTick: classes.layerOneCoverageTick,
+          validityTick: classes.layerOneValidityTick,
+          queryTick: classes.layerOneQueryTick,
         },
         {
-          class: classes.layerTwoDate,
           color: LIGHT_GREEN_HEX,
-          layerDirectionClass: classes.layerTwoDirection,
-          emphasis: classes.layerTwoEmphasis,
+          coverageTick: classes.layerTwoCoverageTick,
+          validityTick: classes.layerTwoValidityTick,
+          queryTick: classes.layerTwoQueryTick,
         },
         {
-          class: classes.layerThreeDate,
           color: LIGHT_ORANGE_HEX,
-          layerDirectionClass: classes.layerThreeDirection,
-          emphasis: classes.layerThreeEmphasis,
+          coverageTick: classes.layerThreeCoverageTick,
+          validityTick: classes.layerThreeValidityTick,
+          queryTick: classes.layerThreeQueryTick,
         },
-        { class: classes.availabilityDate, color: LIGHT_ORANGE_HEX },
       ],
       [classes],
     );
@@ -69,18 +71,32 @@ const TimelineItems = memo(
       layer => layer.id === AnticipatoryAction.storm,
     );
 
+    const isShowingAAFloodLayer = orderedLayers.some(
+      layer => layer.id === AnticipatoryAction.flood,
+    );
+
     const getTooltipContent = useCallback(
-      (date: DateRangeType) =>
-        isShowingAAStormLayer ? (
-          <AAStormTooltipContent date={date} />
-        ) : (
+      (date: DateRangeType) => {
+        if (isShowingAAStormLayer) {
+          return <AAStormTooltipContent date={date} />;
+        }
+        if (isShowingAAFloodLayer) {
+          return <AAFloodTooltipContent date={date} />;
+        }
+        return (
           <StandardTooltipContent
             date={date}
             orderedLayers={orderedLayers}
             dateItemStyling={DATE_ITEM_STYLING}
           />
-        ),
-      [isShowingAAStormLayer, DATE_ITEM_STYLING, orderedLayers],
+        );
+      },
+      [
+        isShowingAAStormLayer,
+        isShowingAAFloodLayer,
+        DATE_ITEM_STYLING,
+        orderedLayers,
+      ],
     );
 
     const availableDatesToDisplay = availableDates.filter(
@@ -108,12 +124,14 @@ const TimelineItems = memo(
                   }
                 : null)}
               classes={{
-                tooltip: isShowingAAStormLayer
-                  ? classes.AAStormTooltip
-                  : classes.defaultTooltip,
-                arrow: isShowingAAStormLayer
-                  ? classes.AAStormTooltipArrow
-                  : undefined,
+                tooltip:
+                  isShowingAAStormLayer || isShowingAAFloodLayer
+                    ? classes.AAStormTooltip
+                    : classes.defaultTooltip,
+                arrow:
+                  isShowingAAStormLayer || isShowingAAFloodLayer
+                    ? classes.AAStormTooltipArrow
+                    : undefined,
               }}
             >
               <Grid
@@ -127,16 +145,25 @@ const TimelineItems = memo(
                 data-date-index={index}
               >
                 <div>
-                  {isShowingAAStormLayer ? (
-                    <AAStormTimelineItem currentDate={date} />
-                  ) : (
-                    <StandardTimelineItem
-                      concatenatedLayers={truncatedLayers}
-                      currentDate={date}
-                      dateItemStyling={DATE_ITEM_STYLING}
-                      isDateAvailable={isDateAvailable}
-                    />
-                  )}
+                  {(() => {
+                    if (isShowingAAStormLayer) {
+                      return <AAStormTimelineItem currentDate={date} />;
+                    }
+                    if (isShowingAAFloodLayer) {
+                      return <AAFloodTimelineItem currentDate={date} />;
+                    }
+                    return (
+                      <StandardTimelineItem
+                        concatenatedLayers={truncatedLayers}
+                        currentDate={date}
+                        dateItemStyling={DATE_ITEM_STYLING}
+                        availabilityClass={classes.availabilityDate}
+                        isDateAvailable={isDateAvailable}
+                        dateRange={dateRange}
+                        selectedDate={selectedDate}
+                      />
+                    );
+                  })()}
                 </div>
 
                 <TimelineLabel
@@ -166,13 +193,21 @@ const createLayerStyles = (
   backgroundColor,
 });
 
-const createDirectionStyles = (
-  borderColor: CSSProperties['borderColor'],
+const createTimelineItemStyles = (
+  backgroundColor: CSSProperties['backgroundColor'],
   top: CSSProperties['top'],
-): DirectionStyle => ({
-  top,
-  borderLeft: `6px solid ${borderColor}`,
-});
+  opacity: CSSProperties['opacity'] = 0.8,
+): TimelineItemStyle => {
+  return {
+    position: 'absolute',
+    height: 10,
+    width: TIMELINE_ITEM_WIDTH,
+    pointerEvents: 'none',
+    opacity,
+    top,
+    backgroundColor,
+  };
+};
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -182,18 +217,20 @@ const useStyles = makeStyles(() =>
       top: -5,
       cursor: 'pointer',
       minWidth: TIMELINE_ITEM_WIDTH,
-      '&:hover': {
-        borderLeft: '1px solid #101010',
-      },
       borderLeft: '1px solid #101010',
       height: 36,
     },
+    // dayItem is set in TimelineLabel.tsx
+    dayItem: {},
     dateItem: {
       color: '#101010',
       position: 'relative',
       top: -5,
       cursor: 'pointer',
       minWidth: TIMELINE_ITEM_WIDTH,
+      // Set a transparent border to prevent layout shifts when the border color changes on hover.
+      // Do not remove this unless you are sure layout shifts will not occur.
+      borderLeft: '1px solid transparent',
       '&:hover': {
         borderLeft: '1px solid #101010',
         '& $dayItem': {
@@ -211,18 +248,22 @@ const useStyles = makeStyles(() =>
       border: '1px solid #D3D3D3',
       maxWidth: 'none',
     },
-    layerOneDate: createLayerStyles(LIGHT_BLUE_HEX, 0),
-    layerTwoDate: createLayerStyles(LIGHT_GREEN_HEX, 10),
-    layerThreeDate: createLayerStyles(LIGHT_ORANGE_HEX, 20),
     availabilityDate: createLayerStyles(grey, 0),
 
-    layerOneEmphasis: createLayerStyles(DARK_BLUE_HEX, 0),
-    layerTwoEmphasis: createLayerStyles(DARK_GREEN_HEX, 10),
-    layerThreeEmphasis: createLayerStyles(DARK_ORANGE_HEX, 20),
+    // Coverage ticks
+    layerOneCoverageTick: createTimelineItemStyles(LIGHT_BLUE_HEX, 0, 0.6),
+    layerTwoCoverageTick: createTimelineItemStyles(LIGHT_GREEN_HEX, 10, 0.6),
+    layerThreeCoverageTick: createTimelineItemStyles(LIGHT_ORANGE_HEX, 20, 0.6),
 
-    layerOneDirection: createDirectionStyles(DARK_BLUE_HEX, 0),
-    layerTwoDirection: createDirectionStyles(DARK_GREEN_HEX, 10),
-    layerThreeDirection: createDirectionStyles(DARK_ORANGE_HEX, 20),
+    // Validity ticks
+    layerOneValidityTick: createTimelineItemStyles(LIGHT_BLUE_HEX, 0),
+    layerTwoValidityTick: createTimelineItemStyles(LIGHT_GREEN_HEX, 10),
+    layerThreeValidityTick: createTimelineItemStyles(LIGHT_ORANGE_HEX, 20),
+
+    // Query date ticks (bold)
+    layerOneQueryTick: createTimelineItemStyles(DARK_BLUE_HEX, 0, 1),
+    layerTwoQueryTick: createTimelineItemStyles(DARK_GREEN_HEX, 10, 1),
+    layerThreeQueryTick: createTimelineItemStyles(DARK_ORANGE_HEX, 20, 1),
 
     currentDate: {
       border: '2px solid black',
@@ -262,9 +303,14 @@ type LayerStyle = {
   backgroundColor: CSSProperties['backgroundColor'];
 };
 
-type DirectionStyle = {
+type TimelineItemStyle = {
+  position: CSSProperties['position'];
+  height: CSSProperties['height'];
+  width: CSSProperties['width'];
+  pointerEvents: CSSProperties['pointerEvents'];
+  opacity: CSSProperties['opacity'];
   top: CSSProperties['top'];
-  borderLeft: CSSProperties['borderLeft'];
+  backgroundColor: CSSProperties['backgroundColor'];
 };
 
 export interface TimelineItemsProps {
@@ -275,6 +321,7 @@ export interface TimelineItemsProps {
   orderedLayers: DateCompatibleLayerWithDateItems[];
   truncatedLayers: DateItem[][];
   showDraggingCursor: boolean;
+  selectedDate: number;
 }
 
 export default TimelineItems;

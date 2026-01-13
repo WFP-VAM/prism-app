@@ -3,16 +3,17 @@
 // x -> y .. x is used by y
 import type { RootState } from 'context/store';
 import type { LayerDataTypes } from 'context/layers/layer-data';
-import type { LayerKey, LayerType } from 'config/types';
+import type { LayerKey } from 'config/types';
 import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
 import { datesAreEqualWithoutTime } from 'utils/date-utils';
 import { Map as MaplibreMap } from 'maplibre-gl';
+import { isBoundaryLayer } from 'utils/boundary-layers-utils';
 import type { MapState } from '.';
 
 export const layersSelector = (state: RootState): MapState['layers'] =>
   state.mapState.layers;
 export const activeLayersSelector = (state: RootState): MapState['layers'] =>
-  state.mapState.layers.filter((layer: LayerType) => layer.type !== 'boundary');
+  state.mapState.layers.filter(layer => !isBoundaryLayer(layer));
 export const dateRangeSelector = (state: RootState): MapState['dateRange'] =>
   state.mapState.dateRange;
 export const mapSelector = (state: RootState): MaplibreMap | undefined =>
@@ -23,7 +24,7 @@ export const layerDataSelector =
   (state: RootState): LayerDataTypes | undefined =>
     // TODO - investigate if it is safe to return the first match by id
     // if there are no match for the given date.
-    // eslint-disable-next-line fp/no-mutating-methods
+
     state.mapState.layersData
       .slice()
       .reverse() // We want to return the most recent layer data first

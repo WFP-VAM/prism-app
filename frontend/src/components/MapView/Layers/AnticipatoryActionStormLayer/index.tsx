@@ -1,17 +1,16 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { AnticipatoryActionLayerProps, BoundaryLayerProps } from 'config/types';
+import { AnticipatoryActionLayerProps } from 'config/types';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { Source, Layer, MapLayerMouseEvent } from 'react-map-gl/maplibre';
 import { Feature, Point } from 'geojson';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   dateRangeSelector,
-  layerDataSelector,
   mapSelector,
 } from 'context/mapStateSlice/selectors';
 import { useMapCallback } from 'utils/map-utils';
 import { hidePopup } from 'context/tooltipStateSlice';
-import { LayerData } from 'context/layers/layer-data';
+import { useBoundaryData } from 'utils/useBoundaryData';
 import { getBoundaryLayersByAdminLevel } from 'config/utils';
 import {
   AADataSelector,
@@ -95,10 +94,7 @@ const AnticipatoryActionStormLayer = React.memo(
       startDate,
     ]);
 
-    const boundaryLayerState = useSelector(
-      layerDataSelector(boundaryLayer.id),
-    ) as LayerData<BoundaryLayerProps> | undefined;
-    const { data: boundaryData } = boundaryLayerState || {};
+    const { data: boundaryData } = useBoundaryData(boundaryLayer.id, map);
 
     const [selectedFeature, setSelectedFeature] = useState<{
       feature: AAStormTimeSeriesFeature | null;
@@ -120,7 +116,6 @@ const AnticipatoryActionStormLayer = React.memo(
 
       // Add the first point of the future line to the past line to ensure they connect
       if (futureLineCoordinates.length > 0 && pastLineCoordinates.length > 0) {
-        // eslint-disable-next-line fp/no-mutating-methods
         pastLineCoordinates.push(futureLineCoordinates[0]);
       }
 
@@ -252,7 +247,6 @@ const AnticipatoryActionStormLayer = React.memo(
     // Display a pointer cursor when hovering over the wind points
     const onMouseEnter = () => () => {
       if (map) {
-        // eslint-disable-next-line fp/no-mutation
         map.getCanvas().style.cursor = 'pointer';
       }
     };
@@ -266,7 +260,6 @@ const AnticipatoryActionStormLayer = React.memo(
 
     const onMouseLeave = () => () => {
       if (map) {
-        // eslint-disable-next-line fp/no-mutation
         map.getCanvas().style.cursor = '';
       }
     };

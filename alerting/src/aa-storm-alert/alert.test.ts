@@ -10,7 +10,7 @@ import {
 } from './alert';
 import { buildDetailedReport, buildLandfallInfo } from './test-utils';
 import { WindState } from 'prism-common';
-import { LastStates } from '../types/aa-storm-email';
+import { LastStates } from '../types/storm-reports';
 import { captureScreenshotFromUrl } from '../utils/capture-utils';
 import { formatDate } from '../utils/date';
 
@@ -44,7 +44,8 @@ describe('alert mechanism', () => {
         ],
       },
       {
-        description: 'when short reports have one storm with monitoring and ready state',
+        description:
+          'when short reports have one storm with monitoring and ready state',
         data: {
           '2025-01-31': {
             elvis: [
@@ -78,7 +79,7 @@ describe('alert mechanism', () => {
                 ref_time: '2025-01-31T06:00:00Z',
                 state: 'monitoring',
                 path: 'elvis/2025-01-31T06:00:00Z.json',
-              }
+              },
             ],
           },
         },
@@ -164,6 +165,7 @@ describe('alert mechanism', () => {
         ],
         data: buildDetailedReport({
           status: WindState.ready,
+          affected64ktDistrict: ['Namacurra'],
         }),
       },
       {
@@ -243,7 +245,10 @@ describe('alert mechanism', () => {
           landfallInfo: buildLandfallInfo({
             landfall_time: [
               '2025-01-13 06:00:00',
-              formatDate(new Date(Date.now() - 60 * 60 * 1000), 'YYYY-MM-DD HH:mm:ss'), // now - 1 hour; ie landfall occured already
+              formatDate(
+                new Date(Date.now() - 60 * 60 * 1000),
+                'YYYY-MM-DD HH:mm:ss',
+              ), // now - 1 hour; ie landfall occured already
             ],
           }),
         }),
@@ -251,7 +256,7 @@ describe('alert mechanism', () => {
     ];
     it.each(tests)('$description', async ({ data, shortReports }) => {
       mockedFetch.mockResolvedValue({ json: () => data });
-      (captureScreenshotFromUrl as jest.Mock).mockResolvedValue("");
+      (captureScreenshotFromUrl as jest.Mock).mockResolvedValue('');
 
       const emailPayloads = await buildEmailPayloads(
         shortReports,

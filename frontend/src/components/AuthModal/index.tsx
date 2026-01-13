@@ -18,9 +18,11 @@ import {
   Typography,
   makeStyles,
 } from '@material-ui/core';
+import { Close, Send } from '@material-ui/icons';
 import { useSafeTranslation } from 'i18n';
 import { layersSelector } from 'context/mapStateSlice/selectors';
 import { setUserAuthGlobal, userAuthSelector } from 'context/serverStateSlice';
+import { refetchLayerDatesArraysForPointData } from 'context/serverPreloadStateSlice';
 import { UserAuth } from 'config/types';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
 import { removeLayer } from 'context/mapStateSlice';
@@ -61,9 +63,15 @@ const AuthModal = () => {
   }, [isUserAuthenticated, layersWithAuthRequired]);
 
   const validateToken = useCallback(
-    (event: FormEvent<HTMLFormElement>) => {
+    async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
+      // Set auth in state first - Redux actions are synchronous so state updates immediately
       dispatch(setUserAuthGlobal(auth));
+      // Wait a tick to ensure state is fully updated, then re-fetch dates with new authentication
+      // The refetch thunk will read auth from state, which is now updated
+      await Promise.resolve();
+      // Await the refetch to ensure dates are reloaded before closing modal
+      await dispatch(refetchLayerDatesArraysForPointData());
       setOpen(false);
     },
     [auth, dispatch],
@@ -185,16 +193,22 @@ const AuthModal = () => {
               }}
             >
               <div className={classes.buttonWrapper}>
-                <Button type="submit" variant="contained" color="primary">
-                  {t('Send')}
-                </Button>
                 <Button
                   type="reset"
-                  variant="contained"
+                  variant="outlined"
                   color="secondary"
                   onClick={onCancelClick}
+                  startIcon={<Close />}
                 >
                   {t('Cancel')}
+                </Button>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  startIcon={<Send />}
+                >
+                  {t('Send')}
                 </Button>
               </div>
             </Box>

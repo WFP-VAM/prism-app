@@ -203,7 +203,8 @@
   "Monthly rainfall anomaly": "اختلال الهاطل المطري الشهري",
   "Clear All": "مسح الكل",
   "Admin 1": "المستوى الاداري 1-محافظة",
-  "Remove Admin 1": "ازالة المستوى الاداري",
+  "Admin 2": "المستوى الاداري 2- لواء",
+  "Remove {{adminLevel}}": "ازالة المستوى الاداري {{adminLevel}}",
   "Download CSV": "تنزيل ملف CSV",
   "Period 1": "الفترة 1",
   "Period 2": "الفترة 2",
@@ -287,8 +288,6 @@
   "Composite Drought Index v1. SPI weight = 0.5; LST weight = 0.25; NDVI weight = 0.25": "مؤشر الجفاف المركب الإصدار 1. وزن مؤشر SPI = 0.5؛ وزن مؤشر LST = 0.25؛ وزن مؤشر الغطاء النباتي الطبيعي = 0.25",
   "Monthly Combined Drought Index (v2)": "مؤشر الجفاف الشهري المركب (الإصدار 2)",
   "Seasonal Combined Drought Index (v1)": "مؤشر الجفاف الموسمي المركب (الإصدار 1)",
-  "Admin 2": "المستوى الاداري 2- لواء",
-  "Remove Admin 2": "إزالة المستوى الاداري 2",
   "Irbid": "إربد",
   "at Level": "عند المستوى",
   "Reverse colors": "عكس الألوان",
@@ -313,5 +312,7 @@
   "Estimate of precipitation over a 6-month period derived from CHIRPS (UCSB Climate Hazards Group).": "تقدير الهطول المطري لفترة 6 اشهر مشتق من بيانات CHIRPS",
   "Estimate of precipitation over a 9-month period derived from CHIRPS (UCSB Climate Hazards Group).": "تقدير الهطول المطري لفترة 9 اشهر مشتق من بيانات CHIRPS",
   "Estimate of precipitation over a 1-year period derived from CHIRPS (UCSB Climate Hazards Group).": "تقدير الهطول المطري لفترة 12 اشهر مشتق من بيانات CHIRPS",
-  "Number of days of rainfall": "عدد ايام الهطول المطري"
+  "Number of days of rainfall": "عدد ايام الهطول المطري",
+  "Data coverage": "فترة تغطية البيانات",
+  "Coverage": "تغطية"
 }

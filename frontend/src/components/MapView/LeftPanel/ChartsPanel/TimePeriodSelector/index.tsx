@@ -65,6 +65,7 @@ const TimePeriodSelector = memo(
             <Typography className={styles.textLabel} variant="body2">
               {`${t(startLabel)}: `}
             </Typography>
+            {/* @ts-expect-error - react-datepicker v2 types incompatible with React 18 */}
             <DatePicker
               locale={t('date_locale')}
               dateFormat="PP"
@@ -95,6 +96,7 @@ const TimePeriodSelector = memo(
             <Typography className={styles.textLabel} variant="body2">
               {`${t(endLabel)}: `}
             </Typography>
+            {/* @ts-expect-error - react-datepicker v2 types incompatible with React 18 */}
             <DatePicker
               locale={t('date_locale')}
               dateFormat="PP"

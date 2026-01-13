@@ -6,7 +6,7 @@ FROM ghcr.io/osgeo/gdal:ubuntu-full-3.11.1
 
 ENV PYTHONPATH=/
 
-ENV POETRY_VERSION=2.1.3
+ENV POETRY_VERSION=2.2.1
 # install poetry in this location
 ENV POETRY_HOME="/opt/poetry"
 
@@ -33,8 +33,10 @@ COPY pyproject.toml /
 COPY poetry.lock /
 
 RUN --mount=type=cache,target=/var/cache/apt \
-    apt-get update && \
-    apt-get --no-install-recommends install -y python3-pip libpq-dev curl python3-dev build-essential
+    DEBIAN_FRONTEND=noninteractive apt-get update --fix-missing && \
+    DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y python3-pip libpq-dev curl python3-dev build-essential && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN --mount=type=cache,target=/root/.cache \
     poetry install
@@ -47,7 +49,7 @@ RUN poetry run playwright install chromium
 RUN --mount=type=cache,target=/root/.cache \
     --mount=type=cache,target=/var/lib/apt \
     --mount=type=cache,target=/var/cache/apt \
-    poetry run playwright install-deps
+    DEBIAN_FRONTEND=noninteractive poetry run playwright install-deps
 
 # keep this copy towards the end to help with caching previous layers
 COPY ./prism_app /prism_app

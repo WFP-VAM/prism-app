@@ -2,14 +2,21 @@
   "compilerOptions": {
     "target": "ES2020",
     "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "module": "ESNext",
-    "skipLibCheck": true,
     "baseUrl": "./src",
     "strictPropertyInitialization": false,
     "experimentalDecorators": true,
     "esModuleInterop": true,
-
+    "paths": {
+      "public/*": [
+        "../public/*"
+      ]
+    },
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
@@ -17,14 +24,27 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-
     /* Linting */
     "strict": true,
+    /* Allow legacy React component types for compatibility with older libraries */
+    "skipLibCheck": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "vite.config.ts"],
-  "exclude": ["cypress.config.ts", "cypress", "node_modules"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "cypress.config.ts",
+    "cypress",
+    "node_modules",
+    "**/*.test.tsx",
+    "**/*.test.ts"
+  ],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
 }

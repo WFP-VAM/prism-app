@@ -68,7 +68,6 @@ export const getWindStatesForDate = (
 
   const selectedTime = date ? new Date(date).getTime() : null;
 
-  // eslint-disable-next-line fp/no-mutating-methods
   return unsorted.sort((a, b) => {
     if (selectedTime) {
       const aAct = getLatestActivationTime(a.states);

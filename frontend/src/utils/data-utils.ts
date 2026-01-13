@@ -10,11 +10,10 @@ export type TFunction = _TFunction;
 export function getRoundedData(
   data: number | string | null,
   t?: i18nTranslator,
-  // eslint-disable-next-line default-param-last
+
   decimals: number = 2,
   statistic?: AggregationOperations | string,
 ): string {
-  /* eslint-disable fp/no-mutation */
   let result = data;
   if (isNumber(result) && Number.isNaN(result)) {
     return '-';
@@ -27,7 +26,6 @@ export function getRoundedData(
   } else {
     // TODO - investigate why we received string 'null' values in data.
     result = result && result !== 'null' ? result : 'No Data';
-    /* eslint-enable fp/no-mutation */
   }
   const unit = statistic && units[statistic];
   return `${t ? t(result) : result} ${unit || ''}`;
@@ -69,17 +67,29 @@ export function coordFirst(data: GeoJSON): number[] {
 
 // check if a date is in a list of given available date (ignoring times)
 export function getDateFromList(
-  checkingDate: Date | null,
-  availableDates: Date[],
-): Date | null {
+  checkingDate: number | null,
+  availableDates: number[],
+): number | null {
   if (availableDates.length === 0) {
     return null;
   }
   if (!checkingDate) {
     return availableDates[availableDates.length - 1];
   }
-  const foundDate = availableDates.find(
-    date => date.toDateString() === checkingDate.toDateString(),
-  );
+  const foundDate = availableDates.find(date => date === checkingDate);
   return foundDate || availableDates[availableDates.length - 1];
+}
+
+/**
+ * Parse a number from a string, handling 0 as a valid value.
+ * Returns undefined if the string is empty or not a valid number.
+ * @param value - String value to parse
+ * @returns Parsed number or undefined if invalid/empty
+ */
+export function parseNumberOrUndefined(value: string): number | undefined {
+  if (!value) {
+    return undefined;
+  }
+  const parsed = parseFloat(value);
+  return Number.isNaN(parsed) ? undefined : parsed;
 }

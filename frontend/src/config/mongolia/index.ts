@@ -1,10 +1,11 @@
 import appConfig from './prism.json';
 import rawLayers from './layers.json';
 import rawTables from './tables.json';
-import mongoliaTranslation from './translation.json';
 
 const rawReports = {};
-const translation = { mn: mongoliaTranslation };
+// Country-specific translation overrides shared translation
+// Using empty object since translation.json is already used as the source for shared mongolian translations
+const translation = { mn: {} };
 
 export default {
   appConfig,
@@ -12,5 +13,5 @@ export default {
   rawTables,
   rawReports,
   translation,
-  defaultBoundariesFile: 'admin_boundaries.json',
+  defaultBoundariesFile: 'mng_adm2_boundaries.json',
 };

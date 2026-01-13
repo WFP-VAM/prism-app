@@ -1,6 +1,7 @@
 import { camelCase } from 'lodash';
 import { useHistory } from 'react-router-dom';
 import { LayerType } from 'config/types';
+import { useCallback, useMemo } from 'react';
 import { AnalysisParams } from './types';
 import { keepLayer } from './keep-layer-utils';
 
@@ -34,54 +35,65 @@ export const getUrlKey = (layer: LayerType): UrlLayerKey =>
 
 export const useUrlHistory = () => {
   const { replace, location } = useHistory();
-  const urlParams = new URLSearchParams(location.search);
+  // urlParams is very far down the react dependency tree, so needs
+  // to be memoized to prevent a lot of unwanted rerendering
+  const urlParams = useMemo(
+    () => new URLSearchParams(location.search),
+    [location.search],
+  );
 
   const clearHistory = () => {
     replace({ search: '' });
   };
 
-  const appendLayerToUrl = (
-    layerKey: UrlLayerKey,
-    selectedLayers: LayerType[],
-    layer: LayerType,
-  ): string => {
-    const urlLayers = urlParams.get(layerKey);
+  const appendLayerToUrl = useCallback(
+    (
+      layerKey: UrlLayerKey,
+      selectedLayers: LayerType[],
+      layer: LayerType,
+    ): string => {
+      const urlLayers = urlParams.get(layerKey);
 
-    const selectedLayersUrl = urlLayers !== null ? urlLayers.split(',') : [];
+      const selectedLayersUrl = urlLayers !== null ? urlLayers.split(',') : [];
 
-    const filteredSelectedLayers =
-      selectedLayers
-        .filter(l => selectedLayersUrl.includes(l.id) && keepLayer(l, layer))
-        .map(l => l.id) || [];
+      const filteredSelectedLayers =
+        selectedLayers
+          .filter(l => selectedLayersUrl.includes(l.id) && keepLayer(l, layer))
+          .map(l => l.id) || [];
 
-    const updatedUrl = [...filteredSelectedLayers, layer.id];
+      const updatedUrl = [...filteredSelectedLayers, layer.id];
 
-    return updatedUrl.join(',');
-  };
+      return updatedUrl.join(',');
+    },
+    [urlParams],
+  );
 
-  const removeLayerFromUrl = (layerKey: UrlLayerKey, layerId: string) => {
-    // Get all layer ids from the url.
-    const urlLayers = urlParams.get(layerKey);
+  const removeLayerFromUrl = useCallback(
+    (layerKey: UrlLayerKey, layerId: string) => {
+      // Get all layer ids from the url.
+      const urlLayers = urlParams.get(layerKey);
 
-    const selectedLayersUrl = urlLayers !== null ? urlLayers.split(',') : [];
-    const filteredSelectedLayers = selectedLayersUrl
-      .filter(l => l !== layerId)
-      .join(',');
+      const selectedLayersUrl = urlLayers !== null ? urlLayers.split(',') : [];
+      const filteredSelectedLayers = selectedLayersUrl
+        .filter(l => l !== layerId)
+        .join(',');
 
-    // If the list of layers is empty, remove the layerKey from the url.
-    if (filteredSelectedLayers === '') {
-      urlParams.delete(layerKey);
+      // If the list of layers is empty, remove the layerKey from the url.
+      if (filteredSelectedLayers === '') {
+        urlParams.delete(layerKey);
 
-      // For hazard layer, remove also the date.
-      if (layerKey === UrlLayerKey.HAZARD) {
-        urlParams.delete('date');
+        // For hazard layer, remove also the date.
+        if (layerKey === UrlLayerKey.HAZARD) {
+          urlParams.delete('date');
+        }
+      } else {
+        urlParams.set(layerKey, filteredSelectedLayers);
       }
-    } else {
-      urlParams.set(layerKey, filteredSelectedLayers);
-    }
 
-    replace({ search: urlParams.toString() });
-  };
+      replace({ search: urlParams.toString() });
+    },
+    [replace, urlParams],
+  );
 
   const updateAnalysisParams = (analysisParams: AnalysisParams) => {
     Object.entries(analysisParams).forEach(([key, value]) => {
@@ -107,20 +119,26 @@ export const useUrlHistory = () => {
     replace({ search: urlParams.toString() });
   };
 
-  const updateHistory = (key: string, value: string) => {
-    urlParams.set(key, value);
-    replace({ search: urlParams.toString() });
-  };
+  const updateHistory = useCallback(
+    (key: string, value: string) => {
+      urlParams.set(key, value);
+      replace({ search: urlParams.toString() });
+    },
+    [replace, urlParams],
+  );
 
-  const removeKeyFromUrl = (key: string) => {
-    urlParams.delete(key);
+  const removeKeyFromUrl = useCallback(
+    (key: string) => {
+      urlParams.delete(key);
 
-    if (key === UrlLayerKey.HAZARD) {
-      urlParams.delete('date');
-    }
+      if (key === UrlLayerKey.HAZARD) {
+        urlParams.delete('date');
+      }
 
-    replace({ search: urlParams.toString() });
-  };
+      replace({ search: urlParams.toString() });
+    },
+    [replace, urlParams],
+  );
 
   return {
     urlParams,

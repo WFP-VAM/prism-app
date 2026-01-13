@@ -111,7 +111,7 @@ const SwitchItem = memo(
     const initialActiveLayerId = useMemo(
       () =>
         selectedActiveLayer.length > 0 ? selectedActiveLayer[0].id : layer.id,
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+
       [layer.id],
     );
 
@@ -173,13 +173,15 @@ const SwitchItem = memo(
           console.error((error as LocalError).getErrorMessage());
           return;
         }
-        const updatedUrl = appendLayerToUrl(
-          urlLayerKey,
-          selectedLayers,
-          selectedLayer,
-        );
-        updateHistory(urlLayerKey, updatedUrl);
-        mapState.actions.addLayer(layer);
+        if (mapState.isGlobalMap) {
+          const updatedUrl = appendLayerToUrl(
+            urlLayerKey,
+            selectedLayers,
+            selectedLayer,
+          );
+          updateHistory(urlLayerKey, updatedUrl);
+        }
+        mapState.actions.addLayer(selectedLayer);
         if (
           'boundary' in selectedLayer ||
           selectedLayer.type !== 'admin_level_data'
@@ -195,6 +197,7 @@ const SwitchItem = memo(
         layer,
         map,
         mapState.actions,
+        mapState.isGlobalMap,
         removeLayerFromUrl,
         selectedLayers,
         serverAvailableDates,

@@ -16,7 +16,7 @@ export interface MapOpacityState {
   error: string | null;
 }
 
-interface SetOpacityParams {
+export interface SetOpacityParams {
   map: MaplibreMap | undefined;
   layerId: LayerType['id'] | undefined;
   layerType: LayerType['type'] | 'analysis' | undefined;
@@ -59,7 +59,7 @@ export const opacityStateSlice = createSlice({
             if (layerId?.includes('_report')) {
               return [getLayerMapId(layerId), 'fill-opacity'];
             }
-            return [getLayerMapId(layerId), 'circle-opacity'];
+            return [getLayerMapId(layerId), 'icon-opacity'];
           case 'analysis':
             return ['layer-analysis', 'fill-opacity'];
           default:
@@ -73,7 +73,7 @@ export const opacityStateSlice = createSlice({
         // force a update of the map style to ensure the change is reflected
         // see https://github.com/maplibre/maplibre-gl-js/issues/3373
         // TODO - check if the above issue got resolved from time to time.
-        // eslint-disable-next-line no-underscore-dangle
+
         map.style._updateLayer(mapLayerId as any);
       }
 

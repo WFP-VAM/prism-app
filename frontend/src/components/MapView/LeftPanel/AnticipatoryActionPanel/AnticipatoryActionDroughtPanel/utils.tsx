@@ -23,6 +23,30 @@ import {
 } from 'components/MapView/DateSelector/TimelineItems/utils';
 import AAIcon from '../AAIcon';
 
+// Centralized colors for AA Drought
+export const AADroughtColors = {
+  categories: {
+    na: { background: '#F1F1F1', text: 'black' },
+    ny: { background: '#F1F1F1', text: 'black' },
+    severe: {
+      set: { background: '#831F00', text: 'white' },
+      ready: { background: '#E63701', text: 'white' },
+    },
+    moderate: {
+      set: { background: '#FF8934', text: 'black' },
+      ready: { background: '#FFD52D', text: 'black' },
+    },
+    mild: {
+      set: { background: '#FFF503', text: 'black' },
+      ready: { background: '#FFFCB3', text: 'black' },
+    },
+    normal: {
+      set: { background: '#FFF503', text: 'black' },
+      ready: { background: '#FFFCB3', text: 'black' },
+    },
+  },
+} as const;
+
 const StyledRadio = withStyles({
   root: {
     '&$checked': {
@@ -112,67 +136,123 @@ export const StyledCheckboxLabel = withStyles({
 
 const AACategoryPhaseMap: { [key: string]: any } = {
   na: {
-    color: '#F1F1F1',
-    iconProps: { topText: 'na', bottomText: '-', color: 'black' },
+    color: AADroughtColors.categories.na.background,
+    iconProps: {
+      topText: 'na',
+      bottomText: '-',
+      color: AADroughtColors.categories.na.text,
+    },
   },
   ny: {
-    color: '#F1F1F1', // Note: Special handling required for 'ny' in getAAColor for non-layer usage
-    iconProps: { topText: 'ny', bottomText: '-', color: 'black' },
+    color: AADroughtColors.categories.ny.background, // Note: Special handling required for 'ny' in getAAColor for non-layer usage
+    iconProps: {
+      topText: 'ny',
+      bottomText: '-',
+      color: AADroughtColors.categories.ny.text,
+    },
   },
   Severe: {
     Set: {
-      color: '#831F00',
-      iconProps: { topText: 'S', bottomText: 'SEV', color: 'white' },
+      color: AADroughtColors.categories.severe.set.background,
+      iconProps: {
+        topText: 'S',
+        bottomText: 'SEV',
+        color: AADroughtColors.categories.severe.set.text,
+      },
     },
     Ready: {
-      color: '#E63701',
-      iconProps: { topText: 'R', bottomText: 'SEV', color: 'white' },
+      color: AADroughtColors.categories.severe.ready.background,
+      iconProps: {
+        topText: 'R',
+        bottomText: 'SEV',
+        color: AADroughtColors.categories.severe.ready.text,
+      },
     },
     na: {
-      color: '#F1F1F1',
-      iconProps: { topText: 'na', bottomText: 'SEV', color: 'black' },
+      color: AADroughtColors.categories.na.background,
+      iconProps: {
+        topText: 'na',
+        bottomText: 'SEV',
+        color: AADroughtColors.categories.na.text,
+      },
     },
   },
   Moderate: {
     Set: {
-      color: '#FF8934',
-      iconProps: { topText: 'S', bottomText: 'MOD', color: 'black' },
+      color: AADroughtColors.categories.moderate.set.background,
+      iconProps: {
+        topText: 'S',
+        bottomText: 'MOD',
+        color: AADroughtColors.categories.moderate.set.text,
+      },
     },
     Ready: {
-      color: '#FFD52D',
-      iconProps: { topText: 'R', bottomText: 'MOD', color: 'black' },
+      color: AADroughtColors.categories.moderate.ready.background,
+      iconProps: {
+        topText: 'R',
+        bottomText: 'MOD',
+        color: AADroughtColors.categories.moderate.ready.text,
+      },
     },
     na: {
-      color: '#F1F1F1',
-      iconProps: { topText: 'na', bottomText: 'MOD', color: 'black' },
+      color: AADroughtColors.categories.na.background,
+      iconProps: {
+        topText: 'na',
+        bottomText: 'MOD',
+        color: AADroughtColors.categories.na.text,
+      },
     },
   },
   Mild: {
     Set: {
-      color: '#FFF503',
-      iconProps: { topText: 'S', bottomText: 'MIL', color: 'black' },
+      color: AADroughtColors.categories.mild.set.background,
+      iconProps: {
+        topText: 'S',
+        bottomText: 'MIL',
+        color: AADroughtColors.categories.mild.set.text,
+      },
     },
     Ready: {
-      color: '#FFFCB3',
-      iconProps: { topText: 'R', bottomText: 'MIL', color: 'black' },
+      color: AADroughtColors.categories.mild.ready.background,
+      iconProps: {
+        topText: 'R',
+        bottomText: 'MIL',
+        color: AADroughtColors.categories.mild.ready.text,
+      },
     },
     na: {
-      color: '#F1F1F1',
-      iconProps: { topText: 'na', bottomText: 'MIL', color: 'black' },
+      color: AADroughtColors.categories.na.background,
+      iconProps: {
+        topText: 'na',
+        bottomText: 'MIL',
+        color: AADroughtColors.categories.na.text,
+      },
     },
   },
   Normal: {
     Set: {
-      color: '#FFF503',
-      iconProps: { topText: 'S', bottomText: 'BNO', color: 'black' },
+      color: AADroughtColors.categories.normal.set.background,
+      iconProps: {
+        topText: 'S',
+        bottomText: 'BNO',
+        color: AADroughtColors.categories.normal.set.text,
+      },
     },
     Ready: {
-      color: '#FFFCB3',
-      iconProps: { topText: 'R', bottomText: 'BNO', color: 'black' },
+      color: AADroughtColors.categories.normal.ready.background,
+      iconProps: {
+        topText: 'R',
+        bottomText: 'BNO',
+        color: AADroughtColors.categories.normal.ready.text,
+      },
     },
     na: {
-      color: '#F1F1F1',
-      iconProps: { topText: 'na', bottomText: 'BNO', color: 'black' },
+      color: AADroughtColors.categories.na.background,
+      iconProps: {
+        topText: 'na',
+        bottomText: 'BNO',
+        color: AADroughtColors.categories.na.text,
+      },
     },
   },
 };
@@ -186,8 +266,8 @@ export function getAAColor(
   if (category === 'ny' && !forLayer) {
     return `repeating-linear-gradient(
       -45deg,
-      #F1F1F1,
-      #F1F1F1 10px,
+      ${AADroughtColors.categories.na.background},
+      ${AADroughtColors.categories.na.background} 10px,
       white 10px,
       white 20px
     )`;

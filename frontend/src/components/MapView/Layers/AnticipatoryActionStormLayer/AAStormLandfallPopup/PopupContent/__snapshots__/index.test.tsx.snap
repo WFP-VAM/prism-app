@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`AAStormLandfallPopup component renders as expected 1`] = `
 <div>
@@ -9,7 +9,8 @@ exports[`AAStormLandfallPopup component renders as expected 1`] = `
       classname="makeStyles-text-4 makeStyles-title-5"
       variant="body1"
     >
-      Report date: 
+      Report date
+      : 
       2024-03-01 8pm (GMT+2)
     </mock-typography>
     <div
@@ -17,14 +18,10 @@ exports[`AAStormLandfallPopup component renders as expected 1`] = `
     >
       <mock-typography
         classname="makeStyles-text-4"
+        style="max-width: 100px;"
         variant="body1"
       >
-        landfall 
-        <span
-          class="makeStyles-block-1"
-        >
-          estimated time
-        </span>
+        Landfall estimated time
       </mock-typography>
       <mock-typography
         classname="makeStyles-text-4 makeStyles-textAlignRight-6"
@@ -43,14 +40,10 @@ exports[`AAStormLandfallPopup component renders as expected 1`] = `
     >
       <mock-typography
         classname="makeStyles-text-4"
+        style="max-width: 150px;"
         variant="body1"
       >
-        landfall estimated
-        <span
-          class="makeStyles-block-1"
-        >
-          leadtime
-        </span>
+        Landfall estimated leadtime
       </mock-typography>
       <mock-typography
         classname="makeStyles-text-4 makeStyles-textAlignRight-6"
@@ -64,14 +57,10 @@ exports[`AAStormLandfallPopup component renders as expected 1`] = `
     >
       <mock-typography
         classname="makeStyles-text-4"
+        style="max-width: 150px;"
         variant="body1"
       >
-        District impacted
-        <span
-          class="makeStyles-block-1"
-        >
-          by landfall
-        </span>
+        District impacted by landfall
       </mock-typography>
       <mock-typography
         classname="makeStyles-text-4 makeStyles-textAlignRight-6"

@@ -20,7 +20,6 @@ function getLayerGroup(layer: LayerType) {
           l.id === layer.id || l.group?.layers.find(ll => ll.id === layer.id),
       );
       if (foundLayer) {
-        // eslint-disable-next-line fp/no-mutation
         group = foundLayer.group;
         return true;
       }

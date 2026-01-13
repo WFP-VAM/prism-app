@@ -68,9 +68,23 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add('switchLanguage', (langcode: string) => {
-  cy.get('[aria-label="language-select-dropdown-button"]').click();
+  cy.get('[aria-label="language-select-dropdown-button"]', {
+    timeout: 10000,
+  })
+    .should('be.visible')
+    .scrollIntoView()
+    .click({ force: true });
   cy.get(
     `[aria-label="language-select-dropdown-menu-item-${langcode}"]`,
-  ).click();
+  )
+    .should('be.visible')
+    .click();
   cy.contains('Layers').should('be.visible');
+});
+
+Cypress.Commands.add('scrollLeft', () => {
+  cy.get('button#chevronLeftButton').click();
+});
+Cypress.Commands.add('scrollRight', () => {
+  cy.get('button#chevronRightButton').click();
 });

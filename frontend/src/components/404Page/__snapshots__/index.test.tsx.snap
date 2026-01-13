@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`renders as expected 1`] = `
 <div>
@@ -51,7 +51,7 @@ exports[`renders as expected 1`] = `
         <img
           alt="World Food Programme logo"
           class="makeStyles-image-3"
-          src="images/wfp_logo.png"
+          src="test-file-stub"
         />
       </div>
     </div>

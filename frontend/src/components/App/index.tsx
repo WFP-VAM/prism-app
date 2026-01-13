@@ -7,7 +7,9 @@ import { Font } from '@react-pdf/renderer';
 import { authRequired } from 'config';
 import NavBar from 'components/NavBar';
 import MapView from 'components/MapView';
+import DashboardView from 'components/DashboardView';
 import Login from 'components/Login';
+import ExportView from 'components/ExportView';
 import muiTheme from 'muiTheme';
 import Notifier from 'components/Notifier';
 import AuthModal from 'components/AuthModal';
@@ -59,12 +61,20 @@ Font.register({
 const Wrapper = memo(() => (
   <div id="app">
     <NavBar />
-    <Switch>
-      <Route>
-        <MapView />
-        <AuthModal />
-      </Route>
-    </Switch>
+    <div style={{ paddingTop: '56px', height: 'calc(100% - 56px)' }}>
+      {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
+      <Switch>
+        {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
+        <Route path="/dashboard/:path?" exact>
+          <DashboardView />
+        </Route>
+        {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
+        <Route>
+          <MapView />
+          <AuthModal />
+        </Route>
+      </Switch>
+    </div>
   </div>
 ));
 
@@ -74,7 +84,19 @@ function App() {
   // The rendered content
   const renderedContent = useMemo(() => {
     if (isAuthenticated || !authRequired) {
-      return <Wrapper />;
+      return (
+        // @ts-expect-error - react-router-dom v5 types incompatible with React 18
+        <Switch>
+          {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
+          <Route path="/export" exact>
+            <ExportView />
+          </Route>
+          {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
+          <Route>
+            <Wrapper />
+          </Route>
+        </Switch>
+      );
     }
     return <Login />;
   }, [isAuthenticated]);
@@ -83,6 +105,7 @@ function App() {
     <ThemeProvider theme={muiTheme}>
       {/* Used to show notifications from redux as a snackbar. Notifications are stored in notificationState */}
       <Notifier />
+      {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
       <Router>{renderedContent}</Router>
     </ThemeProvider>
   );

@@ -94,10 +94,12 @@ const {
   defaultBoundariesFile,
   rawTables,
   rawReports,
+  rawDashboards,
 }: {
   defaultBoundariesFile: string;
   rawTables: Record<string, any>;
   rawReports: Record<string, any>;
+  rawDashboards?: any[];
 } = configMap[safeCountry];
 
 const {
@@ -112,6 +114,10 @@ const appConfig: Record<string, any> = merge(
   {},
   defaultConfig,
   configMap[safeCountry].appConfig,
+  // Add dashboards to appConfig if available
+  rawDashboards && rawDashboards.length > 0
+    ? { dashboards: rawDashboards }
+    : {},
 );
 
 export function getRawLayers(
@@ -139,7 +145,7 @@ export function getRawLayers(
               `Legend '${layer.legend}' could not be found in shared legends.`,
             );
           }
-          // eslint-disable-next-line no-param-reassign, fp/no-mutation
+
           layer.legend = sharedLegends[layer.legend] || layer.legend;
         }
         return [key, layer];
@@ -147,6 +153,9 @@ export function getRawLayers(
   );
 }
 
+// Translation priority order (later values override earlier):
+// 1. Base: sharedTranslation[key] (shared language files from config/shared)
+// 2. Override: value (country-specific translation overrides shared)
 export function getTranslation(country: Country): Record<string, any> {
   const countryTranslation = get(configMap[country], 'translation', {});
   return Object.fromEntries(
@@ -198,6 +207,7 @@ export {
   rawLayers,
   rawTables,
   rawReports,
+  rawDashboards,
   msalInstance,
   msalRequest,
   enableNavigationDropdown,

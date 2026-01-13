@@ -44,6 +44,7 @@ import {
   BaselineLayerResult,
   checkBaselineDataLayer,
   Column,
+  createAreaExposedLegend,
   createLegendFromFeatureArray,
   ExposedPopulationResult,
   fetchApiData,
@@ -69,6 +70,7 @@ import { fetchWMSLayerAsGeoJSON } from 'utils/server-utils';
 import { isLocalhost } from 'serviceWorker';
 import { ANALYSIS_API_URL } from 'utils/constants';
 import { getFormattedDate } from 'utils/date-utils';
+import { boundaryCache } from 'utils/boundary-cache';
 import { layerDataSelector } from './mapStateSlice/selectors';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord } from './layers/admin_level_data';
@@ -79,6 +81,16 @@ export type TableRowType = { [key: string]: string | number };
 export type TableData = {
   columns: string[];
   rows: TableRowType[];
+};
+
+type CachedAnalysisResult = {
+  result: AnalysisResult;
+  timestamp: number;
+  config: AnalysisDispatchParams | PolygonAnalysisDispatchParams;
+};
+
+type AnalysisCache = {
+  [cacheKey: string]: CachedAnalysisResult;
 };
 
 type AnalysisResultState = {
@@ -97,6 +109,8 @@ type AnalysisResultState = {
   exposureAnalysisResultDataSortByKey: Column['id'];
   exposureAnalysisResultDataSortOrder: 'asc' | 'desc';
   invertedColors?: boolean;
+  cache: AnalysisCache;
+  currentCacheKey?: string;
 };
 
 export type TableRow = {
@@ -121,6 +135,8 @@ const initialState: AnalysisResultState = {
   exposureAnalysisResultDataSortOrder: 'asc',
   opacity: 0.5,
   invertedColors: false,
+  cache: {},
+  currentCacheKey: undefined,
 };
 
 /* Gets a public URL for the admin boundaries used by this application.
@@ -139,12 +155,12 @@ function getAdminBoundariesURL(adminBoundariesPath: string) {
   if (isLocalhost) {
     return defaultBoundariesPath;
   }
-  return (
-    window.location.origin + window.location.pathname + adminBoundariesPath
-  );
+  // Use the configured PUBLIC_URL (base path from router config) to construct the full URL
+  const publicUrl = import.meta.PUBLIC_URL || '';
+  return window.location.origin + publicUrl + adminBoundariesPath;
 }
 
-const generateTableColumnsFromApiData = (
+export const generateTableColumnsFromApiData = (
   aggregateData: AsyncReturnType<typeof fetchApiData>,
   key: string = 'sum',
 ): Column[] => {
@@ -349,6 +365,7 @@ export type AnalysisDispatchParams = {
   date: ReturnType<Date['getTime']>; // just a hint to developers that we give a date number here, not just any number
   statistic: AggregationOperations; // we might have to deviate from this if analysis accepts more than what this enum provides
   exposureValue: ExposureValue;
+  useCache?: boolean; // Optional bypass, defaults to true
 };
 
 export type PolygonAnalysisDispatchParams = {
@@ -360,6 +377,46 @@ export type PolygonAnalysisDispatchParams = {
   // just a hint to developers that we give a date number here, not just any number
   startDate: ReturnType<Date['getTime']>;
   endDate: ReturnType<Date['getTime']>;
+  useCache?: boolean; // Optional bypass, defaults to true
+};
+
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+const MAX_CACHE_SIZE = 4;
+
+export function generateRasterCacheKey(params: AnalysisDispatchParams): string {
+  const {
+    hazardLayer,
+    baselineLayer,
+    date,
+    statistic,
+    threshold,
+    exposureValue,
+  } = params;
+  return `raster_${hazardLayer.id}_${baselineLayer.id}_${date}_${statistic}_${threshold.above ?? ''}_${threshold.below ?? ''}_${exposureValue.operator}_${exposureValue.value}`;
+}
+
+export function generatePolygonCacheKey(
+  params: PolygonAnalysisDispatchParams,
+): string {
+  const { hazardLayer, adminLevel, startDate, endDate } = params;
+  return `polygon_${hazardLayer.id}_${adminLevel}_${startDate}_${endDate}`;
+}
+
+const isCacheStale = (timestamp: number): boolean =>
+  Date.now() - timestamp > CACHE_TTL_MS;
+
+const evictOldestCacheEntry = (cache: AnalysisCache): AnalysisCache => {
+  const entries = Object.entries(cache);
+  if (entries.length < MAX_CACHE_SIZE) {
+    return cache;
+  }
+
+  const oldestEntry = entries.reduce((oldest, current) =>
+    current[1].timestamp < oldest[1].timestamp ? current : oldest,
+  );
+  const oldestKey = oldestEntry[0];
+  const { [oldestKey]: _, ...rest } = cache;
+  return rest;
 };
 
 export type ExposedPopulationDispatchParams = {
@@ -403,7 +460,6 @@ async function createAPIRequestParams(
   // will default to the boundary layer hosted in S3.
   const zonesUrl = zonesPath ?? getAdminBoundariesURL(adminBoundariesPath);
 
-  // eslint-disable-next-line camelcase
   const wfsParams = (params as WfsRequestParams)?.layer_name
     ? { wfs_params: params as WfsRequestParams }
     : undefined;
@@ -417,28 +473,25 @@ async function createAPIRequestParams(
   const band = getStacBand(additionalQueryParams);
   // Get geotiff_url using STAC for layers in earthobservation.vam.
   // TODO - What happens if there is no date? are some layers not STAC?
-  const geotiffUrl =
-    baseUrl.includes('api.earthobservation.vam.wfp.org/ows') &&
-    // use WCS for flood exposure analysis because of a bug with gdal_calc
-    !serverLayerName.includes('wp_pop_cicunadj')
-      ? await getDownloadGeotiffURL(
-          serverLayerName,
-          band,
-          extent,
-          dateString,
-          dispatch,
-        )
-      : createGetCoverageUrl({
-          bbox: extent,
-          bboxDigits: 1,
-          date: dateValue,
-          layerId: serverLayerName,
-          resolution: wcsConfig?.pixelResolution,
-          url: baseUrl,
-        });
+  const geotiffUrl = baseUrl.includes('api.earthobservation.vam.wfp.org/ows')
+    ? await getDownloadGeotiffURL(
+        serverLayerName,
+        band,
+        extent,
+        dateString,
+        dispatch,
+      )
+    : createGetCoverageUrl({
+        bbox: extent,
+        bboxDigits: 1,
+        date: dateValue,
+        layerId: serverLayerName,
+        resolution: wcsConfig?.pixelResolution,
+        url: baseUrl,
+      });
 
   // we force group_by to be defined with &
-  // eslint-disable-next-line camelcase
+
   const apiRequest: ApiData = {
     geotiff_url: geotiffUrl,
     zones_url: zonesUrl,
@@ -457,8 +510,7 @@ async function createAPIRequestParams(
   return apiRequest;
 }
 
-const mergeTableRows = (tableRows: TableRow[]): TableRow => {
-  /* eslint-disable no-param-reassign, fp/no-mutation */
+export const mergeTableRows = (tableRows: TableRow[]): TableRow => {
   const mergedObject: TableRow = tableRows.reduce(
     (acc, tableRow) =>
       Object.keys(tableRow).reduce((tableRowAcc, tableRowKey) => {
@@ -492,7 +544,6 @@ const mergeTableRows = (tableRows: TableRow[]): TableRow => {
   mergedObject['90 km/h'] = ninety;
   mergedObject['60 km/h'] = sixty;
 
-  /* eslint-enable no-param-reassign, fp/no-mutation */
   return mergedObject;
 };
 
@@ -502,19 +553,24 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
   CreateAsyncThunkTypes
 >(
   'analysisResultState/requestAndStoreExposedPopulation',
+
   async (params, api) => {
     const { exposure, date, extent, statistic, wfsLayerId, maskLayerId } =
       params;
 
     const adminBoundaries = getBoundaryLayerSingleton();
 
-    const adminBoundariesData = layerDataSelector(adminBoundaries.id)(
-      api.getState(),
-    ) as LayerData<BoundaryLayerProps>;
-
-    const boundaryData = layerDataSelector(adminBoundaries.id)(
-      api.getState(),
-    ) as LayerData<BoundaryLayerProps> | undefined;
+    const boundaryData = await boundaryCache.getBoundaryData(
+      adminBoundaries,
+      api.dispatch,
+    );
+    if (!boundaryData) {
+      throw new Error('Boundary Layer not loaded!');
+    }
+    const adminBoundariesData = {
+      data: boundaryData,
+      layer: adminBoundaries,
+    } as LayerData<BoundaryLayerProps>;
     const { id, key, calc } = exposure;
 
     const wfsLayer =
@@ -546,7 +602,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       const dateString = getFormattedDate(dateValue, 'default');
 
       // Get geotiff_url using STAC for layers in earthobservation.vam.
-      // eslint-disable-next-line
+
       maskUrl =
         baseUrl.includes('api.earthobservation.vam.wfp.org/ows') &&
         !serverLayerName.includes('hf_water')
@@ -601,7 +657,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
     const featuresWithBoundaryProps = appendBoundaryProperties(
       adminBoundaries.adminCode,
       features,
-      boundaryData!.data.features,
+      boundaryData.features,
     );
 
     const collection: FeatureCollection = {
@@ -609,7 +665,12 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       features: featuresWithBoundaryProps,
     };
 
-    const legend = createLegendFromFeatureArray(features, statistic);
+    // For "Area exposed", always use a fixed percentage-based legend with standard classification
+    // instead of dynamically creating one from feature values.
+    const legend =
+      statistic === AggregationOperations['Area exposed']
+        ? createAreaExposedLegend()
+        : createLegendFromFeatureArray(features, statistic);
     // TODO - use raster legend title
     const legendText = wfsLayer ? wfsLayer.title : 'Exposure Analysis';
 
@@ -633,7 +694,6 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
     // We need to merge the data returned by the API as it will be split
     // by category for each admin boundary.
     if (key) {
-      // eslint-disable-next-line fp/no-mutation
       tableRows = Object.values(_groupBy(tableRows, 'name')).map(adminRows =>
         mergeTableRows(adminRows),
       );
@@ -658,6 +718,23 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   AnalysisDispatchParams,
   CreateAsyncThunkTypes
 >('analysisResultState/requestAndStoreAnalysis', async (params, api) => {
+  if (params.useCache) {
+    const cacheKey = generateRasterCacheKey(params);
+    const state = api.getState();
+    const cached = state.analysisResultState.cache[cacheKey];
+
+    if (cached && !isCacheStale(cached.timestamp)) {
+      return cached.result;
+    }
+  }
+
+  // Check if the request was aborted before making the expensive API call
+  const checkIfRequestWasAborted = () => {
+    if (api.signal.aborted) {
+      throw new Error('Analysis request was cancelled');
+    }
+  };
+
   const {
     hazardLayer,
     date,
@@ -675,13 +752,20 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     (baselineLayer as AdminLevelDataLayerProps)?.adminLevel ||
     (baselineLayer as BoundaryLayerProps)?.adminLevelCodes?.length;
   const adminBoundaries = getBoundaryLayersByAdminLevel(adminLevel);
-  const adminBoundariesData = layerDataSelector(adminBoundaries.id)(
-    api.getState(),
-  ) as LayerData<BoundaryLayerProps>;
 
-  if (!adminBoundariesData && adminBoundaries.format !== 'pmtiles') {
+  const boundaryData = await boundaryCache.getBoundaryData(
+    adminBoundaries,
+    api.dispatch,
+  );
+  if (!boundaryData && adminBoundaries.format !== 'pmtiles') {
     throw new Error('Boundary Layer not loaded!');
   }
+  const adminBoundariesData = boundaryData
+    ? ({
+        data: boundaryData,
+        layer: adminBoundaries,
+      } as LayerData<BoundaryLayerProps>)
+    : undefined;
 
   const apiRequest = await createAPIRequestParams(
     hazardLayer,
@@ -694,6 +778,8 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     exposureValue,
   );
 
+  checkIfRequestWasAborted();
+
   const statsByAdminId = scaleAndFilterAggregateData(
     await fetchApiData(ANALYSIS_API_URL, apiRequest, api.dispatch),
     hazardLayer,
@@ -701,10 +787,15 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     threshold,
   ) as KeyValueResponse[];
 
+  checkIfRequestWasAborted();
+
   const getCheckedBaselineData = async (): Promise<BaselineLayerData> => {
     // if the baselineData doesn't exist, lets load it, otherwise check then load existing data.
     // similar code can be found at impact.ts
     if (baselineLayer.type === 'boundary') {
+      if (!adminBoundariesData) {
+        throw new Error('Boundary data required for boundary baseline layer');
+      }
       return { ...adminBoundariesData.data, layerData: [] };
     }
     if (!baselineData && baselineLayer) {
@@ -722,11 +813,16 @@ export const requestAndStoreAnalysis = createAsyncThunk<
       return checkBaselineDataLayer(baselineLayer.id, baselineData.data);
     }
 
+    if (!adminBoundariesData) {
+      throw new Error('Boundary data required for baseline layer');
+    }
     return { ...adminBoundariesData.data, layerData: [] };
   };
 
   const loadedAndCheckedBaselineData: BaselineLayerData =
     await getCheckedBaselineData();
+
+  checkIfRequestWasAborted();
 
   const features = generateFeaturesFromApiData(
     statsByAdminId,
@@ -736,14 +832,22 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   );
 
   // Create a legend based on statistic data to be used for admin level analsysis.
+  // For "Area exposed", always use a fixed percentage-based legend with standard classification
+  // instead of the hazard layer's legend (which is for hazard values, not percentages).
   const legend =
-    hazardLayer.legend ?? createLegendFromFeatureArray(features, statistic);
+    statistic === AggregationOperations['Area exposed']
+      ? createAreaExposedLegend()
+      : (hazardLayer.legend ??
+        createLegendFromFeatureArray(features, statistic));
 
   const enrichedStatistics: (AggregationOperations | 'stats_intersect_area')[] =
     [statistic];
   if (statistic === AggregationOperations['Area exposed']) {
-    /* eslint-disable-next-line fp/no-mutating-methods */
     enrichedStatistics.push('stats_intersect_area');
+  }
+
+  if (!adminBoundariesData) {
+    throw new Error('Boundary data required for analysis result');
   }
 
   const tableRows: TableRow[] = generateTableFromApiData(
@@ -778,7 +882,17 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
   PolygonAnalysisResult,
   PolygonAnalysisDispatchParams,
   CreateAsyncThunkTypes
->('analysisResultState/requestAndStorePolygonAnalysis', async params => {
+>('analysisResultState/requestAndStorePolygonAnalysis', async (params, api) => {
+  if (params.useCache) {
+    const cacheKey = generatePolygonCacheKey(params);
+    const state = api.getState();
+    const cached = state.analysisResultState.cache[cacheKey];
+
+    if (cached && !isCacheStale(cached.timestamp)) {
+      return cached.result as PolygonAnalysisResult;
+    }
+  }
+
   const {
     adminLevel,
     adminLevelLayer,
@@ -796,7 +910,7 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
 
   const adminLevelName = getAdminNameProperty(adminLevel);
 
-  const classProperties = hazardLayer?.zonal?.class_properties || ['label']; // eslint-disable-line camelcase
+  const classProperties = hazardLayer?.zonal?.class_properties || ['label'];
 
   const result = await calculate({
     // clone the data, so zone, class and stats properties can be safely added
@@ -880,73 +994,62 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
 export const analysisResultSlice = createSlice({
   name: 'analysisResultState',
   initialState,
+
   reducers: {
     setAnalysisResultSortByKey: (
       state,
       { payload }: PayloadAction<string | number>,
-    ) => ({
-      ...state,
-      analysisResultDataSortByKey: payload,
-    }),
+    ) => {
+      state.analysisResultDataSortByKey = payload;
+    },
     setAnalysisResultSortOrder: (
       state,
       { payload }: PayloadAction<'asc' | 'desc'>,
-    ) => ({
-      ...state,
-      analysisResultDataSortOrder: payload,
-    }),
+    ) => {
+      state.analysisResultDataSortOrder = payload;
+    },
     setExposureAnalysisResultSortByKey: (
       state,
       { payload }: PayloadAction<string | number>,
-    ) => ({
-      ...state,
-      exposureAnalysisResultDataSortByKey: payload,
-    }),
+    ) => {
+      state.exposureAnalysisResultDataSortByKey = payload;
+    },
     setExposureAnalysisResultSortOrder: (
       state,
       { payload }: PayloadAction<'asc' | 'desc'>,
-    ) => ({
-      ...state,
-      exposureAnalysisResultDataSortOrder: payload,
-    }),
-    setAnalysisLayerOpacity: (state, { payload }: PayloadAction<number>) => ({
-      ...state,
-      opacity: payload,
-    }),
-    setIsMapLayerActive: (state, { payload }: PayloadAction<boolean>) => ({
-      ...state,
-      isMapLayerActive: payload,
-    }),
-    setExposureLayerId: (state, { payload }: PayloadAction<string>) => ({
-      ...state,
-      exposureLayerId: payload,
-    }),
+    ) => {
+      state.exposureAnalysisResultDataSortOrder = payload;
+    },
+    setAnalysisLayerOpacity: (state, { payload }: PayloadAction<number>) => {
+      state.opacity = payload;
+    },
+    setIsMapLayerActive: (state, { payload }: PayloadAction<boolean>) => {
+      state.isMapLayerActive = payload;
+    },
+    setExposureLayerId: (state, { payload }: PayloadAction<string>) => {
+      state.exposureLayerId = payload;
+    },
     setIsDataTableDrawerActive: (
       state,
       { payload }: PayloadAction<boolean>,
-    ) => ({
-      ...state,
-      isDataTableDrawerActive: payload,
-    }),
+    ) => {
+      state.isDataTableDrawerActive = payload;
+    },
     setCurrentDataDefinition: (
       state,
       { payload }: PayloadAction<TableType>,
-    ) => ({
-      ...state,
-      definition: payload,
-    }),
-    hideDataTableDrawer: state => ({
-      ...state,
-      isDataTableDrawerActive: false,
-    }),
-    analysisLayerInvertColors: state => ({
-      ...state,
-      invertedColors: !state.invertedColors,
-    }),
-    clearAnalysisResult: state => ({
-      ...state,
-      result: undefined,
-    }),
+    ) => {
+      state.definition = payload;
+    },
+    hideDataTableDrawer: state => {
+      state.isDataTableDrawerActive = false;
+    },
+    analysisLayerInvertColors: state => {
+      state.invertedColors = !state.invertedColors;
+    },
+    clearAnalysisResult: state => {
+      state.result = undefined;
+    },
   },
   extraReducers: builder => {
     builder.addCase(
@@ -954,7 +1057,7 @@ export const analysisResultSlice = createSlice({
       (
         { result: _result, ...rest },
         { payload }: PayloadAction<AnalysisResult>,
-      ): AnalysisResultState => ({
+      ) => ({
         ...rest,
         result: payload as ExposedPopulationResult,
         isExposureLoading: false,
@@ -963,7 +1066,7 @@ export const analysisResultSlice = createSlice({
 
     builder.addCase(
       requestAndStoreExposedPopulation.rejected,
-      (state, action): AnalysisResultState => ({
+      (state, action) => ({
         ...state,
         isExposureLoading: false,
         error: action.error.message
@@ -972,60 +1075,100 @@ export const analysisResultSlice = createSlice({
       }),
     );
 
-    builder.addCase(
-      requestAndStoreExposedPopulation.pending,
-      (state): AnalysisResultState => ({
-        ...state,
-        isExposureLoading: true,
-      }),
-    );
+    builder.addCase(requestAndStoreExposedPopulation.pending, state => ({
+      ...state,
+      isExposureLoading: true,
+    }));
 
-    builder.addCase(
-      requestAndStoreAnalysis.fulfilled,
-      (
-        { result: _result, ...rest },
-        { payload }: PayloadAction<AnalysisResult>,
-      ): AnalysisResultState => ({
-        ...rest,
+    builder.addCase(requestAndStoreAnalysis.fulfilled, (state, action) => {
+      const { payload, meta } = action;
+      const currentCache = state.cache;
+      const cacheKey = generateRasterCacheKey(meta.arg);
+      const existingCached = currentCache[cacheKey];
+      const isAlreadyCached =
+        existingCached && !isCacheStale(existingCached.timestamp);
+
+      if (isAlreadyCached) {
+        return {
+          ...state,
+          isLoading: false,
+          result: payload,
+          currentCacheKey: cacheKey,
+        };
+      }
+
+      // New result - update cache
+      const evictedCache = evictOldestCacheEntry(currentCache);
+      return {
+        ...state,
+        cache: {
+          ...evictedCache,
+          [cacheKey]: {
+            result: payload,
+            timestamp: Date.now(),
+            config: meta.arg,
+          },
+        },
         isLoading: false,
-        result: payload as BaselineLayerResult,
-      }),
-    );
+        result: payload,
+        currentCacheKey: cacheKey,
+      };
+    });
 
-    builder.addCase(
-      requestAndStoreAnalysis.rejected,
-      (state, action): AnalysisResultState => ({
-        ...state,
-        isLoading: false,
-        error: action.error.message
-          ? action.error.message
-          : action.error.toString(),
-      }),
-    );
+    builder.addCase(requestAndStoreAnalysis.rejected, (state, action) => ({
+      ...state,
+      isLoading: false,
+      error: action.error.message
+        ? action.error.message
+        : action.error.toString(),
+    }));
 
-    builder.addCase(
-      requestAndStoreAnalysis.pending,
-      (state): AnalysisResultState => ({
-        ...state,
-        isLoading: true,
-      }),
-    );
+    builder.addCase(requestAndStoreAnalysis.pending, state => ({
+      ...state,
+      isLoading: true,
+    }));
 
     builder.addCase(
       requestAndStorePolygonAnalysis.fulfilled,
-      (
-        { result: _result, ...rest },
-        { payload }: PayloadAction<PolygonAnalysisResult>,
-      ): AnalysisResultState => ({
-        ...rest,
-        isLoading: false,
-        result: payload as PolygonAnalysisResult,
-      }),
+      (state, action) => {
+        const { payload, meta } = action;
+        const currentCache = state.cache;
+        const cacheKey = generatePolygonCacheKey(meta.arg);
+        const existingCached = currentCache[cacheKey];
+        const isAlreadyCached =
+          existingCached && !isCacheStale(existingCached.timestamp);
+
+        if (isAlreadyCached) {
+          return {
+            ...state,
+            isLoading: false,
+            result: payload,
+            currentCacheKey: cacheKey,
+          };
+        }
+
+        // New result - update cache
+        const evictedCache = evictOldestCacheEntry(currentCache);
+        return {
+          ...state,
+          cache: {
+            ...evictedCache,
+            [cacheKey]: {
+              result: payload,
+              timestamp: Date.now(),
+              config: meta.arg,
+            },
+          },
+          isLoading: false,
+          result: payload,
+          currentCacheKey: cacheKey,
+        };
+      },
     );
 
     builder.addCase(
       requestAndStorePolygonAnalysis.rejected,
-      (state, action): AnalysisResultState => ({
+      (state, action) => ({
         ...state,
         isLoading: false,
         error: action.error.message
@@ -1034,13 +1177,10 @@ export const analysisResultSlice = createSlice({
       }),
     );
 
-    builder.addCase(
-      requestAndStorePolygonAnalysis.pending,
-      (state): AnalysisResultState => ({
-        ...state,
-        isLoading: true,
-      }),
-    );
+    builder.addCase(requestAndStorePolygonAnalysis.pending, state => ({
+      ...state,
+      isLoading: true,
+    }));
   },
 });
 
@@ -1054,6 +1194,19 @@ export const getCurrentData = (state: RootState): TableData =>
 export const analysisResultSelector = (
   state: RootState,
 ): AnalysisResult | undefined => state.analysisResultState.result;
+
+export const getCachedAnalysisResult =
+  (cacheKey: string | undefined) =>
+  (state: RootState): AnalysisResult | undefined => {
+    if (!cacheKey) {
+      return undefined;
+    }
+    const cached = state.analysisResultState.cache[cacheKey];
+    if (!cached || isCacheStale(cached.timestamp)) {
+      return undefined;
+    }
+    return cached.result;
+  };
 
 export const analysisResultSortByKeySelector = (
   state: RootState,
@@ -1093,6 +1246,10 @@ export const isDataTableDrawerActiveSelector = (state: RootState): boolean =>
 
 export const invertedColorsSelector = (state: RootState): boolean =>
   state.analysisResultState.invertedColors!!;
+
+export const analysisResultErrorSelector = (
+  state: RootState,
+): string | undefined => state.analysisResultState.error;
 
 // Setters
 export const {

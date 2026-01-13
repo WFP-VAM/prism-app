@@ -15,6 +15,7 @@ import {
   CompositeLayerProps,
   LayerKey,
   LegendDefinitionItem,
+  SelectedDateTimestamp,
   WMSLayerProps,
 } from 'config/types';
 import {
@@ -59,7 +60,12 @@ function LayerDownloadOptions({
   const serverAvailableDates = useSelector(availableDatesSelector);
   const layerAvailableDates = serverAvailableDates[layer.id];
   const queryDateItem = useMemo(
-    () => getRequestDateItem(layerAvailableDates, selectedDate, false),
+    () =>
+      getRequestDateItem(
+        layerAvailableDates,
+        selectedDate as SelectedDateTimestamp,
+        false,
+      ),
     [layerAvailableDates, selectedDate],
   );
   const requestDate = queryDateItem?.startDate || queryDateItem?.queryDate;
@@ -222,13 +228,13 @@ function LayerDownloadOptions({
             ? (legend[index + Number(shouldShiftIndex)]?.value as number) *
               scalingFactor
             : 'INF';
-        // eslint-disable-next-line fp/no-mutation
+
         qml += `
                     <item color="${item.color}" value="${value}" alpha="255" label="${label}" />`;
       });
 
       // End of QML file content
-      // eslint-disable-next-line fp/no-mutation
+
       qml += `
                 </colorrampshader>
             </rastershader>

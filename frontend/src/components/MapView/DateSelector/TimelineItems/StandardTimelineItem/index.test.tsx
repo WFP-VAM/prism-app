@@ -6,7 +6,12 @@ test('StandardTimelineItem renders as expected', () => {
   // Arrange
   const currentDateTime = new Date().getTime();
   const concatenatedLayers = [
-    [{ displayDate: currentDateTime, queryDate: currentDateTime }],
+    [
+      {
+        displayDate: currentDateTime,
+        queryDate: currentDateTime,
+      },
+    ],
     [
       {
         displayDate: currentDateTime,
@@ -17,9 +22,9 @@ test('StandardTimelineItem renders as expected', () => {
         queryDate: currentDateTime,
       },
     ],
-  ];
+  ] as DateItem[][];
 
-  const props: Omit<StandardTimelineItemProps, 'classes'> = {
+  const props: StandardTimelineItemProps = {
     isDateAvailable: false,
     concatenatedLayers,
     currentDate: {
@@ -30,15 +35,15 @@ test('StandardTimelineItem renders as expected', () => {
       date: '',
     },
     dateItemStyling: [
-      { class: 'intersectionDate', color: 'White' },
+      { color: 'White' },
       {
-        class: 'layerOneDate',
         color: '',
-        layerDirectionClass: 'layerDirectionClass',
       },
-      { class: 'intersectionDate', color: 'White' },
-      { class: 'intersectionDate', color: 'White' },
+      { color: 'White' },
     ],
+    availabilityClass: 'intersectionDate',
+    dateRange: [],
+    selectedDate: currentDateTime,
   };
 
   // Act
@@ -54,7 +59,7 @@ test('StandardTimelineItem renders as expected with data point starting after Ti
   const firstLayerDataPoint = 1669896000000; // 01-12-2022
   const secondLayerDataPoint = 1670756400000; // 12-12-2022
 
-  const layerDates: DateItem[] = [
+  const layerDates = [
     {
       displayDate: firstLayerDataPoint,
       queryDate: firstLayerDataPoint,
@@ -63,11 +68,11 @@ test('StandardTimelineItem renders as expected with data point starting after Ti
       displayDate: secondLayerDataPoint,
       queryDate: secondLayerDataPoint,
     },
-  ];
+  ] as DateItem[];
 
   const concatenatedLayers = [layerDates, layerDates];
 
-  const props: Omit<StandardTimelineItemProps, 'classes'> = {
+  const props: StandardTimelineItemProps = {
     isDateAvailable: false,
     concatenatedLayers,
     currentDate: {
@@ -78,15 +83,15 @@ test('StandardTimelineItem renders as expected with data point starting after Ti
       date: '',
     },
     dateItemStyling: [
-      { class: 'intersectionDate', color: 'White' },
+      { color: 'White' },
       {
-        class: 'layerOneDate',
         color: '',
-        layerDirectionClass: 'layerDirectionClass',
       },
-      { class: 'intersectionDate', color: 'White' },
-      { class: 'intersectionDate', color: 'White' },
+      { color: 'White' },
     ],
+    availabilityClass: 'intersectionDate',
+    dateRange: [],
+    selectedDate: currentDateTime,
   };
 
   // Act

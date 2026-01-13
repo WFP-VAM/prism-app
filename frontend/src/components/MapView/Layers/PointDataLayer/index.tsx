@@ -19,9 +19,10 @@ import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { addNotification } from 'context/notificationStateSlice';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { getRequestDate } from 'utils/server-utils';
+import { loadAvailableDatesForLayer } from 'context/serverStateSlice';
+import { pointDataLayerDatesSelector } from 'context/serverPreloadStateSlice';
 import { useUrlHistory } from 'utils/url-utils';
 import {
-  circleLayout,
   circlePaint,
   fillPaintCategorical,
   fillPaintData,
@@ -34,15 +35,19 @@ import {
 import { createEWSDatasetParams } from 'utils/ews-utils';
 import { addPopupParams } from 'components/MapView/Layers/layer-utils';
 import {
-  CircleLayerSpecification,
   FillLayerSpecification,
   MapLayerMouseEvent,
+  SymbolLayerSpecification,
 } from 'maplibre-gl';
 import { findFeature, getLayerMapId, useMapCallback } from 'utils/map-utils';
 import { getFormattedDate } from 'utils/date-utils';
 import { geoToH3, h3ToGeoBoundary } from 'h3-js';
 import { createGoogleFloodDatasetParams } from 'utils/google-flood-utils';
 import { useMapState } from 'utils/useMapState';
+import {
+  IconShape,
+  ensureSDFIconsLoaded,
+} from 'components/MapView/Layers/icon-utils';
 
 const onClick =
   ({ layer, dispatch, t }: MapEventWrapFunctionProps<PointDataLayerProps>) =>
@@ -84,11 +89,21 @@ const PointDataLayer = memo(({ layer, before }: LayersProps) => {
   const serverAvailableDates = useSelector(availableDatesSelector);
   const layerAvailableDates = serverAvailableDates[layer.id];
   const userAuth = useSelector(userAuthSelector);
+  const preloadedDates = useSelector(pointDataLayerDatesSelector)[layer.id];
   const {
     actions: { removeLayerData },
   } = useMapState();
+  const map = useMapState()?.maplibreMap();
+  const dispatch = useDispatch();
 
   useMapCallback('click', layerId, layer, onClick);
+
+  // Ensure SDF icons are loaded (create if not in sprite)
+  useEffect(() => {
+    if (map) {
+      ensureSDFIconsLoaded(map);
+    }
+  }, [map]);
 
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
   const validateLayerDate = !layer.dateUrl || queryDate;
@@ -96,9 +111,20 @@ const PointDataLayer = memo(({ layer, before }: LayersProps) => {
   const layerData = useSelector(layerDataSelector(layer.id, queryDate)) as
     | LayerData<PointDataLayerProps>
     | undefined;
-  const dispatch = useDispatch();
   const { updateHistory, removeKeyFromUrl, removeLayerFromUrl } =
     useUrlHistory();
+
+  // Reload available dates when preloaded dates change (e.g., after login/refetch)
+  useEffect(() => {
+    if (
+      layer.dateUrl &&
+      preloadedDates &&
+      preloadedDates.length > 0 &&
+      (!layerAvailableDates || layerAvailableDates.length === 0)
+    ) {
+      dispatch(loadAvailableDatesForLayer(layer.id));
+    }
+  }, [preloadedDates, layer.id, layer.dateUrl, layerAvailableDates, dispatch]);
 
   const { data } = layerData || {};
 
@@ -225,14 +251,22 @@ const PointDataLayer = memo(({ layer, before }: LayersProps) => {
     );
   }
 
+  // Use icons: 'point' (default), 'square', 'triangle', or 'diamond'
+  // These support icon-color which will be applied from circlePaint
+  const iconShape: IconShape = (layer.iconShape || 'point') as IconShape;
+
   return (
     <Source data={data} type="geojson">
       <Layer
         beforeId={before}
         id={layerId}
-        type="circle"
-        layout={circleLayout}
-        paint={circlePaint(layer) as CircleLayerSpecification['paint']}
+        type="symbol"
+        layout={{
+          'icon-image': iconShape,
+          'icon-size': 1.5,
+          'icon-allow-overlap': true,
+        }}
+        paint={circlePaint(layer) as SymbolLayerSpecification['paint']}
       />
     </Source>
   );

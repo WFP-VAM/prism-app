@@ -5,12 +5,19 @@ import React from 'react';
 // learn more: https://github.com/testing-library/jest-dom
 // import '@testing-library/jest-dom/extend-expect';
 import '@testing-library/jest-dom';
-// eslint-disable-next-line import/no-extraneous-dependencies
+
 import 'cross-fetch/polyfill';
 import { randomBytes } from 'crypto';
 
+// Polyfill TextEncoder and TextDecoder for jsPDF compatibility
+if (typeof global.TextEncoder === 'undefined') {
+  const { TextEncoder, TextDecoder } = require('util');
+  global.TextEncoder = TextEncoder;
+  global.TextDecoder = TextDecoder;
+}
+
 // Mock Workers
-// eslint-disable-next-line fp/no-mutation
+
 global.URL.createObjectURL = jest.fn(() => 'worker');
 class Worker {
   url: any;
@@ -26,12 +33,10 @@ class Worker {
   }
 }
 
-// eslint-disable-next-line fp/no-mutation
 // @ts-ignore
-// eslint-disable-next-line fp/no-mutation
+
 window.Worker = Worker;
 
-// eslint-disable-next-line fp/no-mutating-methods
 Object.defineProperty(global.self, 'crypto', {
   value: {
     getRandomValues: (arr: any) => {
@@ -139,10 +144,9 @@ stubMuiIcon('Visibility');
 stubMuiIcon('VisibilityOff');
 
 // mock getContext based on https://github.com/hustcc/jest-canvas-mock/issues/2
-// eslint-disable-next-line fp/no-mutation
+
 HTMLCanvasElement.prototype.getContext = jest.fn();
 
-// eslint-disable-next-line fp/no-mutation
 global.ResizeObserver = jest.fn().mockImplementation(() => ({
   observe: jest.fn(),
   unobserve: jest.fn(),
@@ -157,4 +161,23 @@ jest.mock('chartjs-plugin-annotation', () => ({
     afterDraw: jest.fn(),
     destroy: jest.fn(),
   },
+}));
+
+// Mock zonal-utils to avoid Web Worker issues in tests
+jest.mock('utils/zonal-utils', () => ({
+  calculate: jest.fn(() => Promise.resolve({})),
+}));
+
+// Mock jsPDF to prevent Node.js API issues in tests
+jest.mock('jspdf', () => ({
+  jsPDF: jest.fn().mockImplementation(() => ({
+    addImage: jest.fn(),
+    save: jest.fn(),
+    internal: {
+      pageSize: {
+        getHeight: jest.fn(() => 800),
+        getWidth: jest.fn(() => 600),
+      },
+    },
+  })),
 }));

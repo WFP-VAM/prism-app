@@ -1,15 +1,21 @@
 import appConfig from './prism.json';
 import rawLayers from './layers.json';
 import rawTables from './tables.json';
-import rawReports from './reports.json';
+import rawDashboards from './dashboards.json';
 
-const translation = { pt: {}, en: {} };
+// Country-specific translation overrides shared translation
+const translation = {
+  pt: {},
+  en: { 'Admin 1': 'Province', 'Admin 2': 'District' },
+};
+const rawReports = {};
 
 export default {
   appConfig,
   rawLayers,
-  rawTables,
   rawReports,
+  rawTables,
+  rawDashboards,
   translation,
   defaultBoundariesFile: 'moz_bnd_adm3_WFP.json',
 };

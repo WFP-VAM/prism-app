@@ -1,4 +1,8 @@
-import { DatesPropagation, SeasonBounds } from 'config/types';
+import {
+  DatesPropagation,
+  ReferenceDateTimestamp,
+  SeasonBounds,
+} from 'config/types';
 import timezoneMock from 'timezone-mock';
 import {
   generateIntermediateDateItemFromValidity,
@@ -27,7 +31,7 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
     };
 
     const output = generateIntermediateDateItemFromValidity(
-      layer.dates,
+      layer.dates as ReferenceDateTimestamp[],
       layer.validity,
     );
 
@@ -246,7 +250,7 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
       },
     };
     const output = generateIntermediateDateItemFromValidity(
-      layer.dates,
+      layer.dates as ReferenceDateTimestamp[],
       layer.validity,
     );
     expect(output).toEqual([
@@ -398,7 +402,7 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
       },
     };
     const output = generateIntermediateDateItemFromValidity(
-      layer.dates,
+      layer.dates as ReferenceDateTimestamp[],
       layer.validity,
     );
     expect(output).toEqual([
@@ -547,7 +551,7 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
       },
     };
     const output = generateIntermediateDateItemFromValidity(
-      layer.dates,
+      layer.dates as ReferenceDateTimestamp[],
       layer.validity,
     );
     const startOfWinter = new Date(
@@ -567,10 +571,8 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
       daysInSeason[daysInSeason.length - 1] < endOfWinter
     ) {
       if (daysInSeason.length === 0) {
-        // eslint-disable-next-line fp/no-mutating-methods
         daysInSeason.push(startOfWinter);
       } else {
-        // eslint-disable-next-line fp/no-mutating-methods
         daysInSeason.push(
           new Date(
             new Date(startOfWinter).setDate(
@@ -611,7 +613,7 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
       },
     };
     const output = generateIntermediateDateItemFromValidity(
-      layer.dates,
+      layer.dates as ReferenceDateTimestamp[],
       layer.validity,
     );
     const startOfWetSeason = new Date(
@@ -627,10 +629,8 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
       daysInSeason[daysInSeason.length - 1] < endOfWetSeason
     ) {
       if (daysInSeason.length === 0) {
-        // eslint-disable-next-line fp/no-mutating-methods
         daysInSeason.push(startOfWetSeason);
       } else {
-        // eslint-disable-next-line fp/no-mutating-methods
         daysInSeason.push(
           new Date(
             new Date(startOfWetSeason).setDate(

@@ -54,7 +54,6 @@ function formatLayersCategories(
         } else if (Object.isSealed(layer)) {
           console.error(`Layer ${layer?.id} is sealed and cannot be modified.`);
         } else {
-          // eslint-disable-next-line fp/no-mutation
           layer.group = group;
         }
 
@@ -129,6 +128,8 @@ export const isAnticipatoryActionDroughtAvailable =
   !!appConfig.anticipatoryActionDroughtUrl;
 export const isAnticipatoryActionStormAvailable =
   !!appConfig.anticipatoryActionStormUrl;
+export const isAnticipatoryActionFloodAvailable =
+  !!appConfig.anticipatoryActionFloodUrl;
 
 export const oneDayInMs = 24 * 60 * 60 * 1000;
 export const oneYearInMs = 365 * oneDayInMs;

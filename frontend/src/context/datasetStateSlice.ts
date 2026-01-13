@@ -190,7 +190,7 @@ export const loadGoogleFloodDataset = async (
       {},
       `Request failed for fetching Google Flood data points by location at ${url}`,
     );
-    // eslint-disable-next-line fp/no-mutation
+
     dataPoints = await resp.json();
   } catch (error) {
     console.error(error);
@@ -209,17 +209,20 @@ export const loadGoogleFloodDataset = async (
 
   const tableData = createTableData(results, TableDataFormat.DATE);
 
-  const GoogleFloodConfig = Object.entries(triggerLevels).reduce(
-    (acc, [key, value]) => {
-      const obj = {
-        ...GoogleFloodTriggersConfig[key],
-        values: tableData.rows.map(() => value),
-      };
+  // Handle null triggerLevels (some gauges don't have gauge model data)
+  const GoogleFloodConfig = triggerLevels
+    ? Object.entries(triggerLevels).reduce((acc, [key, value]) => {
+        if (value === null) {
+          return acc;
+        }
+        const obj = {
+          ...GoogleFloodTriggersConfig[key],
+          values: tableData.rows.map(() => value),
+        };
 
-      return { ...acc, [key]: obj };
-    },
-    {},
-  );
+        return { ...acc, [key]: obj };
+      }, {})
+    : {};
 
   const tableDataWithGoogleFloodConfig: TableData = {
     ...tableData,
@@ -267,7 +270,6 @@ export const fetchHDC = async (
     `Request failed to get HDC data at ${url}?${requestParamsStr}`,
   );
 
-  // eslint-disable-next-line fp/no-mutation
   responseJson = await response.json();
 
   const dates: number[] = responseJson?.date?.map((date: string) =>

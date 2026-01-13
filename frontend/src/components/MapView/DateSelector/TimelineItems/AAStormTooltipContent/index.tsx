@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateDateRange } from 'context/mapStateSlice';
 import { getFormattedDate } from 'utils/date-utils';
 import { useUrlHistory } from 'utils/url-utils';
+import { AAStormColors } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
 import { useWindStatesByTime } from '../hooks';
 
 function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
@@ -49,9 +50,9 @@ function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
       case WindState.ready:
         return '#63B2BD';
       case WindState.activated_48kt:
-        return '#FF8934';
+        return AAStormColors.categories.moderate.background;
       case WindState.activated_64kt:
-        return '#E63701';
+        return AAStormColors.categories.severe.background;
       default:
         console.warn('status not found', status);
         return '#ffff';
@@ -62,7 +63,7 @@ function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
     <div className={classes.container}>
       <div className={classes.dateAndCyclonesContainer}>
         <div className={classes.cyclonesContainer}>
-          {/* eslint-disable-next-line fp/no-mutating-methods */}
+          {}
           {allWindStates
             .sort((a, b) =>
               (a.cycloneName || '').localeCompare(b.cycloneName || ''),
@@ -88,7 +89,6 @@ function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
 
                     return (
                       <ToggleButton
-                        // eslint-disable-next-line react/no-array-index-key
                         key={`${windStates.cycloneName}::${itemDate.valueOf()}::${index}`}
                         value={`${windStates.cycloneName?.toUpperCase()}::${item.ref_time}`}
                         onMouseDown={e => e.preventDefault()}
@@ -96,10 +96,8 @@ function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
                         style={{
                           backgroundColor: `${getButtonColor(item.state)}${
                             `${windStates.cycloneName?.toUpperCase()}::${item.ref_time}` ===
-                            // eslint-disable-next-line no-unsafe-optional-chaining, prefer-template
                             stormData.forecastDetails?.cyclone_name.toUpperCase() +
                               '::' +
-                              // eslint-disable-next-line no-unsafe-optional-chaining
                               stormData.forecastDetails?.reference_time
                               ? ''
                               : '50'

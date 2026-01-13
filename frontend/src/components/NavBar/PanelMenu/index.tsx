@@ -1,5 +1,8 @@
 import { Menu, MenuItem } from '@material-ui/core';
-import { PanelItem } from 'config/types';
+import { useSelector } from 'react-redux';
+import { PanelItem, Panel } from 'config/types';
+import { selectedDashboardIndexSelector } from 'context/dashboardStateSlice';
+import { useSafeTranslation } from 'i18n';
 
 function PanelMenu({
   panel,
@@ -14,9 +17,21 @@ function PanelMenu({
   handleChildClick: (childPanel: PanelItem) => void;
   selected: string;
 }) {
-  const validSelected = panel.children?.find(
-    (child: PanelItem) => child.panel === selected,
-  );
+  const selectedDashboardIndex = useSelector(selectedDashboardIndexSelector);
+
+  const getIsChildSelected = (child: PanelItem) => {
+    if (
+      panel.panel === Panel.Dashboard &&
+      child.reportIndex !== undefined &&
+      selected === Panel.Dashboard
+    ) {
+      return child.reportIndex === selectedDashboardIndex;
+    }
+
+    return child.panel === selected;
+  };
+
+  const { t } = useSafeTranslation();
 
   return (
     <Menu
@@ -26,14 +41,18 @@ function PanelMenu({
     >
       {panel.children?.map((child: PanelItem) => (
         <MenuItem
-          key={child.panel}
+          key={
+            child.reportIndex !== undefined
+              ? `dashboard-${child.reportIndex}`
+              : child.panel
+          }
           onClick={() => {
             handleChildClick(child);
             handleMenuClose();
           }}
-          selected={validSelected?.panel === child.panel}
+          selected={getIsChildSelected(child)}
         >
-          {child.label}
+          {t(child.label)}
         </MenuItem>
       ))}
     </Menu>

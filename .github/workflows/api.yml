@@ -26,7 +26,7 @@ jobs:
         uses: snok/install-poetry@v1
         with:
           # Version of Poetry to use
-          version: 2.1.3
+          version: 2.2.1
           virtualenvs-create: true
           virtualenvs-in-project: true
       - name: Install dependencies
@@ -39,6 +39,22 @@ jobs:
           cd api
           poetry run black --check .
           poetry run isort --check .
+      - name: Security audit
+        run: |
+          cd api
+          # Run pip-audit and filter to show only vulnerable packages (exclude packages with no vulns)
+          poetry run pip-audit --desc --format json 2>/dev/null | \
+            jq '{dependencies: [.dependencies[]? | select(.vulns != null and (.vulns | length > 0))]}' > audit_results.json || true
+
+          # Check if there are any vulnerabilities in the filtered results
+          VULN_COUNT=$(jq '.dependencies | length' audit_results.json)
+          if [ "$VULN_COUNT" -gt 0 ]; then
+            echo "❌ Found $VULN_COUNT vulnerable package(s):"
+            jq '.' audit_results.json
+            exit 1
+          else
+            echo "✅ No vulnerabilities found"
+          fi
 
   api_build:
     name: build and test api

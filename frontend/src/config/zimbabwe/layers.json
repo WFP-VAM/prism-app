@@ -5081,7 +5081,7 @@
   "vac_food_insec": {
     "title": "Food insecurity prevalence (ZimVAC 2020)",
     "type": "admin_level_data",
-    "boundary": "admin2_boundaries",
+    "boundary": "admin_boundaries",
     "path": "data/zimbabwe/zim_vac_food_insec_2020.json",
     "data_field": "food_insecurity_prevalence",
     "admin_level": 2,
@@ -5119,7 +5119,7 @@
   "pop_2020": {
     "title": "Population (UNFPA - 2020)",
     "type": "admin_level_data",
-    "boundary": "admin2_boundaries",
+    "boundary": "admin_boundaries",
     "path": "data/zimbabwe/zim_pop_2020.json",
     "data_field": "total_population",
     "admin_level": 2,
@@ -5157,7 +5157,7 @@
   "ipc_phase_10_2020": {
     "title": "IPC Phase Classification (Oct 2020)",
     "type": "admin_level_data",
-    "boundary": "admin2_boundaries",
+    "boundary": "admin_boundaries",
     "path": "data/zimbabwe/zim_ipc_2020_10.json",
     "data_field": "ipc_phase_2020_10",
     "admin_level": 2,
@@ -5195,7 +5195,7 @@
   "cereal_insecurity_2021": {
     "title": "Cereal insecurity 2021",
     "type": "admin_level_data",
-    "boundary": "admin2_boundaries",
+    "boundary": "admin_boundaries",
     "path": "data/zimbabwe/zim_fs_2021.json",
     "data_field": "cereal_insecurity_2021",
     "admin_level": 2,
@@ -5233,7 +5233,7 @@
   "10_year_avg_cereal_insecurity": {
     "title": "10-year average cereal insecurity",
     "type": "admin_level_data",
-    "boundary": "admin2_boundaries",
+    "boundary": "admin_boundaries",
     "path": "data/zimbabwe/zim_fs_2021.json",
     "data_field": "10_year_avg_cereal_insecurity",
     "admin_level": 2,
@@ -5271,7 +5271,7 @@
   "5_year_avg_cereal_insecurity": {
     "title": "5-year average cereal insecurity",
     "type": "admin_level_data",
-    "boundary": "admin2_boundaries",
+    "boundary": "admin_boundaries",
     "path": "data/zimbabwe/zim_fs_2021.json",
     "data_field": "5_year_avg_cereal_insecurity",
     "admin_level": 2,
@@ -5309,7 +5309,7 @@
   "poor_fc": {
     "title": "Poor food consumption",
     "type": "admin_level_data",
-    "boundary": "admin2_boundaries",
+    "boundary": "admin_boundaries",
     "path": "data/zimbabwe/zim_fs_2021.json",
     "data_field": "poor_fc",
     "admin_level": 2,
@@ -5347,7 +5347,7 @@
   "borderline_fc": {
     "title": "Borderline food consumption",
     "type": "admin_level_data",
-    "boundary": "admin2_boundaries",
+    "boundary": "admin_boundaries",
     "path": "data/zimbabwe/zim_fs_2021.json",
     "data_field": "borderline_fc",
     "admin_level": 2,

@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import {
   createStyles,
   Typography,
@@ -9,10 +10,15 @@ import { useMsal } from '@azure/msal-react';
 import { msalRequest } from 'config';
 
 import { colors } from 'muiTheme';
+import wfpLogo from 'public/images/wfp_logo.png';
 
 function Login() {
   const classes = useStyles();
   const { instance } = useMsal();
+
+  const handleLogin = useCallback(() => {
+    instance.loginPopup(msalRequest).catch(() => {});
+  }, [instance]);
 
   return (
     <div className={classes.container}>
@@ -26,10 +32,7 @@ function Login() {
             credentials.
           </Typography>
           <br />
-          <Button
-            variant="contained"
-            onClick={() => instance.loginPopup(msalRequest).catch(() => {})}
-          >
+          <Button variant="contained" onClick={handleLogin}>
             Login
           </Button>
         </Grid>
@@ -37,7 +40,7 @@ function Login() {
         <Grid item>
           <img
             className={classes.image}
-            src="images/wfp_logo.png"
+            src={wfpLogo}
             alt="World Food Programme logo"
           />
         </Grid>

@@ -1,6 +1,7 @@
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
 
 import { LandfallInfo } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
+import { useSafeTranslation } from 'i18n';
 import {
   formatLandfallDate,
   formatLandfallEstimatedLeadtime,
@@ -10,6 +11,7 @@ import {
 
 function PopupContent({ landfallInfo, reportDate }: PopupContentProps) {
   const classes = useStyles();
+  const { t } = useSafeTranslation();
 
   return (
     <div className={classes.itemsContainer}>
@@ -17,11 +19,15 @@ function PopupContent({ landfallInfo, reportDate }: PopupContentProps) {
         variant="body1"
         className={`${classes.text} ${classes.title}`}
       >
-        Report date: {formatReportDate(reportDate)}
+        {t('Report date')}: {formatReportDate(reportDate)}
       </Typography>
       <div className={classes.itemContainer}>
-        <Typography variant="body1" className={classes.text}>
-          landfall <span className={classes.block}>estimated time</span>
+        <Typography
+          variant="body1"
+          className={classes.text}
+          style={{ maxWidth: 100 }}
+        >
+          {t('Landfall estimated time')}
         </Typography>
         <Typography
           variant="body1"
@@ -34,9 +40,12 @@ function PopupContent({ landfallInfo, reportDate }: PopupContentProps) {
         </Typography>
       </div>
       <div className={classes.itemContainer}>
-        <Typography variant="body1" className={classes.text}>
-          landfall estimated
-          <span className={classes.block}>leadtime</span>
+        <Typography
+          variant="body1"
+          className={classes.text}
+          style={{ maxWidth: 150 }}
+        >
+          {t('Landfall estimated leadtime')}
         </Typography>
         <Typography
           variant="body1"
@@ -46,9 +55,12 @@ function PopupContent({ landfallInfo, reportDate }: PopupContentProps) {
         </Typography>
       </div>
       <div className={classes.itemContainer}>
-        <Typography variant="body1" className={classes.text}>
-          District impacted
-          <span className={classes.block}>by landfall</span>
+        <Typography
+          variant="body1"
+          className={classes.text}
+          style={{ maxWidth: 150 }}
+        >
+          {t('District impacted by landfall')}
         </Typography>
         <Typography
           variant="body1"

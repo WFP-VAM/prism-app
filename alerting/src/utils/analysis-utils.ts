@@ -112,10 +112,9 @@ export async function calculateAlert(date: Date, alert: Alert) {
 
   const apiRequest: ApiData = {
     geotiff_url: createGetCoverageUrl({
-      bbox: extent,
+      bbox: extent as readonly [number, number, number, number],
       date,
       layerId: layer.serverLayerName,
-      resolution: layer?.wcsConfig?.pixelResolution,
       url: layer.baseUrl,
     }),
     zones: alert.zones,

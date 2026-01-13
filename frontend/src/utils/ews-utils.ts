@@ -1,6 +1,10 @@
 import GeoJSON, { FeatureCollection, Point } from 'geojson';
 import { Dispatch } from 'redux';
-import { PointData, PointLayerData } from 'config/types';
+import {
+  PointData,
+  PointLayerData,
+  ReferenceDateTimestamp,
+} from 'config/types';
 import { oneDayInMs } from 'components/MapView/LeftPanel/utils';
 import { FloodChartConfigObject } from 'context/tableStateSlice';
 import { fetchWithTimeout } from './fetch-with-timeout';
@@ -33,7 +37,6 @@ enum EWSLevelStatus {
   SEVEREWARNING = 3,
 }
 
-/* eslint-disable camelcase */
 export type EWSSensorData = {
   location_id: number;
   value: [string, number];
@@ -44,11 +47,14 @@ type EWSTriggerLevels = {
   severe_warning: number;
   watch_level: number;
 };
-/* eslint-enable camelcase */
 
+// generate an array with every day since the beginning
+// of January 2021.
 // input parameter is used here only for testing
-export const createEWSDatesArray = (testEndDate?: number): number[] => {
-  const datesArray = [];
+export const createEWSDatesArray = (
+  testEndDate?: number,
+): ReferenceDateTimestamp[] => {
+  const datesArray: ReferenceDateTimestamp[] = [];
 
   const now = new Date();
 
@@ -60,8 +66,7 @@ export const createEWSDatesArray = (testEndDate?: number): number[] => {
   tempDate.setUTCHours(12, 0, 0, 0);
 
   while (tempDate.getTime() <= endDate) {
-    // eslint-disable-next-line fp/no-mutating-methods
-    datesArray.push(tempDate.getTime());
+    datesArray.push(tempDate.getTime() as ReferenceDateTimestamp);
 
     tempDate.setTime(tempDate.getTime() + oneDayInMs);
   }
@@ -117,7 +122,7 @@ export const fetchEWSDataPointsByLocation = async (
       `Request failed for fetching EWS data points by location at ${resource}`,
     );
     return await resp.json();
-  } catch (error) {
+  } catch (_error) {
     return [];
   }
 };
@@ -203,7 +208,6 @@ export const createEWSDatasetParams = (
   featureProperties: any,
   baseUrl: string,
 ) => {
-  /* eslint-disable camelcase */
   const { name, external_id, trigger_levels } = featureProperties;
   const chartTitle = `River level - ${name} (${external_id})`;
 
@@ -213,9 +217,8 @@ export const createEWSDatasetParams = (
     warning: parsedLevels.warning,
     severeWarning: parsedLevels.severe_warning,
   };
-  /* eslint-enable camelcase */
+
   return {
-    // eslint-disable-next-line camelcase
     externalId: external_id,
     triggerLevels,
     chartTitle,

@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`MapView renders as expected 1`] = `
 <div>
@@ -21,7 +21,7 @@ exports[`MapView renders as expected 1`] = `
             aria-labelledby="full-width-tab-layers"
             id="full-width-tabpanel-layers"
             role="tabpanel"
-            style="display: block; flex-grow: 1; height: calc(94vh - 48px); order: -1; overflow-x: hidden;"
+            style="display: block; flex-grow: 1; height: calc(100vh - 48px + 56px); order: -1; overflow-x: hidden;"
           >
             <div
               class="MuiBox-root MuiBox-root-7"
@@ -172,52 +172,6 @@ exports[`MapView renders as expected 1`] = `
                   class="MuiPaper-root MuiAccordion-root makeStyles-root-8 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
                 >
                   <div
-                    aria-controls="Tropical Storms"
-                    aria-disabled="false"
-                    aria-expanded="false"
-                    class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-9"
-                    id="level1-TropicalStorms"
-                    role="button"
-                    tabindex="0"
-                  >
-                    <div
-                      class="MuiAccordionSummary-content makeStyles-summaryContent-12"
-                    >
-                      <mock-typography
-                        classes="[object Object]"
-                      >
-                        Tropical Storms
-                      </mock-typography>
-                    </div>
-                    <div
-                      aria-disabled="false"
-                      aria-hidden="true"
-                      class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-11 MuiIconButton-edgeEnd"
-                    >
-                      <span
-                        class="MuiIconButton-label"
-                      >
-                        <svg
-                          aria-hidden="true"
-                          class="MuiSvgIcon-root"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-                          />
-                        </svg>
-                      </span>
-                      <span
-                        class="MuiTouchRipple-root"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="MuiPaper-root MuiAccordion-root makeStyles-root-8 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
-                >
-                  <div
                     aria-controls="Vulnerability"
                     aria-disabled="false"
                     aria-expanded="false"
@@ -326,25 +280,25 @@ exports[`MapView renders as expected 1`] = `
             aria-labelledby="full-width-tab-charts"
             id="full-width-tabpanel-charts"
             role="tabpanel"
-            style="display: none; flex-grow: 1; height: calc(94vh - 48px); overflow-x: auto;"
+            style="display: none; flex-grow: 1; height: calc(100vh - 48px + 56px); overflow-x: auto;"
           />
           <div
             aria-labelledby="full-width-tab-analysis"
             id="full-width-tabpanel-analysis"
             role="tabpanel"
-            style="display: none; flex-grow: 1; height: calc(94vh - 48px); overflow-x: auto;"
+            style="display: none; flex-grow: 1; height: calc(100vh - 48px + 56px); overflow-x: auto;"
           />
           <div
             aria-labelledby="full-width-tab-alerts"
             id="full-width-tabpanel-alerts"
             role="tabpanel"
-            style="display: none; flex-grow: 1; height: calc(94vh - 48px); overflow-x: auto;"
+            style="display: none; flex-grow: 1; height: calc(100vh - 48px + 56px); overflow-x: auto;"
           />
           <div
             aria-labelledby="full-width-tab-none"
             id="full-width-tabpanel-none"
             role="tabpanel"
-            style="display: none; flex-grow: 1; height: calc(94vh - 48px); overflow-x: auto;"
+            style="display: none; flex-grow: 1; height: calc(100vh - 48px + 56px); overflow-x: auto;"
           />
         </div>
       </div>

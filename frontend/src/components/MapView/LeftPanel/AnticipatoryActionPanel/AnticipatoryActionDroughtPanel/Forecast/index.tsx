@@ -92,54 +92,51 @@ function Forecast({ dialogs }: ForecastProps) {
           <div style={{ minWidth: '10px' }} />
         </div>
 
-        {
-          // eslint-disable-next-line fp/no-mutating-methods
-          Object.entries(chartData)
-            .filter(([sev, _]) => filters.categories[sev as AACategoryType])
-            .sort((a, b) => {
-              const indexA = AAcategory.findIndex(x => x === a[0]);
-              const indexB = AAcategory.findIndex(x => x === b[0]);
+        {Object.entries(chartData)
+          .filter(([sev, _]) => filters.categories[sev as AACategoryType])
+          .sort((a, b) => {
+            const indexA = AAcategory.findIndex(x => x === a[0]);
+            const indexB = AAcategory.findIndex(x => x === b[0]);
 
-              if (indexA > indexB) {
-                return -1;
-              }
-              if (indexA < indexB) {
-                return 1;
-              }
-              return 0;
-            })
-            .map(([sev, indexData]) => {
-              const color = getAAColor(sev as AACategoryType, 'Ready');
-              return (
-                <div className={classes.chartLine} key={sev}>
-                  <div
-                    className={classes.textWrap}
-                    style={{ backgroundColor: color }}
+            if (indexA > indexB) {
+              return -1;
+            }
+            if (indexA < indexB) {
+              return 1;
+            }
+            return 0;
+          })
+          .map(([sev, indexData]) => {
+            const color = getAAColor(sev as AACategoryType, 'Ready');
+            return (
+              <div className={classes.chartLine} key={sev}>
+                <div
+                  className={classes.textWrap}
+                  style={{ backgroundColor: color }}
+                >
+                  <Typography
+                    className={classes.text}
+                    style={{
+                      color: sev === 'Severe' ? 'white' : ' black',
+                      border: `1px solid ${
+                        sev === 'Severe' ? 'white' : ' black'
+                      }`,
+                    }}
                   >
-                    <Typography
-                      className={classes.text}
-                      style={{
-                        color: sev === 'Severe' ? 'white' : ' black',
-                        border: `1px solid ${
-                          sev === 'Severe' ? 'white' : ' black'
-                        }`,
-                      }}
-                    >
-                      {t(sev)}
-                    </Typography>
-                  </div>
-
-                  <div className={classes.chartWrapper}>
-                    <Scatter
-                      data={getChartData(indexData, color) as any}
-                      plugins={[ChartDataLabels]}
-                      options={chartOptions as any}
-                    />
-                  </div>
+                    {t(sev)}
+                  </Typography>
                 </div>
-              );
-            })
-        }
+
+                <div className={classes.chartWrapper}>
+                  <Scatter
+                    data={getChartData(indexData, color) as any}
+                    plugins={[ChartDataLabels]}
+                    options={chartOptions as any}
+                  />
+                </div>
+              </div>
+            );
+          })}
       </div>
       <div className={commonClasses.footerWrapperVert}>
         <div className={commonClasses.footerActionsWrapper}>

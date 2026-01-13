@@ -8,17 +8,14 @@ import {
 import React, { useMemo } from 'react';
 import { Map as MaplibreMap } from 'maplibre-gl';
 import { useSafeTranslation } from 'i18n';
-import { useSelector } from 'react-redux';
-import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { getDisplayBoundaryLayers } from 'config/utils';
 import { Search } from '@material-ui/icons';
-import { LayerData } from 'context/layers/layer-data';
 import { FixedSizeList as List } from 'react-window';
 import { BBox } from 'geojson';
 import bbox from '@turf/bbox';
-import { BoundaryLayerProps } from 'config/types';
 import { BoundaryLayerData } from 'context/layers/boundary';
-import { RootState } from 'context/store';
+import { boundaryCache } from 'utils/boundary-cache';
+import { LayerKey } from 'config/types';
 import {
   BoundaryDropdownProps,
   flattenAreaTree,
@@ -87,39 +84,38 @@ const BoundaryDropdownOptions = React.forwardRef(
   ) => {
     const styles = useStyles();
     const { t, i18n: i18nLocale } = useSafeTranslation();
-    const baseBoundaryLayer = useSelector(
-      layerDataSelector(boundaryLayers[0].id),
+    const baseBoundaryLayerData = boundaryCache.getCachedData(
+      boundaryLayers[0].id,
     );
-    const { data: baseBoundaryLayerData } = baseBoundaryLayer || {};
 
-    // Create a single selector that gets all boundary layer data
-    const allBoundaryLayerData = useSelector((state: RootState) =>
-      boundaryLayers.reduce(
-        (acc, layer) => {
-          // eslint-disable-next-line fp/no-mutation
-          acc[layer.id] = layerDataSelector(layer.id)(
-            state,
-          ) as LayerData<BoundaryLayerProps>;
-          return acc;
-        },
-        {} as { [key: string]: LayerData<BoundaryLayerProps> | undefined },
-      ),
+    // Get all boundary layer data from cache
+    const allBoundaryLayerData = boundaryLayers.reduce(
+      (acc, layer) => {
+        acc[layer.id] = boundaryCache.getCachedData(layer.id);
+        return acc;
+      },
+      {} as Record<LayerKey, BoundaryLayerData | undefined>,
     );
 
     // Combine the data from all layers
     const combinedData = useMemo(() => {
-      const layerData = Object.values(allBoundaryLayerData).filter(Boolean);
+      const layerData = Object.entries(allBoundaryLayerData)
+        .filter(([, data]) => data !== undefined)
+        .map(([layerId, data]) => ({
+          layerId,
+          data: data as BoundaryLayerData,
+        }));
+
       if (!layerData.length) {
         return undefined;
       }
 
       return {
-        type: 'FeatureCollection',
-        features: layerData.flatMap(layer =>
-          layer?.layer?.hideInGoTo
-            ? []
-            : (layer?.data as BoundaryLayerData)?.features || [],
-        ),
+        type: 'FeatureCollection' as const,
+        features: layerData.flatMap(({ layerId, data }) => {
+          const layer = boundaryLayers.find(l => l.id === layerId);
+          return layer?.hideInGoTo ? [] : data.features || [];
+        }),
       };
     }, [allBoundaryLayerData]);
 
@@ -185,6 +181,7 @@ const BoundaryDropdownOptions = React.forwardRef(
         {search && flattenedAreaList.length === 0 && (
           <MenuItem disabled>{t('No Results')}</MenuItem>
         )}
+        {/* @ts-expect-error - react-window types incompatible with React 18 */}
         <List
           height={700}
           itemCount={flattenedAreaList.length}
@@ -212,10 +209,8 @@ const BoundaryDropdownOptions = React.forwardRef(
                     area.adminCode,
                   );
                   if (itemIndex === -1) {
-                    // eslint-disable-next-line fp/no-mutating-methods
                     newSelectedBoundaries.push(area.adminCode);
                   } else {
-                    // eslint-disable-next-line fp/no-mutating-methods
                     newSelectedBoundaries.splice(itemIndex, 1);
                   }
                   if (setSelectedBoundaries !== undefined) {

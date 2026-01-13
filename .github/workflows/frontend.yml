@@ -35,9 +35,9 @@ jobs:
             **/node_modules
             **/.eslintcache
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-2025-2-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-2025-3-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-2025-2
+            ${{ runner.os }}-yarn-2025-3
 
       - name: Install dependencies if needed.
         if: steps.yarn-cache.outputs.cache-hit != 'true'
@@ -73,6 +73,11 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: cd frontend && yarn check-boundary-keys
 
+      - name: Security audit
+        run: |
+          cd frontend && yarn run audit
+          cd ../common && yarn run audit
+
       - name: Build
         run: cd frontend && yarn build
 
@@ -101,9 +106,9 @@ jobs:
             **/.eslintcache
             **/common/dist
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-2025-2-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/.lock', '**/common/src/**/*.ts') }}
+          key: ${{ runner.os }}-yarn-2025-3-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/.lock', '**/common/src/**/*.ts') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-2025-2
+            ${{ runner.os }}-yarn-2025-3
 
       - name: setup 'common' package
         # skip yarn install in frontend, as cypress does it anyway
@@ -126,13 +131,12 @@ jobs:
           CYPRESS_DEFAULT_COMMAND_TIMEOUT: 10000
 
   frontend_build_and_deploy:
-    needs: frontend_tests
     if: github.event_name != 'push'
     name: frontend_build_and_deploy
     runs-on: ubuntu-latest
     env:
       GIT_HASH: ${{ github.event.pull_request.head.sha }}
-      firebase_channel: prism-${{ github.event.pull_request.number }}
+      firebase_channel: ${{ github.event.pull_request.number }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -215,9 +219,9 @@ jobs:
             **/node_modules
             **/.eslintcache
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-2025-2-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-2025-3-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-2025-2
+            ${{ runner.os }}-yarn-2025-3
 
       - name: Install dependencies if needed.
         if: steps.yarn-cache.outputs.cache-hit != 'true'

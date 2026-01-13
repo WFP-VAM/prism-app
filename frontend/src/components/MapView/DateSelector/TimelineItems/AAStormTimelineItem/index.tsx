@@ -3,6 +3,7 @@ import { createStyles, makeStyles } from '@material-ui/core';
 import 'react-datepicker/dist/react-datepicker.css';
 import { DateRangeType } from 'config/types';
 import { WindState } from 'prism-common';
+import { AAStormColors } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
 import { TIMELINE_ITEM_WIDTH } from '../../utils';
 import { useWindStatesByTime } from '../hooks';
 
@@ -36,45 +37,38 @@ function AAStormTimelineItem({ currentDate }: AAStormTimelineItemProps) {
   return <div className={getStylingClass()} />;
 }
 
+const createTimelineItemBaseStyles = () => ({
+  position: 'absolute' as const,
+  pointerEvents: 'none' as const,
+  width: TIMELINE_ITEM_WIDTH - 1,
+  top: 0,
+});
+
 const useStyles = makeStyles(() =>
   createStyles({
     emptySpace: {
-      position: 'absolute',
+      ...createTimelineItemBaseStyles(),
       height: 10,
-      width: TIMELINE_ITEM_WIDTH - 1,
-      top: 0,
     },
     lowRiskIndicator: {
-      position: 'absolute',
+      ...createTimelineItemBaseStyles(),
       height: 12,
-      width: TIMELINE_ITEM_WIDTH - 1,
-      pointerEvents: 'none',
-      top: 0,
       backgroundColor: '#b5ecf4',
     },
     readyIndicator: {
-      position: 'absolute',
+      ...createTimelineItemBaseStyles(),
       height: 16,
-      width: TIMELINE_ITEM_WIDTH - 1,
-      pointerEvents: 'none',
-      top: 0,
       backgroundColor: '#63B2BD',
     },
     activated1Indicator: {
-      position: 'absolute',
+      ...createTimelineItemBaseStyles(),
       height: 20,
-      width: TIMELINE_ITEM_WIDTH - 1,
-      pointerEvents: 'none',
-      top: 0,
-      backgroundColor: '#FF8934',
+      backgroundColor: AAStormColors.categories.moderate.background,
     },
     activated2Indicator: {
-      position: 'absolute',
+      ...createTimelineItemBaseStyles(),
       height: 24,
-      width: TIMELINE_ITEM_WIDTH - 1,
-      pointerEvents: 'none',
-      top: 0,
-      backgroundColor: '#E63701',
+      backgroundColor: AAStormColors.categories.severe.background,
     },
   }),
 );
