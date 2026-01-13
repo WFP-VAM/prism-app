@@ -9,6 +9,7 @@ import NavBar from 'components/NavBar';
 import MapView from 'components/MapView';
 import DashboardView from 'components/DashboardView';
 import Login from 'components/Login';
+import ExportView from 'components/ExportView';
 import muiTheme from 'muiTheme';
 import Notifier from 'components/Notifier';
 import AuthModal from 'components/AuthModal';
@@ -83,7 +84,19 @@ function App() {
   // The rendered content
   const renderedContent = useMemo(() => {
     if (isAuthenticated || !authRequired) {
-      return <Wrapper />;
+      return (
+        // @ts-expect-error - react-router-dom v5 types incompatible with React 18
+        <Switch>
+          {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
+          <Route path="/export" exact>
+            <ExportView />
+          </Route>
+          {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
+          <Route>
+            <Wrapper />
+          </Route>
+        </Switch>
+      );
     }
     return <Login />;
   }, [isAuthenticated]);
