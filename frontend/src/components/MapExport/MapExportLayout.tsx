@@ -444,7 +444,7 @@ function MapExportLayout({
 
   // The map content (title, legend, footer, map itself)
   const mapContent = (
-    <div className={classes.printContainer}>
+    <div ref={printRef} className={classes.printContainer}>
       {toggles.bottomLogoVisibility && bottomLogo && (
         <img
           style={{
@@ -649,11 +649,10 @@ function MapExportLayout({
       >
         {mapDimensions.width > 0 && mapDimensions.height > 0 && (
           <div
-            ref={printRef}
             style={{
               position: 'relative',
               zIndex: 3,
-              border: '1px solid #9E9E9E',
+              border: signalExportReady ? 'none' : '1px solid #9E9E9E',
               boxSizing: 'border-box',
               width: `${mapDimensions.width}px`,
               height: `${mapDimensions.height}px`,

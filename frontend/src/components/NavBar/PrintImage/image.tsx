@@ -54,6 +54,34 @@ const debounceCallback = debounce((callback: any, ...args: any[]) => {
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
+const UNSAFE_FILENAME_CHARS = new Set([
+  '<',
+  '>',
+  ':',
+  '"',
+  '/',
+  '\\',
+  '|',
+  '?',
+  '*',
+]);
+
+function sanitizeFilenamePart(input: string): string {
+  // Avoid control-character regexes (ESLint `no-control-regex`) by checking char codes.
+  const sanitized = input
+    .trim()
+    .split('')
+    .map(ch => {
+      const code = ch.charCodeAt(0);
+      const isControl = code < 32 || code === 127;
+      return isControl || UNSAFE_FILENAME_CHARS.has(ch) ? '_' : ch;
+    })
+    .join('');
+
+  // Collapse multiple underscores into a single underscore (e.g., "___" -> "_").
+  return sanitized.replace(/_+/g, '_').replace(/^_+|_+$/g, '');
+}
+
 function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const { country, header } = appConfig;
   const logo = header?.logo;
@@ -376,7 +404,8 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         /(\s*-\s*)?\{(date|date_coverage)\}/gi,
         '',
       );
-      const filename = `${cleanedTitle}_${startDateStr}_to_${endDateStr}`;
+      const safeTitle = sanitizeFilenamePart(cleanedTitle);
+      const filename = `${safeTitle}_${startDateStr}_to_${endDateStr}`;
       // Server returns ZIP file when format is 'png'
       const contentType =
         format === 'pdf' ? 'application/pdf' : 'application/zip';
