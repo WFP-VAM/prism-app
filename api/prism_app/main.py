@@ -12,11 +12,12 @@ import rasterio  # type: ignore
 from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
-from prism_app.auth import validate_user
+from prism_app.auth import optional_validate_user, validate_user
 from prism_app.caching import FilePath, cache_file, cache_geojson
 from prism_app.database.alert_model import AlchemyEncoder, AlertModel
 from prism_app.database.database import AlertsDataBase
 from prism_app.database.user_info_model import UserInfoModel
+from prism_app.export_maps import export_maps
 from prism_app.googleflood import (
     get_google_flood_dates,
     get_google_floods_gauge_forecast,
@@ -25,9 +26,10 @@ from prism_app.googleflood import (
 )
 from prism_app.hdc import get_hdc_stats
 from prism_app.kobo import get_form_dates, get_form_responses, parse_datetime_params
-from prism_app.models import AcledRequest, RasterGeotiffModel
+from prism_app.models import AcledRequest, MapExportRequestModel, RasterGeotiffModel
 from prism_app.report import download_report
 from prism_app.timer import timed
+from prism_app.utils import extract_dates_from_urls
 from prism_app.validation import validate_intersect_parameter
 from prism_app.zonal_stats import (
     DEFAULT_STATS,
@@ -250,9 +252,16 @@ def get_kobo_form_dates(
         default=False,
         description="If True, return all dates regardless of user province access",
     ),
-    user_info: Annotated[UserInfoPydanticModel, Depends(validate_user)] = None,
+    user_info: Annotated[
+        Optional[UserInfoPydanticModel], Depends(optional_validate_user)
+    ] = None,
 ):
     """Get all form response dates. By default, filters by user's province access if available."""
+    # Return empty list if no user/auth provided
+    if user_info is None:
+        logger.warning("No user/auth provided, returning empty list")
+        return []
+
     # cache responses for 24h as they're unlikely to change
     response.headers["Cache-Control"] = "max-age=86400"
 
@@ -544,3 +553,54 @@ def get_google_floods_inundations_api(
     iso2_codes = [region_code.upper() for region_code in region_codes]
 
     return get_google_floods_inundations(iso2_codes, run_sequentially)
+
+
+@timed
+@app.post(
+    "/export-map",
+    responses={
+        400: {
+            "description": "Bad request - malformed request body or invalid parameters"
+        },
+        500: {"description": "Internal server error"},
+    },
+)
+async def export_maps_endpoint(export_request: MapExportRequestModel) -> Response:
+    """
+    Export maps for multiple dates using server-side rendering.
+
+    Accepts a URL with map parameters and a list of dates, renders maps using
+    Playwright, and returns either a merged PDF or ZIP archive of PNGs.
+    """
+    try:
+        dates = extract_dates_from_urls(export_request.urls)
+        file_bytes, content_type = await export_maps(
+            urls=export_request.urls,
+            viewport_width=export_request.viewportWidth,
+            viewport_height=export_request.viewportHeight,
+            format_type=export_request.format,
+        )
+
+        # Generate filename based on format and date range
+        # TODO: get dates from URLs
+        if export_request.format == "pdf":
+            filename = f"maps_{dates[0]}_to_{dates[-1]}.pdf"
+        else:
+            filename = f"maps_{dates[0]}_to_{dates[-1]}.zip"
+
+        return Response(
+            content=file_bytes,
+            media_type=content_type,
+            headers={
+                "Content-Disposition": f'attachment; filename="{filename}"',
+            },
+        )
+
+    except ValueError as e:
+        logger.error(f"Invalid export request: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error(f"Error during map export: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=500, detail="Internal server error during map export"
+        )
