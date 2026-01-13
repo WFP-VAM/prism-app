@@ -25,7 +25,10 @@ import {
   availableDatesSelector,
   layersLoadingDatesIdsSelector,
 } from 'context/serverStateSlice';
-import { layerDatesPreloadedSelector } from 'context/serverPreloadStateSlice';
+import {
+  wmsLayerDatesLoadedSelector,
+  pointDataLayerDatesLoadedSelector,
+} from 'context/serverPreloadStateSlice';
 import { countBy, get, pickBy, uniqBy } from 'lodash';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'context/hooks';
@@ -74,7 +77,10 @@ const useLayers = () => {
   const serverAvailableDates = useSelector(availableDatesSelector);
   const { startDate: selectedDate } = mapState.dateRange;
   const layersLoadingDates = useSelector(layersLoadingDatesIdsSelector);
-  const datesPreloaded = useSelector(layerDatesPreloadedSelector);
+
+  // Separating point and WMS layer loading for #1452
+  const wmsLoaded = useSelector(wmsLayerDatesLoadedSelector);
+  const pointDataLoaded = useSelector(pointDataLayerDatesLoadedSelector);
 
   // get AA config
   const AAConfig = useMemo(() => {
@@ -348,7 +354,11 @@ const useLayers = () => {
     (): void =>
       missingLayers.forEach(layerId => {
         const layer = LayerDefinitions[layerId as LayerKey];
-        if (['wms', 'point_data'].includes(layer.type) && !datesPreloaded) {
+        // Separating point and WMS layer loading for #1452
+        if (layer.type === 'wms' && !wmsLoaded) {
+          return;
+        }
+        if (layer.type === 'point_data' && !pointDataLoaded) {
           return;
         }
         let datesReady: boolean = false;
@@ -369,7 +379,8 @@ const useLayers = () => {
       }),
     [
       dispatch,
-      datesPreloaded,
+      wmsLoaded,
+      pointDataLoaded,
       layersLoadingDates,
       missingLayers,
       removeLayerFromUrl,
