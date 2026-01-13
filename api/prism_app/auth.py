@@ -106,4 +106,12 @@ def optional_validate_user(
     if credentials is None:
         return None
 
-    return validate_user(credentials)
+    # Try to validate user, return None on auth failure
+    try:
+        user_info_model = validate_user(credentials)
+        # Convert UserInfoModel (ORM) to UserInfoPydanticModel (Pydantic)
+        return UserInfoPydanticModel.from_orm(user_info_model)
+    except HTTPException as e:
+        if e.status_code == status.HTTP_401_UNAUTHORIZED:
+            return None
+        raise
