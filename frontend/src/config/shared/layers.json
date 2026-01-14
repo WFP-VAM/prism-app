@@ -81,7 +81,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "validity": {
-      "forward": 1,
+      "forward": 0,
       "mode": "days"
     },
     "opacity": 0.7,
