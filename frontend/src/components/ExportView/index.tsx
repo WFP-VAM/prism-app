@@ -185,7 +185,14 @@ const ExportView = memo(() => {
       `${exportParams.date}T12:00:00Z`,
     ).getTime() as SelectedDateTimestamp;
 
-    return getLayersCoverage(selectedLayersWithDateSupport, dateTimestamp);
+    return getLayersCoverage(
+      selectedLayersWithDateSupport.filter(
+        layer =>
+          layer.id !== 'anticipatory_action_flood' &&
+          layer.id !== 'anticipatory_action_storm',
+      ),
+      dateTimestamp,
+    );
   }, [exportParams.date, selectedLayersWithDateSupport]);
 
   // Use measured footer height, or estimate if not yet measured
