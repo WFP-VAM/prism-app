@@ -44,7 +44,7 @@ werkzeug = "^3.1.5"
 h11 = "^0.16.0"
 setuptools = "^78.1.1"
 fiona = "^1.10b2"
-filelock = "^3.20.1"
+filelock = "^3.20.3"
 # some package isn't updated for numpy 2.x yet
 numpy = "<2.0"
 
