@@ -40,7 +40,11 @@ function PrintPreview() {
   const layersCoverage = useMemo(
     () =>
       getLayersCoverage(
-        selectedLayersWithDateSupport,
+        selectedLayersWithDateSupport.filter(
+          layer =>
+            layer.id !== 'anticipatory_action_flood' &&
+            layer.id !== 'anticipatory_action_storm',
+        ),
         dateRange.startDate as SelectedDateTimestamp,
       ),
     [dateRange.startDate, selectedLayersWithDateSupport],
