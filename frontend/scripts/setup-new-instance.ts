@@ -169,7 +169,7 @@ async function collectCountryInfo(): Promise<SetupConfig> {
     const overwriteAffirmative: boolean = await new Confirm({
       message: '⚠️  Country configuration already exists. Overwrite?',
       initial: false,
-      format: (value: boolean) => (value ? 'yes' : 'no'),
+      format: (value: boolean) => (value ? 'y' : 'n'),
     }).run();
     if (!overwriteAffirmative) {
       console.log('Aborted.');
@@ -257,7 +257,7 @@ async function collectCountryInfo(): Promise<SetupConfig> {
     useSuggested = await new Confirm({
       message: 'Use these suggested coordinates?',
       initial: true,
-      format: (value: boolean) => (value ? 'yes' : 'no'),
+      format: (value: boolean) => (value ? 'y' : 'n'),
     }).run();
 
     if (useSuggested) {
@@ -303,7 +303,7 @@ async function collectCountryInfo(): Promise<SetupConfig> {
   const alertFormActive: boolean = await new Confirm({
     message: 'Enable alert form?',
     initial: false,
-    format: (value: boolean) => (value ? 'yes' : 'no'),
+    format: (value: boolean) => (value ? 'y' : 'n'),
   }).run();
 
   // 7. Boundary files (paths)
