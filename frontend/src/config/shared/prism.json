@@ -5,14 +5,6 @@
   "printConfig": {
     "defaultFooterText": "The designations employed and the presentation of material in the map(s) do not imply the expression of any opinion on the part of WFP concerning the legal of constitutional status of any country, territory, city, or sea, or concerning the delimitation of its frontiers or boundaries."
   },
-  "icons": {
-    "capacity": "icon_capacity.png",
-    "tables": "icon_table.png",
-    "rainfall": "icon_rain.png",
-    "vegetation": "icon_veg.png",
-    "temperature": "icon_climate.png",
-    "vulnerability": "icon_vulnerable.png"
-  },
   "serversUrls": {
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },

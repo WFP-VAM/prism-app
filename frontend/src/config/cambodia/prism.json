@@ -11,19 +11,6 @@
       "href": "https://dmp.ovio.org"
     }
   ],
-  "icons": {
-    "vulnerability": "icon_vulnerable.png",
-    "exposure": "icon_basemap.png",
-    "field_reports": "icon_basemap.png",
-    "hazards": "icon_climate.png",
-    "flood": "icon_flood.png",
-    "risk": "icon_impact.png",
-    "capacity": "icon_capacity.png",
-    "tables": "icon_table.png",
-    "rainfall": "icon_rain.png",
-    "vegetation": "icon_veg.png",
-    "temperature": "icon_climate.png"
-  },
   "serversUrls": {
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },

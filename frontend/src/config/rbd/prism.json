@@ -3,16 +3,6 @@
   "multiCountry": true,
   "enableNavigationDropdown": true,
   "aboutPath": "data/rbd/about.md",
-  "icons": {
-    "food_security": "icon_foodsecurity.png",
-    "food_security_and_livelihoods": "icon_livelihoods.png",
-    "Cadre Harmonisé": "icon_cadreharmoise2.png",
-    "capacity": "icon_capacity.png",
-    "risk_analysis": "icon_table.png",
-    "rainfall": "icon_rain.png",
-    "vegetation": "icon_veg.png",
-    "temperature": "icon_climate.png"
-  },
   "alertFormActive": false,
   "serversUrls": {
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]

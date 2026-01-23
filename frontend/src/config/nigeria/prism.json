@@ -5,15 +5,6 @@
   "serversUrls": {
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
-  "icons": {
-    "rainfall": "icon_rain.png",
-    "vegetation": "icon_veg.png",
-    "temperature": "icon_climate.png",
-    "risk": "icon_impact.png",
-    "tropical_storms": "icon_tropical_storm.png",
-    "vulnerability": "icon_vulnerable.png",
-    "Cadre Harmonisé": "icon_cadreharmoise2.png"
-  },
   "map": {
     "boundingBox": [2.69, 4.24, 14.58, 13.87]
   },

@@ -2,15 +2,6 @@
   "country": "South Sudan",
   "enableNavigationDropdown": true,
   "countryAdmin0Id": 70001,
-  "icons": {
-    "capacity": "icon_capacity.png",
-    "tables": "icon_table.png",
-    "rainfall": "icon_rain.png",
-    "vegetation": "icon_veg.png",
-    "temperature": "icon_climate.png",
-    "vulnerability": "icon_vulnerable.png",
-    "flood": "icon_flood.png"
-  },
   "alertFormActive": false,
   "serversUrls": {
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
