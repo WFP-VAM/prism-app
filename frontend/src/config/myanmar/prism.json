@@ -21,7 +21,12 @@
     "latitude": 19.467,
     "longitude": 96.371,
     "zoom": 4.48,
-    "boundingBox": [97.3, 11.93, 100.18, 27.34]
+    "boundingBox": [
+      97.3,
+      11.93,
+      100.18,
+      27.34
+    ]
   },
   "defaultDisplayBoundaries": [
     "admin_boundaries",
@@ -34,8 +39,45 @@
     ]
   },
   "categories": {
-    "floods": {
-      "floods": ["flood_extent"]
+    "storms_and_floods": {
+      "floods": [
+        {
+          "group_title": "Flood Status",
+          "activate_all": true,
+          "layers": [
+            {
+              "id": "forecast_river_discharge_at_gauges",
+              "label": "Flood Gauges",
+              "main": true
+            },
+            {
+              "id": "predicted_flood_inundation_maps",
+              "label": "Predicted Inundation Maps"
+            }
+          ]
+        }
+      ],
+      "tropical_storms": [
+        {
+          "group_title": "Tropical Storms",
+          "activate_all": true,
+          "layers": [
+            {
+              "id": "adamts_buffers",
+              "label": "Wind buffers",
+              "main": true
+            },
+            {
+              "id": "adamts_nodes",
+              "label": "Nodes"
+            },
+            {
+              "id": "adamts_tracks",
+              "label": "Tracks"
+            }
+          ]
+        }
+      ]
     },
     "rainfall": {
       "rainfall_amount": [
@@ -149,7 +191,10 @@
           ]
         }
       ],
-      "dry_periods": ["days_dry", "streak_dry_days"],
+      "dry_periods": [
+        "days_dry",
+        "streak_dry_days"
+      ],
       "extreme_rain_events": [
         {
           "group_title": "Number of days of rainfall:",
@@ -196,7 +241,10 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
+      "vegetation_conditions": [
+        "ndvi_dekad",
+        "ndvi_dekad_anomaly"
+      ]
     },
     "temperature": {
       "land_surface_temperature": [
@@ -206,7 +254,10 @@
       ]
     },
     "vulnerability": {
-      "vulnerability_index": ["multidimensional_disadvantage_index", "inform"],
+      "vulnerability_index": [
+        "multidimensional_disadvantage_index",
+        "inform"
+      ],
       "vulnerable_populations": [
         "age_dependency_ratio",
         "female_headed_hhs",
@@ -237,8 +288,13 @@
       ]
     },
     "exposure": {
-      "population": ["total_pop"],
-      "conflict": ["conflict_fatalities", "conflict_type"],
+      "population": [
+        "total_pop"
+      ],
+      "conflict": [
+        "conflict_fatalities",
+        "conflict_type"
+      ],
       "historical_climate_exposure": [
         "population_exposed_historical_river_floods",
         "population_exposed_historical_storm_surge"

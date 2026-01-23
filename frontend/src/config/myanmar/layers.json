@@ -2543,5 +2543,96 @@
         "dataTitle": "Details"
       }
     }
+  },
+    "forecast_river_discharge_at_gauges": {
+    "title": "River discharge forecast",
+    "loader": "google_flood",
+    "type": "point_data",
+    "hex_display": false,
+    "data": "https://prism-api.ovio.org/google-floods/gauges/?region_codes=MM",
+    "detail_url": "https://prism-api.ovio.org/google-floods/gauges/forecasts",
+    "data_field": "severity",
+    "data_field_type": "text",
+    "date_url": "https://prism-api.ovio.org/google-floods/dates/?region_codes=MM",
+    "opacity": 0.9,
+    "legend_text": "River discharge forecast at verified gauges. Visit [Google Research](https://sites.research.google/floodforecasting/) to learn more about Google's AI forecasting models.",
+    "legend": [
+      { "label": "Extreme", "value": "EXTREME", "color": "#a70606" },
+      { "label": "Danger", "value": "SEVERE", "color": "#ea250a" },
+      { "label": "Warning", "value": "ABOVE_NORMAL", "color": "#fba705" },
+      { "label": "Normal", "value": "NO_FLOODING", "color": "#089180" },
+      { "label": "No data", "value": "UNKNOWN", "color": "#858585" }
+    ],
+    "feature_info_title": {
+      "siteName": {
+        "type": "text",
+        "template": "Site: {{siteName}}",
+        "visibility": "if-defined"
+      },
+      "riverName": {
+        "type": "text",
+        "template": "River: {{riverName}}",
+        "visibility": "if-defined"
+      },
+      "gaugeId": {
+        "type": "text",
+        "template": "Gauge ID: {{gaugeId}}",
+        "visibility": "if-defined"
+      }
+    },
+    "feature_info_props": {
+      "siteName": {
+        "type": "text",
+        "dataTitle": "Site",
+        "visibility": "if-defined"
+      },
+      "river": {
+        "type": "text",
+        "dataTitle": "River",
+        "visibility": "if-defined"
+      },
+      "severity": {
+        "type": "labelMapping",
+        "dataTitle": "Flood Status",
+        "labelMap": {
+          "EXTREME": "Extreme",
+          "SEVERE": "Danger",
+          "ABOVE_NORMAL": "Warning",
+          "NO_FLOODING": "Normal",
+          "UNKNOWN": "No data"
+        }
+      },
+      "gaugeId": {
+        "type": "text",
+        "dataTitle": "Gauge ID"
+      },
+      "source": {
+        "type": "text",
+        "dataTitle": "Data source"
+      },
+      "issuedTime": {
+        "type": "date",
+        "dataTitle": "Status issued"
+      }
+    }
+  },
+  "predicted_flood_inundation_maps": {
+    "title": "Flood Inundation Prediction Map",
+    "type": "geojson_polygon",
+    "hex_display": false,
+    "data": "https://prism-api.ovio.org/google-floods/inundations?region_codes=MM",
+    "data_field": "level",
+    "data_field_type": "text",
+    "opacity": 1,
+    "legend_text": "Current predicted flood maps. Visit [Google Research](https://sites.research.google/floodforecasting/) about Google's AI Forecasting models.",
+    "legend": [
+      { "label": "High", "value": "HIGH", "color": "#de2d26" },
+      { "label": "Medium", "value": "MEDIUM", "color": "#fc9272" },
+      { "label": "Low", "value": "LOW", "color": "#fee0d2" }
+    ],
+      "exposure": {
+      "id": "wp_unconstrained_s3",
+      "calc": "A*(B>=3)"
+    }
   }
 }
