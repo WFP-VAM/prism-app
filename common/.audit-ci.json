@@ -3,7 +3,5 @@
   "high": true,
   "critical": true,
   "skip-dev": true,
-  "report-type": "summary",
-  "pass-enoaudit": true,
-  "retry-count": 10
+  "report-type": "summary"
 }
