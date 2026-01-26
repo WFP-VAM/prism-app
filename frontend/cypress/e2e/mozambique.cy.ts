@@ -30,10 +30,20 @@ describe('Loading dates', () => {
     cy.get('header').contains('A. Actions').click();
     cy.get('div.MuiPopover-paper').contains('A. Action Flood').click();
     
+    // Wait for AA Flood panel to be visible first (ensures layer has switched)
+    cy.get('#full-width-tabpanel-anticipatory_action_flood', { timeout: 15000 })
+      .should('be.visible');
+    
     // The date selector may temporarily disappear while AA Flood dates are loading
-    // Use longer timeout to wait for it to reappear with the new date
-    cy.get('.react-datepicker-wrapper button span', { timeout: 30000 }).then(
-      span1 => {
+    // Wait for gauge station content to ensure AA data is loaded
+    cy.get('#full-width-tabpanel-anticipatory_action_flood')
+      .contains('Gauge station', { timeout: 15000 })
+      .should('be.visible');
+    
+    // Now the datepicker should be ready with AA Flood date loaded
+    cy.get('.react-datepicker-wrapper button span', { timeout: 30000 })
+      .should('be.visible')
+      .then(span1 => {
         cy.wrap(span1)
           .invoke('text')
           .should('match', /^[A-Z][a-z]{2} \d{1,2}, \d{4}$/)
@@ -43,10 +53,6 @@ describe('Loading dates', () => {
             const secondDate = new Date(this.aaDate).getTime();
             expect(secondDate).to.be.greaterThan(firstDate);
           });
-      },
-    );
-    cy.get('#full-width-tabpanel-anticipatory_action_flood')
-      .contains('Gauge station', { timeout: 10000 })
-      .should('be.visible');
+      });
   });
 });
