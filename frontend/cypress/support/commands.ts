@@ -96,6 +96,7 @@ Cypress.Commands.add('scrollRight', () => {
  */
 Cypress.Commands.add('waitForMapLoad', (options = {}) => {
   const timeout = options.timeout || 30000;
+  const bufferWait = options.bufferWait !== undefined ? options.bufferWait : 500;
   
   // Wait for the map canvas to be present and visible
   cy.get('.maplibregl-canvas', { timeout })
@@ -107,5 +108,7 @@ Cypress.Commands.add('waitForMapLoad', (options = {}) => {
   cy.get('.maplibregl-control-container', { timeout: 5000 }).should('exist');
   
   // Small additional wait to ensure tiles have started loading
-  cy.wait(500);
+  if (bufferWait > 0) {
+    cy.wait(bufferWait);
+  }
 });
