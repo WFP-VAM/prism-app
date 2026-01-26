@@ -21,7 +21,11 @@ describe('Loading dates', () => {
     // TODO: Fix the root cause in the DateSelector component
     cy.on('uncaught:exception', (err) => {
       // Ignore React "Maximum update depth exceeded" errors in datepicker
-      if (err.message.includes('Maximum update depth exceeded')) {
+      // Check both message and stack trace for more robust detection
+      if (
+        err.message.includes('Maximum update depth exceeded') &&
+        (err.stack?.includes('react-datepicker') || err.stack?.includes('scheduleUpdateOnFiber'))
+      ) {
         return false; // Prevent test from failing
       }
       return true; // Let other errors fail the test
