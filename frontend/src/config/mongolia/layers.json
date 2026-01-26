@@ -382,46 +382,57 @@
     "legend": [
       {
         "label": "-80%",
+        "value": -80,
         "color": "#ff0000"
       },
       {
         "label": "-60%",
+        "value": -60,
         "color": "#ff5900"
       },
       {
         "label": "-40%",
+        "value": -40,
         "color": "#ff8400"
       },
       {
         "label": "-20%",
+        "value": -20,
         "color": "#ffce63"
       },
       {
         "label": "-10%",
+        "value": -10,
         "color": "#ffdd94"
       },
       {
         "label": "0",
+        "value": 0,
         "color": "#ffffbf"
       },
       {
         "label": "+10%",
+        "value": 10,
         "color": "#dee09f"
       },
       {
         "label": "+20%",
+        "value": 20,
         "color": "#bbbf7c"
       },
       {
         "label": "+40%",
+        "value": 40,
         "color": "#9da360"
       },
       {
         "label": "+60%",
+        "value": 60,
         "color": "#7e8745"
       },
       {
         "label": "+80%",
+        "value": 80,
         "color": "#5b6e00"
       }
     ]
@@ -439,22 +450,27 @@
     "legend": [
       {
         "label": "0 kg/ha",
+        "value": 0,
         "color": "#905C00"
       },
       {
         "label": "250 kg/ha",
+        "value": 250,
         "color": "#E4AF3F"
       },
       {
         "label": "500 kg/ha",
+        "value": 500,
         "color": "#98BB64"
       },
       {
         "label": "750 kg/ha",
+        "value": 750,
         "color": "#9CF84C"
       },
       {
         "label": "1,000 kg/ha",
+        "value": 1000,
         "color": "#CDFD63"
       }
     ],
@@ -463,6 +479,11 @@
   "ndvi": {
     "title": "Vegetation index (NDVI)",
     "type": "wms",
+    "wcsConfig": {
+      "scale": 0.0001,
+      "offset": -2,
+      "pixelResolution": 64
+    },
     "server_layer_name": "ModisIndices",
     "additional_query_params": {
       "styles": "ndvi"
@@ -474,42 +495,52 @@
     "legend": [
       {
         "label": "0.00",
+        "value": 0.00,
         "color": "#ece0d7"
       },
       {
         "label": "0.11",
+        "value": 0.11,
         "color": "#d7c8b1"
       },
       {
         "label": "0.22",
+        "value": 0.22,
         "color": "#bfb186"
       },
       {
         "label": "0.33",
+        "value": 0.33,
         "color": "#a59e59"
       },
       {
         "label": "0.44",
+        "value": 0.44,
         "color": "#878a31"
       },
       {
         "label": "0.55",
+        "value": 0.55,
         "color": "#69761f"
       },
       {
         "label": "0.66",
+        "value": 0.66,
         "color": "#4f6021"
       },
       {
         "label": "0.77",
+        "value": 0.77,
         "color": "#374b1b"
       },
       {
         "label": "0.88",
+        "value": 0.88,
         "color": "#1c3800"
       },
       {
         "label": "1.00",
+        "value": 1.00,
         "color": "#000000"
       }
     ]
@@ -531,42 +562,52 @@
     "legend": [
       {
         "label": "-50",
+        "value": -50,
         "color": "#5c9fc8"
       },
       {
         "label": "-40",
+        "value": -40,
         "color": "#7ab1c0"
       },
       {
         "label": "-30",
+        "value": -30,
         "color": "#9fc3b3"
       },
       {
         "label": "-20",
+        "value": -20,
         "color": "#d9e79a"
       },
       {
-        "value": "-10",
+        "label": "-10",
+        "value": -10,
         "color": "#f3f88e"
       },
       {
         "label": "5",
+        "value": 5,
         "color": "#f0d779"
       },
       {
         "label": "15",
+        "value": 15,
         "color": "#eeb563"
       },
       {
         "label": "25",
+        "value": 25,
         "color": "#e98f51"
       },
       {
         "label": "40",
+        "value": 40,
         "color": "#e2633e"
       },
       {
         "label": "50",
+        "value": 50,
         "color": "#da402e"
       }
     ]
@@ -588,22 +629,27 @@
     "legend": [
       {
         "label": "0.10",
+        "value": 0.10,
         "color": "#ef1000"
       },
       {
         "label": "0.17",
+        "value": 0.17,
         "color": "#bf4000"
       },
       {
         "label": "0.26",
+        "value": 0.26,
         "color": "#ba7500"
       },
       {
         "label": "0.34",
+        "value": 0.34,
         "color": "#ead500"
       },
       {
         "label": "1.00",
+        "value": 1.00,
         "color": "#5ea100"
       }
     ]
@@ -619,22 +665,27 @@
     "legend": [
       {
         "label": "0%",
+        "value": 0,
         "color": "#a8a8a8"
       },
       {
         "label": "25%",
+        "value": 25,
         "color": "#c6c6c6"
       },
       {
         "label": "50%",
+        "value": 50,
         "color": "#e0e0e0"
       },
       {
         "label": "75%",
+        "value": 75,
         "color": "#f4f4f4"
       },
       {
         "label": "100%",
+        "value": 100,
         "color": "#ffffff"
       }
     ]
