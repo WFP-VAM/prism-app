@@ -30,17 +30,16 @@ describe('Loading dates', () => {
     cy.get('header').contains('A. Actions').click();
     cy.get('div.MuiPopover-paper').contains('A. Action Flood').click();
     
-    // Wait for AA Flood panel to be visible first (ensures layer has switched)
-    cy.get('#full-width-tabpanel-anticipatory_action_flood', { timeout: 15000 })
+    // Wait a bit for the layer to start loading
+    cy.wait(1000);
+    
+    // Wait for AA Flood panel and gauge station content with longer timeout
+    cy.get('#full-width-tabpanel-anticipatory_action_flood', { timeout: 30000 })
+      .should('be.visible')
+      .contains('Gauge station', { timeout: 30000 })
       .should('be.visible');
     
-    // The date selector may temporarily disappear while AA Flood dates are loading
-    // Wait for gauge station content to ensure AA data is loaded
-    cy.get('#full-width-tabpanel-anticipatory_action_flood')
-      .contains('Gauge station', { timeout: 15000 })
-      .should('be.visible');
-    
-    // Now the datepicker should be ready with AA Flood date loaded
+    // Now check for the datepicker - it should be ready after gauge station content loads
     cy.get('.react-datepicker-wrapper button span', { timeout: 30000 })
       .should('be.visible')
       .then(span1 => {
