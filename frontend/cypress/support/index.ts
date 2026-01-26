@@ -34,6 +34,14 @@ declare global {
        * @example cy.scrollRight();
        */
       scrollRight(): Chainable<JQuery<HTMLElement>>;
+      /**
+       * Wait for the map to be fully loaded and ready.
+       * More reliable than waiting for MapTiler attribution text.
+       * @example cy.waitForMapLoad();
+       * @example cy.waitForMapLoad({ timeout: 20000 });
+       * @example cy.waitForMapLoad({ timeout: 20000, bufferWait: 1000 });
+       */
+      waitForMapLoad(options?: { timeout?: number; bufferWait?: number }): Chainable<void>;
     }
   }
 }
