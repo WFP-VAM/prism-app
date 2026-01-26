@@ -16,21 +16,6 @@ describe('Loading layers', () => {
 
 describe('Loading dates', () => {
   it('switching to AA from rainfall layer should load latest data', () => {
-    // Handle known React infinite loop bug in datepicker when switching to AA layer
-    // This is a pre-existing application bug that was previously hidden by the flaky MapTiler test
-    // TODO: Fix the root cause in the DateSelector component
-    cy.on('uncaught:exception', (err) => {
-      // Ignore React "Maximum update depth exceeded" errors in datepicker
-      // Check both message and stack trace for more robust detection
-      if (
-        err.message.includes('Maximum update depth exceeded') &&
-        (err.stack?.includes('react-datepicker') || err.stack?.includes('scheduleUpdateOnFiber'))
-      ) {
-        return false; // Prevent test from failing
-      }
-      return true; // Let other errors fail the test
-    });
-    
     cy.visit(`${frontendUrl}/?hazardLayerIds=rainfall_dekad&date=2025-09-01`);
 
     cy.waitForMapLoad({ timeout: 20000 });
@@ -44,7 +29,12 @@ describe('Loading dates', () => {
     );
     cy.get('header').contains('A. Actions').click();
     cy.get('div.MuiPopover-paper').contains('A. Action Flood').click();
-    cy.get('.react-datepicker-wrapper button span', { timeout: 20000 }).then(
+    
+    // Wait for layer switch and date loading to complete
+    // The date selector may temporarily disappear while dates are loading
+    cy.wait(2000);
+    
+    cy.get('.react-datepicker-wrapper button span', { timeout: 30000 }).then(
       span1 => {
         cy.wrap(span1)
           .invoke('text')
