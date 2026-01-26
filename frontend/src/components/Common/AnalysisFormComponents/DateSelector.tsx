@@ -27,7 +27,7 @@ function DateSelector({
   const { t } = useSafeTranslation();
 
   const handleDateChange = (date: Date | null) => {
-    onDateChange(date?.getTime() || selectedDate);
+    onDateChange(date?.getTime() ?? null);
   };
 
   return (

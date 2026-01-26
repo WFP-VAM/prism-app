@@ -16,21 +16,6 @@ describe('Loading layers', () => {
 
 describe('Loading dates', () => {
   it('switching to AA from rainfall layer should load latest data', () => {
-    // Handle known React infinite loop bug in datepicker when switching to AA layer
-    // This is a pre-existing application bug that was previously hidden by the flaky MapTiler test
-    // TODO: Fix the root cause in the DateSelector component
-    cy.on('uncaught:exception', (err) => {
-      // Ignore React "Maximum update depth exceeded" errors in datepicker
-      // Check both message and stack trace for more robust detection
-      if (
-        err.message.includes('Maximum update depth exceeded') &&
-        (err.stack?.includes('react-datepicker') || err.stack?.includes('scheduleUpdateOnFiber'))
-      ) {
-        return false; // Prevent test from failing
-      }
-      return true; // Let other errors fail the test
-    });
-    
     cy.visit(`${frontendUrl}/?hazardLayerIds=rainfall_dekad&date=2025-09-01`);
 
     cy.waitForMapLoad({ timeout: 20000 });
@@ -44,8 +29,20 @@ describe('Loading dates', () => {
     );
     cy.get('header').contains('A. Actions').click();
     cy.get('div.MuiPopover-paper').contains('A. Action Flood').click();
-    cy.get('.react-datepicker-wrapper button span', { timeout: 20000 }).then(
-      span1 => {
+    
+    // Wait a bit for the layer to start loading
+    cy.wait(1000);
+    
+    // Wait for AA Flood panel and gauge station content with longer timeout
+    cy.get('#full-width-tabpanel-anticipatory_action_flood', { timeout: 30000 })
+      .should('be.visible')
+      .contains('Gauge station', { timeout: 30000 })
+      .should('be.visible');
+    
+    // Now check for the datepicker - it should be ready after gauge station content loads
+    cy.get('.react-datepicker-wrapper button span', { timeout: 30000 })
+      .should('be.visible')
+      .then(span1 => {
         cy.wrap(span1)
           .invoke('text')
           .should('match', /^[A-Z][a-z]{2} \d{1,2}, \d{4}$/)
@@ -55,10 +52,6 @@ describe('Loading dates', () => {
             const secondDate = new Date(this.aaDate).getTime();
             expect(secondDate).to.be.greaterThan(firstDate);
           });
-      },
-    );
-    cy.get('#full-width-tabpanel-anticipatory_action_flood')
-      .contains('Gauge station', { timeout: 10000 })
-      .should('be.visible');
+      });
   });
 });
