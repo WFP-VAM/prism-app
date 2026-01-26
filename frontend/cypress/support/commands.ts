@@ -88,3 +88,24 @@ Cypress.Commands.add('scrollLeft', () => {
 Cypress.Commands.add('scrollRight', () => {
   cy.get('button#chevronRightButton').click();
 });
+
+/**
+ * Wait for the map to be fully loaded and ready
+ * This is more reliable than waiting for MapTiler attribution text
+ * which can be slow to load or missing in CI environments
+ */
+Cypress.Commands.add('waitForMapLoad', (options = {}) => {
+  const timeout = options.timeout || 30000;
+  
+  // Wait for the map canvas to be present and visible
+  cy.get('.maplibregl-canvas', { timeout })
+    .should('be.visible')
+    .should('have.attr', 'width')
+    .and('not.equal', '0');
+  
+  // Also wait for the map control container to ensure map is interactive
+  cy.get('.maplibregl-control-container', { timeout: 5000 }).should('exist');
+  
+  // Small additional wait to ensure tiles have started loading
+  cy.wait(500);
+});
