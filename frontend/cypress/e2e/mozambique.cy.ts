@@ -30,10 +30,8 @@ describe('Loading dates', () => {
     cy.get('header').contains('A. Actions').click();
     cy.get('div.MuiPopover-paper').contains('A. Action Flood').click();
     
-    // Wait for layer switch and date loading to complete
-    // The date selector may temporarily disappear while dates are loading
-    cy.wait(2000);
-    
+    // The date selector may temporarily disappear while AA Flood dates are loading
+    // Use longer timeout to wait for it to reappear with the new date
     cy.get('.react-datepicker-wrapper button span', { timeout: 30000 }).then(
       span1 => {
         cy.wrap(span1)
