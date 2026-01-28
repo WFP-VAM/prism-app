@@ -41,6 +41,7 @@ packages/*/dist/
 
 packages/common/pnpm-lock.yaml
 
-# ignore cypress artifacts
-frontend/cypress/screenshots/
-frontend/cypress/videos/
+# ignore playwright artifacts
+frontend/playwright-report/
+frontend/test-results/
+frontend/playwright/.cache/

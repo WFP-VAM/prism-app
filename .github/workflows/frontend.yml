@@ -130,34 +130,61 @@ jobs:
             ls -la common/dist | head -10
           fi
 
-      - name: Verify setup before Cypress
+      - name: Install frontend dependencies and link common
+        # Always ensure frontend dependencies are installed and common package is properly linked
+        # This is critical - setup:common_in_ci doesn't run yarn install, so we need to do it here
+        run: |
+          cd frontend
+          echo "Installing frontend dependencies..."
+          yarn install --frozen-lockfile --check-files
+          echo "Verifying prism-common symlink..."
+          if [ -L "node_modules/prism-common" ]; then
+            echo "✓ prism-common symlink exists"
+            ls -la node_modules/prism-common
+          else
+            echo "✗ prism-common symlink missing, attempting to fix..."
+            rm -rf node_modules/prism-common
+            yarn install --frozen-lockfile --check-files
+            if [ -L "node_modules/prism-common" ]; then
+              echo "✓ Fixed: prism-common symlink now exists"
+            else
+              echo "✗ Failed to create symlink"
+              exit 1
+            fi
+          fi
+
+      - name: Install Playwright browsers
+        run: |
+          cd frontend
+          yarn playwright install chromium --with-deps
+
+      - name: Verify setup before Playwright
         # Debug step to verify everything is set up correctly
         run: |
-          echo "Checking frontend node_modules..."
-          ls -la frontend/node_modules | grep -E "(prism-common|cypress)" || echo "Not found in listing"
+          echo "=== Verification ==="
           echo "Checking if common/dist exists..."
-          test -d common/dist && echo "✓ common/dist exists" || echo "✗ common/dist missing"
+          test -d common/dist && echo "✓ common/dist exists" || (echo "✗ common/dist missing" && exit 1)
           echo "Checking if frontend/node_modules/prism-common exists..."
-          test -L frontend/node_modules/prism-common && echo "✓ prism-common symlink exists" || echo "✗ prism-common symlink missing"
+          test -L frontend/node_modules/prism-common && echo "✓ prism-common symlink exists" || (echo "✗ prism-common symlink missing" && exit 1)
+          echo "Checking if Playwright is installed..."
+          test -d frontend/node_modules/@playwright && echo "✓ Playwright installed" || (echo "✗ Playwright missing" && exit 1)
+          echo "Verifying common package can be imported..."
+          cd frontend && node -e "require('prism-common')" && echo "✓ prism-common can be imported" || (echo "✗ prism-common import failed" && exit 1)
 
-      - name: Run cypress e2e tests
-        uses: cypress-io/github-action@v6
-        with:
-          working-directory: ./frontend
-          install-command: yarn install --frozen-lockfile --check-files
-          start: yarn start
-          wait-on: 'http://localhost:3000'
-          wait-on-timeout: 120
-          browser: chrome
-          spec: |
-            cypress/e2e/${{ matrix.country }}.cy.ts
-            cypress/e2e/all_countries.cy.ts
+      - name: Run Playwright e2e tests
+        run: |
+          cd frontend
+          REACT_APP_COUNTRY=${{ matrix.country }} yarn playwright test
         env:
           REACT_APP_COUNTRY: ${{ matrix.country }}
-          # CI runners seem a bit slow, give them more time to complete
-          # each command in cypress. Increased from 10000ms to 20000ms to match
-          # test timeout expectations and account for slower CI environments
-          CYPRESS_DEFAULT_COMMAND_TIMEOUT: 20000
+
+      - name: Upload Playwright test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.country }}
+          path: frontend/playwright-report/
+          retention-days: 30
 
   frontend_build_and_deploy:
     if: github.event_name != 'push'

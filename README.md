@@ -606,18 +606,18 @@ REACT_APP_COUNTRY=cambodia yarn start
 Two sets of tests are available for the frontend:
 
 - jest tests (unit tests) via `yarn test`
-- end to end tests with [cypress](https://docs.cypress.io/app/get-started/why-cypress) via `yarn cypress open` (for
-  interactive development) or `yarn cypress run` (to run the test suite, better suited for CI)
+- end to end tests with [Playwright](https://playwright.dev/) via `yarn playwright` (for
+  CI) or `yarn playwright:ui` (for interactive development)
 
 To write more end to end tests (e2e tests):
 
 - start the frontend for the country you want to test `REACT_APP_COUNTRY=cambodia yarn start`
-- open the cypress UI: `yarn cypress open`
-  - in the electron app that opens, choose e2e tests and the browser to test with
-  - in the controlled browser that opens, pick a file (either `all_countries.cy.ts` or the same country the frontend is
+- run tests: `REACT_APP_COUNTRY=cambodia yarn playwright`
+- for interactive debugging: `yarn playwright:ui`
+  - pick a test file (either `all_countries.spec.ts` or the same country the frontend is
     running on) and start writing tests
 
-The redux state tree is accesssible in cypress test via `window.store.getState()`.
+The redux state tree is accessible in Playwright tests via `window.store.getState()`.
 
 ### Available Scripts
 
