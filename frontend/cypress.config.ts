@@ -5,7 +5,6 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       // implement node event listeners here
     },
-    experimentalStudio: true,
     // Default command timeout - can be overridden by CYPRESS_DEFAULT_COMMAND_TIMEOUT env var
     // Increased for CI environments which tend to be slower
     defaultCommandTimeout: 20000,

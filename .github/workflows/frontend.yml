@@ -98,6 +98,10 @@ jobs:
         with:
           node-version: 20
 
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
       - uses: actions/cache@v4
         id: yarn-cache
         with:
@@ -111,14 +115,22 @@ jobs:
             ${{ runner.os }}-yarn-2025-3
 
       - name: setup 'common' package
-        # skip yarn install in frontend, as cypress does it anyway
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        # Build common package if cache missed or if dist doesn't exist
+        if: steps.yarn-cache.outputs.cache-hit != 'true' || hashFiles('**/common/dist/**') == ''
         run: cd frontend && yarn run setup:common_in_ci
+
+      - name: Ensure frontend dependencies and common link
+        # Always ensure frontend dependencies are installed and common package is properly linked
+        # This is needed even when cache hits to ensure the file:../common symlink exists
+        run: |
+          cd frontend
+          yarn install --frozen-lockfile --check-files
 
       - name: Run cypress e2e tests
         uses: cypress-io/github-action@v6
         with:
           working-directory: ./frontend
+          install-command: yarn install --frozen-lockfile --check-files
           start: yarn start
           wait-on: 'http://localhost:3000'
           wait-on-timeout: 120
