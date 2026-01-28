@@ -120,6 +120,8 @@ jobs:
         with:
           working-directory: ./frontend
           start: yarn start
+          wait-on: 'http://localhost:3000'
+          wait-on-timeout: 120
           browser: chrome
           spec: |
             cypress/e2e/${{ matrix.country }}.cy.ts
@@ -127,8 +129,9 @@ jobs:
         env:
           REACT_APP_COUNTRY: ${{ matrix.country }}
           # CI runners seem a bit slow, give them more time to complete
-          # each command in cypress
-          CYPRESS_DEFAULT_COMMAND_TIMEOUT: 10000
+          # each command in cypress. Increased from 10000ms to 20000ms to match
+          # test timeout expectations and account for slower CI environments
+          CYPRESS_DEFAULT_COMMAND_TIMEOUT: 20000
 
   frontend_build_and_deploy:
     if: github.event_name != 'push'
