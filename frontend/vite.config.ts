@@ -89,9 +89,7 @@ const suppressPublicAssetWarningsPlugin = (): Plugin => ({
     console.warn = (...args: any[]) => {
       const message = args.join(' ');
       if (
-        message.includes(
-          'Assets in public directory cannot be imported',
-        ) ||
+        message.includes('Assets in public directory cannot be imported') ||
         message.includes('use /images/') ||
         message.includes('?url')
       ) {
@@ -124,7 +122,9 @@ export default defineConfig({
         if (
           warning.code === 'UNRESOLVED_IMPORT' ||
           (warning.message &&
-            warning.message.includes('Assets in public directory cannot be imported'))
+            warning.message.includes(
+              'Assets in public directory cannot be imported',
+            ))
         ) {
           return;
         }
