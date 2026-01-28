@@ -80,14 +80,58 @@ const removeFilesPlugin = (): Plugin => ({
   },
 });
 
+// Plugin to suppress Vite warnings about importing assets from public directory
+const suppressPublicAssetWarningsPlugin = (): Plugin => ({
+  name: 'vite-plugin-suppress-public-asset-warnings',
+  buildStart() {
+    // Override console.warn to filter out public asset warnings
+    const originalWarn = console.warn;
+    console.warn = (...args: any[]) => {
+      const message = args.join(' ');
+      if (
+        message.includes(
+          'Assets in public directory cannot be imported',
+        ) ||
+        message.includes('use /images/') ||
+        message.includes('?url')
+      ) {
+        // Suppress this warning
+        return;
+      }
+      // Call original warn for other messages
+      originalWarn.apply(console, args);
+    };
+  },
+});
+
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), nodePolyfills(), removeFilesPlugin()],
+  plugins: [
+    react(),
+    nodePolyfills(),
+    removeFilesPlugin(),
+    suppressPublicAssetWarningsPlugin(),
+  ],
   define: {
     'process.env': env,
   },
   build: {
     outDir: 'build',
+    // Suppress warnings about importing assets from public directory
+    rollupOptions: {
+      onwarn(warning, warn) {
+        // Suppress the specific warning about public directory assets
+        if (
+          warning.code === 'UNRESOLVED_IMPORT' ||
+          (warning.message &&
+            warning.message.includes('Assets in public directory cannot be imported'))
+        ) {
+          return;
+        }
+        // Use default warning handler for other warnings
+        warn(warning);
+      },
+    },
   },
   server: {
     allowedHosts: true,
