@@ -33,12 +33,9 @@ declare global {
   }
 }
 
-// Expose store for e2e testing (Playwright, Cypress, etc.)
+// Expose store for e2e testing (Playwright, etc.)
 // @ts-ignore
-if (
-  typeof window !== 'undefined' &&
-  (window.Cypress || process.env.NODE_ENV === 'test')
-) {
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'test') {
   // @ts-ignore
   window.store = store;
 }
