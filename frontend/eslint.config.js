@@ -19,7 +19,7 @@ export default [
       'build/**',
       'dist/**',
       '../common/**',
-      'cypress/**',
+      'playwright/**',
     ],
   },
   {
@@ -37,8 +37,6 @@ export default [
         ...globals.browser,
         ...globals.node,
         ...globals.jest,
-        cy: 'readonly',
-        Cypress: 'readonly',
         describe: 'readonly',
         it: 'readonly',
         expect: 'readonly',
@@ -202,7 +200,7 @@ export default [
     },
   },
   {
-    files: ['cypress.config.ts'],
+    files: ['playwright.config.ts'],
     rules: {
       '@typescript-eslint/no-unused-vars': [
         'error',

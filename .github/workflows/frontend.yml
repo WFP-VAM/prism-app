@@ -98,6 +98,10 @@ jobs:
         with:
           node-version: 20
 
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
+
       - uses: actions/cache@v4
         id: yarn-cache
         with:
@@ -111,24 +115,76 @@ jobs:
             ${{ runner.os }}-yarn-2025-3
 
       - name: setup 'common' package
-        # skip yarn install in frontend, as cypress does it anyway
+        # Build common package if cache missed
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: cd frontend && yarn run setup:common_in_ci
 
-      - name: Run cypress e2e tests
-        uses: cypress-io/github-action@v6
-        with:
-          working-directory: ./frontend
-          start: yarn start
-          browser: chrome
-          spec: |
-            cypress/e2e/${{ matrix.country }}.cy.ts
-            cypress/e2e/all_countries.cy.ts
+      - name: Verify common package exists
+        # Ensure common/dist exists (should be from cache if cache hit)
+        run: |
+          if [ ! -d "common/dist" ]; then
+            echo "common/dist not found, building..."
+            cd frontend && yarn run setup:common_in_ci
+          else
+            echo "common/dist found"
+            ls -la common/dist | head -10
+          fi
+
+      - name: Install frontend dependencies and link common
+        # Always ensure frontend dependencies are installed and common package is properly linked
+        # This is critical - setup:common_in_ci doesn't run yarn install, so we need to do it here
+        run: |
+          cd frontend
+          echo "Installing frontend dependencies..."
+          yarn install --frozen-lockfile --check-files
+          echo "Verifying prism-common symlink..."
+          if [ -L "node_modules/prism-common" ]; then
+            echo "✓ prism-common symlink exists"
+            ls -la node_modules/prism-common
+          else
+            echo "✗ prism-common symlink missing, attempting to fix..."
+            rm -rf node_modules/prism-common
+            yarn install --frozen-lockfile --check-files
+            if [ -L "node_modules/prism-common" ]; then
+              echo "✓ Fixed: prism-common symlink now exists"
+            else
+              echo "✗ Failed to create symlink"
+              exit 1
+            fi
+          fi
+
+      - name: Install Playwright browsers
+        run: |
+          cd frontend
+          yarn playwright install chromium --with-deps
+
+      - name: Verify setup before Playwright
+        # Debug step to verify everything is set up correctly
+        run: |
+          echo "=== Verification ==="
+          echo "Checking if common/dist exists..."
+          test -d common/dist && echo "✓ common/dist exists" || (echo "✗ common/dist missing" && exit 1)
+          echo "Checking if frontend/node_modules/prism-common exists..."
+          test -L frontend/node_modules/prism-common && echo "✓ prism-common symlink exists" || (echo "✗ prism-common symlink missing" && exit 1)
+          echo "Checking if Playwright is installed..."
+          test -d frontend/node_modules/@playwright && echo "✓ Playwright installed" || (echo "✗ Playwright missing" && exit 1)
+          echo "Verifying common package can be imported..."
+          cd frontend && node -e "require('prism-common')" && echo "✓ prism-common can be imported" || (echo "✗ prism-common import failed" && exit 1)
+
+      - name: Run Playwright e2e tests
+        run: |
+          cd frontend
+          REACT_APP_COUNTRY=${{ matrix.country }} yarn playwright test
         env:
           REACT_APP_COUNTRY: ${{ matrix.country }}
-          # CI runners seem a bit slow, give them more time to complete
-          # each command in cypress
-          CYPRESS_DEFAULT_COMMAND_TIMEOUT: 10000
+
+      - name: Upload Playwright test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.country }}
+          path: frontend/playwright-report/
+          retention-days: 30
 
   frontend_build_and_deploy:
     if: github.event_name != 'push'
@@ -210,7 +266,7 @@ jobs:
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
       - uses: actions/cache@v4
         id: yarn-cache

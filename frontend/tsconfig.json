@@ -36,8 +36,6 @@
     "src"
   ],
   "exclude": [
-    "cypress.config.ts",
-    "cypress",
     "node_modules",
     "**/*.test.tsx",
     "**/*.test.ts"

@@ -41,7 +41,10 @@
     "precommit": "lint-staged",
     "check-boundary-keys": "node ./scripts/check-boundary-keys-validity.js",
     "preprocess-layers": "ts-node --compilerOptions \"{\\\"module\\\":\\\"commonjs\\\"}\" ./scripts/preprocess-layers.ts",
-    "audit": "audit-ci --config .audit-ci.json"
+    "audit": "audit-ci --config .audit-ci.json",
+    "playwright": "playwright test",
+    "playwright:ui": "playwright test --ui",
+    "playwright:install": "playwright install chromium"
   },
   "dependencies": {
     "@azure/msal-browser": "^2.19.0",
@@ -185,7 +188,7 @@
     "babel-jest": "^29.7.0",
     "cross-env": "^7.0.2",
     "cross-fetch": "^4.0.0",
-    "cypress": "^15.9.0",
+    "@playwright/test": "^1.48.0",
     "dotenv": "^16.4.5",
     "eslint": "^9.39.1",
     "eslint-config-airbnb": "^19.0.4",

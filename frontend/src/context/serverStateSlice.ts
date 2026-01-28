@@ -33,7 +33,7 @@ export const loadAvailableDatesForLayer = createAsyncThunk<
       // ready before we try calculating available dates. The condition can return
       // a promise, in which case the action above will only be dispatched once
       // that promise has resolved. This effectively allows waiting for the data
-      // preloading to complete, which can happen in cypress tests where a layer
+      // preloading to complete, which can happen in e2e tests where a layer
       // is activated very early on, or for slow networks.
       if (getLayerType(LayerDefinitions[layerId]) === 'WMSLayer') {
         // action already dispatched, don't do it twice
