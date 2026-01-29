@@ -1289,8 +1289,11 @@
     "date_interval": "days",
     "wcsConfig": {
       "version": "2.0.0",
-      "scale": 0.01,
+      "scale": 0.001,
       "offset": 0
+    },
+    "additional_query_params": {
+      "styles": "wai"
     },
     "validity": {
       "forward": 1,
@@ -1313,8 +1316,11 @@
     "date_interval": "days",
     "wcsConfig": {
       "version": "2.0.0",
-      "scale": 0.01,
+      "scale": 0.001,
       "offset": 0
+    },
+    "additional_query_params": {
+      "styles": "wai06a"
     },
     "validity": {
       "forward": 1,
