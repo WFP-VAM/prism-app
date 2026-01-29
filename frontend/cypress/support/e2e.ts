@@ -47,33 +47,7 @@ beforeEach(function () {
   networkLog.length = 0;
   pendingRequests.clear();
 
-  // ============================================
-  // GLOBAL MOCKS - Mock external tile services to avoid CI flakiness
-  // ============================================
-
-  // Mock MapTiler API tiles (prevents failures when API key is missing or rate-limited)
-  cy.intercept(
-    {
-      method: 'GET',
-      url: /^https:\/\/api\.maptiler\.com\/.*/,
-    },
-    { fixture: 'mocks/vam_empty_tile.png' },
-  ).as('mockMapTilerTiles');
-
-  // Mock VAM/WFP tile requests
-  cy.intercept(
-    {
-      method: 'GET',
-      url: /^https:\/\/api\.earthobservation\.vam\.wfp\.org\/ows\/.*\?bboxsr=.*/,
-    },
-    { fixture: 'mocks/vam_empty_tile.png' },
-  ).as('mockVAMTiles');
-
-  // ============================================
-  // NETWORK MONITORING
-  // ============================================
-
-  // Monitor all requests
+  // Monitor all requests for debugging
   cy.intercept('**/*', req => {
     const isMonitored = isMonitoredUrl(req.url);
     const startTime = Date.now();
