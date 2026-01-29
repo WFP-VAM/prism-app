@@ -27,8 +27,14 @@ describe('Checks on dates', () => {
     );
     cy.url().should('include', 'baselineLayerId=ch_phase');
 
-    // verify that the selected date is correct
-    cy.get('.react-datepicker-wrapper button span').should(
+    // Wait for layer to be fully loaded (chip shows layer count)
+    cy.get('#level1-Cadre-Harmonise .MuiChip-label', { timeout: 30000 }).should(
+      'have.text',
+      '1',
+    );
+
+    // verify that the selected date is correct (with longer timeout for CI)
+    cy.get('.react-datepicker-wrapper button span', { timeout: 15000 }).should(
       'have.text',
       'Sep 30, 2024',
     );
@@ -50,7 +56,15 @@ describe('Checks on dates', () => {
     cy.visit(frontendUrl);
 
     cy.activateLayer('Rainfall', 'Rainfall Amount', 'Rainfall Aggregate');
-    cy.url({ timeout: 20000 }).should('include', 'date=');
+
+    // Wait for layer to be fully loaded (chip shows layer count)
+    cy.get('#level1-Rainfall .MuiChip-label', { timeout: 30000 }).should(
+      'have.text',
+      '1',
+    );
+
+    // Wait for date to be set in URL
+    cy.url({ timeout: 30000 }).should('include', 'date=');
 
     // check that the selected date is within the past month
     cy.get('.react-datepicker-wrapper button span.MuiButton-label').should(
