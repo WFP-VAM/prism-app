@@ -130,6 +130,14 @@ jobs:
           # each command in cypress
           CYPRESS_DEFAULT_COMMAND_TIMEOUT: 10000
 
+      - name: Upload Cypress screenshots on failure
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots-${{ matrix.country }}
+          path: frontend/cypress/screenshots
+          retention-days: 3
+
   frontend_build_and_deploy:
     if: github.event_name != 'push'
     name: frontend_build_and_deploy
