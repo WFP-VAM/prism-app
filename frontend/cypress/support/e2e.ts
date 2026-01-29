@@ -46,28 +46,19 @@ beforeEach(() => {
 
     if (isMonitored) {
       pendingRequests.set(req.url, startTime);
-      const msg = `📤 REQUEST: ${req.method} ${req.url}`;
-      networkLog.push(msg);
-      // eslint-disable-next-line no-console
-      console.log(msg);
+      networkLog.push(`📤 REQUEST: ${req.method} ${req.url}`);
     }
 
     req.on('response', res => {
       if (isMonitored) {
         const duration = Date.now() - startTime;
         pendingRequests.delete(req.url);
-        const msg = `📥 RESPONSE: ${res.statusCode} ${req.url} (${duration}ms)`;
-        networkLog.push(msg);
-        // eslint-disable-next-line no-console
-        console.log(msg);
+        networkLog.push(`📥 RESPONSE: ${res.statusCode} ${req.url} (${duration}ms)`);
       }
 
       // Log all errors regardless of domain
       if (res.statusCode >= 400) {
-        const msg = `❌ ERROR ${res.statusCode}: ${req.url}`;
-        networkLog.push(msg);
-        // eslint-disable-next-line no-console
-        console.log(msg);
+        networkLog.push(`❌ ERROR ${res.statusCode}: ${req.url}`);
       }
     });
   });
@@ -76,24 +67,26 @@ beforeEach(() => {
 afterEach(function () {
   // Log any requests that never got a response (likely timeouts)
   if (pendingRequests.size > 0) {
-    // eslint-disable-next-line no-console
-    console.log('=== PENDING REQUESTS (no response received) ===');
+    networkLog.push('=== PENDING REQUESTS (no response received) ===');
     pendingRequests.forEach((startTime, url) => {
       const duration = Date.now() - startTime;
-      const msg = `⏳ TIMEOUT/PENDING: ${url} (started ${duration}ms ago)`;
-      // eslint-disable-next-line no-console
-      console.log(msg);
-      networkLog.push(msg);
+      networkLog.push(`⏳ TIMEOUT/PENDING: ${url} (started ${duration}ms ago)`);
     });
-    // eslint-disable-next-line no-console
-    console.log('================================================');
+    networkLog.push('================================================');
   }
 
-  // Always log network summary for debugging
-  // eslint-disable-next-line no-console
-  console.log(`=== Network Summary: ${networkLog.length} logged events ===`);
+  // Output all logs to the terminal via cy.task
+  const title = `\n=== Network Log for: ${Cypress.currentTest.title} ===`;
+  cy.task('log', title, { log: false });
+
   if (networkLog.length === 0) {
-    // eslint-disable-next-line no-console
-    console.log('(No monitored network requests were made)');
+    cy.task('log', '(No monitored network requests were made)', { log: false });
+  } else {
+    // Chain cy.task calls to output each log line
+    networkLog.forEach(msg => {
+      cy.task('log', msg, { log: false });
+    });
   }
+
+  cy.task('log', '='.repeat(50), { log: false });
 });
