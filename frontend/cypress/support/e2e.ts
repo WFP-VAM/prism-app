@@ -15,43 +15,85 @@
 
 import './commands';
 
-// Log failed network requests to help debug CI issues
-const failedRequests: string[] = [];
+// Track network requests to help debug CI issues
+const networkLog: string[] = [];
+const pendingRequests: Map<string, number> = new Map();
+
+// Key external domains to monitor
+const MONITORED_DOMAINS = [
+  'earthobservation.vam.wfp.org',
+  'api.maptiler.com',
+  'maptiler.com',
+  'geonode',
+  'wms',
+  'wcs',
+  'wfs',
+];
+
+const isMonitoredUrl = (url: string): boolean => {
+  return MONITORED_DOMAINS.some(domain => url.includes(domain));
+};
 
 beforeEach(() => {
-  // Clear failed requests before each test
-  failedRequests.length = 0;
+  // Clear logs before each test
+  networkLog.length = 0;
+  pendingRequests.clear();
 
+  // Monitor all requests
   cy.intercept('**/*', req => {
+    const isMonitored = isMonitoredUrl(req.url);
+    const startTime = Date.now();
+
+    if (isMonitored) {
+      pendingRequests.set(req.url, startTime);
+      const msg = `📤 REQUEST: ${req.method} ${req.url}`;
+      networkLog.push(msg);
+      // eslint-disable-next-line no-console
+      console.log(msg);
+    }
+
     req.on('response', res => {
+      if (isMonitored) {
+        const duration = Date.now() - startTime;
+        pendingRequests.delete(req.url);
+        const msg = `📥 RESPONSE: ${res.statusCode} ${req.url} (${duration}ms)`;
+        networkLog.push(msg);
+        // eslint-disable-next-line no-console
+        console.log(msg);
+      }
+
+      // Log all errors regardless of domain
       if (res.statusCode >= 400) {
-        const msg = `❌ ${res.statusCode} - ${req.url}`;
-        failedRequests.push(msg);
-        Cypress.log({
-          name: 'Network Error',
-          message: msg,
-          consoleProps: () => ({
-            'Status Code': res.statusCode,
-            URL: req.url,
-            Method: req.method,
-            Headers: res.headers,
-          }),
-        });
+        const msg = `❌ ERROR ${res.statusCode}: ${req.url}`;
+        networkLog.push(msg);
+        // eslint-disable-next-line no-console
+        console.log(msg);
       }
     });
   });
 });
 
 afterEach(function () {
-  // Log summary of failed requests after each test (especially useful on failure)
-  if (failedRequests.length > 0) {
+  // Log any requests that never got a response (likely timeouts)
+  if (pendingRequests.size > 0) {
     // eslint-disable-next-line no-console
-    console.log('=== Failed Network Requests ===');
-    failedRequests.forEach(msg => {
+    console.log('=== PENDING REQUESTS (no response received) ===');
+    pendingRequests.forEach((startTime, url) => {
+      const duration = Date.now() - startTime;
+      const msg = `⏳ TIMEOUT/PENDING: ${url} (started ${duration}ms ago)`;
       // eslint-disable-next-line no-console
       console.log(msg);
+      networkLog.push(msg);
     });
     // eslint-disable-next-line no-console
-    console.log('===============================');
+    console.log('================================================');
+  }
+
+  // Always log network summary for debugging
+  // eslint-disable-next-line no-console
+  console.log(`=== Network Summary: ${networkLog.length} logged events ===`);
+  if (networkLog.length === 0) {
+    // eslint-disable-next-line no-console
+    console.log('(No monitored network requests were made)');
   }
 });
