@@ -1287,6 +1287,11 @@
     "server_layer_name": "wai_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "wcsConfig": {
+      "version": "2.0.0",
+      "scale": 0.01,
+      "offset": 0
+    },
     "validity": {
       "forward": 1,
       "mode": "dekad"
@@ -1306,6 +1311,11 @@
     "server_layer_name": "wai_seasonal_6month",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "wcsConfig": {
+      "version": "2.0.0",
+      "scale": 0.01,
+      "offset": 0
+    },
     "validity": {
       "forward": 1,
       "mode": "dekad"
