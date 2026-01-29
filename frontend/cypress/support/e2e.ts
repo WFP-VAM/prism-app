@@ -19,25 +19,59 @@ import './commands';
 const networkLog: string[] = [];
 const pendingRequests: Map<string, number> = new Map();
 
-// Key external domains to monitor
+// Key external domains to monitor - expanded list
 const MONITORED_DOMAINS = [
   'earthobservation.vam.wfp.org',
   'api.maptiler.com',
   'maptiler.com',
+  'tiles.maptiler.com',
   'geonode',
   'wms',
   'wcs',
   'wfs',
+  'pbf', // Vector tiles
+  'mvt', // MapBox Vector Tiles
 ];
 
 const isMonitoredUrl = (url: string): boolean => {
   return MONITORED_DOMAINS.some(domain => url.includes(domain));
 };
 
-beforeEach(() => {
+beforeEach(function () {
+  // Log test start immediately
+  cy.task('log', `\n🚀 STARTING TEST: ${Cypress.currentTest.title}`, {
+    log: false,
+  });
+
   // Clear logs before each test
   networkLog.length = 0;
   pendingRequests.clear();
+
+  // ============================================
+  // GLOBAL MOCKS - Mock external tile services to avoid CI flakiness
+  // ============================================
+
+  // Mock MapTiler API tiles (prevents failures when API key is missing or rate-limited)
+  cy.intercept(
+    {
+      method: 'GET',
+      url: /^https:\/\/api\.maptiler\.com\/.*/,
+    },
+    { fixture: 'mocks/vam_empty_tile.png' },
+  ).as('mockMapTilerTiles');
+
+  // Mock VAM/WFP tile requests
+  cy.intercept(
+    {
+      method: 'GET',
+      url: /^https:\/\/api\.earthobservation\.vam\.wfp\.org\/ows\/.*\?bboxsr=.*/,
+    },
+    { fixture: 'mocks/vam_empty_tile.png' },
+  ).as('mockVAMTiles');
+
+  // ============================================
+  // NETWORK MONITORING
+  // ============================================
 
   // Monitor all requests
   cy.intercept('**/*', req => {
@@ -53,7 +87,9 @@ beforeEach(() => {
       if (isMonitored) {
         const duration = Date.now() - startTime;
         pendingRequests.delete(req.url);
-        networkLog.push(`📥 RESPONSE: ${res.statusCode} ${req.url} (${duration}ms)`);
+        networkLog.push(
+          `📥 RESPONSE: ${res.statusCode} ${req.url} (${duration}ms)`,
+        );
       }
 
       // Log all errors regardless of domain

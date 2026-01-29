@@ -7,7 +7,8 @@ describe('General stability', () => {
 
   it('should start without hanging and show the map', () => {
     cy.visit('http://localhost:3000');
-    cy.contains('MapTiler', { timeout: 10000 }).should('be.visible');
+    // Verify the map container is present and the app has loaded
+    cy.get('.maplibregl-map', { timeout: 10000 }).should('exist');
     cy.get('[aria-label="language-select-dropdown-button"]', {
       timeout: 10000,
     })
