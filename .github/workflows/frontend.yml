@@ -5,7 +5,7 @@ on:
   # Note - pull_request_target runs the workflow from the main branch, not the PR branch.
   pull_request:
   push:
-    branches:
+    branches: 
       - master
 
 jobs:
@@ -105,7 +105,7 @@ jobs:
             **/node_modules
             **/.eslintcache
             **/common/dist
-            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            ~/.cache/Cypress
           key: ${{ runner.os }}-yarn-2025-3-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/.lock', '**/common/src/**/*.ts') }}
           restore-keys: |
             ${{ runner.os }}-yarn-2025-3
