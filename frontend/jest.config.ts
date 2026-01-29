@@ -29,10 +29,11 @@ const config: Config = {
   moduleDirectories: ['node_modules', 'src'],
   roots: ['<rootDir>'],
   modulePaths: ['<rootDir>'],
-  // Ignore Playwright e2e tests - they should only be run by Playwright
+  // Ignore Cypress e2e tests - they should only be run by Cypress
   testPathIgnorePatterns: [
     '/node_modules/',
-    '.*/playwright/.*', // Match any path containing playwright/
+    '/cypress/',
+    '/playwright/',
     '/build/',
     '/dist/',
   ],

@@ -45,3 +45,8 @@ packages/common/pnpm-lock.yaml
 frontend/playwright-report/
 frontend/test-results/
 frontend/playwright/.cache/
+
+# ignore cypress artifacts
+frontend/cypress/screenshots/
+frontend/cypress/videos/
+frontend/cypress/downloads/
