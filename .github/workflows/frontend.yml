@@ -116,84 +116,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-2025-3
 
-      - name: setup 'common' package
-        # Build common package if cache missed
+      - name: Install dependencies if needed.
         if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: cd frontend && yarn run setup:common_in_ci
-
-      - name: Verify common package exists
-        # Ensure common/dist exists (should be from cache if cache hit)
         run: |
-          if [ ! -d "common/dist" ]; then
-            echo "common/dist not found, building..."
-            cd frontend && yarn run setup:common_in_ci
-          else
-            echo "common/dist found"
-            ls -la common/dist | head -10
-          fi
-
-      - name: Install frontend dependencies and link common
-        # Always ensure frontend dependencies are installed and common package is properly linked
-        # This is critical - setup:common_in_ci doesn't run yarn install, so we need to do it here
-        run: |
-          set -e  # Exit on error
           cd frontend
-          echo "=== Installing frontend dependencies ==="
-          
-          # Ensure common/dist exists
-          if [ ! -d "../common/dist" ]; then
-            echo "ERROR: common/dist does not exist!"
-            ls -la ../common/ || echo "common directory not found"
-            exit 1
-          fi
-          
-          # Install dependencies
-          echo "Running yarn install..."
-          if [ "${{ steps.yarn-cache.outputs.cache-hit }}" == "true" ]; then
-            echo "Cache hit - using --check-files"
-            yarn install --check-files
-          else
-            echo "Cache miss - using --frozen-lockfile"
-            yarn install --frozen-lockfile
-          fi
-          
-          # Verify and fix prism-common symlink if needed
-          echo "=== Verifying prism-common symlink ==="
-          if [ -L "node_modules/prism-common" ]; then
-            echo "✅ Symlink exists"
-            ls -la node_modules/prism-common
-          else
-            echo "⚠ Symlink missing, attempting to fix..."
-            rm -rf node_modules/prism-common
-            yarn install --check-files
-            if [ ! -L "node_modules/prism-common" ] && [ -d "../common/dist" ]; then
-              echo "Creating symlink manually..."
-              ln -sf ../../common node_modules/prism-common
-            fi
-          fi
-          
-          # Final verification
-          if [ ! -L "node_modules/prism-common" ]; then
-            echo "ERROR: Failed to create prism-common symlink"
-            echo "Debug:"
-            ls -la node_modules/ | grep -E "(prism|common)" || echo "No prism-common found"
-            ls -la ../common/ | head -3
-            exit 1
-          fi
-          echo "✅ prism-common symlink verified"
-
-      - name: Verify setup before Cypress
-        # Debug step to verify everything is set up correctly
-        run: |
-          echo "=== Verification ==="
-          echo "Checking if common/dist exists..."
-          test -d common/dist && echo "✓ common/dist exists" || (echo "✗ common/dist missing" && exit 1)
-          echo "Checking if frontend/node_modules/prism-common exists..."
-          test -L frontend/node_modules/prism-common && echo "✓ prism-common symlink exists" || (echo "✗ prism-common symlink missing" && exit 1)
-          echo "Checking if Cypress is installed..."
-          test -d frontend/node_modules/cypress && echo "✓ Cypress installed" || (echo "✗ Cypress missing" && exit 1)
-          echo "Verifying common package can be imported..."
-          cd frontend && node -e "require('prism-common')" && echo "✓ prism-common can be imported" || (echo "✗ prism-common import failed" && exit 1)
+          yarn install --frozen-lockfile --network-timeout 100000
+      
+      - name: setup 'common' package
+        run: cd frontend && yarn run setup:common
 
       - name: Run cypress e2e tests
         uses: cypress-io/github-action@v6
