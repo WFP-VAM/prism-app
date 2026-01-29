@@ -134,72 +134,51 @@ jobs:
         # Always ensure frontend dependencies are installed and common package is properly linked
         # This is critical - setup:common_in_ci doesn't run yarn install, so we need to do it here
         run: |
+          set -e  # Exit on error
           cd frontend
           echo "=== Installing frontend dependencies ==="
-          echo "Cache hit status: ${{ steps.yarn-cache.outputs.cache-hit }}"
           
-          # Check if common/dist exists before proceeding
+          # Ensure common/dist exists
           if [ ! -d "../common/dist" ]; then
             echo "ERROR: common/dist does not exist!"
-            echo "This should have been built in previous steps"
+            ls -la ../common/ || echo "common directory not found"
             exit 1
           fi
           
-          echo "Installing dependencies..."
-          set +e  # Don't exit on error immediately
+          # Install dependencies
+          echo "Running yarn install..."
           if [ "${{ steps.yarn-cache.outputs.cache-hit }}" == "true" ]; then
-            echo "Cache hit - verifying installation with --check-files"
+            echo "Cache hit - using --check-files"
             yarn install --check-files
-            INSTALL_EXIT_CODE=$?
           else
-            echo "Cache miss - fresh install with --frozen-lockfile"
+            echo "Cache miss - using --frozen-lockfile"
             yarn install --frozen-lockfile
-            INSTALL_EXIT_CODE=$?
-          fi
-          set -e  # Re-enable exit on error
-          
-          if [ $INSTALL_EXIT_CODE -ne 0 ]; then
-            echo "WARNING: yarn install had issues, trying without flags..."
-            yarn install
           fi
           
+          # Verify and fix prism-common symlink if needed
           echo "=== Verifying prism-common symlink ==="
           if [ -L "node_modules/prism-common" ]; then
-            echo "✓ prism-common symlink exists"
+            echo "✅ Symlink exists"
             ls -la node_modules/prism-common
-          elif [ -d "node_modules/prism-common" ]; then
-            echo "⚠ node_modules/prism-common exists but is not a symlink, removing..."
-            rm -rf node_modules/prism-common
-            echo "Re-running yarn install to create symlink..."
-            yarn install --check-files || yarn install
           else
-            echo "✗ prism-common symlink missing"
-            echo "Checking if common/dist exists..."
-            ls -la ../common/dist | head -5
-            echo "Attempting to create symlink via yarn install..."
-            yarn install --check-files || yarn install
+            echo "⚠ Symlink missing, attempting to fix..."
+            rm -rf node_modules/prism-common
+            yarn install --check-files
+            if [ ! -L "node_modules/prism-common" ] && [ -d "../common/dist" ]; then
+              echo "Creating symlink manually..."
+              ln -sf ../../common node_modules/prism-common
+            fi
           fi
           
           # Final verification
-          if [ -L "node_modules/prism-common" ]; then
-            echo "✅ prism-common symlink verified"
-            ls -la node_modules/prism-common
-          elif [ ! -d "../common/dist" ]; then
-            echo "ERROR: common/dist missing - cannot create symlink"
+          if [ ! -L "node_modules/prism-common" ]; then
+            echo "ERROR: Failed to create prism-common symlink"
+            echo "Debug:"
+            ls -la node_modules/ | grep -E "(prism|common)" || echo "No prism-common found"
+            ls -la ../common/ | head -3
             exit 1
-          else
-            echo "WARNING: Symlink still missing, attempting manual creation..."
-            ln -sf ../../common node_modules/prism-common
-            if [ -L "node_modules/prism-common" ]; then
-              echo "✅ Manual symlink creation successful"
-            else
-              echo "ERROR: All symlink creation attempts failed"
-              echo "Debug info:"
-              ls -la node_modules/ | grep prism || echo "No prism-common in node_modules"
-              ls -la ../common/ | head -5
-              exit 1
-            fi
           fi
+          echo "✅ prism-common symlink verified"
 
       - name: Install Playwright browsers
         run: |
