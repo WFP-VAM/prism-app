@@ -479,13 +479,24 @@ export const getCompositeLayers = (layer: LayerType): LayerType[] => {
 
 /**
  * A utility function to get the STAC band parameter.
- * WARNING: This function is fragile as it is using the _blended pattern in styles.
- * @param additionalQueryParams - additional query parameters
+ * Priority order:
+ * 1. stacConfig.band (explicit STAC configuration)
+ * 2. additionalQueryParams.band (legacy support)
+ * 3. Extract from additionalQueryParams.styles with _blended pattern (legacy support)
+ * @param stacConfig - optional STAC configuration
+ * @param additionalQueryParams - optional additional query parameters
  * @returns the band parameter
  */
 export const getStacBand = (
+  stacConfig: { band?: string } | undefined,
   additionalQueryParams: Record<string, string> | undefined,
 ) => {
+  // Priority 1: stacConfig.band
+  if (stacConfig?.band) {
+    return stacConfig.band;
+  }
+
+  // Priority 2 & 3: legacy additionalQueryParams
   const { band, styles } =
     (additionalQueryParams as {
       styles?: string;

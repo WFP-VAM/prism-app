@@ -464,13 +464,18 @@ async function createAPIRequestParams(
     ? { wfs_params: params as WfsRequestParams }
     : undefined;
 
-  const { additionalQueryParams, baseUrl, serverLayerName, wcsConfig } =
-    geotiffLayer;
+  const {
+    additionalQueryParams,
+    baseUrl,
+    serverLayerName,
+    wcsConfig,
+    stacConfig,
+  } = geotiffLayer;
   const dateValue = !wcsConfig?.disableDateParam ? date : undefined;
   const dateString = getFormattedDate(dateValue, 'default');
 
   // get geotiff url using band
-  const band = getStacBand(additionalQueryParams);
+  const band = getStacBand(stacConfig, additionalQueryParams);
   // Get geotiff_url using STAC for layers in earthobservation.vam.
   // TODO - What happens if there is no date? are some layers not STAC?
   const geotiffUrl = baseUrl.includes('api.earthobservation.vam.wfp.org/ows')
@@ -592,9 +597,10 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       : undefined;
 
     if (maskLayer) {
-      const { additionalQueryParams, baseUrl, serverLayerName } = maskLayer;
+      const { additionalQueryParams, baseUrl, serverLayerName, stacConfig } =
+        maskLayer;
 
-      const band = getStacBand(additionalQueryParams);
+      const band = getStacBand(stacConfig, additionalQueryParams);
 
       const dateValue = !maskLayer.wcsConfig?.disableDateParam
         ? date

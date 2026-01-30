@@ -207,6 +207,11 @@ export type RawDataConfiguration = {
   disableDateParam?: boolean;
 };
 
+export type StacConfiguration = {
+  // Band name to use when fetching from STAC API for analysis/zonal stats
+  band?: string;
+};
+
 // Type of vector data that the layer provides
 export enum GeometryType {
   Point = 'point',
@@ -504,6 +509,9 @@ export class WMSLayerProps extends CommonLayerProps {
 
   @optional
   wcsConfig?: RawDataConfiguration;
+
+  @optional
+  stacConfig?: StacConfiguration;
 
   @optional // If included, we infer the layer is a vector layer.
   geometry?: GeometryType;
