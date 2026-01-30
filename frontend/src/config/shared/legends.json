@@ -357,7 +357,8 @@
     { "value": 0.4, "label": "None (>= 0.4)", "color": "#F0F0F0" }
   ],  
   "wai_04_0_100": [
-    { "value": 0, "label": "Severe (<20)", "color": "#A93800" },
+    { "value": 0, "label": "No data", "color": "#ffffff" },
+    { "value": 1, "label": "Severe (<20)", "color": "#A93800" },
     { "value": 20, "label": "Intense (20 - 30)", "color": "#E59802" },
     { "value": 30, "label": "Moderate (30 - 40)", "color": "#FFE76A" },
     { "value": 40, "label": "None (>= 40)", "color": "#F0F0F0" }
