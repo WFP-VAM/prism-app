@@ -1310,7 +1310,7 @@
     },
     "opacity": 0.7,
     "legend_text": "The monthly Water Anomaly Index (WAI) integrates three critical variables of the water cycle: WAI = (rainfall anomaly × 0.4) + (evapotranspiration anomaly × 0.3) + (soil moisture anomaly × 0.3)",
-    "legend": "cdi_04_0_100"
+    "legend": "wai_04_0_100"
   },
   "seasonal_water_anomaly": {
     "title": "Seasonal Water Anomaly Index (WAI)",
@@ -1341,7 +1341,7 @@
     },
     "opacity": 0.7,
     "legend_text": "The seasonal Water Anomaly Index (WAI) integrates three critical variables of the water cycle: WAI = (rainfall anomaly × 0.4) + (evapotranspiration anomaly × 0.3) + (soil moisture anomaly × 0.3)",
-    "legend": "cdi_04_0_100"
+    "legend": "wai_04_0_100"
   },
   "wp_pop_icunadj": {
     "title": "population",
