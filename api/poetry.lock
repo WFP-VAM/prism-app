@@ -1138,14 +1138,14 @@ tqdm = ["tqdm"]
 
 [[package]]
 name = "geopandas"
-version = "1.1.1"
+version = "1.1.2"
 description = "Geographic pandas extensions"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "geopandas-1.1.1-py3-none-any.whl", hash = "sha256:589e61aaf39b19828843df16cb90234e72897e2579be236f10eee0d052ad98e8"},
-    {file = "geopandas-1.1.1.tar.gz", hash = "sha256:1745713f64d095c43e72e08e753dbd271678254b24f2e01db8cdb8debe1d293d"},
+    {file = "geopandas-1.1.2-py3-none-any.whl", hash = "sha256:2bb0b1052cb47378addb4ba54c47f8d4642dcbda9b61375638274f49d9f0bb0d"},
+    {file = "geopandas-1.1.2.tar.gz", hash = "sha256:33f7b33565c46a45b8459a2ab699ec943fdbb5716e58e251b3c413cf7783106c"},
 ]
 
 [package.dependencies]
@@ -4651,4 +4651,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.13"
-content-hash = "6b195cda6c9af5a6218561d6f78371cddab3754d80329b29d8702523ecc03031"
+content-hash = "0554e7307b6842ca58baad67c02b920e6d242dad2ec85e2c16ffe62fbedbfd0b"
