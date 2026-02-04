@@ -1048,7 +1048,7 @@
       "mode": "dekad"
     },
     "opacity": 0.7,
-    "legend_text": "Total number of heavy rain days (rainfall > 90th percentile) within last 30 days of dekad",
+    "legend_text": "Total number of intense rain days (rainfall > 90th percentile) within last 30 days of dekad",
     "legend": "xnhie_12_0_14",
     "additional_query_params": {
       "styles": "xnhie_12_0_14"
@@ -1070,7 +1070,7 @@
       "mode": "dekad"
     },
     "opacity": 0.7,
-    "legend_text": "Total number of heavy rain days (rainfall > 95th percentile) within last 30 days of dekad",
+    "legend_text": "Total number of extreme rain days (rainfall > 95th percentile) within last 30 days of dekad",
     "legend": "xnhie_12_0_14",
     "additional_query_params": {
       "styles": "xnhie_12_0_14"
