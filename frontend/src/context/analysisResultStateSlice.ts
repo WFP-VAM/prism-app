@@ -597,6 +597,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       const { additionalQueryParams, baseUrl, serverLayerName } = maskLayer;
 
       const band = getStacBand(additionalQueryParams);
+      const collection = additionalQueryParams?.collection || serverLayerName;
 
       const dateValue = !maskLayer.wcsConfig?.disableDateParam
         ? date
@@ -609,7 +610,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
         baseUrl.includes('api.earthobservation.vam.wfp.org/ows') &&
         !serverLayerName.includes('hf_water')
           ? await getDownloadGeotiffURL(
-              serverLayerName,
+              collection,
               band,
               extent,
               dateString,
