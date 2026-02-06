@@ -471,11 +471,13 @@ async function createAPIRequestParams(
 
   // get geotiff url using band
   const band = getStacBand(additionalQueryParams);
+  // Get STAC collection name from additionalQueryParams, fallback to serverLayerName
+  const collection = additionalQueryParams?.collection || serverLayerName;
   // Get geotiff_url using STAC for layers in earthobservation.vam.
   // TODO - What happens if there is no date? are some layers not STAC?
   const geotiffUrl = baseUrl.includes('api.earthobservation.vam.wfp.org/ows')
     ? await getDownloadGeotiffURL(
-        serverLayerName,
+        collection,
         band,
         extent,
         dateString,
@@ -595,6 +597,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       const { additionalQueryParams, baseUrl, serverLayerName } = maskLayer;
 
       const band = getStacBand(additionalQueryParams);
+      const collection = additionalQueryParams?.collection || serverLayerName;
 
       const dateValue = !maskLayer.wcsConfig?.disableDateParam
         ? date
@@ -607,7 +610,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
         baseUrl.includes('api.earthobservation.vam.wfp.org/ows') &&
         !serverLayerName.includes('hf_water')
           ? await getDownloadGeotiffURL(
-              serverLayerName,
+              collection,
               band,
               extent,
               dateString,
