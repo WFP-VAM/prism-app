@@ -1,7 +1,6 @@
 import json
 import os
 
-import pytest
 from fastapi.testclient import TestClient
 from prism_app.database.database import AlertsDataBase
 from prism_app.main import app
@@ -9,18 +8,11 @@ from prism_app.scripts.add_users import add_users
 
 client = TestClient(app)
 
-# Skip reason for tests that depend on external API calls that are currently failing
-EXTERNAL_API_SKIP_REASON = (
-    "External API (api.earthobservation.vam.wfp.org) is returning 400 errors for these URLs. "
-    "Need to update URLs or create VCR cassettes with valid data."
-)
 
-
-@pytest.mark.skip(reason=EXTERNAL_API_SKIP_REASON)
-# TODO: Add VCR cassette for this test following the pattern in test_google_floods_api.py
 def test_stats_endpoint_for_alerting():
     """
     Call /stats with known-good parameters.
+    Updated to use WCS 2.0.0 format (coverageId, subset parameters).
     This endpoint can be slow (>1 min) so this test is deactivated by default.
     """
     file_path = os.path.join(os.path.dirname(__file__), "test_alerting_zones.json")
@@ -31,7 +23,7 @@ def test_stats_endpoint_for_alerting():
         "/stats",
         headers={"Accept": "application/json"},
         json={
-            "geotiff_url": "https://api.earthobservation.vam.wfp.org/ows/?bbox=39.65475%2C-13.29948%2C40.22682%2C-12.93309&coverage=rfb_blended_moz_dekad&crs=EPSG%3A4326&format=GeoTIFF&height=61&request=GetCoverage&service=WCS&time=2024-07-21&version=1.0.0&width=94",
+            "geotiff_url": "https://api.earthobservation.vam.wfp.org/ows/?service=WCS&request=GetCoverage&version=2.0.0&coverageId=rfb_blended_moz_dekad&subset=Long(39.65475,40.22682)&subset=Lat(-13.29948,-12.93309)&subset=unix(1721520000)",
             "zones": zones,
             "geojson_out": False,
         },

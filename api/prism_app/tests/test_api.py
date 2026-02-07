@@ -9,12 +9,6 @@ from prism_app.database.database import AlertsDataBase
 from prism_app.main import app
 from prism_app.scripts.add_users import add_users
 
-# Skip reason for tests that depend on external API calls that are currently failing
-EXTERNAL_API_SKIP_REASON = (
-    "External API (api.earthobservation.vam.wfp.org) is returning 400 errors for these URLs. "
-    "Need to update URLs or create VCR cassettes with valid data."
-)
-
 
 @pytest.fixture(scope="session", autouse=True)
 def migrate_test_db():
@@ -109,18 +103,17 @@ def test_stats_endpoint1():
     # assert response.json() == []
 
 
-@pytest.mark.skip(reason=EXTERNAL_API_SKIP_REASON)
-# TODO: Add VCR cassette for this test following the pattern in test_google_floods_api.py
 def test_stats_endpoint2():
     """
     Call /stats with known-good parameters.
+    Updated to use WCS 2.0.0 format (coverageId, subset parameters).
     """
 
     response = client.post(
         "/stats",
         headers={"Accept": "application/json"},
         json={
-            "geotiff_url": "https://api.earthobservation.vam.wfp.org/ows/?service=WCS&request=GetCoverage&version=1.0.0&coverage=hf_water_mmr&crs=EPSG%3A4326&bbox=92.2%2C9.7%2C101.2%2C28.5&width=1098&height=2304&format=GeoTIFF&time=2022-08-11",
+            "geotiff_url": "https://api.earthobservation.vam.wfp.org/ows/?service=WCS&request=GetCoverage&version=2.0.0&coverageId=hf_water_mmr&subset=Long(92.2,101.2)&subset=Lat(9.7,28.5)&subset=unix(1660176000)",
             "zones_url": "https://prism-wfp.s3.us-east-2.amazonaws.com/api-test/mmr_admin_boundaries.json",
             "group_by": "TS",
             "geojson_out": False,
@@ -129,11 +122,10 @@ def test_stats_endpoint2():
     assert response.status_code == 200
 
 
-@pytest.mark.skip(reason=EXTERNAL_API_SKIP_REASON)
-# TODO: Add VCR cassette for this test following the pattern in test_google_floods_api.py
 def test_stats_endpoint_masked():
     """
     Call /stats with known-good parameters with a geotiff mask.
+    Updated to use WCS 2.0.0 format (coverageId, subset parameters).
     """
     response = client.post(
         "/stats",
@@ -141,7 +133,7 @@ def test_stats_endpoint_masked():
         json={
             "geotiff_url": "https://prism-wfp.s3.us-east-2.amazonaws.com/api-test/myanmar_rainfall_dekad.tif",
             "zones_url": "https://prism-wfp.s3.us-east-2.amazonaws.com/api-test/mmr_admin_boundaries.json",
-            "mask_url": "https://api.earthobservation.vam.wfp.org/ows/?service=WCS&request=GetCoverage&version=1.0.0&coverage=hf_water_mmr&crs=EPSG%3A4326&bbox=92.2%2C9.7%2C101.2%2C28.5&width=1098&height=2304&format=GeoTIFF&time=2022-08-11",
+            "mask_url": "https://api.earthobservation.vam.wfp.org/ows/?service=WCS&request=GetCoverage&version=2.0.0&coverageId=hf_water_mmr&subset=Long(92.2,101.2)&subset=Lat(9.7,28.5)&subset=unix(1660176000)",
             "group_by": "TS_PCODE",
             "geojson_out": True,
         },
