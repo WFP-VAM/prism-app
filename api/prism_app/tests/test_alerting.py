@@ -9,13 +9,15 @@ from prism_app.scripts.add_users import add_users
 
 client = TestClient(app)
 
+# Skip reason for tests that depend on external API calls that are currently failing
+EXTERNAL_API_SKIP_REASON = (
+    "External API (api.earthobservation.vam.wfp.org) is returning 400 errors for these URLs. "
+    "Need to update URLs or create VCR cassettes with valid data."
+)
 
-@pytest.mark.skip(
-    reason="External API (api.earthobservation.vam.wfp.org) is returning 400 errors for these URLs. Need to update URLs or create VCR cassettes with valid data."
-)
-@pytest.mark.vcr(
-    match_on=["uri", "method"],
-)
+
+@pytest.mark.skip(reason=EXTERNAL_API_SKIP_REASON)
+# TODO: Add VCR cassette for this test following the pattern in test_google_floods_api.py
 def test_stats_endpoint_for_alerting():
     """
     Call /stats with known-good parameters.
