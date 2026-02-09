@@ -1,7 +1,7 @@
 """Sample Data for stats and alert."""
 
 stats_data = {
-    "geotiff_url": "https://data.apps.fao.org/static/data/c3s/MAPSET/AGERA5-ET0-D/C3S.AGERA5-ET0-D.2026-01-D2.tif"",
+    "geotiff_url": "https://data.apps.fao.org/static/data/c3s/MAPSET/AGERA5-ET0-D/C3S.AGERA5-ET0-D.2026-01-D2.tif",
     "zones_url": "https://prism-wfp.s3.us-east-2.amazonaws.com/api-test/mmr_admin_boundaries.json"
     "mmr_admin_boundaries.json",
     "group_by": "TS",
