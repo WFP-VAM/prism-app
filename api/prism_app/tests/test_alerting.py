@@ -22,7 +22,7 @@ def test_stats_endpoint_for_alerting():
         "/stats",
         headers={"Accept": "application/json"},
         json={
-            "geotiff_url": "https://api.earthobservation.vam.wfp.org/ows/?bbox=39.65475%2C-13.29948%2C40.22682%2C-12.93309&coverage=rfb_blended_moz_dekad&crs=EPSG%3A4326&format=GeoTIFF&height=61&request=GetCoverage&service=WCS&time=2024-07-21&version=1.0.0&width=94",
+            "geotiff_url": "https://data.apps.fao.org/static/data/c3s/MAPSET/AGERA5-ET0-D/C3S.AGERA5-ET0-D.2026-01-D2.tif",
             "zones": zones,
             "geojson_out": False,
         },
