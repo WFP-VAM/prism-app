@@ -202,6 +202,7 @@ export async function buildEmailPayloads(
   shortReports: ShortReport[],
   basicPrismUrl: string,
   emails: string[],
+  country: string,
 ): Promise<StormAlertData[]> {
   try {
     console.log(
@@ -264,6 +265,7 @@ export async function buildEmailPayloads(
             }),
 
             status,
+            country,
           };
         }
 
