@@ -14,7 +14,8 @@ RUN set -e && \
       libcups2 libxcomposite1 libxdamage1 libgbm1 libxkbcommon-x11-0 \
       libasound2 libxfixes3 libxrandr2 \
       libx11-6 libx11-xcb1 libxshmfence1 \
-      libgl1-mesa-dri libgl1-mesa-glx && \
+      libgl1-mesa-dri libgl1-mesa-glx \
+      libegl1 libgles2 mesa-utils && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN npx @puppeteer/browsers install chrome@$CHROME_VERSION && \
