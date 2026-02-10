@@ -125,19 +125,27 @@ function AnticipatoryActionFloodPanel() {
     AAData;
   const { startDate } = useSelector(dateRangeSelector);
 
-  // Initialize state from URL params or defaults
-  const [sortField, setSortField] = useState<SortField>(
-    (urlParams.get('aaFloodSort') as SortField) || 'risk_level',
-  );
-  const [sortDirection, setSortDirection] = useState<SortDirection>(
-    (urlParams.get('aaFloodSortDir') as SortDirection) || 'desc',
-  );
-  const [rowsPerPage, setRowsPerPage] = useState<number>(
-    parseInt(urlParams.get('aaFloodRows') || '20', 10),
-  );
-  const [currentPage, setCurrentPage] = useState<number>(
-    parseInt(urlParams.get('aaFloodPage') || '0', 10),
-  );
+  // Initialize state from URL params or defaults with validation
+  const [sortField, setSortField] = useState<SortField>(() => {
+    const urlSort = urlParams.get('aaFloodSort');
+    const validSortFields: SortField[] = ['station_name', 'date', 'risk_level'];
+    return validSortFields.includes(urlSort as SortField)
+      ? (urlSort as SortField)
+      : 'risk_level';
+  });
+  const [sortDirection, setSortDirection] = useState<SortDirection>(() => {
+    const urlDir = urlParams.get('aaFloodSortDir');
+    return urlDir === 'asc' || urlDir === 'desc' ? urlDir : 'desc';
+  });
+  const [rowsPerPage, setRowsPerPage] = useState<number>(() => {
+    const urlRows = parseInt(urlParams.get('aaFloodRows') || '20', 10);
+    const validRowOptions = [10, 20, 50, 100];
+    return validRowOptions.includes(urlRows) ? urlRows : 20;
+  });
+  const [currentPage, setCurrentPage] = useState<number>(() => {
+    const urlPage = parseInt(urlParams.get('aaFloodPage') || '0', 10);
+    return !Number.isNaN(urlPage) && urlPage >= 0 ? urlPage : 0;
+  });
 
   // Sync selected station from URL to Redux on mount
   useEffect(() => {
@@ -145,6 +153,7 @@ function AnticipatoryActionFloodPanel() {
     if (stationFromUrl && stationFromUrl !== selectedStation) {
       dispatch(setAAFloodSelectedStation(stationFromUrl));
     }
+    // This effect should only run on mount to avoid infinite loops
   }, []);
 
   // Sync selected station from Redux to URL whenever it changes
