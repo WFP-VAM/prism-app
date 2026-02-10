@@ -60,6 +60,7 @@ export async function run() {
         filteredAvailableReports,
         alert.prismUrl,
         emails,
+        alert.country,
       );
       const updatedLastStates = transformReportsToLastProcessed(
         context.latestAvailableReports,

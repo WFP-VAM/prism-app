@@ -81,6 +81,7 @@ describe('worker', () => {
       availableReports,
       alert.prismUrl,
       alert.emails,
+      alert.country,
     );
     expect(mockedUpdate).toHaveBeenCalledWith(
       {

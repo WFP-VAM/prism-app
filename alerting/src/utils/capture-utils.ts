@@ -101,13 +101,9 @@ export async function captureScreenshotFromUrl(
     browser = await puppeteer.launch({
       headless: true,
       args: [
-        '--use-gl=egl',
         '--no-sandbox',
         '--disable-setuid-sandbox',
         '--disable-dev-shm-usage',
-        '--disable-gpu-sandbox',
-        '--enable-webgl',
-        '--ignore-gpu-blacklist',
         '--window-size=1920,1080',
       ],
       defaultViewport: null,
