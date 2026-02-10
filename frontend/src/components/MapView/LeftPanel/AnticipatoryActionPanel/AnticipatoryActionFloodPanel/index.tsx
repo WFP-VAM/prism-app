@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Typography,
@@ -28,6 +28,7 @@ import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
 import SimpleDropdown from 'components/Common/SimpleDropdown';
+import { useUrlHistory } from 'utils/url-utils';
 import { useAnticipatoryAction } from '../useAnticipatoryAction';
 import StationCharts from './StationCharts';
 import { TABLE_WIDTH } from './constants';
@@ -118,41 +119,80 @@ function AnticipatoryActionFloodPanel() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
+  const { urlParams, updateHistory, removeKeyFromUrl } = useUrlHistory();
   const { AAData } = useAnticipatoryAction(AnticipatoryAction.flood);
   const { stations, selectedStation, loading, error, stationSummaryData } =
     AAData;
   const { startDate } = useSelector(dateRangeSelector);
 
-  const [sortField, setSortField] = useState<SortField>('risk_level');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
-  const [rowsPerPage, setRowsPerPage] = useState<number>(20);
-  const [currentPage, setCurrentPage] = useState<number>(0);
+  // Initialize state from URL params or defaults
+  const [sortField, setSortField] = useState<SortField>(
+    (urlParams.get('aaFloodSort') as SortField) || 'risk_level',
+  );
+  const [sortDirection, setSortDirection] = useState<SortDirection>(
+    (urlParams.get('aaFloodSortDir') as SortDirection) || 'desc',
+  );
+  const [rowsPerPage, setRowsPerPage] = useState<number>(
+    parseInt(urlParams.get('aaFloodRows') || '20', 10),
+  );
+  const [currentPage, setCurrentPage] = useState<number>(
+    parseInt(urlParams.get('aaFloodPage') || '0', 10),
+  );
+
+  // Sync selected station from URL to Redux on mount
+  useEffect(() => {
+    const stationFromUrl = urlParams.get('aaFloodStation');
+    if (stationFromUrl && stationFromUrl !== selectedStation) {
+      dispatch(setAAFloodSelectedStation(stationFromUrl));
+    }
+  }, []);
+
+  // Sync selected station from Redux to URL whenever it changes
+  useEffect(() => {
+    if (selectedStation) {
+      updateHistory('aaFloodStation', selectedStation);
+    } else {
+      // Remove param if no station selected
+      removeKeyFromUrl('aaFloodStation');
+    }
+  }, [selectedStation, updateHistory, removeKeyFromUrl]);
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+      const newDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+      setSortDirection(newDirection);
+      updateHistory('aaFloodSortDir', newDirection);
     } else {
       setSortField(field);
       setSortDirection('asc');
+      updateHistory('aaFloodSort', field);
+      updateHistory('aaFloodSortDir', 'asc');
     }
   };
 
   const handleRowClick = (stationName: string) => {
     dispatch(setAAFloodSelectedStation(stationName));
+    // URL will be updated by the useEffect that watches selectedStation
   };
 
   const handleRowsPerPageChange = (newRowsPerPage: number) => {
     setRowsPerPage(newRowsPerPage);
     setCurrentPage(0);
+    updateHistory('aaFloodRows', String(newRowsPerPage));
+    updateHistory('aaFloodPage', '0');
   };
 
   const handlePreviousPage = () => {
-    setCurrentPage(prev => Math.max(0, prev - 1));
+    const newPage = Math.max(0, currentPage - 1);
+    setCurrentPage(newPage);
+    updateHistory('aaFloodPage', String(newPage));
   };
 
   const handleNextPage = () => {
     const maxPage = Math.ceil(totalStations / rowsPerPage) - 1;
-    setCurrentPage(prev => Math.min(maxPage, prev + 1));
+    const newPage = Math.min(maxPage, currentPage + 1);
+    setCurrentPage(newPage);
+    updateHistory('aaFloodPage', String(newPage));
   };
 
   const formatDateForDisplay = (value: string | number | Date) => {
@@ -398,7 +438,10 @@ function AnticipatoryActionFloodPanel() {
                 s.station_name === selectedStation,
             )!
           }
-          onClose={() => dispatch(setAAFloodSelectedStation(''))}
+          onClose={() => {
+            dispatch(setAAFloodSelectedStation(''));
+            // URL will be updated by the useEffect that watches selectedStation
+          }}
         />
       )}
     </div>
