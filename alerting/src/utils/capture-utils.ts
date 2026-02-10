@@ -101,12 +101,11 @@ export async function captureScreenshotFromUrl(
     browser = await puppeteer.launch({
       headless: true,
       args: [
-        '--use-gl=egl',
         '--no-sandbox',
         '--disable-setuid-sandbox',
         '--disable-dev-shm-usage',
-        '--disable-gpu-sandbox',
-        '--enable-webgl',
+        '--disable-gpu',
+        '--use-gl=swiftshader', // software WebGL, more reliable in headless containers
         '--ignore-gpu-blacklist',
         '--window-size=1920,1080',
       ],
