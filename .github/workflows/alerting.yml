@@ -33,6 +33,17 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y chromium-browser
 
+      # Ensure cron scripts are executable
+      - name: Check cron scripts are executable
+        run: |
+          cd alerting
+          for f in crons/cron_*.sh; do
+            if [ ! -x "$f" ]; then
+              echo "$f is not executable (missing chmod +x)"
+              exit 1
+            fi
+          done
+
       # Lint and test
       - run: |
           cd alerting
