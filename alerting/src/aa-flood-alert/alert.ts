@@ -128,7 +128,7 @@ export async function buildFloodEmailPayload(
   const base64Image = await captureScreenshotFromUrl({
     url: redirectUrl,
     elementsToHide: ['.MuiDrawer-root', '.MuiList-root', '.MuiGrid-root'],
-    crop: { x: 900, y: 200, width: 1000, height: 800 },
+    crop: { x: 900, y: 150, width: 1000, height: 850 },
   });
 
   // Format date as DD-Month-YYYY for title
