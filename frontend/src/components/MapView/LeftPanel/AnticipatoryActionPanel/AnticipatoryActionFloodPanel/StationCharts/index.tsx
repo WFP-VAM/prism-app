@@ -182,6 +182,10 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   const hydrographChartRef = useRef<Line>(null);
   const probabilityChartRef = useRef<Line>(null);
 
+  if (!station) {
+    return null;
+  }
+
   const probs = floodState.probabilitiesData[station.station_name];
   const stationSummary = floodState.stationSummaryData
     ? floodState.stationSummaryData[station.station_name]
