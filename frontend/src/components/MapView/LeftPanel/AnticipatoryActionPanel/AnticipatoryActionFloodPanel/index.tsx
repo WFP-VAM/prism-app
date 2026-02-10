@@ -304,6 +304,14 @@ function AnticipatoryActionFloodPanel() {
   const canGoPrevious = validCurrentPage > 0;
   const canGoNext = validCurrentPage < totalPages - 1;
 
+  // Sync clamped page back to state and URL if invalid page was provided
+  useEffect(() => {
+    if (validCurrentPage !== currentPage && totalStations > 0) {
+      setCurrentPage(validCurrentPage);
+      updateHistory('aaFloodPage', String(validCurrentPage));
+    }
+  }, [validCurrentPage, currentPage, totalStations, updateHistory]);
+
   if (loading) {
     return (
       <div className={classes.container}>
