@@ -279,18 +279,30 @@ function AnticipatoryActionFloodPanel() {
   });
 
   const paginatedStations = useMemo(() => {
-    const startIndex = currentPage * rowsPerPage;
+    // Clamp currentPage to valid range to handle invalid URL parameters
+    const maxPage = Math.max(
+      0,
+      Math.ceil(sortedStations.length / rowsPerPage) - 1,
+    );
+    const validPage = Math.min(Math.max(0, currentPage), maxPage);
+    const startIndex = validPage * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
     return sortedStations.slice(startIndex, endIndex);
   }, [sortedStations, currentPage, rowsPerPage]);
 
   const totalStations = sortedStations.length;
-  const startIndex = currentPage * rowsPerPage + 1;
-  const endIndex = Math.min((currentPage + 1) * rowsPerPage, totalStations);
+  // Clamp currentPage for display calculations
+  const maxPage = Math.max(0, Math.ceil(totalStations / rowsPerPage) - 1);
+  const validCurrentPage = Math.min(Math.max(0, currentPage), maxPage);
+  const startIndex = validCurrentPage * rowsPerPage + 1;
+  const endIndex = Math.min(
+    (validCurrentPage + 1) * rowsPerPage,
+    totalStations,
+  );
   const totalPages = Math.ceil(totalStations / rowsPerPage);
 
-  const canGoPrevious = currentPage > 0;
-  const canGoNext = currentPage < totalPages - 1;
+  const canGoPrevious = validCurrentPage > 0;
+  const canGoNext = validCurrentPage < totalPages - 1;
 
   if (loading) {
     return (
