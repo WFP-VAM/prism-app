@@ -99,14 +99,12 @@ export async function captureScreenshotFromUrl(
     console.log('Starting screenshot process...');
 
     browser = await puppeteer.launch({
+      // Basic headless config – confirmed by scripts/test-webgl.js to have WebGL
       headless: true,
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
         '--disable-dev-shm-usage',
-        '--disable-gpu',
-        '--use-gl=swiftshader', // software WebGL, more reliable in headless containers
-        '--ignore-gpu-blacklist',
         '--window-size=1920,1080',
       ],
       defaultViewport: null,
