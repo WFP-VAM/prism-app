@@ -235,7 +235,12 @@ async function collectCountryInfo(): Promise<SetupConfig> {
     searchable: true,
   });
   let selectedLayers: string[] = (await layerPrompt.run()) as string[];
-  if (selectedLayers.includes('__ALL_LAYERS__')) {
+  // If user selects "All layers" or just hits Enter with nothing selected,
+  // default to including all shared layers.
+  if (
+    selectedLayers.length === 0 ||
+    selectedLayers.includes('__ALL_LAYERS__')
+  ) {
     selectedLayers = SHARED_LAYERS.map(l => l.id);
   }
 
