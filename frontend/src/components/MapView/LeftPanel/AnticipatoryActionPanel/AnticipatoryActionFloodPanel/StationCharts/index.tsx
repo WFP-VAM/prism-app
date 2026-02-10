@@ -22,8 +22,12 @@ import { Line } from 'react-chartjs-2';
 import 'chartjs-plugin-annotation';
 import { useSafeTranslation } from 'i18n';
 import { FloodStation } from 'context/anticipatoryAction/AAFloodStateSlice/types';
-import { useSelector } from 'react-redux';
-import { AAFloodDataSelector } from 'context/anticipatoryAction/AAFloodStateSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  AAFloodDataSelector,
+  setAAFloodStationDetailActiveTab,
+  setAAFloodStationDetailViewMode,
+} from 'context/anticipatoryAction/AAFloodStateSlice';
 import sortBy from 'lodash/sortBy';
 import { getFormattedDate } from 'utils/date-utils';
 import {
@@ -168,15 +172,16 @@ interface StationChartsProps {
 function StationCharts({ station, onClose }: StationChartsProps) {
   const classes = useStyles();
   const { t } = useSafeTranslation();
-  const [activeTab, setActiveTab] = useState(0);
-  const [viewMode, setViewMode] = useState<'chart' | 'table'>('chart');
+  const dispatch = useDispatch();
+  const floodState = useSelector(AAFloodDataSelector);
+  const activeTab = floodState.stationDetailActiveTab ?? 0;
+  const viewMode = floodState.stationDetailViewMode ?? 'chart';
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadMenuAnchor, setDownloadMenuAnchor] =
     useState<null | HTMLElement>(null);
   const hydrographChartRef = useRef<Line>(null);
   const probabilityChartRef = useRef<Line>(null);
 
-  const floodState = useSelector(AAFloodDataSelector);
   const probs = floodState.probabilitiesData[station.station_name];
   const stationSummary = floodState.stationSummaryData
     ? floodState.stationSummaryData[station.station_name]
@@ -678,12 +683,14 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   }, [probs, stationSummary, labels, beginIdx, endIdx, t, hydrographOptions]);
 
   const handleTabChange = (newValue: number) => {
-    setActiveTab(newValue);
-    setViewMode('chart');
+    dispatch(setAAFloodStationDetailActiveTab(newValue));
+    dispatch(setAAFloodStationDetailViewMode('chart'));
   };
 
   const toggleViewMode = () => {
-    setViewMode(prev => (prev === 'chart' ? 'table' : 'chart'));
+    dispatch(
+      setAAFloodStationDetailViewMode(viewMode === 'chart' ? 'table' : 'chart'),
+    );
   };
 
   const openDownloadMenu = (event: ReactMouseEvent<HTMLElement>) => {

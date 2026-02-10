@@ -65,6 +65,9 @@ export type AnticipatoryActionFloodState = {
   stationSummaryData: Record<string, FloodStation | undefined>;
   availableDates: FloodDateItem[];
   view: AAFloodView;
+  // UI state for the station detail view so it persists across date changes
+  stationDetailActiveTab: number; // 0 = Trigger probability, 1 = Hydrograph
+  stationDetailViewMode: 'chart' | 'table';
   loading: boolean;
   error: string | null;
 };
