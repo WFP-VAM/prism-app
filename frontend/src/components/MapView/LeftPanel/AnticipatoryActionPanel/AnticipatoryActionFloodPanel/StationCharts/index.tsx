@@ -174,7 +174,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const floodState = useSelector(AAFloodDataSelector);
-  const activeTab = floodState.stationDetailActiveTab ?? 0;
+  const activeTab = floodState.stationDetailActiveTab === 1 ? 1 : 0;
   const viewMode = floodState.stationDetailViewMode ?? 'chart';
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadMenuAnchor, setDownloadMenuAnchor] =
@@ -878,14 +878,14 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         <div className={classes.tabs}>
           <Button
             disableRipple
-            className={`${classes.tab} ${activeTab === 0 ? classes.selectedTab : 0}`}
+            className={`${classes.tab} ${activeTab === 0 ? classes.selectedTab : ''}`}
             onClick={() => handleTabChange(0)}
           >
             {t('Trigger probability')}
           </Button>
           <Button
             disableRipple
-            className={`${classes.tab} ${activeTab === 1 ? classes.selectedTab : 0}`}
+            className={`${classes.tab} ${activeTab === 1 ? classes.selectedTab : ''}`}
             onClick={() => handleTabChange(1)}
           >
             {t('Hydrograph')}
