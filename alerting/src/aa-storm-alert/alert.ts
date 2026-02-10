@@ -257,9 +257,9 @@ export async function buildEmailPayloads(
               ],
               crop: {
                 x: 900,
-                y: 150,
+                y: 100,
                 width: 1000,
-                height: 850,
+                height: 900,
               },
             }),
 
