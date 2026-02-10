@@ -10,9 +10,11 @@ RUN set -e && \
     apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y \
-    libnss3 libdbus-1-3 libatk1.0-0 libatk-bridge2.0-0 \
-    libcups2 libxcomposite1 libxdamage1 libgbm1 libxkbcommon-x11-0 \
-    libasound2 libxfixes3 libxrandr2 && \
+      libnss3 libdbus-1-3 libatk1.0-0 libatk-bridge2.0-0 \
+      libcups2 libxcomposite1 libxdamage1 libgbm1 libxkbcommon-x11-0 \
+      libasound2 libxfixes3 libxrandr2 \
+      libx11-6 libx11-xcb1 libxshmfence1 \
+      libgl1-mesa-dri libgl1-mesa-glx && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN npx @puppeteer/browsers install chrome@$CHROME_VERSION && \
