@@ -17,6 +17,7 @@
     "glob": "^13.0.0",
     "js-yaml": "^4.1.1",
     "brace-expansion": "^2.0.2",
+    "@isaacs/brace-expansion": ">=5.0.1",
     "string-width": "4.2.3",
     "form-data": "^3.0.4",
     "lodash": "^4.17.23"
