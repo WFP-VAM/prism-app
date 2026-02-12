@@ -86,7 +86,7 @@ def test_stats_endpoint1():
     #     "/stats",
     #     headers={"Accept": "application/json"},
     #     json={
-    #         "geotiff_url": "https://api.earthobservation.vam.wfp.org/ows/?service=WCS&request=GetCoverage&version=2.0.0&coverageId=wp_pop_cicunadj&subset=Long(95.71,96.68)&subset=Lat(19.42,20.33)",
+    #         "geotiff_url": "https://data.apps.fao.org/static/data/c3s/MAPSET/AGERA5-ET0-D/C3S.AGERA5-ET0-D.2026-01-D2.tif",
     #         "zones_url": "https://prism-wfp.s3.us-east-2.amazonaws.com/api-test/mmr_admin_boundaries.json",
     #         "group_by": "TS_PCODE",
     #         "wfs_params": {
@@ -113,7 +113,7 @@ def test_stats_endpoint2():
         "/stats",
         headers={"Accept": "application/json"},
         json={
-            "geotiff_url": "https://api.earthobservation.vam.wfp.org/ows/?service=WCS&request=GetCoverage&version=1.0.0&coverage=hf_water_mmr&crs=EPSG%3A4326&bbox=92.2%2C9.7%2C101.2%2C28.5&width=1098&height=2304&format=GeoTIFF&time=2022-08-11",
+            "geotiff_url": "https://data.apps.fao.org/static/data/c3s/MAPSET/AGERA5-ET0-D/C3S.AGERA5-ET0-D.2026-01-D2.tif",
             "zones_url": "https://prism-wfp.s3.us-east-2.amazonaws.com/api-test/mmr_admin_boundaries.json",
             "group_by": "TS",
             "geojson_out": False,
@@ -133,7 +133,7 @@ def test_stats_endpoint_masked():
         json={
             "geotiff_url": "https://prism-wfp.s3.us-east-2.amazonaws.com/api-test/myanmar_rainfall_dekad.tif",
             "zones_url": "https://prism-wfp.s3.us-east-2.amazonaws.com/api-test/mmr_admin_boundaries.json",
-            "mask_url": "https://api.earthobservation.vam.wfp.org/ows/?service=WCS&request=GetCoverage&version=1.0.0&coverage=hf_water_mmr&crs=EPSG%3A4326&bbox=92.2%2C9.7%2C101.2%2C28.5&width=1098&height=2304&format=GeoTIFF&time=2022-08-11",
+            "mask_url": "https://data.apps.fao.org/static/data/c3s/MAPSET/AGERA5-ET0-D/C3S.AGERA5-ET0-D.2026-01-D2.tif",
             "group_by": "TS_PCODE",
             "geojson_out": True,
         },

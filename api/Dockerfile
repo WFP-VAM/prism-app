@@ -41,6 +41,9 @@ RUN --mount=type=cache,target=/var/cache/apt \
 RUN --mount=type=cache,target=/root/.cache \
     poetry install
 
+# Upgrade pip in the venv to address CVE-2026-1703 (pip 25.3 → 26.0)
+RUN poetry run pip install --upgrade 'pip>=26.0'
+
 # we must run the playwright install command without mounting the cache, as it seems
 # that installed binaries end up being removed from the image if the cache is used
 RUN poetry run playwright install chromium

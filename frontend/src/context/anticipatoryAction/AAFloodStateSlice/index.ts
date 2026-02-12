@@ -25,6 +25,8 @@ const initialState: AnticipatoryActionFloodState = {
   stationSummaryData: {},
   availableDates: [],
   view: AAFloodView.Home,
+  stationDetailActiveTab: 0,
+  stationDetailViewMode: 'chart',
   loading: false,
   error: null,
 };
@@ -287,6 +289,20 @@ export const anticipatoryActionFloodStateSlice = createSlice({
       ...state,
       view: payload,
     }),
+    setAAFloodStationDetailActiveTab: (
+      state,
+      { payload }: PayloadAction<number>,
+    ) => ({
+      ...state,
+      stationDetailActiveTab: payload,
+    }),
+    setAAFloodStationDetailViewMode: (
+      state,
+      { payload }: PayloadAction<'chart' | 'table'>,
+    ) => ({
+      ...state,
+      stationDetailViewMode: payload,
+    }),
   },
   extraReducers: builder => {
     builder.addCase(loadAAFloodData.fulfilled, (state, { payload }) => ({
@@ -355,7 +371,11 @@ export const AAFloodDataSelector = (state: RootState) =>
 export const AAFloodAvailableDatesSelector = (state: RootState) =>
   state.anticipatoryActionFloodState.availableDates;
 
-export const { setAAFloodSelectedStation, setAAFloodView } =
-  anticipatoryActionFloodStateSlice.actions;
+export const {
+  setAAFloodSelectedStation,
+  setAAFloodView,
+  setAAFloodStationDetailActiveTab,
+  setAAFloodStationDetailViewMode,
+} = anticipatoryActionFloodStateSlice.actions;
 
 export default anticipatoryActionFloodStateSlice.reducer;

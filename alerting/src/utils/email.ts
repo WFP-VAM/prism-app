@@ -4,6 +4,7 @@ import { FloodAlertEmailData } from '../types/flood-email';
 import ejs from 'ejs';
 import path from 'path';
 import { displayWindState, WindState } from 'prism-common';
+import { startCase } from 'lodash';
 
 /**
  *
@@ -140,11 +141,15 @@ export const sendStormAlertEmail = async (
       ? displayWindState[data.status]
       : null;
 
+  const countryName = data.country
+    ? startCase(data.country.toLowerCase())
+    : 'Mozambique';
+
   if (windspeed) {
-    alertTitle = `Activation Triggers detected for windspeed ${windspeed} for ${data.cycloneName}`;
+    alertTitle = `Activation Triggers detected for windspeed ${windspeed} for ${data.cycloneName} in ${countryName}`;
   } else if (data.status === WindState.ready) {
     readiness = true;
-    alertTitle = `Readiness Triggers detected for ${data.cycloneName}`;
+    alertTitle = `Readiness Triggers detected for ${data.cycloneName} in ${countryName}`;
   } else {
     throw new Error('No windspeed found');
   }

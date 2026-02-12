@@ -150,4 +150,5 @@ async function run() {
   );
 }
 
+console.log(`Alert worker started at: ${new Date().toISOString()}`);
 run();

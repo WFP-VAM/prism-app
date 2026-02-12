@@ -2,16 +2,6 @@
   "country": "Jordan",
   "alertFormActive": false,
   "countryAdmin0Id": 130,
-  "icons": {
-    "rainfall": "icon_rain.png",
-    "vegetation": "icon_veg.png",
-    "temperature": "icon_climate.png",
-    "risk": "icon_impact.png",
-    "tropical_storms": "icon_tropical_storm.png",
-    "sensitivity": "icon_vulnerable.png",
-    "exposure": "icon_basemap.png",
-    "capacity": "icon_capacity.png"
-  },
   "serversUrls": {
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
@@ -180,20 +170,11 @@
       ]
     },
     "exposure": {
-      "demographics": [
-        "population",
-        "percent_refugees_2022"
-      ],
-      "agriculture": [
-        "rainfed",
-        "irrigated",
-        "livestock_per_ha"
-      ]
+      "demographics": ["population", "percent_refugees_2022"],
+      "agriculture": ["rainfed", "irrigated", "livestock_per_ha"]
     },
     "sensitivity": {
-      "socioeconomic": [
-        "poverty"
-      ],
+      "socioeconomic": ["poverty"],
       "natural_resources": [
         "natural_habitats",
         "groundwater_abstraction",
@@ -201,11 +182,7 @@
       ]
     },
     "capacity": {
-      "water": [
-        "municipal_water",
-        "gw_irrigation",
-        "mobile_tanks_per_10k"
-      ]
+      "water": ["municipal_water", "gw_irrigation", "mobile_tanks_per_10k"]
     },
     "risk": {
       "exposure": ["exposure_scaled"],
@@ -214,101 +191,9 @@
       "vulnerability": ["vulnerability_scaled"]
     },
     "drought": {
-      "combined_drought_index_v1": [
-        {
-          "group_title": "Monthly",
-          "activate_all": false,
-          "layers": [
-            {
-              "id": "cdi_v1_aggregated_monthly",
-              "label": "Aggregated",
-              "main": true
-            },
-            {
-              "id": "cdi_v1_monthly",
-              "label": "Pixel level"
-            }
-          ]
-        },
-        {
-          "group_title": "Seasonal",
-          "activate_all": false,
-          "layers": [
-            {
-              "id": "cdi_v1_aggregated_seasonal",
-              "label": "Aggregated",
-              "main": true
-            },
-            {
-              "id": "cdi_v1_seasonal",
-              "label": "Pixel level"
-            }
-          ]
-        }
-      ],
-      "combined_drought_index_v2": [
-        {
-          "group_title": "Monthly",
-          "activate_all": false,
-          "layers": [
-            {
-              "id": "cdi_v2_aggregated_monthly",
-              "label": "Aggregated",
-              "main": true
-            },
-            {
-              "id": "cdi_v2_monthly",
-              "label": "Pixel level"
-            }
-          ]
-        },
-        {
-          "group_title": "Seasonal",
-          "activate_all": false,
-          "layers": [
-            {
-              "id": "cdi_v2_aggregated_seasonal",
-              "label": "Aggregated",
-              "main": true
-            },
-            {
-              "id": "cdi_v2_seasonal",
-              "label": "Pixel level"
-            }
-          ]
-        }
-      ],
-      "combined_drought_index_water_based": [
-        {
-          "group_title": "Monthly",
-          "activate_all": false,
-          "layers": [
-            {
-              "id": "cdi_v3_aggregated_monthly",
-              "label": "Aggregated",
-              "main": true
-            },
-            {
-              "id": "cdi_v3_monthly",
-              "label": "Pixel level"
-            }
-          ]
-        },
-        {
-          "group_title": "Seasonal",
-          "activate_all": false,
-          "layers": [
-            {
-              "id": "cdi_v3_aggregated_seasonal",
-              "label": "Aggregated",
-              "main": true
-            },
-            {
-              "id": "cdi_v3_seasonal",
-              "label": "Pixel level"
-            }
-          ]
-        }
+      "water_anomaly_index": [
+        "monthly_water_anomaly",
+        "6m_water_anomaly"
       ]
     }
   }

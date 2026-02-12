@@ -1,19 +1,5 @@
 {
   "country": "Tajikistan",
-  "icons": {
-    "exposure": "icon_basemap.png",
-    "hazards": "icon_flood.png",
-    "floods_and_mudflows": "icon_flood.png",
-    "earthquakes": "icon_eq.png",
-    "capacity": "icon_capacity.png",
-    "tables": "icon_table.png",
-    "rainfall": "icon_rain.png",
-    "snow": "icon_snow.png",
-    "vegetation": "icon_veg.png",
-    "temperature": "icon_climate.png",
-    "tropical_storms": "icon_tropical_storm.png",
-    "vulnerability": "icon_vulnerable.png"
-  },
   "alertFormActive": false,
   "serversUrls": {
     "wms": [

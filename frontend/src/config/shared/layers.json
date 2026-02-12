@@ -1281,6 +1281,186 @@
       "styles": "tdd_21_m12_12"
     }
   },
+  "monthly_water_anomaly": {
+    "title": "Monthly Water Anomaly Index (WAI)",
+    "type": "wms",
+    "server_layer_name": "wai_dekad",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "wcsConfig": {
+      "version": "2.0.0",
+      "scale": 0.01,
+      "offset": 0,
+      "nodata": 0
+    },
+    "additional_query_params": {
+      "styles": "wai_lower",
+      "band": "wai",
+      "collection": "wai_dekad"
+    },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 2,
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "opacity": 0.7,
+    "legend_text": "The monthly Water Anomaly Index (WAI) integrates three critical variables of the water cycle: WAI = (rainfall anomaly × 0.4) + (evapotranspiration anomaly × 0.3) + (soil moisture anomaly × 0.3)",
+    "legend": "wai_04_0_100"
+  },
+  "2m_water_anomaly": {
+    "title": "2-Month Water Anomaly Index (WAI)",
+    "type": "wms",
+    "server_layer_name": "wai_seasonal_2month",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "wcsConfig": {
+      "version": "2.0.0",
+      "scale": 0.01,
+      "offset": 0,
+      "nodata": 0
+    },
+    "additional_query_params": {
+      "styles": "wai_seasonal_02a_lower",
+      "band": "wai02a",
+      "collection": "wai_seasonal_dekad"
+    },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 11,
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "opacity": 0.7,
+    "legend_text": "The seasonal Water Anomaly Index (WAI) integrates three critical variables of the water cycle: WAI = (rainfall anomaly × 0.4) + (evapotranspiration anomaly × 0.3) + (soil moisture anomaly × 0.3)",
+    "legend": "wai_04_0_100"
+  },     
+  "3m_water_anomaly": {
+    "title": "3-Month Water Anomaly Index (WAI)",
+    "type": "wms",
+    "server_layer_name": "wai_seasonal_3month",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "wcsConfig": {
+      "version": "2.0.0",
+      "scale": 0.01,
+      "offset": 0,
+      "nodata": 0
+    },
+    "additional_query_params": {
+      "styles": "wai_seasonal_03a_lower",
+      "band": "wai03a",
+      "collection": "wai_seasonal_dekad"
+    },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 11,
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "opacity": 0.7,
+    "legend_text": "The seasonal Water Anomaly Index (WAI) integrates three critical variables of the water cycle: WAI = (rainfall anomaly × 0.4) + (evapotranspiration anomaly × 0.3) + (soil moisture anomaly × 0.3)",
+    "legend": "wai_04_0_100"
+  },    
+  "4m_water_anomaly": {
+    "title": "4-Month Water Anomaly Index (WAI)",
+    "type": "wms",
+    "server_layer_name": "wai_seasonal_4month",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "wcsConfig": {
+      "version": "2.0.0",
+      "scale": 0.01,
+      "offset": 0,
+      "nodata": 0
+    },
+    "additional_query_params": {
+      "styles": "wai_seasonal_04a_lower",
+      "band": "wai04a",
+      "collection": "wai_seasonal_dekad"
+    },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 11,
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "opacity": 0.7,
+    "legend_text": "The seasonal Water Anomaly Index (WAI) integrates three critical variables of the water cycle: WAI = (rainfall anomaly × 0.4) + (evapotranspiration anomaly × 0.3) + (soil moisture anomaly × 0.3)",
+    "legend": "wai_04_0_100"
+  },  
+  "5m_water_anomaly": {
+    "title": "5-Month Water Anomaly Index (WAI)",
+    "type": "wms",
+    "server_layer_name": "wai_seasonal_5month",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "wcsConfig": {
+      "version": "2.0.0",
+      "scale": 0.01,
+      "offset": 0,
+      "nodata": 0
+    },
+    "additional_query_params": {
+      "styles": "wai_seasonal_05a_lower",
+      "band": "wai05a",
+      "collection": "wai_seasonal_dekad"
+    },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 14,
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "opacity": 0.7,
+    "legend_text": "The seasonal Water Anomaly Index (WAI) integrates three critical variables of the water cycle: WAI = (rainfall anomaly × 0.4) + (evapotranspiration anomaly × 0.3) + (soil moisture anomaly × 0.3)",
+    "legend": "wai_04_0_100"
+  },
+  "6m_water_anomaly": {
+    "title": "6-Month Water Anomaly Index (WAI)",
+    "type": "wms",
+    "server_layer_name": "wai_seasonal_6month",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "wcsConfig": {
+      "version": "2.0.0",
+      "scale": 0.01,
+      "offset": 0,
+      "nodata": 0
+    },
+    "additional_query_params": {
+      "styles": "wai_seasonal_06a_lower",
+      "band": "wai06a",
+      "collection": "wai_seasonal_dekad"
+    },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 17,
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "opacity": 0.7,
+    "legend_text": "The seasonal Water Anomaly Index (WAI) integrates three critical variables of the water cycle: WAI = (rainfall anomaly × 0.4) + (evapotranspiration anomaly × 0.3) + (soil moisture anomaly × 0.3)",
+    "legend": "wai_04_0_100"
+  },
   "wp_pop_icunadj": {
     "title": "population",
     "type": "wms",
