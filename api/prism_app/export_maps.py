@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 # Timeouts
 PAGE_TIMEOUT: Final[int] = 60000
-PRISM_READY_TIMEOUT: Final[int] = 30000
+PRISM_READY_TIMEOUT: Final[int] = 60000
 
 # Viewport settings
 BASE_WIDTH: Final[int] = 1200

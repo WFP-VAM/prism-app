@@ -243,6 +243,12 @@ function AnticipatoryActionFloodPanel() {
   const canGoPrevious = currentPage > 0;
   const canGoNext = currentPage < totalPages - 1;
 
+  const selectedStationData = selectedStation
+    ? stations.find(
+        (s: { station_name: string }) => s.station_name === selectedStation,
+      )
+    : undefined;
+
   if (loading) {
     return (
       <div className={classes.container}>
@@ -389,15 +395,10 @@ function AnticipatoryActionFloodPanel() {
         </Box>
       </Box>
 
-      {/* Show charts when a station is selected */}
-      {selectedStation && (
+      {/* Show charts when a station is selected and found in current stations list */}
+      {selectedStationData && (
         <StationCharts
-          station={
-            stations.find(
-              (s: { station_name: string }) =>
-                s.station_name === selectedStation,
-            )!
-          }
+          station={selectedStationData}
           onClose={() => dispatch(setAAFloodSelectedStation(''))}
         />
       )}

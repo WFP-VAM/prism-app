@@ -34,6 +34,10 @@ jobs:
           cd api
           poetry install
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+      - name: Upgrade pip (CVE-2026-1703)
+        run: |
+          cd api
+          poetry run pip install --upgrade 'pip>=26.0'
       - name: Check formatting with black and isort
         run: |
           cd api
@@ -61,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Install Docker Compose
         run: |
           DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}

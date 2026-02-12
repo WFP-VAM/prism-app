@@ -174,11 +174,12 @@ function LayerDownloadOptions({
   const handleDownloadGeoTiff = useCallback(() => {
     const { serverLayerName, additionalQueryParams } = layer as WMSLayerProps;
     const band = getStacBand(additionalQueryParams);
+    const collection = additionalQueryParams?.collection || serverLayerName;
     const dateString = getFormattedDate(selectedDate, 'default') as string;
 
     setIsGeotiffLoading(true);
     downloadGeotiff(
-      serverLayerName,
+      collection,
       band,
       extent,
       dateString,
