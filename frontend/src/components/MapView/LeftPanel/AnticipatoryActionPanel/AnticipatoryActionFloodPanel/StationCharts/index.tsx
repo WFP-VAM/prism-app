@@ -30,14 +30,16 @@ import {
 } from 'context/anticipatoryAction/AAFloodStateSlice';
 import sortBy from 'lodash/sortBy';
 import { getFormattedDate } from 'utils/date-utils';
+import { appConfig } from 'config/utils';
 import {
   CHART_WIDTH,
-  ForecastWindowPerCountry,
+  DEFAULT_FLOOD_FORECAST_WINDOW,
   TABLE_WIDTH,
   AAFloodColors,
 } from '../constants';
 
-const forecastWindow = ForecastWindowPerCountry.mozambique;
+const forecastWindow =
+  appConfig.anticipatoryActionFloodWindow || DEFAULT_FLOOD_FORECAST_WINDOW;
 
 const useStyles = makeStyles(() =>
   createStyles({

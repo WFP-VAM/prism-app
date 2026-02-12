@@ -1052,6 +1052,46 @@ export class AnticipatoryActionLayerProps extends CommonLayerProps {
   declare title: string;
 }
 
+export interface ForecastWindow {
+  start: number;
+  end: number;
+}
+
+/**
+ * Application configuration interface
+ * This documents the structure of the appConfig object loaded from country-specific prism.json files
+ */
+export interface AppConfig {
+  country?: string;
+  defaultLanguage?: string;
+  anticipatoryActionDroughtUrl?: string;
+  anticipatoryActionDroughtStagingUrl?: string;
+  anticipatoryActionStormUrl?: string;
+  anticipatoryActionFloodUrl?: string;
+  anticipatoryActionFloodWindow?: ForecastWindow;
+  header?: {
+    title?: string;
+    logo?: string;
+  };
+  printConfig?: {
+    defaultFooterText?: string;
+  };
+  countryAdmin0Id?: number;
+  alertFormActive?: boolean;
+  hidePanel?: boolean;
+  enableNavigationDropdown?: boolean;
+  defaultDisplayBoundaries?: string[];
+  serversUrls?: {
+    wms?: string[];
+  };
+  map?: {
+    boundingBox?: number[];
+  };
+  categories?: Record<string, any>;
+  dashboards?: Dashboard[];
+  [key: string]: any; // Allow additional properties
+}
+
 export enum DashboardMapPosition {
   left = 'left',
   right = 'right',
