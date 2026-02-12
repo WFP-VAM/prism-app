@@ -4,6 +4,7 @@ export interface StormAlertData {
   email: string | string[];
   cycloneName: string;
   cycloneTime: string;
+  country?: string;
   activatedTriggers?: {
     districts48kt: string[];
     districts64kt: string[];

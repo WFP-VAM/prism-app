@@ -40,30 +40,34 @@ async def download_report(
 
     async with async_playwright() as p:
         browser = await p.chromium.launch()
-        page = await browser.new_page()
+        page = await browser.new_page(viewport={"width": 1280, "height": 720})
 
         # TODO - this should only be done in CI
         # mock the api call to avoid network issues in CI
         await page.route("https://prism-api.ovio.org/stats", mock_prism_api_stats_call)
 
         page.set_default_timeout(PAGE_TIMEOUT)
+        # Set English before the app loads so the UI renders in English
+        await page.add_init_script("localStorage.setItem('userLanguage', 'en');")
         await page.goto(url)
+        # Wait for the app to finish loading (network idle) so the UI is rendered
+        await page.wait_for_load_state("networkidle")
 
-        # open language dropdown
-        await page.get_by_role("button", name="language-select-dropdown-button").click()
+        # Optionally open language dropdown and select English (if not already en)
+        try:
+            lang_btn = page.get_by_role(
+                "button", name="language-select-dropdown-button"
+            )
+            if await lang_btn.count() > 0:
+                await lang_btn.click(timeout=10_000)
+                await page.get_by_role(
+                    "menuitem", name="language-select-dropdown-menu-item-en"
+                ).click()
+        except Exception:
+            pass
 
-        # Click on the 'en' option
-        await page.get_by_role(
-            "menuitem", name="language-select-dropdown-menu-item-en"
-        ).click()
-
-        # make sure we're on the right tab
-        # await page.get_by_role("button", name="Layers").click()
-
-        # expand the first main and first sub dropdowns
-        # XPath to match a button whose name starts with "Flood" followed by a space and any number
-        # expand the first main and first sub dropdowns
-        await page.get_by_role("button", name="Flood").first.click()
+        # Panel defaults to Layers; expand the Flood category (long timeout for slow CI)
+        await page.get_by_role("button", name="Flood").first.click(timeout=90_000)
 
         await page.get_by_role("button", name="Flood Monitoring").click()
         # Enable flood extent buttons

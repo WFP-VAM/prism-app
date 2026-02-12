@@ -262,6 +262,7 @@ describe('alert mechanism', () => {
         shortReports,
         'https://prism.wfp.org',
         ['test@test.com'],
+        'mozambique',
       );
       expect(emailPayloads).toMatchSnapshot();
     });

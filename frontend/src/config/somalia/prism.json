@@ -13,15 +13,6 @@
     "bottomLogo": "images/somalia-bottom-logo.png"
   },
   "enableNavigationDropdown": true,
-  "icons": {
-    "rainfall": "icon_rain.png",
-    "vegetation": "icon_veg.png",
-    "temperature": "icon_climate.png",
-    "risk": "icon_impact.png",
-    "tropical_storms": "icon_tropical_storm.png",
-    "vulnerability": "icon_vulnerable.png",
-    "exposure": "icon_basemap.png"
-  },
   "defaultDisplayBoundaries": ["admin2_boundaries", "admin1_boundaries"],
   "serversUrls": {
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
