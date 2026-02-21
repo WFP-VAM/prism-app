@@ -150,7 +150,7 @@ export const useChartForm = (
   // Initialize admin properties if we have boundary data and countryAdmin0Id
   useEffect(() => {
     if (!adminProperties && countryAdmin0Id && boundaryLayerData?.data) {
-      setAdminProperties(getProperties(boundaryLayerData.data));
+      setAdminProperties(getProperties(boundaryLayerData.data, boundaryLayer));
     }
   }, [adminProperties, boundaryLayerData]);
 

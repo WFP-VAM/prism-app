@@ -34,20 +34,15 @@ import {
   WMSLayerProps,
   Panel,
 } from 'config/types';
-import {
-  getBoundaryLayersByAdminLevel,
-  getWMSLayersWithChart,
-} from 'config/utils';
+import { getBoundaryLayerSingleton, getWMSLayersWithChart } from 'config/utils';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { useSafeTranslation } from 'i18n';
 import { useBoundaryData } from 'utils/useBoundaryData';
 import { buildCsvFileName, getProperties } from 'components/MapView/utils';
 import DownloadCsvButton from 'components/MapView/DownloadCsvButton';
-import {
-  ChartLocationSelector,
-  ChartDateRangeSelector,
-} from 'components/Common/ChartFormComponents';
+import { ChartDateRangeSelector } from 'components/Common/ChartFormComponents';
 import ChartSection from './ChartSection';
+import LocationSelector from './LocationSelector';
 import TimePeriodSelector from './TimePeriodSelector';
 import DateSlider from './DateSlider';
 import {
@@ -73,8 +68,7 @@ const menuProps: Partial<MenuProps> = {
 
 // Chart configuration
 const { multiCountry, countryAdmin0Id } = appConfig;
-const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
-const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
+const boundaryLayer = getBoundaryLayerSingleton();
 const chartLayers = getWMSLayersWithChart();
 
 // Time constants
@@ -90,7 +84,9 @@ const ChartsPanel = memo(() => {
   const [comparePeriods, setComparePeriods] = useState(false);
 
   // first location state
-  const [admin0Key] = useState<AdminCodeString>('' as AdminCodeString);
+  const [admin0Key, setAdmin0Key] = useState<AdminCodeString>(
+    '' as AdminCodeString,
+  );
   const [admin1Key, setAdmin1Key] = useState<AdminCodeString>(
     '' as AdminCodeString,
   );
@@ -216,13 +212,13 @@ const ChartsPanel = memo(() => {
 
   useEffect(() => {
     if (!adminProperties && countryAdmin0Id && data) {
-      setAdminProperties(getProperties(data));
+      setAdminProperties(getProperties(data, boundaryLayer));
     }
   }, [adminProperties, data]);
 
   useEffect(() => {
     if (!secondAdminProperties && countryAdmin0Id && data) {
-      setSecondAdminProperties(getProperties(data));
+      setSecondAdminProperties(getProperties(data, boundaryLayer));
     }
   }, [secondAdminProperties, data]);
 
@@ -626,94 +622,46 @@ const ChartsPanel = memo(() => {
           />
 
           <Box style={{ paddingLeft: 20, paddingRight: 20 }}>
-            {compareLocations && (
-              <Typography
-                style={{
-                  color: 'black',
-                  fontWeight: 600,
-                  marginBottom: 8,
-                  marginLeft: 10,
-                }}
-                variant="body2"
-              >
-                {t('Location 1')}
-              </Typography>
-            )}
-            <ChartLocationSelector
-              boundaryLayerData={data}
-              boundaryLayer={boundaryLayer}
+            <LocationSelector
+              admin0Key={admin0Key}
               admin1Key={admin1Key}
               admin2Key={admin2Key}
-              stacked
-              hideLabel={compareLocations}
-              onAdmin1Change={(key, properties, level) => {
-                setAdmin1Key(key);
-                setAdmin2Key('' as AdminCodeString);
-                setAdminLevel(level);
-                setAdminProperties(properties);
-                const admin1Name =
-                  data &&
-                  boundaryLayer?.adminLevelNames?.[level - 1] &&
-                  properties?.[boundaryLayer.adminLevelNames[level - 1]];
-                setSelectedAdmin1Area(admin1Name || '');
-                setSelectedAdmin2Area('');
-              }}
-              onAdmin2Change={(key, properties, level) => {
-                setAdmin2Key(key);
-                setAdminLevel(level);
-                setAdminProperties(properties);
-                const admin2Name =
-                  data &&
-                  boundaryLayer?.adminLevelNames?.[level - 1] &&
-                  properties?.[boundaryLayer.adminLevelNames[level - 1]];
-                setSelectedAdmin2Area(admin2Name || '');
-              }}
+              boundaryLayer={boundaryLayer}
+              country={appConfig.country}
+              countryAdmin0Id={countryAdmin0Id}
+              data={data}
+              getProperties={getProperties}
+              multiCountry={multiCountry}
+              setAdmin0Key={setAdmin0Key}
+              setAdmin1Key={setAdmin1Key}
+              setAdmin2Key={setAdmin2Key}
+              setAdminLevel={setAdminLevel}
+              setAdminProperties={setAdminProperties}
+              setSelectedAdmin1Area={setSelectedAdmin1Area}
+              setSelectedAdmin2Area={setSelectedAdmin2Area}
+              title={compareLocations ? t('Location 1') : null}
             />
           </Box>
           {compareLocations && (
-            <Box style={{ paddingLeft: 20, paddingRight: 20 }}>
-              <Typography
-                style={{
-                  color: 'black',
-                  fontWeight: 600,
-                  marginBottom: 8,
-                  marginLeft: 10,
-                }}
-                variant="body2"
-              >
-                {t('Location 2')}
-              </Typography>
-              <ChartLocationSelector
-                boundaryLayerData={data}
-                boundaryLayer={boundaryLayer}
-                admin1Key={secondAdmin1Key}
-                admin2Key={secondAdmin2Key}
-                stacked
-                hideLabel
-                onAdmin1Change={(key, properties, level) => {
-                  setSecondAdmin1Key(key);
-                  setSecondAdmin2Key('' as AdminCodeString);
-                  setSecondAdminLevel(level);
-                  setSecondAdminProperties(properties);
-                  const admin1Name =
-                    data &&
-                    boundaryLayer?.adminLevelNames?.[level - 1] &&
-                    properties?.[boundaryLayer.adminLevelNames[level - 1]];
-                  setSecondSelectedAdmin1Area(admin1Name || '');
-                  setSecondSelectedAdmin2Area('');
-                }}
-                onAdmin2Change={(key, properties, level) => {
-                  setSecondAdmin2Key(key);
-                  setSecondAdminLevel(level);
-                  setSecondAdminProperties(properties);
-                  const admin2Name =
-                    data &&
-                    boundaryLayer?.adminLevelNames?.[level - 1] &&
-                    properties?.[boundaryLayer.adminLevelNames[level - 1]];
-                  setSecondSelectedAdmin2Area(admin2Name || '');
-                }}
-              />
-            </Box>
+            <LocationSelector
+              admin0Key={secondAdmin0Key}
+              admin1Key={secondAdmin1Key}
+              admin2Key={secondAdmin2Key}
+              boundaryLayer={boundaryLayer}
+              country={appConfig.country}
+              countryAdmin0Id={countryAdmin0Id}
+              data={data}
+              getProperties={getProperties}
+              multiCountry={multiCountry}
+              setAdmin0Key={setSecondAdmin0Key}
+              setAdmin1Key={setSecondAdmin1Key}
+              setAdmin2Key={setSecondAdmin2Key}
+              setAdminLevel={setSecondAdminLevel}
+              setAdminProperties={setSecondAdminProperties}
+              setSelectedAdmin1Area={setSecondSelectedAdmin1Area}
+              setSelectedAdmin2Area={setSecondSelectedAdmin2Area}
+              title={t('Location 2')}
+            />
           )}
         </FormGroup>
 

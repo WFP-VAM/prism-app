@@ -41,7 +41,7 @@ const useStyles = makeStyles(() =>
 
 const boundaryLayer = getBoundaryLayersByAdminLevel();
 
-const getProperties = (
+const getPropertiesByAdminCode = (
   layerData: LayerData<BoundaryLayerProps>['data'],
   adminCode: AdminCodeString,
   adminSelectorKey: string,
@@ -93,7 +93,11 @@ function PopupAnalysisCharts({
   const normalizedAdminCode = String(adminCode);
   const adminProperties =
     data && boundaryLayer?.format !== 'pmtiles'
-      ? getProperties(data as BoundaryLayerData, adminCode, adminSelectorKey)
+      ? getPropertiesByAdminCode(
+          data as BoundaryLayerData,
+          adminCode,
+          adminSelectorKey,
+        )
       : (features?.find(
           f =>
             f.properties?.[adminSelectorKey] &&

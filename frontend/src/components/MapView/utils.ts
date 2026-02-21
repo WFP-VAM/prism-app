@@ -1,11 +1,7 @@
 import { orderBy, snakeCase, values } from 'lodash';
 import { TFunction } from 'i18next';
 import type { AppDispatch } from 'context/store';
-import {
-  getBoundaryLayersByAdminLevel,
-  isAnticipatoryActionLayer,
-  LayerDefinitions,
-} from 'config/utils';
+import { isAnticipatoryActionLayer, LayerDefinitions } from 'config/utils';
 import { formatFeatureInfo } from 'utils/server-utils';
 import {
   AdminCodeString,
@@ -341,16 +337,16 @@ export const getExposureAnalysisTableData = (
  * Gets properties from layer data based on ID and admin level.
  *
  * @param layerData - The boundary layer data
+ * @param boundaryLayer - The boundary layer configuration to use for lookup
  * @param id - Optional admin code string identifier
  * @param adminLevel - Optional administrative level type
  * @returns GeoJSON properties for the matching feature
  */
 const { multiCountry } = appConfig;
-const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
-const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
 export const getProperties = (
   layerData: LayerData<BoundaryLayerProps>['data'],
+  boundaryLayer: BoundaryLayerProps,
   id?: AdminCodeString,
   adminLevel?: AdminLevelType,
 ): GeoJsonProperties => {
