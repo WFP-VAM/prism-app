@@ -72,10 +72,10 @@ For each category, you can define sub categories as "subcategory_name":
 
 ```
 {
-  "country": "Cambodia",
+  "country": "Madagascar",
     "map": {
-    "latitude": 12.058,
-    "longitude": 105.281,
+    "latitude": -18.766,
+    "longitude": 46.869,
     "zoom": 6.49
   },
     "serversUrls": {
@@ -693,5 +693,6 @@ Use `frontend/scripts/country_build.sh` from the `frontend` folder:
 
 - `yarn batch:build`: build zips for chosen countries into `frontend/builds/`
 - `yarn deploy:tests`: deploy Firebase preview channels for chosen countries
+
 
 You’ll be prompted for a list of countries (or select `all`). For deploys, ensure Firebase CLI is installed and authenticated.
