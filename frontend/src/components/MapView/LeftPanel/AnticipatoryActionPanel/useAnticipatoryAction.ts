@@ -134,20 +134,33 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
       const date = getFormattedDate(queryDate, DateFormat.Default) as string;
       dispatch(setFilters({ selectedDate: date }));
     } else if (actionType === AnticipatoryAction.flood) {
-      // Only load date data if we have a valid date item in the available dates
-      // This prevents loading with an invalid date from a previous layer
-      const requestDateItem = getRequestDateItem(
+      // Check if the current date is a valid AA flood date (e.g. it may be a
+      // date from a previous rainfall layer that has no match in flood dates).
+      const exactDateItem = getRequestDateItem(
         combinedAvailableDates,
         selectedDate as SelectedDateTimestamp,
-        true, // defaultToMostRecent
+        false,
       );
 
-      if (requestDateItem && requestDateItem.queryDate) {
-        const date = getFormattedDate(
-          requestDateItem.queryDate,
-          DateFormat.Default,
-        ) as string;
-        dispatch(loadAAFloodDateData({ date }));
+      // Fall back to the most recent flood date when there is no exact match.
+      const requestDateItem =
+        exactDateItem ??
+        combinedAvailableDates[combinedAvailableDates.length - 1];
+
+      if (requestDateItem) {
+        // Advance selectedDate when it was from a non-AA layer (no exact match),
+        // so the date picker reflects the correct AA flood date.
+        if (!exactDateItem) {
+          dispatch(updateDateRange({ startDate: requestDateItem.displayDate }));
+        }
+
+        if (requestDateItem.queryDate) {
+          const date = getFormattedDate(
+            requestDateItem.queryDate,
+            DateFormat.Default,
+          ) as string;
+          dispatch(loadAAFloodDateData({ date }));
+        }
       }
     }
   }, [AAAvailableDates, selectedDate]);
