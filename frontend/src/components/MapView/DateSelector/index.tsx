@@ -27,7 +27,6 @@ import { locales, useSafeTranslation } from 'i18n';
 import {
   dateStrToUpperCase,
   datesAreEqualWithoutTime,
-  findClosestDate,
   getFormattedDate,
 } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
@@ -380,38 +379,6 @@ const DateSelector = memo(() => {
     [availableDates],
   );
 
-  // Ensure selected date is always in includeDates to prevent react-datepicker's
-  // internal setState loop (Maximum update depth exceeded) when switching layers
-  // e.g. from rainfall to AA - the previous date may not exist in the new layer's dates
-  const datePickerSelectedDate = useMemo(() => {
-    const allowedDates = [...includedDates, today];
-    if (allowedDates.length === 0) {
-      return new Date();
-    }
-    const rawDate = stateStartDate
-      ? (() => {
-          const utcDate = new Date(stateStartDate);
-          return new Date(
-            utcDate.getUTCFullYear(),
-            utcDate.getUTCMonth(),
-            utcDate.getUTCDate(),
-          );
-        })()
-      : new Date();
-    const rawTime = rawDate.getTime();
-    const isInAllowed = allowedDates.some(d =>
-      datesAreEqualWithoutTime(d.getTime(), rawTime),
-    );
-    if (isInAllowed) {
-      return rawDate;
-    }
-    const closestTime = findClosestDate(
-      rawTime,
-      allowedDates.map(d => d.getTime()),
-    );
-    return new Date(closestTime);
-  }, [stateStartDate, includedDates, today]);
-
   // Find the dates that are queriable
   const selectableDates = useMemo(() => {
     if (truncatedLayers.length === 0) {
@@ -720,7 +687,19 @@ const DateSelector = memo(() => {
             locale={t('date_locale')}
             dateFormat="PP"
             className={classes.datePickerInput}
-            selected={datePickerSelectedDate}
+            selected={
+              stateStartDate
+                ? (() => {
+                    // Force to UTC to avoid any timezone issues when setting a pre-configured date in dashboards
+                    const utcDate = new Date(stateStartDate);
+                    return new Date(
+                      utcDate.getUTCFullYear(),
+                      utcDate.getUTCMonth(),
+                      utcDate.getUTCDate(),
+                    );
+                  })()
+                : new Date()
+            }
             onChange={handleOnDatePickerChange}
             maxDate={maxDate}
             todayButton={t('Today')}
