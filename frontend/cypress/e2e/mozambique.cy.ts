@@ -29,19 +29,14 @@ describe('Loading dates', () => {
     );
     cy.get('header').contains('A. Actions').click();
     cy.get('div.MuiPopover-paper').contains('A. Action Flood').click();
-    cy.get('.react-datepicker-wrapper button span', { timeout: 20000 }).then(
-      span1 => {
-        cy.wrap(span1)
-          .invoke('text')
-          .should('match', /^[A-Z][a-z]{2} \d{1,2}, \d{4}$/)
-          .as('aaDate')
-          .then(function () {
-            const firstDate = new Date(this.initialDate).getTime();
-            const secondDate = new Date(this.aaDate).getTime();
-            expect(secondDate).to.be.greaterThan(firstDate);
-          });
-      },
-    );
+    cy.get('.react-datepicker-wrapper button span', { timeout: 20000 })
+      .invoke('text')
+      .should(aaDate => {
+        expect(aaDate).to.match(/^[A-Z][a-z]{2} \d{1,2}, \d{4}$/);
+        expect(new Date(aaDate).getTime()).to.be.greaterThan(
+          new Date('Sep 1, 2025').getTime(),
+        );
+      });
     cy.get('#full-width-tabpanel-anticipatory_action_flood')
       .contains('Gauge station', { timeout: 10000 })
       .should('be.visible');

@@ -107,17 +107,19 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
       return;
     }
 
+    // Always register AA dates in serverAvailableDates so that
+    // checkSelectedDateForLayerSupport can detect them as loaded and
+    // update the selected date when switching from a non-AA layer.
+    const updatedCapabilities = AALayerIds.reduce(
+      (acc, layerId) => ({
+        ...acc,
+        [layerId]: combinedAvailableDates,
+      }),
+      { ...serverAvailableDates },
+    );
+    dispatch(updateLayersCapabilities(updatedCapabilities));
+
     if (!selectedDate) {
-      const updatedCapabilities = AALayerIds.reduce(
-        (acc, layerId) => ({
-          ...acc,
-          [layerId]: combinedAvailableDates,
-        }),
-        { ...serverAvailableDates },
-      );
-
-      dispatch(updateLayersCapabilities(updatedCapabilities));
-
       // Set the most recent date as the default date for timeline advancement
       if (combinedAvailableDates && combinedAvailableDates.length > 0) {
         const mostRecentDate =
