@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'context/store';
 import {
@@ -83,6 +83,10 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
   const serverAvailableDates = useSelector(availableDatesSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
+  // Track whether we have performed the initial date advancement for flood.
+  // We advance to the most recent flood date the first time AA flood dates load.
+  const hasLoadedInitialFloodDate = useRef(false);
+
   // Load data when component mounts
   useEffect(() => {
     dispatch(loadAAData());
@@ -134,27 +138,32 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
       const date = getFormattedDate(queryDate, DateFormat.Default) as string;
       dispatch(setFilters({ selectedDate: date }));
     } else if (actionType === AnticipatoryAction.flood) {
-      // Check if the current date is a valid AA flood date (e.g. it may be a
-      // date from a previous rainfall layer that has no match in flood dates).
-      const exactDateItem = getRequestDateItem(
-        combinedAvailableDates,
-        selectedDate as SelectedDateTimestamp,
-        false,
-      );
-
-      // Fall back to the most recent flood date when there is no exact match.
-      const requestDateItem =
-        exactDateItem ??
-        combinedAvailableDates[combinedAvailableDates.length - 1];
-
-      if (requestDateItem) {
-        // Advance selectedDate when it was from a non-AA layer (no exact match),
-        // so the date picker reflects the correct AA flood date.
-        if (!exactDateItem) {
-          dispatch(updateDateRange({ startDate: requestDateItem.displayDate }));
+      // On first load of flood dates, always advance to the most recent date so
+      // that switching from any other layer shows the latest flood data.
+      if (!hasLoadedInitialFloodDate.current) {
+        hasLoadedInitialFloodDate.current = true;
+        const mostRecentDate =
+          combinedAvailableDates.length > 0
+            ? combinedAvailableDates[combinedAvailableDates.length - 1]
+            : undefined;
+        if (mostRecentDate) {
+          dispatch(updateDateRange({ startDate: mostRecentDate.displayDate }));
+          if (mostRecentDate.queryDate) {
+            const date = getFormattedDate(
+              mostRecentDate.queryDate,
+              DateFormat.Default,
+            ) as string;
+            dispatch(loadAAFloodDateData({ date }));
+          }
         }
-
-        if (requestDateItem.queryDate) {
+      } else {
+        // User navigated to a different date — load data for the selected date.
+        const requestDateItem = getRequestDateItem(
+          combinedAvailableDates,
+          selectedDate as SelectedDateTimestamp,
+          true,
+        );
+        if (requestDateItem?.queryDate) {
           const date = getFormattedDate(
             requestDateItem.queryDate,
             DateFormat.Default,
