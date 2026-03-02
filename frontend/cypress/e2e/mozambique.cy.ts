@@ -18,7 +18,7 @@ describe('Loading dates', () => {
   it('switching to AA from rainfall layer should load latest data', () => {
     cy.visit(`${frontendUrl}/?hazardLayerIds=rainfall_dekad&date=2025-09-01`);
 
-    cy.contains('MapTiler', { timeout: 60000 }).should('be.visible');
+    cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
     cy.get('.react-datepicker-wrapper button span', { timeout: 20000 }).then(
       span1 => {
         cy.wrap(span1)
