@@ -100,7 +100,7 @@ jobs:
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
       - uses: actions/cache@v4
         id: yarn-cache
@@ -111,9 +111,9 @@ jobs:
             **/common/dist
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             ~/.cache/Cypress
-          key: ${{ runner.os }}-yarn-2025-3-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/.lock', '**/common/src/**/*.ts') }}
+          key: ${{ runner.os }}-yarn-2025-4-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock', '**/common/src/**/*.ts') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-2025-3
+            ${{ runner.os }}-yarn-2025-4
 
       - name: setup 'common' package
         # skip yarn install in frontend, as cypress does it anyway
@@ -125,6 +125,8 @@ jobs:
         with:
           working-directory: ./frontend
           start: yarn start
+          wait-on: 'http://127.0.0.1:3000'
+          wait-on-timeout: 180
           browser: chrome
           spec: |
             cypress/e2e/${{ matrix.country }}.cy.ts
@@ -215,7 +217,7 @@ jobs:
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
       - uses: actions/cache@v4
         id: yarn-cache
@@ -224,9 +226,9 @@ jobs:
             **/node_modules
             **/.eslintcache
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-2025-3-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-2025-4-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-2025-3
+            ${{ runner.os }}-yarn-2025-4
 
       - name: Install dependencies if needed.
         if: steps.yarn-cache.outputs.cache-hit != 'true'
