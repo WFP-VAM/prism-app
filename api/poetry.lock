@@ -2882,7 +2882,7 @@ python-versions = ">=3.9"
 groups = ["main"]
 files = [
     {file = "pypdf-6.7.5-py3-none-any.whl", hash = "sha256:07ba7f1d6e6d9aa2a17f5452e320a84718d4ce863367f7ede2fd72280349ab13"},
-    {file = "pypdf-6.7.5.tar.gz", hash = "sha256:cfe229bdf7f80c74e5888fab506603eee925c62791b68faad087e27c5f079059"},
+    {file = "pypdf-6.7.5.tar.gz", hash = "sha256:40bb2e2e872078655f12b9b89e2f900888bb505e88a82150b64f9f34fa25651d"},
 ]
 
 [package.extras]
@@ -4651,4 +4651,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.13"
-content-hash = "8f0cb1a89dd8941faff0749e086a0c90fc90bd1a8548d0b8c65b4edcf03a8d87"
+content-hash = "b55735de65f599ff1e267112f981a94dd9f139295085a082db521731883de7c8"
