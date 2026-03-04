@@ -16,6 +16,32 @@ describe('Loading layers', () => {
 
 describe('Loading dates', () => {
   it('switching to AA from rainfall layer should load latest data', () => {
+    // Mock AA Flood API endpoints so the test doesn't depend on external services.
+    // The dates.json endpoint provides available forecast dates; the CSV endpoints
+    // provide per-date station data used by the AA Flood panel.
+    const floodBaseUrl =
+      'https://data.earthobservation.vam.wfp.org/public-share/aa/flood/moz/';
+
+    cy.intercept(
+      { method: 'GET', url: `${floodBaseUrl}dates.json` },
+      { fixture: 'mocks/aa_flood/dates.json' },
+    ).as('getFloodDates');
+
+    cy.intercept(
+      { method: 'GET', url: `${floodBaseUrl}station_summary/**` },
+      { fixture: 'mocks/aa_flood/station_summary.csv' },
+    ).as('getFloodStationSummary');
+
+    cy.intercept(
+      { method: 'GET', url: `${floodBaseUrl}probabilities/**` },
+      { fixture: 'mocks/aa_flood/probabilities.csv' },
+    ).as('getFloodProbabilities');
+
+    cy.intercept(
+      { method: 'GET', url: `${floodBaseUrl}discharge/**` },
+      { fixture: 'mocks/aa_flood/discharge.csv' },
+    ).as('getFloodDischarge');
+
     cy.visit(`${frontendUrl}/?hazardLayerIds=rainfall_dekad&date=2025-09-01`);
 
     cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
@@ -29,6 +55,10 @@ describe('Loading dates', () => {
     );
     cy.get('header').contains('A. Actions').click();
     cy.get('div.MuiPopover-paper').contains('A. Action Flood').click();
+
+    // Wait for the mocked dates.json to be fetched before checking the UI
+    cy.wait('@getFloodDates', { timeout: 15000 });
+
     cy.get('.react-datepicker-wrapper button span', { timeout: 20000 }).then(
       span1 => {
         cy.wrap(span1)

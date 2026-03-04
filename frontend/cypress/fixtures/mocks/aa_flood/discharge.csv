@@ -1,0 +1,5 @@
+station_id,station_name,river_name,lon,lat,forecast_issue_date,valid_time,discharge,ensemble_member
+1,Gauge station,Zambezi,35.5,-17.5,2025-10-21,2025-10-22,450,1
+1,Gauge station,Zambezi,35.5,-17.5,2025-10-21,2025-10-22,460,2
+1,Gauge station,Zambezi,35.5,-17.5,2025-10-21,2025-10-23,470,1
+1,Gauge station,Zambezi,35.5,-17.5,2025-10-21,2025-10-23,480,2
