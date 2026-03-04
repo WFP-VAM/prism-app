@@ -3,6 +3,11 @@
 // - `npx cypress run` for a headless run (like in CI)
 const frontendUrl = 'http://localhost:3000';
 
+// Helper: cy.log() only writes to the Cypress Command Log and is
+// invisible in CI headless output.  cy.task('log') writes to the
+// Node process stdout so it shows up in GitHub Actions logs.
+const ciLog = (msg: string) => cy.task('log', `[CYPRESS] ${msg}`);
+
 describe('Loading layers', () => {
   // sample test that runs on Mozambique
   it('checks that dates are loaded', () => {
@@ -30,76 +35,102 @@ describe('Loading dates', () => {
       url: /earthobservation\.vam\.wfp\.org.*?(GetCapabilities|wms)/,
     }).as('wmsApi');
 
-    cy.visit(`${frontendUrl}/?hazardLayerIds=rainfall_dekad&date=2025-09-01`);
+    // ── Step 1: Load app with a rainfall layer ─────────────────────────
+    // Don't hardcode a specific date – let the app pick the latest
+    // available date from the WMS server.  A stale hardcoded date can
+    // cause the DateSelector to hide when the server no longer serves it.
+    cy.visit(`${frontendUrl}/?hazardLayerIds=rainfall_dekad`);
 
     cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
-    cy.get('.react-datepicker-wrapper button span', { timeout: 20000 }).then(
+
+    // Wait for the datepicker to appear (dates loaded from WMS server)
+    cy.get('.react-datepicker-wrapper button span', { timeout: 30000 }).then(
       span1 => {
         cy.wrap(span1)
           .invoke('text')
-          .should('match', /^Sep 1, 2025$/)
+          .then(text => {
+            ciLog(`Initial date shown: "${text}"`);
+          })
+          .should('match', /^[A-Z][a-z]{2} \d{1,2}, \d{4}$/)
           .as('initialDate');
       },
     );
 
-    // Log what the app state looks like before switching to AA
-    cy.window().then(win => {
-      cy.log(
-        '** Redux state before AA switch **',
-      );
-      // @ts-expect-error - accessing Redux store for diagnostics
-      const state = win.__REDUX_DEVTOOLS_EXTENSION__
-        ? 'devtools available'
-        : 'no devtools';
-      cy.log(`DevTools: ${state}`);
-    });
-
+    // ── Step 2: Switch to Anticipatory Action Flood ────────────────────
+    ciLog('Clicking A. Actions menu...');
     cy.get('header').contains('A. Actions').click();
     cy.get('div.MuiPopover-paper').contains('A. Action Flood').click();
+    ciLog('Clicked A. Action Flood');
 
-    // ── Diagnostic: log intercepted flood API calls ──────────────────
-    // Give the app time to dispatch the fetch, then log what happened.
-    cy.wait(3000);
+    // ── Step 3: Diagnostic logging ─────────────────────────────────────
+    // Wait for the network requests to fire and complete
+    cy.wait(5000);
 
-    // Check if dates.json was even requested
-    cy.get('@floodApi.all').then(interceptions => {
+    // Log WMS calls
+    cy.get('@wmsApi.all').then(interceptions => {
       const calls = interceptions as unknown as Cypress.Intercept[];
-      cy.log(`** Flood API calls intercepted: ${calls.length} **`);
+      ciLog(`WMS API calls intercepted: ${calls.length}`);
       calls.forEach((call, i) => {
         const req = (call as any).request;
         const res = (call as any).response;
-        cy.log(
-          `  [${i}] ${req?.method} ${req?.url} → ${res?.statusCode ?? 'no response'}`,
+        ciLog(
+          `  WMS[${i}] ${req?.method} ${req?.url?.slice(0, 120)} → ${res?.statusCode ?? 'pending'}`,
+        );
+      });
+    });
+
+    // Log flood API calls
+    cy.get('@floodApi.all').then(interceptions => {
+      const calls = interceptions as unknown as Cypress.Intercept[];
+      ciLog(`Flood API calls intercepted: ${calls.length}`);
+      calls.forEach((call, i) => {
+        const req = (call as any).request;
+        const res = (call as any).response;
+        ciLog(
+          `  Flood[${i}] ${req?.method} ${req?.url?.slice(0, 120)} → ${res?.statusCode ?? 'pending'}`,
         );
         if (res?.statusCode && res.statusCode >= 400) {
-          cy.log(`  [${i}] Response body: ${JSON.stringify(res.body).slice(0, 200)}`);
+          ciLog(
+            `  Flood[${i}] ERROR body: ${JSON.stringify(res.body).slice(0, 200)}`,
+          );
         }
       });
     });
 
-    // Log whether the datepicker is present in the DOM at all
+    // Log DOM state
     cy.get('body').then($body => {
       const dpExists = $body.find('.react-datepicker-wrapper').length > 0;
-      cy.log(`** Datepicker in DOM: ${dpExists} **`);
+      ciLog(`Datepicker wrapper in DOM: ${dpExists}`);
 
-      // Also check the date-selector container visibility conditions
       const dateSelector = $body.find('[class*="datePickerContainer"]');
-      cy.log(`** DateSelector container found: ${dateSelector.length > 0} **`);
+      ciLog(`DateSelector container found: ${dateSelector.length > 0}`);
+
+      // Check if loading indicator is visible (dates still loading)
+      const loadingIndicators = $body.find('[class*="loading"], [class*="Loading"], [role="progressbar"]');
+      ciLog(`Loading indicators found: ${loadingIndicators.length}`);
     });
 
-    cy.get('.react-datepicker-wrapper button span', { timeout: 20000 }).then(
+    // ── Step 4: Assert datepicker appears with AA date ─────────────────
+    cy.get('.react-datepicker-wrapper button span', { timeout: 30000 }).then(
       span1 => {
         cy.wrap(span1)
           .invoke('text')
+          .then(text => {
+            ciLog(`AA date shown: "${text}"`);
+          })
           .should('match', /^[A-Z][a-z]{2} \d{1,2}, \d{4}$/)
           .as('aaDate')
           .then(function () {
+            ciLog(
+              `Comparing dates: initial="${this.initialDate}" vs aa="${this.aaDate}"`,
+            );
             const firstDate = new Date(this.initialDate).getTime();
             const secondDate = new Date(this.aaDate).getTime();
             expect(secondDate).to.be.greaterThan(firstDate);
           });
       },
     );
+
     cy.get('#full-width-tabpanel-anticipatory_action_flood')
       .contains('Gauge station', { timeout: 10000 })
       .should('be.visible');
