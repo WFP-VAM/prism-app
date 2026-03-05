@@ -7,7 +7,7 @@ describe('General stability', () => {
 
   it('should start without hanging and show the map', () => {
     cy.visit('http://localhost:3000');
-    cy.contains('MapTiler', { timeout: 60000 }).should('be.visible');
+    cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
     cy.get('[aria-label="language-select-dropdown-button"]', {
       timeout: 10000,
     })
