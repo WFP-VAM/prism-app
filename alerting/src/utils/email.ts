@@ -50,7 +50,7 @@ export async function sendEmail({
   const password = process.env.PRISM_ALERTS_EMAIL_PASSWORD;
   const host =
     process.env.PRISM_ALERTS_EMAIL_HOST || 'email-smtp.eu-west-1.amazonaws.com';
-  const user = process.env.PRISM_ALERTS_EMAIL_USER || ''; // AKIBLABLABLA or wfp.prism@wfp.org
+  const user = process.env.PRISM_ALERTS_EMAIL_USER || ''; // AKIB_REPLACE_ME or wfp.prism@wfp.org
 
   if (!(password && user)) {
     // Generate test SMTP service account from ethereal.email
