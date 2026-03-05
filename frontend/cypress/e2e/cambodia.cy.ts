@@ -18,7 +18,7 @@ describe('Date picker', () => {
     ).as('mockVAMtiles');
     cy.visit(frontendUrl);
 
-    cy.contains('MapTiler', { timeout: 60000 }).should('be.visible');
+    cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
     cy.switchLanguage('en');
 
     cy.activateLayer('Rainfall', 'Rainfall Amount', 'Rainfall aggregate');
@@ -106,7 +106,7 @@ describe('Date picker', () => {
     cy.visit(frontendUrl);
 
     cy.wait('@getKoboDates', { timeout: 60000 });
-    cy.contains('MapTiler', { timeout: 60000 }).should('be.visible');
+    cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
     cy.switchLanguage('en');
 
     cy.activateLayer('Field Reports', 'Field Reports', 'Flood report');
@@ -138,7 +138,7 @@ describe('Date picker', () => {
   it('should find a valid date when activating / deactivating and reactivating a layer with date', () => {
     cy.visit(frontendUrl);
 
-    cy.contains('MapTiler', { timeout: 60000 }).should('be.visible');
+    cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
     cy.switchLanguage('en');
     cy.activateLayer('Rainfall', 'Rainfall Amount', 'Rainfall aggregate');
     cy.get('.react-datepicker-wrapper button span', {
