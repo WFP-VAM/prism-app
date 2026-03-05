@@ -8,6 +8,7 @@ export default defineConfig({
       // writes to the Cypress Command Log, which is invisible in CI.
       on('task', {
         log(message: string) {
+          // eslint-disable-next-line no-console
           console.log(message);
           return null;
         },
