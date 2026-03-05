@@ -107,22 +107,16 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
       return;
     }
 
-    // Always update serverAvailableDates with AA dates so that
-    // getPossibleDatesForLayer can find them and the DateSelector
-    // renders. Previously this was only inside the `!selectedDate`
-    // branch, which meant switching to AA Flood while a date was
-    // already selected (e.g. from a previous layer) left
-    // serverAvailableDates empty and the timeline hidden.
-    const updatedCapabilities = AALayerIds.reduce(
-      (acc, layerId) => ({
-        ...acc,
-        [layerId]: combinedAvailableDates,
-      }),
-      { ...serverAvailableDates },
-    );
-    dispatch(updateLayersCapabilities(updatedCapabilities));
-
     if (!selectedDate) {
+      const updatedCapabilities = AALayerIds.reduce(
+        (acc, layerId) => ({
+          ...acc,
+          [layerId]: combinedAvailableDates,
+        }),
+        { ...serverAvailableDates },
+      );
+
+      dispatch(updateLayersCapabilities(updatedCapabilities));
       // Set the most recent date as the default date for timeline advancement
       if (combinedAvailableDates && combinedAvailableDates.length > 0) {
         const mostRecentDate =
