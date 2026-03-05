@@ -10,7 +10,7 @@ describe('General stability', () => {
       `${frontendUrl}/?analysisHazardLayerId=dekad_rainfall_forecast&analysisBaselineLayerId=admin1_boundaries&analysisDate=2025-08-11&analysisStatistic=mean`,
     );
     cy.contains('Rainfall').should('be.visible');
-    cy.contains('MapTiler', { timeout: 60000 }).should('be.visible');
+    cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
   });
 });
 
