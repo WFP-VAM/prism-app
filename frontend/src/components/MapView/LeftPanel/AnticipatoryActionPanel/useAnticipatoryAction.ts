@@ -117,7 +117,6 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
       );
 
       dispatch(updateLayersCapabilities(updatedCapabilities));
-
       // Set the most recent date as the default date for timeline advancement
       if (combinedAvailableDates && combinedAvailableDates.length > 0) {
         const mostRecentDate =
