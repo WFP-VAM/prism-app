@@ -7,7 +7,8 @@
 // CYPRESS_MOZAMBIQUE_DATEPICKER_TIMEOUT_MS, CYPRESS_MOZAMBIQUE_GAUGE_TIMEOUT_MS
 const defaultTimeout = Number(Cypress.env('MOZAMBIQUE_TIMEOUT_MS')) || 60000;
 const datepickerTimeout = Number(Cypress.env('MOZAMBIQUE_DATEPICKER_TIMEOUT_MS')) || 20000;
-const gaugeTimeout = Number(Cypress.env('MOZAMBIQUE_GAUGE_TIMEOUT_MS')) || 10000;
+// AA flood data can be slow in CI; allow up to 30s for the panel to be ready
+const gaugeTimeout = Number(Cypress.env('MOZAMBIQUE_GAUGE_TIMEOUT_MS')) || 30000;
 
 const frontendUrl = 'http://localhost:3000';
 
