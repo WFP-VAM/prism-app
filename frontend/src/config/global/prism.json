@@ -9,9 +9,7 @@
     "boundingBox": [-130, -50, 177, 50]
   },
   "defaultDisplayBoundaries": [
-    "global_admin2_boundaries",
-    "global_admin1_boundaries",
-    "global_admin0_boundaries"
+    "admin_boundaries"
   ],
   "categories": {
     "rainfall": {
@@ -165,6 +163,12 @@
     },
     "vegetation": {
       "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
+    },
+    "drought": {
+      "water_anomaly_index": [
+        "monthly_water_anomaly",
+        "6m_water_anomaly"
+      ]
     },
     "temperature": {
       "land_surface_temperature": [
