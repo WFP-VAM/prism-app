@@ -26,7 +26,7 @@ describe('Export View', () => {
     cy.visit(exportUrl.toString());
 
     // 1. MAP LOADS
-    cy.contains('MapTiler', { timeout: 60000 }).should('be.visible');
+    cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
 
     // 2. TITLE
     cy.contains('Mozambique NDVI Export').should('be.visible');
@@ -70,7 +70,7 @@ describe('Export View', () => {
     cy.visit(exportUrl.toString());
 
     // Wait for map to load
-    cy.contains('MapTiler', { timeout: 60000 }).should('be.visible');
+    cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
 
     // Title should still be visible
     cy.contains('Hidden Elements Test').should('be.visible');
@@ -96,7 +96,7 @@ describe('Export View', () => {
     cy.visit(exportUrl.toString());
 
     // Wait for map to load
-    cy.contains('MapTiler', { timeout: 60000 }).should('be.visible');
+    cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
 
     // Title should show the formatted date instead of {date} placeholder
     cy.contains('Mozambique NDVI - September 30, 2024').should('be.visible');
