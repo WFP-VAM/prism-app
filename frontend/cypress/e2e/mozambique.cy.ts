@@ -27,6 +27,13 @@ describe('Loading dates', () => {
     cy.visit(`${frontendUrl}/?hazardLayerIds=rainfall_dekad&date=2025-09-01`);
 
     cy.get('.maplibregl-canvas', { timeout: defaultTimeout }).should('exist');
+    // Ensure English UI so "Gauge station" and other labels match (Mozambique may default to Portuguese)
+    cy.get('[aria-label="language-select-dropdown-button"]', { timeout: 10000 })
+      .scrollIntoView()
+      .click({ force: true });
+    cy.get('[aria-label="language-select-dropdown-menu-item-en"]')
+      .should('be.visible')
+      .click();
     cy.get('.react-datepicker-wrapper button span', { timeout: datepickerTimeout }).then(
       span1 => {
         cy.wrap(span1)
