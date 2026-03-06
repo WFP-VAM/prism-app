@@ -36,14 +36,12 @@ describe('Loading dates', () => {
       },
     );
     cy.get('header').contains('A. Actions').click();
-    cy.get('div.MuiPopover-paper').contains('A. Action Flood').click();
-    // Wait for AA flood panel to finish loading first. The DateSelector hides during
+    cy.get('div.MuiPopover-paper, [role="menu"]').contains('A. Action Flood').click();
+    // Wait for AA flood panel to finish loading. The DateSelector hides during
     // layer switch until AA dates are ready; waiting for "Gauge station" ensures the
     // full AA flow (config, available dates, flood data) has completed before we
     // assert on the datepicker, avoiding CI flakiness from racing the UI.
-    cy.get('#full-width-tabpanel-anticipatory_action_flood')
-      .contains('Gauge station', { timeout: gaugeTimeout })
-      .should('be.visible');
+    cy.contains('Gauge station', { timeout: gaugeTimeout }).should('be.visible');
     cy.get('.react-datepicker-wrapper button span', { timeout: datepickerTimeout })
       .should($span => {
         const aaDate = $span.text();
