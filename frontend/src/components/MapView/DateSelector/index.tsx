@@ -647,6 +647,23 @@ const DateSelector = memo(() => {
     [updateStartDate],
   );
 
+  // Memoize the selected date to prevent react-datepicker v2 from calling
+  // setState in componentDidUpdate on every render. The v2 DatePicker uses
+  // reference comparison (prevProps.selected !== this.props.selected) which
+  // always triggers when we create a new Date object inline. During rapid
+  // layer switches this amplifies state updates and hits React's max depth.
+  const selectedPickerDate = useMemo(() => {
+    if (!stateStartDate) {
+      return new Date();
+    }
+    const utcDate = new Date(stateStartDate);
+    return new Date(
+      utcDate.getUTCFullYear(),
+      utcDate.getUTCMonth(),
+      utcDate.getUTCDate(),
+    );
+  }, [stateStartDate]);
+
   // Don't display the date selector if:
   // - Dates are still loading for the selected layers
   // - The dateRange hasn't been computed yet
@@ -687,19 +704,7 @@ const DateSelector = memo(() => {
             locale={t('date_locale')}
             dateFormat="PP"
             className={classes.datePickerInput}
-            selected={
-              stateStartDate
-                ? (() => {
-                    // Force to UTC to avoid any timezone issues when setting a pre-configured date in dashboards
-                    const utcDate = new Date(stateStartDate);
-                    return new Date(
-                      utcDate.getUTCFullYear(),
-                      utcDate.getUTCMonth(),
-                      utcDate.getUTCDate(),
-                    );
-                  })()
-                : new Date()
-            }
+            selected={selectedPickerDate}
             onChange={handleOnDatePickerChange}
             maxDate={maxDate}
             todayButton={t('Today')}
