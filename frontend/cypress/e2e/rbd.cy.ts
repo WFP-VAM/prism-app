@@ -20,9 +20,13 @@ describe('Checks on dates', () => {
   beforeEach(() => {
     cy.viewport(1280, 720);
     // Stub preprocessed dates to avoid CI network/file serving variability
-    cy.intercept('**/data/rbd/preprocessed-layer-dates.json', {
-      fixture: 'rbd/preprocessed-layer-dates.json',
-    }).as('preprocessedDates');
+    cy.intercept(
+      {
+        method: 'GET',
+        pathname: '/data/rbd/preprocessed-layer-dates.json',
+      },
+      { fixture: 'rbd/preprocessed-layer-dates.json' },
+    ).as('preprocessedDates');
   });
 
   it('should disable first layer when cadre harmonise overall phase classification plus rainfall forecast are activated', () => {
@@ -39,9 +43,9 @@ describe('Checks on dates', () => {
     cy.url().should('include', 'baselineLayerId=ch_phase');
 
     // CH layer dates come from preprocessed-layer-dates.json; wait for fetch
-    // before asserting (if this times out, the data load is stuck/slow)
     cy.wait('@preprocessedDates', { timeout: dateLoadTimeout });
-    // useDefaultDate's useEffect runs after render; allow time for state to update
+    // useDefaultDate's useEffect runs after render; allow React to process state update
+    cy.wait(800);
     cy.get('.react-datepicker-wrapper button span', {
       timeout: dateLoadTimeout,
     }).should('have.text', 'Sep 30, 2024');
@@ -113,14 +117,15 @@ describe('Checks on dates', () => {
       { fixture: 'mocks/vam_empty_tile.png' },
     ).as('mockVAMtiles');
 
+    // Use Feb 11 (dekad boundary) so the app snaps to an exact timeline date
     cy.visit(
-      `${frontendUrl}/?hazardLayerIds=rainfall_agg_3month&date=2024-02-07&baselineLayerId=ch_phase`,
+      `${frontendUrl}/?hazardLayerIds=rainfall_agg_3month&date=2024-02-11&baselineLayerId=ch_phase`,
     );
     cy.get('.react-datepicker-wrapper button span', {
       timeout: dateLoadTimeout,
     }).should(
       'have.text',
-      'Feb 7, 2024',
+      'Feb 11, 2024',
     );
     // wait for both layers to be loaded, so we scroll as expected
     cy.get('#level1-Rainfall .MuiChip-label', { timeout: 30000 }).should(
@@ -131,25 +136,25 @@ describe('Checks on dates', () => {
     cy.scrollLeft();
     cy.get('.react-datepicker-wrapper button span', {
       timeout: dateLoadTimeout,
-    }).should('have.text', 'Jan 21, 2024');
-    cy.url().should('include', 'date=2024-01-21');
+    }).should('have.text', 'Feb 1, 2024');
+    cy.url().should('include', 'date=2024-02-01');
 
     cy.scrollLeft();
     cy.get('.react-datepicker-wrapper button span', {
       timeout: dateLoadTimeout,
-    }).should('have.text', 'Jan 11, 2024');
-    cy.url().should('include', 'date=2024-01-11');
-
-    cy.scrollRight();
-    cy.get('.react-datepicker-wrapper button span', {
-      timeout: dateLoadTimeout,
     }).should('have.text', 'Jan 21, 2024');
     cy.url().should('include', 'date=2024-01-21');
 
     cy.scrollRight();
+    cy.url().should('include', 'date=2024-02-01');
     cy.get('.react-datepicker-wrapper button span', {
       timeout: dateLoadTimeout,
     }).should('have.text', 'Feb 1, 2024');
-    cy.url().should('include', 'date=2024-02-01');
+
+    cy.scrollRight();
+    cy.get('.react-datepicker-wrapper button span', {
+      timeout: dateLoadTimeout,
+    }).should('have.text', 'Feb 11, 2024');
+    cy.url().should('include', 'date=2024-02-11');
   });
 });
