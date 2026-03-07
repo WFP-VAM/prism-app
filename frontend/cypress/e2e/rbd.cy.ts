@@ -40,10 +40,10 @@ describe('Checks on dates', () => {
     // CH layer dates come from preprocessed-layer-dates.json; wait for fetch
     // before asserting (if this times out, the data load is stuck/slow)
     cy.wait('@preprocessedDates', { timeout: dateLoadTimeout });
-    cy.get('.react-datepicker-wrapper button span').should(
-      'have.text',
-      'Sep 30, 2024',
-    );
+    // useDefaultDate's useEffect runs after render; allow time for state to update
+    cy.get('.react-datepicker-wrapper button span', {
+      timeout: dateLoadTimeout,
+    }).should('have.text', 'Sep 30, 2024');
     cy.url().should('include', 'date=2024-09-30');
 
     cy.activateLayer(
@@ -67,7 +67,7 @@ describe('Checks on dates', () => {
     cy.contains('Layers').should('be.visible');
 
     cy.activateLayer('Rainfall', 'Rainfall Amount', 'Rainfall Aggregate');
-    // Wait for datepicker (dates loaded) before asserting URL; layer dates can be slow in CI
+    // Rainfall dates come from WMS (not preprocessed); wait for datepicker before asserting
     cy.get('.react-datepicker-wrapper button span', {
       timeout: dateLoadTimeout,
     }).should('exist');
@@ -99,10 +99,9 @@ describe('Checks on dates', () => {
     ).should('be.visible');
     // Wait for preprocessed dates fetch before asserting (if stuck, test fails)
     cy.wait('@preprocessedDates', { timeout: dateLoadTimeout });
-    cy.get('.react-datepicker-wrapper button span').should(
-      'have.text',
-      'Sep 30, 2024',
-    );
+    cy.get('.react-datepicker-wrapper button span', {
+      timeout: dateLoadTimeout,
+    }).should('have.text', 'Sep 30, 2024');
     cy.url().should('include', 'date=2024-09-30');
 
     // user clicks a date for which there is no available data for CH
