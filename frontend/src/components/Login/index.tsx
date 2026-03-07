@@ -10,7 +10,7 @@ import { useMsal } from '@azure/msal-react';
 import { msalRequest } from 'config';
 
 import { colors } from 'muiTheme';
-import wfpLogo from 'public/images/wfp_logo.png';
+import { wfpLogo } from 'assets/images';
 
 function Login() {
   const classes = useStyles();

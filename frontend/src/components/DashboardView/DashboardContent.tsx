@@ -26,6 +26,7 @@ import {
   ChartHeight,
 } from '../../config/types';
 import { appConfig } from '../../config';
+import { getImageUrl } from 'assets/images';
 import MapBlock from './MapBlock';
 import TextBlock from './TextBlock';
 import TableBlock from './TableBlock';
@@ -251,13 +252,13 @@ function DashboardContent({
           >
             {mode !== DashboardMode.EDIT ? (
               <>
-                {logoConfig?.visible && logo && (
+                {logoConfig?.visible && getImageUrl(logo) && (
                   <img
                     className={classes.logo}
                     style={{
                       height: logoHeight,
                     }}
-                    src={logo}
+                    src={getImageUrl(logo)}
                     alt="logo"
                   />
                 )}
