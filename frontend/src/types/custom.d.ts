@@ -20,6 +20,10 @@ declare module '*.css' {
 }
 
 declare module '*.png';
+declare module '*.png?url' {
+  const src: string;
+  export default src;
+}
 declare module 'comlink';
 declare module 'prism-common';
 declare module 'zonal';
