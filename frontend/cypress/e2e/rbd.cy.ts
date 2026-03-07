@@ -3,6 +3,8 @@
 // as they rely on certain layers being present
 
 const frontendUrl = 'http://localhost:3000';
+// Layer dates can be slow to load in CI; use longer timeouts for date-dependent assertions
+const dateLoadTimeout = 45000;
 
 describe('General stability', () => {
   it('should open with specific analysis settings without hanging', () => {
@@ -15,8 +17,14 @@ describe('General stability', () => {
 });
 
 describe('Checks on dates', () => {
+  beforeEach(() => {
+    cy.viewport(1280, 720);
+  });
+
   it('should disable first layer when cadre harmonise overall phase classification plus rainfall forecast are activated', () => {
     cy.visit(frontendUrl);
+    cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
+    cy.contains('Layers').should('be.visible');
     // specifying the resq package here is required for cy.react to work
     // see https://github.com/abhinaba-ghosh/cypress-react-selector/issues/320#issuecomment-1416634523
     cy.activateLayer(
@@ -26,11 +34,10 @@ describe('Checks on dates', () => {
     );
     cy.url().should('include', 'baselineLayerId=ch_phase');
 
-    // verify that the selected date is correct
-    cy.get('.react-datepicker-wrapper button span').should(
-      'have.text',
-      'Sep 30, 2024',
-    );
+    // verify that the selected date is correct (layer dates can be slow in CI)
+    cy.get('.react-datepicker-wrapper button span', {
+      timeout: dateLoadTimeout,
+    }).should('have.text', 'Sep 30, 2024');
     cy.url().should('include', 'date=2024-09-30');
 
     cy.activateLayer(
@@ -47,9 +54,15 @@ describe('Checks on dates', () => {
 
   it('should select intersecting dates when cadre harmonise overall phase classification plus rainfall layers are activated', () => {
     cy.visit(frontendUrl);
+    cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
+    cy.contains('Layers').should('be.visible');
 
     cy.activateLayer('Rainfall', 'Rainfall Amount', 'Rainfall Aggregate');
-    cy.url({ timeout: 20000 }).should('include', 'date=');
+    // Wait for datepicker (dates loaded) before asserting URL; layer dates can be slow in CI
+    cy.get('.react-datepicker-wrapper button span', {
+      timeout: dateLoadTimeout,
+    }).should('exist');
+    cy.url().should('include', 'date=');
 
     // check that the selected date is within the past month
     cy.get('.react-datepicker-wrapper button span.MuiButton-label').should(
@@ -75,10 +88,9 @@ describe('Checks on dates', () => {
     cy.contains(
       'No data was found for layer "Overall phase classification" on',
     ).should('be.visible');
-    cy.get('.react-datepicker-wrapper button span', { timeout: 15000 }).should(
-      'have.text',
-      'Sep 30, 2024',
-    );
+    cy.get('.react-datepicker-wrapper button span', {
+      timeout: dateLoadTimeout,
+    }).should('have.text', 'Sep 30, 2024');
     cy.url().should('include', 'date=2024-09-30');
 
     // user clicks a date for which there is no available data for CH
@@ -108,7 +120,9 @@ describe('Checks on dates', () => {
     cy.visit(
       `${frontendUrl}/?hazardLayerIds=rainfall_agg_3month&date=2024-02-07&baselineLayerId=ch_phase`,
     );
-    cy.get('.react-datepicker-wrapper button span', { timeout: 15000 }).should(
+    cy.get('.react-datepicker-wrapper button span', {
+      timeout: dateLoadTimeout,
+    }).should(
       'have.text',
       'Feb 7, 2024',
     );
@@ -119,31 +133,27 @@ describe('Checks on dates', () => {
     );
 
     cy.scrollLeft();
-    cy.get('.react-datepicker-wrapper button span', { timeout: 15000 }).should(
-      'have.text',
-      'Jan 21, 2024',
-    );
+    cy.get('.react-datepicker-wrapper button span', {
+      timeout: dateLoadTimeout,
+    }).should('have.text', 'Jan 21, 2024');
     cy.url().should('include', 'date=2024-01-21');
 
     cy.scrollLeft();
-    cy.get('.react-datepicker-wrapper button span', { timeout: 15000 }).should(
-      'have.text',
-      'Jan 11, 2024',
-    );
+    cy.get('.react-datepicker-wrapper button span', {
+      timeout: dateLoadTimeout,
+    }).should('have.text', 'Jan 11, 2024');
     cy.url().should('include', 'date=2024-01-11');
 
     cy.scrollRight();
-    cy.get('.react-datepicker-wrapper button span', { timeout: 15000 }).should(
-      'have.text',
-      'Jan 21, 2024',
-    );
+    cy.get('.react-datepicker-wrapper button span', {
+      timeout: dateLoadTimeout,
+    }).should('have.text', 'Jan 21, 2024');
     cy.url().should('include', 'date=2024-01-21');
 
     cy.scrollRight();
-    cy.get('.react-datepicker-wrapper button span', { timeout: 15000 }).should(
-      'have.text',
-      'Feb 1, 2024',
-    );
+    cy.get('.react-datepicker-wrapper button span', {
+      timeout: dateLoadTimeout,
+    }).should('have.text', 'Feb 1, 2024');
     cy.url().should('include', 'date=2024-02-01');
   });
 });
