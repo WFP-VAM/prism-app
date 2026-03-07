@@ -2,6 +2,8 @@ import { defineConfig } from 'cypress';
 
 export default defineConfig({
   e2e: {
+    // CI runners are slow; layer dates (preprocessed-layer-dates.json, WMS) can take 30s+
+    defaultCommandTimeout: 45000,
     setupNodeEvents(on, config) {
       // Forward cy.task('log', ...) messages to the terminal so they
       // appear in GitHub Actions (headless) output.  cy.log() only
