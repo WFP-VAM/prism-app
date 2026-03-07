@@ -22,6 +22,9 @@ describe('Checks on dates', () => {
   });
 
   it('should disable first layer when cadre harmonise overall phase classification plus rainfall forecast are activated', () => {
+    cy.intercept('**/data/rbd/preprocessed-layer-dates.json').as(
+      'preprocessedDates',
+    );
     cy.visit(frontendUrl);
     cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
     cy.contains('Layers').should('be.visible');
@@ -34,15 +37,14 @@ describe('Checks on dates', () => {
     );
     cy.url().should('include', 'baselineLayerId=ch_phase');
 
-    // CH layer dates depend on external data that can be slow/fail in CI; verify datepicker
-    // shows a date and URL has date= (exact Sep 30, 2024 only when CH dates load in time)
-    cy.get('.react-datepicker-wrapper button span', {
-      timeout: dateLoadTimeout,
-    })
-      .should('be.visible')
-      .invoke('text')
-      .should('match', /^[A-Z][a-z]{2} \d{1,2}, \d{4}$/);
-    cy.url().should('include', 'date=');
+    // CH layer dates come from preprocessed-layer-dates.json; wait for fetch
+    // before asserting (if this times out, the data load is stuck/slow)
+    cy.wait('@preprocessedDates', { timeout: dateLoadTimeout });
+    cy.get('.react-datepicker-wrapper button span').should(
+      'have.text',
+      'Sep 30, 2024',
+    );
+    cy.url().should('include', 'date=2024-09-30');
 
     cy.activateLayer(
       'Rainfall',
@@ -57,6 +59,9 @@ describe('Checks on dates', () => {
   });
 
   it('should select intersecting dates when cadre harmonise overall phase classification plus rainfall layers are activated', () => {
+    cy.intercept('**/data/rbd/preprocessed-layer-dates.json').as(
+      'preprocessedDates',
+    );
     cy.visit(frontendUrl);
     cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
     cy.contains('Layers').should('be.visible');
@@ -88,18 +93,17 @@ describe('Checks on dates', () => {
     );
     cy.url().should('include', 'baselineLayerId=ch_phase');
     cy.url().should('include', 'hazardLayerIds=rainfall_dekad');
-    // CH layer has no data for 2025, it should select an available date (or today if CH
-    // dates fail to load in CI); verify datepicker and URL have a date
+    // CH layer has no data for 2025, it should select an available date
     cy.contains(
       'No data was found for layer "Overall phase classification" on',
     ).should('be.visible');
-    cy.get('.react-datepicker-wrapper button span', {
-      timeout: dateLoadTimeout,
-    })
-      .should('be.visible')
-      .invoke('text')
-      .should('match', /^[A-Z][a-z]{2} \d{1,2}, \d{4}$/);
-    cy.url().should('include', 'date=');
+    // Wait for preprocessed dates fetch before asserting (if stuck, test fails)
+    cy.wait('@preprocessedDates', { timeout: dateLoadTimeout });
+    cy.get('.react-datepicker-wrapper button span').should(
+      'have.text',
+      'Sep 30, 2024',
+    );
+    cy.url().should('include', 'date=2024-09-30');
 
     // user clicks a date for which there is no available data for CH
     cy.get('#dateTimelineSelector > div.MuiGrid-root')
