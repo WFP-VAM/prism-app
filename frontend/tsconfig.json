@@ -13,6 +13,7 @@
     "experimentalDecorators": true,
     "esModuleInterop": true,
     "paths": {
+      "assets/*": ["assets/*"],
       "public/*": [
         "../public/*"
       ]

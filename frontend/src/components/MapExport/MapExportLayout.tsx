@@ -23,7 +23,7 @@ import { mapStyle } from 'components/MapView/Map/utils';
 import { loadStormIcons } from 'components/MapView/Layers/AnticipatoryActionStormLayer/constants';
 import { ensureSDFIconsLoaded } from 'components/MapView/Layers/icon-utils';
 import { useAAMarkerScalePercent } from 'utils/map-utils';
-import iconNorthArrow from 'public/images/icon_north_arrow.png';
+import { getImageUrl, iconNorthArrow } from 'assets/images';
 // Layer components - keep in sync with MapView/Map/index.tsx
 import {
   AdminLevelDataLayer,
@@ -445,7 +445,7 @@ function MapExportLayout({
   // The map content (title, legend, footer, map itself)
   const mapContent = (
     <div ref={printRef} className={classes.printContainer}>
-      {toggles.bottomLogoVisibility && bottomLogo && (
+      {toggles.bottomLogoVisibility && getImageUrl(bottomLogo) && (
         <img
           style={{
             position: 'absolute',
@@ -456,7 +456,7 @@ function MapExportLayout({
             maxWidth: '150px',
             objectFit: 'contain',
           }}
-          src={bottomLogo}
+          src={getImageUrl(bottomLogo)}
           alt="bottomLogo"
         />
       )}
@@ -478,7 +478,7 @@ function MapExportLayout({
           className={classes.titleOverlay}
           style={{ minHeight: `${titleMinHeight}px` }}
         >
-          {toggles.logoVisibility && logo && (
+          {toggles.logoVisibility && getImageUrl(logo) && (
             <img
               style={{
                 position: 'absolute',
@@ -490,7 +490,7 @@ function MapExportLayout({
                 justifyContent:
                   logoPosition % 2 === 0 ? 'flex-start' : 'flex-end',
               }}
-              src={logo}
+              src={getImageUrl(logo)}
               alt="logo"
             />
           )}
@@ -519,7 +519,7 @@ function MapExportLayout({
             )}
           </div>
         )}
-      {toggles.logoVisibility && !titleText && logo && (
+      {toggles.logoVisibility && !titleText && getImageUrl(logo) && (
         <img
           style={{
             position: 'absolute',
@@ -531,7 +531,7 @@ function MapExportLayout({
             display: 'flex',
             justifyContent: logoPosition % 2 === 0 ? 'flex-start' : 'flex-end',
           }}
-          src={logo}
+          src={getImageUrl(logo)}
           alt="logo"
         />
       )}

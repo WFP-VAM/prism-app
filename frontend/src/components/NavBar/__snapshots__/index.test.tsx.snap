@@ -21,7 +21,7 @@ exports[`renders as expected 1`] = `
             <img
               alt="logo"
               class="makeStyles-logo-8"
-              src="/images/moz-flag-inam-logo.png"
+              src="test-file-stub"
             />
             <div
               class="MuiBox-root MuiBox-root-11 makeStyles-titleBox-7"
