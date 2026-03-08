@@ -113,7 +113,9 @@ describe('Date picker', () => {
     cy.get('input#username').type('aaa');
     cy.get('input#password').type('bbb');
     cy.contains('Send').click();
-    cy.wait('@getKoboForms', { timeout: 10000 });
+    // After authentication, the app re-fetches KOBO dates before it can load forms data.
+    cy.wait('@getKoboDates', { timeout: 60000 });
+    cy.wait('@getKoboForms', { timeout: 60000 });
     // Wait for the date picker to appear and be ready
     cy.get('.react-datepicker-wrapper button span', {
       timeout: 20000,
@@ -165,3 +167,5 @@ describe('Date picker', () => {
     });
   });
 });
+
+export {};
