@@ -19,7 +19,7 @@ describe('General stability', () => {
 export {};
 
 describe('Checks on dates', () => {
-  beforeEach(() => {
+  it('should disable first layer when cadre harmonise overall phase classification plus rainfall forecast are activated', () => {
     cy.viewport(1280, 720);
     // Stub preprocessed dates to avoid CI network/file serving variability
     cy.intercept(
@@ -29,9 +29,7 @@ describe('Checks on dates', () => {
       },
       { fixture: 'rbd/preprocessed-layer-dates.json' },
     ).as('preprocessedDates');
-  });
 
-  it('should disable first layer when cadre harmonise overall phase classification plus rainfall forecast are activated', () => {
     cy.visit(frontendUrl);
     cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
     cy.contains('Layers').should('be.visible');
@@ -66,6 +64,16 @@ describe('Checks on dates', () => {
   });
 
   it('should select intersecting dates when cadre harmonise overall phase classification plus rainfall layers are activated', () => {
+    cy.viewport(1280, 720);
+    // Stub preprocessed dates to avoid CI network/file serving variability
+    cy.intercept(
+      {
+        method: 'GET',
+        pathname: '/data/rbd/preprocessed-layer-dates.json',
+      },
+      { fixture: 'rbd/preprocessed-layer-dates.json' },
+    ).as('preprocessedDates');
+
     // Start with Rainfall layer + date to avoid waiting for WMS dates in CI
     cy.visit(`${frontendUrl}/?hazardLayerIds=rainfall_dekad&date=2025-09-01`);
     cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
@@ -108,6 +116,7 @@ describe('Checks on dates', () => {
   });
 
   it('should scroll to the "smaller" intervals when multiple layers are selected', () => {
+    cy.viewport(1280, 720);
     // mock tiles as we don't really need them here
     cy.intercept(
       {
