@@ -1,6 +1,6 @@
 // tests specific to cambodia
 
-const frontendUrl = 'http://localhost:3000';
+const cambodiaFrontendUrl = 'http://localhost:3000';
 
 describe('Date picker', () => {
   beforeEach(() => {
@@ -16,7 +16,7 @@ describe('Date picker', () => {
       },
       { fixture: 'mocks/vam_empty_tile.png' },
     ).as('mockVAMtiles');
-    cy.visit(frontendUrl);
+    cy.visit(cambodiaFrontendUrl);
 
     cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
     cy.switchLanguage('en');
@@ -97,7 +97,7 @@ describe('Date picker', () => {
         fixture: 'mocks/kobo/dates/get.json',
       },
     ).as('getKoboDates');
-    cy.visit(frontendUrl);
+    cy.visit(cambodiaFrontendUrl);
 
     cy.wait('@getKoboDates', { timeout: 60000 });
     cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
@@ -131,7 +131,7 @@ describe('Date picker', () => {
   });
 
   it('should find a valid date when activating / deactivating and reactivating a layer with date', () => {
-    cy.visit(frontendUrl);
+    cy.visit(cambodiaFrontendUrl);
 
     cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
     cy.switchLanguage('en');
@@ -160,5 +160,3 @@ describe('Date picker', () => {
     });
   });
 });
-
-export {};

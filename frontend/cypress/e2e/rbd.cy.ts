@@ -2,21 +2,19 @@
 // these tests are likely to fail on other countries
 // as they rely on certain layers being present
 
-const frontendUrl = 'http://localhost:3000';
+const rbdFrontendUrl = 'http://localhost:3000';
 // Layer dates can be slow to load in CI; use longer timeouts for date-dependent assertions
 const dateLoadTimeout = 45000;
 
 describe('General stability', () => {
   it('should open with specific analysis settings without hanging', () => {
     cy.visit(
-      `${frontendUrl}/?analysisHazardLayerId=dekad_rainfall_forecast&analysisBaselineLayerId=admin1_boundaries&analysisDate=2025-08-11&analysisStatistic=mean`,
+      `${rbdFrontendUrl}/?analysisHazardLayerId=dekad_rainfall_forecast&analysisBaselineLayerId=admin1_boundaries&analysisDate=2025-08-11&analysisStatistic=mean`,
     );
     cy.contains('Rainfall').should('be.visible');
     cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
   });
 });
-
-export {};
 
 describe('Checks on dates', () => {
   it('should disable first layer when cadre harmonise overall phase classification plus rainfall forecast are activated', () => {
@@ -30,7 +28,7 @@ describe('Checks on dates', () => {
       { fixture: 'rbd/preprocessed-layer-dates.json' },
     ).as('preprocessedDates');
 
-    cy.visit(frontendUrl);
+    cy.visit(rbdFrontendUrl);
     cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
     cy.contains('Layers').should('be.visible');
     // specifying the resq package here is required for cy.react to work
@@ -75,7 +73,7 @@ describe('Checks on dates', () => {
     ).as('preprocessedDates');
 
     // Start with Rainfall layer + date to avoid waiting for WMS dates in CI
-    cy.visit(`${frontendUrl}/?hazardLayerIds=rainfall_dekad&date=2025-09-01`);
+    cy.visit(`${rbdFrontendUrl}/?hazardLayerIds=rainfall_dekad&date=2025-09-01`);
     cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
     cy.contains('Layers').should('be.visible');
     // Wait for datepicker (Rainfall layer loaded from URL)
@@ -127,7 +125,7 @@ describe('Checks on dates', () => {
     ).as('mockVAMtiles');
 
     cy.visit(
-      `${frontendUrl}/?hazardLayerIds=rainfall_agg_3month&date=2024-02-07&baselineLayerId=ch_phase`,
+      `${rbdFrontendUrl}/?hazardLayerIds=rainfall_agg_3month&date=2024-02-07&baselineLayerId=ch_phase`,
     );
     cy.get('.react-datepicker-wrapper button span', {
       timeout: dateLoadTimeout,
