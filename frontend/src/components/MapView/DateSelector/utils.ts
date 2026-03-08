@@ -54,6 +54,36 @@ export function findDateIndex(
   return -1;
 }
 
+export const getDefaultCompatibleDate = (
+  availableDates: ReturnType<Date['getTime']>[],
+  selectedDate?: number,
+): DisplayDateTimestamp | undefined => {
+  if (selectedDate !== undefined) {
+    return selectedDate as DisplayDateTimestamp;
+  }
+
+  return availableDates.at(-1) as DisplayDateTimestamp | undefined;
+};
+
+export const getAdjacentCompatibleDate = (
+  availableDates: ReturnType<Date['getTime']>[],
+  currentDate: number | undefined,
+  direction: 'forward' | 'back',
+): DisplayDateTimestamp | undefined => {
+  if (currentDate === undefined || availableDates.length === 0) {
+    return undefined;
+  }
+
+  const currentIndex = findDateIndex(availableDates, currentDate);
+  if (currentIndex < 0) {
+    return undefined;
+  }
+
+  const adjacentIndex =
+    direction === 'forward' ? currentIndex + 1 : currentIndex - 1;
+  return availableDates[adjacentIndex] as DisplayDateTimestamp | undefined;
+};
+
 // Finds the first DateItem that is available on all layers, as
 // the query date for at least one layer, and in the validity of other layers
 // layerDates must contain only observation dates:
