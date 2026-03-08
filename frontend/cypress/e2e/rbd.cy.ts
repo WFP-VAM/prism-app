@@ -19,15 +19,6 @@ describe('General stability', () => {
 describe('Checks on dates', () => {
   it('should disable first layer when cadre harmonise overall phase classification plus rainfall forecast are activated', () => {
     cy.viewport(1280, 720);
-    // Stub preprocessed dates to avoid CI network/file serving variability
-    cy.intercept(
-      {
-        method: 'GET',
-        pathname: '/data/rbd/preprocessed-layer-dates.json',
-      },
-      { fixture: 'rbd/preprocessed-layer-dates.json' },
-    ).as('preprocessedDates');
-
     cy.visit(rbdFrontendUrl);
     cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
     cy.contains('Layers').should('be.visible');
@@ -40,10 +31,6 @@ describe('Checks on dates', () => {
     );
     cy.url().should('include', 'baselineLayerId=ch_phase');
 
-    // CH layer dates come from preprocessed-layer-dates.json; wait for fetch
-    cy.wait('@preprocessedDates', { timeout: dateLoadTimeout });
-    // useDefaultDate's useEffect runs after render; allow React to process state update
-    cy.wait(800);
     cy.get('.react-datepicker-wrapper button span', {
       timeout: dateLoadTimeout,
     }).should('have.text', 'Sep 30, 2024');
@@ -63,15 +50,6 @@ describe('Checks on dates', () => {
 
   it('should select intersecting dates when cadre harmonise overall phase classification plus rainfall layers are activated', () => {
     cy.viewport(1280, 720);
-    // Stub preprocessed dates to avoid CI network/file serving variability
-    cy.intercept(
-      {
-        method: 'GET',
-        pathname: '/data/rbd/preprocessed-layer-dates.json',
-      },
-      { fixture: 'rbd/preprocessed-layer-dates.json' },
-    ).as('preprocessedDates');
-
     // Start with Rainfall layer + date to avoid waiting for WMS dates in CI
     cy.visit(`${rbdFrontendUrl}/?hazardLayerIds=rainfall_dekad&date=2025-09-01`);
     cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
@@ -92,8 +70,6 @@ describe('Checks on dates', () => {
     cy.contains(
       'No data was found for layer "Overall phase classification" on',
     ).should('be.visible');
-    // Wait for preprocessed dates fetch before asserting (if stuck, test fails)
-    cy.wait('@preprocessedDates', { timeout: dateLoadTimeout });
     cy.get('.react-datepicker-wrapper button span', {
       timeout: dateLoadTimeout,
     }).should('have.text', 'Sep 30, 2024');
