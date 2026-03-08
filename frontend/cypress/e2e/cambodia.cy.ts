@@ -97,12 +97,6 @@ describe('Date picker', () => {
         fixture: 'mocks/kobo/dates/get.json',
       },
     ).as('getKoboDates');
-    cy.intercept(
-      { method: 'GET', url: /^https:\/\/prism-api\.ovio\.org\/kobo\/forms.*/ },
-      {
-        fixture: 'mocks/kobo/forms/get.json',
-      },
-    ).as('getKoboForms');
     cy.visit(frontendUrl);
 
     cy.wait('@getKoboDates', { timeout: 60000 });
@@ -113,9 +107,8 @@ describe('Date picker', () => {
     cy.get('input#username').type('aaa');
     cy.get('input#password').type('bbb');
     cy.contains('Send').click();
-    // After authentication, the app re-fetches KOBO dates before it can load forms data.
+    // After authentication, the app re-fetches KOBO dates before the datepicker can initialize.
     cy.wait('@getKoboDates', { timeout: 60000 });
-    cy.wait('@getKoboForms', { timeout: 60000 });
     // Wait for the date picker to appear and be ready
     cy.get('.react-datepicker-wrapper button span', {
       timeout: 20000,
