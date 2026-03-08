@@ -1,5 +1,9 @@
-import { DateCompatibleLayer } from 'utils/server-utils';
-import { DateItem, DisplayDateTimestamp } from 'config/types';
+import { DateCompatibleLayer, getRequestDate } from 'utils/server-utils';
+import {
+  DateItem,
+  DisplayDateTimestamp,
+  SelectedDateTimestamp,
+} from 'config/types';
 import { datesAreEqualWithoutTime } from 'utils/date-utils';
 
 export const TIMELINE_ITEM_WIDTH = 4;
@@ -82,6 +86,54 @@ export const getAdjacentCompatibleDate = (
   const adjacentIndex =
     direction === 'forward' ? currentIndex + 1 : currentIndex - 1;
   return availableDates[adjacentIndex] as DisplayDateTimestamp | undefined;
+};
+
+export const getNextObservationDate = (
+  layers: DateCompatibleLayerWithDateItems[],
+  currentDate: SelectedDateTimestamp | undefined,
+): DisplayDateTimestamp | undefined => {
+  if (currentDate === undefined) {
+    return undefined;
+  }
+
+  return findMatchingDateBetweenLayers(
+    layers.map(layer =>
+      layer.dateItems.filter(
+        dateItem =>
+          dateItem.queryDate > currentDate &&
+          (dateItem.queryDate as number) === (dateItem.displayDate as number),
+      ),
+    ),
+    'forward',
+  );
+};
+
+export const getPreviousObservationDate = (
+  layers: DateCompatibleLayerWithDateItems[],
+  currentDate: SelectedDateTimestamp | undefined,
+): DisplayDateTimestamp | undefined => {
+  if (currentDate === undefined) {
+    return undefined;
+  }
+
+  return findMatchingDateBetweenLayers(
+    layers.map(layer => {
+      const currentQueryDate = getRequestDate(
+        layer.dateItems,
+        currentDate,
+        !layer.id.includes('anticipatory_action'),
+      );
+
+      return layer.dateItems.filter(
+        dateItem =>
+          dateItem.queryDate < currentDate &&
+          (dateItem.queryDate as number) === (dateItem.displayDate as number) &&
+          (currentQueryDate === undefined ||
+            !datesAreEqualWithoutTime(dateItem.queryDate, currentQueryDate)),
+      );
+    }),
+    'back',
+  );
 };
 
 // Finds the first DateItem that is available on all layers, as

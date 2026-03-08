@@ -44,8 +44,9 @@ import TimelineItems from './TimelineItems';
 import {
   DateCompatibleLayerWithDateItems,
   TIMELINE_ITEM_WIDTH,
-  getAdjacentCompatibleDate,
   getDefaultCompatibleDate,
+  getNextObservationDate,
+  getPreviousObservationDate,
   findDateIndex,
 } from './utils';
 import { oneDayInMs } from '../LeftPanel/utils';
@@ -495,27 +496,25 @@ const DateSelector = memo(() => {
 
   // scroll right with the `>` button
   const incrementDate = useCallback(() => {
-    const nextCompatibleDate = getAdjacentCompatibleDate(
-      availableDates,
-      effectiveSelectedDate,
-      'forward',
+    const nextObservationDate = getNextObservationDate(
+      orderedLayers,
+      effectiveSelectedDate as SelectedDateTimestamp | undefined,
     );
-    if (nextCompatibleDate !== undefined) {
-      setDatePosition(nextCompatibleDate, 0, true);
+    if (nextObservationDate !== undefined) {
+      setDatePosition(nextObservationDate, 0, true);
     }
-  }, [availableDates, effectiveSelectedDate, setDatePosition]);
+  }, [effectiveSelectedDate, orderedLayers, setDatePosition]);
 
   // scroll left with the `<` button
   const decrementDate = useCallback(() => {
-    const previousCompatibleDate = getAdjacentCompatibleDate(
-      availableDates,
-      effectiveSelectedDate,
-      'back',
+    const previousObservationDate = getPreviousObservationDate(
+      orderedLayers,
+      effectiveSelectedDate as SelectedDateTimestamp | undefined,
     );
-    if (previousCompatibleDate !== undefined) {
-      setDatePosition(previousCompatibleDate, 0, true);
+    if (previousObservationDate !== undefined) {
+      setDatePosition(previousObservationDate, 0, true);
     }
-  }, [availableDates, effectiveSelectedDate, setDatePosition]);
+  }, [effectiveSelectedDate, orderedLayers, setDatePosition]);
 
   const clickDate = useCallback(
     (index: number) => {
