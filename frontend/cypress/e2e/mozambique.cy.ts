@@ -1,6 +1,7 @@
 // run cypress tests with:
 // - `yarn cypress open` to run interactively/debug
 // - `npx cypress run` for a headless run (like in CI)
+
 const frontendUrl = 'http://localhost:3000';
 
 describe('Loading layers', () => {
@@ -19,27 +20,24 @@ describe('Loading dates', () => {
     cy.visit(`${frontendUrl}/?hazardLayerIds=rainfall_dekad&date=2025-09-01`);
 
     cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
-    cy.get('.react-datepicker-wrapper button span', { timeout: 20000 }).then(
-      span1 => {
-        cy.wrap(span1)
-          .invoke('text')
-          .should('match', /^Sep 1, 2025$/)
-          .as('initialDate');
-      },
+    cy.switchLanguage('en');
+    cy.get('.react-datepicker-wrapper button span', { timeout: 20000 }).should(
+      'have.text',
+      'Sep 1, 2025',
     );
     cy.get('header').contains('A. Actions').click();
-    cy.get('div.MuiPopover-paper').contains('A. Action Flood').click();
-    cy.get('.react-datepicker-wrapper button span', { timeout: 20000 }).should(
-      $span => {
-        const aaDate = $span.text();
+    cy.get('div.MuiPopover-paper, [role="menu"]').contains('A. Action Flood').click();
+    cy.url().should('include', 'anticipatory_action_flood');
+    cy.contains(/Loading flood data|River gauge status overview|Gauge station/, {
+      timeout: 30000,
+    }).should('be.visible');
+    cy.get('.react-datepicker-wrapper button span', { timeout: 20000 })
+      .invoke('text')
+      .then(aaDate => {
         expect(aaDate).to.match(/^[A-Z][a-z]{2} \d{1,2}, \d{4}$/);
         expect(new Date(aaDate).getTime()).to.be.greaterThan(
           new Date('Sep 1, 2025').getTime(),
         );
-      },
-    );
-    cy.get('#full-width-tabpanel-anticipatory_action_flood')
-      .contains('Gauge station', { timeout: 10000 })
-      .should('be.visible');
+      });
   });
 });

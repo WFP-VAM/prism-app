@@ -133,9 +133,8 @@ jobs:
             cypress/e2e/all_countries.cy.ts
         env:
           REACT_APP_COUNTRY: ${{ matrix.country }}
-          # CI runners seem a bit slow, give them more time to complete
-          # each command in cypress
-          CYPRESS_DEFAULT_COMMAND_TIMEOUT: 10000
+          # CI runners are slow; layer dates (preprocessed, WMS) can take 30s+
+          CYPRESS_DEFAULT_COMMAND_TIMEOUT: 45000
 
   frontend_build_and_deploy:
     if: github.event_name != 'push'

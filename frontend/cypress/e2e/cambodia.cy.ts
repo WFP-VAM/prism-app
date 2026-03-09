@@ -1,6 +1,6 @@
 // tests specific to cambodia
 
-const frontendUrl = 'http://localhost:3000';
+const cambodiaFrontendUrl = 'http://localhost:3000';
 
 describe('Date picker', () => {
   beforeEach(() => {
@@ -16,7 +16,7 @@ describe('Date picker', () => {
       },
       { fixture: 'mocks/vam_empty_tile.png' },
     ).as('mockVAMtiles');
-    cy.visit(frontendUrl);
+    cy.visit(cambodiaFrontendUrl);
 
     cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
     cy.switchLanguage('en');
@@ -97,13 +97,7 @@ describe('Date picker', () => {
         fixture: 'mocks/kobo/dates/get.json',
       },
     ).as('getKoboDates');
-    cy.intercept(
-      { method: 'GET', url: /^https:\/\/prism-api\.ovio\.org\/kobo\/forms.*/ },
-      {
-        fixture: 'mocks/kobo/forms/get.json',
-      },
-    ).as('getKoboForms');
-    cy.visit(frontendUrl);
+    cy.visit(cambodiaFrontendUrl);
 
     cy.wait('@getKoboDates', { timeout: 60000 });
     cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
@@ -113,7 +107,8 @@ describe('Date picker', () => {
     cy.get('input#username').type('aaa');
     cy.get('input#password').type('bbb');
     cy.contains('Send').click();
-    cy.wait('@getKoboForms', { timeout: 10000 });
+    // After authentication, the app re-fetches KOBO dates before the datepicker can initialize.
+    cy.wait('@getKoboDates', { timeout: 60000 });
     // Wait for the date picker to appear and be ready
     cy.get('.react-datepicker-wrapper button span', {
       timeout: 20000,
@@ -136,7 +131,7 @@ describe('Date picker', () => {
   });
 
   it('should find a valid date when activating / deactivating and reactivating a layer with date', () => {
-    cy.visit(frontendUrl);
+    cy.visit(cambodiaFrontendUrl);
 
     cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
     cy.switchLanguage('en');
