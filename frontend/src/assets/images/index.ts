@@ -42,7 +42,7 @@ const IMAGE_REGISTRY: Record<string, string> = {
   'icon_assessment.png': iconAssessment,
   'icon_basemap.png': iconBasemap,
   'icon_cadreharmoise.png': iconCadreharmoise,
-  icon_cadreharmoise2: iconCadreharmoise2,
+  'icon_cadreharmoise2.png': iconCadreharmoise2,
   'icon_capacity.png': iconCapacity,
   'icon_climate.png': iconClimate,
   'icon_drought.png': iconDrought,
