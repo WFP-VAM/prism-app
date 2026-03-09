@@ -27,22 +27,23 @@ describe('Loading dates', () => {
     cy.get('[aria-label="language-select-dropdown-menu-item-en"]')
       .should('be.visible')
       .click();
-    cy.get('.react-datepicker-wrapper button span', { timeout: 20000 }).then(
-      span1 => {
-        cy.wrap(span1)
-          .invoke('text')
-          .should('match', /^Sep 1, 2025$/)
-          .as('initialDate');
-      },
+    cy.get('.react-datepicker-wrapper button span', { timeout: 20000 }).should(
+      'have.text',
+      'Sep 1, 2025',
     );
     cy.get('header').contains('A. Actions').click();
     cy.get('div.MuiPopover-paper, [role="menu"]').contains('A. Action Flood').click();
-    // AA flood layer is added to URL immediately; no dependency on external APIs
     cy.url().should('include', 'anticipatory_action_flood');
-    // Verify AA flood panel appears (loading or loaded); avoids asserting on datepicker
-    // or "Gauge station" which depend on dates.json and flood API that are slow in CI
     cy.contains(/Loading flood data|River gauge status overview|Gauge station/, {
       timeout: 30000,
     }).should('be.visible');
+    cy.get('.react-datepicker-wrapper button span', { timeout: 20000 })
+      .invoke('text')
+      .then(aaDate => {
+        expect(aaDate).to.match(/^[A-Z][a-z]{2} \d{1,2}, \d{4}$/);
+        expect(new Date(aaDate).getTime()).to.be.greaterThan(
+          new Date('Sep 1, 2025').getTime(),
+        );
+      });
   });
 });
