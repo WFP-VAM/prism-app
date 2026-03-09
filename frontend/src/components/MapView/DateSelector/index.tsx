@@ -45,6 +45,7 @@ import TimelineItems from './TimelineItems';
 import {
   DateCompatibleLayerWithDateItems,
   TIMELINE_ITEM_WIDTH,
+  getDefaultCompatibleDate,
   findDateIndex,
   findMatchingDateBetweenLayers,
 } from './utils';
@@ -303,8 +304,15 @@ const DateSelector = memo(() => {
 
   const panelTab = useSelector(leftPanelTabValueSelector);
 
+  const effectiveSelectedDate = useMemo(
+    () => getDefaultCompatibleDate(availableDates, stateStartDate),
+    [availableDates, stateStartDate],
+  );
+
   const range = useMemo(() => {
-    const startDate = stateStartDate ? new Date(stateStartDate) : new Date();
+    const startDate = effectiveSelectedDate
+      ? new Date(effectiveSelectedDate)
+      : new Date();
     const { start, end } = calculateStartAndEndDates(startDate, panelTab);
 
     // Normalize end date to 12:00 UTC to ensure December 31st is included
@@ -351,17 +359,17 @@ const DateSelector = memo(() => {
         isFirstDay: date.getDate() === 1,
       };
     });
-  }, [locale, stateStartDate, panelTab]);
+  }, [effectiveSelectedDate, locale, panelTab]);
 
   const dateIndex = useMemo(
     () =>
       findIndex(
         range,
         date =>
-          !!stateStartDate &&
-          datesAreEqualWithoutTime(date.value, stateStartDate),
+          !!effectiveSelectedDate &&
+          datesAreEqualWithoutTime(date.value, effectiveSelectedDate),
       ),
-    [range, stateStartDate],
+    [effectiveSelectedDate, range],
   );
 
   // Create timeline range and set pointer position
@@ -454,6 +462,12 @@ const DateSelector = memo(() => {
     ],
   );
 
+  useEffect(() => {
+    if (stateStartDate === undefined && effectiveSelectedDate !== undefined) {
+      updateStartDate(new Date(effectiveSelectedDate), true);
+    }
+  }, [effectiveSelectedDate, stateStartDate, updateStartDate]);
+
   const setDatePosition = useCallback(
     (
       date: number | undefined,
@@ -477,8 +491,8 @@ const DateSelector = memo(() => {
 
   // move pointer to closest date when change map layer
   useEffect(() => {
-    setDatePosition(stateStartDate, 0, false);
-  }, [setDatePosition, stateStartDate]);
+    setDatePosition(effectiveSelectedDate, 0, false);
+  }, [effectiveSelectedDate, setDatePosition]);
 
   // scroll right with the `>` button
   const incrementDate = useCallback(() => {
@@ -647,6 +661,23 @@ const DateSelector = memo(() => {
     [updateStartDate],
   );
 
+  // Memoize the selected date to prevent react-datepicker v2 from calling
+  // setState in componentDidUpdate on every render. The v2 DatePicker uses
+  // reference comparison (prevProps.selected !== this.props.selected) which
+  // always triggers when we create a new Date object inline. During rapid
+  // layer switches this amplifies state updates and hits React's max depth.
+  const selectedPickerDate = useMemo(() => {
+    if (!effectiveSelectedDate) {
+      return new Date();
+    }
+    const utcDate = new Date(effectiveSelectedDate);
+    return new Date(
+      utcDate.getUTCFullYear(),
+      utcDate.getUTCMonth(),
+      utcDate.getUTCDate(),
+    );
+  }, [effectiveSelectedDate]);
+
   // Don't display the date selector if:
   // - Dates are still loading for the selected layers
   // - The dateRange hasn't been computed yet
@@ -687,19 +718,7 @@ const DateSelector = memo(() => {
             locale={t('date_locale')}
             dateFormat="PP"
             className={classes.datePickerInput}
-            selected={
-              stateStartDate
-                ? (() => {
-                    // Force to UTC to avoid any timezone issues when setting a pre-configured date in dashboards
-                    const utcDate = new Date(stateStartDate);
-                    return new Date(
-                      utcDate.getUTCFullYear(),
-                      utcDate.getUTCMonth(),
-                      utcDate.getUTCDate(),
-                    );
-                  })()
-                : new Date()
-            }
+            selected={selectedPickerDate}
             onChange={handleOnDatePickerChange}
             maxDate={maxDate}
             todayButton={t('Today')}
