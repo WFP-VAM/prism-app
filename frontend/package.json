@@ -42,8 +42,7 @@
     "check-boundary-keys": "node ./scripts/check-boundary-keys-validity.js",
     "preprocess-layers": "ts-node --compilerOptions \"{\\\"module\\\":\\\"commonjs\\\"}\" ./scripts/preprocess-layers.ts",
     "setup:instance": "ts-node --compilerOptions \"{\\\"module\\\":\\\"commonjs\\\"}\" ./scripts/setup-new-instance.ts",
-    "audit": "audit-ci --config .audit-ci.json",
-    "cypress:ci-repro": "REACT_APP_COUNTRY=mozambique CYPRESS_MOZAMBIQUE_TIMEOUT_MS=500 CYPRESS_MOZAMBIQUE_DATEPICKER_TIMEOUT_MS=500 CYPRESS_MOZAMBIQUE_GAUGE_TIMEOUT_MS=500 CYPRESS_DEFAULT_COMMAND_TIMEOUT=500 npx cypress run --browser chrome --spec cypress/e2e/mozambique.cy.ts"
+    "audit": "audit-ci --config .audit-ci.json"
   },
   "dependencies": {
     "@azure/msal-browser": "^2.19.0",

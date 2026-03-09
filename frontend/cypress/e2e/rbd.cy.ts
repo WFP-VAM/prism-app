@@ -2,14 +2,14 @@
 // these tests are likely to fail on other countries
 // as they rely on certain layers being present
 
-const frontendUrl = 'http://localhost:3000';
+const rbdFrontendUrl = 'http://localhost:3000';
 // Layer dates can be slow to load in CI; use longer timeouts for date-dependent assertions
 const dateLoadTimeout = 45000;
 
 describe('General stability', () => {
   it('should open with specific analysis settings without hanging', () => {
     cy.visit(
-      `${frontendUrl}/?analysisHazardLayerId=dekad_rainfall_forecast&analysisBaselineLayerId=admin1_boundaries&analysisDate=2025-08-11&analysisStatistic=mean`,
+      `${rbdFrontendUrl}/?analysisHazardLayerId=dekad_rainfall_forecast&analysisBaselineLayerId=admin1_boundaries&analysisDate=2025-08-11&analysisStatistic=mean`,
     );
     cy.contains('Rainfall').should('be.visible');
     cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
@@ -17,20 +17,9 @@ describe('General stability', () => {
 });
 
 describe('Checks on dates', () => {
-  beforeEach(() => {
-    cy.viewport(1280, 720);
-    // Stub preprocessed dates to avoid CI network/file serving variability
-    cy.intercept(
-      {
-        method: 'GET',
-        pathname: '/data/rbd/preprocessed-layer-dates.json',
-      },
-      { fixture: 'rbd/preprocessed-layer-dates.json' },
-    ).as('preprocessedDates');
-  });
-
   it('should disable first layer when cadre harmonise overall phase classification plus rainfall forecast are activated', () => {
-    cy.visit(frontendUrl);
+    cy.viewport(1280, 720);
+    cy.visit(rbdFrontendUrl);
     cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
     cy.contains('Layers').should('be.visible');
     // specifying the resq package here is required for cy.react to work
@@ -42,10 +31,6 @@ describe('Checks on dates', () => {
     );
     cy.url().should('include', 'baselineLayerId=ch_phase');
 
-    // CH layer dates come from preprocessed-layer-dates.json; wait for fetch
-    cy.wait('@preprocessedDates', { timeout: dateLoadTimeout });
-    // useDefaultDate's useEffect runs after render; allow React to process state update
-    cy.wait(800);
     cy.get('.react-datepicker-wrapper button span', {
       timeout: dateLoadTimeout,
     }).should('have.text', 'Sep 30, 2024');
@@ -64,10 +49,9 @@ describe('Checks on dates', () => {
   });
 
   it('should select intersecting dates when cadre harmonise overall phase classification plus rainfall layers are activated', () => {
+    cy.viewport(1280, 720);
     // Start with Rainfall layer + date to avoid waiting for WMS dates in CI
-    cy.visit(
-      `${frontendUrl}/?hazardLayerIds=rainfall_dekad&date=2025-09-01`,
-    );
+    cy.visit(`${rbdFrontendUrl}/?hazardLayerIds=rainfall_dekad&date=2025-09-01`);
     cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
     cy.contains('Layers').should('be.visible');
     // Wait for datepicker (Rainfall layer loaded from URL)
@@ -86,8 +70,6 @@ describe('Checks on dates', () => {
     cy.contains(
       'No data was found for layer "Overall phase classification" on',
     ).should('be.visible');
-    // Wait for preprocessed dates fetch before asserting (if stuck, test fails)
-    cy.wait('@preprocessedDates', { timeout: dateLoadTimeout });
     cy.get('.react-datepicker-wrapper button span', {
       timeout: dateLoadTimeout,
     }).should('have.text', 'Sep 30, 2024');
@@ -108,6 +90,7 @@ describe('Checks on dates', () => {
   });
 
   it('should scroll to the "smaller" intervals when multiple layers are selected', () => {
+    cy.viewport(1280, 720);
     // mock tiles as we don't really need them here
     cy.intercept(
       {
@@ -117,16 +100,12 @@ describe('Checks on dates', () => {
       { fixture: 'mocks/vam_empty_tile.png' },
     ).as('mockVAMtiles');
 
-    // Use Feb 11 (dekad boundary) so the app snaps to an exact timeline date
     cy.visit(
-      `${frontendUrl}/?hazardLayerIds=rainfall_agg_3month&date=2024-02-11&baselineLayerId=ch_phase`,
+      `${rbdFrontendUrl}/?hazardLayerIds=rainfall_agg_3month&date=2024-02-07&baselineLayerId=ch_phase`,
     );
     cy.get('.react-datepicker-wrapper button span', {
       timeout: dateLoadTimeout,
-    }).should(
-      'have.text',
-      'Feb 11, 2024',
-    );
+    }).should('have.text', 'Feb 7, 2024');
     // wait for both layers to be loaded, so we scroll as expected
     cy.get('#level1-Rainfall .MuiChip-label', { timeout: 30000 }).should(
       'have.text',
@@ -136,25 +115,25 @@ describe('Checks on dates', () => {
     cy.scrollLeft();
     cy.get('.react-datepicker-wrapper button span', {
       timeout: dateLoadTimeout,
-    }).should('have.text', 'Feb 1, 2024');
-    cy.url().should('include', 'date=2024-02-01');
+    }).should('have.text', 'Jan 21, 2024');
+    cy.url().should('include', 'date=2024-01-21');
 
     cy.scrollLeft();
+    cy.get('.react-datepicker-wrapper button span', {
+      timeout: dateLoadTimeout,
+    }).should('have.text', 'Jan 11, 2024');
+    cy.url().should('include', 'date=2024-01-11');
+
+    cy.scrollRight();
     cy.get('.react-datepicker-wrapper button span', {
       timeout: dateLoadTimeout,
     }).should('have.text', 'Jan 21, 2024');
     cy.url().should('include', 'date=2024-01-21');
 
     cy.scrollRight();
-    cy.url().should('include', 'date=2024-02-01');
     cy.get('.react-datepicker-wrapper button span', {
       timeout: dateLoadTimeout,
     }).should('have.text', 'Feb 1, 2024');
-
-    cy.scrollRight();
-    cy.get('.react-datepicker-wrapper button span', {
-      timeout: dateLoadTimeout,
-    }).should('have.text', 'Feb 11, 2024');
-    cy.url().should('include', 'date=2024-02-11');
+    cy.url().should('include', 'date=2024-02-01');
   });
 });
