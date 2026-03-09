@@ -62,6 +62,7 @@ const IMAGE_REGISTRY: Record<string, string> = {
 /**
  * Resolves a config image path to the bundled asset URL.
  * Handles: /images/xxx.png, images/xxx.png, xxx.png
+ * Falls back to the original path when not found in the registry.
  */
 export function getImageUrl(path: string | undefined): string | undefined {
   if (!path) {
@@ -69,6 +70,20 @@ export function getImageUrl(path: string | undefined): string | undefined {
   }
   const filename = path.replace(/^\/?images\//, '').trim();
   return IMAGE_REGISTRY[filename] ?? IMAGE_REGISTRY[path] ?? path;
+}
+
+/**
+ * Like getImageUrl(), but returns undefined when the image is not in the
+ * bundled asset registry. Use this when you need a strict registry lookup
+ * and want to fall back to a different bundled asset rather than an
+ * unresolved path.
+ */
+export function getBundledImageUrl(path: string | undefined): string | undefined {
+  if (!path) {
+    return undefined;
+  }
+  const filename = path.replace(/^\/?images\//, '').trim();
+  return IMAGE_REGISTRY[filename] ?? IMAGE_REGISTRY[path];
 }
 
 export { wfpLogo };
