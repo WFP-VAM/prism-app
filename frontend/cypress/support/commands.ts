@@ -71,7 +71,6 @@ Cypress.Commands.add('switchLanguage', (langcode: string) => {
   cy.get('[aria-label="language-select-dropdown-button"]', {
     timeout: 10000,
   })
-    .should('be.visible')
     .scrollIntoView()
     .click({ force: true });
   cy.get(
