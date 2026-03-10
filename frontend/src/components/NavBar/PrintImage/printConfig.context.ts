@@ -5,6 +5,7 @@ import {
   AspectRatio,
   AspectRatioOption,
 } from 'components/MapExport/aspectRatioConstants';
+import { BatchCadence } from 'utils/batchCadenceUtils';
 
 // Re-export for backwards compatibility
 export type { AspectRatioOption };
@@ -86,6 +87,12 @@ export type PrintConfigContextType = {
       }>
     >;
     mapCount: number;
+    cadence: BatchCadence;
+    setCadence: React.Dispatch<React.SetStateAction<BatchCadence>>;
+    dekadInterval: number;
+    setDekadInterval: React.Dispatch<React.SetStateAction<number>>;
+    filteredBatchDates: number[];
+    disabledCadences: Set<BatchCadence>;
     shouldEnableBatchMaps: boolean;
     aspectRatioOptions: AspectRatioOption[];
     previewBounds: LngLatBounds | null;

@@ -33,6 +33,11 @@ import PrintConfigContext, {
   MapDimensions,
   Toggles,
 } from './printConfig.context';
+import {
+  BatchCadence,
+  filterDatesByCadence,
+  getDisabledCadences,
+} from '../../../utils/batchCadenceUtils';
 import { calculateExportDimensions } from './mapDimensionsUtils';
 import {
   isCustomRatio,
@@ -160,6 +165,9 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     endDate: null,
   });
 
+  const [cadence, setCadence] = useState<BatchCadence>('every-n-dekads');
+  const [dekadInterval, setDekadInterval] = useState(1);
+
   const [isDownloading, setIsDownloading] = useState(false);
 
   const { selectedLayersWithDateSupport } = useLayers();
@@ -169,24 +177,40 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     // selectedLayersWithDateSupport.every(layer => layer.type === 'wms');
     false; // Temporarily disable batch maps
 
-  const mapCount = useMemo(() => {
+  const { filteredBatchDates, mapCount, uniqueQueryDates } = useMemo(() => {
     const { startDate, endDate } = dateRangeForBatchMaps;
     if (!startDate || !endDate || selectedLayersWithDateSupport.length === 0) {
-      return 0;
+      return { filteredBatchDates: [], mapCount: 0, uniqueQueryDates: [] };
     }
 
     const allDateItems = selectedLayersWithDateSupport.flatMap(layer =>
       getPossibleDatesForLayer(layer, availableDates),
     );
 
-    const uniqueQueryDates = [
+    const rawUniqueDates = [
       ...new Set(allDateItems.map(item => item.queryDate)),
-    ];
+    ]
+      .filter(d => d >= startDate && d <= endDate)
+      .sort((a, b) => a - b);
 
-    return uniqueQueryDates.filter(
-      queryDate => queryDate >= startDate && queryDate <= endDate,
-    ).length;
-  }, [availableDates, selectedLayersWithDateSupport, dateRangeForBatchMaps]);
+    const dates = filterDatesByCadence(rawUniqueDates, cadence, dekadInterval);
+    return {
+      filteredBatchDates: dates,
+      mapCount: dates.length,
+      uniqueQueryDates: rawUniqueDates,
+    };
+  }, [
+    availableDates,
+    selectedLayersWithDateSupport,
+    dateRangeForBatchMaps,
+    cadence,
+    dekadInterval,
+  ]);
+
+  const disabledCadences = useMemo(
+    () => getDisabledCadences(uniqueQueryDates, dekadInterval),
+    [uniqueQueryDates, dekadInterval],
+  );
 
   useEffect(() => {
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
@@ -277,20 +301,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     handleDownloadMenuClose();
 
     try {
-      const allDateItems = selectedLayersWithDateSupport.flatMap(layer =>
-        getPossibleDatesForLayer(layer, availableDates),
-      );
-
-      const uniqueQueryDates = [
-        ...new Set(allDateItems.map(item => item.queryDate)),
-      ];
-
-      const filteredDates = uniqueQueryDates.filter(
-        queryDate => queryDate >= startDate && queryDate <= endDate,
-      );
-
-      // Convert timestamps to YYYY-MM-DD format
-      const formattedDates = filteredDates.map(timestamp =>
+      const formattedDates = filteredBatchDates.map(timestamp =>
         getFormattedDate(timestamp, 'default'),
       );
 
@@ -486,6 +497,12 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       dateRange: dateRangeForBatchMaps,
       setDateRange: setDateRangeForBatchMaps,
       mapCount,
+      cadence,
+      setCadence,
+      dekadInterval,
+      setDekadInterval,
+      filteredBatchDates,
+      disabledCadences,
       aspectRatioOptions: ALL_ASPECT_RATIO_OPTIONS,
       previewBounds,
       setPreviewBounds,

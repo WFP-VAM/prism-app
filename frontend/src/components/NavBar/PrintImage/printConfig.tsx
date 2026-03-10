@@ -27,6 +27,7 @@ import { useSafeTranslation } from '../../../i18n';
 import PrintConfigContext from './printConfig.context';
 import DateRangePicker from './DateRangePicker';
 import AspectRatioSelector from './AspectRatioSelector';
+import CadenceSelector from './CadenceSelector';
 
 interface ToggleSelectorProps {
   title: string;
@@ -632,6 +633,9 @@ function PrintConfig() {
               <GreyContainer>
                 <GreyContainerSection>
                   <DateRangePicker />
+                </GreyContainerSection>
+                <GreyContainerSection>
+                  <CadenceSelector />
                 </GreyContainerSection>
                 <GreyContainerSection isLast>
                   <Box className={classes.mapCountContainer}>
