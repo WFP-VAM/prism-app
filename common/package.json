@@ -61,12 +61,12 @@
     "xml-utils": "^1.6.0-0"
   },
   "resolutions": {
-    "brace-expansion": "^2.0.2",
+    "brace-expansion": "^5.0.2",
     "@isaacs/brace-expansion": ">=5.0.1",
     "lodash": "^4.17.23"
   },
   "_resolutionsNotes": {
-    "brace-expansion": "CVE-2025-5889 - Security fix - Keep resolution: rimraf 6.1.2 → glob → minimatch still uses v2, cannot upgrade to v4 (breaks eslint/minimatch)",
+    "brace-expansion": "CVE-2025-5889 - Security fix - Upgraded to v5.0.2+ (ESM-compatible) required by minimatch 10.2.4; v5 has no known vulnerabilities",
     "lodash": "CVE-2025-13465 - Security fix - GHSA-xxjr-mmjv-4gpg - Prototype Pollution in _.unset and _.omit - Forces v4.17.23+"
   }
 }
