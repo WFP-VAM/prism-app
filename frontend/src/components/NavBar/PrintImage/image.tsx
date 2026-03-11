@@ -175,7 +175,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const shouldEnableBatchMaps =
     // selectedLayersWithDateSupport.length > 0 &&
     // selectedLayersWithDateSupport.every(layer => layer.type === 'wms');
-    false; // Temporarily disable batch maps
+    true; // Temporarily disable batch maps
 
   const { filteredBatchDates, mapCount, uniqueQueryDates } = useMemo(() => {
     const { startDate, endDate } = dateRangeForBatchMaps;
