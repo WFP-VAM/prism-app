@@ -26,6 +26,7 @@ import { useMapState } from 'utils/useMapState';
 import { locales, useSafeTranslation } from 'i18n';
 import {
   dateStrToUpperCase,
+  dateWithoutTime,
   datesAreEqualWithoutTime,
   getFormattedDate,
 } from 'utils/date-utils';
@@ -409,24 +410,21 @@ const DateSelector = memo(() => {
       }
 
       return dates
-        .reduce((acc, currentArray) => [
-          ...acc,
-          ...currentArray.filter(
-            date =>
-              !acc.some(accDate => datesAreEqualWithoutTime(date, accDate)),
-          ),
-        ])
+        .reduce((acc, currentArray) => {
+          const accSet = new Set(acc.map(dateWithoutTime));
+          return [
+            ...acc,
+            ...currentArray.filter(date => !accSet.has(dateWithoutTime(date))),
+          ];
+        })
         .sort((a, b) => a - b);
     }
 
     // Other layers should rely on the dates available in truncatedLayers
-    return dates.reduce((acc, currentArray) =>
-      acc.filter(date =>
-        currentArray.some(currentDate =>
-          datesAreEqualWithoutTime(date, currentDate),
-        ),
-      ),
-    );
+    return dates.reduce((acc, currentArray) => {
+      const currentSet = new Set(currentArray.map(dateWithoutTime));
+      return acc.filter(date => currentSet.has(dateWithoutTime(date)));
+    });
   }, [AAAvailableDates, panelTab, truncatedLayers]);
 
   const updateStartDate = useCallback(
