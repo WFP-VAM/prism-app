@@ -383,8 +383,12 @@ const DateSelector = memo(() => {
     });
   }, [dateIndex, range, availableDates]);
 
-  const includedDates = useMemo(
-    () => availableDates?.map(d => new Date(d)) ?? [],
+  const includedDatesSet = useMemo(
+    () =>
+      new Set([
+        ...(availableDates?.map(d => dateWithoutTime(d)) ?? []),
+        dateWithoutTime(today.getTime()),
+      ]),
     [availableDates],
   );
 
@@ -727,7 +731,9 @@ const DateSelector = memo(() => {
             customInput={<DateSelectorInput />}
             // Include "today" so that the user can select it and get an error message if
             // the selected date is not available
-            includeDates={[...includedDates, today]}
+            filterDate={(date: Date) =>
+              includedDatesSet.has(dateWithoutTime(date.getTime()))
+            }
           />
 
           {!smUp && (
