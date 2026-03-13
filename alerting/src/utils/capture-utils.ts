@@ -1,5 +1,5 @@
 import puppeteer, { Browser, Page, BoundingBox } from 'puppeteer';
-import { Jimp } from 'jimp';
+import jpeg from 'jpeg-js';
 
 interface CropRegion {
   x: number;
@@ -30,30 +30,28 @@ const MAX_RETRY = 3;
  * Check if the image is white by calculating the average of the pixels.
  * @param base64 - image base64 string
  * @param threshold -  Tolerance threshold (e.g., 250 = almost white)
- * @returns {Promise<boolean>} - Returns true if the image is white.
+ * @returns {boolean} - Returns true if the image is white.
  */
-async function isBlankScreenshot(
-  base64: string,
-  threshold = 250,
-): Promise<boolean> {
+function isBlankScreenshot(base64: string, threshold = 250): boolean {
   const imageBuffer = Buffer.from(base64, 'base64');
-  const image = await Jimp.read(imageBuffer);
+  const { width, height, data } = jpeg.decode(imageBuffer, {
+    useTArray: true,
+  });
 
   let whitePixelCount = 0;
-  const width = image.bitmap.width;
-  const height = image.bitmap.height;
   const totalPixels = width * height;
 
-  image.scan(0, 0, width, height, (x, y, idx) => {
-    const r = image.bitmap.data[idx + 0];
-    const g = image.bitmap.data[idx + 1];
-    const b = image.bitmap.data[idx + 2];
+  for (let i = 0; i < totalPixels; i++) {
+    const idx = i * 4;
+    const r = data[idx + 0];
+    const g = data[idx + 1];
+    const b = data[idx + 2];
 
     // if pixel is almost white
     if (r >= threshold && g >= threshold && b >= threshold) {
       whitePixelCount++;
     }
-  });
+  }
 
   const whitePercentage = (whitePixelCount / totalPixels) * 100;
 
@@ -278,7 +276,7 @@ export async function captureScreenshotFromUrl(
         clip: finalCrop,
       });
 
-      isBlank = await isBlankScreenshot(base64Image);
+      isBlank = isBlankScreenshot(base64Image);
       if (isBlank) {
         retry++;
         if (retry >= maxRetry) break;
