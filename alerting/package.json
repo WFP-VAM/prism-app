@@ -14,20 +14,22 @@
     "glob": ">=11.1.0 because of jest and typeorm-seeding ; try to remove once in a while."
   },
   "resolutions": {
-    "glob": "^13.0.0",
+    "glob": "^13.0.6",
     "js-yaml": "^4.1.1",
-    "brace-expansion": "^2.0.2",
     "@isaacs/brace-expansion": ">=5.0.1",
     "string-width": "4.2.3",
     "form-data": "^3.0.4",
-    "lodash": "^4.17.23"
+    "lodash": "^4.17.23",
+    "basic-ftp": "^5.2.0",
+    "**/filelist/minimatch": "^5.1.9"
   },
   "_resolutionsNotes": {
-    "glob": "CVE-2025-64756 + jest/typeorm-seeding compatibility - Parent: (direct devDependency), typeorm-seeding, typeorm, rimraf, jest - Already at latest (13.0.0) - Review periodically",
+    "glob": "CVE-2025-64756 + jest/typeorm-seeding compatibility - Parent: (direct devDependency), typeorm-seeding, typeorm, rimraf, jest - Already at latest (13.0.6) - Review periodically",
     "js-yaml": "CVE-2025-64718 - Security fix - Parent: eslint - Already at latest (4.1.1) - Keep resolution until eslint updates",
-    "brace-expansion": "CVE-2025-5889 - Security fix - Parent: minimatch (via eslint), ejs - Cannot upgrade to v4 (breaks eslint) - Keep at v2 until eslint/minimatch support v4",
     "form-data": "CVE-2025-7783 - Security fix - GHSA-fjxv-7rqg-78g4 - Forces v3.0.4+ for transitive dependencies",
-    "lodash": "CVE-2025-13465 - Security fix - GHSA-xxjr-mmjv-4gpg - Prototype Pollution in _.unset and _.omit - Forces v4.17.23+"
+    "lodash": "CVE-2025-13465 - Security fix - GHSA-xxjr-mmjv-4gpg - Prototype Pollution in _.unset and _.omit - Forces v4.17.23+",
+    "basic-ftp": "GHSA-5rq4-664w-9x2c - Critical: Path Traversal in downloadToDir() - Parent: puppeteer - Fix: v5.2.0+",
+    "**/filelist/minimatch": "GHSA-23c5-xmqv-rm74 + GHSA-3ppc-4f35-3m26 + GHSA-7r86-cg39-jmmj - ReDoS in minimatch 5.x - Parent: ejs>jake>filelist - Fix: v5.1.9 (patched)"
   },
   "scripts": {
     "prebuild": "rimraf dist",
