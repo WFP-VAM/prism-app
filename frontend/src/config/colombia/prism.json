@@ -12,9 +12,7 @@
     "vulnerability": "icon_vulnerable.png"
   },
   "serversUrls": {
-    "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms"
-    ]
+    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
     "boundingBox": [-78.99, -4.3, -66.88, 12.44]

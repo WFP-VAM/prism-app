@@ -907,7 +907,7 @@
       "styles": "ndwi"
     },
     "wcsConfig": {
-      "scale": 0.00001,
+      "scale": 1e-5,
       "offset": 0
     },
     "legend_text": "Indicates the location of water bodies or change in water level, resulting from events like flooding. Source: [SIBELIUs / Kyrgzstan Data Cube](https://kyrgyzstan.sibelius-datacube.org/)",
@@ -979,17 +979,6 @@
     ]
   },
   "dekad_rainfall_anomaly_forecast": {
-    "title": "10-day rainfall forecast anomaly",
-    "type": "wms",
-    "server_layer_name": "rfq_dekad",
-    "additional_query_params": {
-      "styles": "rfq_14_20_400"
-    },
-    "start_date": "today",
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "10-day forecast anomaly compared to the long term average. Derived from CHIRPS and GEFS",
     "legend": [
       {
         "value": 0,

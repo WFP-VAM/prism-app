@@ -190,9 +190,9 @@
       "mode": "dekad"
     },
     "coverage_window": {
-        "backward": 2,
-        "forward": 1,
-        "mode": "dekad"
+      "backward": 2,
+      "forward": 1,
+      "mode": "dekad"
     },
     "opacity": 0.7,
     "legend_text": "Estimate of precipitation over a 1-month period derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
@@ -212,9 +212,9 @@
       "mode": "dekad"
     },
     "coverage_window": {
-        "backward": 2,
-        "forward": 1,
-        "mode": "dekad"
+      "backward": 2,
+      "forward": 1,
+      "mode": "dekad"
     },
     "opacity": 0.7,
     "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
@@ -1340,7 +1340,7 @@
     "opacity": 0.7,
     "legend_text": "The seasonal Water Anomaly Index (WAI) integrates three critical variables of the water cycle: WAI = (rainfall anomaly × 0.4) + (evapotranspiration anomaly × 0.3) + (soil moisture anomaly × 0.3)",
     "legend": "wai_04_0_100"
-  },     
+  },
   "3m_water_anomaly": {
     "title": "3-Month Water Anomaly Index (WAI)",
     "type": "wms",
@@ -1370,7 +1370,7 @@
     "opacity": 0.7,
     "legend_text": "The seasonal Water Anomaly Index (WAI) integrates three critical variables of the water cycle: WAI = (rainfall anomaly × 0.4) + (evapotranspiration anomaly × 0.3) + (soil moisture anomaly × 0.3)",
     "legend": "wai_04_0_100"
-  },    
+  },
   "4m_water_anomaly": {
     "title": "4-Month Water Anomaly Index (WAI)",
     "type": "wms",
@@ -1400,7 +1400,7 @@
     "opacity": 0.7,
     "legend_text": "The seasonal Water Anomaly Index (WAI) integrates three critical variables of the water cycle: WAI = (rainfall anomaly × 0.4) + (evapotranspiration anomaly × 0.3) + (soil moisture anomaly × 0.3)",
     "legend": "wai_04_0_100"
-  },  
+  },
   "5m_water_anomaly": {
     "title": "5-Month Water Anomaly Index (WAI)",
     "type": "wms",

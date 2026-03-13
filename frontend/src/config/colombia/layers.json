@@ -88,7 +88,7 @@
     }
   },
   "rainfall_agg_3month": {
-       "chart_data": {
+    "chart_data": {
       "fields": [
         {
           "key": "r3h",
