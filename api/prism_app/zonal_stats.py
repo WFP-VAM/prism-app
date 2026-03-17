@@ -119,12 +119,10 @@ def _read_zones(
         con.execute(query)
         # Export to temp GeoJSON using GDAL extension
         temp_geojson = os.path.join(CACHE_DIRECTORY, "temp_zones.geojson")
-        con.sql(
-            f"""
+        con.sql(f"""
             COPY {view_name} TO '{temp_geojson}'
             WITH (FORMAT GDAL, DRIVER 'GeoJSON', LAYER_CREATION_OPTIONS 'WRITE_BBOX=YES')
-            """
-        )
+            """)
 
         with open(temp_geojson, "r") as f:
             geojson_data = load(f)
