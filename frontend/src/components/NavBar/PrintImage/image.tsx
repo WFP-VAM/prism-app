@@ -193,7 +193,13 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       .filter(d => d >= startDate && d <= endDate)
       .sort((a, b) => a - b);
 
-    const dates = filterDatesByCadence(rawUniqueDates, cadence, dekadInterval);
+    const coverageWindow = selectedLayersWithDateSupport[0]?.coverageWindow;
+    const dates = filterDatesByCadence(
+      rawUniqueDates,
+      cadence,
+      dekadInterval,
+      coverageWindow,
+    );
     return {
       filteredBatchDates: dates,
       mapCount: dates.length,
