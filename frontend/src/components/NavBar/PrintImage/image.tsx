@@ -176,7 +176,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     const coverageWindow = selectedLayersWithDateSupport[0]?.coverageWindow;
     return getAvailableCadences(coverageWindow);
   }, [selectedLayersWithDateSupport]);
-
   useEffect(() => {
     if (!availableCadences.includes(cadence)) {
       setCadence(availableCadences[0]);

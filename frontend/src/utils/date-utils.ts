@@ -138,6 +138,7 @@ export const getFormattedDate = (
     | 'localeUTC'
     | 'monthDay'
     | 'localeShortUTC'
+    | 'monthYearUTC'
     | 'localeNumericUTC'
     | 'short'
     | 'shortDayFirst'
@@ -237,6 +238,14 @@ export const getFormattedDate = (
       return new Date(date).toLocaleDateString('en-US', {
         month: 'short',
         day: 'numeric',
+        year: 'numeric',
+        timeZone: 'UTC',
+      });
+
+    // Example: "Jun 1999"
+    case 'monthYearUTC':
+      return new Date(date).toLocaleDateString('en-US', {
+        month: 'short',
         year: 'numeric',
         timeZone: 'UTC',
       });

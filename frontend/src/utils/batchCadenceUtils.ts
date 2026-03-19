@@ -158,7 +158,7 @@ export function getAvailableCadences(
   if (
     !coverageWindow ||
     coverageWindow.mode !== DatesPropagation.DEKAD ||
-    (coverageWindow?.backward ?? 0 < 2)
+    (coverageWindow?.backward ?? 0) < 2
   ) {
     return ['every-n-dekads'];
   }

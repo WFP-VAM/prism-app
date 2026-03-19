@@ -27,13 +27,24 @@ const useStyles = makeStyles(() =>
       gap: '0.5rem',
       flexWrap: 'wrap',
     },
+    header: {
+      fontSize: '14px',
+      fontWeight: 400,
+      marginTop: '8px',
+    },
     toggleButton: {
       fontSize: '0.75rem',
       textTransform: 'none',
       padding: '4px 10px',
+      marginBottom: '8px',
     },
     intervalInput: {
       zIndex: 0,
+      marginBottom: '8px',
+      width: '100%',
+      '& input': {
+        fontSize: '0.875rem',
+      },
     },
     dateList: {
       maxHeight: '120px',
@@ -84,7 +95,9 @@ export default function CadenceSelector() {
 
   return (
     <Box className={classes.root}>
-      <Typography variant="body2">{t('Cadence')}</Typography>
+      <Typography variant="h4" className={classes.header}>
+        {t('Cadence')}
+      </Typography>
       <Box className={classes.row}>
         <ToggleButtonGroup
           value={cadence}
@@ -123,9 +136,7 @@ export default function CadenceSelector() {
             inputProps={{ min: 1 }}
             onChange={e => {
               const val = parseInt(e.target.value, 10);
-              if (!Number.isNaN(val) && val >= 1) {
-                setDekadInterval(val);
-              }
+              setDekadInterval(val);
             }}
           />
         )}
@@ -134,7 +145,12 @@ export default function CadenceSelector() {
         <Box className={classes.dateList}>
           {filteredBatchDates.map(ts => (
             <span key={ts} className={classes.dateChip}>
-              {getFormattedDate(ts, 'localeShortUTC')}
+              {getFormattedDate(
+                ts,
+                cadence === 'every-n-dekads'
+                  ? 'localeShortUTC'
+                  : 'monthYearUTC',
+              )}
             </span>
           ))}
         </Box>

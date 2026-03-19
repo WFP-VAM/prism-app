@@ -640,7 +640,7 @@ function PrintConfig() {
                 <GreyContainerSection isLast>
                   <Box className={classes.mapCountContainer}>
                     <Typography variant="body1">
-                      {t('Nb of maps generated')}
+                      {t('Number of maps generated')}
                     </Typography>
                     <Typography
                       variant="body1"
