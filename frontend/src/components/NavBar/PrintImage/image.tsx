@@ -187,10 +187,13 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       getPossibleDatesForLayer(layer, availableDates),
     );
 
+    const startOfStartDate = new Date(startDate).setUTCHours(0, 0, 0, 0);
+    const endOfEndDate = new Date(endDate).setUTCHours(23, 59, 59, 999);
+
     const rawUniqueDates = [
       ...new Set(allDateItems.map(item => item.queryDate)),
     ]
-      .filter(d => d >= startDate && d <= endDate)
+      .filter(d => d >= startOfStartDate && d <= endOfEndDate)
       .sort((a, b) => a - b);
 
     const coverageWindow = selectedLayersWithDateSupport[0]?.coverageWindow;
