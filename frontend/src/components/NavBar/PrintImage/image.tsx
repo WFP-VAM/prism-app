@@ -172,7 +172,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const [isDownloading, setIsDownloading] = useState(false);
 
   const { selectedLayersWithDateSupport } = useLayers();
-
   const availableCadences = useMemo(() => {
     const coverageWindow = selectedLayersWithDateSupport[0]?.coverageWindow;
     return getAvailableCadences(coverageWindow);
@@ -186,8 +185,10 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const availableDates = useSelector(availableDatesSelector);
   const shouldEnableBatchMaps =
     // selectedLayersWithDateSupport.length > 0 &&
-    // selectedLayersWithDateSupport.every(layer => layer.type === 'wms');
-    true; // Temporarily disable batch maps
+    // selectedLayersWithDateSupport.every(
+    //   layer => layer.type === 'wms' && (layer.coverageWindow || layer.validity),
+    // );
+    true; // Temporarily enable batch maps
 
   const { filteredBatchDates, mapCount, uniqueQueryDates } = useMemo(() => {
     const { startDate, endDate } = dateRangeForBatchMaps;
