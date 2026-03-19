@@ -147,6 +147,30 @@ export function filterDatesByCadence(
   return uniqueDekadDates.filter((_, index) => index % dekadInterval === 0);
 }
 
+// Layers without a coverage_window use their validity period instead (e.g. 10-day
+// layers), so the absence of a coverage window is treated as a 1-dekad window.
+// - No coverage window, or dekad window with backward < 2 (< 1 month): every-n-dekads only
+// - Dekad window with backward 2–7 (1–2 months): monthly only
+// - Dekad window with backward >= 8 (3+ months): monthly and quarterly
+export function getAvailableCadences(
+  coverageWindow?: CoverageWindow,
+): BatchCadence[] {
+  if (
+    !coverageWindow ||
+    coverageWindow.mode !== DatesPropagation.DEKAD ||
+    (coverageWindow?.backward ?? 0 < 2)
+  ) {
+    return ['every-n-dekads'];
+  }
+
+  const backwardDekads = coverageWindow.backward ?? 0;
+  // Only allow quarterly cadences for data windows >= 3 months
+  if (backwardDekads >= 8) {
+    return ['monthly', 'quarterly'];
+  }
+  return ['monthly'];
+}
+
 // Returns which cadences should be disabled given the available dates.
 // - monthly: disabled if < 2 distinct calendar months
 // - quarterly: disabled if < 2 distinct calendar quarters

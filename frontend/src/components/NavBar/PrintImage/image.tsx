@@ -36,6 +36,7 @@ import PrintConfigContext, {
 import {
   BatchCadence,
   filterDatesByCadence,
+  getAvailableCadences,
   getDisabledCadences,
 } from '../../../utils/batchCadenceUtils';
 import { calculateExportDimensions } from './mapDimensionsUtils';
@@ -171,6 +172,17 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const [isDownloading, setIsDownloading] = useState(false);
 
   const { selectedLayersWithDateSupport } = useLayers();
+
+  const availableCadences = useMemo(() => {
+    const coverageWindow = selectedLayersWithDateSupport[0]?.coverageWindow;
+    return getAvailableCadences(coverageWindow);
+  }, [selectedLayersWithDateSupport]);
+
+  useEffect(() => {
+    if (!availableCadences.includes(cadence)) {
+      setCadence(availableCadences[0]);
+    }
+  }, [availableCadences, cadence]);
   const availableDates = useSelector(availableDatesSelector);
   const shouldEnableBatchMaps =
     // selectedLayersWithDateSupport.length > 0 &&
@@ -511,6 +523,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       dekadInterval,
       setDekadInterval,
       filteredBatchDates,
+      availableCadences,
       disabledCadences,
       aspectRatioOptions: ALL_ASPECT_RATIO_OPTIONS,
       previewBounds,

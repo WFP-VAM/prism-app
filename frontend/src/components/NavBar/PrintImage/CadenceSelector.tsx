@@ -78,14 +78,9 @@ export default function CadenceSelector() {
     dekadInterval,
     setDekadInterval,
     filteredBatchDates,
+    availableCadences,
     disabledCadences,
   } = printConfig;
-
-  const cadenceOptions: BatchCadence[] = [
-    'every-n-dekads',
-    'monthly',
-    'quarterly',
-  ];
 
   return (
     <Box className={classes.root}>
@@ -103,7 +98,7 @@ export default function CadenceSelector() {
             }
           }}
         >
-          {cadenceOptions.map(option => {
+          {availableCadences.map(option => {
             const isDisabled = disabledCadences.has(option);
             return (
               <ToggleButton

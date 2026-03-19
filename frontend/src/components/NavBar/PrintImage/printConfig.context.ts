@@ -92,6 +92,7 @@ export type PrintConfigContextType = {
     dekadInterval: number;
     setDekadInterval: React.Dispatch<React.SetStateAction<number>>;
     filteredBatchDates: number[];
+    availableCadences: BatchCadence[];
     disabledCadences: Set<BatchCadence>;
     shouldEnableBatchMaps: boolean;
     aspectRatioOptions: AspectRatioOption[];
