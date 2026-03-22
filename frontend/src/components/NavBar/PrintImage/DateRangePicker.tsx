@@ -22,10 +22,10 @@ function DateRangePicker() {
 
   useEffect(() => {
     if (selectedDateFromMap) {
-      setDateRange({
+      setDateRange(prev => ({
+        ...prev,
         startDate: selectedDateFromMap,
-        endDate: new Date().getTime(),
-      });
+      }));
     }
   }, [selectedDateFromMap]);
 
@@ -103,13 +103,7 @@ function DateRangePicker() {
           <DatePicker
             locale={t('date_locale')}
             dateFormat="dd/MM/yyyy"
-            selected={
-              endDate
-                ? new Date(endDate)
-                : selectedDateFromMap
-                  ? new Date()
-                  : null
-            }
+            selected={endDate ? new Date(endDate) : null}
             onChange={handleEndDateChange}
             minDate={startDate ? new Date(startDate) : minDate}
             includeDates={includedDates}

@@ -181,6 +181,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       setCadence(availableCadences[0]);
     }
   }, [availableCadences, cadence]);
+
   const availableDates = useSelector(availableDatesSelector);
   const shouldEnableBatchMaps =
     // selectedLayersWithDateSupport.length > 0 &&
@@ -188,6 +189,8 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     //   layer => layer.type === 'wms' && (layer.coverageWindow || layer.validity),
     // );
     true; // Temporarily enable batch maps
+
+  const shouldShowMultiLayerWarning = selectedLayersWithDateSupport.length > 1;
 
   const { filteredBatchDates, mapCount, uniqueQueryDates } = useMemo(() => {
     const { startDate, endDate } = dateRangeForBatchMaps;
@@ -232,6 +235,31 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     () => getDisabledCadences(uniqueQueryDates, dekadInterval),
     [uniqueQueryDates, dekadInterval],
   );
+
+  useEffect(() => {
+    if (
+      toggles.batchMapsVisibility &&
+      dateRangeForBatchMaps.startDate &&
+      dateRangeForBatchMaps.endDate &&
+      filteredBatchDates.length === 0
+    ) {
+      dispatch(
+        addNotification({
+          type: 'error',
+          message: t(
+            'A map could not be made for the dates you selected. Please choose an earlier date range and/or a shorter cadence.',
+          ),
+        }),
+      );
+    }
+  }, [
+    filteredBatchDates,
+    toggles.batchMapsVisibility,
+    dateRangeForBatchMaps.startDate,
+    dateRangeForBatchMaps.endDate,
+    dispatch,
+    t,
+  ]);
 
   useEffect(() => {
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
@@ -515,6 +543,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       setSelectedBoundaries,
       setLegendScale,
       shouldEnableBatchMaps,
+      shouldShowMultiLayerWarning,
       dateRange: dateRangeForBatchMaps,
       setDateRange: setDateRangeForBatchMaps,
       mapCount,

@@ -95,6 +95,7 @@ export type PrintConfigContextType = {
     availableCadences: BatchCadence[];
     disabledCadences: Set<BatchCadence>;
     shouldEnableBatchMaps: boolean;
+    shouldShowMultiLayerWarning: boolean;
     aspectRatioOptions: AspectRatioOption[];
     previewBounds: LngLatBounds | null;
     setPreviewBounds: React.Dispatch<React.SetStateAction<LngLatBounds | null>>;
