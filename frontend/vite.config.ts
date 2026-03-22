@@ -101,6 +101,7 @@ export default defineConfig({
       components: '/src/components',
       config: '/src/config',
       context: '/src/context',
+      hooks: '/src/hooks',
       utils: '/src/utils',
       muiTheme: '/src/muiTheme',
       i18n: '/src/i18n',
