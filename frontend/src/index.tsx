@@ -3,22 +3,37 @@ import './index.css';
 import './i18n';
 import { Provider } from 'react-redux';
 import { MsalProvider } from '@azure/msal-react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 import App from './components/App';
 import { AppStore, store } from './context/store';
 import { msalInstance } from './config';
 import * as serviceWorker from './serviceWorker';
 
+const FIVE_MINUTES = 5 * 60 * 1000;
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: FIVE_MINUTES,
+      retry: 2,
+      retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff with a max delay of 30 seconds
+    },
+  },
+});
+
 const container = document.getElementById('root');
 const root = createRoot(container!);
 
 root.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <MsalProvider instance={msalInstance}>
-        <App />
-      </MsalProvider>
-    </Provider>
+    <QueryClientProvider client={queryClient}>
+      <Provider store={store}>
+        <MsalProvider instance={msalInstance}>
+          <App />
+        </MsalProvider>
+      </Provider>
+    </QueryClientProvider>
   </React.StrictMode>,
 );
 

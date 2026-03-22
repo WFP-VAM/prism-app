@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { appConfig } from 'config';
 
 import { Map as MaplibreMap } from 'maplibre-gl';
 import { MapState, DateRange } from 'context/mapStateSlice';
@@ -50,6 +49,8 @@ export interface DashboardTableState {
 }
 
 export interface DashboardState {
+  /** Loaded from remote dashboard.json (see useDashboardConfig). */
+  dashboards: Dashboard[];
   selectedDashboardIndex: number;
   title: string;
   mode: DashboardMode;
@@ -63,30 +64,31 @@ export interface DashboardState {
   };
 }
 
-const getDashboardConfig = (index: number) => {
-  if (
-    !Array.isArray(appConfig.dashboards) ||
-    appConfig.dashboards.length === 0
-  ) {
-    // Return a fallback config object or throw an error
-    return {
-      title: 'Dashboard',
-      path: 'dashboard',
-      firstColumn: [],
-      secondColumn: [],
-      thirdColumn: [],
-    };
+const EMPTY_DASHBOARD_FALLBACK: Dashboard = {
+  title: 'Dashboard',
+  path: 'dashboard',
+  firstColumn: [],
+  secondColumn: [],
+  thirdColumn: [],
+};
+
+/**
+ * Resolve dashboard definition by index from the loaded list (matches former appConfig.dashboards behavior).
+ */
+export function getDashboardConfigFromList(
+  index: number,
+  dashboards: Dashboard[],
+): Dashboard {
+  if (!Array.isArray(dashboards) || dashboards.length === 0) {
+    return { ...EMPTY_DASHBOARD_FALLBACK };
   }
-  const originalConfig = appConfig.dashboards[index] || appConfig.dashboards[0];
-
+  const originalConfig = dashboards[index] || dashboards[0];
   const config = { ...originalConfig };
-
-  if (!config.path) {
+  if (!config.path?.trim()) {
     config.path = generateSlugFromTitle(config.title);
   }
-
   return config;
-};
+}
 
 const getMapLayerOpacityConfig = (
   layerId: LayerType['id'],
@@ -176,8 +178,14 @@ const createTableStateFromConfig = (
   sortOrder: tableConfig.sortOrder || 'asc',
 });
 
-const createInitialState = (dashboardIndex: number = 0): DashboardState => {
-  const dashboardConfig = getDashboardConfig(dashboardIndex);
+const createInitialState = (
+  dashboardIndex: number = 0,
+  dashboards: Dashboard[] = [],
+): DashboardState => {
+  const dashboardConfig = getDashboardConfigFromList(
+    dashboardIndex,
+    dashboards,
+  );
 
   const allColumns = [
     dashboardConfig?.firstColumn || [],
@@ -201,6 +209,7 @@ const createInitialState = (dashboardIndex: number = 0): DashboardState => {
   });
 
   return {
+    dashboards,
     selectedDashboardIndex: dashboardIndex,
     title: dashboardConfig?.title || 'Dashboard',
     mode: DashboardMode.VIEW,
@@ -212,15 +221,17 @@ const createInitialState = (dashboardIndex: number = 0): DashboardState => {
   };
 };
 
-const initialState: DashboardState = createInitialState();
+const initialState: DashboardState = createInitialState(0, []);
 
 export const dashboardStateSlice = createSlice({
   name: 'dashboardState',
   initialState,
   reducers: {
-    setSelectedDashboard: (_state, action: PayloadAction<number>) => {
+    setDashboards: (_state, action: PayloadAction<Dashboard[]>) =>
+      createInitialState(0, action.payload),
+    setSelectedDashboard: (state, action: PayloadAction<number>) => {
       const dashboardIndex = action.payload;
-      return createInitialState(dashboardIndex);
+      return createInitialState(dashboardIndex, state.dashboards);
     },
     toggleMapSync: state => {
       const newSyncEnabled = !state.syncMapsEnabled;
@@ -599,14 +610,21 @@ export const selectedDashboardIndexSelector = (state: RootState): number =>
   state.dashboardState.selectedDashboardIndex;
 export const dashboardModeSelector = (state: RootState): DashboardMode =>
   state.dashboardState.mode;
+export const dashboardsListSelector = (state: RootState): Dashboard[] =>
+  state.dashboardState.dashboards;
+
+export const areDashboardsAvailableSelector = (state: RootState): boolean =>
+  state.dashboardState.dashboards.length > 0;
+
 export const dashboardConfigSelector = (
   state: RootState,
 ): Dashboard & {
   selectedDashboardIndex: number;
-  maps: DashboardMapState[];
+  maps: { [elementId: string]: DashboardMapState };
 } => {
   const currentDashboardIndex = state.dashboardState.selectedDashboardIndex;
-  const config = getDashboardConfig(currentDashboardIndex);
+  const { dashboards } = state.dashboardState;
+  const config = getDashboardConfigFromList(currentDashboardIndex, dashboards);
 
   return {
     ...config,
@@ -659,6 +677,7 @@ export const dashboardTableStateSelector =
 
 // Setters
 export const {
+  setDashboards,
   setSelectedDashboard,
   toggleMapSync,
   setSharedViewport,

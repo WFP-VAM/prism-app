@@ -83,6 +83,7 @@ const {
   REACT_APP_OAUTH_REDIRECT_URI: REDIRECT_URI,
   REACT_APP_TESTING: TESTING,
   REACT_APP_QA_MODE: QA_MODE,
+  REACT_APP_DASHBOARD_CONFIG_BUCKET_URL: DASHBOARD_CONFIG_BUCKET_URL,
 } = process.env;
 
 const safeCountry =
@@ -94,12 +95,10 @@ const {
   defaultBoundariesFile,
   rawTables,
   rawReports,
-  rawDashboards,
 }: {
   defaultBoundariesFile: string;
   rawTables: Record<string, any>;
   rawReports: Record<string, any>;
-  rawDashboards?: any[];
 } = configMap[safeCountry];
 
 const {
@@ -110,15 +109,17 @@ const {
 } = shared;
 
 // Perform deep merges between shared and country-specific configurations
+// Dashboard definitions are loaded at runtime from S3 (see dashboardConfigUrl + useDashboardConfig).
 const appConfig: Record<string, any> = merge(
   {},
   defaultConfig,
   configMap[safeCountry].appConfig,
-  // Add dashboards to appConfig if available
-  rawDashboards && rawDashboards.length > 0
-    ? { dashboards: rawDashboards }
-    : {},
 );
+
+const dashboardConfigBaseUrl = DASHBOARD_CONFIG_BUCKET_URL?.replace(/\/$/, '');
+export const dashboardConfigUrl = dashboardConfigBaseUrl
+  ? `${dashboardConfigBaseUrl}/${safeCountry}/dashboard.json`
+  : null;
 
 export function getRawLayers(
   country: Country,
@@ -207,7 +208,6 @@ export {
   rawLayers,
   rawTables,
   rawReports,
-  rawDashboards,
   msalInstance,
   msalRequest,
   enableNavigationDropdown,
