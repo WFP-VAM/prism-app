@@ -74,6 +74,21 @@ const CADENCE_LABELS: Record<BatchCadence, string> = {
   quarterly: 'Quarterly',
 };
 
+function getDateFormat(
+  cadence: BatchCadence,
+): 'localeShortUTC' | 'monthYearUTC' | 'quarterYearUTC' {
+  switch (cadence) {
+    case 'every-n-dekads':
+      return 'localeShortUTC';
+    case 'monthly':
+      return 'monthYearUTC';
+    case 'quarterly':
+      return 'quarterYearUTC';
+    default:
+      return 'localeShortUTC';
+  }
+}
+
 export default function CadenceSelector() {
   const classes = useStyles();
   const { t } = useSafeTranslation();
@@ -145,12 +160,7 @@ export default function CadenceSelector() {
         <Box className={classes.dateList}>
           {filteredBatchDates.map(ts => (
             <span key={ts} className={classes.dateChip}>
-              {getFormattedDate(
-                ts,
-                cadence === 'every-n-dekads'
-                  ? 'localeShortUTC'
-                  : 'monthYearUTC',
-              )}
+              {getFormattedDate(ts, getDateFormat(cadence))}
             </span>
           ))}
         </Box>

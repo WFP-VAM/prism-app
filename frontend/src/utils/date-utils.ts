@@ -139,6 +139,7 @@ export const getFormattedDate = (
     | 'monthDay'
     | 'localeShortUTC'
     | 'monthYearUTC'
+    | 'quarterYearUTC'
     | 'localeNumericUTC'
     | 'short'
     | 'shortDayFirst'
@@ -249,6 +250,12 @@ export const getFormattedDate = (
         year: 'numeric',
         timeZone: 'UTC',
       });
+
+    // Example: "Q3 1999"
+    case 'quarterYearUTC': {
+      const quarter = Math.floor(new Date(date).getUTCMonth() / 3) + 1;
+      return `Q${quarter} ${new Date(date).getUTCFullYear()}`;
+    }
 
     // Example: "06-30-1999" (US) or "30-06-1999" (Europe)
     case 'localeNumericUTC':
