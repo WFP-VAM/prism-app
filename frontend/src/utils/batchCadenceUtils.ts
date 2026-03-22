@@ -28,7 +28,7 @@ function getDekadIndex(day: number): number {
 // For monthly cadence with a dekad coverage window, pick the date from each calendar
 // month that falls in the "representative dekad": the dekad whose coverage window starts
 // on the 1st of that month. For backward=2 this is the 21st, backward=1 → 11th, etc.
-// Falls back to the first available date in the month if the target dekad is missing.
+// Months without a matching target dekad are excluded (partial coverage).
 function filterMonthlyByDekadWindow(
   sortedDates: number[],
   backwardDekads: number,
@@ -47,7 +47,9 @@ function filterMonthlyByDekadWindow(
     const match = dates.find(
       ts => getDekadIndex(new Date(ts).getUTCDate()) === targetDekadIndex,
     );
-    result.push(match ?? dates[0]);
+    if (match !== undefined) {
+      result.push(match);
+    }
   }
   return result;
 }
@@ -55,7 +57,7 @@ function filterMonthlyByDekadWindow(
 // For quarterly cadence with a dekad coverage window, pick the date from each calendar
 // quarter whose coverage window starts on the 1st of the quarter. For backward=8 (9-dekad
 // = 3-month window) this is the 21st of the third month of the quarter, etc.
-// Falls back to the last available date in the quarter if the target is missing.
+// Quarters without a matching target dekad are excluded (partial coverage).
 function filterQuarterlyByDekadWindow(
   sortedDates: number[],
   backwardDekads: number,
@@ -79,8 +81,9 @@ function filterQuarterlyByDekadWindow(
         getDekadIndex(d.getUTCDate()) === targetDekadIndex
       );
     });
-    // Fall back to the last date in the quarter (closest to the target dekad)
-    result.push(match ?? dates[dates.length - 1]);
+    if (match !== undefined) {
+      result.push(match);
+    }
   }
   return result;
 }
