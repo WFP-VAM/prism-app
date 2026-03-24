@@ -109,7 +109,8 @@ const {
 } = shared;
 
 // Perform deep merges between shared and country-specific configurations
-// Dashboard definitions are loaded at runtime from S3 (see dashboardConfigUrl + useDashboardConfig).
+// Dashboard definitions: from S3 when REACT_APP_DASHBOARD_CONFIG_BUCKET_URL is set; otherwise
+// from public /{country}/dashboard.json (you must add that file locally to test; see useDashboardConfig).
 const appConfig: Record<string, any> = merge(
   {},
   defaultConfig,
@@ -120,6 +121,9 @@ const dashboardConfigBaseUrl = DASHBOARD_CONFIG_BUCKET_URL?.replace(/\/$/, '');
 export const dashboardConfigUrl = dashboardConfigBaseUrl
   ? `${dashboardConfigBaseUrl}/${safeCountry}/dashboard.json`
   : null;
+
+/** When no S3 bucket URL: fetch this path (Vite serves `frontend/public/` at the site root). */
+export const localDashboardConfigUrl = `/${safeCountry}/dashboard.json`;
 
 export function getRawLayers(
   country: Country,

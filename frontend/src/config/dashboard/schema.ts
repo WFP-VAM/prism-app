@@ -1,6 +1,10 @@
 import { z } from 'zod';
-import type { Dashboard } from 'config/types';
-import { DashboardElementType } from 'config/types';
+import { AggregationOperations } from '../aggregationOperations';
+import {
+  ChartHeight,
+  DashboardElementType,
+  DashboardMapPosition,
+} from './dashboardEnums';
 import { generateSlugFromTitle } from 'utils/string-utils';
 
 const preSelectedMapLayerSchema = z.object({
@@ -11,11 +15,11 @@ const preSelectedMapLayerSchema = z.object({
 const dashboardMapConfigSchema = z.object({
   type: z.literal(DashboardElementType.MAP),
   defaultDate: z.string().optional(),
-  mapPosition: z.enum(['left', 'right']).optional(),
+  mapPosition: z.enum(DashboardMapPosition).optional(),
   minMapBounds: z.array(z.number()).optional(),
   title: z.string().optional(),
   legendVisible: z.boolean().optional(),
-  legendPosition: z.enum(['left', 'right']).optional(),
+  legendPosition: z.enum(DashboardMapPosition).optional(),
   preSelectedMapLayers: z.array(preSelectedMapLayerSchema).default([]),
 });
 
@@ -26,7 +30,7 @@ const dashboardChartConfigSchema = z.object({
   layerId: z.string(),
   adminUnitLevel: z.number().optional(),
   adminUnitId: z.number().optional(),
-  chartHeight: z.enum(['tall', 'medium', 'short']).optional(),
+  chartHeight: z.enum(ChartHeight).optional(),
 });
 
 const dashboardTextConfigSchema = z.object({
@@ -46,7 +50,7 @@ const dashboardTableConfigSchema = z.object({
   hazardLayerId: z.string(),
   baselineLayerId: z.string(),
   threshold: thresholdDefinitionSchema.optional(),
-  stat: z.enum(['max', 'mean', 'median', 'min', 'sum', 'intersect_percentage']),
+  stat: z.enum(AggregationOperations),
   maxRows: z.number().optional(),
   addResultToMap: z.boolean().optional(),
   sortColumn: z.union([z.string(), z.number()]).optional(),
@@ -60,7 +64,7 @@ const dashboardElementSchema = z.discriminatedUnion('type', [
   dashboardTableConfigSchema,
 ]);
 
-const dashboardSchema = z.object({
+const dashboardRowInputSchema = z.object({
   title: z.string(),
   path: z.string().optional(),
   isEditable: z.boolean().optional(),
@@ -69,42 +73,29 @@ const dashboardSchema = z.object({
   thirdColumn: z.array(dashboardElementSchema).optional(),
 });
 
-export const dashboardConfigArraySchema = z.array(dashboardSchema);
+const dashboardRowSchema = dashboardRowInputSchema.transform(d => ({
+  ...d,
+  path: d.path?.trim() ? d.path : generateSlugFromTitle(d.title),
+}));
 
-export type ParsedDashboardConfig = z.infer<typeof dashboardConfigArraySchema>;
+export type DashboardChartConfig = z.infer<typeof dashboardChartConfigSchema>;
+export type DashboardMapConfig = z.infer<typeof dashboardMapConfigSchema>;
+export type DashboardTextConfig = z.infer<typeof dashboardTextConfigSchema>;
+export type DashboardTableConfig = z.infer<typeof dashboardTableConfigSchema>;
+export type DashboardElements = z.infer<typeof dashboardElementSchema>;
+export type Dashboard = z.infer<typeof dashboardRowSchema>;
 
-function normalizeDashboards(parsed: ParsedDashboardConfig): Dashboard[] {
-  return parsed.map(d => ({
-    ...d,
-    path: d.path?.trim() ? d.path : generateSlugFromTitle(d.title),
-    firstColumn: d.firstColumn.map(el => {
-      if (el.type === DashboardElementType.MAP) {
-        return { ...el, preSelectedMapLayers: el.preSelectedMapLayers ?? [] };
-      }
-      return el;
-    }),
-    secondColumn: d.secondColumn?.map(el => {
-      if (el.type === DashboardElementType.MAP) {
-        return { ...el, preSelectedMapLayers: el.preSelectedMapLayers ?? [] };
-      }
-      return el;
-    }),
-    thirdColumn: d.thirdColumn?.map(el => {
-      if (el.type === DashboardElementType.MAP) {
-        return { ...el, preSelectedMapLayers: el.preSelectedMapLayers ?? [] };
-      }
-      return el;
-    }),
-  })) as Dashboard[];
-}
+export const dashboardConfigArraySchema = z.array(dashboardRowSchema);
+
+export type DashboardConfigArray = z.infer<typeof dashboardConfigArraySchema>;
 
 export type ValidateDashboardConfigResult =
-  | { success: true; data: Dashboard[] }
+  | { success: true; data: DashboardConfigArray }
   | { success: false; error: z.ZodError };
 
 /**
  * Runtime validation for dashboard.json (S3 fetch and future import-JSON).
- * Aligns with config/types.ts Dashboard and DashboardElements.
+ * Dashboard element shapes and Dashboard are inferred from this schema (see config/types re-exports).
  */
 export function validateDashboardConfig(
   raw: unknown,
@@ -113,7 +104,7 @@ export function validateDashboardConfig(
   if (!result.success) {
     return { success: false, error: result.error };
   }
-  return { success: true, data: normalizeDashboards(result.data) };
+  return { success: true, data: result.data };
 }
 
 export function formatDashboardValidationError(error: z.ZodError): string {

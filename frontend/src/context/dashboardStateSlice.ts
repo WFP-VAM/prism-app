@@ -49,7 +49,7 @@ export interface DashboardTableState {
 }
 
 export interface DashboardState {
-  /** Loaded from remote dashboard.json (see useDashboardConfig). */
+  /** Loaded from dashboard config (S3 or public/; see useDashboardConfig). */
   dashboards: Dashboard[];
   selectedDashboardIndex: number;
   title: string;

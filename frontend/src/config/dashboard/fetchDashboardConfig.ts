@@ -15,6 +15,17 @@ export class DashboardConfigFetchError extends Error {
   }
 }
 
+function parseValidatedDashboardBody(parsed: unknown): Dashboard[] {
+  const validated = validateDashboardConfig(parsed);
+  if (!validated.success) {
+    throw new DashboardConfigFetchError(
+      formatDashboardValidationError(validated.error),
+      'validation',
+    );
+  }
+  return validated.data;
+}
+
 /**
  * Fetches dashboard.json, parses JSON, and validates against the dashboard schema.
  */
@@ -49,13 +60,5 @@ export async function fetchDashboardConfig(url: string): Promise<Dashboard[]> {
     );
   }
 
-  const validated = validateDashboardConfig(parsed);
-  if (!validated.success) {
-    throw new DashboardConfigFetchError(
-      formatDashboardValidationError(validated.error),
-      'validation',
-    );
-  }
-
-  return validated.data;
+  return parseValidatedDashboardBody(parsed);
 }

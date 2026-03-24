@@ -2,24 +2,33 @@ import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useDispatch } from 'react-redux';
 import { useIsAuthenticated } from '@azure/msal-react';
-import { authRequired, dashboardConfigUrl } from 'config';
+import {
+  authRequired,
+  dashboardConfigUrl,
+  localDashboardConfigUrl,
+} from 'config';
 import { fetchDashboardConfig } from 'config/dashboard/fetchDashboardConfig';
 import { getDashboardConfigErrorMessage } from 'config/dashboard/dashboardConfigQueryError';
 import { setDashboards } from 'context/dashboardStateSlice';
 import { addNotification } from 'context/notificationStateSlice';
 
 /**
- * Loads dashboard.json from dashboardConfigUrl (S3) and syncs validated data into Redux.
+ * Loads dashboard.json from S3 when `dashboardConfigUrl` is set; otherwise from
+ * `localDashboardConfigUrl` (`public/{country}/dashboard.json`). Add that file under
+ * `frontend/public/` locally if you want to test dashboards without S3.
  */
 export function useDashboardConfig() {
   const dispatch = useDispatch();
   const isAuthenticated = useIsAuthenticated();
-  const enabled =
-    Boolean(dashboardConfigUrl) && (isAuthenticated || !authRequired);
+  const enabled = isAuthenticated || !authRequired;
 
   const { data, status, error, fetchStatus } = useQuery({
-    queryKey: ['dashboardConfig', dashboardConfigUrl],
-    queryFn: () => fetchDashboardConfig(dashboardConfigUrl!),
+    queryKey: [
+      'dashboardConfig',
+      dashboardConfigUrl ?? localDashboardConfigUrl,
+    ],
+    queryFn: () =>
+      fetchDashboardConfig(dashboardConfigUrl ?? localDashboardConfigUrl),
     enabled,
     staleTime: 5 * 60 * 1000,
     retry: 2,
