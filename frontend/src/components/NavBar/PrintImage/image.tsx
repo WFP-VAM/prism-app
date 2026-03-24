@@ -13,8 +13,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
 import { appConfig, safeCountry } from 'config';
-import { AdminCodeString } from 'config/types';
-import { getBoundaryLayerSingleton } from 'config/utils';
+import { AdminCodeString, LayerKey } from 'config/types';
+import { getBoundaryLayerSingleton, getWMSLayersWithChart } from 'config/utils';
 import useResizeObserver from 'utils/useOnResizeObserver';
 import useLayers from 'utils/layers-utils';
 import { availableDatesSelector } from 'context/serverStateSlice';
@@ -174,6 +174,15 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const [dekadInterval, setDekadInterval] = useState(1);
 
   const [isDownloading, setIsDownloading] = useState(false);
+
+  const wmsLayers = useMemo(() => getWMSLayersWithChart(), []);
+  const [selectedLayerId, setSelectedLayerId] = useState<LayerKey | null>(null);
+
+  useEffect(() => {
+    if (selectedLayerId === null && wmsLayers.length > 0) {
+      setSelectedLayerId(wmsLayers[0].id);
+    }
+  }, [wmsLayers, selectedLayerId]);
 
   const { selectedLayersWithDateSupport } = useLayers();
   const availableCadences = useMemo(() => {
@@ -583,6 +592,9 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       setPreviewMapWidth,
       previewMapHeight,
       setPreviewMapHeight,
+      wmsLayers,
+      selectedLayerId,
+      setSelectedLayerId,
     },
   };
 
