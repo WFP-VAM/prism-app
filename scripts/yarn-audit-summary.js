@@ -72,15 +72,17 @@ function formatAuditFailureReport(lines) {
 
 function run() {
   const { level, groups } = getAuditOptions();
-  const yarnCommand = process.platform === 'win32' ? 'yarn.cmd' : 'yarn';
+  // Windows: .cmd shims are not valid spawn targets without a shell (spawnSync → EINVAL).
+  const spawnOptions = {
+    cwd: process.cwd(),
+    encoding: 'utf8',
+    ...(process.platform === 'win32' ? { shell: true } : {}),
+  };
 
   const result = spawnSync(
-    yarnCommand,
+    'yarn',
     ['audit', '--json', '--level', level, '--groups', ...groups],
-    {
-      cwd: process.cwd(),
-      encoding: 'utf8',
-    },
+    spawnOptions,
   );
 
   const stdout = result.stdout || '';
