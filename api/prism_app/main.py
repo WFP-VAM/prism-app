@@ -367,27 +367,25 @@ def stats_demo(
     group_by: Optional[GroupBy] = None,
     intersect_comparison: Optional[str] = None,
 ):
-    """Return examples of zonal statistics."""
+    """Return examples of zonal statistics (Mozambique CHIRPS dekad + admin zones)."""
     # The GET endpoint is used for demo purposes only
     geotiff_url = urlunparse(
         ParseResult(
             scheme="https",
-            netloc="mongolia.sibelius-datacube.org:5000",
-            path="/",
+            netloc="api.earthobservation.vam.wfp.org",
+            path="/ows/wcs",
             params="",
             query=urlencode(
-                {
-                    "service": "WCS",
-                    "request": "GetCoverage",
-                    "version": "1.0.0",
-                    "coverage": "ModisAnomaly",
-                    "crs": "EPSG:4326",
-                    "bbox": "86.5,36.7,119.7,55.3",
-                    "width": "1196",
-                    "height": "672",
-                    "format": "GeoTIFF",
-                    "time": "2020-03-01",
-                }
+                [
+                    ("service", "WCS"),
+                    ("version", "2.0.1"),
+                    ("request", "GetCoverage"),
+                    ("coverageId", "rfh_dekad"),
+                    ("format", "image/geotiff"),
+                    ("subset", "Long(31,40)"),
+                    ("subset", "Lat(-25,-11)"),
+                    ("subset", 'time("2020-03-01T00:00:00.000Z")'),
+                ]
             ),
             fragment="",
         )
@@ -397,7 +395,7 @@ def stats_demo(
         ParseResult(
             scheme="https",
             netloc="prism-admin-boundaries.s3.us-east-2.amazonaws.com",
-            path="mng_admin_boundaries.json",
+            path="moz_admin_boundaries.json",
             params="",
             query="",
             fragment="",
@@ -424,7 +422,7 @@ def stats_demo(
         mask_geotiff=None,
     )
 
-    # TODO - Properly encode before returning. Mongolian characters are returned as hex.
+    # TODO - Properly encode before returning. Non-ASCII admin names may appear as hex.
     return features
 
 
