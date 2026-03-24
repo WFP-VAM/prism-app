@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { AggregationOperations } from '../aggregationOperations';
+import { AggregationOperations } from 'config/aggregationOperations';
 import {
   ChartHeight,
   DashboardElementType,

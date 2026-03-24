@@ -7,8 +7,8 @@ import {
   dashboardConfigUrl,
   localDashboardConfigUrl,
 } from 'config';
-import { fetchDashboardConfig } from 'config/dashboard/fetchDashboardConfig';
-import { getDashboardConfigErrorMessage } from 'config/dashboard/dashboardConfigQueryError';
+import { fetchDashboardConfig } from 'dashboardConfig/fetchDashboardConfig';
+import { getDashboardConfigErrorMessage } from 'dashboardConfig/dashboardConfigQueryError';
 import { setDashboards } from 'context/dashboardStateSlice';
 import { addNotification } from 'context/notificationStateSlice';
 

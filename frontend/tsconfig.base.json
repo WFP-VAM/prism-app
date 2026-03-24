@@ -13,6 +13,7 @@
       "config": ["config/index.ts"],
       "config/*": ["config/*"],
       "context/*": ["context/*"],
+      "dashboardConfig/*": ["dashboardConfig/*"],
       "hooks/*": ["hooks/*"],
       "utils/*": ["utils/*"],
       "muiTheme": ["muiTheme"],

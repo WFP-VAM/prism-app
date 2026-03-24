@@ -1051,7 +1051,7 @@ export {
   DashboardElementType,
   DashboardMapPosition,
   DashboardMode,
-} from './dashboard/dashboardEnums';
+} from '../dashboardConfig/dashboardEnums';
 
 export type {
   Dashboard,
@@ -1060,4 +1060,4 @@ export type {
   DashboardMapConfig,
   DashboardTableConfig,
   DashboardTextConfig,
-} from './dashboard/schema';
+} from '../dashboardConfig/schema';
