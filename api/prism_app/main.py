@@ -15,7 +15,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from prism_app.auth import optional_validate_user, validate_user
 from prism_app.caching import FilePath, cache_file, cache_geojson
 from prism_app.database.alert_model import AlchemyEncoder, AlertModel
-from prism_app.database.database import AlertsDataBase
+from prism_app.database.database import DB_URI, AlertsDataBase
 from prism_app.database.user_info_model import UserInfoModel
 from prism_app.export_maps import export_maps
 from prism_app.googleflood import (
@@ -39,6 +39,8 @@ from prism_app.zonal_stats import (
 )
 from pydantic import EmailStr, HttpUrl, ValidationError
 from requests import get
+from sqlalchemy import create_engine
+from starlette_admin.contrib.sqla import Admin
 
 from .geotiff_from_stac_api import get_geotiff
 from .models import AlertsModel, StatsModel, UserInfoPydanticModel
@@ -71,6 +73,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+admin_engine = create_engine(DB_URI)
+admin = Admin(admin_engine, title="PRISM Admin", base_url="/admin")
+admin.mount_to(app)
 
 alert_db = AlertsDataBase()
 
