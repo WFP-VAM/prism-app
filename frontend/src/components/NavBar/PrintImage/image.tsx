@@ -15,8 +15,8 @@ import { getFormattedDate } from 'utils/date-utils';
 import { appConfig, safeCountry } from 'config';
 import { AdminCodeString, LayerKey } from 'config/types';
 import { getBoundaryLayerSingleton, getWMSLayersWithChart } from 'config/utils';
-import useResizeObserver from 'utils/useOnResizeObserver';
 import useLayers from 'utils/layers-utils';
+import useResizeObserver from 'utils/useOnResizeObserver';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { getPossibleDatesForLayer } from 'utils/server-utils';
 import { useBoundaryData } from 'utils/useBoundaryData';
@@ -175,56 +175,66 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
   const [isDownloading, setIsDownloading] = useState(false);
 
-  const wmsLayers = useMemo(() => getWMSLayersWithChart(), []);
+  const selectableLayers = useMemo(() => getWMSLayersWithChart(), []);
   const [selectedLayerId, setSelectedLayerId] = useState<LayerKey | null>(null);
 
   useEffect(() => {
-    if (selectedLayerId === null && wmsLayers.length > 0) {
-      setSelectedLayerId(wmsLayers[0].id);
+    if (selectedLayerId === null && selectableLayers.length > 0) {
+      setSelectedLayerId(selectableLayers[0].id);
     }
-  }, [wmsLayers, selectedLayerId]);
+  }, [selectableLayers, selectedLayerId]);
 
   const { selectedLayersWithDateSupport } = useLayers();
+  const availableDates = useSelector(availableDatesSelector);
+
+  const printSelectedLayer = useMemo(
+    () =>
+      selectedLayerId
+        ? (selectableLayers.find(l => l.id === selectedLayerId) ?? null)
+        : null,
+    [selectedLayerId, selectableLayers],
+  );
+
   const availableCadences = useMemo(() => {
-    const coverageWindow = selectedLayersWithDateSupport[0]?.coverageWindow;
+    const coverageWindow =
+      printSelectedLayer?.coverageWindow ??
+      selectedLayersWithDateSupport[0]?.coverageWindow;
     return getAvailableCadences(coverageWindow);
-  }, [selectedLayersWithDateSupport]);
+  }, [printSelectedLayer, selectedLayersWithDateSupport]);
   useEffect(() => {
     if (!availableCadences.includes(cadence)) {
       setCadence(availableCadences[0]);
     }
   }, [availableCadences, cadence]);
 
-  const availableDates = useSelector(availableDatesSelector);
   const shouldEnableBatchMaps =
     // selectedLayersWithDateSupport.length > 0 &&
     // selectedLayersWithDateSupport.every(
     //   layer => layer.type === 'wms' && (layer.coverageWindow || layer.validity),
     // );
-    false; // Temporarily disable batch maps
+    true; // Temporarily enable batch maps
 
   const shouldShowMultiLayerWarning = selectedLayersWithDateSupport.length > 1;
 
   const { filteredBatchDates, mapCount, uniqueQueryDates } = useMemo(() => {
     const { startDate, endDate } = dateRangeForBatchMaps;
-    if (!startDate || !endDate || selectedLayersWithDateSupport.length === 0) {
+    if (!startDate || !endDate || !printSelectedLayer) {
       return { filteredBatchDates: [], mapCount: 0, uniqueQueryDates: [] };
     }
 
-    const allDateItems = selectedLayersWithDateSupport.flatMap(layer =>
-      getPossibleDatesForLayer(layer, availableDates),
+    const dateItems = getPossibleDatesForLayer(
+      printSelectedLayer,
+      availableDates,
     );
 
     const startOfStartDate = new Date(startDate).setUTCHours(0, 0, 0, 0);
     const endOfEndDate = new Date(endDate).setUTCHours(23, 59, 59, 999);
 
-    const rawUniqueDates = [
-      ...new Set(allDateItems.map(item => item.queryDate)),
-    ]
+    const rawUniqueDates = [...new Set(dateItems.map(item => item.queryDate))]
       .filter(d => d >= startOfStartDate && d <= endOfEndDate)
       .sort((a, b) => a - b);
 
-    const coverageWindow = selectedLayersWithDateSupport[0]?.coverageWindow;
+    const coverageWindow = printSelectedLayer.coverageWindow;
     const dates = filterDatesByCadence(
       rawUniqueDates,
       cadence,
@@ -238,7 +248,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     };
   }, [
     availableDates,
-    selectedLayersWithDateSupport,
+    printSelectedLayer,
     dateRangeForBatchMaps,
     cadence,
     dekadInterval,
@@ -379,6 +389,12 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     handleDownloadMenuClose();
 
     try {
+      if (!printSelectedLayer) {
+        console.error('No layer selected for batch download');
+        setIsDownloading(false);
+        return;
+      }
+
       const formattedDates = filteredBatchDates.map(timestamp =>
         getFormattedDate(timestamp, 'default'),
       );
@@ -416,6 +432,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         .map(date => {
           const params = new URLSearchParams(baseParams);
           params.set('date', date);
+          params.set('hazardLayerIds', printSelectedLayer.id);
 
           // Map bounds and zoom
           if (mapBounds) {
@@ -592,7 +609,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       setPreviewMapWidth,
       previewMapHeight,
       setPreviewMapHeight,
-      wmsLayers,
+      wmsLayers: selectableLayers,
       selectedLayerId,
       setSelectedLayerId,
     },

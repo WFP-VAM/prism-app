@@ -366,24 +366,6 @@ function PrintConfig() {
           />
         </div>
 
-        {/* Layer */}
-        <div className={classes.optionWrap}>
-          <FormControl fullWidth size="small" variant="outlined">
-            <InputLabel>{t('Layer')}</InputLabel>
-            <Select
-              value={selectedLayerId ?? ''}
-              label={t('Layer')}
-              onChange={e => setSelectedLayerId(e.target.value as LayerKey)}
-            >
-              {wmsLayers.map(layer => (
-                <MenuItem key={layer.id} value={layer.id}>
-                  {t(layer.title)}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </div>
-
         {/* Aspect Ratio */}
         <AspectRatioSelector
           value={mapDimensions.aspectRatio}
@@ -660,6 +642,25 @@ function PrintConfig() {
             />
             {toggles.batchMapsVisibility && (
               <GreyContainer>
+                <GreyContainerSection>
+                  {/* Layer */}
+                  <FormControl fullWidth size="small" variant="outlined">
+                    <InputLabel>{t('Layer')}</InputLabel>
+                    <Select
+                      value={selectedLayerId ?? ''}
+                      label={t('Layer')}
+                      onChange={e =>
+                        setSelectedLayerId(e.target.value as LayerKey)
+                      }
+                    >
+                      {wmsLayers.map(layer => (
+                        <MenuItem key={layer.id} value={layer.id}>
+                          {t(layer.title)}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </GreyContainerSection>
                 <GreyContainerSection>
                   <DateRangePicker />
                 </GreyContainerSection>
