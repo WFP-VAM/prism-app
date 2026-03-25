@@ -1,5 +1,7 @@
 import {
   binaryFind,
+  dateWithoutTime,
+  datesAreEqualWithoutTime,
   findClosestDate,
   generateDateItemsRange,
   generateDatesRange,
@@ -174,6 +176,43 @@ test('Test generateDatesRange', () => {
     1675728000000, 1675814400000, 1675900800000, 1675987200000, 1676073600000,
     1676160000000, 1676246400000,
   ]);
+});
+
+describe('dateWithoutTime / datesAreEqualWithoutTime (PR #1781 calendar & intersection)', () => {
+  test('datesAreEqualWithoutTime matches equality of dateWithoutTime keys', () => {
+    const sameUtcDay: [number | Date, number | Date][] = [
+      [Date.UTC(2024, 8, 1, 12, 0, 0), Date.UTC(2024, 8, 1, 23, 59, 59, 999)],
+      [new Date('2024-09-01T12:00:00.000Z'), new Date('2024-09-01T00:00:00.000Z')],
+    ];
+    for (const [a, b] of sameUtcDay) {
+      expect(datesAreEqualWithoutTime(a, b)).toBe(true);
+      expect(dateWithoutTime(a)).toBe(dateWithoutTime(b));
+    }
+
+    const differentUtcDay: [number | Date, number | Date][] = [
+      [Date.UTC(2024, 8, 1, 12, 0, 0), Date.UTC(2024, 8, 2, 0, 0, 0, 0)],
+    ];
+    for (const [a, b] of differentUtcDay) {
+      expect(datesAreEqualWithoutTime(a, b)).toBe(false);
+      expect(dateWithoutTime(a)).not.toBe(dateWithoutTime(b));
+    }
+  });
+
+  test('DatePicker filterDate uses same keys as timeline: UTC-noon layer ts vs selectedPickerDate shape', () => {
+    // global-setup.cjs sets TZ=UTC for Jest; DateSelector builds picker day from UTC Y/M/D like below.
+    expect(process.env.TZ).toBe('UTC');
+
+    const layerDisplayMs = Date.UTC(2024, 8, 1, 12, 0, 0);
+    const utcDate = new Date(layerDisplayMs);
+    const pickerDay = new Date(
+      utcDate.getUTCFullYear(),
+      utcDate.getUTCMonth(),
+      utcDate.getUTCDate(),
+    );
+
+    const includedDatesSet = new Set([dateWithoutTime(layerDisplayMs)]);
+    expect(includedDatesSet.has(dateWithoutTime(pickerDay))).toBe(true);
+  });
 });
 
 describe('can find closest date', () => {

@@ -383,11 +383,15 @@ const DateSelector = memo(() => {
     });
   }, [dateIndex, range, availableDates]);
 
+  // Keys use dateWithoutTime (UTC calendar day via epoch); same as datesAreEqualWithoutTime / timeline logic.
+  // Jest and most CI use TZ=UTC (see test/global-setup.cjs). In positive-offset zones, local calendar cells
+  // and UTC-noon layer timestamps can diverge for the same nominal day — same as pre–PR-1781 includeDates.
   const includedDatesSet = useMemo(
     () =>
       new Set([
         ...(availableDates?.map(d => dateWithoutTime(d)) ?? []),
-        dateWithoutTime(today.getTime()),
+        // Allow picking "today" (UTC-noon normalized above) so unsupported dates surface a clear error
+        dateWithoutTime(today),
       ]),
     [availableDates],
   );
@@ -732,7 +736,7 @@ const DateSelector = memo(() => {
             // Include "today" so that the user can select it and get an error message if
             // the selected date is not available
             filterDate={(date: Date) =>
-              includedDatesSet.has(dateWithoutTime(date.getTime()))
+              includedDatesSet.has(dateWithoutTime(date))
             }
           />
 
