@@ -940,6 +940,44 @@ exports[`renders as expected 1`] = `
               </div>
             </div>
           </div>
+          <div>
+            <mock-tooltip
+              arrow="true"
+              classes="[object Object]"
+              placement="top"
+              title="Selecting this option will apply the template above to create multiple maps over a time period of your choice."
+            >
+              <div
+                class="makeStyles-collapsibleWrapper-7 "
+              >
+                <mock-switch
+                  checked="false"
+                  classes="[object Object]"
+                  classname="makeStyles-switch-26"
+                  color="primary"
+                  inputprops="[object Object]"
+                />
+                <mock-typography
+                  style="padding-left: 0.5rem;"
+                  variant="h4"
+                >
+                  Create a sequence of maps
+                </mock-typography>
+              </div>
+            </mock-tooltip>
+            <div
+              class="MuiCollapse-root MuiCollapse-hidden"
+              style="min-height: 0px; padding-left: 8px;"
+            >
+              <div
+                class="MuiCollapse-wrapper"
+              >
+                <div
+                  class="MuiCollapse-wrapperInner"
+                />
+              </div>
+            </div>
+          </div>
           <mock-button
             classname="makeStyles-gutter-3"
             color="primary"
