@@ -78,6 +78,23 @@ const dashboardRowSchema = dashboardRowInputSchema.transform(d => ({
   path: d.path?.trim() ? d.path : generateSlugFromTitle(d.title),
 }));
 
+/** Wire format version for `dashboard.json`. Bump only when existing payloads would fail validation. */
+export const CURRENT_DASHBOARD_SCHEMA_VERSION = 1 as const;
+
+const dashboardRowsSchema = z.array(dashboardRowSchema);
+
+const dashboardConfigV1Schema = z.object({
+  schemaVersion: z.literal(1),
+  rows: dashboardRowsSchema,
+});
+
+const dashboardConfigRootSchema = z.preprocess((raw: unknown) => {
+  if (Array.isArray(raw)) {
+    return { schemaVersion: 1, rows: raw };
+  }
+  return raw;
+}, dashboardConfigV1Schema);
+
 export type DashboardChartConfig = z.infer<typeof dashboardChartConfigSchema>;
 export type DashboardMapConfig = z.infer<typeof dashboardMapConfigSchema>;
 export type DashboardTextConfig = z.infer<typeof dashboardTextConfigSchema>;
@@ -85,7 +102,8 @@ export type DashboardTableConfig = z.infer<typeof dashboardTableConfigSchema>;
 export type DashboardElements = z.infer<typeof dashboardElementSchema>;
 export type Dashboard = z.infer<typeof dashboardRowSchema>;
 
-export const dashboardConfigArraySchema = z.array(dashboardRowSchema);
+/** Validated list of dashboard rows (same as root `rows` after parse). */
+export const dashboardConfigArraySchema = dashboardRowsSchema;
 
 export type DashboardConfigArray = z.infer<typeof dashboardConfigArraySchema>;
 
@@ -95,16 +113,17 @@ export type ValidateDashboardConfigResult =
 
 /**
  * Runtime validation for dashboard.json (S3 fetch and future import-JSON).
+ * Accepts a top-level JSON array (implicit v1) or `{ "schemaVersion": 1, "rows": [...] }`.
  * Dashboard element shapes and Dashboard are inferred from this schema (see config/types re-exports).
  */
 export function validateDashboardConfig(
   raw: unknown,
 ): ValidateDashboardConfigResult {
-  const result = dashboardConfigArraySchema.safeParse(raw);
+  const result = dashboardConfigRootSchema.safeParse(raw);
   if (!result.success) {
     return { success: false, error: result.error };
   }
-  return { success: true, data: result.data };
+  return { success: true, data: result.data.rows };
 }
 
 export function formatDashboardValidationError(error: z.ZodError): string {

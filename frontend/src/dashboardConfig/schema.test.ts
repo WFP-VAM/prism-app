@@ -1,6 +1,7 @@
 import {
   validateDashboardConfig,
   formatDashboardValidationError,
+  CURRENT_DASHBOARD_SCHEMA_VERSION,
 } from './schema';
 import { DashboardElementType } from 'config/types';
 import dashboardConfigSample from 'test/fixtures/dashboard-config.sample.json';
@@ -51,6 +52,17 @@ const INVALID_DASHBOARD_CONFIG_CASES: ReadonlyArray<{
       },
     ],
   },
+  {
+    description: 'unsupported schemaVersion on document',
+    raw: {
+      schemaVersion: 99,
+      rows: minimalValidDashboard,
+    },
+  },
+  {
+    description: 'document missing rows',
+    raw: { schemaVersion: CURRENT_DASHBOARD_SCHEMA_VERSION },
+  },
 ];
 
 describe('validateDashboardConfig', () => {
@@ -59,6 +71,19 @@ describe('validateDashboardConfig', () => {
     expect(result.success).toBe(true);
     if (result.success) {
       expect(result.data.length).toBeGreaterThanOrEqual(1);
+    }
+  });
+
+  it('accepts explicit v1 document { schemaVersion, rows }', () => {
+    const fromArray = validateDashboardConfig(minimalValidDashboard);
+    const fromDoc = validateDashboardConfig({
+      schemaVersion: CURRENT_DASHBOARD_SCHEMA_VERSION,
+      rows: minimalValidDashboard,
+    });
+    expect(fromDoc.success).toBe(true);
+    expect(fromArray.success).toBe(true);
+    if (fromDoc.success && fromArray.success) {
+      expect(fromDoc.data).toEqual(fromArray.data);
     }
   });
 

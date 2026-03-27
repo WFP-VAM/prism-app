@@ -438,19 +438,21 @@ The application will show an icon next to the layer in the legend if this attrib
 
 Dashboards are customizable reports that combine maps, charts, tables, and text blocks in a flexible layout. Definitions are loaded at **runtime** from object storage, not from the JS bundle.
 
-Set **`REACT_APP_DASHBOARD_CONFIG_BUCKET_URL`** to the HTTPS base of your dashboard bucket (no trailing slash). The app requests:
+Set **`REACT_APP_DASHBOARD_CONFIG_BUCKET_URL`** to the HTTPS base of your **production** dashboard bucket (no trailing slash). The app requests:
 
 `{REACT_APP_DASHBOARD_CONFIG_BUCKET_URL}/{REACT_APP_COUNTRY}/dashboard.json`
 
 For example, with `REACT_APP_COUNTRY=mozambique` and bucket URL `https://my-bucket.s3.amazonaws.com`, the file must be available at `https://my-bucket.s3.amazonaws.com/mozambique/dashboard.json`.
 
-If this variable is **unset**, the app **fetches** `/<REACT_APP_COUNTRY>/dashboard.json` from the dev server or static host (Vite serves `frontend/public/` at the site root). You must **add** `frontend/public/<country>/dashboard.json` yourself to test dashboards locally; if the file is missing, the request fails and an error is shown.
+**Dev bucket (recommended for schema experiments):** Set **`REACT_APP_DASHBOARD_CONFIG_DEV_BUCKET_URL`** to the dev bucket base URL and **`REACT_APP_DASHBOARD_CONFIG_USE_DEV_BUCKET=true`** so local builds read from dev instead of production. Upload to dev with [`scripts/push-dashboard-config.sh`](scripts/push-dashboard-config.sh) using the **`--dev`** flag. Defaults: **prism-dashboard-config** (prod), **prism-dashboard-config-dev** (dev). See **[`frontend/src/dashboardConfig/README.md`](frontend/src/dashboardConfig/README.md)** for schema versioning, when to bump `schemaVersion`, and examples.
+
+If no bucket URL is **set**, the app **fetches** `/<REACT_APP_COUNTRY>/dashboard.json` from the dev server or static host (Vite serves `frontend/public/` at the site root). You must **add** `frontend/public/<country>/dashboard.json` yourself to test dashboards locally; if the file is missing, the request fails and an error is shown.
 
 **Local development:** Copy a sample file to `public/<REACT_APP_COUNTRY>/dashboard.json` (e.g. `public/mozambique/dashboard.json` when testing Mozambique). Use [`frontend/test/fixtures/dashboard-config.sample.json`](frontend/test/fixtures/dashboard-config.sample.json) as a starting point—it is a **test fixture** and reference payload, not a country’s real deployed config.
 
 Alternatively, set `REACT_APP_DASHBOARD_CONFIG_BUCKET_URL` to your dev server origin (e.g. `http://localhost:3000` with the default Vite port in `vite.config.ts`) so the app requests `{origin}/{country}/dashboard.json` the same way as against S3.
 
-The JSON shape is documented below (same schema as historically used in repo `dashboards.json` files).
+The JSON shape is documented below (same schema as historically used in repo `dashboards.json` files). Payloads may be a top-level array or `{ "schemaVersion": 1, "rows": [...] }`; a bare array is the usual upload format.
 
 ### Dashboard Configuration Structure
 

@@ -7,33 +7,40 @@
 # See this guide to set up AWS CLI and credentials: https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-sso.html#sso-configure-profile-token-auto-sso
 #
 # Usage:
-#   ./push-dashboard-config.sh [--profile <name>] <country> <path-to-dashboard.json>
+#   ./push-dashboard-config.sh [--profile <name>] [--dev] <country> <path-to-dashboard.json>
 #
 # Examples:
 #   ./push-dashboard-config.sh mozambique ./my-dashboard.json
+#   ./push-dashboard-config.sh --dev mozambique ./my-dashboard.json
 #   ./push-dashboard-config.sh --profile wfp nepal ~/configs/nepal-dashboard.json
 #   AWS_PROFILE=wfp ./push-dashboard-config.sh nepal ~/configs/nepal-dashboard.json
 #
 # Environment (optional):
-#   DASHBOARD_S3_BUCKET  — default: prism-dashboard-config
-#   AWS_REGION           — default: eu-west-1 (must match bucket region)
-#   AWS_PROFILE          — when set and --profile is omitted, used instead of default wfp-admin
+#   DASHBOARD_S3_BUCKET      — default: prism-dashboard-config (production)
+#   DASHBOARD_S3_DEV_BUCKET  — default: prism-dashboard-config-dev (used with --dev)
+#   AWS_REGION               — default: eu-west-1 (must match bucket region)
+#   AWS_PROFILE              — when set and --profile is omitted, used instead of default wfp-admin
 #
 
 set -euo pipefail
 
-BUCKET="${DASHBOARD_S3_BUCKET:-prism-dashboard-config}"
+BUCKET_PROD="${DASHBOARD_S3_BUCKET:-prism-dashboard-config}"
+BUCKET_DEV="${DASHBOARD_S3_DEV_BUCKET:-prism-dashboard-config-dev}"
 REGION="${AWS_REGION:-eu-west-1}"
 export AWS_DEFAULT_REGION="$REGION"
 
+BUCKET="$BUCKET_PROD"
+
 usage() {
-  echo "Usage: $0 [--profile <name>] <country> <path-to-local-dashboard.json>" >&2
-  echo "  Archives existing s3://$BUCKET/<country>/dashboard.json as dashboard_MMDDYY.json (or with time suffix if needed), then uploads the local file as dashboard.json." >&2
+  echo "Usage: $0 [--profile <name>] [--dev] <country> <path-to-local-dashboard.json>" >&2
+  echo "  Archives existing s3://<bucket>/<country>/dashboard.json as dashboard_MMDDYY.json (or with time suffix if needed), then uploads the local file as dashboard.json." >&2
+  echo "  --dev             use dev bucket ($BUCKET_DEV by default; override with DASHBOARD_S3_DEV_BUCKET)." >&2
   echo "  --profile <name>  passed to aws CLI (optional; default: \$AWS_PROFILE or wfp-admin)." >&2
   exit 1
 }
 
 AWS_PROFILE_ARGS=()
+USE_DEV_BUCKET=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --profile)
@@ -44,6 +51,10 @@ while [[ $# -gt 0 ]]; do
       AWS_PROFILE_ARGS=(--profile "$2")
       shift 2
       ;;
+    --dev)
+      USE_DEV_BUCKET=1
+      shift
+      ;;
     -*)
       echo "Error: unknown option: $1" >&2
       usage
@@ -53,6 +64,10 @@ while [[ $# -gt 0 ]]; do
       ;;
   esac
 done
+
+if [[ "$USE_DEV_BUCKET" -eq 1 ]]; then
+  BUCKET="$BUCKET_DEV"
+fi
 
 if [[ ${#AWS_PROFILE_ARGS[@]} -eq 0 ]]; then
   AWS_PROFILE_ARGS=(--profile "${AWS_PROFILE:-wfp-admin}")

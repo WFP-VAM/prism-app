@@ -84,6 +84,8 @@ const {
   REACT_APP_TESTING: TESTING,
   REACT_APP_QA_MODE: QA_MODE,
   REACT_APP_DASHBOARD_CONFIG_BUCKET_URL: DASHBOARD_CONFIG_BUCKET_URL,
+  REACT_APP_DASHBOARD_CONFIG_DEV_BUCKET_URL: DASHBOARD_CONFIG_DEV_BUCKET_URL,
+  REACT_APP_DASHBOARD_CONFIG_USE_DEV_BUCKET: DASHBOARD_CONFIG_USE_DEV_BUCKET,
 } = process.env;
 
 const safeCountry =
@@ -109,7 +111,7 @@ const {
 } = shared;
 
 // Perform deep merges between shared and country-specific configurations
-// Dashboard definitions: from S3 when REACT_APP_DASHBOARD_CONFIG_BUCKET_URL is set; otherwise
+// Dashboard definitions: from S3 when a dashboard bucket URL is set; otherwise
 // from public /{country}/dashboard.json (you must add that file locally to test; see useDashboardConfig).
 const appConfig: Record<string, any> = merge(
   {},
@@ -117,7 +119,12 @@ const appConfig: Record<string, any> = merge(
   configMap[safeCountry].appConfig,
 );
 
-const dashboardConfigBaseUrl = DASHBOARD_CONFIG_BUCKET_URL?.replace(/\/$/, '');
+const useDevDashboardBucket = DASHBOARD_CONFIG_USE_DEV_BUCKET === 'true';
+const dashboardBucketUrlRaw = useDevDashboardBucket
+  ? (DASHBOARD_CONFIG_DEV_BUCKET_URL ?? DASHBOARD_CONFIG_BUCKET_URL)
+  : DASHBOARD_CONFIG_BUCKET_URL;
+
+const dashboardConfigBaseUrl = dashboardBucketUrlRaw?.replace(/\/$/, '');
 export const dashboardConfigUrl = dashboardConfigBaseUrl
   ? `${dashboardConfigBaseUrl}/${safeCountry}/dashboard.json`
   : null;
