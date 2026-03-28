@@ -21,7 +21,11 @@ import { availableDatesSelector } from 'context/serverStateSlice';
 import { getPossibleDatesForLayer } from 'utils/server-utils';
 import { useBoundaryData } from 'utils/useBoundaryData';
 import { EXPORT_API_URL } from 'utils/constants';
-import { addNotification } from 'context/notificationStateSlice';
+import {
+  addNotification,
+  removeNotification,
+} from 'context/notificationStateSlice';
+import { stringHash } from 'utils/string-utils';
 import { downloadToFile } from '../../MapView/utils';
 import {
   dateRangeSelector,
@@ -238,6 +242,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
   useEffect(() => {
     if (
+      open &&
       toggles.batchMapsVisibility &&
       dateRangeForBatchMaps.startDate &&
       dateRangeForBatchMaps.endDate &&
@@ -253,6 +258,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       );
     }
   }, [
+    open,
     filteredBatchDates,
     toggles.batchMapsVisibility,
     dateRangeForBatchMaps.startDate,
@@ -260,6 +266,20 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     dispatch,
     t,
   ]);
+
+  useEffect(() => {
+    if (!open) {
+      dispatch(
+        removeNotification(
+          stringHash(
+            t(
+              'A map could not be made for the dates you selected. Please choose an earlier date range and/or a shorter cadence.',
+            ),
+          ),
+        ),
+      );
+    }
+  }, [open, dispatch, t]);
 
   useEffect(() => {
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
