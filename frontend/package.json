@@ -117,7 +117,7 @@
     "canvas": "link:./node_modules/.cache/null",
     "glob": "^13.0.6",
     "js-yaml": "^4.1.1",
-    "brace-expansion": "^2.0.2",
+    "brace-expansion": "^2.0.3",
     "@isaacs/brace-expansion": ">=5.0.1",
     "diff": ">=5.2.2",
     "string-width": "4.2.3",
