@@ -182,7 +182,10 @@ describe('dateWithoutTime / datesAreEqualWithoutTime (PR #1781 calendar & inters
   test('datesAreEqualWithoutTime matches equality of dateWithoutTime keys', () => {
     const sameUtcDay: [number | Date, number | Date][] = [
       [Date.UTC(2024, 8, 1, 12, 0, 0), Date.UTC(2024, 8, 1, 23, 59, 59, 999)],
-      [new Date('2024-09-01T12:00:00.000Z'), new Date('2024-09-01T00:00:00.000Z')],
+      [
+        new Date('2024-09-01T12:00:00.000Z'),
+        new Date('2024-09-01T00:00:00.000Z'),
+      ],
     ];
     for (const [a, b] of sameUtcDay) {
       expect(datesAreEqualWithoutTime(a, b)).toBe(true);
