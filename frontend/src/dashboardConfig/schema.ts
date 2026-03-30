@@ -9,7 +9,7 @@ import { generateSlugFromTitle } from 'utils/string-utils';
 
 const preSelectedMapLayerSchema = z.object({
   layerId: z.string(),
-  opacity: z.number().min(0).max(1).optional(),
+  opacity: z.number().min(0).max(1).optional().default(1),
 });
 
 const dashboardMapConfigSchema = z.object({
@@ -18,8 +18,11 @@ const dashboardMapConfigSchema = z.object({
   mapPosition: z.enum(DashboardMapPosition).optional(),
   minMapBounds: z.array(z.number()).optional(),
   title: z.string().optional(),
-  legendVisible: z.boolean().optional(),
-  legendPosition: z.enum(DashboardMapPosition).optional(),
+  legendVisible: z.boolean().optional().default(true),
+  legendPosition: z
+    .enum(DashboardMapPosition)
+    .optional()
+    .default(DashboardMapPosition.right),
   preSelectedMapLayers: z.array(preSelectedMapLayerSchema).default([]),
 });
 
@@ -30,7 +33,7 @@ const dashboardChartConfigSchema = z.object({
   layerId: z.string(),
   adminUnitLevel: z.number().optional(),
   adminUnitId: z.number().optional(),
-  chartHeight: z.enum(ChartHeight).optional(),
+  chartHeight: z.enum(ChartHeight).optional().default(ChartHeight.TALL),
 });
 
 const dashboardTextConfigSchema = z.object({
@@ -51,10 +54,10 @@ const dashboardTableConfigSchema = z.object({
   baselineLayerId: z.string(),
   threshold: thresholdDefinitionSchema.optional(),
   stat: z.enum(AggregationOperations),
-  maxRows: z.number().optional(),
-  addResultToMap: z.boolean().optional(),
-  sortColumn: z.union([z.string(), z.number()]).optional(),
-  sortOrder: z.enum(['asc', 'desc']).optional(),
+  maxRows: z.number().optional().default(10),
+  addResultToMap: z.boolean().optional().default(true),
+  sortColumn: z.union([z.string(), z.number()]).optional().default('name'),
+  sortOrder: z.enum(['asc', 'desc']).optional().default('asc'),
 });
 
 const dashboardElementSchema = z.discriminatedUnion('type', [
@@ -67,7 +70,7 @@ const dashboardElementSchema = z.discriminatedUnion('type', [
 const dashboardRowInputSchema = z.object({
   title: z.string(),
   path: z.string().optional(),
-  isEditable: z.boolean().optional(),
+  isEditable: z.boolean().optional().default(false),
   firstColumn: z.array(dashboardElementSchema),
   secondColumn: z.array(dashboardElementSchema).optional(),
   thirdColumn: z.array(dashboardElementSchema).optional(),

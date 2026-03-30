@@ -2,7 +2,8 @@ import {
   validateDashboardConfig,
   formatDashboardValidationError,
 } from './schema';
-import { DashboardElementType } from 'config/types';
+import { ChartHeight, DashboardElementType } from 'config/types';
+import { DashboardMapPosition } from './dashboardEnums';
 import dashboardConfigSample from 'test/fixtures/dashboard-config.sample.json';
 
 const minimalValidDashboard = [
@@ -71,6 +72,56 @@ describe('validateDashboardConfig', () => {
       expect(result.data[0].firstColumn[0].type).toBe(
         DashboardElementType.TEXT,
       );
+    }
+  });
+
+  it('applies README default values for optional dashboard and element fields', () => {
+    const result = validateDashboardConfig([
+      {
+        title: 'Defaults',
+        firstColumn: [
+          {
+            type: DashboardElementType.MAP,
+            preSelectedMapLayers: [{ layerId: 'x' }],
+          },
+          {
+            type: DashboardElementType.CHART,
+            startDate: '2025-01-01',
+            layerId: 'y',
+          },
+          {
+            type: DashboardElementType.TABLE,
+            startDate: '2025-01-01',
+            hazardLayerId: 'h',
+            baselineLayerId: 'b',
+            stat: 'mean',
+          },
+        ],
+      },
+    ]);
+    expect(result.success).toBe(true);
+    if (!result.success) {
+      return;
+    }
+    const row = result.data[0];
+    expect(row.isEditable).toBe(false);
+    const [mapEl, chartEl, tableEl] = row.firstColumn;
+    expect(mapEl.type).toBe(DashboardElementType.MAP);
+    if (mapEl.type === DashboardElementType.MAP) {
+      expect(mapEl.legendVisible).toBe(true);
+      expect(mapEl.legendPosition).toBe(DashboardMapPosition.right);
+      expect(mapEl.preSelectedMapLayers[0].opacity).toBe(1);
+    }
+    expect(chartEl.type).toBe(DashboardElementType.CHART);
+    if (chartEl.type === DashboardElementType.CHART) {
+      expect(chartEl.chartHeight).toBe(ChartHeight.TALL);
+    }
+    expect(tableEl.type).toBe(DashboardElementType.TABLE);
+    if (tableEl.type === DashboardElementType.TABLE) {
+      expect(tableEl.maxRows).toBe(10);
+      expect(tableEl.addResultToMap).toBe(true);
+      expect(tableEl.sortColumn).toBe('name');
+      expect(tableEl.sortOrder).toBe('asc');
     }
   });
 

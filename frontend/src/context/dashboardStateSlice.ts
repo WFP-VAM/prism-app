@@ -67,6 +67,7 @@ export interface DashboardState {
 const EMPTY_DASHBOARD_FALLBACK: Dashboard = {
   title: 'Dashboard',
   path: 'dashboard',
+  isEditable: false,
   firstColumn: [],
   secondColumn: [],
   thirdColumn: [],

@@ -12,6 +12,7 @@ describe('dashboardStateSlice', () => {
       {
         title: 'One',
         path: 'one',
+        isEditable: false,
         firstColumn: [
           {
             type: DashboardElementType.TEXT,
