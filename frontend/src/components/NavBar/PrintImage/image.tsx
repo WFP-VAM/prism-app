@@ -175,7 +175,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
   const [isDownloading, setIsDownloading] = useState(false);
 
-  const selectableLayers = useMemo(() => getWMSLayersWithChart(), []);
+  const selectableLayers = getWMSLayersWithChart();
   const [selectedLayerId, setSelectedLayerId] = useState<LayerKey | null>(null);
 
   useEffect(() => {

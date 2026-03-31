@@ -47,11 +47,15 @@ function PrintPreview() {
   }, [selectedLayerId, availableDates, dispatch]);
 
   const printSelectedLayers = useMemo(() => {
-    if (selectedLayerId && LayerDefinitions[selectedLayerId]) {
+    if (
+      printConfig?.toggles.batchMapsVisibility &&
+      selectedLayerId &&
+      LayerDefinitions[selectedLayerId]
+    ) {
       return [LayerDefinitions[selectedLayerId]];
     }
     return [];
-  }, [selectedLayerId]);
+  }, [selectedLayerId, printConfig?.toggles.batchMapsVisibility]);
 
   const adminLevelLayersWithFillPattern = printSelectedLayers.filter(
     layer =>
@@ -115,6 +119,27 @@ function PrintPreview() {
 
   // Get the style and layers of the old map
   const selectedMapStyle = selectedMap.getStyle();
+
+  // When batch maps has a selected layer, strip all raster layers from the
+  // snapshot so the React layer component is the sole renderer (avoids stacking
+  // regardless of which layer was active on the main map).
+  if (selectedMapStyle && printSelectedLayers.length > 0) {
+    const rasterLayersInSnapshot = selectedMapStyle.layers.filter(
+      layer => layer.type === 'raster',
+    );
+    const sourcesToRemove = new Set(
+      rasterLayersInSnapshot
+        .map(layer => ('source' in layer ? (layer.source as string) : null))
+        .filter(Boolean) as string[],
+    );
+
+    selectedMapStyle.layers = selectedMapStyle.layers.filter(
+      layer => layer.type !== 'raster',
+    );
+    sourcesToRemove.forEach(sourceId => {
+      delete selectedMapStyle.sources[sourceId];
+    });
+  }
 
   // Determine active panel for AA markers
   const activePanel =
