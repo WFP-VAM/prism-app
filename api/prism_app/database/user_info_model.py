@@ -2,27 +2,40 @@
 
 import datetime
 import logging
+from typing import Any
 
-from sqlalchemy import JSON, TIMESTAMP, Column, DateTime, Identity, Integer, String
-from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
-from sqlalchemy.sql.sqltypes import Boolean
+from sqlalchemy import Column, DateTime, Identity, Integer, String
+from sqlalchemy.dialects.postgresql import JSONB
+from sqlmodel import Field, SQLModel
 
 logger = logging.getLogger(__name__)
 
-Base = declarative_base()
 
-
-class UserInfoModel(Base):  # type: ignore
-    """UserInfo ORM that defines a table to hold auth data."""
+class UserInfoModel(SQLModel, table=True):
+    """Auth user row; primary key is `username` (TypeORM / prod schema)."""
 
     __tablename__ = "user_info"
-    id = Column("id", Integer, Identity(start=1, cycle=True), primary_key=True)
-    username = Column("username", String, nullable=False)
-    password = Column("password", String, nullable=False)
-    salt = Column("salt", String, nullable=True)
-    access = Column("access", JSON, nullable=True)
-    deployment = Column("deployment", String, nullable=True)
-    organization = Column("organization", String, nullable=True)
-    email = Column("email", String, nullable=True)
-    details = Column("details", String)
-    created_at = Column("created_at", DateTime, default=datetime.datetime.now)
+
+    username: str = Field(sa_column=Column(String, primary_key=True, nullable=False))
+    id: int | None = Field(
+        default=None,
+        sa_column=Column(Integer, Identity(always=False), nullable=False, unique=False),
+    )
+    password: str = Field(sa_column=Column(String, nullable=False))
+    salt: str | None = Field(default=None, sa_column=Column(String, nullable=True))
+    access: dict[str, Any] | list[Any] | None = Field(
+        default=None,
+        sa_column=Column(JSONB, nullable=True),
+    )
+    deployment: str | None = Field(
+        default=None, sa_column=Column(String, nullable=True)
+    )
+    organization: str | None = Field(
+        default=None, sa_column=Column(String, nullable=True)
+    )
+    email: str | None = Field(default=None, sa_column=Column(String, nullable=True))
+    details: str | None = Field(default=None, sa_column=Column(String, nullable=True))
+    created_at: datetime.datetime = Field(
+        default_factory=datetime.datetime.now,
+        sa_column=Column(DateTime, nullable=False),
+    )
