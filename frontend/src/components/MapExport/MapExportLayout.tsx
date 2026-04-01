@@ -556,6 +556,11 @@ function MapExportLayout({
             forPrinting
             listStyle={classes.legendListStyle}
             showDescription={toggles.fullLayerDescription}
+            overrideLayers={
+              selectedLayers && selectedLayers.length > 0
+                ? selectedLayers
+                : undefined
+            }
           />
         </div>
       )}
