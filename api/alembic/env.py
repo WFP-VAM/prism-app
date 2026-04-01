@@ -1,8 +1,34 @@
 """Alembic environment: PRISM alerts DB migrations (SQLModel metadata)."""
 
+import os
 from logging.config import fileConfig
+from pathlib import Path
 
 from alembic import context
+
+
+def _load_api_dotenv() -> None:
+    """Populate os.environ from api/.env if present (Poetry/alembic does not load .env)."""
+    env_path = Path(__file__).resolve().parents[1] / ".env"
+    if not env_path.is_file():
+        return
+    for raw_line in env_path.read_text().splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        if "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        key = key.strip()
+        if not key or key in os.environ:
+            continue
+        value = value.strip()
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
+            value = value[1:-1]
+        os.environ[key] = value
+
+
+_load_api_dotenv()
 
 # Register all table models on SQLModel.metadata
 from prism_app.database.alert_model import AlertModel  # noqa: F401

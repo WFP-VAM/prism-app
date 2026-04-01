@@ -105,7 +105,7 @@ The instance will need to have read/write access to S3. Make sure it has the nec
 
 The alerts/auth PostgreSQL schema (`alert`, `user_info`, `anticipatory_action_alerts`, and `anticipatory_action_alerts_type_enum`) is modeled in SQLModel under `prism_app/database/`. **All new schema changes are made with Alembic** in this directory (`alembic.ini`, `alembic/env.py`, `alembic/versions/`). The TypeORM files under `alerting/migration/` are **historical reference only**; do not add new TypeORM migrations for this database.
 
-**Connection URL** is the same as the API: `PRISM_ALERTS_DATABASE_URL`, or the `POSTGRES_*` variables documented in `prism_app/database/database.py`.
+**Connection URL** is the same as the API: `PRISM_ALERTS_DATABASE_URL`, or the `POSTGRES_*` variables documented in `prism_app/database/database.py`. For local `poetry run alembic` commands, you can put `PRISM_ALERTS_DATABASE_URL` in `api/.env`; `alembic/env.py` loads that file into the process environment before connecting (unlike the shell, Python does not read `.env` by itself).
 
 From the `api/` directory:
 
@@ -132,8 +132,7 @@ PRISM_ALERTS_DATABASE_URL="postgresql://..." poetry run alembic stamp prism_aler
      poetry run alembic revision --autogenerate -m "short description of change"
    ```
 
-3. **Review** the new file under `alembic/versions/` carefully. Autogenerate can miss or mis-handle renames, constraints, and PostgreSQL-specific details; adjust the script by hand when needed. For changes it cannot infer, use `poetry run alembic revision -m "..."` and edit the upgrade/downgrade functions manually.
-4. Apply locally and re-test: `poetry run alembic upgrade head` (with the same URL). Useful commands: `poetry run alembic history`, `poetry run alembic current`.
+3. Apply locally and re-test: `poetry run alembic upgrade head` (with the same URL). Useful commands: `poetry run alembic history`, `poetry run alembic current`.
 
 ## Development
 
