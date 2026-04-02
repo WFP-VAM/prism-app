@@ -9,7 +9,7 @@ package-mode = false
 [tool.poetry.dependencies]
 PyJWT = ">=2.12.0"
 python = ">=3.12,<3.13"
-requests = ">=2.33.0"
+requests = "^2.33.0"
 playwright = "1.53.0"
 fastapi = "^0.120.2"
 httpx = "^0.28.0"
@@ -39,7 +39,8 @@ duckdb = "^1.2.0"
 vcrpy = "^8.0.0"
 urllib3 = "^2.6.3"
 # Force updates for vulnerable transitive dependencies
-pygments = ">=2.20.0"
+aiohttp = ">=3.13.4"
+pygments = "^2.20.0"
 starlette = "^0.49.1"
 werkzeug = ">=3.1.6"
 h11 = "^0.16.0"
