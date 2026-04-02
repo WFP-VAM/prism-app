@@ -56,17 +56,17 @@
   },
   "dependencies": {
     "geojson": "^0.5.0",
-    "lodash": "^4.17.21",
+    "lodash": "^4.18.0",
     "moment": "^2.29.4",
     "xml-utils": "^1.6.0-0"
   },
   "resolutions": {
     "brace-expansion": "^2.0.2",
     "@isaacs/brace-expansion": ">=5.0.1",
-    "lodash": "^4.17.23"
+    "lodash": "^4.18.0"
   },
   "_resolutionsNotes": {
     "brace-expansion": "CVE-2025-5889 - Security fix - Keep resolution: rimraf 6.1.2 → glob → minimatch still uses v2, cannot upgrade to v4 (breaks eslint/minimatch)",
-    "lodash": "CVE-2025-13465 - Security fix - GHSA-xxjr-mmjv-4gpg - Prototype Pollution in _.unset and _.omit - Forces v4.17.23+"
+    "lodash": "Lodash security fixes - GHSA-r5fr-rjxr-66jc / GHSA-f23m-r3pf-42rh (CVE-2026-4800 / CVE-2026-2950) and prior - Forces v4.18.0+"
   }
 }
