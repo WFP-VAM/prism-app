@@ -41,7 +41,6 @@ const useStyles = makeStyles(() =>
     intervalInput: {
       zIndex: 0,
       marginBottom: '8px',
-      width: '100%',
       '& input': {
         fontSize: '0.875rem',
       },
