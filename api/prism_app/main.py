@@ -42,6 +42,8 @@ from requests import get
 from sqlalchemy import create_engine
 from starlette_admin.contrib.sqla import Admin
 
+from prism_app.admin import register_alerts_admin_views
+
 from .geotiff_from_stac_api import get_geotiff
 from .models import AlertsModel, StatsModel
 
@@ -76,6 +78,7 @@ app.add_middleware(
 
 admin_engine = create_engine(DB_URI)
 admin = Admin(admin_engine, title="PRISM Admin", base_url="/admin")
+register_alerts_admin_views(admin)
 admin.mount_to(app)
 
 alert_db = AlertsDataBase()
