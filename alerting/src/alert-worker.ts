@@ -1,19 +1,29 @@
 import { isNaN } from 'lodash';
 import Bluebird from 'bluebird';
 import nodeFetch from 'node-fetch';
-import { createConnection, Repository } from 'typeorm';
 import { API_URL } from './constants';
-import { Alert } from './entities/alerts.entity';
+import type { Alert } from './types/alert';
 import { calculateAlert } from './utils/analysis-utils';
 import { sendEmail } from './utils/email';
 import { fetchCoverageLayerDays, formatUrl, WMS } from 'prism-common';
+import { findActiveAlerts, updateAlertLastTriggered } from './db/alert-queries';
 
 const RUNALL = false;
 
 // @ts-ignore
 global.fetch = nodeFetch;
 
-async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
+export type AlertWorkerDb = {
+  findActiveAlerts: () => Promise<Alert[]>;
+  updateLastTriggered: (id: number, lastTriggered: Date) => Promise<void>;
+};
+
+const defaultAlertDb: AlertWorkerDb = {
+  findActiveAlerts,
+  updateLastTriggered: updateAlertLastTriggered,
+};
+
+async function processAlert(alert: Alert, db: AlertWorkerDb) {
   const {
     baseUrl,
     serverLayerName,
@@ -124,13 +134,11 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
     );
   }
   // Update lastTriggered (inactive during testing)
-  await alertRepository.update(alert.id, { lastTriggered: maxDate });
+  await db.updateLastTriggered(alert.id, maxDate);
 }
-async function run() {
-  const connection = await createConnection();
-  const alertRepository = connection.getRepository(Alert);
 
-  const alerts = await alertRepository.find({ where: { active: true } });
+export async function runAlertWorker(db: AlertWorkerDb = defaultAlertDb) {
+  const alerts = await db.findActiveAlerts();
   console.info(
     `Processing ${
       alerts.length
@@ -141,7 +149,7 @@ async function run() {
     alerts,
     async (alert) => {
       try {
-        await processAlert(alert, alertRepository);
+        await processAlert(alert, db);
       } catch (error) {
         console.error(`Error processing alert ${alert.id}:`, error);
       }
@@ -150,5 +158,14 @@ async function run() {
   );
 }
 
-console.log(`Alert worker started at: ${new Date().toISOString()}`);
-run();
+async function main() {
+  console.log(`Alert worker started at: ${new Date().toISOString()}`);
+  await runAlertWorker();
+}
+
+if (require.main === module) {
+  main().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}

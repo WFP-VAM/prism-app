@@ -11,7 +11,7 @@
   "license": "MIT",
   "packageManager": "yarn@1.22.22",
   "_resolutions": {
-    "glob": ">=11.1.0 because of jest and typeorm-seeding ; try to remove once in a while."
+    "glob": ">=11.1.0 because of jest; try to remove once in a while."
   },
   "resolutions": {
     "glob": "^13.0.6",
@@ -24,7 +24,7 @@
     "**/filelist/minimatch": "^5.1.9"
   },
   "_resolutionsNotes": {
-    "glob": "CVE-2025-64756 + jest/typeorm-seeding compatibility - Parent: (direct devDependency), typeorm-seeding, typeorm, rimraf, jest - Already at latest (13.0.6) - Review periodically",
+    "glob": "CVE-2025-64756 + jest compatibility - Parent: (direct devDependency), rimraf, jest - Already at latest (13.0.6) - Review periodically",
     "js-yaml": "CVE-2025-64718 - Security fix - Parent: eslint - Already at latest (4.1.1) - Keep resolution until eslint updates",
     "form-data": "CVE-2025-7783 - Security fix - GHSA-fjxv-7rqg-78g4 - Forces v3.0.4+ for transitive dependencies",
     "lodash": "Lodash security fixes - GHSA-r5fr-rjxr-66jc / GHSA-f23m-r3pf-42rh (CVE-2026-4800 / CVE-2026-2950) and prior - Forces v4.18.0+",
@@ -43,11 +43,6 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "typeorm": "ts-node $(yarn bin typeorm)",
-    "migration:generate": "yarn typeorm migration:generate",
-    "migration:run": "yarn typeorm migration:run",
-    "migration:revert": "yarn typeorm migration:revert",
-    "typeorm-seeding": "ts-node $(yarn bin typeorm-seeding)",
     "alert-worker": "yarn ts-node src/alert-worker.ts",
     "aa-storm-alert-worker": "yarn ts-node src/aa-storm-alert-runner.ts",
     "aa-flood-alert-worker": "yarn ts-node src/aa-flood-alert-runner.ts",
@@ -67,8 +62,6 @@
     "pg": "^8.5.1",
     "prism-common": "file:../common",
     "puppeteer": "^24.33.0",
-    "typeorm": "^0.3.28",
-    "typeorm-naming-strategies": "^1.1.0",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
@@ -77,6 +70,7 @@
     "@types/node": "20.14.8",
     "@types/node-fetch": "^2.6.13",
     "@types/nodemailer": "^7.0.3",
+    "@types/pg": "^8.11.10",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
     "audit-ci": "^7.1.0",
@@ -90,7 +84,6 @@
     "ts-loader": "^6.2.1",
     "ts-node": "^8.10.2",
     "tsconfig-paths": "^3.9.0",
-    "typeorm-seeding": "^1.6.1",
     "typescript": "5.9.3",
     "yargs": "^15.4.1"
   },

@@ -1,12 +1,13 @@
 import { buildAnticipatoryActionAlerts } from './test-utils';
 import { run } from './worker';
+import {
+  findAnticipatoryActionAlerts,
+  updateAnticipatoryActionAlert,
+} from '../db/aa-queries';
 
-jest.mock('../entities/anticipatoryActionAlerts.entity');
-
-const mockedCreateConnection = jest.fn();
-jest.mock('typeorm', () => ({
-  ...jest.requireActual('typeorm'),
-  createConnection: () => mockedCreateConnection(),
+jest.mock('../db/aa-queries', () => ({
+  findAnticipatoryActionAlerts: jest.fn(),
+  updateAnticipatoryActionAlert: jest.fn(),
 }));
 
 const mockedSendStormAlertEmail = jest.fn();
@@ -27,22 +28,20 @@ jest.mock('./alert', () => {
 
 describe('worker', () => {
   afterEach(() => {
-    jest.resetAllMocks();
+    jest.clearAllMocks();
   });
 
   it('updates the db', async () => {
-    // arrange
-
-    const mockedUpdate = jest.fn();
     const alert = buildAnticipatoryActionAlerts({});
-    const mockedGetRepository = jest.fn().mockReturnValue({
-      find: () => [alert],
-      update: mockedUpdate,
-    });
-    mockedCreateConnection.mockResolvedValue({
-      getRepository: () => mockedGetRepository(),
-      close: jest.fn(),
-    });
+    (findAnticipatoryActionAlerts as jest.Mock).mockResolvedValue([
+      {
+        ...alert,
+        type: 'storm' as const,
+        lastTriggeredAt: undefined,
+        lastRanAt: undefined,
+      },
+    ]);
+    (updateAnticipatoryActionAlert as jest.Mock).mockResolvedValue(undefined);
 
     const availableReports = [
       {
@@ -73,8 +72,10 @@ describe('worker', () => {
 
     await run();
 
-    expect(mockedCreateConnection).toHaveBeenCalled();
-    expect(mockedGetRepository).toHaveBeenCalled();
+    expect(findAnticipatoryActionAlerts).toHaveBeenCalledWith(
+      'mozambique',
+      'storm',
+    );
     expect(mockedSendStormAlertEmail).toHaveBeenCalledTimes(1);
     expect(mockedSendStormAlertEmail).toHaveBeenCalledWith(emailPayloads[0]);
     expect(mockedBuildEmailPayloads).toHaveBeenCalledWith(
@@ -83,11 +84,9 @@ describe('worker', () => {
       alert.emails,
       alert.country,
     );
-    expect(mockedUpdate).toHaveBeenCalledWith(
-      {
-        id: 1,
-      },
-      {
+    expect(updateAnticipatoryActionAlert).toHaveBeenCalledWith(
+      1,
+      expect.objectContaining({
         lastStates: {
           '07-20242025': {
             refTime: '2025-01-30T12:00:00Z',
@@ -96,27 +95,24 @@ describe('worker', () => {
         },
         lastRanAt: expect.any(Date),
         lastTriggeredAt: expect.any(Date),
-      },
+      }),
     );
   });
 
   it('updates the db for multiple alerts', async () => {
-    const mockedUpdate = jest.fn();
-
     const alerts = [
       buildAnticipatoryActionAlerts({ id: 1, country: 'mozambique' }),
       buildAnticipatoryActionAlerts({ id: 2, country: 'mozambique' }),
     ];
-
-    const mockedGetRepository = jest.fn().mockReturnValue({
-      find: () => alerts,
-      update: mockedUpdate,
-    });
-
-    mockedCreateConnection.mockResolvedValue({
-      getRepository: () => mockedGetRepository(),
-      close: jest.fn(),
-    });
+    (findAnticipatoryActionAlerts as jest.Mock).mockResolvedValue(
+      alerts.map((a) => ({
+        ...a,
+        type: 'storm' as const,
+        lastTriggeredAt: undefined,
+        lastRanAt: undefined,
+      })),
+    );
+    (updateAnticipatoryActionAlert as jest.Mock).mockResolvedValue(undefined);
 
     const availableReports = [
       {
@@ -148,17 +144,17 @@ describe('worker', () => {
 
     await run();
 
-    expect(mockedCreateConnection).toHaveBeenCalled();
-    expect(mockedGetRepository).toHaveBeenCalled();
+    expect(findAnticipatoryActionAlerts).toHaveBeenCalledWith(
+      'mozambique',
+      'storm',
+    );
     expect(mockedSendStormAlertEmail).toHaveBeenCalledTimes(2);
     expect(mockedSendStormAlertEmail).toHaveBeenCalledWith(emailPayloads[0]);
 
-    expect(mockedUpdate).toHaveBeenCalledTimes(2);
-    expect(mockedUpdate).toHaveBeenCalledWith(
-      {
-        id: 1,
-      },
-      {
+    expect(updateAnticipatoryActionAlert).toHaveBeenCalledTimes(2);
+    expect(updateAnticipatoryActionAlert).toHaveBeenCalledWith(
+      1,
+      expect.objectContaining({
         lastStates: {
           '07-20242025': {
             refTime: '2025-01-30T12:00:00Z',
@@ -167,13 +163,11 @@ describe('worker', () => {
         },
         lastRanAt: expect.any(Date),
         lastTriggeredAt: expect.any(Date),
-      },
+      }),
     );
-    expect(mockedUpdate).toHaveBeenCalledWith(
-      {
-        id: 2,
-      },
-      {
+    expect(updateAnticipatoryActionAlert).toHaveBeenCalledWith(
+      2,
+      expect.objectContaining({
         lastStates: {
           '07-20242025': {
             refTime: '2025-01-30T12:00:00Z',
@@ -182,7 +176,7 @@ describe('worker', () => {
         },
         lastRanAt: expect.any(Date),
         lastTriggeredAt: expect.any(Date),
-      },
+      }),
     );
   });
 });
