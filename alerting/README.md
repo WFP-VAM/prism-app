@@ -23,17 +23,7 @@ The alerting stack uses the same PostgreSQL database as the PRISM API for `alert
 - Alerts are triggered by a cron job running within the `alerting-node` process.
 - Run `docker compose up` to launch the `alerting-node` and `alerting-db` processes.
 - The system checks database entries to determine **which country** needs to be triggered.
-- Currently, **Mozambique is supported**. To add it, connect to the `psql` console of `alerting-db` and run the following commands:
-
-```sql
--- Storm
-INSERT INTO anticipatory_action_alerts (country, emails, prism_url, type)
-VALUES ('Mozambique', ARRAY['email1@example.com'], 'https://prism.moz.wfp.org', 'storm');
-
--- Flood
-INSERT INTO anticipatory_action_alerts (country, emails, prism_url, type)
-VALUES ('Mozambique', ARRAY['email1@example.com'], 'https://prism.moz.wfp.org', 'flood');
-```
+- Currently, **Mozambique is supported**. After the DB schema exists (Alembic baseline / TypeORM history in prod), seed local data from the **API** (same repo area that owns migrations)—see **Local dev seed data** in [`api/README.md`](../api/README.md): `poetry run python scripts/seed_alerts_db.py` from `api/`. Connection vars are `PRISM_ALERTS_DATABASE_URL` or `POSTGRES_*` in `api/.env`; for host access to `alerting-db`, use port `54321` as in [`.env.example`](./.env.example).
 
 - **country**: The target country for the alert.  
 - **emails**: A list of email addresses that will receive the alert notification.  
@@ -44,59 +34,7 @@ The `type` column is a PostgreSQL ENUM (`anticipatory_action_alerts_type_enum`).
 
 ### Optional: threshold `alert` rows + `user_info` (local testing)
 
-For [Starlette Admin](https://github.com/jowilf/starlette-admin) or API smoke tests, you can seed the shared `alert` and `user_info` tables (same DB as above). Example after `psql` connects:
-
-```sql
-INSERT INTO user_info (
-  username, password, salt, access, email, deployment, organization, details, created_at
-)
-VALUES (
-  'local_dev_user',
-  'localdev',
-  'false',
-  '{"province": "01"}'::jsonb,
-  'local-dev@example.com',
-  'local',
-  'WFP',
-  'Seed user for local testing',
-  NOW()
-)
-ON CONFLICT (username) DO NOTHING;
-
-INSERT INTO alert (
-  email, prism_url, alert_name, alert_config, min, max, zones, active,
-  created_at, updated_at, last_triggered
-)
-VALUES (
-  'seed-alert-1@example.com',
-  'https://prism.moz.wfp.org',
-  'Seed rainfall threshold',
-  '{"id": "rfh_dekad", "type": "wms", "title": "Rainfall", "serverLayerName": "rfh_dekad", "baseUrl": "https://api.earthobservation.vam.wfp.org/ows/", "wcsConfig": {}}'::jsonb,
-  50,
-  200,
-  '{"type": "FeatureCollection", "name": "zones", "features": []}'::jsonb,
-  true,
-  NOW(),
-  NOW(),
-  TIMESTAMP '2026-01-15 10:00:00'
-),
-(
-  'seed-alert-2@example.com',
-  'https://prism.moz.wfp.org',
-  'Seed inactive alert',
-  '{"id": "test-layer", "type": "wms", "title": "Test layer", "serverLayerName": "layer", "baseUrl": "https://example.org/ows/", "wcsConfig": {}}'::jsonb,
-  1,
-  10,
-  NULL,
-  false,
-  NOW(),
-  NOW(),
-  NULL
-);
-```
-
-- **User password:** with `salt = 'false'`, the PRISM API validates this row using a **plain-text** password match ([`prism_app/auth.py`](../api/prism_app/auth.py))—use HTTP Basic `local_dev_user` / `localdev` when auth is enabled.
-- Re-running the `alert` inserts will add duplicate rows unless you delete those emails first; the user insert is idempotent on `username`.
+The same API seed step loads a [Starlette Admin](https://github.com/jowilf/starlette-admin)–friendly `user_info` row and two sample `alert` rows (SQL under [`api/scripts/seed_local_alerts_dev.sql`](../api/scripts/seed_local_alerts_dev.sql)). **User password:** with `salt = 'false'`, the PRISM API validates this row using a **plain-text** password match ([`prism_app/auth.py`](../api/prism_app/auth.py))—use HTTP Basic `local_dev_user` / `localdev` when auth is enabled. Re-running the seed replaces the fixed `seed-alert-*@example.com` rows and leaves `user_info` unchanged if the username already exists.
 
 ### Shared worker runner
 
