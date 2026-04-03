@@ -1,5 +1,14 @@
 import { DashboardConfigFetchError } from './fetchDashboardConfig';
 
+/** True when dashboard.json is missing (HTTP 404): normal state, not a load failure. */
+export function isDashboardConfigNotFoundError(error: unknown): boolean {
+  return (
+    error instanceof DashboardConfigFetchError &&
+    error.causeType === 'http' &&
+    error.status === 404
+  );
+}
+
 /**
  * Maps fetch/validation errors to user-facing notification messages (shared with tests).
  */

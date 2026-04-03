@@ -444,9 +444,9 @@ Set **`REACT_APP_DASHBOARD_CONFIG_BUCKET_URL`** to the HTTPS base of your dashbo
 
 For example, with `REACT_APP_COUNTRY=mozambique` and bucket URL `https://my-bucket.s3.amazonaws.com`, the file must be available at `https://my-bucket.s3.amazonaws.com/mozambique/dashboard.json`.
 
-If this variable is **unset**, the app **fetches** `/<REACT_APP_COUNTRY>/dashboard.json` from the dev server or static host (Vite serves `frontend/public/` at the site root). You must **add** `frontend/public/<country>/dashboard.json` yourself to test dashboards locally; if the file is missing, the request fails and an error is shown.
+If this variable is **unset**, the app **fetches** `/data/<REACT_APP_COUNTRY>/dashboard.json` from the dev server or static host (Vite serves `frontend/public/` at the site root). Add `frontend/public/data/<country>/dashboard.json` to test dashboards locally; if the file is missing, dashboards stay empty and the Dashboard nav link is hidden.
 
-**Local development:** Copy a sample file to `public/<REACT_APP_COUNTRY>/dashboard.json` (e.g. `public/mozambique/dashboard.json` when testing Mozambique). Use [`frontend/test/fixtures/dashboard-config.sample.json`](frontend/test/fixtures/dashboard-config.sample.json) as a starting point—it is a **test fixture** and reference payload, not a country’s real deployed config.
+**Local development:** Copy a sample file to `public/data/<REACT_APP_COUNTRY>/dashboard.json` (e.g. `public/data/mozambique/dashboard.json` when testing Mozambique). Use [`frontend/test/fixtures/dashboard-config.sample.json`](frontend/test/fixtures/dashboard-config.sample.json) as a starting point—it is a **test fixture** and reference payload, not a country’s real deployed config.
 
 Alternatively, set `REACT_APP_DASHBOARD_CONFIG_BUCKET_URL` to your dev server origin (e.g. `http://localhost:3000` with the default Vite port in `vite.config.ts`) so the app requests `{origin}/{country}/dashboard.json` the same way as against S3.
 

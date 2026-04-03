@@ -7,7 +7,10 @@ import {
   localDashboardConfigUrl,
 } from 'config';
 import { fetchDashboardConfig } from 'dashboardConfig/fetchDashboardConfig';
-import { getDashboardConfigErrorMessage } from 'dashboardConfig/dashboardConfigQueryError';
+import {
+  getDashboardConfigErrorMessage,
+  isDashboardConfigNotFoundError,
+} from 'dashboardConfig/dashboardConfigQueryError';
 import { setDashboards } from 'context/dashboardStateSlice';
 import { addNotification } from 'context/notificationStateSlice';
 
@@ -17,8 +20,9 @@ const retryDelayMs = (attemptIndex: number) =>
 
 /**
  * Loads dashboard.json from S3 when `dashboardConfigUrl` is set; otherwise from
- * `localDashboardConfigUrl` (`public/{country}/dashboard.json`). Add that file under
- * `frontend/public/` locally if you want to test dashboards without S3.
+ * `localDashboardConfigUrl` (`public/data/{country}/dashboard.json`). Add that file under
+ * `frontend/public/data/{country}/` locally if you want to test dashboards without S3.
+ * A missing file (404) leaves dashboards empty so the header hides the Dashboard link.
  */
 export function useDashboardConfig(): void {
   const dispatch = useDispatch();
@@ -48,10 +52,15 @@ export function useDashboardConfig(): void {
           dispatch(setDashboards(data));
           return;
         } catch (error) {
-          lastError = error;
           if (cancelled) {
             return;
           }
+          // No dashboard.json for this instance is expected: empty list hides the nav link.
+          if (isDashboardConfigNotFoundError(error)) {
+            dispatch(setDashboards([]));
+            return;
+          }
+          lastError = error;
           if (attempt < RETRY_ATTEMPTS - 1) {
             await new Promise<void>(resolve => {
               setTimeout(resolve, retryDelayMs(attempt));

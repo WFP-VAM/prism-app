@@ -1,5 +1,32 @@
-import { getDashboardConfigErrorMessage } from './dashboardConfigQueryError';
+import {
+  getDashboardConfigErrorMessage,
+  isDashboardConfigNotFoundError,
+} from './dashboardConfigQueryError';
 import { DashboardConfigFetchError } from './fetchDashboardConfig';
+
+describe('isDashboardConfigNotFoundError', () => {
+  it('is true for HTTP 404 fetch error', () => {
+    expect(
+      isDashboardConfigNotFoundError(
+        new DashboardConfigFetchError('Not Found', 'http', 404),
+      ),
+    ).toBe(true);
+  });
+
+  it('is false for other HTTP statuses and non-http errors', () => {
+    expect(
+      isDashboardConfigNotFoundError(
+        new DashboardConfigFetchError('fail', 'http', 500),
+      ),
+    ).toBe(false);
+    expect(
+      isDashboardConfigNotFoundError(
+        new DashboardConfigFetchError('bad json', 'json'),
+      ),
+    ).toBe(false);
+    expect(isDashboardConfigNotFoundError(new Error('x'))).toBe(false);
+  });
+});
 
 describe('getDashboardConfigErrorMessage', () => {
   it('uses DashboardConfigFetchError message', () => {
