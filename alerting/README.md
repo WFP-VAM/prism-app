@@ -7,6 +7,10 @@ It comes with a database which persists alerts related data. The database is pro
 
 There is a unique service running for all country specific frontends.
 
+## Database schema and migrations
+
+The alerting stack uses the same PostgreSQL database as the PRISM API for `alert`, `user_info`, and `anticipatory_action_alerts`. **Python/Alembic under `api/alembic/` is the sole owner of new schema migrations** for this database. The TypeORM migration history in `migration/` remains useful as a record of how production was built, but **do not add new TypeORM migrations** for these tables or enums. Change SQLModel in `api/prism_app/database/`, add an Alembic revision under `api/alembic/versions/`, and run `alembic upgrade head` with `PRISM_ALERTS_DATABASE_URL` (see `api/README.md`).
+
 ## Functionalities
 
 - `anticipatory action storm` alerts
@@ -36,7 +40,63 @@ VALUES ('Mozambique', ARRAY['email1@example.com'], 'https://prism.moz.wfp.org', 
 - **prism_url**: The base URL of the PRISM platform for redirection link and screenshot capture.
 - **type**: Hazard type enum: `storm` | `flood` | `drought`.
 
-The `type` column is a PostgreSQL ENUM. Migration `1738850000000-add-type-to-anticipatory-action-alerts.ts` creates it.
+The `type` column is a PostgreSQL ENUM (`anticipatory_action_alerts_type_enum`). It was originally created by TypeORM migration `1738850000000-add-type-to-anticipatory-action-alerts.ts`; the authoritative definition for new environments is the Alembic baseline under `api/alembic/versions/`.
+
+### Optional: threshold `alert` rows + `user_info` (local testing)
+
+For [Starlette Admin](https://github.com/jowilf/starlette-admin) or API smoke tests, you can seed the shared `alert` and `user_info` tables (same DB as above). Example after `psql` connects:
+
+```sql
+INSERT INTO user_info (
+  username, password, salt, access, email, deployment, organization, details, created_at
+)
+VALUES (
+  'local_dev_user',
+  'localdev',
+  'false',
+  '{"province": "01"}'::jsonb,
+  'local-dev@example.com',
+  'local',
+  'WFP',
+  'Seed user for local testing',
+  NOW()
+)
+ON CONFLICT (username) DO NOTHING;
+
+INSERT INTO alert (
+  email, prism_url, alert_name, alert_config, min, max, zones, active,
+  created_at, updated_at, last_triggered
+)
+VALUES (
+  'seed-alert-1@example.com',
+  'https://prism.moz.wfp.org',
+  'Seed rainfall threshold',
+  '{"id": "rfh_dekad", "type": "wms", "title": "Rainfall", "serverLayerName": "rfh_dekad", "baseUrl": "https://api.earthobservation.vam.wfp.org/ows/", "wcsConfig": {}}'::jsonb,
+  50,
+  200,
+  '{"type": "FeatureCollection", "name": "zones", "features": []}'::jsonb,
+  true,
+  NOW(),
+  NOW(),
+  TIMESTAMP '2026-01-15 10:00:00'
+),
+(
+  'seed-alert-2@example.com',
+  'https://prism.moz.wfp.org',
+  'Seed inactive alert',
+  '{"id": "test-layer", "type": "wms", "title": "Test layer", "serverLayerName": "layer", "baseUrl": "https://example.org/ows/", "wcsConfig": {}}'::jsonb,
+  1,
+  10,
+  NULL,
+  false,
+  NOW(),
+  NOW(),
+  NULL
+);
+```
+
+- **User password:** with `salt = 'false'`, the PRISM API validates this row using a **plain-text** password match ([`prism_app/auth.py`](../api/prism_app/auth.py))—use HTTP Basic `local_dev_user` / `localdev` when auth is enabled.
+- Re-running the `alert` inserts will add duplicate rows unless you delete those emails first; the user insert is idempotent on `username`.
 
 ### Shared worker runner
 

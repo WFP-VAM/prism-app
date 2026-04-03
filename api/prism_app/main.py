@@ -12,6 +12,7 @@ import rasterio  # type: ignore
 from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
+from prism_app.admin import register_alerts_admin_views
 from prism_app.auth import optional_validate_user, validate_user
 from prism_app.caching import FilePath, cache_file, cache_geojson
 from prism_app.database.alert_model import AlchemyEncoder, AlertModel
@@ -76,6 +77,7 @@ app.add_middleware(
 
 admin_engine = create_engine(DB_URI)
 admin = Admin(admin_engine, title="PRISM Admin", base_url="/admin")
+register_alerts_admin_views(admin)
 admin.mount_to(app)
 
 alert_db = AlertsDataBase()
