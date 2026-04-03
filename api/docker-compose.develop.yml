@@ -12,6 +12,8 @@ services:
       - "80:80"
     environment:
       - "RUN=uvicorn prism_app.main:app --host 0.0.0.0 --port 80"
+      # Clear URL so DB_URI is built from POSTGRES_* variables below (!getenv(...) or format(...) in database.py).
+      - PRISM_ALERTS_DATABASE_URL=
       - POSTGRES_HOST=host.docker.internal
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
