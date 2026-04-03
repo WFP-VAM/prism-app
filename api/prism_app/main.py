@@ -12,6 +12,7 @@ import rasterio  # type: ignore
 from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
+from prism_app.admin import register_alerts_admin_views
 from prism_app.auth import optional_validate_user, validate_user
 from prism_app.caching import FilePath, cache_file, cache_geojson
 from prism_app.database.alert_model import AlchemyEncoder, AlertModel
@@ -41,8 +42,6 @@ from pydantic import EmailStr, HttpUrl, ValidationError
 from requests import get
 from sqlalchemy import create_engine
 from starlette_admin.contrib.sqla import Admin
-
-from prism_app.admin import register_alerts_admin_views
 
 from .geotiff_from_stac_api import get_geotiff
 from .models import AlertsModel, StatsModel

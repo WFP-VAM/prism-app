@@ -1,11 +1,10 @@
 """Starlette Admin: read-only views for the alerts Postgres tables."""
 
-from starlette.requests import Request
-from starlette_admin.contrib.sqla import Admin, ModelView
-
 from prism_app.database.alert_model import AlertModel
 from prism_app.database.anticipatory_action_alerts_model import AnticipatoryActionAlerts
 from prism_app.database.user_info_model import UserInfoModel
+from starlette.requests import Request
+from starlette_admin.contrib.sqla import Admin, ModelView
 
 
 class ReadOnlyModelView(ModelView):
