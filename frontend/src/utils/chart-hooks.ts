@@ -291,7 +291,6 @@ export const useChartData = (
     }
   }, [requestParams, enabled, dispatch]);
 
-  // Auto-fetch when params change
   useEffect(() => {
     fetchData();
   }, [fetchData]);
