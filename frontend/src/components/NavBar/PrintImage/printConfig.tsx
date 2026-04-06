@@ -27,6 +27,7 @@ import { useSafeTranslation } from '../../../i18n';
 import PrintConfigContext from './printConfig.context';
 import DateRangePicker from './DateRangePicker';
 import AspectRatioSelector from './AspectRatioSelector';
+import CadenceSelector from './CadenceSelector';
 
 interface ToggleSelectorProps {
   title: string;
@@ -315,6 +316,7 @@ function PrintConfig() {
     downloadMenuAnchorEl,
     mapCount,
     shouldEnableBatchMaps,
+    shouldShowMultiLayerWarning,
     dateRange,
     aspectRatioOptions,
   } = printConfig;
@@ -603,8 +605,11 @@ function PrintConfig() {
             <SectionToggle
               title={t('Create a sequence of maps')}
               expanded={toggles.batchMapsVisibility}
+              disabled={shouldShowMultiLayerWarning}
               tooltip={t(
-                'Selecting this option will apply the template above to create multiple maps over a time period of your choice.',
+                shouldShowMultiLayerWarning
+                  ? 'Select one layer at a time to create a sequence of maps'
+                  : 'Selecting this option will apply the template above to create multiple maps over a time period of your choice.',
               )}
               handleChange={() => {
                 const willBeEnabled = !toggles.batchMapsVisibility;
@@ -633,10 +638,13 @@ function PrintConfig() {
                 <GreyContainerSection>
                   <DateRangePicker />
                 </GreyContainerSection>
+                <GreyContainerSection>
+                  <CadenceSelector />
+                </GreyContainerSection>
                 <GreyContainerSection isLast>
                   <Box className={classes.mapCountContainer}>
                     <Typography variant="body1">
-                      {t('Nb of maps generated')}
+                      {t('Number of maps generated')}
                     </Typography>
                     <Typography
                       variant="body1"
