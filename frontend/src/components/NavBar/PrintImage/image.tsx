@@ -13,9 +13,9 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
 import { appConfig, safeCountry } from 'config';
-import { AdminCodeString, LayerKey } from 'config/types';
-import { getBoundaryLayerSingleton, getWMSLayersWithChart } from 'config/utils';
 import useLayers from 'utils/layers-utils';
+import { AdminCodeString, LayerKey, WMSLayerProps } from 'config/types';
+import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
 import useResizeObserver from 'utils/useOnResizeObserver';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { getPossibleDatesForLayer } from 'utils/server-utils';
@@ -175,7 +175,9 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
   const [isDownloading, setIsDownloading] = useState(false);
 
-  const selectableLayers = getWMSLayersWithChart();
+  const selectableLayers = Object.values(LayerDefinitions).filter(
+    l => l.type === 'wms',
+  ) as WMSLayerProps[];
   const [selectedLayerId, setSelectedLayerId] = useState<LayerKey | null>(null);
 
   useEffect(() => {
