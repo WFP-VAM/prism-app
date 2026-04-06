@@ -1,7 +1,9 @@
--- Local dev seed for the PRISM alerts DB (anticipatory_action_alerts, user_info, alert).
+-- Local dev seed for the PRISM alerts DB (anticipatory_action_alerts, user_info, alert,
+-- plus CIAM-mapped users + permission grants).
 -- Run from api/: poetry run python scripts/seed_alerts_db.py (after alembic upgrade head).
 -- Idempotent: user_info uses ON CONFLICT; AA rows only insert if missing for country+type;
--- seed alerts replace rows with the fixed seed emails.
+-- seed alerts replace rows with the fixed seed emails; users use ON CONFLICT (ciam_sub);
+-- user_permissions use ON CONFLICT on the composite primary key.
 
 -- Anticipatory action (Mozambique) — skip if that country+type already exists
 INSERT INTO anticipatory_action_alerts (country, emails, prism_url, type)
@@ -48,6 +50,40 @@ VALUES (
   NOW()
 )
 ON CONFLICT (username) DO NOTHING;
+
+-- OIDC dev placeholders: replace `ciam_sub` with real CIAM `sub` values when testing login.
+-- Regular user: only `prism.app`. Admin user: `prism.app` + `prism.admin`.
+INSERT INTO users (ciam_sub, email, name, status)
+VALUES (
+    'local-seed|regular',
+    'seed-regular@example.com',
+    'Seed regular user',
+    'active'::prism_user_status
+), (
+    'local-seed|admin',
+    'seed-admin@example.com',
+    'Seed admin user',
+    'active'::prism_user_status
+)
+ON CONFLICT (ciam_sub) DO NOTHING;
+
+INSERT INTO user_permissions (user_id, permission_id)
+SELECT u.id, p.id
+FROM users u
+CROSS JOIN permissions p
+WHERE
+    u.ciam_sub = 'local-seed|regular'
+    AND p.code = 'prism.app'
+ON CONFLICT (user_id, permission_id) DO NOTHING;
+
+INSERT INTO user_permissions (user_id, permission_id)
+SELECT u.id, p.id
+FROM users u
+CROSS JOIN permissions p
+WHERE
+    u.ciam_sub = 'local-seed|admin'
+    AND p.code IN ('prism.app', 'prism.admin')
+ON CONFLICT (user_id, permission_id) DO NOTHING;
 
 -- Replace seed alerts so re-runs do not duplicate
 DELETE FROM alert
