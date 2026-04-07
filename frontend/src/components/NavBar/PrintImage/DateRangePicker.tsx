@@ -1,4 +1,4 @@
-import { useMemo, useContext, useEffect } from 'react';
+import { useMemo, useContext } from 'react';
 import {
   Box,
   Typography,
@@ -8,46 +8,53 @@ import {
 } from '@material-ui/core';
 import DatePicker from 'react-datepicker';
 import { useTranslation } from 'react-i18next';
-import useLayers from 'utils/layers-utils';
+import { useSelector } from 'react-redux';
+import { availableDatesSelector } from 'context/serverStateSlice';
+import { LayerDefinitions } from 'config/utils';
+import { WMSLayerProps } from 'config/types';
+import { getPossibleDatesForLayer } from 'utils/server-utils';
 import PrintConfigContext from './printConfig.context';
-import { useMapState } from 'utils/useMapState';
 
 function DateRangePicker() {
   const classes = useStyles();
   const { t } = useTranslation();
   const { printConfig } = useContext(PrintConfigContext);
-  const { selectedLayerDates } = useLayers();
-  const mapState = useMapState();
-  const selectedDateFromMap = mapState?.dateRange?.startDate;
+  const availableDates = useSelector(availableDatesSelector);
 
-  useEffect(() => {
-    if (selectedDateFromMap) {
-      setDateRange(prev => ({
-        ...prev,
-        startDate: selectedDateFromMap,
-      }));
+  const selectedLayer = useMemo(() => {
+    if (!printConfig?.selectedLayerId) {
+      return null;
     }
-  }, [selectedDateFromMap]);
+    const layer = LayerDefinitions[printConfig.selectedLayerId];
+    return layer?.type === 'wms' ? (layer as WMSLayerProps) : null;
+  }, [printConfig?.selectedLayerId]);
+
+  const layerDates = useMemo(() => {
+    if (!selectedLayer) {
+      return [];
+    }
+    const dateItems = getPossibleDatesForLayer(selectedLayer, availableDates);
+    return [...new Set(dateItems.map(item => item.displayDate))].sort(
+      (a, b) => a - b,
+    );
+  }, [selectedLayer, availableDates]);
 
   const includedDates = useMemo(
-    () => selectedLayerDates.map(timestamp => new Date(timestamp)),
-    [selectedLayerDates],
+    () => layerDates.map(timestamp => new Date(timestamp)),
+    [layerDates],
   );
 
   const minDate = useMemo(
-    () =>
-      selectedLayerDates.length > 0
-        ? new Date(selectedLayerDates[0])
-        : undefined,
-    [selectedLayerDates],
+    () => (layerDates.length > 0 ? new Date(layerDates[0]) : undefined),
+    [layerDates],
   );
 
   const maxDate = useMemo(
     () =>
-      selectedLayerDates.length > 0
-        ? new Date(selectedLayerDates[selectedLayerDates.length - 1])
+      layerDates.length > 0
+        ? new Date(layerDates[layerDates.length - 1])
         : undefined,
-    [selectedLayerDates],
+    [layerDates],
   );
 
   if (!printConfig) {
@@ -76,13 +83,7 @@ function DateRangePicker() {
           <DatePicker
             locale={t('date_locale')}
             dateFormat="dd/MM/yyyy"
-            selected={
-              startDate
-                ? new Date(startDate)
-                : selectedDateFromMap
-                  ? new Date(selectedDateFromMap)
-                  : null
-            }
+            selected={startDate ? new Date(startDate) : null}
             onChange={handleStartDateChange}
             maxDate={endDate ? new Date(endDate) : maxDate}
             includeDates={includedDates}
