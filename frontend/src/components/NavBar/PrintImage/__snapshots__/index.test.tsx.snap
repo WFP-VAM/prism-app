@@ -955,6 +955,7 @@ exports[`renders as expected 1`] = `
                   classes="[object Object]"
                   classname="makeStyles-switch-26"
                   color="primary"
+                  disabled="false"
                   inputprops="[object Object]"
                 />
                 <mock-typography
