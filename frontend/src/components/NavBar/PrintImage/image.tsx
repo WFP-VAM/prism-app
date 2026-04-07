@@ -21,7 +21,11 @@ import { availableDatesSelector } from 'context/serverStateSlice';
 import { getPossibleDatesForLayer } from 'utils/server-utils';
 import { useBoundaryData } from 'utils/useBoundaryData';
 import { EXPORT_API_URL } from 'utils/constants';
-import { addNotification } from 'context/notificationStateSlice';
+import {
+  addNotification,
+  removeNotification,
+} from 'context/notificationStateSlice';
+import { stringHash } from 'utils/string-utils';
 import { downloadToFile } from '../../MapView/utils';
 import {
   dateRangeSelector,
@@ -33,6 +37,12 @@ import PrintConfigContext, {
   MapDimensions,
   Toggles,
 } from './printConfig.context';
+import {
+  BatchCadence,
+  filterDatesByCadence,
+  getAvailableCadences,
+  getDisabledCadences,
+} from '../../../utils/batchCadenceUtils';
 import { calculateExportDimensions } from './mapDimensionsUtils';
 import {
   isCustomRatio,
@@ -160,33 +170,116 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     endDate: null,
   });
 
+  const [cadence, setCadence] = useState<BatchCadence>('every-n-dekads');
+  const [dekadInterval, setDekadInterval] = useState(1);
+
   const [isDownloading, setIsDownloading] = useState(false);
 
   const { selectedLayersWithDateSupport } = useLayers();
+  const availableCadences = useMemo(() => {
+    const coverageWindow = selectedLayersWithDateSupport[0]?.coverageWindow;
+    return getAvailableCadences(coverageWindow);
+  }, [selectedLayersWithDateSupport]);
+  useEffect(() => {
+    if (!availableCadences.includes(cadence)) {
+      setCadence(availableCadences[0]);
+    }
+  }, [availableCadences, cadence]);
+
   const availableDates = useSelector(availableDatesSelector);
   const shouldEnableBatchMaps =
     // selectedLayersWithDateSupport.length > 0 &&
-    // selectedLayersWithDateSupport.every(layer => layer.type === 'wms');
+    // selectedLayersWithDateSupport.every(
+    //   layer => layer.type === 'wms' && (layer.coverageWindow || layer.validity),
+    // );
     false; // Temporarily disable batch maps
 
-  const mapCount = useMemo(() => {
+  const shouldShowMultiLayerWarning = selectedLayersWithDateSupport.length > 1;
+
+  const { filteredBatchDates, mapCount, uniqueQueryDates } = useMemo(() => {
     const { startDate, endDate } = dateRangeForBatchMaps;
     if (!startDate || !endDate || selectedLayersWithDateSupport.length === 0) {
-      return 0;
+      return { filteredBatchDates: [], mapCount: 0, uniqueQueryDates: [] };
     }
 
     const allDateItems = selectedLayersWithDateSupport.flatMap(layer =>
       getPossibleDatesForLayer(layer, availableDates),
     );
 
-    const uniqueQueryDates = [
-      ...new Set(allDateItems.map(item => item.queryDate)),
-    ];
+    const startOfStartDate = new Date(startDate).setUTCHours(0, 0, 0, 0);
+    const endOfEndDate = new Date(endDate).setUTCHours(23, 59, 59, 999);
 
-    return uniqueQueryDates.filter(
-      queryDate => queryDate >= startDate && queryDate <= endDate,
-    ).length;
-  }, [availableDates, selectedLayersWithDateSupport, dateRangeForBatchMaps]);
+    const rawUniqueDates = [
+      ...new Set(allDateItems.map(item => item.queryDate)),
+    ]
+      .filter(d => d >= startOfStartDate && d <= endOfEndDate)
+      .sort((a, b) => a - b);
+
+    const coverageWindow = selectedLayersWithDateSupport[0]?.coverageWindow;
+    const dates = filterDatesByCadence(
+      rawUniqueDates,
+      cadence,
+      dekadInterval,
+      coverageWindow,
+    );
+    return {
+      filteredBatchDates: dates,
+      mapCount: dates.length,
+      uniqueQueryDates: rawUniqueDates,
+    };
+  }, [
+    availableDates,
+    selectedLayersWithDateSupport,
+    dateRangeForBatchMaps,
+    cadence,
+    dekadInterval,
+  ]);
+
+  const disabledCadences = useMemo(
+    () => getDisabledCadences(uniqueQueryDates, dekadInterval),
+    [uniqueQueryDates, dekadInterval],
+  );
+
+  useEffect(() => {
+    if (
+      open &&
+      toggles.batchMapsVisibility &&
+      dateRangeForBatchMaps.startDate &&
+      dateRangeForBatchMaps.endDate &&
+      filteredBatchDates.length === 0
+    ) {
+      dispatch(
+        addNotification({
+          type: 'error',
+          message: t(
+            'A map could not be made for the dates you selected. Please choose an earlier date range and/or a shorter cadence.',
+          ),
+        }),
+      );
+    }
+  }, [
+    open,
+    filteredBatchDates,
+    toggles.batchMapsVisibility,
+    dateRangeForBatchMaps.startDate,
+    dateRangeForBatchMaps.endDate,
+    dispatch,
+    t,
+  ]);
+
+  useEffect(() => {
+    if (!open) {
+      dispatch(
+        removeNotification(
+          stringHash(
+            t(
+              'A map could not be made for the dates you selected. Please choose an earlier date range and/or a shorter cadence.',
+            ),
+          ),
+        ),
+      );
+    }
+  }, [open, dispatch, t]);
 
   useEffect(() => {
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
@@ -277,20 +370,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     handleDownloadMenuClose();
 
     try {
-      const allDateItems = selectedLayersWithDateSupport.flatMap(layer =>
-        getPossibleDatesForLayer(layer, availableDates),
-      );
-
-      const uniqueQueryDates = [
-        ...new Set(allDateItems.map(item => item.queryDate)),
-      ];
-
-      const filteredDates = uniqueQueryDates.filter(
-        queryDate => queryDate >= startDate && queryDate <= endDate,
-      );
-
-      // Convert timestamps to YYYY-MM-DD format
-      const formattedDates = filteredDates.map(timestamp =>
+      const formattedDates = filteredBatchDates.map(timestamp =>
         getFormattedDate(timestamp, 'default'),
       );
 
@@ -483,9 +563,17 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       setSelectedBoundaries,
       setLegendScale,
       shouldEnableBatchMaps,
+      shouldShowMultiLayerWarning,
       dateRange: dateRangeForBatchMaps,
       setDateRange: setDateRangeForBatchMaps,
       mapCount,
+      cadence,
+      setCadence,
+      dekadInterval,
+      setDekadInterval,
+      filteredBatchDates,
+      availableCadences,
+      disabledCadences,
       aspectRatioOptions: ALL_ASPECT_RATIO_OPTIONS,
       previewBounds,
       setPreviewBounds,

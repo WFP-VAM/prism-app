@@ -46,19 +46,51 @@ jobs:
       - name: Security audit
         run: |
           cd api
-          # Run pip-audit and filter to show only vulnerable packages (exclude packages with no vulns)
-          poetry run pip-audit --desc --format json 2>/dev/null | \
-            jq '{dependencies: [.dependencies[]? | select(.vulns != null and (.vulns | length > 0))]}' > audit_results.json || true
+          poetry run pip-audit --desc --format json > audit_results.json 2>/dev/null || true
+          python - <<'PY'
+          import json
+          import sys
+          from pathlib import Path
 
-          # Check if there are any vulnerabilities in the filtered results
-          VULN_COUNT=$(jq '.dependencies | length' audit_results.json)
-          if [ "$VULN_COUNT" -gt 0 ]; then
-            echo "❌ Found $VULN_COUNT vulnerable package(s):"
-            jq '.' audit_results.json
-            exit 1
-          else
-            echo "✅ No vulnerabilities found"
-          fi
+          data = json.loads(Path("audit_results.json").read_text() or "{}")
+          vulnerable_dependencies = [
+              dependency
+              for dependency in data.get("dependencies", [])
+              if dependency.get("vulns")
+          ]
+
+          if not vulnerable_dependencies:
+              print("✅ No vulnerabilities found")
+              sys.exit(0)
+
+          print(
+              f"❌ Found vulnerable packages: {len(vulnerable_dependencies)}"
+          )
+          for dependency in vulnerable_dependencies:
+              advisory_ids = sorted(
+                  {
+                      advisory
+                      for vuln in dependency["vulns"]
+                      for advisory in [vuln.get("id"), *(vuln.get("aliases") or [])]
+                      if advisory
+                  }
+              )
+              fixed_versions = sorted(
+                  {
+                      version
+                      for vuln in dependency["vulns"]
+                      for version in (vuln.get("fix_versions") or [])
+                      if version
+                  }
+              )
+              print(
+                  f"- {dependency['name']}@{dependency['version']} | "
+                  f"{', '.join(advisory_ids)} | "
+                  f"fix: {', '.join(fixed_versions) or 'none listed'}"
+              )
+
+          sys.exit(1)
+          PY
 
   api_build:
     name: build and test api

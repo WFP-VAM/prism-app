@@ -27,12 +27,12 @@ import {
 } from 'context/leftPanelStateSlice';
 import GoToBoundaryDropdown from 'components/Common/BoundaryDropdown/goto';
 import Legends from 'components/MapView/Legends';
-import {
-  areChartLayersAvailable,
-  areDashboardsAvailable,
-  getDashboards,
-} from 'config/utils';
+import { areChartLayersAvailable } from 'config/utils';
 import { generateSlugFromTitle } from 'utils/string-utils';
+import {
+  areDashboardsAvailableSelector,
+  dashboardsListSelector,
+} from 'context/dashboardStateSlice';
 import {
   areTablesAvailable,
   isAnticipatoryActionDroughtAvailable,
@@ -47,84 +47,6 @@ import Title from './Title';
 
 const { alertFormActive } = appConfig;
 
-const getAvailableDashboards = (): PanelItem[] => {
-  const dashboards = getDashboards();
-  return dashboards.map((dashboard, index) => ({
-    panel: Panel.Dashboard,
-    label: dashboard.title,
-    icon: <SpeedOutlined />,
-    reportIndex: index,
-    reportPath: dashboard.path || generateSlugFromTitle(dashboard.title),
-  }));
-};
-
-const panels: PanelItem[] = [
-  { panel: Panel.Layers, label: 'Layers', icon: <LayersOutlined /> },
-  ...(areChartLayersAvailable
-    ? [{ panel: Panel.Charts, label: 'Charts', icon: <BarChartOutlined /> }]
-    : []),
-  ...(areDashboardsAvailable()
-    ? [
-        {
-          panel: Panel.Dashboard,
-          label: 'Dashboard',
-          icon: <SpeedOutlined />,
-          children: getAvailableDashboards(),
-        },
-      ]
-    : []),
-  {
-    panel: Panel.Analysis,
-    label: 'Analysis',
-    icon: <ImageAspectRatioOutlined />,
-  },
-  ...(areTablesAvailable
-    ? [{ panel: Panel.Tables, label: 'Tables', icon: <TableChartOutlined /> }]
-    : []),
-  ...(isAnticipatoryActionDroughtAvailable ||
-  isAnticipatoryActionStormAvailable ||
-  isAnticipatoryActionFloodAvailable
-    ? [
-        {
-          label: 'A. Actions',
-          icon: <TimerOutlined />,
-          children: [
-            ...(isAnticipatoryActionDroughtAvailable
-              ? [
-                  {
-                    panel: Panel.AnticipatoryActionDrought,
-                    label: 'A. Action Drought',
-                    icon: <TimerOutlined />,
-                  },
-                ]
-              : []),
-            ...(isAnticipatoryActionStormAvailable
-              ? [
-                  {
-                    panel: Panel.AnticipatoryActionStorm,
-                    label: 'A. Action Storm',
-                    icon: <TimerOutlined />,
-                  },
-                ]
-              : []),
-            ...(isAnticipatoryActionFloodAvailable
-              ? [
-                  {
-                    panel: Panel.AnticipatoryActionFlood,
-                    label: 'A. Action Flood',
-                    icon: <TimerOutlined />,
-                  },
-                ]
-              : []),
-          ],
-        },
-      ]
-    : []),
-  ...(alertFormActive
-    ? [{ panel: Panel.Alerts, label: '', icon: <Notifications /> }]
-    : []),
-];
-
 function NavBar() {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
@@ -132,7 +54,90 @@ function NavBar() {
   const location = useLocation();
   const classes = useStyles();
   const tabValue = useSelector(leftPanelTabValueSelector);
+  const dashboards = useSelector(dashboardsListSelector);
+  const dashboardsAvailable = useSelector(areDashboardsAvailableSelector);
   const isDashboardMode = tabValue === Panel.Dashboard;
+
+  const dashboardChildren: PanelItem[] = dashboards.map((dashboard, index) => ({
+    panel: Panel.Dashboard,
+    label: dashboard.title,
+    icon: <SpeedOutlined />,
+    reportIndex: index,
+    reportPath: dashboard.path || generateSlugFromTitle(dashboard.title),
+  }));
+
+  const panels: PanelItem[] = [
+    { panel: Panel.Layers, label: 'Layers', icon: <LayersOutlined /> },
+    ...(areChartLayersAvailable
+      ? [{ panel: Panel.Charts, label: 'Charts', icon: <BarChartOutlined /> }]
+      : []),
+    ...(dashboardsAvailable
+      ? [
+          {
+            panel: Panel.Dashboard,
+            label: 'Dashboard',
+            icon: <SpeedOutlined />,
+            children: dashboardChildren,
+          },
+        ]
+      : []),
+    {
+      panel: Panel.Analysis,
+      label: 'Analysis',
+      icon: <ImageAspectRatioOutlined />,
+    },
+    ...(areTablesAvailable
+      ? [
+          {
+            panel: Panel.Tables,
+            label: 'Tables',
+            icon: <TableChartOutlined />,
+          },
+        ]
+      : []),
+    ...(isAnticipatoryActionDroughtAvailable ||
+    isAnticipatoryActionStormAvailable ||
+    isAnticipatoryActionFloodAvailable
+      ? [
+          {
+            label: 'A. Actions',
+            icon: <TimerOutlined />,
+            children: [
+              ...(isAnticipatoryActionDroughtAvailable
+                ? [
+                    {
+                      panel: Panel.AnticipatoryActionDrought,
+                      label: 'A. Action Drought',
+                      icon: <TimerOutlined />,
+                    },
+                  ]
+                : []),
+              ...(isAnticipatoryActionStormAvailable
+                ? [
+                    {
+                      panel: Panel.AnticipatoryActionStorm,
+                      label: 'A. Action Storm',
+                      icon: <TimerOutlined />,
+                    },
+                  ]
+                : []),
+              ...(isAnticipatoryActionFloodAvailable
+                ? [
+                    {
+                      panel: Panel.AnticipatoryActionFlood,
+                      label: 'A. Action Flood',
+                      icon: <TimerOutlined />,
+                    },
+                  ]
+                : []),
+            ],
+          },
+        ]
+      : []),
+    ...(alertFormActive
+      ? [{ panel: Panel.Alerts, label: '', icon: <Notifications /> }]
+      : []),
+  ];
   const theme = useTheme();
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
   const [menuAnchor, setMenuAnchor] = useState<{
