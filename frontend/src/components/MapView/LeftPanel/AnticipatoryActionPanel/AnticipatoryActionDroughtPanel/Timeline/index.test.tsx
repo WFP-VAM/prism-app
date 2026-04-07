@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+import { TestBrowserRouter } from 'test/TestBrowserRouter';
 import configureStore from 'redux-mock-store';
 import { AnticipatoryActionState } from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { Panel } from 'config/types';
@@ -48,11 +48,11 @@ const store = mockStore({
 
 test('renders as expected', () => {
   const { container } = render(
-    <BrowserRouter>
+    <TestBrowserRouter>
       <Provider store={store}>
         <Timeline dialogs={defaultDialogs} />
       </Provider>
-    </BrowserRouter>,
+    </TestBrowserRouter>,
   );
   expect(container).toMatchSnapshot();
 });

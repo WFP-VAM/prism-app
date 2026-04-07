@@ -436,7 +436,21 @@ The application will show an icon next to the layer in the legend if this attrib
 
 ## Dashboards
 
-Dashboards are customizable reports that combine maps, charts, tables, and text blocks in a flexible layout. They are configured in a `dashboards.json` file in your country's config folder (e.g., `src/config/mozambique/dashboards.json`).
+Dashboards are customizable reports that combine maps, charts, tables, and text blocks in a flexible layout. Definitions are loaded at **runtime** from object storage, not from the JS bundle.
+
+Set **`REACT_APP_DASHBOARD_CONFIG_BUCKET_URL`** to the HTTPS base of your dashboard bucket (no trailing slash). The app requests:
+
+`{REACT_APP_DASHBOARD_CONFIG_BUCKET_URL}/{REACT_APP_COUNTRY}/dashboard.json`
+
+For example, with `REACT_APP_COUNTRY=mozambique` and bucket URL `https://my-bucket.s3.amazonaws.com`, the file must be available at `https://my-bucket.s3.amazonaws.com/mozambique/dashboard.json`.
+
+If this variable is **unset**, the app **fetches** `/data/<REACT_APP_COUNTRY>/dashboard.json` from the dev server or static host (Vite serves `frontend/public/` at the site root). Add `frontend/public/data/<country>/dashboard.json` to test dashboards locally; if the file is missing, dashboards stay empty and the Dashboard nav link is hidden.
+
+**Local development:** Copy a sample file to `public/data/<REACT_APP_COUNTRY>/dashboard.json` (e.g. `public/data/mozambique/dashboard.json` when testing Mozambique). Use [`frontend/test/fixtures/dashboard-config.sample.json`](frontend/test/fixtures/dashboard-config.sample.json) as a starting point—it is a **test fixture** and reference payload, not a country’s real deployed config.
+
+Alternatively, set `REACT_APP_DASHBOARD_CONFIG_BUCKET_URL` to your dev server origin (e.g. `http://localhost:3000` with the default Vite port in `vite.config.ts`) so the app requests `{origin}/{country}/dashboard.json` the same way as against S3.
+
+The JSON shape is documented below (same schema as historically used in repo `dashboards.json` files).
 
 ### Dashboard Configuration Structure
 
