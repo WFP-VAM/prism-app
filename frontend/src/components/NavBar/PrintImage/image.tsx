@@ -267,6 +267,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       toggles.batchMapsVisibility &&
       dateRangeForBatchMaps.startDate &&
       dateRangeForBatchMaps.endDate &&
+      uniqueQueryDates.length > 0 &&
       filteredBatchDates.length === 0
     ) {
       dispatch(
