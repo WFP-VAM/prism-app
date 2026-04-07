@@ -1,5 +1,5 @@
 import puppeteer, { Browser, Page, BoundingBox } from 'puppeteer';
-import { Jimp } from 'jimp';
+import jpeg from 'jpeg-js';
 
 interface CropRegion {
   x: number;
@@ -32,28 +32,27 @@ const MAX_RETRY = 3;
  * @param threshold -  Tolerance threshold (e.g., 250 = almost white)
  * @returns {Promise<boolean>} - Returns true if the image is white.
  */
-async function isBlankScreenshot(
+export async function isBlankScreenshot(
   base64: string,
   threshold = 250,
 ): Promise<boolean> {
   const imageBuffer = Buffer.from(base64, 'base64');
-  const image = await Jimp.read(imageBuffer);
-
+  const image = jpeg.decode(imageBuffer, { useTArray: true });
   let whitePixelCount = 0;
-  const width = image.bitmap.width;
-  const height = image.bitmap.height;
+  const width = image.width;
+  const height = image.height;
   const totalPixels = width * height;
+  const pixelData = image.data;
 
-  image.scan(0, 0, width, height, (x, y, idx) => {
-    const r = image.bitmap.data[idx + 0];
-    const g = image.bitmap.data[idx + 1];
-    const b = image.bitmap.data[idx + 2];
-
+  for (let idx = 0; idx < pixelData.length; idx += 4) {
+    const r = pixelData[idx + 0];
+    const g = pixelData[idx + 1];
+    const b = pixelData[idx + 2];
     // if pixel is almost white
     if (r >= threshold && g >= threshold && b >= threshold) {
       whitePixelCount++;
     }
-  });
+  }
 
   const whitePercentage = (whitePixelCount / totalPixels) * 100;
 

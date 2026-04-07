@@ -15,11 +15,14 @@
       "yarn run lint --fix"
     ]
   },
+  "_comment.typecheck": "build uses yarn typecheck (tsconfig.build.json — excludes **/*.test.*). yarn typecheck:all uses tsconfig.json and typechecks tests too.",
   "scripts": {
     "start": "cross-env vite",
     "test": "cross-env REACT_APP_TESTING=true && jest --maxWorkers=8",
     "test:watch": "yarn test --watch",
-    "build": "export GIT_HASH=$(git rev-parse --short HEAD) || true && tsc && cross-env vite build",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit",
+    "typecheck:all": "tsc --noEmit",
+    "build": "export GIT_HASH=$(git rev-parse --short HEAD) || true && yarn typecheck && cross-env vite build",
     "lint:ci": "yarn lint --max-warnings 0",
     "lint": "eslint \"**/*.{js,jsx,ts,tsx}\"",
     "preview": "vite preview",
@@ -42,7 +45,7 @@
     "check-boundary-keys": "node ./scripts/check-boundary-keys-validity.js",
     "preprocess-layers": "ts-node --compilerOptions \"{\\\"module\\\":\\\"commonjs\\\"}\" ./scripts/preprocess-layers.ts",
     "setup:instance": "ts-node --compilerOptions \"{\\\"module\\\":\\\"commonjs\\\"}\" ./scripts/setup-new-instance.ts",
-    "audit": "audit-ci --config .audit-ci.json"
+    "audit": "node ../scripts/yarn-audit-summary.js"
   },
   "dependencies": {
     "@azure/msal-browser": "^2.19.0",
@@ -87,9 +90,9 @@
     "husky": "^4.2.3",
     "i18next": "^23.10.1",
     "i18next-browser-languagedetector": "^7.2.0",
-    "jspdf": "^4.2.0",
+    "jspdf": "^4.2.1",
     "lint-staged": "^16.2.7",
-    "lodash": "^4.17.21",
+    "lodash": "^4.18.0",
     "maplibre-gl": "^3.6.2",
     "marked": "^4.0.10",
     "max-inscribed-circle": "^2.0.1",
@@ -110,14 +113,14 @@
     "react-window": "^1.8.10",
     "redux": "^4.0.5",
     "reflect-metadata": "^0.1.13",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "zod": "^4.3.6"
   },
   "resolutions": {
     "node-notifier": "^10.0.1",
     "canvas": "link:./node_modules/.cache/null",
     "glob": "^13.0.6",
     "js-yaml": "^4.1.1",
-    "brace-expansion": "^2.0.2",
     "@isaacs/brace-expansion": ">=5.0.1",
     "diff": ">=5.2.2",
     "string-width": "4.2.3",
@@ -125,21 +128,23 @@
     "@babel/helpers": "^7.26.10",
     "systeminformation": "^5.27.14",
     "qs": "^6.14.1",
-    "lodash": "^4.17.23",
+    "lodash": "^4.18.0",
     "dompurify": "^3.3.2"
   },
   "_resolutionsNotes": {
     "node-notifier": "Build compatibility - keep",
     "canvas": "Prevents canvas installation (build optimization) - keep",
     "js-yaml": "CVE-2025-64718 - Security fix - Parent: eslint, babel-jest - Already at latest (4.1.1) - Keep resolution until eslint/babel-jest update",
-    "brace-expansion": "CVE-2025-5889 - Security fix - Parent: minimatch (via eslint), @typescript-eslint/parser, @typescript-eslint/eslint-plugin - Cannot upgrade to v4 (breaks eslint) - Keep at v2",
+    "_brace-expansion": "CVE-2026-33750 - Transitive versions in yarn.lock (^2.0.1→2.0.3, ^5.0.2→5.0.5); avoid flat brace-expansion resolution (merges incompatible ranges).",
+    "_picomatch": "CVE-2026-33671 / CVE-2026-33672 - picomatch 2.x pinned to 2.3.2+ in yarn.lock only (flat resolution merged incompatible v4 range).",
+    "_yaml": "CVE-2026-33532 - yaml 1.x/2.x patched in yarn.lock; husky>cosmiconfig vs lint-staged use different majors.",
     "glob": "CVE-2025-64756 - Security fix - Keep resolution: babel-jest → babel-plugin-istanbul → test-exclude still uses old glob 7.x, rimraf upgraded to 6.1.2; updated to ^13.0.6 to fix minimatch 10.x ReDoS via rimraf>glob>minimatch chain (GHSA-23c5-xmqv-rm74)",
     "string-width": "Compatibility fix - Parent: glob → jackspeak → cliui, cypress → listr2 - Forces v4 (CommonJS) for compatibility. Also installed as devDependency to ensure availability - Check if removable when these packages update",
     "form-data": "CVE-2025-7783 - Security fix - GHSA-fjxv-7rqg-78g4 - Forces v3.0.4+ for transitive dependencies",
     "@babel/helpers": "Security fix - GHSA-968p-4wvh-cqc8 - Forces v7.26.10+ for transitive dependencies",
     "systeminformation": "CVE-2025-68154 - Security fix - GHSA-wphj-fx3q-84ch - Parent: cypress - Command Injection vulnerability - Forces v5.27.14+",
     "qs": "CVE-2025-15284 - Security fix - GHSA-6rw7-vpxm-498p - Parent: cypress>@cypress/request - arrayLimit bypass DoS vulnerability - Forces v6.14.1+",
-    "lodash": "CVE-2025-13465 - Security fix - GHSA-xxjr-mmjv-4gpg - Prototype Pollution in _.unset and _.omit - Forces v4.17.23+"
+    "lodash": "Lodash security fixes - GHSA-r5fr-rjxr-66jc / GHSA-f23m-r3pf-42rh (CVE-2026-4800 / CVE-2026-2950) and prior - Forces v4.18.0+"
   },
   "_comment": "The 'defaults' and 'not ie 11' are needed to avoid build issues with maplibre-gl.",
   "browserslist": {
@@ -208,7 +213,7 @@
     "globals": "^16.5.0",
     "jest": "^30.2.0",
     "jest-environment-jsdom": "^30.2.0",
-    "jsonpath": "^1.2.1",
+    "jsonpath": "^1.3.0",
     "prettier": "^3.6.0",
     "redux-mock-store": "^1.5.4",
     "string-width": "4.2.3",
@@ -216,7 +221,7 @@
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.2",
     "typescript": "5.9.3",
-    "vite": "^6.4.1",
+    "vite": "^6.4.2",
     "vite-plugin-node-polyfills": "^0.21.0"
   },
   "engines": {
