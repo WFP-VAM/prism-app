@@ -9,10 +9,11 @@ import { DashboardMode } from 'config/types';
 import {
   dashboardConfigSelector,
   dashboardModeSelector,
+  dashboardsListSelector,
   setMode,
   setSelectedDashboard,
 } from '../../context/dashboardStateSlice';
-import { getDashboardIndexByPath, getDashboards } from '../../config/utils';
+import { getDashboardIndexByPath } from '../../config/utils';
 import { generateSlugFromTitle } from '../../utils/string-utils';
 import { clearAnalysisResult } from '../../context/analysisResultStateSlice';
 import { DashboardExportDialog } from './DashboardExport';
@@ -21,6 +22,7 @@ import DashboardContent from './DashboardContent';
 function DashboardView() {
   const classes = useStyles();
   const dashboardConfig = useSelector(dashboardConfigSelector);
+  const dashboards = useSelector(dashboardsListSelector);
   const { path: dashboardPath, isEditable } = dashboardConfig;
   const mode = useSelector(dashboardModeSelector);
   const dispatch = useDispatch();
@@ -47,15 +49,13 @@ function DashboardView() {
 
   // Handle dashboard path parameter and redirect logic
   useEffect(() => {
-    const dashboards = getDashboards();
-
     if (dashboards.length === 0) {
       return;
     }
 
     if (path) {
       // Find dashboard by path and set it as selected
-      const dashboardIndex = getDashboardIndexByPath(path);
+      const dashboardIndex = getDashboardIndexByPath(path, dashboards);
       dispatch(setSelectedDashboard(dashboardIndex));
     } else {
       // No path provided, redirect to first dashboard's path
@@ -64,7 +64,7 @@ function DashboardView() {
         firstDashboard.path || generateSlugFromTitle(firstDashboard.title);
       history.replace(`/dashboard/${firstDashboardPath}`);
     }
-  }, [path, dispatch, history]);
+  }, [path, dispatch, history, dashboards]);
 
   const handlePreviewClick = () => {
     dispatch(setMode(DashboardMode.VIEW));
