@@ -44,3 +44,6 @@ packages/common/pnpm-lock.yaml
 # ignore cypress artifacts
 frontend/cypress/screenshots/
 frontend/cypress/videos/
+
+# TypeScript composite / declaration emit scratch (if used locally)
+frontend/.tsbuild/

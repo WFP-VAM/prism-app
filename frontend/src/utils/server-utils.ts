@@ -565,11 +565,6 @@ export function generateIntermediateDateItemFromValidity(
 ): DateItem[] {
   const sortedDates = [...dates].sort((a, b) => a - b);
 
-  // only calculate validity and coverage for dates that are less than 5 years old
-  const EXTENDED_VALIDITY_YEARS = 5;
-  const fiveYearsInMs = EXTENDED_VALIDITY_YEARS * 365 * oneDayInMs;
-  const earliestDate = Date.now() - fiveYearsInMs;
-
   const dateItems = sortedDates
     .map(d => {
       const date = new Date(d);
@@ -579,19 +574,6 @@ export function generateIntermediateDateItemFromValidity(
     .reduce((acc: DateItem[], date: Date) => {
       // caching this value seems to reduce memory use substantially
       const dateGetTime = date.getTime();
-
-      // only calculate validity/coverage for dates that are less than 5 years old
-      if (dateGetTime < earliestDate) {
-        return [
-          ...acc,
-          {
-            displayDate: dateGetTime as DisplayDateTimestamp,
-            queryDate: dateGetTime as QueryDateTimestamp,
-            startDate: dateGetTime as CoverageStartDateTimestamp,
-            endDate: dateGetTime as CoverageEndDateTimestamp,
-          },
-        ] as DateItem[];
-      }
 
       // We create the coverage start and the end date for every date
       const { coverageStart, coverageEnd } = getStartAndEndDateFromCoverage(
