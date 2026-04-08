@@ -11,13 +11,8 @@ from urllib.parse import urlencode
 
 import rasterio  # type: ignore
 from fastapi import HTTPException
-from prism_app.caching import (
-    CACHE_DIRECTORY,
-    _hash_value,
-    cache_file,
-    get_json_file,
-    is_file_valid,
-)
+import prism_app.caching as caching
+from prism_app.caching import _hash_value, cache_file, get_json_file, is_file_valid
 from prism_app.duckdb_utils import setup_duckdb_connection
 from prism_app.models import (
     FilePath,
@@ -118,7 +113,7 @@ def _read_zones(
             query += f" AND ST_Contains(ST_MakeEnvelope({minx}, {miny}, {maxx}, {maxy}), geometry)"
         con.execute(query)
         # Export to temp GeoJSON using GDAL extension
-        temp_geojson = os.path.join(CACHE_DIRECTORY, "temp_zones.geojson")
+        temp_geojson = os.path.join(caching.CACHE_DIRECTORY, "temp_zones.geojson")
         con.sql(f"""
             COPY {view_name} TO '{temp_geojson}'
             WITH (FORMAT GDAL, DRIVER 'GeoJSON', LAYER_CREATION_OPTIONS 'WRITE_BBOX=YES')
@@ -418,7 +413,7 @@ def calculate_stats(
             )[:20]
 
         masked_pop_geotiff: FilePath = (
-            f"{CACHE_DIRECTORY}raster_masked_{geotiff_layer}_{slugified_calc}_{cache_hash}.tif"
+            f"{caching.CACHE_DIRECTORY}raster_masked_{geotiff_layer}_{slugified_calc}_{cache_hash}.tif"
         )
 
         if not is_file_valid(masked_pop_geotiff):
@@ -439,7 +434,7 @@ def calculate_stats(
                 reproj_cache_key = f"{geotiff}_reproj_on_{mask_geotiff}"
                 reproj_hash = _hash_value(reproj_cache_key)
                 reproj_pop_geotiff: FilePath = (
-                    f"{CACHE_DIRECTORY}raster_reproj_{geotiff_layer}_on_{mask_layer}_{reproj_hash}.tif"
+                    f"{caching.CACHE_DIRECTORY}raster_reproj_{geotiff_layer}_on_{mask_layer}_{reproj_hash}.tif"
                 )
                 if not is_file_valid(reproj_pop_geotiff):
                     reproj_match(

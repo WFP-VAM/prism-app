@@ -47,6 +47,9 @@
     "aa-storm-alert-worker": "yarn ts-node src/aa-storm-alert-runner.ts",
     "aa-flood-alert-worker": "yarn ts-node src/aa-flood-alert-runner.ts",
     "docker-alert": "source ../api/set_envs.sh && docker compose run --entrypoint 'yarn alert-worker' alerting-node",
+    "check-alerts-db-contract": "ts-node src/ci/check-alerts-db-contract.ts",
+    "smoke-alerts-db-pool": "ts-node src/ci/smoke-alerts-db-pool.ts",
+    "smoke-alerting-workers": "ts-node src/ci/smoke-alerting-workers.ts",
     "audit": "node ../scripts/yarn-audit-summary.js",
     "audit:preflight": "yarn install --frozen-lockfile && yarn run audit"
   },

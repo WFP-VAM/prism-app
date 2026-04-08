@@ -11,9 +11,10 @@ function buildSsl():
   | boolean
   | { rejectUnauthorized: boolean }
   | undefined {
-  return process.env.POSTGRES_SSL === 'true'
-    ? true
-    : { rejectUnauthorized: false };
+  if (process.env.POSTGRES_SSL === 'true') {
+    return { rejectUnauthorized: false };
+  }
+  return undefined;
 }
 
 export function buildPoolConfig(): PoolConfig {
