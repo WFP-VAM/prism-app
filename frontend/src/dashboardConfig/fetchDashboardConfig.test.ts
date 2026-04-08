@@ -20,14 +20,15 @@ describe('fetchDashboardConfig', () => {
       ok: true,
       status: 200,
       statusText: 'OK',
-      json: async () => validBody,
+      headers: new Headers({ 'content-type': 'application/json' }),
+      text: async () => JSON.stringify(validBody),
     } as unknown as Response);
 
-    const data = await fetchDashboardConfig(
-      'https://example.com/mozambique/dashboard.json',
-    );
+    const url = 'https://example.com/mozambique/dashboard.json';
+    const data = await fetchDashboardConfig(url);
     expect(data).toHaveLength(1);
     expect(data[0].title).toBe('T');
+    expect(global.fetch).toHaveBeenCalledWith(url, { cache: 'no-store' });
   });
 
   it('throws DashboardConfigFetchError on network failure', async () => {
@@ -60,14 +61,13 @@ describe('fetchDashboardConfig', () => {
     });
   });
 
-  it('throws on invalid JSON', async () => {
+  it('throws on 200 non-JSON body (hosts must not mask missing files with HTML)', async () => {
     global.fetch = jest.fn().mockResolvedValue({
       ok: true,
       status: 200,
       statusText: 'OK',
-      json: async () => {
-        throw new SyntaxError('Unexpected token');
-      },
+      headers: new Headers({ 'content-type': 'text/html' }),
+      text: async () => '<!doctype html><html></html>',
     } as unknown as Response);
 
     await expect(
@@ -77,12 +77,43 @@ describe('fetchDashboardConfig', () => {
     });
   });
 
+  it('throws on invalid JSON', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      statusText: 'OK',
+      headers: new Headers({ 'content-type': 'application/json' }),
+      text: async () => '{ not valid json',
+    } as unknown as Response);
+
+    await expect(
+      fetchDashboardConfig('https://example.com/x/dashboard.json'),
+    ).rejects.toMatchObject({
+      causeType: 'json',
+    });
+  });
+
+  it('returns empty dashboards when body is empty (missing file)', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      statusText: 'OK',
+      headers: new Headers(),
+      text: async () => '',
+    } as unknown as Response);
+
+    await expect(
+      fetchDashboardConfig('https://example.com/x/dashboard.json'),
+    ).resolves.toEqual([]);
+  });
+
   it('throws validation error for invalid body shape', async () => {
     global.fetch = jest.fn().mockResolvedValue({
       ok: true,
       status: 200,
       statusText: 'OK',
-      json: async () => ({ not: 'array' }),
+      headers: new Headers({ 'content-type': 'application/json' }),
+      text: async () => JSON.stringify({ not: 'array' }),
     } as unknown as Response);
 
     await expect(

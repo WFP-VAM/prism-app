@@ -28,11 +28,15 @@ function parseValidatedDashboardBody(parsed: unknown): Dashboard[] {
 
 /**
  * Fetches dashboard.json, parses JSON, and validates against the dashboard schema.
+ * Each country ships `public/data/{country}/dashboard.json` (use `[]` when there are no dashboards).
+ * Remote `dashboardConfigUrl` (S3) may still 404 if the object is absent.
  */
 export async function fetchDashboardConfig(url: string): Promise<Dashboard[]> {
   let response: Response;
   try {
-    response = await fetch(url);
+    // Avoid 304 + empty body: fetch() does not apply cached bytes to the body, which would
+    // look like an empty config.
+    response = await fetch(url, { cache: 'no-store' });
   } catch (e) {
     const message =
       e instanceof Error ? e.message : 'Network error loading dashboard config';
@@ -50,9 +54,14 @@ export async function fetchDashboardConfig(url: string): Promise<Dashboard[]> {
     );
   }
 
+  const rawText = await response.text();
+  if (rawText.trim() === '') {
+    return parseValidatedDashboardBody([]);
+  }
+
   let parsed: unknown;
   try {
-    parsed = await response.json();
+    parsed = JSON.parse(rawText) as unknown;
   } catch {
     throw new DashboardConfigFetchError(
       'Dashboard configuration is not valid JSON',

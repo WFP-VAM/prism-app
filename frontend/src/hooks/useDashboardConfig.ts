@@ -20,9 +20,9 @@ const retryDelayMs = (attemptIndex: number) =>
 
 /**
  * Loads dashboard.json from S3 when `dashboardConfigUrl` is set; otherwise from
- * `localDashboardConfigUrl` (`public/data/{country}/dashboard.json`). Add that file under
- * `frontend/public/data/{country}/` locally if you want to test dashboards without S3.
- * A missing file (404) leaves dashboards empty so the header hides the Dashboard link.
+ * `localDashboardConfigUrl` (`public/data/{country}/dashboard.json`, always present; use `[]` when
+ * there are no dashboards). A missing S3 object (404) leaves dashboards empty so the header hides
+ * the Dashboard link.
  */
 export function useDashboardConfig(): void {
   const dispatch = useDispatch();
