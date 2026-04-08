@@ -13,7 +13,14 @@ from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from prism_app.admin import register_alerts_admin_views
+from prism_app.admin_oidc_auth import PrismAdminAuthProvider
+from prism_app.admin_settings import get_admin_auth_settings
 from prism_app.auth import optional_validate_user, validate_user
+from prism_app.access_pages import access_not_configured_response
+from prism_app.deps import require_permissions
+from prism_app.database.prism_user_model import PrismUser
+from prism_app.permission_codes import PRISM_ADMIN
+from prism_app.routers import auth_oidc
 from prism_app.caching import FilePath, cache_file, cache_geojson
 from prism_app.database.alert_model import AlchemyEncoder, AlertModel
 from prism_app.database.database import DB_URI, AlertsDataBase
@@ -76,7 +83,43 @@ app.add_middleware(
 )
 
 admin_engine = create_engine(DB_URI)
-admin = Admin(admin_engine, title="PRISM Admin", base_url="/admin")
+app.state.admin_engine = admin_engine
+
+app.include_router(auth_oidc.router)
+
+
+@app.get("/access-not-configured")
+def access_not_configured_page():
+    """Allowlisted page for signed-in users with no ``user_permissions`` rows."""
+    settings = get_admin_auth_settings()
+    return access_not_configured_response(settings.access_support_email)
+
+
+_AdminSession = Annotated[
+    tuple[PrismUser, set[str]],
+    Depends(require_permissions(PRISM_ADMIN)),
+]
+
+
+@app.get("/api/admin/whoami")
+def admin_whoami(prism: _AdminSession):
+    """JSON check for admin session + ``prism.admin`` (optional integration tests)."""
+    user, codes = prism
+    return {
+        "user_id": str(user.id),
+        "ciam_sub": user.ciam_sub,
+        "email": user.email,
+        "permissions": sorted(codes),
+    }
+
+
+admin_auth_settings = get_admin_auth_settings()
+admin = Admin(
+    admin_engine,
+    title="PRISM Admin",
+    base_url="/admin",
+    auth_provider=PrismAdminAuthProvider(admin_engine, admin_auth_settings),
+)
 register_alerts_admin_views(admin)
 admin.mount_to(app)
 

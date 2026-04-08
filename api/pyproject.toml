@@ -52,6 +52,7 @@ fiona = "^1.10b2"
 filelock = "^3.20.3"
 # some package isn't updated for numpy 2.x yet
 numpy = "<2.0"
+pydantic-settings = "^2.0.0"
 
 [tool.poetry.group.dev.dependencies]
 black = ">=26.3.1"

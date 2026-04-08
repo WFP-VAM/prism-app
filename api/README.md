@@ -101,9 +101,38 @@ The instance will need to have read/write access to S3. Make sure it has the nec
 - `lat_max`, max latitude (to define the bounding box of the geotiff).
 - `long_max`, max longitude (to define the bounding box of the geotiff).
 
+## Admin UI (Starlette Admin) and CIAM OIDC
+
+The `/admin` UI uses **CIAM OpenID Connect** (authorization code with a confidential client). PRISM provisions users in the **`users`** table (stable `ciam_sub` from the ID token) and grants **`prism.app`** / **`prism.admin`** via **`user_permissions`**.
+
+**Authoritative CIAM integration guidance** is the WFP documentation site: [CIAM Documentation](https://docs.ciam.auth.wfp.org/). Use it for OIDC flow details, endpoint behavior, client registration, and errors—for example [Supported OpenID Connect flows](https://docs.ciam.auth.wfp.org/supported-oidc-flows/), [Login workflows](https://docs.ciam.auth.wfp.org/login-workflows/), [CIAM getting started](https://docs.ciam.auth.wfp.org/ciam-getting-started/), and [Common errors](https://docs.ciam.auth.wfp.org/common-errors/). User lifecycle (self-service vs API provisioning) is described under [Registration workflows](https://docs.ciam.auth.wfp.org/registration-workflows/).
+
+This codebase loads OIDC metadata via **OpenID Connect Discovery** from `{PRISM_OIDC_ISSUER}/.well-known/openid-configuration`. Set **`PRISM_OIDC_ISSUER`** to the **`issuer`** string from that document (see [`.env.example`](.env.example)); it may be a path under `ciam.auth.wfp.org`, not only the site origin.
+
+**HTTP Basic** auth in [`prism_app/auth.py`](prism_app/auth.py) against **`user_info`** is unchanged and is still used for **geospatial API routes** that depend on `validate_user` / `optional_validate_user`. It does **not** gate Starlette Admin; those are separate credentials and tables.
+
+### Environment
+
+See [`.env.example`](.env.example) for `PRISM_OIDC_*`, `PRISM_SESSION_SECRET`, cookie options, and `PRISM_ACCESS_SUPPORT_EMAIL`.
+
+For **local development without CIAM**, set **`PRISM_ADMIN_AUTH_DISABLED=true`** (never in production). Example vars for tests are defaulted in [`prism_app/tests/conftest.py`](prism_app/tests/conftest.py).
+
+### HTTP routes (main FastAPI app)
+
+| Path | Purpose |
+|------|--------|
+| `GET /auth/sign-in` | Start OIDC (`?next=` optional return path). |
+| `GET /auth/callback` | Registered redirect URI; exchanges code and sets session cookie. |
+| `GET /auth/sign-out` | Clears PRISM session / OIDC state cookies. |
+| `GET /access-not-configured` | Signed-in user with no permission rows. |
+| `GET /api/admin/whoami` | JSON probe; requires session + `prism.admin`. |
+
+`SESSION_TTL` is enforced via signed cookie payload (`exp`) and `Max-Age`.
+
 ## Alerts database migrations (Alembic)
 
-The alerts/auth PostgreSQL schema (`alert`, `user_info`, `anticipatory_action_alerts`, and `anticipatory_action_alerts_type_enum`) is modeled in SQLModel under `prism_app/database/`. **All new schema changes are made with Alembic** in this directory (`alembic.ini`, `alembic/env.py`, `alembic/versions/`). The TypeORM files under `alerting/migration/` are **historical reference only**; do not add new TypeORM migrations for this database.
+
+The alerts/auth PostgreSQL schema (`alert`, `user_info`, `anticipatory_action_alerts`, `users`, `permissions`, `user_permissions`, and related enums) is modeled in SQLModel under `prism_app/database/`. **All new schema changes are made with Alembic** in this directory (`alembic.ini`, `alembic/env.py`, `alembic/versions/`). The TypeORM files under `alerting/migration/` are **historical reference only**; do not add new TypeORM migrations for this database.
 
 **Connection URL** is the same as the API: `PRISM_ALERTS_DATABASE_URL`, or the `POSTGRES_*` variables documented in `prism_app/database/database.py`. For local `poetry run alembic` commands, you can put `PRISM_ALERTS_DATABASE_URL` in `api/.env`; `alembic/env.py` loads that file into the process environment before connecting (unlike the shell, Python does not read `.env` by itself).
 

@@ -2,7 +2,7 @@
 
 from prism_app.database.alert_model import AlertModel
 from prism_app.database.anticipatory_action_alerts_model import AnticipatoryActionAlerts
-from prism_app.database.permission_model import Permission
+from prism_app.database.permission_model import Permission, UserPermission
 from prism_app.database.prism_user_model import PrismUser
 from prism_app.database.user_info_model import UserInfoModel
 from starlette.requests import Request
@@ -38,19 +38,32 @@ class AnticipatoryActionAlertsView(ReadOnlyModelView):
     exclude_fields_from_list = ("last_states",)
 
 
-class PrismUserView(ReadOnlyModelView):
-    """CIAM-mapped PRISM users (authorization identity; not legacy `user_info`)."""
+class PrismUserEditView(ModelView):
+    """CIAM-mapped users: provision metadata; permissions use User permissions."""
 
     label = "PRISM users (CIAM)"
+
+    async def can_create(self, request: Request) -> bool:
+        return False
+
+    async def can_delete(self, request: Request) -> bool:
+        return False
 
 
 class PermissionView(ReadOnlyModelView):
     label = "Permissions"
 
 
+class UserPermissionView(ModelView):
+    """Grant or revoke ``prism.app`` / ``prism.admin`` links for a user."""
+
+    label = "User permissions"
+
+
 def register_alerts_admin_views(admin: Admin) -> None:
     admin.add_view(AlertView(AlertModel))
     admin.add_view(UserInfoView(UserInfoModel))
     admin.add_view(AnticipatoryActionAlertsView(AnticipatoryActionAlerts))
-    admin.add_view(PrismUserView(PrismUser))
+    admin.add_view(PrismUserEditView(PrismUser))
     admin.add_view(PermissionView(Permission))
+    admin.add_view(UserPermissionView(UserPermission))
