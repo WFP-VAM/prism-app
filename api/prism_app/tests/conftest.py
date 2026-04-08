@@ -1,5 +1,10 @@
 """Pytest configuration and fixtures for export_maps tests."""
 
+import os
+
+# Allow Starlette admin and tests to import the app without full OIDC configuration.
+os.environ.setdefault("PRISM_ADMIN_AUTH_DISABLED", "true")
+
 import prism_app.export_maps as export_maps_module
 import pytest
 

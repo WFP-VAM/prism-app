@@ -12,10 +12,13 @@ python = ">=3.12,<3.13"
 requests = "^2.33.0"
 playwright = "1.53.0"
 fastapi = "^0.120.2"
+starlette-admin = "^0.16.0"
 httpx = "^0.28.0"
 uvicorn = { extras = ["standard"], version = "^0.23.2" }
-sqlalchemy = "^1.4.40"
-pydantic = { version = "1.10.22", extras = ["email"] }
+sqlalchemy = "^2.0.36"
+pydantic = { version = "^2.10.0", extras = ["email"] }
+sqlmodel = "^0.0.22"
+alembic = "^1.14.0"
 python-dateutil = "2.8.2"
 types-python-dateutil = "2.8.19"
 psycopg2-binary = "^2.9.9"
@@ -49,6 +52,7 @@ fiona = "^1.10b2"
 filelock = "^3.20.3"
 # some package isn't updated for numpy 2.x yet
 numpy = "<2.0"
+pydantic-settings = "^2.0.0"
 
 [tool.poetry.group.dev.dependencies]
 black = ">=26.3.1"
