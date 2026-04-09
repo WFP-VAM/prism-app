@@ -4239,7 +4239,6 @@ caniuse-lite@^1.0.30001759:
 
 "canvas@link:./node_modules/.cache/null":
   version "0.0.0"
-  uid ""
 
 canvg@^3.0.11:
   version "3.0.11"
@@ -6195,9 +6194,9 @@ h3-js@^3.7.0:
   integrity sha512-LPjlHSwB9zQZrMqKloCZmmmt3yZzIK7nqPcXqwU93zT3TtYG6jP4tZBzAPouxut7lLjdFbMQ75wRBiKfpsnY7w==
 
 handlebars@^4.7.8:
-  version "4.7.8"
-  resolved "https://registry.yarnpkg.com/handlebars/-/handlebars-4.7.8.tgz#41c42c18b1be2365439188c77c6afae71c0cd9e9"
-  integrity sha512-vafaFqs8MZkRrSX7sFVUdo3ap/eNiLnb4IakshzvP56X5Nr1iGKAIqdX6tMlm6HcNRIkr6AxO5jFEoJzzpT8aQ==
+  version "4.7.9"
+  resolved "https://registry.yarnpkg.com/handlebars/-/handlebars-4.7.9.tgz#6f139082ab58dc4e5a0e51efe7db5ae890d56a0f"
+  integrity sha512-4E71E0rpOaQuJR2A3xDZ+GM1HyWYv1clR58tC8emQNeQe3RH7MAzSbat+V0wG78LQBo6m6bzSG/L4pBuCsgnUQ==
   dependencies:
     minimist "^1.2.5"
     neo-async "^2.6.2"
@@ -10861,10 +10860,10 @@ vite-plugin-node-polyfills@^0.21.0:
     "@rollup/plugin-inject" "^5.0.5"
     node-stdlib-browser "^1.2.0"
 
-vite@^6.4.1:
-  version "6.4.1"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-6.4.1.tgz#afbe14518cdd6887e240a4b0221ab6d0ce733f96"
-  integrity sha512-+Oxm7q9hDoLMyJOYfUYBuHQo+dkAloi33apOPP56pzj+vsdJDzr+j1NISE5pyaAuKL4A3UD34qd0lx5+kfKp2g==
+vite@^6.4.2:
+  version "6.4.2"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-6.4.2.tgz#a4e548ca3a90ca9f3724582cab35e1ba15efc6f2"
+  integrity sha512-2N/55r4JDJ4gdrCvGgINMy+HH3iRpNIz8K6SFwVsA+JbQScLiC+clmAxBgwiSPgcG9U15QmvqCGWzMbqda5zGQ==
   dependencies:
     esbuild "^0.25.0"
     fdir "^6.4.4"
