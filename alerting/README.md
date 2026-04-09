@@ -23,17 +23,7 @@ The alerting stack uses the same PostgreSQL database as the PRISM API for `alert
 - Alerts are triggered by a cron job running within the `alerting-node` process.
 - Run `docker compose up` to launch the `alerting-node` and `alerting-db` processes.
 - The system checks database entries to determine **which country** needs to be triggered.
-- Currently, **Mozambique is supported**. To add it, connect to the `psql` console of `alerting-db` and run the following commands:
-
-```sql
--- Storm
-INSERT INTO anticipatory_action_alerts (country, emails, prism_url, type)
-VALUES ('Mozambique', ARRAY['email1@example.com'], 'https://prism.moz.wfp.org', 'storm');
-
--- Flood
-INSERT INTO anticipatory_action_alerts (country, emails, prism_url, type)
-VALUES ('Mozambique', ARRAY['email1@example.com'], 'https://prism.moz.wfp.org', 'flood');
-```
+- Currently, **Mozambique is supported**. After the DB schema exists (Alembic baseline / TypeORM history in prod), seed local data from the **API** (same repo area that owns migrations)—see **Local dev seed data** in [`api/README.md`](../api/README.md): `poetry run python scripts/seed_alerts_db.py` from `api/`. Connection vars are `PRISM_ALERTS_DATABASE_URL` or `POSTGRES_*` in `api/.env`; for host access to `alerting-db`, use port `54321` as in [`.env.example`](./.env.example).
 
 - **country**: The target country for the alert.  
 - **emails**: A list of email addresses that will receive the alert notification.  

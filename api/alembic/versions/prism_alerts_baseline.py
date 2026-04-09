@@ -54,8 +54,18 @@ def upgrade() -> None:
             server_default=sa.text("true"),
             nullable=False,
         ),
-        sa.Column("created_at", sa.DateTime(), nullable=False),
-        sa.Column("updated_at", sa.DateTime(), nullable=False),
+        sa.Column(
+            "created_at",
+            sa.DateTime(),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
+        sa.Column(
+            "updated_at",
+            sa.DateTime(),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
         sa.Column("last_triggered", sa.DateTime(), nullable=True),
     )
 
@@ -70,7 +80,12 @@ def upgrade() -> None:
         sa.Column("organization", sa.String(), nullable=True),
         sa.Column("email", sa.String(), nullable=True),
         sa.Column("details", sa.String(), nullable=True),
-        sa.Column("created_at", sa.DateTime(), nullable=False),
+        sa.Column(
+            "created_at",
+            sa.DateTime(),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
     )
 
     op.create_table(

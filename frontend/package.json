@@ -15,11 +15,14 @@
       "yarn run lint --fix"
     ]
   },
+  "_comment.typecheck": "build uses yarn typecheck (tsconfig.build.json — excludes **/*.test.*). yarn typecheck:all uses tsconfig.json and typechecks tests too.",
   "scripts": {
     "start": "cross-env vite",
     "test": "cross-env REACT_APP_TESTING=true && jest --maxWorkers=8",
     "test:watch": "yarn test --watch",
-    "build": "export GIT_HASH=$(git rev-parse --short HEAD) || true && tsc && cross-env vite build",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit",
+    "typecheck:all": "tsc --noEmit",
+    "build": "export GIT_HASH=$(git rev-parse --short HEAD) || true && yarn typecheck && cross-env vite build",
     "lint:ci": "yarn lint --max-warnings 0",
     "lint": "eslint \"**/*.{js,jsx,ts,tsx}\"",
     "preview": "vite preview",
@@ -110,7 +113,8 @@
     "react-window": "^1.8.10",
     "redux": "^4.0.5",
     "reflect-metadata": "^0.1.13",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "zod": "^4.3.6"
   },
   "resolutions": {
     "node-notifier": "^10.0.1",
@@ -217,7 +221,7 @@
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.2",
     "typescript": "5.9.3",
-    "vite": "^6.4.1",
+    "vite": "^6.4.2",
     "vite-plugin-node-polyfills": "^0.21.0"
   },
   "engines": {

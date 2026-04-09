@@ -114,6 +114,25 @@ From the `api/` directory:
 PRISM_ALERTS_DATABASE_URL="postgresql://user:pass@host:5432/dbname" poetry run alembic upgrade head
 ```
 
+<<<<<<< HEAD
+=======
+### Local dev seed data
+
+**Prerequisite:** the alerts database must already reflect the current Alembic head (otherwise seeding will error on missing tables/enums). From `api/`, with `PRISM_ALERTS_DATABASE_URL` or `POSTGRES_*` set in `.env` and Postgres reachable:
+
+```bash
+poetry run alembic upgrade head
+```
+
+Then insert the shared local-dev rows used by alerting workers and API smoke tests (Mozambique anticipatory-action metadata, a `local_dev_user` in `user_info`, and two sample `alert` rows):
+
+```bash
+poetry run python scripts/seed_alerts_db.py
+```
+
+This is a **standalone dev script** under [`scripts/`](./scripts/) (not part of the importable `prism_app` package or FastAPI surface). It reads [`scripts/seed_local_alerts_dev.sql`](./scripts/seed_local_alerts_dev.sql) and connects with the same `PRISM_ALERTS_DATABASE_URL` / `POSTGRES_*` rules as [`database.py`](./prism_app/database/database.py). Put those variables in `api/.env` (loaded by the script the same way as `alembic/env.py`). The seed is safe to re-run: see comments in the SQL file.
+
+>>>>>>> master
 **Deploy / CI:** run `alembic upgrade head` against the alerts database using `PRISM_ALERTS_DATABASE_URL` before or as part of rolling out an API release that depends on the latest schema.
 
 **Existing databases** that already match this schema (for example, previously migrated with TypeORM) should not re-apply the baseline `CREATE TABLE` migration. Point Alembic at the same URL and **stamp** the current head once, then use `upgrade head` for future revisions:
@@ -141,6 +160,8 @@ To run the api locally, run:
 ```
 make api
 ```
+
+**Alerts DB from Docker:** `prism_app.database.database` uses `PRISM_ALERTS_DATABASE_URL` when set; otherwise it builds a URL from `POSTGRES_*`. `docker-compose.develop.yml` sets `PRISM_ALERTS_DATABASE_URL` to empty so the container ignores a host `api/.env` that uses `127.0.0.1` (fine for Alembic on the laptop, wrong inside Docker—there `127.0.0.1` is the API container). Use `POSTGRES_HOST` / `POSTGRES_PORT` in that compose file so the API reaches Postgres (for example `host.docker.internal` and published port `54321`, or the DB service name and `5432` when sharing a compose network).
 
 To run flask api together with database within same network, run:
 
