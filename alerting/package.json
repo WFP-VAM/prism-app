@@ -20,7 +20,7 @@
     "string-width": "4.2.3",
     "form-data": "^3.0.4",
     "lodash": "^4.18.0",
-    "basic-ftp": "^5.2.0",
+    "basic-ftp": "^5.2.1",
     "**/filelist/minimatch": "^5.1.9"
   },
   "_resolutionsNotes": {
@@ -28,7 +28,7 @@
     "js-yaml": "CVE-2025-64718 - Security fix - Parent: eslint - Already at latest (4.1.1) - Keep resolution until eslint updates",
     "form-data": "CVE-2025-7783 - Security fix - GHSA-fjxv-7rqg-78g4 - Forces v3.0.4+ for transitive dependencies",
     "lodash": "Lodash security fixes - GHSA-r5fr-rjxr-66jc / GHSA-f23m-r3pf-42rh (CVE-2026-4800 / CVE-2026-2950) and prior - Forces v4.18.0+",
-    "basic-ftp": "GHSA-5rq4-664w-9x2c - Critical: Path Traversal in downloadToDir() - Parent: puppeteer - Fix: v5.2.0+",
+    "basic-ftp": "GHSA-5rq4-664w-9x2c + GHSA-chqc-8p9q-pq6q - Path Traversal + FTP Command Injection via CRLF - Parent: puppeteer - Fix: v5.2.1+",
     "**/filelist/minimatch": "GHSA-23c5-xmqv-rm74 + GHSA-3ppc-4f35-3m26 + GHSA-7r86-cg39-jmmj - ReDoS in minimatch 5.x - Parent: ejs>jake>filelist - Fix: v5.1.9 (patched)",
     "_brace-expansion": "CVE-2026-33750 / GHSA-f886-m6hf-6m8v - Transitive brace-expansion pinned in yarn.lock (^2.0.1→2.0.3, ^5.0.2→5.0.5); Yarn v1 cannot express those overrides reliably via resolutions alone."
   },
