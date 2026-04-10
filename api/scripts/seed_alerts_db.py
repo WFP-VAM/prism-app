@@ -1,4 +1,13 @@
-"""Dev-only CLI: seed local rows into the alerts DB. Not part of the prism_app package or API."""
+"""Dev-only CLI: seed local rows into the alerts DB. Not part of the prism_app package or API.
+
+Executes ``seed_local_alerts_dev.sql``, which inserts:
+
+- ``anticipatory_action_alerts`` (Mozambique storm + flood, if missing)
+- ``user_info`` (local dev admin user; ON CONFLICT DO NOTHING)
+- ``alert`` (two sample threshold rows; re-run replaces fixed seed emails)
+
+See alerting/README.md and api/README.md (Local dev seed data).
+"""
 
 from __future__ import annotations
 

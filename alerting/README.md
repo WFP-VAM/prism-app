@@ -34,59 +34,9 @@ The `type` column is a PostgreSQL ENUM (`anticipatory_action_alerts_type_enum`).
 
 ### Optional: threshold `alert` rows + `user_info` (local testing)
 
-For [Starlette Admin](https://github.com/jowilf/starlette-admin) or API smoke tests, you can seed the shared `alert` and `user_info` tables (same DB as above). Example after `psql` connects:
-
-```sql
-INSERT INTO user_info (
-  username, password, salt, access, email, deployment, organization, details, created_at
-)
-VALUES (
-  'local_dev_user',
-  'localdev',
-  'false',
-  '{"province": "01"}'::jsonb,
-  'local-dev@example.com',
-  'local',
-  'WFP',
-  'Seed user for local testing',
-  NOW()
-)
-ON CONFLICT (username) DO NOTHING;
-
-INSERT INTO alert (
-  email, prism_url, alert_name, alert_config, min, max, zones, active,
-  created_at, updated_at, last_triggered
-)
-VALUES (
-  'seed-alert-1@example.com',
-  'https://prism.moz.wfp.org',
-  'Seed rainfall threshold',
-  '{"id": "rfh_dekad", "type": "wms", "title": "Rainfall", "serverLayerName": "rfh_dekad", "baseUrl": "https://api.earthobservation.vam.wfp.org/ows/", "wcsConfig": {}}'::jsonb,
-  50,
-  200,
-  '{"type": "FeatureCollection", "name": "zones", "features": []}'::jsonb,
-  true,
-  NOW(),
-  NOW(),
-  TIMESTAMP '2026-01-15 10:00:00'
-),
-(
-  'seed-alert-2@example.com',
-  'https://prism.moz.wfp.org',
-  'Seed inactive alert',
-  '{"id": "test-layer", "type": "wms", "title": "Test layer", "serverLayerName": "layer", "baseUrl": "https://example.org/ows/", "wcsConfig": {}}'::jsonb,
-  1,
-  10,
-  NULL,
-  false,
-  NOW(),
-  NOW(),
-  NULL
-);
-```
+For [Starlette Admin](https://github.com/jowilf/starlette-admin) or API smoke tests, use the same seed step as above: from `api/`, run `poetry run python scripts/seed_alerts_db.py`. That executes [`api/scripts/seed_local_alerts_dev.sql`](../api/scripts/seed_local_alerts_dev.sql), which loads sample `alert` and `user_info` rows (and the Mozambique AA rows) in one shot. Re-running is safe: see comments at the top of that SQL file.
 
 - **User password:** with `salt = 'false'`, the PRISM API validates this row using a **plain-text** password match ([`prism_app/auth.py`](../api/prism_app/auth.py))—use HTTP Basic `local_dev_user` / `localdev` when auth is enabled.
-- Re-running the `alert` inserts will add duplicate rows unless you delete those emails first; the user insert is idempotent on `username`.
 
 ### Shared worker runner
 
