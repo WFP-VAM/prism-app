@@ -197,10 +197,12 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     [selectedLayerId, selectableLayers],
   );
 
+  console.log({ printSelectedLayer });
+
   const availableCadences = useMemo(() => {
-    const coverageWindow =
-      printSelectedLayer?.coverageWindow ??
-      selectedLayersWithDateSupport[0]?.coverageWindow;
+    const coverageWindow = printSelectedLayer
+      ? printSelectedLayer.coverageWindow
+      : selectedLayersWithDateSupport[0]?.coverageWindow;
     return getAvailableCadences(coverageWindow);
   }, [printSelectedLayer, selectedLayersWithDateSupport]);
   useEffect(() => {
