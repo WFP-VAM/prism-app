@@ -13,6 +13,7 @@ import { availableDatesSelector } from 'context/serverStateSlice';
 import { LayerDefinitions } from 'config/utils';
 import { WMSLayerProps } from 'config/types';
 import { getPossibleDatesForLayer } from 'utils/server-utils';
+import { dateWithoutTime } from 'utils/date-utils';
 import PrintConfigContext from './printConfig.context';
 
 function DateRangePicker() {
@@ -40,7 +41,7 @@ function DateRangePicker() {
   }, [selectedLayer, availableDates]);
 
   const includedDates = useMemo(
-    () => layerDates.map(timestamp => new Date(timestamp)),
+    () => new Set(layerDates.map(dateWithoutTime)),
     [layerDates],
   );
 
@@ -86,7 +87,9 @@ function DateRangePicker() {
             selected={startDate ? new Date(startDate) : null}
             onChange={handleStartDateChange}
             maxDate={endDate ? new Date(endDate) : maxDate}
-            includeDates={includedDates}
+            filterDate={(date: Date) =>
+              includedDates.has(dateWithoutTime(date))
+            }
             peekNextMonth
             showMonthDropdown
             showYearDropdown
@@ -107,7 +110,9 @@ function DateRangePicker() {
             selected={endDate ? new Date(endDate) : null}
             onChange={handleEndDateChange}
             minDate={startDate ? new Date(startDate) : minDate}
-            includeDates={includedDates}
+            filterDate={(date: Date) =>
+              includedDates.has(dateWithoutTime(date))
+            }
             peekNextMonth
             showMonthDropdown
             showYearDropdown
