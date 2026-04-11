@@ -1,18 +1,27 @@
 import os
 import tempfile
+import uuid
 from unittest.mock import MagicMock, patch
 
 import pytest
 import rasterio
 from fastapi.testclient import TestClient
-from prism_app.database.database import AlertsDataBase
+from prism_app.database.alert_model import AlertModel
+from prism_app.database.database import AlertsDataBase, AuthDataBase
+from prism_app.database.user_info_model import UserInfoModel
 from prism_app.main import app
 from prism_app.scripts.add_users import add_users
+from sqlalchemy import text
+from sqlalchemy.orm import Session
 
 
 @pytest.fixture(scope="session", autouse=True)
 def migrate_test_db():
     alerts_db = AlertsDataBase()
+    if alerts_db.engine is None:
+        pytest.skip(
+            "Alerts database unavailable (PRISM_ALERTS_DATABASE_URL / Postgres)"
+        )
     # TODO: find a better way to do this, instead of copying them from
     # the js migration files
     q1 = """CREATE TABLE IF NOT EXISTS "alert" (
@@ -42,9 +51,10 @@ def migrate_test_db():
           "details" character varying,
           "created_at" TIMESTAMP NOT NULL DEFAULT now()
         )"""
-    alerts_db.session.execute(q1)
-    alerts_db.session.execute(q2)
-    alerts_db.session.commit()
+    with Session(bind=alerts_db.engine) as session:
+        session.execute(text(q1))
+        session.execute(text(q2))
+        session.commit()
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -53,6 +63,130 @@ def add_test_users(migrate_test_db):  # noqa: F811
 
 
 client = TestClient(app)
+
+
+def _minimal_alert_payload(email: str, alert_name: str) -> dict:
+    """Valid body for POST /alerts (Pydantic AlertsModel + DB integer min/max)."""
+    return {
+        "email": email,
+        "prism_url": "https://example.org/prism",
+        "alert_name": alert_name,
+        "alert_config": {
+            "id": "test-layer",
+            "type": "wms",
+            "title": "Test",
+            "serverLayerName": "layer",
+            "baseUrl": "https://example.org/ows/",
+            "wcsConfig": {},
+        },
+        "zones": {
+            "type": "FeatureCollection",
+            "name": "zones",
+            "features": [],
+        },
+        "min": 1.9,
+        "max": 10.2,
+    }
+
+
+def test_post_alerts_persists_and_coerces_bounds(migrate_test_db):
+    """SQLModel insert via API; float bounds become integers in DB."""
+    token = uuid.uuid4().hex[:8]
+    email = f"alerts-api-test-{token}@example.com"
+    name = f"pytest_alert_{token}"
+    payload = _minimal_alert_payload(email, name)
+
+    response = client.post("/alerts", json=payload)
+    assert response.status_code == 200
+
+    db = AlertsDataBase()
+    rows = list(db.read(AlertModel.email == email))
+    assert len(rows) == 1
+    row = rows[0]
+    assert row.alert_name == name
+    assert row.min == 1
+    assert row.max == 10
+    assert row.active is True
+    assert row.zones is not None
+    assert row.alert_config["id"] == "test-layer"
+
+
+def test_post_alerts_validation_requires_min_or_max(migrate_test_db):
+    payload = _minimal_alert_payload("x@example.com", "n")
+    payload.pop("min")
+    payload.pop("max")
+    response = client.post("/alerts", json=payload)
+    assert response.status_code == 422
+
+
+def test_get_alert_by_id_success(migrate_test_db):
+    token = uuid.uuid4().hex[:8]
+    email = f"alerts-get-{token}@example.com"
+    name = f"pytest_get_{token}"
+    assert (
+        client.post("/alerts", json=_minimal_alert_payload(email, name)).status_code
+        == 200
+    )
+
+    db = AlertsDataBase()
+    row = db.read(AlertModel.email == email)[0]
+    assert row.id is not None
+
+    r = client.get(f"/alerts/{row.id}", params={"email": email})
+    assert r.status_code == 200
+    body = r.json()
+    assert body["email"] == email
+    assert body["alert_name"] == name
+    assert body["active"] is True
+
+
+def test_get_alert_by_id_forbidden_wrong_email(migrate_test_db):
+    token = uuid.uuid4().hex[:8]
+    email = f"alerts-owner-{token}@example.com"
+    assert (
+        client.post("/alerts", json=_minimal_alert_payload(email, "n")).status_code
+        == 200
+    )
+    row = AlertsDataBase().read(AlertModel.email == email)[0]
+
+    r = client.get(f"/alerts/{row.id}", params={"email": "other@example.com"})
+    assert r.status_code == 403
+
+
+def test_get_alert_by_id_not_found(migrate_test_db):
+    r = client.get("/alerts/999999999", params={"email": "anyone@example.com"})
+    assert r.status_code == 404
+
+
+def test_get_alert_deactivate(migrate_test_db):
+    token = uuid.uuid4().hex[:8]
+    email = f"alerts-deact-{token}@example.com"
+    assert (
+        client.post("/alerts", json=_minimal_alert_payload(email, "d")).status_code
+        == 200
+    )
+    row = AlertsDataBase().read(AlertModel.email == email)[0]
+
+    r = client.get(
+        f"/alerts/{row.id}",
+        params={"email": email, "deactivate": True},
+    )
+    assert r.status_code == 200
+
+    refreshed = AlertsDataBase().readone(row.id)
+    assert refreshed is not None
+    assert refreshed.active is False
+
+
+def test_auth_database_read_returns_users(migrate_test_db):
+    """Regression: read() must query user_info (not alert)."""
+    auth = AuthDataBase()
+    if auth.engine is None:
+        pytest.skip("Auth database unavailable")
+    rows = auth.read(UserInfoModel.username == "admin_01")
+    assert len(rows) >= 1
+    assert rows[0].username == "admin_01"
+    assert isinstance(rows[0].access, (dict, type(None)))
 
 
 def test_stats_endpoint1():
