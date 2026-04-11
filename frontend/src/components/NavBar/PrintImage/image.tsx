@@ -180,13 +180,21 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   ) as WMSLayerProps[];
   const [selectedLayerId, setSelectedLayerId] = useState<LayerKey | null>(null);
 
+  const { selectedLayersWithDateSupport } = useLayers();
+
+  useEffect(() => {
+    if (open) {
+      setSelectedLayerId(
+        (selectedLayersWithDateSupport[0]?.id as LayerKey) ?? null,
+      );
+    }
+  }, [open]);
+
   useEffect(() => {
     if (selectedLayerId === null && selectableLayers.length > 0) {
       setSelectedLayerId(selectableLayers[0].id);
     }
   }, [selectableLayers, selectedLayerId]);
-
-  const { selectedLayersWithDateSupport } = useLayers();
   const availableDates = useSelector(availableDatesSelector);
 
   const printSelectedLayer = useMemo(
@@ -196,8 +204,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         : null,
     [selectedLayerId, selectableLayers],
   );
-
-  console.log({ printSelectedLayer });
 
   const availableCadences = useMemo(() => {
     const coverageWindow = printSelectedLayer
