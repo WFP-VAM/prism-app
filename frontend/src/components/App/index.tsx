@@ -2,13 +2,20 @@ import { memo, useMemo } from 'react';
 import * as Sentry from '@sentry/browser';
 import { useIsAuthenticated } from '@azure/msal-react';
 import { ThemeProvider } from '@material-ui/core/styles';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  useParams,
+} from 'react-router-dom';
 import { Font } from '@react-pdf/renderer';
 import { authRequired } from 'config';
+
 import { useDashboardConfig } from 'hooks/useDashboardConfig';
 import NavBar from 'components/NavBar';
 import MapView from 'components/MapView';
 import DashboardView from 'components/DashboardView';
+import CreateDashboardView from 'components/CreateDashboardView';
 import Login from 'components/Login';
 import ExportView from 'components/ExportView';
 import muiTheme from 'muiTheme';
@@ -59,6 +66,14 @@ Font.register({
   ],
 });
 
+function DashboardRouteSwitcher() {
+  const { path } = useParams<{ path?: string }>();
+  if (path === 'create') {
+    return <CreateDashboardView />;
+  }
+  return <DashboardView />;
+}
+
 const Wrapper = memo(() => (
   <div id="app">
     <NavBar />
@@ -67,7 +82,7 @@ const Wrapper = memo(() => (
       <Switch>
         {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
         <Route path="/dashboard/:path?" exact>
-          <DashboardView />
+          <DashboardRouteSwitcher />
         </Route>
         {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
         <Route>
