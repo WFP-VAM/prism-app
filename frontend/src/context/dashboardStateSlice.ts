@@ -230,6 +230,10 @@ export const dashboardStateSlice = createSlice({
   reducers: {
     setDashboards: (_state, action: PayloadAction<Dashboard[]>) =>
       createInitialState(0, action.payload),
+    setDraftDashboard: (_state, action: PayloadAction<Dashboard>) => ({
+      ...createInitialState(0, [action.payload]),
+      mode: DashboardMode.EDIT,
+    }),
     setSelectedDashboard: (state, action: PayloadAction<number>) => {
       const dashboardIndex = action.payload;
       return createInitialState(dashboardIndex, state.dashboards);
@@ -679,6 +683,7 @@ export const dashboardTableStateSelector =
 // Setters
 export const {
   setDashboards,
+  setDraftDashboard,
   setSelectedDashboard,
   toggleMapSync,
   setSharedViewport,
