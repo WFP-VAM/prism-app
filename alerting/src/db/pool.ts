@@ -33,7 +33,10 @@ export function buildPoolConfig(): PoolConfig {
       (process.env.POSTGRES_PORT &&
         parseInt(process.env.POSTGRES_PORT, 10)) ||
       5432,
-    database: process.env.POSTGRES_DATABASE || 'postgres',
+    database:
+      process.env.POSTGRES_DATABASE ||
+      process.env.POSTGRES_DB ||
+      'postgres',
     ...(process.env.POSTGRES_USER && { user: process.env.POSTGRES_USER }),
     ...(process.env.POSTGRES_PASSWORD && {
       password: process.env.POSTGRES_PASSWORD,
