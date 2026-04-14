@@ -67,6 +67,18 @@ sudo docker compose run --entrypoint "yarn aa-flood-alert-worker --testEmail='em
 ```
 - The provided emails replace the DB-configured recipients for test runs.
 
+### Ethereal (fake SMTP, no credentials)
+
+If **`PRISM_ALERTS_EMAIL_USER`** and **`PRISM_ALERTS_EMAIL_PASSWORD`** are both unset or empty, [`src/utils/email.ts`](./src/utils/email.ts) uses Nodemailer’s [Ethereal](https://ethereal.email) test inbox: it creates a disposable SMTP account, sends through `smtp.ethereal.email`, and logs a **preview URL** (`Preview URL: …`) you can open in a browser to read the message and attachments.
+
+This is independent of **`--testEmail`**: you can keep using test addresses in the command; Ethereal still delivers to its fake SMTP and you inspect the result via the preview URL (those addresses are not a real inbox).
+
+1. Ensure real SMTP env vars are not set (or remove them from `.env` / compose for local runs).
+2. Run a worker that sends mail (commands above, or threshold `alert-worker` if your DB triggers a send).
+3. Copy the logged preview link from the container or terminal output.
+
+Each run may use a new Ethereal account. To reuse one inbox, configure Ethereal’s SMTP user/password yourself via `PRISM_ALERTS_EMAIL_USER`, `PRISM_ALERTS_EMAIL_PASSWORD`, and `PRISM_ALERTS_EMAIL_HOST` (e.g. `smtp.ethereal.email`).
+
 ### Flood data source
 - The flood worker reads `dates.json`: `https://data.earthobservation.vam.wfp.org/public-share/aa/flood/moz/dates.json`.
 - Email triggers when `trigger_status` is one of: `bankfull`, `moderate`, `severe`.
