@@ -3,8 +3,8 @@ import os
 from typing import Final, Optional
 from urllib.parse import parse_qs, urlparse
 
-from playwright.async_api import async_playwright, expect
 import prism_app.caching as caching
+from playwright.async_api import async_playwright, expect
 
 # Html selectors
 LAYER_ACCORDION_SELECTOR: Final[str] = (

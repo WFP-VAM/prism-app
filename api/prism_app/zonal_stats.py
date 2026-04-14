@@ -9,9 +9,9 @@ from json import dump, load
 from typing import Any, NewType, Optional
 from urllib.parse import urlencode
 
+import prism_app.caching as caching
 import rasterio  # type: ignore
 from fastapi import HTTPException
-import prism_app.caching as caching
 from prism_app.caching import _hash_value, cache_file, get_json_file, is_file_valid
 from prism_app.duckdb_utils import setup_duckdb_connection
 from prism_app.models import (
