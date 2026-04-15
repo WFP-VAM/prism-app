@@ -26,6 +26,7 @@ import { useMapState } from 'utils/useMapState';
 import { locales, useSafeTranslation } from 'i18n';
 import {
   dateStrToUpperCase,
+  dateWithoutTime,
   datesAreEqualWithoutTime,
   getFormattedDate,
 } from 'utils/date-utils';
@@ -382,8 +383,16 @@ const DateSelector = memo(() => {
     });
   }, [dateIndex, range, availableDates]);
 
-  const includedDates = useMemo(
-    () => availableDates?.map(d => new Date(d)) ?? [],
+  // Keys use dateWithoutTime (UTC calendar day via epoch); same as datesAreEqualWithoutTime / timeline logic.
+  // Jest and most CI use TZ=UTC (see test/global-setup.cjs). In positive-offset zones, local calendar cells
+  // and UTC-noon layer timestamps can diverge for the same nominal day — same as pre–PR-1781 includeDates.
+  const includedDatesSet = useMemo(
+    () =>
+      new Set([
+        ...(availableDates?.map(d => dateWithoutTime(d)) ?? []),
+        // Allow picking "today" (UTC-noon normalized above) so unsupported dates surface a clear error
+        dateWithoutTime(today),
+      ]),
     [availableDates],
   );
 
@@ -409,24 +418,21 @@ const DateSelector = memo(() => {
       }
 
       return dates
-        .reduce((acc, currentArray) => [
-          ...acc,
-          ...currentArray.filter(
-            date =>
-              !acc.some(accDate => datesAreEqualWithoutTime(date, accDate)),
-          ),
-        ])
+        .reduce((acc, currentArray) => {
+          const accSet = new Set(acc.map(dateWithoutTime));
+          return [
+            ...acc,
+            ...currentArray.filter(date => !accSet.has(dateWithoutTime(date))),
+          ];
+        })
         .sort((a, b) => a - b);
     }
 
     // Other layers should rely on the dates available in truncatedLayers
-    return dates.reduce((acc, currentArray) =>
-      acc.filter(date =>
-        currentArray.some(currentDate =>
-          datesAreEqualWithoutTime(date, currentDate),
-        ),
-      ),
-    );
+    return dates.reduce((acc, currentArray) => {
+      const currentSet = new Set(currentArray.map(dateWithoutTime));
+      return acc.filter(date => currentSet.has(dateWithoutTime(date)));
+    });
   }, [AAAvailableDates, panelTab, truncatedLayers]);
 
   const updateStartDate = useCallback(
@@ -729,7 +735,9 @@ const DateSelector = memo(() => {
             customInput={<DateSelectorInput />}
             // Include "today" so that the user can select it and get an error message if
             // the selected date is not available
-            includeDates={[...includedDates, today]}
+            filterDate={(date: Date) =>
+              includedDatesSet.has(dateWithoutTime(date))
+            }
           />
 
           {!smUp && (

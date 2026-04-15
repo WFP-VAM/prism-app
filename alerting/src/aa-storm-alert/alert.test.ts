@@ -12,8 +12,6 @@ import { buildDetailedReport, buildLandfallInfo } from './test-utils';
 import { WindState } from 'prism-common';
 import { LastStates } from '../types/storm-reports';
 import { captureScreenshotFromUrl } from '../utils/capture-utils';
-import { formatDate } from '../utils/date';
-
 describe('alert mechanism', () => {
   describe('getLatestAvailableReports()', () => {
     const mockedFetch = nodeFetch as unknown as jest.Mock;
@@ -245,10 +243,8 @@ describe('alert mechanism', () => {
           landfallInfo: buildLandfallInfo({
             landfall_time: [
               '2025-01-13 06:00:00',
-              formatDate(
-                new Date(Date.now() - 60 * 60 * 1000),
-                'YYYY-MM-DD HH:mm:ss',
-              ), // now - 1 hour; ie landfall occured already
+              // Fixed time in the past so landfall-detected logic is deterministic (not Date.now()).
+              '2020-01-01 00:00:00',
             ],
           }),
         }),
