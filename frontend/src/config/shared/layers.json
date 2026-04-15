@@ -1333,7 +1333,7 @@
       "mode": "dekad"
     },
     "coverage_window": {
-      "backward": 11,
+      "backward": 5,
       "forward": 1,
       "mode": "dekad"
     },
@@ -1363,7 +1363,7 @@
       "mode": "dekad"
     },
     "coverage_window": {
-      "backward": 11,
+      "backward": 8,
       "forward": 1,
       "mode": "dekad"
     },
