@@ -9,6 +9,7 @@ import {
 import { Dispatch } from 'redux';
 import { TFunction } from 'i18next';
 import React from 'react';
+import { AggregationOperations } from './aggregationOperations';
 import { rawLayers } from '.';
 import type { ReportKey, TableKey } from './utils';
 import type { PopupMetaData } from '../context/tooltipStateSlice';
@@ -641,14 +642,7 @@ export class StatsApi {
   groupBy: string;
 }
 
-export enum AggregationOperations {
-  Max = 'max',
-  Mean = 'mean',
-  Median = 'median',
-  Min = 'min',
-  Sum = 'sum',
-  'Area exposed' = 'intersect_percentage',
-}
+export { AggregationOperations };
 
 export const units: Partial<Record<AggregationOperations | string, string>> = {
   intersect_percentage: '%',
@@ -1052,83 +1046,18 @@ export class AnticipatoryActionLayerProps extends CommonLayerProps {
   declare title: string;
 }
 
-export enum DashboardMapPosition {
-  left = 'left',
-  right = 'right',
-}
+export {
+  ChartHeight,
+  DashboardElementType,
+  DashboardMapPosition,
+  DashboardMode,
+} from '../dashboardConfig/dashboardEnums';
 
-export enum DashboardElementType {
-  CHART = 'CHART',
-  TEXT = 'TEXT',
-  TABLE = 'TABLE',
-  MAP = 'MAP',
-}
-
-export enum DashboardMode {
-  EDIT = 'edit',
-  VIEW = 'view',
-}
-
-export enum ChartHeight {
-  TALL = 'tall',
-  MEDIUM = 'medium',
-  SHORT = 'short',
-}
-
-export interface DashboardChartConfig {
-  type: DashboardElementType.CHART;
-  startDate: string;
-  endDate?: string;
-  layerId: string;
-  adminUnitLevel?: number;
-  adminUnitId?: number;
-  chartHeight?: ChartHeight;
-}
-
-export interface DashboardTextConfig {
-  type: DashboardElementType.TEXT;
-  content: string;
-  textUpdatedAt?: string;
-}
-
-export interface DashboardTableConfig {
-  type: DashboardElementType.TABLE;
-  startDate: string;
-  hazardLayerId: string;
-  baselineLayerId: string;
-  threshold?: ThresholdDefinition;
-  stat: AggregationOperations;
-  maxRows?: number;
-  addResultToMap?: boolean;
-  sortColumn?: string | number;
-  sortOrder?: 'asc' | 'desc';
-}
-
-export interface DashboardMapConfig {
-  type: DashboardElementType.MAP;
-  defaultDate?: string;
-  mapPosition?: DashboardMapPosition;
-  minMapBounds?: number[];
-  title?: string;
-  legendVisible?: boolean; // default: true - can be set in prism.json
-  legendPosition?: 'left' | 'right'; // default: 'right' - can be set in prism.json
-  preSelectedMapLayers: Array<{
-    layerId: string;
-    opacity?: number;
-  }>;
-}
-
-export type DashboardElements =
-  | DashboardMapConfig
-  | DashboardChartConfig
-  | DashboardTextConfig
-  | DashboardTableConfig;
-
-export interface Dashboard {
-  title: string;
-  path: string;
-  isEditable?: boolean;
-  firstColumn: DashboardElements[];
-  secondColumn?: DashboardElements[];
-  thirdColumn?: DashboardElements[];
-}
+export type {
+  Dashboard,
+  DashboardChartConfig,
+  DashboardElements,
+  DashboardMapConfig,
+  DashboardTableConfig,
+  DashboardTextConfig,
+} from '../dashboardConfig/schema';

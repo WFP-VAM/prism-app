@@ -1,5 +1,3 @@
-version: "3"
-
 networks:
   traefik_default:
     external: true
@@ -33,7 +31,7 @@ services:
 
   api:
     container_name: "api"
-    shm_size: '2gb'
+    shm_size: "2gb"
     networks:
       - traefik_default
       - default

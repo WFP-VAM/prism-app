@@ -74,7 +74,7 @@ export default [
           project: './tsconfig.json',
         },
         node: {
-          moduleDirectory: ['node_modules', './src', './public'],
+          moduleDirectory: ['node_modules', './src', './public', './test'],
           extensions: [
             '.js',
             '.jsx',
