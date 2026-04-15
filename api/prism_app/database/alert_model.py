@@ -3,60 +3,73 @@
 import datetime
 import json
 import logging
+from typing import Any
 
-from sqlalchemy import JSON, TIMESTAMP, Column, DateTime, Identity, Integer, String
-from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
-from sqlalchemy.sql.sqltypes import Boolean
+from sqlalchemy import TIMESTAMP, Boolean, Column, DateTime, Identity, Integer, String
+from sqlalchemy import inspect as sa_inspect
+from sqlalchemy import text
+from sqlalchemy.dialects.postgresql import JSONB
+from sqlmodel import Field, SQLModel
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-Base = declarative_base()
 
-
-class AlertModel(Base):  # type: ignore
-    """Alert ORM that defines a table."""
+class AlertModel(SQLModel, table=True):
+    """Alert ORM that defines a table (parity with TypeORM `alert`)."""
 
     __tablename__ = "alert"
-    id = Column("id", Integer, Identity(start=1, cycle=True), primary_key=True)
-    email = Column("email", String, nullable=False)
-    prism_url = Column("prism_url", String, nullable=False)
-    alert_name = Column("alert_name", String)
-    alert_config = Column("alert_config", JSON, nullable=False)
-    min = Column("min", Integer)
-    max = Column("max", Integer)
-    zones = Column("zones", JSON, nullable=False)
-    active = Column("active", Boolean, nullable=False, default=True)
-    created_at = Column("created_at", DateTime, default=datetime.datetime.now)
-    updated_at = Column(
-        "updated_at",
-        DateTime,
-        default=datetime.datetime.now,
-        onupdate=datetime.datetime.now,
+
+    id: int | None = Field(
+        default=None,
+        sa_column=Column(Integer, Identity(always=False), primary_key=True),
     )
-    last_triggered = Column("last_triggered", TIMESTAMP, nullable=True)
+    email: str = Field(sa_column=Column(String, nullable=False))
+    prism_url: str = Field(sa_column=Column(String, nullable=False))
+    alert_name: str | None = Field(
+        default=None, sa_column=Column(String, nullable=True)
+    )
+    alert_config: dict[str, Any] = Field(sa_column=Column(JSONB, nullable=False))
+    min: int | None = Field(default=None, sa_column=Column(Integer, nullable=True))
+    max: int | None = Field(default=None, sa_column=Column(Integer, nullable=True))
+    zones: dict[str, Any] | list[Any] | None = Field(
+        default=None,
+        sa_column=Column(JSONB, nullable=True),
+    )
+    active: bool = Field(
+        default=True,
+        sa_column=Column(Boolean, nullable=False, server_default=text("true")),
+    )
+    created_at: datetime.datetime = Field(
+        default_factory=datetime.datetime.now,
+        sa_column=Column(DateTime, nullable=False),
+    )
+    updated_at: datetime.datetime = Field(
+        default_factory=datetime.datetime.now,
+        sa_column=Column(DateTime, nullable=False, onupdate=datetime.datetime.now),
+    )
+    last_triggered: datetime.datetime | None = Field(
+        default=None,
+        sa_column=Column(TIMESTAMP(timezone=False), nullable=True),
+    )
 
 
 class AlchemyEncoder(json.JSONEncoder):
-    """An utility class that translates ORM model to JSON."""
+    """JSON-encode SQLAlchemy / SQLModel table instances."""
 
-    def default(self, obj):
-        """Overwrite JSONEncoder's default method."""
-        if isinstance(obj.__class__, DeclarativeMeta):
-            # an SQLAlchemy class
-            fields = {}
-            for field in [
+    def default(self, obj: Any):
+        insp = sa_inspect(obj, raiseerr=False)
+        if insp is not None and insp.mapper:
+            fields: dict[str, Any] = {}
+            for field in (
                 x for x in dir(obj) if not x.startswith("_") and x != "metadata"
-            ]:
-                data = obj.__getattribute__(field)
+            ):
+                data = getattr(obj, field, None)
                 try:
-                    json.dumps(
-                        data
-                    )  # this will fail on non-encodable values, like other classes
+                    json.dumps(data)
                     fields[field] = data
                 except TypeError:
                     fields[field] = None
-            # a json-encodable dict
             return fields
 
         return json.JSONEncoder.default(self, obj)
