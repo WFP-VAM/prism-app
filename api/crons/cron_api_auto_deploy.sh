@@ -3,8 +3,9 @@ set -euo pipefail
 
 # To set up cron on EC2:
 # crontab -e
-# Example (every 30 min, log to file):
-# */30 * * * * APP_DIR="$HOME/prism-app/api" BRANCH=main HEALTHCHECK_URL="http://127.0.0.1/health" $HOME/prism-app/api/crons/cron_api_auto_deploy.sh >> $HOME/prism-app/api/auto_deploy.log 2>&1
+# Example (daily at 01:00, log to file):
+# 0 1 * * * APP_DIR="$HOME/prism-app/api" BRANCH=main HEALTHCHECK_URL="http://127.0.0.1/health" $HOME/prism-app/api/crons/cron_api_auto_deploy.sh >> $HOME/prism-app/api/auto_deploy.log 2>&1
+# Note: script no-ops if target branch SHA unchanged since last successful deploy.
 #
 # Auto-deploy API on EC2 when main/master advances.
 # Designed for cron usage: idempotent, locked, SHA-pinned, with optional healthcheck gate.
