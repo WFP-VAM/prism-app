@@ -9,10 +9,9 @@ from typing import List, Optional
 
 from prism_app.database.alert_model import AlertModel
 from prism_app.database.user_info_model import UserInfoModel
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, select
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm.session import Session
+from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.sql import text
 from sqlalchemy.sql.expression import ColumnElement
 
@@ -40,31 +39,32 @@ class AlertsDataBase:
 
     def __init__(self):
         """Alerts Database initializer."""
+        self._engine = None
         self.active = False
         try:
-            # temporary engine with short timeout
             temp_eng = create_engine(DB_URI, connect_args={"connect_timeout": 3})
-            with Session(temp_eng) as session:
-                session.query(text("1")).from_statement(text("SELECT 1")).all()
+            with Session(bind=temp_eng) as session:
+                session.execute(text("SELECT 1"))
 
-            # open main session
-            _eng = create_engine(DB_URI)
-            self.session: Session = sessionmaker(_eng)()
+            self._engine = create_engine(DB_URI)
+            self._session_factory = sessionmaker(
+                self._engine, class_=Session, expire_on_commit=False
+            )
             self.active = True
             logger.info("Alerts DB connection is initialized.")
         except SQLAlchemyError as err:
             logger.error("Alerts DB connection failed: %s", err.__cause__)
 
+    @property
+    def engine(self):
+        """SQLAlchemy engine (e.g. for admin UI or test setup)."""
+        return self._engine
+
     def write(self, alert: AlertModel):
         """Write an alert to the alerts table."""
-        try:
-            self.session.add(alert)
-            self.session.commit()
-        except Exception as e:
-            self.session.rollback()
-            raise e
-        finally:
-            self.session.close()
+        with self._session_factory() as session:
+            session.add(alert)
+            session.commit()
 
     def readall(self) -> List[AlertModel]:
         """
@@ -72,16 +72,18 @@ class AlertsDataBase:
 
         :return: A list of ORM object.
         """
-        return self.session.query(AlertModel).all()
+        with self._session_factory() as session:
+            return list(session.scalars(select(AlertModel)).all())
 
-    def read(self, expr: ColumnElement) -> List[AlertModel]:
+    def read(self, expr: ColumnElement[bool]) -> List[AlertModel]:
         """
         Return all the rows that match expression.
 
         :param expr: An expression that builds a filter.
         :return: A list of ORM object.
         """
-        return self.session.query(AlertModel).filter(expr).all()
+        with self._session_factory() as session:
+            return list(session.scalars(select(AlertModel).where(expr)).all())
 
     def readone(self, id: int):
         """
@@ -90,9 +92,12 @@ class AlertsDataBase:
         :param id: The id of the wanted alert entity
         :return: An alert entity or None if no entity was found
         """
-        return self.session.query(AlertModel).filter_by(id=id).first()
+        with self._session_factory() as session:
+            return session.scalars(
+                select(AlertModel).where(AlertModel.id == id)
+            ).first()
 
-    def deactivate(self, alert: AlertModel):
+    def deactivate(self, alert: AlertModel) -> bool:
         """
         Deactivate an alert from the database.
 
@@ -101,14 +106,15 @@ class AlertsDataBase:
         """
         deactivation_successful = False
         try:
-            alert.active = False  # type: ignore
-            self.session.commit()
-            deactivation_successful = True
+            with self._session_factory() as session:
+                row = session.get(AlertModel, alert.id)
+                if row is None:
+                    return False
+                row.active = False
+                session.commit()
+                deactivation_successful = True
         except Exception as e:
-            self.session.rollback()
-            logger.error(f"Failed to deactivate alert: {e}")
-        finally:
-            self.session.close()
+            logger.error("Failed to deactivate alert: %s", e)
 
         return deactivation_successful
 
@@ -121,14 +127,14 @@ class AlertsDataBase:
         """
         delete_successful = False
         try:
-            self.session.delete(alert)
-            self.session.commit()
-            delete_successful = True
+            with self._session_factory() as session:
+                row = session.get(AlertModel, alert.id)
+                if row is not None:
+                    session.delete(row)
+                session.commit()
+                delete_successful = True
         except Exception as e:
-            self.session.rollback()
-            logger.error(f"Failed to delete alert: {e}")
-        finally:
-            self.session.close()
+            logger.error("Failed to delete alert: %s", e)
 
         return delete_successful
 
@@ -143,32 +149,36 @@ class AuthDataBase:
 
     def __init__(self):
         """Authentication Database initializer."""
+        self._engine = None
         self.active = False
         try:
-            # temporary engine with short timeout
             temp_eng = create_engine(DB_URI, connect_args={"connect_timeout": 3})
-            with Session(temp_eng) as session:
-                session.query(text("1")).from_statement(text("SELECT 1")).all()
+            with Session(bind=temp_eng) as session:
+                session.execute(text("SELECT 1"))
 
-            # open main session
-            _eng = create_engine(DB_URI)
-            self.session: Session = sessionmaker(_eng)()
+            self._engine = create_engine(DB_URI)
+            self._session_factory = sessionmaker(
+                self._engine, class_=Session, expire_on_commit=False
+            )
             self.active = True
             logger.info("Auth DB connection is initialized.")
         except SQLAlchemyError as err:
             logger.error("Auth DB connection failed: %s", err.__cause__)
+
+    @property
+    def engine(self):
+        return self._engine
 
     def create_user(self, user: UserInfoModel):
         """Create user with hashed password."""
         if user.salt != "false":
             salt = os.urandom(32)
             key = hashlib.pbkdf2_hmac(
-                "sha256",  # The hash digest algorithm for HMAC
-                user.password.encode("utf-8"),  # Convert the password to bytes
-                salt,  # Provide the salt
-                100000,  # It is recommended to use at least 100,000 iterations of SHA-256
+                "sha256",
+                user.password.encode("utf-8"),
+                salt,
+                100000,
             )
-            # Bytes encoded to Base64 but still in byte format
             encoded_salt = base64.b64encode(salt)
             encoded_key = base64.b64encode(key)
         else:
@@ -181,24 +191,24 @@ class AuthDataBase:
             access=user.access or {},
         )
         try:
-            self.session.add(db_user)
-            self.session.commit()
+            with self._session_factory() as session:
+                session.add(db_user)
+                session.commit()
+                session.refresh(db_user)
         except SQLAlchemyError as error:
-            self.session.rollback()
             raise error
-        finally:
-            self.session.close()
 
         return db_user
 
-    def read(self, expr: ColumnElement) -> List[UserInfoModel]:
+    def read(self, expr: ColumnElement[bool]) -> List[UserInfoModel]:
         """
         Return all the rows that match expression.
 
         :param expr: An expression that builds a filter.
         :return: A list of ORM object.
         """
-        return self.session.query(AlertModel).filter(expr).all()
+        with self._session_factory() as session:
+            return list(session.scalars(select(UserInfoModel).where(expr)).all())
 
     def get_by_username(self, username: str) -> Optional[UserInfoModel]:
         """
@@ -208,19 +218,18 @@ class AuthDataBase:
         :return: A user entity or None if no entity was found
         """
         try:
-            return (
-                self.session.query(UserInfoModel).filter_by(username=username).first()
-            )
+            with self._session_factory() as session:
+                return session.scalars(
+                    select(UserInfoModel).where(UserInfoModel.username == username)
+                ).first()
         except SQLAlchemyError as error:
-            self.session.rollback()
-            logger.error("An error occured in get_by_username.")
-            logger.error(error, exc_info=True)
-        return self.session.query(UserInfoModel).filter_by(username=username).first()
+            logger.error("An error occured in get_by_username.", exc_info=True)
+            logger.error(error)
+            return None
 
 
 # Local test
 if __name__ == "__main__":
     alert_db = AlertsDataBase()
-    alerts = alert_db.session.query(AlertModel).all()
     for row in alert_db.read(AlertModel.alert_name.startswith("alert")):
         print(row.email)

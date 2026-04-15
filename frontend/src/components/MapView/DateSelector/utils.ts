@@ -54,6 +54,17 @@ export function findDateIndex(
   return -1;
 }
 
+export const getDefaultCompatibleDate = (
+  availableDates: ReturnType<Date['getTime']>[],
+  selectedDate?: number,
+): DisplayDateTimestamp | undefined => {
+  if (selectedDate !== undefined) {
+    return selectedDate as DisplayDateTimestamp;
+  }
+
+  return availableDates.at(-1) as DisplayDateTimestamp | undefined;
+};
+
 // Finds the first DateItem that is available on all layers, as
 // the query date for at least one layer, and in the validity of other layers
 // layerDates must contain only observation dates:

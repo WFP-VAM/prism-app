@@ -1,12 +1,12 @@
 import { render } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
+import { TestBrowserRouter } from 'test/TestBrowserRouter';
 import NotFound from '.';
 
 test('renders as expected', () => {
   const { container } = render(
-    <BrowserRouter>
+    <TestBrowserRouter>
       <NotFound />
-    </BrowserRouter>,
+    </TestBrowserRouter>,
   );
   expect(container).toMatchSnapshot();
 });
