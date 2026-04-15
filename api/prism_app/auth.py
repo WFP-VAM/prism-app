@@ -10,7 +10,6 @@ from fastapi import Depends, HTTPException, Security, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from prism_app.database.database import AuthDataBase
 from prism_app.database.user_info_model import UserInfoModel
-from prism_app.models import UserInfoPydanticModel
 from sqlalchemy.exc import SQLAlchemyError
 
 logger = logging.getLogger(__name__)
@@ -45,7 +44,7 @@ def validate_user(
 ) -> UserInfoModel:
     """Validate user info."""
     if not auth_db.active:
-        return UserInfoModel(access={})
+        return UserInfoModel(username="__auth_disabled__", password="", access={})
 
     if credentials is None:
         raise HTTPException(
@@ -96,7 +95,7 @@ def optional_validate_user(
     credentials: Annotated[
         Optional[HTTPBasicCredentials], Security(HTTPBasic(auto_error=False))
     ] = None,
-) -> Optional[UserInfoPydanticModel]:
+) -> Optional[UserInfoModel]:
     """Optional user validation that returns None instead of raising on auth failure."""
     # If auth_db is not active, return None
     if not auth_db.active:
