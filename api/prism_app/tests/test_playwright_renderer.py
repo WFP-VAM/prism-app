@@ -7,11 +7,12 @@ import prism_app.caching as caching
 import pytest
 from prism_app.report import download_report
 
-EXPECTED_REPORT_FILEPATH: Final[str] = os.path.join(
-    caching.CACHE_DIRECTORY,
-    "reports/",
-    "report-cambodia-flood_extent-en-2023-07-07.pdf",
-)
+_REPORT_BASENAME: Final[str] = "report-cambodia-flood_extent-en-2023-07-07.pdf"
+
+
+def _expected_report_path() -> str:
+    """Path under the active cache root (conftest may override CACHE_DIRECTORY)."""
+    return os.path.join(caching.CACHE_DIRECTORY, "reports/", _REPORT_BASENAME)
 
 
 @pytest.mark.asyncio
@@ -33,7 +34,7 @@ async def test_download_report():
     )
 
     # Assert
-    assert report_path == EXPECTED_REPORT_FILEPATH
+    assert report_path == _expected_report_path()
 
 
 @pytest.mark.asyncio
@@ -45,7 +46,7 @@ async def test_should_load_report_from_cache_if_present(playwright_mock):
         # If it doesn't exist, create the directory
         os.makedirs(os.path.join(caching.CACHE_DIRECTORY, "reports/"))
     with open(
-        EXPECTED_REPORT_FILEPATH,
+        _expected_report_path(),
         "w",
     ) as fp:
         fp.write("Cached pdf report")
@@ -60,5 +61,5 @@ async def test_should_load_report_from_cache_if_present(playwright_mock):
     )
 
     # Assert
-    assert report_path == EXPECTED_REPORT_FILEPATH
+    assert report_path == _expected_report_path()
     playwright_mock.assert_not_called()
