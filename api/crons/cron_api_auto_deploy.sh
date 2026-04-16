@@ -11,7 +11,7 @@ set -euo pipefail
 # Designed for cron usage: idempotent, locked, SHA-pinned, with optional healthcheck gate.
 
 APP_DIR="${APP_DIR:-$HOME/prism-app/api}"
-BRANCH="${BRANCH:-main}" # set to "master" if needed
+BRANCH="${BRANCH:-master}"
 STATE_DIR="${STATE_DIR:-/var/lib/prism-api-deployer}"
 LOCK_FILE="${LOCK_FILE:-/var/lock/prism-api-auto-deploy.lock}"
 HEALTHCHECK_URL="${HEALTHCHECK_URL:-}"
