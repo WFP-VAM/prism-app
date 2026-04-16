@@ -12,7 +12,7 @@ import type { LngLatBounds } from 'maplibre-gl';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
-import { appConfig, safeCountry } from 'config';
+import { appConfig, safeCountry, configMap } from 'config';
 import useLayers from 'utils/layers-utils';
 import { AdminCodeString, LayerKey, WMSLayerProps } from 'config/types';
 import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
@@ -175,8 +175,11 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
   const [isDownloading, setIsDownloading] = useState(false);
 
+  const countryLayerIds = new Set(
+    Object.keys(configMap[safeCountry].rawLayers),
+  );
   const selectableLayers = Object.values(LayerDefinitions).filter(
-    l => l.type === 'wms',
+    l => l.type === 'wms' && countryLayerIds.has(l.id),
   ) as WMSLayerProps[];
   const [selectedLayerId, setSelectedLayerId] = useState<LayerKey | null>(null);
 
