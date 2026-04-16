@@ -50,6 +50,19 @@ export async function fetchDashboardConfig(url: string): Promise<Dashboard[]> {
     );
   }
 
+  // Static hosts (e.g. Firebase Hosting, see frontend/firebase.json) rewrite unknown paths
+  // to `/index.html` and return it with status 200, so a missing dashboard.json arrives as
+  // HTML — not a 404 — and JSON.parse below would throw. Treat a non-JSON content-type as
+  // "not found" so the UI stays silent, matching the 404 path.
+  const contentType = response.headers.get('content-type') ?? '';
+  if (!contentType.toLowerCase().includes('json')) {
+    throw new DashboardConfigFetchError(
+      'Dashboard configuration not found',
+      'http',
+      404,
+    );
+  }
+
   let parsed: unknown;
   try {
     parsed = await response.json();
