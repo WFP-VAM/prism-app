@@ -363,6 +363,19 @@
     { "value": 30, "label": "Moderate (30 - 40)", "color": "#FFE76A" },
     { "value": 40, "label": "None (>= 40)", "color": "#F0F0F0" }
   ],
+  "wai_10_0_100": [
+    { "value": 0, "label": "No data", "color": "#ffffff" },
+    { "value": 10, "label": "10", "color": "#7A0101" },
+    { "value": 20, "label": "20", "color": "#A93800" },
+    { "value": 30, "label": "30", "color": "#E59800" },
+    { "value": 40, "label": "40", "color": "#FFE769" },
+    { "value": 50, "label": "50", "color": "#F0F0F0" },
+    { "value": 60, "label": "60", "color": "#F0F0F0" },
+    { "value": 70, "label": "70", "color": "#A9C6D6" },
+    { "value": 80, "label": "80", "color": "#019AC4" },
+    { "value": 90, "label": "90", "color": "#014C73" },
+    { "value": 100, "label": "100", "color": "#001D2B" } 
+  ],
   "ipc_phase": [
     { "value": 1, "label": "1 - Minimal", "color": "#CDFACD" },
     { "value": 2, "label": "2 - Stressed", "color": "#FAE61E" },

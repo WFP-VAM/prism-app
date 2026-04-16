@@ -260,6 +260,7 @@
     },
     "drought": {
       "water_anomaly_index": [
+        "monthly_water_anomaly_full",
         "monthly_water_anomaly",
         "2m_water_anomaly",
         "3m_water_anomaly",
