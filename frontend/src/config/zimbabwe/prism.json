@@ -258,6 +258,17 @@
         "lst_amplitude"
       ]
     },
+    "drought": {
+      "water_anomaly_index": [
+        "monthly_water_anomaly_full",
+        "monthly_water_anomaly",
+        "2m_water_anomaly",
+        "3m_water_anomaly",
+        "4m_water_anomaly",
+        "5m_water_anomaly",
+        "6m_water_anomaly"
+      ]
+    },
     "vulnerability": {
       "food insecurity": [
         "cereal_insecurity_2021",
