@@ -209,6 +209,19 @@ To deploy, ssh into the EC2 instance:
 - Confirm you're on the right branch and the branch is up to date
 - Run `make deploy`
 
+### Automated deploys (cron)
+
+`api/crons/cron_api_auto_deploy.sh` is a cron-safe script that automatically redeploys the API when the target branch advances. It is idempotent (no-ops if the branch SHA is unchanged), uses `flock` for mutual exclusion, and optionally gates a successful deploy on a healthcheck URL.
+
+Add a daily crontab entry on the EC2 instance (edit with `crontab -e`):
+
+```bash
+# Daily at 01:00 – auto-deploy API when master advances
+0 1 * * * APP_DIR="$HOME/prism-app/api" BRANCH=master HEALTHCHECK_URL="http://127.0.0.1/health" $HOME/prism-app/api/crons/cron_api_auto_deploy.sh >> $HOME/prism-app/api/auto_deploy.log 2>&1
+```
+
+To roll back to the previously deployed SHA, run `api/crons/rollback_api_to_prev.sh`.
+
 There are a few known issues happening from time to time
 
 - `permission denied` when restarting or killing a docker image. To fix it, run `sudo aa-remove-unknown` and re-run your command.

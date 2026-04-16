@@ -54,16 +54,9 @@ run_deploy() {
   echo "deployed: $target_sha (prev: $prev_sha)"
 }
 
-if command -v flock >/dev/null 2>&1; then
-  flock -n "$LOCK_FILE" bash -c "$(declare -f run_deploy); run_deploy"
-else
-  # Fallback (best-effort) if flock not installed
-  if [[ -e "$LOCK_FILE" ]]; then
-    echo "lock exists: $LOCK_FILE"
-    exit 1
-  fi
-  trap 'rm -f "$LOCK_FILE"' EXIT
-  : > "$LOCK_FILE"
-  run_deploy
+if ! command -v flock >/dev/null 2>&1; then
+  echo "error: flock is required but not installed" >&2
+  exit 1
 fi
+flock -n "$LOCK_FILE" bash -c "$(declare -f run_deploy); run_deploy"
 
