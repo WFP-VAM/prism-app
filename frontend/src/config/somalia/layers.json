@@ -300,6 +300,18 @@
       "type": "line"
     }
   },
+  "ipc_phase_2025_06": {
+    "title": "IPC Phase Classification",
+    "type": "admin_level_data",
+    "boundary": "admin2_boundaries",
+    "path": "data/somalia/som-ipc-2025-06.json",
+    "data_field": "ipc-ipcPhase",
+    "admin_level": 2,
+    "admin_code": "ADM2_PCODE",
+    "opacity": 0.7,
+    "legend": "ipc_phase",
+    "legend_text": "This dataset originates from the IPC Technical Working Group, including FSNAU, and is available at district, regional, and livelihood system levels. Date: Apr 2025 - Jun 2025"
+  },
   "ipc_phase": {
     "title": "IPC Phase Classification",
     "type": "admin_level_data",
