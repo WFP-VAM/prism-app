@@ -174,6 +174,28 @@ To run linting and tests, run:
 make test
 ```
 
+#### Alerts database (CI integration + local
+
+GitHub Actions job **`alerts_db_alembic_and_alerting`** (`.github/workflows/api.yml`) applies **`alembic upgrade head`** to an empty Postgres instance, runs the Node **alerts DB contract** and **`yarn smoke-alerting-workers`** from `alerting/`, then runs **`pytest`** on `prism_app/tests/test_api.py`, `test_alerting.py`, and **`test_alerts_db_integration.py`** against that same database.
+
+On the lightweight Ubuntu runner, **`test_stats_endpoint_masked`** is skipped (`SKIP_GDAL_MASK_STATS_TEST=1`) because it needs a full **GDAL** CLI (`gdal_calc.py`). **`make api-test`** in Docker still executes the full API test module, including the masked stats case.
+
+Locally (migrated alerts DB, same env vars as elsewhere). Use a real URL; placeholder hosts such as `...` or Docker-only names like `alerting-db` will skip DB-backed tests or fail DNS (`could not translate host name`). From the **repository root**:
+
+```bash
+cd api
+export KOBO_USERNAME=kobo_user KOBO_PASSWORD=test
+export PRISM_ALERTS_DATABASE_URL='postgresql://postgres:!ChangeMe!@127.0.0.1:54321/postgres'
+SKIP_GDAL_MASK_STATS_TEST=1 PYTHONPATH=. poetry run pytest \
+  prism_app/tests/test_api.py \
+  prism_app/tests/test_alerting.py \
+  prism_app/tests/test_alerts_db_integration.py -v --tb=short
+```
+
+**Manual — Starlette Admin (read-only):** With the API up on the alerts database, open **`/admin`**, then list routes **`/admin/alert-model/list`**, **`/admin/user-info-model/list`**, **`/admin/anticipatory-action-alerts/list`**. Confirm list and detail views; create/edit/delete remain off until auth is added.
+
+**Manual — Node workers:** From `alerting/`, run **`yarn alert-worker`** and one AA worker **without** `--testEmail` against a seeded dev database so the real **`pg`** pool is used (see [alerting/README.md](../alerting/README.md)).
+
 #### Debugging playwright tests
 
 To run python tests outside of docker, run "make localtests". This will set them up to run outside docker, so that

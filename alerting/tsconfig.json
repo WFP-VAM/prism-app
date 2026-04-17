@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "noEmit": true,
-    "emitDecoratorMetadata": true,
     "module": "commonjs",
     "target": "es5",
     "noImplicitAny": false,
@@ -21,7 +20,6 @@
     "isolatedModules": true,
     "jsx": "react",
     "strictPropertyInitialization": false,
-    "experimentalDecorators": true,
     "downlevelIteration": true,
     "types": [
       "jest",
@@ -30,8 +28,5 @@
   },
   "include": [
     "src"
-  ],
-  "files": [
-    "ormconfig.ts"
   ]
 }
