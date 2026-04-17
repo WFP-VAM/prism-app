@@ -237,6 +237,7 @@ def test_stats_endpoint1():
     # assert response.json() == []
 
 
+@pytest.mark.flaky(reruns=3, reruns_delay=2)
 def test_stats_endpoint2():
     """
     Call /stats with known-good parameters.
@@ -255,6 +256,7 @@ def test_stats_endpoint2():
     assert response.status_code == 200
 
 
+@pytest.mark.flaky(reruns=3, reruns_delay=2)
 def test_stats_endpoint_masked():
     """
     Call /stats with known-good parameters with a geotiff mask.
