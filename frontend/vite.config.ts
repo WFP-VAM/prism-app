@@ -98,6 +98,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      assets: path.resolve(__dirname, 'src/assets'),
       components: '/src/components',
       config: '/src/config',
       context: '/src/context',

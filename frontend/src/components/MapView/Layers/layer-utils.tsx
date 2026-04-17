@@ -14,9 +14,7 @@ import { i18nTranslator } from 'i18n';
 import { getFeatureInfoPropsData } from 'components/MapView/utils';
 import { MapLayerMouseEvent } from 'maplibre-gl';
 import { LayerDefinitions } from 'config/utils';
-import iconPoint from 'public/images/icon_point.svg';
-import iconRaster from 'public/images/icon_raster.svg';
-import iconPolygon from 'public/images/icon_polygon.svg';
+import { iconPoint, iconRaster, iconPolygon } from 'assets/images';
 
 export function legendToStops(
   legend: LegendDefinition = [],
