@@ -8,7 +8,7 @@ import {
 import { Link } from 'react-router-dom';
 
 import { colors } from 'muiTheme';
-import wfpLogo from 'public/images/wfp_logo.png';
+import { wfpLogo } from 'assets/images';
 
 function NotFound() {
   const classes = useStyles();

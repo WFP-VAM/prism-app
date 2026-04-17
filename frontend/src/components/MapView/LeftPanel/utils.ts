@@ -1,6 +1,7 @@
 import { camelCase, get, map, mapKeys, startCase } from 'lodash';
 import { GeoJsonProperties } from 'geojson';
 import { appConfig } from 'config';
+import { getImageUrl } from 'assets/images';
 import {
   isTableKey,
   LayerDefinitions,
@@ -94,7 +95,13 @@ export const menuList: MenuItemsType = map(
     }
     return {
       title: startCase(categoryKey),
-      icon: get(appConfig, `icons.${categoryKey}`, 'icon_vulnerable.png'),
+      // TODO - find a better way to handle this
+      icon:
+        getImageUrl(
+          get(appConfig, `icons.${categoryKey}`, 'icon_vulnerable.png'),
+        ) ??
+        getImageUrl('icon_vulnerable.png') ??
+        '',
       layersCategories: formatLayersCategories(layersCategories),
     };
   },
@@ -109,7 +116,12 @@ export const getDynamicMenuList = (selectedLayers?: LayerType[]) =>
     }
     return {
       title: startCase(categoryKey),
-      icon: get(appConfig, `icons.${categoryKey}`, 'icon_vulnerable.png'),
+      icon:
+        getImageUrl(
+          get(appConfig, `icons.${categoryKey}`, 'icon_vulnerable.png'),
+        ) ??
+        getImageUrl('icon_vulnerable.png') ??
+        '',
       layersCategories: formatLayersCategories(
         layersCategories,
         selectedLayers,
