@@ -28,12 +28,14 @@ interface LegendItemsListProps {
   forPrinting?: boolean;
   listStyle?: string;
   showDescription?: boolean;
+  overrideLayers?: LayerType[];
 }
 
 function LegendItemsList({
   listStyle,
   forPrinting = false,
   showDescription = true,
+  overrideLayers,
 }: LegendItemsListProps) {
   const { t } = useSafeTranslation();
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
@@ -42,10 +44,15 @@ function LegendItemsList({
   const analysisLayerOpacity = useSelector(analysisResultOpacitySelector);
   const dateRange = useSelector(dateRangeSelector);
   const {
-    selectedLayers,
+    selectedLayers: globalMapLayers,
     adminBoundariesExtent,
     selectedLayersWithDateSupport,
   } = useLayers();
+
+  const selectedLayers =
+    overrideLayers && overrideLayers.length > 0
+      ? overrideLayers
+      : globalMapLayers;
 
   // Create a mapping of layer id to date coverage for the current selected date
   const layerCoverageMap = useMemo(

@@ -4,10 +4,13 @@ import {
   CircularProgress,
   Collapse,
   Divider,
+  FormControl,
   Icon,
   IconButton,
+  InputLabel,
   Menu,
   MenuItem,
+  Select,
   TextField,
   Theme,
   Tooltip,
@@ -23,6 +26,7 @@ import { cyanBlue } from 'muiTheme';
 import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
 import Switch from 'components/Common/Switch';
 import { AspectRatio } from 'components/MapExport/types';
+import { LayerKey } from 'config/types';
 import { useSafeTranslation } from '../../../i18n';
 import PrintConfigContext from './printConfig.context';
 import DateRangePicker from './DateRangePicker';
@@ -319,6 +323,9 @@ function PrintConfig() {
     shouldShowMultiLayerWarning,
     dateRange,
     aspectRatioOptions,
+    wmsLayers,
+    selectedLayerId,
+    setSelectedLayerId,
   } = printConfig;
 
   return (
@@ -636,6 +643,25 @@ function PrintConfig() {
             {toggles.batchMapsVisibility && (
               <GreyContainer>
                 <GreyContainerSection>
+                  {/* Layer */}
+                  <FormControl fullWidth size="small" variant="outlined">
+                    <InputLabel>{t('Layer')}</InputLabel>
+                    <Select
+                      value={selectedLayerId ?? ''}
+                      label={t('Layer')}
+                      onChange={e =>
+                        setSelectedLayerId(e.target.value as LayerKey)
+                      }
+                    >
+                      {wmsLayers.map(layer => (
+                        <MenuItem key={layer.id} value={layer.id}>
+                          {t(layer.title)}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </GreyContainerSection>
+                <GreyContainerSection>
                   <DateRangePicker />
                 </GreyContainerSection>
                 <GreyContainerSection>
@@ -735,8 +761,10 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column',
       gap: '0.5rem',
       minHeight: '740px',
-      width: '19.2rem',
-      overflow: 'auto',
+      width: '20.5rem',
+      overflowY: 'auto',
+      overflowX: 'hidden',
+      scrollbarGutter: 'stable',
       zIndex: 4,
       backgroundColor: 'white',
     },
