@@ -191,10 +191,7 @@
       "vulnerability": ["vulnerability_scaled"]
     },
     "drought": {
-      "water_anomaly_index": [
-        "monthly_water_anomaly",
-        "6m_water_anomaly"
-      ]
+      "water_anomaly_index": ["monthly_water_anomaly", "6m_water_anomaly"]
     }
   }
 }
