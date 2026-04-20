@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import union from '@turf/union';
 import simplify from '@turf/simplify';
+import { featureCollection } from '@turf/helpers';
 import { getFormattedDate } from '../src/utils/date-utils';
 
 // We fix the timezone to UTC to ensure that
@@ -12,16 +13,18 @@ process.env.TZ = 'UTC';
 
 // Function to merge boundary data and return a single polygon
 const mergeBoundaryData = boundaryData => {
-  let mergedBoundaryData = null;
-  if ((boundaryData?.features.length || 0) > 0) {
-    mergedBoundaryData =
-      boundaryData?.features.reduce((acc, feature) => {
-        if (acc === null) {
-          return feature;
-        }
-        return union(acc, feature);
-      }, null) || null;
+  const features = (boundaryData?.features || []).filter(
+    f => f?.geometry?.coordinates,
+  );
+  if (features.length === 0) {
+    return null;
   }
+  if (features.length === 1) {
+    return simplify(features[0], { tolerance: 0.02 });
+  }
+
+  // @turf/union v7+ expects FeatureCollection, not (a,b) pairwise union.
+  const mergedBoundaryData = union(featureCollection(features));
   return simplify(mergedBoundaryData, { tolerance: 0.02 });
 };
 
