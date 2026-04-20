@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 class UserInfoModel(SQLModel, table=True):
-    """Auth user row; primary key is `username` (TypeORM / prod schema)."""
+    """Auth user row; primary key is `username` (production schema)."""
 
     __tablename__ = "user_info"
 

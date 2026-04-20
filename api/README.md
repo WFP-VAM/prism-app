@@ -103,7 +103,7 @@ The instance will need to have read/write access to S3. Make sure it has the nec
 
 ## Alerts database migrations (Alembic)
 
-The alerts/auth PostgreSQL schema (`alert`, `user_info`, `anticipatory_action_alerts`, and `anticipatory_action_alerts_type_enum`) is modeled in SQLModel under `prism_app/database/`. **All new schema changes are made with Alembic** in this directory (`alembic.ini`, `alembic/env.py`, `alembic/versions/`). The TypeORM files under `alerting/migration/` are **historical reference only**; do not add new TypeORM migrations for this database.
+The alerts/auth PostgreSQL schema (`alert`, `user_info`, `anticipatory_action_alerts`, and `anticipatory_action_alerts_type_enum`) is modeled in SQLModel under `prism_app/database/`. **All schema changes are made with Alembic** in this directory (`alembic.ini`, `alembic/env.py`, `alembic/versions/`).
 
 **Connection URL** is the same as the API: `PRISM_ALERTS_DATABASE_URL`, or the `POSTGRES_*` variables documented in `prism_app/database/database.py`. For local `poetry run alembic` commands, you can put `PRISM_ALERTS_DATABASE_URL` in `api/.env`; `alembic/env.py` loads that file into the process environment before connecting (unlike the shell, Python does not read `.env` by itself).
 
@@ -132,7 +132,7 @@ This is a **standalone dev script** under [`scripts/`](./scripts/) (not part of 
 
 **Deploy / CI:** run `alembic upgrade head` against the alerts database using `PRISM_ALERTS_DATABASE_URL` before or as part of rolling out an API release that depends on the latest schema.
 
-**Existing databases** that already match this schema (for example, previously migrated with TypeORM) should not re-apply the baseline `CREATE TABLE` migration. Point Alembic at the same URL and **stamp** the current head once, then use `upgrade head` for future revisions:
+**Existing databases** that already match this schema (for example, databases that predate Alembic) should not re-apply the baseline `CREATE TABLE` migration. Point Alembic at the same URL and **stamp** the current head once, then use `upgrade head` for future revisions:
 
 ```bash
 PRISM_ALERTS_DATABASE_URL="postgresql://..." poetry run alembic stamp prism_alerts_baseline

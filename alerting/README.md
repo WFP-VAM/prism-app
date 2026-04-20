@@ -9,7 +9,7 @@ There is a unique service running for all country specific frontends.
 
 ## Database schema and migrations
 
-The alerting stack uses the same PostgreSQL database as the PRISM API for `alert`, `user_info`, and `anticipatory_action_alerts`. **Python/Alembic under `api/alembic/` is the sole owner of new schema migrations** for this database. The TypeORM migration history in `migration/` remains useful as a record of how production was built, but **do not add new TypeORM migrations** for these tables or enums. Change SQLModel in `api/prism_app/database/`, add an Alembic revision under `api/alembic/versions/`, and run `alembic upgrade head` with `PRISM_ALERTS_DATABASE_URL` (see `api/README.md`). For context on removed TypeORM config, see [HISTORICAL_TYPEORM.md](./HISTORICAL_TYPEORM.md).
+The alerting stack uses the same PostgreSQL database as the PRISM API for `alert`, `user_info`, and `anticipatory_action_alerts`. **Python/Alembic under `api/alembic/` is the sole owner of schema migrations** for this database. Change SQLModel in `api/prism_app/database/`, add an Alembic revision under `api/alembic/versions/`, and run `alembic upgrade head` with `PRISM_ALERTS_DATABASE_URL` (see `api/README.md`).
 
 ## Functionalities
 
@@ -23,14 +23,14 @@ The alerting stack uses the same PostgreSQL database as the PRISM API for `alert
 - Alerts are triggered by a cron job running within the `alerting-node` process.
 - Run `docker compose up` to launch the `alerting-node` and `alerting-db` processes.
 - The system checks database entries to determine **which country** needs to be triggered.
-- Currently, **Mozambique is supported**. After the DB schema exists (Alembic baseline / TypeORM history in prod), seed local data from the **API** (same repo area that owns migrations)—see **Local dev seed data** in [`api/README.md`](../api/README.md): `poetry run python scripts/seed_alerts_db.py` from `api/`. Connection vars are `PRISM_ALERTS_DATABASE_URL` or `POSTGRES_*` in `api/.env`; for host access to `alerting-db`, use port `54321` as in [`.env.example`](./.env.example).
+- Currently, **Mozambique is supported**. After the DB schema exists, seed local data from the **API** (same repo area that owns migrations)—see **Local dev seed data** in [`api/README.md`](../api/README.md): `poetry run python scripts/seed_alerts_db.py` from `api/`. Connection vars are `PRISM_ALERTS_DATABASE_URL` or `POSTGRES_*` in `api/.env`; for host access to `alerting-db`, use port `54321` as in [`.env.example`](./.env.example).
 
 - **country**: The target country for the alert.  
 - **emails**: A list of email addresses that will receive the alert notification.  
 - **prism_url**: The base URL of the PRISM platform for redirection link and screenshot capture.
 - **type**: Hazard type enum: `storm` | `flood` | `drought`.
 
-The `type` column is a PostgreSQL ENUM (`anticipatory_action_alerts_type_enum`). It was originally created by TypeORM migration `1738850000000-add-type-to-anticipatory-action-alerts.ts`; the authoritative definition for new environments is the Alembic baseline under `api/alembic/versions/`.
+The `type` column is a PostgreSQL ENUM (`anticipatory_action_alerts_type_enum`) defined by the Alembic baseline under `api/alembic/versions/`.
 
 ### Optional: threshold `alert` rows + `user_info` (local testing)
 
