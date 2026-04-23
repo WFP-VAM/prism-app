@@ -41,11 +41,7 @@ import {
   WMSLayer,
 } from 'components/MapView/Layers';
 import useLayers from 'utils/layers-utils';
-import MapGL, {
-  MapEvent,
-  MapRef,
-  ViewStateChangeEvent,
-} from 'react-map-gl/maplibre';
+import MapGL, { MapEvent, MapRef } from 'react-map-gl/maplibre';
 import {
   LngLatBoundsLike,
   MapSourceDataEvent,
@@ -56,8 +52,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { useMediaQuery, useTheme } from '@material-ui/core';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { mapStyle } from './utils';
-// TODO: Re-enable once DeckGL + MapLibre interactivity conflict is resolved
-// import DeckOverlay from './DeckOverlay';
+import DeckOverlay from './DeckOverlay';
 import GeojsonDataLayer from '../Layers/GeojsonDataLayer';
 import AnticipatoryActionFloodLayer from '../Layers/AnticipatoryActionFloodLayer';
 
@@ -127,31 +122,6 @@ const MapComponent = memo(
     const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
       'label_airport',
     );
-
-    const [viewState, setViewState] = useState<{
-      longitude: number;
-      latitude: number;
-      zoom: number;
-      pitch: number;
-      bearing: number;
-    } | null>(null);
-
-    const onMove = useCallback((evt: ViewStateChangeEvent) => {
-      setViewState(prev => {
-        const next = evt.viewState;
-        if (
-          prev &&
-          prev.longitude === next.longitude &&
-          prev.latitude === next.latitude &&
-          prev.zoom === next.zoom &&
-          prev.pitch === next.pitch &&
-          prev.bearing === next.bearing
-        ) {
-          return prev;
-        }
-        return next;
-      });
-    }, []);
 
     const fitBoundsOptions = useMemo(
       () => ({
@@ -264,20 +234,6 @@ const MapComponent = memo(
           watchBoundaryChange(map);
         }
         trackLoadingLayers(map);
-
-        const center = map.getCenter();
-        const initialVS = {
-          longitude: center.lng,
-          latitude: center.lat,
-          zoom: map.getZoom(),
-          pitch: map.getPitch(),
-          bearing: map.getBearing(),
-        };
-        console.info(
-          '[DeckGL] Initial viewState captured from MapLibre',
-          initialVS,
-        );
-        setViewState(initialVS);
       },
       [mapState, showBoundaryInfo, watchBoundaryChange, trackLoadingLayers],
     );
@@ -362,49 +318,42 @@ const MapComponent = memo(
         : mapState.minMapBounds;
 
     return (
-      <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-        <MapGL
-          key={smDown ? 'mobile' : 'desktop'}
-          ref={mapRef}
-          preserveDrawingBuffer
-          dragRotate={false}
-          minZoom={minZoom}
-          maxZoom={maxZoom}
-          {...(viewState
-            ? { viewState }
-            : {
-                initialViewState: {
-                  bounds: initialBounds as LngLatBoundsLike,
-                  fitBoundsOptions: smDown
-                    ? undefined
-                    : { padding: fitBoundsOptions.padding },
-                },
-              })}
-          onMove={onMove}
-          mapStyle={mapStyle}
-          onLoad={onMapLoadWithLabelFilter}
-          onClick={mapOnClick}
-          maxBounds={maxBounds}
-        >
-          {selectedLayers.map((layer, index) => {
-            const { component } = componentTypes[layer.type];
-            return createElement(component as any, {
-              key: layer.id,
-              layer,
-              before: getBeforeId(
-                index,
-                LAYERS_ABOVE_BOUNDARIES.includes(layer.type),
-              ),
-            });
-          })}
-          <AnalysisLayer before={firstBoundaryId} mapRef={mapRef} />
-          <SelectionLayer before={firstSymbolId} />
-          <MapTooltip />
-          {children}
-        </MapGL>
-        {/* TODO: Re-enable once DeckGL + MapLibre interactivity conflict is resolved */}
-        {/* {viewState && <DeckOverlay viewState={viewState} />} */}
-      </div>
+      <MapGL
+        key={smDown ? 'mobile' : 'desktop'}
+        ref={mapRef}
+        preserveDrawingBuffer
+        dragRotate={false}
+        minZoom={minZoom}
+        maxZoom={maxZoom}
+        initialViewState={{
+          bounds: initialBounds as LngLatBoundsLike,
+          fitBoundsOptions: smDown
+            ? undefined
+            : { padding: fitBoundsOptions.padding },
+        }}
+        mapStyle={mapStyle}
+        onLoad={onMapLoadWithLabelFilter}
+        onClick={mapOnClick}
+        maxBounds={maxBounds}
+        style={{ position: 'relative', width: '100%', height: '100%' }}
+      >
+        <DeckOverlay />
+        {selectedLayers.map((layer, index) => {
+          const { component } = componentTypes[layer.type];
+          return createElement(component as any, {
+            key: layer.id,
+            layer,
+            before: getBeforeId(
+              index,
+              LAYERS_ABOVE_BOUNDARIES.includes(layer.type),
+            ),
+          });
+        })}
+        <AnalysisLayer before={firstBoundaryId} mapRef={mapRef} />
+        <SelectionLayer before={firstSymbolId} />
+        <MapTooltip />
+        {children}
+      </MapGL>
     );
   },
 );
