@@ -129,7 +129,8 @@
     "systeminformation": "^5.27.14",
     "qs": "^6.14.1",
     "lodash": "^4.18.0",
-    "dompurify": "^3.4.0"
+    "dompurify": "^3.4.0",
+    "protocol-buffers-schema": ">=3.6.1"
   },
   "_resolutionsNotes": {
     "node-notifier": "Build compatibility - keep",
@@ -144,7 +145,8 @@
     "@babel/helpers": "Security fix - GHSA-968p-4wvh-cqc8 - Forces v7.26.10+ for transitive dependencies",
     "systeminformation": "CVE-2025-68154 - Security fix - GHSA-wphj-fx3q-84ch - Parent: cypress - Command Injection vulnerability - Forces v5.27.14+",
     "qs": "CVE-2025-15284 - Security fix - GHSA-6rw7-vpxm-498p - Parent: cypress>@cypress/request - arrayLimit bypass DoS vulnerability - Forces v6.14.1+",
-    "lodash": "Lodash security fixes - GHSA-r5fr-rjxr-66jc / GHSA-f23m-r3pf-42rh (CVE-2026-4800 / CVE-2026-2950) and prior - Forces v4.18.0+"
+    "lodash": "Lodash security fixes - GHSA-r5fr-rjxr-66jc / GHSA-f23m-r3pf-42rh (CVE-2026-4800 / CVE-2026-2950) and prior - Forces v4.18.0+",
+    "protocol-buffers-schema": "CVE-2026-5758 - Security fix - GHSA-j452-xhg8-qg39 - Parent: geotiff - Forces v3.6.1+"
   },
   "_comment": "The 'defaults' and 'not ie 11' are needed to avoid build issues with maplibre-gl.",
   "browserslist": {

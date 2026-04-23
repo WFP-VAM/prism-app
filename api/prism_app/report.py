@@ -3,8 +3,8 @@ import os
 from typing import Final, Optional
 from urllib.parse import parse_qs, urlparse
 
+import prism_app.caching as caching
 from playwright.async_api import async_playwright, expect
-from prism_app.caching import CACHE_DIRECTORY
 
 # Html selectors
 LAYER_ACCORDION_SELECTOR: Final[str] = (
@@ -25,7 +25,7 @@ async def download_report(
     dateParam = extract_query_param(url, "date")
     report_filename = f"report-{country}-{layerIdParam}-{language}-{dateParam}.pdf"
     report_file_path = os.path.join(
-        CACHE_DIRECTORY,
+        caching.CACHE_DIRECTORY,
         "reports/",
         report_filename,
     )
