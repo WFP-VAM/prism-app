@@ -1,0 +1,1716 @@
+[
+  {
+    "label": "baseline",
+    "timestamp": "2026-02-04T14:00:24.780271",
+    "results": [
+      {
+        "maps_count": 2,
+        "run_number": 1,
+        "duration_seconds": 13.970692125003552,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 2,
+        "duration_seconds": 9.53492424999422,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 3,
+        "duration_seconds": 8.235443167002813,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 3,
+        "run_number": 1,
+        "duration_seconds": 15.869213124999078,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 3,
+        "run_number": 2,
+        "duration_seconds": 13.14960599999904,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 3,
+        "run_number": 3,
+        "duration_seconds": 16.050829875006457,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 1,
+        "duration_seconds": 15.877594167002826,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 2,
+        "duration_seconds": 18.95189679199393,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 3,
+        "duration_seconds": 17.327270583002246,
+        "status_code": 200,
+        "success": true
+      }
+    ],
+    "summary": {
+      "2_maps": {
+        "avg": 10.580353180666862,
+        "min": 8.235443167002813,
+        "max": 13.970692125003552,
+        "stdev": 3.007151707077255
+      },
+      "3_maps": {
+        "avg": 15.023216333334858,
+        "min": 13.14960599999904,
+        "max": 16.050829875006457,
+        "stdev": 1.6251332012662467
+      },
+      "4_maps": {
+        "avg": 17.385587180666334,
+        "min": 15.877594167002826,
+        "max": 18.95189679199393,
+        "stdev": 1.5379807465242004
+      }
+    }
+  },
+  {
+    "label": "pool-of-3",
+    "timestamp": "2026-02-04T14:16:53.103524",
+    "results": [
+      {
+        "maps_count": 2,
+        "run_number": 1,
+        "duration_seconds": 10.897514999996929,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 2,
+        "duration_seconds": 8.909240624998347,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 3,
+        "duration_seconds": 9.635750375004136,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 3,
+        "run_number": 1,
+        "duration_seconds": 12.897124415998405,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 3,
+        "run_number": 2,
+        "duration_seconds": 13.636938915995415,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 3,
+        "run_number": 3,
+        "duration_seconds": 17.259253333999368,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 1,
+        "duration_seconds": 19.388483375005308,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 2,
+        "duration_seconds": 17.681608916005644,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 3,
+        "duration_seconds": 18.855554417001258,
+        "status_code": 200,
+        "success": true
+      }
+    ],
+    "summary": {
+      "2_maps": {
+        "avg": 9.81416866666647,
+        "min": 8.909240624998347,
+        "max": 10.897514999996929,
+        "stdev": 1.0060733386134333
+      },
+      "3_maps": {
+        "avg": 14.59777222199773,
+        "min": 12.897124415998405,
+        "max": 17.259253333999368,
+        "stdev": 2.334404132912201
+      },
+      "4_maps": {
+        "avg": 18.64188223600407,
+        "min": 17.681608916005644,
+        "max": 19.388483375005308,
+        "stdev": 0.8732679745618869
+      }
+    }
+  },
+  {
+    "label": "pool-of-4",
+    "timestamp": "2026-02-04T14:20:02.314934",
+    "results": [
+      {
+        "maps_count": 2,
+        "run_number": 1,
+        "duration_seconds": 9.925205084000481,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 2,
+        "duration_seconds": 8.742993125000794,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 3,
+        "duration_seconds": 8.488791000003403,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 3,
+        "run_number": 1,
+        "duration_seconds": 12.256446999999753,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 3,
+        "run_number": 2,
+        "duration_seconds": 13.074182708995068,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 3,
+        "run_number": 3,
+        "duration_seconds": 12.565949499999988,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 1,
+        "duration_seconds": 17.29644929099595,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 2,
+        "duration_seconds": 15.680105750005168,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 3,
+        "duration_seconds": 19.435260792000918,
+        "status_code": 200,
+        "success": true
+      }
+    ],
+    "summary": {
+      "2_maps": {
+        "avg": 9.052329736334892,
+        "min": 8.488791000003403,
+        "max": 9.925205084000481,
+        "stdev": 0.7665430252177885
+      },
+      "3_maps": {
+        "avg": 12.632193069664936,
+        "min": 12.256446999999753,
+        "max": 13.074182708995068,
+        "stdev": 0.4128729590721384
+      },
+      "4_maps": {
+        "avg": 17.470605277667346,
+        "min": 15.680105750005168,
+        "max": 19.435260792000918,
+        "stdev": 1.8836255143012477
+      }
+    }
+  },
+  {
+    "label": "pool-of-4-2",
+    "timestamp": "2026-02-04T15:59:07.424897",
+    "results": [
+      {
+        "maps_count": 2,
+        "run_number": 1,
+        "duration_seconds": 17.60956941600307,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 2,
+        "duration_seconds": 9.855490542002372,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 3,
+        "duration_seconds": 10.105441874999087,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 3,
+        "run_number": 1,
+        "duration_seconds": 15.242037708987482,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 3,
+        "run_number": 2,
+        "duration_seconds": 13.840873166991514,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 3,
+        "run_number": 3,
+        "duration_seconds": 13.737894749996485,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 1,
+        "duration_seconds": 27.24563516699709,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 2,
+        "duration_seconds": 28.113339042000007,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 3,
+        "duration_seconds": 22.666510208000545,
+        "status_code": 200,
+        "success": true
+      }
+    ],
+    "summary": {
+      "2_maps": {
+        "avg": 12.52350061100151,
+        "min": 9.855490542002372,
+        "max": 17.60956941600307,
+        "stdev": 4.4064374310914936
+      },
+      "3_maps": {
+        "avg": 14.273601875325161,
+        "min": 13.737894749996485,
+        "max": 15.242037708987482,
+        "stdev": 0.8402690709127805
+      },
+      "4_maps": {
+        "avg": 26.00849480566588,
+        "min": 22.666510208000545,
+        "max": 28.113339042000007,
+        "stdev": 2.9265804776134243
+      }
+    }
+  },
+  {
+    "label": "prod-wms",
+    "timestamp": "2026-04-20T14:15:21.621002",
+    "results": [
+      {
+        "maps_count": 2,
+        "run_number": 1,
+        "duration_seconds": 0.007487583032343537,
+        "status_code": 0,
+        "success": false
+      },
+      {
+        "maps_count": 2,
+        "run_number": 2,
+        "duration_seconds": 0.0010289589990861714,
+        "status_code": 0,
+        "success": false
+      },
+      {
+        "maps_count": 2,
+        "run_number": 3,
+        "duration_seconds": 0.0011153749655932188,
+        "status_code": 0,
+        "success": false
+      },
+      {
+        "maps_count": 3,
+        "run_number": 1,
+        "duration_seconds": 0.0008745839586481452,
+        "status_code": 0,
+        "success": false
+      },
+      {
+        "maps_count": 3,
+        "run_number": 2,
+        "duration_seconds": 0.000841124972794205,
+        "status_code": 0,
+        "success": false
+      },
+      {
+        "maps_count": 3,
+        "run_number": 3,
+        "duration_seconds": 0.0009784160065464675,
+        "status_code": 0,
+        "success": false
+      },
+      {
+        "maps_count": 4,
+        "run_number": 1,
+        "duration_seconds": 0.0013836250291205943,
+        "status_code": 0,
+        "success": false
+      },
+      {
+        "maps_count": 4,
+        "run_number": 2,
+        "duration_seconds": 0.001387041003908962,
+        "status_code": 0,
+        "success": false
+      },
+      {
+        "maps_count": 4,
+        "run_number": 3,
+        "duration_seconds": 0.001049292040988803,
+        "status_code": 0,
+        "success": false
+      }
+    ],
+    "summary": {}
+  },
+  {
+    "label": "dev-wms",
+    "timestamp": "2026-04-20T14:15:21.730069",
+    "results": [
+      {
+        "maps_count": 2,
+        "run_number": 1,
+        "duration_seconds": 0.005635874986182898,
+        "status_code": 0,
+        "success": false
+      },
+      {
+        "maps_count": 2,
+        "run_number": 2,
+        "duration_seconds": 0.0012718329671770334,
+        "status_code": 0,
+        "success": false
+      },
+      {
+        "maps_count": 2,
+        "run_number": 3,
+        "duration_seconds": 0.001066249969881028,
+        "status_code": 0,
+        "success": false
+      },
+      {
+        "maps_count": 3,
+        "run_number": 1,
+        "duration_seconds": 0.0008470829925499856,
+        "status_code": 0,
+        "success": false
+      },
+      {
+        "maps_count": 3,
+        "run_number": 2,
+        "duration_seconds": 0.0008298329776152968,
+        "status_code": 0,
+        "success": false
+      },
+      {
+        "maps_count": 3,
+        "run_number": 3,
+        "duration_seconds": 0.0011892080074176192,
+        "status_code": 0,
+        "success": false
+      },
+      {
+        "maps_count": 4,
+        "run_number": 1,
+        "duration_seconds": 0.001061291026417166,
+        "status_code": 0,
+        "success": false
+      },
+      {
+        "maps_count": 4,
+        "run_number": 2,
+        "duration_seconds": 0.0010752920061349869,
+        "status_code": 0,
+        "success": false
+      },
+      {
+        "maps_count": 4,
+        "run_number": 3,
+        "duration_seconds": 0.0008548329933546484,
+        "status_code": 0,
+        "success": false
+      }
+    ],
+    "summary": {}
+  },
+  {
+    "label": "prod-wms",
+    "timestamp": "2026-04-20T14:15:29.526992",
+    "results": [
+      {
+        "maps_count": 2,
+        "run_number": 1,
+        "duration_seconds": 0.005686416989192367,
+        "status_code": 0,
+        "success": false
+      },
+      {
+        "maps_count": 2,
+        "run_number": 2,
+        "duration_seconds": 0.0012546659563668072,
+        "status_code": 0,
+        "success": false
+      },
+      {
+        "maps_count": 2,
+        "run_number": 3,
+        "duration_seconds": 0.0012334580533206463,
+        "status_code": 0,
+        "success": false
+      },
+      {
+        "maps_count": 3,
+        "run_number": 1,
+        "duration_seconds": 0.0009134999709203839,
+        "status_code": 0,
+        "success": false
+      },
+      {
+        "maps_count": 3,
+        "run_number": 2,
+        "duration_seconds": 0.0008957080426625907,
+        "status_code": 0,
+        "success": false
+      },
+      {
+        "maps_count": 3,
+        "run_number": 3,
+        "duration_seconds": 0.0008210410014726222,
+        "status_code": 0,
+        "success": false
+      },
+      {
+        "maps_count": 4,
+        "run_number": 1,
+        "duration_seconds": 0.0011918329983018339,
+        "status_code": 0,
+        "success": false
+      },
+      {
+        "maps_count": 4,
+        "run_number": 2,
+        "duration_seconds": 0.00151012500282377,
+        "status_code": 0,
+        "success": false
+      },
+      {
+        "maps_count": 4,
+        "run_number": 3,
+        "duration_seconds": 0.000990582979284227,
+        "status_code": 0,
+        "success": false
+      }
+    ],
+    "summary": {}
+  },
+  {
+    "label": "prod-wms",
+    "timestamp": "2026-04-20T14:24:34.957256",
+    "results": [
+      {
+        "maps_count": 2,
+        "run_number": 1,
+        "duration_seconds": 0.7788318329839967,
+        "status_code": 500,
+        "success": false
+      },
+      {
+        "maps_count": 2,
+        "run_number": 2,
+        "duration_seconds": 0.06564112502383068,
+        "status_code": 500,
+        "success": false
+      },
+      {
+        "maps_count": 2,
+        "run_number": 3,
+        "duration_seconds": 0.048620790999848396,
+        "status_code": 500,
+        "success": false
+      },
+      {
+        "maps_count": 3,
+        "run_number": 1,
+        "duration_seconds": 0.048280042014084756,
+        "status_code": 500,
+        "success": false
+      },
+      {
+        "maps_count": 3,
+        "run_number": 2,
+        "duration_seconds": 0.12818766600685194,
+        "status_code": 500,
+        "success": false
+      },
+      {
+        "maps_count": 3,
+        "run_number": 3,
+        "duration_seconds": 0.04582345800008625,
+        "status_code": 500,
+        "success": false
+      },
+      {
+        "maps_count": 4,
+        "run_number": 1,
+        "duration_seconds": 0.06025008304277435,
+        "status_code": 500,
+        "success": false
+      },
+      {
+        "maps_count": 4,
+        "run_number": 2,
+        "duration_seconds": 0.19572129199514166,
+        "status_code": 500,
+        "success": false
+      },
+      {
+        "maps_count": 4,
+        "run_number": 3,
+        "duration_seconds": 0.060320666001643986,
+        "status_code": 500,
+        "success": false
+      }
+    ],
+    "summary": {}
+  },
+  {
+    "label": "prod-wms",
+    "timestamp": "2026-04-20T14:29:17.019898",
+    "results": [
+      {
+        "maps_count": 2,
+        "run_number": 1,
+        "duration_seconds": 31.14277891605161,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 2,
+        "duration_seconds": 10.439522416039836,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 3,
+        "duration_seconds": 6.811164916027337,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 3,
+        "run_number": 1,
+        "duration_seconds": 22.34390295902267,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 3,
+        "run_number": 2,
+        "duration_seconds": 12.377246000047307,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 3,
+        "run_number": 3,
+        "duration_seconds": 13.289837249962147,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 1,
+        "duration_seconds": 27.92641424998874,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 2,
+        "duration_seconds": 17.768255833012518,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 3,
+        "duration_seconds": 19.0820979999844,
+        "status_code": 200,
+        "success": true
+      }
+    ],
+    "summary": {
+      "2_maps": {
+        "avg": 16.131155416039594,
+        "min": 6.811164916027337,
+        "max": 31.14277891605161,
+        "stdev": 13.12641895630941
+      },
+      "3_maps": {
+        "avg": 16.003662069677375,
+        "min": 12.377246000047307,
+        "max": 22.34390295902267,
+        "stdev": 5.509736527144452
+      },
+      "4_maps": {
+        "avg": 21.592256027661886,
+        "min": 17.768255833012518,
+        "max": 27.92641424998874,
+        "stdev": 5.524736699520757
+      }
+    }
+  },
+  {
+    "label": "dev-wms",
+    "timestamp": "2026-04-20T14:31:49.399016",
+    "results": [
+      {
+        "maps_count": 2,
+        "run_number": 1,
+        "duration_seconds": 19.76831700000912,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 2,
+        "duration_seconds": 12.79691625002306,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 3,
+        "duration_seconds": 13.966638000041712,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 3,
+        "run_number": 1,
+        "duration_seconds": 20.540109916997608,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 3,
+        "run_number": 2,
+        "duration_seconds": 11.450150624965318,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 3,
+        "run_number": 3,
+        "duration_seconds": 11.71853650000412,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 1,
+        "duration_seconds": 23.89670629199827,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 2,
+        "duration_seconds": 15.800267832993995,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 3,
+        "duration_seconds": 22.206853416981176,
+        "status_code": 200,
+        "success": true
+      }
+    ],
+    "summary": {
+      "2_maps": {
+        "avg": 15.51062375002463,
+        "min": 12.79691625002306,
+        "max": 19.76831700000912,
+        "stdev": 3.733366590805045
+      },
+      "3_maps": {
+        "avg": 14.569599013989015,
+        "min": 11.450150624965318,
+        "max": 20.540109916997608,
+        "stdev": 5.172355176966142
+      },
+      "4_maps": {
+        "avg": 20.634609180657815,
+        "min": 15.800267832993995,
+        "max": 23.89670629199827,
+        "stdev": 4.271070461149044
+      }
+    }
+  },
+  {
+    "label": "prod-wms",
+    "timestamp": "2026-04-20T14:53:13.130223",
+    "map_counts": [
+      1,
+      2,
+      4,
+      8,
+      12
+    ],
+    "results": [
+      {
+        "maps_count": 1,
+        "run_number": 1,
+        "duration_seconds": 8.441064790997189,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 1,
+        "run_number": 2,
+        "duration_seconds": 5.826097042008769,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 1,
+        "run_number": 3,
+        "duration_seconds": 4.438723457977176,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 1,
+        "duration_seconds": 8.877072207978927,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 2,
+        "duration_seconds": 7.762165917025413,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 3,
+        "duration_seconds": 6.770250750007108,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 1,
+        "duration_seconds": 17.399337958951946,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 2,
+        "duration_seconds": 15.557102416991256,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 3,
+        "duration_seconds": 16.54423758300254,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 8,
+        "run_number": 1,
+        "duration_seconds": 74.8853191670496,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 8,
+        "run_number": 2,
+        "duration_seconds": 34.24954379099654,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 8,
+        "run_number": 3,
+        "duration_seconds": 31.933420334011316,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 12,
+        "run_number": 1,
+        "duration_seconds": 97.2002637910191,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 12,
+        "run_number": 2,
+        "duration_seconds": 59.06935608299682,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 12,
+        "run_number": 3,
+        "duration_seconds": 51.68994287500391,
+        "status_code": 200,
+        "success": true
+      }
+    ],
+    "summary": {
+      "1_maps": {
+        "avg": 6.235295096994378,
+        "min": 4.438723457977176,
+        "max": 8.441064790997189,
+        "stdev": 2.032305666639029
+      },
+      "2_maps": {
+        "avg": 7.80316295833715,
+        "min": 6.770250750007108,
+        "max": 8.877072207978927,
+        "stdev": 1.0540088861057397
+      },
+      "4_maps": {
+        "avg": 16.500225986315247,
+        "min": 15.557102416991256,
+        "max": 17.399337958951946,
+        "stdev": 0.9219060220532368
+      },
+      "8_maps": {
+        "avg": 47.022761097352486,
+        "min": 31.933420334011316,
+        "max": 74.8853191670496,
+        "stdev": 24.157456687479172
+      },
+      "12_maps": {
+        "avg": 69.31985424967327,
+        "min": 51.68994287500391,
+        "max": 97.2002637910191,
+        "stdev": 24.425434734482216
+      }
+    }
+  },
+  {
+    "label": "dev-wms",
+    "timestamp": "2026-04-20T15:01:17.012365",
+    "map_counts": [
+      1,
+      2,
+      4,
+      8,
+      12
+    ],
+    "results": [
+      {
+        "maps_count": 1,
+        "run_number": 1,
+        "duration_seconds": 7.965230000030715,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 1,
+        "run_number": 2,
+        "duration_seconds": 8.889823125035036,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 1,
+        "run_number": 3,
+        "duration_seconds": 7.430268333002459,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 1,
+        "duration_seconds": 10.463635249994695,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 2,
+        "duration_seconds": 9.751310332969297,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 3,
+        "duration_seconds": 10.817107708018739,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 1,
+        "duration_seconds": 26.006527582998388,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 2,
+        "duration_seconds": 22.187797875027172,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 3,
+        "duration_seconds": 19.731329040951096,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 8,
+        "run_number": 1,
+        "duration_seconds": 74.90658487501787,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 8,
+        "run_number": 2,
+        "duration_seconds": 41.66951341700042,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 8,
+        "run_number": 3,
+        "duration_seconds": 36.514336165972054,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 12,
+        "run_number": 1,
+        "duration_seconds": 92.02602612500777,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 12,
+        "run_number": 2,
+        "duration_seconds": 61.766702499997336,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 12,
+        "run_number": 3,
+        "duration_seconds": 52.90471837500809,
+        "status_code": 200,
+        "success": true
+      }
+    ],
+    "summary": {
+      "1_maps": {
+        "avg": 8.095107152689403,
+        "min": 7.430268333002459,
+        "max": 8.889823125035036,
+        "stdev": 0.7383942739643645
+      },
+      "2_maps": {
+        "avg": 10.34401776366091,
+        "min": 9.751310332969297,
+        "max": 10.817107708018739,
+        "stdev": 0.5428740815724952
+      },
+      "4_maps": {
+        "avg": 22.64188483299222,
+        "min": 19.731329040951096,
+        "max": 26.006527582998388,
+        "stdev": 3.1621472782863194
+      },
+      "8_maps": {
+        "avg": 51.03014481933011,
+        "min": 36.514336165972054,
+        "max": 74.90658487501787,
+        "stdev": 20.837640351585353
+      },
+      "12_maps": {
+        "avg": 68.8991490000044,
+        "min": 52.90471837500809,
+        "max": 92.02602612500777,
+        "stdev": 20.512752736386787
+      }
+    }
+  },
+  {
+    "label": "prod-wms",
+    "timestamp": "2026-04-20T16:57:59.430334",
+    "map_counts": [
+      1,
+      2,
+      4,
+      8,
+      12
+    ],
+    "results": [
+      {
+        "maps_count": 1,
+        "run_number": 1,
+        "duration_seconds": 17.280004416999873,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 1,
+        "run_number": 2,
+        "duration_seconds": 6.3322779579903,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 1,
+        "run_number": 3,
+        "duration_seconds": 6.894701208977494,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 1,
+        "duration_seconds": 10.862725124985445,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 2,
+        "duration_seconds": 10.85440579202259,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 3,
+        "duration_seconds": 9.602634666953236,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 1,
+        "duration_seconds": 21.24801512499107,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 2,
+        "duration_seconds": 26.58574458298972,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 3,
+        "duration_seconds": 18.548559667018708,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 8,
+        "run_number": 1,
+        "duration_seconds": 32.37685591704212,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 8,
+        "run_number": 2,
+        "duration_seconds": 42.44907491694903,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 8,
+        "run_number": 3,
+        "duration_seconds": 34.963206791027915,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 12,
+        "run_number": 1,
+        "duration_seconds": 48.10122891701758,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 12,
+        "run_number": 2,
+        "duration_seconds": 44.68683437502477,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 12,
+        "run_number": 3,
+        "duration_seconds": 46.824873749981634,
+        "status_code": 200,
+        "success": true
+      }
+    ],
+    "summary": {
+      "1_maps": {
+        "avg": 10.168994527989222,
+        "min": 6.3322779579903,
+        "max": 17.280004416999873,
+        "stdev": 6.164732452387386
+      },
+      "2_maps": {
+        "avg": 10.439921861320423,
+        "min": 9.602634666953236,
+        "max": 10.862725124985445,
+        "stdev": 0.7251239116273124
+      },
+      "4_maps": {
+        "avg": 22.1274397916665,
+        "min": 18.548559667018708,
+        "max": 26.58574458298972,
+        "stdev": 4.090125444487721
+      },
+      "8_maps": {
+        "avg": 36.59637920833969,
+        "min": 32.37685591704212,
+        "max": 42.44907491694903,
+        "stdev": 5.230950009704014
+      },
+      "12_maps": {
+        "avg": 46.537645680674665,
+        "min": 44.68683437502477,
+        "max": 48.10122891701758,
+        "stdev": 1.7252238970481262
+      }
+    }
+  },
+  {
+    "label": "dev-wms",
+    "timestamp": "2026-04-20T17:11:57.672997",
+    "map_counts": [
+      1,
+      2,
+      4,
+      8,
+      12
+    ],
+    "results": [
+      {
+        "maps_count": 1,
+        "run_number": 1,
+        "duration_seconds": 5.806040666997433,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 1,
+        "run_number": 2,
+        "duration_seconds": 3.9889457920216955,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 1,
+        "run_number": 3,
+        "duration_seconds": 3.340501750004478,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 1,
+        "duration_seconds": 7.4691554580349475,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 2,
+        "duration_seconds": 7.870783874997869,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 3,
+        "duration_seconds": 7.057349957991391,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 1,
+        "duration_seconds": 16.045495166967157,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 2,
+        "duration_seconds": 15.776113624975551,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 3,
+        "duration_seconds": 15.00170437496854,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 8,
+        "run_number": 1,
+        "duration_seconds": 29.177727166970726,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 8,
+        "run_number": 2,
+        "duration_seconds": 30.051738875044975,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 8,
+        "run_number": 3,
+        "duration_seconds": 29.448517124983482,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 12,
+        "run_number": 1,
+        "duration_seconds": 47.20105808402877,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 12,
+        "run_number": 2,
+        "duration_seconds": 95.42221312498441,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 12,
+        "run_number": 3,
+        "duration_seconds": 65.31534716603346,
+        "status_code": 200,
+        "success": true
+      }
+    ],
+    "summary": {
+      "1_maps": {
+        "avg": 4.378496069674536,
+        "min": 3.340501750004478,
+        "max": 5.806040666997433,
+        "stdev": 1.2780972583947794
+      },
+      "2_maps": {
+        "avg": 7.465763097008069,
+        "min": 7.057349957991391,
+        "max": 7.870783874997869,
+        "stdev": 0.4067275690423847
+      },
+      "4_maps": {
+        "avg": 15.607771055637082,
+        "min": 15.00170437496854,
+        "max": 16.045495166967157,
+        "stdev": 0.5418756498071149
+      },
+      "8_maps": {
+        "avg": 29.559327722333062,
+        "min": 29.177727166970726,
+        "max": 30.051738875044975,
+        "stdev": 0.4474185488180442
+      },
+      "12_maps": {
+        "avg": 69.31287279168221,
+        "min": 47.20105808402877,
+        "max": 95.42221312498441,
+        "stdev": 24.357855133750164
+      }
+    }
+  },
+  {
+    "label": "prod-wms",
+    "timestamp": "2026-04-21T08:53:40.850909",
+    "map_counts": [
+      1,
+      2,
+      4,
+      8,
+      12
+    ],
+    "results": [
+      {
+        "maps_count": 1,
+        "run_number": 1,
+        "duration_seconds": 9.021001334011089,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 1,
+        "run_number": 2,
+        "duration_seconds": 5.125391082954593,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 1,
+        "run_number": 3,
+        "duration_seconds": 4.44836962496629,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 1,
+        "duration_seconds": 6.325957541004755,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 2,
+        "duration_seconds": 8.701131665962748,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 3,
+        "duration_seconds": 6.546542665979359,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 1,
+        "duration_seconds": 18.005836249969434,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 2,
+        "duration_seconds": 17.223983582982328,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 3,
+        "duration_seconds": 14.964222375012469,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 8,
+        "run_number": 1,
+        "duration_seconds": 39.13652720901882,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 8,
+        "run_number": 2,
+        "duration_seconds": 41.11661333398661,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 8,
+        "run_number": 3,
+        "duration_seconds": 43.89578020898625,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 12,
+        "run_number": 1,
+        "duration_seconds": 75.3725648749969,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 12,
+        "run_number": 2,
+        "duration_seconds": 58.64386854204349,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 12,
+        "run_number": 3,
+        "duration_seconds": 50.45554704096867,
+        "status_code": 200,
+        "success": true
+      }
+    ],
+    "summary": {
+      "1_maps": {
+        "avg": 6.198254013977324,
+        "min": 4.44836962496629,
+        "max": 9.021001334011089,
+        "stdev": 2.467897149034478
+      },
+      "2_maps": {
+        "avg": 7.19121062431562,
+        "min": 6.325957541004755,
+        "max": 8.701131665962748,
+        "stdev": 1.3122730711809092
+      },
+      "4_maps": {
+        "avg": 16.731347402654745,
+        "min": 14.964222375012469,
+        "max": 18.005836249969434,
+        "stdev": 1.5795162378742726
+      },
+      "8_maps": {
+        "avg": 41.38297358399723,
+        "min": 39.13652720901882,
+        "max": 43.89578020898625,
+        "stdev": 2.390780859157534
+      },
+      "12_maps": {
+        "avg": 61.49066015266968,
+        "min": 50.45554704096867,
+        "max": 75.3725648749969,
+        "stdev": 12.70010280631889
+      }
+    }
+  },
+  {
+    "label": "dev-wms",
+    "timestamp": "2026-04-21T08:59:33.238429",
+    "map_counts": [
+      1,
+      2,
+      4,
+      8,
+      12
+    ],
+    "results": [
+      {
+        "maps_count": 1,
+        "run_number": 1,
+        "duration_seconds": 6.778843791980762,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 1,
+        "run_number": 2,
+        "duration_seconds": 9.083244291017763,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 1,
+        "run_number": 3,
+        "duration_seconds": 7.010889708995819,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 1,
+        "duration_seconds": 9.046863208001014,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 2,
+        "duration_seconds": 9.56154291605344,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 2,
+        "run_number": 3,
+        "duration_seconds": 9.63234258396551,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 1,
+        "duration_seconds": 23.34230654098792,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 2,
+        "duration_seconds": 18.885573207982816,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 4,
+        "run_number": 3,
+        "duration_seconds": 18.250073292001616,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 8,
+        "run_number": 1,
+        "duration_seconds": 36.92481354199117,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 8,
+        "run_number": 2,
+        "duration_seconds": 30.784046125016175,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 8,
+        "run_number": 3,
+        "duration_seconds": 31.123864292050712,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 12,
+        "run_number": 1,
+        "duration_seconds": 43.491078999999445,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 12,
+        "run_number": 2,
+        "duration_seconds": 52.3201124999905,
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "maps_count": 12,
+        "run_number": 3,
+        "duration_seconds": 45.37466308398871,
+        "status_code": 200,
+        "success": true
+      }
+    ],
+    "summary": {
+      "1_maps": {
+        "avg": 7.6243259306647815,
+        "min": 6.778843791980762,
+        "max": 9.083244291017763,
+        "stdev": 1.2687763449608107
+      },
+      "2_maps": {
+        "avg": 9.41358290267332,
+        "min": 9.046863208001014,
+        "max": 9.63234258396551,
+        "stdev": 0.31955539283436873
+      },
+      "4_maps": {
+        "avg": 20.15931768032412,
+        "min": 18.250073292001616,
+        "max": 23.34230654098792,
+        "stdev": 2.774802443622864
+      },
+      "8_maps": {
+        "avg": 32.94424131968602,
+        "min": 30.784046125016175,
+        "max": 36.92481354199117,
+        "stdev": 3.451461358526589
+      },
+      "12_maps": {
+        "avg": 47.06195152799288,
+        "min": 43.491078999999445,
+        "max": 52.3201124999905,
+        "stdev": 4.650071489336868
+      }
+    }
+  }
+]

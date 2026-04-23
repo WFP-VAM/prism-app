@@ -44,6 +44,7 @@ from sqlalchemy import create_engine
 from starlette_admin.contrib.sqla import Admin
 
 from .geotiff_from_stac_api import get_geotiff
+from .presigned_cog_url import get_presigned_cog_url
 from .models import AlertsModel, StatsModel
 
 logging.basicConfig(
@@ -464,6 +465,32 @@ def post_raster_geotiff(raster_geotiff: RasterGeotiffModel):
     return JSONResponse(
         content={"download_url": presigned_download_url}, status_code=200
     )
+
+
+@app.get(
+    "/cog_presigned_url",
+    responses={
+        404: {"description": "Collection or asset not found in STAC catalog"},
+        500: {"description": "Internal server error"},
+    },
+)
+def get_cog_presigned_url(
+    collection: str = Query(..., description="STAC collection ID"),
+    date: Optional[str] = Query(
+        None, description="ISO-8601 date string for temporal filtering"
+    ),
+    band: Optional[str] = Query(
+        None, description="Asset key / band name within the STAC item"
+    ),
+):
+    """Return a short-lived pre-signed S3 URL for a COG asset.
+
+    The URL is valid for 5 minutes and supports HTTP byte-range requests,
+    enabling efficient browser-side COG streaming without downloading the
+    full file.
+    """
+    presigned_url = get_presigned_cog_url(collection, date, band)
+    return JSONResponse(content={"url": presigned_url}, status_code=200)
 
 
 @app.get("/google-floods/gauges/")

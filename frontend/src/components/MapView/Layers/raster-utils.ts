@@ -5,7 +5,7 @@ import { buffer } from 'd3-fetch';
 import { fromArrayBuffer, GeoTIFFImage } from 'geotiff';
 import { createGetMapUrl } from 'prism-common';
 import { Dispatch } from 'redux';
-import { RASTER_API_URL } from 'utils/constants';
+import { COG_PRESIGNED_URL_API, RASTER_API_URL } from 'utils/constants';
 import {
   ANALYSIS_REQUEST_TIMEOUT,
   fetchWithTimeout,
@@ -228,6 +228,44 @@ export async function getDownloadGeotiffURL(
   const responseJson = await response.json();
 
   return responseJson.download_url;
+}
+
+/**
+ * Fetch a short-lived (5-minute) pre-signed S3 URL for a COG asset directly
+ * from the STAC catalog. The returned URL supports HTTP byte-range requests,
+ * making it suitable for streaming COG tiles in the browser without downloading
+ * the full file.
+ */
+export async function getPresignedCogUrl(
+  collection: string,
+  date?: string,
+  band?: string,
+): Promise<string> {
+  const params = new URLSearchParams({ collection });
+  if (date) {
+    params.set('date', date);
+  }
+  if (band) {
+    params.set('band', band);
+  }
+
+  const response = await fetch(
+    `${COG_PRESIGNED_URL_API}?${params.toString()}`,
+    {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+    },
+  );
+
+  if (!response.ok) {
+    const detail = await response.text();
+    throw new Error(
+      `Failed to get pre-signed COG URL for collection '${collection}': ${response.status} ${detail}`,
+    );
+  }
+
+  const json = await response.json();
+  return json.url as string;
 }
 
 export async function downloadGeotiff(
