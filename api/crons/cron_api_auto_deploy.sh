@@ -17,6 +17,8 @@ STATE_DIR="${STATE_DIR:-/var/lib/prism-api-deployer}"
 LOCK_FILE="${LOCK_FILE:-/var/lock/prism-api-auto-deploy.lock}"
 HEALTHCHECK_URL="${HEALTHCHECK_URL:-}"
 
+export API_DIR BRANCH STATE_DIR LOCK_FILE HEALTHCHECK_URL
+
 mkdir -p "$STATE_DIR"
 
 run_deploy() {
