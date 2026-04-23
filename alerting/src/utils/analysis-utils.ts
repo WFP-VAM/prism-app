@@ -5,7 +5,7 @@ import bbox from '@turf/bbox';
 import { createGetCoverageUrl } from 'prism-common';
 import { Extent } from './raster-utils';
 import { API_URL } from '../constants';
-import { Alert } from '../entities/alerts.entity';
+import type { Alert } from '../types/alert';
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
