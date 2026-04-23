@@ -1,6 +1,5 @@
 """Baseline: alert, user_info, anticipatory_action_alerts (+ enum).
 
-Parity with historical TypeORM migrations under `alerting/migration/`.
 New schema changes: add Alembic revisions only (Python owns migrations).
 
 Revision ID: prism_alerts_baseline

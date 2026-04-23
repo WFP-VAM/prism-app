@@ -255,6 +255,10 @@ def test_stats_endpoint2():
     assert response.status_code == 200
 
 
+@pytest.mark.skipif(
+    os.getenv("SKIP_GDAL_MASK_STATS_TEST") == "1",
+    reason="Full GDAL stack not available; unmasked stats + Docker api-test still cover /stats",
+)
 def test_stats_endpoint_masked():
     """
     Call /stats with known-good parameters with a geotiff mask.
