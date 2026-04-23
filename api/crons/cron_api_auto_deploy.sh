@@ -4,13 +4,14 @@ set -euo pipefail
 # To set up cron on EC2:
 # crontab -e
 # Example (daily at 01:00, log to file):
-# 0 1 * * * APP_DIR="$HOME/prism-app/api" BRANCH=main HEALTHCHECK_URL="http://127.0.0.1/health" $HOME/prism-app/api/crons/cron_api_auto_deploy.sh >> $HOME/prism-app/api/auto_deploy.log 2>&1
+# 0 1 * * * BRANCH=master HEALTHCHECK_URL="http://127.0.0.1/health" ~/prism-app/api/crons/cron_api_auto_deploy.sh >> ~/prism-app/api/auto_deploy.log 2>&1
 # Note: script no-ops if target branch SHA unchanged since last successful deploy.
 #
 # Auto-deploy API on EC2 when main/master advances.
 # Designed for cron usage: idempotent, locked, SHA-pinned, with optional healthcheck gate.
 
-APP_DIR="${APP_DIR:-$HOME/prism-app/api}"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+API_DIR="$(cd -- "$SCRIPT_DIR/.." && pwd)"
 BRANCH="${BRANCH:-master}"
 STATE_DIR="${STATE_DIR:-/var/lib/prism-api-deployer}"
 LOCK_FILE="${LOCK_FILE:-/var/lock/prism-api-auto-deploy.lock}"
@@ -19,7 +20,17 @@ HEALTHCHECK_URL="${HEALTHCHECK_URL:-}"
 mkdir -p "$STATE_DIR"
 
 run_deploy() {
-  cd "$APP_DIR"
+  cd "$API_DIR"
+
+  if [[ ! -f "./set_envs.sh" ]]; then
+    echo "error: missing ./set_envs.sh in $API_DIR" >&2
+    return 1
+  fi
+
+  if [[ ! -f "./Makefile" ]]; then
+    echo "error: missing ./Makefile in $API_DIR" >&2
+    return 1
+  fi
 
   git fetch --prune origin "$BRANCH"
   local target_sha
@@ -58,5 +69,5 @@ if ! command -v flock >/dev/null 2>&1; then
   echo "error: flock is required but not installed" >&2
   exit 1
 fi
-flock -n "$LOCK_FILE" bash -c "$(declare -f run_deploy); run_deploy"
+flock -n "$LOCK_FILE" bash -euo pipefail -c "$(declare -f run_deploy); run_deploy"
 
