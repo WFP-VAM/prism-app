@@ -4,7 +4,7 @@ set -euo pipefail
 # To set up cron on EC2:
 # crontab -e
 # Example (daily at 01:00, log to file):
-# 0 1 * * * BRANCH=master HEALTHCHECK_URL="http://127.0.0.1/health" ~/prism-app/api/crons/cron_api_auto_deploy.sh >> ~/prism-app/api/auto_deploy.log 2>&1
+# 0 1 * * * BRANCH=master HEALTHCHECK_URL="http://127.0.0.1/" ~/prism-app/api/crons/cron_api_auto_deploy.sh >> ~/prism-app/api/auto_deploy.log 2>&1
 # Note: script no-ops if target branch SHA unchanged since last successful deploy.
 #
 # Auto-deploy API on EC2 when main/master advances.
@@ -68,6 +68,11 @@ run_deploy() {
 
   if [[ -n "$HEALTHCHECK_URL" ]]; then
     curl -fsS --max-time 10 "$HEALTHCHECK_URL" >/dev/null
+    if [[ $? -ne 0 ]]; then
+      echo "error: healthcheck failed" >&2
+      return 1
+    fi
+    echo "healthcheck passed"
   fi
 
   echo "$target_sha" > "$STATE_DIR/deployed_sha"
