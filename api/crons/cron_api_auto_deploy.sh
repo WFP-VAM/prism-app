@@ -34,6 +34,18 @@ run_deploy() {
     return 1
   fi
 
+  if [[ -n "$(git status --porcelain)" ]]; then
+    echo "error: working tree dirty; refusing deploy" >&2
+    return 1
+  fi
+
+  local current_branch
+  current_branch="$(git branch --show-current || true)"
+  if [[ -n "$current_branch" && "$current_branch" != "$BRANCH" ]]; then
+    echo "error: current branch '$current_branch' != '$BRANCH'; refusing deploy" >&2
+    return 1
+  fi
+
   git fetch --prune origin "$BRANCH"
   local target_sha
   target_sha="$(git rev-parse "origin/$BRANCH")"
