@@ -11,5 +11,3 @@ docker compose run --rm -e POSTGRES_SSL=true --entrypoint 'yarn alert-worker' al
 ## and then add the following line to the crontab file:
 # 0 1 * * * ~/prism-app/alerting/crons/cron_alert_run.sh
 ## This will run the alerting script every day at 1:00 AM.
-
-

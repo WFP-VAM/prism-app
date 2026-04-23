@@ -11,5 +11,3 @@ docker compose run --rm -e POSTGRES_SSL=true --entrypoint 'yarn aa-storm-alert-w
 ## and then add the following line to the crontab file:
 ## This will run the storm AA alerting script every hour at minute 0.
 # 0 * * * * ~/prism-app/alerting/crons/cron_aa_storm_alert_run.sh
-
-
