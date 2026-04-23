@@ -34,11 +34,6 @@ run_deploy() {
     return 1
   fi
 
-  if [[ -n "$(git status --porcelain)" ]]; then
-    echo "error: working tree dirty; refusing deploy" >&2
-    return 1
-  fi
-
   local current_branch
   current_branch="$(git branch --show-current || true)"
   if [[ -n "$current_branch" && "$current_branch" != "$BRANCH" ]]; then
