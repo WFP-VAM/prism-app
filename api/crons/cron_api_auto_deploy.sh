@@ -13,8 +13,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 API_DIR="$(cd -- "$SCRIPT_DIR/.." && pwd)"
 BRANCH="${BRANCH:-master}"
-STATE_DIR="${STATE_DIR:-/var/lib/prism-api-deployer}"
-LOCK_FILE="${LOCK_FILE:-/var/lock/prism-api-auto-deploy.lock}"
+STATE_DIR="$API_DIR/.auto_deploy_state"
+LOCK_FILE="$STATE_DIR/auto_deploy.lock"
 HEALTHCHECK_URL="${HEALTHCHECK_URL:-}"
 
 export API_DIR BRANCH STATE_DIR LOCK_FILE HEALTHCHECK_URL
