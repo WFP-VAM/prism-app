@@ -22,11 +22,15 @@ api-typecheck:
 	docker compose run --no-deps api bash -c "mypy ."
 
 test-services:
-	docker compose -f docker-compose.yml -f docker-compose.test.yml up -d
+	docker compose -f docker-compose.yml -f docker-compose.test.yml up -d --remove-orphans
 
+# Use exec (not run) so commands share the long-running api container's network — one-off
+# `docker compose run api` containers often cannot reach testdb by hostname.
+# testdb readiness is enforced by docker-compose.test.yml (depends_on + healthcheck); no wait-for-it needed.
 api-test: test-services
-	docker compose -f docker-compose.yml -f docker-compose.test.yml run api bash -c "../wait-for-it.sh frontend:3300 -t 180"
-	docker compose -f docker-compose.yml -f docker-compose.test.yml run api bash -c "pytest -s tests -v --tb=long"
+	docker compose -f docker-compose.yml -f docker-compose.test.yml exec -T api bash -c "cd / && poetry run alembic -c /alembic.ini upgrade head"
+	docker compose -f docker-compose.yml -f docker-compose.test.yml exec -T api bash -c "/wait-for-it.sh frontend:3300 -t 180"
+	docker compose -f docker-compose.yml -f docker-compose.test.yml exec -T api bash -c "pytest -s tests -v --tb=long"
 	docker compose -f docker-compose.yml -f docker-compose.test.yml down
 
 api-add-users:
