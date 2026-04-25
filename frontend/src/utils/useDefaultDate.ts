@@ -1,10 +1,10 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
 import { isMainLayer, LayerKey, SelectedDateTimestamp } from 'config/types';
 import { availableDatesSelector } from 'context/serverStateSlice';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { useUrlHistory } from './url-utils';
 import { getFormattedDate } from './date-utils';
+import { useUrlHistory } from './url-utils';
 import { useMapState } from './useMapState';
 
 /**

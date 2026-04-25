@@ -1,8 +1,8 @@
-import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
-
-import { store } from 'context/store';
 import { LayerKey, LayersCategoryType } from 'config/types';
+import { store } from 'context/store';
+import { Provider } from 'react-redux';
+
 import MenuSwitch from '.';
 
 jest.mock('./SwitchItem', () => 'mock-SwitchItem');

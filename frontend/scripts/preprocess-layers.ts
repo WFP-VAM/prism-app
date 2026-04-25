@@ -1,10 +1,11 @@
 // Pre-process layers availability dates to avoid doing it on each page load.
 // @ts-nocheck
+import { featureCollection } from '@turf/helpers';
+import simplify from '@turf/simplify';
+import union from '@turf/union';
 import fs from 'fs';
 import path from 'path';
-import union from '@turf/union';
-import simplify from '@turf/simplify';
-import { featureCollection } from '@turf/helpers';
+
 import { getFormattedDate } from '../src/utils/date-utils';
 
 // We fix the timezone to UTC to ensure that

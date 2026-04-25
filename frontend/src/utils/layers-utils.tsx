@@ -1,37 +1,39 @@
+import {
+  expandBoundingBox,
+  Extent,
+} from 'components/MapView/Layers/raster-utils';
 import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
 import { appConfig } from 'config';
 import {
-  Extent,
-  expandBoundingBox,
-} from 'components/MapView/Layers/raster-utils';
-import {
+  AnticipatoryAction,
+  DateItem,
+  isMainLayer,
   LayerKey,
   LayerType,
-  isMainLayer,
-  DateItem,
-  AnticipatoryAction,
 } from 'config/types';
 import {
   AALayerIds,
-  LayerDefinitions,
   getBoundaryLayerSingleton,
   isAnticipatoryActionLayer,
   isWindowedDates,
+  LayerDefinitions,
 } from 'config/utils';
+import { getAAConfig } from 'context/anticipatoryAction/config';
+import { useDispatch, useSelector } from 'context/hooks';
 import { layerOrdering } from 'context/mapStateSlice';
-import { useMapState } from 'utils/useMapState';
 import { addNotification } from 'context/notificationStateSlice';
+import {
+  pointDataLayerDatesLoadedSelector,
+  wmsLayerDatesLoadedSelector,
+} from 'context/serverPreloadStateSlice';
 import {
   availableDatesSelector,
   layersLoadingDatesIdsSelector,
 } from 'context/serverStateSlice';
-import {
-  wmsLayerDatesLoadedSelector,
-  pointDataLayerDatesLoadedSelector,
-} from 'context/serverPreloadStateSlice';
+import { RootState } from 'context/store';
+import { useSafeTranslation } from 'i18n';
 import { countBy, get, pickBy, uniqBy } from 'lodash';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'context/hooks';
 import { LocalError } from 'utils/error-utils';
 import { DateFormat } from 'utils/name-utils';
 import {
@@ -39,20 +41,17 @@ import {
   getAAAvailableDatesCombined,
   getPossibleDatesForLayer,
 } from 'utils/server-utils';
-import { UrlLayerKey, getUrlKey, useUrlHistory } from 'utils/url-utils';
+import { getUrlKey, UrlLayerKey, useUrlHistory } from 'utils/url-utils';
+import { useMapState } from 'utils/useMapState';
 
-import { useSafeTranslation } from 'i18n';
-
-import { getAAConfig } from 'context/anticipatoryAction/config';
-import { RootState } from 'context/store';
+import { getNonBoundaryLayers } from './boundary-layers-utils';
 import {
-  datesAreEqualWithoutTime,
   binaryIncludes,
-  getFormattedDate,
+  datesAreEqualWithoutTime,
   dateWithoutTime,
   findClosestDate,
+  getFormattedDate,
 } from './date-utils';
-import { getNonBoundaryLayers } from './boundary-layers-utils';
 
 const dateSupportLayerTypes: Array<LayerType['type']> = [
   'impact',

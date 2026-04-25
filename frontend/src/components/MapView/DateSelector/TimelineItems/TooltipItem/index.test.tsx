@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+
 import TooltipItem from '.';
 
 test('renders as expected', () => {

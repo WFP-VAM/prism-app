@@ -1,27 +1,28 @@
-import React, { useMemo, useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { List } from '@material-ui/core';
+import {
+  AnticipatoryAction,
+  LayerType,
+  SelectedDateTimestamp,
+} from 'config/types';
+import { AALayerIds } from 'config/utils';
 import {
   analysisResultOpacitySelector,
   analysisResultSelector,
   invertedColorsSelector,
   isAnalysisLayerActiveSelector,
 } from 'context/analysisResultStateSlice';
-import {
-  AnticipatoryAction,
-  LayerType,
-  SelectedDateTimestamp,
-} from 'config/types';
+import { dateRangeSelector } from 'context/mapStateSlice/selectors';
+import { useSafeTranslation } from 'i18n';
+import { createGetLegendGraphicUrl } from 'prism-common';
+import React, { useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { BaselineLayerResult } from 'utils/analysis-utils';
 import useLayers from 'utils/layers-utils';
-import { createGetLegendGraphicUrl } from 'prism-common';
-import { useSafeTranslation } from 'i18n';
-import { List } from '@material-ui/core';
-import { AALayerIds } from 'config/utils';
-import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { getLayersCoverageMap } from 'utils/server-utils';
+
 import AALegend from '../LeftPanel/AnticipatoryActionPanel/AALegend';
-import LegendItem, { DateCoverage } from './LegendItem';
 import LegendImpactResult from './LegendImpactResult';
+import LegendItem, { DateCoverage } from './LegendItem';
 import { invertLegendColors } from './utils';
 
 interface LegendItemsListProps {

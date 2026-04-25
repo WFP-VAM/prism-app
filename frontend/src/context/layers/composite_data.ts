@@ -1,14 +1,14 @@
-import { FeatureCollection } from 'geojson';
 import { appConfig } from 'config';
 import type { CompositeLayerProps } from 'config/types';
-import { fetchWithTimeout } from 'utils/fetch-with-timeout';
-import { HTTPError, LocalError } from 'utils/error-utils';
 import { addNotification } from 'context/notificationStateSlice';
+import { FeatureCollection } from 'geojson';
 import {
   findClosestDate,
   getFormattedDate,
   getSeasonBounds,
 } from 'utils/date-utils';
+import { HTTPError, LocalError } from 'utils/error-utils';
+import { fetchWithTimeout } from 'utils/fetch-with-timeout';
 
 import type { LayerDataParams, LazyLoader } from './layer-data';
 

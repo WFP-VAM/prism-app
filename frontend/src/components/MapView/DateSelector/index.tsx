@@ -1,19 +1,16 @@
+import 'react-datepicker/dist/react-datepicker.css';
+
 import {
   Button,
-  Grid,
-  Theme,
   createStyles,
+  Grid,
   makeStyles,
+  Theme,
   useMediaQuery,
   useTheme,
 } from '@material-ui/core';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
-import { findIndex, get } from 'lodash';
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import Draggable, { DraggableEvent } from 'react-draggable';
-import { useSelector } from 'react-redux';
+import { getTimelineOffset } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
 import {
   AnticipatoryAction,
   DateItem,
@@ -22,35 +19,40 @@ import {
   Panel,
   SelectedDateTimestamp,
 } from 'config/types';
-import { useMapState } from 'utils/useMapState';
-import { locales, useSafeTranslation } from 'i18n';
-import {
-  dateStrToUpperCase,
-  dateWithoutTime,
-  datesAreEqualWithoutTime,
-  getFormattedDate,
-} from 'utils/date-utils';
-import { DateFormat } from 'utils/name-utils';
-import { useUrlHistory } from 'utils/url-utils';
-import useLayers from 'utils/layers-utils';
-import { format } from 'date-fns';
-import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
-import { getRequestDate } from 'utils/server-utils';
 import { isAnticipatoryActionLayer, isWindowedDates } from 'config/utils';
 import { getAAConfig } from 'context/anticipatoryAction/config';
+import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { RootState } from 'context/store';
-import { getTimelineOffset } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
-import TickSvg from './tick.svg';
+import { format } from 'date-fns';
+import { locales, useSafeTranslation } from 'i18n';
+import { findIndex, get } from 'lodash';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import DatePicker from 'react-datepicker';
+import Draggable, { DraggableEvent } from 'react-draggable';
+import { useSelector } from 'react-redux';
+import {
+  datesAreEqualWithoutTime,
+  dateStrToUpperCase,
+  dateWithoutTime,
+  getFormattedDate,
+} from 'utils/date-utils';
+import useLayers from 'utils/layers-utils';
+import { DateFormat } from 'utils/name-utils';
+import { getRequestDate } from 'utils/server-utils';
+import { useUrlHistory } from 'utils/url-utils';
+import { useMapState } from 'utils/useMapState';
+
+import { oneDayInMs } from '../LeftPanel/utils';
 import DateSelectorInput from './DateSelectorInput';
+import TickSvg from './tick.svg';
 import TimelineItems from './TimelineItems';
 import {
   DateCompatibleLayerWithDateItems,
-  TIMELINE_ITEM_WIDTH,
-  getDefaultCompatibleDate,
   findDateIndex,
   findMatchingDateBetweenLayers,
+  getDefaultCompatibleDate,
+  TIMELINE_ITEM_WIDTH,
 } from './utils';
-import { oneDayInMs } from '../LeftPanel/utils';
 
 type Point = {
   x: number;

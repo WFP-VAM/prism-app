@@ -1,54 +1,55 @@
 import {
+  createStyles,
   Dialog,
   DialogContent,
-  createStyles,
   makeStyles,
 } from '@material-ui/core';
 import mask from '@turf/mask';
-import html2canvas from 'html2canvas';
-import { debounce, get } from 'lodash';
-import { jsPDF } from 'jspdf';
-import type { LngLatBounds } from 'maplibre-gl';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { getFormattedDate } from 'utils/date-utils';
-import { appConfig, safeCountry, configMap } from 'config';
-import useLayers from 'utils/layers-utils';
+import { appConfig, configMap, safeCountry } from 'config';
 import { AdminCodeString, LayerKey, WMSLayerProps } from 'config/types';
 import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
-import useResizeObserver from 'utils/useOnResizeObserver';
-import { availableDatesSelector } from 'context/serverStateSlice';
-import { getPossibleDatesForLayer } from 'utils/server-utils';
-import { useBoundaryData } from 'utils/useBoundaryData';
-import { EXPORT_API_URL } from 'utils/constants';
 import {
   addNotification,
   removeNotification,
 } from 'context/notificationStateSlice';
+import { availableDatesSelector } from 'context/serverStateSlice';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
+import { debounce, get } from 'lodash';
+import type { LngLatBounds } from 'maplibre-gl';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { EXPORT_API_URL } from 'utils/constants';
+import { getFormattedDate } from 'utils/date-utils';
+import useLayers from 'utils/layers-utils';
+import { getPossibleDatesForLayer } from 'utils/server-utils';
 import { stringHash } from 'utils/string-utils';
-import { downloadToFile } from '../../MapView/utils';
+import { useBoundaryData } from 'utils/useBoundaryData';
+import useResizeObserver from 'utils/useOnResizeObserver';
+
 import {
   dateRangeSelector,
   mapSelector,
 } from '../../../context/mapStateSlice/selectors';
-import PrintConfig from './printConfig';
-import PrintPreview from './printPreview';
-import PrintConfigContext, {
-  MapDimensions,
-  Toggles,
-} from './printConfig.context';
+import { useSafeTranslation } from '../../../i18n';
 import {
   BatchCadence,
   filterDatesByCadence,
   getAvailableCadences,
   getDisabledCadences,
 } from '../../../utils/batchCadenceUtils';
-import { calculateExportDimensions } from './mapDimensionsUtils';
 import {
-  isCustomRatio,
   ALL_ASPECT_RATIO_OPTIONS,
+  isCustomRatio,
 } from '../../MapExport/aspectRatioConstants';
-import { useSafeTranslation } from '../../../i18n';
+import { downloadToFile } from '../../MapView/utils';
+import { calculateExportDimensions } from './mapDimensionsUtils';
+import PrintConfig from './printConfig';
+import PrintConfigContext, {
+  MapDimensions,
+  Toggles,
+} from './printConfig.context';
+import PrintPreview from './printPreview';
 
 const defaultFooterText = get(appConfig, 'printConfig.defaultFooterText', '');
 

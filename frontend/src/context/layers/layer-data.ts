@@ -1,4 +1,5 @@
-import { createAsyncThunk, AsyncThunk } from '@reduxjs/toolkit';
+import { AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
+import { Extent } from 'components/MapView/Layers/raster-utils';
 import {
   AnticipatoryActionLayerProps,
   DateItem,
@@ -8,20 +9,19 @@ import {
   PointLayerData,
   StaticRasterLayerProps,
 } from 'config/types';
-import { Extent } from 'components/MapView/Layers/raster-utils';
-
 import type { CreateAsyncThunkTypes, ThunkApi } from 'context/store';
+
 import {
-  fetchAdminLevelDataLayerData,
   AdminLevelDataLayerData,
+  fetchAdminLevelDataLayerData,
 } from './admin_level_data';
-import { fetchWCSLayerData, WMSLayerData } from './wms';
-import { fetchPointLayerData } from './point_data';
 import { BoundaryLayerData } from './boundary';
-import { fetchImpactLayerData, ImpactLayerData } from './impact';
 import type { CompositeLayerData } from './composite_data';
 import { fetchCompositeLayerData } from './composite_data';
 import { fetchGeojsonLayerData } from './geojson';
+import { fetchImpactLayerData, ImpactLayerData } from './impact';
+import { fetchPointLayerData } from './point_data';
+import { fetchWCSLayerData, WMSLayerData } from './wms';
 
 export type LayerAcceptingDataType = Exclude<
   LayerType,

@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+
 import LegendImpactResult from './index';
 
 test('renders as expected', () => {

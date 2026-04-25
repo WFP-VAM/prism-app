@@ -1,22 +1,23 @@
-import React, { useState, useEffect } from 'react';
 import {
   Box,
+  createStyles,
+  makeStyles,
   MenuItem,
   Select,
   TextField,
   Tooltip,
   Typography,
-  makeStyles,
-  createStyles,
 } from '@material-ui/core';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import ToggleButton from '@material-ui/lab/ToggleButton';
 import TuneIcon from '@material-ui/icons/Tune';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import {
   AspectRatio,
-  isCustomRatio,
   isAutoRatio,
+  isCustomRatio,
 } from 'components/MapExport/types';
+import React, { useEffect, useState } from 'react';
+
 import { useSafeTranslation } from '../../../i18n';
 import AspectRatioGlyph from './AspectRatioGlyph';
 import { AspectRatioOption } from './printConfig.context';

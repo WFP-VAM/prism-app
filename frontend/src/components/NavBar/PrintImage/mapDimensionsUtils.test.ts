@@ -1,4 +1,5 @@
 import type { AspectRatio } from 'components/MapExport/types';
+
 import { calculateExportDimensions } from './mapDimensionsUtils';
 
 describe('calculateExportDimensions', () => {

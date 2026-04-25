@@ -1,9 +1,10 @@
+import { BoundaryLayerProps } from 'config/types';
+import { LayerDefinitions } from 'config/utils';
+import { BoundaryLayerData } from 'context/layers/boundary';
+import { Map as MaplibreMap } from 'maplibre-gl';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Map as MaplibreMap } from 'maplibre-gl';
-import { BoundaryLayerProps } from 'config/types';
-import { BoundaryLayerData } from 'context/layers/boundary';
-import { LayerDefinitions } from 'config/utils';
+
 import { boundaryCache } from './boundary-cache';
 
 export function useBoundaryData(

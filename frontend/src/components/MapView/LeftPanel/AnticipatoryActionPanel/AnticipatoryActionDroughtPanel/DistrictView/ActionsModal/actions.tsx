@@ -1,34 +1,34 @@
 /* eslint-disable react-refresh/only-export-components */
-import React from 'react';
-import {
-  MarkunreadOutlined,
-  LocalDrink,
-  School,
-  AccountTree,
-  Remove,
-  //   Diversity3 in mui 5 for social assistance
-} from '@material-ui/icons';
 import {
   faCow,
   faHandshake,
-  faMoneyBillWave,
+  faList,
   faMoneyBillTransfer,
+  faMoneyBillWave,
   faPeopleGroup,
   faPersonDigging,
   faPlateWheat,
   faSeedling,
   faSyringe,
-  faList,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   FontAwesomeIcon,
   FontAwesomeIconProps,
 } from '@fortawesome/react-fontawesome';
 import {
+  AccountTree,
+  LocalDrink,
+  MarkunreadOutlined,
+  Remove,
+  School,
+  //   Diversity3 in mui 5 for social assistance
+} from '@material-ui/icons';
+import { AAWindowKeys } from 'config/utils';
+import {
   AACategoryType,
   AAPhaseType,
 } from 'context/anticipatoryAction/AADroughtStateSlice/types';
-import { AAWindowKeys } from 'config/utils';
+import React from 'react';
 
 const IconSize = '1rem';
 

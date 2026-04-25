@@ -1,17 +1,18 @@
-import GeoJSON from 'geojson';
 import {
+  PointData,
   PointDataLayerProps,
   PointDataLoader,
-  PointData,
   PointLayerData,
 } from 'config/types';
-import { fetchEWSData } from 'utils/ews-utils';
-import { fetchACLEDIncidents } from 'utils/acled-utils';
-import { queryParamsToString } from 'utils/url-utils';
-import { fetchWithTimeout } from 'utils/fetch-with-timeout';
-import { HTTPError } from 'utils/error-utils';
 import { setUserAuthGlobal } from 'context/serverStateSlice';
+import GeoJSON from 'geojson';
+import { fetchACLEDIncidents } from 'utils/acled-utils';
 import { getFormattedDate } from 'utils/date-utils';
+import { HTTPError } from 'utils/error-utils';
+import { fetchEWSData } from 'utils/ews-utils';
+import { fetchWithTimeout } from 'utils/fetch-with-timeout';
+import { queryParamsToString } from 'utils/url-utils';
+
 import { getAdminLevelDataLayerData } from './admin_level_data';
 import type { LazyLoader } from './layer-data';
 

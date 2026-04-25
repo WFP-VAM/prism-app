@@ -1,9 +1,10 @@
 import {
   Button,
-  Typography,
   createStyles,
   makeStyles,
+  Typography,
 } from '@material-ui/core';
+import { Equalizer, Reply } from '@material-ui/icons';
 import {
   AADataSelector,
   AAFiltersSelector,
@@ -15,13 +16,13 @@ import {
   AAView,
   AnticipatoryActionDataRow,
 } from 'context/anticipatoryAction/AADroughtStateSlice/types';
+import { useSafeTranslation } from 'i18n';
 import { lightGrey } from 'muiTheme';
 import { useDispatch, useSelector } from 'react-redux';
-import { useSafeTranslation } from 'i18n';
-import { Equalizer, Reply } from '@material-ui/icons';
-import { getAAColor, getAAIcon } from '../utils';
+
 import { useAACommonStyles } from '../../utils';
 import { dateSorter } from '../DistrictView/utils';
+import { getAAColor, getAAIcon } from '../utils';
 import { timelineTransform } from './utils';
 
 interface TimelineItemProps {

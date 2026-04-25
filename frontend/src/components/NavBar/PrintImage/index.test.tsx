@@ -1,10 +1,11 @@
 import { render } from '@testing-library/react';
-import configureStore from 'redux-mock-store';
-import { Provider } from 'react-redux';
-import { TestBrowserRouter } from 'test/TestBrowserRouter';
 import { Panel } from 'config/types';
+import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import thunk from 'redux-thunk';
+import { TestBrowserRouter } from 'test/TestBrowserRouter';
+
 import Download from '.';
 
 const mockStore = configureStore([thunk]);
