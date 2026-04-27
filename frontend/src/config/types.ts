@@ -831,6 +831,7 @@ export type PanelItem = {
   children?: PanelItem[];
   reportIndex?: number;
   reportPath?: string;
+  isDraft?: boolean;
 };
 
 export enum Panel {

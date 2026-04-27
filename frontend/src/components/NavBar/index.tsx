@@ -62,6 +62,7 @@ function NavBar() {
       icon: <SpeedOutlined />,
       reportIndex: index,
       reportPath: dashboard.path || generateSlugFromTitle(dashboard.title),
+      isDraft: dashboard.isDraft,
     })),
     {
       panel: Panel.Dashboard,

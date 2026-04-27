@@ -71,6 +71,7 @@ const dashboardRowInputSchema = z.object({
   title: z.string(),
   path: z.string().optional(),
   isEditable: z.boolean().optional().default(false),
+  isDraft: z.boolean().optional(),
   firstColumn: z.array(dashboardElementSchema),
   secondColumn: z.array(dashboardElementSchema).optional(),
   thirdColumn: z.array(dashboardElementSchema).optional(),

@@ -1,8 +1,21 @@
-import { Menu, MenuItem } from '@material-ui/core';
+import { Chip, Menu, MenuItem, makeStyles } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { PanelItem, Panel } from 'config/types';
 import { selectedDashboardIndexSelector } from 'context/dashboardStateSlice';
 import { useSafeTranslation } from 'i18n';
+
+const useStyles = makeStyles(() => ({
+  menuItem: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    gap: '8px',
+  },
+  draftChip: {
+    height: 18,
+    fontSize: '0.65rem',
+    pointerEvents: 'none',
+  },
+}));
 
 function PanelMenu({
   panel,
@@ -32,6 +45,7 @@ function PanelMenu({
   };
 
   const { t } = useSafeTranslation();
+  const classes = useStyles();
 
   return (
     <Menu
@@ -51,8 +65,17 @@ function PanelMenu({
             handleMenuClose();
           }}
           selected={getIsChildSelected(child)}
+          className={classes.menuItem}
         >
           {t(child.label)}
+          {child.isDraft && (
+            <Chip
+              label="Draft"
+              size="small"
+              color="default"
+              className={classes.draftChip}
+            />
+          )}
         </MenuItem>
       ))}
     </Menu>

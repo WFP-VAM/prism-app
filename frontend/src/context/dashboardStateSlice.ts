@@ -230,10 +230,15 @@ export const dashboardStateSlice = createSlice({
   reducers: {
     setDashboards: (_state, action: PayloadAction<Dashboard[]>) =>
       createInitialState(0, action.payload),
-    setDraftDashboard: (_state, action: PayloadAction<Dashboard>) => ({
-      ...createInitialState(0, [action.payload]),
-      mode: DashboardMode.EDIT,
-    }),
+    setDraftDashboard: (state, action: PayloadAction<Dashboard>) => {
+      const draft = { ...action.payload, isDraft: true };
+      const dashboards = [...state.dashboards, draft];
+      const draftIndex = dashboards.length - 1;
+      return {
+        ...createInitialState(draftIndex, dashboards),
+        mode: DashboardMode.EDIT,
+      };
+    },
     setSelectedDashboard: (state, action: PayloadAction<number>) => {
       const dashboardIndex = action.payload;
       return createInitialState(dashboardIndex, state.dashboards);
@@ -275,10 +280,16 @@ export const dashboardStateSlice = createSlice({
         },
       };
     },
-    setTitle: (state, action: PayloadAction<string>) => ({
-      ...state,
-      title: action.payload,
-    }),
+    setTitle: (state, action: PayloadAction<string>) => {
+      const newTitle = action.payload;
+      const newPath = generateSlugFromTitle(newTitle);
+      const updatedDashboards = state.dashboards.map((d, i) =>
+        i === state.selectedDashboardIndex
+          ? { ...d, title: newTitle, path: newPath }
+          : d,
+      );
+      return { ...state, title: newTitle, dashboards: updatedDashboards };
+    },
     setMode: (state, action: PayloadAction<DashboardMode>) => ({
       ...state,
       mode: action.payload,
@@ -633,6 +644,7 @@ export const dashboardConfigSelector = (
 
   return {
     ...config,
+    title: state.dashboardState.title,
     selectedDashboardIndex: currentDashboardIndex,
     maps: state.dashboardState.mapStates,
   };
