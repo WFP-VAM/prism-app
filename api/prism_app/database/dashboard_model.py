@@ -55,7 +55,8 @@ class DashboardModel(SQLModel, table=True):
     deployment: str | None = Field(
         default=None, sa_column=Column(String, nullable=True)
     )
-    config: dict[str, Any] = Field(sa_column=Column(JSONB, nullable=False))
+    # Full dashboard file shape: a JSON array of row objects; JSONB also allows a single object for legacy.
+    config: Any = Field(sa_column=Column(JSONB, nullable=False))
     created_at: datetime.datetime = Field(
         default_factory=datetime.datetime.now,
         sa_column=Column(DateTime, nullable=False, server_default=text("now()")),
