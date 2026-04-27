@@ -19,6 +19,7 @@ from prism_app.database.alert_model import AlchemyEncoder, AlertModel
 from prism_app.database.database import DB_URI, AlertsDataBase
 from prism_app.database.user_info_model import UserInfoModel
 from prism_app.export_maps import export_maps
+from prism_app.published_dashboards import merge_published_dashboard_rows_for_country
 from prism_app.googleflood import (
     get_google_flood_dates,
     get_google_floods_gauge_forecast,
@@ -87,6 +88,35 @@ alert_db = AlertsDataBase()
 def healthcheck() -> str:
     """Verify that the server is healthy."""
     return "All good!"
+
+
+@app.get(
+    "/dashboards",
+    responses={503: {"description": "Dashboard database unavailable"}},
+    summary="Published dashboard configs (country-scoped)",
+)
+def get_published_dashboards(
+    country: str = Query(..., min_length=1, description="Country code (as stored)"),
+    status: str = Query(
+        "published",
+        description="Only published dashboards are returned; use status=published",
+    ),
+) -> list[Any]:
+    """Return merged dashboard row arrays for all published ``dashboard`` rows in this country.
+
+    The response is a single JSON array, the same top-level shape as the static
+    ``dashboards.json`` consumed by PRISM. Drafts are never included.
+    """
+    if not alert_db.active or alert_db.engine is None:
+        raise HTTPException(
+            status_code=503, detail="Dashboard data is temporarily unavailable"
+        )
+    if status != "published":
+        raise HTTPException(
+            status_code=400,
+            detail="Only status=published is supported for this endpoint",
+        )
+    return merge_published_dashboard_rows_for_country(alert_db.engine, country)
 
 
 @timed
