@@ -5,6 +5,7 @@ from prism_app.database.anticipatory_action_alerts_model import (
     AnticipatoryActionAlerts,
     AnticipatoryActionAlertType,
 )
+from prism_app.database.dashboard_model import DashboardModel, DashboardStatus
 from prism_app.database.user_info_model import UserInfoModel
 
 __all__ = [
@@ -12,5 +13,7 @@ __all__ = [
     "AlchemyEncoder",
     "AnticipatoryActionAlerts",
     "AnticipatoryActionAlertType",
+    "DashboardModel",
+    "DashboardStatus",
     "UserInfoModel",
 ]

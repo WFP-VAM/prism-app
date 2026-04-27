@@ -36,6 +36,7 @@ from prism_app.database.anticipatory_action_alerts_model import (  # noqa: F401
     AnticipatoryActionAlerts,
 )
 from prism_app.database.database import DB_URI
+from prism_app.database.dashboard_model import DashboardModel  # noqa: F401
 from prism_app.database.user_info_model import UserInfoModel  # noqa: F401
 from sqlalchemy import engine_from_config, pool
 from sqlmodel import SQLModel
