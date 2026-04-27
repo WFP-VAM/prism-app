@@ -754,6 +754,7 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'absolute',
       right: theme.spacing(1),
       top: theme.spacing(1),
+      zIndex: 10,
     },
     optionsContainer: {
       display: 'flex',
