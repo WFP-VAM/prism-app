@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react';
 import { Box, Button, Typography, makeStyles } from '@material-ui/core';
-import { DashboardPreset } from 'context/dashboardEditorSlice';
+import { DashboardPreset } from './utils';
 import { useSafeTranslation } from 'i18n';
 
 interface PresetCardProps {

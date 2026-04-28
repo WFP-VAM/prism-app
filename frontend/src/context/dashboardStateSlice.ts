@@ -213,7 +213,7 @@ const createInitialState = (
     dashboards,
     selectedDashboardIndex: dashboardIndex,
     title: dashboardConfig?.title || 'Dashboard',
-    mode: DashboardMode.VIEW,
+    mode: dashboardConfig?.isDraft ? DashboardMode.EDIT : DashboardMode.VIEW,
     columns: allColumns,
     mapStates,
     tableStates,

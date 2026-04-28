@@ -1,49 +1,74 @@
 import { Box, Button, makeStyles } from '@material-ui/core';
 import { ArrowBackOutlined } from '@material-ui/icons';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import DashboardContent from 'components/DashboardView/DashboardContent';
-import { setDraftDashboard } from 'context/dashboardStateSlice';
+import { useHistory } from 'react-router-dom';
+import {
+  setDraftDashboard,
+  dashboardsListSelector,
+} from 'context/dashboardStateSlice';
+import { DashboardElementType } from 'config/types';
 import {
   DashboardPreset,
+  SlotConfig,
+  MAX_SIDEBAR_SLOTS,
   buildDraftDashboard,
-  editorPresetSelector,
-  editorSidebarSlotsSelector,
-  editorStepSelector,
-  resetWizard,
-  selectPreset,
-  setEditorStep,
-} from 'context/dashboardEditorSlice';
+  buildDraftMeta,
+} from './utils';
 import PresetSelector from './PresetSelector';
 import SlotConfigurator from './SlotConfigurator';
 
 function CreateDashboardView() {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const step = useSelector(editorStepSelector);
-  const preset = useSelector(editorPresetSelector);
-  const sidebarSlots = useSelector(editorSidebarSlotsSelector);
+  const history = useHistory();
+  const dashboards = useSelector(dashboardsListSelector);
+  const [step, setStep] = useState<'preset-selection' | 'slot-configuration'>(
+    'preset-selection',
+  );
+  const [preset, setPreset] = useState<DashboardPreset | null>(null);
+  const [sidebarSlots, setSidebarSlots] = useState<SlotConfig[]>([]);
+
+  const launchDraft = (chosen: DashboardPreset, slots: SlotConfig[]) => {
+    const existingDraftCount = dashboards.filter(d => d.isDraft).length;
+    const meta = buildDraftMeta(existingDraftCount);
+    const draft = buildDraftDashboard(chosen, slots, meta);
+    dispatch(setDraftDashboard(draft));
+    history.push(`/dashboard/${meta.path}`);
+  };
 
   const handleSelectPreset = (chosen: DashboardPreset) => {
-    dispatch(selectPreset(chosen));
+    setPreset(chosen);
     if (chosen === 'two-maps') {
-      const draft = buildDraftDashboard(chosen, []);
-      dispatch(setDraftDashboard(draft));
-      dispatch(setEditorStep('editing'));
+      launchDraft(chosen, []);
+    } else {
+      setStep('slot-configuration');
     }
   };
 
   const handleConfirmSlots = () => {
-    if (!preset) {
-      return;
+    launchDraft(preset!, sidebarSlots);
+  };
+
+  const handleAddSlot = () => {
+    if (sidebarSlots.length < MAX_SIDEBAR_SLOTS) {
+      setSidebarSlots(prev => [...prev, { type: null }]);
     }
-    const draft = buildDraftDashboard(preset, sidebarSlots);
-    dispatch(setDraftDashboard(draft));
-    dispatch(setEditorStep('editing'));
+  };
+
+  const handleSetSlotType = (index: number, type: DashboardElementType) => {
+    setSidebarSlots(prev => prev.map((s, i) => (i === index ? { type } : s)));
+  };
+
+  const handleRemoveSlot = (index: number) => {
+    setSidebarSlots(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleBack = () => {
-    if (step === 'editing' || step === 'slot-configuration') {
-      dispatch(resetWizard());
+    if (step === 'slot-configuration') {
+      setStep('preset-selection');
+      setPreset(null);
+      setSidebarSlots([]);
     }
   };
 
@@ -66,27 +91,15 @@ function CreateDashboardView() {
         <PresetSelector onSelect={handleSelectPreset} />
       )}
 
-      {step === 'slot-configuration' && preset && preset !== 'two-maps' && (
-        <SlotConfigurator preset={preset} onConfirm={handleConfirmSlots} />
-      )}
-
-      {step === 'editing' && (
-        <Box className={classes.editorContainer}>
-          <DashboardContent
-            showTitle
-            className={classes.editLayout}
-            isEditable
-          />
-          <Box className={classes.toolbar}>
-            <Button
-              variant="outlined"
-              className={classes.exportButton}
-              disabled
-            >
-              Export JSON
-            </Button>
-          </Box>
-        </Box>
+      {step === 'slot-configuration' && preset && (
+        <SlotConfigurator
+          preset={preset}
+          slots={sidebarSlots}
+          onAddSlot={handleAddSlot}
+          onSetSlotType={handleSetSlotType}
+          onRemoveSlot={handleRemoveSlot}
+          onConfirm={handleConfirmSlots}
+        />
       )}
     </Box>
   );
@@ -110,45 +123,6 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.text.secondary,
     '& .MuiButton-startIcon': {
       color: theme.palette.text.secondary,
-    },
-  },
-  editorContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    flex: 1,
-    minHeight: 0,
-    position: 'relative',
-  },
-  editLayout: {
-    display: 'flex',
-    gap: 16,
-    flex: 1,
-  },
-  toolbar: {
-    position: 'fixed',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    background: 'white',
-    borderTop: '1px solid #E0E0E0',
-    padding: '12px 16px',
-    display: 'flex',
-    justifyContent: 'flex-end',
-    zIndex: 1400,
-  },
-  exportButton: {
-    textTransform: 'none',
-    fontWeight: 500,
-    color: theme.palette.text.secondary,
-    border: `1px solid ${theme.palette.grey[500]}`,
-    '&:hover': {
-      borderColor: theme.palette.primary.main,
-      backgroundColor: theme.palette.action.hover,
-    },
-    '&.Mui-disabled': {
-      opacity: 1,
-      color: theme.palette.text.secondary,
-      border: `1px solid ${theme.palette.grey[400]}`,
     },
   },
 }));

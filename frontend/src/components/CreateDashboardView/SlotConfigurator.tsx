@@ -12,17 +12,8 @@ import {
   NotesOutlined,
   TableChart,
 } from '@material-ui/icons';
-import { useDispatch, useSelector } from 'react-redux';
 import { DashboardElementType } from 'config/types';
-import {
-  DashboardPreset,
-  SlotConfig,
-  MAX_SIDEBAR_SLOTS,
-  addSidebarSlot,
-  setSidebarSlotType,
-  removeSidebarSlot,
-  editorSidebarSlotsSelector,
-} from 'context/dashboardEditorSlice';
+import { DashboardPreset, SlotConfig, MAX_SIDEBAR_SLOTS } from './utils';
 import { useSafeTranslation } from 'i18n';
 
 const SLOT_TYPES: {
@@ -43,11 +34,11 @@ const SLOT_TYPE_LABELS: Partial<Record<DashboardElementType, string>> = {
 
 interface SlotCardProps {
   slot: SlotConfig;
-  index: number;
+  onSetType: (type: DashboardElementType) => void;
+  onRemove: () => void;
 }
 
-function SlotCard({ slot, index }: SlotCardProps) {
-  const dispatch = useDispatch();
+function SlotCard({ slot, onSetType, onRemove }: SlotCardProps) {
   const classes = useStyles();
 
   return (
@@ -65,7 +56,7 @@ function SlotCard({ slot, index }: SlotCardProps) {
                 size="medium"
                 className={classes.typeButton}
                 startIcon={<Icon className={classes.typeButtonIcon} />}
-                onClick={() => dispatch(setSidebarSlotType({ index, type }))}
+                onClick={() => onSetType(type)}
               >
                 {label}
               </Button>
@@ -77,11 +68,7 @@ function SlotCard({ slot, index }: SlotCardProps) {
           <Typography className={classes.slotTypeLabel}>
             {SLOT_TYPE_LABELS[slot.type]}
           </Typography>
-          <IconButton
-            size="small"
-            onClick={() => dispatch(removeSidebarSlot(index))}
-            aria-label="Remove block"
-          >
+          <IconButton size="small" onClick={onRemove} aria-label="Remove block">
             <CloseOutlined fontSize="small" />
           </IconButton>
         </Box>
@@ -92,13 +79,22 @@ function SlotCard({ slot, index }: SlotCardProps) {
 
 interface SlotConfiguratorProps {
   preset: DashboardPreset;
+  slots: SlotConfig[];
+  onAddSlot: () => void;
+  onSetSlotType: (index: number, type: DashboardElementType) => void;
+  onRemoveSlot: (index: number) => void;
   onConfirm: () => void;
 }
 
-function SlotConfigurator({ preset, onConfirm }: SlotConfiguratorProps) {
+function SlotConfigurator({
+  preset,
+  slots,
+  onAddSlot,
+  onSetSlotType,
+  onRemoveSlot,
+  onConfirm,
+}: SlotConfiguratorProps) {
   const classes = useStyles();
-  const dispatch = useDispatch();
-  const slots = useSelector(editorSidebarSlotsSelector);
   const { t } = useSafeTranslation();
   const mapIsLeft = preset === 'map-left';
   const canAddSlot = slots.length < MAX_SIDEBAR_SLOTS;
@@ -111,14 +107,19 @@ function SlotConfigurator({ preset, onConfirm }: SlotConfiguratorProps) {
       </Box>
       <Box className={classes.sidebarBody}>
         {slots.map((slot, i) => (
-          <SlotCard key={i} slot={slot} index={i} />
+          <SlotCard
+            key={i}
+            slot={slot}
+            onSetType={type => onSetSlotType(i, type)}
+            onRemove={() => onRemoveSlot(i)}
+          />
         ))}
         {canAddSlot && (
           <Button
             variant="outlined"
             color="primary"
             startIcon={<AddOutlined />}
-            onClick={() => dispatch(addSidebarSlot())}
+            onClick={onAddSlot}
             className={classes.addButton}
             size="small"
           >
