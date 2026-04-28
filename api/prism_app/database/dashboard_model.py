@@ -5,7 +5,16 @@ import uuid
 from enum import Enum
 from typing import Any
 
-from sqlalchemy import Column, DateTime, Index, String, UniqueConstraint, text
+from sqlalchemy import (
+    Boolean,
+    CheckConstraint,
+    Column,
+    DateTime,
+    Index,
+    String,
+    UniqueConstraint,
+    text,
+)
 from sqlalchemy.dialects.postgresql import ENUM as PG_ENUM
 from sqlalchemy.dialects.postgresql import JSONB, UUID as PG_UUID
 from sqlmodel import Field, SQLModel
@@ -16,6 +25,41 @@ class DashboardStatus(str, Enum):
 
     draft = "draft"
     published = "published"
+
+
+# Source of truth: frontend/src/config/index.ts -> `configMap` keys.
+ALLOWED_DASHBOARD_DEPLOYMENTS = (
+    "afghanistan",
+    "bhutan",
+    "cambodia",
+    "cameroon",
+    "colombia",
+    "cuba",
+    "ecuador",
+    "global",
+    "haiti",
+    "indonesia",
+    "jordan",
+    "kyrgyzstan",
+    "malawi",
+    "mongolia",
+    "mozambique",
+    "myanmar",
+    "namibia",
+    "nepal",
+    "nigeria",
+    "rbd",
+    "sierraleone",
+    "somalia",
+    "southsudan",
+    "srilanka",
+    "sudan",
+    "tajikistan",
+    "tanzania",
+    "ukraine",
+    "zambia",
+    "zimbabwe",
+)
 
 
 _dashboard_status_enum = PG_ENUM(
@@ -31,19 +75,28 @@ class DashboardModel(SQLModel, table=True):
 
     __tablename__ = "dashboard"
     __table_args__ = (
-        UniqueConstraint("country", "name", name="uq_dashboard_country_name"),
-        UniqueConstraint("country", "slug", name="uq_dashboard_country_slug"),
-        Index("ix_dashboard_country_status", "country", "status"),
+        UniqueConstraint("deployment", "title", name="uq_dashboard_deployment_title"),
+        UniqueConstraint("deployment", "slug", name="uq_dashboard_deployment_slug"),
+        Index("ix_dashboard_deployment_status", "deployment", "status"),
         Index("ix_dashboard_deployment", "deployment"),
+        CheckConstraint(
+            "deployment IS NULL OR deployment = ANY (ARRAY["
+            + ", ".join(f"'{value}'" for value in ALLOWED_DASHBOARD_DEPLOYMENTS)
+            + "])",
+            name="ck_dashboard_deployment_allowed_values",
+        ),
     )
 
     id: uuid.UUID = Field(
         default_factory=uuid.uuid4,
         sa_column=Column(PG_UUID(as_uuid=True), primary_key=True, nullable=False),
     )
-    country: str = Field(sa_column=Column(String, nullable=False))
-    name: str = Field(sa_column=Column(String, nullable=False))
+    title: str = Field(sa_column=Column(String, nullable=False))
     slug: str = Field(sa_column=Column(String, nullable=False))
+    is_editable: bool = Field(
+        default=False,
+        sa_column=Column(Boolean, nullable=False, server_default=text("false")),
+    )
     status: DashboardStatus = Field(
         default=DashboardStatus.draft,
         sa_column=Column(
