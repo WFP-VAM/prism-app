@@ -25,4 +25,3 @@ def test_omit_none_keys_removes_nested_null_object_fields() -> None:
     assert "threshold" not in second_col[0]
     assert "adminUnitId" not in second_col[1]
     assert second_col[1]["layerId"] == "x"
-

@@ -74,7 +74,12 @@ class DashboardTableConfig(BaseModel):
 
 
 DashboardElement = Annotated[
-    Union[DashboardMapConfig, DashboardChartConfig, DashboardTextConfig, DashboardTableConfig],
+    Union[
+        DashboardMapConfig,
+        DashboardChartConfig,
+        DashboardTextConfig,
+        DashboardTableConfig,
+    ],
     Field(discriminator="type"),
 ]
 
@@ -88,7 +93,9 @@ class DashboardConfigPayload(BaseModel):
     thirdColumn: list[DashboardElement] = Field(default_factory=list)
 
 
-_config_adapter: TypeAdapter[DashboardConfigPayload] = TypeAdapter(DashboardConfigPayload)
+_config_adapter: TypeAdapter[DashboardConfigPayload] = TypeAdapter(
+    DashboardConfigPayload
+)
 
 
 def _validate_config_dict(obj: Any) -> dict[str, Any]:

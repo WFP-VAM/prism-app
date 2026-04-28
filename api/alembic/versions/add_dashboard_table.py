@@ -17,9 +17,7 @@ depends_on = None
 
 
 def upgrade() -> None:
-    op.execute(
-        "CREATE TYPE dashboard_status_enum AS ENUM ('draft', 'published')"
-    )
+    op.execute("CREATE TYPE dashboard_status_enum AS ENUM ('draft', 'published')")
     status_type = postgresql.ENUM(
         "draft",
         "published",
@@ -65,7 +63,9 @@ def upgrade() -> None:
         sa.Column("created_by", sa.String(), nullable=True),
         sa.Column("updated_by", sa.String(), nullable=True),
         sa.PrimaryKeyConstraint("id"),
-        sa.UniqueConstraint("deployment", "title", name="uq_dashboard_deployment_title"),
+        sa.UniqueConstraint(
+            "deployment", "title", name="uq_dashboard_deployment_title"
+        ),
         sa.UniqueConstraint("deployment", "slug", name="uq_dashboard_deployment_slug"),
         # Source of values: frontend/src/config/index.ts -> `configMap` keys.
         sa.CheckConstraint(

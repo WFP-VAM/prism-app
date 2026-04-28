@@ -3,17 +3,16 @@
 import json
 from typing import Any, cast
 
-from starlette.requests import Request
-from starlette_admin.contrib.sqla import ModelView
-from starlette_admin.exceptions import FormValidationError
-from starlette_admin.fields import EnumField
-
 from prism_app.dashboard_config_validation import validate_and_dump_dashboard_config
 from prism_app.dashboard_slug import slugify_dashboard_name
 from prism_app.database.dashboard_model import (
     ALLOWED_DASHBOARD_DEPLOYMENTS,
     DashboardModel,
 )
+from starlette.requests import Request
+from starlette_admin.contrib.sqla import ModelView
+from starlette_admin.exceptions import FormValidationError
+from starlette_admin.fields import EnumField
 
 
 class DashboardAdminView(ModelView):

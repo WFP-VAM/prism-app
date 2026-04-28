@@ -31,9 +31,7 @@ def test_get_dashboards_rejects_non_published_status():
         mock_db.active = True
         mock_db.engine = object()
         with patch("prism_app.main.merge_published_dashboard_rows_for_country") as m:
-            r = client.get(
-                "/dashboards", params={"country": "moz", "status": "draft"}
-            )
+            r = client.get("/dashboards", params={"country": "moz", "status": "draft"})
     assert r.status_code == 400
     m.assert_not_called()
 

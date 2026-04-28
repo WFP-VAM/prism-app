@@ -4,20 +4,20 @@ import json
 from pathlib import Path
 
 import pytest
-
-from pydantic import ValidationError
-
 from prism_app.dashboard_config_validation import (
     DashboardConfigPayload,
     format_dashboard_config_validation_message,
     validate_and_dump_dashboard_config,
 )
+from pydantic import ValidationError
 
 
 def _sample_list() -> list[dict]:
     repo = Path(__file__).resolve().parents[3]
     raw = json.loads(
-        (repo / "frontend" / "test" / "fixtures" / "dashboard-config.sample.json").read_text()
+        (
+            repo / "frontend" / "test" / "fixtures" / "dashboard-config.sample.json"
+        ).read_text()
     )
     assert isinstance(raw, list) and len(raw) >= 1
     return raw

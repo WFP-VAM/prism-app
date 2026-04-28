@@ -19,7 +19,6 @@ from prism_app.database.alert_model import AlchemyEncoder, AlertModel
 from prism_app.database.database import DB_URI, AlertsDataBase
 from prism_app.database.user_info_model import UserInfoModel
 from prism_app.export_maps import export_maps
-from prism_app.published_dashboards import merge_published_dashboard_rows_for_country
 from prism_app.googleflood import (
     get_google_flood_dates,
     get_google_floods_gauge_forecast,
@@ -29,6 +28,7 @@ from prism_app.googleflood import (
 from prism_app.hdc import get_hdc_stats
 from prism_app.kobo import get_form_dates, get_form_responses, parse_datetime_params
 from prism_app.models import AcledRequest, MapExportRequestModel, RasterGeotiffModel
+from prism_app.published_dashboards import merge_published_dashboard_rows_for_country
 from prism_app.report import download_report
 from prism_app.timer import timed
 from prism_app.utils import extract_dates_from_urls

@@ -4,21 +4,18 @@ from __future__ import annotations
 
 from typing import Any
 
+from prism_app.database.dashboard_model import DashboardModel, DashboardStatus
 from sqlalchemy import select
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
 from sqlmodel import col
-
-from prism_app.database.dashboard_model import DashboardModel, DashboardStatus
 
 
 def _omit_none_keys(value: Any) -> Any:
     """Recursively drop dict keys with None values (keep list positions intact)."""
     if isinstance(value, dict):
         return {
-            key: _omit_none_keys(val)
-            for key, val in value.items()
-            if val is not None
+            key: _omit_none_keys(val) for key, val in value.items() if val is not None
         }
     if isinstance(value, list):
         return [_omit_none_keys(item) for item in value]
