@@ -93,16 +93,20 @@ def healthcheck() -> str:
 @app.get(
     "/dashboards",
     responses={503: {"description": "Dashboard database unavailable"}},
-    summary="Published dashboard configs (country-scoped)",
+    summary="Published dashboard configs (deployment-scoped)",
 )
 def get_published_dashboards(
-    country: str = Query(..., min_length=1, description="Country code (as stored)"),
+    country: str = Query(
+        ...,
+        min_length=1,
+        description="Deployment key (frontend configMap key; query param kept as `country`)",
+    ),
     status: str = Query(
         "published",
         description="Only published dashboards are returned; use status=published",
     ),
 ) -> list[Any]:
-    """Return merged dashboard row arrays for all published ``dashboard`` rows in this country.
+    """Return merged dashboard rows for all published ``dashboard`` rows in this deployment.
 
     The response is a single JSON array, the same top-level shape as the static
     ``dashboards.json`` consumed by PRISM. Drafts are never included.

@@ -29,9 +29,9 @@ def merge_published_dashboard_rows_for_country(
     engine: Engine, country: str
 ) -> list[Any]:
     """
-    Return the combined top-level ``dashboard.json`` array for a country.
+    Return the combined top-level ``dashboard.json`` array for a deployment.
 
-    Merges each published row's ``config`` in ``name`` order. Each row's
+    Merges each published row's ``config`` in ``title`` order. Each row's
     ``config`` is a JSON list of dashboard row objects, or a single object for
     legacy rows.
     """
@@ -40,9 +40,9 @@ def merge_published_dashboard_rows_for_country(
         orm_rows = list(
             session.scalars(
                 select(DashboardModel)
-                .where(col(DashboardModel.country) == country)
+                .where(col(DashboardModel.deployment) == country)
                 .where(col(DashboardModel.status) == DashboardStatus.published)
-                .order_by(col(DashboardModel.name))
+                .order_by(col(DashboardModel.title))
             ).all()
         )
     merged: list[Any] = []
