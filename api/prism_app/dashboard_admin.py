@@ -26,17 +26,16 @@ class DashboardAdminView(ModelView):
 
     label = "Dashboards"
     fields = [
-        "id",
         "title",
-        "slug",
-        "is_editable",
-        "status",
         EnumField(
             "deployment",
             required=False,
             choices=[("", "None")]
             + [(value, value) for value in ALLOWED_DASHBOARD_DEPLOYMENTS],
         ),
+        "status",
+        "is_editable",
+        "slug",
         "config",
         "created_at",
         "updated_at",
