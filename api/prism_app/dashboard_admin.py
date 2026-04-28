@@ -6,6 +6,7 @@ from typing import Any, cast
 from starlette.requests import Request
 from starlette_admin.contrib.sqla import ModelView
 from starlette_admin.exceptions import FormValidationError
+from starlette_admin.fields import EnumField
 
 from prism_app.dashboard_config_validation import validate_and_dump_dashboard_config
 from prism_app.dashboard_slug import slugify_dashboard_name
@@ -24,6 +25,24 @@ class DashboardAdminView(ModelView):
     """
 
     label = "Dashboards"
+    fields = [
+        "id",
+        "title",
+        "slug",
+        "is_editable",
+        "status",
+        EnumField(
+            "deployment",
+            required=False,
+            choices=[("", "None")]
+            + [(value, value) for value in ALLOWED_DASHBOARD_DEPLOYMENTS],
+        ),
+        "config",
+        "created_at",
+        "updated_at",
+        "created_by",
+        "updated_by",
+    ]
     exclude_fields_from_list = ("config",)
     exclude_fields_from_create = (
         "id",

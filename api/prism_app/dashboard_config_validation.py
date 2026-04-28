@@ -1,12 +1,10 @@
-"""Validate dashboard JSON for storage (same top-level array shape as static dashboard.json)."""
+"""Validate dashboard layout JSON stored in dashboard.config."""
 
 from __future__ import annotations
 
 from typing import Annotated, Any, Literal, Union
 
 from pydantic import BaseModel, ConfigDict, Field, TypeAdapter, ValidationError
-
-from prism_app.dashboard_slug import slugify_dashboard_name
 
 AggregationStat = Literal["max", "mean", "median", "min", "sum", "intersect_percentage"]
 ChartHeight = Literal["tall", "medium", "short"]
@@ -82,61 +80,38 @@ DashboardElement = Annotated[
 
 
 class DashboardConfigPayload(BaseModel):
-    """One object from the top-level `dashboard.json` array."""
+    """Dashboard layout payload stored in ``dashboard.config``."""
 
     model_config = ConfigDict(extra="forbid")
-
-    title: str
-    path: str | None = None
-    isEditable: bool = False
     firstColumn: list[DashboardElement]
     secondColumn: list[DashboardElement] = Field(default_factory=list)
     thirdColumn: list[DashboardElement] = Field(default_factory=list)
 
 
-_row_adapter: TypeAdapter[DashboardConfigPayload] = TypeAdapter(DashboardConfigPayload)
+_config_adapter: TypeAdapter[DashboardConfigPayload] = TypeAdapter(DashboardConfigPayload)
 
 
-def _apply_default_path(dumped: dict[str, Any]) -> None:
-    path_val = (dumped.get("path") or "").strip() if isinstance(dumped.get("path"), str) else ""
-    if not path_val:
-        dumped["path"] = slugify_dashboard_name(dumped["title"])
-
-
-def _validate_one_row_dict(obj: Any, row_index: int | None = None) -> dict[str, Any]:
+def _validate_config_dict(obj: Any) -> dict[str, Any]:
     if not isinstance(obj, dict):
-        raise ValueError("Each dashboard in the array must be a JSON object.")
+        raise ValueError("Dashboard config must be a JSON object.")
     try:
-        row = _row_adapter.validate_python(obj)
+        config = _config_adapter.validate_python(obj)
     except ValidationError as e:
-        raise ValueError(
-            format_dashboard_config_validation_message(e, row_index=row_index)
-        ) from e
+        raise ValueError(format_dashboard_config_validation_message(e)) from e
     # Keep output shape aligned with frontend Zod optional fields:
     # omit unset/None values instead of emitting explicit JSON nulls.
-    out = row.model_dump(mode="json", exclude_none=True)
-    _apply_default_path(out)
-    return out
+    return config.model_dump(mode="json", exclude_none=True)
 
 
-def validate_and_dump_dashboard_config(raw: Any) -> list[dict[str, Any]]:
+def validate_and_dump_dashboard_config(raw: Any) -> dict[str, Any]:
     """
-    Validate the same top-level shape as the frontend: a JSON array of dashboard rows, or
-    a single object (wrapped as a one-element list for storage consistency).
-
-    Returns a list of row dicts suitable for JSONB (matches ``dashboard.json`` on disk).
+    Validate dashboard layout JSON for the ``dashboard.config`` column.
+    Only the dashboard columns are persisted in config; model fields such as
+    title, deployment, and is_editable are validated separately.
     """
     if raw is None:
         raise ValueError("Dashboard configuration is required.")
-    if isinstance(raw, list):
-        if len(raw) == 0:
-            raise ValueError("Dashboard configuration must contain at least one dashboard.")
-        return [
-            _validate_one_row_dict(item, row_index=i) for i, item in enumerate(raw)
-        ]
-    if isinstance(raw, dict):
-        return [_validate_one_row_dict(raw, row_index=0)]
-    raise ValueError("Dashboard config must be a JSON object or a non-empty JSON array.")
+    return _validate_config_dict(raw)
 
 
 def _error_location_phrase(loc: tuple[Any, ...]) -> str:
@@ -147,12 +122,11 @@ def _error_location_phrase(loc: tuple[Any, ...]) -> str:
 
 
 def format_dashboard_config_validation_message(
-    exc: ValidationError, row_index: int | None = None
+    exc: ValidationError,
 ) -> str:
     """
     One-line, end-user-friendly summary. Omits Pydantic URLs and long internal messages.
-    If ``row_index`` is set (when validating a row inside a top-level array), it is
-    prepended to each location (e.g. ``0.isEditabledd``).
+    Reports failing field locations (e.g. ``firstColumn.0.type``).
     """
     errors = list(exc.errors())
     n = len(errors)
@@ -166,8 +140,6 @@ def format_dashboard_config_validation_message(
         if not isinstance(loc, tuple):
             loc = (loc,) if loc is not None else ()
         phrase = _error_location_phrase(loc)
-        if row_index is not None:
-            phrase = f"{row_index}.{phrase}" if phrase != "root" else str(row_index)
         parts.append(f"'{phrase}'")
     out = f"{head}: {', '.join(parts)}"
     if n > max_show:

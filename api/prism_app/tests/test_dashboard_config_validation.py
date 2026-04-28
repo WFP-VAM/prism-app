@@ -1,4 +1,4 @@
-"""Unit tests for dashboard JSON validation (admin ingest)."""
+"""Unit tests for dashboard layout JSON validation (admin ingest)."""
 
 import json
 from pathlib import Path
@@ -28,37 +28,32 @@ def _sample_one_row() -> dict:
     return rows[0]
 
 
-def test_validate_single_object_as_one_item_list() -> None:
+def _sample_config_only() -> dict:
     row = _sample_one_row()
-    out = validate_and_dump_dashboard_config(row)
-    assert len(out) == 1
-    assert out[0]["title"] == row["title"]
-    assert "path" in out[0] and out[0]["path"]
+    return {
+        "firstColumn": row["firstColumn"],
+        "secondColumn": row.get("secondColumn", []),
+        "thirdColumn": row.get("thirdColumn", []),
+    }
 
 
-def test_validate_one_element_array() -> None:
-    row = _sample_one_row()
-    out = validate_and_dump_dashboard_config([row])
-    assert len(out) == 1
-    assert out[0]["title"] == row["title"]
+def test_validate_single_config_object() -> None:
+    config = _sample_config_only()
+    out = validate_and_dump_dashboard_config(config)
+    assert len(out["firstColumn"]) == len(config["firstColumn"])
+    assert len(out["secondColumn"]) == len(config["secondColumn"])
+    assert len(out["thirdColumn"]) == len(config["thirdColumn"])
+    assert out["firstColumn"][0]["type"] == config["firstColumn"][0]["type"]
+    assert out["secondColumn"][0]["type"] == config["secondColumn"][0]["type"]
 
 
-def test_validate_full_multidashboard_file() -> None:
-    full = _sample_list()
-    out = validate_and_dump_dashboard_config(full)
-    assert len(out) == len(full) == 3
-    for i, row in enumerate(out):
-        assert row["title"] == full[i]["title"]
-        assert "path" in row and row["path"]
-
-
-def test_reject_empty_array() -> None:
-    with pytest.raises(ValueError, match="at least one"):
-        validate_and_dump_dashboard_config([])
+def test_reject_array_config_payload() -> None:
+    with pytest.raises(ValueError, match="JSON object"):
+        validate_and_dump_dashboard_config([_sample_config_only()])
 
 
 def test_reject_primitives() -> None:
-    with pytest.raises(ValueError, match="JSON object or a non-empty"):
+    with pytest.raises(ValueError, match="JSON object"):
         validate_and_dump_dashboard_config("string")
     with pytest.raises(ValueError):
         validate_and_dump_dashboard_config(None)
@@ -68,7 +63,6 @@ def test_format_validation_message_brief_no_pydantic_url() -> None:
     try:
         DashboardConfigPayload.model_validate(
             {
-                "title": "Test",
                 "firstColumn": [{"type": "MAP", "preSelectedMapLayers": []}],
                 "pathdf": "rainfall-anomaly-2024-2025-rainy-season",
             }
@@ -85,20 +79,19 @@ def test_format_validation_message_brief_no_pydantic_url() -> None:
 
 
 def test_extra_field_in_row_raises_valueerror_with_brief_message() -> None:
-    row = _sample_one_row()
+    row = _sample_config_only()
     row = {**row, "isEditabledd": True}
     with pytest.raises(ValueError) as exc_info:
-        validate_and_dump_dashboard_config([row])
+        validate_and_dump_dashboard_config(row)
     msg = str(exc_info.value)
     assert "errors.pydantic.dev" not in msg
     assert "Extra inputs are not permitted" not in msg
     assert "for dashboard config" in msg
-    assert "0.isEditabledd" in msg
+    assert "isEditabledd" in msg
 
 
 def test_dump_excludes_null_optional_fields_for_frontend_parity() -> None:
     row = {
-        "title": "Parity Test",
         "firstColumn": [{"type": "TEXT", "content": "ok"}],
         "secondColumn": [
             {
@@ -118,7 +111,7 @@ def test_dump_excludes_null_optional_fields_for_frontend_parity() -> None:
         ],
     }
 
-    out = validate_and_dump_dashboard_config([row])
-    second_col = out[0]["secondColumn"]
+    out = validate_and_dump_dashboard_config(row)
+    second_col = out["secondColumn"]
     assert "threshold" not in second_col[0]
     assert "adminUnitId" not in second_col[1]

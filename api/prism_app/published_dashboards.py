@@ -50,6 +50,18 @@ def merge_published_dashboard_rows_for_country(
         cfg = _omit_none_keys(row.config)
         if isinstance(cfg, list):
             merged.extend(cfg)
-        else:
-            merged.append(cfg)
+            continue
+
+        if isinstance(cfg, dict):
+            merged.append(
+                {
+                    "title": row.title,
+                    "isEditable": row.is_editable,
+                    "path": row.slug,
+                    **cfg,
+                }
+            )
+            continue
+
+        merged.append(cfg)
     return merged
