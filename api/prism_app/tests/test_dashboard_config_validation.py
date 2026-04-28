@@ -94,3 +94,31 @@ def test_extra_field_in_row_raises_valueerror_with_brief_message() -> None:
     assert "Extra inputs are not permitted" not in msg
     assert "for dashboard config" in msg
     assert "0.isEditabledd" in msg
+
+
+def test_dump_excludes_null_optional_fields_for_frontend_parity() -> None:
+    row = {
+        "title": "Parity Test",
+        "firstColumn": [{"type": "TEXT", "content": "ok"}],
+        "secondColumn": [
+            {
+                "type": "TABLE",
+                "startDate": "2026-01-01",
+                "hazardLayerId": "hazard_layer",
+                "baselineLayerId": "baseline_layer",
+                "stat": "mean",
+                "threshold": None,
+            },
+            {
+                "type": "CHART",
+                "startDate": "2026-01-01",
+                "layerId": "some_layer",
+                "adminUnitId": None,
+            },
+        ],
+    }
+
+    out = validate_and_dump_dashboard_config([row])
+    second_col = out[0]["secondColumn"]
+    assert "threshold" not in second_col[0]
+    assert "adminUnitId" not in second_col[1]

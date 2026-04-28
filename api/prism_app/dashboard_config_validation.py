@@ -112,7 +112,9 @@ def _validate_one_row_dict(obj: Any, row_index: int | None = None) -> dict[str, 
         raise ValueError(
             format_dashboard_config_validation_message(e, row_index=row_index)
         ) from e
-    out = row.model_dump(mode="json")
+    # Keep output shape aligned with frontend Zod optional fields:
+    # omit unset/None values instead of emitting explicit JSON nulls.
+    out = row.model_dump(mode="json", exclude_none=True)
     _apply_default_path(out)
     return out
 
