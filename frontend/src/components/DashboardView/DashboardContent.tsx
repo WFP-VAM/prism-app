@@ -1,12 +1,20 @@
 import {
   Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
   FormControlLabel,
+  IconButton,
+  MenuItem,
+  Select,
   Switch,
   Typography,
   makeStyles,
-  Button,
 } from '@material-ui/core';
-import { Edit } from '@material-ui/icons';
+import { Close, Edit } from '@material-ui/icons';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSafeTranslation } from 'i18n';
 import {
@@ -17,6 +25,8 @@ import {
   setTitle,
   toggleMapSync,
   dashboardSyncEnabledSelector,
+  setElementType,
+  removeElement,
 } from '../../context/dashboardStateSlice';
 import {
   DashboardMode,
@@ -87,6 +97,52 @@ function DashboardContent({
   const dispatch = useDispatch();
   const syncEnabled = useSelector(dashboardSyncEnabledSelector);
 
+  type PendingAction =
+    | { kind: 'remove'; columnIndex: number; elementIndex: number }
+    | {
+        kind: 'changeType';
+        columnIndex: number;
+        elementIndex: number;
+        newType: DashboardElementType;
+      };
+
+  const [pendingAction, setPendingAction] = useState<PendingAction | null>(
+    null,
+  );
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const stagePendingAction = (action: PendingAction) => {
+    setPendingAction(action);
+    setDialogOpen(true);
+  };
+
+  const cancelPendingAction = () => {
+    setDialogOpen(false);
+  };
+
+  const confirmPendingAction = () => {
+    if (!pendingAction) {
+      return;
+    }
+    if (pendingAction.kind === 'remove') {
+      dispatch(
+        removeElement({
+          columnIndex: pendingAction.columnIndex,
+          elementIndex: pendingAction.elementIndex,
+        }),
+      );
+    } else {
+      dispatch(
+        setElementType({
+          columnIndex: pendingAction.columnIndex,
+          elementIndex: pendingAction.elementIndex,
+          newType: pendingAction.newType,
+        }),
+      );
+    }
+    setDialogOpen(false);
+  };
+
   // Column Height Management - extracted to custom hook
   const { componentHeights, columnRefs, componentRefs, recalculationCount } =
     useColumnHeightManagement({
@@ -94,6 +150,56 @@ function DashboardContent({
       exportConfig,
       columns,
     });
+
+  const BLOCK_TYPE_OPTIONS = [
+    { value: DashboardElementType.TEXT, label: t('Text') },
+    { value: DashboardElementType.CHART, label: t('Chart') },
+    { value: DashboardElementType.TABLE, label: t('Table') },
+  ];
+
+  const renderBlockTypeSelector = (
+    currentType: DashboardElementType,
+    columnIndex: number,
+    elementIndex: number,
+  ) => (
+    <Box className={classes.blockTypeRow}>
+      <Typography variant="h3" className={classes.blockLabel}>
+        {t(`Block #${elementIndex + 1}`)}
+      </Typography>
+      <Select
+        value={currentType}
+        onChange={e => {
+          const newType = e.target.value as DashboardElementType;
+          if (newType !== currentType) {
+            stagePendingAction({
+              kind: 'changeType',
+              columnIndex,
+              elementIndex,
+              newType,
+            });
+          }
+        }}
+        className={classes.blockTypeSelect}
+        disableUnderline
+        variant="outlined"
+      >
+        {BLOCK_TYPE_OPTIONS.map(opt => (
+          <MenuItem key={opt.value} value={opt.value}>
+            {opt.label}
+          </MenuItem>
+        ))}
+      </Select>
+      <IconButton
+        size="small"
+        onClick={() =>
+          stagePendingAction({ kind: 'remove', columnIndex, elementIndex })
+        }
+        className={classes.removeBlockButton}
+      >
+        <Close fontSize="small" />
+      </IconButton>
+    </Box>
+  );
 
   const renderElement = (
     element: DashboardElements,
@@ -174,6 +280,15 @@ function DashboardContent({
               content={element.content || ''}
               columnIndex={columnIndex}
               elementIndex={elementIndex}
+              headerSlot={
+                mode === DashboardMode.EDIT
+                  ? renderBlockTypeSelector(
+                      element.type,
+                      columnIndex,
+                      elementIndex,
+                    )
+                  : undefined
+              }
             />
           </div>
         );
@@ -198,6 +313,15 @@ function DashboardContent({
               addResultToMap={element.addResultToMap}
               sortColumn={element.sortColumn}
               sortOrder={element.sortOrder}
+              headerSlot={
+                mode === DashboardMode.EDIT
+                  ? renderBlockTypeSelector(
+                      element.type,
+                      columnIndex,
+                      elementIndex,
+                    )
+                  : undefined
+              }
             />
           </div>
         );
@@ -224,6 +348,15 @@ function DashboardContent({
               allowDownload={!exportConfig}
               isOverflowing={heightConfig?.overflow === 'auto'}
               recalculationCount={recalculationCount}
+              headerSlot={
+                mode === DashboardMode.EDIT
+                  ? renderBlockTypeSelector(
+                      element.type,
+                      columnIndex,
+                      elementIndex,
+                    )
+                  : undefined
+              }
             />
           </div>
         );
@@ -234,143 +367,172 @@ function DashboardContent({
   };
 
   return (
-    <Box className={classes.root}>
-      <Box
-        className={className || classes.layout}
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        {showTitle && (
-          <Box
-            className={
-              mode === DashboardMode.EDIT
-                ? classes.titleSectionEdit
-                : classes.titleSection
-            }
-          >
-            {mode !== DashboardMode.EDIT ? (
-              <>
-                {logoConfig?.visible && getImageUrl(logo) && (
-                  <img
-                    className={classes.logo}
-                    style={{
-                      height: logoHeight,
-                    }}
-                    src={getImageUrl(logo)}
-                    alt="logo"
-                  />
-                )}
-                <Typography
-                  variant="h2"
-                  component="h1"
-                  className={classes.title}
-                >
-                  {t(dashboardTitle || 'Untitled Dashboard')}
-                </Typography>
-                {mode === DashboardMode.VIEW && (
-                  <Box className={classes.titleActions}>
-                    {isEditable && onEditClick && (
-                      <Button
-                        color="primary"
-                        variant="outlined"
-                        disableElevation
-                        startIcon={<Edit />}
-                        onClick={onEditClick}
-                        size="medium"
-                      >
-                        {t('Edit')}
-                      </Button>
-                    )}
-                  </Box>
-                )}
-              </>
-            ) : (
-              <Box className={classes.grayCard}>
-                <label className={classes.titleBarLabel}>
+    <>
+      <Box className={classes.root}>
+        <Box
+          className={className || classes.layout}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          {showTitle && (
+            <Box
+              className={
+                mode === DashboardMode.EDIT
+                  ? classes.titleSectionEdit
+                  : classes.titleSection
+              }
+            >
+              {mode !== DashboardMode.EDIT ? (
+                <>
+                  {logoConfig?.visible && getImageUrl(logo) && (
+                    <img
+                      className={classes.logo}
+                      style={{
+                        height: logoHeight,
+                      }}
+                      src={getImageUrl(logo)}
+                      alt="logo"
+                    />
+                  )}
                   <Typography
                     variant="h2"
-                    component="span"
-                    className={classes.titleBarTypography}
+                    component="h1"
+                    className={classes.title}
                   >
-                    {t('Dashboard title')}
+                    {t(dashboardTitle || 'Untitled Dashboard')}
                   </Typography>
-                  <input
-                    type="text"
-                    className={classes.titleBarInput}
-                    placeholder={t('Enter dashboard title')}
-                    value={dashboardTitle}
-                    onChange={e => dispatch(setTitle(e.target.value))}
-                    name="dashboard-title"
-                  />
-                </label>
-              </Box>
-            )}
-            {mode === DashboardMode.EDIT && mapElements.length > 1 && (
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={syncEnabled}
-                    onChange={() => dispatch(toggleMapSync())}
-                    color="primary"
-                    size="medium"
-                  />
-                }
-                label={t('Sync maps')}
-                className={classes.syncToggle}
-              />
-            )}
-          </Box>
-        )}
-        {columns.length > 0 && (
-          <Box
-            className={
-              mode !== DashboardMode.EDIT
-                ? classes.dynamicColumnPreviewLayout
-                : classes.dynamicColumnLayout
-            }
-          >
-            {columns.map((column, columnIndex) => {
-              const hasMapElements = column.some(
-                el => el.type === DashboardElementType.MAP,
-              );
-              const columnClass = hasMapElements
-                ? classes.mapColumn
-                : classes.contentColumn;
-
-              return (
-                <Box
-                  key={`column-${columnIndex}`}
-                  className={columnClass}
-                  component="div"
-                >
-                  <div
-                    ref={(el: HTMLDivElement | null) => {
-                      if (el) {
-                        columnRefs.current.set(columnIndex, el);
-                      } else {
-                        columnRefs.current.delete(columnIndex);
-                      }
-                    }}
-                    style={{
-                      height: '100%',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: 16,
-                    }}
-                  >
-                    {column.map((element, elementIndex) =>
-                      renderElement(element, columnIndex, elementIndex),
-                    )}
-                  </div>
+                  {mode === DashboardMode.VIEW && (
+                    <Box className={classes.titleActions}>
+                      {isEditable && onEditClick && (
+                        <Button
+                          color="primary"
+                          variant="outlined"
+                          disableElevation
+                          startIcon={<Edit />}
+                          onClick={onEditClick}
+                          size="medium"
+                        >
+                          {t('Edit')}
+                        </Button>
+                      )}
+                    </Box>
+                  )}
+                </>
+              ) : (
+                <Box className={classes.grayCard}>
+                  <label className={classes.titleBarLabel}>
+                    <Typography
+                      variant="h2"
+                      component="span"
+                      className={classes.titleBarTypography}
+                    >
+                      {t('Dashboard title')}
+                    </Typography>
+                    <input
+                      type="text"
+                      className={classes.titleBarInput}
+                      placeholder={t('Enter dashboard title')}
+                      value={dashboardTitle}
+                      onChange={e => dispatch(setTitle(e.target.value))}
+                      name="dashboard-title"
+                    />
+                  </label>
                 </Box>
-              );
-            })}
-          </Box>
-        )}
+              )}
+              {mode === DashboardMode.EDIT && mapElements.length > 1 && (
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={syncEnabled}
+                      onChange={() => dispatch(toggleMapSync())}
+                      color="primary"
+                      size="medium"
+                    />
+                  }
+                  label={t('Sync maps')}
+                  className={classes.syncToggle}
+                />
+              )}
+            </Box>
+          )}
+          {columns.length > 0 && (
+            <Box
+              className={
+                mode !== DashboardMode.EDIT
+                  ? classes.dynamicColumnPreviewLayout
+                  : classes.dynamicColumnLayout
+              }
+            >
+              {columns.map((column, columnIndex) => {
+                const hasMapElements = column.some(
+                  el => el.type === DashboardElementType.MAP,
+                );
+                const columnClass = hasMapElements
+                  ? classes.mapColumn
+                  : classes.contentColumn;
+
+                return (
+                  <Box
+                    key={`column-${columnIndex}`}
+                    className={columnClass}
+                    component="div"
+                  >
+                    <div
+                      ref={(el: HTMLDivElement | null) => {
+                        if (el) {
+                          columnRefs.current.set(columnIndex, el);
+                        } else {
+                          columnRefs.current.delete(columnIndex);
+                        }
+                      }}
+                      style={{
+                        height: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 16,
+                      }}
+                    >
+                      {column.map((element, elementIndex) =>
+                        renderElement(element, columnIndex, elementIndex),
+                      )}
+                    </div>
+                  </Box>
+                );
+              })}
+            </Box>
+          )}
+        </Box>
       </Box>
-    </Box>
+      <Dialog
+        open={dialogOpen}
+        onClose={cancelPendingAction}
+        TransitionProps={{ onExited: () => setPendingAction(null) }}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogContent>
+          <DialogContentText>
+            {t('Are you sure? This action cannot be undone.')}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={cancelPendingAction} color="primary">
+            {t('Cancel')}
+          </Button>
+          <Button
+            onClick={confirmPendingAction}
+            color="secondary"
+            variant="contained"
+          >
+            {pendingAction?.kind === 'remove'
+              ? t('Delete block')
+              : t('Change block type')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 }
 
@@ -386,6 +548,33 @@ const useStyles = makeStyles(() => ({
     fontWeight: 600,
     fontSize: 16,
     marginBottom: 12,
+  },
+  blockTypeRow: {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: 12,
+    gap: 8,
+    '& $blockLabel': {
+      marginBottom: 0,
+    },
+  },
+  removeBlockButton: {
+    marginLeft: 'auto',
+    color: '#757575',
+    '&:hover': {
+      color: '#212121',
+    },
+  },
+  blockTypeSelect: {
+    fontSize: 14,
+    fontWeight: 500,
+    background: 'white',
+    borderRadius: 4,
+    padding: '2px 8px',
+    '& .MuiSelect-root': {
+      paddingTop: 4,
+      paddingBottom: 4,
+    },
   },
   contentColumn: {
     flex: 1, // Smaller for columns without maps

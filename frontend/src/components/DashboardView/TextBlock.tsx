@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Box, makeStyles, Typography } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import Markdown from 'react-markdown';
@@ -14,6 +14,7 @@ interface TextBlockProps {
   content: string;
   columnIndex: number;
   elementIndex: number;
+  headerSlot?: ReactNode;
 }
 
 const createMarkdownComponents = (classes: any) => ({
@@ -72,6 +73,7 @@ function TextBlock({
   elementIndex,
   label = `Block #${elementIndex + 1}`,
   content,
+  headerSlot,
 }: TextBlockProps) {
   const dispatch = useDispatch();
   const classes = useStyles();
@@ -110,9 +112,11 @@ function TextBlock({
 
   return (
     <Box className={classes.grayCard}>
-      <Typography variant="h3" className={classes.blockLabel}>
-        {t(label)}
-      </Typography>
+      {headerSlot ?? (
+        <Typography variant="h3" className={classes.blockLabel}>
+          {t(label)}
+        </Typography>
+      )}
       <textarea
         name="text-block"
         className={classes.textarea}

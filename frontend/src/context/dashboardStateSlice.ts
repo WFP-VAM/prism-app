@@ -224,6 +224,30 @@ const createInitialState = (
 
 const initialState: DashboardState = createInitialState(0, []);
 
+function createEmptyElement(type: DashboardElementType): DashboardElements {
+  switch (type) {
+    case DashboardElementType.TEXT:
+      return { type: DashboardElementType.TEXT, content: '' };
+    case DashboardElementType.CHART:
+      return {
+        type: DashboardElementType.CHART,
+        startDate: '',
+        layerId: '',
+        chartHeight: undefined,
+      } as unknown as DashboardElements;
+    case DashboardElementType.TABLE:
+      return {
+        type: DashboardElementType.TABLE,
+        startDate: '',
+        hazardLayerId: '',
+        baselineLayerId: '',
+        stat: 'mean' as any,
+      } as unknown as DashboardElements;
+    default:
+      return { type: DashboardElementType.TEXT, content: '' };
+  }
+}
+
 export const dashboardStateSlice = createSlice({
   name: 'dashboardState',
   initialState,
@@ -313,6 +337,41 @@ export const dashboardStateSlice = createSlice({
                   ? { ...element, content }
                   : element,
               )
+            : column,
+        ),
+      };
+    },
+    setElementType: (
+      state,
+      action: PayloadAction<{
+        columnIndex: number;
+        elementIndex: number;
+        newType: DashboardElementType;
+      }>,
+    ) => {
+      const { columnIndex, elementIndex, newType } = action.payload;
+      const emptyElement = createEmptyElement(newType);
+      return {
+        ...state,
+        columns: state.columns.map((column, colIdx) =>
+          colIdx === columnIndex
+            ? column.map((element, elemIdx) =>
+                elemIdx === elementIndex ? emptyElement : element,
+              )
+            : column,
+        ),
+      };
+    },
+    removeElement: (
+      state,
+      action: PayloadAction<{ columnIndex: number; elementIndex: number }>,
+    ) => {
+      const { columnIndex, elementIndex } = action.payload;
+      return {
+        ...state,
+        columns: state.columns.map((column, colIdx) =>
+          colIdx === columnIndex
+            ? column.filter((_, elemIdx) => elemIdx !== elementIndex)
             : column,
         ),
       };
@@ -715,6 +774,8 @@ export const {
   updateTableState,
   setLegendVisible,
   setLegendPosition,
+  setElementType,
+  removeElement,
 } = dashboardStateSlice.actions;
 
 export default dashboardStateSlice.reducer;

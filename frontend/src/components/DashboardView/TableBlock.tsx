@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, ReactNode } from 'react';
 import {
   Box,
   makeStyles,
@@ -57,6 +57,7 @@ interface TableBlockProps extends Partial<DashboardTableConfig> {
   elementIndex: number;
   allowDownload?: boolean;
   maxRows?: number;
+  headerSlot?: ReactNode;
 }
 
 function TableBlock({
@@ -73,6 +74,7 @@ function TableBlock({
   addResultToMap = true,
   sortColumn: initialSortColumn = 'name',
   sortOrder: _initialSortOrder = 'asc',
+  headerSlot,
 }: TableBlockProps) {
   const classes = useStyles();
   const { t } = useSafeTranslation();
@@ -459,9 +461,11 @@ function TableBlock({
 
   return (
     <Box className={classes.grayCard}>
-      <Typography variant="h3" className={classes.blockTitle}>
-        {t('Table Block')} #{index + 1}
-      </Typography>
+      {headerSlot ?? (
+        <Typography variant="h3" className={classes.blockTitle}>
+          {t('Table Block')} #{index + 1}
+        </Typography>
+      )}
 
       {formState.analysisResult && addResultToMap && (
         <Box className={classes.toggleContainer}>
