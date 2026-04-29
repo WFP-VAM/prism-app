@@ -12,6 +12,7 @@ import {
   isDashboardConfigNotFoundError,
 } from 'dashboardConfig/dashboardConfigQueryError';
 import { setDashboards } from 'context/dashboardStateSlice';
+import { loadDraftDashboards } from 'utils/draftDashboardStorage';
 import { addNotification } from 'context/notificationStateSlice';
 
 const RETRY_ATTEMPTS = 3;
@@ -49,7 +50,10 @@ export function useDashboardConfig(): void {
           if (cancelled) {
             return;
           }
-          dispatch(setDashboards(data));
+          const localDrafts = loadDraftDashboards();
+          const s3Ids = new Set(data.map(d => d.id).filter(Boolean));
+          const newDrafts = localDrafts.filter(d => !d.id || !s3Ids.has(d.id));
+          dispatch(setDashboards([...data, ...newDrafts]));
           return;
         } catch (error) {
           if (cancelled) {
@@ -57,7 +61,8 @@ export function useDashboardConfig(): void {
           }
           // No dashboard.json for this instance is expected: empty list hides the nav link.
           if (isDashboardConfigNotFoundError(error)) {
-            dispatch(setDashboards([]));
+            const localDrafts = loadDraftDashboards();
+            dispatch(setDashboards([...localDrafts]));
             return;
           }
           lastError = error;

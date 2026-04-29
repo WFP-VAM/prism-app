@@ -224,6 +224,55 @@ const createInitialState = (
 
 const initialState: DashboardState = createInitialState(0, []);
 
+function buildColumnsFromState(
+  columns: DashboardElements[][],
+  mapStates: { [elementId: string]: DashboardMapState },
+): [DashboardElements[], DashboardElements[], DashboardElements[]] {
+  return [0, 1, 2].map(colIdx =>
+    (columns[colIdx] ?? []).map((element, elemIdx) => {
+      if (element.type !== DashboardElementType.MAP) {
+        return element;
+      }
+      const mapState = mapStates[`${colIdx}-${elemIdx}`];
+      if (!mapState) {
+        return element;
+      }
+      return {
+        ...element,
+        preSelectedMapLayers: mapState.layers.map(l => ({
+          layerId: l.id,
+          opacity: mapState.opacityMap[l.id]?.value ?? 1.0,
+        })),
+        defaultDate:
+          mapState.dateRange?.startDate !== undefined
+            ? new Date(mapState.dateRange.startDate).toISOString()
+            : element.defaultDate,
+        title: mapState.title,
+        legendVisible: mapState.legendVisible,
+        legendPosition: mapState.legendPosition,
+      };
+    }),
+  ) as [DashboardElements[], DashboardElements[], DashboardElements[]];
+}
+
+function syncDraftConfig(state: DashboardState): DashboardState {
+  const current = state.dashboards[state.selectedDashboardIndex];
+  if (!current?.isDraft) {
+    return state;
+  }
+  const [firstColumn, secondColumn, thirdColumn] = buildColumnsFromState(
+    state.columns,
+    state.mapStates,
+  );
+  const updated = { ...current, firstColumn, secondColumn, thirdColumn };
+  return {
+    ...state,
+    dashboards: state.dashboards.map((d, i) =>
+      i === state.selectedDashboardIndex ? updated : d,
+    ),
+  };
+}
+
 function createEmptyElement(type: DashboardElementType): DashboardElements {
   switch (type) {
     case DashboardElementType.TEXT:
@@ -327,7 +376,7 @@ export const dashboardStateSlice = createSlice({
       }>,
     ) => {
       const { columnIndex, elementIndex, content } = action.payload;
-      return {
+      return syncDraftConfig({
         ...state,
         columns: state.columns.map((column, colIdx) =>
           colIdx === columnIndex
@@ -339,7 +388,7 @@ export const dashboardStateSlice = createSlice({
               )
             : column,
         ),
-      };
+      });
     },
     setElementType: (
       state,
@@ -351,7 +400,7 @@ export const dashboardStateSlice = createSlice({
     ) => {
       const { columnIndex, elementIndex, newType } = action.payload;
       const emptyElement = createEmptyElement(newType);
-      return {
+      return syncDraftConfig({
         ...state,
         columns: state.columns.map((column, colIdx) =>
           colIdx === columnIndex
@@ -360,21 +409,21 @@ export const dashboardStateSlice = createSlice({
               )
             : column,
         ),
-      };
+      });
     },
     removeElement: (
       state,
       action: PayloadAction<{ columnIndex: number; elementIndex: number }>,
     ) => {
       const { columnIndex, elementIndex } = action.payload;
-      return {
+      return syncDraftConfig({
         ...state,
         columns: state.columns.map((column, colIdx) =>
           colIdx === columnIndex
             ? column.filter((_, elemIdx) => elemIdx !== elementIndex)
             : column,
         ),
-      };
+      });
     },
     addLayerToMap: (
       state,
@@ -403,7 +452,7 @@ export const dashboardStateSlice = createSlice({
           i === self.findIndex(t => t.id === l.id && t.type === l.type),
       );
 
-      return {
+      return syncDraftConfig({
         ...state,
         mapStates: {
           ...state.mapStates,
@@ -412,7 +461,7 @@ export const dashboardStateSlice = createSlice({
             layers: dedupedLayers,
           },
         },
-      };
+      });
     },
     removeLayerFromMap: (
       state,
@@ -426,7 +475,7 @@ export const dashboardStateSlice = createSlice({
 
       const filteredLayers = mapState.layers.filter(l => keepLayer(l, layer));
 
-      return {
+      return syncDraftConfig({
         ...state,
         mapStates: {
           ...state.mapStates,
@@ -435,7 +484,7 @@ export const dashboardStateSlice = createSlice({
             layers: filteredLayers,
           },
         },
-      };
+      });
     },
     updateMapDateRange: (
       state,
@@ -447,7 +496,7 @@ export const dashboardStateSlice = createSlice({
         return state;
       }
 
-      return {
+      return syncDraftConfig({
         ...state,
         mapStates: {
           ...state.mapStates,
@@ -456,7 +505,7 @@ export const dashboardStateSlice = createSlice({
             dateRange,
           },
         },
-      };
+      });
     },
     setMap: (
       state,
@@ -579,7 +628,7 @@ export const dashboardStateSlice = createSlice({
         callback(value);
       }
 
-      return {
+      return syncDraftConfig({
         ...state,
         mapStates: {
           ...state.mapStates,
@@ -595,14 +644,14 @@ export const dashboardStateSlice = createSlice({
             },
           },
         },
-      };
+      });
     },
     setMapTitle: (
       state,
       action: PayloadAction<{ elementId: string; title: string }>,
     ) => {
       const { elementId, title } = action.payload;
-      return {
+      return syncDraftConfig({
         ...state,
         mapStates: {
           ...state.mapStates,
@@ -611,7 +660,7 @@ export const dashboardStateSlice = createSlice({
             title,
           },
         },
-      };
+      });
     },
     updateTableState: (
       state,
@@ -646,7 +695,7 @@ export const dashboardStateSlice = createSlice({
       if (!mapState) {
         return state;
       }
-      return {
+      return syncDraftConfig({
         ...state,
         mapStates: {
           ...state.mapStates,
@@ -655,7 +704,7 @@ export const dashboardStateSlice = createSlice({
             legendVisible: visible,
           },
         },
-      };
+      });
     },
     setLegendPosition: (
       state,
@@ -666,7 +715,7 @@ export const dashboardStateSlice = createSlice({
       if (!mapState) {
         return state;
       }
-      return {
+      return syncDraftConfig({
         ...state,
         mapStates: {
           ...state.mapStates,
@@ -675,7 +724,7 @@ export const dashboardStateSlice = createSlice({
             legendPosition: position,
           },
         },
-      };
+      });
     },
   },
 });

@@ -16,10 +16,12 @@ import {
 import { getDashboardIndexByPath } from '../../config/utils';
 import { generateSlugFromTitle } from '../../utils/string-utils';
 import { clearAnalysisResult } from '../../context/analysisResultStateSlice';
+import { usePersistDraftDashboards } from 'hooks/usePersistDraftDashboards';
 import { DashboardExportDialog } from './DashboardExport';
 import DashboardContent from './DashboardContent';
 
 function DashboardView() {
+  usePersistDraftDashboards();
   const classes = useStyles();
   const dashboardConfig = useSelector(dashboardConfigSelector);
   const dashboards = useSelector(dashboardsListSelector);
@@ -54,9 +56,13 @@ function DashboardView() {
     }
 
     if (path) {
-      // Find dashboard by path and set it as selected
+      // Find dashboard by path and set it as selected — guard against
+      // re-selecting the same dashboard when `dashboards` gets a new reference
+      // from in-memory edits (which would reset mode via createInitialState).
       const dashboardIndex = getDashboardIndexByPath(path, dashboards);
-      dispatch(setSelectedDashboard(dashboardIndex));
+      if (dashboardIndex !== dashboardConfig.selectedDashboardIndex) {
+        dispatch(setSelectedDashboard(dashboardIndex));
+      }
     } else {
       // No path provided, redirect to first dashboard's path
       const firstDashboard = dashboards[0];
@@ -64,7 +70,13 @@ function DashboardView() {
         firstDashboard.path || generateSlugFromTitle(firstDashboard.title);
       history.replace(`/dashboard/${firstDashboardPath}`);
     }
-  }, [path, dispatch, history, dashboards]);
+  }, [
+    path,
+    dispatch,
+    history,
+    dashboards,
+    dashboardConfig.selectedDashboardIndex,
+  ]);
 
   const handlePreviewClick = () => {
     dispatch(setMode(DashboardMode.VIEW));
