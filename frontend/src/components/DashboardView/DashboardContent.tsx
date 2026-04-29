@@ -17,9 +17,9 @@ import { Close, Edit } from '@material-ui/icons';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSafeTranslation } from 'i18n';
+import type { RootState } from 'context/store';
 import {
   dashboardConfigSelector,
-  dashboardColumnsSelector,
   dashboardMapElementsSelector,
   dashboardModeSelector,
   setTitle,
@@ -27,6 +27,7 @@ import {
   dashboardSyncEnabledSelector,
   setElementType,
   removeElement,
+  swapMapPosition,
 } from '../../context/dashboardStateSlice';
 import {
   DashboardMode,
@@ -90,7 +91,10 @@ function DashboardContent({
   const { logo } = appConfig.header || {};
   const logoHeightMultiplier = 32;
   const logoHeight = logoConfig ? logoHeightMultiplier * logoConfig.scale : 0;
-  const columns = useSelector(dashboardColumnsSelector);
+  /** Include empty middle columns so MAP block ids stay aligned with Redux (`${col}-${row}` keys). */
+  const columns = useSelector(
+    (state: RootState) => state.dashboardState.columns,
+  );
   const mapElements = useSelector(dashboardMapElementsSelector);
   const mode = useSelector(dashboardModeSelector);
   const { t } = useSafeTranslation();
@@ -250,18 +254,27 @@ function DashboardContent({
               minHeight: 0,
             }}
           >
-            {mode === 'edit' && (
+            {mode === DashboardMode.EDIT && (
               <div className={classes.mapHeaderContainer}>
                 <Typography
                   variant="h3"
                   component="h3"
-                  className={classes.blockLabel}
+                  className={`${classes.blockLabel} ${classes.mapHeaderTitle}`}
                 >
                   {mapElements.length > 1
                     ? `Map ${elementIndex + 1}`
                     : 'Map block'}{' '}
                   — {t('Choose map layers')}
                 </Typography>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  size="small"
+                  onClick={() => dispatch(swapMapPosition())}
+                  className={classes.mapBlockSwapButton}
+                >
+                  {t('Swap map position')}
+                </Button>
               </div>
             )}
             <div style={{ height: '100%', flex: 1, minHeight: 0 }}>
@@ -457,7 +470,7 @@ function DashboardContent({
               )}
             </Box>
           )}
-          {columns.length > 0 && (
+          {columns.some(c => c.length > 0) && (
             <Box
               className={
                 mode !== DashboardMode.EDIT
@@ -466,6 +479,9 @@ function DashboardContent({
               }
             >
               {columns.map((column, columnIndex) => {
+                if (column.length === 0) {
+                  return null;
+                }
                 const hasMapElements = column.some(
                   el => el.type === DashboardElementType.MAP,
                 );
@@ -615,10 +631,22 @@ const useStyles = makeStyles(() => ({
     padding: 12,
     flex: 1,
   },
+  mapHeaderTitle: {
+    marginBottom: 0,
+    flex: '1 1 auto',
+    minWidth: 0,
+  },
+  mapBlockSwapButton: {
+    textTransform: 'none',
+    fontWeight: 500,
+    flexShrink: 0,
+    marginLeft: 12,
+  },
   mapHeaderContainer: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+    gap: 8,
     marginBottom: 12,
   },
   titleSection: {

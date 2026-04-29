@@ -255,6 +255,33 @@ function buildColumnsFromState(
   ) as [DashboardElements[], DashboardElements[], DashboardElements[]];
 }
 
+function remapElementIdForSwapFirstTwoColumns(oldId: string): string {
+  const dash = oldId.indexOf('-');
+  if (dash <= 0) {
+    return oldId;
+  }
+  const columnIndex = Number.parseInt(oldId.slice(0, dash), 10);
+  const remainder = oldId.slice(dash + 1);
+  if (columnIndex === 0) {
+    return `1-${remainder}`;
+  }
+  if (columnIndex === 1) {
+    return `0-${remainder}`;
+  }
+  return oldId;
+}
+
+function remapStringKeyedStates<T>(
+  states: { [elementId: string]: T },
+  remapKey: (k: string) => string,
+): { [elementId: string]: T } {
+  const next: { [elementId: string]: T } = {};
+  Object.entries(states).forEach(([id, entry]) => {
+    next[remapKey(id)] = entry;
+  });
+  return next;
+}
+
 function syncDraftConfig(state: DashboardState): DashboardState {
   const current = state.dashboards[state.selectedDashboardIndex];
   if (!current?.isDraft) {
@@ -726,6 +753,27 @@ export const dashboardStateSlice = createSlice({
         },
       });
     },
+    swapMapPosition: state => {
+      const col0 = state.columns[0] ?? [];
+      const col1 = state.columns[1] ?? [];
+      const swappedColumns = state.columns.map((col, idx) =>
+        idx === 0 ? [...col1] : idx === 1 ? [...col0] : [...(col ?? [])],
+      );
+      const nextMapStates = remapStringKeyedStates(
+        state.mapStates,
+        remapElementIdForSwapFirstTwoColumns,
+      );
+      const nextTableStates = remapStringKeyedStates(
+        state.tableStates,
+        remapElementIdForSwapFirstTwoColumns,
+      );
+      return syncDraftConfig({
+        ...state,
+        columns: swappedColumns,
+        mapStates: nextMapStates,
+        tableStates: nextTableStates,
+      });
+    },
   },
 });
 
@@ -823,6 +871,7 @@ export const {
   updateTableState,
   setLegendVisible,
   setLegendPosition,
+  swapMapPosition,
   setElementType,
   removeElement,
 } = dashboardStateSlice.actions;
