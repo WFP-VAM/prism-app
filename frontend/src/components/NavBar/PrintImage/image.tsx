@@ -230,6 +230,12 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
   const shouldShowMultiLayerWarning = selectedLayersWithDateSupport.length > 1;
 
+  useEffect(() => {
+    if (shouldShowMultiLayerWarning) {
+      setToggles(prev => ({ ...prev, batchMapsVisibility: false }));
+    }
+  }, [shouldShowMultiLayerWarning]);
+
   const hasNonDateLayers = useMemo(
     () =>
       selectedLayers.some(
