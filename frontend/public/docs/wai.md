@@ -10,7 +10,7 @@ The index is built around commonly available gridded variables used for early wa
 
 Rainfall is the key driver for crop growth representing availability, evapotranspiration representing the water demand, and soil moisture the stored water. The index accounts for the variable importance of different phases of the season by giving more weight to anomalous behaviour in the wetter stages of the season.
 
-![Slide 2](public/docs/images/wai/Picture1.png)
+![Slide 2](/docs/images/wai/Picture1.png)
 
 ---
 
@@ -26,7 +26,7 @@ The index is derived with a monthly time step and brings together the key variab
 
 Where **θ is some form of anomaly**, i.e. a measure of how far from the "usual" a given value is — or where this value sits in the historical distribution.
 
-![Slide 3](public/docs/images/wai/Picture2.png)
+![Slide 3](/docs/images/wai/Picture2.png)
 
 ---
 
@@ -84,7 +84,7 @@ These weights apply to **ALL variables** in the index.
 
 *Southern Africa Monthly Weights: October – February*
 
-![Slide 8](public/docs/images/wai/Picture3.png)
+![Slide 8](/docs/images/wai/Picture3.png)
 
 ---
 
@@ -105,62 +105,62 @@ An inverse logit transformation is applied to report results on the **0–100** 
 
 ## End-to-End Calculation
 
-![Slide 10](public/docs/images/wai/Slide10.png)
+![Slide 10](/docs/images/wai/Slide10.png)
 
 ---
 
 ## Example: WAI 2023–2024 — Monthly Rainfall
 
-![Slide 11](public/docs/images/wai/Slide11.png)
+![Slide 11](/docs/images/wai/Slide11.png)
 
 ---
 
 ## Example: WAI 2023–2024 — Monthly Ref. Evapotranspiration
 
-![Slide 12](public/docs/images/wai/Slide12.png)
+![Slide 12](/docs/images/wai/Slide12.png)
 
 ---
 
 ## Example: WAI 2023–2024 — Monthly Soil Moisture
 
-![Slide 13](public/docs/images/wai/Slide13.png)
+![Slide 13](/docs/images/wai/Slide13.png)
 
 ---
 
 ## Example: WAI 2023–2024 — Monthly WAI
 
-![Slide 14](public/docs/images/wai/Slide14.png)
+![Slide 14](/docs/images/wai/Slide14.png)
 
 ---
 
 ## Example: WAI 2023–2024 — Seasonal Summary
 
-![Slide 15](public/docs/images/wai/Slide15.png)
+![Slide 15](/docs/images/wai/Slide15.png)
 
 ---
 
 ## Variables to Percentiles to WAI
 
-![Slide 16](public/docs/images/wai/Slide16.png)
+![Slide 16](/docs/images/wai/Slide16.png)
 
 ---
 
 ## Previous Seasonal WAI (Qmulti)
 
 Historical seasonal WAI (Qmulti) output over Southern Africa:
-![Slide 17](public/docs/images/wai/Picture4.png)
+![Slide 17](/docs/images/wai/Picture4.png)
 
 ---
 
 ## Summary by Administrative Divisions — Regional
 
-![Slide 18](public/docs/images/wai/Slide18.png)
+![Slide 18](/docs/images/wai/Slide18.png)
 
 ---
 
 ## Summary by Administrative Divisions — MOZ Tete
 
-![Slide 19](public/docs/images/wai/Slide19.png)
+![Slide 19](/docs/images/wai/Slide19.png)
 
 ---
 
