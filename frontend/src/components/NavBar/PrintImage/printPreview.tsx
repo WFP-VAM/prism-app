@@ -12,6 +12,7 @@ import {
 } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
 import useLayers from 'utils/layers-utils';
+import { isBoundaryLayer } from 'utils/boundary-layers-utils';
 import { getLayersCoverage } from 'utils/server-utils';
 import {
   availableDatesSelector,
@@ -37,7 +38,7 @@ function PrintPreview() {
   const tabValue = useSelector(leftPanelTabValueSelector);
 
   const { logo } = appConfig.header || {};
-  const { selectedLayersWithDateSupport } = useLayers();
+  const { selectedLayersWithDateSupport, selectedLayers } = useLayers();
   const selectedLayerId = printConfig?.selectedLayerId ?? null;
 
   useEffect(() => {
@@ -120,21 +121,28 @@ function PrintPreview() {
   // Get the style and layers of the old map
   const selectedMapStyle = selectedMap.getStyle();
 
-  // When batch maps has a selected layer, strip all raster layers from the
-  // snapshot so the React layer component is the sole renderer (avoids stacking
-  // regardless of which layer was active on the main map).
+  // When batch maps has a selected layer, strip raster layers and non-boundary
+  // application layers from the snapshot so the React layer component is the
+  // sole renderer (avoids stacking regardless of which layers were active on
+  // the main map).
   if (selectedMapStyle && printSelectedLayers.length > 0) {
-    const rasterLayersInSnapshot = selectedMapStyle.layers.filter(
-      layer => layer.type === 'raster',
-    );
+    const boundaryMapIdPrefixes = selectedLayers
+      .filter(isBoundaryLayer)
+      .map(l => `layer-${l.id}`);
+    const isLayerToRemove = (layer: { id: string; type: string }) =>
+      layer.type === 'raster' ||
+      (layer.id.startsWith('layer-') &&
+        !boundaryMapIdPrefixes.some(prefix => layer.id.startsWith(prefix)));
+
     const sourcesToRemove = new Set(
-      rasterLayersInSnapshot
+      selectedMapStyle.layers
+        .filter(isLayerToRemove)
         .map(layer => ('source' in layer ? (layer.source as string) : null))
         .filter(Boolean) as string[],
     );
 
     selectedMapStyle.layers = selectedMapStyle.layers.filter(
-      layer => layer.type !== 'raster',
+      layer => !isLayerToRemove(layer),
     );
     sourcesToRemove.forEach(sourceId => {
       delete selectedMapStyle.sources[sourceId];

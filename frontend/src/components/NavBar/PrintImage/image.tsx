@@ -14,6 +14,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
 import { appConfig, safeCountry, configMap } from 'config';
 import useLayers from 'utils/layers-utils';
+import { isBoundaryLayer } from 'utils/boundary-layers-utils';
 import { AdminCodeString, LayerKey, WMSLayerProps } from 'config/types';
 import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
 import useResizeObserver from 'utils/useOnResizeObserver';
@@ -183,7 +184,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   ) as WMSLayerProps[];
   const [selectedLayerId, setSelectedLayerId] = useState<LayerKey | null>(null);
 
-  const { selectedLayersWithDateSupport } = useLayers();
+  const { selectedLayersWithDateSupport, selectedLayers } = useLayers();
 
   useEffect(() => {
     if (open) {
@@ -225,9 +226,19 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     // selectedLayersWithDateSupport.every(
     //   layer => layer.type === 'wms' && (layer.coverageWindow || layer.validity),
     // );
-    false; // Temporarily false batch maps
+    true; // Temporarily enable batch maps
 
   const shouldShowMultiLayerWarning = selectedLayersWithDateSupport.length > 1;
+
+  const hasNonDateLayers = useMemo(
+    () =>
+      selectedLayers.some(
+        layer =>
+          !isBoundaryLayer(layer) &&
+          !selectedLayersWithDateSupport.some(dl => dl.id === layer.id),
+      ),
+    [selectedLayers, selectedLayersWithDateSupport],
+  );
 
   const { filteredBatchDates, mapCount, uniqueQueryDates } = useMemo(() => {
     const { startDate, endDate } = dateRangeForBatchMaps;
@@ -313,6 +324,32 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       );
     }
   }, [open, dispatch, t]);
+
+  useEffect(() => {
+    if (
+      open &&
+      toggles.batchMapsVisibility &&
+      hasNonDateLayers &&
+      printSelectedLayer
+    ) {
+      dispatch(
+        addNotification({
+          type: 'warning',
+          message: t(
+            'The sequence of maps will only display the {{layerTitle}} layer',
+            { layerTitle: printSelectedLayer.title },
+          ),
+        }),
+      );
+    }
+  }, [
+    open,
+    toggles.batchMapsVisibility,
+    hasNonDateLayers,
+    printSelectedLayer,
+    dispatch,
+    t,
+  ]);
 
   useEffect(() => {
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
