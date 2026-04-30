@@ -5,6 +5,7 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Font } from '@react-pdf/renderer';
 import { authRequired } from 'config';
+import { useDashboardConfig } from 'hooks/useDashboardConfig';
 import NavBar from 'components/NavBar';
 import MapView from 'components/MapView';
 import DashboardView from 'components/DashboardView';
@@ -79,6 +80,7 @@ const Wrapper = memo(() => (
 ));
 
 function App() {
+  useDashboardConfig();
   const isAuthenticated = useIsAuthenticated();
 
   // The rendered content

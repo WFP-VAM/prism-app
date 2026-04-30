@@ -25,6 +25,9 @@ const DEFAULT_CROP: CropRegion = {
 };
 const DEFAULT_TARGET = '.maplibregl-canvas';
 const MAX_RETRY = 3;
+/** Map pages rarely reach networkidle0 (tiles, polling); timeout 0 disables navigation timeout and can hang forever. */
+const GOTO_TIMEOUT_MS = 180_000;
+const SELECTOR_TIMEOUT_MS = 120_000;
 
 /**
  * Check if the image is white by calculating the average of the pixels.
@@ -112,10 +115,16 @@ export async function captureScreenshotFromUrl(
 
     await page.setViewport({ width: 1920, height: 1080 });
 
-    await page.goto(url, { waitUntil: 'networkidle0', timeout: 0 });
+    await page.goto(url, {
+      waitUntil: 'load',
+      timeout: GOTO_TIMEOUT_MS,
+    });
 
     // Wait for the element to be visible in the DOM
-    await page.waitForSelector(screenshotTargetSelector, { visible: true });
+    await page.waitForSelector(screenshotTargetSelector, {
+      visible: true,
+      timeout: SELECTOR_TIMEOUT_MS,
+    });
 
     // Give time for map tiles and layers to render
     console.log(

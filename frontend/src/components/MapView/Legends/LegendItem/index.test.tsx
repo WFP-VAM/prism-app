@@ -2,12 +2,12 @@ import { render } from '@testing-library/react';
 
 import { Provider } from 'react-redux';
 import { store } from 'context/store';
-import { BrowserRouter } from 'react-router-dom';
+import { TestBrowserRouter } from 'test/TestBrowserRouter';
 import LegendItem from '.';
 
 test('renders as expected', () => {
   const { container } = render(
-    <BrowserRouter>
+    <TestBrowserRouter>
       <Provider store={store}>
         <LegendItem
           title="Some Legend Title"
@@ -25,7 +25,7 @@ test('renders as expected', () => {
           <div>Test Children</div>
         </LegendItem>
       </Provider>
-    </BrowserRouter>,
+    </TestBrowserRouter>,
   );
   expect(container).toMatchSnapshot();
 });

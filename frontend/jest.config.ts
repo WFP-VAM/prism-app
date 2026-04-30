@@ -24,6 +24,7 @@ const config: Config = {
     '\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
       '<rootDir>/test/fileMock.ts',
     '\\.(css|less)$': '<rootDir>/test/fileMock.ts',
+    '^test/(.*)$': '<rootDir>/test/$1',
   },
   setupFilesAfterEnv: ['<rootDir>/test/setupTests.ts'],
   moduleDirectories: ['node_modules', 'src'],

@@ -362,26 +362,14 @@ export const isWindowedDates = (
 
 export const areChartLayersAvailable = getWMSLayersWithChart().length > 0;
 
-export const areDashboardsAvailable = (): boolean => 'dashboards' in appConfig;
-
-export const getDashboards = (): Dashboard[] => {
-  if (!areDashboardsAvailable()) {
-    return [];
-  }
-
-  const { dashboards } = appConfig;
-  if (Array.isArray(dashboards)) {
-    return dashboards;
-  }
-
-  return [];
-};
-
+/**
+ * Find a dashboard by URL path segment. Pass dashboards from Redux
+ * (dashboardsListSelector).
+ */
 export const findDashboardByPath = (
   path: string,
+  dashboards: Dashboard[],
 ): { dashboard: Dashboard; index: number } | null => {
-  const dashboards = getDashboards();
-
   for (let i = 0; i < dashboards.length; i += 1) {
     const dashboard = dashboards[i];
     const dashboardPath =
@@ -395,8 +383,11 @@ export const findDashboardByPath = (
   return null;
 };
 
-export const getDashboardIndexByPath = (path: string): number => {
-  const result = findDashboardByPath(path);
+export const getDashboardIndexByPath = (
+  path: string,
+  dashboards: Dashboard[],
+): number => {
+  const result = findDashboardByPath(path, dashboards);
   return result ? result.index : 0;
 };
 

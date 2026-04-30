@@ -1,9 +1,7 @@
--- Local dev seed for the PRISM alerts DB (anticipatory_action_alerts, user_info, alert,
--- plus CIAM-mapped users + permission grants).
+-- Local dev seed for the PRISM alerts DB (anticipatory_action_alerts, user_info, alert).
 -- Run from api/: poetry run python scripts/seed_alerts_db.py (after alembic upgrade head).
 -- Idempotent: user_info uses ON CONFLICT; AA rows only insert if missing for country+type;
--- seed alerts replace rows with the fixed seed emails; users use ON CONFLICT (ciam_sub);
--- user_permissions use ON CONFLICT on the composite primary key.
+-- seed alerts replace rows with the fixed seed emails.
 
 -- Anticipatory action (Mozambique) — skip if that country+type already exists
 INSERT INTO anticipatory_action_alerts (country, emails, prism_url, type)

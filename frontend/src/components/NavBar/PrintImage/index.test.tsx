@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+import { TestBrowserRouter } from 'test/TestBrowserRouter';
 import { Panel } from 'config/types';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import thunk from 'redux-thunk';
@@ -56,11 +56,11 @@ test('renders as expected', () => {
   });
 
   const { container } = render(
-    <BrowserRouter>
+    <TestBrowserRouter>
       <Provider store={store}>
         <Download />
       </Provider>
-    </BrowserRouter>,
+    </TestBrowserRouter>,
   );
   expect(container).toMatchSnapshot();
 

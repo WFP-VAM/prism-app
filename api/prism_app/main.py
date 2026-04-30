@@ -13,8 +13,11 @@ from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from prism_app.admin import register_alerts_admin_views
+<<<<<<< HEAD
 from prism_app.admin_oidc_auth import PrismAdminAuthProvider
 from prism_app.admin_settings import get_admin_auth_settings
+=======
+>>>>>>> master
 from prism_app.auth import optional_validate_user, validate_user
 from prism_app.access_pages import access_not_configured_response
 from prism_app.deps import require_permissions
