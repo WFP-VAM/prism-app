@@ -1144,9 +1144,9 @@
   },
   "ndvi_dekad": {
     "title": "10-day NDVI (MODIS)",
-    "type": "wms",
+    "type": "cog",
+    "collection": "mxd13a2_vim_dekad",
     "server_layer_name": "mxd13a2_vim_dekad",
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "validity": {
       "forward": 1,
@@ -1155,14 +1155,10 @@
     "opacity": 0.7,
     "wcsConfig": {
       "scale": 0.0001,
-      "offset": 0,
-      "pixelResolution": 64
+      "offset": 0
     },
     "legend_text": "Normalized Difference Vegetation Index (NDVI) derived from MODIS TERRA/AQUA",
-    "legend": "ndvi",
-    "additional_query_params": {
-      "styles": "vim_14_01_09"
-    }
+    "legend": "ndvi"
   },
   "ndvi_dekad_anomaly": {
     "title": "10-day NDVI anomaly (MODIS)",

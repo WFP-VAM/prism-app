@@ -1,4 +1,4 @@
-import bbox from '@turf/bbox';
+import turfBbox from '@turf/bbox';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import { point } from '@turf/helpers';
 import { buffer } from 'd3-fetch';
@@ -108,7 +108,7 @@ export function featureIntersectsImage(
   feature: GeoJsonBoundary,
   image: GeoTIFFImage,
 ) {
-  const featureExtent = bbox(feature);
+  const featureExtent = turfBbox(feature);
   const imageExtent = image.getBoundingBox();
 
   const xWithinImage = (x: number) =>
@@ -128,7 +128,7 @@ export function pixelsInFeature(
   width: number,
   transform: TransformMatrix,
 ): number[] {
-  const [minX, minY, maxX, maxY] = bbox(feature);
+  const [minX, minY, maxX, maxY] = turfBbox(feature);
 
   const { row: startRow, col: startCol } = geoCoordsToRowCol(
     minX,
@@ -230,23 +230,36 @@ export async function getDownloadGeotiffURL(
   return responseJson.download_url;
 }
 
+export interface PresignedCogUrl {
+  item_id: string;
+  url: string;
+  bbox?: [number, number, number, number]; // WGS84 [minLon, minLat, maxLon, maxLat]
+}
+
 /**
- * Fetch a short-lived (5-minute) pre-signed S3 URL for a COG asset directly
- * from the STAC catalog. The returned URL supports HTTP byte-range requests,
- * making it suitable for streaming COG tiles in the browser without downloading
- * the full file.
+ * Fetch short-lived (5-minute) pre-signed S3 URLs for every COG asset in a
+ * STAC collection matching the given date.  For tiled collections (e.g. MODIS
+ * sinusoidal grid) this returns one URL per spatial tile.  Each URL supports
+ * HTTP byte-range requests for efficient browser-side COG streaming.
+ *
+ * @param bbox Optional WGS84 bounding box [minLon, minLat, maxLon, maxLat]
+ *             to spatially filter results to a deployment region.
  */
-export async function getPresignedCogUrl(
+export async function getPresignedCogUrls(
   collection: string,
   date?: string,
   band?: string,
-): Promise<string> {
+  bbox?: [number, number, number, number],
+): Promise<PresignedCogUrl[]> {
   const params = new URLSearchParams({ collection });
   if (date) {
     params.set('date', date);
   }
   if (band) {
     params.set('band', band);
+  }
+  if (bbox) {
+    params.set('bbox', bbox.join(','));
   }
 
   const response = await fetch(
@@ -260,12 +273,12 @@ export async function getPresignedCogUrl(
   if (!response.ok) {
     const detail = await response.text();
     throw new Error(
-      `Failed to get pre-signed COG URL for collection '${collection}': ${response.status} ${detail}`,
+      `Failed to get pre-signed COG URLs for collection '${collection}': ${response.status} ${detail}`,
     );
   }
 
   const json = await response.json();
-  return json.url as string;
+  return json.urls as PresignedCogUrl[];
 }
 
 export async function downloadGeotiff(

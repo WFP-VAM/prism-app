@@ -35,6 +35,7 @@ import {
   DatesPropagation,
   FeatureInfoType,
   ImpactLayerProps,
+  CogLayerProps,
   PointDataLoader,
   StaticRasterLayerProps,
   WMSLayerProps,
@@ -191,6 +192,7 @@ export function getLayersCoverageMap(
 export type DateCompatibleLayer =
   | AdminLevelDataLayerProps
   | WMSLayerProps
+  | CogLayerProps
   | ImpactLayerProps
   | PointDataLayerProps
   | StaticRasterLayerProps
@@ -753,8 +755,9 @@ export async function preloadLayerDatesForWMS(
   const WCSWMSLayers = Object.values(LayerDefinitions).filter(
     (layer): layer is WMSLayerProps =>
       layer.type === 'wms' ||
+      layer.type === 'cog' ||
       compositeLayersWithDateLayerTypeMap[layer.id] === 'wms',
-  );
+  ) as WMSLayerProps[];
   const allWMSDates = wmsServerUrls.map(async url => {
     const serverDates = await localWMSGetLayerDates(url, dispatch);
     return mapServerDatesToLayerIds(serverDates, WCSWMSLayers);
@@ -841,7 +844,7 @@ export const getLayerType = (
   ) {
     return 'staticRasterLayer';
   }
-  if (l.type === 'wms') {
+  if (l.type === 'wms' || l.type === 'cog') {
     return 'WMSLayer';
   }
   if (l.type === 'impact') {

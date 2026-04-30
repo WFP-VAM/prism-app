@@ -35,6 +35,9 @@ import {
   StaticRasterLayer,
   WMSLayer,
 } from 'components/MapView/Layers';
+import COGLayerComponent from 'components/MapView/Layers/COGLayer';
+import DeckGLOverlay from 'components/MapView/DeckGLOverlay';
+import { DeckGLLayersProvider } from 'components/MapView/DeckGLLayersContext';
 import GeojsonDataLayer from 'components/MapView/Layers/GeojsonDataLayer';
 import AnticipatoryActionFloodLayer from 'components/MapView/Layers/AnticipatoryActionFloodLayer';
 import { MapExportLayoutProps } from './types';
@@ -65,6 +68,7 @@ type LayerComponentsMap<U extends LayerType> = {
 const componentTypes: LayerComponentsMap<LayerType> = {
   boundary: { component: BoundaryLayer },
   wms: { component: WMSLayer },
+  cog: { component: COGLayerComponent },
   admin_level_data: { component: AdminLevelDataLayer },
   impact: { component: ImpactLayer },
   point_data: { component: PointDataLayer },
@@ -560,68 +564,71 @@ function MapExportLayout({
         </div>
       )}
       <div className={classes.mapContainer}>
-        <MapGL
-          ref={mapRef}
-          dragRotate={false}
-          // preserveDrawingBuffer is required for the map to be exported as an image
-          preserveDrawingBuffer
-          initialViewState={effectiveInitialViewState}
-          onLoad={handleMapLoad}
-          mapStyle={processedMapStyle || mapStyle.toString()}
-        >
-          {/* Render selected layers - KEEP IN SYNC with MapView/Map/index.tsx */}
-          {/* Pass 'before' prop to insert layers below labels/symbols */}
-          {selectedLayers.map(layer => {
-            const { component } = componentTypes[layer.type];
-            return createElement(component as any, {
-              key: layer.id,
-              layer,
-              before: firstSymbolId,
-            });
-          })}
-          {/* AA Drought markers */}
-          {activePanel === Panel.AnticipatoryActionDrought &&
-            aaMarkers.map(marker => (
-              <Marker
-                key={`marker-${marker.district}`}
-                longitude={marker.longitude}
-                latitude={marker.latitude}
-                anchor="center"
+        <DeckGLLayersProvider>
+          <MapGL
+            ref={mapRef}
+            dragRotate={false}
+            // preserveDrawingBuffer is required for the map to be exported as an image
+            preserveDrawingBuffer
+            initialViewState={effectiveInitialViewState}
+            onLoad={handleMapLoad}
+            mapStyle={processedMapStyle || mapStyle.toString()}
+          >
+            <DeckGLOverlay />
+            {/* Render selected layers - KEEP IN SYNC with MapView/Map/index.tsx */}
+            {/* Pass 'before' prop to insert layers below labels/symbols */}
+            {selectedLayers.map(layer => {
+              const { component } = componentTypes[layer.type];
+              return createElement(component as any, {
+                key: layer.id,
+                layer,
+                before: firstSymbolId,
+              });
+            })}
+            {/* AA Drought markers */}
+            {activePanel === Panel.AnticipatoryActionDrought &&
+              aaMarkers.map(marker => (
+                <Marker
+                  key={`marker-${marker.district}`}
+                  longitude={marker.longitude}
+                  latitude={marker.latitude}
+                  anchor="center"
+                >
+                  <div style={{ transform: `scale(${scalePercent})` }}>
+                    {marker.icon}
+                  </div>
+                </Marker>
+              ))}
+            {/* AA Flood station markers */}
+            {activePanel === Panel.AnticipatoryActionFlood &&
+              floodStations.map(station => (
+                <FloodStationMarker
+                  key={`flood-station-${station.station_id}`}
+                  station={station}
+                  stationSummary={station}
+                  interactive={false}
+                />
+              ))}
+            {toggles.countryMask && invertedAdminBoundaryLimitPolygon && (
+              <Source
+                id="mask-overlay"
+                type="geojson"
+                data={invertedAdminBoundaryLimitPolygon}
               >
-                <div style={{ transform: `scale(${scalePercent})` }}>
-                  {marker.icon}
-                </div>
-              </Marker>
-            ))}
-          {/* AA Flood station markers */}
-          {activePanel === Panel.AnticipatoryActionFlood &&
-            floodStations.map(station => (
-              <FloodStationMarker
-                key={`flood-station-${station.station_id}`}
-                station={station}
-                stationSummary={station}
-                interactive={false}
-              />
-            ))}
-          {toggles.countryMask && invertedAdminBoundaryLimitPolygon && (
-            <Source
-              id="mask-overlay"
-              type="geojson"
-              data={invertedAdminBoundaryLimitPolygon}
-            >
-              <Layer
-                id="mask-layer-overlay"
-                type="fill"
-                source="mask-overlay"
-                layout={{}}
-                paint={{
-                  'fill-color': '#000',
-                  'fill-opacity': 0.7,
-                }}
-              />
-            </Source>
-          )}
-        </MapGL>
+                <Layer
+                  id="mask-layer-overlay"
+                  type="fill"
+                  source="mask-overlay"
+                  layout={{}}
+                  paint={{
+                    'fill-color': '#000',
+                    'fill-opacity': 0.7,
+                  }}
+                />
+              </Source>
+            )}
+          </MapGL>
+        </DeckGLLayersProvider>
       </div>
     </div>
   );

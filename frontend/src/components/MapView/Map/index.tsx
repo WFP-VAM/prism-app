@@ -40,6 +40,9 @@ import {
   StaticRasterLayer,
   WMSLayer,
 } from 'components/MapView/Layers';
+import COGLayerComponent from 'components/MapView/Layers/COGLayer';
+import DeckGLOverlay from 'components/MapView/DeckGLOverlay';
+import { DeckGLLayersProvider } from 'components/MapView/DeckGLLayersContext';
 import useLayers from 'utils/layers-utils';
 import MapGL, { MapEvent, MapRef } from 'react-map-gl/maplibre';
 import {
@@ -74,6 +77,7 @@ type LayerComponentsMap<U extends LayerType> = {
 const componentTypes: LayerComponentsMap<LayerType> = {
   boundary: { component: BoundaryLayer },
   wms: { component: WMSLayer },
+  cog: { component: COGLayerComponent },
   admin_level_data: { component: AdminLevelDataLayer },
   impact: { component: ImpactLayer },
   point_data: { component: PointDataLayer },
@@ -317,41 +321,44 @@ const MapComponent = memo(
         : mapState.minMapBounds;
 
     return (
-      <MapGL
-        key={smDown ? 'mobile' : 'desktop'}
-        ref={mapRef}
-        // preserveDrawingBuffer is required for the map to be exported as an image. Used in reportDoc.tsx
-        preserveDrawingBuffer
-        dragRotate={false}
-        minZoom={minZoom}
-        maxZoom={maxZoom}
-        initialViewState={{
-          bounds: initialBounds as LngLatBoundsLike,
-          fitBoundsOptions: smDown
-            ? undefined
-            : { padding: fitBoundsOptions.padding },
-        }}
-        mapStyle={mapStyle}
-        onLoad={onMapLoadWithLabelFilter}
-        onClick={mapOnClick}
-        maxBounds={maxBounds}
-      >
-        {selectedLayers.map((layer, index) => {
-          const { component } = componentTypes[layer.type];
-          return createElement(component as any, {
-            key: layer.id,
-            layer,
-            before: getBeforeId(
-              index,
-              LAYERS_ABOVE_BOUNDARIES.includes(layer.type),
-            ),
-          });
-        })}
-        <AnalysisLayer before={firstBoundaryId} mapRef={mapRef} />
-        <SelectionLayer before={firstSymbolId} />
-        <MapTooltip />
-        {children}
-      </MapGL>
+      <DeckGLLayersProvider>
+        <MapGL
+          key={smDown ? 'mobile' : 'desktop'}
+          ref={mapRef}
+          // preserveDrawingBuffer is required for the map to be exported as an image. Used in reportDoc.tsx
+          preserveDrawingBuffer
+          dragRotate={false}
+          minZoom={minZoom}
+          maxZoom={maxZoom}
+          initialViewState={{
+            bounds: initialBounds as LngLatBoundsLike,
+            fitBoundsOptions: smDown
+              ? undefined
+              : { padding: fitBoundsOptions.padding },
+          }}
+          mapStyle={mapStyle}
+          onLoad={onMapLoadWithLabelFilter}
+          onClick={mapOnClick}
+          maxBounds={maxBounds}
+        >
+          <DeckGLOverlay />
+          {selectedLayers.map((layer, index) => {
+            const { component } = componentTypes[layer.type];
+            return createElement(component as any, {
+              key: layer.id,
+              layer,
+              before: getBeforeId(
+                index,
+                LAYERS_ABOVE_BOUNDARIES.includes(layer.type),
+              ),
+            });
+          })}
+          <AnalysisLayer before={firstBoundaryId} mapRef={mapRef} />
+          <SelectionLayer before={firstSymbolId} />
+          <MapTooltip />
+          {children}
+        </MapGL>
+      </DeckGLLayersProvider>
     );
   },
 );

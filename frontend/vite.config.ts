@@ -88,6 +88,13 @@ export default defineConfig({
   },
   build: {
     outDir: 'build',
+    target: 'es2022',
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      target: 'es2022',
+    },
+    exclude: ['@developmentseed/geotiff'],
   },
   server: {
     allowedHosts: true,

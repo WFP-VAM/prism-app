@@ -1,6 +1,7 @@
 import { createAsyncThunk, AsyncThunk } from '@reduxjs/toolkit';
 import {
   AnticipatoryActionLayerProps,
+  CogLayerProps,
   DateItem,
   DiscriminateUnion,
   GeojsonLayerData,
@@ -25,7 +26,7 @@ import { fetchGeojsonLayerData } from './geojson';
 
 export type LayerAcceptingDataType = Exclude<
   LayerType,
-  StaticRasterLayerProps | AnticipatoryActionLayerProps
+  StaticRasterLayerProps | AnticipatoryActionLayerProps | CogLayerProps
 >;
 
 type LayerSpecificDataTypes = {

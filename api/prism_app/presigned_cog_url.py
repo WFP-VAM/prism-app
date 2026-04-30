@@ -80,76 +80,24 @@ def _get_bucket_region(bucket: str) -> str:
     return region
 
 
-@cached(cache=TTLCache(maxsize=256, ttl=_CACHE_TTL))
-def get_presigned_cog_url(
-    collection: str,
-    date: str | None = None,
-    band: str | None = None,
-) -> str:
-    """
-    Look up a COG asset in the STAC catalog and return a short-lived pre-signed
-    URL that the browser can use for byte-range requests.
-
-    Args:
-        collection: STAC collection ID (matches ``additional_query_params.collection``
-                    or ``server_layer_name`` in layer config).
-        date:       Optional ISO-8601 date string for temporal filtering.
-        band:       Optional asset key / band name within the STAC item.
-
-    Returns:
-        A pre-signed HTTPS URL valid for ``PRESIGNED_URL_EXPIRES_IN`` seconds.
-    """
-    catalog = Client.open(STAC_URL)
-
-    datetime_params = [date] if date is not None else None
-    results = catalog.search(
-        collections=[collection],
-        datetime=datetime_params,
-    )
-    items = list(results.items())
-
-    if not items:
-        raise HTTPException(
-            status_code=404,
-            detail=f"No items found for collection '{collection}'"
-            + (f" on date '{date}'" if date else ""),
+def _resolve_asset_key(item, band: str | None) -> str:
+    """Pick the asset key from a STAC item: requested band first, then first available."""
+    available = item.assets
+    if band and band in available:
+        return band
+    if band:
+        logger.warning(
+            "Band '%s' not found in item '%s'; available: %s. Falling back to first asset.",
+            band,
+            item.id,
+            list(available.keys()),
         )
+    return next(iter(available))
 
-    item = items[0]
-    available_assets = item.assets
 
-    if not available_assets:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Item '{item.id}' in collection '{collection}' has no assets",
-        )
-
-    # Resolve asset key: prefer requested band if present, else first asset
-    if band and band in available_assets:
-        asset_key = band
-    else:
-        if band:
-            logger.warning(
-                "Band '%s' not found in item '%s'; available: %s. Falling back to first asset.",
-                band,
-                item.id,
-                list(available_assets.keys()),
-            )
-        asset_key = next(iter(available_assets))
-
-    href = available_assets[asset_key].href
-    logger.debug("Resolved asset href for '%s/%s': %s", collection, asset_key, href)
-
-    try:
-        bucket, key, region_from_href = _parse_s3_href(href)
-    except ValueError as exc:
-        raise HTTPException(
-            status_code=500,
-            detail=str(exc),
-        ) from exc
-
-    # Use region from href when available; otherwise look it up so SigV4 signing
-    # uses the correct regional endpoint (wrong region → AuthorizationQueryParametersError).
+def _presign_href(href: str) -> str:
+    """Parse an S3 href and return a SigV4 presigned URL."""
+    bucket, key, region_from_href = _parse_s3_href(href)
     region = region_from_href or _get_bucket_region(bucket)
 
     s3_client = boto3.client(
@@ -172,5 +120,75 @@ def get_presigned_cog_url(
         key,
         PRESIGNED_URL_EXPIRES_IN,
     )
-
     return presigned_url
+
+
+@cached(cache=TTLCache(maxsize=256, ttl=_CACHE_TTL))
+def get_presigned_cog_urls(
+    collection: str,
+    date: str | None = None,
+    band: str | None = None,
+    bbox: tuple[float, float, float, float] | None = None,
+) -> list[dict]:
+    """
+    Look up COG assets in the STAC catalog and return short-lived pre-signed
+    URLs that the browser can use for byte-range requests.
+
+    For tiled collections (e.g. MODIS sinusoidal grid) a single collection + date
+    may return many items, one per spatial tile.  Every matching item is presigned.
+
+    Args:
+        collection: STAC collection ID (matches ``additional_query_params.collection``
+                    or ``server_layer_name`` in layer config).
+        date:       Optional ISO-8601 date string for temporal filtering.
+        band:       Optional asset key / band name within the STAC item.
+        bbox:       Optional WGS84 bounding box [minLon, minLat, maxLon, maxLat]
+                    for spatial filtering.  Useful for tiled collections to avoid
+                    returning tiles outside the deployment region.
+
+    Returns:
+        A list of dicts, each containing ``item_id``, ``url``, and ``bbox``.
+    """
+    catalog = Client.open(STAC_URL)
+
+    datetime_params = [date] if date is not None else None
+    search_kwargs: dict = {
+        "collections": [collection],
+        "datetime": datetime_params,
+    }
+    if bbox is not None:
+        search_kwargs["bbox"] = list(bbox)
+    results = catalog.search(**search_kwargs)
+    items = list(results.items())
+
+    if not items:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No items found for collection '{collection}'"
+            + (f" on date '{date}'" if date else ""),
+        )
+
+    presigned: list[dict] = []
+    for item in items:
+        if not item.assets:
+            logger.warning("Skipping item '%s' — no assets", item.id)
+            continue
+
+        asset_key = _resolve_asset_key(item, band)
+        href = item.assets[asset_key].href
+        logger.debug("Resolved asset href for '%s/%s': %s", item.id, asset_key, href)
+
+        try:
+            url = _presign_href(href)
+        except ValueError as exc:
+            raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+        presigned.append({"item_id": item.id, "url": url, "bbox": item.bbox})
+
+    if not presigned:
+        raise HTTPException(
+            status_code=404,
+            detail=f"All items in collection '{collection}' lack assets",
+        )
+
+    return presigned

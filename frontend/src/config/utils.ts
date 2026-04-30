@@ -22,6 +22,7 @@ import {
   StatsApi,
   TableType,
   WMSLayerProps,
+  CogLayerProps,
 } from './types';
 
 // Typescript does not handle our configuration methods very well
@@ -106,6 +107,11 @@ export const getLayerByKey = (layerKey: LayerKey): LayerType => {
   switch (definition.type) {
     case 'wms':
       if (checkRequiredKeys(WMSLayerProps, definition, true)) {
+        return definition;
+      }
+      return throwInvalidLayer();
+    case 'cog':
+      if (checkRequiredKeys(CogLayerProps, definition, true)) {
         return definition;
       }
       return throwInvalidLayer();
