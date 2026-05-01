@@ -16,6 +16,8 @@ from prism_app.prism_auth_service import is_active, load_user_and_permissions
 # Starlette SessionMiddleware session dict keys (JSON-serializable).
 PRISM_SESSION_USER_ID = "prism_uid"
 PRISM_SESSION_CIAM_SUB = "ciam_sub"
+# Bound to GET /auth/sign-out → POST /auth/sign-out (consumption via session.pop).
+PRISM_SESSION_SIGN_OUT_CSRF = "sign_out_csrf"
 
 
 def set_prism_session_user(request: Request, *, user_id: UUID, ciam_sub: str) -> None:

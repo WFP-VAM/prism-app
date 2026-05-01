@@ -1,6 +1,7 @@
 """Regression tests for admin OIDC security hardening (PR A)."""
 
 import os
+import re
 
 import pytest
 
@@ -14,6 +15,10 @@ from sqlalchemy import create_engine
 from prism_app.admin_oidc_auth import PrismAdminAuthProvider
 from prism_app.admin_settings import AdminAuthSettings, get_admin_auth_settings
 from prism_app.main import app
+
+# Session cookies use Secure when PRISM_SESSION_COOKIE_SECURE defaults true; httpx omits Secure
+# cookies on http:// URLs, so use HTTPS for any flow that round-trips the session cookie.
+_HTTPS = "https://testserver"
 
 
 def test_prism_admin_auth_provider_does_not_allowlist_admin_api_routes() -> None:
@@ -43,25 +48,35 @@ def test_production_requires_session_secret(monkeypatch: pytest.MonkeyPatch) -> 
 
 def test_get_sign_out_when_admin_auth_disabled_redirects_without_confirm() -> None:
     """conftest sets PRISM_ADMIN_AUTH_DISABLED — sign-out skips the confirm HTML page."""
-    client = TestClient(app)
+    client = TestClient(app, base_url=_HTTPS)
     r = client.get("/auth/sign-out", follow_redirects=False)
     assert r.status_code == 303
     assert r.headers["location"] == "/auth/signed-out"
 
 
+def _oidc_sign_out_test_settings() -> AdminAuthSettings:
+    """Configured OIDC (invalid issuer avoids network); enough fields for POST sign-out."""
+
+    return AdminAuthSettings.model_construct(
+        admin_auth_disabled=False,
+        oidc_issuer="https://example.invalid/oauth2/",
+        oidc_client_id="test",
+        oidc_client_secret="test",
+        oidc_redirect_uri="https://example.invalid/callback",
+        session_secret="0123456789abcdef" * 2,
+        session_cookie_secure=True,
+    )
+
+
 def test_get_sign_out_when_oidc_enabled_shows_confirm_page() -> None:
     """GET must not mutate session via top-level navigation when OIDC is active."""
 
-    class _OidcOnSettings:
-        admin_auth_disabled = False
-        oidc_configured = True
-
     def _fake_admin_auth_settings():
-        return _OidcOnSettings()
+        return _oidc_sign_out_test_settings()
 
     app.dependency_overrides[get_admin_auth_settings] = _fake_admin_auth_settings
     try:
-        client = TestClient(app)
+        client = TestClient(app, base_url=_HTTPS)
         r = client.get("/auth/sign-out")
     finally:
         app.dependency_overrides.pop(get_admin_auth_settings, None)
@@ -70,3 +85,50 @@ def test_get_sign_out_when_oidc_enabled_shows_confirm_page() -> None:
     assert "Confirm sign out" in r.text
     assert 'method="post"' in r.text.lower()
     assert "/auth/sign-out" in r.text
+    assert 'name="csrf_token"' in r.text
+    m = re.search(r'name="csrf_token"\s+value="([^"]+)"', r.text)
+    assert m is not None and m.group(1)
+
+
+def test_post_sign_out_oidc_without_csrf_returns_403() -> None:
+
+    def _fake_admin_auth_settings():
+        return _oidc_sign_out_test_settings()
+
+    app.dependency_overrides[get_admin_auth_settings] = _fake_admin_auth_settings
+    try:
+        client = TestClient(app, base_url=_HTTPS)
+        r = client.post("/auth/sign-out", data={})
+    finally:
+        app.dependency_overrides.pop(get_admin_auth_settings, None)
+
+    assert r.status_code == 403
+    assert "security token" in r.text.lower()
+
+
+def test_post_sign_out_oidc_with_csrf_redirects() -> None:
+
+    def _fake_admin_auth_settings():
+        return _oidc_sign_out_test_settings()
+
+    app.dependency_overrides[get_admin_auth_settings] = _fake_admin_auth_settings
+    try:
+        client = TestClient(app, base_url=_HTTPS)
+        g = client.get("/auth/sign-out")
+        m = re.search(r'name="csrf_token"\s+value="([^"]+)"', g.text)
+        assert m is not None
+        token = m.group(1)
+        r = client.post("/auth/sign-out", data={"csrf_token": token}, follow_redirects=False)
+    finally:
+        app.dependency_overrides.pop(get_admin_auth_settings, None)
+
+    assert r.status_code == 303
+    assert r.headers["location"] == "/auth/signed-out"
+
+
+def test_post_sign_out_when_admin_disabled_works_without_csrf() -> None:
+    """Local-dev path: no OIDC confirm page, POST must not require CSRF."""
+    client = TestClient(app, base_url=_HTTPS)
+    r = client.post("/auth/sign-out", data={}, follow_redirects=False)
+    assert r.status_code == 303
+    assert r.headers["location"] == "/auth/signed-out"

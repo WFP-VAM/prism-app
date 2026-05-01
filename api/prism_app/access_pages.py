@@ -80,6 +80,18 @@ def signed_out_response() -> HTMLResponse:
     return _render_template("signed_out.html", status_code=200)
 
 
-def sign_out_confirm_response() -> HTMLResponse:
-    """Ask the user to POST /auth/sign-out (avoids logout CSRF via cross-site GET navigation)."""
-    return _render_template("sign_out_confirm.html", status_code=200)
+def sign_out_confirm_response(csrf_token: str) -> HTMLResponse:
+    """Prompt for POST /auth/sign-out with CSRF token (see router)."""
+    return _render_template(
+        "sign_out_confirm.html",
+        status_code=200,
+        csrf_token=csrf_token,
+    )
+
+
+def sign_out_csrf_failed_response() -> HTMLResponse:
+    """POST /auth/sign-out without a valid CSRF synchronizer."""
+    return _render_template(
+        "sign_out_csrf_failed.html",
+        status_code=403,
+    )

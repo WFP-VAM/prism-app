@@ -150,11 +150,13 @@ Paste the result into `api/.env` as `PRISM_SESSION_SECRET=...`. In AWS or simila
 | `GET /auth/sign-in` | Start OIDC (`?next=` optional return path). |
 | `GET /auth/callback` | Registered redirect URI; exchanges code and sets session cookie. |
 | `GET /auth/sign-out` | When OIDC is enabled: confirmation page; submit to clear cookies. Otherwise redirects and clears cookies immediately. |
-| `POST /auth/sign-out` | Clears PRISM session / OIDC state cookies; redirects to CIAM end-session when configured. |
+| `POST /auth/sign-out` | Clears PRISM session / OIDC state cookies; redirects to CIAM end-session when configured. When the confirmation page is used, the form must include a **CSRF token** issued on that GET (see below). |
 | `GET /access-not-configured` | Signed-in user with no permission rows. |
 | `GET /api/admin/whoami` | JSON probe; requires session + `prism.admin.access`. |
 
 **Prism Admin browser session**: Starlette **`SessionMiddleware`** signs a **`PRISM_SESSION_COOKIE_NAME`** cookie (JSON payload via **itsdangerous**). **`PRISM_SESSION_TTL_SECONDS`** maps to the middleware **`max_age`** (also enforced by cookie timestamp signature). Prism stores **`prism_uid`** / **`ciam_sub`** keys in that session (`prism_app/deps.py`).
+
+**Sign-out CSRF**: For **OIDC** deployments, `GET /auth/sign-out` stores a one-time token in the signed session and renders it as a hidden `csrf_token` field. `POST /auth/sign-out` **must** match that value (then the token is discarded). This blocks **logout CSRF**—a third-party site tricking the browser into submitting a state-changing request that carries your session cookies. `SameSite` cookies reduce that risk for many browsers but are not a complete substitute. When **`PRISM_ADMIN_AUTH_DISABLED`** is true or OIDC is not configured, sign-out does not use the confirm form, so POST does not require this token.
 
 ## Alerts database migrations (Alembic)
 

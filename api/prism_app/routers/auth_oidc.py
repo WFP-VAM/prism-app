@@ -9,7 +9,7 @@ from typing import Annotated
 import httpx
 import jwt
 from authlib.integrations.base_client.errors import OAuthError
-from fastapi import APIRouter, Depends, Query, Request
+from fastapi import APIRouter, Depends, Form, Query, Request
 from fastapi.responses import RedirectResponse, Response
 
 from prism_app.access_pages import (
@@ -17,6 +17,7 @@ from prism_app.access_pages import (
     oidc_not_configured_response,
     oidc_session_interrupted_response,
     sign_out_confirm_response,
+    sign_out_csrf_failed_response,
     signed_out_response,
 )
 from prism_app.admin_settings import (
@@ -25,6 +26,7 @@ from prism_app.admin_settings import (
     log_oidc_configuration_blocked,
 )
 from prism_app.deps import (
+    PRISM_SESSION_SIGN_OUT_CSRF,
     clear_oidc_state_cookie,
     clear_prism_auth_cookies,
     clear_prism_browser_session,
@@ -76,6 +78,17 @@ def _clear_session_and_oidc_state_only(
 ) -> None:
     clear_prism_browser_session(request)
     clear_oidc_state_cookie(response, settings)
+
+
+def _consume_sign_out_csrf(request: Request, submitted: str | None) -> bool:
+    """POP session CSRF token and compare to form field (one-time, timing-safe)."""
+    expected = request.session.pop(PRISM_SESSION_SIGN_OUT_CSRF, None)
+    if not isinstance(expected, str) or not expected or submitted is None:
+        return False
+    got = submitted.strip()
+    if len(got) != len(expected):
+        return False
+    return secrets.compare_digest(expected, got)
 
 
 def _safe_next(next_raw: str | None, default: str = "/admin/") -> str:
@@ -304,12 +317,19 @@ def oidc_sign_out_confirm(
 ) -> Response:
     if settings.admin_auth_disabled or not settings.oidc_configured:
         return _perform_sign_out(request, settings)
-    return sign_out_confirm_response()
+    csrf = secrets.token_urlsafe(32)
+    request.session[PRISM_SESSION_SIGN_OUT_CSRF] = csrf
+    return sign_out_confirm_response(csrf)
 
 
 @router.post("/sign-out")
 def oidc_sign_out_post(
     request: Request,
     settings: Annotated[AdminAuthSettings, Depends(get_admin_auth_settings)],
+    csrf_token: Annotated[str | None, Form()] = None,
 ) -> Response:
+    if settings.oidc_configured and not settings.admin_auth_disabled:
+        csrf = csrf_token.strip() if csrf_token else None
+        if not _consume_sign_out_csrf(request, csrf):
+            return sign_out_csrf_failed_response()
     return _perform_sign_out(request, settings)
