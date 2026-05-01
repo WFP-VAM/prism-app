@@ -78,3 +78,8 @@ def oidc_not_configured_response(
 def signed_out_response() -> HTMLResponse:
     """After sign-out: PRISM cookies are cleared; CIAM may redirect here when post_logout_redirect_uri is configured."""
     return _render_template("signed_out.html", status_code=200)
+
+
+def sign_out_confirm_response() -> HTMLResponse:
+    """Ask the user to POST /auth/sign-out (avoids logout CSRF via cross-site GET navigation)."""
+    return _render_template("sign_out_confirm.html", status_code=200)

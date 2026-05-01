@@ -32,7 +32,6 @@ class PrismAdminAuthProvider(BaseAuthProvider):
         super().__init__(
             login_path="/login",
             logout_path="/logout",
-            allow_routes=["api", "api:file"],
         )
         self.engine = engine
         self.settings = settings

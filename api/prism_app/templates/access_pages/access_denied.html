@@ -15,8 +15,8 @@
     if this persists, contact an administrator.
 </p>
 <p>
-    Signing out via <a href="/auth/sign-out">Sign out</a> clears PRISM cookies and, when your
-    deployment is wired to CIAM, redirects you through CIAM's end-session URL so the SSO session
+    <a href="/auth/sign-out">Sign out</a> opens a confirmation step, then clears PRISM cookies;
+    when CIAM is configured it redirects through CIAM's end-session URL so the SSO session
     can end as well (configure <code>PRISM_OIDC_POST_LOGOUT_REDIRECT_URI</code> per CIAM).
     If you only need a fresh CIAM credential prompt next time, you can also use
     <code>PRISM_OIDC_AUTHORIZE_PROMPT=login</code> or a private window.

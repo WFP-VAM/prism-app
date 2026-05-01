@@ -1,0 +1,14 @@
+{% extends "access_pages_base.html" %}
+{% set title = "Sign out" %}
+{% set heading = "Confirm sign out" %}
+
+{% block content %}
+<p>
+    Use the button below to end your PRISM admin session (clear cookies).
+    When CIAM logout is configured, you will be redirected through the identity provider
+    after your session ends here.
+</p>
+<form method="post" action="/auth/sign-out">
+    <button type="submit" class="btn btn-outline-secondary">Sign out</button>
+</form>
+{% endblock %}

@@ -15,6 +15,7 @@ from prism_app.access_pages import (
     access_denied_response,
     oidc_not_configured_response,
     oidc_session_interrupted_response,
+    sign_out_confirm_response,
     signed_out_response,
 )
 from prism_app.admin_settings import (
@@ -60,7 +61,7 @@ def _cookie_params(settings: AdminAuthSettings) -> dict:
 def _set_id_token_hint_cookie(
     response: Response, settings: AdminAuthSettings, id_token: str
 ) -> None:
-    """Store id_token so /auth/sign-out can pass id_token_hint to CIAM."""
+    """Store id_token so POST /auth/sign-out can pass id_token_hint to CIAM."""
     response.set_cookie(
         key=settings.oidc_id_token_hint_cookie_name,
         value=id_token,
@@ -85,6 +86,25 @@ def _safe_next(next_raw: str | None, default: str = "/admin/") -> str:
     if p.scheme in ("http", "https") and p.path:
         return p.path + (f"?{p.query}" if p.query else "")
     return default
+
+
+def _perform_sign_out(request: Request, settings: AdminAuthSettings) -> Response:
+    """Clear PRISM auth cookies; redirect to CIAM end_session when OIDC is enabled and configured."""
+    if settings.admin_auth_disabled or not settings.oidc_configured:
+        r = RedirectResponse(url="/auth/signed-out", status_code=303)
+        clear_prism_auth_cookies(r, settings)
+        return r
+
+    hint_raw = request.cookies.get(settings.oidc_id_token_hint_cookie_name)
+    hint_stripped = hint_raw.strip() if isinstance(hint_raw, str) else None
+    dest = build_rp_initiated_logout_url(
+        settings, hint_stripped if hint_stripped else None
+    )
+    fallback = "/auth/signed-out"
+    url = dest if dest else fallback
+    r = RedirectResponse(url=url, status_code=303)
+    clear_prism_auth_cookies(r, settings)
+    return r
 
 
 @router.get("/sign-in")
@@ -275,22 +295,18 @@ def oidc_signed_out() -> Response:
 
 
 @router.get("/sign-out")
-def oidc_sign_out(
+def oidc_sign_out_confirm(
     request: Request,
     settings: Annotated[AdminAuthSettings, Depends(get_admin_auth_settings)],
 ) -> Response:
     if settings.admin_auth_disabled or not settings.oidc_configured:
-        r = RedirectResponse(url="/auth/signed-out", status_code=303)
-        clear_prism_auth_cookies(r, settings)
-        return r
+        return _perform_sign_out(request, settings)
+    return sign_out_confirm_response()
 
-    hint_raw = request.cookies.get(settings.oidc_id_token_hint_cookie_name)
-    hint_stripped = hint_raw.strip() if isinstance(hint_raw, str) else None
-    dest = build_rp_initiated_logout_url(
-        settings, hint_stripped if hint_stripped else None
-    )
-    fallback = "/auth/signed-out"
-    url = dest if dest else fallback
-    r = RedirectResponse(url=url, status_code=303)
-    clear_prism_auth_cookies(r, settings)
-    return r
+
+@router.post("/sign-out")
+def oidc_sign_out_post(
+    request: Request,
+    settings: Annotated[AdminAuthSettings, Depends(get_admin_auth_settings)],
+) -> Response:
+    return _perform_sign_out(request, settings)

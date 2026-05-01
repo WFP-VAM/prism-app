@@ -136,7 +136,8 @@ For **local development without CIAM**, set **`PRISM_ADMIN_AUTH_DISABLED=true`**
 |------|--------|
 | `GET /auth/sign-in` | Start OIDC (`?next=` optional return path). |
 | `GET /auth/callback` | Registered redirect URI; exchanges code and sets session cookie. |
-| `GET /auth/sign-out` | Clears PRISM session / OIDC state cookies. |
+| `GET /auth/sign-out` | When OIDC is enabled: confirmation page; submit to clear cookies. Otherwise redirects and clears cookies immediately. |
+| `POST /auth/sign-out` | Clears PRISM session / OIDC state cookies; redirects to CIAM end-session when configured. |
 | `GET /access-not-configured` | Signed-in user with no permission rows. |
 | `GET /api/admin/whoami` | JSON probe; requires session + `prism.admin.access`. |
 

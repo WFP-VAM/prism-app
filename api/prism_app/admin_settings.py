@@ -32,7 +32,7 @@ class AdminAuthSettings(BaseSettings):
 
     session_secret: str = ""
     session_cookie_name: str = "prism_session"
-    session_cookie_secure: bool = False
+    session_cookie_secure: bool = True
     session_cookie_samesite: str = "lax"
     session_ttl_seconds: int = 3600
     oidc_state_cookie_name: str = "prism_oidc_state"

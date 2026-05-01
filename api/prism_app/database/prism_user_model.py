@@ -26,7 +26,7 @@ _prism_user_status = ENUM(
 
 
 class PrismUser(SQLModel, table=True):
-    """Alerts DB user: keyed by CIAM ``sub``. First OIDC login can JIT-create row; permissions are granted separately."""
+    """PRISM user: keyed by CIAM ``sub``."""
 
     __tablename__ = "users"
 
