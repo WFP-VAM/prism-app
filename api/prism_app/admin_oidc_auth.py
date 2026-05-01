@@ -3,10 +3,8 @@
 from __future__ import annotations
 
 from typing import Optional, Union
-from urllib.parse import urlencode
-from uuid import UUID
+from urllib.parse import quote, urlencode
 
-import jwt
 from sqlalchemy.engine import Engine
 from starlette.middleware import Middleware
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
@@ -19,9 +17,9 @@ from starlette.status import HTTP_303_SEE_OTHER
 
 from prism_app.access_pages import access_denied_response, oidc_not_configured_response
 from prism_app.admin_settings import AdminAuthSettings, log_oidc_configuration_blocked
-from prism_app.oidc_support import verify_session_cookie
+from prism_app.deps import load_prism_user_from_session
 from prism_app.permission_codes import ADMIN_ACCESS, ALL_CAPABILITIES
-from prism_app.prism_auth_service import is_active, load_user_and_permissions
+from prism_app.prism_auth_service import is_active
 from starlette_admin.base import BaseAdmin
 
 
@@ -65,8 +63,6 @@ class PrismAdminAuthProvider(BaseAuthProvider):
     async def _render_oidc_login_redirect(
         self, request: Request, admin: BaseAdmin
     ) -> Response:
-        from urllib.parse import quote
-
         nxt = request.query_params.get("next") or str(request.url_for("index"))
         return RedirectResponse(
             url=f"/auth/sign-in?next={quote(nxt, safe='')}",
@@ -144,8 +140,13 @@ class PrismAdminAuthMiddleware(BaseHTTPMiddleware):
             log_oidc_configuration_blocked(settings, where="Starlette-admin middleware")
             return oidc_not_configured_response(settings)
 
-        raw = request.cookies.get(settings.session_cookie_name)
-        if not raw:
+        user, codes, _ = load_prism_user_from_session(
+            request,
+            prov.engine,
+            settings,
+        )
+
+        if user is None:
             return RedirectResponse(
                 "{url}?{query_params}".format(
                     url=request.url_for(request.app.state.ROUTE_NAME + ":login"),
@@ -154,25 +155,12 @@ class PrismAdminAuthMiddleware(BaseHTTPMiddleware):
                 status_code=HTTP_303_SEE_OTHER,
             )
 
-        try:
-            claims = verify_session_cookie(settings, raw)
-        except jwt.PyJWTError:
-            return RedirectResponse(
-                "{url}?{query_params}".format(
-                    url=request.url_for(request.app.state.ROUTE_NAME + ":login"),
-                    query_params=urlencode({"next": str(request.url)}),
-                ),
-                status_code=HTTP_303_SEE_OTHER,
-            )
-
-        user, codes = load_user_and_permissions(prov.engine, UUID(claims["uid"]))
         if not is_active(user):
             return access_denied_response(settings.access_support_email)
 
         if ADMIN_ACCESS not in codes:
             return RedirectResponse("/access-not-configured", HTTP_303_SEE_OTHER)
 
-        assert user is not None
         request.state.prism_user = user
         request.state.permission_codes = codes
         return await call_next(request)

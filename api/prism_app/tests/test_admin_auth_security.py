@@ -2,6 +2,8 @@
 
 import os
 
+import pytest
+
 # main.py imports kobo at module load time; provide placeholders for unit tests.
 os.environ.setdefault("KOBO_USERNAME", "pytest")
 os.environ.setdefault("KOBO_PASSWORD", "pytest")
@@ -26,6 +28,17 @@ def test_prism_admin_auth_provider_does_not_allowlist_admin_api_routes() -> None
 
 def test_admin_auth_settings_default_session_cookie_secure() -> None:
     assert AdminAuthSettings().session_cookie_secure is True
+
+
+def test_production_requires_session_secret(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("PRISM_ENV", "production")
+    monkeypatch.setenv("PRISM_SESSION_SECRET", "")
+    get_admin_auth_settings.cache_clear()
+    try:
+        with pytest.raises(ValueError, match="PRISM_SESSION_SECRET"):
+            get_admin_auth_settings()
+    finally:
+        get_admin_auth_settings.cache_clear()
 
 
 def test_get_sign_out_when_admin_auth_disabled_redirects_without_confirm() -> None:

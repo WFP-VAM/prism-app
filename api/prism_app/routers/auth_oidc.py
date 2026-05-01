@@ -27,14 +27,14 @@ from prism_app.admin_settings import (
 from prism_app.deps import (
     clear_oidc_state_cookie,
     clear_prism_auth_cookies,
-    delete_prism_cookie_matching_issue,
+    clear_prism_browser_session,
+    set_prism_session_user,
 )
 from prism_app.oidc_support import (
     build_authorize_url,
     build_rp_initiated_logout_url,
     exchange_code_for_tokens,
     generate_pkce_pair,
-    session_cookie_value_and_max_age,
     sign_oidc_state,
     verify_id_token,
     verify_oidc_state,
@@ -71,8 +71,10 @@ def _set_id_token_hint_cookie(
     )
 
 
-def _clear_session_and_oidc_state_only(response: Response, settings: AdminAuthSettings) -> None:
-    delete_prism_cookie_matching_issue(response, settings, settings.session_cookie_name)
+def _clear_session_and_oidc_state_only(
+    request: Request, response: Response, settings: AdminAuthSettings
+) -> None:
+    clear_prism_browser_session(request)
     clear_oidc_state_cookie(response, settings)
 
 
@@ -93,7 +95,7 @@ def _perform_sign_out(request: Request, settings: AdminAuthSettings) -> Response
     """Clear PRISM auth cookies; redirect to CIAM end_session when OIDC is enabled and configured."""
     if settings.admin_auth_disabled or not settings.oidc_configured:
         r = RedirectResponse(url="/auth/signed-out", status_code=303)
-        clear_prism_auth_cookies(r, settings)
+        clear_prism_auth_cookies(request, r, settings)
         return r
 
     hint_raw = request.cookies.get(settings.oidc_id_token_hint_cookie_name)
@@ -104,7 +106,7 @@ def _perform_sign_out(request: Request, settings: AdminAuthSettings) -> Response
     fallback = "/auth/signed-out"
     url = dest if dest else fallback
     r = RedirectResponse(url=url, status_code=303)
-    clear_prism_auth_cookies(r, settings)
+    clear_prism_auth_cookies(request, r, settings)
     return r
 
 
@@ -169,7 +171,7 @@ async def oidc_callback(
                 "OIDC callback missing state cookie or params (often refresh or bookmark)"
             )
         r = oidc_session_interrupted_response()
-        clear_prism_auth_cookies(r, settings)
+        clear_prism_auth_cookies(request, r, settings)
         return r
 
     try:
@@ -177,13 +179,13 @@ async def oidc_callback(
     except jwt.PyJWTError:
         logger.warning("OIDC state cookie invalid")
         r = oidc_session_interrupted_response()
-        clear_prism_auth_cookies(r, settings)
+        clear_prism_auth_cookies(request, r, settings)
         return r
 
     if state_claims.get("state") != state:
         logger.warning("OIDC state mismatch")
         r = oidc_session_interrupted_response()
-        clear_prism_auth_cookies(r, settings)
+        clear_prism_auth_cookies(request, r, settings)
         return r
 
     nonce = state_claims["nonce"]
@@ -201,7 +203,7 @@ async def oidc_callback(
         else:
             logger.exception("OIDC token exchange OAuth error: %s", exc)
         r = oidc_session_interrupted_response()
-        clear_prism_auth_cookies(r, settings)
+        clear_prism_auth_cookies(request, r, settings)
         return r
     except httpx.HTTPStatusError as exc:
         err = ""
@@ -214,19 +216,19 @@ async def oidc_callback(
         else:
             logger.exception("OIDC token exchange HTTP error: %s", exc)
         r = oidc_session_interrupted_response()
-        clear_prism_auth_cookies(r, settings)
+        clear_prism_auth_cookies(request, r, settings)
         return r
     except Exception as exc:  # noqa: BLE001
         logger.exception("OIDC token exchange failed: %s", exc)
         r = oidc_session_interrupted_response()
-        clear_prism_auth_cookies(r, settings)
+        clear_prism_auth_cookies(request, r, settings)
         return r
 
     id_token = tokens.get("id_token")
     if not id_token:
         logger.warning("Token response missing id_token")
         r = oidc_session_interrupted_response()
-        clear_prism_auth_cookies(r, settings)
+        clear_prism_auth_cookies(request, r, settings)
         return r
 
     try:
@@ -239,7 +241,7 @@ async def oidc_callback(
     except Exception as exc:  # noqa: BLE001
         logger.warning("ID token validation failed: %s", exc)
         r = oidc_session_interrupted_response()
-        clear_prism_auth_cookies(r, settings)
+        clear_prism_auth_cookies(request, r, settings)
         return r
 
     ciam_sub = claims["sub"]
@@ -254,7 +256,7 @@ async def oidc_callback(
             exc,
         )
         r = oidc_session_interrupted_response()
-        clear_prism_auth_cookies(r, settings)
+        clear_prism_auth_cookies(request, r, settings)
         return r
 
     if user is None:
@@ -263,41 +265,28 @@ async def oidc_callback(
             ciam_sub[:64],
         )
         r = access_denied_response(settings.access_support_email)
-        _clear_session_and_oidc_state_only(r, settings)
+        _clear_session_and_oidc_state_only(request, r, settings)
         _set_id_token_hint_cookie(r, settings, id_token)
         return r
 
     if not is_active(user):
         r = access_denied_response(settings.access_support_email)
-        _clear_session_and_oidc_state_only(r, settings)
+        _clear_session_and_oidc_state_only(request, r, settings)
         _set_id_token_hint_cookie(r, settings, id_token)
         return r
 
     touch_last_login(eng, user.id)
 
-    session_value, session_max_age = session_cookie_value_and_max_age(
-        settings, user_id=user.id, ciam_sub=user.ciam_sub
-    )
+    request.session.clear()
+    set_prism_session_user(request, user_id=user.id, ciam_sub=user.ciam_sub)
 
     if not codes:
         r = RedirectResponse(url="/access-not-configured", status_code=303)
-        r.set_cookie(
-            key=settings.session_cookie_name,
-            value=session_value,
-            max_age=session_max_age,
-            **_cookie_params(settings),
-        )
         _set_id_token_hint_cookie(r, settings, id_token)
         clear_oidc_state_cookie(r, settings)
         return r
 
     r = RedirectResponse(url=next_path, status_code=303)
-    r.set_cookie(
-        key=settings.session_cookie_name,
-        value=session_value,
-        max_age=session_max_age,
-        **_cookie_params(settings),
-    )
     _set_id_token_hint_cookie(r, settings, id_token)
     clear_oidc_state_cookie(r, settings)
     return r

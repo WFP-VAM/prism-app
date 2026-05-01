@@ -21,7 +21,6 @@ import time
 from functools import lru_cache
 from typing import Any
 from urllib.parse import quote, urlencode
-from uuid import UUID
 
 import httpx
 import jwt
@@ -36,9 +35,6 @@ from joserfc.jwk import KeySet
 from prism_app.admin_settings import AdminAuthSettings
 
 logger = logging.getLogger(__name__)
-
-# ``PRISM_DEV_SIMPLE_SESSION_COOKIE`` only: ~10 year Max-Age (dev convenience, not a security property).
-_DEV_SIMPLE_SESSION_MAX_AGE_SECONDS = 10 * 365 * 24 * 3600
 
 _SUPPORTED_ID_ALGS = frozenset({
     "RS256",
@@ -297,42 +293,6 @@ def verify_oidc_state(settings: AdminAuthSettings, token: str) -> dict[str, Any]
     )
 
 
-def sign_session_cookie(settings: AdminAuthSettings, payload: dict[str, Any]) -> str:
-    now = int(time.time())
-    body = {
-        **payload,
-        "iat": now,
-        "exp": now + settings.session_ttl_seconds,
-    }
-    return jwt.encode(body, settings.session_secret, algorithm="HS256")
-
-
-def verify_session_cookie(settings: AdminAuthSettings, token: str) -> dict[str, Any]:
-    if settings.dev_simple_session_cookie:
-        try:
-            uid = UUID(token.strip())
-        except ValueError as exc:
-            raise jwt.DecodeError("Invalid dev simple session cookie") from exc
-        return {"uid": str(uid), "ciam_sub": ""}
-
-    return jwt.decode(
-        token,
-        settings.session_secret,
-        algorithms=["HS256"],
-        options={"require": ["exp", "iat", "uid", "ciam_sub"]},
-    )
-
-
-def session_cookie_value_and_max_age(
-    settings: AdminAuthSettings, *, user_id: UUID, ciam_sub: str
-) -> tuple[str, int]:
-    """Return ``(Set-Cookie value, max_age)`` after successful OIDC login."""
-    if settings.dev_simple_session_cookie:
-        return str(user_id), _DEV_SIMPLE_SESSION_MAX_AGE_SECONDS
-    body = {"uid": str(user_id), "ciam_sub": ciam_sub}
-    return sign_session_cookie(settings, body), settings.session_ttl_seconds
-
-
 __all__ = [
     "DISCOVERY_PATH_SUFFIX",
     "build_authorize_url",
@@ -341,10 +301,7 @@ __all__ = [
     "generate_pkce_pair",
     "get_oidc_discovery_doc",
     "normalize_issuer_for_discovery",
-    "session_cookie_value_and_max_age",
     "sign_oidc_state",
     "verify_id_token",
     "verify_oidc_state",
-    "verify_session_cookie",
-    "sign_session_cookie",
 ]

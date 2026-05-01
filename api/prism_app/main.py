@@ -5,7 +5,7 @@ import json
 import logging
 import os
 from datetime import date
-from typing import Annotated, Any, Optional
+from typing import Annotated, Any, Literal, Optional
 from urllib.parse import ParseResult, urlencode, urlunparse
 
 import rasterio  # type: ignore
@@ -48,6 +48,7 @@ from prism_app.zonal_stats import (
 from pydantic import EmailStr, HttpUrl, ValidationError
 from requests import get
 from sqlalchemy import create_engine
+from starlette.middleware.sessions import SessionMiddleware
 from starlette_admin.contrib.sqla import Admin
 
 from .geotiff_from_stac_api import get_geotiff
@@ -80,6 +81,22 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+)
+
+_admin_session_settings = get_admin_auth_settings()
+_ss_low = _admin_session_settings.session_cookie_samesite.lower()
+_same_site_admin: Literal["lax", "strict", "none"] = (
+    _ss_low if _ss_low in ("lax", "strict", "none") else "lax"
+)
+
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=_admin_session_settings.session_secret,
+    session_cookie=_admin_session_settings.session_cookie_name,
+    max_age=_admin_session_settings.session_ttl_seconds,
+    path="/",
+    same_site=_same_site_admin,
+    https_only=_admin_session_settings.session_cookie_secure,
 )
 
 admin_engine = create_engine(DB_URI)

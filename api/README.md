@@ -130,6 +130,19 @@ See [`.env.example`](.env.example) for `PRISM_OIDC_*`, `PRISM_SESSION_SECRET`, c
 
 For **local development without CIAM**, set **`PRISM_ADMIN_AUTH_DISABLED=true`** (never in production). Example vars for tests are defaulted in [`prism_app/tests/conftest.py`](prism_app/tests/conftest.py).
 
+### Session secret (`PRISM_SESSION_SECRET`)
+
+The API uses Starlette **`SessionMiddleware`** with **itsdangerous** to sign [`PRISM_SESSION_COOKIE_NAME`](prism_app/admin_settings.py); the same key is used for short-lived **OIDC state** signing. In **production** you must set **`PRISM_SESSION_SECRET`** to a long random string and use the **same value** on every process and host (otherwise sessions break when load balancing). Set **`PRISM_ENV=production`** (or `prod`) so the app **fails fast at startup** if the secret is missing; leave `PRISM_ENV` unset (or any other value) for local and test runs, where an empty secret triggers a one-time **ephemeral** key at startup (logged as a warning)—convenient for scratch work, but cookies are invalidated on restart and multiple **uvicorn workers** do not share sessions unless you fix the secret.
+
+**Generate a stable secret locally** (pick one):
+
+```bash
+openssl rand -hex 32
+python -c "import secrets; print(secrets.token_hex(32))"
+```
+
+Paste the result into `api/.env` as `PRISM_SESSION_SECRET=...`. In AWS or similar, store it in Secrets Manager / SSM Parameter Store and inject into the container or task definition; rotating the secret logs everyone out until they sign in again.
+
 ### HTTP routes (main FastAPI app)
 
 | Path | Purpose |
@@ -141,7 +154,7 @@ For **local development without CIAM**, set **`PRISM_ADMIN_AUTH_DISABLED=true`**
 | `GET /access-not-configured` | Signed-in user with no permission rows. |
 | `GET /api/admin/whoami` | JSON probe; requires session + `prism.admin.access`. |
 
-`SESSION_TTL` is enforced via signed cookie payload (`exp`) and `Max-Age`.
+**Prism Admin browser session**: Starlette **`SessionMiddleware`** signs a **`PRISM_SESSION_COOKIE_NAME`** cookie (JSON payload via **itsdangerous**). **`PRISM_SESSION_TTL_SECONDS`** maps to the middleware **`max_age`** (also enforced by cookie timestamp signature). Prism stores **`prism_uid`** / **`ciam_sub`** keys in that session (`prism_app/deps.py`).
 
 ## Alerts database migrations (Alembic)
 
