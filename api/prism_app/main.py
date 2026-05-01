@@ -13,16 +13,13 @@ from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from prism_app.admin import register_alerts_admin_views
-<<<<<<< HEAD
 from prism_app.admin_oidc_auth import PrismAdminAuthProvider
 from prism_app.admin_settings import get_admin_auth_settings
-=======
->>>>>>> master
 from prism_app.auth import optional_validate_user, validate_user
 from prism_app.access_pages import access_not_configured_response
 from prism_app.deps import require_permissions
 from prism_app.database.prism_user_model import PrismUser
-from prism_app.permission_codes import PRISM_ADMIN
+from prism_app.permission_codes import ADMIN_ACCESS
 from prism_app.routers import auth_oidc
 from prism_app.caching import FilePath, cache_file, cache_geojson
 from prism_app.database.alert_model import AlchemyEncoder, AlertModel
@@ -100,13 +97,13 @@ def access_not_configured_page():
 
 _AdminSession = Annotated[
     tuple[PrismUser, set[str]],
-    Depends(require_permissions(PRISM_ADMIN)),
+    Depends(require_permissions(ADMIN_ACCESS)),
 ]
 
 
 @app.get("/api/admin/whoami")
 def admin_whoami(prism: _AdminSession):
-    """JSON check for admin session + ``prism.admin`` (optional integration tests)."""
+    """JSON check for admin session + ``prism.admin.access`` (optional integration tests)."""
     user, codes = prism
     return {
         "user_id": str(user.id),

@@ -8,11 +8,46 @@ from uuid import UUID
 
 from fastapi import Depends, HTTPException, Request, status
 from sqlalchemy.engine import Engine
+from starlette.responses import Response
 
 from prism_app.admin_settings import AdminAuthSettings, get_admin_auth_settings
 from prism_app.database.prism_user_model import PrismUser
 from prism_app.oidc_support import verify_session_cookie
 from prism_app.prism_auth_service import is_active, load_user_and_permissions
+
+
+def clear_prism_auth_cookies(response: Response, settings: AdminAuthSettings) -> None:
+    """Delete Prism session, OIDC state, and ID-token hint cookies (same attrs as issuance)."""
+    for key in (
+        settings.session_cookie_name,
+        settings.oidc_state_cookie_name,
+        settings.oidc_id_token_hint_cookie_name,
+    ):
+        delete_prism_cookie_matching_issue(response, settings, key)
+
+
+def clear_oidc_state_cookie(response: Response, settings: AdminAuthSettings) -> None:
+    """Remove only the OIDC state cookie (after successful callback when session is kept)."""
+    delete_prism_cookie_matching_issue(
+        response, settings, settings.oidc_state_cookie_name
+    )
+
+
+def delete_prism_cookie_matching_issue(
+    response: Response,
+    settings: AdminAuthSettings,
+    key: str,
+) -> None:
+    ss = settings.session_cookie_samesite.lower()
+    if ss not in ("lax", "strict", "none"):
+        ss = "lax"
+    response.delete_cookie(
+        key,
+        path="/",
+        secure=settings.session_cookie_secure,
+        httponly=True,
+        samesite=ss,  # type: ignore[arg-type]
+    )
 
 
 def get_admin_engine(request: Request) -> Engine:

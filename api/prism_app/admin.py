@@ -52,12 +52,14 @@ class PrismUserEditView(ModelView):
 
 class PermissionView(ReadOnlyModelView):
     label = "Permissions"
+    exclude_fields_from_list = ("id",)
 
 
 class UserPermissionView(ModelView):
-    """Grant or revoke ``prism.app`` / ``prism.admin`` links for a user."""
+    """Grant or revoke capability codes (e.g. ``prism.admin.access``, ``prism.content.view``)."""
 
     label = "User permissions"
+    fields = ("user", "permission", "granted_at")
 
 
 def register_alerts_admin_views(admin: Admin) -> None:

@@ -2,56 +2,79 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 from fastapi.responses import HTMLResponse
+from jinja2 import ChoiceLoader, Environment, FileSystemLoader, select_autoescape
+from starlette_admin import __file__ as _starlette_admin_file
+
+from prism_app.admin_settings import AdminAuthSettings
+
+_TEMPLATES_DIR = Path(__file__).resolve().parent / "templates" / "access_pages"
+_STARLETTE_ADMIN_TEMPLATES_DIR = (
+    Path(_starlette_admin_file).resolve().parent / "templates"
+)
+_TEMPLATE_ENV = Environment(
+    loader=ChoiceLoader(
+        [
+            FileSystemLoader(str(_TEMPLATES_DIR)),
+            FileSystemLoader(str(_STARLETTE_ADMIN_TEMPLATES_DIR)),
+        ]
+    ),
+    autoescape=select_autoescape(["html", "xml"]),
+)
+_TEMPLATE_ENV.globals.update(
+    {
+        "__name__": "admin",
+        "app_title": "PRISM Admin",
+        "favicon_url": None,
+        "get_locale": lambda: "en",
+        "url_for": lambda name, **kwargs: (
+            f"/admin/statics/{kwargs['path']}" if name.endswith(":statics") else "#"
+        ),
+    }
+)
+
+
+def _render_template(name: str, status_code: int, **context: object) -> HTMLResponse:
+    html = _TEMPLATE_ENV.get_template(name).render(**context)
+    return HTMLResponse(content=html, status_code=status_code)
 
 
 def access_denied_response(support_email: str = "") -> HTMLResponse:
-    contact = (
-        f'<p>Contact: <a href="mailto:{support_email}">{support_email}</a></p>'
-        if support_email
-        else ""
+    return _render_template(
+        "access_denied.html",
+        status_code=403,
+        support_email=support_email,
     )
-    html = f"""<!DOCTYPE html>
-<html lang="en">
-<head><meta charset="utf-8"/><title>Access denied</title></head>
-<body>
-<h1>Access not authorized</h1>
-<p>You signed in successfully, but this application does not recognize your account,
-or your access has been disabled.</p>
-{contact}
-<p><a href="/auth/sign-out">Sign out</a></p>
-</body>
-</html>"""
-    return HTMLResponse(content=html, status_code=403)
+
+
+def oidc_session_interrupted_response() -> HTMLResponse:
+    """Callback could not complete: stale code, missing state cookie, bad state, or token error."""
+    return _render_template("oidc_session_interrupted.html", status_code=200)
 
 
 def access_not_configured_response(support_email: str = "") -> HTMLResponse:
-    contact = (
-        f'<p>Contact: <a href="mailto:{support_email}">{support_email}</a></p>'
-        if support_email
-        else "<p>Contact your administrator to be assigned permissions.</p>"
+    return _render_template(
+        "access_not_configured.html",
+        status_code=200,
+        support_email=support_email,
     )
-    html = f"""<!DOCTYPE html>
-<html lang="en">
-<head><meta charset="utf-8"/><title>Access pending</title></head>
-<body>
-<h1>Access not yet configured</h1>
-<p>Your account is recognized, but no product permissions have been assigned yet.</p>
-{contact}
-<p><a href="/auth/sign-out">Sign out</a></p>
-</body>
-</html>"""
-    return HTMLResponse(content=html, status_code=200)
 
 
-def oidc_not_configured_response() -> HTMLResponse:
-    html = """<!DOCTYPE html>
-<html lang="en">
-<head><meta charset="utf-8"/><title>Admin sign-in unavailable</title></head>
-<body>
-<h1>Admin sign-in is not configured</h1>
-<p>Set PRISM OIDC environment variables (issuer, client id, client secret, redirect URI,
-and session secret), or set <code>PRISM_ADMIN_AUTH_DISABLED=true</code> for local development only.</p>
-</body>
-</html>"""
-    return HTMLResponse(content=html, status_code=503)
+def oidc_not_configured_response(
+    settings: AdminAuthSettings | None = None,
+) -> HTMLResponse:
+    missing_names: list[str] = []
+    if settings is not None:
+        missing_names = settings.missing_oidc_env_names()
+    return _render_template(
+        "oidc_not_configured.html",
+        status_code=503,
+        missing_names=missing_names,
+    )
+
+
+def signed_out_response() -> HTMLResponse:
+    """After sign-out: PRISM cookies are cleared; CIAM may redirect here when post_logout_redirect_uri is configured."""
+    return _render_template("signed_out.html", status_code=200)

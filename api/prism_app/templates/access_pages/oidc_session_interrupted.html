@@ -1,0 +1,26 @@
+{% extends "access_pages_base.html" %}
+{% set title = "Sign-in incomplete" %}
+{% set heading = "Sign-in did not finish" %}
+
+{% block content %}
+<div class="alert alert-warning" role="alert">
+    This page is the OAuth callback. It only works once, right after CIAM redirects here.
+</div>
+<ul>
+    <li>
+        <strong>Refreshed this page or used the back button</strong>:
+        the one-time <code>code</code> in the URL was already used or is now invalid.
+    </li>
+    <li>
+        <strong>Opened this URL from a bookmark or history</strong>:
+        use <a href="/auth/sign-in?next=/admin/">Start sign-in</a> so PRISM can set
+        the required cookie first.
+    </li>
+    <li>
+        <strong>Different site or port</strong>:
+        use the same host and port as when you began (for example <code>localhost</code>
+        vs <code>127.0.0.1</code>, or <code>:80</code> vs another port) so cookies match.
+    </li>
+</ul>
+<a class="btn btn-primary" href="/auth/sign-in?next=/admin/">Start sign-in again</a>
+{% endblock %}

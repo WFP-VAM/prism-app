@@ -50,7 +50,7 @@ VALUES (
 ON CONFLICT (username) DO NOTHING;
 
 -- OIDC dev placeholders: replace `ciam_sub` with real CIAM `sub` values when testing login.
--- Regular user: only `prism.app`. Admin user: `prism.app` + `prism.admin`.
+-- Editor-like seed: view + dashboard manage. Admin seed: full capability set.
 INSERT INTO users (ciam_sub, email, name, status)
 VALUES (
     'local-seed|regular',
@@ -71,7 +71,7 @@ FROM users u
 CROSS JOIN permissions p
 WHERE
     u.ciam_sub = 'local-seed|regular'
-    AND p.code = 'prism.app'
+    AND p.code IN ('prism.content.view', 'prism.dashboard.manage')
 ON CONFLICT (user_id, permission_id) DO NOTHING;
 
 INSERT INTO user_permissions (user_id, permission_id)
@@ -80,7 +80,13 @@ FROM users u
 CROSS JOIN permissions p
 WHERE
     u.ciam_sub = 'local-seed|admin'
-    AND p.code IN ('prism.app', 'prism.admin')
+    AND p.code IN (
+        'prism.content.view',
+        'prism.dashboard.manage',
+        'prism.admin.access',
+        'prism.deployment.manage',
+        'prism.users.manage'
+    )
 ON CONFLICT (user_id, permission_id) DO NOTHING;
 
 -- Replace seed alerts so re-runs do not duplicate

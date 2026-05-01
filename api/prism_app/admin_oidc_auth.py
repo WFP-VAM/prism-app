@@ -1,4 +1,4 @@
-"""Starlette-admin OIDC: custom login redirect, session cookie gate, and ``prism.admin`` check."""
+"""Starlette-admin OIDC: custom login redirect, session cookie gate, and ``prism.admin.access``."""
 
 from __future__ import annotations
 
@@ -18,14 +18,15 @@ from starlette_admin.auth import AdminUser, BaseAuthProvider
 from starlette.status import HTTP_303_SEE_OTHER
 
 from prism_app.access_pages import access_denied_response, oidc_not_configured_response
-from prism_app.admin_settings import AdminAuthSettings
+from prism_app.admin_settings import AdminAuthSettings, log_oidc_configuration_blocked
 from prism_app.oidc_support import verify_session_cookie
-from prism_app.permission_codes import PRISM_ADMIN, PRISM_APP
+from prism_app.permission_codes import ADMIN_ACCESS, ALL_CAPABILITIES
 from prism_app.prism_auth_service import is_active, load_user_and_permissions
 from starlette_admin.base import BaseAdmin
 
+
 class PrismAdminAuthProvider(BaseAuthProvider):
-    """Redirects /admin/login to ``/auth/sign-in``; validates session + ``prism.admin`` in middleware."""
+    """Redirects /admin/login to ``/auth/sign-in``; validates session + ``prism.admin.access``."""
 
     def __init__(self, engine: Engine, settings: AdminAuthSettings) -> None:
         super().__init__(
@@ -74,10 +75,7 @@ class PrismAdminAuthProvider(BaseAuthProvider):
         )
 
     async def _render_logout(self, request: Request, admin: BaseAdmin) -> Response:
-        r = RedirectResponse(url="/admin/", status_code=HTTP_303_SEE_OTHER)
-        r.delete_cookie(self.settings.session_cookie_name, path="/")
-        r.delete_cookie(self.settings.oidc_state_cookie_name, path="/")
-        return r
+        return RedirectResponse(url="/auth/sign-out", status_code=HTTP_303_SEE_OTHER)
 
     async def is_authenticated(self, request: Request) -> bool:
         """Unused by ``PrismAdminAuthMiddleware``; implemented for API compatibility."""
@@ -127,7 +125,7 @@ class PrismAdminAuthMiddleware(BaseHTTPMiddleware):
         settings = prov.settings
 
         if settings.admin_auth_disabled:
-            request.state.permission_codes = {PRISM_ADMIN, PRISM_APP}
+            request.state.permission_codes = set(ALL_CAPABILITIES)
             return await call_next(request)
 
         is_public = (
@@ -144,7 +142,8 @@ class PrismAdminAuthMiddleware(BaseHTTPMiddleware):
             return await call_next(request)
 
         if not settings.oidc_configured:
-            return oidc_not_configured_response()
+            log_oidc_configuration_blocked(settings, where="Starlette-admin middleware")
+            return oidc_not_configured_response(settings)
 
         raw = request.cookies.get(settings.session_cookie_name)
         if not raw:
@@ -171,7 +170,7 @@ class PrismAdminAuthMiddleware(BaseHTTPMiddleware):
         if not is_active(user):
             return access_denied_response(settings.access_support_email)
 
-        if PRISM_ADMIN not in codes:
+        if ADMIN_ACCESS not in codes:
             return RedirectResponse("/access-not-configured", HTTP_303_SEE_OTHER)
 
         assert user is not None

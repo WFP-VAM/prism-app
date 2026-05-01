@@ -2,18 +2,81 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import logging
+from typing import TYPE_CHECKING, Any, Mapping
 from uuid import UUID
 
 from sqlalchemy import select
 from sqlalchemy.engine import Engine
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from prism_app.database.permission_model import Permission, UserPermission
 from prism_app.database.prism_user_model import PrismUser, PrismUserStatus
+from prism_app.oidc_id_token_profile import IdTokenProfileClaims
 
 if TYPE_CHECKING:
     pass
+
+logger = logging.getLogger(__name__)
+
+
+def ensure_prism_user_for_oidc(
+    engine: Engine,
+    *,
+    ciam_sub: str,
+    claims: Mapping[str, Any],
+) -> tuple[PrismUser | None, set[str]]:
+    """Load user by CIAM ``sub``; JIT-insert an active row when missing.
+
+    Subsequent logins refresh ``email`` / ``name`` from the same OIDC claims (CIAM-driven profile).
+    New users start with zero ``user_permissions`` until granted in Admin.
+
+    Raises:
+        ValueError: if ``ciam_sub`` is missing or whitespace-only (caller should fail the sign-in).
+    """
+
+    trimmed_sub = (ciam_sub or "").strip()
+    if not trimmed_sub:
+        raise ValueError("ciam_sub is required and cannot be empty")
+
+    email, display_name = IdTokenProfileClaims.from_claims(claims).to_prism_user_fields()
+
+    with Session(engine) as session:
+        try:
+            user = session.scalars(
+                select(PrismUser).where(PrismUser.ciam_sub == trimmed_sub)
+            ).first()
+
+            if user is None:
+                session.add(
+                    PrismUser(
+                        ciam_sub=trimmed_sub,
+                        email=email,
+                        name=display_name,
+                    )
+                )
+                session.commit()
+                user = session.scalars(
+                    select(PrismUser).where(PrismUser.ciam_sub == trimmed_sub)
+                ).first()
+                if user:
+                    logger.info("JIT Prism user created uid=%s", user.id)
+            else:
+                if user.email != email or user.name != display_name:
+                    user.email = email
+                    user.name = display_name
+                    session.add(user)
+                    session.commit()
+                    session.refresh(user)
+        except IntegrityError:
+            session.rollback()
+            logger.warning(
+                "JIT Prism user concurrent insert; reloading by ciam_sub — %s",
+                trimmed_sub[:80],
+            )
+
+    return load_user_by_ciam_sub(engine, trimmed_sub)
 
 
 def load_user_and_permissions(

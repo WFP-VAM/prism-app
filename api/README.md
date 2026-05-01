@@ -103,7 +103,20 @@ The instance will need to have read/write access to S3. Make sure it has the nec
 
 ## Admin UI (Starlette Admin) and CIAM OIDC
 
-The `/admin` UI uses **CIAM OpenID Connect** (authorization code with a confidential client). PRISM provisions users in the **`users`** table (stable `ciam_sub` from the ID token) and grants **`prism.app`** / **`prism.admin`** via **`user_permissions`**.
+The `/admin` UI uses **CIAM OpenID Connect** (authorization code with a confidential client). PRISM provisions users in the **`users`** table (stable `ciam_sub` from the ID token) and grants **capabilities** via **`user_permissions`** linking to **`permissions.code`**.
+
+### In-app roles (bundles of capability codes)
+
+Roles are not a separate DB table: assign the right permission rows to mirror **Admin**, **Editor**, or **Viewer**.
+
+| Conceptual role | Permission codes |
+|-----------------|------------------|
+| **Admin** | All of: `prism.content.view`, `prism.dashboard.manage`, `prism.admin.access`, `prism.deployment.manage`, `prism.users.manage` |
+| **Editor** | `prism.content.view`, `prism.dashboard.manage` |
+| **Viewer** | `prism.content.view` |
+| **Public** | No rows (only unauthenticated / non-gated routes) |
+
+Granular codes map to your capability matrix: **`prism.dashboard.manage`** covers create, edit, and publish dashboards; **`prism.admin.access`** gates the Starlette admin UI; **`prism.deployment.manage`** and **`prism.users.manage`** are Admin-only. Gate other FastAPI routes with `require_permissions(...)` from [`prism_app/deps.py`](prism_app/deps.py) as you add them.
 
 **Authoritative CIAM integration guidance** is the WFP documentation site: [CIAM Documentation](https://docs.ciam.auth.wfp.org/). Use it for OIDC flow details, endpoint behavior, client registration, and errors—for example [Supported OpenID Connect flows](https://docs.ciam.auth.wfp.org/supported-oidc-flows/), [Login workflows](https://docs.ciam.auth.wfp.org/login-workflows/), [CIAM getting started](https://docs.ciam.auth.wfp.org/ciam-getting-started/), and [Common errors](https://docs.ciam.auth.wfp.org/common-errors/). User lifecycle (self-service vs API provisioning) is described under [Registration workflows](https://docs.ciam.auth.wfp.org/registration-workflows/).
 
@@ -125,18 +138,13 @@ For **local development without CIAM**, set **`PRISM_ADMIN_AUTH_DISABLED=true`**
 | `GET /auth/callback` | Registered redirect URI; exchanges code and sets session cookie. |
 | `GET /auth/sign-out` | Clears PRISM session / OIDC state cookies. |
 | `GET /access-not-configured` | Signed-in user with no permission rows. |
-| `GET /api/admin/whoami` | JSON probe; requires session + `prism.admin`. |
+| `GET /api/admin/whoami` | JSON probe; requires session + `prism.admin.access`. |
 
 `SESSION_TTL` is enforced via signed cookie payload (`exp`) and `Max-Age`.
 
 ## Alerts database migrations (Alembic)
 
-
-The alerts/auth PostgreSQL schema (`alert`, `user_info`, `anticipatory_action_alerts`, `users`, `permissions`, `user_permissions`, and related enums) is modeled in SQLModel under `prism_app/database/`. **All new schema changes are made with Alembic** in this directory (`alembic.ini`, `alembic/env.py`, `alembic/versions/`). The TypeORM files under `alerting/migration/` are **historical reference only**; do not add new TypeORM migrations for this database.
-## Alerts database migrations (Alembic)
-
-The alerts/auth PostgreSQL schema (`alert`, `user_info`, `anticipatory_action_alerts`, and `anticipatory_action_alerts_type_enum`) is modeled in SQLModel under `prism_app/database/`. **All schema changes are made with Alembic** in this directory (`alembic.ini`, `alembic/env.py`, `alembic/versions/`).
-
+The alerts/auth PostgreSQL schema (`alert`, `user_info`, `anticipatory_action_alerts`, `users`, `permissions`, `user_permissions`, related enums) is modeled in SQLModel under `prism_app/database/`. **New schema changes use Alembic** in this directory (`alembic.ini`, `alembic/env.py`, `alembic/versions/`). The TypeORM files under `alerting/migration/` are **historical reference only** for some tables.
 **Connection URL** is the same as the API: `PRISM_ALERTS_DATABASE_URL`, or the `POSTGRES_*` variables documented in `prism_app/database/database.py`. For local `poetry run alembic` commands, you can put `PRISM_ALERTS_DATABASE_URL` in `api/.env`; `alembic/env.py` loads that file into the process environment before connecting (unlike the shell, Python does not read `.env` by itself).
 
 From the `api/` directory:

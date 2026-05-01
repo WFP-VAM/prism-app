@@ -1,0 +1,24 @@
+{% extends "access_pages_base.html" %}
+{% set title = "Admin sign-in unavailable" %}
+{% set heading = "Admin sign-in is not configured" %}
+
+{% block content %}
+<p>
+    The API will not redirect to CIAM until all required PRISM OIDC variables are set
+    (and <code>PRISM_SESSION_SECRET</code> once the four OIDC endpoints are complete).
+</p>
+{% if missing_names %}
+<p>In <strong>this running process</strong>, these are missing or blank:</p>
+<ul>
+    {% for name in missing_names %}
+    <li><code>{{ name }}</code></li>
+    {% endfor %}
+</ul>
+{% endif %}
+<p>
+    Also check: variables must reach the Docker container (<code>env_file</code> / compose),
+    and names must use the <code>PRISM_</code> prefix (for example
+    <code>PRISM_OIDC_ISSUER</code>, not only <code>OIDC_ISSUER</code>).
+</p>
+<p>Or set <code>PRISM_ADMIN_AUTH_DISABLED=true</code> for local development only.</p>
+{% endblock %}

@@ -1,4 +1,4 @@
-"""Add users, permissions, and user_permissions for CIAM-backed authorization.
+"""Add ``users``, ``permissions``, ``user_permissions`` and seed RBAC capability rows.
 
 Revision ID: prism_users_permissions
 Revises: prism_alerts_baseline
@@ -56,7 +56,7 @@ def upgrade() -> None:
             nullable=False,
         ),
         sa.Column("ciam_sub", sa.String(), nullable=False),
-        sa.Column("email", sa.String(), nullable=False),
+        sa.Column("email", sa.String(), nullable=True),
         sa.Column("name", sa.String(), nullable=True),
         sa.Column(
             "status",
@@ -116,14 +116,29 @@ def upgrade() -> None:
         INSERT INTO permissions (code, label, description)
         VALUES
             (
-                'prism.app',
-                'PRISM application',
-                'Access to the main PRISM application.'
+                'prism.content.view',
+                'View gated content',
+                'Read access to PRISM content that requires sign-in.'
             ),
             (
-                'prism.admin',
-                'PRISM admin',
-                'Access to the PRISM admin UI and admin-only APIs.'
+                'prism.dashboard.manage',
+                'Manage dashboards',
+                'Create, edit, and publish dashboard configuration.'
+            ),
+            (
+                'prism.admin.access',
+                'Access admin backend',
+                'Use the Starlette admin UI and admin-only API surfaces.'
+            ),
+            (
+                'prism.deployment.manage',
+                'Manage deployment settings',
+                'Change deployment-wide or system configuration.'
+            ),
+            (
+                'prism.users.manage',
+                'Manage users',
+                'Provision users and assign permissions.'
             )
         ON CONFLICT (code) DO NOTHING
         """

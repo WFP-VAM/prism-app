@@ -26,7 +26,7 @@ _prism_user_status = ENUM(
 
 
 class PrismUser(SQLModel, table=True):
-    """One row per provisioned PRISM user; CIAM `sub` is the stable join key."""
+    """Alerts DB user: keyed by CIAM ``sub``. First OIDC login can JIT-create row; permissions are granted separately."""
 
     __tablename__ = "users"
 
@@ -39,7 +39,7 @@ class PrismUser(SQLModel, table=True):
         ),
     )
     ciam_sub: str = Field(sa_column=Column(String, nullable=False, unique=True))
-    email: str = Field(sa_column=Column(String, nullable=False))
+    email: Optional[str] = Field(default=None, sa_column=Column(String, nullable=True))
     name: Optional[str] = Field(default=None, sa_column=Column(String, nullable=True))
     status: PrismUserStatus = Field(
         default=PrismUserStatus.active,
@@ -67,3 +67,6 @@ class PrismUser(SQLModel, table=True):
         default=None,
         sa_column=Column(DateTime(timezone=True), nullable=True),
     )
+
+    def __admin_repr__(self, request) -> str:
+        return self.email or self.ciam_sub

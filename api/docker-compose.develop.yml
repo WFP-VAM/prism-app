@@ -1,5 +1,9 @@
 services:
   api:
+    # Load PRISM_OIDC_*, PRISM_SESSION_SECRET, etc. from api/.env (same as pydantic_settings env_file).
+    env_file:
+      - path: .env
+        required: false
     volumes:
       - ./prism_app:/prism_app
       # Use these to run the app in development mode and update depedencies

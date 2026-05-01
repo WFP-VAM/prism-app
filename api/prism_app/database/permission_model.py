@@ -7,11 +7,11 @@ from uuid import UUID
 import sqlalchemy as sa
 from sqlalchemy import Column, DateTime, ForeignKey, String, Text, text
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, Relationship, SQLModel
 
 
 class Permission(SQLModel, table=True):
-    """Grantable capability identified by stable `code` (e.g. prism.app)."""
+    """Grantable capability identified by stable `code` (e.g. ``prism.admin.access``)."""
 
     __tablename__ = "permissions"
 
@@ -35,6 +35,9 @@ class Permission(SQLModel, table=True):
             server_default=sa.text("now()"),
         ),
     )
+
+    def __admin_repr__(self, request) -> str:
+        return self.code
 
 
 class UserPermission(SQLModel, table=True):
@@ -65,3 +68,5 @@ class UserPermission(SQLModel, table=True):
             server_default=sa.text("now()"),
         ),
     )
+    user: "PrismUser" = Relationship()
+    permission: Permission = Relationship()

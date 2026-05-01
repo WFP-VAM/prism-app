@@ -6,25 +6,42 @@ import logging
 import secrets
 from typing import Annotated
 
+import httpx
 import jwt
 from fastapi import APIRouter, Depends, Query, Request
 from fastapi.responses import RedirectResponse, Response
 
 from prism_app.access_pages import (
     access_denied_response,
-    access_not_configured_response,
     oidc_not_configured_response,
+    oidc_session_interrupted_response,
+    signed_out_response,
 )
-from prism_app.admin_settings import AdminAuthSettings, get_admin_auth_settings
+from prism_app.admin_settings import (
+    AdminAuthSettings,
+    get_admin_auth_settings,
+    log_oidc_configuration_blocked,
+)
+from prism_app.deps import (
+    clear_oidc_state_cookie,
+    clear_prism_auth_cookies,
+    delete_prism_cookie_matching_issue,
+)
 from prism_app.oidc_support import (
     build_authorize_url,
+    build_rp_initiated_logout_url,
     exchange_code_for_tokens,
+    generate_pkce_pair,
+    session_cookie_value_and_max_age,
     sign_oidc_state,
-    sign_session_cookie,
     verify_id_token,
     verify_oidc_state,
 )
-from prism_app.prism_auth_service import load_user_by_ciam_sub, touch_last_login
+from prism_app.prism_auth_service import (
+    ensure_prism_user_for_oidc,
+    is_active,
+    touch_last_login,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -40,9 +57,21 @@ def _cookie_params(settings: AdminAuthSettings) -> dict:
     }
 
 
-def _clear_oidc_cookies(response: Response, settings: AdminAuthSettings) -> None:
-    response.delete_cookie(settings.oidc_state_cookie_name, path="/")
-    response.delete_cookie(settings.session_cookie_name, path="/")
+def _set_id_token_hint_cookie(
+    response: Response, settings: AdminAuthSettings, id_token: str
+) -> None:
+    """Store id_token so /auth/sign-out can pass id_token_hint to CIAM."""
+    response.set_cookie(
+        key=settings.oidc_id_token_hint_cookie_name,
+        value=id_token,
+        max_age=settings.session_ttl_seconds,
+        **_cookie_params(settings),
+    )
+
+
+def _clear_session_and_oidc_state_only(response: Response, settings: AdminAuthSettings) -> None:
+    delete_prism_cookie_matching_issue(response, settings, settings.session_cookie_name)
+    clear_oidc_state_cookie(response, settings)
 
 
 def _safe_next(next_raw: str | None, default: str = "/admin/") -> str:
@@ -67,16 +96,29 @@ async def oidc_sign_in(
     if settings.admin_auth_disabled:
         return RedirectResponse(url="/admin/", status_code=303)
     if not settings.oidc_configured:
-        return oidc_not_configured_response()
+        log_oidc_configuration_blocked(settings, where="GET /auth/sign-in")
+        return oidc_not_configured_response(settings)
 
     state_plain = secrets.token_urlsafe(32)
     nonce = secrets.token_urlsafe(32)
+    code_verifier, code_challenge = generate_pkce_pair()
     next_path = _safe_next(next_url, default="/admin/")
     state_jwt = sign_oidc_state(
         settings,
-        {"state": state_plain, "nonce": nonce, "next": next_path},
+        {
+            "state": state_plain,
+            "nonce": nonce,
+            "next": next_path,
+            "code_verifier": code_verifier,
+        },
     )
-    authorize = build_authorize_url(settings, state_plain, nonce)
+    authorize = build_authorize_url(
+        settings,
+        state_plain,
+        nonce,
+        code_challenge=code_challenge,
+        code_challenge_method="S256",
+    )
     response = RedirectResponse(url=authorize, status_code=303)
     response.set_cookie(
         key=settings.oidc_state_cookie_name,
@@ -97,94 +139,139 @@ async def oidc_callback(
     if settings.admin_auth_disabled:
         return RedirectResponse(url="/admin/", status_code=303)
     if not settings.oidc_configured:
-        return oidc_not_configured_response()
+        log_oidc_configuration_blocked(settings, where="GET /auth/callback")
+        return oidc_not_configured_response(settings)
 
     raw_state = request.cookies.get(settings.oidc_state_cookie_name)
     if not raw_state or not code or not state:
-        logger.warning("OIDC callback missing cookie or params")
-        r = access_denied_response(settings.access_support_email)
-        _clear_oidc_cookies(r, settings)
+        if code or state:
+            logger.warning(
+                "OIDC callback missing state cookie or params (often refresh or bookmark)"
+            )
+        r = oidc_session_interrupted_response()
+        clear_prism_auth_cookies(r, settings)
         return r
 
     try:
         state_claims = verify_oidc_state(settings, raw_state)
     except jwt.PyJWTError:
         logger.warning("OIDC state cookie invalid")
-        r = access_denied_response(settings.access_support_email)
-        _clear_oidc_cookies(r, settings)
+        r = oidc_session_interrupted_response()
+        clear_prism_auth_cookies(r, settings)
         return r
 
     if state_claims.get("state") != state:
         logger.warning("OIDC state mismatch")
-        r = access_denied_response(settings.access_support_email)
-        _clear_oidc_cookies(r, settings)
+        r = oidc_session_interrupted_response()
+        clear_prism_auth_cookies(r, settings)
         return r
 
     nonce = state_claims["nonce"]
+    code_verifier = state_claims["code_verifier"]
     next_path = state_claims.get("next") or "/admin/"
 
     try:
-        tokens = await exchange_code_for_tokens(settings, code)
+        tokens = await exchange_code_for_tokens(
+            settings, code, code_verifier=code_verifier
+        )
+    except httpx.HTTPStatusError as exc:
+        err = ""
+        try:
+            err = (exc.response.json() or {}).get("error", "")
+        except Exception:  # noqa: BLE001
+            err = ""
+        if exc.response.status_code == 400 and err == "invalid_grant":
+            logger.warning("OIDC token exchange invalid_grant (code reuse or expired)")
+        else:
+            logger.exception("OIDC token exchange HTTP error: %s", exc)
+        r = oidc_session_interrupted_response()
+        clear_prism_auth_cookies(r, settings)
+        return r
     except Exception as exc:  # noqa: BLE001
         logger.exception("OIDC token exchange failed: %s", exc)
-        r = access_denied_response(settings.access_support_email)
-        _clear_oidc_cookies(r, settings)
+        r = oidc_session_interrupted_response()
+        clear_prism_auth_cookies(r, settings)
         return r
 
     id_token = tokens.get("id_token")
     if not id_token:
         logger.warning("Token response missing id_token")
-        r = access_denied_response(settings.access_support_email)
-        _clear_oidc_cookies(r, settings)
+        r = oidc_session_interrupted_response()
+        clear_prism_auth_cookies(r, settings)
         return r
 
     try:
         claims = verify_id_token(settings, id_token, nonce=nonce)
     except Exception as exc:  # noqa: BLE001
         logger.warning("ID token validation failed: %s", exc)
-        r = access_denied_response(settings.access_support_email)
-        _clear_oidc_cookies(r, settings)
+        r = oidc_session_interrupted_response()
+        clear_prism_auth_cookies(r, settings)
         return r
 
     ciam_sub = claims["sub"]
     eng = request.app.state.admin_engine
-    user, codes = load_user_by_ciam_sub(eng, ciam_sub)
+    try:
+        user, codes = ensure_prism_user_for_oidc(
+            eng, ciam_sub=ciam_sub, claims=claims
+        )
+    except ValueError as exc:
+        logger.warning(
+            "OIDC user provisioning refused (bad subject): %s",
+            exc,
+        )
+        r = oidc_session_interrupted_response()
+        clear_prism_auth_cookies(r, settings)
+        return r
 
-    from prism_app.prism_auth_service import is_active
-
-    if user is None or not is_active(user):
+    if user is None:
+        logger.error(
+            "Prism OIDC: no user row after JIT ensure (ciam_sub prefix=%s)",
+            ciam_sub[:64],
+        )
         r = access_denied_response(settings.access_support_email)
-        _clear_oidc_cookies(r, settings)
+        _clear_session_and_oidc_state_only(r, settings)
+        _set_id_token_hint_cookie(r, settings, id_token)
+        return r
+
+    if not is_active(user):
+        r = access_denied_response(settings.access_support_email)
+        _clear_session_and_oidc_state_only(r, settings)
+        _set_id_token_hint_cookie(r, settings, id_token)
         return r
 
     touch_last_login(eng, user.id)
 
-    session_body = {
-        "uid": str(user.id),
-        "ciam_sub": user.ciam_sub,
-    }
-    session_jwt = sign_session_cookie(settings, session_body)
+    session_value, session_max_age = session_cookie_value_and_max_age(
+        settings, user_id=user.id, ciam_sub=user.ciam_sub
+    )
 
     if not codes:
         r = RedirectResponse(url="/access-not-configured", status_code=303)
         r.set_cookie(
             key=settings.session_cookie_name,
-            value=session_jwt,
-            max_age=settings.session_ttl_seconds,
+            value=session_value,
+            max_age=session_max_age,
             **_cookie_params(settings),
         )
-        r.delete_cookie(settings.oidc_state_cookie_name, path="/")
+        _set_id_token_hint_cookie(r, settings, id_token)
+        clear_oidc_state_cookie(r, settings)
         return r
 
     r = RedirectResponse(url=next_path, status_code=303)
     r.set_cookie(
         key=settings.session_cookie_name,
-        value=session_jwt,
-        max_age=settings.session_ttl_seconds,
+        value=session_value,
+        max_age=session_max_age,
         **_cookie_params(settings),
     )
-    r.delete_cookie(settings.oidc_state_cookie_name, path="/")
+    _set_id_token_hint_cookie(r, settings, id_token)
+    clear_oidc_state_cookie(r, settings)
     return r
+
+
+@router.get("/signed-out")
+def oidc_signed_out() -> Response:
+    return signed_out_response()
 
 
 @router.get("/sign-out")
@@ -192,6 +279,18 @@ def oidc_sign_out(
     request: Request,
     settings: Annotated[AdminAuthSettings, Depends(get_admin_auth_settings)],
 ) -> Response:
-    r = RedirectResponse(url="/admin/", status_code=303)
-    _clear_oidc_cookies(r, settings)
+    if settings.admin_auth_disabled or not settings.oidc_configured:
+        r = RedirectResponse(url="/auth/signed-out", status_code=303)
+        clear_prism_auth_cookies(r, settings)
+        return r
+
+    hint_raw = request.cookies.get(settings.oidc_id_token_hint_cookie_name)
+    hint_stripped = hint_raw.strip() if isinstance(hint_raw, str) else None
+    dest = build_rp_initiated_logout_url(
+        settings, hint_stripped if hint_stripped else None
+    )
+    fallback = "/auth/signed-out"
+    url = dest if dest else fallback
+    r = RedirectResponse(url=url, status_code=303)
+    clear_prism_auth_cookies(r, settings)
     return r
