@@ -5,12 +5,38 @@ from prism_app.database.anticipatory_action_alerts_model import AnticipatoryActi
 from prism_app.database.permission_model import Permission, UserPermission
 from prism_app.database.prism_user_model import PrismUser
 from prism_app.database.user_info_model import UserInfoModel
+from prism_app.permission_codes import ADMIN_ACCESS
 from starlette.requests import Request
 from starlette_admin.contrib.sqla import Admin, ModelView
 
 
-class ReadOnlyModelView(ModelView):
-    """List and detail only; CUD is deferred until admin authentication exists."""
+def _request_has_prism_admin_access(request: Request) -> bool:
+    """Defense in depth: middleware already requires ``prism.admin.access`` for admin routes."""
+    codes = getattr(request.state, "permission_codes", None)
+    return bool(codes and ADMIN_ACCESS in codes)
+
+
+class PrismGatedModelView(ModelView):
+    """Internal admin models: list/detail and mutations require ``prism.admin.access``."""
+
+    def is_accessible(self, request: Request) -> bool:
+        return _request_has_prism_admin_access(request)
+
+    def can_view_details(self, request: Request) -> bool:
+        return _request_has_prism_admin_access(request)
+
+    def can_create(self, request: Request) -> bool:
+        return _request_has_prism_admin_access(request)
+
+    def can_edit(self, request: Request) -> bool:
+        return _request_has_prism_admin_access(request)
+
+    def can_delete(self, request: Request) -> bool:
+        return _request_has_prism_admin_access(request)
+
+
+class ReadOnlyModelView(PrismGatedModelView):
+    """List and detail only; no create/edit/delete."""
 
     def can_create(self, request: Request) -> bool:
         return False
@@ -38,15 +64,21 @@ class AnticipatoryActionAlertsView(ReadOnlyModelView):
     exclude_fields_from_list = ("last_states",)
 
 
-class PrismUserEditView(ModelView):
+class PrismUserEditView(PrismGatedModelView):
     """CIAM-mapped users: provision metadata; permissions use User permissions."""
 
     label = "PRISM users (CIAM)"
+    exclude_fields_from_edit = (
+        "id",
+        "ciam_sub",
+        "created_at",
+        "updated_at",
+    )
 
-    async def can_create(self, request: Request) -> bool:
+    def can_create(self, request: Request) -> bool:
         return False
 
-    async def can_delete(self, request: Request) -> bool:
+    def can_delete(self, request: Request) -> bool:
         return False
 
 
@@ -55,7 +87,7 @@ class PermissionView(ReadOnlyModelView):
     exclude_fields_from_list = ("id",)
 
 
-class UserPermissionView(ModelView):
+class UserPermissionView(PrismGatedModelView):
     """Grant or revoke capability codes (e.g. ``prism.admin.access``, ``prism.content.view``)."""
 
     label = "User permissions"

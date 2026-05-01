@@ -15,6 +15,7 @@ from sqlalchemy import create_engine
 from prism_app.admin_oidc_auth import PrismAdminAuthProvider
 from prism_app.admin_settings import AdminAuthSettings, get_admin_auth_settings
 from prism_app.main import app
+from prism_app.routers import auth_oidc
 
 # Session cookies use Secure when PRISM_SESSION_COOKIE_SECURE defaults true; httpx omits Secure
 # cookies on http:// URLs, so use HTTPS for any flow that round-trips the session cookie.
@@ -38,9 +39,22 @@ def test_admin_auth_settings_default_session_cookie_secure() -> None:
 def test_production_requires_session_secret(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("PRISM_ENV", "production")
     monkeypatch.setenv("PRISM_SESSION_SECRET", "")
+    monkeypatch.setenv("PRISM_ADMIN_AUTH_DISABLED", "false")
     get_admin_auth_settings.cache_clear()
     try:
         with pytest.raises(ValueError, match="PRISM_SESSION_SECRET"):
+            get_admin_auth_settings()
+    finally:
+        get_admin_auth_settings.cache_clear()
+
+
+def test_production_rejects_admin_auth_disabled(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("PRISM_ENV", "production")
+    monkeypatch.setenv("PRISM_SESSION_SECRET", "0123456789abcdef" * 2)
+    monkeypatch.setenv("PRISM_ADMIN_AUTH_DISABLED", "true")
+    get_admin_auth_settings.cache_clear()
+    try:
+        with pytest.raises(ValueError, match="PRISM_ADMIN_AUTH_DISABLED"):
             get_admin_auth_settings()
     finally:
         get_admin_auth_settings.cache_clear()
@@ -132,3 +146,19 @@ def test_post_sign_out_when_admin_disabled_works_without_csrf() -> None:
     r = client.post("/auth/sign-out", data={}, follow_redirects=False)
     assert r.status_code == 303
     assert r.headers["location"] == "/auth/signed-out"
+
+
+def test_safe_next_rejects_protocol_relative_absolute_url() -> None:
+    nxt = "https://evil.example//phish.example/login"
+    assert auth_oidc._safe_next(nxt) == "/admin/"
+
+
+def test_safe_next_rejects_traversal_outside_admin() -> None:
+    assert auth_oidc._safe_next("/admin/../../../etc/passwd") == "/admin/"
+
+
+def test_safe_next_allows_admin_subpaths_and_access_page() -> None:
+    assert auth_oidc._safe_next("/admin/list/foo") == "/admin/list/foo"
+    assert auth_oidc._safe_next("/access-not-configured") == "/access-not-configured"
+    # posixpath.normpath collapses a trailing slash on ``/admin/`` to ``/admin``.
+    assert auth_oidc._safe_next("/admin/?tab=1") == "/admin?tab=1"

@@ -92,16 +92,58 @@ def _consume_sign_out_csrf(request: Request, submitted: str | None) -> bool:
 
 
 def _safe_next(next_raw: str | None, default: str = "/admin/") -> str:
+    """Resolve post-login redirect: same host only, no protocol-relative or path traversal escapes.
+
+    Only ``/admin`` (and subpaths) or ``/access-not-configured`` are allowed, matching where
+    the OIDC flow may legitimately send the browser after sign-in.
+    """
+    from posixpath import normpath
+    from urllib.parse import unquote, urlparse
+
     if not next_raw:
         return default
-    if next_raw.startswith("/") and not next_raw.startswith("//"):
-        return next_raw
-    from urllib.parse import urlparse
+    raw = str(next_raw).strip()
+    if not raw:
+        return default
 
-    p = urlparse(next_raw)
-    if p.scheme in ("http", "https") and p.path:
-        return p.path + (f"?{p.query}" if p.query else "")
-    return default
+    path_part: str
+    query: str
+    if raw.startswith("/") and not raw.startswith("//"):
+        if "?" in raw:
+            path_part, _, query = raw.partition("?")
+        else:
+            path_part, query = raw, ""
+    else:
+        p = urlparse(raw)
+        if p.scheme not in ("http", "https") or not p.path:
+            return default
+        path_part, query = p.path, p.query or ""
+
+    path = unquote(path_part)
+    if "\\" in path or path.startswith("//"):
+        return default
+
+    norm = normpath(path)
+    if norm in (".", ""):
+        return default
+    if not norm.startswith("/"):
+        norm = "/" + norm
+    if norm.startswith("//"):
+        return default
+
+    allowed = (
+        norm == "/admin"
+        or norm.startswith("/admin/")
+        or norm == "/access-not-configured"
+    )
+    if not allowed:
+        return default
+
+    if query:
+        if any(bad in query for bad in ("//", "\n", "\r")):
+            return default
+        return f"{norm}?{query}"
+    return norm
 
 
 def _perform_sign_out(request: Request, settings: AdminAuthSettings) -> Response:

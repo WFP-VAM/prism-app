@@ -114,6 +114,11 @@ def log_oidc_configuration_blocked(settings: AdminAuthSettings, *, where: str) -
 def get_admin_auth_settings() -> AdminAuthSettings:
     settings = AdminAuthSettings()
     if _deployment_is_production():
+        if settings.admin_auth_disabled:
+            raise ValueError(
+                "PRISM_ADMIN_AUTH_DISABLED cannot be enabled when PRISM_ENV is production (or prod). "
+                "Admin auth bypass is for local development only."
+            )
         if not settings.session_secret.strip():
             raise ValueError(
                 "PRISM_SESSION_SECRET is required when PRISM_ENV is production (or prod). "
