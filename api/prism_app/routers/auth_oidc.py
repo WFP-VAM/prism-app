@@ -8,6 +8,7 @@ from typing import Annotated
 
 import httpx
 import jwt
+from authlib.integrations.base_client.errors import OAuthError
 from fastapi import APIRouter, Depends, Query, Request
 from fastapi.responses import RedirectResponse, Response
 
@@ -121,7 +122,7 @@ async def oidc_sign_in(
 
     state_plain = secrets.token_urlsafe(32)
     nonce = secrets.token_urlsafe(32)
-    code_verifier, code_challenge = generate_pkce_pair()
+    code_verifier, _code_challenge = generate_pkce_pair()
     next_path = _safe_next(next_url, default="/admin/")
     state_jwt = sign_oidc_state(
         settings,
@@ -136,8 +137,7 @@ async def oidc_sign_in(
         settings,
         state_plain,
         nonce,
-        code_challenge=code_challenge,
-        code_challenge_method="S256",
+        code_verifier=code_verifier,
     )
     response = RedirectResponse(url=authorize, status_code=303)
     response.set_cookie(
@@ -194,6 +194,15 @@ async def oidc_callback(
         tokens = await exchange_code_for_tokens(
             settings, code, code_verifier=code_verifier
         )
+    except OAuthError as exc:
+        err = getattr(exc, "error", None) or ""
+        if err == "invalid_grant":
+            logger.warning("OIDC token exchange invalid_grant (code reuse or expired)")
+        else:
+            logger.exception("OIDC token exchange OAuth error: %s", exc)
+        r = oidc_session_interrupted_response()
+        clear_prism_auth_cookies(r, settings)
+        return r
     except httpx.HTTPStatusError as exc:
         err = ""
         try:
@@ -221,7 +230,12 @@ async def oidc_callback(
         return r
 
     try:
-        claims = verify_id_token(settings, id_token, nonce=nonce)
+        claims = verify_id_token(
+            settings,
+            id_token,
+            nonce=nonce,
+            access_token=tokens.get("access_token"),
+        )
     except Exception as exc:  # noqa: BLE001
         logger.warning("ID token validation failed: %s", exc)
         r = oidc_session_interrupted_response()
