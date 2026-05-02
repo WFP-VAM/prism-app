@@ -9,11 +9,10 @@ from typing import Annotated
 import httpx
 import jwt
 from authlib.integrations.base_client.errors import OAuthError
-from fastapi import APIRouter, Depends, Form, Query, Request
+from fastapi import APIRouter, Depends, Form, HTTPException, Query, Request
 from fastapi.responses import RedirectResponse, Response
 from prism_app.access_pages import (
     access_denied_response,
-    oidc_not_configured_response,
     oidc_session_interrupted_response,
     sign_out_confirm_response,
     sign_out_csrf_failed_response,
@@ -47,6 +46,8 @@ from prism_app.prism_auth_service import (
 )
 
 logger = logging.getLogger(__name__)
+
+_OIDC_NOT_CONFIGURED_DETAIL = "OIDC is not configured for this deployment."
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -174,7 +175,7 @@ async def oidc_sign_in(
         return RedirectResponse(url="/admin/", status_code=303)
     if not settings.oidc_configured:
         log_oidc_configuration_blocked(settings, where="GET /auth/sign-in")
-        return oidc_not_configured_response(settings)
+        raise HTTPException(status_code=503, detail=_OIDC_NOT_CONFIGURED_DETAIL)
 
     state_plain = secrets.token_urlsafe(32)
     nonce = secrets.token_urlsafe(32)
@@ -216,7 +217,7 @@ async def oidc_callback(
         return RedirectResponse(url="/admin/", status_code=303)
     if not settings.oidc_configured:
         log_oidc_configuration_blocked(settings, where="GET /auth/callback")
-        return oidc_not_configured_response(settings)
+        raise HTTPException(status_code=503, detail=_OIDC_NOT_CONFIGURED_DETAIL)
 
     raw_state = request.cookies.get(settings.oidc_state_cookie_name)
     if not raw_state or not code or not state:

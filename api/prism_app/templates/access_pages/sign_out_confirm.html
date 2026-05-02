@@ -5,8 +5,6 @@
 {% block content %}
 <p>
     Use the button below to end your PRISM admin session (clear cookies).
-    When CIAM logout is configured, you will be redirected through the identity provider
-    after your session ends here.
 </p>
 <form method="post" action="/auth/sign-out">
     <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />

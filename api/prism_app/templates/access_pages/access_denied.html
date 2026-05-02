@@ -4,22 +4,15 @@
 
 {% block content %}
 <div class="alert alert-danger" role="alert">
-    CIAM authentication succeeded, but Prism cannot authorize this Admin session.
+    CIAM authentication succeeded, but PRISM cannot authorize this Admin session.
 </div>
 <p>
-    Most often your Prism row exists but is marked <strong>inactive</strong> here.
+    Most often your PRISM row exists but is marked <strong>inactive</strong> here.
     Retry sign-in once if your account was recently re-enabled.
 </p>
 <p>
     If you recently signed in for the first time, your account is normally created automatically;
     if this persists, contact an administrator.
-</p>
-<p>
-    <a href="/auth/sign-out">Sign out</a> opens a confirmation step, then clears PRISM cookies;
-    when CIAM is configured it redirects through CIAM's end-session URL so the SSO session
-    can end as well (configure <code>PRISM_OIDC_POST_LOGOUT_REDIRECT_URI</code> per CIAM).
-    If you only need a fresh CIAM credential prompt next time, you can also use
-    <code>PRISM_OIDC_AUTHORIZE_PROMPT=login</code> or a private window.
 </p>
 {% if support_email %}
 <p>Contact: <a href="mailto:{{ support_email }}">{{ support_email }}</a></p>

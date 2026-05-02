@@ -49,46 +49,6 @@ VALUES (
 )
 ON CONFLICT (username) DO NOTHING;
 
--- OIDC dev placeholders: replace `ciam_sub` with real CIAM `sub` values when testing login.
--- Editor-like seed: view + dashboard manage. Admin seed: full capability set.
-INSERT INTO users (ciam_sub, email, name, status)
-VALUES (
-    'local-seed|regular',
-    'seed-regular@example.com',
-    'Seed regular user',
-    'active'::prism_user_status
-), (
-    'local-seed|admin',
-    'seed-admin@example.com',
-    'Seed admin user',
-    'active'::prism_user_status
-)
-ON CONFLICT (ciam_sub) DO NOTHING;
-
-INSERT INTO user_permissions (user_id, permission_id)
-SELECT u.id, p.id
-FROM users u
-CROSS JOIN permissions p
-WHERE
-    u.ciam_sub = 'local-seed|regular'
-    AND p.code IN ('prism.content.view', 'prism.dashboard.manage')
-ON CONFLICT (user_id, permission_id) DO NOTHING;
-
-INSERT INTO user_permissions (user_id, permission_id)
-SELECT u.id, p.id
-FROM users u
-CROSS JOIN permissions p
-WHERE
-    u.ciam_sub = 'local-seed|admin'
-    AND p.code IN (
-        'prism.content.view',
-        'prism.dashboard.manage',
-        'prism.admin.access',
-        'prism.deployment.manage',
-        'prism.users.manage'
-    )
-ON CONFLICT (user_id, permission_id) DO NOTHING;
-
 -- Replace seed alerts so re-runs do not duplicate
 DELETE FROM alert
 WHERE email IN ('seed-alert-1@example.com', 'seed-alert-2@example.com');

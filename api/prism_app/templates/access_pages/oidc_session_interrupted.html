@@ -1,26 +1,27 @@
 {% extends "access_pages_base.html" %}
 {% set title = "Sign-in incomplete" %}
-{% set heading = "Sign-in did not finish" %}
+{% set heading = "We couldn’t finish signing you in" %}
 
 {% block content %}
 <div class="alert alert-warning" role="alert">
-    This page is the OAuth callback. It only works once, right after CIAM redirects here.
+    This screen is only part of the normal sign-in process. If you’re seeing it on its own,
+    something interrupted the last step.
 </div>
 <ul>
     <li>
-        <strong>Refreshed this page or used the back button</strong>:
-        the one-time <code>code</code> in the URL was already used or is now invalid.
+        <strong>You refreshed the page or went back in the browser</strong> —
+        that often breaks a sign-in that was almost done. Starting again usually fixes it.
     </li>
     <li>
-        <strong>Opened this URL from a bookmark or history</strong>:
-        use <a href="/auth/sign-in?next=/admin/">Start sign-in</a> so PRISM can set
-        the required cookie first.
+        <strong>You opened this page from a bookmark or your history</strong> —
+        sign in from the beginning so we can walk you through the steps in order.
+        <a href="/auth/sign-in?next=/admin/">Start sign-in</a>
     </li>
     <li>
-        <strong>Different site or port</strong>:
-        use the same host and port as when you began (for example <code>localhost</code>
-        vs <code>127.0.0.1</code>, or <code>:80</code> vs another port) so cookies match.
+        <strong>The address in your browser doesn’t match where you started</strong> —
+        for example, switching between “localhost” and “127.0.0.1,” or a different port.
+        Use the same site address you used when you first clicked sign in.
     </li>
 </ul>
-<a class="btn btn-primary" href="/auth/sign-in?next=/admin/">Start sign-in again</a>
+<a class="btn btn-primary" href="/auth/sign-in?next=/admin/">Try signing in again</a>
 {% endblock %}

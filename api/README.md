@@ -105,20 +105,7 @@ The instance will need to have read/write access to S3. Make sure it has the nec
 
 The `/admin` UI uses **CIAM OpenID Connect** (authorization code with a confidential client). PRISM provisions users in the **`users`** table (stable `ciam_sub` from the ID token) and grants **capabilities** via **`user_permissions`** linking to **`permissions.code`**.
 
-### In-app roles (bundles of capability codes)
-
-Roles are not a separate DB table: assign the right permission rows to mirror **Admin**, **Editor**, or **Viewer**.
-
-| Conceptual role | Permission codes |
-|-----------------|------------------|
-| **Admin** | All of: `prism.content.view`, `prism.dashboard.manage`, `prism.admin.access`, `prism.deployment.manage`, `prism.users.manage` |
-| **Editor** | `prism.content.view`, `prism.dashboard.manage` |
-| **Viewer** | `prism.content.view` |
-| **Public** | No rows (only unauthenticated / non-gated routes) |
-
-Granular codes map to your capability matrix: **`prism.dashboard.manage`** covers create, edit, and publish dashboards; **`prism.admin.access`** gates the Starlette admin UI; **`prism.deployment.manage`** and **`prism.users.manage`** are Admin-only. Gate other FastAPI routes with `require_permissions(...)` from [`prism_app/deps.py`](prism_app/deps.py) as you add them.
-
-**Authoritative CIAM integration guidance** is the WFP documentation site: [CIAM Documentation](https://docs.ciam.auth.wfp.org/). Use it for OIDC flow details, endpoint behavior, client registration, and errors—for example [Supported OpenID Connect flows](https://docs.ciam.auth.wfp.org/supported-oidc-flows/), [Login workflows](https://docs.ciam.auth.wfp.org/login-workflows/), [CIAM getting started](https://docs.ciam.auth.wfp.org/ciam-getting-started/), and [Common errors](https://docs.ciam.auth.wfp.org/common-errors/). User lifecycle (self-service vs API provisioning) is described under [Registration workflows](https://docs.ciam.auth.wfp.org/registration-workflows/).
+**Authoritative CIAM integration guidance** is the WFP documentation site: [CIAM Documentation](https://docs.ciam.auth.wfp.org/). Use it for OIDC flow details, endpoint behavior, client registration, and errors—for example.
 
 This codebase loads OIDC metadata via **OpenID Connect Discovery** from `{PRISM_OIDC_ISSUER}/.well-known/openid-configuration`. Set **`PRISM_OIDC_ISSUER`** to the **`issuer`** string from that document (see [`.env.example`](.env.example)); it may be a path under `ciam.auth.wfp.org`, not only the site origin. The RP client logic (authorize URL + PKCE, token endpoint, JWKS JWT verification) uses [Authlib](https://docs.authlib.org/) with Authlib OIDC **`CodeIDToken`** validation atop **joserfc**.
 
@@ -128,11 +115,11 @@ This codebase loads OIDC metadata via **OpenID Connect Discovery** from `{PRISM_
 
 See [`.env.example`](.env.example) for `PRISM_OIDC_*`, `PRISM_SESSION_SECRET`, cookie options, and `PRISM_ACCESS_SUPPORT_EMAIL`.
 
-For **local development without CIAM**, set **`PRISM_ADMIN_AUTH_DISABLED=true`** (never in production). Example vars for tests are defaulted in [`prism_app/tests/conftest.py`](prism_app/tests/conftest.py).
+For **local development without CIAM**, set **`PRISM_ADMIN_AUTH_DISABLED=true`**. Example vars for tests are defaulted in [`prism_app/tests/conftest.py`](prism_app/tests/conftest.py).
 
 ### Session secret (`PRISM_SESSION_SECRET`)
 
-The API uses Starlette **`SessionMiddleware`** with **itsdangerous** to sign [`PRISM_SESSION_COOKIE_NAME`](prism_app/admin_settings.py); the same key is used for short-lived **OIDC state** signing. In **production** you must set **`PRISM_SESSION_SECRET`** to a long random string and use the **same value** on every process and host (otherwise sessions break when load balancing). Set **`PRISM_ENV=production`** (or `prod`) so the app **fails fast at startup** if the secret is missing; leave `PRISM_ENV` unset (or any other value) for local and test runs, where an empty secret triggers a one-time **ephemeral** key at startup (logged as a warning)—convenient for scratch work, but cookies are invalidated on restart and multiple **uvicorn workers** do not share sessions unless you fix the secret.
+The API uses Starlette **`SessionMiddleware`** with **itsdangerous** to sign [`PRISM_SESSION_COOKIE_NAME`](prism_app/admin_settings.py); the same key is used for short-lived **OIDC state** signing. In **production** set **`PRISM_SESSION_SECRET`** to a long random string and use the **same value** on every process and host (otherwise sessions break when load balancing). Set **`PRISM_ENV=production`** (or `prod`) so the app **fails fast at startup** if the secret is missing; leave `PRISM_ENV` unset (or any other value) for local and test runs, where an empty secret triggers a one-time **ephemeral** key at startup (logged as a warning)—convenient for scratch work, but cookies are invalidated on restart and multiple **uvicorn workers** do not share sessions unless you fix the secret.
 
 **Generate a stable secret locally** (pick one):
 
@@ -144,15 +131,6 @@ python -c "import secrets; print(secrets.token_hex(32))"
 Paste the result into `api/.env` as `PRISM_SESSION_SECRET=...`. In AWS or similar, store it in Secrets Manager / SSM Parameter Store and inject into the container or task definition; rotating the secret logs everyone out until they sign in again.
 
 ### HTTP routes (main FastAPI app)
-
-| Path | Purpose |
-|------|--------|
-| `GET /auth/sign-in` | Start OIDC (`?next=` optional return path). |
-| `GET /auth/callback` | Registered redirect URI; exchanges code and sets session cookie. |
-| `GET /auth/sign-out` | When OIDC is enabled: confirmation page; submit to clear cookies. Otherwise redirects and clears cookies immediately. |
-| `POST /auth/sign-out` | Clears PRISM session / OIDC state cookies; redirects to CIAM end-session when configured. When the confirmation page is used, the form must include a **CSRF token** issued on that GET (see below). |
-| `GET /access-not-configured` | Signed-in user with no permission rows. |
-| `GET /api/admin/whoami` | JSON probe; requires session + `prism.admin.access`. |
 
 **Prism Admin browser session**: Starlette **`SessionMiddleware`** signs a **`PRISM_SESSION_COOKIE_NAME`** cookie (JSON payload via **itsdangerous**). **`PRISM_SESSION_TTL_SECONDS`** maps to the middleware **`max_age`** (also enforced by cookie timestamp signature). Prism stores **`prism_uid`** / **`ciam_sub`** keys in that session (`prism_app/deps.py`).
 

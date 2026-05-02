@@ -6,7 +6,6 @@ from pathlib import Path
 
 from fastapi.responses import HTMLResponse
 from jinja2 import ChoiceLoader, Environment, FileSystemLoader, select_autoescape
-from prism_app.admin_settings import AdminAuthSettings
 from starlette_admin import __file__ as _starlette_admin_file
 
 _TEMPLATES_DIR = Path(__file__).resolve().parent / "templates" / "access_pages"
@@ -58,19 +57,6 @@ def access_not_configured_response(support_email: str = "") -> HTMLResponse:
         "access_not_configured.html",
         status_code=200,
         support_email=support_email,
-    )
-
-
-def oidc_not_configured_response(
-    settings: AdminAuthSettings | None = None,
-) -> HTMLResponse:
-    missing_names: list[str] = []
-    if settings is not None:
-        missing_names = settings.missing_oidc_env_names()
-    return _render_template(
-        "oidc_not_configured.html",
-        status_code=503,
-        missing_names=missing_names,
     )
 
 

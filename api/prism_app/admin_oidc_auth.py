@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Optional, Union
 from urllib.parse import quote, urlencode
 
-from prism_app.access_pages import access_denied_response, oidc_not_configured_response
+from prism_app.access_pages import access_denied_response
 from prism_app.admin_settings import AdminAuthSettings, log_oidc_configuration_blocked
 from prism_app.deps import load_prism_user_from_session
 from prism_app.permission_codes import ADMIN_ACCESS, ALL_CAPABILITIES
@@ -14,7 +14,7 @@ from sqlalchemy.engine import Engine
 from starlette.middleware import Middleware
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
-from starlette.responses import RedirectResponse, Response
+from starlette.responses import PlainTextResponse, RedirectResponse, Response
 from starlette.routing import Match, Mount, Route, WebSocketRoute
 from starlette.status import HTTP_303_SEE_OTHER
 from starlette.types import ASGIApp
@@ -136,7 +136,10 @@ class PrismAdminAuthMiddleware(BaseHTTPMiddleware):
 
         if not settings.oidc_configured:
             log_oidc_configuration_blocked(settings, where="Starlette-admin middleware")
-            return oidc_not_configured_response(settings)
+            return PlainTextResponse(
+                "OIDC is not configured for this deployment.",
+                status_code=503,
+            )
 
         user, codes, _ = load_prism_user_from_session(
             request,
