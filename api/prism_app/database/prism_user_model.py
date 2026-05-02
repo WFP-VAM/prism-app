@@ -7,7 +7,8 @@ from uuid import UUID
 
 import sqlalchemy as sa
 from sqlalchemy import Column, DateTime, String, text
-from sqlalchemy.dialects.postgresql import ENUM, UUID as PG_UUID
+from sqlalchemy.dialects.postgresql import ENUM
+from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlmodel import Field, SQLModel
 
 

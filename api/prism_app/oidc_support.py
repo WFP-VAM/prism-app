@@ -31,22 +31,23 @@ from authlib.oidc.core import CodeIDToken
 from joserfc import jwt as joserfc_jwt
 from joserfc.errors import InvalidKeyIdError
 from joserfc.jwk import KeySet
-
 from prism_app.admin_settings import AdminAuthSettings
 
 logger = logging.getLogger(__name__)
 
-_SUPPORTED_ID_ALGS = frozenset({
-    "RS256",
-    "RS384",
-    "RS512",
-    "ES256",
-    "ES384",
-    "ES512",
-    "PS256",
-    "PS384",
-    "PS512",
-})
+_SUPPORTED_ID_ALGS = frozenset(
+    {
+        "RS256",
+        "RS384",
+        "RS512",
+        "ES256",
+        "ES384",
+        "ES512",
+        "PS256",
+        "PS384",
+        "PS512",
+    }
+)
 
 DISCOVERY_PATH_SUFFIX = "/.well-known/openid-configuration"
 
@@ -258,7 +259,9 @@ def verify_id_token(
     if access_token:
         claims_params["access_token"] = access_token
 
-    oid_claims = CodeIDToken(decoded.claims, decoded.header, claims_options, claims_params)
+    oid_claims = CodeIDToken(
+        decoded.claims, decoded.header, claims_options, claims_params
+    )
     oid_claims.validate(leeway=120)
 
     out = dict(oid_claims)
@@ -272,9 +275,7 @@ def verify_id_token(
     return out
 
 
-def sign_oidc_state(
-    settings: AdminAuthSettings, payload: dict[str, Any]
-) -> str:
+def sign_oidc_state(settings: AdminAuthSettings, payload: dict[str, Any]) -> str:
     now = int(time.time())
     body = {
         **payload,

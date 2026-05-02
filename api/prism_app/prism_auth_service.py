@@ -6,14 +6,13 @@ import logging
 from typing import TYPE_CHECKING, Any, Mapping
 from uuid import UUID
 
+from prism_app.database.permission_model import Permission, UserPermission
+from prism_app.database.prism_user_model import PrismUser, PrismUserStatus
+from prism_app.oidc_id_token_profile import IdTokenProfileClaims
 from sqlalchemy import select
 from sqlalchemy.engine import Engine
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
-
-from prism_app.database.permission_model import Permission, UserPermission
-from prism_app.database.prism_user_model import PrismUser, PrismUserStatus
-from prism_app.oidc_id_token_profile import IdTokenProfileClaims
 
 if TYPE_CHECKING:
     pass
@@ -40,7 +39,9 @@ def ensure_prism_user_for_oidc(
     if not trimmed_sub:
         raise ValueError("ciam_sub is required and cannot be empty")
 
-    email, display_name = IdTokenProfileClaims.from_claims(claims).to_prism_user_fields()
+    email, display_name = IdTokenProfileClaims.from_claims(
+        claims
+    ).to_prism_user_fields()
 
     with Session(engine) as session:
         try:

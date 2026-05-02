@@ -11,7 +11,6 @@ import jwt
 from authlib.integrations.base_client.errors import OAuthError
 from fastapi import APIRouter, Depends, Form, Query, Request
 from fastapi.responses import RedirectResponse, Response
-
 from prism_app.access_pages import (
     access_denied_response,
     oidc_not_configured_response,
@@ -302,9 +301,7 @@ async def oidc_callback(
     ciam_sub = claims["sub"]
     eng = request.app.state.admin_engine
     try:
-        user, codes = ensure_prism_user_for_oidc(
-            eng, ciam_sub=ciam_sub, claims=claims
-        )
+        user, codes = ensure_prism_user_for_oidc(eng, ciam_sub=ciam_sub, claims=claims)
     except ValueError as exc:
         logger.warning(
             "OIDC user provisioning refused (bad subject): %s",

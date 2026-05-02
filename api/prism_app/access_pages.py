@@ -6,9 +6,8 @@ from pathlib import Path
 
 from fastapi.responses import HTMLResponse
 from jinja2 import ChoiceLoader, Environment, FileSystemLoader, select_autoescape
-from starlette_admin import __file__ as _starlette_admin_file
-
 from prism_app.admin_settings import AdminAuthSettings
+from starlette_admin import __file__ as _starlette_admin_file
 
 _TEMPLATES_DIR = Path(__file__).resolve().parent / "templates" / "access_pages"
 _STARLETTE_ADMIN_TEMPLATES_DIR = (

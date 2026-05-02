@@ -10,12 +10,11 @@ os.environ.setdefault("KOBO_USERNAME", "pytest")
 os.environ.setdefault("KOBO_PASSWORD", "pytest")
 
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-
 from prism_app.admin_oidc_auth import PrismAdminAuthProvider
 from prism_app.admin_settings import AdminAuthSettings, get_admin_auth_settings
 from prism_app.main import app
 from prism_app.routers import auth_oidc
+from sqlalchemy import create_engine
 
 # Session cookies use Secure when PRISM_SESSION_COOKIE_SECURE defaults true; httpx omits Secure
 # cookies on http:// URLs, so use HTTPS for any flow that round-trips the session cookie.
@@ -48,7 +47,9 @@ def test_production_requires_session_secret(monkeypatch: pytest.MonkeyPatch) -> 
         get_admin_auth_settings.cache_clear()
 
 
-def test_production_rejects_admin_auth_disabled(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_production_rejects_admin_auth_disabled(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setenv("PRISM_ENV", "production")
     monkeypatch.setenv("PRISM_SESSION_SECRET", "0123456789abcdef" * 2)
     monkeypatch.setenv("PRISM_ADMIN_AUTH_DISABLED", "true")
@@ -132,7 +133,9 @@ def test_post_sign_out_oidc_with_csrf_redirects() -> None:
         m = re.search(r'name="csrf_token"\s+value="([^"]+)"', g.text)
         assert m is not None
         token = m.group(1)
-        r = client.post("/auth/sign-out", data={"csrf_token": token}, follow_redirects=False)
+        r = client.post(
+            "/auth/sign-out", data={"csrf_token": token}, follow_redirects=False
+        )
     finally:
         app.dependency_overrides.pop(get_admin_auth_settings, None)
 

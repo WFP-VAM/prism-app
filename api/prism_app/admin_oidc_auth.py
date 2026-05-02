@@ -5,21 +5,20 @@ from __future__ import annotations
 from typing import Optional, Union
 from urllib.parse import quote, urlencode
 
+from prism_app.access_pages import access_denied_response, oidc_not_configured_response
+from prism_app.admin_settings import AdminAuthSettings, log_oidc_configuration_blocked
+from prism_app.deps import load_prism_user_from_session
+from prism_app.permission_codes import ADMIN_ACCESS, ALL_CAPABILITIES
+from prism_app.prism_auth_service import is_active
 from sqlalchemy.engine import Engine
 from starlette.middleware import Middleware
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
 from starlette.responses import RedirectResponse, Response
 from starlette.routing import Match, Mount, Route, WebSocketRoute
+from starlette.status import HTTP_303_SEE_OTHER
 from starlette.types import ASGIApp
 from starlette_admin.auth import AdminUser, BaseAuthProvider
-from starlette.status import HTTP_303_SEE_OTHER
-
-from prism_app.access_pages import access_denied_response, oidc_not_configured_response
-from prism_app.admin_settings import AdminAuthSettings, log_oidc_configuration_blocked
-from prism_app.deps import load_prism_user_from_session
-from prism_app.permission_codes import ADMIN_ACCESS, ALL_CAPABILITIES
-from prism_app.prism_auth_service import is_active
 from starlette_admin.base import BaseAdmin
 
 
@@ -42,7 +41,6 @@ class PrismAdminAuthProvider(BaseAuthProvider):
 
     def setup_admin(self, admin: BaseAdmin) -> None:
         from starlette.routing import Route
-
         from starlette_admin.helpers import wrap_endpoint_with_kwargs
 
         admin.middlewares.append(self.get_middleware(admin=admin))
@@ -124,13 +122,13 @@ class PrismAdminAuthMiddleware(BaseHTTPMiddleware):
             return await call_next(request)
 
         is_public = (
-            current_route is not None and current_route.path in self.allow_paths
-        ) or (
-            current_route is not None and current_route.name in self.allow_routes
-        ) or (
-            current_route is not None
-            and hasattr(current_route, "endpoint")
-            and getattr(current_route.endpoint, "_login_not_required", False)
+            (current_route is not None and current_route.path in self.allow_paths)
+            or (current_route is not None and current_route.name in self.allow_routes)
+            or (
+                current_route is not None
+                and hasattr(current_route, "endpoint")
+                and getattr(current_route.endpoint, "_login_not_required", False)
+            )
         )
 
         if is_public:
