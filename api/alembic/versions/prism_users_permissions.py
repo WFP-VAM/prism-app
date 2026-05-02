@@ -17,6 +17,10 @@ depends_on = None
 
 
 def upgrade() -> None:
+    # PG 12 test images (e.g. kartoza/postgis:12) lack built-in gen_random_uuid(); pgcrypto supplies it.
+    # PG 13+ has gen_random_uuid() in core; ``IF NOT EXISTS`` keeps this idempotent.
+    op.execute("CREATE EXTENSION IF NOT EXISTS pgcrypto")
+
     op.execute("CREATE TYPE prism_user_status AS ENUM ('active', 'disabled')")
 
     user_status = postgresql.ENUM(
@@ -111,8 +115,7 @@ def upgrade() -> None:
         unique=False,
     )
 
-    op.execute(
-        """
+    op.execute("""
         INSERT INTO permissions (code, label, description)
         VALUES
             (
@@ -141,8 +144,7 @@ def upgrade() -> None:
                 'Provision users and assign permissions.'
             )
         ON CONFLICT (code) DO NOTHING
-        """
-    )
+        """)
 
 
 def downgrade() -> None:
