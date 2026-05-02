@@ -30,7 +30,7 @@ test-services:
 api-test: test-services
 	docker compose -f docker-compose.yml -f docker-compose.test.yml exec -T api bash -c "cd / && poetry run alembic -c /alembic.ini upgrade head"
 	docker compose -f docker-compose.yml -f docker-compose.test.yml exec -T api bash -c "/wait-for-it.sh frontend:3300 -t 180"
-	docker compose -f docker-compose.yml -f docker-compose.test.yml exec -T api bash -c "pytest -s tests -v --tb=long"
+	docker compose -f docker-compose.yml -f docker-compose.test.yml exec -T api bash -c "cd / && PYTHONPATH=. poetry run pytest -s prism_app/tests -v --tb=long"
 	docker compose -f docker-compose.yml -f docker-compose.test.yml down
 
 api-add-users:
