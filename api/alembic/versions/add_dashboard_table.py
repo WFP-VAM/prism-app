@@ -15,8 +15,50 @@ down_revision = "prism_alerts_baseline"
 branch_labels = None
 depends_on = None
 
+# Source of values: frontend/src/config/index.ts -> `configMap` keys.
+_DEPLOYMENT_CODES = (
+    "afghanistan",
+    "bhutan",
+    "cambodia",
+    "cameroon",
+    "colombia",
+    "cuba",
+    "ecuador",
+    "global",
+    "haiti",
+    "indonesia",
+    "jordan",
+    "kyrgyzstan",
+    "malawi",
+    "mongolia",
+    "mozambique",
+    "myanmar",
+    "namibia",
+    "nepal",
+    "nigeria",
+    "rbd",
+    "sierraleone",
+    "somalia",
+    "southsudan",
+    "srilanka",
+    "sudan",
+    "tajikistan",
+    "tanzania",
+    "ukraine",
+    "zambia",
+    "zimbabwe",
+)
+
 
 def upgrade() -> None:
+    op.create_table(
+        "deployment",
+        sa.Column("code", sa.String(), nullable=False),
+        sa.PrimaryKeyConstraint("code"),
+    )
+    values_sql = ", ".join(f"('{code}')" for code in _DEPLOYMENT_CODES)
+    op.execute(sa.text(f"INSERT INTO deployment (code) VALUES {values_sql}"))
+
     op.execute("CREATE TYPE dashboard_status_enum AS ENUM ('draft', 'published')")
     status_type = postgresql.ENUM(
         "draft",
@@ -42,7 +84,12 @@ def upgrade() -> None:
             nullable=False,
             server_default=sa.text("'draft'::dashboard_status_enum"),
         ),
-        sa.Column("deployment", sa.String(), nullable=True),
+        sa.Column(
+            "deployment",
+            sa.String(),
+            sa.ForeignKey("deployment.code"),
+            nullable=True,
+        ),
         sa.Column(
             "config",
             postgresql.JSONB(astext_type=sa.Text()),
@@ -67,16 +114,6 @@ def upgrade() -> None:
             "deployment", "title", name="uq_dashboard_deployment_title"
         ),
         sa.UniqueConstraint("deployment", "slug", name="uq_dashboard_deployment_slug"),
-        # Source of values: frontend/src/config/index.ts -> `configMap` keys.
-        sa.CheckConstraint(
-            "deployment IS NULL OR deployment IN "
-            "('afghanistan', 'bhutan', 'cambodia', 'cameroon', 'colombia', 'cuba', "
-            "'ecuador', 'global', 'haiti', 'indonesia', 'jordan', 'kyrgyzstan', "
-            "'malawi', 'mongolia', 'mozambique', 'myanmar', 'namibia', 'nepal', "
-            "'nigeria', 'rbd', 'sierraleone', 'somalia', 'southsudan', 'srilanka', "
-            "'sudan', 'tajikistan', 'tanzania', 'ukraine', 'zambia', 'zimbabwe')",
-            name="ck_dashboard_deployment_allowed_values",
-        ),
     )
     op.create_index(
         "ix_dashboard_deployment_status",
@@ -96,4 +133,5 @@ def downgrade() -> None:
     op.drop_index("ix_dashboard_deployment", table_name="dashboard")
     op.drop_index("ix_dashboard_deployment_status", table_name="dashboard")
     op.drop_table("dashboard")
+    op.drop_table("deployment")
     op.execute("DROP TYPE dashboard_status_enum")

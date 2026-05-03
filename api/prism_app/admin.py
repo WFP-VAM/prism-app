@@ -1,12 +1,13 @@
-"""Starlette Admin: read-only alerts tables; full CRUD for dashboards."""
+"""Starlette Admin: read-only alerts and deployment reference; full CRUD for dashboards."""
 
 from prism_app.dashboard_admin import DashboardAdminView
 from prism_app.database.alert_model import AlertModel
 from prism_app.database.anticipatory_action_alerts_model import AnticipatoryActionAlerts
-from prism_app.database.dashboard_model import DashboardModel
+from prism_app.database.dashboard_model import DashboardModel, DeploymentModel
 from prism_app.database.user_info_model import UserInfoModel
 from starlette.requests import Request
 from starlette_admin.contrib.sqla import Admin, ModelView
+from starlette_admin.fields import StringField
 
 
 class ReadOnlyModelView(ModelView):
@@ -38,8 +39,14 @@ class AnticipatoryActionAlertsView(ReadOnlyModelView):
     exclude_fields_from_list = ("last_states",)
 
 
+class DeploymentView(ReadOnlyModelView):
+    label = "Deployments"
+    fields = [StringField("code", label="Deployment code")]
+
+
 def register_alerts_admin_views(admin: Admin) -> None:
     admin.add_view(AlertView(AlertModel))
     admin.add_view(UserInfoView(UserInfoModel))
     admin.add_view(AnticipatoryActionAlertsView(AnticipatoryActionAlerts))
+    admin.add_view(DeploymentView(DeploymentModel))
     admin.add_view(DashboardAdminView(DashboardModel))

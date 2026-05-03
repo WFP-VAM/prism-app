@@ -7,9 +7,9 @@ from typing import Any
 
 from sqlalchemy import (
     Boolean,
-    CheckConstraint,
     Column,
     DateTime,
+    ForeignKey,
     Index,
     String,
     UniqueConstraint,
@@ -71,6 +71,14 @@ _dashboard_status_enum = PG_ENUM(
 )
 
 
+class DeploymentModel(SQLModel, table=True):
+    """PRISM deployment codes (``configMap`` keys); rows are seeded by migration."""
+
+    __tablename__ = "deployment"
+
+    code: str = Field(sa_column=Column(String, primary_key=True))
+
+
 class DashboardModel(SQLModel, table=True):
     """ORM for the `dashboard` table."""
 
@@ -80,12 +88,6 @@ class DashboardModel(SQLModel, table=True):
         UniqueConstraint("deployment", "slug", name="uq_dashboard_deployment_slug"),
         Index("ix_dashboard_deployment_status", "deployment", "status"),
         Index("ix_dashboard_deployment", "deployment"),
-        CheckConstraint(
-            "deployment IS NULL OR deployment = ANY (ARRAY["
-            + ", ".join(f"'{value}'" for value in ALLOWED_DASHBOARD_DEPLOYMENTS)
-            + "])",
-            name="ck_dashboard_deployment_allowed_values",
-        ),
     )
 
     id: uuid.UUID = Field(
@@ -107,7 +109,8 @@ class DashboardModel(SQLModel, table=True):
         ),
     )
     deployment: str | None = Field(
-        default=None, sa_column=Column(String, nullable=True)
+        default=None,
+        sa_column=Column(String, ForeignKey("deployment.code"), nullable=True),
     )
     # Full dashboard file shape: a JSON array of row objects; JSONB also allows a single object for legacy.
     config: Any = Field(sa_column=Column(JSONB, nullable=False))

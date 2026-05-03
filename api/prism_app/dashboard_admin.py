@@ -28,6 +28,7 @@ class DashboardAdminView(ModelView):
         "title",
         EnumField(
             "deployment",
+            label="Deployment code",
             required=False,
             choices=[("", "None")]
             + [(value, value) for value in ALLOWED_DASHBOARD_DEPLOYMENTS],
