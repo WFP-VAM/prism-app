@@ -14,11 +14,9 @@ deploy:
 logs:
 	source set_envs.sh && docker compose -f docker-compose.yml -f docker-compose.deploy.yml logs --tail=500 -f
 
-# Match `.github/workflows/api.yml` `api_lint`: format the whole `api/` tree.
-# Docker `WORKDIR` is only `/prism_app`, so `docker compose … black .` never touches `alembic/` or `scripts/`.
 api-lint:
-	poetry run black .
-	poetry run isort .
+	docker compose run --no-deps api bash -c "poetry run black ."
+	docker compose run --no-deps api bash -c "poetry run isort ."
 
 api-typecheck:
 	docker compose run --no-deps api bash -c "mypy ."

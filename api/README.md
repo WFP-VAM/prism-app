@@ -110,19 +110,19 @@ See [`.env.example`](.env.example) for a ready-to-copy template.
 
 ### Session secret (`PRISM_SESSION_SECRET`)
 
-Signs the browser session cookie and short-lived OIDC state tokens (via **itsdangerous**).
+Signs the session cookie and OIDC state tokens.
 
-- **Production:** set to a long random string, use the **same value on every host/process** (mismatched secrets break sessions under load balancing). Set `PRISM_ENV=production` (or `prod`) — the app **fails fast at startup** if the secret is missing.
-- **Local/test:** leave empty — an ephemeral key is generated at startup (warning logged). Cookies are lost on restart and multiple uvicorn workers won't share sessions.
-
-Generate a stable secret (pick one):
+| Context | Behavior |
+|---|---|
+| **Production** | Required — set `PRISM_ENV=production`, app fails fast if missing. Use the same value on all hosts. |
+| **Local/test** | Leave empty — ephemeral key generated at startup (warning logged); lost on restart. |
 
 ```bash
+# Generate a stable secret (paste into api/.env as PRISM_SESSION_SECRET=...)
 openssl rand -hex 32
-python -c "import secrets; print(secrets.token_hex(32))"
 ```
 
-Paste into `api/.env` as `PRISM_SESSION_SECRET=...`. In AWS, store in Secrets Manager / SSM and inject at deploy time. Rotating the secret invalidates all active sessions.
+> In AWS store in Secrets Manager / SSM. Rotating the secret logs everyone out.
 
 ## Alerts database migrations (Alembic)
 

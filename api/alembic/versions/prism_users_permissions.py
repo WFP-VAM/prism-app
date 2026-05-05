@@ -17,8 +17,7 @@ depends_on = None
 
 
 def upgrade() -> None:
-    # PG 12 test images (e.g. kartoza/postgis:12) lack built-in gen_random_uuid(); pgcrypto supplies it.
-    # PG 13+ has gen_random_uuid() in core; ``IF NOT EXISTS`` keeps this idempotent.
+    # gen_random_uuid() is built-in on PG 13+; pgcrypto is a no-op safety net.
     op.execute("CREATE EXTENSION IF NOT EXISTS pgcrypto")
 
     op.execute("CREATE TYPE prism_user_status AS ENUM ('active', 'disabled')")

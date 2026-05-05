@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, Mapping
+from typing import Any, Mapping
 from uuid import UUID
 
 from prism_app.auth.oidc_id_token_profile import IdTokenProfileClaims
@@ -14,8 +14,6 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-if TYPE_CHECKING:
-    pass
 
 logger = logging.getLogger(__name__)
 
@@ -77,33 +75,29 @@ def ensure_prism_user_for_oidc(
                 trimmed_sub[:80],
             )
 
-    return load_user_by_ciam_sub(engine, trimmed_sub)
+    return load_user_and_permissions(engine, ciam_sub=trimmed_sub)
 
 
 def load_user_and_permissions(
-    engine: Engine, user_id: UUID
+    engine: Engine,
+    *,
+    user_id: UUID | None = None,
+    ciam_sub: str | None = None,
 ) -> tuple[PrismUser | None, set[str]]:
-    """Return the user row and set of permission codes (empty if missing user)."""
-    with Session(engine) as session:
-        user = session.get(PrismUser, user_id)
-        if user is None:
-            return None, set()
-        rows = session.execute(
-            select(Permission.code)
-            .join(UserPermission, UserPermission.permission_id == Permission.id)
-            .where(UserPermission.user_id == user_id)
-        ).all()
-        codes = {r[0] for r in rows}
-        return user, codes
+    """Return the user row and set of permission codes (empty if missing user).
 
+    Either ``user_id`` or ``ciam_sub`` must be provided.
+    """
+    if (user_id is None) == (ciam_sub is None):
+        raise ValueError("Provide exactly one of user_id or ciam_sub")
 
-def load_user_by_ciam_sub(
-    engine: Engine, ciam_sub: str
-) -> tuple[PrismUser | None, set[str]]:
     with Session(engine) as session:
-        user = session.scalars(
-            select(PrismUser).where(PrismUser.ciam_sub == ciam_sub)
-        ).first()
+        if user_id is not None:
+            user = session.get(PrismUser, user_id)
+        else:
+            user = session.scalars(
+                select(PrismUser).where(PrismUser.ciam_sub == ciam_sub)
+            ).first()
         if user is None:
             return None, set()
         rows = session.execute(

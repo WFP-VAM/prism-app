@@ -82,11 +82,16 @@ def build_authorize_url(
     state: str,
     nonce: str,
     *,
-    code_challenge: str | None = None,
-    code_challenge_method: str | None = None,
-    code_verifier: str | None = None,
+    code_verifier: str,
 ) -> str:
-    """Build the CIAM authorization redirect URL."""
+    """Build the CIAM authorization redirect URL (PKCE S256 via Authlib).
+
+    ``code_verifier`` is required; Authlib derives the ``code_challenge`` internally.
+
+    .. todo:: If a non-PKCE or pre-computed ``code_challenge`` flow is needed later,
+       add ``code_challenge`` / ``code_challenge_method`` keyword parameters and
+       fall back to manual ``urlencode`` construction (see git history).
+    """
     doc = get_oidc_discovery_doc(settings.oidc_issuer)
     auth_ep = doc["authorization_endpoint"]
     token_ep = doc["token_endpoint"]
@@ -96,59 +101,23 @@ def build_authorize_url(
     if prompt:
         extra["prompt"] = prompt
 
-    if code_verifier:
-        if code_challenge or code_challenge_method:
-            logger.warning(
-                "Both code_verifier and code_challenge passed; using code_verifier for Authlib PKCE"
-            )
-        client = OAuth2Client(
-            session=None,
-            client_id=settings.oidc_client_id,
-            redirect_uri=settings.oidc_redirect_uri,
-            scope=settings.oidc_scopes,
-            code_challenge_method="S256",
-            authorization_endpoint=auth_ep,
-            token_endpoint=token_ep,
-        )
-        uri, _ = client.create_authorization_url(
-            auth_ep,
-            state=state,
-            nonce=nonce,
-            code_verifier=code_verifier,
-            **extra,
-        )
-        return uri
-
-    if code_challenge and code_challenge_method:
-        params: dict[str, str] = {
-            "response_type": "code",
-            "client_id": settings.oidc_client_id,
-            "redirect_uri": settings.oidc_redirect_uri,
-            "scope": settings.oidc_scopes,
-            "state": state,
-            "nonce": nonce,
-            "code_challenge": code_challenge,
-            "code_challenge_method": code_challenge_method,
-        }
-        if prompt:
-            params["prompt"] = prompt
-        q = urlencode(params, quote_via=quote, safe="")
-        sep = "&" if "?" in auth_ep else "?"
-        return f"{auth_ep}{sep}{q}"
-
-    params = {
-        "response_type": "code",
-        "client_id": settings.oidc_client_id,
-        "redirect_uri": settings.oidc_redirect_uri,
-        "scope": settings.oidc_scopes,
-        "state": state,
-        "nonce": nonce,
-    }
-    if prompt:
-        params["prompt"] = prompt
-    q = urlencode(params, quote_via=quote, safe="")
-    sep = "&" if "?" in auth_ep else "?"
-    return f"{auth_ep}{sep}{q}"
+    client = OAuth2Client(
+        session=None,
+        client_id=settings.oidc_client_id,
+        redirect_uri=settings.oidc_redirect_uri,
+        scope=settings.oidc_scopes,
+        code_challenge_method="S256",
+        authorization_endpoint=auth_ep,
+        token_endpoint=token_ep,
+    )
+    uri, _ = client.create_authorization_url(
+        auth_ep,
+        state=state,
+        nonce=nonce,
+        code_verifier=code_verifier,
+        **extra,
+    )
+    return uri
 
 
 def build_rp_initiated_logout_url(

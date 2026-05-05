@@ -90,7 +90,7 @@ def load_prism_user_from_session(
         return None, set(), None
     sess_sub_raw = request.session.get(PRISM_SESSION_CIAM_SUB)
     sess_sub = str(sess_sub_raw).strip() if sess_sub_raw is not None else None
-    user, codes = load_user_and_permissions(engine, user_id)
+    user, codes = load_user_and_permissions(engine, user_id=user_id)
     if user is not None and sess_sub and user.ciam_sub != sess_sub:
         clear_prism_browser_session(request)
         return None, set(), None

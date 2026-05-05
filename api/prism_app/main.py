@@ -17,7 +17,7 @@ from prism_app.auth import auth_oidc
 from prism_app.auth.access_pages import access_not_configured_response
 from prism_app.auth.admin_oidc_auth import PrismAdminAuthProvider
 from prism_app.auth.admin_settings import get_admin_auth_settings
-from prism_app.auth.deps import require_permissions
+from prism_app.auth.deps import require_permissions, require_prism_session
 from prism_app.auth.permission_codes import ADMIN_ACCESS
 from prism_app.auth_legacy import optional_validate_user, validate_user
 from prism_app.caching import FilePath, cache_file, cache_geojson
@@ -117,10 +117,16 @@ _AdminSession = Annotated[
     Depends(require_permissions(ADMIN_ACCESS)),
 ]
 
+_AnySession = Annotated[
+    tuple[PrismUser, set[str]],
+    Depends(require_prism_session),
+]
 
+
+@app.get("/api/whoami")
 @app.get("/api/admin/whoami")
-def admin_whoami(prism: _AdminSession):
-    """JSON check for admin session + ``prism.admin.access`` (optional integration tests)."""
+def whoami(prism: _AnySession):
+    """Return current user identity and permissions (any authenticated user)."""
     user, codes = prism
     return {
         "user_id": str(user.id),
