@@ -5,11 +5,14 @@ from __future__ import annotations
 from typing import Optional, Union
 from urllib.parse import quote, urlencode
 
-from prism_app.access_pages import access_denied_response
-from prism_app.admin_settings import AdminAuthSettings, log_oidc_configuration_blocked
-from prism_app.deps import load_prism_user_from_session
-from prism_app.permission_codes import ADMIN_ACCESS, ALL_CAPABILITIES
-from prism_app.prism_auth_service import is_active
+from prism_app.auth.access_pages import access_denied_response
+from prism_app.auth.admin_settings import (
+    AdminAuthSettings,
+    log_oidc_configuration_blocked,
+)
+from prism_app.auth.deps import load_prism_user_from_session
+from prism_app.auth.permission_codes import ADMIN_ACCESS, ALL_CAPABILITIES
+from prism_app.auth.prism_auth_service import is_active
 from sqlalchemy.engine import Engine
 from starlette.middleware import Middleware
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint

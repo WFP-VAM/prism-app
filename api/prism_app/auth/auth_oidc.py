@@ -11,26 +11,26 @@ import jwt
 from authlib.integrations.base_client.errors import OAuthError
 from fastapi import APIRouter, Depends, Form, HTTPException, Query, Request
 from fastapi.responses import RedirectResponse, Response
-from prism_app.access_pages import (
+from prism_app.auth.access_pages import (
     access_denied_response,
     oidc_session_interrupted_response,
     sign_out_confirm_response,
     sign_out_csrf_failed_response,
     signed_out_response,
 )
-from prism_app.admin_settings import (
+from prism_app.auth.admin_settings import (
     AdminAuthSettings,
     get_admin_auth_settings,
     log_oidc_configuration_blocked,
 )
-from prism_app.deps import (
+from prism_app.auth.deps import (
     PRISM_SESSION_SIGN_OUT_CSRF,
     clear_oidc_state_cookie,
     clear_prism_auth_cookies,
     clear_prism_browser_session,
     set_prism_session_user,
 )
-from prism_app.oidc_support import (
+from prism_app.auth.oidc_support import (
     build_authorize_url,
     build_rp_initiated_logout_url,
     exchange_code_for_tokens,
@@ -39,7 +39,7 @@ from prism_app.oidc_support import (
     verify_id_token,
     verify_oidc_state,
 )
-from prism_app.prism_auth_service import (
+from prism_app.auth.prism_auth_service import (
     ensure_prism_user_for_oidc,
     is_active,
     touch_last_login,

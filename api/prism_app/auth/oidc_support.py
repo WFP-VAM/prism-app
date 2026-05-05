@@ -31,7 +31,7 @@ from authlib.oidc.core import CodeIDToken
 from joserfc import jwt as joserfc_jwt
 from joserfc.errors import InvalidKeyIdError
 from joserfc.jwk import KeySet
-from prism_app.admin_settings import AdminAuthSettings
+from prism_app.auth.admin_settings import AdminAuthSettings
 
 logger = logging.getLogger(__name__)
 

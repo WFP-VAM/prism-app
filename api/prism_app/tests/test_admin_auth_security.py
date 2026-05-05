@@ -10,10 +10,10 @@ os.environ.setdefault("KOBO_USERNAME", "pytest")
 os.environ.setdefault("KOBO_PASSWORD", "pytest")
 
 from fastapi.testclient import TestClient
-from prism_app.admin_oidc_auth import PrismAdminAuthProvider
-from prism_app.admin_settings import AdminAuthSettings, get_admin_auth_settings
+from prism_app.auth import auth_oidc
+from prism_app.auth.admin_oidc_auth import PrismAdminAuthProvider
+from prism_app.auth.admin_settings import AdminAuthSettings, get_admin_auth_settings
 from prism_app.main import app
-from prism_app.routers import auth_oidc
 from sqlalchemy import create_engine
 
 # Session cookies use Secure when PRISM_SESSION_COOKIE_SECURE defaults true; httpx omits Secure

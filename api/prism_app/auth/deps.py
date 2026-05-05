@@ -6,9 +6,9 @@ from typing import Annotated, Literal
 from uuid import UUID
 
 from fastapi import Depends, HTTPException, Request, status
-from prism_app.admin_settings import AdminAuthSettings, get_admin_auth_settings
+from prism_app.auth.admin_settings import AdminAuthSettings, get_admin_auth_settings
+from prism_app.auth.prism_auth_service import is_active, load_user_and_permissions
 from prism_app.database.prism_user_model import PrismUser
-from prism_app.prism_auth_service import is_active, load_user_and_permissions
 from sqlalchemy.engine import Engine
 from starlette.responses import Response
 

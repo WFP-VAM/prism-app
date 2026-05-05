@@ -6,9 +6,9 @@ import logging
 from typing import TYPE_CHECKING, Any, Mapping
 from uuid import UUID
 
+from prism_app.auth.oidc_id_token_profile import IdTokenProfileClaims
 from prism_app.database.permission_model import Permission, UserPermission
 from prism_app.database.prism_user_model import PrismUser, PrismUserStatus
-from prism_app.oidc_id_token_profile import IdTokenProfileClaims
 from sqlalchemy import select
 from sqlalchemy.engine import Engine
 from sqlalchemy.exc import IntegrityError
