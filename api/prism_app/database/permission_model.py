@@ -5,6 +5,7 @@ from typing import Optional
 from uuid import UUID
 
 import sqlalchemy as sa
+from markupsafe import escape
 from sqlalchemy import Column, DateTime, ForeignKey, String, Text, text
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlmodel import Field, Relationship, SQLModel
@@ -36,8 +37,18 @@ class Permission(SQLModel, table=True):
         ),
     )
 
+    # -- starlette-admin display helpers --
+    # __admin_repr__:         plain-text shown after a permission is selected
+    # __admin_select2_repr__: HTML shown in the Select2 dropdown options
+
+    def __str__(self) -> str:
+        return f"{self.label} ({self.code})"
+
     def __admin_repr__(self, request) -> str:
-        return self.code
+        return str(self)
+
+    def __admin_select2_repr__(self, request) -> str:
+        return f"<span><strong>{escape(self.label)}</strong> <code>{escape(self.code)}</code></span>"
 
 
 class UserPermission(SQLModel, table=True):

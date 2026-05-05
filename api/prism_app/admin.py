@@ -68,6 +68,7 @@ class PrismUserEditView(PrismGatedModelView):
     """CIAM-mapped users: provision metadata; permissions use User permissions."""
 
     label = "PRISM users (CIAM)"
+    edit_template = "edit_no_add_another.html"  # hides "Save and add another"
     exclude_fields_from_edit = (
         "id",
         "ciam_sub",
@@ -92,6 +93,7 @@ class UserPermissionView(PrismGatedModelView):
 
     label = "User permissions"
     fields = ("user", "permission", "granted_at")
+    exclude_fields_from_create = ("granted_at",)  # auto-set to now() by DB default
 
 
 def register_alerts_admin_views(admin: Admin) -> None:

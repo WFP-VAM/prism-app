@@ -1,0 +1,13 @@
+{#
+  Custom edit template that hides the "Save and add another" button.
+  Used by views where creation is disabled (e.g. PrismUserEditView).
+  Extends the built-in template via the @starlette-admin prefix so
+  ChoiceLoader resolves the original rather than recursing.
+#}
+{% extends "@starlette-admin/edit.html" %}
+
+{% block head_css %}
+  {{ super() }}
+  <style>button[name="_add_another"] { display: none !important; }</style>
+  <style>button[name="_continue_editing"] { display: none !important; }</style>
+{% endblock %}

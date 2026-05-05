@@ -6,6 +6,7 @@ from typing import Optional
 from uuid import UUID
 
 import sqlalchemy as sa
+from markupsafe import escape
 from sqlalchemy import Column, DateTime, String, text
 from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
@@ -69,5 +70,18 @@ class PrismUser(SQLModel, table=True):
         sa_column=Column(DateTime(timezone=True), nullable=True),
     )
 
+    # -- starlette-admin display helpers --
+    # __admin_repr__:         plain-text shown after a user is selected
+    # __admin_select2_repr__: HTML shown in the Select2 dropdown options
+
+    def __str__(self) -> str:
+        parts = [p for p in (self.name, self.email) if p]
+        return " — ".join(parts) if parts else self.ciam_sub
+
     def __admin_repr__(self, request) -> str:
-        return self.email or self.ciam_sub
+        return str(self)
+
+    def __admin_select2_repr__(self, request) -> str:
+        name = escape(self.name or "")
+        email = escape(self.email or self.ciam_sub)
+        return f"<span><strong>{name}</strong> {email}</span>"

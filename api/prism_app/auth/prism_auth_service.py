@@ -14,7 +14,6 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-
 logger = logging.getLogger(__name__)
 
 
