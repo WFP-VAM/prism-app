@@ -56,7 +56,7 @@ services:
       - VECTOR_STORE_ACCESS_KEY_ID=${VECTOR_STORE_ACCESS_KEY_ID}
       - VECTOR_STORE_SECRET_ACCESS_KEY=${VECTOR_STORE_SECRET_ACCESS_KEY}
       - VECTOR_STORE_DEFAULT_REGION=${VECTOR_STORE_DEFAULT_REGION}
-    command: uvicorn prism_app.main:app --host 0.0.0.0 --port 80
+    command: uvicorn prism_app.main:app --host 0.0.0.0 --port 80 --proxy-headers --forwarded-allow-ips="*"
     restart: always
     # adding a DNS to allow self lookup of the api
     dns:

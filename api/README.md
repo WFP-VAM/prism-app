@@ -2,139 +2,127 @@
 
 The PRISM API is a lightweight API to calculate zonal statistics.
 
-The API has two endpoints for now.
+## Quick start (local development)
+
+### Prerequisites
+
+- [Docker](https://www.docker.com/products/docker-desktop/) installed and running
+
+### 1. Environment
+
+Copy the example env file and enable local auth bypass:
+
+```bash
+cp .env.example .env
+```
+
+Edit `api/.env` and set:
+
+```
+PRISM_ADMIN_AUTH_DISABLED=true
+```
+
+This skips CIAM OIDC so you can access `/admin` without credentials. See [Admin UI and CIAM OIDC](#admin-ui-starlette-admin-and-ciam-oidc) for the full auth setup.
+
+You also need `KOBO_USERNAME` and `KOBO_PASSWORD` exported in your shell (the compose file requires them):
+
+```bash
+export KOBO_USERNAME=kobo_user KOBO_PASSWORD=test
+```
+
+### 2. Start the API and database
+
+```bash
+make api
+```
+
+This starts two containers via `docker-compose.develop.yml`:
+- **`db`** — PostGIS (Postgres) on host port **54321**
+- **`api`** — FastAPI (uvicorn with hot reload) on host port **80**
+
+### 3. Run migrations and seed data
+
+In a **second terminal** (while `make api` is running):
+
+```bash
+make db-migrate
+make db-seed
+```
+
+`db-migrate` applies Alembic migrations (`upgrade head`). `db-seed` runs migrations first, then inserts sample dev data (Mozambique AA metadata, a `local_dev_user`, and example alert rows).
+
+### 4. Verify
+
+| What | URL / command |
+|------|---------------|
+| API docs | http://localhost/docs |
+| Admin UI | http://localhost/admin |
+
+### Environment variables
+
+There are three env var mechanisms that serve different contexts:
+
+| Mechanism | When it's used |
+|-----------|---------------|
+| `api/.env` | Environment-specific host-side values (including secrets), for local dev and Alembic |
+| Compose `environment:` | Container-side values |
+| `set_envs.sh` | Production container-side values, mainly for deploys and dev with production services |
+
+---
 
 ## Endpoints
 
-### `/stats` (POST)
+Full, interactive API documentation (request/response schemas, "Try it out") is available at the **Swagger UI**: <https://prism-api.ovio.org/docs>
 
-Calculate zonal statistics for a raster / zones combination. Which takes as inputs through POST:
-
-- `geotiff_url`, the link to a geotiff
-- `zones_url` OR `zones`, the link to a geojson with admin boundaries / a geojson with boundaries
-- `?group_by`, a key to use to group zones in the geojson
-- `?geojson_out`, decide if the output should be a geojson or a list of data. Default is false -> List.
-- `?intersect_comparison`, ask the API to calcuate and return `intersect_percentage`. Formatted as `>=10.1`. Comparison defaults to equality if omitted.
-- `?wfs_params`, A dictionary of parameters to compute statistics using the intersection between WFS FeatureCollection response polygons with admin boundaries. The parameters are the following.
-  - `url`, WFS remote service url.
-  - `layer_name`, the name of the vector layer. Geometry must be POLYGON or MULTIPOLYGON.
-  - `key`, Geojson property field to be extracted for each feature.
-  - `?time`, Layer TIME dimension if enabled.
-- `?filter_by`, A dictionary of parameters that filters the features that match the geojson property key and value specified within the request.
-  - `key`, feature property key.
-  - `value`, feature property value.
-
-### `/demo` (GET)
-
-Exposes a sample API response and takes the following query arguments:
-
-- `?group_by`, a key to use to group zones in the geojson, eg. `ADM1_PCODE`
-- `?geojson_out`, decide if the output should be a geojson or a list of data. Default is false -> List.
-
-### `/alerts-all` (GET)
-
-Return all the alerts data that `alert` table holds
-
-```
-curl --location --request GET 'localhost:80/alerts-all' > data.json
-```
-
-### `/alerts` (GET)
-
-Based on the parameter from request URL, this endpoint will return the matched
-alert rows from DB.
-
-- `id` return alert data that has `id`
-- TODO: more GET all operations will be supported for different query cases
-
-```
-curl --location --request GET 'localhost:80/alerts?id=3'
-```
-
-### `/alerts` (POST)
-
-One successful call will create a new entry in database `alert` table. The JSON
-data should match the model defined in `AlertModel`.
-
-```
-curl --location --request POST 'localhost:80/alerts' \
---header 'Content-Type: application/json' -d @example_alert_post.json
-```
-
-The following endpoints are related to data retrieval from KoboToolbox. Make sure
-you have set the environment variables KOBO_USERNAME, KOBO_PASSWORD
-
-### `/acled` (GET)
-
-Returns armed conflict incidents using ACLED api. Make sure to have the defined ACLED credentials using environment variables `ACLED_API_KEY` and `ACLED_API_EMAIL`
-
-- `iso`, Country ISO code defined in Acled file. Verify documentation.
-- `limit`, Maximum number of results. 0 corresponds to all incidents.
-- `?fields`, Comma separated string which specifies the fields to be returned per incident.
-- `?event_date`, Return incidents only matching the given value with format YYYY-MM-DD
-
-### `/kobo/forms` (GET)
-
-Returns all form responses using Kobo API
-
-- `nameField`, The name of the Kobo form.
-- `datetimeField`, Field used to collect all timestamps.
-- `geomField`, form field which contains lat lon coordinates.
-- `measureField`, form field used for legend rendering. Backend converts string form value to number.
-- `?beginDateTime`, Filter forms starting from given date.
-- `?endDateTime`, Filter forms whose date field is lower than value provided.
-- `?filterStatus`, Filter forms that match the given value. Possible values are 'Approved', 'Not Approved' and 'On Hold'
-
-```
-curl -X GET 'http://localhost/kobo/forms?nameField=Test%20MMR&datetimeField=_submission_time&geomField=Location&measureField=The_number&beginDateTime=2021-09-15&endDateTime=2021-09-29'
-```
-
-### `/raster_geotiff` (POST)
-
-Generate a geotiff for any wfp raster using the stac API and saves it in S3. It returns the pre signed S3 geotiff URL.
-The instance will need to have read/write access to S3. Make sure it has the necessary IAM role or credentials.
-
-- `collection`, the name of the collection to get. For example `r3h_dekad`.
-- `date`, date of the data to get. For example : `2020-09-01`.
-- `lat_min`, min latitude (to define the bounding box of the geotiff).
-- `long_min`, min longitude (to define the bounding box of the geotiff).
-- `lat_max`, max latitude (to define the bounding box of the geotiff).
-- `long_max`, max longitude (to define the bounding box of the geotiff).
+For local development the same docs are served at <http://localhost/docs> once the API is running.
 
 ## Admin UI (Starlette Admin) and CIAM OIDC
 
-The `/admin` UI uses **CIAM OpenID Connect** (authorization code with a confidential client). PRISM provisions users in the **`users`** table (stable `ciam_sub` from the ID token) and grants **capabilities** via **`user_permissions`** linking to **`permissions.code`**.
+`/admin` is gated by **CIAM OpenID Connect** (authorization-code flow, confidential client). [CIAM Documentation](https://docs.ciam.auth.wfp.org/) is the authoritative reference for OIDC flow details, client registration, and errors.
 
-**Authoritative CIAM integration guidance** is the WFP documentation site: [CIAM Documentation](https://docs.ciam.auth.wfp.org/). Use it for OIDC flow details, endpoint behavior, client registration, and errors—for example.
+> **Note:** HTTP Basic auth (`prism_app/auth.py`, `user_info` table) is separate and only gates geospatial API routes — not Admin.
 
-This codebase loads OIDC metadata via **OpenID Connect Discovery** from `{PRISM_OIDC_ISSUER}/.well-known/openid-configuration`. Set **`PRISM_OIDC_ISSUER`** to the **`issuer`** string from that document (see [`.env.example`](.env.example)); it may be a path under `ciam.auth.wfp.org`, not only the site origin. The RP client logic (authorize URL + PKCE, token endpoint, JWKS JWT verification) uses [Authlib](https://docs.authlib.org/) with Authlib OIDC **`CodeIDToken`** validation atop **joserfc**.
+### Quick reference
 
-**HTTP Basic** auth in [`prism_app/auth.py`](prism_app/auth.py) against **`user_info`** is unchanged and is still used for **geospatial API routes** that depend on `validate_user` / `optional_validate_user`. It does **not** gate Starlette Admin; those are separate credentials and tables.
+| Concept | Detail |
+|---|---|
+| Identity | `users` table, keyed on stable `ciam_sub` from the ID token |
+| Authorization | `user_permissions` → `permissions.code` |
+| Library | [Authlib](https://docs.authlib.org/) (PKCE, token endpoint, JWKS) + joserfc |
 
-### Environment
+### Environment variables
 
-See [`.env.example`](.env.example) for `PRISM_OIDC_*`, `PRISM_SESSION_SECRET`, cookie options, and `PRISM_ACCESS_SUPPORT_EMAIL`.
+| Variable | Required | Description |
+|---|---|---|
+| `PRISM_OIDC_ISSUER` | Yes | `issuer` string from CIAM discovery JSON |
+| `PRISM_OIDC_CLIENT_ID` | Yes | Provided by the WFP CIAM team on client registration |
+| `PRISM_OIDC_CLIENT_SECRET` | Yes | Provided by the WFP CIAM team on client registration |
+| `PRISM_OIDC_REDIRECT_URI` | Yes | Must match the registered redirect URI |
+| `PRISM_SESSION_SECRET` | Prod | See [Session secret](#session-secret-prism_session_secret) below |
+| `PRISM_SESSION_TTL_SECONDS` | No | Cookie/session lifetime in seconds (default: `604800` — one week) |
+| `PRISM_OIDC_SCOPES` | No | Space-separated scopes (default: `openid profile email`) |
+| `PRISM_OIDC_AUTHORIZE_PROMPT` | No | Optional `prompt` param on the authorize URL |
+| `PRISM_OIDC_POST_LOGOUT_REDIRECT_URI` | No | Return URL after CIAM logout; must be registered |
+| `PRISM_ACCESS_SUPPORT_EMAIL` | No | Shown on the access-denied page |
+| `PRISM_ADMIN_AUTH_DISABLED` | Dev only | Set `true` to bypass OIDC for local development |
 
-For **local development without CIAM**, set **`PRISM_ADMIN_AUTH_DISABLED=true`**. Example vars for tests are defaulted in [`prism_app/tests/conftest.py`](prism_app/tests/conftest.py).
+See [`.env.example`](.env.example) for a ready-to-copy template.
 
 ### Session secret (`PRISM_SESSION_SECRET`)
 
-The API uses Starlette **`SessionMiddleware`** with **itsdangerous** to sign [`PRISM_SESSION_COOKIE_NAME`](prism_app/admin_settings.py); the same key is used for short-lived **OIDC state** signing. In **production** set **`PRISM_SESSION_SECRET`** to a long random string and use the **same value** on every process and host (otherwise sessions break when load balancing). Set **`PRISM_ENV=production`** (or `prod`) so the app **fails fast at startup** if the secret is missing; leave `PRISM_ENV` unset (or any other value) for local and test runs, where an empty secret triggers a one-time **ephemeral** key at startup (logged as a warning)—convenient for scratch work, but cookies are invalidated on restart and multiple **uvicorn workers** do not share sessions unless you fix the secret.
+Signs the browser session cookie and short-lived OIDC state tokens (via **itsdangerous**).
 
-**Generate a stable secret locally** (pick one):
+- **Production:** set to a long random string, use the **same value on every host/process** (mismatched secrets break sessions under load balancing). Set `PRISM_ENV=production` (or `prod`) — the app **fails fast at startup** if the secret is missing.
+- **Local/test:** leave empty — an ephemeral key is generated at startup (warning logged). Cookies are lost on restart and multiple uvicorn workers won't share sessions.
+
+Generate a stable secret (pick one):
 
 ```bash
 openssl rand -hex 32
 python -c "import secrets; print(secrets.token_hex(32))"
 ```
 
-Paste the result into `api/.env` as `PRISM_SESSION_SECRET=...`. In AWS or similar, store it in Secrets Manager / SSM Parameter Store and inject into the container or task definition; rotating the secret logs everyone out until they sign in again.
-
-### HTTP routes (main FastAPI app)
-
-**Prism Admin browser session**: Starlette **`SessionMiddleware`** signs a **`PRISM_SESSION_COOKIE_NAME`** cookie (JSON payload via **itsdangerous**). **`PRISM_SESSION_TTL_SECONDS`** maps to the middleware **`max_age`** (also enforced by cookie timestamp signature). Prism stores **`prism_uid`** / **`ciam_sub`** keys in that session (`prism_app/deps.py`).
-
-**Sign-out CSRF**: `GET /auth/sign-out` stores a one-time token in the signed session and renders it as a hidden `csrf_token` field. `POST /auth/sign-out` **must** match that value (then the token is discarded). This blocks **logout CSRF**—a third-party site tricking the browser into submitting a state-changing request that carries your session cookies. When **`PRISM_ADMIN_AUTH_DISABLED`** is true or OIDC is not configured, sign-out does not use the confirm form, so POST does not require this token.
+Paste into `api/.env` as `PRISM_SESSION_SECRET=...`. In AWS, store in Secrets Manager / SSM and inject at deploy time. Rotating the secret invalidates all active sessions.
 
 ## Alerts database migrations (Alembic)
 
@@ -183,22 +171,6 @@ PRISM_ALERTS_DATABASE_URL="postgresql://..." poetry run alembic stamp prism_aler
    ```
 
 3. Apply locally and re-test: `poetry run alembic upgrade head` (with the same URL). Useful commands: `poetry run alembic history`, `poetry run alembic current`.
-
-## Development
-
-To run the api locally, run:
-
-```
-make api
-```
-
-**Alerts DB from Docker:** `prism_app.database.database` uses `PRISM_ALERTS_DATABASE_URL` when set; otherwise it builds a URL from `POSTGRES_*`. `docker-compose.develop.yml` sets `PRISM_ALERTS_DATABASE_URL` to empty so the container ignores a host `api/.env` that uses `127.0.0.1` (fine for Alembic on the laptop, wrong inside Docker—there `127.0.0.1` is the API container). Use `POSTGRES_HOST` / `POSTGRES_PORT` in that compose file so the API reaches Postgres (for example `host.docker.internal` and published port `54321`, or the DB service name and `5432` when sharing a compose network).
-
-To run flask api together with database within same network, run:
-
-```
-docker compose -f ./docker-compose.develop.yml -f ../alerting/docker-compose.yml up
-```
 
 ### Tests
 

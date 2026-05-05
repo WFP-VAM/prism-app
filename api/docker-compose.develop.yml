@@ -1,14 +1,35 @@
 services:
+  db:
+    image: kartoza/postgis:16-3
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=!ChangeMe!
+    ports:
+      - "54321:5432"
+    volumes:
+      - db_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h localhost -U postgres -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
   api:
-    # Load PRISM_OIDC_*, PRISM_SESSION_SECRET, etc. from api/.env (same as pydantic_settings env_file).
     env_file:
       - path: .env
         required: false
+    depends_on:
+      db:
+        condition: service_healthy
     volumes:
       - ./prism_app:/prism_app
-      # Use these to run the app in development mode and update depedencies
       - ./pyproject.toml:/pyproject.toml
       - ./poetry.lock:/poetry.lock
+      - ./alembic.ini:/alembic.ini:ro
+      - ./alembic:/alembic:ro
+      - ./scripts:/scripts:ro
     build:
       context: ./
       dockerfile: ./Dockerfile
@@ -18,10 +39,10 @@ services:
       - "RUN=uvicorn prism_app.main:app --host 0.0.0.0 --port 80"
       # Clear URL so DB_URI is built from POSTGRES_* variables below (!getenv(...) or format(...) in database.py).
       - PRISM_ALERTS_DATABASE_URL=
-      - POSTGRES_HOST=host.docker.internal
+      - POSTGRES_HOST=db
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
-      - POSTGRES_PORT=54321
+      - POSTGRES_PORT=5432
       - POSTGRES_PASSWORD=!ChangeMe!
       - KOBO_PASSWORD=${KOBO_PASSWORD:?"Add a password to access KOBO data."}
       - KOBO_USERNAME=${KOBO_USERNAME:?"Add a user to access KOBO data."}
@@ -34,3 +55,6 @@ services:
     command: uvicorn prism_app.main:app --host 0.0.0.0 --port 80 --reload
     # Infinite loop, to keep it alive, for debugging
     # command: bash -c "while true; do echo 'sleeping...' && sleep 10; done"
+
+volumes:
+  db_data:

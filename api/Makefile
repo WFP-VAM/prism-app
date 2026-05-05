@@ -35,6 +35,14 @@ api-test: test-services
 	docker compose -f docker-compose.yml -f docker-compose.test.yml exec -T api bash -c "cd / && PYTHONPATH=. poetry run pytest -s prism_app/tests -v --tb=long"
 	docker compose -f docker-compose.yml -f docker-compose.test.yml down
 
+DEV_COMPOSE=docker compose -f docker-compose.yml -f docker-compose.develop.yml
+
+db-migrate:
+	$(DEV_COMPOSE) exec -T api bash -c "cd / && poetry run alembic -c /alembic.ini upgrade head"
+
+db-seed: db-migrate
+	$(DEV_COMPOSE) exec -T api bash -c "poetry run python /scripts/seed_alerts_db.py"
+
 api-add-users:
 	docker compose -f docker-compose.yml -f docker-compose.develop.yml run api bash -c "python scripts/add_users.py"
 
