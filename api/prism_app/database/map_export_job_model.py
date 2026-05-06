@@ -9,9 +9,7 @@ from typing import Any, Optional
 from sqlalchemy import JSON, Column, DateTime, Index, String
 from sqlmodel import Field, SQLModel
 
-
-def _utc_now() -> datetime.datetime:
-    return datetime.datetime.now(datetime.UTC)
+from prism_app.utc import utc_now
 
 
 class MapExportJob(SQLModel, table=True):
@@ -44,7 +42,7 @@ class MapExportJob(SQLModel, table=True):
     )
     requested_by: str = Field(sa_column=Column(String, nullable=False))
     created_at: datetime.datetime = Field(
-        default_factory=_utc_now,
+        default_factory=utc_now,
         sa_column=Column(DateTime(timezone=True), nullable=False),
     )
     started_at: Optional[datetime.datetime] = Field(
@@ -56,7 +54,7 @@ class MapExportJob(SQLModel, table=True):
         sa_column=Column(DateTime(timezone=True), nullable=True),
     )
     updated_at: datetime.datetime = Field(
-        default_factory=_utc_now,
+        default_factory=utc_now,
         sa_column=Column(DateTime(timezone=True), nullable=False),
     )
     progress_current: Optional[int] = Field(default=None)

@@ -12,9 +12,6 @@ from prism_app.models import MapExportRequestModel
 async def render_map_export_fixture(
     fixture_path: Path,
 ) -> tuple[bytes, str]:
-    """
-    Load fixture JSON, validate as MapExportRequestModel, return (body, content_type).
-    """
     raw = json.loads(fixture_path.read_text(encoding="utf-8"))
     req = MapExportRequestModel.model_validate(raw)
     return await export_maps(

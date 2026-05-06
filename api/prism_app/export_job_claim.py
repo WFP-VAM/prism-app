@@ -2,15 +2,10 @@
 
 from __future__ import annotations
 
-import datetime
-
 from sqlmodel import Session, select
 
 from prism_app.database.map_export_job_model import MapExportJob
-
-
-def _utc_now() -> datetime.datetime:
-    return datetime.datetime.now(datetime.UTC)
+from prism_app.utc import utc_now
 
 
 def claim_next_queued_map_export_job(session: Session) -> str | None:
@@ -34,7 +29,7 @@ def claim_next_queued_map_export_job(session: Session) -> str | None:
         session.commit()
         return None
 
-    now = _utc_now()
+    now = utc_now()
     job.status = "running"
     job.started_at = now
     job.updated_at = now

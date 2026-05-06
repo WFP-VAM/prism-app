@@ -11,7 +11,6 @@ from __future__ import annotations
 import asyncio
 import logging
 import os
-from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -24,12 +23,9 @@ from prism_app.export_jobs_db import get_export_jobs_session_factory
 from prism_app.export_maps import export_maps
 from prism_app.export_s3 import put_map_export_bytes, put_map_export_bytes_local
 from prism_app.models import MapExportRequestModel
+from prism_app.utc import utc_now
 
 logger = logging.getLogger(__name__)
-
-
-def _utc_now() -> datetime:
-    return datetime.now(UTC)
 
 
 async def run_export_job(
@@ -89,7 +85,7 @@ async def run_export_job(
     job = session.get(MapExportJob, job_id)
     if job is None:
         raise RuntimeError(f"job row disappeared mid-export: {job_id}")
-    fin = _utc_now()
+    fin = utc_now()
     job.status = "succeeded"
     job.s3_uri = artifact_uri
     job.finished_at = fin
@@ -104,7 +100,7 @@ def _mark_job_failed(session: Session, job_id: str, exc: BaseException) -> None:
         return
     if job.status == "succeeded":
         return
-    fin = _utc_now()
+    fin = utc_now()
     job.status = "failed"
     job.error_json = {"message": str(exc), "type": type(exc).__name__}
     job.finished_at = fin

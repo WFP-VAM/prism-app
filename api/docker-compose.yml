@@ -3,7 +3,7 @@ services:
     build: ./
     volumes:
       - "./cache:/cache:rw"
-      - ./prism_app:/usr/local/lib/python3.9/site-packages/prism_app:ro
+      - ./prism_app:/prism_app:ro
     environment:
       - WORKERS_PER_CORE=1
       # External services credentials
@@ -23,7 +23,7 @@ services:
     shm_size: "2gb"
     volumes:
       - "./cache:/cache:rw"
-      - ./prism_app:/usr/local/lib/python3.9/site-packages/prism_app:ro
+      - ./prism_app:/prism_app:ro
     environment:
       - KOBO_USERNAME=${KOBO_USERNAME:-kobo_user}
       - KOBO_PASSWORD=${KOBO_PASSWORD:-test}
