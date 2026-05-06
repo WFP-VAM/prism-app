@@ -18,6 +18,7 @@ from prism_app.caching import FilePath, cache_file, cache_geojson
 from prism_app.database.alert_model import AlchemyEncoder, AlertModel
 from prism_app.database.database import DB_URI, AlertsDataBase
 from prism_app.database.user_info_model import UserInfoModel
+from prism_app.export_jobs_routes import router as export_map_jobs_router
 from prism_app.export_maps import export_maps
 from prism_app.googleflood import (
     get_google_flood_dates,
@@ -74,6 +75,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(export_map_jobs_router)
 
 admin_engine = create_engine(DB_URI)
 admin = Admin(admin_engine, title="PRISM Admin", base_url="/admin")

@@ -30,3 +30,36 @@ services:
     command: uvicorn prism_app.main:app --host 0.0.0.0 --port 80 --reload
     # Infinite loop, to keep it alive, for debugging
     # command: bash -c "while true; do echo 'sleeping...' && sleep 10; done"
+
+  export_map_worker:
+    shm_size: "2gb"
+    volumes:
+      - ./prism_app:/prism_app
+      - ./pyproject.toml:/pyproject.toml
+      - ./poetry.lock:/poetry.lock
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    environment:
+      - PRISM_ALERTS_DATABASE_URL=
+      - POSTGRES_HOST=host.docker.internal
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_PORT=54321
+      - POSTGRES_PASSWORD=!ChangeMe!
+      - KOBO_PASSWORD=${KOBO_PASSWORD:?"Add a password to access KOBO data."}
+      - KOBO_USERNAME=${KOBO_USERNAME:?"Add a user to access KOBO data."}
+      - EXPORT_JOB_QUEUE_URL=${EXPORT_JOB_QUEUE_URL:-}
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
+      - BROWSER_POOL_SIZE=1
+      - STAC_AWS_ACCESS_KEY_ID=${STAC_AWS_ACCESS_KEY_ID}
+      - STAC_AWS_SECRET_ACCESS_KEY=${STAC_AWS_SECRET_ACCESS_KEY}
+      - GOOGLE_FLOODS_API_KEY=${GOOGLE_FLOODS_API_KEY}
+      - VECTOR_STORE_ACCESS_KEY_ID=${VECTOR_STORE_ACCESS_KEY_ID}
+      - VECTOR_STORE_SECRET_ACCESS_KEY=${VECTOR_STORE_SECRET_ACCESS_KEY}
+      - VECTOR_STORE_DEFAULT_REGION=${VECTOR_STORE_DEFAULT_REGION}
+      - HDC_TOKEN=${HDC_TOKEN:-}
+    working_dir: /prism_app
+    command: python -m prism_app.worker.export_map_worker

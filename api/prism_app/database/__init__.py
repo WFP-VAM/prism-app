@@ -5,6 +5,7 @@ from prism_app.database.anticipatory_action_alerts_model import (
     AnticipatoryActionAlerts,
     AnticipatoryActionAlertType,
 )
+from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.database.user_info_model import UserInfoModel
 
 __all__ = [
@@ -12,5 +13,6 @@ __all__ = [
     "AlchemyEncoder",
     "AnticipatoryActionAlerts",
     "AnticipatoryActionAlertType",
+    "MapExportJob",
     "UserInfoModel",
 ]
