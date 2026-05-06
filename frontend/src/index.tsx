@@ -12,6 +12,7 @@ import { msalInstance, safeCountry } from './config';
 import * as serviceWorker from './serviceWorker';
 
 posthog.init(process.env.REACT_APP_POSTHOG_TOKEN as string, {
+  cookieless_mode: 'always',
   api_host: process.env.REACT_APP_POSTHOG_HOST,
   defaults: '2026-01-30',
 });
