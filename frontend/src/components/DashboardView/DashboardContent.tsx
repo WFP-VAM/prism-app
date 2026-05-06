@@ -210,6 +210,9 @@ function DashboardContent({
     columnIndex: number,
     elementIndex: number,
   ) => {
+    if (!element) {
+      return null;
+    }
     const elementId = `${columnIndex}-${elementIndex}`;
     const heightConfig = componentHeights.get(elementId);
 
