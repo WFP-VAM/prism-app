@@ -114,7 +114,7 @@ function DashboardView() {
             className={classes.previewButton}
             size="medium"
           >
-            {t('Back to Dashboard')}
+            {t('Preview Dashboard')}
           </Button>
         </Box>
       )}
