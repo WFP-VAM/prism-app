@@ -5,6 +5,7 @@ import {
   expandBoundingBox,
 } from 'components/MapView/Layers/raster-utils';
 import {
+  AvailableDates,
   LayerKey,
   LayerType,
   isMainLayer,
@@ -63,6 +64,43 @@ const dateSupportLayerTypes: Array<LayerType['type']> = [
   AnticipatoryAction.storm,
   AnticipatoryAction.flood,
 ];
+
+/**
+ * Returns true when `layer` has date support given the currently loaded
+ * server-available dates, narrowing the type to `DateCompatibleLayer`.
+ *
+ * This is the single source of truth for "does this layer have dates?" and
+ * is used inside `useLayers` to build `selectedLayersWithDateSupport`.
+ */
+export function isDateCompatibleLayer(
+  layer: LayerType,
+  serverAvailableDates: AvailableDates,
+): layer is DateCompatibleLayer {
+  if (layer.type === 'admin_level_data' || layer.type === 'static_raster') {
+    return Boolean(layer.dates);
+  }
+  if (layer.type === 'point_data') {
+    // some point_data layers might not have a date URL (i.e. static data)
+    return Boolean(layer.dateUrl);
+  }
+  if (layer.type === 'wms') {
+    // some WMS layers might not have a date dimension (i.e. static data)
+    return layer.id in serverAvailableDates;
+  }
+  if (layer.type === 'composite') {
+    // some WMS layers might not have date dimension (i.e. static data)
+    return (
+      layer.id in serverAvailableDates ||
+      layer.dateLayer in serverAvailableDates
+    );
+  }
+  if (layer.type === 'impact') {
+    // Impact layers derive their dates from the hazard layer
+    // Check if dates have been loaded for this impact layer
+    return layer.id in serverAvailableDates;
+  }
+  return dateSupportLayerTypes.includes(layer.type);
+}
 
 const useLayers = () => {
   const dispatch = useDispatch();
@@ -149,35 +187,7 @@ const useLayers = () => {
   const selectedLayersWithDateSupport = useMemo(
     () =>
       selectedLayers
-        .filter((layer): layer is DateCompatibleLayer => {
-          if (
-            layer.type === 'admin_level_data' ||
-            layer.type === 'static_raster'
-          ) {
-            return Boolean(layer.dates);
-          }
-          if (layer.type === 'point_data') {
-            // some WMS layer might not have date dimension (i.e. static data)
-            return Boolean(layer.dateUrl);
-          }
-          if (layer.type === 'wms') {
-            // some WMS layer might not have date dimension (i.e. static data)
-            return layer.id in serverAvailableDates;
-          }
-          if (layer.type === 'composite') {
-            // some WMS layer might not have date dimension (i.e. static data)
-            return (
-              layer.id in serverAvailableDates ||
-              layer.dateLayer in serverAvailableDates
-            );
-          }
-          if (layer.type === 'impact') {
-            // Impact layers derive their dates from the hazard layer
-            // Check if dates have been loaded for this impact layer
-            return layer.id in serverAvailableDates;
-          }
-          return dateSupportLayerTypes.includes(layer.type);
-        })
+        .filter(layer => isDateCompatibleLayer(layer, serverAvailableDates))
         .filter(layer => isMainLayer(layer.id, selectedLayers))
         .map(layer => ({
           ...layer,
