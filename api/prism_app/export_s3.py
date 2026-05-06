@@ -25,9 +25,17 @@ def presign_export_get(s3_uri: str, s3_client: object, expires_in: int = 3600) -
     )
 
 
+def _map_export_file_extension(artifact_kind: str) -> str:
+    return "pdf" if artifact_kind == "pdf" else "zip"
+
+
+def _map_export_content_type(artifact_kind: str) -> str:
+    return f"application/{_map_export_file_extension(artifact_kind)}"
+
+
 def s3_key_for_map_export(job_id: str, artifact_kind: str) -> str:
     """artifact_kind: pdf or zip (matches map_export_jobs.content_type)."""
-    ext = "pdf" if artifact_kind == "pdf" else "zip"
+    ext = _map_export_file_extension(artifact_kind)
     return f"map_exports/{job_id}.{ext}"
 
 
@@ -39,7 +47,7 @@ def put_map_export_bytes(
     s3_client: object,
 ) -> str:
     key = s3_key_for_map_export(job_id, artifact_kind)
-    content_type = "application/pdf" if artifact_kind == "pdf" else "application/zip"
+    content_type = _map_export_content_type(artifact_kind)
     s3_client.put_object(  # type: ignore[union-attr]
         Bucket=bucket,
         Key=key,
@@ -57,7 +65,7 @@ def put_map_export_bytes_local(
 ) -> str:
     """Write artifact under ``output_dir``, return ``file:///…`` URI (stored in ``map_export_jobs.s3_uri``)."""
     output_dir.mkdir(parents=True, exist_ok=True)
-    ext = "pdf" if artifact_kind == "pdf" else "zip"
+    ext = _map_export_file_extension(artifact_kind)
     path = (output_dir / f"{job_id}.{ext}").resolve()
     path.write_bytes(file_bytes)
     return path.as_uri()

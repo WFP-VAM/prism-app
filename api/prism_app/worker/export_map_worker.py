@@ -49,15 +49,12 @@ async def run_export_job(
     if job.status == "failed":
         logger.info("Job %s already failed; skipping re-export", job_id)
         return
-    if job.status == "queued":
-        now = _utc_now()
-        job.status = "running"
-        job.started_at = now
-        job.updated_at = now
-        session.add(job)
-        session.commit()
-    elif job.status != "running":
-        logger.warning("Job %s unexpected status %s; skipping", job_id, job.status)
+    if job.status != "running":
+        logger.warning(
+            "Job %s expected status running, got %s; skipping",
+            job_id,
+            job.status,
+        )
         return
 
     req = MapExportRequestModel.model_validate(job.request_payload_json)
