@@ -561,6 +561,38 @@
     "additional_query_params": {
       "styles": "rfb_blended"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "rfb",
+          "label": "Rainfall",
+          "color": "#233f5f"
+        },
+        {
+          "key": "rfb_avg",
+          "label": "Average",
+          "color": "#bdf2e6"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "province_n"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "district_n"
+        }
+      ],
+      "type": "bar"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -591,6 +623,43 @@
     "additional_query_params": {
       "styles": "r1b_blended"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 2,
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r1b",
+          "label": "Rainfall",
+          "color": "#233f5f"
+        },
+        {
+          "key": "r1b_avg",
+          "label": "Average",
+          "color": "#bdf2e6"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "province_n"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "district_n"
+        }
+      ],
+      "type": "bar"
+    },    
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -622,6 +691,43 @@
     "additional_query_params": {
       "styles": "r3b_blended"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 8,
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r3b",
+          "label": "Rainfall",
+          "color": "#233f5f"
+        },
+        {
+          "key": "r3b_avg",
+          "label": "Average",
+          "color": "#bdf2e6"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "province_n"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "district_n"
+        }
+      ],
+      "type": "bar"
+    },    
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -652,6 +758,15 @@
     "server_layer_name": "rfb_blended_lka_dekad",
     "additional_query_params": {
       "styles": "r6b_blended"
+    },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 17,
+      "forward": 1,
+      "mode": "dekad"
     },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
@@ -684,6 +799,15 @@
     "additional_query_params": {
       "styles": "r9b_blended"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 26,
+      "forward": 1,
+      "mode": "dekad"
+    },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -714,6 +838,15 @@
     "server_layer_name": "rfb_blended_lka_dekad",
     "additional_query_params": {
       "styles": "ryb_blended"
+    },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 35,
+      "forward": 1,
+      "mode": "dekad"
     },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
@@ -746,6 +879,42 @@
     "additional_query_params": {
       "styles": "rfq_blended"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "rfq",
+          "label": "Rainfall anomaly",
+          "minValue": 0,
+          "maxValue": 300,
+          "color": "#375692"
+        },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "pointRadius": 0,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "province_n"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "district_n"
+        }
+      ],
+      "type": "line"
+    },  
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -774,6 +943,47 @@
     "additional_query_params": {
       "styles": "r1q_blended"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 2,
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r1q",
+          "label": "Rainfall anomaly",
+          "minValue": 0,
+          "maxValue": 300,
+          "color": "#375692"
+        },
+        {
+          "key": "r1q_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "pointRadius": 0,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "province_n"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "district_n"
+        }
+      ],
+      "type": "line"
+    },    
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -803,6 +1013,47 @@
     "additional_query_params": {
       "styles": "r3q_blended"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 8,
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r3q",
+          "label": "Rainfall anomaly",
+          "color": "#375692",
+          "minValue": 0,
+          "maxValue": 300
+        },
+        {
+          "key": "r3q_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "pointRadius": 0,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "province_n"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "district_n"
+        }
+      ],
+      "type": "line"
+    },    
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -831,6 +1082,15 @@
     "server_layer_name": "rfq_blended_lka_dekad",
     "additional_query_params": {
       "styles": "r6q_blended"
+    },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 17,
+      "forward": 1,
+      "mode": "dekad"
     },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
@@ -861,6 +1121,15 @@
     "additional_query_params": {
       "styles": "r9q_blended"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 26,
+      "forward": 1,
+      "mode": "dekad"
+    },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -889,6 +1158,15 @@
     "server_layer_name": "rfq_blended_lka_dekad",
     "additional_query_params": {
       "styles": "ryq_blended"
+    },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 35,
+      "forward": 1,
+      "mode": "dekad"
     },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
@@ -921,6 +1199,15 @@
     "opacity": 0.7,
     "additional_query_params": {
       "styles": "r1b"
+    },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 2,
+      "forward": 1,
+      "mode": "dekad"
     },
     "legend_text": "Monthly aggregate rainfall based on local station data blended with CHIRP estimates",
     "legend": [

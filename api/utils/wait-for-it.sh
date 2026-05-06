@@ -32,8 +32,12 @@ wait_for()
     WAITFORIT_start_ts=$(date +%s)
     while :
     do
-        curl --output /dev/null --silent --head --fail $WAITFORIT_HOST:$WAITFORIT_PORT
-        WAITFORIT_result=$?
+        # TCP connect (works for Postgres, Redis, etc.). curl --head only suits HTTP services.
+        if (echo >/dev/tcp/"$WAITFORIT_HOST"/"$WAITFORIT_PORT") &>/dev/null; then
+            WAITFORIT_result=0
+        else
+            WAITFORIT_result=1
+        fi
         if [[ $WAITFORIT_result -eq 0 ]]; then
             WAITFORIT_end_ts=$(date +%s)
             echoerr "$WAITFORIT_cmdname: $WAITFORIT_HOST:$WAITFORIT_PORT is available after $((WAITFORIT_end_ts - WAITFORIT_start_ts)) seconds"

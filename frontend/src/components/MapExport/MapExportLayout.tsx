@@ -13,7 +13,6 @@ import MapGL, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';
 import { useTranslation } from 'react-i18next';
 import useResizeObserver from 'utils/useOnResizeObserver';
 import { getFormattedDate, formatCoverageText } from 'utils/date-utils';
-import { DateFormat } from 'utils/name-utils';
 import { lightGrey } from 'muiTheme';
 import { FloodStationMarker } from 'components/MapView/Layers/AnticipatoryActionFloodLayer/FloodStationMarker';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
@@ -23,7 +22,7 @@ import { mapStyle } from 'components/MapView/Map/utils';
 import { loadStormIcons } from 'components/MapView/Layers/AnticipatoryActionStormLayer/constants';
 import { ensureSDFIconsLoaded } from 'components/MapView/Layers/icon-utils';
 import { useAAMarkerScalePercent } from 'utils/map-utils';
-import iconNorthArrow from 'public/images/icon_north_arrow.png';
+import { getImageUrl, iconNorthArrow } from 'assets/images';
 // Layer components - keep in sync with MapView/Map/index.tsx
 import {
   AdminLevelDataLayer,
@@ -152,14 +151,10 @@ function MapExportLayout({
       );
     }
 
-    // Replace {coverage} with formatted coverage ranges (using DayFirstHyphenMonthName)
+    // Replace {coverage} with formatted coverage ranges (using localized numeric date)
     if (layersCoverage && result.includes('{date_coverage}')) {
       const coverageText =
-        formatCoverageText(
-          layersCoverage,
-          t,
-          DateFormat.DayFirstHyphenMonthName,
-        ) ?? '';
+        formatCoverageText(layersCoverage, t, 'localeNumericUTC') ?? '';
       result = result.replace(/\{date_coverage\}/g, coverageText);
     }
 
@@ -445,7 +440,7 @@ function MapExportLayout({
   // The map content (title, legend, footer, map itself)
   const mapContent = (
     <div ref={printRef} className={classes.printContainer}>
-      {toggles.bottomLogoVisibility && bottomLogo && (
+      {toggles.bottomLogoVisibility && getImageUrl(bottomLogo) && (
         <img
           style={{
             position: 'absolute',
@@ -456,7 +451,7 @@ function MapExportLayout({
             maxWidth: '150px',
             objectFit: 'contain',
           }}
-          src={bottomLogo}
+          src={getImageUrl(bottomLogo)}
           alt="bottomLogo"
         />
       )}
@@ -478,7 +473,7 @@ function MapExportLayout({
           className={classes.titleOverlay}
           style={{ minHeight: `${titleMinHeight}px` }}
         >
-          {toggles.logoVisibility && logo && (
+          {toggles.logoVisibility && getImageUrl(logo) && (
             <img
               style={{
                 position: 'absolute',
@@ -490,7 +485,7 @@ function MapExportLayout({
                 justifyContent:
                   logoPosition % 2 === 0 ? 'flex-start' : 'flex-end',
               }}
-              src={logo}
+              src={getImageUrl(logo)}
               alt="logo"
             />
           )}
@@ -519,7 +514,7 @@ function MapExportLayout({
             )}
           </div>
         )}
-      {toggles.logoVisibility && !titleText && logo && (
+      {toggles.logoVisibility && !titleText && getImageUrl(logo) && (
         <img
           style={{
             position: 'absolute',
@@ -531,7 +526,7 @@ function MapExportLayout({
             display: 'flex',
             justifyContent: logoPosition % 2 === 0 ? 'flex-start' : 'flex-end',
           }}
-          src={logo}
+          src={getImageUrl(logo)}
           alt="logo"
         />
       )}

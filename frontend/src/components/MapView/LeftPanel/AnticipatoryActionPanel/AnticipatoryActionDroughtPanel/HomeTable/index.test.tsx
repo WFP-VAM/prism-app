@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+import { TestBrowserRouter } from 'test/TestBrowserRouter';
 import configureStore from 'redux-mock-store';
 import { Panel } from 'config/types';
 import HomeTable from '.';
@@ -51,11 +51,11 @@ describe('HomeTable', () => {
 
   test('renders as expected', () => {
     const { container } = render(
-      <BrowserRouter>
+      <TestBrowserRouter>
         <Provider store={store}>
           <HomeTable dialogs={defaultDialogs} />
         </Provider>
-      </BrowserRouter>,
+      </TestBrowserRouter>,
     );
     expect(container).toMatchSnapshot();
   });

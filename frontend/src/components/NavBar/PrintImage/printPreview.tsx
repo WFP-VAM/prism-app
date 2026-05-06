@@ -37,6 +37,12 @@ function PrintPreview() {
       (layer.fillPattern || layer.legend.some(legend => legend.fillPattern)),
   ) as AdminLevelDataLayerProps[];
 
+  const { shouldEnableBatchMaps, filteredBatchDates } = printConfig ?? {};
+  const previewDate =
+    shouldEnableBatchMaps && filteredBatchDates && filteredBatchDates.length > 0
+      ? filteredBatchDates[filteredBatchDates.length - 1]
+      : dateRange.startDate;
+
   const layersCoverage = useMemo(
     () =>
       getLayersCoverage(
@@ -45,9 +51,9 @@ function PrintPreview() {
             layer.id !== 'anticipatory_action_flood' &&
             layer.id !== 'anticipatory_action_storm',
         ),
-        dateRange.startDate as SelectedDateTimestamp,
+        previewDate as SelectedDateTimestamp,
       ),
-    [dateRange.startDate, selectedLayersWithDateSupport],
+    [previewDate, selectedLayersWithDateSupport],
   );
 
   const filteredFloodStations = useFilteredFloodStations(
@@ -113,7 +119,7 @@ function PrintPreview() {
         titleText={titleText}
         footerText={footerText}
         footerTextSize={footerTextSize}
-        layerDate={dateRange.startDate}
+        layerDate={previewDate}
         logo={logo}
         logoPosition={logoPosition}
         logoScale={logoScale}

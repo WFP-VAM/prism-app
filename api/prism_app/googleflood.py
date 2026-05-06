@@ -291,11 +291,6 @@ def get_google_floods_gauge_forecast(gauge_ids: list[str]):
     return forecast_data
 
 
-class InundationMap(BaseModel):
-    level: str
-    serializedPolygonId: str
-
-
 def fetch_kml(inundationMap):
     try:
         url = f"https://floodforecasting.googleapis.com/v1/serializedPolygons/{inundationMap['serializedPolygonId']}?key={GOOGLE_FLOODS_API_KEY}"

@@ -7,6 +7,10 @@ It comes with a database which persists alerts related data. The database is pro
 
 There is a unique service running for all country specific frontends.
 
+## Database schema and migrations
+
+The alerting stack uses the same PostgreSQL database as the PRISM API for `alert`, `user_info`, and `anticipatory_action_alerts`. **Python/Alembic under `api/alembic/` is the sole owner of schema migrations** for this database. Change SQLModel in `api/prism_app/database/`, add an Alembic revision under `api/alembic/versions/`, and run `alembic upgrade head` with `PRISM_ALERTS_DATABASE_URL` (see `api/README.md`).
+
 ## Functionalities
 
 - `anticipatory action storm` alerts
@@ -19,24 +23,20 @@ There is a unique service running for all country specific frontends.
 - Alerts are triggered by a cron job running within the `alerting-node` process.
 - Run `docker compose up` to launch the `alerting-node` and `alerting-db` processes.
 - The system checks database entries to determine **which country** needs to be triggered.
-- Currently, **Mozambique is supported**. To add it, connect to the `psql` console of `alerting-db` and run the following commands:
-
-```sql
--- Storm
-INSERT INTO anticipatory_action_alerts (country, emails, prism_url, type)
-VALUES ('Mozambique', ARRAY['email1@example.com'], 'https://prism.moz.wfp.org', 'storm');
-
--- Flood
-INSERT INTO anticipatory_action_alerts (country, emails, prism_url, type)
-VALUES ('Mozambique', ARRAY['email1@example.com'], 'https://prism.moz.wfp.org', 'flood');
-```
+- Currently, **Mozambique is supported**. After the DB schema exists, seed local data from the **API** (same repo area that owns migrations)—see **Local dev seed data** in [`api/README.md`](../api/README.md): `poetry run python scripts/seed_alerts_db.py` from `api/`. Connection vars are `PRISM_ALERTS_DATABASE_URL` or `POSTGRES_*` in `api/.env`; for host access to `alerting-db`, use port `54321` as in [`.env.example`](./.env.example).
 
 - **country**: The target country for the alert.  
 - **emails**: A list of email addresses that will receive the alert notification.  
 - **prism_url**: The base URL of the PRISM platform for redirection link and screenshot capture.
 - **type**: Hazard type enum: `storm` | `flood` | `drought`.
 
-The `type` column is a PostgreSQL ENUM. Migration `1738850000000-add-type-to-anticipatory-action-alerts.ts` creates it.
+The `type` column is a PostgreSQL ENUM (`anticipatory_action_alerts_type_enum`) defined by the Alembic baseline under `api/alembic/versions/`.
+
+### Optional: threshold `alert` rows + `user_info` (local testing)
+
+For [Starlette Admin](https://github.com/jowilf/starlette-admin) or API smoke tests, use the same seed step as above: from `api/`, run `poetry run python scripts/seed_alerts_db.py`. That executes [`api/scripts/seed_local_alerts_dev.sql`](../api/scripts/seed_local_alerts_dev.sql), which loads sample `alert` and `user_info` rows (and the Mozambique AA rows) in one shot. Re-running is safe: see comments at the top of that SQL file.
+
+- **User password:** with `salt = 'false'`, the PRISM API validates this row using a **plain-text** password match ([`prism_app/auth.py`](../api/prism_app/auth.py))—use HTTP Basic `local_dev_user` / `localdev` when auth is enabled.
 
 ### Shared worker runner
 
@@ -67,10 +67,34 @@ sudo docker compose run --entrypoint "yarn aa-flood-alert-worker --testEmail='em
 ```
 - The provided emails replace the DB-configured recipients for test runs.
 
+### Ethereal (fake SMTP, no credentials)
+
+If **`PRISM_ALERTS_EMAIL_USER`** and **`PRISM_ALERTS_EMAIL_PASSWORD`** are both unset or empty, [`src/utils/email.ts`](./src/utils/email.ts) uses Nodemailer’s [Ethereal](https://ethereal.email) test inbox: it creates a disposable SMTP account, sends through `smtp.ethereal.email`, and logs a **preview URL** (`Preview URL: …`) you can open in a browser to read the message and attachments.
+
+This is independent of **`--testEmail`**: you can keep using test addresses in the command; Ethereal still delivers to its fake SMTP and you inspect the result via the preview URL (those addresses are not a real inbox).
+
+1. Ensure real SMTP env vars are not set (or remove them from `.env` / compose for local runs).
+2. Run a worker that sends mail (commands above, or threshold `alert-worker` if your DB triggers a send).
+3. Copy the logged preview link from the container or terminal output.
+
+Each run may use a new Ethereal account. To reuse one inbox, configure Ethereal’s SMTP user/password yourself via `PRISM_ALERTS_EMAIL_USER`, `PRISM_ALERTS_EMAIL_PASSWORD`, and `PRISM_ALERTS_EMAIL_HOST` (e.g. `smtp.ethereal.email`).
+
 ### Flood data source
 - The flood worker reads `dates.json`: `https://data.earthobservation.vam.wfp.org/public-share/aa/flood/moz/dates.json`.
 - Email triggers when `trigger_status` is one of: `bankfull`, `moderate`, `severe`.
 - Email content follows the AA Flood design and includes a map screenshot and CTA link.
+
+## CI and release checks (shared alerts database)
+
+GitHub Actions job **`alerts_db_alembic_and_alerting`** (in [`.github/workflows/api.yml`](../.github/workflows/api.yml)) starts an ephemeral Postgres, runs `alembic upgrade head` from `api/`, then:
+
+1. **`yarn check-alerts-db-contract`** — Validates tables/columns/types the Node workers query still match the migrated schema (`src/ci/check-alerts-db-contract.ts`). Requires `PRISM_ALERTS_DATABASE_URL`.
+2. **`yarn smoke-alerts-db-pool`** — Runs real `pg` queries used by threshold and AA workers (empty tables OK; `src/ci/smoke-alerts-db-pool.ts`).
+3. **`yarn smoke-alerting-workers`** — Runs `runAlertWorker()` plus AA storm/flood `SELECT`s on the same pool (`src/ci/smoke-alerting-workers.ts`; safe when there are no active alerts).
+
+The same job then runs **`pytest`** on `test_api.py`, `test_alerting.py`, and **`test_alerts_db_integration.py`** so the API, `/stats` alerting fixture, admin list routes, and Alembic metadata align with that database. See [api/README.md](../api/README.md) (**Alerts database (CI integration + local)**).
+
+**Before or right after the first production `alembic upgrade` on the shared alerts DB**, also smoke manually: full `alert-worker`, one AA worker **without** `--testEmail` (so the pool hits Postgres), and read-only Starlette Admin on `alert` / `user_info` / `anticipatory_action_alerts`.
 
 ## Server crons
 Alert workers are running as crons on the server. Edit with: `crontab -e`

@@ -1,14 +1,40 @@
-import { createConnection, ILike } from 'typeorm';
-import { AnticipatoryActionAlerts } from '../entities/anticipatoryActionAlerts.entity';
+import type {
+  AnticipatoryActionAlert,
+  AnticipatoryActionHazardType,
+} from '../types/anticipatory-action-alerts';
+import {
+  findAnticipatoryActionAlerts,
+  updateAnticipatoryActionAlert,
+} from '../db/aa-queries';
+
+export type AADbAdapter = {
+  findAnticipatoryActionAlerts: (
+    country: string,
+    type: AnticipatoryActionHazardType,
+  ) => Promise<AnticipatoryActionAlert[]>;
+  updateAnticipatoryActionAlert: (
+    id: number,
+    args: {
+      lastStates: Record<string, { status: string; refTime: string }>;
+      lastRanAt: Date;
+      lastTriggeredAt: Date | null;
+    },
+  ) => Promise<void>;
+};
+
+const defaultAADb: AADbAdapter = {
+  findAnticipatoryActionAlerts,
+  updateAnticipatoryActionAlert,
+};
 
 type WorkerParams<TPayload, TShared> = {
   country: string;
-  type: 'storm' | 'flood' | 'drought';
+  type: AnticipatoryActionHazardType;
   overrideEmails: string[];
   prepare: () => Promise<TShared>;
   buildForAlert: (
     alert: Pick<
-      AnticipatoryActionAlerts,
+      AnticipatoryActionAlert,
       'id' | 'country' | 'emails' | 'prismUrl' | 'lastStates'
     >,
     context: TShared,
@@ -19,6 +45,8 @@ type WorkerParams<TPayload, TShared> = {
     updatedLastStates: Record<string, { status: string; refTime: string }>;
   }>;
   send: (payload: TPayload) => Promise<void>;
+  /** Inject for tests; defaults to pg-backed queries. */
+  aaDb?: AADbAdapter;
 };
 
 export async function runAAWorker<TPayload, TShared>({
@@ -28,17 +56,16 @@ export async function runAAWorker<TPayload, TShared>({
   prepare,
   buildForAlert,
   send,
+  aaDb = defaultAADb,
 }: WorkerParams<TPayload, TShared>) {
   const IS_TEST = overrideEmails.length > 0;
 
   let alerts: Array<
     Pick<
-      AnticipatoryActionAlerts,
+      AnticipatoryActionAlert,
       'id' | 'country' | 'emails' | 'prismUrl' | 'lastStates'
     >
   > = [];
-  let connection;
-  let alertRepository;
 
   if (IS_TEST) {
     const prismUrl = 'https://prism.moz.wfp.org';
@@ -52,16 +79,11 @@ export async function runAAWorker<TPayload, TShared>({
       },
     ];
   } else {
-    connection = await createConnection();
-    alertRepository = connection.getRepository(AnticipatoryActionAlerts);
-    alerts = await alertRepository.find({
-      where: { country: ILike(country), type },
-    });
+    alerts = await aaDb.findAnticipatoryActionAlerts(country, type);
   }
 
   if (!alerts.length) {
     console.error(`Error: No ${type} alert config found for ${country}`);
-    if (connection) await connection.close();
     return;
   }
 
@@ -77,19 +99,14 @@ export async function runAAWorker<TPayload, TShared>({
 
     await Promise.all(payloads.map((p) => send(p)));
 
-    if (!IS_TEST && alertRepository) {
-      await alertRepository.update(
-        { id: alert.id },
-        {
-          lastStates: updatedLastStates,
-          lastRanAt: new Date(),
-          ...(payloads.length > 0 ? { lastTriggeredAt: new Date() } : {}),
-        },
-      );
+    if (!IS_TEST) {
+      const lastRanAt = new Date();
+      const lastTriggeredAt = payloads.length > 0 ? new Date() : null;
+      await aaDb.updateAnticipatoryActionAlert(alert.id, {
+        lastStates: updatedLastStates,
+        lastRanAt,
+        lastTriggeredAt,
+      });
     }
-  }
-
-  if (connection) {
-    await connection.close();
   }
 }

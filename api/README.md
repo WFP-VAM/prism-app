@@ -101,6 +101,55 @@ The instance will need to have read/write access to S3. Make sure it has the nec
 - `lat_max`, max latitude (to define the bounding box of the geotiff).
 - `long_max`, max longitude (to define the bounding box of the geotiff).
 
+## Alerts database migrations (Alembic)
+
+The alerts/auth PostgreSQL schema (`alert`, `user_info`, `anticipatory_action_alerts`, and `anticipatory_action_alerts_type_enum`) is modeled in SQLModel under `prism_app/database/`. **All schema changes are made with Alembic** in this directory (`alembic.ini`, `alembic/env.py`, `alembic/versions/`).
+
+**Connection URL** is the same as the API: `PRISM_ALERTS_DATABASE_URL`, or the `POSTGRES_*` variables documented in `prism_app/database/database.py`. For local `poetry run alembic` commands, you can put `PRISM_ALERTS_DATABASE_URL` in `api/.env`; `alembic/env.py` loads that file into the process environment before connecting (unlike the shell, Python does not read `.env` by itself).
+
+From the `api/` directory:
+
+```bash
+# Apply pending revisions (new or empty databases)
+PRISM_ALERTS_DATABASE_URL="postgresql://user:pass@host:5432/dbname" poetry run alembic upgrade head
+```
+
+### Local dev seed data
+
+**Prerequisite:** the alerts database must already reflect the current Alembic head (otherwise seeding will error on missing tables/enums). From `api/`, with `PRISM_ALERTS_DATABASE_URL` or `POSTGRES_*` set in `.env` and Postgres reachable:
+
+```bash
+poetry run alembic upgrade head
+```
+
+Then insert the shared local-dev rows used by alerting workers and API smoke tests (Mozambique anticipatory-action metadata, a `local_dev_user` in `user_info`, and two sample `alert` rows):
+
+```bash
+poetry run python scripts/seed_alerts_db.py
+```
+
+This is a **standalone dev script** under [`scripts/`](./scripts/) (not part of the importable `prism_app` package or FastAPI surface). It reads [`scripts/seed_local_alerts_dev.sql`](./scripts/seed_local_alerts_dev.sql) and connects with the same `PRISM_ALERTS_DATABASE_URL` / `POSTGRES_*` rules as [`database.py`](./prism_app/database/database.py). Put those variables in `api/.env` (loaded by the script the same way as `alembic/env.py`). The seed is safe to re-run: see comments in the SQL file.
+
+**Deploy / CI:** run `alembic upgrade head` against the alerts database using `PRISM_ALERTS_DATABASE_URL` before or as part of rolling out an API release that depends on the latest schema.
+
+**Existing databases** that already match this schema (for example, databases that predate Alembic) should not re-apply the baseline `CREATE TABLE` migration. Point Alembic at the same URL and **stamp** the current head once, then use `upgrade head` for future revisions:
+
+```bash
+PRISM_ALERTS_DATABASE_URL="postgresql://..." poetry run alembic stamp prism_alerts_baseline
+```
+
+### Adding new migrations
+
+1. Update the SQLModel definitions under `prism_app/database/` (and any related types).
+2. With the alerts database reachable at the **current** schema version (usually after `alembic upgrade head`), generate a revision from the `api/` directory:
+
+   ```bash
+   PRISM_ALERTS_DATABASE_URL="postgresql://user:pass@host:5432/dbname" \
+     poetry run alembic revision --autogenerate -m "short description of change"
+   ```
+
+3. Apply locally and re-test: `poetry run alembic upgrade head` (with the same URL). Useful commands: `poetry run alembic history`, `poetry run alembic current`.
+
 ## Development
 
 To run the api locally, run:
@@ -108,6 +157,8 @@ To run the api locally, run:
 ```
 make api
 ```
+
+**Alerts DB from Docker:** `prism_app.database.database` uses `PRISM_ALERTS_DATABASE_URL` when set; otherwise it builds a URL from `POSTGRES_*`. `docker-compose.develop.yml` sets `PRISM_ALERTS_DATABASE_URL` to empty so the container ignores a host `api/.env` that uses `127.0.0.1` (fine for Alembic on the laptop, wrong inside Docker—there `127.0.0.1` is the API container). Use `POSTGRES_HOST` / `POSTGRES_PORT` in that compose file so the API reaches Postgres (for example `host.docker.internal` and published port `54321`, or the DB service name and `5432` when sharing a compose network).
 
 To run flask api together with database within same network, run:
 
@@ -122,6 +173,28 @@ To run linting and tests, run:
 ```
 make test
 ```
+
+#### Alerts database (CI integration + local
+
+GitHub Actions job **`alerts_db_alembic_and_alerting`** (`.github/workflows/api.yml`) applies **`alembic upgrade head`** to an empty Postgres instance, runs the Node **alerts DB contract** and **`yarn smoke-alerting-workers`** from `alerting/`, then runs **`pytest`** on `prism_app/tests/test_api.py`, `test_alerting.py`, and **`test_alerts_db_integration.py`** against that same database.
+
+On the lightweight Ubuntu runner, **`test_stats_endpoint_masked`** is skipped (`SKIP_GDAL_MASK_STATS_TEST=1`) because it needs a full **GDAL** CLI (`gdal_calc.py`). **`make api-test`** in Docker still executes the full API test module, including the masked stats case.
+
+Locally (migrated alerts DB, same env vars as elsewhere). Use a real URL; placeholder hosts such as `...` or Docker-only names like `alerting-db` will skip DB-backed tests or fail DNS (`could not translate host name`). From the **repository root**:
+
+```bash
+cd api
+export KOBO_USERNAME=kobo_user KOBO_PASSWORD=test
+export PRISM_ALERTS_DATABASE_URL='postgresql://postgres:!ChangeMe!@127.0.0.1:54321/postgres'
+SKIP_GDAL_MASK_STATS_TEST=1 PYTHONPATH=. poetry run pytest \
+  prism_app/tests/test_api.py \
+  prism_app/tests/test_alerting.py \
+  prism_app/tests/test_alerts_db_integration.py -v --tb=short
+```
+
+**Manual — Starlette Admin (read-only):** With the API up on the alerts database, open **`/admin`**, then list routes **`/admin/alert-model/list`**, **`/admin/user-info-model/list`**, **`/admin/anticipatory-action-alerts/list`**. Confirm list and detail views; create/edit/delete remain off until auth is added.
+
+**Manual — Node workers:** From `alerting/`, run **`yarn alert-worker`** and one AA worker **without** `--testEmail` against a seeded dev database so the real **`pg`** pool is used (see [alerting/README.md](../alerting/README.md)).
 
 #### Debugging playwright tests
 
@@ -148,6 +221,7 @@ To deploy the application, we need to ensure the environment variables are set i
 Before deploying, make sure that:
 - The EC2 instance you are using is assigned an IAM role that has access to S3.
 - All the necessary secrets needed in `set_envs.sh` have been configured in the AWS secrets manager.
+- The alerts PostgreSQL schema is current: from `api/`, run `poetry run alembic upgrade head` with `PRISM_ALERTS_DATABASE_URL` set (see **Alerts database migrations (Alembic)** above; use `alembic stamp` if the database predates Alembic and already has the tables).
 
 To deploy, ssh into the EC2 instance:
 - Get the private key and copy it to `~/.ssh/{some name}.pem`
@@ -156,6 +230,19 @@ To deploy, ssh into the EC2 instance:
 - Navigate to the api directory
 - Confirm you're on the right branch and the branch is up to date
 - Run `make deploy`
+
+### Automated deploys (cron)
+
+`api/crons/cron_api_auto_deploy.sh` is a cron-safe script that automatically redeploys the API when the target branch advances. It is idempotent (no-ops if the branch SHA is unchanged), uses `flock` for mutual exclusion, and optionally gates a successful deploy on a healthcheck URL.
+
+Add a daily crontab entry on the EC2 instance (edit with `crontab -e`):
+
+```bash
+# Daily at 01:00 – auto-deploy API when master advances
+0 1 * * * APP_DIR="$HOME/prism-app/api" BRANCH=master HEALTHCHECK_URL="http://127.0.0.1/health" $HOME/prism-app/api/crons/cron_api_auto_deploy.sh >> $HOME/prism-app/api/auto_deploy.log 2>&1
+```
+
+To roll back to the previously deployed SHA, run `api/crons/rollback_api_to_prev.sh`.
 
 There are a few known issues happening from time to time
 

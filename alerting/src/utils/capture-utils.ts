@@ -1,5 +1,5 @@
 import puppeteer, { Browser, Page, BoundingBox } from 'puppeteer';
-import { Jimp } from 'jimp';
+import jpeg from 'jpeg-js';
 
 interface CropRegion {
   x: number;
@@ -25,6 +25,9 @@ const DEFAULT_CROP: CropRegion = {
 };
 const DEFAULT_TARGET = '.maplibregl-canvas';
 const MAX_RETRY = 3;
+/** Map pages rarely reach networkidle0 (tiles, polling); timeout 0 disables navigation timeout and can hang forever. */
+const GOTO_TIMEOUT_MS = 180_000;
+const SELECTOR_TIMEOUT_MS = 120_000;
 
 /**
  * Check if the image is white by calculating the average of the pixels.
@@ -32,28 +35,27 @@ const MAX_RETRY = 3;
  * @param threshold -  Tolerance threshold (e.g., 250 = almost white)
  * @returns {Promise<boolean>} - Returns true if the image is white.
  */
-async function isBlankScreenshot(
+export async function isBlankScreenshot(
   base64: string,
   threshold = 250,
 ): Promise<boolean> {
   const imageBuffer = Buffer.from(base64, 'base64');
-  const image = await Jimp.read(imageBuffer);
-
+  const image = jpeg.decode(imageBuffer, { useTArray: true });
   let whitePixelCount = 0;
-  const width = image.bitmap.width;
-  const height = image.bitmap.height;
+  const width = image.width;
+  const height = image.height;
   const totalPixels = width * height;
+  const pixelData = image.data;
 
-  image.scan(0, 0, width, height, (x, y, idx) => {
-    const r = image.bitmap.data[idx + 0];
-    const g = image.bitmap.data[idx + 1];
-    const b = image.bitmap.data[idx + 2];
-
+  for (let idx = 0; idx < pixelData.length; idx += 4) {
+    const r = pixelData[idx + 0];
+    const g = pixelData[idx + 1];
+    const b = pixelData[idx + 2];
     // if pixel is almost white
     if (r >= threshold && g >= threshold && b >= threshold) {
       whitePixelCount++;
     }
-  });
+  }
 
   const whitePercentage = (whitePixelCount / totalPixels) * 100;
 
@@ -113,10 +115,16 @@ export async function captureScreenshotFromUrl(
 
     await page.setViewport({ width: 1920, height: 1080 });
 
-    await page.goto(url, { waitUntil: 'networkidle0', timeout: 0 });
+    await page.goto(url, {
+      waitUntil: 'load',
+      timeout: GOTO_TIMEOUT_MS,
+    });
 
     // Wait for the element to be visible in the DOM
-    await page.waitForSelector(screenshotTargetSelector, { visible: true });
+    await page.waitForSelector(screenshotTargetSelector, {
+      visible: true,
+      timeout: SELECTOR_TIMEOUT_MS,
+    });
 
     // Give time for map tiles and layers to render
     console.log(
