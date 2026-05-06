@@ -24,6 +24,7 @@ import {
   TableType,
   Panel,
 } from 'config/types';
+import { usePostHog } from '@posthog/react';
 import { useSafeTranslation } from 'i18n';
 import {
   getCurrentData as getTableData,
@@ -54,6 +55,7 @@ const TablesPanel = memo(() => {
   const [tableValue, setTableValue] = useState<string>('');
   const [showDataTable, setShowDataTable] = useState<boolean>(false);
 
+  const posthog = usePostHog();
   const { t } = useSafeTranslation();
 
   useEffect(() => {
@@ -143,10 +145,11 @@ const TablesPanel = memo(() => {
 
   const handleTableDropdownChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
+      posthog?.capture('table_loaded', { table_id: event.target.value });
       setTableValue(event.target.value);
       dispatch(loadTable(event.target.value));
     },
-    [dispatch],
+    [dispatch, posthog],
   );
 
   return (

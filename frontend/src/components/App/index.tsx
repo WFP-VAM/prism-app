@@ -1,7 +1,8 @@
-import { memo, useMemo } from 'react';
+import { memo, useEffect, useMemo } from 'react';
 import * as Sentry from '@sentry/browser';
-import { useIsAuthenticated } from '@azure/msal-react';
+import { useIsAuthenticated, useMsal } from '@azure/msal-react';
 import { ThemeProvider } from '@material-ui/core/styles';
+import { usePostHog } from '@posthog/react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Font } from '@react-pdf/renderer';
 import { authRequired } from 'config';
@@ -82,6 +83,18 @@ const Wrapper = memo(() => (
 function App() {
   useDashboardConfig();
   const isAuthenticated = useIsAuthenticated();
+  const { accounts } = useMsal();
+  const posthog = usePostHog();
+
+  useEffect(() => {
+    if (isAuthenticated && accounts.length > 0) {
+      const account = accounts[0];
+      posthog?.identify(account.homeAccountId, {
+        email: account.username,
+        name: account.name,
+      });
+    }
+  }, [isAuthenticated, accounts, posthog]);
 
   // The rendered content
   const renderedContent = useMemo(() => {

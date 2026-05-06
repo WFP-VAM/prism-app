@@ -3,11 +3,13 @@ import { createStyles } from '@material-ui/styles';
 import { Button, Typography, makeStyles } from '@material-ui/core';
 import { useSafeTranslation } from 'i18n';
 import { cyanBlue } from 'muiTheme';
+import { usePostHog } from '@posthog/react';
 
 const TablesActions = memo(
   ({ showTable, handleShowTable, csvTableData }: TablesActionsProps) => {
     const classes = useStyles();
     const { t } = useSafeTranslation();
+    const posthog = usePostHog();
 
     const handleOnClickHideShowTable = useCallback(() => {
       handleShowTable(!showTable);
@@ -30,7 +32,10 @@ const TablesActions = memo(
             {renderedHideShowTableButtonLabel}
           </Typography>
         </Button>
-        <Button className={classes.downloadCsvButton}>
+        <Button
+          className={classes.downloadCsvButton}
+          onClick={() => posthog?.capture('table_csv_downloaded')}
+        >
           <a href={csvTableData}>
             <Typography variant="body2">{t('Download as CSV')}</Typography>
           </a>

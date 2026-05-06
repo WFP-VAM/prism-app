@@ -41,6 +41,7 @@ import HomeTable from './HomeTable';
 import HowToReadModal from '../HowToReadModal';
 import Timeline from './Timeline';
 import Forecast from './Forecast';
+import { usePostHog } from '@posthog/react';
 import { useAnticipatoryAction } from '../useAnticipatoryAction';
 
 const { categories } = getAADroughtCountryConfig();
@@ -49,6 +50,7 @@ function AnticipatoryActionDroughtPanel() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
+  const posthog = usePostHog();
   const { AAData } = useAnticipatoryAction(AnticipatoryAction.drought);
   const monitoredDistricts = useSelector(AAMonitoredDistrictsSelector);
   const selectedDistrict = useSelector(AASelectedDistrictSelector);
@@ -156,6 +158,10 @@ function AnticipatoryActionDroughtPanel() {
                   key={x.name}
                   value={x.name}
                   onClick={() => {
+                    posthog?.capture('anticipatory_action_district_selected', {
+                      district: x.name,
+                      vulnerability: x.vulnerability,
+                    });
                     dispatch(setAASelectedDistrict(x.name));
                     if (view === AAView.Home) {
                       dispatch(setAAView(AAView.District));

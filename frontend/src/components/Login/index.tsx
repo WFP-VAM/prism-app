@@ -8,6 +8,7 @@ import {
 } from '@material-ui/core';
 import { useMsal } from '@azure/msal-react';
 import { msalRequest } from 'config';
+import { usePostHog } from '@posthog/react';
 
 import { colors } from 'muiTheme';
 import { wfpLogo } from 'assets/images';
@@ -15,10 +16,12 @@ import { wfpLogo } from 'assets/images';
 function Login() {
   const classes = useStyles();
   const { instance } = useMsal();
+  const posthog = usePostHog();
 
   const handleLogin = useCallback(() => {
+    posthog?.capture('login_clicked');
     instance.loginPopup(msalRequest).catch(() => {});
-  }, [instance]);
+  }, [instance, posthog]);
 
   return (
     <div className={classes.container}>

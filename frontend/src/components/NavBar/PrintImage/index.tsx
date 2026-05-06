@@ -6,6 +6,7 @@ import { mapSelector } from 'context/mapStateSlice/selectors';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { Panel } from 'config/types';
 import { DashboardExportDialog } from 'components/DashboardView/DashboardExport';
+import { usePostHog } from '@posthog/react';
 import DownloadImage from './image';
 
 function PrintImage() {
@@ -15,6 +16,7 @@ function PrintImage() {
   const tabValue = useSelector(leftPanelTabValueSelector);
   const theme = useTheme();
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
+  const posthog = usePostHog();
 
   const previewRef = useRef<HTMLCanvasElement>(null);
 
@@ -29,6 +31,7 @@ function PrintImage() {
   const openModal = () => {
     // Check if we're in dashboard mode
     if (tabValue === Panel.Dashboard) {
+      posthog?.capture('map_print_opened', { mode: 'dashboard' });
       setOpenDashboardExport(true);
       return;
     }
@@ -45,6 +48,7 @@ function PrintImage() {
           context.drawImage(activeLayers, 0, 0);
         }
       }
+      posthog?.capture('map_print_opened', { mode: 'map' });
       setOpenImage(true);
     }
   };

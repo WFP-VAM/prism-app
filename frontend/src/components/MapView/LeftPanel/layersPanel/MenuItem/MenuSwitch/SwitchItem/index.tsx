@@ -25,6 +25,7 @@ import {
 import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
 import { LocalError } from 'utils/error-utils';
 import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
+import { usePostHog } from '@posthog/react';
 import { toggleRemoveLayer } from './utils';
 import LayerDownloadOptions from './LayerDownloadOptions';
 import ExposureAnalysisOption from './ExposureAnalysisOption';
@@ -57,6 +58,7 @@ const SwitchItem = memo(
     const layersLoadingDates = useSelector(layersLoadingDatesIdsSelector);
     const [isOpacitySelected, setIsOpacitySelected] = useState(false);
     const dispatch: AppDispatch = useDispatch();
+    const posthog = usePostHog();
 
     const opacity = useSelector(opacitySelector(layerId));
     const hexDisplay = layer.type === 'point_data' && layer.hexDisplay;
@@ -150,6 +152,13 @@ const SwitchItem = memo(
 
         const urlLayerKey = getUrlKey(selectedLayer);
 
+        posthog?.capture('layer_toggled', {
+          layer_id: selectedLayer.id,
+          layer_title: selectedLayer.title,
+          layer_type: selectedLayer.type,
+          enabled: checked,
+        });
+
         if (!checked) {
           toggleRemoveLayer(
             selectedLayer,
@@ -198,6 +207,7 @@ const SwitchItem = memo(
         map,
         mapState.actions,
         mapState.isGlobalMap,
+        posthog,
         removeLayerFromUrl,
         selectedLayers,
         serverAvailableDates,

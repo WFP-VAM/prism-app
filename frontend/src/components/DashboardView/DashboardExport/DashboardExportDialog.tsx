@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import mask from '@turf/mask';
+import { usePostHog } from '@posthog/react';
 import { useSafeTranslation } from 'i18n';
 import { getFormattedDate } from 'utils/date-utils';
 import {
@@ -41,6 +42,7 @@ function DashboardExportDialog({
   handleClose,
 }: DashboardExportDialogProps) {
   const classes = useStyles();
+  const posthog = usePostHog();
   const { t } = useSafeTranslation();
   const printRef = useRef<HTMLDivElement>(null);
   const [paperSize, setPaperSize] = useState<PaperSize>(PaperSize.A4_LANDSCAPE);
@@ -185,6 +187,11 @@ function DashboardExportDialog({
   };
 
   const download = async (format: 'pdf' | 'png') => {
+    posthog?.capture('dashboard_exported', {
+      format,
+      paper_size: paperSize,
+      dashboard_title: dashboardTitle,
+    });
     handleDownloadMenuClose();
     setIsExporting(true);
 

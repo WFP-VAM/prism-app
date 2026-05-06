@@ -22,6 +22,7 @@ import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import { generateUniqueTableKey } from 'components/MapView/utils';
+import { usePostHog } from '@posthog/react';
 
 function ExposureAnalysisOption({
   layer,
@@ -31,6 +32,7 @@ function ExposureAnalysisOption({
 }: ExposureAnalysisOptionProps) {
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
+  const posthog = usePostHog();
   const analysisResult = useSelector(analysisResultSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
@@ -67,6 +69,12 @@ function ExposureAnalysisOption({
       extent,
       ...hazardLayer,
     };
+
+    posthog?.capture('exposure_analysis_run', {
+      layer_id: layer.id,
+      layer_title: layer.title,
+      date: selectedDate,
+    });
 
     // Set the exposure layer id in redux so that we can have access to the reports configurations through the layer id
     dispatch(setExposureLayerId(layer.id));

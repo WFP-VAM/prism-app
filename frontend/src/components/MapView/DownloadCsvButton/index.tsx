@@ -7,6 +7,7 @@ import {
 import { t } from 'i18next';
 import { downloadChartsToCsv } from 'utils/csv-utils';
 import { cyanBlue } from 'muiTheme';
+import { usePostHog } from '@posthog/react';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -36,13 +37,22 @@ function DownloadChartCSVButton({
   disabled = false,
 }: DownloadChartCSVButtonProps) {
   const classes = useStyles();
+  const posthog = usePostHog();
   const buildDataToDownload: () => [{ [key: string]: any[] }, string][] = () =>
     filesData.map(fileData => [fileData.data, fileData.fileName]);
+
+  const handleClick = () => {
+    posthog?.capture('chart_csv_downloaded', {
+      file_count: filesData.length,
+      file_names: filesData.map(f => f.fileName),
+    });
+    downloadChartsToCsv(buildDataToDownload())();
+  };
 
   return (
     <Button
       className={classes.downloadButton}
-      onClick={downloadChartsToCsv(buildDataToDownload())}
+      onClick={handleClick}
       disabled={disabled}
     >
       <Typography variant="body2">{t('Download CSV')}</Typography>

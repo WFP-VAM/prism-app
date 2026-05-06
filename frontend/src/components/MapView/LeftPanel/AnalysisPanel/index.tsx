@@ -38,6 +38,7 @@ import {
   RasterType,
 } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
+import { usePostHog } from '@posthog/react';
 import { useSafeTranslation } from 'i18n';
 import {
   downloadCSVFromTableData,
@@ -204,6 +205,7 @@ const AnalysisPanel = memo(() => {
     preSelectedBaselineLayer?.id,
   );
 
+  const posthog = usePostHog();
   const { t } = useSafeTranslation();
   const { translatedColumns } = useAnalysisTableColumns(
     analysisResult || undefined,
@@ -295,6 +297,13 @@ const AnalysisPanel = memo(() => {
       removeKeyFromUrl(BASELINE_URL_LAYER_KEY);
       dispatch(removeLayer(preSelectedBaselineLayer));
     }
+
+    posthog?.capture('analysis_run', {
+      hazard_layer_id: hazardLayerId,
+      baseline_layer_id: baselineLayerId,
+      statistic,
+      hazard_data_type: hazardDataType,
+    });
 
     // Only clear the analysis result, don't reset form values
     // This allows users to change parameters and run new analysis without losing their changes
@@ -519,7 +528,12 @@ const AnalysisPanel = memo(() => {
         <Button
           className={classes.analysisButton}
           disabled={!analysisResult}
-          onClick={() => setShowTable(!showTable)}
+          onClick={() => {
+            posthog?.capture('analysis_table_toggled', {
+              visible: !showTable,
+            });
+            setShowTable(!showTable);
+          }}
         >
           <Typography variant="body2">
             {showTable ? t('Hide Table') : t('View Table')}
@@ -530,18 +544,25 @@ const AnalysisPanel = memo(() => {
         </Button>
         <Button
           className={classes.bottomButton}
-          onClick={() =>
-            analysisResult &&
-            (analysisResult instanceof BaselineLayerResult ||
-              analysisResult instanceof PolygonAnalysisResult) &&
-            downloadCSVFromTableData(
-              analysisResult,
-              translatedColumns,
-              selectedDate,
-              analysisSortColumn,
-              analysisIsAscending ? 'asc' : 'desc',
-            )
-          }
+          onClick={() => {
+            if (
+              analysisResult &&
+              (analysisResult instanceof BaselineLayerResult ||
+                analysisResult instanceof PolygonAnalysisResult)
+            ) {
+              posthog?.capture('analysis_csv_downloaded', {
+                hazard_layer_id: hazardLayerId,
+                date: selectedDate,
+              });
+              downloadCSVFromTableData(
+                analysisResult,
+                translatedColumns,
+                selectedDate,
+                analysisSortColumn,
+                analysisIsAscending ? 'asc' : 'desc',
+              );
+            }
+          }}
         >
           <Typography variant="body2">{t('Download CSV')}</Typography>
         </Button>
