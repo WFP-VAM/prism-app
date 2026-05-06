@@ -1,5 +1,7 @@
-FROM ghcr.io/osgeo/gdal:ubuntu-full-3.11.1
-# gdal 3.11.1 uses ubuntu 24.04 and python 3.12
+# ubuntu-small: core GDAL + deps; ~much smaller than ubuntu-full (extra drivers/HDF/etc.).
+# If a raster format fails at runtime, switch back to ubuntu-full or add that driver.
+FROM ghcr.io/osgeo/gdal:ubuntu-small-3.12.4
+# Ubuntu 24.04, Python 3.12, GDAL 3.12.x
 
 # we use poetry to install our dependencies in a venv separate from
 # the docker image system python environment
@@ -32,10 +34,18 @@ COPY pyproject.toml /
 
 COPY poetry.lock /
 
+# GDAL images may ship Apache Arrow apt repo; drop if present (not needed for pip stack).
+RUN rm -f /etc/apt/sources.list.d/apache-arrow.sources /etc/apt/sources.list.d/apache-arrow.list
+
+# apt verifies InRelease via gpgv as user _apt; Docker Desktop (arm64) often breaks that sandbox and
+# you get bogus GPG errors for *all* ubuntu-ports URLs. Run the apt sandbox as root during build.
+RUN printf '%s\n' 'APT::Sandbox::User "root";' >/etc/apt/apt.conf.d/99docker-sandbox-root.conf
+
 RUN --mount=type=cache,target=/var/cache/apt \
     DEBIAN_FRONTEND=noninteractive apt-get update --fix-missing && \
-    DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y python3-pip libpq-dev curl python3-dev build-essential && \
-    apt-get clean && \
+    DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y python3-pip libpq-dev curl python3-dev build-essential
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 RUN --mount=type=cache,target=/root/.cache \
