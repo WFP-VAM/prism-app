@@ -43,6 +43,7 @@ import {
   filterDatesByCadence,
   getAvailableCadences,
   getDisabledCadences,
+  isBatchMapCompatibleLayer,
 } from '../../../utils/batchCadenceUtils';
 import { calculateExportDimensions } from './mapDimensionsUtils';
 import {
@@ -180,7 +181,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     Object.keys(configMap[safeCountry].rawLayers),
   );
   const selectableLayers = Object.values(LayerDefinitions).filter(
-    l => l.type === 'wms' && countryLayerIds.has(l.id),
+    l => isBatchMapCompatibleLayer(l) && countryLayerIds.has(l.id),
   ) as WMSLayerProps[];
   const [selectedLayerId, setSelectedLayerId] = useState<LayerKey | null>(null);
 
@@ -223,9 +224,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
   const shouldEnableBatchMaps =
     selectedLayersWithDateSupport.length > 0 &&
-    selectedLayersWithDateSupport.every(
-      layer => layer.type === 'wms' && (layer.coverageWindow || layer.validity),
-    );
+    selectedLayersWithDateSupport.every(isBatchMapCompatibleLayer);
   // true; // Temporarily enable batch maps
 
   const shouldShowMultiLayerWarning = selectedLayersWithDateSupport.length > 1;
