@@ -23,6 +23,11 @@ def _get_session_factory() -> sessionmaker:
     return _session_factory
 
 
+def get_export_jobs_session_factory() -> sessionmaker:
+    """Shared sessionmaker for API routes and the export map worker."""
+    return _get_session_factory()
+
+
 def get_export_jobs_session() -> Generator[Session, None, None]:
     factory = _get_session_factory()
     session = factory()

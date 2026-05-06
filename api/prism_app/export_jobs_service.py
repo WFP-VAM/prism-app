@@ -1,8 +1,6 @@
-"""Create / dedupe map export jobs before SQS handoff."""
+"""Create / dedupe map export jobs."""
 
 from __future__ import annotations
-
-from collections.abc import Callable
 
 from sqlmodel import Session, select
 
@@ -15,11 +13,10 @@ def enqueue_map_export_job(
     session: Session,
     request: MapExportRequestModel,
     requested_by: str,
-    sqs_send: Callable[[str], None],
 ) -> tuple[MapExportJob, int]:
     """
-    Return (job, http_status). New queue work -> 202 and sqs_send called;
-    dedupe (in-flight or succeeded) -> 200 and no SQS.
+    Return (job, http_status). New row with status queued -> 202;
+    dedupe (in-flight or succeeded) -> 200.
     """
     fingerprint = compute_request_fingerprint(request, requested_by)
     stmt = (
@@ -53,5 +50,4 @@ def enqueue_map_export_job(
     session.add(job)
     session.commit()
     session.refresh(job)
-    sqs_send(job.id)
     return job, 202

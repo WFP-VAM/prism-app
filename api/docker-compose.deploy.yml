@@ -76,7 +76,7 @@ services:
       - PRISM_ALERTS_DATABASE_URL=${PRISM_ALERTS_DATABASE_URL:?"Provide a URL for the alerts database."}
       - KOBO_PASSWORD=${KOBO_PASSWORD:?"Add a password to access KOBO data."}
       - KOBO_USERNAME=${KOBO_USERNAME:?"Add a user to access KOBO data."}
-      - EXPORT_JOB_QUEUE_URL=${EXPORT_JOB_QUEUE_URL:?"SQS queue URL for map export jobs."}
+      - EXPORT_MAP_S3_BUCKET=${EXPORT_MAP_S3_BUCKET:?"S3 bucket for map export PDF/ZIP artifacts."}
       - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-${VECTOR_STORE_DEFAULT_REGION:-}}
       - STAC_AWS_ACCESS_KEY_ID=${STAC_AWS_ACCESS_KEY_ID:?"Provide the AWS access key for the stac api."}
       - STAC_AWS_SECRET_ACCESS_KEY=${STAC_AWS_SECRET_ACCESS_KEY:?"Provide the AWS secret key for the stac api."}
@@ -85,7 +85,10 @@ services:
       - VECTOR_STORE_ACCESS_KEY_ID=${VECTOR_STORE_ACCESS_KEY_ID}
       - VECTOR_STORE_SECRET_ACCESS_KEY=${VECTOR_STORE_SECRET_ACCESS_KEY}
       - VECTOR_STORE_DEFAULT_REGION=${VECTOR_STORE_DEFAULT_REGION}
-    command: python -m prism_app.worker.export_map_worker
+    command:
+      - /.venv/bin/python
+      - -m
+      - prism_app.worker.export_map_worker
     restart: always
     dns:
       - 8.8.8.8

@@ -1,8 +1,9 @@
 """HTTP routes for async map export jobs."""
 
+# TODO(transition): Revisit merging batch UX with legacy POST /export-map once all clients use /export-map/jobs + polling.
+
 from __future__ import annotations
 
-from collections.abc import Callable
 from typing import Any
 
 import boto3
@@ -16,13 +17,12 @@ from prism_app.database.user_info_model import UserInfoModel
 from prism_app.export_job_fingerprint import compute_request_fingerprint
 from prism_app.export_jobs_db import get_export_jobs_session
 from prism_app.export_jobs_service import enqueue_map_export_job
-from prism_app.export_s3 import presign_export_get
+from prism_app.export_s3 import (
+    is_file_artifact_uri,
+    local_path_from_file_uri,
+    presign_export_get,
+)
 from prism_app.models import MapExportRequestModel
-from prism_app.sqs_export import send_export_job_message
-
-
-def get_sqs_send() -> Callable[[str], None]:
-    return send_export_job_message
 
 
 def get_s3_client_for_presign():
@@ -37,11 +37,8 @@ def create_map_export_job(
     body: MapExportRequestModel,
     user: UserInfoModel = Depends(validate_user),
     session: Session = Depends(get_export_jobs_session),
-    sqs_send: Callable[[str], None] = Depends(get_sqs_send),
 ) -> JSONResponse:
-    job, status_code = enqueue_map_export_job(
-        session, body, user.username, sqs_send
-    )
+    job, status_code = enqueue_map_export_job(session, body, user.username)
     fingerprint = compute_request_fingerprint(body, user.username)
     payload: dict[str, Any] = {
         "job_id": job.id,
@@ -64,8 +61,12 @@ def read_map_export_job(
         raise HTTPException(status_code=404, detail="Job not found")
 
     download_url: str | None = None
+    local_artifact_path: str | None = None
     if job.status == "succeeded" and job.s3_uri:
-        download_url = presign_export_get(job.s3_uri, s3_client)
+        if is_file_artifact_uri(job.s3_uri):
+            local_artifact_path = local_path_from_file_uri(job.s3_uri)
+        else:
+            download_url = presign_export_get(job.s3_uri, s3_client)
 
     return {
         "job_id": job.id,
@@ -74,5 +75,6 @@ def read_map_export_job(
         "progress_current": job.progress_current,
         "progress_total": job.progress_total,
         "download_url": download_url,
+        "local_artifact_path": local_artifact_path,
         "error": job.error_json,
     }
