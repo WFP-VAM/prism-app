@@ -12,7 +12,7 @@ import {
 } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
 import useLayers from 'utils/layers-utils';
-import { isBoundaryLayer } from 'utils/boundary-layers-utils';
+import { getDisplayBoundaryLayers } from 'config/utils';
 import { getLayersCoverage } from 'utils/server-utils';
 import {
   availableDatesSelector,
@@ -38,7 +38,7 @@ function PrintPreview() {
   const tabValue = useSelector(leftPanelTabValueSelector);
 
   const { logo } = appConfig.header || {};
-  const { selectedLayersWithDateSupport, selectedLayers } = useLayers();
+  const { selectedLayersWithDateSupport } = useLayers();
   const selectedLayerId = printConfig?.selectedLayerId ?? null;
 
   useEffect(() => {
@@ -53,7 +53,10 @@ function PrintPreview() {
       selectedLayerId &&
       LayerDefinitions[selectedLayerId]
     ) {
-      return [LayerDefinitions[selectedLayerId]];
+      return [
+        LayerDefinitions[selectedLayerId],
+        ...getDisplayBoundaryLayers().reverse(),
+      ];
     }
     return [];
   }, [selectedLayerId, printConfig?.toggles.batchMapsVisibility]);
@@ -121,18 +124,14 @@ function PrintPreview() {
   // Get the style and layers of the old map
   const selectedMapStyle = selectedMap.getStyle();
 
-  // When batch maps has a selected layer, strip raster layers and non-boundary
-  // application layers from the snapshot so the React layer component is the
-  // sole renderer (avoids stacking regardless of which layers were active on
-  // the main map).
+  // When batch maps has a selected layer, strip all application layers from the
+  // snapshot (raster tiles and all layer- prefixed entries) leaving a pure
+  // basemap. Boundary layers and the WMS date layer are rendered via React so
+  // their ordering is explicit and not affected by side-effects on the main map
+  // (e.g. a layer with a `boundary` property that removes other boundary layers).
   if (selectedMapStyle && printSelectedLayers.length > 0) {
-    const boundaryMapIdPrefixes = selectedLayers
-      .filter(isBoundaryLayer)
-      .map(l => `layer-${l.id}`);
     const isLayerToRemove = (layer: { id: string; type: string }) =>
-      layer.type === 'raster' ||
-      (layer.id.startsWith('layer-') &&
-        !boundaryMapIdPrefixes.some(prefix => layer.id.startsWith(prefix)));
+      layer.type === 'raster' || layer.id.startsWith('layer-');
 
     const sourcesToRemove = new Set(
       selectedMapStyle.layers

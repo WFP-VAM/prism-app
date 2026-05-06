@@ -222,11 +222,11 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   }, [availableCadences, cadence]);
 
   const shouldEnableBatchMaps =
-    // selectedLayersWithDateSupport.length > 0 &&
-    // selectedLayersWithDateSupport.every(
-    //   layer => layer.type === 'wms' && (layer.coverageWindow || layer.validity),
-    // );
-    true; // Temporarily enable batch maps
+    selectedLayersWithDateSupport.length > 0 &&
+    selectedLayersWithDateSupport.every(
+      layer => layer.type === 'wms' && (layer.coverageWindow || layer.validity),
+    );
+  // true; // Temporarily enable batch maps
 
   const shouldShowMultiLayerWarning = selectedLayersWithDateSupport.length > 1;
 
@@ -490,6 +490,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
           const params = new URLSearchParams(baseParams);
           params.set('date', date);
           params.set('hazardLayerIds', printSelectedLayer.id);
+          params.delete('baselineLayerId');
 
           // Map bounds and zoom
           if (mapBounds) {
