@@ -326,6 +326,24 @@
         }
       ]
     },
+    "water_anomaly": {
+      "drought_conditions": [
+        "monthly_water_anomaly",
+        "2m_water_anomaly",
+        "3m_water_anomaly",
+        "4m_water_anomaly",
+        "5m_water_anomaly",
+        "6m_water_anomaly"
+      ],
+      "water_anomaly_index": [
+        "monthly_water_anomaly_full",
+        "2m_water_anomaly_full",
+        "3m_water_anomaly_full",
+        "4m_water_anomaly_full",
+        "5m_water_anomaly_full",
+        "6m_water_anomaly_full"
+      ]
+    },
     "vegetation": {
       "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
     },
@@ -338,16 +356,6 @@
         "lst_daytime",
         "lst_day_anomaly",
         "lst_amplitude"
-      ]
-    },
-    "drought": {
-      "water_anomaly_index": [
-        "monthly_water_anomaly",
-        "2m_water_anomaly",
-        "3m_water_anomaly",
-        "4m_water_anomaly",
-        "5m_water_anomaly",
-        "6m_water_anomaly"
       ]
     },
     "vulnerability": {
