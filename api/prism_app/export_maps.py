@@ -26,9 +26,8 @@ logger = logging.getLogger(__name__)
 PAGE_TIMEOUT: Final[int] = 60000
 PRISM_READY_TIMEOUT: Final[int] = 60000
 # After PRISM_READY, brief pause so WMS/raster composites can finish painting (ms).
-EXPORT_MAP_POST_READY_MS: Final[int] = int(
-    os.getenv("EXPORT_MAP_POST_READY_MS", "1000")
-)
+# TODO - remove if not needed after fixes to MapLayout in the frontend.
+EXPORT_MAP_POST_READY_MS = 0
 
 # Viewport settings
 BASE_WIDTH: Final[int] = 1200
