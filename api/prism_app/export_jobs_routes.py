@@ -20,9 +20,11 @@ from prism_app.export_jobs_service import enqueue_map_export_job
 from prism_app.export_s3 import (
     is_file_artifact_uri,
     local_path_from_file_uri,
+    map_export_artifact_exists,
     presign_export_get,
 )
 from prism_app.models import MapExportRequestModel
+from prism_app.utc import utc_now
 
 
 def get_s3_client_for_presign():
@@ -37,8 +39,11 @@ def create_map_export_job(
     body: MapExportRequestModel,
     user: UserInfoModel = Depends(validate_user),
     session: Session = Depends(get_export_jobs_session),
+    s3_client: object = Depends(get_s3_client_for_presign),
 ) -> JSONResponse:
-    job, status_code = enqueue_map_export_job(session, body, user.username)
+    job, status_code = enqueue_map_export_job(
+        session, body, user.username, s3_client
+    )
     fingerprint = compute_request_fingerprint(body, user.username)
     payload: dict[str, Any] = {
         "job_id": job.id,
@@ -59,6 +64,20 @@ def read_map_export_job(
     job = session.get(MapExportJob, job_id)
     if job is None or job.requested_by != user.username:
         raise HTTPException(status_code=404, detail="Job not found")
+
+    if job.status == "succeeded" and job.s3_uri:
+        if not map_export_artifact_exists(job.s3_uri, s3_client=s3_client):
+            fin = utc_now()
+            job.status = "failed"
+            job.error_json = {
+                "message": "Export artifact missing or inaccessible.",
+                "type": "ArtifactMissing",
+            }
+            job.s3_uri = None
+            job.finished_at = fin
+            job.updated_at = fin
+            session.add(job)
+            session.commit()
 
     download_url: str | None = None
     local_artifact_path: str | None = None

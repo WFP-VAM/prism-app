@@ -83,3 +83,34 @@ def local_path_from_file_uri(file_uri: str) -> str:
     if parsed.netloc:
         raise ValueError(f"Unsupported file URI with authority: {file_uri!r}")
     return unquote(parsed.path)
+
+
+def map_export_artifact_exists(
+    s3_uri: str | None,
+    *,
+    s3_client: object | None = None,
+) -> bool:
+    """
+    True if the export artifact is still readable (local path exists, or S3 head OK).
+
+    ``file://`` URIs are always checked on disk. For ``s3://``, if ``s3_client`` is
+    omitted, returns True (assume valid — use a client from the API layer to verify).
+    """
+    if not s3_uri:
+        return False
+    if is_file_artifact_uri(s3_uri):
+        try:
+            path = Path(local_path_from_file_uri(s3_uri))
+            return path.is_file() and path.stat().st_size > 0
+        except (ValueError, OSError):
+            return False
+    if s3_uri.startswith("s3://"):
+        if s3_client is None:
+            return True  # verification requires a client; caller API always provides one
+        bucket, key = parse_s3_uri(s3_uri)
+        try:
+            s3_client.head_object(Bucket=bucket, Key=key)  # type: ignore[union-attr]
+            return True
+        except Exception:
+            return False
+    return False

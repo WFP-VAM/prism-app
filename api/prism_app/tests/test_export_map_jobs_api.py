@@ -11,6 +11,7 @@ os.environ.setdefault("KOBO_USERNAME", "pytest")
 os.environ.setdefault("KOBO_PASSWORD", "pytest")
 
 from collections.abc import Generator
+from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock
 
@@ -135,6 +136,7 @@ def test_get_succeeded_returns_presigned_url(
 
     mock_s3 = MagicMock()
     mock_s3.generate_presigned_url.return_value = "https://example.com/presigned"
+    mock_s3.head_object.return_value = {}
     app.dependency_overrides[get_s3_client_for_presign] = lambda: mock_s3
     try:
         r = api_client.get(f"/export-map/jobs/{job_id}")
@@ -148,8 +150,12 @@ def test_get_succeeded_returns_presigned_url(
 
 
 def test_get_succeeded_file_uri_returns_local_path_skips_presign(
-    api_client: TestClient, sqlite_engine
+    api_client: TestClient, sqlite_engine, tmp_path: Path
 ) -> None:
+    pdf = tmp_path / "mock-export.pdf"
+    pdf.write_bytes(b"%PDF-")
+    file_uri = pdf.resolve().as_uri()
+
     SessionLocal = sessionmaker(
         bind=sqlite_engine, class_=Session, expire_on_commit=False
     )
@@ -159,7 +165,7 @@ def test_get_succeeded_file_uri_returns_local_path_skips_presign(
             request_payload_json=_body(),
             status="succeeded",
             requested_by="__auth_disabled__",
-            s3_uri="file:///tmp/mock-export.pdf",
+            s3_uri=file_uri,
             content_type="pdf",
         )
         session.add(job)
@@ -177,4 +183,4 @@ def test_get_succeeded_file_uri_returns_local_path_skips_presign(
 
     assert r.status_code == 200
     assert r.json()["download_url"] is None
-    assert r.json()["local_artifact_path"] == "/tmp/mock-export.pdf"
+    assert r.json()["local_artifact_path"] == str(pdf.resolve())

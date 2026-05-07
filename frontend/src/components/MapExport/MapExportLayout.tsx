@@ -291,8 +291,13 @@ function MapExportLayout({
 
     if (shouldTrackTileLoading && map) {
       let hasSignaledReady = false;
-      let idleCheckCount = 0;
-      const MAX_IDLE_CHECKS = 3;
+      let stableLoadedTicks = 0;
+      // Idle + poll share this counter: several consecutive observations that the map is
+      // fully loaded (not a single lucky areTilesLoaded() true—avoids empty WMS/raster frames).
+      const STABLE_LOADED_TICKS = signalExportReady ? 6 : 3;
+      const EXPORT_READY_SAFETY_MS = signalExportReady ? 60_000 : 25_000;
+
+      let pollInterval: ReturnType<typeof setInterval> | undefined;
 
       const signalReady = () => {
         if (hasSignaledReady) {
@@ -301,6 +306,9 @@ function MapExportLayout({
 
         hasSignaledReady = true;
         map.off('idle', idleHandler);
+        if (pollInterval !== undefined) {
+          clearInterval(pollInterval);
+        }
 
         // Set PRISM_READY for server-side rendering (Playwright)
         if (signalExportReady) {
@@ -323,43 +331,42 @@ function MapExportLayout({
         return Boolean(isStyleLoaded && areTilesLoaded && isLoaded);
       };
 
-      const idleHandler = () => {
+      const bumpStableLoaded = () => {
         if (hasSignaledReady) {
           return;
         }
-
         if (checkFullyLoaded()) {
-          idleCheckCount += 1;
-
-          // Require multiple consecutive idle states to ensure stability
-          if (idleCheckCount >= MAX_IDLE_CHECKS) {
+          stableLoadedTicks += 1;
+          if (stableLoadedTicks >= STABLE_LOADED_TICKS) {
             signalReady();
           }
         } else {
-          // Reset counter if not fully loaded
-          idleCheckCount = 0;
+          stableLoadedTicks = 0;
         }
+      };
+
+      const idleHandler = () => {
+        bumpStableLoaded();
       };
 
       // Listen for idle events - fires when map finishes rendering
       map.on('idle', idleHandler);
 
-      // Poll for ready state
-      const pollInterval = setInterval(() => {
-        if (!hasSignaledReady && checkFullyLoaded()) {
-          clearInterval(pollInterval);
-          signalReady();
-        }
+      // Poll in case idle is slow to fire but the map is already fully loaded
+      pollInterval = setInterval(() => {
+        bumpStableLoaded();
       }, 500);
 
       // Safety timeout to prevent infinite waiting
       setTimeout(() => {
-        clearInterval(pollInterval);
+        if (pollInterval !== undefined) {
+          clearInterval(pollInterval);
+        }
         if (!hasSignaledReady) {
           console.warn('Safety timeout reached, forcing PRISM_READY');
           signalReady();
         }
-      }, 25000);
+      }, EXPORT_READY_SAFETY_MS);
     } else if (onMapLoad) {
       onMapLoad(e);
     }
