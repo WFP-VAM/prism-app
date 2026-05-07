@@ -14,7 +14,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlmodel import Session
 
 from prism_app.database.map_export_job_model import MapExportJob
-from prism_app.export_jobs_service import enqueue_map_export_job
+from prism_app.export_jobs.fingerprint import compute_request_fingerprint
+from prism_app.export_jobs.service import enqueue_map_export_job
 from prism_app.models import MapExportRequestModel
 
 
@@ -41,41 +42,51 @@ def _sample_request() -> MapExportRequestModel:
 
 def test_enqueue_inserts_queued(db_session: Session) -> None:
     req = _sample_request()
-    job, status = enqueue_map_export_job(db_session, req, requested_by="alice")
+    job, status = enqueue_map_export_job(db_session, req)
     assert status == 202
-    assert job.requested_by == "alice"
+    assert job.origin_url == "http://localhost"
     assert job.status == "queued"
+
+
+def test_enqueue_sets_origin_from_first_url(db_session: Session) -> None:
+    req = MapExportRequestModel(
+        urls=[
+            "https://staging-prism-frontend--abc.web.app/map?date=2025-01-01",
+        ],
+        viewportWidth=1200,
+        viewportHeight=849,
+        format="pdf",
+    )
+    job, status = enqueue_map_export_job(db_session, req)
+    assert status == 202
+    assert job.origin_url == "https://staging-prism-frontend--abc.web.app"
 
 
 def test_dedupe_active_job(db_session: Session) -> None:
     req = _sample_request()
-    from prism_app.export_job_fingerprint import compute_request_fingerprint
-
-    fp = compute_request_fingerprint(req, "alice")
+    fp = compute_request_fingerprint(req)
     existing = MapExportJob(
         request_fingerprint=fp,
         request_payload_json=req.model_dump(mode="json"),
         status="queued",
-        requested_by="alice",
+        origin_url=None,
     )
     db_session.add(existing)
     db_session.commit()
 
-    job, status = enqueue_map_export_job(db_session, req, requested_by="alice")
+    job, status = enqueue_map_export_job(db_session, req)
     assert job.id == existing.id
     assert status == 200
 
 
 def test_dedupe_succeeded(db_session: Session) -> None:
     req = _sample_request()
-    from prism_app.export_job_fingerprint import compute_request_fingerprint
-
-    fp = compute_request_fingerprint(req, "alice")
+    fp = compute_request_fingerprint(req)
     done = MapExportJob(
         request_fingerprint=fp,
         request_payload_json=req.model_dump(mode="json"),
         status="succeeded",
-        requested_by="alice",
+        origin_url=None,
         s3_uri="s3://b/k",
         content_type="pdf",
         finished_at=datetime.datetime.now(datetime.UTC),
@@ -87,7 +98,7 @@ def test_dedupe_succeeded(db_session: Session) -> None:
     mock_s3.head_object.return_value = {}
 
     job, status = enqueue_map_export_job(
-        db_session, req, requested_by="alice", s3_client=mock_s3
+        db_session, req, s3_client=mock_s3
     )
     assert job.id == done.id
     assert status == 200
@@ -96,14 +107,12 @@ def test_dedupe_succeeded(db_session: Session) -> None:
 
 def test_dedupe_succeeded_requeues_when_s3_object_missing(db_session: Session) -> None:
     req = _sample_request()
-    from prism_app.export_job_fingerprint import compute_request_fingerprint
-
-    fp = compute_request_fingerprint(req, "alice")
+    fp = compute_request_fingerprint(req)
     done = MapExportJob(
         request_fingerprint=fp,
         request_payload_json=req.model_dump(mode="json"),
         status="succeeded",
-        requested_by="alice",
+        origin_url=None,
         s3_uri="s3://b/k",
         content_type="pdf",
         finished_at=datetime.datetime.now(datetime.UTC),
@@ -116,7 +125,7 @@ def test_dedupe_succeeded_requeues_when_s3_object_missing(db_session: Session) -
     mock_s3.head_object.side_effect = OSError("no such key")
 
     job, status = enqueue_map_export_job(
-        db_session, req, requested_by="alice", s3_client=mock_s3
+        db_session, req, s3_client=mock_s3
     )
     assert status == 202
     assert job.status == "queued"
@@ -131,9 +140,7 @@ def test_dedupe_succeeded_requeues_when_local_file_missing(
     db_session: Session, tmp_path: Path
 ) -> None:
     req = _sample_request()
-    from prism_app.export_job_fingerprint import compute_request_fingerprint
-
-    fp = compute_request_fingerprint(req, "alice")
+    fp = compute_request_fingerprint(req)
     pdf = tmp_path / "gone.pdf"
     pdf.write_bytes(b"%PDF")
     uri = pdf.resolve().as_uri()
@@ -141,7 +148,7 @@ def test_dedupe_succeeded_requeues_when_local_file_missing(
         request_fingerprint=fp,
         request_payload_json=req.model_dump(mode="json"),
         status="succeeded",
-        requested_by="alice",
+        origin_url=None,
         s3_uri=uri,
         content_type="pdf",
         finished_at=datetime.datetime.now(datetime.UTC),
@@ -150,7 +157,7 @@ def test_dedupe_succeeded_requeues_when_local_file_missing(
     db_session.commit()
     pdf.unlink()
 
-    job, status = enqueue_map_export_job(db_session, req, requested_by="alice")
+    job, status = enqueue_map_export_job(db_session, req)
     assert status == 202
     assert job.status == "queued"
     db_session.refresh(done)
@@ -159,20 +166,18 @@ def test_dedupe_succeeded_requeues_when_local_file_missing(
 
 def test_failed_allows_new_job(db_session: Session) -> None:
     req = _sample_request()
-    from prism_app.export_job_fingerprint import compute_request_fingerprint
-
-    fp = compute_request_fingerprint(req, "alice")
+    fp = compute_request_fingerprint(req)
     failed = MapExportJob(
         request_fingerprint=fp,
         request_payload_json=req.model_dump(mode="json"),
         status="failed",
-        requested_by="alice",
+        origin_url=None,
         error_json={"message": "x"},
     )
     db_session.add(failed)
     db_session.commit()
 
-    job, status = enqueue_map_export_job(db_session, req, requested_by="alice")
+    job, status = enqueue_map_export_job(db_session, req)
     assert job.id != failed.id
     assert status == 202
     assert job.status == "queued"

@@ -10,7 +10,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlmodel import Session
 
 from prism_app.database.map_export_job_model import MapExportJob
-from prism_app.export_job_claim import claim_next_queued_map_export_job
+from prism_app.export_jobs.claim import claim_next_queued_map_export_job
 
 
 @pytest.fixture
@@ -36,7 +36,6 @@ def test_claim_picks_oldest_queued(db_session: Session) -> None:
         request_fingerprint="a",
         request_payload_json={"urls": ["http://localhost/?date=2025-01-01"], "format": "pdf"},
         status="queued",
-        requested_by="u",
         created_at=t0,
         updated_at=t0,
     )
@@ -44,7 +43,6 @@ def test_claim_picks_oldest_queued(db_session: Session) -> None:
         request_fingerprint="b",
         request_payload_json={"urls": ["http://localhost/?date=2025-01-02"], "format": "pdf"},
         status="queued",
-        requested_by="u",
         created_at=t1,
         updated_at=t1,
     )
@@ -69,7 +67,6 @@ def test_claim_skips_non_queued(db_session: Session) -> None:
         request_fingerprint="a",
         request_payload_json={"urls": ["http://localhost/?date=2025-01-01"], "format": "pdf"},
         status="running",
-        requested_by="u",
     )
     db_session.add(j)
     db_session.commit()

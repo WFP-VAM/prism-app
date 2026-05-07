@@ -9,15 +9,14 @@ from typing import Any, Optional
 from sqlalchemy import JSON, Column, DateTime, Index, String
 from sqlmodel import Field, SQLModel
 
-from prism_app.utc import utc_now
+from prism_app.utils import utc_now
 
 
 class MapExportJob(SQLModel, table=True):
     __tablename__ = "map_export_jobs"
     __table_args__ = (
         Index(
-            "ix_map_export_jobs_principal_fingerprint",
-            "requested_by",
+            "ix_map_export_jobs_request_fingerprint",
             "request_fingerprint",
         ),
     )
@@ -40,7 +39,10 @@ class MapExportJob(SQLModel, table=True):
         default=None,
         sa_column=Column(String, nullable=True),
     )
-    requested_by: str = Field(sa_column=Column(String, nullable=False))
+    origin_url: Optional[str] = Field(
+        default=None,
+        sa_column=Column(String(2048), nullable=True),
+    )
     created_at: datetime.datetime = Field(
         default_factory=utc_now,
         sa_column=Column(DateTime(timezone=True), nullable=False),

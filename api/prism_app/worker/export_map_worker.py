@@ -18,12 +18,12 @@ import boto3
 from sqlmodel import Session
 
 from prism_app.database.map_export_job_model import MapExportJob
-from prism_app.export_job_claim import claim_next_queued_map_export_job
-from prism_app.export_jobs_db import get_export_jobs_session_factory
+from prism_app.export_jobs.claim import claim_next_queued_map_export_job
+from prism_app.export_jobs.db import get_export_jobs_session_factory
 from prism_app.export_maps import export_maps
 from prism_app.export_s3 import put_map_export_bytes, put_map_export_bytes_local
 from prism_app.models import MapExportRequestModel
-from prism_app.utc import utc_now
+from prism_app.utils import utc_now
 
 logger = logging.getLogger(__name__)
 

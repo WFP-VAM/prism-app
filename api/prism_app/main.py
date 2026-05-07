@@ -18,7 +18,7 @@ from prism_app.caching import FilePath, cache_file, cache_geojson
 from prism_app.database.alert_model import AlchemyEncoder, AlertModel
 from prism_app.database.database import DB_URI, AlertsDataBase
 from prism_app.database.user_info_model import UserInfoModel
-from prism_app.export_jobs_routes import router as export_map_jobs_router
+from prism_app.export_jobs import router as export_map_jobs_router
 from prism_app.export_maps import export_maps
 from prism_app.googleflood import (
     get_google_flood_dates,

@@ -25,8 +25,6 @@ services:
       - "./cache:/cache:rw"
       - ./prism_app:/prism_app:ro
     environment:
-      - KOBO_USERNAME=${KOBO_USERNAME:-kobo_user}
-      - KOBO_PASSWORD=${KOBO_PASSWORD:-test}
       - PRISM_ALERTS_DATABASE_URL
       - EXPORT_MAP_S3_BUCKET=${EXPORT_MAP_S3_BUCKET:-}
       - EXPORT_MAP_LOCAL_OUTPUT_DIR=${EXPORT_MAP_LOCAL_OUTPUT_DIR:-}
@@ -34,7 +32,4 @@ services:
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
       - BROWSER_POOL_SIZE=1
-    command:
-      - /.venv/bin/python
-      - -m
-      - prism_app.worker.export_map_worker
+    command: ["/.venv/bin/python", "-m", "prism_app.worker.export_map_worker"]

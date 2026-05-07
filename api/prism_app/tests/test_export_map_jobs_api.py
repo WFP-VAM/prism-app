@@ -23,8 +23,8 @@ from sqlalchemy.pool import StaticPool
 from sqlmodel import Session
 
 from prism_app.database.map_export_job_model import MapExportJob
-from prism_app.export_jobs_db import get_export_jobs_session
-from prism_app.export_jobs_routes import get_s3_client_for_presign
+from prism_app.export_jobs.db import get_export_jobs_session
+from prism_app.export_jobs.routes import get_s3_client_for_presign
 from prism_app.main import app
 from prism_app.models import MapExportRequestModel
 
@@ -84,6 +84,7 @@ def test_post_export_map_jobs_returns_202_and_enqueues(api_client: TestClient) -
     assert data["deduplicated"] is False
     assert data["status"] == "queued"
     assert "job_id" in data
+    assert data["origin_url"] == "http://localhost"
 
 
 def test_get_export_map_job_status(api_client: TestClient) -> None:
@@ -93,6 +94,7 @@ def test_get_export_map_job_status(api_client: TestClient) -> None:
     assert r.status_code == 200
     assert r.json()["status"] == "queued"
     assert r.json()["download_url"] is None
+    assert r.json()["origin_url"] == "http://localhost"
 
 
 def test_post_export_map_jobs_staging_mozambique_fixture(
@@ -112,6 +114,7 @@ def test_post_export_map_jobs_staging_mozambique_fixture(
     assert data["deduplicated"] is False
     assert data["status"] == "queued"
     assert "job_id" in data
+    assert data["origin_url"] == "https://prism.moz.wfp.org"
 
 
 def test_get_succeeded_returns_presigned_url(
@@ -125,7 +128,7 @@ def test_get_succeeded_returns_presigned_url(
             request_fingerprint="fp",
             request_payload_json=_body(),
             status="succeeded",
-            requested_by="__auth_disabled__",
+            origin_url=None,
             s3_uri="s3://mybucket/path/to/file.pdf",
             content_type="pdf",
         )
@@ -164,7 +167,7 @@ def test_get_succeeded_file_uri_returns_local_path_skips_presign(
             request_fingerprint="fp",
             request_payload_json=_body(),
             status="succeeded",
-            requested_by="__auth_disabled__",
+            origin_url=None,
             s3_uri=file_uri,
             content_type="pdf",
         )

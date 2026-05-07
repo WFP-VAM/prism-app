@@ -23,15 +23,12 @@ def canonical_request_dict(request: MapExportRequestModel) -> dict[str, Any]:
     return _canonicalize(data)
 
 
-def compute_request_fingerprint(
-    request: MapExportRequestModel, requested_by: str
-) -> str:
-    """SHA-256 hex digest; distinguishes principals."""
-    envelope = {
-        "payload": canonical_request_dict(request),
-        "requested_by": requested_by,
-    }
+def compute_request_fingerprint(request: MapExportRequestModel) -> str:
+    """SHA-256 hex of canonical export body (dedupe is global, not per-user)."""
     body = json.dumps(
-        envelope, separators=(",", ":"), ensure_ascii=False, sort_keys=True
+        canonical_request_dict(request),
+        separators=(",", ":"),
+        ensure_ascii=False,
+        sort_keys=True,
     )
     return hashlib.sha256(body.encode("utf-8")).hexdigest()

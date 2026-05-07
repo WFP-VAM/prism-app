@@ -5,10 +5,22 @@ from __future__ import annotations
 from sqlmodel import Session, select
 
 from prism_app.database.map_export_job_model import MapExportJob
-from prism_app.export_job_fingerprint import compute_request_fingerprint
+from prism_app.export_jobs.fingerprint import compute_request_fingerprint
 from prism_app.export_s3 import map_export_artifact_exists
 from prism_app.models import MapExportRequestModel
-from prism_app.utc import utc_now
+from prism_app.utils import utc_now
+
+
+def _origin_from_first_export_url(urls: list[str]) -> str | None:
+    """Scheme + netloc of first map URL (audit); None if not http(s) with host."""
+    if not urls:
+        return None
+    from urllib.parse import urlparse
+
+    p = urlparse(urls[0].strip())
+    if p.scheme in ("http", "https") and p.netloc:
+        return f"{p.scheme}://{p.netloc}"
+    return None
 
 
 def _invalidate_stale_succeeded_job(session: Session, job: MapExportJob) -> None:
@@ -28,20 +40,16 @@ def _invalidate_stale_succeeded_job(session: Session, job: MapExportJob) -> None
 def enqueue_map_export_job(
     session: Session,
     request: MapExportRequestModel,
-    requested_by: str,
     s3_client: object | None = None,
 ) -> tuple[MapExportJob, int]:
     """
     Return (job, http_status). New row with status queued -> 202;
     dedupe (in-flight or succeeded) -> 200.
     """
-    fingerprint = compute_request_fingerprint(request, requested_by)
+    fingerprint = compute_request_fingerprint(request)
     stmt = (
         select(MapExportJob)
-        .where(
-            MapExportJob.requested_by == requested_by,
-            MapExportJob.request_fingerprint == fingerprint,
-        )
+        .where(MapExportJob.request_fingerprint == fingerprint)
         .order_by(MapExportJob.created_at.desc())
     )
     rows = list(session.exec(stmt))
@@ -68,7 +76,7 @@ def enqueue_map_export_job(
         request_fingerprint=fingerprint,
         request_payload_json=request.model_dump(mode="json"),
         status="queued",
-        requested_by=requested_by,
+        origin_url=_origin_from_first_export_url(request.urls),
         content_type=artifact_kind,
     )
     session.add(job)

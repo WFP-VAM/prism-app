@@ -11,12 +11,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from sqlmodel import Session
 
-from prism_app.auth import validate_user
 from prism_app.database.map_export_job_model import MapExportJob
-from prism_app.database.user_info_model import UserInfoModel
-from prism_app.export_job_fingerprint import compute_request_fingerprint
-from prism_app.export_jobs_db import get_export_jobs_session
-from prism_app.export_jobs_service import enqueue_map_export_job
+from prism_app.export_jobs.db import get_export_jobs_session
+from prism_app.export_jobs.fingerprint import compute_request_fingerprint
+from prism_app.export_jobs.service import enqueue_map_export_job
 from prism_app.export_s3 import (
     is_file_artifact_uri,
     local_path_from_file_uri,
@@ -24,7 +22,7 @@ from prism_app.export_s3 import (
     presign_export_get,
 )
 from prism_app.models import MapExportRequestModel
-from prism_app.utc import utc_now
+from prism_app.utils import utc_now
 
 
 def get_s3_client_for_presign():
@@ -37,18 +35,16 @@ router = APIRouter(prefix="/export-map", tags=["export-map"])
 @router.post("/jobs")
 def create_map_export_job(
     body: MapExportRequestModel,
-    user: UserInfoModel = Depends(validate_user),
     session: Session = Depends(get_export_jobs_session),
     s3_client: object = Depends(get_s3_client_for_presign),
 ) -> JSONResponse:
-    job, status_code = enqueue_map_export_job(
-        session, body, user.username, s3_client
-    )
-    fingerprint = compute_request_fingerprint(body, user.username)
+    job, status_code = enqueue_map_export_job(session, body, s3_client)
+    fingerprint = compute_request_fingerprint(body)
     payload: dict[str, Any] = {
         "job_id": job.id,
         "status": job.status,
         "request_fingerprint": fingerprint,
+        "origin_url": job.origin_url,
         "deduplicated": status_code == 200,
     }
     return JSONResponse(status_code=status_code, content=payload)
@@ -57,12 +53,11 @@ def create_map_export_job(
 @router.get("/jobs/{job_id}")
 def read_map_export_job(
     job_id: str,
-    user: UserInfoModel = Depends(validate_user),
     session: Session = Depends(get_export_jobs_session),
     s3_client: object = Depends(get_s3_client_for_presign),
 ) -> dict[str, Any]:
     job = session.get(MapExportJob, job_id)
-    if job is None or job.requested_by != user.username:
+    if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
 
     if job.status == "succeeded" and job.s3_uri:
@@ -91,6 +86,7 @@ def read_map_export_job(
         "job_id": job.id,
         "status": job.status,
         "request_fingerprint": job.request_fingerprint,
+        "origin_url": job.origin_url,
         "progress_current": job.progress_current,
         "progress_total": job.progress_total,
         "download_url": download_url,

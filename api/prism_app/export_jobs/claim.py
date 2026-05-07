@@ -5,7 +5,7 @@ from __future__ import annotations
 from sqlmodel import Session, select
 
 from prism_app.database.map_export_job_model import MapExportJob
-from prism_app.utc import utc_now
+from prism_app.utils import utc_now
 
 
 def claim_next_queued_map_export_job(session: Session) -> str | None:

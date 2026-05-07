@@ -15,11 +15,8 @@
 # Env:
 #   MAP_EXPORT_E2E_API_PORT   host port (default 8888)
 #   MAP_EXPORT_E2E_FIXTURE    JSON body path (default staging moz fixture)
-#   MAP_EXPORT_E2E_USER       Basic user (default e2e_map_export)
-#   MAP_EXPORT_E2E_PASSWORD   Basic password (default changeme; must match seed SQL)
 #   MAP_EXPORT_E2E_POLL_SEC   poll interval (default 5)
 #   MAP_EXPORT_E2E_TIMEOUT_SEC  max wait for job (default 900)
-#   MAP_EXPORT_E2E_DB_PASSWORD  testdb postgres password (default !ChangeMe!, same as docker-compose.test.yml)
 #
 # Teardown this stack:
 #   ./scripts/map_export_job_docker_e2e.sh --down
@@ -49,12 +46,8 @@ fi
 
 API_PORT="${MAP_EXPORT_E2E_API_PORT:-8888}"
 FIXTURE="${MAP_EXPORT_E2E_FIXTURE:-prism_app/tests/fixtures/staging_moz_export_map_request.json}"
-USER="${MAP_EXPORT_E2E_USER:-e2e_map_export}"
-PASS="${MAP_EXPORT_E2E_PASSWORD:-changeme}"
 POLL="${MAP_EXPORT_E2E_POLL_SEC:-5}"
 TIMEOUT="${MAP_EXPORT_E2E_TIMEOUT_SEC:-900}"
-_default_testdb_pw='!ChangeMe!'
-TESTDB_PW="${MAP_EXPORT_E2E_DB_PASSWORD:-${_default_testdb_pw}}"
 
 if [[ ! -f "$FIXTURE" ]]; then
   echo "Fixture not found: $FIXTURE" >&2
@@ -76,14 +69,9 @@ if ! "${COMPOSE[@]}" exec -T testdb pg_isready -U postgres -d postgres >/dev/nul
   exit 1
 fi
 
-echo "[3/5] Alembic migrate + seed auth user (one-off api container)..."
+echo "[3/5] Alembic migrate (one-off api container)..."
 "${COMPOSE[@]}" run --rm --no-deps api bash -lc \
   'cd / && poetry run alembic -c /alembic.ini upgrade head'
-# TCP + password: socket-only psql hits peer auth inside kartoza/postgis image.
-"${COMPOSE[@]}" exec -T \
-  -e "PGPASSWORD=${TESTDB_PW}" \
-  testdb psql -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 \
-  < scripts/seed_map_export_e2e_auth.sql
 
 echo "[4/5] Starting api + export_map_worker..."
 "${COMPOSE[@]}" up -d api export_map_worker
@@ -105,7 +93,7 @@ fi
 echo "POST /export-map/jobs (fixture: $FIXTURE)..."
 tmp_post="$(mktemp)"
 trap 'rm -f "$tmp_post"' EXIT
-code="$(curl -sS -u "$USER:$PASS" \
+code="$(curl -sS \
   -H 'Content-Type: application/json' \
   -d @"$FIXTURE" \
   -o "$tmp_post" \
@@ -122,7 +110,7 @@ status="$(echo "$resp" | python3 -c 'import json,sys; print(json.load(sys.stdin)
 
 if [[ "$status" == "succeeded" ]]; then
   echo "Job already succeeded (dedupe). Fetching download_url..."
-  body="$(curl -sS -u "$USER:$PASS" "$base/export-map/jobs/${job_id}")"
+  body="$(curl -sS "$base/export-map/jobs/${job_id}")"
   echo "$body" | python3 -c 'import json,sys; d=json.load(sys.stdin); print("download_url:", d.get("download_url")); print("local_artifact_path:", d.get("local_artifact_path"))'
   echo "OK."
   exit 0
@@ -142,7 +130,7 @@ while true; do
     "${COMPOSE[@]}" logs --tail 120 export_map_worker >&2 || true
     exit 1
   fi
-  body="$(curl -sS -u "$USER:$PASS" "$base/export-map/jobs/${job_id}")"
+  body="$(curl -sS "$base/export-map/jobs/${job_id}")"
   st="$(echo "$body" | python3 -c 'import json,sys; print(json.load(sys.stdin)["status"])')"
   echo "  status=$st (${elapsed}s)"
   if [[ "$st" == "succeeded" ]]; then
