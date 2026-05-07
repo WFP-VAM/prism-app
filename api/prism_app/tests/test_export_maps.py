@@ -134,9 +134,7 @@ def test_validate_export_url_support():
     validate_export_url(f"http://wfp.org/?test=1&date={TEST_DATE}")
     validate_export_url(f"https://prism.wfp.org/?test=1&date={TEST_DATE}")
     validate_export_url(f"http://prism.example.wfp.org/?test=1&date={TEST_DATE}")
-    validate_export_url(
-        f"https://staging-prism-frontend--1622-38oautsx.web.app/?test=1&date={TEST_DATE}"
-    )
+    validate_export_url(f"https://prism.moz.wfp.org/?test=1&date={TEST_DATE}")
 
     # These should not be allowed
     with pytest.raises(ValueError, match="not allowed"):
