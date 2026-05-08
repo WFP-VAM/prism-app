@@ -9,8 +9,6 @@ from typing import Any
 import boto3
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
-from sqlmodel import Session
-
 from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.export_jobs.db import get_export_jobs_session
 from prism_app.export_jobs.fingerprint import compute_request_fingerprint
@@ -23,6 +21,7 @@ from prism_app.export_s3 import (
 )
 from prism_app.models import MapExportRequestModel
 from prism_app.utils import utc_now
+from sqlmodel import Session
 
 
 def get_s3_client_for_presign():

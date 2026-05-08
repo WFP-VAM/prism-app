@@ -2,13 +2,12 @@
 
 from __future__ import annotations
 
-from sqlmodel import Session, select
-
 from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.export_jobs.fingerprint import compute_request_fingerprint
 from prism_app.export_s3 import map_export_artifact_exists
 from prism_app.models import MapExportRequestModel
 from prism_app.utils import utc_now
+from sqlmodel import Session, select
 
 
 def _origin_from_first_export_url(urls: list[str]) -> str | None:

@@ -16,16 +16,15 @@ from unittest.mock import MagicMock
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.pool import StaticPool
-from sqlmodel import Session
-
 from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.export_jobs.db import get_export_jobs_session
 from prism_app.export_jobs.routes import get_s3_client_for_presign
 from prism_app.main import app
 from prism_app.models import MapExportRequestModel
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
+from sqlmodel import Session
 
 _STAGING_MOZ_EXPORT_FIXTURE = (
     Path(__file__).parent / "fixtures" / "staging_moz_export_map_request.json"

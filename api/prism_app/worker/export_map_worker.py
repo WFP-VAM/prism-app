@@ -15,8 +15,6 @@ from pathlib import Path
 from typing import Any
 
 import boto3
-from sqlmodel import Session
-
 from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.export_jobs.claim import claim_next_queued_map_export_job
 from prism_app.export_jobs.db import get_export_jobs_session_factory
@@ -24,6 +22,7 @@ from prism_app.export_maps import export_maps
 from prism_app.export_s3 import put_map_export_bytes, put_map_export_bytes_local
 from prism_app.models import MapExportRequestModel
 from prism_app.utils import utc_now
+from sqlmodel import Session
 
 logger = logging.getLogger(__name__)
 
@@ -166,7 +165,9 @@ async def amain() -> None:
                 try:
                     _mark_job_failed(work, job_id, e)
                 except Exception:
-                    logger.exception("Could not persist failed status for job %s", job_id)
+                    logger.exception(
+                        "Could not persist failed status for job %s", job_id
+                    )
         finally:
             work.close()
 

@@ -6,10 +6,9 @@ import datetime
 import uuid
 from typing import Any, Optional
 
+from prism_app.utils import utc_now
 from sqlalchemy import JSON, Column, DateTime, Index, String
 from sqlmodel import Field, SQLModel
-
-from prism_app.utils import utc_now
 
 
 class MapExportJob(SQLModel, table=True):

@@ -106,7 +106,9 @@ def map_export_artifact_exists(
             return False
     if s3_uri.startswith("s3://"):
         if s3_client is None:
-            return True  # verification requires a client; caller API always provides one
+            return (
+                True  # verification requires a client; caller API always provides one
+            )
         bucket, key = parse_s3_uri(s3_uri)
         try:
             s3_client.head_object(Bucket=bucket, Key=key)  # type: ignore[union-attr]

@@ -6,13 +6,10 @@ import io
 from pathlib import Path
 
 import pytest
+from prism_app.e2e_export_maps import render_map_export_fixture
 from pypdf import PdfReader
 
-from prism_app.e2e_export_maps import render_map_export_fixture
-
-_FIXTURE = (
-    Path(__file__).parent / "fixtures" / "staging_moz_export_map_request.json"
-)
+_FIXTURE = Path(__file__).parent / "fixtures" / "staging_moz_export_map_request.json"
 
 
 @pytest.mark.e2e

@@ -3,20 +3,17 @@
 from __future__ import annotations
 
 import datetime
-
+from pathlib import Path
 from unittest.mock import MagicMock
 
-from pathlib import Path
-
 import pytest
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlmodel import Session
-
 from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.export_jobs.fingerprint import compute_request_fingerprint
 from prism_app.export_jobs.service import enqueue_map_export_job
 from prism_app.models import MapExportRequestModel
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlmodel import Session
 
 
 @pytest.fixture
@@ -97,9 +94,7 @@ def test_dedupe_succeeded(db_session: Session) -> None:
     mock_s3 = MagicMock()
     mock_s3.head_object.return_value = {}
 
-    job, status = enqueue_map_export_job(
-        db_session, req, s3_client=mock_s3
-    )
+    job, status = enqueue_map_export_job(db_session, req, s3_client=mock_s3)
     assert job.id == done.id
     assert status == 200
     mock_s3.head_object.assert_called_once()
@@ -124,9 +119,7 @@ def test_dedupe_succeeded_requeues_when_s3_object_missing(db_session: Session) -
     mock_s3 = MagicMock()
     mock_s3.head_object.side_effect = OSError("no such key")
 
-    job, status = enqueue_map_export_job(
-        db_session, req, s3_client=mock_s3
-    )
+    job, status = enqueue_map_export_job(db_session, req, s3_client=mock_s3)
     assert status == 202
     assert job.status == "queued"
     assert job.id != done_id

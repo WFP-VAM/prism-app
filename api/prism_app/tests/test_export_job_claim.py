@@ -5,12 +5,11 @@ from __future__ import annotations
 import datetime
 
 import pytest
+from prism_app.database.map_export_job_model import MapExportJob
+from prism_app.export_jobs.claim import claim_next_queued_map_export_job
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlmodel import Session
-
-from prism_app.database.map_export_job_model import MapExportJob
-from prism_app.export_jobs.claim import claim_next_queued_map_export_job
 
 
 @pytest.fixture
@@ -34,14 +33,20 @@ def test_claim_picks_oldest_queued(db_session: Session) -> None:
     t1 = datetime.datetime(2025, 1, 2, tzinfo=datetime.UTC)
     older = MapExportJob(
         request_fingerprint="a",
-        request_payload_json={"urls": ["http://localhost/?date=2025-01-01"], "format": "pdf"},
+        request_payload_json={
+            "urls": ["http://localhost/?date=2025-01-01"],
+            "format": "pdf",
+        },
         status="queued",
         created_at=t0,
         updated_at=t0,
     )
     newer = MapExportJob(
         request_fingerprint="b",
-        request_payload_json={"urls": ["http://localhost/?date=2025-01-02"], "format": "pdf"},
+        request_payload_json={
+            "urls": ["http://localhost/?date=2025-01-02"],
+            "format": "pdf",
+        },
         status="queued",
         created_at=t1,
         updated_at=t1,
@@ -65,7 +70,10 @@ def test_claim_picks_oldest_queued(db_session: Session) -> None:
 def test_claim_skips_non_queued(db_session: Session) -> None:
     j = MapExportJob(
         request_fingerprint="a",
-        request_payload_json={"urls": ["http://localhost/?date=2025-01-01"], "format": "pdf"},
+        request_payload_json={
+            "urls": ["http://localhost/?date=2025-01-01"],
+            "format": "pdf",
+        },
         status="running",
     )
     db_session.add(j)

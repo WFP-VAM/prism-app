@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import pytest
-
 from prism_app.export_s3 import (
     is_file_artifact_uri,
     local_path_from_file_uri,
