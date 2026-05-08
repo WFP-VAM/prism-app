@@ -1,22 +1,6 @@
-import { CoverageWindow, DatesPropagation, LayerType, WMSLayerProps } from 'config/types';
+import { CoverageWindow, DatesPropagation } from 'config/types';
 
 export type BatchCadence = 'monthly' | 'quarterly' | 'every-n-dekads';
-
-/**
- * Returns true when a layer is eligible for batch-map generation.
- * A layer is eligible if it is a WMS layer that has either a `coverageWindow`
- * or a `validity` property configured (i.e. it has date support).
- *
- * This acts as a TypeScript type guard narrowing the type to `WMSLayerProps`.
- */
-export function isBatchMapCompatibleLayer(
-  layer: LayerType,
-): layer is WMSLayerProps {
-  if (layer.type !== 'wms') {
-    return false;
-  }
-  return !!(layer.coverageWindow || layer.validity);
-}
 
 function getMonthKey(timestamp: number): string {
   const d = new Date(timestamp);

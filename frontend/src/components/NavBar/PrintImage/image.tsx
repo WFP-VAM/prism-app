@@ -13,9 +13,9 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
 import { appConfig, safeCountry, configMap } from 'config';
-import useLayers from 'utils/layers-utils';
+import useLayers, { isDateCompatibleLayer } from 'utils/layers-utils';
 import { isBoundaryLayer } from 'utils/boundary-layers-utils';
-import { AdminCodeString, LayerKey, WMSLayerProps } from 'config/types';
+import { AdminCodeString, LayerKey } from 'config/types';
 import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
 import useResizeObserver from 'utils/useOnResizeObserver';
 import { availableDatesSelector } from 'context/serverStateSlice';
@@ -43,7 +43,6 @@ import {
   filterDatesByCadence,
   getAvailableCadences,
   getDisabledCadences,
-  isBatchMapCompatibleLayer,
 } from '../../../utils/batchCadenceUtils';
 import { calculateExportDimensions } from './mapDimensionsUtils';
 import {
@@ -180,9 +179,10 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const countryLayerIds = new Set(
     Object.keys(configMap[safeCountry].rawLayers),
   );
+  const availableDates = useSelector(availableDatesSelector);
   const selectableLayers = Object.values(LayerDefinitions).filter(
-    l => isBatchMapCompatibleLayer(l) && countryLayerIds.has(l.id),
-  ) as WMSLayerProps[];
+    l => isDateCompatibleLayer(l, availableDates) && countryLayerIds.has(l.id),
+  );
   const [selectedLayerId, setSelectedLayerId] = useState<LayerKey | null>(null);
 
   const { selectedLayersWithDateSupport, selectedLayers } = useLayers();
@@ -200,7 +200,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       setSelectedLayerId(selectableLayers[0].id);
     }
   }, [selectableLayers, selectedLayerId]);
-  const availableDates = useSelector(availableDatesSelector);
 
   const printSelectedLayer = useMemo(
     () =>
@@ -222,10 +221,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     }
   }, [availableCadences, cadence]);
 
-  const shouldEnableBatchMaps =
-    selectedLayersWithDateSupport.length > 0 &&
-    selectedLayersWithDateSupport.every(isBatchMapCompatibleLayer);
-  // true; // Temporarily enable batch maps
+  const shouldEnableBatchMaps = selectedLayersWithDateSupport.length > 0;
 
   const shouldShowMultiLayerWarning = selectedLayersWithDateSupport.length > 1;
 
