@@ -6,7 +6,7 @@ from typing import Any, Final
 
 # Default frontend host for export-job tests; override via base_url kwarg or env in CI if needed.
 MAP_EXPORT_FIXTURE_BASE_URL: Final[str] = (
-    "https://staging-prism-frontend--1622-38oautsx.web.app"
+    "https://staging-prism-frontend--1848-6327fmyc.web.app"
 )
 
 # Required non-defaults vs useExportParams: bounds+zoom (viewport), aspectRatio=Auto (else 4:3),

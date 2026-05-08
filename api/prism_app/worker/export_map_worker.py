@@ -57,6 +57,10 @@ async def run_export_job(
         return
 
     req = MapExportRequestModel.model_validate(job.request_payload_json)
+    # TEMP: debug export targets — remove when done
+    for i, url in enumerate(req.urls):
+        logger.info("[TEMP] export job %s url[%s]: %s", job_id, i, url)
+
     file_bytes, _media = await export_maps(
         urls=req.urls,
         viewport_width=req.viewportWidth,
