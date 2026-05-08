@@ -82,6 +82,14 @@ const componentTypes: LayerComponentsMap<LayerType> = {
   },
 };
 
+/** Playwright (/export, signalExportReady): min consecutive "fully loaded" samples before PRISM_READY. */
+const MAP_EXPORT_STABLE_LOADED_TICKS = 1;
+/**
+ * Poll when map idle is slow (ms). 0 uses the shortest practical interval (browser clamps ~4ms).
+ * Print preview (no signalExportReady) keeps 500ms / 3 ticks.
+ */
+const MAP_EXPORT_LOAD_POLL_MS = 0;
+
 function MapExportLayout({
   toggles,
   aspectRatio,
@@ -294,7 +302,10 @@ function MapExportLayout({
       let stableLoadedTicks = 0;
       // Idle + poll share this counter: several consecutive observations that the map is
       // fully loaded (not a single lucky areTilesLoaded() true—avoids empty WMS/raster frames).
-      const STABLE_LOADED_TICKS = signalExportReady ? 6 : 3;
+      const STABLE_LOADED_TICKS = signalExportReady
+        ? MAP_EXPORT_STABLE_LOADED_TICKS
+        : 3;
+      const loadPollMs = signalExportReady ? MAP_EXPORT_LOAD_POLL_MS : 500;
       const EXPORT_READY_SAFETY_MS = signalExportReady ? 60_000 : 25_000;
 
       let pollInterval: ReturnType<typeof setInterval> | undefined;
@@ -355,7 +366,7 @@ function MapExportLayout({
       // Poll in case idle is slow to fire but the map is already fully loaded
       pollInterval = setInterval(() => {
         bumpStableLoaded();
-      }, 500);
+      }, loadPollMs);
 
       // Safety timeout to prevent infinite waiting
       setTimeout(() => {
