@@ -14,7 +14,8 @@ services:
     environment:
       - "RUN=uvicorn prism_app.main:app --host 0.0.0.0 --port 80"
       - PRISM_ALERTS_DATABASE_URL=postgresql://postgres:!ChangeMe!@testdb:5432/postgres
-    command: uvicorn prism_app.main:app --host 0.0.0.0 --port 80 --reload
+    # No --reload: mounted /prism_app + reload can restart API mid-pytest; CI needs stable process.
+    command: uvicorn prism_app.main:app --host 0.0.0.0 --port 80
     # Infinite loop, to keep it alive, for debugging
     # command: bash -c "while true; do echo 'sleeping...' && sleep 10; done"
   testdb:
