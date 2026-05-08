@@ -106,7 +106,7 @@ export type PrintConfigContextType = {
     setPreviewMapWidth: React.Dispatch<React.SetStateAction<number | null>>;
     previewMapHeight: number | null;
     setPreviewMapHeight: React.Dispatch<React.SetStateAction<number | null>>;
-    wmsLayers: DateCompatibleLayer[];
+    selectableLayers: DateCompatibleLayer[];
     selectedLayerId: LayerKey | null;
     setSelectedLayerId: React.Dispatch<React.SetStateAction<LayerKey | null>>;
   };

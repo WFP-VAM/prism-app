@@ -665,7 +665,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       setPreviewMapWidth,
       previewMapHeight,
       setPreviewMapHeight,
-      wmsLayers: selectableLayers,
+      selectableLayers,
       selectedLayerId,
       setSelectedLayerId,
     },

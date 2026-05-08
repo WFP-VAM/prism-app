@@ -323,7 +323,7 @@ function PrintConfig() {
     shouldShowMultiLayerWarning,
     dateRange,
     aspectRatioOptions,
-    wmsLayers,
+    selectableLayers,
     selectedLayerId,
     setSelectedLayerId,
   } = printConfig;
@@ -653,7 +653,7 @@ function PrintConfig() {
                         setSelectedLayerId(e.target.value as LayerKey)
                       }
                     >
-                      {wmsLayers.map(layer => (
+                      {selectableLayers.map(layer => (
                         <MenuItem key={layer.id} value={layer.id}>
                           {t(layer.title)}
                         </MenuItem>
