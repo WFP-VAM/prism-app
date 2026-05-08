@@ -181,7 +181,10 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   );
   const availableDates = useSelector(availableDatesSelector);
   const selectableLayers = Object.values(LayerDefinitions).filter(
-    l => isDateCompatibleLayer(l, availableDates) && countryLayerIds.has(l.id),
+    l =>
+      isDateCompatibleLayer(l, availableDates) &&
+      countryLayerIds.has(l.id) &&
+      !(l.type === 'point_data' && l.authRequired),
   );
   const [selectedLayerId, setSelectedLayerId] = useState<LayerKey | null>(null);
 
