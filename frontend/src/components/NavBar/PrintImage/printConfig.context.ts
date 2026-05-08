@@ -1,6 +1,7 @@
 import React, { createContext } from 'react';
 import type { LngLatBounds } from 'maplibre-gl';
-import { AdminCodeString, WMSLayerProps, LayerKey } from 'config/types';
+import { AdminCodeString, LayerKey } from 'config/types';
+import { DateCompatibleLayer } from 'utils/server-utils';
 import {
   AspectRatio,
   AspectRatioOption,
@@ -105,7 +106,7 @@ export type PrintConfigContextType = {
     setPreviewMapWidth: React.Dispatch<React.SetStateAction<number | null>>;
     previewMapHeight: number | null;
     setPreviewMapHeight: React.Dispatch<React.SetStateAction<number | null>>;
-    wmsLayers: WMSLayerProps[];
+    selectableLayers: DateCompatibleLayer[];
     selectedLayerId: LayerKey | null;
     setSelectedLayerId: React.Dispatch<React.SetStateAction<LayerKey | null>>;
   };
