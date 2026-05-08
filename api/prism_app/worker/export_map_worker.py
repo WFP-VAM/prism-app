@@ -134,16 +134,20 @@ async def amain() -> None:
         "export_map_worker polling map_export_jobs (idle back-off %ss)", idle_sec
     )
 
+    def _claim_one_job_id() -> str | None:
+        """Own Session inside worker thread (Session is not thread-safe)."""
+        claim_session = factory()
+        try:
+            return claim_next_queued_map_export_job(claim_session)
+        finally:
+            claim_session.close()
+
     while True:
-        session = factory()
         job_id: str | None = None
         try:
-            job_id = await asyncio.to_thread(claim_next_queued_map_export_job, session)
+            job_id = await asyncio.to_thread(_claim_one_job_id)
         except Exception:
             logger.exception("claim_next_queued_map_export_job failed")
-            session.rollback()
-        finally:
-            session.close()
 
         if not job_id:
             await asyncio.sleep(idle_sec)

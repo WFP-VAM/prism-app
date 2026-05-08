@@ -74,17 +74,11 @@ services:
     environment:
       - BROWSER_POOL_SIZE=1
       - PRISM_ALERTS_DATABASE_URL=${PRISM_ALERTS_DATABASE_URL:?"Provide a URL for the alerts database."}
-      - KOBO_PASSWORD=${KOBO_PASSWORD:?"Add a password to access KOBO data."}
-      - KOBO_USERNAME=${KOBO_USERNAME:?"Add a user to access KOBO data."}
       - EXPORT_MAP_S3_BUCKET=${EXPORT_MAP_S3_BUCKET:?"S3 bucket for map export PDF/ZIP artifacts."}
+      - EXPORT_JOB_POLL_IDLE_SEC=${EXPORT_JOB_POLL_IDLE_SEC:-2}
       - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-${VECTOR_STORE_DEFAULT_REGION:-}}
-      - STAC_AWS_ACCESS_KEY_ID=${STAC_AWS_ACCESS_KEY_ID:?"Provide the AWS access key for the stac api."}
-      - STAC_AWS_SECRET_ACCESS_KEY=${STAC_AWS_SECRET_ACCESS_KEY:?"Provide the AWS secret key for the stac api."}
-      - GOOGLE_FLOODS_API_KEY=${GOOGLE_FLOODS_API_KEY:?"Provide the Google Floods API key."}
-      - HDC_TOKEN=${HDC_TOKEN:?"Provide a token to access HDC chart data."}
-      - VECTOR_STORE_ACCESS_KEY_ID=${VECTOR_STORE_ACCESS_KEY_ID}
-      - VECTOR_STORE_SECRET_ACCESS_KEY=${VECTOR_STORE_SECRET_ACCESS_KEY}
-      - VECTOR_STORE_DEFAULT_REGION=${VECTOR_STORE_DEFAULT_REGION}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
     command:
       - /.venv/bin/python
       - -m

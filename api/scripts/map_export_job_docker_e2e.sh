@@ -14,7 +14,7 @@
 #
 # Env:
 #   MAP_EXPORT_E2E_API_PORT   host port (default 8888)
-#   MAP_EXPORT_E2E_FIXTURE    JSON body path (default staging moz fixture)
+#   MAP_EXPORT_E2E_FIXTURE    optional JSON path (default: built from moz_export fixture in api container)
 #   MAP_EXPORT_E2E_POLL_SEC   poll interval (default 5)
 #   MAP_EXPORT_E2E_TIMEOUT_SEC  max wait for job (default 900)
 #
@@ -45,14 +45,8 @@ if [[ -z "${EXPORT_MAP_S3_BUCKET:-}" ]]; then
 fi
 
 API_PORT="${MAP_EXPORT_E2E_API_PORT:-8888}"
-FIXTURE="${MAP_EXPORT_E2E_FIXTURE:-prism_app/tests/fixtures/staging_moz_export_map_request.json}"
 POLL="${MAP_EXPORT_E2E_POLL_SEC:-5}"
 TIMEOUT="${MAP_EXPORT_E2E_TIMEOUT_SEC:-900}"
-
-if [[ ! -f "$FIXTURE" ]]; then
-  echo "Fixture not found: $FIXTURE" >&2
-  exit 1
-fi
 
 echo "[1/5] Starting testdb..."
 "${COMPOSE[@]}" up -d testdb
@@ -90,9 +84,31 @@ if ! curl -fsS "$base/" >/dev/null 2>&1; then
   exit 1
 fi
 
-echo "POST /export-map/jobs (fixture: $FIXTURE)..."
 tmp_post="$(mktemp)"
-trap 'rm -f "$tmp_post"' EXIT
+CLEANUP_FIXTURE=0
+if [[ -n "${MAP_EXPORT_E2E_FIXTURE:-}" ]]; then
+  FIXTURE="$MAP_EXPORT_E2E_FIXTURE"
+  if [[ ! -f "$FIXTURE" ]]; then
+    echo "Fixture not found: $FIXTURE" >&2
+    exit 1
+  fi
+else
+  FIXTURE="$(mktemp)"
+  CLEANUP_FIXTURE=1
+  "${COMPOSE[@]}" exec -T api bash -lc \
+    'cd / && poetry run python -c "import json; from prism_app.tests.fixtures.moz_export import moz_export_map_request_dict; print(json.dumps(moz_export_map_request_dict()))"' \
+    > "$FIXTURE"
+fi
+
+_cleanup() {
+  rm -f "$tmp_post"
+  if [[ "$CLEANUP_FIXTURE" == "1" ]]; then
+    rm -f "$FIXTURE"
+  fi
+}
+trap _cleanup EXIT
+
+echo "POST /export-map/jobs (fixture: $FIXTURE)..."
 code="$(curl -sS \
   -H 'Content-Type: application/json' \
   -d @"$FIXTURE" \

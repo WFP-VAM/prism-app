@@ -166,6 +166,21 @@ To run flask api together with database within same network, run:
 docker compose -f ./docker-compose.develop.yml -f ../alerting/docker-compose.yml up
 ```
 
+### Batch map export (async jobs)
+
+Synchronous **`POST /export-map`** is unchanged (single HTTP response with the PDF or ZIP).
+
+Async batch flow (DB-backed **`map_export_jobs`**, worker, S3 or local artifacts):
+
+- **`POST /export-map/jobs`** — body is **`MapExportRequestModel`** (same as sync export). Returns **`job_id`**, **`status`**, **`origin_url`** (derived from the first map URL’s host), dedupe hint. **No Basic auth** on these routes; treat **`job_id`** as the capability for **`GET`**.
+- **`GET /export-map/jobs/{id}`** — status, presigned **`download_url`** (S3) or **`local_artifact_path`** (dev **`file://`** artifacts), or **`error`**.
+
+**Worker:** `python -m prism_app.worker.export_map_worker` (see **`docker-compose.yml`** / **`docker-compose.deploy.yml`** **`export_map_worker`**). Needs **`PRISM_ALERTS_DATABASE_URL`** and either **`EXPORT_MAP_S3_BUCKET`** or **`EXPORT_MAP_LOCAL_OUTPUT_DIR`**. Optional **`EXPORT_JOB_POLL_IDLE_SEC`**.
+
+**Migrations:** Alembic revision **`map_export_jobs_001`** (after **`prism_alerts_baseline`**) creates **`map_export_jobs`**.
+
+**Dev / smoke:** `scripts/map_export_job_docker_e2e.sh`, `scripts/e2e_export_map_pdf.py` (not production paths).
+
 ### Tests
 
 To run linting and tests, run:

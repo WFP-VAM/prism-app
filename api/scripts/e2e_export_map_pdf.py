@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""E2E: load a MapExportRequest JSON fixture, run Playwright export_maps, write PDF.
+"""E2E: run Playwright export_maps from the staging-moz dict fixture or a JSON file.
 
 Requires network access to URLs in the fixture and Playwright browsers::
 
@@ -19,13 +19,6 @@ import asyncio
 import sys
 from pathlib import Path
 
-_DEFAULT_FIXTURE = (
-    Path(__file__).resolve().parent.parent
-    / "prism_app"
-    / "tests"
-    / "fixtures"
-    / "staging_moz_export_map_request.json"
-)
 _DEFAULT_OUTPUT = Path("e2e-output") / "map_export_e2e.pdf"
 
 
@@ -42,8 +35,8 @@ def main(argv: list[str] | None = None) -> int:
         "-f",
         "--fixture",
         type=Path,
-        default=_DEFAULT_FIXTURE,
-        help=f"MapExportRequest JSON (default: {_DEFAULT_FIXTURE})",
+        default=None,
+        help="Optional MapExportRequest JSON file (default: built-in staging-moz dict)",
     )
     p.add_argument(
         "-o",
@@ -53,17 +46,23 @@ def main(argv: list[str] | None = None) -> int:
         help=f"Output PDF path (default: {_DEFAULT_OUTPUT})",
     )
     args = p.parse_args(argv)
-    fixture: Path = args.fixture
     output: Path = args.output
-    if not fixture.is_file():
-        print(f"Fixture not found: {fixture}", file=sys.stderr)
-        return 1
 
     _api_root_on_path()
     from prism_app.e2e_export_maps import render_map_export_fixture
+    from prism_app.tests.fixtures.moz_export import moz_export_map_request_dict
+
+    if args.fixture is not None:
+        fixture_path: Path = args.fixture
+        if not fixture_path.is_file():
+            print(f"Fixture not found: {fixture_path}", file=sys.stderr)
+            return 1
+        payload: dict | Path = fixture_path
+    else:
+        payload = moz_export_map_request_dict()
 
     async def _run() -> None:
-        pdf_bytes, content_type = await render_map_export_fixture(fixture)
+        pdf_bytes, content_type = await render_map_export_fixture(payload)
         if content_type != "application/pdf":
             raise SystemExit(f"Expected application/pdf, got {content_type!r}")
         output.parent.mkdir(parents=True, exist_ok=True)

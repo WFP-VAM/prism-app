@@ -28,7 +28,7 @@ def upgrade() -> None:
         ),
         sa.Column("s3_uri", sa.String(), nullable=True),
         sa.Column("content_type", sa.String(), nullable=True),
-        sa.Column("requested_by", sa.String(), nullable=False),
+        sa.Column("origin_url", sa.String(length=2048), nullable=True),
         sa.Column(
             "created_at",
             sa.DateTime(timezone=True),
@@ -48,16 +48,16 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(
-        "ix_map_export_jobs_principal_fingerprint",
+        "ix_map_export_jobs_request_fingerprint",
         "map_export_jobs",
-        ["requested_by", "request_fingerprint"],
+        ["request_fingerprint"],
         unique=False,
     )
 
 
 def downgrade() -> None:
     op.drop_index(
-        "ix_map_export_jobs_principal_fingerprint",
+        "ix_map_export_jobs_request_fingerprint",
         table_name="map_export_jobs",
     )
     op.drop_table("map_export_jobs")

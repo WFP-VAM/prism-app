@@ -2,17 +2,15 @@
 
 from __future__ import annotations
 
-import json
 import os
+from collections.abc import Generator
 from pathlib import Path
+from typing import Any
+from unittest.mock import MagicMock
 
 # main imports kobo which requires these at import time
 os.environ.setdefault("KOBO_USERNAME", "pytest")
 os.environ.setdefault("KOBO_PASSWORD", "pytest")
-
-from collections.abc import Generator
-from typing import Any
-from unittest.mock import MagicMock
 
 import pytest
 from fastapi.testclient import TestClient
@@ -21,19 +19,19 @@ from prism_app.export_jobs.db import get_export_jobs_session
 from prism_app.export_jobs.routes import get_s3_client_for_presign
 from prism_app.main import app
 from prism_app.models import MapExportRequestModel
+from prism_app.tests.fixtures.moz_export import (
+    MAP_EXPORT_FIXTURE_BASE_URL,
+    moz_export_map_request_dict,
+)
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 from sqlmodel import Session
 
-_STAGING_MOZ_EXPORT_FIXTURE = (
-    Path(__file__).parent / "fixtures" / "staging_moz_export_map_request.json"
-)
-
 
 @pytest.fixture
-def staging_moz_export_map_request_body() -> dict[str, Any]:
-    return json.loads(_STAGING_MOZ_EXPORT_FIXTURE.read_text(encoding="utf-8"))
+def moz_export_map_request_body() -> dict[str, Any]:
+    return moz_export_map_request_dict()
 
 
 @pytest.fixture
@@ -95,24 +93,24 @@ def test_get_export_map_job_status(api_client: TestClient) -> None:
     assert r.json()["origin_url"] == "http://localhost"
 
 
-def test_post_export_map_jobs_staging_mozambique_fixture(
+def test_post_export_map_jobs_mozambique_fixture(
     api_client: TestClient,
-    staging_moz_export_map_request_body: dict[str, Any],
+    moz_export_map_request_body: dict[str, Any],
 ) -> None:
     # Ensures real-world Firebase preview URLs + MapExportRequestModel validation.
-    model = MapExportRequestModel.model_validate(staging_moz_export_map_request_body)
+    model = MapExportRequestModel.model_validate(moz_export_map_request_body)
     assert len(model.urls) == 3
     assert model.format == "pdf"
     assert model.viewportWidth == 1200
     assert model.viewportHeight == 1028
 
-    r = api_client.post("/export-map/jobs", json=staging_moz_export_map_request_body)
+    r = api_client.post("/export-map/jobs", json=moz_export_map_request_body)
     assert r.status_code == 202, r.text
     data = r.json()
     assert data["deduplicated"] is False
     assert data["status"] == "queued"
     assert "job_id" in data
-    assert data["origin_url"] == "https://prism.moz.wfp.org"
+    assert data["origin_url"] == MAP_EXPORT_FIXTURE_BASE_URL
 
 
 def test_get_succeeded_returns_presigned_url(
