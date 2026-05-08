@@ -36,9 +36,7 @@ def get_s3_client_for_presign() -> object | None:
         return None
 
 
-def _s3_client_for_artifact(
-    uri: str | None, injected: object | None
-) -> object | None:
+def _s3_client_for_artifact(uri: str | None, injected: object | None) -> object | None:
     if not uri or is_file_artifact_uri(uri):
         return None
     if injected is not None:
