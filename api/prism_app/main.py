@@ -23,8 +23,8 @@ from prism_app.auth_legacy import optional_validate_user, validate_user
 from prism_app.caching import FilePath, cache_file, cache_geojson
 from prism_app.database.alert_model import AlchemyEncoder, AlertModel
 from prism_app.database.database import DB_URI, AlertsDataBase
-from prism_app.database.prism_user_model import PrismUser
-from prism_app.database.user_info_model import UserInfoModel
+from prism_app.database.kobo_user_model import KoboUser
+from prism_app.database.user_model import User
 from prism_app.export_maps import export_maps
 from prism_app.googleflood import (
     get_google_flood_dates,
@@ -113,12 +113,12 @@ def access_not_configured_page():
 
 
 _AdminSession = Annotated[
-    tuple[PrismUser, set[str]],
+    tuple[User, set[str]],
     Depends(require_permissions(ADMIN_ACCESS)),
 ]
 
 _AnySession = Annotated[
-    tuple[PrismUser, set[str]],
+    tuple[User, set[str]],
     Depends(require_prism_session),
 ]
 
@@ -326,9 +326,7 @@ def get_kobo_form_dates(
         default=False,
         description="If True, return all dates regardless of user province access",
     ),
-    user_info: Annotated[
-        Optional[UserInfoModel], Depends(optional_validate_user)
-    ] = None,
+    user_info: Annotated[Optional[KoboUser], Depends(optional_validate_user)] = None,
 ):
     """Get all form response dates. By default, filters by user's province access if available."""
     # Return empty list if no user/auth provided
@@ -353,7 +351,7 @@ def get_kobo_forms(
     formId: str,
     datetimeField: str,
     koboUrl: HttpUrl,
-    user_info: Annotated[UserInfoModel, Depends(validate_user)],
+    user_info: Annotated[KoboUser, Depends(validate_user)],
     geomField: Optional[str] = None,
     filters: Optional[str] = None,
     beginDateTime=Query(default="2000-01-01"),

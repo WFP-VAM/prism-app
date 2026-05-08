@@ -10,7 +10,7 @@ from prism_app.auth.admin_settings import (
     AdminAuthSettings,
     log_oidc_configuration_blocked,
 )
-from prism_app.auth.deps import load_prism_user_from_session
+from prism_app.auth.deps import load_user_from_session
 from prism_app.auth.permission_codes import ADMIN_ACCESS, ALL_CAPABILITIES
 from prism_app.auth.prism_auth_service import is_active
 from sqlalchemy.engine import Engine
@@ -144,7 +144,7 @@ class PrismAdminAuthMiddleware(BaseHTTPMiddleware):
                 status_code=503,
             )
 
-        user, codes, _ = load_prism_user_from_session(
+        user, codes, _ = load_user_from_session(
             request,
             prov.engine,
             settings,

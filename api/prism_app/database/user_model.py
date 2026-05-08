@@ -1,4 +1,4 @@
-"""PRISM application user mapped from CIAM (`sub` + profile fields)."""
+"""Application user mapped from CIAM (`sub` + profile fields)."""
 
 import datetime
 from enum import Enum
@@ -13,22 +13,22 @@ from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlmodel import Field, SQLModel
 
 
-class PrismUserStatus(str, Enum):
-    """Mirrors PostgreSQL enum `prism_user_status`."""
+class UserStatus(str, Enum):
+    """Mirrors PostgreSQL enum `user_status`."""
 
     active = "active"
     disabled = "disabled"
 
 
-_prism_user_status = ENUM(
-    PrismUserStatus,
-    name="prism_user_status",
+_user_status = ENUM(
+    UserStatus,
+    name="user_status",
     create_type=False,
 )
 
 
-class PrismUser(SQLModel, table=True):
-    """PRISM user: keyed by CIAM ``sub``."""
+class User(SQLModel, table=True):
+    """Application user: keyed by CIAM ``sub``."""
 
     __tablename__ = "users"
 
@@ -43,12 +43,12 @@ class PrismUser(SQLModel, table=True):
     ciam_sub: str = Field(sa_column=Column(String, nullable=False, unique=True))
     email: Optional[str] = Field(default=None, sa_column=Column(String, nullable=True))
     name: Optional[str] = Field(default=None, sa_column=Column(String, nullable=True))
-    status: PrismUserStatus = Field(
-        default=PrismUserStatus.active,
+    status: UserStatus = Field(
+        default=UserStatus.active,
         sa_column=Column(
-            _prism_user_status,
+            _user_status,
             nullable=False,
-            server_default=sa.text("'active'::prism_user_status"),
+            server_default=sa.text("'active'::user_status"),
         ),
     )
     created_at: datetime.datetime = Field(

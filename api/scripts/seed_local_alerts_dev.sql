@@ -1,6 +1,6 @@
--- Local dev seed for the PRISM alerts DB (anticipatory_action_alerts, user_info, alert).
+-- Local dev seed for the PRISM alerts DB (anticipatory_action_alerts, kobo_users, alert).
 -- Run from api/: poetry run python scripts/seed_alerts_db.py (after alembic upgrade head).
--- Idempotent: user_info uses ON CONFLICT; AA rows only insert if missing for country+type;
+-- Idempotent: kobo_users uses ON CONFLICT; AA rows only insert if missing for country+type;
 -- seed alerts replace rows with the fixed seed emails.
 
 -- Anticipatory action (Mozambique) — skip if that country+type already exists
@@ -33,7 +33,7 @@ WHERE NOT EXISTS (
 );
 
 -- Starlette Admin / API smoke tests: seed user (plain-text password when salt = 'false')
-INSERT INTO user_info (
+INSERT INTO kobo_users (
   username, password, salt, access, email, deployment, organization, details, created_at
 )
 VALUES (

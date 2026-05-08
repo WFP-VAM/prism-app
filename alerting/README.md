@@ -9,7 +9,7 @@ There is a unique service running for all country specific frontends.
 
 ## Database schema and migrations
 
-The alerting stack uses the same PostgreSQL database as the PRISM API for `alert`, `user_info`, and `anticipatory_action_alerts`. **Python/Alembic under `api/alembic/` is the sole owner of schema migrations** for this database. Change SQLModel in `api/prism_app/database/`, add an Alembic revision under `api/alembic/versions/`, and run `alembic upgrade head` with `PRISM_ALERTS_DATABASE_URL` (see `api/README.md`).
+The alerting stack uses the same PostgreSQL database as the PRISM API for `alert`, `kobo_users`, and `anticipatory_action_alerts`. **Python/Alembic under `api/alembic/` is the sole owner of schema migrations** for this database. Change SQLModel in `api/prism_app/database/`, add an Alembic revision under `api/alembic/versions/`, and run `alembic upgrade head` with `PRISM_ALERTS_DATABASE_URL` (see `api/README.md`).
 
 ## Functionalities
 
@@ -32,9 +32,9 @@ The alerting stack uses the same PostgreSQL database as the PRISM API for `alert
 
 The `type` column is a PostgreSQL ENUM (`anticipatory_action_alerts_type_enum`) defined by the Alembic baseline under `api/alembic/versions/`.
 
-### Optional: threshold `alert` rows + `user_info` (local testing)
+### Optional: threshold `alert` rows + `kobo_users` (local testing)
 
-For [Starlette Admin](https://github.com/jowilf/starlette-admin) or API smoke tests, use the same seed step as above: from `api/`, run `poetry run python scripts/seed_alerts_db.py`. That executes [`api/scripts/seed_local_alerts_dev.sql`](../api/scripts/seed_local_alerts_dev.sql), which loads sample `alert` and `user_info` rows (and the Mozambique AA rows) in one shot. Re-running is safe: see comments at the top of that SQL file.
+For [Starlette Admin](https://github.com/jowilf/starlette-admin) or API smoke tests, use the same seed step as above: from `api/`, run `poetry run python scripts/seed_alerts_db.py`. That executes [`api/scripts/seed_local_alerts_dev.sql`](../api/scripts/seed_local_alerts_dev.sql), which loads sample `alert` and `kobo_users` rows (and the Mozambique AA rows) in one shot. Re-running is safe: see comments at the top of that SQL file.
 
 - **User password:** with `salt = 'false'`, the PRISM API validates this row using a **plain-text** password match ([`prism_app/auth.py`](../api/prism_app/auth.py))—use HTTP Basic `local_dev_user` / `localdev` when auth is enabled.
 
@@ -94,7 +94,7 @@ GitHub Actions job **`alerts_db_alembic_and_alerting`** (in [`.github/workflows/
 
 The same job then runs **`pytest`** on `test_api.py`, `test_alerting.py`, and **`test_alerts_db_integration.py`** so the API, `/stats` alerting fixture, admin list routes, and Alembic metadata align with that database. See [api/README.md](../api/README.md) (**Alerts database (CI integration + local)**).
 
-**Before or right after the first production `alembic upgrade` on the shared alerts DB**, also smoke manually: full `alert-worker`, one AA worker **without** `--testEmail` (so the pool hits Postgres), and read-only Starlette Admin on `alert` / `user_info` / `anticipatory_action_alerts`.
+**Before or right after the first production `alembic upgrade` on the shared alerts DB**, also smoke manually: full `alert-worker`, one AA worker **without** `--testEmail` (so the pool hits Postgres), and read-only Starlette Admin on `alert` / `kobo_users` / `anticipatory_action_alerts`.
 
 ## Server crons
 Alert workers are running as crons on the server. Edit with: `crontab -e`

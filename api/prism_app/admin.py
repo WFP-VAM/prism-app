@@ -3,9 +3,9 @@
 from prism_app.auth.permission_codes import ADMIN_ACCESS
 from prism_app.database.alert_model import AlertModel
 from prism_app.database.anticipatory_action_alerts_model import AnticipatoryActionAlerts
+from prism_app.database.kobo_user_model import KoboUser
 from prism_app.database.permission_model import Permission, UserPermission
-from prism_app.database.prism_user_model import PrismUser
-from prism_app.database.user_info_model import UserInfoModel
+from prism_app.database.user_model import User
 from starlette.requests import Request
 from starlette_admin.contrib.sqla import Admin, ModelView
 
@@ -53,8 +53,8 @@ class AlertView(ReadOnlyModelView):
     exclude_fields_from_list = ("alert_config", "zones")
 
 
-class UserInfoView(ReadOnlyModelView):
-    label = "User info"
+class KoboUserView(ReadOnlyModelView):
+    label = "Kobo users"
     exclude_fields_from_list = ("password", "salt")
     exclude_fields_from_detail = ("password", "salt")
 
@@ -64,10 +64,10 @@ class AnticipatoryActionAlertsView(ReadOnlyModelView):
     exclude_fields_from_list = ("last_states",)
 
 
-class PrismUserEditView(PrismGatedModelView):
+class UserEditView(PrismGatedModelView):
     """CIAM-mapped users: provision metadata; permissions use User permissions."""
 
-    label = "PRISM users (CIAM)"
+    label = "Users (CIAM)"
     edit_template = "edit_no_add_another.html"  # hides "Save and add another"
     exclude_fields_from_edit = (
         "id",
@@ -98,8 +98,8 @@ class UserPermissionView(PrismGatedModelView):
 
 def register_alerts_admin_views(admin: Admin) -> None:
     admin.add_view(AlertView(AlertModel))
-    admin.add_view(UserInfoView(UserInfoModel))
+    admin.add_view(KoboUserView(KoboUser))
     admin.add_view(AnticipatoryActionAlertsView(AnticipatoryActionAlerts))
-    admin.add_view(PrismUserEditView(PrismUser))
+    admin.add_view(UserEditView(User))
     admin.add_view(PermissionView(Permission))
     admin.add_view(UserPermissionView(UserPermission))

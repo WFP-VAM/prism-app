@@ -1,4 +1,8 @@
-"""Add ``users``, ``permissions``, ``user_permissions`` and seed RBAC capability rows.
+"""Rename ``user_info`` → ``kobo_users``; add ``users``, ``permissions``, ``user_permissions`` and seed RBAC capability rows.
+
+The legacy ``user_info`` table (HTTP Basic auth / Kobo province gating) is renamed to
+``kobo_users`` to disambiguate it from the new CIAM-backed ``users`` table added in the
+same revision.
 
 Revision ID: prism_users_permissions
 Revises: prism_alerts_baseline
@@ -17,15 +21,15 @@ depends_on = None
 
 
 def upgrade() -> None:
-    # gen_random_uuid() is built-in on PG 13+; pgcrypto is a no-op safety net.
-    op.execute("CREATE EXTENSION IF NOT EXISTS pgcrypto")
 
-    op.execute("CREATE TYPE prism_user_status AS ENUM ('active', 'disabled')")
+    op.rename_table("user_info", "kobo_users")
+
+    op.execute("CREATE TYPE user_status AS ENUM ('active', 'disabled')")
 
     user_status = postgresql.ENUM(
         "active",
         "disabled",
-        name="prism_user_status",
+        name="user_status",
         create_type=False,
     )
 
@@ -64,7 +68,7 @@ def upgrade() -> None:
         sa.Column(
             "status",
             user_status,
-            server_default=sa.text("'active'::prism_user_status"),
+            server_default=sa.text("'active'::user_status"),
             nullable=False,
         ),
         sa.Column(
@@ -151,4 +155,5 @@ def downgrade() -> None:
     op.drop_table("user_permissions")
     op.drop_table("users")
     op.drop_table("permissions")
-    op.execute("DROP TYPE prism_user_status")
+    op.execute("DROP TYPE user_status")
+    op.rename_table("kobo_users", "user_info")

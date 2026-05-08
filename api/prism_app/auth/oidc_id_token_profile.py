@@ -66,6 +66,6 @@ class IdTokenProfileClaims(BaseModel):
         parts = [p for p in (self.given_name, self.family_name) if p]
         return " ".join(parts) if parts else None
 
-    def to_prism_user_fields(self) -> tuple[str | None, str | None]:
+    def to_user_fields(self) -> tuple[str | None, str | None]:
         """``(mailbox, display_name)`` for ``users.email`` / ``users.name``."""
         return self.prism_mailbox(), self.prism_display_name()

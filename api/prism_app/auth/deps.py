@@ -8,7 +8,7 @@ from uuid import UUID
 from fastapi import Depends, HTTPException, Request, status
 from prism_app.auth.admin_settings import AdminAuthSettings, get_admin_auth_settings
 from prism_app.auth.prism_auth_service import is_active, load_user_and_permissions
-from prism_app.database.prism_user_model import PrismUser
+from prism_app.database.user_model import User
 from sqlalchemy.engine import Engine
 from starlette.responses import Response
 
@@ -73,9 +73,9 @@ def get_admin_engine(request: Request) -> Engine:
     return request.app.state.admin_engine
 
 
-def load_prism_user_from_session(
+def load_user_from_session(
     request: Request, engine: Engine, settings: AdminAuthSettings
-) -> tuple[PrismUser | None, set[str], str | None]:
+) -> tuple[User | None, set[str], str | None]:
     """Resolve ``prism_uid`` (+ optional ``ciam_sub``) from session → DB user."""
     uid_raw = request.session.get(PRISM_SESSION_USER_ID)
     if uid_raw is None:
@@ -101,14 +101,14 @@ def require_prism_session(
     request: Request,
     settings: Annotated[AdminAuthSettings, Depends(get_admin_auth_settings)],
     engine: Annotated[Engine, Depends(get_admin_engine)],
-) -> tuple[PrismUser, set[str]]:
+) -> tuple[User, set[str]]:
     """Load user + permission codes from Starlette session; 401 if missing or inconsistent."""
     if settings.admin_auth_disabled:
         raise HTTPException(
             status_code=status.HTTP_501_NOT_IMPLEMENTED,
             detail="Session API not available when PRISM_ADMIN_AUTH_DISABLED is true.",
         )
-    user, codes, _ = load_prism_user_from_session(request, engine, settings)
+    user, codes, _ = load_user_from_session(request, engine, settings)
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -127,8 +127,8 @@ def require_permissions(*required: str):
     """Dependency factory: all listed permission codes must be present."""
 
     def _dep(
-        session: Annotated[tuple[PrismUser, set[str]], Depends(require_prism_session)],
-    ) -> tuple[PrismUser, set[str]]:
+        session: Annotated[tuple[User, set[str]], Depends(require_prism_session)],
+    ) -> tuple[User, set[str]]:
         user, codes = session
         missing = set(required) - codes
         if missing:

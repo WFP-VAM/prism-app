@@ -1,6 +1,12 @@
 # PRISM API
 
-The PRISM API is a lightweight API to calculate zonal statistics.
+The PRISM API encompasses a broad set of capabilities:
+- The PRISM Admin Console (CIAM OIDC authentication)
+- Zonal statistics — aggregate rasters over polygons
+- Raster GeoTIFF generation from STAC-backed sources
+- Alerts REST API and related anticipatory-action records
+- Kobo form metadata and responses, HDC chart data, ACLED pulls, and Google Floods
+- Report downloads and server-side map export (merged PDF or ZIP of PNGs)
 
 ## Quick start (local development)
 
@@ -58,17 +64,7 @@ make db-seed
 | API docs | http://localhost/docs |
 | Admin UI | http://localhost/admin |
 
-### Environment variables
-
-There are three env var mechanisms that serve different contexts:
-
-| Mechanism | When it's used |
-|-----------|---------------|
-| `api/.env` | Environment-specific host-side values (including secrets), for local dev and Alembic |
-| Compose `environment:` | Container-side values |
-| `set_envs.sh` | Production container-side values, mainly for deploys and dev with production services |
-
----
+Environment variables and CIAM-related settings are documented in [AUTH.md](AUTH.md#environment-variables).
 
 ## Endpoints
 
@@ -80,7 +76,7 @@ For local development the same docs are served at <http://localhost/docs> once t
 
 `/admin` is gated by **CIAM OpenID Connect** (authorization-code flow, confidential client). [CIAM Documentation](https://docs.ciam.auth.wfp.org/) is the authoritative reference for OIDC flow details, client registration, and errors.
 
-> **Note:** HTTP Basic auth (`prism_app/auth.py`, `user_info` table) is separate and only gates geospatial API routes — not Admin.
+> **Note:** HTTP Basic auth (`prism_app/auth.py`, `kobo_users` table) is separate and only gates geospatial API routes — not Admin.
 
 ### Quick reference
 
@@ -90,23 +86,7 @@ For local development the same docs are served at <http://localhost/docs> once t
 | Authorization | `user_permissions` → `permissions.code` |
 | Library | [Authlib](https://docs.authlib.org/) (PKCE, token endpoint, JWKS) + joserfc |
 
-### Environment variables
-
-| Variable | Required | Description |
-|---|---|---|
-| `PRISM_OIDC_ISSUER` | Yes | `issuer` string from CIAM discovery JSON |
-| `PRISM_OIDC_CLIENT_ID` | Yes | Provided by the WFP CIAM team on client registration |
-| `PRISM_OIDC_CLIENT_SECRET` | Yes | Provided by the WFP CIAM team on client registration |
-| `PRISM_OIDC_REDIRECT_URI` | Yes | Must match the registered redirect URI |
-| `PRISM_SESSION_SECRET` | Prod | See [Session secret](#session-secret-prism_session_secret) below |
-| `PRISM_SESSION_TTL_SECONDS` | No | Cookie/session lifetime in seconds (default: `604800` — one week) |
-| `PRISM_OIDC_SCOPES` | No | Space-separated scopes (default: `openid profile email`) |
-| `PRISM_OIDC_AUTHORIZE_PROMPT` | No | Optional `prompt` param on the authorize URL |
-| `PRISM_OIDC_POST_LOGOUT_REDIRECT_URI` | No | Return URL after CIAM logout; must be registered |
-| `PRISM_ACCESS_SUPPORT_EMAIL` | No | Shown on the access-denied page |
-| `PRISM_ADMIN_AUTH_DISABLED` | Dev only | Set `true` to bypass OIDC for local development |
-
-See [`.env.example`](.env.example) for a ready-to-copy template.
+OIDC and related environment variables are listed in [AUTH.md](AUTH.md#ciam-oidc-and-admin-session).
 
 ### Session secret (`PRISM_SESSION_SECRET`)
 
@@ -126,7 +106,7 @@ openssl rand -hex 32
 
 ## Alerts database migrations (Alembic)
 
-The alerts/auth PostgreSQL schema (`alert`, `user_info`, `anticipatory_action_alerts`, `users`, `permissions`, `user_permissions`, related enums) is modeled in SQLModel under `prism_app/database/`. **New schema changes use Alembic** in this directory (`alembic.ini`, `alembic/env.py`, `alembic/versions/`). The TypeORM files under `alerting/migration/` are **historical reference only** for some tables.
+The alerts/auth PostgreSQL schema (`alert`, `kobo_users`, `anticipatory_action_alerts`, `users`, `permissions`, `user_permissions`, related enums) is modeled in SQLModel under `prism_app/database/`. **New schema changes use Alembic** in this directory (`alembic.ini`, `alembic/env.py`, `alembic/versions/`). The TypeORM files under `alerting/migration/` are **historical reference only** for some tables.
 **Connection URL** is the same as the API: `PRISM_ALERTS_DATABASE_URL`, or the `POSTGRES_*` variables documented in `prism_app/database/database.py`. For local `poetry run alembic` commands, you can put `PRISM_ALERTS_DATABASE_URL` in `api/.env`; `alembic/env.py` loads that file into the process environment before connecting (unlike the shell, Python does not read `.env` by itself).
 
 From the `api/` directory:
@@ -144,7 +124,7 @@ PRISM_ALERTS_DATABASE_URL="postgresql://user:pass@host:5432/dbname" poetry run a
 poetry run alembic upgrade head
 ```
 
-Then insert the shared local-dev rows used by alerting workers and API smoke tests (Mozambique anticipatory-action metadata, a `local_dev_user` in `user_info`, and two sample `alert` rows):
+Then insert the shared local-dev rows used by alerting workers and API smoke tests (Mozambique anticipatory-action metadata, a `local_dev_user` in `kobo_users`, and two sample `alert` rows):
 
 ```bash
 poetry run python scripts/seed_alerts_db.py
@@ -198,7 +178,7 @@ SKIP_GDAL_MASK_STATS_TEST=1 PYTHONPATH=. poetry run pytest \
   prism_app/tests/test_alerts_db_integration.py -v --tb=short
 ```
 
-**Manual — Starlette Admin (read-only):** With the API up on the alerts database, open **`/admin`**, then list routes **`/admin/alert-model/list`**, **`/admin/user-info-model/list`**, **`/admin/anticipatory-action-alerts/list`**. Confirm list and detail views; create/edit/delete remain off until auth is added.
+**Manual — Starlette Admin (read-only):** With the API up on the alerts database, open **`/admin`**, then list routes **`/admin/alert-model/list`**, **`/admin/kobo-user/list`**, **`/admin/anticipatory-action-alerts/list`**. Confirm list and detail views; create/edit/delete remain off until auth is added.
 
 **Manual — Node workers:** From `alerting/`, run **`yarn alert-worker`** and one AA worker **without** `--testEmail` against a seeded dev database so the real **`pg`** pool is used (see [alerting/README.md](../alerting/README.md)).
 

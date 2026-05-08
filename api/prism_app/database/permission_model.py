@@ -79,5 +79,5 @@ class UserPermission(SQLModel, table=True):
             server_default=sa.text("now()"),
         ),
     )
-    user: "PrismUser" = Relationship()
+    user: "User" = Relationship()
     permission: Permission = Relationship()

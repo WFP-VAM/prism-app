@@ -40,7 +40,7 @@ from prism_app.auth.oidc_support import (
     verify_oidc_state,
 )
 from prism_app.auth.prism_auth_service import (
-    ensure_prism_user_for_oidc,
+    ensure_user_for_oidc,
     is_active,
     touch_last_login,
 )
@@ -302,7 +302,7 @@ async def oidc_callback(
     ciam_sub = claims["sub"]
     eng = request.app.state.admin_engine
     try:
-        user, codes = ensure_prism_user_for_oidc(eng, ciam_sub=ciam_sub, claims=claims)
+        user, codes = ensure_user_for_oidc(eng, ciam_sub=ciam_sub, claims=claims)
     except ValueError as exc:
         logger.warning(
             "OIDC user provisioning refused (bad subject): %s",

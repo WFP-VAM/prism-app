@@ -8,7 +8,7 @@ from uuid import UUID
 
 from prism_app.auth.oidc_id_token_profile import IdTokenProfileClaims
 from prism_app.database.permission_model import Permission, UserPermission
-from prism_app.database.prism_user_model import PrismUser, PrismUserStatus
+from prism_app.database.user_model import User, UserStatus
 from sqlalchemy import select
 from sqlalchemy.engine import Engine
 from sqlalchemy.exc import IntegrityError
@@ -17,12 +17,12 @@ from sqlalchemy.orm import Session
 logger = logging.getLogger(__name__)
 
 
-def ensure_prism_user_for_oidc(
+def ensure_user_for_oidc(
     engine: Engine,
     *,
     ciam_sub: str,
     claims: Mapping[str, Any],
-) -> tuple[PrismUser | None, set[str]]:
+) -> tuple[User | None, set[str]]:
     """Load user by CIAM ``sub``; JIT-insert an active row when missing.
 
     Subsequent logins refresh ``email`` / ``name`` from the same OIDC claims (CIAM-driven profile).
@@ -36,19 +36,17 @@ def ensure_prism_user_for_oidc(
     if not trimmed_sub:
         raise ValueError("ciam_sub is required and cannot be empty")
 
-    email, display_name = IdTokenProfileClaims.from_claims(
-        claims
-    ).to_prism_user_fields()
+    email, display_name = IdTokenProfileClaims.from_claims(claims).to_user_fields()
 
     with Session(engine) as session:
         try:
             user = session.scalars(
-                select(PrismUser).where(PrismUser.ciam_sub == trimmed_sub)
+                select(User).where(User.ciam_sub == trimmed_sub)
             ).first()
 
             if user is None:
                 session.add(
-                    PrismUser(
+                    User(
                         ciam_sub=trimmed_sub,
                         email=email,
                         name=display_name,
@@ -56,10 +54,10 @@ def ensure_prism_user_for_oidc(
                 )
                 session.commit()
                 user = session.scalars(
-                    select(PrismUser).where(PrismUser.ciam_sub == trimmed_sub)
+                    select(User).where(User.ciam_sub == trimmed_sub)
                 ).first()
                 if user:
-                    logger.info("JIT Prism user created uid=%s", user.id)
+                    logger.info("JIT user created uid=%s", user.id)
             else:
                 if user.email != email or user.name != display_name:
                     user.email = email
@@ -70,7 +68,7 @@ def ensure_prism_user_for_oidc(
         except IntegrityError:
             session.rollback()
             logger.warning(
-                "JIT Prism user concurrent insert; reloading by ciam_sub — %s",
+                "JIT user concurrent insert; reloading by ciam_sub — %s",
                 trimmed_sub[:80],
             )
 
@@ -82,7 +80,7 @@ def load_user_and_permissions(
     *,
     user_id: UUID | None = None,
     ciam_sub: str | None = None,
-) -> tuple[PrismUser | None, set[str]]:
+) -> tuple[User | None, set[str]]:
     """Return the user row and set of permission codes (empty if missing user).
 
     Either ``user_id`` or ``ciam_sub`` must be provided.
@@ -92,10 +90,10 @@ def load_user_and_permissions(
 
     with Session(engine) as session:
         if user_id is not None:
-            user = session.get(PrismUser, user_id)
+            user = session.get(User, user_id)
         else:
             user = session.scalars(
-                select(PrismUser).where(PrismUser.ciam_sub == ciam_sub)
+                select(User).where(User.ciam_sub == ciam_sub)
             ).first()
         if user is None:
             return None, set()
@@ -112,7 +110,7 @@ def touch_last_login(engine: Engine, user_id: UUID) -> None:
     from datetime import datetime, timezone
 
     with Session(engine) as session:
-        user = session.get(PrismUser, user_id)
+        user = session.get(User, user_id)
         if user is None:
             return
         user.last_login_at = datetime.now(timezone.utc)
@@ -120,10 +118,10 @@ def touch_last_login(engine: Engine, user_id: UUID) -> None:
         session.commit()
 
 
-def is_active(user: PrismUser | None) -> bool:
+def is_active(user: User | None) -> bool:
     if user is None or user.status is None:
         return False
     s = user.status
     if isinstance(s, str):
-        return s == PrismUserStatus.active.value
-    return s == PrismUserStatus.active
+        return s == UserStatus.active.value
+    return s == UserStatus.active
