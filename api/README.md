@@ -175,7 +175,7 @@ Async batch flow (DB-backed **`map_export_jobs`**, worker, S3 or local artifacts
 - **`POST /export-map/jobs`** — body is **`MapExportRequestModel`** (same as sync export). Returns **`job_id`**, **`status`**, **`origin_url`** (derived from the first map URL’s host), dedupe hint. **No Basic auth** on these routes; treat **`job_id`** as the capability for **`GET`**.
 - **`GET /export-map/jobs/{id}`** — status, presigned **`download_url`** (S3) or **`local_artifact_path`** (dev **`file://`** artifacts), or **`error`**.
 
-**Worker:** `python -m prism_app.worker.export_map_worker` (see **`docker-compose.yml`** / **`docker-compose.deploy.yml`** **`export_map_worker`**). Needs **`PRISM_ALERTS_DATABASE_URL`** and either **`EXPORT_MAP_S3_BUCKET`** or **`EXPORT_MAP_LOCAL_OUTPUT_DIR`**. Optional **`EXPORT_JOB_POLL_IDLE_SEC`**.
+**Worker:** `python -m prism_app.worker.export_map_worker` (see **`docker-compose.yml`** / **`docker-compose.deploy.yml`** **`export_map_worker`**). Needs **`PRISM_ALERTS_DATABASE_URL`** and either **`EXPORT_MAP_S3_BUCKET`** or **`EXPORT_MAP_LOCAL_OUTPUT_DIR`**. Poll idle interval is fixed in code (2s).
 
 **Migrations:** Alembic revision **`map_export_jobs_001`** (after **`prism_alerts_baseline`**) creates **`map_export_jobs`**.
 

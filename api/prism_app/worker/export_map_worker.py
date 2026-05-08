@@ -4,6 +4,7 @@ Run: ``python -m prism_app.worker.export_map_worker``
 
 Set ``EXPORT_MAP_S3_BUCKET`` for S3, **or** ``EXPORT_MAP_LOCAL_OUTPUT_DIR`` for local files
 (``file:///…`` URI in DB; dev / Docker volume — do not use in production).
+When the queue is empty, the worker sleeps a fixed 2s before polling again.
 """
 
 from __future__ import annotations
@@ -25,6 +26,9 @@ from prism_app.utils import utc_now
 from sqlmodel import Session
 
 logger = logging.getLogger(__name__)
+
+# Seconds to sleep when no queued map_export_jobs row is available.
+_POLL_IDLE_SEC = 2.0
 
 
 async def run_export_job(
@@ -111,7 +115,6 @@ def _mark_job_failed(session: Session, job_id: str, exc: BaseException) -> None:
 async def amain() -> None:
     bucket = os.environ.get("EXPORT_MAP_S3_BUCKET", "").strip()
     local_raw = os.environ.get("EXPORT_MAP_LOCAL_OUTPUT_DIR", "").strip()
-    idle_sec = float(os.getenv("EXPORT_JOB_POLL_IDLE_SEC", "2"))
 
     if bucket:
         local_dir: Path | None = None
@@ -131,7 +134,7 @@ async def amain() -> None:
 
     factory = get_export_jobs_session_factory()
     logger.info(
-        "export_map_worker polling map_export_jobs (idle back-off %ss)", idle_sec
+        "export_map_worker polling map_export_jobs (idle back-off %ss)", _POLL_IDLE_SEC
     )
 
     def _claim_one_job_id() -> str | None:
@@ -150,7 +153,7 @@ async def amain() -> None:
             logger.exception("claim_next_queued_map_export_job failed")
 
         if not job_id:
-            await asyncio.sleep(idle_sec)
+            await asyncio.sleep(_POLL_IDLE_SEC)
             continue
 
         work = factory()
