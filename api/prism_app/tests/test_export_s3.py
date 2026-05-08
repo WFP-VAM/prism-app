@@ -64,9 +64,7 @@ def test_normalize_export_map_s3_object_prefix(raw: str | None, want: str) -> No
         ("  s3://b/p  ", "b", "p"),
     ],
 )
-def test_parse_export_map_s3_bucket_env(
-    raw: str, bucket: str, prefix: str
-) -> None:
+def test_parse_export_map_s3_bucket_env(raw: str, bucket: str, prefix: str) -> None:
     assert parse_export_map_s3_bucket_env(raw) == (bucket, prefix)
 
 
