@@ -182,9 +182,11 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const availableDates = useSelector(availableDatesSelector);
   const selectableLayers = Object.values(LayerDefinitions).filter(
     l =>
+      // temporarily limit to WMS to limit scope and edge cases
+      l.type === 'wms' &&
       isDateCompatibleLayer(l, availableDates) &&
-      countryLayerIds.has(l.id) &&
-      !(l.type === 'point_data' && l.authRequired),
+      countryLayerIds.has(l.id),
+    // !(l.type === 'point_data' && l.authRequired),
   );
   const [selectedLayerId, setSelectedLayerId] = useState<LayerKey | null>(null);
 
