@@ -19,7 +19,10 @@ import { AdminCodeString, LayerKey } from 'config/types';
 import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
 import useResizeObserver from 'utils/useOnResizeObserver';
 import { availableDatesSelector } from 'context/serverStateSlice';
-import { getPossibleDatesForLayer } from 'utils/server-utils';
+import {
+  DateCompatibleLayer,
+  getPossibleDatesForLayer,
+} from 'utils/server-utils';
 import { useBoundaryData } from 'utils/useBoundaryData';
 import { EXPORT_API_URL } from 'utils/constants';
 import {
@@ -181,7 +184,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   );
   const availableDates = useSelector(availableDatesSelector);
   const selectableLayers = Object.values(LayerDefinitions).filter(
-    l =>
+    (l): l is DateCompatibleLayer =>
       // temporarily limit to WMS to limit scope and edge cases
       l.type === 'wms' &&
       isDateCompatibleLayer(l, availableDates) &&
