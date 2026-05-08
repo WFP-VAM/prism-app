@@ -22,7 +22,7 @@ import MapExportLayout from 'components/MapExport/MapExportLayout';
 import useLayers from 'utils/layers-utils';
 import useResizeObserver from 'utils/useOnResizeObserver';
 import { getLayersCoverage } from 'utils/server-utils';
-import { SelectedDateTimestamp } from 'config/types';
+import { LayerType, SelectedDateTimestamp } from 'config/types';
 
 /**
  * ExportView is a component that displays a map and allows the user to export it as a PDF or ZIP file.
@@ -69,6 +69,18 @@ const ExportView = memo(() => {
 
   // Load layers from URL params - useLayers already handles this
   const { selectedLayers, selectedLayersWithDateSupport } = useLayers();
+
+  // Match `PrintPreview` / batch export: render data layers first, then boundaries.
+  // `layerOrdering` in map state places boundaries before WMS in the sorted array,
+  // which maps to WMS above boundaries in GL stack—exported PNGs then hide lines under raster.
+  const selectedLayersForExport = useMemo(() => {
+    const nonBoundary = selectedLayers.filter(l => l.type !== 'boundary');
+    const orderedBoundaries = getDisplayBoundaryLayers()
+      .reverse()
+      .map(bl => selectedLayers.find(l => l.id === bl.id))
+      .filter((l): l is LayerType => l != null);
+    return [...nonBoundary, ...orderedBoundaries];
+  }, [selectedLayers]);
 
   // Get boundary layer for mask computation
   const boundaryLayer = getBoundaryLayerSingleton();
@@ -225,7 +237,7 @@ const ExportView = memo(() => {
         bottomLogo={bottomLogo}
         bottomLogoScale={exportParams.bottomLogoScale}
         adminLevelLayersWithFillPattern={adminLevelLayersWithFillPattern}
-        selectedLayers={selectedLayers}
+        selectedLayers={selectedLayersForExport}
         layersCoverage={layersCoverage}
         signalExportReady
       />
