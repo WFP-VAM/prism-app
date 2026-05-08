@@ -2,8 +2,10 @@
 
 Run: ``python -m prism_app.worker.export_map_worker``
 
-Set ``EXPORT_MAP_S3_BUCKET`` for S3, **or** ``EXPORT_MAP_LOCAL_OUTPUT_DIR`` for local files
+Set ``EXPORT_MAP_S3_BUCKET`` for S3 (bare name, ``bucket/prefix``, or ``s3://bucket/prefix``),
+**or** ``EXPORT_MAP_LOCAL_OUTPUT_DIR`` for local files
 (``file:///…`` URI in DB; dev / Docker volume — do not use in production).
+If neither is set, defaults to ``DEFAULT_EXPORT_MAP_S3_BUCKET`` (see ``export_s3``).
 When the queue is empty, the worker sleeps a fixed 2s before polling again.
 """
 
@@ -20,7 +22,12 @@ from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.export_jobs.claim import claim_next_queued_map_export_job
 from prism_app.export_jobs.db import get_export_jobs_session_factory
 from prism_app.export_maps import export_maps
-from prism_app.export_s3 import put_map_export_bytes, put_map_export_bytes_local
+from prism_app.export_s3 import (
+    DEFAULT_EXPORT_MAP_S3_BUCKET,
+    parse_export_map_s3_bucket_env,
+    put_map_export_bytes,
+    put_map_export_bytes_local,
+)
 from prism_app.models import MapExportRequestModel
 from prism_app.utils import utc_now
 from sqlmodel import Session
@@ -37,6 +44,7 @@ async def run_export_job(
     *,
     local_output_dir: Path | None = None,
     s3_bucket: str | None = None,
+    s3_object_prefix: str = "",
     s3_client: Any | None = None,
 ) -> None:
     job = session.get(MapExportJob, job_id)
@@ -83,6 +91,7 @@ async def run_export_job(
             kind,
             file_bytes,
             s3_client,
+            object_prefix=s3_object_prefix,
         )
 
     job = session.get(MapExportJob, job_id)
@@ -113,13 +122,22 @@ def _mark_job_failed(session: Session, job_id: str, exc: BaseException) -> None:
 
 
 async def amain() -> None:
-    bucket = os.environ.get("EXPORT_MAP_S3_BUCKET", "").strip()
     local_raw = os.environ.get("EXPORT_MAP_LOCAL_OUTPUT_DIR", "").strip()
+    if "EXPORT_MAP_S3_BUCKET" not in os.environ and not local_raw:
+        bucket_raw = DEFAULT_EXPORT_MAP_S3_BUCKET
+    else:
+        bucket_raw = os.environ.get("EXPORT_MAP_S3_BUCKET", "").strip()
+    bucket, s3_prefix = parse_export_map_s3_bucket_env(bucket_raw)
 
     if bucket:
         local_dir: Path | None = None
         s3 = boto3.client("s3")
-        logger.info("export_map_worker S3 mode (EXPORT_MAP_S3_BUCKET=%s)", bucket)
+        logger.info(
+            "export_map_worker S3 mode (bucket=%s prefix=%s raw=%s)",
+            bucket,
+            s3_prefix or "(none)",
+            bucket_raw,
+        )
     elif local_raw:
         local_dir = Path(local_raw).resolve()
         s3 = None
@@ -164,6 +182,7 @@ async def amain() -> None:
                     job_id,
                     local_output_dir=local_dir,
                     s3_bucket=bucket if bucket else None,
+                    s3_object_prefix=s3_prefix,
                     s3_client=s3,
                 )
             except Exception as e:

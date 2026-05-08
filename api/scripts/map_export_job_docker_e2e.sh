@@ -10,6 +10,8 @@
 #   ./scripts/map_export_job_docker_e2e.sh
 #   # or S3:
 #   export EXPORT_MAP_S3_BUCKET=your-bucket
+#   # or with object prefix:
+#   export EXPORT_MAP_S3_BUCKET=s3://your-bucket/folder
 #   ./scripts/map_export_job_docker_e2e.sh
 #
 # Env:
