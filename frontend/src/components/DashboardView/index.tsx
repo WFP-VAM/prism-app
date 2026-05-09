@@ -1,5 +1,5 @@
 import { Box, makeStyles, Button } from '@material-ui/core';
-import { VisibilityOutlined } from '@material-ui/icons';
+import { VisibilityOutlined, DescriptionOutlined } from '@material-ui/icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
@@ -17,6 +17,7 @@ import { getDashboardIndexByPath } from '../../config/utils';
 import { generateSlugFromTitle } from '../../utils/string-utils';
 import { clearAnalysisResult } from '../../context/analysisResultStateSlice';
 import { usePersistDraftDashboards } from 'hooks/usePersistDraftDashboards';
+import { downloadToFile } from 'components/MapView/utils';
 import { DashboardExportDialog } from './DashboardExport';
 import DashboardContent from './DashboardContent';
 
@@ -82,6 +83,18 @@ function DashboardView() {
     dispatch(setMode(DashboardMode.VIEW));
   };
 
+  const handleExportJSON = () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { selectedDashboardIndex, maps, ...dashboard } = dashboardConfig;
+    const exportData = [{ ...dashboard, isDraft: undefined }];
+    const filename = `${dashboard.path}_${Date.now()}`;
+    downloadToFile(
+      { content: JSON.stringify(exportData, null, 2), isUrl: false },
+      filename,
+      'application/json',
+    );
+  };
+
   const handleClosePreview = () => {
     dispatch(setMode(DashboardMode.EDIT));
   };
@@ -107,14 +120,24 @@ function DashboardView() {
       {mode === DashboardMode.EDIT && (
         <Box className={classes.toolbar}>
           <Button
-            variant="outlined"
+            variant="text"
             color="primary"
             startIcon={<VisibilityOutlined />}
             onClick={handlePreviewClick}
-            className={classes.previewButton}
+            className={classes.toolbarButton}
             size="medium"
           >
             {t('Preview Dashboard')}
+          </Button>
+          <Button
+            variant="outlined"
+            color="primary"
+            startIcon={<DescriptionOutlined />}
+            onClick={handleExportJSON}
+            className={classes.toolbarButton}
+            size="medium"
+          >
+            {t('Export JSON')}
           </Button>
         </Box>
       )}
@@ -215,11 +238,11 @@ const useStyles = makeStyles(() => ({
     padding: '12px 16px',
     display: 'flex',
     justifyContent: 'center',
+    gap: '8px',
     zIndex: 1400,
   },
-  previewButton: {
+  toolbarButton: {
     textTransform: 'none',
-    fontWeight: 500,
   },
   previewDialog: {
     '& .MuiDialog-paper': {
