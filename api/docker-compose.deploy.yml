@@ -61,3 +61,28 @@ services:
     # adding a DNS to allow self lookup of the api
     dns:
       - 8.8.8.8
+
+  export_map_worker:
+    container_name: "export_map_worker"
+    build:
+      context: .
+      dockerfile: Dockerfile.export-map-worker
+    shm_size: "2gb"
+    networks:
+      - traefik_default
+      - default
+    environment:
+      - BROWSER_POOL_SIZE=1
+      - PRISM_ALERTS_DATABASE_URL=${PRISM_ALERTS_DATABASE_URL:?"Provide a URL for the alerts database."}
+      # Default URI must stay aligned with DEFAULT_EXPORT_MAP_S3_BUCKET in export_s3.py
+      - EXPORT_MAP_S3_BUCKET=${EXPORT_MAP_S3_BUCKET:-s3://prism-wfp/batch-maps}
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-${VECTOR_STORE_DEFAULT_REGION:-}}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
+    command:
+      - python
+      - -m
+      - prism_app.worker.export_map_worker
+    restart: always
+    dns:
+      - 8.8.8.8
