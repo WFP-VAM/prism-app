@@ -28,7 +28,7 @@ export VECTOR_STORE_SECRET_ACCESS_KEY=$(aws secretsmanager get-secret-value     
 export VECTOR_STORE_DEFAULT_REGION=$(aws secretsmanager get-secret-value     --secret-id PRISM_AWS_S3_CREDENTIALS | jq .SecretString | jq fromjson | jq -r .AWS_DEFAULT_REGION)
 
 # Map batch export (worker). ``EXPORT_MAP_S3_BUCKET`` in secret: bare bucket, ``s3://bucket/prefix``, etc.
-export EXPORT_MAP_S3_BUCKET="$(aws secretsmanager get-secret-value --secret-id PRISM_EXPORT_MAP_S3_BUCKET | jq -r .SecretString | jq fromjson | jq -r .PRISM_EXPORT_MAP_S3_BUCKET)"
+export EXPORT_MAP_S3_BUCKET="$(aws secretsmanager get-secret-value --secret-id PRISM_EXPORT_MAP_S3_BUCKET | jq .SecretString | jq fromjson | jq -r .PRISM_EXPORT_MAP_S3_BUCKET)"
 
 export HOSTNAME=prism-api.ovio.org
 export INFO_EMAIL=info@ovio.org
