@@ -17,9 +17,11 @@ services:
     ports:
       - "80:80"
 
-  # Map batch export worker (map_export_jobs).
+  # Map batch export worker (map_export_jobs). Slim image: no GDAL/raster stack.
   export_map_worker:
-    build: ./
+    build:
+      context: ./
+      dockerfile: Dockerfile.export-map-worker
     shm_size: "2gb"
     volumes:
       - "./cache:/cache:rw"
@@ -32,4 +34,4 @@ services:
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
       - BROWSER_POOL_SIZE=1
-    command: ["/.venv/bin/python", "-m", "prism_app.worker.export_map_worker"]
+    command: ["python", "-m", "prism_app.worker.export_map_worker"]

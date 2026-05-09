@@ -66,7 +66,7 @@ services:
     container_name: "export_map_worker"
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.export-map-worker
     shm_size: "2gb"
     networks:
       - traefik_default
@@ -80,7 +80,7 @@ services:
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
     command:
-      - /.venv/bin/python
+      - python
       - -m
       - prism_app.worker.export_map_worker
     restart: always

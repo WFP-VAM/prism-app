@@ -175,6 +175,8 @@ Async batch flow (DB-backed **`map_export_jobs`**, worker, S3 or local artifacts
 - **`POST /export-map/jobs`** — body is **`MapExportRequestModel`** (same as sync export). Returns **`job_id`**, **`status`**, **`origin_url`** (derived from the first map URL’s host), dedupe hint. **No Basic auth** on these routes; treat **`job_id`** as the capability for **`GET`**.
 - **`GET /export-map/jobs/{id}`** — status, presigned **`download_url`** (S3) or **`local_artifact_path`** (dev **`file://`** artifacts), or **`error`**.
 
+**Worker image:** **`Dockerfile.export-map-worker`** ( **`python:3.12-slim-bookworm`** + Playwright/Chromium + pinned **`requirements-export-map-worker.txt`**). No GDAL/rasterio/geopandas/STAC stack — smaller/faster pull than the main API image **`Dockerfile`** ( **osgeo/gdal** ). Bump pip pins when you change **`pyproject.toml`** / **`poetry.lock`** for packages listed in that requirements file.
+
 **Worker:** `python -m prism_app.worker.export_map_worker` (see **`docker-compose.yml`** / **`docker-compose.deploy.yml`** **`export_map_worker`**). Needs **`PRISM_ALERTS_DATABASE_URL`** and **`EXPORT_MAP_S3_BUCKET`** (optional forms: bare bucket, `bucket/prefix`, `s3://bucket/prefix`) **or** **`EXPORT_MAP_LOCAL_OUTPUT_DIR`**. If neither bucket nor local dir is set, the worker uses **`DEFAULT_EXPORT_MAP_S3_BUCKET`** in **`export_s3`** (`s3://prism-wfp/batch-maps`). **`docker-compose.deploy.yml`** uses the same URI as the Compose default when **`EXPORT_MAP_S3_BUCKET`** is unset. Poll idle interval is fixed in code (2s).
 
 **Migrations:** Alembic revision **`map_export_jobs_001`** (after **`prism_alerts_baseline`**) creates **`map_export_jobs`**.
