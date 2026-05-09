@@ -229,7 +229,12 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     }
   }, [availableCadences, cadence]);
 
-  const shouldEnableBatchMaps = selectedLayersWithDateSupport.length > 0;
+  const shouldEnableBatchMaps =
+    // selectedLayersWithDateSupport.length > 0 &&
+    // selectedLayersWithDateSupport.every(
+    //   layer => layer.type === 'wms' && (layer.coverageWindow || layer.validity),
+    // );
+    false; // Temporarily disable batch maps;
 
   const shouldShowMultiLayerWarning = selectedLayersWithDateSupport.length > 1;
 
