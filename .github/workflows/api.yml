@@ -92,6 +92,35 @@ jobs:
           sys.exit(1)
           PY
 
+  # Trivy: OS + language packages inside the built images (pip-audit above is Poetry-only).
+  docker_image_cve_scan:
+    name: Docker CVE scan (${{ matrix.image_label }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image_label: api
+            dockerfile: Dockerfile
+            image_tag: prism-ci-api:trivy
+          - image_label: export-map-worker
+            dockerfile: Dockerfile.export-map-worker
+            image_tag: prism-ci-export-map-worker:trivy
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build ${{ matrix.image_label }} image
+        run: docker build -f api/${{ matrix.dockerfile }} -t ${{ matrix.image_tag }} api
+      - name: Trivy vulnerability scan
+        uses: aquasecurity/trivy-action@0.36.0
+        with:
+          scan-type: image
+          image-ref: ${{ matrix.image_tag }}
+          vuln-type: os,library
+          severity: CRITICAL,HIGH
+          exit-code: "1"
+          format: table
+
   api_build:
     name: build and test api
     runs-on: ubuntu-latest
