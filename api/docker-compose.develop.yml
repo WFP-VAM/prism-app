@@ -2,6 +2,8 @@ services:
   api:
     volumes:
       - ./prism_app:/prism_app
+      - ./alembic.ini:/alembic.ini:ro
+      - ./alembic:/alembic:ro
       # Use these to run the app in development mode and update depedencies
       - ./pyproject.toml:/pyproject.toml
       - ./poetry.lock:/poetry.lock

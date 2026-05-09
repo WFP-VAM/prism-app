@@ -7,6 +7,10 @@ build:
 api:
 	docker compose -f docker-compose.yml -f docker-compose.develop.yml up
 
+# Alerts DB migrations inside the dev API container (start stack first: make api).
+db-migrate:
+	docker compose -f docker-compose.yml -f docker-compose.develop.yml exec -T api bash -c "cd / && poetry run alembic -c /alembic.ini upgrade head"
+
 deploy:
 	docker network create traefik_default || true
 	source set_envs.sh && docker compose build && docker compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
