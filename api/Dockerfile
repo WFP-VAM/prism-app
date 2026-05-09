@@ -69,6 +69,8 @@ RUN --mount=type=cache,target=/var/lib/apt \
 
 # keep this copy towards the end to help with caching previous layers
 COPY ./prism_app /prism_app
+COPY ./alembic.ini /alembic.ini
+COPY ./alembic /alembic
 
 WORKDIR /prism_app/
 

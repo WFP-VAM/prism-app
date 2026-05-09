@@ -4,6 +4,8 @@ services:
     volumes:
       - "./cache:/cache:rw"
       - ./prism_app:/prism_app:ro
+      - ./alembic.ini:/alembic.ini:ro
+      - ./alembic:/alembic:ro
     environment:
       - WORKERS_PER_CORE=1
       # External services credentials
@@ -34,4 +36,4 @@ services:
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
       - BROWSER_POOL_SIZE=1
-    command: ["python", "-m", "prism_app.worker.export_map_worker"]
+    command: [ "python", "-m", "prism_app.worker.export_map_worker" ]
