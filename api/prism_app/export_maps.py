@@ -25,6 +25,9 @@ logger = logging.getLogger(__name__)
 # Timeouts
 PAGE_TIMEOUT: Final[int] = 60000
 PRISM_READY_TIMEOUT: Final[int] = 60000
+# After PRISM_READY, brief pause so WMS/raster composites can finish painting (ms).
+# TODO - remove if not needed after fixes to MapLayout in the frontend.
+EXPORT_MAP_POST_READY_MS = 0
 
 # Viewport settings
 BASE_WIDTH: Final[int] = 1200
@@ -199,6 +202,9 @@ async def render_single_map(
                     f"All {MAX_RENDER_RETRIES} render attempts failed for {url}"
                 )
                 raise
+
+        if EXPORT_MAP_POST_READY_MS > 0:
+            await asyncio.sleep(EXPORT_MAP_POST_READY_MS / 1000.0)
 
         # Capture screenshot or PDF
         if render_format == "pdf":
