@@ -5,9 +5,7 @@ from __future__ import annotations
 from typing import Any, Final
 
 # Default frontend host for export-job tests; override via base_url kwarg or env in CI if needed.
-MAP_EXPORT_FIXTURE_BASE_URL: Final[str] = (
-    "https://staging-prism-frontend--1848-6327fmyc.web.app"
-)
+MAP_EXPORT_FIXTURE_BASE_URL: Final[str] = "https://prism.moz.wfp.org"
 
 # Required non-defaults vs useExportParams: bounds+zoom (viewport), aspectRatio=Auto (else 4:3),
 # title template, fullLayerDescription + bottomLogoVisibility (toggle defaults differ).
