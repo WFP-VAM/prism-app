@@ -6,7 +6,7 @@ FROM ghcr.io/osgeo/gdal:ubuntu-full-3.11.1
 
 ENV PYTHONPATH=/
 
-ENV POETRY_VERSION=2.2.1
+ENV POETRY_VERSION=2.3.3
 # install poetry in this location
 ENV POETRY_HOME="/opt/poetry"
 
@@ -41,8 +41,8 @@ RUN --mount=type=cache,target=/var/cache/apt \
 RUN --mount=type=cache,target=/root/.cache \
     poetry install
 
-# Upgrade pip in the venv to address CVE-2026-1703 (pip 25.3 → 26.0)
-RUN poetry run pip install --upgrade 'pip>=26.0'
+# Upgrade pip + tooling (CVE-2026-1703 pip, CVE-2026-24049 wheel, CVE-2026-23949 jaraco.context via setuptools vendor refresh)
+RUN poetry run pip install --upgrade 'pip>=26.0' 'setuptools>=82.0.0' 'wheel>=0.46.2' 'jaraco.context>=6.1.0'
 
 # we must run the playwright install command without mounting the cache, as it seems
 # that installed binaries end up being removed from the image if the cache is used
@@ -53,6 +53,19 @@ RUN --mount=type=cache,target=/root/.cache \
     --mount=type=cache,target=/var/lib/apt \
     --mount=type=cache,target=/var/cache/apt \
     DEBIAN_FRONTEND=noninteractive poetry run playwright install-deps
+
+# Apply security updates (e.g. GnuPG CVE-2025-68973, libtiff CVE-2025-9900); drop build-only headers
+# (linux-libc-dev); remove GStreamer "bad" codecs not required for headless map export.
+RUN --mount=type=cache,target=/var/lib/apt \
+    --mount=type=cache,target=/var/cache/apt \
+    DEBIAN_FRONTEND=noninteractive apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y upgrade && \
+    DEBIAN_FRONTEND=noninteractive apt-get purge -y \
+      build-essential python3-dev linux-libc-dev libpq-dev \
+      gstreamer1.0-plugins-bad libgstreamer-plugins-bad1.0-0 && \
+    DEBIAN_FRONTEND=noninteractive apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # keep this copy towards the end to help with caching previous layers
 COPY ./prism_app /prism_app

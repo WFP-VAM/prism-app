@@ -17,13 +17,25 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements-export-map-worker.txt /
-RUN pip install --no-cache-dir --upgrade 'pip>=26.0' \
-    && pip install --no-cache-dir -r /requirements-export-map-worker.txt
+RUN pip install --no-cache-dir --upgrade 'pip>=26.0' 'setuptools>=82.0.0' 'wheel>=0.46.2' 'jaraco.context>=6.1.0' \
+    && pip install --no-cache-dir -r /requirements-export-map-worker.txt \
+    && pip install --no-cache-dir --upgrade 'setuptools>=82.0.0' 'wheel>=0.46.2'
 
 # Browser + OS deps (same pattern as main api/Dockerfile)
 RUN playwright install chromium \
     && playwright install-deps chromium \
-    && rm -rf /root/.cache/ms-playwright/.links \
+    && rm -rf /root/.cache/ms-playwright/.links
+
+# Security updates + trim packages not needed for headless Chromium (Xvfb/Xorg CVE noise,
+# dev headers, optional GStreamer "bad" codecs).
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get -y upgrade \
+    && DEBIAN_FRONTEND=noninteractive apt-get purge -y \
+         linux-libc-dev \
+         gstreamer1.0-plugins-bad libgstreamer-plugins-bad1.0-0 \
+         xvfb xserver-common \
+    && DEBIAN_FRONTEND=noninteractive apt-get autoremove -y \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 COPY ./prism_app /prism_app
