@@ -119,6 +119,13 @@ exports[`renders as expected 1`] = `
             <mock-menu
               open="false"
             >
+              <mock-divider />
+              <mock-menuitem
+                classname="makeStyles-menuItem-12"
+                selected="false"
+              >
+                Import JSON
+              </mock-menuitem>
               <mock-menuitem
                 classname="makeStyles-menuItem-12"
                 selected="false"

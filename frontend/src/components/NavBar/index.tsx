@@ -20,6 +20,7 @@ import {
   TimerOutlined,
   Notifications,
   SpeedOutlined,
+  PublishOutlined,
 } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -64,6 +65,13 @@ function NavBar() {
       reportPath: dashboard.path || generateSlugFromTitle(dashboard.title),
       isDraft: dashboard.isDraft,
     })),
+    {
+      panel: Panel.Dashboard,
+      label: 'Import JSON',
+      icon: <PublishOutlined />,
+      reportPath: 'import',
+      dividerBefore: true,
+    },
     {
       panel: Panel.Dashboard,
       label: 'Create dashboard',

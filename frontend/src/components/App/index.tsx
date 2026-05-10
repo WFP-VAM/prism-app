@@ -16,6 +16,7 @@ import NavBar from 'components/NavBar';
 import MapView from 'components/MapView';
 import DashboardView from 'components/DashboardView';
 import CreateDashboardView from 'components/CreateDashboardView';
+import ImportDashboardView from 'components/ImportDashboardView';
 import Login from 'components/Login';
 import ExportView from 'components/ExportView';
 import muiTheme from 'muiTheme';
@@ -70,6 +71,9 @@ function DashboardRouteSwitcher() {
   const { path } = useParams<{ path?: string }>();
   if (path === 'create') {
     return <CreateDashboardView />;
+  }
+  if (path === 'import') {
+    return <ImportDashboardView />;
   }
   return <DashboardView />;
 }

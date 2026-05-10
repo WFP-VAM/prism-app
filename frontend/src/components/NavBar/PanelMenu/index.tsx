@@ -1,4 +1,5 @@
-import { Chip, Menu, MenuItem, makeStyles } from '@material-ui/core';
+import { Chip, Divider, Menu, MenuItem, makeStyles } from '@material-ui/core';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { PanelItem, Panel } from 'config/types';
 import { selectedDashboardIndexSelector } from 'context/dashboardStateSlice';
@@ -33,12 +34,11 @@ function PanelMenu({
   const selectedDashboardIndex = useSelector(selectedDashboardIndexSelector);
 
   const getIsChildSelected = (child: PanelItem) => {
-    if (
-      panel.panel === Panel.Dashboard &&
-      child.reportIndex !== undefined &&
-      selected === Panel.Dashboard
-    ) {
-      return child.reportIndex === selectedDashboardIndex;
+    if (panel.panel === Panel.Dashboard && selected === Panel.Dashboard) {
+      return (
+        child.reportIndex !== undefined &&
+        child.reportIndex === selectedDashboardIndex
+      );
     }
 
     return child.panel === selected;
@@ -54,29 +54,33 @@ function PanelMenu({
       onClose={handleMenuClose}
     >
       {panel.children?.map((child: PanelItem) => (
-        <MenuItem
+        <React.Fragment
           key={
             child.reportIndex !== undefined
               ? `dashboard-${child.reportIndex}`
-              : child.panel
+              : (child.reportPath ?? child.panel)
           }
-          onClick={() => {
-            handleChildClick(child);
-            handleMenuClose();
-          }}
-          selected={getIsChildSelected(child)}
-          className={classes.menuItem}
         >
-          {t(child.label)}
-          {child.isDraft && (
-            <Chip
-              label="Draft"
-              size="small"
-              color="default"
-              className={classes.draftChip}
-            />
-          )}
-        </MenuItem>
+          {child.dividerBefore && <Divider />}
+          <MenuItem
+            onClick={() => {
+              handleChildClick(child);
+              handleMenuClose();
+            }}
+            selected={getIsChildSelected(child)}
+            className={classes.menuItem}
+          >
+            {t(child.label)}
+            {child.isDraft && (
+              <Chip
+                label="Draft"
+                size="small"
+                color="default"
+                className={classes.draftChip}
+              />
+            )}
+          </MenuItem>
+        </React.Fragment>
       ))}
     </Menu>
   );

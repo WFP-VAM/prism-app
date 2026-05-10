@@ -832,6 +832,7 @@ export type PanelItem = {
   reportIndex?: number;
   reportPath?: string;
   isDraft?: boolean;
+  dividerBefore?: boolean;
 };
 
 export enum Panel {
