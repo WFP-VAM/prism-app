@@ -902,12 +902,15 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
               <Button
                 variant="contained"
                 color="primary"
-                component="a"
-                href={batchExportReady?.url ?? '#'}
-                target="_blank"
-                rel="noopener noreferrer"
                 disabled={!batchExportReady}
-                onClick={handleBatchExportReadyClose}
+                onClick={() => {
+                  if (!batchExportReady) {
+                    return;
+                  }
+                  const { url } = batchExportReady;
+                  window.open(url, '_blank', 'noopener,noreferrer');
+                  handleBatchExportReadyClose();
+                }}
               >
                 {t('Download')}
               </Button>
