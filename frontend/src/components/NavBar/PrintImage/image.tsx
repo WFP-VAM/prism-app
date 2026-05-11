@@ -874,6 +874,8 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       <Modal
         open={Boolean(batchExportReady)}
         onClose={handleBatchExportReadyClose}
+        disableBackdropClick
+        disableEscapeKeyDown
         className={classes.batchExportModal}
         closeAfterTransition
         BackdropProps={{ timeout: 300 }}
