@@ -16,7 +16,7 @@ deploy:
 	source set_envs.sh && docker compose build && docker compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
 
 logs:
-	source set_envs.sh && docker compose -f docker-compose.yml -f docker-compose.deploy.yml logs --tail=500 -f
+	source set_envs.sh && docker compose -f docker-compose.yml -f docker-compose.deploy.yml logs --tail=500 -f --timestamps
 
 api-lint:
 	docker compose run --no-deps api bash -c "poetry run black ."
