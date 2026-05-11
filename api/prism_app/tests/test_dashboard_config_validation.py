@@ -10,8 +10,7 @@ from prism_app.dashboard_config_validation import (
 )
 from pydantic import ValidationError
 
-SAMPLE_DASHBOARD_ROWS = json.loads(
-    """
+SAMPLE_DASHBOARD_ROWS = json.loads("""
 [
   {
     "title": "Rainfall anomaly - 2024/2025 rainy season",
@@ -112,8 +111,7 @@ SAMPLE_DASHBOARD_ROWS = json.loads(
     ]
   }
 ]
-"""
-)
+""")
 
 
 def _sample_config_only() -> dict:
