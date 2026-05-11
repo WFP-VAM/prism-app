@@ -1,5 +1,15 @@
 const runLocally = !!process.env.REACT_APP_LOCAL;
 
+const LOCAL_EXPORT_PAGE_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]']);
+
+/** Origin embedded in map export job URLs. Backend cannot fetch loopback; use public PRISM host when UI runs on localhost. */
+export function getMapExportPageOrigin(pageUrl: URL): string {
+  if (LOCAL_EXPORT_PAGE_HOSTS.has(pageUrl.hostname)) {
+    return 'https://prism.moz.wfp.org';
+  }
+  return pageUrl.origin;
+}
+
 const DEFAULT_API_URL = runLocally
   ? 'http://localhost'
   : 'https://prism-api.ovio.org';

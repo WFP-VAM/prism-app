@@ -3,12 +3,14 @@ import {
   Button,
   Dialog,
   DialogContent,
+  Fade,
+  Modal,
+  Paper,
   Theme,
   Typography,
   createStyles,
   makeStyles,
 } from '@material-ui/core';
-import Alert from '@material-ui/lab/Alert';
 import mask from '@turf/mask';
 import html2canvas from 'html2canvas';
 import { debounce, get } from 'lodash';
@@ -58,6 +60,7 @@ import {
   ALL_ASPECT_RATIO_OPTIONS,
 } from '../../MapExport/aspectRatioConstants';
 import { useSafeTranslation } from '../../../i18n';
+import { getMapExportPageOrigin } from '../../../utils/constants';
 
 const defaultFooterText = get(appConfig, 'printConfig.defaultFooterText', '');
 
@@ -219,7 +222,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
   useEffect(() => {
     if (!open) {
-      setBatchExportReady(null);
       batchDateRangeSeededForLayerRef.current = null;
     }
   }, [open]);
@@ -539,8 +541,11 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       // extra left padding that the main map has for UI elements
       const mapBounds = previewBounds;
       const mapZoom = previewZoom;
-      // Construct URLs for each date by adding `/export` to the pathname and setting the date param
-      const { origin, pathname, search } = new URL(window.location.href);
+      // Construct URLs for each date by adding `/export` to the pathname and setting the date param.
+      // Backend must fetch these URLs; localhost UI origin is swapped for prism.moz.wfp.org.
+      const pageUrl = new URL(window.location.href);
+      const { pathname, search } = pageUrl;
+      const origin = getMapExportPageOrigin(pageUrl);
       const exportPath = `${pathname.replace(/\/$/, '')}/export`;
       const baseParams = new URLSearchParams(search);
 
@@ -620,7 +625,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         addNotification({
           type: 'info',
           message: t(
-            'Batch export started. This may take several minutes; use the download button in this window when it appears.',
+            'Batch export started. This may take several minutes; a popup will appear when the file is ready.',
           ),
         }),
       );
@@ -658,7 +663,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       dispatch(
         addNotification({
           type: 'success',
-          message: t('Batch export is ready. Use the download button in the print window.'),
+          message: t('Batch export is ready'),
         }),
       );
     } catch (error) {
@@ -751,53 +756,93 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     },
   };
 
+  const handleBatchExportReadyClose = () => {
+    setBatchExportReady(null);
+  };
+
   return (
-    <PrintConfigContext.Provider value={printContext}>
-      <Dialog
-        maxWidth="xl"
-        open={open}
-        keepMounted
-        onClose={() => handleClose()}
-        aria-labelledby="dialog-preview"
+    <>
+      <PrintConfigContext.Provider value={printContext}>
+        <Dialog
+          maxWidth="xl"
+          open={open}
+          keepMounted
+          onClose={() => handleClose()}
+          aria-labelledby="dialog-preview"
+        >
+          <DialogContent>
+            <Box className={classes.contentContainer}>
+              <PrintPreview />
+              <PrintConfig />
+            </Box>
+          </DialogContent>
+        </Dialog>
+      </PrintConfigContext.Provider>
+      <Modal
+        open={Boolean(batchExportReady)}
+        onClose={handleBatchExportReadyClose}
+        className={classes.batchExportModal}
+        closeAfterTransition
+        BackdropProps={{ timeout: 300 }}
       >
-        <DialogContent>
-          {batchExportReady && (
-            <Alert severity="success" className={classes.batchExportReadyBanner}>
-              <Typography variant="body2" gutterBottom>
-                {t('Batch export is ready.')}
-              </Typography>
+        <Fade in={Boolean(batchExportReady)}>
+          <Paper
+            elevation={8}
+            className={classes.batchExportPaper}
+            role="dialog"
+            aria-labelledby="batch-export-ready-title"
+          >
+            <Typography
+              id="batch-export-ready-title"
+              variant="h6"
+              component="h2"
+              gutterBottom
+            >
+              {t('Batch export is ready')}
+            </Typography>
+            <Box className={classes.batchExportActions}>
+              <Button color="primary" onClick={handleBatchExportReadyClose}>
+                {t('Close')}
+              </Button>
               <Button
                 variant="contained"
                 color="primary"
                 component="a"
-                href={batchExportReady.url}
-                download={batchExportReady.filename}
+                href={batchExportReady?.url ?? '#'}
+                target="_blank"
                 rel="noopener noreferrer"
+                disabled={!batchExportReady}
+                onClick={handleBatchExportReadyClose}
               >
                 {t('Download')}
               </Button>
-            </Alert>
-          )}
-          <Box className={classes.contentContainer}>
-            <PrintPreview />
-            <PrintConfig />
-          </Box>
-        </DialogContent>
-      </Dialog>
-    </PrintConfigContext.Provider>
+            </Box>
+          </Paper>
+        </Fade>
+      </Modal>
+    </>
   );
 }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    batchExportReadyBanner: {
-      marginBottom: '1rem',
-      '& .MuiAlert-message': {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        gap: theme.spacing(1),
-      },
+    batchExportModal: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: theme.zIndex.modal + 100,
+    },
+    batchExportPaper: {
+      padding: theme.spacing(3),
+      maxWidth: 420,
+      outline: 'none',
+    },
+    batchExportActions: {
+      display: 'flex',
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+      gap: theme.spacing(1),
+      marginTop: theme.spacing(1),
     },
     contentContainer: {
       fontFamily: 'Roboto',
