@@ -748,7 +748,7 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.text.secondary,
     },
     gutter: {
-      marginBottom: 10,
+      marginBottom: 0,
     },
     closeButton: {
       position: 'absolute',

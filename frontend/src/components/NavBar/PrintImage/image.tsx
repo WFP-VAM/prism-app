@@ -1,9 +1,14 @@
 import {
+  Box,
+  Button,
   Dialog,
   DialogContent,
+  Theme,
+  Typography,
   createStyles,
   makeStyles,
 } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
 import mask from '@turf/mask';
 import html2canvas from 'html2canvas';
 import { debounce, get } from 'lodash';
@@ -11,7 +16,7 @@ import { jsPDF } from 'jspdf';
 import type { LngLatBounds } from 'maplibre-gl';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getFormattedDate } from 'utils/date-utils';
+import { getFormattedDate, dateWithoutTime } from 'utils/date-utils';
 import { appConfig, safeCountry, configMap } from 'config';
 import useLayers, { isWmsSelectableForBatchPrint } from 'utils/layers-utils';
 import { isBoundaryLayer } from 'utils/boundary-layers-utils';
@@ -173,11 +178,17 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     startDate: null,
     endDate: null,
   });
+  /** Reseed batch defaults when layer or batch toggle changes; avoid clobbering after user edits same layer. */
+  const batchDateRangeSeededForLayerRef = useRef<string | null>(null);
 
   const [cadence, setCadence] = useState<BatchCadence>('every-n-dekads');
   const [dekadInterval, setDekadInterval] = useState(1);
 
   const [isDownloading, setIsDownloading] = useState(false);
+  const [batchExportReady, setBatchExportReady] = useState<{
+    url: string;
+    filename: string;
+  } | null>(null);
 
   const countryLayerIds = new Set(
     Object.keys(configMap[safeCountry].rawLayers),
@@ -201,6 +212,19 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   }, [open]);
 
   useEffect(() => {
+    if (!toggles.batchMapsVisibility) {
+      batchDateRangeSeededForLayerRef.current = null;
+    }
+  }, [toggles.batchMapsVisibility]);
+
+  useEffect(() => {
+    if (!open) {
+      setBatchExportReady(null);
+      batchDateRangeSeededForLayerRef.current = null;
+    }
+  }, [open]);
+
+  useEffect(() => {
     if (selectedLayerId === null && selectableLayers.length > 0) {
       setSelectedLayerId(selectableLayers[0].id);
     }
@@ -213,6 +237,43 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         : null,
     [selectedLayerId, selectableLayers],
   );
+
+  useEffect(() => {
+    if (
+      !open ||
+      !toggles.batchMapsVisibility ||
+      !printSelectedLayer ||
+      batchDateRangeSeededForLayerRef.current === printSelectedLayer.id
+    ) {
+      return;
+    }
+    const dateItems = getPossibleDatesForLayer(
+      printSelectedLayer,
+      availableDates,
+    );
+    if (dateItems.length === 0) {
+      return;
+    }
+    const mapStart = dateRange.startDate;
+    const fromMap =
+      mapStart != null
+        ? dateItems.find(
+            item =>
+              dateWithoutTime(item.queryDate) === dateWithoutTime(mapStart) ||
+              dateWithoutTime(item.displayDate) === dateWithoutTime(mapStart),
+          )
+        : undefined;
+    const anchorItem = fromMap ?? dateItems[dateItems.length - 1];
+    const day = dateWithoutTime(anchorItem.displayDate);
+    setDateRangeForBatchMaps({ startDate: day, endDate: day });
+    batchDateRangeSeededForLayerRef.current = printSelectedLayer.id;
+  }, [
+    open,
+    toggles.batchMapsVisibility,
+    printSelectedLayer,
+    availableDates,
+    dateRange.startDate,
+  ]);
 
   const availableCadences = useMemo(() => {
     const coverageWindow = printSelectedLayer
@@ -257,11 +318,22 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       availableDates,
     );
 
-    const startOfStartDate = new Date(startDate).setUTCHours(0, 0, 0, 0);
-    const endOfEndDate = new Date(endDate).setUTCHours(23, 59, 59, 999);
+    const rangeStartDay = dateWithoutTime(startDate);
+    const rangeEndDay = dateWithoutTime(endDate);
+
+    const displayDayByQuery = new Map(
+      dateItems.map(item => [item.queryDate, item.displayDate]),
+    );
 
     const rawUniqueDates = [...new Set(dateItems.map(item => item.queryDate))]
-      .filter(d => d >= startOfStartDate && d <= endOfEndDate)
+      .filter(d => {
+        const disp = displayDayByQuery.get(d);
+        if (disp === undefined) {
+          return false;
+        }
+        const day = dateWithoutTime(disp);
+        return day >= rangeStartDay && day <= rangeEndDay;
+      })
       .sort((a, b) => a - b);
 
     const coverageWindow = printSelectedLayer.coverageWindow;
@@ -548,10 +620,12 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         addNotification({
           type: 'info',
           message: t(
-            'Batch export started. This may take several minutes; the file will download when ready.',
+            'Batch export started. This may take several minutes; use the download button in this window when it appears.',
           ),
         }),
       );
+
+      setBatchExportReady(null);
 
       const jobPayload = {
         urls: constructedUrls,
@@ -576,21 +650,15 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       const ext = format === 'pdf' ? '.pdf' : '.zip';
       const filename = `${baseFilename}${ext}`;
 
-      // Presigned S3 GET from page JS requires bucket CORS. Opening the URL in a new
-      // browsing context avoids fetch() CORS; `download` hints filename (honored when same-origin or when S3 sends Content-Disposition).
-      const link = document.createElement('a');
-      link.href = presignedArtifactUrl;
-      link.download = filename;
-      link.rel = 'noopener noreferrer';
-      link.target = '_blank';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      setBatchExportReady({
+        url: presignedArtifactUrl,
+        filename,
+      });
 
       dispatch(
         addNotification({
           type: 'success',
-          message: t('Batch download completed successfully.'),
+          message: t('Batch export is ready. Use the download button in the print window.'),
         }),
       );
     } catch (error) {
@@ -692,17 +760,45 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         onClose={() => handleClose()}
         aria-labelledby="dialog-preview"
       >
-        <DialogContent className={classes.contentContainer}>
-          <PrintPreview />
-          <PrintConfig />
+        <DialogContent>
+          {batchExportReady && (
+            <Alert severity="success" className={classes.batchExportReadyBanner}>
+              <Typography variant="body2" gutterBottom>
+                {t('Batch export is ready.')}
+              </Typography>
+              <Button
+                variant="contained"
+                color="primary"
+                component="a"
+                href={batchExportReady.url}
+                download={batchExportReady.filename}
+                rel="noopener noreferrer"
+              >
+                {t('Download')}
+              </Button>
+            </Alert>
+          )}
+          <Box className={classes.contentContainer}>
+            <PrintPreview />
+            <PrintConfig />
+          </Box>
         </DialogContent>
       </Dialog>
     </PrintConfigContext.Provider>
   );
 }
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    batchExportReadyBanner: {
+      marginBottom: '1rem',
+      '& .MuiAlert-message': {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        gap: theme.spacing(1),
+      },
+    },
     contentContainer: {
       fontFamily: 'Roboto',
       display: 'flex',
