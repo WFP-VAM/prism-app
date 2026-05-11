@@ -234,7 +234,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     // selectedLayersWithDateSupport.every(
     //   layer => layer.type === 'wms' && (layer.coverageWindow || layer.validity),
     // );
-    true; // Temporarily disable batch maps;
+    false; // Temporarily disable batch maps;
 
   const shouldShowMultiLayerWarning = selectedLayersWithDateSupport.length > 1;
 
