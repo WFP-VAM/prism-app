@@ -17,13 +17,13 @@ import os
 from pathlib import Path
 from typing import Any
 
-import boto3
 from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.export_jobs.claim import claim_next_queued_map_export_job
 from prism_app.export_jobs.db import get_export_jobs_session_factory
 from prism_app.export_maps import export_maps
 from prism_app.export_s3 import (
     DEFAULT_EXPORT_MAP_S3_BUCKET,
+    map_export_s3_client,
     parse_export_map_s3_bucket_env,
     put_map_export_bytes,
     put_map_export_bytes_local,
@@ -131,7 +131,7 @@ async def amain() -> None:
 
     if bucket:
         local_dir: Path | None = None
-        s3 = boto3.client("s3")
+        s3 = map_export_s3_client()
         logger.info(
             "export_map_worker S3 mode (bucket=%s prefix=%s raw=%s)",
             bucket,

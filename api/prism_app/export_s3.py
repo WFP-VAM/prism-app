@@ -3,10 +3,27 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 from urllib.parse import unquote, urlparse
+
+import boto3
+from botocore.config import Config
 
 # When ``EXPORT_MAP_S3_BUCKET`` is unset and ``EXPORT_MAP_LOCAL_OUTPUT_DIR`` is unset (worker).
 DEFAULT_EXPORT_MAP_S3_BUCKET = "s3://prism-wfp/batch-maps"
+
+# Region for default map-export bucket (prism-wfp). SigV4 presigns must match bucket region.
+# Callers for other buckets can pass ``region_name=...`` into ``map_export_s3_client``.
+MAP_EXPORT_S3_SIGNING_REGION = "us-east-2"
+
+# Buckets/regions often reject legacy SigV2 presigned URLs (`AWSAccessKeyId=…` query params).
+_S3_SIGV4 = Config(signature_version="s3v4")
+
+
+def map_export_s3_client(**kwargs: Any) -> Any:
+    """S3 client using AWS SigV4; default region matches ``DEFAULT_EXPORT_MAP_S3_BUCKET``."""
+    kwargs.setdefault("region_name", MAP_EXPORT_S3_SIGNING_REGION)
+    return boto3.client("s3", config=_S3_SIGV4, **kwargs)
 
 
 def parse_s3_uri(s3_uri: str) -> tuple[str, str]:
