@@ -1,4 +1,6 @@
-import { useContext, useEffect, useMemo } from 'react';
+import { cloneDeep } from 'lodash';
+import type { LngLatBounds } from 'maplibre-gl';
+import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { appConfig } from 'config';
 import { AAMarkersSelector } from 'context/anticipatoryAction/AADroughtStateSlice';
@@ -61,11 +63,16 @@ function PrintPreview() {
     return [];
   }, [selectedLayerId, printConfig?.toggles.batchMapsVisibility]);
 
-  const adminLevelLayersWithFillPattern = printSelectedLayers.filter(
-    layer =>
-      layer.type === 'admin_level_data' &&
-      (layer.fillPattern || layer.legend.some(legend => legend.fillPattern)),
-  ) as AdminLevelDataLayerProps[];
+  const adminLevelLayersWithFillPattern = useMemo(
+    () =>
+      printSelectedLayers.filter(
+        layer =>
+          layer.type === 'admin_level_data' &&
+          (layer.fillPattern ||
+            layer.legend.some(legend => legend.fillPattern)),
+      ) as AdminLevelDataLayerProps[],
+    [printSelectedLayers],
+  );
 
   const { shouldEnableBatchMaps, filteredBatchDates } = printConfig ?? {};
   const previewDate =
@@ -91,7 +98,74 @@ function PrintPreview() {
     dateRange.startDate,
   );
 
-  // Appease TS by ensuring printConfig is defined
+  const printConfigRef = useRef(printConfig);
+  printConfigRef.current = printConfig;
+
+  const mapLabelsVisibility = printConfig?.toggles.mapLabelsVisibility ?? true;
+  const mapPreviewCenter = selectedMap?.getCenter();
+  const mapPreviewZoom = selectedMap?.getZoom() ?? 1;
+
+  const processedMapStyle = useMemo(() => {
+    if (!selectedMap) {
+      return null;
+    }
+    const rawStyle = selectedMap.getStyle();
+    if (!rawStyle) {
+      return null;
+    }
+    const style = cloneDeep(rawStyle);
+    if (printSelectedLayers.length > 0) {
+      const isLayerToRemove = (layer: { id: string; type: string }) =>
+        layer.type === 'raster' || layer.id.startsWith('layer-');
+
+      const sourcesToRemove = new Set(
+        style.layers
+          .filter(isLayerToRemove)
+          .map(layer => ('source' in layer ? (layer.source as string) : null))
+          .filter(Boolean) as string[],
+      );
+
+      style.layers = style.layers.filter(layer => !isLayerToRemove(layer));
+      sourcesToRemove.forEach(sourceId => {
+        delete style.sources[sourceId];
+      });
+    }
+    if (!mapLabelsVisibility) {
+      style.layers = style.layers.filter(x => !x.id.includes('label'));
+    }
+    return style;
+  }, [selectedMap, printSelectedLayers, mapLabelsVisibility]);
+
+  const initialViewState = useMemo(
+    () => ({
+      longitude: mapPreviewCenter?.lng ?? 0,
+      latitude: mapPreviewCenter?.lat ?? 0,
+      zoom: mapPreviewZoom,
+    }),
+    [mapPreviewCenter?.lng, mapPreviewCenter?.lat, mapPreviewZoom],
+  );
+
+  const maxBounds = useMemo(
+    () => selectedMap?.getMaxBounds() ?? undefined,
+    [selectedMap],
+  );
+
+  const handlePreviewBoundsChange = useCallback(
+    (bounds: LngLatBounds, zoom: number) => {
+      printConfigRef.current?.setPreviewBounds(bounds);
+      printConfigRef.current?.setPreviewZoom(zoom);
+    },
+    [],
+  );
+
+  const handleMapDimensionsChange = useCallback(
+    (width: number, height: number) => {
+      printConfigRef.current?.setPreviewMapWidth(width);
+      printConfigRef.current?.setPreviewMapHeight(height);
+    },
+    [],
+  );
+
   if (!printConfig || !selectedMap) {
     return null;
   }
@@ -115,38 +189,7 @@ function PrintPreview() {
     footerHeight,
     bottomLogo,
     bottomLogoScale,
-    setPreviewBounds,
-    setPreviewZoom,
-    setPreviewMapWidth,
-    setPreviewMapHeight,
   } = printConfig;
-
-  // Get the style and layers of the old map
-  const selectedMapStyle = selectedMap.getStyle();
-
-  // When batch maps has a selected layer, strip all application layers from the
-  // snapshot (raster tiles and all layer- prefixed entries) leaving a pure
-  // basemap. Boundary layers and the WMS date layer are rendered via React so
-  // their ordering is explicit and not affected by side-effects on the main map
-  // (e.g. a layer with a `boundary` property that removes other boundary layers).
-  if (selectedMapStyle && printSelectedLayers.length > 0) {
-    const isLayerToRemove = (layer: { id: string; type: string }) =>
-      layer.type === 'raster' || layer.id.startsWith('layer-');
-
-    const sourcesToRemove = new Set(
-      selectedMapStyle.layers
-        .filter(isLayerToRemove)
-        .map(layer => ('source' in layer ? (layer.source as string) : null))
-        .filter(Boolean) as string[],
-    );
-
-    selectedMapStyle.layers = selectedMapStyle.layers.filter(
-      layer => !isLayerToRemove(layer),
-    );
-    sourcesToRemove.forEach(sourceId => {
-      delete selectedMapStyle.sources[sourceId];
-    });
-  }
 
   // Determine active panel for AA markers
   const activePanel =
@@ -159,10 +202,8 @@ function PrintPreview() {
     return null;
   }
 
-  if (selectedMapStyle && !toggles.mapLabelsVisibility) {
-    selectedMapStyle.layers = selectedMapStyle?.layers.filter(
-      x => !x.id.includes('label'),
-    );
+  if (!processedMapStyle) {
+    return null;
   }
 
   return (
@@ -180,13 +221,9 @@ function PrintPreview() {
         titleHeight={titleHeight}
         legendPosition={legendPosition}
         legendScale={legendScale}
-        initialViewState={{
-          longitude: selectedMap.getCenter().lng,
-          latitude: selectedMap.getCenter().lat,
-          zoom: selectedMap.getZoom(),
-        }}
-        mapStyle={selectedMapStyle}
-        maxBounds={selectedMap.getMaxBounds() ?? undefined}
+        initialViewState={initialViewState}
+        mapStyle={processedMapStyle}
+        maxBounds={maxBounds}
         invertedAdminBoundaryLimitPolygon={invertedAdminBoundaryLimitPolygon}
         printRef={printRef}
         titleRef={titleRef}
@@ -200,14 +237,8 @@ function PrintPreview() {
         selectedLayers={printSelectedLayers}
         adminLevelLayersWithFillPattern={adminLevelLayersWithFillPattern}
         layersCoverage={layersCoverage}
-        onBoundsChange={(bounds, zoom) => {
-          setPreviewBounds(bounds);
-          setPreviewZoom(zoom);
-        }}
-        onMapDimensionsChange={(width, height) => {
-          setPreviewMapWidth(width);
-          setPreviewMapHeight(height);
-        }}
+        onBoundsChange={handlePreviewBoundsChange}
+        onMapDimensionsChange={handleMapDimensionsChange}
       />
     </div>
   );

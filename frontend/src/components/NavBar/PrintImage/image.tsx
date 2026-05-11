@@ -16,7 +16,13 @@ import html2canvas from 'html2canvas';
 import { debounce, get } from 'lodash';
 import { jsPDF } from 'jspdf';
 import type { LngLatBounds } from 'maplibre-gl';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getFormattedDate, dateWithoutTime } from 'utils/date-utils';
 import { appConfig, safeCountry, configMap } from 'config';
@@ -193,14 +199,19 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     filename: string;
   } | null>(null);
 
-  const countryLayerIds = new Set(
-    Object.keys(configMap[safeCountry].rawLayers),
+  const countryLayerIds = useMemo(
+    () => new Set(Object.keys(configMap[safeCountry].rawLayers)),
+    [safeCountry],
   );
   const availableDates = useSelector(availableDatesSelector);
-  const selectableLayers = Object.values(LayerDefinitions).filter(
-    (l): l is DateCompatibleLayer =>
-      isWmsSelectableForBatchPrint(l, availableDates) &&
-      countryLayerIds.has(l.id),
+  const selectableLayers = useMemo(
+    () =>
+      Object.values(LayerDefinitions).filter(
+        (l): l is DateCompatibleLayer =>
+          isWmsSelectableForBatchPrint(l, availableDates) &&
+          countryLayerIds.has(l.id),
+      ),
+    [availableDates, countryLayerIds],
   );
   const [selectedLayerId, setSelectedLayerId] = useState<LayerKey | null>(null);
 
@@ -455,306 +466,388 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     setAdminBoundaryPolygon(masked as any);
   }, [data, selectedBoundaries, selectedBoundaries.length]);
 
-  const handleDownloadMenuClose = () => {
+  const handleDownloadMenuClose = useCallback(() => {
     setDownloadMenuAnchorEl(null);
-  };
+  }, []);
 
-  const handleDownloadMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setDownloadMenuAnchorEl(event.currentTarget);
-  };
+  const handleDownloadMenuOpen = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      setDownloadMenuAnchorEl(event.currentTarget);
+    },
+    [],
+  );
 
-  const download = (format: 'pdf' | 'jpeg' | 'png') => {
-    const filename: string = `${titleText || country}_${
-      getFormattedDate(dateRange.startDate, 'snake') || 'no_date'
-    }`;
-    const docGeneration = async () => {
-      // png is generally preferred for images containing lines and text.
-      const ext = format === 'pdf' ? 'png' : format;
-      const elem = printRef.current;
-      if (!elem) {
-        throw new Error('canvas is undefined');
-      }
-      const canvas = await html2canvas(elem);
-      const file = canvas.toDataURL(`image/${ext}`);
-      if (format === 'pdf') {
-        const orientation =
-          canvas.width > canvas.height ? 'landscape' : 'portrait';
+  const download = useCallback(
+    (format: 'pdf' | 'jpeg' | 'png') => {
+      const filename: string = `${titleText || country}_${
+        getFormattedDate(dateRange.startDate, 'snake') || 'no_date'
+      }`;
+      const docGeneration = async () => {
+        // png is generally preferred for images containing lines and text.
+        const ext = format === 'pdf' ? 'png' : format;
+        const elem = printRef.current;
+        if (!elem) {
+          throw new Error('canvas is undefined');
+        }
+        const canvas = await html2canvas(elem);
+        const file = canvas.toDataURL(`image/${ext}`);
+        if (format === 'pdf') {
+          const orientation =
+            canvas.width > canvas.height ? 'landscape' : 'portrait';
 
-        const pdf = new jsPDF({
-          orientation,
-          unit: 'px',
-          format: [canvas.width, canvas.height],
-        });
-        const pdfHeight = pdf.internal.pageSize.getHeight();
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        pdf.addImage(file, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
-        pdf.save(`${filename}.pdf`);
-      } else {
-        downloadToFile(
-          { content: file, isUrl: true },
-          filename,
-          `image/${ext}`,
-        );
-      }
-    };
-
-    try {
-      docGeneration();
-    } catch (error) {
-      console.error(error);
-    }
-
-    handleClose();
-    handleDownloadMenuClose();
-  };
-
-  const downloadBatch = async (format: 'pdf' | 'png') => {
-    const { startDate, endDate } = dateRangeForBatchMaps;
-
-    if (!startDate || !endDate) {
-      console.error('Date range not set for batch download');
-      return;
-    }
-
-    setIsDownloading(true);
-    handleDownloadMenuClose();
-
-    try {
-      if (!printSelectedLayer) {
-        console.error('No layer selected for batch download');
-        setIsDownloading(false);
-        return;
-      }
-
-      const formattedDates = filteredBatchDates.map(timestamp =>
-        getFormattedDate(timestamp, 'default'),
-      );
-
-      if (formattedDates.length === 0) {
-        console.error('No dates found in the selected range');
-        setIsDownloading(false);
-        return;
-      }
-
-      // Use preview map bounds and zoom (captured from MapExportLayout via onBoundsChange)
-      // This ensures we get the exact bounds/zoom shown in the preview, without the
-      // extra left padding that the main map has for UI elements
-      const mapBounds = previewBounds;
-      const mapZoom = previewZoom;
-      // Construct URLs for each date by adding `/export` to the pathname and setting the date param.
-      // Backend must fetch these URLs; localhost UI origin is swapped for prism.moz.wfp.org.
-      const pageUrl = new URL(window.location.href);
-      const { pathname, search } = pageUrl;
-      const origin = getMapExportPageOrigin(pageUrl);
-      const exportPath = `${pathname.replace(/\/$/, '')}/export`;
-      const baseParams = new URLSearchParams(search);
-
-      // Calculate viewport dimensions for export
-      // For 'Auto' aspect ratio, use the actual map dimensions from the preview
-      const exportDims = calculateExportDimensions(
-        mapDimensions.aspectRatio,
-        mapDimensions.aspectRatio === 'Auto'
-          ? (previewMapWidth ?? undefined)
-          : undefined,
-        mapDimensions.aspectRatio === 'Auto'
-          ? (previewMapHeight ?? undefined)
-          : undefined,
-      );
-
-      const constructedUrls = formattedDates
-        .filter((date): date is string => date !== undefined)
-        .map(date => {
-          const params = new URLSearchParams(baseParams);
-          params.set('date', date);
-          params.set('hazardLayerIds', printSelectedLayer.id);
-          params.delete('baselineLayerId');
-
-          // Map bounds and zoom
-          if (mapBounds) {
-            const bounds = `${mapBounds.getWest()},${mapBounds.getSouth()},${mapBounds.getEast()},${mapBounds.getNorth()}`;
-            params.set('bounds', bounds);
-          }
-          if (mapZoom != null) {
-            params.set('zoom', String(mapZoom));
-          }
-
-          // Print config options
-          // Map always fills viewport (100%), viewport dimensions maintain aspect ratio
-          params.set('mapWidth', '100');
-          params.set('mapHeight', '100');
-          // Handle aspect ratio - could be string or object
-          if (isCustomRatio(mapDimensions.aspectRatio)) {
-            params.set('aspectRatio', 'Custom');
-            params.set('customWidth', String(mapDimensions.aspectRatio.w));
-            params.set('customHeight', String(mapDimensions.aspectRatio.h));
-          } else {
-            params.set('aspectRatio', mapDimensions.aspectRatio);
-          }
-          params.set('title', titleText);
-          params.set('footer', footerText);
-          params.set('footerTextSize', String(footerTextSize));
-
-          // Position/scale
-          params.set('logoPosition', String(logoPosition));
-          params.set('logoScale', String(logoScale));
-          params.set('legendPosition', String(legendPosition));
-          params.set('legendScale', String(legendScale));
-          params.set('bottomLogoScale', String(bottomLogoScale));
-
-          // Toggles (as JSON, excluding batchMapsVisibility)
-          const exportToggles = {
-            fullLayerDescription: toggles.fullLayerDescription,
-            countryMask: toggles.countryMask,
-            mapLabelsVisibility: toggles.mapLabelsVisibility,
-            logoVisibility: toggles.logoVisibility,
-            legendVisibility: toggles.legendVisibility,
-            footerVisibility: toggles.footerVisibility,
-            bottomLogoVisibility: toggles.bottomLogoVisibility,
-          };
-          params.set('toggles', JSON.stringify(exportToggles));
-
-          // Selected boundaries
-          if (selectedBoundaries.length > 0) {
-            params.set('selectedBoundaries', selectedBoundaries.join(','));
-          }
-
-          return `${origin}${exportPath}?${params.toString()}`;
-        });
-
-      dispatch(
-        addNotification({
-          type: 'info',
-          message: t(
-            'Batch export started. This may take several minutes; a popup will appear when the file is ready.',
-          ),
-        }),
-      );
-
-      setBatchExportReady(null);
-
-      const jobPayload = {
-        urls: constructedUrls,
-        viewportWidth: exportDims.canvasWidth,
-        viewportHeight: exportDims.canvasHeight,
-        format,
+          const pdf = new jsPDF({
+            orientation,
+            unit: 'px',
+            format: [canvas.width, canvas.height],
+          });
+          const pdfHeight = pdf.internal.pageSize.getHeight();
+          const pdfWidth = pdf.internal.pageSize.getWidth();
+          pdf.addImage(
+            file,
+            'PNG',
+            0,
+            0,
+            pdfWidth,
+            pdfHeight,
+            undefined,
+            'FAST',
+          );
+          pdf.save(`${filename}.pdf`);
+        } else {
+          downloadToFile(
+            { content: file, isUrl: true },
+            filename,
+            `image/${ext}`,
+          );
+        }
       };
 
-      const { downloadUrl: presignedArtifactUrl } =
-        await createMapExportJobAndWaitForDownloadUrl(jobPayload, {
-          pollIntervalMs: 2000,
+      try {
+        docGeneration();
+      } catch (error) {
+        console.error(error);
+      }
+
+      handleClose();
+      setDownloadMenuAnchorEl(null);
+    },
+    [titleText, country, dateRange.startDate, handleClose],
+  );
+
+  const downloadBatch = useCallback(
+    async (format: 'pdf' | 'png') => {
+      const { startDate, endDate } = dateRangeForBatchMaps;
+
+      if (!startDate || !endDate) {
+        console.error('Date range not set for batch download');
+        return;
+      }
+
+      setIsDownloading(true);
+      handleDownloadMenuClose();
+
+      try {
+        if (!printSelectedLayer) {
+          console.error('No layer selected for batch download');
+          setIsDownloading(false);
+          return;
+        }
+
+        const formattedDates = filteredBatchDates.map(timestamp =>
+          getFormattedDate(timestamp, 'default'),
+        );
+
+        if (formattedDates.length === 0) {
+          console.error('No dates found in the selected range');
+          setIsDownloading(false);
+          return;
+        }
+
+        // Use preview map bounds and zoom (captured from MapExportLayout via onBoundsChange)
+        // This ensures we get the exact bounds/zoom shown in the preview, without the
+        // extra left padding that the main map has for UI elements
+        const mapBounds = previewBounds;
+        const mapZoom = previewZoom;
+        // Construct URLs for each date by adding `/export` to the pathname and setting the date param.
+        // Backend must fetch these URLs; localhost UI origin is swapped for prism.moz.wfp.org.
+        const pageUrl = new URL(window.location.href);
+        const { pathname, search } = pageUrl;
+        const origin = getMapExportPageOrigin(pageUrl);
+        const exportPath = `${pathname.replace(/\/$/, '')}/export`;
+        const baseParams = new URLSearchParams(search);
+
+        // Calculate viewport dimensions for export
+        // For 'Auto' aspect ratio, use the actual map dimensions from the preview
+        const exportDims = calculateExportDimensions(
+          mapDimensions.aspectRatio,
+          mapDimensions.aspectRatio === 'Auto'
+            ? (previewMapWidth ?? undefined)
+            : undefined,
+          mapDimensions.aspectRatio === 'Auto'
+            ? (previewMapHeight ?? undefined)
+            : undefined,
+        );
+
+        const constructedUrls = formattedDates
+          .filter((date): date is string => date !== undefined)
+          .map(date => {
+            const params = new URLSearchParams(baseParams);
+            params.set('date', date);
+            params.set('hazardLayerIds', printSelectedLayer.id);
+            params.delete('baselineLayerId');
+
+            // Map bounds and zoom
+            if (mapBounds) {
+              const bounds = `${mapBounds.getWest()},${mapBounds.getSouth()},${mapBounds.getEast()},${mapBounds.getNorth()}`;
+              params.set('bounds', bounds);
+            }
+            if (mapZoom != null) {
+              params.set('zoom', String(mapZoom));
+            }
+
+            // Print config options
+            // Map always fills viewport (100%), viewport dimensions maintain aspect ratio
+            params.set('mapWidth', '100');
+            params.set('mapHeight', '100');
+            // Handle aspect ratio - could be string or object
+            if (isCustomRatio(mapDimensions.aspectRatio)) {
+              params.set('aspectRatio', 'Custom');
+              params.set('customWidth', String(mapDimensions.aspectRatio.w));
+              params.set('customHeight', String(mapDimensions.aspectRatio.h));
+            } else {
+              params.set('aspectRatio', mapDimensions.aspectRatio);
+            }
+            params.set('title', titleText);
+            params.set('footer', footerText);
+            params.set('footerTextSize', String(footerTextSize));
+
+            // Position/scale
+            params.set('logoPosition', String(logoPosition));
+            params.set('logoScale', String(logoScale));
+            params.set('legendPosition', String(legendPosition));
+            params.set('legendScale', String(legendScale));
+            params.set('bottomLogoScale', String(bottomLogoScale));
+
+            // Toggles (as JSON, excluding batchMapsVisibility)
+            const exportToggles = {
+              fullLayerDescription: toggles.fullLayerDescription,
+              countryMask: toggles.countryMask,
+              mapLabelsVisibility: toggles.mapLabelsVisibility,
+              logoVisibility: toggles.logoVisibility,
+              legendVisibility: toggles.legendVisibility,
+              footerVisibility: toggles.footerVisibility,
+              bottomLogoVisibility: toggles.bottomLogoVisibility,
+            };
+            params.set('toggles', JSON.stringify(exportToggles));
+
+            // Selected boundaries
+            if (selectedBoundaries.length > 0) {
+              params.set('selectedBoundaries', selectedBoundaries.join(','));
+            }
+
+            return `${origin}${exportPath}?${params.toString()}`;
+          });
+
+        dispatch(
+          addNotification({
+            type: 'info',
+            message: t(
+              'Batch export started. This may take several minutes; a popup will appear when the file is ready.',
+            ),
+          }),
+        );
+
+        setBatchExportReady(null);
+
+        const jobPayload = {
+          urls: constructedUrls,
+          viewportWidth: exportDims.canvasWidth,
+          viewportHeight: exportDims.canvasHeight,
+          format,
+        };
+
+        const { downloadUrl: presignedArtifactUrl } =
+          await createMapExportJobAndWaitForDownloadUrl(jobPayload, {
+            pollIntervalMs: 2000,
+          });
+
+        const startDateStr = getFormattedDate(startDate, 'snake');
+        const endDateStr = getFormattedDate(endDate, 'snake');
+        const cleanedTitle = (titleText || country).replace(
+          /(\s*-\s*)?\{(date|date_coverage)\}/gi,
+          '',
+        );
+        const safeTitle = sanitizeFilenamePart(cleanedTitle);
+        const baseFilename = `${safeTitle}_${startDateStr}_to_${endDateStr}`;
+        const ext = format === 'pdf' ? '.pdf' : '.zip';
+        const filename = `${baseFilename}${ext}`;
+
+        setBatchExportReady({
+          url: presignedArtifactUrl,
+          filename,
         });
 
-      const startDateStr = getFormattedDate(startDate, 'snake');
-      const endDateStr = getFormattedDate(endDate, 'snake');
-      const cleanedTitle = (titleText || country).replace(
-        /(\s*-\s*)?\{(date|date_coverage)\}/gi,
-        '',
-      );
-      const safeTitle = sanitizeFilenamePart(cleanedTitle);
-      const baseFilename = `${safeTitle}_${startDateStr}_to_${endDateStr}`;
-      const ext = format === 'pdf' ? '.pdf' : '.zip';
-      const filename = `${baseFilename}${ext}`;
+        dispatch(
+          addNotification({
+            type: 'success',
+            message: t('Batch export is ready'),
+          }),
+        );
+      } catch (error) {
+        const message =
+          error instanceof Error
+            ? t('Batch export failed: {{message}}', { message: error.message })
+            : t(
+                'Something went wrong with the batch download. Please try again.',
+              );
+        dispatch(
+          addNotification({
+            type: 'error',
+            message,
+          }),
+        );
+        console.error('Batch download failed:', error);
+      } finally {
+        setIsDownloading(false);
+      }
+    },
+    [
+      dateRangeForBatchMaps,
+      handleDownloadMenuClose,
+      printSelectedLayer,
+      filteredBatchDates,
+      previewBounds,
+      previewZoom,
+      mapDimensions,
+      titleText,
+      footerText,
+      footerTextSize,
+      logoPosition,
+      logoScale,
+      legendPosition,
+      legendScale,
+      bottomLogoScale,
+      toggles,
+      selectedBoundaries,
+      dispatch,
+      t,
+    ],
+  );
 
-      setBatchExportReady({
-        url: presignedArtifactUrl,
-        filename,
-      });
-
-      dispatch(
-        addNotification({
-          type: 'success',
-          message: t('Batch export is ready'),
-        }),
-      );
-    } catch (error) {
-      const message =
-        error instanceof Error
-          ? t('Batch export failed: {{message}}', { message: error.message })
-          : t(
-              'Something went wrong with the batch download. Please try again.',
-            );
-      dispatch(
-        addNotification({
-          type: 'error',
-          message,
-        }),
-      );
-      console.error('Batch download failed:', error);
-    } finally {
-      setIsDownloading(false);
-    }
-  };
-
-  const printContext = {
-    printConfig: {
+  const printContext = useMemo(
+    () => ({
+      printConfig: {
+        open,
+        toggles,
+        mapDimensions,
+        footerHeight,
+        selectedBoundaries,
+        setDownloadMenuAnchorEl,
+        titleText,
+        titleRef,
+        footerTextSize,
+        footerText,
+        footerRef,
+        logoPosition,
+        titleHeight,
+        logoScale,
+        legendPosition,
+        legendScale,
+        printRef,
+        invertedAdminBoundaryLimitPolygon,
+        handleClose,
+        setTitleText,
+        debounceCallback,
+        country,
+        setMapDimensions,
+        logo,
+        setLogoPosition,
+        setLogoScale,
+        bottomLogo,
+        bottomLogoScale,
+        setBottomLogoScale,
+        setToggles,
+        setLegendPosition,
+        setFooterText,
+        setFooterTextSize,
+        handleDownloadMenuOpen,
+        downloadMenuAnchorEl,
+        handleDownloadMenuClose,
+        download,
+        downloadBatch,
+        isDownloading,
+        defaultFooterText,
+        setSelectedBoundaries,
+        setLegendScale,
+        shouldEnableBatchMaps,
+        shouldShowMultiLayerWarning,
+        dateRange: dateRangeForBatchMaps,
+        setDateRange: setDateRangeForBatchMaps,
+        mapCount,
+        cadence,
+        setCadence,
+        dekadInterval,
+        setDekadInterval,
+        filteredBatchDates,
+        availableCadences,
+        disabledCadences,
+        aspectRatioOptions: ALL_ASPECT_RATIO_OPTIONS,
+        previewBounds,
+        setPreviewBounds,
+        previewZoom,
+        setPreviewZoom,
+        previewMapWidth,
+        setPreviewMapWidth,
+        previewMapHeight,
+        setPreviewMapHeight,
+        selectableLayers,
+        selectedLayerId,
+        setSelectedLayerId,
+      },
+    }),
+    [
       open,
       toggles,
       mapDimensions,
       footerHeight,
       selectedBoundaries,
-      setDownloadMenuAnchorEl,
       titleText,
-      titleRef,
       footerTextSize,
       footerText,
-      footerRef,
       logoPosition,
       titleHeight,
       logoScale,
       legendPosition,
       legendScale,
-      printRef,
       invertedAdminBoundaryLimitPolygon,
       handleClose,
-      setTitleText,
-      debounceCallback,
       country,
-      setMapDimensions,
       logo,
-      setLogoPosition,
-      setLogoScale,
       bottomLogo,
       bottomLogoScale,
-      setBottomLogoScale,
-      setToggles,
-      setLegendPosition,
-      setFooterText,
-      setFooterTextSize,
       handleDownloadMenuOpen,
       downloadMenuAnchorEl,
       handleDownloadMenuClose,
       download,
       downloadBatch,
       isDownloading,
-      defaultFooterText,
-      setSelectedBoundaries,
-      setLegendScale,
       shouldEnableBatchMaps,
       shouldShowMultiLayerWarning,
-      dateRange: dateRangeForBatchMaps,
-      setDateRange: setDateRangeForBatchMaps,
+      dateRangeForBatchMaps,
       mapCount,
       cadence,
-      setCadence,
       dekadInterval,
-      setDekadInterval,
       filteredBatchDates,
       availableCadences,
       disabledCadences,
-      aspectRatioOptions: ALL_ASPECT_RATIO_OPTIONS,
       previewBounds,
-      setPreviewBounds,
       previewZoom,
-      setPreviewZoom,
       previewMapWidth,
-      setPreviewMapWidth,
       previewMapHeight,
-      setPreviewMapHeight,
       selectableLayers,
       selectedLayerId,
-      setSelectedLayerId,
-    },
-  };
+    ],
+  );
 
   const handleBatchExportReadyClose = () => {
     setBatchExportReady(null);
