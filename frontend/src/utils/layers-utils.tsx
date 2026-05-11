@@ -102,6 +102,26 @@ export function isDateCompatibleLayer(
   return dateSupportLayerTypes.includes(layer.type);
 }
 
+/**
+ * WMS layers eligible for batch print picker. Uses Redux when dates are already
+ * loaded (`isDateCompatibleLayer`), otherwise falls back to config (`coverageWindow`
+ * / `validity`) so the dropdown is not empty before preload completes or when
+ * no hazard is on the map. Building `filteredBatchDates` still needs
+ * `getPossibleDatesForLayer` → server dates in Redux after `loadAvailableDatesForLayer`.
+ */
+export function isWmsSelectableForBatchPrint(
+  layer: LayerType,
+  serverAvailableDates: AvailableDates,
+): boolean {
+  if (layer.type !== 'wms') {
+    return false;
+  }
+  if (layer.id in serverAvailableDates) {
+    return isDateCompatibleLayer(layer, serverAvailableDates);
+  }
+  return Boolean(layer.coverageWindow || layer.validity);
+}
+
 const useLayers = () => {
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();

@@ -13,7 +13,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
 import { appConfig, safeCountry, configMap } from 'config';
-import useLayers, { isDateCompatibleLayer } from 'utils/layers-utils';
+import useLayers, { isWmsSelectableForBatchPrint } from 'utils/layers-utils';
 import { isBoundaryLayer } from 'utils/boundary-layers-utils';
 import { AdminCodeString, LayerKey } from 'config/types';
 import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
@@ -183,16 +183,10 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     Object.keys(configMap[safeCountry].rawLayers),
   );
   const availableDates = useSelector(availableDatesSelector);
-  // WMS entries need `layer.id in availableDates` for `isDateCompatibleLayer`.
-  // Until preload fills Redux (or with no hazard toggled so nothing fetched), the
-  // batch layer dropdown can be empty in dev even though LayerDefinitions has WMS layers.
   const selectableLayers = Object.values(LayerDefinitions).filter(
     (l): l is DateCompatibleLayer =>
-      // temporarily limit to WMS to limit scope and edge cases
-      l.type === 'wms' &&
-      isDateCompatibleLayer(l, availableDates) &&
+      isWmsSelectableForBatchPrint(l, availableDates) &&
       countryLayerIds.has(l.id),
-    // !(l.type === 'point_data' && l.authRequired),
   );
   const [selectedLayerId, setSelectedLayerId] = useState<LayerKey | null>(null);
 
@@ -232,12 +226,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     }
   }, [availableCadences, cadence]);
 
-  const shouldEnableBatchMaps =
-    // selectedLayersWithDateSupport.length > 0 &&
-    // selectedLayersWithDateSupport.every(
-    //   layer => layer.type === 'wms' && (layer.coverageWindow || layer.validity),
-    // );
-    true; // Temporarily disable batch maps;
+  const shouldEnableBatchMaps = true; // Temporarily disable batch maps;
 
   const shouldShowMultiLayerWarning = selectedLayersWithDateSupport.length > 1;
 
