@@ -38,6 +38,8 @@ export PRISM_SESSION_SECRET=$(aws secretsmanager get-secret-value     --secret-i
 export PRISM_SESSION_TTL_SECONDS=604800
 
 export PRISM_ENV=production
+# Map batch export (worker). ``EXPORT_MAP_S3_BUCKET`` in secret: bare bucket, ``s3://bucket/prefix``, etc.
+export EXPORT_MAP_S3_BUCKET="$(aws secretsmanager get-secret-value --secret-id PRISM_EXPORT_MAP_S3_BUCKET | jq .SecretString | jq fromjson | jq -r .PRISM_EXPORT_MAP_S3_BUCKET)"
 
 export HOSTNAME=prism-api.ovio.org
 export INFO_EMAIL=info@ovio.org

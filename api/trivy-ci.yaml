@@ -1,0 +1,13 @@
+# Used by PRISM CI Docker image scan (.github/workflows/api.yml).
+# Detailed table only — no summary table of every target (avoids rows with 0 vulns).
+table-mode:
+  - detailed
+# Do not enumerate all installed packages when none are vulnerable.
+list-all-pkgs: false
+scan:
+  scanners:
+    - vuln
+# Bookworm slim often reports CVEs with no Debian security update yet; fail only when
+# a fix exists in the distro (actionable).
+vulnerability:
+  ignore-unfixed: true
