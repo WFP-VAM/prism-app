@@ -24,7 +24,7 @@ import {
   getPossibleDatesForLayer,
 } from 'utils/server-utils';
 import { useBoundaryData } from 'utils/useBoundaryData';
-import { EXPORT_API_URL } from 'utils/constants';
+import { createMapExportJobAndWaitForDownloadUrl } from 'utils/mapExportJobsApi';
 import {
   addNotification,
   removeNotification,
@@ -544,25 +544,38 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
           return `${origin}${exportPath}?${params.toString()}`;
         });
 
-      const response = await fetch(`${EXPORT_API_URL}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          urls: constructedUrls,
-          viewportWidth: exportDims.canvasWidth,
-          viewportHeight: exportDims.canvasHeight,
-          format,
+      dispatch(
+        addNotification({
+          type: 'info',
+          message: t(
+            'Batch export started. This may take several minutes; the file will download when ready.',
+          ),
         }),
+      );
+
+      const jobPayload = {
+        urls: constructedUrls,
+        viewportWidth: exportDims.canvasWidth,
+        viewportHeight: exportDims.canvasHeight,
+        format,
+      };
+
+      const { downloadUrl: presignedArtifactUrl } =
+        await createMapExportJobAndWaitForDownloadUrl(jobPayload, {
+          pollIntervalMs: 2000,
+        });
+
+      const fileResponse = await fetch(presignedArtifactUrl, {
+        mode: 'cors',
+        credentials: 'omit',
       });
-
-      if (!response.ok) {
-        throw new Error(`Export failed: ${response.statusText}`);
+      if (!fileResponse.ok) {
+        throw new Error(
+          fileResponse.statusText || `Download failed (${fileResponse.status})`,
+        );
       }
-
-      const blob = await response.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
+      const blob = await fileResponse.blob();
+      const blobObjectUrl = window.URL.createObjectURL(blob);
       const startDateStr = getFormattedDate(startDate, 'snake');
       const endDateStr = getFormattedDate(endDate, 'snake');
       const cleanedTitle = (titleText || country).replace(
@@ -576,7 +589,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         format === 'pdf' ? 'application/pdf' : 'application/zip';
 
       downloadToFile(
-        { content: downloadUrl, isUrl: true },
+        { content: blobObjectUrl, isUrl: true },
         filename,
         contentType,
       );
@@ -588,12 +601,16 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         }),
       );
     } catch (error) {
+      const message =
+        error instanceof Error
+          ? t('Batch export failed: {{message}}', { message: error.message })
+          : t(
+              'Something went wrong with the batch download. Please try again.',
+            );
       dispatch(
         addNotification({
           type: 'error',
-          message: t(
-            'Something went wrong with the batch download. Please try again.',
-          ),
+          message,
         }),
       );
       console.error('Batch download failed:', error);
