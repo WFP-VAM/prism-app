@@ -5,7 +5,7 @@ The legacy ``user_info`` table (HTTP Basic auth / Kobo province gating) is renam
 same revision.
 
 Revision ID: prism_users_permissions
-Revises: prism_alerts_baseline
+Revises: map_export_jobs_001
 Create Date: 2026-04-06
 
 """
@@ -15,7 +15,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 revision = "prism_users_permissions"
-down_revision = "prism_alerts_baseline"
+down_revision = "map_export_jobs_001"
 branch_labels = None
 depends_on = None
 
