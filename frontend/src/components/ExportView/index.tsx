@@ -202,6 +202,7 @@ const ExportView = memo(() => {
 
   return (
     <Box className={classes.root}>
+      {/* Paint order: MapExportLayout stacks boundaries before rasters */}
       <MapExportLayout
         toggles={exportParams.toggles}
         aspectRatio={exportParams.aspectRatio}

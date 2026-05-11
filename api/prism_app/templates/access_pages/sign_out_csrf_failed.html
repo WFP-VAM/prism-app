@@ -1,0 +1,11 @@
+{% extends "access_pages_base.html" %}
+{% set title = "Sign out" %}
+{% set heading = "Could not complete sign out" %}
+
+{% block content %}
+<p>
+    This sign-out attempt was rejected (missing or invalid security token).
+    Use the PRISM Admin <strong>Sign out</strong> link again so the page can refresh the form.
+</p>
+<p><a href="/admin/" class="btn btn-primary">Return to Admin</a></p>
+{% endblock %}

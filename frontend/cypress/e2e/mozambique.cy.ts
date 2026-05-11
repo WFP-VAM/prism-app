@@ -35,7 +35,8 @@ describe('Loading dates', () => {
       .invoke('text')
       .then(aaDate => {
         expect(aaDate).to.match(/^[A-Z][a-z]{2} \d{1,2}, \d{4}$/);
-        expect(new Date(aaDate).getTime()).to.be.greaterThan(
+        // AA "latest" can align with same dekad as rainfall anchor; require not older.
+        expect(new Date(aaDate).getTime()).to.be.at.least(
           new Date('Sep 1, 2025').getTime(),
         );
       });

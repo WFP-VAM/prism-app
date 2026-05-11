@@ -1,29 +1,30 @@
-import { useFilteredFloodStations } from 'components/MapView/Layers/AnticipatoryActionFloodLayer/useFilteredFloodStations';
+import { useContext, useEffect, useMemo } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { appConfig } from 'config';
+import { AAMarkersSelector } from 'context/anticipatoryAction/AADroughtStateSlice';
+import { AAFloodDataSelector } from 'context/anticipatoryAction/AAFloodStateSlice';
+import { useFilteredFloodStations } from 'components/MapView/Layers/AnticipatoryActionFloodLayer/useFilteredFloodStations';
+import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import {
-  AdminLevelDataLayerProps,
   Panel,
+  AdminLevelDataLayerProps,
   SelectedDateTimestamp,
 } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
-import { AAMarkersSelector } from 'context/anticipatoryAction/AADroughtStateSlice';
-import { AAFloodDataSelector } from 'context/anticipatoryAction/AAFloodStateSlice';
-import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import useLayers from 'utils/layers-utils';
+import { getDisplayBoundaryLayers } from 'config/utils';
+import { getLayersCoverage } from 'utils/server-utils';
 import {
   availableDatesSelector,
   loadAvailableDatesForLayer,
 } from 'context/serverStateSlice';
-import { useContext, useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import useLayers from 'utils/layers-utils';
-import { getLayersCoverage } from 'utils/server-utils';
 
 import {
   dateRangeSelector,
   mapSelector,
 } from '../../../context/mapStateSlice/selectors';
-import MapExportLayout from '../../MapExport/MapExportLayout';
 import PrintConfigContext from './printConfig.context';
+import MapExportLayout from '../../MapExport/MapExportLayout';
 
 function PrintPreview() {
   const { printConfig } = useContext(PrintConfigContext);
@@ -52,7 +53,10 @@ function PrintPreview() {
       selectedLayerId &&
       LayerDefinitions[selectedLayerId]
     ) {
-      return [LayerDefinitions[selectedLayerId]];
+      return [
+        LayerDefinitions[selectedLayerId],
+        ...getDisplayBoundaryLayers().reverse(),
+      ];
     }
     return [];
   }, [selectedLayerId, printConfig?.toggles.batchMapsVisibility]);
@@ -120,21 +124,24 @@ function PrintPreview() {
   // Get the style and layers of the old map
   const selectedMapStyle = selectedMap.getStyle();
 
-  // When batch maps has a selected layer, strip all raster layers from the
-  // snapshot so the React layer component is the sole renderer (avoids stacking
-  // regardless of which layer was active on the main map).
+  // When batch maps has a selected layer, strip all application layers from the
+  // snapshot (raster tiles and all layer- prefixed entries) leaving a pure
+  // basemap. Boundary layers and the WMS date layer are rendered via React so
+  // their ordering is explicit and not affected by side-effects on the main map
+  // (e.g. a layer with a `boundary` property that removes other boundary layers).
   if (selectedMapStyle && printSelectedLayers.length > 0) {
-    const rasterLayersInSnapshot = selectedMapStyle.layers.filter(
-      layer => layer.type === 'raster',
-    );
+    const isLayerToRemove = (layer: { id: string; type: string }) =>
+      layer.type === 'raster' || layer.id.startsWith('layer-');
+
     const sourcesToRemove = new Set(
-      rasterLayersInSnapshot
+      selectedMapStyle.layers
+        .filter(isLayerToRemove)
         .map(layer => ('source' in layer ? (layer.source as string) : null))
         .filter(Boolean) as string[],
     );
 
     selectedMapStyle.layers = selectedMapStyle.layers.filter(
-      layer => layer.type !== 'raster',
+      layer => !isLayerToRemove(layer),
     );
     sourcesToRemove.forEach(sourceId => {
       delete selectedMapStyle.sources[sourceId];

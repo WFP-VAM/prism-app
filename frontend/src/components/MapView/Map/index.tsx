@@ -1,6 +1,35 @@
-import 'maplibre-gl/dist/maplibre-gl.css';
-
-import { useMediaQuery, useTheme } from '@material-ui/core';
+import React, {
+  ComponentType,
+  createElement,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import AnalysisLayer from 'components/MapView/Layers/AnalysisLayer';
+import SelectionLayer from 'components/MapView/Layers/SelectionLayer';
+import MapTooltip from 'components/MapView/MapTooltip';
+import { appConfig } from 'config';
+import useMapOnClick from 'components/MapView/useMapOnClick';
+import { setBounds, setLocation } from 'context/mapBoundaryInfoStateSlice';
+import {
+  DashboardMode,
+  DiscriminateUnion,
+  LayerKey,
+  LayerType,
+  Panel,
+} from 'config/types';
+import { setLoadingLayerIds } from 'context/mapTileLoadingStateSlice';
+import {
+  getFirstBoundaryLayerMapId,
+  getLayerBeforeId,
+  layerUsesSymbolAnchorOnly,
+  stackLayersForMapPaintOrder,
+} from 'utils/map-layer-before-utils';
+import { useMapState } from 'utils/useMapState';
+import { dashboardModeSelector } from 'context/dashboardStateSlice';
 import {
   AdminLevelDataLayer,
   AnticipatoryActionDroughtLayer,
@@ -12,49 +41,20 @@ import {
   StaticRasterLayer,
   WMSLayer,
 } from 'components/MapView/Layers';
-import AnalysisLayer from 'components/MapView/Layers/AnalysisLayer';
-import SelectionLayer from 'components/MapView/Layers/SelectionLayer';
-import MapTooltip from 'components/MapView/MapTooltip';
-import useMapOnClick from 'components/MapView/useMapOnClick';
-import { appConfig } from 'config';
-import {
-  DashboardMode,
-  DiscriminateUnion,
-  LayerKey,
-  LayerType,
-  Panel,
-} from 'config/types';
-import { dashboardModeSelector } from 'context/dashboardStateSlice';
-import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
-import { setBounds, setLocation } from 'context/mapBoundaryInfoStateSlice';
-import { setLoadingLayerIds } from 'context/mapTileLoadingStateSlice';
+import useLayers from 'utils/layers-utils';
+import MapGL, { MapEvent, MapRef } from 'react-map-gl/maplibre';
 import {
   LngLatBoundsLike,
-  Map as MaplibreMap,
   MapSourceDataEvent,
+  Map as MaplibreMap,
 } from 'maplibre-gl';
-import React, {
-  ComponentType,
-  createElement,
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-import MapGL, { MapEvent, MapRef } from 'react-map-gl/maplibre';
-import { useDispatch, useSelector } from 'react-redux';
-import useLayers from 'utils/layers-utils';
-import {
-  firstBoundaryOnView,
-  getLayerMapId,
-  isLayerOnView,
-} from 'utils/map-utils';
-import { useMapState } from 'utils/useMapState';
 
-import AnticipatoryActionFloodLayer from '../Layers/AnticipatoryActionFloodLayer';
-import GeojsonDataLayer from '../Layers/GeojsonDataLayer';
+import 'maplibre-gl/dist/maplibre-gl.css';
+import { useMediaQuery, useTheme } from '@material-ui/core';
+import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { mapStyle } from './utils';
+import GeojsonDataLayer from '../Layers/GeojsonDataLayer';
+import AnticipatoryActionFloodLayer from '../Layers/AnticipatoryActionFloodLayer';
 
 type LayerComponentsMap<U extends LayerType> = {
   [T in U['type']]: {
@@ -91,8 +91,6 @@ const componentTypes: LayerComponentsMap<LayerType> = {
     component: AnticipatoryActionFloodLayer,
   },
 };
-
-const LAYERS_ABOVE_BOUNDARIES = ['anticipatory_action', 'geojson_polygon'];
 
 const {
   map: { minZoom, maxZoom, maxBounds },
@@ -238,27 +236,25 @@ const MapComponent = memo(
       [mapState, showBoundaryInfo, watchBoundaryChange, trackLoadingLayers],
     );
 
-    const boundaryId = firstBoundaryOnView(selectedMap);
+    const stackLayers = useMemo(
+      () => stackLayersForMapPaintOrder(selectedLayers),
+      [selectedLayers],
+    );
 
-    const firstBoundaryId = boundaryId && getLayerMapId(boundaryId);
+    const firstBoundaryId = getFirstBoundaryLayerMapId(selectedMap);
 
     const mapOnClick = useMapOnClick(boundaryLayerId, mapRef.current);
 
     const getBeforeId = useCallback(
-      (index: number, aboveBoundaries: boolean = false) => {
-        if (index === 0) {
-          return firstSymbolId;
-        }
-        if (aboveBoundaries) {
-          return firstSymbolId;
-        }
-        const previousLayerId = selectedLayers[index - 1].id;
-        if (isLayerOnView(selectedMap, previousLayerId)) {
-          return getLayerMapId(previousLayerId);
-        }
-        return firstBoundaryId || firstSymbolId;
-      },
-      [firstBoundaryId, firstSymbolId, selectedLayers, selectedMap],
+      (index: number, aboveBoundaries: boolean = false) =>
+        getLayerBeforeId(index, {
+          aboveBoundaries,
+          stackLayers,
+          map: selectedMap,
+          firstSymbolId,
+          firstBoundaryLayerMapId: firstBoundaryId,
+        }),
+      [firstBoundaryId, firstSymbolId, stackLayers, selectedMap],
     );
 
     // Handler to filter out label layers when hideMapLabels is true
@@ -337,15 +333,12 @@ const MapComponent = memo(
         onClick={mapOnClick}
         maxBounds={maxBounds}
       >
-        {selectedLayers.map((layer, index) => {
+        {stackLayers.map((layer, index) => {
           const { component } = componentTypes[layer.type];
           return createElement(component as any, {
             key: layer.id,
             layer,
-            before: getBeforeId(
-              index,
-              LAYERS_ABOVE_BOUNDARIES.includes(layer.type),
-            ),
+            before: getBeforeId(index, layerUsesSymbolAnchorOnly(layer)),
           });
         })}
         <AnalysisLayer before={firstBoundaryId} mapRef={mapRef} />

@@ -1,10 +1,11 @@
+import React, { createContext } from 'react';
+import type { LngLatBounds } from 'maplibre-gl';
+import { AdminCodeString, LayerKey } from 'config/types';
+import { DateCompatibleLayer } from 'utils/server-utils';
 import {
   AspectRatio,
   AspectRatioOption,
 } from 'components/MapExport/aspectRatioConstants';
-import { AdminCodeString, LayerKey, WMSLayerProps } from 'config/types';
-import type { LngLatBounds } from 'maplibre-gl';
-import React, { createContext } from 'react';
 import { BatchCadence } from 'utils/batchCadenceUtils';
 
 // Re-export for backwards compatibility
@@ -105,7 +106,7 @@ export type PrintConfigContextType = {
     setPreviewMapWidth: React.Dispatch<React.SetStateAction<number | null>>;
     previewMapHeight: number | null;
     setPreviewMapHeight: React.Dispatch<React.SetStateAction<number | null>>;
-    wmsLayers: WMSLayerProps[];
+    selectableLayers: DateCompatibleLayer[];
     selectedLayerId: LayerKey | null;
     setSelectedLayerId: React.Dispatch<React.SetStateAction<LayerKey | null>>;
   };

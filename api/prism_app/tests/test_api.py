@@ -1,3 +1,4 @@
+import hashlib
 import os
 import tempfile
 import uuid
@@ -8,7 +9,7 @@ import rasterio
 from fastapi.testclient import TestClient
 from prism_app.database.alert_model import AlertModel
 from prism_app.database.database import AlertsDataBase, AuthDataBase
-from prism_app.database.user_info_model import UserInfoModel
+from prism_app.database.kobo_user_model import KoboUser
 from prism_app.main import app
 from prism_app.scripts.add_users import add_users
 from sqlalchemy import text
@@ -39,7 +40,7 @@ def migrate_test_db():
           "last_triggered" TIMESTAMP,
           CONSTRAINT "PK_ad91cad659a3536465d564a4b2f" PRIMARY KEY ("id")
         )"""
-    q2 = """CREATE TABLE IF NOT EXISTS "user_info" (
+    q2 = """CREATE TABLE IF NOT EXISTS "kobo_users" (
           "id" SERIAL NOT NULL,
           "username" character varying PRIMARY KEY,
           "password" character varying NOT NULL,
@@ -179,11 +180,11 @@ def test_get_alert_deactivate(migrate_test_db):
 
 
 def test_auth_database_read_returns_users(migrate_test_db):
-    """Regression: read() must query user_info (not alert)."""
+    """Regression: read() must query kobo_users (not alert)."""
     auth = AuthDataBase()
     if auth.engine is None:
         pytest.skip("Auth database unavailable")
-    rows = auth.read(UserInfoModel.username == "admin_01")
+    rows = auth.read(KoboUser.username == "admin_01")
     assert len(rows) >= 1
     assert rows[0].username == "admin_01"
     assert isinstance(rows[0].access, (dict, type(None)))
@@ -319,12 +320,17 @@ def test_raster_geotiff_endpoint(get_geotiff_mock):
 
 @patch("boto3.client")
 @patch("prism_app.geotiff_from_stac_api.upload_to_s3")
-@patch("prism_app.geotiff_from_stac_api.write_cog")
+@patch("prism_app.geotiff_from_stac_api.generate_geotiff_from_stac_api")
 def test_raster_geotiff_endpoint_non_4326(
-    mock_write_cog, mock_upload_to_s3, mock_boto3_client
+    mock_generate_geotiff_from_stac,
+    mock_upload_to_s3,
+    mock_boto3_client,
 ):
     """
     Call /raster_geotiff with a non-4326 CRS projection.
+
+    Live STAC (api.earthobservation.vam.wfp.org) sits behind CloudFront; CI runners
+    often get 403. Stub STAC/load; still run reproject-to-4326 and S3/presign mocks.
     """
     # Construct the path to the sample GeoTIFF file
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -354,15 +360,23 @@ def test_raster_geotiff_endpoint_non_4326(
 
     mock_upload_to_s3.side_effect = lambda file_path: fake_upload_to_s3(file_path)
 
-    # Mock the write_cog function to copy the sample GeoTIFF to the temporary file
-    def fake_write_cog(dataset, file_path, overwrite=True):
-        copy_geotiff(sample_tiff_path, file_path)
+    def stub_generate_geotiff_from_stac_api(
+        collection: str,
+        bbox: tuple[float, float, float, float],
+        date=None,
+        band=None,
+    ):
+        from prism_app.geotiff_from_stac_api import CRS_EPSG_4326
+        from prism_app.raster_utils import get_raster_crs, reproject_raster
 
-    mock_write_cog.side_effect = (
-        lambda dataset, file_path, overwrite=True: fake_write_cog(
-            dataset, file_path, overwrite
-        )
-    )
+        bbox_hash = hashlib.sha256(str(bbox).encode()).hexdigest()[:8]
+        file_path = f"{collection}_{bbox_hash}_{date or 'no_date'}.tif"
+        copy_geotiff(sample_tiff_path, file_path)
+        if get_raster_crs(file_path) != CRS_EPSG_4326:
+            reproject_raster(file_path, CRS_EPSG_4326, file_path)
+        return file_path
+
+    mock_generate_geotiff_from_stac.side_effect = stub_generate_geotiff_from_stac_api
 
     response = client.post(
         "/raster_geotiff",
