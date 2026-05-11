@@ -1,5 +1,5 @@
-import type { Map as MaplibreMap } from 'maplibre-gl';
 import { LayerType } from 'config/types';
+import type { Map as MaplibreMap } from 'maplibre-gl';
 import {
   firstBoundaryOnView,
   getLayerMapId,
