@@ -15,27 +15,27 @@ def _expected_report_path() -> str:
     return os.path.join(caching.CACHE_DIRECTORY, "reports/", _REPORT_BASENAME)
 
 
-# TODO - re-enable this test once the report functionality tests are less flaky.
-# @pytest.mark.asyncio
-# async def test_download_report():
-#     """Test generate report using playwright and returns a path string"""
-#     # Arrange
-#     shutil.rmtree(
-#         os.path.join(caching.CACHE_DIRECTORY, "reports/"),
-#         ignore_errors=True,
-#         onerror=None,
-#     )
+@pytest.mark.xfail(reason="flaky report functionality", strict=False)
+@pytest.mark.asyncio
+async def test_download_report():
+    """Test generate report using playwright and returns a path string"""
+    # Arrange
+    shutil.rmtree(
+        os.path.join(caching.CACHE_DIRECTORY, "reports/"),
+        ignore_errors=True,
+        onerror=None,
+    )
 
-#     # Act
-#     report_path: str = await download_report(
-#         "http://frontend:3300/?hazardLayerIds=flood_extent&date=2023-07-07",
-#         "flood_extent",
-#         "cambodia",
-#         "en",
-#     )
+    # Act
+    report_path: str = await download_report(
+        "http://frontend:3300/?hazardLayerIds=flood_extent&date=2023-07-07",
+        "flood_extent",
+        "cambodia",
+        "en",
+    )
 
-#     # Assert
-#     assert report_path == _expected_report_path()
+    # Assert
+    assert report_path == _expected_report_path()
 
 
 @pytest.mark.asyncio
