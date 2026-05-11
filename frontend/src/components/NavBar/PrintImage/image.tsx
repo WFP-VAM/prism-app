@@ -565,17 +565,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
           pollIntervalMs: 2000,
         });
 
-      const fileResponse = await fetch(presignedArtifactUrl, {
-        mode: 'cors',
-        credentials: 'omit',
-      });
-      if (!fileResponse.ok) {
-        throw new Error(
-          fileResponse.statusText || `Download failed (${fileResponse.status})`,
-        );
-      }
-      const blob = await fileResponse.blob();
-      const blobObjectUrl = window.URL.createObjectURL(blob);
       const startDateStr = getFormattedDate(startDate, 'snake');
       const endDateStr = getFormattedDate(endDate, 'snake');
       const cleanedTitle = (titleText || country).replace(
@@ -583,16 +572,20 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         '',
       );
       const safeTitle = sanitizeFilenamePart(cleanedTitle);
-      const filename = `${safeTitle}_${startDateStr}_to_${endDateStr}`;
-      // Server returns ZIP file when format is 'png'
-      const contentType =
-        format === 'pdf' ? 'application/pdf' : 'application/zip';
+      const baseFilename = `${safeTitle}_${startDateStr}_to_${endDateStr}`;
+      const ext = format === 'pdf' ? '.pdf' : '.zip';
+      const filename = `${baseFilename}${ext}`;
 
-      downloadToFile(
-        { content: blobObjectUrl, isUrl: true },
-        filename,
-        contentType,
-      );
+      // Presigned S3 GET from page JS requires bucket CORS. Opening the URL in a new
+      // browsing context avoids fetch() CORS; `download` hints filename (honored when same-origin or when S3 sends Content-Disposition).
+      const link = document.createElement('a');
+      link.href = presignedArtifactUrl;
+      link.download = filename;
+      link.rel = 'noopener noreferrer';
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
       dispatch(
         addNotification({
