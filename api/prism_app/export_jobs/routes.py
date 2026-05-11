@@ -6,7 +6,6 @@ from __future__ import annotations
 
 from typing import Any
 
-import boto3
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from prism_app.database.map_export_job_model import MapExportJob
@@ -17,6 +16,7 @@ from prism_app.export_s3 import (
     is_file_artifact_uri,
     local_path_from_file_uri,
     map_export_artifact_exists,
+    map_export_s3_client,
     presign_export_get,
 )
 from prism_app.models import MapExportRequestModel
@@ -31,7 +31,7 @@ def get_s3_client_for_presign() -> object | None:
     Callers that need presign or head_object create a client on demand or no-op safely.
     """
     try:
-        return boto3.client("s3")
+        return map_export_s3_client()
     except Exception:  # noqa: BLE001 — NoRegionError, missing creds, etc.
         return None
 
@@ -42,7 +42,7 @@ def _s3_client_for_artifact(uri: str | None, injected: object | None) -> object 
     if injected is not None:
         return injected
     try:
-        return boto3.client("s3")
+        return map_export_s3_client()
     except Exception:
         return None
 
