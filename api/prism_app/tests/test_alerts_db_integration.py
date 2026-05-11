@@ -35,7 +35,7 @@ def test_public_alerts_tables_exist(alerts_db_url: str) -> None:
     insp = inspect(engine)
     names = set(insp.get_table_names(schema="public"))
     assert "alert" in names
-    assert "user_info" in names
+    assert "kobo_users" in names
     assert "anticipatory_action_alerts" in names
 
 
@@ -59,7 +59,7 @@ def test_admin_mount_and_list_routes(alerts_db_url: str) -> None:
     # Identity slugs come from SQLModel class names (see admin index sidebar).
     for path in (
         "/admin/alert-model/list",
-        "/admin/user-info-model/list",
+        "/admin/kobo-user/list",
         "/admin/anticipatory-action-alerts/list",
         "/admin/deployment-model/list",
         "/admin/dashboard-model/list",

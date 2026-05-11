@@ -14,7 +14,7 @@ playwright = "1.53.0"
 fastapi = "^0.120.2"
 starlette-admin = "^0.16.0"
 httpx = "^0.28.0"
-uvicorn = { extras = ["standard"], version = "^0.23.2" }
+uvicorn = { extras = ["standard"], version = "^0.46.0" }
 sqlalchemy = "^2.0.36"
 pydantic = { version = "^2.10.0", extras = ["email"] }
 sqlmodel = "^0.0.22"
@@ -42,6 +42,8 @@ duckdb = "^1.2.0"
 vcrpy = "^8.0.0"
 urllib3 = "^2.6.3"
 # Force updates for vulnerable transitive dependencies
+mako = "^1.3.12"
+python-multipart = "^0.0.27"
 aiohttp = ">=3.13.4"
 pygments = "^2.20.0"
 starlette = "^0.49.1"
@@ -52,6 +54,10 @@ fiona = "^1.10b2"
 filelock = "^3.20.3"
 # some package isn't updated for numpy 2.x yet
 numpy = "<2.0"
+pydantic-settings = "^2.0.0"
+cryptography = ">=42.0.0"
+authlib = ">=1.3.2"
+itsdangerous = "^2.2.0"
 
 [tool.poetry.group.dev.dependencies]
 black = ">=26.3.1"

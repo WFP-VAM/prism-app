@@ -6,7 +6,8 @@ from prism_app.database.anticipatory_action_alerts_model import (
     AnticipatoryActionAlertType,
 )
 from prism_app.database.dashboard_model import DashboardModel, DashboardStatus
-from prism_app.database.user_info_model import UserInfoModel
+from prism_app.database.kobo_user_model import KoboUser
+from prism_app.database.map_export_job_model import MapExportJob
 
 __all__ = [
     "AlertModel",
@@ -15,5 +16,6 @@ __all__ = [
     "AnticipatoryActionAlertType",
     "DashboardModel",
     "DashboardStatus",
-    "UserInfoModel",
+    "KoboUser",
+    "MapExportJob",
 ]

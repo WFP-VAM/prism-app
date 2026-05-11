@@ -1,0 +1,13 @@
+{% extends "access_pages_base.html" %}
+{% set title = "Access pending" %}
+{% set heading = "Access not yet configured" %}
+
+{% block content %}
+<p>Your account is recognized, but no product permissions have been assigned yet.</p>
+{% if support_email %}
+<p>Contact: <a href="mailto:{{ support_email }}">{{ support_email }}</a></p>
+{% else %}
+<p>Contact your administrator to be assigned permissions.</p>
+{% endif %}
+<a class="btn btn-outline-secondary" href="/auth/sign-out">Sign out</a>
+{% endblock %}
