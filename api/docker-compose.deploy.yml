@@ -16,12 +16,19 @@ services:
       - "--providers.docker.network=traefik_default"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.websecure.address=:443"
-      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      # TLS-ALPN challenge fails when hostname is behind Cloudflare proxy (orange cloud): LE hits CF edge, not Traefik.
+      # DNS-01 via Cloudflare API issues certs without exposing ACME on origin 443.
+      - "--certificatesresolvers.myresolver.acme.dnschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.dnschallenge.provider=cloudflare"
+      - "--certificatesresolvers.myresolver.acme.dnschallenge.resolvers=1.1.1.1:53,8.8.8.8:53"
       # Production Let's Encrypt (default CA). For staging debugging only, add:
       #   --certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
       # Switching staging→prod: if issuance fails, stop Traefik and rotate/rename letsencrypt/acme.json (different ACME accounts).
       - "--certificatesresolvers.myresolver.acme.email=${INFO_EMAIL:?'Must provide info email'}"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    environment:
+      # Zone:DNS Edit — https://developers.cloudflare.com/fundamentals/api/get-started/create-token/
+      - CLOUDFLARE_DNS_API_TOKEN=${CLOUDFLARE_DNS_API_TOKEN:?'DNS challenge: create Cloudflare API token with DNS:Edit for prism-api.ovio.org zone'}
     networks:
       - traefik_default
     ports:
