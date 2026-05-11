@@ -1,10 +1,10 @@
 """Starlette Admin: read-only alerts and deployment reference; full CRUD for dashboards."""
 
+from prism_app.auth.permission_codes import ADMIN_ACCESS
 from prism_app.dashboard_admin import DashboardAdminView
 from prism_app.database.alert_model import AlertModel
 from prism_app.database.anticipatory_action_alerts_model import AnticipatoryActionAlerts
 from prism_app.database.dashboard_model import DashboardModel, DeploymentModel
-from prism_app.auth.permission_codes import ADMIN_ACCESS
 from prism_app.database.kobo_user_model import KoboUser
 from prism_app.database.permission_model import Permission, UserPermission
 from prism_app.database.user_model import User
@@ -70,7 +70,8 @@ class AnticipatoryActionAlertsView(ReadOnlyModelView):
 class DeploymentView(ReadOnlyModelView):
     label = "Deployments"
     fields = [StringField("code", label="Deployment code")]
-    
+
+
 class UserEditView(PrismGatedModelView):
     """CIAM-mapped users: provision metadata; permissions use User permissions."""
 

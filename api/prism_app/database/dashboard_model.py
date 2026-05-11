@@ -5,6 +5,7 @@ import uuid
 from enum import Enum
 from typing import Any
 
+from prism_app.dashboard_slug import slugify_dashboard_name
 from sqlalchemy import (
     Boolean,
     Column,
@@ -21,8 +22,6 @@ from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import validates
 from sqlmodel import Field, SQLModel
-
-from prism_app.dashboard_slug import slugify_dashboard_name
 
 
 class DashboardStatus(str, Enum):
