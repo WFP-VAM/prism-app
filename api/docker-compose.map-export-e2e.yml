@@ -1,0 +1,23 @@
+# Local smoke: PostGIS (testdb) + API + export_map_worker, worker DB URL pinned to testdb.
+#
+#   cd api
+#   ./scripts/map_export_job_docker_e2e.sh
+#   # or with S3:
+#   EXPORT_MAP_S3_BUCKET=your-bucket ./scripts/map_export_job_docker_e2e.sh
+#
+# Compose merge order:
+#   docker compose -f docker-compose.yml -f docker-compose.test.yml -f docker-compose.map-export-e2e.yml
+
+services:
+  api:
+    ports:
+      - "${MAP_EXPORT_E2E_API_PORT:-8888}:80"
+
+  export_map_worker:
+    depends_on:
+      testdb:
+        condition: service_healthy
+    environment:
+      PRISM_ALERTS_DATABASE_URL: postgresql://postgres:!ChangeMe!@testdb:5432/postgres
+      EXPORT_MAP_S3_BUCKET: ${EXPORT_MAP_S3_BUCKET:-}
+      EXPORT_MAP_LOCAL_OUTPUT_DIR: ${EXPORT_MAP_LOCAL_OUTPUT_DIR:-/cache/map_export_artifacts}

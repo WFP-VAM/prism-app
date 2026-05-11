@@ -1,6 +1,6 @@
 import fnmatch
 import logging
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Final
 from urllib.parse import parse_qs, urlparse
 
@@ -9,6 +9,11 @@ from fastapi import HTTPException
 from requests.adapters import Retry
 
 logger = logging.getLogger(__name__)
+
+
+def utc_now() -> datetime:
+    """Single UTC clock for models, API, and workers."""
+    return datetime.now(UTC)
 
 
 def forward_http_error(resp: requests.Response, excluded_codes: list[int]) -> None:

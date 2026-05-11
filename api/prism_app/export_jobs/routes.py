@@ -1,0 +1,123 @@
+"""HTTP routes for async map export jobs."""
+
+# TODO(transition): Revisit merging batch UX with legacy POST /export-map once all clients use /export-map/jobs + polling.
+
+from __future__ import annotations
+
+from typing import Any
+
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import JSONResponse
+from prism_app.database.map_export_job_model import MapExportJob
+from prism_app.export_jobs.db import get_export_jobs_session
+from prism_app.export_jobs.fingerprint import compute_request_fingerprint
+from prism_app.export_jobs.service import enqueue_map_export_job
+from prism_app.export_s3 import (
+    is_file_artifact_uri,
+    local_path_from_file_uri,
+    map_export_artifact_exists,
+    map_export_s3_client,
+    presign_export_get,
+)
+from prism_app.models import MapExportRequestModel
+from prism_app.utils import utc_now
+from sqlmodel import Session
+
+
+def get_s3_client_for_presign() -> object | None:
+    """
+    Return an S3 client when boto3 can configure one; else None (local-artifact dev).
+
+    Callers that need presign or head_object create a client on demand or no-op safely.
+    """
+    try:
+        return map_export_s3_client()
+    except Exception:  # noqa: BLE001 — NoRegionError, missing creds, etc.
+        return None
+
+
+def _s3_client_for_artifact(uri: str | None, injected: object | None) -> object | None:
+    if not uri or is_file_artifact_uri(uri):
+        return None
+    if injected is not None:
+        return injected
+    try:
+        return map_export_s3_client()
+    except Exception:
+        return None
+
+
+router = APIRouter(prefix="/export-map", tags=["export-map"])
+
+
+@router.post("/jobs")
+def create_map_export_job(
+    body: MapExportRequestModel,
+    session: Session = Depends(get_export_jobs_session),
+    s3_client: object | None = Depends(get_s3_client_for_presign),
+) -> JSONResponse:
+    job, status_code = enqueue_map_export_job(session, body, s3_client)
+    fingerprint = compute_request_fingerprint(body)
+    payload: dict[str, Any] = {
+        "job_id": job.id,
+        "status": job.status,
+        "request_fingerprint": fingerprint,
+        "origin_url": job.origin_url,
+        "deduplicated": status_code == 200,
+    }
+    return JSONResponse(status_code=status_code, content=payload)
+
+
+@router.get("/jobs/{job_id}")
+def read_map_export_job(
+    job_id: str,
+    session: Session = Depends(get_export_jobs_session),
+    s3_client: object | None = Depends(get_s3_client_for_presign),
+) -> dict[str, Any]:
+    job = session.get(MapExportJob, job_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail="Job not found")
+
+    verify_client = _s3_client_for_artifact(job.s3_uri, s3_client)
+
+    if job.status == "succeeded" and job.s3_uri:
+        if not map_export_artifact_exists(job.s3_uri, s3_client=verify_client):
+            fin = utc_now()
+            job.status = "failed"
+            job.error_json = {
+                "message": "Export artifact missing or inaccessible.",
+                "type": "ArtifactMissing",
+            }
+            job.s3_uri = None
+            job.finished_at = fin
+            job.updated_at = fin
+            session.add(job)
+            session.commit()
+
+    download_url: str | None = None
+    local_artifact_path: str | None = None
+    if job.status == "succeeded" and job.s3_uri:
+        if is_file_artifact_uri(job.s3_uri):
+            local_artifact_path = local_path_from_file_uri(job.s3_uri)
+        else:
+            presign_client = verify_client or _s3_client_for_artifact(
+                job.s3_uri, s3_client
+            )
+            if presign_client is None:
+                raise HTTPException(
+                    status_code=503,
+                    detail="S3 client unavailable; cannot presign download URL.",
+                )
+            download_url = presign_export_get(job.s3_uri, presign_client)
+
+    return {
+        "job_id": job.id,
+        "status": job.status,
+        "request_fingerprint": job.request_fingerprint,
+        "origin_url": job.origin_url,
+        "progress_current": job.progress_current,
+        "progress_total": job.progress_total,
+        "download_url": download_url,
+        "local_artifact_path": local_artifact_path,
+        "error": job.error_json,
+    }

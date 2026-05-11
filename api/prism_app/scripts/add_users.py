@@ -4,7 +4,7 @@ import secrets
 import string
 
 from prism_app.database.database import AuthDataBase
-from prism_app.database.user_info_model import UserInfoModel
+from prism_app.database.kobo_user_model import KoboUser
 
 auth_db = AuthDataBase()
 
@@ -32,7 +32,7 @@ def add_users():
             "username": f"admin_{province}",
             "access": {"province": province},
         }
-        user_info = UserInfoModel(**user)
+        user_info = KoboUser(**user)
         password = generate_pasword(8)
         user_info.password = password
         try:
