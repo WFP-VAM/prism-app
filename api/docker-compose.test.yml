@@ -41,6 +41,8 @@ services:
     entrypoint: yarn start --port 3300
     environment:
       - REACT_APP_COUNTRY=cambodia
+      # Playwright E2E has no MSAL session; frontend treats !REACT_APP_TESTING && WFPAuthRequired
+      - REACT_APP_TESTING=true
     ports:
       - "3300:3300"
     volumes:
