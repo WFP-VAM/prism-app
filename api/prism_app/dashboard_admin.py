@@ -4,11 +4,7 @@ import json
 from typing import Any, cast
 
 from prism_app.dashboard_config_validation import validate_and_dump_dashboard_config
-from prism_app.dashboard_slug import slugify_dashboard_name
-from prism_app.database.dashboard_model import (
-    ALLOWED_DASHBOARD_DEPLOYMENTS,
-    DashboardModel,
-)
+from prism_app.database.dashboard_model import ALLOWED_DASHBOARD_DEPLOYMENTS
 from starlette.requests import Request
 from starlette_admin.contrib.sqla import ModelView
 from starlette_admin.exceptions import FormValidationError
@@ -106,15 +102,3 @@ class DashboardAdminView(ModelView):
 
         if errors:
             raise FormValidationError(cast(dict[str | int, Any], errors))
-
-    async def before_create(
-        self, request: Request, data: dict[str, Any], obj: Any
-    ) -> None:
-        assert isinstance(obj, DashboardModel)
-        obj.slug = slugify_dashboard_name(obj.title)
-
-    async def before_edit(
-        self, request: Request, data: dict[str, Any], obj: Any
-    ) -> None:
-        assert isinstance(obj, DashboardModel)
-        obj.slug = slugify_dashboard_name(obj.title)

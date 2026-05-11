@@ -13,12 +13,16 @@ from sqlalchemy import (
     Index,
     String,
     UniqueConstraint,
+    event,
     text,
 )
 from sqlalchemy.dialects.postgresql import ENUM as PG_ENUM
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
+from sqlalchemy.orm import validates
 from sqlmodel import Field, SQLModel
+
+from prism_app.dashboard_slug import slugify_dashboard_name
 
 
 class DashboardStatus(str, Enum):
@@ -133,3 +137,16 @@ class DashboardModel(SQLModel, table=True):
     updated_by: str | None = Field(
         default=None, sa_column=Column(String, nullable=True)
     )
+
+    @validates("title")
+    def _set_slug_from_title(self, key: str, title: str) -> str:
+        self.slug = slugify_dashboard_name(title)
+        return title
+
+
+@event.listens_for(DashboardModel, "before_insert")
+@event.listens_for(DashboardModel, "before_update")
+def _derive_dashboard_slug_from_title(
+    mapper: object, connection: object, target: DashboardModel
+) -> None:
+    target.slug = slugify_dashboard_name(target.title)

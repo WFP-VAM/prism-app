@@ -1,19 +1,13 @@
 """Starlette Admin: read-only alerts and deployment reference; full CRUD for dashboards."""
 
-<<<<<<< HEAD
 from prism_app.dashboard_admin import DashboardAdminView
 from prism_app.database.alert_model import AlertModel
 from prism_app.database.anticipatory_action_alerts_model import AnticipatoryActionAlerts
 from prism_app.database.dashboard_model import DashboardModel, DeploymentModel
-from prism_app.database.user_info_model import UserInfoModel
-=======
 from prism_app.auth.permission_codes import ADMIN_ACCESS
-from prism_app.database.alert_model import AlertModel
-from prism_app.database.anticipatory_action_alerts_model import AnticipatoryActionAlerts
 from prism_app.database.kobo_user_model import KoboUser
 from prism_app.database.permission_model import Permission, UserPermission
 from prism_app.database.user_model import User
->>>>>>> master
 from starlette.requests import Request
 from starlette_admin.contrib.sqla import Admin, ModelView
 from starlette_admin.fields import StringField
