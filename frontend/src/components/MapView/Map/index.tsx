@@ -23,10 +23,11 @@ import {
 } from 'config/types';
 import { setLoadingLayerIds } from 'context/mapTileLoadingStateSlice';
 import {
-  firstBoundaryOnView,
-  getLayerMapId,
-  isLayerOnView,
-} from 'utils/map-utils';
+  getFirstBoundaryLayerMapId,
+  getLayerBeforeId,
+  layerUsesSymbolAnchorOnly,
+  stackLayersForMapPaintOrder,
+} from 'utils/map-layer-before-utils';
 import { useMapState } from 'utils/useMapState';
 import { dashboardModeSelector } from 'context/dashboardStateSlice';
 import {
@@ -90,8 +91,6 @@ const componentTypes: LayerComponentsMap<LayerType> = {
     component: AnticipatoryActionFloodLayer,
   },
 };
-
-const LAYERS_ABOVE_BOUNDARIES = ['anticipatory_action', 'geojson_polygon'];
 
 const {
   map: { minZoom, maxZoom, maxBounds },
@@ -237,27 +236,25 @@ const MapComponent = memo(
       [mapState, showBoundaryInfo, watchBoundaryChange, trackLoadingLayers],
     );
 
-    const boundaryId = firstBoundaryOnView(selectedMap);
+    const stackLayers = useMemo(
+      () => stackLayersForMapPaintOrder(selectedLayers),
+      [selectedLayers],
+    );
 
-    const firstBoundaryId = boundaryId && getLayerMapId(boundaryId);
+    const firstBoundaryId = getFirstBoundaryLayerMapId(selectedMap);
 
     const mapOnClick = useMapOnClick(boundaryLayerId, mapRef.current);
 
     const getBeforeId = useCallback(
-      (index: number, aboveBoundaries: boolean = false) => {
-        if (index === 0) {
-          return firstSymbolId;
-        }
-        if (aboveBoundaries) {
-          return firstSymbolId;
-        }
-        const previousLayerId = selectedLayers[index - 1].id;
-        if (isLayerOnView(selectedMap, previousLayerId)) {
-          return getLayerMapId(previousLayerId);
-        }
-        return firstBoundaryId || firstSymbolId;
-      },
-      [firstBoundaryId, firstSymbolId, selectedLayers, selectedMap],
+      (index: number, aboveBoundaries: boolean = false) =>
+        getLayerBeforeId(index, {
+          aboveBoundaries,
+          stackLayers,
+          map: selectedMap,
+          firstSymbolId,
+          firstBoundaryLayerMapId: firstBoundaryId,
+        }),
+      [firstBoundaryId, firstSymbolId, stackLayers, selectedMap],
     );
 
     // Handler to filter out label layers when hideMapLabels is true
@@ -336,15 +333,12 @@ const MapComponent = memo(
         onClick={mapOnClick}
         maxBounds={maxBounds}
       >
-        {selectedLayers.map((layer, index) => {
+        {stackLayers.map((layer, index) => {
           const { component } = componentTypes[layer.type];
           return createElement(component as any, {
             key: layer.id,
             layer,
-            before: getBeforeId(
-              index,
-              LAYERS_ABOVE_BOUNDARIES.includes(layer.type),
-            ),
+            before: getBeforeId(index, layerUsesSymbolAnchorOnly(layer)),
           });
         })}
         <AnalysisLayer before={firstBoundaryId} mapRef={mapRef} />
