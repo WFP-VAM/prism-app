@@ -1,7 +1,6 @@
 """Unit tests for dashboard layout JSON validation (admin ingest)."""
 
 import json
-from pathlib import Path
 
 import pytest
 from prism_app.dashboard_config_validation import (
@@ -11,25 +10,114 @@ from prism_app.dashboard_config_validation import (
 )
 from pydantic import ValidationError
 
-
-def _sample_list() -> list[dict]:
-    repo = Path(__file__).resolve().parents[3]
-    raw = json.loads(
-        (
-            repo / "frontend" / "test" / "fixtures" / "dashboard-config.sample.json"
-        ).read_text()
-    )
-    assert isinstance(raw, list) and len(raw) >= 1
-    return raw
-
-
-def _sample_one_row() -> dict:
-    rows = _sample_list()
-    return rows[0]
+SAMPLE_DASHBOARD_ROWS = json.loads(
+    """
+[
+  {
+    "title": "Rainfall anomaly - 2024/2025 rainy season",
+    "isEditable": true,
+    "firstColumn": [
+      {
+        "type": "MAP",
+        "defaultDate": "2024-12-21",
+        "title": "Rainfall anomaly - Oct to Dec 2024",
+        "mapPosition": "left",
+        "minMapBounds": [29.48, -28.92, 43.52, -7.08],
+        "preSelectedMapLayers": [
+          { "layerId": "precip_blended_anomaly_3m", "opacity": 0.8 }
+        ]
+      }
+    ],
+    "secondColumn": [
+      {
+        "type": "MAP",
+        "defaultDate": "2025-03-21",
+        "title": "Rainfall anomaly - Jan to Mar 2025",
+        "mapPosition": "right",
+        "minMapBounds": [29.48, -28.92, 43.52, -7.08],
+        "preSelectedMapLayers": [
+          { "layerId": "precip_blended_anomaly_3m", "opacity": 0.8 }
+        ]
+      }
+    ],
+    "thirdColumn": [
+      {
+        "type": "TEXT",
+        "content": "Analyzing the precipitation anomaly for the 2024/25 rainy season, two distinct periods of precipitation can be observed: the first half of the season with well-below-normal rainfall (left side map) and the second half of the season (right side map) with normal to above-normal rainfall across most of the country, with geographic areas where below-normal rainfall continues to be observed, particularly in central and northern Cabo Province.",
+        "textUpdatedAt": "2025-09-01"
+      }
+    ]
+  },
+  {
+    "title": "SPI - 2024/2025 rainy season",
+    "firstColumn": [
+      {
+        "type": "MAP",
+        "title": "SPI - Oct 2024 - March 2025",
+        "defaultDate": "2025-03-21",
+        "mapPosition": "left",
+        "minMapBounds": [31, -25, 40, -11],
+        "preSelectedMapLayers": [
+          { "layerId": "spi_blended_6m", "opacity": 0.7 }
+        ]
+      }
+    ],
+    "secondColumn": [
+      {
+        "type": "TEXT",
+        "content": "The six-month Standardized Precipitation Index (SPI) provides a cumulative view of rainfall anomalies and helps contextualize the decadal and monthly fluctuations observed throughout the 2024/25 season. The SPI map clearly highlights severe rainfall deficits (SPI < -1.5; orange to red hues) in several areas of the country, with the greatest concern in the provinces of Cabo Delgado and Niassa. Areas in the provinces of Nampula, Tete, Inhambane, and Maputo also demonstrate an accumulation of rainfall deficits between October 2024 and March 2025. Only a few areas of the country recorded above-normal SPI values \u200b\u200b(blue and purple hues), likely associated with episodes of intense rainfall in February and March of 2025. However, these surpluses were spatially limited and short-lived, without translating into a widespread or sustained improvement in seasonal conditions. Thus, the six-month SPI consolidates evidence of widespread and prolonged water stress, conditions that likely compromised agricultural production, reduced the availability of local water resources, and increased food insecurity in the most affected regions.",
+        "textUpdatedAt": "2025-03-01"
+      },
+      {
+        "type": "TABLE",
+        "startDate": "2025-03-21",
+        "hazardLayerId": "spi_blended_6m",
+        "baselineLayerId": "admin_boundaries",
+        "stat": "mean",
+        "addResultToMap": false,
+        "sortColumn": "mean",
+        "sortOrder": "asc"
+      }
+    ],
+    "thirdColumn": []
+  },
+  {
+    "title": "Oct - Dec 2024 rainfall anomaly",
+    "isEditable": true,
+    "firstColumn": [
+      {
+        "type": "MAP",
+        "defaultDate": "2024-12-21",
+        "mapPosition": "left",
+        "minMapBounds": [31, -25, 40, -11],
+        "title": "Rainfall anomaly - Oct - Dec 2024",
+        "preSelectedMapLayers": [
+          { "layerId": "precip_blended_anomaly_3m", "opacity": 0.7 }
+        ]
+      }
+    ],
+    "secondColumn": [
+      {
+        "type": "CHART",
+        "startDate": "2023-12-21",
+        "endDate": "2024-12-21",
+        "layerId": "precip_blended_anomaly_3m",
+        "adminUnitLevel": 0
+      },
+      {
+        "type": "TEXT",
+        "content": "Between October and December 2024, most of southern and central Mozambique experienced below-average rainfall, with anomalies typically ranging from 40–80% of the long-term average. Northern Mozambique also show deficits, though slightly less severe. Only small coastal areas near Beira and southern Mozambique approach near-normal conditions (around 80–100%). The time-series chart for Mozambique indicates that rainfall anomalies were near normal through early 2024, followed by a prolonged dry period from mid-year onward, with values steadily declining below 100%. A brief recovery occurred around October–November 2024, when rainfall approached normal levels, but by December 2024, conditions again deteriorated, signaling a return to below-normal rainfall to close the year. Overall, the data suggest a persistent dry trend across much of the region, with only temporary improvement late in the season.",
+        "textUpdatedAt": "2025-03-01"
+      }
+    ]
+  }
+]
+"""
+)
 
 
 def _sample_config_only() -> dict:
-    row = _sample_one_row()
+    row = SAMPLE_DASHBOARD_ROWS[0]
     return {
         "firstColumn": row["firstColumn"],
         "secondColumn": row.get("secondColumn", []),
