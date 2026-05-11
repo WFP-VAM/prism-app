@@ -11,7 +11,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 revision = "add_dashboard_table"
-down_revision = "prism_alerts_baseline"
+down_revision = "prism_users_permissions"
 branch_labels = None
 depends_on = None
 
