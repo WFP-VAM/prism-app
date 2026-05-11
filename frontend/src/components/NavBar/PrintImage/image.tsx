@@ -183,6 +183,9 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     Object.keys(configMap[safeCountry].rawLayers),
   );
   const availableDates = useSelector(availableDatesSelector);
+  // WMS entries need `layer.id in availableDates` for `isDateCompatibleLayer`.
+  // Until preload fills Redux (or with no hazard toggled so nothing fetched), the
+  // batch layer dropdown can be empty in dev even though LayerDefinitions has WMS layers.
   const selectableLayers = Object.values(LayerDefinitions).filter(
     (l): l is DateCompatibleLayer =>
       // temporarily limit to WMS to limit scope and edge cases
@@ -234,7 +237,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     // selectedLayersWithDateSupport.every(
     //   layer => layer.type === 'wms' && (layer.coverageWindow || layer.validity),
     // );
-    false; // Temporarily disable batch maps;
+    true; // Temporarily disable batch maps;
 
   const shouldShowMultiLayerWarning = selectedLayersWithDateSupport.length > 1;
 

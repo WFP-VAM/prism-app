@@ -22,6 +22,12 @@ import { mapStyle } from 'components/MapView/Map/utils';
 import { loadStormIcons } from 'components/MapView/Layers/AnticipatoryActionStormLayer/constants';
 import { ensureSDFIconsLoaded } from 'components/MapView/Layers/icon-utils';
 import { useAAMarkerScalePercent } from 'utils/map-utils';
+import {
+  getFirstBoundaryLayerMapId,
+  getLayerBeforeId,
+  layerUsesSymbolAnchorOnly,
+  stackLayersForMapPaintOrder,
+} from 'utils/map-layer-before-utils';
 import { getImageUrl, iconNorthArrow } from 'assets/images';
 // Layer components - keep in sync with MapView/Map/index.tsx
 import {
@@ -136,6 +142,28 @@ function MapExportLayout({
   // Layers should be inserted below symbols/labels to keep labels visible
   const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
     'label_airport',
+  );
+
+  // Boundaries first, then other layers — shared with MapView via stackLayersForMapPaintOrder.
+  const stackLayers = useMemo(
+    () => stackLayersForMapPaintOrder(selectedLayers),
+    [selectedLayers],
+  );
+
+  const firstBoundaryLayerMapId = getFirstBoundaryLayerMapId(
+    mapRef.current?.getMap(),
+  );
+
+  const getBeforeId = useCallback(
+    (index: number, aboveBoundaries: boolean = false) =>
+      getLayerBeforeId(index, {
+        aboveBoundaries,
+        stackLayers,
+        map: mapRef.current?.getMap(),
+        firstSymbolId,
+        firstBoundaryLayerMapId,
+      }),
+    [firstBoundaryLayerMapId, firstSymbolId, stackLayers],
   );
 
   // Scale percent for AA markers based on map zoom
@@ -594,12 +622,12 @@ function MapExportLayout({
         >
           {/* Render selected layers - KEEP IN SYNC with MapView/Map/index.tsx */}
           {/* Pass 'before' prop to insert layers below labels/symbols */}
-          {selectedLayers.map(layer => {
+          {stackLayers.map((layer, index) => {
             const { component } = componentTypes[layer.type];
             return createElement(component as any, {
               key: layer.id,
               layer,
-              before: firstSymbolId,
+              before: getBeforeId(index, layerUsesSymbolAnchorOnly(layer)),
             });
           })}
           {/* AA Drought markers */}
