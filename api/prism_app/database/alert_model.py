@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 class AlertModel(SQLModel, table=True):
-    """Alert ORM that defines a table (parity with TypeORM `alert`)."""
+    """Alert ORM that defines the `alert` table."""
 
     __tablename__ = "alert"
 

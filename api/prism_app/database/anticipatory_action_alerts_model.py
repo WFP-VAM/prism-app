@@ -1,4 +1,4 @@
-"""Anticipatory action alerts metadata table (TypeORM parity)."""
+"""Anticipatory action alerts metadata table."""
 
 import datetime
 from enum import Enum

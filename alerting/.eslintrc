@@ -75,14 +75,6 @@
           }
         ]
       }
-    },
-    {
-      "files": [
-        "src/**/*.entity.{ts,js}"
-      ],
-      "rules": {
-        "import/no-cycle": "off"
-      }
     }
   ]
 }

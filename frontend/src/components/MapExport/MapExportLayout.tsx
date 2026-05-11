@@ -22,7 +22,7 @@ import { mapStyle } from 'components/MapView/Map/utils';
 import { loadStormIcons } from 'components/MapView/Layers/AnticipatoryActionStormLayer/constants';
 import { ensureSDFIconsLoaded } from 'components/MapView/Layers/icon-utils';
 import { useAAMarkerScalePercent } from 'utils/map-utils';
-import iconNorthArrow from 'public/images/icon_north_arrow.png';
+import { getImageUrl, iconNorthArrow } from 'assets/images';
 // Layer components - keep in sync with MapView/Map/index.tsx
 import {
   AdminLevelDataLayer,
@@ -81,6 +81,14 @@ const componentTypes: LayerComponentsMap<LayerType> = {
     component: AnticipatoryActionFloodLayer,
   },
 };
+
+/** Playwright (/export, signalExportReady): min consecutive "fully loaded" samples before PRISM_READY. */
+const MAP_EXPORT_STABLE_LOADED_TICKS = 1;
+/**
+ * Poll when map idle is slow (ms). 0 uses the shortest practical interval (browser clamps ~4ms).
+ * Print preview (no signalExportReady) keeps 500ms / 3 ticks.
+ */
+const MAP_EXPORT_LOAD_POLL_MS = 0;
 
 function MapExportLayout({
   toggles,
@@ -291,8 +299,16 @@ function MapExportLayout({
 
     if (shouldTrackTileLoading && map) {
       let hasSignaledReady = false;
-      let idleCheckCount = 0;
-      const MAX_IDLE_CHECKS = 3;
+      let stableLoadedTicks = 0;
+      // Idle + poll share this counter: several consecutive observations that the map is
+      // fully loaded (not a single lucky areTilesLoaded() true—avoids empty WMS/raster frames).
+      const STABLE_LOADED_TICKS = signalExportReady
+        ? MAP_EXPORT_STABLE_LOADED_TICKS
+        : 3;
+      const loadPollMs = signalExportReady ? MAP_EXPORT_LOAD_POLL_MS : 500;
+      const EXPORT_READY_SAFETY_MS = signalExportReady ? 60_000 : 25_000;
+
+      let pollInterval: ReturnType<typeof setInterval> | undefined;
 
       const signalReady = () => {
         if (hasSignaledReady) {
@@ -301,6 +317,9 @@ function MapExportLayout({
 
         hasSignaledReady = true;
         map.off('idle', idleHandler);
+        if (pollInterval !== undefined) {
+          clearInterval(pollInterval);
+        }
 
         // Set PRISM_READY for server-side rendering (Playwright)
         if (signalExportReady) {
@@ -323,43 +342,42 @@ function MapExportLayout({
         return Boolean(isStyleLoaded && areTilesLoaded && isLoaded);
       };
 
-      const idleHandler = () => {
+      const bumpStableLoaded = () => {
         if (hasSignaledReady) {
           return;
         }
-
         if (checkFullyLoaded()) {
-          idleCheckCount += 1;
-
-          // Require multiple consecutive idle states to ensure stability
-          if (idleCheckCount >= MAX_IDLE_CHECKS) {
+          stableLoadedTicks += 1;
+          if (stableLoadedTicks >= STABLE_LOADED_TICKS) {
             signalReady();
           }
         } else {
-          // Reset counter if not fully loaded
-          idleCheckCount = 0;
+          stableLoadedTicks = 0;
         }
+      };
+
+      const idleHandler = () => {
+        bumpStableLoaded();
       };
 
       // Listen for idle events - fires when map finishes rendering
       map.on('idle', idleHandler);
 
-      // Poll for ready state
-      const pollInterval = setInterval(() => {
-        if (!hasSignaledReady && checkFullyLoaded()) {
-          clearInterval(pollInterval);
-          signalReady();
-        }
-      }, 500);
+      // Poll in case idle is slow to fire but the map is already fully loaded
+      pollInterval = setInterval(() => {
+        bumpStableLoaded();
+      }, loadPollMs);
 
       // Safety timeout to prevent infinite waiting
       setTimeout(() => {
-        clearInterval(pollInterval);
+        if (pollInterval !== undefined) {
+          clearInterval(pollInterval);
+        }
         if (!hasSignaledReady) {
           console.warn('Safety timeout reached, forcing PRISM_READY');
           signalReady();
         }
-      }, 25000);
+      }, EXPORT_READY_SAFETY_MS);
     } else if (onMapLoad) {
       onMapLoad(e);
     }
@@ -440,7 +458,7 @@ function MapExportLayout({
   // The map content (title, legend, footer, map itself)
   const mapContent = (
     <div ref={printRef} className={classes.printContainer}>
-      {toggles.bottomLogoVisibility && bottomLogo && (
+      {toggles.bottomLogoVisibility && getImageUrl(bottomLogo) && (
         <img
           style={{
             position: 'absolute',
@@ -451,7 +469,7 @@ function MapExportLayout({
             maxWidth: '150px',
             objectFit: 'contain',
           }}
-          src={bottomLogo}
+          src={getImageUrl(bottomLogo)}
           alt="bottomLogo"
         />
       )}
@@ -473,7 +491,7 @@ function MapExportLayout({
           className={classes.titleOverlay}
           style={{ minHeight: `${titleMinHeight}px` }}
         >
-          {toggles.logoVisibility && logo && (
+          {toggles.logoVisibility && getImageUrl(logo) && (
             <img
               style={{
                 position: 'absolute',
@@ -485,7 +503,7 @@ function MapExportLayout({
                 justifyContent:
                   logoPosition % 2 === 0 ? 'flex-start' : 'flex-end',
               }}
-              src={logo}
+              src={getImageUrl(logo)}
               alt="logo"
             />
           )}
@@ -514,7 +532,7 @@ function MapExportLayout({
             )}
           </div>
         )}
-      {toggles.logoVisibility && !titleText && logo && (
+      {toggles.logoVisibility && !titleText && getImageUrl(logo) && (
         <img
           style={{
             position: 'absolute',
@@ -526,7 +544,7 @@ function MapExportLayout({
             display: 'flex',
             justifyContent: logoPosition % 2 === 0 ? 'flex-start' : 'flex-end',
           }}
-          src={logo}
+          src={getImageUrl(logo)}
           alt="logo"
         />
       )}

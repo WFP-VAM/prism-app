@@ -8,6 +8,7 @@ import {
 } from '@material-ui/core';
 import { appConfig } from 'config';
 import { t } from 'i18next';
+import { getImageUrl } from 'assets/images';
 
 const { header } = appConfig;
 
@@ -21,13 +22,12 @@ function Title() {
     title: 'PRISM',
   };
 
-  // Ensure logo path is absolute to prevent routing conflicts
-  const logoSrc = logo && logo.startsWith('images/') ? `/${logo}` : logo;
+  const logoSrc = getImageUrl(logo);
 
   return (
     !smDown && (
       <div className={classes.titleContainer}>
-        {logo && <img className={classes.logo} src={logoSrc} alt="logo" />}
+        {logoSrc && <img className={classes.logo} src={logoSrc} alt="logo" />}
         <Box className={classes.titleBox}>
           {title && (
             <Typography

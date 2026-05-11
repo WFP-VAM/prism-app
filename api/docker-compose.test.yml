@@ -3,22 +3,34 @@
 
 services:
   api:
+    depends_on:
+      testdb:
+        condition: service_healthy
     volumes:
       - ./prism_app:/prism_app
+      - ./alembic.ini:/alembic.ini:ro
+      - ./alembic:/alembic:ro
       - ./utils/wait-for-it.sh:/wait-for-it.sh
     environment:
       - "RUN=uvicorn prism_app.main:app --host 0.0.0.0 --port 80"
       - PRISM_ALERTS_DATABASE_URL=postgresql://postgres:!ChangeMe!@testdb:5432/postgres
-    command: uvicorn prism_app.main:app --host 0.0.0.0 --port 80 --reload
+    # No --reload: mounted /prism_app + reload can restart API mid-pytest; CI needs stable process.
+    command: uvicorn prism_app.main:app --host 0.0.0.0 --port 80
     # Infinite loop, to keep it alive, for debugging
     # command: bash -c "while true; do echo 'sleeping...' && sleep 10; done"
   testdb:
-    image: kartoza/postgis:12.1
+    image: kartoza/postgis:16-3
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
       - POSTGRES_PORT=5432
       - POSTGRES_PASSWORD=!ChangeMe!
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
 
   frontend:
     # small wrapper around the frontend code to make it easier to run
@@ -29,6 +41,8 @@ services:
     entrypoint: yarn start --port 3300
     environment:
       - REACT_APP_COUNTRY=cambodia
+      # Playwright E2E has no MSAL session; frontend treats !REACT_APP_TESTING && WFPAuthRequired
+      - REACT_APP_TESTING=true
     ports:
       - "3300:3300"
     volumes:
