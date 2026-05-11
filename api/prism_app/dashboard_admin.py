@@ -35,8 +35,6 @@ class DashboardAdminView(ModelView):
         "config",
         "created_at",
         "updated_at",
-        "created_by",
-        "updated_by",
     ]
     exclude_fields_from_list = ("config",)
     exclude_fields_from_create = (
@@ -44,16 +42,12 @@ class DashboardAdminView(ModelView):
         "slug",
         "created_at",
         "updated_at",
-        "created_by",
-        "updated_by",
     )
     exclude_fields_from_edit = (
         "id",
         "slug",
         "created_at",
         "updated_at",
-        "created_by",
-        "updated_by",
     )
     searchable_fields = [
         "title",

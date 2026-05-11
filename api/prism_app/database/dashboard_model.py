@@ -131,12 +131,6 @@ class DashboardModel(SQLModel, table=True):
             onupdate=datetime.datetime.now,
         ),
     )
-    created_by: str | None = Field(
-        default=None, sa_column=Column(String, nullable=True)
-    )
-    updated_by: str | None = Field(
-        default=None, sa_column=Column(String, nullable=True)
-    )
 
     @validates("title")
     def _set_slug_from_title(self, key: str, title: str) -> str:

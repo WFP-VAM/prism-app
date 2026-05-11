@@ -107,8 +107,6 @@ def upgrade() -> None:
             server_default=sa.text("now()"),
             nullable=False,
         ),
-        sa.Column("created_by", sa.String(), nullable=True),
-        sa.Column("updated_by", sa.String(), nullable=True),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint(
             "deployment", "title", name="uq_dashboard_deployment_title"
