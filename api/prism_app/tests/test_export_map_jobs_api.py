@@ -92,9 +92,7 @@ def test_get_export_map_job_status(api_client: TestClient) -> None:
     assert r.json()["status"] == "queued"
     assert r.json()["download_url"] is None
     assert r.json()["origin_url"] == "http://localhost"
-    assert (
-        r.json()["download_filename"] == "TestPlace_precip_2025_01_01.pdf"
-    )
+    assert r.json()["download_filename"] == "TestPlace_precip_2025_01_01.pdf"
 
 
 def test_post_export_map_jobs_mozambique_fixture(

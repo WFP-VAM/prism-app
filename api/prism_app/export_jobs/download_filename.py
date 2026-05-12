@@ -5,7 +5,6 @@ from __future__ import annotations
 from typing import Literal
 from urllib.parse import parse_qs, urlparse
 
-
 _UNSAFE_FILENAME_CHARS = frozenset('<>:"/\\|?*')
 
 
@@ -64,7 +63,9 @@ def build_map_export_download_filename(
     snakes = [iso_date_to_snake(d) for d in dates]
     start_snake = snakes[0]
     end_snake = snakes[-1]
-    date_stem = start_snake if start_snake == end_snake else f"{start_snake}_to_{end_snake}"
+    date_stem = (
+        start_snake if start_snake == end_snake else f"{start_snake}_to_{end_snake}"
+    )
     base = f"{safe_country}_{safe_layer}_{date_stem}"
     return f"{base}{ext}"
 

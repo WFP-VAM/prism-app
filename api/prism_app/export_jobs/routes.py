@@ -10,7 +10,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.export_jobs.db import get_export_jobs_session
-from prism_app.export_jobs.download_filename import map_export_download_filename_from_payload
+from prism_app.export_jobs.download_filename import (
+    map_export_download_filename_from_payload,
+)
 from prism_app.export_jobs.fingerprint import compute_request_fingerprint
 from prism_app.export_jobs.service import enqueue_map_export_job
 from prism_app.export_s3 import (
@@ -97,7 +99,9 @@ def read_map_export_job(
 
     download_filename: str | None = None
     if job.request_payload_json is not None:
-        download_filename = map_export_download_filename_from_payload(job.request_payload_json)
+        download_filename = map_export_download_filename_from_payload(
+            job.request_payload_json
+        )
 
     download_url: str | None = None
     local_artifact_path: str | None = None
