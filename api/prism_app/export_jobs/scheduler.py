@@ -45,7 +45,9 @@ def fire_next_due_map_export_schedule(session: Session) -> bool:
     schedule_id = schedule.id
     for attempt in range(1, SCHEDULE_FIRE_MAX_ATTEMPTS + 1):
         try:
-            request = MapExportRequestModel.model_validate(schedule.request_payload_json)
+            request = MapExportRequestModel.model_validate(
+                schedule.request_payload_json
+            )
             enqueue_scheduled_map_export_job(session, schedule, request)
 
             fired_at = utc_now()

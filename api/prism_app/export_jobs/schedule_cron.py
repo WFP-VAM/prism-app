@@ -5,7 +5,6 @@ from __future__ import annotations
 from datetime import datetime
 
 from croniter import croniter
-
 from prism_app.utils import utc_now
 
 
