@@ -5,7 +5,7 @@ import uuid
 from enum import Enum
 from typing import Any
 
-from prism_app.dashboard_slug import slugify_dashboard_name
+from prism_app.dashboard.util import slugify_dashboard_name
 from sqlalchemy import (
     Boolean,
     Column,

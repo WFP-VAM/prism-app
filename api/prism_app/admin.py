@@ -1,16 +1,15 @@
 """Starlette Admin: read-only alerts and deployment reference; full CRUD for dashboards."""
 
 from prism_app.auth.permission_codes import ADMIN_ACCESS
-from prism_app.dashboard_admin import DashboardAdminView
+from prism_app.dashboard.dashboard_admin import DashboardAdminView
 from prism_app.database.alert_model import AlertModel
 from prism_app.database.anticipatory_action_alerts_model import AnticipatoryActionAlerts
-from prism_app.database.dashboard_model import DashboardModel, DeploymentModel
+from prism_app.database.dashboard_model import DashboardModel
 from prism_app.database.kobo_user_model import KoboUser
 from prism_app.database.permission_model import Permission, UserPermission
 from prism_app.database.user_model import User
 from starlette.requests import Request
 from starlette_admin.contrib.sqla import Admin, ModelView
-from starlette_admin.fields import StringField
 
 
 def _request_has_prism_admin_access(request: Request) -> bool:
@@ -67,11 +66,6 @@ class AnticipatoryActionAlertsView(ReadOnlyModelView):
     exclude_fields_from_list = ("last_states",)
 
 
-class DeploymentView(ReadOnlyModelView):
-    label = "Deployments"
-    fields = [StringField("code", label="Deployment code")]
-
-
 class UserEditView(PrismGatedModelView):
     """CIAM-mapped users: provision metadata; permissions use User permissions."""
 
@@ -108,7 +102,6 @@ def register_alerts_admin_views(admin: Admin) -> None:
     admin.add_view(AlertView(AlertModel))
     admin.add_view(KoboUserView(KoboUser))
     admin.add_view(AnticipatoryActionAlertsView(AnticipatoryActionAlerts))
-    admin.add_view(DeploymentView(DeploymentModel))
     admin.add_view(DashboardAdminView(DashboardModel))
     admin.add_view(UserEditView(User))
     admin.add_view(PermissionView(Permission))

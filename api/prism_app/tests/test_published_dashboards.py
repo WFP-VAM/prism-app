@@ -1,6 +1,6 @@
 """Unit tests for dashboard read normalization helpers."""
 
-from prism_app.published_dashboards import _omit_none_keys
+from prism_app.dashboard.util import omit_none_keys
 
 
 def test_omit_none_keys_removes_nested_null_object_fields() -> None:
@@ -20,7 +20,7 @@ def test_omit_none_keys_removes_nested_null_object_fields() -> None:
         ],
     }
 
-    out = _omit_none_keys(payload)
+    out = omit_none_keys(payload)
     second_col = out["secondColumn"]
     assert "threshold" not in second_col[0]
     assert "adminUnitId" not in second_col[1]

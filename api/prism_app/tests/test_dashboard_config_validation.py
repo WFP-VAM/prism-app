@@ -3,7 +3,7 @@
 import json
 
 import pytest
-from prism_app.dashboard_config_validation import (
+from prism_app.dashboard.dashboard_config_validation import (
     DashboardConfigPayload,
     format_dashboard_config_validation_message,
     validate_and_dump_dashboard_config,

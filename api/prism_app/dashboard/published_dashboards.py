@@ -4,22 +4,12 @@ from __future__ import annotations
 
 from typing import Any
 
+from prism_app.dashboard.util import omit_none_keys
 from prism_app.database.dashboard_model import DashboardModel, DashboardStatus
 from sqlalchemy import select
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
 from sqlmodel import col
-
-
-def _omit_none_keys(value: Any) -> Any:
-    """Recursively drop dict keys with None values (keep list positions intact)."""
-    if isinstance(value, dict):
-        return {
-            key: _omit_none_keys(val) for key, val in value.items() if val is not None
-        }
-    if isinstance(value, list):
-        return [_omit_none_keys(item) for item in value]
-    return value
 
 
 def merge_published_dashboard_rows_for_country(
@@ -44,7 +34,7 @@ def merge_published_dashboard_rows_for_country(
         )
     merged: list[Any] = []
     for row in orm_rows:
-        cfg = _omit_none_keys(row.config)
+        cfg = omit_none_keys(row.config)
         if isinstance(cfg, list):
             merged.extend(cfg)
             continue

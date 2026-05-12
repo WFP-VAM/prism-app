@@ -21,6 +21,9 @@ from prism_app.auth.deps import require_permissions, require_prism_session
 from prism_app.auth.permission_codes import ADMIN_ACCESS
 from prism_app.auth_legacy import optional_validate_user, validate_user
 from prism_app.caching import FilePath, cache_file, cache_geojson
+from prism_app.dashboard.published_dashboards import (
+    merge_published_dashboard_rows_for_country,
+)
 from prism_app.database.alert_model import AlchemyEncoder, AlertModel
 from prism_app.database.database import DB_URI, AlertsDataBase
 from prism_app.database.kobo_user_model import KoboUser
@@ -36,7 +39,6 @@ from prism_app.googleflood import (
 from prism_app.hdc import get_hdc_stats
 from prism_app.kobo import get_form_dates, get_form_responses, parse_datetime_params
 from prism_app.models import AcledRequest, MapExportRequestModel, RasterGeotiffModel
-from prism_app.published_dashboards import merge_published_dashboard_rows_for_country
 from prism_app.report import download_report
 from prism_app.timer import timed
 from prism_app.utils import extract_dates_from_urls
@@ -164,10 +166,10 @@ def healthcheck() -> str:
     summary="Published dashboard configs (deployment-scoped)",
 )
 def get_published_dashboards(
-    country: str = Query(
+    deployment: str = Query(
         ...,
         min_length=1,
-        description="Deployment key (frontend configMap key; query param kept as `country`)",
+        description="Deployment key (frontend configMap key)",
     ),
     status: str = Query(
         "published",
@@ -188,7 +190,7 @@ def get_published_dashboards(
             status_code=400,
             detail="Only status=published is supported for this endpoint",
         )
-    return merge_published_dashboard_rows_for_country(alert_db.engine, country)
+    return merge_published_dashboard_rows_for_country(alert_db.engine, deployment)
 
 
 @timed

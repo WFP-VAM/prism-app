@@ -1,0 +1,100 @@
+<div
+    class="dashboard-config-json-drop border border-2 rounded p-4 text-center {% if error %}{{ field.error_class }}{% endif %}"
+    data-dashboard-config-drop
+    id="{{ field.id }}_drop"
+>
+    <p class="mb-2">Drag and drop a JSON file here, or browse to choose one.</p>
+    <p class="text-muted small mb-3">Only <code>.json</code> files are accepted.</p>
+    <input
+        type="file"
+        class="form-control dashboard-config-json-file-input {% if error %}is-invalid{% endif %}"
+        id="{{ field.id }}"
+        name="{{ field.id }}"
+        {{ field.input_params() | safe }}
+    />
+    <p class="text-muted small mt-2 mb-0" data-dashboard-config-filename hidden></p>
+    {% if field.help_text %}
+        <small class="form-hint d-block mt-2">{{ field.help_text }}</small>
+    {% endif %}
+</div>
+{% if action.name == 'EDIT' and data %}
+    <input
+        type="hidden"
+        name="{{ field.id }}__existing"
+        value="{{ data|tojson|forceescape }}"
+    />
+    <p class="text-muted small mt-2 mb-0">
+        Current configuration is kept unless you upload a new JSON file.
+    </p>
+{% endif %}
+{% include "forms/_error.html" %}
+<style>
+    .dashboard-config-json-drop.is-dragover {
+        border-color: var(--tblr-primary, #206bc4);
+        background-color: rgba(32, 107, 196, 0.05);
+    }
+</style>
+<script>
+    (() => {
+        const dropZone = document.getElementById("{{ field.id }}_drop");
+        if (!dropZone) {
+            return;
+        }
+        const input = dropZone.querySelector(".dashboard-config-json-file-input");
+        const filenameEl = dropZone.querySelector("[data-dashboard-config-filename]");
+        if (!input) {
+            return;
+        }
+
+        const showFilename = (file) => {
+            if (!filenameEl || !file) {
+                return;
+            }
+            filenameEl.textContent = `Selected file: ${file.name}`;
+            filenameEl.hidden = false;
+        };
+
+        const setDragOver = (active) => {
+            dropZone.classList.toggle("is-dragover", active);
+        };
+
+        const isJsonFile = (file) => file.name.toLowerCase().endsWith(".json");
+
+        input.addEventListener("change", () => {
+            const file = input.files?.[0];
+            if (file && !isJsonFile(file)) {
+                input.value = "";
+                if (filenameEl) {
+                    filenameEl.hidden = true;
+                }
+                return;
+            }
+            showFilename(file);
+        });
+
+        ["dragenter", "dragover"].forEach((eventName) => {
+            dropZone.addEventListener(eventName, (event) => {
+                event.preventDefault();
+                setDragOver(true);
+            });
+        });
+
+        ["dragleave", "drop"].forEach((eventName) => {
+            dropZone.addEventListener(eventName, (event) => {
+                event.preventDefault();
+                setDragOver(false);
+            });
+        });
+
+        dropZone.addEventListener("drop", (event) => {
+            const file = event.dataTransfer?.files?.[0];
+            if (!file || !isJsonFile(file)) {
+                return;
+            }
+            const transfer = new DataTransfer();
+            transfer.items.add(file);
+            input.files = transfer.files;
+            showFilename(file);
+        });
+    })();
+</script>

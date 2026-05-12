@@ -3,7 +3,10 @@
 import json
 from typing import Any, cast
 
-from prism_app.dashboard_config_validation import validate_and_dump_dashboard_config
+from prism_app.dashboard.dashboard_config_field import DashboardConfigJsonFileField
+from prism_app.dashboard.dashboard_config_validation import (
+    validate_and_dump_dashboard_config,
+)
 from prism_app.database.dashboard_model import ALLOWED_DASHBOARD_DEPLOYMENTS
 from starlette.requests import Request
 from starlette_admin.contrib.sqla import ModelView
@@ -14,12 +17,13 @@ from starlette_admin.fields import EnumField
 class DashboardAdminView(ModelView):
     """Create / edit / delete dashboards; `slug` is derived from `title`.
 
-    The `config` JSONB field uses Starlette Admin's built-in JSON editor (tree/code).
-    Paste the same top-level array as ``dashboard.json`` (one or more dashboard rows), or
+    The `config` JSONB field is uploaded as a JSON file (drag-and-drop or browse).
+    Use the same top-level array as ``dashboard.json`` (one or more dashboard rows), or
     a single row object.
     """
 
     label = "Dashboards"
+    name = "dashboard"
     fields = [
         "title",
         EnumField(
@@ -32,7 +36,15 @@ class DashboardAdminView(ModelView):
         "status",
         "is_editable",
         "slug",
-        "config",
+        DashboardConfigJsonFileField(
+            "config",
+            label="Configuration file",
+            required=True,
+            help_text=(
+                "Upload a dashboard JSON file (same shape as dashboard.json: "
+                "an array of dashboard rows, or a single row object)."
+            ),
+        ),
         "created_at",
         "updated_at",
     ]
@@ -87,7 +99,7 @@ class DashboardAdminView(ModelView):
                 cfg = None
         if "config" not in errors:
             if cfg is None:
-                errors["config"] = "Dashboard configuration is required."
+                errors["config"] = "Upload a valid JSON configuration file."
             else:
                 try:
                     data["config"] = validate_and_dump_dashboard_config(cfg)

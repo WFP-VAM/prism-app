@@ -1,6 +1,6 @@
 """Unit tests for dashboard URL slug helper."""
 
-from prism_app.dashboard_slug import slugify_dashboard_name
+from prism_app.dashboard.util import slugify_dashboard_name
 
 
 def test_slugify_basic() -> None:

@@ -1,4 +1,4 @@
-"""API tests for GET /dashboards (published, country-scoped)."""
+"""API tests for GET /dashboards (published, deployment-scoped)."""
 
 import os
 from unittest.mock import patch
@@ -13,7 +13,7 @@ from prism_app.main import app
 client = TestClient(app)
 
 
-def test_get_dashboards_requires_country():
+def test_get_dashboards_requires_deployment():
     r = client.get("/dashboards")
     assert r.status_code == 422
 
@@ -21,7 +21,7 @@ def test_get_dashboards_requires_country():
 def test_get_dashboards_503_when_db_inactive():
     with patch("prism_app.main.alert_db") as mock_db:
         mock_db.active = False
-        r = client.get("/dashboards", params={"country": "moz"})
+        r = client.get("/dashboards", params={"deployment": "moz"})
     assert r.status_code == 503
     assert "unavailable" in r.json()["detail"].lower()
 
@@ -31,7 +31,9 @@ def test_get_dashboards_rejects_non_published_status():
         mock_db.active = True
         mock_db.engine = object()
         with patch("prism_app.main.merge_published_dashboard_rows_for_country") as m:
-            r = client.get("/dashboards", params={"country": "moz", "status": "draft"})
+            r = client.get(
+                "/dashboards", params={"deployment": "moz", "status": "draft"}
+            )
     assert r.status_code == 400
     m.assert_not_called()
 
@@ -54,7 +56,7 @@ def test_get_dashboards_returns_merged_config():
             return_value=sample,
         ) as m:
             r = client.get(
-                "/dashboards", params={"country": "moz", "status": "published"}
+                "/dashboards", params={"deployment": "moz", "status": "published"}
             )
     assert r.status_code == 200
     assert r.json() == sample

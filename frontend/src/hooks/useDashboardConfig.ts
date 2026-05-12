@@ -25,7 +25,7 @@ export function useDashboardConfig(): void {
   const isAuthenticated = useIsAuthenticated();
   const enabled = isAuthenticated || !authRequired;
   const url = `${DASHBOARDS_API_URL}?${new URLSearchParams({
-    country: safeCountry,
+    deployment: safeCountry,
     status: 'published',
   }).toString()}`;
 
