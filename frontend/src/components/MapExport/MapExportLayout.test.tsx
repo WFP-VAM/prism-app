@@ -33,6 +33,10 @@ jest.mock('components/MapView/Legends/LegendItemsList', () => {
 
 jest.mock('utils/map-utils', () => ({
   useAAMarkerScalePercent: () => 1,
+  getLayerMapId: (id: string, type?: string) =>
+    `layer-${id}${type ? `-${type}` : ''}`,
+  isLayerOnView: () => false,
+  firstBoundaryOnView: () => undefined,
 }));
 
 jest.mock('utils/useOnResizeObserver', () => {
