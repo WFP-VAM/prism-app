@@ -27,6 +27,7 @@ class DashboardAdminView(ModelView):
 
     label = "Dashboards"
     name = "dashboard"
+    detail_template = "detail_dashboard.html"
     fields = [
         "title",
         EnumField(

@@ -1,0 +1,77 @@
+{#
+  Dashboard detail view: show the record title in the card header instead of the UUID.
+#}
+{% extends "@starlette-admin/detail.html" %}
+
+{% block content %}
+    {% set pk = model.pk_attr %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div id="alertContainer"></div>
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <strong>{{ obj.title }}</strong>
+                        </h3>
+                        <div class="card-actions">
+                            {% with pk=obj[pk] %}
+                                {% include "row-actions.html" %}
+                            {% endwith %}
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="ms-auto text-muted">
+                            <div class="ms-2 d-inline-block">
+                                <div class="input-icon">
+                                    <span class="input-icon-addon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                            <circle cx="10" cy="10" r="7"></circle>
+                                            <line x1="21" y1="21" x2="15" y2="15"></line>
+                                        </svg>
+                                    </span>
+                                    <input type="search" id="searchInput" value="" class="form-control" placeholder="{{ _('Search') }}..." aria-label="Search in table">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-vcenter table-mobile-md">
+                                <thead>
+                                <tr>
+                                    <th>{{ _("Attribute") }}</th>
+                                    <th>{{ _("Value") }}</th>
+                                </tr>
+                                </thead>
+                                <tbody id="tableContent">
+                                {% for field in model.get_fields_list(request, 'DETAIL' | ra) %}
+                                    <tr>
+                                        <td data-label="Attribute">
+                                            <div>
+                                                <strong>{{ field.label }}</strong>
+                                            </div>
+                                        </td>
+                                        <td data-label="Value">
+                                            {% with data=obj[field.name] %}
+                                                {% if data == None %}
+                                                    {% include "displays/_null.html" %}
+                                                {% elif (data | is_iter) and (data |length) ==0 %}
+                                                    {% include "displays/_empty.html" %}
+                                                {% else %}
+                                                    {% include field.display_template %}
+                                                {% endif %}
+                                            {% endwith %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
