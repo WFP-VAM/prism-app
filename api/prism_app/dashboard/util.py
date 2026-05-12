@@ -4,21 +4,21 @@ import re
 from typing import Any
 
 
-def slugify_dashboard_name(name: str) -> str:
-    """Lowercase kebab-case slug; stable per country when paired with unique `name`."""
+def slugify_dashboard_path_part(name: str) -> str:
+    """Lowercase kebab-case path segment from a dashboard title or deployment."""
     s = (name or "").strip().lower()
     s = re.sub(r"[^a-z0-9]+", "-", s)
     s = s.strip("-")
     return s
 
 
-def build_dashboard_slug(title: str, deployment: str) -> str:
-    """Build stored dashboard slug, prefixed by deployment."""
-    base = slugify_dashboard_name(title) or "dashboard"
-    deployment_slug = slugify_dashboard_name(deployment)
-    if not deployment_slug:
-        raise ValueError("deployment is required to build dashboard slug")
-    return f"{deployment_slug}-{base}"
+def build_dashboard_path(title: str, deployment: str) -> str:
+    """Build stored dashboard path, prefixed by deployment."""
+    base = slugify_dashboard_path_part(title) or "dashboard"
+    deployment_part = slugify_dashboard_path_part(deployment)
+    if not deployment_part:
+        raise ValueError("deployment is required to build dashboard path")
+    return f"{deployment_part}-{base}"
 
 
 def omit_none_keys(value: Any) -> Any:

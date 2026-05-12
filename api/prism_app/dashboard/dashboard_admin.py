@@ -18,7 +18,7 @@ from starlette_admin.fields import EnumField
 
 
 class DashboardAdminView(ModelView):
-    """Create / edit / delete dashboards; slug is derived from title and deployment.
+    """Create / edit / delete dashboards; path is derived from title and deployment.
 
     The `config` JSONB field is uploaded as a JSON file (drag-and-drop or browse).
     Use the same top-level array as ``dashboard.json`` (one or more dashboard rows), or

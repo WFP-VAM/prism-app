@@ -74,7 +74,7 @@ def upgrade() -> None:
         "dashboard",
         sa.Column("id", postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column("title", sa.String(), nullable=False),
-        sa.Column("slug", sa.String(), nullable=False),
+        sa.Column("path", sa.String(), nullable=False),
         sa.Column(
             "status",
             status_type,
@@ -108,7 +108,7 @@ def upgrade() -> None:
         sa.UniqueConstraint(
             "deployment", "title", name="uq_dashboard_deployment_title"
         ),
-        sa.UniqueConstraint("deployment", "slug", name="uq_dashboard_deployment_slug"),
+        sa.UniqueConstraint("deployment", "path", name="uq_dashboard_deployment_path"),
     )
     op.create_index(
         "ix_dashboard_deployment_status",

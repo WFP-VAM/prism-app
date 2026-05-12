@@ -43,7 +43,7 @@ def merge_published_dashboard_rows_for_country(
             merged.append(
                 {
                     "title": row.title,
-                    "path": row.slug,
+                    "path": row.path,
                     **cfg,
                 }
             )

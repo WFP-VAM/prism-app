@@ -5,7 +5,7 @@ import uuid
 from enum import Enum
 from typing import Any
 
-from prism_app.dashboard.util import build_dashboard_slug
+from prism_app.dashboard.util import build_dashboard_path
 from sqlalchemy import (
     Column,
     DateTime,
@@ -87,7 +87,7 @@ class DashboardModel(SQLModel, table=True):
     __tablename__ = "dashboard"
     __table_args__ = (
         UniqueConstraint("deployment", "title", name="uq_dashboard_deployment_title"),
-        UniqueConstraint("deployment", "slug", name="uq_dashboard_deployment_slug"),
+        UniqueConstraint("deployment", "path", name="uq_dashboard_deployment_path"),
         Index("ix_dashboard_deployment_status", "deployment", "status"),
         Index("ix_dashboard_deployment", "deployment"),
     )
@@ -97,7 +97,7 @@ class DashboardModel(SQLModel, table=True):
         sa_column=Column(PG_UUID(as_uuid=True), primary_key=True, nullable=False),
     )
     title: str = Field(sa_column=Column(String, nullable=False))
-    slug: str = Field(sa_column=Column(String, nullable=False))
+    path: str = Field(sa_column=Column(String, nullable=False))
     status: DashboardStatus = Field(
         default=DashboardStatus.draft,
         sa_column=Column(
@@ -126,13 +126,13 @@ class DashboardModel(SQLModel, table=True):
     )
 
 
-def apply_dashboard_slug(target: DashboardModel) -> None:
-    target.slug = build_dashboard_slug(target.title, target.deployment)
+def apply_dashboard_path(target: DashboardModel) -> None:
+    target.path = build_dashboard_path(target.title, target.deployment)
 
 
 @event.listens_for(DashboardModel, "before_insert")
 @event.listens_for(DashboardModel, "before_update")
-def _derive_dashboard_slug(
+def _derive_dashboard_path(
     mapper: object, connection: object, target: DashboardModel
 ) -> None:
-    apply_dashboard_slug(target)
+    apply_dashboard_path(target)
