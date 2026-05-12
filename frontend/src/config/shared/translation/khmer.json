@@ -82,6 +82,8 @@
   "Batch export is ready": "ការនាំចេញបាច់រួចរាល់",
   "Batch export started. This may take several minutes; a popup will appear when the file is ready.": "ការនាំចេញបាច់បានចាប់ផ្តើម។ តាមដានវឌ្ឍនភាពនៅក្នុងបង្អួចនាំចេញបាច់ ការងារធំអាចចំណាយពេលច្រើននាទី។",
   "batch_export_status_and_maps": "ស្ថានភាព៖ {{status}} · ផែនទី {{current}} នៃ {{total}}",
+  "batch_export_maps_truncated_panel": "ផែនទី {{total}} ត្រូវនឹងការកំណត់របស់អ្នក។ ការនាំចេញនីមួយៗរួមបញ្ចូលតែ {{max}} ផែនទីថ្មីបំផុតតាមកាលបរិច្ឆេទ ដើម្បីការពារម៉ាស៊ីនបម្រើផែនទី។",
+  "batch_export_maps_truncated_toast": "ការនាំចេញនេះមានតែ {{max}} ផែនទីថ្មីបំផុត (បានជ្រើស {{total}} សរុប)។ កាត់តរយៈពេល ឬបើកនាំចេញម្តងទៀតសម្រាប់កាលបរិច្ឆេទចាស់ជាងនេះ។",
   "Batch map exports": "ការនាំចេញផែនទីបាច់",
   "{{current}} of {{total}} maps": "ផែនទី {{current}} នៃ {{total}}",
   "Track batch export progress here. You can run several jobs at once.": "តាមដានវឌ្ឍនភាពនាំចេញបាច់នៅទីនេះ។ អ្នកអាចដំណើរការកិច្ចការច្រើនក្នុងពេលតែមួយ។",

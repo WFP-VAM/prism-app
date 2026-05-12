@@ -33,6 +33,8 @@
     "Batch export is ready": "Dhoofinta taxanaha waa diyaar",
     "Batch export started. This may take several minutes; a popup will appear when the file is ready.": "Dhoofinta taxanaha waa la bilaabay. Ku socodsiinta holmarinta ee daaqadda dhoofinta taxanaha shaqooyinka waaweyn waxay qaadan karaan daqiiqado dhowr ah.",
     "batch_export_status_and_maps": "xaaladda: {{status}} · {{current}} ka mid ah {{total}} khariidadood",
+    "batch_export_maps_truncated_panel": "{{total}} khariidadood ayaa ah kuwa ku dhigma goobahaaga. Dhoofin kasta wuxuu ka koobnaanayaa kaliya {{max}} kuwa ugu dambeeya (taariikh) si ay u ilaaliyaan adeegaha khariidada.",
+    "batch_export_maps_truncated_toast": "Dhoofintani waxay ku jirtaa kaliya {{max}} khariidadood oo ugu dambeeya ({{total}} oo la dooray wadarta). Yar baaxada taariikhda ama dhoofi mar kale oo loogu talagalay taariikhaha hore.",
     "Batch map exports": "Dhoofinta khariidadaha taxanaha",
     "{{current}} of {{total}} maps": "{{current}} ka mid ah {{total}} khariidadood",
     "Track batch export progress here. You can run several jobs at once.": "Halkan ka socodsiinta holmarinta dhoofinta taxanaha. Waxaad isku mar shaqayn kartaa shaqooyin badan.",

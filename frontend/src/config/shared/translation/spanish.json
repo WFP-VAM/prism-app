@@ -17,6 +17,8 @@
   "Batch export is ready": "La exportación por lotes está lista",
   "Batch export started. This may take several minutes; a popup will appear when the file is ready.": "Exportación por lotes iniciada. Siga el progreso en la ventana de exportación por lotes; los trabajos grandes pueden tardar varios minutos.",
   "batch_export_status_and_maps": "estado: {{status}} · {{current}} de {{total}} mapas",
+  "batch_export_maps_truncated_panel": "{{total}} mapas coinciden con su configuración. Cada exportación incluye solo los {{max}} más recientes (por fecha) para proteger los servidores de mapas.",
+  "batch_export_maps_truncated_toast": "Esta exportación incluye solo los {{max}} mapas más recientes ({{total}} seleccionados en total). Reduzca el intervalo de fechas o ejecute otra exportación para fechas más antiguas.",
   "Batch map exports": "Exportaciones de mapas por lotes",
   "{{current}} of {{total}} maps": "{{current}} de {{total}} mapas",
   "Track batch export progress here. You can run several jobs at once.": "Siga aquí el progreso de la exportación por lotes. Puede ejecutar varios trabajos a la vez.",

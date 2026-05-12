@@ -17,6 +17,8 @@
     "Batch export started. This may take several minutes; a popup will appear when the file is ready.": "Export par lot démarré. Suivez la progression dans la fenêtre d'export par lot ; les travaux volumineux peuvent prendre plusieurs minutes.",
     "Batch download completed successfully.": "Téléchargement par lot terminé avec succès.",
     "batch_export_status_and_maps": "statut : {{status}} · {{current}} sur {{total}} cartes",
+    "batch_export_maps_truncated_panel": "{{total}} cartes correspondent à vos réglages. Chaque export n’intègre que les {{max}} plus récentes (par date) pour protéger les serveurs de cartes.",
+    "batch_export_maps_truncated_toast": "Cet export ne comprend que les {{max}} cartes les plus récentes ({{total}} sélectionnées au total). Réduisez la plage ou lancez un autre export pour les dates plus anciennes.",
     "Batch map exports": "Exports de cartes par lot",
     "{{current}} of {{total}} maps": "{{current}} sur {{total}} cartes",
     "Track batch export progress here. You can run several jobs at once.": "Suivez ici la progression des exports par lot. Vous pouvez lancer plusieurs tâches en parallèle.",
