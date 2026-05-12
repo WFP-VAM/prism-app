@@ -36,40 +36,14 @@ def _invalidate_stale_succeeded_job(session: Session, job: MapExportJob) -> None
     session.add(job)
 
 
-def enqueue_map_export_job(
+def create_queued_map_export_job(
     session: Session,
     request: MapExportRequestModel,
-    s3_client: object | None = None,
-) -> tuple[MapExportJob, int]:
-    """
-    Return (job, http_status). New row with status queued -> 202;
-    dedupe (in-flight or succeeded) -> 200.
-    """
+    *,
+    schedule_id: str | None = None,
+) -> MapExportJob:
+    """Persist a new queued job row without committing."""
     fingerprint = compute_request_fingerprint(request)
-    stmt = (
-        select(MapExportJob)
-        .where(MapExportJob.request_fingerprint == fingerprint)
-        .order_by(MapExportJob.created_at.desc())
-    )
-    rows = list(session.exec(stmt))
-
-    active = [r for r in rows if r.status in ("queued", "running")]
-    if active:
-        active.sort(key=lambda r: r.created_at, reverse=True)
-        return active[0], 200
-
-    succeeded = [r for r in rows if r.status == "succeeded"]
-    if succeeded:
-        succeeded.sort(key=lambda r: r.created_at, reverse=True)
-        invalidated_any = False
-        for job in succeeded:
-            if map_export_artifact_exists(job.s3_uri, s3_client=s3_client):
-                return job, 200
-            _invalidate_stale_succeeded_job(session, job)
-            invalidated_any = True
-        if invalidated_any:
-            session.commit()
-
     artifact_kind = "pdf" if request.format == "pdf" else "zip"
     job = MapExportJob(
         request_fingerprint=fingerprint,
@@ -77,8 +51,50 @@ def enqueue_map_export_job(
         status="queued",
         origin_url=_origin_from_first_export_url(request.urls),
         content_type=artifact_kind,
+        schedule_id=schedule_id,
     )
     session.add(job)
+    return job
+
+
+def enqueue_map_export_job(
+    session: Session,
+    request: MapExportRequestModel,
+    s3_client: object | None = None,
+    *,
+    dedupe: bool = True,
+) -> tuple[MapExportJob, int]:
+    """
+    Return (job, http_status). New row with status queued -> 202;
+    dedupe (in-flight or succeeded) -> 200.
+    """
+    fingerprint = compute_request_fingerprint(request)
+    if dedupe:
+        stmt = (
+            select(MapExportJob)
+            .where(MapExportJob.request_fingerprint == fingerprint)
+            .order_by(MapExportJob.created_at.desc())
+        )
+        rows = list(session.exec(stmt))
+
+        active = [r for r in rows if r.status in ("queued", "running")]
+        if active:
+            active.sort(key=lambda r: r.created_at, reverse=True)
+            return active[0], 200
+
+        succeeded = [r for r in rows if r.status == "succeeded"]
+        if succeeded:
+            succeeded.sort(key=lambda r: r.created_at, reverse=True)
+            invalidated_any = False
+            for job in succeeded:
+                if map_export_artifact_exists(job.s3_uri, s3_client=s3_client):
+                    return job, 200
+                _invalidate_stale_succeeded_job(session, job)
+                invalidated_any = True
+            if invalidated_any:
+                session.commit()
+
+    job = create_queued_map_export_job(session, request)
     session.commit()
     session.refresh(job)
     return job, 202

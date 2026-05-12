@@ -10,15 +10,27 @@ from prism_app.export_jobs.fingerprint import (
     compute_request_fingerprint,
 )
 from prism_app.export_jobs.routes import get_s3_client_for_presign, router
-from prism_app.export_jobs.service import enqueue_map_export_job
+from prism_app.export_jobs.schedule_cron import compute_next_run_at, validate_cron_expression
+from prism_app.export_jobs.schedule_service import (
+    enqueue_scheduled_map_export_job,
+    refresh_schedule_next_run_at,
+    validate_schedule_fields,
+)
+from prism_app.export_jobs.service import create_queued_map_export_job, enqueue_map_export_job
 
 __all__ = [
     "canonical_request_dict",
     "claim_next_queued_map_export_job",
+    "compute_next_run_at",
     "compute_request_fingerprint",
+    "create_queued_map_export_job",
     "enqueue_map_export_job",
+    "enqueue_scheduled_map_export_job",
     "get_export_jobs_session",
     "get_export_jobs_session_factory",
     "get_s3_client_for_presign",
+    "refresh_schedule_next_run_at",
     "router",
+    "validate_cron_expression",
+    "validate_schedule_fields",
 ]
