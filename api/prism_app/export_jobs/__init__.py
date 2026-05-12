@@ -11,10 +11,10 @@ from prism_app.export_jobs.fingerprint import (
 )
 from prism_app.export_jobs.routes import get_s3_client_for_presign, router
 from prism_app.export_jobs.schedule_cron import compute_next_run_at, validate_cron_expression
+from prism_app.export_jobs.schedule_admin_form import MapExportScheduleAdminForm
 from prism_app.export_jobs.schedule_service import (
     enqueue_scheduled_map_export_job,
     refresh_schedule_next_run_at,
-    validate_schedule_fields,
 )
 from prism_app.export_jobs.service import create_queued_map_export_job, enqueue_map_export_job
 
@@ -29,8 +29,8 @@ __all__ = [
     "get_export_jobs_session",
     "get_export_jobs_session_factory",
     "get_s3_client_for_presign",
+    "MapExportScheduleAdminForm",
     "refresh_schedule_next_run_at",
     "router",
     "validate_cron_expression",
-    "validate_schedule_fields",
 ]
