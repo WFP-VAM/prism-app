@@ -7,8 +7,8 @@ import {
 import { LayerData } from 'context/layers/layer-data';
 import { isEnglishLanguageSelected } from 'i18n';
 import i18n from 'i18next';
-import { Map as MaplibreMap } from 'maplibre-gl';
 import { sortBy } from 'lodash';
+import { Map as MaplibreMap } from 'maplibre-gl';
 
 /**
  * A tree of admin boundary areas, starting from

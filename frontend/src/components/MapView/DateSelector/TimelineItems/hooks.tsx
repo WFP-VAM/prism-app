@@ -1,13 +1,14 @@
+import { getDateInUTC } from 'components/MapView/Layers/AnticipatoryActionStormLayer/utils';
 import { AAWindStateReports } from 'context/anticipatoryAction/AAStormStateSlice';
-import { WindState } from 'prism-common';
 import {
-  TimeAndState,
   AAStormWindStateReports,
+  TimeAndState,
 } from 'context/anticipatoryAction/AAStormStateSlice/types';
+import { WindState } from 'prism-common';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { getDateInUTC } from 'components/MapView/Layers/AnticipatoryActionStormLayer/utils';
 import { datesAreEqualWithoutTime } from 'utils/date-utils';
+
 import { WindStateReport } from './types';
 
 // Returns cyclones and their states for a given date, sorted by:

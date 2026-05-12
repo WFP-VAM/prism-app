@@ -4,25 +4,26 @@ import {
   getDefaultMiddleware,
   PayloadAction,
 } from '@reduxjs/toolkit';
+
+import analysisResultStateReduce from './analysisResultStateSlice';
+import anticipatoryActionDroughtStateReduce from './anticipatoryAction/AADroughtStateSlice';
+import anticipatoryActionFloodStateReduce from './anticipatoryAction/AAFloodStateSlice';
+import anticipatoryActionStormStateReduce from './anticipatoryAction/AAStormStateSlice';
+import dashboardStateReduce from './dashboardStateSlice';
+import datasetResultStateReduce from './datasetStateSlice';
+import leftPanelStateReduce from './leftPanelStateSlice';
+import mapBoundaryInfoStateReduce from './mapBoundaryInfoStateSlice';
+import mapSelectionLayerStateReduce from './mapSelectionLayerStateSlice';
 import mapStateReduce from './mapStateSlice';
-import serverStateReduce from './serverStateSlice';
-import serverPreloadStateReduce from './serverPreloadStateSlice';
-import tableStateReduce from './tableStateSlice';
-import tooltipStateReduce from './tooltipStateSlice';
+import mapTileLoadingStateReduce from './mapTileLoadingStateSlice';
 import notificationStateReduce, {
   errorToNotificationMiddleware,
 } from './notificationStateSlice';
-import analysisResultStateReduce from './analysisResultStateSlice';
-import mapSelectionLayerStateReduce from './mapSelectionLayerStateSlice';
-import mapBoundaryInfoStateReduce from './mapBoundaryInfoStateSlice';
-import datasetResultStateReduce from './datasetStateSlice';
-import mapTileLoadingStateReduce from './mapTileLoadingStateSlice';
-import leftPanelStateReduce from './leftPanelStateSlice';
 import opacityStateReduce from './opacityStateSlice';
-import dashboardStateReduce from './dashboardStateSlice';
-import anticipatoryActionDroughtStateReduce from './anticipatoryAction/AADroughtStateSlice';
-import anticipatoryActionStormStateReduce from './anticipatoryAction/AAStormStateSlice';
-import anticipatoryActionFloodStateReduce from './anticipatoryAction/AAFloodStateSlice';
+import serverPreloadStateReduce from './serverPreloadStateSlice';
+import serverStateReduce from './serverStateSlice';
+import tableStateReduce from './tableStateSlice';
+import tooltipStateReduce from './tooltipStateSlice';
 
 const reducer = combineReducers({
   mapState: mapStateReduce,

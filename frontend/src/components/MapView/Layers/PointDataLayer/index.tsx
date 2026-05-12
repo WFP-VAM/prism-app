@@ -1,8 +1,13 @@
-import { memo, useEffect } from 'react';
-import { Layer, Source } from 'react-map-gl/maplibre';
-import { Point } from 'geojson';
-
-import { useDispatch, useSelector } from 'react-redux';
+import {
+  ensureSDFIconsLoaded,
+  IconShape,
+} from 'components/MapView/Layers/icon-utils';
+import { addPopupParams } from 'components/MapView/Layers/layer-utils';
+import {
+  circlePaint,
+  fillPaintCategorical,
+  fillPaintData,
+} from 'components/MapView/Layers/styles';
 import {
   MapEventWrapFunctionProps,
   PointDataLayerProps,
@@ -10,44 +15,38 @@ import {
   PointLayerData,
 } from 'config/types';
 import {
-  clearUserAuthGlobal,
-  userAuthSelector,
-  availableDatesSelector,
-} from 'context/serverStateSlice';
+  clearDataset,
+  setEWSParams,
+  setGoogleFloodParams,
+} from 'context/datasetStateSlice';
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { addNotification } from 'context/notificationStateSlice';
-import { useDefaultDate } from 'utils/useDefaultDate';
-import { getRequestDate } from 'utils/server-utils';
-import { loadAvailableDatesForLayer } from 'context/serverStateSlice';
 import { pointDataLayerDatesSelector } from 'context/serverPreloadStateSlice';
-import { useUrlHistory } from 'utils/url-utils';
 import {
-  circlePaint,
-  fillPaintCategorical,
-  fillPaintData,
-} from 'components/MapView/Layers/styles';
-import {
-  setEWSParams,
-  setGoogleFloodParams,
-  clearDataset,
-} from 'context/datasetStateSlice';
-import { createEWSDatasetParams } from 'utils/ews-utils';
-import { addPopupParams } from 'components/MapView/Layers/layer-utils';
+  availableDatesSelector,
+  clearUserAuthGlobal,
+  userAuthSelector,
+} from 'context/serverStateSlice';
+import { loadAvailableDatesForLayer } from 'context/serverStateSlice';
+import { Point } from 'geojson';
+import { geoToH3, h3ToGeoBoundary } from 'h3-js';
 import {
   FillLayerSpecification,
   MapLayerMouseEvent,
   SymbolLayerSpecification,
 } from 'maplibre-gl';
-import { findFeature, getLayerMapId, useMapCallback } from 'utils/map-utils';
+import { memo, useEffect } from 'react';
+import { Layer, Source } from 'react-map-gl/maplibre';
+import { useDispatch, useSelector } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
-import { geoToH3, h3ToGeoBoundary } from 'h3-js';
+import { createEWSDatasetParams } from 'utils/ews-utils';
 import { createGoogleFloodDatasetParams } from 'utils/google-flood-utils';
+import { findFeature, getLayerMapId, useMapCallback } from 'utils/map-utils';
+import { getRequestDate } from 'utils/server-utils';
+import { useUrlHistory } from 'utils/url-utils';
+import { useDefaultDate } from 'utils/useDefaultDate';
 import { useMapState } from 'utils/useMapState';
-import {
-  IconShape,
-  ensureSDFIconsLoaded,
-} from 'components/MapView/Layers/icon-utils';
 
 const onClick =
   ({ layer, dispatch, t }: MapEventWrapFunctionProps<PointDataLayerProps>) =>

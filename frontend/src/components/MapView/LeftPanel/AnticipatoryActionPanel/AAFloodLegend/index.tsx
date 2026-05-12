@@ -1,15 +1,15 @@
 import {
-  Typography,
-  makeStyles,
+  Box,
   createStyles,
   Divider,
-  Box,
+  makeStyles,
+  Typography,
 } from '@material-ui/core';
-import { black } from 'muiTheme';
 import { Visibility } from '@material-ui/icons';
-import { useSafeTranslation } from 'i18n';
-import { getFloodRiskColor } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
 import { AAFloodColors } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionFloodPanel/constants';
+import { getFloodRiskColor } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
+import { useSafeTranslation } from 'i18n';
+import { black } from 'muiTheme';
 
 const useStyles = makeStyles(() =>
   createStyles({

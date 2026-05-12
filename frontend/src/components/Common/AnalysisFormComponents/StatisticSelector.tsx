@@ -1,13 +1,12 @@
-import React, { useMemo } from 'react';
 import {
   FormControl,
   FormControlLabel,
+  makeStyles,
+  MenuItem,
   Radio,
   RadioGroup,
-  Typography,
   TextField,
-  MenuItem,
-  makeStyles,
+  Typography,
 } from '@material-ui/core';
 import {
   AggregationOperations,
@@ -16,6 +15,7 @@ import {
   WMSLayerProps,
 } from 'config/types';
 import { useSafeTranslation } from 'i18n';
+import React, { useMemo } from 'react';
 
 interface StatisticSelectorProps {
   value: AggregationOperations;

@@ -1,12 +1,13 @@
-import { memo, useCallback, useMemo } from 'react';
 import { Theme } from '@material-ui/core';
 import { StyleSheet, Text, View } from '@react-pdf/renderer';
-import { chunk } from 'lodash';
-import { getRoundedData } from 'utils/data-utils';
 import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
+import { chunk } from 'lodash';
+import { memo, useCallback, useMemo } from 'react';
 import { Column } from 'utils/analysis-utils';
-import { FIRST_PAGE_TABLE_ROWS, MAX_TABLE_ROWS_PER_PAGE } from './types';
+import { getRoundedData } from 'utils/data-utils';
+
 import ReportDocTableHeader from './ReportDocTableHeader';
+import { FIRST_PAGE_TABLE_ROWS, MAX_TABLE_ROWS_PER_PAGE } from './types';
 
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({

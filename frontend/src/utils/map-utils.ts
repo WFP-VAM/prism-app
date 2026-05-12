@@ -1,11 +1,7 @@
+import simplify from '@turf/simplify';
 import {
-  MapLayerEventType,
-  MapLayerMouseEvent,
-  Map as MaplibreMap,
-} from 'maplibre-gl';
-import {
-  LayerKey,
   BoundaryLayerProps,
+  LayerKey,
   LayerType,
   MapEventWrapFunctionProps,
 } from 'config/types';
@@ -13,13 +9,17 @@ import {
   getBoundaryLayerSingleton,
   getDisplayBoundaryLayers,
 } from 'config/utils';
-import React, { useRef } from 'react';
-import simplify from '@turf/simplify';
-import { useDispatch, useSelector } from 'react-redux';
+import { BoundaryLayerData } from 'context/layers/boundary';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
+import {
+  Map as MaplibreMap,
+  MapLayerEventType,
+  MapLayerMouseEvent,
+} from 'maplibre-gl';
 import maxInscribedCircle from 'max-inscribed-circle'; // ts-ignore
-import { BoundaryLayerData } from 'context/layers/boundary';
+import React, { useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 /**
  * Gets the map layer ID for a given layer key

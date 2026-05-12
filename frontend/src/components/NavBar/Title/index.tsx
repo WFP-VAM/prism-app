@@ -6,9 +6,9 @@ import {
   useMediaQuery,
   useTheme,
 } from '@material-ui/core';
+import { getImageUrl } from 'assets/images';
 import { appConfig } from 'config';
 import { t } from 'i18next';
-import { getImageUrl } from 'assets/images';
 
 const { header } = appConfig;
 

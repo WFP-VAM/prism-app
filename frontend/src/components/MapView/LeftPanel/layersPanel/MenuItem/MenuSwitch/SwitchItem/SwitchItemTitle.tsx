@@ -1,13 +1,13 @@
 import {
+  createStyles,
+  makeStyles,
   MenuItem,
   Select,
   Typography,
-  createStyles,
-  makeStyles,
 } from '@material-ui/core';
 import { LayerType, MenuGroupItem } from 'config/types';
-import React, { memo, useCallback } from 'react';
 import { useSafeTranslation } from 'i18n';
+import React, { memo, useCallback } from 'react';
 
 const useStyles = makeStyles(() =>
   createStyles({

@@ -10,8 +10,8 @@ import {
 } from '@material-ui/core';
 import Menu, { MenuProps } from '@material-ui/core/Menu';
 import { ArrowDropDown } from '@material-ui/icons';
-import React, { useState } from 'react';
 import { useSafeTranslation } from 'i18n';
+import React, { useState } from 'react';
 
 const StyledMenu = withStyles((theme: Theme) => ({
   paper: {

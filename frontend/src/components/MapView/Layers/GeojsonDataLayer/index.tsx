@@ -1,14 +1,12 @@
-import { memo, useEffect } from 'react';
-import { Layer, Source } from 'react-map-gl/maplibre';
-
-import { useDispatch, useSelector } from 'react-redux';
 import { GeojsonDataLayerProps, LegendDefinition } from 'config/types';
-
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
-import { getLayerMapId } from 'utils/map-utils';
 import { opacitySelector } from 'context/opacityStateSlice';
 import { FillLayerSpecification } from 'maplibre-gl';
+import { memo, useEffect } from 'react';
+import { Layer, Source } from 'react-map-gl/maplibre';
+import { useDispatch, useSelector } from 'react-redux';
+import { getLayerMapId } from 'utils/map-utils';
 
 const paintProps: (
   legend: LegendDefinition,

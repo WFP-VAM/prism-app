@@ -1,42 +1,43 @@
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from 'context/store';
 import {
   AnticipatoryAction,
   DateItem,
   SelectedDateTimestamp,
 } from 'config/types';
+import {
+  AALayerIds,
+  isAnticipatoryActionLayer,
+  isWindowedDates,
+  LayerDefinitions,
+} from 'config/utils';
+import { AnticipatoryActionData } from 'context/anticipatoryAction/AADroughtStateSlice/types';
+import { loadAAFloodDateData } from 'context/anticipatoryAction/AAFloodStateSlice';
+import { AnticipatoryActionFloodState } from 'context/anticipatoryAction/AAFloodStateSlice/types';
+import { ParsedStormData } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import { getAAConfig } from 'context/anticipatoryAction/config';
+import { updateDateRange } from 'context/mapStateSlice';
 import {
   dateRangeSelector,
   layersSelector,
   mapSelector,
 } from 'context/mapStateSlice/selectors';
-import { updateDateRange } from 'context/mapStateSlice';
-import { getUrlKey, useUrlHistory, UrlLayerKey } from 'utils/url-utils';
 import {
-  AALayerIds,
-  LayerDefinitions,
-  isWindowedDates,
-  isAnticipatoryActionLayer,
-} from 'config/utils';
+  availableDatesSelector,
+  updateLayersCapabilities,
+} from 'context/serverStateSlice';
+import { RootState } from 'context/store';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { isBoundaryLayer } from 'utils/boundary-layers-utils';
+import { getFormattedDate } from 'utils/date-utils';
+import { DateFormat } from 'utils/name-utils';
 import {
   getAAAvailableDatesCombined,
   getRequestDate,
   getRequestDateItem,
 } from 'utils/server-utils';
-import {
-  availableDatesSelector,
-  updateLayersCapabilities,
-} from 'context/serverStateSlice';
-import { AnticipatoryActionData } from 'context/anticipatoryAction/AADroughtStateSlice/types';
-import { ParsedStormData } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
-import { AnticipatoryActionFloodState } from 'context/anticipatoryAction/AAFloodStateSlice/types';
-import { loadAAFloodDateData } from 'context/anticipatoryAction/AAFloodStateSlice';
-import { getFormattedDate } from 'utils/date-utils';
-import { DateFormat } from 'utils/name-utils';
+import { getUrlKey, UrlLayerKey, useUrlHistory } from 'utils/url-utils';
 import { useMapState } from 'utils/useMapState';
-import { isBoundaryLayer } from 'utils/boundary-layers-utils';
+
 import { toggleRemoveLayer } from '../layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 
 type AADataByAction<T extends AnticipatoryAction> =

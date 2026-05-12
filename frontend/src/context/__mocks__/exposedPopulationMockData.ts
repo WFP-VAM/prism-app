@@ -1,5 +1,5 @@
-import { ExposedPopulationResult } from 'utils/analysis-utils';
 import { AggregationOperations } from 'config/types';
+import { ExposedPopulationResult } from 'utils/analysis-utils';
 
 // Mock data for exposed population analysis with Mozambique coordinates
 export const mockExposedPopulationData = new ExposedPopulationResult(

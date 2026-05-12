@@ -1,4 +1,3 @@
-import { useState, useMemo, useCallback, memo } from 'react';
 import {
   FormControl,
   InputLabel,
@@ -7,20 +6,21 @@ import {
   Select,
   Theme,
 } from '@material-ui/core';
-import { useSelector } from 'react-redux';
-import { uniq } from 'lodash';
 import {
-  mapSelector,
   boundaryRelationSelector,
+  mapSelector,
 } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
+import { uniq } from 'lodash';
+import { memo, useCallback, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import SearchBar from './searchBar';
 import {
-  setMenuItemStyle,
   containsText,
   createMatchesTree,
   MapInteraction,
+  setMenuItemStyle,
 } from './utils';
 
 const useStyles = makeStyles((theme: Theme) => ({

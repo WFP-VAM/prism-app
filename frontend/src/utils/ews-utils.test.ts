@@ -1,6 +1,7 @@
 import timezoneMock from 'timezone-mock';
-import { createEWSDatesArray } from './ews-utils';
+
 import { timezones } from '../../test/helpers';
+import { createEWSDatesArray } from './ews-utils';
 
 const f = () => {
   expect(createEWSDatesArray(testEndDate)).toEqual(ret);

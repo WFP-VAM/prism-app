@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core';
-import { LayerKey } from 'config/types';
 import LayerDropdown from 'components/MapView/Layers/LayerDropdown';
+import { LayerKey } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 
 interface BaselineLayerSelectorProps {

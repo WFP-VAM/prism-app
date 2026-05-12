@@ -1,8 +1,8 @@
-import { createStyles, Typography, makeStyles } from '@material-ui/core';
+import { createStyles, makeStyles, Typography } from '@material-ui/core';
 import { DateRangeType } from 'config/types';
-import { DateFormat } from 'utils/name-utils';
 import { format } from 'date-fns';
 import { locales } from 'i18n';
+import { DateFormat } from 'utils/name-utils';
 
 function TimelineLabel({
   locale,

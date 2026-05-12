@@ -1,8 +1,9 @@
-import { Provider } from 'react-redux';
-import { render } from '@testing-library/react';
-import { ThemeProvider } from '@material-ui/styles';
 import { createTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/styles';
+import { render } from '@testing-library/react';
 import { store } from 'context/store';
+import { Provider } from 'react-redux';
+
 import AlertsPanel from '.';
 
 jest.mock('../../Layers/LayerDropdown', () => 'mock-Layer-Dropdown');

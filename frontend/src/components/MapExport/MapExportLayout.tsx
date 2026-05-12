@@ -1,27 +1,4 @@
-import { Typography, createStyles, makeStyles } from '@material-ui/core';
-import maplibregl from 'maplibre-gl';
-import React, {
-  useRef,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  createElement,
-  ComponentType,
-} from 'react';
-import MapGL, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';
-import { useTranslation } from 'react-i18next';
-import useResizeObserver from 'utils/useOnResizeObserver';
-import { getFormattedDate, formatCoverageText } from 'utils/date-utils';
-import { lightGrey } from 'muiTheme';
-import { FloodStationMarker } from 'components/MapView/Layers/AnticipatoryActionFloodLayer/FloodStationMarker';
-import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
-import { DiscriminateUnion, LayerType, Panel } from 'config/types';
-import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer/utils';
-import { mapStyle } from 'components/MapView/Map/utils';
-import { loadStormIcons } from 'components/MapView/Layers/AnticipatoryActionStormLayer/constants';
-import { ensureSDFIconsLoaded } from 'components/MapView/Layers/icon-utils';
-import { useAAMarkerScalePercent } from 'utils/map-utils';
+import { createStyles, makeStyles, Typography } from '@material-ui/core';
 import { getImageUrl, iconNorthArrow } from 'assets/images';
 // Layer components - keep in sync with MapView/Map/index.tsx
 import {
@@ -35,10 +12,40 @@ import {
   StaticRasterLayer,
   WMSLayer,
 } from 'components/MapView/Layers';
-import GeojsonDataLayer from 'components/MapView/Layers/GeojsonDataLayer';
+import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer/utils';
 import AnticipatoryActionFloodLayer from 'components/MapView/Layers/AnticipatoryActionFloodLayer';
-import { MapExportLayoutProps } from './types';
+import { FloodStationMarker } from 'components/MapView/Layers/AnticipatoryActionFloodLayer/FloodStationMarker';
+import { loadStormIcons } from 'components/MapView/Layers/AnticipatoryActionStormLayer/constants';
+import GeojsonDataLayer from 'components/MapView/Layers/GeojsonDataLayer';
+import { ensureSDFIconsLoaded } from 'components/MapView/Layers/icon-utils';
+import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
+import { mapStyle } from 'components/MapView/Map/utils';
+import { DiscriminateUnion, LayerType, Panel } from 'config/types';
+import maplibregl from 'maplibre-gl';
+import { lightGrey } from 'muiTheme';
+import React, {
+  ComponentType,
+  createElement,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { useTranslation } from 'react-i18next';
+import MapGL, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';
+import { formatCoverageText, getFormattedDate } from 'utils/date-utils';
+import {
+  getFirstBoundaryLayerMapId,
+  getLayerBeforeId,
+  layerUsesSymbolAnchorOnly,
+  stackLayersForMapPaintOrder,
+} from 'utils/map-layer-before-utils';
+import { useAAMarkerScalePercent } from 'utils/map-utils';
+import useResizeObserver from 'utils/useOnResizeObserver';
+
 import { getAspectRatioDecimal } from './aspectRatioConstants';
+import { MapExportLayoutProps } from './types';
 
 /**
  * MapExportLayout - Shared component for rendering map exports
@@ -136,6 +143,28 @@ function MapExportLayout({
   // Layers should be inserted below symbols/labels to keep labels visible
   const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
     'label_airport',
+  );
+
+  // Boundaries first, then other layers — shared with MapView via stackLayersForMapPaintOrder.
+  const stackLayers = useMemo(
+    () => stackLayersForMapPaintOrder(selectedLayers),
+    [selectedLayers],
+  );
+
+  const firstBoundaryLayerMapId = getFirstBoundaryLayerMapId(
+    mapRef.current?.getMap(),
+  );
+
+  const getBeforeId = useCallback(
+    (index: number, aboveBoundaries: boolean = false) =>
+      getLayerBeforeId(index, {
+        aboveBoundaries,
+        stackLayers,
+        map: mapRef.current?.getMap(),
+        firstSymbolId,
+        firstBoundaryLayerMapId,
+      }),
+    [firstBoundaryLayerMapId, firstSymbolId, stackLayers],
   );
 
   // Scale percent for AA markers based on map zoom
@@ -574,6 +603,11 @@ function MapExportLayout({
             forPrinting
             listStyle={classes.legendListStyle}
             showDescription={toggles.fullLayerDescription}
+            overrideLayers={
+              selectedLayers && selectedLayers.length > 0
+                ? selectedLayers
+                : undefined
+            }
           />
         </div>
       )}
@@ -589,12 +623,12 @@ function MapExportLayout({
         >
           {/* Render selected layers - KEEP IN SYNC with MapView/Map/index.tsx */}
           {/* Pass 'before' prop to insert layers below labels/symbols */}
-          {selectedLayers.map(layer => {
+          {stackLayers.map((layer, index) => {
             const { component } = componentTypes[layer.type];
             return createElement(component as any, {
               key: layer.id,
               layer,
-              before: firstSymbolId,
+              before: getBeforeId(index, layerUsesSymbolAnchorOnly(layer)),
             });
           })}
           {/* AA Drought markers */}

@@ -1,11 +1,12 @@
-import React, { createContext } from 'react';
-import type { LngLatBounds } from 'maplibre-gl';
-import { AdminCodeString } from 'config/types';
 import {
   AspectRatio,
   AspectRatioOption,
 } from 'components/MapExport/aspectRatioConstants';
+import { AdminCodeString, LayerKey } from 'config/types';
+import type { LngLatBounds } from 'maplibre-gl';
+import React, { createContext } from 'react';
 import { BatchCadence } from 'utils/batchCadenceUtils';
+import { DateCompatibleLayer } from 'utils/server-utils';
 
 // Re-export for backwards compatibility
 export type { AspectRatioOption };
@@ -105,6 +106,9 @@ export type PrintConfigContextType = {
     setPreviewMapWidth: React.Dispatch<React.SetStateAction<number | null>>;
     previewMapHeight: number | null;
     setPreviewMapHeight: React.Dispatch<React.SetStateAction<number | null>>;
+    selectableLayers: DateCompatibleLayer[];
+    selectedLayerId: LayerKey | null;
+    setSelectedLayerId: React.Dispatch<React.SetStateAction<LayerKey | null>>;
   };
 };
 
