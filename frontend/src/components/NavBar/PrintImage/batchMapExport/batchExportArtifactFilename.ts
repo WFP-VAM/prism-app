@@ -37,6 +37,18 @@ function buildBatchDateStem(startDate: number, endDate: number): string {
   return `${startDateStr}_to_${endDateStr}`;
 }
 
+/** Single pass; caller must pass non-empty array. */
+function minMaxUtcMs(stamps: readonly number[]): { minTs: number; maxTs: number } {
+  let minTs = stamps[0];
+  let maxTs = stamps[0];
+  for (let i = 1; i < stamps.length; i += 1) {
+    const ts = stamps[i];
+    if (ts < minTs) minTs = ts;
+    if (ts > maxTs) maxTs = ts;
+  }
+  return { minTs, maxTs };
+}
+
 /** Display range for UI (default date format); single label when same day in formatted output. */
 export function buildBatchExportDatesDisplay(
   mapTimestampsUtc: readonly number[],
@@ -44,17 +56,7 @@ export function buildBatchExportDatesDisplay(
   if (mapTimestampsUtc.length === 0) {
     return '';
   }
-  let minTs = mapTimestampsUtc[0];
-  let maxTs = mapTimestampsUtc[0];
-  for (let i = 1; i < mapTimestampsUtc.length; i += 1) {
-    const ts = mapTimestampsUtc[i];
-    if (ts < minTs) {
-      minTs = ts;
-    }
-    if (ts > maxTs) {
-      maxTs = ts;
-    }
-  }
+  const { minTs, maxTs } = minMaxUtcMs(mapTimestampsUtc);
   const startLabel = getFormattedDate(minTs, 'default') ?? '';
   const endLabel = getFormattedDate(maxTs, 'default') ?? '';
   if (startLabel === endLabel) {
@@ -89,17 +91,7 @@ export function buildBatchArtifactBasenames(
   if (mapTimestampsUtc.length === 0) {
     throw new Error('buildBatchArtifactBasenames: empty map timestamps');
   }
-  let minTs = mapTimestampsUtc[0];
-  let maxTs = mapTimestampsUtc[0];
-  for (let i = 1; i < mapTimestampsUtc.length; i += 1) {
-    const ts = mapTimestampsUtc[i];
-    if (ts < minTs) {
-      minTs = ts;
-    }
-    if (ts > maxTs) {
-      maxTs = ts;
-    }
-  }
+  const { minTs, maxTs } = minMaxUtcMs(mapTimestampsUtc);
   const filenameBase = buildBatchExportFilenameBase(
     country,
     layerId,
