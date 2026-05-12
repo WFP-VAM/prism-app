@@ -155,9 +155,7 @@ def _group_zones(
     grouped_basename = "{zones}.{simplify_tolerance}.{group_by}".format(
         zones=cache_filename, group_by=group_by, simplify_tolerance=simplify_tolerance
     )
-    output_filename: FilePath = os.path.join(
-        caching.CACHE_DIRECTORY, grouped_basename
-    )
+    output_filename: FilePath = os.path.join(caching.CACHE_DIRECTORY, grouped_basename)
     if is_file_valid(output_filename):
         return output_filename
 
