@@ -306,9 +306,7 @@ async def export_maps(
         progress_lock = asyncio.Lock()
         completed_maps = 0
 
-        async def render_to_file_with_progress(
-            url: str, output_path: Path
-        ) -> None:
+        async def render_to_file_with_progress(url: str, output_path: Path) -> None:
             nonlocal completed_maps
             await render_to_file(
                 pool,

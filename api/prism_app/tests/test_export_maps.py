@@ -124,6 +124,7 @@ async def test_export_maps_progress_callback_ordered_counts():
     )
     assert calls == [(1, 3), (2, 3), (3, 3)]
 
+
 # URL validation tests - parameterized
 @pytest.mark.parametrize(
     "url,should_raise,error_keyword",
