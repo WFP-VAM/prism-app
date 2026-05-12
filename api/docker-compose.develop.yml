@@ -58,20 +58,24 @@ services:
   
   export_map_worker:
     shm_size: "2gb"
+    depends_on:
+      db:
+        condition: service_healthy
     volumes:
       - ./prism_app:/prism_app
+      - ./cache:/cache:rw
     build:
       context: ./
       dockerfile: ./Dockerfile.export-map-worker
     environment:
       - PRISM_ALERTS_DATABASE_URL=
-      - POSTGRES_HOST=host.docker.internal
+      - POSTGRES_HOST=db
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
-      - POSTGRES_PORT=54321
+      - POSTGRES_PORT=5432
       - POSTGRES_PASSWORD=!ChangeMe!
       - EXPORT_MAP_S3_BUCKET=${EXPORT_MAP_S3_BUCKET:-}
-      - EXPORT_MAP_LOCAL_OUTPUT_DIR=${EXPORT_MAP_LOCAL_OUTPUT_DIR:-}
+      - EXPORT_MAP_LOCAL_OUTPUT_DIR=${EXPORT_MAP_LOCAL_OUTPUT_DIR:-/cache/map_exports}
       - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-}
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
