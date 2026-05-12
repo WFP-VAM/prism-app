@@ -18,7 +18,7 @@ import {
   Tooltip,
   Typography,
 } from '@material-ui/core';
-import { Cancel, GetApp } from '@material-ui/icons';
+import { Cancel, FileCopy, GetApp } from '@material-ui/icons';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import Switch from 'components/Common/Switch';
@@ -310,6 +310,7 @@ function PrintConfig() {
     setFooterTextSize,
     download,
     downloadBatch,
+    copyBatchMapUrls,
     isDownloading,
     defaultFooterText,
     selectedBoundaries,
@@ -610,37 +611,60 @@ function PrintConfig() {
         {/* Batch Maps */}
         {shouldEnableBatchMaps && (
           <>
-            <SectionToggle
-              title={t('Create a sequence of maps')}
-              expanded={toggles.batchMapsVisibility}
-              disabled={shouldShowMultiLayerWarning}
-              tooltip={t(
-                shouldShowMultiLayerWarning
-                  ? 'Select one layer at a time to create a sequence of maps'
-                  : 'Selecting this option will apply the template above to create multiple maps over a time period of your choice.',
+            <Box className={classes.batchMapsHeader}>
+              <Box className={classes.batchMapsToggle}>
+                <SectionToggle
+                  title={t('Create a sequence of maps')}
+                  expanded={toggles.batchMapsVisibility}
+                  disabled={shouldShowMultiLayerWarning}
+                  tooltip={t(
+                    shouldShowMultiLayerWarning
+                      ? 'Select one layer at a time to create a sequence of maps'
+                      : 'Selecting this option will apply the template above to create multiple maps over a time period of your choice.',
+                  )}
+                  handleChange={() => {
+                    const willBeEnabled = !toggles.batchMapsVisibility;
+
+                    if (willBeEnabled && !titleText.includes('{date}')) {
+                      // Append date placeholder
+                      setTitleText(prev => `${prev}${DATE_PLACEHOLDER_SUFFIX}`);
+                    } else if (
+                      !willBeEnabled &&
+                      titleText.endsWith(DATE_PLACEHOLDER_SUFFIX)
+                    ) {
+                      // Remove date placeholder suffix
+                      setTitleText(prev =>
+                        prev.slice(0, -DATE_PLACEHOLDER_SUFFIX.length),
+                      );
+                    }
+
+                    setToggles(prev => ({
+                      ...prev,
+                      batchMapsVisibility: willBeEnabled,
+                    }));
+                  }}
+                />
+              </Box>
+              {toggles.batchMapsVisibility && (
+                <Tooltip
+                  title={t('Copy batch map settings')}
+                  arrow
+                  placement="top"
+                  classes={{ tooltip: classes.tooltip }}
+                >
+                  <button
+                    type="button"
+                    aria-label={t('Copy batch map settings')}
+                    className={classes.batchMapsCopyButton}
+                    onClick={() => {
+                      void copyBatchMapUrls();
+                    }}
+                  >
+                    <FileCopy fontSize="small" />
+                  </button>
+                </Tooltip>
               )}
-              handleChange={() => {
-                const willBeEnabled = !toggles.batchMapsVisibility;
-
-                if (willBeEnabled && !titleText.includes('{date}')) {
-                  // Append date placeholder
-                  setTitleText(prev => `${prev}${DATE_PLACEHOLDER_SUFFIX}`);
-                } else if (
-                  !willBeEnabled &&
-                  titleText.endsWith(DATE_PLACEHOLDER_SUFFIX)
-                ) {
-                  // Remove date placeholder suffix
-                  setTitleText(prev =>
-                    prev.slice(0, -DATE_PLACEHOLDER_SUFFIX.length),
-                  );
-                }
-
-                setToggles(prev => ({
-                  ...prev,
-                  batchMapsVisibility: willBeEnabled,
-                }));
-              }}
-            />
+            </Box>
             {toggles.batchMapsVisibility && (
               <GreyContainer>
                 <GreyContainerSection>
@@ -817,6 +841,30 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: '4px',
       padding: '8px 12px',
       backgroundColor: '#f5f5f5',
+    },
+    batchMapsHeader: {
+      display: 'flex',
+      alignItems: 'center',
+      width: '100%',
+    },
+    batchMapsToggle: {
+      flex: 1,
+      minWidth: 0,
+    },
+    batchMapsCopyButton: {
+      marginLeft: 'auto',
+      display: 'inline-flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: 8,
+      border: 'none',
+      background: 'transparent',
+      color: 'rgba(0, 0, 0, 0.54)',
+      cursor: 'pointer',
+      '&:hover': {
+        color: 'rgba(0, 0, 0, 0.87)',
+        backgroundColor: 'rgba(0, 0, 0, 0.04)',
+      },
     },
   }),
 );

@@ -42,11 +42,12 @@ import {
   getAvailableCadences,
   getDisabledCadences,
 } from '../../../utils/batchCadenceUtils';
-import {
-  ALL_ASPECT_RATIO_OPTIONS,
-  isCustomRatio,
-} from '../../MapExport/aspectRatioConstants';
+import { ALL_ASPECT_RATIO_OPTIONS } from '../../MapExport/aspectRatioConstants';
 import { downloadToFile } from '../../MapView/utils';
+import {
+  buildBatchExportUrls,
+  formatExportUrlForClipboard,
+} from './batchExportUrls';
 import { calculateExportDimensions } from './mapDimensionsUtils';
 import PrintConfig from './printConfig';
 import PrintConfigContext, {
@@ -227,7 +228,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     }
   }, [availableCadences, cadence]);
 
-  const shouldEnableBatchMaps = false; // Temporarily disable batch maps;
+  const shouldEnableBatchMaps = true; // Temporarily disable batch maps;
 
   const shouldShowMultiLayerWarning = selectedLayersWithDateSupport.length > 1;
 
@@ -435,6 +436,93 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     handleDownloadMenuClose();
   };
 
+  const getBatchExportUrls = () => {
+    if (!printSelectedLayer) {
+      return [];
+    }
+
+    const formattedDates = filteredBatchDates
+      .map(timestamp => getFormattedDate(timestamp, 'default'))
+      .filter((date): date is string => date !== undefined);
+
+    if (formattedDates.length === 0) {
+      return [];
+    }
+
+    return buildBatchExportUrls({
+      pageUrl: window.location.href,
+      layerId: printSelectedLayer.id,
+      formattedDates,
+      mapBounds: previewBounds,
+      mapZoom: previewZoom,
+      aspectRatio: mapDimensions.aspectRatio,
+      titleText,
+      footerText,
+      footerTextSize,
+      logoPosition,
+      logoScale,
+      legendPosition,
+      legendScale,
+      bottomLogoScale,
+      toggles: {
+        fullLayerDescription: toggles.fullLayerDescription,
+        countryMask: toggles.countryMask,
+        mapLabelsVisibility: toggles.mapLabelsVisibility,
+        logoVisibility: toggles.logoVisibility,
+        legendVisibility: toggles.legendVisibility,
+        footerVisibility: toggles.footerVisibility,
+        bottomLogoVisibility: toggles.bottomLogoVisibility,
+      },
+      selectedBoundaries,
+    });
+  };
+
+  const copyBatchMapUrls = async () => {
+    const { startDate, endDate } = dateRangeForBatchMaps;
+
+    if (!startDate || !endDate) {
+      dispatch(
+        addNotification({
+          type: 'error',
+          message: t('Date range not set for batch download'),
+        }),
+      );
+      return;
+    }
+
+    const constructedUrls = getBatchExportUrls();
+
+    if (constructedUrls.length === 0) {
+      dispatch(
+        addNotification({
+          type: 'error',
+          message: t('No dates found in the selected range'),
+        }),
+      );
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(
+        constructedUrls.map(formatExportUrlForClipboard).join('\n'),
+      );
+      dispatch(
+        addNotification({
+          type: 'success',
+          message: t('Batch map URLs copied to clipboard.'),
+        }),
+      );
+    } catch (error) {
+      dispatch(
+        addNotification({
+          type: 'error',
+          message: t('Could not copy batch map settings. Please try again.'),
+        }),
+      );
+      console.error('Copy batch map settings failed:', error);
+    }
+  };
+
   const downloadBatch = async (format: 'pdf' | 'png') => {
     const { startDate, endDate } = dateRangeForBatchMaps;
 
@@ -453,25 +541,13 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         return;
       }
 
-      const formattedDates = filteredBatchDates.map(timestamp =>
-        getFormattedDate(timestamp, 'default'),
-      );
+      const constructedUrls = getBatchExportUrls();
 
-      if (formattedDates.length === 0) {
+      if (constructedUrls.length === 0) {
         console.error('No dates found in the selected range');
         setIsDownloading(false);
         return;
       }
-
-      // Use preview map bounds and zoom (captured from MapExportLayout via onBoundsChange)
-      // This ensures we get the exact bounds/zoom shown in the preview, without the
-      // extra left padding that the main map has for UI elements
-      const mapBounds = previewBounds;
-      const mapZoom = previewZoom;
-      // Construct URLs for each date by adding `/export` to the pathname and setting the date param
-      const { origin, pathname, search } = new URL(window.location.href);
-      const exportPath = `${pathname.replace(/\/$/, '')}/export`;
-      const baseParams = new URLSearchParams(search);
 
       // Calculate viewport dimensions for export
       // For 'Auto' aspect ratio, use the actual map dimensions from the preview
@@ -484,66 +560,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
           ? (previewMapHeight ?? undefined)
           : undefined,
       );
-
-      const constructedUrls = formattedDates
-        .filter((date): date is string => date !== undefined)
-        .map(date => {
-          const params = new URLSearchParams(baseParams);
-          params.set('date', date);
-          params.set('hazardLayerIds', printSelectedLayer.id);
-          params.delete('baselineLayerId');
-
-          // Map bounds and zoom
-          if (mapBounds) {
-            const bounds = `${mapBounds.getWest()},${mapBounds.getSouth()},${mapBounds.getEast()},${mapBounds.getNorth()}`;
-            params.set('bounds', bounds);
-          }
-          if (mapZoom != null) {
-            params.set('zoom', String(mapZoom));
-          }
-
-          // Print config options
-          // Map always fills viewport (100%), viewport dimensions maintain aspect ratio
-          params.set('mapWidth', '100');
-          params.set('mapHeight', '100');
-          // Handle aspect ratio - could be string or object
-          if (isCustomRatio(mapDimensions.aspectRatio)) {
-            params.set('aspectRatio', 'Custom');
-            params.set('customWidth', String(mapDimensions.aspectRatio.w));
-            params.set('customHeight', String(mapDimensions.aspectRatio.h));
-          } else {
-            params.set('aspectRatio', mapDimensions.aspectRatio);
-          }
-          params.set('title', titleText);
-          params.set('footer', footerText);
-          params.set('footerTextSize', String(footerTextSize));
-
-          // Position/scale
-          params.set('logoPosition', String(logoPosition));
-          params.set('logoScale', String(logoScale));
-          params.set('legendPosition', String(legendPosition));
-          params.set('legendScale', String(legendScale));
-          params.set('bottomLogoScale', String(bottomLogoScale));
-
-          // Toggles (as JSON, excluding batchMapsVisibility)
-          const exportToggles = {
-            fullLayerDescription: toggles.fullLayerDescription,
-            countryMask: toggles.countryMask,
-            mapLabelsVisibility: toggles.mapLabelsVisibility,
-            logoVisibility: toggles.logoVisibility,
-            legendVisibility: toggles.legendVisibility,
-            footerVisibility: toggles.footerVisibility,
-            bottomLogoVisibility: toggles.bottomLogoVisibility,
-          };
-          params.set('toggles', JSON.stringify(exportToggles));
-
-          // Selected boundaries
-          if (selectedBoundaries.length > 0) {
-            params.set('selectedBoundaries', selectedBoundaries.join(','));
-          }
-
-          return `${origin}${exportPath}?${params.toString()}`;
-        });
 
       const response = await fetch(`${EXPORT_API_URL}`, {
         method: 'POST',
@@ -643,6 +659,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       handleDownloadMenuClose,
       download,
       downloadBatch,
+      copyBatchMapUrls,
       isDownloading,
       defaultFooterText,
       setSelectedBoundaries,
