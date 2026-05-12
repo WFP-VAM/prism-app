@@ -1,8 +1,8 @@
 import { Menu, MenuItem } from '@material-ui/core';
-import { useSelector } from 'react-redux';
-import { PanelItem, Panel } from 'config/types';
+import { Panel, PanelItem } from 'config/types';
 import { selectedDashboardIndexSelector } from 'context/dashboardStateSlice';
 import { useSafeTranslation } from 'i18n';
+import { useSelector } from 'react-redux';
 
 function PanelMenu({
   panel,

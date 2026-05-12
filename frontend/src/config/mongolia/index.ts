@@ -1,5 +1,5 @@
-import appConfig from './prism.json';
 import rawLayers from './layers.json';
+import appConfig from './prism.json';
 import rawTables from './tables.json';
 
 const rawReports = {};

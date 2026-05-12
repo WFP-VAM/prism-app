@@ -1,7 +1,7 @@
-import { Typography, Input, makeStyles } from '@material-ui/core';
-import DatePicker from 'react-datepicker';
+import { Input, makeStyles, Typography } from '@material-ui/core';
 import { useSafeTranslation } from 'i18n';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import DatePicker from 'react-datepicker';
 
 interface ChartDateRangeSelectorProps {
   startDate: number | null;

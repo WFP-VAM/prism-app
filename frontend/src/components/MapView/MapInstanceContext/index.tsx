@@ -1,23 +1,24 @@
-import React, { useMemo } from 'react';
-import { Map as MaplibreMap } from 'maplibre-gl';
-import { LayerType } from 'config/types';
-import { DateRange } from 'context/mapStateSlice';
 import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
-import { RootState } from 'context/store';
-import { useDispatch } from 'react-redux';
+import { LayerType } from 'config/types';
 import {
   addLayerToMap,
-  removeLayerFromMap,
-  updateMapDateRange,
-  setMap,
-  removeLayerData,
-  setBoundaryRelationData,
-  dismissError,
-  setDashboardOpacity,
-  dashboardOpacitySelector,
   dashboardMapStateSelector,
+  dashboardOpacitySelector,
+  dismissError,
+  removeLayerData,
+  removeLayerFromMap,
+  setBoundaryRelationData,
+  setDashboardOpacity,
+  setMap,
   setMapTitle,
+  updateMapDateRange,
 } from 'context/dashboardStateSlice';
+import { DateRange } from 'context/mapStateSlice';
+import { RootState } from 'context/store';
+import { Map as MaplibreMap } from 'maplibre-gl';
+import React, { useMemo } from 'react';
+import { useDispatch } from 'react-redux';
+
 import MapInstanceContext, { MapInstanceActions } from './mapInstance.context';
 
 type MapGetter = () => MaplibreMap | undefined;

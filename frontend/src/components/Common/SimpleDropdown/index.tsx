@@ -1,6 +1,6 @@
-import React, { useCallback } from 'react';
 import { FormControl, MenuItem, Select, Typography } from '@material-ui/core';
 import { useSafeTranslation } from 'i18n';
+import React, { useCallback } from 'react';
 
 type OptionLabel = string;
 

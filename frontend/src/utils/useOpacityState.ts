@@ -1,12 +1,12 @@
-import { useContext, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
-import { Map as MaplibreMap } from 'maplibre-gl';
-import { LayerType } from 'config/types';
 import MapInstanceContext from 'components/MapView/MapInstanceContext/mapInstance.context';
+import { LayerType } from 'config/types';
 import {
   opacitySelector,
   setOpacity as setGlobalOpacity,
 } from 'context/opacityStateSlice';
+import { Map as MaplibreMap } from 'maplibre-gl';
+import { useCallback, useContext } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { useMapState } from './useMapState';
 

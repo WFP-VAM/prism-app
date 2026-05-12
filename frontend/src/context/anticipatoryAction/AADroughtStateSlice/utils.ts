@@ -1,4 +1,3 @@
-import { AAWindowKeys } from 'config/utils';
 import {
   AADataSeverityOrder,
   getAAIcon,
@@ -9,9 +8,11 @@ import {
   ReferenceDateTimestamp,
   Validity,
 } from 'config/types';
-import { generateIntermediateDateItemFromValidity } from 'utils/server-utils';
+import { AAWindowKeys } from 'config/utils';
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
+import { generateIntermediateDateItemFromValidity } from 'utils/server-utils';
+
 import {
   AACategoryType,
   AAPhaseType,

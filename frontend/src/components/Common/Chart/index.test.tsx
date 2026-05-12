@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+
 import Chart from '.';
 
 test('Renders as expected', () => {

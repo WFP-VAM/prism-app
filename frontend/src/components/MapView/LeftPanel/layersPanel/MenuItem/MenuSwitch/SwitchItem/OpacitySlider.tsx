@@ -1,15 +1,15 @@
 import {
   Box,
-  Slider,
-  Typography,
   createStyles,
   makeStyles,
+  Slider,
+  Typography,
 } from '@material-ui/core';
 import { LayerType } from 'config/types';
-import { useMapState } from 'utils/useMapState';
-import { useOpacityState } from 'utils/useOpacityState';
 import { ChangeEvent, memo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import { useMapState } from 'utils/useMapState';
+import { useOpacityState } from 'utils/useOpacityState';
 
 const useStyles = makeStyles(() =>
   createStyles({

@@ -1,13 +1,13 @@
-import defaultConfig from './prism.json';
+import mongolian from '../mongolia/translation.json';
 import sharedLayers from './layers.json';
 import sharedLegends from './legends.json';
+import defaultConfig from './prism.json';
 // Translation files
 import arabic from './translation/arabic.json';
 import english from './translation/english.json';
 import french from './translation/french.json';
 import khmer from './translation/khmer.json';
 import kyrgyz from './translation/kyrgyz.json';
-import mongolian from '../mongolia/translation.json';
 import portuguese from './translation/portuguese.json';
 import russian from './translation/russian.json';
 import somali from './translation/somali.json';

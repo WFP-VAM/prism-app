@@ -1,7 +1,8 @@
 import fg from 'fast-glob';
 import fs from 'fs';
-import { Country, configMap, getRawLayers, getTranslation } from './index';
+
 import { extractTranslationItems } from './config.test.utils';
+import { configMap, Country, getRawLayers, getTranslation } from './index';
 
 function loadTranslationKeys(): Set<string> {
   const translationKeyRegex = /[ {]t\('([^']+)'\)/g;

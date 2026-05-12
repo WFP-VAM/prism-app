@@ -1,12 +1,12 @@
 import {
   Button,
-  Typography,
   createStyles,
   makeStyles,
+  Typography,
 } from '@material-ui/core';
 import { t } from 'i18next';
-import { downloadChartsToCsv } from 'utils/csv-utils';
 import { cyanBlue } from 'muiTheme';
+import { downloadChartsToCsv } from 'utils/csv-utils';
 
 const useStyles = makeStyles(() =>
   createStyles({

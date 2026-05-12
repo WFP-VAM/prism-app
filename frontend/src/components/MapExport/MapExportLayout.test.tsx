@@ -1,8 +1,10 @@
-import { Provider } from 'react-redux';
-import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
+
 import { createTheme, ThemeProvider } from '@material-ui/core';
+import { render } from '@testing-library/react';
 import { store } from 'context/store';
+import { Provider } from 'react-redux';
+
 import MapExportLayout from './MapExportLayout';
 import { AspectRatio, MapExportToggles } from './types';
 

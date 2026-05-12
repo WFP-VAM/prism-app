@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
 import type React from 'react';
-import { DashboardMode, DashboardElements } from '../../config/types';
+import { useEffect, useRef, useState } from 'react';
+
+import { DashboardElements, DashboardMode } from '../../config/types';
 import type { ExportConfig } from './DashboardContent';
 
 // A constant for the gap between various columns and padding

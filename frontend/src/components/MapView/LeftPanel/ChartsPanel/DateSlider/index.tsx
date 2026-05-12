@@ -1,9 +1,10 @@
-import { Box, Typography, createStyles, makeStyles } from '@material-ui/core';
-import React from 'react';
-import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 import './slider.css';
+
+import { Box, createStyles, makeStyles, Typography } from '@material-ui/core';
 import { useSafeTranslation } from 'i18n';
+import React from 'react';
+import RangeSlider from 'react-range-slider-input';
 
 const useStyles = makeStyles(() =>
   createStyles({
