@@ -238,7 +238,6 @@ def test_stats_endpoint1():
     # assert response.json() == []
 
 
-@pytest.mark.flaky(reruns=3, reruns_delay=2)
 def test_stats_endpoint2():
     """
     Call /stats with known-good parameters.
