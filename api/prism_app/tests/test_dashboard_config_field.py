@@ -4,7 +4,10 @@ import json
 from io import BytesIO
 
 import pytest
-from prism_app.dashboard.dashboard_config_field import DashboardConfigJsonFileField
+from prism_app.dashboard.dashboard_config_field import (
+    DashboardConfigJsonFileField,
+    format_dashboard_config_json_for_display,
+)
 from starlette.datastructures import FormData, UploadFile
 from starlette_admin._types import RequestAction
 
@@ -59,3 +62,14 @@ async def test_parse_form_data_keeps_existing_config_on_edit_without_upload(
     parsed = await field.parse_form_data(None, form, RequestAction.EDIT)
 
     assert parsed == existing
+
+
+def test_format_display_prettifies_json(
+    field: DashboardConfigJsonFileField,
+) -> None:
+    data = {"title": "Example", "nested": [1, 2]}
+    rendered = field.format_display(data)
+
+    assert rendered == format_dashboard_config_json_for_display(data)
+    assert "\n" in rendered
+    assert '"title": "Example"' in rendered

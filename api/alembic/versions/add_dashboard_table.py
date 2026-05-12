@@ -59,10 +59,13 @@ def upgrade() -> None:
     values_sql = ", ".join(f"('{code}')" for code in _DEPLOYMENT_CODES)
     op.execute(sa.text(f"INSERT INTO deployment (code) VALUES {values_sql}"))
 
-    op.execute("CREATE TYPE dashboard_status_enum AS ENUM ('draft', 'published')")
+    op.execute(
+        "CREATE TYPE dashboard_status_enum AS ENUM ('draft', 'published', 'archived')"
+    )
     status_type = postgresql.ENUM(
         "draft",
         "published",
+        "archived",
         name="dashboard_status_enum",
         create_type=False,
     )
@@ -73,12 +76,6 @@ def upgrade() -> None:
         sa.Column("title", sa.String(), nullable=False),
         sa.Column("slug", sa.String(), nullable=False),
         sa.Column(
-            "is_editable",
-            sa.Boolean(),
-            nullable=False,
-            server_default=sa.text("false"),
-        ),
-        sa.Column(
             "status",
             status_type,
             nullable=False,
@@ -88,7 +85,7 @@ def upgrade() -> None:
             "deployment",
             sa.String(),
             sa.ForeignKey("deployment.code"),
-            nullable=True,
+            nullable=False,
         ),
         sa.Column(
             "config",

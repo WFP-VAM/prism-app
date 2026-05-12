@@ -20,6 +20,19 @@ _JSON_CONTENT_TYPES = frozenset(
     }
 )
 _EXISTING_FIELD_SUFFIX = "__existing"
+_JSON_DISPLAY_INDENT = 2
+
+
+def format_dashboard_config_json_for_display(data: Any) -> str:
+    """Pretty-print dashboard config for admin detail and edit previews."""
+    if data is None:
+        return ""
+    return json.dumps(
+        data,
+        indent=_JSON_DISPLAY_INDENT,
+        ensure_ascii=False,
+        default=str,
+    )
 
 
 def _is_json_upload(file: UploadFile) -> bool:
@@ -38,8 +51,11 @@ class DashboardConfigJsonFileField(BaseField):
 
     accept: str = _JSON_ACCEPT
     form_template: str = "forms/dashboard_config_json_file.html"
-    display_template: str = "displays/json.html"
+    display_template: str = "displays/dashboard_config_json.html"
     render_function_key: str = "json"
+
+    def format_display(self, data: Any) -> str:
+        return format_dashboard_config_json_for_display(data)
 
     def input_params(self) -> str:
         return html_params(

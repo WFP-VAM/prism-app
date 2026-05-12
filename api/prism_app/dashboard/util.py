@@ -12,6 +12,15 @@ def slugify_dashboard_name(name: str) -> str:
     return s
 
 
+def build_dashboard_slug(title: str, deployment: str) -> str:
+    """Build stored dashboard slug, prefixed by deployment."""
+    base = slugify_dashboard_name(title) or "dashboard"
+    deployment_slug = slugify_dashboard_name(deployment)
+    if not deployment_slug:
+        raise ValueError("deployment is required to build dashboard slug")
+    return f"{deployment_slug}-{base}"
+
+
 def omit_none_keys(value: Any) -> Any:
     """Recursively drop dict keys with None values (keep list positions intact)."""
     if isinstance(value, dict):

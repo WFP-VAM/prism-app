@@ -7,7 +7,10 @@ from prism_app.dashboard.dashboard_config_field import DashboardConfigJsonFileFi
 from prism_app.dashboard.dashboard_config_validation import (
     validate_and_dump_dashboard_config,
 )
-from prism_app.database.dashboard_model import ALLOWED_DASHBOARD_DEPLOYMENTS
+from prism_app.database.dashboard_model import (
+    ALLOWED_DASHBOARD_DEPLOYMENTS,
+    DashboardStatus,
+)
 from starlette.requests import Request
 from starlette_admin.contrib.sqla import ModelView
 from starlette_admin.exceptions import FormValidationError
@@ -15,7 +18,7 @@ from starlette_admin.fields import EnumField
 
 
 class DashboardAdminView(ModelView):
-    """Create / edit / delete dashboards; `slug` is derived from `title`.
+    """Create / edit / delete dashboards; slug is derived from title and deployment.
 
     The `config` JSONB field is uploaded as a JSON file (drag-and-drop or browse).
     Use the same top-level array as ``dashboard.json`` (one or more dashboard rows), or
@@ -28,14 +31,14 @@ class DashboardAdminView(ModelView):
         "title",
         EnumField(
             "deployment",
-            label="Deployment code",
-            required=False,
-            choices=[("", "None")]
-            + [(value, value) for value in ALLOWED_DASHBOARD_DEPLOYMENTS],
+            label="Country",
+            required=True,
+            choices=[(value, value) for value in ALLOWED_DASHBOARD_DEPLOYMENTS],
         ),
-        "status",
-        "is_editable",
-        "slug",
+        EnumField(
+            "status",
+            choices=[(status.value, status.value) for status in DashboardStatus],
+        ),
         DashboardConfigJsonFileField(
             "config",
             label="Configuration file",
@@ -51,19 +54,16 @@ class DashboardAdminView(ModelView):
     exclude_fields_from_list = ("config",)
     exclude_fields_from_create = (
         "id",
-        "slug",
         "created_at",
         "updated_at",
     )
     exclude_fields_from_edit = (
         "id",
-        "slug",
         "created_at",
         "updated_at",
     )
     searchable_fields = [
         "title",
-        "slug",
         "status",
         "deployment",
     ]
@@ -78,7 +78,9 @@ class DashboardAdminView(ModelView):
             data["title"] = str(title).strip()
 
         deployment = data.get("deployment")
-        if deployment is not None and str(deployment).strip():
+        if deployment is None or not str(deployment).strip():
+            errors["deployment"] = "Country is required."
+        else:
             deployment_val = str(deployment).strip()
             if deployment_val not in ALLOWED_DASHBOARD_DEPLOYMENTS:
                 errors["deployment"] = (
@@ -87,8 +89,6 @@ class DashboardAdminView(ModelView):
                 )
             else:
                 data["deployment"] = deployment_val
-        elif deployment is not None:
-            data["deployment"] = None
 
         cfg = data.get("config")
         if isinstance(cfg, str):

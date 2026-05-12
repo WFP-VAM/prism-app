@@ -114,7 +114,7 @@ def validate_and_dump_dashboard_config(raw: Any) -> dict[str, Any]:
     """
     Validate dashboard layout JSON for the ``dashboard.config`` column.
     Only the dashboard columns are persisted in config; model fields such as
-    title, deployment, and is_editable are validated separately.
+    title and deployment are validated separately.
     """
     if raw is None:
         raise ValueError("Dashboard configuration is required.")

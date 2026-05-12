@@ -5,9 +5,8 @@ import uuid
 from enum import Enum
 from typing import Any
 
-from prism_app.dashboard.util import slugify_dashboard_name
+from prism_app.dashboard.util import build_dashboard_slug
 from sqlalchemy import (
-    Boolean,
     Column,
     DateTime,
     ForeignKey,
@@ -20,15 +19,15 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import ENUM as PG_ENUM
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
-from sqlalchemy.orm import validates
 from sqlmodel import Field, SQLModel
 
 
 class DashboardStatus(str, Enum):
-    """Publication state: drafts are not served to the PRISM UI read API."""
+    """Publication state: drafts and archived rows are not served to the PRISM UI read API."""
 
     draft = "draft"
     published = "published"
+    archived = "archived"
 
 
 # Source of truth: frontend/src/config/index.ts -> `configMap` keys.
@@ -99,10 +98,6 @@ class DashboardModel(SQLModel, table=True):
     )
     title: str = Field(sa_column=Column(String, nullable=False))
     slug: str = Field(sa_column=Column(String, nullable=False))
-    is_editable: bool = Field(
-        default=False,
-        sa_column=Column(Boolean, nullable=False, server_default=text("false")),
-    )
     status: DashboardStatus = Field(
         default=DashboardStatus.draft,
         sa_column=Column(
@@ -111,9 +106,8 @@ class DashboardModel(SQLModel, table=True):
             server_default=text("'draft'::dashboard_status_enum"),
         ),
     )
-    deployment: str | None = Field(
-        default=None,
-        sa_column=Column(String, ForeignKey("deployment.code"), nullable=True),
+    deployment: str = Field(
+        sa_column=Column(String, ForeignKey("deployment.code"), nullable=False),
     )
     # Full dashboard file shape: a JSON array of row objects; JSONB also allows a single object for legacy.
     config: Any = Field(sa_column=Column(JSONB, nullable=False))
@@ -131,15 +125,14 @@ class DashboardModel(SQLModel, table=True):
         ),
     )
 
-    @validates("title")
-    def _set_slug_from_title(self, key: str, title: str) -> str:
-        self.slug = slugify_dashboard_name(title)
-        return title
+
+def apply_dashboard_slug(target: DashboardModel) -> None:
+    target.slug = build_dashboard_slug(target.title, target.deployment)
 
 
 @event.listens_for(DashboardModel, "before_insert")
 @event.listens_for(DashboardModel, "before_update")
-def _derive_dashboard_slug_from_title(
+def _derive_dashboard_slug(
     mapper: object, connection: object, target: DashboardModel
 ) -> None:
-    target.slug = slugify_dashboard_name(target.title)
+    apply_dashboard_slug(target)
