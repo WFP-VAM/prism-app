@@ -7,6 +7,7 @@ import os
 import tempfile
 import time
 import zipfile
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
@@ -260,6 +261,7 @@ async def export_maps(
     viewport_width: int,
     viewport_height: int,
     format_type: ExportFormat,
+    progress_callback: Callable[[int, int], None] | None = None,
 ) -> Tuple[bytes, str]:
     """
     Export maps for multiple dates and return packaged file.
@@ -269,6 +271,8 @@ async def export_maps(
         viewport_width: Browser viewport width in pixels
         viewport_height: Browser viewport height in pixels
         format_type: Output format ('pdf' or 'zip')
+        progress_callback: If set, called on the asyncio event-loop thread after
+            each map finishes rendering as ``(completed_count, total_count)``.
     Returns: Tuple of (file_bytes, content_type)
     """
     export_start = time.time()
@@ -298,8 +302,15 @@ async def export_maps(
 
         # Step 3: Render all maps - pool handles concurrency via acquire/release
         render_start = time.time()
-        render_tasks = [
-            render_to_file(
+        total_maps = len(urls)
+        progress_lock = asyncio.Lock()
+        completed_maps = 0
+
+        async def render_to_file_with_progress(
+            url: str, output_path: Path
+        ) -> None:
+            nonlocal completed_maps
+            await render_to_file(
                 pool,
                 url,
                 viewport_width,
@@ -307,6 +318,13 @@ async def export_maps(
                 format_type,
                 output_path,
             )
+            if progress_callback is not None:
+                async with progress_lock:
+                    completed_maps += 1
+                    progress_callback(completed_maps, total_maps)
+
+        render_tasks = [
+            render_to_file_with_progress(url, output_path)
             for url, output_path in zip(urls, output_paths)
         ]
         await asyncio.gather(*render_tasks)
