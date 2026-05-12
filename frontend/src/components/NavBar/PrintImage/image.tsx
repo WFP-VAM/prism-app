@@ -54,10 +54,7 @@ import {
 } from '../../../utils/constants';
 import { ALL_ASPECT_RATIO_OPTIONS } from '../../MapExport/aspectRatioConstants';
 import { downloadToFile } from '../../MapView/utils';
-import {
-  buildBatchArtifactBasenames,
-  buildBatchExportDatesDisplay,
-} from './batchMapExport/batchExportArtifactFilename';
+import { buildBatchExportDatesDisplay } from './batchMapExport/batchExportArtifactFilename';
 import { buildBatchExportUrls } from './batchMapExport/buildBatchExportUrls';
 import { useBatchMapExportJobs } from './batchMapExport/useBatchMapExportJobs';
 import { calculateExportDimensions } from './mapDimensionsUtils';
@@ -589,21 +586,15 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         const layerDisplayName =
           printSelectedLayer.title ?? printSelectedLayer.id;
         const datesSummary = buildBatchExportDatesDisplay(timestampsForExport);
-        const { downloadFilename } = buildBatchArtifactBasenames(
-          country,
-          printSelectedLayer.id,
-          timestampsForExport,
-          format,
-        );
 
         enqueueBatchMapExportJob({
           urls: constructedUrls,
           viewportWidth: exportDims.canvasWidth,
           viewportHeight: exportDims.canvasHeight,
           format,
+          country,
           layerDisplayName,
           datesSummary,
-          downloadFilename,
           mapTotal: constructedUrls.length,
         });
       } catch (error) {

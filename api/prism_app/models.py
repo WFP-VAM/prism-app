@@ -208,6 +208,11 @@ class MapExportRequestModel(BaseModel):
         description="Output format: 'pdf' for merged PDF, 'png' for ZIP archive of PNGs",
         examples=["png"],
     )
+    country: str = Field(
+        default="",
+        max_length=200,
+        description="Country or instance label for download filenames (e.g. prism appConfig country slug).",
+    )
 
     @model_validator(mode="after")
     def validate_urls(self):

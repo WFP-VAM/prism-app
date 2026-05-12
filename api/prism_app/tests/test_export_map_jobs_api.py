@@ -66,10 +66,11 @@ def api_client(
 
 def _body() -> dict[str, Any]:
     return {
-        "urls": ["http://localhost/?date=2025-01-01"],
+        "urls": ["http://localhost/?hazardLayerIds=precip&date=2025-01-01"],
         "viewportWidth": 1200,
         "viewportHeight": 849,
         "format": "pdf",
+        "country": "TestPlace",
     }
 
 
@@ -91,6 +92,9 @@ def test_get_export_map_job_status(api_client: TestClient) -> None:
     assert r.json()["status"] == "queued"
     assert r.json()["download_url"] is None
     assert r.json()["origin_url"] == "http://localhost"
+    assert (
+        r.json()["download_filename"] == "TestPlace_precip_2025_01_01.pdf"
+    )
 
 
 def test_post_export_map_jobs_mozambique_fixture(
@@ -150,10 +154,14 @@ def test_get_succeeded_returns_presigned_url(
     finally:
         del app.dependency_overrides[get_s3_client_for_presign]
     mock_s3.generate_presigned_url.assert_called_once()
+    _gc_args, gc_kw = mock_s3.generate_presigned_url.call_args
+    assert "attachment" in gc_kw["Params"]["ResponseContentDisposition"]
 
     assert r.status_code == 200
-    assert r.json()["download_url"] == "https://example.com/presigned"
-    assert r.json()["local_artifact_path"] is None
+    j = r.json()
+    assert j["download_url"] == "https://example.com/presigned"
+    assert j["download_filename"] == "TestPlace_precip_2025_01_01.pdf"
+    assert j["local_artifact_path"] is None
 
 
 def test_get_succeeded_file_uri_returns_local_path_skips_presign(
@@ -189,5 +197,7 @@ def test_get_succeeded_file_uri_returns_local_path_skips_presign(
     mock_s3.generate_presigned_url.assert_not_called()
 
     assert r.status_code == 200
-    assert r.json()["download_url"] is None
-    assert r.json()["local_artifact_path"] == str(pdf.resolve())
+    j = r.json()
+    assert j["download_url"] is None
+    assert j["local_artifact_path"] == str(pdf.resolve())
+    assert j["download_filename"] == "TestPlace_precip_2025_01_01.pdf"

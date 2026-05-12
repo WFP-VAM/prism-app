@@ -7,6 +7,8 @@ export interface MapExportJobRequestBody {
   viewportWidth: number;
   viewportHeight: number;
   format: MapExportJobFormat;
+  /** Mirrors app country label for artifact naming (backend builds filename). */
+  country: string;
 }
 
 export interface MapExportJobCreateResponse {
@@ -32,6 +34,7 @@ export interface MapExportJobStatusResponse {
   error: MapExportJobErrorPayload | null;
   progress_current?: number | null;
   progress_total?: number | null;
+  download_filename?: string | null;
 }
 
 function sleep(ms: number): Promise<void> {
@@ -91,7 +94,7 @@ export interface WaitForMapExportJobOptions {
 export async function waitForMapExportJobDownloadUrl(
   jobId: string,
   options: WaitForMapExportJobOptions = {},
-): Promise<string> {
+): Promise<{ downloadUrl: string; downloadFilename: string | null }> {
   const pollIntervalMs = options.pollIntervalMs ?? 2000;
   const maxWaitMs = options.maxWaitMs ?? 120 * 60 * 1000;
   const deadline = Date.now() + maxWaitMs;
@@ -109,7 +112,11 @@ export async function waitForMapExportJobDownloadUrl(
       if (!downloadUrl) {
         throw new Error('Export succeeded but no download URL was returned');
       }
-      return downloadUrl;
+      const downloadFilename =
+        typeof job.download_filename === 'string'
+          ? job.download_filename
+          : null;
+      return { downloadUrl, downloadFilename };
     }
     if (job.status === 'failed') {
       throw new Error(exportFailureMessage(job));
@@ -125,8 +132,13 @@ export async function waitForMapExportJobDownloadUrl(
 export async function createMapExportJobAndWaitForDownloadUrl(
   body: MapExportJobRequestBody,
   options: WaitForMapExportJobOptions = {},
-): Promise<{ downloadUrl: string; format: MapExportJobFormat }> {
+): Promise<{
+  downloadUrl: string;
+  downloadFilename: string | null;
+  format: MapExportJobFormat;
+}> {
   const { job_id: jobId } = await createMapExportJob(body);
-  const downloadUrl = await waitForMapExportJobDownloadUrl(jobId, options);
-  return { downloadUrl, format: body.format };
+  const { downloadUrl, downloadFilename } =
+    await waitForMapExportJobDownloadUrl(jobId, options);
+  return { downloadUrl, downloadFilename, format: body.format };
 }

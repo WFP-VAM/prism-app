@@ -54,7 +54,7 @@ export default function BatchMapExportJobsProvider({
           downloadUrl: null,
           layerDisplayName: payload.layerDisplayName,
           datesSummary: payload.datesSummary,
-          downloadFilename: payload.downloadFilename,
+          downloadFilename: null,
           format: payload.format,
           error: null,
         },
@@ -67,6 +67,7 @@ export default function BatchMapExportJobsProvider({
             viewportWidth: payload.viewportWidth,
             viewportHeight: payload.viewportHeight,
             format: payload.format,
+            country: payload.country,
           });
           setJobs(prev =>
             prev.map(j =>
@@ -74,9 +75,8 @@ export default function BatchMapExportJobsProvider({
             ),
           );
 
-          const downloadUrl = await waitForMapExportJobDownloadUrl(
-            serverJobId,
-            {
+          const { downloadUrl, downloadFilename } =
+            await waitForMapExportJobDownloadUrl(serverJobId, {
               pollIntervalMs: 2000,
               onJobUpdate: snap => {
                 setJobs(prev =>
@@ -89,18 +89,26 @@ export default function BatchMapExportJobsProvider({
                             snap.progress_current ?? j.progressCurrent,
                           progressTotalFromApi:
                             snap.progress_total ?? j.progressTotalFromApi,
+                          downloadFilename:
+                            snap.download_filename ??
+                            j.downloadFilename ??
+                            null,
                         }
                       : j,
                   ),
                 );
               },
-            },
-          );
+            });
 
           setJobs(prev =>
             prev.map(j =>
               j.clientId === clientId
-                ? { ...j, status: 'succeeded', downloadUrl }
+                ? {
+                    ...j,
+                    status: 'succeeded',
+                    downloadUrl,
+                    downloadFilename,
+                  }
                 : j,
             ),
           );
