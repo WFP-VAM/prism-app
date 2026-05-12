@@ -6,6 +6,8 @@ import { mapSelector } from 'context/mapStateSlice/selectors';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { Panel } from 'config/types';
 import { DashboardExportDialog } from 'components/DashboardView/DashboardExport';
+import BatchMapExportJobsProvider from './batchMapExport/BatchMapExportJobsProvider';
+import BatchMapExportGlobalTray from './batchMapExport/BatchMapExportGlobalTray';
 import DownloadImage from './image';
 
 function PrintImage() {
@@ -50,28 +52,29 @@ function PrintImage() {
   };
 
   return (
-    <>
-      <div style={{ paddingTop: '4px' }}>
-        <IconButton
-          onClick={openModal}
-          style={{
-            backgroundColor: 'transparent',
-            color: 'white',
-          }}
-        >
-          <PrintOutlined style={{ fontSize: mdUp ? '1.25rem' : '1.5rem' }} />
-        </IconButton>
-      </div>
-      {/* Map Print Dialog */}
-      <DownloadImage open={openImage} handleClose={handleClose} />
-      {/* Dashboard Export Dialog - don't show in snapshots */}
-      {process.env.NODE_ENV !== 'test' && (
-        <DashboardExportDialog
-          open={openDashboardExport}
-          handleClose={handleCloseDashboardExport}
-        />
-      )}
-    </>
+    <BatchMapExportJobsProvider>
+      <>
+        <div style={{ paddingTop: '4px' }}>
+          <IconButton
+            onClick={openModal}
+            style={{
+              backgroundColor: 'transparent',
+              color: 'white',
+            }}
+          >
+            <PrintOutlined style={{ fontSize: mdUp ? '1.25rem' : '1.5rem' }} />
+          </IconButton>
+        </div>
+        <DownloadImage open={openImage} handleClose={handleClose} />
+        <BatchMapExportGlobalTray printDialogOpen={openImage} />
+        {process.env.NODE_ENV !== 'test' && (
+          <DashboardExportDialog
+            open={openDashboardExport}
+            handleClose={handleCloseDashboardExport}
+          />
+        )}
+      </>
+    </BatchMapExportJobsProvider>
   );
 }
 

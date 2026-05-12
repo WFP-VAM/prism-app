@@ -1,13 +1,7 @@
 import {
   Box,
-  Button,
   Dialog,
   DialogContent,
-  Fade,
-  Modal,
-  Paper,
-  Theme,
-  Typography,
   createStyles,
   makeStyles,
 } from '@material-ui/core';
@@ -37,7 +31,12 @@ import {
   getPossibleDatesForLayer,
 } from 'utils/server-utils';
 import { useBoundaryData } from 'utils/useBoundaryData';
-import { createMapExportJobAndWaitForDownloadUrl } from 'utils/mapExportJobsApi';
+import { buildBatchExportUrls } from './batchMapExport/buildBatchExportUrls';
+import {
+  buildBatchArtifactBasenames,
+  buildBatchExportDatesDisplay,
+} from './batchMapExport/batchExportArtifactFilename';
+import { useBatchMapExportJobs } from './batchMapExport/useBatchMapExportJobs';
 import {
   addNotification,
   removeNotification,
@@ -61,10 +60,7 @@ import {
   getDisabledCadences,
 } from '../../../utils/batchCadenceUtils';
 import { calculateExportDimensions } from './mapDimensionsUtils';
-import {
-  isCustomRatio,
-  ALL_ASPECT_RATIO_OPTIONS,
-} from '../../MapExport/aspectRatioConstants';
+import { ALL_ASPECT_RATIO_OPTIONS } from '../../MapExport/aspectRatioConstants';
 import { useSafeTranslation } from '../../../i18n';
 import { getMapExportPageOrigin } from '../../../utils/constants';
 
@@ -82,34 +78,6 @@ const debounceCallback = debounce((callback: any, ...args: any[]) => {
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
-const UNSAFE_FILENAME_CHARS = new Set([
-  '<',
-  '>',
-  ':',
-  '"',
-  '/',
-  '\\',
-  '|',
-  '?',
-  '*',
-]);
-
-function sanitizeFilenamePart(input: string): string {
-  // Avoid control-character regexes (ESLint `no-control-regex`) by checking char codes.
-  const sanitized = input
-    .trim()
-    .split('')
-    .map(ch => {
-      const code = ch.charCodeAt(0);
-      const isControl = code < 32 || code === 127;
-      return isControl || UNSAFE_FILENAME_CHARS.has(ch) ? '_' : ch;
-    })
-    .join('');
-
-  // Collapse multiple underscores into a single underscore (e.g., "___" -> "_").
-  return sanitized.replace(/_+/g, '_').replace(/^_+|_+$/g, '');
-}
-
 function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const { country, header } = appConfig;
   const logo = header?.logo;
@@ -121,6 +89,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const { data } = useBoundaryData(boundaryLayer.id);
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
+  const { enqueueBatchMapExportJob } = useBatchMapExportJobs();
 
   // list of toggles
   const [toggles, setToggles] = useState<Toggles>({
@@ -194,11 +163,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const [dekadInterval, setDekadInterval] = useState(1);
 
   const [isDownloading, setIsDownloading] = useState(false);
-  const [batchExportReady, setBatchExportReady] = useState<{
-    url: string;
-    filename: string;
-  } | null>(null);
-
   const countryLayerIds = useMemo(
     () => new Set(Object.keys(configMap[safeCountry].rawLayers)),
     [safeCountry],
@@ -300,7 +264,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     }
   }, [availableCadences, cadence]);
 
-  const shouldEnableBatchMaps = true; // Temporarily disable batch maps;
+  const shouldEnableBatchMaps = true;
 
   const shouldShowMultiLayerWarning = selectedLayersWithDateSupport.length > 1;
 
@@ -549,7 +513,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       try {
         if (!printSelectedLayer) {
           console.error('No layer selected for batch download');
-          setIsDownloading(false);
           return;
         }
 
@@ -559,25 +522,17 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
         if (formattedDates.length === 0) {
           console.error('No dates found in the selected range');
-          setIsDownloading(false);
           return;
         }
 
-        // Use preview map bounds and zoom (captured from MapExportLayout via onBoundsChange)
-        // This ensures we get the exact bounds/zoom shown in the preview, without the
-        // extra left padding that the main map has for UI elements
         const mapBounds = previewBounds;
         const mapZoom = previewZoom;
-        // Construct URLs for each date by adding `/export` to the pathname and setting the date param.
-        // Backend must fetch these URLs; localhost UI origin is swapped for prism.moz.wfp.org.
         const pageUrl = new URL(window.location.href);
         const { pathname, search } = pageUrl;
         const origin = getMapExportPageOrigin(pageUrl);
         const exportPath = `${pathname.replace(/\/$/, '')}/export`;
         const baseParams = new URLSearchParams(search);
 
-        // Calculate viewport dimensions for export
-        // For 'Auto' aspect ratio, use the actual map dimensions from the preview
         const exportDims = calculateExportDimensions(
           mapDimensions.aspectRatio,
           mapDimensions.aspectRatio === 'Auto'
@@ -588,111 +543,47 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
             : undefined,
         );
 
-        const constructedUrls = formattedDates
-          .filter((date): date is string => date !== undefined)
-          .map(date => {
-            const params = new URLSearchParams(baseParams);
-            params.set('date', date);
-            params.set('hazardLayerIds', printSelectedLayer.id);
-            params.delete('baselineLayerId');
+        const constructedUrls = buildBatchExportUrls({
+          formattedDates,
+          origin,
+          exportPath,
+          baseSearchParams: baseParams,
+          printSelectedLayer,
+          mapBounds,
+          mapZoom,
+          mapDimensions,
+          titleText,
+          footerText,
+          footerTextSize,
+          logoPosition,
+          logoScale,
+          legendPosition,
+          legendScale,
+          bottomLogoScale,
+          toggles,
+          selectedBoundaries,
+        });
 
-            // Map bounds and zoom
-            if (mapBounds) {
-              const bounds = `${mapBounds.getWest()},${mapBounds.getSouth()},${mapBounds.getEast()},${mapBounds.getNorth()}`;
-              params.set('bounds', bounds);
-            }
-            if (mapZoom != null) {
-              params.set('zoom', String(mapZoom));
-            }
-
-            // Print config options
-            // Map always fills viewport (100%), viewport dimensions maintain aspect ratio
-            params.set('mapWidth', '100');
-            params.set('mapHeight', '100');
-            // Handle aspect ratio - could be string or object
-            if (isCustomRatio(mapDimensions.aspectRatio)) {
-              params.set('aspectRatio', 'Custom');
-              params.set('customWidth', String(mapDimensions.aspectRatio.w));
-              params.set('customHeight', String(mapDimensions.aspectRatio.h));
-            } else {
-              params.set('aspectRatio', mapDimensions.aspectRatio);
-            }
-            params.set('title', titleText);
-            params.set('footer', footerText);
-            params.set('footerTextSize', String(footerTextSize));
-
-            // Position/scale
-            params.set('logoPosition', String(logoPosition));
-            params.set('logoScale', String(logoScale));
-            params.set('legendPosition', String(legendPosition));
-            params.set('legendScale', String(legendScale));
-            params.set('bottomLogoScale', String(bottomLogoScale));
-
-            // Toggles (as JSON, excluding batchMapsVisibility)
-            const exportToggles = {
-              fullLayerDescription: toggles.fullLayerDescription,
-              countryMask: toggles.countryMask,
-              mapLabelsVisibility: toggles.mapLabelsVisibility,
-              logoVisibility: toggles.logoVisibility,
-              legendVisibility: toggles.legendVisibility,
-              footerVisibility: toggles.footerVisibility,
-              bottomLogoVisibility: toggles.bottomLogoVisibility,
-            };
-            params.set('toggles', JSON.stringify(exportToggles));
-
-            // Selected boundaries
-            if (selectedBoundaries.length > 0) {
-              params.set('selectedBoundaries', selectedBoundaries.join(','));
-            }
-
-            return `${origin}${exportPath}?${params.toString()}`;
-          });
-
-        dispatch(
-          addNotification({
-            type: 'info',
-            message: t(
-              'Batch export started. This may take several minutes; a popup will appear when the file is ready.',
-            ),
-          }),
+        const layerDisplayName =
+          printSelectedLayer.title ?? printSelectedLayer.id;
+        const datesSummary = buildBatchExportDatesDisplay(filteredBatchDates);
+        const { downloadFilename } = buildBatchArtifactBasenames(
+          country,
+          printSelectedLayer.id,
+          filteredBatchDates,
+          format,
         );
 
-        setBatchExportReady(null);
-
-        const jobPayload = {
+        enqueueBatchMapExportJob({
           urls: constructedUrls,
           viewportWidth: exportDims.canvasWidth,
           viewportHeight: exportDims.canvasHeight,
           format,
-        };
-
-        const { downloadUrl: presignedArtifactUrl } =
-          await createMapExportJobAndWaitForDownloadUrl(jobPayload, {
-            pollIntervalMs: 2000,
-          });
-
-        const startDateStr = getFormattedDate(startDate, 'snake');
-        const endDateStr = getFormattedDate(endDate, 'snake');
-        const cleanedTitle = (titleText || country).replace(
-          /(\s*-\s*)?\{(date|date_coverage)\}/gi,
-          '',
-        );
-        const safeTitle = sanitizeFilenamePart(cleanedTitle);
-        const baseFilename = `${safeTitle}_${startDateStr}_to_${endDateStr}`;
-        const ext = format === 'pdf' ? '.pdf' : '.zip';
-        const filename = `${baseFilename}${ext}`;
-
-        setBatchExportReady({
-          url: presignedArtifactUrl,
-          filename,
+          layerDisplayName,
+          datesSummary,
+          downloadFilename,
+          mapTotal: constructedUrls.length,
         });
-
-        dispatch(
-          addNotification({
-            type: 'success',
-            message: t('Batch export is ready'),
-          }),
-        );
       } catch (error) {
         const message =
           error instanceof Error
@@ -718,7 +609,11 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       filteredBatchDates,
       previewBounds,
       previewZoom,
+      previewMapWidth,
+      previewMapHeight,
+      enqueueBatchMapExportJob,
       mapDimensions,
+      country,
       titleText,
       footerText,
       footerTextSize,
@@ -849,99 +744,28 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     ],
   );
 
-  const handleBatchExportReadyClose = () => {
-    setBatchExportReady(null);
-  };
-
   return (
-    <>
-      <PrintConfigContext.Provider value={printContext}>
-        <Dialog
-          maxWidth="xl"
-          open={open}
-          keepMounted
-          onClose={() => handleClose()}
-          aria-labelledby="dialog-preview"
-        >
-          <DialogContent>
-            <Box className={classes.contentContainer}>
-              <PrintPreview />
-              <PrintConfig />
-            </Box>
-          </DialogContent>
-        </Dialog>
-      </PrintConfigContext.Provider>
-      <Modal
-        open={Boolean(batchExportReady)}
-        onClose={handleBatchExportReadyClose}
-        disableBackdropClick
-        disableEscapeKeyDown
-        className={classes.batchExportModal}
-        closeAfterTransition
-        BackdropProps={{ timeout: 300 }}
+    <PrintConfigContext.Provider value={printContext}>
+      <Dialog
+        maxWidth="xl"
+        open={open}
+        keepMounted
+        onClose={() => handleClose()}
+        aria-labelledby="dialog-preview"
       >
-        <Fade in={Boolean(batchExportReady)}>
-          <Paper
-            elevation={8}
-            className={classes.batchExportPaper}
-            role="dialog"
-            aria-labelledby="batch-export-ready-title"
-          >
-            <Typography
-              id="batch-export-ready-title"
-              variant="h6"
-              component="h2"
-              gutterBottom
-            >
-              {t('Batch export is ready')}
-            </Typography>
-            <Box className={classes.batchExportActions}>
-              <Button color="primary" onClick={handleBatchExportReadyClose}>
-                {t('Close')}
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                disabled={!batchExportReady}
-                onClick={() => {
-                  if (!batchExportReady) {
-                    return;
-                  }
-                  const { url } = batchExportReady;
-                  window.open(url, '_blank', 'noopener,noreferrer');
-                  handleBatchExportReadyClose();
-                }}
-              >
-                {t('Download')}
-              </Button>
-            </Box>
-          </Paper>
-        </Fade>
-      </Modal>
-    </>
+        <DialogContent>
+          <Box className={classes.contentContainer}>
+            <PrintPreview />
+            <PrintConfig />
+          </Box>
+        </DialogContent>
+      </Dialog>
+    </PrintConfigContext.Provider>
   );
 }
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
-    batchExportModal: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: theme.zIndex.modal + 100,
-    },
-    batchExportPaper: {
-      padding: theme.spacing(3),
-      maxWidth: 420,
-      outline: 'none',
-    },
-    batchExportActions: {
-      display: 'flex',
-      justifyContent: 'flex-end',
-      alignItems: 'center',
-      gap: theme.spacing(1),
-      marginTop: theme.spacing(1),
-    },
     contentContainer: {
       fontFamily: 'Roboto',
       display: 'flex',

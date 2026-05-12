@@ -32,6 +32,8 @@ import PrintConfigContext from './printConfig.context';
 import DateRangePicker from './DateRangePicker';
 import AspectRatioSelector from './AspectRatioSelector';
 import CadenceSelector from './CadenceSelector';
+import BatchMapExportJobRows from './batchMapExport/BatchMapExportJobRows';
+import { useBatchMapExportJobs } from './batchMapExport/useBatchMapExportJobs';
 
 interface ToggleSelectorProps {
   title: string;
@@ -272,6 +274,8 @@ const DATE_PLACEHOLDER_SUFFIX = ': {date_coverage}';
 function PrintConfig() {
   const classes = useStyles();
   const { t } = useSafeTranslation();
+  const { jobs: activeBatchJobs, dismissBatchMapExportJob } =
+    useBatchMapExportJobs();
   const { printConfig } = useContext(PrintConfigContext);
 
   // Local state for responsive input - syncs to parent with debounce
@@ -329,7 +333,7 @@ function PrintConfig() {
   } = printConfig;
 
   return (
-    <Box>
+    <Box className={classes.printPanelRoot}>
       <div className={classes.optionsContainer}>
         <div>
           <Box
@@ -682,10 +686,30 @@ function PrintConfig() {
                 </GreyContainerSection>
               </GreyContainer>
             )}
+            {toggles.batchMapsVisibility && activeBatchJobs.length > 0 && (
+              <Box className={classes.batchExportsInPanelWrap}>
+                <GreyContainer>
+                  <GreyContainerSection isLast>
+                    <Typography
+                      variant="h4"
+                      style={{ marginBottom: '8px', fontWeight: 600 }}
+                    >
+                      {t('Batch map exports')}
+                    </Typography>
+                    <BatchMapExportJobRows
+                      jobs={activeBatchJobs}
+                      onDismiss={dismissBatchMapExportJob}
+                      variant="panel"
+                    />
+                  </GreyContainerSection>
+                </GreyContainer>
+              </Box>
+            )}
           </>
         )}
 
         <Button
+          fullWidth
           style={{ backgroundColor: cyanBlue, color: 'black' }}
           variant="contained"
           color="primary"
@@ -744,6 +768,10 @@ function PrintConfig() {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    printPanelRoot: {
+      minWidth: 0,
+      flexShrink: 1,
+    },
     title: {
       color: theme.palette.text.secondary,
     },
@@ -763,6 +791,10 @@ const useStyles = makeStyles((theme: Theme) =>
       gap: '0.5rem',
       minHeight: '740px',
       width: '20.5rem',
+      minWidth: 0,
+      boxSizing: 'border-box',
+      paddingLeft: theme.spacing(1),
+      paddingRight: theme.spacing(1),
       overflowY: 'auto',
       overflowX: 'hidden',
       scrollbarGutter: 'stable',
@@ -816,6 +848,11 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: '4px',
       padding: '8px 12px',
       backgroundColor: '#f5f5f5',
+    },
+    batchExportsInPanelWrap: {
+      marginTop: theme.spacing(1.5),
+      width: '100%',
+      minWidth: 0,
     },
   }),
 );
