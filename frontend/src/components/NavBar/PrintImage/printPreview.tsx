@@ -1,3 +1,4 @@
+import { CircularProgress, Typography } from '@material-ui/core';
 import { useFilteredFloodStations } from 'components/MapView/Layers/AnticipatoryActionFloodLayer/useFilteredFloodStations';
 import { appConfig } from 'config';
 import {
@@ -16,7 +17,14 @@ import {
 } from 'context/serverStateSlice';
 import { cloneDeep } from 'lodash';
 import type { LngLatBounds } from 'maplibre-gl';
-import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import useLayers from 'utils/layers-utils';
 import { getLayersCoverage } from 'utils/server-utils';
@@ -26,6 +34,8 @@ import {
   mapSelector,
 } from '../../../context/mapStateSlice/selectors';
 import MapExportLayout from '../../MapExport/MapExportLayout';
+import { useSafeTranslation } from '../../../i18n';
+
 import PrintConfigContext from './printConfig.context';
 
 function PrintPreview() {
@@ -38,6 +48,7 @@ function PrintPreview() {
   const AAMarkers = useSelector(AAMarkersSelector);
   const floodState = useSelector(AAFloodDataSelector);
   const tabValue = useSelector(leftPanelTabValueSelector);
+  const { t } = useSafeTranslation();
 
   const { logo } = appConfig.header || {};
   const { selectedLayersWithDateSupport } = useLayers();
@@ -166,6 +177,33 @@ function PrintPreview() {
     [],
   );
 
+  const togglesSlice = printConfig?.toggles;
+  const previewLoaderKey = useMemo(
+    () =>
+      [
+        printConfig?.selectedLayerId ?? '',
+        String(previewDate ?? ''),
+        togglesSlice?.batchMapsVisibility ? '1' : '0',
+        togglesSlice?.mapLabelsVisibility ? '1' : '0',
+      ].join('|'),
+    [
+      togglesSlice?.batchMapsVisibility,
+      togglesSlice?.mapLabelsVisibility,
+      previewDate,
+      printConfig?.selectedLayerId,
+    ],
+  );
+
+  const [previewMapReady, setPreviewMapReady] = useState(false);
+
+  useEffect(() => {
+    setPreviewMapReady(false);
+  }, [previewLoaderKey, printConfig?.open]);
+
+  const handlePreviewMapLoad = useCallback(() => {
+    setPreviewMapReady(true);
+  }, []);
+
   if (!printConfig || !selectedMap) {
     return null;
   }
@@ -207,8 +245,41 @@ function PrintPreview() {
   }
 
   return (
-    <div style={{ flex: 1, minWidth: 0, minHeight: 0, display: 'flex' }}>
+    <div
+      style={{
+        flex: 1,
+        minWidth: 0,
+        minHeight: 0,
+        display: 'flex',
+        position: 'relative',
+      }}
+    >
+      {!previewMapReady && (
+        <div
+          role="status"
+          aria-live="polite"
+          aria-busy="true"
+          aria-label={t('Loading preview map')}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 12,
+            backgroundColor: 'rgba(255, 255, 255, 0.85)',
+            zIndex: 10,
+          }}
+        >
+          <CircularProgress />
+          <Typography variant="body2" color="textSecondary">
+            {t('Loading preview map')}
+          </Typography>
+        </div>
+      )}
       <MapExportLayout
+        key={previewLoaderKey}
         toggles={toggles}
         aspectRatio={mapDimensions.aspectRatio}
         titleText={titleText}
@@ -239,6 +310,7 @@ function PrintPreview() {
         layersCoverage={layersCoverage}
         onBoundsChange={handlePreviewBoundsChange}
         onMapDimensionsChange={handleMapDimensionsChange}
+        onMapLoad={handlePreviewMapLoad}
       />
     </div>
   );
