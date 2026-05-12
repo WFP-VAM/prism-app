@@ -841,13 +841,16 @@ const useStyles = makeStyles((theme: Theme) =>
     mapCountContainer: {
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'space-between',
+      justifyContent: 'flex-start',
+      flexWrap: 'wrap',
+      gap: theme.spacing(1),
     },
     mapCountValue: {
-      border: '1px solid rgba(0, 0, 0, 0.23)',
       borderRadius: '4px',
-      padding: '8px 12px',
-      backgroundColor: '#f5f5f5',
+      padding: theme.spacing(0.25, 0.75),
+      margin: theme.spacing(0.5, 1),
+      backgroundColor: theme.palette.grey[300],
+      lineHeight: 1.2,
     },
     batchExportsInPanelWrap: {
       marginTop: theme.spacing(1.5),

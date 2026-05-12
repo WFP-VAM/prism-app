@@ -516,9 +516,9 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
           return;
         }
 
-        const formattedDates = filteredBatchDates.map(timestamp =>
-          getFormattedDate(timestamp, 'default'),
-        );
+        const formattedDates = filteredBatchDates
+          .map(timestamp => getFormattedDate(timestamp, 'default'))
+          .filter((d): d is string => d !== undefined && d !== '');
 
         if (formattedDates.length === 0) {
           console.error('No dates found in the selected range');

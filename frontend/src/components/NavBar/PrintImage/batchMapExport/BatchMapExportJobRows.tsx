@@ -171,6 +171,7 @@ function BatchMapExportJobRows({ jobs, onDismiss, variant }: Props) {
                               job.downloadUrl!,
                               job.downloadFilename,
                             );
+                            onDismiss(job.clientId);
                           } catch (err) {
                             console.error('Batch export download failed:', err);
                             dispatch(

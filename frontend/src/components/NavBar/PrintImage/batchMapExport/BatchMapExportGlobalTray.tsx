@@ -7,7 +7,6 @@ import {
   createStyles,
   makeStyles,
 } from '@material-ui/core';
-import React from 'react';
 import { useSafeTranslation } from 'i18n';
 import BatchMapExportJobRows from './BatchMapExportJobRows';
 import { useBatchMapExportJobs } from './useBatchMapExportJobs';

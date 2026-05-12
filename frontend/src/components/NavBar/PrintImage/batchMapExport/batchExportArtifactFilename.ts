@@ -29,8 +29,8 @@ export function sanitizeFilenamePart(input: string): string {
 
 /** Single ``YYYY_MM_DD`` or ``start_to_end`` when range spans multiple formatted days. */
 function buildBatchDateStem(startDate: number, endDate: number): string {
-  const startDateStr = getFormattedDate(startDate, 'snake');
-  const endDateStr = getFormattedDate(endDate, 'snake');
+  const startDateStr = getFormattedDate(startDate, 'snake') ?? '';
+  const endDateStr = getFormattedDate(endDate, 'snake') ?? '';
   if (startDateStr === endDateStr) {
     return startDateStr;
   }
@@ -55,8 +55,8 @@ export function buildBatchExportDatesDisplay(
       maxTs = ts;
     }
   }
-  const startLabel = getFormattedDate(minTs, 'default');
-  const endLabel = getFormattedDate(maxTs, 'default');
+  const startLabel = getFormattedDate(minTs, 'default') ?? '';
+  const endLabel = getFormattedDate(maxTs, 'default') ?? '';
   if (startLabel === endLabel) {
     return startLabel;
   }
