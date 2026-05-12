@@ -1,14 +1,22 @@
 import {
   Box,
+  createStyles,
   Dialog,
   DialogContent,
-  createStyles,
   makeStyles,
 } from '@material-ui/core';
 import mask from '@turf/mask';
+import { appConfig, configMap, safeCountry } from 'config';
+import { AdminCodeString, LayerKey } from 'config/types';
+import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
+import {
+  addNotification,
+  removeNotification,
+} from 'context/notificationStateSlice';
+import { availableDatesSelector } from 'context/serverStateSlice';
 import html2canvas from 'html2canvas';
-import { debounce, get } from 'lodash';
 import { jsPDF } from 'jspdf';
+import { debounce, get } from 'lodash';
 import type { LngLatBounds } from 'maplibre-gl';
 import React, {
   useCallback,
@@ -17,52 +25,45 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { getFormattedDate, dateWithoutTime } from 'utils/date-utils';
-import { appConfig, safeCountry, configMap } from 'config';
-import useLayers, { isWmsSelectableForBatchPrint } from 'utils/layers-utils';
+import { useDispatch, useSelector } from 'react-redux';
 import { isBoundaryLayer } from 'utils/boundary-layers-utils';
-import { AdminCodeString, LayerKey } from 'config/types';
-import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
-import useResizeObserver from 'utils/useOnResizeObserver';
-import { availableDatesSelector } from 'context/serverStateSlice';
+import { dateWithoutTime, getFormattedDate } from 'utils/date-utils';
+import useLayers, { isWmsSelectableForBatchPrint } from 'utils/layers-utils';
 import {
   DateCompatibleLayer,
   getPossibleDatesForLayer,
 } from 'utils/server-utils';
-import { useBoundaryData } from 'utils/useBoundaryData';
-import { buildBatchExportUrls } from './batchMapExport/buildBatchExportUrls';
-import {
-  buildBatchArtifactBasenames,
-  buildBatchExportDatesDisplay,
-} from './batchMapExport/batchExportArtifactFilename';
-import { useBatchMapExportJobs } from './batchMapExport/useBatchMapExportJobs';
-import {
-  addNotification,
-  removeNotification,
-} from 'context/notificationStateSlice';
 import { stringHash } from 'utils/string-utils';
-import { downloadToFile } from '../../MapView/utils';
+import { useBoundaryData } from 'utils/useBoundaryData';
+import useResizeObserver from 'utils/useOnResizeObserver';
+
 import {
   dateRangeSelector,
   mapSelector,
 } from '../../../context/mapStateSlice/selectors';
-import PrintConfig from './printConfig';
-import PrintPreview from './printPreview';
-import PrintConfigContext, {
-  MapDimensions,
-  Toggles,
-} from './printConfig.context';
+import { useSafeTranslation } from '../../../i18n';
 import {
   BatchCadence,
   filterDatesByCadence,
   getAvailableCadences,
   getDisabledCadences,
 } from '../../../utils/batchCadenceUtils';
-import { calculateExportDimensions } from './mapDimensionsUtils';
-import { ALL_ASPECT_RATIO_OPTIONS } from '../../MapExport/aspectRatioConstants';
-import { useSafeTranslation } from '../../../i18n';
 import { getMapExportPageOrigin } from '../../../utils/constants';
+import { ALL_ASPECT_RATIO_OPTIONS } from '../../MapExport/aspectRatioConstants';
+import { downloadToFile } from '../../MapView/utils';
+import {
+  buildBatchArtifactBasenames,
+  buildBatchExportDatesDisplay,
+} from './batchMapExport/batchExportArtifactFilename';
+import { buildBatchExportUrls } from './batchMapExport/buildBatchExportUrls';
+import { useBatchMapExportJobs } from './batchMapExport/useBatchMapExportJobs';
+import { calculateExportDimensions } from './mapDimensionsUtils';
+import PrintConfig from './printConfig';
+import PrintConfigContext, {
+  MapDimensions,
+  Toggles,
+} from './printConfig.context';
+import PrintPreview from './printPreview';
 
 const defaultFooterText = get(appConfig, 'printConfig.defaultFooterText', '');
 

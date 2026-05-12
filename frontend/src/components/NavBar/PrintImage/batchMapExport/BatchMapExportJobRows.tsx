@@ -1,20 +1,21 @@
 import {
   Box,
   Button,
+  createStyles,
   Divider,
   LinearProgress,
   List,
   ListItem,
+  makeStyles,
   Theme,
   Typography,
-  createStyles,
-  makeStyles,
 } from '@material-ui/core';
-import React, { useMemo } from 'react';
-import { useDispatch } from 'react-redux';
+import { addNotification } from 'context/notificationStateSlice';
 import { useSafeTranslation } from 'i18n';
 import { cyanBlue } from 'muiTheme';
-import { addNotification } from 'context/notificationStateSlice';
+import React, { useMemo } from 'react';
+import { useDispatch } from 'react-redux';
+
 import { downloadBlobFromSignedUrl } from './downloadBlobFromSignedUrl';
 import type { BatchMapExportJobRow } from './types';
 

@@ -1,4 +1,5 @@
 import { isCustomRatio } from 'components/MapExport/aspectRatioConstants';
+
 import type { BuildBatchExportUrlsInput } from './types';
 
 export function buildBatchExportUrls(

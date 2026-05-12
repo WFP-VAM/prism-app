@@ -1,13 +1,14 @@
-import { useRef, useState } from 'react';
 import { IconButton, useMediaQuery, useTheme } from '@material-ui/core';
-import { useSelector } from 'react-redux';
 import PrintOutlined from '@material-ui/icons/PrintOutlined';
-import { mapSelector } from 'context/mapStateSlice/selectors';
-import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
-import { Panel } from 'config/types';
 import { DashboardExportDialog } from 'components/DashboardView/DashboardExport';
-import BatchMapExportJobsProvider from './batchMapExport/BatchMapExportJobsProvider';
+import { Panel } from 'config/types';
+import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { mapSelector } from 'context/mapStateSlice/selectors';
+import { useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+
 import BatchMapExportGlobalTray from './batchMapExport/BatchMapExportGlobalTray';
+import BatchMapExportJobsProvider from './batchMapExport/BatchMapExportJobsProvider';
 import DownloadImage from './image';
 
 function PrintImage() {
