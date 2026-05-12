@@ -731,7 +731,7 @@ function PrintConfig() {
               </span>
             </>
           ) : (
-            <span>{t('Download')}</span>
+            <span>{t('Export')}</span>
           )}
         </Button>
 
@@ -744,10 +744,10 @@ function PrintConfig() {
           {toggles.batchMapsVisibility
             ? [
                 <MenuItem key="pdf" onClick={() => downloadBatch('pdf')}>
-                  {t('Download maps as PDF')}
+                  {t('Export maps as PDF')}
                 </MenuItem>,
                 <MenuItem key="png" onClick={() => downloadBatch('png')}>
-                  {t('Download maps as PNGs')}
+                  {t('Export maps as PNGs')}
                 </MenuItem>,
               ]
             : [

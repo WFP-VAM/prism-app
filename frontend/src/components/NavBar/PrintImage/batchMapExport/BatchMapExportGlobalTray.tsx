@@ -3,6 +3,7 @@ import {
   createStyles,
   makeStyles,
   Paper,
+  Portal,
   Slide,
   Theme,
   Typography,
@@ -24,7 +25,7 @@ function BatchMapExportGlobalTray({ printDialogOpen }: Props) {
 
   const visible = jobs.length > 0 && !printDialogOpen;
 
-  return (
+  const tray = (
     <Slide direction="up" in={visible} mountOnEnter unmountOnExit>
       <Paper
         className={classes.paper}
@@ -50,6 +51,12 @@ function BatchMapExportGlobalTray({ printDialogOpen }: Props) {
       </Paper>
     </Slide>
   );
+
+  /*
+   * Navbar sits in a lower stacking context than MapView date strip (inline z-index 1300).
+   * Portal reparents tray to body so `paper.zIndex` competes globally and clears the timeline.
+   */
+  return <Portal>{tray}</Portal>;
 }
 
 /** Tray stays narrow so compact job cards match “small card” layout vs full-width print panel. */
@@ -66,7 +73,8 @@ const useStyles = makeStyles((theme: Theme) =>
       // Avoid `100vw` (includes scrollbar width) clipping fixed-position tray at viewport edge.
       width: `min(${TRAY_MAX_WIDTH_PX}px, calc(100% - ${theme.spacing(4)}px))`,
       margin: 0,
-      zIndex: theme.zIndex.snackbar,
+      // Above DateSelector timeline (1300); keep below tooltips / default snackbar layering.
+      zIndex: theme.zIndex.modal + 50,
       padding: theme.spacing(2, 2, 2),
       borderRadius: theme.shape.borderRadius,
       backgroundColor: theme.palette.background.paper,

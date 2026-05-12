@@ -40,6 +40,7 @@ exports[`renders as expected 1`] = `
     aria-labelledby="dialog-preview"
     keepmounted="true"
     maxwidth="xl"
+    modalprops="[object Object]"
     open="false"
   >
     <mock-dialogcontent>
@@ -990,7 +991,7 @@ exports[`renders as expected 1`] = `
               variant="contained"
             >
               <span>
-                Download
+                Export
               </span>
             </mock-button>
             <mock-menu
