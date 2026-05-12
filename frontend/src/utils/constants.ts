@@ -25,6 +25,9 @@ export const ALERT_API_URL = `${API_URL}/alerts`;
 export const KOBO_API_URL = `${API_URL}/kobo`;
 export const RASTER_API_URL = `${API_URL}/raster_geotiff`;
 export const EXPORT_MAP_JOBS_API_URL = `${API_URL}/export-map/jobs`;
+
+/** Must match MAP_EXPORT_MAX_URLS_PER_REQUEST in api/prism_app/models.py */
+export const MAP_EXPORT_MAX_URLS_PER_REQUEST = 12;
 // Default to the VAM URL for HDC data.
 export const CHART_API_URL =
   'https://api.earthobservation.vam.wfp.org/stats/admin';

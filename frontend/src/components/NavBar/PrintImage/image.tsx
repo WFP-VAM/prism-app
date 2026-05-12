@@ -48,7 +48,10 @@ import {
   getAvailableCadences,
   getDisabledCadences,
 } from '../../../utils/batchCadenceUtils';
-import { getMapExportPageOrigin } from '../../../utils/constants';
+import {
+  getMapExportPageOrigin,
+  MAP_EXPORT_MAX_URLS_PER_REQUEST,
+} from '../../../utils/constants';
 import { ALL_ASPECT_RATIO_OPTIONS } from '../../MapExport/aspectRatioConstants';
 import { downloadToFile } from '../../MapView/utils';
 import {
@@ -508,24 +511,42 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         return;
       }
 
-      setIsDownloading(true);
       handleDownloadMenuClose();
 
+      if (!printSelectedLayer) {
+        console.error('No layer selected for batch download');
+        return;
+      }
+
+      const timestampsForExport =
+        filteredBatchDates.length > MAP_EXPORT_MAX_URLS_PER_REQUEST
+          ? filteredBatchDates.slice(-MAP_EXPORT_MAX_URLS_PER_REQUEST)
+          : filteredBatchDates;
+
+      if (filteredBatchDates.length > MAP_EXPORT_MAX_URLS_PER_REQUEST) {
+        dispatch(
+          addNotification({
+            type: 'warning',
+            message: t('batch_export_maps_truncated_toast', {
+              max: MAP_EXPORT_MAX_URLS_PER_REQUEST,
+              total: filteredBatchDates.length,
+            }),
+          }),
+        );
+      }
+
+      const formattedDates = timestampsForExport
+        .map(timestamp => getFormattedDate(timestamp, 'default'))
+        .filter((d): d is string => d !== undefined && d !== '');
+
+      if (formattedDates.length === 0) {
+        console.error('No dates found in the selected range');
+        return;
+      }
+
+      setIsDownloading(true);
+
       try {
-        if (!printSelectedLayer) {
-          console.error('No layer selected for batch download');
-          return;
-        }
-
-        const formattedDates = filteredBatchDates
-          .map(timestamp => getFormattedDate(timestamp, 'default'))
-          .filter((d): d is string => d !== undefined && d !== '');
-
-        if (formattedDates.length === 0) {
-          console.error('No dates found in the selected range');
-          return;
-        }
-
         const mapBounds = previewBounds;
         const mapZoom = previewZoom;
         const pageUrl = new URL(window.location.href);
@@ -567,11 +588,11 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
         const layerDisplayName =
           printSelectedLayer.title ?? printSelectedLayer.id;
-        const datesSummary = buildBatchExportDatesDisplay(filteredBatchDates);
+        const datesSummary = buildBatchExportDatesDisplay(timestampsForExport);
         const { downloadFilename } = buildBatchArtifactBasenames(
           country,
           printSelectedLayer.id,
-          filteredBatchDates,
+          timestampsForExport,
           format,
         );
 

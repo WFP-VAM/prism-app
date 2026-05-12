@@ -172,12 +172,17 @@ class AlertsModel(BaseModel):
 
 ExportFormat = Literal["pdf", "png"]
 
+# Cap concurrent renders per job to reduce load on tile/WMS infra (batch + sync export).
+MAP_EXPORT_MAX_URLS_PER_REQUEST = 12
+
 
 class MapExportRequestModel(BaseModel):
     """Schema for export request data to be passed to /export-map endpoint."""
 
     urls: list[str] = Field(
         ...,
+        min_length=1,
+        max_length=MAP_EXPORT_MAX_URLS_PER_REQUEST,
         description="Map URLs containing all parameters necessary to render print view "
         "including layer ID(s), layer opacity, bounding box, legend config, etc.",
         examples=[
@@ -208,8 +213,6 @@ class MapExportRequestModel(BaseModel):
     def validate_urls(self):
         from prism_app.utils import validate_export_url
 
-        if not self.urls:
-            raise ValueError("URLs are required")
         for url in self.urls:
             try:
                 validate_export_url(url)

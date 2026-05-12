@@ -113,6 +113,14 @@ def test_post_export_map_jobs_mozambique_fixture(
     assert data["origin_url"] == MAP_EXPORT_FIXTURE_BASE_URL
 
 
+def test_post_export_map_jobs_returns_422_when_too_many_urls(
+    api_client: TestClient,
+) -> None:
+    urls = [f"http://localhost/?date=2025-01-{i:02d}" for i in range(1, 14)]
+    r = api_client.post("/export-map/jobs", json={**_body(), "urls": urls})
+    assert r.status_code == 422, r.text
+
+
 def test_get_succeeded_returns_presigned_url(
     api_client: TestClient, sqlite_engine
 ) -> None:

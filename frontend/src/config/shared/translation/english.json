@@ -19,6 +19,8 @@
   "Batch export started. This may take several minutes; a popup will appear when the file is ready.": "Batch export started. Track progress in the batch export window; larger jobs may take several minutes.",
   "Batch download completed successfully.": "Batch download completed successfully.",
   "batch_export_status_and_maps": "status: {{status}} · {{current}} of {{total}} maps",
+  "batch_export_maps_truncated_panel": "{{total}} maps match your settings. Each export includes only the {{max}} most recent (by date) to protect map servers.",
+  "batch_export_maps_truncated_toast": "This export includes the {{max}} most recent maps only ({{total}} selected). Narrow the range or run another export for older dates.",
   "Batch map exports": "Batch map exports",
   "{{current}} of {{total}} maps": "{{current}} of {{total}} maps",
   "Status": "Status",

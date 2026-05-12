@@ -203,6 +203,15 @@ def test_export_endpoint_multiple_dates(mock_page_url):
         ({"urls": ["http://localhost/?test=1"]}, 422),  # Missing date parameter
         ({"urls": ["http://evil.com/?test=1"]}, 422),  # Disallowed domain
         ({"urls": ["/?hazardLayerIds=test_layer"]}, 422),  # Relative URL
+        (
+            {
+                "urls": [
+                    f"http://localhost/?test=1&date=2025-01-{i:02d}"
+                    for i in range(1, 14)
+                ]
+            },
+            422,
+        ),  # More than max maps per request
     ],
 )
 def test_export_endpoint_validation_errors(
