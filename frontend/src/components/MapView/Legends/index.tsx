@@ -2,15 +2,16 @@ import {
   Button,
   createStyles,
   IconButton,
-  Typography,
   makeStyles,
-  useTheme,
+  Typography,
   useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
-import { VisibilityOutlined, VisibilityOffOutlined } from '@material-ui/icons';
-import { useState, memo, useCallback } from 'react';
+import { VisibilityOffOutlined, VisibilityOutlined } from '@material-ui/icons';
 import { useSafeTranslation } from 'i18n';
 import { black, cyanBlue } from 'muiTheme';
+import { memo, useCallback, useState } from 'react';
+
 import LegendItemsList from './LegendItemsList';
 
 const Legends = memo(() => {

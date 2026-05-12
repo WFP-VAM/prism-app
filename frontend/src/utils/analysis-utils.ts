@@ -1,15 +1,7 @@
 import {
-  flatten,
-  get,
-  has,
-  isNumber,
-  isUndefined,
-  omit,
-  orderBy,
-} from 'lodash';
-import { Feature, FeatureCollection } from 'geojson';
-import { createGetCoverageUrl } from 'prism-common';
-import { Dispatch } from 'redux';
+  Extent,
+  GeoJsonBoundary,
+} from 'components/MapView/Layers/raster-utils';
 import { appConfig } from 'config';
 import {
   AdminLevelDataLayerProps,
@@ -25,26 +17,35 @@ import {
   WfsRequestParams,
   WMSLayerProps,
 } from 'config/types';
-import {
-  Extent,
-  GeoJsonBoundary,
-} from 'components/MapView/Layers/raster-utils';
-import { AdminLevelDataLayerData } from 'context/layers/admin_level_data';
 import { LayerDefinitions } from 'config/utils';
 import type { TableRow } from 'context/analysisResultStateSlice';
-import { isLocalhost } from 'serviceWorker';
+import { AdminLevelDataLayerData } from 'context/layers/admin_level_data';
+import { Feature, FeatureCollection } from 'geojson';
 import {
   i18nTranslator,
   isEnglishLanguageSelected,
   useSafeTranslation,
 } from 'i18n';
+import {
+  flatten,
+  get,
+  has,
+  isNumber,
+  isUndefined,
+  omit,
+  orderBy,
+} from 'lodash';
+import { createGetCoverageUrl } from 'prism-common';
+import { Dispatch } from 'redux';
+import { isLocalhost } from 'serviceWorker';
 import { ANALYSIS_API_URL } from 'utils/constants';
+
 import { getRoundedData } from './data-utils';
+import { getFormattedDate } from './date-utils';
 import {
   ANALYSIS_REQUEST_TIMEOUT,
   fetchWithTimeout,
 } from './fetch-with-timeout';
-import { getFormattedDate } from './date-utils';
 
 const { multiCountry } = appConfig;
 

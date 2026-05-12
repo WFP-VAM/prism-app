@@ -1,16 +1,16 @@
-import { useState, memo, useMemo, useCallback } from 'react';
 import {
-  IconButton,
   createStyles,
   Grid,
-  Theme,
+  IconButton,
   makeStyles,
+  Theme,
 } from '@material-ui/core';
 import InfoIcon from '@material-ui/icons/Info';
-import { useDispatch } from 'react-redux';
-import { LayerType } from 'config/types';
-import { LayerDefinitions, getBoundaryLayerSingleton } from 'config/utils';
 import ContentDialog from 'components/NavBar/ContentDialog';
+import { LayerType } from 'config/types';
+import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
+import { memo, useCallback, useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { loadLayerContent } from 'utils/load-layer-utils';
 
 const LayerContentPreview = memo(({ layerId }: PreviewProps) => {

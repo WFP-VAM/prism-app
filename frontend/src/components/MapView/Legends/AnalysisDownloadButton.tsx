@@ -1,6 +1,11 @@
 import { IconButton, Menu, MenuItem, Tooltip } from '@material-ui/core';
-import React, { useCallback, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import GetAppIcon from '@material-ui/icons/GetApp';
+import {
+  downloadToFile,
+  getExposureAnalysisColumnsToRender,
+  getExposureAnalysisTableData,
+  getExposureAnalysisTableDataRowsToRender,
+} from 'components/MapView/utils';
 import {
   analysisResultSelector,
   analysisResultSortByKeySelector,
@@ -11,6 +16,9 @@ import {
   TableRow,
 } from 'context/analysisResultStateSlice';
 import { useSafeTranslation } from 'i18n';
+import { snakeCase } from 'lodash';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   BaselineLayerResult,
   downloadCSVFromTableData,
@@ -19,15 +27,7 @@ import {
   PolygonAnalysisResult,
   useAnalysisTableColumns,
 } from 'utils/analysis-utils';
-import {
-  downloadToFile,
-  getExposureAnalysisColumnsToRender,
-  getExposureAnalysisTableData,
-  getExposureAnalysisTableDataRowsToRender,
-} from 'components/MapView/utils';
-import { snakeCase } from 'lodash';
 import { getExposureAnalysisCsvData } from 'utils/csv-utils';
-import GetAppIcon from '@material-ui/icons/GetApp';
 
 function AnalysisDownloadButton() {
   const analysisResult = useSelector(analysisResultSelector);

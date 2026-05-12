@@ -1,8 +1,10 @@
-import { Provider } from 'react-redux';
-import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
+
 import { createTheme, ThemeProvider } from '@material-ui/core';
+import { render } from '@testing-library/react';
 import { store } from 'context/store';
+import { Provider } from 'react-redux';
+
 import MapExportLayout from './MapExportLayout';
 import { AspectRatio, MapExportToggles } from './types';
 
@@ -33,6 +35,10 @@ jest.mock('components/MapView/Legends/LegendItemsList', () => {
 
 jest.mock('utils/map-utils', () => ({
   useAAMarkerScalePercent: () => 1,
+  getLayerMapId: (id: string, type?: string) =>
+    `layer-${id}${type ? `-${type}` : ''}`,
+  isLayerOnView: () => false,
+  firstBoundaryOnView: () => undefined,
 }));
 
 jest.mock('utils/useOnResizeObserver', () => {

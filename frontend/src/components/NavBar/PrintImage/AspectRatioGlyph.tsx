@@ -1,5 +1,5 @@
-import { AspectRatio, isCustomRatio } from 'components/MapExport/types';
 import { getAspectRatioDecimal } from 'components/MapExport/aspectRatioConstants';
+import { AspectRatio, isCustomRatio } from 'components/MapExport/types';
 
 interface AspectRatioGlyphProps {
   aspectRatio: AspectRatio;

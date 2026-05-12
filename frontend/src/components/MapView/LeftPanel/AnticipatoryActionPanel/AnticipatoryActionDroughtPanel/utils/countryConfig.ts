@@ -1,9 +1,10 @@
-import React from 'react';
+import { safeCountry } from 'config';
 import {
   AACategoryType,
   AAPhaseType,
 } from 'context/anticipatoryAction/AADroughtStateSlice/types';
-import { safeCountry } from 'config';
+import React from 'react';
+
 import { getAAIcon } from '../utils';
 
 /**

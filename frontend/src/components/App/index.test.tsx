@@ -1,8 +1,9 @@
-import { render } from '@testing-library/react';
 import { MsalProvider } from '@azure/msal-react';
-import { Provider } from 'react-redux';
+import { render } from '@testing-library/react';
 import { msalInstance } from 'config';
 import { store } from 'context/store';
+import { Provider } from 'react-redux';
+
 import App from '.';
 
 jest.mock('components/NavBar', () => 'mock-NavBar');

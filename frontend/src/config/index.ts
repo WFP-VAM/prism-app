@@ -1,11 +1,14 @@
-import { has, get, merge } from 'lodash';
 import { PublicClientApplication } from '@azure/msal-browser';
-import shared from './shared';
+import { get, has, merge } from 'lodash';
+
 import afghanistan from './afghanistan';
 import bhutan from './bhutan';
 import cambodia from './cambodia';
 import cameroon from './cameroon';
 import colombia from './colombia';
+// list countries that have a preprocessed-layer-dates.json file
+// to avoid a failed network call on each layer activation
+import countriesWithPreprocessedDates from './countriesWithPreprocessedDates.json';
 import cuba from './cuba';
 import ecuador from './ecuador';
 import global from './global';
@@ -21,6 +24,7 @@ import namibia from './namibia';
 import nepal from './nepal';
 import nigeria from './nigeria';
 import rbd from './rbd';
+import shared from './shared';
 import sierraleone from './sierraleone';
 import somalia from './somalia';
 import southsudan from './southsudan';
@@ -31,9 +35,6 @@ import tanzania from './tanzania';
 import ukraine from './ukraine';
 import zambia from './zambia';
 import zimbabwe from './zimbabwe';
-// list countries that have a preprocessed-layer-dates.json file
-// to avoid a failed network call on each layer activation
-import countriesWithPreprocessedDates from './countriesWithPreprocessedDates.json';
 
 // Upload the boundary URL to S3 to enable the use of the API in a local environment.
 const DEFAULT_BOUNDARIES_FOLDER =
@@ -207,13 +208,13 @@ export {
   appConfig,
   authRequired,
   countriesWithPreprocessedDates,
-  safeCountry,
   defaultBoundariesPath,
-  rawLayers,
-  rawTables,
-  rawReports,
+  enableNavigationDropdown,
   msalInstance,
   msalRequest,
-  enableNavigationDropdown,
+  rawLayers,
+  rawReports,
+  rawTables,
+  safeCountry,
   translation,
 };

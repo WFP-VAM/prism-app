@@ -1,54 +1,59 @@
 import {
+  createStyles,
   Dialog,
   DialogContent,
-  createStyles,
   makeStyles,
 } from '@material-ui/core';
 import mask from '@turf/mask';
-import html2canvas from 'html2canvas';
-import { debounce, get } from 'lodash';
-import { jsPDF } from 'jspdf';
-import type { LngLatBounds } from 'maplibre-gl';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { getFormattedDate } from 'utils/date-utils';
-import { appConfig, safeCountry } from 'config';
-import { AdminCodeString } from 'config/types';
-import { getBoundaryLayerSingleton } from 'config/utils';
-import useResizeObserver from 'utils/useOnResizeObserver';
-import useLayers from 'utils/layers-utils';
-import { availableDatesSelector } from 'context/serverStateSlice';
-import { getPossibleDatesForLayer } from 'utils/server-utils';
-import { useBoundaryData } from 'utils/useBoundaryData';
-import { EXPORT_API_URL } from 'utils/constants';
+import { appConfig, configMap, safeCountry } from 'config';
+import { AdminCodeString, LayerKey } from 'config/types';
+import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
 import {
   addNotification,
   removeNotification,
 } from 'context/notificationStateSlice';
+import { availableDatesSelector } from 'context/serverStateSlice';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
+import { debounce, get } from 'lodash';
+import type { LngLatBounds } from 'maplibre-gl';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { isBoundaryLayer } from 'utils/boundary-layers-utils';
+import { EXPORT_API_URL } from 'utils/constants';
+import { getFormattedDate } from 'utils/date-utils';
+import useLayers, { isWmsSelectableForBatchPrint } from 'utils/layers-utils';
+import {
+  DateCompatibleLayer,
+  getPossibleDatesForLayer,
+} from 'utils/server-utils';
 import { stringHash } from 'utils/string-utils';
-import { downloadToFile } from '../../MapView/utils';
+import { useBoundaryData } from 'utils/useBoundaryData';
+import useResizeObserver from 'utils/useOnResizeObserver';
+
 import {
   dateRangeSelector,
   mapSelector,
 } from '../../../context/mapStateSlice/selectors';
-import PrintConfig from './printConfig';
-import PrintPreview from './printPreview';
-import PrintConfigContext, {
-  MapDimensions,
-  Toggles,
-} from './printConfig.context';
+import { useSafeTranslation } from '../../../i18n';
 import {
   BatchCadence,
   filterDatesByCadence,
   getAvailableCadences,
   getDisabledCadences,
 } from '../../../utils/batchCadenceUtils';
-import { calculateExportDimensions } from './mapDimensionsUtils';
 import {
-  isCustomRatio,
   ALL_ASPECT_RATIO_OPTIONS,
+  isCustomRatio,
 } from '../../MapExport/aspectRatioConstants';
-import { useSafeTranslation } from '../../../i18n';
+import { downloadToFile } from '../../MapView/utils';
+import { calculateExportDimensions } from './mapDimensionsUtils';
+import PrintConfig from './printConfig';
+import PrintConfigContext, {
+  MapDimensions,
+  Toggles,
+} from './printConfig.context';
+import PrintPreview from './printPreview';
 
 const defaultFooterText = get(appConfig, 'printConfig.defaultFooterText', '');
 
@@ -175,47 +180,92 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
   const [isDownloading, setIsDownloading] = useState(false);
 
-  const { selectedLayersWithDateSupport } = useLayers();
+  const countryLayerIds = new Set(
+    Object.keys(configMap[safeCountry].rawLayers),
+  );
+  const availableDates = useSelector(availableDatesSelector);
+  const selectableLayers = Object.values(LayerDefinitions).filter(
+    (l): l is DateCompatibleLayer =>
+      isWmsSelectableForBatchPrint(l, availableDates) &&
+      countryLayerIds.has(l.id),
+  );
+  const [selectedLayerId, setSelectedLayerId] = useState<LayerKey | null>(null);
+
+  const { selectedLayersWithDateSupport, selectedLayers } = useLayers();
+
+  useEffect(() => {
+    if (open) {
+      setSelectedLayerId(
+        (selectedLayersWithDateSupport[0]?.id as LayerKey) ?? null,
+      );
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (selectedLayerId === null && selectableLayers.length > 0) {
+      setSelectedLayerId(selectableLayers[0].id);
+    }
+  }, [selectableLayers, selectedLayerId]);
+
+  const printSelectedLayer = useMemo(
+    () =>
+      selectedLayerId
+        ? (selectableLayers.find(l => l.id === selectedLayerId) ?? null)
+        : null,
+    [selectedLayerId, selectableLayers],
+  );
+
   const availableCadences = useMemo(() => {
-    const coverageWindow = selectedLayersWithDateSupport[0]?.coverageWindow;
+    const coverageWindow = printSelectedLayer
+      ? printSelectedLayer.coverageWindow
+      : selectedLayersWithDateSupport[0]?.coverageWindow;
     return getAvailableCadences(coverageWindow);
-  }, [selectedLayersWithDateSupport]);
+  }, [printSelectedLayer, selectedLayersWithDateSupport]);
   useEffect(() => {
     if (!availableCadences.includes(cadence)) {
       setCadence(availableCadences[0]);
     }
   }, [availableCadences, cadence]);
 
-  const availableDates = useSelector(availableDatesSelector);
-  const shouldEnableBatchMaps =
-    // selectedLayersWithDateSupport.length > 0 &&
-    // selectedLayersWithDateSupport.every(
-    //   layer => layer.type === 'wms' && (layer.coverageWindow || layer.validity),
-    // );
-    false; // Temporarily disable batch maps
+  const shouldEnableBatchMaps = false; // Temporarily disable batch maps;
 
   const shouldShowMultiLayerWarning = selectedLayersWithDateSupport.length > 1;
 
+  useEffect(() => {
+    if (shouldShowMultiLayerWarning) {
+      setToggles(prev => ({ ...prev, batchMapsVisibility: false }));
+    }
+  }, [shouldShowMultiLayerWarning]);
+
+  const hasNonDateLayers = useMemo(
+    () =>
+      selectedLayers.some(
+        layer =>
+          !isBoundaryLayer(layer) &&
+          !selectedLayersWithDateSupport.some(dl => dl.id === layer.id),
+      ),
+    [selectedLayers, selectedLayersWithDateSupport],
+  );
+
   const { filteredBatchDates, mapCount, uniqueQueryDates } = useMemo(() => {
     const { startDate, endDate } = dateRangeForBatchMaps;
-    if (!startDate || !endDate || selectedLayersWithDateSupport.length === 0) {
+    if (!startDate || !endDate || !printSelectedLayer) {
       return { filteredBatchDates: [], mapCount: 0, uniqueQueryDates: [] };
     }
 
-    const allDateItems = selectedLayersWithDateSupport.flatMap(layer =>
-      getPossibleDatesForLayer(layer, availableDates),
+    const dateItems = getPossibleDatesForLayer(
+      printSelectedLayer,
+      availableDates,
     );
 
     const startOfStartDate = new Date(startDate).setUTCHours(0, 0, 0, 0);
     const endOfEndDate = new Date(endDate).setUTCHours(23, 59, 59, 999);
 
-    const rawUniqueDates = [
-      ...new Set(allDateItems.map(item => item.queryDate)),
-    ]
+    const rawUniqueDates = [...new Set(dateItems.map(item => item.queryDate))]
       .filter(d => d >= startOfStartDate && d <= endOfEndDate)
       .sort((a, b) => a - b);
 
-    const coverageWindow = selectedLayersWithDateSupport[0]?.coverageWindow;
+    const coverageWindow = printSelectedLayer.coverageWindow;
     const dates = filterDatesByCadence(
       rawUniqueDates,
       cadence,
@@ -229,7 +279,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     };
   }, [
     availableDates,
-    selectedLayersWithDateSupport,
+    printSelectedLayer,
     dateRangeForBatchMaps,
     cadence,
     dekadInterval,
@@ -246,6 +296,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       toggles.batchMapsVisibility &&
       dateRangeForBatchMaps.startDate &&
       dateRangeForBatchMaps.endDate &&
+      uniqueQueryDates.length > 0 &&
       filteredBatchDates.length === 0
     ) {
       dispatch(
@@ -280,6 +331,32 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       );
     }
   }, [open, dispatch, t]);
+
+  useEffect(() => {
+    if (
+      open &&
+      toggles.batchMapsVisibility &&
+      hasNonDateLayers &&
+      printSelectedLayer
+    ) {
+      dispatch(
+        addNotification({
+          type: 'warning',
+          message: t(
+            'The sequence of maps will only display the {{layerTitle}} layer',
+            { layerTitle: printSelectedLayer.title },
+          ),
+        }),
+      );
+    }
+  }, [
+    open,
+    toggles.batchMapsVisibility,
+    hasNonDateLayers,
+    printSelectedLayer,
+    dispatch,
+    t,
+  ]);
 
   useEffect(() => {
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
@@ -370,6 +447,12 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     handleDownloadMenuClose();
 
     try {
+      if (!printSelectedLayer) {
+        console.error('No layer selected for batch download');
+        setIsDownloading(false);
+        return;
+      }
+
       const formattedDates = filteredBatchDates.map(timestamp =>
         getFormattedDate(timestamp, 'default'),
       );
@@ -407,6 +490,8 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         .map(date => {
           const params = new URLSearchParams(baseParams);
           params.set('date', date);
+          params.set('hazardLayerIds', printSelectedLayer.id);
+          params.delete('baselineLayerId');
 
           // Map bounds and zoom
           if (mapBounds) {
@@ -583,6 +668,9 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       setPreviewMapWidth,
       previewMapHeight,
       setPreviewMapHeight,
+      selectableLayers,
+      selectedLayerId,
+      setSelectedLayerId,
     },
   };
 

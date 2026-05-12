@@ -1,19 +1,20 @@
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import Papa from 'papaparse';
-import { DateItem } from 'config/types';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { isSingleWindowMode } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
 import { appConfig } from 'config';
+import { DateItem } from 'config/types';
 import { AAWindowKeys } from 'config/utils';
+import Papa from 'papaparse';
 import { getCurrentDateTimeForUrl } from 'utils/date-utils';
 import { getAADroughtUrl } from 'utils/url-utils';
-import { isSingleWindowMode } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
+
 import type { CreateAsyncThunkTypes, RootState } from '../../store';
 import {
   AACategoryType,
   AAView,
+  allWindowsKey,
   AnticipatoryActionData,
   AnticipatoryActionState,
   Vulnerability,
-  allWindowsKey,
 } from './types';
 import {
   calculateMapRenderedDistricts,

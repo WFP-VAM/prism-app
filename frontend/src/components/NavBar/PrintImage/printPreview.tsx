@@ -1,15 +1,21 @@
-import { useContext, useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import { appConfig } from 'config';
-import { AAMarkersSelector } from 'context/anticipatoryAction/AADroughtStateSlice';
-import { AAFloodDataSelector } from 'context/anticipatoryAction/AAFloodStateSlice';
 import { useFilteredFloodStations } from 'components/MapView/Layers/AnticipatoryActionFloodLayer/useFilteredFloodStations';
-import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { appConfig } from 'config';
 import {
-  Panel,
   AdminLevelDataLayerProps,
+  Panel,
   SelectedDateTimestamp,
 } from 'config/types';
+import { LayerDefinitions } from 'config/utils';
+import { getDisplayBoundaryLayers } from 'config/utils';
+import { AAMarkersSelector } from 'context/anticipatoryAction/AADroughtStateSlice';
+import { AAFloodDataSelector } from 'context/anticipatoryAction/AAFloodStateSlice';
+import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import {
+  availableDatesSelector,
+  loadAvailableDatesForLayer,
+} from 'context/serverStateSlice';
+import { useContext, useEffect, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import useLayers from 'utils/layers-utils';
 import { getLayersCoverage } from 'utils/server-utils';
 
@@ -17,21 +23,45 @@ import {
   dateRangeSelector,
   mapSelector,
 } from '../../../context/mapStateSlice/selectors';
-import PrintConfigContext from './printConfig.context';
 import MapExportLayout from '../../MapExport/MapExportLayout';
+import PrintConfigContext from './printConfig.context';
 
 function PrintPreview() {
   const { printConfig } = useContext(PrintConfigContext);
+  const dispatch = useDispatch();
 
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
+  const availableDates = useSelector(availableDatesSelector);
   const AAMarkers = useSelector(AAMarkersSelector);
   const floodState = useSelector(AAFloodDataSelector);
   const tabValue = useSelector(leftPanelTabValueSelector);
 
   const { logo } = appConfig.header || {};
-  const { selectedLayers, selectedLayersWithDateSupport } = useLayers();
-  const adminLevelLayersWithFillPattern = selectedLayers.filter(
+  const { selectedLayersWithDateSupport } = useLayers();
+  const selectedLayerId = printConfig?.selectedLayerId ?? null;
+
+  useEffect(() => {
+    if (selectedLayerId && !availableDates[selectedLayerId]) {
+      dispatch(loadAvailableDatesForLayer(selectedLayerId));
+    }
+  }, [selectedLayerId, availableDates, dispatch]);
+
+  const printSelectedLayers = useMemo(() => {
+    if (
+      printConfig?.toggles.batchMapsVisibility &&
+      selectedLayerId &&
+      LayerDefinitions[selectedLayerId]
+    ) {
+      return [
+        LayerDefinitions[selectedLayerId],
+        ...getDisplayBoundaryLayers().reverse(),
+      ];
+    }
+    return [];
+  }, [selectedLayerId, printConfig?.toggles.batchMapsVisibility]);
+
+  const adminLevelLayersWithFillPattern = printSelectedLayers.filter(
     layer =>
       layer.type === 'admin_level_data' &&
       (layer.fillPattern || layer.legend.some(legend => legend.fillPattern)),
@@ -94,6 +124,30 @@ function PrintPreview() {
   // Get the style and layers of the old map
   const selectedMapStyle = selectedMap.getStyle();
 
+  // When batch maps has a selected layer, strip all application layers from the
+  // snapshot (raster tiles and all layer- prefixed entries) leaving a pure
+  // basemap. Boundary layers and the WMS date layer are rendered via React so
+  // their ordering is explicit and not affected by side-effects on the main map
+  // (e.g. a layer with a `boundary` property that removes other boundary layers).
+  if (selectedMapStyle && printSelectedLayers.length > 0) {
+    const isLayerToRemove = (layer: { id: string; type: string }) =>
+      layer.type === 'raster' || layer.id.startsWith('layer-');
+
+    const sourcesToRemove = new Set(
+      selectedMapStyle.layers
+        .filter(isLayerToRemove)
+        .map(layer => ('source' in layer ? (layer.source as string) : null))
+        .filter(Boolean) as string[],
+    );
+
+    selectedMapStyle.layers = selectedMapStyle.layers.filter(
+      layer => !isLayerToRemove(layer),
+    );
+    sourcesToRemove.forEach(sourceId => {
+      delete selectedMapStyle.sources[sourceId];
+    });
+  }
+
   // Determine active panel for AA markers
   const activePanel =
     tabValue === Panel.AnticipatoryActionDrought ||
@@ -143,6 +197,7 @@ function PrintPreview() {
         aaMarkers={AAMarkers}
         floodStations={filteredFloodStations}
         activePanel={activePanel}
+        selectedLayers={printSelectedLayers}
         adminLevelLayersWithFillPattern={adminLevelLayersWithFillPattern}
         layersCoverage={layersCoverage}
         onBoundsChange={(bounds, zoom) => {

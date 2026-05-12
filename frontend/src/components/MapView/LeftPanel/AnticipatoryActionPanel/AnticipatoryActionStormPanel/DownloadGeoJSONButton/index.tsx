@@ -1,7 +1,8 @@
 import { Button, Typography } from '@material-ui/core';
-import { useSelector } from 'react-redux';
 import { AADataSelector } from 'context/anticipatoryAction/AAStormStateSlice';
 import { useSafeTranslation } from 'i18n';
+import { useSelector } from 'react-redux';
+
 import { useAACommonStyles } from '../../utils';
 
 function DownloadGeoJSONButton() {
