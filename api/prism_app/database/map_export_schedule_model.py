@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import datetime
 import uuid
-from typing import Any, Optional
+from typing import Optional
 
 from prism_app.utils import utc_now
-from sqlalchemy import JSON, Column, DateTime, Index, Integer, String
+from sqlalchemy import Column, DateTime, Index, Integer, String, Text
 from sqlmodel import Field, SQLModel
 
 
@@ -26,9 +26,7 @@ class MapExportSchedule(SQLModel, table=True):
     )
     name: str = Field(sa_column=Column(String, nullable=False))
     cron_expression: str = Field(sa_column=Column(String, nullable=False))
-    request_payload_json: dict[str, Any] = Field(
-        sa_column=Column(JSON, nullable=False),
-    )
+    batch_map_url: str = Field(sa_column=Column(Text, nullable=False))
     max_runs: int = Field(sa_column=Column(Integer, nullable=False))
     runs_completed: int = Field(
         default=0,

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import datetime
 import logging
-from typing import Any
 from unittest.mock import MagicMock
 
 import pytest
@@ -22,7 +21,10 @@ from prism_app.export_jobs.scheduler import (
 )
 from prism_app.export_jobs.service import enqueue_map_export_job
 from prism_app.models import MapExportRequestModel
-from prism_app.tests.fixtures.moz_export import moz_export_map_request_dict
+from prism_app.tests.fixtures.moz_export import (
+    moz_export_map_request_dict,
+    moz_export_schedule_urls_text,
+)
 from prism_app.utils import utc_now
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -59,13 +61,13 @@ def _add_due_schedule(
     *,
     max_runs: int = 2,
     runs_completed: int = 0,
-    payload: dict[str, Any] | None = None,
+    payload: str | None = None,
 ) -> MapExportSchedule:
     schedule = MapExportSchedule(
         name="due",
         cron_expression="0 6 * * *",
-        request_payload_json=(
-            moz_export_map_request_dict() if payload is None else payload
+        batch_map_url=(
+            moz_export_schedule_urls_text() if payload is None else payload
         ),
         max_runs=max_runs,
         runs_completed=runs_completed,
@@ -154,7 +156,7 @@ def test_fire_next_due_schedule_halts_after_repeated_validation_failure(
     schedule = _add_due_schedule(
         schedule_job_session,
         max_runs=3,
-        payload={},
+        payload="http://evil.com/export?date=2026-04-11",
     )
 
     with caplog.at_level(logging.ERROR, logger="prism_app.export_jobs.scheduler"):
@@ -179,7 +181,7 @@ def test_refresh_schedule_next_run_at_clears_when_cap_reached() -> None:
     schedule = MapExportSchedule(
         name="done",
         cron_expression="0 6 * * *",
-        request_payload_json=moz_export_map_request_dict(),
+        batch_map_url=moz_export_schedule_urls_text(),
         max_runs=1,
         runs_completed=1,
         next_run_at=utc_now(),

@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 import os
 from typing import Any
 from unittest.mock import MagicMock
@@ -13,7 +12,7 @@ from prism_app.auth.permission_codes import ALL_CAPABILITIES
 from prism_app.database.map_export_schedule_model import MapExportSchedule
 from prism_app.export_jobs.schedule_admin_form import MapExportScheduleAdminForm
 from prism_app.export_jobs.schedule_service import reprepare_schedule_for_retry
-from prism_app.tests.fixtures.moz_export import moz_export_map_request_dict
+from prism_app.tests.fixtures.moz_export import moz_export_schedule_urls_text
 from pydantic import ValidationError
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -58,29 +57,29 @@ def _valid_schedule_form() -> dict[str, Any]:
         "name": "Moz nightly",
         "cron_expression": "0 6 * * *",
         "max_runs": 3,
-        "request_payload_json": moz_export_map_request_dict(),
+        "batch_map_url": moz_export_schedule_urls_text(),
     }
 
 
-def test_map_export_schedule_admin_form_parses_json_string() -> None:
-    payload = moz_export_map_request_dict()
+def test_map_export_schedule_admin_form_normalizes_multiline_urls() -> None:
+    urls = moz_export_schedule_urls_text().splitlines()
     form = MapExportScheduleAdminForm.model_validate(
         {
             "name": "Moz nightly",
             "cron_expression": "0 6 * * *",
             "max_runs": "5",
-            "request_payload_json": json.dumps(payload),
+            "batch_map_url": f"  {urls[0]}  \n\n{urls[1]}",
         }
     )
     assert form.max_runs == 5
-    assert form.request_payload_json.model_dump(mode="json") == payload
+    assert form.batch_map_url == "\n".join(urls[:2])
 
 
-def test_map_export_schedule_admin_form_accepts_fixture_payload() -> None:
+def test_map_export_schedule_admin_form_accepts_fixture_urls() -> None:
     form = MapExportScheduleAdminForm.model_validate(_valid_schedule_form())
     assert form.cron_expression == "0 6 * * *"
     assert form.max_runs == 3
-    assert form.request_payload_json.format == "pdf"
+    assert len(form.batch_map_url.splitlines()) == 3
 
 
 def test_map_export_schedule_admin_form_rejects_bad_cron() -> None:
@@ -91,7 +90,7 @@ def test_map_export_schedule_admin_form_rejects_bad_cron() -> None:
 
 
 @pytest.mark.asyncio
-async def test_admin_validate_rejects_invalid_json_string(
+async def test_admin_validate_rejects_invalid_export_url(
     schedule_view: MapExportScheduleView,
     schedule_db_session: Session,
 ) -> None:
@@ -100,13 +99,13 @@ async def test_admin_validate_rejects_invalid_json_string(
         await schedule_view.validate(
             request,
             {
-                "name": "Bad JSON",
+                "name": "Bad URL",
                 "cron_expression": "0 6 * * *",
                 "max_runs": "1",
-                "request_payload_json": "{not-json",
+                "batch_map_url": "http://evil.com/export?date=2026-04-11",
             },
         )
-    assert "request_payload_json" in exc_info.value.errors
+    assert "batch_map_url" in exc_info.value.errors
 
 
 @pytest.mark.asyncio
@@ -125,7 +124,7 @@ async def test_admin_create_persists_schedule_with_next_run(
     assert schedule.runs_completed == 0
     assert schedule.max_runs == 3
     assert schedule.next_run_at is not None
-    assert schedule.request_payload_json["format"] == "pdf"
+    assert schedule.batch_map_url == moz_export_schedule_urls_text()
 
 
 @pytest.mark.asyncio
@@ -145,7 +144,7 @@ async def test_admin_edit_updates_cron_and_recomputes_next_run(
             "name": "Moz morning",
             "cron_expression": "0 7 * * *",
             "max_runs": 3,
-            "request_payload_json": created.request_payload_json,
+            "batch_map_url": created.batch_map_url,
         },
     )
 
@@ -208,7 +207,7 @@ def test_reprepare_schedule_for_retry_requires_remaining_runs() -> None:
     schedule = MapExportSchedule(
         name="done",
         cron_expression="0 6 * * *",
-        request_payload_json=moz_export_map_request_dict(),
+        batch_map_url=moz_export_schedule_urls_text(),
         max_runs=1,
         runs_completed=1,
     )

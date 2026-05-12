@@ -9,7 +9,9 @@ from prism_app.export_jobs.schedule_service import (
     enqueue_scheduled_map_export_job,
     refresh_schedule_next_run_at,
 )
-from prism_app.models import MapExportRequestModel
+from prism_app.export_jobs.schedule_request import (
+    map_export_request_from_schedule_export_urls,
+)
 from prism_app.utils import utc_now
 from sqlmodel import Session, select
 
@@ -45,8 +47,8 @@ def fire_next_due_map_export_schedule(session: Session) -> bool:
     schedule_id = schedule.id
     for attempt in range(1, SCHEDULE_FIRE_MAX_ATTEMPTS + 1):
         try:
-            request = MapExportRequestModel.model_validate(
-                schedule.request_payload_json
+            request = map_export_request_from_schedule_export_urls(
+                schedule.batch_map_url
             )
             enqueue_scheduled_map_export_job(session, schedule, request)
 

@@ -23,6 +23,7 @@ from starlette.requests import Request
 from starlette_admin.actions import row_action
 from starlette_admin.contrib.sqla import Admin, ModelView
 from starlette_admin.exceptions import ActionFailed, FormValidationError
+from starlette_admin.fields import TextAreaField
 
 
 def _request_has_prism_admin_access(request: Request) -> bool:
@@ -120,11 +121,20 @@ class MapExportScheduleView(PrismGatedModelView):
         "runs_completed",
         "next_run_at",
         "last_run_at",
-        "request_payload_json",
+        TextAreaField(
+            "batch_map_url",
+            label="Batch map URL",
+            help_text=(
+                "Paste one or more absolute /export URLs from the batch map export "
+                "clipboard, one URL per line."
+            ),
+            rows=10,
+            exclude_from_list=True,
+        ),
         "created_at",
         "updated_at",
     )
-    exclude_fields_from_list = ("request_payload_json", "created_at", "updated_at")
+    exclude_fields_from_list = ("created_at", "updated_at")
     exclude_fields_from_create = (
         "runs_completed",
         "last_run_at",

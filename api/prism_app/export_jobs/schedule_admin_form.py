@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
-import json
 from typing import Any
 
 from prism_app.export_jobs.schedule_cron import validate_cron_expression
-from prism_app.models import MapExportRequestModel
+from prism_app.export_jobs.schedule_request import (
+    map_export_request_from_schedule_export_urls,
+    normalize_schedule_export_urls,
+)
 from pydantic import BaseModel, Field, ValidationError, field_validator
 
 
@@ -16,7 +18,7 @@ class MapExportScheduleAdminForm(BaseModel):
     name: str = Field(min_length=1)
     cron_expression: str
     max_runs: int = Field(ge=1)
-    request_payload_json: MapExportRequestModel
+    batch_map_url: str = Field(min_length=1)
 
     @field_validator("name", mode="before")
     @classmethod
@@ -42,25 +44,23 @@ class MapExportScheduleAdminForm(BaseModel):
             return int(text) if text else 0
         return value
 
-    @field_validator("request_payload_json", mode="before")
+    @field_validator("batch_map_url", mode="before")
     @classmethod
-    def parse_request_payload_json(cls, value: Any) -> Any:
-        if isinstance(value, str):
-            text = value.strip()
-            if not text:
-                return {}
-            try:
-                return json.loads(text)
-            except json.JSONDecodeError as exc:
-                raise ValueError(
-                    f"Invalid JSON in request_payload_json: {exc}"
-                ) from exc
-        return value or {}
+    def strip_batch_map_url(cls, value: Any) -> Any:
+        if value is None:
+            return ""
+        return str(value).strip()
 
     @field_validator("cron_expression")
     @classmethod
     def validate_cron(cls, value: str) -> str:
         return validate_cron_expression(value)
+
+    @field_validator("batch_map_url")
+    @classmethod
+    def validate_batch_map_url(cls, value: str) -> str:
+        map_export_request_from_schedule_export_urls(value)
+        return normalize_schedule_export_urls(value)
 
 
 def map_export_schedule_admin_form_errors(exc: ValidationError) -> dict[str, str]:
@@ -68,12 +68,10 @@ def map_export_schedule_admin_form_errors(exc: ValidationError) -> dict[str, str
     errors: dict[str, str] = {}
     for err in exc.errors():
         loc = tuple(str(part) for part in err["loc"])
-        if loc and loc[0] == "request_payload_json" and len(loc) > 1:
-            key = "request_payload_json." + ".".join(loc[1:])
-        elif loc:
+        if loc:
             key = loc[0]
         else:
-            key = "request_payload_json"
+            key = "batch_map_url"
         errors[key] = err["msg"]
     return errors
 
@@ -85,10 +83,10 @@ def apply_map_export_schedule_admin_form(data: dict[str, Any]) -> None:
             "name": data.get("name"),
             "cron_expression": data.get("cron_expression"),
             "max_runs": data.get("max_runs"),
-            "request_payload_json": data.get("request_payload_json"),
+            "batch_map_url": data.get("batch_map_url"),
         }
     )
     data["name"] = form.name
     data["cron_expression"] = form.cron_expression
     data["max_runs"] = form.max_runs
-    data["request_payload_json"] = form.request_payload_json.model_dump(mode="json")
+    data["batch_map_url"] = form.batch_map_url

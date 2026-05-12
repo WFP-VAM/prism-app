@@ -2,7 +2,6 @@
 
 import sqlalchemy as sa
 from alembic import op
-from sqlalchemy.dialects import postgresql
 
 revision = "map_export_schedules_001"
 down_revision = "prism_users_permissions"
@@ -16,11 +15,7 @@ def upgrade() -> None:
         sa.Column("id", sa.String(), nullable=False),
         sa.Column("name", sa.String(), nullable=False),
         sa.Column("cron_expression", sa.String(), nullable=False),
-        sa.Column(
-            "request_payload_json",
-            postgresql.JSONB(astext_type=sa.Text()),
-            nullable=False,
-        ),
+        sa.Column("batch_map_url", sa.Text(), nullable=False),
         sa.Column("max_runs", sa.Integer(), nullable=False),
         sa.Column(
             "runs_completed",
