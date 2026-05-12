@@ -185,9 +185,7 @@ function BatchMapExportJobRows({ jobs, onDismiss, variant }: Props) {
                         }
                       }}
                       title={
-                        job.downloadFilename
-                          ? job.downloadFilename
-                          : undefined
+                        job.downloadFilename ? job.downloadFilename : undefined
                       }
                     >
                       {t('Download')}
