@@ -33,9 +33,8 @@ import {
   dateRangeSelector,
   mapSelector,
 } from '../../../context/mapStateSlice/selectors';
-import MapExportLayout from '../../MapExport/MapExportLayout';
 import { useSafeTranslation } from '../../../i18n';
-
+import MapExportLayout from '../../MapExport/MapExportLayout';
 import PrintConfigContext from './printConfig.context';
 
 function PrintPreview() {
