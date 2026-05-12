@@ -1,4 +1,4 @@
-"""Starlette Admin: read-only alerts and deployment reference; full CRUD for dashboards."""
+"""Starlette Admin: read-only alerts; full CRUD for dashboards."""
 
 from prism_app.auth.permission_codes import ADMIN_ACCESS
 from prism_app.dashboard.dashboard_admin import DashboardAdminView
