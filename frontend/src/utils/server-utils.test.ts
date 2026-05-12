@@ -4,13 +4,14 @@ import {
   SeasonBounds,
 } from 'config/types';
 import timezoneMock from 'timezone-mock';
-import {
-  generateIntermediateDateItemFromValidity,
-  getStaticRasterDataCoverage,
-  getAdminLevelDataCoverage,
-} from './server-utils';
+
 import { timezones } from '../../test/helpers';
 import { getSeasonBounds, SEASON_MAP } from './date-utils';
+import {
+  generateIntermediateDateItemFromValidity,
+  getAdminLevelDataCoverage,
+  getStaticRasterDataCoverage,
+} from './server-utils';
 
 // NOTE: all timestamps are created in the LOCAL timezone (as per js docs), so that
 // these tests should pass for any TZ.

@@ -1,7 +1,9 @@
-import React, { memo, useMemo } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
+
 import { DateItem, DateRangeType } from 'config/types';
+import React, { memo, useMemo } from 'react';
 import { datesAreEqualWithoutTime } from 'utils/date-utils';
+
 import { DateItemStyle } from '../types';
 
 const StandardTimelineItem = memo(

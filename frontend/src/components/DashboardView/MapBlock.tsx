@@ -1,57 +1,58 @@
-import React, { memo, useEffect, useCallback, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
-  Typography,
   CircularProgress,
   createStyles,
-  makeStyles,
-  IconButton,
-  Tooltip,
-  TextField,
   Icon,
+  IconButton,
+  makeStyles,
+  TextField,
+  Tooltip,
+  Typography,
 } from '@material-ui/core';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import Switch from 'components/Common/Switch';
 import ImageIcon from '@material-ui/icons/Image';
-import { Source, Layer } from 'react-map-gl/maplibre';
-import html2canvas from 'html2canvas';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import Switch from 'components/Common/Switch';
+import RootAccordionItems from 'components/MapView/LeftPanel/layersPanel/RootAccordionItems';
+import { MapInstanceProvider } from 'components/MapView/MapInstanceContext';
+import { downloadToFile } from 'components/MapView/utils';
+import { DashboardMode } from 'config/types';
 import { getDisplayBoundaryLayers, LayerDefinitions } from 'config/utils';
 import {
-  isLoading as areDatesLoading,
-  loadAvailableDatesForLayer,
-} from 'context/serverStateSlice';
-import { useMapState } from 'utils/useMapState';
-import { useDashboardMapSync } from 'utils/useDashboardMapSync';
-import { MapInstanceProvider } from 'components/MapView/MapInstanceContext';
-import { boundaryCache } from 'utils/boundary-cache';
-import {
+  dashboardMapStateSelector,
+  dashboardModeSelector,
   selectedDashboardIndexSelector,
   setCapturedViewport,
-  dashboardModeSelector,
-  dashboardMapStateSelector,
-  setLegendVisible,
   setLegendPosition,
+  setLegendVisible,
 } from 'context/dashboardStateSlice';
-import useLayers from 'utils/layers-utils';
-import { getNonBoundaryLayers } from 'utils/boundary-layers-utils';
-import RootAccordionItems from 'components/MapView/LeftPanel/layersPanel/RootAccordionItems';
 import {
   pointDataLayerDatesRequested,
   preloadLayerDatesArraysForPointData,
   preloadLayerDatesArraysForWMS,
   WMSLayerDatesRequested,
 } from 'context/serverPreloadStateSlice';
+import {
+  isLoading as areDatesLoading,
+  loadAvailableDatesForLayer,
+} from 'context/serverStateSlice';
+import html2canvas from 'html2canvas';
 import { useSafeTranslation } from 'i18n';
-import { DashboardMode } from 'config/types';
-import { downloadToFile } from 'components/MapView/utils';
+import React, { memo, useCallback, useEffect, useRef } from 'react';
+import { Layer, Source } from 'react-map-gl/maplibre';
+import { useDispatch, useSelector } from 'react-redux';
+import { boundaryCache } from 'utils/boundary-cache';
+import { getNonBoundaryLayers } from 'utils/boundary-layers-utils';
 import { getFormattedDate } from 'utils/date-utils';
-import MapComponent from '../MapView/Map';
+import useLayers from 'utils/layers-utils';
+import { useDashboardMapSync } from 'utils/useDashboardMapSync';
+import { useMapState } from 'utils/useMapState';
+
 import DateSelector from '../MapView/DateSelector';
-import DashboardLegends from './DashboardLegends';
+import MapComponent from '../MapView/Map';
 import BlockPreviewHeader from './BlockPreviewHeader';
 import type { ExportConfig } from './DashboardContent';
+import DashboardLegends from './DashboardLegends';
 
 /*
   reverse the order off adding layers so that the first boundary layer will be placed at the very bottom,

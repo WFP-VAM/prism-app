@@ -1,9 +1,10 @@
-import { Popup } from 'react-map-gl/maplibre';
+import { createStyles, makeStyles, Typography } from '@material-ui/core';
 import { ParsedStormData } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import _React from 'react';
-import { createStyles, makeStyles, Typography } from '@material-ui/core';
-import { findLandfallWindPoint, hasLandfallOccured } from '../utils';
+import { Popup } from 'react-map-gl/maplibre';
+
 import { formatWindPointDate } from '../../utils';
+import { findLandfallWindPoint, hasLandfallOccured } from '../utils';
 
 function AAStormLandfallMarker({ stormData }: AAStormLandfallPopupProps) {
   const classes = useStyles();

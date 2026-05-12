@@ -1,11 +1,12 @@
-import { z } from 'zod';
 import { AggregationOperations } from 'config/aggregationOperations';
+import { generateSlugFromTitle } from 'utils/string-utils';
+import { z } from 'zod';
+
 import {
   ChartHeight,
   DashboardElementType,
   DashboardMapPosition,
 } from './dashboardEnums';
-import { generateSlugFromTitle } from 'utils/string-utils';
 
 const preSelectedMapLayerSchema = z.object({
   layerId: z.string(),

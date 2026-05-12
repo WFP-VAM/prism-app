@@ -1,5 +1,6 @@
-import { fetchDashboardConfig } from './fetchDashboardConfig';
 import { DashboardElementType } from 'config/types';
+
+import { fetchDashboardConfig } from './fetchDashboardConfig';
 
 const validBody = [
   {

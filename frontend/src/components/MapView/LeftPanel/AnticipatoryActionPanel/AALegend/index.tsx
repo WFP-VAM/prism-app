@@ -1,11 +1,12 @@
-import { ListItem, Paper, createStyles, makeStyles } from '@material-ui/core';
+import { createStyles, ListItem, makeStyles, Paper } from '@material-ui/core';
+import { Panel } from 'config/types';
+import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { lightGrey } from 'muiTheme';
 import { useSelector } from 'react-redux';
-import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
-import { Panel } from 'config/types';
+
 import AADroughtLegend from '../AADroughtLegend';
-import AAStormLegend from '../AAStormLegend';
 import AAFloodLegend from '../AAFloodLegend';
+import AAStormLegend from '../AAStormLegend';
 
 export interface AALegendProps {
   forPrinting?: boolean;

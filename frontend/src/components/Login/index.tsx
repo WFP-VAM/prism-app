@@ -1,16 +1,15 @@
-import { useCallback } from 'react';
+import { useMsal } from '@azure/msal-react';
 import {
-  createStyles,
-  Typography,
   Button,
+  createStyles,
   Grid,
   makeStyles,
+  Typography,
 } from '@material-ui/core';
-import { useMsal } from '@azure/msal-react';
-import { msalRequest } from 'config';
-
-import { colors } from 'muiTheme';
 import { wfpLogo } from 'assets/images';
+import { msalRequest } from 'config';
+import { colors } from 'muiTheme';
+import { useCallback } from 'react';
 
 function Login() {
   const classes = useStyles();

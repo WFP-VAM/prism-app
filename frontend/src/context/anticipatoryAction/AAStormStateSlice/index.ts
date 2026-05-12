@@ -7,10 +7,11 @@ import {
   QueryDateTimestamp,
 } from 'config/types';
 import { StormDataResponseBody } from 'prism-common/';
+
 import type { CreateAsyncThunkTypes, RootState } from '../../store';
+import { ParsedStormData } from './parsedStormDataTypes';
 import { AAStormWindStateReports, AnticipatoryActionState } from './types';
 import { parseAndTransformAA } from './utils';
-import { ParsedStormData } from './parsedStormDataTypes';
 
 const initialState: AnticipatoryActionState = {
   data: {},

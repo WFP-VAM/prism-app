@@ -1,6 +1,7 @@
 import { IconButton, Tooltip } from '@material-ui/core';
 import { ImageAspectRatioOutlined } from '@material-ui/icons';
-import { useDispatch, useSelector } from 'react-redux';
+import { Extent } from 'components/MapView/Layers/raster-utils';
+import { generateUniqueTableKey } from 'components/MapView/utils';
 import {
   AggregationOperations,
   ExposedPopulationDefinition,
@@ -20,8 +21,7 @@ import {
 import { setTabValue } from 'context/leftPanelStateSlice';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
-import { Extent } from 'components/MapView/Layers/raster-utils';
-import { generateUniqueTableKey } from 'components/MapView/utils';
+import { useDispatch, useSelector } from 'react-redux';
 
 function ExposureAnalysisOption({
   layer,

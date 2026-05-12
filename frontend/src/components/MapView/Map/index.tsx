@@ -1,35 +1,6 @@
-import React, {
-  ComponentType,
-  createElement,
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import AnalysisLayer from 'components/MapView/Layers/AnalysisLayer';
-import SelectionLayer from 'components/MapView/Layers/SelectionLayer';
-import MapTooltip from 'components/MapView/MapTooltip';
-import { appConfig } from 'config';
-import useMapOnClick from 'components/MapView/useMapOnClick';
-import { setBounds, setLocation } from 'context/mapBoundaryInfoStateSlice';
-import {
-  DashboardMode,
-  DiscriminateUnion,
-  LayerKey,
-  LayerType,
-  Panel,
-} from 'config/types';
-import { setLoadingLayerIds } from 'context/mapTileLoadingStateSlice';
-import {
-  getFirstBoundaryLayerMapId,
-  getLayerBeforeId,
-  layerUsesSymbolAnchorOnly,
-  stackLayersForMapPaintOrder,
-} from 'utils/map-layer-before-utils';
-import { useMapState } from 'utils/useMapState';
-import { dashboardModeSelector } from 'context/dashboardStateSlice';
+import 'maplibre-gl/dist/maplibre-gl.css';
+
+import { useMediaQuery, useTheme } from '@material-ui/core';
 import {
   AdminLevelDataLayer,
   AnticipatoryActionDroughtLayer,
@@ -41,20 +12,50 @@ import {
   StaticRasterLayer,
   WMSLayer,
 } from 'components/MapView/Layers';
-import useLayers from 'utils/layers-utils';
-import MapGL, { MapEvent, MapRef } from 'react-map-gl/maplibre';
+import AnalysisLayer from 'components/MapView/Layers/AnalysisLayer';
+import SelectionLayer from 'components/MapView/Layers/SelectionLayer';
+import MapTooltip from 'components/MapView/MapTooltip';
+import useMapOnClick from 'components/MapView/useMapOnClick';
+import { appConfig } from 'config';
+import {
+  DashboardMode,
+  DiscriminateUnion,
+  LayerKey,
+  LayerType,
+  Panel,
+} from 'config/types';
+import { dashboardModeSelector } from 'context/dashboardStateSlice';
+import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { setBounds, setLocation } from 'context/mapBoundaryInfoStateSlice';
+import { setLoadingLayerIds } from 'context/mapTileLoadingStateSlice';
 import {
   LngLatBoundsLike,
-  MapSourceDataEvent,
   Map as MaplibreMap,
+  MapSourceDataEvent,
 } from 'maplibre-gl';
+import React, {
+  ComponentType,
+  createElement,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import MapGL, { MapEvent, MapRef } from 'react-map-gl/maplibre';
+import { useDispatch, useSelector } from 'react-redux';
+import useLayers from 'utils/layers-utils';
+import {
+  getFirstBoundaryLayerMapId,
+  getLayerBeforeId,
+  layerUsesSymbolAnchorOnly,
+  stackLayersForMapPaintOrder,
+} from 'utils/map-layer-before-utils';
+import { useMapState } from 'utils/useMapState';
 
-import 'maplibre-gl/dist/maplibre-gl.css';
-import { useMediaQuery, useTheme } from '@material-ui/core';
-import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
-import { mapStyle } from './utils';
-import GeojsonDataLayer from '../Layers/GeojsonDataLayer';
 import AnticipatoryActionFloodLayer from '../Layers/AnticipatoryActionFloodLayer';
+import GeojsonDataLayer from '../Layers/GeojsonDataLayer';
+import { mapStyle } from './utils';
 
 type LayerComponentsMap<U extends LayerType> = {
   [T in U['type']]: {

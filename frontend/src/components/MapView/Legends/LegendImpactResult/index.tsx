@@ -1,5 +1,6 @@
-import { memo } from 'react';
 import { useSafeTranslation } from 'i18n';
+import { memo } from 'react';
+
 import LegendMarkdown from '../LegendMarkdown';
 
 interface LegendImpactProps {

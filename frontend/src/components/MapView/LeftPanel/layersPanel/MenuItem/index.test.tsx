@@ -1,8 +1,8 @@
-import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
-
-import { store } from 'context/store';
 import { LayerKey, MenuItemType } from 'config/types';
+import { store } from 'context/store';
+import { Provider } from 'react-redux';
+
 import MenuItem from '.';
 
 jest.mock(

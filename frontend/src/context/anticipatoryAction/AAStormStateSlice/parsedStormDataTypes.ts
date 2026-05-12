@@ -1,4 +1,4 @@
-import { Feature, Geometry, GeoJsonProperties } from 'geojson';
+import { Feature, GeoJsonProperties, Geometry } from 'geojson';
 import { ForecastDetails, TimeSeries } from 'prism-common/';
 
 export enum AACategory {

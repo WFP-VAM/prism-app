@@ -1,5 +1,4 @@
 import {
-  makeStyles,
   Box,
   Button,
   createStyles,
@@ -8,27 +7,28 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  makeStyles,
   Theme,
   Typography,
   useTheme,
 } from '@material-ui/core';
-
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { ArrowBack } from '@material-ui/icons';
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
-import { snakeCase } from 'lodash';
-import { useSafeTranslation } from 'i18n';
-import { mapSelector } from 'context/mapStateSlice/selectors';
+import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
+import { ReportType } from 'config/types';
 import {
   analysisResultSelector,
   TableRow as AnalysisTableRow,
 } from 'context/analysisResultStateSlice';
+import { mapSelector } from 'context/mapStateSlice/selectors';
+import { useSafeTranslation } from 'i18n';
+import { snakeCase } from 'lodash';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Column, ExposedPopulationResult } from 'utils/analysis-utils';
-import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
-import { ReportType } from 'config/types';
-import { DateFormat } from 'utils/name-utils';
 import { getFormattedDate } from 'utils/date-utils';
+import { DateFormat } from 'utils/name-utils';
+
 import ReportDoc from './reportDoc';
 
 type Format = 'png' | 'jpeg';

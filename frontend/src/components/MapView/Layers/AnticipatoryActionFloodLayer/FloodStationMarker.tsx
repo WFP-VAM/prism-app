@@ -1,10 +1,10 @@
-import { Marker } from 'react-map-gl/maplibre';
 import { Tooltip } from '@material-ui/core';
 import { FloodStation } from 'context/anticipatoryAction/AAFloodStateSlice/types';
 import {
   getCircleBorderColor,
   getFloodRiskColor,
 } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
+import { Marker } from 'react-map-gl/maplibre';
 
 const CIRCLE_SIZE = 16;
 

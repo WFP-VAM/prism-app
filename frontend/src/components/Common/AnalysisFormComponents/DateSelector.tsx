@@ -1,12 +1,12 @@
 import {
-  Typography,
   Input,
   InputAdornment,
   makeStyles,
+  Typography,
 } from '@material-ui/core';
 import { DateRangeRounded } from '@material-ui/icons';
-import DatePicker from 'react-datepicker';
 import { useSafeTranslation } from 'i18n';
+import DatePicker from 'react-datepicker';
 
 interface DateSelectorProps {
   selectedDate: number | null;
