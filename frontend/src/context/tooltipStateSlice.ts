@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { merge } from 'lodash';
 import { AdminCodeString } from 'config/types';
+import { merge } from 'lodash';
+
 import type { RootState } from './store';
 
 export interface PopupTitleData {

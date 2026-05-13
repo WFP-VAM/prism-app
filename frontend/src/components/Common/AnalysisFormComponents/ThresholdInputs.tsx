@@ -1,7 +1,7 @@
-import React, { useState, useCallback } from 'react';
-import { TextField, Typography, makeStyles } from '@material-ui/core';
+import { makeStyles, TextField, Typography } from '@material-ui/core';
 import { AggregationOperations } from 'config/types';
 import { useSafeTranslation } from 'i18n';
+import React, { useCallback, useState } from 'react';
 
 interface ThresholdInputsProps {
   belowThreshold: string;

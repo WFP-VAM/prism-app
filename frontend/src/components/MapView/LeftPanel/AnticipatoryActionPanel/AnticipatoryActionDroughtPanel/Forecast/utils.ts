@@ -1,9 +1,9 @@
+import { calculateSeason } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
 import {
   AACategoryType,
   AnticipatoryActionDataRow,
   AnticipatoryActionState,
 } from 'context/anticipatoryAction/AADroughtStateSlice/types';
-import { calculateSeason } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
 
 const indexOrder = ['SPI', 'DRY'];
 const monthsOrder = ['O', 'N', 'D', 'J', 'F', 'M', 'A', 'M', 'J'];

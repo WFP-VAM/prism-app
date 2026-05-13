@@ -3,11 +3,13 @@ import {
   Button,
   CircularProgress,
   Collapse,
+  createStyles,
   Divider,
   FormControl,
   Icon,
   IconButton,
   InputLabel,
+  makeStyles,
   Menu,
   MenuItem,
   Select,
@@ -15,23 +17,22 @@ import {
   Theme,
   Tooltip,
   Typography,
-  createStyles,
-  makeStyles,
 } from '@material-ui/core';
-import { GetApp, Cancel } from '@material-ui/icons';
-import React, { useContext, useState, useEffect } from 'react';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import { Cancel, GetApp } from '@material-ui/icons';
 import ToggleButton from '@material-ui/lab/ToggleButton';
-import { cyanBlue } from 'muiTheme';
-import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import Switch from 'components/Common/Switch';
 import { AspectRatio } from 'components/MapExport/types';
+import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
 import { LayerKey } from 'config/types';
+import { cyanBlue } from 'muiTheme';
+import React, { useContext, useEffect, useState } from 'react';
+
 import { useSafeTranslation } from '../../../i18n';
-import PrintConfigContext from './printConfig.context';
-import DateRangePicker from './DateRangePicker';
 import AspectRatioSelector from './AspectRatioSelector';
 import CadenceSelector from './CadenceSelector';
+import DateRangePicker from './DateRangePicker';
+import PrintConfigContext from './printConfig.context';
 
 interface ToggleSelectorProps {
   title: string;

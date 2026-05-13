@@ -1,12 +1,13 @@
 import { render } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import { TestBrowserRouter } from 'test/TestBrowserRouter';
-import configureStore from 'redux-mock-store';
-import { AnticipatoryActionState } from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { Panel } from 'config/types';
+import { AnticipatoryActionState } from 'context/anticipatoryAction/AADroughtStateSlice/types';
+import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
+import { TestBrowserRouter } from 'test/TestBrowserRouter';
+
 import { defaultDialogs, mockAAData } from '../test.utils';
-import { forecastTransform } from './utils';
 import Forecast from '.';
+import { forecastTransform } from './utils';
 
 const mockStore = configureStore([]);
 

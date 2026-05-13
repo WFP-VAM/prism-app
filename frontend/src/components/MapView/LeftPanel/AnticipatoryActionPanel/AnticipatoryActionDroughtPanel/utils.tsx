@@ -9,18 +9,19 @@ import {
   useRadioGroup,
   withStyles,
 } from '@material-ui/core';
-import { black, borderGray, lightGrey } from 'muiTheme';
-import { useSafeTranslation } from 'i18n';
-import {
-  AACategoryType,
-  AAPhaseType,
-  AAcategory,
-  AnticipatoryActionDataRow,
-} from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import {
   LIGHT_BLUE_HEX,
   LIGHT_GREEN_HEX,
 } from 'components/MapView/DateSelector/TimelineItems/utils';
+import {
+  AAcategory,
+  AACategoryType,
+  AAPhaseType,
+  AnticipatoryActionDataRow,
+} from 'context/anticipatoryAction/AADroughtStateSlice/types';
+import { useSafeTranslation } from 'i18n';
+import { black, borderGray, lightGrey } from 'muiTheme';
+
 import AAIcon from '../AAIcon';
 
 // Centralized colors for AA Drought

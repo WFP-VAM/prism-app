@@ -1,17 +1,17 @@
-import { memo } from 'react';
-import { useSelector } from 'react-redux';
-import { Layer, Source } from 'react-map-gl/maplibre';
-import { WMSLayerProps } from 'config/types';
 import {
   expandBoundingBox,
   getWMSUrl,
 } from 'components/MapView/Layers/raster-utils';
-import { useDefaultDate } from 'utils/useDefaultDate';
-import { getRequestDate } from 'utils/server-utils';
-import { availableDatesSelector } from 'context/serverStateSlice';
-import { getLayerMapId } from 'utils/map-utils';
 import { appConfig } from 'config';
+import { WMSLayerProps } from 'config/types';
 import { opacitySelector } from 'context/opacityStateSlice';
+import { availableDatesSelector } from 'context/serverStateSlice';
+import { memo } from 'react';
+import { Layer, Source } from 'react-map-gl/maplibre';
+import { useSelector } from 'react-redux';
+import { getLayerMapId } from 'utils/map-utils';
+import { getRequestDate } from 'utils/server-utils';
+import { useDefaultDate } from 'utils/useDefaultDate';
 
 const WMSLayers = memo(
   ({

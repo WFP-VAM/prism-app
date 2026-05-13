@@ -1,19 +1,20 @@
-import { useMemo, useContext } from 'react';
 import {
   Box,
-  Typography,
-  Theme,
   createStyles,
   makeStyles,
+  Theme,
+  Typography,
 } from '@material-ui/core';
+import { WMSLayerProps } from 'config/types';
+import { LayerDefinitions } from 'config/utils';
+import { availableDatesSelector } from 'context/serverStateSlice';
+import { useContext, useMemo } from 'react';
 import DatePicker from 'react-datepicker';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { availableDatesSelector } from 'context/serverStateSlice';
-import { LayerDefinitions } from 'config/utils';
-import { WMSLayerProps } from 'config/types';
-import { getPossibleDatesForLayer } from 'utils/server-utils';
 import { dateWithoutTime } from 'utils/date-utils';
+import { getPossibleDatesForLayer } from 'utils/server-utils';
+
 import PrintConfigContext from './printConfig.context';
 
 function DateRangePicker() {

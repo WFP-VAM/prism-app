@@ -6,24 +6,25 @@ import {
   Theme,
   useMediaQuery,
 } from '@material-ui/core';
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { AdminCodeString } from 'config/types';
+import { getBoundaryLayerSingleton } from 'config/utils';
 import {
   getSelectedBoundaries,
   setIsSelectionMode,
   setSelectedBoundaries as setSelectedBoundariesRedux,
 } from 'context/mapSelectionLayerStateSlice';
-import { getBoundaryLayerSingleton } from 'config/utils';
 import { useSafeTranslation } from 'i18n';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useBoundaryData } from 'utils/useBoundaryData';
+
+import BoundaryDropdownOptions from './BoundaryDropdownOptions';
 import {
   BoundaryDropdownProps,
   flattenAreaTree,
   getAdminBoundaryTree,
   TIMEOUT_ANIMATION_DELAY,
 } from './utils';
-import BoundaryDropdownOptions from './BoundaryDropdownOptions';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 

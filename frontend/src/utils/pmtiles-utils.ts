@@ -20,8 +20,8 @@
  *
  */
 
-import { Protocol, PMTiles } from 'pmtiles';
 import MapLibreGL from 'maplibre-gl';
+import { PMTiles, Protocol } from 'pmtiles';
 
 // Create a singleton instance of the protocol
 const protocol = new Protocol();

@@ -1,22 +1,22 @@
 import {
+  Box,
   CircularProgress,
   createStyles,
-  Typography,
-  Box,
   makeStyles,
+  Typography,
 } from '@material-ui/core';
-
-import { GeoJsonProperties } from 'geojson';
-import { omit } from 'lodash';
-import React, { memo, useEffect, useMemo, useState } from 'react';
+import Chart, { ChartProps } from 'components/Common/Chart';
 import { AdminLevelType, WMSLayerProps } from 'config/types';
 import { CHART_DATA_PREFIXES } from 'context/datasetStateSlice';
 import { TableData } from 'context/tableStateSlice';
+import { GeoJsonProperties } from 'geojson';
 import { useSafeTranslation } from 'i18n';
-import Chart, { ChartProps } from 'components/Common/Chart';
+import { omit } from 'lodash';
+import React, { memo, useEffect, useMemo, useState } from 'react';
+import { useChartData } from 'utils/chart-hooks';
 import { createCsvDataFromDataKeyMap, createDataKeyMap } from 'utils/csv-utils';
 import { getFormattedDate } from 'utils/date-utils';
-import { useChartData } from 'utils/chart-hooks';
+
 import { generateDateStrings } from './utils';
 
 /**

@@ -1,10 +1,11 @@
+import { calculateSeason } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
 import {
   AnticipatoryActionDataRow,
   AnticipatoryActionState,
 } from 'context/anticipatoryAction/AADroughtStateSlice/types';
-import { calculateSeason } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
-import { AADataSeverityOrder } from '../utils';
+
 import { TimelineRow } from '../Timeline/utils';
+import { AADataSeverityOrder } from '../utils';
 
 export function districtViewTransform(
   data: AnticipatoryActionDataRow[] | undefined,

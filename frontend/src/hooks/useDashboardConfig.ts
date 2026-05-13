@@ -1,14 +1,14 @@
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { useIsAuthenticated } from '@azure/msal-react';
 import { authRequired, safeCountry } from 'config';
-import { fetchDashboardConfig } from 'dashboardConfig/fetchDashboardConfig';
+import { setDashboards } from 'context/dashboardStateSlice';
+import { addNotification } from 'context/notificationStateSlice';
 import {
   getDashboardConfigErrorMessage,
   isDashboardConfigNotFoundError,
 } from 'dashboardConfig/dashboardConfigQueryError';
-import { setDashboards } from 'context/dashboardStateSlice';
-import { addNotification } from 'context/notificationStateSlice';
+import { fetchDashboardConfig } from 'dashboardConfig/fetchDashboardConfig';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { DASHBOARDS_API_URL } from 'utils/constants';
 
 const RETRY_ATTEMPTS = 3;

@@ -19,6 +19,7 @@ jobs:
     env:
       PRISM_ALERTS_DATABASE_URL: ${{ secrets.PRISM_ALERTS_DATABASE_URL }}
       EMAIL_PASSWORD: ${{ secrets.PRISM_ALERTS_EMAIL_PASSWORD }}
+      PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "true"
 
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     steps:
@@ -44,13 +45,11 @@ jobs:
             fi
           done
 
-      # Lint and test
+      # Lint and test (use lockfile-only install; avoid `yarn add` in CI — re-resolution can hit bad/preview registry metadata)
       - run: |
           cd alerting
-          yarn install
+          yarn install --frozen-lockfile
           yarn setup:common
-          # Install puppeteer dependencies
-          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true yarn add puppeteer puppeteer-core
           yarn lint
           yarn test
           # Run flood alert worker with test email

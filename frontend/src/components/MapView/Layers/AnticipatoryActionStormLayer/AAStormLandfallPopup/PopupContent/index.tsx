@@ -1,7 +1,7 @@
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
-
 import { LandfallInfo } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import { useSafeTranslation } from 'i18n';
+
 import {
   formatLandfallDate,
   formatLandfallEstimatedLeadtime,
