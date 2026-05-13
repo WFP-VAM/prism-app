@@ -38,13 +38,20 @@ function buildBatchDateStem(startDate: number, endDate: number): string {
 }
 
 /** Single pass; caller must pass non-empty array. */
-function minMaxUtcMs(stamps: readonly number[]): { minTs: number; maxTs: number } {
+function minMaxUtcMs(stamps: readonly number[]): {
+  minTs: number;
+  maxTs: number;
+} {
   let minTs = stamps[0];
   let maxTs = stamps[0];
   for (let i = 1; i < stamps.length; i += 1) {
     const ts = stamps[i];
-    if (ts < minTs) minTs = ts;
-    if (ts > maxTs) maxTs = ts;
+    if (ts < minTs) {
+      minTs = ts;
+    }
+    if (ts > maxTs) {
+      maxTs = ts;
+    }
   }
   return { minTs, maxTs };
 }
