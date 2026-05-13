@@ -6,15 +6,15 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
+import {
+  AdminBoundaryTree,
+  getAdminBoundaryTree,
+} from 'components/MapView/Layers/BoundaryDropdown/utils';
+import { AdminCodeString, BoundaryLayerProps, PanelSize } from 'config/types';
+import { BoundaryLayerData } from 'context/layers/boundary';
+import { useSafeTranslation } from 'i18n';
 import { sortBy } from 'lodash';
 import React, { memo, ReactNode } from 'react';
-import { BoundaryLayerProps, PanelSize, AdminCodeString } from 'config/types';
-import {
-  getAdminBoundaryTree,
-  AdminBoundaryTree,
-} from 'components/MapView/Layers/BoundaryDropdown/utils';
-import { useSafeTranslation } from 'i18n';
-import { BoundaryLayerData } from 'context/layers/boundary';
 
 const useStyles = makeStyles(() =>
   createStyles({

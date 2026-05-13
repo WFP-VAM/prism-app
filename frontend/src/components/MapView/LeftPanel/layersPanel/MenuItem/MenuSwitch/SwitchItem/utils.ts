@@ -1,5 +1,5 @@
 import { Map as MaplibreMap } from 'maplibre-gl';
-import { UrlLayerKey } from '../../../../../../../utils/url-utils';
+
 import { LayerKey, LayerType } from '../../../../../../../config/types';
 import {
   getDisplayBoundaryLayers,
@@ -9,6 +9,7 @@ import {
   safeDispatchAddLayer,
   safeDispatchRemoveLayer,
 } from '../../../../../../../utils/map-utils';
+import { UrlLayerKey } from '../../../../../../../utils/url-utils';
 
 export function toggleRemoveLayer(
   layer: LayerType,

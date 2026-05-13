@@ -1,10 +1,11 @@
 import { render } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import { TestBrowserRouter } from 'test/TestBrowserRouter';
-import configureStore from 'redux-mock-store';
 import { Panel } from 'config/types';
-import HomeTable from '.';
+import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
+import { TestBrowserRouter } from 'test/TestBrowserRouter';
+
 import { defaultDialogs, mockAARenderedDistricts } from '../test.utils';
+import HomeTable from '.';
 
 const mockStore = configureStore([]);
 

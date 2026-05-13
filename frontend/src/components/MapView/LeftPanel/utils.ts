@@ -1,14 +1,5 @@
-import { camelCase, get, map, mapKeys, startCase } from 'lodash';
-import { GeoJsonProperties } from 'geojson';
-import { appConfig } from 'config';
 import { getImageUrl } from 'assets/images';
-import {
-  isTableKey,
-  LayerDefinitions,
-  TableDefinitions,
-  TableKey,
-  getWMSLayersWithChart,
-} from 'config/utils';
+import { appConfig } from 'config';
 import {
   isLayerKey,
   LayerKey,
@@ -17,6 +8,15 @@ import {
   MenuGroup,
   MenuItemType,
 } from 'config/types';
+import {
+  getWMSLayersWithChart,
+  isTableKey,
+  LayerDefinitions,
+  TableDefinitions,
+  TableKey,
+} from 'config/utils';
+import { GeoJsonProperties } from 'geojson';
+import { camelCase, get, map, mapKeys, startCase } from 'lodash';
 
 const { multiCountry, country } = appConfig;
 const chartLayers = getWMSLayersWithChart();

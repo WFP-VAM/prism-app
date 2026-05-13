@@ -1,5 +1,5 @@
-import appConfig from './prism.json';
 import rawLayers from './layers.json';
+import appConfig from './prism.json';
 import rawReports from './reports.json';
 // import myanmarTranslation from './translation.json';
 

@@ -1,5 +1,5 @@
-import { forwardRef, Ref } from 'react';
 import { Button, createStyles, makeStyles } from '@material-ui/core';
+import { forwardRef, Ref } from 'react';
 
 const DateSelectorInput = forwardRef(
   (

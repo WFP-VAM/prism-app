@@ -1,13 +1,11 @@
 import {
   Button,
-  Typography,
   createStyles,
   makeStyles,
+  Typography,
 } from '@material-ui/core';
+import { ClearAll, Reply } from '@material-ui/icons';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { Scatter } from 'react-chartjs-2';
-import { useDispatch, useSelector } from 'react-redux';
-import { lightGrey } from 'muiTheme';
 import {
   AADataSelector,
   AAFiltersSelector,
@@ -15,16 +13,19 @@ import {
   setAAView,
 } from 'context/anticipatoryAction/AADroughtStateSlice';
 import {
+  AAcategory,
   AACategoryType,
   AAView,
-  AAcategory,
 } from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
-import { ClearAll, Reply } from '@material-ui/icons';
+import { lightGrey } from 'muiTheme';
+import { Scatter } from 'react-chartjs-2';
+import { useDispatch, useSelector } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
-import { getAAColor } from '../utils';
+
 import { useAACommonStyles } from '../../utils';
+import { getAAColor } from '../utils';
 import { chartOptions, forecastTransform, getChartData } from './utils';
 
 interface ForecastProps {

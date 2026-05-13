@@ -1,7 +1,7 @@
 import {
   binaryFind,
-  dateWithoutTime,
   datesAreEqualWithoutTime,
+  dateWithoutTime,
   findClosestDate,
   generateDateItemsRange,
   generateDatesRange,

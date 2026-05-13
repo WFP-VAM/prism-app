@@ -1,11 +1,11 @@
-import { useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import {
-  dashboardSyncEnabledSelector,
-  dashboardSharedViewportSelector,
   dashboardMapElementsSelector,
+  dashboardSharedViewportSelector,
+  dashboardSyncEnabledSelector,
   setSharedViewport,
 } from 'context/dashboardStateSlice';
+import { useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useMapState } from 'utils/useMapState';
 
 export const useDashboardMapSync = (mode?: string) => {

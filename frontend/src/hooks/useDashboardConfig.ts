@@ -1,18 +1,18 @@
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { useIsAuthenticated } from '@azure/msal-react';
 import {
   authRequired,
   dashboardConfigUrl,
   localDashboardConfigUrl,
 } from 'config';
-import { fetchDashboardConfig } from 'dashboardConfig/fetchDashboardConfig';
+import { setDashboards } from 'context/dashboardStateSlice';
+import { addNotification } from 'context/notificationStateSlice';
 import {
   getDashboardConfigErrorMessage,
   isDashboardConfigNotFoundError,
 } from 'dashboardConfig/dashboardConfigQueryError';
-import { setDashboards } from 'context/dashboardStateSlice';
-import { addNotification } from 'context/notificationStateSlice';
+import { fetchDashboardConfig } from 'dashboardConfig/fetchDashboardConfig';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 const RETRY_ATTEMPTS = 3;
 const retryDelayMs = (attemptIndex: number) =>

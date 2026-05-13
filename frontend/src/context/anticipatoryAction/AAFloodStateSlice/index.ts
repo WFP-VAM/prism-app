@@ -1,15 +1,16 @@
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import Papa from 'papaparse';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { appConfig } from 'config';
 import { startCase } from 'lodash';
+import Papa from 'papaparse';
+
 import type { CreateAsyncThunkTypes, RootState } from '../../store';
 import {
   AAFloodView,
   AnticipatoryActionFloodState,
-  FloodStation,
   FloodDateItem,
-  FloodProbabilityPoint,
   FloodForecastData,
+  FloodProbabilityPoint,
+  FloodStation,
 } from './types';
 import {
   buildAvailableFloodDatesFromDatesJson,

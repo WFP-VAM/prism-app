@@ -1,13 +1,21 @@
-import React, { memo, useMemo, useCallback, useState } from 'react';
 import { IconButton, Menu, MenuItem, Tooltip } from '@material-ui/core';
 import GetAppIcon from '@material-ui/icons/GetApp';
-import { useSafeTranslation } from 'i18n';
 import {
   downloadToFile,
   getExposureAnalysisColumnsToRender,
   getExposureAnalysisTableData,
   getExposureAnalysisTableDataRowsToRender,
 } from 'components/MapView/utils';
+import {
+  exposureAnalysisResultSortByKeySelector,
+  exposureAnalysisResultSortOrderSelector,
+  getCurrentDefinition,
+  TableRow,
+} from 'context/analysisResultStateSlice';
+import { useSafeTranslation } from 'i18n';
+import { snakeCase } from 'lodash';
+import React, { memo, useCallback, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   BaselineLayerResult,
   downloadCSVFromTableData,
@@ -16,14 +24,6 @@ import {
   PolygonAnalysisResult,
   useAnalysisTableColumns,
 } from 'utils/analysis-utils';
-import { snakeCase } from 'lodash';
-import { useSelector } from 'react-redux';
-import {
-  exposureAnalysisResultSortByKeySelector,
-  exposureAnalysisResultSortOrderSelector,
-  getCurrentDefinition,
-  TableRow,
-} from 'context/analysisResultStateSlice';
 import { getExposureAnalysisCsvData } from 'utils/csv-utils';
 
 const AnalysisLayerSwitchItemDownloadOptions = memo(

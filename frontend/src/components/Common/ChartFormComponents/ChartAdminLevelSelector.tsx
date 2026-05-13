@@ -1,9 +1,9 @@
-import { Typography, makeStyles } from '@material-ui/core';
-import { range } from 'lodash';
-import { AdminLevelType } from 'config/types';
-import { getAdminLevelCount } from 'utils/admin-utils';
+import { makeStyles, Typography } from '@material-ui/core';
 import SimpleDropdown from 'components/Common/SimpleDropdown';
+import { AdminLevelType } from 'config/types';
 import { useSafeTranslation } from 'i18n';
+import { range } from 'lodash';
+import { getAdminLevelCount } from 'utils/admin-utils';
 
 interface ChartAdminLevelSelectorProps {
   value: AdminLevelType;

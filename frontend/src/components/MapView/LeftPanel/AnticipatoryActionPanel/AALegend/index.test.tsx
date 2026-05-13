@@ -1,7 +1,8 @@
 import { render } from '@testing-library/react';
-import configureStore from 'redux-mock-store';
 import { Panel } from 'config/types';
 import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
+
 import AALegend from '.';
 
 test('renders as expected', () => {

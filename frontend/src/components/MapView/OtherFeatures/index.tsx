@@ -1,8 +1,9 @@
 import { Box, createStyles, makeStyles } from '@material-ui/core';
 import { memo, useMemo } from 'react';
 import useLayers from 'utils/layers-utils';
-import DateSelector from '../DateSelector';
+
 import BoundaryInfoBox from '../BoundaryInfoBox';
+import DateSelector from '../DateSelector';
 
 const useStyles = makeStyles(() =>
   createStyles({
