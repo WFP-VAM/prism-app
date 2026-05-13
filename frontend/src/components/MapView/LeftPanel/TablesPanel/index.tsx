@@ -1,31 +1,22 @@
 import {
-  ChangeEvent,
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-import {
   LinearProgress,
   ListSubheader,
+  makeStyles,
   MenuItem,
   TextField,
   Theme,
   Typography,
-  makeStyles,
 } from '@material-ui/core';
-import { useDispatch, useSelector } from 'react-redux';
 import { createStyles } from '@material-ui/styles';
+import { usePostHog } from '@posthog/react';
 import {
   LayersCategoryType,
   MenuItemType,
+  Panel,
   PanelSize,
   TableType,
-  Panel,
 } from 'config/types';
-import { usePostHog } from '@posthog/react';
-import { useSafeTranslation } from 'i18n';
+import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import {
   getCurrentData as getTableData,
   getCurrentDefinition as getTableDefinition,
@@ -33,10 +24,20 @@ import {
   isLoading as tableLoading,
   loadTable,
 } from 'context/tableStateSlice';
-import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
-import TablesActions from './TablesActions';
-import DataTable from './DataTable';
+import { useSafeTranslation } from 'i18n';
+import {
+  ChangeEvent,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { tablesMenuItems } from '../utils';
+import DataTable from './DataTable';
+import TablesActions from './TablesActions';
 
 const tableCategories = tablesMenuItems
   .map((menuItem: MenuItemType) => menuItem.layersCategories)

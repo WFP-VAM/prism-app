@@ -1,9 +1,9 @@
-import { memo, useCallback, useMemo } from 'react';
+import { Button, makeStyles, Typography } from '@material-ui/core';
 import { createStyles } from '@material-ui/styles';
-import { Button, Typography, makeStyles } from '@material-ui/core';
+import { usePostHog } from '@posthog/react';
 import { useSafeTranslation } from 'i18n';
 import { cyanBlue } from 'muiTheme';
-import { usePostHog } from '@posthog/react';
+import { memo, useCallback, useMemo } from 'react';
 
 const TablesActions = memo(
   ({ showTable, handleShowTable, csvTableData }: TablesActionsProps) => {

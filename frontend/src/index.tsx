@@ -1,14 +1,16 @@
-import { createRoot } from 'react-dom/client';
 import './index.css';
 import './i18n';
-import { Provider } from 'react-redux';
+
 import { MsalProvider } from '@azure/msal-react';
-import React from 'react';
-import posthog from 'posthog-js';
 import { PostHogProvider } from '@posthog/react';
+import posthog from 'posthog-js';
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import { Provider } from 'react-redux';
+
 import App from './components/App';
-import { AppStore, store } from './context/store';
 import { msalInstance, safeCountry } from './config';
+import { AppStore, store } from './context/store';
 import * as serviceWorker from './serviceWorker';
 
 posthog.init(process.env.REACT_APP_POSTHOG_TOKEN as string, {

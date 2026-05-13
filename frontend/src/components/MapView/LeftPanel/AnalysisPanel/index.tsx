@@ -1,75 +1,76 @@
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  Button,
-  createStyles,
-  LinearProgress,
-  Typography,
-  IconButton,
-  Theme,
-  CircularProgress,
   Box,
+  Button,
+  CircularProgress,
+  createStyles,
+  IconButton,
+  LinearProgress,
   makeStyles,
+  Theme,
+  Typography,
 } from '@material-ui/core';
 import { BarChartOutlined, CloseRounded } from '@material-ui/icons';
-import { useDispatch, useSelector } from 'context/hooks';
-import { orderBy } from 'lodash';
-import { mapSelector, layersSelector } from 'context/mapStateSlice/selectors';
-import { useUrlHistory } from 'utils/url-utils';
+import { usePostHog } from '@posthog/react';
 import {
-  clearAnalysisResult,
-  setIsMapLayerActive,
-  isExposureAnalysisLoadingSelector,
-  analysisResultSortByKeySelector,
-  analysisResultSortOrderSelector,
-  setAnalysisResultSortByKey,
-  setAnalysisResultSortOrder,
-  exposureAnalysisResultSortByKeySelector,
-  exposureAnalysisResultSortOrderSelector,
-  setExposureAnalysisResultSortByKey,
-  setExposureAnalysisResultSortOrder,
-  TableRow,
-} from 'context/analysisResultStateSlice';
+  AdminLevelSelector,
+  BaselineLayerSelector,
+  DateRangeSelector,
+  DateSelector,
+  HazardLayerSelector,
+  StatisticSelector,
+  ThresholdInputs,
+} from 'components/Common/AnalysisFormComponents';
+import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
 import {
   AdminLevelDataLayerProps,
   AggregationOperations,
   GeometryType,
-  PanelSize,
   Panel,
+  PanelSize,
   RasterType,
 } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
-import { usePostHog } from '@posthog/react';
-import { useSafeTranslation } from 'i18n';
 import {
-  downloadCSVFromTableData,
-  BaselineLayerResult,
-  ExposedPopulationResult,
-  PolygonAnalysisResult,
-  useAnalysisTableColumns,
-  Column,
-} from 'utils/analysis-utils';
-import { refreshBoundaries, safeDispatchAddLayer } from 'utils/map-utils';
-import { addLayer, removeLayer } from 'context/mapStateSlice';
+  analysisResultSortByKeySelector,
+  analysisResultSortOrderSelector,
+  clearAnalysisResult,
+  exposureAnalysisResultSortByKeySelector,
+  exposureAnalysisResultSortOrderSelector,
+  isExposureAnalysisLoadingSelector,
+  setAnalysisResultSortByKey,
+  setAnalysisResultSortOrder,
+  setExposureAnalysisResultSortByKey,
+  setExposureAnalysisResultSortOrder,
+  setIsMapLayerActive,
+  TableRow,
+} from 'context/analysisResultStateSlice';
+import { useDispatch, useSelector } from 'context/hooks';
 import {
   leftPanelTabValueSelector,
   setTabValue,
 } from 'context/leftPanelStateSlice';
-import {
-  HazardLayerSelector,
-  BaselineLayerSelector,
-  StatisticSelector,
-  ThresholdInputs,
-  DateSelector,
-  DateRangeSelector,
-  AdminLevelSelector,
-} from 'components/Common/AnalysisFormComponents';
-import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
+import { addLayer, removeLayer } from 'context/mapStateSlice';
+import { layersSelector, mapSelector } from 'context/mapStateSlice/selectors';
+import { useSafeTranslation } from 'i18n';
+import { orderBy } from 'lodash';
 import { black, cyanBlue } from 'muiTheme';
-import { useAnalysisForm, useAnalysisExecution } from 'utils/analysis-hooks';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { useAnalysisExecution, useAnalysisForm } from 'utils/analysis-hooks';
+import {
+  BaselineLayerResult,
+  Column,
+  downloadCSVFromTableData,
+  ExposedPopulationResult,
+  PolygonAnalysisResult,
+  useAnalysisTableColumns,
+} from 'utils/analysis-utils';
+import { refreshBoundaries, safeDispatchAddLayer } from 'utils/map-utils';
+import { useUrlHistory } from 'utils/url-utils';
+
+import { getExposureAnalysisTableData } from '../../utils';
 import AnalysisTable from './AnalysisTable';
 import ExposureAnalysisTable from './AnalysisTable/ExposureAnalysisTable';
 import ExposureAnalysisActions from './ExposureAnalysisActions';
-import { getExposureAnalysisTableData } from '../../utils';
 
 const tabPanelType = Panel.Analysis;
 

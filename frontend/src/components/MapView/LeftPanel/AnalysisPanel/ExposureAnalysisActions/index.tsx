@@ -1,25 +1,26 @@
-import { useCallback, useState, MouseEvent, useMemo } from 'react';
 import { Button, Typography } from '@material-ui/core';
-import { snakeCase } from 'lodash';
-import { useSelector } from 'react-redux';
+import { usePostHog } from '@posthog/react';
+import ReportDialog from 'components/Common/ReportDialog';
 import {
   downloadToFile,
   getExposureAnalysisColumnsToRender,
   getExposureAnalysisTableDataRowsToRender,
 } from 'components/MapView/utils';
-import { useSafeTranslation } from 'i18n';
+import { ReportsDefinitions } from 'config/utils';
 import {
   exposureLayerIdSelector,
   getCurrentDefinition,
   TableRow as AnalysisTableRow,
 } from 'context/analysisResultStateSlice';
-import ReportDialog from 'components/Common/ReportDialog';
+import { useSafeTranslation } from 'i18n';
+import { snakeCase } from 'lodash';
+import { MouseEvent, useCallback, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Column } from 'utils/analysis-utils';
-import { ReportsDefinitions } from 'config/utils';
 import { getExposureAnalysisCsvData } from 'utils/csv-utils';
-import { usePostHog } from '@posthog/react';
-import LoadingBlinkingDots from '../../../../Common/LoadingBlinkingDots';
+
 import { safeCountry } from '../../../../../config';
+import LoadingBlinkingDots from '../../../../Common/LoadingBlinkingDots';
 
 function ExposureAnalysisActions({
   analysisButton,
