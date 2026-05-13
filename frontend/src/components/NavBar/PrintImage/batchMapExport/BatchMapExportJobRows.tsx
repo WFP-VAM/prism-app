@@ -12,13 +12,13 @@ import {
 } from '@material-ui/core';
 import { addNotification } from 'context/notificationStateSlice';
 import { useSafeTranslation } from 'i18n';
+import type { TFunction } from 'i18next';
 import { cyanBlue } from 'muiTheme';
 import React, { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { downloadBlobFromSignedUrl } from './downloadBlobFromSignedUrl';
 import type { BatchMapExportJobRow } from './types';
-import type { TFunction } from 'i18next';
 
 function batchExportStatusLabel(status: string, t: TFunction): string {
   switch (status) {
