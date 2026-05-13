@@ -503,13 +503,14 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     }
 
     try {
+      // One representative /export URL (first cadence date); batch download still uses all dates.
       await navigator.clipboard.writeText(
-        constructedUrls.map(formatExportUrlForClipboard).join('\n'),
+        formatExportUrlForClipboard(constructedUrls[0]),
       );
       dispatch(
         addNotification({
           type: 'success',
-          message: t('Batch map URLs copied to clipboard.'),
+          message: t('Batch map URL copied to clipboard.'),
         }),
       );
     } catch (error) {
