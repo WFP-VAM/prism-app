@@ -115,7 +115,10 @@ class DashboardAdminView(ModelView):
         """Convert IntegrityError from duplicate title/deployment into user-friendly form error."""
         if isinstance(exc, IntegrityError):
             error_msg = str(exc.orig) if hasattr(exc, "orig") else str(exc)
-            if "uq_dashboard_deployment_title" in error_msg or "uq_dashboard_deployment_path" in error_msg:
+            if (
+                "uq_dashboard_deployment_title" in error_msg
+                or "uq_dashboard_deployment_path" in error_msg
+            ):
                 raise FormValidationError(
                     cast(
                         dict[str | int, Any],
