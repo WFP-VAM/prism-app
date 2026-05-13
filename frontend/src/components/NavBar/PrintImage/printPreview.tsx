@@ -35,7 +35,17 @@ import {
 } from '../../../context/mapStateSlice/selectors';
 import { useSafeTranslation } from '../../../i18n';
 import MapExportLayout from '../../MapExport/MapExportLayout';
+import type { ExportMapBounds } from '../../MapExport/types';
 import PrintConfigContext from './printConfig.context';
+
+function lngLatBoundsToExport(b: LngLatBounds): ExportMapBounds {
+  return {
+    west: b.getWest(),
+    south: b.getSouth(),
+    east: b.getEast(),
+    north: b.getNorth(),
+  };
+}
 
 function PrintPreview() {
   const { printConfig } = useContext(PrintConfigContext);
@@ -112,9 +122,6 @@ function PrintPreview() {
   printConfigRef.current = printConfig;
 
   const mapLabelsVisibility = printConfig?.toggles.mapLabelsVisibility ?? true;
-  const mapPreviewCenter = selectedMap?.getCenter();
-  const mapPreviewZoom = selectedMap?.getZoom() ?? 1;
-
   const processedMapStyle = useMemo(() => {
     if (!selectedMap) {
       return null;
@@ -145,15 +152,6 @@ function PrintPreview() {
     }
     return style;
   }, [selectedMap, printSelectedLayers, mapLabelsVisibility]);
-
-  const initialViewState = useMemo(
-    () => ({
-      longitude: mapPreviewCenter?.lng ?? 0,
-      latitude: mapPreviewCenter?.lat ?? 0,
-      zoom: mapPreviewZoom,
-    }),
-    [mapPreviewCenter?.lng, mapPreviewCenter?.lat, mapPreviewZoom],
-  );
 
   const maxBounds = useMemo(
     () => selectedMap?.getMaxBounds() ?? undefined,
@@ -226,7 +224,11 @@ function PrintPreview() {
     footerHeight,
     bottomLogo,
     bottomLogoScale,
+    previewBounds,
   } = printConfig;
+
+  const boundsToFit = previewBounds ?? selectedMap.getBounds();
+  const geographicBoundsForExport = lngLatBoundsToExport(boundsToFit);
 
   // Determine active panel for AA markers
   const activePanel =
@@ -291,7 +293,7 @@ function PrintPreview() {
         titleHeight={titleHeight}
         legendPosition={legendPosition}
         legendScale={legendScale}
-        initialViewState={initialViewState}
+        bounds={geographicBoundsForExport}
         mapStyle={processedMapStyle}
         maxBounds={maxBounds}
         invertedAdminBoundaryLimitPolygon={invertedAdminBoundaryLimitPolygon}

@@ -21,6 +21,7 @@ import type { LngLatBounds } from 'maplibre-gl';
 import React, {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -159,6 +160,8 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   });
   /** Reseed batch defaults when layer or batch toggle changes; avoid clobbering after user edits same layer. */
   const batchDateRangeSeededForLayerRef = useRef<string | null>(null);
+  /** Seed preview bounds/zoom once per print dialog open from main map. */
+  const printPreviewBoundsSeededRef = useRef(false);
 
   const [cadence, setCadence] = useState<BatchCadence>('every-n-dekads');
   const [dekadInterval, setDekadInterval] = useState(1);
@@ -201,6 +204,28 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       batchDateRangeSeededForLayerRef.current = null;
     }
   }, [open]);
+
+  useEffect(() => {
+    if (!open) {
+      setPreviewBounds(null);
+      setPreviewZoom(null);
+      setPreviewMapWidth(null);
+      setPreviewMapHeight(null);
+    }
+  }, [open]);
+
+  useLayoutEffect(() => {
+    if (!open) {
+      printPreviewBoundsSeededRef.current = false;
+      return;
+    }
+    if (!selectedMap || printPreviewBoundsSeededRef.current) {
+      return;
+    }
+    setPreviewBounds(selectedMap.getBounds());
+    setPreviewZoom(selectedMap.getZoom());
+    printPreviewBoundsSeededRef.current = true;
+  }, [open, selectedMap]);
 
   useEffect(() => {
     if (selectedLayerId === null && selectableLayers.length > 0) {
