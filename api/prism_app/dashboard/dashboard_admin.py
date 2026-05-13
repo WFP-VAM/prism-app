@@ -4,9 +4,6 @@ import json
 from typing import Any, cast
 
 from prism_app.dashboard.dashboard_config_field import DashboardConfigJsonFileField
-from prism_app.dashboard.dashboard_config_validation import (
-    validate_and_dump_dashboard_config,
-)
 from prism_app.database.dashboard_model import (
     ALLOWED_DASHBOARD_DEPLOYMENTS,
     DashboardStatus,
@@ -102,10 +99,7 @@ class DashboardAdminView(ModelView):
             if cfg is None:
                 errors["config"] = "Upload a valid JSON configuration file."
             else:
-                try:
-                    data["config"] = validate_and_dump_dashboard_config(cfg)
-                except ValueError as e:
-                    errors["config"] = str(e)
+                data["config"] = cfg
 
         if errors:
             raise FormValidationError(cast(dict[str | int, Any], errors))
