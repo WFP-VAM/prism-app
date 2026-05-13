@@ -199,3 +199,44 @@ def test_get_succeeded_file_uri_returns_local_path_skips_presign(
     assert j["download_url"] is None
     assert j["local_artifact_path"] == str(pdf.resolve())
     assert j["download_filename"] == "TestPlace_precip_2025_01_01.pdf"
+
+
+def test_delete_export_map_job_cancels_queued(api_client: TestClient) -> None:
+    post = api_client.post("/export-map/jobs", json=_body())
+    assert post.status_code == 202
+    job_id = post.json()["job_id"]
+    r = api_client.delete(f"/export-map/jobs/{job_id}")
+    assert r.status_code == 204
+    assert api_client.delete(f"/export-map/jobs/{job_id}").status_code == 204
+    g = api_client.get(f"/export-map/jobs/{job_id}")
+    assert g.status_code == 200
+    assert g.json()["status"] == "cancelled"
+
+
+def test_delete_export_map_job_missing_returns_404(api_client: TestClient) -> None:
+    fake_id = "00000000-0000-4000-b000-000000000012"
+    r = api_client.delete(f"/export-map/jobs/{fake_id}")
+    assert r.status_code == 404
+
+
+def test_delete_running_export_job_returns_409(
+    api_client: TestClient, sqlite_engine
+) -> None:
+    SessionLocal = sessionmaker(
+        bind=sqlite_engine, class_=Session, expire_on_commit=False
+    )
+    with SessionLocal() as session:
+        job = MapExportJob(
+            request_fingerprint="fp-run",
+            request_payload_json=_body(),
+            status="running",
+            origin_url=None,
+            content_type="pdf",
+        )
+        session.add(job)
+        session.commit()
+        session.refresh(job)
+        job_id = job.id
+
+    r = api_client.delete(f"/export-map/jobs/{job_id}")
+    assert r.status_code == 409

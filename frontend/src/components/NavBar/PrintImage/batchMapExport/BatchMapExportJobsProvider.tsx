@@ -1,8 +1,9 @@
 import { addNotification } from 'context/notificationStateSlice';
 import { useSafeTranslation } from 'i18n';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
+  cancelMapExportJob,
   createMapExportJob,
   waitForMapExportJobDownloadUrl,
 } from 'utils/mapExportJobsApi';
@@ -21,9 +22,21 @@ export default function BatchMapExportJobsProvider({
   const [jobs, setJobs] = useState<BatchMapExportJobRow[]>([]);
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
+  const abortByClientIdRef = useRef(new Map<string, AbortController>());
+  const jobsRef = useRef<BatchMapExportJobRow[]>(jobs);
+  jobsRef.current = jobs;
 
   const dismissBatchMapExportJob = useCallback((clientId: string) => {
+    const snapshot = jobsRef.current.find(j => j.clientId === clientId);
+
+    abortByClientIdRef.current.get(clientId)?.abort();
+    abortByClientIdRef.current.delete(clientId);
+
     setJobs(prev => prev.filter(j => j.clientId !== clientId));
+
+    if (snapshot?.serverJobId && snapshot.status === 'queued') {
+      void cancelMapExportJob(snapshot.serverJobId).catch(() => {});
+    }
   }, []);
 
   const enqueueBatchMapExportJob = useCallback(
@@ -32,6 +45,10 @@ export default function BatchMapExportJobsProvider({
         typeof crypto !== 'undefined' && crypto.randomUUID
           ? crypto.randomUUID()
           : `batch-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+
+      const abortController = new AbortController();
+      abortByClientIdRef.current.set(clientId, abortController);
+      const signal = abortController.signal;
 
       dispatch(
         addNotification({
@@ -62,13 +79,16 @@ export default function BatchMapExportJobsProvider({
 
       void (async () => {
         try {
-          const { job_id: serverJobId } = await createMapExportJob({
-            urls: payload.urls,
-            viewportWidth: payload.viewportWidth,
-            viewportHeight: payload.viewportHeight,
-            format: payload.format,
-            country: payload.country,
-          });
+          const { job_id: serverJobId } = await createMapExportJob(
+            {
+              urls: payload.urls,
+              viewportWidth: payload.viewportWidth,
+              viewportHeight: payload.viewportHeight,
+              format: payload.format,
+              country: payload.country,
+            },
+            signal,
+          );
           setJobs(prev =>
             prev.map(j =>
               j.clientId === clientId ? { ...j, serverJobId } : j,
@@ -78,6 +98,7 @@ export default function BatchMapExportJobsProvider({
           const { downloadUrl, downloadFilename } =
             await waitForMapExportJobDownloadUrl(serverJobId, {
               pollIntervalMs: 2000,
+              signal,
               onJobUpdate: snap => {
                 setJobs(prev =>
                   prev.map(j =>
@@ -119,6 +140,9 @@ export default function BatchMapExportJobsProvider({
             }),
           );
         } catch (err) {
+          if (err instanceof DOMException && err.name === 'AbortError') {
+            return;
+          }
           const msg =
             err instanceof Error
               ? err.message
@@ -146,6 +170,8 @@ export default function BatchMapExportJobsProvider({
             }),
           );
           console.error('Batch download failed:', err);
+        } finally {
+          abortByClientIdRef.current.delete(clientId);
         }
       })();
     },

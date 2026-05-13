@@ -45,17 +45,33 @@ function sleep(ms: number): Promise<void> {
 
 export async function createMapExportJob(
   body: MapExportJobRequestBody,
+  signal?: AbortSignal,
 ): Promise<MapExportJobCreateResponse> {
   const response = await fetch(EXPORT_MAP_JOBS_API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
+    signal,
   });
   const text = await response.text();
   if (!response.ok) {
     throw new Error(text || `HTTP ${response.status}`);
   }
   return JSON.parse(text) as MapExportJobCreateResponse;
+}
+
+/**
+ * DELETE /export-map/jobs/:id — only succeeds while server status is queued.
+ */
+export async function cancelMapExportJob(jobId: string): Promise<void> {
+  const response = await fetch(`${EXPORT_MAP_JOBS_API_URL}/${jobId}`, {
+    method: 'DELETE',
+  });
+  if (response.ok || response.status === 404 || response.status === 409) {
+    return;
+  }
+  const text = await response.text();
+  throw new Error(text || `HTTP ${response.status}`);
 }
 
 export async function getMapExportJobStatus(

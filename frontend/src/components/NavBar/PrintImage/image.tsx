@@ -545,18 +545,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
           ? filteredBatchDates.slice(-MAP_EXPORT_MAX_URLS_PER_REQUEST)
           : filteredBatchDates;
 
-      if (filteredBatchDates.length > MAP_EXPORT_MAX_URLS_PER_REQUEST) {
-        dispatch(
-          addNotification({
-            type: 'warning',
-            message: t('batch_export_maps_truncated_toast', {
-              max: MAP_EXPORT_MAX_URLS_PER_REQUEST,
-              total: filteredBatchDates.length,
-            }),
-          }),
-        );
-      }
-
       const formattedDates = timestampsForExport
         .map(timestamp => getFormattedDate(timestamp, 'default'))
         .filter((d): d is string => d !== undefined && d !== '');
@@ -617,7 +605,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
           viewportWidth: exportDims.canvasWidth,
           viewportHeight: exportDims.canvasHeight,
           format,
-          country,
+          country: country.toLowerCase(),
           layerDisplayName,
           datesSummary,
           mapTotal: constructedUrls.length,

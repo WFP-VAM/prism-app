@@ -700,7 +700,6 @@ function PrintConfig() {
                     >
                       {t('batch_export_maps_truncated_panel', {
                         max: MAP_EXPORT_MAX_URLS_PER_REQUEST,
-                        total: mapCount,
                       })}
                     </Typography>
                   )}
@@ -874,11 +873,11 @@ const useStyles = makeStyles((theme: Theme) =>
       lineHeight: 1.2,
     },
     mapCountValueWarning: {
-      color: theme.palette.warning.dark,
+      color: theme.palette.error.main,
     },
     batchExportTruncateHint: {
       marginTop: theme.spacing(0.5),
-      color: theme.palette.warning.dark,
+      color: theme.palette.error.main,
     },
     batchExportsInPanelWrap: {
       marginTop: theme.spacing(1.5),

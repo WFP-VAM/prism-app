@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from fastapi.responses import JSONResponse
 from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.export_jobs.db import get_export_jobs_session
@@ -14,7 +14,10 @@ from prism_app.export_jobs.download_filename import (
     map_export_download_filename_from_payload,
 )
 from prism_app.export_jobs.fingerprint import compute_request_fingerprint
-from prism_app.export_jobs.service import enqueue_map_export_job
+from prism_app.export_jobs.service import (
+    cancel_map_export_job_if_queued,
+    enqueue_map_export_job,
+)
 from prism_app.export_s3 import (
     is_file_artifact_uri,
     local_path_from_file_uri,
@@ -136,3 +139,20 @@ def read_map_export_job(
         "error": job.error_json,
     }
     return payload
+
+
+@router.delete("/jobs/{job_id}", status_code=204)
+def cancel_map_export_job_route(
+    job_id: str,
+    session: Session = Depends(get_export_jobs_session),
+) -> Response:
+    """Drop a queued job so workers never claim it."""
+    outcome = cancel_map_export_job_if_queued(session, job_id)
+    if outcome in ("cancelled", "already_cancelled"):
+        return Response(status_code=204)
+    if outcome == "not_found":
+        raise HTTPException(status_code=404, detail="Job not found")
+    raise HTTPException(
+        status_code=409,
+        detail="Job can only be cancelled while queued.",
+    )
