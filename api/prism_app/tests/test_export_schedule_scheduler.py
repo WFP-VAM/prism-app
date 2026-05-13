@@ -66,9 +66,7 @@ def _add_due_schedule(
     schedule = MapExportSchedule(
         name="due",
         cron_expression="0 6 * * *",
-        batch_map_url=(
-            moz_export_schedule_urls_text() if payload is None else payload
-        ),
+        batch_map_url=(moz_export_schedule_urls_text() if payload is None else payload),
         max_runs=max_runs,
         runs_completed=runs_completed,
         next_run_at=utc_now() - datetime.timedelta(seconds=30),

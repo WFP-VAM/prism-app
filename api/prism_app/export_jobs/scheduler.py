@@ -5,12 +5,12 @@ from __future__ import annotations
 import logging
 
 from prism_app.database.map_export_schedule_model import MapExportSchedule
+from prism_app.export_jobs.schedule_request import (
+    map_export_request_from_schedule_export_urls,
+)
 from prism_app.export_jobs.schedule_service import (
     enqueue_scheduled_map_export_job,
     refresh_schedule_next_run_at,
-)
-from prism_app.export_jobs.schedule_request import (
-    map_export_request_from_schedule_export_urls,
 )
 from prism_app.utils import utc_now
 from sqlmodel import Session, select
