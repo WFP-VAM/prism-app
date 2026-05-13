@@ -7,7 +7,7 @@ import {
 import { usePostHog } from '@posthog/react';
 import mask from '@turf/mask';
 import { appConfig, safeCountry } from 'config';
-import { AdminCodeString } from 'config/types';
+import { AdminCodeString, isMainLayer, LayerKey } from 'config/types';
 import { getBoundaryLayerSingleton } from 'config/utils';
 import {
   addNotification,
@@ -22,8 +22,11 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { EXPORT_API_URL } from 'utils/constants';
 import { getFormattedDate } from 'utils/date-utils';
-import useLayers from 'utils/layers-utils';
-import { getPossibleDatesForLayer } from 'utils/server-utils';
+import useLayers, { isWmsSelectableForBatchPrint } from 'utils/layers-utils';
+import {
+  DateCompatibleLayer,
+  getPossibleDatesForLayer,
+} from 'utils/server-utils';
 import { stringHash } from 'utils/string-utils';
 import { useBoundaryData } from 'utils/useBoundaryData';
 import useResizeObserver from 'utils/useOnResizeObserver';
@@ -178,7 +181,31 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
   const [isDownloading, setIsDownloading] = useState(false);
 
-  const { selectedLayersWithDateSupport } = useLayers();
+  const availableDates = useSelector(availableDatesSelector);
+  const { selectedLayersWithDateSupport, selectedLayers } = useLayers();
+
+  const selectableLayers = useMemo((): DateCompatibleLayer[] => {
+    return selectedLayers
+      .filter(layer => isMainLayer(layer.id, selectedLayers))
+      .filter(layer =>
+        isWmsSelectableForBatchPrint(layer, availableDates),
+      ) as DateCompatibleLayer[];
+  }, [selectedLayers, availableDates]);
+
+  const [selectedLayerId, setSelectedLayerId] = useState<LayerKey | null>(null);
+
+  useEffect(() => {
+    if (selectableLayers.length === 0) {
+      setSelectedLayerId(null);
+      return;
+    }
+    if (
+      selectedLayerId == null ||
+      !selectableLayers.some(l => l.id === selectedLayerId)
+    ) {
+      setSelectedLayerId(selectableLayers[0].id as LayerKey);
+    }
+  }, [selectableLayers, selectedLayerId]);
   const availableCadences = useMemo(() => {
     const coverageWindow = selectedLayersWithDateSupport[0]?.coverageWindow;
     return getAvailableCadences(coverageWindow);
@@ -189,7 +216,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     }
   }, [availableCadences, cadence]);
 
-  const availableDates = useSelector(availableDatesSelector);
   const shouldEnableBatchMaps =
     // selectedLayersWithDateSupport.length > 0 &&
     // selectedLayersWithDateSupport.every(
@@ -601,6 +627,9 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       setPreviewMapWidth,
       previewMapHeight,
       setPreviewMapHeight,
+      selectableLayers,
+      selectedLayerId,
+      setSelectedLayerId,
     },
   };
 
