@@ -228,7 +228,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     }
   }, [availableCadences, cadence]);
 
-  const shouldEnableBatchMaps = true; // Temporarily disable batch maps;
+  const shouldEnableBatchMaps = false; // Temporarily disable batch maps;
 
   const shouldShowMultiLayerWarning = selectedLayersWithDateSupport.length > 1;
 
