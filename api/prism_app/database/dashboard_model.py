@@ -109,7 +109,7 @@ class DashboardModel(SQLModel, table=True):
     deployment: str = Field(
         sa_column=Column(String, ForeignKey("deployment.code"), nullable=False),
     )
-    # Full dashboard file shape: a JSON array of row objects; JSONB also allows a single object for legacy.
+    # Single dashboard row object stored as JSONB.
     config: Any = Field(sa_column=Column(JSONB, nullable=False))
     created_at: datetime.datetime = Field(
         default_factory=datetime.datetime.now,
