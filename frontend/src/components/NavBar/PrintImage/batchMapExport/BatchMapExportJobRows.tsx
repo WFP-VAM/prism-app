@@ -12,11 +12,27 @@ import {
 } from '@material-ui/core';
 import { addNotification } from 'context/notificationStateSlice';
 import { useSafeTranslation } from 'i18n';
+import type { TFunction } from 'i18next';
 import { cyanBlue } from 'muiTheme';
 import React, { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 
 import type { BatchMapExportJobRow } from './types';
+
+function batchExportStatusLabel(status: string, t: TFunction): string {
+  switch (status) {
+    case 'queued':
+      return t('batch_export_status_queued');
+    case 'running':
+      return t('batch_export_status_running');
+    case 'succeeded':
+      return t('batch_export_status_succeeded');
+    case 'failed':
+      return t('batch_export_status_failed');
+    default:
+      return status;
+  }
+}
 
 type Props = {
   jobs: BatchMapExportJobRow[];
@@ -108,7 +124,7 @@ function BatchMapExportJobRows({ jobs, onDismiss, variant }: Props) {
                   component="div"
                   className={classes.jobLineText}
                 >
-                  {job.layerDisplayName}
+                  t({job.layerDisplayName})
                 </Typography>
                 <Typography
                   variant="subtitle2"
@@ -126,7 +142,7 @@ function BatchMapExportJobRows({ jobs, onDismiss, variant }: Props) {
                   >
                     {job.error ??
                       t('Batch export failed: {{message}}', {
-                        message: job.status,
+                        message: batchExportStatusLabel(job.status, t),
                       })}
                   </Typography>
                 ) : showProgress ? (
@@ -138,7 +154,7 @@ function BatchMapExportJobRows({ jobs, onDismiss, variant }: Props) {
                       className={`${classes.statusProgressLine} ${classes.jobLineText}`}
                     >
                       {t('batch_export_status_and_maps', {
-                        status: job.status,
+                        status: batchExportStatusLabel(job.status, t),
                         current: mapsCurrent,
                         total: mapsTotal,
                       })}
