@@ -30,8 +30,5 @@ export function useBatchMapExportJobsState() {
 export function useBatchMapExportJobs(): BatchMapExportJobsContextValue {
   const actions = useBatchMapExportJobsActions();
   const state = useBatchMapExportJobsState();
-  return useMemo(
-    () => ({ ...actions, ...state }),
-    [actions, state],
-  );
+  return useMemo(() => ({ ...actions, ...state }), [actions, state]);
 }
