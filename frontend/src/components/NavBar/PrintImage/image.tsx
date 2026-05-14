@@ -19,7 +19,6 @@ import { jsPDF } from 'jspdf';
 import { debounce, get } from 'lodash';
 import type { LngLatBounds } from 'maplibre-gl';
 import React, {
-  useCallback,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -160,26 +159,21 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   });
   /** Reseed batch defaults when layer or batch toggle changes; avoid clobbering after user edits same layer. */
   const batchDateRangeSeededForLayerRef = useRef<string | null>(null);
-  /** Seed preview bounds/zoom once per print dialog open from main map. */
-  const printPreviewBoundsSeededRef = useRef(false);
+  /** Tracks print dialog open/close so we seed preview bounds/zoom once per open from main map. */
+  const printDialogWasOpenRef = useRef(false);
 
   const [cadence, setCadence] = useState<BatchCadence>('every-n-dekads');
   const [dekadInterval, setDekadInterval] = useState(1);
 
   const [isDownloading, setIsDownloading] = useState(false);
-  const countryLayerIds = useMemo(
-    () => new Set(Object.keys(configMap[safeCountry].rawLayers)),
-    [safeCountry],
+  const countryLayerIds = new Set(
+    Object.keys(configMap[safeCountry].rawLayers),
   );
   const availableDates = useSelector(availableDatesSelector);
-  const selectableLayers = useMemo(
-    () =>
-      Object.values(LayerDefinitions).filter(
-        (l): l is DateCompatibleLayer =>
-          isWmsSelectableForBatchPrint(l, availableDates) &&
-          countryLayerIds.has(l.id),
-      ),
-    [availableDates, countryLayerIds],
+  const selectableLayers = Object.values(LayerDefinitions).filter(
+    (l): l is DateCompatibleLayer =>
+      isWmsSelectableForBatchPrint(l, availableDates) &&
+      countryLayerIds.has(l.id),
   );
   const [selectedLayerId, setSelectedLayerId] = useState<LayerKey | null>(null);
 
@@ -216,15 +210,15 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
   useLayoutEffect(() => {
     if (!open) {
-      printPreviewBoundsSeededRef.current = false;
+      printDialogWasOpenRef.current = false;
       return;
     }
-    if (!selectedMap || printPreviewBoundsSeededRef.current) {
+    if (!selectedMap || printDialogWasOpenRef.current) {
       return;
     }
     setPreviewBounds(selectedMap.getBounds());
     setPreviewZoom(selectedMap.getZoom());
-    printPreviewBoundsSeededRef.current = true;
+    printDialogWasOpenRef.current = true;
   }, [open, selectedMap]);
 
   useEffect(() => {
@@ -456,85 +450,71 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     setAdminBoundaryPolygon(masked as any);
   }, [data, selectedBoundaries, selectedBoundaries.length]);
 
-  const handleDownloadMenuClose = useCallback(() => {
+  const handleDownloadMenuClose = () => {
     setDownloadMenuAnchorEl(null);
-  }, []);
+  };
 
-  const handleDownloadMenuOpen = useCallback(
-    (event: React.MouseEvent<HTMLElement>) => {
-      setDownloadMenuAnchorEl(event.currentTarget);
-    },
-    [],
-  );
+  const handleDownloadMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setDownloadMenuAnchorEl(event.currentTarget);
+  };
 
-  const download = useCallback(
-    (format: 'pdf' | 'jpeg' | 'png') => {
-      const filename: string = `${titleText || country}_${
-        getFormattedDate(dateRange.startDate, 'snake') || 'no_date'
-      }`;
-      const docGeneration = async () => {
-        // png is generally preferred for images containing lines and text.
-        const ext = format === 'pdf' ? 'png' : format;
-        const elem = printRef.current;
-        if (!elem) {
-          throw new Error('canvas is undefined');
-        }
-        const canvas = await html2canvas(elem);
-        const file = canvas.toDataURL(`image/${ext}`);
-        if (format === 'pdf') {
-          const orientation =
-            canvas.width > canvas.height ? 'landscape' : 'portrait';
-
-          const pdf = new jsPDF({
-            orientation,
-            unit: 'px',
-            format: [canvas.width, canvas.height],
-          });
-          const pdfHeight = pdf.internal.pageSize.getHeight();
-          const pdfWidth = pdf.internal.pageSize.getWidth();
-          pdf.addImage(
-            file,
-            'PNG',
-            0,
-            0,
-            pdfWidth,
-            pdfHeight,
-            undefined,
-            'FAST',
-          );
-          pdf.save(`${filename}.pdf`);
-        } else {
-          downloadToFile(
-            { content: file, isUrl: true },
-            filename,
-            `image/${ext}`,
-          );
-        }
-      };
-
-      try {
-        docGeneration();
-      } catch (error) {
-        console.error(error);
+  const download = (format: 'pdf' | 'jpeg' | 'png') => {
+    const filename: string = `${titleText || country}_${
+      getFormattedDate(dateRange.startDate, 'snake') || 'no_date'
+    }`;
+    const docGeneration = async () => {
+      // png is generally preferred for images containing lines and text.
+      const ext = format === 'pdf' ? 'png' : format;
+      const elem = printRef.current;
+      if (!elem) {
+        throw new Error('canvas is undefined');
       }
+      const canvas = await html2canvas(elem);
+      const file = canvas.toDataURL(`image/${ext}`);
+      if (format === 'pdf') {
+        const orientation =
+          canvas.width > canvas.height ? 'landscape' : 'portrait';
 
-      handleClose();
-      setDownloadMenuAnchorEl(null);
-    },
-    [titleText, country, dateRange.startDate, handleClose],
-  );
-
-  const downloadBatch = useCallback(
-    async (format: 'pdf' | 'png') => {
-      const { startDate, endDate } = dateRangeForBatchMaps;
-
-      if (!startDate || !endDate) {
-        console.error('Date range not set for batch download');
-        return;
+        const pdf = new jsPDF({
+          orientation,
+          unit: 'px',
+          format: [canvas.width, canvas.height],
+        });
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        pdf.addImage(file, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
+        pdf.save(`${filename}.pdf`);
+      } else {
+        downloadToFile(
+          { content: file, isUrl: true },
+          filename,
+          `image/${ext}`,
+        );
       }
+    };
 
-      handleDownloadMenuClose();
+    try {
+      docGeneration();
+    } catch (error) {
+      console.error(error);
+    }
 
+    handleClose();
+    setDownloadMenuAnchorEl(null);
+  };
+
+  const downloadBatch = async (format: 'pdf' | 'png') => {
+    const { startDate, endDate } = dateRangeForBatchMaps;
+
+    if (!startDate || !endDate) {
+      console.error('Date range not set for batch download');
+      return;
+    }
+
+    setIsDownloading(true);
+    handleDownloadMenuClose();
+
+    try {
       if (!printSelectedLayer) {
         console.error('No layer selected for batch download');
         return;
@@ -554,221 +534,148 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         return;
       }
 
-      setIsDownloading(true);
+      const mapBounds = previewBounds;
+      const mapZoom = previewZoom;
+      const pageUrl = new URL(window.location.href);
+      const { pathname, search } = pageUrl;
+      const origin = getMapExportPageOrigin(pageUrl);
+      const exportPath = `${pathname.replace(/\/$/, '')}/export`;
+      const baseParams = new URLSearchParams(search);
 
-      try {
-        const mapBounds = previewBounds;
-        const mapZoom = previewZoom;
-        const pageUrl = new URL(window.location.href);
-        const { pathname, search } = pageUrl;
-        const origin = getMapExportPageOrigin(pageUrl);
-        const exportPath = `${pathname.replace(/\/$/, '')}/export`;
-        const baseParams = new URLSearchParams(search);
+      const exportDims = calculateExportDimensions(
+        mapDimensions.aspectRatio,
+        mapDimensions.aspectRatio === 'Auto'
+          ? (previewMapWidth ?? undefined)
+          : undefined,
+        mapDimensions.aspectRatio === 'Auto'
+          ? (previewMapHeight ?? undefined)
+          : undefined,
+      );
 
-        const exportDims = calculateExportDimensions(
-          mapDimensions.aspectRatio,
-          mapDimensions.aspectRatio === 'Auto'
-            ? (previewMapWidth ?? undefined)
-            : undefined,
-          mapDimensions.aspectRatio === 'Auto'
-            ? (previewMapHeight ?? undefined)
-            : undefined,
-        );
-
-        const constructedUrls = buildBatchExportUrls({
-          formattedDates,
-          origin,
-          exportPath,
-          baseSearchParams: baseParams,
-          printSelectedLayer,
-          mapBounds,
-          mapZoom,
-          mapDimensions,
-          titleText,
-          footerText,
-          footerTextSize,
-          logoPosition,
-          logoScale,
-          legendPosition,
-          legendScale,
-          bottomLogoScale,
-          toggles,
-          selectedBoundaries,
-        });
-
-        const layerDisplayName =
-          printSelectedLayer.title ?? printSelectedLayer.id;
-        const datesSummary = buildBatchExportDatesDisplay(timestampsForExport);
-
-        enqueueBatchMapExportJob({
-          urls: constructedUrls,
-          viewportWidth: exportDims.canvasWidth,
-          viewportHeight: exportDims.canvasHeight,
-          format,
-          country: country.toLowerCase(),
-          layerDisplayName,
-          datesSummary,
-          mapTotal: constructedUrls.length,
-        });
-      } catch (error) {
-        const message =
-          error instanceof Error
-            ? t('Batch export failed: {{message}}', { message: error.message })
-            : t(
-                'Something went wrong with the batch download. Please try again.',
-              );
-        dispatch(
-          addNotification({
-            type: 'error',
-            message,
-          }),
-        );
-        console.error('Batch download failed:', error);
-      } finally {
-        setIsDownloading(false);
-      }
-    },
-    [
-      dateRangeForBatchMaps,
-      handleDownloadMenuClose,
-      printSelectedLayer,
-      filteredBatchDates,
-      previewBounds,
-      previewZoom,
-      previewMapWidth,
-      previewMapHeight,
-      enqueueBatchMapExportJob,
-      mapDimensions,
-      country,
-      titleText,
-      footerText,
-      footerTextSize,
-      logoPosition,
-      logoScale,
-      legendPosition,
-      legendScale,
-      bottomLogoScale,
-      toggles,
-      selectedBoundaries,
-      dispatch,
-      t,
-    ],
-  );
-
-  const printContext = useMemo(
-    () => ({
-      printConfig: {
-        open,
-        toggles,
+      const constructedUrls = buildBatchExportUrls({
+        formattedDates,
+        origin,
+        exportPath,
+        baseSearchParams: baseParams,
+        printSelectedLayer,
+        mapBounds,
+        mapZoom,
         mapDimensions,
-        footerHeight,
-        selectedBoundaries,
-        setDownloadMenuAnchorEl,
         titleText,
-        titleRef,
-        footerTextSize,
         footerText,
-        footerRef,
+        footerTextSize,
         logoPosition,
-        titleHeight,
         logoScale,
         legendPosition,
         legendScale,
-        printRef,
-        invertedAdminBoundaryLimitPolygon,
-        handleClose,
-        setTitleText,
-        debounceCallback,
-        country,
-        setMapDimensions,
-        logo,
-        setLogoPosition,
-        setLogoScale,
-        bottomLogo,
         bottomLogoScale,
-        setBottomLogoScale,
-        setToggles,
-        setLegendPosition,
-        setFooterText,
-        setFooterTextSize,
-        handleDownloadMenuOpen,
-        downloadMenuAnchorEl,
-        handleDownloadMenuClose,
-        download,
-        downloadBatch,
-        isDownloading,
-        defaultFooterText,
-        setSelectedBoundaries,
-        setLegendScale,
-        shouldEnableBatchMaps,
-        shouldShowMultiLayerWarning,
-        dateRange: dateRangeForBatchMaps,
-        setDateRange: setDateRangeForBatchMaps,
-        mapCount,
-        cadence,
-        setCadence,
-        dekadInterval,
-        setDekadInterval,
-        filteredBatchDates,
-        availableCadences,
-        disabledCadences,
-        aspectRatioOptions: ALL_ASPECT_RATIO_OPTIONS,
-        previewBounds,
-        setPreviewBounds,
-        previewZoom,
-        setPreviewZoom,
-        previewMapWidth,
-        setPreviewMapWidth,
-        previewMapHeight,
-        setPreviewMapHeight,
-        selectableLayers,
-        selectedLayerId,
-        setSelectedLayerId,
-      },
-    }),
-    [
+        toggles,
+        selectedBoundaries,
+      });
+
+      const layerDisplayName =
+        printSelectedLayer.title ?? printSelectedLayer.id;
+      const datesSummary = buildBatchExportDatesDisplay(timestampsForExport);
+
+      enqueueBatchMapExportJob({
+        urls: constructedUrls,
+        viewportWidth: exportDims.canvasWidth,
+        viewportHeight: exportDims.canvasHeight,
+        format,
+        country: country.toLowerCase(),
+        layerDisplayName,
+        datesSummary,
+        mapTotal: constructedUrls.length,
+      });
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? t('Batch export failed: {{message}}', { message: error.message })
+          : t(
+              'Something went wrong with the batch download. Please try again.',
+            );
+      dispatch(
+        addNotification({
+          type: 'error',
+          message,
+        }),
+      );
+      console.error('Batch download failed:', error);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  const printContext = {
+    printConfig: {
       open,
       toggles,
       mapDimensions,
       footerHeight,
       selectedBoundaries,
+      setDownloadMenuAnchorEl,
       titleText,
+      titleRef,
       footerTextSize,
       footerText,
+      footerRef,
       logoPosition,
       titleHeight,
       logoScale,
       legendPosition,
       legendScale,
+      printRef,
       invertedAdminBoundaryLimitPolygon,
       handleClose,
+      setTitleText,
+      debounceCallback,
       country,
+      setMapDimensions,
       logo,
+      setLogoPosition,
+      setLogoScale,
       bottomLogo,
       bottomLogoScale,
+      setBottomLogoScale,
+      setToggles,
+      setLegendPosition,
+      setFooterText,
+      setFooterTextSize,
       handleDownloadMenuOpen,
       downloadMenuAnchorEl,
       handleDownloadMenuClose,
       download,
       downloadBatch,
       isDownloading,
+      defaultFooterText,
+      setSelectedBoundaries,
+      setLegendScale,
       shouldEnableBatchMaps,
       shouldShowMultiLayerWarning,
-      dateRangeForBatchMaps,
+      dateRange: dateRangeForBatchMaps,
+      setDateRange: setDateRangeForBatchMaps,
       mapCount,
       cadence,
+      setCadence,
       dekadInterval,
+      setDekadInterval,
       filteredBatchDates,
       availableCadences,
       disabledCadences,
+      aspectRatioOptions: ALL_ASPECT_RATIO_OPTIONS,
       previewBounds,
+      setPreviewBounds,
       previewZoom,
+      setPreviewZoom,
       previewMapWidth,
+      setPreviewMapWidth,
       previewMapHeight,
+      setPreviewMapHeight,
       selectableLayers,
       selectedLayerId,
-    ],
-  );
+      setSelectedLayerId,
+    },
+  };
 
   return (
     <PrintConfigContext.Provider value={printContext}>

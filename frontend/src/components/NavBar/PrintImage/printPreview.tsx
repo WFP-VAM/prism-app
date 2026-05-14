@@ -15,16 +15,8 @@ import {
   availableDatesSelector,
   loadAvailableDatesForLayer,
 } from 'context/serverStateSlice';
-import { cloneDeep } from 'lodash';
 import type { LngLatBounds } from 'maplibre-gl';
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import useLayers from 'utils/layers-utils';
 import { getLayersCoverage } from 'utils/server-utils';
@@ -83,16 +75,11 @@ function PrintPreview() {
     return [];
   }, [selectedLayerId, printConfig?.toggles.batchMapsVisibility]);
 
-  const adminLevelLayersWithFillPattern = useMemo(
-    () =>
-      printSelectedLayers.filter(
-        layer =>
-          layer.type === 'admin_level_data' &&
-          (layer.fillPattern ||
-            layer.legend.some(legend => legend.fillPattern)),
-      ) as AdminLevelDataLayerProps[],
-    [printSelectedLayers],
-  );
+  const adminLevelLayersWithFillPattern = printSelectedLayers.filter(
+    layer =>
+      layer.type === 'admin_level_data' &&
+      (layer.fillPattern || layer.legend.some(legend => legend.fillPattern)),
+  ) as AdminLevelDataLayerProps[];
 
   const { shouldEnableBatchMaps, filteredBatchDates } = printConfig ?? {};
   const previewDate =
@@ -116,62 +103,6 @@ function PrintPreview() {
   const filteredFloodStations = useFilteredFloodStations(
     floodState.stationSummaryData,
     dateRange.startDate,
-  );
-
-  const printConfigRef = useRef(printConfig);
-  printConfigRef.current = printConfig;
-
-  const mapLabelsVisibility = printConfig?.toggles.mapLabelsVisibility ?? true;
-  const processedMapStyle = useMemo(() => {
-    if (!selectedMap) {
-      return null;
-    }
-    const rawStyle = selectedMap.getStyle();
-    if (!rawStyle) {
-      return null;
-    }
-    const style = cloneDeep(rawStyle);
-    if (printSelectedLayers.length > 0) {
-      const isLayerToRemove = (layer: { id: string; type: string }) =>
-        layer.type === 'raster' || layer.id.startsWith('layer-');
-
-      const sourcesToRemove = new Set(
-        style.layers
-          .filter(isLayerToRemove)
-          .map(layer => ('source' in layer ? (layer.source as string) : null))
-          .filter(Boolean) as string[],
-      );
-
-      style.layers = style.layers.filter(layer => !isLayerToRemove(layer));
-      sourcesToRemove.forEach(sourceId => {
-        delete style.sources[sourceId];
-      });
-    }
-    if (!mapLabelsVisibility) {
-      style.layers = style.layers.filter(x => !x.id.includes('label'));
-    }
-    return style;
-  }, [selectedMap, printSelectedLayers, mapLabelsVisibility]);
-
-  const maxBounds = useMemo(
-    () => selectedMap?.getMaxBounds() ?? undefined,
-    [selectedMap],
-  );
-
-  const handlePreviewBoundsChange = useCallback(
-    (bounds: LngLatBounds, zoom: number) => {
-      printConfigRef.current?.setPreviewBounds(bounds);
-      printConfigRef.current?.setPreviewZoom(zoom);
-    },
-    [],
-  );
-
-  const handleMapDimensionsChange = useCallback(
-    (width: number, height: number) => {
-      printConfigRef.current?.setPreviewMapWidth(width);
-      printConfigRef.current?.setPreviewMapHeight(height);
-    },
-    [],
   );
 
   const togglesSlice = printConfig?.toggles;
@@ -225,10 +156,41 @@ function PrintPreview() {
     bottomLogo,
     bottomLogoScale,
     previewBounds,
+    setPreviewBounds,
+    setPreviewZoom,
+    setPreviewMapWidth,
+    setPreviewMapHeight,
   } = printConfig;
 
   const boundsToFit = previewBounds ?? selectedMap.getBounds();
   const geographicBoundsForExport = lngLatBoundsToExport(boundsToFit);
+
+  // Get the style and layers of the old map
+  const selectedMapStyle = selectedMap.getStyle();
+
+  // When batch maps has a selected layer, strip all application layers from the
+  // snapshot (raster tiles and all layer- prefixed entries) leaving a pure
+  // basemap. Boundary layers and the WMS date layer are rendered via React so
+  // their ordering is explicit and not affected by side-effects on the main map
+  // (e.g. a layer with a `boundary` property that removes other boundary layers).
+  if (selectedMapStyle && printSelectedLayers.length > 0) {
+    const isLayerToRemove = (layer: { id: string; type: string }) =>
+      layer.type === 'raster' || layer.id.startsWith('layer-');
+
+    const sourcesToRemove = new Set(
+      selectedMapStyle.layers
+        .filter(isLayerToRemove)
+        .map(layer => ('source' in layer ? (layer.source as string) : null))
+        .filter(Boolean) as string[],
+    );
+
+    selectedMapStyle.layers = selectedMapStyle.layers.filter(
+      layer => !isLayerToRemove(layer),
+    );
+    sourcesToRemove.forEach(sourceId => {
+      delete selectedMapStyle.sources[sourceId];
+    });
+  }
 
   // Determine active panel for AA markers
   const activePanel =
@@ -241,8 +203,10 @@ function PrintPreview() {
     return null;
   }
 
-  if (!processedMapStyle) {
-    return null;
+  if (selectedMapStyle && !toggles.mapLabelsVisibility) {
+    selectedMapStyle.layers = selectedMapStyle?.layers.filter(
+      x => !x.id.includes('label'),
+    );
   }
 
   return (
@@ -294,8 +258,8 @@ function PrintPreview() {
         legendPosition={legendPosition}
         legendScale={legendScale}
         bounds={geographicBoundsForExport}
-        mapStyle={processedMapStyle}
-        maxBounds={maxBounds}
+        mapStyle={selectedMapStyle}
+        maxBounds={selectedMap.getMaxBounds() ?? undefined}
         invertedAdminBoundaryLimitPolygon={invertedAdminBoundaryLimitPolygon}
         printRef={printRef}
         titleRef={titleRef}
@@ -309,8 +273,14 @@ function PrintPreview() {
         selectedLayers={printSelectedLayers}
         adminLevelLayersWithFillPattern={adminLevelLayersWithFillPattern}
         layersCoverage={layersCoverage}
-        onBoundsChange={handlePreviewBoundsChange}
-        onMapDimensionsChange={handleMapDimensionsChange}
+        onBoundsChange={(bounds, zoom) => {
+          setPreviewBounds(bounds);
+          setPreviewZoom(zoom);
+        }}
+        onMapDimensionsChange={(width, height) => {
+          setPreviewMapWidth(width);
+          setPreviewMapHeight(height);
+        }}
         onMapLoad={handlePreviewMapLoad}
       />
     </div>
