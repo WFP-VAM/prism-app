@@ -11,7 +11,10 @@ import {
 import { useSafeTranslation } from 'i18n';
 
 import BatchMapExportJobRows from './BatchMapExportJobRows';
-import { useBatchMapExportJobs } from './useBatchMapExportJobs';
+import {
+  useBatchMapExportJobsActions,
+  useBatchMapExportJobsState,
+} from './useBatchMapExportJobs';
 
 type Props = {
   /** When true, same list is shown inside the print panel instead. */
@@ -21,7 +24,8 @@ type Props = {
 function BatchMapExportGlobalTray({ printDialogOpen }: Props) {
   const classes = useStyles();
   const { t } = useSafeTranslation();
-  const { jobs, dismissBatchMapExportJob } = useBatchMapExportJobs();
+  const { jobs } = useBatchMapExportJobsState();
+  const { dismissBatchMapExportJob } = useBatchMapExportJobsActions();
 
   const visible = jobs.length > 0 && !printDialogOpen;
 

@@ -56,7 +56,7 @@ import { ALL_ASPECT_RATIO_OPTIONS } from '../../MapExport/aspectRatioConstants';
 import { downloadToFile } from '../../MapView/utils';
 import { buildBatchExportDatesDisplay } from './batchMapExport/batchExportArtifactFilename';
 import { buildBatchExportUrls } from './batchMapExport/buildBatchExportUrls';
-import { useBatchMapExportJobs } from './batchMapExport/useBatchMapExportJobs';
+import { useBatchMapExportJobsActions } from './batchMapExport/useBatchMapExportJobs';
 import { calculateExportDimensions } from './mapDimensionsUtils';
 import PrintConfig from './printConfig';
 import PrintConfigContext, {
@@ -90,7 +90,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const { data } = useBoundaryData(boundaryLayer.id);
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
-  const { enqueueBatchMapExportJob } = useBatchMapExportJobs();
+  const { enqueueBatchMapExportJob } = useBatchMapExportJobsActions();
 
   // list of toggles
   const [toggles, setToggles] = useState<Toggles>({

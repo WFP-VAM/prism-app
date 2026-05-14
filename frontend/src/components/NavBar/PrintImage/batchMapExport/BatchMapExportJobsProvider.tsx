@@ -8,7 +8,10 @@ import {
   waitForMapExportJobDownloadUrl,
 } from 'utils/mapExportJobsApi';
 
-import { BatchMapExportJobsContext } from './batchMapExportJobsContext';
+import {
+  BatchMapExportJobsActionsContext,
+  BatchMapExportJobsStateContext,
+} from './batchMapExportJobsContext';
 import type {
   BatchMapExportEnqueuePayload,
   BatchMapExportJobRow,
@@ -178,18 +181,21 @@ export default function BatchMapExportJobsProvider({
     [dispatch, t],
   );
 
-  const value = useMemo(
+  const actionsValue = useMemo(
     () => ({
-      jobs,
       enqueueBatchMapExportJob,
       dismissBatchMapExportJob,
     }),
-    [jobs, enqueueBatchMapExportJob, dismissBatchMapExportJob],
+    [enqueueBatchMapExportJob, dismissBatchMapExportJob],
   );
 
+  const stateValue = useMemo(() => ({ jobs }), [jobs]);
+
   return (
-    <BatchMapExportJobsContext.Provider value={value}>
-      {children}
-    </BatchMapExportJobsContext.Provider>
+    <BatchMapExportJobsActionsContext.Provider value={actionsValue}>
+      <BatchMapExportJobsStateContext.Provider value={stateValue}>
+        {children}
+      </BatchMapExportJobsStateContext.Provider>
+    </BatchMapExportJobsActionsContext.Provider>
   );
 }

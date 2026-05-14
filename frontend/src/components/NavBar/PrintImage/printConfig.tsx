@@ -32,7 +32,10 @@ import { useSafeTranslation } from '../../../i18n';
 import { MAP_EXPORT_MAX_URLS_PER_REQUEST } from '../../../utils/constants';
 import AspectRatioSelector from './AspectRatioSelector';
 import BatchMapExportJobRows from './batchMapExport/BatchMapExportJobRows';
-import { useBatchMapExportJobs } from './batchMapExport/useBatchMapExportJobs';
+import {
+  useBatchMapExportJobsActions,
+  useBatchMapExportJobsState,
+} from './batchMapExport/useBatchMapExportJobs';
 import CadenceSelector from './CadenceSelector';
 import DateRangePicker from './DateRangePicker';
 import PrintConfigContext from './printConfig.context';
@@ -276,8 +279,8 @@ const DATE_PLACEHOLDER_SUFFIX = ': {date_coverage}';
 function PrintConfig() {
   const classes = useStyles();
   const { t } = useSafeTranslation();
-  const { jobs: activeBatchJobs, dismissBatchMapExportJob } =
-    useBatchMapExportJobs();
+  const { jobs: activeBatchJobs } = useBatchMapExportJobsState();
+  const { dismissBatchMapExportJob } = useBatchMapExportJobsActions();
   const { printConfig } = useContext(PrintConfigContext);
 
   // Local state for responsive input - syncs to parent with debounce

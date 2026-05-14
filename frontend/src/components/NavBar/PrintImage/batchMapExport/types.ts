@@ -34,11 +34,18 @@ export type BatchMapExportJobRow = {
   error: string | null;
 };
 
-export type BatchMapExportJobsContextValue = {
-  jobs: BatchMapExportJobRow[];
+export type BatchMapExportJobsActionsContextValue = {
   enqueueBatchMapExportJob: (payload: BatchMapExportEnqueuePayload) => void;
   dismissBatchMapExportJob: (clientId: string) => void;
 };
+
+export type BatchMapExportJobsStateContextValue = {
+  jobs: BatchMapExportJobRow[];
+};
+
+/** @deprecated Prefer useBatchMapExportJobsActions + useBatchMapExportJobsState to avoid extra re-renders. */
+export type BatchMapExportJobsContextValue =
+  BatchMapExportJobsActionsContextValue & BatchMapExportJobsStateContextValue;
 
 export type BuildBatchExportUrlsInput = {
   formattedDates: string[];
