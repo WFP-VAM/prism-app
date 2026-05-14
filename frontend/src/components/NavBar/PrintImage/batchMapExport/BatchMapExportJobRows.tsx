@@ -124,7 +124,7 @@ function BatchMapExportJobRows({ jobs, onDismiss, variant }: Props) {
                   component="div"
                   className={classes.jobLineText}
                 >
-                  t({job.layerDisplayName})
+                  {t(job.layerDisplayName)}
                 </Typography>
                 <Typography
                   variant="subtitle2"
