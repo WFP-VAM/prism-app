@@ -1,6 +1,14 @@
 import { createContext } from 'react';
 
-import type { BatchMapExportJobsContextValue } from './types';
+import type {
+  BatchMapExportJobsActionsContextValue,
+  BatchMapExportJobsStateContextValue,
+} from './types';
 
-export const BatchMapExportJobsContext =
-  createContext<BatchMapExportJobsContextValue | null>(null);
+/** Stable across job polling — enqueue / dismiss only. */
+export const BatchMapExportJobsActionsContext =
+  createContext<BatchMapExportJobsActionsContextValue | null>(null);
+
+/** Updates when export job progress / list changes (~2s while polling). */
+export const BatchMapExportJobsStateContext =
+  createContext<BatchMapExportJobsStateContextValue | null>(null);

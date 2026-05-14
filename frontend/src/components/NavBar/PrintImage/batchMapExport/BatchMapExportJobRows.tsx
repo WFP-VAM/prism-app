@@ -17,7 +17,6 @@ import { cyanBlue } from 'muiTheme';
 import React, { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { downloadBlobFromSignedUrl } from './downloadBlobFromSignedUrl';
 import type { BatchMapExportJobRow } from './types';
 
 function batchExportStatusLabel(status: string, t: TFunction): string {
@@ -125,7 +124,7 @@ function BatchMapExportJobRows({ jobs, onDismiss, variant }: Props) {
                   component="div"
                   className={classes.jobLineText}
                 >
-                  t({job.layerDisplayName})
+                  {t(job.layerDisplayName)}
                 </Typography>
                 <Typography
                   variant="subtitle2"
@@ -181,26 +180,28 @@ function BatchMapExportJobRows({ jobs, onDismiss, variant }: Props) {
                       color="primary"
                       size="small"
                       style={{ backgroundColor: cyanBlue, color: 'black' }}
-                      onClick={() =>
-                        void (async () => {
-                          try {
-                            await downloadBlobFromSignedUrl(
-                              job.downloadUrl!,
-                              job.downloadFilename,
-                            );
-                            onDismiss(job.clientId);
-                          } catch (err) {
-                            console.error('Batch export download failed:', err);
-                            dispatch(
-                              addNotification({
-                                type: 'error',
-                                message: t(
-                                  'Something went wrong with the batch download. Please try again.',
-                                ),
-                              }),
-                            );
-                          }
-                        })()
+                      onClick={() => {
+                        try {
+                          window.open(
+                            job.downloadUrl!,
+                            '_blank',
+                            'noopener,noreferrer',
+                          );
+                          onDismiss(job.clientId);
+                        } catch (err) {
+                          console.error('Batch export download failed:', err);
+                          dispatch(
+                            addNotification({
+                              type: 'error',
+                              message: t(
+                                'Something went wrong with the batch download. Please try again.',
+                              ),
+                            }),
+                          );
+                        }
+                      }}
+                      title={
+                        job.downloadFilename ? job.downloadFilename : undefined
                       }
                     >
                       {t('Download')}

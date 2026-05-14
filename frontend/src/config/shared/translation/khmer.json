@@ -82,6 +82,7 @@
   "Batch export is ready": "ការនាំចេញបាច់រួចរាល់",
   "Batch export started. This may take several minutes; a popup will appear when the file is ready.": "ការនាំចេញបាច់បានចាប់ផ្តើម។ តាមដានវឌ្ឍនភាពនៅក្នុងបង្អួចនាំចេញបាច់ ការងារធំអាចចំណាយពេលច្រើននាទី។",
   "batch_export_status_and_maps": "ស្ថានភាព៖ {{status}} · ផែនទី {{current}} នៃ {{total}}",
+  "batch_export_maps_truncated_panel": "ការជ្រើសរើសរបស់អ្នកលើសពីកម្រិតនាំចេញ {{max}} ផែនទី។ រុក Export នឹងបង្កើត {{max}} ផែនទីថ្មីបំផុតក្នុងការជ្រើសរើសរបស់អ្នក។ អ្នកក៏អាចសម្របចន្លោយកាលបរិច្ឆេទ ដើម្បីនាំចេញ {{max}} ផែនទីដែលអ្នកត្រូវការ។",
   "batch_export_status_queued": "កំពុងរង់ចាំ",
   "batch_export_status_running": "កំពុងដំណើរការ",
   "batch_export_status_succeeded": "បានបញ្ចប់",

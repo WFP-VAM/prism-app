@@ -29,9 +29,13 @@ import { cyanBlue } from 'muiTheme';
 import React, { useContext, useEffect, useState } from 'react';
 
 import { useSafeTranslation } from '../../../i18n';
+import { MAP_EXPORT_MAX_URLS_PER_REQUEST } from '../../../utils/constants';
 import AspectRatioSelector from './AspectRatioSelector';
 import BatchMapExportJobRows from './batchMapExport/BatchMapExportJobRows';
-import { useBatchMapExportJobs } from './batchMapExport/useBatchMapExportJobs';
+import {
+  useBatchMapExportJobsActions,
+  useBatchMapExportJobsState,
+} from './batchMapExport/useBatchMapExportJobs';
 import CadenceSelector from './CadenceSelector';
 import DateRangePicker from './DateRangePicker';
 import PrintConfigContext from './printConfig.context';
@@ -275,8 +279,8 @@ const DATE_PLACEHOLDER_SUFFIX = ': {date_coverage}';
 function PrintConfig() {
   const classes = useStyles();
   const { t } = useSafeTranslation();
-  const { jobs: activeBatchJobs, dismissBatchMapExportJob } =
-    useBatchMapExportJobs();
+  const { jobs: activeBatchJobs } = useBatchMapExportJobsState();
+  const { dismissBatchMapExportJob } = useBatchMapExportJobsActions();
   const { printConfig } = useContext(PrintConfigContext);
 
   // Local state for responsive input - syncs to parent with debounce
@@ -332,6 +336,9 @@ function PrintConfig() {
     selectedLayerId,
     setSelectedLayerId,
   } = printConfig;
+
+  const batchMapsWillTruncate =
+    toggles.batchMapsVisibility && mapCount > MAP_EXPORT_MAX_URLS_PER_REQUEST;
 
   return (
     <Box className={classes.printPanelRoot}>
@@ -679,11 +686,26 @@ function PrintConfig() {
                     </Typography>
                     <Typography
                       variant="body1"
-                      className={classes.mapCountValue}
+                      className={`${classes.mapCountValue}${
+                        batchMapsWillTruncate
+                          ? ` ${classes.mapCountValueWarning}`
+                          : ''
+                      }`}
                     >
                       {mapCount}
                     </Typography>
                   </Box>
+                  {batchMapsWillTruncate && (
+                    <Typography
+                      variant="caption"
+                      component="p"
+                      className={classes.batchExportTruncateHint}
+                    >
+                      {t('batch_export_maps_truncated_panel', {
+                        max: MAP_EXPORT_MAX_URLS_PER_REQUEST,
+                      })}
+                    </Typography>
+                  )}
                 </GreyContainerSection>
               </GreyContainer>
             )}
@@ -852,6 +874,13 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(0.5, 1),
       backgroundColor: theme.palette.grey[300],
       lineHeight: 1.2,
+    },
+    mapCountValueWarning: {
+      color: theme.palette.error.main,
+    },
+    batchExportTruncateHint: {
+      marginTop: theme.spacing(0.5),
+      color: theme.palette.error.main,
     },
     batchExportsInPanelWrap: {
       marginTop: theme.spacing(1.5),

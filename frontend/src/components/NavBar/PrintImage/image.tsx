@@ -48,15 +48,15 @@ import {
   getAvailableCadences,
   getDisabledCadences,
 } from '../../../utils/batchCadenceUtils';
-import { getMapExportPageOrigin } from '../../../utils/constants';
+import {
+  getMapExportPageOrigin,
+  MAP_EXPORT_MAX_URLS_PER_REQUEST,
+} from '../../../utils/constants';
 import { ALL_ASPECT_RATIO_OPTIONS } from '../../MapExport/aspectRatioConstants';
 import { downloadToFile } from '../../MapView/utils';
-import {
-  buildBatchArtifactBasenames,
-  buildBatchExportDatesDisplay,
-} from './batchMapExport/batchExportArtifactFilename';
+import { buildBatchExportDatesDisplay } from './batchMapExport/batchExportArtifactFilename';
 import { buildBatchExportUrls } from './batchMapExport/buildBatchExportUrls';
-import { useBatchMapExportJobs } from './batchMapExport/useBatchMapExportJobs';
+import { useBatchMapExportJobsActions } from './batchMapExport/useBatchMapExportJobs';
 import { calculateExportDimensions } from './mapDimensionsUtils';
 import PrintConfig from './printConfig';
 import PrintConfigContext, {
@@ -90,7 +90,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const { data } = useBoundaryData(boundaryLayer.id);
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
-  const { enqueueBatchMapExportJob } = useBatchMapExportJobs();
+  const { enqueueBatchMapExportJob } = useBatchMapExportJobsActions();
 
   // list of toggles
   const [toggles, setToggles] = useState<Toggles>({
@@ -520,7 +520,12 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         return;
       }
 
-      const formattedDates = filteredBatchDates
+      const timestampsForExport =
+        filteredBatchDates.length > MAP_EXPORT_MAX_URLS_PER_REQUEST
+          ? filteredBatchDates.slice(-MAP_EXPORT_MAX_URLS_PER_REQUEST)
+          : filteredBatchDates;
+
+      const formattedDates = timestampsForExport
         .map(timestamp => getFormattedDate(timestamp, 'default'))
         .filter((d): d is string => d !== undefined && d !== '');
 
@@ -570,22 +575,16 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
       const layerDisplayName =
         printSelectedLayer.title ?? printSelectedLayer.id;
-      const datesSummary = buildBatchExportDatesDisplay(filteredBatchDates);
-      const { downloadFilename } = buildBatchArtifactBasenames(
-        country,
-        printSelectedLayer.id,
-        filteredBatchDates,
-        format,
-      );
+      const datesSummary = buildBatchExportDatesDisplay(timestampsForExport);
 
       enqueueBatchMapExportJob({
         urls: constructedUrls,
         viewportWidth: exportDims.canvasWidth,
         viewportHeight: exportDims.canvasHeight,
         format,
+        country: country.toLowerCase(),
         layerDisplayName,
         datesSummary,
-        downloadFilename,
         mapTotal: constructedUrls.length,
       });
     } catch (error) {

@@ -19,6 +19,7 @@
   "Batch export started. This may take several minutes; a popup will appear when the file is ready.": "Batch export started. Track progress in the batch export window; larger jobs may take several minutes.",
   "Batch download completed successfully.": "Batch download completed successfully.",
   "batch_export_status_and_maps": "status: {{status}} · {{current}} of {{total}} maps",
+  "batch_export_maps_truncated_panel": "Your selection exceeds the export limit of {{max}} maps. Clicking export will generate the {{max}} latest maps in your selection. You can also modify the date range to export the {{max}} maps you need.",
   "batch_export_status_queued": "Queued",
   "batch_export_status_running": "Running",
   "batch_export_status_succeeded": "Succeeded",

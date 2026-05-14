@@ -11,10 +11,10 @@ export type BatchMapExportEnqueuePayload = {
   viewportWidth: number;
   viewportHeight: number;
   format: MapExportJobFormat;
+  /** Country label forwarded to API for backend filename stem. */
+  country: string;
   layerDisplayName: string;
   datesSummary: string;
-  /** Client-side save as filename only (blob download). */
-  downloadFilename: string;
   mapTotal: number;
 };
 
@@ -28,16 +28,24 @@ export type BatchMapExportJobRow = {
   downloadUrl: string | null;
   layerDisplayName: string;
   datesSummary: string;
-  downloadFilename: string;
+  /** Present after GET exposes ``download_filename`` (server-derived). */
+  downloadFilename: string | null;
   format: MapExportJobFormat;
   error: string | null;
 };
 
-export type BatchMapExportJobsContextValue = {
-  jobs: BatchMapExportJobRow[];
+export type BatchMapExportJobsActionsContextValue = {
   enqueueBatchMapExportJob: (payload: BatchMapExportEnqueuePayload) => void;
   dismissBatchMapExportJob: (clientId: string) => void;
 };
+
+export type BatchMapExportJobsStateContextValue = {
+  jobs: BatchMapExportJobRow[];
+};
+
+/** @deprecated Prefer useBatchMapExportJobsActions + useBatchMapExportJobsState to avoid extra re-renders. */
+export type BatchMapExportJobsContextValue =
+  BatchMapExportJobsActionsContextValue & BatchMapExportJobsStateContextValue;
 
 export type BuildBatchExportUrlsInput = {
   formattedDates: string[];

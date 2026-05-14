@@ -2,7 +2,7 @@ const runLocally = !!process.env.REACT_APP_LOCAL;
 
 const LOCAL_EXPORT_PAGE_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]']);
 
-/** Origin embedded in map export job URLs. When REACT_APP_LOCAL is set, backend cannot fetch loopback; use public PRISM host. */
+/** Origin embedded in map export job URLs. When running frontend only, backend cannot fetch loopback; use public PRISM host unless running the API locally explicitly. */
 export function getMapExportPageOrigin(pageUrl: URL): string {
   if (!runLocally && LOCAL_EXPORT_PAGE_HOSTS.has(pageUrl.hostname)) {
     return 'https://prism.moz.wfp.org';
@@ -25,6 +25,9 @@ export const ALERT_API_URL = `${API_URL}/alerts`;
 export const KOBO_API_URL = `${API_URL}/kobo`;
 export const RASTER_API_URL = `${API_URL}/raster_geotiff`;
 export const EXPORT_MAP_JOBS_API_URL = `${API_URL}/export-map/jobs`;
+
+/** Must match MAP_EXPORT_MAX_URLS_PER_REQUEST in api/prism_app/models.py */
+export const MAP_EXPORT_MAX_URLS_PER_REQUEST = 12;
 // Default to the VAM URL for HDC data.
 export const CHART_API_URL =
   'https://api.earthobservation.vam.wfp.org/stats/admin';

@@ -7,6 +7,8 @@ export interface MapExportJobRequestBody {
   viewportWidth: number;
   viewportHeight: number;
   format: MapExportJobFormat;
+  /** Mirrors app country label for artifact naming (backend builds filename). */
+  country: string;
 }
 
 export interface MapExportJobCreateResponse {
@@ -32,6 +34,7 @@ export interface MapExportJobStatusResponse {
   error: MapExportJobErrorPayload | null;
   progress_current?: number | null;
   progress_total?: number | null;
+  download_filename?: string | null;
 }
 
 function sleep(ms: number): Promise<void> {
@@ -42,17 +45,33 @@ function sleep(ms: number): Promise<void> {
 
 export async function createMapExportJob(
   body: MapExportJobRequestBody,
+  signal?: AbortSignal,
 ): Promise<MapExportJobCreateResponse> {
   const response = await fetch(EXPORT_MAP_JOBS_API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
+    signal,
   });
   const text = await response.text();
   if (!response.ok) {
     throw new Error(text || `HTTP ${response.status}`);
   }
   return JSON.parse(text) as MapExportJobCreateResponse;
+}
+
+/**
+ * DELETE /export-map/jobs/:id — only succeeds while server status is queued.
+ */
+export async function cancelMapExportJob(jobId: string): Promise<void> {
+  const response = await fetch(`${EXPORT_MAP_JOBS_API_URL}/${jobId}`, {
+    method: 'DELETE',
+  });
+  if (response.ok || response.status === 404 || response.status === 409) {
+    return;
+  }
+  const text = await response.text();
+  throw new Error(text || `HTTP ${response.status}`);
 }
 
 export async function getMapExportJobStatus(
@@ -91,7 +110,7 @@ export interface WaitForMapExportJobOptions {
 export async function waitForMapExportJobDownloadUrl(
   jobId: string,
   options: WaitForMapExportJobOptions = {},
-): Promise<string> {
+): Promise<{ downloadUrl: string; downloadFilename: string | null }> {
   const pollIntervalMs = options.pollIntervalMs ?? 2000;
   const maxWaitMs = options.maxWaitMs ?? 120 * 60 * 1000;
   const deadline = Date.now() + maxWaitMs;
@@ -109,7 +128,11 @@ export async function waitForMapExportJobDownloadUrl(
       if (!downloadUrl) {
         throw new Error('Export succeeded but no download URL was returned');
       }
-      return downloadUrl;
+      const downloadFilename =
+        typeof job.download_filename === 'string'
+          ? job.download_filename
+          : null;
+      return { downloadUrl, downloadFilename };
     }
     if (job.status === 'failed') {
       throw new Error(exportFailureMessage(job));
@@ -125,8 +148,13 @@ export async function waitForMapExportJobDownloadUrl(
 export async function createMapExportJobAndWaitForDownloadUrl(
   body: MapExportJobRequestBody,
   options: WaitForMapExportJobOptions = {},
-): Promise<{ downloadUrl: string; format: MapExportJobFormat }> {
+): Promise<{
+  downloadUrl: string;
+  downloadFilename: string | null;
+  format: MapExportJobFormat;
+}> {
   const { job_id: jobId } = await createMapExportJob(body);
-  const downloadUrl = await waitForMapExportJobDownloadUrl(jobId, options);
-  return { downloadUrl, format: body.format };
+  const { downloadUrl, downloadFilename } =
+    await waitForMapExportJobDownloadUrl(jobId, options);
+  return { downloadUrl, downloadFilename, format: body.format };
 }
