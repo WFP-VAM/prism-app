@@ -70,7 +70,7 @@ function PanelMenu({
           {t(child.label)}
           {child.isDraft && (
             <Chip
-              label="Draft"
+              label={t('Draft')}
               size="small"
               color="default"
               className={classes.draftChip}

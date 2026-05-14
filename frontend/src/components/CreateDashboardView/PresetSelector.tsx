@@ -19,6 +19,7 @@ function PresetCard({
   onClick,
 }: PresetCardProps) {
   const classes = useStyles();
+  const { t } = useSafeTranslation();
   return (
     <Box
       className={`${classes.card} ${selected ? classes.cardSelected : ''}`}
@@ -34,7 +35,7 @@ function PresetCard({
       aria-pressed={selected}
     >
       <Box className={classes.wireframe}>{wireframe}</Box>
-      <Typography className={classes.cardLabel}>{label}</Typography>
+      <Typography className={classes.cardLabel}>{t(label)}</Typography>
       <Typography className={classes.cardDescription}>{description}</Typography>
     </Box>
   );

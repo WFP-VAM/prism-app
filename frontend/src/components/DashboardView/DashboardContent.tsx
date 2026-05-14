@@ -265,8 +265,8 @@ function DashboardContent({
                   className={`${classes.blockLabel} ${classes.mapHeaderTitle}`}
                 >
                   {mapElements.length > 1
-                    ? `Map ${elementIndex + 1}`
-                    : 'Map block'}{' '}
+                    ? t(`Map ${elementIndex + 1}`)
+                    : t('Map block')}{' '}
                   — {t('Choose map layers')}
                 </Typography>
                 <Button

@@ -40,13 +40,14 @@ interface SlotCardProps {
 
 function SlotCard({ slot, onSetType, onRemove }: SlotCardProps) {
   const classes = useStyles();
+  const { t } = useSafeTranslation();
 
   return (
     <Box className={classes.slotCard}>
       {slot.type === null ? (
         <>
           <Typography className={classes.slotPrompt}>
-            Choose block type
+            {t('Choose block type')}
           </Typography>
           <Box className={classes.typeButtons}>
             {SLOT_TYPES.map(({ type, label, Icon }) => (
@@ -58,7 +59,7 @@ function SlotCard({ slot, onSetType, onRemove }: SlotCardProps) {
                 startIcon={<Icon className={classes.typeButtonIcon} />}
                 onClick={() => onSetType(type)}
               >
-                {label}
+                {t(label)}
               </Button>
             ))}
           </Box>
@@ -66,9 +67,13 @@ function SlotCard({ slot, onSetType, onRemove }: SlotCardProps) {
       ) : (
         <Box className={classes.slotSet}>
           <Typography className={classes.slotTypeLabel}>
-            {SLOT_TYPE_LABELS[slot.type]}
+            {t(SLOT_TYPE_LABELS[slot.type] || '')}
           </Typography>
-          <IconButton size="small" onClick={onRemove} aria-label="Remove block">
+          <IconButton
+            size="small"
+            onClick={onRemove}
+            aria-label={t('Remove block')}
+          >
             <CloseOutlined fontSize="small" />
           </IconButton>
         </Box>

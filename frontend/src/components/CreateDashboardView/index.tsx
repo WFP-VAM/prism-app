@@ -1,6 +1,7 @@
 import { Box, Button, makeStyles } from '@material-ui/core';
 import { ArrowBackOutlined } from '@material-ui/icons';
 import { useState } from 'react';
+import { useSafeTranslation } from 'i18n';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
@@ -20,6 +21,7 @@ import SlotConfigurator from './SlotConfigurator';
 
 function CreateDashboardView() {
   const classes = useStyles();
+  const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const history = useHistory();
   const dashboards = useSelector(dashboardsListSelector);
@@ -82,7 +84,7 @@ function CreateDashboardView() {
             className={classes.backButton}
             size="small"
           >
-            Start over
+            {t('Start over')}
           </Button>
         </Box>
       )}
