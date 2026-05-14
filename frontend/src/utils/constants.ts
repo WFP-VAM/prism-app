@@ -2,9 +2,9 @@ const runLocally = !!process.env.REACT_APP_LOCAL;
 
 const LOCAL_EXPORT_PAGE_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]']);
 
-/** Origin embedded in map export job URLs. When REACT_APP_LOCAL is set, backend cannot fetch loopback; use public PRISM host. */
+/** Origin embedded in map export job URLs. When running frontend only, backend cannot fetch loopback; use public PRISM host unless running the API locally explicitly. */
 export function getMapExportPageOrigin(pageUrl: URL): string {
-  if (runLocally && LOCAL_EXPORT_PAGE_HOSTS.has(pageUrl.hostname)) {
+  if (!runLocally && LOCAL_EXPORT_PAGE_HOSTS.has(pageUrl.hostname)) {
     return 'https://prism.moz.wfp.org';
   }
   return pageUrl.origin;
