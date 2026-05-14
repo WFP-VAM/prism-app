@@ -120,7 +120,7 @@ function DashboardView() {
       {mode === DashboardMode.EDIT && (
         <Box className={classes.toolbar}>
           <Button
-            variant="text"
+            variant="outlined"
             color="primary"
             startIcon={<VisibilityOutlined />}
             onClick={handlePreviewClick}
