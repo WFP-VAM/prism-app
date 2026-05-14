@@ -15,6 +15,7 @@ import {
   availableDatesSelector,
   loadAvailableDatesForLayer,
 } from 'context/serverStateSlice';
+import { cloneDeep } from 'lodash';
 import type { LngLatBounds } from 'maplibre-gl';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -74,6 +75,55 @@ function PrintPreview() {
     }
     return [];
   }, [selectedLayerId, printConfig?.toggles.batchMapsVisibility]);
+
+  const mapLabelsVisibility = printConfig?.toggles.mapLabelsVisibility ?? true;
+
+  const maxBounds = useMemo(
+    () => selectedMap?.getMaxBounds() ?? undefined,
+    [selectedMap],
+  );
+
+  // Clone the main map style for the preview MapGL instance. Never mutate
+  // `getStyle()` in place — that object backs the live map. Recompute only when
+  // `selectedMap`, batch layer selection, or label visibility change (see deps).
+  const processedMapStyle = useMemo(() => {
+    if (!selectedMap) {
+      return null;
+    }
+    // Snapshot current style from the main map (basemap + any GL layers).
+    const rawStyle = selectedMap.getStyle();
+    if (!rawStyle) {
+      return null;
+    }
+    const style = cloneDeep(rawStyle);
+
+    // When batch maps has a selected layer, strip application layers from this
+    // snapshot (raster tiles and all `layer-` prefixed entries), leaving a pure
+    // basemap. Boundary layers and the WMS/date layer are drawn by React children
+    // (`MapExportLayout`) so order stays explicit and we avoid main-map side
+    // effects (e.g. a layer with `boundary` that removes other boundary layers).
+    if (printSelectedLayers.length > 0) {
+      const isLayerToRemove = (layer: { id: string; type: string }) =>
+        layer.type === 'raster' || layer.id.startsWith('layer-');
+
+      const sourcesToRemove = new Set(
+        style.layers
+          .filter(isLayerToRemove)
+          .map(layer => ('source' in layer ? (layer.source as string) : null))
+          .filter(Boolean) as string[],
+      );
+
+      style.layers = style.layers.filter(layer => !isLayerToRemove(layer));
+      sourcesToRemove.forEach(sourceId => {
+        delete style.sources[sourceId];
+      });
+    }
+    // Respect the print dialog “map labels” toggle on this clone only.
+    if (!mapLabelsVisibility) {
+      style.layers = style.layers.filter(x => !x.id.includes('label'));
+    }
+    return style;
+  }, [selectedMap, printSelectedLayers, mapLabelsVisibility]);
 
   const adminLevelLayersWithFillPattern = printSelectedLayers.filter(
     layer =>
@@ -165,33 +215,6 @@ function PrintPreview() {
   const boundsToFit = previewBounds ?? selectedMap.getBounds();
   const geographicBoundsForExport = lngLatBoundsToExport(boundsToFit);
 
-  // Get the style and layers of the old map
-  const selectedMapStyle = selectedMap.getStyle();
-
-  // When batch maps has a selected layer, strip all application layers from the
-  // snapshot (raster tiles and all layer- prefixed entries) leaving a pure
-  // basemap. Boundary layers and the WMS date layer are rendered via React so
-  // their ordering is explicit and not affected by side-effects on the main map
-  // (e.g. a layer with a `boundary` property that removes other boundary layers).
-  if (selectedMapStyle && printSelectedLayers.length > 0) {
-    const isLayerToRemove = (layer: { id: string; type: string }) =>
-      layer.type === 'raster' || layer.id.startsWith('layer-');
-
-    const sourcesToRemove = new Set(
-      selectedMapStyle.layers
-        .filter(isLayerToRemove)
-        .map(layer => ('source' in layer ? (layer.source as string) : null))
-        .filter(Boolean) as string[],
-    );
-
-    selectedMapStyle.layers = selectedMapStyle.layers.filter(
-      layer => !isLayerToRemove(layer),
-    );
-    sourcesToRemove.forEach(sourceId => {
-      delete selectedMapStyle.sources[sourceId];
-    });
-  }
-
   // Determine active panel for AA markers
   const activePanel =
     tabValue === Panel.AnticipatoryActionDrought ||
@@ -203,10 +226,9 @@ function PrintPreview() {
     return null;
   }
 
-  if (selectedMapStyle && !toggles.mapLabelsVisibility) {
-    selectedMapStyle.layers = selectedMapStyle?.layers.filter(
-      x => !x.id.includes('label'),
-    );
+  if (!processedMapStyle) {
+    // Style not ready yet (e.g. map still booting) — avoid mounting MapGL with no style.
+    return null;
   }
 
   return (
@@ -258,8 +280,8 @@ function PrintPreview() {
         legendPosition={legendPosition}
         legendScale={legendScale}
         bounds={geographicBoundsForExport}
-        mapStyle={selectedMapStyle}
-        maxBounds={selectedMap.getMaxBounds() ?? undefined}
+        mapStyle={processedMapStyle}
+        maxBounds={maxBounds}
         invertedAdminBoundaryLimitPolygon={invertedAdminBoundaryLimitPolygon}
         printRef={printRef}
         titleRef={titleRef}
