@@ -18,6 +18,10 @@ exports[`renders as expected 1`] = `
       />
       <mock-typography
         class="makeStyles-titleUnchecked-13"
+        component="span"
+        role="button"
+        style="cursor: pointer;"
+        tabindex="0"
       />
       <mock-tooltip
         title="Opacity"

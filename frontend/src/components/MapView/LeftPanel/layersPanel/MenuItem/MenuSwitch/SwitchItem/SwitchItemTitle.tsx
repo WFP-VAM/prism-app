@@ -2,6 +2,7 @@ import {
   createStyles,
   makeStyles,
   MenuItem,
+  MenuProps,
   Select,
   Typography,
 } from '@material-ui/core';
@@ -48,6 +49,12 @@ const useStyles = makeStyles(() =>
 const getFilteredMenuGroupItems = (menus: MenuGroupItem[], filter?: string) =>
   menus.filter(menu => (filter ? menu.id === filter : true));
 
+/** Nested accordions + drawer: anchor positioning / scroll lock can break MUI Select menu. */
+const switchItemSelectMenuProps: Partial<MenuProps> = {
+  getContentAnchorEl: null,
+  disableScrollLock: true,
+};
+
 interface SwitchTitleProps {
   layer: LayerType;
   someLayerAreSelected: boolean;
@@ -82,12 +89,36 @@ const SwitchItemTitle = memo(
       [setActiveLayerId, toggleLayerValue],
     );
 
+    const handleTitleClick = useCallback(() => {
+      if (disabledMenuSelection) {
+        return;
+      }
+      toggleLayerValue(activeLayerId, !someLayerAreSelected);
+    }, [
+      activeLayerId,
+      disabledMenuSelection,
+      someLayerAreSelected,
+      toggleLayerValue,
+    ]);
+
     return (
       <>
         <Typography
           className={
             someLayerAreSelected ? classes.title : classes.titleUnchecked
           }
+          component="span"
+          role="button"
+          tabIndex={0}
+          onClick={handleTitleClick}
+          onMouseDown={e => e.stopPropagation()}
+          onKeyDown={e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              handleTitleClick();
+            }
+          }}
+          style={{ cursor: disabledMenuSelection ? 'default' : 'pointer' }}
         >
           {validatedTitle}
         </Typography>
@@ -101,6 +132,8 @@ const SwitchItemTitle = memo(
             }}
             value={activeLayerId}
             onChange={e => handleSelect(e)}
+            onMouseDown={e => e.stopPropagation()}
+            MenuProps={switchItemSelectMenuProps}
             disabled={disabledMenuSelection}
           >
             {getFilteredMenuGroupItems(group.layers, groupMenuFilter).map(
