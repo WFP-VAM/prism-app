@@ -13,4 +13,4 @@ pydantic[email]==2.12.5
 fastapi==0.120.4
 requests==2.33.1
 python-dateutil==2.8.2
-urllib3>=2.6.3,<3
+urllib3>=2.7.0,<3
