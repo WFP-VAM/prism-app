@@ -64,7 +64,6 @@ function ChartDateRangeSelector({
           <Typography className={classes.fieldLabel} variant="body2">
             {t('Start')}
           </Typography>
-          {/* @ts-expect-error - react-datepicker v2 types incompatible with React 18 */}
           <DatePicker
             selected={startDate ? new Date(startDate) : null}
             onChange={handleStartDateChange}
@@ -84,7 +83,6 @@ function ChartDateRangeSelector({
           <Typography className={classes.fieldLabel} variant="body2">
             {t('End')}
           </Typography>
-          {/* @ts-expect-error - react-datepicker v2 types incompatible with React 18 */}
           <DatePicker
             selected={endDate ? new Date(endDate) : null}
             onChange={handleEndDateChange}

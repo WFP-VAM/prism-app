@@ -1,8 +1,7 @@
 import { Box, makeStyles, Typography } from '@material-ui/core';
 import { DashboardMode } from 'config/types';
 import { useSafeTranslation } from 'i18n';
-import React from 'react';
-import Markdown from 'react-markdown';
+import Markdown, { type Components } from 'react-markdown';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -17,38 +16,38 @@ interface TextBlockProps {
   elementIndex: number;
 }
 
-const createMarkdownComponents = (classes: any) => ({
-  p: ({ children }: { children: React.ReactNode }) => (
+const createMarkdownComponents = (classes: any): Components => ({
+  p: ({ children }) => (
     <Typography variant="body1" className={classes.previewText}>
       {children}
     </Typography>
   ),
-  h1: ({ children }: { children: React.ReactNode }) => (
+  h1: ({ children }) => (
     <Typography variant="h4" className={classes.previewHeading}>
       {children}
     </Typography>
   ),
-  h2: ({ children }: { children: React.ReactNode }) => (
+  h2: ({ children }) => (
     <Typography variant="h5" className={classes.previewHeading}>
       {children}
     </Typography>
   ),
-  h3: ({ children }: { children: React.ReactNode }) => (
+  h3: ({ children }) => (
     <Typography variant="h6" className={classes.previewHeading}>
       {children}
     </Typography>
   ),
-  strong: ({ children }: { children: React.ReactNode }) => (
+  strong: ({ children }) => (
     <Typography component="span" style={{ fontWeight: 600 }}>
       {children}
     </Typography>
   ),
-  em: ({ children }: { children: React.ReactNode }) => (
+  em: ({ children }) => (
     <Typography component="span" style={{ fontStyle: 'italic' }}>
       {children}
     </Typography>
   ),
-  a: ({ children, href }: { children: React.ReactNode; href?: string }) => (
+  a: ({ children, href }) => (
     <Typography
       component="a"
       href={href}
@@ -59,7 +58,7 @@ const createMarkdownComponents = (classes: any) => ({
       {children}
     </Typography>
   ),
-  img: ({ src, alt }: { src?: string; alt?: string }) => (
+  img: ({ src, alt }) => (
     <img
       src={src}
       alt={alt || ''}
@@ -87,7 +86,6 @@ function TextBlock({
     return (
       <Box className={classes.previewContainer}>
         <Markdown
-          linkTarget="_blank"
           components={createMarkdownComponents(classes)}
           allowedElements={[
             'p',

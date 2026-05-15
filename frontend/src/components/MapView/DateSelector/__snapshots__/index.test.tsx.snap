@@ -149,7 +149,7 @@ exports[`renders as expected with a single date 1`] = `
             class="react-datepicker__input-container"
           >
             <mock-button
-              classname="makeStyles-buttonStyle-12"
+              class="makeStyles-buttonStyle-12"
               variant="outlined"
             >
               Mar 11, 2023
@@ -166,7 +166,7 @@ exports[`renders as expected with a single date 1`] = `
         class="MuiGrid-root makeStyles-slider-7 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-true"
       >
         <mock-button
-          classname="makeStyles-chevronDate-2"
+          class="makeStyles-chevronDate-2"
           id="chevronLeftButton"
         >
           <mock-chevronleft />
@@ -199,7 +199,7 @@ exports[`renders as expected with a single date 1`] = `
           </div>
         </div>
         <mock-button
-          classname="makeStyles-chevronDate-2"
+          class="makeStyles-chevronDate-2"
           id="chevronRightButton"
         >
           <mock-chevronright />

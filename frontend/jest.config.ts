@@ -4,6 +4,7 @@ const config: Config = {
   preset: 'ts-jest',
   testEnvironment: 'jest-environment-jsdom',
   globalSetup: '<rootDir>/test/global-setup.cjs',
+  setupFiles: ['<rootDir>/test/jest-react-dom-polyfill.cjs'],
   transform: {
     '^.+\\.tsx?$': [
       'ts-jest',

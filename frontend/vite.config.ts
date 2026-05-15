@@ -97,6 +97,7 @@ export default defineConfig({
     host: true,
   },
   resolve: {
+    dedupe: ['react', 'react-dom'],
     alias: {
       assets: path.resolve(__dirname, 'src/assets'),
       components: '/src/components',
