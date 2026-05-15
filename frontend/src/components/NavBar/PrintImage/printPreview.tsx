@@ -83,9 +83,24 @@ function PrintPreview() {
     [selectedMap],
   );
 
+  // MapLibre mutates `getStyle()` in place after load; React only sees stable
+  // `selectedMap` ref → memoized clones go stale until something else changes deps.
+  // Bump epoch on open + styledata while print dialog visible.
+  const [mainMapStyleEpoch, setMainMapStyleEpoch] = useState(0);
+  useEffect(() => {
+    if (!selectedMap || !printConfig?.open) {
+      return undefined;
+    }
+    const bumpEpoch = () => setMainMapStyleEpoch(n => n + 1);
+    bumpEpoch();
+    selectedMap.on('styledata', bumpEpoch);
+    return () => {
+      selectedMap.off('styledata', bumpEpoch);
+    };
+  }, [printConfig?.open, selectedMap]);
+
   // Clone the main map style for the preview MapGL instance. Never mutate
-  // `getStyle()` in place — that object backs the live map. Recompute only when
-  // `selectedMap`, batch layer selection, or label visibility change (see deps).
+  // `getStyle()` in place — that object backs the live map.
   const processedMapStyle = useMemo(() => {
     if (!selectedMap) {
       return null;
@@ -123,7 +138,12 @@ function PrintPreview() {
       style.layers = style.layers.filter(x => !x.id.includes('label'));
     }
     return style;
-  }, [selectedMap, printSelectedLayers, mapLabelsVisibility]);
+  }, [
+    selectedMap,
+    printSelectedLayers,
+    mapLabelsVisibility,
+    mainMapStyleEpoch,
+  ]);
 
   const adminLevelLayersWithFillPattern = printSelectedLayers.filter(
     layer =>
