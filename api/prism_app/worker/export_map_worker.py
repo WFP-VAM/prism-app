@@ -7,7 +7,8 @@ Set ``EXPORT_MAP_S3_BUCKET`` for S3 (bare name, ``bucket/prefix``, or ``s3://buc
 (``file:///…`` URI in DB; dev / Docker volume — do not use in production).
 If neither is set, defaults to ``DEFAULT_EXPORT_MAP_S3_BUCKET`` (see ``export_s3``).
 When the queue is empty, the worker sleeps a fixed 2s before polling again.
-Due schedules are checked every 60s and enqueue new ``map_export_jobs`` rows.
+Scheduled public map enqueues are triggered by ``cron_scheduled_public_maps.sh`` /
+``python -m prism_app.scripts.scheduled_public_maps_cron``, not from this loop.
 """
 
 from __future__ import annotations
@@ -15,14 +16,12 @@ from __future__ import annotations
 import asyncio
 import logging
 import os
-import time
 from pathlib import Path
 from typing import Any
 
 from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.export_jobs.claim import claim_next_queued_map_export_job
 from prism_app.export_jobs.db import get_export_jobs_session_factory
-from prism_app.export_jobs.scheduler import fire_due_map_export_schedules
 from prism_app.export_maps import export_maps
 from prism_app.export_s3 import (
     DEFAULT_EXPORT_MAP_S3_BUCKET,
@@ -39,8 +38,6 @@ logger = logging.getLogger(__name__)
 
 # Seconds to sleep when no queued map_export_jobs row is available.
 _POLL_IDLE_SEC = 2.0
-# Seconds between map_export_schedules due checks.
-_SCHEDULER_TICK_SEC = 60.0
 
 
 async def run_export_job(
@@ -157,18 +154,9 @@ async def amain() -> None:
 
     factory = get_export_jobs_session_factory()
     logger.info(
-        "export_map_worker polling map_export_jobs (idle back-off %ss, schedule tick %ss)",
+        "export_map_worker polling map_export_jobs (idle back-off %ss)",
         _POLL_IDLE_SEC,
-        _SCHEDULER_TICK_SEC,
     )
-
-    def _fire_due_schedules() -> int:
-        """Own Session inside worker thread (Session is not thread-safe)."""
-        schedule_session = factory()
-        try:
-            return fire_due_map_export_schedules(schedule_session)
-        finally:
-            schedule_session.close()
 
     def _claim_one_job_id() -> str | None:
         """Own Session inside worker thread (Session is not thread-safe)."""
@@ -178,18 +166,7 @@ async def amain() -> None:
         finally:
             claim_session.close()
 
-    last_schedule_tick = time.monotonic()
     while True:
-        now_mono = time.monotonic()
-        if now_mono - last_schedule_tick >= _SCHEDULER_TICK_SEC:
-            last_schedule_tick = now_mono
-            try:
-                fired = await asyncio.to_thread(_fire_due_schedules)
-                if fired:
-                    logger.info("Enqueued %s scheduled map export job(s)", fired)
-            except Exception:
-                logger.exception("fire_due_map_export_schedules failed")
-
         job_id: str | None = None
         try:
             job_id = await asyncio.to_thread(_claim_one_job_id)

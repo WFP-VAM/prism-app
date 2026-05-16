@@ -7,7 +7,7 @@ import uuid
 from typing import Any, Optional
 
 from prism_app.utils import utc_now
-from sqlalchemy import JSON, Column, DateTime, ForeignKey, Index, String
+from sqlalchemy import JSON, Column, DateTime, Index, Integer, String
 from sqlmodel import Field, SQLModel
 
 
@@ -19,8 +19,10 @@ class MapExportJob(SQLModel, table=True):
             "request_fingerprint",
         ),
         Index(
-            "ix_map_export_jobs_schedule_id",
-            "schedule_id",
+            "ix_map_export_jobs_status_priority_created",
+            "status",
+            "priority",
+            "created_at",
         ),
     )
 
@@ -64,11 +66,7 @@ class MapExportJob(SQLModel, table=True):
     )
     progress_current: Optional[int] = Field(default=None)
     progress_total: Optional[int] = Field(default=None)
-    schedule_id: Optional[str] = Field(
-        default=None,
-        sa_column=Column(
-            String,
-            ForeignKey("map_export_schedules.id", ondelete="SET NULL"),
-            nullable=True,
-        ),
+    priority: int = Field(
+        default=200,
+        sa_column=Column(Integer, nullable=False, server_default="200"),
     )

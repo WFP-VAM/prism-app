@@ -18,17 +18,6 @@ _MOZ_EXPORT_PATH: Final[str] = (
 )
 
 
-def moz_export_schedule_urls_text(
-    *,
-    base_url: str | None = None,
-    dates: tuple[str, str, str] | None = None,
-) -> str:
-    """Newline-separated export URLs for map export schedule admin forms."""
-    return "\n".join(
-        moz_export_map_request_dict(base_url=base_url, dates=dates)["urls"]
-    )
-
-
 def moz_export_map_request_dict(
     *,
     base_url: str | None = None,

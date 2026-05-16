@@ -7,7 +7,6 @@ from prism_app.database.anticipatory_action_alerts_model import (
 )
 from prism_app.database.kobo_user_model import KoboUser
 from prism_app.database.map_export_job_model import MapExportJob
-from prism_app.database.map_export_schedule_model import MapExportSchedule
 
 __all__ = [
     "AlertModel",
@@ -16,5 +15,4 @@ __all__ = [
     "AnticipatoryActionAlertType",
     "KoboUser",
     "MapExportJob",
-    "MapExportSchedule",
 ]

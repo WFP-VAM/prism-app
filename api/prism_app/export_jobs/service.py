@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.export_jobs.fingerprint import compute_request_fingerprint
+from prism_app.export_jobs.priority import MAP_EXPORT_JOB_PRIORITY_INTERACTIVE
 from prism_app.export_s3 import map_export_artifact_exists
 from prism_app.models import MapExportRequestModel
 from prism_app.utils import utc_now
@@ -40,7 +41,7 @@ def create_queued_map_export_job(
     session: Session,
     request: MapExportRequestModel,
     *,
-    schedule_id: str | None = None,
+    priority: int = MAP_EXPORT_JOB_PRIORITY_INTERACTIVE,
 ) -> MapExportJob:
     """Persist a new queued job row without committing."""
     fingerprint = compute_request_fingerprint(request)
@@ -51,7 +52,7 @@ def create_queued_map_export_job(
         status="queued",
         origin_url=_origin_from_first_export_url(request.urls),
         content_type=artifact_kind,
-        schedule_id=schedule_id,
+        priority=priority,
     )
     session.add(job)
     return job
@@ -63,6 +64,7 @@ def enqueue_map_export_job(
     s3_client: object | None = None,
     *,
     dedupe: bool = True,
+    priority: int = MAP_EXPORT_JOB_PRIORITY_INTERACTIVE,
 ) -> tuple[MapExportJob, int]:
     """
     Return (job, http_status). New row with status queued -> 202;
@@ -94,7 +96,7 @@ def enqueue_map_export_job(
             if invalidated_any:
                 session.commit()
 
-    job = create_queued_map_export_job(session, request)
+    job = create_queued_map_export_job(session, request, priority=priority)
     session.commit()
     session.refresh(job)
     return job, 202

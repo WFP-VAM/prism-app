@@ -58,7 +58,6 @@ pydantic-settings = "^2.0.0"
 cryptography = ">=42.0.0"
 authlib = ">=1.3.2"
 itsdangerous = "^2.2.0"
-croniter = "^6.2.2"
 
 [tool.poetry.group.dev.dependencies]
 black = ">=26.3.1"

@@ -1,0 +1,12 @@
+{
+  "jobs": [
+    {
+      "country": "mozambique",
+      "layer_ids": ["precip_blended_dekad"],
+      "export_url_template": "https://prism.moz.wfp.org/export?date={date}&hazardLayerIds={layer_id}&bounds=24.99,-29.08,38.85,-10.74&zoom=4.16&mapWidth=100&mapHeight=100&aspectRatio=A4-P&title=Mozambique%3A+%7Bdate_coverage%7D",
+      "viewportWidth": 1200,
+      "viewportHeight": 1697,
+      "format": "pdf"
+    }
+  ]
+}

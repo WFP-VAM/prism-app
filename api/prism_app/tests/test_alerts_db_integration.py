@@ -61,7 +61,6 @@ def test_admin_mount_and_list_routes(alerts_db_url: str) -> None:
         "/admin/alert-model/list",
         "/admin/kobo-user/list",
         "/admin/anticipatory-action-alerts/list",
-        "/admin/map-export-schedule/list",
     ):
         lr = client.get(path)
         assert lr.status_code in (
