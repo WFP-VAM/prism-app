@@ -1,41 +1,22 @@
 name: PRISM CI - Alerting
 on:
-  # Run on all pull requests and on pushes to master.
   pull_request:
   push:
     branches:
       - master
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    env:
-      PRISM_ALERTS_DATABASE_URL: ${{ secrets.PRISM_ALERTS_DATABASE_URL }}
-      EMAIL_PASSWORD: ${{ secrets.PRISM_ALERTS_EMAIL_PASSWORD }}
-      PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "true"
-
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: "20"
 
-      # Install Chrome for Puppeteer
-      - name: Install Chrome
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y chromium-browser
-
-      # Ensure cron scripts are executable
-      - name: Check cron scripts are executable
+      - name: Ensure cron scripts are executable
         run: |
           cd alerting
           for f in crons/cron_*.sh; do
@@ -45,18 +26,10 @@ jobs:
             fi
           done
 
-      # Lint and test (use lockfile-only install; avoid `yarn add` in CI — re-resolution can hit bad/preview registry metadata)
-      - run: |
+      - name: Install (script aliases only)
+        run: |
           cd alerting
           yarn install --frozen-lockfile
-          yarn setup:common
-          yarn lint
-          yarn test
-          # Run flood alert worker with test email
-          echo "Running flood alert worker with test email"
-          yarn aa-flood-alert-worker --testEmail='hello@ovio.org'
-          echo "Running storm alert worker with test email"
-          yarn aa-storm-alert-worker --testEmail='hello@ovio.org'
 
       - name: Security audit
         run: cd alerting && yarn run audit

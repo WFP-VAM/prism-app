@@ -52,6 +52,10 @@ BACKEND_COVERAGE=poetry run pytest --cov=. --cov-fail-under=50 --cov-report term
 api-coverage:
 	docker compose run --no-deps api ${BACKEND_COVERAGE}
 
+# AA flood/storm email in Ethereal (Playwright in api image). Pass PRISM_E2E_* on host if needed.
+api-alert-email-e2e:
+	./scripts/alert_email_ethereal_e2e_docker.sh
+
 # Run tests for all components.
 test:
 	$(MAKE) api-lint

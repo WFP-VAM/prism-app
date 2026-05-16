@@ -1,13 +1,10 @@
 #!/bin/bash
-cd ~/prism-app/alerting
+cd ~/prism-app/api
 
 # source secrets from AWS
-source ../api/set_envs.sh
+source set_envs.sh
 
-docker compose run --rm -e POSTGRES_SSL=true --entrypoint 'yarn alert-worker' alerting-node 2>&1 | tee -a ~/prism-app/alerting/alert_worker.log
+PYTHONPATH=. poetry run python -m prism_app.worker.alert_runner threshold 2>&1 | tee -a ~/prism-app/api/alert_worker.log
 
-## To set up the cron job, run the following command on the server:
-# crontab -e
-## and then add the following line to the crontab file:
+## crontab example (daily 1:00):
 # 0 1 * * * ~/prism-app/alerting/crons/cron_alert_run.sh
-## This will run the alerting script every day at 1:00 AM.

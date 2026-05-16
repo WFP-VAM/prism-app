@@ -1,13 +1,9 @@
 #!/bin/bash
-cd ~/prism-app/alerting
+cd ~/prism-app/api
 
-# source secrets from AWS
-source ../api/set_envs.sh
+source set_envs.sh
 
-docker compose run --rm -e POSTGRES_SSL=true --entrypoint 'yarn aa-flood-alert-worker' alerting-node 2>&1 | tee -a ~/prism-app/alerting/aa_flood_alert_worker.log
+PYTHONPATH=. poetry run python -m prism_app.worker.alert_runner aa-flood 2>&1 | tee -a ~/prism-app/api/aa_flood_alert_worker.log
 
-## To set up the cron job, run the following command on the server:
-# crontab -e
-## and then add the following line to the crontab file:
-## This will run the flood AA alerting script every hour at minute 10.
+## crontab example (hourly :10):
 # 10 * * * * ~/prism-app/alerting/crons/cron_aa_flood_alert_run.sh

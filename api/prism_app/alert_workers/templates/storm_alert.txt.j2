@@ -1,0 +1,32 @@
+PRISM ALERT - {{ alert_title }}
+
+Anticipatory Action Alert for Tropical Storm {{ cyclone_name }} - {{ cyclone_time }}
+Forecast by Regional Specialized Meteorological Center La Reunion.
+
+{% if readiness %}
+Readiness Trigger: Detected
+{% endif %}
+
+{% if readiness %}
+A system with severe tropical storm-force winds (or stronger) is expected to impact any of the coastal provinces within the next 5 days, with a lead time of at least 96 hours.
+{% endif %}
+
+{% if activated_triggers %}
+Wind speeds above the threshold of 119 km/h are forecasted. This is not an official activation.
+
+Activation Triggers: Detected
+
+Projected wind speeds affecting pilot districts:
+- > 119 km/h: {{ activated_triggers.districts64kt }}
+{% else %}
+Activation Triggers: Not Detected
+{% endif %}
+
+Access PRISM Tropical Storm Dashboard: {{ redirect_url }}
+
+Map showing the trajectory of cyclone {{ cyclone_name }} over Mozambique:
+(Image unavailable in plain text format)
+
+We will continue to monitor the situation and provide timely updates.
+
+Disclaimer: This alert is automatically generated based on an evaluation of the latest forecast. It does not represent an official activation. The official decision regarding Anticipatory Action activation will be made and communicated by INGD (Instituto Nacional de Gestão e Redução do Risco de Desastres).

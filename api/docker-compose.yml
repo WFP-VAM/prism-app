@@ -1,6 +1,7 @@
 services:
   api:
     build: ./
+    shm_size: "2gb"
     volumes:
       - "./cache:/cache:rw"
       - ./prism_app:/prism_app:ro

@@ -162,7 +162,7 @@ make test
 
 #### Alerts database (CI integration + local
 
-GitHub Actions job **`alerts_db_alembic_and_alerting`** (`.github/workflows/api.yml`) applies **`alembic upgrade head`** to an empty Postgres instance, runs the Node **alerts DB contract** and **`yarn smoke-alerting-workers`** from `alerting/`, then runs **`pytest`** on `prism_app/tests/test_api.py`, `test_alerting.py`, and **`test_alerts_db_integration.py`** against that same database.
+GitHub Actions job **`alerts_db_alembic_and_alerting`** (`.github/workflows/api.yml`) applies **`alembic upgrade head`** to an empty Postgres instance, runs the **Python** alerts DB contract + worker smoke (`prism_app.ci.*`, `prism_app.worker.alert_runner smoke`; the `alerting/` package can still expose the same steps via `yarn`), then runs **`pytest`** on `prism_app/tests/test_api.py`, `test_alerting.py`, and **`test_alerts_db_integration.py`** against that same database.
 
 On the lightweight Ubuntu runner, **`test_stats_endpoint_masked`** is skipped (`SKIP_GDAL_MASK_STATS_TEST=1`) because it needs a full **GDAL** CLI (`gdal_calc.py`). **`make api-test`** in Docker still executes the full API test module, including the masked stats case.
 
@@ -180,7 +180,7 @@ SKIP_GDAL_MASK_STATS_TEST=1 PYTHONPATH=. poetry run pytest \
 
 **Manual — Starlette Admin (read-only):** With the API up on the alerts database, open **`/admin`**, then list routes **`/admin/alert-model/list`**, **`/admin/kobo-user/list`**, **`/admin/anticipatory-action-alerts/list`**. Confirm list and detail views; create/edit/delete remain off until auth is added.
 
-**Manual — Node workers:** From `alerting/`, run **`yarn alert-worker`** and one AA worker **without** `--testEmail` against a seeded dev database so the real **`pg`** pool is used (see [alerting/README.md](../alerting/README.md)).
+**Manual — alert workers:** From `api/` run **`PYTHONPATH=. poetry run python -m prism_app.worker.alert_runner threshold`** (and AA subcommands) against a seeded dev database, or use **`yarn`** aliases in [alerting/README.md](../alerting/README.md).
 
 #### Debugging playwright tests
 
