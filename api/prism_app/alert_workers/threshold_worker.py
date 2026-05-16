@@ -4,18 +4,19 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 
 import httpx
+from prism_app.alert_workers import db, layer_days, mail_render, settings, smtp_mailer
+from prism_app.alert_workers.wcs_url import create_get_coverage_url
 from shapely import ops
 from shapely.geometry import shape as sh_shape
 
-from prism_app.alert_workers import db, layer_days, settings
-from prism_app.alert_workers import smtp_mailer
-from prism_app.alert_workers.wcs_url import create_get_coverage_url
-
 logger = logging.getLogger(__name__)
+
+_ASSET_DIR = Path(__file__).resolve().parent / "assets"
 
 
 def format_prism_url(prism_url: str, params: dict[str, str]) -> str:
@@ -183,19 +184,15 @@ def process_alert_row(
     )
 
     if msg:
-        name_bit = f" {alert['alert_name']}" if alert.get("alert_name") else ""
-        text_body = (
-            f"Your alert{name_bit} has been triggered.\n\n"
-            f"Layer: {cfg['serverLayerName']}\n"
-            f"Date: {max_date}\n\n"
-            f"Go to {url_params} for more information.\n\nAlert: {msg}\n"
-        )
-        html_body = (
-            text_body.replace("\n", "<br>").replace(
-                url_params,
-                f'<a href="{url_params}">{cfg.get("title", "layer")}</a>',
-            )
-            + f"<br><br>To cancel this alert, click <a href='{deactivate}'>here</a>."
+        html_body, text_body = mail_render.render_threshold_mail(
+            heading_title="PRISM Alert Triggered",
+            alert_name=str(alert["alert_name"]) if alert.get("alert_name") else None,
+            layer_title=str(cfg.get("title", "layer")),
+            layer_server_name=str(cfg["serverLayerName"]),
+            trigger_date=str(max_date),
+            stats_message=msg,
+            prism_url=url_params,
+            deactivate_url=deactivate,
         )
         smtp_mailer.send_email(
             from_addr="wfp.prism@wfp.org",
@@ -203,6 +200,13 @@ def process_alert_row(
             subject="PRISM Alert Triggered",
             text_body=text_body,
             html_body=html_body,
+            attachments=[
+                {
+                    "filename": "arrow-forward-icon.png",
+                    "path": _ASSET_DIR / "arrowForwardIcon.png",
+                    "cid": "arrow-forward-icon",
+                },
+            ],
         )
         logger.info("Alert %s triggered", aid)
     else:

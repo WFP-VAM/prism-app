@@ -51,3 +51,29 @@ def render_storm_mail(
     html = _env.get_template("storm_alert.html.j2").render(**ctx)
     text = _env.get_template("storm_alert.txt.j2").render(**ctx)
     return html, text
+
+
+def render_threshold_mail(
+    *,
+    heading_title: str,
+    alert_name: str | None,
+    layer_title: str,
+    layer_server_name: str,
+    trigger_date: str,
+    stats_message: str,
+    prism_url: str,
+    deactivate_url: str,
+) -> tuple[str, str]:
+    ctx = {
+        "heading_title": heading_title,
+        "alert_name": alert_name,
+        "layer_title": layer_title,
+        "layer_server_name": layer_server_name,
+        "trigger_date": trigger_date,
+        "stats_message": stats_message,
+        "prism_url": prism_url,
+        "deactivate_url": deactivate_url,
+    }
+    html = _env.get_template("threshold_alert.html.j2").render(**ctx)
+    text = _env.get_template("threshold_alert.txt.j2").render(**ctx)
+    return html, text

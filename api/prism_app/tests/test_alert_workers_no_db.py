@@ -19,7 +19,11 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from prism_app.alert_workers import smtp_mailer
-from prism_app.alert_workers.mail_render import render_flood_mail, render_storm_mail
+from prism_app.alert_workers.mail_render import (
+    render_flood_mail,
+    render_storm_mail,
+    render_threshold_mail,
+)
 from prism_app.alert_workers.threshold_worker import (
     alert_message_from_stats,
     format_prism_url,
@@ -108,6 +112,26 @@ def test_render_storm_mail() -> None:
     assert "ANTICIPATORY ACTION ALERT FOR TROPICAL STORM" in html
     assert "https://prism.example/storm" in html
     assert "Storm alert" in text
+
+
+def test_render_threshold_mail_matches_aa_styling() -> None:
+    html, text = render_threshold_mail(
+        heading_title="PRISM Alert Triggered",
+        alert_name="Area North",
+        layer_title="Rainfall anomaly",
+        layer_server_name="chirps_monthly",
+        trigger_date="2026-05-15 00:00:00",
+        stats_message="Maximum value 12.5 is above the threshold 10.",
+        prism_url="https://prism.example/map?date=2026-05-15",
+        deactivate_url="https://api.prism.example/alerts/1?deactivate=true",
+    )
+    assert "PRISM Alert Triggered" in html
+    assert "rgba(99, 178, 189, 1)" in html
+    assert "cid:arrow-forward-icon" in html
+    assert "Maximum value 12.5" in html
+    assert "Area North" in html
+    assert "Rainfall anomaly" in text
+    assert "chirps_monthly" in text
 
 
 def test_send_email_no_credentials_logs_only(

@@ -17,10 +17,11 @@ Env:
 - ``PRISM_E2E_PRISM_BASE_URL`` — default ``https://prism.moz.wfp.org/``
 - ``PRISM_E2E_FLOOD_DATE`` — optional ISO date key (else latest from ``dates.json``)
 - ``PRISM_E2E_MAP_WAIT_MS`` — tile wait before screenshot (default ``8000``)
-- ``PRISM_E2E_STORM_SCREENSHOT_URL`` — optional full PRISM storm URL for second test
+- ``PRISM_E2E_STORM_SCREENSHOT_URL`` — optional; full storm map URL (overrides auto-built URL)
+- ``PRISM_E2E_STORM_REF_TIME`` — ISO reference time for default storm URL if screenshot URL unset (else noon UTC on latest flood day)
+- ``PRISM_E2E_THRESHOLD_API_URL``, ``PRISM_E2E_THRESHOLD_LAYER_ID``, ``PRISM_E2E_THRESHOLD_LAYER_NAME``, ``PRISM_E2E_THRESHOLD_LAYER_TITLE``
 
-Stdout prints the Ethereal preview URL(s). Open that URL in a browser to see HTML + images;
-plain ``urllib`` only gets Ethereal’s JS shell, not the rendered message body.
+Covers **flood AA**, **storm AA**, **threshold** emails. Stdout = three Ethereal preview URLs; open in browser (GET only sees JS shell).
 """
 
 from __future__ import annotations
@@ -41,8 +42,14 @@ from prism_app.alert_workers.aa_flood import (
     flood_prism_url,
     latest_flood_date,
 )
+from prism_app.alert_workers.aa_storm import build_prism_storm_url
 from prism_app.alert_workers.browser_shot import Crop, capture_screenshot_from_url
-from prism_app.alert_workers.mail_render import render_flood_mail, render_storm_mail
+from prism_app.alert_workers.mail_render import (
+    render_flood_mail,
+    render_storm_mail,
+    render_threshold_mail,
+)
+from prism_app.alert_workers.threshold_worker import format_prism_url
 
 _ALERT_ASSETS = Path(__file__).resolve().parents[1] / "alert_workers" / "assets"
 
@@ -51,6 +58,26 @@ _force = os.environ.get("PRISM_ALERT_EMAIL_E2E", "").lower() in (
     "true",
     "yes",
 )
+
+
+def _e2e_latest_flood_date_key(client: httpx.Client) -> str:
+    if env := os.environ.get("PRISM_E2E_FLOOD_DATE"):
+        return env
+    dates = fetch_flood_dates_json(client)
+    latest = latest_flood_date(dates) or ""
+    assert latest, "No flood dates from public API (set PRISM_E2E_FLOOD_DATE)"
+    return latest
+
+
+def _stdout_ethereal_preview(capsys: pytest.CaptureFixture) -> str:
+    out = capsys.readouterr().out
+    previews = [
+        ln.strip()
+        for ln in out.splitlines()
+        if ln.strip().startswith("https://ethereal.email/message/")
+    ]
+    assert previews, f"no preview URL on stdout: {out!r}"
+    return previews[-1]
 
 
 def _assert_ethereal_preview_url_reachable(url: str) -> None:
@@ -83,16 +110,14 @@ def test_e2e_ethereal_flood_alert_with_real_map(
     wait_ms = int(os.environ.get("PRISM_E2E_MAP_WAIT_MS", "8000"))
 
     with httpx.Client(timeout=120.0, verify=True) as client:
-        if env_date := os.environ.get("PRISM_E2E_FLOOD_DATE"):
-            latest = env_date
+        latest = _e2e_latest_flood_date_key(client)
+        dates = fetch_flood_dates_json(client)
+        entry = dates.get(latest) if isinstance(dates, dict) else {}
+        if os.environ.get("PRISM_E2E_FLOOD_DATE"):
             trigger = os.environ.get("PRISM_E2E_FLOOD_TRIGGER", "moderate")
             stations_by_status: dict[str, list[str]] = {}
         else:
-            dates = fetch_flood_dates_json(client)
-            latest = latest_flood_date(dates) or ""
-            assert latest, "No flood dates from public API (set PRISM_E2E_FLOOD_DATE)"
-            entry = dates.get(latest) or {}
-            trigger = str(entry.get("trigger_status") or "moderate")
+            trigger = str((entry or {}).get("trigger_status") or "moderate")
             stations_by_status = {}
 
     day = _format_date(latest, "YYYY-MM-DD")
@@ -143,19 +168,9 @@ def test_e2e_ethereal_flood_alert_with_real_map(
             },
         ],
     )
-    out = capsys.readouterr().out
-    previews = [
-        ln.strip()
-        for ln in out.splitlines()
-        if ln.strip().startswith("https://ethereal.email/message/")
-    ]
-    assert previews, f"no preview URL on stdout: {out!r}"
-    preview = previews[-1]
+    preview = _stdout_ethereal_preview(capsys)
     print("E2E flood Ethereal preview:", preview, flush=True)
     _assert_ethereal_preview_url_reachable(preview)
-
-
-_storm_url = os.environ.get("PRISM_E2E_STORM_SCREENSHOT_URL", "").strip()
 
 
 @pytest.mark.e2e
@@ -164,17 +179,25 @@ _storm_url = os.environ.get("PRISM_E2E_STORM_SCREENSHOT_URL", "").strip()
     not _force,
     reason="Set PRISM_ALERT_EMAIL_E2E=1 for Playwright + Ethereal (slow)",
 )
-@pytest.mark.skipif(
-    not _storm_url,
-    reason="Set PRISM_E2E_STORM_SCREENSHOT_URL to a full PRISM AA storm map URL",
-)
 def test_e2e_ethereal_storm_alert_with_real_map(
     capsys: pytest.CaptureFixture,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setenv("PRISM_ALERTS_USE_ETHEREAL", "true")
     token = str(uuid.uuid4())
+    base = os.environ.get("PRISM_E2E_PRISM_BASE_URL", "https://prism.moz.wfp.org/")
     wait_ms = int(os.environ.get("PRISM_E2E_MAP_WAIT_MS", "8000"))
+
+    with httpx.Client(timeout=120.0, verify=True) as client:
+        latest = _e2e_latest_flood_date_key(client)
+    day = _format_date(latest, "YYYY-MM-DD")
+    storm_url = os.environ.get("PRISM_E2E_STORM_SCREENSHOT_URL", "").strip() or (
+        build_prism_storm_url(
+            base,
+            os.environ.get("PRISM_E2E_STORM_REF_TIME", f"{day}T12:00:00+00:00"),
+        )
+    )
+
     cyclone_name = os.environ.get("PRISM_E2E_STORM_CYCLONE_NAME", "E2ECyclone")
     cyclone_time = os.environ.get(
         "PRISM_E2E_STORM_TIME",
@@ -204,7 +227,7 @@ def test_e2e_ethereal_storm_alert_with_real_map(
     )
 
     b64 = capture_screenshot_from_url(
-        _storm_url,
+        storm_url,
         elements_to_hide=[".MuiDrawer-root", ".MuiList-root", ".MuiGrid-root"],
         crop=Crop(900, 50, 1000, 950),
         extra_wait_ms=wait_ms,
@@ -219,7 +242,7 @@ def test_e2e_ethereal_storm_alert_with_real_map(
         cyclone_time=cyclone_time,
         readiness=readiness,
         activated_triggers=activated,
-        redirect_url=_storm_url,
+        redirect_url=storm_url,
     )
     smtp_mailer.send_email(
         from_addr="wfp.prism@wfp.org",
@@ -246,13 +269,73 @@ def test_e2e_ethereal_storm_alert_with_real_map(
             },
         ],
     )
-    out = capsys.readouterr().out
-    previews = [
-        ln.strip()
-        for ln in out.splitlines()
-        if ln.strip().startswith("https://ethereal.email/message/")
-    ]
-    assert previews, f"no preview URL on stdout: {out!r}"
-    preview = previews[-1]
+    preview = _stdout_ethereal_preview(capsys)
     print("E2E storm Ethereal preview:", preview, flush=True)
+    _assert_ethereal_preview_url_reachable(preview)
+
+
+@pytest.mark.e2e
+@pytest.mark.network
+@pytest.mark.skipif(
+    not _force,
+    reason="Set PRISM_ALERT_EMAIL_E2E=1 for Playwright + Ethereal (slow)",
+)
+def test_e2e_ethereal_threshold_alert(
+    capsys: pytest.CaptureFixture,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Stats/threshold mail (same shape as ``threshold_worker.process_alert_row`` body)."""
+    monkeypatch.setenv("PRISM_ALERTS_USE_ETHEREAL", "true")
+    token = str(uuid.uuid4())
+    base = os.environ.get("PRISM_E2E_PRISM_BASE_URL", "https://prism.moz.wfp.org/")
+    api_base = os.environ.get(
+        "PRISM_E2E_THRESHOLD_API_URL",
+        "https://prism.example.org/api",
+    )
+
+    with httpx.Client(timeout=120.0, verify=True) as client:
+        latest = _e2e_latest_flood_date_key(client)
+    day = _format_date(latest, "YYYY-MM-DD")
+    hazard_id = os.environ.get("PRISM_E2E_THRESHOLD_LAYER_ID", "7")
+    url_params = format_prism_url(
+        base,
+        {"hazardLayerIds": str(hazard_id), "date": day},
+    )
+    aid = 999999
+    deactivate = (
+        f"{api_base}/alerts/{aid}?deactivate=true&email=e2e-threshold@example.com"
+    )
+    msg = f"E2E threshold stats message ({token})"
+    server_layer = os.environ.get(
+        "PRISM_E2E_THRESHOLD_LAYER_NAME",
+        "E2E test layer",
+    )
+    layer_title = os.environ.get("PRISM_E2E_THRESHOLD_LAYER_TITLE", "E2E layer")
+
+    html_body, text_body = render_threshold_mail(
+        heading_title="PRISM Alert Triggered",
+        alert_name="E2E",
+        layer_title=layer_title,
+        layer_server_name=server_layer,
+        trigger_date=day,
+        stats_message=msg,
+        prism_url=url_params,
+        deactivate_url=deactivate,
+    )
+    smtp_mailer.send_email(
+        from_addr="wfp.prism@wfp.org",
+        to_addrs="e2e-threshold@example.com",
+        subject="PRISM Alert Triggered",
+        text_body=text_body,
+        html_body=html_body,
+        attachments=[
+            {
+                "filename": "arrow-forward-icon.png",
+                "path": _ALERT_ASSETS / "arrowForwardIcon.png",
+                "cid": "arrow-forward-icon",
+            },
+        ],
+    )
+    preview = _stdout_ethereal_preview(capsys)
+    print("E2E threshold Ethereal preview:", preview, flush=True)
     _assert_ethereal_preview_url_reachable(preview)
