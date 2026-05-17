@@ -1,9 +1,10 @@
 # export_map_worker — slim image (no GDAL/rasterio/geopandas/STAC stack).
 # Playwright + Chromium dominate size; base is still far smaller than ghcr.io/osgeo/gdal:ubuntu-full.
+# Debian trixie slim tracks newer security fixes than bookworm for CI Trivy scans.
 #
 # Build: docker build -f Dockerfile.export-map-worker -t prism-export-map-worker .
 #
-FROM python:3.12-slim-bookworm
+FROM python:3.12-slim-trixie
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/
