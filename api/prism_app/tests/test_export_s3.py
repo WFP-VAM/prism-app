@@ -10,6 +10,7 @@ from prism_app.export_s3 import (
     parse_s3_uri,
     put_map_export_bytes_local,
     s3_key_for_map_export,
+    slug_s3_path_segment,
 )
 
 
@@ -34,6 +35,43 @@ def test_s3_key_for_map_export_with_object_prefix():
         s3_key_for_map_export("jid", "pdf", object_prefix="/batch-maps/")
         == "batch-maps/map_exports/jid.pdf"
     )
+
+
+def test_s3_key_for_map_export_public_maps():
+    assert (
+        s3_key_for_map_export(
+            "jid",
+            "pdf",
+            public_maps_segments=("mozambique", "precip_blended_dekad"),
+        )
+        == "public_maps/mozambique/precip_blended_dekad/jid.pdf"
+    )
+    assert (
+        s3_key_for_map_export(
+            "jid",
+            "pdf",
+            object_prefix="batch-maps",
+            public_maps_segments=("moz", "layer"),
+        )
+        == "batch-maps/public_maps/moz/layer/jid.pdf"
+    )
+
+
+@pytest.mark.parametrize(
+    "raw,want",
+    [
+        ("Mozambique", "mozambique"),
+        ("a/b", "a-b"),
+        ("  Mixed_Case  ", "mixed_case"),
+    ],
+)
+def test_slug_s3_path_segment(raw: str, want: str) -> None:
+    assert slug_s3_path_segment(raw) == want
+
+
+def test_slug_s3_path_segment_rejects_empty() -> None:
+    with pytest.raises(ValueError):
+        slug_s3_path_segment("   !!!   ")
 
 
 @pytest.mark.parametrize(
@@ -87,6 +125,21 @@ def test_put_map_export_bytes_local_roundtrip(tmp_path: Path):
     p = Path(local_path_from_file_uri(uri))
     assert p.is_file()
     assert p.read_bytes() == b"%PDF-1.4"
+
+
+def test_put_map_export_bytes_local_public_subpath(tmp_path: Path):
+    uri = put_map_export_bytes_local(
+        tmp_path,
+        "jid",
+        "pdf",
+        b"%PDF-1.4",
+        public_maps_segments=("moz", "layer1"),
+    )
+    p = Path(local_path_from_file_uri(uri))
+    assert p.is_file()
+    assert p.parent.name == "layer1"
+    assert p.parent.parent.name == "moz"
+    assert p.parent.parent.parent.name == "public_maps"
 
 
 def test_local_path_from_file_uri_rejects_http():

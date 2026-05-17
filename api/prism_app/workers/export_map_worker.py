@@ -6,9 +6,10 @@ Set ``EXPORT_MAP_S3_BUCKET`` for S3 (bare name, ``bucket/prefix``, or ``s3://buc
 **or** ``EXPORT_MAP_LOCAL_OUTPUT_DIR`` for local files
 (``file:///…`` URI in DB; dev / Docker volume — do not use in production).
 If neither is set, defaults to ``DEFAULT_EXPORT_MAP_S3_BUCKET`` (see ``export_s3``).
-When the queue is empty, the worker sleeps a fixed 2s before polling again.
-Scheduled public map enqueues are triggered by ``cron_scheduled_public_maps.sh`` /
-``python -m prism_app.workers.scheduled_public_maps.cron``, not from this loop.
+Artifacts: ``map_exports/{job_id}.{ext}`` by default, or ``public_maps/{country}/{layer}/{job_id}.{ext}``
+(slugified) when ``publicMapUpload`` (needs explicit ``country`` and ``hazardLayerIds`` on the URL).
+When the queue is empty, the worker sleeps 2s before polling again.
+Scheduled public map enqueues: ``cron_scheduled_public_maps.sh`` / ``python -m prism_app.workers.scheduled_public_maps.cron``.
 """
 
 from __future__ import annotations
@@ -31,7 +32,7 @@ from prism_app.export_s3 import (
     put_map_export_bytes_local,
 )
 from prism_app.models import MapExportRequestModel
-from prism_app.utils import utc_now
+from prism_app.utils import public_map_upload_path_segments, utc_now
 from sqlmodel import Session
 
 logger = logging.getLogger(__name__)
@@ -75,6 +76,12 @@ async def run_export_job(
     )
     kind = job.content_type or ("pdf" if req.format == "pdf" else "zip")
 
+    public_maps_segments: tuple[str, str] | None = None
+    if req.publicMapUpload:
+        public_maps_segments = public_map_upload_path_segments(
+            req.urls[0], country=req.country
+        )
+
     if local_output_dir is not None:
         artifact_uri = await asyncio.to_thread(
             put_map_export_bytes_local,
@@ -82,6 +89,7 @@ async def run_export_job(
             job_id,
             kind,
             file_bytes,
+            public_maps_segments=public_maps_segments,
         )
     else:
         if not s3_bucket or s3_client is None:
@@ -94,6 +102,7 @@ async def run_export_job(
             file_bytes,
             s3_client,
             object_prefix=s3_object_prefix,
+            public_maps_segments=public_maps_segments,
         )
 
     job = session.get(MapExportJob, job_id)

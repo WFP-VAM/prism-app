@@ -9,6 +9,8 @@ Default config path: ``prism_app/workers/scheduled_public_maps/config/scheduled_
 
 **Behavior**
 
+- **Public layout**: optional per-job ``"public": true`` (requires non-empty ``country`` in config). Worker writes
+   ``public_maps/{country}/{layer}/{job_id}.{ext}``; ``country`` from job payload only; ``layer`` from ``hazardLayerIds`` on the export URL.
 - **Dates**: each ``layer_id`` is resolved against WFP datacube WMS GetCapabilities
   (default ``https://api.earthobservation.vam.wfp.org/ows``); override with
   ``SCHEDULED_PUBLIC_MAPS_WMS_BASE``. Latest timestep → ``{date}`` as ``YYYY-MM-DD``.
@@ -44,7 +46,14 @@ logger = logging.getLogger(__name__)
 class ScheduledPublicMapJobGroup(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
-    country: str | None = Field(default=None, description="Logged only.")
+    country: str | None = Field(
+        default=None,
+        description="Optional; copied into map export job payload for public_maps path + logs.",
+    )
+    public: bool = Field(
+        default=False,
+        description="When true, worker uploads under public_maps/… (requires ``country``).",
+    )
     layer_ids: list[str] = Field(..., min_length=1)
     export_url_template: str = Field(
         ...,
@@ -56,12 +65,16 @@ class ScheduledPublicMapJobGroup(BaseModel):
     viewportHeight: int | None = None
 
     @model_validator(mode="after")
-    def template_has_placeHolders(self) -> ScheduledPublicMapJobGroup:
+    def validate_group(self) -> ScheduledPublicMapJobGroup:
         t = self.export_url_template
         if "{date}" not in t or "{layer_id}" not in t:
             raise ValueError(
                 "export_url_template must include both {date} and {layer_id}"
             )
+        if self.public:
+            cty = self.country
+            if not (cty and cty.strip()):
+                raise ValueError("country is required when public is true")
         return self
 
 
@@ -77,6 +90,7 @@ def load_config(path: Path) -> ScheduledPublicMapsFile:
 def _build_request(
     export_url: str,
     group: ScheduledPublicMapJobGroup,
+    _layer_id: str,
 ) -> MapExportRequestModel:
     payload: dict[str, Any] = {
         "urls": [export_url],
@@ -86,6 +100,10 @@ def _build_request(
         payload["viewportWidth"] = group.viewportWidth
     if group.viewportHeight is not None:
         payload["viewportHeight"] = group.viewportHeight
+    if group.country is not None and group.country.strip():
+        payload["country"] = group.country.strip()
+    if group.public:
+        payload["publicMapUpload"] = True
     return MapExportRequestModel.model_validate(payload)
 
 
@@ -150,7 +168,7 @@ def main(argv: list[str] | None = None) -> int:
                 )
             )
             try:
-                req = _build_request(export_url, group)
+                req = _build_request(export_url, group, layer_id)
             except ValueError as exc:
                 logger.error("invalid export URL for %s: %s", label, exc)
                 return 1

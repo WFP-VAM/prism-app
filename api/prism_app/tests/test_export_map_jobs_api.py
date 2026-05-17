@@ -83,6 +83,26 @@ def test_post_export_map_jobs_returns_202_and_enqueues(api_client: TestClient) -
     assert data["origin_url"] == "http://localhost"
 
 
+def test_post_export_map_jobs_strips_public_upload_flag(
+    api_client: TestClient, sqlite_engine
+) -> None:
+    body = {
+        **_body(),
+        "urls": ["http://localhost/?date=2025-01-01&hazardLayerIds=layer_a"],
+        "publicMapUpload": True,
+    }
+    r = api_client.post("/export-map/jobs", json=body)
+    assert r.status_code == 202, r.text
+    job_id = r.json()["job_id"]
+    SessionLocal = sessionmaker(
+        bind=sqlite_engine, class_=Session, expire_on_commit=False
+    )
+    with SessionLocal() as session:
+        job = session.get(MapExportJob, job_id)
+        assert job is not None
+        assert job.request_payload_json.get("publicMapUpload") is False
+
+
 def test_get_export_map_job_status(api_client: TestClient) -> None:
     post = api_client.post("/export-map/jobs", json=_body())
     job_id = post.json()["job_id"]

@@ -572,6 +572,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
           viewportWidth: exportDims.canvasWidth,
           viewportHeight: exportDims.canvasHeight,
           format,
+          country: safeCountry,
         }),
       });
 

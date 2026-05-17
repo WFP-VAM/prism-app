@@ -86,6 +86,17 @@ def test_job_group_rejects_bad_template() -> None:
         )
 
 
+def test_job_group_public_requires_country() -> None:
+    with pytest.raises(ValidationError, match="country"):
+        ScheduledPublicMapJobGroup.model_validate(
+            {
+                "public": True,
+                "layer_ids": ["x"],
+                "export_url_template": f"{MAP_EXPORT_FIXTURE_BASE_URL}/export?date={{date}}&hazardLayerIds={{layer_id}}",
+            }
+        )
+
+
 def test_main_dry_run(tmp_path: Path) -> None:
     tmpl = f"{MAP_EXPORT_FIXTURE_BASE_URL}/export?date={{date}}&hazardLayerIds={{layer_id}}"
     cfg_path = tmp_path / "c.json"

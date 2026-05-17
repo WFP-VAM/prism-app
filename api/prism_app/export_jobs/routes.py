@@ -19,7 +19,7 @@ from prism_app.export_s3 import (
     map_export_s3_client,
     presign_export_get,
 )
-from prism_app.models import MapExportRequestModel
+from prism_app.models import MapExportJobEnqueueRequest
 from prism_app.utils import utc_now
 from sqlmodel import Session
 
@@ -52,12 +52,13 @@ router = APIRouter(prefix="/export-map", tags=["export-map"])
 
 @router.post("/jobs")
 def create_map_export_job(
-    body: MapExportRequestModel,
+    body: MapExportJobEnqueueRequest,
     session: Session = Depends(get_export_jobs_session),
     s3_client: object | None = Depends(get_s3_client_for_presign),
 ) -> JSONResponse:
-    job, status_code = enqueue_map_export_job(session, body, s3_client)
-    fingerprint = compute_request_fingerprint(body)
+    req = body.to_queued_request()
+    job, status_code = enqueue_map_export_job(session, req, s3_client)
+    fingerprint = compute_request_fingerprint(req)
     payload: dict[str, Any] = {
         "job_id": job.id,
         "status": job.status,
