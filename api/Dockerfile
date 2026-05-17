@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.4
 FROM ghcr.io/osgeo/gdal:ubuntu-full-3.11.5
-# gdal 3.11.1 uses ubuntu 24.04 and python 3.12
+# gdal 3.11.5 on ubuntu 24.04 with python 3.12 (patch releases reduce unfixed OS CVE noise vs 3.11.1)
 
 # we use poetry to install our dependencies in a venv separate from
 # the docker image system python environment
@@ -55,8 +55,8 @@ RUN --mount=type=cache,target=/root/.cache \
     --mount=type=cache,target=/var/cache/apt \
     DEBIAN_FRONTEND=noninteractive poetry run playwright install-deps
 
-# Apply security updates (e.g. GnuPG CVE-2025-68973, libtiff CVE-2025-9900); drop build-only headers
-# (linux-libc-dev); remove GStreamer "bad" codecs not required for headless map export.
+# Drop build-only headers (linux-libc-dev); remove GStreamer "bad" codecs not required for headless map export.
+# Intentionally no `apt-get upgrade` here — full upgrades often break reproducible Docker builds in CI.
 RUN --mount=type=cache,target=/var/lib/apt \
     --mount=type=cache,target=/var/cache/apt \
     DEBIAN_FRONTEND=noninteractive apt-get update && \
