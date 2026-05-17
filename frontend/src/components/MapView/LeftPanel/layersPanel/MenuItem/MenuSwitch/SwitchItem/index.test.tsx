@@ -1,8 +1,8 @@
-import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
-
-import { store } from 'context/store';
 import { LayerType } from 'config/types';
+import { store } from 'context/store';
+import { Provider } from 'react-redux';
+
 import SwitchItem from '.';
 
 jest.mock('react-router-dom', () => ({

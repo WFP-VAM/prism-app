@@ -1,24 +1,24 @@
-import { useContext, useMemo } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { Map as MaplibreMap } from 'maplibre-gl';
-import { LayerType } from 'config/types';
-import {
-  DateRange,
-  MapState,
-  addLayer as addGlobalMapLayer,
-  removeLayer as removeGlobalMapLayer,
-  updateDateRange as updateGlobalMapDateRange,
-  setMap as setGlobalMap,
-  removeLayerData as removeGlobalMapLayerData,
-  setBoundaryRelationData as setGlobalMapBoundaryRelationData,
-} from 'context/mapStateSlice';
 import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
 import MapInstanceContext from 'components/MapView/MapInstanceContext/mapInstance.context';
-import {
-  layersSelector,
-  dateRangeSelector,
-} from 'context/mapStateSlice/selectors';
 import { appConfig } from 'config';
+import { LayerType } from 'config/types';
+import {
+  addLayer as addGlobalMapLayer,
+  DateRange,
+  MapState,
+  removeLayer as removeGlobalMapLayer,
+  removeLayerData as removeGlobalMapLayerData,
+  setBoundaryRelationData as setGlobalMapBoundaryRelationData,
+  setMap as setGlobalMap,
+  updateDateRange as updateGlobalMapDateRange,
+} from 'context/mapStateSlice';
+import {
+  dateRangeSelector,
+  layersSelector,
+} from 'context/mapStateSlice/selectors';
+import { Map as MaplibreMap } from 'maplibre-gl';
+import { useContext, useMemo } from 'react';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 
 type MapGetter = () => MaplibreMap | undefined;
 

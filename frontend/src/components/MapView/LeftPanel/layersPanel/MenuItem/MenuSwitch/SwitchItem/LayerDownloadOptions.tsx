@@ -6,10 +6,13 @@ import {
   MenuItem,
   Tooltip,
 } from '@material-ui/core';
-import React, { useCallback, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { mapValues } from 'lodash';
 import GetAppIcon from '@material-ui/icons/GetApp';
+import {
+  downloadGeotiff,
+  Extent,
+} from 'components/MapView/Layers/raster-utils';
+import { downloadToFile } from 'components/MapView/utils';
+import { safeCountry } from 'config';
 import {
   AdminLevelDataLayerProps,
   CompositeLayerProps,
@@ -18,25 +21,22 @@ import {
   SelectedDateTimestamp,
   WMSLayerProps,
 } from 'config/types';
+import { getStacBand, LayerDefinitions } from 'config/utils';
+import { isExposureAnalysisLoadingSelector } from 'context/analysisResultStateSlice';
+import { LayerData } from 'context/layers/layer-data';
 import {
   dateRangeSelector,
   layerDataSelector,
 } from 'context/mapStateSlice/selectors';
-import { LayerData } from 'context/layers/layer-data';
-import { downloadToFile } from 'components/MapView/utils';
-import { castObjectsArrayToCsv } from 'utils/csv-utils';
-import {
-  downloadGeotiff,
-  Extent,
-} from 'components/MapView/Layers/raster-utils';
-import { useSafeTranslation } from 'i18n';
-import { isExposureAnalysisLoadingSelector } from 'context/analysisResultStateSlice';
 import { availableDatesSelector } from 'context/serverStateSlice';
-import { getRequestDateItem } from 'utils/server-utils';
-import { LayerDefinitions, getStacBand } from 'config/utils';
-import { getFormattedDate } from 'utils/date-utils';
-import { safeCountry } from 'config';
 import { Point } from 'geojson';
+import { useSafeTranslation } from 'i18n';
+import { mapValues } from 'lodash';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { castObjectsArrayToCsv } from 'utils/csv-utils';
+import { getFormattedDate } from 'utils/date-utils';
+import { getRequestDateItem } from 'utils/server-utils';
 
 // TODO - return early when the layer is not selected.
 function LayerDownloadOptions({

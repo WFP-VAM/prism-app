@@ -1,5 +1,5 @@
-import { LayerType, MenuGroup } from 'config/types';
 import { menuList } from 'components/MapView/LeftPanel/utils';
+import { LayerType, MenuGroup } from 'config/types';
 import { isAnticipatoryActionLayer } from 'config/utils';
 
 // Layer types that are allowed to have multiple layers overlap on the map.

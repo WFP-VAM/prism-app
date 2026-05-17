@@ -1,45 +1,46 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   AdminLevelDataLayerProps,
   AdminLevelType,
   AggregationOperations,
   BoundaryLayerProps,
+  ExposureOperator,
+  ExposureValue,
   GeometryType,
   HazardDataType,
   LayerKey,
   RasterType,
   ThresholdDefinition,
   WMSLayerProps,
-  ExposureValue,
-  ExposureOperator,
 } from 'config/types';
+import { getDisplayBoundaryLayers, LayerDefinitions } from 'config/utils';
 import {
   AnalysisDispatchParams,
-  PolygonAnalysisDispatchParams,
   analysisResultSelector,
   clearAnalysisResult,
+  generatePolygonCacheKey,
+  generateRasterCacheKey,
+  getCachedAnalysisResult,
   isAnalysisLoadingSelector,
+  PolygonAnalysisDispatchParams,
   requestAndStoreAnalysis,
   requestAndStorePolygonAnalysis,
-  getCachedAnalysisResult,
-  generateRasterCacheKey,
-  generatePolygonCacheKey,
 } from 'context/analysisResultStateSlice';
+import { LayerData } from 'context/layers/layer-data';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import {
   availableDatesSelector,
   loadAvailableDatesForLayer,
 } from 'context/serverStateSlice';
-import { LayerData } from 'context/layers/layer-data';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { getAdminLevelLayer } from 'utils/admin-utils';
-import { safeDispatchAddLayer, safeDispatchRemoveLayer } from 'utils/map-utils';
-import useLayers from 'utils/layers-utils';
-import { getPossibleDatesForLayer } from 'utils/server-utils';
+import type { AnalysisResult } from 'utils/analysis-utils';
 import { getDateFromList, parseNumberOrUndefined } from 'utils/data-utils';
 import { getFormattedDate } from 'utils/date-utils';
-import { LayerDefinitions, getDisplayBoundaryLayers } from 'config/utils';
-import type { AnalysisResult } from 'utils/analysis-utils';
+import useLayers from 'utils/layers-utils';
+import { safeDispatchAddLayer, safeDispatchRemoveLayer } from 'utils/map-utils';
+import { getPossibleDatesForLayer } from 'utils/server-utils';
+
 import { useBoundaryData } from './useBoundaryData';
 
 export interface UseAnalysisFormOptions {

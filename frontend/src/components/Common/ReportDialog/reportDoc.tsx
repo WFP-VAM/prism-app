@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react';
+import { Theme } from '@material-ui/core';
 import {
   Document,
   Image,
@@ -7,15 +7,16 @@ import {
   Text,
   View,
 } from '@react-pdf/renderer';
-import { Theme } from '@material-ui/core';
-import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
 import { getLegendItemLabel } from 'components/MapView/utils';
 import { LegendDefinition, ReportType } from 'config/types';
-import { Column } from 'utils/analysis-utils';
+import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
 import { useSafeTranslation } from 'i18n';
-import { PDFLegendDefinition } from './types';
+import { memo, useMemo } from 'react';
+import { Column } from 'utils/analysis-utils';
+
 import ReportDocLegend from './ReportDocLegend';
 import ReportDocTable from './ReportDocTable';
+import { PDFLegendDefinition } from './types';
 import { getReportFontFamily } from './utils';
 
 const makeStyles = (theme: Theme, selectedLanguage: string) =>

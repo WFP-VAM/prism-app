@@ -1,24 +1,33 @@
-import { Box, makeStyles, Button } from '@material-ui/core';
-import { VisibilityOutlined } from '@material-ui/icons';
-import { useSelector, useDispatch } from 'react-redux';
-import { useEffect, useState } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
-import { useSafeTranslation } from 'i18n';
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  makeStyles,
+} from '@material-ui/core';
+import { DeleteOutlined, VisibilityOutlined } from '@material-ui/icons';
 import { DashboardMode } from 'config/types';
+import { usePersistDraftDashboards } from 'hooks/usePersistDraftDashboards';
+import { useSafeTranslation } from 'i18n';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, useParams } from 'react-router-dom';
 
+import { getDashboardIndexByPath } from '../../config/utils';
+import { clearAnalysisResult } from '../../context/analysisResultStateSlice';
 import {
   dashboardConfigSelector,
   dashboardModeSelector,
   dashboardsListSelector,
+  removeDashboard,
   setMode,
   setSelectedDashboard,
 } from '../../context/dashboardStateSlice';
-import { getDashboardIndexByPath } from '../../config/utils';
 import { generateSlugFromTitle } from '../../utils/string-utils';
-import { clearAnalysisResult } from '../../context/analysisResultStateSlice';
-import { usePersistDraftDashboards } from 'hooks/usePersistDraftDashboards';
-import { DashboardExportDialog } from './DashboardExport';
 import DashboardContent from './DashboardContent';
+import { DashboardExportDialog } from './DashboardExport';
 
 function DashboardView() {
   usePersistDraftDashboards();
@@ -35,6 +44,13 @@ function DashboardView() {
   // Export/Publish dialog state
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const handleCloseExport = () => setExportDialogOpen(false);
+
+  // Delete dashboard dialog state
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const handleDeleteConfirm = () => {
+    dispatch(removeDashboard());
+    history.push('/dashboard/create');
+  };
 
   // Clear any existing analysis state when component mounts
   useEffect(() => {
@@ -106,6 +122,18 @@ function DashboardView() {
       />
       {mode === DashboardMode.EDIT && (
         <Box className={classes.toolbar}>
+          {dashboardConfig.isDraft && (
+            <Button
+              variant="outlined"
+              color="secondary"
+              startIcon={<DeleteOutlined />}
+              onClick={() => setDeleteDialogOpen(true)}
+              className={classes.previewButton}
+              size="medium"
+            >
+              {t('Delete')}
+            </Button>
+          )}
           <Button
             variant="outlined"
             color="primary"
@@ -123,6 +151,33 @@ function DashboardView() {
         open={exportDialogOpen}
         handleClose={handleCloseExport}
       />
+
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogContent>
+          <DialogContentText>
+            {t(
+              `Are you sure you want to delete "${dashboardConfig.title}"? This cannot be undone. You’ll be taken back to the dashboard creation page.`,
+            )}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteDialogOpen(false)} color="primary">
+            {t('Cancel')}
+          </Button>
+          <Button
+            onClick={handleDeleteConfirm}
+            color="secondary"
+            variant="contained"
+          >
+            {t('Delete Dashboard')}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
@@ -216,6 +271,7 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     justifyContent: 'center',
     zIndex: 1400,
+    gap: '8px',
   },
   previewButton: {
     textTransform: 'none',

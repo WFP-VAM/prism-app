@@ -1,10 +1,11 @@
 import { DateRangeType } from 'config/types';
+import { useSafeTranslation } from 'i18n';
 import { compact } from 'lodash';
 import React, { FC } from 'react';
 import { datesAreEqualWithoutTime, getFormattedDate } from 'utils/date-utils';
-import { useSafeTranslation } from 'i18n';
-import TooltipItem from '../TooltipItem';
+
 import { DateCompatibleLayerWithDateItems } from '../../utils';
+import TooltipItem from '../TooltipItem';
 import { DateItemStyle } from '../types';
 
 const StandardTooltipContent: FC<StandardTooltipContentProps> = ({

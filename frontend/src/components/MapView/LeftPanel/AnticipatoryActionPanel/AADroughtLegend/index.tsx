@@ -1,18 +1,19 @@
 import {
-  Divider,
-  Typography,
   createStyles,
+  Divider,
   makeStyles,
+  Typography,
 } from '@material-ui/core';
 import { useSafeTranslation } from 'i18n';
 import { borderGray } from 'muiTheme';
 import React from 'react';
-import { useAACommonStyles } from '../utils';
+
 import {
-  getLegendPhases,
   getDescriptionText,
+  getLegendPhases,
 } from '../AnticipatoryActionDroughtPanel/utils/countryConfig';
 import HowToReadModal from '../HowToReadModal';
+import { useAACommonStyles } from '../utils';
 
 function AADroughtLegend({ showDescription = true }: AADroughtLegendProps) {
   const [open, setOpen] = React.useState(false);

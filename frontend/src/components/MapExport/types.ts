@@ -1,10 +1,10 @@
-import React from 'react';
-import type {
-  StyleSpecification,
-  LngLatBoundsLike,
-  LngLatBounds,
-} from 'maplibre-gl';
 import { AdminCodeString, LayerType } from 'config/types';
+import type {
+  LngLatBounds,
+  LngLatBoundsLike,
+  StyleSpecification,
+} from 'maplibre-gl';
+import React from 'react';
 import { LayerDateCoverage } from 'utils/server-utils';
 
 // Re-export aspect ratio types and utilities from the single source of truth
@@ -12,8 +12,8 @@ import { LayerDateCoverage } from 'utils/server-utils';
 export type {
   AspectRatio,
   AspectRatioOption,
-  PresetAspectRatio,
   CustomAspectRatio,
+  PresetAspectRatio,
 } from './aspectRatioConstants';
 // Re-export type guard functions (values, not types)
 export {

@@ -7,12 +7,13 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-import { ReactElement } from 'react';
 import { menuList } from 'components/MapView/LeftPanel/utils';
+import { appConfig } from 'config';
 import { LayerKey, LayerType } from 'config/types';
 import { getDisplayBoundaryLayers, LayerDefinitions } from 'config/utils';
 import { useSafeTranslation } from 'i18n';
-import { appConfig } from 'config';
+import { ReactElement } from 'react';
+
 import { getLayerGeometryIcon } from './layer-utils';
 
 const { multiCountry } = appConfig;

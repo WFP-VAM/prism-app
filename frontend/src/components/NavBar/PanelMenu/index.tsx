@@ -1,9 +1,9 @@
-import { Chip, Divider, Menu, MenuItem, makeStyles } from '@material-ui/core';
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { PanelItem, Panel } from 'config/types';
+import { Chip, Divider, makeStyles, Menu, MenuItem } from '@material-ui/core';
+import { Panel, PanelItem } from 'config/types';
 import { selectedDashboardIndexSelector } from 'context/dashboardStateSlice';
 import { useSafeTranslation } from 'i18n';
+import React from 'react';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles(() => ({
   menuItem: {
@@ -73,7 +73,7 @@ function PanelMenu({
             {t(child.label)}
             {child.isDraft && (
               <Chip
-                label="Draft"
+                label={t('Draft')}
                 size="small"
                 color="default"
                 className={classes.draftChip}

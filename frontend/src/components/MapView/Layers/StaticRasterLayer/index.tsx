@@ -5,6 +5,7 @@ import { Layer, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
 import { getLayerMapId } from 'utils/map-utils';
 import { useDefaultDate } from 'utils/useDefaultDate';
+
 import { createStaticRasterLayerUrl } from './utils';
 
 const StaticRasterLayer = memo(

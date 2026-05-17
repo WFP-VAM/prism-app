@@ -5,17 +5,18 @@ import {
   TextField,
   TextFieldProps,
 } from '@material-ui/core';
-import React, { useMemo } from 'react';
-import { Map as MaplibreMap } from 'maplibre-gl';
-import { useSafeTranslation } from 'i18n';
-import { getDisplayBoundaryLayers } from 'config/utils';
 import { Search } from '@material-ui/icons';
-import { FixedSizeList as List } from 'react-window';
-import { BBox } from 'geojson';
 import bbox from '@turf/bbox';
-import { BoundaryLayerData } from 'context/layers/boundary';
-import { boundaryCache } from 'utils/boundary-cache';
 import { LayerKey } from 'config/types';
+import { getDisplayBoundaryLayers } from 'config/utils';
+import { BoundaryLayerData } from 'context/layers/boundary';
+import { BBox } from 'geojson';
+import { useSafeTranslation } from 'i18n';
+import { Map as MaplibreMap } from 'maplibre-gl';
+import React, { useMemo } from 'react';
+import { FixedSizeList as List } from 'react-window';
+import { boundaryCache } from 'utils/boundary-cache';
+
 import {
   BoundaryDropdownProps,
   flattenAreaTree,

@@ -1,7 +1,8 @@
-import { useState, type ReactNode } from 'react';
-import { Box, Button, Typography, makeStyles } from '@material-ui/core';
-import { DashboardPreset } from './utils';
+import { Box, Button, makeStyles, Typography } from '@material-ui/core';
 import { useSafeTranslation } from 'i18n';
+import { type ReactNode, useState } from 'react';
+
+import { DashboardPreset } from './utils';
 
 interface PresetCardProps {
   label: string;
@@ -19,6 +20,7 @@ function PresetCard({
   onClick,
 }: PresetCardProps) {
   const classes = useStyles();
+  const { t } = useSafeTranslation();
   return (
     <Box
       className={`${classes.card} ${selected ? classes.cardSelected : ''}`}
@@ -34,7 +36,7 @@ function PresetCard({
       aria-pressed={selected}
     >
       <Box className={classes.wireframe}>{wireframe}</Box>
-      <Typography className={classes.cardLabel}>{label}</Typography>
+      <Typography className={classes.cardLabel}>{t(label)}</Typography>
       <Typography className={classes.cardDescription}>{description}</Typography>
     </Box>
   );

@@ -1,28 +1,28 @@
-import { memo, useEffect, useRef, useState, useMemo, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Box, createStyles, makeStyles } from '@material-ui/core';
+import mask from '@turf/mask';
+import MapExportLayout from 'components/MapExport/MapExportLayout';
+import { mapStyle } from 'components/MapView/Map/utils';
+import { appConfig, safeCountry } from 'config';
+import { SelectedDateTimestamp } from 'config/types';
 import {
-  getDisplayBoundaryLayers,
   getBoundaryLayerSingleton,
+  getDisplayBoundaryLayers,
 } from 'config/utils';
 import {
-  WMSLayerDatesRequested,
   pointDataLayerDatesRequested,
   preloadLayerDatesArraysForPointData,
   preloadLayerDatesArraysForWMS,
+  WMSLayerDatesRequested,
 } from 'context/serverPreloadStateSlice';
-import { useMapState } from 'utils/useMapState';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { boundaryCache } from 'utils/boundary-cache';
-import { useExportParams } from 'utils/useExportParams';
-import { appConfig, safeCountry } from 'config';
-import { useBoundaryData } from 'utils/useBoundaryData';
-import { mapStyle } from 'components/MapView/Map/utils';
-import mask from '@turf/mask';
-import MapExportLayout from 'components/MapExport/MapExportLayout';
 import useLayers from 'utils/layers-utils';
-import useResizeObserver from 'utils/useOnResizeObserver';
 import { getLayersCoverage } from 'utils/server-utils';
-import { SelectedDateTimestamp } from 'config/types';
+import { useBoundaryData } from 'utils/useBoundaryData';
+import { useExportParams } from 'utils/useExportParams';
+import { useMapState } from 'utils/useMapState';
+import useResizeObserver from 'utils/useOnResizeObserver';
 
 /**
  * ExportView is a component that displays a map and allows the user to export it as a PDF or ZIP file.
@@ -202,6 +202,7 @@ const ExportView = memo(() => {
 
   return (
     <Box className={classes.root}>
+      {/* Paint order: MapExportLayout stacks boundaries before rasters */}
       <MapExportLayout
         toggles={exportParams.toggles}
         aspectRatio={exportParams.aspectRatio}

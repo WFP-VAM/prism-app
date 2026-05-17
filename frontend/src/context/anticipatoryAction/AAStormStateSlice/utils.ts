@@ -1,4 +1,6 @@
-import { WindState, StormDataResponseBody } from 'prism-common/';
+import { StormDataResponseBody, WindState } from 'prism-common/';
+
+import { allDistrictsInCoastalProvince } from './districs';
 import {
   AACategory,
   AACategoryDataToLandfallMap,
@@ -9,7 +11,6 @@ import {
   MergedFeatures,
   ResultType,
 } from './parsedStormDataTypes';
-import { allDistrictsInCoastalProvince } from './districs';
 
 const watchedDistricts: { [key in AACategory]: string[] } = {
   [AACategory.Moderate]: allDistrictsInCoastalProvince,

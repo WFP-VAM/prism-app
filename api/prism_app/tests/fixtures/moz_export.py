@@ -32,4 +32,5 @@ def moz_export_map_request_dict(
         "viewportWidth": 1200,
         "viewportHeight": 1028,
         "format": "pdf",
+        "country": "Mozambique",
     }

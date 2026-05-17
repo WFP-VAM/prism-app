@@ -1,14 +1,13 @@
 import {
-  Typography,
-  makeStyles,
   createStyles,
   Divider,
+  makeStyles,
+  Typography,
 } from '@material-ui/core';
 import anticipatoryActionIcons from 'components/Common/AnticipatoryAction/icons';
-
 import { AADataSelector } from 'context/anticipatoryAction/AAStormStateSlice';
-import { TimeSeries } from 'prism-common/';
 import { useSafeTranslation } from 'i18n';
+import { TimeSeries } from 'prism-common/';
 import { useSelector } from 'react-redux';
 
 const phases = [

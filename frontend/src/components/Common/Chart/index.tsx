@@ -1,15 +1,16 @@
-import React, { memo, useCallback, useMemo, useState } from 'react';
-import colormap from 'colormap';
-import { ChartOptions } from 'chart.js';
 import 'chartjs-plugin-annotation';
-import { Bar, Line } from 'react-chartjs-2';
+
+import { IconButton, makeStyles, Tooltip } from '@material-ui/core';
+import GetAppIcon from '@material-ui/icons/GetApp';
+import ImageIcon from '@material-ui/icons/Image';
+import { ChartOptions } from 'chart.js';
+import colormap from 'colormap';
+import { buildCsvFileName, downloadToFile } from 'components/MapView/utils';
 import { ChartConfig, DatasetField } from 'config/types';
 import { TableData } from 'context/tableStateSlice';
 import { useSafeTranslation } from 'i18n';
-import { IconButton, Tooltip, makeStyles } from '@material-ui/core';
-import ImageIcon from '@material-ui/icons/Image';
-import GetAppIcon from '@material-ui/icons/GetApp';
-import { buildCsvFileName, downloadToFile } from 'components/MapView/utils';
+import React, { memo, useCallback, useMemo, useState } from 'react';
+import { Bar, Line } from 'react-chartjs-2';
 import {
   createCsvDataFromDataKeyMap,
   createDataKeyMap,

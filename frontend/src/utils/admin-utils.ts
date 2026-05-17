@@ -1,17 +1,18 @@
 import { appConfig } from 'config';
 import {
   AdminLevelType,
-  DatasetLevel,
   BoundaryLayerProps,
+  DatasetLevel,
   WMSLayerProps,
 } from 'config/types';
 import {
-  getBoundaryLayerSingleton,
   getBoundaryLayersByAdminLevel,
+  getBoundaryLayerSingleton,
   getDisplayBoundaryLayers,
 } from 'config/utils';
 import { AdminBoundaryParams, EWSParams } from 'context/datasetStateSlice';
 import { CHART_API_URL } from 'utils/constants';
+
 import { GoogleFloodParams } from './google-flood-utils';
 
 const { multiCountry } = appConfig;

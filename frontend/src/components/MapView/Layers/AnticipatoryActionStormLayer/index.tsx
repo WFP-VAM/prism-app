@@ -1,36 +1,36 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useWindStatesByTime } from 'components/MapView/DateSelector/TimelineItems/hooks';
+import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
 import { AnticipatoryActionLayerProps } from 'config/types';
-import { useDefaultDate } from 'utils/useDefaultDate';
-import { Source, Layer, MapLayerMouseEvent } from 'react-map-gl/maplibre';
-import { Feature, Point } from 'geojson';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  dateRangeSelector,
-  mapSelector,
-} from 'context/mapStateSlice/selectors';
-import { useMapCallback } from 'utils/map-utils';
-import { hidePopup } from 'context/tooltipStateSlice';
-import { useBoundaryData } from 'utils/useBoundaryData';
 import { getBoundaryLayersByAdminLevel } from 'config/utils';
 import {
   AADataSelector,
   AALoadingSelector,
-  loadStormReport,
   AASelectedStormNameSelector,
+  loadStormReport,
 } from 'context/anticipatoryAction/AAStormStateSlice';
-import { updateDateRange } from 'context/mapStateSlice';
-import { useWindStatesByTime } from 'components/MapView/DateSelector/TimelineItems/hooks';
-import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
 import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
-import { AAStormTimeSeriesFeature, TimeSeries } from 'prism-common/';
+import { updateDateRange } from 'context/mapStateSlice';
+import {
+  dateRangeSelector,
+  mapSelector,
+} from 'context/mapStateSlice/selectors';
+import { hidePopup } from 'context/tooltipStateSlice';
+import { Feature, Point } from 'geojson';
 import maplibregl from 'maplibre-gl';
-import { WIND_TYPE_TO_ICON_MAP, loadStormIcons } from './constants';
+import { AAStormTimeSeriesFeature, TimeSeries } from 'prism-common/';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Layer, MapLayerMouseEvent, Source } from 'react-map-gl/maplibre';
+import { useDispatch, useSelector } from 'react-redux';
+import { useMapCallback } from 'utils/map-utils';
+import { useBoundaryData } from 'utils/useBoundaryData';
+import { useDefaultDate } from 'utils/useDefaultDate';
+
 import AAStormDatePopup from './AAStormDatePopup';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
-
 import AAStormLandfallMarker from './AAStormLandfallPopup/AAStormLandfallMarker/AAStormLandfallMarker';
-import { parseGeoJsonFeature } from './utils';
 import { findLandfallWindPoint } from './AAStormLandfallPopup/utils';
+import { loadStormIcons, WIND_TYPE_TO_ICON_MAP } from './constants';
+import { parseGeoJsonFeature } from './utils';
 
 interface AnticipatoryActionStormLayerProps {
   layer: AnticipatoryActionLayerProps;

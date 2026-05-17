@@ -2,6 +2,9 @@
 
 import os
 
+# Allow Starlette admin and tests to import the app without full OIDC configuration.
+os.environ.setdefault("PRISM_ADMIN_AUTH_DISABLED", "true")
+
 import prism_app.caching as caching_module
 import prism_app.export_maps as export_maps_module
 import pytest

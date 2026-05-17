@@ -1,36 +1,36 @@
 import {
-  memo,
-  useState,
-  useCallback,
-  useMemo,
-  ChangeEvent,
-  useEffect,
-} from 'react';
-import {
-  makeStyles,
   Box,
   IconButton,
+  makeStyles,
   Slider,
   Switch,
   Tooltip,
   Typography,
 } from '@material-ui/core';
-
-import { createStyles } from '@material-ui/styles';
-import { useDispatch, useSelector } from 'react-redux';
 import OpacityIcon from '@material-ui/icons/Opacity';
-import { useSafeTranslation } from 'i18n';
+import { createStyles } from '@material-ui/styles';
 import { clearAnalysisResult } from 'context/analysisResultStateSlice';
+import { mapSelector } from 'context/mapStateSlice/selectors';
+import {
+  opacitySelector,
+  setOpacity as setStateOpacity,
+} from 'context/opacityStateSlice';
+import { useSafeTranslation } from 'i18n';
+import {
+  ChangeEvent,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   BaselineLayerResult,
   ExposedPopulationResult,
   PolygonAnalysisResult,
 } from 'utils/analysis-utils';
-import {
-  opacitySelector,
-  setOpacity as setStateOpacity,
-} from 'context/opacityStateSlice';
-import { mapSelector } from 'context/mapStateSlice/selectors';
+
 import AnalysisLayerSwitchItemDownloadOptions from './AnalysisLayerSwitchItemDownloadOptions';
 
 const AnalysisLayerSwitchItem = memo(

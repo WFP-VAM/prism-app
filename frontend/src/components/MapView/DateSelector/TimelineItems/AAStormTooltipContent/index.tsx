@@ -1,19 +1,20 @@
-import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
-import { DateRangeType } from 'config/types';
-import { MouseEvent } from 'react';
-import { formatInUTC } from 'components/MapView/Layers/AnticipatoryActionStormLayer/utils';
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
-import { WindState } from 'prism-common';
+import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
+import { formatInUTC } from 'components/MapView/Layers/AnticipatoryActionStormLayer/utils';
+import { AAStormColors } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
+import { DateRangeType } from 'config/types';
 import {
   AADataSelector,
   loadStormReport,
   setSelectedStormName,
 } from 'context/anticipatoryAction/AAStormStateSlice';
-import { useDispatch, useSelector } from 'react-redux';
 import { updateDateRange } from 'context/mapStateSlice';
+import { WindState } from 'prism-common';
+import { MouseEvent } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
 import { useUrlHistory } from 'utils/url-utils';
-import { AAStormColors } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
+
 import { useWindStatesByTime } from '../hooks';
 
 function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {

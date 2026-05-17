@@ -1,4 +1,4 @@
-"""UserInfo database model."""
+"""Kobo/HTTP-Basic auth user model (legacy ``kobo_users`` table)."""
 
 import datetime
 import logging
@@ -11,10 +11,10 @@ from sqlmodel import Field, SQLModel
 logger = logging.getLogger(__name__)
 
 
-class UserInfoModel(SQLModel, table=True):
-    """Auth user row; primary key is `username` (production schema)."""
+class KoboUser(SQLModel, table=True):
+    """Kobo auth user row; primary key is ``username`` (production schema)."""
 
-    __tablename__ = "user_info"
+    __tablename__ = "kobo_users"
 
     username: str = Field(sa_column=Column(String, primary_key=True, nullable=False))
     id: int | None = Field(

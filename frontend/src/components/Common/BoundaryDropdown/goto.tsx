@@ -1,5 +1,3 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
 import {
   Button,
   IconButton,
@@ -9,9 +7,11 @@ import {
   useTheme,
 } from '@material-ui/core';
 import RoomOutlinedIcon from '@material-ui/icons/RoomOutlined';
-import { useSafeTranslation } from 'i18n';
 import BoundaryDropdownOptions from 'components/MapView/Layers/BoundaryDropdown/BoundaryDropdownOptions';
 import { mapSelector } from 'context/mapStateSlice/selectors';
+import { useSafeTranslation } from 'i18n';
+import React from 'react';
+import { useSelector } from 'react-redux';
 
 function GoToBoundaryDropdown() {
   const { t } = useSafeTranslation();

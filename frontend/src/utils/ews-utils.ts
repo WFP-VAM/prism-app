@@ -1,14 +1,15 @@
-import GeoJSON, { FeatureCollection, Point } from 'geojson';
-import { Dispatch } from 'redux';
+import { oneDayInMs } from 'components/MapView/LeftPanel/utils';
 import {
   PointData,
   PointLayerData,
   ReferenceDateTimestamp,
 } from 'config/types';
-import { oneDayInMs } from 'components/MapView/LeftPanel/utils';
 import { FloodChartConfigObject } from 'context/tableStateSlice';
-import { fetchWithTimeout } from './fetch-with-timeout';
+import GeoJSON, { FeatureCollection, Point } from 'geojson';
+import { Dispatch } from 'redux';
+
 import { getFormattedDate } from './date-utils';
+import { fetchWithTimeout } from './fetch-with-timeout';
 import { DateFormat } from './name-utils';
 
 export const EWSTriggersConfig: FloodChartConfigObject = {

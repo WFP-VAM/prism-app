@@ -1,13 +1,19 @@
 import {
-  makeStyles,
   Box,
   Button,
   createStyles,
+  makeStyles,
   TextField,
   Theme,
   Typography,
 } from '@material-ui/core';
-
+import BoundaryDropdown from 'components/MapView/Layers/BoundaryDropdown';
+import LayerDropdown from 'components/MapView/Layers/LayerDropdown';
+import { LayerKey, PanelSize, WMSLayerProps } from 'config/types';
+import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
+import { getSelectedBoundaries } from 'context/mapSelectionLayerStateSlice';
+import { addNotification } from 'context/notificationStateSlice';
+import { useSafeTranslation } from 'i18n';
 import React, {
   Dispatch,
   SetStateAction,
@@ -16,16 +22,9 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { LayerKey, PanelSize, WMSLayerProps } from 'config/types';
-import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
 import { AlertRequest, fetchApiData, getPrismUrl } from 'utils/analysis-utils';
-import { useBoundaryData } from 'utils/useBoundaryData';
-import LayerDropdown from 'components/MapView/Layers/LayerDropdown';
-import BoundaryDropdown from 'components/MapView/Layers/BoundaryDropdown';
-import { getSelectedBoundaries } from 'context/mapSelectionLayerStateSlice';
-import { addNotification } from 'context/notificationStateSlice';
-import { useSafeTranslation } from 'i18n';
 import { ALERT_API_URL } from 'utils/constants';
+import { useBoundaryData } from 'utils/useBoundaryData';
 
 // Not fully RFC-compliant, but should filter out obviously-invalid emails.
 // Source: https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
