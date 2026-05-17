@@ -17,13 +17,13 @@ import os
 from pathlib import Path
 from typing import Any
 
-import boto3
 from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.export_jobs.claim import claim_next_queued_map_export_job
 from prism_app.export_jobs.db import get_export_jobs_session_factory
 from prism_app.export_maps import export_maps
 from prism_app.export_s3 import (
     DEFAULT_EXPORT_MAP_S3_BUCKET,
+    map_export_s3_client,
     parse_export_map_s3_bucket_env,
     put_map_export_bytes,
     put_map_export_bytes_local,
@@ -65,11 +65,31 @@ async def run_export_job(
         return
 
     req = MapExportRequestModel.model_validate(job.request_payload_json)
+    total_maps = len(req.urls)
+
+    t0 = utc_now()
+    job.progress_total = total_maps
+    job.progress_current = 0
+    job.updated_at = t0
+    session.add(job)
+    session.commit()
+
+    def report_progress(completed: int, total: int) -> None:
+        row = session.get(MapExportJob, job_id)
+        if row is None:
+            return
+        row.progress_current = completed
+        row.progress_total = total
+        row.updated_at = utc_now()
+        session.add(row)
+        session.commit()
+
     file_bytes, _media = await export_maps(
         urls=req.urls,
         viewport_width=req.viewportWidth,
         viewport_height=req.viewportHeight,
         format_type=req.format,
+        progress_callback=report_progress,
     )
     kind = job.content_type or ("pdf" if req.format == "pdf" else "zip")
 
@@ -100,6 +120,8 @@ async def run_export_job(
     fin = utc_now()
     job.status = "succeeded"
     job.s3_uri = artifact_uri
+    if job.progress_total is not None:
+        job.progress_current = job.progress_total
     job.finished_at = fin
     job.updated_at = fin
     session.add(job)
@@ -131,7 +153,7 @@ async def amain() -> None:
 
     if bucket:
         local_dir: Path | None = None
-        s3 = boto3.client("s3")
+        s3 = map_export_s3_client()
         logger.info(
             "export_map_worker S3 mode (bucket=%s prefix=%s raw=%s)",
             bucket,

@@ -1,9 +1,9 @@
-import { defineConfig, Plugin } from 'vite';
 import react from '@vitejs/plugin-react-swc';
-import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
+import { defineConfig, Plugin } from 'vite';
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 // Load environment variables that start with REACT_APP_
 dotenv.config({ path: '.env' });

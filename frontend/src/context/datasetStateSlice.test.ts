@@ -1,6 +1,7 @@
 import timezoneMock from 'timezone-mock';
-import { TableDataFormat, createTableData } from './datasetStateSlice';
+
 import { timezones } from '../../test/helpers';
+import { createTableData, TableDataFormat } from './datasetStateSlice';
 
 const f = () => {
   const ret = createTableData(

@@ -1,10 +1,11 @@
-import { FeatureCollection } from 'geojson';
 import { BoundaryLayerProps } from 'config/types';
-import { coordFirst } from 'utils/data-utils';
-import { fetchWithTimeout } from 'utils/fetch-with-timeout';
-import { LocalError } from 'utils/error-utils';
 import { addNotification } from 'context/notificationStateSlice';
+import { FeatureCollection } from 'geojson';
+import { coordFirst } from 'utils/data-utils';
+import { LocalError } from 'utils/error-utils';
+import { fetchWithTimeout } from 'utils/fetch-with-timeout';
 import { getPmtilesInstance } from 'utils/pmtiles-utils';
+
 import type { LayerDataParams, LazyLoader } from './layer-data';
 
 export interface BoundaryLayerData extends FeatureCollection {}

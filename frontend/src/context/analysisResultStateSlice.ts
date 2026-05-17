@@ -7,16 +7,9 @@ import {
 import centroid from '@turf/centroid';
 import { convertArea } from '@turf/helpers';
 import {
-  Feature,
-  FeatureCollection,
-  GeoJsonProperties,
-  Geometry,
-  Position,
-} from 'geojson';
-import { get, groupBy as _groupBy, uniq } from 'lodash';
-import { createGetCoverageUrl } from 'prism-common';
-import { calculate } from 'utils/zonal-utils';
-
+  Extent,
+  getDownloadGeotiffURL,
+} from 'components/MapView/Layers/raster-utils';
 import { defaultBoundariesPath } from 'config';
 import {
   AdminLevelDataLayerProps,
@@ -35,6 +28,22 @@ import {
   WMSLayerProps,
   ZonalPolygonRow,
 } from 'config/types';
+import {
+  getBoundaryLayersByAdminLevel,
+  getBoundaryLayerSingleton,
+  getStacBand,
+  LayerDefinitions,
+} from 'config/utils';
+import {
+  Feature,
+  FeatureCollection,
+  GeoJsonProperties,
+  Geometry,
+  Position,
+} from 'geojson';
+import { get, groupBy as _groupBy, uniq } from 'lodash';
+import { createGetCoverageUrl } from 'prism-common';
+import { isLocalhost } from 'serviceWorker';
 import { getAdminLevelLayer, getAdminNameProperty } from 'utils/admin-utils';
 import {
   AnalysisResult,
@@ -54,27 +63,18 @@ import {
   scaleAndFilterAggregateData,
   scaleFeatureStat,
 } from 'utils/analysis-utils';
-import { getRoundedData } from 'utils/data-utils';
-import { getFullLocationName } from 'utils/name-utils';
-import {
-  getBoundaryLayersByAdminLevel,
-  getBoundaryLayerSingleton,
-  getStacBand,
-  LayerDefinitions,
-} from 'config/utils';
-import {
-  Extent,
-  getDownloadGeotiffURL,
-} from 'components/MapView/Layers/raster-utils';
-import { fetchWMSLayerAsGeoJSON } from 'utils/server-utils';
-import { isLocalhost } from 'serviceWorker';
-import { ANALYSIS_API_URL } from 'utils/constants';
-import { getFormattedDate } from 'utils/date-utils';
 import { boundaryCache } from 'utils/boundary-cache';
-import { layerDataSelector } from './mapStateSlice/selectors';
-import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
+import { ANALYSIS_API_URL } from 'utils/constants';
+import { getRoundedData } from 'utils/data-utils';
+import { getFormattedDate } from 'utils/date-utils';
+import { getFullLocationName } from 'utils/name-utils';
+import { fetchWMSLayerAsGeoJSON } from 'utils/server-utils';
+import { calculate } from 'utils/zonal-utils';
+
 import { DataRecord } from './layers/admin_level_data';
 import { BoundaryLayerData } from './layers/boundary';
+import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
+import { layerDataSelector } from './mapStateSlice/selectors';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 
 export type TableRowType = { [key: string]: string | number };

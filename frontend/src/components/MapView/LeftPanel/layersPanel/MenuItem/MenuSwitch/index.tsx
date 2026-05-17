@@ -10,6 +10,11 @@ import {
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
+import { Extent } from 'components/MapView/Layers/raster-utils';
+import { filterActiveLayers } from 'components/MapView/utils';
+import { LayerType } from 'config/types';
+import { useSafeTranslation } from 'i18n';
+import { cyanBlue, lightGrey } from 'muiTheme';
 import {
   ChangeEvent,
   memo,
@@ -18,14 +23,10 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { LayerType } from 'config/types';
-import { useSafeTranslation } from 'i18n';
-import { cyanBlue, lightGrey } from 'muiTheme';
-import { Extent } from 'components/MapView/Layers/raster-utils';
 import { useMapState } from 'utils/useMapState';
-import { filterActiveLayers } from 'components/MapView/utils';
-import SwitchItems from './SwitchItems';
+
 import { makeSafeIDFromTitle } from '../utils';
+import SwitchItems from './SwitchItems';
 
 const useStyles = makeStyles(() =>
   createStyles({

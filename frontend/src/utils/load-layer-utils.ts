@@ -1,4 +1,5 @@
 import { Dispatch } from 'redux';
+
 import { fetchWithTimeout } from './fetch-with-timeout';
 
 export const loadLayerContent = async (

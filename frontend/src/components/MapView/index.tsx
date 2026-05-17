@@ -1,15 +1,16 @@
-import { memo, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Box, createStyles, makeStyles } from '@material-ui/core';
 import { getDisplayBoundaryLayers } from 'config/utils';
 import {
-  WMSLayerDatesRequested,
   pointDataLayerDatesRequested,
   preloadLayerDatesArraysForPointData,
   preloadLayerDatesArraysForWMS,
+  WMSLayerDatesRequested,
 } from 'context/serverPreloadStateSlice';
-import { useMapState } from 'utils/useMapState';
+import { memo, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { boundaryCache } from 'utils/boundary-cache';
+import { useMapState } from 'utils/useMapState';
+
 import LeftPanel from './LeftPanel';
 import MapComponent from './Map';
 import OtherFeatures from './OtherFeatures';

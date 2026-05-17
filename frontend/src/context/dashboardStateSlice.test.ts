@@ -1,8 +1,14 @@
+import {
+  DashboardElementType,
+  type DashboardMapConfig,
+  type DashboardTextConfig,
+} from 'config/types';
+import { DashboardMapPosition } from 'dashboardConfig/dashboardEnums';
+
 import dashboardReducer, {
   setDashboards,
   swapMapPosition,
 } from './dashboardStateSlice';
-import { DashboardElementType, type DashboardTextConfig } from 'config/types';
 
 describe('dashboardStateSlice', () => {
   it('initial state has empty dashboards', () => {
@@ -40,8 +46,10 @@ describe('dashboardStateSlice', () => {
         firstColumn: [
           {
             type: DashboardElementType.MAP,
+            legendVisible: true,
+            legendPosition: DashboardMapPosition.right,
             preSelectedMapLayers: [],
-          },
+          } satisfies DashboardMapConfig,
         ],
         secondColumn: [
           {

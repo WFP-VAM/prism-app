@@ -1,12 +1,12 @@
+import { appConfig } from 'config';
 import { AggregationOperations } from 'config/aggregationOperations';
 import {
   ChartHeight,
-  DashboardElementType,
-  DashboardElements,
   Dashboard,
+  DashboardElements,
+  DashboardElementType,
   DashboardMapPosition,
 } from 'config/types';
-import { appConfig } from 'config';
 import { generateSlugFromTitle } from 'utils/string-utils';
 
 export type DashboardPreset = 'map-left' | 'map-right' | 'two-maps';

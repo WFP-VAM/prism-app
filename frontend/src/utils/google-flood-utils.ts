@@ -1,9 +1,9 @@
 import { oneDayInMs } from 'components/MapView/LeftPanel/utils';
-import { getTitle } from 'utils/title-utils';
 import { FeatureTitleObject } from 'config/types';
-import { PopupData } from 'context/tooltipStateSlice';
 import { FloodChartConfigObject } from 'context/tableStateSlice';
+import { PopupData } from 'context/tooltipStateSlice';
 import { t } from 'i18next';
+import { getTitle } from 'utils/title-utils';
 
 export type GoogleFloodParams = {
   gaugeId: string;

@@ -1,45 +1,46 @@
 import {
   AppBar,
   createStyles,
+  makeStyles,
   Theme,
   Toolbar,
-  makeStyles,
-  useTheme,
   useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
-import React, { useState, useEffect } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
-import { useSafeTranslation } from 'i18n';
-import { appConfig } from 'config';
 import {
   AddOutlined,
   BarChartOutlined,
   ImageAspectRatioOutlined,
   LayersOutlined,
-  TableChartOutlined,
-  TimerOutlined,
   Notifications,
   SpeedOutlined,
+  TableChartOutlined,
+  TimerOutlined,
 } from '@material-ui/icons';
-import { useDispatch, useSelector } from 'react-redux';
+import GoToBoundaryDropdown from 'components/Common/BoundaryDropdown/goto';
+import {
+  areTablesAvailable,
+  isAnticipatoryActionDroughtAvailable,
+  isAnticipatoryActionFloodAvailable,
+  isAnticipatoryActionStormAvailable,
+} from 'components/MapView/LeftPanel/utils';
+import Legends from 'components/MapView/Legends';
+import { appConfig } from 'config';
+import { Panel, PanelItem } from 'config/types';
+import { areChartLayersAvailable } from 'config/utils';
+import { dashboardsListSelector } from 'context/dashboardStateSlice';
 import {
   leftPanelTabValueSelector,
   setTabValue,
 } from 'context/leftPanelStateSlice';
-import GoToBoundaryDropdown from 'components/Common/BoundaryDropdown/goto';
-import Legends from 'components/MapView/Legends';
-import { areChartLayersAvailable } from 'config/utils';
+import { useSafeTranslation } from 'i18n';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, useLocation } from 'react-router-dom';
 import { generateSlugFromTitle } from 'utils/string-utils';
-import { dashboardsListSelector } from 'context/dashboardStateSlice';
-import {
-  areTablesAvailable,
-  isAnticipatoryActionDroughtAvailable,
-  isAnticipatoryActionStormAvailable,
-  isAnticipatoryActionFloodAvailable,
-} from 'components/MapView/LeftPanel/utils';
-import { Panel, PanelItem } from 'config/types';
-import PanelMenu from './PanelMenu';
+
 import PanelButton from './PanelButton';
+import PanelMenu from './PanelMenu';
 import RightSideMenu from './RightSideMenu';
 import Title from './Title';
 

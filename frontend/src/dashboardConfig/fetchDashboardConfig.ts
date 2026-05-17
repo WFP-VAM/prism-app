@@ -1,7 +1,8 @@
 import type { Dashboard } from 'config/types';
+
 import {
-  validateDashboardConfig,
   formatDashboardValidationError,
+  validateDashboardConfig,
 } from './schema';
 
 export class DashboardConfigFetchError extends Error {

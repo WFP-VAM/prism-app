@@ -1,24 +1,25 @@
-import React, { useContext } from 'react';
 import {
   Box,
   Button,
-  IconButton,
-  Menu,
-  MenuItem,
-  makeStyles,
-  createStyles,
-  Theme,
   Collapse,
+  createStyles,
   Divider,
   Icon,
+  IconButton,
+  makeStyles,
+  Menu,
+  MenuItem,
+  Theme,
 } from '@material-ui/core';
 import { Cancel, GetApp } from '@material-ui/icons';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
-import { cyanBlue } from 'muiTheme';
-import { useSafeTranslation } from 'i18n';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import Switch from 'components/Common/Switch';
 import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
+import { useSafeTranslation } from 'i18n';
+import { cyanBlue } from 'muiTheme';
+import React, { useContext } from 'react';
+
 import DashboardExportContext from './dashboardExport.context';
 
 // Helper components

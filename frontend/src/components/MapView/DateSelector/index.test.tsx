@@ -1,6 +1,4 @@
-import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
-import configureStore from 'redux-mock-store';
 import {
   CoverageWindow,
   DatesPropagation,
@@ -8,10 +6,13 @@ import {
   ReferenceDateTimestamp,
   Validity,
 } from 'config/types';
+import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
 import {
   generateIntermediateDateItemFromValidity,
   getAvailableDatesForLayer,
 } from 'utils/server-utils';
+
 import DateSelector from '.';
 
 jest.mock('react-router-dom', () => ({

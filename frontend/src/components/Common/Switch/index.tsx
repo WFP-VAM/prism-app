@@ -1,11 +1,11 @@
-import React from 'react';
 import {
-  Switch as SwitchUI,
-  Typography,
   createStyles,
   makeStyles,
+  Switch as SwitchUI,
+  Typography,
 } from '@material-ui/core';
 import { cyanBlue } from 'muiTheme';
+import React from 'react';
 
 function Switch({
   checked,

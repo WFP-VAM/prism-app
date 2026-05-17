@@ -4,21 +4,24 @@ networks:
 
 services:
   traefik:
-    # https://docs.traefik.io/user-guides/docker-compose/acme-tls/
-    image: "traefik:v2.11"
+    # https://doc.traefik.io/traefik/migration/v2-to-v3/
+    image: "traefik:v3.7.0"
     container_name: "traefik"
     command:
       - "--log.level=INFO"
+      # Keep Docker label rules compatible with v2 matchers (Host, PathPrefix, ...).
+      - "--core.defaultrulesyntax=v2"
       - "--api.insecure=true"
       - "--providers.docker=true"
       - "--providers.docker.network=traefik_default"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.websecure.address=:443"
       - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
-      - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+      # Production Let's Encrypt (default CA). For staging debugging only, add:
+      #   --certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
+      # Switching staging→prod: if issuance fails, stop Traefik and rotate/rename letsencrypt/acme.json (different ACME accounts).
       - "--certificatesresolvers.myresolver.acme.email=${INFO_EMAIL:?'Must provide info email'}"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
-      - traefik.docker.network=traefik_default
     networks:
       - traefik_default
     ports:
@@ -43,7 +46,7 @@ services:
       - "traefik.http.routers.whoami.entrypoints=websecure"
       - "traefik.http.routers.whoami.tls.certresolver=myresolver"
     environment:
-      - "RUN=uvicorn prism_app.main:app --host 0.0.0.0 --port 80"
+      - "RUN=uvicorn prism_app.main:app --host 0.0.0.0 --port 80 --proxy-headers --forwarded-allow-ips=172.16.0.0/12,10.0.0.0/8,192.168.0.0/16,127.0.0.1"
       - BROWSER_POOL_SIZE=4
       # make sure that the alert password is properly set
       - PRISM_ALERTS_DATABASE_URL=${PRISM_ALERTS_DATABASE_URL:?"Provide a URL for the alerts database."}
@@ -56,7 +59,22 @@ services:
       - VECTOR_STORE_ACCESS_KEY_ID=${VECTOR_STORE_ACCESS_KEY_ID}
       - VECTOR_STORE_SECRET_ACCESS_KEY=${VECTOR_STORE_SECRET_ACCESS_KEY}
       - VECTOR_STORE_DEFAULT_REGION=${VECTOR_STORE_DEFAULT_REGION}
-    command: uvicorn prism_app.main:app --host 0.0.0.0 --port 80
+      - PRISM_OIDC_ISSUER=${PRISM_OIDC_ISSUER:?"Provide the CIAM OIDC issuer URL."}
+      - PRISM_OIDC_REDIRECT_URI=${PRISM_OIDC_REDIRECT_URI:?"Provide the OIDC redirect URI."}
+      - PRISM_OIDC_CLIENT_ID=${PRISM_OIDC_CLIENT_ID:?"Provide the CIAM OIDC client ID."}
+      - PRISM_OIDC_CLIENT_SECRET=${PRISM_OIDC_CLIENT_SECRET:?"Provide the CIAM OIDC client secret."}
+      - PRISM_SESSION_SECRET=${PRISM_SESSION_SECRET:?"Provide the session signing secret."}
+      - PRISM_SESSION_TTL_SECONDS=${PRISM_SESSION_TTL_SECONDS:-604800}
+      - PRISM_ENV=${PRISM_ENV:-development}
+    command:
+      - uvicorn
+      - prism_app.main:app
+      - --host
+      - "0.0.0.0"
+      - --port
+      - "80"
+      - --proxy-headers
+      - --forwarded-allow-ips=172.16.0.0/12,10.0.0.0/8,192.168.0.0/16,127.0.0.1
     restart: always
     # adding a DNS to allow self lookup of the api
     dns:

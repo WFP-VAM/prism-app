@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { LngLatBounds } from 'maplibre-gl';
+
 import type { RootState } from './store';
 
 type MapBoundaryInfoState = {

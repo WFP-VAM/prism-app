@@ -1,5 +1,6 @@
 import type { Polygon } from 'geojson';
 import { ExposedPopulationResult } from 'utils/analysis-utils';
+
 import { mockExposedPopulationData } from '../__mocks__/exposedPopulationMockData';
 
 describe('Exposed Population Report', () => {

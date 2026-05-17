@@ -1,7 +1,7 @@
-import { useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
 import type { Dashboard } from 'config/types';
 import type { RootState } from 'context/store';
+import { useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { saveDraftDashboards } from 'utils/draftDashboardStorage';
 
 export function usePersistDraftDashboards(): void {

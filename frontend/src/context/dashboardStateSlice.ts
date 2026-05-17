@@ -1,21 +1,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-import { Map as MaplibreMap } from 'maplibre-gl';
-import { MapState, DateRange } from 'context/mapStateSlice';
-import { LayerDefinitions } from 'config/utils';
-import { keepLayer } from 'utils/keep-layer-utils';
 import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
+import type {
+  Dashboard,
+  DashboardElements,
+  DashboardMapConfig,
+  DashboardTableConfig,
+  LayerType,
+} from 'config/types';
+import { DashboardElementType, DashboardMode } from 'config/types';
+import { LayerDefinitions } from 'config/utils';
+import { DateRange, MapState } from 'context/mapStateSlice';
+import { Map as MaplibreMap } from 'maplibre-gl';
+import { keepLayer } from 'utils/keep-layer-utils';
 import { getLayerMapId } from 'utils/map-utils';
 import { generateSlugFromTitle } from 'utils/string-utils';
 
-import type {
-  LayerType,
-  DashboardMapConfig,
-  DashboardTableConfig,
-  DashboardElements,
-  Dashboard,
-} from 'config/types';
-import { DashboardMode, DashboardElementType } from 'config/types';
 import type { RootState } from './store';
 
 type MapGetter = () => MaplibreMap | undefined;
@@ -227,30 +226,44 @@ const initialState: DashboardState = createInitialState(0, []);
 function buildColumnsFromState(
   columns: DashboardElements[][],
   mapStates: { [elementId: string]: DashboardMapState },
+  tableStates: { [elementId: string]: DashboardTableState },
 ): [DashboardElements[], DashboardElements[], DashboardElements[]] {
   return [0, 1, 2].map(colIdx =>
     (columns[colIdx] ?? []).map((element, elemIdx) => {
-      if (element.type !== DashboardElementType.MAP) {
-        return element;
+      const elementId = `${colIdx}-${elemIdx}`;
+      if (element.type === DashboardElementType.MAP) {
+        const mapState = mapStates[elementId];
+        if (!mapState) {
+          return element;
+        }
+        return {
+          ...element,
+          preSelectedMapLayers: mapState.layers.map(l => ({
+            layerId: l.id,
+            opacity: mapState.opacityMap[l.id]?.value ?? 1.0,
+          })),
+          defaultDate:
+            mapState.dateRange?.startDate !== undefined
+              ? new Date(mapState.dateRange.startDate).toISOString()
+              : element.defaultDate,
+          title: mapState.title,
+          legendVisible: mapState.legendVisible,
+          legendPosition: mapState.legendPosition,
+        };
       }
-      const mapState = mapStates[`${colIdx}-${elemIdx}`];
-      if (!mapState) {
-        return element;
+      if (element.type === DashboardElementType.TABLE) {
+        const tableState = tableStates[elementId];
+        if (!tableState) {
+          return element;
+        }
+        return {
+          ...element,
+          maxRows: tableState.maxRows,
+          sortColumn: tableState.sortColumn,
+          sortOrder: tableState.sortOrder,
+        };
       }
-      return {
-        ...element,
-        preSelectedMapLayers: mapState.layers.map(l => ({
-          layerId: l.id,
-          opacity: mapState.opacityMap[l.id]?.value ?? 1.0,
-        })),
-        defaultDate:
-          mapState.dateRange?.startDate !== undefined
-            ? new Date(mapState.dateRange.startDate).toISOString()
-            : element.defaultDate,
-        title: mapState.title,
-        legendVisible: mapState.legendVisible,
-        legendPosition: mapState.legendPosition,
-      };
+      return element;
     }),
   ) as [DashboardElements[], DashboardElements[], DashboardElements[]];
 }
@@ -282,6 +295,28 @@ function remapStringKeyedStates<T>(
   return next;
 }
 
+function remapStatesAfterRemoval<T>(
+  states: { [elementId: string]: T },
+  columnIndex: number,
+  removedElementIndex: number,
+): { [elementId: string]: T } {
+  const next: { [elementId: string]: T } = {};
+  Object.entries(states).forEach(([id, entry]) => {
+    const dash = id.indexOf('-');
+    const colIdx = Number.parseInt(id.slice(0, dash), 10);
+    const elemIdx = Number.parseInt(id.slice(dash + 1), 10);
+    if (colIdx !== columnIndex) {
+      next[id] = entry;
+    } else if (elemIdx < removedElementIndex) {
+      next[id] = entry;
+    } else if (elemIdx > removedElementIndex) {
+      next[`${colIdx}-${elemIdx - 1}`] = entry;
+    }
+    // elemIdx === removedElementIndex: drop it
+  });
+  return next;
+}
+
 function syncDraftConfig(state: DashboardState): DashboardState {
   const current = state.dashboards[state.selectedDashboardIndex];
   if (!current?.isDraft) {
@@ -290,6 +325,7 @@ function syncDraftConfig(state: DashboardState): DashboardState {
   const [firstColumn, secondColumn, thirdColumn] = buildColumnsFromState(
     state.columns,
     state.mapStates,
+    state.tableStates,
   );
   const updated = { ...current, firstColumn, secondColumn, thirdColumn };
   return {
@@ -426,7 +462,27 @@ export const dashboardStateSlice = createSlice({
       }>,
     ) => {
       const { columnIndex, elementIndex, newType } = action.payload;
+      const elementId = `${columnIndex}-${elementIndex}`;
       const emptyElement = createEmptyElement(newType);
+
+      const nextMapStates = { ...state.mapStates };
+      const nextTableStates = { ...state.tableStates };
+
+      // Remove stale state for the outgoing type
+      delete nextMapStates[elementId];
+      delete nextTableStates[elementId];
+
+      // Initialize state for the incoming type
+      if (newType === DashboardElementType.MAP) {
+        nextMapStates[elementId] = createMapStateFromConfig(
+          emptyElement as DashboardMapConfig,
+        );
+      } else if (newType === DashboardElementType.TABLE) {
+        nextTableStates[elementId] = createTableStateFromConfig(
+          emptyElement as DashboardTableConfig,
+        );
+      }
+
       return syncDraftConfig({
         ...state,
         columns: state.columns.map((column, colIdx) =>
@@ -436,6 +492,8 @@ export const dashboardStateSlice = createSlice({
               )
             : column,
         ),
+        mapStates: nextMapStates,
+        tableStates: nextTableStates,
       });
     },
     removeElement: (
@@ -450,7 +508,23 @@ export const dashboardStateSlice = createSlice({
             ? column.filter((_, elemIdx) => elemIdx !== elementIndex)
             : column,
         ),
+        mapStates: remapStatesAfterRemoval(
+          state.mapStates,
+          columnIndex,
+          elementIndex,
+        ),
+        tableStates: remapStatesAfterRemoval(
+          state.tableStates,
+          columnIndex,
+          elementIndex,
+        ),
       });
+    },
+    removeDashboard: state => {
+      const dashboards = state.dashboards.filter(
+        (_, i) => i !== state.selectedDashboardIndex,
+      );
+      return { ...state, dashboards };
     },
     addLayerToMap: (
       state,
@@ -702,7 +776,7 @@ export const dashboardStateSlice = createSlice({
         return state;
       }
 
-      return {
+      return syncDraftConfig({
         ...state,
         tableStates: {
           ...state.tableStates,
@@ -711,7 +785,7 @@ export const dashboardStateSlice = createSlice({
             ...updates,
           },
         },
-      };
+      });
     },
     setLegendVisible: (
       state,
@@ -874,6 +948,7 @@ export const {
   swapMapPosition,
   setElementType,
   removeElement,
+  removeDashboard,
 } = dashboardStateSlice.actions;
 
 export default dashboardStateSlice.reducer;

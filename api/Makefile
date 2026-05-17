@@ -16,7 +16,7 @@ deploy:
 	source set_envs.sh && docker compose build && docker compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
 
 logs:
-	source set_envs.sh && docker compose -f docker-compose.yml -f docker-compose.deploy.yml logs --tail=500 -f
+	source set_envs.sh && docker compose -f docker-compose.yml -f docker-compose.deploy.yml logs --tail=500 -f --timestamps
 
 api-lint:
 	docker compose run --no-deps api bash -c "poetry run black ."
@@ -34,8 +34,16 @@ test-services:
 api-test: test-services
 	docker compose -f docker-compose.yml -f docker-compose.test.yml exec -T api bash -c "cd / && poetry run alembic -c /alembic.ini upgrade head"
 	docker compose -f docker-compose.yml -f docker-compose.test.yml exec -T api bash -c "/wait-for-it.sh frontend:3300 -t 180"
-	docker compose -f docker-compose.yml -f docker-compose.test.yml exec -T api bash -c "pytest -s tests -v --tb=long"
+	docker compose -f docker-compose.yml -f docker-compose.test.yml exec -T api bash -c "cd / && PYTHONPATH=. poetry run pytest -s prism_app/tests -v --tb=long"
 	docker compose -f docker-compose.yml -f docker-compose.test.yml down
+
+DEV_COMPOSE=docker compose -f docker-compose.yml -f docker-compose.develop.yml
+
+db-migrate:
+	$(DEV_COMPOSE) exec -T api bash -c "cd / && poetry run alembic -c /alembic.ini upgrade head"
+
+db-seed: db-migrate
+	$(DEV_COMPOSE) exec -T api bash -c "poetry run python /scripts/seed_alerts_db.py"
 
 api-add-users:
 	docker compose -f docker-compose.yml -f docker-compose.develop.yml run api bash -c "python scripts/add_users.py"
