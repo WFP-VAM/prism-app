@@ -2,7 +2,7 @@
 
 Run inside the export_map_worker image (or any env with PRISM_ALERTS_DATABASE_URL):
 
-    python -m prism_app.scripts.scheduled_public_maps_cron --config /path/to/config.json
+    python -m prism_app.workers.scheduled_public_maps.cron --config /path/to/config.json
 
 - **Dates**: each ``layer_id`` is resolved against WFP datacube WMS GetCapabilities
   (default ``https://api.earthobservation.vam.wfp.org/ows``); override with
@@ -11,7 +11,7 @@ Run inside the export_map_worker image (or any env with PRISM_ALERTS_DATABASE_UR
   see ``export_jobs/claim.py`` (``ORDER BY priority DESC``).
 
 Config: ``SCHEDULED_PUBLIC_MAPS_CONFIG`` or ``--config``.
-Example: ``api/scheduled_public_maps/config/scheduled_public_maps.example.json``.
+Example: shipped at ``prism_app/workers/scheduled_public_maps/config/scheduled_public_maps.example.json``.
 """
 
 from __future__ import annotations
@@ -31,7 +31,9 @@ from prism_app.export_jobs.priority import MAP_EXPORT_JOB_PRIORITY_SCHEDULED_PUB
 from prism_app.export_jobs.service import enqueue_map_export_job
 from prism_app.export_s3 import map_export_s3_client
 from prism_app.models import ExportFormat, MapExportRequestModel
-from prism_app.scheduled_public_maps.layer_days import latest_date_yyyy_mm_dd_for_layer
+from prism_app.workers.scheduled_public_maps.layer_days import (
+    latest_date_yyyy_mm_dd_for_layer,
+)
 
 
 logger = logging.getLogger(__name__)

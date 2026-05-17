@@ -1,6 +1,6 @@
 """Poll ``map_export_jobs`` for queued work, run ``export_maps``, store artifact on S3 or disk.
 
-Run: ``python -m prism_app.worker.export_map_worker``
+Run: ``python -m prism_app.workers.export_map_worker``
 
 Set ``EXPORT_MAP_S3_BUCKET`` for S3 (bare name, ``bucket/prefix``, or ``s3://bucket/prefix``),
 **or** ``EXPORT_MAP_LOCAL_OUTPUT_DIR`` for local files
@@ -8,7 +8,7 @@ Set ``EXPORT_MAP_S3_BUCKET`` for S3 (bare name, ``bucket/prefix``, or ``s3://buc
 If neither is set, defaults to ``DEFAULT_EXPORT_MAP_S3_BUCKET`` (see ``export_s3``).
 When the queue is empty, the worker sleeps a fixed 2s before polling again.
 Scheduled public map enqueues are triggered by ``cron_scheduled_public_maps.sh`` /
-``python -m prism_app.scripts.scheduled_public_maps_cron``, not from this loop.
+``python -m prism_app.workers.scheduled_public_maps.cron``, not from this loop.
 """
 
 from __future__ import annotations

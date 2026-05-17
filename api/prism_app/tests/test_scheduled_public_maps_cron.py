@@ -9,7 +9,7 @@ from unittest.mock import patch
 import pytest
 from pydantic import ValidationError
 
-from prism_app.scripts.scheduled_public_maps_cron import (
+from prism_app.workers.scheduled_public_maps.cron import (
     ScheduledPublicMapJobGroup,
     ScheduledPublicMapsFile,
     load_config,
@@ -19,9 +19,10 @@ from prism_app.tests.fixtures.moz_export import MAP_EXPORT_FIXTURE_BASE_URL
 
 
 def _example_config_path() -> Path:
-    """``api/scheduled_public_maps/config/scheduled_public_maps.example.json``."""
+    """Shipped example next to the cron module under ``workers/scheduled_public_maps/config``."""
     return (
-        Path(__file__).resolve().parents[2]
+        Path(__file__).resolve().parents[1]
+        / "workers"
         / "scheduled_public_maps"
         / "config"
         / "scheduled_public_maps.example.json"
@@ -48,7 +49,7 @@ def test_repo_example_config_dry_run() -> None:
         return "2026-04-21"
 
     with patch(
-        "prism_app.scripts.scheduled_public_maps_cron.latest_date_yyyy_mm_dd_for_layer",
+        "prism_app.workers.scheduled_public_maps.cron.latest_date_yyyy_mm_dd_for_layer",
         fake_latest,
     ):
         code = main(["--config", str(path), "--dry-run"])
@@ -107,7 +108,7 @@ def test_main_dry_run(tmp_path: Path) -> None:
         return "2026-04-21"
 
     with patch(
-        "prism_app.scripts.scheduled_public_maps_cron.latest_date_yyyy_mm_dd_for_layer",
+        "prism_app.workers.scheduled_public_maps.cron.latest_date_yyyy_mm_dd_for_layer",
         fake_latest,
     ):
         code = main(["--config", str(cfg_path), "--dry-run"])

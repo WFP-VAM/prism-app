@@ -23,12 +23,12 @@ if [[ -f ./set_envs.sh ]]; then
   source ./set_envs.sh
 fi
 
-HOST_CONFIG="${SCHEDULED_PUBLIC_MAPS_CONFIG:-${API_ROOT}/scheduled_public_maps/config/scheduled_public_maps.json}"
+HOST_CONFIG="${SCHEDULED_PUBLIC_MAPS_CONFIG:-${API_ROOT}/prism_app/workers/scheduled_public_maps/config/scheduled_public_maps.json}"
 CONTAINER_CONFIG="${SCHEDULED_PUBLIC_MAPS_CONTAINER_PATH:-/config/scheduled_public_maps.json}"
 
 if [[ ! -f "${HOST_CONFIG}" ]]; then
   echo "error: config file missing: ${HOST_CONFIG}" >&2
-  echo "Copy api/scheduled_public_maps/config/scheduled_public_maps.example.json to api/scheduled_public_maps/config/scheduled_public_maps.json (or set SCHEDULED_PUBLIC_MAPS_CONFIG)." >&2
+  echo "Copy api/prism_app/workers/scheduled_public_maps/config/scheduled_public_maps.example.json to api/prism_app/workers/scheduled_public_maps/config/scheduled_public_maps.json (or set SCHEDULED_PUBLIC_MAPS_CONFIG)." >&2
   exit 1
 fi
 
@@ -36,5 +36,5 @@ docker compose run --rm \
   -v "${HOST_CONFIG}:${CONTAINER_CONFIG}:ro" \
   -e "SCHEDULED_PUBLIC_MAPS_CONFIG=${CONTAINER_CONFIG}" \
   export_map_worker \
-  python -m prism_app.scripts.scheduled_public_maps_cron --config "${CONTAINER_CONFIG}" \
+  python -m prism_app.workers.scheduled_public_maps.cron --config "${CONTAINER_CONFIG}" \
   2>&1 | tee -a "${API_ROOT}/scheduled_public_maps_cron.log"

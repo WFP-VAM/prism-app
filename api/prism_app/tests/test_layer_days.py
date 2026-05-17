@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from prism_app.scheduled_public_maps.layer_days import (
+from prism_app.workers.scheduled_public_maps.layer_days import (
     collect_times_for_layer_id,
     parse_wms_capabilities_layer_days,
 )
