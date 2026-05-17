@@ -5,7 +5,9 @@ exports[`renders as expected 1`] = `
   <div
     class="makeStyles-root-1"
   >
-    <mock-dialog>
+    <mock-dialog
+      open="false"
+    >
       <mock-dialogtitle>
         <div
           class="makeStyles-titleWrapper-12"
@@ -42,17 +44,17 @@ exports[`renders as expected 1`] = `
         </div>
       </mock-dialogtitle>
       <mock-dialogcontent
-        dividers=""
+        dividers="true"
       >
         <div
           class="makeStyles-contentWrapper-13"
         />
       </mock-dialogcontent>
       <mock-dialogactions
-        class="makeStyles-dialogActionsWrapper-16"
+        classname="makeStyles-dialogActionsWrapper-16"
       >
         <mock-button
-          class="makeStyles-dialogButton-17"
+          classname="makeStyles-dialogButton-17"
           starticon="[object Object]"
           variant="outlined"
         >
@@ -72,7 +74,7 @@ exports[`renders as expected 1`] = `
           style="text-align: center;"
         >
           <mock-typography
-            class="makeStyles-headerText-24"
+            classname="makeStyles-headerText-24"
             variant="h4"
           >
             Window 1
@@ -88,7 +90,7 @@ exports[`renders as expected 1`] = `
               class="makeStyles-headColumn-22"
             >
               <mock-typography
-                class="makeStyles-monthText-25"
+                classname="makeStyles-monthText-25"
               >
                 Aug
               </mock-typography>
@@ -97,7 +99,7 @@ exports[`renders as expected 1`] = `
               class="makeStyles-headColumn-22"
             >
               <mock-typography
-                class="makeStyles-monthText-25"
+                classname="makeStyles-monthText-25"
               >
                 Sep
               </mock-typography>
@@ -106,7 +108,7 @@ exports[`renders as expected 1`] = `
               class="makeStyles-headColumn-22"
             >
               <mock-typography
-                class="makeStyles-monthText-25"
+                classname="makeStyles-monthText-25"
               >
                 Oct
               </mock-typography>
@@ -115,7 +117,7 @@ exports[`renders as expected 1`] = `
               class="makeStyles-headColumn-22"
             >
               <mock-typography
-                class="makeStyles-monthText-25"
+                classname="makeStyles-monthText-25"
               >
                 Nov
               </mock-typography>
@@ -466,8 +468,8 @@ exports[`renders as expected 1`] = `
       class="makeStyles-footerActionsWrapper-4"
     >
       <mock-button
-        class="makeStyles-footerButton-6"
-        fullwidth=""
+        classname="makeStyles-footerButton-6"
+        fullwidth="true"
         starticon="[object Object]"
         variant="outlined"
       >
@@ -476,8 +478,8 @@ exports[`renders as expected 1`] = `
         </mock-typography>
       </mock-button>
       <mock-button
-        class="makeStyles-footerButton-6"
-        fullwidth=""
+        classname="makeStyles-footerButton-6"
+        fullwidth="true"
         starticon="[object Object]"
         variant="outlined"
       >
@@ -486,8 +488,8 @@ exports[`renders as expected 1`] = `
         </mock-typography>
       </mock-button>
       <mock-button
-        class="makeStyles-footerButton-6"
-        fullwidth=""
+        classname="makeStyles-footerButton-6"
+        fullwidth="true"
         starticon="[object Object]"
         variant="outlined"
       >
@@ -500,7 +502,7 @@ exports[`renders as expected 1`] = `
       class="makeStyles-footerDialogsWrapper-5"
     >
       <mock-typography
-        class="makeStyles-footerDialog-7"
+        classname="makeStyles-footerDialog-7"
         component="button"
       >
         How to read this screen

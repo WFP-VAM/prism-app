@@ -11,13 +11,14 @@ exports[`renders as expected 1`] = `
       style="display: flex; align-items: center;"
     >
       <mock-switch
-        class="makeStyles-switch-8"
+        checked="false"
         classes="[object Object]"
+        classname="makeStyles-switch-8"
         color="primary"
         inputprops="[object Object]"
       />
       <mock-typography
-        class="makeStyles-titleUnchecked-13"
+        classname="makeStyles-titleUnchecked-13"
         component="span"
         role="button"
         style="cursor: pointer;"
@@ -54,7 +55,8 @@ exports[`renders as expected 1`] = `
       </mock-tooltip>
       <mock-menu
         id="download-menu"
-        keepmounted=""
+        keepmounted="true"
+        open="false"
       />
     </div>
   </div>

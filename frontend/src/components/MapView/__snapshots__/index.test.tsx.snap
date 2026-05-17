@@ -7,7 +7,7 @@ exports[`MapView renders as expected 1`] = `
   >
     <mock-drawer
       anchor="left"
-      open=""
+      open="true"
       paperprops="[object Object]"
       variant="persistent"
     >

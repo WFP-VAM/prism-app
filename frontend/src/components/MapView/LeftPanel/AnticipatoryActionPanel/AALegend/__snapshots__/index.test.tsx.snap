@@ -3,13 +3,15 @@
 exports[`renders as expected 1`] = `
 <div>
   <mock-listitem
-    dense=""
-    disablegutters=""
+    dense="true"
+    disablegutters="true"
   >
     <div
       class="MuiPaper-root makeStyles-paper-1 MuiPaper-elevation1 MuiPaper-rounded"
     >
-      <mock-dialog>
+      <mock-dialog
+        open="false"
+      >
         <mock-dialogtitle>
           <div
             class="makeStyles-titleWrapper-13"
@@ -46,7 +48,7 @@ exports[`renders as expected 1`] = `
           </div>
         </mock-dialogtitle>
         <mock-dialogcontent
-          dividers=""
+          dividers="true"
         >
           <div
             class="makeStyles-contentWrapper-14"
@@ -156,10 +158,10 @@ exports[`renders as expected 1`] = `
           </div>
         </mock-dialogcontent>
         <mock-dialogactions
-          class="makeStyles-dialogActionsWrapper-16"
+          classname="makeStyles-dialogActionsWrapper-16"
         >
           <mock-button
-            class="makeStyles-dialogButton-17"
+            classname="makeStyles-dialogButton-17"
             component="a"
             href="mailto:anticipatory_action@wfp.org"
             starticon="[object Object]"
@@ -171,7 +173,7 @@ exports[`renders as expected 1`] = `
             </mock-typography>
           </mock-button>
           <mock-button
-            class="makeStyles-dialogButton-17"
+            classname="makeStyles-dialogButton-17"
             starticon="[object Object]"
             variant="outlined"
           >

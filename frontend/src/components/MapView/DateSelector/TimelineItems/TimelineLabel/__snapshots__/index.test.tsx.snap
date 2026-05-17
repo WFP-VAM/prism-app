@@ -3,7 +3,7 @@
 exports[`TimelineLabel renders as expected 1`] = `
 <div>
   <mock-typography
-    class="makeStyles-dateItemLabel-1"
+    classname="makeStyles-dateItemLabel-1"
     style="cursor: default;"
     variant="body2"
   >

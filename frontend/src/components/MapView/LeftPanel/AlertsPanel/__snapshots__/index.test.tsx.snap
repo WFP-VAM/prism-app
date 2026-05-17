@@ -12,7 +12,7 @@ exports[`renders as expected 1`] = `
         class="makeStyles-alertFormOptions-3"
       >
         <mock-layer-dropdown
-          class="makeStyles-analysisPanelParamText-4"
+          classname="makeStyles-analysisPanelParamText-4"
           label="Hazard Layer"
           placeholder="Choose hazard layer"
           type="wms"
@@ -31,7 +31,8 @@ exports[`renders as expected 1`] = `
           class="makeStyles-thresholdInputsContainer-6"
         >
           <mock-textfield
-            class="makeStyles-numberField-7"
+            classname="makeStyles-numberField-7"
+            error="false"
             helpertext=""
             id="filled-number"
             label="Below"
@@ -39,7 +40,7 @@ exports[`renders as expected 1`] = `
             value=""
           />
           <mock-textfield
-            class="makeStyles-numberField-7"
+            classname="makeStyles-numberField-7"
             id="filled-number"
             label="Above"
             type="number"
@@ -65,7 +66,7 @@ exports[`renders as expected 1`] = `
         class="makeStyles-alertFormOptions-3"
       >
         <mock-textfield
-          fullwidth=""
+          fullwidth="true"
           id="alert-name"
           inputlabelprops="[object Object]"
           inputprops="[object Object]"
@@ -78,7 +79,7 @@ exports[`renders as expected 1`] = `
         class="makeStyles-alertFormOptions-3"
       >
         <mock-textfield
-          fullwidth=""
+          fullwidth="true"
           id="email-address"
           inputlabelprops="[object Object]"
           inputprops="[object Object]"
@@ -88,8 +89,8 @@ exports[`renders as expected 1`] = `
       </div>
     </div>
     <mock-button
-      class="makeStyles-innerCreateAlertButton-8"
-      disabled=""
+      classname="makeStyles-innerCreateAlertButton-8"
+      disabled="true"
     >
       <mock-typography
         style="color: white;"

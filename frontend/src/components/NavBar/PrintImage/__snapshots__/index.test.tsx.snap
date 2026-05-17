@@ -38,8 +38,9 @@ exports[`renders as expected 1`] = `
   </div>
   <mock-dialog
     aria-labelledby="dialog-preview"
-    keepmounted=""
+    keepmounted="true"
     maxwidth="xl"
+    open="false"
   >
     <mock-dialogcontent>
       <div
@@ -86,7 +87,7 @@ exports[`renders as expected 1`] = `
               class="makeStyles-optionWrap-8"
             >
               <mock-textfield
-                fullwidth=""
+                fullwidth="true"
                 inputprops="[object Object]"
                 placeholder="Title"
                 size="small"
@@ -98,7 +99,7 @@ exports[`renders as expected 1`] = `
               class="makeStyles-wrapper-21"
             >
               <mock-typography
-                class="makeStyles-header-22"
+                classname="makeStyles-header-22"
                 variant="h4"
               >
                 Aspect Ratio
@@ -118,7 +119,7 @@ exports[`renders as expected 1`] = `
                     class="MuiToggleButton-label"
                   >
                     <mock-tooltip
-                      arrow=""
+                      arrow="true"
                       classes="[object Object]"
                       title="Map resizes based on browser window"
                     >
@@ -270,9 +271,9 @@ exports[`renders as expected 1`] = `
                 class="makeStyles-collapsibleWrapper-9 makeStyles-collapsibleWrapperExpanded-10"
               >
                 <mock-switch
-                  checked=""
-                  class="makeStyles-switch-31"
+                  checked="true"
                   classes="[object Object]"
+                  classname="makeStyles-switch-31"
                   color="primary"
                   inputprops="[object Object]"
                 />
@@ -450,9 +451,9 @@ exports[`renders as expected 1`] = `
                 class="makeStyles-collapsibleWrapper-9 "
               >
                 <mock-switch
-                  checked=""
-                  class="makeStyles-switch-31"
+                  checked="true"
                   classes="[object Object]"
+                  classname="makeStyles-switch-31"
                   color="primary"
                   inputprops="[object Object]"
                 />
@@ -481,8 +482,9 @@ exports[`renders as expected 1`] = `
                 class="makeStyles-collapsibleWrapper-9 "
               >
                 <mock-switch
-                  class="makeStyles-switch-31"
+                  checked="false"
                   classes="[object Object]"
+                  classname="makeStyles-switch-31"
                   color="primary"
                   inputprops="[object Object]"
                 />
@@ -521,9 +523,9 @@ exports[`renders as expected 1`] = `
                 class="makeStyles-collapsibleWrapper-9 makeStyles-collapsibleWrapperExpanded-10"
               >
                 <mock-switch
-                  checked=""
-                  class="makeStyles-switch-31"
+                  checked="true"
                   classes="[object Object]"
+                  classname="makeStyles-switch-31"
                   color="primary"
                   inputprops="[object Object]"
                 />
@@ -613,9 +615,9 @@ exports[`renders as expected 1`] = `
                             class="makeStyles-collapsibleWrapper-9"
                           >
                             <mock-switch
-                              checked=""
-                              class="makeStyles-switch-31"
+                              checked="true"
                               classes="[object Object]"
+                              classname="makeStyles-switch-31"
                               color="primary"
                               inputprops="[object Object]"
                             />
@@ -772,9 +774,9 @@ exports[`renders as expected 1`] = `
                 class="makeStyles-collapsibleWrapper-9 makeStyles-collapsibleWrapperExpanded-10"
               >
                 <mock-switch
-                  checked=""
-                  class="makeStyles-switch-31"
+                  checked="true"
                   classes="[object Object]"
+                  classname="makeStyles-switch-31"
                   color="primary"
                   inputprops="[object Object]"
                 />
@@ -924,12 +926,11 @@ exports[`renders as expected 1`] = `
                         class="MuiBox-root MuiBox-root-47"
                       >
                         <mock-textfield
-                          defaultvalue=""
-                          fullwidth=""
+                          fullwidth="true"
                           inputprops="[object Object]"
                           maxrows="6"
                           minrows="3"
-                          multiline=""
+                          multiline="true"
                           size="small"
                           style="background-color: white; border-radius: 5px;"
                           variant="outlined"
@@ -942,7 +943,7 @@ exports[`renders as expected 1`] = `
             </div>
             <div>
               <mock-tooltip
-                arrow=""
+                arrow="true"
                 classes="[object Object]"
                 placement="top"
                 title="Selecting this option will apply the template above to create multiple maps over a time period of your choice."
@@ -951,9 +952,11 @@ exports[`renders as expected 1`] = `
                   class="makeStyles-collapsibleWrapper-9 "
                 >
                   <mock-switch
-                    class="makeStyles-switch-31"
+                    checked="false"
                     classes="[object Object]"
+                    classname="makeStyles-switch-31"
                     color="primary"
+                    disabled="false"
                     inputprops="[object Object]"
                   />
                   <mock-typography
@@ -978,10 +981,11 @@ exports[`renders as expected 1`] = `
               </div>
             </div>
             <mock-button
-              class="makeStyles-gutter-5"
+              classname="makeStyles-gutter-5"
               color="primary"
+              disabled="false"
               endicon="[object Object]"
-              fullwidth=""
+              fullwidth="true"
               style="background-color: rgb(99, 178, 189); color: black;"
               variant="contained"
             >
@@ -990,7 +994,8 @@ exports[`renders as expected 1`] = `
               </span>
             </mock-button>
             <mock-menu
-              keepmounted=""
+              keepmounted="true"
+              open="false"
             >
               <mock-menuitem>
                 Download PNG

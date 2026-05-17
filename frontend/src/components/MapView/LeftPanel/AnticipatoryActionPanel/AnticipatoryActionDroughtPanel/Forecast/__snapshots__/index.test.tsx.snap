@@ -19,7 +19,7 @@ exports[`renders as expected 1`] = `
         style="min-width: 3rem;"
       />
       <mock-typography
-        class="makeStyles-label-8"
+        classname="makeStyles-label-8"
       >
         SPI DJF
       </mock-typography>
@@ -35,7 +35,7 @@ exports[`renders as expected 1`] = `
         style="background-color: rgb(255, 213, 45);"
       >
         <mock-typography
-          class="makeStyles-text-6"
+          classname="makeStyles-text-6"
           style="color: black; border: 1px solid black;"
         >
           Moderate
@@ -58,7 +58,7 @@ exports[`renders as expected 1`] = `
         style="background-color: rgb(255, 252, 179);"
       >
         <mock-typography
-          class="makeStyles-text-6"
+          classname="makeStyles-text-6"
           style="color: black; border: 1px solid black;"
         >
           Mild
@@ -81,8 +81,8 @@ exports[`renders as expected 1`] = `
       class="makeStyles-footerActionsWrapper-10"
     >
       <mock-button
-        class="makeStyles-footerButton-12"
-        fullwidth=""
+        classname="makeStyles-footerButton-12"
+        fullwidth="true"
         starticon="[object Object]"
         variant="outlined"
       >
@@ -91,8 +91,8 @@ exports[`renders as expected 1`] = `
         </mock-typography>
       </mock-button>
       <mock-button
-        class="makeStyles-footerButton-12"
-        fullwidth=""
+        classname="makeStyles-footerButton-12"
+        fullwidth="true"
         starticon="[object Object]"
         variant="outlined"
       >
@@ -105,7 +105,7 @@ exports[`renders as expected 1`] = `
       class="makeStyles-footerDialogsWrapperVert-15"
     >
       <mock-typography
-        class="makeStyles-footerDialog-13"
+        classname="makeStyles-footerDialog-13"
         component="button"
       >
         How to read this screen

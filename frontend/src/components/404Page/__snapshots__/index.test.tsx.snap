@@ -13,20 +13,20 @@ exports[`renders as expected 1`] = `
       >
         <mock-typography
           color="textPrimary"
-          gutterbottom=""
+          gutterbottom="true"
           variant="h3"
         >
           404 Page Not Found
         </mock-typography>
         <mock-typography
           color="textPrimary"
-          gutterbottom=""
+          gutterbottom="true"
           variant="h5"
         >
           Sorry, it seems we ran into a problem. We already collected information about this error.
         </mock-typography>
         <mock-typography
-          gutterbottom=""
+          gutterbottom="true"
           variant="body1"
         >
           If you have typed the address of this web page, you may have misspelled it or if you redirected to this page, it may be moved to another location. Please go back to the website home page and try to find your page from the website navigation.

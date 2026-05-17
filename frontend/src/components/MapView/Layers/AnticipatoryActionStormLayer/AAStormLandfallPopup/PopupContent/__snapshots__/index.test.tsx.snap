@@ -6,7 +6,7 @@ exports[`AAStormLandfallPopup component renders as expected 1`] = `
     class="makeStyles-itemsContainer-2"
   >
     <mock-typography
-      class="makeStyles-text-4 makeStyles-title-5"
+      classname="makeStyles-text-4 makeStyles-title-5"
       variant="body1"
     >
       Report date
@@ -17,14 +17,14 @@ exports[`AAStormLandfallPopup component renders as expected 1`] = `
       class="makeStyles-itemContainer-3"
     >
       <mock-typography
-        class="makeStyles-text-4"
+        classname="makeStyles-text-4"
         style="max-width: 100px;"
         variant="body1"
       >
         Landfall estimated time
       </mock-typography>
       <mock-typography
-        class="makeStyles-text-4 makeStyles-textAlignRight-6"
+        classname="makeStyles-text-4 makeStyles-textAlignRight-6"
         variant="body1"
       >
         2024-03-12 03:00 GMT+2
@@ -39,14 +39,14 @@ exports[`AAStormLandfallPopup component renders as expected 1`] = `
       class="makeStyles-itemContainer-3"
     >
       <mock-typography
-        class="makeStyles-text-4"
+        classname="makeStyles-text-4"
         style="max-width: 150px;"
         variant="body1"
       >
         Landfall estimated leadtime
       </mock-typography>
       <mock-typography
-        class="makeStyles-text-4 makeStyles-textAlignRight-6"
+        classname="makeStyles-text-4 makeStyles-textAlignRight-6"
         variant="body1"
       >
         247 - 252 hrs
@@ -56,14 +56,14 @@ exports[`AAStormLandfallPopup component renders as expected 1`] = `
       class="makeStyles-itemContainer-3"
     >
       <mock-typography
-        class="makeStyles-text-4"
+        classname="makeStyles-text-4"
         style="max-width: 150px;"
         variant="body1"
       >
         District impacted by landfall
       </mock-typography>
       <mock-typography
-        class="makeStyles-text-4 makeStyles-textAlignRight-6"
+        classname="makeStyles-text-4 makeStyles-textAlignRight-6"
         variant="body1"
       >
         Inhassoro

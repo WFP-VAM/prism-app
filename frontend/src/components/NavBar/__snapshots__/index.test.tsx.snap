@@ -3,7 +3,7 @@
 exports[`renders as expected 1`] = `
 <div>
   <mock-appbar
-    class="makeStyles-appBar-1"
+    classname="makeStyles-appBar-1"
     position="fixed"
   >
     <mock-toolbar
@@ -27,7 +27,7 @@ exports[`renders as expected 1`] = `
               class="MuiBox-root MuiBox-root-11 makeStyles-titleBox-7"
             >
               <mock-typography
-                class="makeStyles-title-9"
+                classname="makeStyles-title-9"
                 color="secondary"
                 variant="h6"
               >
@@ -138,14 +138,22 @@ exports[`renders as expected 1`] = `
                 class="MuiTouchRipple-root"
               />
             </button>
-            <mock-menu>
-              <mock-menuitem>
+            <mock-menu
+              open="false"
+            >
+              <mock-menuitem
+                selected="false"
+              >
                 A. Action Drought
               </mock-menuitem>
-              <mock-menuitem>
+              <mock-menuitem
+                selected="false"
+              >
                 A. Action Storm
               </mock-menuitem>
-              <mock-menuitem>
+              <mock-menuitem
+                selected="false"
+              >
                 A. Action Flood
               </mock-menuitem>
             </mock-menu>
@@ -188,7 +196,8 @@ exports[`renders as expected 1`] = `
               />
             </button>
             <mock-menu
-              keepmounted=""
+              keepmounted="true"
+              open="false"
             />
           </div>
         </div>
@@ -197,7 +206,7 @@ exports[`renders as expected 1`] = `
         >
           <mock-button
             aria-label="Legend"
-            class="makeStyles-triggerButton-19"
+            classname="makeStyles-triggerButton-19"
             starticon="[object Object]"
             style="background-color: rgb(99, 178, 189);"
           >
@@ -234,8 +243,8 @@ exports[`renders as expected 1`] = `
             />
           </button>
           <mock-list
-            class="makeStyles-list-20"
-            disablepadding=""
+            classname="makeStyles-list-20"
+            disablepadding="true"
           />
           <mock-printimage />
           <a
@@ -293,7 +302,8 @@ exports[`renders as expected 1`] = `
             </mock-typography>
           </mock-button>
           <mock-menu
-            class="makeStyles-block-23"
+            classname="makeStyles-block-23"
+            open="false"
           >
             <mock-menuitem
               aria-label="language-select-dropdown-menu-item-en"
