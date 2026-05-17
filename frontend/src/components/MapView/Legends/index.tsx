@@ -32,13 +32,13 @@ const Legends = memo(() => {
 
   const [open, setOpen] = useState(true);
 
+  const toggleLegendVisibility = useCallback(() => {
+    setOpen(o => !o);
+  }, []);
+
   if (shouldHideFloatingMapLegend(tabValue)) {
     return null;
   }
-
-  const toggleLegendVisibility = useCallback(() => {
-    setOpen(!open);
-  }, [open]);
 
   return (
     <>
