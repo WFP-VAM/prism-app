@@ -28,8 +28,6 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
-
 from prism_app.export_jobs.db import get_export_jobs_session_factory
 from prism_app.export_jobs.priority import MAP_EXPORT_JOB_PRIORITY_SCHEDULED_PUBLIC
 from prism_app.export_jobs.service import enqueue_map_export_job
@@ -38,7 +36,7 @@ from prism_app.models import ExportFormat, MapExportRequestModel
 from prism_app.workers.scheduled_public_maps.layer_days import (
     latest_date_yyyy_mm_dd_for_layer,
 )
-
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 logger = logging.getLogger(__name__)
 
@@ -113,7 +111,9 @@ def main(argv: list[str] | None = None) -> int:
         level=logging.INFO,
     )
     parser = argparse.ArgumentParser(description=__doc__)
-    default_config = Path(__file__).resolve().parent / "config" / "scheduled_public_maps.json"
+    default_config = (
+        Path(__file__).resolve().parent / "config" / "scheduled_public_maps.json"
+    )
     parser.add_argument(
         "--config",
         "-c",
@@ -151,22 +151,16 @@ def main(argv: list[str] | None = None) -> int:
 
     for group in config.jobs:
         for layer_id in group.layer_ids:
-            label = (
-                f"{group.country or '?'}:{layer_id}"
-                if group.country
-                else layer_id
-            )
+            label = f"{group.country or '?'}:{layer_id}" if group.country else layer_id
             cover_date = latest_date_yyyy_mm_dd_for_layer(
                 layer_id, timeout_sec=timeout_sec
             )
             if not cover_date:
                 logger.warning("skip %s — no capability dates", label)
                 continue
-            export_url = (
-                group.export_url_template.replace("{date}", cover_date).replace(
-                    "{layer_id}", layer_id
-                )
-            )
+            export_url = group.export_url_template.replace(
+                "{date}", cover_date
+            ).replace("{layer_id}", layer_id)
             try:
                 req = _build_request(export_url, group, layer_id)
             except ValueError as exc:

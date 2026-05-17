@@ -7,15 +7,14 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-from pydantic import ValidationError
-
+from prism_app.tests.fixtures.moz_export import MAP_EXPORT_FIXTURE_BASE_URL
 from prism_app.workers.scheduled_public_maps.cron import (
     ScheduledPublicMapJobGroup,
     ScheduledPublicMapsFile,
     load_config,
     main,
 )
-from prism_app.tests.fixtures.moz_export import MAP_EXPORT_FIXTURE_BASE_URL
+from pydantic import ValidationError
 
 
 def _repo_config_path() -> Path:

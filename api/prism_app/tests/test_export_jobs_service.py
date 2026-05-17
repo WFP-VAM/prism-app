@@ -7,11 +7,11 @@ from pathlib import Path
 from unittest.mock import MagicMock
 
 import pytest
-from pydantic import ValidationError
 from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.export_jobs.fingerprint import compute_request_fingerprint
 from prism_app.export_jobs.service import enqueue_map_export_job
 from prism_app.models import MapExportRequestModel
+from pydantic import ValidationError
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlmodel import Session

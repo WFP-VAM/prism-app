@@ -96,13 +96,9 @@ def parse_wms_capabilities_layer_days(cap_xml: str) -> dict[str, list[int]]:
         for c in layer_el:
             tag = _local_tag(c.tag)
             if tag == "Dimension" and c.get("name") == "time" and c.text:
-                date_strings.extend(
-                    p.strip() for p in c.text.split(",") if p.strip()
-                )
+                date_strings.extend(p.strip() for p in c.text.split(",") if p.strip())
             elif tag == "Extent" and c.get("name") == "time" and c.text:
-                date_strings.extend(
-                    p.strip() for p in c.text.split(",") if p.strip()
-                )
+                date_strings.extend(p.strip() for p in c.text.split(",") if p.strip())
         if not date_strings:
             continue
         try:
@@ -123,9 +119,7 @@ def fetch_capabilities_xml(url: str, *, timeout_sec: float) -> str:
 def fetch_layer_days_map(*, timeout_sec: float = 120.0) -> dict[str, list[int]]:
     """Download WMS GetCapabilities from the configured OWS root."""
     service = _normalize_wms_service_url(wms_ows_root())
-    q = urlencode(
-        {"service": "WMS", "request": "GetCapabilities", "version": "1.1.0"}
-    )
+    q = urlencode({"service": "WMS", "request": "GetCapabilities", "version": "1.1.0"})
     cap_url = f"{service}?{q}"
     xml_text = fetch_capabilities_xml(cap_url, timeout_sec=timeout_sec)
     return parse_wms_capabilities_layer_days(xml_text)

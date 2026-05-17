@@ -32,4 +32,6 @@ def test_public_map_upload_path_segments_requires_country() -> None:
 
 def test_public_map_upload_path_segments_requires_hazard_layer_ids() -> None:
     with pytest.raises(ValueError, match="hazardLayerIds"):
-        public_map_upload_path_segments("http://localhost/?date=2025-01-01", country="c")
+        public_map_upload_path_segments(
+            "http://localhost/?date=2025-01-01", country="c"
+        )
