@@ -1,9 +1,8 @@
 // Basic CSS Layout for the whole page
 import './app.css';
 
-import { useIsAuthenticated, useMsal } from '@azure/msal-react';
+import { useIsAuthenticated } from '@azure/msal-react';
 import { ThemeProvider } from '@material-ui/core/styles';
-import { usePostHog } from '@posthog/react';
 import { Font } from '@react-pdf/renderer';
 import * as Sentry from '@sentry/browser';
 import AuthModal from 'components/AuthModal';
@@ -18,7 +17,7 @@ import KhmerFont from 'fonts/Khmer-Regular.ttf';
 import RobotoFont from 'fonts/Roboto-Regular.ttf';
 import { useDashboardConfig } from 'hooks/useDashboardConfig';
 import muiTheme from 'muiTheme';
-import { memo, useEffect, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development') {
@@ -84,18 +83,6 @@ const Wrapper = memo(() => (
 function App() {
   useDashboardConfig();
   const isAuthenticated = useIsAuthenticated();
-  const { accounts } = useMsal();
-  const posthog = usePostHog();
-
-  useEffect(() => {
-    if (isAuthenticated && accounts.length > 0) {
-      const account = accounts[0];
-      posthog?.identify(account.homeAccountId, {
-        email: account.username,
-        name: account.name,
-      });
-    }
-  }, [isAuthenticated, accounts, posthog]);
 
   // The rendered content
   const renderedContent = useMemo(() => {
