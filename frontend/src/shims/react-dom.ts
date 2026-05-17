@@ -6,9 +6,10 @@
  * Vite alias: `react-dom` → this file; `react-dom-vendor` → real package.
  * Do not import `react-dom` here — use `react-dom-vendor` only.
  */
-export * from 'react-dom-vendor';
 export { findDOMNodeImpl as findDOMNode } from '../reactDomFindDomNodeImpl';
+export * from 'react-dom-vendor';
 import ReactDOMDefault from 'react-dom-vendor';
+
 import { findDOMNodeImpl } from '../reactDomFindDomNodeImpl';
 
 const patchedDefault =

@@ -89,11 +89,7 @@ function findHostDomFromFiberBfs(start: unknown): Element | Text | null {
       alternate?: unknown;
     };
     const sn = f.stateNode;
-    if (
-      sn != null &&
-      typeof sn === 'object' &&
-      'nodeType' in (sn as object)
-    ) {
+    if (sn != null && typeof sn === 'object' && 'nodeType' in (sn as object)) {
       const nt = (sn as { nodeType: number }).nodeType;
       if (nt === 1 || nt === 3 || nt === 8) {
         return sn as Element | Text;
