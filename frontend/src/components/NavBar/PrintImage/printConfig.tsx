@@ -29,7 +29,13 @@ import { cyanBlue } from 'muiTheme';
 import React, { useContext, useEffect, useState } from 'react';
 
 import { useSafeTranslation } from '../../../i18n';
+import { MAP_EXPORT_MAX_URLS_PER_REQUEST } from '../../../utils/constants';
 import AspectRatioSelector from './AspectRatioSelector';
+import BatchMapExportJobRows from './batchMapExport/BatchMapExportJobRows';
+import {
+  useBatchMapExportJobsActions,
+  useBatchMapExportJobsState,
+} from './batchMapExport/useBatchMapExportJobs';
 import CadenceSelector from './CadenceSelector';
 import DateRangePicker from './DateRangePicker';
 import PrintConfigContext from './printConfig.context';
@@ -273,6 +279,8 @@ const DATE_PLACEHOLDER_SUFFIX = ': {date_coverage}';
 function PrintConfig() {
   const classes = useStyles();
   const { t } = useSafeTranslation();
+  const { jobs: activeBatchJobs } = useBatchMapExportJobsState();
+  const { dismissBatchMapExportJob } = useBatchMapExportJobsActions();
   const { printConfig } = useContext(PrintConfigContext);
 
   // Local state for responsive input - syncs to parent with debounce
@@ -330,8 +338,11 @@ function PrintConfig() {
     setSelectedLayerId,
   } = printConfig;
 
+  const batchMapsWillTruncate =
+    toggles.batchMapsVisibility && mapCount > MAP_EXPORT_MAX_URLS_PER_REQUEST;
+
   return (
-    <Box>
+    <Box className={classes.printPanelRoot}>
       <div className={classes.optionsContainer}>
         <div>
           <Box
@@ -699,18 +710,53 @@ function PrintConfig() {
                     </Typography>
                     <Typography
                       variant="body1"
-                      className={classes.mapCountValue}
+                      className={`${classes.mapCountValue}${
+                        batchMapsWillTruncate
+                          ? ` ${classes.mapCountValueWarning}`
+                          : ''
+                      }`}
                     >
                       {mapCount}
                     </Typography>
                   </Box>
+                  {batchMapsWillTruncate && (
+                    <Typography
+                      variant="caption"
+                      component="p"
+                      className={classes.batchExportTruncateHint}
+                    >
+                      {t('batch_export_maps_truncated_panel', {
+                        max: MAP_EXPORT_MAX_URLS_PER_REQUEST,
+                      })}
+                    </Typography>
+                  )}
                 </GreyContainerSection>
               </GreyContainer>
+            )}
+            {toggles.batchMapsVisibility && activeBatchJobs.length > 0 && (
+              <Box className={classes.batchExportsInPanelWrap}>
+                <GreyContainer>
+                  <GreyContainerSection isLast>
+                    <Typography
+                      variant="h4"
+                      style={{ marginBottom: '8px', fontWeight: 600 }}
+                    >
+                      {t('Batch map exports')}
+                    </Typography>
+                    <BatchMapExportJobRows
+                      jobs={activeBatchJobs}
+                      onDismiss={dismissBatchMapExportJob}
+                      variant="panel"
+                    />
+                  </GreyContainerSection>
+                </GreyContainer>
+              </Box>
             )}
           </>
         )}
 
         <Button
+          fullWidth
           style={{ backgroundColor: cyanBlue, color: 'black' }}
           variant="contained"
           color="primary"
@@ -731,7 +777,7 @@ function PrintConfig() {
               </span>
             </>
           ) : (
-            <span>{t('Download')}</span>
+            <span>{t('Export')}</span>
           )}
         </Button>
 
@@ -744,10 +790,10 @@ function PrintConfig() {
           {toggles.batchMapsVisibility
             ? [
                 <MenuItem key="pdf" onClick={() => downloadBatch('pdf')}>
-                  {t('Download maps as PDF')}
+                  {t('Export maps as PDF')}
                 </MenuItem>,
                 <MenuItem key="png" onClick={() => downloadBatch('png')}>
-                  {t('Download maps as PNGs')}
+                  {t('Export maps as PNGs')}
                 </MenuItem>,
               ]
             : [
@@ -769,11 +815,15 @@ function PrintConfig() {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    printPanelRoot: {
+      minWidth: 0,
+      flexShrink: 1,
+    },
     title: {
       color: theme.palette.text.secondary,
     },
     gutter: {
-      marginBottom: 10,
+      marginBottom: 0,
     },
     closeButton: {
       position: 'absolute',
@@ -788,6 +838,10 @@ const useStyles = makeStyles((theme: Theme) =>
       gap: '0.5rem',
       minHeight: '740px',
       width: '20.5rem',
+      minWidth: 0,
+      boxSizing: 'border-box',
+      paddingLeft: theme.spacing(1),
+      paddingRight: theme.spacing(1),
       overflowY: 'auto',
       overflowX: 'hidden',
       scrollbarGutter: 'stable',
@@ -834,13 +888,28 @@ const useStyles = makeStyles((theme: Theme) =>
     mapCountContainer: {
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'space-between',
+      justifyContent: 'flex-start',
+      flexWrap: 'wrap',
+      gap: theme.spacing(1),
     },
     mapCountValue: {
-      border: '1px solid rgba(0, 0, 0, 0.23)',
       borderRadius: '4px',
-      padding: '8px 12px',
-      backgroundColor: '#f5f5f5',
+      padding: theme.spacing(0.25, 0.75),
+      margin: theme.spacing(0.5, 1),
+      backgroundColor: theme.palette.grey[300],
+      lineHeight: 1.2,
+    },
+    mapCountValueWarning: {
+      color: theme.palette.error.main,
+    },
+    batchExportTruncateHint: {
+      marginTop: theme.spacing(0.5),
+      color: theme.palette.error.main,
+    },
+    batchExportsInPanelWrap: {
+      marginTop: theme.spacing(1.5),
+      width: '100%',
+      minWidth: 0,
     },
     batchMapsHeader: {
       display: 'flex',

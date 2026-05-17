@@ -66,10 +66,11 @@ def api_client(
 
 def _body() -> dict[str, Any]:
     return {
-        "urls": ["http://localhost/?date=2025-01-01"],
+        "urls": ["http://localhost/?hazardLayerIds=precip&date=2025-01-01"],
         "viewportWidth": 1200,
         "viewportHeight": 849,
         "format": "pdf",
+        "country": "TestPlace",
     }
 
 
@@ -111,6 +112,7 @@ def test_get_export_map_job_status(api_client: TestClient) -> None:
     assert r.json()["status"] == "queued"
     assert r.json()["download_url"] is None
     assert r.json()["origin_url"] == "http://localhost"
+    assert r.json()["download_filename"] == "TestPlace_precip_2025_01_01.pdf"
 
 
 def test_post_export_map_jobs_mozambique_fixture(
@@ -131,6 +133,14 @@ def test_post_export_map_jobs_mozambique_fixture(
     assert data["status"] == "queued"
     assert "job_id" in data
     assert data["origin_url"] == MAP_EXPORT_FIXTURE_BASE_URL
+
+
+def test_post_export_map_jobs_returns_422_when_too_many_urls(
+    api_client: TestClient,
+) -> None:
+    urls = [f"http://localhost/?date=2025-01-{i:02d}" for i in range(1, 14)]
+    r = api_client.post("/export-map/jobs", json={**_body(), "urls": urls})
+    assert r.status_code == 422, r.text
 
 
 def test_get_succeeded_returns_presigned_url(
@@ -162,10 +172,14 @@ def test_get_succeeded_returns_presigned_url(
     finally:
         del app.dependency_overrides[get_s3_client_for_presign]
     mock_s3.generate_presigned_url.assert_called_once()
+    _gc_args, gc_kw = mock_s3.generate_presigned_url.call_args
+    assert "attachment" in gc_kw["Params"]["ResponseContentDisposition"]
 
     assert r.status_code == 200
-    assert r.json()["download_url"] == "https://example.com/presigned"
-    assert r.json()["local_artifact_path"] is None
+    j = r.json()
+    assert j["download_url"] == "https://example.com/presigned"
+    assert j["download_filename"] == "TestPlace_precip_2025_01_01.pdf"
+    assert j["local_artifact_path"] is None
 
 
 def test_get_succeeded_file_uri_returns_local_path_skips_presign(
@@ -201,5 +215,48 @@ def test_get_succeeded_file_uri_returns_local_path_skips_presign(
     mock_s3.generate_presigned_url.assert_not_called()
 
     assert r.status_code == 200
-    assert r.json()["download_url"] is None
-    assert r.json()["local_artifact_path"] == str(pdf.resolve())
+    j = r.json()
+    assert j["download_url"] is None
+    assert j["local_artifact_path"] == str(pdf.resolve())
+    assert j["download_filename"] == "TestPlace_precip_2025_01_01.pdf"
+
+
+def test_delete_export_map_job_cancels_queued(api_client: TestClient) -> None:
+    post = api_client.post("/export-map/jobs", json=_body())
+    assert post.status_code == 202
+    job_id = post.json()["job_id"]
+    r = api_client.delete(f"/export-map/jobs/{job_id}")
+    assert r.status_code == 204
+    assert api_client.delete(f"/export-map/jobs/{job_id}").status_code == 204
+    g = api_client.get(f"/export-map/jobs/{job_id}")
+    assert g.status_code == 200
+    assert g.json()["status"] == "cancelled"
+
+
+def test_delete_export_map_job_missing_returns_404(api_client: TestClient) -> None:
+    fake_id = "00000000-0000-4000-b000-000000000012"
+    r = api_client.delete(f"/export-map/jobs/{fake_id}")
+    assert r.status_code == 404
+
+
+def test_delete_running_export_job_returns_409(
+    api_client: TestClient, sqlite_engine
+) -> None:
+    SessionLocal = sessionmaker(
+        bind=sqlite_engine, class_=Session, expire_on_commit=False
+    )
+    with SessionLocal() as session:
+        job = MapExportJob(
+            request_fingerprint="fp-run",
+            request_payload_json=_body(),
+            status="running",
+            origin_url=None,
+            content_type="pdf",
+        )
+        session.add(job)
+        session.commit()
+        session.refresh(job)
+        job_id = job.id
+
+    r = api_client.delete(f"/export-map/jobs/{job_id}")
+    assert r.status_code == 409

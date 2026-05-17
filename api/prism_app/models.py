@@ -172,6 +172,9 @@ class AlertsModel(BaseModel):
 
 ExportFormat = Literal["pdf", "png"]
 
+# Cap concurrent renders per job to reduce load on tile/WMS infra (batch + sync export).
+MAP_EXPORT_MAX_URLS_PER_REQUEST = 12
+
 
 def _validate_map_export_urls(urls: list[str]) -> None:
     from prism_app.utils import validate_export_url
@@ -190,6 +193,8 @@ class MapExportRequestModel(BaseModel):
 
     urls: list[str] = Field(
         ...,
+        min_length=1,
+        max_length=MAP_EXPORT_MAX_URLS_PER_REQUEST,
         description="Map URLs containing all parameters necessary to render print view "
         "including layer ID(s), layer opacity, bounding box, legend config, etc.",
         examples=[
@@ -215,10 +220,12 @@ class MapExportRequestModel(BaseModel):
         description="Output format: 'pdf' for merged PDF, 'png' for ZIP archive of PNGs",
         examples=["png"],
     )
-    country: str | None = Field(
-        default=None,
+    country: str = Field(
+        default="",
+        max_length=200,
         description=(
-            "Country label (e.g. frontend appConfig.country). Required when publicMapUpload is true; "
+            "Country or instance label for download filenames and job metadata "
+            "(e.g. appConfig country slug). Required (non-empty) when publicMapUpload is true; "
             "never inferred from the export URL."
         ),
     )
@@ -226,7 +233,7 @@ class MapExportRequestModel(BaseModel):
         default=False,
         description=(
             "When true, map export worker writes under public_maps/{country}/{layer}/. "
-            "Requires ``country`` and ``hazardLayerIds`` on the export URL. "
+            "Requires non-empty ``country`` and ``hazardLayerIds`` on the export URL. "
             "Not settable via POST /export-map/jobs."
         ),
     )
@@ -259,6 +266,8 @@ class MapExportJobEnqueueRequest(BaseModel):
 
     urls: list[str] = Field(
         ...,
+        min_length=1,
+        max_length=MAP_EXPORT_MAX_URLS_PER_REQUEST,
         description="Map URLs (same rules as ``MapExportRequestModel``).",
     )
     viewportWidth: int = Field(
@@ -277,9 +286,10 @@ class MapExportJobEnqueueRequest(BaseModel):
         ...,
         description="Output format: 'pdf' or 'png'.",
     )
-    country: str | None = Field(
-        default=None,
-        description="Optional country label (e.g. app config); stored on the job for metadata.",
+    country: str = Field(
+        default="",
+        max_length=200,
+        description="Country or instance label for download filenames and job metadata.",
     )
 
     @model_validator(mode="after")
