@@ -25,7 +25,7 @@
                     {{ title }}
                 </h1>
                 <p class="content-subtitle" style="margin: 0 0 20px; font-size: 14px;">
-                    Flood Anticipatory Action Alert for Mozambique – forecast by GloFAS with data processing by WFP
+                    Flood Anticipatory Action Alert for {{ country_display_name }} – {{ forecast_attribution_line }}
                 </p>
                 <p class="trigger-title"
                     style="margin: 10px 0 20px; width: 100%; font-weight: bold; font-size: 16px;">
@@ -35,7 +35,7 @@
                     {% for status, station_list in stations_by_status.items() %}
                         <p style="margin: 0 0 10px; line-height: 1.6;">
                             River discharge levels may exceed the {{ status }} threshold at
-                            {{ station_list | join(', ') }} in Mozambique within the next 3 to 5 days.
+                            {{ station_list | join(', ') }} in {{ country_display_name }} within the next {{ forecast_lead_days_phrase }} days.
                         </p>
                     {% endfor %}
                 {% endif %}
@@ -53,7 +53,7 @@
                         style="width: 24px; height: 24px; vertical-align: middle; margin-right: 8px;"> Gauge
                     Map
                 </h3>
-                <img src="cid:flood-image-cid" alt="Map showing the gauge status over Mozambique"
+                <img src="cid:flood-image-cid" alt="Map showing the gauge status over {{ map_alt_country }}"
                     width="100%" style="border: none;">
                 <p style="margin-top: 20px;">
                     We will continue to closely monitor the situation and provide timely updates as more
@@ -64,7 +64,7 @@
                     style="background-color: rgba(241, 241, 241, 1); padding: 20px; margin-top: 20px; color: black;">
                     <strong>Disclaimer</strong>: This alert is automatically generated based on an evaluation of the latest forecast.
                     It does not represent an official activation. The official decision regarding Anticipatory Action activation will be
-                    made and communicated by <strong>INGD (Instituto Nacional de Gestão e Redução do Risco de Desastres)</strong>.
+                    made and communicated by {{ disclaimer_authority_html | safe }}.
                 </p>
             </div>
         </main>

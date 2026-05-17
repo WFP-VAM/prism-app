@@ -18,6 +18,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { Close, GetApp, TableChart } from '@material-ui/icons';
+import { safeCountry } from 'config';
 import {
   AAFloodDataSelector,
   setAAFloodStationDetailActiveTab,
@@ -35,11 +36,11 @@ import { getFormattedDate } from 'utils/date-utils';
 import {
   AAFloodColors,
   CHART_WIDTH,
-  ForecastWindowPerCountry,
+  getAAFloodForecastWindow,
   TABLE_WIDTH,
 } from '../constants';
 
-const forecastWindow = ForecastWindowPerCountry.mozambique;
+const forecastWindow = getAAFloodForecastWindow(safeCountry);
 
 const useStyles = makeStyles(() =>
   createStyles({

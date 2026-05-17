@@ -15,12 +15,15 @@ def main() -> None:
     with db.alerts_session() as conn:
         alerts = db.fetch_active_alerts(conn)
         aa = db.fetch_aa_alerts(conn, "Mozambique", "storm")
+        flood = db.fetch_all_aa_alerts_by_type(conn, "flood")
     print(
         "Alerts DB smoke OK (",
         len(alerts),
         "active alerts,",
         len(aa),
-        "AA storm rows for Mozambique)",
+        "AA storm rows for Mozambique,",
+        len(flood),
+        "AA flood rows)",
     )
 
 

@@ -97,6 +97,60 @@ def test_render_flood_mail_contains_title_and_link() -> None:
     assert "Test flood title" in text
 
 
+def test_aa_flood_helper_functions() -> None:
+    from prism_app.alert_workers.aa_flood import (
+        flood_last_state_key,
+        forecast_lead_days_phrase,
+        resolve_flood_email_copy,
+        strip_legacy_moz_flood_key,
+        transform_last_processed_flood,
+    )
+
+    assert forecast_lead_days_phrase(3, 5) == "3 to 5"
+    assert forecast_lead_days_phrase(7, 7) == "7"
+    assert strip_legacy_moz_flood_key(
+        {"moz_flood": {"status": "x", "refTime": "2025-01-01"}},
+    ) == {}
+    assert strip_legacy_moz_flood_key(
+        {
+            "moz_flood": {"status": "x", "refTime": "a"},
+            "flood_alert_2": {"status": "y", "refTime": "b"},
+        },
+    ) == {"flood_alert_2": {"status": "y", "refTime": "b"}}
+    assert transform_last_processed_flood(
+        "2025-02-02",
+        "moderate",
+        "flood_alert_9",
+    ) == {"flood_alert_9": {"status": "moderate", "refTime": "2025-02-02"}}
+    assert flood_last_state_key(42) == "flood_alert_42"
+
+    defaults = resolve_flood_email_copy(country="mozambique", metadata={})
+    assert defaults["country_display_name"] == "mozambique"
+    assert defaults["forecast_lead_days_phrase"] == "3 to 5"
+    assert "GloFAS" in defaults["forecast_attribution_line"]
+    assert "INGD" in defaults["disclaimer_authority_html"]
+    assert "INGD" in defaults["disclaimer_authority_plain"]
+    assert "<strong>" not in defaults["disclaimer_authority_plain"]
+
+    overrides = resolve_flood_email_copy(
+        country="XYZ",
+        metadata={
+            "countryDisplayName": "Republic of XYZ",
+            "forecastLeadDaysMin": 2,
+            "forecastLeadDaysMax": 4,
+            "forecastAttributionLine": "forecast by ExampleHydrology",
+            "disclaimerAuthorityHtml": "<strong>National DRM Agency</strong>",
+            "disclaimerAuthorityPlain": "National DRM Agency (plain)",
+            "mapAltCountry": "XYZ map label",
+        },
+    )
+    assert overrides["country_display_name"] == "Republic of XYZ"
+    assert overrides["forecast_lead_days_phrase"] == "2 to 4"
+    assert overrides["forecast_attribution_line"] == "forecast by ExampleHydrology"
+    assert overrides["disclaimer_authority_plain"] == "National DRM Agency (plain)"
+    assert overrides["map_alt_country"] == "XYZ map label"
+
+
 def test_render_storm_mail() -> None:
     html, text = render_storm_mail(
         alert_title="Storm alert",
