@@ -98,21 +98,35 @@ export default defineConfig({
   },
   resolve: {
     dedupe: ['react', 'react-dom'],
-    alias: {
-      assets: path.resolve(__dirname, 'src/assets'),
-      components: '/src/components',
-      config: '/src/config',
-      context: '/src/context',
-      dashboardConfig: '/src/dashboardConfig',
-      hooks: '/src/hooks',
-      utils: '/src/utils',
-      muiTheme: '/src/muiTheme',
-      i18n: '/src/i18n',
-      fonts: '/src/fonts',
-      serviceWorker: '/src/serviceWorker',
-      src: '/src',
-      test: '/test',
-      public: '/public',
-    },
+    alias: [
+      {
+        find: /^react-dom$/,
+        replacement: path.resolve(__dirname, 'src/shims/react-dom.ts'),
+      },
+      {
+        find: 'react-dom-vendor',
+        replacement: path.resolve(__dirname, 'node_modules/react-dom'),
+      },
+    ].concat(
+      Object.entries({
+        assets: path.resolve(__dirname, 'src/assets'),
+        components: '/src/components',
+        config: '/src/config',
+        context: '/src/context',
+        dashboardConfig: '/src/dashboardConfig',
+        hooks: '/src/hooks',
+        utils: '/src/utils',
+        muiTheme: '/src/muiTheme',
+        i18n: '/src/i18n',
+        fonts: '/src/fonts',
+        serviceWorker: '/src/serviceWorker',
+        src: '/src',
+        test: '/test',
+        public: '/public',
+      }).map(([find, replacement_]) => ({
+        find,
+        replacement: replacement_,
+      })),
+    ),
   },
 });

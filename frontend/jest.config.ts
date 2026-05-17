@@ -4,7 +4,6 @@ const config: Config = {
   preset: 'ts-jest',
   testEnvironment: 'jest-environment-jsdom',
   globalSetup: '<rootDir>/test/global-setup.cjs',
-  setupFiles: ['<rootDir>/test/jest-react-dom-polyfill.cjs'],
   transform: {
     '^.+\\.tsx?$': [
       'ts-jest',
@@ -22,6 +21,8 @@ const config: Config = {
   },
   transformIgnorePatterns: ['<rootDir>/node_modules/(?!(quick-lru)/)'],
   moduleNameMapper: {
+    '^react-dom$': '<rootDir>/src/shims/react-dom.ts',
+    '^react-dom-vendor$': '<rootDir>/node_modules/react-dom',
     '\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
       '<rootDir>/test/fileMock.ts',
     '\\.(css|less)$': '<rootDir>/test/fileMock.ts',
