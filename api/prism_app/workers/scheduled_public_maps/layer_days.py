@@ -1,11 +1,8 @@
 """Fetch available coverage timestamps per layer via WMS GetCapabilities (alert-worker parity).
 
 Uses the WFP Humanitarian Data Cube OWS gateway
-``https://api.earthobservation.vam.wfp.org/ows/`` (WMS) by default — same stack as
+``https://api.earthobservation.vam.wfp.org/ows/`` (WMS) — same stack as
 frontend ``…/ows/wms`` in ``prism.json``.
-
-Override with env ``SCHEDULED_PUBLIC_MAPS_WMS_BASE`` (path ending with ``/ows`` or
-``/ows/wms``; ``/wms`` is appended when missing).
 
 Alert reference: ``alerting/src/alert-worker.ts`` → ``WMS.getLayerDays()`` then max date.
 """
@@ -13,7 +10,6 @@ Alert reference: ``alerting/src/alert-worker.ts`` → ``WMS.getLayerDays()`` the
 from __future__ import annotations
 
 import logging
-import os
 import xml.etree.ElementTree as ET
 from datetime import UTC, datetime
 from urllib.parse import urlencode
@@ -26,11 +22,7 @@ DEFAULT_WMS_OWS_ROOT = "https://api.earthobservation.vam.wfp.org/ows"
 
 
 def wms_ows_root() -> str:
-    return (
-        os.environ.get("SCHEDULED_PUBLIC_MAPS_WMS_BASE", DEFAULT_WMS_OWS_ROOT)
-        .strip()
-        .rstrip("/")
-    )
+    return DEFAULT_WMS_OWS_ROOT.rstrip("/")
 
 
 def _local_tag(tag: str) -> str:

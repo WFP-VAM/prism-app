@@ -12,8 +12,7 @@ Default config path: ``prism_app/workers/scheduled_public_maps/config/scheduled_
 - **Public layout**: optional per-job ``"public": true`` (requires non-empty ``country`` in config). Worker writes
    ``public_maps/{country}/{layer}/{job_id}.{ext}``; ``country`` from job payload only; ``layer`` from ``hazardLayerIds`` on the export URL.
 - **Dates**: each ``layer_id`` is resolved against WFP datacube WMS GetCapabilities
-  (default ``https://api.earthobservation.vam.wfp.org/ows``); override with
-  ``SCHEDULED_PUBLIC_MAPS_WMS_BASE``. Latest timestep → ``{date}`` as ``YYYY-MM-DD``.
+  (``https://api.earthobservation.vam.wfp.org/ows``). Latest timestep → ``{date}`` as ``YYYY-MM-DD``.
 - **Priority**: jobs enqueue with priority 100 vs interactive default 200 —
   see ``export_jobs/claim.py`` (``ORDER BY priority DESC``).
 """
@@ -23,7 +22,6 @@ from __future__ import annotations
 import argparse
 import json
 import logging
-import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -39,6 +37,8 @@ from prism_app.workers.scheduled_public_maps.layer_days import (
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 logger = logging.getLogger(__name__)
+
+_CAPABILITIES_HTTP_TIMEOUT_SEC = 120.0
 
 
 class ScheduledPublicMapJobGroup(BaseModel):
@@ -139,9 +139,7 @@ def main(argv: list[str] | None = None) -> int:
         logger.error("Invalid config %s: %s", path, exc)
         return 1
 
-    timeout_sec = float(
-        os.environ.get("SCHEDULED_PUBLIC_MAPS_HTTP_TIMEOUT", "120").strip() or "120"
-    )
+    timeout_sec = _CAPABILITIES_HTTP_TIMEOUT_SEC
 
     factory = get_export_jobs_session_factory()
     enqueued = 0

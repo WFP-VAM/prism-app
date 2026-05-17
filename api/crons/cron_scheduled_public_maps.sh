@@ -10,7 +10,7 @@
 # Requires: Docker Compose api stack, PRISM_ALERTS_DATABASE_URL, AWS creds for dedupe artifact checks.
 #
 # Priority: cron enqueues at priority 100; API export jobs default 200 (see export_jobs/claim.py).
-# WMS dates: default OWS https://api.earthobservation.vam.wfp.org/ows — override with SCHEDULED_PUBLIC_MAPS_WMS_BASE if needed.
+# WMS dates: GetCapabilities against https://api.earthobservation.vam.wfp.org/ows
 # Alembic: map_export_schedules revisions were removed from this repo; existing DBs may need manual
 # cleanup of map_export_schedules + schedule_id and ``alembic stamp map_export_job_priority_001``.
 
