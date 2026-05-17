@@ -8,11 +8,19 @@ import {
   useTheme,
 } from '@material-ui/core';
 import { VisibilityOffOutlined, VisibilityOutlined } from '@material-ui/icons';
+import { Panel } from 'config/types';
+import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { useSafeTranslation } from 'i18n';
 import { black, cyanBlue } from 'muiTheme';
 import { memo, useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import LegendItemsList from './LegendItemsList';
+
+/** Tabs where left panel is full-viewport data UI; floating legend lives under AppBar (z-index above Drawer) and would cover charts/tables (React 19 stacking unchanged—behavior was always wrong; upgrade made it more visible). */
+function shouldHideFloatingMapLegend(tabValue: Panel): boolean {
+  return tabValue === Panel.Charts || tabValue === Panel.Tables;
+}
 
 const Legends = memo(() => {
   const classes = useStyles();
@@ -20,8 +28,13 @@ const Legends = memo(() => {
   const theme = useTheme();
   const smDown = useMediaQuery(theme.breakpoints.down('sm'));
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
+  const tabValue = useSelector(leftPanelTabValueSelector);
 
   const [open, setOpen] = useState(true);
+
+  if (shouldHideFloatingMapLegend(tabValue)) {
+    return null;
+  }
 
   const toggleLegendVisibility = useCallback(() => {
     setOpen(!open);

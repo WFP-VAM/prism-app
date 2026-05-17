@@ -4,7 +4,7 @@ exports[`renders as expected 1`] = `
 <div>
   <mock-button
     aria-label="Legend"
-    class="makeStyles-triggerButton-1"
+    classname="makeStyles-triggerButton-1"
     starticon="[object Object]"
     style="background-color: rgb(99, 178, 189);"
   >
@@ -41,8 +41,8 @@ exports[`renders as expected 1`] = `
     />
   </button>
   <mock-list
-    class="makeStyles-list-2"
-    disablepadding=""
+    classname="makeStyles-list-2"
+    disablepadding="true"
   />
 </div>
 `;
