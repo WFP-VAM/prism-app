@@ -520,6 +520,12 @@ export const dashboardStateSlice = createSlice({
         ),
       });
     },
+    removeDashboard: state => {
+      const dashboards = state.dashboards.filter(
+        (_, i) => i !== state.selectedDashboardIndex,
+      );
+      return { ...state, dashboards };
+    },
     addLayerToMap: (
       state,
       action: PayloadAction<{ elementId: string; layer: LayerType }>,
@@ -942,6 +948,7 @@ export const {
   swapMapPosition,
   setElementType,
   removeElement,
+  removeDashboard,
 } = dashboardStateSlice.actions;
 
 export default dashboardStateSlice.reducer;

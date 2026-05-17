@@ -2,8 +2,8 @@ import {
   Box,
   Button,
   IconButton,
-  Typography,
   makeStyles,
+  Typography,
 } from '@material-ui/core';
 import {
   AddOutlined,
@@ -13,8 +13,9 @@ import {
   TableChart,
 } from '@material-ui/icons';
 import { DashboardElementType } from 'config/types';
-import { DashboardPreset, SlotConfig, MAX_SIDEBAR_SLOTS } from './utils';
 import { useSafeTranslation } from 'i18n';
+
+import { DashboardPreset, MAX_SIDEBAR_SLOTS, SlotConfig } from './utils';
 
 const SLOT_TYPES: {
   type: DashboardElementType;

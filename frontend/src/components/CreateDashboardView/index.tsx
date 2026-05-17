@@ -1,23 +1,24 @@
 import { Box, Button, makeStyles } from '@material-ui/core';
 import { ArrowBackOutlined } from '@material-ui/icons';
-import { useState } from 'react';
-import { useSafeTranslation } from 'i18n';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import {
-  setDraftDashboard,
-  dashboardsListSelector,
-} from 'context/dashboardStateSlice';
 import { DashboardElementType } from 'config/types';
 import {
-  DashboardPreset,
-  SlotConfig,
-  MAX_SIDEBAR_SLOTS,
-  buildDraftDashboard,
-  buildDraftMeta,
-} from './utils';
+  dashboardsListSelector,
+  setDraftDashboard,
+} from 'context/dashboardStateSlice';
+import { useSafeTranslation } from 'i18n';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+
 import PresetSelector from './PresetSelector';
 import SlotConfigurator from './SlotConfigurator';
+import {
+  buildDraftDashboard,
+  buildDraftMeta,
+  DashboardPreset,
+  MAX_SIDEBAR_SLOTS,
+  SlotConfig,
+} from './utils';
 
 function CreateDashboardView() {
   const classes = useStyles();

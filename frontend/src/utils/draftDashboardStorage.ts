@@ -1,7 +1,7 @@
 import type { Dashboard } from 'config/types';
 import {
-  validateDashboardConfig,
   formatDashboardValidationError,
+  validateDashboardConfig,
 } from 'dashboardConfig/schema';
 
 export const DRAFT_STORAGE_KEY = 'prism_draft_dashboards';
