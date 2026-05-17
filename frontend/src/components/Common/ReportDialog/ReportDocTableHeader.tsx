@@ -1,6 +1,6 @@
-import { memo, useMemo } from 'react';
-import { StyleSheet, Text, View } from '@react-pdf/renderer';
 import { Theme } from '@material-ui/core';
+import { StyleSheet, Text, View } from '@react-pdf/renderer';
+import { memo, useMemo } from 'react';
 import { Column } from 'utils/analysis-utils';
 
 const makeStyles = (theme: Theme) =>

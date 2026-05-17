@@ -1,12 +1,13 @@
-import React, { ReactNode } from 'react';
 import { Box, makeStyles, Typography } from '@material-ui/core';
-import { useDispatch, useSelector } from 'react-redux';
-import Markdown from 'react-markdown';
-import { useSafeTranslation } from 'i18n';
 import { DashboardMode } from 'config/types';
+import { useSafeTranslation } from 'i18n';
+import React, { type ReactNode } from 'react';
+import Markdown from 'react-markdown';
+import { useDispatch, useSelector } from 'react-redux';
+
 import {
-  setTextContent,
   dashboardModeSelector,
+  setTextContent,
 } from '../../context/dashboardStateSlice';
 
 interface TextBlockProps {

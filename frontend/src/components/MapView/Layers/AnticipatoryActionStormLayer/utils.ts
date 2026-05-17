@@ -1,11 +1,10 @@
+import { TZDate } from '@date-fns/tz';
+import { differenceInHours, format, isSameDay, parseJSON } from 'date-fns';
+import { MapGeoJSONFeature } from 'maplibre-gl';
 import {
   AAStormTimeSeriesFeature,
   TimeSerieFeatureProperty,
 } from 'prism-common/';
-
-import { isSameDay, parseJSON, format, differenceInHours } from 'date-fns';
-import { MapGeoJSONFeature } from 'maplibre-gl';
-import { TZDate } from '@date-fns/tz';
 
 export function getDateInUTC(
   time: string | undefined,

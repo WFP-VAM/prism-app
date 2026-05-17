@@ -1,16 +1,17 @@
-import { sortBy } from 'lodash';
-import GeoJSON from 'geojson';
-import { Dispatch } from 'redux';
 import {
-  PointLayerData,
   PointDataLayerProps,
+  PointLayerData,
   ReferenceDateTimestamp,
 } from 'config/types';
 import { addNotification } from 'context/notificationStateSlice';
-import { queryParamsToString } from './url-utils';
-import { fetchWithTimeout } from './fetch-with-timeout';
-import { LocalError } from './error-utils';
+import GeoJSON from 'geojson';
+import { sortBy } from 'lodash';
+import { Dispatch } from 'redux';
+
 import { getFormattedDate, getTimeInMilliseconds } from './date-utils';
+import { LocalError } from './error-utils';
+import { fetchWithTimeout } from './fetch-with-timeout';
+import { queryParamsToString } from './url-utils';
 
 export const fetchACLEDDates = async (
   url: string,

@@ -1,6 +1,3 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import omit from 'lodash/omit';
 import { createStyles, makeStyles } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import {
@@ -8,6 +5,9 @@ import {
   notificationsSelector,
   removeNotification,
 } from 'context/notificationStateSlice';
+import omit from 'lodash/omit';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 const AUTO_CLOSE_TIME = 10 * 1000;
 

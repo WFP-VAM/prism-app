@@ -1,30 +1,30 @@
-import { memo, useMemo } from 'react';
-import * as Sentry from '@sentry/browser';
+// Basic CSS Layout for the whole page
+import './app.css';
+
 import { useIsAuthenticated } from '@azure/msal-react';
 import { ThemeProvider } from '@material-ui/core/styles';
+import { Font } from '@react-pdf/renderer';
+import * as Sentry from '@sentry/browser';
+import AuthModal from 'components/AuthModal';
+import CreateDashboardView from 'components/CreateDashboardView';
+import DashboardView from 'components/DashboardView';
+import ExportView from 'components/ExportView';
+import Login from 'components/Login';
+import MapView from 'components/MapView';
+import NavBar from 'components/NavBar';
+import Notifier from 'components/Notifier';
+import { authRequired } from 'config';
+import KhmerFont from 'fonts/Khmer-Regular.ttf';
+import RobotoFont from 'fonts/Roboto-Regular.ttf';
+import { useDashboardConfig } from 'hooks/useDashboardConfig';
+import muiTheme from 'muiTheme';
+import { memo, useMemo } from 'react';
 import {
   BrowserRouter as Router,
   Route,
   Switch,
   useParams,
 } from 'react-router-dom';
-import { Font } from '@react-pdf/renderer';
-import { authRequired } from 'config';
-
-import { useDashboardConfig } from 'hooks/useDashboardConfig';
-import NavBar from 'components/NavBar';
-import MapView from 'components/MapView';
-import DashboardView from 'components/DashboardView';
-import CreateDashboardView from 'components/CreateDashboardView';
-import Login from 'components/Login';
-import ExportView from 'components/ExportView';
-import muiTheme from 'muiTheme';
-import Notifier from 'components/Notifier';
-import AuthModal from 'components/AuthModal';
-// Basic CSS Layout for the whole page
-import './app.css';
-import RobotoFont from 'fonts/Roboto-Regular.ttf';
-import KhmerFont from 'fonts/Khmer-Regular.ttf';
 
 if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development') {
   if (process.env.REACT_APP_SENTRY_URL) {

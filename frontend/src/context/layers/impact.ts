@@ -1,20 +1,20 @@
-import { FeatureCollection } from 'geojson';
 import {
+  AdminLevelDataLayerProps,
   AggregationOperations,
   ImpactLayerProps,
-  AdminLevelDataLayerProps,
   WMSLayerProps,
 } from 'config/types';
-import type { ThunkApi } from 'context/store';
-
 import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
-import { boundaryCache } from 'utils/boundary-cache';
+import type { ThunkApi } from 'context/store';
+import { FeatureCollection } from 'geojson';
 import type { BaselineLayerData } from 'utils/analysis-utils';
 import {
   checkBaselineDataLayer,
   loadFeaturesFromApi,
 } from 'utils/analysis-utils';
+import { boundaryCache } from 'utils/boundary-cache';
+
 import type { LayerDataParams, LazyLoader } from './layer-data';
 
 export type ImpactLayerData = {

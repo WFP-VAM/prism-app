@@ -1,17 +1,18 @@
 import {
   Button,
+  createStyles,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
-  Typography,
-  createStyles,
   makeStyles,
+  Typography,
 } from '@material-ui/core';
 import { Cancel, Close, HelpOutline } from '@material-ui/icons';
 import { useSafeTranslation } from 'i18n';
 import { black, cyanBlue } from 'muiTheme';
+
 import { getAADroughtCountryConfig } from '../AnticipatoryActionDroughtPanel/utils/countryConfig';
 
 const content = getAADroughtCountryConfig().howToReadContent;

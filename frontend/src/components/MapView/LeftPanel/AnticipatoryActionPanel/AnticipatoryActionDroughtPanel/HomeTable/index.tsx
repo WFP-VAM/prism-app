@@ -1,14 +1,12 @@
 import {
   Button,
-  Typography,
   createStyles,
   makeStyles,
+  Typography,
 } from '@material-ui/core';
-import { useSafeTranslation } from 'i18n';
-import { borderGray, grey, lightGrey } from 'muiTheme';
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { AAView } from 'context/anticipatoryAction/AADroughtStateSlice/types';
+import { BarChartOutlined, GetApp } from '@material-ui/icons';
+import { appConfig } from 'config';
+import { PanelSize } from 'config/types';
 import { AAWindowKeys } from 'config/utils';
 import {
   AAFiltersSelector,
@@ -18,13 +16,16 @@ import {
   setAASelectedDistrict,
   setAAView,
 } from 'context/anticipatoryAction/AADroughtStateSlice';
-import { GetApp, BarChartOutlined } from '@material-ui/icons';
-import { appConfig } from 'config';
-import { PanelSize } from 'config/types';
+import { AAView } from 'context/anticipatoryAction/AADroughtStateSlice/types';
+import { useSafeTranslation } from 'i18n';
+import { borderGray, grey, lightGrey } from 'muiTheme';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { getCurrentDateTimeForUrl } from 'utils/date-utils';
 import { getAADroughtUrl } from 'utils/url-utils';
-import { AADataSeverityOrder, getAAIcon } from '../utils';
+
 import { useAACommonStyles } from '../../utils';
+import { AADataSeverityOrder, getAAIcon } from '../utils';
 import { getRowCategories } from '../utils/countryConfig';
 
 interface AreaTagProps {

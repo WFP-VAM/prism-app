@@ -1,15 +1,16 @@
-import { useContext } from 'react';
 import {
   Box,
-  TextField,
-  Typography,
   createStyles,
   makeStyles,
+  TextField,
+  Typography,
 } from '@material-ui/core';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
-import { getFormattedDate } from 'utils/date-utils';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import { useContext } from 'react';
 import { BatchCadence } from 'utils/batchCadenceUtils';
+import { getFormattedDate } from 'utils/date-utils';
+
 import { useSafeTranslation } from '../../../i18n';
 import PrintConfigContext from './printConfig.context';
 

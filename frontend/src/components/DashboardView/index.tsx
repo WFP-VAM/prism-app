@@ -1,11 +1,14 @@
-import { Box, makeStyles, Button } from '@material-ui/core';
+import { Box, Button, makeStyles } from '@material-ui/core';
 import { VisibilityOutlined } from '@material-ui/icons';
-import { useSelector, useDispatch } from 'react-redux';
-import { useEffect, useState } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
-import { useSafeTranslation } from 'i18n';
 import { DashboardMode } from 'config/types';
+import { usePersistDraftDashboards } from 'hooks/usePersistDraftDashboards';
+import { useSafeTranslation } from 'i18n';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, useParams } from 'react-router-dom';
 
+import { getDashboardIndexByPath } from '../../config/utils';
+import { clearAnalysisResult } from '../../context/analysisResultStateSlice';
 import {
   dashboardConfigSelector,
   dashboardModeSelector,
@@ -13,12 +16,9 @@ import {
   setMode,
   setSelectedDashboard,
 } from '../../context/dashboardStateSlice';
-import { getDashboardIndexByPath } from '../../config/utils';
 import { generateSlugFromTitle } from '../../utils/string-utils';
-import { clearAnalysisResult } from '../../context/analysisResultStateSlice';
-import { usePersistDraftDashboards } from 'hooks/usePersistDraftDashboards';
-import { DashboardExportDialog } from './DashboardExport';
 import DashboardContent from './DashboardContent';
+import { DashboardExportDialog } from './DashboardExport';
 
 function DashboardView() {
   usePersistDraftDashboards();

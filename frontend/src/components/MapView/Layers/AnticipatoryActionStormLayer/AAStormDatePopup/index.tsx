@@ -1,12 +1,13 @@
-import { MapLayerMouseEvent, Popup } from 'react-map-gl/maplibre';
-import _React, { useCallback, useState } from 'react';
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
-import { useMapCallback } from 'utils/map-utils';
 import {
   AAStormTimeSeriesFeature,
   FeaturePropertyDataType,
   TimeSeries,
 } from 'prism-common/';
+import _React, { useCallback, useState } from 'react';
+import { MapLayerMouseEvent, Popup } from 'react-map-gl/maplibre';
+import { useMapCallback } from 'utils/map-utils';
+
 import { formatWindPointDate } from '../utils';
 
 interface AAStormDatePopupProps {

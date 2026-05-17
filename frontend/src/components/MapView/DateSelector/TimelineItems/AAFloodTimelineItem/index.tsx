@@ -1,7 +1,8 @@
-import { useSelector } from 'react-redux';
-import { RootState } from 'context/store';
 import { DateRangeType } from 'config/types';
+import { RootState } from 'context/store';
+import { useSelector } from 'react-redux';
 import { datesAreEqualWithoutTime } from 'utils/date-utils';
+
 import { TIMELINE_ITEM_WIDTH } from '../../utils';
 
 interface AAFloodTimelineItemProps {

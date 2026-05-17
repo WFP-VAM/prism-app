@@ -1,5 +1,6 @@
-import { Dispatch } from 'redux';
 import { addNotification } from 'context/notificationStateSlice';
+import { Dispatch } from 'redux';
+
 import { HTTPError } from './error-utils';
 
 interface FetchWithTimeoutOptions extends RequestInit {

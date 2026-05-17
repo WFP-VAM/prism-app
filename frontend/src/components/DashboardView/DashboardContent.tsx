@@ -7,43 +7,44 @@ import {
   DialogContentText,
   FormControlLabel,
   IconButton,
+  makeStyles,
   MenuItem,
   Select,
   Switch,
   Typography,
-  makeStyles,
 } from '@material-ui/core';
 import { Close, Edit } from '@material-ui/icons';
+import { getImageUrl } from 'assets/images';
+import { useSafeTranslation } from 'i18n';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useSafeTranslation } from 'i18n';
-import type { RootState } from 'context/store';
+
+import { appConfig } from '../../config';
 import {
+  AdminCodeString,
+  ChartHeight,
+  DashboardElements,
+  DashboardElementType,
+  DashboardMode,
+} from '../../config/types';
+import {
+  dashboardColumnsSelector,
   dashboardConfigSelector,
   dashboardMapElementsSelector,
   dashboardModeSelector,
-  setTitle,
-  toggleMapSync,
   dashboardSyncEnabledSelector,
-  setElementType,
   removeElement,
+  setElementType,
+  setTitle,
   swapMapPosition,
+  toggleMapSync,
 } from '../../context/dashboardStateSlice';
-import {
-  DashboardMode,
-  AdminCodeString,
-  DashboardElementType,
-  DashboardElements,
-  ChartHeight,
-} from '../../config/types';
-import { appConfig } from '../../config';
-import { getImageUrl } from 'assets/images';
-import MapBlock from './MapBlock';
-import TextBlock from './TextBlock';
-import TableBlock from './TableBlock';
 import ChartBlock from './ChartBlock';
-import { useColumnHeightManagement, GAP } from './useColumnHeightManagement';
 import { CHART_HEIGHTS } from './chartConstants';
+import MapBlock from './MapBlock';
+import TableBlock from './TableBlock';
+import TextBlock from './TextBlock';
+import { GAP, useColumnHeightManagement } from './useColumnHeightManagement';
 
 interface LogoConfig {
   visible: boolean;
@@ -92,9 +93,7 @@ function DashboardContent({
   const logoHeightMultiplier = 32;
   const logoHeight = logoConfig ? logoHeightMultiplier * logoConfig.scale : 0;
   /** Include empty middle columns so MAP block ids stay aligned with Redux (`${col}-${row}` keys). */
-  const columns = useSelector(
-    (state: RootState) => state.dashboardState.columns,
-  );
+  const columns = useSelector(dashboardColumnsSelector);
   const mapElements = useSelector(dashboardMapElementsSelector);
   const mode = useSelector(dashboardModeSelector);
   const { t } = useSafeTranslation();

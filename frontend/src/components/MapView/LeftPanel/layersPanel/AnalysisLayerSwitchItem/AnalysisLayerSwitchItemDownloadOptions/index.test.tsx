@@ -1,6 +1,7 @@
 import { render } from '@testing-library/react';
-import { Provider } from 'react-redux';
 import { store } from 'context/store';
+import { Provider } from 'react-redux';
+
 import AnalysisLayerSwitchItemDownloadOptions from '.';
 
 test('renders as expected', () => {

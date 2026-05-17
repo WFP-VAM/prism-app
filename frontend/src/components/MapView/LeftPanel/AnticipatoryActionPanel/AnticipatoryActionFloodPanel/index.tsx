@@ -1,36 +1,37 @@
-import { useState, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import {
-  Typography,
+  Box,
+  createStyles,
+  IconButton,
+  makeStyles,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  createStyles,
-  makeStyles,
   TableSortLabel,
-  Box,
-  IconButton,
+  Typography,
 } from '@material-ui/core';
-import { cyanBlue } from 'muiTheme';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
+import SimpleDropdown from 'components/Common/SimpleDropdown';
+import { AnticipatoryAction } from 'config/types';
 import { setAAFloodSelectedStation } from 'context/anticipatoryAction/AAFloodStateSlice';
 import {
   getFloodRiskColor,
   getFloodRiskSeverity,
 } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
-import { useSafeTranslation } from 'i18n';
-import { AnticipatoryAction } from 'config/types';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
+import { useSafeTranslation } from 'i18n';
+import { cyanBlue } from 'muiTheme';
+import { useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
-import SimpleDropdown from 'components/Common/SimpleDropdown';
+
 import { useAnticipatoryAction } from '../useAnticipatoryAction';
-import StationCharts from './StationCharts';
 import { TABLE_WIDTH } from './constants';
+import StationCharts from './StationCharts';
 
 const useStyles = makeStyles(() =>
   createStyles({

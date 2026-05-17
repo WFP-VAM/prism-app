@@ -1,12 +1,14 @@
-import { createRoot } from 'react-dom/client';
 import './index.css';
 import './i18n';
-import { Provider } from 'react-redux';
+
 import { MsalProvider } from '@azure/msal-react';
 import React from 'react';
+import { createRoot } from 'react-dom/client';
+import { Provider } from 'react-redux';
+
 import App from './components/App';
-import { AppStore, store } from './context/store';
 import { msalInstance } from './config';
+import { AppStore, store } from './context/store';
 import * as serviceWorker from './serviceWorker';
 
 const container = document.getElementById('root');

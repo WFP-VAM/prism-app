@@ -6,15 +6,15 @@ import {
   setAAFilters as setDroughtAAFilters,
 } from 'context/anticipatoryAction/AADroughtStateSlice';
 import {
-  AAAvailableDatesSelector as stormAvailableDatesSelector,
-  AADataSelector as stormDataSelector,
-  loadAllAAStormData,
-} from 'context/anticipatoryAction/AAStormStateSlice';
-import {
   AAFloodAvailableDatesSelector as floodAvailableDatesSelector,
   AAFloodDataSelector as floodDataSelector,
   loadAAFloodData,
 } from 'context/anticipatoryAction/AAFloodStateSlice';
+import {
+  AAAvailableDatesSelector as stormAvailableDatesSelector,
+  AADataSelector as stormDataSelector,
+  loadAllAAStormData,
+} from 'context/anticipatoryAction/AAStormStateSlice';
 
 const anticipatoryActionConfig = {
   [AnticipatoryAction.storm]: {

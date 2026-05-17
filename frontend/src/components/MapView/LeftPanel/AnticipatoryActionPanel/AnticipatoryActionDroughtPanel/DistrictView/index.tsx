@@ -1,17 +1,11 @@
 import {
   Button,
-  Tooltip,
-  Typography,
   createStyles,
   makeStyles,
+  Tooltip,
+  Typography,
 } from '@material-ui/core';
-import { lightGrey } from 'muiTheme';
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  AAView,
-  AnticipatoryActionDataRow,
-} from 'context/anticipatoryAction/AADroughtStateSlice/types';
+import { ClearAll, Equalizer, Reply } from '@material-ui/icons';
 import { AAWindowKeys } from 'config/utils';
 import {
   AADataSelector,
@@ -20,15 +14,22 @@ import {
   setAASelectedDistrict,
   setAAView,
 } from 'context/anticipatoryAction/AADroughtStateSlice';
+import {
+  AAView,
+  AnticipatoryActionDataRow,
+} from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { useSafeTranslation } from 'i18n';
-import { ClearAll, Equalizer, Reply } from '@material-ui/icons';
-import { AADataSeverityOrder, getAAIcon } from '../utils';
+import { lightGrey } from 'muiTheme';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { useAACommonStyles } from '../../utils';
+import { AADataSeverityOrder, getAAIcon } from '../utils';
+import ActionsModal from './ActionsModal';
 import {
   Action,
   getActionsByPhaseCategoryAndWindow,
 } from './ActionsModal/actions';
-import ActionsModal from './ActionsModal';
 import { dateSorter, districtViewTransform } from './utils';
 
 interface WindowColumnProps {

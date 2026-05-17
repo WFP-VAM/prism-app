@@ -9,7 +9,7 @@ import rasterio
 from fastapi.testclient import TestClient
 from prism_app.database.alert_model import AlertModel
 from prism_app.database.database import AlertsDataBase, AuthDataBase
-from prism_app.database.user_info_model import UserInfoModel
+from prism_app.database.kobo_user_model import KoboUser
 from prism_app.main import app
 from prism_app.scripts.add_users import add_users
 from sqlalchemy import text
@@ -40,7 +40,7 @@ def migrate_test_db():
           "last_triggered" TIMESTAMP,
           CONSTRAINT "PK_ad91cad659a3536465d564a4b2f" PRIMARY KEY ("id")
         )"""
-    q2 = """CREATE TABLE IF NOT EXISTS "user_info" (
+    q2 = """CREATE TABLE IF NOT EXISTS "kobo_users" (
           "id" SERIAL NOT NULL,
           "username" character varying PRIMARY KEY,
           "password" character varying NOT NULL,
@@ -180,11 +180,11 @@ def test_get_alert_deactivate(migrate_test_db):
 
 
 def test_auth_database_read_returns_users(migrate_test_db):
-    """Regression: read() must query user_info (not alert)."""
+    """Regression: read() must query kobo_users (not alert)."""
     auth = AuthDataBase()
     if auth.engine is None:
         pytest.skip("Auth database unavailable")
-    rows = auth.read(UserInfoModel.username == "admin_01")
+    rows = auth.read(KoboUser.username == "admin_01")
     assert len(rows) >= 1
     assert rows[0].username == "admin_01"
     assert isinstance(rows[0].access, (dict, type(None)))

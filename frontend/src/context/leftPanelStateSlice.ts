@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { appConfig } from 'config';
 import { LeftPanelState, Panel, PanelSize } from 'config/types';
+
 import type { RootState } from './store';
 
 const { hidePanel } = appConfig;

@@ -1,4 +1,5 @@
 import { WindState } from 'prism-common';
+
 import { getWindStatesForDate } from '../hooks';
 
 describe('getWindStatesForDate', () => {
