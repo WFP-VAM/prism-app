@@ -82,3 +82,33 @@ def enqueue_map_export_job(
     session.commit()
     session.refresh(job)
     return job, 202
+
+
+def cancel_map_export_job_if_queued(session: Session, job_id: str) -> str:
+    """
+    Mark a queued job as cancelled. Idempotent when already cancelled.
+
+    Returns outcome: cancelled | already_cancelled | not_found | not_queued.
+
+    Workers only claim rows with status ``queued``, so cancelled rows are never processed.
+    """
+    job = session.get(MapExportJob, job_id)
+    if job is None:
+        return "not_found"
+    if job.status == "cancelled":
+        session.commit()
+        return "already_cancelled"
+    if job.status != "queued":
+        session.commit()
+        return "not_queued"
+    now = utc_now()
+    job.status = "cancelled"
+    job.finished_at = now
+    job.updated_at = now
+    job.error_json = {
+        "message": "Cancelled before processing.",
+        "type": "Cancelled",
+    }
+    session.add(job)
+    session.commit()
+    return "cancelled"
