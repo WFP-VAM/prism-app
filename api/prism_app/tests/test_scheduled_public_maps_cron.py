@@ -18,19 +18,19 @@ from prism_app.workers.scheduled_public_maps.cron import (
 from prism_app.tests.fixtures.moz_export import MAP_EXPORT_FIXTURE_BASE_URL
 
 
-def _example_config_path() -> Path:
-    """Shipped example next to the cron module under ``workers/scheduled_public_maps/config``."""
+def _repo_config_path() -> Path:
+    """Committed default: ``workers/scheduled_public_maps/config/scheduled_public_maps.json``."""
     return (
         Path(__file__).resolve().parents[1]
         / "workers"
         / "scheduled_public_maps"
         / "config"
-        / "scheduled_public_maps.example.json"
+        / "scheduled_public_maps.json"
     )
 
 
-def test_repo_example_config_loads_and_matches_schema() -> None:
-    path = _example_config_path()
+def test_repo_config_loads_and_matches_schema() -> None:
+    path = _repo_config_path()
     assert path.is_file(), f"expected example config at {path}"
     cfg = load_config(path)
     assert len(cfg.jobs) >= 1
@@ -40,9 +40,9 @@ def test_repo_example_config_loads_and_matches_schema() -> None:
     assert "{layer_id}" in first.export_url_template
 
 
-def test_repo_example_config_dry_run() -> None:
+def test_repo_config_dry_run() -> None:
     """End-to-end parse + expand; WMS lookup mocked (no network)."""
-    path = _example_config_path()
+    path = _repo_config_path()
     assert path.is_file()
 
     def fake_latest(*_a, **_k):  # noqa: ANN001

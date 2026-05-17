@@ -2,16 +2,18 @@
 
 Run inside the export_map_worker image (or any env with PRISM_ALERTS_DATABASE_URL):
 
-    python -m prism_app.workers.scheduled_public_maps.cron --config /path/to/config.json
+    python -m prism_app.workers.scheduled_public_maps.cron
+
+Default config path: ``prism_app/workers/scheduled_public_maps/config/scheduled_public_maps.json``
+(next to this module). Override with ``--config /path/to/file.json`` for tests or one-offs.
+
+**Behavior**
 
 - **Dates**: each ``layer_id`` is resolved against WFP datacube WMS GetCapabilities
   (default ``https://api.earthobservation.vam.wfp.org/ows``); override with
   ``SCHEDULED_PUBLIC_MAPS_WMS_BASE``. Latest timestep → ``{date}`` as ``YYYY-MM-DD``.
 - **Priority**: jobs enqueue with priority 100 vs interactive default 200 —
   see ``export_jobs/claim.py`` (``ORDER BY priority DESC``).
-
-Config: ``SCHEDULED_PUBLIC_MAPS_CONFIG`` or ``--config``.
-Example: shipped at ``prism_app/workers/scheduled_public_maps/config/scheduled_public_maps.example.json``.
 """
 
 from __future__ import annotations
@@ -93,16 +95,13 @@ def main(argv: list[str] | None = None) -> int:
         level=logging.INFO,
     )
     parser = argparse.ArgumentParser(description=__doc__)
-    default_cfg = os.environ.get(
-        "SCHEDULED_PUBLIC_MAPS_CONFIG",
-        "/config/scheduled_public_maps.json",
-    )
+    default_config = Path(__file__).resolve().parent / "config" / "scheduled_public_maps.json"
     parser.add_argument(
         "--config",
         "-c",
         type=Path,
-        default=Path(default_cfg),
-        help=f"JSON config file (default: {default_cfg})",
+        default=default_config,
+        help=f"JSON config file (default: {default_config})",
     )
     parser.add_argument(
         "--dry-run",
