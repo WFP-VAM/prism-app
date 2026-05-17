@@ -2,28 +2,28 @@ import {
   Box,
   Button,
   CircularProgress,
-  Typography,
   makeStyles,
+  Typography,
 } from '@material-ui/core';
 import {
   CheckCircleOutline,
   CloudUploadOutlined,
   ErrorOutline,
 } from '@material-ui/icons';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import type React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { useSafeTranslation } from 'i18n';
-import {
-  setDraftDashboard,
-  dashboardsListSelector,
-} from 'context/dashboardStateSlice';
 import type { Dashboard } from 'config/types';
 import {
-  validateDashboardConfig,
+  dashboardsListSelector,
+  setDraftDashboard,
+} from 'context/dashboardStateSlice';
+import {
   formatDashboardValidationError,
+  validateDashboardConfig,
 } from 'dashboardConfig/schema';
+import { useSafeTranslation } from 'i18n';
+import type React from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { generateSlugFromTitle } from 'utils/string-utils';
 
 type ViewState =
