@@ -17,7 +17,15 @@ import {
 } from 'context/serverStateSlice';
 import { cloneDeep } from 'lodash';
 import type { LngLatBounds } from 'maplibre-gl';
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import {
+  useCallback,
+  useContext,
+  useDeferredValue,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import useLayers from 'utils/layers-utils';
 import { getLayersCoverage } from 'utils/server-utils';
@@ -55,6 +63,11 @@ function PrintPreview() {
   const { logo } = appConfig.header || {};
   const { selectedLayersWithDateSupport } = useLayers();
   const selectedLayerId = printConfig?.selectedLayerId ?? null;
+  // Style clone + MapExportLayout remount are expensive; defer so layer Select can
+  // close and paint before cloneDeep runs (keeps preview correct once caught up).
+  const deferredLayerIdForPreview = useDeferredValue(selectedLayerId);
+  const previewLayerTransitionPending =
+    selectedLayerId !== deferredLayerIdForPreview;
 
   useEffect(() => {
     if (selectedLayerId && !availableDates[selectedLayerId]) {
@@ -65,16 +78,16 @@ function PrintPreview() {
   const printSelectedLayers = useMemo(() => {
     if (
       printConfig?.toggles.batchMapsVisibility &&
-      selectedLayerId &&
-      LayerDefinitions[selectedLayerId]
+      deferredLayerIdForPreview &&
+      LayerDefinitions[deferredLayerIdForPreview]
     ) {
       return [
-        LayerDefinitions[selectedLayerId],
+        LayerDefinitions[deferredLayerIdForPreview],
         ...getDisplayBoundaryLayers().reverse(),
       ];
     }
     return [];
-  }, [selectedLayerId, printConfig?.toggles.batchMapsVisibility]);
+  }, [deferredLayerIdForPreview, printConfig?.toggles.batchMapsVisibility]);
 
   const mapLabelsVisibility = printConfig?.toggles.mapLabelsVisibility ?? true;
 
@@ -179,7 +192,7 @@ function PrintPreview() {
   const previewLoaderKey = useMemo(
     () =>
       [
-        printConfig?.selectedLayerId ?? '',
+        deferredLayerIdForPreview ?? '',
         String(previewDate ?? ''),
         togglesSlice?.batchMapsVisibility ? '1' : '0',
         togglesSlice?.mapLabelsVisibility ? '1' : '0',
@@ -188,13 +201,13 @@ function PrintPreview() {
       togglesSlice?.batchMapsVisibility,
       togglesSlice?.mapLabelsVisibility,
       previewDate,
-      printConfig?.selectedLayerId,
+      deferredLayerIdForPreview,
     ],
   );
 
   const [previewMapReady, setPreviewMapReady] = useState(false);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setPreviewMapReady(false);
   }, [previewLoaderKey, printConfig?.open]);
 
@@ -261,7 +274,7 @@ function PrintPreview() {
         position: 'relative',
       }}
     >
-      {!previewMapReady && (
+      {(!previewMapReady || previewLayerTransitionPending) && (
         <div
           role="status"
           aria-live="polite"
