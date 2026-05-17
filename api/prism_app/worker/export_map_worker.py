@@ -65,11 +65,31 @@ async def run_export_job(
         return
 
     req = MapExportRequestModel.model_validate(job.request_payload_json)
+    total_maps = len(req.urls)
+
+    t0 = utc_now()
+    job.progress_total = total_maps
+    job.progress_current = 0
+    job.updated_at = t0
+    session.add(job)
+    session.commit()
+
+    def report_progress(completed: int, total: int) -> None:
+        row = session.get(MapExportJob, job_id)
+        if row is None:
+            return
+        row.progress_current = completed
+        row.progress_total = total
+        row.updated_at = utc_now()
+        session.add(row)
+        session.commit()
+
     file_bytes, _media = await export_maps(
         urls=req.urls,
         viewport_width=req.viewportWidth,
         viewport_height=req.viewportHeight,
         format_type=req.format,
+        progress_callback=report_progress,
     )
     kind = job.content_type or ("pdf" if req.format == "pdf" else "zip")
 
@@ -100,6 +120,8 @@ async def run_export_job(
     fin = utc_now()
     job.status = "succeeded"
     job.s3_uri = artifact_uri
+    if job.progress_total is not None:
+        job.progress_current = job.progress_total
     job.finished_at = fin
     job.updated_at = fin
     session.add(job)

@@ -1,3 +1,4 @@
+import { CircularProgress, Typography } from '@material-ui/core';
 import { useFilteredFloodStations } from 'components/MapView/Layers/AnticipatoryActionFloodLayer/useFilteredFloodStations';
 import { appConfig } from 'config';
 import {
@@ -14,7 +15,8 @@ import {
   availableDatesSelector,
   loadAvailableDatesForLayer,
 } from 'context/serverStateSlice';
-import { useContext, useEffect, useMemo } from 'react';
+import type { LngLatBounds } from 'maplibre-gl';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import useLayers from 'utils/layers-utils';
 import { getLayersCoverage } from 'utils/server-utils';
@@ -23,8 +25,19 @@ import {
   dateRangeSelector,
   mapSelector,
 } from '../../../context/mapStateSlice/selectors';
+import { useSafeTranslation } from '../../../i18n';
 import MapExportLayout from '../../MapExport/MapExportLayout';
+import type { ExportMapBounds } from '../../MapExport/types';
 import PrintConfigContext from './printConfig.context';
+
+function lngLatBoundsToExport(b: LngLatBounds): ExportMapBounds {
+  return {
+    west: b.getWest(),
+    south: b.getSouth(),
+    east: b.getEast(),
+    north: b.getNorth(),
+  };
+}
 
 function PrintPreview() {
   const { printConfig } = useContext(PrintConfigContext);
@@ -36,6 +49,7 @@ function PrintPreview() {
   const AAMarkers = useSelector(AAMarkersSelector);
   const floodState = useSelector(AAFloodDataSelector);
   const tabValue = useSelector(leftPanelTabValueSelector);
+  const { t } = useSafeTranslation();
 
   const { logo } = appConfig.header || {};
   const { selectedLayersWithDateSupport } = useLayers();
@@ -91,7 +105,33 @@ function PrintPreview() {
     dateRange.startDate,
   );
 
-  // Appease TS by ensuring printConfig is defined
+  const togglesSlice = printConfig?.toggles;
+  const previewLoaderKey = useMemo(
+    () =>
+      [
+        printConfig?.selectedLayerId ?? '',
+        String(previewDate ?? ''),
+        togglesSlice?.batchMapsVisibility ? '1' : '0',
+        togglesSlice?.mapLabelsVisibility ? '1' : '0',
+      ].join('|'),
+    [
+      togglesSlice?.batchMapsVisibility,
+      togglesSlice?.mapLabelsVisibility,
+      previewDate,
+      printConfig?.selectedLayerId,
+    ],
+  );
+
+  const [previewMapReady, setPreviewMapReady] = useState(false);
+
+  useEffect(() => {
+    setPreviewMapReady(false);
+  }, [previewLoaderKey, printConfig?.open]);
+
+  const handlePreviewMapLoad = useCallback(() => {
+    setPreviewMapReady(true);
+  }, []);
+
   if (!printConfig || !selectedMap) {
     return null;
   }
@@ -115,11 +155,15 @@ function PrintPreview() {
     footerHeight,
     bottomLogo,
     bottomLogoScale,
+    previewBounds,
     setPreviewBounds,
     setPreviewZoom,
     setPreviewMapWidth,
     setPreviewMapHeight,
   } = printConfig;
+
+  const boundsToFit = previewBounds ?? selectedMap.getBounds();
+  const geographicBoundsForExport = lngLatBoundsToExport(boundsToFit);
 
   // Get the style and layers of the old map
   const selectedMapStyle = selectedMap.getStyle();
@@ -166,8 +210,41 @@ function PrintPreview() {
   }
 
   return (
-    <div style={{ flex: 1, minWidth: 0, minHeight: 0, display: 'flex' }}>
+    <div
+      style={{
+        flex: 1,
+        minWidth: 0,
+        minHeight: 0,
+        display: 'flex',
+        position: 'relative',
+      }}
+    >
+      {!previewMapReady && (
+        <div
+          role="status"
+          aria-live="polite"
+          aria-busy="true"
+          aria-label={t('Loading preview map')}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 12,
+            backgroundColor: 'rgba(255, 255, 255, 0.85)',
+            zIndex: 10,
+          }}
+        >
+          <CircularProgress />
+          <Typography variant="body2" color="textSecondary">
+            {t('Loading preview map')}
+          </Typography>
+        </div>
+      )}
       <MapExportLayout
+        key={previewLoaderKey}
         toggles={toggles}
         aspectRatio={mapDimensions.aspectRatio}
         titleText={titleText}
@@ -180,11 +257,7 @@ function PrintPreview() {
         titleHeight={titleHeight}
         legendPosition={legendPosition}
         legendScale={legendScale}
-        initialViewState={{
-          longitude: selectedMap.getCenter().lng,
-          latitude: selectedMap.getCenter().lat,
-          zoom: selectedMap.getZoom(),
-        }}
+        bounds={geographicBoundsForExport}
         mapStyle={selectedMapStyle}
         maxBounds={selectedMap.getMaxBounds() ?? undefined}
         invertedAdminBoundaryLimitPolygon={invertedAdminBoundaryLimitPolygon}
@@ -208,6 +281,7 @@ function PrintPreview() {
           setPreviewMapWidth(width);
           setPreviewMapHeight(height);
         }}
+        onMapLoad={handlePreviewMapLoad}
       />
     </div>
   );

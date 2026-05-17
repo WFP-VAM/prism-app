@@ -102,6 +102,29 @@ async def test_export_maps(urls, format_type, expected_files):
         raise ValueError(f"Invalid format type: {format_type}")
 
 
+@pytest.mark.asyncio
+async def test_export_maps_progress_callback_ordered_counts():
+    """progress_callback receives monotonic completed counts despite concurrent renders."""
+    calls: list[tuple[int, int]] = []
+
+    def cb(done: int, total: int) -> None:
+        calls.append((done, total))
+
+    urls = [
+        f"{MOCK_PAGE_URL}?date={TEST_DATE}",
+        f"{MOCK_PAGE_URL}?date=2025-01-11",
+        f"{MOCK_PAGE_URL}?date=2025-01-21",
+    ]
+    await export_maps(
+        urls=urls,
+        viewport_width=1200,
+        viewport_height=1600,
+        format_type="pdf",
+        progress_callback=cb,
+    )
+    assert calls == [(1, 3), (2, 3), (3, 3)]
+
+
 # URL validation tests - parameterized
 @pytest.mark.parametrize(
     "url,should_raise,error_keyword",
@@ -203,6 +226,15 @@ def test_export_endpoint_multiple_dates(mock_page_url):
         ({"urls": ["http://localhost/?test=1"]}, 422),  # Missing date parameter
         ({"urls": ["http://evil.com/?test=1"]}, 422),  # Disallowed domain
         ({"urls": ["/?hazardLayerIds=test_layer"]}, 422),  # Relative URL
+        (
+            {
+                "urls": [
+                    f"http://localhost/?test=1&date=2025-01-{i:02d}"
+                    for i in range(1, 14)
+                ]
+            },
+            422,
+        ),  # More than max maps per request
     ],
 )
 def test_export_endpoint_validation_errors(
