@@ -4,7 +4,7 @@ import sqlalchemy as sa
 from alembic import op
 from sqlalchemy.dialects import postgresql
 
-revision = "anticipatory_action_alerts_metadata_001"
+revision = "aa_alerts_metadata_001"
 down_revision = "prism_users_permissions"
 branch_labels = None
 depends_on = None
