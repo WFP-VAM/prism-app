@@ -1,11 +1,6 @@
 """API tests for GET /dashboards (published, deployment-scoped)."""
 
-import os
 from unittest.mock import patch
-
-# prism_app.kobo is imported by main and raises if these are unset
-os.environ.setdefault("KOBO_USERNAME", "test")
-os.environ.setdefault("KOBO_PASSWORD", "test")
 
 from fastapi.testclient import TestClient
 from prism_app.main import app
