@@ -28,7 +28,8 @@ function parseValidatedDashboardBody(parsed: unknown): Dashboard[] {
 }
 
 /**
- * Fetches dashboard.json, parses JSON, and validates against the dashboard schema.
+ * Fetches a published-dashboard JSON array (full URL, e.g. GET `/dashboards?…`),
+ * parses the body, and validates it against the dashboard schema.
  */
 export async function fetchDashboardConfig(url: string): Promise<Dashboard[]> {
   let response: Response;
