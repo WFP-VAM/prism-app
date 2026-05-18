@@ -212,7 +212,7 @@ const createInitialState = (
     dashboards,
     selectedDashboardIndex: dashboardIndex,
     title: dashboardConfig?.title || 'Dashboard',
-    mode: DashboardMode.VIEW,
+    mode: dashboardConfig?.isDraft ? DashboardMode.EDIT : DashboardMode.VIEW,
     columns: allColumns,
     mapStates,
     tableStates,
@@ -223,12 +223,158 @@ const createInitialState = (
 
 const initialState: DashboardState = createInitialState(0, []);
 
+function buildColumnsFromState(
+  columns: DashboardElements[][],
+  mapStates: { [elementId: string]: DashboardMapState },
+  tableStates: { [elementId: string]: DashboardTableState },
+): [DashboardElements[], DashboardElements[], DashboardElements[]] {
+  return [0, 1, 2].map(colIdx =>
+    (columns[colIdx] ?? []).map((element, elemIdx) => {
+      const elementId = `${colIdx}-${elemIdx}`;
+      if (element.type === DashboardElementType.MAP) {
+        const mapState = mapStates[elementId];
+        if (!mapState) {
+          return element;
+        }
+        return {
+          ...element,
+          preSelectedMapLayers: mapState.layers.map(l => ({
+            layerId: l.id,
+            opacity: mapState.opacityMap[l.id]?.value ?? 1.0,
+          })),
+          defaultDate:
+            mapState.dateRange?.startDate !== undefined
+              ? new Date(mapState.dateRange.startDate).toISOString()
+              : element.defaultDate,
+          title: mapState.title,
+          legendVisible: mapState.legendVisible,
+          legendPosition: mapState.legendPosition,
+        };
+      }
+      if (element.type === DashboardElementType.TABLE) {
+        const tableState = tableStates[elementId];
+        if (!tableState) {
+          return element;
+        }
+        return {
+          ...element,
+          maxRows: tableState.maxRows,
+          sortColumn: tableState.sortColumn,
+          sortOrder: tableState.sortOrder,
+        };
+      }
+      return element;
+    }),
+  ) as [DashboardElements[], DashboardElements[], DashboardElements[]];
+}
+
+function remapElementIdForSwapFirstTwoColumns(oldId: string): string {
+  const dash = oldId.indexOf('-');
+  if (dash <= 0) {
+    return oldId;
+  }
+  const columnIndex = Number.parseInt(oldId.slice(0, dash), 10);
+  const remainder = oldId.slice(dash + 1);
+  if (columnIndex === 0) {
+    return `1-${remainder}`;
+  }
+  if (columnIndex === 1) {
+    return `0-${remainder}`;
+  }
+  return oldId;
+}
+
+function remapStringKeyedStates<T>(
+  states: { [elementId: string]: T },
+  remapKey: (k: string) => string,
+): { [elementId: string]: T } {
+  const next: { [elementId: string]: T } = {};
+  Object.entries(states).forEach(([id, entry]) => {
+    next[remapKey(id)] = entry;
+  });
+  return next;
+}
+
+function remapStatesAfterRemoval<T>(
+  states: { [elementId: string]: T },
+  columnIndex: number,
+  removedElementIndex: number,
+): { [elementId: string]: T } {
+  const next: { [elementId: string]: T } = {};
+  Object.entries(states).forEach(([id, entry]) => {
+    const dash = id.indexOf('-');
+    const colIdx = Number.parseInt(id.slice(0, dash), 10);
+    const elemIdx = Number.parseInt(id.slice(dash + 1), 10);
+    if (colIdx !== columnIndex) {
+      next[id] = entry;
+    } else if (elemIdx < removedElementIndex) {
+      next[id] = entry;
+    } else if (elemIdx > removedElementIndex) {
+      next[`${colIdx}-${elemIdx - 1}`] = entry;
+    }
+    // elemIdx === removedElementIndex: drop it
+  });
+  return next;
+}
+
+function syncDraftConfig(state: DashboardState): DashboardState {
+  const current = state.dashboards[state.selectedDashboardIndex];
+  if (!current?.isDraft) {
+    return state;
+  }
+  const [firstColumn, secondColumn, thirdColumn] = buildColumnsFromState(
+    state.columns,
+    state.mapStates,
+    state.tableStates,
+  );
+  const updated = { ...current, firstColumn, secondColumn, thirdColumn };
+  return {
+    ...state,
+    dashboards: state.dashboards.map((d, i) =>
+      i === state.selectedDashboardIndex ? updated : d,
+    ),
+  };
+}
+
+function createEmptyElement(type: DashboardElementType): DashboardElements {
+  switch (type) {
+    case DashboardElementType.TEXT:
+      return { type: DashboardElementType.TEXT, content: '' };
+    case DashboardElementType.CHART:
+      return {
+        type: DashboardElementType.CHART,
+        startDate: '',
+        layerId: '',
+        chartHeight: undefined,
+      } as unknown as DashboardElements;
+    case DashboardElementType.TABLE:
+      return {
+        type: DashboardElementType.TABLE,
+        startDate: '',
+        hazardLayerId: '',
+        baselineLayerId: '',
+        stat: 'mean' as any,
+      } as unknown as DashboardElements;
+    default:
+      return { type: DashboardElementType.TEXT, content: '' };
+  }
+}
+
 export const dashboardStateSlice = createSlice({
   name: 'dashboardState',
   initialState,
   reducers: {
     setDashboards: (_state, action: PayloadAction<Dashboard[]>) =>
       createInitialState(0, action.payload),
+    setDraftDashboard: (state, action: PayloadAction<Dashboard>) => {
+      const draft = { ...action.payload, isDraft: true };
+      const dashboards = [...state.dashboards, draft];
+      const draftIndex = dashboards.length - 1;
+      return {
+        ...createInitialState(draftIndex, dashboards),
+        mode: DashboardMode.EDIT,
+      };
+    },
     setSelectedDashboard: (state, action: PayloadAction<number>) => {
       const dashboardIndex = action.payload;
       return createInitialState(dashboardIndex, state.dashboards);
@@ -270,10 +416,16 @@ export const dashboardStateSlice = createSlice({
         },
       };
     },
-    setTitle: (state, action: PayloadAction<string>) => ({
-      ...state,
-      title: action.payload,
-    }),
+    setTitle: (state, action: PayloadAction<string>) => {
+      const newTitle = action.payload;
+      const newPath = generateSlugFromTitle(newTitle);
+      const updatedDashboards = state.dashboards.map((d, i) =>
+        i === state.selectedDashboardIndex
+          ? { ...d, title: newTitle, path: newPath }
+          : d,
+      );
+      return { ...state, title: newTitle, dashboards: updatedDashboards };
+    },
     setMode: (state, action: PayloadAction<DashboardMode>) => ({
       ...state,
       mode: action.payload,
@@ -287,7 +439,7 @@ export const dashboardStateSlice = createSlice({
       }>,
     ) => {
       const { columnIndex, elementIndex, content } = action.payload;
-      return {
+      return syncDraftConfig({
         ...state,
         columns: state.columns.map((column, colIdx) =>
           colIdx === columnIndex
@@ -299,7 +451,80 @@ export const dashboardStateSlice = createSlice({
               )
             : column,
         ),
-      };
+      });
+    },
+    setElementType: (
+      state,
+      action: PayloadAction<{
+        columnIndex: number;
+        elementIndex: number;
+        newType: DashboardElementType;
+      }>,
+    ) => {
+      const { columnIndex, elementIndex, newType } = action.payload;
+      const elementId = `${columnIndex}-${elementIndex}`;
+      const emptyElement = createEmptyElement(newType);
+
+      const nextMapStates = { ...state.mapStates };
+      const nextTableStates = { ...state.tableStates };
+
+      // Remove stale state for the outgoing type
+      delete nextMapStates[elementId];
+      delete nextTableStates[elementId];
+
+      // Initialize state for the incoming type
+      if (newType === DashboardElementType.MAP) {
+        nextMapStates[elementId] = createMapStateFromConfig(
+          emptyElement as DashboardMapConfig,
+        );
+      } else if (newType === DashboardElementType.TABLE) {
+        nextTableStates[elementId] = createTableStateFromConfig(
+          emptyElement as DashboardTableConfig,
+        );
+      }
+
+      return syncDraftConfig({
+        ...state,
+        columns: state.columns.map((column, colIdx) =>
+          colIdx === columnIndex
+            ? column.map((element, elemIdx) =>
+                elemIdx === elementIndex ? emptyElement : element,
+              )
+            : column,
+        ),
+        mapStates: nextMapStates,
+        tableStates: nextTableStates,
+      });
+    },
+    removeElement: (
+      state,
+      action: PayloadAction<{ columnIndex: number; elementIndex: number }>,
+    ) => {
+      const { columnIndex, elementIndex } = action.payload;
+      return syncDraftConfig({
+        ...state,
+        columns: state.columns.map((column, colIdx) =>
+          colIdx === columnIndex
+            ? column.filter((_, elemIdx) => elemIdx !== elementIndex)
+            : column,
+        ),
+        mapStates: remapStatesAfterRemoval(
+          state.mapStates,
+          columnIndex,
+          elementIndex,
+        ),
+        tableStates: remapStatesAfterRemoval(
+          state.tableStates,
+          columnIndex,
+          elementIndex,
+        ),
+      });
+    },
+    removeDashboard: state => {
+      const dashboards = state.dashboards.filter(
+        (_, i) => i !== state.selectedDashboardIndex,
+      );
+      return { ...state, dashboards };
     },
     addLayerToMap: (
       state,
@@ -328,7 +553,7 @@ export const dashboardStateSlice = createSlice({
           i === self.findIndex(t => t.id === l.id && t.type === l.type),
       );
 
-      return {
+      return syncDraftConfig({
         ...state,
         mapStates: {
           ...state.mapStates,
@@ -337,7 +562,7 @@ export const dashboardStateSlice = createSlice({
             layers: dedupedLayers,
           },
         },
-      };
+      });
     },
     removeLayerFromMap: (
       state,
@@ -351,7 +576,7 @@ export const dashboardStateSlice = createSlice({
 
       const filteredLayers = mapState.layers.filter(l => keepLayer(l, layer));
 
-      return {
+      return syncDraftConfig({
         ...state,
         mapStates: {
           ...state.mapStates,
@@ -360,7 +585,7 @@ export const dashboardStateSlice = createSlice({
             layers: filteredLayers,
           },
         },
-      };
+      });
     },
     updateMapDateRange: (
       state,
@@ -372,7 +597,7 @@ export const dashboardStateSlice = createSlice({
         return state;
       }
 
-      return {
+      return syncDraftConfig({
         ...state,
         mapStates: {
           ...state.mapStates,
@@ -381,7 +606,7 @@ export const dashboardStateSlice = createSlice({
             dateRange,
           },
         },
-      };
+      });
     },
     setMap: (
       state,
@@ -504,7 +729,7 @@ export const dashboardStateSlice = createSlice({
         callback(value);
       }
 
-      return {
+      return syncDraftConfig({
         ...state,
         mapStates: {
           ...state.mapStates,
@@ -520,14 +745,14 @@ export const dashboardStateSlice = createSlice({
             },
           },
         },
-      };
+      });
     },
     setMapTitle: (
       state,
       action: PayloadAction<{ elementId: string; title: string }>,
     ) => {
       const { elementId, title } = action.payload;
-      return {
+      return syncDraftConfig({
         ...state,
         mapStates: {
           ...state.mapStates,
@@ -536,7 +761,7 @@ export const dashboardStateSlice = createSlice({
             title,
           },
         },
-      };
+      });
     },
     updateTableState: (
       state,
@@ -551,7 +776,7 @@ export const dashboardStateSlice = createSlice({
         return state;
       }
 
-      return {
+      return syncDraftConfig({
         ...state,
         tableStates: {
           ...state.tableStates,
@@ -560,7 +785,7 @@ export const dashboardStateSlice = createSlice({
             ...updates,
           },
         },
-      };
+      });
     },
     setLegendVisible: (
       state,
@@ -571,7 +796,7 @@ export const dashboardStateSlice = createSlice({
       if (!mapState) {
         return state;
       }
-      return {
+      return syncDraftConfig({
         ...state,
         mapStates: {
           ...state.mapStates,
@@ -580,7 +805,7 @@ export const dashboardStateSlice = createSlice({
             legendVisible: visible,
           },
         },
-      };
+      });
     },
     setLegendPosition: (
       state,
@@ -591,7 +816,7 @@ export const dashboardStateSlice = createSlice({
       if (!mapState) {
         return state;
       }
-      return {
+      return syncDraftConfig({
         ...state,
         mapStates: {
           ...state.mapStates,
@@ -600,7 +825,28 @@ export const dashboardStateSlice = createSlice({
             legendPosition: position,
           },
         },
-      };
+      });
+    },
+    swapMapPosition: state => {
+      const col0 = state.columns[0] ?? [];
+      const col1 = state.columns[1] ?? [];
+      const swappedColumns = state.columns.map((col, idx) =>
+        idx === 0 ? [...col1] : idx === 1 ? [...col0] : [...(col ?? [])],
+      );
+      const nextMapStates = remapStringKeyedStates(
+        state.mapStates,
+        remapElementIdForSwapFirstTwoColumns,
+      );
+      const nextTableStates = remapStringKeyedStates(
+        state.tableStates,
+        remapElementIdForSwapFirstTwoColumns,
+      );
+      return syncDraftConfig({
+        ...state,
+        columns: swappedColumns,
+        mapStates: nextMapStates,
+        tableStates: nextTableStates,
+      });
     },
   },
 });
@@ -628,6 +874,7 @@ export const dashboardConfigSelector = (
 
   return {
     ...config,
+    title: state.dashboardState.title,
     selectedDashboardIndex: currentDashboardIndex,
     maps: state.dashboardState.mapStates,
   };
@@ -678,6 +925,7 @@ export const dashboardTableStateSelector =
 // Setters
 export const {
   setDashboards,
+  setDraftDashboard,
   setSelectedDashboard,
   toggleMapSync,
   setSharedViewport,
@@ -697,6 +945,10 @@ export const {
   updateTableState,
   setLegendVisible,
   setLegendPosition,
+  swapMapPosition,
+  setElementType,
+  removeElement,
+  removeDashboard,
 } = dashboardStateSlice.actions;
 
 export default dashboardStateSlice.reducer;

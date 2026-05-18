@@ -27,7 +27,7 @@ import {
   DashboardMode,
 } from 'config/types';
 import { useSafeTranslation } from 'i18n';
-import { useEffect, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useChartData, useChartForm } from 'utils/chart-hooks';
 import {
@@ -47,6 +47,7 @@ interface ChartBlockProps extends Partial<DashboardChartConfig> {
   chartHeight?: ChartHeight;
   isOverflowing?: boolean;
   recalculationCount?: number;
+  headerSlot?: ReactNode;
 }
 
 function ChartBlock({
@@ -59,6 +60,7 @@ function ChartBlock({
   chartHeight: initialChartHeight,
   isOverflowing,
   recalculationCount,
+  headerSlot,
 }: ChartBlockProps) {
   const classes = useStyles();
   const { t } = useSafeTranslation();
@@ -341,9 +343,11 @@ function ChartBlock({
   // Edit mode rendering
   return (
     <Box className={classes.grayCard}>
-      <Typography variant="h3" className={classes.blockTitle}>
-        {t('Chart Block')} #{index + 1}
-      </Typography>
+      {headerSlot ?? (
+        <Typography variant="h3" className={classes.blockTitle}>
+          {t('Chart Block')} #{index + 1}
+        </Typography>
+      )}
 
       <Box className={classes.formContainer}>
         <Box className={classes.formSection}>

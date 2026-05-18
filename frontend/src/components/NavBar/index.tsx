@@ -8,6 +8,7 @@ import {
   useTheme,
 } from '@material-ui/core';
 import {
+  AddOutlined,
   BarChartOutlined,
   ImageAspectRatioOutlined,
   LayersOutlined,
@@ -27,10 +28,7 @@ import Legends from 'components/MapView/Legends';
 import { appConfig } from 'config';
 import { Panel, PanelItem } from 'config/types';
 import { areChartLayersAvailable } from 'config/utils';
-import {
-  areDashboardsAvailableSelector,
-  dashboardsListSelector,
-} from 'context/dashboardStateSlice';
+import { dashboardsListSelector } from 'context/dashboardStateSlice';
 import {
   leftPanelTabValueSelector,
   setTabValue,
@@ -56,32 +54,36 @@ function NavBar() {
   const classes = useStyles();
   const tabValue = useSelector(leftPanelTabValueSelector);
   const dashboards = useSelector(dashboardsListSelector);
-  const dashboardsAvailable = useSelector(areDashboardsAvailableSelector);
   const isDashboardMode = tabValue === Panel.Dashboard;
 
-  const dashboardChildren: PanelItem[] = dashboards.map((dashboard, index) => ({
-    panel: Panel.Dashboard,
-    label: dashboard.title,
-    icon: <SpeedOutlined />,
-    reportIndex: index,
-    reportPath: dashboard.path || generateSlugFromTitle(dashboard.title),
-  }));
+  const dashboardChildren: PanelItem[] = [
+    ...dashboards.map((dashboard, index) => ({
+      panel: Panel.Dashboard,
+      label: dashboard.title,
+      icon: <SpeedOutlined />,
+      reportIndex: index,
+      reportPath: dashboard.path || generateSlugFromTitle(dashboard.title),
+      isDraft: dashboard.isDraft,
+    })),
+    {
+      panel: Panel.Dashboard,
+      label: 'Create dashboard',
+      icon: <AddOutlined />,
+      reportPath: 'create',
+    },
+  ];
 
   const panels: PanelItem[] = [
     { panel: Panel.Layers, label: 'Layers', icon: <LayersOutlined /> },
     ...(areChartLayersAvailable
       ? [{ panel: Panel.Charts, label: 'Charts', icon: <BarChartOutlined /> }]
       : []),
-    ...(dashboardsAvailable
-      ? [
-          {
-            panel: Panel.Dashboard,
-            label: 'Dashboard',
-            icon: <SpeedOutlined />,
-            children: dashboardChildren,
-          },
-        ]
-      : []),
+    {
+      panel: Panel.Dashboard,
+      label: 'Dashboard',
+      icon: <SpeedOutlined />,
+      children: dashboardChildren,
+    },
     {
       panel: Panel.Analysis,
       label: 'Analysis',
