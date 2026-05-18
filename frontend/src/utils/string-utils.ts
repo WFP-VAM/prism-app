@@ -18,9 +18,5 @@ export const stringHash = (s: string): string => {
 };
 
 export const generateSlugFromTitle = (title: string): string => {
-  if (!title || typeof title !== 'string' || title.trim() === '') {
-    return 'untitled-dashboard';
-  }
-
   return kebabCase(title.trim());
 };
