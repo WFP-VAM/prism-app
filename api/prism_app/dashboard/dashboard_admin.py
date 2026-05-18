@@ -5,6 +5,7 @@ from typing import Any, cast
 
 from prism_app.dashboard.dashboard_config_field import DashboardConfigJsonFileField
 from prism_app.database.dashboard_model import DashboardCountry, DashboardStatus
+from sqlalchemy.exc import IntegrityError
 from starlette.requests import Request
 from starlette_admin.contrib.sqla import ModelView
 from starlette_admin.exceptions import FormValidationError
@@ -19,8 +20,7 @@ class DashboardAdminView(ModelView):
     """Create / edit / delete dashboards; path is derived from title and country.
 
     The `config` JSONB field is uploaded as a JSON file (drag-and-drop or browse).
-    Use the same top-level array as ``dashboard.json`` (one or more dashboard rows), or
-    a single row object.
+    Upload a single dashboard row object (not an array).
     """
 
     label = "Dashboards"
@@ -43,8 +43,8 @@ class DashboardAdminView(ModelView):
             label="Configuration file",
             required=True,
             help_text=(
-                "Upload a dashboard JSON file (same shape as dashboard.json: "
-                "an array of dashboard rows, or a single row object)."
+                "Upload a dashboard JSON file containing a single "
+                "dashboard row object (not an array)."
             ),
         ),
         "created_at",
@@ -99,8 +99,33 @@ class DashboardAdminView(ModelView):
         if "config" not in errors:
             if cfg is None:
                 errors["config"] = "Upload a valid JSON configuration file."
+            elif isinstance(cfg, list):
+                errors["config"] = (
+                    "Expected a single dashboard row object, not an array. "
+                    "Please upload a JSON file containing one {...} object."
+                )
+            elif not isinstance(cfg, dict):
+                errors["config"] = "Config must be a JSON object."
             else:
                 data["config"] = cfg
 
         if errors:
             raise FormValidationError(cast(dict[str | int, Any], errors))
+
+    def handle_exception(self, exc: Exception) -> None:
+        """Convert IntegrityError from duplicate title/deployment into user-friendly form error."""
+        if isinstance(exc, IntegrityError):
+            error_msg = str(exc.orig) if hasattr(exc, "orig") else str(exc)
+            if (
+                "uq_dashboard_deployment_title" in error_msg
+                or "uq_dashboard_deployment_path" in error_msg
+            ):
+                raise FormValidationError(
+                    cast(
+                        dict[str | int, Any],
+                        {
+                            "title": "A dashboard with this title already exists for the selected country."
+                        },
+                    )
+                )
+        return super().handle_exception(exc)
