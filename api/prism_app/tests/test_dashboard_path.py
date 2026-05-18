@@ -2,6 +2,7 @@
 
 from prism_app.dashboard.util import build_dashboard_path, slugify_dashboard_path_part
 from prism_app.database.dashboard_model import (
+    DashboardCountry,
     DashboardModel,
     DashboardStatus,
     apply_dashboard_path,
@@ -16,7 +17,7 @@ def test_slugify_path_part_strips_and_collapses() -> None:
     assert slugify_dashboard_path_part("  SPI -- 2024  ") == "spi-2024"
 
 
-def test_build_dashboard_path_prefixes_deployment() -> None:
+def test_build_dashboard_path_prefixes_country() -> None:
     assert (
         build_dashboard_path("Rainfall anomaly", "mozambique")
         == "mozambique-rainfall-anomaly"
@@ -26,7 +27,7 @@ def test_build_dashboard_path_prefixes_deployment() -> None:
 def test_apply_dashboard_path_after_admin_field_order() -> None:
     dashboard = DashboardModel(
         title="Rainfall anomaly",
-        deployment="mozambique",
+        country=DashboardCountry.mozambique,
         status=DashboardStatus.draft,
         config={},
         path="pending",

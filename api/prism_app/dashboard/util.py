@@ -5,20 +5,20 @@ from typing import Any
 
 
 def slugify_dashboard_path_part(name: str) -> str:
-    """Lowercase kebab-case path segment from a dashboard title or deployment."""
+    """Lowercase kebab-case path segment from a dashboard title or country."""
     s = (name or "").strip().lower()
     s = re.sub(r"[^a-z0-9]+", "-", s)
     s = s.strip("-")
     return s
 
 
-def build_dashboard_path(title: str, deployment: str) -> str:
-    """Build stored dashboard path, prefixed by deployment."""
+def build_dashboard_path(title: str, country: str) -> str:
+    """Build stored dashboard path, prefixed by country."""
     base = slugify_dashboard_path_part(title) or "dashboard"
-    deployment_part = slugify_dashboard_path_part(deployment)
-    if not deployment_part:
-        raise ValueError("deployment is required to build dashboard path")
-    return f"{deployment_part}-{base}"
+    country_part = slugify_dashboard_path_part(country)
+    if not country_part:
+        raise ValueError("country is required to build dashboard path")
+    return f"{country_part}-{base}"
 
 
 def omit_none_keys(value: Any) -> Any:

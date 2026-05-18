@@ -4,18 +4,19 @@ import json
 from typing import Any, cast
 
 from prism_app.dashboard.dashboard_config_field import DashboardConfigJsonFileField
-from prism_app.database.dashboard_model import (
-    ALLOWED_DASHBOARD_DEPLOYMENTS,
-    DashboardStatus,
-)
+from prism_app.database.dashboard_model import DashboardCountry, DashboardStatus
 from starlette.requests import Request
 from starlette_admin.contrib.sqla import ModelView
 from starlette_admin.exceptions import FormValidationError
 from starlette_admin.fields import EnumField
 
+_DASHBOARD_COUNTRY_CHOICES = [
+    (country.value, country.value) for country in DashboardCountry
+]
+
 
 class DashboardAdminView(ModelView):
-    """Create / edit / delete dashboards; path is derived from title and deployment.
+    """Create / edit / delete dashboards; path is derived from title and country.
 
     The `config` JSONB field is uploaded as a JSON file (drag-and-drop or browse).
     Use the same top-level array as ``dashboard.json`` (one or more dashboard rows), or
@@ -28,10 +29,10 @@ class DashboardAdminView(ModelView):
     fields = [
         "title",
         EnumField(
-            "deployment",
+            "country",
             label="Country",
             required=True,
-            choices=[(value, value) for value in ALLOWED_DASHBOARD_DEPLOYMENTS],
+            choices=_DASHBOARD_COUNTRY_CHOICES,
         ),
         EnumField(
             "status",
@@ -63,7 +64,7 @@ class DashboardAdminView(ModelView):
     searchable_fields = [
         "title",
         "status",
-        "deployment",
+        "country",
     ]
 
     async def validate(self, request: Request, data: dict[str, Any]) -> None:
@@ -75,18 +76,18 @@ class DashboardAdminView(ModelView):
         else:
             data["title"] = str(title).strip()
 
-        deployment = data.get("deployment")
-        if deployment is None or not str(deployment).strip():
-            errors["deployment"] = "Country is required."
+        country = data.get("country")
+        if country is None or not str(country).strip():
+            errors["country"] = "Country is required."
         else:
-            deployment_val = str(deployment).strip()
-            if deployment_val not in ALLOWED_DASHBOARD_DEPLOYMENTS:
-                errors["deployment"] = (
-                    "Deployment must match a frontend config key "
+            country_val = str(country).strip()
+            try:
+                data["country"] = DashboardCountry(country_val)
+            except ValueError:
+                errors["country"] = (
+                    "Country must match a frontend config key "
                     "(frontend/src/config/index.ts::configMap)."
                 )
-            else:
-                data["deployment"] = deployment_val
 
         cfg = data.get("config")
         if isinstance(cfg, str):

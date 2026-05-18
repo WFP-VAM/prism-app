@@ -1,7 +1,7 @@
-"""Add dashboard table (JSONB config, status enum, deployment-scoped uniqueness).
+"""Add dashboard table (JSONB config, status enum, country-scoped uniqueness).
 
 Revision ID: add_dashboard_table
-Revises: prism_alerts_baseline
+Revises: prism_users_permissions
 Create Date: 2026-04-27
 
 """
@@ -16,7 +16,7 @@ branch_labels = None
 depends_on = None
 
 # Source of values: frontend/src/config/index.ts -> `configMap` keys.
-_DEPLOYMENT_CODES = (
+_COUNTRY_CODES = (
     "afghanistan",
     "bhutan",
     "cambodia",
@@ -51,13 +51,15 @@ _DEPLOYMENT_CODES = (
 
 
 def upgrade() -> None:
-    op.create_table(
-        "deployment",
-        sa.Column("code", sa.String(), nullable=False),
-        sa.PrimaryKeyConstraint("code"),
+    country_values = ", ".join(f"'{code}'" for code in _COUNTRY_CODES)
+    op.execute(
+        sa.text(f"CREATE TYPE dashboard_country_enum AS ENUM ({country_values})")
     )
-    values_sql = ", ".join(f"('{code}')" for code in _DEPLOYMENT_CODES)
-    op.execute(sa.text(f"INSERT INTO deployment (code) VALUES {values_sql}"))
+    country_type = postgresql.ENUM(
+        *_COUNTRY_CODES,
+        name="dashboard_country_enum",
+        create_type=False,
+    )
 
     op.execute(
         "CREATE TYPE dashboard_status_enum AS ENUM ('draft', 'published', 'archived')"
@@ -81,12 +83,7 @@ def upgrade() -> None:
             nullable=False,
             server_default=sa.text("'draft'::dashboard_status_enum"),
         ),
-        sa.Column(
-            "deployment",
-            sa.String(),
-            sa.ForeignKey("deployment.code"),
-            nullable=False,
-        ),
+        sa.Column("country", country_type, nullable=False),
         sa.Column(
             "config",
             postgresql.JSONB(astext_type=sa.Text()),
@@ -105,28 +102,26 @@ def upgrade() -> None:
             nullable=False,
         ),
         sa.PrimaryKeyConstraint("id"),
-        sa.UniqueConstraint(
-            "deployment", "title", name="uq_dashboard_deployment_title"
-        ),
-        sa.UniqueConstraint("deployment", "path", name="uq_dashboard_deployment_path"),
+        sa.UniqueConstraint("country", "title", name="uq_dashboard_country_title"),
+        sa.UniqueConstraint("country", "path", name="uq_dashboard_country_path"),
     )
     op.create_index(
-        "ix_dashboard_deployment_status",
+        "ix_dashboard_country_status",
         "dashboard",
-        ["deployment", "status"],
+        ["country", "status"],
         unique=False,
     )
     op.create_index(
-        "ix_dashboard_deployment",
+        "ix_dashboard_country",
         "dashboard",
-        ["deployment"],
+        ["country"],
         unique=False,
     )
 
 
 def downgrade() -> None:
-    op.drop_index("ix_dashboard_deployment", table_name="dashboard")
-    op.drop_index("ix_dashboard_deployment_status", table_name="dashboard")
+    op.drop_index("ix_dashboard_country", table_name="dashboard")
+    op.drop_index("ix_dashboard_country_status", table_name="dashboard")
     op.drop_table("dashboard")
-    op.drop_table("deployment")
     op.execute("DROP TYPE dashboard_status_enum")
+    op.execute("DROP TYPE dashboard_country_enum")

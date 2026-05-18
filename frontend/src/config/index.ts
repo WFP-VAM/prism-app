@@ -110,7 +110,7 @@ const {
 
 // Perform deep merges between shared and country-specific configurations
 // Dashboard row definitions: loaded from the geospatial API
-// (GET /dashboards?deployment=<safeCountry see useDashboardConfig).
+// (GET /dashboards?country=<safeCountry>; see useDashboardConfig).
 const appConfig: Record<string, any> = merge(
   {},
   defaultConfig,

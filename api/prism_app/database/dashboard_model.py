@@ -6,16 +6,7 @@ from enum import Enum
 from typing import Any
 
 from prism_app.dashboard.util import build_dashboard_path
-from sqlalchemy import (
-    Column,
-    DateTime,
-    ForeignKey,
-    Index,
-    String,
-    UniqueConstraint,
-    event,
-    text,
-)
+from sqlalchemy import Column, DateTime, Index, String, UniqueConstraint, event, text
 from sqlalchemy.dialects.postgresql import ENUM as PG_ENUM
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
@@ -30,39 +21,39 @@ class DashboardStatus(str, Enum):
     archived = "archived"
 
 
-# Source of truth: frontend/src/config/index.ts -> `configMap` keys.
-ALLOWED_DASHBOARD_DEPLOYMENTS = (
-    "afghanistan",
-    "bhutan",
-    "cambodia",
-    "cameroon",
-    "colombia",
-    "cuba",
-    "ecuador",
-    "global",
-    "haiti",
-    "indonesia",
-    "jordan",
-    "kyrgyzstan",
-    "malawi",
-    "mongolia",
-    "mozambique",
-    "myanmar",
-    "namibia",
-    "nepal",
-    "nigeria",
-    "rbd",
-    "sierraleone",
-    "somalia",
-    "southsudan",
-    "srilanka",
-    "sudan",
-    "tajikistan",
-    "tanzania",
-    "ukraine",
-    "zambia",
-    "zimbabwe",
-)
+class DashboardCountry(str, Enum):
+    """PRISM country codes (``configMap`` keys in frontend/src/config/index.ts)."""
+
+    afghanistan = "afghanistan"
+    bhutan = "bhutan"
+    cambodia = "cambodia"
+    cameroon = "cameroon"
+    colombia = "colombia"
+    cuba = "cuba"
+    ecuador = "ecuador"
+    global_ = "global"
+    haiti = "haiti"
+    indonesia = "indonesia"
+    jordan = "jordan"
+    kyrgyzstan = "kyrgyzstan"
+    malawi = "malawi"
+    mongolia = "mongolia"
+    mozambique = "mozambique"
+    myanmar = "myanmar"
+    namibia = "namibia"
+    nepal = "nepal"
+    nigeria = "nigeria"
+    rbd = "rbd"
+    sierraleone = "sierraleone"
+    somalia = "somalia"
+    southsudan = "southsudan"
+    srilanka = "srilanka"
+    sudan = "sudan"
+    tajikistan = "tajikistan"
+    tanzania = "tanzania"
+    ukraine = "ukraine"
+    zambia = "zambia"
+    zimbabwe = "zimbabwe"
 
 
 _dashboard_status_enum = PG_ENUM(
@@ -72,13 +63,12 @@ _dashboard_status_enum = PG_ENUM(
     create_type=False,
 )
 
-
-class DeploymentModel(SQLModel, table=True):
-    """PRISM deployment codes (``configMap`` keys); rows are seeded by migration."""
-
-    __tablename__ = "deployment"
-
-    code: str = Field(sa_column=Column(String, primary_key=True))
+_dashboard_country_enum = PG_ENUM(
+    DashboardCountry,
+    name="dashboard_country_enum",
+    values_callable=lambda cls: [e.value for e in cls],
+    create_type=False,
+)
 
 
 class DashboardModel(SQLModel, table=True):
@@ -86,10 +76,10 @@ class DashboardModel(SQLModel, table=True):
 
     __tablename__ = "dashboard"
     __table_args__ = (
-        UniqueConstraint("deployment", "title", name="uq_dashboard_deployment_title"),
-        UniqueConstraint("deployment", "path", name="uq_dashboard_deployment_path"),
-        Index("ix_dashboard_deployment_status", "deployment", "status"),
-        Index("ix_dashboard_deployment", "deployment"),
+        UniqueConstraint("country", "title", name="uq_dashboard_country_title"),
+        UniqueConstraint("country", "path", name="uq_dashboard_country_path"),
+        Index("ix_dashboard_country_status", "country", "status"),
+        Index("ix_dashboard_country", "country"),
     )
 
     id: uuid.UUID = Field(
@@ -106,8 +96,8 @@ class DashboardModel(SQLModel, table=True):
             server_default=text("'draft'::dashboard_status_enum"),
         ),
     )
-    deployment: str = Field(
-        sa_column=Column(String, ForeignKey("deployment.code"), nullable=False),
+    country: DashboardCountry = Field(
+        sa_column=Column(_dashboard_country_enum, nullable=False),
     )
     # Full dashboard file shape: a JSON array of row objects; JSONB also allows a single object for legacy.
     config: Any = Field(sa_column=Column(JSONB, nullable=False))
@@ -126,8 +116,14 @@ class DashboardModel(SQLModel, table=True):
     )
 
 
+def _country_code(country: DashboardCountry | str) -> str:
+    if isinstance(country, DashboardCountry):
+        return country.value
+    return str(country)
+
+
 def apply_dashboard_path(target: DashboardModel) -> None:
-    target.path = build_dashboard_path(target.title, target.deployment)
+    target.path = build_dashboard_path(target.title, _country_code(target.country))
 
 
 @event.listens_for(DashboardModel, "before_insert")

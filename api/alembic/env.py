@@ -35,10 +35,7 @@ from prism_app.database.alert_model import AlertModel  # noqa: F401
 from prism_app.database.anticipatory_action_alerts_model import (  # noqa: F401
     AnticipatoryActionAlerts,
 )
-from prism_app.database.dashboard_model import (  # noqa: F401
-    DashboardModel,
-    DeploymentModel,
-)
+from prism_app.database.dashboard_model import DashboardModel  # noqa: F401
 from prism_app.database.database import DB_URI
 from prism_app.database.kobo_user_model import KoboUser  # noqa: F401
 from prism_app.database.permission_model import Permission, UserPermission  # noqa: F401
