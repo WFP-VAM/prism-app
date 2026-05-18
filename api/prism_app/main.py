@@ -171,10 +171,6 @@ def get_published_dashboards(
         min_length=1,
         description="Deployment key (frontend configMap key)",
     ),
-    status: str = Query(
-        "published",
-        description="Only published dashboards are returned; use status=published",
-    ),
 ) -> list[Any]:
     """Return merged dashboard rows for all published ``dashboard`` rows in this deployment.
 
@@ -184,11 +180,6 @@ def get_published_dashboards(
     if not alert_db.active or alert_db.engine is None:
         raise HTTPException(
             status_code=503, detail="Dashboard data is temporarily unavailable"
-        )
-    if status != "published":
-        raise HTTPException(
-            status_code=400,
-            detail="Only status=published is supported for this endpoint",
         )
     return merge_published_dashboard_rows_for_country(alert_db.engine, deployment)
 
