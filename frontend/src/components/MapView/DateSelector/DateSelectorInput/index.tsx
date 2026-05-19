@@ -20,7 +20,9 @@ export type DateSelectorInputProps = Omit<ButtonProps, 'children'> & {
 const DateSelectorInput = forwardRef<HTMLButtonElement, DateSelectorInputProps>(
   ({ value, className, onMouseDown, ...rest }, ref) => {
     const classes = useStyles();
-    const rootClassName = [classes.buttonStyle, className].filter(Boolean).join(' ');
+    const rootClassName = [classes.buttonStyle, className]
+      .filter(Boolean)
+      .join(' ');
     return (
       <Button
         {...rest}
@@ -30,7 +32,7 @@ const DateSelectorInput = forwardRef<HTMLButtonElement, DateSelectorInputProps>(
           root: rootClassName,
           label: classes.labelNoPointer,
         }}
-        onMouseDown={(e) => {
+        onMouseDown={e => {
           onMouseDown?.(e);
           // document-level mousedown listener in react-datepicker + map canvas bubbling
           e.stopPropagation();

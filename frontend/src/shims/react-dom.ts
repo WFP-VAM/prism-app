@@ -8,8 +8,8 @@
  *
  * Named exports assigned explicitly — `export * from` breaks CJS interop in Vite.
  */
-import ReactDOMDefault from 'react-dom-vendor';
 import * as ReactDOMVendor from 'react-dom-vendor';
+import ReactDOMDefault from 'react-dom-vendor';
 
 import { findDOMNodeImpl } from '../reactDomFindDomNodeImpl';
 

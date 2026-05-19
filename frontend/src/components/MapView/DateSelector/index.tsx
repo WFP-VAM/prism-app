@@ -27,14 +27,14 @@ import { format } from 'date-fns';
 import { locales, useSafeTranslation } from 'i18n';
 import { findIndex, get } from 'lodash';
 import {
+  type FC,
   memo,
+  type ReactNode,
   useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
-  type FC,
-  type ReactNode,
 } from 'react';
 import DatePicker from 'react-datepicker';
 import { createPortal } from 'react-dom';
