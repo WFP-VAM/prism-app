@@ -22,6 +22,7 @@ const API_URL = (process.env.REACT_APP_API_URL || DEFAULT_API_URL).replace(
 
 export const ANALYSIS_API_URL = `${API_URL}/stats`;
 export const ALERT_API_URL = `${API_URL}/alerts`;
+export const DASHBOARDS_API_URL = `${API_URL}/dashboards`;
 export const KOBO_API_URL = `${API_URL}/kobo`;
 export const RASTER_API_URL = `${API_URL}/raster_geotiff`;
 export const EXPORT_MAP_JOBS_API_URL = `${API_URL}/export-map/jobs`;
