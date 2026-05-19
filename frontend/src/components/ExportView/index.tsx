@@ -15,8 +15,11 @@ import {
   WMSLayerDatesRequested,
 } from 'context/serverPreloadStateSlice';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { boundaryCache } from 'utils/boundary-cache';
+import { exportLanguage } from 'utils/exportLanguage';
 import useLayers from 'utils/layers-utils';
 import { getLayersCoverage } from 'utils/server-utils';
 import { useBoundaryData } from 'utils/useBoundaryData';
@@ -40,6 +43,9 @@ const displayedBoundaryLayers = getDisplayBoundaryLayers().reverse();
 
 const ExportView = memo(() => {
   const classes = useStyles();
+  const { search } = useLocation();
+  const { i18n } = useTranslation();
+  const exportLang = exportLanguage(search, { apply: true });
   const exportParams = useExportParams();
   const printRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
@@ -199,6 +205,10 @@ const ExportView = memo(() => {
   // Footer always shows date text when visible, so just check footerVisibility
   const footerHeight =
     measuredFooterHeight || (exportParams.toggles.footerVisibility ? 60 : 0);
+
+  if (i18n.resolvedLanguage !== exportLang) {
+    return null;
+  }
 
   return (
     <Box className={classes.root}>
