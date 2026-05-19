@@ -438,24 +438,6 @@ The application will show an icon next to the layer in the legend if this attrib
 
 The API exposes an export endpoint that fetches map tiles from a remote URL and bundles them into an output. To prevent the API from being used as an open proxy, every export URL is validated against an allowlist defined in `api/prism_app/utils.py` as the `EXPORT_ALLOWED_DOMAINS` constant.
 
-A URL is accepted only if it meets **all** of the following:
-
-- It is absolute (includes `http://` or `https://`). Relative URLs are rejected.
-- It includes a `date` query parameter in `YYYY-MM-DD` format (e.g. `?date=2025-04-01`).
-- Its hostname matches one of the patterns in `EXPORT_ALLOWED_DOMAINS`, **or** it is `localhost` / `127.0.0.1` / `::1` (any port), **or** it uses the `file://` scheme (for local testing).
-
-The allowlist supports three pattern styles:
-
-```python
-EXPORT_ALLOWED_DOMAINS = [
-    "*.wfp.org",                     # subdomain wildcard — matches wfp.org and any subdomain
-    "staging.*.amplifyapp.com",      # glob pattern — wildcard can appear anywhere
-    "*prism-frontend--*.web.app",    # glob pattern — for Firebase preview builds
-]
-```
-
-To add a new deployment domain (for example, a new staging environment), edit `EXPORT_ALLOWED_DOMAINS` in `api/prism_app/utils.py` and redeploy the API. If the list is empty, all non-localhost export requests will fail.
-
 ## Dashboards
 
 Dashboards are customizable reports that combine maps, charts, tables, and text blocks in a flexible layout. Definitions are loaded at **runtime** from the **geospatial API** (`GET /dashboards?country=<REACT_APP_COUNTRY>&status=published`), not from the JS bundle. Point **`REACT_APP_API_URL`** at the API (see `frontend/src/utils/constants.ts` for defaults and overrides). If the API returns an empty array, the Dashboard nav link is hidden.
