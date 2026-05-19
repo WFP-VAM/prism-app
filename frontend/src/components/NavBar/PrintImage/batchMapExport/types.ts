@@ -66,4 +66,6 @@ export type BuildBatchExportUrlsInput = {
   bottomLogoScale: number;
   toggles: Toggles;
   selectedBoundaries: AdminCodeString[];
+  /** Active i18n language code (e.g. pt) for server-side /export rendering. */
+  language: string;
 };
