@@ -696,4 +696,4 @@ Use `frontend/scripts/country_build.sh` from the `frontend` folder:
 - `yarn batch:build`: build zips for chosen countries into `frontend/builds/`
 - `yarn deploy:tests`: deploy Firebase preview channels for chosen countries
 
-You’ll be prompted for a list of countries (or select `all`). For deploys, ensure Firebase CLI is installed and authenticated.
+You’ll be prompted for a list of countries (or select `all`). For deploys, ensure Firebase CLI is installed and authenticated, and that your project is set to `prism-frontend`
