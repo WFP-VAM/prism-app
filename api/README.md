@@ -132,26 +132,6 @@ poetry run python scripts/seed_alerts_db.py
 
 This is a **standalone dev script** under [`scripts/`](./scripts/) (not part of the importable `prism_app` package or FastAPI surface). It reads [`scripts/seed_local_alerts_dev.sql`](./scripts/seed_local_alerts_dev.sql) and connects with the same `PRISM_ALERTS_DATABASE_URL` / `POSTGRES_*` rules as [`database.py`](./prism_app/database/database.py). Put those variables in `api/.env` (loaded by the script the same way as `alembic/env.py`). The seed is safe to re-run: see comments in the SQL file.
 
-**Deploy / CI:** run `alembic upgrade head` against the alerts database using `PRISM_ALERTS_DATABASE_URL` before or as part of rolling out an API release that depends on the latest schema.
-
-**Existing databases** that already match this schema (for example, previously migrated with TypeORM) should not re-apply the baseline `CREATE TABLE` migration. Point Alembic at the same URL and **stamp** the current head once, then use `upgrade head` for future revisions:
-
-```bash
-PRISM_ALERTS_DATABASE_URL="postgresql://..." poetry run alembic stamp prism_alerts_baseline
-```
-
-### Adding new migrations
-
-1. Update the SQLModel definitions under `prism_app/database/` (and any related types).
-2. With the alerts database reachable at the **current** schema version (usually after `alembic upgrade head`), generate a revision from the `api/` directory:
-
-   ```bash
-   PRISM_ALERTS_DATABASE_URL="postgresql://user:pass@host:5432/dbname" \
-     poetry run alembic revision --autogenerate -m "short description of change"
-   ```
-
-3. Apply locally and re-test: `poetry run alembic upgrade head` (with the same URL). Useful commands: `poetry run alembic history`, `poetry run alembic current`.
-
 ### Tests
 
 To run linting and tests, run:
@@ -207,7 +187,7 @@ To deploy the application, we need to ensure the environment variables are set i
 Before deploying, make sure that:
 - The EC2 instance you are using is assigned an IAM role that has access to S3.
 - All the necessary secrets needed in `set_envs.sh` have been configured in the AWS secrets manager.
-- The alerts PostgreSQL schema is current: from `api/`, run `poetry run alembic upgrade head` with `PRISM_ALERTS_DATABASE_URL` set (see **Alerts database migrations (Alembic)** above; use `alembic stamp` if the database predates Alembic and already has the tables).
+- The alerts PostgreSQL schema is current: from `api/`, run `poetry run alembic upgrade head` 
 
 To deploy, ssh into the EC2 instance:
 - Get the private key and copy it to `~/.ssh/{some name}.pem`
@@ -215,6 +195,7 @@ To deploy, ssh into the EC2 instance:
 - Run `ssh -i ~/.ssh/{some name}.pem ubuntu@{Public IPv4 DNS}`
 - Navigate to the api directory
 - Confirm you're on the right branch and the branch is up to date
+- Optional: if any database migrations are in the deploying branch, open a bash shell to the API container. Use the `poetry run alembic heads` and `poetry run alembic current` commands first to ensure the proper migration will be applied, and once verified, run `poetry run alembic upgrade head` to run the migration.
 - Run `make deploy`
 
 ### Automated deploys (cron)
