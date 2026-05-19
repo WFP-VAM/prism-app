@@ -53,7 +53,7 @@ function PanelMenu({
       open={Boolean(menuAnchor)}
       onClose={handleMenuClose}
     >
-      {panel.children?.map((child: PanelItem) => (
+      {panel.children?.map((child: PanelItem, index) => (
         <React.Fragment
           key={
             child.reportIndex !== undefined
@@ -61,7 +61,7 @@ function PanelMenu({
               : (child.reportPath ?? child.panel)
           }
         >
-          {child.dividerBefore && <Divider />}
+          {child.dividerBefore && index > 0 && <Divider />}
           <MenuItem
             onClick={() => {
               handleChildClick(child);
