@@ -155,11 +155,14 @@ export function getRawLayers(
 // 2. Override: value (country-specific translation overrides shared)
 export function getTranslation(country: Country): Record<string, any> {
   const countryTranslation = get(configMap[country], 'translation', {});
+  // Always seed English so the shared English file loads as the i18n
+  // fallback, even for countries that declare no translation override.
+  const baseTranslation = { en: {}, ...countryTranslation };
   return Object.fromEntries(
     Object.entries(
       QA_MODE || TESTING
-        ? merge({}, sharedTranslation, countryTranslation)
-        : countryTranslation,
+        ? merge({}, sharedTranslation, baseTranslation)
+        : baseTranslation,
     ).map(([key, value]) => [
       key,
       merge({}, sharedTranslation[key] || {}, value),

@@ -5,7 +5,11 @@ import rawTables from './tables.json';
 // Country-specific translation overrides shared translation
 const translation = {
   pt: {},
-  en: { 'Admin 1': 'Province', 'Admin 2': 'District' },
+  en: {
+    'Admin 1': 'Province',
+    'Admin 2': 'District',
+    'Admin 3': 'Administrative Post',
+  },
 };
 const rawReports = {};
 
