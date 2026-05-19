@@ -1,10 +1,11 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { Provider } from 'react-redux';
 import { createTheme, ThemeProvider } from '@material-ui/core';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { downloadToFile } from 'components/MapView/utils';
 import { setDraftDashboard } from 'context/dashboardStateSlice';
 import { store } from 'context/store';
+import { Provider } from 'react-redux';
 import { TestBrowserRouter } from 'test/TestBrowserRouter';
+
 import DashboardView from '.';
 
 jest.mock('components/MapView/utils', () => ({
