@@ -434,6 +434,10 @@ Impact layers are computed by combining a raster layer with a vector layer based
 To display additional metadata about a layer, you can add a `content_path` attribute to any layer. The attribute expects a path to a `.md` or `.html` file that is stored in `public/data/${REACT_APP_COUNTRY}/filename.ext` directory. For example: `public/data/myanmar/contents.md`
 The application will show an icon next to the layer in the legend if this attribute is configured, and will display the content in a modal window if the icon is clicked.
 
+## Batch Map Exports
+
+The API exposes an export endpoint that fetches map tiles from a remote URL and bundles them into an output. To prevent the API from being used as an open proxy, every export URL is validated against an allowlist defined in `api/prism_app/utils.py` as the `EXPORT_ALLOWED_DOMAINS` constant.
+
 ## Dashboards
 
 Dashboards are customizable reports that combine maps, charts, tables, and text blocks in a flexible layout. Definitions are loaded at **runtime** from the **geospatial API** (`GET /dashboards?country=<REACT_APP_COUNTRY>&status=published`), not from the JS bundle. Point **`REACT_APP_API_URL`** at the API (see `frontend/src/utils/constants.ts` for defaults and overrides). If the API returns an empty array, the Dashboard nav link is hidden.
@@ -696,4 +700,4 @@ Use `frontend/scripts/country_build.sh` from the `frontend` folder:
 - `yarn batch:build`: build zips for chosen countries into `frontend/builds/`
 - `yarn deploy:tests`: deploy Firebase preview channels for chosen countries
 
-You’ll be prompted for a list of countries (or select `all`). For deploys, ensure Firebase CLI is installed and authenticated.
+You’ll be prompted for a list of countries (or select `all`). For deploys, ensure Firebase CLI is installed and authenticated, and that your project is set to `prism-frontend`
