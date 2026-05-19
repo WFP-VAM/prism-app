@@ -69,7 +69,9 @@ const TimePeriodSelector = memo(
               locale={t('date_locale')}
               dateFormat="PP"
               selected={startDate ? new Date(startDate) : null}
-              onChange={date => setStartDate(date?.getTime() || startDate)}
+              onChange={(date: Date | null) =>
+                setStartDate(date?.getTime() ?? startDate)
+              }
               maxDate={new Date()}
               todayButton={t('Today')}
               peekNextMonth
@@ -99,7 +101,9 @@ const TimePeriodSelector = memo(
               locale={t('date_locale')}
               dateFormat="PP"
               selected={endDate ? new Date(endDate) : null}
-              onChange={date => setEndDate(date?.getTime() || endDate)}
+              onChange={(date: Date | null) =>
+                setEndDate(date?.getTime() ?? endDate)
+              }
               maxDate={new Date()}
               todayButton={t('Today')}
               peekNextMonth

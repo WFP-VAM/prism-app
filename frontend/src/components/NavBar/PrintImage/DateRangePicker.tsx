@@ -116,11 +116,6 @@ function DateRangePicker() {
             showMonthDropdown
             showYearDropdown
             dropdownMode="select"
-            popperModifiers={{
-              flip: {
-                enabled: true,
-              },
-            }}
             placeholderText="dd/mm/yyyy"
             showPopperArrow={false}
           />
