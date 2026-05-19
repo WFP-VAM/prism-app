@@ -42,8 +42,6 @@ const WMSLayers = memo(
           })}&bbox={bbox-epsg-3857}`,
         ]}
         tileSize={256}
-        // TODO - activate after reviewing bbox for all countries
-        // bounds={expandedBoundingBox}
       >
         <Layer
           beforeId={before}
