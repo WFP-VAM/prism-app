@@ -60,6 +60,7 @@ RUN --mount=type=cache,target=/root/.cache \
 RUN --mount=type=cache,target=/var/lib/apt \
     --mount=type=cache,target=/var/cache/apt \
     DEBIAN_FRONTEND=noninteractive apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y upgrade && \
     DEBIAN_FRONTEND=noninteractive apt-get purge -y \
       build-essential python3-dev linux-libc-dev libpq-dev \
       gstreamer1.0-plugins-bad libgstreamer-plugins-bad1.0-0 && \
