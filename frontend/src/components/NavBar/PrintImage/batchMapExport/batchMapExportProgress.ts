@@ -33,8 +33,7 @@ export function getBatchMapExportProgressDisplay(job: BatchMapExportJobRow): {
 
   // Determinate only fills in place on poll ticks — looks frozen while Running.
   // Keep the bar indeterminate for queued/running; show map counts in the label.
-  const inProgress =
-    job.status === 'queued' || job.status === 'running';
+  const inProgress = job.status === 'queued' || job.status === 'running';
 
   if (inProgress) {
     return {
