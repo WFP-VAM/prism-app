@@ -17,6 +17,7 @@ import { cyanBlue } from 'muiTheme';
 import React, { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { getBatchMapExportProgressDisplay } from './batchMapExportProgress';
 import type { BatchMapExportJobRow } from './types';
 
 function batchExportStatusLabel(status: string, t: TFunction): string {
@@ -39,44 +40,6 @@ type Props = {
   onDismiss: (clientId: string) => void;
   variant: 'compact' | 'panel';
 };
-
-function mapProgressDisplay(job: BatchMapExportJobRow): {
-  mapsCurrent: number;
-  mapsTotal: number;
-  barMode: 'determinate' | 'indeterminate';
-  barValue: number;
-} {
-  const mapsTotal = Math.max(job.mapTotal, job.progressTotalFromApi ?? 0, 1);
-
-  if (job.status === 'succeeded') {
-    return {
-      mapsCurrent: mapsTotal,
-      mapsTotal,
-      barMode: 'determinate',
-      barValue: 100,
-    };
-  }
-  if (
-    job.progressCurrent != null &&
-    job.progressTotalFromApi != null &&
-    job.progressTotalFromApi > 0
-  ) {
-    const current = Math.min(job.progressCurrent, job.progressTotalFromApi);
-    const pct = (current / job.progressTotalFromApi) * 100;
-    return {
-      mapsCurrent: current,
-      mapsTotal: Math.max(job.progressTotalFromApi, job.mapTotal),
-      barMode: 'determinate',
-      barValue: Math.min(100, pct),
-    };
-  }
-  return {
-    mapsCurrent: 0,
-    mapsTotal: job.mapTotal || mapsTotal,
-    barMode: 'indeterminate',
-    barValue: 0,
-  };
-}
 
 function BatchMapExportJobRows({ jobs, onDismiss, variant }: Props) {
   const dispatch = useDispatch();
@@ -107,8 +70,8 @@ function BatchMapExportJobRows({ jobs, onDismiss, variant }: Props) {
       data-testid="batch-map-export-job-list"
     >
       {sorted.map((job, idx) => {
-        const { mapsCurrent, mapsTotal, barMode, barValue } =
-          mapProgressDisplay(job);
+        const { mapsCurrent, mapsTotal, barMode, barValue, finishing } =
+          getBatchMapExportProgressDisplay(job);
 
         const failed = Boolean(job.error || job.status === 'failed');
         const succeeded = job.status === 'succeeded';
@@ -153,11 +116,16 @@ function BatchMapExportJobRows({ jobs, onDismiss, variant }: Props) {
                       component="div"
                       className={`${classes.statusProgressLine} ${classes.jobLineText}`}
                     >
-                      {t('batch_export_status_and_maps', {
-                        status: batchExportStatusLabel(job.status, t),
-                        current: mapsCurrent,
-                        total: mapsTotal,
-                      })}
+                      {finishing
+                        ? t('batch_export_status_finishing', {
+                            current: mapsCurrent,
+                            total: mapsTotal,
+                          })
+                        : t('batch_export_status_and_maps', {
+                            status: batchExportStatusLabel(job.status, t),
+                            current: mapsCurrent,
+                            total: mapsTotal,
+                          })}
                     </Typography>
                     <LinearProgress
                       className={classes.progress}
