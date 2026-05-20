@@ -35,10 +35,7 @@ import React, {
 import { useTranslation } from 'react-i18next';
 import MapGL, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';
 import { formatCoverageText, getFormattedDate } from 'utils/date-utils';
-import {
-  getExportFontStack,
-  waitForExportFonts,
-} from 'utils/exportFontFamily';
+import { getExportFontStack, waitForExportFonts } from 'utils/exportFontFamily';
 import {
   getFirstBoundaryLayerMapId,
   getLayerBeforeId,
