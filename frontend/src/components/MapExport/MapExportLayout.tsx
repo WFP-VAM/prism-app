@@ -35,7 +35,10 @@ import React, {
 import { useTranslation } from 'react-i18next';
 import MapGL, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';
 import { formatCoverageText, getFormattedDate } from 'utils/date-utils';
-import { waitForExportFonts } from 'utils/exportFontFamily';
+import {
+  getExportFontStack,
+  waitForExportFonts,
+} from 'utils/exportFontFamily';
 import {
   getFirstBoundaryLayerMapId,
   getLayerBeforeId,
@@ -491,7 +494,13 @@ function MapExportLayout({
 
   // The map content (title, legend, footer, map itself)
   const mapContent = (
-    <div ref={printRef} className={classes.printContainer}>
+    <div
+      ref={printRef}
+      className={classes.printContainer}
+      style={{
+        fontFamily: getExportFontStack(i18n.resolvedLanguage ?? 'en'),
+      }}
+    >
       {toggles.bottomLogoVisibility && getImageUrl(bottomLogo) && (
         <img
           style={{

@@ -1,5 +1,3 @@
-import '../../exportFonts.css';
-
 import {
   Box,
   createStyles,
@@ -31,6 +29,7 @@ import { boundaryCache } from 'utils/boundary-cache';
 import {
   getExportFontStack,
   getExportTextDirection,
+  loadExportFonts,
 } from 'utils/exportFontFamily';
 import { exportLanguage } from 'utils/exportLanguage';
 import useLayers from 'utils/layers-utils';
@@ -59,12 +58,25 @@ const ExportView = memo(() => {
   const { search } = useLocation();
   const { i18n } = useTranslation();
   const exportLang = exportLanguage(search, { apply: true });
+  const [exportFontsReady, setExportFontsReady] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    setExportFontsReady(false);
+    void loadExportFonts(exportLang).then(() => {
+      if (!cancelled) {
+        setExportFontsReady(true);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [exportLang]);
+
   const exportTheme = useMemo(
     () =>
-      createTheme({
-        ...muiTheme,
+      createTheme(muiTheme, {
         typography: {
-          ...muiTheme.typography,
           fontFamily: getExportFontStack(exportLang),
         },
       }),
@@ -230,7 +242,7 @@ const ExportView = memo(() => {
   const footerHeight =
     measuredFooterHeight || (exportParams.toggles.footerVisibility ? 60 : 0);
 
-  if (i18n.resolvedLanguage !== exportLang) {
+  if (i18n.resolvedLanguage !== exportLang || !exportFontsReady) {
     return null;
   }
 
