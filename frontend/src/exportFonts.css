@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600&display=swap');
+
 @font-face {
   font-family: Khmer;
   src: url(./fonts/Khmer-Regular.ttf) format('truetype');
@@ -5,5 +7,3 @@
   font-style: normal;
   font-display: block;
 }
-
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600&display=swap');
