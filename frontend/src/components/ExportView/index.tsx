@@ -1,4 +1,12 @@
-import { Box, createStyles, makeStyles } from '@material-ui/core';
+import '../../exportFonts.css';
+
+import {
+  Box,
+  createStyles,
+  createTheme,
+  makeStyles,
+  ThemeProvider,
+} from '@material-ui/core';
 import mask from '@turf/mask';
 import MapExportLayout from 'components/MapExport/MapExportLayout';
 import { mapStyle } from 'components/MapView/Map/utils';
@@ -14,11 +22,16 @@ import {
   preloadLayerDatesArraysForWMS,
   WMSLayerDatesRequested,
 } from 'context/serverPreloadStateSlice';
+import muiTheme from 'muiTheme';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { boundaryCache } from 'utils/boundary-cache';
+import {
+  getExportFontStack,
+  getExportTextDirection,
+} from 'utils/exportFontFamily';
 import { exportLanguage } from 'utils/exportLanguage';
 import useLayers from 'utils/layers-utils';
 import { getLayersCoverage } from 'utils/server-utils';
@@ -46,6 +59,17 @@ const ExportView = memo(() => {
   const { search } = useLocation();
   const { i18n } = useTranslation();
   const exportLang = exportLanguage(search, { apply: true });
+  const exportTheme = useMemo(
+    () =>
+      createTheme({
+        ...muiTheme,
+        typography: {
+          ...muiTheme.typography,
+          fontFamily: getExportFontStack(exportLang),
+        },
+      }),
+    [exportLang],
+  );
   const exportParams = useExportParams();
   const printRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
@@ -211,36 +235,44 @@ const ExportView = memo(() => {
   }
 
   return (
-    <Box className={classes.root}>
-      {/* Paint order: MapExportLayout stacks boundaries before rasters */}
-      <MapExportLayout
-        toggles={exportParams.toggles}
-        aspectRatio={exportParams.aspectRatio}
-        titleText={exportParams.titleText}
-        footerText={exportParams.footerText}
-        footerTextSize={exportParams.footerTextSize}
-        layerDate={exportParams.date}
-        logo={logo}
-        logoPosition={exportParams.logoPosition}
-        logoScale={exportParams.logoScale}
-        titleHeight={titleHeight}
-        legendPosition={exportParams.legendPosition}
-        legendScale={exportParams.legendScale}
-        bounds={exportParams.bounds ?? undefined}
-        mapStyle={processedMapStyle}
-        invertedAdminBoundaryLimitPolygon={invertedAdminBoundaryLimitPolygon}
-        printRef={printRef}
-        titleRef={titleRef}
-        footerRef={footerRef}
-        footerHeight={footerHeight}
-        bottomLogo={bottomLogo}
-        bottomLogoScale={exportParams.bottomLogoScale}
-        adminLevelLayersWithFillPattern={adminLevelLayersWithFillPattern}
-        selectedLayers={selectedLayers}
-        layersCoverage={layersCoverage}
-        signalExportReady
-      />
-    </Box>
+    <ThemeProvider theme={exportTheme}>
+      <Box
+        className={classes.root}
+        style={{
+          fontFamily: getExportFontStack(exportLang),
+          direction: getExportTextDirection(exportLang),
+        }}
+      >
+        {/* Paint order: MapExportLayout stacks boundaries before rasters */}
+        <MapExportLayout
+          toggles={exportParams.toggles}
+          aspectRatio={exportParams.aspectRatio}
+          titleText={exportParams.titleText}
+          footerText={exportParams.footerText}
+          footerTextSize={exportParams.footerTextSize}
+          layerDate={exportParams.date}
+          logo={logo}
+          logoPosition={exportParams.logoPosition}
+          logoScale={exportParams.logoScale}
+          titleHeight={titleHeight}
+          legendPosition={exportParams.legendPosition}
+          legendScale={exportParams.legendScale}
+          bounds={exportParams.bounds ?? undefined}
+          mapStyle={processedMapStyle}
+          invertedAdminBoundaryLimitPolygon={invertedAdminBoundaryLimitPolygon}
+          printRef={printRef}
+          titleRef={titleRef}
+          footerRef={footerRef}
+          footerHeight={footerHeight}
+          bottomLogo={bottomLogo}
+          bottomLogoScale={exportParams.bottomLogoScale}
+          adminLevelLayersWithFillPattern={adminLevelLayersWithFillPattern}
+          selectedLayers={selectedLayers}
+          layersCoverage={layersCoverage}
+          signalExportReady
+        />
+      </Box>
+    </ThemeProvider>
   );
 });
 

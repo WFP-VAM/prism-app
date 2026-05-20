@@ -35,6 +35,7 @@ import React, {
 import { useTranslation } from 'react-i18next';
 import MapGL, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';
 import { formatCoverageText, getFormattedDate } from 'utils/date-utils';
+import { waitForExportFonts } from 'utils/exportFontFamily';
 import {
   getFirstBoundaryLayerMapId,
   getLayerBeforeId,
@@ -170,7 +171,7 @@ function MapExportLayout({
   // Scale percent for AA markers based on map zoom
   const scalePercent = useAAMarkerScalePercent(mapRef.current?.getMap());
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   // Process title text to replace {date} and {coverage} placeholders
   const processedTitleText = useMemo(() => {
@@ -350,16 +351,20 @@ function MapExportLayout({
           clearInterval(pollInterval);
         }
 
-        // Set PRISM_READY for server-side rendering (Playwright)
-        if (signalExportReady) {
-          // eslint-disable-next-line no-console
-          console.info('All tiles loaded, setting PRISM_READY to true');
-          (window as any).PRISM_READY = true;
-        }
+        const finishReady = async () => {
+          if (signalExportReady) {
+            await waitForExportFonts(i18n.resolvedLanguage ?? 'en');
+            // eslint-disable-next-line no-console
+            console.info('All tiles loaded, setting PRISM_READY to true');
+            (window as any).PRISM_READY = true;
+          }
 
-        if (onMapLoad) {
-          onMapLoad(e);
-        }
+          if (onMapLoad) {
+            onMapLoad(e);
+          }
+        };
+
+        void finishReady();
       };
 
       const checkFullyLoaded = (): boolean => {
