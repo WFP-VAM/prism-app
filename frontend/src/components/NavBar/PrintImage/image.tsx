@@ -53,6 +53,7 @@ import {
   getMapExportPageOrigin,
   MAP_EXPORT_MAX_URLS_PER_REQUEST,
 } from '../../../utils/constants';
+import { exportLanguage } from '../../../utils/exportLanguage';
 import { ALL_ASPECT_RATIO_OPTIONS } from '../../MapExport/aspectRatioConstants';
 import { downloadToFile } from '../../MapView/utils';
 import { buildBatchExportDatesDisplay } from './batchMapExport/batchExportArtifactFilename';
@@ -91,7 +92,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const { data } = useBoundaryData(boundaryLayer.id);
   const dispatch = useDispatch();
   const posthog = usePostHog();
-  const { t } = useSafeTranslation();
+  const { t, i18n } = useSafeTranslation();
   const { enqueueBatchMapExportJob } = useBatchMapExportJobsActions();
 
   // list of toggles
@@ -588,6 +589,9 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         bottomLogoScale,
         toggles,
         selectedBoundaries,
+        language: exportLanguage(search, {
+          activeLanguage: i18n.resolvedLanguage,
+        }),
       });
 
       const layerDisplayName =

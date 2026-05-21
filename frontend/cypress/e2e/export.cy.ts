@@ -104,4 +104,19 @@ describe('Export View', () => {
     // The raw {date} placeholder should NOT be visible
     cy.contains('{date}').should('not.exist');
   });
+
+  it('renders translated layer legend when language param is set', () => {
+    const exportUrl = new URL(`${frontendUrl}/export`);
+    exportUrl.searchParams.set('hazardLayerIds', 'precip_blended_dekad');
+    exportUrl.searchParams.set('date', '2024-05-15');
+    exportUrl.searchParams.set('bounds', '32,-27,41,-10');
+    exportUrl.searchParams.set('language', 'pt');
+
+    cy.visit(exportUrl.toString());
+
+    cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
+    cy.contains('Precipitação acumulada combinada INAM/CHIRP (10 dias)').should(
+      'be.visible',
+    );
+  });
 });
