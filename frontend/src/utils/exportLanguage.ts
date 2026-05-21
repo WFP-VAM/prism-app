@@ -5,32 +5,22 @@ import { get } from 'lodash';
 /** URL query param for export / batch map language (see ExportView). */
 export const EXPORT_LANGUAGE_PARAM = 'language';
 
-/** i18n language keys that differ from the 2-letter export URL param. */
-const I18N_TO_EXPORT_LANGUAGE_PARAM: Partial<Record<string, string>> = {
-  عربى: 'ar',
+/** 2-letter URL param → i18n language key (only where they differ). */
+const EXPORT_I18N_BY_PARAM: Record<string, string> = {
+  ar: 'عربى',
 };
 
-const EXPORT_LANGUAGE_PARAM_TO_I18N: Record<string, string> = Object.fromEntries(
-  Object.entries(I18N_TO_EXPORT_LANGUAGE_PARAM).map(([i18n, param]) => [
-    param,
-    i18n,
-  ]),
-);
-
-/** Map i18n language key to 2-letter `?language=` value for export URLs. */
-export function toExportLanguageParam(i18nLanguage: string): string {
-  return I18N_TO_EXPORT_LANGUAGE_PARAM[i18nLanguage] ?? i18nLanguage;
+function resolveFromParam(param: string): string | null {
+  const lang = EXPORT_I18N_BY_PARAM[param] ?? param;
+  return languages.includes(lang) ? lang : null;
 }
 
-function resolveI18nFromExportParam(param: string): string | null {
-  const aliased = EXPORT_LANGUAGE_PARAM_TO_I18N[param];
-  if (aliased && languages.includes(aliased)) {
-    return aliased;
-  }
-  if (languages.includes(param)) {
-    return param;
-  }
-  return null;
+/** i18n language key → 2-letter `?language=` value for export URLs. */
+export function toExportLanguageParam(i18nLanguage: string): string {
+  const entry = Object.entries(EXPORT_I18N_BY_PARAM).find(
+    ([, value]) => value === i18nLanguage,
+  );
+  return entry?.[0] ?? i18nLanguage;
 }
 
 type ExportLanguageOptions = {
@@ -52,7 +42,7 @@ export function exportLanguage(
   const fallback = languages.includes(defaultLocale) ? defaultLocale : 'en';
 
   const fromUrl = new URLSearchParams(search).get(EXPORT_LANGUAGE_PARAM);
-  const resolvedFromUrl = fromUrl ? resolveI18nFromExportParam(fromUrl) : null;
+  const resolvedFromUrl = fromUrl ? resolveFromParam(fromUrl) : null;
   let lang: string;
   if (resolvedFromUrl) {
     lang = resolvedFromUrl;

@@ -3,7 +3,7 @@ import '@fontsource/noto-sans-arabic/600.css';
 
 import khmerFontUrl from 'fonts/Khmer-Regular.ttf';
 
-/** Primary font family for map export / report text by i18n language code. */
+/** Primary font family for /export text by i18n language code. */
 export function getExportFontFamily(language: string): string {
   switch (language) {
     case 'kh':
@@ -15,7 +15,7 @@ export function getExportFontFamily(language: string): string {
   }
 }
 
-/** CSS font stack for web export (Playwright) and MUI typography. */
+/** CSS font stack for /export (Playwright batch maps). */
 export function getExportFontStack(language: string): string {
   const primary = getExportFontFamily(language);
   return `${primary}, Roboto, sans-serif`;
@@ -48,14 +48,12 @@ function injectKhmerFontFace(): void {
   document.head.appendChild(style);
 }
 
-/** Inject bundled faces and wait until they are usable (Playwright batch export). */
+/** Load bundled faces before /export renders (Playwright has no OS fonts). */
 export async function loadExportFonts(language: string): Promise<void> {
-  injectKhmerFontFace();
-  await waitForExportFonts(language);
-}
+  if (language === 'kh') {
+    injectKhmerFontFace();
+  }
 
-/** Wait for export fonts before Playwright captures the page. */
-export async function waitForExportFonts(language: string): Promise<void> {
   if (typeof document === 'undefined' || !document.fonts?.load) {
     return;
   }

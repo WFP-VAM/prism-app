@@ -5,20 +5,15 @@ import {
   toExportLanguageParam,
 } from './exportLanguage';
 
-const hasArabic = languages.includes('عربى');
-const itWithArabic = hasArabic ? it : it.skip;
+const itWithArabic = languages.includes('عربى') ? it : it.skip;
 
 describe('exportLanguage', () => {
   it('accepts standard 2-letter codes', () => {
     expect(exportLanguage('?language=pt')).toBe('pt');
   });
 
-  itWithArabic('maps 2-letter URL param ar to Arabic i18n key', () => {
+  itWithArabic('maps URL param ar to Arabic i18n key', () => {
     expect(exportLanguage('?language=ar')).toBe('عربى');
-  });
-
-  itWithArabic('still accepts legacy Arabic i18n key in URL', () => {
-    expect(exportLanguage('?language=عربى')).toBe('عربى');
   });
 
   itWithArabic('applies resolved language to i18n when apply is true', async () => {

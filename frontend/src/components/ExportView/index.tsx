@@ -85,14 +85,6 @@ const ExportView = memo(() => {
           body1: { fontFamily: exportFontStack, fontWeight: 400 },
           body2: { fontFamily: exportFontStack, fontWeight: 400 },
         },
-        overrides: {
-          MuiTypography: {
-            root: {
-              fontFamily: exportFontStack,
-              fontWeight: 400,
-            },
-          },
-        },
       }),
     [exportFontStack],
   );
@@ -264,10 +256,7 @@ const ExportView = memo(() => {
     <ThemeProvider theme={exportTheme}>
       <Box
         className={classes.root}
-        style={{
-          fontFamily: exportFontStack,
-          direction: getExportTextDirection(exportLang),
-        }}
+        style={{ direction: getExportTextDirection(exportLang) }}
       >
         {/* Paint order: MapExportLayout stacks boundaries before rasters */}
         <MapExportLayout

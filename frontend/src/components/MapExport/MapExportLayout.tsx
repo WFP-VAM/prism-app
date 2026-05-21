@@ -35,7 +35,6 @@ import React, {
 import { useTranslation } from 'react-i18next';
 import MapGL, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';
 import { formatCoverageText, getFormattedDate } from 'utils/date-utils';
-import { getExportFontStack, waitForExportFonts } from 'utils/exportFontFamily';
 import {
   getFirstBoundaryLayerMapId,
   getLayerBeforeId,
@@ -351,9 +350,8 @@ function MapExportLayout({
           clearInterval(pollInterval);
         }
 
-        const finishReady = async () => {
+        const finishReady = () => {
           if (signalExportReady) {
-            await waitForExportFonts(i18n.resolvedLanguage ?? 'en');
             // eslint-disable-next-line no-console
             console.info('All tiles loaded, setting PRISM_READY to true');
             (window as any).PRISM_READY = true;
@@ -364,7 +362,7 @@ function MapExportLayout({
           }
         };
 
-        void finishReady();
+        finishReady();
       };
 
       const checkFullyLoaded = (): boolean => {
@@ -491,13 +489,7 @@ function MapExportLayout({
 
   // The map content (title, legend, footer, map itself)
   const mapContent = (
-    <div
-      ref={printRef}
-      className={classes.printContainer}
-      style={{
-        fontFamily: getExportFontStack(i18n.resolvedLanguage ?? 'en'),
-      }}
-    >
+    <div ref={printRef} className={classes.printContainer}>
       {toggles.bottomLogoVisibility && getImageUrl(bottomLogo) && (
         <img
           style={{
