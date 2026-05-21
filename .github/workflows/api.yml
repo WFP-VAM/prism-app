@@ -46,7 +46,15 @@ jobs:
       - name: Security audit
         run: |
           cd api
-          poetry run pip-audit --desc --format json > audit_results.json 2>/dev/null || true
+          IGNORE_FLAGS=$(python -c "
+          import tomllib
+          from pathlib import Path
+          data = tomllib.loads(Path('audit-ignores.toml').read_text())
+          for a in data.get('advisories', []):
+              print(f'--ignore-vuln {a[\"id\"]}')
+          " | tr '\n' ' ')
+          eval "poetry run pip-audit --desc --format json $IGNORE_FLAGS" \
+            > audit_results.json 2>/dev/null || true
           python - <<'PY'
           import json
           import sys

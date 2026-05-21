@@ -1,0 +1,25 @@
+# Ignored pip-audit advisories
+#
+# Each entry suppresses a known false-positive or disputed advisory.
+# Remove entries once the upstream advisory database is corrected.
+#
+# Schema per entry:
+#   id        – the advisory identifier passed to --ignore-vuln
+#   package   – affected package name
+#   reason    – why this is safe to ignore
+#   reference – link to upstream issue or advisory
+#   added     – date this entry was added (for periodic review)
+
+[[advisories]]
+id = "CVE-2025-45768"
+package = "pyjwt"
+reason = "HMAC minimum key length enforcement. Fixed in 2.11.0; our constraint requires >=2.12.0."
+reference = "https://github.com/jpadilla/pyjwt/issues/1168"
+added = "2026-05-21"
+
+[[advisories]]
+id = "PYSEC-2025-183"
+package = "pyjwt"
+reason = "Critical header (crit) validation per RFC 7515. Fixed in 2.12.0; OSV DB lacks fix_versions metadata."
+reference = "https://github.com/jpadilla/pyjwt/security/advisories/GHSA-752w-5fwx-jx9f"
+added = "2026-05-21"
