@@ -19,7 +19,7 @@ posthog.init(process.env.REACT_APP_POSTHOG_TOKEN as string, {
   defaults: '2026-01-30',
 });
 
-posthog.register({ deployment: safeCountry });
+posthog.register({ country: safeCountry });
 
 const container = document.getElementById('root');
 const root = createRoot(container!);
