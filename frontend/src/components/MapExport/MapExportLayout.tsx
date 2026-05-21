@@ -170,7 +170,7 @@ function MapExportLayout({
   // Scale percent for AA markers based on map zoom
   const scalePercent = useAAMarkerScalePercent(mapRef.current?.getMap());
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   // Process title text to replace {date} and {coverage} placeholders
   const processedTitleText = useMemo(() => {
