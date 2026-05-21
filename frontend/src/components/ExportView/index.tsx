@@ -73,14 +73,28 @@ const ExportView = memo(() => {
     };
   }, [exportLang]);
 
+  const exportFontStack = getExportFontStack(exportLang);
   const exportTheme = useMemo(
     () =>
       createTheme(muiTheme, {
         typography: {
-          fontFamily: getExportFontStack(exportLang),
+          fontFamily: exportFontStack,
+          h4: { fontFamily: exportFontStack, fontWeight: 400 },
+          h5: { fontFamily: exportFontStack, fontWeight: 400 },
+          h6: { fontFamily: exportFontStack, fontWeight: 400 },
+          body1: { fontFamily: exportFontStack, fontWeight: 400 },
+          body2: { fontFamily: exportFontStack, fontWeight: 400 },
+        },
+        overrides: {
+          MuiTypography: {
+            root: {
+              fontFamily: exportFontStack,
+              fontWeight: 400,
+            },
+          },
         },
       }),
-    [exportLang],
+    [exportFontStack],
   );
   const exportParams = useExportParams();
   const printRef = useRef<HTMLDivElement>(null);
@@ -251,7 +265,7 @@ const ExportView = memo(() => {
       <Box
         className={classes.root}
         style={{
-          fontFamily: getExportFontStack(exportLang),
+          fontFamily: exportFontStack,
           direction: getExportTextDirection(exportLang),
         }}
       >
