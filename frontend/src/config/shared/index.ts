@@ -15,7 +15,7 @@ import spanish from './translation/spanish.json';
 
 // TODO - Link translation files for the following languages
 const translation: Record<string, any> = {
-  عربى: arabic,
+  ar: arabic,
   en: english,
   fr: french,
   kh: khmer,

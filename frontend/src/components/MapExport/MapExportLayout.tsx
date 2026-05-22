@@ -489,7 +489,7 @@ function MapExportLayout({
 
   // The map content (title, legend, footer, map itself)
   const mapContent = (
-    <div ref={printRef} className={classes.printContainer}>
+    <div ref={printRef} className={`${classes.printContainer} layout-ltr`}>
       {toggles.bottomLogoVisibility && getImageUrl(bottomLogo) && (
         <img
           style={{
@@ -558,7 +558,10 @@ function MapExportLayout({
               </Typography>
             )}
             {footerDateText && (
-              <Typography style={{ fontSize: `${footerTextSize}px` }}>
+              <Typography
+                className="print-footer-meta"
+                style={{ fontSize: `${footerTextSize}px` }}
+              >
                 {footerDateText} {footerCoverageText ? footerCoverageText : ''}
               </Typography>
             )}

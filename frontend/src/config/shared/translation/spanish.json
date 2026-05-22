@@ -31,6 +31,8 @@
   "Track batch export progress here. You can run several jobs at once.": "Siga aquí el progreso de la exportación por lotes. Puede ejecutar varios trabajos a la vez.",
   "Cadence": "Cadencia",
   "Create a sequence of maps": "Crear una secuencia de mapas",
+  "Select one layer at a time to create a sequence of maps": "Seleccione una capa a la vez para crear una secuencia de mapas",
+  "Selecting this option will apply the template above to create multiple maps over a time period of your choice.": "Al seleccionar esta opción se aplicará la plantilla anterior para crear varios mapas en el periodo de tiempo que elija.",
   "Start date": "Fecha de inicio",
   "End date": "Fecha de finalización",
   "Every N dekads": "Cada N decenas",

@@ -229,6 +229,8 @@
   "Compare Locations": "مقارنة المواقع",
   "Compare Periods": "مقارنة الفترات",
   "Select Charts": "اختيار الرسم البياني",
+  "Select one layer at a time to create a sequence of maps": "حدد طبقة واحدة في كل مرة لإنشاء سلسلة من الخرائط",
+  "Selecting this option will apply the template above to create multiple maps over a time period of your choice.": "سيؤدي تحديد هذا الخيار إلى تطبيق القالب أعلاه لإنشاء خرائط متعددة خلال الفترة الزمنية التي تختارها.",
   "1-month rainfall aggregate": "مجموع هطول الأمطار لشهر واحد",
   "Monthly rainfall anomaly": "اختلال الهاطل المطري الشهري",
   "Clear All": "مسح الكل",

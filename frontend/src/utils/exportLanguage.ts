@@ -5,22 +5,13 @@ import { get } from 'lodash';
 /** URL query param for export / batch map language (see ExportView). */
 export const EXPORT_LANGUAGE_PARAM = 'language';
 
-/** 2-letter URL param → i18n language key (only where they differ). */
-const EXPORT_I18N_BY_PARAM: Record<string, string> = {
-  ar: 'عربى',
-};
-
 function resolveFromParam(param: string): string | null {
-  const lang = EXPORT_I18N_BY_PARAM[param] ?? param;
-  return languages.includes(lang) ? lang : null;
+  return languages.includes(param) ? param : null;
 }
 
-/** i18n language key → 2-letter `?language=` value for export URLs. */
+/** i18n language code for `?language=` on export URLs (2-letter codes). */
 export function toExportLanguageParam(i18nLanguage: string): string {
-  const entry = Object.entries(EXPORT_I18N_BY_PARAM).find(
-    ([, value]) => value === i18nLanguage,
-  );
-  return entry?.[0] ?? i18nLanguage;
+  return i18nLanguage;
 }
 
 type ExportLanguageOptions = {

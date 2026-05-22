@@ -251,6 +251,8 @@
   "Admin 2": "Distrito",
   "Remove {{adminLevel}}": "Remover {{adminLevel}}",
   "Select Charts": "Selecione os gráficos",
+  "Select one layer at a time to create a sequence of maps": "Selecione uma camada de cada vez para criar uma sequência de mapas",
+  "Selecting this option will apply the template above to create multiple maps over a time period of your choice.": "Ao selecionar esta opção, o modelo acima será aplicado para criar vários mapas ao longo do período de tempo que escolher.",
   "Compare Periods": "Comparar períodos",
   "PERIOD 1": "PERÍODO 1",
   "PERIOD 2": "PERÍODO 2",

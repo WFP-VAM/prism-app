@@ -8,7 +8,7 @@ export function getExportFontFamily(language: string): string {
   switch (language) {
     case 'kh':
       return 'Khmer';
-    case 'عربى':
+    case 'ar':
       return 'Noto Sans Arabic';
     default:
       return 'Roboto';
@@ -19,10 +19,6 @@ export function getExportFontFamily(language: string): string {
 export function getExportFontStack(language: string): string {
   const primary = getExportFontFamily(language);
   return `${primary}, Roboto, sans-serif`;
-}
-
-export function getExportTextDirection(language: string): 'rtl' | 'ltr' {
-  return language === 'عربى' ? 'rtl' : 'ltr';
 }
 
 function cssFontFamily(family: string): string {

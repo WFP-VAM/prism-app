@@ -246,6 +246,8 @@
   "Admin 2": "Админ 2",
   "Remove {{adminLevel}}": "Удалить {{adminLevel}}",
   "Select Charts": "Выберите графики",
+  "Select one layer at a time to create a sequence of maps": "Выбирайте по одному слою за раз, чтобы создать последовательность карт",
+  "Selecting this option will apply the template above to create multiple maps over a time period of your choice.": "При выборе этого параметра шаблон выше будет применён для создания нескольких карт за выбранный вами период времени.",
   "Clear all": "Очистить все",
   "Period": "Период",
   "Start": "Начинать",

@@ -239,6 +239,8 @@
   "Remove {{adminLevel}}": "Supprimer {{adminLevel}}",
   "Compare Periods": "Comparer les périodes",
   "Select Charts": "Sélectionner des graphiques",
+  "Select one layer at a time to create a sequence of maps": "Sélectionnez une couche à la fois pour créer une série de cartes",
+  "Selecting this option will apply the template above to create multiple maps over a time period of your choice.": "Cette option applique le modèle ci-dessus pour créer plusieurs cartes sur la période de votre choix.",
   "Admin Levels": "Niveaux Administratifs",
   "View Table": "Voir le tableau",
   "Download CSV": "Télécharger CSV",

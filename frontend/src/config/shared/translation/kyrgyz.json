@@ -246,6 +246,8 @@
   "Admin 2": "Админ 2",
   "Remove {{adminLevel}}": "{{adminLevel}} тазалоо",
   "Select Charts": "Диаграммаларды тандаңыз",
+  "Select one layer at a time to create a sequence of maps": "Карталардын катарын түзүү үчүн бир убакта бир катмарды тандаңыз",
+  "Selecting this option will apply the template above to create multiple maps over a time period of your choice.": "Бул параметрди тандоо жогорудагы шаблонду сиз тандаган убакыт аралыгында бир нече карта түзүү үчүн колдонот.",
   "Clear all": "Баарын тазалоо",
   "Period": "Мезгил",
   "Start": "Баштоо",
