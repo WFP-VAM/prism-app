@@ -81,7 +81,6 @@ services:
       - 8.8.8.8
 
   export_map_worker:
-    container_name: "export_map_worker"
     build:
       context: .
       dockerfile: Dockerfile.export-map-worker
@@ -90,7 +89,7 @@ services:
       - traefik_default
       - default
     environment:
-      - BROWSER_POOL_SIZE=1
+      - BROWSER_POOL_SIZE=2
       - PRISM_ALERTS_DATABASE_URL=${PRISM_ALERTS_DATABASE_URL:?"Provide a URL for the alerts database."}
       # Default URI must stay aligned with DEFAULT_EXPORT_MAP_S3_BUCKET in export_s3.py
       - EXPORT_MAP_S3_BUCKET=${EXPORT_MAP_S3_BUCKET:-s3://prism-wfp/batch-maps}
