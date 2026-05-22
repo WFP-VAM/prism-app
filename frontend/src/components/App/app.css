@@ -30,18 +30,16 @@ html, body { height: 100% }
   direction: ltr;
 }
 
-/* Legend inside print shell: RTL text + swatch order without mirroring overlay positions. */
-.locale-rtl-text .layout-ltr .MuiPaper-root,
-.locale-rtl-text .layout-ltr .MuiList-root,
-.locale-rtl-text .layout-ltr .MuiListItem-root {
+/* Legend cards (map panel + print): RTL text and swatch order. */
+.locale-rtl-text .legend-card {
   direction: rtl;
   text-align: start;
   unicode-bidi: plaintext;
 }
 
-.locale-rtl-text .print-footer-meta {
-  direction: rtl;
-  text-align: start;
+.locale-rtl-text .print-footer-overlay .print-footer-disclaimer,
+.locale-rtl-text .print-footer-overlay .print-footer-meta {
+  text-align: right;
   display: block;
   width: 100%;
 }

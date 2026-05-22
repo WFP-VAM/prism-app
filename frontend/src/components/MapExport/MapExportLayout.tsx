@@ -200,9 +200,9 @@ function MapExportLayout({
 
   // Compute footer date text from layerDate
   const footerDateText = useMemo(() => {
-    const pubDate = `${t('Publication date')}: ${getFormattedDate(Date.now(), 'localeNumericUTC')}`;
+    const pubDate = `${t('Publication date')}: ${getFormattedDate(Date.now(), 'localeNumericUTC', t('date_locale'))}`;
     if (layerDate) {
-      return `${pubDate}. ${t('Layer selection date')}: ${getFormattedDate(layerDate, 'localeNumericUTC')}.`;
+      return `${pubDate}. ${t('Layer selection date')}: ${getFormattedDate(layerDate, 'localeNumericUTC', t('date_locale'))}.`;
     }
     return `${pubDate}.`;
   }, [layerDate, t]);
@@ -546,9 +546,13 @@ function MapExportLayout({
       )}
       {toggles.footerVisibility &&
         (footerText || footerDateText || footerCoverageText) && (
-          <div ref={footerRef} className={classes.footerOverlay}>
+          <div
+            ref={footerRef}
+            className={`${classes.footerOverlay} print-footer-overlay`}
+          >
             {footerText && (
               <Typography
+                className="print-footer-disclaimer"
                 style={{
                   fontSize: `${footerTextSize}px`,
                   whiteSpace: 'pre-line',
