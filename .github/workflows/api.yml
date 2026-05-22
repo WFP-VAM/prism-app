@@ -46,6 +46,7 @@ jobs:
       - name: Security audit
         run: |
           cd api
+          # NOTE: Temporarily ignoring PYSEC-2025-183; add a tracking issue/plan to remove this ignore.
           poetry run pip-audit --desc --format json --ignore-vuln PYSEC-2025-183 > audit_results.json 2>/dev/null || true
           python - <<'PY'
           import json
