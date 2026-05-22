@@ -4,7 +4,7 @@ import rawReports from './reports.json';
 
 const rawTables = {};
 // Country-specific translation overrides shared translation
-const translation = { kh: {} };
+const translation = { km: {} };
 
 export default {
   appConfig,

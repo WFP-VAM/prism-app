@@ -18,7 +18,7 @@ const translation: Record<string, any> = {
   ar: arabic,
   en: english,
   fr: french,
-  kh: khmer,
+  km: khmer,
   ky: kyrgyz,
   mn: mongolian,
   pt: portuguese,

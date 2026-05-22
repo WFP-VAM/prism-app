@@ -6,7 +6,7 @@ import khmerFontUrl from 'fonts/Khmer-Regular.ttf';
 /** Primary font family for /export text by i18n language code. */
 export function getExportFontFamily(language: string): string {
   switch (language) {
-    case 'kh':
+    case 'km':
       return 'Khmer';
     case 'ar':
       return 'Noto Sans Arabic';
@@ -46,7 +46,7 @@ function injectKhmerFontFace(): void {
 
 /** Load bundled faces before /export renders (Playwright has no OS fonts). */
 export async function loadExportFonts(language: string): Promise<void> {
-  if (language === 'kh') {
+  if (language === 'km') {
     injectKhmerFontFace();
   }
 
@@ -61,7 +61,7 @@ export async function loadExportFonts(language: string): Promise<void> {
   }
 
   const family = cssFontFamily(primary);
-  const sampleText = language === 'kh' ? 'កខគ' : 'العربية';
+  const sampleText = language === 'km' ? 'កខគ' : 'العربية';
 
   try {
     await document.fonts.load(`400 16px ${family}`, sampleText);
