@@ -81,7 +81,6 @@ services:
       - 8.8.8.8
 
   export_map_worker:
-    container_name: "export_map_worker"
     build:
       context: .
       dockerfile: Dockerfile.export-map-worker
