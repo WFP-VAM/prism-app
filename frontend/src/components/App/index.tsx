@@ -16,6 +16,7 @@ import { authRequired } from 'config';
 import KhmerFont from 'fonts/Khmer-Regular.ttf';
 import RobotoFont from 'fonts/Roboto-Regular.ttf';
 import { useDashboardConfig } from 'hooks/useDashboardConfig';
+import { useDocumentLocale } from 'hooks/useDocumentLocale';
 import muiTheme from 'muiTheme';
 import { memo, useMemo } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
@@ -79,6 +80,7 @@ const Wrapper = memo(() => (
 
 function App() {
   useDashboardConfig();
+  useDocumentLocale();
   const isAuthenticated = useIsAuthenticated();
 
   // The rendered content

@@ -206,9 +206,9 @@ function MapExportLayout({
 
   // Compute footer date text from layerDate
   const footerDateText = useMemo(() => {
-    const pubDate = `${t('Publication date')}: ${getFormattedDate(Date.now(), 'localeNumericUTC')}`;
+    const pubDate = `${t('Publication date')}: ${getFormattedDate(Date.now(), 'localeNumericUTC', t('date_locale'))}`;
     if (layerDate) {
-      return `${pubDate}. ${t('Layer selection date')}: ${getFormattedDate(layerDate, 'localeNumericUTC')}.`;
+      return `${pubDate}. ${t('Layer selection date')}: ${getFormattedDate(layerDate, 'localeNumericUTC', t('date_locale'))}.`;
     }
     return `${pubDate}.`;
   }, [layerDate, t]);
@@ -500,7 +500,7 @@ function MapExportLayout({
 
   // The map content (title, legend, footer, map itself)
   const mapContent = (
-    <div ref={printRef} className={classes.printContainer}>
+    <div ref={printRef} className={`${classes.printContainer} layout-ltr`}>
       {toggles.bottomLogoVisibility && getImageUrl(bottomLogo) && (
         <img
           style={{
@@ -557,9 +557,13 @@ function MapExportLayout({
       )}
       {toggles.footerVisibility &&
         (footerText || footerDateText || footerCoverageText) && (
-          <div ref={footerRef} className={classes.footerOverlay}>
+          <div
+            ref={footerRef}
+            className={`${classes.footerOverlay} print-footer-overlay`}
+          >
             {footerText && (
               <Typography
+                className="print-footer-disclaimer"
                 style={{
                   fontSize: `${footerTextSize}px`,
                   whiteSpace: 'pre-line',
@@ -569,7 +573,10 @@ function MapExportLayout({
               </Typography>
             )}
             {footerDateText && (
-              <Typography style={{ fontSize: `${footerTextSize}px` }}>
+              <Typography
+                className="print-footer-meta"
+                style={{ fontSize: `${footerTextSize}px` }}
+              >
                 {footerDateText} {footerCoverageText ? footerCoverageText : ''}
               </Typography>
             )}
