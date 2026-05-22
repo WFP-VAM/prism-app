@@ -146,7 +146,7 @@ export default function CadenceSelector() {
             type="number"
             size="small"
             variant="outlined"
-            label="Dekad interval"
+            label={t('Dekad interval')}
             value={dekadInterval}
             inputProps={{ min: 1 }}
             onChange={e => {

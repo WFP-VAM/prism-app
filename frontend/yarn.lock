@@ -1337,6 +1337,11 @@
     "@eslint/core" "^0.17.0"
     levn "^0.4.1"
 
+"@fontsource/noto-sans-arabic@5.2.5":
+  version "5.2.5"
+  resolved "https://registry.yarnpkg.com/@fontsource/noto-sans-arabic/-/noto-sans-arabic-5.2.5.tgz#d42b0a8372146103e37594aba839177df4f7d37e"
+  integrity sha512-bgjSVWWswb0z9QhlQUaemGXUrLJ64uAG2WIZI/pqbViJ8y4cjJtF8YyIsXJOk22+PptMFiEWpHEN79SS+LVcVA==
+
 "@fortawesome/fontawesome-common-types@6.7.2":
   version "6.7.2"
   resolved "https://registry.npmjs.org/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-6.7.2.tgz"

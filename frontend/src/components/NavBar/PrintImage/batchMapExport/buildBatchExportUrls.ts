@@ -1,5 +1,8 @@
 import { isCustomRatio } from 'components/MapExport/aspectRatioConstants';
-import { EXPORT_LANGUAGE_PARAM } from 'utils/exportLanguage';
+import {
+  EXPORT_LANGUAGE_PARAM,
+  toExportLanguageParam,
+} from 'utils/exportLanguage';
 
 import type { BuildBatchExportUrlsInput } from './types';
 
@@ -80,7 +83,7 @@ export function buildBatchExportUrls(
       }
 
       if (language) {
-        params.set(EXPORT_LANGUAGE_PARAM, language);
+        params.set(EXPORT_LANGUAGE_PARAM, toExportLanguageParam(language));
       }
 
       return `${origin}${exportPath}?${params.toString()}`;
