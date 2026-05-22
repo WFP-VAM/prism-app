@@ -45,4 +45,10 @@ describe('buildBatchExportUrls', () => {
     expect(url.searchParams.get('hazardLayerIds')).toBe('precip_blended_dekad');
     expect(url.searchParams.get('date')).toBe('2024-05-15');
   });
+
+  it('uses 2-letter language param for Arabic i18n key', () => {
+    const urls = buildBatchExportUrls({ ...baseInput, language: 'ar' });
+    const url = new URL(urls[0]);
+    expect(url.searchParams.get(EXPORT_LANGUAGE_PARAM)).toBe('ar');
+  });
 });

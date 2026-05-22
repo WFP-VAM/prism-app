@@ -10,7 +10,7 @@ const useStyles = makeStyles(() =>
     indicator: {
       height: 10,
       width: 10,
-      marginRight: 4,
+      marginInlineEnd: 4,
       flexShrink: 0,
     },
   }),

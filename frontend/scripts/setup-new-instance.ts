@@ -53,7 +53,7 @@ const LANGUAGES: Record<string, string> = {
   es: 'Spanish',
   ar: 'Arabic',
   ru: 'Russian',
-  kh: 'Khmer',
+  km: 'Khmer',
   ky: 'Kyrgyz',
   mn: 'Mongolian',
   so: 'Somali',

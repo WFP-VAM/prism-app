@@ -27,7 +27,7 @@ function AALegend({
   return (
     <ListItem disableGutters dense>
       <Paper
-        className={classes.paper}
+        className={`${classes.paper} legend-card`}
         elevation={forPrinting ? 0 : undefined}
         style={
           forPrinting
