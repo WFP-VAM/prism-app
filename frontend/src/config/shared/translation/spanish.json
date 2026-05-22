@@ -20,6 +20,7 @@
   "batch_export_maps_truncated_panel": "Su selección supera el límite de exportación de {{max}} mapas. Al exportar se generarán los {{max}} mapas más recientes de la selección. También puede ajustar el intervalo de fechas para obtener los {{max}} mapas que necesita.",
   "batch_export_status_queued": "En cola",
   "batch_export_status_running": "En ejecución",
+  "batch_export_status_finishing": "Finalizando exportación",
   "batch_export_status_succeeded": "Completado",
   "batch_export_status_failed": "Fallido",
   "Batch map exports": "Exportaciones de mapas por lotes",

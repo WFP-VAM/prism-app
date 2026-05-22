@@ -79,11 +79,11 @@ const ExportView = memo(() => {
       createTheme(muiTheme, {
         typography: {
           fontFamily: exportFontStack,
-          h4: { fontFamily: exportFontStack, fontWeight: 400 },
-          h5: { fontFamily: exportFontStack, fontWeight: 400 },
-          h6: { fontFamily: exportFontStack, fontWeight: 400 },
-          body1: { fontFamily: exportFontStack, fontWeight: 400 },
-          body2: { fontFamily: exportFontStack, fontWeight: 400 },
+          h4: { fontFamily: exportFontStack },
+          h5: { fontFamily: exportFontStack },
+          h6: { fontFamily: exportFontStack },
+          body1: { fontFamily: exportFontStack },
+          body2: { fontFamily: exportFontStack },
         },
       }),
     [exportFontStack],
@@ -254,39 +254,34 @@ const ExportView = memo(() => {
 
   return (
     <ThemeProvider theme={exportTheme}>
-      <Box
-        className={classes.root}
-        style={{ direction: getExportTextDirection(exportLang) }}
-      >
-        {/* Paint order: MapExportLayout stacks boundaries before rasters */}
-        <MapExportLayout
-          toggles={exportParams.toggles}
-          aspectRatio={exportParams.aspectRatio}
-          titleText={exportParams.titleText}
-          footerText={exportParams.footerText}
-          footerTextSize={exportParams.footerTextSize}
-          layerDate={exportParams.date}
-          logo={logo}
-          logoPosition={exportParams.logoPosition}
-          logoScale={exportParams.logoScale}
-          titleHeight={titleHeight}
-          legendPosition={exportParams.legendPosition}
-          legendScale={exportParams.legendScale}
-          bounds={exportParams.bounds ?? undefined}
-          mapStyle={processedMapStyle}
-          invertedAdminBoundaryLimitPolygon={invertedAdminBoundaryLimitPolygon}
-          printRef={printRef}
-          titleRef={titleRef}
-          footerRef={footerRef}
-          footerHeight={footerHeight}
-          bottomLogo={bottomLogo}
-          bottomLogoScale={exportParams.bottomLogoScale}
-          adminLevelLayersWithFillPattern={adminLevelLayersWithFillPattern}
-          selectedLayers={selectedLayers}
-          layersCoverage={layersCoverage}
-          signalExportReady
-        />
-      </Box>
+      {/* Paint order: MapExportLayout stacks boundaries before rasters */}
+      <MapExportLayout
+        toggles={exportParams.toggles}
+        aspectRatio={exportParams.aspectRatio}
+        titleText={exportParams.titleText}
+        footerText={exportParams.footerText}
+        footerTextSize={exportParams.footerTextSize}
+        layerDate={exportParams.date}
+        logo={logo}
+        logoPosition={exportParams.logoPosition}
+        logoScale={exportParams.logoScale}
+        titleHeight={titleHeight}
+        legendPosition={exportParams.legendPosition}
+        legendScale={exportParams.legendScale}
+        bounds={exportParams.bounds ?? undefined}
+        mapStyle={processedMapStyle}
+        invertedAdminBoundaryLimitPolygon={invertedAdminBoundaryLimitPolygon}
+        printRef={printRef}
+        titleRef={titleRef}
+        footerRef={footerRef}
+        footerHeight={footerHeight}
+        bottomLogo={bottomLogo}
+        bottomLogoScale={exportParams.bottomLogoScale}
+        adminLevelLayersWithFillPattern={adminLevelLayersWithFillPattern}
+        selectedLayers={selectedLayers}
+        layersCoverage={layersCoverage}
+        signalExportReady
+      />
     </ThemeProvider>
   );
 });

@@ -20,6 +20,7 @@
   "batch_export_maps_truncated_panel": "Votre sélection dépasse la limite d’export de {{max}} cartes. Un clic sur Exporter produira les {{max}} cartes les plus récentes de votre sélection. Vous pouvez aussi modifier la plage de dates pour obtenir les {{max}} cartes dont vous avez besoin.",
   "batch_export_status_queued": "En attente",
   "batch_export_status_running": "En cours",
+  "batch_export_status_finishing": "Finalisation de l'export",
   "batch_export_status_succeeded": "Terminé",
   "batch_export_status_failed": "Échec",
   "Batch map exports": "Exports de cartes par lot",

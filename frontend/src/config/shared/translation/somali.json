@@ -36,6 +36,7 @@
   "batch_export_maps_truncated_panel": "Xulashidu waxay ka badan tahay xadka dhoofinta ee {{max}} khariidadood. Guji dhoofinta si aad u sameyso {{max}} ee ugu dambeeya ee doorashadaada. Waxaad sidoo kale beddeli kartaa taariikhaha si aad u dhoofsato {{max}} khariidadood ee aad u baahan tahay.",
   "batch_export_status_queued": "Safka",
   "batch_export_status_running": "Waa socdaa",
+  "batch_export_status_finishing": "Dhammayn dhoofinta",
   "batch_export_status_succeeded": "Way dhamaatay",
   "batch_export_status_failed": "Way fashilantay",
   "Batch map exports": "Dhoofinta khariidadaha taxanaha",

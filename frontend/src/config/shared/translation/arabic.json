@@ -35,6 +35,7 @@
   "batch_export_maps_truncated_panel": "تجاوز اختيارك حد التصدير البالغ {{max}} خريطة. سيُنشئ التصدير أحدث {{max}} خريطة ضمن الاختيار. يمكنك أيضاً ضبط نطاق التواريخ لتصدير {{max}} الخرائط التي تحتاجها.",
   "batch_export_status_queued": "في الانتظار",
   "batch_export_status_running": "قيد التشغيل",
+  "batch_export_status_finishing": "جاري إنهاء التصدير",
   "batch_export_status_succeeded": "اكتمل",
   "batch_export_status_failed": "فشل",
   "Batch map exports": "تصدير الخرائط دفعة واحدة",

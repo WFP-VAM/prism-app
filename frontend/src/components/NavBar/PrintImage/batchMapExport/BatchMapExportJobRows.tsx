@@ -26,6 +26,8 @@ function batchExportStatusLabel(status: string, t: TFunction): string {
       return t('batch_export_status_queued');
     case 'running':
       return t('batch_export_status_running');
+    case 'finishing':
+      return t('batch_export_status_finishing');
     case 'succeeded':
       return t('batch_export_status_succeeded');
     case 'failed':
@@ -70,7 +72,7 @@ function BatchMapExportJobRows({ jobs, onDismiss, variant }: Props) {
       data-testid="batch-map-export-job-list"
     >
       {sorted.map((job, idx) => {
-        const { mapsCurrent, mapsTotal, barMode, barValue, finishing } =
+        const { mapsCurrent, mapsTotal, barMode, barValue, displayStatus } =
           getBatchMapExportProgressDisplay(job);
 
         const failed = Boolean(job.error || job.status === 'failed');
@@ -116,16 +118,11 @@ function BatchMapExportJobRows({ jobs, onDismiss, variant }: Props) {
                       component="div"
                       className={`${classes.statusProgressLine} ${classes.jobLineText}`}
                     >
-                      {finishing
-                        ? t('batch_export_status_finishing', {
-                            current: mapsCurrent,
-                            total: mapsTotal,
-                          })
-                        : t('batch_export_status_and_maps', {
-                            status: batchExportStatusLabel(job.status, t),
-                            current: mapsCurrent,
-                            total: mapsTotal,
-                          })}
+                      {t('batch_export_status_and_maps', {
+                        status: batchExportStatusLabel(displayStatus, t),
+                        current: mapsCurrent,
+                        total: mapsTotal,
+                      })}
                     </Typography>
                     <LinearProgress
                       className={classes.progress}

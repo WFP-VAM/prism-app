@@ -35,6 +35,7 @@
   "batch_export_maps_truncated_panel": "Тандалганыңыз экспорттуу чегинен ({{max}} картадан) ашат. Экспорттон кийин тандалганыңыздан акыркы {{max}} карта түзүлөт. Керектүү {{max}} карт үчүн күн диапазонун да өзгөртө аласыз.",
   "batch_export_status_queued": "Күттүүдө",
   "batch_export_status_running": "Аткарылууда",
+  "batch_export_status_finishing": "Экспортту аяктоо",
   "batch_export_status_succeeded": "Бүттү",
   "batch_export_status_failed": "Ката",
   "{{current}} of {{total}} maps": "{{current}}/{{total}} карта",

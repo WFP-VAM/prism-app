@@ -1,24 +1,19 @@
 import type { BatchMapExportJobRow } from './types';
 
+export type BatchMapExportDisplayStatus =
+  | 'queued'
+  | 'running'
+  | 'finishing'
+  | 'succeeded'
+  | 'failed';
+
 export function getBatchMapExportProgressDisplay(job: BatchMapExportJobRow): {
   mapsCurrent: number;
   mapsTotal: number;
   barMode: 'determinate' | 'indeterminate';
   barValue: number;
-  finishing: boolean;
+  displayStatus: BatchMapExportDisplayStatus;
 } {
-  const mapsTotal = Math.max(job.mapTotal, job.progressTotalFromApi ?? 0, 1);
-
-  if (job.status === 'succeeded') {
-    return {
-      mapsCurrent: mapsTotal,
-      mapsTotal,
-      barMode: 'determinate',
-      barValue: 100,
-      finishing: false,
-    };
-  }
-
   const hasProgress =
     job.progressCurrent != null &&
     job.progressTotalFromApi != null &&
@@ -28,30 +23,30 @@ export function getBatchMapExportProgressDisplay(job: BatchMapExportJobRow): {
     ? Math.min(job.progressCurrent!, job.progressTotalFromApi!)
     : 0;
 
-  const mapsRendered =
+  const mapsTotal = hasProgress
+    ? Math.max(job.progressTotalFromApi!, job.mapTotal, 1)
+    : Math.max(job.mapTotal, 1);
+
+  const mapsDone =
     hasProgress && job.progressCurrent! >= job.progressTotalFromApi!;
 
-  // Determinate only fills in place on poll ticks — looks frozen while Running.
-  // Keep the bar indeterminate for queued/running; show map counts in the label.
-  const inProgress = job.status === 'queued' || job.status === 'running';
-
-  if (inProgress) {
-    return {
-      mapsCurrent,
-      mapsTotal: hasProgress
-        ? Math.max(job.progressTotalFromApi!, job.mapTotal)
-        : job.mapTotal || mapsTotal,
-      barMode: 'indeterminate',
-      barValue: 0,
-      finishing: job.status === 'running' && mapsRendered,
-    };
+  let displayStatus: BatchMapExportDisplayStatus = 'queued';
+  if (job.status === 'succeeded') {
+    displayStatus = 'succeeded';
+  } else if (job.status === 'failed') {
+    displayStatus = 'failed';
+  } else if (job.status === 'running') {
+    displayStatus = mapsDone ? 'finishing' : 'running';
   }
 
+  const succeeded = job.status === 'succeeded';
+
   return {
-    mapsCurrent: 0,
-    mapsTotal: job.mapTotal || mapsTotal,
-    barMode: 'indeterminate',
-    barValue: 0,
-    finishing: false,
+    mapsCurrent: succeeded ? mapsTotal : mapsCurrent,
+    mapsTotal,
+    // Indeterminate while queued/running — determinate bar only updates on poll ticks.
+    barMode: succeeded ? 'determinate' : 'indeterminate',
+    barValue: succeeded ? 100 : 0,
+    displayStatus,
   };
 }
