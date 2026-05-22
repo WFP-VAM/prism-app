@@ -285,7 +285,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     }
   }, [availableCadences, cadence]);
 
-  const shouldEnableBatchMaps = true;
+  const shouldEnableBatchMaps = false;
 
   const shouldShowMultiLayerWarning = selectedLayersWithDateSupport.length > 1;
 
