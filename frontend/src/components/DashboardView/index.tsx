@@ -7,7 +7,12 @@ import {
   DialogContentText,
   makeStyles,
 } from '@material-ui/core';
-import { DeleteOutlined, VisibilityOutlined } from '@material-ui/icons';
+import {
+  DeleteOutlined,
+  DescriptionOutlined,
+  VisibilityOutlined,
+} from '@material-ui/icons';
+import { downloadToFile } from 'components/MapView/utils';
 import { DashboardMode } from 'config/types';
 import { usePersistDraftDashboards } from 'hooks/usePersistDraftDashboards';
 import { useSafeTranslation } from 'i18n';
@@ -98,6 +103,25 @@ function DashboardView() {
     dispatch(setMode(DashboardMode.VIEW));
   };
 
+  const handleExportJSON = () => {
+    const {
+      selectedDashboardIndex: _selectedDashboardIndex,
+      maps: _maps,
+      isDraft: _isDraft,
+      ...dashboard
+    } = dashboardConfig;
+    const exportData = [dashboard];
+    const safeSlug = generateSlugFromTitle(
+      dashboard.path || dashboard.title || 'dashboard',
+    );
+    const filename = `${safeSlug}_${Date.now()}`;
+    downloadToFile(
+      { content: JSON.stringify(exportData, null, 2), isUrl: false },
+      filename,
+      'application/json',
+    );
+  };
+
   const handleClosePreview = () => {
     dispatch(setMode(DashboardMode.EDIT));
   };
@@ -128,7 +152,7 @@ function DashboardView() {
               color="secondary"
               startIcon={<DeleteOutlined />}
               onClick={() => setDeleteDialogOpen(true)}
-              className={classes.previewButton}
+              className={classes.toolbarButton}
               size="medium"
             >
               {t('Delete')}
@@ -139,10 +163,20 @@ function DashboardView() {
             color="primary"
             startIcon={<VisibilityOutlined />}
             onClick={handlePreviewClick}
-            className={classes.previewButton}
+            className={classes.toolbarButton}
             size="medium"
           >
             {t('Preview Dashboard')}
+          </Button>
+          <Button
+            variant="outlined"
+            color="primary"
+            startIcon={<DescriptionOutlined />}
+            onClick={handleExportJSON}
+            className={classes.toolbarButton}
+            size="medium"
+          >
+            {t('Export JSON')}
           </Button>
         </Box>
       )}
@@ -270,12 +304,11 @@ const useStyles = makeStyles(() => ({
     padding: '12px 16px',
     display: 'flex',
     justifyContent: 'center',
-    zIndex: 1400,
     gap: '8px',
+    zIndex: 1400,
   },
-  previewButton: {
+  toolbarButton: {
     textTransform: 'none',
-    fontWeight: 500,
   },
   previewDialog: {
     '& .MuiDialog-paper': {
