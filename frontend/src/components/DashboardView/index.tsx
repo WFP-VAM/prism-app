@@ -104,10 +104,17 @@ function DashboardView() {
   };
 
   const handleExportJSON = () => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { selectedDashboardIndex, maps, ...dashboard } = dashboardConfig;
-    const exportData = [{ ...dashboard, isDraft: undefined }];
-    const filename = `${dashboard.path}_${Date.now()}`;
+    const {
+      selectedDashboardIndex: _selectedDashboardIndex,
+      maps: _maps,
+      isDraft: _isDraft,
+      ...dashboard
+    } = dashboardConfig;
+    const exportData = [dashboard];
+    const safeSlug = generateSlugFromTitle(
+      dashboard.path || dashboard.title || 'dashboard',
+    );
+    const filename = `${safeSlug}_${Date.now()}`;
     downloadToFile(
       { content: JSON.stringify(exportData, null, 2), isUrl: false },
       filename,

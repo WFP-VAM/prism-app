@@ -1,8 +1,11 @@
 import { createTheme, ThemeProvider } from '@material-ui/core';
+import { configureStore } from '@reduxjs/toolkit';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { downloadToFile } from 'components/MapView/utils';
-import { setDraftDashboard } from 'context/dashboardStateSlice';
-import { store } from 'context/store';
+import analysisResultReducer from 'context/analysisResultStateSlice';
+import dashboardReducer, {
+  setDraftDashboard,
+} from 'context/dashboardStateSlice';
 import { Provider } from 'react-redux';
 import { TestBrowserRouter } from 'test/TestBrowserRouter';
 
@@ -40,10 +43,21 @@ const mockDashboard = {
   firstColumn: [],
 };
 
+function makeStore() {
+  const store = configureStore({
+    reducer: {
+      dashboardState: dashboardReducer,
+      analysisResultState: analysisResultReducer,
+    },
+  });
+  store.dispatch(setDraftDashboard(mockDashboard));
+  return store;
+}
+
 function renderDashboardView() {
   return render(
     <TestBrowserRouter>
-      <Provider store={store}>
+      <Provider store={makeStore()}>
         <ThemeProvider theme={createTheme()}>
           <DashboardView />
         </ThemeProvider>
@@ -62,7 +76,6 @@ describe('DashboardView export JSON', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    store.dispatch(setDraftDashboard(mockDashboard));
   });
 
   it('calls downloadToFile with a JSON array, application/json content type, and slug_timestamp filename', () => {
