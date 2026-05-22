@@ -12,6 +12,15 @@ import { languages, useSafeTranslation } from 'i18n';
 import { get } from 'lodash';
 import React from 'react';
 
+/** Display labels for the language dropdown (i18n codes stay 2-letter). */
+const LANGUAGE_DROPDOWN_LABELS: Record<string, string> = {
+  ar: 'عربى',
+};
+
+function languageDropdownLabel(code: string): string {
+  return LANGUAGE_DROPDOWN_LABELS[code] ?? code;
+}
+
 function LanguageSelector() {
   const classes = useStyles();
   const { i18n } = useSafeTranslation();
@@ -55,7 +64,7 @@ function LanguageSelector() {
         endIcon={<ArrowDownward fontSize="small" />}
       >
         <Typography color="secondary" style={{ textTransform: 'none' }}>
-          {i18n.resolvedLanguage}
+          {languageDropdownLabel(i18n.resolvedLanguage ?? 'en')}
         </Typography>
       </Button>
       <Menu
@@ -70,7 +79,7 @@ function LanguageSelector() {
             key={lng}
             onClick={() => handleChangeLanguage(lng)}
           >
-            <Typography>{lng}</Typography>
+            <Typography>{languageDropdownLabel(lng)}</Typography>
           </MenuItem>
         ))}
       </Menu>

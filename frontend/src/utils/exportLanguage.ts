@@ -5,6 +5,15 @@ import { get } from 'lodash';
 /** URL query param for export / batch map language (see ExportView). */
 export const EXPORT_LANGUAGE_PARAM = 'language';
 
+function resolveFromParam(param: string): string | null {
+  return languages.includes(param) ? param : null;
+}
+
+/** i18n language code for `?language=` on export URLs (2-letter codes). */
+export function toExportLanguageParam(i18nLanguage: string): string {
+  return i18nLanguage;
+}
+
 type ExportLanguageOptions = {
   /** Navbar / i18n language when building batch URLs and the page URL has no param. */
   activeLanguage?: string | null;
@@ -24,9 +33,10 @@ export function exportLanguage(
   const fallback = languages.includes(defaultLocale) ? defaultLocale : 'en';
 
   const fromUrl = new URLSearchParams(search).get(EXPORT_LANGUAGE_PARAM);
+  const resolvedFromUrl = fromUrl ? resolveFromParam(fromUrl) : null;
   let lang: string;
-  if (fromUrl && languages.includes(fromUrl)) {
-    lang = fromUrl;
+  if (resolvedFromUrl) {
+    lang = resolvedFromUrl;
   } else if (
     options?.activeLanguage &&
     languages.includes(options.activeLanguage)
