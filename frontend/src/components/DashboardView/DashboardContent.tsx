@@ -16,8 +16,9 @@ import {
 import { Close, Edit } from '@material-ui/icons';
 import { getImageUrl } from 'assets/images';
 import { useSafeTranslation } from 'i18n';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import { appConfig } from '../../config';
 import {
@@ -27,18 +28,23 @@ import {
   DashboardElementType,
   DashboardMode,
 } from '../../config/types';
+import { findDashboardByPath } from '../../config/utils';
 import {
   dashboardColumnsSelector,
   dashboardConfigSelector,
   dashboardMapElementsSelector,
   dashboardModeSelector,
+  dashboardsListSelector,
   dashboardSyncEnabledSelector,
   removeElement,
+  selectedDashboardIndexSelector,
   setElementType,
   setTitle,
   swapMapPosition,
   toggleMapSync,
 } from '../../context/dashboardStateSlice';
+import { addNotification } from '../../context/notificationStateSlice';
+import { generateSlugFromTitle } from '../../utils/string-utils';
 import ChartBlock from './ChartBlock';
 import { CHART_HEIGHTS } from './chartConstants';
 import MapBlock from './MapBlock';
@@ -86,17 +92,45 @@ function DashboardContent({
   onEditClick,
 }: DashboardContentProps) {
   const classes = useStyles();
+  const { t } = useSafeTranslation();
   const dashboardConfig = useSelector(dashboardConfigSelector);
   const { title: dashboardTitle } = dashboardConfig;
+  const dashboards = useSelector(dashboardsListSelector);
+  const selectedIndex = useSelector(selectedDashboardIndexSelector);
+  const columns = useSelector(dashboardColumnsSelector);
+  const mapElements = useSelector(dashboardMapElementsSelector);
+  const mode = useSelector(dashboardModeSelector);
+  const history = useHistory();
+
+  const [localTitle, setLocalTitle] = useState(dashboardTitle);
+
+  useEffect(() => {
+    setLocalTitle(dashboardTitle);
+  }, [dashboardTitle]);
+
+  const handleTitleBlur = () => {
+    if (localTitle === dashboardTitle) {
+      return;
+    }
+    const newSlug = generateSlugFromTitle(localTitle);
+    const existing = findDashboardByPath(newSlug, dashboards);
+    if (existing && existing.index !== selectedIndex) {
+      dispatch(
+        addNotification({
+          type: 'error',
+          message: t('A dashboard with this name already exists'),
+        }),
+      );
+      setLocalTitle(dashboardTitle);
+      return;
+    }
+    dispatch(setTitle(localTitle));
+    history.replace(`/dashboard/${newSlug}`);
+  };
 
   const { logo } = appConfig.header || {};
   const logoHeightMultiplier = 32;
   const logoHeight = logoConfig ? logoHeightMultiplier * logoConfig.scale : 0;
-  /** Include empty middle columns so MAP block ids stay aligned with Redux (`${col}-${row}` keys). */
-  const columns = useSelector(dashboardColumnsSelector);
-  const mapElements = useSelector(dashboardMapElementsSelector);
-  const mode = useSelector(dashboardModeSelector);
-  const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const syncEnabled = useSelector(dashboardSyncEnabledSelector);
 
@@ -449,8 +483,9 @@ function DashboardContent({
                       type="text"
                       className={classes.titleBarInput}
                       placeholder={t('Enter dashboard title')}
-                      value={dashboardTitle}
-                      onChange={e => dispatch(setTitle(e.target.value))}
+                      value={localTitle}
+                      onChange={e => setLocalTitle(e.target.value)}
+                      onBlur={handleTitleBlur}
                       name="dashboard-title"
                     />
                   </label>
