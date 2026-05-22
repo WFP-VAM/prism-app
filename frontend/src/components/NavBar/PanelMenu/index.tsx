@@ -5,7 +5,7 @@ import { useSafeTranslation } from 'i18n';
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(theme => ({
   menuItem: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -15,6 +15,11 @@ const useStyles = makeStyles(() => ({
     height: 18,
     fontSize: '0.65rem',
     pointerEvents: 'none',
+  },
+  sectionDivider: {
+    margin: '8px 0',
+    height: 2,
+    backgroundColor: theme.palette.grey[400],
   },
 }));
 
@@ -61,7 +66,9 @@ function PanelMenu({
               : (child.reportPath ?? child.panel)
           }
         >
-          {child.dividerBefore && index > 0 && <Divider />}
+          {child.dividerBefore && index > 0 && (
+            <Divider className={classes.sectionDivider} />
+          )}
           <MenuItem
             onClick={() => {
               handleChildClick(child);
