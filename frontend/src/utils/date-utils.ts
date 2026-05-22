@@ -321,7 +321,11 @@ export function formatCoverageRange(
     return null;
   }
 
-  const startFormatted = getFormattedDate(startDate, format, dateLocale) as string;
+  const startFormatted = getFormattedDate(
+    startDate,
+    format,
+    dateLocale,
+  ) as string;
   const endFormatted = getFormattedDate(endDate, format, dateLocale) as string;
 
   // If start and end are the same day, just show one date

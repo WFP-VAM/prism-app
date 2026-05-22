@@ -1,6 +1,5 @@
 import i18n from 'i18n';
 import { useEffect } from 'react';
-
 import { isRtlLanguage } from 'utils/localeDirection';
 
 /** Sync `<html lang>` and RTL text class from active i18n language. */
