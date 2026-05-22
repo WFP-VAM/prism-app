@@ -1,10 +1,4 @@
-import {
-  Box,
-  createStyles,
-  createTheme,
-  makeStyles,
-  ThemeProvider,
-} from '@material-ui/core';
+import { createTheme, ThemeProvider } from '@material-ui/core';
 import mask from '@turf/mask';
 import MapExportLayout from 'components/MapExport/MapExportLayout';
 import { mapStyle } from 'components/MapView/Map/utils';
@@ -26,11 +20,7 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { boundaryCache } from 'utils/boundary-cache';
-import {
-  getExportFontStack,
-  getExportTextDirection,
-  loadExportFonts,
-} from 'utils/exportFontFamily';
+import { getExportFontStack, loadExportFonts } from 'utils/exportFontFamily';
 import { exportLanguage } from 'utils/exportLanguage';
 import useLayers from 'utils/layers-utils';
 import { getLayersCoverage } from 'utils/server-utils';
@@ -54,7 +44,6 @@ import useResizeObserver from 'utils/useOnResizeObserver';
 const displayedBoundaryLayers = getDisplayBoundaryLayers().reverse();
 
 const ExportView = memo(() => {
-  const classes = useStyles();
   const { search } = useLocation();
   const { i18n } = useTranslation();
   const exportLang = exportLanguage(search, { apply: true });
@@ -285,15 +274,5 @@ const ExportView = memo(() => {
     </ThemeProvider>
   );
 });
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      height: '100vh',
-      width: '100%',
-      position: 'relative',
-    },
-  }),
-);
 
 export default ExportView;
