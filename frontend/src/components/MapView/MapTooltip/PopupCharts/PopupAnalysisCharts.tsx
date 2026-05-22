@@ -1,11 +1,12 @@
 import { createStyles, makeStyles } from '@material-ui/core';
 import ChartSection from 'components/MapView/LeftPanel/ChartsPanel/ChartSection';
 import { oneYearInMs } from 'components/MapView/LeftPanel/utils';
+import { appConfig } from 'config';
 import {
+  AdminCodeString,
   AdminLevelType,
   BoundaryLayerProps,
   WMSLayerProps,
-  AdminCodeString,
 } from 'config/types';
 import { getBoundaryLayersByAdminLevel } from 'config/utils';
 import { BoundaryLayerData } from 'context/layers/boundary';
@@ -14,12 +15,12 @@ import {
   dateRangeSelector,
   mapSelector,
 } from 'context/mapStateSlice/selectors';
-import { useBoundaryData } from 'utils/useBoundaryData';
+import { useSafeTranslation } from 'i18n';
 import { useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { appConfig } from 'config';
-import { useSafeTranslation } from 'i18n';
 import { getLayerMapId } from 'utils/map-utils';
+import { useBoundaryData } from 'utils/useBoundaryData';
+
 import PopupChartWrapper from './PopupChartWrapper';
 
 const { country } = appConfig;

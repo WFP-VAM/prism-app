@@ -1,49 +1,50 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Box,
-  makeStyles,
-  Typography,
-  CircularProgress,
   Button,
-  Switch,
+  CircularProgress,
   FormControlLabel,
   IconButton,
+  makeStyles,
+  Switch,
   TextField,
   Tooltip,
+  Typography,
 } from '@material-ui/core';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import {
-  DashboardTableConfig,
-  AggregationOperations,
-  GeometryType,
-  aggregationOperationsToDisplay,
-  DashboardMode,
-} from 'config/types';
-import { useAnalysisForm, useAnalysisExecution } from 'utils/analysis-hooks';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  setIsMapLayerActive,
-  isAnalysisLayerActiveSelector,
-  analysisResultErrorSelector,
-} from 'context/analysisResultStateSlice';
-import {
-  useAnalysisTableColumns,
-  downloadCSVFromTableData,
-  BaselineLayerResult,
-  PolygonAnalysisResult,
-} from 'utils/analysis-utils';
-import AnalysisTable from 'components/MapView/LeftPanel/AnalysisPanel/AnalysisTable';
-import {
-  HazardLayerSelector,
+  AdminLevelSelector,
   BaselineLayerSelector,
+  DateRangeSelector,
+  DateSelector,
+  HazardLayerSelector,
   StatisticSelector,
   ThresholdInputs,
-  DateSelector,
-  DateRangeSelector,
-  AdminLevelSelector,
 } from 'components/Common/AnalysisFormComponents';
+import AnalysisTable from 'components/MapView/LeftPanel/AnalysisPanel/AnalysisTable';
+import {
+  AggregationOperations,
+  aggregationOperationsToDisplay,
+  DashboardMode,
+  DashboardTableConfig,
+  GeometryType,
+} from 'config/types';
+import {
+  analysisResultErrorSelector,
+  isAnalysisLayerActiveSelector,
+  setIsMapLayerActive,
+} from 'context/analysisResultStateSlice';
 import { useSafeTranslation } from 'i18n';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useAnalysisExecution, useAnalysisForm } from 'utils/analysis-hooks';
+import {
+  BaselineLayerResult,
+  downloadCSVFromTableData,
+  PolygonAnalysisResult,
+  useAnalysisTableColumns,
+} from 'utils/analysis-utils';
 import { getFormattedDate } from 'utils/date-utils';
+
 import {
   dashboardModeSelector,
   dashboardTableStateSelector,

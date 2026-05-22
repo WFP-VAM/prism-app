@@ -8,7 +8,7 @@ from os import getenv
 from typing import List, Optional
 
 from prism_app.database.alert_model import AlertModel
-from prism_app.database.user_info_model import UserInfoModel
+from prism_app.database.kobo_user_model import KoboUser
 from sqlalchemy import create_engine, select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session, sessionmaker
@@ -169,7 +169,7 @@ class AuthDataBase:
     def engine(self):
         return self._engine
 
-    def create_user(self, user: UserInfoModel):
+    def create_user(self, user: KoboUser):
         """Create user with hashed password."""
         if user.salt != "false":
             salt = os.urandom(32)
@@ -184,7 +184,7 @@ class AuthDataBase:
         else:
             encoded_salt = user.salt.encode("utf-8")
             encoded_key = user.password.encode("utf-8")
-        db_user = UserInfoModel(
+        db_user = KoboUser(
             username=user.username,
             password=encoded_key.decode("utf-8"),
             salt=encoded_salt.decode("utf-8"),
@@ -200,7 +200,7 @@ class AuthDataBase:
 
         return db_user
 
-    def read(self, expr: ColumnElement[bool]) -> List[UserInfoModel]:
+    def read(self, expr: ColumnElement[bool]) -> List[KoboUser]:
         """
         Return all the rows that match expression.
 
@@ -208,9 +208,9 @@ class AuthDataBase:
         :return: A list of ORM object.
         """
         with self._session_factory() as session:
-            return list(session.scalars(select(UserInfoModel).where(expr)).all())
+            return list(session.scalars(select(KoboUser).where(expr)).all())
 
-    def get_by_username(self, username: str) -> Optional[UserInfoModel]:
+    def get_by_username(self, username: str) -> Optional[KoboUser]:
         """
         Return one alert matching the provided id.
 
@@ -220,7 +220,7 @@ class AuthDataBase:
         try:
             with self._session_factory() as session:
                 return session.scalars(
-                    select(UserInfoModel).where(UserInfoModel.username == username)
+                    select(KoboUser).where(KoboUser.username == username)
                 ).first()
         except SQLAlchemyError as error:
             logger.error("An error occured in get_by_username.", exc_info=True)

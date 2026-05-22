@@ -1,4 +1,5 @@
 import { AAFloodColors } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionFloodPanel/constants';
+
 import { AAFloodRiskLevelType, FloodDateItem } from './types';
 
 export function getFloodRiskColor(riskLevel: AAFloodRiskLevelType): string {

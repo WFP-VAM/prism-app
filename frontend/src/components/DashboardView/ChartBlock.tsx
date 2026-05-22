@@ -1,42 +1,42 @@
-import { useEffect, useState, useRef } from 'react';
-import { useSelector } from 'react-redux';
 import {
   Box,
-  makeStyles,
-  Typography,
-  CircularProgress,
   Button,
+  CircularProgress,
   FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   IconButton,
+  InputLabel,
+  makeStyles,
+  MenuItem,
+  Select,
   Tooltip,
+  Typography,
 } from '@material-ui/core';
-import ImageIcon from '@material-ui/icons/Image';
 import GetAppIcon from '@material-ui/icons/GetApp';
-import {
-  DashboardChartConfig,
-  AdminLevelType,
-  DashboardMode,
-  ChartHeight,
-} from 'config/types';
-import { useChartForm, useChartData } from 'utils/chart-hooks';
+import ImageIcon from '@material-ui/icons/Image';
 import Chart from 'components/Common/Chart';
 import {
-  ChartLayerSelector,
   ChartDateRangeSelector,
+  ChartLayerSelector,
   ChartLocationSelector,
 } from 'components/Common/ChartFormComponents';
-import { useSafeTranslation } from 'i18n';
-
 import { buildCsvFileName, downloadToFile } from 'components/MapView/utils';
+import {
+  AdminLevelType,
+  ChartHeight,
+  DashboardChartConfig,
+  DashboardMode,
+} from 'config/types';
+import { useSafeTranslation } from 'i18n';
+import { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useChartData, useChartForm } from 'utils/chart-hooks';
 import {
   createCsvDataFromDataKeyMap,
   createDataKeyMap,
   downloadChartsToCsv,
 } from 'utils/csv-utils';
 import { getFormattedDate } from 'utils/date-utils';
+
 import { dashboardModeSelector } from '../../context/dashboardStateSlice';
 import BlockPreviewHeader from './BlockPreviewHeader';
 import { CHART_HEIGHTS } from './chartConstants';

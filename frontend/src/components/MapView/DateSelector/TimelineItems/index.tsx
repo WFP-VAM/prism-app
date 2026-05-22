@@ -1,18 +1,26 @@
-import { CSSProperties, memo, useCallback, useMemo } from 'react';
 import {
+  createStyles,
   Fade,
   Grid,
-  Tooltip,
-  createStyles,
   makeStyles,
+  Tooltip,
 } from '@material-ui/core';
-import { AnticipatoryAction, DateItem, DateRangeType } from 'config/types';
-import { grey } from 'muiTheme';
 import {
   DateCompatibleLayerWithDateItems,
   TIMELINE_ITEM_WIDTH,
 } from 'components/MapView/DateSelector/utils';
+import { AnticipatoryAction, DateItem, DateRangeType } from 'config/types';
+import { grey } from 'muiTheme';
+import { CSSProperties, memo, useCallback, useMemo } from 'react';
+
+import AAFloodTimelineItem from './AAFloodTimelineItem';
+import AAFloodTooltipContent from './AAFloodTooltipContent';
+import AAStormTimelineItem from './AAStormTimelineItem';
+import AAStormTooltipContent from './AAStormTooltipContent';
+import StandardTimelineItem from './StandardTimelineItem';
+import StandardTooltipContent from './StandardTooltipContent';
 import TimelineLabel from './TimelineLabel';
+import { DateItemStyle } from './types';
 import {
   DARK_BLUE_HEX,
   DARK_GREEN_HEX,
@@ -21,13 +29,6 @@ import {
   LIGHT_GREEN_HEX,
   LIGHT_ORANGE_HEX,
 } from './utils';
-import StandardTooltipContent from './StandardTooltipContent';
-import AAStormTooltipContent from './AAStormTooltipContent';
-import { DateItemStyle } from './types';
-import AAStormTimelineItem from './AAStormTimelineItem';
-import StandardTimelineItem from './StandardTimelineItem';
-import AAFloodTooltipContent from './AAFloodTooltipContent';
-import AAFloodTimelineItem from './AAFloodTimelineItem';
 
 const TimelineItems = memo(
   ({

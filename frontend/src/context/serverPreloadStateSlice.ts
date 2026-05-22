@@ -1,14 +1,15 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
+  PointDataLayerProps,
   ReferenceDateTimestamp,
   UserAuth,
-  PointDataLayerProps,
 } from 'config/types';
 import {
+  clearPointDataFetchCache,
   preloadLayerDatesForPointData,
   preloadLayerDatesForWMS,
-  clearPointDataFetchCache,
 } from 'utils/server-utils';
+
 import { layersSelector } from './mapStateSlice/selectors';
 import { loadAvailableDatesForLayer } from './serverStateSlice';
 import type { CreateAsyncThunkTypes, RootState } from './store';

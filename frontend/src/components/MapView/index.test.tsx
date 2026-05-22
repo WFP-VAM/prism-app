@@ -1,8 +1,8 @@
-import { Provider } from 'react-redux';
-import { render } from '@testing-library/react';
-
-import { store } from 'context/store';
 import { createTheme, ThemeProvider } from '@material-ui/core';
+import { render } from '@testing-library/react';
+import { store } from 'context/store';
+import { Provider } from 'react-redux';
+
 import MapView from '.';
 
 jest.mock('./Layers/WMSLayer', () => 'mock-WMSLayer');

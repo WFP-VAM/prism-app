@@ -1,5 +1,3 @@
-import { useCallback, useState, MouseEvent, memo, useMemo } from 'react';
-import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import {
   Button,
   IconButton,
@@ -7,10 +5,12 @@ import {
   useMediaQuery,
   useTheme,
 } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
-import { appConfig } from 'config';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import ContentDialog from 'components/NavBar/ContentDialog';
+import { appConfig } from 'config';
 import { useSafeTranslation } from 'i18n';
+import { memo, MouseEvent, useCallback, useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { loadLayerContent } from 'utils/load-layer-utils';
 
 const About = memo(() => {

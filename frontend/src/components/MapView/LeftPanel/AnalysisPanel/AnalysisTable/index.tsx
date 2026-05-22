@@ -1,4 +1,3 @@
-import React, { memo, useCallback, useMemo, useState, useEffect } from 'react';
 import {
   createStyles,
   makeStyles,
@@ -13,12 +12,13 @@ import {
   Theme,
   Typography,
 } from '@material-ui/core';
-import { useDispatch, useSelector } from 'react-redux';
 import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
-import { Column } from 'utils/analysis-utils';
-import { useSafeTranslation } from 'i18n';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import { hidePopup } from 'context/tooltipStateSlice';
+import { useSafeTranslation } from 'i18n';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Column } from 'utils/analysis-utils';
 
 const AnalysisTable = memo(
   ({

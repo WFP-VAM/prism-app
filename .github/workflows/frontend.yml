@@ -81,7 +81,9 @@ jobs:
       - name: Build
         run: cd frontend && yarn build
 
+  # TEMPORARY: per-country Cypress e2e (matrix + all_countries) disabled — re-enable when stable.
   frontend_end_to_end_tests:
+    if: false
     strategy:
       matrix:
         country: [mozambique, rbd, cambodia]

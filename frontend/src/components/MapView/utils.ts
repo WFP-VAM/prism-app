@@ -17,19 +17,28 @@ import {
   LegendDefinitionItem,
   WMSLayerProps,
 } from 'config/types';
-import { loadAvailableDatesForLayer } from 'context/serverStateSlice';
-import { TableData } from 'context/tableStateSlice';
-import { getUrlKey, UrlLayerKey } from 'utils/url-utils';
-import { addNotification } from 'context/notificationStateSlice';
-import { LocalError } from 'utils/error-utils';
-import { Column, quoteAndEscapeCell } from 'utils/analysis-utils';
+import {
+  getBoundaryLayersByAdminLevel,
+  isAnticipatoryActionLayer,
+  LayerDefinitions,
+} from 'config/utils';
 import { TableRow } from 'context/analysisResultStateSlice';
-import { MapRef, Point } from 'react-map-gl/maplibre';
-import { PopupData } from 'context/tooltipStateSlice';
-import { getTitle } from 'utils/title-utils';
 import { LayerData } from 'context/layers/layer-data';
+import { addNotification } from 'context/notificationStateSlice';
+import { loadAvailableDatesForLayer } from 'context/serverStateSlice';
+import type { AppDispatch } from 'context/store';
+import { TableData } from 'context/tableStateSlice';
+import { PopupData } from 'context/tooltipStateSlice';
 import { GeoJsonProperties } from 'geojson';
-import { appConfig } from 'config';
+import { TFunction } from 'i18next';
+import { orderBy, snakeCase, values } from 'lodash';
+import { MapRef, Point } from 'react-map-gl/maplibre';
+import { Column, quoteAndEscapeCell } from 'utils/analysis-utils';
+import { LocalError } from 'utils/error-utils';
+import { formatFeatureInfo } from 'utils/server-utils';
+import { getTitle } from 'utils/title-utils';
+import { getUrlKey, UrlLayerKey } from 'utils/url-utils';
+
 import { getExtent } from './Layers/raster-utils';
 
 // TODO: maplibre: fix feature

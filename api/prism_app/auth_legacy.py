@@ -9,7 +9,7 @@ from typing import Annotated, Optional
 from fastapi import Depends, HTTPException, Security, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from prism_app.database.database import AuthDataBase
-from prism_app.database.user_info_model import UserInfoModel
+from prism_app.database.kobo_user_model import KoboUser
 from sqlalchemy.exc import SQLAlchemyError
 
 logger = logging.getLogger(__name__)
@@ -41,10 +41,10 @@ def verify_hash(password: str, saved_salt: str) -> bytes:
 
 def validate_user(
     credentials: Annotated[Optional[HTTPBasicCredentials], depends] = None,
-) -> UserInfoModel:
+) -> KoboUser:
     """Validate user info."""
     if not auth_db.active:
-        return UserInfoModel(username="__auth_disabled__", password="", access={})
+        return KoboUser(username="__auth_disabled__", password="", access={})
 
     if credentials is None:
         raise HTTPException(
@@ -95,7 +95,7 @@ def optional_validate_user(
     credentials: Annotated[
         Optional[HTTPBasicCredentials], Security(HTTPBasic(auto_error=False))
     ] = None,
-) -> Optional[UserInfoModel]:
+) -> Optional[KoboUser]:
     """Optional user validation that returns None instead of raising on auth failure."""
     # If auth_db is not active, return None
     if not auth_db.active:

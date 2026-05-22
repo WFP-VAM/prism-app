@@ -1,5 +1,5 @@
-import { MutableRefObject } from 'react';
 import { downloadToFile } from 'components/MapView/utils';
+import { MutableRefObject } from 'react';
 import { downloadChartsToCsv } from 'utils/csv-utils';
 
 jest.mock('../utils.ts', () => ({

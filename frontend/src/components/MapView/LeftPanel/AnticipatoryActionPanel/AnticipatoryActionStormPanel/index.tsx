@@ -1,28 +1,29 @@
 import {
-  Typography,
   createStyles,
+  Input,
   makeStyles,
   MenuItem,
-  Input,
+  Typography,
 } from '@material-ui/core';
-import React from 'react';
-import { useSafeTranslation } from 'i18n';
-import { useDispatch } from 'react-redux';
-import { updateDateRange } from 'context/mapStateSlice';
-import {
-  setSelectedStormName,
-  ExtendedDateItem,
-} from 'context/anticipatoryAction/AAStormStateSlice/index';
 import { AnticipatoryAction, PanelSize } from 'config/types';
+import {
+  ExtendedDateItem,
+  setSelectedStormName,
+} from 'context/anticipatoryAction/AAStormStateSlice/index';
+import { updateDateRange } from 'context/mapStateSlice';
+import { useSafeTranslation } from 'i18n';
+import React from 'react';
+import { useDispatch } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
 import { useUrlHistory } from 'utils/url-utils';
+
 import HowToReadModal from '../HowToReadModal';
-import ActivationTrigger from './ActivationTriggerView';
-import { StyledSelect, useAACommonStyles } from '../utils';
 import { useAnticipatoryAction } from '../useAnticipatoryAction';
-import ReadyTrigger from './ReadyTriggerView';
+import { StyledSelect, useAACommonStyles } from '../utils';
+import ActivationTrigger from './ActivationTriggerView';
 import DownloadGeoJSONButton from './DownloadGeoJSONButton';
+import ReadyTrigger from './ReadyTriggerView';
 
 function AnticipatoryActionStormPanel() {
   const classes = useStyles();

@@ -1,4 +1,3 @@
-import { memo, useCallback, useState } from 'react';
 import {
   Accordion,
   AccordionDetails,
@@ -8,15 +7,16 @@ import {
   Typography,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { useSafeTranslation } from 'i18n';
 import AnalysisLayerSwitchItem from 'components/MapView/LeftPanel/layersPanel/AnalysisLayerSwitchItem';
+import { useLayerMenuItemStyles } from 'components/MapView/LeftPanel/layersPanel/MenuItem/utils';
+import { useSafeTranslation } from 'i18n';
+import { cyanBlue } from 'muiTheme';
+import { memo, useCallback, useState } from 'react';
 import {
   BaselineLayerResult,
   ExposedPopulationResult,
   PolygonAnalysisResult,
 } from 'utils/analysis-utils';
-import { cyanBlue } from 'muiTheme';
-import { useLayerMenuItemStyles } from 'components/MapView/LeftPanel/layersPanel/MenuItem/utils';
 
 interface AnalysisLayerMenuItemProps {
   title: string;

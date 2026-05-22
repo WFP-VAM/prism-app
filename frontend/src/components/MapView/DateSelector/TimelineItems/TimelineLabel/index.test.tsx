@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+
 import TimelineLabel, { TimelineLabelProps } from '.';
 
 test('TimelineLabel renders as expected', () => {

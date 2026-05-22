@@ -1,6 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { GeoJsonProperties } from 'geojson';
+import { getProperties } from 'components/MapView/utils';
 import { appConfig } from 'config';
 import {
   AdminCodeString,
@@ -11,18 +9,21 @@ import {
   LayerKey,
   WMSLayerProps,
 } from 'config/types';
+import { getBoundaryLayersByAdminLevel, LayerDefinitions } from 'config/utils';
 import {
   AdminBoundaryRequestParams,
   CHART_DATA_PREFIXES,
   loadAdminBoundaryDataset,
 } from 'context/datasetStateSlice';
-import { TableData } from 'context/tableStateSlice';
 import { LayerData } from 'context/layers/layer-data';
+import { TableData } from 'context/tableStateSlice';
+import { GeoJsonProperties } from 'geojson';
+import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { getChartAdminBoundaryParams } from 'utils/admin-utils';
 import { getTimeInMilliseconds } from 'utils/date-utils';
-import { LayerDefinitions, getBoundaryLayersByAdminLevel } from 'config/utils';
-import { getProperties } from 'components/MapView/utils';
-import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
+
 import { useBoundaryData } from './useBoundaryData';
 
 const { multiCountry, countryAdmin0Id } = appConfig;

@@ -1,13 +1,13 @@
+import { calculateSeason } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
 import { AAWindowKeys } from 'config/utils';
 import {
+  AAcategory,
   AACategoryType,
   AAPhase,
   AAPhaseType,
-  AAcategory,
   AnticipatoryActionDataRow,
   AnticipatoryActionState,
 } from 'context/anticipatoryAction/AADroughtStateSlice/types';
-import { calculateSeason } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
 
 function getColumnKey(val: AnticipatoryActionDataRow): number {
   const { category, phase } = val;

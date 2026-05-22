@@ -16,7 +16,24 @@ import {
   Switch,
   Typography,
 } from '@material-ui/core';
+import {
+  ChartDateRangeSelector,
+  ChartLocationSelector,
+} from 'components/Common/ChartFormComponents';
+import DownloadCsvButton from 'components/MapView/DownloadCsvButton';
+import { buildCsvFileName, getProperties } from 'components/MapView/utils';
+import { appConfig } from 'config';
+import {
+  AdminCodeString,
+  AdminLevelType,
+  Panel,
+  PanelSize,
+  WMSLayerProps,
+} from 'config/types';
+import { getBoundaryLayerSingleton, getWMSLayersWithChart } from 'config/utils';
+import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { GeoJsonProperties } from 'geojson';
+import { useSafeTranslation } from 'i18n';
 import React, {
   memo,
   useCallback,
@@ -26,17 +43,6 @@ import React, {
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { appConfig } from 'config';
-import {
-  AdminCodeString,
-  AdminLevelType,
-  PanelSize,
-  WMSLayerProps,
-  Panel,
-} from 'config/types';
-import { getBoundaryLayerSingleton, getWMSLayersWithChart } from 'config/utils';
-import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
-import { useSafeTranslation } from 'i18n';
 import { useBoundaryData } from 'utils/useBoundaryData';
 import { buildCsvFileName, getProperties } from 'components/MapView/utils';
 import DownloadCsvButton from 'components/MapView/DownloadCsvButton';
@@ -46,12 +52,15 @@ import LocationSelector from './LocationSelector';
 import TimePeriodSelector from './TimePeriodSelector';
 import DateSlider from './DateSlider';
 import {
-  getCountryName,
   formatLocationString,
   formatTimePeriodString,
+  getCountryName,
   oneDayInMs,
   oneYearInMs,
 } from '../utils';
+import ChartSection from './ChartSection';
+import DateSlider from './DateSlider';
+import TimePeriodSelector from './TimePeriodSelector';
 
 // Menu configuration
 const ITEM_HEIGHT = 48;
