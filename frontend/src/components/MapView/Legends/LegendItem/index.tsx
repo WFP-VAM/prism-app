@@ -286,14 +286,15 @@ const LegendItem = memo(
           dateCoverage?.startDate,
           dateCoverage?.endDate,
           DateFormat.DayFirstHyphenMonthName,
+          t('date_locale'),
         ),
-      [dateCoverage],
+      [dateCoverage, t],
     );
 
     return (
       <ListItem disableGutters dense>
         <Paper
-          className={classes.paper}
+          className={`${classes.paper} legend-card`}
           elevation={forPrinting ? 0 : undefined}
           style={
             forPrinting
@@ -317,9 +318,7 @@ const LegendItem = memo(
               {renderedChildren}
               {coverageText && (
                 <Typography variant="h5" style={{ marginTop: 8 }}>
-                  {t('Coverage')}:
-                  <br />
-                  {coverageText}
+                  {t('Coverage')}: {coverageText}
                 </Typography>
               )}
             </>

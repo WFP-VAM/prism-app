@@ -9,7 +9,7 @@ api:
 
 deploy:
 	docker network create traefik_default || true
-	source set_envs.sh && docker compose build && docker compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
+	source set_envs.sh && docker compose build && docker compose -f docker-compose.yml -f docker-compose.deploy.yml up -d --scale export_map_worker=2
 
 logs:
 	source set_envs.sh && docker compose -f docker-compose.yml -f docker-compose.deploy.yml logs --tail=500 -f --timestamps

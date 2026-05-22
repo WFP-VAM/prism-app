@@ -36,7 +36,7 @@ export const defaultElementForType = (
     case DashboardElementType.CHART:
       return {
         type: DashboardElementType.CHART,
-        startDate: today(),
+        startDate: '',
         layerId: '',
         chartHeight: ChartHeight.TALL,
       };
