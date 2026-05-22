@@ -16,10 +16,7 @@ import {
   Switch,
   Typography,
 } from '@material-ui/core';
-import {
-  ChartDateRangeSelector,
-  ChartLocationSelector,
-} from 'components/Common/ChartFormComponents';
+import { ChartDateRangeSelector } from 'components/Common/ChartFormComponents';
 import DownloadCsvButton from 'components/MapView/DownloadCsvButton';
 import { buildCsvFileName, getProperties } from 'components/MapView/utils';
 import { appConfig } from 'config';
@@ -44,13 +41,7 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import { useBoundaryData } from 'utils/useBoundaryData';
-import { buildCsvFileName, getProperties } from 'components/MapView/utils';
-import DownloadCsvButton from 'components/MapView/DownloadCsvButton';
-import { ChartDateRangeSelector } from 'components/Common/ChartFormComponents';
-import ChartSection from './ChartSection';
-import LocationSelector from './LocationSelector';
-import TimePeriodSelector from './TimePeriodSelector';
-import DateSlider from './DateSlider';
+
 import {
   formatLocationString,
   formatTimePeriodString,
@@ -60,6 +51,7 @@ import {
 } from '../utils';
 import ChartSection from './ChartSection';
 import DateSlider from './DateSlider';
+import LocationSelector from './LocationSelector';
 import TimePeriodSelector from './TimePeriodSelector';
 
 // Menu configuration

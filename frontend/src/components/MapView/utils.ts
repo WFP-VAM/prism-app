@@ -1,8 +1,4 @@
-import { orderBy, snakeCase, values } from 'lodash';
-import { TFunction } from 'i18next';
-import type { AppDispatch } from 'context/store';
-import { isAnticipatoryActionLayer, LayerDefinitions } from 'config/utils';
-import { formatFeatureInfo } from 'utils/server-utils';
+import { appConfig } from 'config';
 import {
   AdminCodeString,
   AdminLevelType,
@@ -17,11 +13,7 @@ import {
   LegendDefinitionItem,
   WMSLayerProps,
 } from 'config/types';
-import {
-  getBoundaryLayersByAdminLevel,
-  isAnticipatoryActionLayer,
-  LayerDefinitions,
-} from 'config/utils';
+import { isAnticipatoryActionLayer, LayerDefinitions } from 'config/utils';
 import { TableRow } from 'context/analysisResultStateSlice';
 import { LayerData } from 'context/layers/layer-data';
 import { addNotification } from 'context/notificationStateSlice';
