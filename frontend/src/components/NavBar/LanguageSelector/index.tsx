@@ -7,6 +7,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import ArrowDownward from '@material-ui/icons/ArrowDropDown';
+import { usePostHog } from '@posthog/react';
 import { appConfig } from 'config';
 import { languages, useSafeTranslation } from 'i18n';
 import { get } from 'lodash';
@@ -25,6 +26,7 @@ function LanguageSelector() {
   const classes = useStyles();
   const { i18n } = useSafeTranslation();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const posthog = usePostHog();
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -35,6 +37,10 @@ function LanguageSelector() {
   };
 
   const handleChangeLanguage = (lng: string): void => {
+    posthog?.capture('language_changed', {
+      language: lng,
+      previous_language: i18n.resolvedLanguage,
+    });
     i18n.changeLanguage(lng);
     localStorage.setItem('userLanguage', lng);
     handleClose();

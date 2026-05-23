@@ -1,8 +1,9 @@
 import { Box, Button, makeStyles } from '@material-ui/core';
 import { VisibilityOutlined } from '@material-ui/icons';
+import { usePostHog } from '@posthog/react';
 import { DashboardMode } from 'config/types';
 import { useSafeTranslation } from 'i18n';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 
@@ -23,16 +24,44 @@ function DashboardView() {
   const classes = useStyles();
   const dashboardConfig = useSelector(dashboardConfigSelector);
   const dashboards = useSelector(dashboardsListSelector);
-  const { path: dashboardPath, isEditable } = dashboardConfig;
+  const {
+    path: dashboardPath,
+    isEditable,
+    title: dashboardTitle,
+    selectedDashboardIndex,
+  } = dashboardConfig;
   const mode = useSelector(dashboardModeSelector);
   const dispatch = useDispatch();
+  const posthog = usePostHog();
   const { t } = useSafeTranslation();
   const { path } = useParams<{ path?: string }>();
   const history = useHistory();
+  const viewStartRef = useRef<number>(Date.now());
 
   // Export/Publish dialog state
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const handleCloseExport = () => setExportDialogOpen(false);
+
+  // Track dashboard viewed / view ended with duration
+  useEffect(() => {
+    if (!dashboardPath) {
+      return undefined;
+    }
+    viewStartRef.current = Date.now();
+    posthog?.capture('dashboard_viewed', {
+      dashboard_title: dashboardTitle,
+      dashboard_path: dashboardPath,
+      dashboard_index: selectedDashboardIndex,
+    });
+    return () => {
+      posthog?.capture('dashboard_view_ended', {
+        dashboard_title: dashboardTitle,
+        dashboard_path: dashboardPath,
+        dashboard_index: selectedDashboardIndex,
+        duration_ms: Date.now() - viewStartRef.current,
+      });
+    };
+  }, [dashboardPath]);
 
   // Clear any existing analysis state when component mounts
   useEffect(() => {

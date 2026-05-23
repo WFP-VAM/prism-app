@@ -9,6 +9,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { ArrowBackIos } from '@material-ui/icons';
+import { usePostHog } from '@posthog/react';
 import { AnticipatoryAction, PanelSize } from 'config/types';
 import { AAWindowKeys } from 'config/utils';
 import {
@@ -50,6 +51,7 @@ function AnticipatoryActionDroughtPanel() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
+  const posthog = usePostHog();
   const { AAData } = useAnticipatoryAction(AnticipatoryAction.drought);
   const monitoredDistricts = useSelector(AAMonitoredDistrictsSelector);
   const selectedDistrict = useSelector(AASelectedDistrictSelector);
@@ -157,6 +159,10 @@ function AnticipatoryActionDroughtPanel() {
                   key={x.name}
                   value={x.name}
                   onClick={() => {
+                    posthog?.capture('anticipatory_action_district_selected', {
+                      district: x.name,
+                      vulnerability: x.vulnerability,
+                    });
                     dispatch(setAASelectedDistrict(x.name));
                     if (view === AAView.Home) {
                       dispatch(setAAView(AAView.District));
