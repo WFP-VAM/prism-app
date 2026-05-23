@@ -13,6 +13,7 @@ import {
   ImageAspectRatioOutlined,
   LayersOutlined,
   Notifications,
+  PublishOutlined,
   SpeedOutlined,
   TableChartOutlined,
   TimerOutlined,
@@ -54,6 +55,7 @@ function NavBar() {
   const classes = useStyles();
   const tabValue = useSelector(leftPanelTabValueSelector);
   const dashboards = useSelector(dashboardsListSelector);
+  const hasDashboards = dashboards.length > 0;
   const isDashboardMode = tabValue === Panel.Dashboard;
 
   const dashboardChildren: PanelItem[] = [
@@ -67,6 +69,13 @@ function NavBar() {
     })),
     {
       panel: Panel.Dashboard,
+      label: 'Import JSON',
+      icon: <PublishOutlined />,
+      reportPath: 'import',
+      dividerBefore: true,
+    },
+    {
+      panel: Panel.Dashboard,
       label: 'Create dashboard',
       icon: <AddOutlined />,
       reportPath: 'create',
@@ -78,12 +87,16 @@ function NavBar() {
     ...(areChartLayersAvailable
       ? [{ panel: Panel.Charts, label: 'Charts', icon: <BarChartOutlined /> }]
       : []),
-    {
-      panel: Panel.Dashboard,
-      label: 'Dashboard',
-      icon: <SpeedOutlined />,
-      children: dashboardChildren,
-    },
+    ...(hasDashboards
+      ? [
+          {
+            panel: Panel.Dashboard,
+            label: 'Dashboard',
+            icon: <SpeedOutlined />,
+            children: dashboardChildren,
+          },
+        ]
+      : []),
     {
       panel: Panel.Analysis,
       label: 'Analysis',

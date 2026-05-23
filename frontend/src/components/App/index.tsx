@@ -9,6 +9,7 @@ import AuthModal from 'components/AuthModal';
 import CreateDashboardView from 'components/CreateDashboardView';
 import DashboardView from 'components/DashboardView';
 import ExportView from 'components/ExportView';
+import ImportDashboardView from 'components/ImportDashboardView';
 import Login from 'components/Login';
 import MapView from 'components/MapView';
 import NavBar from 'components/NavBar';
@@ -71,6 +72,9 @@ function DashboardRouteSwitcher() {
   const { path } = useParams<{ path?: string }>();
   if (path === 'create') {
     return <CreateDashboardView />;
+  }
+  if (path === 'import') {
+    return <ImportDashboardView />;
   }
   return <DashboardView />;
 }
