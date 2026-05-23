@@ -4,9 +4,18 @@
     "path": "data/mongolia/mng_adm2_boundaries.json",
     "opacity": 0.8,
     "admin_code": "ADM2_PCODE_RE",
-    "admin_level_codes": ["ADM1_PCODE_RE", "ADM2_PCODE_RE"],
-    "admin_level_names": ["ADM1_EN", "ADM2_EN"],
-    "admin_level_local_names": ["ADM1_MN", "ADM2_MN"],
+    "admin_level_codes": [
+      "ADM1_PCODE_RE",
+      "ADM2_PCODE_RE"
+    ],
+    "admin_level_names": [
+      "ADM1_EN",
+      "ADM2_EN"
+    ],
+    "admin_level_local_names": [
+      "ADM1_MN",
+      "ADM2_MN"
+    ],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -23,9 +32,15 @@
     "path": "data/mongolia/mng_adm1_nso_match_1212_mn.json",
     "opacity": 0.8,
     "admin_code": "ADM1_PCODE_RE",
-    "admin_level_codes": ["ADM1_PCODE_RE"],
-    "admin_level_names": ["ADM1_EN"],
-    "admin_level_local_names": ["ADM1_MN"],
+    "admin_level_codes": [
+      "ADM1_PCODE_RE"
+    ],
+    "admin_level_names": [
+      "ADM1_EN"
+    ],
+    "admin_level_local_names": [
+      "ADM1_MN"
+    ],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -495,7 +510,7 @@
     "legend": [
       {
         "label": "0.00",
-        "value": 0.00,
+        "value": 0,
         "color": "#ece0d7"
       },
       {
@@ -540,7 +555,7 @@
       },
       {
         "label": "1.00",
-        "value": 1.00,
+        "value": 1,
         "color": "#000000"
       }
     ]
@@ -629,7 +644,7 @@
     "legend": [
       {
         "label": "0.10",
-        "value": 0.10,
+        "value": 0.1,
         "color": "#ef1000"
       },
       {
@@ -649,7 +664,7 @@
       },
       {
         "label": "1.00",
-        "value": 1.00,
+        "value": 1,
         "color": "#5ea100"
       }
     ]
