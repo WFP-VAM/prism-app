@@ -1,14 +1,13 @@
 import {
-  createStyles,
-  Typography,
   Button,
+  createStyles,
   Grid,
   makeStyles,
+  Typography,
 } from '@material-ui/core';
-import { Link } from 'react-router-dom';
-
+import { wfpLogo } from 'assets/images';
 import { colors } from 'muiTheme';
-import wfpLogo from 'public/images/wfp_logo.png';
+import { Link } from 'react-router-dom';
 
 function NotFound() {
   const classes = useStyles();

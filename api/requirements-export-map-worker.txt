@@ -1,0 +1,17 @@
+# Pinned to match api/poetry.lock for reproducible export_map_worker image.
+# Install: pip install -r requirements-export-map-worker.txt
+# Scope: Playwright, PDF merge, Postgres job queue, S3, Pydantic models — no GDAL/raster/GIS stack.
+
+playwright==1.53.0
+pypdf==6.10.2
+boto3==1.41.5
+botocore==1.41.5
+sqlmodel==0.0.22
+SQLAlchemy==2.0.48
+psycopg2-binary==2.9.11
+pydantic[email]==2.12.5
+fastapi==0.136.1
+starlette==1.0.1
+requests==2.33.1
+python-dateutil==2.8.2
+urllib3>=2.6.3,<3

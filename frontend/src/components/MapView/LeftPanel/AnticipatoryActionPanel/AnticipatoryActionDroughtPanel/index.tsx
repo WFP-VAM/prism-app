@@ -1,22 +1,16 @@
 import {
+  createStyles,
   FormControl,
   IconButton,
   Input,
+  makeStyles,
   MenuItem,
   RadioGroup,
   Typography,
-  createStyles,
-  makeStyles,
 } from '@material-ui/core';
-import { black, cyanBlue } from 'muiTheme';
-import React from 'react';
-import { useSafeTranslation } from 'i18n';
 import { ArrowBackIos } from '@material-ui/icons';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  AAView,
-  allWindowsKey,
-} from 'context/anticipatoryAction/AADroughtStateSlice/types';
+import { usePostHog } from '@posthog/react';
+import { AnticipatoryAction, PanelSize } from 'config/types';
 import { AAWindowKeys } from 'config/utils';
 import {
   AAFiltersSelector,
@@ -27,21 +21,29 @@ import {
   setAASelectedDistrict,
   setAAView,
 } from 'context/anticipatoryAction/AADroughtStateSlice';
-import { dateRangeSelector } from 'context/mapStateSlice/selectors';
-import { getFormattedDate } from 'utils/date-utils';
-import { AnticipatoryAction, PanelSize } from 'config/types';
 import {
-  isSingleWindowMode,
-  getAADroughtCountryConfig,
-} from './utils/countryConfig';
-import { StyledCheckboxLabel, StyledRadioLabel } from './utils';
+  AAView,
+  allWindowsKey,
+} from 'context/anticipatoryAction/AADroughtStateSlice/types';
+import { dateRangeSelector } from 'context/mapStateSlice/selectors';
+import { useSafeTranslation } from 'i18n';
+import { black, cyanBlue } from 'muiTheme';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getFormattedDate } from 'utils/date-utils';
+
+import HowToReadModal from '../HowToReadModal';
+import { useAnticipatoryAction } from '../useAnticipatoryAction';
 import { StyledSelect } from '../utils';
 import DistrictView from './DistrictView/index';
-import HomeTable from './HomeTable';
-import HowToReadModal from '../HowToReadModal';
-import Timeline from './Timeline';
 import Forecast from './Forecast';
-import { useAnticipatoryAction } from '../useAnticipatoryAction';
+import HomeTable from './HomeTable';
+import Timeline from './Timeline';
+import { StyledCheckboxLabel, StyledRadioLabel } from './utils';
+import {
+  getAADroughtCountryConfig,
+  isSingleWindowMode,
+} from './utils/countryConfig';
 
 const { categories } = getAADroughtCountryConfig();
 
@@ -49,6 +51,7 @@ function AnticipatoryActionDroughtPanel() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
+  const posthog = usePostHog();
   const { AAData } = useAnticipatoryAction(AnticipatoryAction.drought);
   const monitoredDistricts = useSelector(AAMonitoredDistrictsSelector);
   const selectedDistrict = useSelector(AASelectedDistrictSelector);
@@ -156,6 +159,10 @@ function AnticipatoryActionDroughtPanel() {
                   key={x.name}
                   value={x.name}
                   onClick={() => {
+                    posthog?.capture('anticipatory_action_district_selected', {
+                      district: x.name,
+                      vulnerability: x.vulnerability,
+                    });
                     dispatch(setAASelectedDistrict(x.name));
                     if (view === AAView.Home) {
                       dispatch(setAAView(AAView.District));

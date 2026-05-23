@@ -1,7 +1,8 @@
-import { Typography, createStyles, makeStyles } from '@material-ui/core';
-import { useSelector } from 'react-redux';
+import { createStyles, makeStyles, Typography } from '@material-ui/core';
 import { AADataSelector } from 'context/anticipatoryAction/AAStormStateSlice';
 import { useSafeTranslation } from 'i18n';
+import { useSelector } from 'react-redux';
+
 import { AAStormColors } from '../utils';
 
 function ReadyTrigger() {

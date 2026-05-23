@@ -2,35 +2,36 @@ import {
   Box,
   createStyles,
   IconButton,
-  Tooltip,
   makeStyles,
+  Tooltip,
 } from '@material-ui/core';
-import type { AppDispatch } from 'context/store';
 import OpacityIcon from '@material-ui/icons/Opacity';
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'context/hooks';
-
+import { usePostHog } from '@posthog/react';
+import { Extent } from 'components/MapView/Layers/raster-utils';
+import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
 import { LayerKey, LayerType } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
 import { clearDataset } from 'context/datasetStateSlice';
-import { useSafeTranslation } from 'i18n';
-import { useMapState } from 'utils/useMapState';
-import { refreshBoundaries } from 'utils/map-utils';
-import { getUrlKey, useUrlHistory } from 'utils/url-utils';
-import { Extent } from 'components/MapView/Layers/raster-utils';
+import { useDispatch, useSelector } from 'context/hooks';
+import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
 import {
   availableDatesSelector,
   layersLoadingDatesIdsSelector,
 } from 'context/serverStateSlice';
-import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
+import type { AppDispatch } from 'context/store';
+import { useSafeTranslation } from 'i18n';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { LocalError } from 'utils/error-utils';
-import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
-import { toggleRemoveLayer } from './utils';
-import LayerDownloadOptions from './LayerDownloadOptions';
+import { refreshBoundaries } from 'utils/map-utils';
+import { getUrlKey, useUrlHistory } from 'utils/url-utils';
+import { useMapState } from 'utils/useMapState';
+
 import ExposureAnalysisOption from './ExposureAnalysisOption';
-import SwitchTitle from './SwitchItemTitle';
-import SwitchAction from './SwitchAction';
+import LayerDownloadOptions from './LayerDownloadOptions';
 import OpacitySlider from './OpacitySlider';
+import SwitchAction from './SwitchAction';
+import SwitchTitle from './SwitchItemTitle';
+import { toggleRemoveLayer } from './utils';
 
 const SwitchItem = memo(
   ({
@@ -57,6 +58,7 @@ const SwitchItem = memo(
     const layersLoadingDates = useSelector(layersLoadingDatesIdsSelector);
     const [isOpacitySelected, setIsOpacitySelected] = useState(false);
     const dispatch: AppDispatch = useDispatch();
+    const posthog = usePostHog();
 
     const opacity = useSelector(opacitySelector(layerId));
     const hexDisplay = layer.type === 'point_data' && layer.hexDisplay;
@@ -150,6 +152,13 @@ const SwitchItem = memo(
 
         const urlLayerKey = getUrlKey(selectedLayer);
 
+        posthog?.capture('layer_toggled', {
+          layer_id: selectedLayer.id,
+          layer_title: selectedLayer.title,
+          layer_type: selectedLayer.type,
+          enabled: checked,
+        });
+
         if (!checked) {
           toggleRemoveLayer(
             selectedLayer,
@@ -198,6 +207,7 @@ const SwitchItem = memo(
         map,
         mapState.actions,
         mapState.isGlobalMap,
+        posthog,
         removeLayerFromUrl,
         selectedLayers,
         serverAvailableDates,

@@ -1,5 +1,4 @@
 /* eslint-disable react-refresh/only-export-components */
-import { black, cyanBlue } from 'muiTheme';
 import {
   createStyles,
   makeStyles,
@@ -7,6 +6,7 @@ import {
   SelectProps,
   withStyles,
 } from '@material-ui/core';
+import { black, cyanBlue } from 'muiTheme';
 
 export const StyledSelect = withStyles({
   root: {

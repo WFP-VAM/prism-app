@@ -1,10 +1,11 @@
-import { Typography, createStyles, makeStyles } from '@material-ui/core';
-import { useSelector } from 'react-redux';
+import { createStyles, makeStyles, Typography } from '@material-ui/core';
 import { AADataSelector } from 'context/anticipatoryAction/AAStormStateSlice';
-import { useSafeTranslation } from 'i18n';
 import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
-import { getAAColor, AAStormColors } from '../utils';
+import { useSafeTranslation } from 'i18n';
+import { useSelector } from 'react-redux';
+
 import { useAACommonStyles } from '../../utils';
+import { AAStormColors, getAAColor } from '../utils';
 import { AADisplayCategory, AAPanelCategories } from './types';
 
 interface AreaTagProps {

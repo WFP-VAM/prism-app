@@ -1,6 +1,6 @@
+import { legendToStops } from 'components/MapView/Layers/layer-utils';
 import { AdminLevelDataLayerProps } from 'config/types';
 import { Map } from 'maplibre-gl';
-import { legendToStops } from 'components/MapView/Layers/layer-utils';
 import { convertSvgToPngBase64Image, getSVGShape } from 'utils/image-utils';
 
 const createFillPatternsForLayerLegends = async (

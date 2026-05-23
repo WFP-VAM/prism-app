@@ -1,37 +1,39 @@
 import {
   Box,
+  Button,
   FormControlLabel,
+  makeStyles,
   Switch,
   Typography,
-  makeStyles,
-  Button,
 } from '@material-ui/core';
 import { Edit } from '@material-ui/icons';
-import { useDispatch, useSelector } from 'react-redux';
+import { getImageUrl } from 'assets/images';
 import { useSafeTranslation } from 'i18n';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { appConfig } from '../../config';
 import {
-  dashboardConfigSelector,
+  AdminCodeString,
+  ChartHeight,
+  DashboardElements,
+  DashboardElementType,
+  DashboardMode,
+} from '../../config/types';
+import {
   dashboardColumnsSelector,
+  dashboardConfigSelector,
   dashboardMapElementsSelector,
   dashboardModeSelector,
+  dashboardSyncEnabledSelector,
   setTitle,
   toggleMapSync,
-  dashboardSyncEnabledSelector,
 } from '../../context/dashboardStateSlice';
-import {
-  DashboardMode,
-  AdminCodeString,
-  DashboardElementType,
-  DashboardElements,
-  ChartHeight,
-} from '../../config/types';
-import { appConfig } from '../../config';
-import MapBlock from './MapBlock';
-import TextBlock from './TextBlock';
-import TableBlock from './TableBlock';
 import ChartBlock from './ChartBlock';
-import { useColumnHeightManagement, GAP } from './useColumnHeightManagement';
 import { CHART_HEIGHTS } from './chartConstants';
+import MapBlock from './MapBlock';
+import TableBlock from './TableBlock';
+import TextBlock from './TextBlock';
+import { GAP, useColumnHeightManagement } from './useColumnHeightManagement';
 
 interface LogoConfig {
   visible: boolean;
@@ -251,13 +253,13 @@ function DashboardContent({
           >
             {mode !== DashboardMode.EDIT ? (
               <>
-                {logoConfig?.visible && logo && (
+                {logoConfig?.visible && getImageUrl(logo) && (
                   <img
                     className={classes.logo}
                     style={{
                       height: logoHeight,
                     }}
-                    src={logo}
+                    src={getImageUrl(logo)}
                     alt="logo"
                   />
                 )}

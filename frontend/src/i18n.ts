@@ -1,10 +1,10 @@
-import { merge } from 'lodash';
-import i18n from 'i18next';
-import { initReactI18next, useTranslation } from 'react-i18next';
-import { registerLocale } from 'react-datepicker';
-import { fr, km, pt, es, ru, mn, enUS } from 'date-fns/locale';
-
 import { extractTranslationItems } from 'config/config.test.utils';
+import { enUS, es, fr, km, mn, pt, ru } from 'date-fns/locale';
+import i18n from 'i18next';
+import { merge } from 'lodash';
+import { registerLocale } from 'react-datepicker';
+import { initReactI18next, useTranslation } from 'react-i18next';
+
 import { appConfig, getRawLayers, safeCountry, translation } from './config';
 
 const TRANSLATION_DEBUG = false;

@@ -1,17 +1,18 @@
 import {
   Button,
+  createStyles,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
-  Typography,
-  createStyles,
   makeStyles,
+  Typography,
 } from '@material-ui/core';
 import { Cancel, Close } from '@material-ui/icons';
 import { useSafeTranslation } from 'i18n';
 import { black, cyanBlue } from 'muiTheme';
+
 import { Action } from './actions';
 
 interface ActionsModalProps {

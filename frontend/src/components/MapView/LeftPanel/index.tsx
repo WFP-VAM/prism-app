@@ -1,36 +1,37 @@
-import { Drawer, Theme, createStyles, makeStyles } from '@material-ui/core';
-import React, { memo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  leftPanelTabValueSelector,
-  setTabValue,
-} from 'context/leftPanelStateSlice';
+import { createStyles, Drawer, makeStyles, Theme } from '@material-ui/core';
 import { AnticipatoryAction, Panel } from 'config/types';
 import {
   AALayerIds,
   areChartLayersAvailable,
   isAnticipatoryActionLayer,
 } from 'config/utils';
+import {
+  leftPanelTabValueSelector,
+  setTabValue,
+} from 'context/leftPanelStateSlice';
 import { setSelectedBoundaries } from 'context/mapSelectionLayerStateSlice';
-import { useMapState } from 'utils/useMapState';
+import React, { memo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
+import { useMapState } from 'utils/useMapState';
+
+import AlertsPanel from './AlertsPanel';
 import AnalysisPanel from './AnalysisPanel';
-import ChartsPanel from './ChartsPanel';
-import TablesPanel from './TablesPanel';
 import {
   AnticipatoryActionDroughtPanel,
   AnticipatoryActionStormPanel,
 } from './AnticipatoryActionPanel';
+import AnticipatoryActionFloodPanel from './AnticipatoryActionPanel/AnticipatoryActionFloodPanel';
+import ChartsPanel from './ChartsPanel';
 import LayersPanel from './layersPanel';
+import { toggleRemoveLayer } from './layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
+import TablesPanel from './TablesPanel';
 import {
   areTablesAvailable,
   isAnticipatoryActionDroughtAvailable,
-  isAnticipatoryActionStormAvailable,
   isAnticipatoryActionFloodAvailable,
+  isAnticipatoryActionStormAvailable,
 } from './utils';
-import AlertsPanel from './AlertsPanel';
-import { toggleRemoveLayer } from './layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
-import AnticipatoryActionFloodPanel from './AnticipatoryActionPanel/AnticipatoryActionFloodPanel';
 
 interface TabPanelProps {
   children?: React.ReactNode;

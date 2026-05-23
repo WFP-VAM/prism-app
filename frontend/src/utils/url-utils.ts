@@ -1,9 +1,10 @@
-import { camelCase } from 'lodash';
-import { useHistory } from 'react-router-dom';
 import { LayerType } from 'config/types';
+import { camelCase } from 'lodash';
 import { useCallback, useMemo } from 'react';
-import { AnalysisParams } from './types';
+import { useHistory } from 'react-router-dom';
+
 import { keepLayer } from './keep-layer-utils';
+import { AnalysisParams } from './types';
 
 /*
   This custom hook tracks the browser url string, which is defined by the useHistory hook.

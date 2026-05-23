@@ -1,17 +1,18 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { useCallback } from 'react';
+import { clearDataset } from 'context/datasetStateSlice';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
-import { useBoundaryData } from 'utils/useBoundaryData';
 import {
   addPopupData,
   hidePopup,
   setWMSGetFeatureInfoLoading,
 } from 'context/tooltipStateSlice';
-import { makeFeatureInfoRequest } from 'utils/server-utils';
-import { clearDataset } from 'context/datasetStateSlice';
 import { MapLayerMouseEvent } from 'maplibre-gl';
+import { useCallback } from 'react';
 import { MapRef } from 'react-map-gl/maplibre';
+import { useDispatch, useSelector } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
+import { makeFeatureInfoRequest } from 'utils/server-utils';
+import { useBoundaryData } from 'utils/useBoundaryData';
+
 import { getActiveFeatureInfoLayers, getFeatureInfoParams } from './utils';
 
 const useMapOnClick = (boundaryLayerId: string, mapRef: MapRef | null) => {

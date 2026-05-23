@@ -1,7 +1,8 @@
 import { oneDayInMs } from 'components/MapView/LeftPanel/utils';
-import { get, snakeCase } from 'lodash';
-import { WFS, WMS, fetchCoverageLayerDays, formatUrl } from 'prism-common';
 import type { AppDispatch, RootState } from 'context/store';
+import { get, snakeCase } from 'lodash';
+import { fetchCoverageLayerDays, formatUrl, WFS, WMS } from 'prism-common';
+
 import {
   appConfig,
   countriesWithPreprocessedDates,
@@ -39,17 +40,16 @@ import {
   StaticRasterLayerProps,
   WMSLayerProps,
 } from '../config/types';
-
 import { LayerDefinitions } from '../config/utils';
 import { addNotification } from '../context/notificationStateSlice';
 import { fetchACLEDDates } from './acled-utils';
 import {
-  StartEndDate,
   datesAreEqualWithoutTime,
   generateDateItemsRange,
   generateDatesRange,
   getFormattedDate,
   getSeasonBounds,
+  StartEndDate,
 } from './date-utils';
 import { LocalError } from './error-utils';
 import { createEWSDatesArray } from './ews-utils';

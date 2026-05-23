@@ -1,33 +1,35 @@
 import {
+  createStyles,
   Dialog,
   DialogContent,
-  Snackbar,
-  createStyles,
   makeStyles,
+  Snackbar,
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
-import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
+import { usePostHog } from '@posthog/react';
 import mask from '@turf/mask';
-import { useSafeTranslation } from 'i18n';
-import { getFormattedDate } from 'utils/date-utils';
-import {
-  dashboardConfigSelector,
-  dashboardMapStateSelector,
-  dashboardColumnsSelector,
-} from 'context/dashboardStateSlice';
 import { downloadToFile } from 'components/MapView/utils';
+import { safeCountry } from 'config';
 import { AdminCodeString, DashboardElementType } from 'config/types';
 import { getBoundaryLayerSingleton } from 'config/utils';
-import { safeCountry } from 'config';
+import {
+  dashboardColumnsSelector,
+  dashboardConfigSelector,
+  dashboardMapStateSelector,
+} from 'context/dashboardStateSlice';
+import html2canvas from 'html2canvas';
+import { useSafeTranslation } from 'i18n';
+import { jsPDF } from 'jspdf';
+import React, { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { getFormattedDate } from 'utils/date-utils';
+
 import DashboardExportContext, {
-  PaperSize,
   ExportToggles,
+  PaperSize,
 } from './dashboardExport.context';
-import DashboardExportPreview from './DashboardExportPreview';
 import DashboardExportConfig from './DashboardExportConfig';
+import DashboardExportPreview from './DashboardExportPreview';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
@@ -41,6 +43,7 @@ function DashboardExportDialog({
   handleClose,
 }: DashboardExportDialogProps) {
   const classes = useStyles();
+  const posthog = usePostHog();
   const { t } = useSafeTranslation();
   const printRef = useRef<HTMLDivElement>(null);
   const [paperSize, setPaperSize] = useState<PaperSize>(PaperSize.A4_LANDSCAPE);
@@ -185,6 +188,11 @@ function DashboardExportDialog({
   };
 
   const download = async (format: 'pdf' | 'png') => {
+    posthog?.capture('dashboard_exported', {
+      format,
+      paper_size: paperSize,
+      dashboard_title: dashboardTitle,
+    });
     handleDownloadMenuClose();
     setIsExporting(true);
 

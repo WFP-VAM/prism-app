@@ -1,10 +1,11 @@
-import {
-  validateDashboardConfig,
-  formatDashboardValidationError,
-} from './schema';
 import { ChartHeight, DashboardElementType } from 'config/types';
-import { DashboardMapPosition } from './dashboardEnums';
 import dashboardConfigSample from 'test/fixtures/dashboard-config.sample.json';
+
+import { DashboardMapPosition } from './dashboardEnums';
+import {
+  formatDashboardValidationError,
+  validateDashboardConfig,
+} from './schema';
 
 const minimalValidDashboard = [
   {

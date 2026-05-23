@@ -1,5 +1,6 @@
-import dashboardReducer, { setDashboards } from './dashboardStateSlice';
 import { DashboardElementType, type DashboardTextConfig } from 'config/types';
+
+import dashboardReducer, { setDashboards } from './dashboardStateSlice';
 
 describe('dashboardStateSlice', () => {
   it('initial state has empty dashboards', () => {

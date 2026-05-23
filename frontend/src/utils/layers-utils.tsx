@@ -1,37 +1,40 @@
+import {
+  expandBoundingBox,
+  Extent,
+} from 'components/MapView/Layers/raster-utils';
 import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
 import { appConfig } from 'config';
 import {
-  Extent,
-  expandBoundingBox,
-} from 'components/MapView/Layers/raster-utils';
-import {
+  AnticipatoryAction,
+  AvailableDates,
+  DateItem,
+  isMainLayer,
   LayerKey,
   LayerType,
-  isMainLayer,
-  DateItem,
-  AnticipatoryAction,
 } from 'config/types';
 import {
   AALayerIds,
-  LayerDefinitions,
   getBoundaryLayerSingleton,
   isAnticipatoryActionLayer,
   isWindowedDates,
+  LayerDefinitions,
 } from 'config/utils';
+import { getAAConfig } from 'context/anticipatoryAction/config';
+import { useDispatch, useSelector } from 'context/hooks';
 import { layerOrdering } from 'context/mapStateSlice';
-import { useMapState } from 'utils/useMapState';
 import { addNotification } from 'context/notificationStateSlice';
+import {
+  pointDataLayerDatesLoadedSelector,
+  wmsLayerDatesLoadedSelector,
+} from 'context/serverPreloadStateSlice';
 import {
   availableDatesSelector,
   layersLoadingDatesIdsSelector,
 } from 'context/serverStateSlice';
-import {
-  wmsLayerDatesLoadedSelector,
-  pointDataLayerDatesLoadedSelector,
-} from 'context/serverPreloadStateSlice';
+import { RootState } from 'context/store';
+import { useSafeTranslation } from 'i18n';
 import { countBy, get, pickBy, uniqBy } from 'lodash';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'context/hooks';
 import { LocalError } from 'utils/error-utils';
 import { DateFormat } from 'utils/name-utils';
 import {
@@ -39,20 +42,17 @@ import {
   getAAAvailableDatesCombined,
   getPossibleDatesForLayer,
 } from 'utils/server-utils';
-import { UrlLayerKey, getUrlKey, useUrlHistory } from 'utils/url-utils';
+import { getUrlKey, UrlLayerKey, useUrlHistory } from 'utils/url-utils';
+import { useMapState } from 'utils/useMapState';
 
-import { useSafeTranslation } from 'i18n';
-
-import { getAAConfig } from 'context/anticipatoryAction/config';
-import { RootState } from 'context/store';
+import { getNonBoundaryLayers } from './boundary-layers-utils';
 import {
-  datesAreEqualWithoutTime,
   binaryIncludes,
-  getFormattedDate,
+  datesAreEqualWithoutTime,
   dateWithoutTime,
   findClosestDate,
+  getFormattedDate,
 } from './date-utils';
-import { getNonBoundaryLayers } from './boundary-layers-utils';
 
 const dateSupportLayerTypes: Array<LayerType['type']> = [
   'impact',
@@ -63,6 +63,63 @@ const dateSupportLayerTypes: Array<LayerType['type']> = [
   AnticipatoryAction.storm,
   AnticipatoryAction.flood,
 ];
+
+/**
+ * Returns true when `layer` has date support given the currently loaded
+ * server-available dates, narrowing the type to `DateCompatibleLayer`.
+ *
+ * This is the single source of truth for "does this layer have dates?" and
+ * is used inside `useLayers` to build `selectedLayersWithDateSupport`.
+ */
+export function isDateCompatibleLayer(
+  layer: LayerType,
+  serverAvailableDates: AvailableDates,
+): layer is DateCompatibleLayer {
+  if (layer.type === 'admin_level_data' || layer.type === 'static_raster') {
+    return Boolean(layer.dates);
+  }
+  if (layer.type === 'point_data') {
+    // some point_data layers might not have a date URL (i.e. static data)
+    return Boolean(layer.dateUrl);
+  }
+  if (layer.type === 'wms') {
+    // some WMS layers might not have a date dimension (i.e. static data)
+    return layer.id in serverAvailableDates;
+  }
+  if (layer.type === 'composite') {
+    // some WMS layers might not have date dimension (i.e. static data)
+    return (
+      layer.id in serverAvailableDates ||
+      layer.dateLayer in serverAvailableDates
+    );
+  }
+  if (layer.type === 'impact') {
+    // Impact layers derive their dates from the hazard layer
+    // Check if dates have been loaded for this impact layer
+    return layer.id in serverAvailableDates;
+  }
+  return dateSupportLayerTypes.includes(layer.type);
+}
+
+/**
+ * WMS layers eligible for batch print picker. Uses Redux when dates are already
+ * loaded (`isDateCompatibleLayer`), otherwise falls back to config (`coverageWindow`
+ * / `validity`) so the dropdown is not empty before preload completes or when
+ * no hazard is on the map. Building `filteredBatchDates` still needs
+ * `getPossibleDatesForLayer` → server dates in Redux after `loadAvailableDatesForLayer`.
+ */
+export function isWmsSelectableForBatchPrint(
+  layer: LayerType,
+  serverAvailableDates: AvailableDates,
+): boolean {
+  if (layer.type !== 'wms') {
+    return false;
+  }
+  if (layer.id in serverAvailableDates) {
+    return isDateCompatibleLayer(layer, serverAvailableDates);
+  }
+  return Boolean(layer.coverageWindow || layer.validity);
+}
 
 const useLayers = () => {
   const dispatch = useDispatch();
@@ -149,35 +206,7 @@ const useLayers = () => {
   const selectedLayersWithDateSupport = useMemo(
     () =>
       selectedLayers
-        .filter((layer): layer is DateCompatibleLayer => {
-          if (
-            layer.type === 'admin_level_data' ||
-            layer.type === 'static_raster'
-          ) {
-            return Boolean(layer.dates);
-          }
-          if (layer.type === 'point_data') {
-            // some WMS layer might not have date dimension (i.e. static data)
-            return Boolean(layer.dateUrl);
-          }
-          if (layer.type === 'wms') {
-            // some WMS layer might not have date dimension (i.e. static data)
-            return layer.id in serverAvailableDates;
-          }
-          if (layer.type === 'composite') {
-            // some WMS layer might not have date dimension (i.e. static data)
-            return (
-              layer.id in serverAvailableDates ||
-              layer.dateLayer in serverAvailableDates
-            );
-          }
-          if (layer.type === 'impact') {
-            // Impact layers derive their dates from the hazard layer
-            // Check if dates have been loaded for this impact layer
-            return layer.id in serverAvailableDates;
-          }
-          return dateSupportLayerTypes.includes(layer.type);
-        })
+        .filter(layer => isDateCompatibleLayer(layer, serverAvailableDates))
         .filter(layer => isMainLayer(layer.id, selectedLayers))
         .map(layer => ({
           ...layer,

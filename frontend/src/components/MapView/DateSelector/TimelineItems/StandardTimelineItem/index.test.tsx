@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react';
 import { DateItem } from 'config/types';
+
 import StandardTimelineItem, { StandardTimelineItemProps } from '.';
 
 test('StandardTimelineItem renders as expected', () => {

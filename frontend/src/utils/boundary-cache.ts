@@ -1,10 +1,10 @@
+import type { Dispatch } from '@reduxjs/toolkit';
 import { BoundaryLayerProps, LayerKey } from 'config/types';
 import {
   BoundaryLayerData,
   fetchBoundaryLayerData,
 } from 'context/layers/boundary';
 import { Map as MaplibreMap } from 'maplibre-gl';
-import type { Dispatch } from '@reduxjs/toolkit';
 
 // Use a generic Dispatch type to avoid circular dependency with context/store
 type DispatchFunction = Dispatch<any>;

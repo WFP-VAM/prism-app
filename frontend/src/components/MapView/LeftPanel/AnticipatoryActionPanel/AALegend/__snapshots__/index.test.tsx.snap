@@ -7,7 +7,7 @@ exports[`renders as expected 1`] = `
     disablegutters="true"
   >
     <div
-      class="MuiPaper-root makeStyles-paper-1 MuiPaper-elevation1 MuiPaper-rounded"
+      class="MuiPaper-root makeStyles-paper-1 legend-card MuiPaper-elevation1 MuiPaper-rounded"
     >
       <mock-dialog
         open="false"

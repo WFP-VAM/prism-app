@@ -1,13 +1,5 @@
-import { camelCase, get, map, mapKeys, startCase } from 'lodash';
-import { GeoJsonProperties } from 'geojson';
+import { getImageUrl } from 'assets/images';
 import { appConfig } from 'config';
-import {
-  isTableKey,
-  LayerDefinitions,
-  TableDefinitions,
-  TableKey,
-  getWMSLayersWithChart,
-} from 'config/utils';
 import {
   isLayerKey,
   LayerKey,
@@ -16,6 +8,15 @@ import {
   MenuGroup,
   MenuItemType,
 } from 'config/types';
+import {
+  getWMSLayersWithChart,
+  isTableKey,
+  LayerDefinitions,
+  TableDefinitions,
+  TableKey,
+} from 'config/utils';
+import { GeoJsonProperties } from 'geojson';
+import { camelCase, get, map, mapKeys, startCase } from 'lodash';
 
 const { multiCountry, country } = appConfig;
 const chartLayers = getWMSLayersWithChart();
@@ -94,7 +95,13 @@ export const menuList: MenuItemsType = map(
     }
     return {
       title: startCase(categoryKey),
-      icon: get(appConfig, `icons.${categoryKey}`, 'icon_vulnerable.png'),
+      // TODO - find a better way to handle this
+      icon:
+        getImageUrl(
+          get(appConfig, `icons.${categoryKey}`, 'icon_vulnerable.png'),
+        ) ??
+        getImageUrl('icon_vulnerable.png') ??
+        '',
       layersCategories: formatLayersCategories(layersCategories),
     };
   },
@@ -109,7 +116,12 @@ export const getDynamicMenuList = (selectedLayers?: LayerType[]) =>
     }
     return {
       title: startCase(categoryKey),
-      icon: get(appConfig, `icons.${categoryKey}`, 'icon_vulnerable.png'),
+      icon:
+        getImageUrl(
+          get(appConfig, `icons.${categoryKey}`, 'icon_vulnerable.png'),
+        ) ??
+        getImageUrl('icon_vulnerable.png') ??
+        '',
       layersCategories: formatLayersCategories(
         layersCategories,
         selectedLayers,
