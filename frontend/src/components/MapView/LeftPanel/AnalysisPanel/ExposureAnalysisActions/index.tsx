@@ -1,4 +1,5 @@
 import { Button, Typography } from '@material-ui/core';
+import { usePostHog } from '@posthog/react';
 import ReportDialog from 'components/Common/ReportDialog';
 import {
   downloadToFile,
@@ -30,6 +31,7 @@ function ExposureAnalysisActions({
 }: ExposureAnalysisActionsProps) {
   // only display local names if local language is selected, otherwise display english name
   const { t, i18n } = useSafeTranslation();
+  const posthog = usePostHog();
   const analysisDefinition = useSelector(getCurrentDefinition);
   const exposureLayerId = useSelector(exposureLayerIdSelector);
 
@@ -60,6 +62,10 @@ function ExposureAnalysisActions({
   const handleOnDownloadCsv = useCallback(
     (event: MouseEvent<HTMLButtonElement>) => {
       event.preventDefault();
+      posthog?.capture('exposure_analysis_csv_downloaded', {
+        layer_id: exposureLayerId,
+        analysis_id: analysisDefinition?.id,
+      });
       downloadToFile(
         {
           content: exposureAnalysisCsvData,
@@ -71,7 +77,7 @@ function ExposureAnalysisActions({
         'text/csv',
       );
     },
-    [analysisDefinition, exposureAnalysisCsvData],
+    [analysisDefinition, exposureAnalysisCsvData, exposureLayerId, posthog],
   );
 
   /**
@@ -120,7 +126,13 @@ function ExposureAnalysisActions({
 
   return (
     <>
-      <Button className={analysisButton} onClick={clearAnalysis}>
+      <Button
+        className={analysisButton}
+        onClick={() => {
+          posthog?.capture('analysis_cleared', { layer_id: exposureLayerId });
+          clearAnalysis();
+        }}
+      >
         <Typography variant="body2">{t('Clear Analysis')}</Typography>
       </Button>
       {exposureAnalysisCsvData && (
