@@ -1,11 +1,11 @@
-import { Button, IconButton, Badge, Typography } from '@material-ui/core';
-import React from 'react';
+import { Badge, Button, IconButton, Typography } from '@material-ui/core';
 import { ExpandMore } from '@material-ui/icons';
-import { black, cyanBlue } from 'muiTheme';
-import useLayers from 'utils/layers-utils';
-import { useSelector } from 'react-redux';
-import { analysisResultSelector } from 'context/analysisResultStateSlice';
 import { Panel } from 'config/types';
+import { analysisResultSelector } from 'context/analysisResultStateSlice';
+import { black, cyanBlue } from 'muiTheme';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import useLayers from 'utils/layers-utils';
 
 function PanelButton({
   panel,

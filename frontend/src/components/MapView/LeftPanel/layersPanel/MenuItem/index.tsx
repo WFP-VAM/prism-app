@@ -1,18 +1,19 @@
-import { memo, useMemo } from 'react';
 import {
-  Grid,
-  Typography,
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Grid,
+  Typography,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { LayersCategoryType } from 'config/types';
-import MenuSwitch from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch';
-import { useSafeTranslation } from 'i18n';
 import { Extent } from 'components/MapView/Layers/raster-utils';
-import { useMapState } from 'utils/useMapState';
+import MenuSwitch from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch';
 import { filterActiveLayers } from 'components/MapView/utils';
+import { LayersCategoryType } from 'config/types';
+import { useSafeTranslation } from 'i18n';
+import { memo, useMemo } from 'react';
+import { useMapState } from 'utils/useMapState';
+
 import SelectedLayersInformation from './SelectedLayersInformation';
 import { makeSafeIDFromTitle, useLayerMenuItemStyles } from './utils';
 

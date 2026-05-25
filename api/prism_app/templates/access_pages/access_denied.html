@@ -1,0 +1,24 @@
+{% extends "access_pages_base.html" %}
+{% set title = "Access denied" %}
+{% set heading = "Access not authorized" %}
+
+{% block content %}
+<div class="alert alert-danger" role="alert">
+    CIAM authentication succeeded, but PRISM cannot authorize this Admin session.
+</div>
+<p>
+    Most often your PRISM row exists but is marked <strong>inactive</strong> here.
+    Retry sign-in once if your account was recently re-enabled.
+</p>
+<p>
+    If you recently signed in for the first time, your account is normally created automatically;
+    if this persists, contact an administrator.
+</p>
+{% if support_email %}
+<p>Contact: <a href="mailto:{{ support_email }}">{{ support_email }}</a></p>
+{% endif %}
+<div class="d-flex gap-2 flex-wrap">
+    <a class="btn btn-outline-secondary" href="/auth/sign-out">Sign out</a>
+    <a class="btn btn-primary" href="/auth/sign-in?next=/admin/">Continue to sign-in</a>
+</div>
+{% endblock %}

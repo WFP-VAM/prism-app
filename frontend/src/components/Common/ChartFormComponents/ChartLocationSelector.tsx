@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Box,
   makeStyles,
@@ -6,20 +5,21 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-import { sortBy } from 'lodash';
+import {
+  AdminBoundaryTree,
+  getAdminBoundaryTree,
+} from 'components/MapView/Layers/BoundaryDropdown/utils';
+import { getProperties } from 'components/MapView/utils';
 import {
   AdminCodeString,
   AdminLevelType,
   BoundaryLayerProps,
 } from 'config/types';
-import {
-  getAdminBoundaryTree,
-  AdminBoundaryTree,
-} from 'components/MapView/Layers/BoundaryDropdown/utils';
-import { useSafeTranslation } from 'i18n';
 import { BoundaryLayerData } from 'context/layers/boundary';
-import { getProperties } from 'components/MapView/utils';
 import { GeoJsonProperties } from 'geojson';
+import { useSafeTranslation } from 'i18n';
+import { sortBy } from 'lodash';
+import React from 'react';
 
 interface ChartLocationSelectorProps {
   boundaryLayerData: BoundaryLayerData | undefined;

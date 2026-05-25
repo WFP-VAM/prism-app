@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+
 import HowToReadModal from '.';
 
 test('renders actions modal', () => {

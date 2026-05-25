@@ -9,6 +9,7 @@ import {
   FillLayerSpecification,
   SymbolLayerSpecification,
 } from 'maplibre-gl';
+
 import { legendToStops } from './layer-utils';
 
 export const circleLayout: CircleLayerSpecification['layout'] = {

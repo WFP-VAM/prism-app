@@ -1,4 +1,22 @@
 import {
+  Box,
+  Button,
+  createStyles,
+  Dialog,
+  DialogTitle,
+  makeStyles,
+  TextField,
+  Theme,
+  Typography,
+} from '@material-ui/core';
+import { Close, Send } from '@material-ui/icons';
+import { UserAuth } from 'config/types';
+import { removeLayer } from 'context/mapStateSlice';
+import { layersSelector } from 'context/mapStateSlice/selectors';
+import { refetchLayerDatesArraysForPointData } from 'context/serverPreloadStateSlice';
+import { setUserAuthGlobal, userAuthSelector } from 'context/serverStateSlice';
+import { useSafeTranslation } from 'i18n';
+import {
   ChangeEvent,
   FormEvent,
   useCallback,
@@ -7,25 +25,7 @@ import {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Box,
-  Button,
-  createStyles,
-  Dialog,
-  DialogTitle,
-  TextField,
-  Theme,
-  Typography,
-  makeStyles,
-} from '@material-ui/core';
-import { Close, Send } from '@material-ui/icons';
-import { useSafeTranslation } from 'i18n';
-import { layersSelector } from 'context/mapStateSlice/selectors';
-import { setUserAuthGlobal, userAuthSelector } from 'context/serverStateSlice';
-import { refetchLayerDatesArraysForPointData } from 'context/serverPreloadStateSlice';
-import { UserAuth } from 'config/types';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
-import { removeLayer } from 'context/mapStateSlice';
 
 const initialAuthState: UserAuth = {
   username: '',

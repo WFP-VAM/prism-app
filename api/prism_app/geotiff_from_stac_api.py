@@ -8,6 +8,7 @@ from cachetools import TTLCache, cached
 from fastapi import HTTPException
 from odc.geo.xr import write_cog
 from odc.stac import configure_rio, stac_load
+from prism_app.caching import CACHE_DIRECTORY
 from prism_app.raster_utils import get_raster_crs, reproject_raster
 from prism_app.timer import timed
 from pystac_client import Client
@@ -30,6 +31,18 @@ configure_rio(
         "aws_secret_access_key": STAC_AWS_SECRET_ACCESS_KEY,
     },
 )
+
+
+def _geotiff_staging_dir() -> str:
+    """Scratch dir for COG before S3. Same root as file cache (CACHE_DIRECTORY); /tmp if unusable."""
+    root = CACHE_DIRECTORY.rstrip(os.sep)
+    try:
+        os.makedirs(root, exist_ok=True)
+    except OSError:
+        pass
+    if os.path.isdir(root) and os.access(root, os.W_OK):
+        return root
+    return "/tmp"
 
 
 def _patch_item_crs(item: pystac.Item, epsg: int | None = None):
@@ -94,7 +107,10 @@ def generate_geotiff_from_stac_api(
     final_band = list(collections_dataset.keys())[0]
     band_suffix = "_" + final_band if (final_band != "band") else ""
     bbox_hash = hashlib.sha256(str(bbox).encode()).hexdigest()[:8]
-    file_path = f"{collection}{band_suffix}_{bbox_hash}_{date or 'no_date'}.tif"
+    base_name = f"{collection}{band_suffix}_{bbox_hash}_{date or 'no_date'}.tif"
+    staging = _geotiff_staging_dir()
+    os.makedirs(staging, exist_ok=True)
+    file_path = os.path.join(staging, base_name)
 
     try:
         write_cog(collections_dataset[final_band], file_path, overwrite=True)

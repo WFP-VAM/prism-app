@@ -1,21 +1,32 @@
-import React from 'react';
 import {
   Button,
   createStyles,
+  makeStyles,
   Menu,
   MenuItem,
   Typography,
-  makeStyles,
 } from '@material-ui/core';
-import { languages, useSafeTranslation } from 'i18n';
-import { appConfig } from 'config';
-import { get } from 'lodash';
 import ArrowDownward from '@material-ui/icons/ArrowDropDown';
+import { usePostHog } from '@posthog/react';
+import { appConfig } from 'config';
+import { languages, useSafeTranslation } from 'i18n';
+import { get } from 'lodash';
+import React from 'react';
+
+/** Display labels for the language dropdown (i18n codes stay 2-letter). */
+const LANGUAGE_DROPDOWN_LABELS: Record<string, string> = {
+  ar: 'عربى',
+};
+
+function languageDropdownLabel(code: string): string {
+  return LANGUAGE_DROPDOWN_LABELS[code] ?? code;
+}
 
 function LanguageSelector() {
   const classes = useStyles();
   const { i18n } = useSafeTranslation();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const posthog = usePostHog();
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -26,6 +37,10 @@ function LanguageSelector() {
   };
 
   const handleChangeLanguage = (lng: string): void => {
+    posthog?.capture('language_changed', {
+      language: lng,
+      previous_language: i18n.resolvedLanguage,
+    });
     i18n.changeLanguage(lng);
     localStorage.setItem('userLanguage', lng);
     handleClose();
@@ -55,7 +70,7 @@ function LanguageSelector() {
         endIcon={<ArrowDownward fontSize="small" />}
       >
         <Typography color="secondary" style={{ textTransform: 'none' }}>
-          {i18n.resolvedLanguage}
+          {languageDropdownLabel(i18n.resolvedLanguage ?? 'en')}
         </Typography>
       </Button>
       <Menu
@@ -70,7 +85,7 @@ function LanguageSelector() {
             key={lng}
             onClick={() => handleChangeLanguage(lng)}
           >
-            <Typography>{lng}</Typography>
+            <Typography>{languageDropdownLabel(lng)}</Typography>
           </MenuItem>
         ))}
       </Menu>

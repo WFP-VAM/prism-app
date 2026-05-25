@@ -1,7 +1,8 @@
 import type { Dashboard } from 'config/types';
+
 import {
-  validateDashboardConfig,
   formatDashboardValidationError,
+  validateDashboardConfig,
 } from './schema';
 
 export class DashboardConfigFetchError extends Error {
@@ -27,7 +28,8 @@ function parseValidatedDashboardBody(parsed: unknown): Dashboard[] {
 }
 
 /**
- * Fetches dashboard.json, parses JSON, and validates against the dashboard schema.
+ * Fetches a published-dashboard JSON array (full URL, e.g. GET `/dashboards?…`),
+ * parses the body, and validates it against the dashboard schema.
  */
 export async function fetchDashboardConfig(url: string): Promise<Dashboard[]> {
   let response: Response;
@@ -47,6 +49,19 @@ export async function fetchDashboardConfig(url: string): Promise<Dashboard[]> {
       `Dashboard configuration request failed (${response.status} ${response.statusText})`,
       'http',
       response.status,
+    );
+  }
+
+  // Static hosts (e.g. Firebase Hosting, see frontend/firebase.json) rewrite unknown paths
+  // to `/index.html` and return it with status 200, so a missing dashboard.json arrives as
+  // HTML — not a 404 — and JSON.parse below would throw. Treat a non-JSON content-type as
+  // "not found" so the UI stays silent, matching the 404 path.
+  const contentType = response.headers.get('content-type') ?? '';
+  if (!contentType.toLowerCase().includes('json')) {
+    throw new DashboardConfigFetchError(
+      'Dashboard configuration not found',
+      'http',
+      404,
     );
   }
 

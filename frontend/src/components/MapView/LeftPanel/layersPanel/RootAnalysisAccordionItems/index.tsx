@@ -1,5 +1,3 @@
-import { memo } from 'react';
-import { useSelector } from 'react-redux';
 import {
   analysisResultOpacitySelector,
   analysisResultSelector,
@@ -7,6 +5,9 @@ import {
   analysisResultSortOrderSelector,
 } from 'context/analysisResultStateSlice';
 import { useSafeTranslation } from 'i18n';
+import { memo } from 'react';
+import { useSelector } from 'react-redux';
+
 import AnalysisLayerMenuItem from '../AnalysisLayerMenuItem';
 
 const RootAnalysisAccordionItems = memo(() => {

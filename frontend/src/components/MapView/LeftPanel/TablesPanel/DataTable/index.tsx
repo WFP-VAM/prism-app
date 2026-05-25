@@ -1,8 +1,7 @@
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { createStyles } from '@material-ui/styles';
 import {
   Box,
   CircularProgress,
+  makeStyles,
   Table,
   TableBody,
   TableCell,
@@ -13,14 +12,15 @@ import {
   TableSortLabel,
   Theme,
   Typography,
-  makeStyles,
 } from '@material-ui/core';
-import { orderBy } from 'lodash';
-import { useSafeTranslation } from 'i18n';
-import { ChartConfig } from 'config/types';
-import { TableData, TableRowType } from 'context/tableStateSlice';
+import { createStyles } from '@material-ui/styles';
 import Chart from 'components/Common/Chart';
 import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
+import { ChartConfig } from 'config/types';
+import { TableData, TableRowType } from 'context/tableStateSlice';
+import { useSafeTranslation } from 'i18n';
+import { orderBy } from 'lodash';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { getTableCellVal } from 'utils/data-utils';
 
 const DataTable = memo(

@@ -1,11 +1,12 @@
 import { render } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import { TestBrowserRouter } from 'test/TestBrowserRouter';
-import configureStore from 'redux-mock-store';
-import { AnticipatoryActionState } from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { Panel } from 'config/types';
-import DistrictView from '.';
+import { AnticipatoryActionState } from 'context/anticipatoryAction/AADroughtStateSlice/types';
+import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
+import { TestBrowserRouter } from 'test/TestBrowserRouter';
+
 import { defaultDialogs, mockAAData } from '../test.utils';
+import DistrictView from '.';
 import { districtViewTransform } from './utils';
 
 const mockStore = configureStore([]);

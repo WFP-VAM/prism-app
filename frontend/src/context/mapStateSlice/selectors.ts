@@ -1,13 +1,14 @@
 // cannot exist within mapStateSlice due to import cycles with
 // layerDataSelector(used to be mapStateSlice) -> nso/impact -> layer-data -> mapStateSlice
 // x -> y .. x is used by y
-import type { RootState } from 'context/store';
-import type { LayerDataTypes } from 'context/layers/layer-data';
-import type { LayerKey } from 'config/types';
 import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
-import { datesAreEqualWithoutTime } from 'utils/date-utils';
+import type { LayerKey } from 'config/types';
+import type { LayerDataTypes } from 'context/layers/layer-data';
+import type { RootState } from 'context/store';
 import { Map as MaplibreMap } from 'maplibre-gl';
 import { isBoundaryLayer } from 'utils/boundary-layers-utils';
+import { datesAreEqualWithoutTime } from 'utils/date-utils';
+
 import type { MapState } from '.';
 
 export const layersSelector = (state: RootState): MapState['layers'] =>

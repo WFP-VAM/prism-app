@@ -1,6 +1,7 @@
 import { render } from '@testing-library/react';
-import { Provider } from 'react-redux';
 import { store } from 'context/store';
+import { Provider } from 'react-redux';
+
 import MapComponent from '.';
 
 jest.mock('react-router-dom', () => ({

@@ -1,28 +1,27 @@
-import { memo, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import {
+  BoundaryRelationData,
+  loadBoundaryRelations,
+} from 'components/Common/BoundaryDropdown/utils';
 import { BoundaryLayerProps, MapEventWrapFunctionProps } from 'config/types';
-import { showPopup } from 'context/tooltipStateSlice';
-import { Source, Layer, MapLayerMouseEvent } from 'react-map-gl/maplibre';
 import { isPrimaryBoundaryLayer } from 'config/utils';
 import { toggleSelectedBoundary } from 'context/mapSelectionLayerStateSlice';
-import { useMapState } from 'utils/useMapState';
-import { getFullLocationName } from 'utils/name-utils';
-import { useBoundaryData } from 'utils/useBoundaryData';
-
+import { setBoundaryRelationData } from 'context/mapStateSlice';
+import { showPopup } from 'context/tooltipStateSlice';
+import { languages } from 'i18n';
 import { Map as MaplibreMap } from 'maplibre-gl';
+import { memo, useEffect, useState } from 'react';
+import { Layer, MapLayerMouseEvent, Source } from 'react-map-gl/maplibre';
+import { useDispatch } from 'react-redux';
 import {
   findFeature,
   getEvtCoords,
   getLayerMapId,
   useMapCallback,
 } from 'utils/map-utils';
+import { getFullLocationName } from 'utils/name-utils';
 import { initPmtilesProtocol } from 'utils/pmtiles-utils';
-import { languages } from 'i18n';
-import {
-  BoundaryRelationData,
-  loadBoundaryRelations,
-} from 'components/Common/BoundaryDropdown/utils';
-import { setBoundaryRelationData } from 'context/mapStateSlice';
+import { useBoundaryData } from 'utils/useBoundaryData';
+import { useMapState } from 'utils/useMapState';
 
 function onToggleHover(cursor: string, targetMap: MaplibreMap) {
   targetMap.getCanvas().style.cursor = cursor;

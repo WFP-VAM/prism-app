@@ -9,15 +9,10 @@ from json import dump, load
 from typing import Any, NewType, Optional
 from urllib.parse import urlencode
 
+import prism_app.caching as caching
 import rasterio  # type: ignore
 from fastapi import HTTPException
-from prism_app.caching import (
-    CACHE_DIRECTORY,
-    _hash_value,
-    cache_file,
-    get_json_file,
-    is_file_valid,
-)
+from prism_app.caching import _hash_value, cache_file, get_json_file, is_file_valid
 from prism_app.duckdb_utils import setup_duckdb_connection
 from prism_app.models import (
     FilePath,
@@ -118,7 +113,7 @@ def _read_zones(
             query += f" AND ST_Contains(ST_MakeEnvelope({minx}, {miny}, {maxx}, {maxy}), geometry)"
         con.execute(query)
         # Export to temp GeoJSON using GDAL extension
-        temp_geojson = os.path.join(CACHE_DIRECTORY, "temp_zones.geojson")
+        temp_geojson = os.path.join(caching.CACHE_DIRECTORY, "temp_zones.geojson")
         con.sql(f"""
             COPY {view_name} TO '{temp_geojson}'
             WITH (FORMAT GDAL, DRIVER 'GeoJSON', LAYER_CREATION_OPTIONS 'WRITE_BBOX=YES')
@@ -157,9 +152,10 @@ def _group_zones(
     """Group zones by a key id and merge polygons."""
     safe_filename = zones_filepath.replace("/", "_").replace("s3://", "")
     cache_filename = safe_filename.replace("parquet", "json")
-    output_filename: FilePath = "{zones}.{simplify_tolerance}.{group_by}".format(
+    grouped_basename = "{zones}.{simplify_tolerance}.{group_by}".format(
         zones=cache_filename, group_by=group_by, simplify_tolerance=simplify_tolerance
     )
+    output_filename: FilePath = os.path.join(caching.CACHE_DIRECTORY, grouped_basename)
     if is_file_valid(output_filename):
         return output_filename
 
@@ -417,8 +413,9 @@ def calculate_stats(
                 [x if x.isalnum() else "" for x in (slugified_calc)]
             )[:20]
 
-        masked_pop_geotiff: FilePath = (
-            f"{CACHE_DIRECTORY}raster_masked_{geotiff_layer}_{slugified_calc}_{cache_hash}.tif"
+        masked_pop_geotiff: FilePath = os.path.join(
+            caching.CACHE_DIRECTORY,
+            f"raster_masked_{geotiff_layer}_{slugified_calc}_{cache_hash}.tif",
         )
 
         if not is_file_valid(masked_pop_geotiff):
@@ -438,8 +435,9 @@ def calculate_stats(
                 )
                 reproj_cache_key = f"{geotiff}_reproj_on_{mask_geotiff}"
                 reproj_hash = _hash_value(reproj_cache_key)
-                reproj_pop_geotiff: FilePath = (
-                    f"{CACHE_DIRECTORY}raster_reproj_{geotiff_layer}_on_{mask_layer}_{reproj_hash}.tif"
+                reproj_pop_geotiff: FilePath = os.path.join(
+                    caching.CACHE_DIRECTORY,
+                    f"raster_reproj_{geotiff_layer}_on_{mask_layer}_{reproj_hash}.tif",
                 )
                 if not is_file_valid(reproj_pop_geotiff):
                     reproj_match(

@@ -1,11 +1,15 @@
-import { useRef, useState } from 'react';
 import { IconButton, useMediaQuery, useTheme } from '@material-ui/core';
-import { useSelector } from 'react-redux';
 import PrintOutlined from '@material-ui/icons/PrintOutlined';
-import { mapSelector } from 'context/mapStateSlice/selectors';
-import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
-import { Panel } from 'config/types';
+import { usePostHog } from '@posthog/react';
 import { DashboardExportDialog } from 'components/DashboardView/DashboardExport';
+import { Panel } from 'config/types';
+import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { mapSelector } from 'context/mapStateSlice/selectors';
+import { useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+
+import BatchMapExportGlobalTray from './batchMapExport/BatchMapExportGlobalTray';
+import BatchMapExportJobsProvider from './batchMapExport/BatchMapExportJobsProvider';
 import DownloadImage from './image';
 
 function PrintImage() {
@@ -15,6 +19,7 @@ function PrintImage() {
   const tabValue = useSelector(leftPanelTabValueSelector);
   const theme = useTheme();
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
+  const posthog = usePostHog();
 
   const previewRef = useRef<HTMLCanvasElement>(null);
 
@@ -29,6 +34,7 @@ function PrintImage() {
   const openModal = () => {
     // Check if we're in dashboard mode
     if (tabValue === Panel.Dashboard) {
+      posthog?.capture('map_print_opened', { mode: 'dashboard' });
       setOpenDashboardExport(true);
       return;
     }
@@ -45,33 +51,35 @@ function PrintImage() {
           context.drawImage(activeLayers, 0, 0);
         }
       }
+      posthog?.capture('map_print_opened', { mode: 'map' });
       setOpenImage(true);
     }
   };
 
   return (
-    <>
-      <div style={{ paddingTop: '4px' }}>
-        <IconButton
-          onClick={openModal}
-          style={{
-            backgroundColor: 'transparent',
-            color: 'white',
-          }}
-        >
-          <PrintOutlined style={{ fontSize: mdUp ? '1.25rem' : '1.5rem' }} />
-        </IconButton>
-      </div>
-      {/* Map Print Dialog */}
-      <DownloadImage open={openImage} handleClose={handleClose} />
-      {/* Dashboard Export Dialog - don't show in snapshots */}
-      {process.env.NODE_ENV !== 'test' && (
-        <DashboardExportDialog
-          open={openDashboardExport}
-          handleClose={handleCloseDashboardExport}
-        />
-      )}
-    </>
+    <BatchMapExportJobsProvider>
+      <>
+        <div style={{ paddingTop: '4px' }}>
+          <IconButton
+            onClick={openModal}
+            style={{
+              backgroundColor: 'transparent',
+              color: 'white',
+            }}
+          >
+            <PrintOutlined style={{ fontSize: mdUp ? '1.25rem' : '1.5rem' }} />
+          </IconButton>
+        </div>
+        <DownloadImage open={openImage} handleClose={handleClose} />
+        <BatchMapExportGlobalTray printDialogOpen={openImage} />
+        {process.env.NODE_ENV !== 'test' && (
+          <DashboardExportDialog
+            open={openDashboardExport}
+            handleClose={handleCloseDashboardExport}
+          />
+        )}
+      </>
+    </BatchMapExportJobsProvider>
   );
 }
 

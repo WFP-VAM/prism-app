@@ -1,9 +1,11 @@
 // Pre-process layers availability dates to avoid doing it on each page load.
 // @ts-nocheck
+import { featureCollection } from '@turf/helpers';
+import simplify from '@turf/simplify';
+import union from '@turf/union';
 import fs from 'fs';
 import path from 'path';
-import union from '@turf/union';
-import simplify from '@turf/simplify';
+
 import { getFormattedDate } from '../src/utils/date-utils';
 
 // We fix the timezone to UTC to ensure that
@@ -12,16 +14,18 @@ process.env.TZ = 'UTC';
 
 // Function to merge boundary data and return a single polygon
 const mergeBoundaryData = boundaryData => {
-  let mergedBoundaryData = null;
-  if ((boundaryData?.features.length || 0) > 0) {
-    mergedBoundaryData =
-      boundaryData?.features.reduce((acc, feature) => {
-        if (acc === null) {
-          return feature;
-        }
-        return union(acc, feature);
-      }, null) || null;
+  const features = (boundaryData?.features || []).filter(
+    f => f?.geometry?.coordinates,
+  );
+  if (features.length === 0) {
+    return null;
   }
+  if (features.length === 1) {
+    return simplify(features[0], { tolerance: 0.02 });
+  }
+
+  // @turf/union v7+ expects FeatureCollection, not (a,b) pairwise union.
+  const mergedBoundaryData = union(featureCollection(features));
   return simplify(mergedBoundaryData, { tolerance: 0.02 });
 };
 
@@ -100,17 +104,18 @@ async function generateIntermediateDateItemFromDataFile(
 }
 
 async function preprocessValidityPeriods(country, layersToProcess) {
-  const preprocessedData = {};
-
-  await Promise.all(
+  const entries = await Promise.all(
     layersToProcess.map(async ([key, layer]) => {
-      preprocessedData[key] = await generateIntermediateDateItemFromDataFile(
+      const value = await generateIntermediateDateItemFromDataFile(
         layer.dates,
         layer.path,
         layer.validityPeriod,
       );
+      return [key, value];
     }),
   );
+  entries.sort((a, b) => a[0].localeCompare(b[0]));
+  const preprocessedData = Object.fromEntries(entries);
   if (Object.keys(preprocessedData).length === 0) {
     return;
   }
@@ -124,17 +129,17 @@ async function preprocessValidityPeriods(country, layersToProcess) {
   );
 }
 
-// Get all country directories
+// Get all country directories (sorted: readdir order + parallel work must not affect outputs)
 const countryDirs = fs
   .readdirSync(path.join(__dirname, '../src/config'))
   .filter(file =>
     fs.statSync(path.join(__dirname, '../src/config', file)).isDirectory(),
-  );
+  )
+  .sort((a, b) => a.localeCompare(b));
 
 // Process each country
 (async () => {
-  const countriesWithPreprocessedDates = [];
-  await Promise.all(
+  const countryFlags = await Promise.all(
     countryDirs.map(async country => {
       // Load layers.json
       const layersData = JSON.parse(
@@ -148,9 +153,6 @@ const countryDirs = fs
       const dateLayersToProcess = Object.entries(layersData).filter(
         ([, layer]) => layer.path && layer.dates && layer.validityPeriod,
       );
-      if (dateLayersToProcess.length > 0) {
-        countriesWithPreprocessedDates.push(country);
-      }
       await preprocessValidityPeriods(country, dateLayersToProcess);
 
       const boundaryLayerToProcess = Object.values(layersData)
@@ -160,8 +162,13 @@ const countryDirs = fs
         )[0];
 
       await preprocessBoundaryLayer(country, boundaryLayerToProcess);
+
+      return dateLayersToProcess.length > 0 ? country : null;
     }),
   );
+  const countriesWithPreprocessedDates = countryFlags
+    .filter(Boolean)
+    .sort((a, b) => a.localeCompare(b));
   fs.writeFileSync(
     path.join(__dirname, '../src/config/countriesWithPreprocessedDates.json'),
     JSON.stringify(countriesWithPreprocessedDates),

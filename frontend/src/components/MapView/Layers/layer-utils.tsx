@@ -1,22 +1,20 @@
 import Tooltip from '@material-ui/core/Tooltip';
-import { get } from 'lodash';
-import { Dispatch } from 'redux';
+import { iconPoint, iconPolygon, iconRaster } from 'assets/images';
+import { getFeatureInfoPropsData } from 'components/MapView/utils';
 import {
+  AdminLevelDataLayerProps,
   LayerType,
   LegendDefinition,
-  AdminLevelDataLayerProps,
   PointDataLayerProps,
 } from 'config/types';
-import { PopupData, addPopupData } from 'context/tooltipStateSlice';
-import { findFeature, getEvtCoords, getLayerMapId } from 'utils/map-utils';
-import { getRoundedData } from 'utils/data-utils';
-import { i18nTranslator } from 'i18n';
-import { getFeatureInfoPropsData } from 'components/MapView/utils';
-import { MapLayerMouseEvent } from 'maplibre-gl';
 import { LayerDefinitions } from 'config/utils';
-import iconPoint from 'public/images/icon_point.svg';
-import iconRaster from 'public/images/icon_raster.svg';
-import iconPolygon from 'public/images/icon_polygon.svg';
+import { addPopupData, PopupData } from 'context/tooltipStateSlice';
+import { i18nTranslator } from 'i18n';
+import { get } from 'lodash';
+import { MapLayerMouseEvent } from 'maplibre-gl';
+import { Dispatch } from 'redux';
+import { getRoundedData } from 'utils/data-utils';
+import { findFeature, getEvtCoords, getLayerMapId } from 'utils/map-utils';
 
 export function legendToStops(
   legend: LegendDefinition = [],

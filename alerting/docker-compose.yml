@@ -25,6 +25,8 @@ services:
     working_dir: /prism_app
     environment:
       - POSTGRES_HOST=alerting-db
+      # Override host-oriented POSTGRES_PORT from alerting/.env (dotenv); DB listens on 5432 inside the network.
+      - POSTGRES_PORT=5432
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
       - POSTGRES_PASSWORD=!ChangeMe!

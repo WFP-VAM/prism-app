@@ -1,8 +1,8 @@
-import { Typography, Box } from '@material-ui/core';
-import { DateRangeType } from 'config/types';
-import { useSelector } from 'react-redux';
-import { RootState } from 'context/store';
+import { Box, Typography } from '@material-ui/core';
 import { formatInUTC } from 'components/MapView/Layers/AnticipatoryActionStormLayer/utils';
+import { DateRangeType } from 'config/types';
+import { RootState } from 'context/store';
+import { useSelector } from 'react-redux';
 import { datesAreEqualWithoutTime } from 'utils/date-utils';
 
 interface AAFloodTooltipContentProps {

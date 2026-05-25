@@ -1,21 +1,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-import { Map as MaplibreMap } from 'maplibre-gl';
-import { MapState, DateRange } from 'context/mapStateSlice';
-import { LayerDefinitions } from 'config/utils';
-import { keepLayer } from 'utils/keep-layer-utils';
 import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
+import type {
+  Dashboard,
+  DashboardElements,
+  DashboardMapConfig,
+  DashboardTableConfig,
+  LayerType,
+} from 'config/types';
+import { DashboardElementType, DashboardMode } from 'config/types';
+import { LayerDefinitions } from 'config/utils';
+import { DateRange, MapState } from 'context/mapStateSlice';
+import { Map as MaplibreMap } from 'maplibre-gl';
+import { keepLayer } from 'utils/keep-layer-utils';
 import { getLayerMapId } from 'utils/map-utils';
 import { generateSlugFromTitle } from 'utils/string-utils';
 
-import type {
-  LayerType,
-  DashboardMapConfig,
-  DashboardTableConfig,
-  DashboardElements,
-  Dashboard,
-} from 'config/types';
-import { DashboardMode, DashboardElementType } from 'config/types';
 import type { RootState } from './store';
 
 type MapGetter = () => MaplibreMap | undefined;
@@ -49,7 +48,7 @@ export interface DashboardTableState {
 }
 
 export interface DashboardState {
-  /** Loaded from dashboard config (S3 or public/; see useDashboardConfig). */
+  /** Loaded from published dashboard API (see useDashboardConfig). */
   dashboards: Dashboard[];
   selectedDashboardIndex: number;
   title: string;

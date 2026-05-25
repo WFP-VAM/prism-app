@@ -1,5 +1,5 @@
-import appConfig from './prism.json';
 import indonesiaRawLayers from './layers.json';
+import appConfig from './prism.json';
 
 const rawReports = {};
 // Country-specific translation overrides shared translation

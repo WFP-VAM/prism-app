@@ -1,14 +1,14 @@
-import React from 'react';
 import {
   FormControl,
   InputLabel,
+  makeStyles,
   MenuItem,
   Select,
-  makeStyles,
 } from '@material-ui/core';
 import { LayerKey, WMSLayerProps } from 'config/types';
 import { getWMSLayersWithChart } from 'config/utils';
 import { useSafeTranslation } from 'i18n';
+import React from 'react';
 
 interface ChartLayerSelectorProps {
   value: LayerKey | undefined;
