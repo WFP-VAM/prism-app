@@ -4,6 +4,11 @@ build:
 	docker compose -f docker-compose.yml -f docker-compose.test.yml build --no-cache
 	docker compose -f docker-compose.yml -f docker-compose.test.yml pull
 
+# CI: use layer cache; (no --no-cache)
+ci-build:
+	docker compose -f docker-compose.yml -f docker-compose.test.yml build
+	docker compose -f docker-compose.yml -f docker-compose.test.yml pull
+
 api:
 	docker compose -f docker-compose.yml -f docker-compose.develop.yml up
 
