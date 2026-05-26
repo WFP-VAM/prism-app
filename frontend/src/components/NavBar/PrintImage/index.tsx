@@ -1,30 +1,45 @@
-import React, { useRef, useState } from 'react';
-import {
-  Button,
-  createStyles,
-  Typography,
-  WithStyles,
-  withStyles,
-} from '@material-ui/core';
-import { useSelector } from 'react-redux';
-import Print from '@material-ui/icons/Print';
+import { IconButton, useMediaQuery, useTheme } from '@material-ui/core';
+import PrintOutlined from '@material-ui/icons/PrintOutlined';
+import { usePostHog } from '@posthog/react';
+import { DashboardExportDialog } from 'components/DashboardView/DashboardExport';
+import { Panel } from 'config/types';
+import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { mapSelector } from 'context/mapStateSlice/selectors';
-import { useSafeTranslation } from 'i18n';
+import { useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+
+import BatchMapExportGlobalTray from './batchMapExport/BatchMapExportGlobalTray';
+import BatchMapExportJobsProvider from './batchMapExport/BatchMapExportJobsProvider';
 import DownloadImage from './image';
 
-function PrintImage({ classes }: PrintImageProps) {
+function PrintImage() {
   const [openImage, setOpenImage] = useState(false);
+  const [openDashboardExport, setOpenDashboardExport] = useState(false);
   const selectedMap = useSelector(mapSelector);
+  const tabValue = useSelector(leftPanelTabValueSelector);
+  const theme = useTheme();
+  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
+  const posthog = usePostHog();
 
   const previewRef = useRef<HTMLCanvasElement>(null);
-
-  const { t } = useSafeTranslation();
 
   const handleClose = () => {
     setOpenImage(false);
   };
 
+  const handleCloseDashboardExport = () => {
+    setOpenDashboardExport(false);
+  };
+
   const openModal = () => {
+    // Check if we're in dashboard mode
+    if (tabValue === Panel.Dashboard) {
+      posthog?.capture('map_print_opened', { mode: 'dashboard' });
+      setOpenDashboardExport(true);
+      return;
+    }
+
+    // Otherwise, open the map print dialog
     if (selectedMap) {
       const activeLayers = selectedMap.getCanvas();
       const canvas = previewRef.current;
@@ -36,32 +51,36 @@ function PrintImage({ classes }: PrintImageProps) {
           context.drawImage(activeLayers, 0, 0);
         }
       }
+      posthog?.capture('map_print_opened', { mode: 'map' });
       setOpenImage(true);
     }
   };
 
   return (
-    <>
-      <div style={{ paddingTop: '4px' }}>
-        <Button onClick={openModal} style={{ backgroundColor: 'transparent' }}>
-          <Print fontSize="small" style={{ paddingRight: '0.2em' }} />
-          <Typography className={classes.printText} variant="body2">
-            {t('Print')}
-          </Typography>
-        </Button>
-      </div>
-      <DownloadImage open={openImage} handleClose={handleClose} />
-    </>
+    <BatchMapExportJobsProvider>
+      <>
+        <div style={{ paddingTop: '4px' }}>
+          <IconButton
+            onClick={openModal}
+            style={{
+              backgroundColor: 'transparent',
+              color: 'white',
+            }}
+          >
+            <PrintOutlined style={{ fontSize: mdUp ? '1.25rem' : '1.5rem' }} />
+          </IconButton>
+        </div>
+        <DownloadImage open={openImage} handleClose={handleClose} />
+        <BatchMapExportGlobalTray printDialogOpen={openImage} />
+        {process.env.NODE_ENV !== 'test' && (
+          <DashboardExportDialog
+            open={openDashboardExport}
+            handleClose={handleCloseDashboardExport}
+          />
+        )}
+      </>
+    </BatchMapExportJobsProvider>
   );
 }
 
-const styles = () =>
-  createStyles({
-    printText: {
-      textTransform: 'uppercase',
-    },
-  });
-
-export interface PrintImageProps extends WithStyles<typeof styles> {}
-
-export default withStyles(styles)(PrintImage);
+export default PrintImage;

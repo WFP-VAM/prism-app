@@ -1,24 +1,9 @@
 {
   "country": "Tajikistan",
-  "icons": {
-    "exposure": "icon_basemap.png",
-    "hazards": "icon_flood.png",
-    "floods_and_mudflows": "icon_flood.png",
-    "earthquakes": "icon_eq.png",
-    "capacity": "icon_capacity.png",
-    "tables": "icon_table.png",
-    "rainfall": "icon_rain.png",
-    "snow": "icon_snow.png",
-    "vegetation": "icon_veg.png",
-    "temperature": "icon_climate.png",
-    "tropical_storms": "icon_tropical_storm.png",
-    "vulnerability": "icon_vulnerable.png"
-  },
   "alertFormActive": false,
   "serversUrls": {
     "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms",
-      "https://sparc.wfp.org/geoserver/prism/wms"
+      "https://api.earthobservation.vam.wfp.org/ows/wms"
     ]
   },
   "map": {
@@ -111,6 +96,10 @@
               "main": true
             },
             {
+              "id": "spi_2m",
+              "label": "2-month"
+            },
+            {
               "id": "spi_3m",
               "label": "3-month",
               "main": false
@@ -136,7 +125,7 @@
       "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
-          "group_title": "Rainfall categories:",
+          "group_title": "Number of days of rainfall:",
           "activate_all": false,
           "layers": [
             {
@@ -191,7 +180,6 @@
       ]
     },
     "hazards": {
-      "earthquakes": ["usgs_shakemaps"],
       "floods": ["Flood_freq"]
     },
     "exposure": {

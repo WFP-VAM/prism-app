@@ -16,7 +16,7 @@ export class WFS extends Base {
 
   async getLayerNames() {
     return getFeatureTypesFromCapabilities(await this.getCapabilities()).map(
-      (featureType) => featureType.name.short
+      (featureType) => featureType.name.short,
     );
   }
 

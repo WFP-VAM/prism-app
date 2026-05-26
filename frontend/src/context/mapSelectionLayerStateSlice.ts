@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { uniq } from 'lodash';
 import { AdminCodeString } from 'config/types';
+import { uniq } from 'lodash';
+
 import type { RootState } from './store';
 
 // This is used by the selection layer to provide the ability to select layers with the mouse.
@@ -45,24 +46,18 @@ export const mapSelectionLayerStateSlice = createSlice({
     setSelectedBoundaries: (
       state,
       { payload }: PayloadAction<AdminCodeString[]>,
-    ) => {
-      return {
-        ...state,
-        selectedBoundaries: uniq(payload),
-      };
-    },
-    clearSelectedBoundaries: state => {
-      return { ...state, selectedBoundaries: [] };
-    },
+    ) => ({
+      ...state,
+      selectedBoundaries: uniq(payload),
+    }),
+    clearSelectedBoundaries: state => ({ ...state, selectedBoundaries: [] }),
     setIsSelectionMode: (
       state,
       { payload: isSelectionMode }: PayloadAction<boolean>,
-    ) => {
-      return {
-        ...state,
-        isSelectionMode,
-      };
-    },
+    ) => ({
+      ...state,
+      isSelectionMode,
+    }),
   },
 });
 

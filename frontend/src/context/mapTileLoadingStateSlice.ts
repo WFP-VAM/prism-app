@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { LayerKey } from 'config/types';
+
 import type { RootState } from './store';
 
 type MapTileLoadingState = {
@@ -12,11 +13,9 @@ export const mapTileLoadingState = createSlice({
     loadingLayerIds: [],
   } as MapTileLoadingState,
   reducers: {
-    setLoadingLayerIds: (state, { payload }: PayloadAction<LayerKey[]>) => {
-      return {
-        loadingLayerIds: payload,
-      };
-    },
+    setLoadingLayerIds: (_state, { payload }: PayloadAction<LayerKey[]>) => ({
+      loadingLayerIds: payload,
+    }),
   },
 });
 

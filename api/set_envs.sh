@@ -10,6 +10,7 @@ export KOBO_PASSWORD=$(aws secretsmanager get-secret-value     --secret-id KOBO_
 export PRISM_ALERTS_DATABASE_URL=$(aws secretsmanager get-secret-value     --secret-id PRISM_ALERTS_DATABASE_URL | jq .SecretString | jq fromjson | jq -r .PRISM_ALERTS_DATABASE_URL)
 export PRISM_ALERTS_EMAIL_USER=$(aws secretsmanager get-secret-value     --secret-id PRISM_ALERTS_EMAIL | jq .SecretString | jq fromjson | jq -r .PRISM_ALERTS_EMAIL_USER)
 export PRISM_ALERTS_EMAIL_PASSWORD=$(aws secretsmanager get-secret-value     --secret-id PRISM_ALERTS_EMAIL | jq .SecretString | jq fromjson | jq -r .PRISM_ALERTS_EMAIL_PASSWORD)
+export PRISM_ALERTS_EMAIL_HOST=$(aws secretsmanager get-secret-value     --secret-id PRISM_ALERTS_EMAIL | jq .SecretString | jq fromjson | jq -r .PRISM_ALERTS_EMAIL_HOST)
 
 # HDC Token
 export HDC_TOKEN=$(aws secretsmanager get-secret-value     --secret-id HDC_TOKEN | jq .SecretString | jq fromjson | jq -r .HDC_TOKEN)
@@ -17,6 +18,28 @@ export HDC_TOKEN=$(aws secretsmanager get-secret-value     --secret-id HDC_TOKEN
 # ACLED Credentials
 export ACLED_API_KEY=$(aws secretsmanager get-secret-value     --secret-id ACLED_CREDENTIALS | jq .SecretString | jq fromjson | jq -r .ACLED_API_KEY)
 export ACLED_API_EMAIL=$(aws secretsmanager get-secret-value     --secret-id ACLED_CREDENTIALS | jq .SecretString | jq fromjson | jq -r .ACLED_API_EMAIL)
+
+# Google Flood
+export GOOGLE_FLOODS_API_KEY=$(aws secretsmanager get-secret-value     --secret-id GOOGLE_FLOODS_API_KEY | jq .SecretString | jq fromjson | jq -r .GOOGLE_FLOODS_API_KEY)
+
+# Vector Store Credentials
+export VECTOR_STORE_ACCESS_KEY_ID=$(aws secretsmanager get-secret-value     --secret-id PRISM_AWS_S3_CREDENTIALS | jq .SecretString | jq fromjson | jq -r .AWS_ACCESS_KEY_ID)
+export VECTOR_STORE_SECRET_ACCESS_KEY=$(aws secretsmanager get-secret-value     --secret-id PRISM_AWS_S3_CREDENTIALS | jq .SecretString | jq fromjson | jq -r .AWS_SECRET_ACCESS_KEY)
+export VECTOR_STORE_DEFAULT_REGION=$(aws secretsmanager get-secret-value     --secret-id PRISM_AWS_S3_CREDENTIALS | jq .SecretString | jq fromjson | jq -r .AWS_DEFAULT_REGION)
+
+# CIAM OIDC (admin authentication)
+export PRISM_OIDC_ISSUER=$(aws secretsmanager get-secret-value     --secret-id PRISM_OIDC | jq .SecretString | jq fromjson | jq -r .PRISM_OIDC_ISSUER)
+export PRISM_OIDC_REDIRECT_URI=$(aws secretsmanager get-secret-value     --secret-id PRISM_OIDC | jq .SecretString | jq fromjson | jq -r .PRISM_OIDC_REDIRECT_URI)
+export PRISM_OIDC_CLIENT_ID=$(aws secretsmanager get-secret-value     --secret-id PRISM_OIDC | jq .SecretString | jq fromjson | jq -r .PRISM_OIDC_CLIENT_ID)
+export PRISM_OIDC_CLIENT_SECRET=$(aws secretsmanager get-secret-value     --secret-id PRISM_OIDC | jq .SecretString | jq fromjson | jq -r .PRISM_OIDC_CLIENT_SECRET)
+
+# Session (signs cookie + OIDC state; rotating logs everyone out)
+export PRISM_SESSION_SECRET=$(aws secretsmanager get-secret-value     --secret-id PRISM_SESSION_SECRET | jq .SecretString | jq fromjson | jq -r .PRISM_SESSION_SECRET)
+export PRISM_SESSION_TTL_SECONDS=604800
+
+export PRISM_ENV=production
+# Map batch export (worker). ``EXPORT_MAP_S3_BUCKET`` in secret: bare bucket, ``s3://bucket/prefix``, etc.
+export EXPORT_MAP_S3_BUCKET="$(aws secretsmanager get-secret-value --secret-id PRISM_EXPORT_MAP_S3_BUCKET | jq .SecretString | jq fromjson | jq -r .PRISM_EXPORT_MAP_S3_BUCKET)"
 
 export HOSTNAME=prism-api.ovio.org
 export INFO_EMAIL=info@ovio.org

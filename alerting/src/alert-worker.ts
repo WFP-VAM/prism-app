@@ -1,17 +1,29 @@
 import { isNaN } from 'lodash';
 import Bluebird from 'bluebird';
 import nodeFetch from 'node-fetch';
-import { createConnection, Repository } from 'typeorm';
 import { API_URL } from './constants';
-import { Alert } from './entities/alerts.entity';
-import { calculateBoundsForAlert } from './utils/analysis-utils';
+import type { Alert } from './types/alert';
+import { calculateAlert } from './utils/analysis-utils';
 import { sendEmail } from './utils/email';
 import { fetchCoverageLayerDays, formatUrl, WMS } from 'prism-common';
+import { findActiveAlerts, updateAlertLastTriggered } from './db/alert-queries';
+
+const RUNALL = false;
 
 // @ts-ignore
 global.fetch = nodeFetch;
 
-async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
+export type AlertWorkerDb = {
+  findActiveAlerts: () => Promise<Alert[]>;
+  updateLastTriggered: (id: number, lastTriggered: Date) => Promise<void>;
+};
+
+const defaultAlertDb: AlertWorkerDb = {
+  findActiveAlerts,
+  updateLastTriggered: updateAlertLastTriggered,
+};
+
+async function processAlert(alert: Alert, db: AlertWorkerDb) {
   const {
     baseUrl,
     serverLayerName,
@@ -20,28 +32,37 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
     id: hazardLayerId,
   } = alert.alertConfig;
 
-  const {
-    id,
-    alertName,
-    createdAt,
-    email,
-    lastTriggered,
-    prismUrl,
-    active,
-  } = alert;
+  const { id, alertName, createdAt, email, lastTriggered, prismUrl, active } =
+    alert;
+
+  if (!active) {
+    console.log(`Alert ${id} is not active. Skipping.`);
+    return;
+  }
+
+  console.log(
+    `Processing alert with ID: ${id}, Name: ${alertName}, Email: ${email}, Last Triggered: ${lastTriggered}, PRISM URL: ${prismUrl}`,
+  );
 
   let availableDates;
   let layerAvailableDates = [];
   try {
-    availableDates = type === 'wms'
-      ? await new WMS(`${baseUrl}/wms`.replace(/([^:]\/)\/+/g, "$1")).getLayerDays()
-      : await fetchCoverageLayerDays(baseUrl);
+    availableDates =
+      type === 'wms'
+        ? await new WMS(
+            `${baseUrl}/wms`.replace(/([^:]\/)\/+/g, '$1'),
+          ).getLayerDays()
+        : await fetchCoverageLayerDays(baseUrl);
     layerAvailableDates = availableDates[serverLayerName];
   } catch (error) {
-    console.warn(`Failed to fetch available dates for ${baseUrl} ${serverLayerName}: ${(error as Error).message}`);
+    console.warn(
+      `Failed to fetch available dates for ${baseUrl} ${serverLayerName}: ${
+        (error as Error).message
+      }`,
+    );
   }
 
-  if (!layerAvailableDates) {
+  if (!layerAvailableDates || layerAvailableDates.length === 0) {
     console.warn(`No dates available for ${baseUrl} ${serverLayerName}.`);
     return;
   }
@@ -53,10 +74,19 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
     (lastTriggered && lastTriggered >= maxDate) ||
     createdAt >= maxDate
   ) {
-    return;
+    console.log(
+      `Alert id ${id} - no new data available. Last triggered or created on ${(
+        lastTriggered || createdAt
+      ).toDateString()}. Max available date is ${maxDate.toDateString()}.${
+        RUNALL ? 'RUNALL is active, processing.' : ''
+      }`,
+    );
+    if (!RUNALL) {
+      return;
+    }
   }
 
-  const alertMessage = await calculateBoundsForAlert(maxDate, alert);
+  const alertMessage = await calculateAlert(maxDate, alert);
 
   // Use the URL API to create the url and perform url encoding on all character
   const url = new URL(`/alerts/${id}`, API_URL);
@@ -89,9 +119,8 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
     console.log(
       `Alert ${id} - '${alert.alertName}' was triggered on ${maxDate}.`,
     );
-    // TODO - Send an email using WFP SMTP servers.
     await sendEmail({
-      from: 'prism-alert@ovio.org',
+      from: 'wfp.prism@wfp.org',
       to: email,
       subject: `PRISM Alert Triggered`,
       text: emailMessage,
@@ -99,22 +128,28 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
     });
 
     console.log(alertMessage);
+  } else {
+    console.log(
+      `Alert ${id} - '${alert.alertName}' was NOT triggered on ${maxDate}.`,
+    );
   }
-  // Update lastTriggered (imnactive during testing)
-  await alertRepository.update(alert.id, { lastTriggered: maxDate });
+  // Update lastTriggered (inactive during testing)
+  await db.updateLastTriggered(alert.id, maxDate);
 }
-async function run() {
-  const connection = await createConnection();
-  const alertRepository = connection.getRepository(Alert);
 
-  const alerts = await alertRepository.find({ where: { active: true } });
-  console.info(`Processing ${alerts.length} active alerts.`);
+export async function runAlertWorker(db: AlertWorkerDb = defaultAlertDb) {
+  const alerts = await db.findActiveAlerts();
+  console.info(
+    `Processing ${
+      alerts.length
+    } active alerts on ${new Date().toLocaleDateString()}.`,
+  );
 
   await Bluebird.map(
     alerts,
     async (alert) => {
       try {
-        await processAlert(alert, alertRepository);
+        await processAlert(alert, db);
       } catch (error) {
         console.error(`Error processing alert ${alert.id}:`, error);
       }
@@ -123,4 +158,14 @@ async function run() {
   );
 }
 
-run();
+async function main() {
+  console.log(`Alert worker started at: ${new Date().toISOString()}`);
+  await runAlertWorker();
+}
+
+if (require.main === module) {
+  main().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}

@@ -1,19 +1,18 @@
-import React from 'react';
 import {
   createStyles,
+  makeStyles,
   Paper,
-  Theme,
   TextField,
-  WithStyles,
-  withStyles,
+  Theme,
 } from '@material-ui/core';
-import { useSelector } from 'react-redux';
+import { useSelector } from 'context/hooks';
 import {
   boundsSelector,
   zoomSelector,
 } from 'context/mapBoundaryInfoStateSlice';
 
-function LocationBox({ classes }: LocationBoxProps) {
+function LocationBox() {
+  const classes = useStyles();
   const bounds = useSelector(boundsSelector);
   const zoom = useSelector(zoomSelector);
   const boundsStr = bounds ? JSON.stringify(bounds.toArray()) : '';
@@ -33,7 +32,7 @@ function LocationBox({ classes }: LocationBoxProps) {
   );
 }
 
-const styles = (theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       position: 'absolute',
@@ -43,8 +42,7 @@ const styles = (theme: Theme) =>
       zIndex: theme.zIndex.modal,
       backgroundColor: theme.palette.primary.main,
     },
-  });
+  }),
+);
 
-export interface LocationBoxProps extends WithStyles<typeof styles> {}
-
-export default withStyles(styles)(LocationBox);
+export default LocationBox;

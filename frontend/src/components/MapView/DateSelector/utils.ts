@@ -1,50 +1,12 @@
-import moment from 'moment';
+import { DateItem, DisplayDateTimestamp } from 'config/types';
+import { datesAreEqualWithoutTime } from 'utils/date-utils';
 import { DateCompatibleLayer } from 'utils/server-utils';
-import { DateItem } from 'config/types';
 
-export const TIMELINE_ITEM_WIDTH = 10;
-
-// The DatePicker is timezone aware, so we trick it into
-// displaying UTC dates.
-export const USER_DATE_OFFSET = new Date().getTimezoneOffset() * 60000;
+export const TIMELINE_ITEM_WIDTH = 4;
 
 export type DateCompatibleLayerWithDateItems = DateCompatibleLayer & {
   dateItems: DateItem[];
 };
-
-/**
- * Return the closest date from a given list of available dates
- * @param date
- * @param availableDates
- * @return date as momentjs object
- */
-export function findClosestDate(
-  date: number,
-  availableDates: ReturnType<Date['getTime']>[],
-) {
-  const dateToCheck = moment(date);
-
-  // TODO - better handle empty arrays.
-  if (availableDates.length === 0) {
-    return dateToCheck;
-  }
-
-  const reducerFunc = (
-    closest: ReturnType<Date['getTime']>,
-    current: ReturnType<Date['getTime']>,
-  ) => {
-    const diff = Math.abs(moment(current).diff(dateToCheck));
-    const closestDiff = Math.abs(moment(closest).diff(dateToCheck));
-
-    if (diff < closestDiff) {
-      return current;
-    }
-
-    return closest;
-  };
-
-  return moment(availableDates.reduce(reducerFunc));
-}
 
 /**
  * Binary search to return index of available dates that matched
@@ -63,7 +25,7 @@ export function findDateIndex(
   let endIndex = availableDates.length - 1;
   while (startIndex <= endIndex) {
     const midIndex = Math.floor((startIndex + endIndex) / 2);
-    if (availableDates[midIndex] === date) {
+    if (datesAreEqualWithoutTime(availableDates[midIndex], date)) {
       return midIndex;
     }
     if (midIndex === startIndex && endIndex - startIndex <= 1) {
@@ -84,12 +46,56 @@ export function findDateIndex(
         : endIndex;
     }
     if (date < availableDates[midIndex]) {
-      // eslint-disable-next-line fp/no-mutation
       endIndex = midIndex - 1;
     } else {
-      // eslint-disable-next-line fp/no-mutation
       startIndex = midIndex + 1;
     }
   }
   return -1;
 }
+
+export const getDefaultCompatibleDate = (
+  availableDates: ReturnType<Date['getTime']>[],
+  selectedDate?: number,
+): DisplayDateTimestamp | undefined => {
+  if (selectedDate !== undefined) {
+    return selectedDate as DisplayDateTimestamp;
+  }
+
+  return availableDates.at(-1) as DisplayDateTimestamp | undefined;
+};
+
+// Finds the first DateItem that is available on all layers, as
+// the query date for at least one layer, and in the validity of other layers
+// layerDates must contain only observation dates:
+// ie. queryDate === displayDate
+// and already be filtered before/after the current selected date.
+// Returns undefined if no date is available at all.
+// For forward: returns the beginning of the next validity period (minimum of first dates).
+// For back: returns the beginning of the previous validity period closest to current date (maximum of last dates).
+export const findMatchingDateBetweenLayers = (
+  layerDates: DateItem[][],
+  direction: 'forward' | 'back',
+): DisplayDateTimestamp | undefined => {
+  // one of the layers has no more dates to check: there will be no match
+  if (layerDates.every(ld => ld.length === 0)) {
+    return undefined;
+  }
+
+  // For forward: take the first element (index 0) from each layer's filtered dates
+  // For back: take the last element (index length - 1) from each layer's filtered dates
+  const firstDates: DateItem[] = layerDates
+    .map(l => l[direction === 'forward' ? 0 : l.length - 1])
+    .filter(l => l); // remove undefined elements, which break min/max below
+
+  if (direction === 'forward') {
+    // Return the minimum date to get the beginning of the next validity period
+    return Math.min(
+      ...firstDates.map(di => di.displayDate),
+    ) as DisplayDateTimestamp;
+  }
+  // Return the maximum date to get the beginning of the previous validity period closest to current date
+  return Math.max(
+    ...firstDates.map(di => di.displayDate),
+  ) as DisplayDateTimestamp;
+};

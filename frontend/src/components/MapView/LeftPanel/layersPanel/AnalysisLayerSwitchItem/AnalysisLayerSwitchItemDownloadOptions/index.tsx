@@ -1,13 +1,21 @@
-import React, { memo, useMemo, useCallback, useState } from 'react';
 import { IconButton, Menu, MenuItem, Tooltip } from '@material-ui/core';
 import GetAppIcon from '@material-ui/icons/GetApp';
-import { useSafeTranslation } from 'i18n';
 import {
   downloadToFile,
   getExposureAnalysisColumnsToRender,
   getExposureAnalysisTableData,
   getExposureAnalysisTableDataRowsToRender,
 } from 'components/MapView/utils';
+import {
+  exposureAnalysisResultSortByKeySelector,
+  exposureAnalysisResultSortOrderSelector,
+  getCurrentDefinition,
+  TableRow,
+} from 'context/analysisResultStateSlice';
+import { useSafeTranslation } from 'i18n';
+import { snakeCase } from 'lodash';
+import React, { memo, useCallback, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   BaselineLayerResult,
   downloadCSVFromTableData,
@@ -16,14 +24,6 @@ import {
   PolygonAnalysisResult,
   useAnalysisTableColumns,
 } from 'utils/analysis-utils';
-import { snakeCase } from 'lodash';
-import { useSelector } from 'react-redux';
-import {
-  exposureAnalysisResultSortByKeySelector,
-  exposureAnalysisResultSortOrderSelector,
-  getCurrentDefinition,
-  TableRow,
-} from 'context/analysisResultStateSlice';
 import { getExposureAnalysisCsvData } from 'utils/csv-utils';
 
 const AnalysisLayerSwitchItemDownloadOptions = memo(
@@ -33,10 +33,8 @@ const AnalysisLayerSwitchItemDownloadOptions = memo(
     analysisResultSortByKey,
     analysisResultSortOrder,
   }: AnalysisLayerSwitchItemDownloadOptionsProps) => {
-    const [
-      downloadMenuAnchorEl,
-      setDownloadMenuAnchorEl,
-    ] = useState<HTMLElement | null>(null);
+    const [downloadMenuAnchorEl, setDownloadMenuAnchorEl] =
+      useState<HTMLElement | null>(null);
 
     const { translatedColumns } = useAnalysisTableColumns(analysisData);
 
@@ -53,19 +51,20 @@ const AnalysisLayerSwitchItemDownloadOptions = memo(
       exposureAnalysisResultSortByKey,
       exposureAnalysisResultSortOrder,
     );
-    const exposureAnalysisColumnsToRender = getExposureAnalysisColumnsToRender(
-      translatedColumns,
-    );
-    const exposureAnalysisTableRowsToRender = getExposureAnalysisTableDataRowsToRender(
-      translatedColumns,
-      exposureAnalysisTableData,
-    );
+    const exposureAnalysisColumnsToRender =
+      getExposureAnalysisColumnsToRender(translatedColumns);
+    const exposureAnalysisTableRowsToRender =
+      getExposureAnalysisTableDataRowsToRender(
+        translatedColumns,
+        exposureAnalysisTableData,
+      );
 
     const { t } = useSafeTranslation();
 
-    const featureCollection = useMemo(() => {
-      return analysisData?.featureCollection;
-    }, [analysisData]);
+    const featureCollection = useMemo(
+      () => analysisData?.featureCollection,
+      [analysisData],
+    );
 
     const handleDownloadMenuClose = useCallback(() => {
       setDownloadMenuAnchorEl(null);
@@ -87,13 +86,13 @@ const AnalysisLayerSwitchItemDownloadOptions = memo(
         );
       }
       return (
-        <Tooltip title="Download">
+        <Tooltip title={t('Download') as string}>
           <IconButton onClick={handleDownloadMenuOpen}>
             <GetAppIcon />
           </IconButton>
         </Tooltip>
       );
-    }, [handleDownloadMenuOpen, selected]);
+    }, [handleDownloadMenuOpen, selected, t]);
 
     const analysisDate = useMemo(() => {
       if (analysisData instanceof BaselineLayerResult) {
@@ -168,13 +167,14 @@ const AnalysisLayerSwitchItemDownloadOptions = memo(
       );
     }, [analysisData, featureCollection, fileName]);
 
-    const renderedDownloadAsCSVMenuItem = useMemo(() => {
-      return (
+    const renderedDownloadAsCSVMenuItem = useMemo(
+      () => (
         <MenuItem key="download-as-csv" onClick={handleDownloadCsv}>
           {t('Download as CSV')}
         </MenuItem>
-      );
-    }, [handleDownloadCsv, t]);
+      ),
+      [handleDownloadCsv, t],
+    );
 
     return (
       <>

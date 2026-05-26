@@ -1,8 +1,12 @@
-FROM ghcr.io/osgeo/gdal:ubuntu-full-3.7.0
+FROM ghcr.io/osgeo/gdal:ubuntu-full-3.11.5
+# gdal 3.11.1 uses ubuntu 24.04 and python 3.12
+
+# we use poetry to install our dependencies in a venv separate from
+# the docker image system python environment
 
 ENV PYTHONPATH=/
 
-ENV POETRY_VERSION=1.6.1
+ENV POETRY_VERSION=2.3.3
 # install poetry in this location
 ENV POETRY_HOME="/opt/poetry"
 
@@ -11,41 +15,63 @@ ENV POETRY_NO_INTERACTION=1
 # set the cache location so we can mount docker buildx cache on it
 ENV POETRY_CACHE_DIR=/root/.cache
 
-# set poetry to use the system python env so we get all
-# the GDAL packages which are already installed. This goes
-# against best practice, but follows the logic in place before
-# the switch to poetry
-ENV POETRY_VIRTUALENVS_CREATE=false
+# it seems impossible to set ENV in docker images to the output of a command
+# (see https://github.com/moby/moby/issues/29110)
+# so we cannot know where poetry puts its venv, unless we force it inside the source
+ENV POETRY_VIRTUALENVS_IN_PROJECT=true
 
-ENV PATH="$POETRY_HOME/bin:$PATH"
+# PATH:
+# /.venv/bin is where poetry installs our packages (because of IN_PROJECT above)
+# $POETRY_HOME/bin is where poetry itself is
+ENV PATH="/.venv/bin:$POETRY_HOME/bin:$PATH"
 
 RUN --mount=type=cache,target=/root/.cache curl -sSL https://install.python-poetry.org | python3 -
 
-# COPY requirements.txt .
 # copy pyproject so that black and isort use the right config
 COPY pyproject.toml /
 
 COPY poetry.lock /
 
 RUN --mount=type=cache,target=/var/cache/apt \
-    apt-get update && \
-    apt-get --no-install-recommends install -y python3-pip libpq-dev curl python3-dev build-essential
-RUN pip install --upgrade pip
+    DEBIAN_FRONTEND=noninteractive apt-get update --fix-missing && \
+    DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y python3-pip libpq-dev curl python3-dev build-essential && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN --mount=type=cache,target=/root/.cache \
     poetry install
 
-# RUN --mount=type=cache,target=/root/.cache poetry run playwright install chromium
+# Upgrade pip + tooling (CVE-2026-1703 pip, CVE-2026-24049 wheel, CVE-2026-23949 jaraco.context via setuptools vendor refresh)
+RUN poetry run pip install --upgrade 'pip>=26.0' 'setuptools>=82.0.0' 'wheel>=0.46.2' 'jaraco.context>=6.1.0'
+
+# we must run the playwright install command without mounting the cache, as it seems
+# that installed binaries end up being removed from the image if the cache is used
 RUN poetry run playwright install chromium
-# playwright installs a lot of apt packages
+
+# playwright installs a lot of apt packages to support its browser
 RUN --mount=type=cache,target=/root/.cache \
     --mount=type=cache,target=/var/lib/apt \
     --mount=type=cache,target=/var/cache/apt \
-    poetry run playwright install-deps
+    DEBIAN_FRONTEND=noninteractive poetry run playwright install-deps
+
+# Apply security updates (e.g. GnuPG CVE-2025-68973, libtiff CVE-2025-9900); drop build-only headers
+# (linux-libc-dev); remove GStreamer "bad" codecs not required for headless map export.
+RUN --mount=type=cache,target=/var/lib/apt \
+    --mount=type=cache,target=/var/cache/apt \
+    DEBIAN_FRONTEND=noninteractive apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y upgrade && \
+    DEBIAN_FRONTEND=noninteractive apt-get purge -y \
+      build-essential python3-dev linux-libc-dev libpq-dev \
+      gstreamer1.0-plugins-bad libgstreamer-plugins-bad1.0-0 && \
+    DEBIAN_FRONTEND=noninteractive apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # keep this copy towards the end to help with caching previous layers
-COPY ./app /app
+COPY ./prism_app /prism_app
+COPY ./alembic.ini /alembic.ini
+COPY ./alembic /alembic
 
-WORKDIR /app/
+WORKDIR /prism_app/
 
 EXPOSE 80

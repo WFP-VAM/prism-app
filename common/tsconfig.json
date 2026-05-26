@@ -18,7 +18,8 @@
     "jsx": "react",
     "strictPropertyInitialization": false,
     "experimentalDecorators": true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "declaration": true
   },
   "include": ["src"]
 }

@@ -15,7 +15,7 @@ export function scaleImage(
     checkExtent: true,
     resolution: 256,
     maxPixels: 5096,
-  }
+  },
 ) {
   if (doCheckExtent) {
     checkExtent(extent);

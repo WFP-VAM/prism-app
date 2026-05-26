@@ -8,3 +8,42 @@ html, body { height: 100% }
     flex-direction: column;
     height: 100%;
 }
+
+/*
+ * Arabic: RTL for text only. Layout shells (map print overlays) use .layout-ltr
+ * so absolute left/right positions do not mirror.
+ */
+.locale-rtl-text .MuiTypography-root,
+.locale-rtl-text .MuiButton-label,
+.locale-rtl-text .MuiMenuItem-root,
+.locale-rtl-text .MuiTableCell-root,
+.locale-rtl-text .MuiInputBase-input,
+.locale-rtl-text .MuiFormLabel-root,
+.locale-rtl-text .MuiListItemText-root,
+.locale-rtl-text .MuiAccordionSummary-content {
+  direction: rtl;
+  unicode-bidi: plaintext;
+}
+
+/* Map/print overlays: keep physical left/right; text inside stays RTL via rules above. */
+.layout-ltr {
+  direction: ltr;
+}
+
+/* Legend cards (map panel + print): RTL text and swatch order. */
+.locale-rtl-text .legend-card {
+  direction: rtl;
+  text-align: start;
+  unicode-bidi: plaintext;
+}
+
+.locale-rtl-text .print-footer-overlay .print-footer-disclaimer,
+.locale-rtl-text .print-footer-overlay .print-footer-meta {
+  text-align: right;
+  display: block;
+  width: 100%;
+}
+
+.svg-inline--fa {
+  font-size: revert-layer;
+}

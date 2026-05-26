@@ -10,7 +10,12 @@ import {
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
-import React, {
+import { Extent } from 'components/MapView/Layers/raster-utils';
+import { filterActiveLayers } from 'components/MapView/utils';
+import { LayerType } from 'config/types';
+import { useSafeTranslation } from 'i18n';
+import { cyanBlue, lightGrey } from 'muiTheme';
+import {
   ChangeEvent,
   memo,
   useCallback,
@@ -18,12 +23,9 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { useSelector } from 'react-redux';
-import { LayerType } from 'config/types';
-import { useSafeTranslation } from 'i18n';
-import { Extent } from 'components/MapView/Layers/raster-utils';
-import { layersSelector } from 'context/mapStateSlice/selectors';
-import { filterActiveLayers } from 'components/MapView/utils';
+import { useMapState } from 'utils/useMapState';
+
+import { makeSafeIDFromTitle } from '../utils';
 import SwitchItems from './SwitchItems';
 
 const useStyles = makeStyles(() =>
@@ -33,14 +35,14 @@ const useStyles = makeStyles(() =>
       maxWidth: '100%',
     },
     rootSummary: {
-      backgroundColor: '#F5F7F8',
+      backgroundColor: lightGrey,
     },
     rootDetails: {
       padding: 0,
       backgroundColor: '#FFFFFF',
     },
     expandIcon: {
-      color: '#53888F',
+      color: 'black',
     },
     summaryContent: {
       alignItems: 'center',
@@ -49,8 +51,9 @@ const useStyles = makeStyles(() =>
       marginLeft: '1.5%',
     },
     title: {
-      color: '#53888F',
-      fontWeight: 500,
+      color: 'black',
+      fontSize: '14px',
+      fontWeight: 400,
     },
   }),
 );
@@ -63,24 +66,25 @@ interface MenuSwitchProps {
 
 const MenuSwitch = memo(({ title, layers, extent }: MenuSwitchProps) => {
   const { t } = useSafeTranslation();
-  const selectedLayers = useSelector(layersSelector);
+  const mapState = useMapState();
+  const selectedLayers = mapState.layers;
   const classes = useStyles();
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleAccordionExpand = useCallback(
-    (event: ChangeEvent<{}>, expanded: boolean) => {
+    (_event: ChangeEvent<{}>, expanded: boolean) => {
       setIsExpanded(expanded);
     },
     [],
   );
 
-  const selectedInternalLayers = useMemo(() => {
-    return selectedLayers.filter(layer => {
-      return layers.some(internalLayer => {
-        return filterActiveLayers(layer, internalLayer);
-      });
-    });
-  }, [layers, selectedLayers]);
+  const selectedInternalLayers = useMemo(
+    () =>
+      selectedLayers.filter(layer =>
+        layers.some(internalLayer => filterActiveLayers(layer, internalLayer)),
+      ),
+    [layers, selectedLayers],
+  );
 
   const [informationChipLabel, setInformationChipLabel] = useState<string>(
     selectedInternalLayers.length.toString(),
@@ -112,7 +116,7 @@ const MenuSwitch = memo(({ title, layers, extent }: MenuSwitchProps) => {
         onMouseEnter={handleChipOnMouseEnter}
         onMouseLeave={handleChipOnMouseLeave}
         classes={{ root: classes.chipRoot }}
-        color="secondary"
+        style={{ backgroundColor: cyanBlue }}
         label={informationChipLabel}
       />
     );
@@ -139,7 +143,7 @@ const MenuSwitch = memo(({ title, layers, extent }: MenuSwitchProps) => {
           content: classes.summaryContent,
         }}
         aria-controls={title}
-        id={title}
+        id={`level2-${makeSafeIDFromTitle(title)}`}
       >
         <Typography classes={{ root: classes.title }}>{t(title)}</Typography>
         {renderedSelectedLayerInformation}

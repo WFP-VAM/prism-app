@@ -1,34 +1,32 @@
+import { oneDayInMs } from 'components/MapView/LeftPanel/utils';
+import {
+  PointData,
+  PointLayerData,
+  ReferenceDateTimestamp,
+} from 'config/types';
+import { FloodChartConfigObject } from 'context/tableStateSlice';
 import GeoJSON, { FeatureCollection, Point } from 'geojson';
-import moment from 'moment';
 import { Dispatch } from 'redux';
-import { PointData, PointLayerData } from 'config/types';
+
+import { getFormattedDate } from './date-utils';
 import { fetchWithTimeout } from './fetch-with-timeout';
+import { DateFormat } from './name-utils';
 
-type EWSChartConfig = {
-  label: string;
-  color: string;
-};
-
-type EWSChartItem = EWSChartConfig & { values: number[] };
-
-export type EWSChartConfigObject = { [key: string]: EWSChartConfig };
-export type EWSChartItemsObject = { [key: string]: EWSChartItem };
-
-export const EWSTriggersConfig: EWSChartConfigObject = {
+export const EWSTriggersConfig: FloodChartConfigObject = {
   normal: {
-    label: 'normal',
+    label: 'Normal',
     color: '#1a9641',
   },
   watchLevel: {
-    label: 'watch level',
+    label: 'Watch level',
     color: '#f9d84e',
   },
   warning: {
-    label: 'warning',
+    label: 'Warning',
     color: '#fdae61',
   },
   severeWarning: {
-    label: 'severe warning',
+    label: 'Severe warning',
     color: '#e34a33',
   },
 };
@@ -40,7 +38,6 @@ enum EWSLevelStatus {
   SEVEREWARNING = 3,
 }
 
-/* eslint-disable camelcase */
 export type EWSSensorData = {
   location_id: number;
   value: [string, number];
@@ -51,22 +48,28 @@ type EWSTriggerLevels = {
   severe_warning: number;
   watch_level: number;
 };
-/* eslint-enable camelcase */
 
+// generate an array with every day since the beginning
+// of January 2021.
 // input parameter is used here only for testing
-export const createEWSDatesArray = (testEndDate?: number): number[] => {
-  const datesArray = [];
+export const createEWSDatesArray = (
+  testEndDate?: number,
+): ReferenceDateTimestamp[] => {
+  const datesArray: ReferenceDateTimestamp[] = [];
 
-  const endDate =
-    testEndDate || moment(moment.utc().format('YYYY-MM-DD')).valueOf();
+  const now = new Date();
 
-  const tempDate = moment.utc('2021-01-01');
+  const endDate = testEndDate
+    ? new Date(testEndDate).setUTCHours(12, 0, 0, 0)
+    : now.setUTCHours(12, 0, 0, 0);
 
-  while (tempDate.valueOf() <= endDate) {
-    // eslint-disable-next-line fp/no-mutating-methods
-    datesArray.push(tempDate.clone().set({ hour: 12, minute: 0 }).valueOf());
+  const tempDate = new Date('2021-01-01');
+  tempDate.setUTCHours(12, 0, 0, 0);
 
-    tempDate.add(1, 'days');
+  while (tempDate.getTime() <= endDate) {
+    datesArray.push(tempDate.getTime() as ReferenceDateTimestamp);
+
+    tempDate.setTime(tempDate.getTime() + oneDayInMs);
   }
 
   return datesArray;
@@ -99,16 +102,16 @@ export const fetchEWSDataPointsByLocation = async (
   dispatch: Dispatch,
   externalId?: string,
 ): Promise<EWSSensorData[]> => {
-  const endDate = moment(date)
-    .clone()
-    .set({ hour: 23, minute: 59, second: 59 });
+  const endDate = new Date(date);
+  endDate.setUTCHours(23, 59, 59, 999);
   // FIXME: pass start/end here? why the 24h delta?
-  const startDate = endDate.clone().subtract(1, 'days');
-  const format = 'YYYY-MM-DDTHH:mm:ss';
+  const startDate = new Date(endDate.getTime() - oneDayInMs);
+  const format = DateFormat.ISO;
 
-  const url = `${baseUrl}/sensors/sensor_event?start=${startDate.format(
+  const url = `${baseUrl}/sensors/sensor_event?start=${getFormattedDate(
+    startDate,
     format,
-  )}&end=${endDate.format(format)}`;
+  )}&end=${getFormattedDate(endDate, format)}`;
 
   const resource = externalId ? `${url}&external_id=${externalId}` : url;
 
@@ -120,7 +123,7 @@ export const fetchEWSDataPointsByLocation = async (
       `Request failed for fetching EWS data points by location at ${resource}`,
     );
     return await resp.json();
-  } catch (error) {
+  } catch (_error) {
     return [];
   }
 };
@@ -197,18 +200,15 @@ export const fetchEWSData = async (
     [] as PointData[],
   );
 
-  return {
-    features: GeoJSON.parse(processedFeatures, {
-      Point: ['lat', 'lon'],
-    }),
-  };
+  return GeoJSON.parse(processedFeatures, {
+    Point: ['lat', 'lon'],
+  }) as any as PointLayerData;
 };
 
 export const createEWSDatasetParams = (
   featureProperties: any,
   baseUrl: string,
 ) => {
-  /* eslint-disable camelcase */
   const { name, external_id, trigger_levels } = featureProperties;
   const chartTitle = `River level - ${name} (${external_id})`;
 
@@ -218,7 +218,7 @@ export const createEWSDatasetParams = (
     warning: parsedLevels.warning,
     severeWarning: parsedLevels.severe_warning,
   };
-  /* eslint-enable camelcase */
+
   return {
     externalId: external_id,
     triggerLevels,

@@ -1,8 +1,9 @@
-import appConfig from './prism.json';
 import rawLayers from './layers.json';
+import appConfig from './prism.json';
 
 const rawTables = {};
 const rawReports = {};
+// Country-specific translation overrides shared translation
 const translation = {};
 
 export default {
@@ -11,5 +12,5 @@ export default {
   rawTables,
   rawReports,
   translation,
-  defaultBoundariesFile: 'zim_admin2_boundaries_v2.json',
+  defaultBoundariesFile: 'zim_admin2_boundaries_v3_w_dataviz.json',
 };

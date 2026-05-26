@@ -25,7 +25,7 @@ export class Base {
       fetch?: any;
       service?: string;
       version?: string;
-    } = { fetch: undefined }
+    } = { fetch: undefined },
   ) {
     this.debug = debug;
     this.fetch = customFetch || fetch;
@@ -67,13 +67,13 @@ export class Base {
 
   async getLayerNames(): Promise<string[]> {
     throw new Error(
-      `${this.constructor.name} does not implement getLayerNames`
+      `${this.constructor.name} does not implement getLayerNames`,
     );
   }
 
   async hasLayerId(
     layerId: string,
-    options?: Parameters<typeof hasLayerId>[2]
+    options?: Parameters<typeof hasLayerId>[2],
   ): Promise<boolean> {
     return hasLayerId(await this.getLayerIds(), layerId, options);
   }

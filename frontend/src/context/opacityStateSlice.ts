@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { LayerType } from 'config/types';
-import { getLayerMapId } from 'utils/map-utils';
 import { Map as MaplibreMap } from 'maplibre-gl';
+import { getLayerMapId } from 'utils/map-utils';
+
 import type { RootState } from './store';
 
 interface OpacityEntry {
@@ -16,7 +17,7 @@ export interface MapOpacityState {
   error: string | null;
 }
 
-interface SetOpacityParams {
+export interface SetOpacityParams {
   map: MaplibreMap | undefined;
   layerId: LayerType['id'] | undefined;
   layerType: LayerType['type'] | 'analysis' | undefined;
@@ -34,7 +35,8 @@ export const opacityStateSlice = createSlice({
   initialState,
   reducers: {
     setOpacity: (state, action: PayloadAction<SetOpacityParams>) => {
-      const { map, layerId, layerType, value, callback } = action.payload;
+      const { map, layerId, layerType, value, callback } =
+        action?.payload || {};
       if (!map) {
         return state;
       }
@@ -50,6 +52,7 @@ export const opacityStateSlice = createSlice({
           case 'admin_level_data':
           case 'composite':
           case 'impact':
+          case 'geojson_polygon':
             return [getLayerMapId(layerId), 'fill-opacity'];
           case 'point_data':
             // This is a hacky way to support opacity change for Kobo data.
@@ -57,7 +60,7 @@ export const opacityStateSlice = createSlice({
             if (layerId?.includes('_report')) {
               return [getLayerMapId(layerId), 'fill-opacity'];
             }
-            return [getLayerMapId(layerId), 'circle-opacity'];
+            return [getLayerMapId(layerId), 'icon-opacity'];
           case 'analysis':
             return ['layer-analysis', 'fill-opacity'];
           default:
@@ -66,12 +69,12 @@ export const opacityStateSlice = createSlice({
       })();
 
       // update map
-      if (map.getLayer(mapLayerId) !== undefined) {
+      if (map.getLayer(mapLayerId) !== undefined && value !== undefined) {
         map.setPaintProperty(mapLayerId, opacityType, value);
         // force a update of the map style to ensure the change is reflected
         // see https://github.com/maplibre/maplibre-gl-js/issues/3373
         // TODO - check if the above issue got resolved from time to time.
-        // eslint-disable-next-line no-underscore-dangle
+
         map.style._updateLayer(mapLayerId as any);
       }
 
@@ -95,9 +98,10 @@ export const opacityStateSlice = createSlice({
 });
 
 // Getters
-export const opacitySelector = (layerId: string) => (
-  state: RootState,
-): number | undefined => state.opacityState.opacityMap[layerId]?.value;
+export const opacitySelector =
+  (layerId: string) =>
+  (state: RootState): number | undefined =>
+    state.opacityState.opacityMap[layerId]?.value;
 
 // Setters
 export const { setOpacity } = opacityStateSlice.actions;

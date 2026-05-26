@@ -85,7 +85,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Estimate of precipitation over a 10-day period derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "Estimate of precipitation over a 10-day period derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "0 mm", "color": "#fafafa" },
       { "value": 0.01, "label": "1-2 mm", "color": "#fffadf" },
@@ -146,7 +146,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "< 20%", "color": "#8c4800" },
       { "value": 20, "label": "20-40%", "color": "#af6b27" },
@@ -193,7 +193,7 @@
     },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Total aggregate precipitation over a 1-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "Total aggregate precipitation over a 1-month period, rolling every 10 days. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "0 mm", "color": "#fafafa" },
       { "value": 0.01, "label": "1-5 mm", "color": "#fffadf" },
@@ -254,7 +254,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "< 20%", "color": "#8c4800" },
       { "value": 20, "label": "20-40%", "color": "#af6b27" },
@@ -362,7 +362,7 @@
     },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "3-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "3-month precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "< 20%", "color": "#8c4800" },
       { "value": 20, "label": "20-40%", "color": "#af6b27" },
@@ -390,7 +390,7 @@
     },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "6-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "6-month precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "< 50%", "color": "#8c4800" },
       { "value": 50, "label": "50-60%", "color": "#af6b27" },
@@ -418,7 +418,7 @@
     },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "9-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "9-month precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "< 50%", "color": "#8c4800" },
       { "value": 50, "label": "50-60%", "color": "#af6b27" },
@@ -446,7 +446,7 @@
     },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "1-year precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "1-year precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "< 50%", "color": "#8c4800" },
       { "value": 50, "label": "50-60%", "color": "#af6b27" },
@@ -561,6 +561,38 @@
     "additional_query_params": {
       "styles": "rfb_blended"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "rfb",
+          "label": "Rainfall",
+          "color": "#233f5f"
+        },
+        {
+          "key": "rfb_avg",
+          "label": "Average",
+          "color": "#bdf2e6"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "province_n"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "district_n"
+        }
+      ],
+      "type": "bar"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -591,6 +623,43 @@
     "additional_query_params": {
       "styles": "r1b_blended"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 2,
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r1b",
+          "label": "Rainfall",
+          "color": "#233f5f"
+        },
+        {
+          "key": "r1b_avg",
+          "label": "Average",
+          "color": "#bdf2e6"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "province_n"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "district_n"
+        }
+      ],
+      "type": "bar"
+    },    
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -622,6 +691,43 @@
     "additional_query_params": {
       "styles": "r3b_blended"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 8,
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r3b",
+          "label": "Rainfall",
+          "color": "#233f5f"
+        },
+        {
+          "key": "r3b_avg",
+          "label": "Average",
+          "color": "#bdf2e6"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "province_n"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "district_n"
+        }
+      ],
+      "type": "bar"
+    },    
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -652,6 +758,15 @@
     "server_layer_name": "rfb_blended_lka_dekad",
     "additional_query_params": {
       "styles": "r6b_blended"
+    },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 17,
+      "forward": 1,
+      "mode": "dekad"
     },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
@@ -684,6 +799,15 @@
     "additional_query_params": {
       "styles": "r9b_blended"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 26,
+      "forward": 1,
+      "mode": "dekad"
+    },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -714,6 +838,15 @@
     "server_layer_name": "rfb_blended_lka_dekad",
     "additional_query_params": {
       "styles": "ryb_blended"
+    },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 35,
+      "forward": 1,
+      "mode": "dekad"
     },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
@@ -746,6 +879,42 @@
     "additional_query_params": {
       "styles": "rfq_blended"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "rfq",
+          "label": "Rainfall anomaly",
+          "minValue": 0,
+          "maxValue": 300,
+          "color": "#375692"
+        },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "pointRadius": 0,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "province_n"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "district_n"
+        }
+      ],
+      "type": "line"
+    },  
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -774,6 +943,47 @@
     "additional_query_params": {
       "styles": "r1q_blended"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 2,
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r1q",
+          "label": "Rainfall anomaly",
+          "minValue": 0,
+          "maxValue": 300,
+          "color": "#375692"
+        },
+        {
+          "key": "r1q_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "pointRadius": 0,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "province_n"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "district_n"
+        }
+      ],
+      "type": "line"
+    },    
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -803,6 +1013,47 @@
     "additional_query_params": {
       "styles": "r3q_blended"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 8,
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r3q",
+          "label": "Rainfall anomaly",
+          "color": "#375692",
+          "minValue": 0,
+          "maxValue": 300
+        },
+        {
+          "key": "r3q_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "pointRadius": 0,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "province_n"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "district_n"
+        }
+      ],
+      "type": "line"
+    },    
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -831,6 +1082,15 @@
     "server_layer_name": "rfq_blended_lka_dekad",
     "additional_query_params": {
       "styles": "r6q_blended"
+    },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 17,
+      "forward": 1,
+      "mode": "dekad"
     },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
@@ -861,6 +1121,15 @@
     "additional_query_params": {
       "styles": "r9q_blended"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 26,
+      "forward": 1,
+      "mode": "dekad"
+    },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -889,6 +1158,15 @@
     "server_layer_name": "rfq_blended_lka_dekad",
     "additional_query_params": {
       "styles": "ryq_blended"
+    },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 35,
+      "forward": 1,
+      "mode": "dekad"
     },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
@@ -921,6 +1199,15 @@
     "opacity": 0.7,
     "additional_query_params": {
       "styles": "r1b"
+    },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 2,
+      "forward": 1,
+      "mode": "dekad"
     },
     "legend_text": "Monthly aggregate rainfall based on local station data blended with CHIRP estimates",
     "legend": [
@@ -1724,48 +2011,6 @@
       { "value": 12, "label": "> +12C", "color": "#67000d" }
     ]
   },
-  "worldpop_hdc_constrained_un_adj": {
-    "title": "population",
-    "type": "wms",
-    "wcsConfig": {
-      "disableDateParam": true,
-      "version": "2.0.0",
-      "scale": "1"
-    },
-    "server_layer_name": "wp_pop_cicunadj",
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "opacity": 0,
-    "legend_text": "",
-    "legend": []
-  },
-  "worldpop_constrained_un_adj": {
-    "title": "population",
-    "type": "wms",
-    "wcsConfig": {
-      "disableDateParam": true,
-      "version": "2.0.0",
-      "scale": "1"
-    },
-    "server_layer_name": "wp_pop_cicunadj",
-    "base_url": "https://prism-worldpop-rasters.s3.us-east-2.amazonaws.com/lka_ppp_2020_UNadj_constrained.tif",
-    "opacity": 0,
-    "legend_text": "",
-    "legend": []
-  },
-  "worldpop_unconstrained_un_adj": {
-    "title": "population",
-    "type": "wms",
-    "wcsConfig": {
-      "disableDateParam": true,
-      "version": "2.0.0",
-      "scale": "1"
-    },
-    "server_layer_name": "wp_pop_cicunadj",
-    "base_url": "https://prism-worldpop-rasters.s3.us-east-2.amazonaws.com/lka_ppp_2020_UNadj.tif",
-    "opacity": 0,
-    "legend_text": "",
-    "legend": []
-  },
   "poverty_hc": {
     "type": "admin_level_data",
     "title": "Poverty headcount",
@@ -2071,67 +2316,5 @@
       }
     ],
     "legend_text": "Number of households"
-  },
-  "adamts_nodes": {
-    "title": "Tropical Storms - Nodes",
-    "type": "wms",
-    "server_layer_name": "wld_gdacs_tc_events_nodes",
-    "opacity": 0.7,
-    "legend": [],
-    "legend_text": "Tropical Storms - Nodes",
-    "base_url": "https://sparc.wfp.org/geoserver",
-    "feature_info_props": {
-      "event_name": {
-        "type": "text",
-        "dataTitle": "Event name"
-      },
-      "timestamp": {
-        "type": "date",
-        "dataTitle": "Publication date"
-      },
-      "wind_speed": {
-        "type": "text",
-        "dataTitle": "Estimated wind speed"
-      }
-    },
-    "geometry": "point"
-  },
-  "adamts_buffers": {
-    "title": "Tropical Storms - Wind Buffers",
-    "type": "wms",
-    "server_layer_name": "lka_gdacs_buffers",
-    "opacity": 0.7,
-    "legend": [],
-    "legend_text": "Wind buffers (radii) estimate potential wind speeds along the path of a storm with a buffer estimating the area exposed to each wind speed category. Source: GDACS",
-    "base_url": "https://sparc.wfp.org/geoserver",
-    "feature_info_props": {
-      "event_name": {
-        "type": "text",
-        "dataTitle": "Event name"
-      },
-      "timestamp": {
-        "type": "date",
-        "dataTitle": "Publication date"
-      },
-      "wcsConfig": {
-        "scale": 0.1,
-        "offset": 0
-      }
-    },
-    "exposure": {
-      "id": "worldpop_unconstrained_un_adj",
-      "key": "label"
-    },
-    "geometry": "polygon"
-  },
-  "adamts_tracks": {
-    "title": "Tropical Storms - Tracks",
-    "type": "wms",
-    "server_layer_name": "wld_gdacs_tc_events_tracks",
-    "opacity": 0.7,
-    "legend": [],
-    "legend_text": "Tracks visualize the projected path of a storm based on the forecasted position of it's center at various points in time. Source: GDACS",
-    "base_url": "https://sparc.wfp.org/geoserver",
-    "geometry": "linestring"
   }
 }

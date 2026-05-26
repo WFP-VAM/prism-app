@@ -3,7 +3,7 @@ import { findTagText } from "./xml";
 
 export function findAndParseAbstract(
   xml: string,
-  { trim = true }: { trim?: boolean } = { trim: true }
+  { trim = true }: { trim?: boolean } = { trim: true },
 ) {
   let abstract = findTagText(xml, "Abstract");
   if (!abstract) {
@@ -18,7 +18,7 @@ export function findAndParseAbstract(
 
 export function findAndParseCapabilityUrl(
   xml: string,
-  capability: string
+  capability: string,
 ): string | undefined {
   const onlineResource = findTagByPath(xml, [
     "Capability",
@@ -84,9 +84,7 @@ export function findVersion(xml: string): string | undefined {
   return undefined;
 }
 
-export function parseName(
-  name: string
-): {
+export function parseName(name: string): {
   full: string;
   namespace: string | undefined;
   short: string;
@@ -101,7 +99,7 @@ export function parseName(
 
 export function parseService(
   url: string,
-  options?: { case?: "lower" | "raw" | "upper" }
+  options?: { case?: "lower" | "raw" | "upper" },
 ) {
   const { pathname, searchParams } = new URL(url);
 

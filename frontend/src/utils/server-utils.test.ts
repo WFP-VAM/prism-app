@@ -1,11 +1,17 @@
-import { DatesPropagation } from 'config/types';
+import {
+  DatesPropagation,
+  ReferenceDateTimestamp,
+  SeasonBounds,
+} from 'config/types';
 import timezoneMock from 'timezone-mock';
+
+import { timezones } from '../../test/helpers';
+import { getSeasonBounds, SEASON_MAP } from './date-utils';
 import {
   generateIntermediateDateItemFromValidity,
-  getStaticRasterDataCoverage,
   getAdminLevelDataCoverage,
+  getStaticRasterDataCoverage,
 } from './server-utils';
-import { timezones } from '../../test/helpers';
 
 // NOTE: all timestamps are created in the LOCAL timezone (as per js docs), so that
 // these tests should pass for any TZ.
@@ -20,147 +26,219 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
         new Date('2023-12-21').setHours(12, 0),
       ],
       validity: {
-        days: 10,
-        mode: DatesPropagation.FORWARD,
+        forward: 10,
+        mode: DatesPropagation.DAYS,
       },
     };
 
-    const output = generateIntermediateDateItemFromValidity(layer);
+    const output = generateIntermediateDateItemFromValidity(
+      layer.dates as ReferenceDateTimestamp[],
+      layer.validity,
+    );
+
     expect(output).toEqual([
       {
         displayDate: new Date('2023-12-01').setHours(12, 0),
         queryDate: layer.dates[0],
-        isStartDate: true,
-        isEndDate: false,
+        startDate: layer.dates[0],
+        endDate: new Date('2023-12-11').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-02').setHours(12, 0),
         queryDate: layer.dates[0],
+        startDate: layer.dates[0],
+        endDate: new Date('2023-12-11').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-03').setHours(12, 0),
         queryDate: layer.dates[0],
+        startDate: layer.dates[0],
+        endDate: new Date('2023-12-11').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-04').setHours(12, 0),
         queryDate: layer.dates[0],
+        startDate: layer.dates[0],
+        endDate: new Date('2023-12-11').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-05').setHours(12, 0),
         queryDate: layer.dates[0],
+        startDate: layer.dates[0],
+        endDate: new Date('2023-12-11').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-06').setHours(12, 0),
         queryDate: layer.dates[0],
+        startDate: layer.dates[0],
+        endDate: new Date('2023-12-11').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-07').setHours(12, 0),
         queryDate: layer.dates[0],
+        startDate: layer.dates[0],
+        endDate: new Date('2023-12-11').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-08').setHours(12, 0),
         queryDate: layer.dates[0],
+        startDate: layer.dates[0],
+        endDate: new Date('2023-12-11').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-09').setHours(12, 0),
         queryDate: layer.dates[0],
+        startDate: layer.dates[0],
+        endDate: new Date('2023-12-11').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-10').setHours(12, 0),
         queryDate: layer.dates[0],
+        startDate: layer.dates[0],
+        endDate: new Date('2023-12-11').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-12-11').setHours(12, 0),
+        queryDate: layer.dates[0],
+        startDate: layer.dates[0],
+        endDate: new Date('2023-12-11').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-11').setHours(12, 0),
         queryDate: layer.dates[1],
-        isStartDate: true,
-        isEndDate: false,
+        startDate: layer.dates[1],
+        endDate: new Date('2023-12-21').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-12').setHours(12, 0),
         queryDate: layer.dates[1],
+        startDate: layer.dates[1],
+        endDate: new Date('2023-12-21').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-13').setHours(12, 0),
         queryDate: layer.dates[1],
+        startDate: layer.dates[1],
+        endDate: new Date('2023-12-21').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-14').setHours(12, 0),
         queryDate: layer.dates[1],
+        startDate: layer.dates[1],
+        endDate: new Date('2023-12-21').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-15').setHours(12, 0),
         queryDate: layer.dates[1],
+        startDate: layer.dates[1],
+        endDate: new Date('2023-12-21').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-16').setHours(12, 0),
         queryDate: layer.dates[1],
+        startDate: layer.dates[1],
+        endDate: new Date('2023-12-21').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-17').setHours(12, 0),
         queryDate: layer.dates[1],
+        startDate: layer.dates[1],
+        endDate: new Date('2023-12-21').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-18').setHours(12, 0),
         queryDate: layer.dates[1],
+        startDate: layer.dates[1],
+        endDate: new Date('2023-12-21').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-19').setHours(12, 0),
         queryDate: layer.dates[1],
+        startDate: layer.dates[1],
+        endDate: new Date('2023-12-21').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-20').setHours(12, 0),
         queryDate: layer.dates[1],
+        startDate: layer.dates[1],
+        endDate: new Date('2023-12-21').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-12-21').setHours(12, 0),
+        queryDate: layer.dates[1],
+        startDate: layer.dates[1],
+        endDate: new Date('2023-12-21').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-21').setHours(12, 0),
         queryDate: layer.dates[2],
-        isStartDate: true,
-        isEndDate: false,
+        startDate: layer.dates[2],
+        endDate: new Date('2023-12-31').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-22').setHours(12, 0),
         queryDate: layer.dates[2],
+        startDate: layer.dates[2],
+        endDate: new Date('2023-12-31').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-23').setHours(12, 0),
         queryDate: layer.dates[2],
+        startDate: layer.dates[2],
+        endDate: new Date('2023-12-31').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-24').setHours(12, 0),
         queryDate: layer.dates[2],
+        startDate: layer.dates[2],
+        endDate: new Date('2023-12-31').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-25').setHours(12, 0),
         queryDate: layer.dates[2],
+        startDate: layer.dates[2],
+        endDate: new Date('2023-12-31').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-26').setHours(12, 0),
         queryDate: layer.dates[2],
+        startDate: layer.dates[2],
+        endDate: new Date('2023-12-31').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-27').setHours(12, 0),
         queryDate: layer.dates[2],
+        startDate: layer.dates[2],
+        endDate: new Date('2023-12-31').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-28').setHours(12, 0),
         queryDate: layer.dates[2],
+        startDate: layer.dates[2],
+        endDate: new Date('2023-12-31').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-29').setHours(12, 0),
         queryDate: layer.dates[2],
+        startDate: layer.dates[2],
+        endDate: new Date('2023-12-31').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-30').setHours(12, 0),
         queryDate: layer.dates[2],
+        startDate: layer.dates[2],
+        endDate: new Date('2023-12-31').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-31').setHours(12, 0),
         queryDate: layer.dates[2],
+        startDate: layer.dates[2],
+        endDate: new Date('2023-12-31').setHours(12, 0),
       },
     ]);
   });
 
-  test('should return correct dates with backwards propagation', () => {
+  test('should return correct dates with backward propagation', () => {
     const layer = {
       name: 'myd11a2_taa_dekad',
       dates: [
@@ -168,101 +246,415 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
         new Date('2023-12-11').setHours(12, 0),
       ],
       validity: {
-        days: 10,
-        mode: DatesPropagation.BACKWARD,
+        backward: 10,
+        mode: DatesPropagation.DAYS,
       },
     };
-    const output = generateIntermediateDateItemFromValidity(layer);
+    const output = generateIntermediateDateItemFromValidity(
+      layer.dates as ReferenceDateTimestamp[],
+      layer.validity,
+    );
     expect(output).toEqual([
       {
         displayDate: new Date('2023-11-21').setHours(12, 0),
         queryDate: layer.dates[0],
+        startDate: new Date('2023-11-21').setHours(12, 0),
+        endDate: layer.dates[0],
       },
       {
         displayDate: new Date('2023-11-22').setHours(12, 0),
         queryDate: layer.dates[0],
+        startDate: new Date('2023-11-21').setHours(12, 0),
+        endDate: layer.dates[0],
       },
       {
         displayDate: new Date('2023-11-23').setHours(12, 0),
         queryDate: layer.dates[0],
+        startDate: new Date('2023-11-21').setHours(12, 0),
+        endDate: layer.dates[0],
       },
       {
         displayDate: new Date('2023-11-24').setHours(12, 0),
         queryDate: layer.dates[0],
+        startDate: new Date('2023-11-21').setHours(12, 0),
+        endDate: layer.dates[0],
       },
       {
         displayDate: new Date('2023-11-25').setHours(12, 0),
         queryDate: layer.dates[0],
+        startDate: new Date('2023-11-21').setHours(12, 0),
+        endDate: layer.dates[0],
       },
       {
         displayDate: new Date('2023-11-26').setHours(12, 0),
         queryDate: layer.dates[0],
+        startDate: new Date('2023-11-21').setHours(12, 0),
+        endDate: layer.dates[0],
       },
       {
         displayDate: new Date('2023-11-27').setHours(12, 0),
         queryDate: layer.dates[0],
+        startDate: new Date('2023-11-21').setHours(12, 0),
+        endDate: layer.dates[0],
       },
       {
         displayDate: new Date('2023-11-28').setHours(12, 0),
         queryDate: layer.dates[0],
+        startDate: new Date('2023-11-21').setHours(12, 0),
+        endDate: layer.dates[0],
       },
       {
         displayDate: new Date('2023-11-29').setHours(12, 0),
         queryDate: layer.dates[0],
+        startDate: new Date('2023-11-21').setHours(12, 0),
+        endDate: layer.dates[0],
       },
       {
         displayDate: new Date('2023-11-30').setHours(12, 0),
         queryDate: layer.dates[0],
+        startDate: new Date('2023-11-21').setHours(12, 0),
+        endDate: layer.dates[0],
       },
       {
         displayDate: new Date('2023-12-01').setHours(12, 0),
         queryDate: layer.dates[0],
-        isStartDate: false,
-        isEndDate: true,
+        startDate: new Date('2023-11-21').setHours(12, 0),
+        endDate: layer.dates[0],
+      },
+      {
+        displayDate: new Date('2023-12-01').setHours(12, 0),
+        queryDate: layer.dates[1],
+        startDate: new Date('2023-12-01').setHours(12, 0),
+        endDate: layer.dates[1],
       },
       {
         displayDate: new Date('2023-12-02').setHours(12, 0),
         queryDate: layer.dates[1],
+        endDate: layer.dates[1],
+        startDate: new Date('2023-12-01').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-03').setHours(12, 0),
         queryDate: layer.dates[1],
+        endDate: layer.dates[1],
+        startDate: new Date('2023-12-01').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-04').setHours(12, 0),
         queryDate: layer.dates[1],
+        endDate: layer.dates[1],
+        startDate: new Date('2023-12-01').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-05').setHours(12, 0),
         queryDate: layer.dates[1],
+        endDate: layer.dates[1],
+        startDate: new Date('2023-12-01').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-06').setHours(12, 0),
         queryDate: layer.dates[1],
+        endDate: layer.dates[1],
+        startDate: new Date('2023-12-01').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-07').setHours(12, 0),
         queryDate: layer.dates[1],
+        endDate: layer.dates[1],
+        startDate: new Date('2023-12-01').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-08').setHours(12, 0),
         queryDate: layer.dates[1],
+        endDate: layer.dates[1],
+        startDate: new Date('2023-12-01').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-09').setHours(12, 0),
         queryDate: layer.dates[1],
+        endDate: layer.dates[1],
+        startDate: new Date('2023-12-01').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-10').setHours(12, 0),
         queryDate: layer.dates[1],
+        endDate: layer.dates[1],
+        startDate: new Date('2023-12-01').setHours(12, 0),
       },
       {
         displayDate: new Date('2023-12-11').setHours(12, 0),
         queryDate: layer.dates[1],
-        isStartDate: false,
-        isEndDate: true,
+        startDate: new Date('2023-12-01').setHours(12, 0),
+        endDate: new Date('2023-12-11').setHours(12, 0),
       },
     ]);
+  });
+
+  test('should return correct dates with backwards propagation and dekad', () => {
+    const layer = {
+      name: 'myd11a2_taa_dekad',
+      dates: [
+        new Date('2023-12-01').setHours(12, 0),
+        new Date('2023-12-11').setHours(12, 0),
+      ],
+      validity: {
+        backward: 1,
+        mode: DatesPropagation.DEKAD,
+      },
+    };
+    const output = generateIntermediateDateItemFromValidity(
+      layer.dates as ReferenceDateTimestamp[],
+      layer.validity,
+    );
+    expect(output).toEqual([
+      {
+        displayDate: new Date('2023-11-21').setHours(12, 0),
+        queryDate: layer.dates[0],
+        endDate: layer.dates[0],
+        startDate: new Date('2023-11-21').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-11-22').setHours(12, 0),
+        queryDate: layer.dates[0],
+        endDate: layer.dates[0],
+        startDate: new Date('2023-11-21').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-11-23').setHours(12, 0),
+        queryDate: layer.dates[0],
+        endDate: layer.dates[0],
+        startDate: new Date('2023-11-21').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-11-24').setHours(12, 0),
+        queryDate: layer.dates[0],
+        endDate: layer.dates[0],
+        startDate: new Date('2023-11-21').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-11-25').setHours(12, 0),
+        queryDate: layer.dates[0],
+        endDate: layer.dates[0],
+        startDate: new Date('2023-11-21').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-11-26').setHours(12, 0),
+        queryDate: layer.dates[0],
+        endDate: layer.dates[0],
+        startDate: new Date('2023-11-21').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-11-27').setHours(12, 0),
+        queryDate: layer.dates[0],
+        endDate: layer.dates[0],
+        startDate: new Date('2023-11-21').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-11-28').setHours(12, 0),
+        queryDate: layer.dates[0],
+        endDate: layer.dates[0],
+        startDate: new Date('2023-11-21').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-11-29').setHours(12, 0),
+        queryDate: layer.dates[0],
+        endDate: layer.dates[0],
+        startDate: new Date('2023-11-21').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-11-30').setHours(12, 0),
+        queryDate: layer.dates[0],
+        endDate: layer.dates[0],
+        startDate: new Date('2023-11-21').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-12-01').setHours(12, 0),
+        queryDate: layer.dates[0],
+        endDate: layer.dates[0],
+        startDate: new Date('2023-11-21').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-12-01').setHours(12, 0),
+        queryDate: layer.dates[1],
+        endDate: layer.dates[1],
+        startDate: new Date('2023-12-01').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-12-02').setHours(12, 0),
+        queryDate: layer.dates[1],
+        endDate: layer.dates[1],
+        startDate: new Date('2023-12-01').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-12-03').setHours(12, 0),
+        queryDate: layer.dates[1],
+        endDate: layer.dates[1],
+        startDate: new Date('2023-12-01').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-12-04').setHours(12, 0),
+        queryDate: layer.dates[1],
+        endDate: layer.dates[1],
+        startDate: new Date('2023-12-01').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-12-05').setHours(12, 0),
+        queryDate: layer.dates[1],
+        endDate: layer.dates[1],
+        startDate: new Date('2023-12-01').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-12-06').setHours(12, 0),
+        queryDate: layer.dates[1],
+        endDate: layer.dates[1],
+        startDate: new Date('2023-12-01').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-12-07').setHours(12, 0),
+        queryDate: layer.dates[1],
+        endDate: layer.dates[1],
+        startDate: new Date('2023-12-01').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-12-08').setHours(12, 0),
+        queryDate: layer.dates[1],
+        endDate: layer.dates[1],
+        startDate: new Date('2023-12-01').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-12-09').setHours(12, 0),
+        queryDate: layer.dates[1],
+        endDate: layer.dates[1],
+        startDate: new Date('2023-12-01').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-12-10').setHours(12, 0),
+        queryDate: layer.dates[1],
+        endDate: layer.dates[1],
+        startDate: new Date('2023-12-01').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-12-11').setHours(12, 0),
+        queryDate: layer.dates[1],
+        endDate: layer.dates[1],
+        startDate: new Date('2023-12-01').setHours(12, 0),
+      },
+    ]);
+  });
+
+  test('should return correct dates for seasons', () => {
+    const dates = ['2023-01-01'];
+    const layer = {
+      name: 'myd11a2_taa_season',
+      dates: dates.map(date => new Date(date).setHours(12, 0)),
+      validity: {
+        mode: DatesPropagation.SEASON,
+      },
+    };
+    const output = generateIntermediateDateItemFromValidity(
+      layer.dates as ReferenceDateTimestamp[],
+      layer.validity,
+    );
+    const startOfWinter = new Date(
+      new Date(dates[0]).getFullYear(),
+      SEASON_MAP[0][0],
+      1,
+    );
+    const endOfWinter = new Date(
+      new Date(dates[0]).getFullYear(),
+      SEASON_MAP[0][1] + 1,
+      0,
+    );
+
+    const daysInSeason: Date[] = [];
+    while (
+      !daysInSeason[daysInSeason.length - 1] ||
+      daysInSeason[daysInSeason.length - 1] < endOfWinter
+    ) {
+      if (daysInSeason.length === 0) {
+        daysInSeason.push(startOfWinter);
+      } else {
+        daysInSeason.push(
+          new Date(
+            new Date(startOfWinter).setDate(
+              startOfWinter.getDate() + daysInSeason.length,
+            ),
+          ),
+        );
+      }
+    }
+
+    const { start, end } = getSeasonBounds(
+      new Date(daysInSeason[0]),
+    ) as SeasonBounds;
+    const adjustedEnd = new Date(end).setDate(0);
+    expect(output).toEqual(
+      daysInSeason.map(date => ({
+        displayDate: new Date(date).getTime(),
+        queryDate: new Date(dates[0]).getTime(),
+        endDate: new Date(adjustedEnd).getTime(),
+        startDate: new Date(start).getTime(),
+      })),
+    );
+  });
+
+  test('should return correct dates for custom seasons', () => {
+    const dates = ['2023-01-01'];
+    const layer = {
+      name: 'myd11a2_taa_season',
+      dates: dates.map(date => new Date(date).setHours(12, 0)),
+      validity: {
+        mode: DatesPropagation.SEASON,
+        seasons: [
+          {
+            start: '01-August',
+            end: '28-February',
+          },
+        ],
+      },
+    };
+    const output = generateIntermediateDateItemFromValidity(
+      layer.dates as ReferenceDateTimestamp[],
+      layer.validity,
+    );
+    const startOfWetSeason = new Date(
+      `${parseInt(dates[0].split('-')[0], 10) - 1}-${layer.validity.seasons[0].start}`,
+    );
+    const endOfWetSeason = new Date(
+      `${dates[0].split('-')[0]}-${layer.validity.seasons[0].end}`,
+    );
+
+    const daysInSeason: Date[] = [];
+    while (
+      !daysInSeason[daysInSeason.length - 1] ||
+      daysInSeason[daysInSeason.length - 1] < endOfWetSeason
+    ) {
+      if (daysInSeason.length === 0) {
+        daysInSeason.push(startOfWetSeason);
+      } else {
+        daysInSeason.push(
+          new Date(
+            new Date(startOfWetSeason).setDate(
+              startOfWetSeason.getDate() + daysInSeason.length,
+            ),
+          ),
+        );
+      }
+    }
+
+    const { start, end } = getSeasonBounds(
+      new Date(dates[0]),
+      layer.validity.seasons,
+    ) as SeasonBounds;
+
+    expect(output).toEqual(
+      daysInSeason.map(date => ({
+        displayDate: new Date(date).setUTCHours(12),
+        queryDate: new Date(start).getTime(),
+        endDate: new Date(end).getTime(),
+        startDate: new Date(start).getTime(),
+      })),
+    );
   });
 });
 

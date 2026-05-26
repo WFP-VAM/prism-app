@@ -1,12 +1,13 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`TimelineLabel renders as expected 1`] = `
 <div>
   <mock-typography
-    classname="TimelineLabel-dateItemLabel-1"
+    classname="makeStyles-dateItemLabel-1"
+    style="cursor: default;"
     variant="body2"
   >
-    décembre 2021
+    déc.
   </mock-typography>
 </div>
 `;

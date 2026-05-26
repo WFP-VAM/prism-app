@@ -1,11 +1,12 @@
+import { Color } from '@material-ui/lab';
 import {
   AnyAction,
   createSlice,
   Middleware,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import { Color } from '@material-ui/lab';
 import { stringHash } from 'utils/string-utils';
+
 import type { AppDispatch, RootState } from './store';
 
 // to test notification reaction to various error codes, http://httpstat.us/404 can be used where 404 is the status to test.
@@ -77,47 +78,49 @@ export const notificationsSelector = (
 ): NotificationState['notifications'] => state.notificationState.notifications;
 
 // Setters
-export const {
-  addNotification,
-  removeNotification,
-} = notificationStateSlice.actions;
+export const { addNotification, removeNotification } =
+  notificationStateSlice.actions;
 
 // middleware to add error as notifications to this slice
 // Typing could improve?
-export const errorToNotificationMiddleware: Middleware<{}, RootState> = () => (
-  dispatch: AppDispatch,
-) => (action: AnyAction) => {
-  let dispatchResult;
-  try {
-    // catch sync errors
-    // eslint-disable-next-line fp/no-mutation
-    dispatchResult = dispatch(action);
-  } catch (err) {
-    dispatch(
-      addNotification({
-        type: 'error',
-        message: (err as any).message || err,
-      }),
-    );
-    throw err;
-  }
+export const errorToNotificationMiddleware: Middleware<{}, RootState> =
+  () => (dispatch: AppDispatch) => (action: AnyAction) => {
+    let dispatchResult;
+    try {
+      // catch sync errors
 
-  // typical layout for rejected thunk e.g mapState/loadLayerData/rejected
-  const thunkRejectedRegex = /^[A-z]+\/[A-z]+\/rejected$/;
+      dispatchResult = dispatch(action);
+    } catch (err) {
+      dispatch(
+        addNotification({
+          type: 'error',
+          message: (err as any).message || err,
+        }),
+      );
+      throw err;
+    }
 
-  if (thunkRejectedRegex.test(action.type)) {
-    const errorMessage = action.error.message || action.error;
+    // typical layout for rejected thunk e.g mapState/loadLayerData/rejected
+    const thunkRejectedRegex = /^[A-z]+\/[A-z]+\/rejected$/;
 
-    dispatch(
-      addNotification({
-        type: 'error',
-        message: errorMessage,
-      }),
-    );
-    console.error(`Above error(s) caused by: ${errorMessage}`);
-  }
+    if (thunkRejectedRegex.test(action.type)) {
+      // Don't show error notifications for aborted requests (intentional cancellations)
+      if (action.meta?.aborted) {
+        return dispatchResult;
+      }
 
-  return dispatchResult;
-};
+      const errorMessage = action.error.message || action.error;
+
+      dispatch(
+        addNotification({
+          type: 'error',
+          message: errorMessage,
+        }),
+      );
+      console.error(`Above error(s) caused by: ${errorMessage}`);
+    }
+
+    return dispatchResult;
+  };
 
 export default notificationStateSlice.reducer;

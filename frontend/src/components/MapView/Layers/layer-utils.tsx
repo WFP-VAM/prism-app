@@ -1,28 +1,51 @@
-import React from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
-import { get } from 'lodash';
-import { Dispatch } from 'redux';
+import { iconPoint, iconPolygon, iconRaster } from 'assets/images';
+import { getFeatureInfoPropsData } from 'components/MapView/utils';
 import {
+  AdminLevelDataLayerProps,
   LayerType,
   LegendDefinition,
-  AdminLevelDataLayerProps,
   PointDataLayerProps,
 } from 'config/types';
-import { addPopupData } from 'context/tooltipStateSlice';
-import { findFeature, getEvtCoords, getLayerMapId } from 'utils/map-utils';
-import { getRoundedData } from 'utils/data-utils';
+import { LayerDefinitions } from 'config/utils';
+import { addPopupData, PopupData } from 'context/tooltipStateSlice';
 import { i18nTranslator } from 'i18n';
-import { getFeatureInfoPropsData } from 'components/MapView/utils';
+import { get } from 'lodash';
 import { MapLayerMouseEvent } from 'maplibre-gl';
+import { Dispatch } from 'redux';
+import { getRoundedData } from 'utils/data-utils';
+import { findFeature, getEvtCoords, getLayerMapId } from 'utils/map-utils';
 
 export function legendToStops(
   legend: LegendDefinition = [],
 ): [number, string][] {
-  // TODO - Make this function easier to use for point data and explicit its behavior.
-  return legend.map(({ value, color }) => [
-    typeof value === 'string' ? parseFloat(value.replace('< ', '')) : value,
-    color,
-  ]);
+  return legend
+    .map(({ value, label, color }) => {
+      // Use value if available, otherwise fall back to label
+      const valueToParse =
+        value ?? (typeof label === 'string' ? label : label?.value);
+
+      if (valueToParse === null || valueToParse === undefined) {
+        return [NaN, color];
+      }
+
+      // Parse the value, handling strings with special characters like %, +, <
+      const parsedValue =
+        typeof valueToParse === 'string'
+          ? parseFloat(
+              valueToParse
+                .replace(/< /g, '')
+                .replace(/%/g, '')
+                .replace(/\+/g, '')
+                .trim(),
+            )
+          : valueToParse;
+
+      return [parsedValue, color];
+    })
+    .filter(
+      ([numValue]) => typeof numValue === 'number' && !Number.isNaN(numValue),
+    ) as [number, string][];
 }
 
 export function getLayerGeometry(
@@ -41,11 +64,10 @@ export function getLayerGeometry(
   return 'unknown';
 }
 
-// TODO - load icons from within "src" to leverage compiler saftey
 const geometryIconSrc = {
-  point: 'images/icon_point.svg',
-  raster: 'images/icon_raster.svg',
-  polygon: 'images/icon_polygon.svg',
+  point: iconPoint,
+  raster: iconRaster,
+  polygon: iconPolygon,
 };
 
 export function getLayerGeometryIcon(layer: LayerType) {
@@ -85,42 +107,87 @@ export const addPopupParams = (
 
   const coordinates = getEvtCoords(evt);
 
-  const { dataField, featureInfoProps, title } = layer;
+  const {
+    dataField,
+    featureInfoTitle,
+    featureInfoProps,
+    title,
+    dataLabel,
+    displaySource,
+    legend,
+  } = layer;
 
   // adminLevelLayer uses data field by default.
   const propertyField: string = dataField
     ? `properties.${dataField}`
     : 'properties.data';
 
-  // by default add `dataField` to the tooltip if it is not within the feature_info_props dictionary.
-  if (!Object.keys(featureInfoProps || {}).includes(dataField)) {
-    dispatch(
-      addPopupData({
-        [title]: {
-          data: getRoundedData(get(feature, propertyField), t),
-          coordinates,
-        },
-      }),
-    );
+  // By default, we add `dataField` to the tooltip if it is not within the feature_info_props dictionary.
+  // If a custom dataLabel is provided, we'll make sure to use that before the value
+  // If displaySource is set to `legend_label`, use the matching legend label for the dataField.
+  const useCustomLabel = !!dataLabel || displaySource === 'legend_label';
+  if (
+    useCustomLabel ||
+    !Object.keys(featureInfoProps || {}).includes(dataField)
+  ) {
+    const customDisplayData =
+      displaySource === 'legend_label' &&
+      legend.find(
+        legendItem => legendItem.value === get(feature, propertyField),
+      )?.label;
+    const displayData = customDisplayData
+      ? `${t(`${customDisplayData}`)}`
+      : getRoundedData(get(feature, propertyField), t);
+
+    const popupDataRows: PopupData = {
+      ...(dataLabel ? { [title]: { data: null, coordinates } } : {}),
+      [dataLabel ?? title]: {
+        data: displayData,
+        coordinates,
+      },
+    };
+
+    dispatch(addPopupData(popupDataRows));
   }
 
   // Add feature_info_props as extra fields to the tooltip
+  let featureInfoPropsWithFallback = featureInfoProps || {};
+  if ('fallbackLayerKeys' in layer) {
+    layer.fallbackLayerKeys?.forEach(backupLayerKey => {
+      const layerDef = LayerDefinitions[
+        backupLayerKey
+      ] as AdminLevelDataLayerProps;
+
+      featureInfoPropsWithFallback = {
+        ...layerDef.featureInfoProps,
+        ...featureInfoPropsWithFallback,
+      };
+    });
+  }
+
+  // temporary fix for the admin level
+  const possibleAdminLevelData: PopupData = adminLevel
+    ? {
+        'Admin Level': {
+          data: feature.properties.adminLevel,
+          coordinates,
+        },
+      }
+    : {};
+
+  const featureInfoPropsData = getFeatureInfoPropsData(
+    featureInfoTitle,
+    featureInfoPropsWithFallback || {},
+    coordinates,
+    feature,
+  );
+
   dispatch(
     addPopupData({
-      // temporary fix for the admin level
-      ...(adminLevel
-        ? {
-            'Admin Level': {
-              data: feature.properties.adminLevel,
-              coordinates,
-            },
-          }
-        : {}),
-      ...getFeatureInfoPropsData(
-        layer.featureInfoProps || {},
-        coordinates,
-        feature,
-      ),
+      // Only if we're providing a custom label, put the data before admin level
+      ...(!useCustomLabel ? possibleAdminLevelData : {}),
+      ...featureInfoPropsData,
+      ...(useCustomLabel ? possibleAdminLevelData : {}),
     }),
   );
 };

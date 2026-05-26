@@ -1,18 +1,19 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import omit from 'lodash/omit';
-import { createStyles, WithStyles, withStyles } from '@material-ui/core';
+import { createStyles, makeStyles } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import {
   Notification,
   notificationsSelector,
   removeNotification,
 } from 'context/notificationStateSlice';
+import omit from 'lodash/omit';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 const AUTO_CLOSE_TIME = 10 * 1000;
 
-function Notifier({ classes }: NotifierProps) {
+function Notifier() {
   const dispatch = useDispatch();
+  const classes = useStyles();
   const notifications = useSelector(notificationsSelector);
   const [topOffset, setTopOffset] = useState(65);
 
@@ -66,26 +67,29 @@ function Notifier({ classes }: NotifierProps) {
     });
   }, [autoClose, notifications]);
 
+  // Don't show notifications on export view
+  if (window.location.pathname === '/export') {
+    return null;
+  }
+
   return (
     <div className={classes.notificationsContainer} style={{ top: topOffset }}>
-      {notifications.map(notification => {
-        return (
-          <Alert
-            variant="filled"
-            severity={notification.type}
-            key={notification.key}
-            onClose={handleClose(notification)}
-            className={classes.alert}
-          >
-            {notification.message}
-          </Alert>
-        );
-      })}
+      {notifications.map(notification => (
+        <Alert
+          variant="filled"
+          severity={notification.type}
+          key={notification.key}
+          onClose={handleClose(notification)}
+          className={classes.alert}
+        >
+          {notification.message}
+        </Alert>
+      ))}
     </div>
   );
 }
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     notificationsContainer: {
       left: '50%',
@@ -99,7 +103,7 @@ const styles = () =>
     alert: {
       marginBottom: '10px',
     },
-  });
+  }),
+);
 
-interface NotifierProps extends WithStyles<typeof styles> {}
-export default withStyles(styles)(Notifier);
+export default Notifier;

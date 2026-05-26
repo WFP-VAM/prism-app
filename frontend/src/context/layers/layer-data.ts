@@ -1,35 +1,43 @@
-import { createAsyncThunk, AsyncThunk } from '@reduxjs/toolkit';
+import { AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
+import { Extent } from 'components/MapView/Layers/raster-utils';
 import {
+  AnticipatoryActionLayerProps,
+  DateItem,
   DiscriminateUnion,
+  GeojsonLayerData,
   LayerType,
   PointLayerData,
   StaticRasterLayerProps,
 } from 'config/types';
-import { Extent } from 'components/MapView/Layers/raster-utils';
-
 import type { CreateAsyncThunkTypes, ThunkApi } from 'context/store';
+
 import {
-  fetchAdminLevelDataLayerData,
   AdminLevelDataLayerData,
+  fetchAdminLevelDataLayerData,
 } from './admin_level_data';
-import { fetchWCSLayerData, WMSLayerData } from './wms';
-import { fetchPointLayerData } from './point_data';
-import { BoundaryLayerData, fetchBoundaryLayerData } from './boundary';
-import { fetchImpactLayerData, ImpactLayerData } from './impact';
+import { BoundaryLayerData } from './boundary';
 import type { CompositeLayerData } from './composite_data';
 import { fetchCompositeLayerData } from './composite_data';
+import { fetchGeojsonLayerData } from './geojson';
+import { fetchImpactLayerData, ImpactLayerData } from './impact';
+import { fetchPointLayerData } from './point_data';
+import { fetchWCSLayerData, WMSLayerData } from './wms';
 
-export type LayerAcceptingDataType = Exclude<LayerType, StaticRasterLayerProps>;
+export type LayerAcceptingDataType = Exclude<
+  LayerType,
+  StaticRasterLayerProps | AnticipatoryActionLayerProps
+>;
 
 type LayerSpecificDataTypes = {
   boundary: BoundaryLayerData;
   wms: WMSLayerData;
   impact: ImpactLayerData;
-  // eslint-disable-next-line camelcase
+
   admin_level_data: AdminLevelDataLayerData;
-  // eslint-disable-next-line camelcase
+
   point_data: PointLayerData | AdminLevelDataLayerData;
   composite: CompositeLayerData;
+  geojson_polygon: GeojsonLayerData;
 };
 
 export interface LayerData<L extends LayerAcceptingDataType> {
@@ -43,6 +51,7 @@ export interface LayerDataParams<T extends LayerAcceptingDataType> {
   layer: T;
   extent?: Extent;
   date?: number;
+  availableDates?: DateItem[];
 
   [key: string]: any;
 }
@@ -64,8 +73,9 @@ type LayerDataMap = {
 export type LayerDataTypes = LayerDataMap[keyof LayerDataMap];
 
 // Define a type for the object mapping layer type to fetch function
+// Exclude boundary since it uses global cache instead of Redux
 type LayerLoaders = {
-  [key in LayerAcceptingDataType['type']]: LazyLoader<
+  [key in Exclude<LayerAcceptingDataType['type'], 'boundary'>]: LazyLoader<
     DiscriminateUnion<LayerAcceptingDataType, 'type', key>
   >;
 };
@@ -84,13 +94,21 @@ export const loadLayerData: LoadLayerDataFuncType = createAsyncThunk<
   CreateAsyncThunkTypes
 >('mapState/loadLayerData', async (params, thunkApi) => {
   const { layer, extent, date } = params;
+
+  // Boundary layers should use the global boundary cache instead of Redux
+  if (layer.type === 'boundary') {
+    throw new Error(
+      'Boundary layers should use boundaryCache.getBoundaryData() instead of loadLayerData()',
+    );
+  }
+
   const layerLoaders: LayerLoaders = {
-    boundary: fetchBoundaryLayerData,
     impact: fetchImpactLayerData,
     wms: fetchWCSLayerData,
     admin_level_data: fetchAdminLevelDataLayerData,
     point_data: fetchPointLayerData,
     composite: fetchCompositeLayerData,
+    geojson_polygon: fetchGeojsonLayerData,
   };
   const lazyLoad: LazyLoader<any> = layerLoaders[layer.type];
   try {

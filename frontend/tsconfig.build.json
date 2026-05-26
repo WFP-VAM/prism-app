@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.base.json",
+  "include": ["src"],
+  "exclude": [
+    "cypress.config.ts",
+    "cypress",
+    "node_modules",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}

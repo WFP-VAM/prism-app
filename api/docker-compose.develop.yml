@@ -1,28 +1,83 @@
-version: "3"
-
 services:
-  api:
+  db:
+    image: kartoza/postgis:16-3
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=!ChangeMe!
+    ports:
+      - "54321:5432"
     volumes:
-      - ./app:/app
-      # Use these to run the app in development mode and update depedencies
+      - db_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h localhost -U postgres -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  api:
+    env_file:
+      - path: .env
+        required: false
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./prism_app:/prism_app
       - ./pyproject.toml:/pyproject.toml
       - ./poetry.lock:/poetry.lock
+      - ./alembic.ini:/alembic.ini:ro
+      - ./alembic:/alembic:ro
+      - ./scripts:/scripts:ro
     build:
       context: ./
       dockerfile: ./Dockerfile
     ports:
       - "80:80"
     environment:
-      - "RUN=uvicorn app.main:app --host 0.0.0.0 --port 80"
-      - POSTGRES_HOST=host.docker.internal
+      - "RUN=uvicorn prism_app.main:app --host 0.0.0.0 --port 80"
+      # Clear URL so DB_URI is built from POSTGRES_* variables below (!getenv(...) or format(...) in database.py).
+      - PRISM_ALERTS_DATABASE_URL=
+      - POSTGRES_HOST=db
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
-      - POSTGRES_PORT=54321
+      - POSTGRES_PORT=5432
       - POSTGRES_PASSWORD=!ChangeMe!
       - KOBO_PASSWORD=${KOBO_PASSWORD:?"Add a password to access KOBO data."}
       - KOBO_USERNAME=${KOBO_USERNAME:?"Add a user to access KOBO data."}
       - STAC_AWS_ACCESS_KEY_ID=${STAC_AWS_ACCESS_KEY_ID}
       - STAC_AWS_SECRET_ACCESS_KEY=${STAC_AWS_SECRET_ACCESS_KEY}
-    command: uvicorn app.main:app --host 0.0.0.0 --port 80 --reload
+      - GOOGLE_FLOODS_API_KEY=${GOOGLE_FLOODS_API_KEY}
+      - VECTOR_STORE_ACCESS_KEY_ID=${VECTOR_STORE_ACCESS_KEY_ID}
+      - VECTOR_STORE_SECRET_ACCESS_KEY=${VECTOR_STORE_SECRET_ACCESS_KEY}
+      - VECTOR_STORE_DEFAULT_REGION=${VECTOR_STORE_DEFAULT_REGION}
+    command: uvicorn prism_app.main:app --host 0.0.0.0 --port 80 --reload
     # Infinite loop, to keep it alive, for debugging
     # command: bash -c "while true; do echo 'sleeping...' && sleep 10; done"
+  
+  export_map_worker:
+    shm_size: "2gb"
+    volumes:
+      - ./prism_app:/prism_app
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.export-map-worker
+    environment:
+      - PRISM_ALERTS_DATABASE_URL=
+      - POSTGRES_HOST=host.docker.internal
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_PORT=54321
+      - POSTGRES_PASSWORD=!ChangeMe!
+      - EXPORT_MAP_S3_BUCKET=${EXPORT_MAP_S3_BUCKET:-}
+      - EXPORT_MAP_LOCAL_OUTPUT_DIR=${EXPORT_MAP_LOCAL_OUTPUT_DIR:-}
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
+      - BROWSER_POOL_SIZE=1
+    working_dir: /prism_app
+    command: [ "python", "-m", "prism_app.worker.export_map_worker" ]
+
+volumes:
+  db_data:

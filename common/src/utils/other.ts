@@ -9,7 +9,7 @@ export function formatUrl(
   }: { debug?: boolean; sortParams?: boolean } = {
     debug: false,
     sortParams: true,
-  }
+  },
 ): string {
   const url = new URL(baseUrl);
   const keys = Object.keys(params);
@@ -37,7 +37,7 @@ export function hasLayerId(
   target: string,
   { strict = false }: { strict?: boolean } = {
     strict: false,
-  }
+  },
 ): boolean {
   return !!ids.find((id) => {
     const { full, short, namespace } = parseName(id);

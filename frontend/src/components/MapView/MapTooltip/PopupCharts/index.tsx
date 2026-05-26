@@ -1,8 +1,9 @@
-import { AdminLevelType, AdminCodeString } from 'config/types';
+import { AdminCodeString, AdminLevelType } from 'config/types';
 import { getWMSLayersWithChart } from 'config/utils';
 import { layersSelector } from 'context/mapStateSlice/selectors';
 import React, { memo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+
 import PopupAnalysisCharts from './PopupAnalysisCharts';
 import PopupChartsList from './PopupChartsList';
 
@@ -20,51 +21,53 @@ interface PopupChartsProps {
   availableAdminLevels: AdminLevelType[];
 }
 
-const PopupCharts = ({
-  setPopupTitle,
-  adminCode,
-  adminSelectorKey,
-  adminLevel,
-  setAdminLevel,
-  adminLevelsNames,
-  availableAdminLevels,
-}: PopupChartsProps) => {
-  const mapState = useSelector(layersSelector);
+const PopupCharts = memo(
+  ({
+    setPopupTitle,
+    adminCode,
+    adminSelectorKey,
+    adminLevel,
+    setAdminLevel,
+    adminLevelsNames,
+    availableAdminLevels,
+  }: PopupChartsProps) => {
+    const mapState = useSelector(layersSelector);
 
-  const mapStateIds = mapState.map(item => item.id);
-  const filteredChartLayers = chartLayers.filter(item =>
-    mapStateIds.includes(item.id),
-  );
+    const mapStateIds = mapState.map(item => item.id);
+    const filteredChartLayers = chartLayers.filter(item =>
+      mapStateIds.includes(item.id),
+    );
 
-  useEffect(() => {
-    if (adminLevel !== undefined) {
-      setPopupTitle(adminLevelsNames().join(', '));
-    } else {
-      setPopupTitle('');
-    }
-  }, [adminLevel, adminLevelsNames, setPopupTitle]);
+    useEffect(() => {
+      if (adminLevel !== undefined) {
+        setPopupTitle(adminLevelsNames().join(', '));
+      } else {
+        setPopupTitle('');
+      }
+    }, [adminLevel, adminLevelsNames, setPopupTitle]);
 
-  return (
-    <>
-      {adminLevel === undefined && (
-        <PopupChartsList
-          adminLevelsNames={adminLevelsNames}
-          availableAdminLevels={availableAdminLevels}
-          filteredChartLayers={filteredChartLayers}
-          setAdminLevel={setAdminLevel}
-        />
-      )}
-      {adminLevel !== undefined && (
-        <PopupAnalysisCharts
-          adminLevelsNames={adminLevelsNames}
-          adminCode={adminCode}
-          adminSelectorKey={adminSelectorKey}
-          adminLevel={adminLevel}
-          filteredChartLayers={filteredChartLayers}
-        />
-      )}
-    </>
-  );
-};
+    return (
+      <>
+        {adminLevel === undefined && (
+          <PopupChartsList
+            adminLevelsNames={adminLevelsNames}
+            availableAdminLevels={availableAdminLevels}
+            filteredChartLayers={filteredChartLayers}
+            setAdminLevel={setAdminLevel}
+          />
+        )}
+        {adminLevel !== undefined && (
+          <PopupAnalysisCharts
+            adminLevelsNames={adminLevelsNames}
+            adminCode={adminCode}
+            adminSelectorKey={adminSelectorKey}
+            adminLevel={adminLevel}
+            filteredChartLayers={filteredChartLayers}
+          />
+        )}
+      </>
+    );
+  },
+);
 
-export default memo(PopupCharts);
+export default PopupCharts;

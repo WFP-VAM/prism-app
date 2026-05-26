@@ -1,31 +1,10 @@
-import React, {
-  ComponentType,
-  createElement,
-  memo,
-  SetStateAction,
-  useCallback,
-  Dispatch,
-  useMemo,
-  useState,
-} from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import AnalysisLayer from 'components/MapView/Layers/AnalysisLayer';
-import SelectionLayer from 'components/MapView/Layers/SelectionLayer';
-import MapTooltip from 'components/MapView/MapTooltip';
-import { setMap } from 'context/mapStateSlice';
-import { appConfig } from 'config';
-import useMapOnClick from 'components/MapView/useMapOnClick';
-import { setBounds, setLocation } from 'context/mapBoundaryInfoStateSlice';
-import { DiscriminateUnion, LayerKey, LayerType } from 'config/types';
-import { setLoadingLayerIds } from 'context/mapTileLoadingStateSlice';
-import {
-  firstBoundaryOnView,
-  getLayerMapId,
-  isLayerOnView,
-} from 'utils/map-utils';
-import { mapSelector } from 'context/mapStateSlice/selectors';
+import 'maplibre-gl/dist/maplibre-gl.css';
+
+import { useMediaQuery, useTheme } from '@material-ui/core';
 import {
   AdminLevelDataLayer,
+  AnticipatoryActionDroughtLayer,
+  AnticipatoryActionStormLayer,
   BoundaryLayer,
   CompositeLayer,
   ImpactLayer,
@@ -33,89 +12,156 @@ import {
   StaticRasterLayer,
   WMSLayer,
 } from 'components/MapView/Layers';
-import useLayers from 'utils/layers-utils';
+import AnalysisLayer from 'components/MapView/Layers/AnalysisLayer';
+import SelectionLayer from 'components/MapView/Layers/SelectionLayer';
+import MapTooltip from 'components/MapView/MapTooltip';
+import useMapOnClick from 'components/MapView/useMapOnClick';
+import { appConfig } from 'config';
+import {
+  DashboardMode,
+  DiscriminateUnion,
+  LayerKey,
+  LayerType,
+  Panel,
+} from 'config/types';
+import { dashboardModeSelector } from 'context/dashboardStateSlice';
+import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { setBounds, setLocation } from 'context/mapBoundaryInfoStateSlice';
+import { setLoadingLayerIds } from 'context/mapTileLoadingStateSlice';
+import {
+  LngLatBoundsLike,
+  Map as MaplibreMap,
+  MapSourceDataEvent,
+} from 'maplibre-gl';
+import React, {
+  ComponentType,
+  createElement,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import MapGL, { MapEvent, MapRef } from 'react-map-gl/maplibre';
-import { MapSourceDataEvent, Map as MaplibreMap } from 'maplibre-gl';
+import { useDispatch, useSelector } from 'react-redux';
+import useLayers from 'utils/layers-utils';
+import {
+  getFirstBoundaryLayerMapId,
+  getLayerBeforeId,
+  layerUsesSymbolAnchorOnly,
+  stackLayersForMapPaintOrder,
+} from 'utils/map-layer-before-utils';
+import { useMapState } from 'utils/useMapState';
 
-import 'maplibre-gl/dist/maplibre-gl.css';
-
-interface MapComponentProps {
-  setIsAlertFormOpen: Dispatch<SetStateAction<boolean>>;
-  panelHidden: boolean;
-}
+import AnticipatoryActionFloodLayer from '../Layers/AnticipatoryActionFloodLayer';
+import GeojsonDataLayer from '../Layers/GeojsonDataLayer';
+import { mapStyle } from './utils';
 
 type LayerComponentsMap<U extends LayerType> = {
   [T in U['type']]: {
-    component: ComponentType<{ layer: DiscriminateUnion<U, 'type', T> }>;
+    component: ComponentType<{
+      layer: DiscriminateUnion<U, 'type', T>;
+      mapRef: MapRef;
+    }>;
   };
 };
 
-export const mapStyle = new URL(
-  process.env.REACT_APP_DEFAULT_STYLE ||
-    'https://api.maptiler.com/maps/0ad52f6b-ccf2-4a36-a9b8-7ebd8365e56f/style.json?key=y2DTSu9yWiu755WByJr3',
-);
-
+/**
+ * Layer component mapping - KEEP IN SYNC with MapExport/MapExportLayout.tsx
+ *
+ * If you add a new layer type, ensure it's also added to MapExportLayout
+ * so that layer rendering works correctly in both the main map view and
+ * the export/print preview.
+ */
 const componentTypes: LayerComponentsMap<LayerType> = {
   boundary: { component: BoundaryLayer },
   wms: { component: WMSLayer },
   admin_level_data: { component: AdminLevelDataLayer },
   impact: { component: ImpactLayer },
   point_data: { component: PointDataLayer },
+  geojson_polygon: { component: GeojsonDataLayer },
   static_raster: { component: StaticRasterLayer },
   composite: { component: CompositeLayer },
+  anticipatory_action_drought: {
+    component: AnticipatoryActionDroughtLayer,
+  },
+  anticipatory_action_storm: {
+    component: AnticipatoryActionStormLayer,
+  },
+  anticipatory_action_flood: {
+    component: AnticipatoryActionFloodLayer,
+  },
 };
 
 const {
-  map: { boundingBox, minZoom, maxZoom, maxBounds },
+  map: { minZoom, maxZoom, maxBounds },
 } = appConfig;
 
+interface MapComponentProps {
+  children?: React.ReactNode;
+  hideMapLabels?: boolean;
+}
+
 const MapComponent = memo(
-  ({ setIsAlertFormOpen, panelHidden }: MapComponentProps) => {
+  ({ children, hideMapLabels = false }: MapComponentProps = {}) => {
     const mapRef = React.useRef<MapRef>(null);
-
+    const theme = useTheme();
+    const smDown = useMediaQuery(theme.breakpoints.down('sm'));
     const dispatch = useDispatch();
-
     const { selectedLayers, boundaryLayerId } = useLayers();
 
-    const selectedMap = useSelector(mapSelector);
+    const mapState = useMapState();
+    const selectedMap = mapState?.maplibreMap();
+    const isGlobalMap = mapState?.isGlobalMap;
+    const dashboardMode = useSelector(dashboardModeSelector);
+    const tabValue = useSelector(leftPanelTabValueSelector);
+
+    const panelHidden = tabValue === Panel.None;
 
     const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
       'label_airport',
     );
 
-    const fitBoundsOptions = useMemo(() => {
-      return {
+    const fitBoundsOptions = useMemo(
+      () => ({
         duration: 0,
-        padding: {
-          bottom: 150, // room for dates.
-          left: panelHidden ? 30 : 500, // room for the left panel if active.
-          right: 60,
-          top: 70,
-        },
-      };
-    }, [panelHidden]);
+        padding: isGlobalMap
+          ? {
+              // Main map view - original padding
+              bottom: 150, // room for dates.
+              left: panelHidden ? 30 : 500, // room for the left panel if active.
+              right: 60,
+              top: 70,
+            }
+          : {
+              // MapBlock has different layout - left panel is 1/3 width, date selector below
+              bottom: 125, // room for date selector below
+              left: 20, // minimal padding since left panel is separate
+              right: 150,
+              top: 70,
+            },
+      }),
+      [panelHidden, isGlobalMap],
+    );
 
-    const showBoundaryInfo = useMemo(() => {
-      return JSON.parse(process.env.REACT_APP_SHOW_MAP_INFO || 'false');
-    }, []);
+    const showBoundaryInfo = useMemo(
+      () => JSON.parse(process.env.REACT_APP_SHOW_MAP_INFO || 'false'),
+      [],
+    );
 
     const onDragEnd = useCallback(
-      (map: MaplibreMap) => {
-        return () => {
-          const bounds = map.getBounds();
-          dispatch(setBounds(bounds));
-        };
+      (map: MaplibreMap) => () => {
+        const bounds = map.getBounds();
+        dispatch(setBounds(bounds));
       },
       [dispatch],
     );
 
     const onZoomEnd = useCallback(
-      (map: MaplibreMap) => {
-        return () => {
-          const bounds = map.getBounds();
-          const newZoom = map.getZoom();
-          dispatch(setLocation({ bounds, zoom: newZoom }));
-        };
+      (map: MaplibreMap) => () => {
+        const bounds = map.getBounds();
+        const newZoom = map.getZoom();
+        dispatch(setLocation({ bounds, zoom: newZoom }));
       },
       [dispatch],
     );
@@ -131,34 +177,30 @@ const MapComponent = memo(
     );
 
     const mapSourceListener = useCallback(
-      (layerIds: Set<LayerKey>) => {
-        return (e: MapSourceDataEvent) => {
-          if (!e.sourceId || !e.sourceId.startsWith('source-')) {
-            return;
-          }
-          const layerId = e.sourceId.substring('source-'.length) as LayerKey;
-          const included = layerIds.has(layerId);
-          if (!included && !e.isSourceLoaded) {
-            layerIds.add(layerId);
-            dispatch(setLoadingLayerIds([...layerIds]));
-          } else if (included && e.isSourceLoaded) {
-            layerIds.delete(layerId);
-            dispatch(setLoadingLayerIds([...layerIds]));
-          }
-        };
+      (layerIds: Set<LayerKey>) => (e: MapSourceDataEvent) => {
+        if (!e.sourceId || !e.sourceId.startsWith('source-')) {
+          return;
+        }
+        const layerId = e.sourceId.substring('source-'.length) as LayerKey;
+        const included = layerIds.has(layerId);
+        if (!included && !e.isSourceLoaded) {
+          layerIds.add(layerId);
+          dispatch(setLoadingLayerIds([...layerIds]));
+        } else if (included && e.isSourceLoaded) {
+          layerIds.delete(layerId);
+          dispatch(setLoadingLayerIds([...layerIds]));
+        }
       },
       [dispatch],
     );
 
     const idleMapListener = useCallback(
-      (layerIds: Set<LayerKey>) => {
-        return () => {
-          if (layerIds.size <= 0) {
-            return;
-          }
-          layerIds.clear();
-          dispatch(setLoadingLayerIds([...layerIds]));
-        };
+      (layerIds: Set<LayerKey>) => () => {
+        if (layerIds.size <= 0) {
+          return;
+        }
+        layerIds.clear();
+        dispatch(setLoadingLayerIds([...layerIds]));
       },
       [dispatch],
     );
@@ -176,70 +218,134 @@ const MapComponent = memo(
 
     // TODO: maplibre: Maybe replace this with the map provider
     // Saves a reference to base MaplibreGl Map object in case child layers need access beyond the React wrappers.
-    const onMapLoad = (e: MapEvent) => {
+    const onMapLoad = useCallback(
+      (_e: MapEvent) => {
+        if (!mapRef.current) {
+          return;
+        }
+        const map = mapRef.current.getMap();
+
+        const { layers } = map.getStyle();
+        // Find the first symbol on the map to make sure we add boundary layers below them.
+        setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
+        mapState.actions.setMap(() => mapRef.current?.getMap() || undefined);
+        if (showBoundaryInfo) {
+          watchBoundaryChange(map);
+        }
+        trackLoadingLayers(map);
+      },
+      [mapState, showBoundaryInfo, watchBoundaryChange, trackLoadingLayers],
+    );
+
+    const stackLayers = useMemo(
+      () => stackLayersForMapPaintOrder(selectedLayers),
+      [selectedLayers],
+    );
+
+    const firstBoundaryId = getFirstBoundaryLayerMapId(selectedMap);
+
+    const mapOnClick = useMapOnClick(boundaryLayerId, mapRef.current);
+
+    const getBeforeId = useCallback(
+      (index: number, aboveBoundaries: boolean = false) =>
+        getLayerBeforeId(index, {
+          aboveBoundaries,
+          stackLayers,
+          map: selectedMap,
+          firstSymbolId,
+          firstBoundaryLayerMapId: firstBoundaryId,
+        }),
+      [firstBoundaryId, firstSymbolId, stackLayers, selectedMap],
+    );
+
+    // Handler to filter out label layers when hideMapLabels is true
+    const onMapLoadWithLabelFilter = useCallback(
+      (e: MapEvent) => {
+        onMapLoad(e);
+        if (hideMapLabels && mapRef.current) {
+          const map = mapRef.current.getMap();
+          const style = map.getStyle();
+          if (style && style.layers) {
+            const filteredLayers = style.layers.filter(
+              layer => !layer.id.includes('label'),
+            );
+            // Update style with filtered layers
+            map.setStyle({
+              ...style,
+              layers: filteredLayers,
+            });
+          }
+        }
+      },
+      [hideMapLabels, onMapLoad],
+    );
+
+    // Update map labels visibility when hideMapLabels prop changes
+    useEffect(() => {
       if (!mapRef.current) {
         return;
       }
       const map = mapRef.current.getMap();
-
-      const { layers } = map.getStyle();
-      // Find the first symbol on the map to make sure we add boundary layers below them.
-      setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
-      dispatch(setMap(() => mapRef.current?.getMap() || undefined));
-      if (showBoundaryInfo) {
-        watchBoundaryChange(map);
+      const style = map.getStyle();
+      if (!style || !style.layers) {
+        return;
       }
-      trackLoadingLayers(map);
-    };
 
-    const boundaryId = firstBoundaryOnView(selectedMap);
+      const labelLayers = style.layers.filter(layer =>
+        layer.id.includes('label'),
+      );
 
-    const firstBoundaryId = boundaryId && getLayerMapId(boundaryId);
-
-    const mapOnClick = useCallback(() => {
-      return useMapOnClick(setIsAlertFormOpen, boundaryLayerId, mapRef.current);
-    }, [boundaryLayerId, setIsAlertFormOpen]);
-
-    const getBeforeId = useCallback(
-      (index: number) => {
-        if (index === 0) {
-          return firstSymbolId;
+      labelLayers.forEach(layer => {
+        if (map.getLayer(layer.id)) {
+          map.setLayoutProperty(
+            layer.id,
+            'visibility',
+            hideMapLabels ? 'none' : 'visible',
+          );
         }
-        const previousLayerId = selectedLayers[index - 1].id;
-        if (isLayerOnView(selectedMap, previousLayerId)) {
-          return getLayerMapId(previousLayerId);
-        }
-        return firstBoundaryId || firstSymbolId;
-      },
-      [firstBoundaryId, firstSymbolId, selectedLayers, selectedMap],
-    );
+      });
+    }, [hideMapLabels]);
+
+    // Use captured viewport if available and not in edit mode
+    const initialBounds =
+      !isGlobalMap &&
+      dashboardMode !== DashboardMode.EDIT &&
+      mapState.capturedViewport
+        ? mapState.capturedViewport
+        : mapState.minMapBounds;
 
     return (
       <MapGL
+        key={smDown ? 'mobile' : 'desktop'}
         ref={mapRef}
+        // preserveDrawingBuffer is required for the map to be exported as an image. Used in reportDoc.tsx
+        preserveDrawingBuffer
         dragRotate={false}
         minZoom={minZoom}
         maxZoom={maxZoom}
         initialViewState={{
-          bounds: boundingBox,
-          fitBoundsOptions: { padding: fitBoundsOptions.padding },
+          bounds: initialBounds as LngLatBoundsLike,
+          fitBoundsOptions: smDown
+            ? undefined
+            : { padding: fitBoundsOptions.padding },
         }}
-        mapStyle={mapStyle.toString()}
-        onLoad={onMapLoad}
-        onClick={mapOnClick()}
+        mapStyle={mapStyle}
+        onLoad={onMapLoadWithLabelFilter}
+        onClick={mapOnClick}
         maxBounds={maxBounds}
       >
-        {selectedLayers.map((layer, index) => {
+        {stackLayers.map((layer, index) => {
           const { component } = componentTypes[layer.type];
           return createElement(component as any, {
             key: layer.id,
             layer,
-            before: getBeforeId(index),
+            before: getBeforeId(index, layerUsesSymbolAnchorOnly(layer)),
           });
         })}
-        <AnalysisLayer before={firstBoundaryId} />
+        <AnalysisLayer before={firstBoundaryId} mapRef={mapRef} />
         <SelectionLayer before={firstSymbolId} />
         <MapTooltip />
+        {children}
       </MapGL>
     );
   },

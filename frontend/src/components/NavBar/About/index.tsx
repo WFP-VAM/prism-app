@@ -1,11 +1,16 @@
-import React, { useCallback, useState, MouseEvent, memo, useMemo } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Typography, Grid } from '@material-ui/core';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { useDispatch } from 'react-redux';
-import { appConfig } from 'config';
+import {
+  Button,
+  IconButton,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@material-ui/core';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import ContentDialog from 'components/NavBar/ContentDialog';
+import { appConfig } from 'config';
 import { useSafeTranslation } from 'i18n';
+import { memo, MouseEvent, useCallback, useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { loadLayerContent } from 'utils/load-layer-utils';
 
 const About = memo(() => {
@@ -13,6 +18,9 @@ const About = memo(() => {
   const { t } = useSafeTranslation();
   const { aboutPath } = appConfig;
   const dispatch = useDispatch();
+  const theme = useTheme();
+  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
+  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
 
   const href = aboutPath ? '' : 'https://innovation.wfp.org/project/prism';
 
@@ -39,19 +47,41 @@ const About = memo(() => {
     return <ContentDialog content={content} handleClose={handleDialogClose} />;
   }, [content, handleDialogClose]);
 
+  const icon = (
+    <InfoOutlinedIcon style={{ fontSize: mdUp ? '1.25rem' : '1.5rem' }} />
+  );
+
   return (
-    <Grid item key="About">
-      <Typography
-        variant="body2"
-        component="a"
-        target="_blank"
-        href={href}
-        onClick={handler}
-      >
-        <FontAwesomeIcon icon={faInfoCircle} /> {t('About')}
-      </Typography>
+    <>
+      {smDown ? (
+        <IconButton
+          key="About"
+          component={aboutPath ? 'button' : 'a'}
+          target={aboutPath ? undefined : '_blank'}
+          href={aboutPath ? undefined : href}
+          onClick={handler}
+          style={{ color: 'white' }}
+          aria-label={t('About')}
+        >
+          {icon}
+        </IconButton>
+      ) : (
+        <Button
+          key="About"
+          style={{ fontSize: '1.25rem', color: 'white' }}
+          component={aboutPath ? 'button' : 'a'}
+          target={aboutPath ? undefined : '_blank'}
+          href={aboutPath ? undefined : href}
+          onClick={handler}
+          startIcon={icon}
+        >
+          <Typography color="secondary" style={{ textTransform: 'none' }}>
+            {t('About')}
+          </Typography>
+        </Button>
+      )}
       {renderedContentDialog}
-    </Grid>
+    </>
   );
 });
 

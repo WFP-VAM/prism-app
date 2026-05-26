@@ -3,20 +3,6 @@
   "countryAdmin0Id": 273,
   "WFPAuthRequired": false,
   "alertFormActive": false,
-  "icons": {
-    "vulnerability": "icon_vulnerable.png",
-    "exposure": "icon_basemap.png",
-    "hazards": "icon_climate.png",
-    "flood": "icon_flood.png",
-    "risk": "icon_impact.png",
-    "capacity": "icon_capacity.png",
-    "tropical_storms": "icon_tropical_storm.png",
-    "storms_and_floods": "icon_tropical_storm.png",
-    "tables": "icon_table.png",
-    "rainfall": "icon_rain.png",
-    "vegetation": "icon_veg.png",
-    "temperature": "icon_climate.png"
-  },
   "map": {
     "latitude": 19.467,
     "longitude": 96.371,
@@ -30,34 +16,12 @@
   ],
   "serversUrls": {
     "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms",
-      "https://ogcserver.gis.wfp.org/geoserver/prism/wms"
+      "https://api.earthobservation.vam.wfp.org/ows/wms"
     ]
   },
   "categories": {
-    "storms_and_floods": {
-      "floods": ["flood_extent"],
-      "tropical_storms": [
-        {
-          "group_title": "Tropical Storms",
-          "activate_all": true,
-          "layers": [
-            {
-              "id": "adamts_buffers",
-              "label": "Wind buffers",
-              "main": true
-            },
-            {
-              "id": "adamts_nodes",
-              "label": "Nodes"
-            },
-            {
-              "id": "adamts_tracks",
-              "label": "Tracks"
-            }
-          ]
-        }
-      ]
+    "floods": {
+      "floods": ["flood_extent"]
     },
     "rainfall": {
       "rainfall_amount": [
@@ -145,6 +109,10 @@
               "main": true
             },
             {
+              "id": "spi_2m",
+              "label": "2-month"
+            },
+            {
               "id": "spi_3m",
               "label": "3-month",
               "main": false
@@ -170,7 +138,7 @@
       "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
-          "group_title": "Rainfall categories:",
+          "group_title": "Number of days of rainfall:",
           "activate_all": false,
           "layers": [
             {

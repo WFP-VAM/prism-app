@@ -3,16 +3,10 @@
   "countryAdmin0Id": 271,
   "alertFormActive": false,
   "enableNavigationDropdown": true,
+  "anticipatoryActionDroughtUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/aa_probabilities_triggers_zwe.csv",
+  "anticipatoryActionDroughtStagingUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/staging/aa_probabilities_triggers_zwe.csv",
   "serversUrls": {
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
-  },
-  "icons": {
-    "rainfall": "icon_rain.png",
-    "vegetation": "icon_veg.png",
-    "temperature": "icon_climate.png",
-    "risk": "icon_impact.png",
-    "tropical_storms": "icon_tropical_storm.png",
-    "vulnerability": "icon_vulnerable.png"
   },
   "map": {
     "boundingBox": [25.26, -22.27, 32.85, -15.51]
@@ -55,8 +49,8 @@
               "label": "6-month"
             },
             {
-            "id": "precip_blended_7m",
-            "label": "7-month"
+              "id": "precip_blended_7m",
+              "label": "7-month"
             }
           ]
         },
@@ -100,7 +94,11 @@
           ]
         }
       ],
-      "forecasts": ["daily_rainfall_forecast", "dekad_rainfall_forecast", "dekad_rainfall_anomaly_forecast"],
+      "forecasts": [
+        "daily_rainfall_forecast",
+        "dekad_rainfall_forecast",
+        "dekad_rainfall_anomaly_forecast"
+      ],
       "global_rainfall_products": [
         {
           "group_title": "CHIRPS rainfall aggregate",
@@ -180,6 +178,10 @@
               "id": "spi_1m",
               "label": "1-month",
               "main": true
+            },
+            {
+              "id": "spi_2m",
+              "label": "2-month"
             },
             {
               "id": "spi_3m",

@@ -1,15 +1,15 @@
-import appConfig from './prism.json';
 import indonesiaRawLayers from './layers.json';
-import indonesiaRawTables from './tables.json';
+import appConfig from './prism.json';
 
 const rawReports = {};
+// Country-specific translation overrides shared translation
 const translation = {};
 
 export default {
   appConfig,
   rawLayers: indonesiaRawLayers,
-  rawTables: indonesiaRawTables,
+  rawTables: {},
   rawReports,
   translation,
-  defaultBoundariesFile: 'idn_admin_boundaries.json',
+  defaultBoundariesFile: 'idn_bnd_adm2_WFP.json',
 };

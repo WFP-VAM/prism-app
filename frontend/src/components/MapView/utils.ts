@@ -1,24 +1,40 @@
-import { orderBy, snakeCase, values } from 'lodash';
-import { TFunction } from 'i18next';
-import { Dispatch } from 'redux';
-import { LayerDefinitions } from 'config/utils';
-import { formatFeatureInfo } from 'utils/server-utils';
+import { appConfig } from 'config';
 import {
+  AdminCodeString,
+  AdminLevelType,
   AvailableDates,
+  BoundaryLayerProps,
   FeatureInfoObject,
+  FeatureInfoProps,
   FeatureInfoType,
+  FeatureInfoVisibility,
+  FeatureTitleObject,
   LayerType,
   LegendDefinitionItem,
   WMSLayerProps,
 } from 'config/types';
-import { TableData } from 'context/tableStateSlice';
-import { getUrlKey, UrlLayerKey } from 'utils/url-utils';
-import { addNotification } from 'context/notificationStateSlice';
-import { LocalError } from 'utils/error-utils';
-import { Column, quoteAndEscapeCell } from 'utils/analysis-utils';
+import {
+  getBoundaryLayersByAdminLevel,
+  isAnticipatoryActionLayer,
+  LayerDefinitions,
+} from 'config/utils';
 import { TableRow } from 'context/analysisResultStateSlice';
-import { AdminBoundaryParams, EWSParams } from 'context/datasetStateSlice';
+import { LayerData } from 'context/layers/layer-data';
+import { addNotification } from 'context/notificationStateSlice';
+import { loadAvailableDatesForLayer } from 'context/serverStateSlice';
+import type { AppDispatch } from 'context/store';
+import { TableData } from 'context/tableStateSlice';
+import { PopupData } from 'context/tooltipStateSlice';
+import { GeoJsonProperties } from 'geojson';
+import { TFunction } from 'i18next';
+import { orderBy, snakeCase, values } from 'lodash';
 import { MapRef, Point } from 'react-map-gl/maplibre';
+import { Column, quoteAndEscapeCell } from 'utils/analysis-utils';
+import { LocalError } from 'utils/error-utils';
+import { formatFeatureInfo } from 'utils/server-utils';
+import { getTitle } from 'utils/title-utils';
+import { getUrlKey, UrlLayerKey } from 'utils/url-utils';
+
 import { getExtent } from './Layers/raster-utils';
 
 // TODO: maplibre: fix feature
@@ -88,12 +104,11 @@ export const downloadToFile = (
   link.click();
 };
 
-export const buildCsvFileName = (items: string[]) => {
-  return items
+export const buildCsvFileName = (items: string[]) =>
+  items
     .filter(x => !!x)
     .map(snakeCase)
     .join('_');
-};
 
 const sortKeys = (featureInfoProps: FeatureInfoObject): string[][] => {
   const [dataKeys, metaDataKeys] = Object.entries(featureInfoProps).reduce(
@@ -136,15 +151,23 @@ const getData = (
   coordinates: any,
 ) =>
   Object.keys(properties)
-    .filter(prop => keys.includes(prop))
+    .filter(prop => keys.includes(prop) && prop !== 'title')
     .reduce((obj, item) => {
+      const itemProps = featureInfoProps[item] as FeatureInfoProps;
+      if (
+        itemProps.visibility === FeatureInfoVisibility.IfDefined &&
+        !properties[item]
+      ) {
+        return obj;
+      }
+
       return {
         ...obj,
-        [featureInfoProps[item].dataTitle]: {
+        [itemProps.dataTitle]: {
           data: formatFeatureInfo(
             properties[item],
-            featureInfoProps[item].type,
-            featureInfoProps[item].labelMap,
+            itemProps.type,
+            itemProps.labelMap,
           ),
           coordinates,
         },
@@ -153,14 +176,16 @@ const getData = (
 
 // TODO: maplibre: fix feature
 export function getFeatureInfoPropsData(
+  featureInfoTitle: FeatureTitleObject | undefined,
   featureInfoProps: FeatureInfoObject,
   coordinates: number[],
   feature: any,
-) {
+): PopupData {
   const [keys, metaDataKeys] = sortKeys(featureInfoProps);
   const { properties } = feature;
 
   return {
+    ...getTitle(featureInfoTitle, properties),
     ...getMetaData(featureInfoProps, metaDataKeys, properties),
     ...getData(featureInfoProps, keys, properties, coordinates),
   };
@@ -185,19 +210,33 @@ export const getLegendItemLabel = (
   return t(value);
 };
 
-export const generateUniqueTableKey = (activityName: string) => {
-  return `${activityName}_${Date.now()}`;
-};
+export const generateUniqueTableKey = (activityName: string) =>
+  `${activityName}_${Date.now()}`;
 
+/**
+ * Determine if available dates for the layer are ready for use.
+ * Return true/false if they are, or are loading.
+ * throw an error if it is not possible to load them at all.
+ */
 export const checkLayerAvailableDatesAndContinueOrRemove = (
   layer: LayerType,
   serverAvailableDates: AvailableDates,
+  layersLoadingDates: string[],
   removeLayerFromUrl: (layerKey: UrlLayerKey, layerId: string) => void,
-  dispatch: Dispatch,
-) => {
+  dispatch: AppDispatch,
+): boolean => {
   const { id: layerId } = layer as any;
-  if (serverAvailableDates[layerId]?.length !== 0) {
-    return;
+  if (serverAvailableDates[layerId] === undefined) {
+    if (!layersLoadingDates.includes(layerId)) {
+      dispatch(loadAvailableDatesForLayer(layerId));
+    }
+    return false;
+  }
+  if (
+    serverAvailableDates[layer.id] !== undefined ||
+    isAnticipatoryActionLayer(layer.type)
+  ) {
+    return true;
   }
   const urlLayerKey = getUrlKey(layer);
   removeLayerFromUrl(urlLayerKey, layer.id);
@@ -216,16 +255,13 @@ export const checkLayerAvailableDatesAndContinueOrRemove = (
 const filterActiveGroupedLayers = (
   selectedLayer: LayerType,
   categoryLayer: LayerType,
-): boolean | undefined => {
-  return (
-    (categoryLayer?.group?.activateAll &&
-      categoryLayer?.group?.layers.some(
-        l => l.id === selectedLayer.id && l.main,
-      )) ||
-    (!categoryLayer?.group?.activateAll &&
-      categoryLayer?.group?.layers.some(l => l.id === selectedLayer.id))
-  );
-};
+): boolean | undefined =>
+  (categoryLayer?.group?.activateAll &&
+    categoryLayer?.group?.layers.some(
+      l => l.id === selectedLayer.id && l.main,
+    )) ||
+  (!categoryLayer?.group?.activateAll &&
+    categoryLayer?.group?.layers.some(l => l.id === selectedLayer.id));
 
 /**
  * Filters the active layers in the layers panel
@@ -234,24 +270,17 @@ const filterActiveGroupedLayers = (
 export const filterActiveLayers = (
   selectedLayer: LayerType,
   categoryLayer: LayerType,
-): boolean | undefined => {
-  return (
-    selectedLayer.id === categoryLayer.id ||
-    filterActiveGroupedLayers(selectedLayer, categoryLayer)
-  );
-};
+): boolean | undefined =>
+  selectedLayer.id === categoryLayer.id ||
+  filterActiveGroupedLayers(selectedLayer, categoryLayer);
 
-export const formatIntersectPercentageAttribute = (
-  /* eslint-disable camelcase */
-  data: {
-    intersect_percentage?: string | number;
-    stats_intersect_area?: string | number;
-    [key: string]: any;
-  },
-) => {
-  /* eslint-disable fp/no-mutation */
+export const formatIntersectPercentageAttribute = (data: {
+  intersect_percentage?: string | number;
+  stats_intersect_area?: string | number;
+  [key: string]: any;
+}) => {
   let transformedData = data;
-  if (parseInt((data.intersect_percentage as unknown) as string, 10) >= 0) {
+  if (parseInt(data.intersect_percentage as unknown as string, 10) >= 0) {
     transformedData = {
       ...transformedData,
       intersect_percentage: 100 * ((data.intersect_percentage as number) || 0),
@@ -263,7 +292,7 @@ export const formatIntersectPercentageAttribute = (
       stats_intersect_area: data.stats_intersect_area,
     };
   }
-  /* eslint-enable fp/no-mutation */
+
   return transformedData;
 };
 
@@ -277,24 +306,21 @@ const getExposureAnalysisTableCellValue = (
   return quoteAndEscapeCell(value);
 };
 
-export const getExposureAnalysisColumnsToRender = (columns: Column[]) => {
-  return columns.reduce(
-    (acc: { [key: string]: string | number }, column: Column) => {
-      return {
-        ...acc,
-        [column.id]: column.label,
-      };
-    },
+export const getExposureAnalysisColumnsToRender = (columns: Column[]) =>
+  columns.reduce(
+    (acc: { [key: string]: string | number }, column: Column) => ({
+      ...acc,
+      [column.id]: column.label,
+    }),
     {},
   );
-};
 
 export const getExposureAnalysisTableDataRowsToRender = (
   columns: Column[],
   tableData: TableRow[],
-) => {
-  return tableData.map((tableRowData: TableRow) => {
-    return columns.reduce(
+) =>
+  tableData.map((tableRowData: TableRow) =>
+    columns.reduce(
       (acc: { [key: string]: string | number }, column: Column) => {
         const value = tableRowData[column.id];
         return {
@@ -303,19 +329,39 @@ export const getExposureAnalysisTableDataRowsToRender = (
         };
       },
       {},
-    );
-  });
-};
+    ),
+  );
 
 export const getExposureAnalysisTableData = (
   tableData: TableRow[],
   sortColumn: Column['id'],
   sortOrder: 'asc' | 'desc',
-) => {
-  return orderBy(tableData, sortColumn, sortOrder);
-};
+) => orderBy(tableData, sortColumn, sortOrder);
 
-export const isAdminBoundary = (
-  params: AdminBoundaryParams | EWSParams,
-): params is AdminBoundaryParams =>
-  (params as AdminBoundaryParams).id !== undefined;
+/**
+ * Gets properties from layer data based on ID and admin level.
+ *
+ * @param layerData - The boundary layer data
+ * @param id - Optional admin code string identifier
+ * @param adminLevel - Optional administrative level type
+ * @returns GeoJSON properties for the matching feature
+ */
+const { multiCountry } = appConfig;
+const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
+const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
+
+export const getProperties = (
+  layerData: LayerData<BoundaryLayerProps>['data'],
+  id?: AdminCodeString,
+  adminLevel?: AdminLevelType,
+): GeoJsonProperties => {
+  if (id === undefined || adminLevel === undefined) {
+    return layerData.features[0].properties;
+  }
+  const indexLevel = multiCountry ? adminLevel : adminLevel - 1;
+  const adminCode = boundaryLayer.adminLevelCodes[indexLevel];
+  const item = layerData.features.find(
+    elem => elem.properties && elem.properties[adminCode] === id,
+  );
+  return item?.properties ?? {};
+};

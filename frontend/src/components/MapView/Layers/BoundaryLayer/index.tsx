@@ -1,30 +1,29 @@
-import React, { memo, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { BoundaryLayerProps, MapEventWrapFunctionProps } from 'config/types';
-import { LayerData } from 'context/layers/layer-data';
-import { showPopup } from 'context/tooltipStateSlice';
-import { Source, Layer, MapLayerMouseEvent } from 'react-map-gl/maplibre';
-import { setBoundaryRelationData } from 'context/mapStateSlice';
 import {
-  loadBoundaryRelations,
   BoundaryRelationData,
+  loadBoundaryRelations,
 } from 'components/Common/BoundaryDropdown/utils';
+import { BoundaryLayerProps, MapEventWrapFunctionProps } from 'config/types';
 import { isPrimaryBoundaryLayer } from 'config/utils';
 import { toggleSelectedBoundary } from 'context/mapSelectionLayerStateSlice';
-import { layerDataSelector } from 'context/mapStateSlice/selectors';
-import { getFullLocationName } from 'utils/name-utils';
-
+import { setBoundaryRelationData } from 'context/mapStateSlice';
+import { showPopup } from 'context/tooltipStateSlice';
 import { languages } from 'i18n';
 import { Map as MaplibreMap } from 'maplibre-gl';
+import { memo, useEffect, useState } from 'react';
+import { Layer, MapLayerMouseEvent, Source } from 'react-map-gl/maplibre';
+import { useDispatch } from 'react-redux';
 import {
   findFeature,
   getEvtCoords,
   getLayerMapId,
   useMapCallback,
 } from 'utils/map-utils';
+import { getFullLocationName } from 'utils/name-utils';
+import { initPmtilesProtocol } from 'utils/pmtiles-utils';
+import { useBoundaryData } from 'utils/useBoundaryData';
+import { useMapState } from 'utils/useMapState';
 
 function onToggleHover(cursor: string, targetMap: MaplibreMap) {
-  // eslint-disable-next-line no-param-reassign, fp/no-mutation
   targetMap.getCanvas().style.cursor = cursor;
 }
 
@@ -33,71 +32,91 @@ interface ComponentProps {
   before?: string;
 }
 
-const onClick = ({
-  dispatch,
-  layer,
-  t,
-}: MapEventWrapFunctionProps<BoundaryLayerProps>) => (
-  evt: MapLayerMouseEvent,
-) => {
-  const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
-  if (!isPrimaryLayer) {
-    return;
-  }
+const onClick =
+  ({ dispatch, layer }: MapEventWrapFunctionProps<BoundaryLayerProps>) =>
+  (evt: MapLayerMouseEvent) => {
+    const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
+    if (!isPrimaryLayer) {
+      return;
+    }
 
-  const layerId = getLayerMapId(layer.id, 'fill');
+    const layerId = getLayerMapId(layer.id, 'fill');
 
-  const feature = findFeature(layerId, evt);
-  if (!feature) {
-    return;
-  }
+    const feature = findFeature(layerId, evt);
+    if (!feature) {
+      return;
+    }
 
-  // send the selection to the map selection layer. No-op if selection mode isn't on.
-  dispatch(toggleSelectedBoundary(feature.properties[layer.adminCode]));
+    // send the selection to the map selection layer. No-op if selection mode isn't on.
+    dispatch(toggleSelectedBoundary(feature.properties[layer.adminCode]));
 
-  const coordinates = getEvtCoords(evt);
-  const locationSelectorKey = layer.adminCode;
-  const locationAdminCode = feature.properties[layer.adminCode];
-  const locationName = getFullLocationName(layer.adminLevelNames, feature);
+    const coordinates = getEvtCoords(evt);
+    const locationSelectorKey = layer.adminCode;
+    const locationAdminCode = feature.properties[layer.adminCode];
+    const locationName = getFullLocationName(layer.adminLevelNames, feature);
 
-  const locationLocalName = getFullLocationName(
-    layer.adminLevelLocalNames,
-    feature,
-  );
+    const locationLocalName = getFullLocationName(
+      layer.adminLevelLocalNames,
+      feature,
+    );
 
-  dispatch(
-    showPopup({
-      coordinates,
-      locationSelectorKey,
-      locationAdminCode,
-      locationName,
-      locationLocalName,
-    }),
-  );
-};
+    dispatch(
+      showPopup({
+        coordinates,
+        locationSelectorKey,
+        locationAdminCode,
+        locationName,
+        locationLocalName,
+      }),
+    );
+  };
 
 const onMouseEnter = () => (evt: MapLayerMouseEvent) =>
   onToggleHover('pointer', evt.target);
 const onMouseLeave = () => (evt: MapLayerMouseEvent) =>
   onToggleHover('', evt.target);
 
-const BoundaryLayer = ({ layer, before }: ComponentProps) => {
-  const dispatch = useDispatch();
+const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
+  const selectedMap = useMapState()?.maplibreMap();
+  const [isZoomLevelSufficient, setIsZoomLevelSufficient] = useState(
+    !layer.minZoom,
+  );
 
-  const boundaryLayer = useSelector(layerDataSelector(layer.id)) as
-    | LayerData<BoundaryLayerProps>
-    | undefined;
-  const { data } = boundaryLayer || {};
+  const { data } = useBoundaryData(layer.id, selectedMap);
 
-  const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
   const layerId = getLayerMapId(layer.id, 'fill');
 
   useMapCallback('click', layerId, layer, onClick);
   useMapCallback('mouseenter', layerId, layer, onMouseEnter);
   useMapCallback('mouseleave', layerId, layer, onMouseLeave);
 
+  // Control the zoom level threshold above which the layer will not be displayed
   useEffect(() => {
-    if (!data || !isPrimaryLayer) {
+    if (!selectedMap || !layer.minZoom) {
+      return undefined;
+    }
+    const checkZoom = () => {
+      const zoom = selectedMap.getZoom();
+      setIsZoomLevelSufficient(zoom > layer.minZoom!);
+    };
+    checkZoom(); // Initial check
+    selectedMap.on('zoomend', checkZoom);
+    return () => {
+      selectedMap.off('zoomend', checkZoom);
+    };
+  }, [selectedMap, layer.minZoom]);
+
+  useEffect(() => {
+    if (layer.format === 'pmtiles') {
+      return initPmtilesProtocol();
+    }
+    return undefined;
+  }, [layer.format]);
+
+  const dispatch = useDispatch();
+  const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
+  useEffect(() => {
+    if (!data || !isPrimaryLayer || layer.format !== 'pmtiles') {
       return;
     }
 
@@ -117,6 +136,38 @@ const BoundaryLayer = ({ layer, before }: ComponentProps) => {
     dispatch(setBoundaryRelationData(dataDict));
   }, [data, dispatch, layer, isPrimaryLayer]);
 
+  if (layer.format === 'pmtiles') {
+    return (
+      <Source
+        id={`source-${layer.id}`}
+        type="vector"
+        url={`pmtiles://${layer.path}`}
+      >
+        <Layer
+          id={getLayerMapId(layer.id)}
+          type="line"
+          source={`source-${layer.id}`}
+          source-layer={layer.layerName}
+          paint={{
+            ...layer.styles.line,
+            'line-opacity': isZoomLevelSufficient
+              ? layer.styles.line?.['line-opacity']
+              : 0,
+          }}
+          beforeId={before}
+        />
+        <Layer
+          id={layerId}
+          type="fill"
+          source={`source-${layer.id}`}
+          source-layer={layer.layerName}
+          paint={layer.styles.fill}
+          beforeId={before}
+        />
+      </Source>
+    );
+  }
+
   if (!data) {
     return null; // boundary layer hasn't loaded yet. We load it on init inside MapView. We can't load it here since its a dependency of other layers.
   }
@@ -127,7 +178,12 @@ const BoundaryLayer = ({ layer, before }: ComponentProps) => {
       <Layer
         id={getLayerMapId(layer.id)}
         type="line"
-        paint={layer.styles.line}
+        paint={{
+          ...layer.styles.line,
+          'line-opacity': isZoomLevelSufficient
+            ? layer.styles.line?.['line-opacity']
+            : 0, // Adjust opacity based on zoom level
+        }}
         beforeId={before}
       />
       <Layer
@@ -138,6 +194,6 @@ const BoundaryLayer = ({ layer, before }: ComponentProps) => {
       />
     </Source>
   );
-};
+});
 
-export default memo(BoundaryLayer);
+export default BoundaryLayer;

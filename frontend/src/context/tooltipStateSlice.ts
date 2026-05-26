@@ -1,11 +1,22 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { merge } from 'lodash';
 import { AdminCodeString } from 'config/types';
+import { merge } from 'lodash';
+
 import type { RootState } from './store';
+
+export interface PopupTitleData {
+  title: {
+    prop: string;
+    data: number | string | null;
+    context?: {
+      [key: string]: string;
+    };
+  };
+}
 
 export interface PopupData {
   [key: string]: {
-    data: number | string;
+    data: number | string | null;
     coordinates: GeoJSON.Position;
   };
 }
@@ -22,7 +33,7 @@ export interface MapTooltipState {
   locationSelectorKey: string;
   locationName: string;
   locationLocalName: string;
-  data: PopupData & PopupMetaData;
+  data: (PopupData & PopupMetaData) | PopupTitleData;
   showing: boolean;
   wmsGetFeatureInfoLoading: boolean;
 }

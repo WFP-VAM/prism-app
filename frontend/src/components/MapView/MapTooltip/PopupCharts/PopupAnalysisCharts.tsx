@@ -1,28 +1,31 @@
-import { WithStyles, createStyles, withStyles } from '@material-ui/core';
+import { createStyles, makeStyles } from '@material-ui/core';
 import ChartSection from 'components/MapView/LeftPanel/ChartsPanel/ChartSection';
 import { oneYearInMs } from 'components/MapView/LeftPanel/utils';
+import { appConfig } from 'config';
 import {
+  AdminCodeString,
   AdminLevelType,
   BoundaryLayerProps,
   WMSLayerProps,
-  AdminCodeString,
 } from 'config/types';
 import { getBoundaryLayersByAdminLevel } from 'config/utils';
 import { BoundaryLayerData } from 'context/layers/boundary';
 import { LayerData } from 'context/layers/layer-data';
 import {
   dateRangeSelector,
-  layerDataSelector,
+  mapSelector,
 } from 'context/mapStateSlice/selectors';
-import React, { useRef } from 'react';
-import { useSelector } from 'react-redux';
-import { appConfig } from 'config';
 import { useSafeTranslation } from 'i18n';
+import { useRef } from 'react';
+import { useSelector } from 'react-redux';
+import { getLayerMapId } from 'utils/map-utils';
+import { useBoundaryData } from 'utils/useBoundaryData';
+
 import PopupChartWrapper from './PopupChartWrapper';
 
 const { country } = appConfig;
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     chartContainer: {
       display: 'flex',
@@ -34,7 +37,8 @@ const styles = () =>
       width: '400px',
       flexGrow: 1,
     },
-  });
+  }),
+);
 
 const boundaryLayer = getBoundaryLayersByAdminLevel();
 
@@ -43,11 +47,13 @@ const getProperties = (
   adminCode: AdminCodeString,
   adminSelectorKey: string,
 ) => {
+  // Normalize both values to strings for comparison (admin codes might be stored as numbers)
+  const normalizedAdminCode = String(adminCode);
   const features = layerData.features.find(
     elem =>
       elem.properties &&
       elem.properties[adminSelectorKey] &&
-      elem.properties[adminSelectorKey] === adminCode,
+      String(elem.properties[adminSelectorKey]) === normalizedAdminCode,
   );
 
   if (!features) {
@@ -56,48 +62,63 @@ const getProperties = (
   return features.properties;
 };
 
-interface PopupChartProps extends WithStyles<typeof styles> {
+interface PopupChartProps {
   filteredChartLayers: WMSLayerProps[];
   adminCode: AdminCodeString;
   adminSelectorKey: string;
   adminLevel: AdminLevelType;
   adminLevelsNames: () => string[];
 }
-const PopupAnalysisCharts = ({
+
+function PopupAnalysisCharts({
   filteredChartLayers,
   adminCode,
   adminSelectorKey,
   adminLevel,
   adminLevelsNames,
-  classes,
-}: PopupChartProps) => {
+}: PopupChartProps) {
+  const classes = useStyles();
   const { t } = useSafeTranslation();
   const dataForCsv = useRef<{ [key: string]: any[] }>({});
-  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
-    | LayerData<BoundaryLayerProps>
-    | undefined;
-  const { data } = boundaryLayerData || {};
+  const { data } = useBoundaryData(boundaryLayer.id);
+  const map = useSelector(mapSelector);
 
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const chartEndDate = selectedDate || new Date().getTime();
   const chartStartDate = chartEndDate - oneYearInMs;
 
+  const layerId = getLayerMapId(boundaryLayer.id, 'fill');
+  const features = map?.queryRenderedFeatures(undefined, { layers: [layerId] });
+
+  // Normalize adminCode to string for comparison
+  const normalizedAdminCode = String(adminCode);
+  const adminProperties =
+    data && boundaryLayer?.format !== 'pmtiles'
+      ? getProperties(data as BoundaryLayerData, adminCode, adminSelectorKey)
+      : (features?.find(
+          f =>
+            f.properties?.[adminSelectorKey] &&
+            String(f.properties[adminSelectorKey]) === normalizedAdminCode,
+        )?.properties ?? null);
+
   if (filteredChartLayers.length < 1) {
     return null;
   }
 
+  // Don't render charts if adminProperties is null to prevent errors
+  if (!adminProperties) {
+    return null;
+  }
+
   return (
-    <PopupChartWrapper>
+    <PopupChartWrapper key={adminProperties?.id}>
       {filteredChartLayers.map(filteredChartLayer => (
         <div key={filteredChartLayer.id} className={classes.chartContainer}>
           <div className={classes.chartSection}>
             <ChartSection
+              key={`${filteredChartLayer.id}-${adminCode}-${adminLevel}-${chartStartDate}-${chartEndDate}`}
               chartLayer={filteredChartLayer}
-              adminProperties={getProperties(
-                data as BoundaryLayerData,
-                adminCode,
-                adminSelectorKey,
-              )}
+              adminProperties={adminProperties}
               adminLevel={adminLevel}
               startDate={chartStartDate}
               endDate={chartEndDate}
@@ -113,6 +134,6 @@ const PopupAnalysisCharts = ({
       ))}
     </PopupChartWrapper>
   );
-};
+}
 
-export default withStyles(styles)(PopupAnalysisCharts);
+export default PopupAnalysisCharts;

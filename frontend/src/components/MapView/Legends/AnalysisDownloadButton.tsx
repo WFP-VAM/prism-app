@@ -1,6 +1,12 @@
 import { IconButton, Menu, MenuItem, Tooltip } from '@material-ui/core';
-import React, { useCallback, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import GetAppIcon from '@material-ui/icons/GetApp';
+import { usePostHog } from '@posthog/react';
+import {
+  downloadToFile,
+  getExposureAnalysisColumnsToRender,
+  getExposureAnalysisTableData,
+  getExposureAnalysisTableDataRowsToRender,
+} from 'components/MapView/utils';
 import {
   analysisResultSelector,
   analysisResultSortByKeySelector,
@@ -11,6 +17,9 @@ import {
   TableRow,
 } from 'context/analysisResultStateSlice';
 import { useSafeTranslation } from 'i18n';
+import { snakeCase } from 'lodash';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   BaselineLayerResult,
   downloadCSVFromTableData,
@@ -19,15 +28,7 @@ import {
   PolygonAnalysisResult,
   useAnalysisTableColumns,
 } from 'utils/analysis-utils';
-import {
-  downloadToFile,
-  getExposureAnalysisColumnsToRender,
-  getExposureAnalysisTableData,
-  getExposureAnalysisTableDataRowsToRender,
-} from 'components/MapView/utils';
-import { snakeCase } from 'lodash';
 import { getExposureAnalysisCsvData } from 'utils/csv-utils';
-import GetAppIcon from '@material-ui/icons/GetApp';
 
 function AnalysisDownloadButton() {
   const analysisResult = useSelector(analysisResultSelector);
@@ -43,10 +44,9 @@ function AnalysisDownloadButton() {
   );
   const analysisDefinition = useSelector(getCurrentDefinition);
 
-  const [
-    downloadMenuAnchorEl,
-    setDownloadMenuAnchorEl,
-  ] = useState<HTMLElement | null>(null);
+  const posthog = usePostHog();
+  const [downloadMenuAnchorEl, setDownloadMenuAnchorEl] =
+    useState<HTMLElement | null>(null);
 
   const handleDownloadMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setDownloadMenuAnchorEl(event.currentTarget);
@@ -61,19 +61,20 @@ function AnalysisDownloadButton() {
     exposureAnalysisResultSortByKey,
     exposureAnalysisResultSortOrder,
   );
-  const exposureAnalysisColumnsToRender = getExposureAnalysisColumnsToRender(
-    translatedColumns,
-  );
-  const exposureAnalysisTableRowsToRender = getExposureAnalysisTableDataRowsToRender(
-    translatedColumns,
-    exposureAnalysisTableData,
-  );
+  const exposureAnalysisColumnsToRender =
+    getExposureAnalysisColumnsToRender(translatedColumns);
+  const exposureAnalysisTableRowsToRender =
+    getExposureAnalysisTableDataRowsToRender(
+      translatedColumns,
+      exposureAnalysisTableData,
+    );
 
   const { t } = useSafeTranslation();
 
-  const featureCollection = useMemo(() => {
-    return analysisResult?.featureCollection;
-  }, [analysisResult]);
+  const featureCollection = useMemo(
+    () => analysisResult?.featureCollection,
+    [analysisResult],
+  );
 
   const analysisDate = useMemo(() => {
     if (analysisResult instanceof BaselineLayerResult) {
@@ -97,6 +98,9 @@ function AnalysisDownloadButton() {
   }, [analysisDate, analysisResult, t]);
 
   const handleAnalysisDownloadGeoJson = useCallback((): void => {
+    posthog?.capture('analysis_downloaded_geojson', {
+      file_name: fileName ?? 'prism_extract',
+    });
     downloadToFile(
       {
         content: JSON.stringify(featureCollection),
@@ -106,13 +110,16 @@ function AnalysisDownloadButton() {
       'application/json',
     );
     handleDownloadMenuClose();
-  }, [featureCollection, fileName]);
+  }, [featureCollection, fileName, posthog]);
 
   const handleAnalysisDownloadCsv = useCallback((): void => {
     handleDownloadMenuClose();
     if (!analysisResult) {
       return;
     }
+    posthog?.capture('analysis_downloaded_csv', {
+      analysis_type: analysisResult.constructor.name,
+    });
     if (analysisResult instanceof ExposedPopulationResult) {
       downloadToFile(
         {
@@ -144,12 +151,13 @@ function AnalysisDownloadButton() {
     analysisResultSortOrder,
     exposureAnalysisColumnsToRender,
     exposureAnalysisTableRowsToRender,
+    posthog,
     translatedColumns,
   ]);
 
   return (
     <>
-      <Tooltip title="Download">
+      <Tooltip title={t('Download') as string}>
         <IconButton onClick={handleDownloadMenuOpen} size="small">
           <GetAppIcon fontSize="small" />
         </IconButton>

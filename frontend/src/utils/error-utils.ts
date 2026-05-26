@@ -2,7 +2,7 @@ export class LocalError extends Error {
   constructor(public readonly message: string) {
     super(message);
     // We are extending a built-in class
-    // eslint-disable-next-line fp/no-mutating-methods
+
     Object.setPrototypeOf(this, LocalError.prototype);
   }
 

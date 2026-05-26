@@ -1,4 +1,4 @@
-/* eslint-disable no-bitwise, fp/no-mutation */
+import { kebabCase } from 'lodash';
 
 // https://stackoverflow.com/a/7616484
 export const stringHash = (s: string): string => {
@@ -15,4 +15,8 @@ export const stringHash = (s: string): string => {
   }
 
   return hash.toString();
+};
+
+export const generateSlugFromTitle = (title: string): string => {
+  return kebabCase(title.trim());
 };

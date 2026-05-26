@@ -1,12 +1,14 @@
 import { IconButton, Tooltip } from '@material-ui/core';
 import { ImageAspectRatioOutlined } from '@material-ui/icons';
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { usePostHog } from '@posthog/react';
+import { Extent } from 'components/MapView/Layers/raster-utils';
+import { generateUniqueTableKey } from 'components/MapView/utils';
 import {
   AggregationOperations,
   ExposedPopulationDefinition,
   GeometryType,
   LayerType,
+  Panel,
 } from 'config/types';
 import { ReportsDefinitions, TableKey } from 'config/utils';
 import {
@@ -17,11 +19,10 @@ import {
   setCurrentDataDefinition,
   setExposureLayerId,
 } from 'context/analysisResultStateSlice';
-import { Panel, setTabValue } from 'context/leftPanelStateSlice';
+import { setTabValue } from 'context/leftPanelStateSlice';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
-import { Extent } from 'components/MapView/Layers/raster-utils';
-import { generateUniqueTableKey } from 'components/MapView/utils';
+import { useDispatch, useSelector } from 'react-redux';
 
 function ExposureAnalysisOption({
   layer,
@@ -31,13 +32,13 @@ function ExposureAnalysisOption({
 }: ExposureAnalysisOptionProps) {
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
+  const posthog = usePostHog();
   const analysisResult = useSelector(analysisResultSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
   const foundReports = Object.keys(ReportsDefinitions).filter(
-    reportDefinitionKey => {
-      return ReportsDefinitions[reportDefinitionKey].layerId === layer.id;
-    },
+    reportDefinitionKey =>
+      ReportsDefinitions[reportDefinitionKey].layerId === layer.id,
   );
   if (!exposure || !foundReports.length) {
     return null;
@@ -68,6 +69,12 @@ function ExposureAnalysisOption({
       extent,
       ...hazardLayer,
     };
+
+    posthog?.capture('exposure_analysis_run', {
+      layer_id: layer.id,
+      layer_title: layer.title,
+      date: selectedDate,
+    });
 
     // Set the exposure layer id in redux so that we can have access to the reports configurations through the layer id
     dispatch(setExposureLayerId(layer.id));

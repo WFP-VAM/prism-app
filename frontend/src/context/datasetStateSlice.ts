@@ -1,17 +1,21 @@
-import moment from 'moment';
-import { orderBy } from 'lodash';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Dispatch } from 'redux';
 import { ChartType, DatasetField } from 'config/types';
-import { DEFAULT_DATE_FORMAT } from 'utils/name-utils';
+import { orderBy } from 'lodash';
+import { getFormattedDate, getTimeInMilliseconds } from 'utils/date-utils';
 import {
   EWSSensorData,
   EWSTriggersConfig,
   fetchEWSDataPointsByLocation,
 } from 'utils/ews-utils';
 import { fetchWithTimeout } from 'utils/fetch-with-timeout';
-import { getDateFormat, getMillisecondsFromISO } from 'utils/date-utils';
-import type { CreateAsyncThunkTypes, RootState } from './store';
+import {
+  FloodSensorData,
+  GoogleFloodParams,
+  GoogleFloodTriggersConfig,
+} from 'utils/google-flood-utils';
+import { DateFormat } from 'utils/name-utils';
+
+import type { AppDispatch, CreateAsyncThunkTypes, RootState } from './store';
 import { TableData } from './tableStateSlice';
 
 export type EWSParams = {
@@ -33,7 +37,7 @@ type EWSDataPointsRequestParams = EWSParams & {
 type DatasetState = {
   data?: TableData;
   isLoading: boolean;
-  datasetParams?: AdminBoundaryParams | EWSParams;
+  datasetParams?: AdminBoundaryParams | EWSParams | GoogleFloodParams;
   chartType: ChartType;
   title: string;
 };
@@ -48,6 +52,7 @@ type BoundaryProps = {
   code: number;
   level: string;
   name: string;
+  localName: string;
 };
 
 type BoundaryPropsDict = { [key: string]: BoundaryProps };
@@ -69,7 +74,8 @@ export type AdminBoundaryRequestParams = AdminBoundaryParams & {
 
 export type DatasetRequestParams =
   | AdminBoundaryRequestParams
-  | EWSDataPointsRequestParams;
+  | EWSDataPointsRequestParams
+  | GoogleFloodParams;
 
 type DataItem = {
   date: number;
@@ -87,8 +93,8 @@ export const createTableData = (
   results: DataItem[],
   format: TableDataFormat,
 ): TableData => {
-  const momentFormat =
-    format === TableDataFormat.DATE ? DEFAULT_DATE_FORMAT : 'YYYY-MM-DD HH:mm';
+  const dateFormat =
+    format === TableDataFormat.DATE ? DateFormat.Default : DateFormat.DateTime;
 
   const sortedRows = orderBy(results, item => item.date).map(row => {
     const valuesObj = Object.values(row.values).reduce(
@@ -100,7 +106,7 @@ export const createTableData = (
     );
 
     return {
-      [CHART_DATA_PREFIXES.date]: moment.utc(row.date).format(momentFormat),
+      [CHART_DATA_PREFIXES.date]: getFormattedDate(row.date, dateFormat),
       ...valuesObj,
     };
   });
@@ -122,7 +128,7 @@ export const createTableData = (
 
 export const loadEWSDataset = async (
   params: EWSDataPointsRequestParams,
-  dispatch: Dispatch,
+  dispatch: AppDispatch,
 ): Promise<TableData> => {
   const { date, externalId, triggerLevels, baseUrl } = params;
 
@@ -136,8 +142,11 @@ export const loadEWSDataset = async (
   const results: DataItem[] = dataPoints.map(item => {
     const [measureDate, value] = item.value;
 
+    // offset back from UTC to local time so that the date is displayed correctly
+    // i.e. in Cambodia Time as it is received.
+    const offset = new Date().getTimezoneOffset();
     return {
-      date: getMillisecondsFromISO(measureDate),
+      date: getTimeInMilliseconds(measureDate) - offset * 60 * 1000,
       values: { measure: value.toString() },
     };
   });
@@ -161,7 +170,69 @@ export const loadEWSDataset = async (
     EWSConfig,
   };
 
-  return new Promise<TableData>(resolve => resolve(tableDataWithEWSConfig));
+  return new Promise<TableData>(resolve => {
+    resolve(tableDataWithEWSConfig);
+  });
+};
+
+export const loadGoogleFloodDataset = async (
+  params: GoogleFloodParams,
+  dispatch: AppDispatch,
+): Promise<TableData> => {
+  const { gaugeId, triggerLevels, detailUrl } = params;
+
+  const url = `${detailUrl}?gauge_ids=${gaugeId}`;
+
+  let dataPoints: { [key: string]: FloodSensorData[] } = {};
+  try {
+    const resp = await fetchWithTimeout(
+      url,
+      dispatch,
+      {},
+      `Request failed for fetching Google Flood data points by location at ${url}`,
+    );
+
+    dataPoints = await resp.json();
+  } catch (error) {
+    console.error(error);
+  }
+
+  const results: DataItem[] = dataPoints[gaugeId].map(item => {
+    const [measureDate, value] = item.value;
+    // offset back from UTC to local time so that the date is displayed correctly
+    // i.e. in Cambodia Time as it is received.
+    const offset = new Date().getTimezoneOffset();
+    return {
+      date: getTimeInMilliseconds(measureDate) - offset * 60 * 1000,
+      values: { Measure: value.toString() },
+    };
+  });
+
+  const tableData = createTableData(results, TableDataFormat.DATE);
+
+  // Handle null triggerLevels (some gauges don't have gauge model data)
+  const GoogleFloodConfig = triggerLevels
+    ? Object.entries(triggerLevels).reduce((acc, [key, value]) => {
+        if (value === null) {
+          return acc;
+        }
+        const obj = {
+          ...GoogleFloodTriggersConfig[key],
+          values: tableData.rows.map(() => value),
+        };
+
+        return { ...acc, [key]: obj };
+      }, {})
+    : {};
+
+  const tableDataWithGoogleFloodConfig: TableData = {
+    ...tableData,
+    GoogleFloodConfig,
+  };
+
+  return new Promise<TableData>(resolve => {
+    resolve(tableDataWithGoogleFloodConfig);
+  });
 };
 
 type HDCResponse = {
@@ -179,7 +250,7 @@ export const fetchHDC = async (
   url: string,
   datasetFields: DatasetField[],
   params: { [key: string]: any },
-  dispatch: Dispatch,
+  dispatch: AppDispatch,
 ): Promise<DataItem[]> => {
   const requestParamsStr = Object.entries(params)
     .map(([key, value]) => `${key}=${value}`)
@@ -200,11 +271,10 @@ export const fetchHDC = async (
     `Request failed to get HDC data at ${url}?${requestParamsStr}`,
   );
 
-  // eslint-disable-next-line fp/no-mutation
   responseJson = await response.json();
 
   const dates: number[] = responseJson?.date?.map((date: string) =>
-    getMillisecondsFromISO(date),
+    getTimeInMilliseconds(date),
   );
 
   return dates?.map((date, index) => {
@@ -236,10 +306,10 @@ const getVamParam = (serverLayerName: string): string => {
 
 export const loadAdminBoundaryDataset = async (
   params: AdminBoundaryRequestParams,
-  dispatch: Dispatch,
+  dispatch: AppDispatch,
 ): Promise<TableData | undefined> => {
-  const endDateStr = getDateFormat(params.endDate, 'default');
-  const startDateStr = getDateFormat(params.startDate, 'default');
+  const endDateStr = getFormattedDate(params.endDate, 'default');
+  const startDateStr = getFormattedDate(params.startDate, 'default');
 
   const {
     url: hdcUrl,
@@ -251,7 +321,7 @@ export const loadAdminBoundaryDataset = async (
 
   const hdcRequestParams = {
     level,
-    admin_id: adminCode,
+    id_code: adminCode,
     coverage: 'full',
     vam: getVamParam(serverLayerName),
     start: startDateStr,
@@ -266,7 +336,9 @@ export const loadAdminBoundaryDataset = async (
   );
 
   const tableData = createTableData(results, TableDataFormat.DATE);
-  return new Promise<TableData>(resolve => resolve(tableData));
+  return new Promise<TableData>(resolve => {
+    resolve(tableData);
+  });
 };
 
 export const loadDataset = createAsyncThunk<
@@ -276,9 +348,16 @@ export const loadDataset = createAsyncThunk<
 >(
   'datasetState/loadDataset',
   async (params: DatasetRequestParams, { dispatch }) => {
-    return (params as AdminBoundaryRequestParams).id
-      ? loadAdminBoundaryDataset(params as AdminBoundaryRequestParams, dispatch)
-      : loadEWSDataset(params as EWSDataPointsRequestParams, dispatch);
+    if ((params as AdminBoundaryRequestParams).id) {
+      return loadAdminBoundaryDataset(
+        params as AdminBoundaryRequestParams,
+        dispatch,
+      );
+    }
+    if ((params as EWSDataPointsRequestParams).date) {
+      return loadEWSDataset(params as EWSDataPointsRequestParams, dispatch);
+    }
+    return loadGoogleFloodDataset(params as GoogleFloodParams, dispatch);
   },
 );
 
@@ -326,6 +405,32 @@ export const datasetResultStateSlice = createSlice({
         title: chartTitle,
       };
     },
+    setGoogleFloodParams: (
+      state,
+      { payload }: PayloadAction<GoogleFloodParams>,
+    ): DatasetState => {
+      const {
+        gaugeId,
+        triggerLevels,
+        detailUrl,
+        chartTitle,
+        unit,
+        yAxisLabel,
+      } = payload;
+
+      return {
+        ...state,
+        datasetParams: {
+          gaugeId,
+          triggerLevels,
+          chartTitle,
+          detailUrl,
+          unit,
+          yAxisLabel,
+        },
+        title: chartTitle,
+      };
+    },
   },
   extraReducers: builder => {
     builder.addCase(
@@ -363,6 +468,7 @@ export const {
   setDatasetTitle,
   setDatasetChartType,
   setEWSParams,
+  setGoogleFloodParams,
 } = datasetResultStateSlice.actions;
 
 export default datasetResultStateSlice.reducer;

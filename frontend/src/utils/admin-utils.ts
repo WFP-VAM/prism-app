@@ -1,15 +1,23 @@
+import { appConfig } from 'config';
 import {
   AdminLevelType,
-  DatasetLevel,
   BoundaryLayerProps,
+  DatasetLevel,
   WMSLayerProps,
 } from 'config/types';
 import {
+  getBoundaryLayersByAdminLevel,
   getBoundaryLayerSingleton,
   getDisplayBoundaryLayers,
 } from 'config/utils';
-import { AdminBoundaryParams } from 'context/datasetStateSlice';
+import { AdminBoundaryParams, EWSParams } from 'context/datasetStateSlice';
 import { CHART_API_URL } from 'utils/constants';
+
+import { GoogleFloodParams } from './google-flood-utils';
+
+const { multiCountry } = appConfig;
+const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
+const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
 export function getAdminLevelLayer(
   adminLevel: AdminLevelType = 1,
@@ -49,6 +57,7 @@ export const getChartAdminBoundaryParams = (
   properties: { [key: string]: any },
 ): AdminBoundaryParams => {
   const { serverLayerName, chartData } = layer;
+  const { adminLevelNames, adminLevelLocalNames } = boundaryLayer;
 
   const { levels, url: chartUrl, fields: datasetFields } = chartData!;
 
@@ -62,7 +71,15 @@ export const getChartAdminBoundaryParams = (
       [item.id]: {
         code: properties[item.id],
         level: item.level,
-        name: properties[item.name],
+        name:
+          properties[item.name] ||
+          properties[
+            adminLevelNames[Number(item.level) - (multiCountry ? 0 : 1)]
+          ],
+        localName:
+          properties[
+            adminLevelLocalNames[Number(item.level) - (multiCountry ? 0 : 1)]
+          ],
       },
     }),
     {},
@@ -78,3 +95,8 @@ export const getChartAdminBoundaryParams = (
 
   return adminBoundaryParams;
 };
+
+export const isAdminBoundary = (
+  params: AdminBoundaryParams | EWSParams | GoogleFloodParams,
+): params is AdminBoundaryParams =>
+  (params as AdminBoundaryParams).id !== undefined;

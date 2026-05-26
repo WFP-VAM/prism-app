@@ -1,27 +1,34 @@
-import React, { memo, useCallback, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Popup } from 'react-map-gl/maplibre';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   createStyles,
-  withStyles,
-  WithStyles,
-  Typography,
   IconButton,
+  makeStyles,
+  Typography,
 } from '@material-ui/core';
-import { hidePopup, tooltipSelector } from 'context/tooltipStateSlice';
-import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
-import { AdminLevelType } from 'config/types';
-import { appConfig } from 'config';
 import Loader from 'components/Common/Loader';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import PopupCharts from './PopupCharts';
-import RedirectToDMP from './RedirectToDMP';
-import PopupContent from './PopupContent';
+import { appConfig } from 'config';
+import { AdminLevelType } from 'config/types';
+import {
+  hidePopup,
+  PopupData,
+  PopupMetaData,
+  PopupTitleData,
+  tooltipSelector,
+} from 'context/tooltipStateSlice';
+import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
+import { omit } from 'lodash';
+import { memo, useCallback, useMemo, useState } from 'react';
+import { Popup } from 'react-map-gl/maplibre';
+import { useDispatch, useSelector } from 'react-redux';
+
 import PopupPointDataChart from './PointDataChart/PopupPointDataChart';
 import usePointDataChart from './PointDataChart/usePointDataChart';
+import PopupCharts from './PopupCharts';
+import PopupContent from './PopupContent';
+import RedirectToDMP from './RedirectToDMP';
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     phasePopulationTable: {
       tableLayout: 'fixed',
@@ -43,11 +50,13 @@ const styles = () =>
       marginBottom: '4px',
     },
     popup: {
+      // Overrides the default maxWidth of 240px set by react-map-gl
+      maxWidth: '40em !important',
+      zIndex: 5,
       '& div.maplibregl-popup-content': {
         background: 'black',
         color: 'white',
         padding: '5px 5px 5px 5px',
-        maxWidth: '40em',
         maxHeight: '400px',
         overflow: 'auto',
       },
@@ -62,19 +71,19 @@ const styles = () =>
       right: 0,
       top: 0,
     },
-  });
+  }),
+);
 
 const { multiCountry } = appConfig;
 const availableAdminLevels: AdminLevelType[] = multiCountry
   ? [0, 1, 2]
   : [1, 2];
 
-interface TooltipProps extends WithStyles<typeof styles> {}
-
-const MapTooltip = ({ classes }: TooltipProps) => {
+const MapTooltip = memo(() => {
+  const classes = useStyles();
   const dispatch = useDispatch();
   const popup = useSelector(tooltipSelector);
-  const { i18n } = useSafeTranslation();
+  const { t, i18n } = useSafeTranslation();
   const [popupTitle, setPopupTitle] = useState<string>('');
   const [adminLevel, setAdminLevel] = useState<AdminLevelType | undefined>(
     undefined,
@@ -82,14 +91,26 @@ const MapTooltip = ({ classes }: TooltipProps) => {
 
   const { dataset, isLoading } = usePointDataChart();
 
+  const providedPopupTitle = (popup.data as PopupTitleData).title;
+  const popupData: PopupData & PopupMetaData = providedPopupTitle
+    ? omit(popup.data, 'title', providedPopupTitle.prop)
+    : popup.data;
   const defaultPopupTitle = useMemo(() => {
+    if (providedPopupTitle) {
+      // Title can be a template requiring interpolation
+      return t(providedPopupTitle.data as string, providedPopupTitle.context);
+    }
     if (isEnglishLanguageSelected(i18n)) {
       return popup.locationName;
     }
     return popup.locationLocalName;
-  }, [i18n, popup.locationLocalName, popup.locationName]);
-
-  const popupData = popup.data;
+  }, [
+    i18n,
+    popup.locationLocalName,
+    popup.locationName,
+    providedPopupTitle,
+    t,
+  ]);
 
   // TODO - simplify logic once we revamp admin levels object
   const adminLevelsNames = useCallback(() => {
@@ -103,7 +124,7 @@ const MapTooltip = ({ classes }: TooltipProps) => {
         ? availableAdminLevels.length
         : adminLevel + (multiCountry ? 1 : 0);
     // If adminLevel is undefined, return the whole array
-    // eslint-disable-next-line fp/no-mutating-methods
+
     return splitNames.splice(0, adminLevelLimit);
   }, [adminLevel, i18n, popup]);
 
@@ -111,13 +132,15 @@ const MapTooltip = ({ classes }: TooltipProps) => {
     return null;
   }
 
+  const key = JSON.stringify(popup.coordinates);
+
   if (dataset) {
     return (
       <Popup
+        key={key}
         latitude={popup.coordinates?.[1]}
         longitude={popup.coordinates?.[0]}
         className={classes.popup}
-        style={{ zIndex: 5, maxWidth: 'none' }}
         closeButton={false}
       >
         <IconButton
@@ -135,6 +158,7 @@ const MapTooltip = ({ classes }: TooltipProps) => {
 
   return (
     <Popup
+      key={key}
       latitude={popup.coordinates?.[1]}
       longitude={popup.coordinates?.[0]}
       className={classes.popup}
@@ -175,6 +199,6 @@ const MapTooltip = ({ classes }: TooltipProps) => {
       <Loader showLoader={popup.wmsGetFeatureInfoLoading} />
     </Popup>
   );
-};
+});
 
-export default memo(withStyles(styles)(MapTooltip));
+export default MapTooltip;

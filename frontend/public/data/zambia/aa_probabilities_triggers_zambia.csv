@@ -1,0 +1,7 @@
+district,index,category,window,issue_ready,issue_set,trigger_ready,trigger_set,vulnerability,prob_ready,prob_set,season,date_ready,date_set
+Gwembe,SPI DJF,Moderate,Window 1,8,9,0.3,0.35,GT,0.3,0.55,2024-25,2024-08-01,2024-09-01
+Gwembe,SPI DJF,Moderate,Window 1,9,10,0.35,0.4,GT,0.87,0.6,2024-25,2024-09-01,2024-10-01
+Gwembe,SPI DJF,Moderate,Window 1,10,11,0.4,0.5,GT,0.03,0.06,2024-25,2024-09-01,2024-10-01
+Chirundu,SPI DJF,Moderate,Window 1,8,9,0.33,0.4,GT,0.09,0.15,2024-25,2024-08-01,2024-09-01
+Chirundu,SPI DJF,Moderate,Window 1,9,10,0.36,0.42,GT,0.66,0.44,2024-25,2024-09-01,2024-10-01
+Chirundu,SPI DJF,Moderate,Window 1,10,11,0.27,0.3,GT,0.42,0.11,2024-25,2024-09-01,2024-10-01

@@ -1,10 +1,12 @@
-import moment from 'moment';
 import {
   binaryFind,
+  datesAreEqualWithoutTime,
+  dateWithoutTime,
+  findClosestDate,
   generateDateItemsRange,
   generateDatesRange,
-  getDateFormat,
-  getMillisecondsFromISO,
+  getFormattedDate,
+  getTimeInMilliseconds,
   StartEndDate,
 } from './date-utils';
 
@@ -30,24 +32,32 @@ describe('Test buildDateItemsFromStartEndDates', () => {
       {
         displayDate: new Date('2018-02-01').getTime(),
         queryDate: startDate0,
-        isStartDate: true,
+        startDate: startDate0,
+        endDate: endDate0,
       },
       {
         displayDate: new Date('2018-02-02').getTime(),
         queryDate: startDate0,
+        startDate: startDate0,
+        endDate: endDate0,
       },
       {
         displayDate: new Date('2018-02-03').getTime(),
         queryDate: startDate0,
+        startDate: startDate0,
+        endDate: endDate0,
       },
       {
         displayDate: new Date('2018-02-04').getTime(),
         queryDate: startDate0,
+        startDate: startDate0,
+        endDate: endDate0,
       },
       {
         displayDate: new Date('2018-02-05').getTime(),
         queryDate: startDate0,
-        isEndDate: true,
+        startDate: startDate0,
+        endDate: endDate0,
       },
     ]);
   });
@@ -56,16 +66,8 @@ describe('Test buildDateItemsFromStartEndDates', () => {
 describe('Binary search in ordered arrays of timestamps', () => {
   test('should return the index of found element', () => {
     const arr = [
-      1701160000000,
-      1702160000000,
-      1703160000000,
-      1703460000000,
-      1705160000000,
-      1705395000000,
-      1706160000000,
-      1715160000000,
-      1725160000000,
-      1735160000000,
+      1701160000000, 1702160000000, 1703160000000, 1703460000000, 1705160000000,
+      1705395000000, 1706160000000, 1715160000000, 1725160000000, 1735160000000,
     ];
     arr.forEach((elem, i) => {
       const idx = binaryFind<number>(arr, elem, x => x);
@@ -101,9 +103,9 @@ const defaultFormatTests = [
 ];
 
 test.each(defaultFormatTests)(
-  'Test getDateFormat default',
+  'Test getFormattedDate default',
   (input, expected) => {
-    expect(expected).toEqual(getDateFormat(input, 'default'));
+    expect(expected).toEqual(getFormattedDate(input, 'default'));
   },
 );
 
@@ -130,9 +132,12 @@ const snakeFormateTests = [
   [1644614400000, '2022_02_11'],
 ];
 
-test.each(snakeFormateTests)('Test getDateFormat snake', (input, expected) => {
-  expect(expected).toEqual(getDateFormat(input, 'snake'));
-});
+test.each(snakeFormateTests)(
+  'Test getFormattedDate snake',
+  (input, expected) => {
+    expect(expected).toEqual(getFormattedDate(input, 'snake'));
+  },
+);
 
 const isoDates = [
   ['2024-02-02T13:44:24.164Z', 1706881464164],
@@ -157,24 +162,82 @@ const isoDates = [
   ['2025-10-06T14:23:59.400Z', 1759760639400],
 ];
 
-test.each(isoDates)('Test getMillisecondsFromISO', (input, expected) => {
-  expect(expected).toEqual(getMillisecondsFromISO(input as string));
+test.each(isoDates)('Test getTimeInMilliseconds', (input, expected) => {
+  expect(expected).toEqual(getTimeInMilliseconds(input as string));
 });
 
 test('Test generateDatesRange', () => {
-  const ret = generateDatesRange(moment('2023-02-02'), moment('2023-02-13'));
+  const ret = generateDatesRange(
+    new Date('2023-02-02'),
+    new Date('2023-02-13'),
+  );
   expect(ret).toEqual([
-    1675296000000,
-    1675382400000,
-    1675468800000,
-    1675555200000,
-    1675641600000,
-    1675728000000,
-    1675814400000,
-    1675900800000,
-    1675987200000,
-    1676073600000,
-    1676160000000,
-    1676246400000,
+    1675296000000, 1675382400000, 1675468800000, 1675555200000, 1675641600000,
+    1675728000000, 1675814400000, 1675900800000, 1675987200000, 1676073600000,
+    1676160000000, 1676246400000,
   ]);
+});
+
+describe('dateWithoutTime / datesAreEqualWithoutTime (PR #1781 calendar & intersection)', () => {
+  test('datesAreEqualWithoutTime matches equality of dateWithoutTime keys', () => {
+    const sameUtcDay: [number | Date, number | Date][] = [
+      [Date.UTC(2024, 8, 1, 12, 0, 0), Date.UTC(2024, 8, 1, 23, 59, 59, 999)],
+      [
+        new Date('2024-09-01T12:00:00.000Z'),
+        new Date('2024-09-01T00:00:00.000Z'),
+      ],
+    ];
+    for (const [a, b] of sameUtcDay) {
+      expect(datesAreEqualWithoutTime(a, b)).toBe(true);
+      expect(dateWithoutTime(a)).toBe(dateWithoutTime(b));
+    }
+
+    const differentUtcDay: [number | Date, number | Date][] = [
+      [Date.UTC(2024, 8, 1, 12, 0, 0), Date.UTC(2024, 8, 2, 0, 0, 0, 0)],
+    ];
+    for (const [a, b] of differentUtcDay) {
+      expect(datesAreEqualWithoutTime(a, b)).toBe(false);
+      expect(dateWithoutTime(a)).not.toBe(dateWithoutTime(b));
+    }
+  });
+
+  test('DatePicker filterDate uses same keys as timeline: UTC-noon layer ts vs selectedPickerDate shape', () => {
+    // global-setup.cjs sets TZ=UTC for Jest; DateSelector builds picker day from UTC Y/M/D like below.
+    expect(process.env.TZ).toBe('UTC');
+
+    const layerDisplayMs = Date.UTC(2024, 8, 1, 12, 0, 0);
+    const utcDate = new Date(layerDisplayMs);
+    const pickerDay = new Date(
+      utcDate.getUTCFullYear(),
+      utcDate.getUTCMonth(),
+      utcDate.getUTCDate(),
+    );
+
+    const includedDatesSet = new Set([dateWithoutTime(layerDisplayMs)]);
+    expect(includedDatesSet.has(dateWithoutTime(pickerDay))).toBe(true);
+  });
+});
+
+describe('can find closest date', () => {
+  test('findClosestDate', () => {
+    const findClosestDateResult = new Date(
+      findClosestDate(
+        findClosestDateData.date,
+        findClosestDateData.availableDates,
+      ),
+    ).toISOString();
+
+    expect(findClosestDateResult).toBe(findClosestDateData.result);
+  });
+
+  const findClosestDateData = {
+    date: 1702288800000,
+    availableDates: [
+      1689076800000, 1689940800000, 1690891200000, 1691755200000, 1692619200000,
+      1693569600000, 1694433600000, 1695297600000, 1696161600000, 1697025600000,
+      1697889600000, 1698840000000, 1699704000000, 1700568000000, 1701432000000,
+      1702296000000, 1703160000000, 1704110400000, 1704974400000,
+    ],
+    result: '2023-12-11T12:00:00.000Z',
+  };
 });

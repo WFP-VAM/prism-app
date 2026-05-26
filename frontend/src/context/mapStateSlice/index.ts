@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
 import { LayerKey, LayerType } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
 import {
@@ -6,11 +7,10 @@ import {
   LayerDataTypes,
   loadLayerData,
 } from 'context/layers/layer-data';
-import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
-import { keepLayer } from 'utils/keep-layer-utils';
 import { Map as MaplibreMap } from 'maplibre-gl';
+import { keepLayer } from 'utils/keep-layer-utils';
 
-interface DateRange {
+export interface DateRange {
   startDate?: number;
   // TODO this field is updated, but doesn't seem to be used yet
   endDate?: number;
@@ -20,14 +20,17 @@ export type MapState = {
   layers: LayerType[];
   dateRange: DateRange;
   maplibreMap: MapGetter;
+  minMapBounds: number[];
   errors: string[];
   // TODO this shouldn't be any
+  // Note: Boundary layer data is now stored in global cache (utils/boundary-cache.ts), not here
   layersData: LayerData<any>[];
   // Keep track of layer id which are currently loading its layerData.
   // Note that layerData is mainly for storing vector map data.
   // Tile image loading for raster layer is tracked separately on mapTileLoadingStateSlice
   loadingLayerIds: LayerKey[];
   boundaryRelationData: BoundaryRelationsDict;
+  title?: string;
 };
 
 // Maplibre's map type contains some kind of cyclic dependency that causes an infinite loop in immers's change
@@ -39,6 +42,7 @@ const initialState: MapState = {
   layers: [],
   dateRange: {} as DateRange,
   maplibreMap: (() => {}) as MapGetter,
+  minMapBounds: [] as number[],
   errors: [],
   layersData: [],
   loadingLayerIds: [],
@@ -55,6 +59,7 @@ const getTypeOrder = (layer: LayerType) => {
   return layer.type;
 };
 
+// TODO: update ordering?
 // Order layers to keep boundaries and point_data on top. boundaries first.
 export const layerOrdering = (a: LayerType, b: LayerType) => {
   // Dictionary with all the available layerTypes
@@ -68,18 +73,26 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
       | 'pattern_admin_level_data'
       | 'impact'
       | 'point_data'
+      | 'geojson_polygon'
       | 'polygon'
-      | 'static_raster']: number;
+      | 'static_raster'
+      | 'anticipatory_action_drought'
+      | 'anticipatory_action_storm'
+      | 'anticipatory_action_flood']: number;
   } = {
     point_data: 0,
-    polygon: 1,
-    boundary: 2,
-    pattern_admin_level_data: 3,
-    admin_level_data: 4,
-    impact: 5,
-    composite: 5,
-    wms: 6,
-    static_raster: 7,
+    geojson_polygon: 1,
+    polygon: 2,
+    boundary: 3,
+    pattern_admin_level_data: 4,
+    admin_level_data: 5,
+    impact: 6,
+    composite: 6,
+    wms: 7,
+    static_raster: 8,
+    anticipatory_action_drought: 9,
+    anticipatory_action_storm: 10,
+    anticipatory_action_flood: 11,
   };
 
   const typeA = getTypeOrder(a);
@@ -109,9 +122,16 @@ export const mapStateSlice = createSlice({
           ? [...layersToAdd, ...filteredLayers]
           : [...filteredLayers, ...layersToAdd];
 
+      // Deduplicate layers
+      const dedupedLayers = newLayers.filter(
+        (layer, index, self) =>
+          index ===
+          self.findIndex(t => t.id === layer.id && t.type === layer.type),
+      );
+
       return {
         ...rest,
-        layers: newLayers,
+        layers: dedupedLayers,
       };
     },
     removeLayerData: (

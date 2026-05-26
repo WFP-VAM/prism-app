@@ -1,21 +1,15 @@
 {
   "country": "Tanzania",
   "countryAdmin0Id": 257,
+  "anticipatoryActionDroughtUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/staging/aa_probabilities_triggers_tza.csv",
+  "anticipatoryActionDroughtStagingUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/staging/aa_probabilities_triggers_tza.csv",
   "alertFormActive": false,
   "enableNavigationDropdown": true,
   "serversUrls": {
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
-  "icons": {
-    "rainfall": "icon_rain.png",
-    "vegetation": "icon_veg.png",
-    "temperature": "icon_climate.png",
-    "risk": "icon_impact.png",
-    "tropical_storms": "icon_tropical_storm.png",
-    "vulnerability": "icon_vulnerable.png"
-  },
   "map": {
-    "boundingBox":  [29.3399975929, -11.7209380022, 40.31659, -0.95]
+    "boundingBox": [29.3399975929, -11.7209380022, 40.31659, -0.95]
   },
   "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "categories": {
@@ -29,6 +23,10 @@
               "id": "rainfall_dekad",
               "label": "10-day",
               "main": true
+            },
+            {
+              "id": "chirps_rainfall_daily",
+              "label": "Daily"
             },
             {
               "id": "rainfall_agg_1month",
@@ -85,6 +83,10 @@
               "main": true
             },
             {
+              "id": "spi_2m",
+              "label": "2-month"
+            },
+            {
               "id": "spi_3m",
               "label": "3-month"
             },
@@ -102,6 +104,11 @@
             }
           ]
         }
+      ],
+      "forecasts": [
+        "daily_rainfall_forecast",
+        "dekad_rainfall_forecast",
+        "dekad_rainfall_anomaly_forecast"
       ],
       "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
@@ -160,9 +167,7 @@
       ]
     },
     "vulnerability": {
-      "food insecurity": [
-        "ipc_phase_10_2022"
-      ]
+      "food insecurity": ["ipc_phase_10_2022"]
     }
   }
 }

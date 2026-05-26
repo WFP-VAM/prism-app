@@ -6,15 +6,15 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
+import {
+  AdminBoundaryTree,
+  getAdminBoundaryTree,
+} from 'components/MapView/Layers/BoundaryDropdown/utils';
+import { AdminCodeString, BoundaryLayerProps, PanelSize } from 'config/types';
+import { BoundaryLayerData } from 'context/layers/boundary';
+import { useSafeTranslation } from 'i18n';
 import { sortBy } from 'lodash';
 import React, { memo, ReactNode } from 'react';
-import { BoundaryLayerProps, PanelSize, AdminCodeString } from 'config/types';
-import {
-  getAdminBoundaryTree,
-  AdminBoundaryTree,
-} from 'components/MapView/Layers/BoundaryDropdown';
-import { useSafeTranslation } from 'i18n';
-import { BoundaryLayerData } from 'context/layers/boundary';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -39,7 +39,6 @@ const useStyles = makeStyles(() =>
         color: '#333333',
       },
       '& .MuiInputBase-root': {
-        color: 'black',
         '&:hover fieldset': {
           borderColor: '#333333',
         },
@@ -109,11 +108,10 @@ const LocationSelector = memo(
 
     const selectedAdmin1Area = () => admin0BoundaryTree?.[admin1Key];
 
-    const orderedAdmin2areas: () => AdminBoundaryTree[] = () => {
-      return data && admin1Key
+    const orderedAdmin2areas: () => AdminBoundaryTree[] = () =>
+      data && admin1Key
         ? sortBy(Object.values(selectedAdmin1Area().children), 'label')
         : [];
-    };
 
     const selectedAdmin2Area = () => selectedAdmin1Area().children[admin2Key];
 
@@ -124,13 +122,11 @@ const LocationSelector = memo(
       return adminBoundaryTree.children[admin0keyValue].label as ReactNode;
     };
 
-    const renderAdmin1Value = (admin1keyValue: any) => {
-      return admin0BoundaryTree[admin1keyValue]?.label;
-    };
+    const renderAdmin1Value = (admin1keyValue: any) =>
+      admin0BoundaryTree[admin1keyValue]?.label;
 
-    const renderAdmin2Value = (admin2KeyValue: any) => {
-      return selectedAdmin1Area().children[admin2KeyValue].label;
-    };
+    const renderAdmin2Value = (admin2KeyValue: any) =>
+      selectedAdmin1Area().children[admin2KeyValue].label;
 
     const onChangeAdmin0Area = (event: React.ChangeEvent<HTMLInputElement>) => {
       const admin0Id = event.target.value;
@@ -212,7 +208,7 @@ const LocationSelector = memo(
             disabled={!multiCountry}
           >
             <MenuItem key={country} value={country} disabled>
-              {country}
+              {t(country)}
             </MenuItem>
             {renderMenuItemList(orderedAdmin0areas())}
           </TextField>
@@ -231,7 +227,10 @@ const LocationSelector = memo(
             disabled={orderedAdmin1areas().length === 0}
           >
             <MenuItem divider>
-              <Box className={styles.removeAdmin}> {t('Remove Admin 1')}</Box>
+              <Box className={styles.removeAdmin}>
+                {' '}
+                {t('Remove {{adminLevel}}', { adminLevel: t('Admin 1') })}
+              </Box>
             </MenuItem>
             {renderMenuItemList(orderedAdmin1areas())}
           </TextField>
@@ -249,7 +248,10 @@ const LocationSelector = memo(
               variant="outlined"
             >
               <MenuItem divider>
-                <Box className={styles.removeAdmin}> {t('Remove Admin 2')}</Box>
+                <Box className={styles.removeAdmin}>
+                  {' '}
+                  {t('Remove {{adminLevel}}', { adminLevel: t('Admin 2') })}
+                </Box>
               </MenuItem>
               {renderMenuItemList(orderedAdmin2areas())}
             </TextField>

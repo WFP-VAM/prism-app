@@ -1,26 +1,56 @@
-import React from 'react';
 import {
   Button,
-  ButtonGroup,
   createStyles,
-  Theme,
+  makeStyles,
+  Menu,
+  MenuItem,
   Typography,
-  withStyles,
-  WithStyles,
 } from '@material-ui/core';
-import { languages, useSafeTranslation } from 'i18n';
+import ArrowDownward from '@material-ui/icons/ArrowDropDown';
+import { usePostHog } from '@posthog/react';
 import { appConfig } from 'config';
+import { languages, useSafeTranslation } from 'i18n';
 import { get } from 'lodash';
+import React from 'react';
 
-function LanguageSelector({ classes }: LanguageSelectorProps) {
+/** Display labels for the language dropdown (i18n codes stay 2-letter). */
+const LANGUAGE_DROPDOWN_LABELS: Record<string, string> = {
+  ar: 'عربى',
+};
+
+function languageDropdownLabel(code: string): string {
+  return LANGUAGE_DROPDOWN_LABELS[code] ?? code;
+}
+
+function LanguageSelector() {
+  const classes = useStyles();
   const { i18n } = useSafeTranslation();
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const posthog = usePostHog();
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleChangeLanguage = (lng: string): void => {
+    posthog?.capture('language_changed', {
+      language: lng,
+      previous_language: i18n.resolvedLanguage,
+    });
     i18n.changeLanguage(lng);
+    localStorage.setItem('userLanguage', lng);
+    handleClose();
   };
 
   React.useEffect(() => {
-    const locale = get(appConfig, 'defaultLanguage', 'en');
+    const savedLanguage = localStorage.getItem('userLanguage');
+    const defaultLocale = get(appConfig, 'defaultLanguage', 'en');
+    const locale = savedLanguage || defaultLocale;
+
     if (languages.includes(locale)) {
       i18n.changeLanguage(locale);
     }
@@ -32,38 +62,46 @@ function LanguageSelector({ classes }: LanguageSelectorProps) {
   }
 
   return (
-    <ButtonGroup variant="text" className={classes.block}>
-      {languages.map(lng => (
-        <Button
-          key={lng}
-          type="submit"
-          onClick={() => handleChangeLanguage(lng)}
-        >
-          <Typography
-            variant="body2"
-            style={{
-              fontWeight: i18n.resolvedLanguage === lng ? 'bold' : 'normal',
-            }}
+    <>
+      <Button
+        aria-label="language-select-dropdown-button"
+        style={{ paddingLeft: 0 }}
+        onClick={handleClick}
+        endIcon={<ArrowDownward fontSize="small" />}
+      >
+        <Typography color="secondary" style={{ textTransform: 'none' }}>
+          {languageDropdownLabel(i18n.resolvedLanguage ?? 'en')}
+        </Typography>
+      </Button>
+      <Menu
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+        className={classes.block}
+        anchorEl={anchorEl}
+      >
+        {languages.map(lng => (
+          <MenuItem
+            aria-label={`language-select-dropdown-menu-item-${lng}`}
+            key={lng}
+            onClick={() => handleChangeLanguage(lng)}
           >
-            {lng}
-          </Typography>
-        </Button>
-      ))}
-    </ButtonGroup>
+            <Typography>{languageDropdownLabel(lng)}</Typography>
+          </MenuItem>
+        ))}
+      </Menu>
+    </>
   );
 }
 
-const styles = (theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     block: {
       paddingLeft: '10px',
       paddingTop: '4px',
     },
-    title: {
-      color: theme.palette.text.secondary,
-    },
-  });
+  }),
+);
 
-export interface LanguageSelectorProps extends WithStyles<typeof styles> {}
+export interface LanguageSelectorProps {}
 
-export default withStyles(styles)(LanguageSelector);
+export default LanguageSelector;

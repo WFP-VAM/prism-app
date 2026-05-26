@@ -1,10 +1,10 @@
-import appConfig from './prism.json';
 import rawLayers from './layers.json';
+import appConfig from './prism.json';
 import rawReports from './reports.json';
-import cambodiaTranslation from './translation.json';
 
 const rawTables = {};
-const translation = { kh: cambodiaTranslation };
+// Country-specific translation overrides shared translation
+const translation = { km: {} };
 
 export default {
   appConfig,

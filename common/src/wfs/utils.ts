@@ -1,10 +1,8 @@
 import { isEmpty } from "lodash";
-import * as moment from "moment";
 
 import { findTagByName, findTagsByPath, getAttribute } from "xml-utils";
 
 import {
-  DEFAULT_DATE_FORMAT,
   findAndParseAbstract,
   findTagAttribute,
   findTagText,
@@ -22,6 +20,10 @@ import {
 
 import type { BBOX } from "../types";
 
+function formatDateToISO(date: string | number): string {
+  return new Date(date).toISOString().split("T")[0];
+}
+
 type FeatureType = {
   name: ReturnType<typeof parseName>;
   abstract: string | undefined;
@@ -38,7 +40,7 @@ export function getBaseUrl(url: string): string {
 }
 
 export function findAndParseLatLongBoundingBox(
-  xml: string
+  xml: string,
 ): Readonly<[number, number, number, number]> | undefined {
   const tag = findTagByName(xml, "LatLongBoundingBox");
   if (!tag) {
@@ -56,7 +58,7 @@ export function findAndParseLatLongBoundingBox(
 // to-do: MetadataURL
 // to-do: parse prefix from name?
 export function getFeatureTypesFromCapabilities(
-  capabilities: string
+  capabilities: string,
 ): FeatureType[] {
   const featureTypes: FeatureType[] = [];
   findTagsByPath(capabilities, ["FeatureTypeList", "FeatureType"]).forEach(
@@ -72,24 +74,24 @@ export function getFeatureTypesFromCapabilities(
             keywords: findAndParseKeywords(inner),
             srs: (findTagText(inner, "DefaultSRS")?.replace(
               "urn:x-ogc:def:crs:",
-              ""
+              "",
             ) || findTagText(inner, "SRS"))!,
             bbox: (findAndParseWGS84BoundingBox(inner) ||
               findAndParseLatLongBoundingBox(inner))!,
           });
         }
       }
-    }
+    },
   );
   return featureTypes;
 }
 
 export function parseFullFeatureTypeNames(
   capabilities: string,
-  { sort = true }: { sort?: boolean } = { sort: true }
+  { sort = true }: { sort?: boolean } = { sort: true },
 ): string[] {
   const names = getFeatureTypesFromCapabilities(capabilities).map(
-    (featureType) => featureType.name.full
+    (featureType) => featureType.name.full,
   );
   if (sort) {
     // eslint-disable-next-line fp/no-mutating-methods
@@ -103,7 +105,7 @@ export function parseGetFeatureUrl(
   capabilities: string,
   { method = "GET" }: { method: "GET" | "POST"; throw?: boolean } = {
     method: "GET",
-  }
+  },
 ): string | undefined {
   const url =
     findAndParseOperationUrl(capabilities, "GetFeature", method) ||
@@ -117,14 +119,14 @@ export function parseGetFeatureUrl(
         "HTTP",
         titlecase(method),
       ],
-      "onlineResource"
+      "onlineResource",
     );
   if (!url) {
     return undefined;
   }
 
   // remove params
-  return url.split("?")[0];
+  return url.split("?")[0].replace(/^http:/, "https:");
 }
 
 export function hasFeatureType(
@@ -132,7 +134,7 @@ export function hasFeatureType(
   name: string,
   { strict = false }: { strict?: boolean } = {
     strict: false,
-  }
+  },
 ): boolean {
   return !!featureTypes.find((featureType) => {
     if (strict) {
@@ -185,7 +187,7 @@ export function getFeaturesUrl(
     method: "POST",
     sortBy: undefined,
     version: "2.0.0",
-  }
+  },
 ) {
   const base = parseGetFeatureUrl(capabilities, { method });
 
@@ -201,9 +203,8 @@ export function getFeaturesUrl(
     service: "WFS",
     version,
     request: "GetFeature",
-    [/^(0|1)/.test(version)
-      ? "typeName"
-      : "typeNames"]: typeNameOrNames?.toString(),
+    [/^(0|1)/.test(version) ? "typeName" : "typeNames"]:
+      typeNameOrNames?.toString(),
     bbox: bbox?.toString(),
     featureID: featureId,
     srsName: srs,
@@ -219,12 +220,8 @@ export function getFeaturesUrl(
     cql_filter: (() => {
       if (dateRange && dateField) {
         const [startDate, endDate] = dateRange;
-        const startDateFormatted = `${moment
-          .utc(startDate)
-          .format(DEFAULT_DATE_FORMAT)}T00:00:00`;
-        const endDateFormatted = `${moment
-          .utc(endDate)
-          .format(DEFAULT_DATE_FORMAT)}T23:59:59`;
+        const startDateFormatted = `${formatDateToISO(startDate)}T00:00:00`;
+        const endDateFormatted = `${formatDateToISO(endDate)}T23:59:59`;
         return `${dateField} BETWEEN ${startDateFormatted} AND ${endDateFormatted}`;
       }
       return undefined;
@@ -251,7 +248,7 @@ export async function getFeatures(
     format: "geojson",
     method: "POST",
     wait: 0,
-  }
+  },
 ) {
   const run = async () => {
     const url = getFeaturesUrl(capabilities, typeNameOrNames, {

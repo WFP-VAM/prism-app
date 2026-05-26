@@ -4,25 +4,16 @@
     "path": "data/zimbabwe/zim_admin2_boundaries_v3_w_dataviz.json",
     "opacity": 0.8,
     "admin_code": "distrpc",
-    "admin_level_codes": [
-      "dataviz_adm1_id",
-      "distrpc"
-    ],
-    "admin_level_names": [
-      "PROVNAMEFU",
-      "DIST_NAME_"
-    ],
-    "admin_level_local_names": [
-      "PROVNAMEFU",
-      "DIST_NAME_"
-    ],
+    "admin_level_codes": ["dataviz_adm1_id", "distrpc"],
+    "admin_level_names": ["PROVNAMEFU", "DIST_NAME_"],
+    "admin_level_local_names": ["PROVNAMEFU", "DIST_NAME_"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
       },
       "line": {
         "line-color": "gray",
-        "line-width": 1,
+        "line-width": 1.5,
         "line-opacity": 0.8
       }
     }
@@ -32,15 +23,9 @@
     "path": "data/zimbabwe/zwe_polbnda_adm1_250k_cso.json",
     "opacity": 0.8,
     "admin_code": "PROV_CODE",
-    "admin_level_codes": [
-      "PROV_CODE"
-    ],
-    "admin_level_names": [
-      "PROVINCE"
-    ],
-    "admin_level_local_names": [
-      "PROVINCE"
-    ],
+    "admin_level_codes": ["PROV_CODE"],
+    "admin_level_names": ["PROVINCE"],
+    "admin_level_local_names": ["PROVINCE"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -415,8 +400,12 @@
       "styles": "rfb_blended",
       "band": "rfb"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "rfb",
@@ -538,8 +527,12 @@
       "styles": "rfq_blended",
       "band": "rfq"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "rfq",
@@ -655,8 +648,17 @@
       "styles": "r1b_blended",
       "band": "r1b"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 2,
+      "forward": 1,
+      "mode": "dekad"
+    },  
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "r1b",
@@ -778,8 +780,17 @@
       "styles": "r1q_blended",
       "band": "r1q"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 2,
+      "forward": 1,
+      "mode": "dekad"
+    },    
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "r1q",
@@ -895,8 +906,17 @@
       "styles": "r3b_blended",
       "band": "r3b"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 8,
+      "forward": 1,
+      "mode": "dekad"
+    },    
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "r3b",
@@ -1018,8 +1038,17 @@
       "styles": "r3q_blended",
       "band": "r3q"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 8,
+      "forward": 1,
+      "mode": "dekad"
+    },    
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "r3q",
@@ -1164,7 +1193,7 @@
       "type": "bar"
     },
     "opacity": 0.7,
-    "legend_text": "Estimate of precipitation over a 10-day period derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "Estimate of precipitation over a 10-day period derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       {
         "value": 0,
@@ -1289,7 +1318,7 @@
       "type": "line"
     },
     "opacity": 0.7,
-    "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       {
         "value": 0,
@@ -1400,7 +1429,7 @@
     },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Total aggregate precipitation over a 1-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "Total aggregate precipitation over a 1-month period, rolling every 10 days. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       {
         "value": 0,
@@ -1525,7 +1554,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       {
         "value": 0,
@@ -1758,7 +1787,7 @@
     },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "3-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "3-month precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       {
         "label": "< 60%",
@@ -1805,7 +1834,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "6-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "6-month precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       {
         "label": "< 60%",
@@ -1852,7 +1881,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "9-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "9-month precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       {
         "label": "< 60%",
@@ -1899,7 +1928,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "1-year precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "1-year precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       {
         "label": "< 60%",
@@ -2040,7 +2069,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "2-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "2-month precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       {
         "label": "< 60%",
@@ -2181,7 +2210,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "4-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "4-month precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       {
         "label": "< 60%",
@@ -2322,7 +2351,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "5-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "5-month precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       {
         "label": "< 60%",
@@ -2652,6 +2681,15 @@
       "styles": "r2b_blended",
       "band": "r2b"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 5,
+      "forward": 1,
+      "mode": "dekad"
+    },    
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -2747,6 +2785,15 @@
       "styles": "r4b_blended",
       "band": "r4b"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 11,
+      "forward": 1,
+      "mode": "dekad"
+    },    
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -2842,6 +2889,15 @@
       "styles": "r5b_blended",
       "band": "r5b"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 14,
+      "forward": 1,
+      "mode": "dekad"
+    },    
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -2937,6 +2993,15 @@
       "styles": "r6b_blended",
       "band": "r6b"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 17,
+      "forward": 1,
+      "mode": "dekad"
+    },    
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -3032,6 +3097,15 @@
       "styles": "r7b_blended",
       "band": "r7b"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 20,
+      "forward": 1,
+      "mode": "dekad"
+    },    
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -3127,6 +3201,15 @@
       "styles": "r9b_blended",
       "band": "r9b"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 26,
+      "forward": 1,
+      "mode": "dekad"
+    },    
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -3222,6 +3305,15 @@
       "styles": "ryb_blended",
       "band": "ryb"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 35,
+      "forward": 1,
+      "mode": "dekad"
+    },    
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -3317,6 +3409,15 @@
       "styles": "r2q_blended",
       "band": "r2q"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 5,
+      "forward": 1,
+      "mode": "dekad"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -3401,6 +3502,15 @@
     "additional_query_params": {
       "styles": "r4q_blended",
       "band": "r4q"
+    },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 11,
+      "forward": 1,
+      "mode": "dekad"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -3487,6 +3597,15 @@
       "styles": "r5q_blended",
       "band": "r5q"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 14,
+      "forward": 1,
+      "mode": "dekad"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -3572,6 +3691,15 @@
       "styles": "r6q_blended",
       "band": "r6q"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 17,
+      "forward": 1,
+      "mode": "dekad"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -3654,7 +3782,17 @@
     "type": "wms",
     "server_layer_name": "rfq_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "r7q_blended"
+      "styles": "r7q_blended",
+      "band": "r7q"
+    },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 20,
+      "forward": 1,
+      "mode": "dekad"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -3741,6 +3879,15 @@
       "styles": "r9q_blended",
       "band": "r9q"
     },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 26,
+      "forward": 1,
+      "mode": "dekad"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -3825,6 +3972,15 @@
     "additional_query_params": {
       "styles": "ryq_blended",
       "band": "ryq"
+    },
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "coverage_window": {
+      "backward": 35,
+      "forward": 1,
+      "mode": "dekad"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -3913,7 +4069,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Number of consecutive days with less than 2 mm precipitation in the last 30 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "Number of consecutive days with less than 2 mm precipitation in the last 30 days. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       {
         "value": 0,
@@ -3992,7 +4148,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Longest number of consecutive days with less than 2 mm precipitation in the last 30 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "Longest number of consecutive days with less than 2 mm precipitation in the last 30 days. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       {
         "value": 0,
@@ -4071,7 +4227,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Total number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "Total number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       {
         "value": 0,
@@ -4293,7 +4449,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Longest consecutive number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "Longest consecutive number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       {
         "value": 0,
@@ -5096,6 +5252,7 @@
   "vac_food_insec": {
     "title": "Food insecurity prevalence (ZimVAC 2020)",
     "type": "admin_level_data",
+    "boundary": "admin_boundaries",
     "path": "data/zimbabwe/zim_vac_food_insec_2020.json",
     "data_field": "food_insecurity_prevalence",
     "admin_level": 2,
@@ -5133,6 +5290,7 @@
   "pop_2020": {
     "title": "Population (UNFPA - 2020)",
     "type": "admin_level_data",
+    "boundary": "admin_boundaries",
     "path": "data/zimbabwe/zim_pop_2020.json",
     "data_field": "total_population",
     "admin_level": 2,
@@ -5170,6 +5328,7 @@
   "ipc_phase_10_2020": {
     "title": "IPC Phase Classification (Oct 2020)",
     "type": "admin_level_data",
+    "boundary": "admin_boundaries",
     "path": "data/zimbabwe/zim_ipc_2020_10.json",
     "data_field": "ipc_phase_2020_10",
     "admin_level": 2,
@@ -5207,6 +5366,7 @@
   "cereal_insecurity_2021": {
     "title": "Cereal insecurity 2021",
     "type": "admin_level_data",
+    "boundary": "admin_boundaries",
     "path": "data/zimbabwe/zim_fs_2021.json",
     "data_field": "cereal_insecurity_2021",
     "admin_level": 2,
@@ -5244,6 +5404,7 @@
   "10_year_avg_cereal_insecurity": {
     "title": "10-year average cereal insecurity",
     "type": "admin_level_data",
+    "boundary": "admin_boundaries",
     "path": "data/zimbabwe/zim_fs_2021.json",
     "data_field": "10_year_avg_cereal_insecurity",
     "admin_level": 2,
@@ -5281,6 +5442,7 @@
   "5_year_avg_cereal_insecurity": {
     "title": "5-year average cereal insecurity",
     "type": "admin_level_data",
+    "boundary": "admin_boundaries",
     "path": "data/zimbabwe/zim_fs_2021.json",
     "data_field": "5_year_avg_cereal_insecurity",
     "admin_level": 2,
@@ -5318,6 +5480,7 @@
   "poor_fc": {
     "title": "Poor food consumption",
     "type": "admin_level_data",
+    "boundary": "admin_boundaries",
     "path": "data/zimbabwe/zim_fs_2021.json",
     "data_field": "poor_fc",
     "admin_level": 2,
@@ -5355,6 +5518,7 @@
   "borderline_fc": {
     "title": "Borderline food consumption",
     "type": "admin_level_data",
+    "boundary": "admin_boundaries",
     "path": "data/zimbabwe/zim_fs_2021.json",
     "data_field": "borderline_fc",
     "admin_level": 2,

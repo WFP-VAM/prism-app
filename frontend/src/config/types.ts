@@ -1,16 +1,20 @@
-import { GeoJSON } from 'geojson';
-import { every, map } from 'lodash';
 import 'reflect-metadata';
+
+import { FeatureCollection, GeoJSON } from 'geojson';
+import { TFunction } from 'i18next';
+import { every, map } from 'lodash';
 import {
   FillLayerSpecification,
   LineLayerSpecification,
   MapLayerMouseEvent,
 } from 'maplibre-gl';
+import React from 'react';
 import { Dispatch } from 'redux';
-import { TFunction } from 'i18next';
-import { rawLayers } from '.';
-import type { ReportKey, TableKey } from './utils';
+
 import type { PopupMetaData } from '../context/tooltipStateSlice';
+import { rawLayers } from '.';
+import { AggregationOperations } from './aggregationOperations';
+import type { ReportKey, TableKey } from './utils';
 
 // TODO currently unused. Could be harnessed within admin levels key typing
 export type BoundaryKey = 'CODE' | 'CODE1' | 'CODE2';
@@ -25,7 +29,9 @@ export type LayerType =
   | ImpactLayerProps
   | PointDataLayerProps
   | CompositeLayerProps
-  | StaticRasterLayerProps;
+  | StaticRasterLayerProps
+  | AnticipatoryActionLayerProps
+  | GeojsonDataLayerProps;
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   k: infer I,
@@ -65,11 +71,10 @@ export const isLayerKey = (layerKey: string | MenuGroup) => {
  * @param layerId
  * @param layers
  */
-export const isMainLayer = (layerId: string, layers: LayerType[]) => {
-  return !layers
+export const isMainLayer = (layerId: string, layers: LayerType[]) =>
+  !layers
     .filter(sl => sl.group)
     .some(sl => sl.group?.layers?.find(l => l.id === layerId && !l.main));
-};
 
 /**
  * Decorator to mark a property on a class type as optional. This allows us to get a list of all required keys at
@@ -108,8 +113,8 @@ export type AsyncReturnType<T extends (...args: any) => any> =
   T extends (...args: any) => Promise<infer U>
     ? U // if T matches this signature and returns anything else, // extract the return value U and use that, or...
     : T extends (...args: any) => infer U
-    ? U // if everything goes to hell, return an `any`
-    : any;
+      ? U // if everything goes to hell, return an `any`
+      : any;
 
 /*
  * Get an array of required keys for a class.
@@ -136,6 +141,7 @@ export function requiredKeysForClassType(constructor: ClassType<any>) {
 export function checkRequiredKeys<T extends Record<string, any>>(
   classType: ClassType<T>,
   maybeType: Record<string, any>,
+
   logErrors = false,
   id?: string,
 ): maybeType is T {
@@ -153,13 +159,15 @@ export function checkRequiredKeys<T extends Record<string, any>>(
     }
 
     // Log warnings for keys that aren't a part of this definition
-    // eslint-disable-next-line new-cap
+
     const target = new classType();
     const allKeys = Object.getOwnPropertyNames(target);
     Object.keys(maybeType)
       .filter(key => !allKeys.includes(key))
       .forEach(key =>
-        console.warn(`Found unknown key '${key}' on config for ${id}`),
+        console.warn(
+          `Found unknown key '${key}' on config for ${id || maybeType.id}`,
+        ),
       );
   }
   return !missingKey;
@@ -175,7 +183,9 @@ export type LegendDefinitionItem = {
   color: string;
   // Optional, to create custom label like '≤50'. if label is not defined
   // then value attribute will be shown instead
+  // TODO - the label.text functionality does not seem to be used. Remove? @Amit
   label?: LegendLabel | string;
+  fillPattern?: 'left' | 'right';
 };
 
 export type LegendDefinition = LegendDefinitionItem[];
@@ -215,11 +225,10 @@ export type HazardDataType = GeometryType | RasterType;
 
 export type ZonalConfig = {
   // we're keeping snakecase here because that is what zonal uses
-  // eslint-disable-next-line camelcase
+
   class_properties?: string[];
 };
 
-/* eslint-disable camelcase */
 export type ZonalOptions = {
   zones: GeoJSON;
   zone_properties?: string[];
@@ -232,7 +241,6 @@ export type ZonalOptions = {
   include_null_class_rows?: boolean;
   on_after_each_zone_feature?: Function;
 };
-/* eslint-enable camelcase */
 
 // this is the row object found in the table.rows array
 // of the result object returned by zonal.calculate
@@ -264,10 +272,19 @@ export enum Interval {
   ONE_YEAR = '1-year',
 }
 
-export type FeatureInfoObject = { [key: string]: FeatureInfoProps };
+export type FeatureTitleObject = {
+  [key: string]: FeatureInfoTitle;
+};
+
+export type FeatureInfoObject = {
+  [key: string]: FeatureInfoProps;
+};
 
 export class CommonLayerProps {
   id: LayerKey;
+
+  @optional
+  disableDownload?: boolean; // If true, the layer cannot be downloaded as a file.
 
   @optional // only optional for boundary layer
   title?: string;
@@ -294,7 +311,9 @@ export class CommonLayerProps {
   contentPath?: string;
 
   @optional
-  featureInfoProps?: { [key: string]: FeatureInfoProps };
+  featureInfoTitle?: FeatureTitleObject;
+  @optional
+  featureInfoProps?: FeatureInfoObject;
 
   /*
   * only for layer that has grouped menu and always assigned to main layer of group (../components/Navbar/utils.ts)
@@ -317,10 +336,13 @@ export class CommonLayerProps {
     },
   */
   @optional
-  group?: MenuGroup;
+  group?: MenuGroup = undefined; // Defaulting to undefined to make sure that the group property is writable
 
   @optional
   validity?: Validity; // Include additional dates in the calendar based on the number provided.
+
+  @optional
+  coverageWindow?: CoverageWindow; // see docs/dates.md for explanations
 
   @optional
   disableAnalysis?: boolean; // Hide layer in Analysis feature
@@ -369,7 +391,7 @@ export type AdminLevelNameString = string & {
 export type FilePath = string & { 'a path to a file': {} };
 
 export class BoundaryLayerProps extends CommonLayerProps {
-  type: 'boundary';
+  type: 'boundary' = 'boundary';
   path: FilePath; // path to admin_boundries.json file - web or local.
   adminCode: AdminCodeString; // same value as last item in adminLevelCodes below
   adminLevelCodes: AdminCodeString[]; // Ordered as below
@@ -379,6 +401,26 @@ export class BoundaryLayerProps extends CommonLayerProps {
 
   @optional
   isPrimary?: boolean | undefined;
+
+  @optional
+  format?: 'pmtiles' | 'geojson' = 'geojson';
+
+  @optional
+  zonesPath: FilePath; // path to admin_boundries.parquet file in S3
+
+  @optional
+  simplifyTolerance?: number; // optional geometry simplification for analysis stats (only an option when zonesPath provided)
+
+  @optional
+  layerName?: string;
+
+  @optional
+  hideInGoTo?: boolean | undefined;
+
+  // Minimum zoom level to display the boundary.
+  // Note that the layer is still loaded, but not displayed.
+  @optional
+  minZoom?: number;
 }
 
 export enum DataType {
@@ -388,46 +430,77 @@ export enum DataType {
   LabelMapping = 'labelMapping',
 }
 
+export enum FeatureInfoVisibility {
+  Always = 'always', // Default
+  IfDefined = 'if-defined',
+}
+
 type PopupMetaDataKeys = keyof PopupMetaData;
 
-interface FeatureInfoProps {
+export interface FeatureInfoTitle {
+  type: DataType;
+  template: string;
+  labelMap?: { [key: string]: string };
+  visibility?: FeatureInfoVisibility;
+}
+
+export interface FeatureInfoProps {
   type: DataType;
   dataTitle: string;
   labelMap?: { [key: string]: string };
   metadata?: PopupMetaDataKeys;
+  visibility?: FeatureInfoVisibility;
 }
 
 export enum DatesPropagation {
-  FORWARD = 'forward',
-  BACKWARD = 'backward',
-  BOTH = 'both',
+  DAYS = 'days',
+  DEKAD = 'dekad',
+  SEASON = 'season',
 }
 
 export type ValidityPeriod = {
-  // eslint-disable-next-line camelcase
-  start_date_field: string;
-  // eslint-disable-next-line camelcase
-  end_date_field: string;
+  start_date_field: string; // name of the attribute to use for start date
+
+  end_date_field: string; // name of the attribute to use for end date
+};
+
+export type SeasonBoundsConfig = {
+  start: string;
+  end: string;
+};
+
+export type SeasonBounds = {
+  start: Date;
+  end: Date;
 };
 
 export type Validity = {
-  days: number; // Number of days to include in the calendar.
   mode: DatesPropagation; // Propagation mode for dates.
+  backward?: number; // Number of days/dekades backward.
+  forward?: number; // Number of days/dekades forward.
+  seasons?: SeasonBoundsConfig[];
+};
+
+export type CoverageWindow = {
+  mode: DatesPropagation;
+  backward?: number; // Number of days/dekades backward.
+  forward?: number; // Number of days/dekades forward.
+  seasons?: SeasonBoundsConfig[];
 };
 
 export class WMSLayerProps extends CommonLayerProps {
-  type: 'wms';
+  type: 'wms' = 'wms';
   baseUrl: string;
   serverLayerName: string;
 
   @makeRequired
-  title: string;
+  declare title: string;
 
   @makeRequired
-  legend: LegendDefinition;
+  declare legend: LegendDefinition;
 
   @makeRequired
-  legendText: string;
+  declare legendText: string;
 
   @optional
   additionalQueryParams?: { [key: string]: string };
@@ -458,45 +531,53 @@ enum AggregationOptions {
   PIXEL = 'pixel',
   GEOJSON = 'geojson',
 }
-enum DateTypeOptions {
-  CONTINUOUS = 'continuous',
-  SINGLE = 'single',
-}
+
 export class CompositeLayerProps extends CommonLayerProps {
-  type: 'composite';
+  type: 'composite' = 'composite';
+  period: 'monthly' | 'seasonal';
   baseUrl: string;
 
   @makeRequired
-  title: string;
+  declare title: string;
 
   inputLayers: {
     id: LayerType['type'];
-    weight: number;
+    importance: number;
     interval: Interval;
+    key: [string, string];
+    aggregation: 'average' | 'last_dekad';
+    invert?: boolean | undefined;
   }[];
 
   aggregation: AggregationOptions;
-  interval: Interval;
-  dateType: DateTypeOptions;
   dateLayer: LayerKey; // layer to use to get dates from
   startDate: string;
 
   @optional
   endDate?: string;
+
+  // @optional
+  // expectedDataLagDays?: number;
+  @optional
+  aggregateBy?: 'mean' | 'median' | 'max';
+  @optional
+  aggregationBoundaryPath?: string;
+  @optional
+  adminCode?: number;
 }
 
 export class StaticRasterLayerProps extends CommonLayerProps {
-  type: 'static_raster';
+  type: 'static_raster' = 'static_raster';
   baseUrl: string;
 
   @makeRequired
-  title: string;
+  declare title: string;
 
   @makeRequired
-  legend: LegendDefinition;
+  declare legend: LegendDefinition;
 
   @makeRequired
-  legendText: string;
+  declare legendText: string;
 
   minZoom: number;
 
@@ -512,7 +593,7 @@ export enum DataFieldType {
 }
 
 export class AdminLevelDataLayerProps extends CommonLayerProps {
-  type: 'admin_level_data';
+  type: 'admin_level_data' = 'admin_level_data';
   path: string;
 
   @optional
@@ -522,13 +603,13 @@ export class AdminLevelDataLayerProps extends CommonLayerProps {
   validityPeriod?: ValidityPeriod;
 
   @makeRequired
-  title: string;
+  declare title: string;
 
   @makeRequired
-  legend: LegendDefinition;
+  declare legend: LegendDefinition;
 
   @makeRequired
-  legendText: string;
+  declare legendText: string;
 
   @makeRequired
   adminCode: string;
@@ -538,6 +619,12 @@ export class AdminLevelDataLayerProps extends CommonLayerProps {
 
   @makeRequired
   dataField: string;
+
+  @optional // An additional label to display in Tooltips for the dataField or custom displaySource
+  dataLabel?: string;
+
+  @optional // if legend_label, uses the label from legend to display in feature info. if not, uses dataField
+  displaySource?: 'legend_label' | 'data_field';
 
   @optional
   boundary?: LayerKey;
@@ -550,19 +637,14 @@ export class AdminLevelDataLayerProps extends CommonLayerProps {
 }
 
 export class StatsApi {
-  url: string;
+  @optional
+  url?: string;
+
   zonesUrl: string;
   groupBy: string;
 }
 
-export enum AggregationOperations {
-  Max = 'max',
-  Mean = 'mean',
-  Median = 'median',
-  Min = 'min',
-  Sum = 'sum',
-  'Area exposed' = 'intersect_percentage',
-}
+export { AggregationOperations };
 
 export const units: Partial<Record<AggregationOperations | string, string>> = {
   intersect_percentage: '%',
@@ -607,16 +689,16 @@ export type AllAggregationOperations =
 export type ThresholdDefinition = { below?: number; above?: number };
 
 export class ImpactLayerProps extends CommonLayerProps {
-  type: 'impact';
+  type: 'impact' = 'impact';
 
   @makeRequired
-  title: string;
+  declare title: string;
 
   @makeRequired
-  legend: LegendDefinition;
+  declare legend: LegendDefinition;
 
   @makeRequired
-  legendText: string;
+  declare legendText: string;
 
   hazardLayer: LayerKey; // not all layers supported here, just WMS layers
   baselineLayer: LayerKey; // not all layers supported here, just NSO layers. Maybe an advanced way to type this?
@@ -634,23 +716,37 @@ export class ImpactLayerProps extends CommonLayerProps {
 export enum PointDataLoader {
   EWS = 'ews',
   ACLED = 'acled',
+  GOOGLE_FLOOD = 'google_flood',
 }
 
 export class PointDataLayerProps extends CommonLayerProps {
-  type: 'point_data';
+  type: 'point_data' = 'point_data';
   data: string;
+
+  @makeRequired
   dataField: string;
+
+  @optional // An additional label to display in Tooltips for the dataField or custom displaySource
+  dataLabel?: string;
+
+  @optional // if legend_label, uses the label from legend to display in feature info. if not, uses dataField
+  displaySource?: 'legend_label' | 'data_field';
+
   // URL to fetch all possible dates from
-  dateUrl: string;
+  @optional
+  dateUrl?: string;
 
   @makeRequired
-  title: string;
+  declare title: string;
 
   @makeRequired
-  legend: LegendDefinition;
+  declare legend: LegendDefinition;
 
   @makeRequired
-  legendText: string;
+  declare legendText: string;
+
+  @optional
+  hexDisplay?: boolean; // display data in hexagon grid
 
   @optional
   fallbackData?: string;
@@ -659,7 +755,7 @@ export class PointDataLayerProps extends CommonLayerProps {
   additionalQueryParams?: { [key: string]: string | { [key: string]: string } };
 
   @optional
-  featureInfoProps?: FeatureInfoObject;
+  declare featureInfoProps?: FeatureInfoObject;
 
   @optional
   adminLevelDisplay?: AdminLevelDisplayType;
@@ -675,6 +771,35 @@ export class PointDataLayerProps extends CommonLayerProps {
 
   @optional
   dataFieldType?: DataFieldType = DataFieldType.NUMBER;
+
+  @optional
+  detailUrl?: string;
+
+  @optional
+  iconShape?: 'point' | 'square' | 'triangle' | 'diamond';
+}
+
+export class GeojsonDataLayerProps extends CommonLayerProps {
+  type: 'geojson_polygon' = 'geojson_polygon';
+  data: string;
+
+  @makeRequired
+  dataField: string;
+
+  @optional // if legend_label, uses the label from legend to display in feature info. if not, uses dataField
+  displaySource?: 'legend_label' | 'data_field';
+
+  @makeRequired
+  declare title: string;
+
+  @makeRequired
+  declare legend: LegendDefinition;
+
+  @makeRequired
+  declare legendText: string;
+
+  @optional
+  additionalQueryParams?: { [key: string]: string | { [key: string]: string } };
 }
 
 export type RequiredKeys<T> = {
@@ -682,11 +807,8 @@ export type RequiredKeys<T> = {
 }[keyof T];
 
 // Get the type of a union based on the value (V) and lookup field (K)
-export type DiscriminateUnion<
-  T,
-  K extends keyof T,
-  V extends T[K]
-> = T extends Record<K, V> ? T : never;
+export type DiscriminateUnion<T, K extends keyof T, V extends T[K]> =
+  T extends Record<K, V> ? T : never;
 
 export type LayersMap = {
   [key in LayerKey]: LayerType;
@@ -704,11 +826,61 @@ export interface MenuItemType {
   layersCategories: LayersCategoryType[];
 }
 
+export type PanelItem = {
+  panel?: Panel;
+  label: string;
+  icon: React.ReactNode;
+  children?: PanelItem[];
+  reportIndex?: number;
+  reportPath?: string;
+};
+
+export enum Panel {
+  None = 'none',
+  Layers = 'layers',
+  Charts = 'charts',
+  Dashboard = 'dashboard',
+  Analysis = 'analysis',
+  Tables = 'tables',
+  AnticipatoryActionDrought = 'anticipatory_action_drought',
+  AnticipatoryActionStorm = 'anticipatory_action_storm',
+  AnticipatoryActionFlood = 'anticipatory_action_flood',
+  Alerts = 'alerts',
+}
+
+export type LeftPanelState = {
+  tabValue: Panel;
+  panelSize: PanelSize;
+};
+
+// these "nominal" types help clarify what type of date we have
+// around the code base, as they are incompatible.
+// The second part of the type (after &) is discarded by the
+// typescript compiler, so there is no runtime impact.
+// refer to docs/dates.md for conceptual explanations
+export type SelectedDateTimestamp = number & { SelectedDateTimestamp: {} };
+export type ReferenceDateTimestamp = number & { ReferenceDateTimestamp: {} };
+export type QueryDateTimestamp = number & { QueryDateTimestamp: {} };
+export type DisplayDateTimestamp = number & { DisplayDateTimestamp: {} };
+export type CoverageStartDateTimestamp = number & {
+  CoverageStartDateTimestamp: {};
+};
+export type CoverageEndDateTimestamp = number & {
+  CoverageEndDateTimestamp: {};
+};
+export type ValidityStartDateTimestamp = number & {
+  ValidityStartDateTimestamp: {};
+};
+export type ValidityEndDateTimestamp = number & {
+  ValidityEndDateTimestamp: {};
+};
+
 export type DateItem = {
-  displayDate: number; // Date that will be rendered in the calendar.
-  queryDate: number; // Date that will be used in the WMS request.
-  isStartDate?: boolean;
-  isEndDate?: boolean;
+  displayDate: DisplayDateTimestamp; // Date that will be rendered in the calendar.
+  queryDate: QueryDateTimestamp; // Date that will be used in the WMS request.
+  // start and end dates of the date range.
+  startDate?: CoverageStartDateTimestamp;
+  endDate?: CoverageEndDateTimestamp;
 };
 
 export type AvailableDates = {
@@ -717,14 +889,12 @@ export type AvailableDates = {
     | PointDataLayerProps['id']]: DateItem[];
 };
 
-/* eslint-disable camelcase */
 export interface WfsRequestParams {
   url: string;
   layer_name: string;
   time?: string;
   key: string;
 }
-/* eslint-enable camelcase */
 
 export interface ChartConfig {
   type: string;
@@ -824,21 +994,16 @@ type AdminLevelDisplayType = {
 export type PointData = {
   lat: number;
   lon: number;
-  date: number; // in unix time.
+  date?: number; // in unix time.
   [key: string]: any;
 };
 
-export type PointLayerData = {
-  features: PointData[];
-};
+export type PointLayerData = FeatureCollection;
+export type GeojsonLayerData = FeatureCollection;
 
 export interface BaseLayer {
   name: string;
   dates: number[];
-}
-
-export interface ValidityLayer extends BaseLayer {
-  validity: Validity;
 }
 
 export interface PathLayer extends BaseLayer {
@@ -852,10 +1017,12 @@ export type UserAuth = {
 };
 
 export enum PanelSize {
+  auto = '',
   folded = '0vw',
-  medium = '500px',
+  medium = '425px',
   large = '1000px',
   xlarge = '1400px',
+  full = '100%',
 }
 
 export type MapEventWrapFunctionProps<T> = {
@@ -867,3 +1034,31 @@ export type MapEventWrapFunctionProps<T> = {
 export type MapEventWrapFunction<T> = (
   props: MapEventWrapFunctionProps<T>,
 ) => (evt: MapLayerMouseEvent) => void;
+
+export enum AnticipatoryAction {
+  storm = 'anticipatory_action_storm',
+  drought = 'anticipatory_action_drought',
+  flood = 'anticipatory_action_flood',
+}
+
+export class AnticipatoryActionLayerProps extends CommonLayerProps {
+  type: AnticipatoryAction = AnticipatoryAction.drought;
+
+  @makeRequired
+  declare title: string;
+}
+
+export {
+  ChartHeight,
+  DashboardElementType,
+  DashboardMapPosition,
+  DashboardMode,
+} from '../dashboardConfig/dashboardEnums';
+export type {
+  Dashboard,
+  DashboardChartConfig,
+  DashboardElements,
+  DashboardMapConfig,
+  DashboardTableConfig,
+  DashboardTextConfig,
+} from '../dashboardConfig/schema';

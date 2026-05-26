@@ -1,16 +1,8 @@
 import {
-  flatten,
-  get,
-  has,
-  isNumber,
-  isUndefined,
-  omit,
-  orderBy,
-} from 'lodash';
-import { Feature, FeatureCollection } from 'geojson';
-import { createGetCoverageUrl } from 'prism-common';
-import { TFunctionKeys } from 'i18next';
-import { Dispatch } from 'redux';
+  Extent,
+  GeoJsonBoundary,
+} from 'components/MapView/Layers/raster-utils';
+import { appConfig } from 'config';
 import {
   AdminLevelDataLayerProps,
   AdminLevelType,
@@ -25,26 +17,37 @@ import {
   WfsRequestParams,
   WMSLayerProps,
 } from 'config/types';
-import {
-  Extent,
-  GeoJsonBoundary,
-} from 'components/MapView/Layers/raster-utils';
-import { AdminLevelDataLayerData } from 'context/layers/admin_level_data';
 import { LayerDefinitions } from 'config/utils';
 import type { TableRow } from 'context/analysisResultStateSlice';
-import { isLocalhost } from 'serviceWorker';
+import { AdminLevelDataLayerData } from 'context/layers/admin_level_data';
+import { Feature, FeatureCollection } from 'geojson';
 import {
   i18nTranslator,
   isEnglishLanguageSelected,
   useSafeTranslation,
 } from 'i18n';
+import {
+  flatten,
+  get,
+  has,
+  isNumber,
+  isUndefined,
+  omit,
+  orderBy,
+} from 'lodash';
+import { createGetCoverageUrl } from 'prism-common';
+import { Dispatch } from 'redux';
+import { isLocalhost } from 'serviceWorker';
 import { ANALYSIS_API_URL } from 'utils/constants';
+
 import { getRoundedData } from './data-utils';
+import { getFormattedDate } from './date-utils';
 import {
   ANALYSIS_REQUEST_TIMEOUT,
   fetchWithTimeout,
 } from './fetch-with-timeout';
-import { getDateFormat } from './date-utils';
+
+const { multiCountry } = appConfig;
 
 export type BaselineLayerData = AdminLevelDataLayerData;
 
@@ -57,15 +60,8 @@ export type Column = {
 const hasKeys = (obj: any, keys: string[]): boolean =>
   !keys.find(key => !has(obj, key));
 
-const scaleValueIfDefined = (
-  value: number,
-  scale?: number,
-  offset?: number,
-) => {
-  return scale !== undefined && offset !== undefined
-    ? value * scale + offset
-    : value;
-};
+const scaleValueIfDefined = (value: number, scale?: number, offset?: number) =>
+  scale !== undefined && offset !== undefined ? value * scale + offset : value;
 
 function thresholdOrNaN(value: number, threshold?: ThresholdDefinition) {
   // filter out nullish values.
@@ -140,7 +136,6 @@ export const checkBaselineDataLayer = (
   );
 };
 
-/* eslint-disable camelcase */
 export type ApiData = {
   geotiff_url: ReturnType<typeof createGetCoverageUrl>; // helps developers get an understanding of what might go here, despite the type eventually being a string.
   zones_url: string;
@@ -149,7 +144,6 @@ export type ApiData = {
   wfs_params?: WfsRequestParams;
 };
 
-/* eslint-disable camelcase */
 export type AlertRequest = {
   alert_name: string;
   alert_config: WMSLayerProps;
@@ -179,8 +173,8 @@ export const fetchApiData = async (
   url: string,
   apiData: ApiData | AlertRequest,
   dispatch: Dispatch,
-): Promise<Array<KeyValueResponse | Feature>> => {
-  return (
+): Promise<Array<KeyValueResponse | Feature>> =>
+  (
     await fetchWithTimeout(
       url,
       dispatch,
@@ -202,7 +196,7 @@ export const fetchApiData = async (
     .then(message => {
       try {
         return JSON.parse(message);
-      } catch (e) {
+      } catch (_e) {
         // In some cases the response isn't valid JSON.
         // In those cases, just wrap the full response in an object.
         return {
@@ -210,7 +204,6 @@ export const fetchApiData = async (
         };
       }
     });
-};
 
 export function scaleAndFilterAggregateData(
   aggregateData: AsyncReturnType<typeof fetchApiData>,
@@ -222,21 +215,18 @@ export function scaleAndFilterAggregateData(
   const { scale, offset } = wcsConfig || {};
 
   return (aggregateData as KeyValueResponse[])
-    .map(data => {
-      return {
-        ...data,
-        [operation]: scaleValueIfDefined(
-          get(data, `stats_${operation}`) as number,
-          scale,
-          offset,
-        ),
-      };
-    })
-    .filter(data => {
-      return !Number.isNaN(
-        thresholdOrNaN(data[operation] as number, threshold),
-      );
-    });
+    .map(data => ({
+      ...data,
+      [operation]: scaleValueIfDefined(
+        get(data, `stats_${operation}`) as number,
+        scale,
+        offset,
+      ),
+    }))
+    .filter(
+      data =>
+        !Number.isNaN(thresholdOrNaN(data[operation] as number, threshold)),
+    );
 }
 
 export function generateFeaturesFromApiData(
@@ -246,18 +236,17 @@ export function generateFeaturesFromApiData(
   operation: AggregationOperations,
 ): GeoJsonBoundary[] {
   const mergedFeatures = mergeFeaturesByProperty(
-    baselineData.features.features,
+    baselineData.features,
     aggregateData,
     groupBy,
   );
-
   return mergedFeatures.filter(feature => {
     const value = get(feature, ['properties', operation]);
     return value !== undefined && !Number.isNaN(value);
   }) as GeoJsonBoundary[];
 }
 
-// Is this function still needed?
+// Is this function still needed? It's only in use by ImpactLayers
 export async function loadFeaturesFromApi(
   layer: ImpactLayerProps,
   baselineData: BaselineLayerData,
@@ -276,10 +265,16 @@ export async function loadFeaturesFromApi(
     version: hazardLayerDef.wcsConfig?.version,
   });
 
-  const statsApi = layer.api as StatsApi;
+  const statsApi = layer.api;
+  if (!statsApi || !statsApi.zonesUrl || !statsApi.groupBy) {
+    throw new Error(
+      `StatsApi configuration is missing required properties (zonesUrl, groupBy) for layer '${layer.id}'`,
+    );
+  }
+
   const apiUrl = statsApi.url || ANALYSIS_API_URL;
 
-  const apiData = {
+  const apiData: ApiData = {
     geotiff_url: wcsUrl,
     zones_url: statsApi.zonesUrl,
     group_by: statsApi.groupBy,
@@ -305,7 +300,7 @@ export function quoteAndEscapeCell(value: number | string) {
   if (isUndefined(value)) {
     return '';
   }
-  return `"${value.toString().replaceAll('"', '""')}"`;
+  return `"${(value.toString() as any)?.replaceAll('"', '""')}"`;
 }
 
 export type AnalysisResult =
@@ -347,6 +342,50 @@ export function scaleFeatureStat(
 }
 
 /**
+ * Standard percentage-based legend definition for exposure level analysis.
+ * Used for area exposed and polygon analysis with percentage-based exposure statistics.
+ * Uses fixed breakpoints as requested in https://github.com/WFP-VAM/prism-app/issues/1381
+ * Color breaks from https://colorbrewer2.org/#type=sequential&scheme=Reds&n=5
+ */
+export const EXPOSURE_LEVEL_LEGEND: LegendDefinition = [
+  {
+    value: 0.2,
+    color: '#fee5d9', // very light red-orange
+    label: '<20%',
+  },
+  {
+    value: 0.4,
+    color: '#fcae91', // rose bud
+    label: '20 - 39%',
+  },
+  {
+    value: 0.6,
+    color: '#fb6a4a', // red-orange
+    label: '40 - 59%',
+  },
+  {
+    value: 0.8,
+    color: '#de2d26', // medium red-orange
+    label: '60 - 79%',
+  },
+  {
+    value: 1.0,
+    color: '#a50f15', // dark tamarillo red
+    label: '>=80%',
+  },
+];
+
+/**
+ * Creates a standard percentage-based legend for "Area exposed" analysis.
+ * Uses fixed breakpoints as requested in https://github.com/WFP-VAM/prism-app/issues/1381
+ *
+ * @return LegendDefinition
+ */
+export function createAreaExposedLegend(): LegendDefinition {
+  return EXPOSURE_LEVEL_LEGEND;
+}
+
+/**
  * Creates Analysis result legend based on data returned from API.
  *
  * The equal interval method takes the maximum values minus the minimum
@@ -383,14 +422,17 @@ export function createLegendFromFeatureArray(
 
     // Make sure you don't have a value greater than maxNum.
     const value = Math.min(breakpoint, maxNum);
-    /* eslint-disable fp/no-mutation */
+
     let formattedValue;
     if (statistic === AggregationOperations['Area exposed']) {
       formattedValue = `${(value * 100).toFixed(2)} %`;
     } else {
-      formattedValue = `(${Math.round(value).toLocaleString('en-US')})`;
+      // Keep decimal if delta is less than 10, otherwise round to nearest integer.
+      const keepDecimal = delta < 5;
+      formattedValue = keepDecimal
+        ? `(${value.toFixed(1)})`
+        : `(${Math.round(value).toLocaleString('en-US')})`;
     }
-    /* eslint-enable fp/no-mutation */
 
     return {
       value,
@@ -411,20 +453,18 @@ export class ExposedPopulationResult {
   legendText: string;
   statistic: AggregationOperations;
   tableData: TableRow[];
-  date: number;
+  analysisDate: ReturnType<Date['getTime']>;
   tableColumns: any;
 
-  getTitle = (t?: i18nTranslator): string => {
-    return t ? t('Population Exposure') : 'Population Exposure';
-  };
+  getTitle = (t: i18nTranslator): string => t('Population Exposure');
 
-  getStatTitle = (t?: i18nTranslator): string => {
-    return this.getTitle(t);
-  };
+  getLayerTitle = (t: i18nTranslator): string => this.getTitle(t);
 
-  getHazardLayer = (): WMSLayerProps => {
-    return this.getHazardLayer();
-  };
+  getStatLabel(t: i18nTranslator): string {
+    return t(aggregationOperationsToDisplay[this.statistic]);
+  }
+
+  getHazardLayer = (): WMSLayerProps => this.getHazardLayer();
 
   constructor(
     tableData: TableRow[],
@@ -434,7 +474,7 @@ export class ExposedPopulationResult {
     legendText: string,
     groupBy: string,
     key: string,
-    date: number,
+    analysisDate: ReturnType<Date['getTime']>,
     tableColumns: any,
   ) {
     this.tableData = tableData;
@@ -444,7 +484,7 @@ export class ExposedPopulationResult {
     this.legendText = legendText;
     this.groupBy = groupBy;
     this.key = key;
-    this.date = date;
+    this.analysisDate = analysisDate;
     this.tableColumns = tableColumns;
   }
 }
@@ -453,13 +493,12 @@ export class ExposedPopulationResult {
 export class BaselineLayerResult {
   key: number = Date.now();
   featureCollection: FeatureCollection;
+  adminBoundariesFormat: string;
   tableData: TableRow[];
-  // for debugging purposes only, as its easy to view the raw API response via Redux Devtools. Should be left empty in production
-  private rawApiData?: object[];
-
+  // TODO: Type this
+  statsByAdminId?: KeyValueResponse[];
   statistic: AggregationOperations;
   threshold: ThresholdDefinition;
-
   legend: LegendDefinition;
   legendText: string;
   hazardLayerId: WMSLayerProps['id'];
@@ -475,16 +514,18 @@ export class BaselineLayerResult {
     statistic: AggregationOperations,
     threshold: ThresholdDefinition,
     legend?: LegendDefinition,
-    rawApiData?: object[],
+    statsByAdminId?: KeyValueResponse[],
     analysisDate?: ReturnType<Date['getTime']>,
+    adminBoundariesFormat?: string,
   ) {
     this.featureCollection = featureCollection;
     this.tableData = tableData;
+    this.adminBoundariesFormat = adminBoundariesFormat ?? 'geojson';
     this.statistic = statistic;
     this.threshold = threshold;
     this.legend = baselineLayer.legend ?? legend;
     this.legendText = hazardLayer.legendText;
-    this.rawApiData = rawApiData;
+    this.statsByAdminId = statsByAdminId;
 
     this.hazardLayerId = hazardLayer.id;
     this.baselineLayerId = baselineLayer.id;
@@ -496,32 +537,41 @@ export class BaselineLayerResult {
     return LayerDefinitions[this.hazardLayerId] as WMSLayerProps;
   }
 
-  getBaselineLayer(): AdminLevelDataLayerProps {
-    return LayerDefinitions[this.baselineLayerId] as AdminLevelDataLayerProps;
+  getBaselineLayer(): BoundaryLayerProps | AdminLevelDataLayerProps {
+    return LayerDefinitions[this.baselineLayerId] as
+      | BoundaryLayerProps
+      | AdminLevelDataLayerProps;
   }
 
-  getStatTitle(t?: i18nTranslator): string {
-    return t
-      ? `${t(this.getHazardLayer().title)} (${t(
-          aggregationOperationsToDisplay[this.statistic],
-        )})`
-      : `${this.getHazardLayer().title} (${
-          aggregationOperationsToDisplay[this.statistic]
-        })`;
+  getLayerTitle(t: i18nTranslator): string {
+    return t(this.getHazardLayer().title);
   }
 
-  getTitle(t?: i18nTranslator): string | undefined {
+  getTitle(t: i18nTranslator): string | undefined {
     const baselineLayer = this.getBaselineLayer();
-    // If there is no title, we are using admin boundaries and return StatTitle instead.
+
     if (!baselineLayer.title) {
-      return this.getStatTitle(t);
+      return this.getStatSummaryTitle(t);
     }
     const baselineTitle = baselineLayer.title || 'Admin levels';
-    return t
-      ? `${t(baselineTitle)} ${t('exposed to')} ${t(
-          this.getHazardLayer().title,
-        )}`
-      : `${baselineTitle} exposed to ${this.getHazardLayer().title}`;
+    return `${t(baselineTitle)} ${t('exposed to')} ${t(
+      this.getHazardLayer().title,
+    )}`;
+  }
+
+  getStatLabel(t: i18nTranslator): string {
+    const statTitle = t(aggregationOperationsToDisplay[this.statistic]);
+    const atLevel = t('at Level');
+    const baselineLayer = this.getBaselineLayer();
+    const adminLevel =
+      'adminLevel' in baselineLayer
+        ? baselineLayer.adminLevel
+        : baselineLayer.adminLevelCodes.length - (multiCountry ? 1 : 0);
+    return `${statTitle} ${atLevel} ${adminLevel}`;
+  }
+
+  getStatSummaryTitle(t: i18nTranslator): string {
+    return `${this.getLayerTitle(t)} ${this.getStatLabel(t)}`;
   }
 }
 
@@ -560,10 +610,9 @@ export function getAnalysisTableColumns(
   ];
 
   if (statistic === AggregationOperations['Area exposed']) {
-    /* eslint-disable-next-line fp/no-mutating-methods */
     analysisTableColumns.push({
       id: 'stats_intersect_area',
-      label: 'Area exposed in sq km',
+      label: 'Area exposed in km²',
       format: (value: string | number) =>
         getRoundedData(value as number, undefined, 2, 'stats_intersect_area'),
     });
@@ -595,9 +644,7 @@ export function getAnalysisTableColumns(
   ];
 }
 
-export function useAnalysisTableColumns(
-  analysisResult?: AnalysisResult,
-): {
+export function useAnalysisTableColumns(analysisResult?: AnalysisResult): {
   translatedColumns: Column[];
   analysisTableColumns: Column[];
 } {
@@ -652,15 +699,8 @@ export class PolygonAnalysisResult {
     this.boundaryId = boundaryId;
     this.startDate = startDate;
     this.endDate = endDate;
-    // color breaks from https://colorbrewer2.org/#type=sequential&scheme=Reds&n=5
-    // this legend of red-like colors goes from very light to dark
-    this.legend = [
-      { label: '20%', value: 0.2, color: '#fee5d9' }, // very light red-orange, HSL: 0.05, 0.95, 0.92,
-      { label: '40%', value: 0.4, color: '#fcae91' }, // rose bud, HSL: 0.05, 0.95, 0.78,
-      { label: '60%', value: 0.6, color: '#fb6a4a' }, // red-orange, HSL: 0.03, 0.96, 0.64
-      { label: '80%', value: 0.8, color: '#de2d26' }, // medium red-orange HSL: 0.01, 0.74, 0.51
-      { label: '100%', value: 1, color: '#a50f15' }, // dark tamarillo red: 0.99 0.83 0.35, dark red
-    ];
+    // Use the shared percentage-based legend for consistency
+    this.legend = EXPOSURE_LEVEL_LEGEND;
 
     this.legendText = hazardLayer.legendText;
     this.hazardLayerId = hazardLayer.id;
@@ -669,20 +709,14 @@ export class PolygonAnalysisResult {
     return LayerDefinitions[this.hazardLayerId] as WMSLayerProps;
   }
 
-  getTitle(t?: i18nTranslator): string {
-    return t
-      ? `${t(this.getHazardLayer().title)} ${t('intersecting admin level')} ${t(
-          (this.adminLevel as unknown) as TFunctionKeys,
-        )}`
-      : `${this.getHazardLayer().title} intersecting admin level ${
-          this.adminLevel
-        }`;
+  getTitle(t: i18nTranslator): string {
+    return `${t(this.getHazardLayer().title)} ${t(
+      'intersecting admin level',
+    )} ${t(this.adminLevel as unknown as any)}`;
   }
 
-  getStatTitle(t?: i18nTranslator): string {
-    return t
-      ? `${t(this.getHazardLayer().title)} (${t(this.statistic)})`
-      : `${this.getHazardLayer().title} (${this.statistic})`;
+  getStatTitle(t: i18nTranslator): string {
+    return `${t(this.getHazardLayer().title)} (${t(this.statistic)})`;
   }
 }
 
@@ -710,7 +744,7 @@ export function generateAnalysisFilename(
       ? analysisResult.adminLevel
       : undefined;
 
-  const dateString = getDateFormat(selectedDate || createdAt, 'snake');
+  const dateString = getFormattedDate(selectedDate || createdAt, 'snake');
 
   return `analysis_${hazardLayerId}${
     baselineLayerId ? `_${baselineLayerId}` : ''
@@ -747,11 +781,13 @@ export function downloadCSVFromTableData(
         .join(','),
     ),
   ];
-  const rawCsv = `data:text/csv;charset=utf-8,${csvLines.join('\n')}`;
+  const rawCsv = csvLines.join('\n');
 
-  const encodedUri = encodeURI(rawCsv);
+  // Use Blob to handle large data
+  const blob = new Blob([rawCsv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
-  link.setAttribute('href', encodedUri);
+  link.setAttribute('href', url);
 
   link.setAttribute(
     'download',
@@ -760,6 +796,7 @@ export function downloadCSVFromTableData(
   document.body.appendChild(link); // Required for FF
 
   link.click();
+  document.body.removeChild(link); // Clean up
 }
 
 // type of results that have the tableData property

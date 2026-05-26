@@ -6,15 +6,6 @@
   "serversUrls": {
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
-  "icons": {
-    "rainfall": "icon_rain.png",
-    "vegetation": "icon_veg.png",
-    "temperature": "icon_climate.png",
-    "risk": "icon_impact.png",
-    "tropical_storms": "icon_tropical_storm.png",
-    "vulnerability": "icon_vulnerable.png",
-    "Cadre Harmonisé": "icon_cadreharmoise2.png"
-  },
   "map": {
     "boundingBox": [11.6, 1.8, 15.21, 12.18]
   },
@@ -94,6 +85,10 @@
               "main": true
             },
             {
+              "id": "spi_2m",
+              "label": "2-month"
+            },
+            {
               "id": "spi_3m",
               "label": "3-month"
             },
@@ -115,7 +110,7 @@
       "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
-          "group_title": "Rainfall categories:",
+          "group_title": "Number of days of rainfall:",
           "activate_all": false,
           "layers": [
             {
@@ -169,10 +164,7 @@
       ]
     },
     "vulnerability": {
-      "Cadre Harmonisé": [
-        "ch_phase",
-        "ch_pop3_5"
-      ]
+      "Cadre Harmonisé": ["ch_phase", "ch_pop3_5"]
     }
   }
 }

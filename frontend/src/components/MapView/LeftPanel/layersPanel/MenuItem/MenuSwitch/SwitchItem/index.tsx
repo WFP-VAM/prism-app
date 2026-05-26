@@ -2,35 +2,39 @@ import {
   Box,
   createStyles,
   IconButton,
+  makeStyles,
   Tooltip,
-  WithStyles,
-  withStyles,
 } from '@material-ui/core';
 import OpacityIcon from '@material-ui/icons/Opacity';
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { usePostHog } from '@posthog/react';
+import { Extent } from 'components/MapView/Layers/raster-utils';
+import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
 import { LayerKey, LayerType } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
 import { clearDataset } from 'context/datasetStateSlice';
-import { layersSelector, mapSelector } from 'context/mapStateSlice/selectors';
+import { useDispatch, useSelector } from 'context/hooks';
+import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
+import {
+  availableDatesSelector,
+  layersLoadingDatesIdsSelector,
+} from 'context/serverStateSlice';
+import type { AppDispatch } from 'context/store';
 import { useSafeTranslation } from 'i18n';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { LocalError } from 'utils/error-utils';
 import { refreshBoundaries } from 'utils/map-utils';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
-import { Extent } from 'components/MapView/Layers/raster-utils';
-import { availableDatesSelector } from 'context/serverStateSlice';
-import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
-import { LocalError } from 'utils/error-utils';
-import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
-import { toggleRemoveLayer } from './utils';
-import LayerDownloadOptions from './LayerDownloadOptions';
+import { useMapState } from 'utils/useMapState';
+
 import ExposureAnalysisOption from './ExposureAnalysisOption';
-import SwitchTitle from './SwitchItemTitle';
-import SwitchAction from './SwitchAction';
+import LayerDownloadOptions from './LayerDownloadOptions';
 import OpacitySlider from './OpacitySlider';
+import SwitchAction from './SwitchAction';
+import SwitchTitle from './SwitchItemTitle';
+import { toggleRemoveLayer } from './utils';
 
 const SwitchItem = memo(
   ({
-    classes,
     layer,
     extent,
     groupMenuFilter,
@@ -43,18 +47,26 @@ const SwitchItem = memo(
       type: layerType,
       group,
     } = layer;
+    const classes = useStyles();
     const { t } = useSafeTranslation();
-    const selectedLayers = useSelector(layersSelector);
+    const mapState = useMapState();
+    const selectedLayers = mapState.layers;
     const serverAvailableDates = useSelector(availableDatesSelector);
-    const map = useSelector(mapSelector);
+    const map = mapState.maplibreMap();
+    // keep track of layers for which we are computing available dates
+    // to avoid triggering duplicate actions
+    const layersLoadingDates = useSelector(layersLoadingDatesIdsSelector);
     const [isOpacitySelected, setIsOpacitySelected] = useState(false);
-    const dispatch = useDispatch();
+    const dispatch: AppDispatch = useDispatch();
+    const posthog = usePostHog();
+
     const opacity = useSelector(opacitySelector(layerId));
-    const {
-      updateHistory,
-      appendLayerToUrl,
-      removeLayerFromUrl,
-    } = useUrlHistory();
+    const hexDisplay = layer.type === 'point_data' && layer.hexDisplay;
+    // Hack to use composite layer type for hexDisplay layers and switch
+    // to using fill for opacity control
+    const layerTypeOverride = hexDisplay ? 'composite' : layerType;
+    const { updateHistory, appendLayerToUrl, removeLayerFromUrl } =
+      useUrlHistory();
 
     useEffect(() => {
       setIsOpacitySelected(false);
@@ -69,18 +81,20 @@ const SwitchItem = memo(
           map,
           value: initialOpacity || 0,
           layerId,
-          layerType,
+          layerType: layerTypeOverride,
         }),
       );
-    }, [dispatch, initialOpacity, layerId, layerType, map, opacity]);
+    }, [dispatch, initialOpacity, layerId, layerTypeOverride, map, opacity]);
 
-    const someLayerAreSelected = useMemo(() => {
-      return selectedLayers.some(
-        ({ id: testId }) =>
-          testId === layerId ||
-          (group && group.layers.some(l => l.id === testId)),
-      );
-    }, [group, layerId, selectedLayers]);
+    const someLayerAreSelected = useMemo(
+      () =>
+        selectedLayers.some(
+          ({ id: testId }) =>
+            testId === layerId ||
+            (group && group.layers.some(l => l.id === testId)),
+        ),
+      [group, layerId, selectedLayers],
+    );
 
     const selectedActiveLayer = useMemo(
       () =>
@@ -96,12 +110,12 @@ const SwitchItem = memo(
       [group, someLayerAreSelected, selectedLayers],
     );
 
-    const initialActiveLayerId = useMemo(() => {
-      return selectedActiveLayer.length > 0
-        ? selectedActiveLayer[0].id
-        : layer.id;
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [layer.id]);
+    const initialActiveLayerId = useMemo(
+      () =>
+        selectedActiveLayer.length > 0 ? selectedActiveLayer[0].id : layer.id,
+
+      [layer.id],
+    );
 
     const [activeLayerId, setActiveLayerId] = useState(
       initialActiveLayerId || (group?.layers?.find(l => l.main)?.id as string),
@@ -114,13 +128,15 @@ const SwitchItem = memo(
       );
     }, [group, initialActiveLayerId]);
 
-    const exposure = useMemo(() => {
-      return (layer.type === 'wms' && layer.exposure) || undefined;
-    }, [layer.exposure, layer.type]);
+    const exposure = useMemo(
+      () => (layer.type === 'wms' && layer.exposure) || undefined,
+      [layer.exposure, layer.type],
+    );
 
-    const validatedTitle = useMemo(() => {
-      return t(group?.groupTitle || layerTitle || '');
-    }, [group, layerTitle, t]);
+    const validatedTitle = useMemo(
+      () => t(group?.groupTitle || layerTitle || ''),
+      [group, layerTitle, t],
+    );
 
     const toggleLayerValue = useCallback(
       (selectedLayerId: string, checked: boolean) => {
@@ -136,20 +152,29 @@ const SwitchItem = memo(
 
         const urlLayerKey = getUrlKey(selectedLayer);
 
+        posthog?.capture('layer_toggled', {
+          layer_id: selectedLayer.id,
+          layer_title: selectedLayer.title,
+          layer_type: selectedLayer.type,
+          enabled: checked,
+        });
+
         if (!checked) {
           toggleRemoveLayer(
             selectedLayer,
             map,
             urlLayerKey,
-            dispatch,
+            mapState.actions.removeLayer,
             removeLayerFromUrl,
+            mapState.actions.addLayer,
           );
           return;
         }
         try {
           checkLayerAvailableDatesAndContinueOrRemove(
-            layer,
+            selectedLayer,
             serverAvailableDates,
+            layersLoadingDates,
             removeLayerFromUrl,
             dispatch,
           );
@@ -157,19 +182,22 @@ const SwitchItem = memo(
           console.error((error as LocalError).getErrorMessage());
           return;
         }
-        const updatedUrl = appendLayerToUrl(
-          urlLayerKey,
-          selectedLayers,
-          selectedLayer,
-        );
-        updateHistory(urlLayerKey, updatedUrl);
+        if (mapState.isGlobalMap) {
+          const updatedUrl = appendLayerToUrl(
+            urlLayerKey,
+            selectedLayers,
+            selectedLayer,
+          );
+          updateHistory(urlLayerKey, updatedUrl);
+        }
+        mapState.actions.addLayer(selectedLayer);
         if (
           'boundary' in selectedLayer ||
           selectedLayer.type !== 'admin_level_data'
         ) {
           return;
         }
-        refreshBoundaries(map, dispatch);
+        refreshBoundaries(map, mapState.actions);
       },
       [
         appendLayerToUrl,
@@ -177,16 +205,32 @@ const SwitchItem = memo(
         group,
         layer,
         map,
+        mapState.actions,
+        mapState.isGlobalMap,
+        posthog,
         removeLayerFromUrl,
         selectedLayers,
         serverAvailableDates,
+        layersLoadingDates,
         updateHistory,
       ],
     );
 
     return (
-      <Box display="flex" flexDirection="column" maxWidth="100%">
-        <Box key={layerId} display="flex" alignItems="center" m={2}>
+      <Box
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          maxWidth: '100%',
+        }}
+      >
+        <Box
+          key={layerId}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
           <SwitchAction
             activeLayerId={activeLayerId}
             someLayerAreSelected={someLayerAreSelected}
@@ -203,7 +247,7 @@ const SwitchItem = memo(
             groupMenuFilter={groupMenuFilter}
             disabledMenuSelection={disabledMenuSelection}
           />
-          <Tooltip title="Opacity">
+          <Tooltip title={t('Opacity') as string}>
             <span style={{ marginLeft: 'auto' }}>
               <IconButton
                 disabled={!someLayerAreSelected}
@@ -236,7 +280,7 @@ const SwitchItem = memo(
           <OpacitySlider
             activeLayerId={activeLayerId}
             layerId={layerId}
-            layerType={layerType}
+            layerType={layerTypeOverride}
           />
         )}
       </Box>
@@ -244,7 +288,7 @@ const SwitchItem = memo(
   },
 );
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     switch: {
       marginRight: 2,
@@ -262,7 +306,6 @@ const styles = () =>
       },
     },
     opacityRoot: {
-      color: '#828282',
       marginLeft: 'auto',
     },
     opacityRootSelected: {
@@ -273,13 +316,14 @@ const styles = () =>
         color: '#4CA1AD',
       },
     },
-  });
+  }),
+);
 
-export interface SwitchItemProps extends WithStyles<typeof styles> {
+export interface SwitchItemProps {
   layer: LayerType;
   extent?: Extent;
   groupMenuFilter?: string;
   disabledMenuSelection?: boolean;
 }
 
-export default withStyles(styles)(SwitchItem);
+export default SwitchItem;

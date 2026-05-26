@@ -1,23 +1,16 @@
 {
   "country": "Cambodia",
-  "defaultLanguage": "kh",
+  "defaultLanguage": "km",
   "countryAdmin0Id": 44,
   "alertFormActive": false,
   "aboutPath": "data/cambodia/about.md",
   "enableNavigationDropdown": true,
-  "icons": {
-    "vulnerability": "icon_vulnerable.png",
-    "exposure": "icon_basemap.png",
-    "field_reports": "icon_basemap.png",
-    "hazards": "icon_climate.png",
-    "flood": "icon_flood.png",
-    "risk": "icon_impact.png",
-    "capacity": "icon_capacity.png",
-    "tables": "icon_table.png",
-    "rainfall": "icon_rain.png",
-    "vegetation": "icon_veg.png",
-    "temperature": "icon_climate.png"
-  },
+  "rightSideLinks": [
+    {
+      "title": "Disaster impact field reports",
+      "href": "https://dmp.ovio.org"
+    }
+  ],
   "serversUrls": {
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
@@ -25,7 +18,7 @@
     "boundingBox": [102.35, 10.49, 107.61, 14.57]
   },
   "defaultDisplayBoundaries": [
-    "admin_boundaries",
+    "admin3_boundaries",
     "admin1_boundaries",
     "admin2_boundaries"
   ],
@@ -36,6 +29,11 @@
       "early_warning": ["ews_remote"]
     },
     "rainfall": {
+      "forecasts": [
+        "daily_rainfall_forecast",
+        "dekad_rainfall_forecast",
+        "dekad_rainfall_anomaly_forecast"
+      ],
       "rainfall_amount": [
         {
           "group_title": "Rainfall aggregate",
@@ -121,6 +119,10 @@
               "main": true
             },
             {
+              "id": "spi_2m",
+              "label": "2-month"
+            },
+            {
               "id": "spi_3m",
               "label": "3-month",
               "main": false
@@ -200,7 +202,7 @@
       ]
     },
     "vulnerability": {
-      "poverty": ["idpoor", "idpoor_1", "idpoor_2"]
+      "poverty": ["idpoor", "idpoor_1", "idpoor_2", "vuln_index"]
     },
     "field_reports": {
       "field_reports": ["flood_report", "drought_report", "kh_incident_report"]

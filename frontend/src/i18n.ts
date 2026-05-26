@@ -1,40 +1,26 @@
-import { merge } from 'lodash';
+import { extractTranslationItems } from 'config/config.test.utils';
+import { enUS, es, fr, km, mn, pt, ru } from 'date-fns/locale';
 import i18n from 'i18next';
-import Moment from 'moment';
-import { extendMoment } from 'moment-range';
-import { initReactI18next, useTranslation } from 'react-i18next';
+import { merge } from 'lodash';
 import { registerLocale } from 'react-datepicker';
-import { useCallback } from 'react';
-import en from 'date-fns/locale/en-US';
-import fr from 'date-fns/locale/fr';
-import km from 'date-fns/locale/km';
-import pt from 'date-fns/locale/pt';
-import es from 'date-fns/locale/es';
-import ru from 'date-fns/locale/ru';
-import mn from 'date-fns/locale/mn';
+import { initReactI18next, useTranslation } from 'react-i18next';
 
-import { translation } from './config';
-import 'moment/locale/km';
-import 'moment/locale/fr';
-import 'moment/locale/pt';
-import 'moment/locale/es';
-import 'moment/locale/ru';
-import 'moment/locale/mn';
+import { appConfig, getRawLayers, safeCountry, translation } from './config';
 
 const TRANSLATION_DEBUG = false;
+const layers = getRawLayers(safeCountry, true);
 // Register other date locales to be used by our DatePicker
-// TODO - extract registerLocale and moment/locale imports and loading into a separate file for clarity.
-registerLocale('en', en);
+// TODO - extract registerLocale  imports and loading into a separate file for clarity.
+// Test for missing locales
+registerLocale('en', enUS);
 registerLocale('fr', fr);
 registerLocale('km', km);
 registerLocale('pt', pt);
 registerLocale('es', es);
 registerLocale('ru', ru);
 registerLocale('mn', mn);
-export const moment = extendMoment(Moment as any);
-moment.locale('en');
 
-export type i18nTranslator = typeof i18n['t'];
+export type i18nTranslator = (typeof i18n)['t'];
 
 export const appResources = {
   en: {
@@ -56,9 +42,7 @@ export const formattedTranslation = Object.keys(translation).reduce(
 );
 
 const englishKeys = Object.keys(translation)
-  .flatMap(language => {
-    return Object.keys(translation[language]);
-  })
+  .flatMap(language => Object.keys(translation[language]))
   .reduce(
     (previousKeys, currentKey) => ({
       ...previousKeys,
@@ -77,6 +61,38 @@ export const resources = merge(
 
 export const languages = Object.keys(resources);
 
+const isDevelopment = ['development'].includes(process.env.NODE_ENV || '');
+
+const missingKeys: Record<string, string[]> = { en: [] };
+if (TRANSLATION_DEBUG || isDevelopment) {
+  const itemsToTranslate: string[] = extractTranslationItems(appConfig, layers);
+  itemsToTranslate.forEach(item => {
+    if (
+      item !== '' &&
+      !Object.prototype.hasOwnProperty.call(resources.en.translation, item)
+    ) {
+      missingKeys.en.push(item);
+    }
+  });
+
+  // eslint-disable-next-line no-console
+  console.log('Missing translation keys:', missingKeys.en);
+}
+
+function logMissingKey(lng: string, key: string) {
+  if (TRANSLATION_DEBUG || isDevelopment) {
+    if (!missingKeys[lng]) {
+      missingKeys[lng] = [];
+    }
+
+    if (!missingKeys[lng].includes(key) && key !== '') {
+      missingKeys[lng].push(key);
+      // eslint-disable-next-line no-console
+      console.log('Missing keys:', missingKeys[lng]);
+    }
+  }
+}
+
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next
   .init({
@@ -89,6 +105,11 @@ i18n
     preload: languages,
     ns: ['translation'],
     defaultNS: 'translation',
+    saveMissing: true,
+    missingKeyHandler: (lng, _ns, key) => {
+      const foundLng = Array.isArray(lng) ? lng[0] : lng;
+      logMissingKey(foundLng, key);
+    },
   });
 
 export function useSafeTranslation(): {
@@ -98,23 +119,7 @@ export function useSafeTranslation(): {
 } {
   const { t, ...rest } = useTranslation();
   return {
-    t: useCallback(
-      (key: string) => {
-        if (key === undefined) {
-          return '';
-        }
-        if (key in resources.en.translation) {
-          return t(key);
-        }
-        if (TRANSLATION_DEBUG) {
-          console.warn(
-            `Translation for "${key}" is not configured in your translation file.`,
-          );
-        }
-        return key;
-      },
-      [t],
-    ),
+    t,
     ...rest,
   };
 }
@@ -122,5 +127,15 @@ export function useSafeTranslation(): {
 export function isEnglishLanguageSelected(lang: typeof i18n): boolean {
   return lang.resolvedLanguage === 'en';
 }
+
+export const locales = {
+  en: enUS,
+  fr,
+  km,
+  pt,
+  es,
+  ru,
+  mn,
+};
 
 export default i18n;

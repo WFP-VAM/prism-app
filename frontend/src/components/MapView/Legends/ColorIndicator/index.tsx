@@ -1,18 +1,5 @@
-import React from 'react';
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
 import { alpha } from '@material-ui/core/styles';
-
-interface StylesProps {
-  color: string;
-  opacity: number;
-  fillPattern: 'left' | 'right' | undefined;
-}
-
-const indicatorsCommonStyles = {
-  height: 10,
-  width: 10,
-  marginRight: 4,
-};
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -21,14 +8,77 @@ const useStyles = makeStyles(() =>
       alignItems: 'center',
     },
     indicator: {
-      ...indicatorsCommonStyles,
-      backgroundColor: ({ color, opacity }: StylesProps) =>
-        alpha(color, opacity),
+      height: 10,
+      width: 10,
+      marginInlineEnd: 4,
+      flexShrink: 0,
     },
-    fillPatternIndicator: {
-      ...indicatorsCommonStyles,
-      background: ({ color, fillPattern }: StylesProps) =>
-        `linear-gradient(
+  }),
+);
+
+const getShapeStyles = (
+  iconShape: 'point' | 'square' | 'triangle' | 'diamond' | undefined,
+  color: string,
+  opacity: number,
+) => {
+  const baseColor = alpha(color, opacity);
+  const size = 10;
+
+  if (iconShape === 'triangle') {
+    return {
+      width: 0,
+      height: 0,
+      backgroundColor: 'transparent',
+      borderLeft: `${size / 2}px solid transparent`,
+      borderRight: `${size / 2}px solid transparent`,
+      borderBottom: `${size}px solid ${baseColor}`,
+      borderRadius: 0,
+    };
+  }
+
+  if (iconShape === 'diamond') {
+    return {
+      backgroundColor: baseColor,
+      borderRadius: 0,
+      transform: 'rotate(45deg)',
+      width: size * 0.707, // sqrt(2) / 2 for 45deg rotation
+      height: size * 0.707,
+    };
+  }
+
+  if (iconShape === 'point') {
+    return {
+      backgroundColor: baseColor,
+      borderRadius: '50%',
+    };
+  }
+  // default to square
+  return {
+    backgroundColor: baseColor,
+    borderRadius: 0,
+  };
+};
+
+function ColorIndicator({
+  value,
+  color,
+  opacity,
+  fillPattern,
+  iconShape,
+}: ColorIndicatorProps) {
+  const classes = useStyles();
+
+  const shapeStyles = getShapeStyles(iconShape, color, opacity);
+
+  return (
+    <div className={classes.container}>
+      <div
+        className={classes.indicator}
+        style={{
+          ...shapeStyles,
+          ...(fillPattern
+            ? {
+                backgroundColor: `linear-gradient(
           to ${fillPattern} bottom, 
           ${color} calc(100% / 7),  
           white calc(100% / 7) calc(100% / 7 * 2), 
@@ -38,24 +88,9 @@ const useStyles = makeStyles(() =>
           white calc(100% / 7 * 5) calc(100% / 7 * 6), 
           ${color} calc(100% / 7 * 6)
         )`,
-    },
-  }),
-);
-
-function ColorIndicator({
-  value,
-  color,
-  opacity,
-  fillPattern,
-}: ColorIndicatorProps) {
-  const classes = useStyles({ color, opacity, fillPattern });
-
-  return (
-    <div className={classes.container}>
-      <div
-        className={
-          fillPattern ? classes.fillPatternIndicator : classes.indicator
-        }
+              }
+            : {}),
+        }}
       />
       <Typography color="textSecondary">{value}</Typography>
     </div>
@@ -67,6 +102,7 @@ export interface ColorIndicatorProps {
   color: string;
   opacity: number;
   fillPattern?: 'left' | 'right';
+  iconShape?: 'point' | 'square' | 'triangle' | 'diamond';
 }
 
 export default ColorIndicator;

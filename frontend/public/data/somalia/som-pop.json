@@ -1,0 +1,596 @@
+{
+    "DataList": [
+        {
+            "ADM1_EN": "Awdal",
+            "ADM2_EN": "Borama",
+            "ADM1_PCODE": "SO11",
+            "ADM2_PCODE": "SO1101",
+            "pop_pess_2014": 398609,
+            "pop_2024": 431593
+        },
+        {
+            "ADM1_EN": "Awdal",
+            "ADM2_EN": "Baki",
+            "ADM1_PCODE": "SO11",
+            "ADM2_PCODE": "SO1102",
+            "pop_pess_2014": 96885,
+            "pop_2024": 66114
+        },
+        {
+            "ADM1_EN": "Awdal",
+            "ADM2_EN": "Lughaye",
+            "ADM1_PCODE": "SO11",
+            "ADM2_PCODE": "SO1103",
+            "pop_pess_2014": 100819,
+            "pop_2024": 71938
+        },
+        {
+            "ADM1_EN": "Awdal",
+            "ADM2_EN": "Zeylac",
+            "ADM1_PCODE": "SO11",
+            "ADM2_PCODE": "SO1104",
+            "pop_pess_2014": 76951,
+            "pop_2024": 66460
+        },
+        {
+            "ADM1_EN": "Woqooyi Galbeed",
+            "ADM2_EN": "Hargeysa",
+            "ADM1_PCODE": "SO12",
+            "ADM2_PCODE": "SO1201",
+            "pop_pess_2014": 959081,
+            "pop_2024": 1045504
+        },
+        {
+            "ADM1_EN": "Woqooyi Galbeed",
+            "ADM2_EN": "Berbera",
+            "ADM1_PCODE": "SO12",
+            "ADM2_PCODE": "SO1202",
+            "pop_pess_2014": 176008,
+            "pop_2024": 189942
+        },
+        {
+            "ADM1_EN": "Woqooyi Galbeed",
+            "ADM2_EN": "Gebiley",
+            "ADM1_PCODE": "SO12",
+            "ADM2_PCODE": "SO1203",
+            "pop_pess_2014": 106914,
+            "pop_2024": 212038
+        },
+        {
+            "ADM1_EN": "Togdheer",
+            "ADM2_EN": "Burco",
+            "ADM1_PCODE": "SO13",
+            "ADM2_PCODE": "SO1301",
+            "pop_pess_2014": 460354,
+            "pop_2024": 520410
+        },
+        {
+            "ADM1_EN": "Togdheer",
+            "ADM2_EN": "Buuhoodle",
+            "ADM1_PCODE": "SO13",
+            "ADM2_PCODE": "SO1302",
+            "pop_pess_2014": 83747,
+            "pop_2024": 97388
+        },
+        {
+            "ADM1_EN": "Togdheer",
+            "ADM2_EN": "Owdweyne",
+            "ADM1_PCODE": "SO13",
+            "ADM2_PCODE": "SO1303",
+            "pop_pess_2014": 101358,
+            "pop_2024": 97966
+        },
+        {
+            "ADM1_EN": "Togdheer",
+            "ADM2_EN": "Sheikh",
+            "ADM1_PCODE": "SO13",
+            "ADM2_PCODE": "SO1304",
+            "pop_pess_2014": 75904,
+            "pop_2024": 144919
+        },
+        {
+            "ADM1_EN": "Sool",
+            "ADM2_EN": "Laas Caanood",
+            "ADM1_PCODE": "SO14",
+            "ADM2_PCODE": "SO1401",
+            "pop_pess_2014": 156438,
+            "pop_2024": 264121
+        },
+        {
+            "ADM1_EN": "Sool",
+            "ADM2_EN": "Caynabo",
+            "ADM1_PCODE": "SO14",
+            "ADM2_PCODE": "SO1402",
+            "pop_pess_2014": 59080,
+            "pop_2024": 96183
+        },
+        {
+            "ADM1_EN": "Sool",
+            "ADM2_EN": "Taleex",
+            "ADM1_PCODE": "SO14",
+            "ADM2_PCODE": "SO1403",
+            "pop_pess_2014": 73529,
+            "pop_2024": 92822
+        },
+        {
+            "ADM1_EN": "Sool",
+            "ADM2_EN": "Xudun",
+            "ADM1_PCODE": "SO14",
+            "ADM2_PCODE": "SO1404",
+            "pop_pess_2014": 38380,
+            "pop_2024": 95848
+        },
+        {
+            "ADM1_EN": "Sanaag",
+            "ADM2_EN": "Ceerigaabo",
+            "ADM1_PCODE": "SO15",
+            "ADM2_PCODE": "SO1501",
+            "pop_pess_2014": 205318,
+            "pop_2024": 177355
+        },
+        {
+            "ADM1_EN": "Sanaag",
+            "ADM2_EN": "Ceel Afweyn",
+            "ADM1_PCODE": "SO15",
+            "ADM2_PCODE": "SO1502",
+            "pop_pess_2014": 99950,
+            "pop_2024": 92962
+        },
+        {
+            "ADM1_EN": "Sanaag",
+            "ADM2_EN": "Laasqoray",
+            "ADM1_PCODE": "SO15",
+            "ADM2_PCODE": "SO1503",
+            "pop_pess_2014": 238855,
+            "pop_2024": 158383
+        },
+        {
+            "ADM1_EN": "Bari",
+            "ADM2_EN": "Bossaso",
+            "ADM1_PCODE": "SO16",
+            "ADM2_PCODE": "SO1601",
+            "pop_pess_2014": 469566,
+            "pop_2024": 793480
+        },
+        {
+            "ADM1_EN": "Bari",
+            "ADM2_EN": "Bandarbeyla",
+            "ADM1_PCODE": "SO16",
+            "ADM2_PCODE": "SO1602",
+            "pop_pess_2014": 15481,
+            "pop_2024": 50155
+        },
+        {
+            "ADM1_EN": "Bari",
+            "ADM2_EN": "Caluula",
+            "ADM1_PCODE": "SO16",
+            "ADM2_PCODE": "SO1603",
+            "pop_pess_2014": 48986,
+            "pop_2024": 95548
+        },
+        {
+            "ADM1_EN": "Bari",
+            "ADM2_EN": "Iskushuban",
+            "ADM1_PCODE": "SO16",
+            "ADM2_PCODE": "SO1604",
+            "pop_pess_2014": 58415,
+            "pop_2024": 60161
+        },
+        {
+            "ADM1_EN": "Bari",
+            "ADM2_EN": "Qandala",
+            "ADM1_PCODE": "SO16",
+            "ADM2_PCODE": "SO1605",
+            "pop_pess_2014": 52111,
+            "pop_2024": 64401
+        },
+        {
+            "ADM1_EN": "Bari",
+            "ADM2_EN": "Qardho",
+            "ADM1_PCODE": "SO16",
+            "ADM2_PCODE": "SO1606",
+            "pop_pess_2014": 85588,
+            "pop_2024": 168487
+        },
+        {
+            "ADM1_EN": "Nugaal",
+            "ADM2_EN": "Garoowe",
+            "ADM1_PCODE": "SO17",
+            "ADM2_PCODE": "SO1701",
+            "pop_pess_2014": 246702,
+            "pop_2024": 331589
+        },
+        {
+            "ADM1_EN": "Nugaal",
+            "ADM2_EN": "Burtinle",
+            "ADM1_PCODE": "SO17",
+            "ADM2_PCODE": "SO1702",
+            "pop_pess_2014": 64963,
+            "pop_2024": 130225
+        },
+        {
+            "ADM1_EN": "Nugaal",
+            "ADM2_EN": "Eyl",
+            "ADM1_PCODE": "SO17",
+            "ADM2_PCODE": "SO1703",
+            "pop_pess_2014": 81033,
+            "pop_2024": 169997
+        },
+        {
+            "ADM1_EN": "Mudug",
+            "ADM2_EN": "Gaalkacyo",
+            "ADM1_PCODE": "SO18",
+            "ADM2_PCODE": "SO1801",
+            "pop_pess_2014": 389194,
+            "pop_2024": 823135
+        },
+        {
+            "ADM1_EN": "Mudug",
+            "ADM2_EN": "Galdogob",
+            "ADM1_PCODE": "SO18",
+            "ADM2_PCODE": "SO1802",
+            "pop_pess_2014": 79595,
+            "pop_2024": 184257
+        },
+        {
+            "ADM1_EN": "Mudug",
+            "ADM2_EN": "Hobyo",
+            "ADM1_PCODE": "SO18",
+            "ADM2_PCODE": "SO1803",
+            "pop_pess_2014": 115222,
+            "pop_2024": 187940
+        },
+        {
+            "ADM1_EN": "Mudug",
+            "ADM2_EN": "Jariiban",
+            "ADM1_PCODE": "SO18",
+            "ADM2_PCODE": "SO1804",
+            "pop_pess_2014": 81890,
+            "pop_2024": 193072
+        },
+        {
+            "ADM1_EN": "Mudug",
+            "ADM2_EN": "Xarardheere",
+            "ADM1_PCODE": "SO18",
+            "ADM2_PCODE": "SO1805",
+            "pop_pess_2014": 51961,
+            "pop_2024": 81903
+        },
+        {
+            "ADM1_EN": "Galgaduud",
+            "ADM2_EN": "Dhuusamarreeb",
+            "ADM1_PCODE": "SO19",
+            "ADM2_PCODE": "SO1901",
+            "pop_pess_2014": 144407,
+            "pop_2024": 250621
+        },
+        {
+            "ADM1_EN": "Galgaduud",
+            "ADM2_EN": "Cabudwaaq",
+            "ADM1_PCODE": "SO19",
+            "ADM2_PCODE": "SO1902",
+            "pop_pess_2014": 101959,
+            "pop_2024": 212060
+        },
+        {
+            "ADM1_EN": "Galgaduud",
+            "ADM2_EN": "Cadaado",
+            "ADM1_PCODE": "SO19",
+            "ADM2_PCODE": "SO1903",
+            "pop_pess_2014": 129588,
+            "pop_2024": 136074
+        },
+        {
+            "ADM1_EN": "Galgaduud",
+            "ADM2_EN": "Ceel Buur",
+            "ADM1_PCODE": "SO19",
+            "ADM2_PCODE": "SO1904",
+            "pop_pess_2014": 83610,
+            "pop_2024": 108648
+        },
+        {
+            "ADM1_EN": "Galgaduud",
+            "ADM2_EN": "Ceel Dheer",
+            "ADM1_PCODE": "SO19",
+            "ADM2_PCODE": "SO1905",
+            "pop_pess_2014": 109870,
+            "pop_2024": 105236
+        },
+        {
+            "ADM1_EN": "Hiraan",
+            "ADM2_EN": "Belet Weyne",
+            "ADM1_PCODE": "SO20",
+            "ADM2_PCODE": "SO2001",
+            "pop_pess_2014": 235214,
+            "pop_2024": 340103
+        },
+        {
+            "ADM1_EN": "Hiraan",
+            "ADM2_EN": "Bulo Burto",
+            "ADM1_PCODE": "SO20",
+            "ADM2_PCODE": "SO2002",
+            "pop_pess_2014": 138283,
+            "pop_2024": 100704
+        },
+        {
+            "ADM1_EN": "Hiraan",
+            "ADM2_EN": "Jalalaqsi",
+            "ADM1_PCODE": "SO20",
+            "ADM2_PCODE": "SO2003",
+            "pop_pess_2014": 147189,
+            "pop_2024": 64008
+        },
+        {
+            "ADM1_EN": "Middle Shabelle",
+            "ADM2_EN": "Jowhar",
+            "ADM1_PCODE": "SO21",
+            "ADM2_PCODE": "SO2101",
+            "pop_pess_2014": 179097,
+            "pop_2024": 432455
+        },
+        {
+            "ADM1_EN": "Middle Shabelle",
+            "ADM2_EN": "Adan Yabaal",
+            "ADM1_PCODE": "SO21",
+            "ADM2_PCODE": "SO2102",
+            "pop_pess_2014": 37781,
+            "pop_2024": 101584
+        },
+        {
+            "ADM1_EN": "Middle Shabelle",
+            "ADM2_EN": "Balcad",
+            "ADM1_PCODE": "SO21",
+            "ADM2_PCODE": "SO2103",
+            "pop_pess_2014": 212261,
+            "pop_2024": 395485
+        },
+        {
+            "ADM1_EN": "Middle Shabelle",
+            "ADM2_EN": "Cadale",
+            "ADM1_PCODE": "SO21",
+            "ADM2_PCODE": "SO2104",
+            "pop_pess_2014": 86896,
+            "pop_2024": 83826
+        },
+        {
+            "ADM1_EN": "Banadir",
+            "ADM2_EN": "Banadir",
+            "ADM1_PCODE": "SO22",
+            "ADM2_PCODE": "SO2201",
+            "pop_pess_2014": 1650228,
+            "pop_2024": 3171391
+        },
+        {
+            "ADM1_EN": "Lower Shabelle",
+            "ADM2_EN": "Marka",
+            "ADM1_PCODE": "SO23",
+            "ADM2_PCODE": "SO2301",
+            "pop_pess_2014": 198301,
+            "pop_2024": 292024
+        },
+        {
+            "ADM1_EN": "Lower Shabelle",
+            "ADM2_EN": "Afgooye",
+            "ADM1_PCODE": "SO23",
+            "ADM2_PCODE": "SO2302",
+            "pop_pess_2014": 238655,
+            "pop_2024": 558118
+        },
+        {
+            "ADM1_EN": "Lower Shabelle",
+            "ADM2_EN": "Baraawe",
+            "ADM1_PCODE": "SO23",
+            "ADM2_PCODE": "SO2303",
+            "pop_pess_2014": 74072,
+            "pop_2024": 64738
+        },
+        {
+            "ADM1_EN": "Lower Shabelle",
+            "ADM2_EN": "Kurtunwaarey",
+            "ADM1_PCODE": "SO23",
+            "ADM2_PCODE": "SO2304",
+            "pop_pess_2014": 262315,
+            "pop_2024": 76193
+        },
+        {
+            "ADM1_EN": "Lower Shabelle",
+            "ADM2_EN": "Qoryooley",
+            "ADM1_PCODE": "SO23",
+            "ADM2_PCODE": "SO2305",
+            "pop_pess_2014": 292394,
+            "pop_2024": 149563
+        },
+        {
+            "ADM1_EN": "Lower Shabelle",
+            "ADM2_EN": "Sablaale",
+            "ADM1_PCODE": "SO23",
+            "ADM2_PCODE": "SO2306",
+            "pop_pess_2014": 23447,
+            "pop_2024": 74808
+        },
+        {
+            "ADM1_EN": "Lower Shabelle",
+            "ADM2_EN": "Wanla Weyn",
+            "ADM1_PCODE": "SO23",
+            "ADM2_PCODE": "SO2307",
+            "pop_pess_2014": 113035,
+            "pop_2024": 377671
+        },
+        {
+            "ADM1_EN": "Bay",
+            "ADM2_EN": "Baydhaba",
+            "ADM1_PCODE": "SO24",
+            "ADM2_PCODE": "SO2401",
+            "pop_pess_2014": 315679,
+            "pop_2024": 733660
+        },
+        {
+            "ADM1_EN": "Bay",
+            "ADM2_EN": "Buur Hakaba",
+            "ADM1_PCODE": "SO24",
+            "ADM2_PCODE": "SO2402",
+            "pop_pess_2014": 197198,
+            "pop_2024": 204235
+        },
+        {
+            "ADM1_EN": "Bay",
+            "ADM2_EN": "Diinsoor",
+            "ADM1_PCODE": "SO24",
+            "ADM2_PCODE": "SO2403",
+            "pop_pess_2014": 174932,
+            "pop_2024": 173776
+        },
+        {
+            "ADM1_EN": "Bay",
+            "ADM2_EN": "Qansax Dheere",
+            "ADM1_PCODE": "SO24",
+            "ADM2_PCODE": "SO2404",
+            "pop_pess_2014": 104373,
+            "pop_2024": 136307
+        },
+        {
+            "ADM1_EN": "Bakool",
+            "ADM2_EN": "Xudur",
+            "ADM1_PCODE": "SO25",
+            "ADM2_PCODE": "SO2501",
+            "pop_pess_2014": 108902,
+            "pop_2024": 114942
+        },
+        {
+            "ADM1_EN": "Bakool",
+            "ADM2_EN": "Ceel Barde",
+            "ADM1_PCODE": "SO25",
+            "ADM2_PCODE": "SO2502",
+            "pop_pess_2014": 59129,
+            "pop_2024": 84319
+        },
+        {
+            "ADM1_EN": "Bakool",
+            "ADM2_EN": "Tayeeglow",
+            "ADM1_PCODE": "SO25",
+            "ADM2_PCODE": "SO2503",
+            "pop_pess_2014": 73675,
+            "pop_2024": 165132
+        },
+        {
+            "ADM1_EN": "Bakool",
+            "ADM2_EN": "Waajid",
+            "ADM1_PCODE": "SO25",
+            "ADM2_PCODE": "SO2504",
+            "pop_pess_2014": 125521,
+            "pop_2024": 89584
+        },
+        {
+            "ADM1_EN": "Bakool",
+            "ADM2_EN": "Rab Dhuure",
+            "ADM1_PCODE": "SO25",
+            "ADM2_PCODE": "SO2505",
+            "pop_pess_2014": "",
+            "pop_2024": 89396
+        },
+        {
+            "ADM1_EN": "Gedo",
+            "ADM2_EN": "Garbahaarey",
+            "ADM1_PCODE": "SO26",
+            "ADM2_PCODE": "SO2601",
+            "pop_pess_2014": 76952,
+            "pop_2024": 148230
+        },
+        {
+            "ADM1_EN": "Gedo",
+            "ADM2_EN": "Baardheere",
+            "ADM1_PCODE": "SO26",
+            "ADM2_PCODE": "SO2602",
+            "pop_pess_2014": 177384,
+            "pop_2024": 203601
+        },
+        {
+            "ADM1_EN": "Gedo",
+            "ADM2_EN": "Belet Xaawo",
+            "ADM1_PCODE": "SO26",
+            "ADM2_PCODE": "SO2603",
+            "pop_pess_2014": 83116,
+            "pop_2024": 173234
+        },
+        {
+            "ADM1_EN": "Gedo",
+            "ADM2_EN": "Ceel Waaq",
+            "ADM1_PCODE": "SO26",
+            "ADM2_PCODE": "SO2604",
+            "pop_pess_2014": 60046,
+            "pop_2024": 103529
+        },
+        {
+            "ADM1_EN": "Gedo",
+            "ADM2_EN": "Doolow",
+            "ADM1_PCODE": "SO26",
+            "ADM2_PCODE": "SO2605",
+            "pop_pess_2014": 41245,
+            "pop_2024": 205735
+        },
+        {
+            "ADM1_EN": "Gedo",
+            "ADM2_EN": "Luuq",
+            "ADM1_PCODE": "SO26",
+            "ADM2_PCODE": "SO2606",
+            "pop_pess_2014": 69660,
+            "pop_2024": 141255
+        },
+        {
+            "ADM1_EN": "Middle Juba",
+            "ADM2_EN": "Bu'aale",
+            "ADM1_PCODE": "SO27",
+            "ADM2_PCODE": "SO2701",
+            "pop_pess_2014": 108986,
+            "pop_2024": 149338
+        },
+        {
+            "ADM1_EN": "Middle Juba",
+            "ADM2_EN": "Jilib",
+            "ADM1_PCODE": "SO27",
+            "ADM2_PCODE": "SO2702",
+            "pop_pess_2014": 174819,
+            "pop_2024": 168928
+        },
+        {
+            "ADM1_EN": "Middle Juba",
+            "ADM2_EN": "Saakow",
+            "ADM1_PCODE": "SO27",
+            "ADM2_PCODE": "SO2703",
+            "pop_pess_2014": 79116,
+            "pop_2024": 111860
+        },
+        {
+            "ADM1_EN": "Lower Juba",
+            "ADM2_EN": "Kismaayo",
+            "ADM1_PCODE": "SO28",
+            "ADM2_PCODE": "SO2801",
+            "pop_pess_2014": 162733,
+            "pop_2024": 358941
+        },
+        {
+            "ADM1_EN": "Lower Juba",
+            "ADM2_EN": "Afmadow",
+            "ADM1_PCODE": "SO28",
+            "ADM2_PCODE": "SO2802",
+            "pop_pess_2014": 172485,
+            "pop_2024": 275995
+        },
+        {
+            "ADM1_EN": "Lower Juba",
+            "ADM2_EN": "Badhaadhe",
+            "ADM1_PCODE": "SO28",
+            "ADM2_PCODE": "SO2803",
+            "pop_pess_2014": 56178,
+            "pop_2024": 84344
+        },
+        {
+            "ADM1_EN": "Lower Juba",
+            "ADM2_EN": "Jamaame",
+            "ADM1_PCODE": "SO28",
+            "ADM2_PCODE": "SO2804",
+            "pop_pess_2014": 97911,
+            "pop_2024": 438974
+        }
+    ]
+}

@@ -1,4 +1,22 @@
-import React, {
+import {
+  Box,
+  Button,
+  createStyles,
+  Dialog,
+  DialogTitle,
+  makeStyles,
+  TextField,
+  Theme,
+  Typography,
+} from '@material-ui/core';
+import { Close, Send } from '@material-ui/icons';
+import { UserAuth } from 'config/types';
+import { removeLayer } from 'context/mapStateSlice';
+import { layersSelector } from 'context/mapStateSlice/selectors';
+import { refetchLayerDatesArraysForPointData } from 'context/serverPreloadStateSlice';
+import { setUserAuthGlobal, userAuthSelector } from 'context/serverStateSlice';
+import { useSafeTranslation } from 'i18n';
+import {
   ChangeEvent,
   FormEvent,
   useCallback,
@@ -7,31 +25,15 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Box,
-  Button,
-  createStyles,
-  Dialog,
-  DialogTitle,
-  TextField,
-  Theme,
-  Typography,
-  WithStyles,
-  withStyles,
-} from '@material-ui/core';
-import { TFunctionKeys } from 'i18next';
-import { useSafeTranslation } from 'i18n';
-import { layersSelector } from 'context/mapStateSlice/selectors';
-import { setUserAuthGlobal, userAuthSelector } from 'context/serverStateSlice';
-import { UserAuth } from 'config/types';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
-import { removeLayer } from 'context/mapStateSlice';
 
-const AuthModal = ({ classes }: AuthModalProps) => {
-  const initialAuthState: UserAuth = {
-    username: '',
-    password: '',
-  };
+const initialAuthState: UserAuth = {
+  username: '',
+  password: '',
+};
+
+const AuthModal = () => {
+  const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [auth, setAuth] = useState<UserAuth>(initialAuthState);
 
@@ -41,17 +43,17 @@ const AuthModal = ({ classes }: AuthModalProps) => {
   const { removeLayerFromUrl } = useUrlHistory();
   const dispatch = useDispatch();
 
-  const isUserAuthenticated = useMemo(() => {
-    return userAuth !== undefined;
-  }, [userAuth]);
+  const isUserAuthenticated = useMemo(() => userAuth !== undefined, [userAuth]);
 
   const { t } = useSafeTranslation();
 
-  const layersWithAuthRequired = useMemo(() => {
-    return selectedLayers.filter(
-      layer => layer.type === 'point_data' && layer.authRequired,
-    );
-  }, [selectedLayers]);
+  const layersWithAuthRequired = useMemo(
+    () =>
+      selectedLayers.filter(
+        layer => layer.type === 'point_data' && layer.authRequired,
+      ),
+    [selectedLayers],
+  );
 
   useEffect(() => {
     if (!layersWithAuthRequired.length || isUserAuthenticated) {
@@ -61,33 +63,41 @@ const AuthModal = ({ classes }: AuthModalProps) => {
   }, [isUserAuthenticated, layersWithAuthRequired]);
 
   const validateToken = useCallback(
-    (event: FormEvent<HTMLFormElement>) => {
+    async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
+      // Set auth in state first - Redux actions are synchronous so state updates immediately
       dispatch(setUserAuthGlobal(auth));
+      // Wait a tick to ensure state is fully updated, then re-fetch dates with new authentication
+      // The refetch thunk will read auth from state, which is now updated
+      await Promise.resolve();
+      // Await the refetch to ensure dates are reloaded before closing modal
+      await dispatch(refetchLayerDatesArraysForPointData());
       setOpen(false);
     },
     [auth, dispatch],
   );
 
   // The layer with auth title
-  const layerWithAuthTitle = useMemo(() => {
-    return layersWithAuthRequired.reduce(
-      (acc: string, currentLayer, currentLayerIndex) => {
-        return currentLayerIndex === 0
-          ? t(currentLayer?.title as TFunctionKeys) ?? ''
-          : `${acc}, ${t(currentLayer.title as TFunctionKeys)}`;
-      },
-      '',
-    );
-  }, [layersWithAuthRequired, t]);
+  const layerWithAuthTitle = useMemo(
+    () =>
+      layersWithAuthRequired.reduce(
+        (acc: string, currentLayer, currentLayerIndex) =>
+          currentLayerIndex === 0
+            ? (t(currentLayer?.title as any) ?? '')
+            : `${acc}, ${t(currentLayer.title as any)}`,
+        '',
+      ),
+    [layersWithAuthRequired, t],
+  );
 
   // function that handles the text-field on change
-  const handleInputTextChanged = useCallback((identifier: keyof UserAuth) => {
-    return (event: ChangeEvent<HTMLInputElement>) => {
+  const handleInputTextChanged = useCallback(
+    (identifier: keyof UserAuth) => (event: ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
       setAuth(params => ({ ...params, [identifier]: value }));
-    };
-  }, []);
+    },
+    [],
+  );
 
   // function that is invoked when cancel is clicked
   const onCancelClick = useCallback(() => {
@@ -99,11 +109,11 @@ const AuthModal = ({ classes }: AuthModalProps) => {
     });
     setAuth(initialAuthState);
     setOpen(false);
-  }, [dispatch, initialAuthState, layersWithAuthRequired, removeLayerFromUrl]);
+  }, [dispatch, layersWithAuthRequired, removeLayerFromUrl]);
 
   // function that handles the close modal
   const closeModal = useCallback(
-    (event, reason) => {
+    (_event: any, reason: any) => {
       if (reason === 'backdropClick') {
         onCancelClick();
         return;
@@ -137,12 +147,18 @@ const AuthModal = ({ classes }: AuthModalProps) => {
           </Typography>
           <form noValidate onSubmit={validateToken}>
             <Box
-              width="100%"
-              display="flex"
-              justifyContent="space-between"
-              marginTop="2em"
+              style={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'space-between',
+                marginTop: '2em',
+              }}
             >
-              <Box width="45%">
+              <Box
+                style={{
+                  width: '45%',
+                }}
+              >
                 <Typography className={classes.label} variant="body2">
                   {t('Username')}
                 </Typography>
@@ -153,7 +169,11 @@ const AuthModal = ({ classes }: AuthModalProps) => {
                   onChange={handleInputTextChanged('username')}
                 />
               </Box>
-              <Box width="45%">
+              <Box
+                style={{
+                  width: '45%',
+                }}
+              >
                 <Typography className={classes.label} variant="body2">
                   {t('Password')}
                 </Typography>
@@ -166,18 +186,29 @@ const AuthModal = ({ classes }: AuthModalProps) => {
                 />
               </Box>
             </Box>
-            <Box display="flex" justifyContent="flex-end">
+            <Box
+              style={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+              }}
+            >
               <div className={classes.buttonWrapper}>
-                <Button type="submit" variant="contained" color="primary">
-                  {t('Send')}
-                </Button>
                 <Button
                   type="reset"
-                  variant="contained"
+                  variant="outlined"
                   color="secondary"
                   onClick={onCancelClick}
+                  startIcon={<Close />}
                 >
                   {t('Cancel')}
+                </Button>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  startIcon={<Send />}
+                >
+                  {t('Send')}
                 </Button>
               </div>
             </Box>
@@ -204,7 +235,7 @@ const AuthModal = ({ classes }: AuthModalProps) => {
   ]);
 };
 
-const styles = (theme: Theme) => {
+const useStyles = makeStyles((theme: Theme) => {
   const { secondary } = theme.palette.text;
 
   const color = {
@@ -235,8 +266,6 @@ const styles = (theme: Theme) => {
       justifyContent: 'space-between',
     },
   });
-};
+});
 
-export interface AuthModalProps extends WithStyles<typeof styles> {}
-
-export default withStyles(styles)(AuthModal);
+export default AuthModal;

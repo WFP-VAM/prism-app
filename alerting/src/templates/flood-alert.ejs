@@ -1,0 +1,113 @@
+<% if (!isPlainText) { %>
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>PRISM Flood Alert</title>
+        <style>
+            @media screen and (max-width: 600px) {
+                .content-wrapper {
+                    padding: 20px !important;
+                }
+            }
+        </style>
+    </head>
+
+    <body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; color:black;">
+        <div class="container" style="color:black; width: 600px; margin: 20px auto; background: #ffffff;">
+            <header class="header" style="padding-top: 30px;">
+                <p class="title" style="font-size: 20px; font-weight: 500; line-height: 23.44px; text-align: center;">
+                    PRISM</p>
+            </header>
+            <main>
+                <div class="content-wrapper" style="padding: 50px; font-size: 14px;">
+                    <h1 class="content-title"
+                        style="font-size: 24px; font-weight: 700; line-height: 30px; color: #333; margin: 0 0 10px;">
+                        <%= title %>
+                    </h1>
+                    <p class="content-subtitle" style="margin: 0 0 20px; font-size: 14px;">
+                        Flood Anticipatory Action Alert for Mozambique – forecast by GloFAS with data processing by WFP
+                    </p>
+                    <p class="trigger-title"
+                        style="margin: 10px 0 20px; width: 100%; font-weight: bold; font-size: 16px;">
+                        Trigger detection: <%= triggerStatus %>. This is not an official activation.
+                    </p>
+                    <% if (stationsByStatus && Object.keys(stationsByStatus).length> 0) { %>
+                        <% Object.keys(stationsByStatus).forEach((status)=> { %>
+                            <% const stationList=stationsByStatus[status]; %>
+                                <p style="margin: 0 0 10px; line-height: 1.6;">
+                                    River discharge levels may exceed the <%= status %> threshold at <%=
+                                            stationList.join(', ') %> in Mozambique within the next 3 to 5 days.
+                            </p>
+                        <% }); %>
+                    <% } %>
+
+                            <div class="button-container" style="text-align: center; margin: 20px 0;">
+                                <a href="<%= redirectUrl %>" target="_blank" rel="noopener noreferrer"
+                                    aria-label="Access PRISM Flood Dashboard (opens in a new tab)" class="button"
+                                    style="display: inline-block; text-align: center; background: rgba(99, 178, 189, 1); color: black; padding: 12px; text-decoration: none; border-radius: 5px; white-space: nowrap; font-weight: 600;">
+                                    <span style="vertical-align: middle">ACCESS DASHBOARD</span>
+                                    <img src="cid:arrow-forward-icon" alt=""
+                                        style="width: 16px; height: 16px; vertical-align: middle; margin-left: 6px;">
+                                </a>
+                            </div>
+
+                            <h3 style="font-size: 18px; margin: 20px 0 10px;">
+                                <img src="cid:map-icon" alt=""
+                                    style="width: 24px; height: 24px; vertical-align: middle; margin-right: 8px;"> Gauge
+                                Map
+                            </h3>
+                            <img src="cid:flood-image-cid" alt="Map showing the gauge status over Mozambique"
+                                width="100%" style="border: none;">
+
+                            <p style="margin-top: 20px;">
+                                We will continue to closely monitor the situation and provide timely updates as more
+                                information
+                                becomes available.
+                            </p>
+
+                            <p class="gray-box"
+                                style="background-color: rgba(241, 241, 241, 1); padding: 20px; margin-top: 20px; color: black;">
+                                <strong>Disclaimer</strong>: This alert is automatically generated based on an evaluation of the latest forecast. 
+                                It does not represent an official activation. The official decision regarding Anticipatory Action activation will be 
+                                made and communicated by <strong>INGD (Instituto Nacional de Gestão e Redução do Risco de Desastres)</strong>.
+                            </p>
+                </div>
+            </main>
+            <footer class="footer"
+                style="font-size: 12px; color: white; padding-top: 15px; width: 100%; background-color: rgba(99, 178, 189, 1);">
+                <p class="title"
+                    style="margin-bottom: 15px; font-size: 20px; font-weight: 500; line-height: 23.44px; text-align: center;">
+                    PRISM</p>
+                <p style="margin-bottom: 15px; text-align: center;">This message was automatically generated.</p>
+                <p style="background-color:black; text-align: center; vertical-align: middle; padding:5px">Legal notice
+                    Data Protection Policy</p>
+            </footer>
+        </div>
+    </body>
+
+    </html>
+    <% } else { %>
+        PRISM FLOOD ALERT - <%= title %>
+
+            Flood Anticipatory Action Alert for Mozambique – forecast by GloFAS with data processing by WFP
+
+            Trigger detection: <%= triggerStatus %>. This is not an official activation. 
+
+            <% if (stationsByStatus && Object.keys(stationsByStatus).length > 0) { %>
+                <% Object.keys(stationsByStatus).forEach((status) => { %>
+                    <% const stationList = stationsByStatus[status]; %>
+                    River discharge levels may exceed the <%= status %> threshold at <%= stationList.join(' , ') %> in Mozambique within the next 3 to 5 days.
+                <% }); %>
+            <% } %>
+
+                                    Access PRISM Flood Dashboard: <%= redirectUrl %>
+
+                                        Map: (image unavailable in plain text format)
+
+                                        Disclaimer: This alert is automatically generated based on an evaluation of the latest forecast. 
+                                        It does not represent an official activation. The official decision regarding Anticipatory Action 
+                                        activation will be made and communicated by INGD (Instituto Nacional de Gestão e Redução do Risco de Desastres).
+                                        <% } %>

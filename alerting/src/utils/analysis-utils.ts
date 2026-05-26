@@ -1,12 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import fetch from 'node-fetch';
-import { get, isNil } from 'lodash';
+import { get } from 'lodash';
 import bbox from '@turf/bbox';
 import { createGetCoverageUrl } from 'prism-common';
 import { Extent } from './raster-utils';
 import { API_URL } from '../constants';
-import { Alert } from '../entities/alerts.entity';
+import type { Alert } from '../types/alert';
 
-// eslint-disable-next-line fp/no-mutation
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 /* eslint-disable camelcase */
@@ -31,6 +31,11 @@ export async function fetchApiData(
     // body data type must match "Content-Type" header
     body: JSON.stringify(apiData),
   });
+
+  if (response.status !== 200) {
+    throw new Error(`Failed to fetch data: ${response.statusText}`);
+  }
+
   return response.json();
 }
 
@@ -70,7 +75,7 @@ export function getAlertMessage(
   if (!Array.isArray(aggregateData)) {
     console.warn('aggregateData is not an array');
     console.warn('aggregateData', JSON.stringify(aggregateData));
-    return undefined
+    return undefined;
   }
 
   aggregateData.forEach((data) => {
@@ -85,31 +90,31 @@ export function getAlertMessage(
       offset,
     );
 
-    if (!isNil(alertMin) && minValue < alertMin!) {
-      // eslint-disable-next-line fp/no-mutation
+    if (typeof alertMin === 'number' && minValue < alertMin) {
       alertMessage = `Minimum value ${minValue} is below the threshold ${alertMin}.`;
     }
 
-    if (!isNil(alertMax) && maxValue > alertMax!) {
-      // eslint-disable-next-line fp/no-mutation
+    if (typeof alertMax === 'number' && maxValue > alertMax) {
       alertMessage = `Maximum value ${maxValue} is above the threshold ${alertMax}.`;
     }
   });
+
   return alertMessage;
 }
 
-export async function calculateBoundsForAlert(date: Date, alert: Alert) {
+export async function calculateAlert(date: Date, alert: Alert) {
   if (!alert.zones) {
+    console.warn(`No zones provided for alert ${alert.id}.`);
     return undefined;
   }
   const extent = bbox(alert.zones) as Extent;
   const layer = alert.alertConfig;
+
   const apiRequest: ApiData = {
     geotiff_url: createGetCoverageUrl({
-      bbox: extent,
+      bbox: extent as readonly [number, number, number, number],
       date,
       layerId: layer.serverLayerName,
-      resolution: layer?.wcsConfig?.pixelResolution,
       url: layer.baseUrl,
     }),
     zones: alert.zones,

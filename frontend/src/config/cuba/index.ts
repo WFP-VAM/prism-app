@@ -1,10 +1,10 @@
-import appConfig from './prism.json';
 import rawLayers from './layers.json';
-import cubaTranslation from './translation.json';
+import appConfig from './prism.json';
 
 const rawTables = {};
 const rawReports = {};
-const translation = { es: cubaTranslation };
+// Country-specific translation overrides shared translation
+const translation = { es: {} };
 
 export default {
   appConfig,

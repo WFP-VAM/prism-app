@@ -1,17 +1,16 @@
-import React from 'react';
 import {
-  createStyles,
-  WithStyles,
-  withStyles,
-  Typography,
   Button,
+  createStyles,
   Grid,
+  makeStyles,
+  Typography,
 } from '@material-ui/core';
+import { wfpLogo } from 'assets/images';
+import { colors } from 'muiTheme';
 import { Link } from 'react-router-dom';
 
-import { colors } from 'muiTheme';
-
-function NotFound({ classes }: NotFoundProps) {
+function NotFound() {
+  const classes = useStyles();
   return (
     <div className={classes.container}>
       <Grid container spacing={3} className={classes.content}>
@@ -24,14 +23,15 @@ function NotFound({ classes }: NotFoundProps) {
             information about this error.
           </Typography>
           <Typography variant="body1" gutterBottom>
-            If you have typed the address of this web page, you may misspelled
-            it or if you redirected to this page, it may be moved to another
-            location. Please go back to the website home page and try to find
-            your page from the website navigation.
+            If you have typed the address of this web page, you may have
+            misspelled it or if you redirected to this page, it may be moved to
+            another location. Please go back to the website home page and try to
+            find your page from the website navigation.
           </Typography>
         </Grid>
 
         <Grid item>
+          {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
           <Link to="/">
             <Button variant="contained">Back To Home</Button>
           </Link>
@@ -40,7 +40,7 @@ function NotFound({ classes }: NotFoundProps) {
         <Grid item>
           <img
             className={classes.image}
-            src="images/wfp_logo.png"
+            src={wfpLogo}
             alt="World Food Programme logo"
           />
         </Grid>
@@ -49,7 +49,7 @@ function NotFound({ classes }: NotFoundProps) {
   );
 }
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     container: {
       width: '100vw',
@@ -68,8 +68,7 @@ const styles = () =>
       width: '90%',
       opacity: '0.5',
     },
-  });
+  }),
+);
 
-export interface NotFoundProps extends WithStyles<typeof styles> {}
-
-export default withStyles(styles)(NotFound);
+export default NotFound;

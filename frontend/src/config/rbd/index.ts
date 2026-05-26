@@ -1,8 +1,10 @@
-import appConfig from './prism.json';
 import rawLayers from './layers.json';
-import frTranslation from './translation.json';
+import appConfig from './prism.json';
 
-const translation = { fr: frTranslation };
+// Country-specific translation overrides shared translation
+const translation = {
+  fr: { 'Regional Bureau Dakar': 'Bureau Régional Dakar' },
+};
 
 const rawTables = {};
 const rawReports = {};
@@ -13,5 +15,5 @@ export default {
   rawTables,
   rawReports,
   translation,
-  defaultBoundariesFile: 'wca_admbnda_adm2_ocha.json',
+  defaultBoundariesFile: 'wca_admbnda_adm2_ocha.json?v2',
 };

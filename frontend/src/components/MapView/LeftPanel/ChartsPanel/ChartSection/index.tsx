@@ -1,32 +1,23 @@
 import {
+  Box,
   CircularProgress,
   createStyles,
+  makeStyles,
   Typography,
-  WithStyles,
-  withStyles,
-  Box,
 } from '@material-ui/core';
-import { GeoJsonProperties } from 'geojson';
-import { omit } from 'lodash';
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { appConfig } from 'config';
-import {
-  AdminLevelType,
-  ChartConfig,
-  DatasetField,
-  WMSLayerProps,
-} from 'config/types';
-import {
-  CHART_DATA_PREFIXES,
-  DatasetRequestParams,
-  loadAdminBoundaryDataset,
-} from 'context/datasetStateSlice';
-import { TableData } from 'context/tableStateSlice';
-import { useSafeTranslation } from 'i18n';
-import { getChartAdminBoundaryParams } from 'utils/admin-utils';
 import Chart, { ChartProps } from 'components/Common/Chart';
+import { AdminLevelType, WMSLayerProps } from 'config/types';
+import { CHART_DATA_PREFIXES } from 'context/datasetStateSlice';
+import { TableData } from 'context/tableStateSlice';
+import { GeoJsonProperties } from 'geojson';
+import { useSafeTranslation } from 'i18n';
+import { omit } from 'lodash';
+import React, { memo, useEffect, useMemo, useState } from 'react';
+import { useChartData } from 'utils/chart-hooks';
 import { createCsvDataFromDataKeyMap, createDataKeyMap } from 'utils/csv-utils';
+import { getFormattedDate } from 'utils/date-utils';
+
+import { generateDateStrings } from './utils';
 
 /**
  * This function removes the first occurrence of a specific number from an array.
@@ -44,33 +35,6 @@ function removeFirstOccurrence(arr: number[], numberToRemove: number) {
   return arr;
 }
 
-// returns startDate and endDate as part of result
-export function generateDateStrings(startDate: Date, endDate: Date) {
-  const result = [];
-  const interval = [1, 11, 21];
-  const currentDate = new Date(startDate);
-  currentDate.setUTCHours(12);
-  endDate.setUTCHours(12);
-
-  while (currentDate <= endDate) {
-    // eslint-disable-next-line fp/no-mutation, no-plusplus
-    for (let i = 0; i < 3; i++) {
-      currentDate.setDate(interval[i]);
-      const formattedDate = currentDate.toISOString().split('T')[0];
-
-      if (currentDate > startDate && currentDate <= endDate) {
-        // eslint-disable-next-line fp/no-mutating-methods
-        result.push(formattedDate);
-      }
-    }
-
-    currentDate.setDate(1);
-    currentDate.setMonth(currentDate.getMonth() + 1);
-  }
-
-  return result;
-}
-
 function extendDatasetRows(
   chartDataset: TableData,
   minDate?: string,
@@ -85,7 +49,7 @@ function extendDatasetRows(
 
   if (minDate && minDate < datasetMin) {
     const result = generateDateStrings(new Date(minDate), new Date(datasetMin));
-    // eslint-disable-next-line fp/no-mutation
+
     lowerDates = result.slice(0, result.length - 1);
   }
 
@@ -94,7 +58,7 @@ function extendDatasetRows(
       new Date(datasetMax),
       new Date(maxDate),
     );
-    // eslint-disable-next-line fp/no-mutation
+
     upperDates = result;
   }
 
@@ -131,30 +95,58 @@ const ChartSection = memo(
     maxChartValue,
     minChartValue,
     chartProps,
-    classes,
   }: ChartSectionProps) => {
-    const dispatch = useDispatch();
+    const classes = useStyles();
     const { t } = useSafeTranslation();
-    const [chartDataset, setChartDataset] = useState<undefined | TableData>();
+
+    const {
+      chartDataset,
+      isLoading,
+      error,
+      chartConfig,
+      chartTitle,
+      chartSubtitle,
+    } = useChartData({
+      chartLayer,
+      adminProperties,
+      adminLevel,
+      startDate,
+      endDate,
+      enabled: true,
+    });
+
     const [extendedChartDataset, setExtendedChartDataset] = useState<
       undefined | TableData
     >();
+
+    const comparingCharts = !chartMaxDateRange;
 
     React.useEffect(() => {
       if (!chartDataset) {
         return;
       }
-      const extended = extendDatasetRows(
-        chartDataset,
-        chartMaxDateRange?.[0],
-        chartMaxDateRange?.[1],
+
+      if (comparingCharts) {
+        setExtendedChartDataset(
+          extendDatasetRows(
+            chartDataset,
+            getFormattedDate(startDate, 'default'),
+            getFormattedDate(endDate, 'default'),
+          ),
+        );
+        return;
+      }
+
+      setExtendedChartDataset(
+        extendDatasetRows(
+          chartDataset,
+          chartMaxDateRange?.[0],
+          chartMaxDateRange?.[1],
+        ),
       );
+    }, [chartDataset, chartMaxDateRange, comparingCharts, endDate, startDate]);
 
-      setExtendedChartDataset(extended);
-    }, [chartDataset, chartMaxDateRange]);
-
-    // This effect is used to calculate the max and min values of the chart
-    // so that we can put charts on the same scale for comparison.
+    // Calculate max and min values for comparison charts to keep them on the same scale
     React.useEffect(() => {
       if (!(extendedChartDataset && setMaxChartValues && setMinChartValues)) {
         return () => {};
@@ -237,88 +229,7 @@ const ChartSection = memo(
       setMaxDataTicks,
     ]);
 
-    const [chartDataSetIsLoading, setChartDataSetIsLoading] = useState<boolean>(
-      false,
-    );
-    const [chartDataSetError, setChartDataSetError] = useState<
-      string | undefined
-    >(undefined);
-    const { levels } = chartLayer.chartData!;
-
-    const levelsDict = Object.fromEntries(levels.map(x => [x.level, x.id]));
-
-    const params = useMemo(
-      () =>
-        getChartAdminBoundaryParams(
-          chartLayer,
-          adminProperties as { [key: string]: any },
-        ),
-      [chartLayer, adminProperties],
-    );
-
-    const adminKey = levelsDict[adminLevel.toString()];
-    // Default to country level data.
-    const { code: adminCode } = useMemo(() => {
-      return (
-        params.boundaryProps[adminKey] || {
-          code: appConfig.countryAdmin0Id,
-        }
-      );
-    }, [adminKey, params]);
-
-    const requestParams: DatasetRequestParams = useMemo(() => {
-      return {
-        id: adminKey,
-        level: adminLevel.toString(),
-        adminCode: adminCode || appConfig.countryAdmin0Id,
-        boundaryProps: params.boundaryProps,
-        url: params.url,
-        serverLayerName: params.serverLayerName,
-        datasetFields: params.datasetFields,
-        startDate,
-        endDate,
-      };
-    }, [
-      adminCode,
-      adminKey,
-      adminLevel,
-      startDate,
-      endDate,
-      params.boundaryProps,
-      params.datasetFields,
-      params.serverLayerName,
-      params.url,
-    ]);
-
-    const getData = useCallback(async () => {
-      setChartDataSetIsLoading(true);
-      setChartDataset(undefined);
-      try {
-        const results = await loadAdminBoundaryDataset(requestParams, dispatch);
-        // if an error has occured in the http request or the results are undefined clear the chart
-        if (!results) {
-          return;
-        }
-        const keyMap = createDataKeyMap(results, requestParams.datasetFields);
-
-        const csvData = createCsvDataFromDataKeyMap(results, keyMap);
-        // eslint-disable-next-line no-param-reassign
-        dataForCsv.current = {
-          ...dataForCsv.current,
-          [chartLayer.title]: csvData,
-        };
-
-        setChartDataset(results);
-      } catch (error) {
-        console.warn(error);
-        setChartDataSetError(
-          `${t('Error: Impossible to get data for')} ${t(chartLayer.title)} `,
-        );
-      } finally {
-        setChartDataSetIsLoading(false);
-      }
-    }, [chartLayer.title, dataForCsv, dispatch, requestParams, t]);
-
+    // Update chart selected date range based on slider position
     useEffect(() => {
       if (!extendedChartDataset) {
         return;
@@ -337,79 +248,69 @@ const ChartSection = memo(
       }
     }, [extendedChartDataset, chartRange, setChartSelectedDateRange]);
 
+    // Generate CSV data for download
     useEffect(() => {
-      getData();
+      if (!chartDataset || !chartLayer.chartData?.fields) {
+        return () => {};
+      }
+
+      const keyMap = createDataKeyMap(
+        chartDataset,
+        chartLayer.chartData.fields,
+      );
+      const csvData = createCsvDataFromDataKeyMap(chartDataset, keyMap);
+
+      dataForCsv.current = {
+        ...dataForCsv.current,
+        [chartLayer.title]: csvData,
+      };
+
       return () => {
-        // eslint-disable-next-line no-param-reassign
         dataForCsv.current = omit(dataForCsv.current, chartLayer.title);
       };
-    }, [chartLayer.title, dataForCsv, getData]);
+    }, [
+      chartDataset,
+      chartLayer.title,
+      chartLayer.chartData?.fields,
+      dataForCsv,
+    ]);
 
-    const chartType = useMemo(() => {
-      return chartLayer.chartData!.type;
-    }, [chartLayer.chartData]);
-
-    const colors = useMemo(() => {
-      return params.datasetFields?.map(row => row.color);
-    }, [params.datasetFields]);
-
-    const minValue = useMemo(() => {
-      return Math.min(
-        ...(params.datasetFields
-          ?.filter((row: DatasetField) => {
-            return row?.minValue !== undefined;
-          })
-          .map((row: DatasetField) => {
-            return row.minValue;
-          }) as number[]),
-      );
-    }, [params.datasetFields]);
-
-    const maxValue = useMemo(() => {
-      return Math.max(
-        ...(params.datasetFields
-          ?.filter((row: DatasetField) => {
-            return row?.maxValue !== undefined;
-          })
-          .map((row: DatasetField) => {
-            return row.maxValue;
-          }) as number[]),
-      );
-    }, [params.datasetFields]);
-
-    const config: ChartConfig = useMemo(() => {
+    const overriddenConfig = useMemo(() => {
+      if (!chartConfig) {
+        return null;
+      }
       return {
-        type: chartType,
-        stacked: false,
-        category: CHART_DATA_PREFIXES.date,
-        data: CHART_DATA_PREFIXES.col,
-        transpose: true,
-        displayLegend: true,
-        minValue: minChartValue || minValue,
-        maxValue: maxChartValue || maxValue,
-        colors,
+        ...chartConfig,
+        minValue: minChartValue || chartConfig.minValue,
+        maxValue: maxChartValue || chartConfig.maxValue,
       };
-    }, [chartType, colors, maxChartValue, maxValue, minChartValue, minValue]);
-
-    const title = useMemo(() => {
-      return chartLayer.title;
-    }, [chartLayer.title]);
+    }, [chartConfig, minChartValue, maxChartValue]);
 
     return useMemo(() => {
-      if (chartDataSetIsLoading) {
+      if (isLoading) {
         return (
           <div className={classes.loading}>
             <CircularProgress size={50} />
           </div>
         );
       }
-      if (extendedChartDataset && !chartDataSetIsLoading) {
+      if (error) {
+        return (
+          <Box className={classes.errorContainer}>
+            <Typography color="error" component="p" variant="h4">
+              {`${t('Error: Impossible to get data for')} ${t(chartLayer.title)}`}
+            </Typography>
+          </Box>
+        );
+      }
+      if (extendedChartDataset && overriddenConfig) {
         return (
           <Chart
-            title={t(title)}
-            config={config}
+            title={t(chartTitle)}
+            subtitle={t(chartSubtitle)}
+            config={overriddenConfig}
             data={extendedChartDataset}
-            datasetFields={params.datasetFields}
+            datasetFields={chartLayer.chartData?.fields}
             chartRange={chartRange}
             notMaintainAspectRatio
             legendAtBottom
@@ -417,33 +318,26 @@ const ChartSection = memo(
           />
         );
       }
-      if (chartDataSetError) {
-        return (
-          <Box className={classes.errorContainer}>
-            <Typography color="error" component="p" variant="h4">
-              {chartDataSetError}
-            </Typography>
-          </Box>
-        );
-      }
       return null;
     }, [
-      chartDataSetIsLoading,
+      isLoading,
+      error,
       extendedChartDataset,
-      chartDataSetError,
+      overriddenConfig,
       classes.loading,
       classes.errorContainer,
       t,
-      title,
-      config,
-      params.datasetFields,
+      chartTitle,
+      chartSubtitle,
+      chartLayer.chartData?.fields,
+      chartLayer.title,
       chartRange,
       chartProps,
     ]);
   },
 );
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     errorContainer: {
       display: 'flex',
@@ -459,9 +353,10 @@ const styles = () =>
       justifyContent: 'center',
       alignItems: 'center',
     },
-  });
+  }),
+);
 
-export interface ChartSectionProps extends WithStyles<typeof styles> {
+export interface ChartSectionProps {
   chartLayer: WMSLayerProps;
   adminProperties: GeoJsonProperties;
   adminLevel: AdminLevelType;
@@ -482,4 +377,4 @@ export interface ChartSectionProps extends WithStyles<typeof styles> {
   chartProps?: Partial<ChartProps>;
 }
 
-export default withStyles(styles)(ChartSection);
+export default ChartSection;

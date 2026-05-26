@@ -7,7 +7,7 @@ export function bboxToString(
     | Readonly<string[]>
     | string[]
     | Array<number | string>,
-  bboxDigits?: number
+  bboxDigits?: number,
 ): string {
   const [xmin, ymin, xmax, ymax] = bbox;
   return [
@@ -30,7 +30,7 @@ export function checkExtent(extent: BBOX): void {
   const [minX, minY, maxX, maxY] = extent;
   if (minX > maxX || minY > maxY) {
     throw new Error(
-      `the extent ${extent} seems malformed or else may contain "wrapping" which is not supported`
+      `the extent ${extent} seems malformed or else may contain "wrapping" which is not supported`,
     );
   }
 }

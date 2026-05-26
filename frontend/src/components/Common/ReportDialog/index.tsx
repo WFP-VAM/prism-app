@@ -1,4 +1,3 @@
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Button,
@@ -8,40 +7,35 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  makeStyles,
   Theme,
   Typography,
   useTheme,
-  WithStyles,
-  withStyles,
 } from '@material-ui/core';
-import { useSelector } from 'react-redux';
 import { ArrowBack } from '@material-ui/icons';
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
-import { snakeCase } from 'lodash';
-import moment from 'moment';
-import { useSafeTranslation } from 'i18n';
-import { mapSelector } from 'context/mapStateSlice/selectors';
+import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
+import { ReportType } from 'config/types';
 import {
   analysisResultSelector,
   TableRow as AnalysisTableRow,
 } from 'context/analysisResultStateSlice';
+import { mapSelector } from 'context/mapStateSlice/selectors';
+import { useSafeTranslation } from 'i18n';
+import { snakeCase } from 'lodash';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Column, ExposedPopulationResult } from 'utils/analysis-utils';
-import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
-import { ReportType } from 'config/types';
-import { getDateFormat } from 'utils/date-utils';
+import { getFormattedDate } from 'utils/date-utils';
+import { DateFormat } from 'utils/name-utils';
+
 import ReportDoc from './reportDoc';
 
 type Format = 'png' | 'jpeg';
 
 const ReportDialog = memo(
-  ({
-    classes,
-    open,
-    reportConfig,
-    handleClose,
-    tableData,
-    columns,
-  }: ReportProps) => {
+  ({ open, reportConfig, handleClose, tableData, columns }: ReportProps) => {
+    const classes = useStyles();
     const theme = useTheme();
     const { t } = useSafeTranslation();
     const [mapImage, setMapImage] = useState<string | null>(null);
@@ -51,16 +45,24 @@ const ReportDialog = memo(
       analysisResultSelector,
     ) as ExposedPopulationResult;
 
-    const reportDate = useMemo(() => {
-      return analysisResult?.date
-        ? getDateFormat(new Date(analysisResult?.date).toISOString(), 'default')
-        : '';
-    }, [analysisResult]);
+    const reportDate = useMemo(
+      () =>
+        analysisResult?.analysisDate
+          ? getFormattedDate(
+              new Date(analysisResult?.analysisDate).toISOString(),
+              'default',
+            )
+          : '',
+      [analysisResult],
+    );
 
     const getPDFName = useMemo(() => {
       const type = snakeCase(analysisResult?.legendText);
       const date = new Date();
-      const dateString = moment(date).format('DD_MM_YYYY');
+      const dateString = getFormattedDate(
+        date.toISOString(),
+        DateFormat.DayFirstSnakeCase,
+      );
       return `PRISM_report_${type}_${dateString}.pdf`;
     }, [analysisResult]);
 
@@ -74,17 +76,6 @@ const ReportDialog = memo(
       },
       [selectedMap],
     );
-
-    // Manual loader wait to show that the document is loading
-    useEffect(() => {
-      const loadingTimer = setTimeout(() => {
-        setDocumentIsLoading(false);
-      }, 15000);
-      if (!open) {
-        return clearTimeout(loadingTimer);
-      }
-      return () => clearTimeout(loadingTimer);
-    }, [open]);
 
     useEffect(() => {
       if (!open) {
@@ -127,37 +118,16 @@ const ReportDialog = memo(
       theme,
     ]);
 
-    const renderedPdfDocumentLoading = useMemo(() => {
-      if (!documentIsLoading) {
-        return null;
-      }
-      return (
-        <Box className={classes.documentLoadingContainer}>
-          <Typography
-            className={classes.documentLoaderText}
-            variant="body1"
-            component="span"
-          >
-            {t('Loading document')}
-          </Typography>
-          <LoadingBlinkingDots dotColor="white" />
-        </Box>
-      );
-    }, [
-      classes.documentLoaderText,
-      classes.documentLoadingContainer,
-      documentIsLoading,
-      t,
-    ]);
-
-    const renderedLoadingButtonText = useCallback(
-      ({ loading }) => {
-        if (loading || documentIsLoading) {
+    const renderedLoadingButtonText: any = useCallback(
+      ({ loading }: any) => {
+        if (loading) {
+          setDocumentIsLoading(true);
           return `${t('Loading document')}...`;
         }
+        setDocumentIsLoading(false);
         return t('Download');
       },
-      [documentIsLoading, t],
+      [t],
     );
 
     const renderedDownloadPdfButton = useMemo(() => {
@@ -165,27 +135,25 @@ const ReportDialog = memo(
         return null;
       }
       return (
-        <>
-          <Button id="download-action">
-            <PDFDownloadLink
-              document={
-                <ReportDoc
-                  exposureLegendDefinition={analysisResult?.legend ?? []}
-                  theme={theme}
-                  reportTitle={`${t(reportConfig.title)} ${reportDate}`}
-                  reportConfig={reportConfig}
-                  tableShowTotal
-                  mapImage={mapImage}
-                  tableData={tableData}
-                  columns={columns}
-                />
-              }
-              fileName={getPDFName}
-            >
-              {renderedLoadingButtonText}
-            </PDFDownloadLink>
-          </Button>
-        </>
+        <Button id="download-action">
+          <PDFDownloadLink
+            document={
+              <ReportDoc
+                exposureLegendDefinition={analysisResult?.legend ?? []}
+                theme={theme}
+                reportTitle={`${t(reportConfig.title)} ${reportDate}`}
+                reportConfig={reportConfig}
+                tableShowTotal
+                mapImage={mapImage}
+                tableData={tableData}
+                columns={columns}
+              />
+            }
+            fileName={getPDFName}
+          >
+            {renderedLoadingButtonText}
+          </PDFDownloadLink>
+        </Button>
       );
     }, [
       analysisResult,
@@ -200,11 +168,13 @@ const ReportDialog = memo(
       theme,
     ]);
 
-    const renderedSignatureText = useMemo(() => {
-      return reportConfig?.signatureText
-        ? t(reportConfig.signatureText)
-        : t('PRISM automated report');
-    }, [reportConfig, t]);
+    const renderedSignatureText = useMemo(
+      () =>
+        reportConfig?.signatureText
+          ? t(reportConfig.signatureText)
+          : t('PRISM automated report'),
+      [reportConfig, t],
+    );
 
     return (
       <Dialog
@@ -233,7 +203,18 @@ const ReportDialog = memo(
             position: 'relative',
           }}
         >
-          {renderedPdfDocumentLoading}
+          {documentIsLoading && (
+            <Box className={classes.documentLoadingContainer}>
+              <Typography
+                className={classes.documentLoaderText}
+                variant="body1"
+                component="span"
+              >
+                {t('Loading document')}
+              </Typography>
+              <LoadingBlinkingDots dotColor="white" />
+            </Box>
+          )}
           {renderedPdfViewer}
         </DialogContent>
         <DialogActions className={classes.actions}>
@@ -245,9 +226,10 @@ const ReportDialog = memo(
   },
 );
 
-const styles = (theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     documentLoadingContainer: {
+      zIndex: 1000,
       backgroundColor: 'white',
       display: 'flex',
       justifyContent: 'center',
@@ -295,9 +277,10 @@ const styles = (theme: Theme) =>
       fontWeight: 500,
       paddingLeft: '1em',
     },
-  });
+  }),
+);
 
-export interface ReportProps extends WithStyles<typeof styles> {
+export interface ReportProps {
   open: boolean;
   reportConfig: ReportType;
   handleClose: () => void;
@@ -305,4 +288,4 @@ export interface ReportProps extends WithStyles<typeof styles> {
   columns: Column[];
 }
 
-export default withStyles(styles)(ReportDialog);
+export default ReportDialog;

@@ -1,6 +1,6 @@
-import React from 'react';
 import { render } from '@testing-library/react';
-import TimelineItem, { TimelineLabelProps } from '.';
+
+import TimelineLabel, { TimelineLabelProps } from '.';
 
 test('TimelineLabel renders as expected', () => {
   // Arrange
@@ -13,10 +13,11 @@ test('TimelineLabel renders as expected', () => {
       isFirstDay: true,
       date: '2021-12-31',
     },
+    showDraggingCursor: false,
   };
 
   // Act
-  const { container } = render(<TimelineItem {...props} />);
+  const { container } = render(<TimelineLabel {...props} />);
 
   // Assert
   expect(container).toMatchSnapshot();

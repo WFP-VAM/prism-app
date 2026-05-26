@@ -3,14 +3,6 @@
   "countryAdmin0Id": 231,
   "alertFormActive": false,
   "defaultLayer": "precip_blended_dekad",
-  "icons": {
-    "rainfall": "icon_rain.png",
-    "vegetation": "icon_veg.png",
-    "temperature": "icon_climate.png",
-    "risk": "icon_impact.png",
-    "tropical_storms": "icon_tropical_storm.png",
-    "vulnerability": "icon_vulnerable.png"
-  },
   "serversUrls": {
     "wms": [
       "https://api.earthobservation.vam.wfp.org/ows/wms"
@@ -163,6 +155,10 @@
               "main": true
             },
             {
+              "id": "spi_2m",
+              "label": "2-month"
+            },
+            {
               "id": "spi_3m",
               "label": "3-month"
             },
@@ -181,13 +177,10 @@
           ]
         }
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
-          "group_title": "Rainfall categories:",
+          "group_title": "Number of days of rainfall:",
           "activate_all": false,
           "layers": [
             {
@@ -231,10 +224,7 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": [
-        "ndvi_dekad",
-        "ndvi_dekad_anomaly"
-      ]
+      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
     },
     "temperature": {
       "land_surface_temperature": [
@@ -244,9 +234,7 @@
       ]
     },
     "vulnerability": {
-      "poverty": [
-        "poverty_hc"
-      ],
+      "poverty": ["poverty_hc"],
       "food_insecurity": [
         "food_insecure",
         "livelihood_coping",
@@ -256,10 +244,7 @@
       ]
     },
     "exposure": {
-      "population": [
-        "pop_21",
-        "num_hhs"
-      ]
+      "population": ["pop_21", "num_hhs"]
     }
   }
 }

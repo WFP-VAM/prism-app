@@ -1,10 +1,10 @@
-import appConfig from './prism.json';
 import rawLayers from './layers.json';
-import jordanTranslation from './translation.json';
+import appConfig from './prism.json';
 
 const rawTables = {};
 const rawReports = {};
-const translation = { عربى: jordanTranslation };
+// Country-specific translation overrides shared translation
+const translation = { ar: {} };
 
 export default {
   appConfig,
@@ -12,5 +12,5 @@ export default {
   rawTables,
   rawReports,
   translation,
-  defaultBoundariesFile: 'jor_admbnda_adm2_jdos.json',
+  defaultBoundariesFile: 'jor_admbnda_adm3_jdos_merged.json',
 };

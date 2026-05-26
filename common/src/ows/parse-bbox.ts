@@ -1,7 +1,7 @@
 import { findTagText } from "../utils";
 
 export default function parseBoundingBox(
-  xml: string
+  xml: string,
 ): Readonly<[number, number, number, number]> | undefined {
   const lowerCorner = findTagText(xml, "ows:LowerCorner");
   const upperCorner = findTagText(xml, "ows:UpperCorner");

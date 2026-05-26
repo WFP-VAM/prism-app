@@ -1,28 +1,31 @@
 {
   "country": "Mozambique",
   "defaultLanguage": "en",
+  "anticipatoryActionDroughtUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/aa_probabilities_triggers_moz.csv",
+  "anticipatoryActionDroughtStagingUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/staging/aa_probabilities_triggers_moz.csv",
+  "anticipatoryActionStormUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/latest.json.",
+  "anticipatoryActionFloodUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/flood/moz/dates.json",
+  "header": {
+    "title": "PRISM",
+    "logo": "/images/moz-flag-inam-logo.png"
+  },
+  "printConfig": {
+    "defaultFooterText": ""
+  },
   "countryAdmin0Id": 170,
   "alertFormActive": false,
   "hidePanel": false,
   "enableNavigationDropdown": true,
-  "icons": {
-    "rainfall": "icon_rain.png",
-    "vegetation": "icon_veg.png",
-    "temperature": "icon_climate.png",
-    "risk": "icon_impact.png",
-    "tropical_storms": "icon_tropical_storm.png",
-    "vulnerability": "icon_vulnerable.png",
-    "exposure": "icon_basemap.png"
-  },
-  "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
+  "defaultDisplayBoundaries": [
+    "admin_boundaries",
+    "admin2_boundaries",
+    "admin1_boundaries"
+  ],
   "serversUrls": {
-    "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms",
-      "https://ogcserver.gis.wfp.org/geoserver/prism/wms"
-    ]
+    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
-    "boundingBox": [30.18, -24.74, 40.78, -10.32]
+    "boundingBox": [31, -25, 40, -11]
   },
   "categories": {
     "rainfall": {
@@ -41,12 +44,32 @@
               "label": "1-month"
             },
             {
+              "id": "precip_blended_2m",
+              "label": "2-month"
+            },
+            {
               "id": "precip_blended_3m",
               "label": "3-month"
             },
             {
+              "id": "precip_blended_4m",
+              "label": "4-month"
+            },
+            {
+              "id": "precip_blended_5m",
+              "label": "5-month"
+            },
+            {
               "id": "precip_blended_6m",
               "label": "6-month"
+            },
+            {
+              "id": "precip_blended_7m",
+              "label": "7-month"
+            },
+            {
+              "id": "precip_blended_8m",
+              "label": "8-month"
             },
             {
               "id": "precip_blended_9m",
@@ -72,12 +95,32 @@
               "label": "1-month"
             },
             {
+              "id": "precip_blended_anomaly_2m",
+              "label": "2-month"
+            },
+            {
               "id": "precip_blended_anomaly_3m",
               "label": "3-month"
             },
             {
+              "id": "precip_blended_anomaly_4m",
+              "label": "4-month"
+            },
+            {
+              "id": "precip_blended_anomaly_5m",
+              "label": "5-month"
+            },
+            {
               "id": "precip_blended_anomaly_6m",
               "label": "6-month"
+            },
+            {
+              "id": "precip_blended_anomaly_7m",
+              "label": "7-month"
+            },
+            {
+              "id": "precip_blended_anomaly_8m",
+              "label": "8-month"
             },
             {
               "id": "precip_blended_anomaly_9m",
@@ -88,22 +131,69 @@
               "label": "1-year"
             }
           ]
+        },
+        {
+          "group_title": "SPI",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "spi_blended_1m",
+              "label": "1-month",
+              "main": true
+            },
+            {
+              "id": "spi_blended_2m",
+              "label": "2-month"
+            },
+            {
+              "id": "spi_blended_3m",
+              "label": "3-month"
+            },
+            {
+              "id": "spi_blended_6m",
+              "label": "6-month"
+            },
+            {
+              "id": "spi_blended_9m",
+              "label": "9-month"
+            },
+            {
+              "id": "spi_blended_1y",
+              "label": "1-year"
+            },
+            {
+              "id": "spi_blended_2y",
+              "label": "2-year"
+            },
+            {
+              "id": "spi_blended_3y",
+              "label": "3-year"
+            },
+            {
+              "id": "spi_blended_5y",
+              "label": "5-year"
+            }
+          ]
         }
       ],
-      "forecasts": ["daily_rainfall_forecast", "dekad_rainfall_forecast", "dekad_rainfall_anomaly_forecast"],
+      "forecasts": [
+        "daily_rainfall_forecast",
+        "dekad_rainfall_forecast",
+        "dekad_rainfall_anomaly_forecast"
+      ],
       "global_rainfall_products": [
         {
           "group_title": "Rainfall aggregate",
           "activate_all": false,
           "layers": [
             {
+              "id": "rainfall_daily",
+              "label": "Daily"
+            },
+            {
               "id": "rainfall_dekad",
               "label": "10-day",
               "main": true
-            },
-            {
-              "id": "chirps_rainfall_daily",
-              "label": "Daily"
             },
             {
               "id": "rainfall_agg_1month",
@@ -168,6 +258,10 @@
               "main": true
             },
             {
+              "id": "spi_2m",
+              "label": "2-month"
+            },
+            {
               "id": "spi_3m",
               "label": "3-month"
             },
@@ -189,7 +283,7 @@
       "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
-          "group_title": "Rainfall categories:",
+          "group_title": "Number of days of rainfall:",
           "activate_all": false,
           "layers": [
             {
@@ -246,71 +340,96 @@
         "lst_amplitude"
       ]
     },
-    "tropical_storms": {
-      "tropical_storms": [
-        {
-          "group_title": "Tropical Storms",
-          "activate_all": true,
-          "layers": [
-            {
-              "id": "adamts_buffers",
-              "label": "Wind buffers",
-              "main": true
-            },
-            {
-              "id": "adamts_nodes",
-              "label": "Nodes"
-            },
-            {
-              "id": "adamts_tracks",
-              "label": "Tracks"
-            }
-          ]
-        }
-      ]
-    },
     "vulnerability": {
       "poverty": ["mpi"],
       "food_insecurity": [
         {
-          "group_title": "IPC",
+          "group_title": "IPC - phase classification",
           "activate_all": false,
           "layers": [
             {
-              "id": "ipc_phase_current",
-              "label": "Current phase classification",
+              "id": "ipc_phase_projection_2024_2025_v2",
+              "label": "Projection October 2024 to March 2025"
+            },
+            {
+              "id": "ipc_phase_2024",
+              "label": "2024",
               "main": true
             },
             {
-              "id": "ipc_phase_projected",
-              "label": "Projected phase classification"
+              "id": "ipc_phase_2023",
+              "label": "2023"
             },
             {
-              "id": "ipc_phase_12_2020",
-              "label": "December 2020 phase classification"
+              "id": "ipc_phase_2022",
+              "label": "2022"
+            }
+          ]
+        },
+        {
+          "group_title": "IPC - population in phase 3+",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ipc_pop_ph3_2023",
+              "label": "2023",
+              "main": true
             },
             {
-              "id": "ipc_pop_ph3_current",
-              "label": "Current population in phase 3+"
+              "id": "ipc_pop_ph3_2022",
+              "label": "2022"
+            }
+          ]
+        },
+        {
+          "group_title": "IPC - population in phase 4",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ipc_pop_ph4_2023",
+              "label": "2023",
+              "main": true
             },
             {
-              "id": "ipc_pop_ph3_projected",
-              "label": "Projected population in phase 3+"
+              "id": "ipc_pop_ph4_2022",
+              "label": "2022"
+            }
+          ]
+        },
+        {
+          "group_title": "IPC - percent of people in phase 3+",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ipc_perc_ph3_2023",
+              "label": "2023",
+              "main": true
             },
             {
-              "id": "ipc_perc_ph3_current",
-              "label": "Current percent of population in phase 3+"
+              "id": "ipc_perc_ph3_2022",
+              "label": "2022"
+            }
+          ]
+        },
+        {
+          "group_title": "IPC - percent of people in phase 4",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ipc_perc_ph4_2023",
+              "label": "2023",
+              "main": true
             },
             {
-              "id": "ipc_perc_ph3_projected",
-              "label": "Projected percent of population in phase 3+"
+              "id": "ipc_perc_ph4_2022",
+              "label": "2022"
             }
           ]
         }
       ]
     },
     "exposure": {
-      "population": ["census"]
+      "population": ["pop_proj_2025"]
     }
   }
 }

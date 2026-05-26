@@ -1,0 +1,16 @@
+import rawLayers from './layers.json';
+import appConfig from './prism.json';
+
+const rawTables = {};
+const rawReports = {};
+// Country-specific translation overrides shared translation
+const translation = { ar: {} };
+
+export default {
+  appConfig,
+  rawLayers,
+  rawTables,
+  rawReports,
+  translation,
+  defaultBoundariesFile: 'sdn_admbnda_adm2_cbs_nic_ssa_20200831.json',
+};

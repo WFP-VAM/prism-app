@@ -1,11 +1,3 @@
-import React, {
-  memo,
-  PropsWithChildren,
-  useCallback,
-  useEffect,
-  useState,
-  useMemo,
-} from 'react';
 import {
   Box,
   createStyles,
@@ -13,36 +5,58 @@ import {
   Grid,
   IconButton,
   ListItem,
+  makeStyles,
   Paper,
   Popover,
   Slider,
   Tooltip,
   Typography,
-  withStyles,
-  WithStyles,
 } from '@material-ui/core';
-import { Close, Opacity } from '@material-ui/icons';
-import { useDispatch, useSelector } from 'react-redux';
-import { LayerType, LegendDefinitionItem } from 'config/types';
-import { mapSelector, layersSelector } from 'context/mapStateSlice/selectors';
-import { clearDataset } from 'context/datasetStateSlice';
-import { useSafeTranslation } from 'i18n';
-import { clearAnalysisResult } from 'context/analysisResultStateSlice';
-import LayerContentPreview from 'components/MapView/Legends/layerContentPreview';
-import ColorIndicator from 'components/MapView/Legends/ColorIndicator';
-import { getLegendItemLabel } from 'components/MapView/utils';
+import { Close, Opacity, SwapVert } from '@material-ui/icons';
 import { Extent } from 'components/MapView/Layers/raster-utils';
-import { getUrlKey, useUrlHistory } from 'utils/url-utils';
 import LayerDownloadOptions from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch/SwitchItem/LayerDownloadOptions';
-import AnalysisDownloadButton from 'components/MapView/Legends//AnalysisDownloadButton';
 import { toggleRemoveLayer } from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
-import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
+import AnalysisDownloadButton from 'components/MapView/Legends//AnalysisDownloadButton';
+import ColorIndicator from 'components/MapView/Legends/ColorIndicator';
+import LayerContentPreview from 'components/MapView/Legends/layerContentPreview';
+import { getLegendItemLabel } from 'components/MapView/utils';
+import {
+  LayerType,
+  LegendDefinitionItem,
+  Panel,
+  PointDataLayerProps,
+} from 'config/types';
+import {
+  analysisLayerInvertColors,
+  clearAnalysisResult,
+  setIsMapLayerActive,
+} from 'context/analysisResultStateSlice';
+import { dashboardModeSelector } from 'context/dashboardStateSlice';
+import { clearDataset } from 'context/datasetStateSlice';
+import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { useSafeTranslation } from 'i18n';
+import { lightGrey } from 'muiTheme';
+import React, {
+  memo,
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { formatCoverageRange } from 'utils/date-utils';
+import { DateFormat } from 'utils/name-utils';
+import { getUrlKey, useUrlHistory } from 'utils/url-utils';
+import { useMapState } from 'utils/useMapState';
+import { useOpacityState } from 'utils/useOpacityState';
+
+import LegendMarkdown from '../LegendMarkdown';
 import LoadingBar from '../LoadingBar';
 
 // Children here is legendText
 const LegendItem = memo(
   ({
-    classes,
     id,
     title,
     legend,
@@ -52,27 +66,55 @@ const LegendItem = memo(
     legendUrl,
     fillPattern,
     extent,
+    forPrinting = false,
+    showDescription = true,
+    dateCoverage,
   }: LegendItemProps) => {
+    const classes = useStyles();
     const dispatch = useDispatch();
+    const {
+      actions: { addLayer, removeLayer },
+      layers,
+      ...mapState
+    } = useMapState();
     const { removeLayerFromUrl } = useUrlHistory();
-    const map = useSelector(mapSelector);
+    const map = mapState.maplibreMap();
     const [opacityEl, setOpacityEl] = useState<HTMLButtonElement | null>(null);
-    const opacity = useSelector(opacitySelector(id as string));
+    const opacityState = useOpacityState();
+    const opacityFromState = useSelector(
+      opacityState.getOpacitySelector(id as string),
+    );
+    const tabValue = useSelector(leftPanelTabValueSelector);
+    const dashboardMode = useSelector(dashboardModeSelector);
+
+    // Use opacity from state if available, otherwise fall back to the initial opacity
+    const opacity =
+      opacityFromState !== undefined ? opacityFromState : initialOpacity;
     const isAnalysis = type === 'analysis';
 
+    const canShowRemoveButton =
+      tabValue !== Panel.Dashboard || dashboardMode === 'edit';
+
     useEffect(() => {
-      if (opacity !== undefined) {
+      if (opacityFromState !== undefined || !map) {
         return;
       }
-      dispatch(
-        setOpacity({
-          map,
-          value: initialOpacity || 0,
-          layerId: id,
-          layerType: type,
-        }),
-      );
-    }, [dispatch, id, initialOpacity, map, opacity, type]);
+
+      opacityState.setOpacity({
+        map,
+        value: initialOpacity || 0.8, // Better default than 0 for dashboard context
+        layerId: id,
+        layerType: type,
+      });
+    }, [
+      id,
+      initialOpacity,
+      map,
+      opacityFromState,
+      type,
+      opacityState,
+      mapState.isGlobalMap,
+    ]);
 
     const { t } = useSafeTranslation();
 
@@ -87,14 +129,18 @@ const LegendItem = memo(
     const open = Boolean(opacityEl);
     const opacityId = open ? 'opacity-popover' : undefined;
 
-    const selectedLayers = useSelector(layersSelector);
-    const layer = useMemo(() => {
-      return selectedLayers.find(l => l.id === id);
-    }, [id, selectedLayers]);
+    const layer = useMemo(() => layers.find(l => l.id === id), [id, layers]);
 
-    const renderedOpacitySlider = useMemo(() => {
-      return (
-        <Box px={2} display="flex" className={classes.opacityBox}>
+    const renderedOpacitySlider = useMemo(
+      () => (
+        <Box
+          style={{
+            paddingLeft: 2,
+            paddingRight: 2,
+            display: 'flex',
+          }}
+          className={classes.opacityBox}
+        >
           <Typography classes={{ root: classes.opacityText }}>
             {`${Math.round((opacity || 0) * 100)}%`}
           </Typography>
@@ -108,45 +154,51 @@ const LegendItem = memo(
               root: classes.opacitySliderRoot,
               thumb: classes.opacitySliderThumb,
             }}
-            onChange={(e, newValue) =>
-              dispatch(
-                setOpacity({
-                  map,
-                  value: newValue as number,
-                  layerId: id,
-                  layerType: type,
-                }),
-              )
+            onChange={(_e, newValue) =>
+              opacityState.setOpacity({
+                map,
+                value: newValue as number,
+                layerId: id,
+                layerType: type,
+              })
             }
           />
         </Box>
-      );
-    }, [
-      classes.opacityBox,
-      classes.opacitySliderRoot,
-      classes.opacitySliderThumb,
-      classes.opacityText,
-      dispatch,
-      id,
-      map,
-      opacity,
-      type,
-    ]);
+      ),
+      [
+        classes.opacityBox,
+        classes.opacitySliderRoot,
+        classes.opacitySliderThumb,
+        classes.opacityText,
+        opacityState,
+        id,
+        map,
+        opacity,
+        type,
+      ],
+    );
 
-    const layerDownloadOptions = useMemo(() => {
-      return layer ? (
-        <LayerDownloadOptions
-          layerId={layer.id}
-          extent={extent}
-          selected
-          size="small"
-        />
-      ) : null;
-    }, [layer, extent]);
+    const layerDownloadOptions = useMemo(
+      () =>
+        layer ? (
+          <LayerDownloadOptions
+            layerId={layer.id}
+            extent={extent}
+            selected
+            size="small"
+          />
+        ) : null,
+      [layer, extent],
+    );
 
     const remove = useCallback(() => {
       if (isAnalysis) {
-        dispatch(clearAnalysisResult());
+        // In dashboard mode, just toggle layer visibility instead of clearing analysis
+        if (tabValue === Panel.Dashboard) {
+          dispatch(setIsMapLayerActive(false));
+        } else {
+          dispatch(clearAnalysisResult());
+        }
       }
       if (layer) {
         // clear previous table dataset loaded first
@@ -157,36 +209,53 @@ const LegendItem = memo(
           layer,
           map,
           urlLayerKey,
-          dispatch,
+          removeLayer,
           removeLayerFromUrl,
+          addLayer,
         );
       }
-    }, [isAnalysis, layer, dispatch, map, removeLayerFromUrl]);
+    }, [
+      isAnalysis,
+      layer,
+      dispatch,
+      map,
+      removeLayerFromUrl,
+      addLayer,
+      removeLayer,
+      tabValue,
+    ]);
 
-    const getColorIndicatorKey = useCallback((item: LegendDefinitionItem) => {
-      return (
+    const getColorIndicatorKey = useCallback(
+      (item: LegendDefinitionItem) =>
         item.value ||
-        (typeof item.label === 'string' ? item?.label : item?.label?.text)
-      );
-    }, []);
+        (typeof item.label === 'string' ? item?.label : item?.label?.text),
+      [],
+    );
 
-    const renderedLegendDefinitionItems = useMemo(() => {
-      return legend?.map((item: LegendDefinitionItem) => (
-        <ColorIndicator
-          key={getColorIndicatorKey(item)}
-          value={getLegendItemLabel(t, item)}
-          color={item.color as string}
-          opacity={opacity as number}
-          fillPattern={fillPattern}
-        />
-      ));
-    }, [fillPattern, getColorIndicatorKey, legend, opacity, t]);
+    const renderedLegendDefinitionItems = useMemo(
+      () =>
+        legend?.map((item: LegendDefinitionItem) => (
+          <ColorIndicator
+            key={getColorIndicatorKey(item)}
+            value={getLegendItemLabel(t, item)}
+            color={item.color as string}
+            opacity={opacity as number}
+            fillPattern={fillPattern || item.fillPattern}
+            iconShape={
+              type === 'point_data' && (layer as PointDataLayerProps)?.iconShape
+                ? (layer as PointDataLayerProps).iconShape
+                : undefined
+            }
+          />
+        )),
+      [fillPattern, getColorIndicatorKey, legend, opacity, t, type, layer],
+    );
 
     const renderedLegendUrl = useMemo(() => {
       if (legendUrl) {
         return <img src={legendUrl} alt={title} />;
       }
-      return <>{renderedLegendDefinitionItems}</>;
+      return renderedLegendDefinitionItems;
     }, [legendUrl, renderedLegendDefinitionItems, title]);
 
     const renderedLegend = useMemo(() => {
@@ -202,14 +271,39 @@ const LegendItem = memo(
       }
       return (
         <Grid item>
-          <Typography variant="h5">{children}</Typography>
+          {typeof children === 'string' ? (
+            <LegendMarkdown>{children}</LegendMarkdown>
+          ) : (
+            <Typography variant="h5">{children}</Typography>
+          )}
         </Grid>
       );
     }, [children]);
 
+    const coverageText = useMemo(
+      () =>
+        formatCoverageRange(
+          dateCoverage?.startDate,
+          dateCoverage?.endDate,
+          DateFormat.DayFirstHyphenMonthName,
+          t('date_locale'),
+        ),
+      [dateCoverage, t],
+    );
+
     return (
       <ListItem disableGutters dense>
-        <Paper className={classes.paper}>
+        <Paper
+          className={`${classes.paper} legend-card`}
+          elevation={forPrinting ? 0 : undefined}
+          style={
+            forPrinting
+              ? {
+                  border: `1px solid ${lightGrey}`,
+                }
+              : undefined
+          }
+        >
           <Grid item style={{ display: 'flex' }}>
             <Typography style={{ flexGrow: 1 }} variant="h4">
               {title}
@@ -218,53 +312,88 @@ const LegendItem = memo(
           </Grid>
           <Divider />
           {renderedLegend}
-          <LoadingBar layerId={id} />
-          {renderedChildren}
-          <Divider style={{ margin: '8px 0px' }} />
-          <Box display="flex" justifyContent="space-between">
-            <Tooltip title="Opacity">
-              <IconButton size="small" onClick={openOpacity}>
-                <Opacity fontSize="small" />
-              </IconButton>
-            </Tooltip>
+          {showDescription && (
             <>
-              <Popover
-                id={opacityId}
-                open={open}
-                anchorEl={opacityEl}
-                onClose={closeOpacity}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'left',
+              <LoadingBar layerId={id} />
+              {renderedChildren}
+              {coverageText && (
+                <Typography variant="h5" style={{ marginTop: 8 }}>
+                  {t('Coverage')}: {coverageText}
+                </Typography>
+              )}
+            </>
+          )}
+          {!forPrinting && (
+            <>
+              <Divider style={{ margin: '8px 0px' }} />
+              <Box
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
                 }}
               >
-                {renderedOpacitySlider}
-              </Popover>
-              {isAnalysis ? <AnalysisDownloadButton /> : layerDownloadOptions}
-              <Tooltip title="Remove layer">
-                <IconButton size="small" onClick={remove}>
-                  <Close fontSize="small" />
-                </IconButton>
-              </Tooltip>
+                <Tooltip title={t('Opacity') as string}>
+                  <IconButton size="small" onClick={openOpacity}>
+                    <Opacity fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+                {isAnalysis && (
+                  <Tooltip title={t('Reverse colors') as string}>
+                    <IconButton
+                      size="small"
+                      onClick={() => dispatch(analysisLayerInvertColors())}
+                    >
+                      <SwapVert fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                )}
+                <>
+                  <Popover
+                    id={opacityId}
+                    open={open}
+                    anchorEl={opacityEl}
+                    onClose={closeOpacity}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'left',
+                    }}
+                  >
+                    {renderedOpacitySlider}
+                  </Popover>
+                  {isAnalysis ? (
+                    <AnalysisDownloadButton />
+                  ) : (
+                    layerDownloadOptions
+                  )}
+                  {canShowRemoveButton && (
+                    <Tooltip title={t('Remove layer') as string}>
+                      <IconButton size="small" onClick={remove}>
+                        <Close fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </>
+              </Box>
             </>
-          </Box>
+          )}
         </Paper>
       </ListItem>
     );
   },
 );
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     paper: {
       padding: 8,
       width: 180,
+      borderRadius: '8px',
     },
     slider: {
       padding: '0 5px',
     },
     opacityBox: {
-      backgroundColor: '#fff',
+      backgroundColor: 'white',
       width: 172,
       overflow: 'hidden',
     },
@@ -282,11 +411,15 @@ const styles = () =>
       width: 28,
       lineHeight: '36px',
     },
-  });
+  }),
+);
 
-interface LegendItemProps
-  extends WithStyles<typeof styles>,
-    PropsWithChildren<{}> {
+export interface DateCoverage {
+  startDate?: number;
+  endDate?: number;
+}
+
+interface LegendItemProps extends PropsWithChildren<{}> {
   id: LayerType['id'];
   title: LayerType['title'];
   legend: LayerType['legend'];
@@ -295,6 +428,9 @@ interface LegendItemProps
   opacity: LayerType['opacity'];
   fillPattern?: 'left' | 'right';
   extent?: Extent;
+  forPrinting?: boolean;
+  showDescription?: boolean;
+  dateCoverage?: DateCoverage;
 }
 
-export default withStyles(styles)(LegendItem);
+export default LegendItem;

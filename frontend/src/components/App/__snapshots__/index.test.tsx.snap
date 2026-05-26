@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`renders as expected 1`] = `
 <div>
@@ -7,8 +7,12 @@ exports[`renders as expected 1`] = `
     id="app"
   >
     <mock-navbar />
-    <mock-mapview />
-    <mock-authmodal />
+    <div
+      style="padding-top: 56px; height: calc(100% - 56px);"
+    >
+      <mock-mapview />
+      <mock-authmodal />
+    </div>
   </div>
 </div>
 `;

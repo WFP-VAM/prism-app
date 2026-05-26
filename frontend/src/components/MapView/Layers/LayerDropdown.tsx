@@ -7,13 +7,16 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-import React, { ReactElement } from 'react';
-import { startCase } from 'lodash';
 import { menuList } from 'components/MapView/LeftPanel/utils';
+import { appConfig } from 'config';
 import { LayerKey, LayerType } from 'config/types';
 import { getDisplayBoundaryLayers, LayerDefinitions } from 'config/utils';
 import { useSafeTranslation } from 'i18n';
+import { ReactElement } from 'react';
+
 import { getLayerGeometryIcon } from './layer-utils';
+
+const { multiCountry } = appConfig;
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -44,26 +47,13 @@ function LayerDropdown({
   setValue,
   label,
   placeholder,
+  disabled = false,
   ...rest
 }: LayerSelectorProps) {
   // this could be testable, needs to be constructed in a way that prevents it breaking whenever new layers are added. (don't put layer name in snapshot)
 
   const { t } = useSafeTranslation();
   const classes = useStyles();
-
-  // Only take first boundary for now
-  const adminBoundaries = getDisplayBoundaryLayers().slice(0, 1);
-  const AdminBoundaryCategory = {
-    title: 'Admin Levels',
-    layers: adminBoundaries.map((aboundary, index) => ({
-      title: startCase(aboundary.id),
-      boundary: aboundary.id,
-      ...aboundary,
-      adminLevel: index + 1,
-    })),
-    tables: [],
-  };
-
   // Filter out layers that are not supported by the analysis tool
   const filterLayersForAnalysis = (layer: LayerType) => {
     if (layer.disableAnalysis) {
@@ -77,6 +67,22 @@ function LayerDropdown({
     return true;
   };
 
+  // Only take first boundary for now
+  const adminBoundaries = getDisplayBoundaryLayers();
+  const AdminBoundaryCategory = {
+    title: 'Admin Levels',
+    layers: adminBoundaries
+      .map((aboundary, _index) => ({
+        title: t(
+          `Admin ${aboundary.adminLevelCodes.length - (multiCountry ? 1 : 0)}`,
+        ),
+        boundary: aboundary.id,
+        ...aboundary,
+      }))
+      .filter(filterLayersForAnalysis),
+    tables: [],
+  };
+
   const categories = [
     // If type is admin_level_data, add admin boundaries at the begining to run analysis
     ...(type === 'admin_level_data' ? [AdminBoundaryCategory] : []),
@@ -88,9 +94,9 @@ function LayerDropdown({
         if (layerCategory.layers.some(f => f.group)) {
           const layers = layerCategory.layers.map(layer => {
             if (layer.group && !layer.group.activateAll) {
-              return layer.group.layers.map(layerKey => {
-                return LayerDefinitions[layerKey.id as LayerKey];
-              });
+              return layer.group.layers.map(
+                layerKey => LayerDefinitions[layerKey.id as LayerKey],
+              );
             }
             return layer;
           });
@@ -107,6 +113,9 @@ function LayerDropdown({
         ...category,
         layers: category.layers
           .filter(layer => layer.type === type)
+          // if the layer is an admin level data layer, filter out the layers that have dates as there is
+          // a bug when running an analysis. See https://github.com/WFP-VAM/prism-app/issues/1521
+          .filter(layer => type !== 'admin_level_data' || !('dates' in layer))
           .filter(filterLayersForAnalysis),
       }))
       // 4. filter categories which don't have any layers at the end of it all.
@@ -127,6 +136,7 @@ function LayerDropdown({
         defaultValue=""
         select
         label={label}
+        disabled={disabled}
         InputProps={{
           classes: {
             focused: classes.focused,
@@ -175,5 +185,6 @@ interface LayerSelectorProps {
   setValue: (val: LayerKey) => void;
   className?: string;
   placeholder?: string;
+  disabled?: boolean;
 }
 export default LayerDropdown;

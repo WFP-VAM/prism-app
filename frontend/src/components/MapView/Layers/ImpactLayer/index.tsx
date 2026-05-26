@@ -1,34 +1,33 @@
-import React, { memo, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { get } from 'lodash';
-import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core';
-import { getExtent, Extent } from 'components/MapView/Layers/raster-utils';
+import { createStyles, makeStyles, Theme } from '@material-ui/core';
 import { legendToStops } from 'components/MapView/Layers/layer-utils';
+import { Extent, getExtent } from 'components/MapView/Layers/raster-utils';
+import { getFeatureInfoPropsData } from 'components/MapView/utils';
 import { ImpactLayerProps, MapEventWrapFunctionProps } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
-import { Layer, Source } from 'react-map-gl/maplibre';
+import { layerDataSelector } from 'context/mapStateSlice/selectors';
+import { loadingLayerIdsSelector } from 'context/mapStateSlice/selectors';
+import { opacitySelector } from 'context/opacityStateSlice';
 import { addPopupData } from 'context/tooltipStateSlice';
-import {
-  dateRangeSelector,
-  layerDataSelector,
-  mapSelector,
-} from 'context/mapStateSlice/selectors';
-import { getFeatureInfoPropsData } from 'components/MapView/utils';
 import { i18nTranslator, useSafeTranslation } from 'i18n';
-import { getRoundedData } from 'utils/data-utils';
+import { get } from 'lodash';
 import {
   FillLayerSpecification,
   LineLayerSpecification,
   MapLayerMouseEvent,
 } from 'maplibre-gl';
+import { memo, useEffect, useRef } from 'react';
+import { Layer, Source } from 'react-map-gl/maplibre';
+import { useDispatch, useSelector } from 'react-redux';
+import { getRoundedData } from 'utils/data-utils';
 import {
   findFeature,
   getEvtCoords,
   getLayerMapId,
   useMapCallback,
 } from 'utils/map-utils';
-import { opacitySelector } from 'context/opacityStateSlice';
+import { useDefaultDate } from 'utils/useDefaultDate';
+import { useMapState } from 'utils/useMapState';
 
 const linePaint: LineLayerSpecification['paint'] = {
   'line-color': 'grey',
@@ -41,61 +40,70 @@ function getHazardData(evt: any, operation: string, t?: i18nTranslator) {
   return getRoundedData(data, t);
 }
 
-const onClick = ({
-  layer,
-  t,
-  dispatch,
-}: MapEventWrapFunctionProps<ImpactLayerProps>) => (
-  evt: MapLayerMouseEvent,
-) => {
-  const hazardLayerDef = LayerDefinitions[layer.hazardLayer];
-  const operation = layer.operation || 'median';
-  const hazardTitle = `${
-    hazardLayerDef.title ? t(hazardLayerDef.title) : ''
-  } (${t(operation)})`;
+const onClick =
+  ({ layer, t, dispatch }: MapEventWrapFunctionProps<ImpactLayerProps>) =>
+  (evt: MapLayerMouseEvent) => {
+    const hazardLayerDef = LayerDefinitions[layer.hazardLayer];
+    const operation = layer.operation || 'median';
+    const hazardTitle = `${
+      hazardLayerDef.title ? t(hazardLayerDef.title) : ''
+    } (${t(operation)})`;
 
-  const layerId = getLayerMapId(layer.id);
-  const feature = findFeature(layerId, evt);
-  if (!feature) {
-    return;
-  }
+    const layerId = getLayerMapId(layer.id);
+    const feature = findFeature(layerId, evt);
+    if (!feature) {
+      return;
+    }
 
-  const coordinates = getEvtCoords(evt);
+    const coordinates = getEvtCoords(evt);
 
-  const popupData = {
-    [layer.title]: {
-      data: getRoundedData(get(feature, 'properties.impactValue'), t),
-      coordinates,
-    },
-    [hazardTitle]: {
-      data: getHazardData(evt, operation, t),
-      coordinates,
-    },
-  };
-  // by default add `impactValue` to the tooltip
-  dispatch(addPopupData(popupData));
-  // then add feature_info_props as extra fields to the tooltip
-  dispatch(
-    addPopupData(
-      getFeatureInfoPropsData(
-        layer.featureInfoProps || {},
+    const popupData = {
+      [layer.title]: {
+        data: getRoundedData(get(feature, 'properties.impactValue'), t),
         coordinates,
-        feature,
+      },
+      [hazardTitle]: {
+        data: getHazardData(evt, operation, t),
+        coordinates,
+      },
+    };
+    // by default add `impactValue` to the tooltip
+    dispatch(addPopupData(popupData));
+    // then add feature_info_props as extra fields to the tooltip
+    dispatch(
+      addPopupData(
+        getFeatureInfoPropsData(
+          layer.featureInfoTitle || {},
+          layer.featureInfoProps || {},
+          coordinates,
+          feature,
+        ),
       ),
-    ),
-  );
-};
+    );
+  };
 
-const ImpactLayer = ({ classes, layer, before }: ComponentProps) => {
-  const map = useSelector(mapSelector);
-  const { startDate: selectedDate } = useSelector(dateRangeSelector);
+const ImpactLayer = memo(({ layer, before }: ComponentProps) => {
+  const classes = useStyles();
+  const { maplibreMap, dateRange } = useMapState();
+  const map = maplibreMap();
+  // Load the layer default date if no date is selected
+  useDefaultDate(layer.id);
+  const { startDate: selectedDate } = dateRange;
   const { data, date } =
-    (useSelector(layerDataSelector(layer.id, selectedDate)) as LayerData<
-      ImpactLayerProps
-    >) || {};
+    (useSelector(
+      layerDataSelector(layer.id, selectedDate),
+    ) as LayerData<ImpactLayerProps>) || {};
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
   const opacityState = useSelector(opacitySelector(layer.id));
+  const loadingLayerIds = useSelector(loadingLayerIdsSelector);
+  const isLayerLoading = loadingLayerIds.includes(layer.id);
+
+  // Track the last attempted date/extent to prevent infinite retry loops on failure
+  const lastAttemptedRef = useRef<{
+    date?: number;
+    extent?: Extent;
+  }>({});
 
   useMapCallback('click', getLayerMapId(layer.id), layer, onClick);
 
@@ -104,16 +112,44 @@ const ImpactLayer = ({ classes, layer, before }: ComponentProps) => {
     // For now, assume that if we have layer data, we don't need to refetch. This could change down the line if we
     // want to dynamically re-fetch data based on changing map bounds.
     // Only fetch once we actually know the extent
+    // Also check if a request is already pending to prevent duplicate requests
+    // And check if we've already attempted this exact date/extent combination to prevent infinite retries on failure
     const [minX, , maxX] = extent;
+    const extentKey = `${minX},${maxX}`;
+    const lastAttemptedKey =
+      lastAttemptedRef.current.date === selectedDate &&
+      lastAttemptedRef.current.extent &&
+      `${lastAttemptedRef.current.extent[0]},${lastAttemptedRef.current.extent[2]}` ===
+        extentKey;
+
+    // Reset the ref if date or extent changes (allowing new attempts for new combinations)
+    if (
+      lastAttemptedRef.current.date !== selectedDate ||
+      (lastAttemptedRef.current.extent &&
+        `${lastAttemptedRef.current.extent[0]},${lastAttemptedRef.current.extent[2]}` !==
+          extentKey)
+    ) {
+      lastAttemptedRef.current = {};
+    }
+
     if (
       selectedDate &&
       (!data || date !== selectedDate) &&
       minX !== 0 &&
-      maxX !== 0
+      maxX !== 0 &&
+      !isLayerLoading &&
+      !lastAttemptedKey
     ) {
+      // Track this attempt
+      lastAttemptedRef.current = { date: selectedDate, extent };
       dispatch(loadLayerData({ layer, extent, date: selectedDate }));
     }
-  }, [dispatch, layer, extent, data, selectedDate, date]);
+
+    // Reset the ref if we successfully loaded data
+    if (data && date === selectedDate) {
+      lastAttemptedRef.current = {};
+    }
+  }, [dispatch, layer, extent, data, selectedDate, date, isLayerLoading]);
 
   if (!data) {
     return selectedDate ? null : (
@@ -158,9 +194,9 @@ const ImpactLayer = ({ classes, layer, before }: ComponentProps) => {
       />
     </Source>
   );
-};
+});
 
-const styles = (theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     message: {
       position: 'absolute',
@@ -177,11 +213,12 @@ const styles = (theme: Theme) =>
       backgroundColor: theme.palette.grey.A100,
       borderRadius: theme.spacing(2),
     },
-  });
+  }),
+);
 
-interface ComponentProps extends WithStyles<typeof styles> {
+interface ComponentProps {
   layer: ImpactLayerProps;
   before?: string;
 }
 
-export default memo(withStyles(styles)(ImpactLayer));
+export default ImpactLayer;

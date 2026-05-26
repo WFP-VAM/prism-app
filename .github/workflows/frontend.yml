@@ -2,6 +2,7 @@
 name: PRISM CI - Frontend
 on:
   # Run on all pull requests and on pushes to master.
+  # Note - pull_request_target runs the workflow from the main branch, not the PR branch.
   pull_request:
   push:
     branches:
@@ -14,6 +15,7 @@ jobs:
         os:
           - ubuntu-latest
           - windows-latest
+      max-parallel: 2
 
     name: frontend_tests
     runs-on: ${{ matrix.os }}
@@ -21,36 +23,39 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Use Node.js 16.x
+      - name: Use Node.js 20.x
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         id: yarn-cache
         with:
           path: |
             **/node_modules
             **/.eslintcache
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-2024-2-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-2025-3-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-2024-2
+            ${{ runner.os }}-yarn-2025-3
 
       - name: Install dependencies if needed.
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: |
           cd frontend
           yarn install --frozen-lockfile --network-timeout 100000
-          yarn setup:common
-
+      - name: setup 'common' package
+        run: cd frontend && yarn run setup:common
       - name: Lint
-        run: cd frontend && yarn lint
+        run: cd frontend && yarn lint:ci
 
       - name: Test
-        run: cd frontend && yarn test
+        run: |
+          cd frontend
+          yarn test
 
       - name: JSON check
+        if: matrix.os == 'ubuntu-latest'
         run: cd frontend && yarn prettier:json-check
 
       - name: Layer availability check
@@ -59,43 +64,107 @@ jobs:
           cd frontend && yarn preprocess-layers
           DIFF=$(git diff --name-only)
           if [ "$DIFF" != "" ]; then
-            echo "Files have changed. Make sure to run yarn preprocess-layers and commit changes."
+            echo "Files have changed. Run yarn preprocess-layers after yarn setup:common (or align frontend/yarn.lock with Yarn output), then commit."
+            git diff --stat
             echo "$DIFF"
             exit 1
           fi
 
       - name: Check boundary keys
+        if: matrix.os == 'ubuntu-latest'
         run: cd frontend && yarn check-boundary-keys
+
+      - name: Security audit
+        run: |
+          cd frontend && yarn run audit
+          cd ../common && yarn run audit
 
       - name: Build
         run: cd frontend && yarn build
 
-  frontend_build_and_deploy:
-    needs: frontend_tests
-    if: github.event_name == 'pull_request'
-    name: frontend_build_and_deploy
+  # TEMPORARY: per-country Cypress e2e (matrix + all_countries) disabled — re-enable when stable.
+  frontend_end_to_end_tests:
+    if: false
+    strategy:
+      matrix:
+        country: [mozambique, rbd, cambodia]
+      max-parallel: 2
+
+    name: Frontend e2e tests
     runs-on: ubuntu-latest
-    env:
-      surge_url: prism-${{ github.event.pull_request.number }}.surge.sh
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Use Node.js 16.x
+      - name: Use Node.js 20.x
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20
 
-      - uses: actions/cache@v2
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v4
+        id: yarn-cache
+        with:
+          path: |
+            **/node_modules
+            **/.eslintcache
+            **/common/dist
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            ~/.cache/Cypress
+          key: ${{ runner.os }}-yarn-2025-4-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock', '**/common/src/**/*.ts') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-2025-4
+
+      - name: setup 'common' package
+        # skip yarn install in frontend, as cypress does it anyway
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: cd frontend && yarn run setup:common_in_ci
+
+      - name: Run cypress e2e tests
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: ./frontend
+          start: yarn start
+          wait-on: 'http://127.0.0.1:3000'
+          wait-on-timeout: 180
+          browser: chrome
+          spec: |
+            cypress/e2e/${{ matrix.country }}.cy.ts
+            cypress/e2e/all_countries.cy.ts
+        env:
+          REACT_APP_COUNTRY: ${{ matrix.country }}
+          # CI runners are slow; layer dates (preprocessed, WMS) can take 30s+
+          CYPRESS_DEFAULT_COMMAND_TIMEOUT: 45000
+
+  frontend_build_and_deploy:
+    if: github.event_name != 'push'
+    name: frontend_build_and_deploy
+    runs-on: ubuntu-latest
+    env:
+      GIT_HASH: ${{ github.event.pull_request.head.sha }}
+      firebase_channel: ${{ github.event.pull_request.number }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - uses: actions/cache@v4
         id: yarn-cache
         with:
           path: |
             **/node_modules
             **/.eslintcache
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-2024-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-2025-3-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-2024
+            ${{ runner.os }}-yarn-2025-3
 
       - name: Install dependencies if needed.
         if: steps.yarn-cache.outputs.cache-hit != 'true'
@@ -116,25 +185,17 @@ jobs:
       - name: build frontend
         run: |
           cd frontend
-          GENERATE_SOURCEMAP=false REACT_APP_COUNTRY=${{ steps.country_regex.outputs.group1 || 'mozambique'}} yarn build
-      - name: Deploy on surge
-        uses: dswistowski/surge-sh-action@v1
+          REACT_APP_QA_MODE=true GENERATE_SOURCEMAP=false REACT_APP_COUNTRY=${{ steps.country_regex.outputs.group1 || 'mozambique'}} yarn build
+      - name: Deploy on firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          domain: ${{ env.surge_url }}
-          project: "frontend/build/."
-          login: ${{ secrets.surge_login }}
-          token: ${{ secrets.surge_token }}
-      - name: Get current date
-        id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H:%M:%S')"
-      - name: Comment PR
-        uses: marocchino/sticky-pull-request-comment@v1
-        continue-on-error: true
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          message: |
-            Build succeeded and deployed at https://${{ env.surge_url }} 
-            (hash ${{ github.event.pull_request.head.sha }} deployed at ${{ steps.date.outputs.date }})
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_PRISM_FRONTEND }}"
+          projectId: "prism-frontend"
+          target: "staging-target"
+          entryPoint: "frontend"
+          channelId: ${{ env.firebase_channel }}
+          expires: 30d
 
   master_frontend_build_and_deploy:
     needs: frontend_tests
@@ -146,30 +207,30 @@ jobs:
         country: [mozambique, cambodia, rbd]
     env:
       REACT_APP_SENTRY_URL: ${{ secrets.REACT_APP_SENTRY_URL }}
-      surge_url: prism-master-${{ matrix.country }}.surge.sh
+      firebase_channel: prism-master-${{ matrix.country }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Use Node.js 16.x
+      - name: Use Node.js 20.x
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         id: yarn-cache
         with:
           path: |
             **/node_modules
             **/.eslintcache
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-2025-4-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
+            ${{ runner.os }}-yarn-2025-4
 
       - name: Install dependencies if needed.
         if: steps.yarn-cache.outputs.cache-hit != 'true'
@@ -182,10 +243,13 @@ jobs:
         run: |
           cd frontend
           GENERATE_SOURCEMAP=false REACT_APP_COUNTRY=${{ matrix.country }} yarn build
-      - name: Deploy on surge
-        uses: dswistowski/surge-sh-action@v1
+      - name: Deploy on firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          domain: ${{ env.surge_url }}
-          project: "frontend/build/."
-          login: ${{ secrets.surge_login }}
-          token: ${{ secrets.surge_token }}
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_PRISM_FRONTEND }}"
+          projectId: "prism-frontend"
+          target: "staging-target"
+          entryPoint: "frontend"
+          channelId: ${{ env.firebase_channel }}
+          expires: 30d

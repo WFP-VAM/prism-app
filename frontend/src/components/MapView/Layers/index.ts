@@ -1,17 +1,21 @@
-import WMSLayer from './WMSLayer';
 import AdminLevelDataLayer from './AdminLevelDataLayer';
-import PointDataLayer from './PointDataLayer';
+import AnticipatoryActionDroughtLayer from './AnticipatoryActionDroughtLayer';
+import AnticipatoryActionStormLayer from './AnticipatoryActionStormLayer';
 import BoundaryLayer from './BoundaryLayer';
-import ImpactLayer from './ImpactLayer';
-import StaticRasterLayer from './StaticRasterLayer';
 import CompositeLayer from './CompositeLayer';
+import ImpactLayer from './ImpactLayer';
+import PointDataLayer from './PointDataLayer';
+import StaticRasterLayer from './StaticRasterLayer';
+import WMSLayer from './WMSLayer';
 
 export {
-  ImpactLayer,
-  StaticRasterLayer,
-  WMSLayer,
   AdminLevelDataLayer,
-  PointDataLayer,
+  AnticipatoryActionDroughtLayer,
+  AnticipatoryActionStormLayer,
   BoundaryLayer,
   CompositeLayer,
+  ImpactLayer,
+  PointDataLayer,
+  StaticRasterLayer,
+  WMSLayer,
 };

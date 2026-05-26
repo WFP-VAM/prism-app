@@ -1,193 +1,304 @@
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   AppBar,
-  Button,
-  Box,
   createStyles,
-  Drawer,
-  Grid,
-  Hidden,
+  makeStyles,
   Theme,
   Toolbar,
-  Typography,
-  withStyles,
-  WithStyles,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
-import React, { useState } from 'react';
-import { get } from 'lodash';
-import { useSafeTranslation } from 'i18n';
+import {
+  BarChartOutlined,
+  ImageAspectRatioOutlined,
+  LayersOutlined,
+  Notifications,
+  SpeedOutlined,
+  TableChartOutlined,
+  TimerOutlined,
+} from '@material-ui/icons';
+import GoToBoundaryDropdown from 'components/Common/BoundaryDropdown/goto';
+import {
+  areTablesAvailable,
+  isAnticipatoryActionDroughtAvailable,
+  isAnticipatoryActionFloodAvailable,
+  isAnticipatoryActionStormAvailable,
+} from 'components/MapView/LeftPanel/utils';
+import Legends from 'components/MapView/Legends';
 import { appConfig } from 'config';
-import About from './About';
-import LanguageSelector from './LanguageSelector';
-import PrintImage from './PrintImage';
+import { Panel, PanelItem } from 'config/types';
+import { areChartLayersAvailable } from 'config/utils';
+import {
+  areDashboardsAvailableSelector,
+  dashboardsListSelector,
+} from 'context/dashboardStateSlice';
+import {
+  leftPanelTabValueSelector,
+  setTabValue,
+} from 'context/leftPanelStateSlice';
+import { useSafeTranslation } from 'i18n';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, useLocation } from 'react-router-dom';
+import { generateSlugFromTitle } from 'utils/string-utils';
 
-function NavBar({ classes }: NavBarProps) {
+import PanelButton from './PanelButton';
+import PanelMenu from './PanelMenu';
+import RightSideMenu from './RightSideMenu';
+import Title from './Title';
+
+const { alertFormActive } = appConfig;
+
+function NavBar() {
   const { t } = useSafeTranslation();
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const location = useLocation();
+  const classes = useStyles();
+  const tabValue = useSelector(leftPanelTabValueSelector);
+  const dashboards = useSelector(dashboardsListSelector);
+  const dashboardsAvailable = useSelector(areDashboardsAvailableSelector);
+  const isDashboardMode = tabValue === Panel.Dashboard;
 
-  const rightSideLinks = [
+  const dashboardChildren: PanelItem[] = dashboards.map((dashboard, index) => ({
+    panel: Panel.Dashboard,
+    label: dashboard.title,
+    icon: <SpeedOutlined />,
+    reportIndex: index,
+    reportPath: dashboard.path || generateSlugFromTitle(dashboard.title),
+  }));
+
+  const panels: PanelItem[] = [
+    { panel: Panel.Layers, label: 'Layers', icon: <LayersOutlined /> },
+    ...(areChartLayersAvailable
+      ? [{ panel: Panel.Charts, label: 'Charts', icon: <BarChartOutlined /> }]
+      : []),
+    ...(dashboardsAvailable
+      ? [
+          {
+            panel: Panel.Dashboard,
+            label: 'Dashboard',
+            icon: <SpeedOutlined />,
+            children: dashboardChildren,
+          },
+        ]
+      : []),
     {
-      title: 'GitHub',
-      icon: faGithub,
-      href: 'https://github.com/wfp-VAM/prism-app',
+      panel: Panel.Analysis,
+      label: 'Analysis',
+      icon: <ImageAspectRatioOutlined />,
     },
+    ...(areTablesAvailable
+      ? [
+          {
+            panel: Panel.Tables,
+            label: 'Tables',
+            icon: <TableChartOutlined />,
+          },
+        ]
+      : []),
+    ...(isAnticipatoryActionDroughtAvailable ||
+    isAnticipatoryActionStormAvailable ||
+    isAnticipatoryActionFloodAvailable
+      ? [
+          {
+            label: 'A. Actions',
+            icon: <TimerOutlined />,
+            children: [
+              ...(isAnticipatoryActionDroughtAvailable
+                ? [
+                    {
+                      panel: Panel.AnticipatoryActionDrought,
+                      label: 'A. Action Drought',
+                      icon: <TimerOutlined />,
+                    },
+                  ]
+                : []),
+              ...(isAnticipatoryActionStormAvailable
+                ? [
+                    {
+                      panel: Panel.AnticipatoryActionStorm,
+                      label: 'A. Action Storm',
+                      icon: <TimerOutlined />,
+                    },
+                  ]
+                : []),
+              ...(isAnticipatoryActionFloodAvailable
+                ? [
+                    {
+                      panel: Panel.AnticipatoryActionFlood,
+                      label: 'A. Action Flood',
+                      icon: <TimerOutlined />,
+                    },
+                  ]
+                : []),
+            ],
+          },
+        ]
+      : []),
+    ...(alertFormActive
+      ? [{ panel: Panel.Alerts, label: '', icon: <Notifications /> }]
+      : []),
   ];
+  const theme = useTheme();
+  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
+  const [menuAnchor, setMenuAnchor] = useState<{
+    [key: string]: HTMLElement | null;
+  }>({});
+  const [selectedChild, setSelectedChild] = useState<Record<string, PanelItem>>(
+    {},
+  );
 
-  const [openMobileMenu, setOpenMobileMenu] = useState(false);
+  // Sync URL with panel state
+  useEffect(() => {
+    if (
+      location.pathname.startsWith('/dashboard') &&
+      tabValue !== Panel.Dashboard
+    ) {
+      dispatch(setTabValue(Panel.Dashboard));
+    } else if (location.pathname === '/' && tabValue === Panel.Dashboard) {
+      dispatch(setTabValue(Panel.Layers));
+    }
+  }, [location.pathname, tabValue, dispatch]);
 
-  const buttons = rightSideLinks.map(({ title, icon, href }) => (
-    <Grid item key={title}>
-      <Typography
-        variant="body2"
-        component="a"
-        target="_blank"
-        href={href}
-        onClick={() => setOpenMobileMenu(false)}
-      >
-        <FontAwesomeIcon icon={icon} /> {title}
-      </Typography>
-    </Grid>
-  ));
+  const handleMenuOpen = (
+    key: string,
+    event: React.MouseEvent<HTMLElement>,
+  ) => {
+    setMenuAnchor(prev => ({ ...prev, [key]: event.currentTarget }));
+  };
 
-  const { title, subtitle, logo } = get(appConfig, 'header', {
-    title: 'PRISM',
-  });
+  const handleMenuClose = (key: string) => {
+    setMenuAnchor(prev => ({ ...prev, [key]: null }));
+  };
+
+  const handlePanelClick = (panel: Panel) => {
+    dispatch(setTabValue(panel));
+    if (panel === Panel.Dashboard) {
+      history.push('/dashboard');
+    } else if (location.pathname !== '/') {
+      history.push('/');
+    }
+  };
+
+  const handleChildSelection = (panel: any, child: any) => {
+    setSelectedChild({
+      [panel.label]: child,
+    });
+    handleMenuClose(panel.label);
+
+    if (panel.panel === Panel.Dashboard && child.reportPath) {
+      dispatch(setTabValue(Panel.Dashboard));
+      history.push(`/dashboard/${child.reportPath}`);
+    } else {
+      handlePanelClick(child.panel);
+    }
+  };
 
   return (
-    <AppBar position="static" className={classes.appBar}>
+    <AppBar position="fixed" className={classes.appBar}>
       <Toolbar variant="dense">
-        <Grid container>
-          <Grid item xs={6} md={3} className={classes.logoContainer}>
-            {logo && <img className={classes.logo} src={logo} alt="logo" />}
-            <Box display="flex" flexDirection="column">
-              {title && (
-                <Typography variant="h6" className={classes.title}>
-                  {t(title)}
-                </Typography>
-              )}
-              {subtitle && (
-                <Typography variant="subtitle2" className={classes.subtitle}>
-                  {t(subtitle)}
-                </Typography>
-              )}
-            </Box>
-          </Grid>
+        <div className={classes.navbarContainer}>
+          <div className={classes.leftSideContainer}>
+            <Title />
+            <div className={classes.panelsContainer}>
+              {panels.map(panel => {
+                const selected =
+                  tabValue === panel.panel ||
+                  (panel.children &&
+                    panel.children.some(child => tabValue === child.panel));
 
-          <Hidden smDown>
-            <Grid
-              spacing={3}
-              container
-              justifyContent="flex-end"
-              alignItems="center"
-              item
-              xs={6}
-              md={9}
-            >
-              <PrintImage />
-              {buttons}
-              <About />
-              <LanguageSelector />
-            </Grid>
-          </Hidden>
+                const buttonText =
+                  selectedChild[panel.label] && panel.panel !== Panel.Dashboard
+                    ? selectedChild[panel.label].label
+                    : t(panel.label);
 
-          <Hidden mdUp>
-            <Grid item xs={6} className={classes.mobileMenuContainer}>
-              <Button
-                onClick={() => setOpenMobileMenu(prevOpen => !prevOpen)}
-                aria-controls={openMobileMenu ? 'mobile-menu-list' : undefined}
-                aria-haspopup="true"
-                className={classes.menuBars}
-              >
-                <FontAwesomeIcon icon={faBars} />
-              </Button>
-
-              <Drawer
-                anchor="right"
-                open={openMobileMenu}
-                onClose={() => setOpenMobileMenu(false)}
-              >
-                <Grid
-                  container
-                  spacing={3}
-                  className={classes.mobileDrawerContent}
-                >
-                  <PrintImage />
-                  {buttons}
-                  <About />
-                  <LanguageSelector />
-                </Grid>
-              </Drawer>
-            </Grid>
-          </Hidden>
-        </Grid>
+                return (
+                  <React.Fragment key={panel.label}>
+                    <PanelButton
+                      panel={panel}
+                      selected={selected || false}
+                      handleClick={e => {
+                        if (panel.children) {
+                          handleMenuOpen(panel.label, e);
+                        } else if (panel.panel) {
+                          handlePanelClick(panel.panel);
+                        }
+                      }}
+                      isMobile={!mdUp}
+                      buttonText={buttonText}
+                    />
+                    {panel.children && (
+                      <PanelMenu
+                        panel={panel}
+                        menuAnchor={menuAnchor[panel.label]}
+                        handleMenuClose={() => handleMenuClose(panel.label)}
+                        handleChildClick={(child: any) =>
+                          handleChildSelection(panel, child)
+                        }
+                        selected={tabValue}
+                      />
+                    )}
+                  </React.Fragment>
+                );
+              })}
+              <GoToBoundaryDropdown />
+            </div>
+          </div>
+          <div className={classes.rightSideContainer}>
+            {!isDashboardMode && <Legends />}
+            <RightSideMenu />
+          </div>
+        </div>
       </Toolbar>
     </AppBar>
   );
 }
 
-const styles = (theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    logo: {
-      height: 32,
-      marginRight: 15,
-    },
-
     appBar: {
       backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
-      height: '7vh',
+      height: '56px',
+      minHeight: '56px',
+      maxHeight: '56px',
       display: 'flex',
       justifyContent: 'center',
+      top: 0,
+      zIndex: theme.zIndex.drawer + 1,
     },
-
-    logoContainer: {
+    navbarContainer: {
       display: 'flex',
-      justifyContent: 'center',
+      justifyContent: 'space-between',
+      flexDirection: 'row',
+      width: '100%',
+    },
+    leftSideContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'start',
+      gap: '5rem',
+      [theme.breakpoints.down('sm')]: {
+        gap: '1rem',
+      },
+    },
+    panelsContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'start',
+      gap: '1rem',
+      alignItems: 'center',
+      [theme.breakpoints.down('sm')]: {
+        gap: '0.5rem',
+      },
+    },
+    rightSideContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'start',
+      gap: '0.5rem',
       alignItems: 'center',
     },
+  }),
+);
 
-    title: {
-      letterSpacing: '.3rem',
-      fontSize: '1.25rem',
-      lineHeight: '1.5rem',
-      textTransform: 'uppercase',
-      padding: 0,
-    },
-
-    subtitle: {
-      fontSize: '.8rem',
-      fontWeight: 300,
-      letterSpacing: '.1rem',
-      lineHeight: '.8rem',
-      padding: 0,
-    },
-
-    menuContainer: {
-      textAlign: 'center',
-    },
-
-    mobileDrawerContent: {
-      backgroundColor: theme.palette.primary.main,
-      paddingTop: 16,
-      width: '80vw',
-      height: '100vh',
-      overflowX: 'hidden',
-      display: 'flex',
-      flexDirection: 'column',
-      paddingLeft: '1em',
-    },
-
-    menuBars: {
-      height: '100%',
-      fontSize: 20,
-      color: theme.palette.text.primary,
-    },
-
-    mobileMenuContainer: {
-      textAlign: 'right',
-    },
-  });
-
-export interface NavBarProps extends WithStyles<typeof styles> {}
-
-export default withStyles(styles)(NavBar);
+export default NavBar;

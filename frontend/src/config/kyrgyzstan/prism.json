@@ -1,20 +1,6 @@
 {
   "country": "Kyrgyzstan",
   "countryAdmin0Id": 138,
-  "icons": {
-    "exposure": "icon_basemap.png",
-    "hazards": "icon_flood.png",
-    "floods_and_mudflows": "icon_flood.png",
-    "risk": "icon_impact.png",
-    "capacity": "icon_capacity.png",
-    "tables": "icon_table.png",
-    "rainfall": "icon_rain.png",
-    "snow": "icon_snow.png",
-    "vegetation": "icon_veg.png",
-    "temperature": "icon_climate.png",
-    "tropical_storms": "icon_tropical_storm.png",
-    "vulnerability": "icon_vulnerable.png"
-  },
   "alertFormActive": false,
   "map": {
     "boundingBox": [68, 39.28, 80.26, 43.3]
@@ -23,7 +9,8 @@
   "serversUrls": {
     "wms": [
       "https://api.earthobservation.vam.wfp.org/ows/wms",
-      "https://kyrgyzstan.sibelius-datacube.org:5000/wms"
+      "https://kyrgyzstan.sibelius-datacube.org:5000/wms",
+      "https://firms.modaps.eosdis.nasa.gov/mapserver/wms/fires/49278a84c3c473e387548ae0c6b31ced/"
     ]
   },
   "categories": {
@@ -114,6 +101,10 @@
               "main": true
             },
             {
+              "id": "spi_2m",
+              "label": "2-month"
+            },
+            {
               "id": "spi_3m",
               "label": "3-month",
               "main": false
@@ -139,7 +130,7 @@
       "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
-          "group_title": "Rainfall categories:",
+          "group_title": "Number of days of rainfall:",
           "activate_all": false,
           "layers": [
             {
@@ -186,8 +177,6 @@
       "vegetation_conditions": [
         "ndvi_dekad",
         "ndvi_dekad_anomaly",
-        "pasture_anomaly",
-        "ModisVHI",
         "10day_NDVI_KDC"
       ]
     },
@@ -200,7 +189,10 @@
       ]
     },
     "snow": {
-      "snow_conditions": ["snow_cover", "modis_snow_percentage"]
+      "snow_conditions": ["snow_ndsi", "modis_snow_percentage"]
+    },
+    "water": {
+      "water_cover": ["ModisNDWI"]
     },
     "floods_and_mudflows": {
       "floods_and_mudflows": ["flood_mudflows"]
@@ -211,7 +203,9 @@
     "exposure": {
       "population": ["population"],
       "crops": ["wheat", "potato", "veg", "fruit"],
-      "livestock": ["livestock"]
+      "livestock": ["livestock"],
+      "health_facilities": ["health_facilities"],
+      "fires": ["viirs_fires_2023_06_09"]
     }
   }
 }

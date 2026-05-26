@@ -1,29 +1,30 @@
 import {
   Button,
-  Typography,
-  WithStyles,
   createStyles,
-  withStyles,
+  makeStyles,
+  Typography,
 } from '@material-ui/core';
-import React from 'react';
+import { usePostHog } from '@posthog/react';
 import { t } from 'i18next';
+import { cyanBlue } from 'muiTheme';
 import { downloadChartsToCsv } from 'utils/csv-utils';
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     downloadButton: {
-      backgroundColor: '#62B2BD',
+      backgroundColor: cyanBlue,
       '&:hover': {
-        backgroundColor: '#62B2BD',
+        backgroundColor: cyanBlue,
       },
       marginLeft: '25%',
       marginRight: '25%',
       width: '50%',
       '&.Mui-disabled': { opacity: 0.5 },
     },
-  });
+  }),
+);
 
-interface DownloadChartCSVButtonProps extends WithStyles<typeof styles> {
+interface DownloadChartCSVButtonProps {
   filesData: {
     fileName: string;
     data: { [key: string]: any[] };
@@ -31,27 +32,32 @@ interface DownloadChartCSVButtonProps extends WithStyles<typeof styles> {
   disabled?: boolean;
 }
 
-const DownloadChartCSVButton = ({
+function DownloadChartCSVButton({
   filesData,
   disabled = false,
-  classes,
-}: DownloadChartCSVButtonProps) => {
-  const buildDataToDownload: () => [
-    { [key: string]: any[] },
-    string,
-  ][] = () => {
-    return filesData.map(fileData => [fileData.data, fileData.fileName]);
+}: DownloadChartCSVButtonProps) {
+  const classes = useStyles();
+  const posthog = usePostHog();
+  const buildDataToDownload: () => [{ [key: string]: any[] }, string][] = () =>
+    filesData.map(fileData => [fileData.data, fileData.fileName]);
+
+  const handleClick = () => {
+    posthog?.capture('chart_csv_downloaded', {
+      file_count: filesData.length,
+      file_names: filesData.map(f => f.fileName),
+    });
+    downloadChartsToCsv(buildDataToDownload())();
   };
 
   return (
     <Button
       className={classes.downloadButton}
-      onClick={downloadChartsToCsv(buildDataToDownload())}
+      onClick={handleClick}
       disabled={disabled}
     >
       <Typography variant="body2">{t('Download CSV')}</Typography>
     </Button>
   );
-};
+}
 
-export default withStyles(styles)(DownloadChartCSVButton);
+export default DownloadChartCSVButton;

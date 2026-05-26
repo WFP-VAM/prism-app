@@ -1,31 +1,26 @@
-import React, { useCallback, useState, MouseEvent, useMemo } from 'react';
-import {
-  Button,
-  createStyles,
-  Theme,
-  Typography,
-  withStyles,
-  WithStyles,
-} from '@material-ui/core';
-import { snakeCase } from 'lodash';
-import { useSelector } from 'react-redux';
+import { Button, Typography } from '@material-ui/core';
+import { usePostHog } from '@posthog/react';
+import ReportDialog from 'components/Common/ReportDialog';
 import {
   downloadToFile,
   getExposureAnalysisColumnsToRender,
   getExposureAnalysisTableDataRowsToRender,
 } from 'components/MapView/utils';
-import { useSafeTranslation } from 'i18n';
+import { ReportsDefinitions } from 'config/utils';
 import {
   exposureLayerIdSelector,
   getCurrentDefinition,
   TableRow as AnalysisTableRow,
 } from 'context/analysisResultStateSlice';
-import ReportDialog from 'components/Common/ReportDialog';
+import { useSafeTranslation } from 'i18n';
+import { snakeCase } from 'lodash';
+import { MouseEvent, useCallback, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Column } from 'utils/analysis-utils';
-import { ReportsDefinitions } from 'config/utils';
 import { getExposureAnalysisCsvData } from 'utils/csv-utils';
-import LoadingBlinkingDots from '../../../../Common/LoadingBlinkingDots';
+
 import { safeCountry } from '../../../../../config';
+import LoadingBlinkingDots from '../../../../Common/LoadingBlinkingDots';
 
 function ExposureAnalysisActions({
   analysisButton,
@@ -36,6 +31,7 @@ function ExposureAnalysisActions({
 }: ExposureAnalysisActionsProps) {
   // only display local names if local language is selected, otherwise display english name
   const { t, i18n } = useSafeTranslation();
+  const posthog = usePostHog();
   const analysisDefinition = useSelector(getCurrentDefinition);
   const exposureLayerId = useSelector(exposureLayerIdSelector);
 
@@ -44,13 +40,10 @@ function ExposureAnalysisActions({
 
   const API_URL = 'https://prism-api.ovio.org/report';
 
-  const exposureAnalysisColumnsToRender = getExposureAnalysisColumnsToRender(
-    columns,
-  );
-  const exposureAnalysisTableRowsToRender = getExposureAnalysisTableDataRowsToRender(
-    columns,
-    tableData,
-  );
+  const exposureAnalysisColumnsToRender =
+    getExposureAnalysisColumnsToRender(columns);
+  const exposureAnalysisTableRowsToRender =
+    getExposureAnalysisTableDataRowsToRender(columns, tableData);
   const exposureAnalysisCsvData = getExposureAnalysisCsvData(
     exposureAnalysisColumnsToRender,
     exposureAnalysisTableRowsToRender,
@@ -60,11 +53,8 @@ function ExposureAnalysisActions({
     // We use find here because exposure reports and layers have 1 - 1 sync.
     // TODO Future enhancement if exposure reports are more than one for specific layer
     const foundReportKeyBasedOnLayerId = Object.keys(ReportsDefinitions).find(
-      reportDefinitionKey => {
-        return (
-          ReportsDefinitions[reportDefinitionKey].layerId === exposureLayerId
-        );
-      },
+      reportDefinitionKey =>
+        ReportsDefinitions[reportDefinitionKey].layerId === exposureLayerId,
     );
     return ReportsDefinitions[foundReportKeyBasedOnLayerId as string];
   }, [exposureLayerId]);
@@ -72,6 +62,10 @@ function ExposureAnalysisActions({
   const handleOnDownloadCsv = useCallback(
     (event: MouseEvent<HTMLButtonElement>) => {
       event.preventDefault();
+      posthog?.capture('exposure_analysis_csv_downloaded', {
+        layer_id: exposureLayerId,
+        analysis_id: analysisDefinition?.id,
+      });
       downloadToFile(
         {
           content: exposureAnalysisCsvData,
@@ -83,12 +77,12 @@ function ExposureAnalysisActions({
         'text/csv',
       );
     },
-    [analysisDefinition, exposureAnalysisCsvData],
+    [analysisDefinition, exposureAnalysisCsvData, exposureLayerId, posthog],
   );
 
   /**
-   * Trigger a report generation on the backend API and dowload it
-   *  */
+   * Trigger a report generation on the backend API  and donwload it
+   * */
   const handleDownloadReport = async () => {
     setDownloadReportIsLoading(true);
     try {
@@ -120,21 +114,25 @@ function ExposureAnalysisActions({
       // Clean up the temporary URL and link element
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-    } catch (e) {
+    } catch (_e) {
       setDownloadReportIsLoading(false);
     }
     setDownloadReportIsLoading(false);
   };
 
-  const handleToggleReport = (toggle: boolean) => {
-    return () => {
-      setOpenReport(toggle);
-    };
+  const handleToggleReport = (toggle: boolean) => () => {
+    setOpenReport(toggle);
   };
 
   return (
     <>
-      <Button className={analysisButton} onClick={clearAnalysis}>
+      <Button
+        className={analysisButton}
+        onClick={() => {
+          posthog?.capture('analysis_cleared', { layer_id: exposureLayerId });
+          clearAnalysis();
+        }}
+      >
         <Typography variant="body2">{t('Clear Analysis')}</Typography>
       </Button>
       {exposureAnalysisCsvData && (
@@ -142,23 +140,18 @@ function ExposureAnalysisActions({
           <Typography variant="body2">{t('Download as CSV')}</Typography>
         </Button>
       )}
-      <Button
-        id="create-report"
-        className={bottomButton}
-        onClick={handleToggleReport(true)}
-        // Hide the preview report button for now. Report creation happens in the backend and is cached.
-        style={{ position: 'absolute', height: 0, width: 0 }}
-      >
-        <Typography variant="body2">{t('Preview Report (slow)')}</Typography>
-      </Button>
-      <Button
-        className={bottomButton}
-        onClick={handleDownloadReport}
-        disabled={downloadReportIsLoading}
-      >
-        <Typography variant="body2">{t('Download Report')}</Typography>
-        {downloadReportIsLoading && <LoadingBlinkingDots dotColor="white" />}
-      </Button>
+      {/* TODO - Fix in backend, issue #1383 */}
+      {exposureLayerId !== 'adamts_buffers' && (
+        <Button
+          className={bottomButton}
+          onClick={handleDownloadReport}
+          // FIXME - Temporarily disabled due to the unavailability of the population data
+          disabled={downloadReportIsLoading || true} // TEMPORARILY DISABLED due to security concerns with react-pdf/renderer
+        >
+          <Typography variant="body2">{t('Download Report')}</Typography>
+          {downloadReportIsLoading && <LoadingBlinkingDots dotColor="white" />}
+        </Button>
+      )}
       <ReportDialog
         open={openReport}
         handleClose={handleToggleReport(false)}
@@ -166,61 +159,27 @@ function ExposureAnalysisActions({
         tableData={tableData}
         columns={columns}
       />
+      <Button
+        id="create-report"
+        // className={bottomButton}
+        onClick={handleToggleReport(true)}
+        // Hide the preview report button for now. Report creation happens in the backend and is cached.
+        style={{
+          left: -0,
+          opacity: 0,
+          height: 1,
+          minWidth: 0,
+          padding: 0,
+          margin: 0,
+        }}
+      >
+        <Typography variant="body2">{t('Preview Report (slow)')}</Typography>
+      </Button>
     </>
   );
 }
 
-const styles = (theme: Theme) =>
-  createStyles({
-    tableContainer: {
-      height: '60vh',
-      maxWidth: '90%',
-      marginTop: 5,
-      zIndex: theme.zIndex.modal + 1,
-    },
-    tableHead: {
-      backgroundColor: '#EBEBEB',
-      boxShadow: 'inset 0px -1px 0px rgba(0, 0, 0, 0.25)',
-    },
-    tableHeaderText: {
-      color: 'black',
-      fontWeight: 500,
-    },
-    tableBodyText: {
-      color: 'black',
-    },
-    innerAnalysisButton: {
-      backgroundColor: theme.surfaces?.dark,
-    },
-    tablePagination: {
-      display: 'flex',
-      justifyContent: 'center',
-      color: 'black',
-    },
-    select: {
-      flex: '1 1 10%',
-      maxWidth: '10%',
-      marginRight: 0,
-    },
-    caption: {
-      flex: '1 2 30%',
-      marginLeft: 0,
-    },
-    backButton: {
-      flex: '1 1 5%',
-      maxWidth: '10%',
-    },
-    nextButton: {
-      flex: '1 1 5%',
-      maxWidth: '10%',
-    },
-    spacer: {
-      flex: '1 1 5%',
-      maxWidth: '5%',
-    },
-  });
-
-interface ExposureAnalysisActionsProps extends WithStyles<typeof styles> {
+interface ExposureAnalysisActionsProps {
   analysisButton?: string;
   bottomButton?: string;
   clearAnalysis: () => void;
@@ -228,4 +187,4 @@ interface ExposureAnalysisActionsProps extends WithStyles<typeof styles> {
   columns: Column[];
 }
 
-export default withStyles(styles)(ExposureAnalysisActions);
+export default ExposureAnalysisActions;

@@ -33,7 +33,7 @@ export default class WCSLayer extends Layer {
         debug: options.debug,
         fetch: this.fetch,
         wait: options.wait,
-      })
+      }),
     );
   }
 

@@ -4,37 +4,68 @@ version = "1.1.1"
 description = "API Interface for WFP PRISM"
 authors = ["Ovio"]
 license = "Apache 2.0"
+package-mode = false
 
 [tool.poetry.dependencies]
-PyJWT = "2.4.0"
-python = "<3.11,>=3.8.0"
-requests = "^2.25.1"
-playwright = "1.38.0"
-fastapi = "^0.109.1"
-schemathesis = "^3.19.7"
-uvicorn = { extras = ["standard"], version = "^0.23.2" }
-sqlalchemy = "^1.4.40"
-rasterio = "^1.3.8"
-pydantic = { version = "1.9.2", extras = ["email"] }
+PyJWT = ">=2.12.0"
+python = ">=3.12,<3.13"
+requests = "^2.33.0"
+playwright = "1.53.0"
+fastapi = "^0.136.0"
+starlette-admin = "^0.16.0"
+httpx = "^0.28.0"
+uvicorn = { extras = ["standard"], version = "^0.46.0" }
+sqlalchemy = "^2.0.36"
+pydantic = { version = "^2.10.0", extras = ["email"] }
+sqlmodel = "^0.0.22"
+alembic = "^1.14.0"
 python-dateutil = "2.8.2"
 types-python-dateutil = "2.8.19"
-psycopg2 = "^2.9.9"
-rasterstats = "0.18.0"
-boto3 = "^1.28.61"
+psycopg2-binary = "^2.9.9"
+rasterstats = "0.20.0"
+boto3 = "^1.40.1"
 cachetools = "^5.3.1"
 odc-geo = "^0.4.1"
-odc-stac = "^0.3.8"
-pystac-client = "^0.7.5"
-pystac = "^1.8.4"
-pytest-asyncio = "^0.21.1"
-pytest-playwright = "^0.4.3"
+odc-stac = "^0.4.0"
+pypdf = ">=6.10.2"
+pystac-client = "^0.8.6"
+pystac = "^1.12.2"
+pytest-asyncio = "^1.0.0"
+pytest-playwright = "^0.7.0"
+rasterio = "^1.3.9"
+rioxarray = "^0.17.0"
+pytest-recording = "^0.13.2"
+geopandas = "^1.1.2"
+s3fs = "^2025.2.0"
+pyarrow = "^23.0.1"
+duckdb = "^1.2.0"
+vcrpy = "^8.0.0"
+urllib3 = "^2.6.3"
+# Force updates for vulnerable transitive dependencies
+mako = "^1.3.12"
+python-multipart = "^0.0.27"
+aiohttp = ">=3.13.4"
+pygments = "^2.20.0"
+starlette = "^1.0.1"
+werkzeug = ">=3.1.6"
+h11 = "^0.16.0"
+setuptools = "^78.1.1"
+fiona = "^1.10b2"
+filelock = "^3.20.3"
+# some package isn't updated for numpy 2.x yet
+numpy = "<2.0"
+pydantic-settings = "^2.0.0"
+cryptography = ">=42.0.0"
+authlib = ">=1.3.2"
+itsdangerous = "^2.2.0"
 
 [tool.poetry.group.dev.dependencies]
-black = "^23.9.0"
+black = ">=26.3.1"
 isort = "^5.12.0"
-mypy = "^1.5.1"
-pytest = "^7.4.2"
-pytest-cov = "^4.1.0"
+mypy = "^1.18.2"
+pytest = "^9.0.3"
+pytest-cov = "^6.2.0"
+pip-audit = "^2.6.0"
 
 [[tool.mypy.overrides]]
 module = ["backoff"]
@@ -47,6 +78,9 @@ line-length = 88
 profile = "black"
 multi_line_output = 3       # Vertical Hanging Indent
 src_paths = "prism-app/api"
+
+[tool.poetry.scripts]
+audit = "pip_audit:main"
 
 [build-system]
 requires = ["poetry-core>=1.0.8"]

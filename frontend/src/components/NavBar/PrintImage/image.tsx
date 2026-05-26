@@ -1,229 +1,443 @@
 import {
-  Backdrop,
   Box,
-  Button,
-  CircularProgress,
+  createStyles,
   Dialog,
   DialogContent,
-  IconButton,
-  Menu,
-  MenuItem,
-  TextField,
-  Theme,
-  Typography,
-  WithStyles,
-  createStyles,
   makeStyles,
-  withStyles,
 } from '@material-ui/core';
-import GetAppIcon from '@material-ui/icons/GetApp';
+import { usePostHog } from '@posthog/react';
 import mask from '@turf/mask';
-import { legendListId } from 'components/MapView/Legends';
-import html2canvas from 'html2canvas';
-import { debounce } from 'lodash';
-import { jsPDF } from 'jspdf';
-import maplibregl from 'maplibre-gl';
-import React, { useRef, useState } from 'react';
-import MapGL, { Layer, MapRef, Source } from 'react-map-gl/maplibre';
-import { useSelector } from 'react-redux';
-import CancelIcon from '@material-ui/icons/Cancel';
-import { mapStyle } from 'components/MapView/Map';
-import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer';
-import { getDateFormat } from 'utils/date-utils';
-import useLayers from 'utils/layers-utils';
-import { appConfig, safeCountry } from 'config';
+import { appConfig, configMap, safeCountry } from 'config';
+import { AdminCodeString, LayerKey } from 'config/types';
+import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
 import {
-  AdminCodeString,
-  AdminLevelDataLayerProps,
-  BoundaryLayerProps,
-} from 'config/types';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import { cyanBlue } from 'muiTheme';
-import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
-import { getBoundaryLayerSingleton } from 'config/utils';
-import { LayerData } from 'context/layers/layer-data';
+  addNotification,
+  removeNotification,
+} from 'context/notificationStateSlice';
+import { availableDatesSelector } from 'context/serverStateSlice';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
+import { debounce, get } from 'lodash';
+import type { LngLatBounds } from 'maplibre-gl';
+import React, {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { isBoundaryLayer } from 'utils/boundary-layers-utils';
+import { dateWithoutTime, getFormattedDate } from 'utils/date-utils';
+import useLayers, { isWmsSelectableForBatchPrint } from 'utils/layers-utils';
+import {
+  DateCompatibleLayer,
+  getPossibleDatesForLayer,
+} from 'utils/server-utils';
+import { stringHash } from 'utils/string-utils';
+import { useUrlHistory } from 'utils/url-utils';
+import { getBoolParam } from 'utils/urlParamSchema';
+import { useBoundaryData } from 'utils/useBoundaryData';
+import useResizeObserver from 'utils/useOnResizeObserver';
+
 import {
   dateRangeSelector,
-  layerDataSelector,
   mapSelector,
 } from '../../../context/mapStateSlice/selectors';
 import { useSafeTranslation } from '../../../i18n';
+import {
+  BatchCadence,
+  filterDatesByCadence,
+  getAvailableCadences,
+  getDisabledCadences,
+} from '../../../utils/batchCadenceUtils';
+import {
+  getMapExportPageOrigin,
+  MAP_EXPORT_MAX_URLS_PER_REQUEST,
+} from '../../../utils/constants';
+import { exportLanguage } from '../../../utils/exportLanguage';
+import { ALL_ASPECT_RATIO_OPTIONS } from '../../MapExport/aspectRatioConstants';
 import { downloadToFile } from '../../MapView/utils';
+import { buildBatchExportDatesDisplay } from './batchMapExport/batchExportArtifactFilename';
+import { buildBatchExportUrls } from './batchMapExport/buildBatchExportUrls';
+import { useBatchMapExportJobsActions } from './batchMapExport/useBatchMapExportJobs';
+import { calculateExportDimensions } from './mapDimensionsUtils';
+import PrintConfig from './printConfig';
+import PrintConfigContext, {
+  MapDimensions,
+  Toggles,
+} from './printConfig.context';
+import PrintPreview from './printPreview';
 
-const DEFAULT_FOOTER_TEXT =
-  'The designations employed and the presentation of material in the map(s) do not imply the expression of any opinion on the part of WFP concerning the legal of constitutional status of any country, territory, city, or sea, or concerning the delimitation of its frontiers or boundaries.';
+const defaultFooterText = get(appConfig, 'printConfig.defaultFooterText', '');
+
+// Initial dimensions with 'Auto' aspect ratio (fills container)
+const initialMapDimensions: MapDimensions = {
+  aspectRatio: 'Auto',
+};
 
 // Debounce changes so that we don't redraw on every keystroke.
 const debounceCallback = debounce((callback: any, ...args: any[]) => {
   callback(...args);
 }, 750);
 
-interface ToggleSelectorProps {
-  title: string;
-  value: number;
-  options: { value: number; comp: React.JSX.Element; disabled?: boolean }[];
-  setValue: (v: number) => void;
-}
-
-const toggleSelectorStyles = makeStyles(() => ({
-  wrapper: { display: 'flex', flexDirection: 'column', gap: '0.6rem' },
-  buttonGroup: { gap: '4px' },
-  button: {
-    height: '40px',
-    width: '48px',
-    borderLeft: '1px solid rgba(0, 0, 0, 0.12) !important',
-  },
-}));
-
-function ToggleSelector({
-  title,
-  options,
-  value,
-  setValue,
-}: ToggleSelectorProps) {
-  const classes = toggleSelectorStyles();
-  return (
-    <div className={classes.wrapper}>
-      <Typography variant="h4">{title}</Typography>
-      <ToggleButtonGroup
-        value={value}
-        exclusive
-        onChange={(e, v) => setValue(v)}
-        className={classes.buttonGroup}
-      >
-        {options.map(x => (
-          <ToggleButton
-            key={x.value}
-            className={classes.button}
-            value={x.value}
-            disabled={x.disabled}
-          >
-            {x.comp}
-          </ToggleButton>
-        ))}
-      </ToggleButtonGroup>
-    </div>
-  );
-}
-
-const legendSelectorOptions = [
-  { value: 0, comp: <VisibilityOffIcon /> },
-  { value: 60, comp: <div>60%</div> },
-  { value: 70, comp: <div>70%</div> },
-  { value: 80, comp: <div>80%</div> },
-  { value: 90, comp: <div>90%</div> },
-  { value: 100, comp: <div>100%</div> },
-];
-
-const mapWidthSelectorOptions = [
-  { value: 50, comp: <div>50%</div> },
-  { value: 60, comp: <div>60%</div> },
-  { value: 70, comp: <div>70%</div> },
-  { value: 80, comp: <div>80%</div> },
-  { value: 90, comp: <div>90%</div> },
-  { value: 100, comp: <div>100%</div> },
-];
-
-const footerTextSelectorOptions = [
-  { value: 0, comp: <VisibilityOffIcon /> },
-  { value: 8, comp: <div style={{ fontSize: '8px' }}>Aa</div> },
-  { value: 10, comp: <div style={{ fontSize: '10px' }}>Aa</div> },
-  { value: 12, comp: <div style={{ fontSize: '12px' }}>Aa</div> },
-  { value: 16, comp: <div style={{ fontSize: '16px' }}>Aa</div> },
-  { value: 20, comp: <div style={{ fontSize: '20px' }}>Aa</div> },
-];
-
-const layerDescriptionSelectorOptions = [
-  { value: 0, comp: <VisibilityOffIcon /> },
-  { value: 1, comp: <VisibilityIcon /> },
-];
-
-const countryMaskSelectorOptions = [
-  { value: 0, comp: <VisibilityOffIcon /> },
-  { value: 1, comp: <VisibilityIcon /> },
-];
-
 const boundaryLayer = getBoundaryLayerSingleton();
 
-function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
-  const { t } = useSafeTranslation();
-  const { country } = appConfig;
+function DownloadImage({ open, handleClose }: DownloadImageProps) {
+  const { country, header } = appConfig;
+  const logo = header?.logo;
+  const bottomLogo = get(appConfig, 'printConfig.bottomLogo', undefined);
+  const classes = useStyles();
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
   const printRef = useRef<HTMLDivElement>(null);
-  const overlayContainerRef = useRef<HTMLDivElement>(null);
-  const titleOverlayRef = useRef<HTMLDivElement>(null);
-  const boundaryLayerState = useSelector(
-    layerDataSelector(boundaryLayer.id),
-  ) as LayerData<BoundaryLayerProps> | undefined;
-  const { data } = boundaryLayerState || {};
+  const { data } = useBoundaryData(boundaryLayer.id);
+  const dispatch = useDispatch();
+  const posthog = usePostHog();
+  const { t, i18n } = useSafeTranslation();
+  const { enqueueBatchMapExportJob } = useBatchMapExportJobsActions();
+  const { urlParams } = useUrlHistory();
 
-  const mapRef = React.useRef<MapRef>(null);
   // list of toggles
-  const [toggles, setToggles] = React.useState({
+  const [toggles, setToggles] = useState<Toggles>({
     fullLayerDescription: true,
-    countryMask: true,
-    scaleBar: true,
-    northArrow: true,
+    countryMask: false,
+    mapLabelsVisibility: true,
+    logoVisibility: !!logo,
+    legendVisibility: true,
+    footerVisibility: true,
+    batchMapsVisibility: false,
+    bottomLogoVisibility: !!bottomLogo,
   });
-  const [
-    downloadMenuAnchorEl,
-    setDownloadMenuAnchorEl,
-  ] = React.useState<HTMLElement | null>(null);
-  const [selectedBoundaries, setSelectedBoundaries] = React.useState<
+
+  const [downloadMenuAnchorEl, setDownloadMenuAnchorEl] =
+    useState<HTMLElement | null>(null);
+  const [selectedBoundaries, setSelectedBoundaries] = useState<
     AdminCodeString[]
   >([]);
-  const [titleText, setTitleText] = React.useState<string>(country);
-  const [footerText, setFooterText] = React.useState('');
-  const [elementsLoading, setElementsLoading] = React.useState(true);
-  const [footerTextSize, setFooterTextSize] = React.useState(12);
-  const [legendScale, setLegendScale] = React.useState(100);
+  const [titleText, setTitleText] = useState<string>(country);
+  const [footerText, setFooterText] = useState(defaultFooterText);
+  const [footerTextSize, setFooterTextSize] = useState(12);
+  const [legendScale, setLegendScale] = useState(1);
+  const [legendPosition, setLegendPosition] = useState(0);
+  const [logoPosition, setLogoPosition] = useState(0);
+  const [logoScale, setLogoScale] = useState(1);
+  const [bottomLogoScale, setBottomLogoScale] = useState(1);
   // the % value of the original dimensions
-  const [mapDimensions, setMapDimensions] = React.useState<{
-    height: number;
-    width: number;
-  }>({ width: 100, height: 100 });
+  const [mapDimensions, setMapDimensions] =
+    React.useState<MapDimensions>(initialMapDimensions);
+  const [footerRef, { height: measuredFooterHeight }] =
+    useResizeObserver<HTMLDivElement>(footerText, open);
+
+  // Use measured footer height, or estimate if not yet measured
+  // This prevents overlap between footer and scale/legend elements during initial render
+  const footerHeight =
+    measuredFooterHeight || (toggles.footerVisibility ? 60 : 0);
+  const [titleRef, { height: titleHeight }] = useResizeObserver<HTMLDivElement>(
+    titleText,
+    open,
+  );
+  // Bounds and zoom captured from the preview map (no extra padding like main map)
+  const [previewBounds, setPreviewBounds] = useState<LngLatBounds | null>(null);
+  const [previewZoom, setPreviewZoom] = useState<number | null>(null);
+  // Map dimensions captured from the preview (used for 'Auto' aspect ratio in batch exports)
+  const [previewMapWidth, setPreviewMapWidth] = useState<number | null>(null);
+  const [previewMapHeight, setPreviewMapHeight] = useState<number | null>(null);
 
   // Get the style and layers of the old map
   const selectedMapStyle = selectedMap?.getStyle();
 
-  const { selectedLayers } = useLayers();
-  const adminLevelLayersWithFillPattern = selectedLayers.filter(
-    layer => layer.type === 'admin_level_data' && layer.fillPattern,
-  ) as AdminLevelDataLayerProps[];
+  if (selectedMapStyle && !toggles.mapLabelsVisibility) {
+    selectedMapStyle.layers = selectedMapStyle?.layers.filter(
+      x => !x.id.includes('label'),
+    );
+  }
 
-  const defaultFooterText = React.useMemo(() => {
-    const getDateText = (): string => {
-      if (!dateRange || !dateRange.startDate) {
-        return '';
-      }
-      return `${t('Layers represent data')} ${
-        dateRange.startDate && dateRange.endDate
-          ? `${t('from')} ${getDateFormat(dateRange.startDate, 'default')} ${t(
-              'to',
-            )} ${getDateFormat(dateRange.endDate, 'default')}`
-          : `${t('on')} ${getDateFormat(dateRange.startDate, 'default')}`
-      }. `;
-    };
-    return `${getDateText()} ${t(DEFAULT_FOOTER_TEXT)}`;
-  }, [t, dateRange]);
+  const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] =
+    useState(null);
 
-  React.useEffect(() => {
-    setFooterText(defaultFooterText);
-  }, [defaultFooterText]);
+  const [dateRangeForBatchMaps, setDateRangeForBatchMaps] = useState<{
+    startDate: number | null;
+    endDate: number | null;
+  }>({
+    startDate: null,
+    endDate: null,
+  });
+  /** Reseed batch defaults when layer or batch toggle changes; avoid clobbering after user edits same layer. */
+  const batchDateRangeSeededForLayerRef = useRef<string | null>(null);
+  /** Tracks print dialog open/close so we seed preview bounds/zoom once per open from main map. */
+  const printDialogWasOpenRef = useRef(false);
 
-  const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] = useState(
-    null,
+  const [cadence, setCadence] = useState<BatchCadence>('every-n-dekads');
+  const [dekadInterval, setDekadInterval] = useState(1);
+
+  const [isDownloading, setIsDownloading] = useState(false);
+  const countryLayerIds = new Set(
+    Object.keys(configMap[safeCountry].rawLayers),
+  );
+  const availableDates = useSelector(availableDatesSelector);
+  const selectableLayers = Object.values(LayerDefinitions).filter(
+    (l): l is DateCompatibleLayer =>
+      isWmsSelectableForBatchPrint(l, availableDates) &&
+      countryLayerIds.has(l.id),
+  );
+  const [selectedLayerId, setSelectedLayerId] = useState<LayerKey | null>(null);
+
+  const { selectedLayersWithDateSupport, selectedLayers } = useLayers();
+
+  useEffect(() => {
+    if (open) {
+      setSelectedLayerId(
+        (selectedLayersWithDateSupport[0]?.id as LayerKey) ?? null,
+      );
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (!toggles.batchMapsVisibility) {
+      batchDateRangeSeededForLayerRef.current = null;
+    }
+  }, [toggles.batchMapsVisibility]);
+
+  useEffect(() => {
+    if (!open) {
+      batchDateRangeSeededForLayerRef.current = null;
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) {
+      setPreviewBounds(null);
+      setPreviewZoom(null);
+      setPreviewMapWidth(null);
+      setPreviewMapHeight(null);
+    }
+  }, [open]);
+
+  useLayoutEffect(() => {
+    if (!open) {
+      printDialogWasOpenRef.current = false;
+      return;
+    }
+    if (!selectedMap || printDialogWasOpenRef.current) {
+      return;
+    }
+    setPreviewBounds(selectedMap.getBounds());
+    setPreviewZoom(selectedMap.getZoom());
+    printDialogWasOpenRef.current = true;
+  }, [open, selectedMap]);
+
+  useEffect(() => {
+    if (selectedLayerId === null && selectableLayers.length > 0) {
+      setSelectedLayerId(selectableLayers[0].id);
+    }
+  }, [selectableLayers, selectedLayerId]);
+
+  const printSelectedLayer = useMemo(
+    () =>
+      selectedLayerId
+        ? (selectableLayers.find(l => l.id === selectedLayerId) ?? null)
+        : null,
+    [selectedLayerId, selectableLayers],
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
+    if (
+      !open ||
+      !toggles.batchMapsVisibility ||
+      !printSelectedLayer ||
+      batchDateRangeSeededForLayerRef.current === printSelectedLayer.id
+    ) {
+      return;
+    }
+    const dateItems = getPossibleDatesForLayer(
+      printSelectedLayer,
+      availableDates,
+    );
+    if (dateItems.length === 0) {
+      return;
+    }
+    const mapStart = dateRange.startDate;
+    const fromMap =
+      mapStart != null
+        ? dateItems.find(
+            item =>
+              dateWithoutTime(item.queryDate) === dateWithoutTime(mapStart) ||
+              dateWithoutTime(item.displayDate) === dateWithoutTime(mapStart),
+          )
+        : undefined;
+    const anchorItem = fromMap ?? dateItems[dateItems.length - 1];
+    const day = dateWithoutTime(anchorItem.displayDate);
+    setDateRangeForBatchMaps({ startDate: day, endDate: day });
+    batchDateRangeSeededForLayerRef.current = printSelectedLayer.id;
+  }, [
+    open,
+    toggles.batchMapsVisibility,
+    printSelectedLayer,
+    availableDates,
+    dateRange.startDate,
+  ]);
+
+  const availableCadences = useMemo(() => {
+    const coverageWindow = printSelectedLayer
+      ? printSelectedLayer.coverageWindow
+      : selectedLayersWithDateSupport[0]?.coverageWindow;
+    return getAvailableCadences(coverageWindow);
+  }, [printSelectedLayer, selectedLayersWithDateSupport]);
+  useEffect(() => {
+    if (!availableCadences.includes(cadence)) {
+      setCadence(availableCadences[0]);
+    }
+  }, [availableCadences, cadence]);
+
+  // TODO: remove showBatchMaps URL gate once batch maps is enabled by default
+  const shouldEnableBatchMaps = getBoolParam(urlParams, 'showBatchMaps', false);
+
+  const shouldShowMultiLayerWarning = selectedLayersWithDateSupport.length > 1;
+
+  useEffect(() => {
+    if (shouldShowMultiLayerWarning) {
+      setToggles(prev => ({ ...prev, batchMapsVisibility: false }));
+    }
+  }, [shouldShowMultiLayerWarning]);
+
+  const hasNonDateLayers = useMemo(
+    () =>
+      selectedLayers.some(
+        layer =>
+          !isBoundaryLayer(layer) &&
+          !selectedLayersWithDateSupport.some(dl => dl.id === layer.id),
+      ),
+    [selectedLayers, selectedLayersWithDateSupport],
+  );
+
+  const { filteredBatchDates, mapCount, uniqueQueryDates } = useMemo(() => {
+    const { startDate, endDate } = dateRangeForBatchMaps;
+    if (!startDate || !endDate || !printSelectedLayer) {
+      return { filteredBatchDates: [], mapCount: 0, uniqueQueryDates: [] };
+    }
+
+    const dateItems = getPossibleDatesForLayer(
+      printSelectedLayer,
+      availableDates,
+    );
+
+    const rangeStartDay = dateWithoutTime(startDate);
+    const rangeEndDay = dateWithoutTime(endDate);
+
+    const displayDayByQuery = new Map(
+      dateItems.map(item => [item.queryDate, item.displayDate]),
+    );
+
+    const rawUniqueDates = [...new Set(dateItems.map(item => item.queryDate))]
+      .filter(d => {
+        const disp = displayDayByQuery.get(d);
+        if (disp === undefined) {
+          return false;
+        }
+        const day = dateWithoutTime(disp);
+        return day >= rangeStartDay && day <= rangeEndDay;
+      })
+      .sort((a, b) => a - b);
+
+    const coverageWindow = printSelectedLayer.coverageWindow;
+    const dates = filterDatesByCadence(
+      rawUniqueDates,
+      cadence,
+      dekadInterval,
+      coverageWindow,
+    );
+    return {
+      filteredBatchDates: dates,
+      mapCount: dates.length,
+      uniqueQueryDates: rawUniqueDates,
+    };
+  }, [
+    availableDates,
+    printSelectedLayer,
+    dateRangeForBatchMaps,
+    cadence,
+    dekadInterval,
+  ]);
+
+  const disabledCadences = useMemo(
+    () => getDisabledCadences(uniqueQueryDates, dekadInterval),
+    [uniqueQueryDates, dekadInterval],
+  );
+
+  useEffect(() => {
+    if (
+      open &&
+      toggles.batchMapsVisibility &&
+      dateRangeForBatchMaps.startDate &&
+      dateRangeForBatchMaps.endDate &&
+      uniqueQueryDates.length > 0 &&
+      filteredBatchDates.length === 0
+    ) {
+      dispatch(
+        addNotification({
+          type: 'error',
+          message: t(
+            'A map could not be made for the dates you selected. Please choose an earlier date range and/or a shorter cadence.',
+          ),
+        }),
+      );
+    }
+  }, [
+    open,
+    filteredBatchDates,
+    toggles.batchMapsVisibility,
+    dateRangeForBatchMaps.startDate,
+    dateRangeForBatchMaps.endDate,
+    dispatch,
+    t,
+  ]);
+
+  useEffect(() => {
+    if (!open) {
+      dispatch(
+        removeNotification(
+          stringHash(
+            t(
+              'A map could not be made for the dates you selected. Please choose an earlier date range and/or a shorter cadence.',
+            ),
+          ),
+        ),
+      );
+    }
+  }, [open, dispatch, t]);
+
+  useEffect(() => {
+    if (
+      open &&
+      toggles.batchMapsVisibility &&
+      hasNonDateLayers &&
+      printSelectedLayer
+    ) {
+      dispatch(
+        addNotification({
+          type: 'warning',
+          message: t(
+            'The sequence of maps will only display the {{layerTitle}} layer',
+            { layerTitle: printSelectedLayer.title },
+          ),
+        }),
+      );
+    }
+  }, [
+    open,
+    toggles.batchMapsVisibility,
+    hasNonDateLayers,
+    printSelectedLayer,
+    dispatch,
+    t,
+  ]);
+
+  useEffect(() => {
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
     // which runs ./scripts/preprocess-layers.js
     if (selectedBoundaries.length === 0) {
-      fetch(`data/${safeCountry}/admin-boundary-unified-polygon.json`)
+      fetch(`/data/${safeCountry}/admin-boundary-unified-polygon.json`)
         .then(response => response.json())
         .then(polygonData => {
           const maskedPolygon = mask(polygonData as any);
@@ -243,208 +457,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     setAdminBoundaryPolygon(masked as any);
   }, [data, selectedBoundaries, selectedBoundaries.length]);
 
-  const createFooterElement = (
-    inputFooterText: string = t(DEFAULT_FOOTER_TEXT),
-    width: number,
-    ratio: number,
-    fontSize: number,
-  ): HTMLDivElement => {
-    const footer = document.createElement('div');
-    // eslint-disable-next-line fp/no-mutation
-    footer.innerHTML = `
-      <div style='width:${
-        (width - 16) / ratio
-      }px;margin:8px;font-size:12px;padding-bottom:8px;font-size:${fontSize}px'>
-        ${inputFooterText}
-      </div>
-    `;
-    return footer;
-  };
-
-  const refreshImage = async (currentFooterText = footerText) => {
-    /* eslint-disable fp/no-mutation */
-    setElementsLoading(true);
-    if (open && mapRef.current) {
-      const map = mapRef.current.getMap();
-      const activeLayers = map.getCanvas();
-      // Load fill pattern images to this new map instance if needed.
-      Promise.all(
-        adminLevelLayersWithFillPattern.map(layer =>
-          addFillPatternImagesInMap(layer as AdminLevelDataLayerProps, map),
-        ),
-      );
-
-      const canvasContainer = overlayContainerRef.current;
-      if (!canvasContainer) {
-        return;
-      }
-
-      // clear canvas
-      while (canvasContainer.firstChild) {
-        canvasContainer.removeChild(canvasContainer.firstChild);
-      }
-
-      const canvas = document.createElement('canvas');
-      if (canvas) {
-        let footerTextHeight = 0;
-        let scalerBarLength = 0;
-        const scaleBarGap = 10;
-
-        const { width } = activeLayers;
-        const { height } = activeLayers;
-
-        const ratio = window.devicePixelRatio || 1;
-
-        canvas.width = width * ratio;
-        canvas.height = height * ratio;
-        canvas.style.width = `${width / ratio}px`;
-        canvas.style.height = `${height / ratio}px`;
-
-        const context = canvas.getContext('2d');
-
-        if (!context) {
-          return;
-        }
-
-        context.scale(ratio, ratio);
-        context.clearRect(0, 0, canvas.width, canvas.height);
-
-        // toggle legend
-        const div = document.getElementById(legendListId);
-        if (div?.firstChild && legendScale > 0) {
-          const childElements = Array.from(div.childNodes).filter(
-            node => node.nodeType === 1,
-          ) as HTMLElement[];
-
-          const target = document.createElement('div');
-          target.style.width = '196px'; // 180px + 2*8px padding
-
-          childElements.forEach((li: HTMLElement, i) => {
-            const isLast = childElements.length - 1 === i;
-
-            const children = Array.from(li.childNodes).filter(
-              // node type 1 represents an HTMLElement
-              node => node.nodeType === 1,
-            ) as HTMLElement[];
-            const divContainer = children[0] as HTMLElement;
-
-            const contents = Array.from(divContainer.childNodes).filter(
-              node => node.nodeType === 1,
-            ) as HTMLElement[];
-
-            const container = document.createElement('div');
-            container.style.padding = '8px';
-            container.style.paddingBottom = isLast ? '8px' : '16px';
-            target.appendChild(container);
-
-            const keepDivider = isLast ? 1 : 0;
-
-            contents
-              .slice(
-                0,
-                toggles.fullLayerDescription
-                  ? 6 - keepDivider
-                  : 4 - keepDivider,
-              )
-              .forEach(x => container.appendChild(x.cloneNode(true)));
-          });
-
-          document.body.appendChild(target);
-
-          const c = await html2canvas(target, { useCORS: true });
-          context.drawImage(
-            c,
-            24,
-            24 + (titleOverlayRef.current?.offsetHeight || 0),
-            (target.offsetWidth * legendScale * ratio) / 100.0,
-            (target.offsetHeight * legendScale * ratio) / 100.0,
-          );
-          document.body.removeChild(target);
-        }
-
-        // toggle footer
-        if (footerTextSize > 0) {
-          const footer = createFooterElement(
-            currentFooterText,
-            activeLayers.width,
-            ratio,
-            footerTextSize,
-          );
-          document.body.appendChild(footer);
-          const c = await html2canvas(footer);
-          footerTextHeight = footer.offsetHeight;
-          context.drawImage(
-            c,
-            0 * ratio,
-            activeLayers.height - footer.offsetHeight * ratio,
-            footer.offsetWidth * ratio,
-            footer.offsetHeight * ratio,
-          );
-          document.body.removeChild(footer);
-        }
-
-        if (toggles.scaleBar) {
-          map.addControl(new maplibregl.ScaleControl({}), 'top-right');
-          const elem = document.querySelector(
-            '.maplibregl-ctrl-scale',
-          ) as HTMLElement;
-
-          if (elem) {
-            const html = document.createElement('div');
-
-            scalerBarLength = elem.offsetWidth;
-            html.style.width = `${elem.offsetWidth + 2}px`;
-            html.appendChild(elem);
-
-            document.body.appendChild(html);
-
-            const c = await html2canvas(html);
-            context.drawImage(
-              c,
-              activeLayers.width - (scaleBarGap + elem.offsetWidth) * ratio,
-              activeLayers.height -
-                (30 + (footerTextSize > 0 ? footerTextHeight : 0)) * ratio,
-              html.offsetWidth * ratio,
-              html.offsetHeight * ratio,
-            );
-            document.body.removeChild(html);
-          }
-        }
-
-        if (toggles.northArrow) {
-          const image = new Image();
-          const imageWidth = 50 * ratio;
-          const imageHeight = 60 * ratio;
-
-          image.onload = () => {
-            context.drawImage(
-              image,
-              activeLayers.width -
-                (scaleBarGap + imageWidth / 4 + scalerBarLength / 2) * ratio,
-              activeLayers.height -
-                (110 + (footerTextSize > 0 ? footerTextHeight : 0)) * ratio,
-              imageWidth,
-              imageHeight,
-            );
-          };
-          image.src = './images/icon_north_arrow.png';
-        }
-
-        canvasContainer.appendChild(canvas);
-      }
-    }
-    /* eslint-enable fp/no-mutation */
-    setElementsLoading(false);
-  };
-
-  // reload the canvas when the settings are changed
-  React.useEffect(() => {
-    if (open) {
-      refreshImage();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [toggles, legendScale, mapRef, footerTextSize, footerText, titleText]);
-
   const handleDownloadMenuClose = () => {
     setDownloadMenuAnchorEl(null);
   };
@@ -454,8 +466,13 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   };
 
   const download = (format: 'pdf' | 'jpeg' | 'png') => {
+    posthog?.capture('map_print_downloaded', {
+      format,
+      title: titleText,
+      date: getFormattedDate(dateRange.startDate, 'default'),
+    });
     const filename: string = `${titleText || country}_${
-      getDateFormat(dateRange.startDate, 'snake') || 'no_date'
+      getFormattedDate(dateRange.startDate, 'snake') || 'no_date'
     }`;
     const docGeneration = async () => {
       // png is generally preferred for images containing lines and text.
@@ -469,7 +486,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
       if (format === 'pdf') {
         const orientation =
           canvas.width > canvas.height ? 'landscape' : 'portrait';
-        // eslint-disable-next-line new-cap
+
         const pdf = new jsPDF({
           orientation,
           unit: 'px',
@@ -495,11 +512,198 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     }
 
     handleClose();
+    setDownloadMenuAnchorEl(null);
+  };
+
+  const downloadBatch = async (format: 'pdf' | 'png') => {
+    const { startDate, endDate } = dateRangeForBatchMaps;
+
+    if (!startDate || !endDate) {
+      console.error('Date range not set for batch download');
+      return;
+    }
+
+    setIsDownloading(true);
     handleDownloadMenuClose();
+
+    posthog?.capture('batch_maps_downloaded', {
+      format,
+      title: titleText,
+      start_date: getFormattedDate(startDate, 'default'),
+      end_date: getFormattedDate(endDate, 'default'),
+      cadence,
+      dekad_interval: dekadInterval,
+      map_count: filteredBatchDates.length,
+    });
+
+    try {
+      if (!printSelectedLayer) {
+        console.error('No layer selected for batch download');
+        return;
+      }
+
+      const timestampsForExport =
+        filteredBatchDates.length > MAP_EXPORT_MAX_URLS_PER_REQUEST
+          ? filteredBatchDates.slice(-MAP_EXPORT_MAX_URLS_PER_REQUEST)
+          : filteredBatchDates;
+
+      const formattedDates = timestampsForExport
+        .map(timestamp => getFormattedDate(timestamp, 'default'))
+        .filter((d): d is string => d !== undefined && d !== '');
+
+      if (formattedDates.length === 0) {
+        console.error('No dates found in the selected range');
+        return;
+      }
+
+      const mapBounds = previewBounds;
+      const mapZoom = previewZoom;
+      const pageUrl = new URL(window.location.href);
+      const { pathname, search } = pageUrl;
+      const origin = getMapExportPageOrigin(pageUrl);
+      const exportPath = `${pathname.replace(/\/$/, '')}/export`;
+      const baseParams = new URLSearchParams(search);
+
+      const exportDims = calculateExportDimensions(
+        mapDimensions.aspectRatio,
+        mapDimensions.aspectRatio === 'Auto'
+          ? (previewMapWidth ?? undefined)
+          : undefined,
+        mapDimensions.aspectRatio === 'Auto'
+          ? (previewMapHeight ?? undefined)
+          : undefined,
+      );
+
+      const constructedUrls = buildBatchExportUrls({
+        formattedDates,
+        origin,
+        exportPath,
+        baseSearchParams: baseParams,
+        printSelectedLayer,
+        mapBounds,
+        mapZoom,
+        mapDimensions,
+        titleText,
+        footerText,
+        footerTextSize,
+        logoPosition,
+        logoScale,
+        legendPosition,
+        legendScale,
+        bottomLogoScale,
+        toggles,
+        selectedBoundaries,
+        language: exportLanguage(search, {
+          activeLanguage: i18n.resolvedLanguage,
+        }),
+      });
+
+      const layerDisplayName =
+        printSelectedLayer.title ?? printSelectedLayer.id;
+      const datesSummary = buildBatchExportDatesDisplay(timestampsForExport);
+
+      enqueueBatchMapExportJob({
+        urls: constructedUrls,
+        viewportWidth: exportDims.canvasWidth,
+        viewportHeight: exportDims.canvasHeight,
+        format,
+        country: country.toLowerCase(),
+        layerDisplayName,
+        datesSummary,
+        mapTotal: constructedUrls.length,
+      });
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? t('Batch export failed: {{message}}', { message: error.message })
+          : t(
+              'Something went wrong with the batch download. Please try again.',
+            );
+      dispatch(
+        addNotification({
+          type: 'error',
+          message,
+        }),
+      );
+      console.error('Batch download failed:', error);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  const printContext = {
+    printConfig: {
+      open,
+      toggles,
+      mapDimensions,
+      footerHeight,
+      selectedBoundaries,
+      setDownloadMenuAnchorEl,
+      titleText,
+      titleRef,
+      footerTextSize,
+      footerText,
+      footerRef,
+      logoPosition,
+      titleHeight,
+      logoScale,
+      legendPosition,
+      legendScale,
+      printRef,
+      invertedAdminBoundaryLimitPolygon,
+      handleClose,
+      setTitleText,
+      debounceCallback,
+      country,
+      setMapDimensions,
+      logo,
+      setLogoPosition,
+      setLogoScale,
+      bottomLogo,
+      bottomLogoScale,
+      setBottomLogoScale,
+      setToggles,
+      setLegendPosition,
+      setFooterText,
+      setFooterTextSize,
+      handleDownloadMenuOpen,
+      downloadMenuAnchorEl,
+      handleDownloadMenuClose,
+      download,
+      downloadBatch,
+      isDownloading,
+      defaultFooterText,
+      setSelectedBoundaries,
+      setLegendScale,
+      shouldEnableBatchMaps,
+      shouldShowMultiLayerWarning,
+      dateRange: dateRangeForBatchMaps,
+      setDateRange: setDateRangeForBatchMaps,
+      mapCount,
+      cadence,
+      setCadence,
+      dekadInterval,
+      setDekadInterval,
+      filteredBatchDates,
+      availableCadences,
+      disabledCadences,
+      aspectRatioOptions: ALL_ASPECT_RATIO_OPTIONS,
+      previewBounds,
+      setPreviewBounds,
+      previewZoom,
+      setPreviewZoom,
+      previewMapWidth,
+      setPreviewMapWidth,
+      previewMapHeight,
+      setPreviewMapHeight,
+      selectableLayers,
+      selectedLayerId,
+      setSelectedLayerId,
+    },
   };
 
   return (
-    <>
+    <PrintConfigContext.Provider value={printContext}>
       <Dialog
         maxWidth="xl"
         open={open}
@@ -507,344 +711,38 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
         onClose={() => handleClose()}
         aria-labelledby="dialog-preview"
       >
-        <DialogContent className={classes.contentContainer}>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              width: '100%',
-            }}
-          >
-            <div>
-              <Typography variant="h3" className={classes.title}>
-                {t('MAP PREVIEW')}
-              </Typography>
-              <Typography color="textSecondary" variant="body1">
-                {t('Use your mouse to pan and zoom the map')}
-              </Typography>
-            </div>
-            <div
-              style={{
-                width: '100%',
-                height: '100%',
-              }}
-            >
-              <div
-                style={{
-                  position: 'relative',
-                  zIndex: 3,
-                  border: '1px solid black',
-                  height: `${mapDimensions.height}%`,
-                  width: `${mapDimensions.width}%`,
-                }}
-              >
-                <div ref={printRef} className={classes.printContainer}>
-                  <div
-                    ref={overlayContainerRef}
-                    className={classes.mapOverlay}
-                  />
-                  {elementsLoading && (
-                    <div className={classes.backdropWrapper}>
-                      <Backdrop className={classes.backdrop} open>
-                        <CircularProgress />
-                      </Backdrop>
-                    </div>
-                  )}
-                  {titleText && (
-                    <div ref={titleOverlayRef} className={classes.titleOverlay}>
-                      {titleText}
-                    </div>
-                  )}
-                  <div className={classes.mapContainer}>
-                    {selectedMap && open && (
-                      <MapGL
-                        ref={mapRef}
-                        dragRotate={false}
-                        // preserveDrawingBuffer is required for the map to be exported as an image
-                        preserveDrawingBuffer
-                        initialViewState={{
-                          longitude: selectedMap.getCenter().lng,
-                          latitude: selectedMap.getCenter().lat,
-                          zoom: selectedMap.getZoom(),
-                        }}
-                        onLoad={() => refreshImage()}
-                        onMove={() => debounceCallback(refreshImage)}
-                        mapStyle={selectedMapStyle || mapStyle.toString()}
-                        maxBounds={selectedMap.getMaxBounds() ?? undefined}
-                      >
-                        {toggles.countryMask && (
-                          <Source
-                            id="mask-overlay"
-                            type="geojson"
-                            data={invertedAdminBoundaryLimitPolygon}
-                          >
-                            <Layer
-                              id="mask-layer-overlay"
-                              type="fill"
-                              source="mask-overlay"
-                              layout={{}}
-                              paint={{
-                                'fill-color': '#000',
-                                'fill-opacity': 0.7,
-                              }}
-                            />
-                          </Source>
-                        )}
-                      </MapGL>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className={classes.optionsContainer}>
-            <div>
-              <Box
-                fontSize={14}
-                fontWeight={900}
-                mb={1}
-                className={classes.title}
-              >
-                {t('Map Options')}
-              </Box>
-              <IconButton
-                className={classes.closeButton}
-                onClick={() => handleClose()}
-              >
-                <CancelIcon />
-              </IconButton>
-            </div>
-
-            <div className={classes.optionWrap}>
-              <Typography variant="h4">Title</Typography>
-              <TextField
-                key={titleText}
-                defaultValue={titleText}
-                fullWidth
-                size="small"
-                inputProps={{ style: { color: 'black' } }}
-                onChange={event => {
-                  debounceCallback(setTitleText, event.target.value);
-                }}
-                variant="outlined"
-              />
-            </div>
-
-            <ToggleSelector
-              value={Number(toggles.countryMask)}
-              options={countryMaskSelectorOptions}
-              setValue={val =>
-                setToggles(prev => ({
-                  ...prev,
-                  countryMask: Boolean(val),
-                }))
-              }
-              title="Mask data outside of admin area"
-            />
-
-            {toggles.countryMask && (
-              <div className={classes.optionWrap}>
-                <Typography variant="h4">Select admin area</Typography>
-                <SimpleBoundaryDropdown
-                  selectAll
-                  className={classes.formControl}
-                  selectedBoundaries={selectedBoundaries}
-                  setSelectedBoundaries={setSelectedBoundaries}
-                  selectProps={{
-                    variant: 'outlined',
-                    fullWidth: true,
-                  }}
-                  multiple={false}
-                  size="small"
-                />
-              </div>
-            )}
-
-            <ToggleSelector
-              value={Number(toggles.fullLayerDescription)}
-              options={layerDescriptionSelectorOptions}
-              setValue={val =>
-                setToggles(prev => ({
-                  ...prev,
-                  fullLayerDescription: Boolean(val),
-                }))
-              }
-              title="Legend - Full Layer Description"
-            />
-
-            <ToggleSelector
-              value={legendScale}
-              options={legendSelectorOptions}
-              setValue={setLegendScale}
-              title="Legend"
-            />
-
-            <ToggleSelector
-              value={mapDimensions.width}
-              options={mapWidthSelectorOptions}
-              setValue={val =>
-                setMapDimensions(prev => ({
-                  ...(prev || {}),
-                  width: val as number,
-                }))
-              }
-              title="Map Width"
-            />
-
-            <ToggleSelector
-              value={footerTextSize}
-              options={footerTextSelectorOptions}
-              setValue={setFooterTextSize}
-              title="Footer Text"
-            />
-
-            <TextField
-              size="small"
-              key={defaultFooterText}
-              multiline
-              defaultValue={defaultFooterText}
-              inputProps={{ style: { color: 'black', fontSize: '0.9rem' } }}
-              minRows={3}
-              maxRows={3}
-              onChange={event => {
-                debounceCallback(setFooterText, event.target.value);
-              }}
-              variant="outlined"
-            />
-
-            <Button
-              style={{ backgroundColor: cyanBlue, color: 'black' }}
-              variant="contained"
-              color="primary"
-              className={classes.gutter}
-              endIcon={<GetAppIcon />}
-              onClick={e => handleDownloadMenuOpen(e)}
-            >
-              {t('Download')}
-            </Button>
-            <Menu
-              anchorEl={downloadMenuAnchorEl}
-              keepMounted
-              open={Boolean(downloadMenuAnchorEl)}
-              onClose={handleDownloadMenuClose}
-            >
-              <MenuItem onClick={() => download('png')}>
-                {t('Download PNG')}
-              </MenuItem>
-              <MenuItem onClick={() => download('jpeg')}>
-                {t('Download JPEG')}
-              </MenuItem>
-              <MenuItem onClick={() => download('pdf')}>
-                {t('Download PDF')}
-              </MenuItem>
-            </Menu>
-          </div>
+        <DialogContent>
+          <Box className={classes.contentContainer}>
+            <PrintPreview />
+            <PrintConfig />
+          </Box>
         </DialogContent>
       </Dialog>
-    </>
+    </PrintConfigContext.Provider>
   );
 }
 
-const styles = (theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
-    title: {
-      color: theme.palette.text.secondary,
-    },
-    gutter: {
-      marginBottom: 10,
-    },
-    closeButton: {
-      position: 'absolute',
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-      color: theme.palette.grey[500],
-    },
-    backdrop: {
-      position: 'absolute',
-    },
-    backdropWrapper: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      zIndex: 2,
-      width: '100%',
-      height: '100%',
-      display: 'flex',
-      justifyContent: 'center',
-    },
-    printContainer: {
-      width: '100%',
-      height: '100%',
-    },
-    mapContainer: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      height: '100%',
-      width: '100%',
-      zIndex: 1,
-    },
-    mapOverlay: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      zIndex: 2,
-      pointerEvents: 'none',
-    },
-    optionWrap: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '0.6rem',
-    },
-    titleOverlay: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      zIndex: 2,
-      color: 'black',
-      backgroundColor: 'white',
-      width: '100%',
-      textAlign: 'center',
-      fontSize: '1.5rem',
-      padding: '8px 0 8px 0',
-    },
-    formControl: {
-      width: '100%',
-      '& > .MuiInputLabel-shrink': { display: 'none' },
-      '& > .MuiInput-root': { margin: 0 },
-      '& label': {
-        textTransform: 'uppercase',
-        letterSpacing: '3px',
-        fontSize: '11px',
-        position: 'absolute',
-        top: '-13px',
-      },
-    },
     contentContainer: {
-      scrollbarGutter: 'stable',
+      fontFamily: 'Roboto',
       display: 'flex',
       gap: '1rem',
       flexDirection: 'row',
       justifyContent: 'space-between',
       width: '90vw',
       height: '90vh',
+      maxWidth: '100%',
+      maxHeight: '100%',
+      boxSizing: 'border-box',
+      paddingBottom: '20px',
     },
-    optionsContainer: {
-      display: 'flex',
-      height: '100%',
-      flexDirection: 'column',
-      gap: '0.8rem',
-      width: '25rem',
-      scrollbarGutter: 'stable',
-      overflow: 'auto',
-      paddingRight: '15px',
-    },
-  });
+  }),
+);
 
-export interface DownloadImageProps extends WithStyles<typeof styles> {
+export interface DownloadImageProps {
   open: boolean;
   handleClose: () => void;
 }
 
-export default withStyles(styles)(DownloadImage);
+export default DownloadImage;

@@ -1,12 +1,19 @@
-import { camelCase, get, map, mapKeys } from 'lodash';
+import { camelCase, get, isPlainObject, map, mapKeys, mapValues } from 'lodash';
+import { generateSlugFromTitle } from 'utils/string-utils';
+
 import { appConfig, rawLayers, rawReports, rawTables } from '.';
 import {
   AdminLevelDataLayerProps,
+  AnticipatoryAction,
+  AnticipatoryActionLayerProps,
+  AvailableDates,
   BoundaryLayerProps,
   checkRequiredKeys,
   CompositeLayerProps,
+  Dashboard,
+  DateItem,
+  GeojsonDataLayerProps,
   ImpactLayerProps,
-  Interval,
   LayerKey,
   LayersMap,
   LayerType,
@@ -27,9 +34,8 @@ export type ReportKey = string;
  * Check if a string is an explicitly defined report in reports.json
  * @param reportsKey the string to check
  */
-export const isReportsKey = (reportsKey: string): reportsKey is ReportKey => {
-  return reportsKey in rawReports;
-};
+export const isReportsKey = (reportsKey: string): reportsKey is ReportKey =>
+  reportsKey in rawReports;
 
 /**
  * Check if a string is an explicitly defined table in tables.json
@@ -42,48 +48,59 @@ export function isTableKey(tableKey: string): tableKey is TableKey {
 function parseStatsApiConfig(maybeConfig: {
   [key: string]: any;
 }): StatsApi | undefined {
-  const config = mapKeys(maybeConfig, (v, k) => camelCase(k));
+  const config = mapKeys(maybeConfig, (_v, k) => camelCase(k));
   if (checkRequiredKeys(StatsApi, config, true)) {
     return config as StatsApi;
   }
   return undefined;
 }
 
-const orderedInterval: Record<Interval, number> = {
-  [Interval.ONE_DAY]: 1,
-  [Interval.TEN_DAYS]: 10,
-  [Interval.ONE_MONTH]: 30,
-  [Interval.ONE_YEAR]: 365,
-};
-function checkIntervals(definition: CompositeLayerProps) {
-  const layerIntervalValue = orderedInterval[definition.interval];
-  const subLayersIntervalsValues = definition.inputLayers.map(
-    subLayer => orderedInterval[subLayer.interval],
-  );
-  return Math.max(...subLayersIntervalsValues) <= layerIntervalValue;
+export function deepCamelCaseKeys(obj: any): any {
+  if (Array.isArray(obj)) {
+    return obj.map(deepCamelCaseKeys);
+  }
+  if (isPlainObject(obj)) {
+    return mapValues(
+      mapKeys(obj, (_v, k) => camelCase(k)),
+      deepCamelCaseKeys,
+    );
+  }
+  return obj;
 }
 
+// Helper function to ensure data paths are absolute
+const ensureAbsoluteDataPath = (path: string): string => {
+  if (path.startsWith('/')) {
+    return path;
+  }
+  if (path.startsWith('data/')) {
+    return `/${path}`;
+  }
+  return path;
+};
+
 // CamelCase the keys inside the layer definition & validate config
-const getLayerByKey = (layerKey: LayerKey): LayerType => {
+export const getLayerByKey = (layerKey: LayerKey): LayerType => {
   const rawDefinition = rawLayers[layerKey];
+
+  const processedDefinition = mapKeys(rawDefinition, (_v, k) => camelCase(k));
+
+  // Ensure data paths are absolute to prevent routing conflicts
+  if (processedDefinition.path) {
+    processedDefinition.path = ensureAbsoluteDataPath(processedDefinition.path);
+  }
 
   const definition: { id: LayerKey; type: LayerType['type'] } = {
     id: layerKey,
     type: rawDefinition.type as LayerType['type'],
-    ...mapKeys(rawDefinition, (v, k) => camelCase(k)),
+    // TODO - Transition to deepCamelCaseKeys
+    // but handle line-opacity and other special cases
+    ...processedDefinition,
   };
 
   const throwInvalidLayer = () => {
     throw new Error(
       `Found invalid layer definition for layer '${layerKey}'. Check console for more details.`,
-    );
-  };
-
-  const throwInvalidInterval = () => {
-    // eslint-disable-next-line no-console
-    console.log('Please verify intervals in layer definition', definition);
-    throw new Error(
-      `Found invalid Interval definition for layer '${layerKey}'. InputLayers intervals should be lower than global interval.`,
     );
   };
 
@@ -132,15 +149,27 @@ const getLayerByKey = (layerKey: LayerKey): LayerType => {
       if (!checkRequiredKeys(CompositeLayerProps, definition, true)) {
         return throwInvalidLayer();
       }
-      if (!checkIntervals(definition)) {
-        return throwInvalidInterval();
+      return definition;
+    case 'anticipatory_action_drought':
+    case 'anticipatory_action_storm':
+    case 'anticipatory_action_flood':
+      if (
+        checkRequiredKeys(CompositeLayerProps, definition, true) &&
+        isAnticipatoryActionLayer(definition.type)
+      ) {
+        return definition;
+      }
+      return throwInvalidLayer();
+    case 'geojson_polygon':
+      if (!checkRequiredKeys(GeojsonDataLayerProps, definition, true)) {
+        return throwInvalidLayer();
       }
       return definition;
     default:
       // doesn't do anything, but it helps catch any layer type cases we forgot above compile time via TS.
       // https://stackoverflow.com/questions/39419170/how-do-i-check-that-a-switch-block-is-exhaustive-in-typescript
-      // eslint-disable-next-line no-unused-vars
-      ((_: never) => {})(definition.type);
+
+      ((_: never | AnticipatoryAction) => {})(definition.type);
       throw new Error(
         `Found invalid layer definition for layer '${layerKey}' (Unknown type '${definition.type}'). Check config/layers.json.`,
       );
@@ -163,13 +192,61 @@ function verifyValidImpactLayer(
   throwIfInvalid('baselineLayer');
 }
 
+export const AAWindowKeys = ['Window 1', 'Window 2'] as const;
+export const AALayerIds = Object.values(AnticipatoryAction);
+
 export const LayerDefinitions: LayersMap = (() => {
+  const droughtUrl = appConfig.anticipatoryActionDroughtUrl;
+  const stormUrl = appConfig.anticipatoryActionStormUrl;
+  const floodUrl = appConfig.anticipatoryActionFloodUrl;
+
+  const AALayers: AnticipatoryActionLayerProps[] = [
+    {
+      id: AnticipatoryAction.drought,
+      title: 'Anticipatory Action Drought',
+      type: AnticipatoryAction.drought,
+      opacity: 0.9,
+    },
+    {
+      id: AnticipatoryAction.storm,
+      title: 'Anticipatory Action Storm',
+      type: AnticipatoryAction.storm,
+      opacity: 0.9,
+    },
+    {
+      id: AnticipatoryAction.flood,
+      title: 'Anticipatory Action Flood',
+      type: AnticipatoryAction.flood,
+      opacity: 0.9,
+    },
+  ];
+
+  const AALayersById = AALayers.reduce(
+    (acc, layer) => ({ ...acc, [layer.id]: layer }),
+    {} as Record<string, AnticipatoryActionLayerProps>,
+  );
+
+  const initialLayers: LayersMap = {
+    ...(droughtUrl
+      ? {
+          [AnticipatoryAction.drought]:
+            AALayersById[AnticipatoryAction.drought],
+        }
+      : {}),
+    ...(stormUrl
+      ? { [AnticipatoryAction.storm]: AALayersById[AnticipatoryAction.storm] }
+      : {}),
+    ...(floodUrl
+      ? { [AnticipatoryAction.flood]: AALayersById[AnticipatoryAction.flood] }
+      : {}),
+  };
+
   const layers = Object.keys(rawLayers).reduce(
     (acc, layerKey) => ({
       ...acc,
       [layerKey]: getLayerByKey(layerKey as LayerKey),
     }),
-    {} as LayersMap,
+    initialLayers,
   );
 
   // Verify that the layers referenced by impact layers actually exist
@@ -181,11 +258,12 @@ export const LayerDefinitions: LayersMap = (() => {
 })();
 
 export function getBoundaryLayers(): BoundaryLayerProps[] {
-  return Object.values(LayerDefinitions).filter(
-    (layer): layer is BoundaryLayerProps => layer.type === 'boundary',
-  );
+  return Object.values(LayerDefinitions)
+    .filter((layer): layer is BoundaryLayerProps => layer.type === 'boundary')
+    .sort((a, b) => a.adminLevelCodes.length - b.adminLevelCodes.length);
 }
 
+// TODO - is this still relevant? @Amit do we have boundary files that we do not want displayed?
 export function getDisplayBoundaryLayers(): BoundaryLayerProps[] {
   const boundaryLayers = getBoundaryLayers();
   const boundariesCount = boundaryLayers.length;
@@ -218,10 +296,14 @@ export function getDisplayBoundaryLayers(): BoundaryLayerProps[] {
     // get override layers from override names without
     // disrupting the order of which they are defined
     // since the first is considered as default
-    const defaultDisplayBoundaries = defaultBoundaries.map(
-      // TODO - use a find?
-      id => boundaryLayers.filter(l => l.id === id)[0],
-    );
+
+    const defaultDisplayBoundaries = defaultBoundaries
+      .map(
+        // TODO - use a find?
+        id => boundaryLayers.filter(l => l.id === id)[0],
+      )
+      // order by admin level depth [decreasing]
+      .sort((a, b) => b.adminLevelCodes.length - a.adminLevelCodes.length);
 
     if (defaultDisplayBoundaries.length === 0) {
       throw new Error(
@@ -241,7 +323,7 @@ export function getBoundaryLayerSingleton(): BoundaryLayerProps {
 
 // Return a boundary layer with the specified adminLevel depth.
 export function getBoundaryLayersByAdminLevel(adminLevel?: number) {
-  if (adminLevel) {
+  if (typeof adminLevel === 'number' && adminLevel >= 0) {
     const boundaryLayers = getBoundaryLayers();
     const adminLevelBoundary = boundaryLayers.find(
       boundaryLayer => boundaryLayer.adminLevelNames.length === adminLevel,
@@ -263,11 +345,57 @@ export function getWMSLayersWithChart(): WMSLayerProps[] {
   ) as WMSLayerProps[];
 }
 
+export const isAnticipatoryActionLayer = (
+  type: string,
+): type is AnticipatoryAction =>
+  Object.values(AnticipatoryAction).includes(type as AnticipatoryAction);
+
+export const isWindowEmpty = (data: any, windowKey: string): boolean =>
+  data && windowKey in data && Object.keys(data[windowKey]).length === 0;
+
+export const isWindowedDates = (
+  dates: AvailableDates | DateItem[],
+): dates is Record<'Window 1' | 'Window 2', DateItem[]> =>
+  typeof dates === 'object' &&
+  dates !== null &&
+  'Window 1' in dates &&
+  'Window 2' in dates;
+
+export const areChartLayersAvailable = getWMSLayersWithChart().length > 0;
+
+/**
+ * Find a dashboard by URL path segment. Pass dashboards from Redux
+ * (dashboardsListSelector).
+ */
+export const findDashboardByPath = (
+  path: string,
+  dashboards: Dashboard[],
+): { dashboard: Dashboard; index: number } | null => {
+  for (let i = 0; i < dashboards.length; i += 1) {
+    const dashboard = dashboards[i];
+    const dashboardPath =
+      dashboard.path || generateSlugFromTitle(dashboard.title);
+
+    if (dashboardPath === path) {
+      return { dashboard: { ...dashboard, path: dashboardPath }, index: i };
+    }
+  }
+
+  return null;
+};
+
+export const getDashboardIndexByPath = (
+  path: string,
+  dashboards: Dashboard[],
+): number => {
+  const result = findDashboardByPath(path, dashboards);
+  return result ? result.index : 0;
+};
+
 const isValidReportsDefinition = (
   maybeReport: object,
-): maybeReport is ReportType => {
-  return checkRequiredKeys(ReportType, maybeReport, true);
-};
+): maybeReport is ReportType =>
+  checkRequiredKeys(ReportType, maybeReport, true);
 
 function isValidTableDefinition(maybeTable: object): maybeTable is TableType {
   return checkRequiredKeys(TableType, maybeTable, true);
@@ -279,7 +407,7 @@ const getReportByKey = (key: ReportKey): ReportType => {
   const reports = rawReports as Record<string, any>;
   const rawDefinition = {
     id: key,
-    ...mapKeys(isReportsKey(key) ? reports[key] : {}, (v, k) => camelCase(k)),
+    ...mapKeys(isReportsKey(key) ? reports[key] : {}, (_v, k) => camelCase(k)),
   };
 
   if (isValidReportsDefinition(rawDefinition)) {
@@ -296,7 +424,7 @@ function getTableByKey(key: TableKey): TableType {
   const tables = rawTables as Record<string, any>;
   const rawDefinition = {
     id: key,
-    ...mapKeys(isTableKey(key) ? tables[key] : {}, (v, k) => camelCase(k)),
+    ...mapKeys(isTableKey(key) ? tables[key] : {}, (_v, k) => camelCase(k)),
   };
 
   if (isValidTableDefinition(rawDefinition)) {
@@ -331,9 +459,11 @@ export const getCompositeLayers = (layer: LayerType): LayerType[] => {
   const compositeLayersIds = inputLayers?.map(inputLayer => inputLayer.id);
 
   if (compositeLayersIds?.length) {
-    const compositeLayers = map(LayerDefinitions, (value, key) => {
-      return compositeLayersIds.includes(key as LayerType['type']) && value;
-    }).filter(x => x);
+    const compositeLayers = map(
+      LayerDefinitions,
+      (value, key) =>
+        compositeLayersIds.includes(key as LayerType['type']) && value,
+    ).filter(x => x);
     return compositeLayers as LayerType[];
   }
   return [];

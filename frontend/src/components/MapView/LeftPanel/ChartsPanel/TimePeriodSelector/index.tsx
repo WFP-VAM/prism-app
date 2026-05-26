@@ -7,9 +7,9 @@ import {
   Typography,
 } from '@material-ui/core';
 import { DateRangeRounded } from '@material-ui/icons';
-import DatePicker from 'react-datepicker';
-import React, { memo } from 'react';
 import { useSafeTranslation } from 'i18n';
+import React, { memo } from 'react';
+import DatePicker from 'react-datepicker';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -65,6 +65,7 @@ const TimePeriodSelector = memo(
             <Typography className={styles.textLabel} variant="body2">
               {`${t(startLabel)}: `}
             </Typography>
+            {/* @ts-expect-error - react-datepicker v2 types incompatible with React 18 */}
             <DatePicker
               locale={t('date_locale')}
               dateFormat="PP"
@@ -95,6 +96,7 @@ const TimePeriodSelector = memo(
             <Typography className={styles.textLabel} variant="body2">
               {`${t(endLabel)}: `}
             </Typography>
+            {/* @ts-expect-error - react-datepicker v2 types incompatible with React 18 */}
             <DatePicker
               locale={t('date_locale')}
               dateFormat="PP"

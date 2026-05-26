@@ -1,5 +1,5 @@
 {
-  "admin_boundaries": {
+  "admin3_boundaries": {
     "type": "boundary",
     "path": "data/cambodia/khm_bnd_admin3_gov_ed2022_w_dataviz.json",
     "opacity": 0.8,
@@ -251,7 +251,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Estimate of precipitation over a 10-day period derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "Estimate of precipitation over a 10-day period derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "0 mm", "color": "#fafafa" },
       { "value": 0.01, "label": "1-2 mm", "color": "#fffadf" },
@@ -280,7 +280,10 @@
     },
     "chart_data": {
       "fields": [
-        { "key": "rfq", "label": "Rainfall anomaly", "color": "#375692",
+        {
+          "key": "rfq",
+          "label": "Rainfall anomaly",
+          "color": "#375692",
           "minValue": 0,
           "maxValue": 300
         },
@@ -309,7 +312,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "< 20%", "color": "#8c4800" },
       { "value": 20, "label": "20-40%", "color": "#af6b27" },
@@ -361,7 +364,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "< 20%", "color": "#8c4800" },
       { "value": 20, "label": "20-40%", "color": "#af6b27" },
@@ -413,7 +416,7 @@
     },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "3-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "3-month precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "< 20%", "color": "#8c4800" },
       { "value": 20, "label": "20-40%", "color": "#af6b27" },
@@ -441,7 +444,7 @@
     },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "6-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "6-month precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "< 50%", "color": "#8c4800" },
       { "value": 50, "label": "50-60%", "color": "#af6b27" },
@@ -469,7 +472,7 @@
     },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "9-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "9-month precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "< 50%", "color": "#8c4800" },
       { "value": 50, "label": "50-60%", "color": "#af6b27" },
@@ -497,7 +500,7 @@
     },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "1-year precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "1-year precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "< 50%", "color": "#8c4800" },
       { "value": 50, "label": "50-60%", "color": "#af6b27" },
@@ -544,7 +547,7 @@
     },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Total aggregate precipitation over a 1-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "Total aggregate precipitation over a 1-month period, rolling every 10 days. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "0 mm", "color": "#fafafa" },
       { "value": 0.01, "label": "1-5 mm", "color": "#fffadf" },
@@ -1483,7 +1486,7 @@
       { "value": 12, "label": "> +12C", "color": "#67000d" }
     ]
   },
-  "wp_pop_cicunadj": {
+  "wp_pop_icunadj": {
     "title": "population",
     "type": "wms",
     "wcsConfig": {
@@ -1491,7 +1494,10 @@
       "version": "2.0.0",
       "scale": "1"
     },
-    "server_layer_name": "wp_pop_cicunadj",
+    "server_layer_name": "wp_pop_icunadj",
+    "additional_query_params": {
+      "styles": "wp_pop_icunadj_khm_2020"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "opacity": 0,
     "legend_text": "",
@@ -1526,7 +1532,7 @@
       }
     ],
     "exposure": {
-      "id": "wp_pop_cicunadj",
+      "id": "wp_pop_icunadj",
       "calc": "A*(B>=3)"
     }
   },
@@ -1646,8 +1652,9 @@
     "title": "EWS 1294 river level data",
     "loader": "ews",
     "type": "point_data",
+    "icon_shape": "point",
     "data": "https://sensors.ews1294.com/api/v1",
-    "date_url": "",
+    "date_url": "active",
     "feature_info_props": {
       "status": {
         "type": "labelMapping",
@@ -1944,21 +1951,133 @@
       }
     ]
   },
-  "cdi": {
-    "title": "Combined Drought Index",
-    "type": "composite",
-    "base_url": "https://to-fill-later",
-    "input_layers": [
-      { "id": "spi_1m", "weight": 0.4, "interval": "1-month" },
-      { "id": "lst_anomaly", "weight": 0.3, "interval": "10-days" },
-      { "id": "ndvi_dekad_anomaly", "weight": 0.3, "interval": "10-days" }
+  "vuln_index": {
+    "title": "Socioeconomic Vulnerability Index",
+    "type": "admin_level_data",
+    "path": "data/cambodia/vuln_index.json",
+    "data_field": "IndexValue",
+    "admin_level": 3,
+    "admin_code": "Adm3_text",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "value": 0,
+        "label": "Minimal: 0 - 0.1",
+        "color": "#7fbc41"
+      },
+      {
+        "value": 0.1,
+        "label": "Very Low: 0.1 - 0.2",
+        "color": "#b8e186"
+      },
+      {
+        "value": 0.2,
+        "label": "Low: 0.2 - 0.4",
+        "color": "#e6f5d0"
+      },
+      {
+        "value": 0.4,
+        "label": "Moderate: 0.4 - 0.6",
+        "color": "#f1b6da"
+      },
+      {
+        "value": 0.6,
+        "label": "High: 0.6 - 0.8",
+        "color": "#de77ae"
+      },
+      {
+        "value": 0.8,
+        "label": "Very High: 0.8 - 1",
+        "color": "#c51b7d"
+      }
     ],
-    "aggregation": "pixel",
-    "interval": "1-month",
-    "date_type": "continuous",
-    "date_layer": "spi_1m",
-    "start_date": "2020-01-01",
-    "end_date": "",
-    "opacity": 0.8
+    "legend_text": "Index meausring a household’s social and economic capacities and resilience to cope with, adapt to and recover from the floods and droughts. Aggregated at Commune level"
+  },
+  "forecast_river_discharge_at_gauges": {
+    "title": "River discharge forecast",
+    "loader": "google_flood",
+    "type": "point_data",
+    "hex_display": false,
+    "data": "https://prism-api.ovio.org/google-floods/gauges/?region_codes=KH",
+    "detail_url": "https://prism-api.ovio.org/google-floods/gauges/forecasts",
+    "data_field": "severity",
+    "data_field_type": "text",
+    "date_url": "https://prism-api.ovio.org/google-floods/dates/?region_codes=KH",
+    "opacity": 0.9,
+    "legend_text": "River discharge forecast at verified gauges. Visit [Google Research](https://sites.research.google/floodforecasting/) to learn more about Google's AI forecasting models.",
+    "legend": [
+      { "label": "Extreme", "value": "EXTREME", "color": "#a70606" },
+      { "label": "Danger", "value": "SEVERE", "color": "#ea250a" },
+      { "label": "Warning", "value": "ABOVE_NORMAL", "color": "#fba705" },
+      { "label": "Normal", "value": "NO_FLOODING", "color": "#089180" },
+      { "label": "No data", "value": "UNKNOWN", "color": "#858585" }
+    ],
+    "feature_info_title": {
+      "siteName": {
+        "type": "text",
+        "template": "Site: {{siteName}}",
+        "visibility": "if-defined"
+      },
+      "riverName": {
+        "type": "text",
+        "template": "River: {{riverName}}",
+        "visibility": "if-defined"
+      },
+      "gaugeId": {
+        "type": "text",
+        "template": "Gauge ID: {{gaugeId}}",
+        "visibility": "if-defined"
+      }
+    },
+    "feature_info_props": {
+      "siteName": {
+        "type": "text",
+        "dataTitle": "Site",
+        "visibility": "if-defined"
+      },
+      "river": {
+        "type": "text",
+        "dataTitle": "River",
+        "visibility": "if-defined"
+      },
+      "severity": {
+        "type": "labelMapping",
+        "dataTitle": "Flood Status",
+        "labelMap": {
+          "EXTREME": "Extreme",
+          "SEVERE": "Danger",
+          "ABOVE_NORMAL": "Warning",
+          "NO_FLOODING": "Normal",
+          "UNKNOWN": "No data"
+        }
+      },
+      "gaugeId": {
+        "type": "text",
+        "dataTitle": "Gauge ID"
+      },
+      "source": {
+        "type": "text",
+        "dataTitle": "Data source"
+      },
+      "issuedTime": {
+        "type": "date",
+        "dataTitle": "Status issued"
+      }
+    }
+  },
+  "predicted_flood_inundation_maps": {
+    "title": "Flood Inundation Prediction Map",
+    "type": "geojson_polygon",
+    "hex_display": false,
+    "data": "https://prism-api.ovio.org/google-floods/inundations/?region_codes=KH",
+    "data_field": "level",
+    "data_field_type": "text",
+    "opacity": 1,
+    "legend_text": "Current predicted flood maps. Visit [Google Research](https://sites.research.google/floodforecasting/) about Google's AI Forecasting models.",
+    "legend": [
+      { "label": "High", "value": "HIGH", "color": "#de2d26" },
+      { "label": "Medium", "value": "MEDIUM", "color": "#fc9272" },
+      { "label": "Low", "value": "LOW", "color": "#fee0d2" }
+    ]
   }
 }

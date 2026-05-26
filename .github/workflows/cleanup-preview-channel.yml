@@ -1,0 +1,28 @@
+name: Cleanup Firebase Preview Channel
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  cleanup_preview_channel:
+    name: cleanup_preview_channel
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Install Firebase CLI
+        run: npm i -g firebase-tools
+      - name: Delete Firebase preview channel
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_PRISM_FRONTEND }}
+        run: |
+          echo "$FIREBASE_SERVICE_ACCOUNT" > ${HOME}/gcloud.json
+          export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/gcloud.json"
+          cd frontend
+          firebase --project prism-frontend hosting:channel:delete ${{ github.event.pull_request.number }} --site staging-prism-frontend --force
+

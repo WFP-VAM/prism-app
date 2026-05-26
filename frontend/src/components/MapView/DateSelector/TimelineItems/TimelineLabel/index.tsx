@@ -1,26 +1,41 @@
-import {
-  WithStyles,
-  createStyles,
-  withStyles,
-  Typography,
-} from '@material-ui/core';
-import React from 'react';
+import { createStyles, makeStyles, Typography } from '@material-ui/core';
 import { DateRangeType } from 'config/types';
-import { moment } from 'i18n';
-import { MONTH_YEAR_DATE_FORMAT } from 'utils/name-utils';
+import { format } from 'date-fns';
+import { locales } from 'i18n';
+import { DateFormat } from 'utils/name-utils';
 
-const TimelineLabel = ({ classes, locale, date }: TimelineLabelProps) => {
+function TimelineLabel({
+  locale,
+  date,
+  showDraggingCursor,
+}: TimelineLabelProps) {
+  const classes = useStyles();
+
   if (date.isFirstDay) {
     return (
-      <Typography variant="body2" className={classes.dateItemLabel}>
-        {moment(date.value).locale(locale).format(MONTH_YEAR_DATE_FORMAT)}
+      <Typography
+        variant="body2"
+        className={classes.dateItemLabel}
+        style={{ cursor: showDraggingCursor ? 'ew-resize' : 'default' }}
+        // prevent click on the label from triggering the date selection
+        onClick={e => e.stopPropagation()}
+      >
+        {format(
+          date.value,
+          date.month.includes('Jan')
+            ? DateFormat.ShortMonthYear
+            : DateFormat.ShortMonth,
+          {
+            locale: locales[locale as keyof typeof locales],
+          },
+        )}
       </Typography>
     );
   }
   return <div className={classes.dayItem} />;
-};
+}
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     dateItemLabel: {
       color: '#101010',
@@ -32,16 +47,20 @@ const styles = () =>
       fontWeight: 'bold',
       zIndex: 1,
     },
-
     dayItem: {
+      position: 'absolute',
       height: 10,
+      marginLeft: '-1px',
       borderLeft: '1px solid #ededed',
+      zIndex: -1,
     },
-  });
+  }),
+);
 
-export interface TimelineLabelProps extends WithStyles<typeof styles> {
+export interface TimelineLabelProps {
   locale: string;
   date: DateRangeType;
+  showDraggingCursor: boolean;
 }
 
-export default withStyles(styles)(TimelineLabel);
+export default TimelineLabel;

@@ -2,7 +2,7 @@ import { findTagByName } from "xml-utils";
 import { findTagText } from "../utils";
 
 export function parseEnvelope(
-  xml: string
+  xml: string,
 ): Readonly<[number, number, number, number]> {
   const lowerCorner = findTagText(xml, "gml:lowerCorner");
   const upperCorner = findTagText(xml, "gml:upperCorner");
@@ -15,7 +15,7 @@ export function parseEnvelope(
 }
 
 export function findAndParseEnvelope(
-  xml: string
+  xml: string,
 ): Readonly<[number, number, number, number]> | undefined {
   const envelope = findTagByName(xml, "gml:Envelope")?.outer;
   return envelope ? parseEnvelope(envelope) : undefined;

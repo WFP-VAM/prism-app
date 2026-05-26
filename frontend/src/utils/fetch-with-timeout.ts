@@ -1,5 +1,6 @@
-import { Dispatch } from 'redux';
 import { addNotification } from 'context/notificationStateSlice';
+import { Dispatch } from 'redux';
+
 import { HTTPError } from './error-utils';
 
 interface FetchWithTimeoutOptions extends RequestInit {
@@ -8,7 +9,7 @@ interface FetchWithTimeoutOptions extends RequestInit {
 
 export const ANALYSIS_REQUEST_TIMEOUT = 60000;
 
-const DEFAULT_REQUEST_TIMEOUT = 15000;
+const DEFAULT_REQUEST_TIMEOUT = 30000;
 
 export const fetchWithTimeout = async (
   resource: RequestInfo,
@@ -29,10 +30,18 @@ export const fetchWithTimeout = async (
       signal: controller.signal,
     });
     if (!res.ok) {
-      throw new HTTPError(
-        fetchErrorMessage ?? `Something went wrong requesting at ${resource}`,
-        res.status,
-      );
+      const body = await res.json();
+      const detail =
+        body.detail === 'string' ? body.detail : body.detail?.[0]?.msg;
+      const message =
+        detail ??
+        fetchErrorMessage ??
+        `Something went wrong requesting at ${resource}`;
+      console.error('New HTTP Error: ', {
+        message,
+        statusCode: res.status,
+      });
+      throw new HTTPError(message, res.status);
     }
     return res;
   } catch (error) {
@@ -55,9 +64,14 @@ export const fetchWithTimeout = async (
         }),
       );
     } else {
+      const errorMessage =
+        fetchErrorMessage ||
+        (error as HTTPError).message ||
+        (error as Error).message ||
+        `Failed to fetch from ${resource}`;
       dispatch(
         addNotification({
-          message: (error as HTTPError).message,
+          message: errorMessage,
           type: 'warning',
         }),
       );

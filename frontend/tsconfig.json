@@ -1,24 +1,6 @@
 {
-  "compilerOptions": {
-    "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "baseUrl": "./src",
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react",
-    "strictPropertyInitialization": false,
-    "experimentalDecorators": true,
-    "downlevelIteration": true
-  },
-  "include": ["src"],
-  "files": ["src/types/custom.d.ts"]
+  "extends": "./tsconfig.base.json",
+  "include": ["src", "test"],
+  "exclude": ["cypress.config.ts", "cypress", "node_modules"],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }
