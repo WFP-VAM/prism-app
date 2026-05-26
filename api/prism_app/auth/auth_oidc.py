@@ -91,11 +91,41 @@ def _consume_sign_out_csrf(request: Request, submitted: str | None) -> bool:
     return secrets.compare_digest(expected, got)
 
 
-def _safe_next(next_raw: str | None, default: str = "/admin/") -> str:
+def _frontend_redirect_origins(settings: AdminAuthSettings | None) -> set[str]:
+    if settings is None:
+        return set()
+    from urllib.parse import urlparse
+
+    origins: set[str] = set()
+    for raw in settings.frontend_redirect_origins.split(","):
+        value = raw.strip().rstrip("/")
+        if not value:
+            continue
+        p = urlparse(value)
+        if p.scheme in ("http", "https") and p.netloc:
+            origins.add(f"{p.scheme}://{p.netloc}")
+    return origins
+
+
+def _is_frontend_print_modal_return(norm_path: str, query: str) -> bool:
+    from urllib.parse import parse_qs
+
+    if norm_path != "/" or not query:
+        return False
+    parsed = parse_qs(query, keep_blank_values=True)
+    return parsed.get("printModal") == ["1"]
+
+
+def _safe_next(
+    next_raw: str | None,
+    default: str = "/admin/",
+    settings: AdminAuthSettings | None = None,
+) -> str:
     """Resolve post-login redirect: same host only, no protocol-relative or path traversal escapes.
 
-    Only ``/admin`` (and subpaths) or ``/access-not-configured`` are allowed, matching where
-    the OIDC flow may legitimately send the browser after sign-in.
+    ``/admin`` (and subpaths) and ``/access-not-configured`` are allowed for the
+    admin app. For the React app, only configured frontend origins may receive
+    the print-modal return intent.
     """
     from posixpath import normpath
     from urllib.parse import unquote, urlparse
@@ -106,6 +136,7 @@ def _safe_next(next_raw: str | None, default: str = "/admin/") -> str:
     if not raw:
         return default
 
+    origin: str | None = None
     path_part: str
     query: str
     if raw.startswith("/") and not raw.startswith("//"):
@@ -117,6 +148,7 @@ def _safe_next(next_raw: str | None, default: str = "/admin/") -> str:
         p = urlparse(raw)
         if p.scheme not in ("http", "https") or not p.path:
             return default
+        origin = f"{p.scheme}://{p.netloc}"
         path_part, query = p.path, p.query or ""
 
     path = unquote(path_part)
@@ -131,19 +163,25 @@ def _safe_next(next_raw: str | None, default: str = "/admin/") -> str:
     if norm.startswith("//"):
         return default
 
-    allowed = (
+    admin_allowed = (
         norm == "/admin"
         or norm.startswith("/admin/")
         or norm == "/access-not-configured"
     )
-    if not allowed:
-        return default
-
     if query:
         if any(bad in query for bad in ("//", "\n", "\r")):
             return default
-        return f"{norm}?{query}"
-    return norm
+
+    if admin_allowed:
+        return f"{norm}?{query}" if query else norm
+
+    frontend_allowed = (
+        origin in _frontend_redirect_origins(settings)
+        and _is_frontend_print_modal_return(norm, query)
+    )
+    if frontend_allowed:
+        return f"{origin}{norm}?{query}"
+    return default
 
 
 def _perform_sign_out(request: Request, settings: AdminAuthSettings) -> Response:
@@ -180,7 +218,7 @@ async def oidc_sign_in(
     state_plain = secrets.token_urlsafe(32)
     nonce = secrets.token_urlsafe(32)
     code_verifier, _code_challenge = generate_pkce_pair()
-    next_path = _safe_next(next_url, default="/admin/")
+    next_path = _safe_next(next_url, default="/admin/", settings=settings)
     state_jwt = sign_oidc_state(
         settings,
         {

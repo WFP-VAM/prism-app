@@ -165,3 +165,25 @@ def test_safe_next_allows_admin_subpaths_and_access_page() -> None:
     assert auth_oidc._safe_next("/access-not-configured") == "/access-not-configured"
     # posixpath.normpath collapses a trailing slash on ``/admin/`` to ``/admin``.
     assert auth_oidc._safe_next("/admin/?tab=1") == "/admin?tab=1"
+
+
+def test_safe_next_allows_configured_frontend_print_modal_return() -> None:
+    settings = AdminAuthSettings(
+        frontend_redirect_origins="https://prism.example.org,http://localhost:3000"
+    )
+
+    nxt = "https://prism.example.org/?printModal=1&batchMaps=1&schedule=1"
+
+    assert auth_oidc._safe_next(nxt, settings=settings) == nxt
+
+
+def test_safe_next_rejects_unconfigured_frontend_origin() -> None:
+    settings = AdminAuthSettings(frontend_redirect_origins="https://prism.example.org")
+
+    assert (
+        auth_oidc._safe_next(
+            "https://evil.example/?printModal=1&batchMaps=1&schedule=1",
+            settings=settings,
+        )
+        == "/admin/"
+    )

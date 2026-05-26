@@ -1,11 +1,13 @@
 import {
   Box,
   Button,
+  Checkbox,
   CircularProgress,
   Collapse,
   createStyles,
   Divider,
   FormControl,
+  FormControlLabel,
   Icon,
   IconButton,
   InputLabel,
@@ -25,11 +27,18 @@ import Switch from 'components/Common/Switch';
 import { AspectRatio } from 'components/MapExport/types';
 import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
 import { LayerKey } from 'config/types';
+import { addNotification } from 'context/notificationStateSlice';
 import { cyanBlue } from 'muiTheme';
 import React, { useContext, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import {
+  MAP_EXPORT_MAX_URLS_PER_REQUEST,
+  PRISM_SIGN_IN_URL,
+  PRISM_WHOAMI_API_URL,
+} from 'utils/constants';
 
 import { useSafeTranslation } from '../../../i18n';
-import { MAP_EXPORT_MAX_URLS_PER_REQUEST } from '../../../utils/constants';
 import AspectRatioSelector from './AspectRatioSelector';
 import BatchMapExportJobRows from './batchMapExport/BatchMapExportJobRows';
 import {
@@ -279,15 +288,69 @@ const DATE_PLACEHOLDER_SUFFIX = ': {date_coverage}';
 function PrintConfig() {
   const classes = useStyles();
   const { t } = useSafeTranslation();
+  const dispatch = useDispatch();
+  const location = useLocation();
   const { jobs: activeBatchJobs } = useBatchMapExportJobsState();
   const { dismissBatchMapExportJob } = useBatchMapExportJobsActions();
   const { printConfig } = useContext(PrintConfigContext);
+  const [createScheduledMaps, setCreateScheduledMaps] = useState(false);
+  const [isPrismAuthenticated, setIsPrismAuthenticated] = useState(false);
 
   // Local state for responsive input - syncs to parent with debounce
   const [localTitle, setLocalTitle] = useState(printConfig?.titleText ?? '');
   useEffect(() => {
     setLocalTitle(printConfig?.titleText ?? '');
   }, [printConfig?.titleText]);
+
+  useEffect(() => {
+    if (!printConfig?.open) {
+      return;
+    }
+    const params = new URLSearchParams(location.search);
+    if (params.get('schedule') === '1') {
+      setCreateScheduledMaps(true);
+    }
+    if (params.get('batchMaps') === '1') {
+      printConfig.setTitleText(prev =>
+        prev.includes('{date}') ? prev : `${prev}${DATE_PLACEHOLDER_SUFFIX}`,
+      );
+      printConfig.setToggles(prev =>
+        prev.batchMapsVisibility
+          ? prev
+          : { ...prev, batchMapsVisibility: true },
+      );
+    }
+  }, [
+    location.search,
+    printConfig?.open,
+    printConfig?.setTitleText,
+    printConfig?.setToggles,
+  ]);
+
+  useEffect(() => {
+    if (!printConfig?.open) {
+      return;
+    }
+    let cancelled = false;
+    const checkSession = async () => {
+      try {
+        const response = await fetch(PRISM_WHOAMI_API_URL, {
+          credentials: 'include',
+        });
+        if (!cancelled) {
+          setIsPrismAuthenticated(response.ok);
+        }
+      } catch (_error) {
+        if (!cancelled) {
+          setIsPrismAuthenticated(false);
+        }
+      }
+    };
+    void checkSession();
+    return () => {
+      cancelled = true;
+    };
+  }, [createScheduledMaps, printConfig?.open]);
 
   // Appease TS by ensuring printConfig is defined
   if (!printConfig) {
@@ -340,6 +403,40 @@ function PrintConfig() {
 
   const batchMapsWillTruncate =
     toggles.batchMapsVisibility && mapCount > MAP_EXPORT_MAX_URLS_PER_REQUEST;
+
+  const handlePrimaryButtonClick = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    if (!createScheduledMaps) {
+      handleDownloadMenuOpen(event);
+      return;
+    }
+    if (!isPrismAuthenticated) {
+      const params = new URLSearchParams(location.search);
+      params.set('printModal', '1');
+      params.set('batchMaps', '1');
+      params.set('schedule', '1');
+      const returnUrl = `${window.location.origin}${
+        location.pathname
+      }?${params.toString()}`;
+      window.location.assign(
+        `${PRISM_SIGN_IN_URL}?next=${encodeURIComponent(returnUrl)}`,
+      );
+      return;
+    }
+    dispatch(
+      addNotification({
+        type: 'info',
+        message: t('Schedule creation will be added next.'),
+      }),
+    );
+  };
+
+  const primaryButtonLabel = createScheduledMaps
+    ? isPrismAuthenticated
+      ? t('Create schedule')
+      : t('Login to create schedule')
+    : t('Export');
 
   return (
     <Box className={classes.printPanelRoot}>
@@ -703,6 +800,20 @@ function PrintConfig() {
                 <GreyContainerSection>
                   <CadenceSelector />
                 </GreyContainerSection>
+                <GreyContainerSection>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={createScheduledMaps}
+                        onChange={event =>
+                          setCreateScheduledMaps(event.target.checked)
+                        }
+                        color="primary"
+                      />
+                    }
+                    label={t('Create scheduled maps')}
+                  />
+                </GreyContainerSection>
                 <GreyContainerSection isLast>
                   <Box className={classes.mapCountContainer}>
                     <Typography variant="body1">
@@ -761,8 +872,8 @@ function PrintConfig() {
           variant="contained"
           color="primary"
           className={classes.gutter}
-          endIcon={<GetApp />}
-          onClick={e => handleDownloadMenuOpen(e)}
+          endIcon={createScheduledMaps ? undefined : <GetApp />}
+          onClick={handlePrimaryButtonClick}
           disabled={
             isDownloading ||
             (toggles.batchMapsVisibility &&
@@ -777,7 +888,7 @@ function PrintConfig() {
               </span>
             </>
           ) : (
-            <span>{t('Export')}</span>
+            <span>{primaryButtonLabel}</span>
           )}
         </Button>
 
