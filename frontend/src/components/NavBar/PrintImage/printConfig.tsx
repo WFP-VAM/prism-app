@@ -420,7 +420,7 @@ function PrintConfig() {
     if (!canManageSchedules) {
       return;
     }
-    void createSchedule();
+    handleDownloadMenuOpen(event);
   };
 
   const primaryLabelKey = schedulePrimaryButtonLabelKey({
@@ -905,7 +905,7 @@ function PrintConfig() {
           variant="contained"
           color="primary"
           className={classes.gutter}
-          endIcon={createScheduledMaps ? undefined : <GetApp />}
+          endIcon={<GetApp />}
           onClick={handlePrimaryButtonClick}
           disabled={isPrintPanelPrimaryDisabled({
             isDownloading,
@@ -936,26 +936,47 @@ function PrintConfig() {
           open={Boolean(downloadMenuAnchorEl)}
           onClose={handleDownloadMenuClose}
         >
-          {toggles.batchMapsVisibility
+          {createScheduledMaps && isPrismAuthenticated && canManageSchedules
             ? [
-                <MenuItem key="pdf" onClick={() => downloadBatch('pdf')}>
+                <MenuItem
+                  key="schedule-pdf"
+                  onClick={() => {
+                    handleDownloadMenuClose();
+                    void createSchedule('pdf');
+                  }}
+                >
                   {t('Export maps as PDF')}
                 </MenuItem>,
-                <MenuItem key="png" onClick={() => downloadBatch('png')}>
+                <MenuItem
+                  key="schedule-png"
+                  onClick={() => {
+                    handleDownloadMenuClose();
+                    void createSchedule('png');
+                  }}
+                >
                   {t('Export maps as PNGs')}
                 </MenuItem>,
               ]
-            : [
-                <MenuItem key="png" onClick={() => download('png')}>
-                  {t('Download PNG')}
-                </MenuItem>,
-                <MenuItem key="jpeg" onClick={() => download('jpeg')}>
-                  {t('Download JPEG')}
-                </MenuItem>,
-                <MenuItem key="pdf" onClick={() => download('pdf')}>
-                  {t('Download PDF')}
-                </MenuItem>,
-              ]}
+            : toggles.batchMapsVisibility
+              ? [
+                  <MenuItem key="pdf" onClick={() => downloadBatch('pdf')}>
+                    {t('Export maps as PDF')}
+                  </MenuItem>,
+                  <MenuItem key="png" onClick={() => downloadBatch('png')}>
+                    {t('Export maps as PNGs')}
+                  </MenuItem>,
+                ]
+              : [
+                  <MenuItem key="png" onClick={() => download('png')}>
+                    {t('Download PNG')}
+                  </MenuItem>,
+                  <MenuItem key="jpeg" onClick={() => download('jpeg')}>
+                    {t('Download JPEG')}
+                  </MenuItem>,
+                  <MenuItem key="pdf" onClick={() => download('pdf')}>
+                    {t('Download PDF')}
+                  </MenuItem>,
+                ]}
         </Menu>
       </div>
     </Box>

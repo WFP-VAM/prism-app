@@ -24,6 +24,8 @@ export type ScheduleExportQueryParams = {
   bottomLogoScale?: number;
   toggles?: Record<string, boolean>;
   selectedBoundaries?: string[];
+  /** Export page locale (see ``EXPORT_LANGUAGE_PARAM`` / ExportView). */
+  language?: string;
 };
 
 export type ScheduleExportOptions = {
@@ -39,7 +41,7 @@ export type MapExportScheduleCreateRequest = {
   layer_id: string;
   cadence: MapExportScheduleCadenceApi;
   dekad_interval: number;
-  format: 'pdf';
+  format: 'pdf' | 'png';
   export_options: ScheduleExportOptions;
 };
 

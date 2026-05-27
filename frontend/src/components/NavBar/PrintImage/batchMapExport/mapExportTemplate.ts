@@ -34,6 +34,7 @@ export type BuildScheduleExportOptionsInput = MapExportPrintTemplate & {
   mapBounds: LngLatBounds;
   viewportWidth: number;
   viewportHeight: number;
+  language?: string;
 };
 
 export type ExportPageLocation = {
@@ -154,6 +155,7 @@ export function buildBatchExportUrls(
 
 function scheduleQueryParamsFromTemplate(
   template: MapExportPrintTemplate & { mapBounds: LngLatBounds },
+  language?: string,
 ): ScheduleExportOptions['queryParams'] {
   const queryParams: ScheduleExportOptions['queryParams'] = {
     bounds: boundsString(template.mapBounds),
@@ -186,6 +188,10 @@ function scheduleQueryParamsFromTemplate(
     queryParams.selectedBoundaries = [...template.selectedBoundaries];
   }
 
+  if (language) {
+    queryParams.language = toExportLanguageParam(language);
+  }
+
   return queryParams;
 }
 
@@ -195,7 +201,7 @@ export function buildScheduleExportOptions(
   return {
     origin: input.origin,
     exportPath: input.exportPath,
-    queryParams: scheduleQueryParamsFromTemplate(input),
+    queryParams: scheduleQueryParamsFromTemplate(input, input.language),
     viewportWidth: input.viewportWidth,
     viewportHeight: input.viewportHeight,
   };

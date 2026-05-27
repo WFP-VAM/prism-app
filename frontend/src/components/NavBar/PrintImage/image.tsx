@@ -690,79 +690,82 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     }
   };
 
-  const createSchedule = useCallback(async () => {
-    if (!printSelectedLayer) {
-      dispatch(
-        addNotification({
-          type: 'error',
-          message: t('Select a layer for scheduled maps'),
-        }),
-      );
-      return;
-    }
-    if (!previewBounds) {
-      dispatch(
-        addNotification({
-          type: 'error',
-          message: t(
-            'Open the print preview so the map viewport is captured before creating a schedule',
-          ),
-        }),
-      );
-      return;
-    }
-
-    setIsDownloading(true);
-    try {
-      const exportOptions =
-        mapExportTemplate.buildScheduleExportOptionsPayload();
-      if (!exportOptions) {
+  const createSchedule = useCallback(
+    async (format: 'pdf' | 'png') => {
+      if (!printSelectedLayer) {
+        dispatch(
+          addNotification({
+            type: 'error',
+            message: t('Select a layer for scheduled maps'),
+          }),
+        );
+        return;
+      }
+      if (!previewBounds) {
+        dispatch(
+          addNotification({
+            type: 'error',
+            message: t(
+              'Open the print preview so the map viewport is captured before creating a schedule',
+            ),
+          }),
+        );
         return;
       }
 
-      const result = await createMapExportSchedule({
-        country: safeCountry,
-        layer_id: printSelectedLayer.id,
-        cadence: cadenceToApi(cadence),
-        dekad_interval: dekadInterval,
-        format: 'pdf',
-        export_options: exportOptions,
-      });
+      setIsDownloading(true);
+      try {
+        const exportOptions =
+          mapExportTemplate.buildScheduleExportOptionsPayload();
+        if (!exportOptions) {
+          return;
+        }
 
-      dispatch(
-        addNotification({
-          type: 'success',
-          message: t('Schedule "{{name}}" created', { name: result.name }),
-        }),
-      );
-      handleClose();
-    } catch (error) {
-      const message =
-        error instanceof Error
-          ? t('Schedule creation failed: {{message}}', {
-              message: error.message,
-            })
-          : t('Schedule creation failed. Please try again.');
-      dispatch(
-        addNotification({
-          type: 'error',
-          message,
-        }),
-      );
-      console.error('Create schedule failed:', error);
-    } finally {
-      setIsDownloading(false);
-    }
-  }, [
-    printSelectedLayer,
-    previewBounds,
-    mapExportTemplate,
-    cadence,
-    dekadInterval,
-    dispatch,
-    t,
-    handleClose,
-  ]);
+        const result = await createMapExportSchedule({
+          country: safeCountry,
+          layer_id: printSelectedLayer.id,
+          cadence: cadenceToApi(cadence),
+          dekad_interval: dekadInterval,
+          format,
+          export_options: exportOptions,
+        });
+
+        dispatch(
+          addNotification({
+            type: 'success',
+            message: t('Schedule "{{name}}" created', { name: result.name }),
+          }),
+        );
+        handleClose();
+      } catch (error) {
+        const message =
+          error instanceof Error
+            ? t('Schedule creation failed: {{message}}', {
+                message: error.message,
+              })
+            : t('Schedule creation failed. Please try again.');
+        dispatch(
+          addNotification({
+            type: 'error',
+            message,
+          }),
+        );
+        console.error('Create schedule failed:', error);
+      } finally {
+        setIsDownloading(false);
+      }
+    },
+    [
+      printSelectedLayer,
+      previewBounds,
+      mapExportTemplate,
+      cadence,
+      dekadInterval,
+      dispatch,
+      t,
+      handleClose,
+    ],
+  );
 
   const printContext = {
     printConfig: {

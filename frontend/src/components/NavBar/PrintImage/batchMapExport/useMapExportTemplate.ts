@@ -103,6 +103,7 @@ export function useMapExportTemplate(input: UseMapExportTemplateInput) {
       viewportHeight: viewport.canvasHeight,
       ...printTemplateFields(input),
       mapBounds: input.mapBounds,
+      language: input.language,
     });
   }
 

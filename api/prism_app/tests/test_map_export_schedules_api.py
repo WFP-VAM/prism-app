@@ -148,6 +148,42 @@ def test_post_export_map_schedule_creates_active_owned_schedule(
         )
 
 
+def test_post_export_map_schedule_export_url_includes_language(
+    api_client: TestClient,
+) -> None:
+    body = _schedule_body()
+    assert isinstance(body["export_options"], dict)
+    assert isinstance(body["export_options"]["queryParams"], dict)
+    body["export_options"]["queryParams"]["language"] = "pt"
+
+    response = api_client.post("/export-map/schedules", json=body)
+
+    assert response.status_code == 201, response.text
+    assert "language=pt" in response.json()["export_url"]
+
+
+def test_post_export_map_schedule_accepts_png_format(
+    api_client: TestClient,
+    sqlite_engine,
+) -> None:
+    body = _schedule_body()
+    body["format"] = "png"
+
+    response = api_client.post("/export-map/schedules", json=body)
+
+    assert response.status_code == 201, response.text
+    assert response.json()["name"].endswith("PNG")
+    SessionLocal = sessionmaker(
+        bind=sqlite_engine,
+        class_=Session,
+        expire_on_commit=False,
+    )
+    with SessionLocal() as session:
+        schedule = session.get(MapExportSchedule, response.json()["schedule_id"])
+        assert schedule is not None
+        assert schedule.format == "png"
+
+
 def test_post_export_map_schedule_rejects_unknown_export_query_param(
     api_client: TestClient,
 ) -> None:

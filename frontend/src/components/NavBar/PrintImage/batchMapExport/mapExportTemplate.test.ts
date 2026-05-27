@@ -150,7 +150,10 @@ describe('buildScheduleExportOptions', () => {
       selectedBoundaries: ['MOZ01'],
       viewportWidth: 1200,
       viewportHeight: 900,
+      language: 'pt',
     });
+
+    expect(options.queryParams.language).toBe('pt');
 
     expect(options.origin).toBe('https://prism.example.org');
     expect(options.queryParams.bounds).toBe('30,-26,41,-10');
@@ -167,6 +170,7 @@ describe('schedule/batch template parity', () => {
     const [batchUrl] = buildBatchExportUrls({
       ...sharedTemplate,
       formattedDates: ['2024-05-01'],
+      language: 'ar',
     });
     const batchParams = new URL(batchUrl).searchParams;
 
@@ -175,9 +179,11 @@ describe('schedule/batch template parity', () => {
       selectedBoundaries: ['MOZ01'],
       viewportWidth: 1200,
       viewportHeight: 900,
+      language: 'ar',
     });
 
     expect(schedule.queryParams.bounds).toBe(batchParams.get('bounds'));
+    expect(schedule.queryParams.language).toBe(batchParams.get('language'));
     expect(schedule.queryParams.zoom).toBe(batchParams.get('zoom'));
     expect(schedule.queryParams.aspectRatio).toBe(
       batchParams.get('aspectRatio'),

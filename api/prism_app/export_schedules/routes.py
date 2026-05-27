@@ -54,6 +54,7 @@ class ScheduleExportQueryParams(BaseModel):
         default=None,
         alias="selectedBoundaries",
     )
+    language: str | None = None
 
 
 class ScheduleExportOptions(BaseModel):
