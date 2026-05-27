@@ -110,6 +110,9 @@ export type PrintConfigContextType = {
     selectableLayers: DateCompatibleLayer[];
     selectedLayerId: LayerKey | null;
     setSelectedLayerId: React.Dispatch<React.SetStateAction<LayerKey | null>>;
+    createScheduledMaps: boolean;
+    setCreateScheduledMaps: React.Dispatch<React.SetStateAction<boolean>>;
+    createSchedule: () => Promise<void>;
   };
 };
 

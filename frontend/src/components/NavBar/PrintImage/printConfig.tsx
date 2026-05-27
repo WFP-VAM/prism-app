@@ -27,13 +27,12 @@ import Switch from 'components/Common/Switch';
 import { AspectRatio } from 'components/MapExport/types';
 import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
 import { LayerKey } from 'config/types';
-import { addNotification } from 'context/notificationStateSlice';
 import { cyanBlue } from 'muiTheme';
 import React, { useContext, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import {
   MAP_EXPORT_MAX_URLS_PER_REQUEST,
+  MAP_EXPORTS_MANAGE_PERMISSION,
   PRISM_SIGN_IN_URL,
   PRISM_WHOAMI_API_URL,
 } from 'utils/constants';
@@ -288,13 +287,12 @@ const DATE_PLACEHOLDER_SUFFIX = ': {date_coverage}';
 function PrintConfig() {
   const classes = useStyles();
   const { t } = useSafeTranslation();
-  const dispatch = useDispatch();
   const location = useLocation();
   const { jobs: activeBatchJobs } = useBatchMapExportJobsState();
   const { dismissBatchMapExportJob } = useBatchMapExportJobsActions();
   const { printConfig } = useContext(PrintConfigContext);
-  const [createScheduledMaps, setCreateScheduledMaps] = useState(false);
   const [isPrismAuthenticated, setIsPrismAuthenticated] = useState(false);
+  const [canManageSchedules, setCanManageSchedules] = useState(false);
 
   // Local state for responsive input - syncs to parent with debounce
   const [localTitle, setLocalTitle] = useState(printConfig?.titleText ?? '');
@@ -306,43 +304,29 @@ function PrintConfig() {
     if (!printConfig?.open) {
       return;
     }
-    const params = new URLSearchParams(location.search);
-    if (params.get('schedule') === '1') {
-      setCreateScheduledMaps(true);
-    }
-    if (params.get('batchMaps') === '1') {
-      printConfig.setTitleText(prev =>
-        prev.includes('{date}') ? prev : `${prev}${DATE_PLACEHOLDER_SUFFIX}`,
-      );
-      printConfig.setToggles(prev =>
-        prev.batchMapsVisibility
-          ? prev
-          : { ...prev, batchMapsVisibility: true },
-      );
-    }
-  }, [
-    location.search,
-    printConfig?.open,
-    printConfig?.setTitleText,
-    printConfig?.setToggles,
-  ]);
-
-  useEffect(() => {
-    if (!printConfig?.open) {
-      return;
-    }
     let cancelled = false;
     const checkSession = async () => {
       try {
         const response = await fetch(PRISM_WHOAMI_API_URL, {
           credentials: 'include',
         });
-        if (!cancelled) {
-          setIsPrismAuthenticated(response.ok);
+        if (cancelled) {
+          return;
         }
+        if (!response.ok) {
+          setIsPrismAuthenticated(false);
+          setCanManageSchedules(false);
+          return;
+        }
+        const data = (await response.json()) as { permissions?: string[] };
+        setIsPrismAuthenticated(true);
+        setCanManageSchedules(
+          (data.permissions ?? []).includes(MAP_EXPORTS_MANAGE_PERMISSION),
+        );
       } catch (_error) {
         if (!cancelled) {
           setIsPrismAuthenticated(false);
+          setCanManageSchedules(false);
         }
       }
     };
@@ -350,7 +334,7 @@ function PrintConfig() {
     return () => {
       cancelled = true;
     };
-  }, [createScheduledMaps, printConfig?.open]);
+  }, [printConfig?.open]);
 
   // Appease TS by ensuring printConfig is defined
   if (!printConfig) {
@@ -399,6 +383,10 @@ function PrintConfig() {
     selectableLayers,
     selectedLayerId,
     setSelectedLayerId,
+    createScheduledMaps,
+    setCreateScheduledMaps,
+    createSchedule,
+    previewBounds,
   } = printConfig;
 
   const batchMapsWillTruncate =
@@ -424,12 +412,10 @@ function PrintConfig() {
       );
       return;
     }
-    dispatch(
-      addNotification({
-        type: 'info',
-        message: t('Schedule creation will be added next.'),
-      }),
-    );
+    if (!canManageSchedules) {
+      return;
+    }
+    void createSchedule();
   };
 
   const primaryButtonLabel = createScheduledMaps
@@ -437,6 +423,11 @@ function PrintConfig() {
       ? t('Create schedule')
       : t('Login to create schedule')
     : t('Export');
+
+  const schedulePrimaryDisabled =
+    createScheduledMaps &&
+    isPrismAuthenticated &&
+    (!canManageSchedules || !selectedLayerId || !previewBounds);
 
   return (
     <Box className={classes.printPanelRoot}>
@@ -794,54 +785,80 @@ function PrintConfig() {
                     </Select>
                   </FormControl>
                 </GreyContainerSection>
-                <GreyContainerSection>
-                  <DateRangePicker />
-                </GreyContainerSection>
+                {!createScheduledMaps && (
+                  <GreyContainerSection>
+                    <DateRangePicker />
+                  </GreyContainerSection>
+                )}
                 <GreyContainerSection>
                   <CadenceSelector />
                 </GreyContainerSection>
-                <GreyContainerSection>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={createScheduledMaps}
-                        onChange={event =>
-                          setCreateScheduledMaps(event.target.checked)
-                        }
-                        color="primary"
-                      />
-                    }
-                    label={t('Create scheduled maps')}
-                  />
+                <GreyContainerSection isLast={createScheduledMaps}>
+                  <Tooltip
+                    title={t(
+                      'Scheduled maps use your current print template and viewport. Sign in with schedule permission to create a recurring export.',
+                    )}
+                    arrow
+                    placement="top"
+                    classes={{ tooltip: classes.tooltip }}
+                  >
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={createScheduledMaps}
+                          onChange={event =>
+                            setCreateScheduledMaps(event.target.checked)
+                          }
+                          color="primary"
+                        />
+                      }
+                      label={t('Create scheduled maps')}
+                    />
+                  </Tooltip>
+                  {createScheduledMaps &&
+                    isPrismAuthenticated &&
+                    !canManageSchedules && (
+                      <Typography
+                        variant="caption"
+                        component="p"
+                        className={classes.batchExportTruncateHint}
+                      >
+                        {t(
+                          'You do not have permission to create schedules. Contact an administrator.',
+                        )}
+                      </Typography>
+                    )}
                 </GreyContainerSection>
-                <GreyContainerSection isLast>
-                  <Box className={classes.mapCountContainer}>
-                    <Typography variant="body1">
-                      {t('Number of maps generated')}
-                    </Typography>
-                    <Typography
-                      variant="body1"
-                      className={`${classes.mapCountValue}${
-                        batchMapsWillTruncate
-                          ? ` ${classes.mapCountValueWarning}`
-                          : ''
-                      }`}
-                    >
-                      {mapCount}
-                    </Typography>
-                  </Box>
-                  {batchMapsWillTruncate && (
-                    <Typography
-                      variant="caption"
-                      component="p"
-                      className={classes.batchExportTruncateHint}
-                    >
-                      {t('batch_export_maps_truncated_panel', {
-                        max: MAP_EXPORT_MAX_URLS_PER_REQUEST,
-                      })}
-                    </Typography>
-                  )}
-                </GreyContainerSection>
+                {!createScheduledMaps && (
+                  <GreyContainerSection isLast>
+                    <Box className={classes.mapCountContainer}>
+                      <Typography variant="body1">
+                        {t('Number of maps generated')}
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        className={`${classes.mapCountValue}${
+                          batchMapsWillTruncate
+                            ? ` ${classes.mapCountValueWarning}`
+                            : ''
+                        }`}
+                      >
+                        {mapCount}
+                      </Typography>
+                    </Box>
+                    {batchMapsWillTruncate && (
+                      <Typography
+                        variant="caption"
+                        component="p"
+                        className={classes.batchExportTruncateHint}
+                      >
+                        {t('batch_export_maps_truncated_panel', {
+                          max: MAP_EXPORT_MAX_URLS_PER_REQUEST,
+                        })}
+                      </Typography>
+                    )}
+                  </GreyContainerSection>
+                )}
               </GreyContainer>
             )}
             {toggles.batchMapsVisibility && activeBatchJobs.length > 0 && (
@@ -876,8 +893,12 @@ function PrintConfig() {
           onClick={handlePrimaryButtonClick}
           disabled={
             isDownloading ||
-            (toggles.batchMapsVisibility &&
-              (!dateRange.startDate || !dateRange.endDate))
+            schedulePrimaryDisabled ||
+            (createScheduledMaps && !isPrismAuthenticated
+              ? false
+              : toggles.batchMapsVisibility &&
+                !createScheduledMaps &&
+                (!dateRange.startDate || !dateRange.endDate))
           }
         >
           {isDownloading ? (

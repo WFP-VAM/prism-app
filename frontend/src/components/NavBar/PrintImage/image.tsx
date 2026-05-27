@@ -19,6 +19,7 @@ import { jsPDF } from 'jspdf';
 import { debounce, get } from 'lodash';
 import type { LngLatBounds } from 'maplibre-gl';
 import React, {
+  useCallback,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -26,6 +27,7 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { isBoundaryLayer } from 'utils/boundary-layers-utils';
 import { dateWithoutTime, getFormattedDate } from 'utils/date-utils';
 import useLayers, { isWmsSelectableForBatchPrint } from 'utils/layers-utils';
@@ -52,11 +54,16 @@ import {
   getMapExportPageOrigin,
   MAP_EXPORT_MAX_URLS_PER_REQUEST,
 } from '../../../utils/constants';
+import {
+  cadenceToApi,
+  createMapExportSchedule,
+} from '../../../utils/mapExportSchedulesApi';
 import { ALL_ASPECT_RATIO_OPTIONS } from '../../MapExport/aspectRatioConstants';
 import { downloadToFile } from '../../MapView/utils';
 import { formatExportUrlForClipboard } from './batchExportUrls';
 import { buildBatchExportDatesDisplay } from './batchMapExport/batchExportArtifactFilename';
 import { buildBatchExportUrls } from './batchMapExport/buildBatchExportUrls';
+import { buildScheduleExportOptions } from './batchMapExport/buildScheduleExportOptions';
 import { useBatchMapExportJobsActions } from './batchMapExport/useBatchMapExportJobs';
 import { calculateExportDimensions } from './mapDimensionsUtils';
 import PrintConfig from './printConfig';
@@ -80,7 +87,10 @@ const debounceCallback = debounce((callback: any, ...args: any[]) => {
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
+const DATE_PLACEHOLDER_SUFFIX = ': {date_coverage}';
+
 function DownloadImage({ open, handleClose }: DownloadImageProps) {
+  const location = useLocation();
   const { country, header } = appConfig;
   const logo = header?.logo;
   const bottomLogo = get(appConfig, 'printConfig.bottomLogo', undefined);
@@ -165,6 +175,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
   const [cadence, setCadence] = useState<BatchCadence>('every-n-dekads');
   const [dekadInterval, setDekadInterval] = useState(1);
+  const [createScheduledMaps, setCreateScheduledMaps] = useState(false);
 
   const [isDownloading, setIsDownloading] = useState(false);
   const countryLayerIds = new Set(
@@ -177,6 +188,26 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       countryLayerIds.has(l.id),
   );
   const [selectedLayerId, setSelectedLayerId] = useState<LayerKey | null>(null);
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+    const params = new URLSearchParams(location.search);
+    if (params.get('schedule') === '1') {
+      setCreateScheduledMaps(true);
+    }
+    if (params.get('batchMaps') === '1') {
+      setTitleText(prev =>
+        prev.includes('{date}') ? prev : `${prev}${DATE_PLACEHOLDER_SUFFIX}`,
+      );
+      setToggles(prev =>
+        prev.batchMapsVisibility
+          ? prev
+          : { ...prev, batchMapsVisibility: true },
+      );
+    }
+  }, [location.search, open]);
 
   const { selectedLayersWithDateSupport, selectedLayers } = useLayers();
 
@@ -695,6 +726,120 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     }
   };
 
+  const createSchedule = useCallback(async () => {
+    if (!printSelectedLayer) {
+      dispatch(
+        addNotification({
+          type: 'error',
+          message: t('Select a layer for scheduled maps'),
+        }),
+      );
+      return;
+    }
+    if (!previewBounds) {
+      dispatch(
+        addNotification({
+          type: 'error',
+          message: t(
+            'Open the print preview so the map viewport is captured before creating a schedule',
+          ),
+        }),
+      );
+      return;
+    }
+
+    setIsDownloading(true);
+    try {
+      const pageUrl = new URL(window.location.href);
+      const { pathname } = pageUrl;
+      const origin = getMapExportPageOrigin(pageUrl);
+      const exportPath = `${pathname.replace(/\/$/, '')}/export`;
+      const exportDims = calculateExportDimensions(
+        mapDimensions.aspectRatio,
+        mapDimensions.aspectRatio === 'Auto'
+          ? (previewMapWidth ?? undefined)
+          : undefined,
+        mapDimensions.aspectRatio === 'Auto'
+          ? (previewMapHeight ?? undefined)
+          : undefined,
+      );
+      const exportOptions = buildScheduleExportOptions({
+        origin,
+        exportPath,
+        mapBounds: previewBounds,
+        mapZoom: previewZoom,
+        mapDimensions,
+        titleText,
+        footerText,
+        footerTextSize,
+        logoPosition,
+        logoScale,
+        legendPosition,
+        legendScale,
+        bottomLogoScale,
+        toggles,
+        selectedBoundaries,
+        viewportWidth: exportDims.canvasWidth,
+        viewportHeight: exportDims.canvasHeight,
+      });
+
+      const result = await createMapExportSchedule({
+        country: safeCountry,
+        layer_id: printSelectedLayer.id,
+        cadence: cadenceToApi(cadence),
+        dekad_interval: dekadInterval,
+        format: 'pdf',
+        export_options: exportOptions,
+      });
+
+      dispatch(
+        addNotification({
+          type: 'success',
+          message: t('Schedule "{{name}}" created', { name: result.name }),
+        }),
+      );
+      handleClose();
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? t('Schedule creation failed: {{message}}', {
+              message: error.message,
+            })
+          : t('Schedule creation failed. Please try again.');
+      dispatch(
+        addNotification({
+          type: 'error',
+          message,
+        }),
+      );
+      console.error('Create schedule failed:', error);
+    } finally {
+      setIsDownloading(false);
+    }
+  }, [
+    printSelectedLayer,
+    previewBounds,
+    previewZoom,
+    previewMapWidth,
+    previewMapHeight,
+    mapDimensions,
+    titleText,
+    footerText,
+    footerTextSize,
+    logoPosition,
+    logoScale,
+    legendPosition,
+    legendScale,
+    bottomLogoScale,
+    toggles,
+    selectedBoundaries,
+    cadence,
+    dekadInterval,
+    dispatch,
+    t,
+    handleClose,
+  ]);
+
   const printContext = {
     printConfig: {
       open,
@@ -764,6 +909,9 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       selectableLayers,
       selectedLayerId,
       setSelectedLayerId,
+      createScheduledMaps,
+      setCreateScheduledMaps,
+      createSchedule,
     },
   };
 
