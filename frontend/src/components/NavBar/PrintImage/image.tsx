@@ -50,22 +50,17 @@ import {
   getAvailableCadences,
   getDisabledCadences,
 } from '../../../utils/batchCadenceUtils';
-import {
-  getMapExportPageOrigin,
-  MAP_EXPORT_MAX_URLS_PER_REQUEST,
-} from '../../../utils/constants';
+import { MAP_EXPORT_MAX_URLS_PER_REQUEST } from '../../../utils/constants';
 import {
   cadenceToApi,
   createMapExportSchedule,
 } from '../../../utils/mapExportSchedulesApi';
 import { ALL_ASPECT_RATIO_OPTIONS } from '../../MapExport/aspectRatioConstants';
 import { downloadToFile } from '../../MapView/utils';
-import { formatExportUrlForClipboard } from './batchExportUrls';
 import { buildBatchExportDatesDisplay } from './batchMapExport/batchExportArtifactFilename';
-import { buildBatchExportUrls } from './batchMapExport/buildBatchExportUrls';
-import { buildScheduleExportOptions } from './batchMapExport/buildScheduleExportOptions';
+import { formatExportUrlForClipboard } from './batchMapExport/mapExportTemplate';
 import { useBatchMapExportJobsActions } from './batchMapExport/useBatchMapExportJobs';
-import { calculateExportDimensions } from './mapDimensionsUtils';
+import { useMapExportTemplate } from './batchMapExport/useMapExportTemplate';
 import PrintConfig from './printConfig';
 import PrintConfigContext, {
   MapDimensions,
@@ -390,6 +385,24 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     [uniqueQueryDates, dekadInterval],
   );
 
+  const mapExportTemplate = useMapExportTemplate({
+    mapBounds: previewBounds,
+    mapZoom: previewZoom,
+    mapDimensions,
+    previewMapWidth,
+    previewMapHeight,
+    titleText,
+    footerText,
+    footerTextSize,
+    logoPosition,
+    logoScale,
+    legendPosition,
+    legendScale,
+    bottomLogoScale,
+    toggles,
+    selectedBoundaries,
+  });
+
   useEffect(() => {
     if (
       open &&
@@ -535,47 +548,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     setDownloadMenuAnchorEl(null);
   };
 
-  const getBatchExportUrls = () => {
-    if (!printSelectedLayer) {
-      return [];
-    }
-
-    const formattedDates = filteredBatchDates
-      .map(timestamp => getFormattedDate(timestamp, 'default'))
-      .filter((d): d is string => d !== undefined && d !== '');
-
-    if (formattedDates.length === 0) {
-      return [];
-    }
-
-    const pageUrl = new URL(window.location.href);
-    const { pathname, search } = pageUrl;
-    const origin = getMapExportPageOrigin(pageUrl);
-    const exportPath = `${pathname.replace(/\/$/, '')}/export`;
-    const baseParams = new URLSearchParams(search);
-
-    return buildBatchExportUrls({
-      formattedDates,
-      origin,
-      exportPath,
-      baseSearchParams: baseParams,
-      printSelectedLayer,
-      mapBounds: previewBounds,
-      mapZoom: previewZoom,
-      mapDimensions,
-      titleText,
-      footerText,
-      footerTextSize,
-      logoPosition,
-      logoScale,
-      legendPosition,
-      legendScale,
-      bottomLogoScale,
-      toggles,
-      selectedBoundaries,
-    });
-  };
-
   const copyBatchMapUrls = async () => {
     const { startDate, endDate } = dateRangeForBatchMaps;
 
@@ -589,7 +561,10 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       return;
     }
 
-    const constructedUrls = getBatchExportUrls();
+    const constructedUrls = mapExportTemplate.buildBatchUrlsForTimestamps(
+      filteredBatchDates,
+      printSelectedLayer,
+    );
 
     if (constructedUrls.length === 0) {
       dispatch(
@@ -645,62 +620,26 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
           ? filteredBatchDates.slice(-MAP_EXPORT_MAX_URLS_PER_REQUEST)
           : filteredBatchDates;
 
-      const formattedDates = timestampsForExport
-        .map(timestamp => getFormattedDate(timestamp, 'default'))
-        .filter((d): d is string => d !== undefined && d !== '');
+      const constructedUrls = mapExportTemplate.buildBatchUrlsForTimestamps(
+        timestampsForExport,
+        printSelectedLayer,
+      );
 
-      if (formattedDates.length === 0) {
+      if (constructedUrls.length === 0) {
         console.error('No dates found in the selected range');
         return;
       }
 
-      const mapBounds = previewBounds;
-      const mapZoom = previewZoom;
-      const pageUrl = new URL(window.location.href);
-      const { pathname, search } = pageUrl;
-      const origin = getMapExportPageOrigin(pageUrl);
-      const exportPath = `${pathname.replace(/\/$/, '')}/export`;
-      const baseParams = new URLSearchParams(search);
-
-      const exportDims = calculateExportDimensions(
-        mapDimensions.aspectRatio,
-        mapDimensions.aspectRatio === 'Auto'
-          ? (previewMapWidth ?? undefined)
-          : undefined,
-        mapDimensions.aspectRatio === 'Auto'
-          ? (previewMapHeight ?? undefined)
-          : undefined,
-      );
-
-      const constructedUrls = buildBatchExportUrls({
-        formattedDates,
-        origin,
-        exportPath,
-        baseSearchParams: baseParams,
-        printSelectedLayer,
-        mapBounds,
-        mapZoom,
-        mapDimensions,
-        titleText,
-        footerText,
-        footerTextSize,
-        logoPosition,
-        logoScale,
-        legendPosition,
-        legendScale,
-        bottomLogoScale,
-        toggles,
-        selectedBoundaries,
-      });
-
       const layerDisplayName =
         printSelectedLayer.title ?? printSelectedLayer.id;
       const datesSummary = buildBatchExportDatesDisplay(timestampsForExport);
+      const { canvasWidth, canvasHeight } =
+        mapExportTemplate.viewportDimensions;
 
       enqueueBatchMapExportJob({
         urls: constructedUrls,
-        viewportWidth: exportDims.canvasWidth,
-        viewportHeight: exportDims.canvasHeight,
+        viewportWidth: canvasWidth,
+        viewportHeight: canvasHeight,
         format,
         country: safeCountry,
         layerDisplayName,
@@ -750,38 +689,11 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
     setIsDownloading(true);
     try {
-      const pageUrl = new URL(window.location.href);
-      const { pathname } = pageUrl;
-      const origin = getMapExportPageOrigin(pageUrl);
-      const exportPath = `${pathname.replace(/\/$/, '')}/export`;
-      const exportDims = calculateExportDimensions(
-        mapDimensions.aspectRatio,
-        mapDimensions.aspectRatio === 'Auto'
-          ? (previewMapWidth ?? undefined)
-          : undefined,
-        mapDimensions.aspectRatio === 'Auto'
-          ? (previewMapHeight ?? undefined)
-          : undefined,
-      );
-      const exportOptions = buildScheduleExportOptions({
-        origin,
-        exportPath,
-        mapBounds: previewBounds,
-        mapZoom: previewZoom,
-        mapDimensions,
-        titleText,
-        footerText,
-        footerTextSize,
-        logoPosition,
-        logoScale,
-        legendPosition,
-        legendScale,
-        bottomLogoScale,
-        toggles,
-        selectedBoundaries,
-        viewportWidth: exportDims.canvasWidth,
-        viewportHeight: exportDims.canvasHeight,
-      });
+      const exportOptions =
+        mapExportTemplate.buildScheduleExportOptionsPayload();
+      if (!exportOptions) {
+        return;
+      }
 
       const result = await createMapExportSchedule({
         country: safeCountry,
@@ -819,20 +731,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   }, [
     printSelectedLayer,
     previewBounds,
-    previewZoom,
-    previewMapWidth,
-    previewMapHeight,
-    mapDimensions,
-    titleText,
-    footerText,
-    footerTextSize,
-    logoPosition,
-    logoScale,
-    legendPosition,
-    legendScale,
-    bottomLogoScale,
-    toggles,
-    selectedBoundaries,
+    mapExportTemplate,
     cadence,
     dekadInterval,
     dispatch,
