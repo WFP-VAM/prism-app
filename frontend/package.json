@@ -62,6 +62,7 @@
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "4.0.0-alpha.61",
     "@material-ui/styles": "4.11.5",
+    "@posthog/react": "^1.9.0",
     "@react-pdf/renderer": "^4.3.1",
     "@reduxjs/toolkit": "^1.4.0",
     "@sentry/browser": "^7.119.1",
@@ -99,6 +100,7 @@
     "max-inscribed-circle": "^2.0.1",
     "papaparse": "^5.2.0",
     "pmtiles": "^4.2.1",
+    "posthog-js": "^1.372.9",
     "prism-common": "file:../common",
     "react": "^18",
     "react-chartjs-2": "^2.9.0",
@@ -132,7 +134,8 @@
     "qs": "^6.14.1",
     "lodash": "^4.18.0",
     "dompurify": "^3.4.0",
-    "protocol-buffers-schema": ">=3.6.1"
+    "protocol-buffers-schema": ">=3.6.1",
+    "protobufjs": "^7.5.8"
   },
   "_resolutionsNotes": {
     "node-notifier": "Build compatibility - keep",
@@ -148,7 +151,8 @@
     "systeminformation": "CVE-2025-68154 - Security fix - GHSA-wphj-fx3q-84ch - Parent: cypress - Command Injection vulnerability - Forces v5.27.14+",
     "qs": "CVE-2025-15284 - Security fix - GHSA-6rw7-vpxm-498p - Parent: cypress>@cypress/request - arrayLimit bypass DoS vulnerability - Forces v6.14.1+",
     "lodash": "Lodash security fixes - GHSA-r5fr-rjxr-66jc / GHSA-f23m-r3pf-42rh (CVE-2026-4800 / CVE-2026-2950) and prior - Forces v4.18.0+",
-    "protocol-buffers-schema": "CVE-2026-5758 - Security fix - GHSA-j452-xhg8-qg39 - Parent: geotiff - Forces v3.6.1+"
+    "protocol-buffers-schema": "CVE-2026-5758 - Security fix - GHSA-j452-xhg8-qg39 - Parent: geotiff - Forces v3.6.1+",
+    "protobufjs": "CVE-2026-45740 - Security fix - GHSA-jggg-4jg4-v7c6 - Parent: posthog-js>@opentelemetry/otlp-transformer - Forces v7.5.8+"
   },
   "_comment": "The 'defaults' and 'not ie 11' are needed to avoid build issues with maplibre-gl.",
   "browserslist": {

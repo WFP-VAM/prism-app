@@ -6,6 +6,7 @@ import {
   Snackbar,
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
+import { usePostHog } from '@posthog/react';
 import mask from '@turf/mask';
 import { downloadToFile } from 'components/MapView/utils';
 import { safeCountry } from 'config';
@@ -42,6 +43,7 @@ function DashboardExportDialog({
   handleClose,
 }: DashboardExportDialogProps) {
   const classes = useStyles();
+  const posthog = usePostHog();
   const { t } = useSafeTranslation();
   const printRef = useRef<HTMLDivElement>(null);
   const [paperSize, setPaperSize] = useState<PaperSize>(PaperSize.A4_LANDSCAPE);
@@ -186,6 +188,11 @@ function DashboardExportDialog({
   };
 
   const download = async (format: 'pdf' | 'png') => {
+    posthog?.capture('dashboard_exported', {
+      format,
+      paper_size: paperSize,
+      dashboard_title: dashboardTitle,
+    });
     handleDownloadMenuClose();
     setIsExporting(true);
 

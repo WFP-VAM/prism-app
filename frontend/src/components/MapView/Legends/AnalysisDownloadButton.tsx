@@ -1,5 +1,6 @@
 import { IconButton, Menu, MenuItem, Tooltip } from '@material-ui/core';
 import GetAppIcon from '@material-ui/icons/GetApp';
+import { usePostHog } from '@posthog/react';
 import {
   downloadToFile,
   getExposureAnalysisColumnsToRender,
@@ -43,6 +44,7 @@ function AnalysisDownloadButton() {
   );
   const analysisDefinition = useSelector(getCurrentDefinition);
 
+  const posthog = usePostHog();
   const [downloadMenuAnchorEl, setDownloadMenuAnchorEl] =
     useState<HTMLElement | null>(null);
 
@@ -96,6 +98,9 @@ function AnalysisDownloadButton() {
   }, [analysisDate, analysisResult, t]);
 
   const handleAnalysisDownloadGeoJson = useCallback((): void => {
+    posthog?.capture('analysis_downloaded_geojson', {
+      file_name: fileName ?? 'prism_extract',
+    });
     downloadToFile(
       {
         content: JSON.stringify(featureCollection),
@@ -105,13 +110,16 @@ function AnalysisDownloadButton() {
       'application/json',
     );
     handleDownloadMenuClose();
-  }, [featureCollection, fileName]);
+  }, [featureCollection, fileName, posthog]);
 
   const handleAnalysisDownloadCsv = useCallback((): void => {
     handleDownloadMenuClose();
     if (!analysisResult) {
       return;
     }
+    posthog?.capture('analysis_downloaded_csv', {
+      analysis_type: analysisResult.constructor.name,
+    });
     if (analysisResult instanceof ExposedPopulationResult) {
       downloadToFile(
         {
@@ -143,6 +151,7 @@ function AnalysisDownloadButton() {
     analysisResultSortOrder,
     exposureAnalysisColumnsToRender,
     exposureAnalysisTableRowsToRender,
+    posthog,
     translatedColumns,
   ]);
 

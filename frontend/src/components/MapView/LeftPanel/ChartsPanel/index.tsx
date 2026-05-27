@@ -187,19 +187,25 @@ const ChartsPanel = memo(() => {
   const dataForCsv = useRef<{ [key: string]: any[] }>({});
   const dataForSecondCsv = useRef<{ [key: string]: any[] }>({});
 
+  const posthog = usePostHog();
   const { t } = useSafeTranslation();
 
   const tabValue = useSelector(leftPanelTabValueSelector);
 
   const onChangeChartLayers = useCallback(
     (event: React.ChangeEvent<{ value: unknown }>) => {
-      if (compareLocations || comparePeriods) {
-        setSelectedLayerTitles([event.target.value] as string[]);
-      } else {
-        setSelectedLayerTitles(event.target.value as string[]);
-      }
+      const newTitles =
+        compareLocations || comparePeriods
+          ? ([event.target.value] as string[])
+          : (event.target.value as string[]);
+      posthog?.capture('chart_layers_selected', {
+        layer_titles: newTitles,
+        compare_locations: compareLocations,
+        compare_periods: comparePeriods,
+      });
+      setSelectedLayerTitles(newTitles);
     },
-    [compareLocations, comparePeriods],
+    [compareLocations, comparePeriods, posthog],
   );
 
   const showChartsPanel = useMemo(
@@ -513,6 +519,7 @@ const ChartsPanel = memo(() => {
   ]);
 
   const handleClearAllSelectedCharts = useCallback(() => {
+    posthog?.capture('charts_cleared');
     setSelectedLayerTitles([]);
     // Clear the date
     setStartDate1(new Date().getTime() - oneYearInMs);
@@ -528,9 +535,13 @@ const ChartsPanel = memo(() => {
     // reset the admin 2 titles
     setAdmin2Key('' as AdminCodeString);
     setSecondAdmin2Key('' as AdminCodeString);
-  }, []);
+  }, [posthog]);
 
   const handleOnChangeCompareLocationsSwitch = useCallback(() => {
+    posthog?.capture('chart_comparison_toggled', {
+      type: 'locations',
+      enabled: !compareLocations,
+    });
     if (comparePeriods) {
       setComparePeriods(false);
     }
@@ -552,12 +563,17 @@ const ChartsPanel = memo(() => {
     adminProperties,
     compareLocations,
     comparePeriods,
+    posthog,
     secondAdmin0Key,
     secondAdminProperties,
     selectedLayerTitles,
   ]);
 
   const handleOnChangeComparePeriodsSwitch = useCallback(() => {
+    posthog?.capture('chart_comparison_toggled', {
+      type: 'periods',
+      enabled: !comparePeriods,
+    });
     if (compareLocations) {
       setCompareLocations(false);
     }
@@ -566,7 +582,7 @@ const ChartsPanel = memo(() => {
       setSelectedLayerTitles([selectedLayerTitles[0]]);
     }
     setComparePeriods(!comparePeriods);
-  }, [compareLocations, comparePeriods, selectedLayerTitles]);
+  }, [compareLocations, comparePeriods, posthog, selectedLayerTitles]);
 
   const chartsSelectRenderValue = useCallback(
     (selected: any) =>
