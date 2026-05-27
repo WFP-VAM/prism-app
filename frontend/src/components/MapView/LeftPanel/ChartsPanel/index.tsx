@@ -16,6 +16,7 @@ import {
   Switch,
   Typography,
 } from '@material-ui/core';
+import { usePostHog } from '@posthog/react';
 import { ChartDateRangeSelector } from 'components/Common/ChartFormComponents';
 import DownloadCsvButton from 'components/MapView/DownloadCsvButton';
 import { buildCsvFileName, getProperties } from 'components/MapView/utils';
