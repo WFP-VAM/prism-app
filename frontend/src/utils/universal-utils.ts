@@ -3,18 +3,13 @@ import { BoundaryLayerProps, LayerKey } from 'config/types';
 import universalMetadata from 'config/universal/metadata.json';
 import { getDisplayBoundaryLayers } from 'config/utils';
 
-type UniversalMetadata = {
-  admin3: string[];
-  bbox: Record<string, [number, number, number, number]>;
-};
-
-const metadata = universalMetadata as UniversalMetadata;
+type CountriesKey = keyof typeof universalMetadata.countries;
 
 export const UNIVERSAL_ADMIN3_LAYER_ID: LayerKey =
   'universal_admin3_boundaries';
 
 const ADMIN3_ISO3_CODES = new Set(
-  metadata.admin3
+  universalMetadata.admin3Countries
     .map((code: string) => code.toUpperCase())
     .filter(code => /^[A-Z0-9]{3}$/.test(code)),
 );
@@ -42,7 +37,7 @@ export function isKnownIso3(iso3: string | undefined): boolean {
   if (!normalized || !isValidIso3Format(normalized)) {
     return false;
   }
-  return normalized in metadata.bbox;
+  return normalized in universalMetadata.countries;
 }
 
 export function hasAdmin3ForCountry(iso3: string | undefined): boolean {
@@ -126,10 +121,11 @@ export function getCountryBbox(
   iso3: string | undefined,
 ): [number, number, number, number] | undefined {
   const normalized = normalizeIso3(iso3);
-  if (!normalized) {
+  if (!normalized || !isKnownIso3(normalized)) {
     return undefined;
   }
-  return metadata.bbox[normalized];
+  const [a, b, c, d] = universalMetadata.countries[normalized as CountriesKey];
+  return [a, b, c, d];
 }
 
 export { universalMetadata };
