@@ -147,7 +147,7 @@ jobs:
       GIT_HASH: ${{ github.event.pull_request.head.sha }}
       firebase_channel: ${{ github.event.pull_request.number }}
       REACT_APP_POSTHOG_TOKEN: ${{ secrets.REACT_APP_POSTHOG_TOKEN }}
-      REACT_APP_POSTHOG_HOST: ${{ secrets.REACT_APP_POSTHOG_HOST }}
+      REACT_APP_POSTHOG_HOST: 'https://eu.i.posthog.com'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -210,7 +210,7 @@ jobs:
     env:
       REACT_APP_SENTRY_URL: ${{ secrets.REACT_APP_SENTRY_URL }}
       REACT_APP_POSTHOG_TOKEN: ${{ secrets.REACT_APP_POSTHOG_TOKEN }}
-      REACT_APP_POSTHOG_HOST: ${{ secrets.REACT_APP_POSTHOG_HOST }}
+      REACT_APP_POSTHOG_HOST: 'https://eu.i.posthog.com'
       firebase_channel: prism-master-${{ matrix.country }}
     steps:
       - name: Checkout
