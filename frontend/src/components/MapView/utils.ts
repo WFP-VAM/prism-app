@@ -1,4 +1,3 @@
-import { appConfig } from 'config';
 import {
   AdminCodeString,
   AdminLevelType,
@@ -33,6 +32,7 @@ import { Column, quoteAndEscapeCell } from 'utils/analysis-utils';
 import { LocalError } from 'utils/error-utils';
 import { formatFeatureInfo } from 'utils/server-utils';
 import { getTitle } from 'utils/title-utils';
+import { getEffectiveMultiCountry } from 'utils/universal-country-admin';
 import { getUrlKey, UrlLayerKey } from 'utils/url-utils';
 
 import { getExtent } from './Layers/raster-utils';
@@ -346,7 +346,7 @@ export const getExposureAnalysisTableData = (
  * @param adminLevel - Optional administrative level type
  * @returns GeoJSON properties for the matching feature
  */
-const { multiCountry } = appConfig;
+const multiCountry = getEffectiveMultiCountry();
 const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
 const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 

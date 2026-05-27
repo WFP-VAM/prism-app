@@ -23,7 +23,6 @@ import {
 } from 'components/Common/ChartFormComponents';
 import DownloadCsvButton from 'components/MapView/DownloadCsvButton';
 import { buildCsvFileName, getProperties } from 'components/MapView/utils';
-import { appConfig } from 'config';
 import {
   AdminCodeString,
   AdminLevelType,
@@ -47,6 +46,10 @@ import React, {
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
+import {
+  getEffectiveMultiCountry,
+  useEffectiveCountryAdmin0Id,
+} from 'utils/universal-country-admin';
 import { useBoundaryData } from 'utils/useBoundaryData';
 
 import {
@@ -74,8 +77,8 @@ const menuProps: Partial<MenuProps> = {
 };
 
 // Chart configuration
-const { multiCountry, countryAdmin0Id } = appConfig;
-const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
+const configMultiCountry = getEffectiveMultiCountry();
+const MAX_ADMIN_LEVEL = configMultiCountry ? 3 : 2;
 const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 const chartLayers = getWMSLayersWithChart();
 
@@ -86,6 +89,7 @@ const oneYearInTicks = 34;
 const tabPanelType = Panel.Charts;
 
 const ChartsPanel = memo(() => {
+  const countryAdmin0Id = useEffectiveCountryAdmin0Id();
   const { data } = useBoundaryData(boundaryLayer.id);
   const classes = useStyles();
   const [compareLocations, setCompareLocations] = useState(false);

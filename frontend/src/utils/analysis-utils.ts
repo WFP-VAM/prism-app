@@ -142,6 +142,7 @@ export type ApiData = {
   group_by: string;
   geojson_out?: boolean;
   wfs_params?: WfsRequestParams;
+  iso3_filter?: string;
 };
 
 export type AlertRequest = {

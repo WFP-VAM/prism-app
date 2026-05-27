@@ -1,4 +1,3 @@
-import { appConfig } from 'config';
 import {
   AdminLevelType,
   BoundaryLayerProps,
@@ -14,8 +13,10 @@ import { AdminBoundaryParams, EWSParams } from 'context/datasetStateSlice';
 import { CHART_API_URL } from 'utils/constants';
 
 import { GoogleFloodParams } from './google-flood-utils';
+import { getEffectiveMultiCountry } from './universal-country-admin';
+import { resolveChartBoundaryProperty } from './universal-utils';
 
-const { multiCountry } = appConfig;
+const multiCountry = getEffectiveMultiCountry();
 const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
 const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
@@ -69,14 +70,15 @@ export const getChartAdminBoundaryParams = (
     (obj, item) => ({
       ...obj,
       [item.id]: {
-        code: properties[item.id],
+        code: resolveChartBoundaryProperty(properties, item.id),
         level: item.level,
         name:
-          properties[item.name] ||
+          resolveChartBoundaryProperty(properties, item.name) ||
           properties[
             adminLevelNames[Number(item.level) - (multiCountry ? 0 : 1)]
           ],
         localName:
+          resolveChartBoundaryProperty(properties, item.name) ||
           properties[
             adminLevelLocalNames[Number(item.level) - (multiCountry ? 0 : 1)]
           ],

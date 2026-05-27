@@ -7,6 +7,7 @@ import { isPrimaryBoundaryLayer } from 'config/utils';
 import { toggleSelectedBoundary } from 'context/mapSelectionLayerStateSlice';
 import { setBoundaryRelationData } from 'context/mapStateSlice';
 import { showPopup } from 'context/tooltipStateSlice';
+import { useCountryIso } from 'context/useCountryIso';
 import { languages } from 'i18n';
 import { Map as MaplibreMap } from 'maplibre-gl';
 import { memo, useEffect, useState } from 'react';
@@ -19,7 +20,7 @@ import {
   useMapCallback,
 } from 'utils/map-utils';
 import { getFullLocationName } from 'utils/name-utils';
-import { initPmtilesProtocol } from 'utils/pmtiles-utils';
+import { getIso3MapFilter, isUrlDrivenDeployment } from 'utils/universal-utils';
 import { useBoundaryData } from 'utils/useBoundaryData';
 import { useMapState } from 'utils/useMapState';
 
@@ -78,6 +79,10 @@ const onMouseLeave = () => (evt: MapLayerMouseEvent) =>
 
 const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
   const selectedMap = useMapState()?.maplibreMap();
+  const { iso3 } = useCountryIso();
+  const iso3Filter = isUrlDrivenDeployment()
+    ? (getIso3MapFilter(iso3) as any)
+    : undefined;
   const [isZoomLevelSufficient, setIsZoomLevelSufficient] = useState(
     !layer.minZoom,
   );
@@ -105,13 +110,6 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
       selectedMap.off('zoomend', checkZoom);
     };
   }, [selectedMap, layer.minZoom]);
-
-  useEffect(() => {
-    if (layer.format === 'pmtiles') {
-      return initPmtilesProtocol();
-    }
-    return undefined;
-  }, [layer.format]);
 
   const dispatch = useDispatch();
   const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
@@ -148,6 +146,7 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
           type="line"
           source={`source-${layer.id}`}
           source-layer={layer.layerName}
+          filter={iso3Filter}
           paint={{
             ...layer.styles.line,
             'line-opacity': isZoomLevelSufficient
@@ -161,6 +160,7 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
           type="fill"
           source={`source-${layer.id}`}
           source-layer={layer.layerName}
+          filter={iso3Filter}
           paint={layer.styles.fill}
           beforeId={before}
         />

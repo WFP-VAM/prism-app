@@ -5,6 +5,7 @@ import { coordFirst } from 'utils/data-utils';
 import { LocalError } from 'utils/error-utils';
 import { fetchWithTimeout } from 'utils/fetch-with-timeout';
 import { getPmtilesInstance } from 'utils/pmtiles-utils';
+import { filterFeaturesByIso3 } from 'utils/universal-utils';
 
 import type { LayerDataParams, LazyLoader } from './layer-data';
 
@@ -13,7 +14,7 @@ export interface BoundaryLayerData extends FeatureCollection {}
 export const fetchBoundaryLayerData: LazyLoader<BoundaryLayerProps> =
   () =>
   async (params: LayerDataParams<BoundaryLayerProps>, { dispatch }) => {
-    const { layer, map } = params;
+    const { layer, map, iso3Filter } = params;
     const { path, format } = layer;
 
     try {
@@ -25,9 +26,14 @@ export const fetchBoundaryLayerData: LazyLoader<BoundaryLayerProps> =
           sourceLayer: layer.layerName,
         });
 
+        const features = filterFeaturesByIso3(
+          allFeatures,
+          iso3Filter as string | undefined,
+        );
+
         return {
           type: 'FeatureCollection',
-          features: allFeatures,
+          features,
           properties: { header },
         };
       }
@@ -56,6 +62,15 @@ export const fetchBoundaryLayerData: LazyLoader<BoundaryLayerProps> =
           );
         }
       });
+      if (iso3Filter) {
+        return {
+          ...geojson,
+          features: filterFeaturesByIso3(
+            geojson.features ?? [],
+            iso3Filter as string,
+          ),
+        };
+      }
       return geojson;
     } catch (error) {
       if (!(error instanceof LocalError)) {

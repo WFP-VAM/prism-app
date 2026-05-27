@@ -29,10 +29,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getChartAdminBoundaryParams } from 'utils/admin-utils';
 import { getLatestPeriodRange, getTimeInMilliseconds } from 'utils/date-utils';
 import { getPossibleDatesForLayer } from 'utils/server-utils';
+import { useEffectiveCountryAdmin0Id } from 'utils/universal-country-admin';
+import { getEffectiveMultiCountry } from 'utils/universal-country-admin';
 
 import { useBoundaryData } from './useBoundaryData';
 
-const { multiCountry, countryAdmin0Id } = appConfig;
+const multiCountry = getEffectiveMultiCountry();
+const staticCountryAdmin0Id = appConfig.countryAdmin0Id;
 const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
 const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
@@ -126,6 +129,7 @@ export interface UseChartFormReturn {
 export const useChartForm = (
   options: UseChartFormOptions = {},
 ): UseChartFormReturn => {
+  const countryAdmin0Id = useEffectiveCountryAdmin0Id();
   const {
     initialChartLayerId,
     initialStartDate,
@@ -263,7 +267,7 @@ export const useChartForm = (
       return;
     }
     setAdminProperties(getProperties(boundaryLayerData.data));
-  }, [adminProperties, boundaryLayerData]);
+  }, [adminProperties, boundaryLayerData, countryAdmin0Id]);
 
   // Ensure adminLevel matches what's actually selected
   useEffect(() => {
@@ -367,6 +371,7 @@ export interface UseChartDataReturn {
 export const useChartData = (
   options: UseChartDataOptions,
 ): UseChartDataReturn => {
+  const countryAdmin0Id = useEffectiveCountryAdmin0Id();
   const {
     chartLayer,
     adminProperties,
@@ -401,17 +406,24 @@ export const useChartData = (
     const adminKey = levelsDict[adminLevel.toString()];
 
     const { code: adminCode } = params.boundaryProps[adminKey] || {
-      code: appConfig.countryAdmin0Id,
+      code: countryAdmin0Id ?? staticCountryAdmin0Id,
     };
 
     return {
       ...params,
       level: adminLevel.toString(),
-      adminCode: adminCode || appConfig.countryAdmin0Id,
+      adminCode: adminCode || countryAdmin0Id || staticCountryAdmin0Id,
       startDate,
       endDate,
     };
-  }, [chartLayer, adminProperties, adminLevel, startDate, endDate]);
+  }, [
+    chartLayer,
+    adminProperties,
+    adminLevel,
+    startDate,
+    endDate,
+    countryAdmin0Id,
+  ]);
 
   const fetchData = useCallback(async () => {
     if (!requestParams || !enabled) {

@@ -34,6 +34,7 @@ import sudan from './sudan';
 import tajikistan from './tajikistan';
 import tanzania from './tanzania';
 import ukraine from './ukraine';
+import universal from './universal';
 import zambia from './zambia';
 import zimbabwe from './zimbabwe';
 
@@ -71,6 +72,7 @@ export const configMap = {
   tajikistan,
   tanzania,
   ukraine,
+  universal,
   zambia,
   zimbabwe,
 } as const;
