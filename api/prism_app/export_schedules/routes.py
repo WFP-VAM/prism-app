@@ -146,8 +146,23 @@ def build_schedule_export_url(body: MapExportScheduleCreateRequest) -> str:
     return export_url
 
 
+def format_map_export_schedule_name(
+    *,
+    country: str,
+    layer_id: str,
+    cadence: MapExportScheduleCadence,
+    format: str,
+) -> str:
+    return f"{country} {layer_id} {cadence.value} {format.upper()}"
+
+
 def generate_schedule_name(body: MapExportScheduleCreateRequest) -> str:
-    return f"{body.country} {body.layer_id} {body.cadence.value} {body.format.upper()}"
+    return format_map_export_schedule_name(
+        country=body.country,
+        layer_id=body.layer_id,
+        cadence=body.cadence,
+        format=body.format,
+    )
 
 
 @router.post(

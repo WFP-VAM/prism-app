@@ -1,6 +1,6 @@
 """Starlette Admin: read-only views for the alerts Postgres tables."""
 
-from prism_app.auth.permission_codes import ADMIN_ACCESS
+from prism_app.auth.admin_request import request_has_prism_admin_access
 from prism_app.database.alert_model import AlertModel
 from prism_app.database.anticipatory_action_alerts_model import AnticipatoryActionAlerts
 from prism_app.database.kobo_user_model import KoboUser
@@ -10,29 +10,23 @@ from starlette.requests import Request
 from starlette_admin.contrib.sqla import Admin, ModelView
 
 
-def _request_has_prism_admin_access(request: Request) -> bool:
-    """Defense in depth: middleware already requires ``prism.admin.access`` for admin routes."""
-    codes = getattr(request.state, "permission_codes", None)
-    return bool(codes and ADMIN_ACCESS in codes)
-
-
 class PrismGatedModelView(ModelView):
     """Internal admin models: list/detail and mutations require ``prism.admin.access``."""
 
     def is_accessible(self, request: Request) -> bool:
-        return _request_has_prism_admin_access(request)
+        return request_has_prism_admin_access(request)
 
     def can_view_details(self, request: Request) -> bool:
-        return _request_has_prism_admin_access(request)
+        return request_has_prism_admin_access(request)
 
     def can_create(self, request: Request) -> bool:
-        return _request_has_prism_admin_access(request)
+        return request_has_prism_admin_access(request)
 
     def can_edit(self, request: Request) -> bool:
-        return _request_has_prism_admin_access(request)
+        return request_has_prism_admin_access(request)
 
     def can_delete(self, request: Request) -> bool:
-        return _request_has_prism_admin_access(request)
+        return request_has_prism_admin_access(request)
 
 
 class ReadOnlyModelView(PrismGatedModelView):

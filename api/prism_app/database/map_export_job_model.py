@@ -98,3 +98,7 @@ class MapExportJob(SQLModel, table=True):
         default=200,
         sa_column=Column(Integer, nullable=False, server_default="200"),
     )
+
+    def __admin_repr__(self, request) -> str:  # noqa: ARG002
+        schedule = self.map_export_schedule_id or "interactive"
+        return f"{self.status} — {schedule}"

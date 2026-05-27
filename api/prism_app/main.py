@@ -13,6 +13,7 @@ from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from prism_app.admin import register_alerts_admin_views
+from prism_app.admin_map_export import PrismAdmin, register_map_export_admin_views
 from prism_app.auth import auth_oidc
 from prism_app.auth.access_pages import access_not_configured_response
 from prism_app.auth.admin_oidc_auth import PrismAdminAuthProvider
@@ -141,13 +142,14 @@ def whoami(prism: _AnySession):
 
 
 admin_auth_settings = get_admin_auth_settings()
-admin = Admin(
+admin = PrismAdmin(
     admin_engine,
     title="PRISM Admin",
     base_url="/admin",
     auth_provider=PrismAdminAuthProvider(admin_engine, admin_auth_settings),
 )
 register_alerts_admin_views(admin)
+register_map_export_admin_views(admin)
 admin.mount_to(app)
 
 alert_db = AlertsDataBase()

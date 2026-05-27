@@ -90,6 +90,9 @@ class MapExportSchedule(SQLModel, table=True):
         sa_column=Column(DateTime(timezone=True), nullable=False),
     )
 
+    def __admin_repr__(self, request) -> str:  # noqa: ARG002
+        return f"{self.name} ({self.status.value})"
+
     @model_validator(mode="after")
     def validate_export_url_placeholders(self) -> Self:
         missing = [
