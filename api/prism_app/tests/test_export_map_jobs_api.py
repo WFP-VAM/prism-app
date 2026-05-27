@@ -2,15 +2,10 @@
 
 from __future__ import annotations
 
-import os
 from collections.abc import Generator
 from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock
-
-# main imports kobo which requires these at import time
-os.environ.setdefault("KOBO_USERNAME", "pytest")
-os.environ.setdefault("KOBO_PASSWORD", "pytest")
 
 import pytest
 from fastapi.testclient import TestClient

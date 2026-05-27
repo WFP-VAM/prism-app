@@ -1,5 +1,6 @@
 import { IconButton, useMediaQuery, useTheme } from '@material-ui/core';
 import PrintOutlined from '@material-ui/icons/PrintOutlined';
+import { usePostHog } from '@posthog/react';
 import { DashboardExportDialog } from 'components/DashboardView/DashboardExport';
 import { Panel } from 'config/types';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
@@ -21,6 +22,7 @@ function PrintImage() {
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
   const history = useHistory();
   const location = useLocation();
+  const posthog = usePostHog();
 
   const previewRef = useRef<HTMLCanvasElement>(null);
 
@@ -43,6 +45,7 @@ function PrintImage() {
   const openModal = useCallback(() => {
     // Check if we're in dashboard mode
     if (tabValue === Panel.Dashboard) {
+      posthog?.capture('map_print_opened', { mode: 'dashboard' });
       setOpenDashboardExport(true);
       return;
     }
@@ -59,6 +62,7 @@ function PrintImage() {
           context.drawImage(activeLayers, 0, 0);
         }
       }
+      posthog?.capture('map_print_opened', { mode: 'map' });
       setOpenImage(true);
     }
   }, [selectedMap, tabValue]);

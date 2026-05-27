@@ -2,6 +2,10 @@ import { isCustomRatio } from 'components/MapExport/aspectRatioConstants';
 import type { AdminCodeString } from 'config/types';
 import type { LngLatBounds } from 'maplibre-gl';
 import { getMapExportPageOrigin } from 'utils/constants';
+import {
+  EXPORT_LANGUAGE_PARAM,
+  toExportLanguageParam,
+} from 'utils/exportLanguage';
 import type { ScheduleExportOptions } from 'utils/mapExportSchedulesApi';
 
 import type { MapDimensions, Toggles } from '../printConfig.context';
@@ -138,6 +142,12 @@ export function buildBatchExportUrls(
       params.set('hazardLayerIds', input.printSelectedLayer.id);
       params.delete('baselineLayerId');
       applyMapExportPrintTemplate(params, template);
+      if (input.language) {
+        params.set(
+          EXPORT_LANGUAGE_PARAM,
+          toExportLanguageParam(input.language),
+        );
+      }
       return `${input.origin}${input.exportPath}?${params.toString()}`;
     });
 }

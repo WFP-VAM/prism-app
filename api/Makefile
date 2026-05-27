@@ -4,12 +4,17 @@ build:
 	docker compose -f docker-compose.yml -f docker-compose.test.yml build --no-cache
 	docker compose -f docker-compose.yml -f docker-compose.test.yml pull
 
+# CI: use layer cache; (no --no-cache)
+ci-build:
+	docker compose -f docker-compose.yml -f docker-compose.test.yml build
+	docker compose -f docker-compose.yml -f docker-compose.test.yml pull
+
 api:
 	docker compose -f docker-compose.yml -f docker-compose.develop.yml up
 
 deploy:
 	docker network create traefik_default || true
-	source set_envs.sh && docker compose build && docker compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
+	source set_envs.sh && docker compose build && docker compose -f docker-compose.yml -f docker-compose.deploy.yml up -d --scale export_map_worker=2
 
 logs:
 	source set_envs.sh && docker compose -f docker-compose.yml -f docker-compose.deploy.yml logs --tail=500 -f --timestamps

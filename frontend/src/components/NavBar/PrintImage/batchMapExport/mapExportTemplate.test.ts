@@ -1,5 +1,6 @@
 import type { AspectRatio } from 'components/MapExport/types';
 import type { LngLatBounds } from 'maplibre-gl';
+import { EXPORT_LANGUAGE_PARAM } from 'utils/exportLanguage';
 import type { DateCompatibleLayer } from 'utils/server-utils';
 
 import {
@@ -51,6 +52,7 @@ const sharedTemplate = {
   bottomLogoScale: 1,
   toggles: defaultToggles,
   selectedBoundaries: ['MOZ01', 'MOZ02'],
+  language: 'en',
 };
 
 describe('buildBatchExportUrls', () => {
@@ -79,6 +81,25 @@ describe('buildBatchExportUrls', () => {
       }),
     );
     expect(params.get('fullLayerDescription')).toBeNull();
+  });
+
+  test('includes language query param on each export URL', () => {
+    const urls = buildBatchExportUrls({
+      ...sharedTemplate,
+      formattedDates: ['2024-05-01'],
+      language: 'pt',
+    });
+    const params = new URL(urls[0]).searchParams;
+    expect(params.get(EXPORT_LANGUAGE_PARAM)).toBe('pt');
+  });
+
+  test('uses 2-letter language param for Arabic i18n key', () => {
+    const urls = buildBatchExportUrls({
+      ...sharedTemplate,
+      formattedDates: ['2024-05-01'],
+      language: 'ar',
+    });
+    expect(new URL(urls[0]).searchParams.get(EXPORT_LANGUAGE_PARAM)).toBe('ar');
   });
 
   test('formats clipboard URLs without percent-encoding', () => {

@@ -5,6 +5,7 @@ import {
   DialogContent,
   makeStyles,
 } from '@material-ui/core';
+import { usePostHog } from '@posthog/react';
 import mask from '@turf/mask';
 import { appConfig, configMap, safeCountry } from 'config';
 import { AdminCodeString, LayerKey } from 'config/types';
@@ -36,6 +37,8 @@ import {
   getPossibleDatesForLayer,
 } from 'utils/server-utils';
 import { stringHash } from 'utils/string-utils';
+import { useUrlHistory } from 'utils/url-utils';
+import { getBoolParam } from 'utils/urlParamSchema';
 import { useBoundaryData } from 'utils/useBoundaryData';
 import useResizeObserver from 'utils/useOnResizeObserver';
 
@@ -51,6 +54,7 @@ import {
   getDisabledCadences,
 } from '../../../utils/batchCadenceUtils';
 import { MAP_EXPORT_MAX_URLS_PER_REQUEST } from '../../../utils/constants';
+import { exportLanguage } from '../../../utils/exportLanguage';
 import {
   cadenceToApi,
   createMapExportSchedule,
@@ -95,8 +99,10 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const printRef = useRef<HTMLDivElement>(null);
   const { data } = useBoundaryData(boundaryLayer.id);
   const dispatch = useDispatch();
-  const { t } = useSafeTranslation();
+  const posthog = usePostHog();
+  const { t, i18n } = useSafeTranslation();
   const { enqueueBatchMapExportJob } = useBatchMapExportJobsActions();
+  const { urlParams } = useUrlHistory();
 
   // list of toggles
   const [toggles, setToggles] = useState<Toggles>({
@@ -311,7 +317,8 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     }
   }, [availableCadences, cadence]);
 
-  const shouldEnableBatchMaps = true;
+  // TODO: remove showBatchMaps URL gate once batch maps is enabled by default
+  const shouldEnableBatchMaps = getBoolParam(urlParams, 'showBatchMaps', false);
 
   const shouldShowMultiLayerWarning = selectedLayersWithDateSupport.length > 1;
 
@@ -401,6 +408,9 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     bottomLogoScale,
     toggles,
     selectedBoundaries,
+    language: exportLanguage(location.search, {
+      activeLanguage: i18n.resolvedLanguage,
+    }),
   });
 
   useEffect(() => {
@@ -504,6 +514,11 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   };
 
   const download = (format: 'pdf' | 'jpeg' | 'png') => {
+    posthog?.capture('map_print_downloaded', {
+      format,
+      title: titleText,
+      date: getFormattedDate(dateRange.startDate, 'default'),
+    });
     const filename: string = `${titleText || country}_${
       getFormattedDate(dateRange.startDate, 'snake') || 'no_date'
     }`;
@@ -609,6 +624,16 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     setIsDownloading(true);
     handleDownloadMenuClose();
 
+    posthog?.capture('batch_maps_downloaded', {
+      format,
+      title: titleText,
+      start_date: getFormattedDate(startDate, 'default'),
+      end_date: getFormattedDate(endDate, 'default'),
+      cadence,
+      dekad_interval: dekadInterval,
+      map_count: filteredBatchDates.length,
+    });
+
     try {
       if (!printSelectedLayer) {
         console.error('No layer selected for batch download');
@@ -634,7 +659,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         printSelectedLayer.title ?? printSelectedLayer.id;
       const datesSummary = buildBatchExportDatesDisplay(timestampsForExport);
       const { canvasWidth, canvasHeight } =
-        mapExportTemplate.viewportDimensions;
+        mapExportTemplate.getViewportDimensions();
 
       enqueueBatchMapExportJob({
         urls: constructedUrls,

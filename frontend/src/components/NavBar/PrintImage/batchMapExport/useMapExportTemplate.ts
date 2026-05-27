@@ -27,6 +27,7 @@ export type UseMapExportTemplateInput = {
   bottomLogoScale: number;
   toggles: Toggles;
   selectedBoundaries: AdminCodeString[];
+  language: string;
 };
 
 function printTemplateFields(input: UseMapExportTemplateInput) {
@@ -47,8 +48,8 @@ function printTemplateFields(input: UseMapExportTemplateInput) {
   };
 }
 
-export function useMapExportTemplate(input: UseMapExportTemplateInput) {
-  const viewportDimensions = calculateExportDimensions(
+function viewportDimensionsForInput(input: UseMapExportTemplateInput) {
+  return calculateExportDimensions(
     input.mapDimensions.aspectRatio,
     input.mapDimensions.aspectRatio === 'Auto'
       ? (input.previewMapWidth ?? undefined)
@@ -57,7 +58,9 @@ export function useMapExportTemplate(input: UseMapExportTemplateInput) {
       ? (input.previewMapHeight ?? undefined)
       : undefined,
   );
+}
 
+export function useMapExportTemplate(input: UseMapExportTemplateInput) {
   function buildBatchUrlsForTimestamps(
     timestamps: number[],
     printSelectedLayer: DateCompatibleLayer | null,
@@ -82,6 +85,7 @@ export function useMapExportTemplate(input: UseMapExportTemplateInput) {
       baseSearchParams: location.baseSearchParams,
       printSelectedLayer,
       ...printTemplateFields(input),
+      language: input.language,
     });
   }
 
@@ -91,18 +95,19 @@ export function useMapExportTemplate(input: UseMapExportTemplateInput) {
     }
 
     const location = getExportPageLocation();
+    const viewport = viewportDimensionsForInput(input);
     return buildScheduleExportOptions({
       origin: location.origin,
       exportPath: location.exportPath,
-      viewportWidth: viewportDimensions.canvasWidth,
-      viewportHeight: viewportDimensions.canvasHeight,
+      viewportWidth: viewport.canvasWidth,
+      viewportHeight: viewport.canvasHeight,
       ...printTemplateFields(input),
       mapBounds: input.mapBounds,
     });
   }
 
   return {
-    viewportDimensions,
+    getViewportDimensions: () => viewportDimensionsForInput(input),
     previewBounds: input.mapBounds,
     buildBatchUrlsForTimestamps,
     buildScheduleExportOptionsPayload,

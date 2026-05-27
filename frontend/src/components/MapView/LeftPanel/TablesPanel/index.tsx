@@ -8,6 +8,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { createStyles } from '@material-ui/styles';
+import { usePostHog } from '@posthog/react';
 import {
   LayersCategoryType,
   MenuItemType,
@@ -55,6 +56,7 @@ const TablesPanel = memo(() => {
   const [tableValue, setTableValue] = useState<string>('');
   const [showDataTable, setShowDataTable] = useState<boolean>(false);
 
+  const posthog = usePostHog();
   const { t } = useSafeTranslation();
 
   useEffect(() => {
@@ -144,10 +146,11 @@ const TablesPanel = memo(() => {
 
   const handleTableDropdownChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
+      posthog?.capture('table_loaded', { table_id: event.target.value });
       setTableValue(event.target.value);
       dispatch(loadTable(event.target.value));
     },
-    [dispatch],
+    [dispatch, posthog],
   );
 
   return (

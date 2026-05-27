@@ -1,14 +1,8 @@
 """Regression tests for admin OIDC security hardening (PR A)."""
 
-import os
 import re
 
 import pytest
-
-# main.py imports kobo at module load time; provide placeholders for unit tests.
-os.environ.setdefault("KOBO_USERNAME", "pytest")
-os.environ.setdefault("KOBO_PASSWORD", "pytest")
-
 from fastapi.testclient import TestClient
 from prism_app.auth import auth_oidc
 from prism_app.auth.admin_oidc_auth import PrismAdminAuthProvider
