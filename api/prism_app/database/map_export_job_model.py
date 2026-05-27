@@ -5,10 +5,16 @@ from __future__ import annotations
 import datetime
 import uuid
 from typing import Any, Optional
+from uuid import UUID
 
+from prism_app.database import map_export_schedule_model as _map_export_schedule_model
+from prism_app.database import user_model as _user_model
 from prism_app.utils import utc_now
-from sqlalchemy import JSON, Column, DateTime, Index, Integer, String
+from sqlalchemy import JSON, Column, DateTime, ForeignKey, Index, Integer, String
+from sqlalchemy.types import Uuid
 from sqlmodel import Field, SQLModel
+
+_ = (_map_export_schedule_model, _user_model)
 
 
 class MapExportJob(SQLModel, table=True):
@@ -24,6 +30,12 @@ class MapExportJob(SQLModel, table=True):
             "priority",
             "created_at",
         ),
+        Index(
+            "ix_map_export_jobs_schedule_created",
+            "map_export_schedule_id",
+            "created_at",
+        ),
+        Index("ix_map_export_jobs_created_by_user_id", "created_by_user_id"),
     )
 
     id: str = Field(
@@ -43,6 +55,22 @@ class MapExportJob(SQLModel, table=True):
     content_type: Optional[str] = Field(
         default=None,
         sa_column=Column(String, nullable=True),
+    )
+    map_export_schedule_id: Optional[str] = Field(
+        default=None,
+        sa_column=Column(
+            String,
+            ForeignKey("map_export_schedules.id", ondelete="SET NULL"),
+            nullable=True,
+        ),
+    )
+    created_by_user_id: Optional[UUID] = Field(
+        default=None,
+        sa_column=Column(
+            Uuid(as_uuid=True),
+            ForeignKey("users.id", ondelete="SET NULL"),
+            nullable=True,
+        ),
     )
     origin_url: Optional[str] = Field(
         default=None,

@@ -12,6 +12,7 @@ DASHBOARD_MANAGE = "prism.dashboard.manage"
 ADMIN_ACCESS = "prism.admin.access"
 DEPLOYMENT_MANAGE = "prism.deployment.manage"
 USERS_MANAGE = "prism.users.manage"
+MAP_EXPORTS_MANAGE = "prism.map_exports.manage"
 
 # Full set for auth-disabled dev mode (all gates pass that the admin UI expects).
 ALL_CAPABILITIES = frozenset(
@@ -21,5 +22,6 @@ ALL_CAPABILITIES = frozenset(
         ADMIN_ACCESS,
         DEPLOYMENT_MANAGE,
         USERS_MANAGE,
+        MAP_EXPORTS_MANAGE,
     }
 )

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from uuid import UUID
+
 from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.export_jobs.fingerprint import compute_request_fingerprint
 from prism_app.export_jobs.priority import MAP_EXPORT_JOB_PRIORITY_INTERACTIVE
@@ -42,6 +44,8 @@ def create_queued_map_export_job(
     request: MapExportRequestModel,
     *,
     priority: int = MAP_EXPORT_JOB_PRIORITY_INTERACTIVE,
+    schedule_id: str | None = None,
+    created_by_user_id: UUID | None = None,
 ) -> MapExportJob:
     """Persist a new queued job row without committing."""
     fingerprint = compute_request_fingerprint(request)
@@ -53,6 +57,8 @@ def create_queued_map_export_job(
         origin_url=_origin_from_first_export_url(request.urls),
         content_type=artifact_kind,
         priority=priority,
+        map_export_schedule_id=schedule_id,
+        created_by_user_id=created_by_user_id,
     )
     session.add(job)
     return job
@@ -65,6 +71,8 @@ def enqueue_map_export_job(
     *,
     dedupe: bool = True,
     priority: int = MAP_EXPORT_JOB_PRIORITY_INTERACTIVE,
+    schedule_id: str | None = None,
+    created_by_user_id: UUID | None = None,
 ) -> tuple[MapExportJob, int]:
     """
     Return (job, http_status). New row with status queued -> 202;
@@ -75,6 +83,7 @@ def enqueue_map_export_job(
         stmt = (
             select(MapExportJob)
             .where(MapExportJob.request_fingerprint == fingerprint)
+            .where(MapExportJob.map_export_schedule_id == schedule_id)
             .order_by(MapExportJob.created_at.desc())
         )
         rows = list(session.exec(stmt))
@@ -96,7 +105,13 @@ def enqueue_map_export_job(
             if invalidated_any:
                 session.commit()
 
-    job = create_queued_map_export_job(session, request, priority=priority)
+    job = create_queued_map_export_job(
+        session,
+        request,
+        priority=priority,
+        schedule_id=schedule_id,
+        created_by_user_id=created_by_user_id,
+    )
     session.commit()
     session.refresh(job)
     return job, 202

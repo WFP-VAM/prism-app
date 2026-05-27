@@ -5,6 +5,7 @@ from __future__ import annotations
 import datetime
 from pathlib import Path
 from unittest.mock import MagicMock
+from uuid import UUID
 
 import pytest
 from prism_app.database.map_export_job_model import MapExportJob
@@ -44,6 +45,22 @@ def test_enqueue_inserts_queued(db_session: Session) -> None:
     assert status == 202
     assert job.origin_url == "http://localhost"
     assert job.status == "queued"
+
+
+def test_enqueue_records_schedule_and_owner(db_session: Session) -> None:
+    req = _sample_request()
+    owner_id = UUID("00000000-0000-4000-8000-000000000123")
+
+    job, status = enqueue_map_export_job(
+        db_session,
+        req,
+        schedule_id="schedule-1",
+        created_by_user_id=owner_id,
+    )
+
+    assert status == 202
+    assert job.map_export_schedule_id == "schedule-1"
+    assert job.created_by_user_id == owner_id
 
 
 def test_enqueue_sets_origin_from_first_url(db_session: Session) -> None:
