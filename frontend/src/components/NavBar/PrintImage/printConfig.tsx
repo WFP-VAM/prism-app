@@ -47,6 +47,11 @@ import {
 import CadenceSelector from './CadenceSelector';
 import DateRangePicker from './DateRangePicker';
 import PrintConfigContext from './printConfig.context';
+import {
+  isPrintPanelPrimaryDisabled,
+  isSchedulePrimaryDisabled,
+  schedulePrimaryButtonLabelKey,
+} from './scheduleExportUi';
 
 interface ToggleSelectorProps {
   title: string;
@@ -418,16 +423,27 @@ function PrintConfig() {
     void createSchedule();
   };
 
-  const primaryButtonLabel = createScheduledMaps
-    ? isPrismAuthenticated
-      ? t('Create schedule')
-      : t('Login to create schedule')
-    : t('Export');
+  const primaryLabelKey = schedulePrimaryButtonLabelKey({
+    createScheduledMaps,
+    isPrismAuthenticated,
+    canManageSchedules,
+    selectedLayerId,
+    hasPreviewBounds: Boolean(previewBounds),
+  });
+  const primaryButtonLabel =
+    primaryLabelKey === 'export'
+      ? t('Export')
+      : primaryLabelKey === 'create_schedule'
+        ? t('Create schedule')
+        : t('Login to create schedule');
 
-  const schedulePrimaryDisabled =
-    createScheduledMaps &&
-    isPrismAuthenticated &&
-    (!canManageSchedules || !selectedLayerId || !previewBounds);
+  const schedulePrimaryDisabled = isSchedulePrimaryDisabled({
+    createScheduledMaps,
+    isPrismAuthenticated,
+    canManageSchedules,
+    selectedLayerId,
+    hasPreviewBounds: Boolean(previewBounds),
+  });
 
   return (
     <Box className={classes.printPanelRoot}>
@@ -891,15 +907,16 @@ function PrintConfig() {
           className={classes.gutter}
           endIcon={createScheduledMaps ? undefined : <GetApp />}
           onClick={handlePrimaryButtonClick}
-          disabled={
-            isDownloading ||
-            schedulePrimaryDisabled ||
-            (createScheduledMaps && !isPrismAuthenticated
-              ? false
-              : toggles.batchMapsVisibility &&
-                !createScheduledMaps &&
-                (!dateRange.startDate || !dateRange.endDate))
-          }
+          disabled={isPrintPanelPrimaryDisabled({
+            isDownloading,
+            schedulePrimaryDisabled,
+            createScheduledMaps,
+            isPrismAuthenticated,
+            batchMapsVisibility: toggles.batchMapsVisibility,
+            hasCompleteDateRange: Boolean(
+              dateRange.startDate && dateRange.endDate,
+            ),
+          })}
         >
           {isDownloading ? (
             <>
