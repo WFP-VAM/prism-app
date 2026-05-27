@@ -128,8 +128,7 @@ _AnySession = Annotated[
 ]
 
 
-@app.get("/api/whoami")
-@app.get("/api/admin/whoami")
+@app.get("/whoami")
 def whoami(prism: _AnySession):
     """Return current user identity and permissions (any authenticated user)."""
     user, codes = prism

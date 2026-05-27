@@ -4,7 +4,7 @@
 
 1. Have the user sign in via CIAM (navigate to `/admin` — they'll be redirected to authenticate).
 2. They'll land on an "access not configured" page. Their `users` row now exists.
-3. Have them visit `<host>/api/whoami` in their browser to get their `user_id`.
+3. Have them visit `<host>/whoami` in their browser to get their `user_id`.
 
 4. Grant admin access:
 

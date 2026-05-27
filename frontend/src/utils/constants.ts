@@ -27,7 +27,7 @@ export const KOBO_API_URL = `${API_URL}/kobo`;
 export const RASTER_API_URL = `${API_URL}/raster_geotiff`;
 export const EXPORT_MAP_JOBS_API_URL = `${API_URL}/export-map/jobs`;
 export const EXPORT_MAP_SCHEDULES_API_URL = `${API_URL}/export-map/schedules`;
-export const PRISM_WHOAMI_API_URL = `${API_URL}/api/whoami`;
+export const PRISM_WHOAMI_API_URL = `${API_URL}/whoami`;
 export const MAP_EXPORTS_MANAGE_PERMISSION = 'prism.map_exports.manage';
 export const PRISM_SIGN_IN_URL = `${API_URL}/auth/sign-in`;
 
