@@ -1,18 +1,21 @@
-"""Enqueue map_export_jobs from JSON config (daily scheduled public maps).
+"""Enqueue map_export_jobs from active DB schedules (daily scheduled public maps).
 
 Run inside the export_map_worker image (or any env with PRISM_ALERTS_DATABASE_URL):
 
     python -m prism_app.workers.scheduled_public_maps.cron
 
-Default config path: ``prism_app/workers/scheduled_public_maps/config/scheduled_public_maps.json``
-(next to this module). Override with ``--config /path/to/file.json`` for tests or one-offs.
+Active ``map_export_schedules`` rows are the default source of truth. Use
+the API/Admin flows to create and manage schedules.
 
 **Behavior**
 
-- **Public layout**: optional per-job ``"public": true`` (requires non-empty ``country`` in config). Worker writes
-   ``public_maps/{country}/{layer}/{job_id}.{ext}``; ``country`` from job payload only; ``layer`` from ``hazardLayerIds`` on the export URL.
-- **Dates**: each ``layer_id`` is resolved against WFP datacube WMS GetCapabilities
-  (``https://api.earthobservation.vam.wfp.org/ows``). Latest timestep → ``{date}`` as ``YYYY-MM-DD``.
+- **Public layout**: DB-backed schedules always set ``publicMapUpload=True``.
+  Worker writes ``public_maps/{country}/{layer}/{job_id}.{ext}``; ``country``
+  from schedule payload only; ``layer`` from ``hazardLayerIds`` on the export URL.
+- **Dates**: active schedules resolve ``layer_id`` against WFP datacube WMS
+  GetCapabilities (``https://api.earthobservation.vam.wfp.org/ows``), apply
+  cadence, and enqueue only the latest eligible date newer than
+  ``last_enqueued_date``.
 - **Priority**: jobs enqueue with priority 100 vs interactive default 200 —
   see ``export_jobs/claim.py`` (``ORDER BY priority DESC``).
 """
@@ -20,89 +23,221 @@ Default config path: ``prism_app/workers/scheduled_public_maps/config/scheduled_
 from __future__ import annotations
 
 import argparse
-import json
+import datetime
 import logging
 import sys
-from pathlib import Path
 from typing import Any
 
+from prism_app.database.map_export_schedule_model import (
+    MapExportSchedule,
+    MapExportScheduleCadence,
+    MapExportScheduleStatus,
+)
 from prism_app.export_jobs.db import get_export_jobs_session_factory
 from prism_app.export_jobs.priority import MAP_EXPORT_JOB_PRIORITY_SCHEDULED_PUBLIC
 from prism_app.export_jobs.service import enqueue_map_export_job
 from prism_app.export_s3 import map_export_s3_client
-from prism_app.models import ExportFormat, MapExportRequestModel
+from prism_app.models import MapExportRequestModel
+from prism_app.utils import utc_now
 from prism_app.workers.scheduled_public_maps.layer_days import (
-    latest_date_yyyy_mm_dd_for_layer,
+    collect_times_for_layer_id,
+    fetch_layer_days_map,
 )
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict
+from sqlmodel import Session, select
 
 logger = logging.getLogger(__name__)
 
 _CAPABILITIES_HTTP_TIMEOUT_SEC = 120.0
 
 
-class ScheduledPublicMapJobGroup(BaseModel):
-    model_config = ConfigDict(extra="ignore")
+def _utc_date_from_ms(timestamp_ms: int) -> datetime.date:
+    return datetime.datetime.fromtimestamp(
+        timestamp_ms / 1000.0,
+        tz=datetime.UTC,
+    ).date()
 
-    country: str | None = Field(
-        default=None,
-        description="Optional; copied into map export job payload for public_maps path + logs.",
-    )
-    public: bool = Field(
-        default=False,
-        description="When true, worker uploads under public_maps/… (requires ``country``).",
-    )
-    layer_ids: list[str] = Field(..., min_length=1)
-    export_url_template: str = Field(
-        ...,
-        min_length=1,
-        description="Absolute /export URL pattern; must contain {date} and {layer_id}.",
-    )
-    format: ExportFormat = "pdf"
-    viewportWidth: int | None = None
-    viewportHeight: int | None = None
 
-    @model_validator(mode="after")
-    def validate_group(self) -> ScheduledPublicMapJobGroup:
-        t = self.export_url_template
-        if "{date}" not in t or "{layer_id}" not in t:
-            raise ValueError(
-                "export_url_template must include both {date} and {layer_id}"
+def _dekad_key(day: datetime.date) -> tuple[int, int, int]:
+    dekad = 1 if day.day <= 10 else 2 if day.day <= 20 else 3
+    return day.year, day.month, dekad
+
+
+def _quarter_key(day: datetime.date) -> tuple[int, int]:
+    return day.year, (day.month - 1) // 3
+
+
+def cadence_eligible_dates(
+    days: list[datetime.date],
+    cadence: MapExportScheduleCadence,
+    dekad_interval: int,
+) -> list[datetime.date]:
+    sorted_days = sorted(set(days))
+    if not sorted_days:
+        return []
+
+    if cadence == MapExportScheduleCadence.monthly:
+        by_month: dict[tuple[int, int], datetime.date] = {}
+        for day in sorted_days:
+            by_month.setdefault((day.year, day.month), day)
+        return list(by_month.values())
+
+    if cadence == MapExportScheduleCadence.quarterly:
+        by_quarter: dict[tuple[int, int], datetime.date] = {}
+        for day in sorted_days:
+            by_quarter.setdefault(_quarter_key(day), day)
+        return list(by_quarter.values())
+
+    by_dekad: dict[tuple[int, int, int], datetime.date] = {}
+    for day in sorted_days:
+        by_dekad.setdefault(_dekad_key(day), day)
+    unique_dekad_days = list(by_dekad.values())
+    if dekad_interval <= 1:
+        return unique_dekad_days
+    return [
+        day
+        for index, day in enumerate(unique_dekad_days)
+        if index % dekad_interval == 0
+    ]
+
+
+def latest_eligible_date_for_schedule(
+    schedule: MapExportSchedule,
+    days_map: dict[str, list[int]],
+) -> datetime.date | None:
+    days = [
+        _utc_date_from_ms(timestamp_ms)
+        for timestamp_ms in collect_times_for_layer_id(days_map, schedule.layer_id)
+    ]
+    eligible = cadence_eligible_dates(
+        days,
+        schedule.cadence,
+        schedule.dekad_interval,
+    )
+    if not eligible:
+        return None
+    return max(eligible)
+
+
+class ScheduledMapExportRequest(BaseModel):
+    """Translate one schedule/date pair into the worker's export job request."""
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    schedule: MapExportSchedule
+    cover_date: datetime.date
+
+    def concrete_export_url(self) -> str:
+        return self.schedule.export_url.replace(
+            "{date}",
+            self.cover_date.isoformat(),
+        ).replace(
+            "{layer_id}",
+            self.schedule.layer_id,
+        )
+
+    def viewport_value(self, key: str) -> int | None:
+        raw = self.schedule.export_options.get(key)
+        if raw is None:
+            return None
+        try:
+            return int(raw)
+        except (TypeError, ValueError):
+            return None
+
+    def to_map_export_request(self) -> MapExportRequestModel:
+        payload: dict[str, Any] = {
+            "urls": [self.concrete_export_url()],
+            "format": self.schedule.format,
+            "country": self.schedule.country,
+            "publicMapUpload": True,
+        }
+        viewport_width = self.viewport_value("viewportWidth")
+        if viewport_width is not None:
+            payload["viewportWidth"] = viewport_width
+        viewport_height = self.viewport_value("viewportHeight")
+        if viewport_height is not None:
+            payload["viewportHeight"] = viewport_height
+        return MapExportRequestModel.model_validate(payload)
+
+
+def process_active_schedules(
+    session_factory,
+    *,
+    days_map: dict[str, list[int]] | None = None,
+    dry_run: bool = False,
+    s3_client: object | None = None,
+    timeout_sec: float = _CAPABILITIES_HTTP_TIMEOUT_SEC,
+) -> tuple[int, int]:
+    """Process active DB schedules. Returns ``(enqueued, skipped)``."""
+    if days_map is None:
+        days_map = fetch_layer_days_map(timeout_sec=timeout_sec)
+
+    enqueued = 0
+    skipped = 0
+    session: Session = session_factory()
+    try:
+        schedules = list(
+            session.exec(
+                select(MapExportSchedule).where(
+                    MapExportSchedule.status == MapExportScheduleStatus.active
+                )
             )
-        if self.public:
-            cty = self.country
-            if not (cty and cty.strip()):
-                raise ValueError("country is required when public is true")
-        return self
+        )
+        for schedule in schedules:
+            now = utc_now()
+            schedule.last_checked_at = now
+            cover_date = latest_eligible_date_for_schedule(schedule, days_map)
+            if cover_date is None:
+                skipped += 1
+                session.add(schedule)
+                session.commit()
+                continue
+            if (
+                schedule.last_enqueued_date is not None
+                and cover_date <= schedule.last_enqueued_date
+            ):
+                skipped += 1
+                session.add(schedule)
+                session.commit()
+                continue
 
+            req = ScheduledMapExportRequest(
+                schedule=schedule,
+                cover_date=cover_date,
+            ).to_map_export_request()
+            if dry_run:
+                logger.info(
+                    "[dry-run] would enqueue schedule=%s date=%s url=%s",
+                    schedule.id,
+                    cover_date.isoformat(),
+                    req.urls[0][:200],
+                )
+                skipped += 1
+                session.add(schedule)
+                session.commit()
+                continue
 
-class ScheduledPublicMapsFile(BaseModel):
-    jobs: list[ScheduledPublicMapJobGroup]
-
-
-def load_config(path: Path) -> ScheduledPublicMapsFile:
-    raw = json.loads(path.read_text(encoding="utf-8"))
-    return ScheduledPublicMapsFile.model_validate(raw)
-
-
-def _build_request(
-    export_url: str,
-    group: ScheduledPublicMapJobGroup,
-    _layer_id: str,
-) -> MapExportRequestModel:
-    payload: dict[str, Any] = {
-        "urls": [export_url],
-        "format": group.format,
-    }
-    if group.viewportWidth is not None:
-        payload["viewportWidth"] = group.viewportWidth
-    if group.viewportHeight is not None:
-        payload["viewportHeight"] = group.viewportHeight
-    if group.country is not None and group.country.strip():
-        payload["country"] = group.country.strip()
-    if group.public:
-        payload["publicMapUpload"] = True
-    return MapExportRequestModel.model_validate(payload)
+            _job, status = enqueue_map_export_job(
+                session,
+                req,
+                s3_client=s3_client,
+                dedupe=True,
+                priority=MAP_EXPORT_JOB_PRIORITY_SCHEDULED_PUBLIC,
+                schedule_id=schedule.id,
+                created_by_user_id=schedule.created_by_user_id,
+            )
+            schedule.last_enqueued_at = now
+            schedule.last_enqueued_date = cover_date
+            session.add(schedule)
+            session.commit()
+            if status == 202:
+                enqueued += 1
+            else:
+                skipped += 1
+    finally:
+        session.close()
+    return enqueued, skipped
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -111,16 +246,6 @@ def main(argv: list[str] | None = None) -> int:
         level=logging.INFO,
     )
     parser = argparse.ArgumentParser(description=__doc__)
-    default_config = (
-        Path(__file__).resolve().parent / "config" / "scheduled_public_maps.json"
-    )
-    parser.add_argument(
-        "--config",
-        "-c",
-        type=Path,
-        default=default_config,
-        help=f"JSON config file (default: {default_config})",
-    )
     parser.add_argument(
         "--dry-run",
         action="store_true",
@@ -128,84 +253,20 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
 
-    path: Path = args.config
-    if not path.is_file():
-        logger.error("Config file not found: %s", path)
-        return 1
-
-    try:
-        config = load_config(path)
-    except (json.JSONDecodeError, ValueError) as exc:
-        logger.error("Invalid config %s: %s", path, exc)
-        return 1
-
     timeout_sec = _CAPABILITIES_HTTP_TIMEOUT_SEC
-
-    factory = get_export_jobs_session_factory()
-    enqueued = 0
-    skipped = 0
-    idx = 0
     s3_client = None if args.dry_run else map_export_s3_client()
 
-    for group in config.jobs:
-        for layer_id in group.layer_ids:
-            label = f"{group.country or '?'}:{layer_id}" if group.country else layer_id
-            cover_date = latest_date_yyyy_mm_dd_for_layer(
-                layer_id, timeout_sec=timeout_sec
-            )
-            if not cover_date:
-                logger.warning("skip %s — no capability dates", label)
-                continue
-            export_url = group.export_url_template.replace(
-                "{date}", cover_date
-            ).replace("{layer_id}", layer_id)
-            try:
-                req = _build_request(export_url, group, layer_id)
-            except ValueError as exc:
-                logger.error("invalid export URL for %s: %s", label, exc)
-                return 1
-
-            if args.dry_run:
-                logger.info(
-                    "[dry-run] would enqueue %s date=%s url=%s",
-                    label,
-                    cover_date,
-                    export_url[:200],
-                )
-                idx += 1
-                continue
-
-            session = factory()
-            try:
-                _job, status = enqueue_map_export_job(
-                    session,
-                    req,
-                    s3_client=s3_client,
-                    dedupe=True,
-                    priority=MAP_EXPORT_JOB_PRIORITY_SCHEDULED_PUBLIC,
-                )
-                if status == 202:
-                    enqueued += 1
-                    logger.info(
-                        "Enqueued %s date=%s http=%s", label, cover_date, status
-                    )
-                else:
-                    skipped += 1
-                    logger.info(
-                        "Skipped duplicate or active %s date=%s http=%s",
-                        label,
-                        cover_date,
-                        status,
-                    )
-            finally:
-                session.close()
-            idx += 1
-
+    factory = get_export_jobs_session_factory()
+    enqueued, skipped = process_active_schedules(
+        factory,
+        dry_run=args.dry_run,
+        s3_client=s3_client,
+        timeout_sec=timeout_sec,
+    )
     logger.info(
-        "scheduled_public_maps_cron finished enqueued=%s skipped=%s ops=%s dry_run=%s",
+        "scheduled_public_maps_cron finished enqueued=%s skipped=%s dry_run=%s",
         enqueued,
         skipped,
-        idx,
         args.dry_run,
     )
     return 0
