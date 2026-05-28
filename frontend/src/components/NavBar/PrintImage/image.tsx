@@ -37,8 +37,6 @@ import {
   getPossibleDatesForLayer,
 } from 'utils/server-utils';
 import { stringHash } from 'utils/string-utils';
-import { useUrlHistory } from 'utils/url-utils';
-import { getBoolParam } from 'utils/urlParamSchema';
 import { useBoundaryData } from 'utils/useBoundaryData';
 import useResizeObserver from 'utils/useOnResizeObserver';
 
@@ -102,7 +100,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const posthog = usePostHog();
   const { t, i18n } = useSafeTranslation();
   const { enqueueBatchMapExportJob } = useBatchMapExportJobsActions();
-  const { urlParams } = useUrlHistory();
 
   // list of toggles
   const [toggles, setToggles] = useState<Toggles>({
@@ -317,8 +314,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     }
   }, [availableCadences, cadence]);
 
-  // TODO: remove showBatchMaps URL gate once batch maps is enabled by default
-  const shouldEnableBatchMaps = getBoolParam(urlParams, 'showBatchMaps', false);
+  const shouldEnableBatchMaps = true;
 
   const shouldShowMultiLayerWarning = selectedLayersWithDateSupport.length > 1;
 

@@ -31,6 +31,7 @@ import { cyanBlue } from 'muiTheme';
 import React, { useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
+  ADMIN_ACCESS_PERMISSION,
   MAP_EXPORT_MAX_URLS_PER_REQUEST,
   MAP_EXPORTS_MANAGE_PERMISSION,
   PRISM_SIGN_IN_URL,
@@ -325,8 +326,10 @@ function PrintConfig() {
         }
         const data = (await response.json()) as { permissions?: string[] };
         setIsPrismAuthenticated(true);
+        const permissions = data.permissions ?? [];
         setCanManageSchedules(
-          (data.permissions ?? []).includes(MAP_EXPORTS_MANAGE_PERMISSION),
+          permissions.includes(MAP_EXPORTS_MANAGE_PERMISSION) ||
+            permissions.includes(ADMIN_ACCESS_PERMISSION),
         );
       } catch (_error) {
         if (!cancelled) {
@@ -443,6 +446,15 @@ function PrintConfig() {
     canManageSchedules,
     selectedLayerId,
     hasPreviewBounds: Boolean(previewBounds),
+  });
+
+  const primaryDisabled = isPrintPanelPrimaryDisabled({
+    isDownloading,
+    schedulePrimaryDisabled,
+    createScheduledMaps,
+    isPrismAuthenticated,
+    batchMapsVisibility: toggles.batchMapsVisibility,
+    hasCompleteDateRange: Boolean(dateRange.startDate && dateRange.endDate),
   });
 
   return (
@@ -901,22 +913,16 @@ function PrintConfig() {
 
         <Button
           fullWidth
-          style={{ backgroundColor: cyanBlue, color: 'black' }}
           variant="contained"
           color="primary"
-          className={classes.gutter}
+          className={`${classes.gutter} ${
+            primaryDisabled
+              ? classes.primaryButtonDisabled
+              : classes.primaryButtonActive
+          }`}
           endIcon={<GetApp />}
           onClick={handlePrimaryButtonClick}
-          disabled={isPrintPanelPrimaryDisabled({
-            isDownloading,
-            schedulePrimaryDisabled,
-            createScheduledMaps,
-            isPrismAuthenticated,
-            batchMapsVisibility: toggles.batchMapsVisibility,
-            hasCompleteDateRange: Boolean(
-              dateRange.startDate && dateRange.endDate,
-            ),
-          })}
+          disabled={primaryDisabled}
         >
           {isDownloading ? (
             <>
@@ -994,6 +1000,22 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     gutter: {
       marginBottom: 0,
+    },
+    primaryButtonActive: {
+      backgroundColor: cyanBlue,
+      color: 'black',
+      '&:hover': {
+        backgroundColor: cyanBlue,
+      },
+    },
+    primaryButtonDisabled: {
+      cursor: 'not-allowed',
+      '&.Mui-disabled': {
+        cursor: 'not-allowed',
+        pointerEvents: 'auto',
+        backgroundColor: theme.palette.grey[300],
+        color: theme.palette.text.disabled,
+      },
     },
     closeButton: {
       position: 'absolute',
