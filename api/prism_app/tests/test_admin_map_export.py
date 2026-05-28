@@ -53,6 +53,12 @@ def test_job_owner_filter_hides_unowned_for_non_admin() -> None:
     assert "created_by_user_id" in compiled
 
 
+def test_schedule_view_allows_delete_for_admin() -> None:
+    view = MapExportScheduleView(MapExportSchedule)
+    assert view.can_delete(_request(admin_access=True)) is True
+    assert view.can_delete(_request(admin_access=False)) is False
+
+
 def test_schedule_view_can_create_only_with_clone_from() -> None:
     view = MapExportScheduleView(MapExportSchedule)
     assert view.can_create(_request(admin_access=True)) is False

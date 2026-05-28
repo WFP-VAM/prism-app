@@ -4,7 +4,9 @@ Revision ID: map_export_schedules_001
 Revises: map_export_job_priority_001
 Create Date: 2026-05-26
 
+Schedule ``status`` is ``active`` (cron enqueues) or ``stopped`` (skipped).
 """
+
 
 import sqlalchemy as sa
 from alembic import op
@@ -54,6 +56,10 @@ def upgrade() -> None:
             ["users.id"],
             name="fk_map_export_schedules_created_by_user_id_users",
             ondelete="SET NULL",
+        ),
+        sa.CheckConstraint(
+            "status IN ('active', 'stopped')",
+            name="ck_map_export_schedules_status",
         ),
         sa.PrimaryKeyConstraint("id"),
     )

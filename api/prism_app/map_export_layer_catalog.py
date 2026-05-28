@@ -29,12 +29,16 @@ def merged_country_layers(country: str) -> dict[str, dict[str, Any]]:
     """Merge shared + country layers; country keys win (see ``getRawLayers``)."""
     country_path = _CONFIG_ROOT / country / "layers.json"
     if not country_path.is_file():
-        raise FileNotFoundError(f"Unknown deployment country layer config: {country_path}")
+        raise FileNotFoundError(
+            f"Unknown deployment country layer config: {country_path}"
+        )
     shared_path = _CONFIG_ROOT / "shared" / "layers.json"
     country_layers = _load_json(country_path)
     shared_layers = _load_json(shared_path) if shared_path.is_file() else {}
     merged = {**shared_layers, **country_layers}
-    return {layer_id: merged[layer_id] for layer_id in country_layers if layer_id in merged}
+    return {
+        layer_id: merged[layer_id] for layer_id in country_layers if layer_id in merged
+    }
 
 
 def is_schedule_eligible_layer(layer: dict[str, Any]) -> bool:

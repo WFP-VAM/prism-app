@@ -30,8 +30,8 @@ from prism_app.database.database import DB_URI, AlertsDataBase
 from prism_app.database.kobo_user_model import KoboUser
 from prism_app.database.user_model import User
 from prism_app.export_jobs import router as export_map_jobs_router
-from prism_app.export_schedules import router as export_map_schedules_router
 from prism_app.export_maps import export_maps
+from prism_app.export_schedules import router as export_map_schedules_router
 from prism_app.googleflood import (
     get_google_flood_dates,
     get_google_floods_gauge_forecast,

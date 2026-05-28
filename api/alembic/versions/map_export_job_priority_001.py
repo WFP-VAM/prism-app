@@ -1,7 +1,7 @@
 """Add map_export_jobs.priority for queue ordering (interactive > scheduled public).
 
 Revision ID: map_export_job_priority_001
-Revises: prism_users_permissions
+Revises: add_dashboard_table
 Create Date: 2026-05-16
 
 Higher priority rows are claimed first; then oldest created_at.
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 from alembic import op
 
 revision = "map_export_job_priority_001"
-down_revision = "prism_users_permissions"
+down_revision = "add_dashboard_table"
 branch_labels = None
 depends_on = None
 

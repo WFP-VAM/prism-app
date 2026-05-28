@@ -2,7 +2,12 @@
 
 from pathlib import Path
 
-_REVISION = Path(__file__).resolve().parents[2] / "alembic" / "versions" / "map_export_schedules_001.py"
+_REVISION = (
+    Path(__file__).resolve().parents[2]
+    / "alembic"
+    / "versions"
+    / "map_export_schedules_001.py"
+)
 
 
 def test_migration_defines_schedule_table_and_permission_seed() -> None:
@@ -15,3 +20,5 @@ def test_migration_defines_schedule_table_and_permission_seed() -> None:
     assert "map_export_schedule_id" in source
     assert "created_by_user_id" in source
     assert "prism.map_exports.manage" in source
+    assert "ck_map_export_schedules_status" in source
+    assert "'active', 'stopped'" in source

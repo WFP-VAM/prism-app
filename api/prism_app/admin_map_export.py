@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import Any
+
 from prism_app.admin import PrismGatedModelView, ReadOnlyModelView
 from prism_app.auth.admin_request import (
     admin_user_from_request,
@@ -12,6 +13,7 @@ from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.database.map_export_schedule_model import (
     MapExportSchedule,
     MapExportScheduleCadence,
+    MapExportScheduleStatus,
 )
 from prism_app.export_schedules.routes import format_map_export_schedule_name
 from prism_app.map_export_layer_catalog import (
@@ -24,9 +26,9 @@ from starlette.exceptions import HTTPException
 from starlette.requests import Request
 from starlette.responses import Response
 from starlette_admin import EnumField, JSONField, StringField
-from starlette_admin.contrib.sqla import Admin
 from starlette_admin._types import RequestAction
 from starlette_admin.actions import link_row_action
+from starlette_admin.contrib.sqla import Admin
 from starlette_admin.exceptions import FormValidationError
 
 
@@ -85,7 +87,7 @@ class MapExportScheduleView(PrismGatedModelView):
     fields = (
         "id",
         "name",
-        "status",
+        EnumField("status", enum=MapExportScheduleStatus),
         "country",
         EnumField(
             "layer_id",
@@ -139,10 +141,7 @@ class MapExportScheduleView(PrismGatedModelView):
     )
     fields_default_sort = [("created_at", True)]
     actions: list[str] = []
-    row_actions = ["view", "edit", "clone"]
-
-    def can_delete(self, request: Request) -> bool:
-        return False
+    row_actions = ["view", "edit", "clone", "delete"]
 
     def can_create(self, request: Request) -> bool:
         if not super().can_create(request):

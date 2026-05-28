@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import logging
 import secrets
+from posixpath import normpath
 from typing import Annotated
+from urllib.parse import parse_qs, unquote, urlparse
 
 import httpx
 import jwt
@@ -94,7 +96,6 @@ def _consume_sign_out_csrf(request: Request, submitted: str | None) -> bool:
 def _frontend_redirect_origins(settings: AdminAuthSettings | None) -> set[str]:
     if settings is None:
         return set()
-    from urllib.parse import urlparse
 
     origins: set[str] = set()
     for raw in settings.frontend_redirect_origins.split(","):
@@ -108,8 +109,7 @@ def _frontend_redirect_origins(settings: AdminAuthSettings | None) -> set[str]:
 
 
 def _is_frontend_print_modal_return(norm_path: str, query: str) -> bool:
-    from urllib.parse import parse_qs
-
+    """Redirect to frontend print modal based if query param is present"""
     if norm_path != "/" or not query:
         return False
     parsed = parse_qs(query, keep_blank_values=True)
@@ -127,9 +127,6 @@ def _safe_next(
     admin app. For the React app, only configured frontend origins may receive
     the print-modal return intent.
     """
-    from posixpath import normpath
-    from urllib.parse import unquote, urlparse
-
     if not next_raw:
         return default
     raw = str(next_raw).strip()
@@ -175,10 +172,9 @@ def _safe_next(
     if admin_allowed:
         return f"{norm}?{query}" if query else norm
 
-    frontend_allowed = (
-        origin in _frontend_redirect_origins(settings)
-        and _is_frontend_print_modal_return(norm, query)
-    )
+    frontend_allowed = origin in _frontend_redirect_origins(
+        settings
+    ) and _is_frontend_print_modal_return(norm, query)
     if frontend_allowed:
         return f"{origin}{norm}?{query}"
     return default

@@ -16,8 +16,9 @@ from sqlmodel import Field, SQLModel
 
 
 class MapExportScheduleStatus(str, Enum):
+    """Schedule lifecycle: active rows are enqueued by cron; stopped rows are not."""
+
     active = "active"
-    paused = "paused"
     stopped = "stopped"
 
 

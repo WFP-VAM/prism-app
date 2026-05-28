@@ -7,7 +7,10 @@ from unittest.mock import patch
 from uuid import UUID
 
 from prism_app.database.map_export_job_model import MapExportJob
-from prism_app.database.map_export_schedule_model import MapExportSchedule
+from prism_app.database.map_export_schedule_model import (
+    MapExportSchedule,
+    MapExportScheduleStatus,
+)
 from prism_app.export_jobs.priority import MAP_EXPORT_JOB_PRIORITY_SCHEDULED_PUBLIC
 from prism_app.tests.fixtures.moz_export import MAP_EXPORT_FIXTURE_BASE_URL
 from prism_app.workers.scheduled_public_maps.cron import (
@@ -125,6 +128,43 @@ def test_process_active_schedules_enqueues_latest_date_and_updates_state() -> No
         assert job.request_payload_json["urls"] == [
             f"{MAP_EXPORT_FIXTURE_BASE_URL}/export?date=2026-04-21&hazardLayerIds=precip_blended_dekad&bounds=24.99,-29.08,38.85,-10.74"
         ]
+
+
+def test_process_active_schedules_skips_stopped() -> None:
+    engine = create_engine(
+        "sqlite://",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+    MapExportSchedule.__table__.create(engine)
+    MapExportJob.__table__.create(engine)
+    SessionLocal = sessionmaker(bind=engine, class_=Session, expire_on_commit=False)
+
+    with SessionLocal() as session:
+        schedule = MapExportSchedule(
+            name="Stopped schedule",
+            status=MapExportScheduleStatus.stopped,
+            country="mozambique",
+            layer_id="precip_blended_dekad",
+            cadence="monthly",
+            dekad_interval=1,
+            export_url=f"{MAP_EXPORT_FIXTURE_BASE_URL}/export?date={{date}}&hazardLayerIds={{layer_id}}",
+            format="pdf",
+            export_options={"viewportWidth": 1200, "viewportHeight": 1697},
+        )
+        session.add(schedule)
+        session.commit()
+
+    days_map = {"precip_blended_dekad": [_utc_noon_ms(2026, 4, 21)]}
+    enqueued, _skipped = process_active_schedules(
+        SessionLocal,
+        days_map=days_map,
+        dry_run=False,
+    )
+
+    assert enqueued == 0
+    with SessionLocal() as session:
+        assert list(session.exec(select(MapExportJob))) == []
 
 
 def test_process_active_schedules_skips_date_already_enqueued() -> None:
