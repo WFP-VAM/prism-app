@@ -7,7 +7,6 @@ Create Date: 2026-05-26
 Schedule ``status`` is ``active`` (cron enqueues) or ``stopped`` (skipped).
 """
 
-
 import sqlalchemy as sa
 from alembic import op
 from sqlalchemy.dialects import postgresql
