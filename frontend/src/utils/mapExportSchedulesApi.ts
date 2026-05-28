@@ -37,6 +37,7 @@ export type ScheduleExportOptions = {
 };
 
 export type MapExportScheduleCreateRequest = {
+  name: string;
   country: string;
   layer_id: string;
   cadence: MapExportScheduleCadenceApi;

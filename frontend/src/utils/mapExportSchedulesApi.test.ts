@@ -18,6 +18,7 @@ describe('cadenceToApi', () => {
 
 describe('createMapExportSchedule', () => {
   const body: MapExportScheduleCreateRequest = {
+    name: 'Mozambique: {date_coverage}',
     country: 'mozambique',
     layer_id: 'precip_blended_dekad',
     cadence: 'monthly',
@@ -46,7 +47,7 @@ describe('createMapExportSchedule', () => {
         JSON.stringify({
           schedule_id: 'sched-1',
           status: 'active',
-          name: 'mozambique precip_blended_dekad monthly PDF',
+          name: 'Mozambique: {date_coverage}',
           export_url: 'https://prism.example.org/export?date={date}',
         }),
     } as Response);

@@ -257,7 +257,8 @@ class MapExportScheduleView(PrismGatedModelView):
         )
         layer_id = str(data.get("layer_id") or obj.layer_id)
         export_format = str(data.get("format") or obj.format)
-        obj.name = format_map_export_schedule_name(
+        submitted_name = str(data.get("name") or obj.name or "").strip()
+        obj.name = submitted_name or format_map_export_schedule_name(
             country=country,
             layer_id=layer_id,
             cadence=cadence,
@@ -278,7 +279,8 @@ class MapExportScheduleView(PrismGatedModelView):
         )
         layer_id = str(data.get("layer_id") or obj.layer_id)
         export_format = str(data.get("format") or obj.format)
-        obj.name = format_map_export_schedule_name(
+        submitted_name = str(data.get("name") or obj.name or "").strip()
+        obj.name = submitted_name or format_map_export_schedule_name(
             country=obj.country,
             layer_id=layer_id,
             cadence=cadence,

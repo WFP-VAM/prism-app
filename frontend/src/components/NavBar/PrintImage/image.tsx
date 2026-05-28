@@ -710,6 +710,17 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         return;
       }
 
+      const scheduleName = titleText.trim();
+      if (!scheduleName) {
+        dispatch(
+          addNotification({
+            type: 'error',
+            message: t('Enter a title for scheduled maps'),
+          }),
+        );
+        return;
+      }
+
       setIsDownloading(true);
       try {
         const exportOptions =
@@ -719,6 +730,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         }
 
         const result = await createMapExportSchedule({
+          name: scheduleName,
           country: safeCountry,
           layer_id: printSelectedLayer.id,
           cadence: cadenceToApi(cadence),
@@ -755,6 +767,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     [
       printSelectedLayer,
       previewBounds,
+      titleText,
       mapExportTemplate,
       cadence,
       dekadInterval,

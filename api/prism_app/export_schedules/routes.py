@@ -85,6 +85,7 @@ class ScheduleExportOptions(BaseModel):
 class MapExportScheduleCreateRequest(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
+    name: str = Field(..., min_length=1)
     country: str = Field(..., min_length=1)
     layer_id: str = Field(..., min_length=1)
     cadence: MapExportScheduleCadence
@@ -157,15 +158,6 @@ def format_map_export_schedule_name(
     return f"{country} {layer_id} {cadence.value} {format.upper()}"
 
 
-def generate_schedule_name(body: MapExportScheduleCreateRequest) -> str:
-    return format_map_export_schedule_name(
-        country=body.country,
-        layer_id=body.layer_id,
-        cadence=body.cadence,
-        format=body.format,
-    )
-
-
 @router.post(
     "/schedules",
     status_code=201,
@@ -181,7 +173,7 @@ def create_map_export_schedule(
         raise HTTPException(status_code=500, detail="Authenticated user is missing id")
 
     schedule = MapExportSchedule(
-        name=generate_schedule_name(body),
+        name=body.name.strip(),
         country=body.country,
         layer_id=body.layer_id,
         cadence=body.cadence,

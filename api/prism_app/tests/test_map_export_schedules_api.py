@@ -92,6 +92,7 @@ def api_client_without_permission(sqlite_engine) -> Generator[TestClient, None, 
 
 def _schedule_body() -> dict[str, object]:
     return {
+        "name": "Mozambique: {date_coverage}",
         "country": "mozambique",
         "layer_id": "precip_blended_dekad",
         "cadence": "monthly",
@@ -121,7 +122,7 @@ def test_post_export_map_schedule_creates_active_owned_schedule(
     assert response.status_code == 201, response.text
     payload = response.json()
     assert payload["status"] == "active"
-    assert payload["name"] == "mozambique precip_blended_dekad monthly PDF"
+    assert payload["name"] == "Mozambique: {date_coverage}"
     assert payload["export_url"].startswith("http://localhost/export?")
     assert "bounds=24.99,-29.08,38.85,-10.74" in payload["export_url"]
     assert "zoom=4.16" in payload["export_url"]
@@ -172,7 +173,7 @@ def test_post_export_map_schedule_accepts_png_format(
     response = api_client.post("/export-map/schedules", json=body)
 
     assert response.status_code == 201, response.text
-    assert response.json()["name"].endswith("PNG")
+    assert response.json()["name"] == "Mozambique: {date_coverage}"
     SessionLocal = sessionmaker(
         bind=sqlite_engine,
         class_=Session,
