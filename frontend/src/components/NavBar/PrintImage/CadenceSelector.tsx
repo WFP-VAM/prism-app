@@ -106,6 +106,7 @@ export default function CadenceSelector() {
     filteredBatchDates,
     availableCadences,
     disabledCadences,
+    createScheduledMaps,
   } = printConfig;
 
   return (
@@ -156,7 +157,7 @@ export default function CadenceSelector() {
           />
         )}
       </Box>
-      {filteredBatchDates.length > 0 && (
+      {!createScheduledMaps && filteredBatchDates.length > 0 && (
         <Box className={classes.dateList}>
           {filteredBatchDates.map(ts => (
             <span key={ts} className={classes.dateChip}>

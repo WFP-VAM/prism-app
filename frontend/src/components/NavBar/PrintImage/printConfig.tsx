@@ -1,13 +1,11 @@
 import {
   Box,
   Button,
-  Checkbox,
   CircularProgress,
   Collapse,
   createStyles,
   Divider,
   FormControl,
-  FormControlLabel,
   Icon,
   IconButton,
   InputLabel,
@@ -718,7 +716,7 @@ function PrintConfig() {
 
         {/* Batch Maps */}
         {shouldEnableBatchMaps && (
-          <>
+          <div>
             <SectionToggle
               title={t('Create a sequence of maps')}
               expanded={toggles.batchMapsVisibility}
@@ -744,12 +742,50 @@ function PrintConfig() {
                   );
                 }
 
+                if (!willBeEnabled) {
+                  setCreateScheduledMaps(false);
+                }
+
                 setToggles(prev => ({
                   ...prev,
                   batchMapsVisibility: willBeEnabled,
                 }));
               }}
             />
+            <Box className={classes.scheduleToggleWrap}>
+              <SectionToggle
+                title={t('Create maps for future data')}
+                expanded={createScheduledMaps}
+                disabled={!toggles.batchMapsVisibility}
+                tooltip={t(
+                  'Selecting this option will apply the template above to create maps as new data becomes available.',
+                )}
+                handleChange={({ target }) => {
+                  if (!target.checked) {
+                    handleDownloadMenuClose();
+                  }
+                  setCreateScheduledMaps(target.checked);
+                }}
+              >
+                {createScheduledMaps &&
+                  isPrismAuthenticated &&
+                  !canManageSchedules && (
+                    <GreyContainer>
+                      <GreyContainerSection isLast>
+                        <Typography
+                          variant="caption"
+                          component="p"
+                          className={classes.batchExportTruncateHint}
+                        >
+                          {t(
+                            'You do not have permission to create schedules. Contact an administrator.',
+                          )}
+                        </Typography>
+                      </GreyContainerSection>
+                    </GreyContainer>
+                  )}
+              </SectionToggle>
+            </Box>
             {toggles.batchMapsVisibility && (
               <GreyContainer>
                 <GreyContainerSection>
@@ -776,44 +812,8 @@ function PrintConfig() {
                     <DateRangePicker />
                   </GreyContainerSection>
                 )}
-                <GreyContainerSection>
-                  <CadenceSelector />
-                </GreyContainerSection>
                 <GreyContainerSection isLast={createScheduledMaps}>
-                  <Tooltip
-                    title={t(
-                      'Scheduled maps use your current print template and viewport. Sign in with schedule permission to create a recurring export.',
-                    )}
-                    arrow
-                    placement="top"
-                    classes={{ tooltip: classes.tooltip }}
-                  >
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={createScheduledMaps}
-                          onChange={event =>
-                            setCreateScheduledMaps(event.target.checked)
-                          }
-                          color="primary"
-                        />
-                      }
-                      label={t('Create scheduled maps')}
-                    />
-                  </Tooltip>
-                  {createScheduledMaps &&
-                    isPrismAuthenticated &&
-                    !canManageSchedules && (
-                      <Typography
-                        variant="caption"
-                        component="p"
-                        className={classes.batchExportTruncateHint}
-                      >
-                        {t(
-                          'You do not have permission to create schedules. Contact an administrator.',
-                        )}
-                      </Typography>
-                    )}
+                  <CadenceSelector />
                 </GreyContainerSection>
                 {!createScheduledMaps && (
                   <GreyContainerSection isLast>
@@ -866,7 +866,7 @@ function PrintConfig() {
                 </GreyContainer>
               </Box>
             )}
-          </>
+          </div>
         )}
 
         <Button
@@ -1055,6 +1055,9 @@ const useStyles = makeStyles((theme: Theme) =>
     batchExportTruncateHint: {
       marginTop: theme.spacing(0.5),
       color: theme.palette.error.main,
+    },
+    scheduleToggleWrap: {
+      paddingBottom: '5px',
     },
     batchExportsInPanelWrap: {
       marginTop: theme.spacing(1.5),

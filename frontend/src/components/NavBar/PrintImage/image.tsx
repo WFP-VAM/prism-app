@@ -28,7 +28,7 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { isBoundaryLayer } from 'utils/boundary-layers-utils';
 import { dateWithoutTime, getFormattedDate } from 'utils/date-utils';
 import useLayers, { isWmsSelectableForBatchPrint } from 'utils/layers-utils';
@@ -89,6 +89,7 @@ const DATE_PLACEHOLDER_SUFFIX = ': {date_coverage}';
 
 function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const location = useLocation();
+  const history = useHistory();
   const { country, header } = appConfig;
   const logo = header?.logo;
   const bottomLogo = get(appConfig, 'printConfig.bottomLogo', undefined);
@@ -176,6 +177,26 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const [dekadInterval, setDekadInterval] = useState(1);
   const [createScheduledMaps, setCreateScheduledMaps] = useState(false);
 
+  const updateCreateScheduledMaps = useCallback(
+    (value: React.SetStateAction<boolean>) => {
+      setCreateScheduledMaps(prev => {
+        const next = typeof value === 'function' ? value(prev) : value;
+        if (!next) {
+          const params = new URLSearchParams(location.search);
+          if (params.has('schedule')) {
+            params.delete('schedule');
+            history.replace({
+              pathname: location.pathname,
+              search: params.toString() ? `?${params.toString()}` : '',
+            });
+          }
+        }
+        return next;
+      });
+    },
+    [history, location.pathname, location.search],
+  );
+
   const [isDownloading, setIsDownloading] = useState(false);
   const countryLayerIds = new Set(
     Object.keys(configMap[safeCountry].rawLayers),
@@ -195,7 +216,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     const params = new URLSearchParams(location.search);
     if (params.get('schedule') === '1') {
       invalidateScheduleWhoamiSession();
-      setCreateScheduledMaps(true);
+      updateCreateScheduledMaps(true);
     }
     if (params.get('batchMaps') === '1') {
       setTitleText(prev =>
@@ -207,7 +228,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
           : { ...prev, batchMapsVisibility: true },
       );
     }
-  }, [location.search, open]);
+  }, [location.search, open, updateCreateScheduledMaps]);
 
   const { selectedLayersWithDateSupport, selectedLayers } = useLayers();
 
@@ -809,7 +830,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       selectedLayerId,
       setSelectedLayerId,
       createScheduledMaps,
-      setCreateScheduledMaps,
+      setCreateScheduledMaps: updateCreateScheduledMaps,
       createSchedule,
     },
   };
