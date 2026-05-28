@@ -275,7 +275,7 @@ function DashboardContent({
       case DashboardElementType.MAP:
         return (
           <Box
-            key={`map-${elementId}`}
+            key={`map-${selectedIndex}-${elementId}`}
             className={
               mode === DashboardMode.VIEW
                 ? classes.previewContainer
@@ -319,7 +319,7 @@ function DashboardContent({
       case DashboardElementType.TEXT:
         return (
           <div
-            key={`text-${elementId}`}
+            key={`text-${selectedIndex}-${elementId}`}
             ref={handleRef}
             style={getWrapperStyle()}
           >
@@ -342,7 +342,7 @@ function DashboardContent({
       case DashboardElementType.TABLE:
         return (
           <div
-            key={`table-${elementId}`}
+            key={`table-${selectedIndex}-${elementId}`}
             ref={handleRef}
             style={getWrapperStyle()}
           >
@@ -356,6 +356,7 @@ function DashboardContent({
               threshold={element.threshold}
               stat={element.stat}
               maxRows={element.maxRows}
+              useLatestAvailableDate={element.useLatestAvailableDate}
               allowDownload={!exportConfig}
               addResultToMap={element.addResultToMap}
               sortColumn={element.sortColumn}
@@ -379,19 +380,23 @@ function DashboardContent({
 
         return (
           <div
-            key={`chart-${elementId}`}
+            key={`chart-${selectedIndex}-${elementId}`}
             ref={handleRef}
             style={getWrapperStyle()}
             data-intended-height={intendedHeight}
           >
             <ChartBlock
               index={elementIndex}
+              columnIndex={columnIndex}
+              elementIndex={elementIndex}
               startDate={element.startDate}
               endDate={element.endDate}
               layerId={element.layerId}
               adminUnitLevel={element.adminUnitLevel}
               adminUnitId={element.adminUnitId}
               chartHeight={element.chartHeight}
+              useLatestAvailableDate={element.useLatestAvailableDate}
+              latestPeriod={element.latestPeriod}
               allowDownload={!exportConfig}
               isOverflowing={heightConfig?.overflow === 'auto'}
               recalculationCount={recalculationCount}

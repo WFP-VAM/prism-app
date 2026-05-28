@@ -1,3 +1,5 @@
+import { ChartLatestPeriod } from 'config/types';
+
 import {
   binaryFind,
   datesAreEqualWithoutTime,
@@ -6,6 +8,7 @@ import {
   generateDateItemsRange,
   generateDatesRange,
   getFormattedDate,
+  getLatestPeriodRange,
   getTimeInMilliseconds,
   StartEndDate,
 } from './date-utils';
@@ -240,4 +243,44 @@ describe('can find closest date', () => {
     ],
     result: '2023-12-11T12:00:00.000Z',
   };
+});
+
+describe('getLatestPeriodRange', () => {
+  const latestMay28 = Date.UTC(2026, 4, 28, 12);
+
+  it('returns dekad bucket starting on the 21st for day 28', () => {
+    const { startDate, endDate } = getLatestPeriodRange(
+      latestMay28,
+      ChartLatestPeriod.DEKAD,
+    );
+    expect(startDate).toBe(Date.UTC(2026, 4, 21, 12));
+    expect(endDate).toBe(latestMay28);
+  });
+
+  it('returns month bucket starting on the 1st', () => {
+    const { startDate, endDate } = getLatestPeriodRange(
+      latestMay28,
+      ChartLatestPeriod.MONTH,
+    );
+    expect(startDate).toBe(Date.UTC(2026, 4, 1, 12));
+    expect(endDate).toBe(latestMay28);
+  });
+
+  it('returns quarter bucket starting on the first month of the quarter', () => {
+    const { startDate, endDate } = getLatestPeriodRange(
+      latestMay28,
+      ChartLatestPeriod.QUARTER,
+    );
+    expect(startDate).toBe(Date.UTC(2026, 3, 1, 12));
+    expect(endDate).toBe(latestMay28);
+  });
+
+  it('returns year bucket starting on January 1', () => {
+    const { startDate, endDate } = getLatestPeriodRange(
+      latestMay28,
+      ChartLatestPeriod.YEAR,
+    );
+    expect(startDate).toBe(Date.UTC(2026, 0, 1, 12));
+    expect(endDate).toBe(latestMay28);
+  });
 });

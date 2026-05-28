@@ -5,6 +5,7 @@ import {
   AdminLevelType,
   BoundaryLayerProps,
   ChartConfig,
+  ChartLatestPeriod,
   DatasetField,
   LayerKey,
   WMSLayerProps,
@@ -16,13 +17,18 @@ import {
   loadAdminBoundaryDataset,
 } from 'context/datasetStateSlice';
 import { LayerData } from 'context/layers/layer-data';
+import {
+  availableDatesSelector,
+  loadAvailableDatesForLayer,
+} from 'context/serverStateSlice';
 import { TableData } from 'context/tableStateSlice';
 import { GeoJsonProperties } from 'geojson';
 import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getChartAdminBoundaryParams } from 'utils/admin-utils';
-import { getTimeInMilliseconds } from 'utils/date-utils';
+import { getLatestPeriodRange, getTimeInMilliseconds } from 'utils/date-utils';
+import { getPossibleDatesForLayer } from 'utils/server-utils';
 
 import { useBoundaryData } from './useBoundaryData';
 
@@ -39,6 +45,8 @@ export interface UseChartFormOptions {
   initialStartDate?: string;
   initialEndDate?: string;
   initialAdminLevel?: AdminLevelType;
+  useLatestAvailableDate?: boolean;
+  latestPeriod?: ChartLatestPeriod;
 }
 
 export interface UseChartFormReturn {
@@ -65,6 +73,7 @@ export interface UseChartFormReturn {
   selectedChartLayer: WMSLayerProps | null;
   boundaryLayerData: LayerData<BoundaryLayerProps> | undefined;
   boundaryLayer: BoundaryLayerProps;
+  isLatestDateReady: boolean;
 }
 
 /**
@@ -78,7 +87,12 @@ export const useChartForm = (
     initialStartDate,
     initialEndDate,
     initialAdminLevel,
+    useLatestAvailableDate = false,
+    latestPeriod = ChartLatestPeriod.MONTH,
   } = options;
+
+  const dispatch = useDispatch();
+  const availableDates = useSelector(availableDatesSelector);
 
   // Form state
   const [chartLayerId, setChartLayerId] = useState<LayerKey | undefined>(
@@ -173,6 +187,42 @@ export const useChartForm = (
     }
   }, [admin1Key, admin2Key, adminLevel]);
 
+  useEffect(() => {
+    if (
+      useLatestAvailableDate &&
+      chartLayerId &&
+      availableDates[chartLayerId] === undefined
+    ) {
+      dispatch(loadAvailableDatesForLayer(chartLayerId));
+    }
+  }, [useLatestAvailableDate, chartLayerId, availableDates, dispatch]);
+
+  const latestRange = useMemo(() => {
+    if (!useLatestAvailableDate || !selectedChartLayer) {
+      return null;
+    }
+    const possibleDates = getPossibleDatesForLayer(
+      selectedChartLayer,
+      availableDates,
+    );
+    if (!possibleDates?.length) {
+      return null;
+    }
+    const latestDate = possibleDates[possibleDates.length - 1].displayDate;
+    return getLatestPeriodRange(latestDate, latestPeriod);
+  }, [
+    useLatestAvailableDate,
+    selectedChartLayer,
+    availableDates,
+    latestPeriod,
+  ]);
+
+  const effectiveStartDate =
+    useLatestAvailableDate && latestRange ? latestRange.startDate : startDate;
+  const effectiveEndDate =
+    useLatestAvailableDate && latestRange ? latestRange.endDate : endDate;
+  const isLatestDateReady = !useLatestAvailableDate || latestRange !== null;
+
   return {
     // Form state
     chartLayerId,
@@ -181,9 +231,9 @@ export const useChartForm = (
     admin2Key,
     adminLevel,
     setLocation,
-    startDate,
+    startDate: effectiveStartDate,
     setStartDate,
-    endDate,
+    endDate: effectiveEndDate,
     setEndDate,
     adminProperties,
     setAdminProperties,
@@ -192,6 +242,7 @@ export const useChartForm = (
     selectedChartLayer,
     boundaryLayerData,
     boundaryLayer,
+    isLatestDateReady,
   };
 };
 

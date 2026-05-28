@@ -1,7 +1,9 @@
 import {
   Box,
+  Checkbox,
   CircularProgress,
   createStyles,
+  FormControlLabel,
   Icon,
   IconButton,
   makeStyles,
@@ -25,6 +27,7 @@ import {
   setCapturedViewport,
   setLegendPosition,
   setLegendVisible,
+  setMapUseLatestDate,
 } from 'context/dashboardStateSlice';
 import {
   pointDataLayerDatesRequested,
@@ -103,6 +106,7 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
 
   const legendVisible = mapState?.legendVisible ?? true;
   const legendPosition = mapState?.legendPosition ?? 'right';
+  const useLatestAvailableDate = mapState?.useLatestAvailableDate ?? false;
   // Convert 'left'/'right' to 0/1 for ToggleButtonGroup
   const legendPositionValue = legendPosition === 'left' ? 0 : 1;
 
@@ -258,15 +262,30 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
           <Typography variant="h3" className={classes.titleLabel}>
             {t('Map Title')}
           </Typography>
-          <TextField
-            value={mapTitle || ''}
-            onChange={handleTitleChange}
-            placeholder={t('Enter map title') as string}
-            variant="outlined"
-            size="small"
-            fullWidth
-            className={classes.titleInput}
-          />
+          <Box className={classes.titleInputRow}>
+            <TextField
+              value={mapTitle || ''}
+              onChange={handleTitleChange}
+              placeholder={t('Enter map title') as string}
+              variant="outlined"
+              size="small"
+              fullWidth
+              className={classes.titleInput}
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={useLatestAvailableDate}
+                  onChange={(_event, checked) =>
+                    dispatch(setMapUseLatestDate({ elementId, value: checked }))
+                  }
+                  color="primary"
+                />
+              }
+              label={t('Use latest data')}
+              className={classes.useLatestCheckbox}
+            />
+          </Box>
         </Box>
       )}
       <Box
@@ -401,7 +420,14 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
           {mode === DashboardMode.EDIT &&
             selectedLayersWithDateSupport.length > 0 &&
             !datesLoading && (
-              <div className={classes.dateSelectorContainer}>
+              <div
+                className={classes.dateSelectorContainer}
+                style={
+                  useLatestAvailableDate
+                    ? { opacity: 0.4, pointerEvents: 'none' }
+                    : undefined
+                }
+              >
                 <DateSelector />
               </div>
             )}
@@ -477,6 +503,16 @@ const useStyles = makeStyles(() =>
       marginBottom: '6px',
       fontSize: '14px',
       fontWeight: 600,
+    },
+    titleInputRow: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '12px',
+    },
+    useLatestCheckbox: {
+      flexShrink: 0,
+      margin: 0,
+      whiteSpace: 'nowrap',
     },
     titleInput: {
       '& .MuiOutlinedInput-input': {

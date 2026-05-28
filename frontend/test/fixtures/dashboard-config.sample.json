@@ -5,7 +5,7 @@
     "firstColumn": [
       {
         "type": "MAP",
-        "defaultDate": "2024-12-21",
+        "date": "2024-12-21",
         "title": "Rainfall anomaly - Oct to Dec 2024",
         "mapPosition": "left",
         "minMapBounds": [29.48, -28.92, 43.52, -7.08],
@@ -17,7 +17,7 @@
     "secondColumn": [
       {
         "type": "MAP",
-        "defaultDate": "2025-03-21",
+        "date": "2025-03-21",
         "title": "Rainfall anomaly - Jan to Mar 2025",
         "mapPosition": "right",
         "minMapBounds": [29.48, -28.92, 43.52, -7.08],
@@ -40,7 +40,7 @@
       {
         "type": "MAP",
         "title": "SPI - Oct 2024 - March 2025",
-        "defaultDate": "2025-03-21",
+        "date": "2025-03-21",
         "mapPosition": "left",
         "minMapBounds": [31, -25, 40, -11],
         "preSelectedMapLayers": [
@@ -73,7 +73,7 @@
     "firstColumn": [
       {
         "type": "MAP",
-        "defaultDate": "2024-12-21",
+        "date": "2024-12-21",
         "mapPosition": "left",
         "minMapBounds": [31, -25, 40, -11],
         "title": "Rainfall anomaly - Oct - Dec 2024",

@@ -4,6 +4,7 @@ import { z } from 'zod';
 
 import {
   ChartHeight,
+  ChartLatestPeriod,
   DashboardElementType,
   DashboardMapPosition,
 } from './dashboardEnums';
@@ -15,7 +16,8 @@ const preSelectedMapLayerSchema = z.object({
 
 const dashboardMapConfigSchema = z.object({
   type: z.literal(DashboardElementType.MAP),
-  defaultDate: z.string().optional(),
+  date: z.string().optional(),
+  useLatestAvailableDate: z.boolean().optional().default(false),
   mapPosition: z.enum(DashboardMapPosition).optional(),
   minMapBounds: z.array(z.number()).optional(),
   title: z.string().optional(),
@@ -29,12 +31,17 @@ const dashboardMapConfigSchema = z.object({
 
 const dashboardChartConfigSchema = z.object({
   type: z.literal(DashboardElementType.CHART),
-  startDate: z.string(),
+  startDate: z.string().optional(),
   endDate: z.string().optional(),
   layerId: z.string(),
   adminUnitLevel: z.number().optional(),
   adminUnitId: z.number().optional(),
   chartHeight: z.enum(ChartHeight).optional().default(ChartHeight.TALL),
+  useLatestAvailableDate: z.boolean().optional().default(false),
+  latestPeriod: z
+    .enum(ChartLatestPeriod)
+    .optional()
+    .default(ChartLatestPeriod.MONTH),
 });
 
 const dashboardTextConfigSchema = z.object({
@@ -50,7 +57,8 @@ const thresholdDefinitionSchema = z.object({
 
 const dashboardTableConfigSchema = z.object({
   type: z.literal(DashboardElementType.TABLE),
-  startDate: z.string(),
+  startDate: z.string().optional(),
+  useLatestAvailableDate: z.boolean().optional().default(false),
   hazardLayerId: z.string(),
   baselineLayerId: z.string(),
   threshold: thresholdDefinitionSchema.optional(),
