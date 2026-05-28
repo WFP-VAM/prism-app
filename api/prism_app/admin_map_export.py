@@ -120,6 +120,7 @@ class MapExportScheduleView(PrismGatedModelView):
             label="Layer",
             choices_loader=_layer_id_choices,
         ),
+        StringField("admin_areas", label="Admin areas", read_only=True),
         EnumField("cadence", enum=MapExportScheduleCadence),
         "dekad_interval",
         EnumField("format", enum=MapExportScheduleFormat),
@@ -133,6 +134,7 @@ class MapExportScheduleView(PrismGatedModelView):
     exclude_fields_from_create = (
         "id",
         "country",
+        "admin_areas",
         "export_url",
         "export_options",
         "last_checked_at",
@@ -144,6 +146,7 @@ class MapExportScheduleView(PrismGatedModelView):
     )
     exclude_fields_from_edit = (
         "id",
+        "admin_areas",
         "export_url",
         "export_options",
         "last_checked_at",
@@ -154,11 +157,12 @@ class MapExportScheduleView(PrismGatedModelView):
         "updated_at",
         "country",
     )
-    searchable_fields = ("name", "layer_id", "status", "country")
+    searchable_fields = ("name", "layer_id", "status", "country", "admin_areas")
     sortable_fields = (
         "name",
         "status",
         "layer_id",
+        "admin_areas",
         "cadence",
         "last_enqueued_at",
         "created_at",
@@ -255,6 +259,7 @@ class MapExportScheduleView(PrismGatedModelView):
             source = await self._load_clone_source(request, clone_from)
             obj.export_url = source.export_url
             obj.export_options = source.export_options
+            obj.admin_areas = source.admin_areas
 
         user = admin_user_from_request(request)
         country = get_deployment_country()

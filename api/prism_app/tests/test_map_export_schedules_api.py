@@ -150,6 +150,29 @@ def test_post_export_map_schedule_creates_active_owned_schedule(
             schedule.export_options["queryParams"]["surprise"]
             == "allowed-in-opaque-blob"
         )
+        assert schedule.admin_areas == ""
+
+
+def test_post_export_map_schedule_persists_admin_areas(
+    api_client: TestClient,
+    sqlite_engine,
+) -> None:
+    body = _schedule_body()
+    body["admin_areas"] = "MOZ01,MOZ02"
+
+    response = api_client.post("/export-map/schedules", json=body)
+
+    assert response.status_code == 201, response.text
+    schedule_id = UUID(response.json()["schedule_id"])
+    SessionLocal = sessionmaker(
+        bind=sqlite_engine,
+        class_=Session,
+        expire_on_commit=False,
+    )
+    with SessionLocal() as session:
+        schedule = session.get(MapExportSchedule, schedule_id)
+        assert schedule is not None
+        assert schedule.admin_areas == "MOZ01,MOZ02"
 
 
 def test_post_export_map_schedule_stores_client_export_url_unchanged(

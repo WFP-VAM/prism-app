@@ -46,6 +46,8 @@ export type MapExportScheduleCreateRequest = {
   export_url: string;
   /** Opaque print-template metadata (viewport, etc.); shape owned by the frontend. */
   export_options: ScheduleExportOptions;
+  /** Comma-separated admin codes selected when the schedule was created. */
+  admin_areas: string;
 };
 
 export type MapExportScheduleCreateResponse = {

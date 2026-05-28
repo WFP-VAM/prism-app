@@ -7,6 +7,7 @@ import {
   applyMapExportPrintTemplate,
   buildBatchExportUrls,
   buildScheduleExportOptions,
+  buildScheduleExportPayload,
   buildScheduleExportUrl,
   getExportPageLocation,
 } from './mapExportTemplate';
@@ -144,6 +145,23 @@ describe('buildScheduleExportUrl', () => {
     expect(parsed.searchParams.get('hazardLayerIds')).toBe('{layer_id}');
     expect(parsed.searchParams.get('language')).toBe('pt');
     expect(parsed.searchParams.get('bounds')).toBe('30,-26,41,-10');
+  });
+});
+
+describe('buildScheduleExportPayload', () => {
+  test('includes comma-separated admin_areas for schedule storage', () => {
+    const payload = buildScheduleExportPayload({
+      ...sharedTemplate,
+      viewportWidth: 1200,
+      viewportHeight: 900,
+    });
+
+    expect(payload.admin_areas).toBe('MOZ01,MOZ02');
+    expect(payload.export_url).toContain('date={date}');
+    expect(payload.export_options.queryParams.selectedBoundaries).toEqual([
+      'MOZ01',
+      'MOZ02',
+    ]);
   });
 });
 

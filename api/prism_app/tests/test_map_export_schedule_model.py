@@ -21,6 +21,7 @@ def _schedule_payload() -> dict[str, object]:
         "name": "Mozambique rainfall monthly PDF",
         "country": "mozambique",
         "layer_id": "precip_blended_dekad",
+        "admin_areas": "MOZ01,MOZ02",
         "cadence": "monthly",
         "export_url": "https://prism.moz.wfp.org/export?date={date}&hazardLayerIds={layer_id}",
         "format": "pdf",

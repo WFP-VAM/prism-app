@@ -101,6 +101,7 @@ async def test_before_create_clone_copies_export_url_and_options(
         export_url="http://x/export?date={date}&hazardLayerIds={layer_id}",
         format="pdf",
         export_options={"origin": "http://x"},
+        admin_areas="MOZ01,MOZ02",
     )
     obj = MapExportSchedule(
         name="temp",
@@ -140,6 +141,7 @@ async def test_before_create_clone_copies_export_url_and_options(
 
     assert obj.export_url == source.export_url
     assert obj.export_options == source.export_options
+    assert obj.admin_areas == source.admin_areas
     assert obj.created_by_user_id == owner_id
 
 

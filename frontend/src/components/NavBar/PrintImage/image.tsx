@@ -721,6 +721,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
           format,
           export_url: schedulePayload.export_url,
           export_options: schedulePayload.export_options,
+          admin_areas: schedulePayload.admin_areas,
         });
 
         dispatch(

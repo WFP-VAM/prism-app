@@ -42,6 +42,7 @@ def upgrade() -> None:
         sa.Column("status", sa.String(), server_default="active", nullable=False),
         sa.Column("country", sa.String(), nullable=False),
         sa.Column("layer_id", sa.String(), nullable=False),
+        sa.Column("admin_areas", sa.String(), server_default="", nullable=False),
         sa.Column("cadence", sa.String(), nullable=False),
         sa.Column("dekad_interval", sa.Integer(), server_default="1", nullable=False),
         sa.Column("export_url", sa.String(length=4096), nullable=False),

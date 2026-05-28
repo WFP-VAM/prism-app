@@ -59,6 +59,11 @@ class MapExportSchedule(SQLModel, table=True):
     )
     country: str = Field(sa_column=Column(String, nullable=False))
     layer_id: str = Field(sa_column=Column(String, nullable=False))
+    # Comma-separated admin codes at schedule creation; display-only in admin for now.
+    admin_areas: str = Field(
+        default="",
+        sa_column=Column(String, nullable=False, server_default=""),
+    )
     cadence: MapExportScheduleCadence = Field(sa_column=Column(String, nullable=False))
     dekad_interval: int = Field(
         default=1,

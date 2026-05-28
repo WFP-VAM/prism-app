@@ -60,6 +60,13 @@ function boundsString(mapBounds: LngLatBounds): string {
   return `${mapBounds.getWest()},${mapBounds.getSouth()},${mapBounds.getEast()},${mapBounds.getNorth()}`;
 }
 
+/** Comma-separated admin codes stored on the schedule for admin display. */
+export function formatScheduleAdminAreas(
+  selectedBoundaries: AdminCodeString[],
+): string {
+  return selectedBoundaries.join(',');
+}
+
 export function exportTogglesForUrl(toggles: Toggles): Record<string, boolean> {
   return {
     fullLayerDescription: toggles.fullLayerDescription,
@@ -231,6 +238,7 @@ export function buildScheduleExportUrl(
 export type ScheduleExportPayload = {
   export_url: string;
   export_options: ScheduleExportOptions;
+  admin_areas: string;
 };
 
 export function buildScheduleExportPayload(
@@ -239,5 +247,6 @@ export function buildScheduleExportPayload(
   return {
     export_url: buildScheduleExportUrl(input),
     export_options: buildScheduleExportOptions(input),
+    admin_areas: formatScheduleAdminAreas(input.selectedBoundaries),
   };
 }

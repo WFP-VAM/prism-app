@@ -40,6 +40,7 @@ class MapExportScheduleCreateRequest(BaseModel):
     format: ExportFormat = "pdf"
     export_url: str = Field(..., min_length=1)
     export_options: dict[str, Any] = Field(default_factory=dict)
+    admin_areas: str = ""
 
     @model_validator(mode="after")
     def validate_export_url_contract(self) -> MapExportScheduleCreateRequest:
@@ -88,6 +89,7 @@ def create_map_export_schedule(
         export_url=body.export_url,
         format=body.format,
         export_options=body.export_options,
+        admin_areas=body.admin_areas,
         created_by_user_id=user.id,
     )
     session.add(schedule)

@@ -36,6 +36,7 @@ describe('createMapExportSchedule', () => {
       viewportWidth: 1200,
       viewportHeight: 900,
     },
+    admin_areas: 'MOZ01,MOZ02',
   };
 
   afterEach(() => {
