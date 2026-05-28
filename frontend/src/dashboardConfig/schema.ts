@@ -68,7 +68,7 @@ const dashboardElementSchema = z.discriminatedUnion('type', [
   dashboardTableConfigSchema,
 ]);
 
-const dashboardRowInputSchema = z.object({
+const dashboardConfigInputSchema = z.object({
   id: z.string().optional(),
   title: z.string(),
   path: z.string().optional(),
@@ -79,34 +79,44 @@ const dashboardRowInputSchema = z.object({
   thirdColumn: z.array(dashboardElementSchema).optional(),
 });
 
-const dashboardRowSchema = dashboardRowInputSchema.transform(d => ({
-  ...d,
-  path: d.path?.trim() ? d.path : generateSlugFromTitle(d.title),
-}));
+export const dashboardConfigSchema = dashboardConfigInputSchema.transform(
+  d => ({
+    ...d,
+    path: d.path?.trim() ? d.path : generateSlugFromTitle(d.title),
+  }),
+);
 
 export type DashboardChartConfig = z.infer<typeof dashboardChartConfigSchema>;
 export type DashboardMapConfig = z.infer<typeof dashboardMapConfigSchema>;
 export type DashboardTextConfig = z.infer<typeof dashboardTextConfigSchema>;
 export type DashboardTableConfig = z.infer<typeof dashboardTableConfigSchema>;
 export type DashboardElements = z.infer<typeof dashboardElementSchema>;
-export type Dashboard = z.infer<typeof dashboardRowSchema>;
-
-export const dashboardConfigArraySchema = z.array(dashboardRowSchema);
-
-export type DashboardConfigArray = z.infer<typeof dashboardConfigArraySchema>;
+export type Dashboard = z.infer<typeof dashboardConfigSchema>;
 
 export type ValidateDashboardConfigResult =
-  | { success: true; data: DashboardConfigArray }
+  | { success: true; data: Dashboard[] }
   | { success: false; error: z.ZodError };
 
-/**
- * Runtime validation for dashboard.json (S3 fetch and future import-JSON).
- * Dashboard element shapes and Dashboard are inferred from this schema (see config/types re-exports).
- */
+export type ValidateImportedDashboardConfigResult =
+  | { success: true; data: Dashboard }
+  | { success: false; error: z.ZodError };
+
+/** Runtime validation for a published dashboard list (API fetch, draft storage). */
 export function validateDashboardConfig(
   raw: unknown,
 ): ValidateDashboardConfigResult {
-  const result = dashboardConfigArraySchema.safeParse(raw);
+  const result = z.array(dashboardConfigSchema).safeParse(raw);
+  if (!result.success) {
+    return { success: false, error: result.error };
+  }
+  return { success: true, data: result.data };
+}
+
+/** Runtime validation for a single dashboard JSON file (export/import). */
+export function validateImportedDashboardConfig(
+  raw: unknown,
+): ValidateImportedDashboardConfigResult {
+  const result = dashboardConfigSchema.safeParse(raw);
   if (!result.success) {
     return { success: false, error: result.error };
   }

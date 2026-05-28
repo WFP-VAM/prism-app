@@ -344,7 +344,7 @@ exports[`ImportDashboardView shows validation error when JSON fails schema check
           classname="makeStyles-errorDetail-102"
           variant="body1"
         >
-          Invalid dashboard configuration: 0.firstColumn.0.type: Invalid input
+          Invalid dashboard configuration: firstColumn.0.type: Invalid input
         </mock-typography>
       </div>
     </div>

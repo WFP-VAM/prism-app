@@ -139,13 +139,12 @@ function DashboardView() {
       isDraft: _isDraft,
       ...dashboard
     } = dashboardConfig;
-    const exportData = [dashboard];
     const safeSlug = generateSlugFromTitle(
       dashboard.path || dashboard.title || 'dashboard',
     );
     const filename = `${safeSlug}_${Date.now()}`;
     downloadToFile(
-      { content: JSON.stringify(exportData, null, 2), isUrl: false },
+      { content: JSON.stringify(dashboard, null, 2), isUrl: false },
       filename,
       'application/json',
     );

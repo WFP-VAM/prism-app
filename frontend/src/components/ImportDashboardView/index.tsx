@@ -17,7 +17,7 @@ import {
 } from 'context/dashboardStateSlice';
 import {
   formatDashboardValidationError,
-  validateDashboardConfig,
+  validateImportedDashboardConfig,
 } from 'dashboardConfig/schema';
 import { useSafeTranslation } from 'i18n';
 import type React from 'react';
@@ -61,7 +61,7 @@ function ImportDashboardView() {
       reader.onload = e => {
         try {
           const parsed = JSON.parse(e.target?.result as string);
-          const result = validateDashboardConfig(parsed);
+          const result = validateImportedDashboardConfig(parsed);
           if (!result.success) {
             const issue = result.error.issues[0];
             const field = issue.path[issue.path.length - 1];
@@ -75,7 +75,7 @@ function ImportDashboardView() {
             setViewState({ status: 'error', detail });
             return;
           }
-          const dashboard = result.data[0];
+          const dashboard = result.data;
           const importedNorm = normalize(dashboard);
           const duplicate = dashboards.find(d => normalize(d) === importedNorm);
           const dashboardPath =

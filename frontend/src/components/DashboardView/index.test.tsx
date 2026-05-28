@@ -78,7 +78,7 @@ describe('DashboardView export JSON', () => {
     jest.clearAllMocks();
   });
 
-  it('calls downloadToFile with a JSON array, application/json content type, and slug_timestamp filename', () => {
+  it('calls downloadToFile with a single dashboard object, application/json content type, and slug_timestamp filename', () => {
     renderDashboardView();
     fireEvent.click(screen.getByText('Export JSON'));
 
@@ -92,10 +92,9 @@ describe('DashboardView export JSON', () => {
     expect(source.isUrl).toBe(false);
 
     const parsed = JSON.parse(source.content);
-    expect(Array.isArray(parsed)).toBe(true);
-    expect(parsed).toHaveLength(1);
-    expect(parsed[0].title).toBe('Test Dashboard');
-    expect(parsed[0].path).toBe('test-dashboard');
+    expect(Array.isArray(parsed)).toBe(false);
+    expect(parsed.title).toBe('Test Dashboard');
+    expect(parsed.path).toBe('test-dashboard');
   });
 
   it('strips isDraft, selectedDashboardIndex, and maps from the exported payload', () => {
@@ -105,8 +104,8 @@ describe('DashboardView export JSON', () => {
     const [source] = jest.mocked(downloadToFile).mock.calls[0];
     const parsed = JSON.parse(source.content);
 
-    expect(parsed[0]).not.toHaveProperty('isDraft');
-    expect(parsed[0]).not.toHaveProperty('selectedDashboardIndex');
-    expect(parsed[0]).not.toHaveProperty('maps');
+    expect(parsed).not.toHaveProperty('isDraft');
+    expect(parsed).not.toHaveProperty('selectedDashboardIndex');
+    expect(parsed).not.toHaveProperty('maps');
   });
 });
