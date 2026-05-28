@@ -1,0 +1,35 @@
+{# Show dekad_interval only when cadence is every_n_dekads (clone/create/edit). #}
+<script type="text/javascript">
+  (function () {
+    const CADENCE_EVERY_N_DEKADS = "every_n_dekads";
+
+    function syncDekadIntervalVisibility() {
+      const cadenceEl = document.querySelector('select[name="cadence"]');
+      const wrap = document.querySelector(".map-export-dekad-interval-field");
+      if (!cadenceEl || !wrap) {
+        return;
+      }
+      const show = cadenceEl.value === CADENCE_EVERY_N_DEKADS;
+      wrap.classList.toggle("d-none", !show);
+    }
+
+    function bindCadenceListener() {
+      const cadenceEl = document.querySelector('select[name="cadence"]');
+      if (!cadenceEl) {
+        return;
+      }
+      cadenceEl.addEventListener("change", syncDekadIntervalVisibility);
+      if (window.jQuery) {
+        window.jQuery(cadenceEl).on(
+          "select2:select select2:clear",
+          syncDekadIntervalVisibility,
+        );
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      bindCadenceListener();
+      syncDekadIntervalVisibility();
+    });
+  })();
+</script>

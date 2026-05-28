@@ -92,7 +92,13 @@ class MapExportSchedule(SQLModel, table=True):
     )
 
     def __admin_repr__(self, request) -> str:  # noqa: ARG002
-        return f"{self.name} ({self.status.value})"
+        # SQLAlchemy may hydrate status as a plain str, not the enum member.
+        status_label = (
+            self.status.value
+            if isinstance(self.status, MapExportScheduleStatus)
+            else self.status
+        )
+        return f"{self.name} ({status_label})"
 
     @model_validator(mode="after")
     def validate_export_url_placeholders(self) -> Self:

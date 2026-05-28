@@ -17,9 +17,7 @@ def _resolve_config_root() -> Path:
     if override:
         root = Path(override).resolve()
         if not root.is_dir():
-            raise FileNotFoundError(
-                f"{_CONFIG_ROOT_ENV} is not a directory: {root}"
-            )
+            raise FileNotFoundError(f"{_CONFIG_ROOT_ENV} is not a directory: {root}")
         return root
 
     here = Path(__file__).resolve().parent

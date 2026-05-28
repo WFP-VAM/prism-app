@@ -22,6 +22,7 @@ from prism_app.map_export_layer_catalog import (
     schedule_layer_ids,
 )
 from sqlalchemy import Select
+from sqlalchemy.orm import Session
 from starlette.exceptions import HTTPException
 from starlette.requests import Request
 from starlette.responses import Response
@@ -57,6 +58,20 @@ def _parse_cadence(value: Any) -> MapExportScheduleCadence:
     return MapExportScheduleCadence(str(value))
 
 
+def _set_admin_action(request: Request, action: RequestAction) -> None:
+    """``find_by_pk`` / ``serialize`` expect ``request.state.action`` (set on normal admin routes)."""
+    request.state.action = action
+
+
+def _normalize_dekad_interval(
+    cadence: MapExportScheduleCadence,
+    dekad_interval: int,
+) -> int:
+    if cadence != MapExportScheduleCadence.every_n_dekads:
+        return 1
+    return dekad_interval
+
+
 class PrismAdmin(Admin):
     """Admin with clone-prefill support for map export schedules."""
 
@@ -67,6 +82,7 @@ class PrismAdmin(Admin):
             identity = request.path_params.get("identity")
             model = self._find_model_from_identity(identity)
             if isinstance(model, MapExportScheduleView):
+                _set_admin_action(request, RequestAction.CREATE)
                 source = await model.find_by_pk(request, clone_from)
                 if source is None:
                     raise HTTPException(status_code=404)
@@ -84,8 +100,9 @@ class PrismAdmin(Admin):
 
 class MapExportScheduleView(PrismGatedModelView):
     label = "Map export schedules"
+    create_template = "map_export_schedule_create.html"
+    edit_template = "map_export_schedule_edit.html"
     fields = (
-        "id",
         "name",
         EnumField("status", enum=MapExportScheduleStatus),
         "country",
@@ -95,13 +112,9 @@ class MapExportScheduleView(PrismGatedModelView):
             choices_loader=_layer_id_choices,
         ),
         EnumField("cadence", enum=MapExportScheduleCadence),
-        "dekad_interval",
         "format",
         StringField("export_url", read_only=True),
         JSONField("export_options", read_only=True),
-        "last_checked_at",
-        "last_enqueued_at",
-        "last_enqueued_date",
         "created_by_user_id",
         "created_at",
         "updated_at",
@@ -109,6 +122,7 @@ class MapExportScheduleView(PrismGatedModelView):
     exclude_fields_from_list = ("export_options", "export_url")
     exclude_fields_from_create = (
         "id",
+        "country",
         "export_url",
         "export_options",
         "last_checked_at",
@@ -156,6 +170,26 @@ class MapExportScheduleView(PrismGatedModelView):
 
     def get_details_query(self, request: Request) -> Select:
         return _apply_schedule_owner_filter(super().get_details_query(request), request)
+
+    async def _load_clone_source(
+        self,
+        request: Request,
+        clone_from: str,
+    ) -> MapExportSchedule:
+        """Load source schedule without flushing the pending create row."""
+        _set_admin_action(request, RequestAction.CREATE)
+        session: Session = request.state.session
+        with session.no_autoflush:
+            source = await self.find_by_pk(request, clone_from)
+        if source is None:
+            raise FormValidationError(
+                {"__all__": "Source schedule not found or not accessible"},
+            )
+        if not source.export_url or not source.export_options:
+            raise FormValidationError(
+                {"__all__": "Source schedule is missing export configuration"},
+            )
+        return source
 
     async def serialize_clone_prefill(
         self,
@@ -206,22 +240,23 @@ class MapExportScheduleView(PrismGatedModelView):
         data: dict[str, Any],
         obj: MapExportSchedule,
     ) -> None:
+        clone_from = request.query_params.get("clone_from")
+        if clone_from:
+            source = await self._load_clone_source(request, clone_from)
+            obj.export_url = source.export_url
+            obj.export_options = source.export_options
+
         user = admin_user_from_request(request)
         country = get_deployment_country()
         obj.country = country
         obj.created_by_user_id = user.id
         cadence = _parse_cadence(data.get("cadence") or obj.cadence)
+        obj.dekad_interval = _normalize_dekad_interval(
+            cadence,
+            int(data.get("dekad_interval") or obj.dekad_interval or 1),
+        )
         layer_id = str(data.get("layer_id") or obj.layer_id)
         export_format = str(data.get("format") or obj.format)
-        clone_from = request.query_params.get("clone_from")
-        if clone_from:
-            source = await self.find_by_pk(request, clone_from)
-            if source is None:
-                raise FormValidationError(
-                    {"__all__": "Source schedule not found or not accessible"},
-                )
-            obj.export_options = source.export_options
-            obj.export_url = source.export_url
         obj.name = format_map_export_schedule_name(
             country=country,
             layer_id=layer_id,
@@ -237,6 +272,10 @@ class MapExportScheduleView(PrismGatedModelView):
     ) -> None:
         _ = request
         cadence = _parse_cadence(data.get("cadence") or obj.cadence)
+        obj.dekad_interval = _normalize_dekad_interval(
+            cadence,
+            int(data.get("dekad_interval") or obj.dekad_interval or 1),
+        )
         layer_id = str(data.get("layer_id") or obj.layer_id)
         export_format = str(data.get("format") or obj.format)
         obj.name = format_map_export_schedule_name(
@@ -250,7 +289,7 @@ class MapExportScheduleView(PrismGatedModelView):
 class MapExportJobView(ReadOnlyModelView):
     label = "Map export jobs"
     exclude_fields_from_list = ("request_payload_json", "error_json")
-    searchable_fields = ("id", "status", "map_export_schedule_id")
+    searchable_fields = ("status", "map_export_schedule_id")
     sortable_fields = ("status", "priority", "created_at", "finished_at")
     fields_default_sort = [("created_at", True)]
 
@@ -266,4 +305,5 @@ class MapExportJobView(ReadOnlyModelView):
 
 def register_map_export_admin_views(admin: Admin) -> None:
     admin.add_view(MapExportScheduleView(MapExportSchedule))
-    admin.add_view(MapExportJobView(MapExportJob))
+    # TODO: do we want to view these in admin?
+    # admin.add_view(MapExportJobView(MapExportJob))

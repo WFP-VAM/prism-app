@@ -9,10 +9,14 @@ from prism_app.admin_map_export import (
     MapExportScheduleView,
     _apply_job_owner_filter,
     _apply_schedule_owner_filter,
+    _normalize_dekad_interval,
 )
 from prism_app.auth.permission_codes import ADMIN_ACCESS
 from prism_app.database.map_export_job_model import MapExportJob
-from prism_app.database.map_export_schedule_model import MapExportSchedule
+from prism_app.database.map_export_schedule_model import (
+    MapExportSchedule,
+    MapExportScheduleCadence,
+)
 from sqlalchemy import select
 from starlette.requests import Request
 
@@ -59,8 +63,14 @@ def test_schedule_view_allows_delete_for_admin() -> None:
     assert view.can_delete(_request(admin_access=False)) is False
 
 
+def test_normalize_dekad_interval_only_for_every_n_dekads() -> None:
+    assert _normalize_dekad_interval(MapExportScheduleCadence.monthly, 3) == 1
+    assert _normalize_dekad_interval(MapExportScheduleCadence.every_n_dekads, 3) == 3
+
+
 def test_schedule_view_can_create_only_with_clone_from() -> None:
     view = MapExportScheduleView(MapExportSchedule)
+    assert view.create_template == "map_export_schedule_create.html"
     assert view.can_create(_request(admin_access=True)) is False
     scope = {
         "type": "http",
@@ -72,6 +82,65 @@ def test_schedule_view_can_create_only_with_clone_from() -> None:
     request = Request(scope)
     request.state.permission_codes = {ADMIN_ACCESS}
     assert view.can_create(request) is True
+
+
+@pytest.mark.asyncio
+async def test_before_create_clone_copies_export_url_and_options(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from contextlib import nullcontext
+    from unittest.mock import MagicMock
+
+    view = MapExportScheduleView(MapExportSchedule)
+    source = MapExportSchedule(
+        id="sched-1",
+        name="mozambique precip monthly PDF",
+        country="mozambique",
+        layer_id="precip_blended_dekad",
+        cadence="monthly",
+        export_url="http://x/export?date={date}&hazardLayerIds={layer_id}",
+        format="pdf",
+        export_options={"origin": "http://x"},
+    )
+    obj = MapExportSchedule(
+        name="temp",
+        status="active",
+        country="mozambique",
+        layer_id="precip_blended_1y",
+        cadence="monthly",
+        format="pdf",
+        export_options={},
+        export_url="",
+    )
+    owner_id = uuid4()
+    request = _request(
+        admin_access=True,
+        user_id=owner_id,
+        query_string=b"clone_from=sched-1",
+    )
+    session = MagicMock()
+    session.no_autoflush.return_value = nullcontext()
+    request.state.session = session
+
+    async def _fake_find_by_pk(_request: Request, pk: str) -> MapExportSchedule:
+        assert pk == "sched-1"
+        return source
+
+    monkeypatch.setattr(view, "find_by_pk", _fake_find_by_pk)
+
+    await view.before_create(
+        request,
+        {
+            "layer_id": "precip_blended_1y",
+            "cadence": "monthly",
+            "format": "pdf",
+        },
+        obj,
+    )
+
+    assert obj.export_url == source.export_url
+    assert obj.export_options == source.export_options
+    assert obj.created_by_user_id == owner_id
 
 
 @pytest.mark.asyncio

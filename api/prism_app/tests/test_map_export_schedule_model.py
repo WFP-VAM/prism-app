@@ -3,7 +3,10 @@
 from __future__ import annotations
 
 import pytest
-from prism_app.database.map_export_schedule_model import MapExportSchedule
+from prism_app.database.map_export_schedule_model import (
+    MapExportSchedule,
+    MapExportScheduleStatus,
+)
 from pydantic import ValidationError
 
 
@@ -22,6 +25,15 @@ def _schedule_payload() -> dict[str, object]:
             "viewportHeight": 1697,
         },
     }
+
+
+def test_admin_repr_accepts_status_as_str_or_enum() -> None:
+    schedule = MapExportSchedule.model_validate(_schedule_payload())
+    schedule.status = MapExportScheduleStatus.active
+    assert schedule.__admin_repr__(None) == f"{schedule.name} (active)"
+
+    schedule.status = "stopped"  # type: ignore[assignment]
+    assert schedule.__admin_repr__(None) == f"{schedule.name} (stopped)"
 
 
 def test_schedule_export_url_requires_date_and_layer_placeholders() -> None:
