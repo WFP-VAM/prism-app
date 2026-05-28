@@ -182,7 +182,8 @@ def transform_last_processed_flood(
 def station_summary_url(dates_url: str, station_file: str | None) -> str | None:
     if not station_file:
         return None
-    base_dir = re.sub(r"dates\.json$", "", dates_url, flags=re.IGNORECASE)
+    base_path = dates_url.split("?")[0]
+    base_dir = re.sub(r"dates\.json$", "", base_path, flags=re.IGNORECASE)
     return f"{base_dir}{station_file}"
 
 
