@@ -50,6 +50,13 @@ db-downgrade:
 db-seed: db-migrate
 	$(DEV_COMPOSE) exec -T api bash -c "poetry run python /scripts/seed_alerts_db.py"
 
+# Enqueue map_export_jobs from active map_export_schedules (requires `make api` running).
+schedule-cron:
+	$(DEV_COMPOSE) exec -T api poetry run python -m prism_app.workers.scheduled_public_maps.cron
+
+schedule-cron-dry-run:
+	$(DEV_COMPOSE) exec -T api poetry run python -m prism_app.workers.scheduled_public_maps.cron --dry-run
+
 api-add-users:
 	docker compose -f docker-compose.yml -f docker-compose.develop.yml run api bash -c "python scripts/add_users.py"
 
