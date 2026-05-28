@@ -75,7 +75,6 @@ interface DashboardContentProps {
   className?: string;
   logoConfig?: LogoConfig;
   exportConfig?: ExportConfig;
-  isEditable?: boolean;
   onEditClick?: () => void;
 }
 
@@ -88,7 +87,6 @@ function DashboardContent({
   className,
   logoConfig,
   exportConfig,
-  isEditable,
   onEditClick,
 }: DashboardContentProps) {
   const classes = useStyles();
@@ -454,7 +452,7 @@ function DashboardContent({
                   </Typography>
                   {mode === DashboardMode.VIEW && (
                     <Box className={classes.titleActions}>
-                      {isEditable && onEditClick && (
+                      {dashboardConfig.isDraft && onEditClick && (
                         <Button
                           color="primary"
                           variant="outlined"

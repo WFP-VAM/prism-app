@@ -21,7 +21,6 @@ describe('dashboardStateSlice', () => {
       {
         title: 'One',
         path: 'one',
-        isEditable: false,
         firstColumn: [
           {
             type: DashboardElementType.TEXT,
@@ -41,7 +40,6 @@ describe('dashboardStateSlice', () => {
       {
         title: 'Draft',
         path: 'draft',
-        isEditable: true,
         isDraft: true,
         firstColumn: [
           {

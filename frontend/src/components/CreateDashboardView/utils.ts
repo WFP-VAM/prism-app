@@ -73,7 +73,7 @@ export const buildDraftDashboard = (
     .filter(s => s.type !== null)
     .map(s => defaultElementForType(s.type!));
 
-  const base = { ...meta, isEditable: true as const };
+  const base = { ...meta };
 
   switch (preset) {
     case 'map-left':
