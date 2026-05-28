@@ -1,13 +1,6 @@
+import { safeCountry } from 'config';
+import { Dashboard, DashboardElementType } from 'config/types';
 import { defaultElementForType } from 'dashboardConfig/defaultElementForType';
-import { appConfig, safeCountry } from 'config';
-import { AggregationOperations } from 'config/aggregationOperations';
-import {
-  ChartHeight,
-  Dashboard,
-  DashboardElements,
-  DashboardElementType,
-  DashboardMapPosition,
-} from 'config/types';
 import { generateSlugFromTitle } from 'utils/string-utils';
 
 export { defaultElementForType };
