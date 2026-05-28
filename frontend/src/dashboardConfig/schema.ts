@@ -80,6 +80,7 @@ const dashboardConfigInputSchema = z.object({
   id: z.string().optional(),
   title: z.string(),
   path: z.string().optional(),
+  country: z.string().optional(),
   isDraft: z.boolean().optional(),
   firstColumn: z.array(dashboardElementSchema),
   secondColumn: z.array(dashboardElementSchema).optional(),
@@ -89,7 +90,7 @@ const dashboardConfigInputSchema = z.object({
 export const dashboardConfigSchema = dashboardConfigInputSchema.transform(
   d => ({
     ...d,
-    path: d.path?.trim() ? d.path : generateSlugFromTitle(d.title),
+    path: d.path?.trim() || generateSlugFromTitle(d.title),
   }),
 );
 

@@ -105,26 +105,32 @@ class DashboardAdminView(ModelView):
                 data["config"] = cfg
 
                 title = str(cfg.get("title", "")).strip()
+                country_val = str(cfg.get("country", "")).strip()
+                config_errors: list[str] = []
+
                 if not title:
-                    errors["config"] = (
+                    config_errors.append(
                         "Config JSON must include a non-empty 'title' field."
                     )
-                else:
-                    data["title"] = title
 
-                country_val = str(cfg.get("country", "")).strip()
+                country: DashboardCountry | None = None
                 if not country_val:
-                    errors["config"] = (
-                        errors.get("config")
-                        or "Config JSON must include a 'country' field matching a valid country code."
+                    config_errors.append(
+                        "Config JSON must include a 'country' field matching a valid country code."
                     )
                 else:
                     try:
-                        data["country"] = DashboardCountry(country_val)
+                        country = DashboardCountry(country_val)
                     except ValueError:
-                        errors["config"] = (
+                        config_errors.append(
                             f"Config 'country' value '{country_val}' is not a valid country code."
                         )
+
+                if config_errors:
+                    errors["config"] = "; ".join(config_errors)
+                else:
+                    data["title"] = title
+                    data["country"] = country
 
         if errors:
             raise FormValidationError(cast(dict[str | int, Any], errors))
