@@ -166,12 +166,14 @@ def _group_zones(
     """Group zones by a key id and merge polygons."""
     safe_filename = zones_filepath.replace("/", "_").replace("s3://", "")
     cache_filename = safe_filename.replace("parquet", "json")
-    grouped_basename = "{zones}.{simplify_tolerance}.{group_by}.{admin_level}.{iso3}".format(
-        zones=cache_filename,
-        group_by=group_by,
-        simplify_tolerance=simplify_tolerance,
-        admin_level=admin_level if admin_level is not None else "all",
-        iso3=iso3_filter if iso3_filter is not None else "all",
+    grouped_basename = (
+        "{zones}.{simplify_tolerance}.{group_by}.{admin_level}.{iso3}".format(
+            zones=cache_filename,
+            group_by=group_by,
+            simplify_tolerance=simplify_tolerance,
+            admin_level=admin_level if admin_level is not None else "all",
+            iso3=iso3_filter if iso3_filter is not None else "all",
+        )
     )
     output_filename: FilePath = os.path.join(caching.CACHE_DIRECTORY, grouped_basename)
     if is_file_valid(output_filename):
