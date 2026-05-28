@@ -111,7 +111,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build ${{ matrix.image_label }} image
-        run: docker build -f api/${{ matrix.dockerfile }} -t ${{ matrix.image_tag }} api
+        run: |
+          extra_context=()
+          if [ "${{ matrix.dockerfile }}" = "Dockerfile" ]; then
+            extra_context=(--build-context "layer_config=frontend/src/config")
+          fi
+          docker build -f "api/${{ matrix.dockerfile }}" "${extra_context[@]}" -t "${{ matrix.image_tag }}" api
       - name: Trivy vulnerability scan
         uses: aquasecurity/trivy-action@v0.36.0
         with:

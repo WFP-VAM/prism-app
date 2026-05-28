@@ -8,8 +8,33 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
-_REPO_ROOT = Path(__file__).resolve().parents[2]
-_CONFIG_ROOT = _REPO_ROOT / "frontend" / "src" / "config"
+_CONFIG_ROOT_ENV = "PRISM_LAYER_CONFIG_ROOT"
+
+
+def _resolve_config_root() -> Path:
+    """Locate ``frontend/src/config`` (repo checkout or ``PRISM_LAYER_CONFIG_ROOT``)."""
+    override = os.getenv(_CONFIG_ROOT_ENV, "").strip()
+    if override:
+        root = Path(override).resolve()
+        if not root.is_dir():
+            raise FileNotFoundError(
+                f"{_CONFIG_ROOT_ENV} is not a directory: {root}"
+            )
+        return root
+
+    here = Path(__file__).resolve().parent
+    for base in (here, *here.parents):
+        candidate = base / "frontend" / "src" / "config"
+        if candidate.is_dir() and any(candidate.glob("*/layers.json")):
+            return candidate
+
+    raise FileNotFoundError(
+        f"Could not locate frontend layer config. Set {_CONFIG_ROOT_ENV} "
+        "(e.g. mount frontend/src/config in the API container)."
+    )
+
+
+_CONFIG_ROOT = _resolve_config_root()
 
 
 def get_deployment_country() -> str:
