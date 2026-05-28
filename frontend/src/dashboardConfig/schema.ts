@@ -82,7 +82,7 @@ const dashboardConfigInputSchema = z.object({
 export const dashboardConfigSchema = dashboardConfigInputSchema.transform(
   d => ({
     ...d,
-    path: d.path?.trim() ? d.path : generateSlugFromTitle(d.title),
+    path: d.path?.trim() || generateSlugFromTitle(d.title),
   }),
 );
 
