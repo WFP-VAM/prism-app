@@ -42,7 +42,6 @@ function DashboardView() {
   const dashboards = useSelector(dashboardsListSelector);
   const {
     path: dashboardPath,
-    isEditable,
     title: dashboardTitle,
     selectedDashboardIndex,
   } = dashboardConfig;
@@ -169,7 +168,6 @@ function DashboardView() {
             ? classes.editLayout
             : classes.previewLayout
         }
-        isEditable={isEditable}
         onEditClick={handleClosePreview}
       />
       {mode === DashboardMode.EDIT && (

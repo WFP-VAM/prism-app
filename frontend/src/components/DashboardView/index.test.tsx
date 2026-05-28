@@ -38,7 +38,6 @@ const FIXED_TIMESTAMP = 1700000000000;
 const mockDashboard = {
   title: 'Test Dashboard',
   path: 'test-dashboard',
-  isEditable: true,
   isDraft: true,
   firstColumn: [],
 };

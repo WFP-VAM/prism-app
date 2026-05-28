@@ -106,7 +106,6 @@ describe('validateDashboardConfig', () => {
       return;
     }
     const row = result.data[0];
-    expect(row.isEditable).toBe(false);
     const [mapEl, chartEl, tableEl] = row.firstColumn;
     expect(mapEl.type).toBe(DashboardElementType.MAP);
     if (mapEl.type === DashboardElementType.MAP) {
