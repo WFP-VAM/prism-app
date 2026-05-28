@@ -205,16 +205,14 @@ const useStyles = makeStyles(() => ({
   selectRoot: {
     flex: 1,
     color: 'black',
-    '& label': {
-      color: '#333333',
+    '& .MuiFormLabel-root': {
+      color: 'black',
     },
-    '& .MuiInputBase-root': {
-      '&:hover fieldset': {
-        borderColor: '#333333',
-      },
-      '&.Mui-focused fieldset': {
-        borderColor: '#333333',
-      },
+    '& .MuiOutlinedInput-notchedOutline': {
+      borderColor: '#333333',
+    },
+    '&:hover .MuiOutlinedInput-notchedOutline': {
+      borderColor: '#333333',
     },
     '& .MuiSelect-root': {
       color: 'black',

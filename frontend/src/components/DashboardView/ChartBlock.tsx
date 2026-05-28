@@ -1,8 +1,10 @@
 import {
   Box,
   Button,
+  Checkbox,
   CircularProgress,
   FormControl,
+  FormControlLabel,
   IconButton,
   InputLabel,
   makeStyles,
@@ -23,12 +25,13 @@ import { buildCsvFileName, downloadToFile } from 'components/MapView/utils';
 import {
   AdminLevelType,
   ChartHeight,
+  ChartLatestPeriod,
   DashboardChartConfig,
   DashboardMode,
 } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useChartData, useChartForm } from 'utils/chart-hooks';
 import {
   createCsvDataFromDataKeyMap,
@@ -37,12 +40,18 @@ import {
 } from 'utils/csv-utils';
 import { getFormattedDate } from 'utils/date-utils';
 
-import { dashboardModeSelector } from '../../context/dashboardStateSlice';
+import {
+  dashboardModeSelector,
+  selectedDashboardIndexSelector,
+  updateBlockConfig,
+} from '../../context/dashboardStateSlice';
 import BlockPreviewHeader from './BlockPreviewHeader';
 import { CHART_HEIGHTS } from './chartConstants';
 
 interface ChartBlockProps extends Partial<DashboardChartConfig> {
   index: number;
+  columnIndex: number;
+  elementIndex: number;
   allowDownload?: boolean;
   chartHeight?: ChartHeight;
   isOverflowing?: boolean;
@@ -52,10 +61,14 @@ interface ChartBlockProps extends Partial<DashboardChartConfig> {
 
 function ChartBlock({
   index,
+  columnIndex,
+  elementIndex,
   startDate: initialStartDate,
   endDate: initialEndDate,
   layerId: initialChartLayerId,
   adminUnitLevel: initialAdminLevel,
+  useLatestAvailableDate: initialUseLatestAvailableDate,
+  latestPeriod: initialLatestPeriod,
   allowDownload,
   chartHeight: initialChartHeight,
   isOverflowing,
@@ -64,15 +77,69 @@ function ChartBlock({
 }: ChartBlockProps) {
   const classes = useStyles();
   const { t } = useSafeTranslation();
+  const dispatch = useDispatch();
   const mode = useSelector(dashboardModeSelector);
+  const selectedDashboardIndex = useSelector(selectedDashboardIndexSelector);
   const chartRef = useRef<any>(null);
+
+  const [useLatest, setUseLatest] = useState(
+    initialUseLatestAvailableDate ?? false,
+  );
+  const [period, setPeriod] = useState<ChartLatestPeriod>(
+    initialLatestPeriod ?? ChartLatestPeriod.MONTH,
+  );
+
+  useEffect(() => {
+    setUseLatest(initialUseLatestAvailableDate ?? false);
+    setPeriod(initialLatestPeriod ?? ChartLatestPeriod.MONTH);
+  }, [
+    initialUseLatestAvailableDate,
+    initialLatestPeriod,
+    selectedDashboardIndex,
+  ]);
 
   const formState = useChartForm({
     initialChartLayerId,
     initialStartDate,
     initialEndDate,
     initialAdminLevel: initialAdminLevel as AdminLevelType | undefined,
+    useLatestAvailableDate: useLatest,
+    latestPeriod: period,
   });
+
+  const persistBlockConfig = (
+    updates: Partial<
+      Pick<
+        DashboardChartConfig,
+        'useLatestAvailableDate' | 'latestPeriod' | 'startDate' | 'endDate'
+      >
+    >,
+  ) => {
+    dispatch(
+      updateBlockConfig({
+        columnIndex,
+        elementIndex,
+        updates,
+      }),
+    );
+  };
+
+  const handleUseLatestChange = (_event: unknown, checked: boolean) => {
+    setUseLatest(checked);
+    persistBlockConfig({
+      useLatestAvailableDate: checked,
+      latestPeriod: period,
+      ...(checked ? { startDate: undefined, endDate: undefined } : {}),
+    });
+  };
+
+  const handlePeriodChange = (newPeriod: ChartLatestPeriod) => {
+    setPeriod(newPeriod);
+    persistBlockConfig({
+      useLatestAvailableDate: useLatest,
+      latestPeriod: newPeriod,
+    });
+  };
 
   const {
     chartDataset,
@@ -88,7 +155,8 @@ function ChartBlock({
     adminLevel: formState.adminLevel,
     startDate: formState.startDate,
     endDate: formState.endDate,
-    enabled: !!formState.chartLayerId,
+    enabled:
+      !!formState.chartLayerId && (!useLatest || formState.isLatestDateReady),
   });
 
   // Form changes tracking for edit mode
@@ -153,6 +221,8 @@ function ChartBlock({
     formState.startDate,
     formState.endDate,
     formState.adminLevel,
+    useLatest,
+    period,
   ]);
 
   // Reset form changed flag when chart loads successfully
@@ -351,19 +421,65 @@ function ChartBlock({
 
       <Box className={classes.formContainer}>
         <Box className={classes.formSection}>
-          <ChartLayerSelector
-            value={formState.chartLayerId}
-            onChange={formState.setChartLayerId}
-          />
+          <Box className={classes.layerSelectorRow}>
+            <ChartLayerSelector
+              value={formState.chartLayerId}
+              onChange={formState.setChartLayerId}
+              className={classes.layerSelectorFlex}
+            />
+          </Box>
         </Box>
 
         <Box className={classes.formSection}>
-          <ChartDateRangeSelector
-            startDate={formState.startDate}
-            endDate={formState.endDate}
-            onStartDateChange={formState.setStartDate}
-            onEndDateChange={formState.setEndDate}
-          />
+          <Box className={classes.dateRangeLabelRow}>
+            <Typography variant="body2" className={classes.dateRangeLabel}>
+              {t('Date Range')}
+            </Typography>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={useLatest}
+                  onChange={handleUseLatestChange}
+                  color="primary"
+                />
+              }
+              label={t('Use latest available date(s)')}
+              className={classes.useLatestCheckbox}
+            />
+          </Box>
+          {useLatest ? (
+            <FormControl variant="outlined" className={classes.formControl}>
+              <InputLabel>{t('Period')}</InputLabel>
+              <Select
+                value={period}
+                onChange={e =>
+                  handlePeriodChange(e.target.value as ChartLatestPeriod)
+                }
+                label={t('Period')}
+              >
+                <MenuItem value={ChartLatestPeriod.DEKAD}>
+                  {t('One dekad')}
+                </MenuItem>
+                <MenuItem value={ChartLatestPeriod.MONTH}>
+                  {t('One month')}
+                </MenuItem>
+                <MenuItem value={ChartLatestPeriod.QUARTER}>
+                  {t('One quarter')}
+                </MenuItem>
+                <MenuItem value={ChartLatestPeriod.YEAR}>
+                  {t('One year')}
+                </MenuItem>
+              </Select>
+            </FormControl>
+          ) : (
+            <ChartDateRangeSelector
+              startDate={formState.startDate}
+              endDate={formState.endDate}
+              onStartDateChange={formState.setStartDate}
+              onEndDateChange={formState.setEndDate}
+              hideLabel
+            />
+          )}
           <ChartLocationSelector
             boundaryLayerData={formState.boundaryLayerData?.data}
             boundaryLayer={formState.boundaryLayer}
@@ -473,6 +589,35 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     gap: theme.spacing(1),
   },
+  layerSelectorRow: {
+    display: 'flex',
+    alignItems: 'flex-end',
+    gap: theme.spacing(2),
+    width: '100%',
+  },
+  layerSelectorFlex: {
+    flex: 1,
+    marginBottom: 0,
+  },
+  dateRangeLabelRow: {
+    display: 'flex',
+    alignItems: 'space-between',
+    justifyContent: 'space-between',
+    marginLeft: 10,
+    width: '90%',
+    marginBottom: 4,
+  },
+  dateRangeLabel: {
+    fontWeight: 600,
+    color: 'black',
+    paddingTop: 9,
+    flexShrink: 0,
+    marginRight: theme.spacing(1),
+  },
+  useLatestCheckbox: {
+    margin: 0,
+    flexShrink: 0,
+  },
   rerunRow: {
     display: 'flex',
     flexDirection: 'row',
@@ -558,6 +703,15 @@ const useStyles = makeStyles(theme => ({
     width: '90%',
     marginLeft: 10,
     marginBottom: 8,
+    '& .MuiFormLabel-root': {
+      color: 'black',
+    },
+    '& .MuiOutlinedInput-notchedOutline': {
+      borderColor: '#333333',
+    },
+    '&:hover .MuiOutlinedInput-notchedOutline': {
+      borderColor: '#333333',
+    },
   },
 }));
 

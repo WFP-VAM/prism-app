@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Checkbox,
   CircularProgress,
   FormControlLabel,
   IconButton,
@@ -48,6 +49,8 @@ import { getFormattedDate } from 'utils/date-utils';
 import {
   dashboardModeSelector,
   dashboardTableStateSelector,
+  selectedDashboardIndexSelector,
+  updateBlockConfig,
   updateTableState,
 } from '../../context/dashboardStateSlice';
 import BlockPreviewHeader from './BlockPreviewHeader';
@@ -71,6 +74,7 @@ function TableBlock({
   threshold: initialThreshold,
   stat: initialStat,
   maxRows: initialMaxRows,
+  useLatestAvailableDate: initialUseLatestAvailableDate,
   allowDownload,
   addResultToMap = true,
   sortColumn: initialSortColumn = 'name',
@@ -81,8 +85,31 @@ function TableBlock({
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const mode = useSelector(dashboardModeSelector);
+  const selectedDashboardIndex = useSelector(selectedDashboardIndexSelector);
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
   const analysisError = useSelector(analysisResultErrorSelector);
+
+  const [useLatest, setUseLatest] = useState(
+    initialUseLatestAvailableDate ?? false,
+  );
+
+  useEffect(() => {
+    setUseLatest(initialUseLatestAvailableDate ?? false);
+  }, [initialUseLatestAvailableDate, selectedDashboardIndex]);
+
+  const handleUseLatestChange = (_event: unknown, checked: boolean) => {
+    setUseLatest(checked);
+    dispatch(
+      updateBlockConfig({
+        columnIndex,
+        elementIndex,
+        updates: {
+          useLatestAvailableDate: checked,
+          ...(checked ? { startDate: undefined } : {}),
+        },
+      }),
+    );
+  };
 
   // Create element ID for Redux state
   const elementId = `${columnIndex}-${elementIndex}`;
@@ -93,10 +120,12 @@ function TableBlock({
   const sortColumn = tableState?.sortColumn ?? initialSortColumn ?? 'name';
   const isAscending = tableState?.sortOrder === 'asc';
 
+  const effectiveInitialStartDate = useLatest ? undefined : initialStartDate;
+
   const formState = useAnalysisForm({
     initialHazardLayerId,
     initialBaselineLayerId,
-    initialStartDate,
+    initialStartDate: effectiveInitialStartDate,
     initialThreshold,
     initialStat,
   });
@@ -499,6 +528,18 @@ function TableBlock({
               onStartDateChange={formState.setStartDate}
               onEndDateChange={formState.setEndDate}
               availableDates={formState.availableHazardDates}
+              disabled={useLatest}
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={useLatest}
+                  onChange={handleUseLatestChange}
+                  color="primary"
+                />
+              }
+              label={t('Use latest available date(s)')}
+              className={classes.useLatestCheckbox}
             />
             <Box className={classes.dateAnalysisRow}>
               <AdminLevelSelector
@@ -545,11 +586,25 @@ function TableBlock({
             </Box>
 
             <Box className={classes.dateAnalysisRow}>
-              <DateSelector
-                selectedDate={formState.selectedDate}
-                onDateChange={formState.setSelectedDate}
-                availableDates={formState.availableHazardDates}
-              />
+              <Box className={classes.dateColumn}>
+                <DateSelector
+                  selectedDate={formState.selectedDate}
+                  onDateChange={formState.setSelectedDate}
+                  availableDates={formState.availableHazardDates}
+                  disabled={useLatest}
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={useLatest}
+                      onChange={handleUseLatestChange}
+                      color="primary"
+                    />
+                  }
+                  label={t('Use latest available date(s)')}
+                  className={classes.useLatestCheckbox}
+                />
+              </Box>
               <TextField
                 label={t('Max rows')}
                 type="number"
@@ -598,6 +653,9 @@ const useStyles = makeStyles(theme => ({
   maxRowsInput: {
     width: 100,
     marginBottom: 16,
+  },
+  useLatestCheckbox: {
+    margin: 0,
   },
   previewContainer: {
     background: 'white',
@@ -650,10 +708,18 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'row',
     gap: theme.spacing(2),
-    alignItems: 'flex-end',
+    alignItems: 'flex-start',
     justifyContent: 'center',
     '& > *:first-child': {
       flex: 1,
+    },
+  },
+  dateColumn: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(0.5),
+    '& > *': {
+      marginBottom: '0 !important',
     },
   },
   rerunButton: {
