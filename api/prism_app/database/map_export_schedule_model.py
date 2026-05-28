@@ -29,6 +29,11 @@ class MapExportScheduleCadence(str, Enum):
     quarterly = "quarterly"
 
 
+class MapExportScheduleFormat(str, Enum):
+    pdf = "pdf"
+    png = "png"
+
+
 class MapExportSchedule(SQLModel, table=True):
     __tablename__ = "map_export_schedules"
     __table_args__ = (
@@ -58,7 +63,9 @@ class MapExportSchedule(SQLModel, table=True):
         sa_column=Column(Integer, nullable=False, server_default="1"),
     )
     export_url: str = Field(sa_column=Column(String(4096), nullable=False))
-    format: str = Field(sa_column=Column(String, nullable=False))
+    format: MapExportScheduleFormat = Field(
+        sa_column=Column(String, nullable=False),
+    )
     export_options: dict[str, Any] = Field(sa_column=Column(JSON, nullable=False))
     last_checked_at: Optional[datetime.datetime] = Field(
         default=None,

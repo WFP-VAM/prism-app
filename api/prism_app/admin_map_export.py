@@ -13,6 +13,7 @@ from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.database.map_export_schedule_model import (
     MapExportSchedule,
     MapExportScheduleCadence,
+    MapExportScheduleFormat,
     MapExportScheduleStatus,
 )
 from prism_app.export_schedules.routes import format_map_export_schedule_name
@@ -57,6 +58,12 @@ def _parse_cadence(value: Any) -> MapExportScheduleCadence:
     if isinstance(value, MapExportScheduleCadence):
         return value
     return MapExportScheduleCadence(str(value))
+
+
+def _parse_format(value: Any) -> str:
+    if isinstance(value, MapExportScheduleFormat):
+        return value.value
+    return str(value).lower()
 
 
 def _set_admin_action(request: Request, action: RequestAction) -> None:
@@ -113,14 +120,15 @@ class MapExportScheduleView(PrismGatedModelView):
             choices_loader=_layer_id_choices,
         ),
         EnumField("cadence", enum=MapExportScheduleCadence),
-        "format",
+        "dekad_interval",
+        EnumField("format", enum=MapExportScheduleFormat),
         StringField("export_url", read_only=True),
         JSONField("export_options", read_only=True),
         "created_by_user_id",
         "created_at",
         "updated_at",
     )
-    exclude_fields_from_list = ("export_options", "export_url")
+    exclude_fields_from_list = ("export_options", "export_url", "dekad_interval")
     exclude_fields_from_create = (
         "id",
         "country",
@@ -257,7 +265,8 @@ class MapExportScheduleView(PrismGatedModelView):
             int(data.get("dekad_interval") or obj.dekad_interval or 1),
         )
         layer_id = str(data.get("layer_id") or obj.layer_id)
-        export_format = str(data.get("format") or obj.format)
+        export_format = _parse_format(data.get("format") or obj.format)
+        obj.format = MapExportScheduleFormat(export_format)
         submitted_name = str(data.get("name") or obj.name or "").strip()
         obj.name = submitted_name or format_map_export_schedule_name(
             country=country,
@@ -279,7 +288,8 @@ class MapExportScheduleView(PrismGatedModelView):
             int(data.get("dekad_interval") or obj.dekad_interval or 1),
         )
         layer_id = str(data.get("layer_id") or obj.layer_id)
-        export_format = str(data.get("format") or obj.format)
+        export_format = _parse_format(data.get("format") or obj.format)
+        obj.format = MapExportScheduleFormat(export_format)
         submitted_name = str(data.get("name") or obj.name or "").strip()
         obj.name = submitted_name or format_map_export_schedule_name(
             country=obj.country,
