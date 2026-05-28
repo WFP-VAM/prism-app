@@ -72,9 +72,6 @@ RUN --mount=type=cache,target=/var/lib/apt \
 COPY ./prism_app /prism_app
 COPY ./alembic.ini /alembic.ini
 COPY ./alembic /alembic
-# Layer catalog for map-export admin (compose/CI: additional_context layer_config).
-COPY --from=layer_config . /frontend-config
-ENV PRISM_LAYER_CONFIG_ROOT=/frontend-config
 
 WORKDIR /prism_app/
 

@@ -1,0 +1,301 @@
+{
+  "countries": {
+    "afghanistan": [],
+    "bhutan": [],
+    "cambodia": [],
+    "cameroon": [],
+    "colombia": [],
+    "cuba": [],
+    "ecuador": [],
+    "global": [],
+    "haiti": [],
+    "indonesia": [],
+    "jordan": [],
+    "kyrgyzstan": [],
+    "malawi": [],
+    "mongolia": [],
+    "mozambique": [
+      {
+        "id": "lst_day_anomaly_blended",
+        "title": "INAM mean maximum air temperature anomaly (10-day)"
+      },
+      {
+        "id": "lst_daytime_blended",
+        "title": "INAM mean maximum air temperature (10-day)"
+      },
+      {
+        "id": "precip_blended_1m",
+        "title": "Blended rainfall aggregate (1-month)"
+      },
+      {
+        "id": "precip_blended_1y",
+        "title": "Blended rainfall aggregate (1-year)"
+      },
+      {
+        "id": "precip_blended_2m",
+        "title": "Blended rainfall aggregate (2-month)"
+      },
+      {
+        "id": "precip_blended_3m",
+        "title": "Blended rainfall aggregate (3-month)"
+      },
+      {
+        "id": "precip_blended_4m",
+        "title": "Blended rainfall aggregate (4-month)"
+      },
+      {
+        "id": "precip_blended_5m",
+        "title": "Blended rainfall aggregate (5-month)"
+      },
+      {
+        "id": "precip_blended_6m",
+        "title": "Blended rainfall aggregate (6-month)"
+      },
+      {
+        "id": "precip_blended_7m",
+        "title": "Blended rainfall aggregate (7-month)"
+      },
+      {
+        "id": "precip_blended_8m",
+        "title": "Blended rainfall aggregate (8-month)"
+      },
+      {
+        "id": "precip_blended_9m",
+        "title": "Blended rainfall aggregate (9-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_1m",
+        "title": "Blended rainfall anomaly (1-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_1y",
+        "title": "Blended rainfall anomaly (1-year)"
+      },
+      {
+        "id": "precip_blended_anomaly_2m",
+        "title": "Blended rainfall anomaly (2-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_3m",
+        "title": "Blended rainfall anomaly (3-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_4m",
+        "title": "Blended rainfall anomaly (4-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_5m",
+        "title": "Blended rainfall anomaly (5-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_6m",
+        "title": "Blended rainfall anomaly (6-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_7m",
+        "title": "Blended rainfall anomaly (7-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_8m",
+        "title": "Blended rainfall anomaly (8-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_9m",
+        "title": "Blended rainfall anomaly (9-month)"
+      },
+      {
+        "id": "precip_blended_dekad",
+        "title": "Blended rainfall aggregate (10-day)"
+      },
+      {
+        "id": "precip_blended_dekad_anomaly",
+        "title": "Blended rainfall anomaly (10-day)"
+      },
+      {
+        "id": "spi_blended_1m",
+        "title": "INAM SPI - 1-month"
+      },
+      {
+        "id": "spi_blended_1y",
+        "title": "INAM SPI - 1-year"
+      },
+      {
+        "id": "spi_blended_2m",
+        "title": "INAM SPI - 2-month"
+      },
+      {
+        "id": "spi_blended_2y",
+        "title": "INAM SPI - 2-year"
+      },
+      {
+        "id": "spi_blended_3m",
+        "title": "INAM SPI - 3-month"
+      },
+      {
+        "id": "spi_blended_3y",
+        "title": "INAM SPI - 3-year"
+      },
+      {
+        "id": "spi_blended_5y",
+        "title": "INAM SPI - 5-year"
+      },
+      {
+        "id": "spi_blended_6m",
+        "title": "INAM SPI - 6-month"
+      },
+      {
+        "id": "spi_blended_9m",
+        "title": "INAM SPI - 9-month"
+      }
+    ],
+    "myanmar": [],
+    "namibia": [],
+    "nepal": [],
+    "nigeria": [],
+    "rbd": [],
+    "sierraleone": [],
+    "somalia": [],
+    "southsudan": [],
+    "srilanka": [
+      {
+        "id": "precip_blended_1m",
+        "title": "Blended rainfall aggregate (1-month)"
+      },
+      {
+        "id": "precip_blended_1y",
+        "title": "Blended rainfall aggregate (1-year)"
+      },
+      {
+        "id": "precip_blended_3m",
+        "title": "Blended rainfall aggregate (3-month)"
+      },
+      {
+        "id": "precip_blended_6m",
+        "title": "Blended rainfall aggregate (6-month)"
+      },
+      {
+        "id": "precip_blended_9m",
+        "title": "Blended rainfall aggregate (9-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_1m",
+        "title": "Blended rainfall anomaly (1-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_1y",
+        "title": "Blended rainfall anomaly (1-year)"
+      },
+      {
+        "id": "precip_blended_anomaly_3m",
+        "title": "Blended rainfall anomaly (3-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_6m",
+        "title": "Blended rainfall anomaly (6-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_9m",
+        "title": "Blended rainfall anomaly (9-month)"
+      },
+      {
+        "id": "precip_blended_dekad",
+        "title": "Blended rainfall estimates (10-day)"
+      },
+      {
+        "id": "precip_blended_dekad_agg",
+        "title": "Blended monthly aggregate rainfall"
+      },
+      {
+        "id": "precip_blended_dekad_anomaly",
+        "title": "Blended rainfall anomaly (10-day)"
+      }
+    ],
+    "sudan": [],
+    "tajikistan": [],
+    "tanzania": [],
+    "ukraine": [],
+    "zambia": [],
+    "zimbabwe": [
+      {
+        "id": "precip_blended_1m",
+        "title": "Blended rainfall aggregate (1-month)"
+      },
+      {
+        "id": "precip_blended_1y",
+        "title": "Blended rainfall aggregate (1-year)"
+      },
+      {
+        "id": "precip_blended_2m",
+        "title": "Blended rainfall aggregate (2-month)"
+      },
+      {
+        "id": "precip_blended_3m",
+        "title": "Blended rainfall aggregate (3-month)"
+      },
+      {
+        "id": "precip_blended_4m",
+        "title": "Blended rainfall aggregate (4-month)"
+      },
+      {
+        "id": "precip_blended_5m",
+        "title": "Blended rainfall aggregate (5-month)"
+      },
+      {
+        "id": "precip_blended_6m",
+        "title": "Blended rainfall aggregate (6-month)"
+      },
+      {
+        "id": "precip_blended_7m",
+        "title": "Blended rainfall aggregate (7-month)"
+      },
+      {
+        "id": "precip_blended_9m",
+        "title": "Blended rainfall aggregate (9-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_1m",
+        "title": "Blended rainfall anomaly (1-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_1y",
+        "title": "Blended rainfall anomaly (1-year)"
+      },
+      {
+        "id": "precip_blended_anomaly_2m",
+        "title": "Blended rainfall anomaly (2-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_3m",
+        "title": "Blended rainfall anomaly (3-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_4m",
+        "title": "Blended rainfall anomaly (4-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_5m",
+        "title": "Blended rainfall anomaly (5-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_6m",
+        "title": "Blended rainfall anomaly (6-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_7m",
+        "title": "Blended rainfall anomaly (7-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_9m",
+        "title": "Blended rainfall anomaly (9-month)"
+      },
+      {
+        "id": "precip_blended_dekad",
+        "title": "Blended rainfall aggregate (10-day)"
+      },
+      {
+        "id": "precip_blended_dekad_anomaly",
+        "title": "Blended rainfall anomaly (10-day)"
+      }
+    ]
+  }
+}

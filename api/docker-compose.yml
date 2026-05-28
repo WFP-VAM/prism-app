@@ -3,8 +3,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      additional_contexts:
-        layer_config: ../frontend/src/config
     volumes:
       - "./cache:/cache:rw"
       - ./prism_app:/prism_app:ro

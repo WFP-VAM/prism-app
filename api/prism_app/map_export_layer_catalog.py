@@ -1,4 +1,4 @@
-"""Layer choices for scheduled map exports (mirrors PRISM batch-print eligibility)."""
+"""Layer choices for scheduled map exports (build-time manifest from frontend config)."""
 
 from __future__ import annotations
 
@@ -8,31 +8,9 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
-_CONFIG_ROOT_ENV = "PRISM_LAYER_CONFIG_ROOT"
-
-
-def _resolve_config_root() -> Path:
-    """Locate ``frontend/src/config`` (repo checkout or ``PRISM_LAYER_CONFIG_ROOT``)."""
-    override = os.getenv(_CONFIG_ROOT_ENV, "").strip()
-    if override:
-        root = Path(override).resolve()
-        if not root.is_dir():
-            raise FileNotFoundError(f"{_CONFIG_ROOT_ENV} is not a directory: {root}")
-        return root
-
-    here = Path(__file__).resolve().parent
-    for base in (here, *here.parents):
-        candidate = base / "frontend" / "src" / "config"
-        if candidate.is_dir() and any(candidate.glob("*/layers.json")):
-            return candidate
-
-    raise FileNotFoundError(
-        f"Could not locate frontend layer config. Set {_CONFIG_ROOT_ENV} "
-        "(e.g. mount frontend/src/config in the API container)."
-    )
-
-
-_CONFIG_ROOT = _resolve_config_root()
+_MANIFEST_PATH = (
+    Path(__file__).resolve().parent / "data" / "schedule_layer_manifest.json"
+)
 
 
 def get_deployment_country() -> str:
@@ -44,40 +22,31 @@ def get_deployment_country() -> str:
     return "mozambique"
 
 
-def _load_json(path: Path) -> dict[str, Any]:
-    return json.loads(path.read_text(encoding="utf-8"))
-
-
-def merged_country_layers(country: str) -> dict[str, dict[str, Any]]:
-    """Merge shared + country layers; country keys win (see ``getRawLayers``)."""
-    country_path = _CONFIG_ROOT / country / "layers.json"
-    if not country_path.is_file():
+@lru_cache(maxsize=1)
+def _load_manifest() -> dict[str, Any]:
+    if not _MANIFEST_PATH.is_file():
         raise FileNotFoundError(
-            f"Unknown deployment country layer config: {country_path}"
+            "Schedule layer manifest not found. Run "
+            "`cd frontend && yarn generate-schedule-layer-manifest`."
         )
-    shared_path = _CONFIG_ROOT / "shared" / "layers.json"
-    country_layers = _load_json(country_path)
-    shared_layers = _load_json(shared_path) if shared_path.is_file() else {}
-    merged = {**shared_layers, **country_layers}
-    return {
-        layer_id: merged[layer_id] for layer_id in country_layers if layer_id in merged
-    }
+    return json.loads(_MANIFEST_PATH.read_text(encoding="utf-8"))
 
 
-def is_schedule_eligible_layer(layer: dict[str, Any]) -> bool:
-    """WMS layers with static date coverage (``isWmsSelectableForBatchPrint`` without server dates)."""
-    if layer.get("type") != "wms":
-        return False
-    return bool(layer.get("coverageWindow") or layer.get("validity"))
+def _country_layers(country: str) -> list[dict[str, str]]:
+    countries = _load_manifest().get("countries", {})
+    if country not in countries:
+        raise FileNotFoundError(
+            f"Unknown deployment country in schedule layer manifest: {country}"
+        )
+    return countries[country]
 
 
 @lru_cache(maxsize=16)
 def schedule_layer_choices(country: str) -> tuple[tuple[str, str], ...]:
     choices: list[tuple[str, str]] = []
-    for layer_id, layer in sorted(merged_country_layers(country).items()):
-        if not is_schedule_eligible_layer(layer):
-            continue
-        title = layer.get("title") or layer_id
+    for entry in _country_layers(country):
+        layer_id = entry["id"]
+        title = entry.get("title") or layer_id
         choices.append((layer_id, f"{layer_id} — {title}"))
     return tuple(choices)
 
