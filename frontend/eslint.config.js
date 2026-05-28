@@ -146,7 +146,7 @@ export default [
       'max-classes-per-file': 'off',
       'spaced-comment': 'warn',
       curly: ['warn', 'all'],
-      'import/no-cycle': 'error', // 31.91s user 2.89s system 126% cpu 27.525 total to 9.67s user 1.18s system 159% cpu 6.808 total
+      'import/no-cycle': 'error',
       'import/no-extraneous-dependencies': [
         'error',
         {
