@@ -409,7 +409,15 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     }),
   });
 
+  const batchDatesUnavailableMessage = t(
+    'A map could not be made for the dates you selected. Please choose an earlier date range and/or a shorter cadence.',
+  );
+
   useEffect(() => {
+    if (createScheduledMaps) {
+      dispatch(removeNotification(stringHash(batchDatesUnavailableMessage)));
+      return;
+    }
     if (
       open &&
       toggles.batchMapsVisibility &&
@@ -421,39 +429,31 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       dispatch(
         addNotification({
           type: 'error',
-          message: t(
-            'A map could not be made for the dates you selected. Please choose an earlier date range and/or a shorter cadence.',
-          ),
+          message: batchDatesUnavailableMessage,
         }),
       );
     }
   }, [
     open,
+    createScheduledMaps,
     filteredBatchDates,
     toggles.batchMapsVisibility,
     dateRangeForBatchMaps.startDate,
     dateRangeForBatchMaps.endDate,
+    batchDatesUnavailableMessage,
     dispatch,
-    t,
   ]);
 
   useEffect(() => {
     if (!open) {
-      dispatch(
-        removeNotification(
-          stringHash(
-            t(
-              'A map could not be made for the dates you selected. Please choose an earlier date range and/or a shorter cadence.',
-            ),
-          ),
-        ),
-      );
+      dispatch(removeNotification(stringHash(batchDatesUnavailableMessage)));
     }
-  }, [open, dispatch, t]);
+  }, [open, batchDatesUnavailableMessage, dispatch]);
 
   useEffect(() => {
     if (
       open &&
+      !createScheduledMaps &&
       toggles.batchMapsVisibility &&
       hasNonDateLayers &&
       printSelectedLayer
@@ -470,6 +470,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     }
   }, [
     open,
+    createScheduledMaps,
     toggles.batchMapsVisibility,
     hasNonDateLayers,
     printSelectedLayer,
