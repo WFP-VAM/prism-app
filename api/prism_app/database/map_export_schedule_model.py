@@ -88,7 +88,11 @@ class MapExportSchedule(SQLModel, table=True):
     )
     updated_at: datetime.datetime = Field(
         default_factory=utc_now,
-        sa_column=Column(DateTime(timezone=True), nullable=False),
+        sa_column=Column(
+            DateTime(timezone=True),
+            nullable=False,
+            onupdate=utc_now,
+        ),
     )
 
     def __admin_repr__(self, request) -> str:  # noqa: ARG002

@@ -21,6 +21,7 @@ from prism_app.map_export_layer_catalog import (
     schedule_layer_choices,
     schedule_layer_ids,
 )
+from prism_app.utils import utc_now
 from sqlalchemy import Select
 from sqlalchemy.orm import Session
 from starlette.exceptions import HTTPException
@@ -286,6 +287,7 @@ class MapExportScheduleView(PrismGatedModelView):
             cadence=cadence,
             format=export_format,
         )
+        obj.updated_at = utc_now()
 
 
 class MapExportJobView(ReadOnlyModelView):
