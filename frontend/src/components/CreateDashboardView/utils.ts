@@ -1,4 +1,4 @@
-import { appConfig } from 'config';
+import { appConfig, safeCountry } from 'config';
 import { AggregationOperations } from 'config/aggregationOperations';
 import {
   ChartHeight,
@@ -61,6 +61,7 @@ export interface DraftMeta {
   id: string;
   title: string;
   path: string;
+  country: string;
 }
 
 export const buildDraftDashboard = (
@@ -101,5 +102,10 @@ export const buildDraftMeta = (existingDraftCount: number): DraftMeta => {
   const n = existingDraftCount + 1;
   const title = n === 1 ? 'New Dashboard' : `New Dashboard #${n}`;
   const id = crypto.randomUUID();
-  return { id, title, path: generateSlugFromTitle(title) };
+  return {
+    id,
+    title,
+    path: generateSlugFromTitle(title),
+    country: safeCountry,
+  };
 };
