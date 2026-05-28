@@ -32,6 +32,7 @@ export const PRISM_WHOAMI_API_URL = `${API_URL}/whoami`;
 export const MAP_EXPORTS_MANAGE_PERMISSION = 'prism.map_exports.manage';
 export const ADMIN_ACCESS_PERMISSION = 'prism.admin.access';
 export const PRISM_SIGN_IN_URL = `${API_URL}/auth/sign-in`;
+export const PRISM_SIGN_OUT_URL = `${API_URL}/auth/sign-out`;
 
 /** Must match MAP_EXPORT_MAX_URLS_PER_REQUEST in api/prism_app/models.py */
 export const MAP_EXPORT_MAX_URLS_PER_REQUEST = 12;

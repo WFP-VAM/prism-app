@@ -181,3 +181,4 @@ def test_safe_next_rejects_unconfigured_frontend_origin() -> None:
         )
         == "/admin/"
     )
+
