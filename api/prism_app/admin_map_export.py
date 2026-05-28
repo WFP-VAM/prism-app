@@ -5,11 +5,11 @@ from __future__ import annotations
 from typing import Any
 
 from prism_app.admin import PrismGatedModelView, ReadOnlyModelView
-from prism_app.dashboard.dashboard_config_field import PrettyJSONField
 from prism_app.auth.admin_request import (
     admin_user_from_request,
     request_has_prism_admin_access,
 )
+from prism_app.dashboard.dashboard_config_field import PrettyJSONField
 from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.database.map_export_schedule_model import (
     MapExportSchedule,
