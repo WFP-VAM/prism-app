@@ -16,10 +16,13 @@ const RETRY_ATTEMPTS = 3;
 const retryDelayMs = (attemptIndex: number) =>
   Math.min(1000 * 2 ** attemptIndex, 30_000);
 
+/** Re-enable when published dashboard config load failures should surface in the UI. */
+const SHOW_DASHBOARD_CONFIG_LOAD_ERROR = false;
+
 /**
  * Loads published dashboard config from the API (`/dashboards`), scoped to the
- * build's country. An empty list hides the Dashboard nav link. Network or validation
- * errors show a notification after retries (except 404, which is treated as empty).
+ * build's country. An empty list hides the Dashboard nav link. Missing config
+ * (404) is treated as empty; other load failures are retried silently for now.
  */
 export function useDashboardConfig(): void {
   const dispatch = useDispatch();
@@ -72,7 +75,11 @@ export function useDashboardConfig(): void {
         }
       }
 
-      if (!cancelled && lastError !== undefined) {
+      if (
+        SHOW_DASHBOARD_CONFIG_LOAD_ERROR &&
+        !cancelled &&
+        lastError !== undefined
+      ) {
         dispatch(
           addNotification({
             type: 'error',
