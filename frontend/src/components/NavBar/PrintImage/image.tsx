@@ -50,6 +50,7 @@ import {
   filterDatesByCadence,
   getAvailableCadences,
   getDisabledCadences,
+  resolveValidCadence,
 } from '../../../utils/batchCadenceUtils';
 import { MAP_EXPORT_MAX_URLS_PER_REQUEST } from '../../../utils/constants';
 import { exportLanguage } from '../../../utils/exportLanguage';
@@ -309,11 +310,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       : selectedLayersWithDateSupport[0]?.coverageWindow;
     return getAvailableCadences(coverageWindow);
   }, [printSelectedLayer, selectedLayersWithDateSupport]);
-  useEffect(() => {
-    if (!availableCadences.includes(cadence)) {
-      setCadence(availableCadences[0]);
-    }
-  }, [availableCadences, cadence]);
 
   const shouldEnableBatchMaps = true;
 
@@ -385,9 +381,24 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   ]);
 
   const disabledCadences = useMemo(
-    () => getDisabledCadences(uniqueQueryDates, dekadInterval),
-    [uniqueQueryDates, dekadInterval],
+    () =>
+      getDisabledCadences(uniqueQueryDates, dekadInterval, createScheduledMaps),
+    [uniqueQueryDates, dekadInterval, createScheduledMaps],
   );
+
+  useEffect(() => {
+    const effectiveDisabled = createScheduledMaps
+      ? new Set<BatchCadence>()
+      : disabledCadences;
+    const validCadence = resolveValidCadence(
+      availableCadences,
+      effectiveDisabled,
+      cadence,
+    );
+    if (validCadence !== cadence) {
+      setCadence(validCadence);
+    }
+  }, [availableCadences, cadence, createScheduledMaps, disabledCadences]);
 
   const mapExportTemplate = useMapExportTemplate({
     mapBounds: previewBounds,
