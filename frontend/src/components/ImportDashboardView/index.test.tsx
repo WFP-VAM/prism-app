@@ -8,30 +8,28 @@ import {
   setDashboards,
 } from 'context/dashboardStateSlice';
 import { store } from 'context/store';
-import { validateDashboardConfig } from 'dashboardConfig/schema';
+import { validateImportedDashboardConfig } from 'dashboardConfig/schema';
 import { Provider } from 'react-redux';
 import { TestBrowserRouter } from 'test/TestBrowserRouter';
 
 import ImportDashboardView from '.';
 
-const minimalValidDashboard = [
-  {
-    title: 'Imported Dashboard',
-    firstColumn: [
-      {
-        type: DashboardElementType.TEXT,
-        content: 'Hello',
-      },
-    ],
-  },
-];
+const minimalValidDashboard = {
+  title: 'Imported Dashboard',
+  firstColumn: [
+    {
+      type: DashboardElementType.TEXT,
+      content: 'Hello',
+    },
+  ],
+};
 
-const validatedImport = validateDashboardConfig(minimalValidDashboard);
+const validatedImport = validateImportedDashboardConfig(minimalValidDashboard);
 if (!validatedImport.success) {
   throw new Error('minimalValidDashboard must be valid for tests');
 }
 const existingDashboard = {
-  ...validatedImport.data[0],
+  ...validatedImport.data,
   isDraft: true,
 };
 
@@ -169,9 +167,10 @@ describe('ImportDashboardView', () => {
   });
 
   test('shows validation error when JSON fails schema checks', () => {
-    fileReaderText = JSON.stringify([
-      { title: 'Bad dashboard', firstColumn: [{ type: 'BOGUS' }] },
-    ]);
+    fileReaderText = JSON.stringify({
+      title: 'Bad dashboard',
+      firstColumn: [{ type: 'BOGUS' }],
+    });
     const { container } = renderImportView();
 
     uploadJsonFile(container);
