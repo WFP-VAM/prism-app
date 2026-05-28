@@ -50,6 +50,7 @@ import {
   getEffectiveMultiCountry,
   useEffectiveCountryAdmin0Id,
 } from 'utils/universal-country-admin';
+import { isUrlDrivenDeployment } from 'utils/universal-utils';
 import { useBoundaryData } from 'utils/useBoundaryData';
 
 import {
@@ -78,7 +79,8 @@ const menuProps: Partial<MenuProps> = {
 
 // Chart configuration
 const configMultiCountry = getEffectiveMultiCountry();
-const MAX_ADMIN_LEVEL = configMultiCountry ? 3 : 2;
+const isUrlDriven = isUrlDrivenDeployment();
+const MAX_ADMIN_LEVEL = isUrlDriven ? 4 : configMultiCountry ? 3 : 2;
 const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 const chartLayers = getWMSLayersWithChart();
 
@@ -103,6 +105,9 @@ const ChartsPanel = memo(() => {
   const [admin2Key, setAdmin2Key] = useState<AdminCodeString>(
     '' as AdminCodeString,
   );
+  const [admin3Key, setAdmin3Key] = useState<AdminCodeString>(
+    '' as AdminCodeString,
+  );
   const [selectedAdmin1Area, setSelectedAdmin1Area] = useState('');
   const [selectedAdmin2Area, setSelectedAdmin2Area] = useState('');
   const [adminLevel, setAdminLevel] = useState<AdminLevelType>(
@@ -116,6 +121,9 @@ const ChartsPanel = memo(() => {
     '' as AdminCodeString,
   );
   const [secondAdmin2Key, setSecondAdmin2Key] = useState<AdminCodeString>(
+    '' as AdminCodeString,
+  );
+  const [secondAdmin3Key, setSecondAdmin3Key] = useState<AdminCodeString>(
     '' as AdminCodeString,
   );
   const [secondSelectedAdmin1Area, setSecondSelectedAdmin1Area] = useState('');
@@ -544,6 +552,9 @@ const ChartsPanel = memo(() => {
     // reset the admin 2 titles
     setAdmin2Key('' as AdminCodeString);
     setSecondAdmin2Key('' as AdminCodeString);
+    // reset the admin 3 titles
+    setAdmin3Key('' as AdminCodeString);
+    setSecondAdmin3Key('' as AdminCodeString);
   }, [posthog]);
 
   const handleOnChangeCompareLocationsSwitch = useCallback(() => {
@@ -666,29 +677,40 @@ const ChartsPanel = memo(() => {
               boundaryLayer={boundaryLayer}
               admin1Key={admin1Key}
               admin2Key={admin2Key}
+              admin3Key={admin3Key}
+              countryAdm0Id={countryAdmin0Id}
               stacked
               hideLabel={compareLocations}
               onAdmin1Change={(key, properties, level) => {
                 setAdmin1Key(key);
                 setAdmin2Key('' as AdminCodeString);
+                setAdmin3Key('' as AdminCodeString);
                 setAdminLevel(level);
                 setAdminProperties(properties);
+                const nameIndex = isUrlDriven ? level : level - 1;
                 const admin1Name =
                   data &&
-                  boundaryLayer?.adminLevelNames?.[level - 1] &&
-                  properties?.[boundaryLayer.adminLevelNames[level - 1]];
+                  boundaryLayer?.adminLevelNames?.[nameIndex] &&
+                  properties?.[boundaryLayer.adminLevelNames[nameIndex]];
                 setSelectedAdmin1Area(admin1Name || '');
                 setSelectedAdmin2Area('');
               }}
               onAdmin2Change={(key, properties, level) => {
                 setAdmin2Key(key);
+                setAdmin3Key('' as AdminCodeString);
                 setAdminLevel(level);
                 setAdminProperties(properties);
+                const nameIndex = isUrlDriven ? level : level - 1;
                 const admin2Name =
                   data &&
-                  boundaryLayer?.adminLevelNames?.[level - 1] &&
-                  properties?.[boundaryLayer.adminLevelNames[level - 1]];
+                  boundaryLayer?.adminLevelNames?.[nameIndex] &&
+                  properties?.[boundaryLayer.adminLevelNames[nameIndex]];
                 setSelectedAdmin2Area(admin2Name || '');
+              }}
+              onAdmin3Change={(key, properties, level) => {
+                setAdmin3Key(key);
+                setAdminLevel(level);
+                setAdminProperties(properties);
               }}
             />
           </Box>
@@ -710,29 +732,40 @@ const ChartsPanel = memo(() => {
                 boundaryLayer={boundaryLayer}
                 admin1Key={secondAdmin1Key}
                 admin2Key={secondAdmin2Key}
+                admin3Key={secondAdmin3Key}
+                countryAdm0Id={countryAdmin0Id}
                 stacked
                 hideLabel
                 onAdmin1Change={(key, properties, level) => {
                   setSecondAdmin1Key(key);
                   setSecondAdmin2Key('' as AdminCodeString);
+                  setSecondAdmin3Key('' as AdminCodeString);
                   setSecondAdminLevel(level);
                   setSecondAdminProperties(properties);
+                  const nameIndex = isUrlDriven ? level : level - 1;
                   const admin1Name =
                     data &&
-                    boundaryLayer?.adminLevelNames?.[level - 1] &&
-                    properties?.[boundaryLayer.adminLevelNames[level - 1]];
+                    boundaryLayer?.adminLevelNames?.[nameIndex] &&
+                    properties?.[boundaryLayer.adminLevelNames[nameIndex]];
                   setSecondSelectedAdmin1Area(admin1Name || '');
                   setSecondSelectedAdmin2Area('');
                 }}
                 onAdmin2Change={(key, properties, level) => {
                   setSecondAdmin2Key(key);
+                  setSecondAdmin3Key('' as AdminCodeString);
                   setSecondAdminLevel(level);
                   setSecondAdminProperties(properties);
+                  const nameIndex = isUrlDriven ? level : level - 1;
                   const admin2Name =
                     data &&
-                    boundaryLayer?.adminLevelNames?.[level - 1] &&
-                    properties?.[boundaryLayer.adminLevelNames[level - 1]];
+                    boundaryLayer?.adminLevelNames?.[nameIndex] &&
+                    properties?.[boundaryLayer.adminLevelNames[nameIndex]];
                   setSecondSelectedAdmin2Area(admin2Name || '');
+                }}
+                onAdmin3Change={(key, properties, level) => {
+                  setSecondAdmin3Key(key);
+                  setSecondAdminLevel(level);
+                  setSecondAdminProperties(properties);
                 }}
               />
             </Box>

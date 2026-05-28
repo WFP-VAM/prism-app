@@ -20,18 +20,26 @@ import { GeoJsonProperties } from 'geojson';
 import { useSafeTranslation } from 'i18n';
 import { sortBy } from 'lodash';
 import React from 'react';
+import { isUrlDrivenDeployment } from 'utils/universal-utils';
 
 interface ChartLocationSelectorProps {
   boundaryLayerData: BoundaryLayerData | undefined;
   boundaryLayer: BoundaryLayerProps;
   admin1Key: AdminCodeString;
   admin2Key: AdminCodeString;
+  admin3Key?: AdminCodeString;
+  countryAdm0Id?: number | string;
   onAdmin1Change: (
     key: AdminCodeString,
     properties: GeoJsonProperties,
     adminLevel: AdminLevelType,
   ) => void;
   onAdmin2Change: (
+    key: AdminCodeString,
+    properties: GeoJsonProperties,
+    adminLevel: AdminLevelType,
+  ) => void;
+  onAdmin3Change?: (
     key: AdminCodeString,
     properties: GeoJsonProperties,
     adminLevel: AdminLevelType,
@@ -47,8 +55,11 @@ function ChartLocationSelector({
   boundaryLayer,
   admin1Key,
   admin2Key,
+  admin3Key = '' as AdminCodeString,
+  countryAdm0Id,
   onAdmin1Change,
   onAdmin2Change,
+  onAdmin3Change,
   disabled = false,
   stacked = false,
   hideLabel = false,
@@ -61,32 +72,50 @@ function ChartLocationSelector({
     return null;
   }
 
+  const isUrlDriven = isUrlDrivenDeployment();
+
   const adminBoundaryTree = getAdminBoundaryTree(
     boundaryLayerData,
     boundaryLayer,
     i18nLocale,
   );
 
-  const admin0BoundaryTree = adminBoundaryTree.children;
+  // In URL-driven mode the country is fixed by the URL; skip the country tier and
+  // show provinces as Admin 1, districts as Admin 2, admin posts as Admin 3.
+  const rootTree: { [code: string]: AdminBoundaryTree } =
+    isUrlDriven && countryAdm0Id !== undefined
+      ? (adminBoundaryTree.children[String(countryAdm0Id)]?.children ?? {})
+      : adminBoundaryTree.children;
 
-  const orderedAdmin1Areas: AdminBoundaryTree[] = boundaryLayerData
-    ? sortBy(Object.values(admin0BoundaryTree), 'label')
-    : [];
+  const orderedAdmin1Areas: AdminBoundaryTree[] = sortBy(
+    Object.values(rootTree),
+    'label',
+  );
 
-  const selectedAdmin1Area = admin0BoundaryTree?.[admin1Key];
+  const selectedAdmin1Area = rootTree[admin1Key];
 
   const orderedAdmin2Areas: AdminBoundaryTree[] =
-    boundaryLayerData && admin1Key && selectedAdmin1Area
+    admin1Key && selectedAdmin1Area
       ? sortBy(Object.values(selectedAdmin1Area.children), 'label')
       : [];
 
   const selectedAdmin2Area = selectedAdmin1Area?.children[admin2Key];
 
-  const renderAdmin1Value = (admin1keyValue: any) =>
-    admin0BoundaryTree[admin1keyValue]?.label;
+  const orderedAdmin3Areas: AdminBoundaryTree[] =
+    admin2Key && selectedAdmin2Area
+      ? sortBy(Object.values(selectedAdmin2Area.children), 'label')
+      : [];
 
-  const renderAdmin2Value = (admin2KeyValue: any) =>
+  const selectedAdmin3Area = selectedAdmin2Area?.children[admin3Key];
+
+  const renderAdmin1Value = (admin1keyValue: string) =>
+    rootTree[admin1keyValue]?.label;
+
+  const renderAdmin2Value = (admin2KeyValue: string) =>
     selectedAdmin1Area?.children[admin2KeyValue]?.label;
+
+  const renderAdmin3Value = (admin3KeyValue: string) =>
+    selectedAdmin2Area?.children[admin3KeyValue]?.label;
 
   const handleAdmin1Change = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -121,12 +150,29 @@ function ChartLocationSelector({
     onAdmin2Change(admin2Id, properties, 2);
   };
 
+  const handleAdmin3Change = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+
+    if (!value) {
+      const properties = getProperties(boundaryLayerData, admin2Key, 2);
+      onAdmin3Change?.('' as AdminCodeString, properties, 2);
+      return;
+    }
+
+    const admin3Id = value as AdminCodeString;
+    const properties = getProperties(boundaryLayerData, admin3Id, 3);
+    onAdmin3Change?.(admin3Id, properties, 3);
+  };
+
   const renderMenuItemList = (trees: AdminBoundaryTree[]) =>
     trees.map(option => (
       <MenuItem key={option.adminCode} value={option.adminCode}>
         {option.label}
       </MenuItem>
     ));
+
+  const showAdmin3Dropdown =
+    isUrlDriven && admin2Key && orderedAdmin3Areas.length > 0;
 
   return (
     <div className={classes.container}>
@@ -156,9 +202,11 @@ function ChartLocationSelector({
           variant="outlined"
           disabled={disabled || orderedAdmin1Areas.length === 0}
         >
-          <MenuItem value="">
-            <Box className={classes.removeAdmin}>{t('Country Level')}</Box>
-          </MenuItem>
+          {!isUrlDriven && (
+            <MenuItem value="">
+              <Box className={classes.removeAdmin}>{t('Country Level')}</Box>
+            </MenuItem>
+          )}
           {renderMenuItemList(orderedAdmin1Areas)}
         </TextField>
 
@@ -179,6 +227,26 @@ function ChartLocationSelector({
               <Box className={classes.removeAdmin}>{t('Remove Admin 2')}</Box>
             </MenuItem>
             {renderMenuItemList(orderedAdmin2Areas)}
+          </TextField>
+        )}
+
+        {showAdmin3Dropdown && (
+          <TextField
+            classes={{ root: classes.selectRoot }}
+            select
+            label={t('Admin 3')}
+            value={selectedAdmin3Area?.adminCode ?? ''}
+            SelectProps={{
+              renderValue: renderAdmin3Value,
+            }}
+            onChange={handleAdmin3Change}
+            variant="outlined"
+            disabled={disabled}
+          >
+            <MenuItem value="">
+              <Box className={classes.removeAdmin}>{t('Remove Admin 3')}</Box>
+            </MenuItem>
+            {renderMenuItemList(orderedAdmin3Areas)}
           </TextField>
         )}
       </div>

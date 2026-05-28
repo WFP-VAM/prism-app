@@ -31,12 +31,14 @@ import { getLatestPeriodRange, getTimeInMilliseconds } from 'utils/date-utils';
 import { getPossibleDatesForLayer } from 'utils/server-utils';
 import { useEffectiveCountryAdmin0Id } from 'utils/universal-country-admin';
 import { getEffectiveMultiCountry } from 'utils/universal-country-admin';
+import { isUrlDrivenDeployment } from 'utils/universal-utils';
 
 import { useBoundaryData } from './useBoundaryData';
 
 const multiCountry = getEffectiveMultiCountry();
 const staticCountryAdmin0Id = appConfig.countryAdmin0Id;
-const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
+const isUrlDriven = isUrlDrivenDeployment();
+const MAX_ADMIN_LEVEL = isUrlDriven ? 4 : multiCountry ? 3 : 2;
 const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
 // Default date range: last 1 year
@@ -403,6 +405,7 @@ export const useChartData = (
     const params = getChartAdminBoundaryParams(chartLayer, adminProperties);
     const { levels } = chartLayer.chartData;
     const levelsDict = Object.fromEntries(levels.map(x => [x.level, x.id]));
+
     const adminKey = levelsDict[adminLevel.toString()];
 
     const { code: adminCode } = params.boundaryProps[adminKey] || {

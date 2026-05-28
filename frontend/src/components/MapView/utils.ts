@@ -33,6 +33,7 @@ import { LocalError } from 'utils/error-utils';
 import { formatFeatureInfo } from 'utils/server-utils';
 import { getTitle } from 'utils/title-utils';
 import { getEffectiveMultiCountry } from 'utils/universal-country-admin';
+import { isUrlDrivenDeployment } from 'utils/universal-utils';
 import { getUrlKey, UrlLayerKey } from 'utils/url-utils';
 
 import { getExtent } from './Layers/raster-utils';
@@ -347,7 +348,8 @@ export const getExposureAnalysisTableData = (
  * @returns GeoJSON properties for the matching feature
  */
 const multiCountry = getEffectiveMultiCountry();
-const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
+const isUrlDriven = isUrlDrivenDeployment();
+const MAX_ADMIN_LEVEL = isUrlDriven ? 4 : multiCountry ? 3 : 2;
 const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
 export const getProperties = (
@@ -358,7 +360,7 @@ export const getProperties = (
   if (id === undefined || adminLevel === undefined) {
     return layerData.features[0].properties;
   }
-  const indexLevel = multiCountry ? adminLevel : adminLevel - 1;
+  const indexLevel = multiCountry || isUrlDriven ? adminLevel : adminLevel - 1;
   const adminCode = boundaryLayer.adminLevelCodes[indexLevel];
   const item = layerData.features.find(
     elem => elem.properties && elem.properties[adminCode] === id,
