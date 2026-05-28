@@ -24,6 +24,8 @@ describe('createMapExportSchedule', () => {
     cadence: 'monthly',
     dekad_interval: 1,
     format: 'pdf',
+    export_url:
+      'https://prism.example.org/mozambique/export?date={date}&hazardLayerIds={layer_id}',
     export_options: {
       origin: 'https://prism.example.org',
       exportPath: '/mozambique/export',

@@ -1,10 +1,11 @@
-"""Add scheduled batch map tables and ownership metadata.
+"""Scheduled batch maps: schedules table, job priority, schedule FKs.
 
 Revision ID: map_export_schedules_001
-Revises: map_export_job_priority_001
+Revises: add_dashboard_table
 Create Date: 2026-05-26
 
 Schedule ``status`` is ``active`` (cron enqueues) or ``stopped`` (skipped).
+Higher-priority map_export_jobs rows are claimed first (API default 200; cron 100).
 """
 
 import sqlalchemy as sa
@@ -12,15 +13,31 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 revision = "map_export_schedules_001"
-down_revision = "map_export_job_priority_001"
+down_revision = "add_dashboard_table"
 branch_labels = None
 depends_on = None
 
 
 def upgrade() -> None:
+    op.add_column(
+        "map_export_jobs",
+        sa.Column(
+            "priority",
+            sa.Integer(),
+            server_default="200",
+            nullable=False,
+        ),
+    )
+    op.create_index(
+        "ix_map_export_jobs_status_priority_created",
+        "map_export_jobs",
+        ["status", "priority", "created_at"],
+        unique=False,
+    )
+
     op.create_table(
         "map_export_schedules",
-        sa.Column("id", sa.String(), nullable=False),
+        sa.Column("id", postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column("name", sa.String(), nullable=False),
         sa.Column("status", sa.String(), server_default="active", nullable=False),
         sa.Column("country", sa.String(), nullable=False),
@@ -77,7 +94,9 @@ def upgrade() -> None:
 
     op.add_column(
         "map_export_jobs",
-        sa.Column("map_export_schedule_id", sa.String(), nullable=True),
+        sa.Column(
+            "map_export_schedule_id", postgresql.UUID(as_uuid=True), nullable=True
+        ),
     )
     op.add_column(
         "map_export_jobs",
@@ -150,3 +169,9 @@ def downgrade() -> None:
         table_name="map_export_schedules",
     )
     op.drop_table("map_export_schedules")
+
+    op.drop_index(
+        "ix_map_export_jobs_status_priority_created",
+        table_name="map_export_jobs",
+    )
+    op.drop_column("map_export_jobs", "priority")

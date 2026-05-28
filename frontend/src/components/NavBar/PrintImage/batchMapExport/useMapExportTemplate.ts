@@ -7,7 +7,7 @@ import { calculateExportDimensions } from '../mapDimensionsUtils';
 import type { MapDimensions, Toggles } from '../printConfig.context';
 import {
   buildBatchExportUrls,
-  buildScheduleExportOptions,
+  buildScheduleExportPayload,
   getExportPageLocation,
 } from './mapExportTemplate';
 
@@ -89,14 +89,14 @@ export function useMapExportTemplate(input: UseMapExportTemplateInput) {
     });
   }
 
-  function buildScheduleExportOptionsPayload() {
+  function buildScheduleExportPayloadForCreate() {
     if (!input.mapBounds) {
       return null;
     }
 
     const location = getExportPageLocation();
     const viewport = viewportDimensionsForInput(input);
-    return buildScheduleExportOptions({
+    return buildScheduleExportPayload({
       origin: location.origin,
       exportPath: location.exportPath,
       viewportWidth: viewport.canvasWidth,
@@ -111,6 +111,6 @@ export function useMapExportTemplate(input: UseMapExportTemplateInput) {
     getViewportDimensions: () => viewportDimensionsForInput(input),
     previewBounds: input.mapBounds,
     buildBatchUrlsForTimestamps,
-    buildScheduleExportOptionsPayload,
+    buildScheduleExportPayloadForCreate,
   };
 }

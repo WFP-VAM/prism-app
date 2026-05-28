@@ -2,13 +2,8 @@
 
 from __future__ import annotations
 
-import os
 from collections.abc import Generator
 from uuid import UUID
-
-# main imports kobo which requires these at import time
-os.environ.setdefault("KOBO_USERNAME", "pytest")
-os.environ.setdefault("KOBO_PASSWORD", "pytest")
 
 import pytest
 from fastapi.testclient import TestClient
@@ -22,6 +17,16 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 from sqlmodel import Session
+
+_SAMPLE_EXPORT_URL = (
+    "http://localhost/export?"
+    "bounds=24.99,-29.08,38.85,-10.74&"
+    "zoom=4.16&"
+    "aspectRatio=A4-P&"
+    "title=Mozambique%3A+%7Bdate_coverage%7D&"
+    "date={date}&"
+    "hazardLayerIds={layer_id}"
+)
 
 
 @pytest.fixture
@@ -98,6 +103,7 @@ def _schedule_body() -> dict[str, object]:
         "cadence": "monthly",
         "dekad_interval": 1,
         "format": "pdf",
+        "export_url": _SAMPLE_EXPORT_URL,
         "export_options": {
             "origin": "http://localhost",
             "exportPath": "/export",
@@ -106,6 +112,7 @@ def _schedule_body() -> dict[str, object]:
                 "zoom": "4.16",
                 "aspectRatio": "A4-P",
                 "title": "Mozambique: {date_coverage}",
+                "surprise": "allowed-in-opaque-blob",
             },
             "viewportWidth": 1200,
             "viewportHeight": 1697,
@@ -123,11 +130,7 @@ def test_post_export_map_schedule_creates_active_owned_schedule(
     payload = response.json()
     assert payload["status"] == "active"
     assert payload["name"] == "Mozambique: {date_coverage}"
-    assert payload["export_url"].startswith("http://localhost/export?")
-    assert "bounds=24.99,-29.08,38.85,-10.74" in payload["export_url"]
-    assert "zoom=4.16" in payload["export_url"]
-    assert "date={date}" in payload["export_url"]
-    assert "hazardLayerIds={layer_id}" in payload["export_url"]
+    assert payload["export_url"] == _SAMPLE_EXPORT_URL
 
     SessionLocal = sessionmaker(
         bind=sqlite_engine,
@@ -135,31 +138,32 @@ def test_post_export_map_schedule_creates_active_owned_schedule(
         expire_on_commit=False,
     )
     with SessionLocal() as session:
-        schedule = session.get(MapExportSchedule, payload["schedule_id"])
+        schedule = session.get(MapExportSchedule, UUID(payload["schedule_id"]))
         assert schedule is not None
         assert schedule.status == "active"
         assert schedule.created_by_user_id == UUID(
             "00000000-0000-4000-8000-000000000123"
         )
-        assert schedule.export_url == payload["export_url"]
+        assert schedule.export_url == _SAMPLE_EXPORT_URL
         assert schedule.export_options["viewportWidth"] == 1200
         assert (
-            schedule.export_options["queryParams"]["bounds"]
-            == "24.99,-29.08,38.85,-10.74"
+            schedule.export_options["queryParams"]["surprise"]
+            == "allowed-in-opaque-blob"
         )
 
 
-def test_post_export_map_schedule_export_url_includes_language(
+def test_post_export_map_schedule_stores_client_export_url_unchanged(
     api_client: TestClient,
 ) -> None:
     body = _schedule_body()
-    assert isinstance(body["export_options"], dict)
-    assert isinstance(body["export_options"]["queryParams"], dict)
-    body["export_options"]["queryParams"]["language"] = "pt"
+    body["export_url"] = (
+        "http://localhost/export?date={date}&hazardLayerIds={layer_id}&language=pt"
+    )
 
     response = api_client.post("/export-map/schedules", json=body)
 
     assert response.status_code == 201, response.text
+    assert response.json()["export_url"] == body["export_url"]
     assert "language=pt" in response.json()["export_url"]
 
 
@@ -180,17 +184,19 @@ def test_post_export_map_schedule_accepts_png_format(
         expire_on_commit=False,
     )
     with SessionLocal() as session:
-        schedule = session.get(MapExportSchedule, response.json()["schedule_id"])
+        schedule = session.get(
+            MapExportSchedule,
+            UUID(response.json()["schedule_id"]),
+        )
         assert schedule is not None
         assert schedule.format == "png"
 
 
-def test_post_export_map_schedule_rejects_unknown_export_query_param(
+def test_post_export_map_schedule_rejects_export_url_missing_placeholders(
     api_client: TestClient,
 ) -> None:
     body = _schedule_body()
-    assert isinstance(body["export_options"], dict)
-    body["export_options"]["queryParams"]["surprise"] = "not-used-by-export"
+    body["export_url"] = "http://localhost/export?date=2000-01-01"
 
     response = api_client.post("/export-map/schedules", json=body)
 

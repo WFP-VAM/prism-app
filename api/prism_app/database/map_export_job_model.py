@@ -56,10 +56,10 @@ class MapExportJob(SQLModel, table=True):
         default=None,
         sa_column=Column(String, nullable=True),
     )
-    map_export_schedule_id: Optional[str] = Field(
+    map_export_schedule_id: Optional[UUID] = Field(
         default=None,
         sa_column=Column(
-            String,
+            Uuid(as_uuid=True),
             ForeignKey("map_export_schedules.id", ondelete="SET NULL"),
             nullable=True,
         ),
@@ -100,5 +100,9 @@ class MapExportJob(SQLModel, table=True):
     )
 
     def __admin_repr__(self, request) -> str:  # noqa: ARG002
-        schedule = self.map_export_schedule_id or "interactive"
+        schedule = (
+            str(self.map_export_schedule_id)
+            if self.map_export_schedule_id is not None
+            else "interactive"
+        )
         return f"{self.status} — {schedule}"

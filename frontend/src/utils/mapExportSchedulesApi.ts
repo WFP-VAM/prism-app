@@ -43,6 +43,8 @@ export type MapExportScheduleCreateRequest = {
   cadence: MapExportScheduleCadenceApi;
   dekad_interval: number;
   format: 'pdf' | 'png';
+  export_url: string;
+  /** Opaque print-template metadata (viewport, etc.); shape owned by the frontend. */
   export_options: ScheduleExportOptions;
 };
 

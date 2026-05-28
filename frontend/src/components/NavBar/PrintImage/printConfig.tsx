@@ -20,7 +20,7 @@ import {
   Tooltip,
   Typography,
 } from '@material-ui/core';
-import { Cancel, FileCopy, GetApp } from '@material-ui/icons';
+import { Cancel, GetApp } from '@material-ui/icons';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import Switch from 'components/Common/Switch';
@@ -31,11 +31,8 @@ import { cyanBlue } from 'muiTheme';
 import React, { useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
-  ADMIN_ACCESS_PERMISSION,
   MAP_EXPORT_MAX_URLS_PER_REQUEST,
-  MAP_EXPORTS_MANAGE_PERMISSION,
   PRISM_SIGN_IN_URL,
-  PRISM_WHOAMI_API_URL,
 } from 'utils/constants';
 
 import { useSafeTranslation } from '../../../i18n';
@@ -53,6 +50,7 @@ import {
   isSchedulePrimaryDisabled,
   schedulePrimaryButtonLabelKey,
 } from './scheduleExportUi';
+import { fetchScheduleWhoamiSession } from './scheduleWhoamiSession';
 
 interface ToggleSelectorProps {
   title: string;
@@ -307,42 +305,26 @@ function PrintConfig() {
   }, [printConfig?.titleText]);
 
   useEffect(() => {
+    const scheduleMode = printConfig?.createScheduledMaps ?? false;
+    if (!scheduleMode) {
+      setIsPrismAuthenticated(false);
+      setCanManageSchedules(false);
+      return;
+    }
     if (!printConfig?.open) {
       return;
     }
     let cancelled = false;
-    const checkSession = async () => {
-      try {
-        const response = await fetch(PRISM_WHOAMI_API_URL, {
-          credentials: 'include',
-        });
-        if (cancelled) {
-          return;
-        }
-        if (!response.ok) {
-          setIsPrismAuthenticated(false);
-          setCanManageSchedules(false);
-          return;
-        }
-        const data = (await response.json()) as { permissions?: string[] };
-        setIsPrismAuthenticated(true);
-        const permissions = data.permissions ?? [];
-        setCanManageSchedules(
-          permissions.includes(MAP_EXPORTS_MANAGE_PERMISSION) ||
-            permissions.includes(ADMIN_ACCESS_PERMISSION),
-        );
-      } catch (_error) {
-        if (!cancelled) {
-          setIsPrismAuthenticated(false);
-          setCanManageSchedules(false);
-        }
+    void fetchScheduleWhoamiSession().then(result => {
+      if (!cancelled) {
+        setIsPrismAuthenticated(result.isPrismAuthenticated);
+        setCanManageSchedules(result.canManageSchedules);
       }
-    };
-    void checkSession();
+    });
     return () => {
       cancelled = true;
     };
-  }, [printConfig?.open]);
+  }, [printConfig?.open, printConfig?.createScheduledMaps]);
 
   // Appease TS by ensuring printConfig is defined
   if (!printConfig) {
@@ -373,7 +355,6 @@ function PrintConfig() {
     setFooterTextSize,
     download,
     downloadBatch,
-    copyBatchMapUrls,
     isDownloading,
     defaultFooterText,
     selectedBoundaries,
@@ -738,60 +719,37 @@ function PrintConfig() {
         {/* Batch Maps */}
         {shouldEnableBatchMaps && (
           <>
-            <Box className={classes.batchMapsHeader}>
-              <Box className={classes.batchMapsToggle}>
-                <SectionToggle
-                  title={t('Create a sequence of maps')}
-                  expanded={toggles.batchMapsVisibility}
-                  disabled={shouldShowMultiLayerWarning}
-                  tooltip={t(
-                    shouldShowMultiLayerWarning
-                      ? 'Select one layer at a time to create a sequence of maps'
-                      : 'Selecting this option will apply the template above to create multiple maps over a time period of your choice.',
-                  )}
-                  handleChange={() => {
-                    const willBeEnabled = !toggles.batchMapsVisibility;
-
-                    if (willBeEnabled && !titleText.includes('{date}')) {
-                      // Append date placeholder
-                      setTitleText(prev => `${prev}${DATE_PLACEHOLDER_SUFFIX}`);
-                    } else if (
-                      !willBeEnabled &&
-                      titleText.endsWith(DATE_PLACEHOLDER_SUFFIX)
-                    ) {
-                      // Remove date placeholder suffix
-                      setTitleText(prev =>
-                        prev.slice(0, -DATE_PLACEHOLDER_SUFFIX.length),
-                      );
-                    }
-
-                    setToggles(prev => ({
-                      ...prev,
-                      batchMapsVisibility: willBeEnabled,
-                    }));
-                  }}
-                />
-              </Box>
-              {toggles.batchMapsVisibility && (
-                <Tooltip
-                  title={t('Copy batch map settings')}
-                  arrow
-                  placement="top"
-                  classes={{ tooltip: classes.tooltip }}
-                >
-                  <button
-                    type="button"
-                    aria-label={t('Copy batch map settings')}
-                    className={classes.batchMapsCopyButton}
-                    onClick={() => {
-                      void copyBatchMapUrls();
-                    }}
-                  >
-                    <FileCopy fontSize="small" />
-                  </button>
-                </Tooltip>
+            <SectionToggle
+              title={t('Create a sequence of maps')}
+              expanded={toggles.batchMapsVisibility}
+              disabled={shouldShowMultiLayerWarning}
+              tooltip={t(
+                shouldShowMultiLayerWarning
+                  ? 'Select one layer at a time to create a sequence of maps'
+                  : 'Selecting this option will apply the template above to create multiple maps over a time period of your choice.',
               )}
-            </Box>
+              handleChange={() => {
+                const willBeEnabled = !toggles.batchMapsVisibility;
+
+                if (willBeEnabled && !titleText.includes('{date}')) {
+                  // Append date placeholder
+                  setTitleText(prev => `${prev}${DATE_PLACEHOLDER_SUFFIX}`);
+                } else if (
+                  !willBeEnabled &&
+                  titleText.endsWith(DATE_PLACEHOLDER_SUFFIX)
+                ) {
+                  // Remove date placeholder suffix
+                  setTitleText(prev =>
+                    prev.slice(0, -DATE_PLACEHOLDER_SUFFIX.length),
+                  );
+                }
+
+                setToggles(prev => ({
+                  ...prev,
+                  batchMapsVisibility: willBeEnabled,
+                }));
+              }}
+            />
             {toggles.batchMapsVisibility && (
               <GreyContainer>
                 <GreyContainerSection>
@@ -1102,30 +1060,6 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(1.5),
       width: '100%',
       minWidth: 0,
-    },
-    batchMapsHeader: {
-      display: 'flex',
-      alignItems: 'center',
-      width: '100%',
-    },
-    batchMapsToggle: {
-      flex: 1,
-      minWidth: 0,
-    },
-    batchMapsCopyButton: {
-      marginLeft: 'auto',
-      display: 'inline-flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: 8,
-      border: 'none',
-      background: 'transparent',
-      color: 'rgba(0, 0, 0, 0.54)',
-      cursor: 'pointer',
-      '&:hover': {
-        color: 'rgba(0, 0, 0, 0.87)',
-        backgroundColor: 'rgba(0, 0, 0, 0.04)',
-      },
     },
   }),
 );

@@ -44,7 +44,7 @@ def create_queued_map_export_job(
     request: MapExportRequestModel,
     *,
     priority: int = MAP_EXPORT_JOB_PRIORITY_INTERACTIVE,
-    schedule_id: str | None = None,
+    schedule_id: UUID | None = None,
     created_by_user_id: UUID | None = None,
 ) -> MapExportJob:
     """Persist a new queued job row without committing."""
@@ -71,7 +71,7 @@ def enqueue_map_export_job(
     *,
     dedupe: bool = True,
     priority: int = MAP_EXPORT_JOB_PRIORITY_INTERACTIVE,
-    schedule_id: str | None = None,
+    schedule_id: UUID | None = None,
     created_by_user_id: UUID | None = None,
 ) -> tuple[MapExportJob, int]:
     """

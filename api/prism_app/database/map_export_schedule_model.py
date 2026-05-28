@@ -8,9 +8,11 @@ from enum import Enum
 from typing import Any, Optional, Self
 from uuid import UUID
 
+from prism_app.export_schedule_validation import normalize_schedule_export_url
 from prism_app.utils import utc_now
 from pydantic import model_validator
 from sqlalchemy import JSON, Column, Date, DateTime, ForeignKey, Index, Integer, String
+from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.types import Uuid
 from sqlmodel import Field, SQLModel
 
@@ -46,9 +48,9 @@ class MapExportSchedule(SQLModel, table=True):
         Index("ix_map_export_schedules_created_by_user_id", "created_by_user_id"),
     )
 
-    id: str = Field(
-        default_factory=lambda: str(uuid.uuid4()),
-        sa_column=Column(String, primary_key=True),
+    id: UUID = Field(
+        default_factory=uuid.uuid4,
+        sa_column=Column(PG_UUID(as_uuid=True), primary_key=True, nullable=False),
     )
     name: str = Field(sa_column=Column(String, nullable=False))
     status: MapExportScheduleStatus = Field(
@@ -113,6 +115,7 @@ class MapExportSchedule(SQLModel, table=True):
 
     @model_validator(mode="after")
     def validate_export_url_placeholders(self) -> Self:
+        self.export_url = normalize_schedule_export_url(self.export_url)
         missing = [
             placeholder
             for placeholder in ("{date}", "{layer_id}")

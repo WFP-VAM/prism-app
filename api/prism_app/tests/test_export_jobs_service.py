@@ -54,12 +54,12 @@ def test_enqueue_records_schedule_and_owner(db_session: Session) -> None:
     job, status = enqueue_map_export_job(
         db_session,
         req,
-        schedule_id="schedule-1",
+        schedule_id=UUID("00000000-0000-4000-8000-000000000001"),
         created_by_user_id=owner_id,
     )
 
     assert status == 202
-    assert job.map_export_schedule_id == "schedule-1"
+    assert job.map_export_schedule_id == UUID("00000000-0000-4000-8000-000000000001")
     assert job.created_by_user_id == owner_id
 
 

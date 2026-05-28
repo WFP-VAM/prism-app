@@ -7,7 +7,7 @@ import {
   applyMapExportPrintTemplate,
   buildBatchExportUrls,
   buildScheduleExportOptions,
-  formatExportUrlForClipboard,
+  buildScheduleExportUrl,
   getExportPageLocation,
 } from './mapExportTemplate';
 
@@ -102,20 +102,6 @@ describe('buildBatchExportUrls', () => {
     expect(new URL(urls[0]).searchParams.get(EXPORT_LANGUAGE_PARAM)).toBe('ar');
   });
 
-  test('formats clipboard URLs without percent-encoding', () => {
-    const [url] = buildBatchExportUrls({
-      ...sharedTemplate,
-      formattedDates: ['2024-05-01'],
-      titleText: 'Mozambique: {date_coverage}',
-    });
-
-    expect(formatExportUrlForClipboard(url)).toContain('bounds=30,-26,41,-10');
-    expect(formatExportUrlForClipboard(url)).toContain(
-      'title=Mozambique: {date_coverage}',
-    );
-    expect(formatExportUrlForClipboard(url)).not.toContain('%2C');
-  });
-
   test('uses custom aspect ratio params when provided', () => {
     const [url] = buildBatchExportUrls({
       ...sharedTemplate,
@@ -143,6 +129,24 @@ describe('buildBatchExportUrls', () => {
   });
 });
 
+describe('buildScheduleExportUrl', () => {
+  test('uses date and layer placeholders for cron substitution', () => {
+    const url = buildScheduleExportUrl({
+      ...sharedTemplate,
+      selectedBoundaries: ['MOZ01'],
+      viewportWidth: 1200,
+      viewportHeight: 900,
+      language: 'pt',
+    });
+
+    const parsed = new URL(url);
+    expect(parsed.searchParams.get('date')).toBe('{date}');
+    expect(parsed.searchParams.get('hazardLayerIds')).toBe('{layer_id}');
+    expect(parsed.searchParams.get('language')).toBe('pt');
+    expect(parsed.searchParams.get('bounds')).toBe('30,-26,41,-10');
+  });
+});
+
 describe('buildScheduleExportOptions', () => {
   test('builds export_options from the same template fields', () => {
     const options = buildScheduleExportOptions({
@@ -166,7 +170,7 @@ describe('buildScheduleExportOptions', () => {
 });
 
 describe('schedule/batch template parity', () => {
-  test('schedule queryParams match batch URL except date and layer', () => {
+  test('schedule export URL matches batch URL except date and layer placeholders', () => {
     const [batchUrl] = buildBatchExportUrls({
       ...sharedTemplate,
       formattedDates: ['2024-05-01'],
@@ -174,24 +178,27 @@ describe('schedule/batch template parity', () => {
     });
     const batchParams = new URL(batchUrl).searchParams;
 
-    const schedule = buildScheduleExportOptions({
+    const scheduleUrl = buildScheduleExportUrl({
       ...sharedTemplate,
       selectedBoundaries: ['MOZ01'],
       viewportWidth: 1200,
       viewportHeight: 900,
       language: 'ar',
     });
+    const scheduleParams = new URL(scheduleUrl).searchParams;
 
-    expect(schedule.queryParams.bounds).toBe(batchParams.get('bounds'));
-    expect(schedule.queryParams.language).toBe(batchParams.get('language'));
-    expect(schedule.queryParams.zoom).toBe(batchParams.get('zoom'));
-    expect(schedule.queryParams.aspectRatio).toBe(
+    expect(scheduleParams.get('bounds')).toBe(batchParams.get('bounds'));
+    expect(scheduleParams.get('language')).toBe(batchParams.get('language'));
+    expect(scheduleParams.get('zoom')).toBe(batchParams.get('zoom'));
+    expect(scheduleParams.get('aspectRatio')).toBe(
       batchParams.get('aspectRatio'),
     );
-    expect(schedule.queryParams.title).toBe(batchParams.get('title'));
-    expect(schedule.queryParams.toggles).toEqual(
-      JSON.parse(batchParams.get('toggles') ?? '{}'),
-    );
+    expect(scheduleParams.get('title')).toBe(batchParams.get('title'));
+    expect(scheduleParams.get('toggles')).toBe(batchParams.get('toggles'));
+    expect(scheduleParams.get('date')).toBe('{date}');
+    expect(scheduleParams.get('hazardLayerIds')).toBe('{layer_id}');
+    expect(batchParams.get('date')).toBe('2024-05-01');
+    expect(batchParams.get('hazardLayerIds')).toBe('rainfall_blended_dekad');
   });
 });
 

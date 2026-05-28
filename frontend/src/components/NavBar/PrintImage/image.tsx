@@ -60,7 +60,6 @@ import {
 import { ALL_ASPECT_RATIO_OPTIONS } from '../../MapExport/aspectRatioConstants';
 import { downloadToFile } from '../../MapView/utils';
 import { buildBatchExportDatesDisplay } from './batchMapExport/batchExportArtifactFilename';
-import { formatExportUrlForClipboard } from './batchMapExport/mapExportTemplate';
 import { useBatchMapExportJobsActions } from './batchMapExport/useBatchMapExportJobs';
 import { useMapExportTemplate } from './batchMapExport/useMapExportTemplate';
 import PrintConfig from './printConfig';
@@ -69,6 +68,7 @@ import PrintConfigContext, {
   Toggles,
 } from './printConfig.context';
 import PrintPreview from './printPreview';
+import { invalidateScheduleWhoamiSession } from './scheduleWhoamiSession';
 
 const defaultFooterText = get(appConfig, 'printConfig.defaultFooterText', '');
 
@@ -193,6 +193,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     }
     const params = new URLSearchParams(location.search);
     if (params.get('schedule') === '1') {
+      invalidateScheduleWhoamiSession();
       setCreateScheduledMaps(true);
     }
     if (params.get('batchMaps') === '1') {
@@ -560,56 +561,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     setDownloadMenuAnchorEl(null);
   };
 
-  const copyBatchMapUrls = async () => {
-    const { startDate, endDate } = dateRangeForBatchMaps;
-
-    if (!startDate || !endDate) {
-      dispatch(
-        addNotification({
-          type: 'error',
-          message: t('Date range not set for batch download'),
-        }),
-      );
-      return;
-    }
-
-    const constructedUrls = mapExportTemplate.buildBatchUrlsForTimestamps(
-      filteredBatchDates,
-      printSelectedLayer,
-    );
-
-    if (constructedUrls.length === 0) {
-      dispatch(
-        addNotification({
-          type: 'error',
-          message: t('No dates found in the selected range'),
-        }),
-      );
-      return;
-    }
-
-    try {
-      // One representative /export URL (first cadence date); batch download still uses all dates.
-      await navigator.clipboard.writeText(
-        formatExportUrlForClipboard(constructedUrls[0]),
-      );
-      dispatch(
-        addNotification({
-          type: 'success',
-          message: t('Batch map URL copied to clipboard.'),
-        }),
-      );
-    } catch (error) {
-      dispatch(
-        addNotification({
-          type: 'error',
-          message: t('Could not copy batch map settings. Please try again.'),
-        }),
-      );
-      console.error('Copy batch map settings failed:', error);
-    }
-  };
-
   const downloadBatch = async (format: 'pdf' | 'png') => {
     const { startDate, endDate } = dateRangeForBatchMaps;
 
@@ -723,9 +674,9 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
       setIsDownloading(true);
       try {
-        const exportOptions =
-          mapExportTemplate.buildScheduleExportOptionsPayload();
-        if (!exportOptions) {
+        const schedulePayload =
+          mapExportTemplate.buildScheduleExportPayloadForCreate();
+        if (!schedulePayload) {
           return;
         }
 
@@ -736,7 +687,8 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
           cadence: cadenceToApi(cadence),
           dekad_interval: dekadInterval,
           format,
-          export_options: exportOptions,
+          export_url: schedulePayload.export_url,
+          export_options: schedulePayload.export_options,
         });
 
         dispatch(
@@ -817,7 +769,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       handleDownloadMenuClose,
       download,
       downloadBatch,
-      copyBatchMapUrls,
       isDownloading,
       defaultFooterText,
       setSelectedBoundaries,

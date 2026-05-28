@@ -207,14 +207,37 @@ export function buildScheduleExportOptions(
   };
 }
 
-export function formatExportUrlForClipboard(exportUrl: string): string {
-  const parsed = new URL(exportUrl);
-  const readableSearch = Array.from(
-    parsed.searchParams.entries(),
-    ([key, value]) => `${key}=${value}`,
-  ).join('&');
+/** Template export URL stored on the schedule; cron substitutes ``{date}`` and ``{layer_id}``. */
+export function buildScheduleExportUrl(
+  input: BuildScheduleExportOptionsInput,
+): string {
+  const params = new URLSearchParams();
+  applyMapExportPrintTemplate(params, {
+    ...input,
+    mapBounds: input.mapBounds,
+  });
+  params.delete('baselineLayerId');
+  if (input.language) {
+    params.set(EXPORT_LANGUAGE_PARAM, toExportLanguageParam(input.language));
+  }
+  const query = params.toString();
+  // Append without URLSearchParams so cron/backend see literal ``{date}`` / ``{layer_id}``.
+  const queryWithPlaceholders = query
+    ? `${query}&date={date}&hazardLayerIds={layer_id}`
+    : 'date={date}&hazardLayerIds={layer_id}';
+  return `${input.origin}${input.exportPath}?${queryWithPlaceholders}`;
+}
 
-  return readableSearch
-    ? `${parsed.origin}${parsed.pathname}?${readableSearch}`
-    : `${parsed.origin}${parsed.pathname}`;
+export type ScheduleExportPayload = {
+  export_url: string;
+  export_options: ScheduleExportOptions;
+};
+
+export function buildScheduleExportPayload(
+  input: BuildScheduleExportOptionsInput,
+): ScheduleExportPayload {
+  return {
+    export_url: buildScheduleExportUrl(input),
+    export_options: buildScheduleExportOptions(input),
+  };
 }
