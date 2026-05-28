@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from prism_app.admin import PrismGatedModelView, ReadOnlyModelView
+from prism_app.dashboard.dashboard_config_field import PrettyJSONField
 from prism_app.auth.admin_request import (
     admin_user_from_request,
     request_has_prism_admin_access,
@@ -28,7 +29,7 @@ from sqlalchemy.orm import Session
 from starlette.exceptions import HTTPException
 from starlette.requests import Request
 from starlette.responses import Response
-from starlette_admin import EnumField, JSONField, StringField
+from starlette_admin import EnumField, StringField
 from starlette_admin._types import RequestAction
 from starlette_admin.actions import link_row_action
 from starlette_admin.contrib.sqla import Admin
@@ -123,7 +124,7 @@ class MapExportScheduleView(PrismGatedModelView):
         "dekad_interval",
         EnumField("format", enum=MapExportScheduleFormat),
         StringField("export_url", read_only=True),
-        JSONField("export_options", read_only=True),
+        PrettyJSONField("export_options", read_only=True),
         "created_by_user_id",
         "created_at",
         "updated_at",

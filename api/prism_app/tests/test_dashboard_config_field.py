@@ -6,6 +6,7 @@ from io import BytesIO
 import pytest
 from prism_app.dashboard.dashboard_config_field import (
     DashboardConfigJsonFileField,
+    PrettyJSONField,
     format_dashboard_config_json_for_display,
 )
 from starlette.datastructures import FormData, UploadFile
@@ -73,3 +74,10 @@ def test_format_display_prettifies_json(
     assert rendered == format_dashboard_config_json_for_display(data)
     assert "\n" in rendered
     assert '"title": "Example"' in rendered
+
+
+def test_pretty_json_field_uses_shared_display_formatter() -> None:
+    field = PrettyJSONField("export_options", read_only=True)
+    data = {"viewportWidth": 1200}
+
+    assert field.format_display(data) == format_dashboard_config_json_for_display(data)
