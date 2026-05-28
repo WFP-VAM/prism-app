@@ -13,7 +13,7 @@ os.environ.setdefault("KOBO_PASSWORD", "pytest")
 import pytest
 from fastapi.testclient import TestClient
 from prism_app.auth.deps import require_prism_session
-from prism_app.auth.permission_codes import MAP_EXPORTS_MANAGE
+from prism_app.auth.permission_codes import ADMIN_ACCESS, MAP_EXPORTS_MANAGE
 from prism_app.database.map_export_schedule_model import MapExportSchedule
 from prism_app.database.user_model import User
 from prism_app.export_jobs.db import get_export_jobs_session
@@ -205,6 +205,37 @@ def test_post_export_map_schedule_requires_map_exports_permission(
     )
 
     assert response.status_code == 403
+
+
+def test_post_export_map_schedule_allows_admin_access_without_map_exports_manage(
+    sqlite_engine,
+) -> None:
+    SessionLocal = sessionmaker(
+        bind=sqlite_engine, class_=Session, expire_on_commit=False
+    )
+
+    def override_session() -> Generator[Session, None, None]:
+        with SessionLocal() as session:
+            yield session
+
+    user = User.model_construct(
+        id=UUID("00000000-0000-4000-8000-000000000125"),
+        ciam_sub="ciam-sub-admin",
+        email="admin@example.org",
+        name="Admin User",
+    )
+
+    def override_prism_session() -> tuple[User, set[str]]:
+        return user, {ADMIN_ACCESS}
+
+    app.dependency_overrides[get_export_jobs_session] = override_session
+    app.dependency_overrides[require_prism_session] = override_prism_session
+    try:
+        with TestClient(app) as client:
+            response = client.post("/export-map/schedules", json=_schedule_body())
+        assert response.status_code == 201, response.text
+    finally:
+        app.dependency_overrides.clear()
 
 
 def test_export_map_schedules_does_not_expose_prism_list_api(

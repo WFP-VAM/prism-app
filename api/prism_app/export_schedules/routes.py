@@ -7,8 +7,8 @@ from typing import Annotated, Any, Literal
 from urllib.parse import urlencode, urlparse, urlunparse
 
 from fastapi import APIRouter, Depends, HTTPException
-from prism_app.auth.deps import require_permissions
-from prism_app.auth.permission_codes import MAP_EXPORTS_MANAGE
+from prism_app.auth.deps import require_any_permission
+from prism_app.auth.permission_codes import ADMIN_ACCESS, MAP_EXPORTS_MANAGE
 from prism_app.database.map_export_schedule_model import (
     MapExportSchedule,
     MapExportScheduleCadence,
@@ -22,9 +22,9 @@ from sqlmodel import Session
 
 router = APIRouter(prefix="/export-map", tags=["export-map"])
 
-_MapExportsManageSession = Annotated[
+_ScheduleCreateSession = Annotated[
     tuple[User, set[str]],
-    Depends(require_permissions(MAP_EXPORTS_MANAGE)),
+    Depends(require_any_permission(MAP_EXPORTS_MANAGE, ADMIN_ACCESS)),
 ]
 
 
@@ -173,7 +173,7 @@ def generate_schedule_name(body: MapExportScheduleCreateRequest) -> str:
 )
 def create_map_export_schedule(
     body: MapExportScheduleCreateRequest,
-    prism: _MapExportsManageSession,
+    prism: _ScheduleCreateSession,
     session: Session = Depends(get_export_jobs_session),
 ) -> MapExportScheduleCreateResponse:
     user, _codes = prism
