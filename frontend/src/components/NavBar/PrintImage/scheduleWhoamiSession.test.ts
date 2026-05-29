@@ -1,33 +1,24 @@
 import {
   ADMIN_ACCESS_PERMISSION,
   MAP_EXPORTS_MANAGE_PERMISSION,
+  PRISM_WHOAMI_API_URL,
 } from 'utils/constants';
-import {
-  fetchPrismWhoami,
-  invalidatePrismWhoamiSession,
-} from 'utils/prismWhoamiSession';
 
 import {
   fetchScheduleWhoamiSession,
   invalidateScheduleWhoamiSession,
 } from './scheduleWhoamiSession';
 
-jest.mock('utils/prismWhoamiSession', () => ({
-  fetchPrismWhoami: jest.fn(),
-  invalidatePrismWhoamiSession: jest.fn(),
-}));
-
-const fetchPrismWhoamiMock = fetchPrismWhoami as jest.MockedFunction<
-  typeof fetchPrismWhoami
->;
-
 describe('fetchScheduleWhoamiSession', () => {
-  beforeEach(() => {
-    fetchPrismWhoamiMock.mockReset();
+  afterEach(() => {
+    invalidateScheduleWhoamiSession();
+    jest.restoreAllMocks();
   });
 
   test('returns unauthenticated when whoami is not ok', async () => {
-    fetchPrismWhoamiMock.mockResolvedValue(null);
+    jest.spyOn(global, 'fetch').mockResolvedValue({
+      ok: false,
+    } as Response);
 
     await expect(fetchScheduleWhoamiSession()).resolves.toEqual({
       isPrismAuthenticated: false,
@@ -36,12 +27,12 @@ describe('fetchScheduleWhoamiSession', () => {
   });
 
   test('detects map export manage permission', async () => {
-    fetchPrismWhoamiMock.mockResolvedValue({
-      user_id: 'uid-1',
-      ciam_sub: 'sub-1',
-      email: null,
-      permissions: [MAP_EXPORTS_MANAGE_PERMISSION],
-    });
+    jest.spyOn(global, 'fetch').mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        permissions: [MAP_EXPORTS_MANAGE_PERMISSION],
+      }),
+    } as Response);
 
     await expect(fetchScheduleWhoamiSession()).resolves.toEqual({
       isPrismAuthenticated: true,
@@ -50,12 +41,12 @@ describe('fetchScheduleWhoamiSession', () => {
   });
 
   test('detects admin access permission', async () => {
-    fetchPrismWhoamiMock.mockResolvedValue({
-      user_id: 'uid-1',
-      ciam_sub: 'sub-1',
-      email: null,
-      permissions: [ADMIN_ACCESS_PERMISSION],
-    });
+    jest.spyOn(global, 'fetch').mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        permissions: [ADMIN_ACCESS_PERMISSION],
+      }),
+    } as Response);
 
     await expect(fetchScheduleWhoamiSession()).resolves.toEqual({
       isPrismAuthenticated: true,
@@ -63,8 +54,23 @@ describe('fetchScheduleWhoamiSession', () => {
     });
   });
 
-  test('invalidateScheduleWhoamiSession clears shared cache', () => {
+  test('invalidateScheduleWhoamiSession clears shared cache', async () => {
+    const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        permissions: [MAP_EXPORTS_MANAGE_PERMISSION],
+      }),
+    } as Response);
+
+    await fetchScheduleWhoamiSession();
+    await fetchScheduleWhoamiSession();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+
     invalidateScheduleWhoamiSession();
-    expect(invalidatePrismWhoamiSession).toHaveBeenCalled();
+    await fetchScheduleWhoamiSession();
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(fetchMock).toHaveBeenCalledWith(PRISM_WHOAMI_API_URL, {
+      credentials: 'include',
+    });
   });
 });
