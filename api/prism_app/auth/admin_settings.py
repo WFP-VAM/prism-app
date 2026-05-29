@@ -45,9 +45,6 @@ class AdminAuthSettings(BaseSettings):
     # Allowed return URL after CIAM logout; must be registered on the OIDC client.
     # See https://docs.ciam.auth.wfp.org/login-workflows/#about-logout
     oidc_post_logout_redirect_uri: str = ""
-    # Comma-separated frontend origins allowed as OIDC `next` targets for React UI intents.
-    # Example: https://prism.moz.wfp.org,http://localhost:3000
-    frontend_redirect_origins: str = ""
 
     access_support_email: str = ""
     admin_auth_disabled: bool = False

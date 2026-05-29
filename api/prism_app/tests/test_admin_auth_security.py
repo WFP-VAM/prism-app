@@ -161,23 +161,25 @@ def test_safe_next_allows_admin_subpaths_and_access_page() -> None:
     assert auth_oidc._safe_next("/admin/?tab=1") == "/admin?tab=1"
 
 
-def test_safe_next_allows_configured_frontend_print_modal_return() -> None:
-    settings = AdminAuthSettings(
-        frontend_redirect_origins="https://prism.example.org,http://localhost:3000"
-    )
-
-    nxt = "https://prism.example.org/?printModal=1&batchMaps=1&schedule=1"
-
-    assert auth_oidc._safe_next(nxt, settings=settings) == nxt
+def test_safe_next_allows_export_allowed_domain_frontend_print_modal_return() -> None:
+    nxt = "https://prism.moz.wfp.org/?printModal=1&batchMaps=1&schedule=1"
+    assert auth_oidc._safe_next(nxt) == nxt
 
 
-def test_safe_next_rejects_unconfigured_frontend_origin() -> None:
-    settings = AdminAuthSettings(frontend_redirect_origins="https://prism.example.org")
+def test_safe_next_allows_localhost_frontend_print_modal_return() -> None:
+    nxt = "http://localhost:3000/?printModal=1&batchMaps=1&schedule=1"
+    assert auth_oidc._safe_next(nxt) == nxt
 
+
+def test_safe_next_allows_firebase_preview_frontend_print_modal_return() -> None:
+    nxt = "https://staging-prism-frontend--1622-abc.web.app/?printModal=1"
+    assert auth_oidc._safe_next(nxt) == nxt
+
+
+def test_safe_next_rejects_disallowed_frontend_origin() -> None:
     assert (
         auth_oidc._safe_next(
             "https://evil.example/?printModal=1&batchMaps=1&schedule=1",
-            settings=settings,
         )
         == "/admin/"
     )

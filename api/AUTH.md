@@ -91,11 +91,12 @@ There are three env var mechanisms that serve different contexts:
 | `PRISM_OIDC_SCOPES` | No | Space-separated scopes (default: `openid profile email`) |
 | `PRISM_OIDC_AUTHORIZE_PROMPT` | No | Optional `prompt` param on the authorize URL |
 | `PRISM_OIDC_POST_LOGOUT_REDIRECT_URI` | No | Return URL after CIAM logout; must be registered |
-| `PRISM_FRONTEND_REDIRECT_ORIGINS` | No | Comma-separated React app origins allowed for post-login UI intent returns |
 | `PRISM_ACCESS_SUPPORT_EMAIL` | No | Shown on the access-denied page |
 | `PRISM_ADMIN_AUTH_DISABLED` | Dev only | Set `true` to bypass OIDC for local development |
 
 See [`.env.example`](.env.example) for a ready-to-copy template.
+
+Post-login returns to the React print modal use the same hostname allowlist as map export (`EXPORT_ALLOWED_DOMAINS` in `prism_app/utils.py`), plus localhost.
 
 ## Dev Mode
 

@@ -46,6 +46,7 @@ from prism_app.auth.prism_auth_service import (
     is_active,
     touch_last_login,
 )
+from prism_app.utils import EXPORT_ALLOWED_DOMAINS, is_domain_allowed
 
 logger = logging.getLogger(__name__)
 
@@ -93,19 +94,19 @@ def _consume_sign_out_csrf(request: Request, submitted: str | None) -> bool:
     return secrets.compare_digest(expected, got)
 
 
-def _frontend_redirect_origins(settings: AdminAuthSettings | None) -> set[str]:
-    if settings is None:
-        return set()
-
-    origins: set[str] = set()
-    for raw in settings.frontend_redirect_origins.split(","):
-        value = raw.strip().rstrip("/")
-        if not value:
-            continue
-        p = urlparse(value)
-        if p.scheme in ("http", "https") and p.netloc:
-            origins.add(f"{p.scheme}://{p.netloc}")
-    return origins
+def _is_allowed_frontend_redirect_origin(origin: str) -> bool:
+    """True when origin hostname matches map-export allowlist (plus localhost)."""
+    p = urlparse(origin)
+    if p.scheme not in ("http", "https") or not p.netloc:
+        return False
+    hostname = p.hostname
+    if not hostname:
+        return False
+    if hostname in ("localhost", "127.0.0.1", "::1"):
+        return True
+    if not EXPORT_ALLOWED_DOMAINS:
+        return False
+    return is_domain_allowed(hostname, EXPORT_ALLOWED_DOMAINS)
 
 
 def _is_frontend_print_modal_return(norm_path: str, query: str) -> bool:
@@ -116,16 +117,12 @@ def _is_frontend_print_modal_return(norm_path: str, query: str) -> bool:
     return parsed.get("printModal") == ["1"]
 
 
-def _safe_next(
-    next_raw: str | None,
-    default: str = "/admin/",
-    settings: AdminAuthSettings | None = None,
-) -> str:
+def _safe_next(next_raw: str | None, default: str = "/admin/") -> str:
     """Resolve post-login redirect: same host only, no protocol-relative or path traversal escapes.
 
     ``/admin`` (and subpaths) and ``/access-not-configured`` are allowed for the
-    admin app. For the React app, only configured frontend origins may receive
-    the print-modal return intent.
+    admin app. For the React app, only hostnames in ``EXPORT_ALLOWED_DOMAINS``
+    (plus localhost) may receive the print-modal return intent.
     """
     if not next_raw:
         return default
@@ -172,9 +169,11 @@ def _safe_next(
     if admin_allowed:
         return f"{norm}?{query}" if query else norm
 
-    frontend_allowed = origin in _frontend_redirect_origins(
-        settings
-    ) and _is_frontend_print_modal_return(norm, query)
+    frontend_allowed = (
+        origin is not None
+        and _is_allowed_frontend_redirect_origin(origin)
+        and _is_frontend_print_modal_return(norm, query)
+    )
     if frontend_allowed:
         return f"{origin}{norm}?{query}"
     return default
@@ -214,7 +213,7 @@ async def oidc_sign_in(
     state_plain = secrets.token_urlsafe(32)
     nonce = secrets.token_urlsafe(32)
     code_verifier, _code_challenge = generate_pkce_pair()
-    next_path = _safe_next(next_url, default="/admin/", settings=settings)
+    next_path = _safe_next(next_url, default="/admin/")
     state_jwt = sign_oidc_state(
         settings,
         {
