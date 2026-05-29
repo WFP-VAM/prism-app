@@ -19,6 +19,7 @@ import KhmerFont from 'fonts/Khmer-Regular.ttf';
 import RobotoFont from 'fonts/Roboto-Regular.ttf';
 import { useDashboardConfig } from 'hooks/useDashboardConfig';
 import { useDocumentLocale } from 'hooks/useDocumentLocale';
+import { usePersistDraftDashboards } from 'hooks/usePersistDraftDashboards';
 import muiTheme from 'muiTheme';
 import { memo, useMemo } from 'react';
 import {
@@ -70,6 +71,7 @@ Font.register({
 
 function DashboardRouteSwitcher() {
   const { path } = useParams<{ path?: string }>();
+  usePersistDraftDashboards();
   if (path === 'create') {
     return <CreateDashboardView />;
   }
