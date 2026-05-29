@@ -15,7 +15,6 @@ import {
 import { usePostHog } from '@posthog/react';
 import { downloadToFile } from 'components/MapView/utils';
 import { DashboardMode } from 'config/types';
-import { usePersistDraftDashboards } from 'hooks/usePersistDraftDashboards';
 import { useSafeTranslation } from 'i18n';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -36,7 +35,6 @@ import DashboardContent from './DashboardContent';
 import { DashboardExportDialog } from './DashboardExport';
 
 function DashboardView() {
-  usePersistDraftDashboards();
   const classes = useStyles();
   const dashboardConfig = useSelector(dashboardConfigSelector);
   const dashboards = useSelector(dashboardsListSelector);
