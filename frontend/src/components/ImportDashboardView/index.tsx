@@ -37,8 +37,17 @@ type ViewState =
     }
   | { status: 'error'; detail: string };
 
+const sortedReplacer = (_key: string, value: unknown) =>
+  value && typeof value === 'object' && !Array.isArray(value)
+    ? Object.fromEntries(
+        Object.entries(value as Record<string, unknown>).sort(([a], [b]) =>
+          a.localeCompare(b),
+        ),
+      )
+    : value;
+
 const normalize = ({ isDraft: _isDraft, ...rest }: Dashboard) =>
-  JSON.stringify(rest);
+  JSON.stringify(rest, sortedReplacer);
 
 function ImportDashboardView() {
   const classes = useStyles();

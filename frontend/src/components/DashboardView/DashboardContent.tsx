@@ -457,7 +457,7 @@ function DashboardContent({
                   </Typography>
                   {mode === DashboardMode.VIEW && (
                     <Box className={classes.titleActions}>
-                      {dashboardConfig.isDraft && onEditClick && (
+                      {onEditClick && (
                         <Button
                           color="primary"
                           variant="outlined"
