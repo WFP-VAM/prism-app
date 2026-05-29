@@ -1,9 +1,7 @@
 import {
   Box,
-  Checkbox,
   CircularProgress,
   createStyles,
-  FormControlLabel,
   Icon,
   IconButton,
   makeStyles,
@@ -27,7 +25,6 @@ import {
   setCapturedViewport,
   setLegendPosition,
   setLegendVisible,
-  setMapUseLatestDate,
 } from 'context/dashboardStateSlice';
 import {
   pointDataLayerDatesRequested,
@@ -272,19 +269,6 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
               fullWidth
               className={classes.titleInput}
             />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={useLatestAvailableDate}
-                  onChange={(_event, checked) =>
-                    dispatch(setMapUseLatestDate({ elementId, value: checked }))
-                  }
-                  color="primary"
-                />
-              }
-              label={t('Use latest data')}
-              className={classes.useLatestCheckbox}
-            />
           </Box>
         </Box>
       )}
@@ -508,11 +492,6 @@ const useStyles = makeStyles(() =>
       display: 'flex',
       alignItems: 'center',
       gap: '12px',
-    },
-    useLatestCheckbox: {
-      flexShrink: 0,
-      margin: 0,
-      whiteSpace: 'nowrap',
     },
     titleInput: {
       '& .MuiOutlinedInput-input': {

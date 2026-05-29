@@ -1,10 +1,8 @@
 import {
   Box,
   Button,
-  Checkbox,
   CircularProgress,
   FormControl,
-  FormControlLabel,
   IconButton,
   InputLabel,
   makeStyles,
@@ -134,16 +132,6 @@ function ChartBlock({
         updates,
       }),
     );
-  };
-
-  const handleUseLatestChange = (_event: unknown, checked: boolean) => {
-    setUseLatest(checked);
-    persistBlockConfig({
-      useLatestAvailableDate: checked,
-      latestPeriod: period,
-      periodReference,
-      ...(checked ? { startDate: undefined, endDate: undefined } : {}),
-    });
   };
 
   const handlePeriodChange = (newPeriod: ChartLatestPeriod) => {
@@ -455,27 +443,11 @@ function ChartBlock({
         </Box>
 
         <Box className={classes.formSection}>
-          <Box className={classes.dateRangeLabelRow}>
-            <Typography variant="body2" className={classes.dateRangeLabel}>
-              {t('Date Range')}
-            </Typography>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={useLatest}
-                  onChange={handleUseLatestChange}
-                  color="primary"
-                />
-              }
-              label={t('Use latest available date(s)')}
-              className={classes.useLatestCheckbox}
-            />
-          </Box>
+          <Typography variant="body2" className={classes.dateRangeLabel}>
+            {t('Date Range')}
+          </Typography>
           {useLatest ? (
             <Box className={classes.latestPeriodRow}>
-              <Typography variant="body2" className={classes.latestPeriodLabel}>
-                {t('Show data for:')}
-              </Typography>
               <FormControl variant="outlined" className={classes.periodControl}>
                 <InputLabel>{t('Reference')}</InputLabel>
                 <Select
@@ -533,6 +505,7 @@ function ChartBlock({
             boundaryLayer={formState.boundaryLayer}
             admin1Key={formState.admin1Key}
             admin2Key={formState.admin2Key}
+            labelMarginBottom={8}
             onAdmin1Change={(key, properties, level) => {
               formState.setLocation(key, '' as any, properties, level);
             }}
@@ -647,24 +620,14 @@ const useStyles = makeStyles(theme => ({
     flex: 1,
     marginBottom: 0,
   },
-  dateRangeLabelRow: {
-    display: 'flex',
-    alignItems: 'space-between',
-    justifyContent: 'space-between',
-    marginLeft: 10,
-    width: '90%',
-    marginBottom: 4,
-  },
   dateRangeLabel: {
     fontWeight: 600,
     color: 'black',
     paddingTop: 9,
     flexShrink: 0,
     marginRight: theme.spacing(1),
-  },
-  useLatestCheckbox: {
-    margin: 0,
-    flexShrink: 0,
+    marginLeft: 10,
+    marginBottom: 4,
   },
   latestPeriodRow: {
     display: 'flex',
@@ -674,12 +637,6 @@ const useStyles = makeStyles(theme => ({
     marginLeft: 10,
     width: '90%',
     marginBottom: 8,
-  },
-  latestPeriodLabel: {
-    fontWeight: 600,
-    color: 'black',
-    paddingBottom: 10,
-    flex: '1 1 100%',
   },
   periodControl: {
     flex: '1 1 140px',

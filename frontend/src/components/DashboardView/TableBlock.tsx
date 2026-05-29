@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  Checkbox,
   CircularProgress,
   FormControlLabel,
   IconButton,
@@ -50,7 +49,6 @@ import {
   dashboardModeSelector,
   dashboardTableStateSelector,
   selectedDashboardIndexSelector,
-  updateBlockConfig,
   updateTableState,
 } from '../../context/dashboardStateSlice';
 import BlockPreviewHeader from './BlockPreviewHeader';
@@ -96,20 +94,6 @@ function TableBlock({
   useEffect(() => {
     setUseLatest(initialUseLatestAvailableDate ?? false);
   }, [initialUseLatestAvailableDate, selectedDashboardIndex]);
-
-  const handleUseLatestChange = (_event: unknown, checked: boolean) => {
-    setUseLatest(checked);
-    dispatch(
-      updateBlockConfig({
-        columnIndex,
-        elementIndex,
-        updates: {
-          useLatestAvailableDate: checked,
-          ...(checked ? { startDate: undefined } : {}),
-        },
-      }),
-    );
-  };
 
   // Create element ID for Redux state
   const elementId = `${columnIndex}-${elementIndex}`;
@@ -522,25 +506,15 @@ function TableBlock({
 
         {formState.hazardDataType === GeometryType.Polygon ? (
           <Box className={classes.formSection}>
-            <DateRangeSelector
-              startDate={formState.startDate}
-              endDate={formState.endDate}
-              onStartDateChange={formState.setStartDate}
-              onEndDateChange={formState.setEndDate}
-              availableDates={formState.availableHazardDates}
-              disabled={useLatest}
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={useLatest}
-                  onChange={handleUseLatestChange}
-                  color="primary"
-                />
-              }
-              label={t('Use latest available date(s)')}
-              className={classes.useLatestCheckbox}
-            />
+            {!useLatest && (
+              <DateRangeSelector
+                startDate={formState.startDate}
+                endDate={formState.endDate}
+                onStartDateChange={formState.setStartDate}
+                onEndDateChange={formState.setEndDate}
+                availableDates={formState.availableHazardDates}
+              />
+            )}
             <Box className={classes.dateAnalysisRow}>
               <AdminLevelSelector
                 value={formState.adminLevel}
@@ -586,25 +560,15 @@ function TableBlock({
             </Box>
 
             <Box className={classes.dateAnalysisRow}>
-              <Box className={classes.dateColumn}>
-                <DateSelector
-                  selectedDate={formState.selectedDate}
-                  onDateChange={formState.setSelectedDate}
-                  availableDates={formState.availableHazardDates}
-                  disabled={useLatest}
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={useLatest}
-                      onChange={handleUseLatestChange}
-                      color="primary"
-                    />
-                  }
-                  label={t('Use latest available date(s)')}
-                  className={classes.useLatestCheckbox}
-                />
-              </Box>
+              {!useLatest && (
+                <Box className={classes.dateColumn}>
+                  <DateSelector
+                    selectedDate={formState.selectedDate}
+                    onDateChange={formState.setSelectedDate}
+                    availableDates={formState.availableHazardDates}
+                  />
+                </Box>
+              )}
               <TextField
                 label={t('Max rows')}
                 type="number"
@@ -653,9 +617,6 @@ const useStyles = makeStyles(theme => ({
   maxRowsInput: {
     width: 100,
     marginBottom: 16,
-  },
-  useLatestCheckbox: {
-    margin: 0,
   },
   previewContainer: {
     background: 'white',

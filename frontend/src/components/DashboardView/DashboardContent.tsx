@@ -1,19 +1,19 @@
 import {
   Box,
   Button,
+  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   FormControlLabel,
-  IconButton,
   makeStyles,
   MenuItem,
   Select,
   Switch,
   Typography,
 } from '@material-ui/core';
-import { Close, Edit } from '@material-ui/icons';
+import { Edit } from '@material-ui/icons';
 import { getImageUrl } from 'assets/images';
 import { useSafeTranslation } from 'i18n';
 import { useEffect, useState } from 'react';
@@ -33,15 +33,17 @@ import {
   dashboardColumnsSelector,
   dashboardConfigSelector,
   dashboardMapElementsSelector,
+  dashboardMapStateSelector,
   dashboardModeSelector,
   dashboardsListSelector,
   dashboardSyncEnabledSelector,
-  removeElement,
   selectedDashboardIndexSelector,
   setElementType,
+  setMapUseLatestDate,
   setTitle,
   swapMapPosition,
   toggleMapSync,
+  updateBlockConfig,
 } from '../../context/dashboardStateSlice';
 import { addNotification } from '../../context/notificationStateSlice';
 import { generateSlugFromTitle } from '../../utils/string-utils';
@@ -132,14 +134,12 @@ function DashboardContent({
   const dispatch = useDispatch();
   const syncEnabled = useSelector(dashboardSyncEnabledSelector);
 
-  type PendingAction =
-    | { kind: 'remove'; columnIndex: number; elementIndex: number }
-    | {
-        kind: 'changeType';
-        columnIndex: number;
-        elementIndex: number;
-        newType: DashboardElementType;
-      };
+  type PendingAction = {
+    kind: 'changeType';
+    columnIndex: number;
+    elementIndex: number;
+    newType: DashboardElementType;
+  };
 
   const [pendingAction, setPendingAction] = useState<PendingAction | null>(
     null,
@@ -159,23 +159,43 @@ function DashboardContent({
     if (!pendingAction) {
       return;
     }
-    if (pendingAction.kind === 'remove') {
-      dispatch(
-        removeElement({
-          columnIndex: pendingAction.columnIndex,
-          elementIndex: pendingAction.elementIndex,
-        }),
-      );
-    } else {
-      dispatch(
-        setElementType({
-          columnIndex: pendingAction.columnIndex,
-          elementIndex: pendingAction.elementIndex,
-          newType: pendingAction.newType,
-        }),
-      );
-    }
+    dispatch(
+      setElementType({
+        columnIndex: pendingAction.columnIndex,
+        elementIndex: pendingAction.elementIndex,
+        newType: pendingAction.newType,
+      }),
+    );
     setDialogOpen(false);
+  };
+
+  const handleBlockUseLatestChange = (
+    columnIndex: number,
+    elementIndex: number,
+    elementType: DashboardElementType,
+    checked: boolean,
+  ) => {
+    if (
+      elementType !== DashboardElementType.CHART &&
+      elementType !== DashboardElementType.TABLE
+    ) {
+      return;
+    }
+
+    dispatch(
+      updateBlockConfig({
+        columnIndex,
+        elementIndex,
+        updates: {
+          useLatestAvailableDate: checked,
+          ...(checked
+            ? elementType === DashboardElementType.CHART
+              ? { startDate: undefined, endDate: undefined }
+              : { startDate: undefined }
+            : {}),
+        },
+      }),
+    );
   };
 
   // Column Height Management - extracted to custom hook
@@ -196,45 +216,63 @@ function DashboardContent({
     currentType: DashboardElementType,
     columnIndex: number,
     elementIndex: number,
-  ) => (
-    <Box className={classes.blockTypeRow}>
-      <Typography variant="h3" className={classes.blockLabel}>
-        {t(`Block #${elementIndex + 1}`)}
-      </Typography>
-      <Select
-        value={currentType}
-        onChange={e => {
-          const newType = e.target.value as DashboardElementType;
-          if (newType !== currentType) {
-            stagePendingAction({
-              kind: 'changeType',
-              columnIndex,
-              elementIndex,
-              newType,
-            });
-          }
-        }}
-        className={classes.blockTypeSelect}
-        disableUnderline
-        variant="outlined"
-      >
-        {BLOCK_TYPE_OPTIONS.map(opt => (
-          <MenuItem key={opt.value} value={opt.value}>
-            {opt.label}
-          </MenuItem>
-        ))}
-      </Select>
-      <IconButton
-        size="small"
-        onClick={() =>
-          stagePendingAction({ kind: 'remove', columnIndex, elementIndex })
-        }
-        className={classes.removeBlockButton}
-      >
-        <Close fontSize="small" />
-      </IconButton>
-    </Box>
-  );
+    useLatestAvailableDate = false,
+  ) => {
+    const supportsUseLatest =
+      currentType === DashboardElementType.CHART ||
+      currentType === DashboardElementType.TABLE;
+
+    return (
+      <Box className={classes.blockTypeRow}>
+        <Typography variant="h3" className={classes.blockLabel}>
+          {t(`Block #${elementIndex + 1}`)}
+        </Typography>
+        <Select
+          value={currentType}
+          onChange={e => {
+            const newType = e.target.value as DashboardElementType;
+            if (newType !== currentType) {
+              stagePendingAction({
+                kind: 'changeType',
+                columnIndex,
+                elementIndex,
+                newType,
+              });
+            }
+          }}
+          className={classes.blockTypeSelect}
+          disableUnderline
+          variant="outlined"
+        >
+          {BLOCK_TYPE_OPTIONS.map(opt => (
+            <MenuItem key={opt.value} value={opt.value}>
+              {opt.label}
+            </MenuItem>
+          ))}
+        </Select>
+        {supportsUseLatest && (
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={useLatestAvailableDate}
+                onChange={(_event, checked) =>
+                  handleBlockUseLatestChange(
+                    columnIndex,
+                    elementIndex,
+                    currentType,
+                    checked,
+                  )
+                }
+                color="primary"
+              />
+            }
+            label={t('Use latest available data')}
+            className={classes.useLatestCheckbox}
+          />
+        )}
+      </Box>
+    );
+  };
 
   const renderElement = (
     element: DashboardElements,
@@ -289,27 +327,12 @@ function DashboardContent({
             }}
           >
             {mode === DashboardMode.EDIT && (
-              <div className={classes.mapHeaderContainer}>
-                <Typography
-                  variant="h3"
-                  component="h3"
-                  className={`${classes.blockLabel} ${classes.mapHeaderTitle}`}
-                >
-                  {mapElements.length > 1
-                    ? t(`Map ${elementIndex + 1}`)
-                    : t('Map block')}{' '}
-                  — {t('Choose map layers')}
-                </Typography>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  size="small"
-                  onClick={() => dispatch(swapMapPosition())}
-                  className={classes.mapBlockSwapButton}
-                >
-                  {t('Swap map position')}
-                </Button>
-              </div>
+              <MapEditHeader
+                elementId={elementId}
+                mapIndex={elementIndex}
+                mapCount={mapElements.length}
+                onSwapMapPosition={() => dispatch(swapMapPosition())}
+              />
             )}
             <div style={{ height: '100%', flex: 1, minHeight: 0 }}>
               <MapBlock elementId={elementId} exportConfig={exportConfig} />
@@ -367,6 +390,7 @@ function DashboardContent({
                       element.type,
                       columnIndex,
                       elementIndex,
+                      element.useLatestAvailableDate ?? false,
                     )
                   : undefined
               }
@@ -407,6 +431,7 @@ function DashboardContent({
                       element.type,
                       columnIndex,
                       elementIndex,
+                      element.useLatestAvailableDate ?? false,
                     )
                   : undefined
               }
@@ -583,9 +608,7 @@ function DashboardContent({
             color="secondary"
             variant="contained"
           >
-            {pendingAction?.kind === 'remove'
-              ? t('Delete block')
-              : t('Change block type')}
+            {t('Change block type')}
           </Button>
         </DialogActions>
       </Dialog>
@@ -615,12 +638,22 @@ const useStyles = makeStyles(() => ({
       marginBottom: 0,
     },
   },
-  removeBlockButton: {
+  useLatestCheckbox: {
+    margin: 0,
     marginLeft: 'auto',
-    color: '#757575',
-    '&:hover': {
-      color: '#212121',
-    },
+    flexShrink: 0,
+    whiteSpace: 'nowrap',
+  },
+  mapHeaderActions: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    flexShrink: 0,
+    marginLeft: 'auto',
+  },
+  mapHeaderUseLatestCheckbox: {
+    margin: 0,
+    whiteSpace: 'nowrap',
   },
   blockTypeSelect: {
     fontSize: 14,
@@ -681,7 +714,6 @@ const useStyles = makeStyles(() => ({
     textTransform: 'none',
     fontWeight: 500,
     flexShrink: 0,
-    marginLeft: 12,
   },
   mapHeaderContainer: {
     display: 'flex',
@@ -822,5 +854,62 @@ const useStyles = makeStyles(() => ({
     fontFamily: 'Roboto',
   },
 }));
+
+interface MapEditHeaderProps {
+  elementId: string;
+  mapIndex: number;
+  mapCount: number;
+  onSwapMapPosition: () => void;
+}
+
+function MapEditHeader({
+  elementId,
+  mapIndex,
+  mapCount,
+  onSwapMapPosition,
+}: MapEditHeaderProps) {
+  const classes = useStyles();
+  const { t } = useSafeTranslation();
+  const dispatch = useDispatch();
+  const mapState = useSelector(dashboardMapStateSelector(elementId));
+  const useLatestAvailableDate = mapState?.useLatestAvailableDate ?? false;
+
+  return (
+    <div className={classes.mapHeaderContainer}>
+      <Typography
+        variant="h3"
+        component="h3"
+        className={`${classes.blockLabel} ${classes.mapHeaderTitle}`}
+      >
+        {mapCount > 1 ? t(`Map ${mapIndex + 1}`) : t('Map block')} —{' '}
+        {t('Choose map layers')}
+      </Typography>
+      <Box className={classes.mapHeaderActions}>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={useLatestAvailableDate}
+              onChange={(_event, checked) =>
+                dispatch(setMapUseLatestDate({ elementId, value: checked }))
+              }
+              color="primary"
+            />
+          }
+          label={t('Use latest available data')}
+          className={classes.mapHeaderUseLatestCheckbox}
+        />
+        <Button
+          variant="outlined"
+          color="primary"
+          size="small"
+          onClick={onSwapMapPosition}
+          className={classes.mapBlockSwapButton}
+        >
+          {t('Swap map position')}
+        </Button>
+      </Box>
+    </div>
+  );
+}
 
 export default DashboardContent;

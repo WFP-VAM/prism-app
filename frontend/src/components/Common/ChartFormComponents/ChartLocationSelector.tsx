@@ -39,6 +39,7 @@ interface ChartLocationSelectorProps {
   disabled?: boolean;
   stacked?: boolean;
   hideLabel?: boolean;
+  labelMarginBottom?: number;
 }
 
 function ChartLocationSelector({
@@ -51,6 +52,7 @@ function ChartLocationSelector({
   disabled = false,
   stacked = false,
   hideLabel = false,
+  labelMarginBottom = 8,
 }: ChartLocationSelectorProps) {
   const classes = useStyles();
   const { t, i18n: i18nLocale } = useSafeTranslation();
@@ -129,7 +131,11 @@ function ChartLocationSelector({
   return (
     <div className={classes.container}>
       {!hideLabel && (
-        <Typography className={classes.label} variant="body2">
+        <Typography
+          className={classes.label}
+          variant="body2"
+          style={{ marginBottom: labelMarginBottom }}
+        >
           {t('Location')}
         </Typography>
       )}
@@ -191,7 +197,6 @@ const useStyles = makeStyles(() => ({
   },
   label: {
     color: 'black',
-    marginBottom: 8,
     fontWeight: 600,
   },
   fieldsRow: {
