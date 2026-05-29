@@ -120,12 +120,15 @@ class MapExportSchedule(SQLModel, table=True):
 
     @model_validator(mode="after")
     def validate_export_url_placeholders(self) -> Self:
-        self.export_url = normalize_schedule_export_url(self.export_url)
+        normalized = normalize_schedule_export_url(self.export_url)
         missing = [
             placeholder
             for placeholder in ("{date}", "{layer_id}")
-            if placeholder not in self.export_url
+            if placeholder not in normalized
         ]
         if missing:
             raise ValueError(f"export_url missing placeholders: {', '.join(missing)}")
+        if normalized != self.export_url:
+            # Avoid SQLAlchemy attribute set during Pydantic validation (no _sa_instance_state yet).
+            object.__setattr__(self, "export_url", normalized)
         return self
