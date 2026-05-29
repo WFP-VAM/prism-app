@@ -15,39 +15,49 @@ const preSelectedMapLayerSchema = z.object({
   opacity: z.number().min(0).max(1).optional().default(1),
 });
 
-const dashboardMapConfigSchema = z.object({
-  type: z.literal(DashboardElementType.MAP),
-  date: z.string().optional(),
-  useLatestAvailableDate: z.boolean().optional().default(false),
-  mapPosition: z.enum(DashboardMapPosition).optional(),
-  minMapBounds: z.array(z.number()).optional(),
-  title: z.string().optional(),
-  legendVisible: z.boolean().optional().default(true),
-  legendPosition: z
-    .enum(DashboardMapPosition)
-    .optional()
-    .default(DashboardMapPosition.right),
-  preSelectedMapLayers: z.array(preSelectedMapLayerSchema).default([]),
-});
+const dashboardMapConfigSchema = z
+  .object({
+    type: z.literal(DashboardElementType.MAP),
+    date: z.string().optional(),
+    useLatestAvailableDate: z.boolean().optional().default(false),
+    mapPosition: z.enum(DashboardMapPosition).optional(),
+    minMapBounds: z.array(z.number()).optional(),
+    title: z.string().optional(),
+    legendVisible: z.boolean().optional().default(true),
+    legendPosition: z
+      .enum(DashboardMapPosition)
+      .optional()
+      .default(DashboardMapPosition.right),
+    preSelectedMapLayers: z.array(preSelectedMapLayerSchema).default([]),
+  })
+  .transform(config =>
+    config.useLatestAvailableDate ? { ...config, date: undefined } : config,
+  );
 
-const dashboardChartConfigSchema = z.object({
-  type: z.literal(DashboardElementType.CHART),
-  startDate: z.string().optional(),
-  endDate: z.string().optional(),
-  layerId: z.string(),
-  adminUnitLevel: z.number().optional(),
-  adminUnitId: z.number().optional(),
-  chartHeight: z.enum(ChartHeight).optional().default(ChartHeight.TALL),
-  useLatestAvailableDate: z.boolean().optional().default(false),
-  latestPeriod: z
-    .enum(ChartLatestPeriod)
-    .optional()
-    .default(ChartLatestPeriod.MONTH),
-  periodReference: z
-    .enum(ChartPeriodReference)
-    .optional()
-    .default(ChartPeriodReference.CURRENT),
-});
+const dashboardChartConfigSchema = z
+  .object({
+    type: z.literal(DashboardElementType.CHART),
+    startDate: z.string().optional(),
+    endDate: z.string().optional(),
+    layerId: z.string(),
+    adminUnitLevel: z.number().optional(),
+    adminUnitId: z.number().optional(),
+    chartHeight: z.enum(ChartHeight).optional().default(ChartHeight.TALL),
+    useLatestAvailableDate: z.boolean().optional().default(false),
+    latestPeriod: z
+      .enum(ChartLatestPeriod)
+      .optional()
+      .default(ChartLatestPeriod.MONTH),
+    periodReference: z
+      .enum(ChartPeriodReference)
+      .optional()
+      .default(ChartPeriodReference.CURRENT),
+  })
+  .transform(config =>
+    config.useLatestAvailableDate
+      ? { ...config, startDate: undefined, endDate: undefined }
+      : config,
+  );
 
 const dashboardTextConfigSchema = z.object({
   type: z.literal(DashboardElementType.TEXT),
@@ -60,19 +70,25 @@ const thresholdDefinitionSchema = z.object({
   above: z.number().optional(),
 });
 
-const dashboardTableConfigSchema = z.object({
-  type: z.literal(DashboardElementType.TABLE),
-  startDate: z.string().optional(),
-  useLatestAvailableDate: z.boolean().optional().default(false),
-  hazardLayerId: z.string(),
-  baselineLayerId: z.string(),
-  threshold: thresholdDefinitionSchema.optional(),
-  stat: z.enum(AggregationOperations),
-  maxRows: z.number().optional().default(10),
-  addResultToMap: z.boolean().optional().default(true),
-  sortColumn: z.union([z.string(), z.number()]).optional().default('name'),
-  sortOrder: z.enum(['asc', 'desc']).optional().default('asc'),
-});
+const dashboardTableConfigSchema = z
+  .object({
+    type: z.literal(DashboardElementType.TABLE),
+    startDate: z.string().optional(),
+    useLatestAvailableDate: z.boolean().optional().default(false),
+    hazardLayerId: z.string(),
+    baselineLayerId: z.string(),
+    threshold: thresholdDefinitionSchema.optional(),
+    stat: z.enum(AggregationOperations),
+    maxRows: z.number().optional().default(10),
+    addResultToMap: z.boolean().optional().default(true),
+    sortColumn: z.union([z.string(), z.number()]).optional().default('name'),
+    sortOrder: z.enum(['asc', 'desc']).optional().default('asc'),
+  })
+  .transform(config =>
+    config.useLatestAvailableDate
+      ? { ...config, startDate: undefined }
+      : config,
+  );
 
 const dashboardElementSchema = z.discriminatedUnion('type', [
   dashboardMapConfigSchema,
