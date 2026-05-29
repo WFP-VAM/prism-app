@@ -6,6 +6,7 @@ import {
   BoundaryLayerProps,
   ChartConfig,
   ChartLatestPeriod,
+  ChartPeriodReference,
   DatasetField,
   LayerKey,
   WMSLayerProps,
@@ -47,6 +48,7 @@ export interface UseChartFormOptions {
   initialAdminLevel?: AdminLevelType;
   useLatestAvailableDate?: boolean;
   latestPeriod?: ChartLatestPeriod;
+  periodReference?: ChartPeriodReference;
 }
 
 export interface UseChartFormReturn {
@@ -89,6 +91,7 @@ export const useChartForm = (
     initialAdminLevel,
     useLatestAvailableDate = false,
     latestPeriod = ChartLatestPeriod.MONTH,
+    periodReference = ChartPeriodReference.CURRENT,
   } = options;
 
   const dispatch = useDispatch();
@@ -209,12 +212,13 @@ export const useChartForm = (
       return null;
     }
     const latestDate = possibleDates[possibleDates.length - 1].displayDate;
-    return getLatestPeriodRange(latestDate, latestPeriod);
+    return getLatestPeriodRange(latestDate, latestPeriod, periodReference);
   }, [
     useLatestAvailableDate,
     selectedChartLayer,
     availableDates,
     latestPeriod,
+    periodReference,
   ]);
 
   const effectiveStartDate =

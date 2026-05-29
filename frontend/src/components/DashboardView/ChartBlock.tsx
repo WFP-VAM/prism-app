@@ -26,6 +26,7 @@ import {
   AdminLevelType,
   ChartHeight,
   ChartLatestPeriod,
+  ChartPeriodReference,
   DashboardChartConfig,
   DashboardMode,
 } from 'config/types';
@@ -69,6 +70,7 @@ function ChartBlock({
   adminUnitLevel: initialAdminLevel,
   useLatestAvailableDate: initialUseLatestAvailableDate,
   latestPeriod: initialLatestPeriod,
+  periodReference: initialPeriodReference,
   allowDownload,
   chartHeight: initialChartHeight,
   isOverflowing,
@@ -88,13 +90,18 @@ function ChartBlock({
   const [period, setPeriod] = useState<ChartLatestPeriod>(
     initialLatestPeriod ?? ChartLatestPeriod.MONTH,
   );
+  const [periodReference, setPeriodReference] = useState<ChartPeriodReference>(
+    initialPeriodReference ?? ChartPeriodReference.CURRENT,
+  );
 
   useEffect(() => {
     setUseLatest(initialUseLatestAvailableDate ?? false);
     setPeriod(initialLatestPeriod ?? ChartLatestPeriod.MONTH);
+    setPeriodReference(initialPeriodReference ?? ChartPeriodReference.CURRENT);
   }, [
     initialUseLatestAvailableDate,
     initialLatestPeriod,
+    initialPeriodReference,
     selectedDashboardIndex,
   ]);
 
@@ -105,13 +112,18 @@ function ChartBlock({
     initialAdminLevel: initialAdminLevel as AdminLevelType | undefined,
     useLatestAvailableDate: useLatest,
     latestPeriod: period,
+    periodReference,
   });
 
   const persistBlockConfig = (
     updates: Partial<
       Pick<
         DashboardChartConfig,
-        'useLatestAvailableDate' | 'latestPeriod' | 'startDate' | 'endDate'
+        | 'useLatestAvailableDate'
+        | 'latestPeriod'
+        | 'periodReference'
+        | 'startDate'
+        | 'endDate'
       >
     >,
   ) => {
@@ -129,6 +141,7 @@ function ChartBlock({
     persistBlockConfig({
       useLatestAvailableDate: checked,
       latestPeriod: period,
+      periodReference,
       ...(checked ? { startDate: undefined, endDate: undefined } : {}),
     });
   };
@@ -138,6 +151,16 @@ function ChartBlock({
     persistBlockConfig({
       useLatestAvailableDate: useLatest,
       latestPeriod: newPeriod,
+      periodReference,
+    });
+  };
+
+  const handlePeriodReferenceChange = (newReference: ChartPeriodReference) => {
+    setPeriodReference(newReference);
+    persistBlockConfig({
+      useLatestAvailableDate: useLatest,
+      latestPeriod: period,
+      periodReference: newReference,
     });
   };
 
@@ -223,6 +246,7 @@ function ChartBlock({
     formState.adminLevel,
     useLatest,
     period,
+    periodReference,
   ]);
 
   // Reset form changed flag when chart loads successfully
@@ -448,29 +472,53 @@ function ChartBlock({
             />
           </Box>
           {useLatest ? (
-            <FormControl variant="outlined" className={classes.formControl}>
-              <InputLabel>{t('Period')}</InputLabel>
-              <Select
-                value={period}
-                onChange={e =>
-                  handlePeriodChange(e.target.value as ChartLatestPeriod)
-                }
-                label={t('Period')}
-              >
-                <MenuItem value={ChartLatestPeriod.DEKAD}>
-                  {t('One dekad')}
-                </MenuItem>
-                <MenuItem value={ChartLatestPeriod.MONTH}>
-                  {t('One month')}
-                </MenuItem>
-                <MenuItem value={ChartLatestPeriod.QUARTER}>
-                  {t('One quarter')}
-                </MenuItem>
-                <MenuItem value={ChartLatestPeriod.YEAR}>
-                  {t('One year')}
-                </MenuItem>
-              </Select>
-            </FormControl>
+            <Box className={classes.latestPeriodRow}>
+              <Typography variant="body2" className={classes.latestPeriodLabel}>
+                {t('Show data for:')}
+              </Typography>
+              <FormControl variant="outlined" className={classes.periodControl}>
+                <InputLabel>{t('Reference')}</InputLabel>
+                <Select
+                  value={periodReference}
+                  onChange={e =>
+                    handlePeriodReferenceChange(
+                      e.target.value as ChartPeriodReference,
+                    )
+                  }
+                  label={t('Reference')}
+                >
+                  <MenuItem value={ChartPeriodReference.CURRENT}>
+                    {t('Current (to date)')}
+                  </MenuItem>
+                  <MenuItem value={ChartPeriodReference.PREVIOUS}>
+                    {t('Last complete')}
+                  </MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl variant="outlined" className={classes.periodControl}>
+                <InputLabel>{t('Period')}</InputLabel>
+                <Select
+                  value={period}
+                  onChange={e =>
+                    handlePeriodChange(e.target.value as ChartLatestPeriod)
+                  }
+                  label={t('Period')}
+                >
+                  <MenuItem value={ChartLatestPeriod.DEKAD}>
+                    {t('Dekad')}
+                  </MenuItem>
+                  <MenuItem value={ChartLatestPeriod.MONTH}>
+                    {t('Month')}
+                  </MenuItem>
+                  <MenuItem value={ChartLatestPeriod.QUARTER}>
+                    {t('Quarter')}
+                  </MenuItem>
+                  <MenuItem value={ChartLatestPeriod.YEAR}>
+                    {t('Year')}
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
           ) : (
             <ChartDateRangeSelector
               startDate={formState.startDate}
@@ -617,6 +665,35 @@ const useStyles = makeStyles(theme => ({
   useLatestCheckbox: {
     margin: 0,
     flexShrink: 0,
+  },
+  latestPeriodRow: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'flex-end',
+    gap: theme.spacing(1),
+    marginLeft: 10,
+    width: '90%',
+    marginBottom: 8,
+  },
+  latestPeriodLabel: {
+    fontWeight: 600,
+    color: 'black',
+    paddingBottom: 10,
+    flex: '1 1 100%',
+  },
+  periodControl: {
+    flex: '1 1 140px',
+    minWidth: 140,
+    marginBottom: 0,
+    '& .MuiFormLabel-root': {
+      color: 'black',
+    },
+    '& .MuiOutlinedInput-notchedOutline': {
+      borderColor: '#333333',
+    },
+    '&:hover .MuiOutlinedInput-notchedOutline': {
+      borderColor: '#333333',
+    },
   },
   rerunRow: {
     display: 'flex',

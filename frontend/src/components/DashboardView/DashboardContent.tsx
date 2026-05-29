@@ -397,6 +397,7 @@ function DashboardContent({
               chartHeight={element.chartHeight}
               useLatestAvailableDate={element.useLatestAvailableDate}
               latestPeriod={element.latestPeriod}
+              periodReference={element.periodReference}
               allowDownload={!exportConfig}
               isOverflowing={heightConfig?.overflow === 'auto'}
               recalculationCount={recalculationCount}

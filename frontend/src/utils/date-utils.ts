@@ -1,5 +1,6 @@
 import {
   ChartLatestPeriod,
+  ChartPeriodReference,
   CoverageEndDateTimestamp,
   CoverageStartDateTimestamp,
   DateItem,
@@ -481,10 +482,79 @@ export function findClosestDate(
   return availableDates.reduce(reducerFunc);
 }
 
-export function getLatestPeriodRange(
+function getLastDayOfMonthUTC(year: number, month: number): number {
+  return new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+}
+
+function getPreviousCompletePeriodRange(
   latestDate: number,
   period: ChartLatestPeriod,
 ): { startDate: number; endDate: number } {
+  const d = new Date(latestDate);
+  const y = d.getUTCFullYear();
+  const m = d.getUTCMonth();
+  const day = d.getUTCDate();
+
+  if (period === ChartLatestPeriod.DEKAD) {
+    if (day <= 10) {
+      const prevMonth = m === 0 ? 11 : m - 1;
+      const prevYear = m === 0 ? y - 1 : y;
+      const lastDay = getLastDayOfMonthUTC(prevYear, prevMonth);
+      return {
+        startDate: Date.UTC(prevYear, prevMonth, 21, 12),
+        endDate: Date.UTC(prevYear, prevMonth, lastDay, 12),
+      };
+    }
+    if (day <= 20) {
+      return {
+        startDate: Date.UTC(y, m, 1, 12),
+        endDate: Date.UTC(y, m, 10, 12),
+      };
+    }
+    return {
+      startDate: Date.UTC(y, m, 11, 12),
+      endDate: Date.UTC(y, m, 20, 12),
+    };
+  }
+
+  if (period === ChartLatestPeriod.MONTH) {
+    const prevMonth = m === 0 ? 11 : m - 1;
+    const prevYear = m === 0 ? y - 1 : y;
+    const lastDay = getLastDayOfMonthUTC(prevYear, prevMonth);
+    return {
+      startDate: Date.UTC(prevYear, prevMonth, 1, 12),
+      endDate: Date.UTC(prevYear, prevMonth, lastDay, 12),
+    };
+  }
+
+  if (period === ChartLatestPeriod.QUARTER) {
+    const quarterStartMonth = Math.floor(m / 3) * 3;
+    const prevQuarterStartMonth = quarterStartMonth - 3;
+    const prevYear = prevQuarterStartMonth < 0 ? y - 1 : y;
+    const prevStartMonth = ((prevQuarterStartMonth % 12) + 12) % 12;
+    const endMonth = prevStartMonth + 2;
+    const lastDay = getLastDayOfMonthUTC(prevYear, endMonth);
+    return {
+      startDate: Date.UTC(prevYear, prevStartMonth, 1, 12),
+      endDate: Date.UTC(prevYear, endMonth, lastDay, 12),
+    };
+  }
+
+  return {
+    startDate: Date.UTC(y - 1, 0, 1, 12),
+    endDate: Date.UTC(y - 1, 11, 31, 12),
+  };
+}
+
+export function getLatestPeriodRange(
+  latestDate: number,
+  period: ChartLatestPeriod,
+  reference: ChartPeriodReference = ChartPeriodReference.CURRENT,
+): { startDate: number; endDate: number } {
+  if (reference === ChartPeriodReference.PREVIOUS) {
+    return getPreviousCompletePeriodRange(latestDate, period);
+  }
+
   const d = new Date(latestDate);
   const y = d.getUTCFullYear();
   const m = d.getUTCMonth();

@@ -1,4 +1,4 @@
-import { ChartLatestPeriod } from 'config/types';
+import { ChartLatestPeriod, ChartPeriodReference } from 'config/types';
 
 import {
   binaryFind,
@@ -282,5 +282,69 @@ describe('getLatestPeriodRange', () => {
     );
     expect(startDate).toBe(Date.UTC(2026, 0, 1, 12));
     expect(endDate).toBe(latestMay28);
+  });
+
+  describe('PREVIOUS reference', () => {
+    it('returns the previous complete dekad', () => {
+      const { startDate, endDate } = getLatestPeriodRange(
+        latestMay28,
+        ChartLatestPeriod.DEKAD,
+        ChartPeriodReference.PREVIOUS,
+      );
+      expect(startDate).toBe(Date.UTC(2026, 4, 11, 12));
+      expect(endDate).toBe(Date.UTC(2026, 4, 20, 12));
+    });
+
+    it('returns the previous complete month', () => {
+      const { startDate, endDate } = getLatestPeriodRange(
+        latestMay28,
+        ChartLatestPeriod.MONTH,
+        ChartPeriodReference.PREVIOUS,
+      );
+      expect(startDate).toBe(Date.UTC(2026, 3, 1, 12));
+      expect(endDate).toBe(Date.UTC(2026, 3, 30, 12));
+    });
+
+    it('returns the previous complete quarter', () => {
+      const { startDate, endDate } = getLatestPeriodRange(
+        latestMay28,
+        ChartLatestPeriod.QUARTER,
+        ChartPeriodReference.PREVIOUS,
+      );
+      expect(startDate).toBe(Date.UTC(2026, 0, 1, 12));
+      expect(endDate).toBe(Date.UTC(2026, 2, 31, 12));
+    });
+
+    it('returns the previous complete year', () => {
+      const { startDate, endDate } = getLatestPeriodRange(
+        latestMay28,
+        ChartLatestPeriod.YEAR,
+        ChartPeriodReference.PREVIOUS,
+      );
+      expect(startDate).toBe(Date.UTC(2025, 0, 1, 12));
+      expect(endDate).toBe(Date.UTC(2025, 11, 31, 12));
+    });
+
+    it('returns the previous year when latest date is early January', () => {
+      const latestJan5 = Date.UTC(2026, 0, 5, 12);
+      const { startDate, endDate } = getLatestPeriodRange(
+        latestJan5,
+        ChartLatestPeriod.YEAR,
+        ChartPeriodReference.PREVIOUS,
+      );
+      expect(startDate).toBe(Date.UTC(2025, 0, 1, 12));
+      expect(endDate).toBe(Date.UTC(2025, 11, 31, 12));
+    });
+
+    it('returns the third dekad of the previous month when latest date is in the first dekad', () => {
+      const latestMay5 = Date.UTC(2026, 4, 5, 12);
+      const { startDate, endDate } = getLatestPeriodRange(
+        latestMay5,
+        ChartLatestPeriod.DEKAD,
+        ChartPeriodReference.PREVIOUS,
+      );
+      expect(startDate).toBe(Date.UTC(2026, 3, 21, 12));
+      expect(endDate).toBe(Date.UTC(2026, 3, 30, 12));
+    });
   });
 });

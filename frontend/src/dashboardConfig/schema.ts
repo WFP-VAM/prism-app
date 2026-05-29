@@ -5,6 +5,7 @@ import { z } from 'zod';
 import {
   ChartHeight,
   ChartLatestPeriod,
+  ChartPeriodReference,
   DashboardElementType,
   DashboardMapPosition,
 } from './dashboardEnums';
@@ -42,6 +43,10 @@ const dashboardChartConfigSchema = z.object({
     .enum(ChartLatestPeriod)
     .optional()
     .default(ChartLatestPeriod.MONTH),
+  periodReference: z
+    .enum(ChartPeriodReference)
+    .optional()
+    .default(ChartPeriodReference.CURRENT),
 });
 
 const dashboardTextConfigSchema = z.object({
