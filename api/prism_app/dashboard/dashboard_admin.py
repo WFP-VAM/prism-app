@@ -46,6 +46,8 @@ class DashboardAdminView(ModelView):
         ),
         EnumField(
             "status",
+            label="Status",
+            required=True,
             choices=[(status.value, status.value) for status in DashboardStatus],
         ),
         DashboardConfigJsonFileField(
@@ -83,6 +85,15 @@ class DashboardAdminView(ModelView):
 
     async def validate(self, request: Request, data: dict[str, Any]) -> None:
         errors: dict[str, str] = {}
+
+        status_val = data.get("status")
+        if not status_val:
+            errors["status"] = "Status is required."
+        else:
+            try:
+                data["status"] = DashboardStatus(status_val)
+            except ValueError:
+                errors["status"] = f"Invalid status value '{status_val}'."
 
         cfg = data.get("config")
         if isinstance(cfg, str):
