@@ -52,7 +52,7 @@ const preprocessFeature = feature => {
         };
         const nestedArea = area(nestedPolygonFeature);
         if (nestedArea < MIN_ISLAND_AREA_M2) {
-          console.log('Nested MultiPolygon area too small:', nestedArea);
+          console.warn('Nested MultiPolygon area too small:', nestedArea);
           return null;
         }
         return polygon;
