@@ -72,6 +72,12 @@ def cadence_eligible_dates(
     cadence: MapExportScheduleCadence,
     dekad_interval: int,
 ) -> list[datetime.date]:
+    """Reduce coverage days to one representative date per cadence period.
+
+    ``monthly`` keeps the first day seen in each calendar month; ``quarterly``
+    one per calendar quarter; ``every_n_dekads`` one per dekad (10-day bucket),
+    optionally keeping every ``dekad_interval``-th dekad when ``dekad_interval`` > 1.
+    """
     sorted_days = sorted(set(days))
     if not sorted_days:
         return []
@@ -105,6 +111,7 @@ def latest_eligible_date_for_schedule(
     schedule: MapExportSchedule,
     days_map: dict[str, list[int]],
 ) -> datetime.date | None:
+    """Latest cadence-eligible coverage date for ``schedule.layer_id``, or None."""
     days = [
         _utc_date_from_ms(timestamp_ms)
         for timestamp_ms in collect_times_for_layer_id(days_map, schedule.layer_id)
@@ -169,7 +176,11 @@ def process_active_schedules(
     s3_client: object | None = None,
     timeout_sec: float = _CAPABILITIES_HTTP_TIMEOUT_SEC,
 ) -> tuple[int, int]:
-    """Process active DB schedules. Returns ``(enqueued, skipped)``."""
+    """Enqueue export jobs for active ``map_export_schedules`` rows.
+
+    Fetches WMS layer days when ``days_map`` is omitted. Skips schedules with
+    no new eligible date or when ``dry_run`` is True. Returns ``(enqueued, skipped)``.
+    """
     if days_map is None:
         days_map = fetch_layer_days_map(timeout_sec=timeout_sec)
 
