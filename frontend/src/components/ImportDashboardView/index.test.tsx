@@ -128,17 +128,15 @@ describe('ImportDashboardView', () => {
   test('detects duplicate when imported JSON has different key ordering', () => {
     store.dispatch(setDashboards([existingDashboard]));
     // Same content as minimalValidDashboard but with keys in a different order
-    const reorderedDashboard = [
-      {
-        firstColumn: [
-          {
-            content: 'Hello',
-            type: DashboardElementType.TEXT,
-          },
-        ],
-        title: 'Imported Dashboard',
-      },
-    ];
+    const reorderedDashboard = {
+      firstColumn: [
+        {
+          content: 'Hello',
+          type: DashboardElementType.TEXT,
+        },
+      ],
+      title: 'Imported Dashboard',
+    };
     fileReaderText = JSON.stringify(reorderedDashboard);
     const { container } = renderImportView();
 
