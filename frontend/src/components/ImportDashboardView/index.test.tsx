@@ -125,6 +125,34 @@ describe('ImportDashboardView', () => {
     expect(container).toMatchSnapshot();
   });
 
+  test('detects duplicate when imported JSON has different key ordering', () => {
+    store.dispatch(setDashboards([existingDashboard]));
+    // Same content as minimalValidDashboard but with keys in a different order
+    const reorderedDashboard = [
+      {
+        firstColumn: [
+          {
+            content: 'Hello',
+            type: DashboardElementType.TEXT,
+          },
+        ],
+        title: 'Imported Dashboard',
+      },
+    ];
+    fileReaderText = JSON.stringify(reorderedDashboard);
+    const { container } = renderImportView();
+
+    uploadJsonFile(container);
+
+    act(() => {
+      jest.advanceTimersByTime(500);
+    });
+
+    expect(screen.getByText('Dashboard already exists')).toBeInTheDocument();
+    expect(dashboardsListSelector(store.getState())).toHaveLength(1);
+    expect(container).toMatchSnapshot();
+  });
+
   test('shows parse error for invalid JSON', () => {
     fileReaderText = '{ not valid json';
     const { container } = renderImportView();
