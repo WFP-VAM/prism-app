@@ -3,7 +3,6 @@ import { AggregationOperations } from 'config/aggregationOperations';
 import {
   ChartHeight,
   ChartLatestPeriod,
-  ChartPeriodReference,
   DashboardElements,
   DashboardElementType,
   DashboardMapPosition,
@@ -34,7 +33,6 @@ export const defaultElementForType = (
         chartHeight: ChartHeight.TALL,
         useLatestAvailableDate: false,
         latestPeriod: ChartLatestPeriod.MONTH,
-        periodReference: ChartPeriodReference.CURRENT,
       };
     case DashboardElementType.TABLE:
       return {

@@ -1,4 +1,4 @@
-import { ChartLatestPeriod, ChartPeriodReference } from 'config/types';
+import { ChartLatestPeriod } from 'config/types';
 
 import {
   binaryFind,
@@ -248,73 +248,40 @@ describe('can find closest date', () => {
 describe('getLatestPeriodRange', () => {
   const latestMay28 = Date.UTC(2026, 4, 28, 12);
 
-  it('returns month bucket starting on the 1st', () => {
+  it('returns a rolling month ending at the latest date', () => {
     const { startDate, endDate } = getLatestPeriodRange(
       latestMay28,
       ChartLatestPeriod.MONTH,
     );
-    expect(startDate).toBe(Date.UTC(2026, 4, 1, 12));
+    expect(startDate).toBe(Date.UTC(2026, 3, 28, 12));
     expect(endDate).toBe(latestMay28);
   });
 
-  it('returns quarter bucket starting on the first month of the quarter', () => {
+  it('returns a rolling quarter ending at the latest date', () => {
     const { startDate, endDate } = getLatestPeriodRange(
       latestMay28,
       ChartLatestPeriod.QUARTER,
     );
-    expect(startDate).toBe(Date.UTC(2026, 3, 1, 12));
+    expect(startDate).toBe(Date.UTC(2026, 1, 28, 12));
     expect(endDate).toBe(latestMay28);
   });
 
-  it('returns year bucket starting on January 1', () => {
+  it('returns a rolling year ending at the latest date', () => {
     const { startDate, endDate } = getLatestPeriodRange(
       latestMay28,
       ChartLatestPeriod.YEAR,
     );
-    expect(startDate).toBe(Date.UTC(2026, 0, 1, 12));
+    expect(startDate).toBe(Date.UTC(2025, 4, 28, 12));
     expect(endDate).toBe(latestMay28);
   });
 
-  describe('PREVIOUS reference', () => {
-    it('returns the previous complete month', () => {
-      const { startDate, endDate } = getLatestPeriodRange(
-        latestMay28,
-        ChartLatestPeriod.MONTH,
-        ChartPeriodReference.PREVIOUS,
-      );
-      expect(startDate).toBe(Date.UTC(2026, 3, 1, 12));
-      expect(endDate).toBe(Date.UTC(2026, 3, 30, 12));
-    });
-
-    it('returns the previous complete quarter', () => {
-      const { startDate, endDate } = getLatestPeriodRange(
-        latestMay28,
-        ChartLatestPeriod.QUARTER,
-        ChartPeriodReference.PREVIOUS,
-      );
-      expect(startDate).toBe(Date.UTC(2026, 0, 1, 12));
-      expect(endDate).toBe(Date.UTC(2026, 2, 31, 12));
-    });
-
-    it('returns the previous complete year', () => {
-      const { startDate, endDate } = getLatestPeriodRange(
-        latestMay28,
-        ChartLatestPeriod.YEAR,
-        ChartPeriodReference.PREVIOUS,
-      );
-      expect(startDate).toBe(Date.UTC(2025, 0, 1, 12));
-      expect(endDate).toBe(Date.UTC(2025, 11, 31, 12));
-    });
-
-    it('returns the previous year when latest date is early January', () => {
-      const latestJan5 = Date.UTC(2026, 0, 5, 12);
-      const { startDate, endDate } = getLatestPeriodRange(
-        latestJan5,
-        ChartLatestPeriod.YEAR,
-        ChartPeriodReference.PREVIOUS,
-      );
-      expect(startDate).toBe(Date.UTC(2025, 0, 1, 12));
-      expect(endDate).toBe(Date.UTC(2025, 11, 31, 12));
-    });
+  it('handles month rollover when rolling back one month', () => {
+    const latestMar31 = Date.UTC(2026, 2, 31, 12);
+    const { startDate, endDate } = getLatestPeriodRange(
+      latestMar31,
+      ChartLatestPeriod.MONTH,
+    );
+    expect(startDate).toBe(Date.UTC(2026, 2, 3, 12));
+    expect(endDate).toBe(latestMar31);
   });
 });

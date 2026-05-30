@@ -26,8 +26,3 @@ export enum ChartLatestPeriod {
   QUARTER = 'quarter',
   YEAR = 'year',
 }
-
-export enum ChartPeriodReference {
-  CURRENT = 'current',
-  PREVIOUS = 'previous',
-}

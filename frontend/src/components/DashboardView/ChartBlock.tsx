@@ -24,7 +24,6 @@ import {
   AdminLevelType,
   ChartHeight,
   ChartLatestPeriod,
-  ChartPeriodReference,
   DashboardChartConfig,
   DashboardMode,
 } from 'config/types';
@@ -68,7 +67,6 @@ function ChartBlock({
   adminUnitLevel: initialAdminLevel,
   useLatestAvailableDate: initialUseLatestAvailableDate,
   latestPeriod: initialLatestPeriod,
-  periodReference: initialPeriodReference,
   allowDownload,
   chartHeight: initialChartHeight,
   isOverflowing,
@@ -88,18 +86,13 @@ function ChartBlock({
   const [period, setPeriod] = useState<ChartLatestPeriod>(
     initialLatestPeriod ?? ChartLatestPeriod.MONTH,
   );
-  const [periodReference, setPeriodReference] = useState<ChartPeriodReference>(
-    initialPeriodReference ?? ChartPeriodReference.CURRENT,
-  );
 
   useEffect(() => {
     setUseLatest(initialUseLatestAvailableDate ?? false);
     setPeriod(initialLatestPeriod ?? ChartLatestPeriod.MONTH);
-    setPeriodReference(initialPeriodReference ?? ChartPeriodReference.CURRENT);
   }, [
     initialUseLatestAvailableDate,
     initialLatestPeriod,
-    initialPeriodReference,
     selectedDashboardIndex,
   ]);
 
@@ -110,18 +103,13 @@ function ChartBlock({
     initialAdminLevel: initialAdminLevel as AdminLevelType | undefined,
     useLatestAvailableDate: useLatest,
     latestPeriod: period,
-    periodReference,
   });
 
   const persistBlockConfig = (
     updates: Partial<
       Pick<
         DashboardChartConfig,
-        | 'useLatestAvailableDate'
-        | 'latestPeriod'
-        | 'periodReference'
-        | 'startDate'
-        | 'endDate'
+        'useLatestAvailableDate' | 'latestPeriod' | 'startDate' | 'endDate'
       >
     >,
   ) => {
@@ -139,16 +127,6 @@ function ChartBlock({
     persistBlockConfig({
       useLatestAvailableDate: useLatest,
       latestPeriod: newPeriod,
-      periodReference,
-    });
-  };
-
-  const handlePeriodReferenceChange = (newReference: ChartPeriodReference) => {
-    setPeriodReference(newReference);
-    persistBlockConfig({
-      useLatestAvailableDate: useLatest,
-      latestPeriod: period,
-      periodReference: newReference,
     });
   };
 
@@ -234,7 +212,6 @@ function ChartBlock({
     formState.adminLevel,
     useLatest,
     period,
-    periodReference,
   ]);
 
   // Reset form changed flag when chart loads successfully
@@ -448,25 +425,6 @@ function ChartBlock({
           </Typography>
           {useLatest ? (
             <Box className={classes.latestPeriodRow}>
-              <FormControl variant="outlined" className={classes.periodControl}>
-                <InputLabel>{t('Reference')}</InputLabel>
-                <Select
-                  value={periodReference}
-                  onChange={e =>
-                    handlePeriodReferenceChange(
-                      e.target.value as ChartPeriodReference,
-                    )
-                  }
-                  label={t('Reference')}
-                >
-                  <MenuItem value={ChartPeriodReference.CURRENT}>
-                    {t('Current (to date)')}
-                  </MenuItem>
-                  <MenuItem value={ChartPeriodReference.PREVIOUS}>
-                    {t('Last complete')}
-                  </MenuItem>
-                </Select>
-              </FormControl>
               <FormControl variant="outlined" className={classes.periodControl}>
                 <InputLabel>{t('Period')}</InputLabel>
                 <Select
