@@ -476,9 +476,6 @@ function ChartBlock({
                   }
                   label={t('Period')}
                 >
-                  <MenuItem value={ChartLatestPeriod.DEKAD}>
-                    {t('Dekad')}
-                  </MenuItem>
                   <MenuItem value={ChartLatestPeriod.MONTH}>
                     {t('Month')}
                   </MenuItem>

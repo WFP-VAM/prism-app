@@ -493,29 +493,6 @@ function getPreviousCompletePeriodRange(
   const d = new Date(latestDate);
   const y = d.getUTCFullYear();
   const m = d.getUTCMonth();
-  const day = d.getUTCDate();
-
-  if (period === ChartLatestPeriod.DEKAD) {
-    if (day <= 10) {
-      const prevMonth = m === 0 ? 11 : m - 1;
-      const prevYear = m === 0 ? y - 1 : y;
-      const lastDay = getLastDayOfMonthUTC(prevYear, prevMonth);
-      return {
-        startDate: Date.UTC(prevYear, prevMonth, 21, 12),
-        endDate: Date.UTC(prevYear, prevMonth, lastDay, 12),
-      };
-    }
-    if (day <= 20) {
-      return {
-        startDate: Date.UTC(y, m, 1, 12),
-        endDate: Date.UTC(y, m, 10, 12),
-      };
-    }
-    return {
-      startDate: Date.UTC(y, m, 11, 12),
-      endDate: Date.UTC(y, m, 20, 12),
-    };
-  }
 
   if (period === ChartLatestPeriod.MONTH) {
     const prevMonth = m === 0 ? 11 : m - 1;
@@ -558,12 +535,8 @@ export function getLatestPeriodRange(
   const d = new Date(latestDate);
   const y = d.getUTCFullYear();
   const m = d.getUTCMonth();
-  const day = d.getUTCDate();
   let start: number;
-  if (period === ChartLatestPeriod.DEKAD) {
-    const startDay = day <= 10 ? 1 : day <= 20 ? 11 : 21;
-    start = Date.UTC(y, m, startDay, 12);
-  } else if (period === ChartLatestPeriod.QUARTER) {
+  if (period === ChartLatestPeriod.QUARTER) {
     start = Date.UTC(y, Math.floor(m / 3) * 3, 1, 12);
   } else if (period === ChartLatestPeriod.YEAR) {
     start = Date.UTC(y, 0, 1, 12);

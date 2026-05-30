@@ -158,7 +158,7 @@ describe('dashboardStateSlice', () => {
         elementIndex: 0,
         updates: {
           useLatestAvailableDate: true,
-          latestPeriod: ChartLatestPeriod.DEKAD,
+          latestPeriod: ChartLatestPeriod.QUARTER,
           startDate: undefined,
           endDate: undefined,
         },
@@ -169,7 +169,7 @@ describe('dashboardStateSlice', () => {
     expect(chart?.type).toBe(DashboardElementType.CHART);
     if (chart?.type === DashboardElementType.CHART) {
       expect(chart.useLatestAvailableDate).toBe(true);
-      expect(chart.latestPeriod).toBe(ChartLatestPeriod.DEKAD);
+      expect(chart.latestPeriod).toBe(ChartLatestPeriod.QUARTER);
       expect(chart.startDate).toBeUndefined();
       expect(chart.endDate).toBeUndefined();
     }

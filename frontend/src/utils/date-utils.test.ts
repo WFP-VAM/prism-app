@@ -248,15 +248,6 @@ describe('can find closest date', () => {
 describe('getLatestPeriodRange', () => {
   const latestMay28 = Date.UTC(2026, 4, 28, 12);
 
-  it('returns dekad bucket starting on the 21st for day 28', () => {
-    const { startDate, endDate } = getLatestPeriodRange(
-      latestMay28,
-      ChartLatestPeriod.DEKAD,
-    );
-    expect(startDate).toBe(Date.UTC(2026, 4, 21, 12));
-    expect(endDate).toBe(latestMay28);
-  });
-
   it('returns month bucket starting on the 1st', () => {
     const { startDate, endDate } = getLatestPeriodRange(
       latestMay28,
@@ -285,16 +276,6 @@ describe('getLatestPeriodRange', () => {
   });
 
   describe('PREVIOUS reference', () => {
-    it('returns the previous complete dekad', () => {
-      const { startDate, endDate } = getLatestPeriodRange(
-        latestMay28,
-        ChartLatestPeriod.DEKAD,
-        ChartPeriodReference.PREVIOUS,
-      );
-      expect(startDate).toBe(Date.UTC(2026, 4, 11, 12));
-      expect(endDate).toBe(Date.UTC(2026, 4, 20, 12));
-    });
-
     it('returns the previous complete month', () => {
       const { startDate, endDate } = getLatestPeriodRange(
         latestMay28,
@@ -334,17 +315,6 @@ describe('getLatestPeriodRange', () => {
       );
       expect(startDate).toBe(Date.UTC(2025, 0, 1, 12));
       expect(endDate).toBe(Date.UTC(2025, 11, 31, 12));
-    });
-
-    it('returns the third dekad of the previous month when latest date is in the first dekad', () => {
-      const latestMay5 = Date.UTC(2026, 4, 5, 12);
-      const { startDate, endDate } = getLatestPeriodRange(
-        latestMay5,
-        ChartLatestPeriod.DEKAD,
-        ChartPeriodReference.PREVIOUS,
-      );
-      expect(startDate).toBe(Date.UTC(2026, 3, 21, 12));
-      expect(endDate).toBe(Date.UTC(2026, 3, 30, 12));
     });
   });
 });

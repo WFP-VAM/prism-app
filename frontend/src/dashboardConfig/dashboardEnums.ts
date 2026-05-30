@@ -22,7 +22,6 @@ export enum ChartHeight {
 }
 
 export enum ChartLatestPeriod {
-  DEKAD = 'dekad',
   MONTH = 'month',
   QUARTER = 'quarter',
   YEAR = 'year',
