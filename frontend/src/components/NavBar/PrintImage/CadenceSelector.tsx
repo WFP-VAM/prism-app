@@ -155,9 +155,7 @@ export default function CadenceSelector() {
               if (Number.isNaN(val)) {
                 return;
               }
-              setDekadInterval(
-                Math.min(MAX_DEKAD_INTERVAL, Math.max(1, val)),
-              );
+              setDekadInterval(Math.min(MAX_DEKAD_INTERVAL, Math.max(1, val)));
             }}
           />
         )}
