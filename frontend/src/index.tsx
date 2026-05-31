@@ -15,7 +15,7 @@ import * as serviceWorker from './serviceWorker';
 
 posthog.init(process.env.REACT_APP_POSTHOG_TOKEN as string, {
   cookieless_mode: 'always',
-  api_host: process.env.REACT_APP_POSTHOG_HOST,
+  api_host: 'https://eu.i.posthog.com',
   defaults: '2026-01-30',
 });
 
