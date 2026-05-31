@@ -93,14 +93,19 @@ function ChartLocationSelector({
       // Clear selection - go back to country level
       onAdmin1Change(
         '' as AdminCodeString,
-        getProperties(boundaryLayerData),
+        getProperties(boundaryLayerData, boundaryLayer),
         0,
       );
       return;
     }
 
     const admin1Id = value as AdminCodeString;
-    const properties = getProperties(boundaryLayerData, admin1Id, 1);
+    const properties = getProperties(
+      boundaryLayerData,
+      boundaryLayer,
+      admin1Id,
+      1,
+    );
     onAdmin1Change(admin1Id, properties, 1);
   };
 
@@ -109,13 +114,23 @@ function ChartLocationSelector({
 
     if (!value) {
       // Clear Admin 2 selection - go back to Admin 1 level
-      const properties = getProperties(boundaryLayerData, admin1Key, 1);
+      const properties = getProperties(
+        boundaryLayerData,
+        boundaryLayer,
+        admin1Key,
+        1,
+      );
       onAdmin2Change('' as AdminCodeString, properties, 1);
       return;
     }
 
     const admin2Id = value as AdminCodeString;
-    const properties = getProperties(boundaryLayerData, admin2Id, 2);
+    const properties = getProperties(
+      boundaryLayerData,
+      boundaryLayer,
+      admin2Id,
+      2,
+    );
     onAdmin2Change(admin2Id, properties, 2);
   };
 

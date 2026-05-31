@@ -132,7 +132,7 @@ const LocationSelector = memo(
       const admin0Id = event.target.value;
 
       if (data) {
-        setAdminProperties(getProperties(data, admin0Id, 0));
+        setAdminProperties(getProperties(data, boundaryLayer, admin0Id, 0));
       }
       setAdmin0Key(event.target.value);
       setAdmin1Key('');
@@ -151,7 +151,7 @@ const LocationSelector = memo(
 
       const admin1Id = event.target.value;
       if (data) {
-        setAdminProperties(getProperties(data, admin1Id, 1));
+        setAdminProperties(getProperties(data, boundaryLayer, admin1Id, 1));
       }
       setAdmin1Key(event.target.value);
       // update the parent component state
@@ -169,7 +169,7 @@ const LocationSelector = memo(
       }
       const admin2Id = event.target.value;
       if (data) {
-        setAdminProperties(getProperties(data, admin2Id, 2));
+        setAdminProperties(getProperties(data, boundaryLayer, admin2Id, 2));
       }
       setAdmin2Key(event.target.value);
 

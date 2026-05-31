@@ -13,11 +13,7 @@ import {
   LegendDefinitionItem,
   WMSLayerProps,
 } from 'config/types';
-import {
-  getBoundaryLayersByAdminLevel,
-  isAnticipatoryActionLayer,
-  LayerDefinitions,
-} from 'config/utils';
+import { isAnticipatoryActionLayer, LayerDefinitions } from 'config/utils';
 import { TableRow } from 'context/analysisResultStateSlice';
 import { LayerData } from 'context/layers/layer-data';
 import { addNotification } from 'context/notificationStateSlice';
@@ -342,16 +338,16 @@ export const getExposureAnalysisTableData = (
  * Gets properties from layer data based on ID and admin level.
  *
  * @param layerData - The boundary layer data
+ * @param boundaryLayer - The boundary layer configuration to use for lookup
  * @param id - Optional admin code string identifier
  * @param adminLevel - Optional administrative level type
  * @returns GeoJSON properties for the matching feature
  */
 const { multiCountry } = appConfig;
-const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
-const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
 export const getProperties = (
   layerData: LayerData<BoundaryLayerProps>['data'],
+  boundaryLayer: BoundaryLayerProps,
   id?: AdminCodeString,
   adminLevel?: AdminLevelType,
 ): GeoJsonProperties => {
