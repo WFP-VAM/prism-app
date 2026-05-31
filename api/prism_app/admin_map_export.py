@@ -129,9 +129,11 @@ def _enrich_schedules_for_admin(
         item._admin_last_executed_at = last_executed.get(item.id)  # noqa: SLF001
         if item.export_url and item.country:
             try:
-                item._admin_output_directory = public_maps_folder_prefix(  # noqa: SLF001
-                    item.export_url,
-                    country=item.country,
+                item._admin_output_directory = (
+                    public_maps_folder_prefix(  # noqa: SLF001
+                        item.export_url,
+                        country=item.country,
+                    )
                 )
             except ValueError:
                 item._admin_output_directory = None  # noqa: SLF001

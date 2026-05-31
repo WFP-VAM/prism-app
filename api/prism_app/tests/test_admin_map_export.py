@@ -12,10 +12,10 @@ from prism_app.admin_map_export import (
     _normalize_dekad_interval,
     _validate_dekad_interval,
 )
-from prism_app.database.map_export_schedule_model import MAX_DEKAD_INTERVAL
 from prism_app.auth.permission_codes import ADMIN_ACCESS
 from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.database.map_export_schedule_model import (
+    MAX_DEKAD_INTERVAL,
     MapExportSchedule,
     MapExportScheduleCadence,
 )
