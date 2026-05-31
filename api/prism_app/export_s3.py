@@ -151,6 +151,21 @@ def s3_key_for_map_export(
     return f"{op}/{base}" if op else base
 
 
+def public_maps_folder_prefix(
+    export_url: str,
+    *,
+    country: str,
+    object_prefix: str = "",
+) -> str:
+    """Directory prefix for scheduled public maps (same layout as ``s3_key_for_map_export``)."""
+    from prism_app.utils import public_map_upload_path_segments
+
+    c_seg, l_seg = public_map_upload_path_segments(export_url, country=country)
+    base = f"public_maps/{c_seg}/{l_seg}/"
+    op = normalize_export_map_s3_object_prefix(object_prefix)
+    return f"{op}/{base}" if op else base
+
+
 def put_map_export_bytes(
     bucket: str,
     job_id: str,

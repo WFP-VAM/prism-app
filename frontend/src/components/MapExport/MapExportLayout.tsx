@@ -91,10 +91,7 @@ const componentTypes: LayerComponentsMap<LayerType> = {
 
 /** Playwright (/export, signalExportReady): min consecutive "fully loaded" samples before PRISM_READY. */
 const MAP_EXPORT_STABLE_LOADED_TICKS = 1;
-/**
- * Poll when map idle is slow (ms). 0 uses the shortest practical interval (browser clamps ~4ms).
- * Print preview (no signalExportReady) keeps 500ms / 3 ticks.
- */
+/** Poll when map idle is slow (ms). 0 uses the shortest practical interval (browser clamps ~4ms). */
 const MAP_EXPORT_LOAD_POLL_MS = 0;
 
 function MapExportLayout({
@@ -326,17 +323,15 @@ function MapExportLayout({
     // Track tile loading using idle event and areTilesLoaded() for robust detection
     const shouldTrackTileLoading = signalExportReady || onMapLoad;
 
-    if (shouldTrackTileLoading && map) {
+    // Print preview passes onMapLoad only; /export uses signalExportReady + tile wait.
+    if (shouldTrackTileLoading && map && !signalExportReady && onMapLoad) {
+      onMapLoad(e);
+      return;
+    }
+
+    if (shouldTrackTileLoading && map && signalExportReady) {
       let hasSignaledReady = false;
       let stableLoadedTicks = 0;
-      // Idle + poll share this counter: several consecutive observations that the map is
-      // fully loaded (not a single lucky areTilesLoaded() true—avoids empty WMS/raster frames).
-      const STABLE_LOADED_TICKS = signalExportReady
-        ? MAP_EXPORT_STABLE_LOADED_TICKS
-        : 3;
-      const loadPollMs = signalExportReady ? MAP_EXPORT_LOAD_POLL_MS : 500;
-      const EXPORT_READY_SAFETY_MS = signalExportReady ? 60_000 : 25_000;
-
       let pollInterval: ReturnType<typeof setInterval> | undefined;
 
       const signalReady = () => {
@@ -350,19 +345,10 @@ function MapExportLayout({
           clearInterval(pollInterval);
         }
 
-        const finishReady = () => {
-          if (signalExportReady) {
-            // eslint-disable-next-line no-console
-            console.info('All tiles loaded, setting PRISM_READY to true');
-            (window as any).PRISM_READY = true;
-          }
-
-          if (onMapLoad) {
-            onMapLoad(e);
-          }
-        };
-
-        finishReady();
+        // eslint-disable-next-line no-console
+        console.info('All tiles loaded, setting PRISM_READY to true');
+        (window as any).PRISM_READY = true;
+        onMapLoad?.(e);
       };
 
       const checkFullyLoaded = (): boolean => {
@@ -380,7 +366,7 @@ function MapExportLayout({
         }
         if (checkFullyLoaded()) {
           stableLoadedTicks += 1;
-          if (stableLoadedTicks >= STABLE_LOADED_TICKS) {
+          if (stableLoadedTicks >= MAP_EXPORT_STABLE_LOADED_TICKS) {
             signalReady();
           }
         } else {
@@ -392,15 +378,12 @@ function MapExportLayout({
         bumpStableLoaded();
       };
 
-      // Listen for idle events - fires when map finishes rendering
       map.on('idle', idleHandler);
 
-      // Poll in case idle is slow to fire but the map is already fully loaded
       pollInterval = setInterval(() => {
         bumpStableLoaded();
-      }, loadPollMs);
+      }, MAP_EXPORT_LOAD_POLL_MS);
 
-      // Safety timeout to prevent infinite waiting
       setTimeout(() => {
         if (pollInterval !== undefined) {
           clearInterval(pollInterval);
@@ -409,7 +392,7 @@ function MapExportLayout({
           console.warn('Safety timeout reached, forcing PRISM_READY');
           signalReady();
         }
-      }, EXPORT_READY_SAFETY_MS);
+      }, 60_000);
     } else if (onMapLoad) {
       onMapLoad(e);
     }

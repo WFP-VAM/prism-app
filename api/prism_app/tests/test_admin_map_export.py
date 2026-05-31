@@ -10,7 +10,9 @@ from prism_app.admin_map_export import (
     _apply_job_owner_filter,
     _apply_schedule_owner_filter,
     _normalize_dekad_interval,
+    _validate_dekad_interval,
 )
+from prism_app.database.map_export_schedule_model import MAX_DEKAD_INTERVAL
 from prism_app.auth.permission_codes import ADMIN_ACCESS
 from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.database.map_export_schedule_model import (
@@ -66,6 +68,32 @@ def test_schedule_view_allows_delete_for_admin() -> None:
 def test_normalize_dekad_interval_only_for_every_n_dekads() -> None:
     assert _normalize_dekad_interval(MapExportScheduleCadence.monthly, 3) == 1
     assert _normalize_dekad_interval(MapExportScheduleCadence.every_n_dekads, 3) == 3
+    assert _normalize_dekad_interval(MapExportScheduleCadence.every_n_dekads, 99) == (
+        MAX_DEKAD_INTERVAL
+    )
+
+
+def test_validate_dekad_interval_bounds() -> None:
+    assert _validate_dekad_interval(MapExportScheduleCadence.monthly, 99) is None
+    assert (
+        _validate_dekad_interval(MapExportScheduleCadence.every_n_dekads, 0) is not None
+    )
+    assert (
+        _validate_dekad_interval(
+            MapExportScheduleCadence.every_n_dekads,
+            MAX_DEKAD_INTERVAL + 1,
+        )
+        is not None
+    )
+
+
+def test_schedule_search_query_is_case_insensitive() -> None:
+    view = MapExportScheduleView(MapExportSchedule)
+    request = _request(admin_access=True)
+    clause = view.get_search_query(request, "Mozambique")
+    compiled = str(clause.compile(compile_kwargs={"literal_binds": True}))
+    assert "lower" in compiled.lower()
+    assert "mozambique" in compiled.lower()
 
 
 def test_schedule_view_can_create_only_with_clone_from() -> None:

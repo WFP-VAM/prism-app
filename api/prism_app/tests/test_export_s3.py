@@ -8,6 +8,7 @@ from prism_app.export_s3 import (
     normalize_export_map_s3_object_prefix,
     parse_export_map_s3_bucket_env,
     parse_s3_uri,
+    public_maps_folder_prefix,
     put_map_export_bytes_local,
     s3_key_for_map_export,
     slug_s3_path_segment,
@@ -45,6 +46,14 @@ def test_s3_key_for_map_export_public_maps():
             public_maps_segments=("mozambique", "precip_blended_dekad"),
         )
         == "public_maps/mozambique/precip_blended_dekad/jid.pdf"
+    )
+    export_url = (
+        "https://prism.example/export?date={date}"
+        "&hazardLayerIds=precip_blended_dekad"
+    )
+    assert (
+        public_maps_folder_prefix(export_url, country="Mozambique")
+        == "public_maps/mozambique/precip_blended_dekad/"
     )
     assert (
         s3_key_for_map_export(

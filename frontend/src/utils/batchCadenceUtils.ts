@@ -2,6 +2,9 @@ import { CoverageWindow, DatesPropagation } from 'config/types';
 
 export type BatchCadence = 'monthly' | 'quarterly' | 'every-n-dekads';
 
+/** Keep in sync with ``MAX_DEKAD_INTERVAL`` in ``map_export_schedule_model.py``. */
+export const MAX_DEKAD_INTERVAL = 3;
+
 function getMonthKey(timestamp: number): string {
   const d = new Date(timestamp);
   return `${d.getUTCFullYear()}-${d.getUTCMonth()}`;
