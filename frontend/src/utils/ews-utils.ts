@@ -8,9 +8,7 @@ import { FloodChartConfigObject } from 'context/tableStateSlice';
 import GeoJSON, { FeatureCollection, Point } from 'geojson';
 import { Dispatch } from 'redux';
 
-import { getFormattedDate } from './date-utils';
 import { fetchWithTimeout } from './fetch-with-timeout';
-import { DateFormat } from './name-utils';
 
 export const EWSTriggersConfig: FloodChartConfigObject = {
   normal: {
@@ -38,9 +36,11 @@ enum EWSLevelStatus {
   SEVEREWARNING = 3,
 }
 
-export type EWSSensorData = {
-  location_id: number;
-  value: [string, number];
+// A single water-height reading from the EWS-1294 `water-height` endpoint.
+// `timestamp` is seconds since the epoch and `water_height` is in millimetres.
+export type EWSWaterHeightData = {
+  timestamp: number;
+  water_height: number;
 };
 
 type EWSTriggerLevels = {
@@ -79,7 +79,7 @@ const fetchEWSLocations = async (
   baseUrl: string,
   dispatch: Dispatch,
 ): Promise<FeatureCollection> => {
-  const url = `${baseUrl}/location.geojson?type=River`;
+  const url = `${baseUrl}/sensor-locations`;
   try {
     const resp = await fetchWithTimeout(
       url,
@@ -96,33 +96,28 @@ const fetchEWSLocations = async (
   }
 };
 
-export const fetchEWSDataPointsByLocation = async (
+// Fetch the water-height time series for a single sensor over a date window.
+// The EWS-1294 `water-height` endpoint requires a numeric `location_id` and
+// ISO-8601 `start_date`/`end_date`; it returns an array of readings, or an
+// error object for invalid requests (guarded by the Array.isArray check).
+export const fetchEWSWaterHeight = async (
   baseUrl: string,
-  date: number,
+  locationId: number,
+  startDate: Date,
+  endDate: Date,
   dispatch: Dispatch,
-  externalId?: string,
-): Promise<EWSSensorData[]> => {
-  const endDate = new Date(date);
-  endDate.setUTCHours(23, 59, 59, 999);
-  // FIXME: pass start/end here? why the 24h delta?
-  const startDate = new Date(endDate.getTime() - oneDayInMs);
-  const format = DateFormat.ISO;
-
-  const url = `${baseUrl}/sensors/sensor_event?start=${getFormattedDate(
-    startDate,
-    format,
-  )}&end=${getFormattedDate(endDate, format)}`;
-
-  const resource = externalId ? `${url}&external_id=${externalId}` : url;
+): Promise<EWSWaterHeightData[]> => {
+  const url = `${baseUrl}/water-height?location_id=${locationId}&start_date=${startDate.toISOString()}&end_date=${endDate.toISOString()}`;
 
   try {
     const resp = await fetchWithTimeout(
-      resource,
+      url,
       dispatch,
       {},
-      `Request failed for fetching EWS data points by location at ${resource}`,
+      `Request failed for fetching EWS water height at ${url}`,
     );
-    return await resp.json();
+    const data = await resp.json();
+    return Array.isArray(data) ? data : [];
   } catch (_error) {
     return [];
   }
@@ -147,30 +142,48 @@ const getLevelStatus = (
   return EWSLevelStatus.SEVEREWARNING;
 };
 
+// Statuses for which the provider does not record water-height data, so we
+// skip the per-sensor time-series request for them (matching ews1294.com).
+const INACTIVE_EWS_STATUSES = ['inactive', 'planned'];
+
 export const fetchEWSData = async (
   baseUrl: string,
   date: number,
   dispatch: Dispatch,
 ): Promise<PointLayerData> => {
-  const [locations, values] = await Promise.all([
-    fetchEWSLocations(baseUrl, dispatch),
-    fetchEWSDataPointsByLocation(baseUrl, date, dispatch),
-  ]);
+  const locations = await fetchEWSLocations(baseUrl, dispatch);
 
-  const processedFeatures: PointData[] = locations.features.reduce(
-    (pointDataArray, feature) => {
+  const endDate = new Date(date);
+  endDate.setUTCHours(23, 59, 59, 999);
+  const startDate = new Date(endDate.getTime() - oneDayInMs);
+
+  const features = locations.features.filter(
+    feature =>
+      feature.properties &&
+      !INACTIVE_EWS_STATUSES.includes(feature.properties.status),
+  );
+
+  // The water-height endpoint is per-location, so fetch each sensor's readings
+  // for the date window in parallel and compute the daily mean/min/max.
+  const processedFeatures = await Promise.all(
+    features.map(async (feature): Promise<PointData | null> => {
       const { properties, geometry } = feature;
 
       if (!properties) {
-        return pointDataArray;
+        return null;
       }
 
-      const locationValues: number[] = values
-        .filter(v => v.location_id === properties.id)
-        .map(v => v.value[1]);
+      const values = await fetchEWSWaterHeight(
+        baseUrl,
+        properties.id,
+        startDate,
+        endDate,
+        dispatch,
+      );
+      const locationValues = values.map(v => v.water_height);
 
       if (locationValues.length === 0) {
-        return pointDataArray;
+        return null;
       }
 
       const mean =
@@ -181,7 +194,7 @@ export const fetchEWSData = async (
 
       const { coordinates } = geometry as Point;
 
-      const pointData: PointData = {
+      return {
         lon: coordinates[0],
         lat: coordinates[1],
         date,
@@ -194,32 +207,34 @@ export const fetchEWSData = async (
           properties.trigger_levels as EWSTriggerLevels,
         ),
       };
-
-      return [...pointDataArray, pointData];
-    },
-    [] as PointData[],
+    }),
   );
 
-  return GeoJSON.parse(processedFeatures, {
-    Point: ['lat', 'lon'],
-  }) as any as PointLayerData;
+  return GeoJSON.parse(
+    processedFeatures.filter((p): p is PointData => p !== null),
+    {
+      Point: ['lat', 'lon'],
+    },
+  ) as any as PointLayerData;
 };
 
 export const createEWSDatasetParams = (
   featureProperties: any,
   baseUrl: string,
 ) => {
-  const { name, external_id, trigger_levels } = featureProperties;
+  const { id, name, external_id, trigger_levels } = featureProperties;
   const chartTitle = `River level - ${name} (${external_id})`;
 
-  const parsedLevels = JSON.parse(trigger_levels);
+  // trigger_levels is now an object on the sensor-locations payload
+  // (it used to be a JSON string on the legacy API).
   const triggerLevels = {
-    watchLevel: parsedLevels.watch_level,
-    warning: parsedLevels.warning,
-    severeWarning: parsedLevels.severe_warning,
+    watchLevel: trigger_levels.watch_level,
+    warning: trigger_levels.warning,
+    severeWarning: trigger_levels.severe_warning,
   };
 
   return {
+    locationId: id,
     externalId: external_id,
     triggerLevels,
     chartTitle,

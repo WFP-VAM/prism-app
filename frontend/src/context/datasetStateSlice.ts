@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { oneDayInMs } from 'components/MapView/LeftPanel/utils';
 import { ChartType, DatasetField } from 'config/types';
 import { orderBy } from 'lodash';
 import { getFormattedDate, getTimeInMilliseconds } from 'utils/date-utils';
 import {
-  EWSSensorData,
   EWSTriggersConfig,
-  fetchEWSDataPointsByLocation,
+  EWSWaterHeightData,
+  fetchEWSWaterHeight,
 } from 'utils/ews-utils';
 import { fetchWithTimeout } from 'utils/fetch-with-timeout';
 import {
@@ -19,6 +20,7 @@ import type { AppDispatch, CreateAsyncThunkTypes, RootState } from './store';
 import { TableData } from './tableStateSlice';
 
 export type EWSParams = {
+  locationId: number;
   externalId: string;
   triggerLevels: EWSTriggerLevels;
   baseUrl: string;
@@ -130,26 +132,26 @@ export const loadEWSDataset = async (
   params: EWSDataPointsRequestParams,
   dispatch: AppDispatch,
 ): Promise<TableData> => {
-  const { date, externalId, triggerLevels, baseUrl } = params;
+  const { date, locationId, triggerLevels, baseUrl } = params;
 
-  const dataPoints: EWSSensorData[] = await fetchEWSDataPointsByLocation(
+  const endDate = new Date(date);
+  endDate.setUTCHours(23, 59, 59, 999);
+  const startDate = new Date(endDate.getTime() - oneDayInMs);
+
+  const dataPoints: EWSWaterHeightData[] = await fetchEWSWaterHeight(
     baseUrl,
-    date,
+    locationId,
+    startDate,
+    endDate,
     dispatch,
-    externalId,
   );
 
-  const results: DataItem[] = dataPoints.map(item => {
-    const [measureDate, value] = item.value;
-
-    // offset back from UTC to local time so that the date is displayed correctly
-    // i.e. in Cambodia Time as it is received.
-    const offset = new Date().getTimezoneOffset();
-    return {
-      date: getTimeInMilliseconds(measureDate) - offset * 60 * 1000,
-      values: { measure: value.toString() },
-    };
-  });
+  const results: DataItem[] = dataPoints.map(item => ({
+    // `timestamp` is an absolute epoch (seconds); display in local time as the
+    // ews1294.com chart does.
+    date: item.timestamp * 1000,
+    values: { measure: item.water_height.toString() },
+  }));
 
   const tableData = createTableData(results, TableDataFormat.TIME);
 
@@ -397,11 +399,12 @@ export const datasetResultStateSlice = createSlice({
       state,
       { payload }: PayloadAction<EWSParams & { chartTitle: string }>,
     ): DatasetState => {
-      const { externalId, chartTitle, triggerLevels, baseUrl } = payload;
+      const { locationId, externalId, chartTitle, triggerLevels, baseUrl } =
+        payload;
 
       return {
         ...state,
-        datasetParams: { externalId, triggerLevels, baseUrl },
+        datasetParams: { locationId, externalId, triggerLevels, baseUrl },
         title: chartTitle,
       };
     },
