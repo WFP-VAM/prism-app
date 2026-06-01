@@ -24,8 +24,9 @@ from prism_app.export_s3 import public_maps_folder_prefix
 from prism_app.export_schedules.routes import format_map_export_schedule_name
 from prism_app.map_export_layer_catalog import (
     get_deployment_country,
-    schedule_layer_choices,
+    schedule_layer_choices_with_extra,
     schedule_layer_ids,
+    schedule_layer_label,
 )
 from prism_app.utils import utc_now
 from sqlalchemy import Select, cast, func, or_, select
@@ -55,9 +56,33 @@ def _apply_job_owner_filter(stmt: Select, request: Request) -> Select:
     return stmt.where(MapExportJob.created_by_user_id == user_id)
 
 
+def _schedule_country_for_request(request: Request) -> str:
+    country = get_deployment_country()
+    pk = request.path_params.get("pk")
+    if pk:
+        session: Session = request.state.session
+        row = session.get(MapExportSchedule, pk)
+        if row is not None and row.country:
+            return row.country
+    clone_from = request.query_params.get("clone_from")
+    if clone_from:
+        session = request.state.session
+        row = session.get(MapExportSchedule, clone_from)
+        if row is not None and row.country:
+            return row.country
+    return country
+
+
 def _layer_id_choices(request: Request) -> list[tuple[str, str]]:
-    _ = request
-    return list(schedule_layer_choices(get_deployment_country()))
+    country = _schedule_country_for_request(request)
+    extra: tuple[str, ...] = ()
+    pk = request.path_params.get("pk")
+    if pk:
+        session: Session = request.state.session
+        row = session.get(MapExportSchedule, pk)
+        if row is not None and row.layer_id:
+            extra = (row.layer_id,)
+    return list(schedule_layer_choices_with_extra(country, extra_layer_ids=extra))
 
 
 def _parse_cadence(value: Any) -> MapExportScheduleCadence:
@@ -166,6 +191,33 @@ class ScheduleLastExecutedField(StringField):
 
 
 @dataclass
+class ScheduleLayerIdField(EnumField):
+    """Layer id with labels resolved from the schedule's country"""
+
+    async def parse_obj(self, request: Request, obj: Any) -> Any:  # noqa: ARG002
+        layer_id = getattr(obj, "layer_id", None)
+        country = getattr(obj, "country", None) or get_deployment_country()
+        return layer_id, country
+
+    async def serialize_value(
+        self,
+        request: Request,
+        value: Any,
+        action: RequestAction,
+    ) -> Any:
+        _ = request
+        if value is None:
+            return None
+        if isinstance(value, tuple) and len(value) == 2:
+            layer_id, country = value
+        else:
+            layer_id, country = value, get_deployment_country()
+        if action == RequestAction.EDIT:
+            return layer_id
+        return schedule_layer_label(country, layer_id)
+
+
+@dataclass
 class MapExportOutputDirectoryField(StringField):
     exclude_from_create = True
     exclude_from_edit = True
@@ -210,7 +262,7 @@ class MapExportScheduleView(PrismGatedModelView):
         "name",
         EnumField("status", enum=MapExportScheduleStatus),
         "country",
-        EnumField(
+        ScheduleLayerIdField(
             "layer_id",
             label="Layer",
             choices_loader=_layer_id_choices,
@@ -386,11 +438,12 @@ class MapExportScheduleView(PrismGatedModelView):
 
     async def validate(self, request: Request, data: dict[str, Any]) -> None:
         errors: dict[str, str] = {}
+        country = _schedule_country_for_request(request)
         layer_id = data.get("layer_id")
         if not layer_id:
             errors["layer_id"] = "Layer is required"
-        elif layer_id not in schedule_layer_ids():
-            errors["layer_id"] = "Layer is not valid for this deployment"
+        elif layer_id not in schedule_layer_ids(country):
+            errors["layer_id"] = f"Layer is not valid for {country}"
         if not data.get("cadence"):
             errors["cadence"] = "Cadence is required"
         cadence_raw = data.get("cadence")

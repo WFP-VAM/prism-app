@@ -5,6 +5,8 @@ from prism_app.map_export_layer_catalog import (
     get_deployment_country,
     schedule_layer_choices,
     schedule_layer_ids,
+    schedule_layer_label,
+    schedule_layer_choices_with_extra,
 )
 
 
@@ -35,3 +37,26 @@ def test_get_deployment_country_defaults_to_mozambique(monkeypatch) -> None:
     monkeypatch.delenv("PRISM_DEPLOYMENT_COUNTRY", raising=False)
     monkeypatch.delenv("REACT_APP_COUNTRY", raising=False)
     assert get_deployment_country() == "mozambique"
+
+
+def test_cambodia_schedule_layers_include_rain_anomaly() -> None:
+    ids = schedule_layer_ids("cambodia")
+    assert "rain_anomaly_6month" in ids
+
+
+def test_schedule_layer_label_falls_back_for_unknown_id() -> None:
+    assert schedule_layer_label("mozambique", "not_in_manifest_xyz") == "not_in_manifest_xyz"
+
+
+def test_schedule_layer_choices_with_extra_includes_legacy_id() -> None:
+    choices = schedule_layer_choices_with_extra(
+        "mozambique",
+        extra_layer_ids=("legacy_layer_xyz",),
+    )
+    assert ("legacy_layer_xyz", "legacy_layer_xyz") in choices
+
+
+def test_schedule_layer_label_uses_country_manifest() -> None:
+    label = schedule_layer_label("cambodia", "rain_anomaly_6month")
+    assert "rain_anomaly_6month" in label
+    assert "6-month" in label.lower() or "rainfall" in label.lower()

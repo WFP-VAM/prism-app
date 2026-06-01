@@ -1,6 +1,6 @@
 /**
  * Build-time manifest of schedule-eligible WMS layers for map export admin.
- * Mirrors ``isWmsSelectableForBatchPrint`` config fallback (no server dates).
+ * All WMS layers per country (batch print may also use server-loaded dates).
  *
  * Output: api/prism_app/data/schedule_layer_manifest.json
  */
@@ -29,12 +29,9 @@ const MANIFEST_PATH = path.join(
   '../../api/prism_app/data/schedule_layer_manifest.json',
 );
 
-/** Same rule as frontend ``isWmsSelectableForBatchPrint`` config fallback (no server dates). */
+/** All WMS hazard layers for a country (batch print may use server dates when config has none). */
 function isScheduleEligibleLayer(layer: LayerConfig): boolean {
-  if (layer.type !== 'wms') {
-    return false;
-  }
-  return Boolean(layer.coverageWindow || layer.validity);
+  return layer.type === 'wms';
 }
 
 /** Merge shared + country layers; country keys win (see ``getRawLayers`` / backend catalog). */

@@ -54,3 +54,26 @@ def schedule_layer_choices(country: str) -> tuple[tuple[str, str], ...]:
 def schedule_layer_ids(country: str | None = None) -> frozenset[str]:
     slug = country or get_deployment_country()
     return frozenset(layer_id for layer_id, _ in schedule_layer_choices(slug))
+
+
+def schedule_layer_label(country: str, layer_id: str) -> str:
+    """Human-readable label for admin display; falls back to ``layer_id``."""
+    for choice_id, label in schedule_layer_choices(country):
+        if choice_id == layer_id:
+            return label
+    return layer_id
+
+
+def schedule_layer_choices_with_extra(
+    country: str,
+    *,
+    extra_layer_ids: tuple[str, ...] = (),
+) -> tuple[tuple[str, str], ...]:
+    """Country manifest choices plus any stored ids not in the manifest (legacy rows)."""
+    choices = list(schedule_layer_choices(country))
+    known = {layer_id for layer_id, _ in choices}
+    for layer_id in extra_layer_ids:
+        if layer_id and layer_id not in known:
+            choices.append((layer_id, layer_id))
+            known.add(layer_id)
+    return tuple(sorted(choices, key=lambda pair: pair[0]))
