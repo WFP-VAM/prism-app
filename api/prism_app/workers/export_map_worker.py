@@ -25,9 +25,8 @@ from prism_app.export_jobs.claim import claim_next_queued_map_export_job
 from prism_app.export_jobs.db import get_export_jobs_session_factory
 from prism_app.export_maps import export_maps
 from prism_app.export_s3 import (
-    DEFAULT_EXPORT_MAP_S3_BUCKET,
+    get_export_map_s3_bucket_and_prefix,
     map_export_s3_client,
-    parse_export_map_s3_bucket_env,
     put_map_export_bytes,
     put_map_export_bytes_local,
 )
@@ -156,20 +155,15 @@ def _mark_job_failed(session: Session, job_id: str, exc: BaseException) -> None:
 
 async def amain() -> None:
     local_raw = os.environ.get("EXPORT_MAP_LOCAL_OUTPUT_DIR", "").strip()
-    if "EXPORT_MAP_S3_BUCKET" not in os.environ and not local_raw:
-        bucket_raw = DEFAULT_EXPORT_MAP_S3_BUCKET
-    else:
-        bucket_raw = os.environ.get("EXPORT_MAP_S3_BUCKET", "").strip()
-    bucket, s3_prefix = parse_export_map_s3_bucket_env(bucket_raw)
+    bucket, s3_prefix = get_export_map_s3_bucket_and_prefix()
 
     if bucket:
         local_dir: Path | None = None
         s3 = map_export_s3_client()
         logger.info(
-            "export_map_worker S3 mode (bucket=%s prefix=%s raw=%s)",
+            "export_map_worker S3 mode (bucket=%s prefix=%s)",
             bucket,
             s3_prefix or "(none)",
-            bucket_raw,
         )
     elif local_raw:
         local_dir = Path(local_raw).resolve()

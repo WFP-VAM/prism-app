@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import re
 from pathlib import Path
 from typing import Any
@@ -151,6 +152,16 @@ def s3_key_for_map_export(
     return f"{op}/{base}" if op else base
 
 
+def get_export_map_s3_bucket_and_prefix() -> tuple[str, str]:
+    """Resolve bucket and object prefix the same way as ``export_map_worker``."""
+    local_raw = os.environ.get("EXPORT_MAP_LOCAL_OUTPUT_DIR", "").strip()
+    if "EXPORT_MAP_S3_BUCKET" not in os.environ and not local_raw:
+        bucket_raw = DEFAULT_EXPORT_MAP_S3_BUCKET
+    else:
+        bucket_raw = os.environ.get("EXPORT_MAP_S3_BUCKET", "").strip()
+    return parse_export_map_s3_bucket_env(bucket_raw)
+
+
 def public_maps_folder_prefix(
     export_url: str,
     *,
@@ -164,6 +175,22 @@ def public_maps_folder_prefix(
     base = f"public_maps/{c_seg}/{l_seg}/"
     op = normalize_export_map_s3_object_prefix(object_prefix)
     return f"{op}/{base}" if op else base
+
+
+def public_maps_folder_uri(export_url: str, *, country: str) -> str:
+    """Full storage URI for the schedule's public-maps folder (S3 or local file URI)."""
+    bucket, object_prefix = get_export_map_s3_bucket_and_prefix()
+    key_prefix = public_maps_folder_prefix(
+        export_url,
+        country=country,
+        object_prefix=object_prefix,
+    )
+    if bucket:
+        return f"s3://{bucket}/{key_prefix}"
+    local_raw = os.environ.get("EXPORT_MAP_LOCAL_OUTPUT_DIR", "").strip()
+    if local_raw:
+        return (Path(local_raw).resolve() / key_prefix).as_uri()
+    return key_prefix
 
 
 def put_map_export_bytes(

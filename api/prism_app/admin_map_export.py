@@ -20,7 +20,7 @@ from prism_app.database.map_export_schedule_model import (
     MapExportScheduleFormat,
     MapExportScheduleStatus,
 )
-from prism_app.export_s3 import public_maps_folder_prefix
+from prism_app.export_s3 import public_maps_folder_uri
 from prism_app.export_schedules.routes import format_map_export_schedule_name
 from prism_app.map_export_layer_catalog import (
     get_deployment_country,
@@ -154,11 +154,9 @@ def _enrich_schedules_for_admin(
         item._admin_last_executed_at = last_executed.get(item.id)  # noqa: SLF001
         if item.export_url and item.country:
             try:
-                item._admin_output_directory = (
-                    public_maps_folder_prefix(  # noqa: SLF001
-                        item.export_url,
-                        country=item.country,
-                    )
+                item._admin_output_directory = public_maps_folder_uri(  # noqa: SLF001
+                    item.export_url,
+                    country=item.country,
                 )
             except ValueError:
                 item._admin_output_directory = None  # noqa: SLF001
@@ -274,7 +272,7 @@ class MapExportScheduleView(PrismGatedModelView):
         ScheduleLastExecutedField("last_executed_at", label="Last executed"),
         MapExportOutputDirectoryField(
             "output_directory",
-            label="Output directory",
+            label="Output location",
         ),
         StringField("export_url", read_only=True),
         PrettyJSONField("export_options", read_only=True),
