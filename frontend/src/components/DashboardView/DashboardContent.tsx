@@ -30,10 +30,7 @@ import {
   DashboardMode,
 } from '../../config/types';
 import { findDashboardByPath } from '../../config/utils';
-import {
-  isAnalysisLayerActiveSelector,
-  setIsMapLayerActive,
-} from '../../context/analysisResultStateSlice';
+import { setIsMapLayerActive } from '../../context/analysisResultStateSlice';
 import {
   dashboardColumnsSelector,
   dashboardConfigSelector,
@@ -139,10 +136,20 @@ function DashboardContent({
   const logoHeight = logoConfig ? logoHeightMultiplier * logoConfig.scale : 0;
   const dispatch = useDispatch();
   const syncEnabled = useSelector(dashboardSyncEnabledSelector);
-  const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
 
-  const handleToggleLayerVisibility = () => {
-    dispatch(setIsMapLayerActive(!isAnalysisLayerActive));
+  const handleTableShowOnMapChange = (
+    columnIndex: number,
+    elementIndex: number,
+    checked: boolean,
+  ) => {
+    dispatch(setIsMapLayerActive(checked));
+    dispatch(
+      updateBlockConfig({
+        columnIndex,
+        elementIndex,
+        updates: { addResultToMap: checked },
+      }),
+    );
   };
 
   type PendingAction =
@@ -430,19 +437,23 @@ function DashboardContent({
                       columnIndex,
                       elementIndex,
                       element.useLatestAvailableDate ?? false,
-                      element.addResultToMap !== false ? (
-                        <FormControlLabel
-                          control={
-                            <Switch
-                              checked={isAnalysisLayerActive}
-                              onChange={handleToggleLayerVisibility}
-                              color="primary"
-                              size="small"
-                            />
-                          }
-                          label={t('Show on map')}
-                        />
-                      ) : undefined,
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={element.addResultToMap !== false}
+                            onChange={(_event, checked) =>
+                              handleTableShowOnMapChange(
+                                columnIndex,
+                                elementIndex,
+                                checked,
+                              )
+                            }
+                            color="primary"
+                            size="small"
+                          />
+                        }
+                        label={t('Show on map')}
+                      />,
                     )
                   : undefined
               }

@@ -280,18 +280,9 @@ function TableBlock({
     formState.analysisResult,
   ]);
 
-  // Disable map layer when addResultToMap is false
-  // Run whenever analysis result changes or on mount
+  // Keep map layer visibility in sync with saved table config
   useEffect(() => {
-    if (!addResultToMap) {
-      dispatch(setIsMapLayerActive(false));
-    }
-    return () => {
-      // Only restore if we actually changed it
-      if (!addResultToMap) {
-        dispatch(setIsMapLayerActive(true));
-      }
-    };
+    dispatch(setIsMapLayerActive(addResultToMap));
   }, [addResultToMap, dispatch]);
 
   // Track analysis failures and handle retries
