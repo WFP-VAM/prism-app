@@ -228,6 +228,7 @@ const BoundaryDropdownOptions = React.forwardRef(
                       newSelectedBoundaries,
                       event.shiftKey,
                     );
+
                     if (!goto) {
                       return;
                     }
@@ -238,7 +239,7 @@ const BoundaryDropdownOptions = React.forwardRef(
                   const features = combinedData.features.filter(f =>
                     boundaryLayers.some(layer =>
                       String(f.properties?.[layer.adminCode])?.startsWith(
-                        area.adminCode,
+                        String(area.adminCode),
                       ),
                     ),
                   );

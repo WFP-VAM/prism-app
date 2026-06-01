@@ -63,7 +63,7 @@ export function getAdminBoundaryTree(
     const [currentLevelCode, ...otherLevelsCodes] = levelsLeft;
     const newBranch = addBranchToTree(
       partialTree.children[fp[currentLevelCode]] ?? {
-        adminCode: fp[currentLevelCode],
+        adminCode: String(fp[currentLevelCode]) as AdminCodeString,
         key: fp[layer.adminLevelNames[level]],
         label: fp[locationLevelNames[level]] ?? '',
         level: (level + 1) as AdminLevelType,

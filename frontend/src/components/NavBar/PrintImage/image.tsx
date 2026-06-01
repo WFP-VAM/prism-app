@@ -6,6 +6,7 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import { usePostHog } from '@posthog/react';
+import * as Sentry from '@sentry/browser';
 import mask from '@turf/mask';
 import { appConfig, rawLayers, safeCountry } from 'config';
 import { AdminCodeString, LayerKey } from 'config/types';
@@ -546,9 +547,37 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         selectedBoundaries,
       ),
     };
+    if (!filteredData || filteredData.features.length === 0) {
+      const errorMessage = t(
+        'No boundary features found for the selected admin area. Please try a different selection.',
+      );
+      const error = new Error(errorMessage);
+      const errdetails = {
+        selectedBoundaries,
+        boundaryLayerId: boundaryLayer.id,
+        boundaryLayerAdminCodes: boundaryLayer.adminLevelCodes,
+        totalFeatures: data?.features?.length ?? 0,
+      };
+      Sentry.captureException(error, { extra: errdetails });
+      posthog?.capture('map_print_admin_area_mask_failed', errdetails);
+      dispatch(
+        addNotification({
+          type: 'error',
+          message: errorMessage,
+        }),
+      );
+      return;
+    }
     const masked = mask(filteredData as any);
     setAdminBoundaryPolygon(masked as any);
-  }, [data, selectedBoundaries, selectedBoundaries.length]);
+  }, [
+    data,
+    dispatch,
+    posthog,
+    selectedBoundaries,
+    selectedBoundaries.length,
+    t,
+  ]);
 
   const handleDownloadMenuClose = () => {
     setDownloadMenuAnchorEl(null);
