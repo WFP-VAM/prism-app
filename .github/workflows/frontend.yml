@@ -147,6 +147,7 @@ jobs:
     env:
       GIT_HASH: ${{ github.event.pull_request.head.sha }}
       firebase_channel: ${{ github.event.pull_request.number }}
+      REACT_APP_POSTHOG_TOKEN: ${{ secrets.REACT_APP_POSTHOG_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -208,6 +209,7 @@ jobs:
         country: [mozambique, cambodia, rbd]
     env:
       REACT_APP_SENTRY_URL: ${{ secrets.REACT_APP_SENTRY_URL }}
+      REACT_APP_POSTHOG_TOKEN: ${{ secrets.REACT_APP_POSTHOG_TOKEN }}
       firebase_channel: prism-master-${{ matrix.country }}
     steps:
       - name: Checkout
