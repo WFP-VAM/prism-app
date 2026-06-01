@@ -1052,6 +1052,7 @@ export class AnticipatoryActionLayerProps extends CommonLayerProps {
 
 export {
   ChartHeight,
+  ChartLatestPeriod,
   DashboardElementType,
   DashboardMapPosition,
   DashboardMode,
