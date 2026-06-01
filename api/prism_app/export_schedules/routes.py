@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends
 from prism_app.auth.deps import require_any_permission
 from prism_app.auth.permission_codes import ADMIN_ACCESS, MAP_EXPORTS_MANAGE
 from prism_app.database.map_export_schedule_model import (
+    MAX_DEKAD_INTERVAL,
     MapExportSchedule,
     MapExportScheduleCadence,
 )
@@ -36,7 +37,7 @@ class MapExportScheduleCreateRequest(BaseModel):
     country: str = Field(..., min_length=1)
     layer_id: str = Field(..., min_length=1)
     cadence: MapExportScheduleCadence
-    dekad_interval: int = Field(default=1, ge=1)
+    dekad_interval: int = Field(default=1, ge=1, le=MAX_DEKAD_INTERVAL)
     format: ExportFormat = "pdf"
     export_url: str = Field(..., min_length=1)
     export_options: dict[str, Any] = Field(default_factory=dict)

@@ -3,14 +3,21 @@
   (function () {
     const CADENCE_EVERY_N_DEKADS = "every_n_dekads";
 
+    const MAX_DEKAD_INTERVAL = 3;
+
     function syncDekadIntervalVisibility() {
       const cadenceEl = document.querySelector('select[name="cadence"]');
       const wrap = document.querySelector(".map-export-dekad-interval-field");
+      const dekadInput = document.querySelector('input[name="dekad_interval"]');
       if (!cadenceEl || !wrap) {
         return;
       }
       const show = cadenceEl.value === CADENCE_EVERY_N_DEKADS;
       wrap.classList.toggle("d-none", !show);
+      if (dekadInput) {
+        dekadInput.min = "1";
+        dekadInput.max = String(MAX_DEKAD_INTERVAL);
+      }
     }
 
     function bindCadenceListener() {
