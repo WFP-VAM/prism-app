@@ -188,7 +188,7 @@ function DashboardContent({
   };
 
   // Column Height Management - extracted to custom hook
-  const { componentHeights, columnRefs, componentRefs, recalculationCount } =
+  const { componentHeights, columnRefs, componentRefs } =
     useColumnHeightManagement({
       mode,
       exportConfig,
@@ -272,6 +272,9 @@ function DashboardContent({
         display: 'flex',
         flexDirection: 'column' as const,
         overflow: heightConfig.overflow,
+        ...(heightConfig.overflow === 'scroll'
+          ? { scrollbarGutter: 'stable' as const }
+          : {}),
       };
     };
 
@@ -419,8 +422,7 @@ function DashboardContent({
               adminUnitId={element.adminUnitId}
               chartHeight={element.chartHeight}
               allowDownload={!exportConfig}
-              isOverflowing={heightConfig?.overflow === 'auto'}
-              recalculationCount={recalculationCount}
+              isOverflowing={heightConfig?.overflow === 'scroll'}
               headerSlot={
                 mode === DashboardMode.EDIT
                   ? renderBlockTypeSelector(

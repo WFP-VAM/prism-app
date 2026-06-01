@@ -46,7 +46,6 @@ interface ChartBlockProps extends Partial<DashboardChartConfig> {
   allowDownload?: boolean;
   chartHeight?: ChartHeight;
   isOverflowing?: boolean;
-  recalculationCount?: number;
   headerSlot?: ReactNode;
 }
 
@@ -59,7 +58,6 @@ function ChartBlock({
   allowDownload,
   chartHeight: initialChartHeight,
   isOverflowing,
-  recalculationCount,
   headerSlot,
 }: ChartBlockProps) {
   const classes = useStyles();
@@ -97,9 +95,6 @@ function ChartBlock({
   const [chartHeightOption, setChartHeightOption] = useState<ChartHeight>(
     initialChartHeight || ChartHeight.TALL,
   );
-
-  // Overflow state management - lock once triggered, reset on recalculation
-  const [isOverflowLocked, setIsOverflowLocked] = useState(false);
 
   const downloadFilename = buildCsvFileName([
     ...(chartTitle ? chartTitle.split(' ') : []),
@@ -166,24 +161,6 @@ function ChartBlock({
     }
   }, [isLoading, wasChartLoading, chartDataset]);
 
-  // Staged lock management: reset on recalculation, then lock if needed after measurement
-  useEffect(() => {
-    if (recalculationCount !== undefined && recalculationCount > 0) {
-      // Reset lock to allow new measurement
-      setIsOverflowLocked(false);
-
-      // After small delay, lock if overflow detected
-      const timeoutId = setTimeout(() => {
-        if (isOverflowing) {
-          setIsOverflowLocked(true);
-        }
-      }, 50);
-
-      return () => clearTimeout(timeoutId);
-    }
-    return undefined;
-  }, [recalculationCount, isOverflowing]);
-
   const formatDateRange = () => {
     const start = formState.startDate;
     const end = formState.endDate;
@@ -244,7 +221,13 @@ function ChartBlock({
             )}
 
             {!isLoading && !error && chartDataset && chartConfig && (
-              <Box className={classes.chartWrapper}>
+              <Box
+                className={
+                  isOverflowing
+                    ? classes.constrainedChartWrapper
+                    : classes.chartWrapper
+                }
+              >
                 <Chart
                   ref={chartRef}
                   title={t(chartSubtitle)}
@@ -258,9 +241,7 @@ function ChartBlock({
                   showDownloadIcons={false}
                   responsive
                   height={
-                    isOverflowing || isOverflowLocked
-                      ? undefined
-                      : CHART_HEIGHTS[chartHeightOption]
+                    isOverflowing ? undefined : CHART_HEIGHTS[chartHeightOption]
                   }
                 />
               </Box>
@@ -515,6 +496,19 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     overflow: 'auto',
+    '& > *': {
+      maxWidth: '100%',
+    },
+  },
+  constrainedChartWrapper: {
+    flex: 1,
+    maxWidth: '100%',
+    position: 'relative',
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
+    minHeight: 0,
     '& > *': {
       maxWidth: '100%',
     },
