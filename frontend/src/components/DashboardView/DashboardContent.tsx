@@ -7,16 +7,17 @@ import {
   DialogContent,
   DialogContentText,
   FormControlLabel,
+  IconButton,
   makeStyles,
   MenuItem,
   Select,
   Switch,
   Typography,
 } from '@material-ui/core';
-import { Edit } from '@material-ui/icons';
+import { Close, Edit } from '@material-ui/icons';
 import { getImageUrl } from 'assets/images';
 import { useSafeTranslation } from 'i18n';
-import { useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
@@ -30,6 +31,10 @@ import {
 } from '../../config/types';
 import { findDashboardByPath } from '../../config/utils';
 import {
+  isAnalysisLayerActiveSelector,
+  setIsMapLayerActive,
+} from '../../context/analysisResultStateSlice';
+import {
   dashboardColumnsSelector,
   dashboardConfigSelector,
   dashboardMapElementsSelector,
@@ -37,6 +42,7 @@ import {
   dashboardModeSelector,
   dashboardsListSelector,
   dashboardSyncEnabledSelector,
+  removeElement,
   selectedDashboardIndexSelector,
   setElementType,
   setMapUseLatestDate,
@@ -133,13 +139,24 @@ function DashboardContent({
   const logoHeight = logoConfig ? logoHeightMultiplier * logoConfig.scale : 0;
   const dispatch = useDispatch();
   const syncEnabled = useSelector(dashboardSyncEnabledSelector);
+  const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
 
-  type PendingAction = {
-    kind: 'changeType';
-    columnIndex: number;
-    elementIndex: number;
-    newType: DashboardElementType;
+  const handleToggleLayerVisibility = () => {
+    dispatch(setIsMapLayerActive(!isAnalysisLayerActive));
   };
+
+  type PendingAction =
+    | {
+        kind: 'changeType';
+        columnIndex: number;
+        elementIndex: number;
+        newType: DashboardElementType;
+      }
+    | {
+        kind: 'remove';
+        columnIndex: number;
+        elementIndex: number;
+      };
 
   const [pendingAction, setPendingAction] = useState<PendingAction | null>(
     null,
@@ -159,13 +176,22 @@ function DashboardContent({
     if (!pendingAction) {
       return;
     }
-    dispatch(
-      setElementType({
-        columnIndex: pendingAction.columnIndex,
-        elementIndex: pendingAction.elementIndex,
-        newType: pendingAction.newType,
-      }),
-    );
+    if (pendingAction.kind === 'changeType') {
+      dispatch(
+        setElementType({
+          columnIndex: pendingAction.columnIndex,
+          elementIndex: pendingAction.elementIndex,
+          newType: pendingAction.newType,
+        }),
+      );
+    } else if (pendingAction.kind === 'remove') {
+      dispatch(
+        removeElement({
+          columnIndex: pendingAction.columnIndex,
+          elementIndex: pendingAction.elementIndex,
+        }),
+      );
+    }
     setDialogOpen(false);
   };
 
@@ -217,6 +243,7 @@ function DashboardContent({
     columnIndex: number,
     elementIndex: number,
     useLatestAvailableDate = false,
+    extraContent?: ReactNode,
   ) => {
     const supportsUseLatest =
       currentType === DashboardElementType.CHART ||
@@ -270,6 +297,18 @@ function DashboardContent({
             className={classes.useLatestCheckbox}
           />
         )}
+        <Box className={classes.blockTypeRowActions}>
+          {extraContent}
+          <IconButton
+            size="small"
+            onClick={() =>
+              stagePendingAction({ kind: 'remove', columnIndex, elementIndex })
+            }
+            className={classes.removeBlockButton}
+          >
+            <Close fontSize="small" />
+          </IconButton>
+        </Box>
       </Box>
     );
   };
@@ -391,6 +430,19 @@ function DashboardContent({
                       columnIndex,
                       elementIndex,
                       element.useLatestAvailableDate ?? false,
+                      element.addResultToMap !== false ? (
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={isAnalysisLayerActive}
+                              onChange={handleToggleLayerVisibility}
+                              color="primary"
+                              size="small"
+                            />
+                          }
+                          label={t('Show on map')}
+                        />
+                      ) : undefined,
                     )
                   : undefined
               }
@@ -607,7 +659,9 @@ function DashboardContent({
             color="secondary"
             variant="contained"
           >
-            {t('Change block type')}
+            {pendingAction?.kind === 'remove'
+              ? t('Remove block')
+              : t('Change block type')}
           </Button>
         </DialogActions>
       </Dialog>
@@ -639,9 +693,20 @@ const useStyles = makeStyles(() => ({
   },
   useLatestCheckbox: {
     margin: 0,
-    marginLeft: 'auto',
     flexShrink: 0,
     whiteSpace: 'nowrap',
+  },
+  blockTypeRowActions: {
+    display: 'flex',
+    alignItems: 'center',
+    marginLeft: 'auto',
+    gap: 8,
+  },
+  removeBlockButton: {
+    color: '#757575',
+    '&:hover': {
+      color: '#212121',
+    },
   },
   mapHeaderActions: {
     display: 'flex',

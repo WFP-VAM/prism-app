@@ -2,10 +2,8 @@ import {
   Box,
   Button,
   CircularProgress,
-  FormControlLabel,
   IconButton,
   makeStyles,
-  Switch,
   TextField,
   Tooltip,
   Typography,
@@ -31,7 +29,6 @@ import {
 } from 'config/types';
 import {
   analysisResultErrorSelector,
-  isAnalysisLayerActiveSelector,
   setIsMapLayerActive,
 } from 'context/analysisResultStateSlice';
 import { useSafeTranslation } from 'i18n';
@@ -86,7 +83,6 @@ function TableBlock({
   const dispatch = useDispatch();
   const mode = useSelector(dashboardModeSelector);
   const selectedDashboardIndex = useSelector(selectedDashboardIndexSelector);
-  const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
   const analysisError = useSelector(analysisResultErrorSelector);
 
   const [useLatest, setUseLatest] = useState(
@@ -215,10 +211,6 @@ function TableBlock({
   const handleAboveThresholdChange = (value: string) => {
     formState.setAboveThreshold(value);
     persistThreshold(formState.belowThreshold, value);
-  };
-
-  const handleToggleLayerVisibility = () => {
-    dispatch(setIsMapLayerActive(!isAnalysisLayerActive));
   };
 
   const handleDownloadCSV = () => {
@@ -541,21 +533,6 @@ function TableBlock({
         </Typography>
       )}
 
-      {formState.analysisResult && addResultToMap && (
-        <Box className={classes.toggleContainer}>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={isAnalysisLayerActive}
-                onChange={handleToggleLayerVisibility}
-                color="primary"
-              />
-            }
-            label={t('Show on map')}
-          />
-        </Box>
-      )}
-
       <Box className={classes.formContainer}>
         <Box className={classes.formSection}>
           <HazardLayerSelector
@@ -761,10 +738,6 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     justifyContent: 'center',
     padding: theme.spacing(4),
-  },
-  toggleContainer: {
-    padding: theme.spacing(1),
-    display: 'flex',
   },
 }));
 
