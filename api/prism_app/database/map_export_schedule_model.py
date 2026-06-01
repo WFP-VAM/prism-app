@@ -36,6 +36,9 @@ class MapExportScheduleFormat(str, Enum):
     png = "png"
 
 
+MAX_DEKAD_INTERVAL = 3
+
+
 class MapExportSchedule(SQLModel, table=True):
     __tablename__ = "map_export_schedules"
     __table_args__ = (
