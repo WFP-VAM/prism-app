@@ -420,28 +420,30 @@ function ChartBlock({
         </Box>
 
         <Box className={classes.formSection}>
-          <Typography variant="body2" className={classes.dateRangeLabel}>
-            {t('Date Range')}
-          </Typography>
+          {!useLatest && (
+            <Typography variant="body2" className={classes.dateRangeLabel}>
+              {t('Date Range')}
+            </Typography>
+          )}
           {useLatest ? (
             <Box className={classes.latestPeriodRow}>
               <FormControl variant="outlined" className={classes.periodControl}>
-                <InputLabel>{t('Period')}</InputLabel>
+                <InputLabel>{t('Date Range')}</InputLabel>
                 <Select
                   value={period}
                   onChange={e =>
                     handlePeriodChange(e.target.value as ChartLatestPeriod)
                   }
-                  label={t('Period')}
+                  label={t('Date Range')}
                 >
                   <MenuItem value={ChartLatestPeriod.MONTH}>
-                    {t('Month')}
+                    {t('Last 30 days')}
                   </MenuItem>
                   <MenuItem value={ChartLatestPeriod.QUARTER}>
-                    {t('Quarter')}
+                    {t('Last 3 months')}
                   </MenuItem>
                   <MenuItem value={ChartLatestPeriod.YEAR}>
-                    {t('Year')}
+                    {t('Last 12 months')}
                   </MenuItem>
                 </Select>
               </FormControl>
