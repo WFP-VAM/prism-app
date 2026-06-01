@@ -155,9 +155,6 @@ function ChartBlock({
     initialChartHeight || ChartHeight.TALL,
   );
 
-  // Overflow state management - lock once triggered, reset on recalculation
-  const [isOverflowLocked, setIsOverflowLocked] = useState(false);
-
   const handleLayerChange = (id: LayerKey | undefined) => {
     formState.setChartLayerId(id);
     persistBlockConfig({ layerId: id ?? '' });
