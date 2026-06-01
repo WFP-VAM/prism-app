@@ -2,10 +2,8 @@ import {
   Box,
   Button,
   CircularProgress,
-  FormControlLabel,
   IconButton,
   makeStyles,
-  Switch,
   TextField,
   Tooltip,
   Typography,
@@ -30,7 +28,6 @@ import {
 } from 'config/types';
 import {
   analysisResultErrorSelector,
-  isAnalysisLayerActiveSelector,
   setIsMapLayerActive,
 } from 'context/analysisResultStateSlice';
 import { useSafeTranslation } from 'i18n';
@@ -81,7 +78,6 @@ function TableBlock({
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const mode = useSelector(dashboardModeSelector);
-  const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
   const analysisError = useSelector(analysisResultErrorSelector);
 
   // Create element ID for Redux state
@@ -142,10 +138,6 @@ function TableBlock({
         updates: { maxRows: newMaxRows },
       }),
     );
-  };
-
-  const handleToggleLayerVisibility = () => {
-    dispatch(setIsMapLayerActive(!isAnalysisLayerActive));
   };
 
   const handleDownloadCSV = () => {
@@ -468,21 +460,6 @@ function TableBlock({
         </Typography>
       )}
 
-      {formState.analysisResult && addResultToMap && (
-        <Box className={classes.toggleContainer}>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={isAnalysisLayerActive}
-                onChange={handleToggleLayerVisibility}
-                color="primary"
-              />
-            }
-            label={t('Show on map')}
-          />
-        </Box>
-      )}
-
       <Box className={classes.formContainer}>
         <Box className={classes.formSection}>
           <HazardLayerSelector
@@ -674,10 +651,6 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     justifyContent: 'center',
     padding: theme.spacing(4),
-  },
-  toggleContainer: {
-    padding: theme.spacing(1),
-    display: 'flex',
   },
 }));
 

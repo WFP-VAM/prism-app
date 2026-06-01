@@ -16,7 +16,7 @@ import {
 import { Close, Edit } from '@material-ui/icons';
 import { getImageUrl } from 'assets/images';
 import { useSafeTranslation } from 'i18n';
-import { useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
@@ -29,6 +29,10 @@ import {
   DashboardMode,
 } from '../../config/types';
 import { findDashboardByPath } from '../../config/utils';
+import {
+  isAnalysisLayerActiveSelector,
+  setIsMapLayerActive,
+} from '../../context/analysisResultStateSlice';
 import {
   dashboardColumnsSelector,
   dashboardConfigSelector,
@@ -131,6 +135,11 @@ function DashboardContent({
   const logoHeight = logoConfig ? logoHeightMultiplier * logoConfig.scale : 0;
   const dispatch = useDispatch();
   const syncEnabled = useSelector(dashboardSyncEnabledSelector);
+  const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
+
+  const handleToggleLayerVisibility = () => {
+    dispatch(setIsMapLayerActive(!isAnalysisLayerActive));
+  };
 
   type PendingAction =
     | { kind: 'remove'; columnIndex: number; elementIndex: number }
@@ -196,6 +205,7 @@ function DashboardContent({
     currentType: DashboardElementType,
     columnIndex: number,
     elementIndex: number,
+    extraContent?: ReactNode,
   ) => (
     <Box className={classes.blockTypeRow}>
       <Typography variant="h3" className={classes.blockLabel}>
@@ -224,15 +234,18 @@ function DashboardContent({
           </MenuItem>
         ))}
       </Select>
-      <IconButton
-        size="small"
-        onClick={() =>
-          stagePendingAction({ kind: 'remove', columnIndex, elementIndex })
-        }
-        className={classes.removeBlockButton}
-      >
-        <Close fontSize="small" />
-      </IconButton>
+      <Box className={classes.blockTypeRowActions}>
+        {extraContent}
+        <IconButton
+          size="small"
+          onClick={() =>
+            stagePendingAction({ kind: 'remove', columnIndex, elementIndex })
+          }
+          className={classes.removeBlockButton}
+        >
+          <Close fontSize="small" />
+        </IconButton>
+      </Box>
     </Box>
   );
 
@@ -366,6 +379,19 @@ function DashboardContent({
                       element.type,
                       columnIndex,
                       elementIndex,
+                      element.addResultToMap !== false ? (
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={isAnalysisLayerActive}
+                              onChange={handleToggleLayerVisibility}
+                              color="primary"
+                              size="small"
+                            />
+                          }
+                          label={t('Show on map')}
+                        />
+                      ) : undefined,
                     )
                   : undefined
               }
@@ -609,8 +635,13 @@ const useStyles = makeStyles(() => ({
       marginBottom: 0,
     },
   },
-  removeBlockButton: {
+  blockTypeRowActions: {
+    display: 'flex',
+    alignItems: 'center',
     marginLeft: 'auto',
+    gap: 8,
+  },
+  removeBlockButton: {
     color: '#757575',
     '&:hover': {
       color: '#212121',
