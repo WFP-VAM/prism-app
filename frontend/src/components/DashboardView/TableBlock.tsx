@@ -25,6 +25,7 @@ import {
   DashboardMode,
   DashboardTableConfig,
   GeometryType,
+  LayerKey,
 } from 'config/types';
 import {
   analysisResultErrorSelector,
@@ -45,6 +46,8 @@ import { getFormattedDate } from 'utils/date-utils';
 import {
   dashboardModeSelector,
   dashboardTableStateSelector,
+  selectedDashboardIndexSelector,
+  updateBlockConfig,
   updateTableState,
 } from '../../context/dashboardStateSlice';
 import BlockPreviewHeader from './BlockPreviewHeader';
@@ -68,6 +71,7 @@ function TableBlock({
   threshold: initialThreshold,
   stat: initialStat,
   maxRows: initialMaxRows,
+  useLatestAvailableDate: initialUseLatestAvailableDate,
   allowDownload,
   addResultToMap = true,
   sortColumn: initialSortColumn = 'name',
@@ -78,7 +82,16 @@ function TableBlock({
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const mode = useSelector(dashboardModeSelector);
+  const selectedDashboardIndex = useSelector(selectedDashboardIndexSelector);
   const analysisError = useSelector(analysisResultErrorSelector);
+
+  const [useLatest, setUseLatest] = useState(
+    initialUseLatestAvailableDate ?? false,
+  );
+
+  useEffect(() => {
+    setUseLatest(initialUseLatestAvailableDate ?? false);
+  }, [initialUseLatestAvailableDate, selectedDashboardIndex]);
 
   // Create element ID for Redux state
   const elementId = `${columnIndex}-${elementIndex}`;
@@ -89,10 +102,12 @@ function TableBlock({
   const sortColumn = tableState?.sortColumn ?? initialSortColumn ?? 'name';
   const isAscending = tableState?.sortOrder === 'asc';
 
+  const effectiveInitialStartDate = useLatest ? undefined : initialStartDate;
+
   const formState = useAnalysisForm({
     initialHazardLayerId,
     initialBaselineLayerId,
-    initialStartDate,
+    initialStartDate: effectiveInitialStartDate,
     initialThreshold,
     initialStat,
   });
@@ -138,6 +153,64 @@ function TableBlock({
         updates: { maxRows: newMaxRows },
       }),
     );
+  };
+
+  const persistBlockConfig = (updates: Partial<DashboardTableConfig>) => {
+    dispatch(
+      updateBlockConfig({
+        columnIndex,
+        elementIndex,
+        updates,
+      }),
+    );
+  };
+
+  const handleHazardLayerChange = (id: LayerKey | undefined) => {
+    formState.setHazardLayerId(id);
+    persistBlockConfig({ hazardLayerId: id ?? '' });
+  };
+
+  const handleBaselineLayerChange = (id: LayerKey | undefined) => {
+    formState.setBaselineLayerId(id);
+    persistBlockConfig({ baselineLayerId: id ?? '' });
+  };
+
+  const handleStatisticChange = (newStat: AggregationOperations) => {
+    formState.setStatistic(newStat);
+    persistBlockConfig({ stat: newStat });
+  };
+
+  const handleStartDateChange = (date: number | null) => {
+    formState.setStartDate(date);
+    persistBlockConfig({
+      startDate: date ? new Date(date).toISOString() : undefined,
+    });
+  };
+
+  const handleSelectedDateChange = (date: number | null) => {
+    formState.setSelectedDate(date);
+    persistBlockConfig({
+      startDate: date ? new Date(date).toISOString() : undefined,
+    });
+  };
+
+  const persistThreshold = (below: string, above: string) => {
+    persistBlockConfig({
+      threshold: {
+        below: below ? parseFloat(below) : undefined,
+        above: above ? parseFloat(above) : undefined,
+      },
+    });
+  };
+
+  const handleBelowThresholdChange = (value: string) => {
+    formState.setBelowThreshold(value);
+    persistThreshold(value, formState.aboveThreshold);
+  };
+
+  const handleAboveThresholdChange = (value: string) => {
+    formState.setAboveThreshold(value);
+    persistThreshold(formState.belowThreshold, value);
   };
 
   const handleDownloadCSV = () => {
@@ -207,18 +280,9 @@ function TableBlock({
     formState.analysisResult,
   ]);
 
-  // Disable map layer when addResultToMap is false
-  // Run whenever analysis result changes or on mount
+  // Keep map layer visibility in sync with saved table config
   useEffect(() => {
-    if (!addResultToMap) {
-      dispatch(setIsMapLayerActive(false));
-    }
-    return () => {
-      // Only restore if we actually changed it
-      if (!addResultToMap) {
-        dispatch(setIsMapLayerActive(true));
-      }
-    };
+    dispatch(setIsMapLayerActive(addResultToMap));
   }, [addResultToMap, dispatch]);
 
   // Track analysis failures and handle retries
@@ -464,19 +528,21 @@ function TableBlock({
         <Box className={classes.formSection}>
           <HazardLayerSelector
             value={formState.hazardLayerId}
-            onChange={formState.setHazardLayerId}
+            onChange={handleHazardLayerChange}
           />
         </Box>
 
         {formState.hazardDataType === GeometryType.Polygon ? (
           <Box className={classes.formSection}>
-            <DateRangeSelector
-              startDate={formState.startDate}
-              endDate={formState.endDate}
-              onStartDateChange={formState.setStartDate}
-              onEndDateChange={formState.setEndDate}
-              availableDates={formState.availableHazardDates}
-            />
+            {!useLatest && (
+              <DateRangeSelector
+                startDate={formState.startDate}
+                endDate={formState.endDate}
+                onStartDateChange={handleStartDateChange}
+                onEndDateChange={formState.setEndDate}
+                availableDates={formState.availableHazardDates}
+              />
+            )}
             <Box className={classes.dateAnalysisRow}>
               <AdminLevelSelector
                 value={formState.adminLevel}
@@ -499,13 +565,13 @@ function TableBlock({
           <Box className={classes.formSection}>
             <BaselineLayerSelector
               value={formState.baselineLayerId}
-              onChange={formState.setBaselineLayerId}
+              onChange={handleBaselineLayerChange}
             />
 
             <Box className={classes.statisticThresholdRow}>
               <StatisticSelector
                 value={formState.statistic}
-                onChange={formState.setStatistic}
+                onChange={handleStatisticChange}
                 exposureValue={formState.exposureValue}
                 onExposureValueChange={formState.setExposureValue}
                 selectedHazardLayer={formState.selectedHazardLayer}
@@ -514,19 +580,23 @@ function TableBlock({
               <ThresholdInputs
                 belowThreshold={formState.belowThreshold}
                 aboveThreshold={formState.aboveThreshold}
-                onBelowThresholdChange={formState.setBelowThreshold}
-                onAboveThresholdChange={formState.setAboveThreshold}
+                onBelowThresholdChange={handleBelowThresholdChange}
+                onAboveThresholdChange={handleAboveThresholdChange}
                 statistic={formState.statistic}
                 requiredThresholdNotSet={formState.requiredThresholdNotSet}
               />
             </Box>
 
             <Box className={classes.dateAnalysisRow}>
-              <DateSelector
-                selectedDate={formState.selectedDate}
-                onDateChange={formState.setSelectedDate}
-                availableDates={formState.availableHazardDates}
-              />
+              {!useLatest && (
+                <Box className={classes.dateColumn}>
+                  <DateSelector
+                    selectedDate={formState.selectedDate}
+                    onDateChange={handleSelectedDateChange}
+                    availableDates={formState.availableHazardDates}
+                  />
+                </Box>
+              )}
               <TextField
                 label={t('Max rows')}
                 type="number"
@@ -627,10 +697,18 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'row',
     gap: theme.spacing(2),
-    alignItems: 'flex-end',
+    alignItems: 'flex-start',
     justifyContent: 'center',
     '& > *:first-child': {
       flex: 1,
+    },
+  },
+  dateColumn: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(0.5),
+    '& > *': {
+      marginBottom: '0 !important',
     },
   },
   rerunButton: {

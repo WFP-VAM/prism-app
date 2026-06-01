@@ -1,13 +1,9 @@
-import { appConfig, safeCountry } from 'config';
-import { AggregationOperations } from 'config/aggregationOperations';
-import {
-  ChartHeight,
-  Dashboard,
-  DashboardElements,
-  DashboardElementType,
-  DashboardMapPosition,
-} from 'config/types';
+import { safeCountry } from 'config';
+import { Dashboard, DashboardElementType } from 'config/types';
+import { defaultElementForType } from 'dashboardConfig/defaultElementForType';
 import { generateSlugFromTitle } from 'utils/string-utils';
+
+export { defaultElementForType };
 
 export type DashboardPreset = 'map-left' | 'map-right' | 'two-maps';
 
@@ -16,46 +12,6 @@ export interface SlotConfig {
 }
 
 export const MAX_SIDEBAR_SLOTS = 3;
-
-const today = () => new Date().toISOString().slice(0, 10);
-
-export const defaultElementForType = (
-  type: DashboardElementType,
-): DashboardElements => {
-  switch (type) {
-    case DashboardElementType.MAP:
-      return {
-        type: DashboardElementType.MAP,
-        preSelectedMapLayers: [],
-        legendVisible: true,
-        legendPosition: DashboardMapPosition.right,
-        minMapBounds: appConfig.map.boundingBox,
-      };
-    case DashboardElementType.TEXT:
-      return { type: DashboardElementType.TEXT, content: '' };
-    case DashboardElementType.CHART:
-      return {
-        type: DashboardElementType.CHART,
-        startDate: '',
-        layerId: '',
-        chartHeight: ChartHeight.TALL,
-      };
-    case DashboardElementType.TABLE:
-      return {
-        type: DashboardElementType.TABLE,
-        startDate: today(),
-        hazardLayerId: '',
-        baselineLayerId: '',
-        stat: AggregationOperations.Mean,
-        maxRows: 10,
-        addResultToMap: true,
-        sortColumn: 'name',
-        sortOrder: 'asc',
-      };
-    default:
-      return { type: DashboardElementType.TEXT, content: '' };
-  }
-};
 
 export interface DraftMeta {
   id: string;

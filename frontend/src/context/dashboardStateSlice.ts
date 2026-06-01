@@ -10,6 +10,7 @@ import type {
 import { DashboardElementType, DashboardMode } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
 import { DateRange, MapState } from 'context/mapStateSlice';
+import { defaultElementForType } from 'dashboardConfig/defaultElementForType';
 import { Map as MaplibreMap } from 'maplibre-gl';
 import { keepLayer } from 'utils/keep-layer-utils';
 import { getLayerMapId } from 'utils/map-utils';
@@ -39,6 +40,9 @@ export interface DashboardMapState extends MapState {
   title?: string;
   legendVisible?: boolean; // default: true
   legendPosition?: 'left' | 'right'; // default: 'right'
+  useLatestAvailableDate?: boolean;
+  /** Fixed date preserved when toggling useLatestAvailableDate on in edit mode. */
+  pinnedDate?: number;
 }
 
 export interface DashboardTableState {
@@ -149,12 +153,16 @@ const createMapStateFromConfig = (
     });
   }
 
+  const useLatest = mapConfig.useLatestAvailableDate ?? false;
+
   return {
     layers: preSelectedLayers,
     dateRange: {
-      startDate: mapConfig.defaultDate
-        ? new Date(mapConfig.defaultDate).getTime()
-        : undefined,
+      startDate: useLatest
+        ? undefined
+        : mapConfig.date
+          ? new Date(mapConfig.date).getTime()
+          : undefined,
     },
     maplibreMap: () => undefined,
     errors: [],
@@ -166,6 +174,7 @@ const createMapStateFromConfig = (
     title: mapConfig.title || '',
     legendVisible: mapConfig.legendVisible ?? true,
     legendPosition: mapConfig.legendPosition ?? 'right',
+    useLatestAvailableDate: useLatest,
   };
 };
 
@@ -241,10 +250,12 @@ function buildColumnsFromState(
             layerId: l.id,
             opacity: mapState.opacityMap[l.id]?.value ?? 1.0,
           })),
-          defaultDate:
-            mapState.dateRange?.startDate !== undefined
+          useLatestAvailableDate: mapState.useLatestAvailableDate ?? false,
+          date: mapState.useLatestAvailableDate
+            ? undefined
+            : mapState.dateRange?.startDate !== undefined
               ? new Date(mapState.dateRange.startDate).toISOString()
-              : element.defaultDate,
+              : element.date,
           title: mapState.title,
           legendVisible: mapState.legendVisible,
           legendPosition: mapState.legendPosition,
@@ -336,27 +347,7 @@ function syncDraftConfig(state: DashboardState): DashboardState {
 }
 
 function createEmptyElement(type: DashboardElementType): DashboardElements {
-  switch (type) {
-    case DashboardElementType.TEXT:
-      return { type: DashboardElementType.TEXT, content: '' };
-    case DashboardElementType.CHART:
-      return {
-        type: DashboardElementType.CHART,
-        startDate: '',
-        layerId: '',
-        chartHeight: undefined,
-      } as unknown as DashboardElements;
-    case DashboardElementType.TABLE:
-      return {
-        type: DashboardElementType.TABLE,
-        startDate: '',
-        hazardLayerId: '',
-        baselineLayerId: '',
-        stat: 'mean' as any,
-      } as unknown as DashboardElements;
-    default:
-      return { type: DashboardElementType.TEXT, content: '' };
-  }
+  return defaultElementForType(type);
 }
 
 export const dashboardStateSlice = createSlice({
@@ -847,6 +838,62 @@ export const dashboardStateSlice = createSlice({
         tableStates: nextTableStates,
       });
     },
+    setMapUseLatestDate: (
+      state,
+      action: PayloadAction<{ elementId: string; value: boolean }>,
+    ) => {
+      const { elementId, value } = action.payload;
+      const mapState = state.mapStates[elementId];
+      if (!mapState) {
+        return state;
+      }
+
+      const nextMapState: DashboardMapState = value
+        ? {
+            ...mapState,
+            useLatestAvailableDate: true,
+            pinnedDate: mapState.dateRange?.startDate ?? mapState.pinnedDate,
+            dateRange: {},
+          }
+        : {
+            ...mapState,
+            useLatestAvailableDate: false,
+            dateRange: mapState.pinnedDate
+              ? { startDate: mapState.pinnedDate }
+              : mapState.dateRange,
+            pinnedDate: undefined,
+          };
+
+      return syncDraftConfig({
+        ...state,
+        mapStates: {
+          ...state.mapStates,
+          [elementId]: nextMapState,
+        },
+      });
+    },
+    updateBlockConfig: (
+      state,
+      action: PayloadAction<{
+        columnIndex: number;
+        elementIndex: number;
+        updates: Partial<DashboardElements>;
+      }>,
+    ) => {
+      const { columnIndex, elementIndex, updates } = action.payload;
+      return syncDraftConfig({
+        ...state,
+        columns: state.columns.map((column, colIdx) =>
+          colIdx === columnIndex
+            ? column.map((element, elemIdx) =>
+                elemIdx === elementIndex
+                  ? ({ ...element, ...updates } as DashboardElements)
+                  : element,
+              )
+            : column,
+        ),
+      });
+    },
   },
 });
 
@@ -948,6 +995,8 @@ export const {
   setElementType,
   removeElement,
   removeDashboard,
+  setMapUseLatestDate,
+  updateBlockConfig,
 } = dashboardStateSlice.actions;
 
 export default dashboardStateSlice.reducer;
