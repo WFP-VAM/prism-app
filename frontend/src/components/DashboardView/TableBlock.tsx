@@ -27,6 +27,7 @@ import {
   DashboardMode,
   DashboardTableConfig,
   GeometryType,
+  LayerKey,
 } from 'config/types';
 import {
   analysisResultErrorSelector,
@@ -49,6 +50,7 @@ import {
   dashboardModeSelector,
   dashboardTableStateSelector,
   selectedDashboardIndexSelector,
+  updateBlockConfig,
   updateTableState,
 } from '../../context/dashboardStateSlice';
 import BlockPreviewHeader from './BlockPreviewHeader';
@@ -155,6 +157,64 @@ function TableBlock({
         updates: { maxRows: newMaxRows },
       }),
     );
+  };
+
+  const persistBlockConfig = (updates: Partial<DashboardTableConfig>) => {
+    dispatch(
+      updateBlockConfig({
+        columnIndex,
+        elementIndex,
+        updates,
+      }),
+    );
+  };
+
+  const handleHazardLayerChange = (id: LayerKey | undefined) => {
+    formState.setHazardLayerId(id);
+    persistBlockConfig({ hazardLayerId: id ?? '' });
+  };
+
+  const handleBaselineLayerChange = (id: LayerKey | undefined) => {
+    formState.setBaselineLayerId(id);
+    persistBlockConfig({ baselineLayerId: id ?? '' });
+  };
+
+  const handleStatisticChange = (newStat: AggregationOperations) => {
+    formState.setStatistic(newStat);
+    persistBlockConfig({ stat: newStat });
+  };
+
+  const handleStartDateChange = (date: number | null) => {
+    formState.setStartDate(date);
+    persistBlockConfig({
+      startDate: date ? new Date(date).toISOString() : undefined,
+    });
+  };
+
+  const handleSelectedDateChange = (date: number | null) => {
+    formState.setSelectedDate(date);
+    persistBlockConfig({
+      startDate: date ? new Date(date).toISOString() : undefined,
+    });
+  };
+
+  const persistThreshold = (below: string, above: string) => {
+    persistBlockConfig({
+      threshold: {
+        below: below ? parseFloat(below) : undefined,
+        above: above ? parseFloat(above) : undefined,
+      },
+    });
+  };
+
+  const handleBelowThresholdChange = (value: string) => {
+    formState.setBelowThreshold(value);
+    persistThreshold(value, formState.aboveThreshold);
+  };
+
+  const handleAboveThresholdChange = (value: string) => {
+    formState.setAboveThreshold(value);
+    persistThreshold(formState.belowThreshold, value);
   };
 
   const handleToggleLayerVisibility = () => {
@@ -500,7 +560,7 @@ function TableBlock({
         <Box className={classes.formSection}>
           <HazardLayerSelector
             value={formState.hazardLayerId}
-            onChange={formState.setHazardLayerId}
+            onChange={handleHazardLayerChange}
           />
         </Box>
 
@@ -510,7 +570,7 @@ function TableBlock({
               <DateRangeSelector
                 startDate={formState.startDate}
                 endDate={formState.endDate}
-                onStartDateChange={formState.setStartDate}
+                onStartDateChange={handleStartDateChange}
                 onEndDateChange={formState.setEndDate}
                 availableDates={formState.availableHazardDates}
               />
@@ -537,13 +597,13 @@ function TableBlock({
           <Box className={classes.formSection}>
             <BaselineLayerSelector
               value={formState.baselineLayerId}
-              onChange={formState.setBaselineLayerId}
+              onChange={handleBaselineLayerChange}
             />
 
             <Box className={classes.statisticThresholdRow}>
               <StatisticSelector
                 value={formState.statistic}
-                onChange={formState.setStatistic}
+                onChange={handleStatisticChange}
                 exposureValue={formState.exposureValue}
                 onExposureValueChange={formState.setExposureValue}
                 selectedHazardLayer={formState.selectedHazardLayer}
@@ -552,8 +612,8 @@ function TableBlock({
               <ThresholdInputs
                 belowThreshold={formState.belowThreshold}
                 aboveThreshold={formState.aboveThreshold}
-                onBelowThresholdChange={formState.setBelowThreshold}
-                onAboveThresholdChange={formState.setAboveThreshold}
+                onBelowThresholdChange={handleBelowThresholdChange}
+                onAboveThresholdChange={handleAboveThresholdChange}
                 statistic={formState.statistic}
                 requiredThresholdNotSet={formState.requiredThresholdNotSet}
               />
@@ -564,7 +624,7 @@ function TableBlock({
                 <Box className={classes.dateColumn}>
                   <DateSelector
                     selectedDate={formState.selectedDate}
-                    onDateChange={formState.setSelectedDate}
+                    onDateChange={handleSelectedDateChange}
                     availableDates={formState.availableHazardDates}
                   />
                 </Box>

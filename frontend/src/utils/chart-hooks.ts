@@ -24,7 +24,7 @@ import {
 import { TableData } from 'context/tableStateSlice';
 import { GeoJsonProperties } from 'geojson';
 import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getChartAdminBoundaryParams } from 'utils/admin-utils';
 import { getLatestPeriodRange, getTimeInMilliseconds } from 'utils/date-utils';
@@ -45,8 +45,52 @@ export interface UseChartFormOptions {
   initialStartDate?: string;
   initialEndDate?: string;
   initialAdminLevel?: AdminLevelType;
+  initialAdminUnitId?: string | number;
   useLatestAvailableDate?: boolean;
   latestPeriod?: ChartLatestPeriod;
+}
+
+export function adminUnitIdFromKeys(
+  admin1Key: AdminCodeString,
+  admin2Key: AdminCodeString,
+  level: AdminLevelType,
+): string | undefined {
+  if (level === 0) {
+    return undefined;
+  }
+  if (level === 2 && admin2Key) {
+    return String(admin2Key);
+  }
+  if (admin1Key) {
+    return String(admin1Key);
+  }
+  return undefined;
+}
+
+function deriveAdminKeysFromProperties(
+  properties: GeoJsonProperties,
+  level: AdminLevelType,
+  deepestCode: string,
+  adminLevelCodes: string[],
+): { admin1Key: AdminCodeString; admin2Key: AdminCodeString } {
+  if (level === 0) {
+    return {
+      admin1Key: '' as AdminCodeString,
+      admin2Key: '' as AdminCodeString,
+    };
+  }
+  const admin1Index = multiCountry ? 1 : 0;
+  const admin1CodeField = adminLevelCodes[admin1Index];
+  if (level === 1) {
+    return {
+      admin1Key: deepestCode as AdminCodeString,
+      admin2Key: '' as AdminCodeString,
+    };
+  }
+  return {
+    admin1Key: (properties?.[admin1CodeField] ?? '') as AdminCodeString,
+    admin2Key: deepestCode as AdminCodeString,
+  };
 }
 
 export interface UseChartFormReturn {
@@ -87,12 +131,14 @@ export const useChartForm = (
     initialStartDate,
     initialEndDate,
     initialAdminLevel,
+    initialAdminUnitId,
     useLatestAvailableDate = false,
     latestPeriod = ChartLatestPeriod.MONTH,
   } = options;
 
   const dispatch = useDispatch();
   const availableDates = useSelector(availableDatesSelector);
+  const hasRestoredAdminRef = useRef(false);
 
   // Form state
   const [chartLayerId, setChartLayerId] = useState<LayerKey | undefined>(
@@ -127,8 +173,7 @@ export const useChartForm = (
     GeoJsonProperties | undefined
   >(undefined);
 
-  // Combined location setter
-  const setLocation = (
+  const setLocationInternal = (
     newAdmin1Key: AdminCodeString,
     newAdmin2Key: AdminCodeString,
     properties: GeoJsonProperties,
@@ -138,6 +183,15 @@ export const useChartForm = (
     setAdmin2Key(newAdmin2Key);
     setAdminLevel(level);
     setAdminProperties(properties);
+  };
+
+  const setLocation = (
+    newAdmin1Key: AdminCodeString,
+    newAdmin2Key: AdminCodeString,
+    properties: GeoJsonProperties,
+    level: AdminLevelType,
+  ) => {
+    setLocationInternal(newAdmin1Key, newAdmin2Key, properties, level);
   };
 
   const boundaryDataResult = useBoundaryData(boundaryLayer.id);
@@ -162,11 +216,53 @@ export const useChartForm = (
     [chartLayerId],
   );
 
+  useEffect(() => {
+    hasRestoredAdminRef.current = false;
+  }, [initialAdminUnitId, initialAdminLevel]);
+
+  // Restore admin unit selection from saved dashboard config
+  useEffect(() => {
+    if (
+      hasRestoredAdminRef.current ||
+      !boundaryLayerData?.data ||
+      initialAdminUnitId === undefined ||
+      initialAdminUnitId === null ||
+      initialAdminUnitId === ''
+    ) {
+      return;
+    }
+
+    const level = (initialAdminLevel ?? 0) as AdminLevelType;
+    const code = String(initialAdminUnitId) as AdminCodeString;
+    const properties = getProperties(boundaryLayerData.data, code, level);
+    const { admin1Key: restoredAdmin1, admin2Key: restoredAdmin2 } =
+      deriveAdminKeysFromProperties(
+        properties,
+        level,
+        String(initialAdminUnitId),
+        boundaryLayer.adminLevelCodes,
+      );
+
+    hasRestoredAdminRef.current = true;
+    setLocationInternal(restoredAdmin1, restoredAdmin2, properties, level);
+  }, [
+    boundaryLayerData,
+    initialAdminUnitId,
+    initialAdminLevel,
+    boundaryLayer.adminLevelCodes,
+  ]);
+
   // Initialize admin properties if we have boundary data and countryAdmin0Id
   useEffect(() => {
-    if (!adminProperties && countryAdmin0Id && boundaryLayerData?.data) {
-      setAdminProperties(getProperties(boundaryLayerData.data));
+    if (
+      hasRestoredAdminRef.current ||
+      adminProperties ||
+      !countryAdmin0Id ||
+      !boundaryLayerData?.data
+    ) {
+      return;
     }
+    setAdminProperties(getProperties(boundaryLayerData.data));
   }, [adminProperties, boundaryLayerData]);
 
   // Ensure adminLevel matches what's actually selected

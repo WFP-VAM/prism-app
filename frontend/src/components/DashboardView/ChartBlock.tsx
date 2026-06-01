@@ -21,16 +21,23 @@ import {
 } from 'components/Common/ChartFormComponents';
 import { buildCsvFileName, downloadToFile } from 'components/MapView/utils';
 import {
+  AdminCodeString,
   AdminLevelType,
   ChartHeight,
   ChartLatestPeriod,
   DashboardChartConfig,
   DashboardMode,
+  LayerKey,
 } from 'config/types';
+import { GeoJsonProperties } from 'geojson';
 import { useSafeTranslation } from 'i18n';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useChartData, useChartForm } from 'utils/chart-hooks';
+import {
+  adminUnitIdFromKeys,
+  useChartData,
+  useChartForm,
+} from 'utils/chart-hooks';
 import {
   createCsvDataFromDataKeyMap,
   createDataKeyMap,
@@ -65,6 +72,7 @@ function ChartBlock({
   endDate: initialEndDate,
   layerId: initialChartLayerId,
   adminUnitLevel: initialAdminLevel,
+  adminUnitId: initialAdminUnitId,
   useLatestAvailableDate: initialUseLatestAvailableDate,
   latestPeriod: initialLatestPeriod,
   allowDownload,
@@ -101,18 +109,12 @@ function ChartBlock({
     initialStartDate,
     initialEndDate,
     initialAdminLevel: initialAdminLevel as AdminLevelType | undefined,
+    initialAdminUnitId,
     useLatestAvailableDate: useLatest,
     latestPeriod: period,
   });
 
-  const persistBlockConfig = (
-    updates: Partial<
-      Pick<
-        DashboardChartConfig,
-        'useLatestAvailableDate' | 'latestPeriod' | 'startDate' | 'endDate'
-      >
-    >,
-  ) => {
+  const persistBlockConfig = (updates: Partial<DashboardChartConfig>) => {
     dispatch(
       updateBlockConfig({
         columnIndex,
@@ -157,6 +159,43 @@ function ChartBlock({
 
   // Overflow state management - lock once triggered, reset on recalculation
   const [isOverflowLocked, setIsOverflowLocked] = useState(false);
+
+  const handleLayerChange = (id: LayerKey | undefined) => {
+    formState.setChartLayerId(id);
+    persistBlockConfig({ layerId: id ?? '' });
+  };
+
+  const handleStartDateChange = (date: number | null) => {
+    formState.setStartDate(date);
+    persistBlockConfig({
+      startDate: date ? new Date(date).toISOString() : undefined,
+    });
+  };
+
+  const handleEndDateChange = (date: number | null) => {
+    formState.setEndDate(date);
+    persistBlockConfig({
+      endDate: date ? new Date(date).toISOString() : undefined,
+    });
+  };
+
+  const handleLocationChange = (
+    admin1Key: AdminCodeString,
+    admin2Key: AdminCodeString,
+    properties: GeoJsonProperties,
+    level: AdminLevelType,
+  ) => {
+    formState.setLocation(admin1Key, admin2Key, properties, level);
+    persistBlockConfig({
+      adminUnitLevel: level,
+      adminUnitId: adminUnitIdFromKeys(admin1Key, admin2Key, level),
+    });
+  };
+
+  const handleChartHeightChange = (height: ChartHeight) => {
+    setChartHeightOption(height);
+    persistBlockConfig({ chartHeight: height });
+  };
 
   const downloadFilename = buildCsvFileName([
     ...(chartTitle ? chartTitle.split(' ') : []),
@@ -413,7 +452,7 @@ function ChartBlock({
           <Box className={classes.layerSelectorRow}>
             <ChartLayerSelector
               value={formState.chartLayerId}
-              onChange={formState.setChartLayerId}
+              onChange={handleLayerChange}
               className={classes.layerSelectorFlex}
             />
           </Box>
@@ -452,8 +491,8 @@ function ChartBlock({
             <ChartDateRangeSelector
               startDate={formState.startDate}
               endDate={formState.endDate}
-              onStartDateChange={formState.setStartDate}
-              onEndDateChange={formState.setEndDate}
+              onStartDateChange={handleStartDateChange}
+              onEndDateChange={handleEndDateChange}
               hideLabel
             />
           )}
@@ -464,15 +503,15 @@ function ChartBlock({
             admin2Key={formState.admin2Key}
             labelMarginBottom={8}
             onAdmin1Change={(key, properties, level) => {
-              formState.setLocation(key, '' as any, properties, level);
-            }}
-            onAdmin2Change={(key, properties, level) => {
-              formState.setLocation(
-                formState.admin1Key,
+              handleLocationChange(
                 key,
+                '' as AdminCodeString,
                 properties,
                 level,
               );
+            }}
+            onAdmin2Change={(key, properties, level) => {
+              handleLocationChange(formState.admin1Key, key, properties, level);
             }}
           />
           <FormControl variant="outlined" className={classes.formControl}>
@@ -480,7 +519,7 @@ function ChartBlock({
             <Select
               value={chartHeightOption}
               onChange={e =>
-                setChartHeightOption(e.target.value as ChartHeight)
+                handleChartHeightChange(e.target.value as ChartHeight)
               }
               label={t('Chart Height')}
             >

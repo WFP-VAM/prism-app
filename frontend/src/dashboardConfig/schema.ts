@@ -40,7 +40,7 @@ const dashboardChartConfigSchema = z
     endDate: z.string().optional(),
     layerId: z.string(),
     adminUnitLevel: z.number().optional(),
-    adminUnitId: z.number().optional(),
+    adminUnitId: z.union([z.string(), z.number()]).optional(),
     chartHeight: z.enum(ChartHeight).optional().default(ChartHeight.TALL),
     useLatestAvailableDate: z.boolean().optional().default(false),
     latestPeriod: z
