@@ -4,9 +4,9 @@ import pytest
 from prism_app.map_export_layer_catalog import (
     get_deployment_country,
     schedule_layer_choices,
+    schedule_layer_choices_with_extra,
     schedule_layer_ids,
     schedule_layer_label,
-    schedule_layer_choices_with_extra,
 )
 
 
@@ -45,7 +45,10 @@ def test_cambodia_schedule_layers_include_rain_anomaly() -> None:
 
 
 def test_schedule_layer_label_falls_back_for_unknown_id() -> None:
-    assert schedule_layer_label("mozambique", "not_in_manifest_xyz") == "not_in_manifest_xyz"
+    assert (
+        schedule_layer_label("mozambique", "not_in_manifest_xyz")
+        == "not_in_manifest_xyz"
+    )
 
 
 def test_schedule_layer_choices_with_extra_includes_legacy_id() -> None:

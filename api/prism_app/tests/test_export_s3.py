@@ -80,9 +80,7 @@ def test_public_maps_folder_uri_local_file_scheme(
 ) -> None:
     monkeypatch.setenv("EXPORT_MAP_S3_BUCKET", "")
     monkeypatch.setenv("EXPORT_MAP_LOCAL_OUTPUT_DIR", str(tmp_path))
-    export_url = (
-        "https://prism.example/export?date={date}&hazardLayerIds=my_layer"
-    )
+    export_url = "https://prism.example/export?date={date}&hazardLayerIds=my_layer"
     uri = public_maps_folder_uri(export_url, country="cambodia")
     assert uri.startswith("file://")
     assert "public_maps/cambodia/my_layer" in uri
