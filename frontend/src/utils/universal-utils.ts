@@ -14,8 +14,9 @@ const ADMIN3_ISO3_CODES = new Set(
     .filter(code => /^[A-Z0-9]{3}$/.test(code)),
 );
 
-export function isUrlDrivenDeployment(): boolean {
-  return Boolean(appConfig.urlDriven);
+export function isUniversalDeployment(): boolean {
+  const config = appConfig as { universal?: boolean; urlDriven?: boolean };
+  return Boolean(config.universal ?? config.urlDriven);
 }
 
 export function normalizeIso3(iso3: string | undefined): string | undefined {
@@ -70,7 +71,7 @@ export function getDisplayBoundaryLayersForIso3(
   iso3?: string,
 ): BoundaryLayerProps[] {
   const layers = getDisplayBoundaryLayers();
-  if (!isUrlDrivenDeployment() || !iso3) {
+  if (!isUniversalDeployment() || !iso3) {
     return layers;
   }
   if (hasAdmin3ForCountry(iso3)) {
@@ -79,11 +80,11 @@ export function getDisplayBoundaryLayersForIso3(
   return layers.filter(layer => layer.id !== UNIVERSAL_ADMIN3_LAYER_ID);
 }
 
-/** Returns the normalized ISO3 code from the URL pathname, or undefined for non-URL-driven deployments. */
+/** Returns the normalized ISO3 code from the URL pathname, or undefined for non-universal deployments. */
 export function getIso3FromPathname(
   pathname: string = window.location.pathname,
 ): string | undefined {
-  if (!isUrlDrivenDeployment()) {
+  if (!isUniversalDeployment()) {
     return undefined;
   }
   const match = pathname.match(/\/country\/([^/]+)/i);
@@ -104,7 +105,7 @@ export function resolveChartBoundaryProperty(
   ) {
     return properties[chartFieldKey];
   }
-  if (!isUrlDrivenDeployment()) {
+  if (!isUniversalDeployment()) {
     return undefined;
   }
   const universalKey = chartFieldKey.replace(

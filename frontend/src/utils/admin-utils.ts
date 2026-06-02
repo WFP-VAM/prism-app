@@ -15,15 +15,15 @@ import { CHART_API_URL } from 'utils/constants';
 import { GoogleFloodParams } from './google-flood-utils';
 import { getEffectiveMultiCountry } from './universal-country-admin';
 import {
-  isUrlDrivenDeployment,
+  isUniversalDeployment,
   resolveChartBoundaryProperty,
 } from './universal-utils';
 
 const multiCountry = getEffectiveMultiCountry();
-// URL-driven deployments use the same boundary layer structure as multiCountry (adm0 included),
+// Universal deployments use the same boundary layer structure as multiCountry (adm0 included),
 // so name lookups must use the level index directly without subtracting 1.
-const isUrlDriven = isUrlDrivenDeployment();
-const MAX_ADMIN_LEVEL = isUrlDriven ? 4 : multiCountry ? 3 : 2;
+const isUniversal = isUniversalDeployment();
+const MAX_ADMIN_LEVEL = isUniversal ? 4 : multiCountry ? 3 : 2;
 const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
 export function getAdminLevelLayer(
@@ -71,10 +71,10 @@ export const getChartAdminBoundaryParams = (
   // Take in chart url if provided, otherwise use default CHART_API_URL
   const url = chartUrl || CHART_API_URL;
 
-  // In multiCountry and url-driven deployments the boundary layer includes adm0,
+  // In multiCountry and universal deployments the boundary layer includes adm0,
   // so the chart level index maps directly (offset = 0). Single-country deployments
   // start their boundary codes at adm1, so we subtract 1 to align them.
-  const levelOffset = multiCountry || isUrlDriven ? 0 : 1;
+  const levelOffset = multiCountry || isUniversal ? 0 : 1;
 
   // TODO - why not reduce this by level directly?
   const boundaryProps = levels.reduce(

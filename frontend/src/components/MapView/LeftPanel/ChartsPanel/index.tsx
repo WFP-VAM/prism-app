@@ -47,7 +47,7 @@ import {
   useEffectiveBoundaryLayer,
   useEffectiveCountryAdmin0Id,
 } from 'utils/universal-country-admin';
-import { isUrlDrivenDeployment } from 'utils/universal-utils';
+import { isUniversalDeployment } from 'utils/universal-utils';
 import { useBoundaryData } from 'utils/useBoundaryData';
 
 import {
@@ -86,7 +86,7 @@ const tabPanelType = Panel.Charts;
 const ChartsPanel = memo(() => {
   const countryAdmin0Id = useEffectiveCountryAdmin0Id();
   const boundaryLayer = useEffectiveBoundaryLayer();
-  const isUrlDriven = isUrlDrivenDeployment();
+  const isUniversal = isUniversalDeployment();
   const { data } = useBoundaryData(boundaryLayer.id);
   const classes = useStyles();
   const [compareLocations, setCompareLocations] = useState(false);
@@ -682,7 +682,7 @@ const ChartsPanel = memo(() => {
                 setAdmin3Key('' as AdminCodeString);
                 setAdminLevel(level);
                 setAdminProperties(properties);
-                const nameIndex = isUrlDriven ? level : level - 1;
+                const nameIndex = isUniversal ? level : level - 1;
                 const admin1Name =
                   data &&
                   boundaryLayer?.adminLevelNames?.[nameIndex] &&
@@ -695,7 +695,7 @@ const ChartsPanel = memo(() => {
                 setAdmin3Key('' as AdminCodeString);
                 setAdminLevel(level);
                 setAdminProperties(properties);
-                const nameIndex = isUrlDriven ? level : level - 1;
+                const nameIndex = isUniversal ? level : level - 1;
                 const admin2Name =
                   data &&
                   boundaryLayer?.adminLevelNames?.[nameIndex] &&
@@ -737,7 +737,7 @@ const ChartsPanel = memo(() => {
                   setSecondAdmin3Key('' as AdminCodeString);
                   setSecondAdminLevel(level);
                   setSecondAdminProperties(properties);
-                  const nameIndex = isUrlDriven ? level : level - 1;
+                  const nameIndex = isUniversal ? level : level - 1;
                   const admin1Name =
                     data &&
                     boundaryLayer?.adminLevelNames?.[nameIndex] &&
@@ -750,7 +750,7 @@ const ChartsPanel = memo(() => {
                   setSecondAdmin3Key('' as AdminCodeString);
                   setSecondAdminLevel(level);
                   setSecondAdminProperties(properties);
-                  const nameIndex = isUrlDriven ? level : level - 1;
+                  const nameIndex = isUniversal ? level : level - 1;
                   const admin2Name =
                     data &&
                     boundaryLayer?.adminLevelNames?.[nameIndex] &&

@@ -1,5 +1,3 @@
-import { isUrlDrivenDeployment } from 'utils/universal-utils';
-
 export function getUniversalBasePath(iso3?: string): string {
   if (!iso3) {
     return '/';
@@ -20,8 +18,4 @@ export function getUniversalDashboardPath(
     return `${base}/dashboard`;
   }
   return `${base}/dashboard/${dashboardSlug}`;
-}
-
-export function isUniversalRouteActive(): boolean {
-  return isUrlDrivenDeployment();
 }

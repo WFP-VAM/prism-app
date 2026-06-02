@@ -20,7 +20,7 @@ import { GeoJsonProperties } from 'geojson';
 import { useSafeTranslation } from 'i18n';
 import { sortBy } from 'lodash';
 import React from 'react';
-import { isUrlDrivenDeployment } from 'utils/universal-utils';
+import { isUniversalDeployment } from 'utils/universal-utils';
 
 interface ChartLocationSelectorProps {
   boundaryLayerData: BoundaryLayerData | undefined;
@@ -72,7 +72,7 @@ function ChartLocationSelector({
     return null;
   }
 
-  const isUrlDriven = isUrlDrivenDeployment();
+  const isUniversal = isUniversalDeployment();
 
   const adminBoundaryTree = getAdminBoundaryTree(
     boundaryLayerData,
@@ -80,10 +80,10 @@ function ChartLocationSelector({
     i18nLocale,
   );
 
-  // In URL-driven mode the country is fixed by the URL; skip the country tier and
+  // In universal deployments the country is fixed by the URL; skip the country tier and
   // show provinces as Admin 1, districts as Admin 2, admin posts as Admin 3.
   const rootTree: { [code: string]: AdminBoundaryTree } =
-    isUrlDriven && countryAdm0Id !== undefined
+    isUniversal && countryAdm0Id !== undefined
       ? (adminBoundaryTree.children[String(countryAdm0Id)]?.children ?? {})
       : adminBoundaryTree.children;
 
@@ -172,7 +172,7 @@ function ChartLocationSelector({
     ));
 
   const showAdmin3Dropdown =
-    isUrlDriven && admin2Key && orderedAdmin3Areas.length > 0;
+    isUniversal && admin2Key && orderedAdmin3Areas.length > 0;
 
   return (
     <div className={classes.container}>
@@ -202,7 +202,7 @@ function ChartLocationSelector({
           variant="outlined"
           disabled={disabled || orderedAdmin1Areas.length === 0}
         >
-          {!isUrlDriven && (
+          {!isUniversal && (
             <MenuItem value="">
               <Box className={classes.removeAdmin}>{t('Country Level')}</Box>
             </MenuItem>

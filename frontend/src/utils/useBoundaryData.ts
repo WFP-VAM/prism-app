@@ -7,7 +7,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { boundaryCache } from './boundary-cache';
-import { isUrlDrivenDeployment } from './universal-utils';
+import { isUniversalDeployment } from './universal-utils';
 
 export function useBoundaryData(
   layerId: string,
@@ -19,7 +19,7 @@ export function useBoundaryData(
 } {
   const dispatch = useDispatch();
   const { iso3 } = useCountryIso();
-  const iso3Filter = isUrlDrivenDeployment() ? iso3 : undefined;
+  const iso3Filter = isUniversalDeployment() ? iso3 : undefined;
   const [data, setData] = useState<BoundaryLayerData | undefined>(
     boundaryCache.getCachedData(layerId, iso3Filter),
   );

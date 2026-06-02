@@ -6,35 +6,41 @@ import {
   Typography,
 } from '@material-ui/core';
 import { wfpLogo } from 'assets/images';
+import { useSafeTranslation } from 'i18n';
 import { colors } from 'muiTheme';
 import { Link, useParams } from 'react-router-dom';
 
 function CountryInvalidPage() {
   const classes = useStyles();
   const { iso3 } = useParams<{ iso3?: string }>();
+  const { t } = useSafeTranslation();
 
   return (
     <div className={classes.root}>
       <div className={classes.card}>
         <Typography className={classes.brand} variant="h6">
-          PRISM
+          {t('PRISM')}
         </Typography>
 
         <Box className={classes.divider} />
 
         <Typography className={classes.heading}>
-          {iso3 ? 'Invalid country code' : 'No country selected'}
+          {iso3 ? t('Invalid country code') : t('No country selected')}
         </Typography>
 
         <Typography className={classes.body}>
           {iso3
-            ? `"${iso3}" is not a recognised ISO 3166-1 alpha-3 country code.`
-            : 'A country code is required to load the map view.'}
+            ? t(
+                '"{{iso3}}" is not a recognised ISO 3166-1 alpha-3 country code.',
+                { iso3 },
+              )
+            : t('A country code is required to load the map view.')}
         </Typography>
 
         <Typography className={classes.hint}>
-          Navigate to <code className={classes.code}>/country/{'{ISO3}'}</code>{' '}
-          using a valid three-letter code — for example,{' '}
+          {t('Navigate to')}{' '}
+          <code className={classes.code}>/country/{'{ISO3}'}</code>{' '}
+          {t('using a valid three-letter code — for example,')}{' '}
           <code className={classes.code}>/country/moz</code>.
         </Typography>
 
@@ -42,7 +48,7 @@ function CountryInvalidPage() {
           // @ts-expect-error - react-router-dom v5 types incompatible with React 18
           <Link to="/country/MOZ" className={classes.link}>
             <Button variant="contained" className={classes.button}>
-              Open Mozambique
+              {t('Open Mozambique')}
             </Button>
           </Link>
         )}
@@ -50,7 +56,7 @@ function CountryInvalidPage() {
         <img
           className={classes.logo}
           src={wfpLogo}
-          alt="World Food Programme logo"
+          alt={t('World Food Programme logo')}
         />
       </div>
     </div>

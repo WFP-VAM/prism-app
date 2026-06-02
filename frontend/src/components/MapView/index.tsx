@@ -14,7 +14,7 @@ import { boundaryCache } from 'utils/boundary-cache';
 import {
   getCountryBbox,
   getDisplayBoundaryLayersForIso3,
-  isUrlDrivenDeployment,
+  isUniversalDeployment,
 } from 'utils/universal-utils';
 import { useMapState } from 'utils/useMapState';
 
@@ -38,7 +38,7 @@ const MapView = memo(() => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!isUrlDrivenDeployment() || !iso3) {
+    if (!isUniversalDeployment() || !iso3) {
       return;
     }
     boundaryCache.clearCache();
@@ -59,7 +59,7 @@ const MapView = memo(() => {
 
     displayedBoundaryLayers.forEach(l => actions.addLayer(l));
 
-    if (!isUrlDrivenDeployment() || !iso3) {
+    if (!isUniversalDeployment() || !iso3) {
       boundaryCache.preloadBoundaries(displayedBoundaryLayers, dispatch, map);
       return undefined;
     }

@@ -5,7 +5,7 @@ import { useCountryIso } from 'context/useCountryIso';
 import { useMemo } from 'react';
 import { useBoundaryData } from 'utils/useBoundaryData';
 
-import { isUrlDrivenDeployment } from './universal-utils';
+import { isUniversalDeployment } from './universal-utils';
 
 export function useEffectiveCountryAdmin0Id(): number | undefined {
   const { iso3 } = useCountryIso();
@@ -14,7 +14,7 @@ export function useEffectiveCountryAdmin0Id(): number | undefined {
   );
 
   return useMemo(() => {
-    if (!isUrlDrivenDeployment()) {
+    if (!isUniversalDeployment()) {
       return appConfig.countryAdmin0Id;
     }
 
@@ -29,7 +29,7 @@ export function useEffectiveCountryAdmin0Id(): number | undefined {
 }
 
 export function getEffectiveMultiCountry(): boolean {
-  return isUrlDrivenDeployment() ? false : Boolean(appConfig.multiCountry);
+  return isUniversalDeployment() ? false : Boolean(appConfig.multiCountry);
 }
 
 export function useEffectiveMultiCountry(): boolean {
@@ -41,7 +41,7 @@ export function useEffectiveBoundaryLayer(): BoundaryLayerProps {
   const { iso3, admin3Available } = useCountryIso();
 
   return useMemo(() => {
-    if (isUrlDrivenDeployment()) {
+    if (isUniversalDeployment()) {
       return getBoundaryLayersByAdminLevel(admin3Available ? 4 : 3);
     }
     return getBoundaryLayersByAdminLevel(appConfig.multiCountry ? 3 : 2);
@@ -62,7 +62,7 @@ export function useEffectiveAdminLevelOptions(): [AdminLevelType, string][] {
     // adm0 is always the first code in every universal boundary layer and in
     // multiCountry single-country deployments, so skip one slot to get subnational.
     const offset =
-      isUrlDrivenDeployment() || Boolean(appConfig.multiCountry) ? 1 : 0;
+      isUniversalDeployment() || Boolean(appConfig.multiCountry) ? 1 : 0;
     const count = boundaryLayer.adminLevelCodes.length - offset;
     return Array.from({ length: count }, (_, i) => [
       (offset + i + 1) as AdminLevelType,

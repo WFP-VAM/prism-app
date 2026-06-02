@@ -31,11 +31,11 @@ import {
   setSelectedDashboard,
 } from '../../context/dashboardStateSlice';
 import { generateSlugFromTitle } from '../../utils/string-utils';
+import { getUniversalDashboardPath } from '../../utils/universal-routing';
 import {
-  getUniversalDashboardPath,
-  isUniversalRouteActive,
-} from '../../utils/universal-routing';
-import { normalizeIso3 } from '../../utils/universal-utils';
+  isUniversalDeployment,
+  normalizeIso3,
+} from '../../utils/universal-utils';
 import DashboardContent from './DashboardContent';
 import { DashboardExportDialog } from './DashboardExport';
 
@@ -57,7 +57,7 @@ function DashboardView() {
     iso3?: string;
   }>();
   const history = useHistory();
-  const urlDriven = isUniversalRouteActive();
+  const isUniversal = isUniversalDeployment();
   const iso3 = normalizeIso3(iso3Param);
   const viewStartRef = useRef<number>(Date.now());
 
@@ -126,7 +126,7 @@ function DashboardView() {
       const firstDashboardPath =
         firstDashboard.path || generateSlugFromTitle(firstDashboard.title);
       history.replace(
-        urlDriven
+        isUniversal
           ? getUniversalDashboardPath(iso3, firstDashboardPath)
           : `/dashboard/${firstDashboardPath}`,
       );
@@ -136,7 +136,7 @@ function DashboardView() {
     dispatch,
     history,
     dashboards,
-    dashboardConfig.selectedDashboardIndex, urlDriven, iso3
+    dashboardConfig.selectedDashboardIndex, isUniversal, iso3
   ]);
 
   const handlePreviewClick = () => {

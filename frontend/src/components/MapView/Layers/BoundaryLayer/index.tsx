@@ -20,7 +20,7 @@ import {
   useMapCallback,
 } from 'utils/map-utils';
 import { getFullLocationName } from 'utils/name-utils';
-import { getIso3MapFilter, isUrlDrivenDeployment } from 'utils/universal-utils';
+import { getIso3MapFilter, isUniversalDeployment } from 'utils/universal-utils';
 import { useBoundaryData } from 'utils/useBoundaryData';
 import { useMapState } from 'utils/useMapState';
 
@@ -80,7 +80,7 @@ const onMouseLeave = () => (evt: MapLayerMouseEvent) =>
 const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
   const selectedMap = useMapState()?.maplibreMap();
   const { iso3 } = useCountryIso();
-  const iso3Filter = isUrlDrivenDeployment()
+  const iso3Filter = isUniversalDeployment()
     ? (getIso3MapFilter(iso3) as any)
     : undefined;
   const [isZoomLevelSufficient, setIsZoomLevelSufficient] = useState(
