@@ -232,7 +232,7 @@ function DashboardContent({
   };
 
   // Column Height Management - extracted to custom hook
-  const { componentHeights, columnRefs, componentRefs, recalculationCount } =
+  const { componentHeights, columnRefs, componentRefs } =
     useColumnHeightManagement({
       mode,
       exportConfig,
@@ -343,6 +343,9 @@ function DashboardContent({
         display: 'flex',
         flexDirection: 'column' as const,
         overflow: heightConfig.overflow,
+        ...(heightConfig.overflow === 'scroll'
+          ? { overflowX: 'hidden' as const, scrollbarGutter: 'stable' as const }
+          : {}),
       };
     };
 
@@ -485,8 +488,7 @@ function DashboardContent({
               useLatestAvailableDate={element.useLatestAvailableDate}
               latestPeriod={element.latestPeriod}
               allowDownload={!exportConfig}
-              isOverflowing={heightConfig?.overflow === 'auto'}
-              recalculationCount={recalculationCount}
+              isOverflowing={heightConfig?.overflow === 'scroll'}
               headerSlot={
                 mode === DashboardMode.EDIT
                   ? renderBlockTypeSelector(
