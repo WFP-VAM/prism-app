@@ -578,10 +578,13 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       params;
 
     const adminBoundaries = getBoundaryLayerSingleton();
+    const iso3 = getIso3FromUrl();
 
     const boundaryData = await boundaryCache.getBoundaryData(
       adminBoundaries,
       api.dispatch,
+      undefined,
+      iso3,
     );
     if (!boundaryData) {
       throw new Error('Boundary Layer not loaded!');
@@ -779,10 +782,13 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     (baselineLayer as AdminLevelDataLayerProps)?.adminLevel ||
     (baselineLayer as BoundaryLayerProps)?.adminLevelCodes?.length;
   const adminBoundaries = getBoundaryLayersByAdminLevel(adminLevel);
+  const iso3 = getIso3FromUrl();
 
   const boundaryData = await boundaryCache.getBoundaryData(
     adminBoundaries,
     api.dispatch,
+    undefined,
+    iso3,
   );
   if (!boundaryData && adminBoundaries.format !== 'pmtiles') {
     throw new Error('Boundary Layer not loaded!');

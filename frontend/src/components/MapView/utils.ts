@@ -363,7 +363,7 @@ export const getProperties = (
   const indexLevel = multiCountry || isUrlDriven ? adminLevel : adminLevel - 1;
   const adminCode = boundaryLayer.adminLevelCodes[indexLevel];
   const item = layerData.features.find(
-    elem => elem.properties && elem.properties[adminCode] === id,
+    elem => elem.properties && String(elem.properties[adminCode]) === id,
   );
   return item?.properties ?? {};
 };

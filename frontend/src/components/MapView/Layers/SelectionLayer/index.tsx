@@ -1,3 +1,4 @@
+import { AdminCodeString } from 'config/types';
 import { getBoundaryLayerSingleton } from 'config/utils';
 import {
   getIsSelectionMode,

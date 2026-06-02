@@ -106,7 +106,7 @@ def _read_zones(
         query = f"CREATE VIEW {view_name} AS SELECT *"
         if simplify_tolerance is not None:
             query += f" exclude(geometry), ST_Simplify(geometry, {simplify_tolerance}) AS geometry"
-        query += f" FROM read_parquet('{zones_filepath}')"
+        query += f" FROM read_parquet('{zones_filepath}', hive_partitioning=true)"
         conditions: list[str] = []
         if admin_level is not None:
             conditions.append(f"admin_level = {admin_level}")
