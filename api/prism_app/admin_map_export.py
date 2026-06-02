@@ -398,6 +398,10 @@ class MapExportScheduleView(PrismGatedModelView):
             raise FormValidationError(
                 {"__all__": "Source schedule not found or not accessible"},
             )
+        if not source.country:
+            raise FormValidationError(
+                {"__all__": "Source schedule is missing country"},
+            )
         if not source.export_url or not source.export_options:
             raise FormValidationError(
                 {"__all__": "Source schedule is missing export configuration"},
@@ -467,14 +471,19 @@ class MapExportScheduleView(PrismGatedModelView):
         obj: MapExportSchedule,
     ) -> None:
         clone_from = request.query_params.get("clone_from")
-        if clone_from:
-            source = await self._load_clone_source(request, clone_from)
-            obj.export_url = source.export_url
-            obj.export_options = source.export_options
-            obj.admin_areas = source.admin_areas
+        if not clone_from:
+            raise FormValidationError(
+                {
+                    "__all__": "Schedules can only be created by cloning an existing schedule",
+                },
+            )
+        source = await self._load_clone_source(request, clone_from)
+        obj.export_url = source.export_url
+        obj.export_options = source.export_options
+        obj.admin_areas = source.admin_areas
 
         user = admin_user_from_request(request)
-        country = get_deployment_country()
+        country = source.country
         obj.country = country
         obj.created_by_user_id = user.id
         cadence = _parse_cadence(data.get("cadence") or obj.cadence)

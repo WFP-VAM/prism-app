@@ -21,6 +21,7 @@ from prism_app.database.map_export_schedule_model import (
 )
 from sqlalchemy import select
 from starlette.requests import Request
+from starlette_admin.exceptions import FormValidationError
 
 
 def _request(*, admin_access: bool, user_id=None, query_string: bytes = b"") -> Request:
@@ -122,14 +123,14 @@ async def test_before_create_clone_copies_export_url_and_options(
     view = MapExportScheduleView(MapExportSchedule)
     source = MapExportSchedule(
         id="sched-1",
-        name="mozambique precip monthly PDF",
-        country="mozambique",
+        name="zimbabwe precip monthly PDF",
+        country="zimbabwe",
         layer_id="precip_blended_dekad",
         cadence="monthly",
         export_url="http://x/export?date={date}&hazardLayerIds={layer_id}",
         format="pdf",
         export_options={"origin": "http://x"},
-        admin_areas="MOZ01,MOZ02",
+        admin_areas="ZWE01,ZWE02",
     )
     obj = MapExportSchedule(
         name="temp",
@@ -170,7 +171,41 @@ async def test_before_create_clone_copies_export_url_and_options(
     assert obj.export_url == source.export_url
     assert obj.export_options == source.export_options
     assert obj.admin_areas == source.admin_areas
+    assert obj.country == "zimbabwe"
     assert obj.created_by_user_id == owner_id
+
+
+@pytest.mark.asyncio
+async def test_load_clone_source_rejects_missing_country(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from contextlib import nullcontext
+    from unittest.mock import MagicMock
+
+    view = MapExportScheduleView(MapExportSchedule)
+    source = MapExportSchedule(
+        id="sched-1",
+        name="no country",
+        country="",
+        layer_id="precip_blended_dekad",
+        cadence="monthly",
+        export_url="http://x/export",
+        format="pdf",
+        export_options={"origin": "http://x"},
+    )
+    request = _request(admin_access=True)
+    session = MagicMock()
+    session.no_autoflush.return_value = nullcontext()
+    request.state.session = session
+
+    async def _fake_find_by_pk(_request: Request, pk: str) -> MapExportSchedule:
+        assert pk == "sched-1"
+        return source
+
+    monkeypatch.setattr(view, "find_by_pk", _fake_find_by_pk)
+
+    with pytest.raises(FormValidationError, match="missing country"):
+        await view._load_clone_source(request, "sched-1")
 
 
 @pytest.mark.asyncio
