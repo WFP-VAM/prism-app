@@ -5,8 +5,7 @@ import { getDisplayBoundaryLayers } from 'config/utils';
 
 type CountriesKey = keyof typeof universalMetadata.countries;
 
-export const UNIVERSAL_ADMIN3_LAYER_ID: LayerKey =
-  'universal_admin3_boundaries';
+const UNIVERSAL_ADMIN3_LAYER_ID: LayerKey = 'universal_admin3_boundaries';
 
 const ADMIN3_ISO3_CODES = new Set(
   universalMetadata.admin3Countries
@@ -129,5 +128,3 @@ export function getCountryBbox(
   const [a, b, c, d] = universalMetadata.countries[normalized as CountriesKey];
   return [a, b, c, d];
 }
-
-export { universalMetadata };

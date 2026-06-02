@@ -32,10 +32,6 @@ export function getEffectiveMultiCountry(): boolean {
   return isUniversalDeployment() ? false : Boolean(appConfig.multiCountry);
 }
 
-export function useEffectiveMultiCountry(): boolean {
-  return getEffectiveMultiCountry();
-}
-
 /** Deepest boundary layer available for the active country. */
 export function useEffectiveBoundaryLayer(): BoundaryLayerProps {
   const { iso3, admin3Available } = useCountryIso();
