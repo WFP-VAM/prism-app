@@ -65,4 +65,22 @@ describe('boundary-cache forceRefresh', () => {
       boundaryCache.getCachedData(layer.id)?.features?.[0]?.properties?.id,
     ).toBe('fresh');
   });
+
+  it('does not cache empty PMTiles feature collections', async () => {
+    const pmtilesLayer = {
+      ...layer,
+      id: 'pmtiles_boundary',
+      format: 'pmtiles',
+    } as BoundaryLayerProps;
+
+    mockFetchBoundaryLayerData.mockImplementation(() => async () => ({
+      type: 'FeatureCollection' as const,
+      features: [],
+    }));
+
+    const result = await boundaryCache.getBoundaryData(pmtilesLayer, dispatch);
+
+    expect(result?.features).toHaveLength(0);
+    expect(boundaryCache.getCachedData(pmtilesLayer.id)).toBeUndefined();
+  });
 });

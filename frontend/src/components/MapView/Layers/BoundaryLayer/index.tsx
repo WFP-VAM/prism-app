@@ -6,11 +6,12 @@ import { BoundaryLayerProps, MapEventWrapFunctionProps } from 'config/types';
 import { isPrimaryBoundaryLayer } from 'config/utils';
 import { toggleSelectedBoundary } from 'context/mapSelectionLayerStateSlice';
 import { setBoundaryRelationData } from 'context/mapStateSlice';
+import { addNotification } from 'context/notificationStateSlice';
 import { showPopup } from 'context/tooltipStateSlice';
 import { useCountryIso } from 'context/useCountryIso';
 import { languages } from 'i18n';
 import { Map as MaplibreMap } from 'maplibre-gl';
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { Layer, MapLayerMouseEvent, Source } from 'react-map-gl/maplibre';
 import { useDispatch } from 'react-redux';
 import {
@@ -87,7 +88,11 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
     !layer.minZoom,
   );
 
-  const { data } = useBoundaryData(layer.id, selectedMap);
+  const { data, error: boundaryDataError } = useBoundaryData(
+    layer.id,
+    selectedMap,
+  );
+  const notifiedBoundaryErrorRef = useRef<string | undefined>();
 
   const layerId = getLayerMapId(layer.id, 'fill');
 
@@ -113,6 +118,23 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
 
   const dispatch = useDispatch();
   const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
+
+  useEffect(() => {
+    if (layer.format !== 'pmtiles' || !boundaryDataError) {
+      return;
+    }
+    if (notifiedBoundaryErrorRef.current === boundaryDataError) {
+      return;
+    }
+    notifiedBoundaryErrorRef.current = boundaryDataError;
+    dispatch(
+      addNotification({
+        message: boundaryDataError,
+        type: 'warning',
+      }),
+    );
+  }, [boundaryDataError, dispatch, layer.format]);
+
   useEffect(() => {
     if (!data || !isPrimaryLayer || layer.format !== 'pmtiles') {
       return;

@@ -19,8 +19,22 @@ export const fetchBoundaryLayerData: LazyLoader<BoundaryLayerProps> =
 
     try {
       if (format === 'pmtiles') {
-        const p = getPmtilesInstance(path);
-        const header = await p.getHeader();
+        let p;
+        let header;
+        try {
+          p = getPmtilesInstance(path);
+          header = await p.getHeader();
+        } catch (headerError) {
+          const message = `Failed to load boundary layer: PMTiles archive at ${path} is unreachable`;
+          console.error(message, headerError);
+          dispatch(
+            addNotification({
+              message,
+              type: 'warning',
+            }),
+          );
+          return undefined;
+        }
 
         const allFeatures = map.querySourceFeatures(`source-${layer.id}`, {
           sourceLayer: layer.layerName,

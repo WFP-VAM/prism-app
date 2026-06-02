@@ -3,11 +3,20 @@ import { LayerDefinitions } from 'config/utils';
 import { BoundaryLayerData } from 'context/layers/boundary';
 import { useCountryIso } from 'context/useCountryIso';
 import { Map as MaplibreMap, MapSourceDataEvent } from 'maplibre-gl';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { boundaryCache } from './boundary-cache';
 import { isUniversalDeployment } from './universal-utils';
+
+export const PMTILES_MAX_SOURCE_RETRIES = 5;
+
+export function shouldRetryPmtilesLoad(
+  retryCount: number,
+  featureCount: number,
+): boolean {
+  return featureCount === 0 && retryCount < PMTILES_MAX_SOURCE_RETRIES;
+}
 
 export function useBoundaryData(
   layerId: string,
@@ -70,6 +79,13 @@ export function useBoundaryData(
     loadData();
   }, [loadData]);
 
+  const pmtilesRetryCountRef = useRef(0);
+
+  useEffect(() => {
+    pmtilesRetryCountRef.current = 0;
+    setError(undefined);
+  }, [layerId, iso3Filter]);
+
   // For PMTiles: retry when tiles finish loading if cache is still empty
   useEffect(() => {
     const layer = LayerDefinitions[layerId] as BoundaryLayerProps;
@@ -80,8 +96,17 @@ export function useBoundaryData(
     const onSourceData = (e: MapSourceDataEvent) => {
       if (e.sourceId === sourceId && e.isSourceLoaded) {
         const cached = boundaryCache.getCachedData(layerId, iso3Filter);
-        if (!cached?.features?.length) {
+        const featureCount = cached?.features?.length ?? 0;
+        if (
+          shouldRetryPmtilesLoad(pmtilesRetryCountRef.current, featureCount)
+        ) {
+          pmtilesRetryCountRef.current += 1;
           loadData();
+          return;
+        }
+        if (featureCount === 0) {
+          const retryError = `Boundary layer "${layerId}" failed to load features from PMTiles after ${PMTILES_MAX_SOURCE_RETRIES} attempts`;
+          setError(retryError);
         }
       }
     };

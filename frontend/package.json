@@ -45,6 +45,7 @@
     "check-boundary-keys": "node ./scripts/check-boundary-keys-validity.js",
     "preprocess-layers": "ts-node --compilerOptions \"{\\\"module\\\":\\\"commonjs\\\"}\" ./scripts/preprocess-layers.ts",
     "generate-schedule-layer-manifest": "ts-node --compilerOptions \"{\\\"module\\\":\\\"commonjs\\\"}\" ./scripts/generate-schedule-layer-manifest.ts",
+    "validate-pmtiles": "ts-node --compilerOptions \"{\\\"module\\\":\\\"commonjs\\\"}\" ./scripts/validate-pmtiles-layers.ts",
     "setup:instance": "ts-node --compilerOptions \"{\\\"module\\\":\\\"commonjs\\\"}\" ./scripts/setup-new-instance.ts",
     "audit": "node ../scripts/yarn-audit-summary.js"
   },
