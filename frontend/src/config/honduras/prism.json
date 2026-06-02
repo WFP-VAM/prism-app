@@ -1,0 +1,88 @@
+{
+  "country": "Honduras",
+  "defaultLanguage": "en",
+  "alertFormActive": false,
+  "serversUrls": {
+    "wms": [
+      "https://api.earthobservation.vam.wfp.org/ows/wms"
+    ]
+  },
+  "map": {
+    "boundingBox": [
+      -89.35,
+      12.98,
+      -83.15,
+      16.01
+    ]
+  },
+  "defaultDisplayBoundaries": [
+    "admin1_boundaries",
+    "admin_boundaries"
+  ],
+  "categories": {
+    "rainfall": {
+      "rainfall_data": [
+        "daily_rainfall_forecast",
+        "dekad_rainfall_forecast",
+        "dekad_rainfall_anomaly_forecast",
+        "rainfall_daily",
+        "rainfall_dekad",
+        "rain_anomaly_dekad",
+        "rainfall_agg_1month",
+        "rain_anomaly_1month",
+        "rainfall_agg_3month",
+        "rain_anomaly_3month",
+        "rainfall_agg_2month",
+        "rain_anomaly_2month",
+        "rainfall_agg_4month",
+        "rain_anomaly_4month",
+        "rainfall_agg_5month",
+        "rain_anomaly_5month",
+        "rainfall_agg_6month",
+        "rain_anomaly_6month",
+        "rainfall_agg_7month",
+        "rain_anomaly_7month",
+        "rainfall_agg_8month",
+        "rain_anomaly_8month",
+        "rainfall_agg_9month",
+        "rain_anomaly_9month",
+        "rainfall_agg_1year",
+        "rain_anomaly_1year",
+        "spi_1m",
+        "spi_2m",
+        "spi_3m",
+        "spi_6m",
+        "spi_9m",
+        "spi_1y",
+        "days_dry",
+        "streak_dry_days",
+        "days_heavy_rain",
+        "days_intense_rain",
+        "days_extreme_rain",
+        "streak_heavy_rain",
+        "streak_intense_rain",
+        "streak_extreme_rain"
+      ]
+    },
+    "vegetation": {
+      "vegetation_data": [
+        "ndvi_dekad",
+        "ndvi_dekad_anomaly"
+      ]
+    },
+    "temperature": {
+      "temperature_data": [
+        "lst_amplitude",
+        "lst_daytime",
+        "lst_nighttime",
+        "lst_day_anomaly",
+        "lst_anomaly"
+      ]
+    },
+    "exposure": {
+      "population_data": [
+        "wp_pop_icunadj"
+      ]
+    }
+  }
+}

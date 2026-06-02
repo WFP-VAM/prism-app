@@ -1,0 +1,55 @@
+{
+  "admin1_boundaries": {
+    "type": "boundary",
+    "path": "data/honduras/hnd_admin1_dv.json",
+    "opacity": 0.8,
+    "admin_code": "adm1_source_id",
+    "admin_level_codes": [
+      "adm1_source_id"
+    ],
+    "admin_level_names": [
+      "adm1_name"
+    ],
+    "admin_level_local_names": [
+      "adm1_name"
+    ],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 2,
+        "line-opacity": 0.8
+      }
+    }
+  },
+  "admin_boundaries": {
+    "type": "boundary",
+    "path": "data/honduras/hnd_admin2_dv.json",
+    "opacity": 0.8,
+    "admin_code": "adm2_source_id",
+    "admin_level_codes": [
+      "adm1_source_id",
+      "adm2_source_id"
+    ],
+    "admin_level_names": [
+      "adm1_name",
+      "adm2_name"
+    ],
+    "admin_level_local_names": [
+      "adm1_name",
+      "adm2_name"
+    ],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1,
+        "line-opacity": 0.8
+      }
+    }
+  }
+}
