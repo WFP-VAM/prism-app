@@ -6,8 +6,8 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import { Font } from '@react-pdf/renderer';
 import * as Sentry from '@sentry/browser';
 import AuthModal from 'components/AuthModal';
-import CreateDashboardView from 'components/CreateDashboardView';
 import CountryInvalidPage from 'components/CountryInvalidPage';
+import CreateDashboardView from 'components/CreateDashboardView';
 import DashboardView from 'components/DashboardView';
 import ExportView from 'components/ExportView';
 import ImportDashboardView from 'components/ImportDashboardView';
@@ -30,11 +30,7 @@ import {
   Switch,
   useParams,
 } from 'react-router-dom';
-import {
-  isUniversalDeployment,
-  isValidIso3Format,
-  normalizeIso3,
-} from 'utils/universal-utils';
+import { isUniversalDeployment } from 'utils/universal-utils';
 
 if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development') {
   if (process.env.REACT_APP_SENTRY_URL) {
@@ -88,18 +84,18 @@ function DashboardRouteSwitcher() {
   return <DashboardView />;
 }
 
-const Wrapper = memo(() => (
+const AppShell = memo(({ countryPrefix = '' }: { countryPrefix?: string }) => (
   <div id="app">
     <NavBar />
     <div style={{ paddingTop: '56px', height: 'calc(100% - 56px)' }}>
       {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
       <Switch>
         {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
-        <Route path="/dashboard/:path?" exact>
+        <Route path={`${countryPrefix}/dashboard/:path?`} exact>
           <DashboardRouteSwitcher />
         </Route>
         {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
-        <Route>
+        <Route path={countryPrefix || '/'}>
           <MapView />
           <AuthModal />
         </Route>
@@ -108,73 +104,36 @@ const Wrapper = memo(() => (
   </div>
 ));
 
-const UniversalWrapper = memo(() => (
-  <div id="app">
-    <NavBar />
-    <div style={{ paddingTop: '56px', height: 'calc(100% - 56px)' }}>
+function AppRoutes() {
+  const isUniversal = isUniversalDeployment();
+
+  return (
+    // @ts-expect-error - react-router-dom v5 types incompatible with React 18
+    <Switch>
       {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
-      <Switch>
-        {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
-        <Route path="/country/:iso3/dashboard/:path?" exact>
-          <DashboardView />
-        </Route>
-        {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
+      <Route path="/export" exact>
+        <ExportView />
+      </Route>
+      {isUniversal && (
+        // @ts-expect-error - react-router-dom v5 types incompatible with React 18
         <Route path="/country/:iso3">
-          <MapView />
-          <AuthModal />
+          <CountryIsoProvider>
+            <AppShell countryPrefix="/country/:iso3" />
+          </CountryIsoProvider>
         </Route>
-      </Switch>
-    </div>
-  </div>
-));
-
-function UniversalCountryRoute() {
-  const { iso3: rawIso3 } = useParams<{ iso3: string }>();
-  const iso3 = normalizeIso3(rawIso3);
-
-  if (!isValidIso3Format(iso3)) {
-    return <CountryInvalidPage />;
-  }
-
-  return (
-    <CountryIsoProvider>
-      <UniversalWrapper />
-    </CountryIsoProvider>
-  );
-}
-
-function UniversalAppRoutes() {
-  return (
-    // @ts-expect-error - react-router-dom v5 types incompatible with React 18
-    <Switch>
-      {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
-      <Route path="/export" exact>
-        <ExportView />
-      </Route>
-      {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
-      <Route path="/country/:iso3" exact={false}>
-        <UniversalCountryRoute />
-      </Route>
-      {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
-      <Route>
-        <CountryInvalidPage />
-      </Route>
-    </Switch>
-  );
-}
-
-function StandardAppRoutes() {
-  return (
-    // @ts-expect-error - react-router-dom v5 types incompatible with React 18
-    <Switch>
-      {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
-      <Route path="/export" exact>
-        <ExportView />
-      </Route>
-      {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
-      <Route>
-        <Wrapper />
-      </Route>
+      )}
+      {isUniversal && (
+        // @ts-expect-error - react-router-dom v5 types incompatible with React 18
+        <Route>
+          <CountryInvalidPage />
+        </Route>
+      )}
+      {!isUniversal && (
+        // @ts-expect-error - react-router-dom v5 types incompatible with React 18
+        <Route>
+          <AppShell />
+        </Route>
+      )}
     </Switch>
   );
 }
@@ -183,15 +142,14 @@ function App() {
   useDashboardConfig();
   useDocumentLocale();
   const isAuthenticated = useIsAuthenticated();
-  const isUniversal = isUniversalDeployment();
 
   // The rendered content
   const renderedContent = useMemo(() => {
     if (isAuthenticated || !authRequired) {
-      return isUniversal ? <UniversalAppRoutes /> : <StandardAppRoutes />;
+      return <AppRoutes />;
     }
     return <Login />;
-  }, [isAuthenticated, isUniversal]);
+  }, [isAuthenticated]);
 
   return (
     <ThemeProvider theme={muiTheme}>

@@ -1,3 +1,4 @@
+import CountryInvalidPage from 'components/CountryInvalidPage';
 import React, { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import {
@@ -32,6 +33,10 @@ export function CountryIsoProvider({
     }),
     [iso3, countryAdmin0Id],
   );
+
+  if (!isValid) {
+    return <CountryInvalidPage />;
+  }
 
   return (
     <CountryIsoContext.Provider value={value}>

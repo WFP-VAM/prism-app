@@ -48,9 +48,6 @@ export function useEffectiveBoundaryLayer(): BoundaryLayerProps {
   }, [iso3, admin3Available]);
 }
 
-// TODO: Merge AdminLevelSelector and ChartAdminLevelSelector into one shared component
-// (both are identical wrappers around useEffectiveAdminLevelOptions + t()).
-
 /**
  * Ordered list of (AdminLevelType value, i18n key) pairs for the current country.
  * Admin 0 (country level) is excluded; subnational levels start at Admin 1.

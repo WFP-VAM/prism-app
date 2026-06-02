@@ -4,6 +4,9 @@ import { AdminLevelType } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 import { useEffectiveAdminLevelOptions } from 'utils/universal-country-admin';
 
+// TODO: Merge AdminLevelSelector and ChartAdminLevelSelector into one shared component
+// (both are identical wrappers around useEffectiveAdminLevelOptions + t()).
+
 interface ChartAdminLevelSelectorProps {
   value: AdminLevelType;
   onChange: (adminLevel: AdminLevelType) => void;
