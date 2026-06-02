@@ -30,10 +30,7 @@ import {
   PanelSize,
   WMSLayerProps,
 } from 'config/types';
-import {
-  getBoundaryLayersByAdminLevel,
-  getWMSLayersWithChart,
-} from 'config/utils';
+import { getWMSLayersWithChart } from 'config/utils';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { GeoJsonProperties } from 'geojson';
 import { useSafeTranslation } from 'i18n';
@@ -47,7 +44,7 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import {
-  getEffectiveMultiCountry,
+  useEffectiveBoundaryLayer,
   useEffectiveCountryAdmin0Id,
 } from 'utils/universal-country-admin';
 import { isUrlDrivenDeployment } from 'utils/universal-utils';
@@ -78,10 +75,6 @@ const menuProps: Partial<MenuProps> = {
 };
 
 // Chart configuration
-const configMultiCountry = getEffectiveMultiCountry();
-const isUrlDriven = isUrlDrivenDeployment();
-const MAX_ADMIN_LEVEL = isUrlDriven ? 4 : configMultiCountry ? 3 : 2;
-const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 const chartLayers = getWMSLayersWithChart();
 
 // Time constants
@@ -92,6 +85,8 @@ const tabPanelType = Panel.Charts;
 
 const ChartsPanel = memo(() => {
   const countryAdmin0Id = useEffectiveCountryAdmin0Id();
+  const boundaryLayer = useEffectiveBoundaryLayer();
+  const isUrlDriven = isUrlDrivenDeployment();
   const { data } = useBoundaryData(boundaryLayer.id);
   const classes = useStyles();
   const [compareLocations, setCompareLocations] = useState(false);

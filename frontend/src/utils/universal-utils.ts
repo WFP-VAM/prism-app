@@ -79,7 +79,7 @@ export function getDisplayBoundaryLayersForIso3(
   return layers.filter(layer => layer.id !== UNIVERSAL_ADMIN3_LAYER_ID);
 }
 
-/** Map HDC chart field keys (dv_adm*) to universal PMTiles property keys (adm*). */
+/** Returns the normalized ISO3 code from the URL pathname, or undefined for non-URL-driven deployments. */
 export function getIso3FromPathname(
   pathname: string = window.location.pathname,
 ): string | undefined {
@@ -90,6 +90,7 @@ export function getIso3FromPathname(
   return normalizeIso3(match?.[1]);
 }
 
+/** Map HDC chart field keys (dv_adm*) to universal PMTiles property keys (adm*). */
 export function resolveChartBoundaryProperty(
   properties: Record<string, unknown> | null | undefined,
   chartFieldKey: string,

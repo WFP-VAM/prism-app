@@ -45,6 +45,7 @@ export function useBoundaryData(
     if (!layer || !map) {
       return;
     }
+    const requestKey = `${layerId}:${iso3Filter ?? ''}`;
     try {
       const result = await boundaryCache.getBoundaryData(
         layer,
@@ -52,6 +53,9 @@ export function useBoundaryData(
         map,
         iso3Filter,
       );
+      if (requestKey !== `${layerId}:${iso3Filter ?? ''}`) {
+        return;
+      }
       setData(result);
       setError(undefined);
     } catch (err) {

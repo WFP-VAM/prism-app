@@ -25,6 +25,8 @@ class BoundaryCacheManager {
   private loadingPromises: Map<string, Promise<BoundaryLayerData | undefined>> =
     new Map();
 
+  private loadGenerations: Map<string, number> = new Map();
+
   private listeners: Set<CacheListener> = new Set();
 
   private getCacheKey(layerId: LayerKey, iso3?: string): string {
@@ -46,6 +48,14 @@ class BoundaryCacheManager {
   private deleteCacheEntry(cacheKey: string): void {
     this.cache.delete(cacheKey);
     this.loadingPromises.delete(cacheKey);
+    this.loadGenerations.set(
+      cacheKey,
+      (this.loadGenerations.get(cacheKey) ?? 0) + 1,
+    );
+  }
+
+  private isCurrentLoad(cacheKey: string, loadGeneration: number): boolean {
+    return loadGeneration === (this.loadGenerations.get(cacheKey) ?? 0);
   }
 
   /**
@@ -64,17 +74,26 @@ class BoundaryCacheManager {
     forceRefresh = false,
   ): Promise<BoundaryLayerData | undefined> {
     const cacheKey = this.getCacheKey(layer.id, iso3);
-    const cached = this.cache.get(cacheKey);
 
-    if (!forceRefresh && cached?.data) {
-      return cached.data;
+    if (forceRefresh) {
+      const stalePromise = this.loadingPromises.get(cacheKey);
+      this.deleteCacheEntry(cacheKey);
+      if (stalePromise) {
+        await stalePromise.catch(() => undefined);
+      }
+    } else {
+      const cached = this.cache.get(cacheKey);
+      if (cached?.data) {
+        return cached.data;
+      }
+
+      // Return existing loading promise to avoid duplicate fetches
+      if (this.loadingPromises.has(cacheKey)) {
+        return this.loadingPromises.get(cacheKey);
+      }
     }
 
-    // Return existing loading promise to avoid duplicate fetches
-    if (!forceRefresh && this.loadingPromises.has(cacheKey)) {
-      return this.loadingPromises.get(cacheKey);
-    }
-
+    const loadGeneration = this.loadGenerations.get(cacheKey) ?? 0;
     this.cache.set(cacheKey, { data: undefined, loading: true });
 
     const loadPromise = this.loadBoundaryData(layer, dispatch, map, iso3);
@@ -82,6 +101,10 @@ class BoundaryCacheManager {
 
     try {
       const data = await loadPromise;
+      if (!this.isCurrentLoad(cacheKey, loadGeneration)) {
+        return data;
+      }
+
       const isEmpty = !data?.features?.length && layer.format === 'pmtiles';
       if (isEmpty) {
         this.deleteCacheEntry(cacheKey);
@@ -94,6 +117,10 @@ class BoundaryCacheManager {
       this.notifyListeners();
       return data;
     } catch (error) {
+      if (!this.isCurrentLoad(cacheKey, loadGeneration)) {
+        throw error;
+      }
+
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
       this.cache.set(cacheKey, {
@@ -104,7 +131,9 @@ class BoundaryCacheManager {
       this.notifyListeners();
       throw error;
     } finally {
-      this.loadingPromises.delete(cacheKey);
+      if (this.loadingPromises.get(cacheKey) === loadPromise) {
+        this.loadingPromises.delete(cacheKey);
+      }
     }
   }
 
@@ -141,8 +170,6 @@ class BoundaryCacheManager {
     map?: MaplibreMap,
     iso3?: string,
   ): Promise<BoundaryLayerData | undefined> {
-    const cacheKey = this.getCacheKey(layer.id, iso3);
-    this.deleteCacheEntry(cacheKey);
     return this.getBoundaryData(layer, dispatch, map, iso3, true);
   }
 
@@ -186,6 +213,7 @@ class BoundaryCacheManager {
   clearCache(): void {
     this.cache.clear();
     this.loadingPromises.clear();
+    this.loadGenerations.clear();
     this.notifyListeners();
   }
 

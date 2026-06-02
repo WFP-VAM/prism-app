@@ -20,19 +20,17 @@ export function CountryIsoProvider({
   const iso3 = normalizeIso3(iso3Param);
   const isValid = isValidIso3Format(iso3);
   const isKnown = isKnownIso3(iso3);
-  const countryName = iso3;
   const admin3Available = hasAdmin3ForCountry(iso3);
 
   const value = useMemo(
     () => ({
       iso3,
-      countryName,
       isValid,
       isKnown,
       admin3Available,
       countryAdmin0Id,
     }),
-    [iso3, countryName, isValid, isKnown, admin3Available, countryAdmin0Id],
+    [iso3, countryAdmin0Id],
   );
 
   return (

@@ -539,7 +539,11 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       return;
     }
 
-    const filteredData = data && {
+    if (data === undefined) {
+      return;
+    }
+
+    const filteredData = {
       ...data,
       features: filterFeaturesBySelectedAdminCodes(
         data.features,
@@ -547,7 +551,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         selectedBoundaries,
       ),
     };
-    if (!filteredData || filteredData.features.length === 0) {
+    if (filteredData.features.length === 0) {
       const errorMessage = t(
         'No boundary features found for the selected admin area. Please try a different selection.',
       );
@@ -570,14 +574,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     }
     const masked = mask(filteredData as any);
     setAdminBoundaryPolygon(masked as any);
-  }, [
-    data,
-    dispatch,
-    posthog,
-    selectedBoundaries,
-    selectedBoundaries.length,
-    t,
-  ]);
+  }, [data, dispatch, posthog, selectedBoundaries, t]);
 
   const handleDownloadMenuClose = () => {
     setDownloadMenuAnchorEl(null);

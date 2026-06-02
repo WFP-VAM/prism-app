@@ -38,12 +38,14 @@ function CountryInvalidPage() {
           <code className={classes.code}>/country/moz</code>.
         </Typography>
 
-        {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
-        <Link to="/country/MOZ" className={classes.link}>
-          <Button variant="contained" className={classes.button}>
-            Open Mozambique
-          </Button>
-        </Link>
+        {process.env.NODE_ENV === 'development' && (
+          // @ts-expect-error - react-router-dom v5 types incompatible with React 18
+          <Link to="/country/MOZ" className={classes.link}>
+            <Button variant="contained" className={classes.button}>
+              Open Mozambique
+            </Button>
+          </Link>
+        )}
 
         <img
           className={classes.logo}

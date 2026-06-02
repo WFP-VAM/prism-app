@@ -1,4 +1,6 @@
 import { appConfig } from 'config';
+import { AdminLevelType, BoundaryLayerProps } from 'config/types';
+import { getBoundaryLayersByAdminLevel } from 'config/utils';
 import { useCountryIso } from 'context/useCountryIso';
 import { useMemo } from 'react';
 import { useBoundaryData } from 'utils/useBoundaryData';
@@ -32,4 +34,39 @@ export function getEffectiveMultiCountry(): boolean {
 
 export function useEffectiveMultiCountry(): boolean {
   return getEffectiveMultiCountry();
+}
+
+/** Deepest boundary layer available for the active country. */
+export function useEffectiveBoundaryLayer(): BoundaryLayerProps {
+  const { iso3, admin3Available } = useCountryIso();
+
+  return useMemo(() => {
+    if (isUrlDrivenDeployment()) {
+      return getBoundaryLayersByAdminLevel(admin3Available ? 4 : 3);
+    }
+    return getBoundaryLayersByAdminLevel(appConfig.multiCountry ? 3 : 2);
+  }, [iso3, admin3Available]);
+}
+
+// TODO: Merge AdminLevelSelector and ChartAdminLevelSelector into one shared component
+// (both are identical wrappers around useEffectiveAdminLevelOptions + t()).
+
+/**
+ * Ordered list of (AdminLevelType value, i18n key) pairs for the current country.
+ * Admin 0 (country level) is excluded; subnational levels start at Admin 1.
+ */
+export function useEffectiveAdminLevelOptions(): [AdminLevelType, string][] {
+  const boundaryLayer = useEffectiveBoundaryLayer();
+
+  return useMemo(() => {
+    // adm0 is always the first code in every universal boundary layer and in
+    // multiCountry single-country deployments, so skip one slot to get subnational.
+    const offset =
+      isUrlDrivenDeployment() || Boolean(appConfig.multiCountry) ? 1 : 0;
+    const count = boundaryLayer.adminLevelCodes.length - offset;
+    return Array.from({ length: count }, (_, i) => [
+      (offset + i + 1) as AdminLevelType,
+      `Admin ${i + 1}`,
+    ]);
+  }, [boundaryLayer]);
 }
