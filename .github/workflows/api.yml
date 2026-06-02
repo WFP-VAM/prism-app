@@ -137,7 +137,7 @@ jobs:
           chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
           docker compose version
       - name: Build containers
-        run: cd api && make build
+        run: cd api && make ci-build
       - name: Run tests
         run: cd api && make api-test
 
