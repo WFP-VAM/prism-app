@@ -344,7 +344,7 @@ function DashboardContent({
         flexDirection: 'column' as const,
         overflow: heightConfig.overflow,
         ...(heightConfig.overflow === 'scroll'
-          ? { scrollbarGutter: 'stable' as const }
+          ? { overflowX: 'hidden' as const, scrollbarGutter: 'stable' as const }
           : {}),
       };
     };
