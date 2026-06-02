@@ -6,6 +6,7 @@ import {
 } from 'config/types';
 import { FloodChartConfigObject } from 'context/tableStateSlice';
 import GeoJSON, { FeatureCollection, Point } from 'geojson';
+import { chunk } from 'lodash';
 import { Dispatch } from 'redux';
 
 import { fetchWithTimeout } from './fetch-with-timeout';
@@ -105,7 +106,7 @@ export const fetchEWSWaterHeight = async (
   locationId: number,
   startDate: Date,
   endDate: Date,
-  dispatch: Dispatch,
+  dispatch?: Dispatch,
 ): Promise<EWSWaterHeightData[]> => {
   const url = `${baseUrl}/water-height?location_id=${locationId}&start_date=${startDate.toISOString()}&end_date=${endDate.toISOString()}`;
 
@@ -146,6 +147,11 @@ const getLevelStatus = (
 // skip the per-sensor time-series request for them (matching ews1294.com).
 const INACTIVE_EWS_STATUSES = ['inactive', 'planned'];
 
+// The water-height endpoint is per-location, so the map layer fans out one
+// request per sensor. The ews1294.com origin returns 504s under a large burst
+// of concurrent requests, so cap how many run at once.
+const EWS_FETCH_CONCURRENCY = 6;
+
 export const fetchEWSData = async (
   baseUrl: string,
   date: number,
@@ -160,55 +166,65 @@ export const fetchEWSData = async (
   const features = locations.features.filter(
     feature =>
       feature.properties &&
-      !INACTIVE_EWS_STATUSES.includes(feature.properties.status),
+      !INACTIVE_EWS_STATUSES.includes(feature.properties.status) &&
+      // 'google' sensors are served by a different endpoint (google-forecast)
+      // and 400 on water-height; they belong to the Google Flood loader.
+      feature.properties.source !== 'google',
   );
 
-  // The water-height endpoint is per-location, so fetch each sensor's readings
-  // for the date window in parallel and compute the daily mean/min/max.
-  const processedFeatures = await Promise.all(
-    features.map(async (feature): Promise<PointData | null> => {
-      const { properties, geometry } = feature;
+  const processFeature = async (
+    feature: FeatureCollection['features'][number],
+  ): Promise<PointData | null> => {
+    const { properties, geometry } = feature;
 
-      if (!properties) {
-        return null;
-      }
+    if (!properties) {
+      return null;
+    }
 
-      const values = await fetchEWSWaterHeight(
-        baseUrl,
-        properties.id,
-        startDate,
-        endDate,
-        dispatch,
-      );
-      const locationValues = values.map(v => v.water_height);
+    // No dispatch is passed: a failed per-sensor request is expected (the
+    // origin may 504 for some sensors) and is handled by skipping the sensor,
+    // so it must not raise a user-facing notification.
+    const values = await fetchEWSWaterHeight(
+      baseUrl,
+      properties.id,
+      startDate,
+      endDate,
+    );
+    const locationValues = values.map(v => v.water_height);
 
-      if (locationValues.length === 0) {
-        return null;
-      }
+    if (locationValues.length === 0) {
+      return null;
+    }
 
-      const mean =
-        locationValues.reduce((acc, item) => acc + item, 0) /
-        locationValues.length;
-      const min = Math.min(...locationValues);
-      const max = Math.max(...locationValues);
+    const mean =
+      locationValues.reduce((acc, item) => acc + item, 0) /
+      locationValues.length;
+    const min = Math.min(...locationValues);
+    const max = Math.max(...locationValues);
 
-      const { coordinates } = geometry as Point;
+    const { coordinates } = geometry as Point;
 
-      return {
-        lon: coordinates[0],
-        lat: coordinates[1],
-        date,
-        mean: parseFloat(mean.toFixed(2)),
-        min,
+    return {
+      lon: coordinates[0],
+      lat: coordinates[1],
+      date,
+      mean: parseFloat(mean.toFixed(2)),
+      min,
+      max,
+      ...properties,
+      status: getLevelStatus(
         max,
-        ...properties,
-        status: getLevelStatus(
-          max,
-          properties.trigger_levels as EWSTriggerLevels,
-        ),
-      };
-    }),
-  );
+        properties.trigger_levels as EWSTriggerLevels,
+      ),
+    };
+  };
+
+  // Fetch in concurrency-capped batches to avoid overwhelming the origin.
+  const processedFeatures: (PointData | null)[] = [];
+
+  for (const batch of chunk(features, EWS_FETCH_CONCURRENCY)) {
+    processedFeatures.push(...(await Promise.all(batch.map(processFeature))));
+  }
 
   return GeoJSON.parse(
     processedFeatures.filter((p): p is PointData => p !== null),
