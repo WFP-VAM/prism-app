@@ -166,14 +166,14 @@ export function expandBoundingBox(
   const newYDistance = currentYDistance + 2 * extraDegrees;
   const xChange = newXDistance - currentXDistance;
   const yChange = newYDistance - currentYDistance;
-  const lowX = boundingBox[0] - xChange / 2;
-  const lowY = boundingBox[1] - yChange / 2;
-  const highX = xChange / 2 + boundingBox[2];
-  const highY = yChange / 2 + boundingBox[3];
-  // const lowX = Math.max(boundingBox[0] - xChange / 2, -180);
-  // const lowY = Math.max(boundingBox[1] - yChange / 2, -90);
-  // const highX = Math.min(xChange / 2 + boundingBox[2], 180);
-  // const highY = Math.min(yChange / 2 + boundingBox[3], 90);
+  // Clamp to valid lon/lat ranges since the backend rejects out-of-range
+  // coordinates (e.g. -185). This assumes the box does not cross the
+  // antimeridian: for a country straddling it (e.g. Fiji/Kiribati) and
+  // the correct fix is splitting into two boxes.
+  const lowX = Math.max(boundingBox[0] - xChange / 2, -180);
+  const lowY = Math.max(boundingBox[1] - yChange / 2, -90);
+  const highX = Math.min(xChange / 2 + boundingBox[2], 180);
+  const highY = Math.min(yChange / 2 + boundingBox[3], 90);
 
   return [lowX, lowY, highX, highY] as Extent;
 }
