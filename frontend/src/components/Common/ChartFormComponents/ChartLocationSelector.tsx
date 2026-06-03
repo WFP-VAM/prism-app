@@ -39,6 +39,7 @@ interface ChartLocationSelectorProps {
   disabled?: boolean;
   stacked?: boolean;
   hideLabel?: boolean;
+  labelMarginBottom?: number;
 }
 
 function ChartLocationSelector({
@@ -51,6 +52,7 @@ function ChartLocationSelector({
   disabled = false,
   stacked = false,
   hideLabel = false,
+  labelMarginBottom = 8,
 }: ChartLocationSelectorProps) {
   const classes = useStyles();
   const { t, i18n: i18nLocale } = useSafeTranslation();
@@ -129,7 +131,11 @@ function ChartLocationSelector({
   return (
     <div className={classes.container}>
       {!hideLabel && (
-        <Typography className={classes.label} variant="body2">
+        <Typography
+          className={classes.label}
+          variant="body2"
+          style={{ marginBottom: labelMarginBottom }}
+        >
           {t('Location')}
         </Typography>
       )}
@@ -191,7 +197,6 @@ const useStyles = makeStyles(() => ({
   },
   label: {
     color: 'black',
-    marginBottom: 8,
     fontWeight: 600,
   },
   fieldsRow: {
@@ -205,16 +210,14 @@ const useStyles = makeStyles(() => ({
   selectRoot: {
     flex: 1,
     color: 'black',
-    '& label': {
-      color: '#333333',
+    '& .MuiFormLabel-root': {
+      color: 'black',
     },
-    '& .MuiInputBase-root': {
-      '&:hover fieldset': {
-        borderColor: '#333333',
-      },
-      '&.Mui-focused fieldset': {
-        borderColor: '#333333',
-      },
+    '& .MuiOutlinedInput-notchedOutline': {
+      borderColor: '#333333',
+    },
+    '&:hover .MuiOutlinedInput-notchedOutline': {
+      borderColor: '#333333',
     },
     '& .MuiSelect-root': {
       color: 'black',
