@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import logging
 import secrets
+from posixpath import normpath
 from typing import Annotated
+from urllib.parse import parse_qs, unquote, urlparse
 
 import httpx
 import jwt
@@ -44,6 +46,7 @@ from prism_app.auth.prism_auth_service import (
     is_active,
     touch_last_login,
 )
+from prism_app.utils import EXPORT_ALLOWED_DOMAINS, is_domain_allowed
 
 logger = logging.getLogger(__name__)
 
@@ -91,21 +94,43 @@ def _consume_sign_out_csrf(request: Request, submitted: str | None) -> bool:
     return secrets.compare_digest(expected, got)
 
 
+def _is_allowed_frontend_redirect_origin(origin: str) -> bool:
+    """True when origin hostname matches map-export allowlist (plus localhost)."""
+    p = urlparse(origin)
+    if p.scheme not in ("http", "https") or not p.netloc:
+        return False
+    hostname = p.hostname
+    if not hostname:
+        return False
+    if hostname in ("localhost", "127.0.0.1", "::1"):
+        return True
+    if not EXPORT_ALLOWED_DOMAINS:
+        return False
+    return is_domain_allowed(hostname, EXPORT_ALLOWED_DOMAINS)
+
+
+def _is_frontend_print_modal_return(norm_path: str, query: str) -> bool:
+    """Redirect to frontend print modal based if query param is present"""
+    if norm_path != "/" or not query:
+        return False
+    parsed = parse_qs(query, keep_blank_values=True)
+    return parsed.get("printModal") == ["1"]
+
+
 def _safe_next(next_raw: str | None, default: str = "/admin/") -> str:
     """Resolve post-login redirect: same host only, no protocol-relative or path traversal escapes.
 
-    Only ``/admin`` (and subpaths) or ``/access-not-configured`` are allowed, matching where
-    the OIDC flow may legitimately send the browser after sign-in.
+    ``/admin`` (and subpaths) and ``/access-not-configured`` are allowed for the
+    admin app. For the React app, only hostnames in ``EXPORT_ALLOWED_DOMAINS``
+    (plus localhost) may receive the print-modal return intent.
     """
-    from posixpath import normpath
-    from urllib.parse import unquote, urlparse
-
     if not next_raw:
         return default
     raw = str(next_raw).strip()
     if not raw:
         return default
 
+    origin: str | None = None
     path_part: str
     query: str
     if raw.startswith("/") and not raw.startswith("//"):
@@ -117,6 +142,7 @@ def _safe_next(next_raw: str | None, default: str = "/admin/") -> str:
         p = urlparse(raw)
         if p.scheme not in ("http", "https") or not p.path:
             return default
+        origin = f"{p.scheme}://{p.netloc}"
         path_part, query = p.path, p.query or ""
 
     path = unquote(path_part)
@@ -131,19 +157,26 @@ def _safe_next(next_raw: str | None, default: str = "/admin/") -> str:
     if norm.startswith("//"):
         return default
 
-    allowed = (
+    admin_allowed = (
         norm == "/admin"
         or norm.startswith("/admin/")
         or norm == "/access-not-configured"
     )
-    if not allowed:
-        return default
-
     if query:
         if any(bad in query for bad in ("//", "\n", "\r")):
             return default
-        return f"{norm}?{query}"
-    return norm
+
+    if admin_allowed:
+        return f"{norm}?{query}" if query else norm
+
+    frontend_allowed = (
+        origin is not None
+        and _is_allowed_frontend_redirect_origin(origin)
+        and _is_frontend_print_modal_return(norm, query)
+    )
+    if frontend_allowed:
+        return f"{origin}{norm}?{query}"
+    return default
 
 
 def _perform_sign_out(request: Request, settings: AdminAuthSettings) -> Response:

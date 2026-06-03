@@ -5,8 +5,9 @@ import { DashboardExportDialog } from 'components/DashboardView/DashboardExport'
 import { Panel } from 'config/types';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { mapSelector } from 'context/mapStateSlice/selectors';
-import { useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useHistory, useLocation } from 'react-router-dom';
 
 import BatchMapExportGlobalTray from './batchMapExport/BatchMapExportGlobalTray';
 import BatchMapExportJobsProvider from './batchMapExport/BatchMapExportJobsProvider';
@@ -19,19 +20,29 @@ function PrintImage() {
   const tabValue = useSelector(leftPanelTabValueSelector);
   const theme = useTheme();
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
+  const history = useHistory();
+  const location = useLocation();
   const posthog = usePostHog();
 
   const previewRef = useRef<HTMLCanvasElement>(null);
 
   const handleClose = () => {
     setOpenImage(false);
+    const params = new URLSearchParams(location.search);
+    params.delete('printModal');
+    params.delete('batchMaps');
+    params.delete('schedule');
+    history.replace({
+      pathname: location.pathname,
+      search: params.toString() ? `?${params.toString()}` : '',
+    });
   };
 
   const handleCloseDashboardExport = () => {
     setOpenDashboardExport(false);
   };
 
-  const openModal = () => {
+  const openModal = useCallback(() => {
     // Check if we're in dashboard mode
     if (tabValue === Panel.Dashboard) {
       posthog?.capture('map_print_opened', { mode: 'dashboard' });
@@ -54,7 +65,14 @@ function PrintImage() {
       posthog?.capture('map_print_opened', { mode: 'map' });
       setOpenImage(true);
     }
-  };
+  }, [selectedMap, tabValue]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('printModal') === '1' && !openImage) {
+      openModal();
+    }
+  }, [location.search, openImage, openModal]);
 
   return (
     <BatchMapExportJobsProvider>

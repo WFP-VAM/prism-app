@@ -5,12 +5,14 @@ from __future__ import annotations
 import datetime
 from pathlib import Path
 from unittest.mock import MagicMock
+from uuid import UUID
 
 import pytest
 from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.export_jobs.fingerprint import compute_request_fingerprint
 from prism_app.export_jobs.service import enqueue_map_export_job
 from prism_app.models import MapExportRequestModel
+from pydantic import ValidationError
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlmodel import Session
@@ -43,6 +45,22 @@ def test_enqueue_inserts_queued(db_session: Session) -> None:
     assert status == 202
     assert job.origin_url == "http://localhost"
     assert job.status == "queued"
+
+
+def test_enqueue_records_schedule_and_owner(db_session: Session) -> None:
+    req = _sample_request()
+    owner_id = UUID("00000000-0000-4000-8000-000000000123")
+
+    job, status = enqueue_map_export_job(
+        db_session,
+        req,
+        schedule_id=UUID("00000000-0000-4000-8000-000000000001"),
+        created_by_user_id=owner_id,
+    )
+
+    assert status == 202
+    assert job.map_export_schedule_id == UUID("00000000-0000-4000-8000-000000000001")
+    assert job.created_by_user_id == owner_id
 
 
 def test_enqueue_sets_origin_from_first_url(db_session: Session) -> None:
@@ -174,3 +192,28 @@ def test_failed_allows_new_job(db_session: Session) -> None:
     assert job.id != failed.id
     assert status == 202
     assert job.status == "queued"
+
+
+def test_map_export_request_public_requires_country() -> None:
+    with pytest.raises(ValidationError, match="country"):
+        MapExportRequestModel.model_validate(
+            {
+                "urls": [
+                    "http://localhost/?date=2025-01-01&hazardLayerIds=lyr",
+                ],
+                "format": "pdf",
+                "publicMapUpload": True,
+            }
+        )
+
+
+def test_map_export_request_public_requires_hazard_layer_ids() -> None:
+    with pytest.raises(ValidationError, match="hazardLayerIds"):
+        MapExportRequestModel.model_validate(
+            {
+                "urls": ["http://localhost/?date=2025-01-01"],
+                "format": "pdf",
+                "country": "mozambique",
+                "publicMapUpload": True,
+            }
+        )

@@ -139,3 +139,20 @@ def require_permissions(*required: str):
         return user, codes
 
     return _dep
+
+
+def require_any_permission(*allowed: str):
+    """Dependency factory: at least one listed permission code must be present."""
+
+    def _dep(
+        session: Annotated[tuple[User, set[str]], Depends(require_prism_session)],
+    ) -> tuple[User, set[str]]:
+        user, codes = session
+        if not set(allowed) & codes:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Missing one of permissions: {sorted(allowed)}",
+            )
+        return user, codes
+
+    return _dep
