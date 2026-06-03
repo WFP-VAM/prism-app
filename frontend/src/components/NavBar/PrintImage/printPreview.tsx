@@ -215,6 +215,20 @@ function PrintPreview() {
     setPreviewMapReady(true);
   }, []);
 
+  const previewInitialViewState = useMemo(() => {
+    const bounds = printConfig?.previewBounds;
+    const zoom = printConfig?.previewZoom;
+    if (!bounds || zoom == null) {
+      return undefined;
+    }
+    const center = bounds.getCenter();
+    return {
+      longitude: center.lng,
+      latitude: center.lat,
+      zoom,
+    };
+  }, [printConfig?.previewBounds, printConfig?.previewZoom]);
+
   if (!printConfig || !selectedMap) {
     return null;
   }
@@ -313,6 +327,7 @@ function PrintPreview() {
         legendPosition={legendPosition}
         legendScale={legendScale}
         bounds={geographicBoundsForExport}
+        initialViewState={previewInitialViewState}
         mapStyle={processedMapStyle}
         maxBounds={maxBounds}
         invertedAdminBoundaryLimitPolygon={invertedAdminBoundaryLimitPolygon}

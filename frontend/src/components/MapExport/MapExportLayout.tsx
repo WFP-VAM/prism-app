@@ -327,6 +327,25 @@ function MapExportLayout({
       }
     }
 
+    // Capture preview bounds/zoom (must run before print-preview early return below).
+    if (onBoundsChange && map) {
+      let lastBoundsStr: string | null = null;
+      let lastZoom: number | null = null;
+
+      map.on('idle', () => {
+        const mapBounds = map.getBounds();
+        const zoom = map.getZoom();
+        if (mapBounds) {
+          const boundsStr = `${mapBounds.getWest()},${mapBounds.getSouth()},${mapBounds.getEast()},${mapBounds.getNorth()}`;
+          if (boundsStr !== lastBoundsStr || zoom !== lastZoom) {
+            lastBoundsStr = boundsStr;
+            lastZoom = zoom;
+            onBoundsChange(mapBounds, zoom);
+          }
+        }
+      });
+    }
+
     // Track tile loading using idle event and areTilesLoaded() for robust detection
     const shouldTrackTileLoading = signalExportReady || onMapLoad;
 
@@ -402,28 +421,6 @@ function MapExportLayout({
       }, 60_000);
     } else if (onMapLoad) {
       onMapLoad(e);
-    }
-
-    // Capture and report map bounds and zoom after load
-    // Use 'idle' event to ensure map has fully settled
-    // Only report when bounds actually change to avoid infinite re-render loops
-    if (onBoundsChange && map) {
-      let lastBoundsStr: string | null = null;
-      let lastZoom: number | null = null;
-
-      map.on('idle', () => {
-        const mapBounds = map.getBounds();
-        const zoom = map.getZoom();
-        if (mapBounds) {
-          // Only call onBoundsChange if bounds or zoom actually changed
-          const boundsStr = `${mapBounds.getWest()},${mapBounds.getSouth()},${mapBounds.getEast()},${mapBounds.getNorth()}`;
-          if (boundsStr !== lastBoundsStr || zoom !== lastZoom) {
-            lastBoundsStr = boundsStr;
-            lastZoom = zoom;
-            onBoundsChange(mapBounds, zoom);
-          }
-        }
-      });
     }
   };
   // Calculate map dimensions based on container size and aspect ratio
