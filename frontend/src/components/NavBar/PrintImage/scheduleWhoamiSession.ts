@@ -4,14 +4,21 @@ import {
   PRISM_WHOAMI_API_URL,
 } from 'utils/constants';
 
+export type ScheduleWhoamiSessionStatus =
+  | 'authenticated'
+  | 'unauthorized'
+  | 'network_error';
+
 export type ScheduleWhoamiResult = {
   isPrismAuthenticated: boolean;
   canManageSchedules: boolean;
+  sessionStatus: ScheduleWhoamiSessionStatus;
 };
 
 const unauthenticated: ScheduleWhoamiResult = {
   isPrismAuthenticated: false,
   canManageSchedules: false,
+  sessionStatus: 'unauthorized',
 };
 
 let cached: ScheduleWhoamiResult | null = null;
@@ -38,9 +45,13 @@ async function requestWhoami(): Promise<ScheduleWhoamiResult> {
       canManageSchedules:
         permissions.includes(MAP_EXPORTS_MANAGE_PERMISSION) ||
         permissions.includes(ADMIN_ACCESS_PERMISSION),
+      sessionStatus: 'authenticated',
     };
   } catch {
-    return unauthenticated;
+    return {
+      ...unauthenticated,
+      sessionStatus: 'network_error',
+    };
   }
 }
 

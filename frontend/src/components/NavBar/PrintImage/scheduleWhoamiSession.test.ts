@@ -23,6 +23,7 @@ describe('fetchScheduleWhoamiSession', () => {
     await expect(fetchScheduleWhoamiSession()).resolves.toEqual({
       isPrismAuthenticated: false,
       canManageSchedules: false,
+      sessionStatus: 'unauthorized',
     });
   });
 
@@ -37,6 +38,7 @@ describe('fetchScheduleWhoamiSession', () => {
     await expect(fetchScheduleWhoamiSession()).resolves.toEqual({
       isPrismAuthenticated: true,
       canManageSchedules: true,
+      sessionStatus: 'authenticated',
     });
   });
 
@@ -51,6 +53,17 @@ describe('fetchScheduleWhoamiSession', () => {
     await expect(fetchScheduleWhoamiSession()).resolves.toEqual({
       isPrismAuthenticated: true,
       canManageSchedules: true,
+      sessionStatus: 'authenticated',
+    });
+  });
+
+  test('returns network_error when fetch throws', async () => {
+    jest.spyOn(global, 'fetch').mockRejectedValue(new Error('offline'));
+
+    await expect(fetchScheduleWhoamiSession()).resolves.toEqual({
+      isPrismAuthenticated: false,
+      canManageSchedules: false,
+      sessionStatus: 'network_error',
     });
   });
 

@@ -48,7 +48,10 @@ import {
   isSchedulePrimaryDisabled,
   schedulePrimaryButtonLabelKey,
 } from './scheduleExportUi';
-import { fetchScheduleWhoamiSession } from './scheduleWhoamiSession';
+import {
+  fetchScheduleWhoamiSession,
+  type ScheduleWhoamiSessionStatus,
+} from './scheduleWhoamiSession';
 
 interface ToggleSelectorProps {
   title: string;
@@ -297,6 +300,8 @@ function PrintConfig() {
   const { printConfig } = useContext(PrintConfigContext);
   const [isPrismAuthenticated, setIsPrismAuthenticated] = useState(false);
   const [canManageSchedules, setCanManageSchedules] = useState(false);
+  const [scheduleSessionStatus, setScheduleSessionStatus] =
+    useState<ScheduleWhoamiSessionStatus>('unauthorized');
 
   // Local state for responsive input - syncs to parent with debounce
   const [localTitle, setLocalTitle] = useState(printConfig?.titleText ?? '');
@@ -309,22 +314,26 @@ function PrintConfig() {
     if (!scheduleMode) {
       setIsPrismAuthenticated(false);
       setCanManageSchedules(false);
+      setScheduleSessionStatus('unauthorized');
       return;
     }
     if (!printConfig?.open) {
       return;
     }
+    const bypassCache =
+      new URLSearchParams(location.search).get('schedule') === '1';
     let cancelled = false;
-    void fetchScheduleWhoamiSession().then(result => {
+    void fetchScheduleWhoamiSession({ bypassCache }).then(result => {
       if (!cancelled) {
         setIsPrismAuthenticated(result.isPrismAuthenticated);
         setCanManageSchedules(result.canManageSchedules);
+        setScheduleSessionStatus(result.sessionStatus);
       }
     });
     return () => {
       cancelled = true;
     };
-  }, [printConfig?.open, printConfig?.createScheduledMaps]);
+  }, [location.search, printConfig?.open, printConfig?.createScheduledMaps]);
 
   // Appease TS by ensuring printConfig is defined
   if (!printConfig) {
@@ -768,6 +777,38 @@ function PrintConfig() {
                 setCreateScheduledMaps(target.checked);
               }}
             >
+              {createScheduledMaps &&
+                scheduleSessionStatus === 'unauthorized' && (
+                  <GreyContainer>
+                    <GreyContainerSection isLast>
+                      <Typography
+                        variant="caption"
+                        component="p"
+                        className={classes.batchExportTruncateHint}
+                      >
+                        {t(
+                          'Sign in is required to create scheduled maps. Use Login to create schedule below.',
+                        )}
+                      </Typography>
+                    </GreyContainerSection>
+                  </GreyContainer>
+                )}
+              {createScheduledMaps &&
+                scheduleSessionStatus === 'network_error' && (
+                  <GreyContainer>
+                    <GreyContainerSection isLast>
+                      <Typography
+                        variant="caption"
+                        component="p"
+                        className={classes.batchExportTruncateHint}
+                      >
+                        {t(
+                          'Could not verify your session. Check your connection and try again.',
+                        )}
+                      </Typography>
+                    </GreyContainerSection>
+                  </GreyContainer>
+                )}
               {createScheduledMaps &&
                 isPrismAuthenticated &&
                 !canManageSchedules && (

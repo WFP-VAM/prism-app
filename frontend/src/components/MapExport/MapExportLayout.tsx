@@ -305,19 +305,26 @@ function MapExportLayout({
     // Load SDF icons for point data layers
     ensureSDFIconsLoaded(mapRef.current?.getMap());
 
-    // If bounds are provided, fit the map to those bounds
-    // This ensures precise geographic extent matching (e.g., for exports)
+    // Match preview viewport: use captured center+zoom when provided (/export?zoom=…).
+    // fitBounds alone ignores zoom and can match a prior export when only zoom changed.
     if (bounds && map) {
-      map.fitBounds(
-        [
-          [bounds.west, bounds.south],
-          [bounds.east, bounds.north],
-        ],
-        {
-          padding: 0,
-          animate: false,
-        },
-      );
+      if (initialViewState) {
+        map.jumpTo({
+          center: [initialViewState.longitude, initialViewState.latitude],
+          zoom: initialViewState.zoom,
+        });
+      } else {
+        map.fitBounds(
+          [
+            [bounds.west, bounds.south],
+            [bounds.east, bounds.north],
+          ],
+          {
+            padding: 0,
+            animate: false,
+          },
+        );
+      }
     }
 
     // Track tile loading using idle event and areTilesLoaded() for robust detection
