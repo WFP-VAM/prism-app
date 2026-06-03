@@ -1,6 +1,6 @@
 """Starlette Admin: read-only alerts; full CRUD for dashboards."""
 
-from prism_app.auth.permission_codes import ADMIN_ACCESS
+from prism_app.auth.permission_codes import ADMIN_ACCESS, can_manage_dashboards_in_admin
 from prism_app.dashboard.dashboard_admin import DashboardAdminView
 from prism_app.database.alert_model import AlertModel
 from prism_app.database.anticipatory_action_alerts_model import AnticipatoryActionAlerts
@@ -12,14 +12,24 @@ from starlette.requests import Request
 from starlette_admin.contrib.sqla import Admin, ModelView
 
 
-def _request_has_prism_admin_access(request: Request) -> bool:
-    """Defense in depth: middleware already requires ``prism.admin.access`` for admin routes."""
+def _permission_codes(request: Request) -> set[str] | None:
     codes = getattr(request.state, "permission_codes", None)
+    return codes if codes else None
+
+
+def _request_has_prism_admin_access(request: Request) -> bool:
+    """Full admin: all model views except dashboard-only managers."""
+    codes = _permission_codes(request)
     return bool(codes and ADMIN_ACCESS in codes)
 
 
+def _request_can_manage_dashboards(request: Request) -> bool:
+    codes = _permission_codes(request)
+    return bool(codes and can_manage_dashboards_in_admin(codes))
+
+
 class PrismGatedModelView(ModelView):
-    """Internal admin models: list/detail and mutations require ``prism.admin.access``."""
+    """Internal admin models: require ``prism.admin.access`` (not dashboard-only)."""
 
     def is_accessible(self, request: Request) -> bool:
         return _request_has_prism_admin_access(request)
@@ -90,6 +100,25 @@ class PermissionView(ReadOnlyModelView):
     exclude_fields_from_list = ("id",)
 
 
+class GatedDashboardAdminView(DashboardAdminView):
+    """Dashboard CRUD for ``prism.admin.access`` or ``prism.dashboard.manage`` only."""
+
+    def is_accessible(self, request: Request) -> bool:
+        return _request_can_manage_dashboards(request)
+
+    def can_view_details(self, request: Request) -> bool:
+        return _request_can_manage_dashboards(request)
+
+    def can_create(self, request: Request) -> bool:
+        return _request_can_manage_dashboards(request)
+
+    def can_edit(self, request: Request) -> bool:
+        return _request_can_manage_dashboards(request)
+
+    def can_delete(self, request: Request) -> bool:
+        return _request_can_manage_dashboards(request)
+
+
 class UserPermissionView(PrismGatedModelView):
     """Grant or revoke capability codes (e.g. ``prism.admin.access``, ``prism.content.view``)."""
 
@@ -102,7 +131,7 @@ def register_alerts_admin_views(admin: Admin) -> None:
     admin.add_view(AlertView(AlertModel))
     admin.add_view(KoboUserView(KoboUser))
     admin.add_view(AnticipatoryActionAlertsView(AnticipatoryActionAlerts))
-    admin.add_view(DashboardAdminView(DashboardModel))
+    admin.add_view(GatedDashboardAdminView(DashboardModel))
     admin.add_view(UserEditView(User))
     admin.add_view(PermissionView(Permission))
     admin.add_view(UserPermissionView(UserPermission))
