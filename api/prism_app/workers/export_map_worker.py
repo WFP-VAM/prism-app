@@ -1,12 +1,15 @@
 """Poll ``map_export_jobs`` for queued work, run ``export_maps``, store artifact on S3 or disk.
 
-Run: ``python -m prism_app.worker.export_map_worker``
+Run: ``python -m prism_app.workers.export_map_worker``
 
 Set ``EXPORT_MAP_S3_BUCKET`` for S3 (bare name, ``bucket/prefix``, or ``s3://bucket/prefix``),
 **or** ``EXPORT_MAP_LOCAL_OUTPUT_DIR`` for local files
 (``file:///…`` URI in DB; dev / Docker volume — do not use in production).
 If neither is set, defaults to ``DEFAULT_EXPORT_MAP_S3_BUCKET`` (see ``export_s3``).
-When the queue is empty, the worker sleeps a fixed 2s before polling again.
+Artifacts: ``map_exports/{job_id}.{ext}`` by default, or ``public_maps/{country}/{layer}/{job_id}.{ext}``
+(slugified) when ``publicMapUpload`` (needs explicit ``country`` and ``hazardLayerIds`` on the URL).
+When the queue is empty, the worker sleeps 2s before polling again.
+Scheduled public map enqueues: ``cron_scheduled_public_maps.sh`` / ``python -m prism_app.workers.scheduled_public_maps.cron``.
 """
 
 from __future__ import annotations
@@ -22,14 +25,13 @@ from prism_app.export_jobs.claim import claim_next_queued_map_export_job
 from prism_app.export_jobs.db import get_export_jobs_session_factory
 from prism_app.export_maps import export_maps
 from prism_app.export_s3 import (
-    DEFAULT_EXPORT_MAP_S3_BUCKET,
+    get_export_map_s3_bucket_and_prefix,
     map_export_s3_client,
-    parse_export_map_s3_bucket_env,
     put_map_export_bytes,
     put_map_export_bytes_local,
 )
 from prism_app.models import MapExportRequestModel
-from prism_app.utils import utc_now
+from prism_app.utils import public_map_upload_path_segments, utc_now
 from sqlmodel import Session
 
 logger = logging.getLogger(__name__)
@@ -93,6 +95,12 @@ async def run_export_job(
     )
     kind = job.content_type or ("pdf" if req.format == "pdf" else "zip")
 
+    public_maps_segments: tuple[str, str] | None = None
+    if req.publicMapUpload:
+        public_maps_segments = public_map_upload_path_segments(
+            req.urls[0], country=req.country
+        )
+
     if local_output_dir is not None:
         artifact_uri = await asyncio.to_thread(
             put_map_export_bytes_local,
@@ -100,6 +108,7 @@ async def run_export_job(
             job_id,
             kind,
             file_bytes,
+            public_maps_segments=public_maps_segments,
         )
     else:
         if not s3_bucket or s3_client is None:
@@ -112,6 +121,7 @@ async def run_export_job(
             file_bytes,
             s3_client,
             object_prefix=s3_object_prefix,
+            public_maps_segments=public_maps_segments,
         )
 
     job = session.get(MapExportJob, job_id)
@@ -145,20 +155,15 @@ def _mark_job_failed(session: Session, job_id: str, exc: BaseException) -> None:
 
 async def amain() -> None:
     local_raw = os.environ.get("EXPORT_MAP_LOCAL_OUTPUT_DIR", "").strip()
-    if "EXPORT_MAP_S3_BUCKET" not in os.environ and not local_raw:
-        bucket_raw = DEFAULT_EXPORT_MAP_S3_BUCKET
-    else:
-        bucket_raw = os.environ.get("EXPORT_MAP_S3_BUCKET", "").strip()
-    bucket, s3_prefix = parse_export_map_s3_bucket_env(bucket_raw)
+    bucket, s3_prefix = get_export_map_s3_bucket_and_prefix()
 
     if bucket:
         local_dir: Path | None = None
         s3 = map_export_s3_client()
         logger.info(
-            "export_map_worker S3 mode (bucket=%s prefix=%s raw=%s)",
+            "export_map_worker S3 mode (bucket=%s prefix=%s)",
             bucket,
             s3_prefix or "(none)",
-            bucket_raw,
         )
     elif local_raw:
         local_dir = Path(local_raw).resolve()
@@ -174,7 +179,8 @@ async def amain() -> None:
 
     factory = get_export_jobs_session_factory()
     logger.info(
-        "export_map_worker polling map_export_jobs (idle back-off %ss)", _POLL_IDLE_SEC
+        "export_map_worker polling map_export_jobs (idle back-off %ss)",
+        _POLL_IDLE_SEC,
     )
 
     def _claim_one_job_id() -> str | None:
