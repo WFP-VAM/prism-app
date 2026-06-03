@@ -13,6 +13,7 @@ from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from prism_app.admin import register_alerts_admin_views
+from prism_app.admin_map_export import PrismAdmin, register_map_export_admin_views
 from prism_app.auth import auth_oidc
 from prism_app.auth.access_pages import access_not_configured_response
 from prism_app.auth.admin_oidc_auth import PrismAdminAuthProvider
@@ -30,6 +31,7 @@ from prism_app.database.kobo_user_model import KoboUser
 from prism_app.database.user_model import User
 from prism_app.export_jobs import router as export_map_jobs_router
 from prism_app.export_maps import export_maps
+from prism_app.export_schedules import router as export_map_schedules_router
 from prism_app.googleflood import (
     get_google_flood_dates,
     get_google_floods_gauge_forecast,
@@ -103,6 +105,7 @@ app.add_middleware(
     https_only=_admin_session_settings.session_cookie_secure,
 )
 app.include_router(export_map_jobs_router)
+app.include_router(export_map_schedules_router)
 
 admin_engine = create_engine(DB_URI)
 app.state.admin_engine = admin_engine
@@ -128,8 +131,7 @@ _AnySession = Annotated[
 ]
 
 
-@app.get("/api/whoami")
-@app.get("/api/admin/whoami")
+@app.get("/whoami")
 def whoami(prism: _AnySession):
     """Return current user identity and permissions (any authenticated user)."""
     user, codes = prism
@@ -142,13 +144,14 @@ def whoami(prism: _AnySession):
 
 
 admin_auth_settings = get_admin_auth_settings()
-admin = Admin(
+admin = PrismAdmin(
     admin_engine,
     title="PRISM Admin",
     base_url="/admin",
     auth_provider=PrismAdminAuthProvider(admin_engine, admin_auth_settings),
 )
 register_alerts_admin_views(admin)
+register_map_export_admin_views(admin)
 admin.mount_to(app)
 
 alert_db = AlertsDataBase()

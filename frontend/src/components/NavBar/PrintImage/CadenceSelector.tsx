@@ -8,7 +8,7 @@ import {
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import { useContext } from 'react';
-import { BatchCadence } from 'utils/batchCadenceUtils';
+import { BatchCadence, MAX_DEKAD_INTERVAL } from 'utils/batchCadenceUtils';
 import { getFormattedDate } from 'utils/date-utils';
 
 import { useSafeTranslation } from '../../../i18n';
@@ -106,6 +106,7 @@ export default function CadenceSelector() {
     filteredBatchDates,
     availableCadences,
     disabledCadences,
+    createScheduledMaps,
   } = printConfig;
 
   return (
@@ -148,15 +149,18 @@ export default function CadenceSelector() {
             variant="outlined"
             label={t('Dekad interval')}
             value={dekadInterval}
-            inputProps={{ min: 1 }}
+            inputProps={{ min: 1, max: MAX_DEKAD_INTERVAL }}
             onChange={e => {
               const val = parseInt(e.target.value, 10);
-              setDekadInterval(val);
+              if (Number.isNaN(val)) {
+                return;
+              }
+              setDekadInterval(Math.min(MAX_DEKAD_INTERVAL, Math.max(1, val)));
             }}
           />
         )}
       </Box>
-      {filteredBatchDates.length > 0 && (
+      {!createScheduledMaps && filteredBatchDates.length > 0 && (
         <Box className={classes.dateList}>
           {filteredBatchDates.map(ts => (
             <span key={ts} className={classes.dateChip}>

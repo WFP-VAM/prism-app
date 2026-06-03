@@ -8,6 +8,20 @@ from prism_app.export_jobs.fingerprint import compute_request_fingerprint
 from prism_app.models import MapExportRequestModel
 
 
+def test_fingerprint_differs_for_public_upload_intent():
+    base = dict(
+        urls=["http://localhost/?date=2025-01-01&hazardLayerIds=precip_blended_dekad"],
+        viewportWidth=1200,
+        viewportHeight=849,
+        format="pdf",
+    )
+    plain = MapExportRequestModel.model_validate(base)
+    public = MapExportRequestModel.model_validate(
+        {**base, "publicMapUpload": True, "country": "mozambique"}
+    )
+    assert compute_request_fingerprint(plain) != compute_request_fingerprint(public)
+
+
 def test_fingerprint_stable_for_same_payload():
     req = MapExportRequestModel(
         urls=["http://localhost/?x=1&date=2025-01-01"],
