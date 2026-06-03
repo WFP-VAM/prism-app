@@ -1,14 +1,11 @@
 {#
-  Custom edit template with Save + Cancel only.
-  Used by DashboardAdminView and UserEditView.
+  Custom create template with Save + Cancel only.
+  Used by DashboardAdminView.
   Extends the built-in template via the @starlette-admin prefix so
   ChoiceLoader resolves the original rather than recursing.
 #}
-{% extends "@starlette-admin/edit.html" %}
+{% extends "@starlette-admin/create.html" %}
 
-{% block head_css %}
-  {{ super() }}
-  {% include "includes/admin_minimal_form_actions.html" %}
 {% block content %}
     <div class="container-fluid">
         <div class="row">
@@ -20,30 +17,32 @@
                         <div class="card-header">
                             <div class="container-fluid">
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <h3 class="card-title">{{ _("Edit %(name)s", name=model.name ) }}</h3>
+                                    <h3 class="card-title">{{ _("New %(name)s", name=model.name ) }}</h3>
                                 </div>
                             </div>
                         </div>
                         <div class="card-body border-bottom py-3">
-                            {% if model.name == 'dashboard' %}
-                            {% set cfg = obj.config if obj.config is mapping else {} %}
-                            {% set derived_title = cfg.get('title') or obj.title or '' %}
-                            {% set derived_country = cfg.get('country') or (obj.country.value if obj.country else '') %}
                             <div class="mb-3">
                                 <label class="form-label">Title</label>
-                                <input type="text" class="form-control" id="derived-title"
-                                       value="{{ derived_title }}" readonly disabled>
+                                <input type="text" class="form-control" id="derived-title" value="" readonly disabled
+                                       placeholder="Derived from uploaded JSON">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Country</label>
-                                <input type="text" class="form-control" id="derived-country"
-                                       value="{{ derived_country }}" readonly disabled>
+                                <input type="text" class="form-control" id="derived-country" value="" readonly disabled
+                                       placeholder="Derived from uploaded JSON">
                             </div>
-                            {% endif %}
-                            {% block edit_form %}
-                                {% for field in model.get_fields_list(request, 'EDIT' | ra) %}
+                            {% block create_form %}
+                                {% for field in model.get_fields_list(request, 'CREATE' | ra) %}
                                     <div class="mb-3">
-                                        {% with action=('EDIT' | ra),data=obj[field.name], error=errors.get(field.name, None) if errors else None %}
+                                        {% if obj is defined and obj %}
+                                            {% set create_data = obj[field.name] %}
+                                        {% elif field.name == 'status' %}
+                                            {% set create_data = 'draft' %}
+                                        {% else %}
+                                            {% set create_data = none %}
+                                        {% endif %}
+                                        {% with action=('CREATE'| ra), data=create_data, error=errors.get(field.name, None) if errors else None %}
                                             {% include field.label_template %}
                                             {% include field.form_template %}
                                         {% endwith %}
@@ -67,7 +66,6 @@
 
 {% block script %}
 {{ super() }}
-{% if model.name == 'dashboard' %}
 <script>
 (() => {
     const fileInput = document.getElementById("config");
@@ -75,25 +73,22 @@
     const countryEl = document.getElementById("derived-country");
     if (!fileInput || !titleEl || !countryEl) return;
 
-    const applyConfig = (cfg) => {
-        titleEl.value = cfg?.title || "";
-        countryEl.value = cfg?.country || "";
-    };
-
     fileInput.addEventListener("change", () => {
         const file = fileInput.files?.[0];
         if (!file) return;
         const reader = new FileReader();
         reader.onload = (e) => {
             try {
-                applyConfig(JSON.parse(e.target.result));
+                const cfg = JSON.parse(e.target.result);
+                titleEl.value = cfg.title || "";
+                countryEl.value = cfg.country || "";
             } catch {
-                applyConfig(null);
+                titleEl.value = "";
+                countryEl.value = "";
             }
         };
         reader.readAsText(file);
     });
 })();
 </script>
-{% endif %}
 {% endblock %}

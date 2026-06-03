@@ -1,4 +1,5 @@
 import {
+  ChartLatestPeriod,
   CoverageEndDateTimestamp,
   CoverageStartDateTimestamp,
   DateItem,
@@ -478,4 +479,24 @@ export function findClosestDate(
   };
 
   return availableDates.reduce(reducerFunc);
+}
+
+export function getLatestPeriodRange(
+  latestDate: number,
+  period: ChartLatestPeriod,
+): { startDate: number; endDate: number } {
+  const d = new Date(latestDate);
+  const y = d.getUTCFullYear();
+  const m = d.getUTCMonth();
+  const day = d.getUTCDate();
+
+  let start: number;
+  if (period === ChartLatestPeriod.QUARTER) {
+    start = Date.UTC(y, m - 3, day, 12);
+  } else if (period === ChartLatestPeriod.YEAR) {
+    start = Date.UTC(y - 1, m, day, 12);
+  } else {
+    start = Date.UTC(y, m - 1, day, 12);
+  }
+  return { startDate: start, endDate: latestDate };
 }

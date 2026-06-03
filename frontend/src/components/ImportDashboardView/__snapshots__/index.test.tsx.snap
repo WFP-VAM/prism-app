@@ -1,0 +1,403 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`ImportDashboardView detects duplicate when imported JSON has different key ordering 1`] = `
+<div>
+  <div
+    class="MuiBox-root MuiBox-root-84 makeStyles-root-66"
+  >
+    <div
+      class="MuiBox-root MuiBox-root-85 makeStyles-card-67"
+    >
+      <div
+        class="MuiBox-root MuiBox-root-87 makeStyles-feedbackContainer-80"
+      >
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root makeStyles-successIcon-82"
+          focusable="false"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M16.59 7.58L10 14.17l-3.59-3.58L5 12l5 5 8-8zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+          />
+        </svg>
+        <mock-typography
+          classname="makeStyles-title-68"
+          variant="h2"
+        >
+          Dashboard already exists
+        </mock-typography>
+        <mock-typography
+          classname="makeStyles-subtitle-69"
+          variant="body1"
+        >
+          <strong>
+            Imported Dashboard
+          </strong>
+           
+          is ready to view.
+        </mock-typography>
+        <mock-button
+          classname="makeStyles-ctaButton-83"
+          color="primary"
+          variant="contained"
+        >
+          View dashboard
+        </mock-button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ImportDashboardView renders idle state 1`] = `
+<div>
+  <div
+    class="MuiBox-root MuiBox-root-19 makeStyles-root-1"
+  >
+    <div
+      class="MuiBox-root MuiBox-root-20 makeStyles-card-2"
+    >
+      <mock-typography
+        classname="makeStyles-title-3"
+        variant="h2"
+      >
+        Import dashboard
+      </mock-typography>
+      <mock-typography
+        classname="makeStyles-subtitle-4"
+        variant="body1"
+      >
+        Upload a JSON file exported from a Prism dashboard.
+      </mock-typography>
+      <div
+        class="MuiBox-root MuiBox-root-21 makeStyles-dropZone-5 "
+      >
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root makeStyles-uploadIcon-7"
+          focusable="false"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3zM8 13h2.55v3h2.9v-3H16l-4-4z"
+          />
+        </svg>
+        <mock-typography
+          classname="makeStyles-dropText-8"
+          variant="body1"
+        >
+          Drag & drop a JSON file here
+        </mock-typography>
+        <mock-typography
+          color="textSecondary"
+          variant="body1"
+        >
+          or
+        </mock-typography>
+        <mock-button
+          classname="makeStyles-browseButton-9"
+          color="primary"
+          size="small"
+          variant="outlined"
+        >
+          Browse files
+        </mock-button>
+        <input
+          accept=".json,application/json"
+          style="display: none;"
+          type="file"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ImportDashboardView shows already-exists when imported dashboard matches one in store 1`] = `
+<div>
+  <div
+    class="MuiBox-root MuiBox-root-62 makeStyles-root-44"
+  >
+    <div
+      class="MuiBox-root MuiBox-root-63 makeStyles-card-45"
+    >
+      <div
+        class="MuiBox-root MuiBox-root-65 makeStyles-feedbackContainer-58"
+      >
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root makeStyles-successIcon-60"
+          focusable="false"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M16.59 7.58L10 14.17l-3.59-3.58L5 12l5 5 8-8zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+          />
+        </svg>
+        <mock-typography
+          classname="makeStyles-title-46"
+          variant="h2"
+        >
+          Dashboard already exists
+        </mock-typography>
+        <mock-typography
+          classname="makeStyles-subtitle-47"
+          variant="body1"
+        >
+          <strong>
+            Imported Dashboard
+          </strong>
+           
+          is ready to view.
+        </mock-typography>
+        <mock-button
+          classname="makeStyles-ctaButton-61"
+          color="primary"
+          variant="contained"
+        >
+          View dashboard
+        </mock-button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ImportDashboardView shows parse error for invalid JSON 1`] = `
+<div>
+  <div
+    class="MuiBox-root MuiBox-root-106 makeStyles-root-88"
+  >
+    <div
+      class="MuiBox-root MuiBox-root-107 makeStyles-card-89"
+    >
+      <mock-typography
+        classname="makeStyles-title-90"
+        variant="h2"
+      >
+        Import dashboard
+      </mock-typography>
+      <mock-typography
+        classname="makeStyles-subtitle-91"
+        variant="body1"
+      >
+        Upload a JSON file exported from a Prism dashboard.
+      </mock-typography>
+      <div
+        class="MuiBox-root MuiBox-root-108 makeStyles-dropZone-92 "
+      >
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root makeStyles-uploadIcon-94"
+          focusable="false"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3zM8 13h2.55v3h2.9v-3H16l-4-4z"
+          />
+        </svg>
+        <mock-typography
+          classname="makeStyles-dropText-95"
+          variant="body1"
+        >
+          Drag & drop a JSON file here
+        </mock-typography>
+        <mock-typography
+          color="textSecondary"
+          variant="body1"
+        >
+          or
+        </mock-typography>
+        <mock-button
+          classname="makeStyles-browseButton-96"
+          color="primary"
+          size="small"
+          variant="outlined"
+        >
+          Browse files
+        </mock-button>
+        <input
+          accept=".json,application/json"
+          style="display: none;"
+          type="file"
+        />
+      </div>
+      <div
+        class="MuiBox-root MuiBox-root-109 makeStyles-error-97"
+      >
+        <div
+          class="MuiBox-root MuiBox-root-110 makeStyles-errorHeader-98"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root makeStyles-errorIcon-100"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+            />
+          </svg>
+          <mock-typography
+            classname="makeStyles-errorHeadline-99"
+            variant="subtitle2"
+          >
+            Invalid dashboard file
+          </mock-typography>
+        </div>
+        <mock-typography
+          classname="makeStyles-errorDetail-101"
+          variant="body1"
+        >
+          Could not parse file as JSON.
+        </mock-typography>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ImportDashboardView shows success after a valid dashboard file is imported 1`] = `
+<div>
+  <div
+    class="MuiBox-root MuiBox-root-40 makeStyles-root-22"
+  >
+    <div
+      class="MuiBox-root MuiBox-root-41 makeStyles-card-23"
+    >
+      <div
+        class="MuiBox-root MuiBox-root-43 makeStyles-feedbackContainer-36"
+      >
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root makeStyles-successIcon-38"
+          focusable="false"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M16.59 7.58L10 14.17l-3.59-3.58L5 12l5 5 8-8zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+          />
+        </svg>
+        <mock-typography
+          classname="makeStyles-title-24"
+          variant="h2"
+        >
+          Import complete
+        </mock-typography>
+        <mock-typography
+          classname="makeStyles-subtitle-25"
+          variant="body1"
+        >
+          <strong>
+            Imported Dashboard
+          </strong>
+           
+          is ready to view.
+        </mock-typography>
+        <mock-button
+          classname="makeStyles-ctaButton-39"
+          color="primary"
+          variant="contained"
+        >
+          View dashboard
+        </mock-button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ImportDashboardView shows validation error when JSON fails schema checks 1`] = `
+<div>
+  <div
+    class="MuiBox-root MuiBox-root-129 makeStyles-root-111"
+  >
+    <div
+      class="MuiBox-root MuiBox-root-130 makeStyles-card-112"
+    >
+      <mock-typography
+        classname="makeStyles-title-113"
+        variant="h2"
+      >
+        Import dashboard
+      </mock-typography>
+      <mock-typography
+        classname="makeStyles-subtitle-114"
+        variant="body1"
+      >
+        Upload a JSON file exported from a Prism dashboard.
+      </mock-typography>
+      <div
+        class="MuiBox-root MuiBox-root-131 makeStyles-dropZone-115 "
+      >
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root makeStyles-uploadIcon-117"
+          focusable="false"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3zM8 13h2.55v3h2.9v-3H16l-4-4z"
+          />
+        </svg>
+        <mock-typography
+          classname="makeStyles-dropText-118"
+          variant="body1"
+        >
+          Drag & drop a JSON file here
+        </mock-typography>
+        <mock-typography
+          color="textSecondary"
+          variant="body1"
+        >
+          or
+        </mock-typography>
+        <mock-button
+          classname="makeStyles-browseButton-119"
+          color="primary"
+          size="small"
+          variant="outlined"
+        >
+          Browse files
+        </mock-button>
+        <input
+          accept=".json,application/json"
+          style="display: none;"
+          type="file"
+        />
+      </div>
+      <div
+        class="MuiBox-root MuiBox-root-132 makeStyles-error-120"
+      >
+        <div
+          class="MuiBox-root MuiBox-root-133 makeStyles-errorHeader-121"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root makeStyles-errorIcon-123"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+            />
+          </svg>
+          <mock-typography
+            classname="makeStyles-errorHeadline-122"
+            variant="subtitle2"
+          >
+            Invalid dashboard file
+          </mock-typography>
+        </div>
+        <mock-typography
+          classname="makeStyles-errorDetail-124"
+          variant="body1"
+        >
+          Invalid dashboard configuration: firstColumn.0.type: Invalid input
+        </mock-typography>
+      </div>
+    </div>
+  </div>
+</div>
+`;
