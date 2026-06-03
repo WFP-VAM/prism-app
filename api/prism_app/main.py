@@ -174,17 +174,25 @@ def get_published_dashboards(
         min_length=1,
         description="Country key (frontend configMap key)",
     ),
+    include_staging: bool = Query(
+        False,
+        description="Include status=staging rows (for staging frontends)",
+    ),
 ) -> list[Any]:
-    """Return merged dashboard rows for all published ``dashboard`` rows in this country.
+    """Return merged dashboard rows for the served ``dashboard`` rows in this country.
 
     The response is a single JSON array, the same top-level shape as the static
-    ``dashboards.json`` consumed by PRISM. Drafts are never included.
+    ``dashboards.json`` consumed by PRISM. ``published`` rows are always
+    included; ``staging`` rows are included only when ``include_staging`` is set.
+    Drafts and archived rows are never included.
     """
     if not alert_db.active or alert_db.engine is None:
         raise HTTPException(
             status_code=503, detail="Dashboard data is temporarily unavailable"
         )
-    return merge_published_dashboard_rows_for_country(alert_db.engine, country)
+    return merge_published_dashboard_rows_for_country(
+        alert_db.engine, country, include_staging=include_staging
+    )
 
 
 @timed
