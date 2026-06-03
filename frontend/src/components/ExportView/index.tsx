@@ -22,6 +22,7 @@ import { useLocation } from 'react-router-dom';
 import { boundaryCache } from 'utils/boundary-cache';
 import { getExportFontStack, loadExportFonts } from 'utils/exportFontFamily';
 import { exportLanguage } from 'utils/exportLanguage';
+import { fetchJsonOrNull } from 'utils/fetchJsonOrNull';
 import useLayers from 'utils/layers-utils';
 import { getLayersCoverage } from 'utils/server-utils';
 import { useBoundaryData } from 'utils/useBoundaryData';
@@ -123,9 +124,9 @@ const ExportView = memo(() => {
 
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
     if (exportParams.selectedBoundaries.length === 0) {
-      fetch(`/data/${safeCountry}/admin-boundary-unified-polygon.json`)
-        .then(response => response.json())
+      fetchJsonOrNull(`/data/${safeCountry}/admin-boundary-unified-polygon.json`)
         .then(polygonData => {
+          if (!polygonData) return;
           const maskedPolygon = mask(polygonData as any);
           setAdminBoundaryPolygon(maskedPolygon as any);
         })
@@ -153,9 +154,9 @@ const ExportView = memo(() => {
 
     if (filteredData.features.length === 0) {
       // Fall back to full country mask if no features match
-      fetch(`/data/${safeCountry}/admin-boundary-unified-polygon.json`)
-        .then(response => response.json())
+      fetchJsonOrNull(`/data/${safeCountry}/admin-boundary-unified-polygon.json`)
         .then(polygonData => {
+          if (!polygonData) return;
           const maskedPolygon = mask(polygonData as any);
           setAdminBoundaryPolygon(maskedPolygon as any);
         })

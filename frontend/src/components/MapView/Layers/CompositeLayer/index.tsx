@@ -22,6 +22,7 @@ import {
   getLayerMapId,
   useMapCallback,
 } from 'utils/map-utils';
+import { fetchJsonOrNull } from 'utils/fetchJsonOrNull';
 import { getRequestDateItem } from 'utils/server-utils';
 import { useDefaultDate } from 'utils/useDefaultDate';
 
@@ -74,9 +75,10 @@ const CompositeLayer = memo(({ layer, before }: Props) => {
   useEffect(() => {
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
     // which runs ./src/scripts/preprocess-layers.js
-    fetch(`/data/${safeCountry}/admin-boundary-unified-polygon.json`)
-      .then(response => response.json())
-      .then(polygonData => setAdminBoundaryPolygon(polygonData))
+    fetchJsonOrNull(`/data/${safeCountry}/admin-boundary-unified-polygon.json`)
+      .then(polygonData => {
+        if (polygonData) setAdminBoundaryPolygon(polygonData);
+      })
       .catch(error => console.error('Error:', error));
   }, []);
 
