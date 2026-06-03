@@ -18,9 +18,7 @@ def upgrade() -> None:
     # ALTER TYPE ... ADD VALUE cannot run inside a transaction block on
     # PostgreSQL < 12, so use an autocommit block to be safe across versions.
     with op.get_context().autocommit_block():
-        op.execute(
-            "ALTER TYPE dashboard_status_enum ADD VALUE IF NOT EXISTS 'staging'"
-        )
+        op.execute("ALTER TYPE dashboard_status_enum ADD VALUE IF NOT EXISTS 'staging'")
 
 
 def downgrade() -> None:
