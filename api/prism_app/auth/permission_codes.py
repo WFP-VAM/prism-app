@@ -12,6 +12,7 @@ DASHBOARD_MANAGE = "prism.dashboard.manage"
 ADMIN_ACCESS = "prism.admin.access"
 DEPLOYMENT_MANAGE = "prism.deployment.manage"
 USERS_MANAGE = "prism.users.manage"
+MAP_EXPORTS_MANAGE = "prism.map_exports.manage"
 
 
 def can_access_admin_panel(codes: set[str] | frozenset[str]) -> bool:
@@ -32,5 +33,6 @@ ALL_CAPABILITIES = frozenset(
         ADMIN_ACCESS,
         DEPLOYMENT_MANAGE,
         USERS_MANAGE,
+        MAP_EXPORTS_MANAGE,
     }
 )

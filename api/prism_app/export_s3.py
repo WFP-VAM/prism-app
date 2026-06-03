@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+import re
 from pathlib import Path
 from typing import Any
 from urllib.parse import quote, unquote, urlparse
@@ -90,6 +92,16 @@ def _map_export_content_type(artifact_kind: str) -> str:
     return f"application/{_map_export_file_extension(artifact_kind)}"
 
 
+def slug_s3_path_segment(raw: str) -> str:
+    """Safe single path segment for S3 keys (lowercase, no slashes or odd chars)."""
+    s = raw.strip().lower()
+    s = re.sub(r"[^a-z0-9._-]+", "-", s)
+    s = re.sub(r"-{2,}", "-", s).strip("-")
+    if not s:
+        raise ValueError("path segment empty after slugify")
+    return s
+
+
 def normalize_export_map_s3_object_prefix(raw: str | None) -> str:
     """Strip slashes; optional folder before ``map_exports/…`` in the object key."""
     if raw is None:
@@ -123,12 +135,62 @@ def s3_key_for_map_export(
     artifact_kind: str,
     *,
     object_prefix: str = "",
+    public_maps_segments: tuple[str, str] | None = None,
 ) -> str:
-    """artifact_kind: pdf or zip (matches map_export_jobs.content_type)."""
+    """artifact_kind: pdf or zip (matches map_export_jobs.content_type).
+
+    When ``public_maps_segments`` is ``(country, layer)`` (already slugified), the key is
+    ``public_maps/{country}/{layer}/{job_id}.{ext}``; otherwise ``map_exports/…``.
+    """
     ext = _map_export_file_extension(artifact_kind)
-    base = f"map_exports/{job_id}.{ext}"
+    if public_maps_segments:
+        c_seg, l_seg = public_maps_segments
+        base = f"public_maps/{c_seg}/{l_seg}/{job_id}.{ext}"
+    else:
+        base = f"map_exports/{job_id}.{ext}"
     op = normalize_export_map_s3_object_prefix(object_prefix)
     return f"{op}/{base}" if op else base
+
+
+def get_export_map_s3_bucket_and_prefix() -> tuple[str, str]:
+    """Resolve bucket and object prefix the same way as ``export_map_worker``."""
+    local_raw = os.environ.get("EXPORT_MAP_LOCAL_OUTPUT_DIR", "").strip()
+    if "EXPORT_MAP_S3_BUCKET" not in os.environ and not local_raw:
+        bucket_raw = DEFAULT_EXPORT_MAP_S3_BUCKET
+    else:
+        bucket_raw = os.environ.get("EXPORT_MAP_S3_BUCKET", "").strip()
+    return parse_export_map_s3_bucket_env(bucket_raw)
+
+
+def public_maps_folder_prefix(
+    export_url: str,
+    *,
+    country: str,
+    object_prefix: str = "",
+) -> str:
+    """Directory prefix for scheduled public maps (same layout as ``s3_key_for_map_export``)."""
+    from prism_app.utils import public_map_upload_path_segments
+
+    c_seg, l_seg = public_map_upload_path_segments(export_url, country=country)
+    base = f"public_maps/{c_seg}/{l_seg}/"
+    op = normalize_export_map_s3_object_prefix(object_prefix)
+    return f"{op}/{base}" if op else base
+
+
+def public_maps_folder_uri(export_url: str, *, country: str) -> str:
+    """Full storage URI for the schedule's public-maps folder (S3 or local file URI)."""
+    bucket, object_prefix = get_export_map_s3_bucket_and_prefix()
+    key_prefix = public_maps_folder_prefix(
+        export_url,
+        country=country,
+        object_prefix=object_prefix,
+    )
+    if bucket:
+        return f"s3://{bucket}/{key_prefix}"
+    local_raw = os.environ.get("EXPORT_MAP_LOCAL_OUTPUT_DIR", "").strip()
+    if local_raw:
+        return (Path(local_raw).resolve() / key_prefix).as_uri()
+    return key_prefix
 
 
 def put_map_export_bytes(
@@ -139,9 +201,15 @@ def put_map_export_bytes(
     s3_client: object,
     *,
     object_prefix: str = "",
+    public_maps_segments: tuple[str, str] | None = None,
 ) -> str:
     op = normalize_export_map_s3_object_prefix(object_prefix or None)
-    key = s3_key_for_map_export(job_id, artifact_kind, object_prefix=op)
+    key = s3_key_for_map_export(
+        job_id,
+        artifact_kind,
+        object_prefix=op,
+        public_maps_segments=public_maps_segments,
+    )
     content_type = _map_export_content_type(artifact_kind)
     s3_client.put_object(  # type: ignore[union-attr]
         Bucket=bucket,
@@ -157,11 +225,18 @@ def put_map_export_bytes_local(
     job_id: str,
     artifact_kind: str,
     file_bytes: bytes,
+    *,
+    public_maps_segments: tuple[str, str] | None = None,
 ) -> str:
     """Write artifact under ``output_dir``, return ``file:///…`` URI (stored in ``map_export_jobs.s3_uri``)."""
-    output_dir.mkdir(parents=True, exist_ok=True)
     ext = _map_export_file_extension(artifact_kind)
-    path = (output_dir / f"{job_id}.{ext}").resolve()
+    if public_maps_segments:
+        c_seg, l_seg = public_maps_segments
+        dest_dir = output_dir / "public_maps" / c_seg / l_seg
+    else:
+        dest_dir = output_dir
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    path = (dest_dir / f"{job_id}.{ext}").resolve()
     path.write_bytes(file_bytes)
     return path.as_uri()
 

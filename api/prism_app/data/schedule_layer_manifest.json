@@ -1,0 +1,2983 @@
+{
+  "countries": {
+    "afghanistan": [],
+    "bhutan": [],
+    "cambodia": [
+      {
+        "id": "days_dry",
+        "title": "Days since last rain"
+      },
+      {
+        "id": "days_extreme_rain",
+        "title": "Number of days with extreme rainfall in the last 30 days"
+      },
+      {
+        "id": "days_heavy_rain",
+        "title": "Number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "days_intense_rain",
+        "title": "Number of days with intense rainfall in the last 30 days"
+      },
+      {
+        "id": "flood_duration",
+        "title": "Flood duration"
+      },
+      {
+        "id": "flood_extent",
+        "title": "Flood extent"
+      },
+      {
+        "id": "flood_pixel_age",
+        "title": "Flood pixel age"
+      },
+      {
+        "id": "lst_amplitude",
+        "title": "Land Surface Temperature - 10-day Amplitude (MODIS)"
+      },
+      {
+        "id": "lst_anomaly",
+        "title": "Daytime Land Surface Temperature - 10-day Anomaly (MODIS)"
+      },
+      {
+        "id": "lst_daytime",
+        "title": "Daytime Land Surface Temperature - 10-day (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad",
+        "title": "10-day NDVI (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad_anomaly",
+        "title": "10-day NDVI anomaly (MODIS)"
+      },
+      {
+        "id": "rain_anomaly_1month",
+        "title": "Monthly rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_1year",
+        "title": "1-year rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_3month",
+        "title": "3-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_6month",
+        "title": "6-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_9month",
+        "title": "9-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_dekad",
+        "title": "10-day rainfall anomaly"
+      },
+      {
+        "id": "rainfall_agg_1month",
+        "title": "1-month rainfall aggregate"
+      },
+      {
+        "id": "rainfall_agg_1year",
+        "title": "1-year rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_3month",
+        "title": "3-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_6month",
+        "title": "6-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_9month",
+        "title": "9-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_dekad",
+        "title": "10-day rainfall estimate (mm)"
+      },
+      {
+        "id": "spi_1m",
+        "title": "SPI - 1-month"
+      },
+      {
+        "id": "spi_1y",
+        "title": "SPI - 1-year"
+      },
+      {
+        "id": "spi_3m",
+        "title": "SPI - 3-month"
+      },
+      {
+        "id": "spi_6m",
+        "title": "SPI - 6-month"
+      },
+      {
+        "id": "spi_9m",
+        "title": "SPI - 9-month"
+      },
+      {
+        "id": "streak_dry_days",
+        "title": "Longest number of consecutive dry days"
+      },
+      {
+        "id": "streak_extreme_rain",
+        "title": "Longest consecutive extreme rainfall days"
+      },
+      {
+        "id": "streak_heavy_rain",
+        "title": "Longest consecutive number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "streak_intense_rain",
+        "title": "Longest consecutive intense rainfall days"
+      },
+      {
+        "id": "wp_pop_icunadj",
+        "title": "population"
+      }
+    ],
+    "cameroon": [
+      {
+        "id": "days_dry",
+        "title": "Days since last rain"
+      },
+      {
+        "id": "days_extreme_rain",
+        "title": "Number of days with extreme rainfall in the last 30 days"
+      },
+      {
+        "id": "days_heavy_rain",
+        "title": "Number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "days_intense_rain",
+        "title": "Number of days with intense rainfall in the last 30 days"
+      },
+      {
+        "id": "lst_amplitude",
+        "title": "Land Surface Temperature - 10-day Amplitude (MODIS)"
+      },
+      {
+        "id": "lst_anomaly",
+        "title": "Land Surface Temperature - 10-day Anomaly (MODIS)"
+      },
+      {
+        "id": "lst_daytime",
+        "title": "Daytime Land Surface Temperature - 10-day (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad",
+        "title": "10-day NDVI (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad_anomaly",
+        "title": "10-day NDVI anomaly (MODIS)"
+      },
+      {
+        "id": "precip_blended_1m",
+        "title": "Blended rainfall aggregate (1-month)"
+      },
+      {
+        "id": "precip_blended_1y",
+        "title": "Blended rainfall aggregate (1-year)"
+      },
+      {
+        "id": "precip_blended_3m",
+        "title": "Blended rainfall aggregate (3-month)"
+      },
+      {
+        "id": "precip_blended_6m",
+        "title": "Blended rainfall aggregate (6-month)"
+      },
+      {
+        "id": "precip_blended_9m",
+        "title": "Blended rainfall aggregate (9-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_1m",
+        "title": "Blended rainfall anomaly (1-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_1y",
+        "title": "Blended rainfall anomaly (1-year)"
+      },
+      {
+        "id": "precip_blended_anomaly_3m",
+        "title": "Blended rainfall anomaly (3-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_6m",
+        "title": "Blended rainfall anomaly (6-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_9m",
+        "title": "Blended rainfall anomaly (9-month)"
+      },
+      {
+        "id": "precip_blended_dekad",
+        "title": "Blended rainfall aggregate (10-day)"
+      },
+      {
+        "id": "precip_blended_dekad_anomaly",
+        "title": "Blended rainfall anomaly (10-day)"
+      },
+      {
+        "id": "rain_anomaly_1month",
+        "title": "Monthly rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_1year",
+        "title": "1-year rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_3month",
+        "title": "3-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_6month",
+        "title": "6-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_9month",
+        "title": "9-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_dekad",
+        "title": "10-day rainfall anomaly"
+      },
+      {
+        "id": "rainfall_agg_1month",
+        "title": "1-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_1year",
+        "title": "1-year rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_3month",
+        "title": "3-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_6month",
+        "title": "6-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_9month",
+        "title": "9-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_dekad",
+        "title": "10-day rainfall estimate (mm)"
+      },
+      {
+        "id": "spi_1m",
+        "title": "SPI - 1-month"
+      },
+      {
+        "id": "spi_1y",
+        "title": "SPI - 1-year"
+      },
+      {
+        "id": "spi_3m",
+        "title": "SPI - 3-month"
+      },
+      {
+        "id": "spi_6m",
+        "title": "SPI - 6-month"
+      },
+      {
+        "id": "spi_9m",
+        "title": "SPI - 9-month"
+      },
+      {
+        "id": "streak_dry_days",
+        "title": "Longest number of consecutive dry days"
+      },
+      {
+        "id": "streak_extreme_rain",
+        "title": "Longest consecutive extreme rainfall days"
+      },
+      {
+        "id": "streak_heavy_rain",
+        "title": "Longest consecutive number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "streak_intense_rain",
+        "title": "Longest consecutive intense rainfall days"
+      }
+    ],
+    "colombia": [],
+    "cuba": [
+      {
+        "id": "days_dry",
+        "title": "Days since last rain"
+      },
+      {
+        "id": "days_extreme_rain",
+        "title": "Number of days with extreme rainfall in the last 30 days"
+      },
+      {
+        "id": "days_heavy_rain",
+        "title": "Number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "days_intense_rain",
+        "title": "Number of days with intense rainfall in the last 30 days"
+      },
+      {
+        "id": "lst_amplitude",
+        "title": "Land Surface Temperature - 10-day Amplitude (MODIS)"
+      },
+      {
+        "id": "lst_anomaly",
+        "title": "Daytime Land Surface Temperature - 10-day Anomaly (MODIS)"
+      },
+      {
+        "id": "lst_daytime",
+        "title": "Daytime Land Surface Temperature - 10-day (MODIS)"
+      },
+      {
+        "id": "lst_nighttime",
+        "title": "Nighttime Land Surface Temperature - 10-day (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad",
+        "title": "10-day NDVI (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad_anomaly",
+        "title": "10-day NDVI anomaly (MODIS)"
+      },
+      {
+        "id": "precip_blended_1m",
+        "title": "Blended rainfall aggregate (1-month)"
+      },
+      {
+        "id": "precip_blended_1y",
+        "title": "Blended rainfall aggregate (1-year)"
+      },
+      {
+        "id": "precip_blended_3m",
+        "title": "Blended rainfall aggregate (3-month)"
+      },
+      {
+        "id": "precip_blended_6m",
+        "title": "Blended rainfall aggregate (6-month)"
+      },
+      {
+        "id": "precip_blended_9m",
+        "title": "Blended rainfall aggregate (9-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_1m",
+        "title": "Blended rainfall anomaly (1-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_1y",
+        "title": "Blended rainfall anomaly (1-year)"
+      },
+      {
+        "id": "precip_blended_anomaly_3m",
+        "title": "Blended rainfall anomaly (3-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_6m",
+        "title": "Blended rainfall anomaly (6-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_9m",
+        "title": "Blended rainfall anomaly (9-month)"
+      },
+      {
+        "id": "precip_blended_dekad",
+        "title": "Blended rainfall aggregate (10-day)"
+      },
+      {
+        "id": "precip_blended_dekad_anomaly",
+        "title": "Blended rainfall anomaly (10-day)"
+      },
+      {
+        "id": "rain_anomaly_1month",
+        "title": "Monthly rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_1year",
+        "title": "1-year rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_3month",
+        "title": "3-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_6month",
+        "title": "6-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_9month",
+        "title": "9-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_dekad",
+        "title": "10-day rainfall anomaly"
+      },
+      {
+        "id": "rainfall_agg_1month",
+        "title": "1-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_1year",
+        "title": "1-year rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_3month",
+        "title": "3-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_6month",
+        "title": "6-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_9month",
+        "title": "9-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_dekad",
+        "title": "10-day rainfall estimate (mm)"
+      },
+      {
+        "id": "spi_1m",
+        "title": "SPI - 1-month"
+      },
+      {
+        "id": "spi_1y",
+        "title": "SPI - 1-year"
+      },
+      {
+        "id": "spi_3m",
+        "title": "SPI - 3-month"
+      },
+      {
+        "id": "spi_6m",
+        "title": "SPI - 6-month"
+      },
+      {
+        "id": "spi_9m",
+        "title": "SPI - 9-month"
+      },
+      {
+        "id": "streak_dry_days",
+        "title": "Longest number of consecutive dry days"
+      },
+      {
+        "id": "streak_extreme_rain",
+        "title": "Longest consecutive extreme rainfall days"
+      },
+      {
+        "id": "streak_heavy_rain",
+        "title": "Longest consecutive number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "streak_intense_rain",
+        "title": "Longest consecutive intense rainfall days"
+      }
+    ],
+    "ecuador": [
+      {
+        "id": "days_dry",
+        "title": "Days since last rain"
+      },
+      {
+        "id": "days_extreme_rain",
+        "title": "Number of days with extreme rainfall in the last 30 days"
+      },
+      {
+        "id": "days_heavy_rain",
+        "title": "Number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "days_intense_rain",
+        "title": "Number of days with intense rainfall in the last 30 days"
+      },
+      {
+        "id": "lst_amplitude",
+        "title": "Land Surface Temperature - 10-day Amplitude (MODIS)"
+      },
+      {
+        "id": "lst_anomaly",
+        "title": "Daytime Land Surface Temperature - 10-day Anomaly (MODIS)"
+      },
+      {
+        "id": "lst_daytime",
+        "title": "Daytime Land Surface Temperature - 10-day (MODIS)"
+      },
+      {
+        "id": "lst_nighttime",
+        "title": "Nighttime Land Surface Temperature - 10-day (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad",
+        "title": "10-day NDVI (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad_anomaly",
+        "title": "10-day NDVI anomaly (MODIS)"
+      },
+      {
+        "id": "rain_anomaly_1month",
+        "title": "Monthly rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_1year",
+        "title": "1-year rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_3month",
+        "title": "3-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_6month",
+        "title": "6-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_9month",
+        "title": "9-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_dekad",
+        "title": "10-day rainfall anomaly"
+      },
+      {
+        "id": "rainfall_agg_1month",
+        "title": "1-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_1year",
+        "title": "1-year rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_3month",
+        "title": "3-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_6month",
+        "title": "6-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_9month",
+        "title": "9-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_dekad",
+        "title": "10-day rainfall estimate (mm)"
+      },
+      {
+        "id": "spi_1m",
+        "title": "SPI - 1-month"
+      },
+      {
+        "id": "spi_1y",
+        "title": "SPI - 1-year"
+      },
+      {
+        "id": "spi_3m",
+        "title": "SPI - 3-month"
+      },
+      {
+        "id": "spi_6m",
+        "title": "SPI - 6-month"
+      },
+      {
+        "id": "spi_9m",
+        "title": "SPI - 9-month"
+      },
+      {
+        "id": "streak_dry_days",
+        "title": "Longest number of consecutive dry days"
+      },
+      {
+        "id": "streak_extreme_rain",
+        "title": "Longest consecutive extreme rainfall days"
+      },
+      {
+        "id": "streak_heavy_rain",
+        "title": "Longest consecutive number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "streak_intense_rain",
+        "title": "Longest consecutive intense rainfall days"
+      }
+    ],
+    "global": [],
+    "haiti": [
+      {
+        "id": "daily_rainfall_forecast",
+        "title": "Rolling daily rainfall forecast"
+      },
+      {
+        "id": "days_dry",
+        "title": "Days since last rain"
+      },
+      {
+        "id": "days_extreme_rain",
+        "title": "Number of days with extreme rainfall in the last 30 days"
+      },
+      {
+        "id": "days_heavy_rain",
+        "title": "Number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "days_intense_rain",
+        "title": "Number of days with intense rainfall in the last 30 days"
+      },
+      {
+        "id": "dekad_rainfall_forecast",
+        "title": "10-day rainfall forecast"
+      },
+      {
+        "id": "lst_amplitude",
+        "title": "Land Surface Temperature - 10-day Amplitude (MODIS)"
+      },
+      {
+        "id": "lst_anomaly",
+        "title": "Land Surface Temperature - 10-day Anomaly (MODIS)"
+      },
+      {
+        "id": "lst_daytime",
+        "title": "Daytime Land Surface Temperature - 10-day (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad",
+        "title": "10-day NDVI (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad_anomaly",
+        "title": "10-day NDVI anomaly (MODIS)"
+      },
+      {
+        "id": "rain_anomaly_1month",
+        "title": "Monthly rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_1year",
+        "title": "1-year rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_2month",
+        "title": "2-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_3month",
+        "title": "3-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_4month",
+        "title": "4-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_5month",
+        "title": "5-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_6month",
+        "title": "6-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_9month",
+        "title": "9-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_dekad",
+        "title": "10-day rainfall anomaly"
+      },
+      {
+        "id": "rainfall_agg_1month",
+        "title": "1-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_1year",
+        "title": "1-year rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_2month",
+        "title": "2-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_3month",
+        "title": "3-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_4month",
+        "title": "4-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_5month",
+        "title": "5-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_6month",
+        "title": "6-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_9month",
+        "title": "9-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_dekad",
+        "title": "10-day rainfall estimate (mm)"
+      },
+      {
+        "id": "spi_1m",
+        "title": "SPI - 1-month"
+      },
+      {
+        "id": "spi_1y",
+        "title": "SPI - 1-year"
+      },
+      {
+        "id": "spi_3m",
+        "title": "SPI - 3-month"
+      },
+      {
+        "id": "spi_6m",
+        "title": "SPI - 6-month"
+      },
+      {
+        "id": "spi_9m",
+        "title": "SPI - 9-month"
+      },
+      {
+        "id": "streak_dry_days",
+        "title": "Longest number of consecutive dry days"
+      },
+      {
+        "id": "streak_extreme_rain",
+        "title": "Longest consecutive extreme rainfall days"
+      },
+      {
+        "id": "streak_heavy_rain",
+        "title": "Longest consecutive number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "streak_intense_rain",
+        "title": "Longest consecutive intense rainfall days"
+      }
+    ],
+    "indonesia": [
+      {
+        "id": "days_dry",
+        "title": "Days since last rain"
+      },
+      {
+        "id": "days_extreme_rain",
+        "title": "Number of days with extreme rainfall in the last 30 days"
+      },
+      {
+        "id": "days_heavy_rain",
+        "title": "Number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "days_intense_rain",
+        "title": "Number of days with intense rainfall in the last 30 days"
+      },
+      {
+        "id": "lst_amplitude",
+        "title": "Land Surface Temperature - 10-day Amplitude (MODIS)"
+      },
+      {
+        "id": "lst_anomaly",
+        "title": "Daytime Land Surface Temperature - 10-day Anomaly (MODIS)"
+      },
+      {
+        "id": "lst_daytime",
+        "title": "Daytime Land Surface Temperature - 10-day (MODIS)"
+      },
+      {
+        "id": "lst_nighttime",
+        "title": "Nighttime Land Surface Temperature - 10-day (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad",
+        "title": "10-day NDVI (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad_anomaly",
+        "title": "10-day NDVI anomaly (MODIS)"
+      },
+      {
+        "id": "rain_anomaly_1month",
+        "title": "CHIRPS 1-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_1year",
+        "title": "CHIRPS 1-year rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_3month",
+        "title": "CHIRPS 3-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_6month",
+        "title": "CHIRPS 6-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_9month",
+        "title": "CHIRPS 9-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_dekad",
+        "title": "CHIRPS 10-day rainfall anomaly"
+      },
+      {
+        "id": "rainfall_agg_1month",
+        "title": "CHIRPS 1-month rainfall aggregate"
+      },
+      {
+        "id": "rainfall_agg_1year",
+        "title": "CHIRPS 1-year rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_3month",
+        "title": "CHIRPS 3-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_6month",
+        "title": "CHIRPS 6-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_9month",
+        "title": "CHIRPS 9-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_dekad",
+        "title": "CHIRPS 10-day rainfall estimate (mm)"
+      },
+      {
+        "id": "spi_1m",
+        "title": "SPI - 1-month"
+      },
+      {
+        "id": "spi_1y",
+        "title": "SPI - 1-year"
+      },
+      {
+        "id": "spi_3m",
+        "title": "SPI - 3-month"
+      },
+      {
+        "id": "spi_6m",
+        "title": "SPI - 6-month"
+      },
+      {
+        "id": "spi_9m",
+        "title": "SPI - 9-month"
+      },
+      {
+        "id": "streak_dry_days",
+        "title": "Longest dry spell"
+      },
+      {
+        "id": "streak_extreme_rain",
+        "title": "Longest consecutive extreme rainfall days"
+      },
+      {
+        "id": "streak_heavy_rain",
+        "title": "Longest consecutive heavy rainfall days"
+      },
+      {
+        "id": "streak_intense_rain",
+        "title": "Longest consecutive intense rainfall days"
+      }
+    ],
+    "jordan": [],
+    "kyrgyzstan": [
+      {
+        "id": "10day_NDVI_KDC",
+        "title": "10-day NDVI (SIBELIUS)"
+      },
+      {
+        "id": "active_fires",
+        "title": "Active fires in the past 24 hours"
+      },
+      {
+        "id": "active_fires_7days",
+        "title": "Active fires in the past 7 days"
+      },
+      {
+        "id": "dekad_rainfall_anomaly_forecast",
+        "title": "10-day rainfall forecast anomaly"
+      },
+      {
+        "id": "modis_snow_percentage",
+        "title": "Snow percentage"
+      },
+      {
+        "id": "ModisNDWI",
+        "title": "10-day Water Index (NDWI - SIBELIUS)"
+      },
+      {
+        "id": "ModisTCI",
+        "title": "Temperature Condition Index "
+      },
+      {
+        "id": "ModisVCI",
+        "title": "Vegetation Condition Index"
+      },
+      {
+        "id": "ModisVHI",
+        "title": "Vegetation Health Index"
+      },
+      {
+        "id": "pasture_anomaly",
+        "title": "10-day pasture anomaly"
+      },
+      {
+        "id": "snow_ndsi",
+        "title": "Snow index (NDSI)"
+      }
+    ],
+    "malawi": [],
+    "mongolia": [
+      {
+        "id": "DzudRiskMap",
+        "title": "Dzud risk"
+      },
+      {
+        "id": "ModisLST",
+        "title": "Surface temperature"
+      },
+      {
+        "id": "ModisSnowPercentage",
+        "title": "Snow cover (%)"
+      },
+      {
+        "id": "ModisVHI",
+        "title": "Agricultural drought (VHI)"
+      },
+      {
+        "id": "ndvi",
+        "title": "Vegetation index (NDVI)"
+      },
+      {
+        "id": "pasture_anomaly",
+        "title": "Pasture anomaly"
+      },
+      {
+        "id": "pasture_biomass",
+        "title": "Pasture biomass"
+      }
+    ],
+    "mozambique": [
+      {
+        "id": "lst_day_anomaly_blended",
+        "title": "INAM mean maximum air temperature anomaly (10-day)"
+      },
+      {
+        "id": "lst_daytime_blended",
+        "title": "INAM mean maximum air temperature (10-day)"
+      },
+      {
+        "id": "precip_blended_1m",
+        "title": "Blended rainfall aggregate (1-month)"
+      },
+      {
+        "id": "precip_blended_1y",
+        "title": "Blended rainfall aggregate (1-year)"
+      },
+      {
+        "id": "precip_blended_2m",
+        "title": "Blended rainfall aggregate (2-month)"
+      },
+      {
+        "id": "precip_blended_3m",
+        "title": "Blended rainfall aggregate (3-month)"
+      },
+      {
+        "id": "precip_blended_4m",
+        "title": "Blended rainfall aggregate (4-month)"
+      },
+      {
+        "id": "precip_blended_5m",
+        "title": "Blended rainfall aggregate (5-month)"
+      },
+      {
+        "id": "precip_blended_6m",
+        "title": "Blended rainfall aggregate (6-month)"
+      },
+      {
+        "id": "precip_blended_7m",
+        "title": "Blended rainfall aggregate (7-month)"
+      },
+      {
+        "id": "precip_blended_8m",
+        "title": "Blended rainfall aggregate (8-month)"
+      },
+      {
+        "id": "precip_blended_9m",
+        "title": "Blended rainfall aggregate (9-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_1m",
+        "title": "Blended rainfall anomaly (1-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_1y",
+        "title": "Blended rainfall anomaly (1-year)"
+      },
+      {
+        "id": "precip_blended_anomaly_2m",
+        "title": "Blended rainfall anomaly (2-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_3m",
+        "title": "Blended rainfall anomaly (3-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_4m",
+        "title": "Blended rainfall anomaly (4-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_5m",
+        "title": "Blended rainfall anomaly (5-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_6m",
+        "title": "Blended rainfall anomaly (6-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_7m",
+        "title": "Blended rainfall anomaly (7-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_8m",
+        "title": "Blended rainfall anomaly (8-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_9m",
+        "title": "Blended rainfall anomaly (9-month)"
+      },
+      {
+        "id": "precip_blended_dekad",
+        "title": "Blended rainfall aggregate (10-day)"
+      },
+      {
+        "id": "precip_blended_dekad_anomaly",
+        "title": "Blended rainfall anomaly (10-day)"
+      },
+      {
+        "id": "spi_blended_1m",
+        "title": "INAM SPI - 1-month"
+      },
+      {
+        "id": "spi_blended_1y",
+        "title": "INAM SPI - 1-year"
+      },
+      {
+        "id": "spi_blended_2m",
+        "title": "INAM SPI - 2-month"
+      },
+      {
+        "id": "spi_blended_2y",
+        "title": "INAM SPI - 2-year"
+      },
+      {
+        "id": "spi_blended_3m",
+        "title": "INAM SPI - 3-month"
+      },
+      {
+        "id": "spi_blended_3y",
+        "title": "INAM SPI - 3-year"
+      },
+      {
+        "id": "spi_blended_5y",
+        "title": "INAM SPI - 5-year"
+      },
+      {
+        "id": "spi_blended_6m",
+        "title": "INAM SPI - 6-month"
+      },
+      {
+        "id": "spi_blended_9m",
+        "title": "INAM SPI - 9-month"
+      }
+    ],
+    "myanmar": [
+      {
+        "id": "days_dry",
+        "title": "Days since last rain"
+      },
+      {
+        "id": "days_extreme_rain",
+        "title": "Number of days with extreme rainfall in the last 30 days"
+      },
+      {
+        "id": "days_heavy_rain",
+        "title": "Number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "days_intense_rain",
+        "title": "Number of days with intense rainfall in the last 30 days"
+      },
+      {
+        "id": "flood_extent",
+        "title": "Flood extent"
+      },
+      {
+        "id": "lst_amplitude",
+        "title": "Land Surface Temperature - 10-day Amplitude (MODIS)"
+      },
+      {
+        "id": "lst_anomaly",
+        "title": "Daytime Land Surface Temperature - 10-day Anomaly (MODIS)"
+      },
+      {
+        "id": "lst_daytime",
+        "title": "Daytime Land Surface Temperature - 10-day (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad",
+        "title": "10-day NDVI (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad_anomaly",
+        "title": "10-day NDVI anomaly (MODIS)"
+      },
+      {
+        "id": "rain_anomaly_1month",
+        "title": "Monthly rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_1year",
+        "title": "1-year rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_3month",
+        "title": "3-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_6month",
+        "title": "6-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_9month",
+        "title": "9-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_dekad",
+        "title": "10-day rainfall anomaly"
+      },
+      {
+        "id": "rainfall_agg_1month",
+        "title": "1-month rainfall aggregate"
+      },
+      {
+        "id": "rainfall_agg_1year",
+        "title": "1-year rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_3month",
+        "title": "3-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_6month",
+        "title": "6-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_9month",
+        "title": "9-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_dekad",
+        "title": "10-day rainfall estimate (mm)"
+      },
+      {
+        "id": "spi_1m",
+        "title": "SPI - 1-month"
+      },
+      {
+        "id": "spi_1y",
+        "title": "SPI - 1-year"
+      },
+      {
+        "id": "spi_3m",
+        "title": "SPI - 3-month"
+      },
+      {
+        "id": "spi_6m",
+        "title": "SPI - 6-month"
+      },
+      {
+        "id": "spi_9m",
+        "title": "SPI - 9-month"
+      },
+      {
+        "id": "streak_dry_days",
+        "title": "Longest number of consecutive dry days"
+      },
+      {
+        "id": "streak_extreme_rain",
+        "title": "Longest consecutive extreme rainfall days"
+      },
+      {
+        "id": "streak_heavy_rain",
+        "title": "Longest consecutive number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "streak_intense_rain",
+        "title": "Longest consecutive intense rainfall days"
+      },
+      {
+        "id": "wp_pop_icunadj",
+        "title": "population"
+      }
+    ],
+    "namibia": [
+      {
+        "id": "ast_max",
+        "title": "Blended air temperature daily max (10-day)"
+      },
+      {
+        "id": "ast_max_anomaly",
+        "title": "Blended air temperature max anomaly (10-day)"
+      },
+      {
+        "id": "days_dry",
+        "title": "Days since last rain"
+      },
+      {
+        "id": "days_extreme_rain",
+        "title": "Number of days with extreme rainfall in the last 30 days"
+      },
+      {
+        "id": "days_heavy_rain",
+        "title": "Number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "days_intense_rain",
+        "title": "Number of days with intense rainfall in the last 30 days"
+      },
+      {
+        "id": "lst_amplitude",
+        "title": "Land Surface Temperature - 10-day Amplitude (MODIS)"
+      },
+      {
+        "id": "lst_day_anomaly",
+        "title": "Daytime Land Surface Temperature - 10-day Anomaly 1km (MODIS)"
+      },
+      {
+        "id": "lst_day_anomaly_blended",
+        "title": "Mean maximum air temperature anomaly (10-day)"
+      },
+      {
+        "id": "lst_daytime",
+        "title": "Daytime Land Surface Temperature - 10-day 1km (MODIS)"
+      },
+      {
+        "id": "lst_daytime_blended",
+        "title": "Mean maximum air temperature (10-day)"
+      },
+      {
+        "id": "lst_nighttime",
+        "title": "Nighttime Land Surface Temperature - 10-day (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad",
+        "title": "10-day NDVI 1km (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad_anomaly",
+        "title": "10-day NDVI anomaly 1km (MODIS)"
+      },
+      {
+        "id": "precip_blended_1m",
+        "title": "Blended rainfall aggregate (1-month)"
+      },
+      {
+        "id": "precip_blended_1y",
+        "title": "Blended rainfall aggregate (1-year)"
+      },
+      {
+        "id": "precip_blended_3m",
+        "title": "Blended rainfall aggregate (3-month)"
+      },
+      {
+        "id": "precip_blended_6m",
+        "title": "Blended rainfall aggregate (6-month)"
+      },
+      {
+        "id": "precip_blended_9m",
+        "title": "Blended rainfall aggregate (9-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_1m",
+        "title": "Blended rainfall anomaly (1-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_1y",
+        "title": "Blended rainfall anomaly (1-year)"
+      },
+      {
+        "id": "precip_blended_anomaly_3m",
+        "title": "Blended rainfall anomaly (3-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_6m",
+        "title": "Blended rainfall anomaly (6-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_9m",
+        "title": "Blended rainfall anomaly (9-month)"
+      },
+      {
+        "id": "precip_blended_dekad",
+        "title": "Blended rainfall estimates (10-day)"
+      },
+      {
+        "id": "precip_blended_dekad_agg",
+        "title": "Blended monthly aggregate rainfall"
+      },
+      {
+        "id": "precip_blended_dekad_anomaly",
+        "title": "Blended rainfall anomaly (10-day)"
+      },
+      {
+        "id": "rain_anomaly_1month",
+        "title": "1-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_1year",
+        "title": "1-year rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_3month",
+        "title": "3-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_6month",
+        "title": "6-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_9month",
+        "title": "9-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_dekad",
+        "title": "10-day rainfall anomaly"
+      },
+      {
+        "id": "rainfall_agg_1month",
+        "title": "1-month rainfall aggregate"
+      },
+      {
+        "id": "rainfall_agg_1year",
+        "title": "1-year rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_2month",
+        "title": "2-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_3month",
+        "title": "3-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_6month",
+        "title": "6-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_9month",
+        "title": "9-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_dekad",
+        "title": "10-day rainfall estimate (mm)"
+      },
+      {
+        "id": "spi_1m",
+        "title": "SPI - 1-month"
+      },
+      {
+        "id": "spi_1y",
+        "title": "SPI - 1-year"
+      },
+      {
+        "id": "spi_3m",
+        "title": "SPI - 3-month"
+      },
+      {
+        "id": "spi_6m",
+        "title": "SPI - 6-month"
+      },
+      {
+        "id": "spi_9m",
+        "title": "SPI - 9-month"
+      },
+      {
+        "id": "streak_dry_days",
+        "title": "Longest dry spell"
+      },
+      {
+        "id": "streak_extreme_rain",
+        "title": "Longest consecutive extreme rainfall days"
+      },
+      {
+        "id": "streak_heavy_rain",
+        "title": "Longest consecutive heavy rainfall days"
+      },
+      {
+        "id": "streak_intense_rain",
+        "title": "Longest consecutive intense rainfall days"
+      }
+    ],
+    "nepal": [
+      {
+        "id": "days_dry",
+        "title": "Days since last rain"
+      },
+      {
+        "id": "days_extreme_rain",
+        "title": "Number of days with extreme rainfall in the last 30 days"
+      },
+      {
+        "id": "days_heavy_rain",
+        "title": "Number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "days_intense_rain",
+        "title": "Number of days with intense rainfall in the last 30 days"
+      },
+      {
+        "id": "lst_amplitude",
+        "title": "Land Surface Temperature - 10-day Amplitude (MODIS)"
+      },
+      {
+        "id": "lst_anomaly",
+        "title": "Daytime Land Surface Temperature - 10-day Anomaly (MODIS)"
+      },
+      {
+        "id": "lst_daytime",
+        "title": "Daytime Land Surface Temperature - 10-day (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad",
+        "title": "10-day NDVI (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad_anomaly",
+        "title": "10-day NDVI anomaly (MODIS)"
+      },
+      {
+        "id": "precip_blended_1m",
+        "title": "Blended rainfall aggregate (1-month)"
+      },
+      {
+        "id": "precip_blended_1y",
+        "title": "Blended rainfall aggregate (1-year)"
+      },
+      {
+        "id": "precip_blended_3m",
+        "title": "Blended rainfall aggregate (3-month)"
+      },
+      {
+        "id": "precip_blended_6m",
+        "title": "Blended rainfall aggregate (6-month)"
+      },
+      {
+        "id": "precip_blended_9m",
+        "title": "Blended rainfall aggregate (9-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_1m",
+        "title": "Blended rainfall anomaly (1-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_1y",
+        "title": "Blended rainfall anomaly (1-year)"
+      },
+      {
+        "id": "precip_blended_anomaly_3m",
+        "title": "Blended rainfall anomaly (3-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_6m",
+        "title": "Blended rainfall anomaly (6-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_9m",
+        "title": "Blended rainfall anomaly (9-month)"
+      },
+      {
+        "id": "precip_blended_dekad",
+        "title": "Blended rainfall estimates (10-day)"
+      },
+      {
+        "id": "precip_blended_dekad_agg",
+        "title": "Blended monthly aggregate rainfall"
+      },
+      {
+        "id": "precip_blended_dekad_anomaly",
+        "title": "Blended rainfall anomaly (10-day)"
+      },
+      {
+        "id": "rain_anomaly_1month",
+        "title": "Monthly rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_1year",
+        "title": "1-year rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_3month",
+        "title": "3-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_6month",
+        "title": "6-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_9month",
+        "title": "9-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_dekad",
+        "title": "10-day rainfall anomaly"
+      },
+      {
+        "id": "rainfall_agg_1month",
+        "title": "1-month rainfall aggregate"
+      },
+      {
+        "id": "rainfall_agg_1year",
+        "title": "1-year rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_3month",
+        "title": "3-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_6month",
+        "title": "6-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_9month",
+        "title": "9-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_dekad",
+        "title": "10-day rainfall estimate (mm)"
+      },
+      {
+        "id": "spi_1m",
+        "title": "SPI - 1-month"
+      },
+      {
+        "id": "spi_1y",
+        "title": "SPI - 1-year"
+      },
+      {
+        "id": "spi_3m",
+        "title": "SPI - 3-month"
+      },
+      {
+        "id": "spi_6m",
+        "title": "SPI - 6-month"
+      },
+      {
+        "id": "spi_9m",
+        "title": "SPI - 9-month"
+      },
+      {
+        "id": "streak_dry_days",
+        "title": "Longest number of consecutive dry days"
+      },
+      {
+        "id": "streak_extreme_rain",
+        "title": "Longest consecutive extreme rainfall days"
+      },
+      {
+        "id": "streak_heavy_rain",
+        "title": "Longest consecutive number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "streak_intense_rain",
+        "title": "Longest consecutive intense rainfall days"
+      }
+    ],
+    "nigeria": [
+      {
+        "id": "days_dry",
+        "title": "Days since last rain"
+      },
+      {
+        "id": "days_extreme_rain",
+        "title": "Number of days with extreme rainfall in the last 30 days"
+      },
+      {
+        "id": "days_heavy_rain",
+        "title": "Number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "days_intense_rain",
+        "title": "Number of days with intense rainfall in the last 30 days"
+      },
+      {
+        "id": "lst_amplitude",
+        "title": "Land Surface Temperature - 10-day Amplitude (MODIS)"
+      },
+      {
+        "id": "lst_anomaly",
+        "title": "Land Surface Temperature - 10-day Anomaly (MODIS)"
+      },
+      {
+        "id": "lst_daytime",
+        "title": "Daytime Land Surface Temperature - 10-day (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad",
+        "title": "10-day NDVI (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad_anomaly",
+        "title": "10-day NDVI anomaly (MODIS)"
+      },
+      {
+        "id": "precip_blended_1m",
+        "title": "Blended rainfall aggregate (1-month)"
+      },
+      {
+        "id": "precip_blended_1y",
+        "title": "Blended rainfall aggregate (1-year)"
+      },
+      {
+        "id": "precip_blended_3m",
+        "title": "Blended rainfall aggregate (3-month)"
+      },
+      {
+        "id": "precip_blended_6m",
+        "title": "Blended rainfall aggregate (6-month)"
+      },
+      {
+        "id": "precip_blended_9m",
+        "title": "Blended rainfall aggregate (9-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_1m",
+        "title": "Blended rainfall anomaly (1-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_1y",
+        "title": "Blended rainfall anomaly (1-year)"
+      },
+      {
+        "id": "precip_blended_anomaly_3m",
+        "title": "Blended rainfall anomaly (3-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_6m",
+        "title": "Blended rainfall anomaly (6-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_9m",
+        "title": "Blended rainfall anomaly (9-month)"
+      },
+      {
+        "id": "precip_blended_dekad",
+        "title": "Blended rainfall aggregate (10-day)"
+      },
+      {
+        "id": "precip_blended_dekad_anomaly",
+        "title": "Blended rainfall anomaly (10-day)"
+      },
+      {
+        "id": "rain_anomaly_1month",
+        "title": "Monthly rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_1year",
+        "title": "1-year rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_3month",
+        "title": "3-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_6month",
+        "title": "6-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_9month",
+        "title": "9-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_dekad",
+        "title": "10-day rainfall anomaly"
+      },
+      {
+        "id": "rainfall_agg_1month",
+        "title": "1-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_1year",
+        "title": "1-year rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_3month",
+        "title": "3-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_6month",
+        "title": "6-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_9month",
+        "title": "9-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_dekad",
+        "title": "10-day rainfall estimate (mm)"
+      },
+      {
+        "id": "spi_1m",
+        "title": "SPI - 1-month"
+      },
+      {
+        "id": "spi_1y",
+        "title": "SPI - 1-year"
+      },
+      {
+        "id": "spi_3m",
+        "title": "SPI - 3-month"
+      },
+      {
+        "id": "spi_6m",
+        "title": "SPI - 6-month"
+      },
+      {
+        "id": "spi_9m",
+        "title": "SPI - 9-month"
+      },
+      {
+        "id": "streak_dry_days",
+        "title": "Longest number of consecutive dry days"
+      },
+      {
+        "id": "streak_extreme_rain",
+        "title": "Longest consecutive extreme rainfall days"
+      },
+      {
+        "id": "streak_heavy_rain",
+        "title": "Longest consecutive number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "streak_intense_rain",
+        "title": "Longest consecutive intense rainfall days"
+      }
+    ],
+    "rbd": [
+      {
+        "id": "daily_rainfall_forecast",
+        "title": "Rolling daily rainfall forecast"
+      },
+      {
+        "id": "days_dry",
+        "title": "Days since last rain"
+      },
+      {
+        "id": "days_extreme_rain",
+        "title": "Number of days with extreme rainfall in the last 30 days"
+      },
+      {
+        "id": "days_heavy_rain",
+        "title": "Number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "days_intense_rain",
+        "title": "Number of days with intense rainfall in the last 30 days"
+      },
+      {
+        "id": "dekad_rainfall_forecast",
+        "title": "10-day rainfall forecast"
+      },
+      {
+        "id": "lst_amplitude",
+        "title": "Land Surface Temperature - 10-day Amplitude (MODIS)"
+      },
+      {
+        "id": "lst_anomaly",
+        "title": "Daytime Land Surface Temperature - 10-day Anomaly (MODIS)"
+      },
+      {
+        "id": "lst_daytime",
+        "title": "Daytime Land Surface Temperature - 10-day (MODIS)"
+      },
+      {
+        "id": "lst_nighttime",
+        "title": "Nighttime Land Surface Temperature - 10-day (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad",
+        "title": "10-day NDVI (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad_anomaly",
+        "title": "10-day NDVI anomaly (MODIS)"
+      },
+      {
+        "id": "rain_anomaly_1month",
+        "title": "1-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_1year",
+        "title": "1-year rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_3month",
+        "title": "3-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_6month",
+        "title": "6-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_9month",
+        "title": "9-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_dekad",
+        "title": "10-day rainfall anomaly"
+      },
+      {
+        "id": "rainfall_agg_1month",
+        "title": "1-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_1year",
+        "title": "1-year rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_3month",
+        "title": "3-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_6month",
+        "title": "6-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_9month",
+        "title": "9-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_dekad",
+        "title": "10-day rainfall estimate (mm)"
+      },
+      {
+        "id": "spi_1m",
+        "title": "SPI - 1-month"
+      },
+      {
+        "id": "spi_1y",
+        "title": "SPI - 1-year"
+      },
+      {
+        "id": "spi_3m",
+        "title": "SPI - 3-month"
+      },
+      {
+        "id": "spi_6m",
+        "title": "SPI - 6-month"
+      },
+      {
+        "id": "spi_9m",
+        "title": "SPI - 9-month"
+      },
+      {
+        "id": "streak_dry_days",
+        "title": "Longest number of consecutive dry days"
+      },
+      {
+        "id": "streak_extreme_rain",
+        "title": "Longest consecutive extreme rainfall days"
+      },
+      {
+        "id": "streak_heavy_rain",
+        "title": "Longest consecutive number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "streak_intense_rain",
+        "title": "Longest consecutive intense rainfall days"
+      }
+    ],
+    "sierraleone": [
+      {
+        "id": "days_dry",
+        "title": "Days since last rain"
+      },
+      {
+        "id": "days_extreme_rain",
+        "title": "Number of days with extreme rainfall in the last 30 days"
+      },
+      {
+        "id": "days_heavy_rain",
+        "title": "Number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "days_intense_rain",
+        "title": "Number of days with intense rainfall in the last 30 days"
+      },
+      {
+        "id": "lst_amplitude",
+        "title": "Land Surface Temperature - 10-day Amplitude (MODIS)"
+      },
+      {
+        "id": "lst_anomaly",
+        "title": "Daytime Land Surface Temperature - 10-day Anomaly (MODIS)"
+      },
+      {
+        "id": "lst_daytime",
+        "title": "Daytime Land Surface Temperature - 10-day (MODIS)"
+      },
+      {
+        "id": "lst_nighttime",
+        "title": "Nighttime Land Surface Temperature - 10-day (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad",
+        "title": "10-day NDVI (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad_anomaly",
+        "title": "10-day NDVI anomaly (MODIS)"
+      },
+      {
+        "id": "rain_anomaly_1month",
+        "title": "1-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_1year",
+        "title": "1-year rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_3month",
+        "title": "3-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_6month",
+        "title": "6-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_9month",
+        "title": "9-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_dekad",
+        "title": "10-day rainfall anomaly"
+      },
+      {
+        "id": "rainfall_agg_1month",
+        "title": "1-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_1year",
+        "title": "1-year rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_3month",
+        "title": "3-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_6month",
+        "title": "6-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_9month",
+        "title": "9-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_dekad",
+        "title": "10-day rainfall estimate (mm)"
+      },
+      {
+        "id": "spi_1m",
+        "title": "SPI - 1-month"
+      },
+      {
+        "id": "spi_1y",
+        "title": "SPI - 1-year"
+      },
+      {
+        "id": "spi_3m",
+        "title": "SPI - 3-month"
+      },
+      {
+        "id": "spi_6m",
+        "title": "SPI - 6-month"
+      },
+      {
+        "id": "spi_9m",
+        "title": "SPI - 9-month"
+      },
+      {
+        "id": "streak_dry_days",
+        "title": "Longest dry spell"
+      },
+      {
+        "id": "streak_extreme_rain",
+        "title": "Longest consecutive extreme rainfall days"
+      },
+      {
+        "id": "streak_heavy_rain",
+        "title": "Longest consecutive number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "streak_intense_rain",
+        "title": "Longest consecutive intense rainfall days"
+      }
+    ],
+    "somalia": [],
+    "southsudan": [
+      {
+        "id": "days_dry",
+        "title": "Days since last rain"
+      },
+      {
+        "id": "days_extreme_rain",
+        "title": "Number of days with extreme rainfall in the last 30 days"
+      },
+      {
+        "id": "days_heavy_rain",
+        "title": "Number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "days_intense_rain",
+        "title": "Number of days with intense rainfall in the last 30 days"
+      },
+      {
+        "id": "lst_amplitude",
+        "title": "Land Surface Temperature - 10-day Amplitude (MODIS)"
+      },
+      {
+        "id": "lst_anomaly",
+        "title": "Daytime Land Surface Temperature - 10-day Anomaly (MODIS)"
+      },
+      {
+        "id": "lst_daytime",
+        "title": "Daytime Land Surface Temperature - 10-day (MODIS)"
+      },
+      {
+        "id": "lst_nighttime",
+        "title": "Nighttime Land Surface Temperature - 10-day (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad",
+        "title": "10-day NDVI (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad_anomaly",
+        "title": "10-day NDVI anomaly (MODIS)"
+      },
+      {
+        "id": "rain_anomaly_1month",
+        "title": "1-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_1year",
+        "title": "1-year rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_3month",
+        "title": "3-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_6month",
+        "title": "6-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_9month",
+        "title": "9-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_dekad",
+        "title": "10-day rainfall anomaly"
+      },
+      {
+        "id": "rainfall_agg_1month",
+        "title": "1-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_1year",
+        "title": "1-year rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_3month",
+        "title": "3-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_6month",
+        "title": "6-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_9month",
+        "title": "9-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_dekad",
+        "title": "10-day rainfall estimate (mm)"
+      },
+      {
+        "id": "spi_1m",
+        "title": "SPI - 1-month"
+      },
+      {
+        "id": "spi_1y",
+        "title": "SPI - 1-year"
+      },
+      {
+        "id": "spi_3m",
+        "title": "SPI - 3-month"
+      },
+      {
+        "id": "spi_6m",
+        "title": "SPI - 6-month"
+      },
+      {
+        "id": "spi_9m",
+        "title": "SPI - 9-month"
+      },
+      {
+        "id": "streak_dry_days",
+        "title": "Longest dry spell"
+      },
+      {
+        "id": "streak_extreme_rain",
+        "title": "Longest consecutive extreme rainfall days"
+      },
+      {
+        "id": "streak_heavy_rain",
+        "title": "Longest consecutive number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "streak_intense_rain",
+        "title": "Longest consecutive intense rainfall days"
+      }
+    ],
+    "srilanka": [
+      {
+        "id": "days_dry",
+        "title": "Days since last rain"
+      },
+      {
+        "id": "days_extreme_rain",
+        "title": "Number of days with extreme rainfall in the last 30 days"
+      },
+      {
+        "id": "days_heavy_rain",
+        "title": "Number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "days_intense_rain",
+        "title": "Number of days with intense rainfall in the last 30 days"
+      },
+      {
+        "id": "lst_amplitude",
+        "title": "Land Surface Temperature - 10-day Amplitude (MODIS)"
+      },
+      {
+        "id": "lst_anomaly",
+        "title": "Daytime Land Surface Temperature - 10-day Anomaly (MODIS)"
+      },
+      {
+        "id": "lst_daytime",
+        "title": "Daytime Land Surface Temperature - 10-day (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad",
+        "title": "10-day NDVI (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad_anomaly",
+        "title": "10-day NDVI anomaly (MODIS)"
+      },
+      {
+        "id": "precip_blended_1m",
+        "title": "Blended rainfall aggregate (1-month)"
+      },
+      {
+        "id": "precip_blended_1y",
+        "title": "Blended rainfall aggregate (1-year)"
+      },
+      {
+        "id": "precip_blended_3m",
+        "title": "Blended rainfall aggregate (3-month)"
+      },
+      {
+        "id": "precip_blended_6m",
+        "title": "Blended rainfall aggregate (6-month)"
+      },
+      {
+        "id": "precip_blended_9m",
+        "title": "Blended rainfall aggregate (9-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_1m",
+        "title": "Blended rainfall anomaly (1-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_1y",
+        "title": "Blended rainfall anomaly (1-year)"
+      },
+      {
+        "id": "precip_blended_anomaly_3m",
+        "title": "Blended rainfall anomaly (3-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_6m",
+        "title": "Blended rainfall anomaly (6-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_9m",
+        "title": "Blended rainfall anomaly (9-month)"
+      },
+      {
+        "id": "precip_blended_dekad",
+        "title": "Blended rainfall estimates (10-day)"
+      },
+      {
+        "id": "precip_blended_dekad_agg",
+        "title": "Blended monthly aggregate rainfall"
+      },
+      {
+        "id": "precip_blended_dekad_anomaly",
+        "title": "Blended rainfall anomaly (10-day)"
+      },
+      {
+        "id": "rain_anomaly_1month",
+        "title": "Monthly rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_1year",
+        "title": "1-year rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_3month",
+        "title": "3-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_6month",
+        "title": "6-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_9month",
+        "title": "9-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_dekad",
+        "title": "10-day rainfall anomaly"
+      },
+      {
+        "id": "rainfall_agg_1month",
+        "title": "1-month rainfall aggregate"
+      },
+      {
+        "id": "rainfall_agg_1year",
+        "title": "1-year rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_3month",
+        "title": "3-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_6month",
+        "title": "6-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_9month",
+        "title": "9-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_dekad",
+        "title": "10-day rainfall estimate (mm)"
+      },
+      {
+        "id": "spi_1m",
+        "title": "SPI - 1-month"
+      },
+      {
+        "id": "spi_1y",
+        "title": "SPI - 1-year"
+      },
+      {
+        "id": "spi_3m",
+        "title": "SPI - 3-month"
+      },
+      {
+        "id": "spi_6m",
+        "title": "SPI - 6-month"
+      },
+      {
+        "id": "spi_9m",
+        "title": "SPI - 9-month"
+      },
+      {
+        "id": "streak_dry_days",
+        "title": "Longest number of consecutive dry days"
+      },
+      {
+        "id": "streak_extreme_rain",
+        "title": "Longest consecutive extreme rainfall days"
+      },
+      {
+        "id": "streak_heavy_rain",
+        "title": "Longest consecutive number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "streak_intense_rain",
+        "title": "Longest consecutive intense rainfall days"
+      }
+    ],
+    "sudan": [],
+    "tajikistan": [
+      {
+        "id": "days_dry",
+        "title": "Days since last rain"
+      },
+      {
+        "id": "days_extreme_rain",
+        "title": "Number of days with extreme rainfall in the last 30 days"
+      },
+      {
+        "id": "days_heavy_rain",
+        "title": "Number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "days_intense_rain",
+        "title": "Number of days with intense rainfall in the last 30 days"
+      },
+      {
+        "id": "lst_amplitude",
+        "title": "Land Surface Temperature - 10-day Amplitude (MODIS)"
+      },
+      {
+        "id": "lst_anomaly",
+        "title": "Land Surface Temperature - 10-day Anomaly (MODIS)"
+      },
+      {
+        "id": "lst_daytime",
+        "title": "Daytime Land Surface Temperature - 10-day (MODIS)"
+      },
+      {
+        "id": "lst_nighttime",
+        "title": "Nighttime Land Surface Temperature - 10-day (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad",
+        "title": "10-day NDVI (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad_anomaly",
+        "title": "10-day NDVI anomaly (MODIS)"
+      },
+      {
+        "id": "rain_anomaly_1month",
+        "title": "Monthly rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_1year",
+        "title": "1-year rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_3month",
+        "title": "3-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_6month",
+        "title": "6-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_9month",
+        "title": "9-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_dekad",
+        "title": "10-day rainfall anomaly"
+      },
+      {
+        "id": "rainfall_agg_1month",
+        "title": "1-month rainfall aggregate"
+      },
+      {
+        "id": "rainfall_agg_1year",
+        "title": "1-year rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_3month",
+        "title": "3-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_6month",
+        "title": "6-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_9month",
+        "title": "9-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_dekad",
+        "title": "10-day rainfall estimate (mm)"
+      },
+      {
+        "id": "spi_1m",
+        "title": "SPI - 1-month"
+      },
+      {
+        "id": "spi_1y",
+        "title": "SPI - 1-year"
+      },
+      {
+        "id": "spi_3m",
+        "title": "SPI - 3-month"
+      },
+      {
+        "id": "spi_6m",
+        "title": "SPI - 6-month"
+      },
+      {
+        "id": "spi_9m",
+        "title": "SPI - 9-month"
+      },
+      {
+        "id": "streak_dry_days",
+        "title": "Longest number of consecutive dry days"
+      },
+      {
+        "id": "streak_extreme_rain",
+        "title": "Longest consecutive extreme rainfall days"
+      },
+      {
+        "id": "streak_heavy_rain",
+        "title": "Longest consecutive number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "streak_intense_rain",
+        "title": "Longest consecutive intense rainfall days"
+      }
+    ],
+    "tanzania": [
+      {
+        "id": "chirps_rainfall_daily",
+        "title": "CHIRPS daily rainfall estimate (mm)"
+      },
+      {
+        "id": "daily_rainfall_forecast",
+        "title": "Rolling daily rainfall forecast"
+      },
+      {
+        "id": "days_dry",
+        "title": "Days since last rain"
+      },
+      {
+        "id": "days_extreme_rain",
+        "title": "Number of days with extreme rainfall in the last 30 days"
+      },
+      {
+        "id": "days_heavy_rain",
+        "title": "Number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "days_intense_rain",
+        "title": "Number of days with intense rainfall in the last 30 days"
+      },
+      {
+        "id": "dekad_rainfall_anomaly_forecast",
+        "title": "10-day rainfall forecast anomaly"
+      },
+      {
+        "id": "dekad_rainfall_forecast",
+        "title": "10-day rainfall forecast"
+      },
+      {
+        "id": "lst_amplitude",
+        "title": "Land Surface Temperature - 10-day Amplitude (MODIS)"
+      },
+      {
+        "id": "lst_anomaly",
+        "title": "Land Surface Temperature - 10-day Anomaly (MODIS)"
+      },
+      {
+        "id": "lst_daytime",
+        "title": "Daytime Land Surface Temperature - 10-day (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad",
+        "title": "10-day NDVI (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad_anomaly",
+        "title": "10-day NDVI anomaly (MODIS)"
+      },
+      {
+        "id": "rain_anomaly_1month",
+        "title": "Monthly rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_1year",
+        "title": "1-year rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_2month",
+        "title": "2-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_3month",
+        "title": "3-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_4month",
+        "title": "4-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_5month",
+        "title": "5-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_6month",
+        "title": "6-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_9month",
+        "title": "9-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_dekad",
+        "title": "10-day rainfall anomaly"
+      },
+      {
+        "id": "rainfall_agg_1month",
+        "title": "1-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_1year",
+        "title": "1-year rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_2month",
+        "title": "2-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_3month",
+        "title": "3-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_4month",
+        "title": "4-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_5month",
+        "title": "5-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_6month",
+        "title": "6-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_9month",
+        "title": "9-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_dekad",
+        "title": "10-day rainfall estimate (mm)"
+      },
+      {
+        "id": "spi_1m",
+        "title": "SPI - 1-month"
+      },
+      {
+        "id": "spi_1y",
+        "title": "SPI - 1-year"
+      },
+      {
+        "id": "spi_3m",
+        "title": "SPI - 3-month"
+      },
+      {
+        "id": "spi_6m",
+        "title": "SPI - 6-month"
+      },
+      {
+        "id": "spi_9m",
+        "title": "SPI - 9-month"
+      },
+      {
+        "id": "streak_dry_days",
+        "title": "Longest number of consecutive dry days"
+      },
+      {
+        "id": "streak_extreme_rain",
+        "title": "Longest consecutive extreme rainfall days"
+      },
+      {
+        "id": "streak_heavy_rain",
+        "title": "Longest consecutive number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "streak_intense_rain",
+        "title": "Longest consecutive intense rainfall days"
+      }
+    ],
+    "ukraine": [
+      {
+        "id": "days_dry",
+        "title": "Number of dry days"
+      },
+      {
+        "id": "days_extreme_rain",
+        "title": "Number of days with extreme rainfall in the last 30 days"
+      },
+      {
+        "id": "days_heavy_rain",
+        "title": "Number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "days_intense_rain",
+        "title": "Number of days with intense rainfall in the last 30 days"
+      },
+      {
+        "id": "lst_amplitude",
+        "title": "Land Surface Temperature - 10-day Amplitude (MODIS)"
+      },
+      {
+        "id": "lst_anomaly",
+        "title": "Land Surface Temperature - 10-day Anomaly (MODIS)"
+      },
+      {
+        "id": "lst_daytime",
+        "title": "Daytime Land Surface Temperature - 10-day (MODIS)"
+      },
+      {
+        "id": "lst_nighttime",
+        "title": "Nighttime Land Surface Temperature - 10-day (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad",
+        "title": "10-day NDVI (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad_anomaly",
+        "title": "10-day NDVI anomaly (MODIS)"
+      },
+      {
+        "id": "rain_anomaly_1month",
+        "title": "Monthly rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_1year",
+        "title": "1-year rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_3month",
+        "title": "3-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_6month",
+        "title": "6-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_9month",
+        "title": "9-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_dekad",
+        "title": "10-day rainfall anomaly"
+      },
+      {
+        "id": "rainfall_agg_1year",
+        "title": "1-year rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_3month",
+        "title": "3-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_6month",
+        "title": "6-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_9month",
+        "title": "9-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_dekad",
+        "title": "10-day rainfall estimate (mm)"
+      },
+      {
+        "id": "spi_1m",
+        "title": "SPI - 1-month"
+      },
+      {
+        "id": "spi_1y",
+        "title": "SPI - 1-year"
+      },
+      {
+        "id": "spi_3m",
+        "title": "SPI - 3-month"
+      },
+      {
+        "id": "spi_6m",
+        "title": "SPI - 6-month"
+      },
+      {
+        "id": "spi_9m",
+        "title": "SPI - 9-month"
+      },
+      {
+        "id": "streak_dry_days",
+        "title": "Longest number of consecutive dry days"
+      },
+      {
+        "id": "streak_heavy_rain",
+        "title": "Longest consecutive number of days with heavy rainfall in the last 30 days"
+      }
+    ],
+    "zambia": [],
+    "zimbabwe": [
+      {
+        "id": "daily_rainfall_forecast",
+        "title": "Rolling daily rainfall forecast"
+      },
+      {
+        "id": "days_dry",
+        "title": "Days since last rain"
+      },
+      {
+        "id": "days_extreme_rain",
+        "title": "Number of days with extreme rainfall in the last 30 days"
+      },
+      {
+        "id": "days_heavy_rain",
+        "title": "Number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "days_intense_rain",
+        "title": "Number of days with intense rainfall in the last 30 days"
+      },
+      {
+        "id": "dekad_rainfall_anomaly_forecast",
+        "title": "10-day rainfall forecast anomaly"
+      },
+      {
+        "id": "dekad_rainfall_forecast",
+        "title": "10-day rainfall forecast"
+      },
+      {
+        "id": "lst_amplitude",
+        "title": "Land Surface Temperature - 10-day Amplitude (MODIS)"
+      },
+      {
+        "id": "lst_anomaly",
+        "title": "Land Surface Temperature - 10-day Anomaly (MODIS)"
+      },
+      {
+        "id": "lst_daytime",
+        "title": "Daytime Land Surface Temperature - 10-day (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad",
+        "title": "10-day NDVI (MODIS)"
+      },
+      {
+        "id": "ndvi_dekad_anomaly",
+        "title": "10-day NDVI anomaly (MODIS)"
+      },
+      {
+        "id": "precip_blended_1m",
+        "title": "Blended rainfall aggregate (1-month)"
+      },
+      {
+        "id": "precip_blended_1y",
+        "title": "Blended rainfall aggregate (1-year)"
+      },
+      {
+        "id": "precip_blended_2m",
+        "title": "Blended rainfall aggregate (2-month)"
+      },
+      {
+        "id": "precip_blended_3m",
+        "title": "Blended rainfall aggregate (3-month)"
+      },
+      {
+        "id": "precip_blended_4m",
+        "title": "Blended rainfall aggregate (4-month)"
+      },
+      {
+        "id": "precip_blended_5m",
+        "title": "Blended rainfall aggregate (5-month)"
+      },
+      {
+        "id": "precip_blended_6m",
+        "title": "Blended rainfall aggregate (6-month)"
+      },
+      {
+        "id": "precip_blended_7m",
+        "title": "Blended rainfall aggregate (7-month)"
+      },
+      {
+        "id": "precip_blended_9m",
+        "title": "Blended rainfall aggregate (9-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_1m",
+        "title": "Blended rainfall anomaly (1-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_1y",
+        "title": "Blended rainfall anomaly (1-year)"
+      },
+      {
+        "id": "precip_blended_anomaly_2m",
+        "title": "Blended rainfall anomaly (2-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_3m",
+        "title": "Blended rainfall anomaly (3-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_4m",
+        "title": "Blended rainfall anomaly (4-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_5m",
+        "title": "Blended rainfall anomaly (5-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_6m",
+        "title": "Blended rainfall anomaly (6-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_7m",
+        "title": "Blended rainfall anomaly (7-month)"
+      },
+      {
+        "id": "precip_blended_anomaly_9m",
+        "title": "Blended rainfall anomaly (9-month)"
+      },
+      {
+        "id": "precip_blended_dekad",
+        "title": "Blended rainfall aggregate (10-day)"
+      },
+      {
+        "id": "precip_blended_dekad_anomaly",
+        "title": "Blended rainfall anomaly (10-day)"
+      },
+      {
+        "id": "rain_anomaly_1month",
+        "title": "Monthly rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_1year",
+        "title": "1-year rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_2month",
+        "title": "2-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_3month",
+        "title": "3-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_4month",
+        "title": "4-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_5month",
+        "title": "5-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_6month",
+        "title": "6-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_9month",
+        "title": "9-month rainfall anomaly"
+      },
+      {
+        "id": "rain_anomaly_dekad",
+        "title": "10-day rainfall anomaly"
+      },
+      {
+        "id": "rainfall_agg_1month",
+        "title": "1-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_1year",
+        "title": "1-year rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_2month",
+        "title": "2-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_3month",
+        "title": "3-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_4month",
+        "title": "4-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_5month",
+        "title": "5-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_6month",
+        "title": "6-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_agg_9month",
+        "title": "9-month rainfall aggregate (mm)"
+      },
+      {
+        "id": "rainfall_dekad",
+        "title": "10-day rainfall estimate (mm)"
+      },
+      {
+        "id": "spi_1m",
+        "title": "SPI - 1-month"
+      },
+      {
+        "id": "spi_1y",
+        "title": "SPI - 1-year"
+      },
+      {
+        "id": "spi_3m",
+        "title": "SPI - 3-month"
+      },
+      {
+        "id": "spi_6m",
+        "title": "SPI - 6-month"
+      },
+      {
+        "id": "spi_9m",
+        "title": "SPI - 9-month"
+      },
+      {
+        "id": "streak_dry_days",
+        "title": "Longest number of consecutive dry days"
+      },
+      {
+        "id": "streak_extreme_rain",
+        "title": "Longest consecutive extreme rainfall days"
+      },
+      {
+        "id": "streak_heavy_rain",
+        "title": "Longest consecutive number of days with heavy rainfall in the last 30 days"
+      },
+      {
+        "id": "streak_intense_rain",
+        "title": "Longest consecutive intense rainfall days"
+      }
+    ]
+  }
+}

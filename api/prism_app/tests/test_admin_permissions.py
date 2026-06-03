@@ -1,8 +1,8 @@
 """Admin panel permission helpers and view gates."""
 
-from prism_app.admin import (
-    _request_can_manage_dashboards,
-    _request_has_prism_admin_access,
+from prism_app.auth.admin_request import (
+    request_can_manage_dashboards,
+    request_has_prism_admin_access,
 )
 from prism_app.auth.permission_codes import (
     ADMIN_ACCESS,
@@ -35,11 +35,11 @@ def test_can_manage_dashboards_in_admin() -> None:
 
 
 def test_request_has_prism_admin_access() -> None:
-    assert _request_has_prism_admin_access(_request_with_codes({ADMIN_ACCESS}))
-    assert not _request_has_prism_admin_access(_request_with_codes({DASHBOARD_MANAGE}))
+    assert request_has_prism_admin_access(_request_with_codes({ADMIN_ACCESS}))
+    assert not request_has_prism_admin_access(_request_with_codes({DASHBOARD_MANAGE}))
 
 
 def test_request_can_manage_dashboards() -> None:
-    assert _request_can_manage_dashboards(_request_with_codes({DASHBOARD_MANAGE}))
-    assert _request_can_manage_dashboards(_request_with_codes({ADMIN_ACCESS}))
-    assert not _request_can_manage_dashboards(_request_with_codes({CONTENT_VIEW}))
+    assert request_can_manage_dashboards(_request_with_codes({DASHBOARD_MANAGE}))
+    assert request_can_manage_dashboards(_request_with_codes({ADMIN_ACCESS}))
+    assert not request_can_manage_dashboards(_request_with_codes({CONTENT_VIEW}))

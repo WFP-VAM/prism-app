@@ -16,7 +16,7 @@ def claim_next_queued_map_export_job(session: Session) -> str | None:
     stmt = (
         select(MapExportJob)
         .where(MapExportJob.status == "queued")
-        .order_by(MapExportJob.created_at.asc())
+        .order_by(MapExportJob.priority.desc(), MapExportJob.created_at.asc())
         .limit(1)
     )
     bind = session.get_bind()

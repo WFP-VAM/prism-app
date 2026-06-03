@@ -2,6 +2,9 @@ import { CoverageWindow, DatesPropagation } from 'config/types';
 
 export type BatchCadence = 'monthly' | 'quarterly' | 'every-n-dekads';
 
+/** Keep in sync with ``MAX_DEKAD_INTERVAL`` in ``map_export_schedule_model.py``. */
+export const MAX_DEKAD_INTERVAL = 3;
+
 function getMonthKey(timestamp: number): string {
   const d = new Date(timestamp);
   return `${d.getUTCFullYear()}-${d.getUTCMonth()}`;
@@ -178,10 +181,16 @@ export function getAvailableCadences(
 // - monthly: disabled if < 2 distinct calendar months
 // - quarterly: disabled if < 2 distinct calendar quarters
 // - every-n-dekads: disabled if < dekadInterval distinct dekad periods (N=1 never disabled)
+// Scheduled exports have no batch date range; layer coverage alone limits cadence options.
 export function getDisabledCadences(
   sortedDates: number[],
   dekadInterval: number = 1,
+  forScheduledExport = false,
 ): Set<BatchCadence> {
+  if (forScheduledExport) {
+    return new Set();
+  }
+
   const disabled = new Set<BatchCadence>();
 
   const distinctMonths = new Set(sortedDates.map(getMonthKey));
@@ -202,4 +211,26 @@ export function getDisabledCadences(
   }
 
   return disabled;
+}
+
+/** First available cadence that is enabled; falls back to the first available option. */
+export function resolveValidCadence(
+  availableCadences: BatchCadence[],
+  disabledCadences: Set<BatchCadence>,
+  currentCadence: BatchCadence,
+): BatchCadence {
+  if (
+    availableCadences.includes(currentCadence) &&
+    !disabledCadences.has(currentCadence)
+  ) {
+    return currentCadence;
+  }
+  const enabled = availableCadences.find(c => !disabledCadences.has(c));
+  if (enabled !== undefined) {
+    return enabled;
+  }
+  if (availableCadences.includes('every-n-dekads')) {
+    return 'every-n-dekads';
+  }
+  return availableCadences[0] ?? currentCadence;
 }

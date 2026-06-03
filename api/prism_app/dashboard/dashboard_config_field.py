@@ -8,7 +8,7 @@ from typing import Any
 from starlette.datastructures import FormData, UploadFile
 from starlette.requests import Request
 from starlette_admin._types import RequestAction
-from starlette_admin.fields import BaseField
+from starlette_admin.fields import BaseField, JSONField
 from starlette_admin.helpers import html_params, is_empty_file
 
 _JSON_ACCEPT = ".json,application/json"
@@ -43,6 +43,16 @@ def _is_json_upload(file: UploadFile) -> bool:
     if content_type and content_type not in _JSON_CONTENT_TYPES:
         return False
     return True
+
+
+@dataclass
+class PrettyJSONField(JSONField):
+    """Model JSON column with the same indented display as dashboard config."""
+
+    display_template: str = "displays/dashboard_config_json.html"
+
+    def format_display(self, data: Any) -> str:
+        return format_dashboard_config_json_for_display(data)
 
 
 @dataclass

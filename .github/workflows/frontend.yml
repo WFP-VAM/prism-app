@@ -62,9 +62,10 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           cd frontend && yarn preprocess-layers
+          cd frontend && yarn generate-schedule-layer-manifest
           DIFF=$(git diff --name-only)
           if [ "$DIFF" != "" ]; then
-            echo "Files have changed. Run yarn preprocess-layers after yarn setup:common (or align frontend/yarn.lock with Yarn output), then commit."
+            echo "Files have changed. Run yarn preprocess-layers and yarn generate-schedule-layer-manifest after yarn setup:common (or align frontend/yarn.lock with Yarn output), then commit."
             git diff --stat
             echo "$DIFF"
             exit 1
