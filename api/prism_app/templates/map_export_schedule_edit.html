@@ -1,5 +1,10 @@
 {% extends "@starlette-admin/edit.html" %}
 
+{% block head_css %}
+    {{ super() }}
+    {% include "includes/admin_minimal_form_actions.html" %}
+{% endblock %}
+
 {% block edit_form %}
     {% for field in model.get_fields_list(request, 'EDIT' | ra) %}
         <div class="mb-3{% if field.name == 'dekad_interval' %} map-export-dekad-interval-field d-none{% endif %}">
