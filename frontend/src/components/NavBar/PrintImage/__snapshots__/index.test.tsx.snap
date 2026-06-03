@@ -98,7 +98,7 @@ exports[`renders as expected 1`] = `
               class="makeStyles-wrapper-21"
             >
               <mock-typography
-                class="makeStyles-header-22"
+                class="makeStyles-header-26"
                 variant="h4"
               >
                 Aspect Ratio
