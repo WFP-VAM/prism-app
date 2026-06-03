@@ -80,7 +80,7 @@ class UserEditView(PrismGatedModelView):
     """CIAM-mapped users: provision metadata; permissions use User permissions."""
 
     label = "Users (CIAM)"
-    edit_template = "edit_no_add_another.html"  # hides "Save and add another"
+    edit_template = "edit_no_add_another.html"  # Save + Cancel only
     exclude_fields_from_edit = (
         "id",
         "ciam_sub",
