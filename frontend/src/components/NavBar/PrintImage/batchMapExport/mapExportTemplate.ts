@@ -14,7 +14,6 @@ import type { BuildBatchExportUrlsInput } from './types';
 /** Print layout fields shared by batch export URLs and schedule export_options. */
 export type MapExportPrintTemplate = {
   mapBounds: LngLatBounds | null;
-  mapZoom: number | null;
   mapDimensions: MapDimensions;
   titleText: string;
   footerText: string;
@@ -87,9 +86,6 @@ export function applyMapExportPrintTemplate(
   if (template.mapBounds) {
     params.set('bounds', boundsString(template.mapBounds));
   }
-  if (template.mapZoom != null) {
-    params.set('zoom', String(template.mapZoom));
-  }
 
   params.set('mapWidth', '100');
   params.set('mapHeight', '100');
@@ -122,7 +118,6 @@ function printTemplateFromBatchInput(
 ): MapExportPrintTemplate {
   return {
     mapBounds: input.mapBounds,
-    mapZoom: input.mapZoom,
     mapDimensions: input.mapDimensions,
     titleText: input.titleText,
     footerText: input.footerText,
@@ -178,10 +173,6 @@ function scheduleQueryParamsFromTemplate(
     bottomLogoScale: template.bottomLogoScale,
     toggles: exportTogglesForUrl(template.toggles),
   };
-
-  if (template.mapZoom != null) {
-    queryParams.zoom = String(template.mapZoom);
-  }
 
   if (isCustomRatio(template.mapDimensions.aspectRatio)) {
     queryParams.aspectRatio = 'Custom';

@@ -50,7 +50,6 @@ export interface ExportParams {
 
   // Map bounds (new)
   bounds: ExportMapBounds | null;
-  zoom: number | null;
 
   // Print config options
   mapWidth: number; // 50-100
@@ -100,13 +99,6 @@ export interface MapExportLayoutProps {
   // Legend
   legendPosition: number;
   legendScale: number;
-
-  // Map view state
-  initialViewState?: {
-    longitude: number;
-    latitude: number;
-    zoom: number;
-  };
 
   // Bounds to fit map to
   bounds?: ExportMapBounds;

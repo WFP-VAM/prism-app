@@ -232,18 +232,6 @@ const ExportView = memo(() => {
     );
   }, [exportParams.date, selectedLayersWithDateSupport]);
 
-  const exportInitialViewState = useMemo(() => {
-    const { bounds, zoom } = exportParams;
-    if (!bounds || zoom == null || !new URLSearchParams(search).has('zoom')) {
-      return undefined;
-    }
-    return {
-      longitude: (bounds.west + bounds.east) / 2,
-      latitude: (bounds.south + bounds.north) / 2,
-      zoom,
-    };
-  }, [exportParams.bounds, exportParams.zoom, search]);
-
   // Use measured footer height, or estimate if not yet measured
   // Footer always shows date text when visible, so just check footerVisibility
   const footerHeight =
@@ -270,7 +258,6 @@ const ExportView = memo(() => {
         legendPosition={exportParams.legendPosition}
         legendScale={exportParams.legendScale}
         bounds={exportParams.bounds ?? undefined}
-        initialViewState={exportInitialViewState}
         mapStyle={processedMapStyle}
         invertedAdminBoundaryLimitPolygon={invertedAdminBoundaryLimitPolygon}
         printRef={printRef}
