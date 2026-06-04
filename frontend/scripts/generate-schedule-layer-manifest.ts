@@ -1,10 +1,12 @@
 /**
  * Build-time manifest of schedule-eligible WMS layers for map export admin.
- * All WMS layers per country (batch print may also use server-loaded dates).
+ * Mirrors the batch/scheduled map layer picker (`rawLayers` +
+ * `isWmsSelectableForBatchPrint` in PrintImage).
  *
  * Output: api/prism_app/data/schedule_layer_manifest.json
  */
 import fs from 'fs';
+import { merge } from 'lodash';
 import path from 'path';
 
 type LayerConfig = {

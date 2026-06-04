@@ -14,6 +14,8 @@ from prism_app.map_export_layer_catalog import (
 def test_mozambique_schedule_layers_include_wms_with_coverage() -> None:
     ids = schedule_layer_ids("mozambique")
     assert "precip_blended_dekad" in ids
+    # Shared layer referenced in prism.json but not defined in country layers.json
+    assert "spi_2m" in ids
 
 
 def test_schedule_layer_wms_name_resolves_server_layer_name() -> None:
