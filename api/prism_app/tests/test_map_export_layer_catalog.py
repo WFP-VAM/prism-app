@@ -7,12 +7,23 @@ from prism_app.map_export_layer_catalog import (
     schedule_layer_choices_with_extra,
     schedule_layer_ids,
     schedule_layer_label,
+    schedule_layer_wms_name,
 )
 
 
 def test_mozambique_schedule_layers_include_wms_with_coverage() -> None:
     ids = schedule_layer_ids("mozambique")
     assert "precip_blended_dekad" in ids
+
+
+def test_schedule_layer_wms_name_resolves_server_layer_name() -> None:
+    assert (
+        schedule_layer_wms_name("mozambique", "precip_blended_dekad")
+        == "rfb_blended_moz_dekad"
+    )
+    assert schedule_layer_wms_name("mozambique", "legacy_unknown_xyz") == (
+        "legacy_unknown_xyz"
+    )
 
 
 def test_boundary_layers_are_not_schedule_eligible() -> None:

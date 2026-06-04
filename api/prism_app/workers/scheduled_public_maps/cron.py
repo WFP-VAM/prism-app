@@ -37,6 +37,7 @@ from prism_app.export_jobs.db import get_export_jobs_session_factory
 from prism_app.export_jobs.priority import MAP_EXPORT_JOB_PRIORITY_SCHEDULED_PUBLIC
 from prism_app.export_jobs.service import enqueue_map_export_job
 from prism_app.export_s3 import map_export_s3_client
+from prism_app.map_export_layer_catalog import schedule_layer_wms_name
 from prism_app.models import MapExportRequestModel
 from prism_app.utils import utc_now
 from prism_app.workers.scheduled_public_maps.layer_days import (
@@ -110,11 +111,14 @@ def cadence_eligible_dates(
 def latest_eligible_date_for_schedule(
     schedule: MapExportSchedule,
     days_map: dict[str, list[int]],
+    *,
+    wms_layer_id: str | None = None,
 ) -> datetime.date | None:
-    """Latest cadence-eligible coverage date for ``schedule.layer_id``, or None."""
+    """Latest cadence-eligible coverage date for the schedule layer, or None."""
+    layer_key = wms_layer_id or schedule.layer_id
     days = [
         _utc_date_from_ms(timestamp_ms)
-        for timestamp_ms in collect_times_for_layer_id(days_map, schedule.layer_id)
+        for timestamp_ms in collect_times_for_layer_id(days_map, layer_key)
     ]
     eligible = cadence_eligible_dates(
         days,
@@ -198,16 +202,27 @@ def process_active_schedules(
         for schedule in schedules:
             now = utc_now()
             schedule.last_checked_at = now
-            cover_date = latest_eligible_date_for_schedule(schedule, days_map)
+            wms_layer_id = schedule_layer_wms_name(
+                schedule.country,
+                schedule.layer_id,
+            )
+            cover_date = latest_eligible_date_for_schedule(
+                schedule,
+                days_map,
+                wms_layer_id=wms_layer_id,
+            )
             if cover_date is None:
                 layer_days = len(
-                    collect_times_for_layer_id(days_map, schedule.layer_id)
+                    collect_times_for_layer_id(days_map, wms_layer_id)
                 )
                 logger.info(
                     "skipping schedule=%s: no eligible cover_date "
-                    "(layer_id=%s cadence=%s dekad_interval=%s layer_days=%s)",
+                    "(country=%s layer_id=%s wms_layer_id=%s cadence=%s "
+                    "dekad_interval=%s layer_days=%s)",
                     schedule.id,
+                    schedule.country,
                     schedule.layer_id,
+                    wms_layer_id,
                     schedule.cadence,
                     schedule.dekad_interval,
                     layer_days,
