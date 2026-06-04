@@ -9,6 +9,7 @@ from prism_app.admin_map_export import (
     MapExportScheduleView,
     _apply_job_owner_filter,
     _apply_schedule_owner_filter,
+    _case_insensitive_build_query,
     _normalize_dekad_interval,
     _validate_dekad_interval,
 )
@@ -95,6 +96,31 @@ def test_schedule_search_query_is_case_insensitive() -> None:
     compiled = str(clause.compile(compile_kwargs={"literal_binds": True}))
     assert "lower" in compiled.lower()
     assert "mozambique" in compiled.lower()
+
+
+def test_schedule_search_query_includes_scheduler_identity() -> None:
+    view = MapExportScheduleView(MapExportSchedule)
+    request = _request(admin_access=True)
+    clause = view.get_search_query(request, "Jane")
+    compiled = str(clause.compile(compile_kwargs={"literal_binds": True}))
+    assert "users" in compiled.lower()
+    assert "jane" in compiled.lower()
+
+
+def test_schedule_column_filter_is_case_insensitive() -> None:
+    clause = _case_insensitive_build_query(
+        {"name": {"contains": "Monthly"}},
+        MapExportSchedule,
+    )
+    compiled = str(clause.compile(compile_kwargs={"literal_binds": True}))
+    assert "lower" in compiled.lower()
+    assert "monthly" in compiled.lower()
+
+
+def test_schedule_searchable_fields_include_cadence_and_format() -> None:
+    view = MapExportScheduleView(MapExportSchedule)
+    assert "cadence" in view.searchable_fields
+    assert "format" in view.searchable_fields
 
 
 def test_schedule_view_can_create_only_with_clone_from() -> None:

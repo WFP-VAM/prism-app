@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Callable, Dict, Optional
 from uuid import UUID
 
 from prism_app.admin import PrismGatedModelView, ReadOnlyModelView
@@ -20,6 +20,7 @@ from prism_app.database.map_export_schedule_model import (
     MapExportScheduleFormat,
     MapExportScheduleStatus,
 )
+from prism_app.database.user_model import User
 from prism_app.export_s3 import public_maps_folder_uri
 from prism_app.export_schedules.routes import format_map_export_schedule_name
 from prism_app.map_export_layer_catalog import (
@@ -29,8 +30,9 @@ from prism_app.map_export_layer_catalog import (
     schedule_layer_label,
 )
 from prism_app.utils import utc_now
-from sqlalchemy import Select, cast, func, or_, select
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy import Select, and_, cast, func, or_, select
+from sqlalchemy.orm import InstrumentedAttribute, Session, joinedload
+from sqlalchemy.sql import ClauseElement
 from sqlalchemy.types import String
 from starlette.exceptions import HTTPException
 from starlette.requests import Request
@@ -39,7 +41,116 @@ from starlette_admin import EnumField, HasOne, StringField
 from starlette_admin._types import RequestAction
 from starlette_admin.actions import link_row_action
 from starlette_admin.contrib.sqla import Admin
+from starlette_admin.contrib.sqla.helpers import OPERATORS
 from starlette_admin.exceptions import FormValidationError
+
+_CASE_INSENSITIVE_STRING_OPERATORS: Dict[str, Callable[..., ClauseElement]] = {
+    **OPERATORS,
+    "eq": lambda f, v: func.lower(cast(f, String)) == str(v).lower(),
+    "neq": lambda f, v: func.lower(cast(f, String)) != str(v).lower(),
+    "startswith": lambda f, v: func.lower(cast(f, String)).startswith(str(v).lower()),
+    "not_startswith": lambda f, v: ~func.lower(cast(f, String)).startswith(
+        str(v).lower(),
+    ),
+    "endswith": lambda f, v: func.lower(cast(f, String)).endswith(str(v).lower()),
+    "not_endswith": lambda f, v: ~func.lower(cast(f, String)).endswith(str(v).lower()),
+    "contains": lambda f, v: func.lower(cast(f, String)).contains(str(v).lower()),
+    "not_contains": lambda f, v: ~func.lower(cast(f, String)).contains(str(v).lower()),
+    "in": lambda f, v: func.lower(cast(f, String)).in_(
+        [str(item).lower() for item in v],
+    ),
+    "not_in": lambda f, v: ~func.lower(cast(f, String)).in_(
+        [str(item).lower() for item in v],
+    ),
+}
+
+
+def _case_insensitive_build_query(
+    where: Dict[str, Any],
+    model: Any,
+    latest_attr: Optional[InstrumentedAttribute] = None,
+) -> Any:
+    """Like ``build_query`` but case-insensitive for string comparison operators."""
+    filters = []
+    for key, _ in where.items():
+        if key == "or":
+            filters.append(
+                or_(
+                    *[
+                        _case_insensitive_build_query(item, model, latest_attr)
+                        for item in where[key]
+                    ],
+                ),
+            )
+        elif key == "and":
+            filters.append(
+                and_(
+                    *[
+                        _case_insensitive_build_query(item, model, latest_attr)
+                        for item in where[key]
+                    ],
+                ),
+            )
+        elif key in _CASE_INSENSITIVE_STRING_OPERATORS:
+            filters.append(
+                _CASE_INSENSITIVE_STRING_OPERATORS[key](latest_attr, where[key]),
+            )
+        else:
+            attr: Optional[InstrumentedAttribute] = getattr(model, key, None)
+            if attr is not None:
+                filters.append(
+                    _case_insensitive_build_query(where[key], model, attr),
+                )
+    if len(filters) == 1:
+        return filters[0]
+    if filters:
+        return and_(*filters)
+    return and_(True)
+
+
+class CaseInsensitiveColumnFilterMixin:
+    """Use case-insensitive string matching for SearchBuilder column filters."""
+
+    def _coerce_list_where(self, where: Any) -> Any:
+        """Turn SearchBuilder JSON into a clause; leave global search strings as-is."""
+        if isinstance(where, dict):
+            return _case_insensitive_build_query(where, self.model)
+        return where
+
+    async def build_full_text_search_query(
+        self,
+        request: Request,
+        term: Any,
+        model: Any,
+    ) -> Any:
+        # ModelView routes non-dict ``where`` here; accept pre-built clauses from
+        # ``_coerce_list_where`` so ``find_all`` / ``count`` can delegate to super().
+        if isinstance(term, ClauseElement):
+            return term
+        return await super().build_full_text_search_query(request, term, model)
+
+    async def count(
+        self,
+        request: Request,
+        where: Any = None,
+    ) -> int:
+        return await super().count(request, where=self._coerce_list_where(where))
+
+    async def find_all(
+        self,
+        request: Request,
+        skip: int = 0,
+        limit: int = 100,
+        where: Any = None,
+        order_by: list[str] | None = None,
+    ) -> Any:
+        return await super().find_all(
+            request,
+            skip=skip,
+            limit=limit,
+            where=self._coerce_list_where(where),
+            order_by=order_by,
+        )
 
 
 def _apply_schedule_owner_filter(stmt: Select, request: Request) -> Select:
@@ -252,7 +363,7 @@ class PrismAdmin(Admin):
         return await super()._render_create(request)
 
 
-class MapExportScheduleView(PrismGatedModelView):
+class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelView):
     label = "Map export schedules"
     create_template = "map_export_schedule_create.html"
     edit_template = "map_export_schedule_edit.html"
@@ -311,7 +422,15 @@ class MapExportScheduleView(PrismGatedModelView):
         "updated_at",
         "country",
     )
-    searchable_fields = ("name", "layer_id", "status", "country", "admin_areas")
+    searchable_fields = (
+        "name",
+        "layer_id",
+        "status",
+        "country",
+        "admin_areas",
+        "cadence",
+        "format",
+    )
     sortable_fields = (
         "name",
         "status",
@@ -354,7 +473,7 @@ class MapExportScheduleView(PrismGatedModelView):
         return _apply_schedule_owner_filter(stmt, request)
 
     def get_search_query(self, request: Request, term: str) -> Any:
-        """Case-insensitive search (explicit lower() for portability)."""
+        """Case-insensitive search across schedule columns and scheduler identity."""
         _ = request
         term_lower = term.strip().lower()
         if not term_lower:
@@ -364,9 +483,16 @@ class MapExportScheduleView(PrismGatedModelView):
             attr = getattr(self.model, field_name, None)
             if attr is None:
                 continue
-            clauses.append(
-                func.lower(cast(attr, String)).contains(term_lower),
-            )
+            clauses.append(func.lower(cast(attr, String)).contains(term_lower))
+        clauses.append(
+            self.model.created_by_user.has(
+                or_(
+                    func.lower(cast(User.email, String)).contains(term_lower),
+                    func.lower(cast(User.name, String)).contains(term_lower),
+                    func.lower(cast(User.ciam_sub, String)).contains(term_lower),
+                ),
+            ),
+        )
         return or_(*clauses) if clauses else None
 
     async def find_all(
