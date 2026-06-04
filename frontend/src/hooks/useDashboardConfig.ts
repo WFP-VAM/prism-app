@@ -1,5 +1,5 @@
 import { useIsAuthenticated } from '@azure/msal-react';
-import { authRequired, safeCountry } from 'config';
+import { authRequired, safeCountry, useStagingDashboards } from 'config';
 import { setDashboards } from 'context/dashboardStateSlice';
 import { addNotification } from 'context/notificationStateSlice';
 import {
@@ -28,9 +28,11 @@ export function useDashboardConfig(): void {
   const dispatch = useDispatch();
   const isAuthenticated = useIsAuthenticated();
   const enabled = isAuthenticated || !authRequired;
-  const url = `${DASHBOARDS_API_URL}?${new URLSearchParams({
-    country: safeCountry,
-  }).toString()}`;
+  const params = new URLSearchParams({ country: safeCountry });
+  if (useStagingDashboards) {
+    params.set('include_staging', 'true');
+  }
+  const url = `${DASHBOARDS_API_URL}?${params.toString()}`;
 
   useEffect(() => {
     if (!enabled) {
