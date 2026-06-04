@@ -80,11 +80,6 @@ const defaultProps = {
   logoScale: 1,
   legendPosition: 0,
   legendScale: 1,
-  initialViewState: {
-    longitude: 0,
-    latitude: 0,
-    zoom: 5,
-  },
   mapStyle: 'mock-style',
 };
 
