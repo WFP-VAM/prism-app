@@ -423,7 +423,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
   const mapExportTemplate = useMapExportTemplate({
     mapBounds: previewBounds,
-    mapZoom: previewZoom,
     mapDimensions,
     previewMapWidth,
     previewMapHeight,
