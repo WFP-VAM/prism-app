@@ -200,6 +200,18 @@ def process_active_schedules(
             schedule.last_checked_at = now
             cover_date = latest_eligible_date_for_schedule(schedule, days_map)
             if cover_date is None:
+                layer_days = len(
+                    collect_times_for_layer_id(days_map, schedule.layer_id)
+                )
+                logger.info(
+                    "skipping schedule=%s: no eligible cover_date "
+                    "(layer_id=%s cadence=%s dekad_interval=%s layer_days=%s)",
+                    schedule.id,
+                    schedule.layer_id,
+                    schedule.cadence,
+                    schedule.dekad_interval,
+                    layer_days,
+                )
                 skipped += 1
                 session.add(schedule)
                 session.commit()
@@ -208,6 +220,13 @@ def process_active_schedules(
                 schedule.last_enqueued_date is not None
                 and cover_date <= schedule.last_enqueued_date
             ):
+                logger.info(
+                    "skipping schedule=%s: cover_date %s not newer than "
+                    "last_enqueued_date %s",
+                    schedule.id,
+                    cover_date.isoformat(),
+                    schedule.last_enqueued_date.isoformat(),
+                )
                 skipped += 1
                 session.add(schedule)
                 session.commit()
