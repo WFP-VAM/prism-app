@@ -1,4 +1,8 @@
-"""Read merged dashboard config arrays for the public (published-only) API."""
+"""Read merged dashboard config arrays for the dashboard read API.
+
+Serves ``published`` rows by default; staging frontends opt in to also seeing
+``staging`` rows via ``include_staging``.
+"""
 
 from __future__ import annotations
 
@@ -12,15 +16,31 @@ from sqlalchemy.orm import Session, sessionmaker
 from sqlmodel import col
 
 
+def served_statuses(include_staging: bool) -> list[DashboardStatus]:
+    """Dashboard statuses exposed by the read API.
+
+    ``published`` is always served; ``staging`` is added only for staging
+    frontends. ``draft`` and ``archived`` are never served.
+    """
+    statuses = [DashboardStatus.published]
+    if include_staging:
+        statuses.append(DashboardStatus.staging)
+    return statuses
+
+
 def merge_published_dashboard_rows_for_country(
-    engine: Engine, country: str
+    engine: Engine, country: str, include_staging: bool = False
 ) -> list[Any]:
     """
     Return the combined top-level ``dashboard.json`` array for a country.
 
-    Merges each published row's ``config`` in ``title`` order. Each row's
+    Merges each served row's ``config`` in ``title`` order. Each row's
     ``config`` is a JSON list of dashboard row objects, or a single object for
     legacy rows.
+
+    By default only ``published`` rows are served. When ``include_staging`` is
+    true, ``staging`` rows are served alongside published ones (for staging
+    frontends previewing dashboards before they go public).
     """
     SessionLocal = sessionmaker(engine, class_=Session, expire_on_commit=False)
     with SessionLocal() as session:
@@ -28,7 +48,7 @@ def merge_published_dashboard_rows_for_country(
             session.scalars(
                 select(DashboardModel)
                 .where(col(DashboardModel.country) == country)
-                .where(col(DashboardModel.status) == DashboardStatus.published)
+                .where(col(DashboardModel.status).in_(served_statuses(include_staging)))
                 .order_by(col(DashboardModel.title))
             ).all()
         )
