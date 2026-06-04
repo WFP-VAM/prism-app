@@ -304,42 +304,16 @@ function MapExportLayout({
     // If bounds are provided, fit the map to those bounds.
     // This ensures precise geographic extent matching (e.g., for exports).
     if (bounds && map) {
-      if (initialViewState) {
-        map.jumpTo({
-          center: [initialViewState.longitude, initialViewState.latitude],
-          zoom: initialViewState.zoom,
-        });
-      } else {
-        map.fitBounds(
-          [
-            [bounds.west, bounds.south],
-            [bounds.east, bounds.north],
-          ],
-          {
-            padding: 0,
-            animate: false,
-          },
-        );
-      }
-    }
-
-    // Capture preview bounds/zoom (must run before print-preview early return below).
-    if (onBoundsChange && map) {
-      let lastBoundsStr: string | null = null;
-      let lastZoom: number | null = null;
-
-      map.on('idle', () => {
-        const mapBounds = map.getBounds();
-        const zoom = map.getZoom();
-        if (mapBounds) {
-          const boundsStr = `${mapBounds.getWest()},${mapBounds.getSouth()},${mapBounds.getEast()},${mapBounds.getNorth()}`;
-          if (boundsStr !== lastBoundsStr || zoom !== lastZoom) {
-            lastBoundsStr = boundsStr;
-            lastZoom = zoom;
-            onBoundsChange(mapBounds, zoom);
-          }
-        }
-      });
+      map.fitBounds(
+        [
+          [bounds.west, bounds.south],
+          [bounds.east, bounds.north],
+        ],
+        {
+          padding: 0,
+          animate: false,
+        },
+      );
     }
 
     // Capture preview bounds/zoom (must run before print-preview early return below).
