@@ -30,12 +30,12 @@ from prism_app.map_export_layer_catalog import (
 )
 from prism_app.utils import utc_now
 from sqlalchemy import Select, cast, func, or_, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.types import String
 from starlette.exceptions import HTTPException
 from starlette.requests import Request
 from starlette.responses import Response
-from starlette_admin import EnumField, StringField
+from starlette_admin import EnumField, HasOne, StringField
 from starlette_admin._types import RequestAction
 from starlette_admin.actions import link_row_action
 from starlette_admin.contrib.sqla import Admin
@@ -276,7 +276,7 @@ class MapExportScheduleView(PrismGatedModelView):
         ),
         StringField("export_url", read_only=True),
         PrettyJSONField("export_options", read_only=True),
-        "created_by_user_id",
+        HasOne("created_by_user", label="Scheduled by", identity="user"),
         "created_at",
         "updated_at",
     )
@@ -292,7 +292,7 @@ class MapExportScheduleView(PrismGatedModelView):
         "last_enqueued_date",
         "last_executed_at",
         "output_directory",
-        "created_by_user_id",
+        "created_by_user",
         "created_at",
         "updated_at",
     )
@@ -306,7 +306,7 @@ class MapExportScheduleView(PrismGatedModelView):
         "last_enqueued_date",
         "last_executed_at",
         "output_directory",
-        "created_by_user_id",
+        "created_by_user",
         "created_at",
         "updated_at",
         "country",
@@ -331,13 +331,27 @@ class MapExportScheduleView(PrismGatedModelView):
         return "clone_from" in request.query_params
 
     def get_list_query(self, request: Request) -> Select:
-        return _apply_schedule_owner_filter(super().get_list_query(request), request)
+        stmt = (
+            super()
+            .get_list_query(request)
+            .options(
+                joinedload(MapExportSchedule.created_by_user),
+            )
+        )
+        return _apply_schedule_owner_filter(stmt, request)
 
     def get_count_query(self, request: Request) -> Select:
         return _apply_schedule_owner_filter(super().get_count_query(request), request)
 
     def get_details_query(self, request: Request) -> Select:
-        return _apply_schedule_owner_filter(super().get_details_query(request), request)
+        stmt = (
+            super()
+            .get_details_query(request)
+            .options(
+                joinedload(MapExportSchedule.created_by_user),
+            )
+        )
+        return _apply_schedule_owner_filter(stmt, request)
 
     def get_search_query(self, request: Request, term: str) -> Any:
         """Case-insensitive search (explicit lower() for portability)."""
@@ -422,7 +436,7 @@ class MapExportScheduleView(PrismGatedModelView):
         serialized["last_checked_at"] = None
         serialized["last_enqueued_at"] = None
         serialized["last_enqueued_date"] = None
-        serialized["created_by_user_id"] = None
+        serialized["created_by_user"] = None
         return serialized
 
     @link_row_action(

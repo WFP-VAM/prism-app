@@ -8,13 +8,15 @@ from enum import Enum
 from typing import Any, Optional, Self
 from uuid import UUID
 
+from prism_app.database.user_model import User
 from prism_app.export_schedule_validation import normalize_schedule_export_url
 from prism_app.utils import utc_now
 from pydantic import model_validator
 from sqlalchemy import JSON, Column, Date, DateTime, ForeignKey, Index, Integer, String
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
+from sqlalchemy.orm import relationship
 from sqlalchemy.types import Uuid
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, Relationship, SQLModel
 
 
 class MapExportScheduleStatus(str, Enum):
@@ -97,6 +99,14 @@ class MapExportSchedule(SQLModel, table=True):
             Uuid(as_uuid=True),
             ForeignKey("users.id", ondelete="SET NULL"),
             nullable=True,
+        ),
+    )
+    created_by_user: Optional[User] = Relationship(
+        sa_relationship=relationship(
+            User,
+            primaryjoin="MapExportSchedule.created_by_user_id == User.id",
+            foreign_keys="MapExportSchedule.created_by_user_id",
+            uselist=False,
         ),
     )
     created_at: datetime.datetime = Field(
