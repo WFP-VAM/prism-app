@@ -14,10 +14,17 @@ from sqlmodel import Field, SQLModel
 
 
 class DashboardStatus(str, Enum):
-    """Publication state: drafts and archived rows are not served to the PRISM UI read API."""
+    """Publication state served to the PRISM UI read API.
+
+    ``published`` rows are served to everyone. ``staging`` rows are served only
+    to staging frontends (``GET /dashboards?include_staging=true``) so a
+    dashboard can be reviewed live before going public. ``draft`` and
+    ``archived`` are never served.
+    """
 
     draft = "draft"
     published = "published"
+    staging = "staging"
     archived = "archived"
 
 
