@@ -343,11 +343,13 @@ function MapExportLayout({
     }
 
     // Capture preview bounds/zoom (must run before print-preview early return below).
+    // Use moveend (fires after fitBounds and user pan/zoom) rather than idle
+    // (which waits for all tiles to load and may not fire before export is captured).
     if (onBoundsChange && map) {
       let lastBoundsStr: string | null = null;
       let lastZoom: number | null = null;
 
-      map.on('idle', () => {
+      const reportBounds = () => {
         const mapBounds = map.getBounds();
         const zoom = map.getZoom();
         if (mapBounds) {
@@ -358,7 +360,11 @@ function MapExportLayout({
             onBoundsChange(mapBounds, zoom);
           }
         }
-      });
+      };
+
+      // Capture immediately (fitBounds with animate:false is synchronous)
+      reportBounds();
+      map.on('moveend', reportBounds);
     }
 
     // Track tile loading using idle event and areTilesLoaded() for robust detection
