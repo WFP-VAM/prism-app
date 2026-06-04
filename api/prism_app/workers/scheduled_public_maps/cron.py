@@ -212,9 +212,7 @@ def process_active_schedules(
                 wms_layer_id=wms_layer_id,
             )
             if cover_date is None:
-                layer_days = len(
-                    collect_times_for_layer_id(days_map, wms_layer_id)
-                )
+                layer_days = len(collect_times_for_layer_id(days_map, wms_layer_id))
                 logger.info(
                     "skipping schedule=%s: no eligible cover_date "
                     "(country=%s layer_id=%s wms_layer_id=%s cadence=%s "
