@@ -305,19 +305,45 @@ function MapExportLayout({
     // Load SDF icons for point data layers
     ensureSDFIconsLoaded(mapRef.current?.getMap());
 
-    // If bounds are provided, fit the map to those bounds
-    // This ensures precise geographic extent matching (e.g., for exports)
+    // Match preview viewport: use captured center+zoom when provided (/export?zoom=…).
+    // fitBounds alone ignores zoom and can match a prior export when only zoom changed.
     if (bounds && map) {
-      map.fitBounds(
-        [
-          [bounds.west, bounds.south],
-          [bounds.east, bounds.north],
-        ],
-        {
-          padding: 0,
-          animate: false,
-        },
-      );
+      if (initialViewState) {
+        map.jumpTo({
+          center: [initialViewState.longitude, initialViewState.latitude],
+          zoom: initialViewState.zoom,
+        });
+      } else {
+        map.fitBounds(
+          [
+            [bounds.west, bounds.south],
+            [bounds.east, bounds.north],
+          ],
+          {
+            padding: 0,
+            animate: false,
+          },
+        );
+      }
+    }
+
+    // Capture preview bounds/zoom (must run before print-preview early return below).
+    if (onBoundsChange && map) {
+      let lastBoundsStr: string | null = null;
+      let lastZoom: number | null = null;
+
+      map.on('idle', () => {
+        const mapBounds = map.getBounds();
+        const zoom = map.getZoom();
+        if (mapBounds) {
+          const boundsStr = `${mapBounds.getWest()},${mapBounds.getSouth()},${mapBounds.getEast()},${mapBounds.getNorth()}`;
+          if (boundsStr !== lastBoundsStr || zoom !== lastZoom) {
+            lastBoundsStr = boundsStr;
+            lastZoom = zoom;
+            onBoundsChange(mapBounds, zoom);
+          }
+        }
+      });
     }
 
     // Track tile loading using idle event and areTilesLoaded() for robust detection
@@ -395,28 +421,6 @@ function MapExportLayout({
       }, 60_000);
     } else if (onMapLoad) {
       onMapLoad(e);
-    }
-
-    // Capture and report map bounds and zoom after load
-    // Use 'idle' event to ensure map has fully settled
-    // Only report when bounds actually change to avoid infinite re-render loops
-    if (onBoundsChange && map) {
-      let lastBoundsStr: string | null = null;
-      let lastZoom: number | null = null;
-
-      map.on('idle', () => {
-        const mapBounds = map.getBounds();
-        const zoom = map.getZoom();
-        if (mapBounds) {
-          // Only call onBoundsChange if bounds or zoom actually changed
-          const boundsStr = `${mapBounds.getWest()},${mapBounds.getSouth()},${mapBounds.getEast()},${mapBounds.getNorth()}`;
-          if (boundsStr !== lastBoundsStr || zoom !== lastZoom) {
-            lastBoundsStr = boundsStr;
-            lastZoom = zoom;
-            onBoundsChange(mapBounds, zoom);
-          }
-        }
-      });
     }
   };
   // Calculate map dimensions based on container size and aspect ratio

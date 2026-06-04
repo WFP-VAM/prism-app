@@ -64,6 +64,17 @@ def schedule_layer_label(country: str, layer_id: str) -> str:
     return layer_id
 
 
+def schedule_layer_wms_name(country: str, layer_id: str) -> str:
+    """WMS GetCapabilities layer ``Name`` for a schedule ``layer_id``, else ``layer_id``."""
+    for entry in _country_layers(country):
+        if entry["id"] == layer_id:
+            wms_name = entry.get("server_layer_name")
+            if isinstance(wms_name, str) and wms_name.strip():
+                return wms_name.strip()
+            break
+    return layer_id
+
+
 def schedule_layer_choices_with_extra(
     country: str,
     *,

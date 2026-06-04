@@ -10,6 +10,7 @@ import path from 'path';
 type LayerConfig = {
   type?: string;
   title?: string;
+  server_layer_name?: string;
   coverageWindow?: unknown;
   validity?: unknown;
 };
@@ -17,6 +18,7 @@ type LayerConfig = {
 type ManifestLayer = {
   id: string;
   title: string;
+  server_layer_name?: string;
 };
 
 type ScheduleLayerManifest = {
@@ -61,6 +63,9 @@ function scheduleLayersForCountry(country: string): ManifestLayer[] {
     .map(([layerId, layer]) => ({
       id: layerId,
       title: layer.title || layerId,
+      ...(layer.server_layer_name
+        ? { server_layer_name: layer.server_layer_name }
+        : {}),
     }))
     .sort((a, b) => a.id.localeCompare(b.id));
 }

@@ -15,14 +15,29 @@ describe('fetchScheduleWhoamiSession', () => {
     jest.restoreAllMocks();
   });
 
-  test('returns unauthenticated when whoami is not ok', async () => {
+  test('returns unauthorized when whoami responds 401', async () => {
     jest.spyOn(global, 'fetch').mockResolvedValue({
       ok: false,
+      status: 401,
     } as Response);
 
     await expect(fetchScheduleWhoamiSession()).resolves.toEqual({
       isPrismAuthenticated: false,
       canManageSchedules: false,
+      sessionStatus: 'unauthorized',
+    });
+  });
+
+  test('returns network_error when whoami responds with other non-ok status', async () => {
+    jest.spyOn(global, 'fetch').mockResolvedValue({
+      ok: false,
+      status: 502,
+    } as Response);
+
+    await expect(fetchScheduleWhoamiSession()).resolves.toEqual({
+      isPrismAuthenticated: false,
+      canManageSchedules: false,
+      sessionStatus: 'network_error',
     });
   });
 
@@ -37,6 +52,7 @@ describe('fetchScheduleWhoamiSession', () => {
     await expect(fetchScheduleWhoamiSession()).resolves.toEqual({
       isPrismAuthenticated: true,
       canManageSchedules: true,
+      sessionStatus: 'authenticated',
     });
   });
 
@@ -51,6 +67,17 @@ describe('fetchScheduleWhoamiSession', () => {
     await expect(fetchScheduleWhoamiSession()).resolves.toEqual({
       isPrismAuthenticated: true,
       canManageSchedules: true,
+      sessionStatus: 'authenticated',
+    });
+  });
+
+  test('returns network_error when fetch throws', async () => {
+    jest.spyOn(global, 'fetch').mockRejectedValue(new Error('offline'));
+
+    await expect(fetchScheduleWhoamiSession()).resolves.toEqual({
+      isPrismAuthenticated: false,
+      canManageSchedules: false,
+      sessionStatus: 'network_error',
     });
   });
 

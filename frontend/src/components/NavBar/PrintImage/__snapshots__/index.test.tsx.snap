@@ -985,6 +985,18 @@ exports[`renders as expected 1`] = `
                     </mock-typography>
                   </div>
                 </mock-tooltip>
+                <div
+                  class="MuiCollapse-root MuiCollapse-hidden"
+                  style="min-height: 0px; padding-left: 8px;"
+                >
+                  <div
+                    class="MuiCollapse-wrapper"
+                  >
+                    <div
+                      class="MuiCollapse-wrapperInner"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
             <mock-button

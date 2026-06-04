@@ -90,10 +90,6 @@ app.add_middleware(
 )
 
 _admin_session_settings = get_admin_auth_settings()
-_ss_low = _admin_session_settings.session_cookie_samesite.lower()
-_same_site_admin: Literal["lax", "strict", "none"] = (
-    _ss_low if _ss_low in ("lax", "strict", "none") else "lax"
-)
 
 app.add_middleware(
     SessionMiddleware,
@@ -101,7 +97,7 @@ app.add_middleware(
     session_cookie=_admin_session_settings.session_cookie_name,
     max_age=_admin_session_settings.session_ttl_seconds,
     path="/",
-    same_site=_same_site_admin,
+    same_site=_admin_session_settings.session_cookie_samesite,  # type: ignore[arg-type]
     https_only=_admin_session_settings.session_cookie_secure,
 )
 app.include_router(export_map_jobs_router)
