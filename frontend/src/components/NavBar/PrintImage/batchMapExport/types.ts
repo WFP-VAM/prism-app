@@ -54,7 +54,6 @@ export type BuildBatchExportUrlsInput = {
   baseSearchParams: URLSearchParams;
   printSelectedLayer: DateCompatibleLayer;
   mapBounds: LngLatBounds | null;
-  mapZoom: number | null;
   mapDimensions: MapDimensions;
   titleText: string;
   footerText: string;

@@ -107,7 +107,6 @@ function MapExportLayout({
   titleHeight = 0,
   legendPosition,
   legendScale,
-  initialViewState,
   bounds,
   mapStyle: mapStyleProp,
   invertedAdminBoundaryLimitPolygon,
@@ -262,11 +261,8 @@ function MapExportLayout({
     ? `calc(100% - ${logoHeight * 8}px)`
     : '100%';
 
-  // Calculate fallback initial view state from bounds if not provided
+  // Calculate fallback initial view state from bounds
   const effectiveInitialViewState = useMemo(() => {
-    if (initialViewState) {
-      return initialViewState;
-    }
     if (bounds) {
       return {
         longitude: (bounds.west + bounds.east) / 2,
@@ -275,7 +271,7 @@ function MapExportLayout({
       };
     }
     return { longitude: 0, latitude: 0, zoom: 2 };
-  }, [initialViewState, bounds]);
+  }, [bounds]);
 
   const handleMapLoad = (e: any) => {
     e.target.addControl(new maplibregl.ScaleControl({}), 'bottom-right');
@@ -305,8 +301,8 @@ function MapExportLayout({
     // Load SDF icons for point data layers
     ensureSDFIconsLoaded(mapRef.current?.getMap());
 
-    // Match preview viewport: use captured center+zoom when provided (/export?zoom=…).
-    // fitBounds alone ignores zoom and can match a prior export when only zoom changed.
+    // If bounds are provided, fit the map to those bounds.
+    // This ensures precise geographic extent matching (e.g., for exports).
     if (bounds && map) {
       if (initialViewState) {
         map.jumpTo({
@@ -325,6 +321,25 @@ function MapExportLayout({
           },
         );
       }
+    }
+
+    // Capture preview bounds/zoom (must run before print-preview early return below).
+    if (onBoundsChange && map) {
+      let lastBoundsStr: string | null = null;
+      let lastZoom: number | null = null;
+
+      map.on('idle', () => {
+        const mapBounds = map.getBounds();
+        const zoom = map.getZoom();
+        if (mapBounds) {
+          const boundsStr = `${mapBounds.getWest()},${mapBounds.getSouth()},${mapBounds.getEast()},${mapBounds.getNorth()}`;
+          if (boundsStr !== lastBoundsStr || zoom !== lastZoom) {
+            lastBoundsStr = boundsStr;
+            lastZoom = zoom;
+            onBoundsChange(mapBounds, zoom);
+          }
+        }
+      });
     }
 
     // Capture preview bounds/zoom (must run before print-preview early return below).
