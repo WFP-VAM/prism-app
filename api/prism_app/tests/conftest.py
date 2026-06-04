@@ -2,6 +2,17 @@
 
 import os
 
+# vcrpy 8.1.x subclasses aiohttp.streams.AsyncStreamReaderMixin, removed in aiohttp 3.14.
+# Google Floods tests use requests; this shim only unblocks VCR cassette setup.
+import aiohttp.streams as _aiohttp_streams
+
+if not hasattr(_aiohttp_streams, "AsyncStreamReaderMixin"):
+
+    class _AsyncStreamReaderMixin:  # noqa: N801
+        pass
+
+    _aiohttp_streams.AsyncStreamReaderMixin = _AsyncStreamReaderMixin
+
 # Allow Starlette admin and tests to import the app without full OIDC configuration.
 os.environ.setdefault("PRISM_ADMIN_AUTH_DISABLED", "true")
 # main imports kobo, which validates credentials at import time.
