@@ -13,7 +13,6 @@ import {
 
 export type UseMapExportTemplateInput = {
   mapBounds: LngLatBounds | null;
-  mapZoom: number | null;
   mapDimensions: MapDimensions;
   previewMapWidth: number | null;
   previewMapHeight: number | null;
@@ -33,7 +32,6 @@ export type UseMapExportTemplateInput = {
 function printTemplateFields(input: UseMapExportTemplateInput) {
   return {
     mapBounds: input.mapBounds,
-    mapZoom: input.mapZoom,
     mapDimensions: input.mapDimensions,
     titleText: input.titleText,
     footerText: input.footerText,

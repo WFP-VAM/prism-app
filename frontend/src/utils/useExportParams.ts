@@ -37,7 +37,6 @@ const exportParamsSchema = {
   date: defineParam('date', param.stringOrNull()),
 
   // Map bounds
-  zoom: defineParam('zoom', param.number(5)),
   bounds: defineParam(
     'bounds',
     param.custom<ExportMapBounds | null>(v => {
