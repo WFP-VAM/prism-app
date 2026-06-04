@@ -36,7 +36,14 @@ async function requestWhoami(): Promise<ScheduleWhoamiResult> {
       credentials: 'include',
     });
     if (!response.ok) {
-      return unauthenticated;
+      if (response.status === 401) {
+        return unauthenticated;
+      }
+      return {
+        isPrismAuthenticated: false,
+        canManageSchedules: false,
+        sessionStatus: 'network_error',
+      };
     }
     const data = (await response.json()) as { permissions?: string[] };
     const permissions = data.permissions ?? [];

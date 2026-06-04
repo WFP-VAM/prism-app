@@ -303,6 +303,9 @@ function PrintConfig() {
   const [scheduleSessionStatus, setScheduleSessionStatus] =
     useState<ScheduleWhoamiSessionStatus>('unauthorized');
 
+  const scheduleWhoamiBypassCache =
+    new URLSearchParams(location.search).get('schedule') === '1';
+
   // Local state for responsive input - syncs to parent with debounce
   const [localTitle, setLocalTitle] = useState(printConfig?.titleText ?? '');
   useEffect(() => {
@@ -320,8 +323,7 @@ function PrintConfig() {
     if (!printConfig?.open) {
       return;
     }
-    const bypassCache =
-      new URLSearchParams(location.search).get('schedule') === '1';
+    const bypassCache = scheduleWhoamiBypassCache;
     let cancelled = false;
     void fetchScheduleWhoamiSession({ bypassCache }).then(result => {
       if (!cancelled) {
@@ -333,7 +335,11 @@ function PrintConfig() {
     return () => {
       cancelled = true;
     };
-  }, [location.search, printConfig?.open, printConfig?.createScheduledMaps]);
+  }, [
+    scheduleWhoamiBypassCache,
+    printConfig?.open,
+    printConfig?.createScheduledMaps,
+  ]);
 
   // Appease TS by ensuring printConfig is defined
   if (!printConfig) {
