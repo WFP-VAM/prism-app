@@ -80,3 +80,38 @@ def test_claim_skips_non_queued(db_session: Session) -> None:
     db_session.commit()
 
     assert claim_next_queued_map_export_job(db_session) is None
+
+
+def test_claim_prefers_higher_priority(db_session: Session) -> None:
+    t0 = datetime.datetime(2025, 1, 1, tzinfo=datetime.UTC)
+    t1 = datetime.datetime(2025, 1, 2, tzinfo=datetime.UTC)
+    low = MapExportJob(
+        request_fingerprint="a",
+        request_payload_json={
+            "urls": ["http://localhost/?date=2025-01-01"],
+            "format": "pdf",
+        },
+        status="queued",
+        created_at=t0,
+        updated_at=t0,
+        priority=100,
+    )
+    high = MapExportJob(
+        request_fingerprint="b",
+        request_payload_json={
+            "urls": ["http://localhost/?date=2025-01-02"],
+            "format": "pdf",
+        },
+        status="queued",
+        created_at=t1,
+        updated_at=t1,
+        priority=200,
+    )
+    db_session.add(low)
+    db_session.add(high)
+    db_session.commit()
+
+    first_id = claim_next_queued_map_export_job(db_session)
+    assert first_id == high.id
+    second_id = claim_next_queued_map_export_job(db_session)
+    assert second_id == low.id

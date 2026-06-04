@@ -1,15 +1,25 @@
 import {
   Box,
   Button,
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
   FormControlLabel,
+  IconButton,
   makeStyles,
+  MenuItem,
+  Select,
   Switch,
   Typography,
 } from '@material-ui/core';
-import { Edit } from '@material-ui/icons';
+import { Close, Edit } from '@material-ui/icons';
 import { getImageUrl } from 'assets/images';
 import { useSafeTranslation } from 'i18n';
+import { type ReactNode, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import { appConfig } from '../../config';
 import {
@@ -19,15 +29,27 @@ import {
   DashboardElementType,
   DashboardMode,
 } from '../../config/types';
+import { findDashboardByPath } from '../../config/utils';
+import { setIsMapLayerActive } from '../../context/analysisResultStateSlice';
 import {
   dashboardColumnsSelector,
   dashboardConfigSelector,
   dashboardMapElementsSelector,
+  dashboardMapStateSelector,
   dashboardModeSelector,
+  dashboardsListSelector,
   dashboardSyncEnabledSelector,
+  removeElement,
+  selectedDashboardIndexSelector,
+  setElementType,
+  setMapUseLatestDate,
   setTitle,
+  swapMapPosition,
   toggleMapSync,
+  updateBlockConfig,
 } from '../../context/dashboardStateSlice';
+import { addNotification } from '../../context/notificationStateSlice';
+import { generateSlugFromTitle } from '../../utils/string-utils';
 import ChartBlock from './ChartBlock';
 import { CHART_HEIGHTS } from './chartConstants';
 import MapBlock from './MapBlock';
@@ -58,7 +80,6 @@ interface DashboardContentProps {
   className?: string;
   logoConfig?: LogoConfig;
   exportConfig?: ExportConfig;
-  isEditable?: boolean;
   onEditClick?: () => void;
 }
 
@@ -71,36 +92,242 @@ function DashboardContent({
   className,
   logoConfig,
   exportConfig,
-  isEditable,
   onEditClick,
 }: DashboardContentProps) {
   const classes = useStyles();
+  const { t } = useSafeTranslation();
   const dashboardConfig = useSelector(dashboardConfigSelector);
   const { title: dashboardTitle } = dashboardConfig;
+  const dashboards = useSelector(dashboardsListSelector);
+  const selectedIndex = useSelector(selectedDashboardIndexSelector);
+  const columns = useSelector(dashboardColumnsSelector);
+  const mapElements = useSelector(dashboardMapElementsSelector);
+  const mode = useSelector(dashboardModeSelector);
+  const history = useHistory();
+
+  const [localTitle, setLocalTitle] = useState(dashboardTitle);
+
+  useEffect(() => {
+    setLocalTitle(dashboardTitle);
+  }, [dashboardTitle]);
+
+  const handleTitleBlur = () => {
+    if (localTitle === dashboardTitle) {
+      return;
+    }
+    const newSlug = generateSlugFromTitle(localTitle);
+    const existing = findDashboardByPath(newSlug, dashboards);
+    if (existing && existing.index !== selectedIndex) {
+      dispatch(
+        addNotification({
+          type: 'error',
+          message: t('A dashboard with this name already exists'),
+        }),
+      );
+      setLocalTitle(dashboardTitle);
+      return;
+    }
+    dispatch(setTitle(localTitle));
+    history.replace(`/dashboard/${newSlug}`);
+  };
 
   const { logo } = appConfig.header || {};
   const logoHeightMultiplier = 32;
   const logoHeight = logoConfig ? logoHeightMultiplier * logoConfig.scale : 0;
-  const columns = useSelector(dashboardColumnsSelector);
-  const mapElements = useSelector(dashboardMapElementsSelector);
-  const mode = useSelector(dashboardModeSelector);
-  const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const syncEnabled = useSelector(dashboardSyncEnabledSelector);
 
+  const handleTableShowOnMapChange = (
+    columnIndex: number,
+    elementIndex: number,
+    checked: boolean,
+  ) => {
+    dispatch(setIsMapLayerActive(checked));
+    dispatch(
+      updateBlockConfig({
+        columnIndex,
+        elementIndex,
+        updates: { addResultToMap: checked },
+      }),
+    );
+  };
+
+  type PendingAction =
+    | {
+        kind: 'changeType';
+        columnIndex: number;
+        elementIndex: number;
+        newType: DashboardElementType;
+      }
+    | {
+        kind: 'remove';
+        columnIndex: number;
+        elementIndex: number;
+      };
+
+  const [pendingAction, setPendingAction] = useState<PendingAction | null>(
+    null,
+  );
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const stagePendingAction = (action: PendingAction) => {
+    setPendingAction(action);
+    setDialogOpen(true);
+  };
+
+  const cancelPendingAction = () => {
+    setDialogOpen(false);
+  };
+
+  const confirmPendingAction = () => {
+    if (!pendingAction) {
+      return;
+    }
+    if (pendingAction.kind === 'changeType') {
+      dispatch(
+        setElementType({
+          columnIndex: pendingAction.columnIndex,
+          elementIndex: pendingAction.elementIndex,
+          newType: pendingAction.newType,
+        }),
+      );
+    } else if (pendingAction.kind === 'remove') {
+      dispatch(
+        removeElement({
+          columnIndex: pendingAction.columnIndex,
+          elementIndex: pendingAction.elementIndex,
+        }),
+      );
+    }
+    setDialogOpen(false);
+  };
+
+  const handleBlockUseLatestChange = (
+    columnIndex: number,
+    elementIndex: number,
+    elementType: DashboardElementType,
+    checked: boolean,
+  ) => {
+    if (
+      elementType !== DashboardElementType.CHART &&
+      elementType !== DashboardElementType.TABLE
+    ) {
+      return;
+    }
+
+    dispatch(
+      updateBlockConfig({
+        columnIndex,
+        elementIndex,
+        updates: {
+          useLatestAvailableDate: checked,
+          ...(checked
+            ? elementType === DashboardElementType.CHART
+              ? { startDate: undefined, endDate: undefined }
+              : { startDate: undefined }
+            : {}),
+        },
+      }),
+    );
+  };
+
   // Column Height Management - extracted to custom hook
-  const { componentHeights, columnRefs, componentRefs, recalculationCount } =
+  const { componentHeights, columnRefs, componentRefs } =
     useColumnHeightManagement({
       mode,
       exportConfig,
       columns,
     });
 
+  const BLOCK_TYPE_OPTIONS = [
+    { value: DashboardElementType.TEXT, label: t('Text') },
+    { value: DashboardElementType.CHART, label: t('Chart') },
+    { value: DashboardElementType.TABLE, label: t('Table') },
+  ];
+
+  const renderBlockTypeSelector = (
+    currentType: DashboardElementType,
+    columnIndex: number,
+    elementIndex: number,
+    useLatestAvailableDate = false,
+    extraContent?: ReactNode,
+  ) => {
+    const supportsUseLatest =
+      currentType === DashboardElementType.CHART ||
+      currentType === DashboardElementType.TABLE;
+
+    return (
+      <Box className={classes.blockTypeRow}>
+        <Typography variant="h3" className={classes.blockLabel}>
+          {t(`Block #${elementIndex + 1}`)}
+        </Typography>
+        <Select
+          value={currentType}
+          onChange={e => {
+            const newType = e.target.value as DashboardElementType;
+            if (newType !== currentType) {
+              stagePendingAction({
+                kind: 'changeType',
+                columnIndex,
+                elementIndex,
+                newType,
+              });
+            }
+          }}
+          className={classes.blockTypeSelect}
+          disableUnderline
+          variant="outlined"
+        >
+          {BLOCK_TYPE_OPTIONS.map(opt => (
+            <MenuItem key={opt.value} value={opt.value}>
+              {opt.label}
+            </MenuItem>
+          ))}
+        </Select>
+        {supportsUseLatest && (
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={useLatestAvailableDate}
+                onChange={(_event, checked) =>
+                  handleBlockUseLatestChange(
+                    columnIndex,
+                    elementIndex,
+                    currentType,
+                    checked,
+                  )
+                }
+                color="primary"
+              />
+            }
+            label={t('Use latest available data')}
+            className={classes.useLatestCheckbox}
+          />
+        )}
+        <Box className={classes.blockTypeRowActions}>
+          {extraContent}
+          <IconButton
+            size="small"
+            onClick={() =>
+              stagePendingAction({ kind: 'remove', columnIndex, elementIndex })
+            }
+            className={classes.removeBlockButton}
+          >
+            <Close fontSize="small" />
+          </IconButton>
+        </Box>
+      </Box>
+    );
+  };
+
   const renderElement = (
     element: DashboardElements,
     columnIndex: number,
     elementIndex: number,
   ) => {
+    if (!element) {
+      return null;
+    }
     const elementId = `${columnIndex}-${elementIndex}`;
     const heightConfig = componentHeights.get(elementId);
 
@@ -116,6 +343,9 @@ function DashboardContent({
         display: 'flex',
         flexDirection: 'column' as const,
         overflow: heightConfig.overflow,
+        ...(heightConfig.overflow === 'scroll'
+          ? { overflowX: 'hidden' as const, scrollbarGutter: 'stable' as const }
+          : {}),
       };
     };
 
@@ -132,7 +362,7 @@ function DashboardContent({
       case DashboardElementType.MAP:
         return (
           <Box
-            key={`map-${elementId}`}
+            key={`map-${selectedIndex}-${elementId}`}
             className={
               mode === DashboardMode.VIEW
                 ? classes.previewContainer
@@ -145,19 +375,13 @@ function DashboardContent({
               minHeight: 0,
             }}
           >
-            {mode === 'edit' && (
-              <div className={classes.mapHeaderContainer}>
-                <Typography
-                  variant="h3"
-                  component="h3"
-                  className={classes.blockLabel}
-                >
-                  {mapElements.length > 1
-                    ? `Map ${elementIndex + 1}`
-                    : 'Map block'}{' '}
-                  — {t('Choose map layers')}
-                </Typography>
-              </div>
+            {mode === DashboardMode.EDIT && (
+              <MapEditHeader
+                elementId={elementId}
+                mapIndex={elementIndex}
+                mapCount={mapElements.length}
+                onSwapMapPosition={() => dispatch(swapMapPosition())}
+              />
             )}
             <div style={{ height: '100%', flex: 1, minHeight: 0 }}>
               <MapBlock elementId={elementId} exportConfig={exportConfig} />
@@ -167,7 +391,7 @@ function DashboardContent({
       case DashboardElementType.TEXT:
         return (
           <div
-            key={`text-${elementId}`}
+            key={`text-${selectedIndex}-${elementId}`}
             ref={handleRef}
             style={getWrapperStyle()}
           >
@@ -175,13 +399,22 @@ function DashboardContent({
               content={element.content || ''}
               columnIndex={columnIndex}
               elementIndex={elementIndex}
+              headerSlot={
+                mode === DashboardMode.EDIT
+                  ? renderBlockTypeSelector(
+                      element.type,
+                      columnIndex,
+                      elementIndex,
+                    )
+                  : undefined
+              }
             />
           </div>
         );
       case DashboardElementType.TABLE:
         return (
           <div
-            key={`table-${elementId}`}
+            key={`table-${selectedIndex}-${elementId}`}
             ref={handleRef}
             style={getWrapperStyle()}
           >
@@ -195,10 +428,38 @@ function DashboardContent({
               threshold={element.threshold}
               stat={element.stat}
               maxRows={element.maxRows}
+              useLatestAvailableDate={element.useLatestAvailableDate}
               allowDownload={!exportConfig}
               addResultToMap={element.addResultToMap}
               sortColumn={element.sortColumn}
               sortOrder={element.sortOrder}
+              headerSlot={
+                mode === DashboardMode.EDIT
+                  ? renderBlockTypeSelector(
+                      element.type,
+                      columnIndex,
+                      elementIndex,
+                      element.useLatestAvailableDate ?? false,
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={element.addResultToMap !== false}
+                            onChange={(_event, checked) =>
+                              handleTableShowOnMapChange(
+                                columnIndex,
+                                elementIndex,
+                                checked,
+                              )
+                            }
+                            color="primary"
+                            size="small"
+                          />
+                        }
+                        label={t('Show on map')}
+                      />,
+                    )
+                  : undefined
+              }
             />
           </div>
         );
@@ -209,22 +470,35 @@ function DashboardContent({
 
         return (
           <div
-            key={`chart-${elementId}`}
+            key={`chart-${selectedIndex}-${elementId}`}
             ref={handleRef}
             style={getWrapperStyle()}
             data-intended-height={intendedHeight}
           >
             <ChartBlock
               index={elementIndex}
+              columnIndex={columnIndex}
+              elementIndex={elementIndex}
               startDate={element.startDate}
               endDate={element.endDate}
               layerId={element.layerId}
               adminUnitLevel={element.adminUnitLevel}
               adminUnitId={element.adminUnitId}
               chartHeight={element.chartHeight}
+              useLatestAvailableDate={element.useLatestAvailableDate}
+              latestPeriod={element.latestPeriod}
               allowDownload={!exportConfig}
-              isOverflowing={heightConfig?.overflow === 'auto'}
-              recalculationCount={recalculationCount}
+              isOverflowing={heightConfig?.overflow === 'scroll'}
+              headerSlot={
+                mode === DashboardMode.EDIT
+                  ? renderBlockTypeSelector(
+                      element.type,
+                      columnIndex,
+                      elementIndex,
+                      element.useLatestAvailableDate ?? false,
+                    )
+                  : undefined
+              }
             />
           </div>
         );
@@ -235,143 +509,176 @@ function DashboardContent({
   };
 
   return (
-    <Box className={classes.root}>
-      <Box
-        className={className || classes.layout}
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        {showTitle && (
-          <Box
-            className={
-              mode === DashboardMode.EDIT
-                ? classes.titleSectionEdit
-                : classes.titleSection
-            }
-          >
-            {mode !== DashboardMode.EDIT ? (
-              <>
-                {logoConfig?.visible && getImageUrl(logo) && (
-                  <img
-                    className={classes.logo}
-                    style={{
-                      height: logoHeight,
-                    }}
-                    src={getImageUrl(logo)}
-                    alt="logo"
-                  />
-                )}
-                <Typography
-                  variant="h2"
-                  component="h1"
-                  className={classes.title}
-                >
-                  {t(dashboardTitle || 'Untitled Dashboard')}
-                </Typography>
-                {mode === DashboardMode.VIEW && (
-                  <Box className={classes.titleActions}>
-                    {isEditable && onEditClick && (
-                      <Button
-                        color="primary"
-                        variant="outlined"
-                        disableElevation
-                        startIcon={<Edit />}
-                        onClick={onEditClick}
-                        size="medium"
-                      >
-                        {t('Edit')}
-                      </Button>
-                    )}
-                  </Box>
-                )}
-              </>
-            ) : (
-              <Box className={classes.grayCard}>
-                <label className={classes.titleBarLabel}>
+    <>
+      <Box className={classes.root}>
+        <Box
+          className={className || classes.layout}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          {showTitle && (
+            <Box
+              className={
+                mode === DashboardMode.EDIT
+                  ? classes.titleSectionEdit
+                  : classes.titleSection
+              }
+            >
+              {mode !== DashboardMode.EDIT ? (
+                <>
+                  {logoConfig?.visible && getImageUrl(logo) && (
+                    <img
+                      className={classes.logo}
+                      style={{
+                        height: logoHeight,
+                      }}
+                      src={getImageUrl(logo)}
+                      alt="logo"
+                    />
+                  )}
                   <Typography
                     variant="h2"
-                    component="span"
-                    className={classes.titleBarTypography}
+                    component="h1"
+                    className={classes.title}
                   >
-                    {t('Dashboard title')}
+                    {t(dashboardTitle || 'Untitled Dashboard')}
                   </Typography>
-                  <input
-                    type="text"
-                    className={classes.titleBarInput}
-                    placeholder={t('Enter dashboard title')}
-                    value={dashboardTitle}
-                    onChange={e => dispatch(setTitle(e.target.value))}
-                    name="dashboard-title"
-                  />
-                </label>
-              </Box>
-            )}
-            {mode === DashboardMode.EDIT && mapElements.length > 1 && (
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={syncEnabled}
-                    onChange={() => dispatch(toggleMapSync())}
-                    color="primary"
-                    size="medium"
-                  />
-                }
-                label={t('Sync maps')}
-                className={classes.syncToggle}
-              />
-            )}
-          </Box>
-        )}
-        {columns.length > 0 && (
-          <Box
-            className={
-              mode !== DashboardMode.EDIT
-                ? classes.dynamicColumnPreviewLayout
-                : classes.dynamicColumnLayout
-            }
-          >
-            {columns.map((column, columnIndex) => {
-              const hasMapElements = column.some(
-                el => el.type === DashboardElementType.MAP,
-              );
-              const columnClass = hasMapElements
-                ? classes.mapColumn
-                : classes.contentColumn;
-
-              return (
-                <Box
-                  key={`column-${columnIndex}`}
-                  className={columnClass}
-                  component="div"
-                >
-                  <div
-                    ref={(el: HTMLDivElement | null) => {
-                      if (el) {
-                        columnRefs.current.set(columnIndex, el);
-                      } else {
-                        columnRefs.current.delete(columnIndex);
-                      }
-                    }}
-                    style={{
-                      height: '100%',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: 16,
-                    }}
-                  >
-                    {column.map((element, elementIndex) =>
-                      renderElement(element, columnIndex, elementIndex),
-                    )}
-                  </div>
+                  {mode === DashboardMode.VIEW && (
+                    <Box className={classes.titleActions}>
+                      {onEditClick && (
+                        <Button
+                          color="primary"
+                          variant="outlined"
+                          disableElevation
+                          startIcon={<Edit />}
+                          onClick={onEditClick}
+                          size="medium"
+                        >
+                          {t('Edit')}
+                        </Button>
+                      )}
+                    </Box>
+                  )}
+                </>
+              ) : (
+                <Box className={classes.grayCard}>
+                  <label className={classes.titleBarLabel}>
+                    <Typography
+                      variant="h2"
+                      component="span"
+                      className={classes.titleBarTypography}
+                    >
+                      {t('Dashboard title')}
+                    </Typography>
+                    <input
+                      type="text"
+                      className={classes.titleBarInput}
+                      placeholder={t('Enter dashboard title')}
+                      value={localTitle}
+                      onChange={e => setLocalTitle(e.target.value)}
+                      onBlur={handleTitleBlur}
+                      name="dashboard-title"
+                    />
+                  </label>
                 </Box>
-              );
-            })}
-          </Box>
-        )}
+              )}
+              {mode === DashboardMode.EDIT && mapElements.length > 1 && (
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={syncEnabled}
+                      onChange={() => dispatch(toggleMapSync())}
+                      color="primary"
+                      size="medium"
+                    />
+                  }
+                  label={t('Sync maps')}
+                  className={classes.syncToggle}
+                />
+              )}
+            </Box>
+          )}
+          {columns.some(c => c.length > 0) && (
+            <Box
+              className={
+                mode !== DashboardMode.EDIT
+                  ? classes.dynamicColumnPreviewLayout
+                  : classes.dynamicColumnLayout
+              }
+            >
+              {columns.map((column, columnIndex) => {
+                if (column.length === 0) {
+                  return null;
+                }
+                const hasMapElements = column.some(
+                  el => el.type === DashboardElementType.MAP,
+                );
+                const columnClass = hasMapElements
+                  ? classes.mapColumn
+                  : classes.contentColumn;
+
+                return (
+                  <Box
+                    key={`column-${columnIndex}`}
+                    className={columnClass}
+                    component="div"
+                  >
+                    <div
+                      ref={(el: HTMLDivElement | null) => {
+                        if (el) {
+                          columnRefs.current.set(columnIndex, el);
+                        } else {
+                          columnRefs.current.delete(columnIndex);
+                        }
+                      }}
+                      style={{
+                        height: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 16,
+                      }}
+                    >
+                      {column.map((element, elementIndex) =>
+                        renderElement(element, columnIndex, elementIndex),
+                      )}
+                    </div>
+                  </Box>
+                );
+              })}
+            </Box>
+          )}
+        </Box>
       </Box>
-    </Box>
+      <Dialog
+        open={dialogOpen}
+        onClose={cancelPendingAction}
+        TransitionProps={{ onExited: () => setPendingAction(null) }}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogContent>
+          <DialogContentText>
+            {t('Are you sure? This action cannot be undone.')}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={cancelPendingAction} color="primary">
+            {t('Cancel')}
+          </Button>
+          <Button
+            onClick={confirmPendingAction}
+            color="secondary"
+            variant="contained"
+          >
+            {pendingAction?.kind === 'remove'
+              ? t('Remove block')
+              : t('Change block type')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 }
 
@@ -387,6 +694,54 @@ const useStyles = makeStyles(() => ({
     fontWeight: 600,
     fontSize: 16,
     marginBottom: 12,
+  },
+  blockTypeRow: {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: 12,
+    gap: 8,
+    '& $blockLabel': {
+      marginBottom: 0,
+    },
+  },
+  useLatestCheckbox: {
+    margin: 0,
+    flexShrink: 0,
+    whiteSpace: 'nowrap',
+  },
+  blockTypeRowActions: {
+    display: 'flex',
+    alignItems: 'center',
+    marginLeft: 'auto',
+    gap: 8,
+  },
+  removeBlockButton: {
+    color: '#757575',
+    '&:hover': {
+      color: '#212121',
+    },
+  },
+  mapHeaderActions: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    flexShrink: 0,
+    marginLeft: 'auto',
+  },
+  mapHeaderUseLatestCheckbox: {
+    margin: 0,
+    whiteSpace: 'nowrap',
+  },
+  blockTypeSelect: {
+    fontSize: 14,
+    fontWeight: 500,
+    background: 'white',
+    borderRadius: 4,
+    padding: '2px 8px',
+    '& .MuiSelect-root': {
+      paddingTop: 4,
+      paddingBottom: 4,
+    },
   },
   contentColumn: {
     flex: 1, // Smaller for columns without maps
@@ -427,10 +782,21 @@ const useStyles = makeStyles(() => ({
     padding: 12,
     flex: 1,
   },
+  mapHeaderTitle: {
+    marginBottom: 0,
+    flex: '1 1 auto',
+    minWidth: 0,
+  },
+  mapBlockSwapButton: {
+    textTransform: 'none',
+    fontWeight: 500,
+    flexShrink: 0,
+  },
   mapHeaderContainer: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+    gap: 8,
     marginBottom: 12,
   },
   titleSection: {
@@ -565,5 +931,62 @@ const useStyles = makeStyles(() => ({
     fontFamily: 'Roboto',
   },
 }));
+
+interface MapEditHeaderProps {
+  elementId: string;
+  mapIndex: number;
+  mapCount: number;
+  onSwapMapPosition: () => void;
+}
+
+function MapEditHeader({
+  elementId,
+  mapIndex,
+  mapCount,
+  onSwapMapPosition,
+}: MapEditHeaderProps) {
+  const classes = useStyles();
+  const { t } = useSafeTranslation();
+  const dispatch = useDispatch();
+  const mapState = useSelector(dashboardMapStateSelector(elementId));
+  const useLatestAvailableDate = mapState?.useLatestAvailableDate ?? false;
+
+  return (
+    <div className={classes.mapHeaderContainer}>
+      <Typography
+        variant="h3"
+        component="h3"
+        className={`${classes.blockLabel} ${classes.mapHeaderTitle}`}
+      >
+        {mapCount > 1 ? t(`Map ${mapIndex + 1}`) : t('Map block')} —{' '}
+        {t('Choose map layers')}
+      </Typography>
+      <Box className={classes.mapHeaderActions}>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={useLatestAvailableDate}
+              onChange={(_event, checked) =>
+                dispatch(setMapUseLatestDate({ elementId, value: checked }))
+              }
+              color="primary"
+            />
+          }
+          label={t('Use latest available data')}
+          className={classes.mapHeaderUseLatestCheckbox}
+        />
+        <Button
+          variant="outlined"
+          color="primary"
+          size="small"
+          onClick={onSwapMapPosition}
+          className={classes.mapBlockSwapButton}
+        >
+          {t('Swap map position')}
+        </Button>
+      </Box>
+    </div>
+  );
+}
 
 export default DashboardContent;

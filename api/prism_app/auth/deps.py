@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Annotated, Literal
+from typing import Annotated
 from uuid import UUID
 
 from fastapi import Depends, HTTPException, Request, status
@@ -56,16 +56,12 @@ def delete_prism_cookie_matching_issue(
     settings: AdminAuthSettings,
     key: str,
 ) -> None:
-    ss_raw = settings.session_cookie_samesite.lower()
-    ss: Literal["lax", "strict", "none"] = (
-        ss_raw if ss_raw in ("lax", "strict", "none") else "lax"
-    )
     response.delete_cookie(
         key,
         path="/",
         secure=settings.session_cookie_secure,
         httponly=True,
-        samesite=ss,
+        samesite=settings.session_cookie_samesite,  # type: ignore[arg-type]
     )
 
 
@@ -135,6 +131,23 @@ def require_permissions(*required: str):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail=f"Missing permissions: {sorted(missing)}",
+            )
+        return user, codes
+
+    return _dep
+
+
+def require_any_permission(*allowed: str):
+    """Dependency factory: at least one listed permission code must be present."""
+
+    def _dep(
+        session: Annotated[tuple[User, set[str]], Depends(require_prism_session)],
+    ) -> tuple[User, set[str]]:
+        user, codes = session
+        if not set(allowed) & codes:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Missing one of permissions: {sorted(allowed)}",
             )
         return user, codes
 
