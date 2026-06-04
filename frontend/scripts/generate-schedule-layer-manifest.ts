@@ -33,12 +33,14 @@ const MANIFEST_PATH = path.join(
   '../../api/prism_app/data/schedule_layer_manifest.json',
 );
 
-/** All WMS hazard layers for a country (batch print may use server dates when config has none). */
+/** WMS layers eligible for batch print when server dates are not loaded yet. */
 function isScheduleEligibleLayer(layer: LayerConfig): boolean {
-  return layer.type === 'wms';
+  return (
+    layer.type === 'wms' && Boolean(layer.coverageWindow || layer.validity)
+  );
 }
 
-/** Merge shared + country layers; country keys win (see ``getRawLayers`` / backend catalog). */
+/** Same merge as ``getRawLayers`` (country → shared → country; country wins). */
 function mergedCountryLayers(country: string): Record<string, LayerConfig> {
   const countryPath = path.join(CONFIG_ROOT, country, 'layers.json');
   const sharedPath = path.join(CONFIG_ROOT, 'shared', 'layers.json');
@@ -51,12 +53,10 @@ function mergedCountryLayers(country: string): Record<string, LayerConfig> {
         LayerConfig
       >)
     : {};
-  const merged = { ...sharedLayers, ...countryLayers };
-  return Object.fromEntries(
-    Object.keys(countryLayers)
-      .filter(layerId => layerId in merged)
-      .map(layerId => [layerId, merged[layerId]]),
-  );
+  return merge({}, countryLayers, sharedLayers, countryLayers) as Record<
+    string,
+    LayerConfig
+  >;
 }
 
 function scheduleLayersForCountry(country: string): ManifestLayer[] {
