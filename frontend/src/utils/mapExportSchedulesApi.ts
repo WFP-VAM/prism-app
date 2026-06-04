@@ -8,7 +8,6 @@ export type MapExportScheduleCadenceApi =
 
 export type ScheduleExportQueryParams = {
   bounds: string;
-  zoom?: string;
   mapWidth?: number;
   mapHeight?: number;
   aspectRatio?: string;
