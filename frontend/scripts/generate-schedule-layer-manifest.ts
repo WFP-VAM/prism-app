@@ -59,6 +59,7 @@ function mergedCountryLayers(country: string): Record<string, LayerConfig> {
   >;
 }
 
+/** Preserve ``getRawLayers`` / ``LayerDefinitions`` key order (matching frontend). */
 function scheduleLayersForCountry(country: string): ManifestLayer[] {
   return Object.entries(mergedCountryLayers(country))
     .filter(([, layer]) => isScheduleEligibleLayer(layer))
@@ -68,8 +69,7 @@ function scheduleLayersForCountry(country: string): ManifestLayer[] {
       ...(layer.server_layer_name
         ? { server_layer_name: layer.server_layer_name }
         : {}),
-    }))
-    .sort((a, b) => a.id.localeCompare(b.id));
+    }));
 }
 
 const countryDirs = fs
