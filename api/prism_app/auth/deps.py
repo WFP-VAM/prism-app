@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Annotated, Literal
+from typing import Annotated
 from uuid import UUID
 
 from fastapi import Depends, HTTPException, Request, status
@@ -56,16 +56,12 @@ def delete_prism_cookie_matching_issue(
     settings: AdminAuthSettings,
     key: str,
 ) -> None:
-    ss_raw = settings.session_cookie_samesite.lower()
-    ss: Literal["lax", "strict", "none"] = (
-        ss_raw if ss_raw in ("lax", "strict", "none") else "lax"
-    )
     response.delete_cookie(
         key,
         path="/",
         secure=settings.session_cookie_secure,
         httponly=True,
-        samesite=ss,
+        samesite=settings.session_cookie_samesite,  # type: ignore[arg-type]
     )
 
 

@@ -103,7 +103,7 @@ def test_process_active_schedules_enqueues_latest_date_and_updates_state() -> No
         schedule_id = schedule.id
 
     days_map = {
-        "precip_blended_dekad": [
+        "rfb_blended_moz_dekad": [
             _utc_noon_ms(2026, 3, 21),
             _utc_noon_ms(2026, 4, 21),
         ],
@@ -155,7 +155,7 @@ def test_process_active_schedules_skips_stopped() -> None:
         session.add(schedule)
         session.commit()
 
-    days_map = {"precip_blended_dekad": [_utc_noon_ms(2026, 4, 21)]}
+    days_map = {"rfb_blended_moz_dekad": [_utc_noon_ms(2026, 4, 21)]}
     enqueued, _skipped = process_active_schedules(
         SessionLocal,
         days_map=days_map,
@@ -194,7 +194,7 @@ def test_process_active_schedules_skips_date_already_enqueued() -> None:
         schedule_id = schedule.id
 
     days_map = {
-        "precip_blended_dekad": [
+        "rfb_blended_moz_dekad": [
             _utc_noon_ms(2026, 3, 21),
             _utc_noon_ms(2026, 4, 21),
         ],
