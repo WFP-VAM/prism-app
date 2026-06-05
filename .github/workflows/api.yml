@@ -21,7 +21,7 @@ jobs:
       - name: Ensure cron scripts are executable
         run: |
           cd api
-          for f in crons/cron_*.sh; do
+          for f in crons/cron_*.sh crons/_compose_run.sh; do
             if [ ! -x "$f" ]; then
               echo "$f is not executable (missing chmod +x)"
               exit 1

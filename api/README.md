@@ -160,11 +160,11 @@ SKIP_GDAL_MASK_STATS_TEST=1 PYTHONPATH=. poetry run pytest \
 
 **Manual — Starlette Admin (read-only):** With the API up on the alerts database, open **`/admin`**, then list routes **`/admin/alert-model/list`**, **`/admin/kobo-user/list`**, **`/admin/anticipatory-action-alerts/list`**. Confirm list and detail views; create/edit/delete remain off until auth is added.
 
-**Manual — alert workers:** From `api/` run **`PYTHONPATH=. poetry run python -m prism_app.workers.alert_runner threshold`** (and `aa-storm` / `aa-flood` subcommands) against a seeded dev database.
+**Manual — alert workers:** From `api/` run **`docker compose run --rm export_map_worker python -m prism_app.workers.alert_runner threshold`** (and `aa-storm` / `aa-flood`) against a seeded dev database. For local iteration without Docker: **`PYTHONPATH=. poetry run python -m prism_app.workers.alert_runner …`**.
 
 **Local alerts database:** `docker compose up alerting-db` starts PostGIS on host port **54321** (see `PRISM_ALERTS_DATABASE_URL` in `.env.example`).
 
-**Server crons:** Shell scripts under [`crons/`](./crons/) invoke the worker module via Poetry; edit production paths with `crontab -e`:
+**Server crons:** Scripts under [`crons/`](./crons/) run one-shot commands in **`export_map_worker`** (same image as scheduled public maps):
 
 ```
 0 * * * *  ~/prism-app/api/crons/cron_aa_storm_alert_run.sh
@@ -172,11 +172,13 @@ SKIP_GDAL_MASK_STATS_TEST=1 PYTHONPATH=. poetry run pytest \
 0 1 * * *  ~/prism-app/api/crons/cron_alert_run.sh
 ```
 
-AA test recipients (Python argparse):
+AA emails use Playwright against **`prism_url`** on each alert row (typically a public frontend `/export` URL reachable from the container).
+
+AA test recipients:
 
 ```bash
-PYTHONPATH=. poetry run python -m prism_app.workers.alert_runner aa-storm --test-email='a@x.com,b@y.com'
-PYTHONPATH=. poetry run python -m prism_app.workers.alert_runner aa-flood --test-email='a@x.com'
+docker compose run --rm export_map_worker python -m prism_app.workers.alert_runner aa-storm --test-email='a@x.com,b@y.com'
+docker compose run --rm export_map_worker python -m prism_app.workers.alert_runner aa-flood --test-email='a@x.com'
 ```
 
 #### Debugging playwright tests

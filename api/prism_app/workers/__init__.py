@@ -1,1 +1,1 @@
-"""Background workers: map export queue consumer, scheduled public maps cron."""
+"""Background workers: map export queue, scheduled public maps cron, alert crons."""

@@ -1,4 +1,4 @@
-"""CLI entrypoints for threshold + AA alert workers (replaces Node ``alerting`` crons)."""
+"""CLI for threshold + AA alert workers (see api/crons/cron_*_alert_run.sh)."""
 
 from __future__ import annotations
 
