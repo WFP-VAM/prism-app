@@ -82,108 +82,222 @@
     }
   },
   "rain_anomaly_dekad": {
-    "title": "10-day rainfall anomaly",
-    "type": "wms",
-    "server_layer_name": "rfq_dekad",
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
-    },
-    "opacity": 0.7,
-    "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
-    "legend": "rfq_14_20_400",
-    "additional_query_params": {
-      "styles": "rfq_14_20_400"
+    "chart_data": {
+      "fields": [
+        {
+          "key": "rfq",
+          "label": "Rainfall anomaly",
+          "color": "#375692",
+          "minValue": 0,
+          "maxValue": 300
+        },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "pointRadius": 0,
+          "fallback": 100,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "line"
     }
   },
   "rainfall_agg_1month": {
-    "title": "1-month rainfall aggregate",
-    "type": "wms",
-    "server_layer_name": "r1h_dekad",
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
-    },
-    "coverage_window": {
-      "backward": 2,
-      "forward": 1,
-      "mode": "dekad"
-    },
-    "opacity": 0.7,
-    "legend_text": "Estimate of precipitation over a 1-month period derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
-    "legend": "rfh_16_0_400",
-    "additional_query_params": {
-      "styles": "rfh_16_0_400"
+    "chart_data": {
+      "fields": [
+        {
+          "key": "r1h",
+          "label": "Rainfall",
+          "color": "#233f5f"
+        },
+        {
+          "key": "r1h_avg",
+          "label": "Average",
+          "color": "#bdf2e6"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "bar"
     }
   },
   "rain_anomaly_1month": {
-    "title": "Monthly rainfall anomaly",
-    "type": "wms",
-    "server_layer_name": "r1q_dekad",
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
-    },
-    "coverage_window": {
-      "backward": 2,
-      "forward": 1,
-      "mode": "dekad"
-    },
-    "opacity": 0.7,
-    "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
-    "legend": "rfq_14_20_400",
-    "additional_query_params": {
-      "styles": "rfq_14_20_400"
+    "chart_data": {
+      "fields": [
+        {
+          "key": "r1q",
+          "label": "Rainfall anomaly",
+          "minValue": 0,
+          "maxValue": 300,
+          "color": "#375692"
+        },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "pointRadius": 0,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "line"
     }
   },
   "rainfall_agg_3month": {
-    "title": "3-month rainfall aggregate (mm)",
-    "type": "wms",
-    "server_layer_name": "r3h_dekad",
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
-    },
-    "coverage_window": {
-      "forward": 1,
-      "backward": 8,
-      "mode": "dekad"
-    },
-    "opacity": 0.7,
-    "legend_text": "Estimate of precipitation over a 3-month period derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
-    "legend": "rfh_16_0_800",
-    "additional_query_params": {
-      "styles": "rfh_16_0_800"
+    "chart_data": {
+      "fields": [
+        {
+          "key": "r3h",
+          "label": "Rainfall",
+          "color": "#233f5f"
+        },
+        {
+          "key": "r3h_avg",
+          "label": "Average",
+          "color": "#bdf2e6"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "PROVNAMEFU"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "DIST_NAME_"
+        }
+      ],
+      "type": "bar"
     }
   },
   "rain_anomaly_3month": {
-    "title": "3-month rainfall anomaly",
-    "type": "wms",
-    "server_layer_name": "r3q_dekad",
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
-    },
-    "coverage_window": {
-      "forward": 1,
-      "backward": 8,
-      "mode": "dekad"
-    },
-    "opacity": 0.7,
-    "legend_text": "3-month precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
-    "legend": "rfq_14_20_400",
-    "additional_query_params": {
-      "styles": "rfq_14_20_400"
+    "chart_data": {
+      "fields": [
+        {
+          "key": "r3q",
+          "label": "Rainfall anomaly",
+          "minValue": 0,
+          "maxValue": 300,
+          "color": "#375692"
+        },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "pointRadius": 0,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "line"
+    }
+  },
+    "ndvi_dekad": {
+    "chart_data": {
+      "fields": [
+        {
+          "key": "vim",
+          "label": "NDVI",
+          "color": "#4eac5b"
+        },
+        {
+          "key": "vim_avg",
+          "label": "Average",
+          "color": "#99ff99"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "line"
+    }
+  },
+    "ndvi_dekad_anomaly": {
+    "chart_data": {
+      "fields": [
+        {
+          "key": "viq",
+          "label": "NDVI anomaly",
+          "minValue": 0,
+          "maxValue": 150,
+          "color": "#5e803f"
+        },
+        {
+          "key": "viq_avg",
+          "label": "Normal",
+          "color": "#eb3223",
+          "pointRadius": 0,
+          "fallback": 100
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "line"
     }
   }
 }
