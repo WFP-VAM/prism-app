@@ -34,10 +34,9 @@ from pathlib import Path
 
 import httpx
 import pytest
-
 from prism_app.alert_workers import smtp_mailer
+from prism_app.alert_workers.aa_flood import _format_date  # noqa: PLC2701
 from prism_app.alert_workers.aa_flood import (
-    _format_date,  # noqa: PLC2701
     fetch_flood_dates_json,
     flood_prism_url,
     latest_flood_date,

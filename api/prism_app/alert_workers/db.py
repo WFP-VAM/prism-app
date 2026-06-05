@@ -7,10 +7,9 @@ import os
 from contextlib import contextmanager
 from typing import Any, Generator, Mapping
 
+from prism_app.alert_workers import settings
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import Engine
-
-from prism_app.alert_workers import settings
 
 _ALERT_SELECT = text(
     """

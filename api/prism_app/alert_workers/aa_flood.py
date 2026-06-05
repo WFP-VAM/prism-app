@@ -8,9 +8,7 @@ from typing import Any
 from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 
 import httpx
-
-from prism_app.alert_workers import db, settings
-from prism_app.alert_workers import smtp_mailer
+from prism_app.alert_workers import db, settings, smtp_mailer
 from prism_app.alert_workers.browser_shot import Crop, capture_screenshot_from_url
 from prism_app.alert_workers.mail_render import render_flood_mail
 

@@ -17,7 +17,6 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
-
 from prism_app.alert_workers import smtp_mailer
 from prism_app.alert_workers.mail_render import (
     render_flood_mail,

@@ -7,7 +7,6 @@ import re
 from datetime import datetime, timezone
 
 import httpx
-
 from prism_app.alert_workers import settings
 from prism_app.alert_workers.wcs_url import get_capabilities_url
 
