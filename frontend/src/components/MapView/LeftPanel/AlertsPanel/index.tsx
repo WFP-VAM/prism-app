@@ -22,7 +22,12 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import {
+  buildFeatureCollectionFromFeatures,
+  resolveFeaturesForAdminCodes,
+} from 'utils/adminAreaSelection';
 import { AlertRequest, fetchApiData, getPrismUrl } from 'utils/analysis-utils';
+import { boundaryCache } from 'utils/boundary-cache';
 import { ALERT_API_URL } from 'utils/constants';
 import { useBoundaryData } from 'utils/useBoundaryData';
 
@@ -48,29 +53,10 @@ function AlertsPanel() {
   const [alertName, setAlertName] = useState('');
   const [alertWaiting, setAlertWaiting] = useState(false);
 
-  const { t } = useSafeTranslation();
-  const regionCodesToFeatureData: { [k: string]: object } = useMemo(() => {
-    if (!boundaryLayerData) {
-      // Not loaded yet. Will proceed when it is.
-      return {};
-    }
+  const { t, i18n } = useSafeTranslation();
 
-    return Object.fromEntries(
-      boundaryLayerData.data?.features
-        ?.filter(feature => feature.properties !== null)
-        .map(feature => [
-          feature.properties?.[boundaryLayer.adminCode],
-          feature,
-        ]) ?? [],
-    );
-  }, [boundaryLayerData]);
-
-  // TODO - leverage boundaryDropdown results directly and try to use
-  // top-level boundary data when possible. Eg. when a region is selected,
-  // try to use the boundary of that region instead of all the districts.
   const generateGeoJsonForRegionNames = useCallback(() => {
-    // TODO - Handle these errors properly.
-    if (!boundaryLayerData) {
+    if (!boundaryLayerData?.data) {
       throw new Error('Boundary layer data is not loaded yet.');
     }
 
@@ -78,20 +64,20 @@ function AlertsPanel() {
       throw new Error('Please select at least one region boundary.');
     }
 
-    const features = regionsList
-      .map(region => regionCodesToFeatureData[region])
-      .filter(Boolean);
-
-    // Generate a copy of admin layer data (to preserve top-level properties)
-    // and replace the 'features' property with just the selected regions.
-    const mutableFeatureCollection = JSON.parse(
-      JSON.stringify(boundaryLayerData.data),
+    const features = resolveFeaturesForAdminCodes(
+      regionsList,
+      boundaryLayerData.data,
+      boundaryLayer,
+      i18n,
+      layerId => boundaryCache.getCachedData(layerId)?.data,
     );
 
-    mutableFeatureCollection.features = features;
+    if (features.length === 0) {
+      throw new Error('No boundary features matched the selected regions.');
+    }
 
-    return mutableFeatureCollection;
-  }, [boundaryLayerData, regionCodesToFeatureData, regionsList]);
+    return buildFeatureCollectionFromFeatures(features, boundaryLayerData.data);
+  }, [boundaryLayerData, i18n, regionsList]);
 
   const onChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newEmail = event.target.value;
