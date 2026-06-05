@@ -117,6 +117,26 @@ def test_schedule_column_filter_is_case_insensitive() -> None:
     assert "monthly" in compiled.lower()
 
 
+def test_schedule_column_filter_eq_null_uses_is_null() -> None:
+    clause = _case_insensitive_build_query(
+        {"name": {"eq": None}},
+        MapExportSchedule,
+    )
+    compiled = str(clause.compile(compile_kwargs={"literal_binds": True}))
+    assert " IS NULL" in compiled
+    assert "'none'" not in compiled.lower()
+
+
+def test_schedule_column_filter_neq_null_uses_is_not_null() -> None:
+    clause = _case_insensitive_build_query(
+        {"name": {"neq": None}},
+        MapExportSchedule,
+    )
+    compiled = str(clause.compile(compile_kwargs={"literal_binds": True}))
+    assert " IS NOT NULL" in compiled
+    assert "'none'" not in compiled.lower()
+
+
 def test_schedule_searchable_fields_include_cadence_and_format() -> None:
     view = MapExportScheduleView(MapExportSchedule)
     assert "cadence" in view.searchable_fields

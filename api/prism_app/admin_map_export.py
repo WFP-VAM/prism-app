@@ -44,10 +44,21 @@ from starlette_admin.contrib.sqla import Admin
 from starlette_admin.contrib.sqla.helpers import OPERATORS
 from starlette_admin.exceptions import FormValidationError
 
+_DEFAULT_EQ = OPERATORS["eq"]
+_DEFAULT_NEQ = OPERATORS["neq"]
+
 _CASE_INSENSITIVE_STRING_OPERATORS: Dict[str, Callable[..., ClauseElement]] = {
     **OPERATORS,
-    "eq": lambda f, v: func.lower(cast(f, String)) == str(v).lower(),
-    "neq": lambda f, v: func.lower(cast(f, String)) != str(v).lower(),
+    "eq": lambda f, v: (
+        _DEFAULT_EQ(f, v)
+        if v is None
+        else func.lower(cast(f, String)) == str(v).lower()
+    ),
+    "neq": lambda f, v: (
+        _DEFAULT_NEQ(f, v)
+        if v is None
+        else func.lower(cast(f, String)) != str(v).lower()
+    ),
     "startswith": lambda f, v: func.lower(cast(f, String)).startswith(str(v).lower()),
     "not_startswith": lambda f, v: ~func.lower(cast(f, String)).startswith(
         str(v).lower(),
