@@ -99,7 +99,7 @@
           ]
         },
         {
-          "group_title": "CHIRPS SPI",
+          "group_title": "SPI",
           "activate_all": false,
           "layers": [
             {
