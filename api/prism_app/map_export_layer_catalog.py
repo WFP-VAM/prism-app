@@ -87,4 +87,4 @@ def schedule_layer_choices_with_extra(
         if layer_id and layer_id not in known:
             choices.append((layer_id, layer_id))
             known.add(layer_id)
-    return tuple(sorted(choices, key=lambda pair: pair[0]))
+    return tuple(choices)
