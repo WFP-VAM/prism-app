@@ -69,7 +69,7 @@ function AlertsPanel() {
       boundaryLayerData.data,
       boundaryLayer,
       i18n,
-      layerId => boundaryCache.getCachedData(layerId)?.data,
+      layerId => boundaryCache.getCachedData(layerId),
     );
 
     if (features.length === 0) {
