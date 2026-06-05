@@ -123,6 +123,9 @@ def build_authorize_url(
 def build_rp_initiated_logout_url(
     settings: AdminAuthSettings,
     id_token_hint: str | None,
+    *,
+    state: str | None = None,
+    post_logout_redirect_uri: str | None = None,
 ) -> str | None:
     """RP-initiated logout via discovery ``end_session_endpoint``."""
     if not settings.oidc_configured:
@@ -144,12 +147,38 @@ def build_rp_initiated_logout_url(
     hint = id_token_hint.strip() if isinstance(id_token_hint, str) else ""
     if hint:
         params["id_token_hint"] = hint
-    post = settings.oidc_post_logout_redirect_uri.strip()
+    post = (
+        post_logout_redirect_uri.strip()
+        if isinstance(post_logout_redirect_uri, str)
+        else settings.oidc_post_logout_redirect_uri.strip()
+    )
     if post:
         params["post_logout_redirect_uri"] = post
+    if state:
+        params["state"] = state
     q = urlencode(params, quote_via=quote) if params else ""
     sep = "&" if "?" in endpoint else "?"
     return f"{endpoint}{sep}{q}" if q else endpoint
+
+
+def sign_logout_return_state(settings: AdminAuthSettings, return_to: str) -> str:
+    """Signed ``state`` for CIAM end_session; echoed on ``post_logout_redirect_uri``."""
+    now = int(time.time())
+    body = {
+        "next": return_to,
+        "iat": now,
+        "exp": now + settings.oidc_state_ttl_seconds,
+    }
+    return jwt.encode(body, settings.session_secret, algorithm="HS256")
+
+
+def verify_logout_return_state(settings: AdminAuthSettings, token: str) -> dict[str, Any]:
+    return jwt.decode(
+        token,
+        settings.session_secret,
+        algorithms=["HS256"],
+        options={"require": ["exp", "iat", "next"]},
+    )
 
 
 async def exchange_code_for_tokens(
@@ -271,7 +300,9 @@ __all__ = [
     "generate_pkce_pair",
     "get_oidc_discovery_doc",
     "normalize_issuer_for_discovery",
+    "sign_logout_return_state",
     "sign_oidc_state",
     "verify_id_token",
+    "verify_logout_return_state",
     "verify_oidc_state",
 ]

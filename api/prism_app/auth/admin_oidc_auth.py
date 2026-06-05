@@ -71,7 +71,10 @@ class PrismAdminAuthProvider(BaseAuthProvider):
         )
 
     async def _render_logout(self, request: Request, admin: BaseAdmin) -> Response:
-        return RedirectResponse(url="/auth/sign-out", status_code=HTTP_303_SEE_OTHER)
+        return RedirectResponse(
+            url="/auth/sign-out?next=%2Fadmin%2F",
+            status_code=HTTP_303_SEE_OTHER,
+        )
 
     async def is_authenticated(self, request: Request) -> bool:
         """Unused by ``PrismAdminAuthMiddleware``; implemented for API compatibility."""
