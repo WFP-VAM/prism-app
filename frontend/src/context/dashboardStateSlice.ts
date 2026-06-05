@@ -106,6 +106,8 @@ const getMapLayerOpacityConfig = (
     case 'impact':
     case 'geojson_polygon':
       return [getLayerMapId(layerId), 'fill-opacity'];
+    case 'pmtiles_vector':
+      return [getLayerMapId(layerId, 'fill'), 'fill-opacity'];
     case 'point_data':
       if (layerId?.includes('_report')) {
         return [getLayerMapId(layerId), 'fill-opacity'];

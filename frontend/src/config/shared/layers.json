@@ -1272,5 +1272,69 @@
     "opacity": 0,
     "legend_text": "",
     "legend": []
+  },
+  "ftw_field_boundaries": {
+    "title": "FTW field boundaries (2024–2025)",
+    "type": "pmtiles_vector",
+    "path": "https://data.source.coop/ftw/global-data/predictions/vectors/alpha/global.pmtiles",
+    "opacity": 0.9,
+    "disable_analysis": true,
+    "legend_text": "Crop fields and field boundaries from FTW global predictions. No country bounds restrict this layer in Mozambique. Tile detail peaks around zoom levels 10–12; zooming past level 15 will not reveal additional fields.",
+    "legend": [
+      { "label": "Crop field (2025)", "color": "#4a90d9" },
+      { "label": "Field boundary (2025)", "color": "#e67e22" },
+      { "label": "Crop field (2024)", "color": "#9b59b6" },
+      { "label": "Field boundary (2024)", "color": "#27ae60" }
+    ],
+    "source_layers": [
+      {
+        "name": "field_boundaries-2024-01-01 00:00:00",
+        "fill": {
+          "fill-color": "#27ae60",
+          "fill-opacity": 0.08
+        },
+        "line": {
+          "line-color": "#27ae60",
+          "line-width": 0.5,
+          "line-opacity": 0.75
+        }
+      },
+      {
+        "name": "field_boundaries-2025-01-01 00:00:00",
+        "fill": {
+          "fill-color": "#e67e22",
+          "fill-opacity": 0.1
+        },
+        "line": {
+          "line-color": "#e67e22",
+          "line-width": 0.5,
+          "line-opacity": 0.85
+        }
+      },
+      {
+        "name": "field-2024-01-01 00:00:00",
+        "fill": {
+          "fill-color": "#9b59b6",
+          "fill-opacity": 0.25
+        },
+        "line": {
+          "line-color": "#9b59b6",
+          "line-width": 0.75,
+          "line-opacity": 0.65
+        }
+      },
+      {
+        "name": "field-2025-01-01 00:00:00",
+        "fill": {
+          "fill-color": "#4a90d9",
+          "fill-opacity": 0.28
+        },
+        "line": {
+          "line-color": "#4a90d9",
+          "line-width": 1,
+          "line-opacity": 0.7
+        }
+      }
+    ]
   }
 }

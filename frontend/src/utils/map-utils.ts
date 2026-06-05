@@ -39,9 +39,39 @@ export function isLayerOnView(map: MaplibreMap | undefined, layerId: LayerKey) {
     return false;
   }
   const style = map.getStyle();
+  const layerPrefix = `layer-${layerId}`;
   return (
-    style?.layers?.map(l => l.id).includes(getLayerMapId(layerId)) ?? false
+    style?.layers?.some(
+      layer =>
+        layer.id === layerPrefix || layer.id.startsWith(`${layerPrefix}-`),
+    ) ?? false
   );
+}
+
+/** MapLibre `beforeId` anchor for a layer that may use multiple map sublayers. */
+export function getTopLayerMapId(
+  map: MaplibreMap | undefined,
+  layerId: LayerKey,
+): string {
+  const bareId = getLayerMapId(layerId);
+  if (map?.getLayer(bareId)) {
+    return bareId;
+  }
+
+  const layerPrefix = `layer-${layerId}`;
+  const sublayers =
+    map
+      ?.getStyle()
+      ?.layers?.filter(
+        layer =>
+          layer.id.startsWith(`${layerPrefix}-`) || layer.id === layerPrefix,
+      ) ?? [];
+
+  if (sublayers.length > 0) {
+    return sublayers[sublayers.length - 1].id;
+  }
+
+  return bareId;
 }
 
 export function safeDispatchAddLayer(

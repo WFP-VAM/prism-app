@@ -327,7 +327,11 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
+      "vegetation_conditions": [
+        "ndvi_dekad",
+        "ndvi_dekad_anomaly",
+        "ftw_field_boundaries"
+      ]
     },
     "temperature": {
       "INAM_air_temperature": [

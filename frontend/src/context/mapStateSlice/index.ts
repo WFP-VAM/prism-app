@@ -74,6 +74,7 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
       | 'impact'
       | 'point_data'
       | 'geojson_polygon'
+      | 'pmtiles_vector'
       | 'polygon'
       | 'static_raster'
       | 'anticipatory_action_drought'
@@ -82,6 +83,7 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
   } = {
     point_data: 0,
     geojson_polygon: 1,
+    pmtiles_vector: 1,
     polygon: 2,
     boundary: 3,
     pattern_admin_level_data: 4,

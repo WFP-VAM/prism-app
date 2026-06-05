@@ -29,10 +29,18 @@ const protocol = new Protocol();
 // Map to store PMTiles instances
 const pmtilesInstances = new Map<string, PMTiles>();
 
+let protocolRefCount = 0;
+
 export const initPmtilesProtocol = () => {
-  MapLibreGL.addProtocol('pmtiles', protocol.tile);
+  if (protocolRefCount === 0) {
+    MapLibreGL.addProtocol('pmtiles', protocol.tile);
+  }
+  protocolRefCount += 1;
   return () => {
-    MapLibreGL.removeProtocol('pmtiles');
+    protocolRefCount -= 1;
+    if (protocolRefCount === 0) {
+      MapLibreGL.removeProtocol('pmtiles');
+    }
   };
 };
 
