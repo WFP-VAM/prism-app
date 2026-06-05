@@ -14,6 +14,8 @@ from prism_app.map_export_layer_catalog import (
 def test_mozambique_schedule_layers_include_wms_with_coverage() -> None:
     ids = schedule_layer_ids("mozambique")
     assert "precip_blended_dekad" in ids
+    # Shared layer referenced in prism.json but not defined in country layers.json
+    assert "spi_2m" in ids
 
 
 def test_schedule_layer_wms_name_resolves_server_layer_name() -> None:
@@ -31,11 +33,13 @@ def test_boundary_layers_are_not_schedule_eligible() -> None:
     assert "admin_boundaries" not in ids
 
 
-def test_schedule_layer_choices_sorted_and_non_empty() -> None:
+def test_schedule_layer_choices_follow_raw_layers_order() -> None:
+    """Manifest order matches frontend batch picker (country keys, then shared-only)."""
     choices = schedule_layer_choices("mozambique")
     assert len(choices) > 0
     ids = [layer_id for layer_id, _ in choices]
-    assert ids == sorted(ids)
+    assert ids[0] == "precip_blended_dekad"
+    assert ids != sorted(ids)
     assert "precip_blended_dekad" in schedule_layer_ids("mozambique")
 
 
@@ -68,6 +72,7 @@ def test_schedule_layer_choices_with_extra_includes_legacy_id() -> None:
         extra_layer_ids=("legacy_layer_xyz",),
     )
     assert ("legacy_layer_xyz", "legacy_layer_xyz") in choices
+    assert choices[-1] == ("legacy_layer_xyz", "legacy_layer_xyz")
 
 
 def test_schedule_layer_label_uses_country_manifest() -> None:
