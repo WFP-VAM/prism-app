@@ -16,7 +16,7 @@ import Switch from 'components/Common/Switch';
 import RootAccordionItems from 'components/MapView/LeftPanel/layersPanel/RootAccordionItems';
 import { MapInstanceProvider } from 'components/MapView/MapInstanceContext';
 import { downloadToFile } from 'components/MapView/utils';
-import { DashboardMode } from 'config/types';
+import { DashboardMode, SelectedDateTimestamp } from 'config/types';
 import { getDisplayBoundaryLayers, LayerDefinitions } from 'config/utils';
 import {
   dashboardMapStateSelector,
@@ -38,13 +38,15 @@ import {
 } from 'context/serverStateSlice';
 import html2canvas from 'html2canvas';
 import { useSafeTranslation } from 'i18n';
-import React, { memo, useCallback, useEffect, useRef } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { useDispatch, useSelector } from 'react-redux';
 import { boundaryCache } from 'utils/boundary-cache';
 import { getNonBoundaryLayers } from 'utils/boundary-layers-utils';
-import { getFormattedDate } from 'utils/date-utils';
+import { formatCoverageText, getFormattedDate } from 'utils/date-utils';
 import useLayers from 'utils/layers-utils';
+import { DateFormat } from 'utils/name-utils';
+import { getLayersCoverage } from 'utils/server-utils';
 import { useDashboardMapSync } from 'utils/useDashboardMapSync';
 import { useMapState } from 'utils/useMapState';
 
@@ -124,14 +126,46 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
       return '';
     }
 
-    const startDateStr = getFormattedDate(startDate, 'localeShortUTC');
+    // Use a locale-aware format so the month name follows the selected language.
+    const dateLocale = t('date_locale');
+    const startDateStr = getFormattedDate(
+      startDate,
+      DateFormat.DayFirstHyphenMonthName,
+      dateLocale,
+    );
 
     if (endDate) {
-      const endDateStr = getFormattedDate(endDate, 'localeShortUTC');
+      const endDateStr = getFormattedDate(
+        endDate,
+        DateFormat.DayFirstHyphenMonthName,
+        dateLocale,
+      );
       return `${startDateStr} - ${endDateStr}`;
     }
     return startDateStr;
   };
+
+  // When the displayed layer(s) have a configured coverage period, show that
+  // instead of the plain selected date to give the proper context of the map.
+  const coverageText = useMemo(
+    () =>
+      formatCoverageText(
+        getLayersCoverage(
+          selectedLayersWithDateSupport,
+          dateRange.startDate as SelectedDateTimestamp,
+        ),
+        t,
+        DateFormat.DayFirstHyphenMonthName,
+      ),
+    [selectedLayersWithDateSupport, dateRange.startDate, t],
+  );
+
+  // Only show a date/coverage subtitle when the map actually has a layer with
+  // date context. Layers without dates (e.g. Multidimensional Poverty Index)
+  // should not get a date appended to their title.
+  const mapSubtitle =
+    coverageText ||
+    (selectedLayersWithDateSupport.length > 0 ? formatMapDate() : '');
 
   const handleDownloadMap = async () => {
     if (!mapContainerRef.current) {
@@ -341,7 +375,7 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
             <div className={classes.previewHeaderContainer}>
               <BlockPreviewHeader
                 title={t(title || '')}
-                subtitle={formatMapDate()}
+                subtitle={mapSubtitle}
                 downloadActions={
                   !exportConfig && (
                     <Tooltip title={t('Download PNG') as string}>
