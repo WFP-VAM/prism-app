@@ -153,7 +153,9 @@ def test_get_sign_out_with_admin_next_redirects_to_admin_when_auth_disabled() ->
     assert r.headers["location"] == "/admin/list"
 
 
-def test_get_sign_out_with_prism_next_redirects_to_frontend_when_auth_disabled() -> None:
+def test_get_sign_out_with_prism_next_redirects_to_frontend_when_auth_disabled() -> (
+    None
+):
     client = TestClient(app, base_url=_HTTPS)
     nxt = "https://staging.dkr9o3t8h8nvn.amplifyapp.com/?printModal=1"
     r = client.get(f"/auth/sign-out?next={quote(nxt, safe='')}", follow_redirects=False)
@@ -233,6 +235,4 @@ def test_safe_sign_out_next_allows_prism_frontend_without_print_modal() -> None:
 
 
 def test_safe_sign_out_next_rejects_disallowed_origin() -> None:
-    assert (
-        auth_oidc._safe_sign_out_next("https://evil.example/logout") == "/admin/"
-    )
+    assert auth_oidc._safe_sign_out_next("https://evil.example/logout") == "/admin/"

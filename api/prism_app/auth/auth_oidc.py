@@ -235,8 +235,9 @@ def _perform_sign_out(
     hint_raw = request.cookies.get(settings.oidc_id_token_hint_cookie_name)
     hint_stripped = hint_raw.strip() if isinstance(hint_raw, str) else None
     logout_state = sign_logout_return_state(settings, return_to)
-    post_logout = settings.oidc_post_logout_redirect_uri.strip() or _signed_out_callback_url(
-        request
+    post_logout = (
+        settings.oidc_post_logout_redirect_uri.strip()
+        or _signed_out_callback_url(request)
     )
     dest = build_rp_initiated_logout_url(
         settings,

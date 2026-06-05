@@ -172,7 +172,9 @@ def sign_logout_return_state(settings: AdminAuthSettings, return_to: str) -> str
     return jwt.encode(body, settings.session_secret, algorithm="HS256")
 
 
-def verify_logout_return_state(settings: AdminAuthSettings, token: str) -> dict[str, Any]:
+def verify_logout_return_state(
+    settings: AdminAuthSettings, token: str
+) -> dict[str, Any]:
     return jwt.decode(
         token,
         settings.session_secret,
