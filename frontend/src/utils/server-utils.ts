@@ -116,6 +116,29 @@ export interface LayerDateCoverage {
 }
 
 /**
+ * Resolve the coverage window (start/end date) for a set of already-resolved
+ * `dateItems` at a given selected date. When the matched DateItem has no
+ * explicit coverage window, falls back to its `displayDate` as a single-day
+ * start/end.
+ */
+export function getDateItemCoverage(
+  dateItems: DateItem[] | undefined,
+  selectedDate: SelectedDateTimestamp | null | undefined,
+): StartEndDate {
+  if (!selectedDate) {
+    return {};
+  }
+  const dateItem = getRequestDateItem(dateItems, selectedDate);
+  if (dateItem?.startDate || dateItem?.endDate) {
+    return { startDate: dateItem.startDate, endDate: dateItem.endDate };
+  }
+  if (dateItem?.displayDate) {
+    return { startDate: dateItem.displayDate, endDate: dateItem.displayDate };
+  }
+  return {};
+}
+
+/**
  * Compute date coverage for layers that support dates.
  * Returns an array of coverage info for each layer that has coverage data.
  *
@@ -137,24 +160,19 @@ export function getLayersCoverage(
 
   return layersWithDateSupport
     .map((layer): LayerDateCoverage | null => {
-      const dateItem = getRequestDateItem(layer.dateItems, selectedDate);
-      if (dateItem?.startDate || dateItem?.endDate) {
-        return {
-          layerId: layer.id,
-          layerTitle: layer.title || layer.id,
-          startDate: dateItem.startDate,
-          endDate: dateItem.endDate,
-        };
+      const { startDate, endDate } = getDateItemCoverage(
+        layer.dateItems,
+        selectedDate,
+      );
+      if (startDate === undefined && endDate === undefined) {
+        return null;
       }
-      if (dateItem?.displayDate) {
-        return {
-          layerId: layer.id,
-          layerTitle: layer.title || layer.id,
-          startDate: dateItem.displayDate,
-          endDate: dateItem.displayDate,
-        };
-      }
-      return null;
+      return {
+        layerId: layer.id,
+        layerTitle: layer.title || layer.id,
+        startDate,
+        endDate,
+      };
     })
     .filter((item): item is LayerDateCoverage => item !== null);
 }
@@ -170,7 +188,7 @@ export function getLayersCoverageMap(
     dateItems: DateItem[];
   }>,
   selectedDate: SelectedDateTimestamp | null | undefined,
-): Record<string, { startDate?: number; endDate?: number }> {
+): Record<string, StartEndDate> {
   const coverageArray = getLayersCoverage(layersWithDateSupport, selectedDate);
   return coverageArray.reduce(
     (map, coverage) => {
@@ -180,7 +198,7 @@ export function getLayersCoverageMap(
       };
       return map;
     },
-    {} as Record<string, { startDate?: number; endDate?: number }>,
+    {} as Record<string, StartEndDate>,
   );
 }
 
@@ -188,23 +206,16 @@ export function getLayersCoverageMap(
  * Compute the coverage period (start/end date) for a single layer at a given
  * date, based on the layer's configured `validity` / `coverageWindow`.
  *
- * Returns an empty object when the layer has no coverage information, so it can
- * be passed safely to analysis result constructors.
+ * Returns an empty object when no matching date item is found, so it can be
+ * passed safely to analysis result constructors.
  */
 export function getCoverageForLayerAndDate(
   layer: DateCompatibleLayer,
   serverAvailableDates: AvailableDates,
   selectedDate: number | null | undefined,
-): { startDate?: number; endDate?: number } {
+): StartEndDate {
   const dateItems = getPossibleDatesForLayer(layer, serverAvailableDates);
-  const dateItem = getRequestDateItem(
-    dateItems,
-    selectedDate as SelectedDateTimestamp,
-  );
-  if (dateItem?.startDate || dateItem?.endDate) {
-    return { startDate: dateItem.startDate, endDate: dateItem.endDate };
-  }
-  return {};
+  return getDateItemCoverage(dateItems, selectedDate as SelectedDateTimestamp);
 }
 
 // Note: PRISM's date picker is designed to work with dates in the UTC timezone
