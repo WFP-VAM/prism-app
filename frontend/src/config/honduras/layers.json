@@ -193,13 +193,13 @@
       "levels": [
         {
           "level": "1",
-          "id": "dataviz_adm1_id",
-          "name": "PROVNAMEFU"
+          "id": "dv_adm1_id",
+          "name": "adm1_name"
         },
         {
           "level": "2",
-          "id": "dataviz_adm2_id",
-          "name": "DIST_NAME_"
+          "id": "dv_adm2_id",
+          "name": "adm2_name"
         }
       ],
       "type": "bar"
