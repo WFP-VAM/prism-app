@@ -25,8 +25,8 @@ AA test recipients (Python argparse):
 
 ```bash
 cd ../api
-PYTHONPATH=. poetry run python -m prism_app.worker.alert_runner aa-storm --test-email='a@x.com,b@y.com'
-PYTHONPATH=. poetry run python -m prism_app.worker.alert_runner aa-flood --test-email='a@x.com'
+PYTHONPATH=. poetry run python -m prism_app.workers.alert_runner aa-storm --test-email='a@x.com,b@y.com'
+PYTHONPATH=. poetry run python -m prism_app.workers.alert_runner aa-flood --test-email='a@x.com'
 ```
 
 ## Server crons

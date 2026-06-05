@@ -1,14 +1,8 @@
 """Regression tests for admin OIDC security hardening (PR A)."""
 
-import os
 import re
 
 import pytest
-
-# main.py imports kobo at module load time; provide placeholders for unit tests.
-os.environ.setdefault("KOBO_USERNAME", "pytest")
-os.environ.setdefault("KOBO_PASSWORD", "pytest")
-
 from fastapi.testclient import TestClient
 from prism_app.auth import auth_oidc
 from prism_app.auth.admin_oidc_auth import PrismAdminAuthProvider
@@ -165,3 +159,27 @@ def test_safe_next_allows_admin_subpaths_and_access_page() -> None:
     assert auth_oidc._safe_next("/access-not-configured") == "/access-not-configured"
     # posixpath.normpath collapses a trailing slash on ``/admin/`` to ``/admin``.
     assert auth_oidc._safe_next("/admin/?tab=1") == "/admin?tab=1"
+
+
+def test_safe_next_allows_export_allowed_domain_frontend_print_modal_return() -> None:
+    nxt = "https://prism.moz.wfp.org/?printModal=1&batchMaps=1&schedule=1"
+    assert auth_oidc._safe_next(nxt) == nxt
+
+
+def test_safe_next_allows_localhost_frontend_print_modal_return() -> None:
+    nxt = "http://localhost:3000/?printModal=1&batchMaps=1&schedule=1"
+    assert auth_oidc._safe_next(nxt) == nxt
+
+
+def test_safe_next_allows_firebase_preview_frontend_print_modal_return() -> None:
+    nxt = "https://staging-prism-frontend--1622-abc.web.app/?printModal=1"
+    assert auth_oidc._safe_next(nxt) == nxt
+
+
+def test_safe_next_rejects_disallowed_frontend_origin() -> None:
+    assert (
+        auth_oidc._safe_next(
+            "https://evil.example/?printModal=1&batchMaps=1&schedule=1",
+        )
+        == "/admin/"
+    )

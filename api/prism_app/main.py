@@ -13,6 +13,7 @@ from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from prism_app.admin import register_alerts_admin_views
+from prism_app.admin_map_export import PrismAdmin, register_map_export_admin_views
 from prism_app.auth import auth_oidc
 from prism_app.auth.access_pages import access_not_configured_response
 from prism_app.auth.admin_oidc_auth import PrismAdminAuthProvider
@@ -21,12 +22,16 @@ from prism_app.auth.deps import require_permissions, require_prism_session
 from prism_app.auth.permission_codes import ADMIN_ACCESS
 from prism_app.auth_legacy import optional_validate_user, validate_user
 from prism_app.caching import FilePath, cache_file, cache_geojson
+from prism_app.dashboard.published_dashboards import (
+    merge_published_dashboard_rows_for_country,
+)
 from prism_app.database.alert_model import AlchemyEncoder, AlertModel
 from prism_app.database.database import DB_URI, AlertsDataBase
 from prism_app.database.kobo_user_model import KoboUser
 from prism_app.database.user_model import User
 from prism_app.export_jobs import router as export_map_jobs_router
 from prism_app.export_maps import export_maps
+from prism_app.export_schedules import router as export_map_schedules_router
 from prism_app.googleflood import (
     get_google_flood_dates,
     get_google_floods_gauge_forecast,
@@ -85,10 +90,6 @@ app.add_middleware(
 )
 
 _admin_session_settings = get_admin_auth_settings()
-_ss_low = _admin_session_settings.session_cookie_samesite.lower()
-_same_site_admin: Literal["lax", "strict", "none"] = (
-    _ss_low if _ss_low in ("lax", "strict", "none") else "lax"
-)
 
 app.add_middleware(
     SessionMiddleware,
@@ -96,10 +97,11 @@ app.add_middleware(
     session_cookie=_admin_session_settings.session_cookie_name,
     max_age=_admin_session_settings.session_ttl_seconds,
     path="/",
-    same_site=_same_site_admin,
+    same_site=_admin_session_settings.session_cookie_samesite,  # type: ignore[arg-type]
     https_only=_admin_session_settings.session_cookie_secure,
 )
 app.include_router(export_map_jobs_router)
+app.include_router(export_map_schedules_router)
 
 admin_engine = create_engine(DB_URI)
 app.state.admin_engine = admin_engine
@@ -125,8 +127,7 @@ _AnySession = Annotated[
 ]
 
 
-@app.get("/api/whoami")
-@app.get("/api/admin/whoami")
+@app.get("/whoami")
 def whoami(prism: _AnySession):
     """Return current user identity and permissions (any authenticated user)."""
     user, codes = prism
@@ -139,13 +140,14 @@ def whoami(prism: _AnySession):
 
 
 admin_auth_settings = get_admin_auth_settings()
-admin = Admin(
+admin = PrismAdmin(
     admin_engine,
     title="PRISM Admin",
     base_url="/admin",
     auth_provider=PrismAdminAuthProvider(admin_engine, admin_auth_settings),
 )
 register_alerts_admin_views(admin)
+register_map_export_admin_views(admin)
 admin.mount_to(app)
 
 alert_db = AlertsDataBase()
@@ -155,6 +157,38 @@ alert_db = AlertsDataBase()
 def healthcheck() -> str:
     """Verify that the server is healthy."""
     return "All good!"
+
+
+@app.get(
+    "/dashboards",
+    responses={503: {"description": "Dashboard database unavailable"}},
+    summary="Published dashboard configs (country-scoped)",
+)
+def get_published_dashboards(
+    country: str = Query(
+        ...,
+        min_length=1,
+        description="Country key (frontend configMap key)",
+    ),
+    include_staging: bool = Query(
+        False,
+        description="Include status=staging rows (for staging frontends)",
+    ),
+) -> list[Any]:
+    """Return merged dashboard rows for the served ``dashboard`` rows in this country.
+
+    The response is a single JSON array, the same top-level shape as the static
+    ``dashboards.json`` consumed by PRISM. ``published`` rows are always
+    included; ``staging`` rows are included only when ``include_staging`` is set.
+    Drafts and archived rows are never included.
+    """
+    if not alert_db.active or alert_db.engine is None:
+        raise HTTPException(
+            status_code=503, detail="Dashboard data is temporarily unavailable"
+        )
+    return merge_published_dashboard_rows_for_country(
+        alert_db.engine, country, include_staging=include_staging
+    )
 
 
 @timed

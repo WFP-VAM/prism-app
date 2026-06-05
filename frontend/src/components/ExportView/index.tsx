@@ -1,4 +1,4 @@
-import { Box, createStyles, makeStyles } from '@material-ui/core';
+import { createTheme, ThemeProvider } from '@material-ui/core';
 import mask from '@turf/mask';
 import MapExportLayout from 'components/MapExport/MapExportLayout';
 import { mapStyle } from 'components/MapView/Map/utils';
@@ -14,9 +14,14 @@ import {
   preloadLayerDatesArraysForWMS,
   WMSLayerDatesRequested,
 } from 'context/serverPreloadStateSlice';
+import muiTheme from 'muiTheme';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { boundaryCache } from 'utils/boundary-cache';
+import { getExportFontStack, loadExportFonts } from 'utils/exportFontFamily';
+import { exportLanguage } from 'utils/exportLanguage';
 import useLayers from 'utils/layers-utils';
 import { getLayersCoverage } from 'utils/server-utils';
 import { useBoundaryData } from 'utils/useBoundaryData';
@@ -39,7 +44,39 @@ import useResizeObserver from 'utils/useOnResizeObserver';
 const displayedBoundaryLayers = getDisplayBoundaryLayers().reverse();
 
 const ExportView = memo(() => {
-  const classes = useStyles();
+  const { search } = useLocation();
+  const { i18n } = useTranslation();
+  const exportLang = exportLanguage(search, { apply: true });
+  const [exportFontsReady, setExportFontsReady] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    setExportFontsReady(false);
+    void loadExportFonts(exportLang).then(() => {
+      if (!cancelled) {
+        setExportFontsReady(true);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [exportLang]);
+
+  const exportFontStack = getExportFontStack(exportLang);
+  const exportTheme = useMemo(
+    () =>
+      createTheme(muiTheme, {
+        typography: {
+          fontFamily: exportFontStack,
+          h4: { fontFamily: exportFontStack },
+          h5: { fontFamily: exportFontStack },
+          h6: { fontFamily: exportFontStack },
+          body1: { fontFamily: exportFontStack },
+          body2: { fontFamily: exportFontStack },
+        },
+      }),
+    [exportFontStack],
+  );
   const exportParams = useExportParams();
   const printRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
@@ -200,8 +237,12 @@ const ExportView = memo(() => {
   const footerHeight =
     measuredFooterHeight || (exportParams.toggles.footerVisibility ? 60 : 0);
 
+  if (i18n.resolvedLanguage !== exportLang || !exportFontsReady) {
+    return null;
+  }
+
   return (
-    <Box className={classes.root}>
+    <ThemeProvider theme={exportTheme}>
       {/* Paint order: MapExportLayout stacks boundaries before rasters */}
       <MapExportLayout
         toggles={exportParams.toggles}
@@ -230,18 +271,8 @@ const ExportView = memo(() => {
         layersCoverage={layersCoverage}
         signalExportReady
       />
-    </Box>
+    </ThemeProvider>
   );
 });
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      height: '100vh',
-      width: '100%',
-      position: 'relative',
-    },
-  }),
-);
 
 export default ExportView;

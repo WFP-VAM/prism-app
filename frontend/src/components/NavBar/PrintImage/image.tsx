@@ -1,11 +1,13 @@
 import {
+  Box,
   createStyles,
   Dialog,
   DialogContent,
   makeStyles,
 } from '@material-ui/core';
+import { usePostHog } from '@posthog/react';
 import mask from '@turf/mask';
-import { appConfig, configMap, safeCountry } from 'config';
+import { appConfig, rawLayers, safeCountry } from 'config';
 import { AdminCodeString, LayerKey } from 'config/types';
 import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
 import {
@@ -17,11 +19,18 @@ import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { debounce, get } from 'lodash';
 import type { LngLatBounds } from 'maplibre-gl';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, useLocation } from 'react-router-dom';
 import { isBoundaryLayer } from 'utils/boundary-layers-utils';
-import { EXPORT_API_URL } from 'utils/constants';
-import { getFormattedDate } from 'utils/date-utils';
+import { dateWithoutTime, getFormattedDate } from 'utils/date-utils';
 import useLayers, { isWmsSelectableForBatchPrint } from 'utils/layers-utils';
 import {
   DateCompatibleLayer,
@@ -41,20 +50,27 @@ import {
   filterDatesByCadence,
   getAvailableCadences,
   getDisabledCadences,
+  resolveValidCadence,
 } from '../../../utils/batchCadenceUtils';
+import { MAP_EXPORT_MAX_URLS_PER_REQUEST } from '../../../utils/constants';
+import { exportLanguage } from '../../../utils/exportLanguage';
+import {
+  cadenceToApi,
+  createMapExportSchedule,
+} from '../../../utils/mapExportSchedulesApi';
 import { ALL_ASPECT_RATIO_OPTIONS } from '../../MapExport/aspectRatioConstants';
 import { downloadToFile } from '../../MapView/utils';
-import {
-  buildBatchExportUrls,
-  formatExportUrlForClipboard,
-} from './batchExportUrls';
-import { calculateExportDimensions } from './mapDimensionsUtils';
+import { formatExportUrlForClipboard } from './batchExportUrls';
+import { buildBatchExportDatesDisplay } from './batchMapExport/batchExportArtifactFilename';
+import { useBatchMapExportJobsActions } from './batchMapExport/useBatchMapExportJobs';
+import { useMapExportTemplate } from './batchMapExport/useMapExportTemplate';
 import PrintConfig from './printConfig';
 import PrintConfigContext, {
   MapDimensions,
   Toggles,
 } from './printConfig.context';
 import PrintPreview from './printPreview';
+import { invalidateScheduleWhoamiSession } from './scheduleWhoamiSession';
 
 const defaultFooterText = get(appConfig, 'printConfig.defaultFooterText', '');
 
@@ -70,35 +86,11 @@ const debounceCallback = debounce((callback: any, ...args: any[]) => {
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
-const UNSAFE_FILENAME_CHARS = new Set([
-  '<',
-  '>',
-  ':',
-  '"',
-  '/',
-  '\\',
-  '|',
-  '?',
-  '*',
-]);
-
-function sanitizeFilenamePart(input: string): string {
-  // Avoid control-character regexes (ESLint `no-control-regex`) by checking char codes.
-  const sanitized = input
-    .trim()
-    .split('')
-    .map(ch => {
-      const code = ch.charCodeAt(0);
-      const isControl = code < 32 || code === 127;
-      return isControl || UNSAFE_FILENAME_CHARS.has(ch) ? '_' : ch;
-    })
-    .join('');
-
-  // Collapse multiple underscores into a single underscore (e.g., "___" -> "_").
-  return sanitized.replace(/_+/g, '_').replace(/^_+|_+$/g, '');
-}
+const DATE_PLACEHOLDER_SUFFIX = ': {date_coverage}';
 
 function DownloadImage({ open, handleClose }: DownloadImageProps) {
+  const location = useLocation();
+  const history = useHistory();
   const { country, header } = appConfig;
   const logo = header?.logo;
   const bottomLogo = get(appConfig, 'printConfig.bottomLogo', undefined);
@@ -108,7 +100,9 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const printRef = useRef<HTMLDivElement>(null);
   const { data } = useBoundaryData(boundaryLayer.id);
   const dispatch = useDispatch();
-  const { t } = useSafeTranslation();
+  const posthog = usePostHog();
+  const { t, i18n } = useSafeTranslation();
+  const { enqueueBatchMapExportJob } = useBatchMapExportJobsActions();
 
   // list of toggles
   const [toggles, setToggles] = useState<Toggles>({
@@ -175,15 +169,41 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     startDate: null,
     endDate: null,
   });
+  /** Reseed batch defaults when layer or batch toggle changes; avoid clobbering after user edits same layer. */
+  const batchDateRangeSeededForLayerRef = useRef<string | null>(null);
+  /** Tracks print dialog open/close so we seed preview bounds/zoom once per open from main map. */
+  const printDialogWasOpenRef = useRef(false);
 
   const [cadence, setCadence] = useState<BatchCadence>('every-n-dekads');
   const [dekadInterval, setDekadInterval] = useState(1);
+  const [createScheduledMaps, setCreateScheduledMaps] = useState(false);
+
+  const updateCreateScheduledMaps = useCallback(
+    (value: React.SetStateAction<boolean>) => {
+      setCreateScheduledMaps(prev => {
+        const next = typeof value === 'function' ? value(prev) : value;
+        if (!next) {
+          const params = new URLSearchParams(location.search);
+          if (params.has('schedule')) {
+            params.delete('schedule');
+            history.replace({
+              pathname: location.pathname,
+              search: params.toString() ? `?${params.toString()}` : '',
+            });
+          }
+        }
+        return next;
+      });
+    },
+    [history, location.pathname, location.search],
+  );
 
   const [isDownloading, setIsDownloading] = useState(false);
-
-  const countryLayerIds = new Set(
-    Object.keys(configMap[safeCountry].rawLayers),
-  );
+  // Use the merged layer set (shared + country-specific) so shared layers a
+  // country only references via prism.json categories — e.g. `days_dry` — are
+  // not excluded. `configMap[safeCountry].rawLayers` holds only the country's
+  // own layers.json and would drop every referenced shared layer.
+  const countryLayerIds = new Set(Object.keys(rawLayers));
   const availableDates = useSelector(availableDatesSelector);
   const selectableLayers = Object.values(LayerDefinitions).filter(
     (l): l is DateCompatibleLayer =>
@@ -191,6 +211,27 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       countryLayerIds.has(l.id),
   );
   const [selectedLayerId, setSelectedLayerId] = useState<LayerKey | null>(null);
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+    const params = new URLSearchParams(location.search);
+    if (params.get('schedule') === '1') {
+      invalidateScheduleWhoamiSession();
+      updateCreateScheduledMaps(true);
+    }
+    if (params.get('batchMaps') === '1') {
+      setTitleText(prev =>
+        prev.includes('{date}') ? prev : `${prev}${DATE_PLACEHOLDER_SUFFIX}`,
+      );
+      setToggles(prev =>
+        prev.batchMapsVisibility
+          ? prev
+          : { ...prev, batchMapsVisibility: true },
+      );
+    }
+  }, [location.search, open, updateCreateScheduledMaps]);
 
   const { selectedLayersWithDateSupport, selectedLayers } = useLayers();
 
@@ -201,6 +242,40 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       );
     }
   }, [open]);
+
+  useEffect(() => {
+    if (!toggles.batchMapsVisibility) {
+      batchDateRangeSeededForLayerRef.current = null;
+    }
+  }, [toggles.batchMapsVisibility]);
+
+  useEffect(() => {
+    if (!open) {
+      batchDateRangeSeededForLayerRef.current = null;
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) {
+      setPreviewBounds(null);
+      setPreviewZoom(null);
+      setPreviewMapWidth(null);
+      setPreviewMapHeight(null);
+    }
+  }, [open]);
+
+  useLayoutEffect(() => {
+    if (!open) {
+      printDialogWasOpenRef.current = false;
+      return;
+    }
+    if (!selectedMap || printDialogWasOpenRef.current) {
+      return;
+    }
+    setPreviewBounds(selectedMap.getBounds());
+    setPreviewZoom(selectedMap.getZoom());
+    printDialogWasOpenRef.current = true;
+  }, [open, selectedMap]);
 
   useEffect(() => {
     if (selectedLayerId === null && selectableLayers.length > 0) {
@@ -216,19 +291,51 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     [selectedLayerId, selectableLayers],
   );
 
+  useEffect(() => {
+    if (
+      !open ||
+      !toggles.batchMapsVisibility ||
+      !printSelectedLayer ||
+      batchDateRangeSeededForLayerRef.current === printSelectedLayer.id
+    ) {
+      return;
+    }
+    const dateItems = getPossibleDatesForLayer(
+      printSelectedLayer,
+      availableDates,
+    );
+    if (dateItems.length === 0) {
+      return;
+    }
+    const mapStart = dateRange.startDate;
+    const fromMap =
+      mapStart != null
+        ? dateItems.find(
+            item =>
+              dateWithoutTime(item.queryDate) === dateWithoutTime(mapStart) ||
+              dateWithoutTime(item.displayDate) === dateWithoutTime(mapStart),
+          )
+        : undefined;
+    const anchorItem = fromMap ?? dateItems[dateItems.length - 1];
+    const day = dateWithoutTime(anchorItem.displayDate);
+    setDateRangeForBatchMaps({ startDate: day, endDate: day });
+    batchDateRangeSeededForLayerRef.current = printSelectedLayer.id;
+  }, [
+    open,
+    toggles.batchMapsVisibility,
+    printSelectedLayer,
+    availableDates,
+    dateRange.startDate,
+  ]);
+
   const availableCadences = useMemo(() => {
     const coverageWindow = printSelectedLayer
       ? printSelectedLayer.coverageWindow
       : selectedLayersWithDateSupport[0]?.coverageWindow;
     return getAvailableCadences(coverageWindow);
   }, [printSelectedLayer, selectedLayersWithDateSupport]);
-  useEffect(() => {
-    if (!availableCadences.includes(cadence)) {
-      setCadence(availableCadences[0]);
-    }
-  }, [availableCadences, cadence]);
 
-  const shouldEnableBatchMaps = false; // Temporarily disable batch maps;
+  const shouldEnableBatchMaps = true;
 
   const shouldShowMultiLayerWarning = selectedLayersWithDateSupport.length > 1;
 
@@ -259,11 +366,22 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       availableDates,
     );
 
-    const startOfStartDate = new Date(startDate).setUTCHours(0, 0, 0, 0);
-    const endOfEndDate = new Date(endDate).setUTCHours(23, 59, 59, 999);
+    const rangeStartDay = dateWithoutTime(startDate);
+    const rangeEndDay = dateWithoutTime(endDate);
+
+    const displayDayByQuery = new Map(
+      dateItems.map(item => [item.queryDate, item.displayDate]),
+    );
 
     const rawUniqueDates = [...new Set(dateItems.map(item => item.queryDate))]
-      .filter(d => d >= startOfStartDate && d <= endOfEndDate)
+      .filter(d => {
+        const disp = displayDayByQuery.get(d);
+        if (disp === undefined) {
+          return false;
+        }
+        const day = dateWithoutTime(disp);
+        return day >= rangeStartDay && day <= rangeEndDay;
+      })
       .sort((a, b) => a - b);
 
     const coverageWindow = printSelectedLayer.coverageWindow;
@@ -287,11 +405,54 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   ]);
 
   const disabledCadences = useMemo(
-    () => getDisabledCadences(uniqueQueryDates, dekadInterval),
-    [uniqueQueryDates, dekadInterval],
+    () =>
+      getDisabledCadences(uniqueQueryDates, dekadInterval, createScheduledMaps),
+    [uniqueQueryDates, dekadInterval, createScheduledMaps],
   );
 
   useEffect(() => {
+    const effectiveDisabled = createScheduledMaps
+      ? new Set<BatchCadence>()
+      : disabledCadences;
+    const validCadence = resolveValidCadence(
+      availableCadences,
+      effectiveDisabled,
+      cadence,
+    );
+    if (validCadence !== cadence) {
+      setCadence(validCadence);
+    }
+  }, [availableCadences, cadence, createScheduledMaps, disabledCadences]);
+
+  const mapExportTemplate = useMapExportTemplate({
+    mapBounds: previewBounds,
+    mapDimensions,
+    previewMapWidth,
+    previewMapHeight,
+    titleText,
+    footerText,
+    footerTextSize,
+    logoPosition,
+    logoScale,
+    legendPosition,
+    legendScale,
+    bottomLogoScale,
+    toggles,
+    selectedBoundaries,
+    language: exportLanguage(location.search, {
+      activeLanguage: i18n.resolvedLanguage,
+    }),
+  });
+
+  const batchDatesUnavailableMessage = t(
+    'A map could not be made for the dates you selected. Please choose an earlier date range and/or a shorter cadence.',
+  );
+
+  useEffect(() => {
+    if (createScheduledMaps) {
+      dispatch(removeNotification(stringHash(batchDatesUnavailableMessage)));
+      return;
+    }
     if (
       open &&
       toggles.batchMapsVisibility &&
@@ -303,39 +464,31 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       dispatch(
         addNotification({
           type: 'error',
-          message: t(
-            'A map could not be made for the dates you selected. Please choose an earlier date range and/or a shorter cadence.',
-          ),
+          message: batchDatesUnavailableMessage,
         }),
       );
     }
   }, [
     open,
+    createScheduledMaps,
     filteredBatchDates,
     toggles.batchMapsVisibility,
     dateRangeForBatchMaps.startDate,
     dateRangeForBatchMaps.endDate,
+    batchDatesUnavailableMessage,
     dispatch,
-    t,
   ]);
 
   useEffect(() => {
     if (!open) {
-      dispatch(
-        removeNotification(
-          stringHash(
-            t(
-              'A map could not be made for the dates you selected. Please choose an earlier date range and/or a shorter cadence.',
-            ),
-          ),
-        ),
-      );
+      dispatch(removeNotification(stringHash(batchDatesUnavailableMessage)));
     }
-  }, [open, dispatch, t]);
+  }, [open, batchDatesUnavailableMessage, dispatch]);
 
   useEffect(() => {
     if (
       open &&
+      !createScheduledMaps &&
       toggles.batchMapsVisibility &&
       hasNonDateLayers &&
       printSelectedLayer
@@ -352,6 +505,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     }
   }, [
     open,
+    createScheduledMaps,
     toggles.batchMapsVisibility,
     hasNonDateLayers,
     printSelectedLayer,
@@ -392,6 +546,11 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   };
 
   const download = (format: 'pdf' | 'jpeg' | 'png') => {
+    posthog?.capture('map_print_downloaded', {
+      format,
+      title: titleText,
+      date: getFormattedDate(dateRange.startDate, 'default'),
+    });
     const filename: string = `${titleText || country}_${
       getFormattedDate(dateRange.startDate, 'snake') || 'no_date'
     }`;
@@ -433,48 +592,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     }
 
     handleClose();
-    handleDownloadMenuClose();
-  };
-
-  const getBatchExportUrls = () => {
-    if (!printSelectedLayer) {
-      return [];
-    }
-
-    const formattedDates = filteredBatchDates
-      .map(timestamp => getFormattedDate(timestamp, 'default'))
-      .filter((date): date is string => date !== undefined);
-
-    if (formattedDates.length === 0) {
-      return [];
-    }
-
-    return buildBatchExportUrls({
-      pageUrl: window.location.href,
-      layerId: printSelectedLayer.id,
-      formattedDates,
-      mapBounds: previewBounds,
-      mapZoom: previewZoom,
-      aspectRatio: mapDimensions.aspectRatio,
-      titleText,
-      footerText,
-      footerTextSize,
-      logoPosition,
-      logoScale,
-      legendPosition,
-      legendScale,
-      bottomLogoScale,
-      toggles: {
-        fullLayerDescription: toggles.fullLayerDescription,
-        countryMask: toggles.countryMask,
-        mapLabelsVisibility: toggles.mapLabelsVisibility,
-        logoVisibility: toggles.logoVisibility,
-        legendVisibility: toggles.legendVisibility,
-        footerVisibility: toggles.footerVisibility,
-        bottomLogoVisibility: toggles.bottomLogoVisibility,
-      },
-      selectedBoundaries,
-    });
+    setDownloadMenuAnchorEl(null);
   };
 
   const copyBatchMapUrls = async () => {
@@ -490,7 +608,22 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       return;
     }
 
-    const constructedUrls = getBatchExportUrls();
+    if (!printSelectedLayer) {
+      dispatch(
+        addNotification({
+          type: 'error',
+          message: t('Select a layer for batch maps'),
+        }),
+      );
+      return;
+    }
+
+    const timestampsForCopy =
+      filteredBatchDates.length > 0 ? [filteredBatchDates[0]] : [];
+    const constructedUrls = mapExportTemplate.buildBatchUrlsForTimestamps(
+      timestampsForCopy,
+      printSelectedLayer,
+    );
 
     if (constructedUrls.length === 0) {
       dispatch(
@@ -503,7 +636,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     }
 
     try {
-      // One representative /export URL (first cadence date); batch download still uses all dates.
       await navigator.clipboard.writeText(
         formatExportUrlForClipboard(constructedUrls[0]),
       );
@@ -535,83 +667,64 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     setIsDownloading(true);
     handleDownloadMenuClose();
 
+    posthog?.capture('batch_maps_downloaded', {
+      format,
+      title: titleText,
+      start_date: getFormattedDate(startDate, 'default'),
+      end_date: getFormattedDate(endDate, 'default'),
+      cadence,
+      dekad_interval: dekadInterval,
+      map_count: filteredBatchDates.length,
+    });
+
     try {
       if (!printSelectedLayer) {
         console.error('No layer selected for batch download');
-        setIsDownloading(false);
         return;
       }
 
-      const constructedUrls = getBatchExportUrls();
+      const timestampsForExport =
+        filteredBatchDates.length > MAP_EXPORT_MAX_URLS_PER_REQUEST
+          ? filteredBatchDates.slice(-MAP_EXPORT_MAX_URLS_PER_REQUEST)
+          : filteredBatchDates;
+
+      const constructedUrls = mapExportTemplate.buildBatchUrlsForTimestamps(
+        timestampsForExport,
+        printSelectedLayer,
+      );
 
       if (constructedUrls.length === 0) {
         console.error('No dates found in the selected range');
-        setIsDownloading(false);
         return;
       }
 
-      // Calculate viewport dimensions for export
-      // For 'Auto' aspect ratio, use the actual map dimensions from the preview
-      const exportDims = calculateExportDimensions(
-        mapDimensions.aspectRatio,
-        mapDimensions.aspectRatio === 'Auto'
-          ? (previewMapWidth ?? undefined)
-          : undefined,
-        mapDimensions.aspectRatio === 'Auto'
-          ? (previewMapHeight ?? undefined)
-          : undefined,
-      );
+      const layerDisplayName =
+        printSelectedLayer.title ?? printSelectedLayer.id;
+      const datesSummary = buildBatchExportDatesDisplay(timestampsForExport);
+      const { canvasWidth, canvasHeight } =
+        mapExportTemplate.getViewportDimensions();
 
-      const response = await fetch(`${EXPORT_API_URL}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          urls: constructedUrls,
-          viewportWidth: exportDims.canvasWidth,
-          viewportHeight: exportDims.canvasHeight,
-          format,
-        }),
+      enqueueBatchMapExportJob({
+        urls: constructedUrls,
+        viewportWidth: canvasWidth,
+        viewportHeight: canvasHeight,
+        format,
+        country: safeCountry,
+        layerDisplayName,
+        datesSummary,
+        mapTotal: constructedUrls.length,
       });
-
-      if (!response.ok) {
-        throw new Error(`Export failed: ${response.statusText}`);
-      }
-
-      const blob = await response.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
-      const startDateStr = getFormattedDate(startDate, 'snake');
-      const endDateStr = getFormattedDate(endDate, 'snake');
-      const cleanedTitle = (titleText || country).replace(
-        /(\s*-\s*)?\{(date|date_coverage)\}/gi,
-        '',
-      );
-      const safeTitle = sanitizeFilenamePart(cleanedTitle);
-      const filename = `${safeTitle}_${startDateStr}_to_${endDateStr}`;
-      // Server returns ZIP file when format is 'png'
-      const contentType =
-        format === 'pdf' ? 'application/pdf' : 'application/zip';
-
-      downloadToFile(
-        { content: downloadUrl, isUrl: true },
-        filename,
-        contentType,
-      );
-
-      dispatch(
-        addNotification({
-          type: 'success',
-          message: t('Batch download completed successfully.'),
-        }),
-      );
     } catch (error) {
+      const message =
+        error instanceof Error
+          ? t('Batch export failed: {{message}}', { message: error.message })
+          : t(
+              'Something went wrong with the batch download. Please try again.',
+            );
       dispatch(
         addNotification({
           type: 'error',
-          message: t(
-            'Something went wrong with the batch download. Please try again.',
-          ),
+          message,
         }),
       );
       console.error('Batch download failed:', error);
@@ -619,6 +732,98 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       setIsDownloading(false);
     }
   };
+
+  const createSchedule = useCallback(
+    async (format: 'pdf' | 'png') => {
+      if (!printSelectedLayer) {
+        dispatch(
+          addNotification({
+            type: 'error',
+            message: t('Select a layer for scheduled maps'),
+          }),
+        );
+        return;
+      }
+      if (!previewBounds) {
+        dispatch(
+          addNotification({
+            type: 'error',
+            message: t(
+              'Open the print preview so the map viewport is captured before creating a schedule',
+            ),
+          }),
+        );
+        return;
+      }
+
+      const scheduleName = titleText.trim();
+      if (!scheduleName) {
+        dispatch(
+          addNotification({
+            type: 'error',
+            message: t('Enter a title for scheduled maps'),
+          }),
+        );
+        return;
+      }
+
+      setIsDownloading(true);
+      try {
+        const schedulePayload =
+          mapExportTemplate.buildScheduleExportPayloadForCreate();
+        if (!schedulePayload) {
+          return;
+        }
+
+        const result = await createMapExportSchedule({
+          name: scheduleName,
+          country: safeCountry,
+          layer_id: printSelectedLayer.id,
+          cadence: cadenceToApi(cadence),
+          dekad_interval: dekadInterval,
+          format,
+          export_url: schedulePayload.export_url,
+          export_options: schedulePayload.export_options,
+          admin_areas: schedulePayload.admin_areas,
+        });
+
+        dispatch(
+          addNotification({
+            type: 'success',
+            message: t('Schedule "{{name}}" created', { name: result.name }),
+          }),
+        );
+        handleClose();
+      } catch (error) {
+        const message =
+          error instanceof Error
+            ? t('Schedule creation failed: {{message}}', {
+                message: error.message,
+              })
+            : t('Schedule creation failed. Please try again.');
+        dispatch(
+          addNotification({
+            type: 'error',
+            message,
+          }),
+        );
+        console.error('Create schedule failed:', error);
+      } finally {
+        setIsDownloading(false);
+      }
+    },
+    [
+      printSelectedLayer,
+      previewBounds,
+      titleText,
+      mapExportTemplate,
+      cadence,
+      dekadInterval,
+      dispatch,
+      t,
+      handleClose,
+    ],
+  );
 
   const printContext = {
     printConfig: {
@@ -689,6 +894,9 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       selectableLayers,
       selectedLayerId,
       setSelectedLayerId,
+      createScheduledMaps,
+      setCreateScheduledMaps: updateCreateScheduledMaps,
+      createSchedule,
     },
   };
 
@@ -701,9 +909,11 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         onClose={() => handleClose()}
         aria-labelledby="dialog-preview"
       >
-        <DialogContent className={classes.contentContainer}>
-          <PrintPreview />
-          <PrintConfig />
+        <DialogContent>
+          <Box className={classes.contentContainer}>
+            <PrintPreview />
+            <PrintConfig />
+          </Box>
         </DialogContent>
       </Dialog>
     </PrintConfigContext.Provider>

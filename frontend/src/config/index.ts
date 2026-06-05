@@ -13,6 +13,7 @@ import cuba from './cuba';
 import ecuador from './ecuador';
 import global from './global';
 import haiti from './haiti';
+import honduras from './honduras';
 import indonesia from './indonesia';
 import jordan from './jordan';
 import kyrgyzstan from './kyrgyzstan';
@@ -50,6 +51,7 @@ export const configMap = {
   ecuador,
   global,
   haiti,
+  honduras,
   indonesia,
   jordan,
   kyrgyzstan,
@@ -84,8 +86,12 @@ const {
   REACT_APP_OAUTH_REDIRECT_URI: REDIRECT_URI,
   REACT_APP_TESTING: TESTING,
   REACT_APP_QA_MODE: QA_MODE,
-  REACT_APP_DASHBOARD_CONFIG_BUCKET_URL: DASHBOARD_CONFIG_BUCKET_URL,
+  REACT_APP_USE_STAGING: USE_STAGING,
 } = process.env;
+
+// When true, the dashboard read API is asked to also return status=staging
+// dashboards (see useDashboardConfig). Off in production builds.
+const useStagingDashboards = USE_STAGING === 'true';
 
 const safeCountry =
   COUNTRY && has(configMap, COUNTRY.toLocaleLowerCase())
@@ -110,21 +116,13 @@ const {
 } = shared;
 
 // Perform deep merges between shared and country-specific configurations
-// Dashboard definitions: from S3 when REACT_APP_DASHBOARD_CONFIG_BUCKET_URL is set; otherwise
-// from public/data/{country}/dashboard.json (see useDashboardConfig).
+// Dashboard row definitions: loaded from the geospatial API
+// (GET /dashboards?country=<safeCountry>; see useDashboardConfig).
 const appConfig: Record<string, any> = merge(
   {},
   defaultConfig,
   configMap[safeCountry].appConfig,
 );
-
-const dashboardConfigBaseUrl = DASHBOARD_CONFIG_BUCKET_URL?.replace(/\/$/, '');
-export const dashboardConfigUrl = dashboardConfigBaseUrl
-  ? `${dashboardConfigBaseUrl}/${safeCountry}/dashboard.json`
-  : null;
-
-/** When no S3 bucket URL: fetch this path (Vite serves `frontend/public/` at the site root). */
-export const localDashboardConfigUrl = `/data/${safeCountry}/dashboard.json`;
 
 export function getRawLayers(
   country: Country,
@@ -164,11 +162,14 @@ export function getRawLayers(
 // 2. Override: value (country-specific translation overrides shared)
 export function getTranslation(country: Country): Record<string, any> {
   const countryTranslation = get(configMap[country], 'translation', {});
+  // Always seed English so the shared English file loads as the i18n
+  // fallback, even for countries that declare no translation override.
+  const baseTranslation = { en: {}, ...countryTranslation };
   return Object.fromEntries(
     Object.entries(
       QA_MODE || TESTING
-        ? merge({}, sharedTranslation, countryTranslation)
-        : countryTranslation,
+        ? merge({}, sharedTranslation, baseTranslation)
+        : baseTranslation,
     ).map(([key, value]) => [
       key,
       merge({}, sharedTranslation[key] || {}, value),
@@ -217,4 +218,5 @@ export {
   rawTables,
   safeCountry,
   translation,
+  useStagingDashboards,
 };

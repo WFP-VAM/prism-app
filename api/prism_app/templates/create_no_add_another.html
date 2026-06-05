@@ -1,0 +1,94 @@
+{#
+  Custom create template with Save + Cancel only.
+  Used by DashboardAdminView.
+  Extends the built-in template via the @starlette-admin prefix so
+  ChoiceLoader resolves the original rather than recursing.
+#}
+{% extends "@starlette-admin/create.html" %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <form action="{{ request.url | safe }}"
+                          method="POST"
+                          enctype="multipart/form-data">
+                        <div class="card-header">
+                            <div class="container-fluid">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h3 class="card-title">{{ _("New %(name)s", name=model.name ) }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body border-bottom py-3">
+                            <div class="mb-3">
+                                <label class="form-label">Title</label>
+                                <input type="text" class="form-control" id="derived-title" value="" readonly disabled
+                                       placeholder="Derived from uploaded JSON">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Country</label>
+                                <input type="text" class="form-control" id="derived-country" value="" readonly disabled
+                                       placeholder="Derived from uploaded JSON">
+                            </div>
+                            {% block create_form %}
+                                {% for field in model.get_fields_list(request, 'CREATE' | ra) %}
+                                    <div class="mb-3">
+                                        {% if obj is defined and obj %}
+                                            {% set create_data = obj[field.name] %}
+                                        {% elif field.name == 'status' %}
+                                            {% set create_data = 'draft' %}
+                                        {% else %}
+                                            {% set create_data = none %}
+                                        {% endif %}
+                                        {% with action=('CREATE'| ra), data=create_data, error=errors.get(field.name, None) if errors else None %}
+                                            {% include field.label_template %}
+                                            {% include field.form_template %}
+                                        {% endwith %}
+                                    </div>
+                                {% endfor %}
+                            {% endblock %}
+                        </div>
+                        <div class="card-footer text-black">
+                            <div class="btn-list ms-auto justify-content-end">
+                                <a href="{{ url_for(__name__ ~ ':list', identity=model.identity) }}"
+                                   class="btn btn-danger">{{ _("Cancel") }}</a>
+                                <button type="submit" class="btn btn-success">{{ _("Save") }}</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+<script>
+(() => {
+    const fileInput = document.getElementById("config");
+    const titleEl = document.getElementById("derived-title");
+    const countryEl = document.getElementById("derived-country");
+    if (!fileInput || !titleEl || !countryEl) return;
+
+    fileInput.addEventListener("change", () => {
+        const file = fileInput.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const cfg = JSON.parse(e.target.result);
+                titleEl.value = cfg.title || "";
+                countryEl.value = cfg.country || "";
+            } catch {
+                titleEl.value = "";
+                countryEl.value = "";
+            }
+        };
+        reader.readAsText(file);
+    });
+})();
+</script>
+{% endblock %}

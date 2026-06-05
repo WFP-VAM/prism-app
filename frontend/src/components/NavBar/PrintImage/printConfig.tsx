@@ -27,12 +27,31 @@ import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdo
 import { LayerKey } from 'config/types';
 import { cyanBlue } from 'muiTheme';
 import React, { useContext, useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import {
+  MAP_EXPORT_MAX_URLS_PER_REQUEST,
+  PRISM_SIGN_IN_URL,
+} from 'utils/constants';
 
 import { useSafeTranslation } from '../../../i18n';
 import AspectRatioSelector from './AspectRatioSelector';
+import BatchMapExportJobRows from './batchMapExport/BatchMapExportJobRows';
+import {
+  useBatchMapExportJobsActions,
+  useBatchMapExportJobsState,
+} from './batchMapExport/useBatchMapExportJobs';
 import CadenceSelector from './CadenceSelector';
 import DateRangePicker from './DateRangePicker';
 import PrintConfigContext from './printConfig.context';
+import {
+  isPrintPanelPrimaryDisabled,
+  isSchedulePrimaryDisabled,
+  schedulePrimaryButtonLabelKey,
+} from './scheduleExportUi';
+import {
+  fetchScheduleWhoamiSession,
+  type ScheduleWhoamiSessionStatus,
+} from './scheduleWhoamiSession';
 
 interface ToggleSelectorProps {
   title: string;
@@ -160,9 +179,11 @@ function SectionToggle({
       ) : (
         switchElement
       )}
-      <Collapse in={expanded} style={{ paddingLeft: '8px' }}>
-        {children}
-      </Collapse>
+      {children ? (
+        <Collapse in={expanded} style={{ paddingLeft: '8px' }}>
+          {children}
+        </Collapse>
+      ) : null}
     </div>
   );
 }
@@ -273,13 +294,52 @@ const DATE_PLACEHOLDER_SUFFIX = ': {date_coverage}';
 function PrintConfig() {
   const classes = useStyles();
   const { t } = useSafeTranslation();
+  const location = useLocation();
+  const { jobs: activeBatchJobs } = useBatchMapExportJobsState();
+  const { dismissBatchMapExportJob } = useBatchMapExportJobsActions();
   const { printConfig } = useContext(PrintConfigContext);
+  const [isPrismAuthenticated, setIsPrismAuthenticated] = useState(false);
+  const [canManageSchedules, setCanManageSchedules] = useState(false);
+  const [scheduleSessionStatus, setScheduleSessionStatus] =
+    useState<ScheduleWhoamiSessionStatus>('unauthorized');
+
+  const scheduleWhoamiBypassCache =
+    new URLSearchParams(location.search).get('schedule') === '1';
 
   // Local state for responsive input - syncs to parent with debounce
   const [localTitle, setLocalTitle] = useState(printConfig?.titleText ?? '');
   useEffect(() => {
     setLocalTitle(printConfig?.titleText ?? '');
   }, [printConfig?.titleText]);
+
+  useEffect(() => {
+    const scheduleMode = printConfig?.createScheduledMaps ?? false;
+    if (!scheduleMode) {
+      setIsPrismAuthenticated(false);
+      setCanManageSchedules(false);
+      setScheduleSessionStatus('unauthorized');
+      return;
+    }
+    if (!printConfig?.open) {
+      return;
+    }
+    const bypassCache = scheduleWhoamiBypassCache;
+    let cancelled = false;
+    void fetchScheduleWhoamiSession({ bypassCache }).then(result => {
+      if (!cancelled) {
+        setIsPrismAuthenticated(result.isPrismAuthenticated);
+        setCanManageSchedules(result.canManageSchedules);
+        setScheduleSessionStatus(result.sessionStatus);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    scheduleWhoamiBypassCache,
+    printConfig?.open,
+    printConfig?.createScheduledMaps,
+  ]);
 
   // Appease TS by ensuring printConfig is defined
   if (!printConfig) {
@@ -328,10 +388,74 @@ function PrintConfig() {
     selectableLayers,
     selectedLayerId,
     setSelectedLayerId,
+    createScheduledMaps,
+    setCreateScheduledMaps,
+    createSchedule,
+    previewBounds,
   } = printConfig;
 
+  const batchMapsWillTruncate =
+    toggles.batchMapsVisibility && mapCount > MAP_EXPORT_MAX_URLS_PER_REQUEST;
+
+  const handlePrimaryButtonClick = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    if (!createScheduledMaps) {
+      handleDownloadMenuOpen(event);
+      return;
+    }
+    if (!isPrismAuthenticated) {
+      const params = new URLSearchParams(location.search);
+      params.set('printModal', '1');
+      params.set('batchMaps', '1');
+      params.set('schedule', '1');
+      const returnUrl = `${window.location.origin}${
+        location.pathname
+      }?${params.toString()}`;
+      window.location.assign(
+        `${PRISM_SIGN_IN_URL}?next=${encodeURIComponent(returnUrl)}`,
+      );
+      return;
+    }
+    if (!canManageSchedules) {
+      return;
+    }
+    handleDownloadMenuOpen(event);
+  };
+
+  const primaryLabelKey = schedulePrimaryButtonLabelKey({
+    createScheduledMaps,
+    isPrismAuthenticated,
+    canManageSchedules,
+    selectedLayerId,
+    hasPreviewBounds: Boolean(previewBounds),
+  });
+  const primaryButtonLabel =
+    primaryLabelKey === 'export'
+      ? t('Export')
+      : primaryLabelKey === 'create_schedule'
+        ? t('Create schedule')
+        : t('Login to create schedule');
+
+  const schedulePrimaryDisabled = isSchedulePrimaryDisabled({
+    createScheduledMaps,
+    isPrismAuthenticated,
+    canManageSchedules,
+    selectedLayerId,
+    hasPreviewBounds: Boolean(previewBounds),
+  });
+
+  const primaryDisabled = isPrintPanelPrimaryDisabled({
+    isDownloading,
+    schedulePrimaryDisabled,
+    createScheduledMaps,
+    isPrismAuthenticated,
+    batchMapsVisibility: toggles.batchMapsVisibility,
+    hasCompleteDateRange: Boolean(dateRange.startDate && dateRange.endDate),
+  });
+
   return (
-    <Box>
+    <Box className={classes.printPanelRoot}>
       <div className={classes.optionsContainer}>
         <div>
           <Box
@@ -610,7 +734,7 @@ function PrintConfig() {
 
         {/* Batch Maps */}
         {shouldEnableBatchMaps && (
-          <>
+          <Box className={classes.batchMapsSection}>
             <Box className={classes.batchMapsHeader}>
               <Box className={classes.batchMapsToggle}>
                 <SectionToggle
@@ -636,6 +760,10 @@ function PrintConfig() {
                       setTitleText(prev =>
                         prev.slice(0, -DATE_PLACEHOLDER_SUFFIX.length),
                       );
+                    }
+
+                    if (!willBeEnabled) {
+                      setCreateScheduledMaps(false);
                     }
 
                     setToggles(prev => ({
@@ -665,63 +793,167 @@ function PrintConfig() {
                 </Tooltip>
               )}
             </Box>
+            <SectionToggle
+              title={t('Create maps for future data')}
+              expanded={createScheduledMaps}
+              disabled={!toggles.batchMapsVisibility}
+              tooltip={t(
+                'Selecting this option will apply the template above to create maps as new data becomes available.',
+              )}
+              handleChange={({ target }) => {
+                if (!target.checked) {
+                  handleDownloadMenuClose();
+                }
+                setCreateScheduledMaps(target.checked);
+              }}
+            >
+              {createScheduledMaps &&
+                scheduleSessionStatus === 'unauthorized' && (
+                  <GreyContainer>
+                    <GreyContainerSection isLast>
+                      <Typography
+                        variant="caption"
+                        component="p"
+                        className={classes.batchExportTruncateHint}
+                      >
+                        {t(
+                          'Sign in is required to create scheduled maps. Use Login to create schedule below.',
+                        )}
+                      </Typography>
+                    </GreyContainerSection>
+                  </GreyContainer>
+                )}
+              {createScheduledMaps &&
+                scheduleSessionStatus === 'network_error' && (
+                  <GreyContainer>
+                    <GreyContainerSection isLast>
+                      <Typography
+                        variant="caption"
+                        component="p"
+                        className={classes.batchExportTruncateHint}
+                      >
+                        {t(
+                          'Could not verify your session. Check your connection and try again.',
+                        )}
+                      </Typography>
+                    </GreyContainerSection>
+                  </GreyContainer>
+                )}
+              {createScheduledMaps &&
+                isPrismAuthenticated &&
+                !canManageSchedules && (
+                  <GreyContainer>
+                    <GreyContainerSection isLast>
+                      <Typography
+                        variant="caption"
+                        component="p"
+                        className={classes.batchExportTruncateHint}
+                      >
+                        {t(
+                          'You do not have permission to create schedules. Contact an administrator.',
+                        )}
+                      </Typography>
+                    </GreyContainerSection>
+                  </GreyContainer>
+                )}
+            </SectionToggle>
             {toggles.batchMapsVisibility && (
-              <GreyContainer>
-                <GreyContainerSection>
-                  {/* Layer */}
-                  <FormControl fullWidth size="small" variant="outlined">
-                    <InputLabel>{t('Layer')}</InputLabel>
-                    <Select
-                      value={selectedLayerId ?? ''}
-                      label={t('Layer')}
-                      onChange={e =>
-                        setSelectedLayerId(e.target.value as LayerKey)
-                      }
-                    >
-                      {selectableLayers.map(layer => (
-                        <MenuItem key={layer.id} value={layer.id}>
-                          {t(layer.title)}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </GreyContainerSection>
-                <GreyContainerSection>
-                  <DateRangePicker />
-                </GreyContainerSection>
-                <GreyContainerSection>
-                  <CadenceSelector />
-                </GreyContainerSection>
-                <GreyContainerSection isLast>
-                  <Box className={classes.mapCountContainer}>
-                    <Typography variant="body1">
-                      {t('Number of maps generated')}
-                    </Typography>
-                    <Typography
-                      variant="body1"
-                      className={classes.mapCountValue}
-                    >
-                      {mapCount}
-                    </Typography>
-                  </Box>
-                </GreyContainerSection>
-              </GreyContainer>
+              <Box className={classes.batchMapsForm}>
+                <GreyContainer>
+                  <GreyContainerSection>
+                    {/* Layer */}
+                    <FormControl fullWidth size="small" variant="outlined">
+                      <InputLabel>{t('Layer')}</InputLabel>
+                      <Select
+                        value={selectedLayerId ?? ''}
+                        label={t('Layer')}
+                        onChange={e =>
+                          setSelectedLayerId(e.target.value as LayerKey)
+                        }
+                      >
+                        {selectableLayers.map(layer => (
+                          <MenuItem key={layer.id} value={layer.id}>
+                            {t(layer.title)}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </GreyContainerSection>
+                  {!createScheduledMaps && (
+                    <GreyContainerSection>
+                      <DateRangePicker />
+                    </GreyContainerSection>
+                  )}
+                  <GreyContainerSection isLast={createScheduledMaps}>
+                    <CadenceSelector />
+                  </GreyContainerSection>
+                  {!createScheduledMaps && (
+                    <GreyContainerSection isLast>
+                      <Box className={classes.mapCountContainer}>
+                        <Typography variant="body1">
+                          {t('Number of maps generated')}
+                        </Typography>
+                        <Typography
+                          variant="body1"
+                          className={`${classes.mapCountValue}${
+                            batchMapsWillTruncate
+                              ? ` ${classes.mapCountValueWarning}`
+                              : ''
+                          }`}
+                        >
+                          {mapCount}
+                        </Typography>
+                      </Box>
+                      {batchMapsWillTruncate && (
+                        <Typography
+                          variant="caption"
+                          component="p"
+                          className={classes.batchExportTruncateHint}
+                        >
+                          {t('batch_export_maps_truncated_panel', {
+                            max: MAP_EXPORT_MAX_URLS_PER_REQUEST,
+                          })}
+                        </Typography>
+                      )}
+                    </GreyContainerSection>
+                  )}
+                </GreyContainer>
+              </Box>
             )}
-          </>
+            {toggles.batchMapsVisibility && activeBatchJobs.length > 0 && (
+              <Box className={classes.batchExportsInPanelWrap}>
+                <GreyContainer>
+                  <GreyContainerSection isLast>
+                    <Typography
+                      variant="h4"
+                      style={{ marginBottom: '8px', fontWeight: 600 }}
+                    >
+                      {t('Batch map exports')}
+                    </Typography>
+                    <BatchMapExportJobRows
+                      jobs={activeBatchJobs}
+                      onDismiss={dismissBatchMapExportJob}
+                      variant="panel"
+                    />
+                  </GreyContainerSection>
+                </GreyContainer>
+              </Box>
+            )}
+          </Box>
         )}
 
         <Button
-          style={{ backgroundColor: cyanBlue, color: 'black' }}
+          fullWidth
           variant="contained"
           color="primary"
-          className={classes.gutter}
+          className={`${classes.gutter} ${
+            primaryDisabled
+              ? classes.primaryButtonDisabled
+              : classes.primaryButtonActive
+          }`}
           endIcon={<GetApp />}
-          onClick={e => handleDownloadMenuOpen(e)}
-          disabled={
-            isDownloading ||
-            (toggles.batchMapsVisibility &&
-              (!dateRange.startDate || !dateRange.endDate))
-          }
+          onClick={handlePrimaryButtonClick}
+          disabled={primaryDisabled}
         >
           {isDownloading ? (
             <>
@@ -731,7 +963,7 @@ function PrintConfig() {
               </span>
             </>
           ) : (
-            <span>{t('Download')}</span>
+            <span>{primaryButtonLabel}</span>
           )}
         </Button>
 
@@ -741,26 +973,47 @@ function PrintConfig() {
           open={Boolean(downloadMenuAnchorEl)}
           onClose={handleDownloadMenuClose}
         >
-          {toggles.batchMapsVisibility
+          {createScheduledMaps && isPrismAuthenticated && canManageSchedules
             ? [
-                <MenuItem key="pdf" onClick={() => downloadBatch('pdf')}>
-                  {t('Download maps as PDF')}
+                <MenuItem
+                  key="schedule-pdf"
+                  onClick={() => {
+                    handleDownloadMenuClose();
+                    void createSchedule('pdf');
+                  }}
+                >
+                  {t('Export maps as PDF')}
                 </MenuItem>,
-                <MenuItem key="png" onClick={() => downloadBatch('png')}>
-                  {t('Download maps as PNGs')}
+                <MenuItem
+                  key="schedule-png"
+                  onClick={() => {
+                    handleDownloadMenuClose();
+                    void createSchedule('png');
+                  }}
+                >
+                  {t('Export maps as PNGs')}
                 </MenuItem>,
               ]
-            : [
-                <MenuItem key="png" onClick={() => download('png')}>
-                  {t('Download PNG')}
-                </MenuItem>,
-                <MenuItem key="jpeg" onClick={() => download('jpeg')}>
-                  {t('Download JPEG')}
-                </MenuItem>,
-                <MenuItem key="pdf" onClick={() => download('pdf')}>
-                  {t('Download PDF')}
-                </MenuItem>,
-              ]}
+            : toggles.batchMapsVisibility
+              ? [
+                  <MenuItem key="pdf" onClick={() => downloadBatch('pdf')}>
+                    {t('Export maps as PDF')}
+                  </MenuItem>,
+                  <MenuItem key="png" onClick={() => downloadBatch('png')}>
+                    {t('Export maps as PNGs')}
+                  </MenuItem>,
+                ]
+              : [
+                  <MenuItem key="png" onClick={() => download('png')}>
+                    {t('Download PNG')}
+                  </MenuItem>,
+                  <MenuItem key="jpeg" onClick={() => download('jpeg')}>
+                    {t('Download JPEG')}
+                  </MenuItem>,
+                  <MenuItem key="pdf" onClick={() => download('pdf')}>
+                    {t('Download PDF')}
+                  </MenuItem>,
+                ]}
         </Menu>
       </div>
     </Box>
@@ -769,11 +1022,31 @@ function PrintConfig() {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    printPanelRoot: {
+      minWidth: 0,
+      flexShrink: 1,
+    },
     title: {
       color: theme.palette.text.secondary,
     },
     gutter: {
-      marginBottom: 10,
+      marginBottom: 0,
+    },
+    primaryButtonActive: {
+      backgroundColor: cyanBlue,
+      color: 'black',
+      '&:hover': {
+        backgroundColor: cyanBlue,
+      },
+    },
+    primaryButtonDisabled: {
+      cursor: 'not-allowed',
+      '&.Mui-disabled': {
+        cursor: 'not-allowed',
+        pointerEvents: 'auto',
+        backgroundColor: theme.palette.grey[300],
+        color: theme.palette.text.disabled,
+      },
     },
     closeButton: {
       position: 'absolute',
@@ -788,6 +1061,10 @@ const useStyles = makeStyles((theme: Theme) =>
       gap: '0.5rem',
       minHeight: '740px',
       width: '20.5rem',
+      minWidth: 0,
+      boxSizing: 'border-box',
+      paddingLeft: theme.spacing(1),
+      paddingRight: theme.spacing(1),
       overflowY: 'auto',
       overflowX: 'hidden',
       scrollbarGutter: 'stable',
@@ -834,13 +1111,27 @@ const useStyles = makeStyles((theme: Theme) =>
     mapCountContainer: {
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'space-between',
+      justifyContent: 'flex-start',
+      flexWrap: 'wrap',
+      gap: theme.spacing(1),
     },
     mapCountValue: {
-      border: '1px solid rgba(0, 0, 0, 0.23)',
       borderRadius: '4px',
-      padding: '8px 12px',
-      backgroundColor: '#f5f5f5',
+      padding: theme.spacing(0.25, 0.75),
+      margin: theme.spacing(0.5, 1),
+      backgroundColor: theme.palette.grey[300],
+      lineHeight: 1.2,
+    },
+    mapCountValueWarning: {
+      color: theme.palette.error.main,
+    },
+    batchExportTruncateHint: {
+      marginTop: theme.spacing(0.5),
+      color: theme.palette.error.main,
+    },
+    batchMapsSection: {
+      display: 'flex',
+      flexDirection: 'column',
     },
     batchMapsHeader: {
       display: 'flex',
@@ -865,6 +1156,14 @@ const useStyles = makeStyles((theme: Theme) =>
         color: 'rgba(0, 0, 0, 0.87)',
         backgroundColor: 'rgba(0, 0, 0, 0.04)',
       },
+    },
+    batchMapsForm: {
+      paddingTop: '10px',
+    },
+    batchExportsInPanelWrap: {
+      marginTop: theme.spacing(1.5),
+      width: '100%',
+      minWidth: 0,
     },
   }),
 );

@@ -265,10 +265,7 @@ export const useAnalysisForm = (
 
   // Load available dates for selected hazard layer
   useEffect(() => {
-    if (
-      hazardLayerId !== undefined &&
-      availableDates[hazardLayerId] === undefined
-    ) {
+    if (hazardLayerId && availableDates[hazardLayerId] === undefined) {
       dispatch(loadAvailableDatesForLayer(hazardLayerId));
     }
   }, [availableDates, dispatch, hazardLayerId]);

@@ -6,8 +6,10 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import { Font } from '@react-pdf/renderer';
 import * as Sentry from '@sentry/browser';
 import AuthModal from 'components/AuthModal';
+import CreateDashboardView from 'components/CreateDashboardView';
 import DashboardView from 'components/DashboardView';
 import ExportView from 'components/ExportView';
+import ImportDashboardView from 'components/ImportDashboardView';
 import Login from 'components/Login';
 import MapView from 'components/MapView';
 import NavBar from 'components/NavBar';
@@ -16,9 +18,16 @@ import { authRequired } from 'config';
 import KhmerFont from 'fonts/Khmer-Regular.ttf';
 import RobotoFont from 'fonts/Roboto-Regular.ttf';
 import { useDashboardConfig } from 'hooks/useDashboardConfig';
+import { useDocumentLocale } from 'hooks/useDocumentLocale';
+import { usePersistDraftDashboards } from 'hooks/usePersistDraftDashboards';
 import muiTheme from 'muiTheme';
 import { memo, useMemo } from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  useParams,
+} from 'react-router-dom';
 
 if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development') {
   if (process.env.REACT_APP_SENTRY_URL) {
@@ -60,6 +69,18 @@ Font.register({
   ],
 });
 
+function DashboardRouteSwitcher() {
+  const { path } = useParams<{ path?: string }>();
+  usePersistDraftDashboards();
+  if (path === 'create') {
+    return <CreateDashboardView />;
+  }
+  if (path === 'import') {
+    return <ImportDashboardView />;
+  }
+  return <DashboardView />;
+}
+
 const Wrapper = memo(() => (
   <div id="app">
     <NavBar />
@@ -68,7 +89,7 @@ const Wrapper = memo(() => (
       <Switch>
         {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
         <Route path="/dashboard/:path?" exact>
-          <DashboardView />
+          <DashboardRouteSwitcher />
         </Route>
         {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
         <Route>
@@ -82,6 +103,7 @@ const Wrapper = memo(() => (
 
 function App() {
   useDashboardConfig();
+  useDocumentLocale();
   const isAuthenticated = useIsAuthenticated();
 
   // The rendered content

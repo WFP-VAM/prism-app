@@ -20,3 +20,9 @@ export enum ChartHeight {
   MEDIUM = 'medium',
   SHORT = 'short',
 }
+
+export enum ChartLatestPeriod {
+  MONTH = 'month',
+  QUARTER = 'quarter',
+  YEAR = 'year',
+}

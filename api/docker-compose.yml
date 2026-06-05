@@ -1,6 +1,8 @@
 services:
   api:
-    build: ./
+    build:
+      context: .
+      dockerfile: Dockerfile
     shm_size: "2gb"
     volumes:
       - "./cache:/cache:rw"
@@ -37,4 +39,4 @@ services:
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
       - BROWSER_POOL_SIZE=1
-    command: [ "python", "-m", "prism_app.worker.export_map_worker" ]
+    command: [ "python", "-m", "prism_app.workers.export_map_worker" ]

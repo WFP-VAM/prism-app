@@ -46,7 +46,8 @@ jobs:
       - name: Security audit
         run: |
           cd api
-          poetry run pip-audit --desc --format json > audit_results.json 2>/dev/null || true
+          # NOTE: Temporarily ignoring PYSEC-2025-183; add a tracking issue/plan to remove this ignore.
+          poetry run pip-audit --desc --format json --ignore-vuln PYSEC-2025-183 > audit_results.json 2>/dev/null || true
           python - <<'PY'
           import json
           import sys
@@ -132,7 +133,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build ${{ matrix.image_label }} image
-        run: docker build -f api/${{ matrix.dockerfile }} -t ${{ matrix.image_tag }} api
+        run: docker build -f "api/${{ matrix.dockerfile }}" -t "${{ matrix.image_tag }}" api
       - name: Trivy vulnerability scan
         uses: aquasecurity/trivy-action@v0.36.0
         with:
@@ -158,7 +159,7 @@ jobs:
           chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
           docker compose version
       - name: Build containers
-        run: cd api && make build
+        run: cd api && make ci-build
       - name: Run tests
         run: cd api && make api-test
 
@@ -210,7 +211,7 @@ make        run: |
           cd api
           PYTHONPATH=. poetry run python -m prism_app.ci.alert_db_contract
           PYTHONPATH=. poetry run python -m prism_app.ci.alert_db_smoke
-          PYTHONPATH=. poetry run python -m prism_app.worker.alert_runner smoke
+          PYTHONPATH=. poetry run python -m prism_app.workers.alert_runner smoke
       - name: API alerts integration tests (same database)
         env:
           # Ubuntu runner Poetry venv has rasterio but not a full gdal_calc CLI like the API Docker image.

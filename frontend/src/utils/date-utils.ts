@@ -1,4 +1,5 @@
 import {
+  ChartLatestPeriod,
   CoverageEndDateTimestamp,
   CoverageStartDateTimestamp,
   DateItem,
@@ -162,10 +163,6 @@ export const getFormattedDate = (
   const jsDate = new Date(date);
   const year = jsDate.getUTCFullYear();
   const month = String(jsDate.getUTCMonth() + 1).padStart(2, '0');
-  const monthName = jsDate.toLocaleString('en-US', {
-    month: 'short',
-    timeZone: 'UTC',
-  });
   const day = String(jsDate.getUTCDate()).padStart(2, '0');
 
   // Example for June 30th, 1999
@@ -196,9 +193,17 @@ export const getFormattedDate = (
     case DateFormat.DayFirstHyphen:
       return `${day}-${month}-${year}`;
 
-    // Example: "30-Jun-1999"
-    case DateFormat.DayFirstHyphenMonthName:
-      return `${day}-${monthName}-${year}`;
+    // Example: "30-Jun-1999" (month name follows dateLocale)
+    case DateFormat.DayFirstHyphenMonthName: {
+      const localizedMonthName = jsDate.toLocaleString(
+        dateLocale === 'default' ? 'en-US' : dateLocale,
+        {
+          month: 'short',
+          timeZone: 'UTC',
+        },
+      );
+      return `${day}-${localizedMonthName}-${year}`;
+    }
 
     // Example: "06/30/1999"
     case DateFormat.MiddleEndian:
@@ -311,13 +316,18 @@ export function formatCoverageRange(
   startDate?: number,
   endDate?: number,
   format: Parameters<typeof getFormattedDate>[1] = 'localeNumericUTC',
+  dateLocale: string = 'default',
 ): string | null {
   if (!startDate || !endDate) {
     return null;
   }
 
-  const startFormatted = getFormattedDate(startDate, format) as string;
-  const endFormatted = getFormattedDate(endDate, format) as string;
+  const startFormatted = getFormattedDate(
+    startDate,
+    format,
+    dateLocale,
+  ) as string;
+  const endFormatted = getFormattedDate(endDate, format, dateLocale) as string;
 
   // If start and end are the same day, just show one date
   if (startFormatted === endFormatted) {
@@ -349,11 +359,17 @@ export function formatCoverageText(
   format?: Parameters<typeof getFormattedDate>[1],
 ): string | null {
   const translate = t ?? ((s: string) => s);
+  const dateLocale = t?.('date_locale') ?? 'default';
 
   const layersWithCoverage = layersCoverage
     .map(coverage => ({
       title: coverage.layerTitle,
-      range: formatCoverageRange(coverage.startDate, coverage.endDate, format),
+      range: formatCoverageRange(
+        coverage.startDate,
+        coverage.endDate,
+        format,
+        dateLocale,
+      ),
     }))
     .filter(item => item.range !== null);
 
@@ -463,4 +479,24 @@ export function findClosestDate(
   };
 
   return availableDates.reduce(reducerFunc);
+}
+
+export function getLatestPeriodRange(
+  latestDate: number,
+  period: ChartLatestPeriod,
+): { startDate: number; endDate: number } {
+  const d = new Date(latestDate);
+  const y = d.getUTCFullYear();
+  const m = d.getUTCMonth();
+  const day = d.getUTCDate();
+
+  let start: number;
+  if (period === ChartLatestPeriod.QUARTER) {
+    start = Date.UTC(y, m - 3, day, 12);
+  } else if (period === ChartLatestPeriod.YEAR) {
+    start = Date.UTC(y - 1, m, day, 12);
+  } else {
+    start = Date.UTC(y, m - 1, day, 12);
+  }
+  return { startDate: start, endDate: latestDate };
 }
