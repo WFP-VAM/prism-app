@@ -18,6 +18,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - name: Ensure cron scripts are executable
+        run: |
+          cd api
+          for f in crons/cron_*.sh; do
+            if [ ! -x "$f" ]; then
+              echo "$f is not executable (missing chmod +x)"
+              exit 1
+            fi
+          done
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
@@ -201,7 +210,7 @@ jobs:
           cd api
           poetry install
       - name: Upgrade pip (CVE-2026-1703)
-make        run: |
+        run: |
           cd api
           poetry run pip install --upgrade 'pip>=26.0'
       - name: Alembic upgrade head

@@ -10,6 +10,9 @@ cache/
 
 .venv
 
+# Local PostGIS volume for alerting-db (docker compose)
+alerting_db_data/
+
 # Test files
 **.json.*
 **/.hypothesis/**
