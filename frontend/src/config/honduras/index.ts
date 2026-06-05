@@ -1,8 +1,8 @@
 import rawLayers from './layers.json';
 import appConfig from './prism.json';
-import rawTables from './tables.json';
 import rawReports from './reports.json';
-const translation = { en: {}, es: {} };
+import rawTables from './tables.json';
+const translation = { es: {} };
 
 export default {
   appConfig,
