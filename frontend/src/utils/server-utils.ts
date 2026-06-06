@@ -184,6 +184,29 @@ export function getLayersCoverageMap(
   );
 }
 
+/**
+ * Compute the coverage period (start/end date) for a single layer at a given
+ * date, based on the layer's configured `validity` / `coverageWindow`.
+ *
+ * Returns an empty object when the layer has no coverage information, so it can
+ * be passed safely to analysis result constructors.
+ */
+export function getCoverageForLayerAndDate(
+  layer: DateCompatibleLayer,
+  serverAvailableDates: AvailableDates,
+  selectedDate: number | null | undefined,
+): { startDate?: number; endDate?: number } {
+  const dateItems = getPossibleDatesForLayer(layer, serverAvailableDates);
+  const dateItem = getRequestDateItem(
+    dateItems,
+    selectedDate as SelectedDateTimestamp,
+  );
+  if (dateItem?.startDate || dateItem?.endDate) {
+    return { startDate: dateItem.startDate, endDate: dateItem.endDate };
+  }
+  return {};
+}
+
 // Note: PRISM's date picker is designed to work with dates in the UTC timezone
 // Therefore, ambiguous dates (dates passed as string e.g 2020-08-01) shouldn't be calculated from the user's timezone and instead be converted directly to UTC.
 // plain JS Date `new Date('2020-08-01').toISOString()`, yields: '2020-08-01T00:00:00.000Z'.

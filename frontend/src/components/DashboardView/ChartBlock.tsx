@@ -44,6 +44,7 @@ import {
   downloadChartsToCsv,
 } from 'utils/csv-utils';
 import { getFormattedDate } from 'utils/date-utils';
+import { DateFormat } from 'utils/name-utils';
 
 import {
   dashboardModeSelector,
@@ -267,8 +268,18 @@ function ChartBlock({
       return '';
     }
 
-    const startStr = getFormattedDate(start, 'localeShortUTC');
-    const endStr = getFormattedDate(end, 'localeShortUTC');
+    // Use a locale-aware format so the month name follows the selected language.
+    const dateLocale = t('date_locale');
+    const startStr = getFormattedDate(
+      start,
+      DateFormat.DayFirstHyphenMonthName,
+      dateLocale,
+    );
+    const endStr = getFormattedDate(
+      end,
+      DateFormat.DayFirstHyphenMonthName,
+      dateLocale,
+    );
 
     return `${startStr} - ${endStr}`;
   };
