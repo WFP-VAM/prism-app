@@ -7,7 +7,7 @@ import {
 } from '@material-ui/core';
 import { usePostHog } from '@posthog/react';
 import mask from '@turf/mask';
-import { appConfig, configMap, safeCountry } from 'config';
+import { appConfig, rawLayers, safeCountry } from 'config';
 import { AdminCodeString, LayerKey } from 'config/types';
 import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
 import {
@@ -198,9 +198,11 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   );
 
   const [isDownloading, setIsDownloading] = useState(false);
-  const countryLayerIds = new Set(
-    Object.keys(configMap[safeCountry].rawLayers),
-  );
+  // Use the merged layer set (shared + country-specific) so shared layers a
+  // country only references via prism.json categories — e.g. `days_dry` — are
+  // not excluded. `configMap[safeCountry].rawLayers` holds only the country's
+  // own layers.json and would drop every referenced shared layer.
+  const countryLayerIds = new Set(Object.keys(rawLayers));
   const availableDates = useSelector(availableDatesSelector);
   const selectableLayers = Object.values(LayerDefinitions).filter(
     (l): l is DateCompatibleLayer =>
@@ -423,7 +425,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
   const mapExportTemplate = useMapExportTemplate({
     mapBounds: previewBounds,
-    mapZoom: previewZoom,
     mapDimensions,
     previewMapWidth,
     previewMapHeight,

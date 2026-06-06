@@ -42,6 +42,11 @@ const useStyles = makeStyles(() =>
     intervalInput: {
       zIndex: 0,
       marginBottom: '8px',
+      minWidth: '7.5rem',
+      flex: '0 0 auto',
+      '& .MuiOutlinedInput-root': {
+        width: '100%',
+      },
       '& input': {
         fontSize: '0.875rem',
       },

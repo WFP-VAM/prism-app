@@ -13,6 +13,7 @@ import cuba from './cuba';
 import ecuador from './ecuador';
 import global from './global';
 import haiti from './haiti';
+import honduras from './honduras';
 import indonesia from './indonesia';
 import jordan from './jordan';
 import kyrgyzstan from './kyrgyzstan';
@@ -50,6 +51,7 @@ export const configMap = {
   ecuador,
   global,
   haiti,
+  honduras,
   indonesia,
   jordan,
   kyrgyzstan,
@@ -84,7 +86,12 @@ const {
   REACT_APP_OAUTH_REDIRECT_URI: REDIRECT_URI,
   REACT_APP_TESTING: TESTING,
   REACT_APP_QA_MODE: QA_MODE,
+  REACT_APP_USE_STAGING: USE_STAGING,
 } = process.env;
+
+// When true, the dashboard read API is asked to also return status=staging
+// dashboards (see useDashboardConfig). Off in production builds.
+const useStagingDashboards = USE_STAGING === 'true';
 
 const safeCountry =
   COUNTRY && has(configMap, COUNTRY.toLocaleLowerCase())
@@ -211,4 +218,5 @@ export {
   rawTables,
   safeCountry,
   translation,
+  useStagingDashboards,
 };

@@ -41,7 +41,6 @@ const sharedTemplate = {
   baseSearchParams: new URLSearchParams('baselineLayerId=old-layer'),
   printSelectedLayer,
   mapBounds,
-  mapZoom: 5.5,
   mapDimensions: { aspectRatio: '4:3' as const },
   titleText: 'Mozambique - {date_coverage}',
   footerText: 'Footer text',
@@ -69,7 +68,6 @@ describe('buildBatchExportUrls', () => {
     expect(params.get('hazardLayerIds')).toBe('rainfall_blended_dekad');
     expect(params.get('baselineLayerId')).toBeNull();
     expect(params.get('bounds')).toBe('30,-26,41,-10');
-    expect(params.get('zoom')).toBe('5.5');
     expect(params.get('toggles')).toBe(
       JSON.stringify({
         fullLayerDescription: true,
@@ -116,17 +114,15 @@ describe('buildBatchExportUrls', () => {
     expect(params.get('customHeight')).toBe('9');
   });
 
-  test('omits bounds and zoom when not available', () => {
+  test('omits bounds when not available', () => {
     const [url] = buildBatchExportUrls({
       ...sharedTemplate,
       formattedDates: ['2024-05-01'],
       mapBounds: null,
-      mapZoom: null,
     });
     const params = new URL(url).searchParams;
 
     expect(params.get('bounds')).toBeNull();
-    expect(params.get('zoom')).toBeNull();
   });
 });
 
@@ -179,7 +175,6 @@ describe('buildScheduleExportOptions', () => {
 
     expect(options.origin).toBe('https://prism.example.org');
     expect(options.queryParams.bounds).toBe('30,-26,41,-10');
-    expect(options.queryParams.zoom).toBe('5.5');
     expect(options.queryParams.aspectRatio).toBe('4:3');
     expect(options.queryParams.toggles?.fullLayerDescription).toBe(true);
     expect(options.queryParams).not.toHaveProperty('date');
@@ -207,7 +202,6 @@ describe('schedule/batch template parity', () => {
 
     expect(scheduleParams.get('bounds')).toBe(batchParams.get('bounds'));
     expect(scheduleParams.get('language')).toBe(batchParams.get('language'));
-    expect(scheduleParams.get('zoom')).toBe(batchParams.get('zoom'));
     expect(scheduleParams.get('aspectRatio')).toBe(
       batchParams.get('aspectRatio'),
     );
@@ -236,7 +230,6 @@ describe('applyMapExportPrintTemplate', () => {
     const params = new URLSearchParams();
     applyMapExportPrintTemplate(params, {
       mapBounds,
-      mapZoom: 4,
       mapDimensions: { aspectRatio: 'A4-P' as AspectRatio },
       titleText: 'T',
       footerText: 'F',

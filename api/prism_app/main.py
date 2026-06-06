@@ -90,10 +90,6 @@ app.add_middleware(
 )
 
 _admin_session_settings = get_admin_auth_settings()
-_ss_low = _admin_session_settings.session_cookie_samesite.lower()
-_same_site_admin: Literal["lax", "strict", "none"] = (
-    _ss_low if _ss_low in ("lax", "strict", "none") else "lax"
-)
 
 app.add_middleware(
     SessionMiddleware,
@@ -101,7 +97,7 @@ app.add_middleware(
     session_cookie=_admin_session_settings.session_cookie_name,
     max_age=_admin_session_settings.session_ttl_seconds,
     path="/",
-    same_site=_same_site_admin,
+    same_site=_admin_session_settings.session_cookie_samesite,  # type: ignore[arg-type]
     https_only=_admin_session_settings.session_cookie_secure,
 )
 app.include_router(export_map_jobs_router)
@@ -174,17 +170,25 @@ def get_published_dashboards(
         min_length=1,
         description="Country key (frontend configMap key)",
     ),
+    include_staging: bool = Query(
+        False,
+        description="Include status=staging rows (for staging frontends)",
+    ),
 ) -> list[Any]:
-    """Return merged dashboard rows for all published ``dashboard`` rows in this country.
+    """Return merged dashboard rows for the served ``dashboard`` rows in this country.
 
     The response is a single JSON array, the same top-level shape as the static
-    ``dashboards.json`` consumed by PRISM. Drafts are never included.
+    ``dashboards.json`` consumed by PRISM. ``published`` rows are always
+    included; ``staging`` rows are included only when ``include_staging`` is set.
+    Drafts and archived rows are never included.
     """
     if not alert_db.active or alert_db.engine is None:
         raise HTTPException(
             status_code=503, detail="Dashboard data is temporarily unavailable"
         )
-    return merge_published_dashboard_rows_for_country(alert_db.engine, country)
+    return merge_published_dashboard_rows_for_country(
+        alert_db.engine, country, include_staging=include_staging
+    )
 
 
 @timed

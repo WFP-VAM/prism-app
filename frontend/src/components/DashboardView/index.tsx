@@ -166,7 +166,7 @@ function DashboardView() {
             ? classes.editLayout
             : classes.previewLayout
         }
-        onEditClick={handleClosePreview}
+        onEditClick={dashboardConfig.isDraft ? handleClosePreview : undefined}
       />
       {mode === DashboardMode.EDIT && (
         <Box className={classes.toolbar}>

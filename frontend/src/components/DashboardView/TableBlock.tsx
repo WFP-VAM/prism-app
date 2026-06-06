@@ -31,6 +31,7 @@ import {
   analysisResultErrorSelector,
   setIsMapLayerActive,
 } from 'context/analysisResultStateSlice';
+import { availableDatesSelector } from 'context/serverStateSlice';
 import { useSafeTranslation } from 'i18n';
 import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -41,7 +42,9 @@ import {
   PolygonAnalysisResult,
   useAnalysisTableColumns,
 } from 'utils/analysis-utils';
-import { getFormattedDate } from 'utils/date-utils';
+import { formatCoverageRange, getFormattedDate } from 'utils/date-utils';
+import { DateFormat } from 'utils/name-utils';
+import { getCoverageForLayerAndDate } from 'utils/server-utils';
 
 import {
   dashboardModeSelector,
@@ -469,8 +472,52 @@ function TableBlock({
       return '';
     }
 
-    return getFormattedDate(date, 'localeShortUTC') || '';
+    // Use a locale-aware format so the month name follows the selected language.
+    return (
+      getFormattedDate(
+        date,
+        DateFormat.DayFirstHyphenMonthName,
+        t('date_locale'),
+      ) || ''
+    );
   };
+
+  // Coverage period configured on the hazard layer, shown instead of the plain
+  // date to give the proper context of the analysis. Derived from the layer
+  // config + selected date so it shows even before/without an analysis result.
+  const serverAvailableDates = useSelector(availableDatesSelector);
+  const coverageText = useMemo(() => {
+    if (!formState.selectedHazardLayer) {
+      return '';
+    }
+    const date = formState.selectedDate || formState.startDate;
+    const coverage = getCoverageForLayerAndDate(
+      formState.selectedHazardLayer,
+      serverAvailableDates,
+      date,
+    );
+    return (
+      formatCoverageRange(
+        coverage.startDate,
+        coverage.endDate,
+        DateFormat.DayFirstHyphenMonthName,
+        t('date_locale'),
+      ) || ''
+    );
+  }, [
+    formState.selectedHazardLayer,
+    formState.selectedDate,
+    formState.startDate,
+    serverAvailableDates,
+    t,
+  ]);
+
+  // Prefer the configured coverage period over the plain selected date.
+  // Depends on `t` so the subtitle re-renders (and re-localizes) on language switch.
+  const previewSubtitle = useMemo(
+    () => coverageText || formatPreviewDate(),
+    [coverageText, formState.selectedDate, formState.startDate, t],
+  );
 
   if (mode === DashboardMode.VIEW) {
     return (
@@ -480,7 +527,7 @@ function TableBlock({
             <Box className={classes.previewHeaderWrapper}>
               <BlockPreviewHeader
                 title={generatePreviewTitle()}
-                subtitle={formatPreviewDate()}
+                subtitle={previewSubtitle}
                 downloadActions={
                   allowDownload &&
                   formState.analysisResult &&
