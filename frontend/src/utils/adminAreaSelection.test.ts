@@ -11,6 +11,8 @@ import {
 const layer = {
   adminCode: 'adm3_source_id',
   adminLevelCodes: ['adm1_source_id', 'adm2_source_id', 'adm3_source_id'],
+  adminLevelNames: ['adm1_name', 'adm2_name', 'adm3_name'],
+  adminLevelLocalNames: ['adm1_name', 'adm2_name', 'adm3_name'],
 } as BoundaryLayerProps;
 
 describe('featureMatchesSelectedAdminCode', () => {
@@ -44,13 +46,6 @@ describe('featureMatchesSelectedAdminCode', () => {
 
 describe('resolveAdminAreaRefs', () => {
   test('resolves the first province in the tree (not dropped by slice)', () => {
-    const layer = {
-      adminCode: 'adm3_source_id',
-      adminLevelCodes: ['adm1_source_id', 'adm2_source_id', 'adm3_source_id'],
-      adminLevelNames: ['adm1_name', 'adm2_name', 'adm3_name'],
-      adminLevelLocalNames: ['adm1_name', 'adm2_name', 'adm3_name'],
-    } as BoundaryLayerProps;
-
     const data = {
       type: 'FeatureCollection',
       features: [
