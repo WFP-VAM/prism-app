@@ -104,7 +104,9 @@ const ChartsPanel = memo(() => {
   const [comparePeriods, setComparePeriods] = useState(false);
 
   // first location state
-  const [admin0Key] = useState<AdminCodeString>('' as AdminCodeString);
+  const [admin0Key, setAdmin0Key] = useState<AdminCodeString>(
+    '' as AdminCodeString,
+  );
   const [admin1Key, setAdmin1Key] = useState<AdminCodeString>(
     '' as AdminCodeString,
   );
@@ -546,6 +548,9 @@ const ChartsPanel = memo(() => {
     // reset the admin level
     setAdminLevel((countryAdmin0Id ? 0 : 1) as AdminLevelType);
     setSecondAdminLevel((countryAdmin0Id ? 0 : 1) as AdminLevelType);
+    // reset the country selection (multi-country deployments)
+    setAdmin0Key('' as AdminCodeString);
+    setSecondAdmin0Key('' as AdminCodeString);
     // reset admin 1 titles
     setAdmin1Key('' as AdminCodeString);
     setSecondAdmin1Key('' as AdminCodeString);
@@ -672,10 +677,20 @@ const ChartsPanel = memo(() => {
             <ChartLocationSelector
               boundaryLayerData={data}
               boundaryLayer={boundaryLayer}
+              admin0Key={admin0Key}
               admin1Key={admin1Key}
               admin2Key={admin2Key}
               stacked
               hideLabel={compareLocations}
+              onAdmin0Change={(key, properties, level) => {
+                setAdmin0Key(key);
+                setAdmin1Key('' as AdminCodeString);
+                setAdmin2Key('' as AdminCodeString);
+                setAdminLevel(level);
+                setAdminProperties(properties);
+                setSelectedAdmin1Area('');
+                setSelectedAdmin2Area('');
+              }}
               onAdmin1Change={(key, properties, level) => {
                 setAdmin1Key(key);
                 setAdmin2Key('' as AdminCodeString);
@@ -712,10 +727,20 @@ const ChartsPanel = memo(() => {
               <ChartLocationSelector
                 boundaryLayerData={data}
                 boundaryLayer={boundaryLayer}
+                admin0Key={secondAdmin0Key}
                 admin1Key={secondAdmin1Key}
                 admin2Key={secondAdmin2Key}
                 stacked
                 hideLabel
+                onAdmin0Change={(key, properties, level) => {
+                  setSecondAdmin0Key(key);
+                  setSecondAdmin1Key('' as AdminCodeString);
+                  setSecondAdmin2Key('' as AdminCodeString);
+                  setSecondAdminLevel(level);
+                  setSecondAdminProperties(properties);
+                  setSecondSelectedAdmin1Area('');
+                  setSecondSelectedAdmin2Area('');
+                }}
                 onAdmin1Change={(key, properties, level) => {
                   setSecondAdmin1Key(key);
                   setSecondAdmin2Key('' as AdminCodeString);

@@ -90,7 +90,10 @@ jest.mock('@material-ui/core', () => {
 
 import ChartLocationSelector from './ChartLocationSelector';
 
-describe('ChartLocationSelector (multi-country / RBD)', () => {
+// Flat mode (no country dropdown): used by the Dashboard editor's ChartBlock,
+// which does not wire up onAdmin0Change. The two dropdowns collapse the country
+// into "Admin 1" but still resolve a valid id_code.
+describe('ChartLocationSelector (multi-country / RBD, no country dropdown)', () => {
   it('resolves a defined id_code when a country is selected', () => {
     const onAdmin1Change = jest.fn();
 
@@ -143,5 +146,115 @@ describe('ChartLocationSelector (multi-country / RBD)', () => {
     expect(level).toBe(1);
     expect(properties).not.toEqual({});
     expect(properties.dv_adm1_id).toBe(1927);
+  });
+});
+
+// Country-dropdown mode (used by the charts panel): wiring up onAdmin0Change
+// surfaces a dedicated Country dropdown so the hierarchy is Country -> Admin 1
+// -> Admin 2 with chart levels 0/1/2. This guards the regression where the
+// country level was dropped and the dropdowns were mislabeled.
+describe('ChartLocationSelector (multi-country / RBD, with country dropdown)', () => {
+  it('shows a dedicated Country dropdown listing all countries', () => {
+    const { container } = render(
+      <ChartLocationSelector
+        boundaryLayerData={BOUNDARY_DATA}
+        boundaryLayer={BOUNDARY_LAYER}
+        admin0Key={'' as any}
+        admin1Key={'' as any}
+        admin2Key={'' as any}
+        onAdmin0Change={jest.fn()}
+        onAdmin1Change={jest.fn()}
+        onAdmin2Change={jest.fn()}
+      />,
+    );
+
+    const [countrySelect] = container.querySelectorAll('select');
+    const optionValues = Array.from(
+      countrySelect.querySelectorAll('option'),
+    ).map(o => (o as HTMLOptionElement).value);
+
+    // The first dropdown lists countries (not admin-1 areas).
+    expect(optionValues).toEqual(expect.arrayContaining(['ML', 'BF']));
+  });
+
+  it('resolves the country at chart level 0', () => {
+    const onAdmin0Change = jest.fn();
+
+    const { container } = render(
+      <ChartLocationSelector
+        boundaryLayerData={BOUNDARY_DATA}
+        boundaryLayer={BOUNDARY_LAYER}
+        admin0Key={'' as any}
+        admin1Key={'' as any}
+        admin2Key={'' as any}
+        onAdmin0Change={onAdmin0Change}
+        onAdmin1Change={jest.fn()}
+        onAdmin2Change={jest.fn()}
+      />,
+    );
+
+    const [countrySelect] = container.querySelectorAll('select');
+    fireEvent.change(countrySelect, { target: { value: 'ML' } });
+
+    expect(onAdmin0Change).toHaveBeenCalledTimes(1);
+    const [code, properties, level] = onAdmin0Change.mock.calls[0];
+    expect(code).toBe('ML');
+    expect(level).toBe(0);
+    expect(properties.dv_adm0_id).toBe(155);
+  });
+
+  it('resolves admin 1 at chart level 1 under the selected country', () => {
+    const onAdmin1Change = jest.fn();
+
+    const { container } = render(
+      <ChartLocationSelector
+        boundaryLayerData={BOUNDARY_DATA}
+        boundaryLayer={BOUNDARY_LAYER}
+        admin0Key={'ML' as any}
+        admin1Key={'' as any}
+        admin2Key={'' as any}
+        onAdmin0Change={jest.fn()}
+        onAdmin1Change={onAdmin1Change}
+        onAdmin2Change={jest.fn()}
+      />,
+    );
+
+    // [country, admin1]
+    const selects = container.querySelectorAll('select');
+    fireEvent.change(selects[1], { target: { value: 'ML07' } });
+
+    expect(onAdmin1Change).toHaveBeenCalledTimes(1);
+    const [code, properties, level] = onAdmin1Change.mock.calls[0];
+    expect(code).toBe('ML07');
+    expect(level).toBe(1);
+    expect(properties.dv_adm1_id).toBe(1927);
+  });
+
+  it('resolves admin 2 at chart level 2 under the selected admin 1', () => {
+    const onAdmin2Change = jest.fn();
+
+    const { container } = render(
+      <ChartLocationSelector
+        boundaryLayerData={BOUNDARY_DATA}
+        boundaryLayer={BOUNDARY_LAYER}
+        admin0Key={'ML' as any}
+        admin1Key={'ML07' as any}
+        admin2Key={'' as any}
+        onAdmin0Change={jest.fn()}
+        onAdmin1Change={jest.fn()}
+        onAdmin2Change={onAdmin2Change}
+      />,
+    );
+
+    // [country, admin1, admin2]
+    const selects = container.querySelectorAll('select');
+    expect(selects.length).toBe(3);
+    fireEvent.change(selects[2], { target: { value: 'ML0701' } });
+
+    expect(onAdmin2Change).toHaveBeenCalledTimes(1);
+    const [code, properties, level] = onAdmin2Change.mock.calls[0];
+    expect(code).toBe('ML0701');
+    expect(level).toBe(2);
+    expect(properties.dv_adm2_id).toBe(19375);
   });
 });

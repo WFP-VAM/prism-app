@@ -25,8 +25,14 @@ import React from 'react';
 interface ChartLocationSelectorProps {
   boundaryLayerData: BoundaryLayerData | undefined;
   boundaryLayer: BoundaryLayerProps;
+  admin0Key?: AdminCodeString;
   admin1Key: AdminCodeString;
   admin2Key: AdminCodeString;
+  onAdmin0Change?: (
+    key: AdminCodeString,
+    properties: GeoJsonProperties,
+    adminLevel: AdminLevelType,
+  ) => void;
   onAdmin1Change: (
     key: AdminCodeString,
     properties: GeoJsonProperties,
@@ -46,8 +52,10 @@ interface ChartLocationSelectorProps {
 function ChartLocationSelector({
   boundaryLayerData,
   boundaryLayer,
+  admin0Key = '' as AdminCodeString,
   admin1Key,
   admin2Key,
+  onAdmin0Change,
   onAdmin1Change,
   onAdmin2Change,
   disabled = false,
@@ -58,13 +66,24 @@ function ChartLocationSelector({
   const classes = useStyles();
   const { t, i18n: i18nLocale } = useSafeTranslation();
 
-  // The chart `levels` config (and getProperties) uses a 0-based admin level
-  // for multi-country deployments (level 0 = country) and a 1-based level for
-  // single-country deployments (level 1 = admin 1). The two dropdowns below
-  // therefore map to different admin levels depending on the deployment.
+  // In multi-country deployments the boundary hierarchy starts at the country
+  // (admin 0). When a consumer wires up `onAdmin0Change` we surface a dedicated
+  // Country dropdown, and the chart levels line up directly with the hierarchy:
+  // 0 = country, 1 = admin 1, 2 = admin 2.
+  //
+  // Otherwise we keep the flat two-dropdown behaviour and absorb the
+  // multi-country offset in the level math (the chart `levels` config and
+  // getProperties treat multi-country as 0-based and single-country as 1-based).
   const { multiCountry } = appConfig;
-  const admin1Level = (multiCountry ? 0 : 1) as AdminLevelType;
-  const admin2Level = (multiCountry ? 1 : 2) as AdminLevelType;
+  const showCountryLevel = multiCountry && Boolean(onAdmin0Change);
+
+  const admin1Level = (
+    showCountryLevel ? 1 : multiCountry ? 0 : 1
+  ) as AdminLevelType;
+
+  const admin2Level = (
+    showCountryLevel ? 2 : multiCountry ? 1 : 2
+  ) as AdminLevelType;
 
   if (!boundaryLayerData) {
     return null;
@@ -76,36 +95,78 @@ function ChartLocationSelector({
     i18nLocale,
   );
 
-  const admin0BoundaryTree = adminBoundaryTree.children;
-
-  const orderedAdmin1Areas: AdminBoundaryTree[] = boundaryLayerData
-    ? sortBy(Object.values(admin0BoundaryTree), 'label')
+  // Countries are only selectable when the country dropdown is shown.
+  const orderedCountries: AdminBoundaryTree[] = showCountryLevel
+    ? sortBy(Object.values(adminBoundaryTree.children), 'label')
     : [];
+  const selectedCountry = showCountryLevel
+    ? adminBoundaryTree.children[admin0Key]
+    : undefined;
 
-  const selectedAdmin1Area = admin0BoundaryTree?.[admin1Key];
+  // Admin 1 areas live under the selected country (multi-country) or at the top
+  // level of the tree (single-country / flat mode).
+  const admin1ParentTree: { [code: string]: AdminBoundaryTree } =
+    showCountryLevel
+      ? (selectedCountry?.children ?? {})
+      : adminBoundaryTree.children;
+
+  const orderedAdmin1Areas: AdminBoundaryTree[] = sortBy(
+    Object.values(admin1ParentTree),
+    'label',
+  );
+
+  const selectedAdmin1Area = admin1ParentTree[admin1Key];
 
   const orderedAdmin2Areas: AdminBoundaryTree[] =
-    boundaryLayerData && admin1Key && selectedAdmin1Area
+    admin1Key && selectedAdmin1Area
       ? sortBy(Object.values(selectedAdmin1Area.children), 'label')
       : [];
 
   const selectedAdmin2Area = selectedAdmin1Area?.children[admin2Key];
 
+  const renderCountryValue = (countryKeyValue: any) =>
+    adminBoundaryTree.children[countryKeyValue]?.label;
+
   const renderAdmin1Value = (admin1keyValue: any) =>
-    admin0BoundaryTree[admin1keyValue]?.label;
+    admin1ParentTree[admin1keyValue]?.label;
 
   const renderAdmin2Value = (admin2KeyValue: any) =>
     selectedAdmin1Area?.children[admin2KeyValue]?.label;
+
+  const handleCountryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+
+    if (!value) {
+      onAdmin0Change?.(
+        '' as AdminCodeString,
+        getProperties(boundaryLayerData),
+        0 as AdminLevelType,
+      );
+      return;
+    }
+
+    const admin0Id = value as AdminCodeString;
+    const properties = getProperties(
+      boundaryLayerData,
+      admin0Id,
+      0 as AdminLevelType,
+    );
+    onAdmin0Change?.(admin0Id, properties, 0 as AdminLevelType);
+  };
 
   const handleAdmin1Change = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
 
     if (!value) {
-      // Clear selection - go back to country level
+      // Clear Admin 1 - fall back to the country level (multi-country) or the
+      // country aggregate (single-country).
+      const fallbackProperties = showCountryLevel
+        ? getProperties(boundaryLayerData, admin0Key, 0 as AdminLevelType)
+        : getProperties(boundaryLayerData);
       onAdmin1Change(
         '' as AdminCodeString,
-        getProperties(boundaryLayerData),
-        0,
+        fallbackProperties,
+        0 as AdminLevelType,
       );
       return;
     }
@@ -157,6 +218,23 @@ function ChartLocationSelector({
         className={classes.fieldsRow}
         style={{ flexDirection: stacked ? 'column' : 'row' }}
       >
+        {showCountryLevel && (
+          <TextField
+            classes={{ root: classes.selectRoot }}
+            select
+            label={t('Country')}
+            value={selectedCountry?.adminCode ?? ''}
+            SelectProps={{
+              renderValue: renderCountryValue,
+            }}
+            onChange={handleCountryChange}
+            variant="outlined"
+            disabled={disabled || orderedCountries.length === 0}
+          >
+            {renderMenuItemList(orderedCountries)}
+          </TextField>
+        )}
+
         <TextField
           classes={{ root: classes.selectRoot }}
           select
@@ -170,7 +248,9 @@ function ChartLocationSelector({
           disabled={disabled || orderedAdmin1Areas.length === 0}
         >
           <MenuItem value="">
-            <Box className={classes.removeAdmin}>{t('Country Level')}</Box>
+            <Box className={classes.removeAdmin}>
+              {showCountryLevel ? t('Remove Admin 1') : t('Country Level')}
+            </Box>
           </MenuItem>
           {renderMenuItemList(orderedAdmin1Areas)}
         </TextField>
