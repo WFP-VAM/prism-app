@@ -79,6 +79,18 @@ const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
 const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 const chartLayers = getWMSLayersWithChart();
 
+// Resolves the admin area name for a chart level from boundary feature
+// properties. Multi-country deployments use 0-based levels (level 0 = country),
+// single-country deployments use 1-based levels (level 1 = admin 1).
+const getAdminAreaName = (
+  properties: GeoJsonProperties,
+  level: AdminLevelType,
+): string => {
+  const nameKey =
+    boundaryLayer?.adminLevelNames?.[level - (multiCountry ? 0 : 1)];
+  return (nameKey && properties?.[nameKey]) || '';
+};
+
 // Time constants
 const yearsToFetchDataFor = 5;
 const oneYearInTicks = 34;
@@ -669,22 +681,18 @@ const ChartsPanel = memo(() => {
                 setAdmin2Key('' as AdminCodeString);
                 setAdminLevel(level);
                 setAdminProperties(properties);
-                const admin1Name =
-                  data &&
-                  boundaryLayer?.adminLevelNames?.[level - 1] &&
-                  properties?.[boundaryLayer.adminLevelNames[level - 1]];
-                setSelectedAdmin1Area(admin1Name || '');
+                setSelectedAdmin1Area(
+                  data ? getAdminAreaName(properties, level) : '',
+                );
                 setSelectedAdmin2Area('');
               }}
               onAdmin2Change={(key, properties, level) => {
                 setAdmin2Key(key);
                 setAdminLevel(level);
                 setAdminProperties(properties);
-                const admin2Name =
-                  data &&
-                  boundaryLayer?.adminLevelNames?.[level - 1] &&
-                  properties?.[boundaryLayer.adminLevelNames[level - 1]];
-                setSelectedAdmin2Area(admin2Name || '');
+                setSelectedAdmin2Area(
+                  data ? getAdminAreaName(properties, level) : '',
+                );
               }}
             />
           </Box>
@@ -713,22 +721,18 @@ const ChartsPanel = memo(() => {
                   setSecondAdmin2Key('' as AdminCodeString);
                   setSecondAdminLevel(level);
                   setSecondAdminProperties(properties);
-                  const admin1Name =
-                    data &&
-                    boundaryLayer?.adminLevelNames?.[level - 1] &&
-                    properties?.[boundaryLayer.adminLevelNames[level - 1]];
-                  setSecondSelectedAdmin1Area(admin1Name || '');
+                  setSecondSelectedAdmin1Area(
+                    data ? getAdminAreaName(properties, level) : '',
+                  );
                   setSecondSelectedAdmin2Area('');
                 }}
                 onAdmin2Change={(key, properties, level) => {
                   setSecondAdmin2Key(key);
                   setSecondAdminLevel(level);
                   setSecondAdminProperties(properties);
-                  const admin2Name =
-                    data &&
-                    boundaryLayer?.adminLevelNames?.[level - 1] &&
-                    properties?.[boundaryLayer.adminLevelNames[level - 1]];
-                  setSecondSelectedAdmin2Area(admin2Name || '');
+                  setSecondSelectedAdmin2Area(
+                    data ? getAdminAreaName(properties, level) : '',
+                  );
                 }}
               />
             </Box>

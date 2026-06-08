@@ -10,6 +10,7 @@ import {
   getAdminBoundaryTree,
 } from 'components/MapView/Layers/BoundaryDropdown/utils';
 import { getProperties } from 'components/MapView/utils';
+import { appConfig } from 'config';
 import {
   AdminCodeString,
   AdminLevelType,
@@ -57,6 +58,14 @@ function ChartLocationSelector({
   const classes = useStyles();
   const { t, i18n: i18nLocale } = useSafeTranslation();
 
+  // The chart `levels` config (and getProperties) uses a 0-based admin level
+  // for multi-country deployments (level 0 = country) and a 1-based level for
+  // single-country deployments (level 1 = admin 1). The two dropdowns below
+  // therefore map to different admin levels depending on the deployment.
+  const { multiCountry } = appConfig;
+  const admin1Level = (multiCountry ? 0 : 1) as AdminLevelType;
+  const admin2Level = (multiCountry ? 1 : 2) as AdminLevelType;
+
   if (!boundaryLayerData) {
     return null;
   }
@@ -102,8 +111,8 @@ function ChartLocationSelector({
     }
 
     const admin1Id = value as AdminCodeString;
-    const properties = getProperties(boundaryLayerData, admin1Id, 1);
-    onAdmin1Change(admin1Id, properties, 1);
+    const properties = getProperties(boundaryLayerData, admin1Id, admin1Level);
+    onAdmin1Change(admin1Id, properties, admin1Level);
   };
 
   const handleAdmin2Change = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,14 +120,18 @@ function ChartLocationSelector({
 
     if (!value) {
       // Clear Admin 2 selection - go back to Admin 1 level
-      const properties = getProperties(boundaryLayerData, admin1Key, 1);
-      onAdmin2Change('' as AdminCodeString, properties, 1);
+      const properties = getProperties(
+        boundaryLayerData,
+        admin1Key,
+        admin1Level,
+      );
+      onAdmin2Change('' as AdminCodeString, properties, admin1Level);
       return;
     }
 
     const admin2Id = value as AdminCodeString;
-    const properties = getProperties(boundaryLayerData, admin2Id, 2);
-    onAdmin2Change(admin2Id, properties, 2);
+    const properties = getProperties(boundaryLayerData, admin2Id, admin2Level);
+    onAdmin2Change(admin2Id, properties, admin2Level);
   };
 
   const renderMenuItemList = (trees: AdminBoundaryTree[]) =>
