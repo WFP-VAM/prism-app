@@ -3,9 +3,12 @@ import type { BoundaryLayerProps } from 'config/types';
 import i18n from 'i18next';
 
 import {
+  adminAreaFilenameSegment,
+  buildCountryAdminFilenameStem,
   featureMatchesSelectedAdminCode,
   formatAdminAreaRefsForDisplay,
   resolveAdminAreaRefs,
+  sanitizeFilenamePart,
 } from './adminAreaSelection';
 
 const layer = {
@@ -83,6 +86,29 @@ describe('resolveAdminAreaRefs', () => {
     expect(
       resolveAdminAreaRefs(['MZ01' as never], data as never, layer, i18n),
     ).toEqual([{ area_id: 'MZ01', name: 'Cabo Delgado' }]);
+  });
+});
+
+describe('export filename helpers', () => {
+  test('builds country_area stem for masked exports', () => {
+    expect(
+      buildCountryAdminFilenameStem('mozambique', [
+        { area_id: 'MZ01', name: 'Cabo Delgado' },
+      ]),
+    ).toBe('mozambique_Cabo_Delgado');
+  });
+
+  test('joins multiple admin area names with underscores', () => {
+    expect(
+      adminAreaFilenameSegment([
+        { area_id: 'MZ01', name: 'Cabo Delgado' },
+        { area_id: 'MZ02', name: 'Gaza' },
+      ]),
+    ).toBe('Cabo_Delgado_Gaza');
+  });
+
+  test('sanitizes unsafe filename characters', () => {
+    expect(sanitizeFilenamePart('Bad/name?')).toBe('Bad_name');
   });
 });
 

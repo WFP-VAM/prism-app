@@ -30,6 +30,8 @@ import React, {
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import {
+  adminAreaFilenameSegment,
+  buildCountryAdminFilenameStem,
   filterFeaturesBySelectedAdminCodes,
   resolveAdminAreaRefs,
 } from 'utils/adminAreaSelection';
@@ -562,7 +564,11 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       title: titleText,
       date: getFormattedDate(dateRange.startDate, 'default'),
     });
-    const filename: string = `${titleText || country}_${
+    const maskedFilenameStem =
+      toggles.countryMask && adminAreaRefs.length > 0
+        ? buildCountryAdminFilenameStem(safeCountry, adminAreaRefs)
+        : undefined;
+    const filename: string = `${maskedFilenameStem ?? (titleText || country)}_${
       getFormattedDate(dateRange.startDate, 'snake') || 'no_date'
     }`;
     const docGeneration = async () => {
@@ -660,6 +666,9 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         viewportHeight: canvasHeight,
         format,
         country: safeCountry,
+        ...(toggles.countryMask && adminAreaRefs.length > 0
+          ? { adminArea: adminAreaFilenameSegment(adminAreaRefs) }
+          : {}),
         layerDisplayName,
         datesSummary,
         mapTotal: constructedUrls.length,
