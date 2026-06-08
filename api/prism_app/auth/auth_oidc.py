@@ -6,7 +6,7 @@ import logging
 import secrets
 from posixpath import normpath
 from typing import Annotated
-from urllib.parse import parse_qs, unquote, urlparse
+from urllib.parse import parse_qs, quote, unquote, urlparse
 
 import httpx
 import jwt
@@ -19,6 +19,7 @@ from prism_app.auth.access_pages import (
     sign_out_confirm_response,
     sign_out_csrf_failed_response,
     signed_out_response,
+    welcome_response,
 )
 from prism_app.auth.admin_settings import (
     AdminAuthSettings,
@@ -56,6 +57,8 @@ logger = logging.getLogger(__name__)
 _OIDC_NOT_CONFIGURED_DETAIL = "OIDC is not configured for this deployment."
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+
+AUTH_WELCOME_PATH = "/auth/welcome"
 
 
 def _cookie_params(settings: AdminAuthSettings) -> dict:
@@ -182,8 +185,10 @@ def _safe_next(next_raw: str | None, default: str = "/admin/") -> str:
     return default
 
 
-def _safe_sign_out_next(next_raw: str | None, *, default: str = "/admin/") -> str:
-    """Resolve post-logout destination: admin paths on this host or allowlisted PRISM SPA URLs."""
+def _safe_sign_out_next(
+    next_raw: str | None, *, default: str = AUTH_WELCOME_PATH
+) -> str:
+    """Resolve post-logout destination: admin welcome page, admin paths, or allowlisted PRISM SPA URLs."""
     if not next_raw:
         return default
     raw = str(next_raw).strip()
@@ -206,6 +211,7 @@ def _safe_sign_out_next(next_raw: str | None, *, default: str = "/admin/") -> st
             norm == "/admin"
             or norm.startswith("/admin/")
             or norm == "/access-not-configured"
+            or norm == AUTH_WELCOME_PATH
         ):
             return raw
         return default
@@ -429,6 +435,15 @@ async def oidc_callback(
     _set_id_token_hint_cookie(r, settings, id_token)
     clear_oidc_state_cookie(r, settings)
     return r
+
+
+@router.get("/welcome")
+def oidc_welcome(
+    next_url: Annotated[str | None, Query(alias="next")] = None,
+) -> Response:
+    sign_in_next = _safe_next(next_url, default="/admin/")
+    sign_in_href = f"/auth/sign-in?next={quote(sign_in_next, safe='')}"
+    return welcome_response(sign_in_href=sign_in_href)
 
 
 @router.get("/signed-out", name="oidc_signed_out")

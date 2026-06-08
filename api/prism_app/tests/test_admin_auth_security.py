@@ -61,7 +61,7 @@ def test_get_sign_out_when_admin_auth_disabled_redirects_without_confirm() -> No
     client = TestClient(app, base_url=_HTTPS)
     r = client.get("/auth/sign-out", follow_redirects=False)
     assert r.status_code == 303
-    assert r.headers["location"] == "/admin/"
+    assert r.headers["location"] == "/auth/welcome"
 
 
 def _oidc_sign_out_test_settings() -> AdminAuthSettings:
@@ -135,7 +135,7 @@ def test_post_sign_out_oidc_with_csrf_redirects() -> None:
         app.dependency_overrides.pop(get_admin_auth_settings, None)
 
     assert r.status_code == 303
-    assert r.headers["location"] == "/admin/"
+    assert r.headers["location"] == "/auth/welcome"
 
 
 def test_post_sign_out_when_admin_disabled_works_without_csrf() -> None:
@@ -143,7 +143,7 @@ def test_post_sign_out_when_admin_disabled_works_without_csrf() -> None:
     client = TestClient(app, base_url=_HTTPS)
     r = client.post("/auth/sign-out", data={}, follow_redirects=False)
     assert r.status_code == 303
-    assert r.headers["location"] == "/admin/"
+    assert r.headers["location"] == "/auth/welcome"
 
 
 def test_get_sign_out_with_admin_next_redirects_to_admin_when_auth_disabled() -> None:
@@ -235,4 +235,25 @@ def test_safe_sign_out_next_allows_prism_frontend_without_print_modal() -> None:
 
 
 def test_safe_sign_out_next_rejects_disallowed_origin() -> None:
-    assert auth_oidc._safe_sign_out_next("https://evil.example/logout") == "/admin/"
+    assert (
+        auth_oidc._safe_sign_out_next("https://evil.example/logout") == "/auth/welcome"
+    )
+
+
+def test_safe_sign_out_next_allows_welcome_path() -> None:
+    assert auth_oidc._safe_sign_out_next("/auth/welcome") == "/auth/welcome"
+
+
+def test_welcome_page_renders() -> None:
+    client = TestClient(app, base_url=_HTTPS)
+    r = client.get("/auth/welcome")
+    assert r.status_code == 200
+    assert "Welcome" in r.text
+    assert "/auth/sign-in?next=%2Fadmin%2F" in r.text
+
+
+def test_welcome_page_honors_next_for_sign_in_link() -> None:
+    client = TestClient(app, base_url=_HTTPS)
+    r = client.get("/auth/welcome?next=%2Fadmin%2Flist")
+    assert r.status_code == 200
+    assert "/auth/sign-in?next=%2Fadmin%2Flist" in r.text

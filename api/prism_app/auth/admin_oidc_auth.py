@@ -66,13 +66,13 @@ class PrismAdminAuthProvider(BaseAuthProvider):
     ) -> Response:
         nxt = request.query_params.get("next") or str(request.url_for("index"))
         return RedirectResponse(
-            url=f"/auth/sign-in?next={quote(nxt, safe='')}",
+            url=f"/auth/welcome?next={quote(nxt, safe='')}",
             status_code=HTTP_303_SEE_OTHER,
         )
 
     async def _render_logout(self, request: Request, admin: BaseAdmin) -> Response:
         return RedirectResponse(
-            url="/auth/sign-out?next=%2Fadmin%2F",
+            url="/auth/sign-out?next=%2Fauth%2Fwelcome",
             status_code=HTTP_303_SEE_OTHER,
         )
 
@@ -154,11 +154,11 @@ class PrismAdminAuthMiddleware(BaseHTTPMiddleware):
         )
 
         if user is None:
+            next_path = request.url.path
+            if request.url.query:
+                next_path = f"{next_path}?{request.url.query}"
             return RedirectResponse(
-                "{url}?{query_params}".format(
-                    url=request.url_for(request.app.state.ROUTE_NAME + ":login"),
-                    query_params=urlencode({"next": str(request.url)}),
-                ),
+                url=f"/auth/welcome?{urlencode({'next': next_path})}",
                 status_code=HTTP_303_SEE_OTHER,
             )
 
