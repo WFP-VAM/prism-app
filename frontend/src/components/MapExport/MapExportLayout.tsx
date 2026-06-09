@@ -21,6 +21,7 @@ import { ensureSDFIconsLoaded } from 'components/MapView/Layers/icon-utils';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
 import { mapStyle } from 'components/MapView/Map/utils';
 import { DiscriminateUnion, LayerType, Panel } from 'config/types';
+import type { StyleSpecification } from 'maplibre-gl';
 import maplibregl from 'maplibre-gl';
 import { lightGrey } from 'muiTheme';
 import React, {
@@ -54,6 +55,10 @@ import {
 import useResizeObserver from 'utils/useOnResizeObserver';
 
 import { getAspectRatioDecimal } from './aspectRatioConstants';
+import {
+  removeBasemapLabelLayersFromMap,
+  splitExportMapStyleForClipping,
+} from './splitExportMapStyleForClipping';
 import { transparentDataOverlayMapStyle } from './transparentDataOverlayMapStyle';
 import { MapExportLayoutProps } from './types';
 
@@ -141,7 +146,11 @@ function MapExportLayout({
   const northArrowRef = useRef<HTMLImageElement>(null);
   const baseMapRef = React.useRef<MapRef>(null);
   const dataMapRef = React.useRef<MapRef>(null);
+  const boundariesMapRef = React.useRef<MapRef>(null);
+  const labelsMapRef = React.useRef<MapRef>(null);
   const dataLayersClipContainerRef = useRef<HTMLDivElement>(null);
+  const [runtimeLabelsOverlayStyle, setRuntimeLabelsOverlayStyle] =
+    useState<StyleSpecification | null>(null);
 
   // Track container dimensions to calculate proper map size
   const [containerRef, containerDimensions] =
@@ -173,6 +182,49 @@ function MapExportLayout({
     [stackLayers],
   );
 
+  // Process map style to filter labels if needed
+  const processedMapStyle = useMemo(() => {
+    if (
+      typeof mapStyleProp === 'object' &&
+      mapStyleProp.layers &&
+      !toggles.mapLabelsVisibility
+    ) {
+      return {
+        ...mapStyleProp,
+        layers: mapStyleProp.layers.filter((x: any) => !x.id.includes('label')),
+      };
+    }
+    return mapStyleProp;
+  }, [mapStyleProp, toggles.mapLabelsVisibility]);
+
+  useEffect(() => {
+    setRuntimeLabelsOverlayStyle(null);
+  }, [processedMapStyle, shouldClipDataLayers, toggles.mapLabelsVisibility]);
+
+  const clippedExportStyles = useMemo(() => {
+    if (!shouldClipDataLayers || typeof processedMapStyle !== 'object') {
+      return null;
+    }
+
+    return splitExportMapStyleForClipping(
+      processedMapStyle,
+      toggles.mapLabelsVisibility,
+    );
+  }, [processedMapStyle, shouldClipDataLayers, toggles.mapLabelsVisibility]);
+
+  const basemapMapStyle =
+    clippedExportStyles?.basemapStyle ??
+    processedMapStyle ??
+    mapStyle.toString();
+  const labelsOverlayStyle =
+    runtimeLabelsOverlayStyle ?? clippedExportStyles?.labelsStyle;
+  const shouldShowLabelsOverlay = Boolean(
+    shouldClipDataLayers && labelsOverlayStyle,
+  );
+  const shouldShowBoundariesOverlay = Boolean(
+    shouldClipDataLayers && boundaryLayers.length > 0,
+  );
+
   const firstBoundaryLayerMapId = getFirstBoundaryLayerMapId(
     baseMapRef.current?.getMap(),
   );
@@ -193,6 +245,22 @@ function MapExportLayout({
       shouldClipDataLayers,
       stackLayers,
     ],
+  );
+
+  const getBoundaryOverlayBeforeId = useCallback(
+    (index: number) => {
+      if (index === 0) {
+        return undefined;
+      }
+
+      const previousLayerId = boundaryLayers[index - 1].id;
+      if (isLayerOnView(boundariesMapRef.current?.getMap(), previousLayerId)) {
+        return getLayerMapId(previousLayerId);
+      }
+
+      return undefined;
+    },
+    [boundaryLayers],
   );
 
   const getDataLayerBeforeId = useCallback(
@@ -225,13 +293,33 @@ function MapExportLayout({
       return false;
     }
 
-    if (!shouldClipDataLayers) {
-      return true;
+    if (shouldClipDataLayers) {
+      const dataMap = dataMapRef.current?.getMap();
+      if (!dataMap || !isMapFullyLoaded(dataMap)) {
+        return false;
+      }
     }
 
-    const dataMap = dataMapRef.current?.getMap();
-    return Boolean(dataMap && isMapFullyLoaded(dataMap));
-  }, [shouldClipDataLayers]);
+    if (shouldShowBoundariesOverlay) {
+      const boundariesMap = boundariesMapRef.current?.getMap();
+      if (!boundariesMap || !isMapFullyLoaded(boundariesMap)) {
+        return false;
+      }
+    }
+
+    if (shouldShowLabelsOverlay) {
+      const labelsMap = labelsMapRef.current?.getMap();
+      if (!labelsMap || !isMapFullyLoaded(labelsMap)) {
+        return false;
+      }
+    }
+
+    return true;
+  }, [
+    shouldClipDataLayers,
+    shouldShowBoundariesOverlay,
+    shouldShowLabelsOverlay,
+  ]);
 
   // Scale percent for AA markers based on map zoom
   const scalePercent = useAAMarkerScalePercent(baseMapRef.current?.getMap());
@@ -307,21 +395,6 @@ function MapExportLayout({
     updateScaleBarAndNorthArrow();
   }, [updateScaleBarAndNorthArrow]);
 
-  // Process map style to filter labels if needed
-  const processedMapStyle = useMemo(() => {
-    if (
-      typeof mapStyleProp === 'object' &&
-      mapStyleProp.layers &&
-      !toggles.mapLabelsVisibility
-    ) {
-      return {
-        ...mapStyleProp,
-        layers: mapStyleProp.layers.filter((x: any) => !x.id.includes('label')),
-      };
-    }
-    return mapStyleProp;
-  }, [mapStyleProp, toggles.mapLabelsVisibility]);
-
   const logoHeightMultipler = 32;
   const logoHeight = logoHeightMultipler * logoScale;
   // Title min height is based on the logo size but only if visible
@@ -380,11 +453,25 @@ function MapExportLayout({
     [bounds],
   );
 
-  const syncDataOverlayToBasemap = useCallback(() => {
+  const syncOverlayMapsToBasemap = useCallback(() => {
     const baseMap = baseMapRef.current?.getMap();
+    if (!baseMap) {
+      return;
+    }
+
     const dataMap = dataMapRef.current?.getMap();
-    if (baseMap && dataMap) {
+    if (dataMap) {
       syncMapView(baseMap, dataMap);
+    }
+
+    const boundariesMap = boundariesMapRef.current?.getMap();
+    if (boundariesMap) {
+      syncMapView(baseMap, boundariesMap);
+    }
+
+    const labelsMap = labelsMapRef.current?.getMap();
+    if (labelsMap) {
+      syncMapView(baseMap, labelsMap);
     }
   }, []);
 
@@ -462,10 +549,21 @@ function MapExportLayout({
 
     if (!shouldClipDataLayers) {
       loadDataLayerAssets(map);
+    } else if (
+      toggles.mapLabelsVisibility &&
+      typeof processedMapStyle === 'string' &&
+      map?.getStyle()
+    ) {
+      const { labelsStyle } = splitExportMapStyleForClipping(
+        map.getStyle(),
+        true,
+      );
+      removeBasemapLabelLayersFromMap(map);
+      setRuntimeLabelsOverlayStyle(labelsStyle);
     }
 
     fitMapToBounds(map);
-    syncDataOverlayToBasemap();
+    syncOverlayMapsToBasemap();
 
     if (onBoundsChange && map) {
       let lastBoundsStr: string | null = null;
@@ -482,7 +580,7 @@ function MapExportLayout({
             onBoundsChange(mapBounds, zoom);
           }
         }
-        syncDataOverlayToBasemap();
+        syncOverlayMapsToBasemap();
       };
 
       reportBounds();
@@ -513,11 +611,19 @@ function MapExportLayout({
     const map = dataMapRef.current?.getMap();
     loadDataLayerAssets(map);
     fitMapToBounds(map);
-    syncDataOverlayToBasemap();
+    syncOverlayMapsToBasemap();
 
     if (onMapLoad && !signalExportReady) {
       onMapLoad(e);
     }
+  };
+
+  const handleBoundariesMapLoad = () => {
+    syncOverlayMapsToBasemap();
+  };
+
+  const handleLabelsMapLoad = () => {
+    syncOverlayMapsToBasemap();
   };
   // Calculate map dimensions based on container size and aspect ratio
   const mapDimensions = useMemo(() => {
@@ -742,11 +848,11 @@ function MapExportLayout({
           preserveDrawingBuffer
           initialViewState={effectiveInitialViewState}
           onLoad={handleBaseMapLoad}
-          mapStyle={processedMapStyle || mapStyle.toString()}
+          mapStyle={basemapMapStyle}
           style={{ width: '100%', height: '100%' }}
         >
-          {(shouldClipDataLayers ? boundaryLayers : stackLayers).map(
-            (layer, index) => {
+          {!shouldClipDataLayers &&
+            stackLayers.map((layer, index) => {
               const { component } = componentTypes[layer.type];
               return createElement(component as any, {
                 key: layer.id,
@@ -757,8 +863,7 @@ function MapExportLayout({
                   layerUsesSymbolAnchorOnly(layer),
                 ),
               });
-            },
-          )}
+            })}
           {!shouldClipDataLayers && (
             <>
               {activePanel === Panel.AnticipatoryActionDrought &&
@@ -837,6 +942,42 @@ function MapExportLayout({
             </MapGL>
           </div>
         )}
+        {shouldShowBoundariesOverlay && (
+          <div className={classes.boundariesMapOverlay}>
+            <MapGL
+              ref={boundariesMapRef}
+              dragRotate={false}
+              preserveDrawingBuffer
+              initialViewState={effectiveInitialViewState}
+              onLoad={handleBoundariesMapLoad}
+              mapStyle={transparentDataOverlayMapStyle}
+              style={{ width: '100%', height: '100%' }}
+            >
+              {boundaryLayers.map((layer, index) => {
+                const { component } = componentTypes[layer.type];
+                return createElement(component as any, {
+                  key: layer.id,
+                  layer,
+                  mapRef: boundariesMapRef,
+                  before: getBoundaryOverlayBeforeId(index),
+                });
+              })}
+            </MapGL>
+          </div>
+        )}
+        {shouldShowLabelsOverlay && labelsOverlayStyle && (
+          <div className={classes.labelsMapOverlay}>
+            <MapGL
+              ref={labelsMapRef}
+              dragRotate={false}
+              preserveDrawingBuffer
+              initialViewState={effectiveInitialViewState}
+              onLoad={handleLabelsMapLoad}
+              mapStyle={labelsOverlayStyle}
+              style={{ width: '100%', height: '100%' }}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -910,6 +1051,24 @@ const useStyles = makeStyles(() =>
       height: '100%',
       width: '100%',
       zIndex: 2,
+      pointerEvents: 'none',
+    },
+    labelsMapOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      height: '100%',
+      width: '100%',
+      zIndex: 4,
+      pointerEvents: 'none',
+    },
+    boundariesMapOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      height: '100%',
+      width: '100%',
+      zIndex: 3,
       pointerEvents: 'none',
     },
     titleOverlay: {
