@@ -7,10 +7,12 @@ type CountriesKey = keyof typeof universalMetadata.countries;
 
 const UNIVERSAL_ADMIN3_LAYER_ID: LayerKey = 'universal_admin3_boundaries';
 
+const ISO3_CODE_REGEX = /^[A-Z0-9]{3}$/;
+
 const ADMIN3_ISO3_CODES = new Set(
   universalMetadata.admin3Countries
     .map((code: string) => code.toUpperCase())
-    .filter(code => /^[A-Z0-9]{3}$/.test(code)),
+    .filter(code => ISO3_CODE_REGEX.test(code)),
 );
 
 export function isUniversalDeployment(): boolean {
@@ -19,17 +21,11 @@ export function isUniversalDeployment(): boolean {
 }
 
 export function normalizeIso3(iso3: string | undefined): string | undefined {
-  if (!iso3) {
-    return undefined;
-  }
-  return iso3.trim().toUpperCase();
+  return iso3?.trim().toUpperCase();
 }
 
 export function isValidIso3Format(iso3: string | undefined): boolean {
-  if (!iso3) {
-    return false;
-  }
-  return /^[A-Z0-9]{3}$/.test(iso3);
+  return iso3 ? ISO3_CODE_REGEX.test(iso3) : false;
 }
 
 export function isKnownIso3(iso3: string | undefined): boolean {
@@ -42,28 +38,23 @@ export function isKnownIso3(iso3: string | undefined): boolean {
 
 export function hasAdmin3ForCountry(iso3: string | undefined): boolean {
   const normalized = normalizeIso3(iso3);
-  if (!normalized) {
-    return false;
-  }
-  return ADMIN3_ISO3_CODES.has(normalized);
+  return normalized ? ADMIN3_ISO3_CODES.has(normalized) : false;
 }
 
 export function getIso3MapFilter(iso3: string | undefined) {
   const normalized = normalizeIso3(iso3);
-  if (!normalized) {
-    return undefined;
-  }
-  return ['==', ['get', 'iso3'], normalized] as const;
+  return normalized
+    ? (['==', ['get', 'iso3'], normalized] as const)
+    : undefined;
 }
 
 export function filterFeaturesByIso3<
   T extends { properties?: Record<string, unknown> | null },
 >(features: T[], iso3: string | undefined): T[] {
   const normalized = normalizeIso3(iso3);
-  if (!normalized) {
-    return features;
-  }
-  return features.filter(feature => feature.properties?.iso3 === normalized);
+  return normalized
+    ? features.filter(feature => feature.properties?.iso3 === normalized)
+    : features;
 }
 
 export function getDisplayBoundaryLayersForIso3(

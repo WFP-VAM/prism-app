@@ -115,18 +115,19 @@ function AppRoutes() {
         <ExportView />
       </Route>
       {isUniversal && (
-        // @ts-expect-error - react-router-dom v5 types incompatible with React 18
-        <Route path="/country/:iso3">
-          <CountryIsoProvider>
-            <AppShell countryPrefix="/country/:iso3" />
-          </CountryIsoProvider>
-        </Route>
-      )}
-      {isUniversal && (
-        // @ts-expect-error - react-router-dom v5 types incompatible with React 18
-        <Route>
-          <CountryInvalidPage />
-        </Route>
+        <>
+          {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
+          <Route path="/country/:iso3">
+            <CountryIsoProvider>
+              <AppShell countryPrefix="/country/:iso3" />
+            </CountryIsoProvider>
+          </Route>
+
+          {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
+          <Route path="/country/:iso3">
+            <CountryInvalidPage />
+          </Route>
+        </>
       )}
       {!isUniversal && (
         // @ts-expect-error - react-router-dom v5 types incompatible with React 18

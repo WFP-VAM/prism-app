@@ -5,13 +5,11 @@ import {
   type CountryIsoContextValue,
 } from './countryIsoContext';
 
-export function useCountryIso(): CountryIsoContextValue {
-  return useContext(CountryIsoContext);
-}
-
-export function useOptionalCountryIso(): CountryIsoContextValue | undefined {
+export function useCountryIso(
+  optional?: boolean,
+): CountryIsoContextValue | undefined {
   const context = useContext(CountryIsoContext);
-  if (!context.iso3) {
+  if (optional && !context.iso3) {
     return undefined;
   }
   return context;

@@ -388,12 +388,8 @@ export type PolygonAnalysisDispatchParams = {
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 const MAX_CACHE_SIZE = 4;
 
-function getIso3FromUrl(): string | undefined {
-  return getIso3FromPathname();
-}
-
 function getAnalysisIso3Suffix(): string {
-  const iso3 = getIso3FromUrl();
+  const iso3 = getIso3FromPathname();
   return iso3 ? `_${iso3}` : '';
 }
 
@@ -508,7 +504,7 @@ async function createAPIRequestParams(
 
   // we force group_by to be defined with &
 
-  const iso3Filter = getIso3FromUrl();
+  const iso3Filter = getIso3FromPathname();
 
   const apiRequest: ApiData = {
     geotiff_url: geotiffUrl,
@@ -578,7 +574,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       params;
 
     const adminBoundaries = getBoundaryLayerSingleton();
-    const iso3 = getIso3FromUrl();
+    const iso3 = getIso3FromPathname();
 
     const boundaryData = await boundaryCache.getBoundaryData(
       adminBoundaries,
@@ -782,7 +778,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     (baselineLayer as AdminLevelDataLayerProps)?.adminLevel ||
     (baselineLayer as BoundaryLayerProps)?.adminLevelCodes?.length;
   const adminBoundaries = getBoundaryLayersByAdminLevel(adminLevel);
-  const iso3 = getIso3FromUrl();
+  const iso3 = getIso3FromPathname();
 
   const boundaryData = await boundaryCache.getBoundaryData(
     adminBoundaries,
