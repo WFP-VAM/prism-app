@@ -238,10 +238,22 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
   const { selectedLayersWithDateSupport, selectedLayers } = useLayers();
 
+  const defaultBatchMapLayerId = useMemo((): LayerKey | null => {
+    if (selectableLayers.length === 0) {
+      return null;
+    }
+    const selectableIds = new Set(selectableLayers.map(layer => layer.id));
+    const fromMainMap = selectedLayersWithDateSupport.find(layer =>
+      selectableIds.has(layer.id),
+    )?.id as LayerKey | undefined;
+    return fromMainMap ?? selectableLayers[0].id;
+  }, [selectableLayers, selectedLayersWithDateSupport]);
+
   // Batch-map layer in the print dialog is separate from the main map's
   // `hazardLayerIds`. On open, read `batchMapLayerId` once (e.g. after login
-  // redirect); otherwise default to the main map's active layer. The ref ensures
-  // we do not re-run when the sync effect below updates the URL.
+  // redirect); otherwise default to the first batch-printable main-map layer, or
+  // the first selectable batch-print layer. The ref ensures we do not re-run
+  // when the sync effect below updates the URL.
   useEffect(() => {
     if (!open) {
       printLayerInitializedRef.current = false;
@@ -268,24 +280,28 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       }
     }
 
-    if (selectedLayersWithDateSupport.length === 0) {
+    if (defaultBatchMapLayerId === null) {
       return;
     }
 
     printLayerInitializedRef.current = true;
-    setSelectedLayerId(
-      (selectedLayersWithDateSupport[0]?.id as LayerKey) ?? null,
-    );
-  }, [open, selectableLayers, selectedLayersWithDateSupport]);
+    setSelectedLayerId(defaultBatchMapLayerId);
+  }, [open, selectableLayers, defaultBatchMapLayerId]);
 
   // Keep `batchMapLayerId` in the URL while batch maps is enabled so login
   // redirect and modal restore preserve the print-layer choice. Intentionally
   // omit `location.search` from deps so URL updates do not re-trigger init above.
+  // Skip syncing when `schedule=1` is present: the post-login redirect URL already
+  // carries `batchMapLayerId`, and replacing search here re-triggers schedule init
+  // and whoami work on every layer tweak.
   useEffect(() => {
     if (!open || !toggles.batchMapsVisibility || !selectedLayerId) {
       return;
     }
     const params = new URLSearchParams(location.search);
+    if (params.get('schedule') === '1') {
+      return;
+    }
     if (params.get(BATCH_MAP_LAYER_URL_KEY) === selectedLayerId) {
       return;
     }
@@ -337,10 +353,10 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   }, [open, selectedMap]);
 
   useEffect(() => {
-    if (selectedLayerId === null && selectableLayers.length > 0) {
-      setSelectedLayerId(selectableLayers[0].id);
+    if (selectedLayerId === null && defaultBatchMapLayerId !== null) {
+      setSelectedLayerId(defaultBatchMapLayerId);
     }
-  }, [selectableLayers, selectedLayerId]);
+  }, [defaultBatchMapLayerId, selectedLayerId]);
 
   const printSelectedLayer = useMemo(
     () =>
