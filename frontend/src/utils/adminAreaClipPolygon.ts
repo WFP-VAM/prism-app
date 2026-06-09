@@ -66,14 +66,16 @@ export async function resolveAdminAreaClipPolygon(options: {
     getLayerData,
   } = options;
 
+  const effectiveBoundaryData = boundaryData ?? getLayerData(boundaryLayer.id);
+
   if (selectedBoundaries.length > 0) {
-    if (!boundaryData) {
+    if (!effectiveBoundaryData) {
       return null;
     }
 
     const fromSelection = buildAdminAreaClipPolygonFromSelection(
       selectedBoundaries,
-      boundaryData,
+      effectiveBoundaryData,
       boundaryLayer,
       i18nLocale,
       getLayerData,
@@ -87,7 +89,7 @@ export async function resolveAdminAreaClipPolygon(options: {
   try {
     return await fetchUnifiedCountryBoundaryPolygon(country);
   } catch {
-    return buildCountryClipPolygonFromBoundaryData(boundaryData);
+    return buildCountryClipPolygonFromBoundaryData(effectiveBoundaryData);
   }
 }
 

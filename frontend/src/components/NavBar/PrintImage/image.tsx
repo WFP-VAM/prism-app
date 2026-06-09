@@ -170,6 +170,16 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     getLayerData: getBoundaryLayerData,
   });
 
+  useEffect(() => {
+    if (!open || !toggles.countryMask) {
+      return undefined;
+    }
+
+    void boundaryCache.getBoundaryData(boundaryLayer, dispatch);
+
+    return undefined;
+  }, [dispatch, open, toggles.countryMask]);
+
   const [dateRangeForBatchMaps, setDateRangeForBatchMaps] = useState<{
     startDate: number | null;
     endDate: number | null;

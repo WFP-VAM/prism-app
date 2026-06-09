@@ -478,6 +478,23 @@ function MapExportLayout({
     }
   }, []);
 
+  const applyDataLayersClipPath = useCallback(() => {
+    const container = dataLayersClipContainerRef.current;
+    if (!shouldClipDataLayers || !adminAreaClipPolygon) {
+      if (container) {
+        container.style.clipPath = '';
+      }
+      return;
+    }
+
+    const map = dataMapRef.current?.getMap();
+    if (!map || !container) {
+      return;
+    }
+
+    applyAdminAreaClipPath(map, container, adminAreaClipPolygon);
+  }, [adminAreaClipPolygon, shouldClipDataLayers]);
+
   const startExportReadyTracking = useCallback(
     (map: maplibregl.Map, onLoadEvent: unknown) => {
       let hasSignaledReady = false;
@@ -615,6 +632,7 @@ function MapExportLayout({
     loadDataLayerAssets(map);
     fitMapToBounds(map);
     syncOverlayMapsToBasemap();
+    applyDataLayersClipPath();
 
     if (onMapLoad && !signalExportReady) {
       onMapLoad(e);
@@ -680,34 +698,25 @@ function MapExportLayout({
   }, [mapDimensions, onMapDimensionsChange]);
 
   useEffect(() => {
-    if (!shouldClipDataLayers) {
-      if (dataLayersClipContainerRef.current) {
-        dataLayersClipContainerRef.current.style.clipPath = '';
-      }
-      return undefined;
-    }
+    applyDataLayersClipPath();
 
     const map = dataMapRef.current?.getMap();
-    const container = dataLayersClipContainerRef.current;
-    if (!map || !container) {
+    if (!map || !shouldClipDataLayers) {
       return undefined;
     }
 
-    const updateClipPath = () => {
-      applyAdminAreaClipPath(map, container, adminAreaClipPolygon);
-    };
-
-    updateClipPath();
-    map.on('moveend', updateClipPath);
-    map.on('resize', updateClipPath);
+    map.on('moveend', applyDataLayersClipPath);
+    map.on('resize', applyDataLayersClipPath);
 
     return () => {
-      map.off('moveend', updateClipPath);
-      map.off('resize', updateClipPath);
-      map.off('resize', updateClipPath);
-      applyAdminAreaClipPath(map, container, null);
+      map.off('moveend', applyDataLayersClipPath);
+      map.off('resize', applyDataLayersClipPath);
+      const container = dataLayersClipContainerRef.current;
+      if (container) {
+        applyAdminAreaClipPath(map, container, null);
+      }
     };
-  }, [adminAreaClipPolygon, shouldClipDataLayers, mapDimensions]);
+  }, [applyDataLayersClipPath, shouldClipDataLayers, mapDimensions]);
 
   // The map content (title, legend, footer, map itself)
   const mapContent = (

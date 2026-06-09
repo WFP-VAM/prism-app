@@ -159,6 +159,46 @@ describe('adminAreaClipPolygon', () => {
     expect(polygon?.geometry.type).toBe('Polygon');
   });
 
+  test('resolveAdminAreaClipPolygon uses cached boundary data when props are undefined', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 404,
+    }) as jest.Mock;
+
+    const cachedBoundaryData = {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          properties: { pcode: 'A' },
+          geometry: {
+            type: 'Polygon',
+            coordinates: [
+              [
+                [0, 0],
+                [1, 0],
+                [1, 1],
+                [0, 1],
+                [0, 0],
+              ],
+            ],
+          },
+        },
+      ],
+    };
+
+    const polygon = await resolveAdminAreaClipPolygon({
+      country: 'honduras',
+      selectedBoundaries: [],
+      boundaryData: undefined,
+      boundaryLayer,
+      i18nLocale: { language: 'en' } as any,
+      getLayerData: () => cachedBoundaryData as any,
+    });
+
+    expect(polygon?.geometry.type).toBe('Polygon');
+  });
+
   test('resolveAdminAreaClipPolygon waits for boundary data when admin area selected', async () => {
     const polygon = await resolveAdminAreaClipPolygon({
       country: 'mozambique',
