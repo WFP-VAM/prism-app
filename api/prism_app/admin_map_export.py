@@ -21,7 +21,7 @@ from prism_app.database.map_export_schedule_model import (
     MapExportScheduleStatus,
 )
 from prism_app.database.user_model import User
-from prism_app.export_s3 import public_maps_folder_uri
+from prism_app.export_s3 import public_maps_folder_uri, storage_uri_to_admin_output_path
 from prism_app.export_schedules.routes import format_map_export_schedule_name
 from prism_app.map_export_layer_catalog import (
     get_deployment_country,
@@ -343,9 +343,16 @@ class MapExportOutputDirectoryField(StringField):
     exclude_from_edit = True
     searchable = False
     orderable = False
+    display_template: str = "displays/map_export_output_path.html"
 
     async def parse_obj(self, request: Request, obj: Any) -> Any:  # noqa: ARG002
-        return getattr(obj, "_admin_output_directory", None)
+        storage_uri = getattr(obj, "_admin_output_directory", None)
+        if not storage_uri:
+            return None
+        try:
+            return storage_uri_to_admin_output_path(storage_uri)
+        except ValueError:
+            return None
 
 
 class PrismAdmin(Admin):
@@ -394,7 +401,7 @@ class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelVie
         ScheduleLastExecutedField("last_executed_at", label="Last executed"),
         MapExportOutputDirectoryField(
             "output_directory",
-            label="Output location",
+            label="Output path",
         ),
         StringField("export_url", read_only=True),
         PrettyJSONField("export_options", read_only=True),

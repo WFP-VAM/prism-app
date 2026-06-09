@@ -3,6 +3,7 @@ from pathlib import Path
 import pytest
 from prism_app.export_s3 import (
     DEFAULT_EXPORT_MAP_S3_BUCKET,
+    MAP_EXPORT_S3_SIGNING_REGION,
     get_export_map_s3_bucket_and_prefix,
     is_file_artifact_uri,
     local_path_from_file_uri,
@@ -14,6 +15,7 @@ from prism_app.export_s3 import (
     put_map_export_bytes_local,
     s3_key_for_map_export,
     slug_s3_path_segment,
+    storage_uri_to_admin_output_path,
 )
 
 
@@ -72,6 +74,39 @@ def test_public_maps_folder_uri_includes_bucket_and_prefix(
         "s3://prism-wfp/batch-maps/public_maps/mozambique/precip_blended_dekad/"
     )
     assert get_export_map_s3_bucket_and_prefix() == ("prism-wfp", "batch-maps")
+
+
+def test_storage_uri_to_admin_output_path_s3_console(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("EXPORT_MAP_LOCAL_OUTPUT_DIR", raising=False)
+    storage_uri = (
+        "s3://prism-wfp/batch-maps/public_maps/mozambique/precip_blended_dekad/"
+    )
+    link = storage_uri_to_admin_output_path(storage_uri)
+    assert link.startswith("https://s3.console.aws.amazon.com/s3/buckets/prism-wfp")
+    assert f"region={MAP_EXPORT_S3_SIGNING_REGION}" in link
+    assert "prefix=batch-maps/public_maps/mozambique/precip_blended_dekad/" in link
+
+
+def test_storage_uri_to_admin_output_path_local_file_scheme(
+    tmp_path: Path,
+) -> None:
+    folder = tmp_path / "public_maps" / "moz" / "layer"
+    storage_uri = folder.as_uri() + "/"
+    assert storage_uri_to_admin_output_path(storage_uri) == str(folder) + "/"
+
+
+def test_storage_uri_to_admin_output_path_bare_prefix_uses_bucket(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("EXPORT_MAP_LOCAL_OUTPUT_DIR", raising=False)
+    monkeypatch.delenv("EXPORT_MAP_S3_BUCKET", raising=False)
+    link = storage_uri_to_admin_output_path(
+        "batch-maps/public_maps/mozambique/precip_blended_dekad/",
+    )
+    assert "s3.console.aws.amazon.com/s3/buckets/prism-wfp" in link
+    assert "prefix=batch-maps/public_maps/mozambique/precip_blended_dekad/" in link
 
 
 def test_public_maps_folder_uri_local_file_scheme(

@@ -193,6 +193,32 @@ def public_maps_folder_uri(export_url: str, *, country: str) -> str:
     return key_prefix
 
 
+def _s3_console_folder_url(bucket: str, key_prefix: str) -> str:
+    prefix = key_prefix if key_prefix.endswith("/") else f"{key_prefix}/"
+    return (
+        f"https://s3.console.aws.amazon.com/s3/buckets/{bucket}"
+        f"?region={MAP_EXPORT_S3_SIGNING_REGION}&prefix={quote(prefix)}"
+    )
+
+
+def storage_uri_to_admin_output_path(storage_uri: str) -> str:
+    """Admin display value: local filesystem path or browser-openable URL."""
+    uri = storage_uri.strip()
+    if not uri:
+        raise ValueError("storage URI is empty")
+    if uri.startswith("file://"):
+        return local_path_from_file_uri(uri)
+    if uri.startswith("s3://"):
+        bucket, key = parse_s3_uri(uri)
+        return _s3_console_folder_url(bucket, key)
+    if uri.startswith(("http://", "https://")):
+        return uri
+    bucket, _ = get_export_map_s3_bucket_and_prefix()
+    if bucket:
+        return _s3_console_folder_url(bucket, uri)
+    raise ValueError(f"Cannot build output path for {storage_uri!r}")
+
+
 def put_map_export_bytes(
     bucket: str,
     job_id: str,
