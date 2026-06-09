@@ -75,7 +75,7 @@ export type PrintConfigContextType = {
     footerText: string;
     footerRef: React.RefObject<HTMLDivElement>;
     titleHeight: number;
-    invertedAdminBoundaryLimitPolygon: any;
+    adminAreaClipPolygon: any;
     printRef: React.RefObject<HTMLDivElement>;
     dateRange: {
       startDate: number | null;

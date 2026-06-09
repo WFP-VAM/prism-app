@@ -1,5 +1,4 @@
 import { createTheme, ThemeProvider } from '@material-ui/core';
-import mask from '@turf/mask';
 import MapExportLayout from 'components/MapExport/MapExportLayout';
 import { mapStyle } from 'components/MapView/Map/utils';
 import { appConfig, safeCountry } from 'config';
@@ -19,6 +18,10 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
+import {
+  buildAdminAreaClipPolygonFromSelection,
+  fetchUnifiedCountryBoundaryPolygon,
+} from 'utils/adminAreaClipPolygon';
 import { boundaryCache } from 'utils/boundary-cache';
 import { getExportFontStack, loadExportFonts } from 'utils/exportFontFamily';
 import { exportLanguage } from 'utils/exportLanguage';
@@ -107,27 +110,26 @@ const ExportView = memo(() => {
   // Load layers from URL params - useLayers already handles this
   const { selectedLayers, selectedLayersWithDateSupport } = useLayers();
 
-  // Get boundary layer for mask computation
+  // Get boundary layer for admin area clip
   const boundaryLayer = getBoundaryLayerSingleton();
   const { data: boundaryData } = useBoundaryData(boundaryLayer.id, map);
 
-  // Compute inverted admin boundary polygon for mask
-  const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] =
-    useState<GeoJSON.Feature | null>(null);
+  const [adminAreaClipPolygon, setAdminAreaClipPolygon] =
+    useState<GeoJSON.Feature<GeoJSON.Polygon | GeoJSON.MultiPolygon> | null>(
+      null,
+    );
 
   useEffect(() => {
     if (!exportParams.toggles.countryMask) {
-      setAdminBoundaryPolygon(null);
+      setAdminAreaClipPolygon(null);
       return;
     }
 
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
     if (exportParams.selectedBoundaries.length === 0) {
-      fetch(`/data/${safeCountry}/admin-boundary-unified-polygon.json`)
-        .then(response => response.json())
+      fetchUnifiedCountryBoundaryPolygon(safeCountry)
         .then(polygonData => {
-          const maskedPolygon = mask(polygonData as any);
-          setAdminBoundaryPolygon(maskedPolygon as any);
+          setAdminAreaClipPolygon(polygonData);
         })
         .catch(error =>
           console.error('Error loading admin boundary polygon:', error),
@@ -135,29 +137,22 @@ const ExportView = memo(() => {
       return;
     }
 
-    // Wait for boundary data to be loaded
     if (!boundaryData) {
       return;
     }
 
-    // Filter features based on selected boundaries
-    const filteredData = {
-      ...boundaryData,
-      features: boundaryData.features.filter((cell: any) => {
-        const featureAdminCode = cell.properties?.[boundaryLayer.adminCode];
-        return exportParams.selectedBoundaries.some(selectedCode =>
-          String(featureAdminCode).startsWith(selectedCode),
-        );
-      }),
-    };
+    const clipPolygon = buildAdminAreaClipPolygonFromSelection(
+      exportParams.selectedBoundaries,
+      boundaryData,
+      boundaryLayer,
+      i18n,
+      layerId => boundaryCache.getCachedData(layerId),
+    );
 
-    if (filteredData.features.length === 0) {
-      // Fall back to full country mask if no features match
-      fetch(`/data/${safeCountry}/admin-boundary-unified-polygon.json`)
-        .then(response => response.json())
+    if (!clipPolygon) {
+      fetchUnifiedCountryBoundaryPolygon(safeCountry)
         .then(polygonData => {
-          const maskedPolygon = mask(polygonData as any);
-          setAdminBoundaryPolygon(maskedPolygon as any);
+          setAdminAreaClipPolygon(polygonData);
         })
         .catch(error =>
           console.error('Error loading admin boundary polygon:', error),
@@ -165,13 +160,12 @@ const ExportView = memo(() => {
       return;
     }
 
-    const masked = mask(filteredData as any);
-    setAdminBoundaryPolygon(masked as any);
+    setAdminAreaClipPolygon(clipPolygon);
   }, [
     boundaryData,
     exportParams.selectedBoundaries,
     exportParams.toggles.countryMask,
-    boundaryLayer.adminCode,
+    i18n,
   ]);
 
   // Preload dates and load boundary layers
@@ -259,7 +253,7 @@ const ExportView = memo(() => {
         legendScale={exportParams.legendScale}
         bounds={exportParams.bounds ?? undefined}
         mapStyle={processedMapStyle}
-        invertedAdminBoundaryLimitPolygon={invertedAdminBoundaryLimitPolygon}
+        adminAreaClipPolygon={adminAreaClipPolygon}
         printRef={printRef}
         titleRef={titleRef}
         footerRef={footerRef}

@@ -235,7 +235,7 @@ describe('MapExportLayout', () => {
     expect(container.querySelector('.footerOverlay')).not.toBeInTheDocument();
   });
 
-  test('renders country mask when countryMask is true and polygon provided', () => {
+  test('does not render legacy mask overlay when countryMask is enabled', () => {
     const toggles = { ...defaultToggles, countryMask: true };
     const mockPolygon = {
       type: 'Feature',
@@ -260,13 +260,13 @@ describe('MapExportLayout', () => {
           <MapExportLayout
             {...defaultProps}
             toggles={toggles}
-            invertedAdminBoundaryLimitPolygon={mockPolygon as any}
+            adminAreaClipPolygon={mockPolygon as any}
           />
         </ThemeProvider>
       </Provider>,
     );
-    // Source should be rendered for mask
-    expect(container.textContent).toContain('mock-Source');
+
+    expect(container.textContent).not.toContain('mock-Source');
   });
 
   test('applies logo scale correctly', () => {

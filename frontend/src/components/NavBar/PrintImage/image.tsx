@@ -6,7 +6,6 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import { usePostHog } from '@posthog/react';
-import mask from '@turf/mask';
 import { appConfig, rawLayers, safeCountry } from 'config';
 import { AdminCodeString, LayerKey } from 'config/types';
 import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
@@ -30,11 +29,15 @@ import React, {
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import {
+  buildAdminAreaClipPolygonFromSelection,
+  fetchUnifiedCountryBoundaryPolygon,
+} from 'utils/adminAreaClipPolygon';
+import {
   adminAreaFilenameSegment,
   buildCountryAdminFilenameStem,
-  filterFeaturesBySelectedAdminCodes,
   resolveAdminAreaRefs,
 } from 'utils/adminAreaSelection';
+import { boundaryCache } from 'utils/boundary-cache';
 import { isBoundaryLayer } from 'utils/boundary-layers-utils';
 import { dateWithoutTime, getFormattedDate } from 'utils/date-utils';
 import useLayers, { isWmsSelectableForBatchPrint } from 'utils/layers-utils';
@@ -164,8 +167,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     );
   }
 
-  const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] =
-    useState(null);
+  const [adminAreaClipPolygon, setAdminAreaClipPolygon] = useState(null);
 
   const [dateRangeForBatchMaps, setDateRangeForBatchMaps] = useState<{
     startDate: number | null;
@@ -525,30 +527,44 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   ]);
 
   useEffect(() => {
+    if (!toggles.countryMask) {
+      setAdminAreaClipPolygon(null);
+      return;
+    }
+
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
-    // which runs ./scripts/preprocess-layers.js
     if (selectedBoundaries.length === 0) {
-      fetch(`/data/${safeCountry}/admin-boundary-unified-polygon.json`)
-        .then(response => response.json())
+      fetchUnifiedCountryBoundaryPolygon(safeCountry)
         .then(polygonData => {
-          const maskedPolygon = mask(polygonData as any);
-          setAdminBoundaryPolygon(maskedPolygon as any);
+          setAdminAreaClipPolygon(polygonData as any);
         })
         .catch(error => console.error('Error:', error));
       return;
     }
 
-    const filteredData = data && {
-      ...data,
-      features: filterFeaturesBySelectedAdminCodes(
-        data.features,
-        boundaryLayer,
-        selectedBoundaries,
-      ),
-    };
-    const masked = mask(filteredData as any);
-    setAdminBoundaryPolygon(masked as any);
-  }, [data, selectedBoundaries, selectedBoundaries.length]);
+    if (!data) {
+      return;
+    }
+
+    const clipPolygon = buildAdminAreaClipPolygonFromSelection(
+      selectedBoundaries,
+      data,
+      boundaryLayer,
+      i18n,
+      layerId => boundaryCache.getCachedData(layerId),
+    );
+
+    if (!clipPolygon) {
+      fetchUnifiedCountryBoundaryPolygon(safeCountry)
+        .then(polygonData => {
+          setAdminAreaClipPolygon(polygonData as any);
+        })
+        .catch(error => console.error('Error:', error));
+      return;
+    }
+
+    setAdminAreaClipPolygon(clipPolygon as any);
+  }, [data, i18n, selectedBoundaries, toggles.countryMask]);
 
   const handleDownloadMenuClose = () => {
     setDownloadMenuAnchorEl(null);
@@ -803,7 +819,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       legendPosition,
       legendScale,
       printRef,
-      invertedAdminBoundaryLimitPolygon,
+      adminAreaClipPolygon,
       handleClose,
       setTitleText,
       debounceCallback,

@@ -233,7 +233,7 @@ function PrintPreview() {
     logoScale,
     legendPosition,
     legendScale,
-    invertedAdminBoundaryLimitPolygon,
+    adminAreaClipPolygon,
     printRef,
     footerHeight,
     bottomLogo,
@@ -315,7 +315,7 @@ function PrintPreview() {
         bounds={geographicBoundsForExport}
         mapStyle={processedMapStyle}
         maxBounds={maxBounds}
-        invertedAdminBoundaryLimitPolygon={invertedAdminBoundaryLimitPolygon}
+        adminAreaClipPolygon={adminAreaClipPolygon}
         printRef={printRef}
         titleRef={titleRef}
         footerRef={footerRef}

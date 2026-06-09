@@ -69,7 +69,7 @@ export interface ExportParams {
   // Toggles
   toggles: MapExportToggles;
 
-  // Admin boundary selection for mask
+  // Admin boundary selection for regional clip
   selectedBoundaries: AdminCodeString[];
 }
 
@@ -109,8 +109,10 @@ export interface MapExportLayoutProps {
   // Optional bounds constraint
   maxBounds?: LngLatBoundsLike;
 
-  // Country mask polygon (computed from selected boundaries)
-  invertedAdminBoundaryLimitPolygon?: GeoJSON.Feature | null;
+  // Admin area clip polygon (computed from selected boundaries)
+  adminAreaClipPolygon?: GeoJSON.Feature<
+    GeoJSON.Polygon | GeoJSON.MultiPolygon
+  > | null;
 
   // For capturing the rendered output
   printRef?: React.RefObject<HTMLDivElement>;

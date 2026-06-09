@@ -33,7 +33,12 @@ import React, {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import MapGL, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';
+import MapGL, { MapRef, Marker } from 'react-map-gl/maplibre';
+import {
+  applyAdminAreaClipPath,
+  isMapFullyLoaded,
+  syncMapView,
+} from 'utils/adminAreaMapClip';
 import { formatCoverageText, getFormattedDate } from 'utils/date-utils';
 import {
   getFirstBoundaryLayerMapId,
@@ -41,10 +46,15 @@ import {
   layerUsesSymbolAnchorOnly,
   stackLayersForMapPaintOrder,
 } from 'utils/map-layer-before-utils';
-import { useAAMarkerScalePercent } from 'utils/map-utils';
+import {
+  getLayerMapId,
+  isLayerOnView,
+  useAAMarkerScalePercent,
+} from 'utils/map-utils';
 import useResizeObserver from 'utils/useOnResizeObserver';
 
 import { getAspectRatioDecimal } from './aspectRatioConstants';
+import { transparentDataOverlayMapStyle } from './transparentDataOverlayMapStyle';
 import { MapExportLayoutProps } from './types';
 
 /**
@@ -109,7 +119,7 @@ function MapExportLayout({
   legendScale,
   bounds,
   mapStyle: mapStyleProp,
-  invertedAdminBoundaryLimitPolygon,
+  adminAreaClipPolygon,
   printRef,
   titleRef,
   footerRef,
@@ -129,7 +139,9 @@ function MapExportLayout({
 }: MapExportLayoutProps) {
   const classes = useStyles();
   const northArrowRef = useRef<HTMLImageElement>(null);
-  const mapRef = React.useRef<MapRef>(null);
+  const baseMapRef = React.useRef<MapRef>(null);
+  const dataMapRef = React.useRef<MapRef>(null);
+  const dataLayersClipContainerRef = useRef<HTMLDivElement>(null);
 
   // Track container dimensions to calculate proper map size
   const [containerRef, containerDimensions] =
@@ -147,24 +159,82 @@ function MapExportLayout({
     [selectedLayers],
   );
 
-  const firstBoundaryLayerMapId = getFirstBoundaryLayerMapId(
-    mapRef.current?.getMap(),
+  const shouldClipDataLayers = Boolean(
+    toggles.countryMask && adminAreaClipPolygon,
   );
 
-  const getBeforeId = useCallback(
+  const boundaryLayers = useMemo(
+    () => stackLayers.filter(layer => layer.type === 'boundary'),
+    [stackLayers],
+  );
+
+  const dataLayers = useMemo(
+    () => stackLayers.filter(layer => layer.type !== 'boundary'),
+    [stackLayers],
+  );
+
+  const firstBoundaryLayerMapId = getFirstBoundaryLayerMapId(
+    baseMapRef.current?.getMap(),
+  );
+
+  const getBasemapLayerBeforeId = useCallback(
     (index: number, aboveBoundaries: boolean = false) =>
       getLayerBeforeId(index, {
         aboveBoundaries,
-        stackLayers,
-        map: mapRef.current?.getMap(),
+        stackLayers: shouldClipDataLayers ? boundaryLayers : stackLayers,
+        map: baseMapRef.current?.getMap(),
         firstSymbolId,
         firstBoundaryLayerMapId,
       }),
-    [firstBoundaryLayerMapId, firstSymbolId, stackLayers],
+    [
+      boundaryLayers,
+      firstBoundaryLayerMapId,
+      firstSymbolId,
+      shouldClipDataLayers,
+      stackLayers,
+    ],
   );
 
+  const getDataLayerBeforeId = useCallback(
+    (index: number, aboveBoundaries: boolean = false) => {
+      if (!shouldClipDataLayers) {
+        return getBasemapLayerBeforeId(index, aboveBoundaries);
+      }
+
+      if (aboveBoundaries) {
+        return undefined;
+      }
+
+      if (index === 0) {
+        return undefined;
+      }
+
+      const previousLayerId = dataLayers[index - 1].id;
+      if (isLayerOnView(dataMapRef.current?.getMap(), previousLayerId)) {
+        return getLayerMapId(previousLayerId);
+      }
+
+      return undefined;
+    },
+    [dataLayers, getBasemapLayerBeforeId, shouldClipDataLayers],
+  );
+
+  const areExportMapsLoaded = useCallback(() => {
+    const baseMap = baseMapRef.current?.getMap();
+    if (!baseMap || !isMapFullyLoaded(baseMap)) {
+      return false;
+    }
+
+    if (!shouldClipDataLayers) {
+      return true;
+    }
+
+    const dataMap = dataMapRef.current?.getMap();
+    return Boolean(dataMap && isMapFullyLoaded(dataMap));
+  }, [shouldClipDataLayers]);
+
   // Scale percent for AA markers based on map zoom
-  const scalePercent = useAAMarkerScalePercent(mapRef.current?.getMap());
+  const scalePercent = useAAMarkerScalePercent(baseMapRef.current?.getMap());
 
   const { t } = useTranslation();
 
@@ -273,37 +343,29 @@ function MapExportLayout({
     return { longitude: 0, latitude: 0, zoom: 2 };
   }, [bounds]);
 
-  const handleMapLoad = (e: any) => {
-    e.target.addControl(new maplibregl.ScaleControl({}), 'bottom-right');
-    updateScaleBarAndNorthArrow();
-
-    // Find the first symbol layer for proper layer ordering
-    // Data layers should be inserted below symbols/labels
-    const map = mapRef.current?.getMap();
-    if (map) {
-      const { layers } = map.getStyle();
-      const symbolLayer = layers?.find(layer => layer.type === 'symbol');
-      if (symbolLayer) {
-        setFirstSymbolId(symbolLayer.id);
+  const loadDataLayerAssets = useCallback(
+    (map: maplibregl.Map | undefined) => {
+      if (!map) {
+        return;
       }
-    }
 
-    // Load fill pattern images to this new map instance if needed.
-    Promise.all(
-      adminLevelLayersWithFillPattern.map(layer =>
-        addFillPatternImagesInMap(layer, mapRef.current?.getMap()),
-      ),
-    );
+      Promise.all(
+        adminLevelLayersWithFillPattern.map(layer =>
+          addFillPatternImagesInMap(layer, map),
+        ),
+      );
+      loadStormIcons(map, false);
+      ensureSDFIconsLoaded(map);
+    },
+    [adminLevelLayersWithFillPattern],
+  );
 
-    // Load storm icons for anticipatory action storm layers
-    loadStormIcons(mapRef.current?.getMap(), false); // Don't throw on error for print preview
+  const fitMapToBounds = useCallback(
+    (map: maplibregl.Map | undefined) => {
+      if (!bounds || !map) {
+        return;
+      }
 
-    // Load SDF icons for point data layers
-    ensureSDFIconsLoaded(mapRef.current?.getMap());
-
-    // If bounds are provided, fit the map to those bounds.
-    // This ensures precise geographic extent matching (e.g., for exports).
-    if (bounds && map) {
       map.fitBounds(
         [
           [bounds.west, bounds.south],
@@ -314,43 +376,20 @@ function MapExportLayout({
           animate: false,
         },
       );
+    },
+    [bounds],
+  );
+
+  const syncDataOverlayToBasemap = useCallback(() => {
+    const baseMap = baseMapRef.current?.getMap();
+    const dataMap = dataMapRef.current?.getMap();
+    if (baseMap && dataMap) {
+      syncMapView(baseMap, dataMap);
     }
+  }, []);
 
-    // Capture preview bounds/zoom (must run before print-preview early return below).
-    // Use moveend (fires after fitBounds and user pan/zoom) rather than idle
-    // (which waits for all tiles to load and may not fire before export is captured).
-    if (onBoundsChange && map) {
-      let lastBoundsStr: string | null = null;
-      let lastZoom: number | null = null;
-
-      const reportBounds = () => {
-        const mapBounds = map.getBounds();
-        const zoom = map.getZoom();
-        if (mapBounds) {
-          const boundsStr = `${mapBounds.getWest()},${mapBounds.getSouth()},${mapBounds.getEast()},${mapBounds.getNorth()}`;
-          if (boundsStr !== lastBoundsStr || zoom !== lastZoom) {
-            lastBoundsStr = boundsStr;
-            lastZoom = zoom;
-            onBoundsChange(mapBounds, zoom);
-          }
-        }
-      };
-
-      // Capture immediately (fitBounds with animate:false is synchronous)
-      reportBounds();
-      map.on('moveend', reportBounds);
-    }
-
-    // Track tile loading using idle event and areTilesLoaded() for robust detection
-    const shouldTrackTileLoading = signalExportReady || onMapLoad;
-
-    // Print preview passes onMapLoad only; /export uses signalExportReady + tile wait.
-    if (shouldTrackTileLoading && map && !signalExportReady && onMapLoad) {
-      onMapLoad(e);
-      return;
-    }
-
-    if (shouldTrackTileLoading && map && signalExportReady) {
+  const startExportReadyTracking = useCallback(
+    (map: maplibregl.Map, onLoadEvent: unknown) => {
       let hasSignaledReady = false;
       let stableLoadedTicks = 0;
       let pollInterval: ReturnType<typeof setInterval> | undefined;
@@ -369,23 +408,14 @@ function MapExportLayout({
         // eslint-disable-next-line no-console
         console.info('All tiles loaded, setting PRISM_READY to true');
         (window as any).PRISM_READY = true;
-        onMapLoad?.(e);
-      };
-
-      const checkFullyLoaded = (): boolean => {
-        // areTilesLoaded() can return void
-        const areTilesLoaded = Boolean(map.areTilesLoaded());
-        const isStyleLoaded = map.isStyleLoaded();
-        const isLoaded = map.loaded();
-
-        return Boolean(isStyleLoaded && areTilesLoaded && isLoaded);
+        onMapLoad?.(onLoadEvent);
       };
 
       const bumpStableLoaded = () => {
         if (hasSignaledReady) {
           return;
         }
-        if (checkFullyLoaded()) {
+        if (areExportMapsLoaded()) {
           stableLoadedTicks += 1;
           if (stableLoadedTicks >= MAP_EXPORT_STABLE_LOADED_TICKS) {
             signalReady();
@@ -400,7 +430,6 @@ function MapExportLayout({
       };
 
       map.on('idle', idleHandler);
-
       pollInterval = setInterval(() => {
         bumpStableLoaded();
       }, MAP_EXPORT_LOAD_POLL_MS);
@@ -414,7 +443,79 @@ function MapExportLayout({
           signalReady();
         }
       }, 60_000);
-    } else if (onMapLoad) {
+    },
+    [areExportMapsLoaded, onMapLoad],
+  );
+
+  const handleBaseMapLoad = (e: any) => {
+    e.target.addControl(new maplibregl.ScaleControl({}), 'bottom-right');
+    updateScaleBarAndNorthArrow();
+
+    const map = baseMapRef.current?.getMap();
+    if (map) {
+      const { layers } = map.getStyle();
+      const symbolLayer = layers?.find(layer => layer.type === 'symbol');
+      if (symbolLayer) {
+        setFirstSymbolId(symbolLayer.id);
+      }
+    }
+
+    if (!shouldClipDataLayers) {
+      loadDataLayerAssets(map);
+    }
+
+    fitMapToBounds(map);
+    syncDataOverlayToBasemap();
+
+    if (onBoundsChange && map) {
+      let lastBoundsStr: string | null = null;
+      let lastZoom: number | null = null;
+
+      const reportBounds = () => {
+        const mapBounds = map.getBounds();
+        const zoom = map.getZoom();
+        if (mapBounds) {
+          const boundsStr = `${mapBounds.getWest()},${mapBounds.getSouth()},${mapBounds.getEast()},${mapBounds.getNorth()}`;
+          if (boundsStr !== lastBoundsStr || zoom !== lastZoom) {
+            lastBoundsStr = boundsStr;
+            lastZoom = zoom;
+            onBoundsChange(mapBounds, zoom);
+          }
+        }
+        syncDataOverlayToBasemap();
+      };
+
+      reportBounds();
+      map.on('moveend', reportBounds);
+    }
+
+    const shouldTrackTileLoading = signalExportReady || onMapLoad;
+
+    if (
+      shouldTrackTileLoading &&
+      map &&
+      !signalExportReady &&
+      onMapLoad &&
+      !shouldClipDataLayers
+    ) {
+      onMapLoad(e);
+      return;
+    }
+
+    if (shouldTrackTileLoading && map && signalExportReady) {
+      startExportReadyTracking(map, e);
+    } else if (onMapLoad && !shouldClipDataLayers) {
+      onMapLoad(e);
+    }
+  };
+
+  const handleDataMapLoad = (e: any) => {
+    const map = dataMapRef.current?.getMap();
+    loadDataLayerAssets(map);
+    fitMapToBounds(map);
+    syncDataOverlayToBasemap();
+
+    if (onMapLoad && !signalExportReady) {
       onMapLoad(e);
     }
   };
@@ -468,6 +569,37 @@ function MapExportLayout({
       onMapDimensionsChange(mapDimensions.width, mapDimensions.height);
     }
   }, [mapDimensions, onMapDimensionsChange]);
+
+  useEffect(() => {
+    if (!shouldClipDataLayers) {
+      if (dataLayersClipContainerRef.current) {
+        dataLayersClipContainerRef.current.style.clipPath = '';
+      }
+      return undefined;
+    }
+
+    const map = dataMapRef.current?.getMap();
+    const container = dataLayersClipContainerRef.current;
+    if (!map || !container) {
+      return undefined;
+    }
+
+    const updateClipPath = () => {
+      applyAdminAreaClipPath(map, container, adminAreaClipPolygon);
+    };
+
+    updateClipPath();
+    map.on('move', updateClipPath);
+    map.on('moveend', updateClipPath);
+    map.on('resize', updateClipPath);
+
+    return () => {
+      map.off('move', updateClipPath);
+      map.off('moveend', updateClipPath);
+      map.off('resize', updateClipPath);
+      applyAdminAreaClipPath(map, container, null);
+    };
+  }, [adminAreaClipPolygon, shouldClipDataLayers, mapDimensions]);
 
   // The map content (title, legend, footer, map itself)
   const mapContent = (
@@ -605,67 +737,106 @@ function MapExportLayout({
       )}
       <div className={classes.mapContainer}>
         <MapGL
-          ref={mapRef}
+          ref={baseMapRef}
           dragRotate={false}
-          // preserveDrawingBuffer is required for the map to be exported as an image
           preserveDrawingBuffer
           initialViewState={effectiveInitialViewState}
-          onLoad={handleMapLoad}
+          onLoad={handleBaseMapLoad}
           mapStyle={processedMapStyle || mapStyle.toString()}
+          style={{ width: '100%', height: '100%' }}
         >
-          {/* Render selected layers - KEEP IN SYNC with MapView/Map/index.tsx */}
-          {/* Pass 'before' prop to insert layers below labels/symbols */}
-          {stackLayers.map((layer, index) => {
-            const { component } = componentTypes[layer.type];
-            return createElement(component as any, {
-              key: layer.id,
-              layer,
-              before: getBeforeId(index, layerUsesSymbolAnchorOnly(layer)),
-            });
-          })}
-          {/* AA Drought markers */}
-          {activePanel === Panel.AnticipatoryActionDrought &&
-            aaMarkers.map(marker => (
-              <Marker
-                key={`marker-${marker.district}`}
-                longitude={marker.longitude}
-                latitude={marker.latitude}
-                anchor="center"
-              >
-                <div style={{ transform: `scale(${scalePercent})` }}>
-                  {marker.icon}
-                </div>
-              </Marker>
-            ))}
-          {/* AA Flood station markers */}
-          {activePanel === Panel.AnticipatoryActionFlood &&
-            floodStations.map(station => (
-              <FloodStationMarker
-                key={`flood-station-${station.station_id}`}
-                station={station}
-                stationSummary={station}
-                interactive={false}
-              />
-            ))}
-          {toggles.countryMask && invertedAdminBoundaryLimitPolygon && (
-            <Source
-              id="mask-overlay"
-              type="geojson"
-              data={invertedAdminBoundaryLimitPolygon}
-            >
-              <Layer
-                id="mask-layer-overlay"
-                type="fill"
-                source="mask-overlay"
-                layout={{}}
-                paint={{
-                  'fill-color': '#000',
-                  'fill-opacity': 0.7,
-                }}
-              />
-            </Source>
+          {(shouldClipDataLayers ? boundaryLayers : stackLayers).map(
+            (layer, index) => {
+              const { component } = componentTypes[layer.type];
+              return createElement(component as any, {
+                key: layer.id,
+                layer,
+                mapRef: baseMapRef,
+                before: getBasemapLayerBeforeId(
+                  index,
+                  layerUsesSymbolAnchorOnly(layer),
+                ),
+              });
+            },
+          )}
+          {!shouldClipDataLayers && (
+            <>
+              {activePanel === Panel.AnticipatoryActionDrought &&
+                aaMarkers.map(marker => (
+                  <Marker
+                    key={`marker-${marker.district}`}
+                    longitude={marker.longitude}
+                    latitude={marker.latitude}
+                    anchor="center"
+                  >
+                    <div style={{ transform: `scale(${scalePercent})` }}>
+                      {marker.icon}
+                    </div>
+                  </Marker>
+                ))}
+              {activePanel === Panel.AnticipatoryActionFlood &&
+                floodStations.map(station => (
+                  <FloodStationMarker
+                    key={`flood-station-${station.station_id}`}
+                    station={station}
+                    stationSummary={station}
+                    interactive={false}
+                  />
+                ))}
+            </>
           )}
         </MapGL>
+        {shouldClipDataLayers && (
+          <div
+            ref={dataLayersClipContainerRef}
+            className={classes.dataLayersClipOverlay}
+          >
+            <MapGL
+              ref={dataMapRef}
+              dragRotate={false}
+              preserveDrawingBuffer
+              initialViewState={effectiveInitialViewState}
+              onLoad={handleDataMapLoad}
+              mapStyle={transparentDataOverlayMapStyle}
+              style={{ width: '100%', height: '100%' }}
+            >
+              {dataLayers.map((layer, index) => {
+                const { component } = componentTypes[layer.type];
+                return createElement(component as any, {
+                  key: layer.id,
+                  layer,
+                  mapRef: dataMapRef,
+                  before: getDataLayerBeforeId(
+                    index,
+                    layerUsesSymbolAnchorOnly(layer),
+                  ),
+                });
+              })}
+              {activePanel === Panel.AnticipatoryActionDrought &&
+                aaMarkers.map(marker => (
+                  <Marker
+                    key={`marker-${marker.district}`}
+                    longitude={marker.longitude}
+                    latitude={marker.latitude}
+                    anchor="center"
+                  >
+                    <div style={{ transform: `scale(${scalePercent})` }}>
+                      {marker.icon}
+                    </div>
+                  </Marker>
+                ))}
+              {activePanel === Panel.AnticipatoryActionFlood &&
+                floodStations.map(station => (
+                  <FloodStationMarker
+                    key={`flood-station-${station.station_id}`}
+                    station={station}
+                    stationSummary={station}
+                    interactive={false}
+                  />
+                ))}
+            </MapGL>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -731,6 +902,15 @@ const useStyles = makeStyles(() =>
       height: '100%',
       width: '100%',
       zIndex: 1,
+    },
+    dataLayersClipOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      height: '100%',
+      width: '100%',
+      zIndex: 2,
+      pointerEvents: 'none',
     },
     titleOverlay: {
       display: 'flex',
