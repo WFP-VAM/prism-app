@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Literal
 from urllib.parse import parse_qs, urlparse
 
-_UNSAFE_FILENAME_CHARS = frozenset('<>:"/\\|?*')
+_UNSAFE_FILENAME_CHARS = frozenset(' <>:"/\\|?*')
 
 
 def sanitize_filename_part(value: str) -> str:
