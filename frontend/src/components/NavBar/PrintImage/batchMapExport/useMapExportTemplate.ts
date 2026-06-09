@@ -1,5 +1,6 @@
 import type { AdminCodeString } from 'config/types';
 import type { LngLatBounds } from 'maplibre-gl';
+import type { AdminAreaRef } from 'utils/adminAreaSelection';
 import { getFormattedDate } from 'utils/date-utils';
 import type { DateCompatibleLayer } from 'utils/server-utils';
 
@@ -26,6 +27,7 @@ export type UseMapExportTemplateInput = {
   bottomLogoScale: number;
   toggles: Toggles;
   selectedBoundaries: AdminCodeString[];
+  adminAreaRefs: AdminAreaRef[];
   language: string;
 };
 
@@ -43,6 +45,13 @@ function printTemplateFields(input: UseMapExportTemplateInput) {
     bottomLogoScale: input.bottomLogoScale,
     toggles: input.toggles,
     selectedBoundaries: input.selectedBoundaries,
+  };
+}
+
+function scheduleExportFields(input: UseMapExportTemplateInput) {
+  return {
+    ...printTemplateFields(input),
+    adminAreaRefs: input.adminAreaRefs,
   };
 }
 
@@ -99,7 +108,7 @@ export function useMapExportTemplate(input: UseMapExportTemplateInput) {
       exportPath: location.exportPath,
       viewportWidth: viewport.canvasWidth,
       viewportHeight: viewport.canvasHeight,
-      ...printTemplateFields(input),
+      ...scheduleExportFields(input),
       mapBounds: input.mapBounds,
       language: input.language,
     });

@@ -1,6 +1,10 @@
 import { isCustomRatio } from 'components/MapExport/aspectRatioConstants';
 import type { AdminCodeString } from 'config/types';
 import type { LngLatBounds } from 'maplibre-gl';
+import {
+  type AdminAreaRef,
+  formatAdminAreaRefsForDisplay,
+} from 'utils/adminAreaSelection';
 import { getMapExportPageOrigin } from 'utils/constants';
 import {
   EXPORT_LANGUAGE_PARAM,
@@ -33,6 +37,7 @@ export type BuildScheduleExportOptionsInput = MapExportPrintTemplate & {
   mapBounds: LngLatBounds;
   viewportWidth: number;
   viewportHeight: number;
+  adminAreaRefs: AdminAreaRef[];
   language?: string;
 };
 
@@ -59,11 +64,11 @@ function boundsString(mapBounds: LngLatBounds): string {
   return `${mapBounds.getWest()},${mapBounds.getSouth()},${mapBounds.getEast()},${mapBounds.getNorth()}`;
 }
 
-/** Comma-separated admin codes stored on the schedule for admin display. */
+/** Human-readable admin area names stored on the schedule for admin display. */
 export function formatScheduleAdminAreas(
-  selectedBoundaries: AdminCodeString[],
+  adminAreaRefs: AdminAreaRef[],
 ): string {
-  return selectedBoundaries.join(',');
+  return formatAdminAreaRefsForDisplay(adminAreaRefs);
 }
 
 export function exportTogglesForUrl(toggles: Toggles): Record<string, boolean> {
@@ -196,13 +201,19 @@ function scheduleQueryParamsFromTemplate(
 export function buildScheduleExportOptions(
   input: BuildScheduleExportOptionsInput,
 ): ScheduleExportOptions {
-  return {
+  const options: ScheduleExportOptions = {
     origin: input.origin,
     exportPath: input.exportPath,
     queryParams: scheduleQueryParamsFromTemplate(input, input.language),
     viewportWidth: input.viewportWidth,
     viewportHeight: input.viewportHeight,
   };
+
+  if (input.adminAreaRefs.length > 0) {
+    options.adminAreas = input.adminAreaRefs;
+  }
+
+  return options;
 }
 
 /** Template export URL stored on the schedule; cron substitutes ``{date}`` and ``{layer_id}``. */
@@ -238,6 +249,6 @@ export function buildScheduleExportPayload(
   return {
     export_url: buildScheduleExportUrl(input),
     export_options: buildScheduleExportOptions(input),
-    admin_areas: formatScheduleAdminAreas(input.selectedBoundaries),
+    admin_areas: formatScheduleAdminAreas(input.adminAreaRefs),
   };
 }
