@@ -109,7 +109,7 @@ const mergeBoundaryData = boundaryData => {
 };
 
 async function preprocessBoundaryLayer(country, boundaryLayer) {
-  if (country === 'shared') {
+  if (country === 'shared' || !boundaryLayer?.path) {
     return;
   }
   const outputFilePath = path.join(
@@ -117,29 +117,26 @@ async function preprocessBoundaryLayer(country, boundaryLayer) {
     `../public/data/${country}/admin-boundary-unified-polygon.json`,
   );
 
-  // Check if the output file already exists, always reprocess for Mozambique
-  if (country === 'mozambique' || !fs.existsSync(outputFilePath)) {
-    const filePath = boundaryLayer.path;
-    const fileContent = fs.readFileSync(
-      path.join(__dirname, '../public/', filePath),
-      'utf-8',
-    );
-    const boundaryData = JSON.parse(fileContent);
-    try {
-      const preprocessedData = mergeBoundaryData(boundaryData);
-      if (!preprocessedData) {
-        console.warn(
-          `Warning: No valid boundary geometry produced for ${country}.`,
-        );
-        return;
-      }
-      fs.writeFileSync(outputFilePath, JSON.stringify(preprocessedData));
-    } catch (error) {
+  const filePath = boundaryLayer.path;
+  const fileContent = fs.readFileSync(
+    path.join(__dirname, '../public/', filePath),
+    'utf-8',
+  );
+  const boundaryData = JSON.parse(fileContent);
+  try {
+    const preprocessedData = mergeBoundaryData(boundaryData);
+    if (!preprocessedData) {
       console.warn(
-        `Warning: Failed to merge boundary data for ${country}.`,
-        error,
+        `Warning: No valid boundary geometry produced for ${country}.`,
       );
+      return;
     }
+    fs.writeFileSync(outputFilePath, JSON.stringify(preprocessedData));
+  } catch (error) {
+    console.warn(
+      `Warning: Failed to merge boundary data for ${country}.`,
+      error,
+    );
   }
 }
 
@@ -249,7 +246,10 @@ const countryDirs = fs
         .sort(
           (a, b) => a.admin_level_names.length - b.admin_level_names.length,
         )[0];
-      await preprocessBoundaryLayer(country, boundaryLayerToProcess);
+
+      if (boundaryLayerToProcess) {
+        await preprocessBoundaryLayer(country, boundaryLayerToProcess);
+      }
 
       return dateLayersToProcess.length > 0 ? country : null;
     }),

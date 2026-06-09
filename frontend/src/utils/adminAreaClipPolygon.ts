@@ -1,6 +1,6 @@
 import { featureCollection } from '@turf/helpers';
 import union from '@turf/union';
-import type { BoundaryLayerProps } from 'config/types';
+import type { AdminCodeString, BoundaryLayerProps } from 'config/types';
 import type { LayerData } from 'context/layers/layer-data';
 import type { Feature, MultiPolygon, Polygon } from 'geojson';
 import type i18n from 'i18next';
@@ -9,15 +9,22 @@ import { resolveFeaturesForAdminCodes } from './adminAreaSelection';
 
 export type AdminAreaClipPolygon = Feature<Polygon | MultiPolygon>;
 
+function isPolygonOrMultiPolygonFeature(
+  feature: Feature,
+): feature is Feature<Polygon | MultiPolygon> {
+  const geometryType = feature.geometry?.type;
+  return geometryType === 'Polygon' || geometryType === 'MultiPolygon';
+}
+
 export function mergeAdminAreaClipFeatures(
-  features: Feature[],
+  features: Feature<Polygon | MultiPolygon>[],
 ): AdminAreaClipPolygon | null {
   if (features.length === 0) {
     return null;
   }
 
   if (features.length === 1) {
-    return features[0] as AdminAreaClipPolygon;
+    return features[0];
   }
 
   const merged = union(featureCollection(features));
@@ -31,16 +38,14 @@ export function buildCountryClipPolygonFromBoundaryData(
     return null;
   }
 
-  const features = boundaryData.features.filter(
-    feature => feature?.geometry?.coordinates,
-  );
+  const features = boundaryData.features.filter(isPolygonOrMultiPolygonFeature);
 
   return mergeAdminAreaClipFeatures(features);
 }
 
 export async function resolveAdminAreaClipPolygon(options: {
   country: string;
-  selectedBoundaries: string[];
+  selectedBoundaries: AdminCodeString[];
   boundaryData: LayerData<BoundaryLayerProps>['data'] | undefined;
   boundaryLayer: BoundaryLayerProps;
   i18nLocale: typeof i18n;
@@ -75,16 +80,10 @@ export async function resolveAdminAreaClipPolygon(options: {
     }
   }
 
-  const fromBoundaryData =
-    buildCountryClipPolygonFromBoundaryData(boundaryData);
-  if (fromBoundaryData) {
-    return fromBoundaryData;
-  }
-
   try {
     return await fetchUnifiedCountryBoundaryPolygon(country);
   } catch {
-    return null;
+    return buildCountryClipPolygonFromBoundaryData(boundaryData);
   }
 }
 
@@ -104,7 +103,7 @@ export async function fetchUnifiedCountryBoundaryPolygon(
 }
 
 export function buildAdminAreaClipPolygonFromSelection(
-  selectedBoundaries: string[],
+  selectedBoundaries: AdminCodeString[],
   boundaryData: LayerData<BoundaryLayerProps>['data'] | undefined,
   boundaryLayer: BoundaryLayerProps,
   i18nLocale: typeof i18n,
@@ -124,5 +123,7 @@ export function buildAdminAreaClipPolygonFromSelection(
     getLayerData,
   );
 
-  return mergeAdminAreaClipFeatures(features);
+  return mergeAdminAreaClipFeatures(
+    features.filter(isPolygonOrMultiPolygonFeature),
+  );
 }
