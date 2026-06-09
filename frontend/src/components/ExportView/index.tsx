@@ -18,10 +18,7 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import {
-  buildAdminAreaClipPolygonFromSelection,
-  fetchUnifiedCountryBoundaryPolygon,
-} from 'utils/adminAreaClipPolygon';
+import { resolveAdminAreaClipPolygon } from 'utils/adminAreaClipPolygon';
 import { boundaryCache } from 'utils/boundary-cache';
 import { getExportFontStack, loadExportFonts } from 'utils/exportFontFamily';
 import { exportLanguage } from 'utils/exportLanguage';
@@ -122,50 +119,40 @@ const ExportView = memo(() => {
   useEffect(() => {
     if (!exportParams.toggles.countryMask) {
       setAdminAreaClipPolygon(null);
-      return;
+      return undefined;
     }
 
-    // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
-    if (exportParams.selectedBoundaries.length === 0) {
-      fetchUnifiedCountryBoundaryPolygon(safeCountry)
-        .then(polygonData => {
-          setAdminAreaClipPolygon(polygonData);
-        })
-        .catch(error =>
-          console.error('Error loading admin boundary polygon:', error),
-        );
-      return;
-    }
+    let cancelled = false;
 
-    if (!boundaryData) {
-      return;
-    }
-
-    const clipPolygon = buildAdminAreaClipPolygonFromSelection(
-      exportParams.selectedBoundaries,
+    void resolveAdminAreaClipPolygon({
+      country: safeCountry,
+      selectedBoundaries: exportParams.selectedBoundaries,
       boundaryData,
       boundaryLayer,
-      i18n,
-      layerId => boundaryCache.getCachedData(layerId),
-    );
+      i18nLocale: i18n,
+      getLayerData: layerId => boundaryCache.getCachedData(layerId),
+    })
+      .then(polygon => {
+        if (!cancelled) {
+          setAdminAreaClipPolygon(polygon);
+        }
+      })
+      .catch(error => {
+        if (!cancelled) {
+          console.error('Error resolving admin area clip polygon:', error);
+          setAdminAreaClipPolygon(null);
+        }
+      });
 
-    if (!clipPolygon) {
-      fetchUnifiedCountryBoundaryPolygon(safeCountry)
-        .then(polygonData => {
-          setAdminAreaClipPolygon(polygonData);
-        })
-        .catch(error =>
-          console.error('Error loading admin boundary polygon:', error),
-        );
-      return;
-    }
-
-    setAdminAreaClipPolygon(clipPolygon);
+    return () => {
+      cancelled = true;
+    };
   }, [
     boundaryData,
     exportParams.selectedBoundaries,
     exportParams.toggles.countryMask,
     i18n,
+    safeCountry,
   ]);
 
   // Preload dates and load boundary layers

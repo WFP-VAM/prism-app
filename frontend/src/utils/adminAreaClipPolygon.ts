@@ -24,6 +24,70 @@ export function mergeAdminAreaClipFeatures(
   return (merged ?? features[0]) as AdminAreaClipPolygon;
 }
 
+export function buildCountryClipPolygonFromBoundaryData(
+  boundaryData: LayerData<BoundaryLayerProps>['data'] | undefined,
+): AdminAreaClipPolygon | null {
+  if (!boundaryData?.features?.length) {
+    return null;
+  }
+
+  const features = boundaryData.features.filter(
+    feature => feature?.geometry?.coordinates,
+  );
+
+  return mergeAdminAreaClipFeatures(features);
+}
+
+export async function resolveAdminAreaClipPolygon(options: {
+  country: string;
+  selectedBoundaries: string[];
+  boundaryData: LayerData<BoundaryLayerProps>['data'] | undefined;
+  boundaryLayer: BoundaryLayerProps;
+  i18nLocale: typeof i18n;
+  getLayerData: (
+    layerId: string,
+  ) => LayerData<BoundaryLayerProps>['data'] | undefined;
+}): Promise<AdminAreaClipPolygon | null> {
+  const {
+    country,
+    selectedBoundaries,
+    boundaryData,
+    boundaryLayer,
+    i18nLocale,
+    getLayerData,
+  } = options;
+
+  if (selectedBoundaries.length > 0) {
+    if (!boundaryData) {
+      return null;
+    }
+
+    const fromSelection = buildAdminAreaClipPolygonFromSelection(
+      selectedBoundaries,
+      boundaryData,
+      boundaryLayer,
+      i18nLocale,
+      getLayerData,
+    );
+
+    if (fromSelection) {
+      return fromSelection;
+    }
+  }
+
+  const fromBoundaryData =
+    buildCountryClipPolygonFromBoundaryData(boundaryData);
+  if (fromBoundaryData) {
+    return fromBoundaryData;
+  }
+
+  try {
+    return await fetchUnifiedCountryBoundaryPolygon(country);
+  } catch {
+    return null;
+  }
+}
+
 export async function fetchUnifiedCountryBoundaryPolygon(
   country: string,
 ): Promise<AdminAreaClipPolygon> {

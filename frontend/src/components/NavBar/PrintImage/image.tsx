@@ -28,10 +28,7 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
-import {
-  buildAdminAreaClipPolygonFromSelection,
-  fetchUnifiedCountryBoundaryPolygon,
-} from 'utils/adminAreaClipPolygon';
+import { resolveAdminAreaClipPolygon } from 'utils/adminAreaClipPolygon';
 import {
   adminAreaFilenameSegment,
   buildCountryAdminFilenameStem,
@@ -529,42 +526,35 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   useEffect(() => {
     if (!toggles.countryMask) {
       setAdminAreaClipPolygon(null);
-      return;
+      return undefined;
     }
 
-    // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
-    if (selectedBoundaries.length === 0) {
-      fetchUnifiedCountryBoundaryPolygon(safeCountry)
-        .then(polygonData => {
-          setAdminAreaClipPolygon(polygonData as any);
-        })
-        .catch(error => console.error('Error:', error));
-      return;
-    }
+    let cancelled = false;
 
-    if (!data) {
-      return;
-    }
-
-    const clipPolygon = buildAdminAreaClipPolygonFromSelection(
+    void resolveAdminAreaClipPolygon({
+      country: safeCountry,
       selectedBoundaries,
-      data,
+      boundaryData: data,
       boundaryLayer,
-      i18n,
-      layerId => boundaryCache.getCachedData(layerId),
-    );
+      i18nLocale: i18n,
+      getLayerData: layerId => boundaryCache.getCachedData(layerId),
+    })
+      .then(polygon => {
+        if (!cancelled) {
+          setAdminAreaClipPolygon(polygon as any);
+        }
+      })
+      .catch(error => {
+        if (!cancelled) {
+          console.error('Error resolving admin area clip polygon:', error);
+          setAdminAreaClipPolygon(null);
+        }
+      });
 
-    if (!clipPolygon) {
-      fetchUnifiedCountryBoundaryPolygon(safeCountry)
-        .then(polygonData => {
-          setAdminAreaClipPolygon(polygonData as any);
-        })
-        .catch(error => console.error('Error:', error));
-      return;
-    }
-
-    setAdminAreaClipPolygon(clipPolygon as any);
-  }, [data, i18n, selectedBoundaries, toggles.countryMask]);
+    return () => {
+      cancelled = true;
+    };
+  }, [data, i18n, safeCountry, selectedBoundaries, toggles.countryMask]);
 
   const handleDownloadMenuClose = () => {
     setDownloadMenuAnchorEl(null);
