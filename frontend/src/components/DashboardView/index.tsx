@@ -219,7 +219,8 @@ function DashboardView() {
         <DialogContent>
           <DialogContentText>
             {t(
-              `Are you sure you want to delete "${dashboardConfig.title}"? This cannot be undone. You’ll be taken back to the dashboard creation page.`,
+              'Are you sure you want to delete "{{title}}"? This cannot be undone. You will be taken back to the dashboard creation page.',
+              { title: dashboardConfig.title },
             )}
           </DialogContentText>
         </DialogContent>
