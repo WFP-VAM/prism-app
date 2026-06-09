@@ -643,5 +643,19 @@
   "Swap map position": "Trocar posição do mapa",
   "Dashboard title": "Título do painel",
   "Are you sure? This action cannot be undone.": "Tem a certeza? Esta ação não pode ser desfeita.",
-  "Show on map": "Mostrar no mapa"
+  "Show on map": "Mostrar no mapa",
+  "Import dashboard": "Importar painel",
+  "Upload a JSON file exported from a Prism dashboard.": "Carregue um ficheiro JSON exportado de um painel Prism.",
+  "Drag & drop a JSON file here": "Arraste e largue um ficheiro JSON aqui",
+  "or": "ou",
+  "Browse files": "Procurar ficheiros",
+  "Invalid dashboard file": "Ficheiro de painel inválido",
+  "Importing dashboard…": "A importar painel…",
+  "Dashboard already exists": "O painel já existe",
+  "Import complete": "Importação concluída",
+  "is ready to view.": "está pronto para visualizar.",
+  "View dashboard": "Ver painel",
+  "Could not parse file as JSON.": "Não foi possível interpretar o ficheiro como JSON.",
+  "{{field}} is missing, please check your config file and try again": "{{field}} está em falta, verifique o ficheiro de configuração e tente novamente",
+  "A dashboard with this name already exists": "Já existe um painel com este nome"
 }
