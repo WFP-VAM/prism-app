@@ -29,6 +29,10 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
+import {
+  filterFeaturesBySelectedAdminCodes,
+  resolveAdminAreaRefs,
+} from 'utils/adminAreaSelection';
 import { isBoundaryLayer } from 'utils/boundary-layers-utils';
 import { dateWithoutTime, getFormattedDate } from 'utils/date-utils';
 import useLayers, { isWmsSelectableForBatchPrint } from 'utils/layers-utils';
@@ -483,6 +487,11 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     }
   }, [availableCadences, cadence, createScheduledMaps, disabledCadences]);
 
+  const adminAreaRefs = useMemo(
+    () => resolveAdminAreaRefs(selectedBoundaries, data, boundaryLayer, i18n),
+    [data, selectedBoundaries, i18n],
+  );
+
   const mapExportTemplate = useMapExportTemplate({
     mapBounds: previewBounds,
     mapDimensions,
@@ -498,6 +507,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     bottomLogoScale,
     toggles,
     selectedBoundaries,
+    adminAreaRefs,
     language: exportLanguage(location.search, {
       activeLanguage: i18n.resolvedLanguage,
     }),
@@ -588,8 +598,10 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
     const filteredData = data && {
       ...data,
-      features: data.features.filter(cell =>
-        selectedBoundaries.includes(cell.properties?.[boundaryLayer.adminCode]),
+      features: filterFeaturesBySelectedAdminCodes(
+        data.features,
+        boundaryLayer,
+        selectedBoundaries,
       ),
     };
     const masked = mask(filteredData as any);
