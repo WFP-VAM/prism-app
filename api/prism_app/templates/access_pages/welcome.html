@@ -1,0 +1,13 @@
+{% extends "access_pages_base.html" %}
+{% set title = "Welcome (PRISM Admin)" %}
+{% set heading = "Welcome" %}
+
+{% block content %}
+<p>
+    You are not signed in to PRISM Admin. Sign in with your CIAM account to manage
+    alerts, dashboards, and map exports.
+</p>
+<div class="d-flex gap-2 flex-wrap">
+    <a class="btn btn-primary" href="{{ sign_in_href }}">Sign in</a>
+</div>
+{% endblock %}

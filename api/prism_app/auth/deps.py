@@ -17,6 +17,7 @@ PRISM_SESSION_USER_ID = "prism_uid"
 PRISM_SESSION_CIAM_SUB = "ciam_sub"
 # Bound to GET /auth/sign-out → POST /auth/sign-out (consumption via session.pop).
 PRISM_SESSION_SIGN_OUT_CSRF = "sign_out_csrf"
+PRISM_SESSION_SIGN_OUT_NEXT = "sign_out_next"
 
 
 def set_prism_session_user(request: Request, *, user_id: UUID, ciam_sub: str) -> None:
