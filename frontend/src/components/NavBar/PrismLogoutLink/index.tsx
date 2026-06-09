@@ -34,7 +34,10 @@ function PrismLogoutLink() {
   const handleLogout = () => {
     invalidatePrismWhoamiSession();
     invalidateScheduleWhoamiSession();
-    window.location.assign(PRISM_SIGN_OUT_URL);
+    const returnUrl = `${window.location.origin}${location.pathname}${location.search}`;
+    window.location.assign(
+      `${PRISM_SIGN_OUT_URL}?next=${encodeURIComponent(returnUrl)}`,
+    );
   };
 
   return (
