@@ -697,7 +697,7 @@ const ChartsPanel = memo(() => {
                 setAdminLevel(level);
                 setAdminProperties(properties);
                 setSelectedAdmin1Area(
-                  data ? getAdminAreaName(properties, level) : '',
+                  key && data ? getAdminAreaName(properties, level) : '',
                 );
                 setSelectedAdmin2Area('');
               }}
@@ -706,7 +706,7 @@ const ChartsPanel = memo(() => {
                 setAdminLevel(level);
                 setAdminProperties(properties);
                 setSelectedAdmin2Area(
-                  data ? getAdminAreaName(properties, level) : '',
+                  key && data ? getAdminAreaName(properties, level) : '',
                 );
               }}
             />
@@ -747,7 +747,7 @@ const ChartsPanel = memo(() => {
                   setSecondAdminLevel(level);
                   setSecondAdminProperties(properties);
                   setSecondSelectedAdmin1Area(
-                    data ? getAdminAreaName(properties, level) : '',
+                    key && data ? getAdminAreaName(properties, level) : '',
                   );
                   setSecondSelectedAdmin2Area('');
                 }}
@@ -756,7 +756,7 @@ const ChartsPanel = memo(() => {
                   setSecondAdminLevel(level);
                   setSecondAdminProperties(properties);
                   setSecondSelectedAdmin2Area(
-                    data ? getAdminAreaName(properties, level) : '',
+                    key && data ? getAdminAreaName(properties, level) : '',
                   );
                 }}
               />

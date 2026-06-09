@@ -42,8 +42,15 @@ const BOUNDARY_DATA = {
   ],
 } as any;
 
-// No `config` mock here: the test runner's default deployment is
-// single-country (multiCountry === false).
+// Force a single-country deployment regardless of the test runner's COUNTRY.
+jest.mock('config', () => {
+  const actual = jest.requireActual('config');
+  return {
+    ...actual,
+    appConfig: { ...actual.appConfig, multiCountry: false },
+  };
+});
+
 jest.mock('config/utils', () => ({
   ...jest.requireActual('config/utils'),
   getBoundaryLayersByAdminLevel: () => BOUNDARY_LAYER,
