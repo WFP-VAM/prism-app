@@ -28,7 +28,11 @@ export function mergeAdminAreaClipFeatures(
   }
 
   const merged = union(featureCollection(features));
-  return (merged ?? features[0]) as AdminAreaClipPolygon;
+  if (merged && isPolygonOrMultiPolygonFeature(merged)) {
+    return merged;
+  }
+
+  return features[0];
 }
 
 export function buildCountryClipPolygonFromBoundaryData(
@@ -87,19 +91,45 @@ export async function resolveAdminAreaClipPolygon(options: {
   }
 }
 
+const unifiedCountryBoundaryCache = new Map<
+  string,
+  Promise<AdminAreaClipPolygon>
+>();
+
 export async function fetchUnifiedCountryBoundaryPolygon(
   country: string,
 ): Promise<AdminAreaClipPolygon> {
-  const response = await fetch(
-    `/data/${country}/admin-boundary-unified-polygon.json`,
-  );
-  if (!response.ok) {
-    throw new Error(
-      `Failed to load admin boundary polygon for ${country}: ${response.status}`,
-    );
+  const cached = unifiedCountryBoundaryCache.get(country);
+  if (cached) {
+    return cached;
   }
 
-  return response.json();
+  const request = (async () => {
+    const response = await fetch(
+      `/data/${country}/admin-boundary-unified-polygon.json`,
+    );
+    if (!response.ok) {
+      throw new Error(
+        `Failed to load admin boundary polygon for ${country}: ${response.status}`,
+      );
+    }
+
+    const polygon = await response.json();
+    if (!isPolygonOrMultiPolygonFeature(polygon)) {
+      throw new Error(
+        `Invalid admin boundary polygon for ${country}: expected Polygon or MultiPolygon`,
+      );
+    }
+
+    return polygon;
+  })();
+
+  unifiedCountryBoundaryCache.set(country, request);
+  request.catch(() => {
+    unifiedCountryBoundaryCache.delete(country);
+  });
+
+  return request;
 }
 
 export function buildAdminAreaClipPolygonFromSelection(

@@ -28,7 +28,6 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
-import { resolveAdminAreaClipPolygon } from 'utils/adminAreaClipPolygon';
 import {
   adminAreaFilenameSegment,
   buildCountryAdminFilenameStem,
@@ -43,6 +42,7 @@ import {
   getPossibleDatesForLayer,
 } from 'utils/server-utils';
 import { stringHash } from 'utils/string-utils';
+import { useAdminAreaClipPolygon } from 'utils/useAdminAreaClipPolygon';
 import { useBoundaryData } from 'utils/useBoundaryData';
 import useResizeObserver from 'utils/useOnResizeObserver';
 
@@ -155,16 +155,20 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const [previewMapWidth, setPreviewMapWidth] = useState<number | null>(null);
   const [previewMapHeight, setPreviewMapHeight] = useState<number | null>(null);
 
-  // Get the style and layers of the old map
-  const selectedMapStyle = selectedMap?.getStyle();
+  const getBoundaryLayerData = useCallback(
+    (layerId: string) => boundaryCache.getCachedData(layerId),
+    [],
+  );
 
-  if (selectedMapStyle && !toggles.mapLabelsVisibility) {
-    selectedMapStyle.layers = selectedMapStyle?.layers.filter(
-      x => !x.id.includes('label'),
-    );
-  }
-
-  const [adminAreaClipPolygon, setAdminAreaClipPolygon] = useState(null);
+  const adminAreaClipPolygon = useAdminAreaClipPolygon({
+    enabled: toggles.countryMask,
+    country: safeCountry,
+    selectedBoundaries,
+    boundaryData: data,
+    boundaryLayer,
+    i18nLocale: i18n,
+    getLayerData: getBoundaryLayerData,
+  });
 
   const [dateRangeForBatchMaps, setDateRangeForBatchMaps] = useState<{
     startDate: number | null;
@@ -522,39 +526,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     dispatch,
     t,
   ]);
-
-  useEffect(() => {
-    if (!toggles.countryMask) {
-      setAdminAreaClipPolygon(null);
-      return undefined;
-    }
-
-    let cancelled = false;
-
-    void resolveAdminAreaClipPolygon({
-      country: safeCountry,
-      selectedBoundaries,
-      boundaryData: data,
-      boundaryLayer,
-      i18nLocale: i18n,
-      getLayerData: layerId => boundaryCache.getCachedData(layerId),
-    })
-      .then(polygon => {
-        if (!cancelled) {
-          setAdminAreaClipPolygon(polygon as any);
-        }
-      })
-      .catch(error => {
-        if (!cancelled) {
-          console.error('Error resolving admin area clip polygon:', error);
-          setAdminAreaClipPolygon(null);
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [data, i18n, safeCountry, selectedBoundaries, toggles.countryMask]);
 
   const handleDownloadMenuClose = () => {
     setDownloadMenuAnchorEl(null);

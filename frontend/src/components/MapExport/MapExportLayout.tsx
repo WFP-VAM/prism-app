@@ -56,6 +56,7 @@ import useResizeObserver from 'utils/useOnResizeObserver';
 
 import { getAspectRatioDecimal } from './aspectRatioConstants';
 import {
+  isBasemapLabelLayer,
   removeBasemapLabelLayersFromMap,
   splitExportMapStyleForClipping,
 } from './splitExportMapStyleForClipping';
@@ -191,7 +192,9 @@ function MapExportLayout({
     ) {
       return {
         ...mapStyleProp,
-        layers: mapStyleProp.layers.filter((x: any) => !x.id.includes('label')),
+        layers: mapStyleProp.layers.filter(
+          layer => !isBasemapLabelLayer(layer),
+        ),
       };
     }
     return mapStyleProp;
@@ -695,13 +698,12 @@ function MapExportLayout({
     };
 
     updateClipPath();
-    map.on('move', updateClipPath);
     map.on('moveend', updateClipPath);
     map.on('resize', updateClipPath);
 
     return () => {
-      map.off('move', updateClipPath);
       map.off('moveend', updateClipPath);
+      map.off('resize', updateClipPath);
       map.off('resize', updateClipPath);
       applyAdminAreaClipPath(map, container, null);
     };
@@ -1019,19 +1021,6 @@ function MapExportLayout({
 
 const useStyles = makeStyles(() =>
   createStyles({
-    backdrop: {
-      position: 'absolute',
-    },
-    backdropWrapper: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      zIndex: 2,
-      width: '100%',
-      height: '100%',
-      display: 'flex',
-      justifyContent: 'center',
-    },
     printContainer: {
       width: '100%',
       height: '100%',

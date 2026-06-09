@@ -18,12 +18,12 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { resolveAdminAreaClipPolygon } from 'utils/adminAreaClipPolygon';
 import { boundaryCache } from 'utils/boundary-cache';
 import { getExportFontStack, loadExportFonts } from 'utils/exportFontFamily';
 import { exportLanguage } from 'utils/exportLanguage';
 import useLayers from 'utils/layers-utils';
 import { getLayersCoverage } from 'utils/server-utils';
+import { useAdminAreaClipPolygon } from 'utils/useAdminAreaClipPolygon';
 import { useBoundaryData } from 'utils/useBoundaryData';
 import { useExportParams } from 'utils/useExportParams';
 import { useMapState } from 'utils/useMapState';
@@ -111,49 +111,20 @@ const ExportView = memo(() => {
   const boundaryLayer = getBoundaryLayerSingleton();
   const { data: boundaryData } = useBoundaryData(boundaryLayer.id, map);
 
-  const [adminAreaClipPolygon, setAdminAreaClipPolygon] =
-    useState<GeoJSON.Feature<GeoJSON.Polygon | GeoJSON.MultiPolygon> | null>(
-      null,
-    );
+  const getBoundaryLayerData = useCallback(
+    (layerId: string) => boundaryCache.getCachedData(layerId),
+    [],
+  );
 
-  useEffect(() => {
-    if (!exportParams.toggles.countryMask) {
-      setAdminAreaClipPolygon(null);
-      return undefined;
-    }
-
-    let cancelled = false;
-
-    void resolveAdminAreaClipPolygon({
-      country: safeCountry,
-      selectedBoundaries: exportParams.selectedBoundaries,
-      boundaryData,
-      boundaryLayer,
-      i18nLocale: i18n,
-      getLayerData: layerId => boundaryCache.getCachedData(layerId),
-    })
-      .then(polygon => {
-        if (!cancelled) {
-          setAdminAreaClipPolygon(polygon);
-        }
-      })
-      .catch(error => {
-        if (!cancelled) {
-          console.error('Error resolving admin area clip polygon:', error);
-          setAdminAreaClipPolygon(null);
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [
+  const adminAreaClipPolygon = useAdminAreaClipPolygon({
+    enabled: exportParams.toggles.countryMask,
+    country: safeCountry,
+    selectedBoundaries: exportParams.selectedBoundaries,
     boundaryData,
-    exportParams.selectedBoundaries,
-    exportParams.toggles.countryMask,
-    i18n,
-    safeCountry,
-  ]);
+    boundaryLayer,
+    i18nLocale: i18n,
+    getLayerData: getBoundaryLayerData,
+  });
 
   // Preload dates and load boundary layers
   useEffect(() => {
