@@ -13,6 +13,8 @@ export type BatchMapExportEnqueuePayload = {
   format: MapExportJobFormat;
   /** Country label forwarded to API for backend filename stem. */
   country: string;
+  /** Sanitized admin area segment for masked exports (country_area_… filenames). */
+  adminArea?: string;
   layerDisplayName: string;
   datesSummary: string;
   mapTotal: number;
@@ -54,7 +56,6 @@ export type BuildBatchExportUrlsInput = {
   baseSearchParams: URLSearchParams;
   printSelectedLayer: DateCompatibleLayer;
   mapBounds: LngLatBounds | null;
-  mapZoom: number | null;
   mapDimensions: MapDimensions;
   titleText: string;
   footerText: string;

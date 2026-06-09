@@ -2,6 +2,12 @@
 
 import os
 
+# aiohttp 3.14+ removed AsyncStreamReaderMixin; vcrpy 8.x stubs still subclass it.
+import aiohttp.streams as _aiohttp_streams
+
+if not hasattr(_aiohttp_streams, "AsyncStreamReaderMixin"):
+    _aiohttp_streams.AsyncStreamReaderMixin = object
+
 # Allow Starlette admin and tests to import the app without full OIDC configuration.
 os.environ.setdefault("PRISM_ADMIN_AUTH_DISABLED", "true")
 # main imports kobo, which validates credentials at import time.

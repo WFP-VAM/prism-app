@@ -11,7 +11,6 @@ import {
   invertedColorsSelector,
   isAnalysisLayerActiveSelector,
 } from 'context/analysisResultStateSlice';
-import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
 import { createGetLegendGraphicUrl } from 'prism-common';
 import React, { useCallback, useMemo } from 'react';
@@ -19,6 +18,7 @@ import { useSelector } from 'react-redux';
 import { BaselineLayerResult } from 'utils/analysis-utils';
 import useLayers from 'utils/layers-utils';
 import { getLayersCoverageMap } from 'utils/server-utils';
+import { useMapState } from 'utils/useMapState';
 
 import AALegend from '../LeftPanel/AnticipatoryActionPanel/AALegend';
 import LegendImpactResult from './LegendImpactResult';
@@ -43,7 +43,9 @@ function LegendItemsList({
   const analysisResult = useSelector(analysisResultSelector);
   const invertedColorsForAnalysis = useSelector(invertedColorsSelector);
   const analysisLayerOpacity = useSelector(analysisResultOpacitySelector);
-  const dateRange = useSelector(dateRangeSelector);
+  // Use the instance-scoped date range so that dashboard maps (each with their
+  // own selected date) compute coverage for the correct date, not the global map's.
+  const { dateRange } = useMapState();
   const {
     selectedLayers: globalMapLayers,
     adminBoundariesExtent,
@@ -135,6 +137,10 @@ function LegendItemsList({
         opacity={analysisLayerOpacity}
         forPrinting={forPrinting}
         showDescription={showDescription}
+        dateCoverage={{
+          startDate: analysisResult?.coverageStartDate,
+          endDate: analysisResult?.coverageEndDate,
+        }}
       >
         {renderedLegendImpactResult}
       </LegendItem>,

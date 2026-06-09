@@ -478,7 +478,8 @@ Displays an interactive map with pre-selected layers.
 ```json
 {
   "type": "MAP",
-  "defaultDate": "2025-04-01",
+  "date": "2025-04-01",
+  "useLatestAvailableDate": false,
   "mapPosition": "left",
   "minMapBounds": [31, -25, 40, -11],
   "title": "Temperature Anomaly Map",
@@ -496,7 +497,8 @@ Displays an interactive map with pre-selected layers.
 - `preSelectedMapLayers` (required): Array of layer objects to display on the map
   - `layerId`: Layer ID from `layers.json`
   - `opacity` (optional): Layer opacity (0.0 to 1.0). Defaults to 1.0
-- `defaultDate` (optional): Initial date for the map in `YYYY-MM-DD` format
+- `date` (optional): Fixed date for the map in `YYYY-MM-DD` format. Omit when `useLatestAvailableDate` is `true`.
+- `useLatestAvailableDate` (optional): When `true`, the map uses the latest available date for the selected layer(s) on each load. Defaults to `false`.
 - `mapPosition` (optional): `"left"` or `"right"` - used for side-by-side map comparison
 - `minMapBounds` (optional): Map extent as `[west, south, east, north]`
 - `title` (optional): Custom title for the map
@@ -515,15 +517,19 @@ Displays time-series chart data for a WMS layer.
   "layerId": "precip_blended_dekad",
   "adminUnitLevel": 1,
   "adminUnitId": 12345,
-  "chartHeight": "tall"
+  "chartHeight": "tall",
+  "useLatestAvailableDate": false,
+  "latestPeriod": "month"
 }
 ```
 
 **Properties:**
 - `type`: Must be `"CHART"`
-- `startDate` (required): Start date for chart data in `YYYY-MM-DD` format
+- `startDate` (optional): Start date for chart data in `YYYY-MM-DD` format. Required when `useLatestAvailableDate` is `false`.
 - `layerId` (required): Layer ID from `layers.json` (must have `chartData` configured)
 - `endDate` (optional): End date for chart data. If omitted, only `startDate` is used
+- `useLatestAvailableDate` (optional): When `true`, the chart uses the latest available date for the layer and a single period bucket (`latestPeriod`) instead of explicit start/end dates. Defaults to `false`.
+- `latestPeriod` (optional): When `useLatestAvailableDate` is `true`, the period bucket to use: `"dekad"`, `"month"`, `"quarter"`, or `"year"`. Defaults to `"month"`.
 - `adminUnitLevel` (optional): Administrative level (0, 1, 2, etc.) to aggregate data by
 - `adminUnitId` (optional): Specific admin unit ID to filter chart data
 - `chartHeight` (optional): Height of the chart. Options: `"tall"`, `"medium"`, `"short"`. Defaults to `"tall"`
@@ -536,6 +542,7 @@ Displays analysis results in a table format, combining a hazard layer with a bas
 {
   "type": "TABLE",
   "startDate": "2025-04-01",
+  "useLatestAvailableDate": false,
   "hazardLayerId": "spi_blended_2m",
   "baselineLayerId": "admin1_boundaries",
   "threshold": { "below": -1.5, "above": 1.5 },
@@ -549,7 +556,8 @@ Displays analysis results in a table format, combining a hazard layer with a bas
 
 **Properties:**
 - `type`: Must be `"TABLE"`
-- `startDate` (required): Date for analysis in `YYYY-MM-DD` format
+- `startDate` (optional): Date for analysis in `YYYY-MM-DD` format. Required when `useLatestAvailableDate` is `false`.
+- `useLatestAvailableDate` (optional): When `true`, the table uses the latest available date for the hazard layer on each load. Defaults to `false`.
 - `hazardLayerId` (required): Hazard layer ID from `layers.json`
 - `baselineLayerId` (required): Baseline layer ID (typically a boundary or admin level layer)
 - `stat` (required): Aggregation statistic. Options:

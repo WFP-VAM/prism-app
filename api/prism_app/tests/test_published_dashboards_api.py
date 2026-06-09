@@ -41,4 +41,20 @@ def test_get_dashboards_returns_merged_config():
             r = client.get("/dashboards", params={"country": "moz"})
     assert r.status_code == 200
     assert r.json() == sample
-    m.assert_called_once_with(mock_db.engine, "moz")
+    m.assert_called_once_with(mock_db.engine, "moz", include_staging=False)
+
+
+def test_get_dashboards_forwards_include_staging():
+    with patch("prism_app.main.alert_db") as mock_db:
+        mock_db.active = True
+        mock_db.engine = object()
+        with patch(
+            "prism_app.main.merge_published_dashboard_rows_for_country",
+            return_value=[],
+        ) as m:
+            r = client.get(
+                "/dashboards",
+                params={"country": "moz", "include_staging": "true"},
+            )
+    assert r.status_code == 200
+    m.assert_called_once_with(mock_db.engine, "moz", include_staging=True)
