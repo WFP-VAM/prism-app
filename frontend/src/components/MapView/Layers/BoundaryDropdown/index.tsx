@@ -16,15 +16,11 @@ import {
 import { useSafeTranslation } from 'i18n';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { resolveAdminAreaRefs } from 'utils/adminAreaSelection';
 import { useBoundaryData } from 'utils/useBoundaryData';
 
 import BoundaryDropdownOptions from './BoundaryDropdownOptions';
-import {
-  BoundaryDropdownProps,
-  flattenAreaTree,
-  getAdminBoundaryTree,
-  TIMEOUT_ANIMATION_DELAY,
-} from './utils';
+import { BoundaryDropdownProps, TIMEOUT_ANIMATION_DELAY } from './utils';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
@@ -56,9 +52,6 @@ export function SimpleBoundaryDropdown({
     );
   }
 
-  const areaTree = getAdminBoundaryTree(data, boundaryLayer, i18nLocale);
-  const flattenedAreaList = flattenAreaTree(areaTree, search).slice(1);
-
   // It's important for this to be another component, since the Select component
   // acts on the `value` prop, which we need to hide from <Select /> since this isn't a menu item.
   const out = (
@@ -76,12 +69,13 @@ export function SimpleBoundaryDropdown({
         value={selectedBoundaries}
         // This is a workaround to display the selected items as a comma separated list.
         renderValue={selected =>
-          (selected as AdminCodeString[])
-            .map(
-              adminCode =>
-                flattenedAreaList.find(area => area.adminCode === adminCode)
-                  ?.label || adminCode,
-            )
+          resolveAdminAreaRefs(
+            selected as AdminCodeString[],
+            data,
+            boundaryLayer,
+            i18nLocale,
+          )
+            .map(ref => ref.name)
             .join(', ')
         }
         {...selectProps}

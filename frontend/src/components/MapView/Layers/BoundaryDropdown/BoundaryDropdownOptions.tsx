@@ -215,15 +215,10 @@ const BoundaryDropdownOptions = React.forwardRef(
                     newSelectedBoundaries.splice(itemIndex, 1);
                   }
                   if (setSelectedBoundaries !== undefined) {
-                    const boundariesToSelect = flattenedAreaList
-                      .filter(b =>
-                        newSelectedBoundaries.some((v: string) =>
-                          b.adminCode.startsWith(v),
-                        ),
-                      )
-                      .map(b => b.adminCode);
-
-                    setSelectedBoundaries(boundariesToSelect, event.shiftKey);
+                    setSelectedBoundaries(
+                      newSelectedBoundaries,
+                      event.shiftKey,
+                    );
                     if (!goto) {
                       return;
                     }
