@@ -39,6 +39,51 @@ export function formatAdminAreaRefsForDisplay(refs: AdminAreaRef[]): string {
   return refs.map(ref => ref.name).join(', ');
 }
 
+/** Mirror ``sanitize_filename_part`` in ``api/prism_app/export_jobs/download_filename.py``. */
+export function sanitizeFilenamePart(value: string): string {
+  let sanitized = value
+    .trim()
+    .split('')
+    .map(ch => {
+      const code = ch.charCodeAt(0);
+      if (code < 32 || code === 127 || ch === ' ' || /[<>:"/\\|?*]/.test(ch)) {
+        return '_';
+      }
+      return ch;
+    })
+    .join('');
+
+  while (sanitized.includes('__')) {
+    sanitized = sanitized.replace(/__/g, '_');
+  }
+
+  return sanitized.replace(/^_+|_+$/g, '');
+}
+
+/** Underscore-joined admin names for export filenames (e.g. ``Cabo_Delgado``). */
+export function adminAreaFilenameSegment(
+  refs: AdminAreaRef[],
+): string | undefined {
+  const parts = refs
+    .map(ref => sanitizeFilenamePart(ref.name))
+    .filter(part => part.length > 0);
+
+  return parts.length > 0 ? parts.join('_') : undefined;
+}
+
+export function buildCountryAdminFilenameStem(
+  country: string,
+  adminAreaRefs: AdminAreaRef[],
+): string | undefined {
+  const safeCountry = sanitizeFilenamePart(country);
+  const areaSegment = adminAreaFilenameSegment(adminAreaRefs);
+  if (!safeCountry || !areaSegment) {
+    return undefined;
+  }
+
+  return `${safeCountry}_${areaSegment}`;
+}
+
 /** True when a boundary feature matches a selected admin code at any configured level. */
 export function featureMatchesSelectedAdminCode(
   properties: Record<string, unknown> | null | undefined,
