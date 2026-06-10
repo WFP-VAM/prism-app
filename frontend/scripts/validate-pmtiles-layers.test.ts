@@ -23,8 +23,7 @@ describe('validate-pmtiles-layers', () => {
     expect(layers.length).toBeGreaterThan(0);
     expect(
       layers.some(
-        l =>
-          l.configCountry === 'universal' && l.layer_name === 'admin2',
+        l => l.configCountry === 'universal' && l.layer_name === 'admin2',
       ),
     ).toBe(true);
     expect(
@@ -63,9 +62,9 @@ describe('validate-pmtiles-layers', () => {
     const errors = validateLayerAgainstMetadata(sampleLayer, {
       vector_layers: [{ id: 'admin0', fields: {} }],
     });
-    expect(errors.some(e => e.includes('source layer "admin2" not found'))).toBe(
-      true,
-    );
+    expect(
+      errors.some(e => e.includes('source layer "admin2" not found')),
+    ).toBe(true);
   });
 
   it('validateLayerAgainstMetadata fails when property keys are missing', () => {
@@ -81,14 +80,16 @@ describe('validate-pmtiles-layers', () => {
   });
 
   it('validatePmtilesUrl reports unreachable archive', async () => {
-    const errors = await validatePmtilesUrl('https://example.com/bad.pmtiles', [
-      sampleLayer,
-    ], () => ({
-      getHeader: async () => {
-        throw new Error('network error');
-      },
-      getMetadata: async () => ({}),
-    }));
+    const errors = await validatePmtilesUrl(
+      'https://example.com/bad.pmtiles',
+      [sampleLayer],
+      () => ({
+        getHeader: async () => {
+          throw new Error('network error');
+        },
+        getMetadata: async () => ({}),
+      }),
+    );
     expect(errors.some(e => e.includes('unreachable'))).toBe(true);
   });
 

@@ -136,7 +136,9 @@ function DashboardView() {
     dispatch,
     history,
     dashboards,
-    dashboardConfig.selectedDashboardIndex, isUniversal, iso3
+    dashboardConfig.selectedDashboardIndex,
+    isUniversal,
+    iso3,
   ]);
 
   const handlePreviewClick = () => {

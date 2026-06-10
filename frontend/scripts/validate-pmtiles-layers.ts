@@ -27,7 +27,9 @@ export interface PmtilesMetadata {
   vector_layers?: VectorLayerMeta[];
 }
 
-export function collectPmtilesLayers(configDir: string): RawPmtilesBoundaryLayer[] {
+export function collectPmtilesLayers(
+  configDir: string,
+): RawPmtilesBoundaryLayer[] {
   const layers: RawPmtilesBoundaryLayer[] = [];
   const countryDirs = fs
     .readdirSync(configDir)
@@ -39,7 +41,9 @@ export function collectPmtilesLayers(configDir: string): RawPmtilesBoundaryLayer
     if (!fs.existsSync(layersPath)) {
       return;
     }
-    const layersData = JSON.parse(fs.readFileSync(layersPath, 'utf-8')) as Record<
+    const layersData = JSON.parse(
+      fs.readFileSync(layersPath, 'utf-8'),
+    ) as Record<
       string,
       {
         type?: string;
@@ -75,7 +79,9 @@ export function collectPmtilesLayers(configDir: string): RawPmtilesBoundaryLayer
   return layers;
 }
 
-export function getRequiredPropertyKeys(layer: RawPmtilesBoundaryLayer): string[] {
+export function getRequiredPropertyKeys(
+  layer: RawPmtilesBoundaryLayer,
+): string[] {
   return [
     ...layer.admin_level_codes,
     ...layer.admin_level_names,
@@ -147,7 +153,7 @@ async function main() {
   const allLayers = collectPmtilesLayers(configDir);
 
   if (allLayers.length === 0) {
-    console.log('No PMTiles boundary layers found in config.');
+    console.error('No PMTiles boundary layers found in config.');
     return;
   }
 
@@ -160,7 +166,10 @@ async function main() {
 
   const allErrors: string[] = [];
   for (const [url, layers] of byUrl.entries()) {
-    console.log(`Validating PMTiles: ${url} (${layers.length} layer config(s))`);
+    // eslint-disable-next-line no-console
+    console.info(
+      `Validating PMTiles: ${url} (${layers.length} layer config(s))`,
+    );
     const urlErrors = await validatePmtilesUrl(url, layers);
     allErrors.push(...urlErrors);
   }
@@ -171,7 +180,8 @@ async function main() {
     process.exit(1);
   }
 
-  console.log(
+  // eslint-disable-next-line no-console
+  console.info(
     `PMTiles validation passed (${byUrl.size} archive(s), ${allLayers.length} layer config(s)).`,
   );
 }
