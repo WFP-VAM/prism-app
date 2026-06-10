@@ -229,6 +229,14 @@ class MapExportRequestModel(BaseModel):
             "never inferred from the export URL."
         ),
     )
+    adminArea: Optional[str] = Field(
+        default=None,
+        max_length=200,
+        description=(
+            "Sanitized admin area label for download filenames when export uses a regional mask "
+            "(e.g. Cabo_Delgado)."
+        ),
+    )
     publicMapUpload: bool = Field(
         default=False,
         description=(
@@ -290,6 +298,11 @@ class MapExportJobEnqueueRequest(BaseModel):
         default="",
         max_length=200,
         description="Country or instance label for download filenames and job metadata.",
+    )
+    adminArea: Optional[str] = Field(
+        default=None,
+        max_length=200,
+        description="Sanitized admin area label for download filenames when export uses a regional mask.",
     )
 
     @model_validator(mode="after")

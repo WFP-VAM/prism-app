@@ -9,6 +9,8 @@ export interface MapExportJobRequestBody {
   format: MapExportJobFormat;
   /** Mirrors app country label for artifact naming (backend builds filename). */
   country: string;
+  /** Sanitized admin area segment when export uses a regional mask (e.g. Cabo_Delgado). */
+  adminArea?: string;
 }
 
 export interface MapExportJobCreateResponse {

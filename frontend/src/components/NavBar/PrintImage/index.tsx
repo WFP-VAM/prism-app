@@ -8,6 +8,7 @@ import { mapSelector } from 'context/mapStateSlice/selectors';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
+import { BATCH_MAP_LAYER_URL_KEY } from 'utils/constants';
 
 import BatchMapExportGlobalTray from './batchMapExport/BatchMapExportGlobalTray';
 import BatchMapExportJobsProvider from './batchMapExport/BatchMapExportJobsProvider';
@@ -31,6 +32,7 @@ function PrintImage() {
     const params = new URLSearchParams(location.search);
     params.delete('printModal');
     params.delete('batchMaps');
+    params.delete(BATCH_MAP_LAYER_URL_KEY);
     params.delete('schedule');
     history.replace({
       pathname: location.pathname,
