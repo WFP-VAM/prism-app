@@ -657,5 +657,17 @@
   "View dashboard": "Ver painel",
   "Could not parse file as JSON.": "Não foi possível interpretar o ficheiro como JSON.",
   "{{field}} is missing, please check your config file and try again": "{{field}} está em falta, verifique o ficheiro de configuração e tente novamente",
-  "A dashboard with this name already exists": "Já existe um painel com este nome"
+  "A dashboard with this name already exists": "Já existe um painel com este nome",
+  "Enter dashboard title": "Insira o título do painel",
+  "Sync maps": "Sincronizar mapas",
+  "Change block type": "Alterar tipo de bloco",
+  "Edit": "Editar",
+  "Failed to export dashboard": "Falha ao exportar painel",
+  "Dashboard exported successfully as PDF": "Painel exportado com sucesso como PDF",
+  "Dashboard exported successfully as PNG": "Painel exportado com sucesso como PNG",
+  "Export Options": "Opções de exportação",
+  "Exporting...": "A exportar...",
+  "Unknown error": "Erro desconhecido",
+  "Create dashboard": "Criar painel",
+  "Dashboard": "Painel"
 }
