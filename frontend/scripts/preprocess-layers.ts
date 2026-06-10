@@ -55,7 +55,7 @@ const preprocessFeature = feature => {
           console.warn('Nested MultiPolygon area too small:', nestedArea);
           return null;
         }
-        return polygon;
+        return [polygon[0]];
       })
       .filter(Boolean);
 
