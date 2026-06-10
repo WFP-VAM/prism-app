@@ -24,12 +24,8 @@ from prism_app.database.map_export_schedule_model import (
 from sqlalchemy import select
 from starlette.datastructures import FormData
 from starlette.requests import Request
-<<<<<<< HEAD
-from starlette_admin.exceptions import ActionFailed, FormValidationError
-=======
 from starlette_admin._types import RequestAction
-from starlette_admin.exceptions import FormValidationError
->>>>>>> master
+from starlette_admin.exceptions import ActionFailed, FormValidationError
 
 
 def _request(
@@ -178,7 +174,6 @@ def test_schedule_searchable_fields_include_cadence_and_format() -> None:
     assert "format" in view.searchable_fields
 
 
-<<<<<<< HEAD
 def test_schedule_view_bulk_actions_include_update_status_and_delete() -> None:
     view = MapExportScheduleView(MapExportSchedule)
     assert view.list_template == "map_export_schedule_list.html"
@@ -251,7 +246,8 @@ async def test_update_status_action_updates_selected_schedules(
     session.commit.assert_called_once()
     assert "1 schedule" in message
     assert "stopped" in message
-=======
+
+
 def test_schedule_list_hides_country_for_map_export_manager() -> None:
     view = MapExportScheduleView(MapExportSchedule)
     manager_request = _request(admin_access=False, map_exports_manage=True)
@@ -298,7 +294,6 @@ def test_schedule_search_includes_country_for_admin() -> None:
     clause = view.get_search_query(admin_request, "mozambique")
     compiled = str(clause.compile(compile_kwargs={"literal_binds": True}))
     assert "country" in compiled.lower()
->>>>>>> master
 
 
 def test_schedule_view_can_create_only_with_clone_from() -> None:
