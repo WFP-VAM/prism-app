@@ -3,7 +3,7 @@ import {
   loadBoundaryRelations,
 } from 'components/Common/BoundaryDropdown/utils';
 import { BoundaryLayerProps, MapEventWrapFunctionProps } from 'config/types';
-import { isPrimaryBoundaryLayer } from 'config/utils';
+import { getDisplayBoundaryLayers, isPrimaryBoundaryLayer } from 'config/utils';
 import { toggleSelectedBoundary } from 'context/mapSelectionLayerStateSlice';
 import { setBoundaryRelationData } from 'context/mapStateSlice';
 import { showPopup } from 'context/tooltipStateSlice';
@@ -36,12 +36,35 @@ interface ComponentProps {
 const onClick =
   ({ dispatch, layer }: MapEventWrapFunctionProps<BoundaryLayerProps>) =>
   (evt: MapLayerMouseEvent) => {
-    const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
-    if (!isPrimaryLayer) {
-      return;
-    }
-
     const layerId = getLayerMapId(layer.id, 'fill');
+
+    if (isUniversalDeployment()) {
+      const currentDepth = layer.adminLevelNames.length;
+      // Only query layers that are actually present on the map. maplibre's
+      // queryRenderedFeatures returns nothing for the entire query if any
+      // requested layer id is missing (e.g. admin3 for countries without it),
+      // which would otherwise make every level defer and admin0 always win.
+      const deeperFillLayerIds = getDisplayBoundaryLayers()
+        .filter(
+          boundaryLayer => boundaryLayer.adminLevelNames.length > currentDepth,
+        )
+        .map(boundaryLayer => getLayerMapId(boundaryLayer.id, 'fill'))
+        .filter(fillLayerId => evt.target.getLayer(fillLayerId));
+
+      if (deeperFillLayerIds.length > 0) {
+        const deeperFeatures = evt.target.queryRenderedFeatures(evt.point, {
+          layers: deeperFillLayerIds,
+        });
+        if (deeperFeatures.length > 0) {
+          return;
+        }
+      }
+    } else {
+      const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
+      if (!isPrimaryLayer) {
+        return;
+      }
+    }
 
     const feature = findFeature(layerId, evt);
     if (!feature) {

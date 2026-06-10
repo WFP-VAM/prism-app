@@ -29,6 +29,21 @@ import { useDispatch, useSelector } from 'react-redux';
 export const getLayerMapId = (layerId: string, type?: 'fill' | 'line') =>
   `layer-${layerId}${type ? `-${type}` : ''}`;
 
+const boundaryFillLayerIds = new Set(
+  getDisplayBoundaryLayers().map(layer => getLayerMapId(layer.id, 'fill')),
+);
+
+/** True when the click hit a configured boundary fill layer (map popup source). */
+export function clickedBoundaryFillLayer(
+  features?: { layer?: { id?: string } }[],
+): boolean {
+  return Boolean(
+    features?.some(feature =>
+      boundaryFillLayerIds.has(feature.layer?.id ?? ''),
+    ),
+  );
+}
+
 /**
  * Checks weither given layer is on view
  * @param map the Maplibre Map object
