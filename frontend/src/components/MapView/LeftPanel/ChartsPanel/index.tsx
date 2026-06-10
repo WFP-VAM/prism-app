@@ -44,6 +44,7 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import {
+  getEffectiveMultiCountry,
   useEffectiveBoundaryLayer,
   useEffectiveCountryAdmin0Id,
 } from 'utils/universal-country-admin';
@@ -87,13 +88,29 @@ const ChartsPanel = memo(() => {
   const countryAdmin0Id = useEffectiveCountryAdmin0Id();
   const boundaryLayer = useEffectiveBoundaryLayer();
   const isUniversal = isUniversalDeployment();
+  const multiCountry = getEffectiveMultiCountry();
   const { data } = useBoundaryData(boundaryLayer.id);
+
+  // Resolves the admin area name for a chart level from boundary feature
+  // properties. Universal (URL-driven) and multi-country deployments use
+  // 0-based levels (level 0 = country), single-country deployments use 1-based
+  // levels (level 1 = admin 1).
+  const getAdminAreaName = (
+    properties: GeoJsonProperties,
+    level: AdminLevelType,
+  ): string => {
+    const nameIndex = isUniversal || multiCountry ? level : level - 1;
+    const nameKey = boundaryLayer?.adminLevelNames?.[nameIndex];
+    return (nameKey && properties?.[nameKey]) || '';
+  };
   const classes = useStyles();
   const [compareLocations, setCompareLocations] = useState(false);
   const [comparePeriods, setComparePeriods] = useState(false);
 
   // first location state
-  const [admin0Key] = useState<AdminCodeString>('' as AdminCodeString);
+  const [admin0Key, setAdmin0Key] = useState<AdminCodeString>(
+    '' as AdminCodeString,
+  );
   const [admin1Key, setAdmin1Key] = useState<AdminCodeString>(
     '' as AdminCodeString,
   );
@@ -541,6 +558,9 @@ const ChartsPanel = memo(() => {
     // reset the admin level
     setAdminLevel((countryAdmin0Id ? 0 : 1) as AdminLevelType);
     setSecondAdminLevel((countryAdmin0Id ? 0 : 1) as AdminLevelType);
+    // reset the country selection (multi-country deployments)
+    setAdmin0Key('' as AdminCodeString);
+    setSecondAdmin0Key('' as AdminCodeString);
     // reset admin 1 titles
     setAdmin1Key('' as AdminCodeString);
     setSecondAdmin1Key('' as AdminCodeString);
@@ -670,24 +690,31 @@ const ChartsPanel = memo(() => {
             <ChartLocationSelector
               boundaryLayerData={data}
               boundaryLayer={boundaryLayer}
+              admin0Key={admin0Key}
               admin1Key={admin1Key}
               admin2Key={admin2Key}
               admin3Key={admin3Key}
               countryAdm0Id={countryAdmin0Id}
               stacked
               hideLabel={compareLocations}
+              onAdmin0Change={(key, properties, level) => {
+                setAdmin0Key(key);
+                setAdmin1Key('' as AdminCodeString);
+                setAdmin2Key('' as AdminCodeString);
+                setAdminLevel(level);
+                setAdminProperties(properties);
+                setSelectedAdmin1Area('');
+                setSelectedAdmin2Area('');
+              }}
               onAdmin1Change={(key, properties, level) => {
                 setAdmin1Key(key);
                 setAdmin2Key('' as AdminCodeString);
                 setAdmin3Key('' as AdminCodeString);
                 setAdminLevel(level);
                 setAdminProperties(properties);
-                const nameIndex = isUniversal ? level : level - 1;
-                const admin1Name =
-                  data &&
-                  boundaryLayer?.adminLevelNames?.[nameIndex] &&
-                  properties?.[boundaryLayer.adminLevelNames[nameIndex]];
-                setSelectedAdmin1Area(admin1Name || '');
+                setSelectedAdmin1Area(
+                  key && data ? getAdminAreaName(properties, level) : '',
+                );
                 setSelectedAdmin2Area('');
               }}
               onAdmin2Change={(key, properties, level) => {
@@ -695,12 +722,9 @@ const ChartsPanel = memo(() => {
                 setAdmin3Key('' as AdminCodeString);
                 setAdminLevel(level);
                 setAdminProperties(properties);
-                const nameIndex = isUniversal ? level : level - 1;
-                const admin2Name =
-                  data &&
-                  boundaryLayer?.adminLevelNames?.[nameIndex] &&
-                  properties?.[boundaryLayer.adminLevelNames[nameIndex]];
-                setSelectedAdmin2Area(admin2Name || '');
+                setSelectedAdmin2Area(
+                  key && data ? getAdminAreaName(properties, level) : '',
+                );
               }}
               onAdmin3Change={(key, properties, level) => {
                 setAdmin3Key(key);
@@ -725,24 +749,31 @@ const ChartsPanel = memo(() => {
               <ChartLocationSelector
                 boundaryLayerData={data}
                 boundaryLayer={boundaryLayer}
+                admin0Key={secondAdmin0Key}
                 admin1Key={secondAdmin1Key}
                 admin2Key={secondAdmin2Key}
                 admin3Key={secondAdmin3Key}
                 countryAdm0Id={countryAdmin0Id}
                 stacked
                 hideLabel
+                onAdmin0Change={(key, properties, level) => {
+                  setSecondAdmin0Key(key);
+                  setSecondAdmin1Key('' as AdminCodeString);
+                  setSecondAdmin2Key('' as AdminCodeString);
+                  setSecondAdminLevel(level);
+                  setSecondAdminProperties(properties);
+                  setSecondSelectedAdmin1Area('');
+                  setSecondSelectedAdmin2Area('');
+                }}
                 onAdmin1Change={(key, properties, level) => {
                   setSecondAdmin1Key(key);
                   setSecondAdmin2Key('' as AdminCodeString);
                   setSecondAdmin3Key('' as AdminCodeString);
                   setSecondAdminLevel(level);
                   setSecondAdminProperties(properties);
-                  const nameIndex = isUniversal ? level : level - 1;
-                  const admin1Name =
-                    data &&
-                    boundaryLayer?.adminLevelNames?.[nameIndex] &&
-                    properties?.[boundaryLayer.adminLevelNames[nameIndex]];
-                  setSecondSelectedAdmin1Area(admin1Name || '');
+                  setSecondSelectedAdmin1Area(
+                    key && data ? getAdminAreaName(properties, level) : '',
+                  );
                   setSecondSelectedAdmin2Area('');
                 }}
                 onAdmin2Change={(key, properties, level) => {
@@ -750,12 +781,9 @@ const ChartsPanel = memo(() => {
                   setSecondAdmin3Key('' as AdminCodeString);
                   setSecondAdminLevel(level);
                   setSecondAdminProperties(properties);
-                  const nameIndex = isUniversal ? level : level - 1;
-                  const admin2Name =
-                    data &&
-                    boundaryLayer?.adminLevelNames?.[nameIndex] &&
-                    properties?.[boundaryLayer.adminLevelNames[nameIndex]];
-                  setSecondSelectedAdmin2Area(admin2Name || '');
+                  setSecondSelectedAdmin2Area(
+                    key && data ? getAdminAreaName(properties, level) : '',
+                  );
                 }}
                 onAdmin3Change={(key, properties, level) => {
                   setSecondAdmin3Key(key);

@@ -59,7 +59,10 @@ import {
   getDisabledCadences,
   resolveValidCadence,
 } from '../../../utils/batchCadenceUtils';
-import { MAP_EXPORT_MAX_URLS_PER_REQUEST } from '../../../utils/constants';
+import {
+  BATCH_MAP_LAYER_URL_KEY,
+  MAP_EXPORT_MAX_URLS_PER_REQUEST,
+} from '../../../utils/constants';
 import { exportLanguage } from '../../../utils/exportLanguage';
 import {
   cadenceToApi,
@@ -217,6 +220,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       countryLayerIds.has(l.id),
   );
   const [selectedLayerId, setSelectedLayerId] = useState<LayerKey | null>(null);
+  const printLayerInitializedRef = useRef(false);
 
   useEffect(() => {
     if (!open) {
@@ -241,13 +245,85 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
   const { selectedLayersWithDateSupport, selectedLayers } = useLayers();
 
-  useEffect(() => {
-    if (open) {
-      setSelectedLayerId(
-        (selectedLayersWithDateSupport[0]?.id as LayerKey) ?? null,
-      );
+  const defaultBatchMapLayerId = useMemo((): LayerKey | null => {
+    if (selectableLayers.length === 0) {
+      return null;
     }
-  }, [open]);
+    const selectableIds = new Set(selectableLayers.map(layer => layer.id));
+    const fromMainMap = selectedLayersWithDateSupport.find(layer =>
+      selectableIds.has(layer.id),
+    )?.id as LayerKey | undefined;
+    return fromMainMap ?? selectableLayers[0].id;
+  }, [selectableLayers, selectedLayersWithDateSupport]);
+
+  // Batch-map layer in the print dialog is separate from the main map's
+  // `hazardLayerIds`. On open, read `batchMapLayerId` once (e.g. after login
+  // redirect); otherwise default to the first batch-printable main-map layer, or
+  // the first selectable batch-print layer. The ref ensures we do not re-run
+  // when the sync effect below updates the URL.
+  useEffect(() => {
+    if (!open) {
+      printLayerInitializedRef.current = false;
+      return;
+    }
+    if (printLayerInitializedRef.current) {
+      return;
+    }
+
+    const params = new URLSearchParams(location.search);
+    const batchMapLayerId = params.get(BATCH_MAP_LAYER_URL_KEY);
+
+    if (batchMapLayerId) {
+      const batchMapLayerValid = selectableLayers.some(
+        layer => layer.id === batchMapLayerId,
+      );
+      if (!batchMapLayerValid && selectableLayers.length === 0) {
+        return;
+      }
+      if (batchMapLayerValid) {
+        setSelectedLayerId(batchMapLayerId as LayerKey);
+        printLayerInitializedRef.current = true;
+        return;
+      }
+    }
+
+    if (defaultBatchMapLayerId === null) {
+      return;
+    }
+
+    printLayerInitializedRef.current = true;
+    setSelectedLayerId(defaultBatchMapLayerId);
+  }, [open, selectableLayers, defaultBatchMapLayerId]);
+
+  // Keep `batchMapLayerId` in the URL while batch maps is enabled so login
+  // redirect and modal restore preserve the print-layer choice. Intentionally
+  // omit `location.search` from deps so URL updates do not re-trigger init above.
+  // Skip syncing when `schedule=1` is present: the post-login redirect URL already
+  // carries `batchMapLayerId`, and replacing search here re-triggers schedule init
+  // and whoami work on every layer tweak.
+  useEffect(() => {
+    if (!open || !toggles.batchMapsVisibility || !selectedLayerId) {
+      return;
+    }
+    const params = new URLSearchParams(location.search);
+    if (params.get('schedule') === '1') {
+      return;
+    }
+    if (params.get(BATCH_MAP_LAYER_URL_KEY) === selectedLayerId) {
+      return;
+    }
+    params.set(BATCH_MAP_LAYER_URL_KEY, selectedLayerId);
+    history.replace({
+      pathname: location.pathname,
+      search: params.toString() ? `?${params.toString()}` : '',
+    });
+  }, [
+    open,
+    toggles.batchMapsVisibility,
+    selectedLayerId,
+    history,
+    location.pathname,
+  ]);
 
   useEffect(() => {
     if (!toggles.batchMapsVisibility) {
@@ -284,10 +360,10 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   }, [open, selectedMap]);
 
   useEffect(() => {
-    if (selectedLayerId === null && selectableLayers.length > 0) {
-      setSelectedLayerId(selectableLayers[0].id);
+    if (selectedLayerId === null && defaultBatchMapLayerId !== null) {
+      setSelectedLayerId(defaultBatchMapLayerId);
     }
-  }, [selectableLayers, selectedLayerId]);
+  }, [defaultBatchMapLayerId, selectedLayerId]);
 
   const printSelectedLayer = useMemo(
     () =>
