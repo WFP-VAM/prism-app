@@ -18,6 +18,7 @@ import React, { useState } from 'react';
 import About from '../About';
 import LanguageSelector from '../LanguageSelector';
 import PrintImage from '../PrintImage';
+import PrismLogoutLink from '../PrismLogoutLink';
 
 type ConfigRightSideLink = {
   title: string;
@@ -45,6 +46,7 @@ function RightSideMenuContent({ buttons }: { buttons: React.ReactNode }) {
       {buttons}
       <About />
       <LanguageSelector />
+      <PrismLogoutLink />
     </>
   );
 }

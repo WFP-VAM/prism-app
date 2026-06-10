@@ -1,4 +1,4 @@
-"""Starlette-admin OIDC: custom login redirect, session cookie gate, and ``prism.admin.access``."""
+"""Starlette-admin OIDC: custom login redirect, session cookie gate, and admin panel access."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from prism_app.auth.admin_settings import (
     log_oidc_configuration_blocked,
 )
 from prism_app.auth.deps import load_user_from_session
-from prism_app.auth.permission_codes import ADMIN_ACCESS, ALL_CAPABILITIES
+from prism_app.auth.permission_codes import ALL_CAPABILITIES, can_access_admin_panel
 from prism_app.auth.prism_auth_service import is_active
 from sqlalchemy.engine import Engine
 from starlette.middleware import Middleware
@@ -26,7 +26,7 @@ from starlette_admin.base import BaseAdmin
 
 
 class PrismAdminAuthProvider(BaseAuthProvider):
-    """Redirects /admin/login to ``/auth/sign-in``; validates session + ``prism.admin.access``."""
+    """Redirects /admin/login to ``/auth/sign-in``; validates session + admin panel permissions."""
 
     def __init__(self, engine: Engine, settings: AdminAuthSettings) -> None:
         super().__init__(
@@ -66,12 +66,15 @@ class PrismAdminAuthProvider(BaseAuthProvider):
     ) -> Response:
         nxt = request.query_params.get("next") or str(request.url_for("index"))
         return RedirectResponse(
-            url=f"/auth/sign-in?next={quote(nxt, safe='')}",
+            url=f"/auth/welcome?next={quote(nxt, safe='')}",
             status_code=HTTP_303_SEE_OTHER,
         )
 
     async def _render_logout(self, request: Request, admin: BaseAdmin) -> Response:
-        return RedirectResponse(url="/auth/sign-out", status_code=HTTP_303_SEE_OTHER)
+        return RedirectResponse(
+            url="/auth/sign-out?next=%2Fauth%2Fwelcome",
+            status_code=HTTP_303_SEE_OTHER,
+        )
 
     async def is_authenticated(self, request: Request) -> bool:
         """Unused by ``PrismAdminAuthMiddleware``; implemented for API compatibility."""
@@ -151,18 +154,18 @@ class PrismAdminAuthMiddleware(BaseHTTPMiddleware):
         )
 
         if user is None:
+            next_path = request.url.path
+            if request.url.query:
+                next_path = f"{next_path}?{request.url.query}"
             return RedirectResponse(
-                "{url}?{query_params}".format(
-                    url=request.url_for(request.app.state.ROUTE_NAME + ":login"),
-                    query_params=urlencode({"next": str(request.url)}),
-                ),
+                url=f"/auth/welcome?{urlencode({'next': next_path})}",
                 status_code=HTTP_303_SEE_OTHER,
             )
 
         if not is_active(user):
             return access_denied_response(settings.access_support_email)
 
-        if ADMIN_ACCESS not in codes:
+        if not can_access_admin_panel(codes):
             return RedirectResponse("/access-not-configured", HTTP_303_SEE_OTHER)
 
         request.state.prism_user = user

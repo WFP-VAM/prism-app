@@ -12,6 +12,7 @@ psycopg2-binary==2.9.11
 pydantic[email]==2.12.5
 fastapi==0.136.1
 starlette==1.0.1
+markupsafe==3.0.3
 requests==2.33.1
 python-dateutil==2.8.2
 urllib3>=2.6.3,<3

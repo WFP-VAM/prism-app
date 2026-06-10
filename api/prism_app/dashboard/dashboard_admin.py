@@ -15,9 +15,17 @@ _DASHBOARD_COUNTRY_CHOICES = [
     (country.value, country.value) for country in DashboardCountry
 ]
 
+_DUPLICATE_DASHBOARD_FALLBACK_MSG = (
+    "A dashboard with this title already exists for the selected country. "
+    "Change the title in your config JSON or edit the existing dashboard."
+)
+
 
 class DashboardAdminView(ModelView):
     """Create / edit / delete dashboards; path is derived from title and country.
+
+    Title and country are read-only in the admin form and derived from the uploaded
+    config JSON. Status is the only editable lifecycle field besides the config file.
 
     The `config` JSONB field is uploaded as a JSON file (drag-and-drop or browse).
     Upload a single dashboard row object (not an array).
@@ -26,6 +34,8 @@ class DashboardAdminView(ModelView):
     label = "Dashboards"
     name = "dashboard"
     detail_template = "detail_dashboard.html"
+    edit_template = "edit_no_add_another.html"
+    create_template = "create_no_add_another.html"
     fields = [
         "title",
         EnumField(
@@ -36,6 +46,8 @@ class DashboardAdminView(ModelView):
         ),
         EnumField(
             "status",
+            label="Status",
+            required=True,
             choices=[(status.value, status.value) for status in DashboardStatus],
         ),
         DashboardConfigJsonFileField(
@@ -55,11 +67,15 @@ class DashboardAdminView(ModelView):
         "id",
         "created_at",
         "updated_at",
+        "title",
+        "country",
     )
     exclude_fields_from_edit = (
         "id",
         "created_at",
         "updated_at",
+        "title",
+        "country",
     )
     searchable_fields = [
         "title",
@@ -70,24 +86,14 @@ class DashboardAdminView(ModelView):
     async def validate(self, request: Request, data: dict[str, Any]) -> None:
         errors: dict[str, str] = {}
 
-        title = data.get("title")
-        if title is None or not str(title).strip():
-            errors["title"] = "Title is required."
+        status_val = data.get("status")
+        if not status_val:
+            errors["status"] = "Status is required."
         else:
-            data["title"] = str(title).strip()
-
-        country = data.get("country")
-        if country is None or not str(country).strip():
-            errors["country"] = "Country is required."
-        else:
-            country_val = str(country).strip()
             try:
-                data["country"] = DashboardCountry(country_val)
+                data["status"] = DashboardStatus(status_val)
             except ValueError:
-                errors["country"] = (
-                    "Country must match a frontend config key "
-                    "(frontend/src/config/index.ts::configMap)."
-                )
+                errors["status"] = f"Invalid status value '{status_val}'."
 
         cfg = data.get("config")
         if isinstance(cfg, str):
@@ -109,23 +115,78 @@ class DashboardAdminView(ModelView):
             else:
                 data["config"] = cfg
 
+                title = str(cfg.get("title", "")).strip()
+                country_val = str(cfg.get("country", "")).strip()
+                config_errors: list[str] = []
+
+                if not title:
+                    config_errors.append(
+                        "Config JSON must include a non-empty 'title' field."
+                    )
+
+                country: DashboardCountry | None = None
+                if not country_val:
+                    config_errors.append(
+                        "Config JSON must include a 'country' field matching a valid country code."
+                    )
+                else:
+                    try:
+                        country = DashboardCountry(country_val)
+                    except ValueError:
+                        config_errors.append(
+                            f"Config 'country' value '{country_val}' is not a valid country code."
+                        )
+
+                if config_errors:
+                    errors["config"] = "; ".join(config_errors)
+                else:
+                    data["title"] = title
+                    data["country"] = country
+
         if errors:
             raise FormValidationError(cast(dict[str | int, Any], errors))
 
+    def _apply_title_and_country_from_config(self, obj: Any) -> None:
+        """Set title and country on the ORM instance from its config JSON.
+
+        Called from before_create/before_edit because excluded fields are not
+        populated from form data by starlette-admin's internal create/edit flow.
+        """
+        cfg = obj.config
+        if not isinstance(cfg, dict):
+            return
+        title = str(cfg.get("title", "")).strip()
+        if title:
+            obj.title = title
+        country_val = str(cfg.get("country", "")).strip()
+        if country_val:
+            try:
+                obj.country = DashboardCountry(country_val)
+            except ValueError:
+                pass
+
+    async def before_create(
+        self, request: Request, data: dict[str, Any], obj: Any
+    ) -> None:
+        self._apply_title_and_country_from_config(obj)
+
+    async def before_edit(
+        self, request: Request, data: dict[str, Any], obj: Any
+    ) -> None:
+        self._apply_title_and_country_from_config(obj)
+
     def handle_exception(self, exc: Exception) -> None:
-        """Convert IntegrityError from duplicate title/deployment into user-friendly form error."""
+        """Convert IntegrityError from duplicate title/country into user-friendly form error."""
         if isinstance(exc, IntegrityError):
             error_msg = str(exc.orig) if hasattr(exc, "orig") else str(exc)
             if (
-                "uq_dashboard_deployment_title" in error_msg
-                or "uq_dashboard_deployment_path" in error_msg
+                "uq_dashboard_country_title" in error_msg
+                or "uq_dashboard_country_path" in error_msg
             ):
                 raise FormValidationError(
                     cast(
                         dict[str | int, Any],
-                        {
-                            "title": "A dashboard with this title already exists for the selected country."
-                        },
+                        {"config": _DUPLICATE_DASHBOARD_FALLBACK_MSG},
                     )
                 )
         return super().handle_exception(exc)

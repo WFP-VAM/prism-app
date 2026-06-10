@@ -1,6 +1,7 @@
 """Regression tests for admin OIDC security hardening (PR A)."""
 
 import re
+from urllib.parse import quote
 
 import pytest
 from fastapi.testclient import TestClient
@@ -60,7 +61,7 @@ def test_get_sign_out_when_admin_auth_disabled_redirects_without_confirm() -> No
     client = TestClient(app, base_url=_HTTPS)
     r = client.get("/auth/sign-out", follow_redirects=False)
     assert r.status_code == 303
-    assert r.headers["location"] == "/auth/signed-out"
+    assert r.headers["location"] == "/auth/welcome"
 
 
 def _oidc_sign_out_test_settings() -> AdminAuthSettings:
@@ -134,7 +135,7 @@ def test_post_sign_out_oidc_with_csrf_redirects() -> None:
         app.dependency_overrides.pop(get_admin_auth_settings, None)
 
     assert r.status_code == 303
-    assert r.headers["location"] == "/auth/signed-out"
+    assert r.headers["location"] == "/auth/welcome"
 
 
 def test_post_sign_out_when_admin_disabled_works_without_csrf() -> None:
@@ -142,7 +143,45 @@ def test_post_sign_out_when_admin_disabled_works_without_csrf() -> None:
     client = TestClient(app, base_url=_HTTPS)
     r = client.post("/auth/sign-out", data={}, follow_redirects=False)
     assert r.status_code == 303
-    assert r.headers["location"] == "/auth/signed-out"
+    assert r.headers["location"] == "/auth/welcome"
+
+
+def test_get_sign_out_with_admin_next_redirects_to_admin_when_auth_disabled() -> None:
+    client = TestClient(app, base_url=_HTTPS)
+    r = client.get("/auth/sign-out?next=%2Fadmin%2Flist", follow_redirects=False)
+    assert r.status_code == 303
+    assert r.headers["location"] == "/admin/list"
+
+
+def test_get_sign_out_with_prism_next_redirects_to_frontend_when_auth_disabled() -> (
+    None
+):
+    client = TestClient(app, base_url=_HTTPS)
+    nxt = "https://staging.dkr9o3t8h8nvn.amplifyapp.com/?printModal=1"
+    r = client.get(f"/auth/sign-out?next={quote(nxt, safe='')}", follow_redirects=False)
+    assert r.status_code == 303
+    assert r.headers["location"] == nxt
+
+
+def test_signed_out_with_logout_state_redirects_to_next() -> None:
+    from prism_app.auth.oidc_support import sign_logout_return_state
+
+    settings = _oidc_sign_out_test_settings()
+    nxt = "https://prism.moz.wfp.org/"
+    token = sign_logout_return_state(settings, nxt)
+
+    def _fake_admin_auth_settings():
+        return settings
+
+    app.dependency_overrides[get_admin_auth_settings] = _fake_admin_auth_settings
+    try:
+        client = TestClient(app, base_url=_HTTPS)
+        r = client.get(f"/auth/signed-out?state={token}", follow_redirects=False)
+    finally:
+        app.dependency_overrides.pop(get_admin_auth_settings, None)
+
+    assert r.status_code == 303
+    assert r.headers["location"] == nxt
 
 
 def test_safe_next_rejects_protocol_relative_absolute_url() -> None:
@@ -159,3 +198,62 @@ def test_safe_next_allows_admin_subpaths_and_access_page() -> None:
     assert auth_oidc._safe_next("/access-not-configured") == "/access-not-configured"
     # posixpath.normpath collapses a trailing slash on ``/admin/`` to ``/admin``.
     assert auth_oidc._safe_next("/admin/?tab=1") == "/admin?tab=1"
+
+
+def test_safe_next_allows_export_allowed_domain_frontend_print_modal_return() -> None:
+    nxt = "https://prism.moz.wfp.org/?printModal=1&batchMaps=1&schedule=1"
+    assert auth_oidc._safe_next(nxt) == nxt
+
+
+def test_safe_next_allows_localhost_frontend_print_modal_return() -> None:
+    nxt = "http://localhost:3000/?printModal=1&batchMaps=1&schedule=1"
+    assert auth_oidc._safe_next(nxt) == nxt
+
+
+def test_safe_next_allows_firebase_preview_frontend_print_modal_return() -> None:
+    nxt = "https://staging-prism-frontend--1622-abc.web.app/?printModal=1"
+    assert auth_oidc._safe_next(nxt) == nxt
+
+
+def test_safe_next_rejects_disallowed_frontend_origin() -> None:
+    assert (
+        auth_oidc._safe_next(
+            "https://evil.example/?printModal=1&batchMaps=1&schedule=1",
+        )
+        == "/admin/"
+    )
+
+
+def test_safe_sign_out_next_allows_admin_paths() -> None:
+    assert auth_oidc._safe_sign_out_next("/admin/") == "/admin/"
+    assert auth_oidc._safe_sign_out_next("/admin/list/foo") == "/admin/list/foo"
+
+
+def test_safe_sign_out_next_allows_prism_frontend_without_print_modal() -> None:
+    nxt = "https://prism.moz.wfp.org/dashboard"
+    assert auth_oidc._safe_sign_out_next(nxt) == nxt
+
+
+def test_safe_sign_out_next_rejects_disallowed_origin() -> None:
+    assert (
+        auth_oidc._safe_sign_out_next("https://evil.example/logout") == "/auth/welcome"
+    )
+
+
+def test_safe_sign_out_next_allows_welcome_path() -> None:
+    assert auth_oidc._safe_sign_out_next("/auth/welcome") == "/auth/welcome"
+
+
+def test_welcome_page_renders() -> None:
+    client = TestClient(app, base_url=_HTTPS)
+    r = client.get("/auth/welcome")
+    assert r.status_code == 200
+    assert "Welcome" in r.text
+    assert "/auth/sign-in?next=%2Fadmin%2F" in r.text
+
+
+def test_welcome_page_honors_next_for_sign_in_link() -> None:
+    client = TestClient(app, base_url=_HTTPS)
+    r = client.get("/auth/welcome?next=%2Fadmin%2Flist")
+    assert r.status_code == 200
+    assert "/auth/sign-in?next=%2Fadmin%2Flist" in r.text

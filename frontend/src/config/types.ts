@@ -833,6 +833,8 @@ export type PanelItem = {
   children?: PanelItem[];
   reportIndex?: number;
   reportPath?: string;
+  isDraft?: boolean;
+  dividerBefore?: boolean;
 };
 
 export enum Panel {
@@ -1050,6 +1052,7 @@ export class AnticipatoryActionLayerProps extends CommonLayerProps {
 
 export {
   ChartHeight,
+  ChartLatestPeriod,
   DashboardElementType,
   DashboardMapPosition,
   DashboardMode,

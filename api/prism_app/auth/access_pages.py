@@ -65,6 +65,17 @@ def signed_out_response() -> HTMLResponse:
     return _render_template("signed_out.html", status_code=200)
 
 
+def welcome_response(
+    *, sign_in_href: str = "/auth/sign-in?next=%2Fadmin%2F"
+) -> HTMLResponse:
+    """Landing page for unauthenticated admin access; links to the CIAM sign-in flow."""
+    return _render_template(
+        "welcome.html",
+        status_code=200,
+        sign_in_href=sign_in_href,
+    )
+
+
 def sign_out_confirm_response(csrf_token: str) -> HTMLResponse:
     """Prompt for POST /auth/sign-out with CSRF token (see router)."""
     return _render_template(

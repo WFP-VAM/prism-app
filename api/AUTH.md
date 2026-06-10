@@ -4,7 +4,7 @@
 
 1. Have the user sign in via CIAM (navigate to `/admin` — they'll be redirected to authenticate).
 2. They'll land on an "access not configured" page. Their `users` row now exists.
-3. Have them visit `<host>/api/whoami` in their browser to get their `user_id`.
+3. Have them visit `<host>/whoami` in their browser to get their `user_id`.
 
 4. Grant admin access:
 
@@ -95,6 +95,8 @@ There are three env var mechanisms that serve different contexts:
 | `PRISM_ADMIN_AUTH_DISABLED` | Dev only | Set `true` to bypass OIDC for local development |
 
 See [`.env.example`](.env.example) for a ready-to-copy template.
+
+Post-login returns to the React print modal use the same hostname allowlist as map export (`EXPORT_ALLOWED_DOMAINS` in `prism_app/utils.py`), plus localhost.
 
 ## Dev Mode
 
