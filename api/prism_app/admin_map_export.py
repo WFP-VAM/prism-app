@@ -4,12 +4,13 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, Optional, Sequence
 from uuid import UUID
 
 from prism_app.admin import PrismGatedModelView, ReadOnlyModelView
 from prism_app.auth.admin_request import (
     admin_user_from_request,
+    request_can_manage_map_exports,
     request_has_prism_admin_access,
 )
 from prism_app.dashboard.dashboard_config_field import PrettyJSONField
@@ -45,6 +46,7 @@ from starlette_admin.contrib.sqla import Admin
 from starlette_admin.contrib.sqla.helpers import OPERATORS
 from starlette_admin.exceptions import ActionFailed, FormValidationError
 from starlette_admin.i18n import ngettext
+from starlette_admin.fields import BaseField
 
 _DEFAULT_EQ = OPERATORS["eq"]
 _DEFAULT_NEQ = OPERATORS["neq"]
@@ -482,8 +484,62 @@ class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelVie
     actions = ["update_status", "delete"]
     row_actions = ["view", "edit", "clone", "delete"]
 
+    _ADMIN_ONLY_FIELD_NAMES = frozenset({"country"})
+
+    def _admin_only_field_names(self, request: Request) -> frozenset[str]:
+        if request_has_prism_admin_access(request):
+            return frozenset()
+        return self._ADMIN_ONLY_FIELD_NAMES
+
+    def get_fields_list(
+        self,
+        request: Request,
+        action: RequestAction = RequestAction.LIST,
+    ) -> Sequence[BaseField]:
+        hidden = self._admin_only_field_names(request)
+        if not hidden:
+            return super().get_fields_list(request, action)
+        return [
+            field
+            for field in super().get_fields_list(request, action)
+            if field.name not in hidden
+        ]
+
+    def _searchable_fields_for_request(self, request: Request) -> tuple[str, ...]:
+        hidden = self._admin_only_field_names(request)
+        return tuple(
+            name
+            for name in self.searchable_fields  # type: ignore[union-attr]
+            if name not in hidden
+        )
+
+    async def _configs(self, request: Request) -> dict[str, Any]:
+        configs = await super()._configs(request)
+        hidden = self._admin_only_field_names(request)
+        if not hidden:
+            return configs
+        searchable = self._searchable_fields_for_request(request)
+        exportable = tuple(
+            name for name in self.export_fields if name not in hidden  # type: ignore[union-attr]
+        )
+        configs["searchColumns"] = [f"{name}:name" for name in searchable]
+        configs["exportColumns"] = [f"{name}:name" for name in exportable]
+        return configs
+
+    def is_accessible(self, request: Request) -> bool:
+        return request_can_manage_map_exports(request)
+
+    def can_view_details(self, request: Request) -> bool:
+        return request_can_manage_map_exports(request)
+
+    def can_edit(self, request: Request) -> bool:
+        return request_can_manage_map_exports(request)
+
+    def can_delete(self, request: Request) -> bool:
+        return request_has_prism_admin_access(request)
+
     def can_create(self, request: Request) -> bool:
-        if not super().can_create(request):
+        if not request_can_manage_map_exports(request):
             return False
         return "clone_from" in request.query_params
 
@@ -517,7 +573,7 @@ class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelVie
         if not term_lower:
             return None
         clauses = []
-        for field_name in self.searchable_fields:
+        for field_name in self._searchable_fields_for_request(request):
             attr = getattr(self.model, field_name, None)
             if attr is None:
                 continue

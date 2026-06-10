@@ -27,12 +27,19 @@ export type ScheduleExportQueryParams = {
   language?: string;
 };
 
+export type ScheduleAdminArea = {
+  area_id: string;
+  name: string;
+};
+
 export type ScheduleExportOptions = {
   origin: string;
   exportPath: string;
   queryParams: ScheduleExportQueryParams;
   viewportWidth?: number;
   viewportHeight?: number;
+  /** Selected admin areas at schedule creation (codes + display names). */
+  adminAreas?: ScheduleAdminArea[];
 };
 
 export type MapExportScheduleCreateRequest = {
@@ -45,7 +52,7 @@ export type MapExportScheduleCreateRequest = {
   export_url: string;
   /** Opaque print-template metadata (viewport, etc.); shape owned by the frontend. */
   export_options: ScheduleExportOptions;
-  /** Comma-separated admin codes selected when the schedule was created. */
+  /** Human-readable admin area names for admin console display. */
   admin_areas: string;
 };
 

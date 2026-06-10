@@ -7,6 +7,7 @@ import { mapSelector } from 'context/mapStateSlice/selectors';
 import { LineLayerSpecification } from 'maplibre-gl';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
+import { filterFeaturesBySelectedAdminCodes } from 'utils/adminAreaSelection';
 import { useBoundaryData } from 'utils/useBoundaryData';
 
 const boundaryLayer = getBoundaryLayerSingleton();
@@ -31,8 +32,10 @@ function SelectionLayer({ before }: { before?: string }) {
 
   const filteredData = {
     ...data,
-    features: data.features.filter(cell =>
-      selectedBoundaries.includes(cell.properties?.[boundaryLayer.adminCode]),
+    features: filterFeaturesBySelectedAdminCodes(
+      data.features,
+      boundaryLayer,
+      selectedBoundaries,
     ),
   };
 
