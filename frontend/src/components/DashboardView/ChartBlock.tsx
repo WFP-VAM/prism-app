@@ -176,15 +176,16 @@ function ChartBlock({
   };
 
   const handleLocationChange = (
+    admin0Key: AdminCodeString,
     admin1Key: AdminCodeString,
     admin2Key: AdminCodeString,
     properties: GeoJsonProperties,
     level: AdminLevelType,
   ) => {
-    formState.setLocation(admin1Key, admin2Key, properties, level);
+    formState.setLocation(admin0Key, admin1Key, admin2Key, properties, level);
     persistBlockConfig({
       adminUnitLevel: level,
-      adminUnitId: adminUnitIdFromKeys(admin1Key, admin2Key, level),
+      adminUnitId: adminUnitIdFromKeys(admin0Key, admin1Key, admin2Key, level),
     });
   };
 
@@ -491,11 +492,22 @@ function ChartBlock({
           <ChartLocationSelector
             boundaryLayerData={formState.boundaryLayerData?.data}
             boundaryLayer={formState.boundaryLayer}
+            admin0Key={formState.admin0Key}
             admin1Key={formState.admin1Key}
             admin2Key={formState.admin2Key}
             labelMarginBottom={8}
+            onAdmin0Change={(key, properties, level) => {
+              handleLocationChange(
+                key,
+                '' as AdminCodeString,
+                '' as AdminCodeString,
+                properties,
+                level,
+              );
+            }}
             onAdmin1Change={(key, properties, level) => {
               handleLocationChange(
+                formState.admin0Key,
                 key,
                 '' as AdminCodeString,
                 properties,
@@ -503,7 +515,13 @@ function ChartBlock({
               );
             }}
             onAdmin2Change={(key, properties, level) => {
-              handleLocationChange(formState.admin1Key, key, properties, level);
+              handleLocationChange(
+                formState.admin0Key,
+                formState.admin1Key,
+                key,
+                properties,
+                level,
+              );
             }}
           />
           <FormControl variant="outlined" className={classes.formControl}>
