@@ -6,7 +6,6 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import { Font } from '@react-pdf/renderer';
 import * as Sentry from '@sentry/browser';
 import AuthModal from 'components/AuthModal';
-import CountryInvalidPage from 'components/CountryInvalidPage';
 import CreateDashboardView from 'components/CreateDashboardView';
 import DashboardView from 'components/DashboardView';
 import ExportView from 'components/ExportView';
@@ -15,6 +14,7 @@ import Login from 'components/Login';
 import MapView from 'components/MapView';
 import NavBar from 'components/NavBar';
 import Notifier from 'components/Notifier';
+import UniversalPlaceholder from 'components/UniversalPlaceholder';
 import { authRequired } from 'config';
 import { CountryIsoProvider } from 'context/CountryIsoProvider';
 import KhmerFont from 'fonts/Khmer-Regular.ttf';
@@ -117,15 +117,15 @@ function AppRoutes() {
       {isUniversal && (
         <>
           {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
-          <Route path="/country/:iso3">
-            <CountryIsoProvider>
-              <AppShell countryPrefix="/country/:iso3" />
-            </CountryIsoProvider>
+          <Route path="/" exact>
+            <UniversalPlaceholder />
           </Route>
 
           {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
           <Route path="/country/:iso3">
-            <CountryInvalidPage />
+            <CountryIsoProvider>
+              <AppShell countryPrefix="/country/:iso3" />
+            </CountryIsoProvider>
           </Route>
         </>
       )}
