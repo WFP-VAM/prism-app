@@ -150,6 +150,7 @@ function MapExportLayout({
   const boundariesMapRef = React.useRef<MapRef>(null);
   const labelsMapRef = React.useRef<MapRef>(null);
   const dataLayersClipContainerRef = useRef<HTMLDivElement>(null);
+  const [baseMapReadyVersion, setBaseMapReadyVersion] = useState(0);
   const [runtimeLabelsOverlayStyle, setRuntimeLabelsOverlayStyle] =
     useState<StyleSpecification | null>(null);
 
@@ -495,6 +496,11 @@ function MapExportLayout({
     applyAdminAreaClipPath(map, container, adminAreaClipPolygon);
   }, [adminAreaClipPolygon, shouldClipDataLayers]);
 
+  const syncClippedExportView = useCallback(() => {
+    syncOverlayMapsToBasemap();
+    applyDataLayersClipPath();
+  }, [applyDataLayersClipPath, syncOverlayMapsToBasemap]);
+
   const startExportReadyTracking = useCallback(
     (map: maplibregl.Map, onLoadEvent: unknown) => {
       let hasSignaledReady = false;
@@ -583,7 +589,8 @@ function MapExportLayout({
     }
 
     fitMapToBounds(map);
-    syncOverlayMapsToBasemap();
+    syncClippedExportView();
+    setBaseMapReadyVersion(version => version + 1);
 
     if (onBoundsChange && map) {
       let lastBoundsStr: string | null = null;
@@ -600,7 +607,7 @@ function MapExportLayout({
             onBoundsChange(mapBounds, zoom);
           }
         }
-        syncOverlayMapsToBasemap();
+        syncClippedExportView();
       };
 
       reportBounds();
@@ -631,8 +638,7 @@ function MapExportLayout({
     const map = dataMapRef.current?.getMap();
     loadDataLayerAssets(map);
     fitMapToBounds(map);
-    syncOverlayMapsToBasemap();
-    applyDataLayersClipPath();
+    syncClippedExportView();
 
     if (onMapLoad && !signalExportReady) {
       onMapLoad(e);
@@ -640,11 +646,11 @@ function MapExportLayout({
   };
 
   const handleBoundariesMapLoad = () => {
-    syncOverlayMapsToBasemap();
+    syncClippedExportView();
   };
 
   const handleLabelsMapLoad = () => {
-    syncOverlayMapsToBasemap();
+    syncClippedExportView();
   };
   // Calculate map dimensions based on container size and aspect ratio
   const mapDimensions = useMemo(() => {
@@ -698,25 +704,50 @@ function MapExportLayout({
   }, [mapDimensions, onMapDimensionsChange]);
 
   useEffect(() => {
-    applyDataLayersClipPath();
-
-    const map = dataMapRef.current?.getMap();
-    if (!map || !shouldClipDataLayers) {
+    if (!shouldClipDataLayers) {
+      applyDataLayersClipPath();
       return undefined;
     }
 
-    map.on('moveend', applyDataLayersClipPath);
-    map.on('resize', applyDataLayersClipPath);
+    const baseMap = baseMapRef.current?.getMap();
+    if (!baseMap) {
+      return undefined;
+    }
+
+    let rafId = 0;
+    const syncOnMove = () => {
+      if (rafId !== 0) {
+        cancelAnimationFrame(rafId);
+      }
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        syncClippedExportView();
+      });
+    };
+
+    syncClippedExportView();
+    baseMap.on('move', syncOnMove);
+    baseMap.on('moveend', syncClippedExportView);
+    baseMap.on('resize', syncClippedExportView);
+    baseMap.on('zoom', syncOnMove);
 
     return () => {
-      map.off('moveend', applyDataLayersClipPath);
-      map.off('resize', applyDataLayersClipPath);
-      const container = dataLayersClipContainerRef.current;
-      if (container) {
-        applyAdminAreaClipPath(map, container, null);
+      if (rafId !== 0) {
+        cancelAnimationFrame(rafId);
       }
+      baseMap.off('move', syncOnMove);
+      baseMap.off('moveend', syncClippedExportView);
+      baseMap.off('resize', syncClippedExportView);
+      baseMap.off('zoom', syncOnMove);
+      applyDataLayersClipPath();
     };
-  }, [applyDataLayersClipPath, shouldClipDataLayers, mapDimensions]);
+  }, [
+    applyDataLayersClipPath,
+    baseMapReadyVersion,
+    mapDimensions,
+    shouldClipDataLayers,
+    syncClippedExportView,
+  ]);
 
   // The map content (title, legend, footer, map itself)
   const mapContent = (
@@ -909,6 +940,10 @@ function MapExportLayout({
           >
             <MapGL
               ref={dataMapRef}
+              dragPan={false}
+              scrollZoom={false}
+              doubleClickZoom={false}
+              touchZoomRotate={false}
               dragRotate={false}
               preserveDrawingBuffer
               initialViewState={effectiveInitialViewState}
@@ -957,6 +992,10 @@ function MapExportLayout({
           <div className={classes.boundariesMapOverlay}>
             <MapGL
               ref={boundariesMapRef}
+              dragPan={false}
+              scrollZoom={false}
+              doubleClickZoom={false}
+              touchZoomRotate={false}
               dragRotate={false}
               preserveDrawingBuffer
               initialViewState={effectiveInitialViewState}
@@ -980,6 +1019,10 @@ function MapExportLayout({
           <div className={classes.labelsMapOverlay}>
             <MapGL
               ref={labelsMapRef}
+              dragPan={false}
+              scrollZoom={false}
+              doubleClickZoom={false}
+              touchZoomRotate={false}
               dragRotate={false}
               preserveDrawingBuffer
               initialViewState={effectiveInitialViewState}
