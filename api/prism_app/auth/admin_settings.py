@@ -36,7 +36,10 @@ class AdminAuthSettings(BaseSettings):
     session_secret: str = ""
     session_cookie_name: str = "prism_session"
     session_cookie_secure: bool = True
-    session_cookie_samesite: str = "lax"
+    # React apps (*.wfp.org, Amplify, Firebase) are always on a different site than this API.
+    # SameSite=Lax omits the session cookie on cross-origin credentialed fetch (/whoami, schedules).
+    # None + Secure (below) is required so browsers send prism_session to prism-api from the SPA.
+    session_cookie_samesite: str = "none"
     session_ttl_seconds: int = 3600
     oidc_state_cookie_name: str = "prism_oidc_state"
     oidc_state_ttl_seconds: int = 600

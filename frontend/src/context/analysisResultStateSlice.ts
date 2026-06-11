@@ -68,13 +68,17 @@ import { ANALYSIS_API_URL } from 'utils/constants';
 import { getRoundedData } from 'utils/data-utils';
 import { getFormattedDate } from 'utils/date-utils';
 import { getFullLocationName } from 'utils/name-utils';
-import { fetchWMSLayerAsGeoJSON } from 'utils/server-utils';
+import {
+  fetchWMSLayerAsGeoJSON,
+  getCoverageForLayerAndDate,
+} from 'utils/server-utils';
 import { calculate } from 'utils/zonal-utils';
 
 import { DataRecord } from './layers/admin_level_data';
 import { BoundaryLayerData } from './layers/boundary';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { layerDataSelector } from './mapStateSlice/selectors';
+import { availableDatesSelector } from './serverStateSlice';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 
 export type TableRowType = { [key: string]: string | number };
@@ -702,6 +706,12 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       );
     }
 
+    const coverage = getCoverageForLayerAndDate(
+      populationLayer,
+      availableDatesSelector(api.getState()),
+      date,
+    );
+
     return new ExposedPopulationResult(
       tableRows,
       collection,
@@ -712,6 +722,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       key,
       date,
       tableColumns,
+      coverage,
     );
   },
 );
@@ -862,6 +873,12 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     [], // no extra columns
   );
 
+  const coverage = getCoverageForLayerAndDate(
+    hazardLayer,
+    availableDatesSelector(api.getState()),
+    date,
+  );
+
   return new BaselineLayerResult(
     tableRows,
     {
@@ -878,6 +895,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     statsByAdminId,
     date,
     adminBoundaries.format,
+    coverage,
   );
 });
 
@@ -980,6 +998,12 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
 
   const boundaryId = getAdminLevelLayer(adminLevel).id;
 
+  const coverage = getCoverageForLayerAndDate(
+    hazardLayer,
+    availableDatesSelector(api.getState()),
+    startDate,
+  );
+
   return new PolygonAnalysisResult(
     tableRows,
     tableColumns,
@@ -991,6 +1015,7 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
     undefined,
     startDate,
     endDate,
+    coverage,
   );
 });
 

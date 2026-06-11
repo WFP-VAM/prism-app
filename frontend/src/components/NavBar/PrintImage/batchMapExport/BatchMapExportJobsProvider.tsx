@@ -89,6 +89,7 @@ export default function BatchMapExportJobsProvider({
               viewportHeight: payload.viewportHeight,
               format: payload.format,
               country: payload.country,
+              ...(payload.adminArea ? { adminArea: payload.adminArea } : {}),
             },
             signal,
           );

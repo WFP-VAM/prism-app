@@ -111,7 +111,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build ${{ matrix.image_label }} image
-        run: docker build -f api/${{ matrix.dockerfile }} -t ${{ matrix.image_tag }} api
+        run: docker build -f "api/${{ matrix.dockerfile }}" -t "${{ matrix.image_tag }}" api
       - name: Trivy vulnerability scan
         uses: aquasecurity/trivy-action@v0.36.0
         with:
@@ -137,7 +137,7 @@ jobs:
           chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
           docker compose version
       - name: Build containers
-        run: cd api && make build
+        run: cd api && make ci-build
       - name: Run tests
         run: cd api && make api-test
 

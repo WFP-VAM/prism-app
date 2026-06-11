@@ -1,6 +1,19 @@
-import { Box, Button, makeStyles } from '@material-ui/core';
-import { VisibilityOutlined } from '@material-ui/icons';
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  makeStyles,
+} from '@material-ui/core';
+import {
+  DeleteOutlined,
+  DescriptionOutlined,
+  VisibilityOutlined,
+} from '@material-ui/icons';
 import { usePostHog } from '@posthog/react';
+import { downloadToFile } from 'components/MapView/utils';
 import { DashboardMode } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 import { useEffect, useRef, useState } from 'react';
@@ -13,6 +26,7 @@ import {
   dashboardConfigSelector,
   dashboardModeSelector,
   dashboardsListSelector,
+  removeDashboard,
   setMode,
   setSelectedDashboard,
 } from '../../context/dashboardStateSlice';
@@ -26,7 +40,6 @@ function DashboardView() {
   const dashboards = useSelector(dashboardsListSelector);
   const {
     path: dashboardPath,
-    isEditable,
     title: dashboardTitle,
     selectedDashboardIndex,
   } = dashboardConfig;
@@ -41,6 +54,13 @@ function DashboardView() {
   // Export/Publish dialog state
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const handleCloseExport = () => setExportDialogOpen(false);
+
+  // Delete dashboard dialog state
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const handleDeleteConfirm = () => {
+    dispatch(removeDashboard());
+    history.push('/dashboard/create');
+  };
 
   // Track dashboard viewed / view ended with duration
   useEffect(() => {
@@ -83,9 +103,13 @@ function DashboardView() {
     }
 
     if (path) {
-      // Find dashboard by path and set it as selected
+      // Find dashboard by path and set it as selected — guard against
+      // re-selecting the same dashboard when `dashboards` gets a new reference
+      // from in-memory edits (which would reset mode via createInitialState).
       const dashboardIndex = getDashboardIndexByPath(path, dashboards);
-      dispatch(setSelectedDashboard(dashboardIndex));
+      if (dashboardIndex !== dashboardConfig.selectedDashboardIndex) {
+        dispatch(setSelectedDashboard(dashboardIndex));
+      }
     } else {
       // No path provided, redirect to first dashboard's path
       const firstDashboard = dashboards[0];
@@ -93,10 +117,34 @@ function DashboardView() {
         firstDashboard.path || generateSlugFromTitle(firstDashboard.title);
       history.replace(`/dashboard/${firstDashboardPath}`);
     }
-  }, [path, dispatch, history, dashboards]);
+  }, [
+    path,
+    dispatch,
+    history,
+    dashboards,
+    dashboardConfig.selectedDashboardIndex,
+  ]);
 
   const handlePreviewClick = () => {
     dispatch(setMode(DashboardMode.VIEW));
+  };
+
+  const handleExportJSON = () => {
+    const {
+      selectedDashboardIndex: _selectedDashboardIndex,
+      maps: _maps,
+      isDraft: _isDraft,
+      ...dashboard
+    } = dashboardConfig;
+    const safeSlug = generateSlugFromTitle(
+      dashboard.path || dashboard.title || 'dashboard',
+    );
+    const filename = `${safeSlug}_${Date.now()}`;
+    downloadToFile(
+      { content: JSON.stringify(dashboard, null, 2), isUrl: false },
+      filename,
+      'application/json',
+    );
   };
 
   const handleClosePreview = () => {
@@ -118,20 +166,41 @@ function DashboardView() {
             ? classes.editLayout
             : classes.previewLayout
         }
-        isEditable={isEditable}
-        onEditClick={handleClosePreview}
+        onEditClick={dashboardConfig.isDraft ? handleClosePreview : undefined}
       />
       {mode === DashboardMode.EDIT && (
         <Box className={classes.toolbar}>
+          {dashboardConfig.isDraft && (
+            <Button
+              variant="outlined"
+              color="secondary"
+              startIcon={<DeleteOutlined />}
+              onClick={() => setDeleteDialogOpen(true)}
+              className={classes.toolbarButton}
+              size="medium"
+            >
+              {t('Delete')}
+            </Button>
+          )}
           <Button
             variant="outlined"
             color="primary"
             startIcon={<VisibilityOutlined />}
             onClick={handlePreviewClick}
-            className={classes.previewButton}
+            className={classes.toolbarButton}
             size="medium"
           >
-            {t('Back to Dashboard')}
+            {t('Preview Dashboard')}
+          </Button>
+          <Button
+            variant="outlined"
+            color="primary"
+            startIcon={<DescriptionOutlined />}
+            onClick={handleExportJSON}
+            className={classes.toolbarButton}
+            size="medium"
+          >
+            {t('Export JSON')}
           </Button>
         </Box>
       )}
@@ -140,6 +209,33 @@ function DashboardView() {
         open={exportDialogOpen}
         handleClose={handleCloseExport}
       />
+
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogContent>
+          <DialogContentText>
+            {t(
+              `Are you sure you want to delete "${dashboardConfig.title}"? This cannot be undone. You’ll be taken back to the dashboard creation page.`,
+            )}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteDialogOpen(false)} color="primary">
+            {t('Cancel')}
+          </Button>
+          <Button
+            onClick={handleDeleteConfirm}
+            color="secondary"
+            variant="contained"
+          >
+            {t('Delete Dashboard')}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
@@ -232,11 +328,11 @@ const useStyles = makeStyles(() => ({
     padding: '12px 16px',
     display: 'flex',
     justifyContent: 'center',
+    gap: '8px',
     zIndex: 1400,
   },
-  previewButton: {
+  toolbarButton: {
     textTransform: 'none',
-    fontWeight: 500,
   },
   previewDialog: {
     '& .MuiDialog-paper': {
