@@ -15,6 +15,7 @@ from prism_app.auth.admin_settings import (
 )
 from prism_app.auth.auth_oidc import _perform_sign_out
 from prism_app.auth.deps import PRISM_SESSION_AUTH_PROVIDER
+from prism_app.auth.oidc_support import generate_pkce_pair, sign_oidc_state
 from prism_app.main import app
 
 _HTTPS = "https://testserver"
@@ -195,3 +196,48 @@ def test_welcome_page_shows_provider_buttons() -> None:
     assert "Staff sign-in (Entra ID)" in r.text
     assert "/auth/sign-in?provider=ciam&amp;next=%2Fadmin" in r.text
     assert "/auth/sign-in?provider=entra&amp;next=%2Fadmin" in r.text
+
+
+def _ciam_only_settings() -> AdminAuthSettings:
+    return AdminAuthSettings(
+        _env_file=None,
+        oidc_issuer="https://ciam.example.invalid/oauth2/",
+        oidc_client_id="ciam-client",
+        oidc_client_secret="ciam-secret",
+        oidc_redirect_uri="https://api.example.invalid/auth/callback",
+        session_secret="0123456789abcdef" * 2,
+        session_cookie_secure=True,
+        admin_auth_disabled=False,
+    )
+
+
+def test_callback_rejects_unconfigured_provider_in_state() -> None:
+    settings = _ciam_only_settings()
+    state_plain = "callback-state-123"
+    code_verifier, _ = generate_pkce_pair()
+    state_jwt = sign_oidc_state(
+        settings,
+        {
+            "state": state_plain,
+            "nonce": "nonce-123",
+            "next": "/admin/",
+            "code_verifier": code_verifier,
+            "provider": PROVIDER_ENTRA,
+        },
+    )
+
+    def _fake_settings():
+        return settings
+
+    app.dependency_overrides[get_admin_auth_settings] = _fake_settings
+    try:
+        client = TestClient(app, base_url=_HTTPS)
+        client.cookies.set(settings.oidc_state_cookie_name, state_jwt)
+        response = client.get(
+            f"/auth/callback?code=fake-code&state={state_plain}",
+        )
+    finally:
+        app.dependency_overrides.pop(get_admin_auth_settings, None)
+
+    assert response.status_code == 200
+    assert "sign-in incomplete" in response.text.lower()
