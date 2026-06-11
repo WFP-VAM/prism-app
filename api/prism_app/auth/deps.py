@@ -15,15 +15,24 @@ from starlette.responses import Response
 # Starlette SessionMiddleware session dict keys (JSON-serializable).
 PRISM_SESSION_USER_ID = "prism_uid"
 PRISM_SESSION_CIAM_SUB = "ciam_sub"
+PRISM_SESSION_AUTH_PROVIDER = "auth_provider"
 # Bound to GET /auth/sign-out → POST /auth/sign-out (consumption via session.pop).
 PRISM_SESSION_SIGN_OUT_CSRF = "sign_out_csrf"
 PRISM_SESSION_SIGN_OUT_NEXT = "sign_out_next"
 
 
-def set_prism_session_user(request: Request, *, user_id: UUID, ciam_sub: str) -> None:
+def set_prism_session_user(
+    request: Request,
+    *,
+    user_id: UUID,
+    ciam_sub: str,
+    auth_provider: str | None = None,
+) -> None:
     """Persist CIAM-linked Prism user in Starlette signed session (SessionMiddleware cookie)."""
     request.session[PRISM_SESSION_USER_ID] = str(user_id)
     request.session[PRISM_SESSION_CIAM_SUB] = ciam_sub
+    if auth_provider:
+        request.session[PRISM_SESSION_AUTH_PROVIDER] = auth_provider
 
 
 def clear_prism_browser_session(request: Request) -> None:

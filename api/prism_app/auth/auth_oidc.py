@@ -22,12 +22,14 @@ from prism_app.auth.access_pages import (
     welcome_response,
 )
 from prism_app.auth.admin_settings import (
-    PROVIDER_CIAM,
+    DEFAULT_OIDC_PROVIDER_ID,
     AdminAuthSettings,
+    OidcProviderConfig,
     get_admin_auth_settings,
     log_oidc_configuration_blocked,
 )
 from prism_app.auth.deps import (
+    PRISM_SESSION_AUTH_PROVIDER,
     PRISM_SESSION_SIGN_OUT_CSRF,
     PRISM_SESSION_SIGN_OUT_NEXT,
     clear_oidc_state_cookie,
@@ -230,11 +232,51 @@ def _signed_out_callback_url(request: Request) -> str:
     return f"{str(request.base_url).rstrip('/')}/auth/signed-out"
 
 
+def _session_auth_provider(request: Request) -> str:
+    raw = request.session.get(PRISM_SESSION_AUTH_PROVIDER)
+    if isinstance(raw, str) and raw.strip():
+        return raw.strip()
+    return DEFAULT_OIDC_PROVIDER_ID
+
+
+def _resolve_oidc_provider(
+    settings: AdminAuthSettings, provider_id: str | None
+) -> OidcProviderConfig:
+    providers = settings.oidc_providers()
+    if not providers:
+        raise HTTPException(status_code=503, detail=_OIDC_NOT_CONFIGURED_DETAIL)
+    key = (provider_id or DEFAULT_OIDC_PROVIDER_ID).strip().lower()
+    provider = providers.get(key)
+    if provider is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Unknown or unconfigured identity provider: {key}",
+        )
+    return provider
+
+
 def _perform_sign_out(
     request: Request, settings: AdminAuthSettings, return_to: str
 ) -> Response:
-    """Clear PRISM auth cookies; redirect to CIAM end_session when OIDC is enabled and configured."""
-    if settings.admin_auth_disabled or not settings.oidc_configured:
+    """Clear PRISM auth cookies; redirect to the session provider's end_session when configured."""
+    if settings.admin_auth_disabled:
+        r = RedirectResponse(url=return_to, status_code=303)
+        clear_prism_auth_cookies(request, r, settings)
+        return r
+
+    providers = settings.oidc_providers()
+    if not providers:
+        r = RedirectResponse(url=return_to, status_code=303)
+        clear_prism_auth_cookies(request, r, settings)
+        return r
+
+    provider_id = _session_auth_provider(request)
+    provider = providers.get(provider_id)
+    if provider is None:
+        logger.warning(
+            "Sign-out: session provider %r no longer configured; local logout only",
+            provider_id,
+        )
         r = RedirectResponse(url=return_to, status_code=303)
         clear_prism_auth_cookies(request, r, settings)
         return r
@@ -247,7 +289,7 @@ def _perform_sign_out(
         or _signed_out_callback_url(request)
     )
     dest = build_rp_initiated_logout_url(
-        settings.oidc_providers()[PROVIDER_CIAM],
+        provider,
         settings,
         hint_stripped if hint_stripped else None,
         state=logout_state,
@@ -264,12 +306,15 @@ async def oidc_sign_in(
     request: Request,
     settings: Annotated[AdminAuthSettings, Depends(get_admin_auth_settings)],
     next_url: Annotated[str | None, Query(alias="next")] = None,
+    provider: Annotated[str | None, Query()] = None,
 ) -> Response:
     if settings.admin_auth_disabled:
         return RedirectResponse(url="/admin/", status_code=303)
-    if not settings.oidc_configured:
+    if not settings.oidc_providers():
         log_oidc_configuration_blocked(settings, where="GET /auth/sign-in")
         raise HTTPException(status_code=503, detail=_OIDC_NOT_CONFIGURED_DETAIL)
+
+    oidc_provider = _resolve_oidc_provider(settings, provider)
 
     state_plain = secrets.token_urlsafe(32)
     nonce = secrets.token_urlsafe(32)
@@ -282,11 +327,11 @@ async def oidc_sign_in(
             "nonce": nonce,
             "next": next_path,
             "code_verifier": code_verifier,
+            "provider": oidc_provider.provider_id,
         },
     )
-    provider = settings.oidc_providers()[PROVIDER_CIAM]
     authorize = build_authorize_url(
-        provider,
+        oidc_provider,
         state_plain,
         nonce,
         code_verifier=code_verifier,
@@ -310,7 +355,7 @@ async def oidc_callback(
 ) -> Response:
     if settings.admin_auth_disabled:
         return RedirectResponse(url="/admin/", status_code=303)
-    if not settings.oidc_configured:
+    if not settings.oidc_providers():
         log_oidc_configuration_blocked(settings, where="GET /auth/callback")
         raise HTTPException(status_code=503, detail=_OIDC_NOT_CONFIGURED_DETAIL)
 
@@ -341,12 +386,19 @@ async def oidc_callback(
     nonce = state_claims["nonce"]
     code_verifier = state_claims["code_verifier"]
     next_path = state_claims.get("next") or "/admin/"
+    provider_id = state_claims.get("provider") or DEFAULT_OIDC_PROVIDER_ID
 
-    provider = settings.oidc_providers()[PROVIDER_CIAM]
+    try:
+        oidc_provider = _resolve_oidc_provider(settings, str(provider_id))
+    except HTTPException:
+        logger.warning("OIDC callback provider %r not configured", provider_id)
+        r = oidc_session_interrupted_response()
+        clear_prism_auth_cookies(request, r, settings)
+        return r
 
     try:
         tokens = await exchange_code_for_tokens(
-            provider, code, code_verifier=code_verifier
+            oidc_provider, code, code_verifier=code_verifier
         )
     except OAuthError as exc:
         err = getattr(exc, "error", None) or ""
@@ -385,7 +437,7 @@ async def oidc_callback(
 
     try:
         claims = verify_id_token(
-            provider,
+            oidc_provider,
             id_token,
             nonce=nonce,
             access_token=tokens.get("access_token"),
@@ -428,7 +480,12 @@ async def oidc_callback(
     touch_last_login(eng, user.id)
 
     request.session.clear()
-    set_prism_session_user(request, user_id=user.id, ciam_sub=user.ciam_sub)
+    set_prism_session_user(
+        request,
+        user_id=user.id,
+        ciam_sub=user.ciam_sub,
+        auth_provider=oidc_provider.provider_id,
+    )
 
     if not codes:
         r = RedirectResponse(url="/access-not-configured", status_code=303)
@@ -478,7 +535,7 @@ def oidc_sign_out_confirm(
     next_url: Annotated[str | None, Query(alias="next")] = None,
 ) -> Response:
     return_to = _safe_sign_out_next(next_url)
-    if settings.admin_auth_disabled or not settings.oidc_configured:
+    if settings.admin_auth_disabled or not settings.oidc_providers():
         return _perform_sign_out(request, settings, return_to)
     csrf = secrets.token_urlsafe(32)
     request.session[PRISM_SESSION_SIGN_OUT_CSRF] = csrf
@@ -492,7 +549,7 @@ def oidc_sign_out_post(
     settings: Annotated[AdminAuthSettings, Depends(get_admin_auth_settings)],
     csrf_token: Annotated[str | None, Form()] = None,
 ) -> Response:
-    if settings.oidc_configured and not settings.admin_auth_disabled:
+    if settings.oidc_providers() and not settings.admin_auth_disabled:
         csrf = csrf_token.strip() if csrf_token else None
         if not _consume_sign_out_csrf(request, csrf):
             return sign_out_csrf_failed_response()
