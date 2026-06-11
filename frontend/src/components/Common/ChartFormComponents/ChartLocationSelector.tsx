@@ -192,10 +192,23 @@ function ChartLocationSelector({
 
     if (!value) {
       // Clear Admin 1 - fall back to the country level (multi-country) or the
-      // country aggregate (single-country).
-      const fallbackProperties = showCountryLevel
-        ? getProperties(boundaryLayerData, admin0Key, 0 as AdminLevelType)
-        : getProperties(boundaryLayerData);
+      // country aggregate (single-country / universal).
+      let fallbackProperties: GeoJsonProperties;
+      if (showCountryLevel) {
+        fallbackProperties = getProperties(
+          boundaryLayerData,
+          admin0Key,
+          0 as AdminLevelType,
+        );
+      } else if (isUniversal && countryAdm0Id !== undefined) {
+        fallbackProperties = getProperties(
+          boundaryLayerData,
+          String(countryAdm0Id) as AdminCodeString,
+          0 as AdminLevelType,
+        );
+      } else {
+        fallbackProperties = getProperties(boundaryLayerData);
+      }
       onAdmin1Change(
         '' as AdminCodeString,
         fallbackProperties,
@@ -298,13 +311,11 @@ function ChartLocationSelector({
           variant="outlined"
           disabled={disabled || orderedAdmin1Areas.length === 0}
         >
-          {!isUniversal && (
-            <MenuItem value="">
-              <Box className={classes.removeAdmin}>
-                {showCountryLevel ? t('Remove Admin 1') : t('Country Level')}
-              </Box>
-            </MenuItem>
-          )}
+          <MenuItem value="">
+            <Box className={classes.removeAdmin}>
+              {showCountryLevel ? t('Remove Admin 1') : t('Country Level')}
+            </Box>
+          </MenuItem>
           {renderMenuItemList(orderedAdmin1Areas)}
         </TextField>
 
