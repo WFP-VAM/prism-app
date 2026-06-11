@@ -19,11 +19,13 @@ from prism_app.database.map_export_schedule_model import (
     MAX_DEKAD_INTERVAL,
     MapExportSchedule,
     MapExportScheduleCadence,
+    MapExportScheduleStatus,
 )
 from sqlalchemy import select
+from starlette.datastructures import FormData
 from starlette.requests import Request
 from starlette_admin._types import RequestAction
-from starlette_admin.exceptions import FormValidationError
+from starlette_admin.exceptions import ActionFailed, FormValidationError
 
 
 def _request(
@@ -170,6 +172,80 @@ def test_schedule_searchable_fields_include_cadence_and_format() -> None:
     view = MapExportScheduleView(MapExportSchedule)
     assert "cadence" in view.searchable_fields
     assert "format" in view.searchable_fields
+
+
+def test_schedule_view_bulk_actions_include_update_status_and_delete() -> None:
+    view = MapExportScheduleView(MapExportSchedule)
+    assert view.list_template == "map_export_schedule_list.html"
+    assert view.actions == ["update_status", "delete"]
+    assert "update_status" in view._actions
+    assert "delete" in view._actions
+    assert view._actions["update_status"]["confirmation"]
+    assert view._actions["delete"]["confirmation"]
+    assert 'name="status"' in view._actions["update_status"]["form"]
+    assert 'value="active"' in view._actions["update_status"]["form"]
+    assert 'value="stopped"' in view._actions["update_status"]["form"]
+
+
+@pytest.mark.asyncio
+async def test_update_status_action_requires_status(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    view = MapExportScheduleView(MapExportSchedule)
+    request = _request(admin_access=True)
+    request._form = FormData([])  # noqa: SLF001
+
+    async def _fake_form() -> FormData:
+        return request._form  # noqa: SLF001
+
+    request.form = _fake_form  # type: ignore[method-assign]
+
+    with pytest.raises(ActionFailed, match="Status is required"):
+        await view.update_status_action(request, ["sched-1"])
+
+
+@pytest.mark.asyncio
+async def test_update_status_action_updates_selected_schedules(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from unittest.mock import AsyncMock, MagicMock
+
+    view = MapExportScheduleView(MapExportSchedule)
+    schedule = MapExportSchedule(
+        id="sched-1",
+        name="mozambique precip monthly PDF",
+        status="active",
+        country="mozambique",
+        layer_id="precip_blended_dekad",
+        cadence="monthly",
+        export_url="http://x/export",
+        format="pdf",
+        export_options={"origin": "http://x"},
+    )
+    request = _request(admin_access=True)
+    request._form = FormData([("status", "stopped")])  # noqa: SLF001
+
+    async def _fake_form() -> FormData:
+        return request._form  # noqa: SLF001
+
+    request.form = _fake_form  # type: ignore[method-assign]
+
+    session = MagicMock()
+    request.state.session = session
+    monkeypatch.setattr(
+        view,
+        "find_by_pks",
+        AsyncMock(return_value=[schedule]),
+    )
+
+    message = await view.update_status_action(request, ["sched-1"])
+
+    assert schedule.status == MapExportScheduleStatus.stopped
+    assert schedule.updated_at is not None
+    session.add.assert_called_once_with(schedule)
+    session.commit.assert_called_once()
+    assert "1 schedule" in message
+    assert "stopped" in message
 
 
 def test_schedule_list_hides_country_for_map_export_manager() -> None:
