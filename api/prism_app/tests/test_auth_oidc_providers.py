@@ -174,3 +174,24 @@ def test_perform_sign_out_defaults_to_ciam_when_session_has_no_provider(
     _perform_sign_out(request, settings, "/auth/welcome")
 
     assert captured["provider_id"] == PROVIDER_CIAM
+
+
+def test_welcome_page_shows_provider_buttons() -> None:
+    settings = _multi_provider_settings()
+
+    def _fake_settings():
+        return settings
+
+    app.dependency_overrides[get_admin_auth_settings] = _fake_settings
+    try:
+        client = TestClient(app, base_url=_HTTPS)
+        r = client.get("/auth/welcome?next=%2Fadmin%2F")
+    finally:
+        app.dependency_overrides.pop(get_admin_auth_settings, None)
+
+    assert r.status_code == 200
+    assert "Choose how to sign in" in r.text
+    assert "Partner sign-in (CIAM)" in r.text
+    assert "Staff sign-in (Entra ID)" in r.text
+    assert "/auth/sign-in?provider=ciam&amp;next=%2Fadmin" in r.text
+    assert "/auth/sign-in?provider=entra&amp;next=%2Fadmin" in r.text

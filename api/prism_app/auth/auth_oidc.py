@@ -23,6 +23,8 @@ from prism_app.auth.access_pages import (
 )
 from prism_app.auth.admin_settings import (
     DEFAULT_OIDC_PROVIDER_ID,
+    PROVIDER_CIAM,
+    PROVIDER_ENTRA,
     AdminAuthSettings,
     OidcProviderConfig,
     get_admin_auth_settings,
@@ -62,6 +64,33 @@ _OIDC_NOT_CONFIGURED_DETAIL = "OIDC is not configured for this deployment."
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 AUTH_WELCOME_PATH = "/auth/welcome"
+
+_WELCOME_SIGN_IN_LABELS = {
+    PROVIDER_CIAM: "Partner sign-in (CIAM)",
+    PROVIDER_ENTRA: "Staff sign-in (Entra ID)",
+}
+
+
+def _welcome_sign_in_options(
+    settings: AdminAuthSettings, sign_in_next: str
+) -> list[dict[str, str]]:
+    providers = list(settings.oidc_providers().values())
+    multiple = len(providers) > 1
+    options: list[dict[str, str]] = []
+    for provider in providers:
+        if multiple:
+            label = _WELCOME_SIGN_IN_LABELS.get(
+                provider.provider_id,
+                f"Sign in ({provider.display_name})",
+            )
+        else:
+            label = "Sign in"
+        href = (
+            f"/auth/sign-in?provider={quote(provider.provider_id, safe='')}"
+            f"&next={quote(sign_in_next, safe='')}"
+        )
+        options.append({"label": label, "href": href})
+    return options
 
 
 def _cookie_params(settings: AdminAuthSettings) -> dict:
@@ -501,11 +530,13 @@ async def oidc_callback(
 
 @router.get("/welcome")
 def oidc_welcome(
+    settings: Annotated[AdminAuthSettings, Depends(get_admin_auth_settings)],
     next_url: Annotated[str | None, Query(alias="next")] = None,
 ) -> Response:
     sign_in_next = _safe_next(next_url, default="/admin/")
-    sign_in_href = f"/auth/sign-in?next={quote(sign_in_next, safe='')}"
-    return welcome_response(sign_in_href=sign_in_href)
+    return welcome_response(
+        sign_in_options=_welcome_sign_in_options(settings, sign_in_next)
+    )
 
 
 @router.get("/signed-out", name="oidc_signed_out")
