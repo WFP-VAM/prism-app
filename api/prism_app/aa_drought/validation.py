@@ -182,11 +182,7 @@ def validate_aa_drought_csv(
         result.date_min = min(dates)
         result.date_max = max(dates)
 
-    if (
-        prior_row_count is not None
-        and data_rows < prior_row_count
-        and result.ok
-    ):
+    if prior_row_count is not None and data_rows < prior_row_count and result.ok:
         result.warnings.append(
             f"This upload has {data_rows} data rows but the currently published "
             f"dataset has {prior_row_count}. Uploads are full-replace — confirm "

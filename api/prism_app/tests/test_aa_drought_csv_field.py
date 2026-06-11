@@ -38,7 +38,9 @@ async def test_parse_form_data_reads_csv_upload(field: AaDroughtCsvFileField) ->
 
 @pytest.mark.asyncio
 async def test_parse_form_data_strips_utf8_bom(field: AaDroughtCsvFileField) -> None:
-    form = FormData([("csv_content", _upload("aa.csv", b"\xef\xbb\xbf" + _CSV.encode()))])
+    form = FormData(
+        [("csv_content", _upload("aa.csv", b"\xef\xbb\xbf" + _CSV.encode()))]
+    )
     parsed = await field.parse_form_data(None, form, RequestAction.CREATE)
     assert parsed == _CSV
     assert not parsed.startswith("﻿")

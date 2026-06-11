@@ -12,6 +12,7 @@ import rasterio  # type: ignore
 from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
+from prism_app.aa_drought.published_datasets import get_served_aa_drought_csv
 from prism_app.admin import register_alerts_admin_views
 from prism_app.admin_map_export import PrismAdmin, register_map_export_admin_views
 from prism_app.auth import auth_oidc
@@ -22,7 +23,6 @@ from prism_app.auth.deps import require_permissions, require_prism_session
 from prism_app.auth.permission_codes import ADMIN_ACCESS
 from prism_app.auth_legacy import optional_validate_user, validate_user
 from prism_app.caching import FilePath, cache_file, cache_geojson
-from prism_app.aa_drought.published_datasets import get_served_aa_drought_csv
 from prism_app.dashboard.published_dashboards import (
     merge_published_dashboard_rows_for_country,
 )
