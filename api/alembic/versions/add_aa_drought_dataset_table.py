@@ -96,7 +96,8 @@ def upgrade() -> None:
         unique=False,
     )
 
-    op.execute("""
+    op.execute(
+        """
         INSERT INTO permissions (code, label, description)
         VALUES
             (
@@ -105,16 +106,15 @@ def upgrade() -> None:
                 'Upload, validate, and publish Anticipatory Action drought CSV datasets.'
             )
         ON CONFLICT (code) DO NOTHING
-        """)
+        """
+    )
 
 
 def downgrade() -> None:
     op.execute("DELETE FROM permissions WHERE code = 'prism.aa_data.manage'")
     op.drop_index("ix_aa_drought_country", table_name="aa_drought_dataset")
     op.drop_index("ix_aa_drought_country_status", table_name="aa_drought_dataset")
-    op.drop_index(
-        "uq_aa_drought_published_country", table_name="aa_drought_dataset"
-    )
+    op.drop_index("uq_aa_drought_published_country", table_name="aa_drought_dataset")
     op.drop_table("aa_drought_dataset")
     op.execute("DROP TYPE aa_drought_status_enum")
     op.execute("DROP TYPE aa_drought_country_enum")
