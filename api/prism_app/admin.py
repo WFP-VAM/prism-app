@@ -70,6 +70,7 @@ class UserEditView(PrismGatedModelView):
     edit_template = "edit_no_add_another.html"  # Save + Cancel only
     exclude_fields_from_edit = (
         "id",
+        "auth_provider",
         "ciam_sub",
         "created_at",
         "updated_at",

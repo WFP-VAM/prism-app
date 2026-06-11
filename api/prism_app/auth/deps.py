@@ -6,7 +6,11 @@ from typing import Annotated
 from uuid import UUID
 
 from fastapi import Depends, HTTPException, Request, status
-from prism_app.auth.admin_settings import AdminAuthSettings, get_admin_auth_settings
+from prism_app.auth.admin_settings import (
+    DEFAULT_OIDC_PROVIDER_ID,
+    AdminAuthSettings,
+    get_admin_auth_settings,
+)
 from prism_app.auth.prism_auth_service import is_active, load_user_and_permissions
 from prism_app.database.user_model import User
 from sqlalchemy.engine import Engine
@@ -96,10 +100,17 @@ def load_user_from_session(
         return None, set(), None
     sess_sub_raw = request.session.get(PRISM_SESSION_CIAM_SUB)
     sess_sub = str(sess_sub_raw).strip() if sess_sub_raw is not None else None
+    sess_provider_raw = request.session.get(PRISM_SESSION_AUTH_PROVIDER)
+    sess_provider = (
+        str(sess_provider_raw).strip()
+        if isinstance(sess_provider_raw, str) and sess_provider_raw.strip()
+        else DEFAULT_OIDC_PROVIDER_ID
+    )
     user, codes = load_user_and_permissions(engine, user_id=user_id)
-    if user is not None and sess_sub and user.ciam_sub != sess_sub:
-        clear_prism_browser_session(request)
-        return None, set(), None
+    if user is not None and sess_sub:
+        if user.ciam_sub != sess_sub or user.auth_provider != sess_provider:
+            clear_prism_browser_session(request)
+            return None, set(), None
     return user, codes, sess_sub
 
 

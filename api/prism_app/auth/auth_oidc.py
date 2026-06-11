@@ -480,7 +480,12 @@ async def oidc_callback(
     ciam_sub = claims["sub"]
     eng = request.app.state.admin_engine
     try:
-        user, codes = ensure_user_for_oidc(eng, ciam_sub=ciam_sub, claims=claims)
+        user, codes = ensure_user_for_oidc(
+            eng,
+            auth_provider=oidc_provider.provider_id,
+            ciam_sub=ciam_sub,
+            claims=claims,
+        )
     except ValueError as exc:
         logger.warning(
             "OIDC user provisioning refused (bad subject): %s",
