@@ -1,10 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { isSingleWindowMode } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
-import { appConfig } from 'config';
+import { appConfig, safeCountry } from 'config';
 import { DateItem } from 'config/types';
 import { AAWindowKeys } from 'config/utils';
 import Papa from 'papaparse';
-import { getCurrentDateTimeForUrl } from 'utils/date-utils';
 import { getAADroughtUrl } from 'utils/url-utils';
 
 import type { CreateAsyncThunkTypes, RootState } from '../../store';
@@ -61,9 +60,13 @@ export const loadAAData = createAsyncThunk<
   undefined,
   CreateAsyncThunkTypes
 >('anticipatoryActionDroughtState/loadAAData', async () => {
-  const url = `${getAADroughtUrl(appConfig)}?date=${getCurrentDateTimeForUrl()}`;
+  const url = getAADroughtUrl(appConfig, safeCountry);
 
   return new Promise<any>((resolve, reject) => {
+    if (!url) {
+      reject(new Error('No anticipatory action drought URL configured'));
+      return;
+    }
     Papa.parse(url, {
       header: true,
       download: true,

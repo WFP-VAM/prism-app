@@ -1,0 +1,135 @@
+{% if action.name == 'EDIT' and data %}
+    <div class="aa-drought-csv-readonly mb-3">
+        <p class="text-muted small mb-2">Current CSV (read-only preview).</p>
+        <pre class="aa-drought-csv-preview mb-0">{{ field.format_display(data) }}</pre>
+        <p class="aa-drought-csv-preview-note small mb-0">
+            Note: to replace this dataset, use the drag-and-drop below.
+        </p>
+    </div>
+{% endif %}
+<div
+    class="aa-drought-csv-drop border border-2 rounded p-4 text-center {% if error %}{{ field.error_class }}{% endif %}"
+    data-aa-drought-csv-drop
+    id="{{ field.id }}_drop"
+>
+    <p class="mb-2">Drag and drop a CSV file here, or browse to choose one.</p>
+    <p class="text-muted small mb-3">Only <code>.csv</code> files are accepted.</p>
+    <input
+        type="file"
+        class="form-control aa-drought-csv-file-input {% if error %}is-invalid{% endif %}"
+        id="{{ field.id }}"
+        name="{{ field.id }}"
+        {{ field.input_params() | safe }}
+    />
+    <p class="text-muted small mt-2 mb-0" data-aa-drought-csv-filename hidden></p>
+    {% if field.help_text %}
+        <small class="form-hint d-block mt-2">{{ field.help_text }}</small>
+    {% endif %}
+</div>
+{% if action.name == 'EDIT' and data %}
+    <input
+        type="hidden"
+        name="{{ field.id }}__existing"
+        value="{{ data|tojson|forceescape }}"
+    />
+    <p class="text-muted small mt-2 mb-0">
+        Current CSV is kept unless you upload a new file.
+    </p>
+{% endif %}
+{% include "forms/_error.html" %}
+<style>
+    .aa-drought-csv-preview {
+        max-height: 24rem;
+        overflow: auto;
+        padding: 0.75rem;
+        border: 1px solid var(--tblr-border-color, #dee2e6);
+        border-radius: 0.375rem;
+        background: var(--tblr-bg-surface-secondary, #f8f9fa);
+        color: #000;
+        opacity: 1;
+        font-family: var(
+            --tblr-font-monospace,
+            ui-monospace,
+            SFMono-Regular,
+            Menlo,
+            Monaco,
+            Consolas,
+            monospace
+        );
+        font-size: 0.8125rem;
+        line-height: 1.4;
+        white-space: pre;
+        word-break: normal;
+    }
+    .aa-drought-csv-preview-note {
+        margin-top: 0.5rem;
+    }
+    .aa-drought-csv-drop.is-dragover {
+        border-color: var(--tblr-primary, #206bc4);
+        background-color: rgba(32, 107, 196, 0.05);
+    }
+</style>
+<script>
+    (() => {
+        const dropZone = document.getElementById("{{ field.id }}_drop");
+        if (!dropZone) {
+            return;
+        }
+        const input = dropZone.querySelector(".aa-drought-csv-file-input");
+        const filenameEl = dropZone.querySelector("[data-aa-drought-csv-filename]");
+        if (!input) {
+            return;
+        }
+
+        const showFilename = (file) => {
+            if (!filenameEl || !file) {
+                return;
+            }
+            filenameEl.textContent = `Selected file: ${file.name}`;
+            filenameEl.hidden = false;
+        };
+
+        const setDragOver = (active) => {
+            dropZone.classList.toggle("is-dragover", active);
+        };
+
+        const isCsvFile = (file) => file.name.toLowerCase().endsWith(".csv");
+
+        input.addEventListener("change", () => {
+            const file = input.files?.[0];
+            if (file && !isCsvFile(file)) {
+                input.value = "";
+                if (filenameEl) {
+                    filenameEl.hidden = true;
+                }
+                return;
+            }
+            showFilename(file);
+        });
+
+        ["dragenter", "dragover"].forEach((eventName) => {
+            dropZone.addEventListener(eventName, (event) => {
+                event.preventDefault();
+                setDragOver(true);
+            });
+        });
+
+        ["dragleave", "drop"].forEach((eventName) => {
+            dropZone.addEventListener(eventName, (event) => {
+                event.preventDefault();
+                setDragOver(false);
+            });
+        });
+
+        dropZone.addEventListener("drop", (event) => {
+            const file = event.dataTransfer?.files?.[0];
+            if (!file || !isCsvFile(file)) {
+                return;
+            }
+            const transfer = new DataTransfer();
+            transfer.items.add(file);
+            input.files = transfer.files;
+            showFilename(file);
+        });
+    })();
+</script>

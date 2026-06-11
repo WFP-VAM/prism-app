@@ -3,6 +3,8 @@ import { camelCase } from 'lodash';
 import { useCallback, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 
+import { AA_DROUGHT_API_URL } from './constants';
+import { getCurrentDateTimeForUrl } from './date-utils';
 import { keepLayer } from './keep-layer-utils';
 import { AnalysisParams } from './types';
 
@@ -194,13 +196,43 @@ export function getStagingParam(): boolean {
 }
 
 /**
- * Returns the correct anticipatory action drought URL based on the staging param and config.
+ * Returns the configured CDN URL for the anticipatory action drought CSV.
  * Only returns the staging URL if isStaging is true and the staging URL exists.
  */
-export function getAADroughtUrl(appConfig: any): string | undefined {
+export function getAADroughtCdnUrl(appConfig: any): string | undefined {
   const isStaging = getStagingParam();
   if (isStaging && appConfig.anticipatoryActionDroughtStagingUrl) {
     return appConfig.anticipatoryActionDroughtStagingUrl;
   }
   return appConfig.anticipatoryActionDroughtUrl;
+}
+
+/**
+ * Returns the fetch URL for the anticipatory action drought CSV, cache-busted.
+ *
+ * When a `country` key is provided, routes through the PRISM API
+ * (`/aa/drought/{country}.csv`), which serves a government-uploaded dataset
+ * when one is published and otherwise redirects to the configured CDN URL
+ * (passed as `fallback`). Without a country key it falls back to the CDN URL
+ * directly, preserving the pre-API behavior.
+ */
+export function getAADroughtUrl(
+  appConfig: any,
+  country?: string,
+): string | undefined {
+  const cdnUrl = getAADroughtCdnUrl(appConfig);
+  const cacheBust = getCurrentDateTimeForUrl();
+
+  if (!country) {
+    return cdnUrl ? `${cdnUrl}?date=${cacheBust}` : undefined;
+  }
+
+  const params = new URLSearchParams({ date: cacheBust });
+  if (getStagingParam()) {
+    params.set('include_staging', 'true');
+  }
+  if (cdnUrl) {
+    params.set('fallback', cdnUrl);
+  }
+  return `${AA_DROUGHT_API_URL}/${country}.csv?${params.toString()}`;
 }
