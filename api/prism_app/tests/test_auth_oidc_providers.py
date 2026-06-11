@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-import jwt
-import pytest
 from unittest.mock import Mock
 
+import jwt
+import pytest
 from fastapi.testclient import TestClient
 from prism_app.auth.admin_settings import (
     PROVIDER_CIAM,

@@ -55,8 +55,7 @@ def test_entra_provider_derives_single_tenant_issuer() -> None:
     assert set(providers) == {PROVIDER_CIAM, PROVIDER_ENTRA}
     entra = providers[PROVIDER_ENTRA]
     assert entra.issuer == (
-        "https://login.microsoftonline.com/"
-        "11111111-2222-3333-4444-555555555555/v2.0"
+        "https://login.microsoftonline.com/" "11111111-2222-3333-4444-555555555555/v2.0"
     )
     # Shares the CIAM callback; same URL must be registered on the Entra app.
     assert entra.redirect_uri == _CIAM_KWARGS["oidc_redirect_uri"]

@@ -40,8 +40,10 @@ _DISCOVERY = {
 def _mock_discovery(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
         "prism_app.auth.oidc_support.get_oidc_discovery_doc",
-        lambda issuer: _DISCOVERY if issuer == _PROVIDER.issuer else (_ for _ in ()).throw(
-            AssertionError(f"unexpected issuer {issuer!r}")
+        lambda issuer: (
+            _DISCOVERY
+            if issuer == _PROVIDER.issuer
+            else (_ for _ in ()).throw(AssertionError(f"unexpected issuer {issuer!r}"))
         ),
     )
 
