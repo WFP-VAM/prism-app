@@ -181,16 +181,15 @@ def send_email(
 
     to_list = [to_addrs] if isinstance(to_addrs, str) else list(to_addrs)
     bcc_list = [bcc] if isinstance(bcc, str) else list(bcc or []) if bcc else []
+    to_list = [a for a in to_list if a]
+    bcc_list = [a for a in bcc_list if a]
 
-    root = MIMEMultipart("mixed")
+    root = MIMEMultipart("related")
     root["Message-ID"] = make_msgid()
     root["Subject"] = subject
     root["From"] = from_addr
     if to_list:
         root["To"] = ", ".join(to_list)
-    if bcc_list:
-        root["Bcc"] = ", ".join(bcc_list)
-
     alt = MIMEMultipart("alternative")
     alt.attach(MIMEText(text_body, "plain", "utf-8"))
     if html_body:
