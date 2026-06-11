@@ -22,6 +22,7 @@ from prism_app.auth.access_pages import (
     welcome_response,
 )
 from prism_app.auth.admin_settings import (
+    PROVIDER_CIAM,
     AdminAuthSettings,
     get_admin_auth_settings,
     log_oidc_configuration_blocked,
@@ -246,6 +247,7 @@ def _perform_sign_out(
         or _signed_out_callback_url(request)
     )
     dest = build_rp_initiated_logout_url(
+        settings.oidc_providers()[PROVIDER_CIAM],
         settings,
         hint_stripped if hint_stripped else None,
         state=logout_state,
@@ -282,8 +284,9 @@ async def oidc_sign_in(
             "code_verifier": code_verifier,
         },
     )
+    provider = settings.oidc_providers()[PROVIDER_CIAM]
     authorize = build_authorize_url(
-        settings,
+        provider,
         state_plain,
         nonce,
         code_verifier=code_verifier,
@@ -339,9 +342,11 @@ async def oidc_callback(
     code_verifier = state_claims["code_verifier"]
     next_path = state_claims.get("next") or "/admin/"
 
+    provider = settings.oidc_providers()[PROVIDER_CIAM]
+
     try:
         tokens = await exchange_code_for_tokens(
-            settings, code, code_verifier=code_verifier
+            provider, code, code_verifier=code_verifier
         )
     except OAuthError as exc:
         err = getattr(exc, "error", None) or ""
@@ -380,7 +385,7 @@ async def oidc_callback(
 
     try:
         claims = verify_id_token(
-            settings,
+            provider,
             id_token,
             nonce=nonce,
             access_token=tokens.get("access_token"),
