@@ -96,8 +96,7 @@ def upgrade() -> None:
         unique=False,
     )
 
-    op.execute(
-        """
+    op.execute("""
         INSERT INTO permissions (code, label, description)
         VALUES
             (
@@ -106,8 +105,7 @@ def upgrade() -> None:
                 'Upload, validate, and publish Anticipatory Action drought CSV datasets.'
             )
         ON CONFLICT (code) DO NOTHING
-        """
-    )
+        """)
 
 
 def downgrade() -> None:
