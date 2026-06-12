@@ -14,6 +14,7 @@ import { Map as MaplibreMap } from 'maplibre-gl';
 import { memo, useEffect, useState } from 'react';
 import { Layer, MapLayerMouseEvent, Source } from 'react-map-gl/maplibre';
 import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import {
   findFeature,
   getEvtCoords,
@@ -21,7 +22,13 @@ import {
   useMapCallback,
 } from 'utils/map-utils';
 import { getFullLocationName } from 'utils/name-utils';
-import { getIso3MapFilter, isUniversalDeployment } from 'utils/universal-utils';
+import { getUniversalMapPath } from 'utils/universal-routing';
+import {
+  getIso3FromPathname,
+  getIso3MapFilter,
+  isUniversalDeployment,
+  isUniversalLandingMode,
+} from 'utils/universal-utils';
 import { useBoundaryData } from 'utils/useBoundaryData';
 import { useMapState } from 'utils/useMapState';
 
@@ -34,9 +41,15 @@ interface ComponentProps {
   before?: string;
 }
 
+const UNIVERSAL_ADMIN0_LAYER_ID = 'universal_admin0_boundaries';
+
 const onClick =
   ({ dispatch, layer }: MapEventWrapFunctionProps<BoundaryLayerProps>) =>
   (evt: MapLayerMouseEvent) => {
+    if (isUniversalDeployment() && !getIso3FromPathname()) {
+      return;
+    }
+
     const layerId = getLayerMapId(layer.id, 'fill');
 
     if (isUniversalDeployment()) {
@@ -103,9 +116,14 @@ const onMouseLeave = () => (evt: MapLayerMouseEvent) =>
 
 const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
   const selectedMap = useMapState()?.maplibreMap();
+  const history = useHistory();
   const { iso3 } = useCountryIso();
+  const isLandingMode = isUniversalLandingMode(iso3);
+  // maplibre rejects an `undefined` filter ("array expected, undefined found"),
+  // so when no country is selected (landing) fall back to a match-everything
+  // filter to render the whole-world admin0 boundaries.
   const iso3Filter = isUniversalDeployment()
-    ? (getIso3MapFilter(iso3) as any)
+    ? ((getIso3MapFilter(iso3) ?? ['all']) as any)
     : undefined;
   const [isZoomLevelSufficient, setIsZoomLevelSufficient] = useState(
     !layer.minZoom,
@@ -121,6 +139,29 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
   useMapCallback('click', layerId, layer, onClick);
   useMapCallback('mouseenter', layerId, layer, onMouseEnter);
   useMapCallback('mouseleave', layerId, layer, onMouseLeave);
+
+  useEffect(() => {
+    if (
+      !selectedMap ||
+      !isLandingMode ||
+      layer.id !== UNIVERSAL_ADMIN0_LAYER_ID
+    ) {
+      return undefined;
+    }
+
+    const onLandingClick = (evt: MapLayerMouseEvent) => {
+      const feature = findFeature(layerId, evt);
+      const countryIso3 = feature?.properties?.iso3;
+      if (countryIso3) {
+        history.push(getUniversalMapPath(String(countryIso3)));
+      }
+    };
+
+    selectedMap.on('click', layerId, onLandingClick);
+    return () => {
+      selectedMap.off('click', layerId, onLandingClick);
+    };
+  }, [selectedMap, isLandingMode, layer.id, layerId, history]);
 
   // Control the zoom level threshold above which the layer will not be displayed
   useEffect(() => {

@@ -14,7 +14,6 @@ import Login from 'components/Login';
 import MapView from 'components/MapView';
 import NavBar from 'components/NavBar';
 import Notifier from 'components/Notifier';
-import UniversalPlaceholder from 'components/UniversalPlaceholder';
 import { authRequired } from 'config';
 import { CountryIsoProvider } from 'context/CountryIsoProvider';
 import KhmerFont from 'fonts/Khmer-Regular.ttf';
@@ -112,7 +111,9 @@ function AppRoutes() {
       {isUniversal && (
         <>
           <Route path="/" exact>
-            <UniversalPlaceholder />
+            <CountryIsoProvider>
+              <AppShell />
+            </CountryIsoProvider>
           </Route>
 
           <Route path="/country/:iso3">

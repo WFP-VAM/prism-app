@@ -5,6 +5,7 @@ import { getDisplayBoundaryLayers } from 'config/utils';
 
 type CountriesKey = keyof typeof universalMetadata.countries;
 
+const UNIVERSAL_ADMIN0_LAYER_ID: LayerKey = 'universal_admin0_boundaries';
 const UNIVERSAL_ADMIN3_LAYER_ID: LayerKey = 'universal_admin3_boundaries';
 
 const ISO3_CODE_REGEX = /^[A-Z0-9]{3}$/;
@@ -57,17 +58,54 @@ export function filterFeaturesByIso3<
     : features;
 }
 
+export function isUniversalLandingMode(iso3?: string): boolean {
+  return isUniversalDeployment() && !iso3;
+}
+
 export function getDisplayBoundaryLayersForIso3(
   iso3?: string,
 ): BoundaryLayerProps[] {
   const layers = getDisplayBoundaryLayers();
-  if (!isUniversalDeployment() || !iso3) {
+  if (!isUniversalDeployment()) {
     return layers;
+  }
+  if (!iso3) {
+    return layers.filter(layer => layer.id === UNIVERSAL_ADMIN0_LAYER_ID);
   }
   if (hasAdmin3ForCountry(iso3)) {
     return layers;
   }
   return layers.filter(layer => layer.id !== UNIVERSAL_ADMIN3_LAYER_ID);
+}
+
+export type UniversalCountryOption = {
+  iso3: string;
+  name: string;
+};
+
+export function getCountriesFromAdmin0Features(
+  features: { properties?: Record<string, unknown> | null }[] | undefined,
+): UniversalCountryOption[] {
+  if (!features?.length) {
+    return [];
+  }
+
+  const countriesByIso3 = new Map<string, string>();
+  features.forEach(feature => {
+    const iso3 = normalizeIso3(String(feature.properties?.iso3 ?? ''));
+    const name = String(feature.properties?.adm0_name ?? '').trim();
+    if (!iso3 || !name || countriesByIso3.has(iso3)) {
+      return;
+    }
+    countriesByIso3.set(iso3, name);
+  });
+
+  return Array.from(countriesByIso3.entries())
+    .map(([countryIso3, countryName]) => ({
+      iso3: countryIso3,
+      name: countryName,
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name));
 }
 
 /** Returns the normalized ISO3 code from the URL pathname, or undefined for non-universal deployments. */
