@@ -1,4 +1,5 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
+import { useClip } from 'components/MapExport/clipContext';
 import { legendToStops } from 'components/MapView/Layers/layer-utils';
 import { Extent, getExtent } from 'components/MapView/Layers/raster-utils';
 import { getFeatureInfoPropsData } from 'components/MapView/utils';
@@ -19,6 +20,7 @@ import {
 import { memo, useEffect, useRef } from 'react';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { useDispatch, useSelector } from 'react-redux';
+import { clipFeatureCollectionToPolygon } from 'utils/clipVectorData';
 import { getRoundedData } from 'utils/data-utils';
 import {
   findFeature,
@@ -98,6 +100,7 @@ const ImpactLayer = memo(({ layer, before }: ComponentProps) => {
   const opacityState = useSelector(opacitySelector(layer.id));
   const loadingLayerIds = useSelector(loadingLayerIdsSelector);
   const isLayerLoading = loadingLayerIds.includes(layer.id);
+  const clip = useClip();
 
   // Track the last attempted date/extent to prevent infinite retry loops on failure
   const lastAttemptedRef = useRef<{
@@ -164,6 +167,11 @@ const ImpactLayer = memo(({ layer, before }: ComponentProps) => {
   const { impactFeatures, boundaries } = data;
   const noMatchingDistricts = impactFeatures.features.length === 0;
 
+  const sourceData = noMatchingDistricts ? boundaries : impactFeatures;
+  const clippedSourceData = clip
+    ? clipFeatureCollectionToPolygon(sourceData, clip.clipPolygon, clip.clipId)
+    : sourceData;
+
   // TODO: maplibre: fix any
   const fillPaint: FillLayerSpecification['paint'] = {
     'fill-opacity': opacityState || layer.opacity || 0.1,
@@ -176,10 +184,7 @@ const ImpactLayer = memo(({ layer, before }: ComponentProps) => {
   };
 
   return (
-    <Source
-      type="geojson"
-      data={noMatchingDistricts ? boundaries : impactFeatures}
-    >
+    <Source type="geojson" data={clippedSourceData}>
       <Layer
         id={getLayerMapId(layer.id, 'line')}
         type="line"

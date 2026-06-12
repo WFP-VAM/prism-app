@@ -28,6 +28,7 @@ import {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import useLayers from 'utils/layers-utils';
+import { isBasemapLabelLayer } from 'utils/map-utils';
 import { getLayersCoverage } from 'utils/server-utils';
 
 import {
@@ -36,7 +37,6 @@ import {
 } from '../../../context/mapStateSlice/selectors';
 import { useSafeTranslation } from '../../../i18n';
 import MapExportLayout from '../../MapExport/MapExportLayout';
-import { isBasemapLabelLayer } from '../../MapExport/splitExportMapStyleForClipping';
 import type { ExportMapBounds } from '../../MapExport/types';
 import PrintConfigContext from './printConfig.context';
 

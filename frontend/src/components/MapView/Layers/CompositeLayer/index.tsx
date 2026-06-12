@@ -1,4 +1,5 @@
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
+import { useClip } from 'components/MapExport/clipContext';
 import { safeCountry } from 'config';
 import {
   CompositeLayerProps,
@@ -16,6 +17,7 @@ import { FillLayerSpecification, MapLayerMouseEvent } from 'maplibre-gl';
 import { memo, useEffect, useMemo, useState } from 'react';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { useDispatch, useSelector } from 'react-redux';
+import { clipFeatureCollectionToPolygon } from 'utils/clipVectorData';
 import {
   findFeature,
   getEvtCoords,
@@ -57,6 +59,7 @@ const CompositeLayer = memo(({ layer, before }: Props) => {
   const serverAvailableDates = useSelector(availableDatesSelector);
   const opacityState = useSelector(opacitySelector(layer.id));
   const dispatch = useDispatch();
+  const clip = useClip();
 
   const layerAvailableDates =
     serverAvailableDates[layer.id] || serverAvailableDates[layer.dateLayer];
@@ -181,8 +184,15 @@ const CompositeLayer = memo(({ layer, before }: Props) => {
       ...data,
       features: finalFeatures,
     };
+    const clippedData = clip
+      ? clipFeatureCollectionToPolygon(
+          filteredData as any,
+          clip.clipPolygon,
+          clip.clipId,
+        )
+      : filteredData;
     return (
-      <Source key={requestDate} type="geojson" data={filteredData}>
+      <Source key={requestDate} type="geojson" data={clippedData}>
         <Layer
           key={requestDate}
           id={getLayerMapId(layer.id)}

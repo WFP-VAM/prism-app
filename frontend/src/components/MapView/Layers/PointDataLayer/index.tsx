@@ -1,3 +1,4 @@
+import { useClip } from 'components/MapExport/clipContext';
 import {
   ensureSDFIconsLoaded,
   IconShape,
@@ -36,9 +37,10 @@ import {
   MapLayerMouseEvent,
   SymbolLayerSpecification,
 } from 'maplibre-gl';
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useMemo } from 'react';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { useDispatch, useSelector } from 'react-redux';
+import { clipFeatureCollectionToPolygon } from 'utils/clipVectorData';
 import { getFormattedDate } from 'utils/date-utils';
 import { createEWSDatasetParams } from 'utils/ews-utils';
 import { createGoogleFloodDatasetParams } from 'utils/google-flood-utils';
@@ -127,6 +129,15 @@ const PointDataLayer = memo(({ layer, before }: LayersProps) => {
 
   const { data } = layerData || {};
 
+  const clip = useClip();
+  const clippedData = useMemo(
+    () =>
+      data && clip
+        ? clipFeatureCollectionToPolygon(data, clip.clipPolygon, clip.clipId)
+        : data,
+    [data, clip],
+  );
+
   useEffect(() => {
     if (layer.authRequired && !userAuth) {
       return;
@@ -192,8 +203,8 @@ const PointDataLayer = memo(({ layer, before }: LayersProps) => {
 
   if (layer.hexDisplay) {
     const finalFeatures =
-      data &&
-      data.features
+      clippedData &&
+      clippedData.features
         .map(feature => {
           const point = feature.geometry as Point;
 
@@ -217,7 +228,7 @@ const PointDataLayer = memo(({ layer, before }: LayersProps) => {
         .filter(Boolean);
 
     const filteredData = {
-      ...data,
+      ...clippedData,
       features: finalFeatures,
     };
 
@@ -235,7 +246,7 @@ const PointDataLayer = memo(({ layer, before }: LayersProps) => {
 
   if (layer.adminLevelDisplay) {
     return (
-      <Source data={data} type="geojson">
+      <Source data={clippedData} type="geojson">
         <Layer
           id={layerId}
           type="fill"
@@ -255,7 +266,7 @@ const PointDataLayer = memo(({ layer, before }: LayersProps) => {
   const iconShape: IconShape = (layer.iconShape || 'point') as IconShape;
 
   return (
-    <Source data={data} type="geojson">
+    <Source data={clippedData} type="geojson">
       <Layer
         beforeId={before}
         id={layerId}
