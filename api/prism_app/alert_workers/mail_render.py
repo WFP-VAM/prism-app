@@ -19,12 +19,30 @@ def render_flood_mail(
     trigger_status: str,
     stations_by_status: dict[str, list[str]],
     redirect_url: str,
+    country_display_name: str = "Mozambique",
+    forecast_attribution_line: str = (
+        "forecast by GloFAS with data processing by WFP"
+    ),
+    forecast_lead_days_phrase: str = "3 to 5",
+    disclaimer_authority_html: str = (
+        "<strong>INGD (Instituto Nacional de Gestão e Redução do Risco de Desastres)</strong>"
+    ),
+    disclaimer_authority_plain: str = (
+        "INGD (Instituto Nacional de Gestão e Redução do Risco de Desastres)"
+    ),
+    map_alt_country: str = "Mozambique",
 ) -> tuple[str, str]:
     ctx = {
         "title": title,
         "trigger_status": trigger_status,
         "stations_by_status": stations_by_status,
         "redirect_url": redirect_url,
+        "country_display_name": country_display_name,
+        "forecast_attribution_line": forecast_attribution_line,
+        "forecast_lead_days_phrase": forecast_lead_days_phrase,
+        "disclaimer_authority_html": disclaimer_authority_html,
+        "disclaimer_authority_plain": disclaimer_authority_plain,
+        "map_alt_country": map_alt_country,
     }
     html = _env.get_template("flood_alert.html.j2").render(**ctx)
     text = _env.get_template("flood_alert.txt.j2").render(**ctx)

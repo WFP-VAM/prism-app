@@ -60,7 +60,7 @@ class KoboUserView(ReadOnlyModelView):
 
 class AnticipatoryActionAlertsView(ReadOnlyModelView):
     label = "Anticipatory action alerts"
-    exclude_fields_from_list = ("last_states",)
+    exclude_fields_from_list = ("last_states", "metadata")
 
 
 class UserEditView(PrismGatedModelView):

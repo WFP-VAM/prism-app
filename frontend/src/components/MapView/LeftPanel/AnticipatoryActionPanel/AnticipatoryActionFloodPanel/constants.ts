@@ -1,11 +1,28 @@
 export const TABLE_WIDTH = 500;
 export const CHART_WIDTH = 700;
-export const ForecastWindowPerCountry = {
-  mozambique: {
-    start: 3,
-    end: 5,
-  },
+
+export type AAFloodForecastWindow = { start: number; end: number };
+
+/** Used when country has no entry in `ForecastWindowPerCountry`. */
+export const DEFAULT_AA_FLOOD_FORECAST_WINDOW: AAFloodForecastWindow = {
+  start: 3,
+  end: 5,
 };
+
+/** Per `REACT_APP_COUNTRY` slug (`safeCountry`). Add entries for non-default lead-day ranges. */
+export const ForecastWindowPerCountry: Partial<
+  Record<string, AAFloodForecastWindow>
+> = {
+  mozambique: { start: 3, end: 5 },
+};
+
+export function getAAFloodForecastWindow(
+  countrySlug: string,
+): AAFloodForecastWindow {
+  return (
+    ForecastWindowPerCountry[countrySlug] ?? DEFAULT_AA_FLOOD_FORECAST_WINDOW
+  );
+}
 
 // Helper function to convert hex to rgba
 const hexToRgba = (hex: string, alpha: number): string => {

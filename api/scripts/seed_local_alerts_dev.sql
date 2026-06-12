@@ -18,12 +18,13 @@ WHERE NOT EXISTS (
     AND a.type = 'storm'::anticipatory_action_alerts_type_enum
 );
 
-INSERT INTO anticipatory_action_alerts (country, emails, prism_url, type)
+INSERT INTO anticipatory_action_alerts (country, emails, prism_url, type, metadata)
 SELECT
   'Mozambique',
   ARRAY['email1@example.com']::varchar[],
   'https://prism.moz.wfp.org',
-  'flood'::anticipatory_action_alerts_type_enum
+  'flood'::anticipatory_action_alerts_type_enum,
+  '{"floodDatesUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/flood/moz/dates.json"}'::jsonb
 WHERE NOT EXISTS (
   SELECT 1
   FROM anticipatory_action_alerts a
@@ -31,6 +32,12 @@ WHERE NOT EXISTS (
     a.country = 'Mozambique'
     AND a.type = 'flood'::anticipatory_action_alerts_type_enum
 );
+
+UPDATE anticipatory_action_alerts
+SET metadata = '{"floodDatesUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/flood/moz/dates.json"}'::jsonb
+WHERE type = 'flood'::anticipatory_action_alerts_type_enum
+  AND country ILIKE 'mozambique'
+  AND metadata IS NULL;
 
 -- Starlette Admin / API smoke tests: seed user (plain-text password when salt = 'false')
 INSERT INTO kobo_users (
