@@ -1,5 +1,4 @@
 import { createTheme, ThemeProvider } from '@material-ui/core';
-import mask from '@turf/mask';
 import MapExportLayout from 'components/MapExport/MapExportLayout';
 import { mapStyle } from 'components/MapView/Map/utils';
 import { appConfig, safeCountry } from 'config';
@@ -24,6 +23,7 @@ import { getExportFontStack, loadExportFonts } from 'utils/exportFontFamily';
 import { exportLanguage } from 'utils/exportLanguage';
 import useLayers from 'utils/layers-utils';
 import { getLayersCoverage } from 'utils/server-utils';
+import { useAdminAreaClipPolygon } from 'utils/useAdminAreaClipPolygon';
 import { useBoundaryData } from 'utils/useBoundaryData';
 import { useExportParams } from 'utils/useExportParams';
 import { useMapState } from 'utils/useMapState';
@@ -107,72 +107,24 @@ const ExportView = memo(() => {
   // Load layers from URL params - useLayers already handles this
   const { selectedLayers, selectedLayersWithDateSupport } = useLayers();
 
-  // Get boundary layer for mask computation
+  // Get boundary layer for admin area clip
   const boundaryLayer = getBoundaryLayerSingleton();
   const { data: boundaryData } = useBoundaryData(boundaryLayer.id, map);
 
-  // Compute inverted admin boundary polygon for mask
-  const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] =
-    useState<GeoJSON.Feature | null>(null);
+  const getBoundaryLayerData = useCallback(
+    (layerId: string) => boundaryCache.getCachedData(layerId),
+    [],
+  );
 
-  useEffect(() => {
-    if (!exportParams.toggles.countryMask) {
-      setAdminBoundaryPolygon(null);
-      return;
-    }
-
-    // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
-    if (exportParams.selectedBoundaries.length === 0) {
-      fetch(`/data/${safeCountry}/admin-boundary-unified-polygon.json`)
-        .then(response => response.json())
-        .then(polygonData => {
-          const maskedPolygon = mask(polygonData as any);
-          setAdminBoundaryPolygon(maskedPolygon as any);
-        })
-        .catch(error =>
-          console.error('Error loading admin boundary polygon:', error),
-        );
-      return;
-    }
-
-    // Wait for boundary data to be loaded
-    if (!boundaryData) {
-      return;
-    }
-
-    // Filter features based on selected boundaries
-    const filteredData = {
-      ...boundaryData,
-      features: boundaryData.features.filter((cell: any) => {
-        const featureAdminCode = cell.properties?.[boundaryLayer.adminCode];
-        return exportParams.selectedBoundaries.some(selectedCode =>
-          String(featureAdminCode).startsWith(selectedCode),
-        );
-      }),
-    };
-
-    if (filteredData.features.length === 0) {
-      // Fall back to full country mask if no features match
-      fetch(`/data/${safeCountry}/admin-boundary-unified-polygon.json`)
-        .then(response => response.json())
-        .then(polygonData => {
-          const maskedPolygon = mask(polygonData as any);
-          setAdminBoundaryPolygon(maskedPolygon as any);
-        })
-        .catch(error =>
-          console.error('Error loading admin boundary polygon:', error),
-        );
-      return;
-    }
-
-    const masked = mask(filteredData as any);
-    setAdminBoundaryPolygon(masked as any);
-  }, [
+  const adminAreaClipPolygon = useAdminAreaClipPolygon({
+    enabled: exportParams.toggles.countryMask,
+    country: safeCountry,
+    selectedBoundaries: exportParams.selectedBoundaries,
     boundaryData,
-    exportParams.selectedBoundaries,
-    exportParams.toggles.countryMask,
-    boundaryLayer.adminCode,
-  ]);
+    boundaryLayer,
+    i18nLocale: i18n,
+    getLayerData: getBoundaryLayerData,
+  });
 
   // Preload dates and load boundary layers
   useEffect(() => {
@@ -259,7 +211,7 @@ const ExportView = memo(() => {
         legendScale={exportParams.legendScale}
         bounds={exportParams.bounds ?? undefined}
         mapStyle={processedMapStyle}
-        invertedAdminBoundaryLimitPolygon={invertedAdminBoundaryLimitPolygon}
+        adminAreaClipPolygon={adminAreaClipPolygon}
         printRef={printRef}
         titleRef={titleRef}
         footerRef={footerRef}

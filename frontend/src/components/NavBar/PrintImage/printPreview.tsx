@@ -36,6 +36,7 @@ import {
 } from '../../../context/mapStateSlice/selectors';
 import { useSafeTranslation } from '../../../i18n';
 import MapExportLayout from '../../MapExport/MapExportLayout';
+import { isBasemapLabelLayer } from '../../MapExport/splitExportMapStyleForClipping';
 import type { ExportMapBounds } from '../../MapExport/types';
 import PrintConfigContext from './printConfig.context';
 
@@ -148,7 +149,7 @@ function PrintPreview() {
     }
     // Respect the print dialog “map labels” toggle on this clone only.
     if (!mapLabelsVisibility) {
-      style.layers = style.layers.filter(x => !x.id.includes('label'));
+      style.layers = style.layers.filter(layer => !isBasemapLabelLayer(layer));
     }
     return style;
   }, [
@@ -233,7 +234,7 @@ function PrintPreview() {
     logoScale,
     legendPosition,
     legendScale,
-    invertedAdminBoundaryLimitPolygon,
+    adminAreaClipPolygon,
     printRef,
     footerHeight,
     bottomLogo,
@@ -315,7 +316,7 @@ function PrintPreview() {
         bounds={geographicBoundsForExport}
         mapStyle={processedMapStyle}
         maxBounds={maxBounds}
-        invertedAdminBoundaryLimitPolygon={invertedAdminBoundaryLimitPolygon}
+        adminAreaClipPolygon={adminAreaClipPolygon}
         printRef={printRef}
         titleRef={titleRef}
         footerRef={footerRef}
