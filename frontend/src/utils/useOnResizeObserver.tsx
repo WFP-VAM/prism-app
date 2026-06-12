@@ -5,14 +5,14 @@ const initialState = { width: 0, height: 0 };
 function useResizeObserver<T extends HTMLElement>(
   ...depArray: unknown[]
 ): [
-  React.RefObject<T>,
+  React.RefObject<T | null>,
   {
     width: number;
     height: number;
   },
 ] {
   const [size, setSize] = React.useState(initialState);
-  const targetRef = React.useRef<T>(null);
+  const targetRef = React.useRef<T | null>(null);
 
   React.useEffect(() => {
     const target = targetRef.current;

@@ -16,7 +16,7 @@ exports[`HomeTable renders as expected 1`] = `
         style="width: calc(100% - 3rem);"
       >
         <mock-typography
-          classname="makeStyles-windowHeader-10"
+          class="makeStyles-windowHeader-10"
           variant="h4"
         >
           Window 1
@@ -62,7 +62,7 @@ exports[`HomeTable renders as expected 1`] = `
             class="makeStyles-tagWrapper-14"
           >
             <mock-typography
-              classname="makeStyles-emptyText-15"
+              class="makeStyles-emptyText-15"
             >
               (
               no district
@@ -111,7 +111,7 @@ exports[`HomeTable renders as expected 1`] = `
             class="makeStyles-tagWrapper-14"
           >
             <mock-typography
-              classname="makeStyles-emptyText-15"
+              class="makeStyles-emptyText-15"
             >
               (
               no district
@@ -160,7 +160,7 @@ exports[`HomeTable renders as expected 1`] = `
             class="makeStyles-tagWrapper-14"
           >
             <mock-typography
-              classname="makeStyles-emptyText-15"
+              class="makeStyles-emptyText-15"
             >
               (
               no district
@@ -259,7 +259,7 @@ exports[`HomeTable renders as expected 1`] = `
             class="makeStyles-tagWrapper-14"
           >
             <mock-typography
-              classname="makeStyles-emptyText-15"
+              class="makeStyles-emptyText-15"
             >
               (
               no district
@@ -327,10 +327,10 @@ exports[`HomeTable renders as expected 1`] = `
       class="makeStyles-footerActionsWrapper-3"
     >
       <mock-button
-        classname="makeStyles-footerButton-5"
+        class="makeStyles-footerButton-5"
         component="a"
         download="2023-12-01-aa_probabilities_triggers_moz.csv"
-        fullwidth="true"
+        fullwidth=""
         href="https://data.earthobservation.vam.wfp.org/public-share/aa/aa_probabilities_triggers_moz.csv?date=2024-12-01-00-00"
         starticon="[object Object]"
         variant="outlined"
@@ -340,8 +340,8 @@ exports[`HomeTable renders as expected 1`] = `
         </mock-typography>
       </mock-button>
       <mock-button
-        classname="makeStyles-footerButton-5"
-        fullwidth="true"
+        class="makeStyles-footerButton-5"
+        fullwidth=""
         starticon="[object Object]"
         variant="outlined"
       >
@@ -354,7 +354,7 @@ exports[`HomeTable renders as expected 1`] = `
       class="makeStyles-footerDialogsWrapper-4"
     >
       <mock-typography
-        classname="makeStyles-footerDialog-6"
+        class="makeStyles-footerDialog-6"
         component="button"
       >
         How to read this screen

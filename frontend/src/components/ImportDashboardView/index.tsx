@@ -56,15 +56,24 @@ function ImportDashboardView() {
   const history = useHistory();
   const dashboards = useSelector(dashboardsListSelector);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const pendingTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const pendingTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [dragging, setDragging] = useState(false);
   const [viewState, setViewState] = useState<ViewState>({ status: 'idle' });
 
-  useEffect(() => () => clearTimeout(pendingTimeout.current), []);
+  useEffect(
+    () => () => {
+      if (pendingTimeout.current) {
+        clearTimeout(pendingTimeout.current);
+      }
+    },
+    [],
+  );
 
   const processFile = useCallback(
     (file: File) => {
-      clearTimeout(pendingTimeout.current);
+      if (pendingTimeout.current) {
+        clearTimeout(pendingTimeout.current);
+      }
       setViewState({ status: 'loading' });
       const reader = new FileReader();
       reader.onload = e => {

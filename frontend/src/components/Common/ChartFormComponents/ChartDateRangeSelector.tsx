@@ -64,7 +64,6 @@ function ChartDateRangeSelector({
           <Typography className={classes.fieldLabel} variant="body2">
             {t('Start')}
           </Typography>
-          {/* @ts-expect-error - react-datepicker v2 types incompatible with React 18 */}
           <DatePicker
             locale={t('date_locale')}
             dateFormat="PP"
@@ -85,7 +84,6 @@ function ChartDateRangeSelector({
           <Typography className={classes.fieldLabel} variant="body2">
             {t('End')}
           </Typography>
-          {/* @ts-expect-error - react-datepicker v2 types incompatible with React 18 */}
           <DatePicker
             locale={t('date_locale')}
             dateFormat="PP"
