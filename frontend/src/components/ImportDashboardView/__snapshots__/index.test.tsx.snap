@@ -3,17 +3,17 @@
 exports[`ImportDashboardView detects duplicate when imported JSON has different key ordering 1`] = `
 <div>
   <div
-    class="makeStyles-root-55 MuiBox-root css-0"
+    class="MuiBox-root css-tyhhe5"
   >
     <div
-      class="makeStyles-card-56 MuiBox-root css-0"
+      class="MuiBox-root css-tq1qd4"
     >
       <div
-        class="makeStyles-feedbackContainer-69 MuiBox-root css-0"
+        class="MuiBox-root css-znx1o3"
       >
         <svg
           aria-hidden="true"
-          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium makeStyles-successIcon-71 css-1umw9bq-MuiSvgIcon-root"
+          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-goh84h-MuiSvgIcon-root"
           data-testid="CheckCircleOutlinedIcon"
           focusable="false"
           viewBox="0 0 24 24"
@@ -23,12 +23,12 @@ exports[`ImportDashboardView detects duplicate when imported JSON has different 
           />
         </svg>
         <h2
-          class="MuiTypography-root MuiTypography-h2 makeStyles-title-57 css-3y61ws-MuiTypography-root"
+          class="MuiTypography-root MuiTypography-h2 css-1tswvm5-MuiTypography-root"
         >
           Dashboard already exists
         </h2>
         <p
-          class="MuiTypography-root MuiTypography-body1 makeStyles-subtitle-58 css-l0p3u8-MuiTypography-root"
+          class="MuiTypography-root MuiTypography-body1 css-zb3ouh-MuiTypography-root"
         >
           <strong>
             Imported Dashboard
@@ -37,7 +37,7 @@ exports[`ImportDashboardView detects duplicate when imported JSON has different 
           is ready to view.
         </p>
         <button
-          class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-sizeMedium MuiButton-colorPrimary makeStyles-ctaButton-72 css-tnebnx-MuiButtonBase-root-MuiButton-root"
+          class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-sizeMedium MuiButton-colorPrimary css-274y1b-MuiButtonBase-root-MuiButton-root"
           tabindex="0"
           type="button"
         >
@@ -52,27 +52,27 @@ exports[`ImportDashboardView detects duplicate when imported JSON has different 
 exports[`ImportDashboardView renders idle state 1`] = `
 <div>
   <div
-    class="makeStyles-root-1 MuiBox-root css-0"
+    class="MuiBox-root css-tyhhe5"
   >
     <div
-      class="makeStyles-card-2 MuiBox-root css-0"
+      class="MuiBox-root css-tq1qd4"
     >
       <h2
-        class="MuiTypography-root MuiTypography-h2 makeStyles-title-3 css-3y61ws-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-h2 css-1tswvm5-MuiTypography-root"
       >
         Import dashboard
       </h2>
       <p
-        class="MuiTypography-root MuiTypography-body1 makeStyles-subtitle-4 css-l0p3u8-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-body1 css-zb3ouh-MuiTypography-root"
       >
         Upload a JSON file exported from a Prism dashboard.
       </p>
       <div
-        class="makeStyles-dropZone-5 MuiBox-root css-0"
+        class="MuiBox-root css-1nyidl2"
       >
         <svg
           aria-hidden="true"
-          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium makeStyles-uploadIcon-7 css-1umw9bq-MuiSvgIcon-root"
+          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1t96axh-MuiSvgIcon-root"
           data-testid="CloudUploadOutlinedIcon"
           focusable="false"
           viewBox="0 0 24 24"
@@ -82,17 +82,17 @@ exports[`ImportDashboardView renders idle state 1`] = `
           />
         </svg>
         <p
-          class="MuiTypography-root MuiTypography-body1 makeStyles-dropText-8 css-l0p3u8-MuiTypography-root"
+          class="MuiTypography-root MuiTypography-body1 css-8he3i7-MuiTypography-root"
         >
           Drag & drop a JSON file here
         </p>
         <p
-          class="MuiTypography-root MuiTypography-body1 css-1dhkdrw-MuiTypography-root"
+          class="MuiTypography-root MuiTypography-body1 css-7csfbm-MuiTypography-root"
         >
           or
         </p>
         <button
-          class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeSmall MuiButton-colorPrimary makeStyles-browseButton-9 css-vd6rqb-MuiButtonBase-root-MuiButton-root"
+          class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeSmall MuiButton-colorPrimary css-1dy68vn-MuiButtonBase-root-MuiButton-root"
           tabindex="0"
           type="button"
         >
@@ -112,17 +112,17 @@ exports[`ImportDashboardView renders idle state 1`] = `
 exports[`ImportDashboardView shows already-exists when imported dashboard matches one in store 1`] = `
 <div>
   <div
-    class="makeStyles-root-37 MuiBox-root css-0"
+    class="MuiBox-root css-tyhhe5"
   >
     <div
-      class="makeStyles-card-38 MuiBox-root css-0"
+      class="MuiBox-root css-tq1qd4"
     >
       <div
-        class="makeStyles-feedbackContainer-51 MuiBox-root css-0"
+        class="MuiBox-root css-znx1o3"
       >
         <svg
           aria-hidden="true"
-          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium makeStyles-successIcon-53 css-1umw9bq-MuiSvgIcon-root"
+          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-goh84h-MuiSvgIcon-root"
           data-testid="CheckCircleOutlinedIcon"
           focusable="false"
           viewBox="0 0 24 24"
@@ -132,12 +132,12 @@ exports[`ImportDashboardView shows already-exists when imported dashboard matche
           />
         </svg>
         <h2
-          class="MuiTypography-root MuiTypography-h2 makeStyles-title-39 css-3y61ws-MuiTypography-root"
+          class="MuiTypography-root MuiTypography-h2 css-1tswvm5-MuiTypography-root"
         >
           Dashboard already exists
         </h2>
         <p
-          class="MuiTypography-root MuiTypography-body1 makeStyles-subtitle-40 css-l0p3u8-MuiTypography-root"
+          class="MuiTypography-root MuiTypography-body1 css-zb3ouh-MuiTypography-root"
         >
           <strong>
             Imported Dashboard
@@ -146,7 +146,7 @@ exports[`ImportDashboardView shows already-exists when imported dashboard matche
           is ready to view.
         </p>
         <button
-          class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-sizeMedium MuiButton-colorPrimary makeStyles-ctaButton-54 css-tnebnx-MuiButtonBase-root-MuiButton-root"
+          class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-sizeMedium MuiButton-colorPrimary css-274y1b-MuiButtonBase-root-MuiButton-root"
           tabindex="0"
           type="button"
         >
@@ -161,27 +161,27 @@ exports[`ImportDashboardView shows already-exists when imported dashboard matche
 exports[`ImportDashboardView shows parse error for invalid JSON 1`] = `
 <div>
   <div
-    class="makeStyles-root-73 MuiBox-root css-0"
+    class="MuiBox-root css-tyhhe5"
   >
     <div
-      class="makeStyles-card-74 MuiBox-root css-0"
+      class="MuiBox-root css-tq1qd4"
     >
       <h2
-        class="MuiTypography-root MuiTypography-h2 makeStyles-title-75 css-3y61ws-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-h2 css-1tswvm5-MuiTypography-root"
       >
         Import dashboard
       </h2>
       <p
-        class="MuiTypography-root MuiTypography-body1 makeStyles-subtitle-76 css-l0p3u8-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-body1 css-zb3ouh-MuiTypography-root"
       >
         Upload a JSON file exported from a Prism dashboard.
       </p>
       <div
-        class="makeStyles-dropZone-77 MuiBox-root css-0"
+        class="MuiBox-root css-1nyidl2"
       >
         <svg
           aria-hidden="true"
-          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium makeStyles-uploadIcon-79 css-1umw9bq-MuiSvgIcon-root"
+          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1t96axh-MuiSvgIcon-root"
           data-testid="CloudUploadOutlinedIcon"
           focusable="false"
           viewBox="0 0 24 24"
@@ -191,17 +191,17 @@ exports[`ImportDashboardView shows parse error for invalid JSON 1`] = `
           />
         </svg>
         <p
-          class="MuiTypography-root MuiTypography-body1 makeStyles-dropText-80 css-l0p3u8-MuiTypography-root"
+          class="MuiTypography-root MuiTypography-body1 css-8he3i7-MuiTypography-root"
         >
           Drag & drop a JSON file here
         </p>
         <p
-          class="MuiTypography-root MuiTypography-body1 css-1dhkdrw-MuiTypography-root"
+          class="MuiTypography-root MuiTypography-body1 css-7csfbm-MuiTypography-root"
         >
           or
         </p>
         <button
-          class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeSmall MuiButton-colorPrimary makeStyles-browseButton-81 css-vd6rqb-MuiButtonBase-root-MuiButton-root"
+          class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeSmall MuiButton-colorPrimary css-1dy68vn-MuiButtonBase-root-MuiButton-root"
           tabindex="0"
           type="button"
         >
@@ -214,14 +214,14 @@ exports[`ImportDashboardView shows parse error for invalid JSON 1`] = `
         />
       </div>
       <div
-        class="makeStyles-error-82 MuiBox-root css-0"
+        class="MuiBox-root css-1qn6rzw"
       >
         <div
-          class="makeStyles-errorHeader-83 MuiBox-root css-0"
+          class="MuiBox-root css-1o0ljzr"
         >
           <svg
             aria-hidden="true"
-            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium makeStyles-errorIcon-85 css-1umw9bq-MuiSvgIcon-root"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-13knikv-MuiSvgIcon-root"
             data-testid="ErrorOutlinedIcon"
             focusable="false"
             viewBox="0 0 24 24"
@@ -231,13 +231,13 @@ exports[`ImportDashboardView shows parse error for invalid JSON 1`] = `
             />
           </svg>
           <h6
-            class="MuiTypography-root MuiTypography-subtitle2 makeStyles-errorHeadline-84 css-q34nll-MuiTypography-root"
+            class="MuiTypography-root MuiTypography-subtitle2 css-1xszczh-MuiTypography-root"
           >
             Invalid dashboard file
           </h6>
         </div>
         <p
-          class="MuiTypography-root MuiTypography-body1 makeStyles-errorDetail-86 css-l0p3u8-MuiTypography-root"
+          class="MuiTypography-root MuiTypography-body1 css-1158u9z-MuiTypography-root"
         >
           Could not parse file as JSON.
         </p>
@@ -250,17 +250,17 @@ exports[`ImportDashboardView shows parse error for invalid JSON 1`] = `
 exports[`ImportDashboardView shows success after a valid dashboard file is imported 1`] = `
 <div>
   <div
-    class="makeStyles-root-19 MuiBox-root css-0"
+    class="MuiBox-root css-tyhhe5"
   >
     <div
-      class="makeStyles-card-20 MuiBox-root css-0"
+      class="MuiBox-root css-tq1qd4"
     >
       <div
-        class="makeStyles-feedbackContainer-33 MuiBox-root css-0"
+        class="MuiBox-root css-znx1o3"
       >
         <svg
           aria-hidden="true"
-          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium makeStyles-successIcon-35 css-1umw9bq-MuiSvgIcon-root"
+          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-goh84h-MuiSvgIcon-root"
           data-testid="CheckCircleOutlinedIcon"
           focusable="false"
           viewBox="0 0 24 24"
@@ -270,12 +270,12 @@ exports[`ImportDashboardView shows success after a valid dashboard file is impor
           />
         </svg>
         <h2
-          class="MuiTypography-root MuiTypography-h2 makeStyles-title-21 css-3y61ws-MuiTypography-root"
+          class="MuiTypography-root MuiTypography-h2 css-1tswvm5-MuiTypography-root"
         >
           Import complete
         </h2>
         <p
-          class="MuiTypography-root MuiTypography-body1 makeStyles-subtitle-22 css-l0p3u8-MuiTypography-root"
+          class="MuiTypography-root MuiTypography-body1 css-zb3ouh-MuiTypography-root"
         >
           <strong>
             Imported Dashboard
@@ -284,7 +284,7 @@ exports[`ImportDashboardView shows success after a valid dashboard file is impor
           is ready to view.
         </p>
         <button
-          class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-sizeMedium MuiButton-colorPrimary makeStyles-ctaButton-36 css-tnebnx-MuiButtonBase-root-MuiButton-root"
+          class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-sizeMedium MuiButton-colorPrimary css-274y1b-MuiButtonBase-root-MuiButton-root"
           tabindex="0"
           type="button"
         >
@@ -299,27 +299,27 @@ exports[`ImportDashboardView shows success after a valid dashboard file is impor
 exports[`ImportDashboardView shows validation error when JSON fails schema checks 1`] = `
 <div>
   <div
-    class="makeStyles-root-91 MuiBox-root css-0"
+    class="MuiBox-root css-tyhhe5"
   >
     <div
-      class="makeStyles-card-92 MuiBox-root css-0"
+      class="MuiBox-root css-tq1qd4"
     >
       <h2
-        class="MuiTypography-root MuiTypography-h2 makeStyles-title-93 css-3y61ws-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-h2 css-1tswvm5-MuiTypography-root"
       >
         Import dashboard
       </h2>
       <p
-        class="MuiTypography-root MuiTypography-body1 makeStyles-subtitle-94 css-l0p3u8-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-body1 css-zb3ouh-MuiTypography-root"
       >
         Upload a JSON file exported from a Prism dashboard.
       </p>
       <div
-        class="makeStyles-dropZone-95 MuiBox-root css-0"
+        class="MuiBox-root css-1nyidl2"
       >
         <svg
           aria-hidden="true"
-          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium makeStyles-uploadIcon-97 css-1umw9bq-MuiSvgIcon-root"
+          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1t96axh-MuiSvgIcon-root"
           data-testid="CloudUploadOutlinedIcon"
           focusable="false"
           viewBox="0 0 24 24"
@@ -329,17 +329,17 @@ exports[`ImportDashboardView shows validation error when JSON fails schema check
           />
         </svg>
         <p
-          class="MuiTypography-root MuiTypography-body1 makeStyles-dropText-98 css-l0p3u8-MuiTypography-root"
+          class="MuiTypography-root MuiTypography-body1 css-8he3i7-MuiTypography-root"
         >
           Drag & drop a JSON file here
         </p>
         <p
-          class="MuiTypography-root MuiTypography-body1 css-1dhkdrw-MuiTypography-root"
+          class="MuiTypography-root MuiTypography-body1 css-7csfbm-MuiTypography-root"
         >
           or
         </p>
         <button
-          class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeSmall MuiButton-colorPrimary makeStyles-browseButton-99 css-vd6rqb-MuiButtonBase-root-MuiButton-root"
+          class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeSmall MuiButton-colorPrimary css-1dy68vn-MuiButtonBase-root-MuiButton-root"
           tabindex="0"
           type="button"
         >
@@ -352,14 +352,14 @@ exports[`ImportDashboardView shows validation error when JSON fails schema check
         />
       </div>
       <div
-        class="makeStyles-error-100 MuiBox-root css-0"
+        class="MuiBox-root css-1qn6rzw"
       >
         <div
-          class="makeStyles-errorHeader-101 MuiBox-root css-0"
+          class="MuiBox-root css-1o0ljzr"
         >
           <svg
             aria-hidden="true"
-            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium makeStyles-errorIcon-103 css-1umw9bq-MuiSvgIcon-root"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-13knikv-MuiSvgIcon-root"
             data-testid="ErrorOutlinedIcon"
             focusable="false"
             viewBox="0 0 24 24"
@@ -369,13 +369,13 @@ exports[`ImportDashboardView shows validation error when JSON fails schema check
             />
           </svg>
           <h6
-            class="MuiTypography-root MuiTypography-subtitle2 makeStyles-errorHeadline-102 css-q34nll-MuiTypography-root"
+            class="MuiTypography-root MuiTypography-subtitle2 css-1xszczh-MuiTypography-root"
           >
             Invalid dashboard file
           </h6>
         </div>
         <p
-          class="MuiTypography-root MuiTypography-body1 makeStyles-errorDetail-104 css-l0p3u8-MuiTypography-root"
+          class="MuiTypography-root MuiTypography-body1 css-1158u9z-MuiTypography-root"
         >
           Invalid dashboard configuration: firstColumn.0.type: Invalid input
         </p>

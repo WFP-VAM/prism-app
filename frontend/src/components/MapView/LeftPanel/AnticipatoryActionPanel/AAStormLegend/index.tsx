@@ -1,11 +1,11 @@
-import { Divider, Typography } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { Box, Divider, Typography } from '@mui/material';
 import anticipatoryActionIcons from 'components/Common/AnticipatoryAction/icons';
 import { AADataSelector } from 'context/anticipatoryAction/AAStormStateSlice';
 import { useSafeTranslation } from 'i18n';
 import { TimeSeries } from 'prism-common/';
 import { useSelector } from 'react-redux';
+
+import { aaStormLegendSx } from '../aaPanelStyles';
 
 const phases = [
   {
@@ -96,7 +96,6 @@ function getPhasesInReport(timeSeries: TimeSeries | undefined) {
 }
 
 function AAStormLegend() {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
   const stormData = useSelector(AADataSelector);
   const currentPhases = getPhasesInReport(stormData.timeSeries);
@@ -142,54 +141,59 @@ function AAStormLegend() {
   ];
 
   return (
-    <div className={classes.root}>
-      <Typography variant="h3" className={classes.title}>
+    <Box sx={aaStormLegendSx.root}>
+      <Typography variant="h3" sx={aaStormLegendSx.title}>
         {t('Phases')}
       </Typography>
 
-      <div className={classes.section}>
+      <Box sx={aaStormLegendSx.section}>
         {currentPhases.map(phase => (
-          <div key={phase.label} className={classes.itemWrapper}>
-            <img src={phase.icon} alt={phase.label} className={classes.icon} />
+          <Box key={phase.label} sx={aaStormLegendSx.itemWrapper}>
+            <Box
+              component="img"
+              src={phase.icon}
+              alt={phase.label}
+              sx={aaStormLegendSx.icon}
+            />
             <div>
               <Typography>{t(phase.label)}</Typography>
               {phase.speed && (
                 <Typography color="textSecondary">({phase.speed})</Typography>
               )}
             </div>
-          </div>
+          </Box>
         ))}
-      </div>
+      </Box>
 
       <Divider />
 
-      <div className={classes.section}>
+      <Box sx={aaStormLegendSx.section}>
         {buffers
           .filter(buffer => buffer.isVisible)
           .map(buffer => (
-            <div key={buffer.label} className={classes.itemWrapper}>
-              <div
-                className={classes.colorBox}
+            <Box key={buffer.label} sx={aaStormLegendSx.itemWrapper}>
+              <Box
+                sx={aaStormLegendSx.colorBox}
                 style={{ borderColor: buffer.color }}
               />
               <Typography>{t(buffer.label)}</Typography>
-            </div>
+            </Box>
           ))}
         <Typography variant="caption" color="textSecondary">
           {t('By Météo France La Réunion')}
         </Typography>
-      </div>
+      </Box>
 
       <Divider />
 
-      <div className={classes.section}>
+      <Box sx={aaStormLegendSx.section}>
         {tracks
           .filter(track => track.isVisible)
           .map(track => (
-            <div key={track.label} className={classes.itemWrapper}>
+            <Box key={track.label} sx={aaStormLegendSx.itemWrapper}>
               {track.type ? (
-                <div
-                  className={classes.line}
+                <Box
+                  sx={aaStormLegendSx.line}
                   style={{
                     borderTop:
                       track.type === 'dashed'
@@ -198,82 +202,38 @@ function AAStormLegend() {
                   }}
                 />
               ) : (
-                <img
+                <Box
+                  component="img"
                   src={track.icon}
                   alt={track.label}
-                  className={classes.icon}
+                  sx={aaStormLegendSx.icon}
                 />
               )}
               <Typography>{t(track.label)}</Typography>
-            </div>
+            </Box>
           ))}
-      </div>
+      </Box>
 
       <Divider />
 
-      <div className={classes.section}>
-        <Typography variant="h3" className={classes.title}>
+      <Box sx={aaStormLegendSx.section}>
+        <Typography variant="h3" sx={aaStormLegendSx.title}>
           {t('Districts')}
         </Typography>
-        <div className={classes.itemWrapper}>
-          <div className={classes.districtBox} />
+        <Box sx={aaStormLegendSx.itemWrapper}>
+          <Box sx={aaStormLegendSx.districtBox} />
           <Typography>{t('District')}</Typography>
-        </div>
-        <div className={classes.itemWrapper}>
-          <div
-            className={classes.districtBox}
+        </Box>
+        <Box sx={aaStormLegendSx.itemWrapper}>
+          <Box
+            sx={aaStormLegendSx.districtBox}
             style={{ border: '2px solid black' }}
           />
           <Typography>{t('Monitored district')}</Typography>
-        </div>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </Box>
   );
 }
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      padding: '0rem 0rem',
-    },
-    title: {
-      fontWeight: 'bold',
-      marginBottom: '1rem',
-    },
-    section: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '0.5rem',
-      marginTop: '1rem',
-      marginBottom: '1rem',
-    },
-    itemWrapper: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '0.5rem',
-    },
-    icon: {
-      width: '20px',
-      height: '20px',
-      objectFit: 'contain',
-    },
-    colorBox: {
-      width: '20px',
-      height: '20px',
-      border: '3px solid',
-      borderRadius: '3px',
-    },
-    line: {
-      width: '20px',
-      height: 0,
-    },
-    districtBox: {
-      width: '30px',
-      height: '20px',
-      border: '1px solid #666',
-      borderRadius: '2px',
-    },
-  }),
-);
 
 export default AAStormLegend;

@@ -1,6 +1,4 @@
-import { Box, Paper, Portal, Slide, Theme, Typography } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { Box, Paper, Portal, Slide, Typography } from '@mui/material';
 import { useSafeTranslation } from 'i18n';
 
 import BatchMapExportJobRows from './BatchMapExportJobRows';
@@ -14,8 +12,10 @@ type Props = {
   printDialogOpen: boolean;
 };
 
+/** Tray stays narrow so compact job cards match “small card” layout vs full-width print panel. */
+const TRAY_MAX_WIDTH_PX = 340;
+
 function BatchMapExportGlobalTray({ printDialogOpen }: Props) {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
   const { jobs } = useBatchMapExportJobsState();
   const { dismissBatchMapExportJob } = useBatchMapExportJobsActions();
@@ -25,12 +25,33 @@ function BatchMapExportGlobalTray({ printDialogOpen }: Props) {
   const tray = (
     <Slide direction="up" in={visible} mountOnEnter unmountOnExit>
       <Paper
-        className={classes.paper}
         elevation={6}
         component="section"
         aria-label={t('Batch map exports')}
+        sx={theme => ({
+          position: 'fixed',
+          left: 'auto',
+          right: theme.spacing(2),
+          bottom: theme.spacing(2),
+          maxWidth: TRAY_MAX_WIDTH_PX,
+          // Avoid `100vw` (includes scrollbar width) clipping fixed-position tray at viewport edge.
+          width: `min(${TRAY_MAX_WIDTH_PX}px, calc(100% - ${theme.spacing(4)}))`,
+          margin: 0,
+          // Above DateSelector timeline (1300); keep below tooltips / default snackbar layering.
+          zIndex: theme.zIndex.modal + 50,
+          padding: theme.spacing(2, 2, 2),
+          borderRadius: theme.shape.borderRadius,
+          backgroundColor: theme.palette.background.paper,
+          border: `1px solid ${theme.palette.divider}`,
+        })}
       >
-        <Typography variant="subtitle1" className={classes.title}>
+        <Typography
+          variant="subtitle1"
+          sx={theme => ({
+            fontWeight: 600,
+            marginBottom: theme.spacing(0.5),
+          })}
+        >
           {t('Batch map exports')}
         </Typography>
         <Typography
@@ -42,7 +63,13 @@ function BatchMapExportGlobalTray({ printDialogOpen }: Props) {
             'Track batch export progress here. You can run several jobs at once.',
           )}
         </Typography>
-        <Box className={classes.listWrap}>
+        <Box
+          sx={theme => ({
+            marginTop: theme.spacing(1),
+            maxHeight: 'min(40vh, 320px)',
+            overflowY: 'auto',
+          })}
+        >
           <BatchMapExportJobRows
             jobs={jobs}
             onDismiss={dismissBatchMapExportJob}
@@ -59,38 +86,5 @@ function BatchMapExportGlobalTray({ printDialogOpen }: Props) {
    */
   return <Portal>{tray}</Portal>;
 }
-
-/** Tray stays narrow so compact job cards match “small card” layout vs full-width print panel. */
-const TRAY_MAX_WIDTH_PX = 340;
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    paper: {
-      position: 'fixed',
-      left: 'auto',
-      right: theme.spacing(2),
-      bottom: theme.spacing(2),
-      maxWidth: TRAY_MAX_WIDTH_PX,
-      // Avoid `100vw` (includes scrollbar width) clipping fixed-position tray at viewport edge.
-      width: `min(${TRAY_MAX_WIDTH_PX}px, calc(100% - ${theme.spacing(4)}))`,
-      margin: 0,
-      // Above DateSelector timeline (1300); keep below tooltips / default snackbar layering.
-      zIndex: theme.zIndex.modal + 50,
-      padding: theme.spacing(2, 2, 2),
-      borderRadius: theme.shape.borderRadius,
-      backgroundColor: theme.palette.background.paper,
-      border: `1px solid ${theme.palette.divider}`,
-    },
-    title: {
-      fontWeight: 600,
-      marginBottom: theme.spacing(0.5),
-    },
-    listWrap: {
-      marginTop: theme.spacing(1),
-      maxHeight: 'min(40vh, 320px)',
-      overflowY: 'auto',
-    },
-  }),
-);
 
 export default BatchMapExportGlobalTray;

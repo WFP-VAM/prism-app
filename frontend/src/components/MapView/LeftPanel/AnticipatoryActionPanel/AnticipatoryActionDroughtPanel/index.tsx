@@ -1,5 +1,6 @@
 import { ArrowBackIos } from '@mui/icons-material';
 import {
+  Box,
   FormControl,
   IconButton,
   Input,
@@ -7,8 +8,6 @@ import {
   RadioGroup,
   Typography,
 } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import { usePostHog } from '@posthog/react';
 import { AnticipatoryAction, PanelSize } from 'config/types';
 import { AAWindowKeys } from 'config/utils';
@@ -27,11 +26,11 @@ import {
 } from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
-import { black, cyanBlue } from 'muiTheme';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
 
+import { aaDroughtPanelSx } from '../aaPanelStyles';
 import HowToReadModal from '../HowToReadModal';
 import { useAnticipatoryAction } from '../useAnticipatoryAction';
 import { StyledSelect } from '../utils';
@@ -48,7 +47,6 @@ import {
 const { categories } = getAADroughtCountryConfig();
 
 function AnticipatoryActionDroughtPanel() {
-  const classes = useStyles();
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
   const posthog = usePostHog();
@@ -83,8 +81,8 @@ function AnticipatoryActionDroughtPanel() {
   }, [AAData, selectedDistrict]);
 
   return (
-    <div
-      className={classes.anticipatoryActionPanel}
+    <Box
+      sx={aaDroughtPanelSx.anticipatoryActionPanel}
       style={{
         width: (() => {
           switch (view) {
@@ -108,9 +106,9 @@ function AnticipatoryActionDroughtPanel() {
         open={howToReadModalOpen}
         onClose={() => setHowToReadModalOpen(false)}
       />
-      <div className={classes.headerWrapper}>
-        <div className={classes.titleSelectWrapper}>
-          <div className={classes.titleSelectWrapper}>
+      <Box sx={aaDroughtPanelSx.headerWrapper}>
+        <Box sx={aaDroughtPanelSx.titleSelectWrapper}>
+          <Box sx={aaDroughtPanelSx.titleSelectWrapper}>
             {(view === AAView.District ||
               view === AAView.Timeline ||
               view === AAView.Forecast) && (
@@ -174,15 +172,15 @@ function AnticipatoryActionDroughtPanel() {
                 </MenuItem>
               ))}
             </StyledSelect>
-          </div>
-        </div>
+          </Box>
+        </Box>
 
         {!isSingleWindowMode() && (
           <div>
             <FormControl component="fieldset">
               <RadioGroup
                 defaultValue={allWindowsKey}
-                className={classes.radioButtonGroup}
+                sx={aaDroughtPanelSx.radioButtonGroup}
                 onChange={(_e, val) =>
                   dispatch(setAAFilters({ selectedWindow: val as any }))
                 }
@@ -265,62 +263,13 @@ function AnticipatoryActionDroughtPanel() {
             </StyledSelect>
           </div>
         )}
-      </div>
+      </Box>
       {view === AAView.Home && <HomeTable dialogs={dialogs} />}
       {view === AAView.District && <DistrictView dialogs={dialogs} />}
       {view === AAView.Timeline && <Timeline dialogs={dialogs} />}
       {view === AAView.Forecast && <Forecast dialogs={dialogs} />}
-    </div>
+    </Box>
   );
 }
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    anticipatoryActionPanel: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '1rem',
-      height: '100%',
-      justifyContent: 'space-between',
-    },
-    headerWrapper: {
-      padding: '1rem 1rem 0 1rem',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '0.50rem',
-    },
-    radioButtonGroup: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'flex-end',
-    },
-    footerWrapper: { display: 'flex', flexDirection: 'column' },
-    footerActionsWrapper: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      padding: '0.5rem',
-      gap: '1rem',
-    },
-    footerLinksWrapper: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      padding: '0.5rem',
-    },
-    footerButton: { borderColor: cyanBlue, color: black },
-    footerLink: {
-      textDecoration: 'underline',
-      backgroundColor: 'transparent',
-      border: 'none',
-      cursor: 'pointer',
-    },
-    titleSelectWrapper: {
-      display: 'flex',
-      alignItems: 'center',
-      width: '100%',
-    },
-  }),
-);
 
 export default AnticipatoryActionDroughtPanel;

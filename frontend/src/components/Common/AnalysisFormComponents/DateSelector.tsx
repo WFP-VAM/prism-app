@@ -1,8 +1,31 @@
 import { DateRangeRounded } from '@mui/icons-material';
-import { Input, InputAdornment, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import {
+  Box,
+  GlobalStyles,
+  Input,
+  InputAdornment,
+  Typography,
+} from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
 import { useSafeTranslation } from 'i18n';
 import DatePicker from 'react-datepicker';
+
+import {
+  analysisPanelParamTextSx,
+  CALENDAR_POPPER_CLASS,
+  calendarPopperGlobalStyles,
+  colorBlackSx,
+} from '../formComponentStyles';
+
+const datePickerContainerSx = {
+  marginLeft: '10px',
+  marginBottom: '30px',
+  width: 'auto',
+  color: 'black',
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+} satisfies SxProps<Theme>;
 
 interface DateSelectorProps {
   selectedDate: number | null;
@@ -19,7 +42,6 @@ function DateSelector({
   label,
   disabled = false,
 }: DateSelectorProps) {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
 
   const handleDateChange = (date: Date | null) => {
@@ -27,8 +49,9 @@ function DateSelector({
   };
 
   return (
-    <div className={classes.datePickerContainer}>
-      <Typography className={classes.colorBlack} variant="body2">
+    <Box sx={datePickerContainerSx}>
+      <GlobalStyles styles={calendarPopperGlobalStyles} />
+      <Typography sx={colorBlackSx} variant="body2">
         {`${label || t('Date')}: `}
       </Typography>
       <DatePicker
@@ -45,7 +68,7 @@ function DateSelector({
         disabled={disabled}
         customInput={
           <Input
-            className={classes.analysisPanelParamText}
+            sx={analysisPanelParamTextSx}
             disableUnderline
             disabled={disabled}
             endAdornment={
@@ -55,33 +78,11 @@ function DateSelector({
             }
           />
         }
-        popperClassName={classes.calendarPopper}
+        popperClassName={CALENDAR_POPPER_CLASS}
         includeDates={availableDates}
       />
-    </div>
+    </Box>
   );
 }
-
-const useStyles = makeStyles(() => ({
-  datePickerContainer: {
-    marginLeft: 10,
-    marginBottom: 30,
-    width: 'auto',
-    color: 'black',
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  colorBlack: {
-    color: 'black',
-  },
-  analysisPanelParamText: {
-    width: '100%',
-    color: 'black',
-  },
-  calendarPopper: {
-    zIndex: 3,
-  },
-}));
 
 export default DateSelector;

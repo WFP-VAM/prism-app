@@ -10,39 +10,39 @@ exports[`renders as expected 1`] = `
     December 1, 2023
   </h3>
   <div
-    class="makeStyles-charts-2"
+    class="MuiBox-root css-dhqezv"
   >
     <div
-      class="makeStyles-chartsHeader-3"
+      class="MuiBox-root css-1jndf0t"
     >
       <div
-        style="min-width: 3rem;"
+        class="MuiBox-root css-1m78t8x"
       />
       <p
-        class="MuiTypography-root MuiTypography-body1 makeStyles-label-8 css-l0p3u8-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-body1 css-1hkxiz6-MuiTypography-root"
       >
         SPI DJF
       </p>
       <div
-        style="min-width: 10px;"
+        class="MuiBox-root css-f1zsqn"
       />
     </div>
     <div
-      class="makeStyles-chartLine-4"
+      class="MuiBox-root css-12pms27"
     >
       <div
-        class="makeStyles-textWrap-5"
+        class="MuiBox-root css-1hroxk7"
         style="background-color: rgb(255, 213, 45);"
       >
         <p
-          class="MuiTypography-root MuiTypography-body1 makeStyles-text-6 css-l0p3u8-MuiTypography-root"
+          class="MuiTypography-root MuiTypography-body1 css-7g79ta-MuiTypography-root"
           style="color: black; border: 1px solid black;"
         >
           Moderate
         </p>
       </div>
       <div
-        class="makeStyles-chartWrapper-7"
+        class="MuiBox-root css-1a46w9a"
       >
         <canvas
           height="150"
@@ -51,21 +51,21 @@ exports[`renders as expected 1`] = `
       </div>
     </div>
     <div
-      class="makeStyles-chartLine-4"
+      class="MuiBox-root css-12pms27"
     >
       <div
-        class="makeStyles-textWrap-5"
+        class="MuiBox-root css-1hroxk7"
         style="background-color: rgb(255, 252, 179);"
       >
         <p
-          class="MuiTypography-root MuiTypography-body1 makeStyles-text-6 css-l0p3u8-MuiTypography-root"
+          class="MuiTypography-root MuiTypography-body1 css-7g79ta-MuiTypography-root"
           style="color: black; border: 1px solid black;"
         >
           Mild
         </p>
       </div>
       <div
-        class="makeStyles-chartWrapper-7"
+        class="MuiBox-root css-1a46w9a"
       >
         <canvas
           height="150"
@@ -75,13 +75,13 @@ exports[`renders as expected 1`] = `
     </div>
   </div>
   <div
-    class="makeStyles-footerWrapperVert-14"
+    class="MuiBox-root css-9jay18"
   >
     <div
-      class="makeStyles-footerActionsWrapper-10"
+      class="MuiBox-root css-jekkxf"
     >
       <button
-        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary MuiButton-fullWidth makeStyles-footerButton-12 css-nlocxw-MuiButtonBase-root-MuiButton-root"
+        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary MuiButton-fullWidth css-1jqm0xi-MuiButtonBase-root-MuiButton-root"
         tabindex="0"
         type="button"
       >
@@ -107,7 +107,7 @@ exports[`renders as expected 1`] = `
         </p>
       </button>
       <button
-        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary MuiButton-fullWidth makeStyles-footerButton-12 css-nlocxw-MuiButtonBase-root-MuiButton-root"
+        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary MuiButton-fullWidth css-1jqm0xi-MuiButtonBase-root-MuiButton-root"
         tabindex="0"
         type="button"
       >
@@ -134,10 +134,10 @@ exports[`renders as expected 1`] = `
       </button>
     </div>
     <div
-      class="makeStyles-footerDialogsWrapperVert-15"
+      class="MuiBox-root css-xggrxg"
     >
       <button
-        class="MuiTypography-root MuiTypography-body1 makeStyles-footerDialog-13 css-l0p3u8-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-body1 css-1uj4td3-MuiTypography-root"
       >
         How to read this screen
       </button>

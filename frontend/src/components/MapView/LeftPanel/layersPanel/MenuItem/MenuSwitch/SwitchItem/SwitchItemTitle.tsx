@@ -1,54 +1,16 @@
-import { MenuItem, MenuProps, Select, Typography } from '@mui/material';
+import { Box, Input, MenuItem, Select, Typography } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import {
+  layerDaySelectMenuProps,
+  layerDaySelectSx,
+  layerDaySelectTitleSx,
+} from 'components/MapView/LeftPanel/layersPanel/layerPanelStyles';
 import { LayerType, MenuGroupItem } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 import { memo, useCallback } from 'react';
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    title: {
-      lineHeight: 1.8,
-      color: 'black',
-      fontWeight: 400,
-      fontSize: '14px',
-    },
-    titleUnchecked: {
-      lineHeight: 1.8,
-      fontWeight: 400,
-      fontSize: '14px',
-    },
-    select: {
-      '&::before': {
-        border: 'none',
-      },
-    },
-    selectItem: {
-      whiteSpace: 'normal',
-      fontSize: 13,
-      fontWeight: 300,
-      color: 'black',
-      padding: 0,
-      marginLeft: 5,
-    },
-    selectItemUnchecked: {
-      whiteSpace: 'normal',
-      fontSize: 13,
-      fontWeight: 300,
-      padding: 0,
-      marginLeft: 5,
-    },
-  }),
-);
-
 const getFilteredMenuGroupItems = (menus: MenuGroupItem[], filter?: string) =>
   menus.filter(menu => (filter ? menu.id === filter : true));
-
-/** Nested accordions + drawer: anchor positioning / scroll lock can break MUI Select menu. */
-const switchItemSelectMenuProps: Partial<MenuProps> = {
-  disableScrollLock: true,
-};
 
 interface SwitchTitleProps {
   layer: LayerType;
@@ -71,7 +33,6 @@ const SwitchItemTitle = memo(
     groupMenuFilter,
     disabledMenuSelection = false,
   }: SwitchTitleProps) => {
-    const classes = useStyles();
     const { t } = useSafeTranslation();
     const { group } = layer;
 
@@ -97,11 +58,16 @@ const SwitchItemTitle = memo(
     ]);
 
     return (
-      <>
+      <Box
+        component="span"
+        sx={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          minWidth: 0,
+        }}
+      >
         <Typography
-          className={
-            someLayerAreSelected ? classes.title : classes.titleUnchecked
-          }
           component="span"
           role="button"
           tabIndex={0}
@@ -113,23 +79,23 @@ const SwitchItemTitle = memo(
               handleTitleClick();
             }
           }}
-          style={{ cursor: disabledMenuSelection ? 'default' : 'pointer' }}
+          sx={layerDaySelectTitleSx(
+            someLayerAreSelected,
+            disabledMenuSelection,
+          )}
         >
           {validatedTitle}
         </Typography>
         {group && !group.activateAll && (
           <Select
-            className={classes.select}
-            classes={{
-              root: someLayerAreSelected
-                ? classes.selectItem
-                : classes.selectItemUnchecked,
-            }}
+            variant="standard"
             value={activeLayerId}
+            input={<Input disableUnderline />}
             onChange={e => handleSelect(e)}
             onMouseDown={e => e.stopPropagation()}
-            MenuProps={switchItemSelectMenuProps}
+            MenuProps={layerDaySelectMenuProps}
             disabled={disabledMenuSelection}
+            sx={layerDaySelectSx(someLayerAreSelected)}
           >
             {getFilteredMenuGroupItems(group.layers, groupMenuFilter).map(
               menu => (
@@ -140,7 +106,7 @@ const SwitchItemTitle = memo(
             )}
           </Select>
         )}
-      </>
+      </Box>
     );
   },
 );

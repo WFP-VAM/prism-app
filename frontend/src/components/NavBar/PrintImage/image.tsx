@@ -1,6 +1,4 @@
 import { Box, Dialog, DialogContent } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import { usePostHog } from '@posthog/react';
 import mask from '@turf/mask';
 import { appConfig, rawLayers, safeCountry } from 'config';
@@ -98,7 +96,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const { country, header } = appConfig;
   const logo = header?.logo;
   const bottomLogo = get(appConfig, 'printConfig.bottomLogo', undefined);
-  const classes = useStyles();
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
   const printRef = useRef<HTMLDivElement>(null);
@@ -940,7 +937,21 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         aria-labelledby="dialog-preview"
       >
         <DialogContent>
-          <Box className={classes.contentContainer}>
+          <Box
+            sx={{
+              fontFamily: 'Roboto',
+              display: 'flex',
+              gap: '1rem',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              width: '90vw',
+              height: '90vh',
+              maxWidth: '100%',
+              maxHeight: '100%',
+              boxSizing: 'border-box',
+              paddingBottom: '20px',
+            }}
+          >
             <PrintPreview />
             <PrintConfig />
           </Box>
@@ -949,24 +960,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     </PrintConfigContext.Provider>
   );
 }
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    contentContainer: {
-      fontFamily: 'Roboto',
-      display: 'flex',
-      gap: '1rem',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      width: '90vw',
-      height: '90vh',
-      maxWidth: '100%',
-      maxHeight: '100%',
-      boxSizing: 'border-box',
-      paddingBottom: '20px',
-    },
-  }),
-);
 
 export interface DownloadImageProps {
   open: boolean;

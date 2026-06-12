@@ -1,7 +1,23 @@
-import { Input, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { Box, GlobalStyles, Input, Typography } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
 import { useSafeTranslation } from 'i18n';
 import DatePicker from 'react-datepicker';
+
+import {
+  analysisPanelParamTextSx,
+  CALENDAR_POPPER_CLASS,
+  calendarPopperGlobalStyles,
+  colorBlackSx,
+  formContainerSx,
+} from '../formComponentStyles';
+
+const dateRangePickerSx = {
+  display: 'inline-block',
+  marginRight: '15px',
+  marginTop: '15px',
+  minWidth: '125px',
+  width: '100px',
+} satisfies SxProps<Theme>;
 
 interface DateRangeSelectorProps {
   startDate: number | null;
@@ -20,7 +36,6 @@ function DateRangeSelector({
   availableDates = [],
   disabled = false,
 }: DateRangeSelectorProps) {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
 
   const handleStartDateChange = (date: Date | null) => {
@@ -32,12 +47,13 @@ function DateRangeSelector({
   };
 
   return (
-    <div className={classes.container}>
-      <Typography className={classes.colorBlack} variant="body2">
+    <Box sx={formContainerSx()}>
+      <GlobalStyles styles={calendarPopperGlobalStyles} />
+      <Typography sx={colorBlackSx} variant="body2">
         {t('Date Range')}
       </Typography>
-      <div className={classes.dateRangePicker}>
-        <Typography className={classes.colorBlack} variant="body2">
+      <Box sx={dateRangePickerSx}>
+        <Typography sx={colorBlackSx} variant="body2">
           {t('Start')}
         </Typography>
         <DatePicker
@@ -50,13 +66,13 @@ function DateRangeSelector({
           showYearDropdown
           dropdownMode="select"
           disabled={disabled}
-          customInput={<Input className={classes.analysisPanelParamText} />}
-          popperClassName={classes.calendarPopper}
+          customInput={<Input sx={analysisPanelParamTextSx} />}
+          popperClassName={CALENDAR_POPPER_CLASS}
           includeDates={availableDates}
         />
-      </div>
-      <div className={classes.dateRangePicker}>
-        <Typography className={classes.colorBlack} variant="body2">
+      </Box>
+      <Box sx={dateRangePickerSx}>
+        <Typography sx={colorBlackSx} variant="body2">
           {t('End')}
         </Typography>
         <DatePicker
@@ -69,41 +85,13 @@ function DateRangeSelector({
           showYearDropdown
           dropdownMode="select"
           disabled={disabled}
-          customInput={<Input className={classes.analysisPanelParamText} />}
-          popperClassName={classes.calendarPopper}
+          customInput={<Input sx={analysisPanelParamTextSx} />}
+          popperClassName={CALENDAR_POPPER_CLASS}
           includeDates={availableDates}
         />
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
-
-const useStyles = makeStyles(() => ({
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginBottom: 30,
-    marginLeft: 10,
-    width: '90%',
-    color: 'black',
-  },
-  colorBlack: {
-    color: 'black',
-  },
-  analysisPanelParamText: {
-    width: '100%',
-    color: 'black',
-  },
-  calendarPopper: {
-    zIndex: 3,
-  },
-  dateRangePicker: {
-    display: 'inline-block',
-    marginRight: '15px',
-    marginTop: '15px',
-    minWidth: '125px',
-    width: '100px',
-  },
-}));
 
 export default DateRangeSelector;

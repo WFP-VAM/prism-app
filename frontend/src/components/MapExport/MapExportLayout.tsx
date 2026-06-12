@@ -1,6 +1,4 @@
-import { Typography } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { Box, Typography } from '@mui/material';
 import { getImageUrl, iconNorthArrow } from 'assets/images';
 // Layer components - keep in sync with MapView/Map/index.tsx
 import {
@@ -24,7 +22,6 @@ import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
 import { mapStyle } from 'components/MapView/Map/utils';
 import { DiscriminateUnion, LayerType, Panel } from 'config/types';
 import maplibregl from 'maplibre-gl';
-import { lightGrey } from 'muiTheme';
 import React, {
   ComponentType,
   createElement,
@@ -47,6 +44,13 @@ import { useAAMarkerScalePercent } from 'utils/map-utils';
 import useResizeObserver from 'utils/useOnResizeObserver';
 
 import { getAspectRatioDecimal } from './aspectRatioConstants';
+import {
+  mapExportFooterOverlaySx,
+  mapExportMapContainerSx,
+  mapExportPreviewContainerSx,
+  mapExportPrintContainerSx,
+  mapExportTitleOverlaySx,
+} from './mapExportLayoutStyles';
 import { MapExportLayoutProps } from './types';
 
 /**
@@ -135,7 +139,6 @@ function MapExportLayout({
   signalExportReady = false,
   layersCoverage = [],
 }: MapExportLayoutProps) {
-  const classes = useStyles();
   const northArrowRef = useRef<HTMLImageElement>(null);
   const mapRef = React.useRef<MapRef>(null);
 
@@ -493,7 +496,7 @@ function MapExportLayout({
 
   // The map content (title, legend, footer, map itself)
   const mapContent = (
-    <div ref={printRef} className={`${classes.printContainer} layout-ltr`}>
+    <Box ref={printRef} className="layout-ltr" sx={mapExportPrintContainerSx}>
       {toggles.bottomLogoVisibility && getImageUrl(bottomLogo) && (
         <img
           style={{
@@ -522,9 +525,9 @@ function MapExportLayout({
         alt="northArrow"
       />
       {titleText && (
-        <div
+        <Box
           ref={titleRef}
-          className={classes.titleOverlay}
+          sx={mapExportTitleOverlaySx}
           style={{ minHeight: `${titleMinHeight}px` }}
         >
           {toggles.logoVisibility && getImageUrl(logo) && (
@@ -546,13 +549,14 @@ function MapExportLayout({
           <Typography variant="h6" style={{ maxWidth: titleMaxWidth }}>
             {processedTitleText}
           </Typography>
-        </div>
+        </Box>
       )}
       {toggles.footerVisibility &&
         (footerText || footerDateText || footerCoverageText) && (
-          <div
+          <Box
             ref={footerRef}
-            className={`${classes.footerOverlay} print-footer-overlay`}
+            className="print-footer-overlay"
+            sx={mapExportFooterOverlaySx}
           >
             {footerText && (
               <Typography
@@ -573,7 +577,7 @@ function MapExportLayout({
                 {footerDateText} {footerCoverageText ? footerCoverageText : ''}
               </Typography>
             )}
-          </div>
+          </Box>
         )}
       {toggles.logoVisibility && !titleText && getImageUrl(logo) && (
         <img
@@ -615,7 +619,11 @@ function MapExportLayout({
         >
           <LegendItemsList
             forPrinting
-            listStyle={classes.legendListStyle}
+            listSx={{
+              position: 'absolute',
+              top: '8px',
+              zIndex: 2,
+            }}
             showDescription={toggles.fullLayerDescription}
             overrideLayers={
               selectedLayers && selectedLayers.length > 0
@@ -625,7 +633,7 @@ function MapExportLayout({
           />
         </div>
       )}
-      <div className={classes.mapContainer}>
+      <Box sx={mapExportMapContainerSx}>
         <MapGL
           ref={mapRef}
           dragRotate={false}
@@ -688,12 +696,12 @@ function MapExportLayout({
             </Source>
           )}
         </MapGL>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 
   return (
-    <div className={classes.previewContainer}>
+    <Box sx={mapExportPreviewContainerSx}>
       <div
         ref={containerRef}
         style={{
@@ -723,87 +731,8 @@ function MapExportLayout({
           </div>
         )}
       </div>
-    </div>
+    </Box>
   );
 }
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    backdrop: {
-      position: 'absolute',
-    },
-    backdropWrapper: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      zIndex: 2,
-      width: '100%',
-      height: '100%',
-      display: 'flex',
-      justifyContent: 'center',
-    },
-    printContainer: {
-      width: '100%',
-      height: '100%',
-    },
-    mapContainer: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      height: '100%',
-      width: '100%',
-      zIndex: 1,
-    },
-    titleOverlay: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      zIndex: 2,
-      color: 'black',
-      backgroundColor: 'white',
-      width: '100%',
-      textAlign: 'center',
-      fontSize: '1.25rem',
-      fontWeight: 600,
-      padding: '8px 0 8px 0',
-      borderBottom: `1px solid ${lightGrey}`,
-      '& h6': {},
-    },
-    footerOverlay: {
-      padding: '8px',
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      zIndex: 3,
-      color: 'black',
-      backgroundColor: 'white',
-      width: '100%',
-      boxSizing: 'border-box',
-      borderTop: `1px solid ${lightGrey}`,
-    },
-    legendListStyle: {
-      position: 'absolute',
-      top: '8px',
-      zIndex: 2,
-    },
-    sameRowToggles: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-    },
-    previewContainer: {
-      height: '100%',
-      width: '100%',
-      minWidth: 0,
-      minHeight: 0,
-      flex: 1,
-      display: 'flex',
-      overflow: 'hidden',
-    },
-  }),
-);
 
 export default MapExportLayout;

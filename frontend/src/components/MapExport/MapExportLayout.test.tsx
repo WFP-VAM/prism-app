@@ -1,14 +1,6 @@
 import '@testing-library/jest-dom';
 
-import {
-  StyledEngineProvider,
-  Theme,
-  ThemeProvider,
-} from '@mui/material/styles';
-import {
-  StylesProvider,
-  ThemeProvider as StylesThemeProvider,
-} from '@mui/styles';
+import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import { render } from '@testing-library/react';
 import { store } from 'context/store';
 import muiTheme from 'muiTheme';
@@ -16,11 +8,6 @@ import { Provider } from 'react-redux';
 
 import MapExportLayout from './MapExportLayout';
 import { AspectRatio, MapExportToggles } from './types';
-
-declare module '@mui/styles/defaultTheme' {
-  interface DefaultTheme extends Theme {}
-}
-
 jest.mock('react-map-gl/maplibre', () => {
   const React = require('react');
   return {
@@ -32,7 +19,6 @@ jest.mock('react-map-gl/maplibre', () => {
     Marker: () => 'mock-Marker',
   };
 });
-
 jest.mock('components/MapView/Legends/LegendItemsList', () => {
   const React = require('react');
   return {
@@ -45,7 +31,6 @@ jest.mock('components/MapView/Legends/LegendItemsList', () => {
       ),
   };
 });
-
 jest.mock('utils/map-utils', () => ({
   useAAMarkerScalePercent: () => 1,
   getLayerMapId: (id: string, type?: string) =>
@@ -53,7 +38,6 @@ jest.mock('utils/map-utils', () => ({
   isLayerOnView: () => false,
   firstBoundaryOnView: () => undefined,
 }));
-
 jest.mock('utils/useOnResizeObserver', () => {
   const React = require('react');
   return {
@@ -64,14 +48,12 @@ jest.mock('utils/useOnResizeObserver', () => {
     ],
   };
 });
-
 jest.mock(
   'components/MapView/Layers/AnticipatoryActionFloodLayer/FloodStationMarker',
   () => ({
     FloodStationMarker: () => 'mock-FloodStationMarker',
   }),
 );
-
 const defaultToggles: MapExportToggles = {
   fullLayerDescription: false,
   countryMask: false,
@@ -80,7 +62,6 @@ const defaultToggles: MapExportToggles = {
   legendVisibility: true,
   footerVisibility: true,
 };
-
 const defaultProps = {
   toggles: defaultToggles,
   aspectRatio: 'Auto' as AspectRatio,
@@ -95,68 +76,48 @@ const defaultProps = {
   legendScale: 1,
   mapStyle: 'mock-style',
 };
-
 describe('MapExportLayout', () => {
   beforeAll(() => {
     jest.useFakeTimers();
     jest.setSystemTime(new Date('2024-12-01'));
   });
-
   afterAll(() => {
     jest.useRealTimers();
   });
-
   test('shows title when titleText provided', () => {
     const { getByText } = render(
       <Provider store={store}>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={muiTheme}>
-            <StylesThemeProvider theme={muiTheme}>
-              <StylesProvider injectFirst>
-                <MapExportLayout
-                  {...defaultProps}
-                  titleText="Test Export Title"
-                />
-              </StylesProvider>
-            </StylesThemeProvider>
+            <MapExportLayout {...defaultProps} titleText="Test Export Title" />
           </ThemeProvider>
         </StyledEngineProvider>
       </Provider>,
     );
     expect(getByText('Test Export Title')).toBeInTheDocument();
   });
-
   test('hides title when titleText empty', () => {
     const { container } = render(
       <Provider store={store}>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={muiTheme}>
-            <StylesThemeProvider theme={muiTheme}>
-              <StylesProvider injectFirst>
-                <MapExportLayout {...defaultProps} titleText="" />
-              </StylesProvider>
-            </StylesThemeProvider>
+            <MapExportLayout {...defaultProps} titleText="" />
           </ThemeProvider>
         </StyledEngineProvider>
       </Provider>,
     );
     expect(container.querySelector('.titleOverlay')).not.toBeInTheDocument();
   });
-
   test('shows logo when logoVisibility is true and logo provided', () => {
     const { container } = render(
       <Provider store={store}>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={muiTheme}>
-            <StylesThemeProvider theme={muiTheme}>
-              <StylesProvider injectFirst>
-                <MapExportLayout
-                  {...defaultProps}
-                  logo="test-logo.png"
-                  titleText="Test Title"
-                />
-              </StylesProvider>
-            </StylesThemeProvider>
+            <MapExportLayout
+              {...defaultProps}
+              logo="test-logo.png"
+              titleText="Test Title"
+            />
           </ThemeProvider>
         </StyledEngineProvider>
       </Provider>,
@@ -164,23 +125,18 @@ describe('MapExportLayout', () => {
     const logoImg = container.querySelector('img[alt="logo"]');
     expect(logoImg).toBeInTheDocument();
   });
-
   test('hides logo when logoVisibility is false', () => {
     const toggles = { ...defaultToggles, logoVisibility: false };
     const { container } = render(
       <Provider store={store}>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={muiTheme}>
-            <StylesThemeProvider theme={muiTheme}>
-              <StylesProvider injectFirst>
-                <MapExportLayout
-                  {...defaultProps}
-                  toggles={toggles}
-                  logo="test-logo.png"
-                  titleText="Test Title"
-                />
-              </StylesProvider>
-            </StylesThemeProvider>
+            <MapExportLayout
+              {...defaultProps}
+              toggles={toggles}
+              logo="test-logo.png"
+              titleText="Test Title"
+            />
           </ThemeProvider>
         </StyledEngineProvider>
       </Provider>,
@@ -188,22 +144,17 @@ describe('MapExportLayout', () => {
     const logoImg = container.querySelector('img[alt="logo"]');
     expect(logoImg).not.toBeInTheDocument();
   });
-
   test('positions logo left when logoPosition is 0', () => {
     const { container } = render(
       <Provider store={store}>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={muiTheme}>
-            <StylesThemeProvider theme={muiTheme}>
-              <StylesProvider injectFirst>
-                <MapExportLayout
-                  {...defaultProps}
-                  logo="test-logo.png"
-                  logoPosition={0}
-                  titleText="Test Title"
-                />
-              </StylesProvider>
-            </StylesThemeProvider>
+            <MapExportLayout
+              {...defaultProps}
+              logo="test-logo.png"
+              logoPosition={0}
+              titleText="Test Title"
+            />
           </ThemeProvider>
         </StyledEngineProvider>
       </Provider>,
@@ -212,22 +163,17 @@ describe('MapExportLayout', () => {
     expect(logoImg?.style.left).toBe('8px');
     expect(logoImg?.style.right).toBe('auto');
   });
-
   test('positions logo right when logoPosition is 1', () => {
     const { container } = render(
       <Provider store={store}>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={muiTheme}>
-            <StylesThemeProvider theme={muiTheme}>
-              <StylesProvider injectFirst>
-                <MapExportLayout
-                  {...defaultProps}
-                  logo="test-logo.png"
-                  logoPosition={1}
-                  titleText="Test Title"
-                />
-              </StylesProvider>
-            </StylesThemeProvider>
+            <MapExportLayout
+              {...defaultProps}
+              logo="test-logo.png"
+              logoPosition={1}
+              titleText="Test Title"
+            />
           </ThemeProvider>
         </StyledEngineProvider>
       </Provider>,
@@ -236,81 +182,60 @@ describe('MapExportLayout', () => {
     expect(logoImg?.style.left).toBe('auto');
     expect(logoImg?.style.right).toBe('8px');
   });
-
   test('shows legend when legendVisibility is true', () => {
     const { getByTestId } = render(
       <Provider store={store}>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={muiTheme}>
-            <StylesThemeProvider theme={muiTheme}>
-              <StylesProvider injectFirst>
-                <MapExportLayout {...defaultProps} />
-              </StylesProvider>
-            </StylesThemeProvider>
+            <MapExportLayout {...defaultProps} />
           </ThemeProvider>
         </StyledEngineProvider>
       </Provider>,
     );
     expect(getByTestId('legend-items')).toBeInTheDocument();
   });
-
   test('hides legend when legendVisibility is false', () => {
     const toggles = { ...defaultToggles, legendVisibility: false };
     const { queryByTestId } = render(
       <Provider store={store}>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={muiTheme}>
-            <StylesThemeProvider theme={muiTheme}>
-              <StylesProvider injectFirst>
-                <MapExportLayout {...defaultProps} toggles={toggles} />
-              </StylesProvider>
-            </StylesThemeProvider>
+            <MapExportLayout {...defaultProps} toggles={toggles} />
           </ThemeProvider>
         </StyledEngineProvider>
       </Provider>,
     );
     expect(queryByTestId('legend-items')).not.toBeInTheDocument();
   });
-
   test('shows footer when footerVisibility is true and footerText provided', () => {
     const { getByText } = render(
       <Provider store={store}>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={muiTheme}>
-            <StylesThemeProvider theme={muiTheme}>
-              <StylesProvider injectFirst>
-                <MapExportLayout {...defaultProps} footerText="Test Footer" />
-              </StylesProvider>
-            </StylesThemeProvider>
+            <MapExportLayout {...defaultProps} footerText="Test Footer" />
           </ThemeProvider>
         </StyledEngineProvider>
       </Provider>,
     );
     expect(getByText('Test Footer')).toBeInTheDocument();
   });
-
   test('hides footer when footerVisibility is false', () => {
     const toggles = { ...defaultToggles, footerVisibility: false };
     const { container } = render(
       <Provider store={store}>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={muiTheme}>
-            <StylesThemeProvider theme={muiTheme}>
-              <StylesProvider injectFirst>
-                <MapExportLayout
-                  {...defaultProps}
-                  toggles={toggles}
-                  footerText="Test Footer"
-                />
-              </StylesProvider>
-            </StylesThemeProvider>
+            <MapExportLayout
+              {...defaultProps}
+              toggles={toggles}
+              footerText="Test Footer"
+            />
           </ThemeProvider>
         </StyledEngineProvider>
       </Provider>,
     );
     expect(container.querySelector('.footerOverlay')).not.toBeInTheDocument();
   });
-
   test('renders country mask when countryMask is true and polygon provided', () => {
     const toggles = { ...defaultToggles, countryMask: true };
     const mockPolygon = {
@@ -329,20 +254,15 @@ describe('MapExportLayout', () => {
       },
       properties: {},
     };
-
     const { container } = render(
       <Provider store={store}>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={muiTheme}>
-            <StylesThemeProvider theme={muiTheme}>
-              <StylesProvider injectFirst>
-                <MapExportLayout
-                  {...defaultProps}
-                  toggles={toggles}
-                  invertedAdminBoundaryLimitPolygon={mockPolygon as any}
-                />
-              </StylesProvider>
-            </StylesThemeProvider>
+            <MapExportLayout
+              {...defaultProps}
+              toggles={toggles}
+              invertedAdminBoundaryLimitPolygon={mockPolygon as any}
+            />
           </ThemeProvider>
         </StyledEngineProvider>
       </Provider>,
@@ -350,22 +270,17 @@ describe('MapExportLayout', () => {
     // Source should be rendered for mask
     expect(container.textContent).toContain('mock-Source');
   });
-
   test('applies logo scale correctly', () => {
     const { container } = render(
       <Provider store={store}>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={muiTheme}>
-            <StylesThemeProvider theme={muiTheme}>
-              <StylesProvider injectFirst>
-                <MapExportLayout
-                  {...defaultProps}
-                  logo="test-logo.png"
-                  logoScale={1.5}
-                  titleText="Test Title"
-                />
-              </StylesProvider>
-            </StylesThemeProvider>
+            <MapExportLayout
+              {...defaultProps}
+              logo="test-logo.png"
+              logoScale={1.5}
+              titleText="Test Title"
+            />
           </ThemeProvider>
         </StyledEngineProvider>
       </Provider>,
@@ -374,17 +289,12 @@ describe('MapExportLayout', () => {
     // logoHeight = 32 * 1.5 = 48
     expect(logoImg?.style.height).toBe('48px');
   });
-
   test('applies legend scale correctly', () => {
     const { container } = render(
       <Provider store={store}>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={muiTheme}>
-            <StylesThemeProvider theme={muiTheme}>
-              <StylesProvider injectFirst>
-                <MapExportLayout {...defaultProps} legendScale={0.7} />
-              </StylesProvider>
-            </StylesThemeProvider>
+            <MapExportLayout {...defaultProps} legendScale={0.7} />
           </ThemeProvider>
         </StyledEngineProvider>
       </Provider>,
@@ -394,21 +304,16 @@ describe('MapExportLayout', () => {
     )?.parentElement;
     expect(legendContainer?.style.transform).toBe('scale(0.7)');
   });
-
   test('applies footer text size correctly', () => {
     const { getByText } = render(
       <Provider store={store}>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={muiTheme}>
-            <StylesThemeProvider theme={muiTheme}>
-              <StylesProvider injectFirst>
-                <MapExportLayout
-                  {...defaultProps}
-                  footerText="Test Footer"
-                  footerTextSize={16}
-                />
-              </StylesProvider>
-            </StylesThemeProvider>
+            <MapExportLayout
+              {...defaultProps}
+              footerText="Test Footer"
+              footerTextSize={16}
+            />
           </ThemeProvider>
         </StyledEngineProvider>
       </Provider>,
@@ -416,22 +321,17 @@ describe('MapExportLayout', () => {
     const footerText = getByText('Test Footer');
     expect(footerText).toHaveStyle({ fontSize: '16px' });
   });
-
   test('shows bottom logo when bottomLogoVisibility is true and bottomLogo provided', () => {
     const toggles = { ...defaultToggles, bottomLogoVisibility: true };
     const { container } = render(
       <Provider store={store}>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={muiTheme}>
-            <StylesThemeProvider theme={muiTheme}>
-              <StylesProvider injectFirst>
-                <MapExportLayout
-                  {...defaultProps}
-                  toggles={toggles}
-                  bottomLogo="test-bottom-logo.png"
-                />
-              </StylesProvider>
-            </StylesThemeProvider>
+            <MapExportLayout
+              {...defaultProps}
+              toggles={toggles}
+              bottomLogo="test-bottom-logo.png"
+            />
           </ThemeProvider>
         </StyledEngineProvider>
       </Provider>,
@@ -439,22 +339,17 @@ describe('MapExportLayout', () => {
     const bottomLogoImg = container.querySelector('img[alt="bottomLogo"]');
     expect(bottomLogoImg).toBeInTheDocument();
   });
-
   test('hides bottom logo when bottomLogoVisibility is false', () => {
     const toggles = { ...defaultToggles, bottomLogoVisibility: false };
     const { container } = render(
       <Provider store={store}>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={muiTheme}>
-            <StylesThemeProvider theme={muiTheme}>
-              <StylesProvider injectFirst>
-                <MapExportLayout
-                  {...defaultProps}
-                  toggles={toggles}
-                  bottomLogo="test-bottom-logo.png"
-                />
-              </StylesProvider>
-            </StylesThemeProvider>
+            <MapExportLayout
+              {...defaultProps}
+              toggles={toggles}
+              bottomLogo="test-bottom-logo.png"
+            />
           </ThemeProvider>
         </StyledEngineProvider>
       </Provider>,
@@ -462,18 +357,13 @@ describe('MapExportLayout', () => {
     const bottomLogoImg = container.querySelector('img[alt="bottomLogo"]');
     expect(bottomLogoImg).not.toBeInTheDocument();
   });
-
   test('hides bottom logo when bottomLogo is not provided', () => {
     const toggles = { ...defaultToggles, bottomLogoVisibility: true };
     const { container } = render(
       <Provider store={store}>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={muiTheme}>
-            <StylesThemeProvider theme={muiTheme}>
-              <StylesProvider injectFirst>
-                <MapExportLayout {...defaultProps} toggles={toggles} />
-              </StylesProvider>
-            </StylesThemeProvider>
+            <MapExportLayout {...defaultProps} toggles={toggles} />
           </ThemeProvider>
         </StyledEngineProvider>
       </Provider>,
@@ -481,23 +371,18 @@ describe('MapExportLayout', () => {
     const bottomLogoImg = container.querySelector('img[alt="bottomLogo"]');
     expect(bottomLogoImg).not.toBeInTheDocument();
   });
-
   test('applies bottom logo scale correctly', () => {
     const toggles = { ...defaultToggles, bottomLogoVisibility: true };
     const { container } = render(
       <Provider store={store}>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={muiTheme}>
-            <StylesThemeProvider theme={muiTheme}>
-              <StylesProvider injectFirst>
-                <MapExportLayout
-                  {...defaultProps}
-                  toggles={toggles}
-                  bottomLogo="test-bottom-logo.png"
-                  bottomLogoScale={1.5}
-                />
-              </StylesProvider>
-            </StylesThemeProvider>
+            <MapExportLayout
+              {...defaultProps}
+              toggles={toggles}
+              bottomLogo="test-bottom-logo.png"
+              bottomLogoScale={1.5}
+            />
           </ThemeProvider>
         </StyledEngineProvider>
       </Provider>,
@@ -508,21 +393,16 @@ describe('MapExportLayout', () => {
     // bottomLogoHeight = 32 * 1.5 = 48
     expect(bottomLogoImg?.style.height).toBe('48px');
   });
-
   test('replaces {date} placeholder in title with formatted date when layerDate provided', () => {
     const { getByText } = render(
       <Provider store={store}>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={muiTheme}>
-            <StylesThemeProvider theme={muiTheme}>
-              <StylesProvider injectFirst>
-                <MapExportLayout
-                  {...defaultProps}
-                  titleText="Test Title - {date}"
-                  layerDate="2024-09-30"
-                />
-              </StylesProvider>
-            </StylesThemeProvider>
+            <MapExportLayout
+              {...defaultProps}
+              titleText="Test Title - {date}"
+              layerDate="2024-09-30"
+            />
           </ThemeProvider>
         </StyledEngineProvider>
       </Provider>,

@@ -1,13 +1,7 @@
 import { Fade, Grid, Tooltip } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
-import {
-  DateCompatibleLayerWithDateItems,
-  TIMELINE_ITEM_WIDTH,
-} from 'components/MapView/DateSelector/utils';
+import { DateCompatibleLayerWithDateItems } from 'components/MapView/DateSelector/utils';
 import { AnticipatoryAction, DateItem, DateRangeType } from 'config/types';
-import { grey } from 'muiTheme';
-import { CSSProperties, memo, useCallback, useMemo } from 'react';
+import { memo, useCallback } from 'react';
 
 import AAFloodTimelineItem from './AAFloodTimelineItem';
 import AAFloodTooltipContent from './AAFloodTooltipContent';
@@ -15,16 +9,16 @@ import AAStormTimelineItem from './AAStormTimelineItem';
 import AAStormTooltipContent from './AAStormTooltipContent';
 import StandardTimelineItem from './StandardTimelineItem';
 import StandardTooltipContent from './StandardTooltipContent';
-import TimelineLabel from './TimelineLabel';
-import { DateItemStyle } from './types';
 import {
-  DARK_BLUE_HEX,
-  DARK_GREEN_HEX,
-  DARK_ORANGE_HEX,
-  LIGHT_BLUE_HEX,
-  LIGHT_GREEN_HEX,
-  LIGHT_ORANGE_HEX,
-} from './utils';
+  aaStormTooltipArrowSx,
+  aaStormTooltipSx,
+  availabilityDateSx,
+  DATE_ITEM_STYLING,
+  dateItemFullSx,
+  dateItemSx,
+  defaultTooltipSx,
+} from './timelineItemsStyles';
+import TimelineLabel from './TimelineLabel';
 
 const TimelineItems = memo(
   ({
@@ -37,33 +31,6 @@ const TimelineItems = memo(
     showDraggingCursor,
     selectedDate,
   }: TimelineItemsProps) => {
-    const classes = useStyles();
-
-    // Hard coded styling for date items (first, second, and third layers)
-    const DATE_ITEM_STYLING: DateItemStyle[] = useMemo(
-      () => [
-        {
-          color: LIGHT_BLUE_HEX,
-          coverageTick: classes.layerOneCoverageTick,
-          validityTick: classes.layerOneValidityTick,
-          queryTick: classes.layerOneQueryTick,
-        },
-        {
-          color: LIGHT_GREEN_HEX,
-          coverageTick: classes.layerTwoCoverageTick,
-          validityTick: classes.layerTwoValidityTick,
-          queryTick: classes.layerTwoQueryTick,
-        },
-        {
-          color: LIGHT_ORANGE_HEX,
-          coverageTick: classes.layerThreeCoverageTick,
-          validityTick: classes.layerThreeValidityTick,
-          queryTick: classes.layerThreeQueryTick,
-        },
-      ],
-      [classes],
-    );
-
     const isShowingAAStormLayer = orderedLayers.some(
       layer => layer.id === AnticipatoryAction.storm,
     );
@@ -84,21 +51,18 @@ const TimelineItems = memo(
           <StandardTooltipContent
             date={date}
             orderedLayers={orderedLayers}
-            dateItemStyling={DATE_ITEM_STYLING}
+            dateItemStyling={[...DATE_ITEM_STYLING]}
           />
         );
       },
-      [
-        isShowingAAStormLayer,
-        isShowingAAFloodLayer,
-        DATE_ITEM_STYLING,
-        orderedLayers,
-      ],
+      [isShowingAAStormLayer, isShowingAAFloodLayer, orderedLayers],
     );
 
     const availableDatesToDisplay = availableDates.filter(
       date => date >= dateRange[0].value,
     );
+
+    const isAATooltip = isShowingAAStormLayer || isShowingAAFloodLayer;
 
     // Draw a column for each date of the Timeline that start at the beginning of the year
     return (
@@ -113,16 +77,10 @@ const TimelineItems = memo(
               slotProps={{
                 transition: { timeout: 0 },
                 tooltip: {
-                  className:
-                    isShowingAAStormLayer || isShowingAAFloodLayer
-                      ? classes.AAStormTooltip
-                      : classes.defaultTooltip,
+                  sx: isAATooltip ? aaStormTooltipSx : defaultTooltipSx,
                 },
                 arrow: {
-                  className:
-                    isShowingAAStormLayer || isShowingAAFloodLayer
-                      ? classes.AAStormTooltipArrow
-                      : undefined,
+                  sx: isAATooltip ? aaStormTooltipArrowSx : undefined,
                 },
               }}
               placement="top"
@@ -138,9 +96,7 @@ const TimelineItems = memo(
               <Grid
                 key={`Root-${date.label}-${date.value}`}
                 size="grow"
-                className={`${
-                  date.isFirstDay ? classes.dateItemFull : classes.dateItem
-                }`}
+                sx={date.isFirstDay ? dateItemFullSx : dateItemSx}
                 onClick={() => clickDate(index)}
                 data-date-index={index}
               >
@@ -156,8 +112,8 @@ const TimelineItems = memo(
                       <StandardTimelineItem
                         concatenatedLayers={truncatedLayers}
                         currentDate={date}
-                        dateItemStyling={DATE_ITEM_STYLING}
-                        availabilityClass={classes.availabilityDate}
+                        dateItemStyling={[...DATE_ITEM_STYLING]}
+                        availabilitySx={availabilityDateSx}
                         isDateAvailable={isDateAvailable}
                         dateRange={dateRange}
                         selectedDate={selectedDate}
@@ -179,139 +135,6 @@ const TimelineItems = memo(
     );
   },
 );
-
-const createLayerStyles = (
-  backgroundColor: CSSProperties['backgroundColor'],
-  top: CSSProperties['top'],
-): LayerStyle => ({
-  position: 'absolute',
-  height: 10,
-  width: TIMELINE_ITEM_WIDTH,
-  pointerEvents: 'none',
-  opacity: 0.6,
-  top,
-  backgroundColor,
-});
-
-const createTimelineItemStyles = (
-  backgroundColor: CSSProperties['backgroundColor'],
-  top: CSSProperties['top'],
-  opacity: CSSProperties['opacity'] = 0.8,
-): TimelineItemStyle => {
-  return {
-    position: 'absolute',
-    height: 10,
-    width: TIMELINE_ITEM_WIDTH,
-    pointerEvents: 'none',
-    opacity,
-    top,
-    backgroundColor,
-  };
-};
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    dateItemFull: {
-      color: '#101010',
-      position: 'relative',
-      top: -5,
-      cursor: 'pointer',
-      minWidth: TIMELINE_ITEM_WIDTH,
-      borderLeft: '1px solid #101010',
-      height: 36,
-    },
-    // dayItem is set in TimelineLabel.tsx
-    dayItem: {},
-    dateItem: {
-      color: '#101010',
-      position: 'relative',
-      top: -5,
-      cursor: 'pointer',
-      minWidth: TIMELINE_ITEM_WIDTH,
-      // Set a transparent border to prevent layout shifts when the border color changes on hover.
-      // Do not remove this unless you are sure layout shifts will not occur.
-      borderLeft: '1px solid transparent',
-      '&:hover': {
-        borderLeft: '1px solid #101010',
-        '& $dayItem': {
-          borderLeft: 0,
-        },
-      },
-    },
-    defaultTooltip: {
-      backgroundColor: '#222222',
-      opacity: '0.85 !important',
-      maxWidth: 'none',
-    },
-    AAStormTooltip: {
-      backgroundColor: '#FFFFFF',
-      border: '1px solid #D3D3D3',
-      maxWidth: 'none',
-    },
-    availabilityDate: createLayerStyles(grey, 0),
-
-    // Coverage ticks
-    layerOneCoverageTick: createTimelineItemStyles(LIGHT_BLUE_HEX, 0, 0.6),
-    layerTwoCoverageTick: createTimelineItemStyles(LIGHT_GREEN_HEX, 10, 0.6),
-    layerThreeCoverageTick: createTimelineItemStyles(LIGHT_ORANGE_HEX, 20, 0.6),
-
-    // Validity ticks
-    layerOneValidityTick: createTimelineItemStyles(LIGHT_BLUE_HEX, 0),
-    layerTwoValidityTick: createTimelineItemStyles(LIGHT_GREEN_HEX, 10),
-    layerThreeValidityTick: createTimelineItemStyles(LIGHT_ORANGE_HEX, 20),
-
-    // Query date ticks (bold)
-    layerOneQueryTick: createTimelineItemStyles(DARK_BLUE_HEX, 0, 1),
-    layerTwoQueryTick: createTimelineItemStyles(DARK_GREEN_HEX, 10, 1),
-    layerThreeQueryTick: createTimelineItemStyles(DARK_ORANGE_HEX, 20, 1),
-
-    currentDate: {
-      border: '2px solid black',
-      top: '-7px',
-      minWidth: '13.9px',
-      maxHeight: '34.05px',
-      '&:hover': {
-        border: '2px solid black',
-      },
-    },
-
-    AAStormTooltipArrow: {
-      width: '11px',
-      height: '11px',
-      bottom: '-1px !important',
-      '&::before': {
-        width: '8px',
-        height: '8px',
-        backgroundColor: 'white',
-        transformOrigin: 'center !important',
-        boxSizing: 'border-box',
-        borderWidth: '0px 1px 1px 0px',
-        borderColor: '#D3D3D3',
-        borderStyle: 'solid',
-      },
-    },
-  }),
-);
-
-type LayerStyle = {
-  position: CSSProperties['position'];
-  height: CSSProperties['height'];
-  width: CSSProperties['width'];
-  pointerEvents: CSSProperties['pointerEvents'];
-  opacity: CSSProperties['opacity'];
-  top: CSSProperties['top'];
-  backgroundColor: CSSProperties['backgroundColor'];
-};
-
-type TimelineItemStyle = {
-  position: CSSProperties['position'];
-  height: CSSProperties['height'];
-  width: CSSProperties['width'];
-  pointerEvents: CSSProperties['pointerEvents'];
-  opacity: CSSProperties['opacity'];
-  top: CSSProperties['top'];
-  backgroundColor: CSSProperties['backgroundColor'];
-};
 
 export interface TimelineItemsProps {
   dateRange: DateRangeType[];

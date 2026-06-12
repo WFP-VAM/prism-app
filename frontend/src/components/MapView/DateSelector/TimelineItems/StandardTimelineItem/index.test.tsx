@@ -42,7 +42,7 @@ test('StandardTimelineItem renders as expected', () => {
       },
       { color: 'White' },
     ],
-    availabilityClass: 'intersectionDate',
+    availabilitySx: {},
     dateRange: [],
     selectedDate: currentDateTime,
   };
@@ -90,7 +90,7 @@ test('StandardTimelineItem renders as expected with data point starting after Ti
       },
       { color: 'White' },
     ],
-    availabilityClass: 'intersectionDate',
+    availabilitySx: {},
     dateRange: [],
     selectedDate: currentDateTime,
   };

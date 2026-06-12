@@ -4,48 +4,30 @@ import {
   Grid,
   ListItemText,
   MenuItem,
-  Theme,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import Menu, { MenuProps } from '@mui/material/Menu';
-import withStyles from '@mui/styles/withStyles';
+import Menu from '@mui/material/Menu';
+import type { SxProps, Theme } from '@mui/material/styles';
 import { useSafeTranslation } from 'i18n';
 import React, { useState } from 'react';
 
-const StyledMenu = withStyles((theme: Theme) => ({
-  paper: {
-    border: '1px solid #d3d4d5',
-    backgroundColor: theme.palette.primary.main,
-  },
-}))((props: MenuProps) => (
-  <Menu
-    elevation={0}
-    anchorOrigin={{
-      vertical: 'bottom',
-      horizontal: 'center',
-    }}
-    transformOrigin={{
-      vertical: 'top',
-      horizontal: 'center',
-    }}
-    {...props}
-  />
-));
+const menuPaperSx = (theme: Theme): SxProps<Theme> => ({
+  border: '1px solid #d3d4d5',
+  backgroundColor: theme.palette.primary.main,
+});
 
-const StyledButton = withStyles(() => ({
-  root: {
+const buttonSx = {
+  '&&': {
     marginTop: '0.4rem',
     marginBottom: '0.1rem',
     fontSize: '0.7rem',
   },
-}))(Button);
+} satisfies SxProps<Theme>;
 
-const StyledMenuItem = withStyles((theme: Theme) => ({
-  root: {
-    color: theme.palette.common.white,
-  },
-}))(MenuItem);
+const menuItemSx = (theme: Theme): SxProps<Theme> => ({
+  color: theme.palette.common.white,
+});
 
 interface IProps {
   mainLabel: string;
@@ -73,32 +55,48 @@ function MultiOptionsButton({ mainLabel, options }: IProps) {
 
   return (
     <Grid>
-      <StyledButton
+      <Button
         variant="contained"
         color="primary"
         fullWidth
         onClick={handleClick}
+        sx={buttonSx}
       >
         {!smDown && <>{t(mainLabel)}</>}
         <ArrowDropDown fontSize="small" />
-      </StyledButton>
-      <StyledMenu
+      </Button>
+      <Menu
         id="button-menu"
         anchorEl={anchorEl}
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
+        elevation={0}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        slotProps={{
+          paper: {
+            sx: menuPaperSx(theme),
+          },
+        }}
       >
         {options.map(option => (
-          <StyledMenuItem
+          <MenuItem
             key={option.label}
             disabled={option.disabled}
             onClick={() => handleOptionClick(option.onClick)}
+            sx={menuItemSx(theme)}
           >
             <ListItemText primary={t(option.label)} />
-          </StyledMenuItem>
+          </MenuItem>
         ))}
-      </StyledMenu>
+      </Menu>
     </Grid>
   );
 }

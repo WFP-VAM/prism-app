@@ -4,7 +4,7 @@ exports[`renders as expected 1`] = `
 <div>
   <button
     aria-label="Legend"
-    class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary makeStyles-triggerButton-1 css-13hs1jc-MuiButtonBase-root-MuiButton-root"
+    class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-1r51r0c-MuiButtonBase-root-MuiButton-root"
     style="background-color: rgb(99, 178, 189);"
     tabindex="0"
     type="button"
@@ -14,7 +14,7 @@ exports[`renders as expected 1`] = `
     >
       <svg
         aria-hidden="true"
-        class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium makeStyles-icon-3 css-1umw9bq-MuiSvgIcon-root"
+        class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1kie56c-MuiSvgIcon-root"
         data-testid="VisibilityOffOutlinedIcon"
         focusable="false"
         style="color: rgb(16, 16, 16);"
@@ -34,14 +34,14 @@ exports[`renders as expected 1`] = `
   </button>
   <button
     aria-label="Legend"
-    class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-iksamw-MuiButtonBase-root-MuiIconButton-root"
+    class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-155wbr6-MuiButtonBase-root-MuiIconButton-root"
     style="background-color: rgb(99, 178, 189);"
     tabindex="0"
     type="button"
   >
     <svg
       aria-hidden="true"
-      class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium makeStyles-icon-3 css-1umw9bq-MuiSvgIcon-root"
+      class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1kie56c-MuiSvgIcon-root"
       data-testid="VisibilityOffOutlinedIcon"
       focusable="false"
       style="color: rgb(16, 16, 16);"
@@ -53,7 +53,7 @@ exports[`renders as expected 1`] = `
     </svg>
   </button>
   <ul
-    class="MuiList-root makeStyles-list-2 css-54zhjy-MuiList-root"
+    class="MuiList-root css-1xcvwwv-MuiList-root"
   />
 </div>
 `;

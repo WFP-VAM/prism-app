@@ -1,5 +1,7 @@
 import 'react-datepicker/dist/react-datepicker.css';
 
+import { Box } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
 import { DateItem, DateRangeType } from 'config/types';
 import React, { memo, useMemo } from 'react';
 import { datesAreEqualWithoutTime } from 'utils/date-utils';
@@ -11,7 +13,7 @@ const StandardTimelineItem = memo(
     concatenatedLayers,
     currentDate,
     dateItemStyling,
-    availabilityClass,
+    availabilitySx,
     isDateAvailable,
     dateRange,
     selectedDate,
@@ -102,9 +104,9 @@ const StandardTimelineItem = memo(
     return (
       <>
         {/* Add a small grey line to indicate where dates are overlapping */}
-        {layerMatches.length >= 1 && isDateAvailable && (
-          <div
-            className={availabilityClass}
+        {layerMatches.length >= 1 && isDateAvailable && availabilitySx && (
+          <Box
+            sx={availabilitySx}
             style={{
               height: 4,
               // TODO - handle more than 3 layers
@@ -143,21 +145,19 @@ const StandardTimelineItem = memo(
             return null;
           }
 
-          // Determine which tick class to use based on priority
-          let tickClassName: string | undefined;
+          // Determine which tick sx to use based on priority
+          let tickSx: SxProps<Theme> | undefined;
           if (hasQueryTick) {
-            tickClassName = dateItemStyling[layerIndex].queryTick;
+            tickSx = dateItemStyling[layerIndex].queryTick;
           } else if (hasValidityTick) {
-            tickClassName = dateItemStyling[layerIndex].validityTick;
+            tickSx = dateItemStyling[layerIndex].validityTick;
           } else if (hasCoverageTick) {
-            tickClassName = dateItemStyling[layerIndex].coverageTick;
+            tickSx = dateItemStyling[layerIndex].coverageTick;
           }
 
           return (
             <React.Fragment key={`layer-${layerIndex}-${currentDate.value}`}>
-              {tickClassName && (
-                <div className={tickClassName} role="presentation" />
-              )}
+              {tickSx && <Box sx={tickSx} role="presentation" />}
             </React.Fragment>
           );
         })}
@@ -170,7 +170,7 @@ export interface StandardTimelineItemProps {
   concatenatedLayers: DateItem[][];
   currentDate: DateRangeType;
   dateItemStyling: DateItemStyle[];
-  availabilityClass?: string;
+  availabilitySx?: SxProps<Theme>;
   isDateAvailable: boolean;
   dateRange: DateRangeType[];
   selectedDate: number;

@@ -1,73 +1,12 @@
 import { Box, TextField, Typography } from '@mui/material';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import { useContext } from 'react';
 import { BatchCadence, MAX_DEKAD_INTERVAL } from 'utils/batchCadenceUtils';
 import { getFormattedDate } from 'utils/date-utils';
 
 import { useSafeTranslation } from '../../../i18n';
 import PrintConfigContext from './printConfig.context';
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '0.5rem',
-    },
-    row: {
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: '0.5rem',
-      flexWrap: 'wrap',
-    },
-    header: {
-      fontSize: '14px',
-      fontWeight: 400,
-      marginTop: '8px',
-    },
-    toggleButton: {
-      fontSize: '0.75rem',
-      textTransform: 'none',
-      padding: '4px 10px',
-      marginBottom: '8px',
-    },
-    intervalInput: {
-      zIndex: 0,
-      marginBottom: '8px',
-      minWidth: '7.5rem',
-      flex: '0 0 auto',
-      '& .MuiOutlinedInput-root': {
-        width: '100%',
-      },
-      '& input': {
-        fontSize: '0.875rem',
-      },
-    },
-    dateList: {
-      maxHeight: '120px',
-      overflowY: 'auto',
-      display: 'flex',
-      flexWrap: 'wrap',
-      gap: '4px',
-      padding: '4px',
-      backgroundColor: 'white',
-      borderRadius: '4px',
-      border: '1px solid #ccc',
-    },
-    dateChip: {
-      color: '#000',
-      fontSize: '0.7rem',
-      padding: '2px 6px',
-      backgroundColor: '#e0e0e0',
-      borderRadius: '4px',
-      whiteSpace: 'nowrap',
-    },
-  }),
-);
 
 const CADENCE_LABELS: Record<BatchCadence, string> = {
   'every-n-dekads': 'Every N dekads',
@@ -91,7 +30,6 @@ function getDateFormat(
 }
 
 export default function CadenceSelector() {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
   const { printConfig } = useContext(PrintConfigContext);
 
@@ -111,11 +49,32 @@ export default function CadenceSelector() {
   } = printConfig;
 
   return (
-    <Box className={classes.root}>
-      <Typography variant="h4" className={classes.header}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '0.5rem',
+      }}
+    >
+      <Typography
+        variant="h4"
+        sx={{
+          fontSize: '14px',
+          fontWeight: 400,
+          marginTop: '8px',
+        }}
+      >
         {t('Cadence')}
       </Typography>
-      <Box className={classes.row}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: '0.5rem',
+          flexWrap: 'wrap',
+        }}
+      >
         <ToggleButtonGroup
           value={cadence}
           exclusive
@@ -135,7 +94,12 @@ export default function CadenceSelector() {
                 key={option}
                 value={option}
                 disabled={isDisabled}
-                className={classes.toggleButton}
+                sx={{
+                  fontSize: '0.75rem',
+                  textTransform: 'none',
+                  padding: '4px 10px',
+                  marginBottom: '8px',
+                }}
               >
                 {t(CADENCE_LABELS[option])}
               </ToggleButton>
@@ -144,7 +108,18 @@ export default function CadenceSelector() {
         </ToggleButtonGroup>
         {cadence === 'every-n-dekads' && (
           <TextField
-            className={classes.intervalInput}
+            sx={{
+              zIndex: 0,
+              marginBottom: '8px',
+              minWidth: '7.5rem',
+              flex: '0 0 auto',
+              '& .MuiOutlinedInput-root': {
+                width: '100%',
+              },
+              '& input': {
+                fontSize: '0.875rem',
+              },
+            }}
             type="number"
             size="small"
             variant="outlined"
@@ -162,11 +137,34 @@ export default function CadenceSelector() {
         )}
       </Box>
       {!createScheduledMaps && filteredBatchDates.length > 0 && (
-        <Box className={classes.dateList}>
+        <Box
+          sx={{
+            maxHeight: '120px',
+            overflowY: 'auto',
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '4px',
+            padding: '4px',
+            backgroundColor: 'white',
+            borderRadius: '4px',
+            border: '1px solid #ccc',
+          }}
+        >
           {filteredBatchDates.map(ts => (
-            <span key={ts} className={classes.dateChip}>
+            <Box
+              component="span"
+              key={ts}
+              sx={{
+                color: '#000',
+                fontSize: '0.7rem',
+                padding: '2px 6px',
+                backgroundColor: '#e0e0e0',
+                borderRadius: '4px',
+                whiteSpace: 'nowrap',
+              }}
+            >
               {getFormattedDate(ts, getDateFormat(cadence))}
-            </span>
+            </Box>
           ))}
         </Box>
       )}

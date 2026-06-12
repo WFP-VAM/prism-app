@@ -1,15 +1,17 @@
-import { Button, Grid, Typography } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { Box, Button, Grid, Typography } from '@mui/material';
 import { wfpLogo } from 'assets/images';
-import { colors } from 'muiTheme';
 import { Link } from 'react-router-dom';
 
+import {
+  notFoundContainerSx,
+  notFoundContentSx,
+  notFoundImageSx,
+} from './notFoundStyles';
+
 function NotFound() {
-  const classes = useStyles();
   return (
-    <div className={classes.container}>
-      <Grid container spacing={3} className={classes.content}>
+    <Box sx={notFoundContainerSx}>
+      <Grid container spacing={3} sx={notFoundContentSx}>
         <Grid>
           <Typography variant="h3" color="textPrimary" gutterBottom>
             404 Page Not Found
@@ -33,37 +35,16 @@ function NotFound() {
         </Grid>
 
         <Grid>
-          <img
-            className={classes.image}
+          <Box
+            component="img"
+            sx={notFoundImageSx}
             src={wfpLogo}
             alt="World Food Programme logo"
           />
         </Grid>
       </Grid>
-    </div>
+    </Box>
   );
 }
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    container: {
-      width: '100vw',
-      height: '100vh',
-      backgroundColor: colors.skyBlue,
-      display: 'flex',
-      justifyContent: 'center',
-    },
-
-    content: {
-      margin: 'auto',
-      maxWidth: '50vw',
-    },
-
-    image: {
-      width: '90%',
-      opacity: '0.5',
-    },
-  }),
-);
 
 export default NotFound;

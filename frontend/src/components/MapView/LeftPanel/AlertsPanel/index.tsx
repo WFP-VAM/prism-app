@@ -1,9 +1,12 @@
-import { Box, Button, TextField, Theme, Typography } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { Box, Button, TextField, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import {
+  analysisPanelParamTextSx,
+  formContainerSx,
+} from 'components/Common/formComponentStyles';
 import BoundaryDropdown from 'components/MapView/Layers/BoundaryDropdown';
 import LayerDropdown from 'components/MapView/Layers/LayerDropdown';
-import { LayerKey, PanelSize, WMSLayerProps } from 'config/types';
+import { LayerKey, WMSLayerProps } from 'config/types';
 import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
 import { getSelectedBoundaries } from 'context/mapSelectionLayerStateSlice';
 import { addNotification } from 'context/notificationStateSlice';
@@ -25,6 +28,15 @@ import { boundaryCache } from 'utils/boundary-cache';
 import { ALERT_API_URL } from 'utils/constants';
 import { useBoundaryData } from 'utils/useBoundaryData';
 
+import {
+  alertFormMenuSx,
+  createAlertButtonSx,
+  newAlertFormContainerSx,
+  numberFieldSx,
+  regionSelectorSx,
+  thresholdInputsContainerSx,
+} from '../leftPanelStyles';
+
 // Not fully RFC-compliant, but should filter out obviously-invalid emails.
 // Source: https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
 const EMAIL_REGEX: RegExp =
@@ -33,7 +45,7 @@ const EMAIL_REGEX: RegExp =
 const boundaryLayer = getBoundaryLayerSingleton();
 
 function AlertsPanel() {
-  const classes = useStyles();
+  const theme = useTheme();
   const boundaryLayerData = useBoundaryData(boundaryLayer.id);
   const regionsList = useSelector(getSelectedBoundaries);
   const dispatch = useDispatch();
@@ -151,26 +163,27 @@ function AlertsPanel() {
 
   const renderedAlertForm = useMemo(
     () => (
-      <Box className={classes.alertFormMenu}>
-        <div className={classes.newAlertFormContainer}>
-          <div className={classes.alertFormOptions}>
-            <LayerDropdown
-              type="wms"
-              value={hazardLayerId || ''}
-              setValue={setHazardLayerId}
-              className={classes.analysisPanelParamText}
-              label={t('Hazard Layer')}
-              placeholder="Choose hazard layer"
-            />
-          </div>
-          <div className={classes.alertFormOptions}>
+      <Box sx={alertFormMenuSx}>
+        <Box sx={newAlertFormContainerSx}>
+          <Box sx={formContainerSx()}>
+            <Box sx={analysisPanelParamTextSx}>
+              <LayerDropdown
+                type="wms"
+                value={hazardLayerId || ''}
+                setValue={setHazardLayerId}
+                label={t('Hazard Layer')}
+                placeholder="Choose hazard layer"
+              />
+            </Box>
+          </Box>
+          <Box sx={formContainerSx()}>
             <Typography variant="body2">{t('Threshold')}</Typography>
-            <div className={classes.thresholdInputsContainer}>
+            <Box sx={thresholdInputsContainerSx}>
               <TextField
                 id="filled-number"
                 error={!!thresholdError}
                 helperText={t(thresholdError || '')}
-                className={classes.numberField}
+                sx={numberFieldSx}
                 label={t('Below')}
                 type="number"
                 value={belowThreshold}
@@ -179,18 +192,20 @@ function AlertsPanel() {
               <TextField
                 id="filled-number"
                 label={t('Above')}
-                className={classes.numberField}
+                sx={numberFieldSx}
                 value={aboveThreshold}
                 onChange={onThresholdOptionChange('above')}
                 type="number"
               />
-            </div>
-          </div>
-          <div className={classes.alertFormOptions}>
+            </Box>
+          </Box>
+          <Box sx={formContainerSx()}>
             <Typography variant="body2">{t('Regions')}</Typography>
-            <BoundaryDropdown className={classes.regionSelector} />
-          </div>
-          <div className={classes.alertFormOptions}>
+            <Box sx={regionSelectorSx}>
+              <BoundaryDropdown className="" />
+            </Box>
+          </Box>
+          <Box sx={formContainerSx()}>
             <TextField
               id="alert-name"
               label={t('Alert Name')}
@@ -207,8 +222,8 @@ function AlertsPanel() {
               onChange={e => setAlertName(e.target.value)}
               fullWidth
             />
-          </div>
-          <div className={classes.alertFormOptions}>
+          </Box>
+          <Box sx={formContainerSx()}>
             <TextField
               id="email-address"
               label={t('Email Address')}
@@ -224,10 +239,10 @@ function AlertsPanel() {
               onChange={onChangeEmail}
               fullWidth
             />
-          </div>
-        </div>
+          </Box>
+        </Box>
         <Button
-          className={classes.innerCreateAlertButton}
+          sx={createAlertButtonSx(theme)}
           onClick={runAlertForm}
           disabled={
             !hazardLayerId ||
@@ -249,77 +264,18 @@ function AlertsPanel() {
       alertName,
       alertWaiting,
       belowThreshold,
-      classes,
       emailValid,
       hazardLayerId,
       onThresholdOptionChange,
       regionsList.length,
       runAlertForm,
       t,
+      theme,
       thresholdError,
     ],
   );
 
   return renderedAlertForm;
 }
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    alertFormMenu: {
-      display: 'flex',
-      flexDirection: 'column',
-      width: PanelSize.medium,
-      height: '100%',
-      overflow: 'scroll',
-      backgroundColor: 'white',
-      color: 'black',
-    },
-    newAlertFormContainer: {
-      padding: '30px 10px 10px 10px',
-      height: 'calc(100% - 90px)',
-      overflow: 'auto',
-    },
-    alertFormOptions: {
-      display: 'flex',
-      flexDirection: 'column',
-      marginBottom: 30,
-      marginLeft: 10,
-      width: '90%',
-      color: 'black',
-    },
-    analysisPanelParamText: {
-      width: '100%',
-      color: 'black',
-    },
-    regionSelector: {
-      width: '100%',
-    },
-    thresholdInputsContainer: {
-      display: 'flex',
-      flexDirection: 'row',
-      gap: '16px',
-      marginTop: '10px',
-    },
-    numberField: {
-      paddingRight: '10px',
-      maxWidth: '140px',
-      '& label': {
-        color: '#333333',
-      },
-    },
-    innerCreateAlertButton: {
-      backgroundColor: theme.palette.primary.main,
-      '&:hover': {
-        backgroundColor: 'black !important',
-      },
-      marginTop: 10,
-      marginBottom: 10,
-      marginLeft: '25%',
-      marginRight: '25%',
-      width: '50%',
-      '&.Mui-disabled': { opacity: 0.5 },
-    },
-  }),
-);
 
 export default AlertsPanel;

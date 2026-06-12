@@ -1,71 +1,13 @@
 /* eslint-disable react-refresh/only-export-components */
 import { Select, SelectProps } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
-import withStyles from '@mui/styles/withStyles';
-import { black, cyanBlue } from 'muiTheme';
 
-export const StyledSelect = withStyles({
-  root: {
-    '&:focus': {
-      backgroundColor: 'transparent',
-    },
-  },
-})((props: SelectProps) => <Select {...props} />);
+import { aaStyledSelectSx } from './aaPanelStyles';
 
-export const useAACommonStyles = makeStyles(() =>
-  createStyles({
-    footerWrapper: { display: 'flex', flexDirection: 'column' },
-    footerActionsWrapper: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      padding: '0.5rem',
-      gap: '1rem',
-    },
-    footerDialogsWrapper: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      padding: '0.5rem',
-      paddingTop: 0,
-    },
-    footerButton: { borderColor: cyanBlue, color: black },
-    footerDialog: {
-      textDecoration: 'underline',
-      backgroundColor: 'transparent',
-      border: 'none',
-      cursor: 'pointer',
-      textAlign: 'right',
-    },
-    footerWrapperVert: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-    },
-    footerDialogsWrapperVert: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      padding: '0.5rem',
-    },
-    newTag: {
-      height: '2em',
-      padding: '0 0.5em',
-      color: 'white',
-      background: '#A4A4A4',
-      fontSize: '10px',
-      borderRadius: '32px',
-      display: 'flex',
-      alignItems: 'center',
-    },
-    windowHeader: {
-      fontWeight: 'bold',
-      textTransform: 'uppercase',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginBottom: '0.5rem',
-    },
-  }),
+export { aaCommonSx } from './aaPanelStyles';
+
+export const StyledSelect = ({ sx, ...props }: SelectProps) => (
+  <Select
+    {...props}
+    sx={[aaStyledSelectSx, ...(Array.isArray(sx) ? sx : sx ? [sx] : [])]}
+  />
 );

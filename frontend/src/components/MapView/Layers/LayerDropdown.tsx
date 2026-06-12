@@ -5,8 +5,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import { menuList } from 'components/MapView/LeftPanel/utils';
 import { appConfig } from 'config';
 import { LayerKey, LayerType } from 'config/types';
@@ -18,28 +16,16 @@ import { getLayerGeometryIcon } from './layer-utils';
 
 const { multiCountry } = appConfig;
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    selectRoot: {
-      width: '100%',
-      '& .MuiInputBase-root': {
-        '&:hover fieldset': {
-          borderColor: '#333333',
-        },
-      },
-    },
-    input: {
-      color: '#333333',
-    },
-    focused: {
-      borderColor: '#333333',
-      color: '#333333',
-    },
-    label: {
-      color: '#333333',
-    },
-  }),
-);
+const layerDropdownSx = {
+  width: '100%',
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': { borderColor: '#333333' },
+    '&:hover fieldset': { borderColor: '#333333' },
+    '&.Mui-focused fieldset': { borderColor: '#333333' },
+  },
+  '& .MuiInputBase-input': { color: '#333333' },
+  '& .MuiInputLabel-root': { color: '#333333' },
+};
 
 function LayerDropdown({
   type,
@@ -53,7 +39,6 @@ function LayerDropdown({
   // this could be testable, needs to be constructed in a way that prevents it breaking whenever new layers are added. (don't put layer name in snapshot)
 
   const { t } = useSafeTranslation();
-  const classes = useStyles();
   // Filter out layers that are not supported by the analysis tool
   const filterLayersForAnalysis = (layer: LayerType) => {
     if (layer.disableAnalysis) {
@@ -127,7 +112,7 @@ function LayerDropdown({
   return (
     <FormControl {...rest}>
       <TextField
-        classes={{ root: classes.selectRoot }}
+        sx={layerDropdownSx}
         variant="outlined"
         value={value}
         onChange={e => {
@@ -137,19 +122,7 @@ function LayerDropdown({
         select
         label={label}
         disabled={disabled}
-        slotProps={{
-          input: {
-            classes: {
-              focused: classes.focused,
-              input: classes.input,
-            },
-          },
-          inputLabel: {
-            classes: {
-              root: classes.label,
-            },
-          },
-        }}
+        fullWidth
       >
         {categories.reduce(
           // map wouldn't work here because <Select> doesn't support <Fragment> with keys, so we need one array

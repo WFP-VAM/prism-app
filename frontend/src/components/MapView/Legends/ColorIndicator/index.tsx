@@ -1,22 +1,5 @@
-import { Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    container: {
-      display: 'flex',
-      alignItems: 'center',
-    },
-    indicator: {
-      height: 10,
-      width: 10,
-      marginInlineEnd: 4,
-      flexShrink: 0,
-    },
-  }),
-);
 
 const getShapeStyles = (
   iconShape: 'point' | 'square' | 'triangle' | 'diamond' | undefined,
@@ -68,14 +51,17 @@ function ColorIndicator({
   fillPattern,
   iconShape,
 }: ColorIndicatorProps) {
-  const classes = useStyles();
-
   const shapeStyles = getShapeStyles(iconShape, color, opacity);
 
   return (
-    <div className={classes.container}>
-      <div
-        className={classes.indicator}
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <Box
+        sx={{
+          height: '10px',
+          width: '10px',
+          marginInlineEnd: '4px',
+          flexShrink: 0,
+        }}
         style={{
           ...shapeStyles,
           ...(fillPattern
@@ -95,7 +81,7 @@ function ColorIndicator({
         }}
       />
       <Typography color="textSecondary">{value}</Typography>
-    </div>
+    </Box>
   );
 }
 

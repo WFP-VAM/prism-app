@@ -11,14 +11,19 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import LayerDownloadOptions from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch/SwitchItem/LayerDownloadOptions';
 import { toggleRemoveLayer } from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 import AnalysisDownloadButton from 'components/MapView/Legends//AnalysisDownloadButton';
 import ColorIndicator from 'components/MapView/Legends/ColorIndicator';
 import LayerContentPreview from 'components/MapView/Legends/layerContentPreview';
+import {
+  legendBodyTextSx,
+  legendCoverageTextSx,
+  legendItemActionsSx,
+  legendItemPaperSx,
+  legendOpacitySliderSx,
+} from 'components/MapView/Legends/legendStyles';
 import { getLegendItemLabel } from 'components/MapView/utils';
 import {
   LayerType,
@@ -70,7 +75,6 @@ const LegendItem = memo(
     showDescription = true,
     dateCoverage,
   }: LegendItemProps) => {
-    const classes = useStyles();
     const dispatch = useDispatch();
     const {
       actions: { addLayer, removeLayer },
@@ -134,14 +138,14 @@ const LegendItem = memo(
     const renderedOpacitySlider = useMemo(
       () => (
         <Box
+          sx={legendOpacitySliderSx.box}
           style={{
             paddingLeft: 2,
             paddingRight: 2,
             display: 'flex',
           }}
-          className={classes.opacityBox}
         >
-          <Typography classes={{ root: classes.opacityText }}>
+          <Typography sx={legendOpacitySliderSx.text}>
             {`${Math.round((opacity || 0) * 100)}%`}
           </Typography>
           <Slider
@@ -150,9 +154,9 @@ const LegendItem = memo(
             min={0}
             max={1}
             aria-labelledby="opacity-slider"
-            classes={{
-              root: classes.opacitySliderRoot,
-              thumb: classes.opacitySliderThumb,
+            sx={legendOpacitySliderSx.root}
+            slotProps={{
+              thumb: { sx: legendOpacitySliderSx.thumb },
             }}
             onChange={(_e, newValue) =>
               opacityState.setOpacity({
@@ -165,17 +169,7 @@ const LegendItem = memo(
           />
         </Box>
       ),
-      [
-        classes.opacityBox,
-        classes.opacitySliderRoot,
-        classes.opacitySliderThumb,
-        classes.opacityText,
-        opacityState,
-        id,
-        map,
-        opacity,
-        type,
-      ],
+      [opacityState, id, map, opacity, type],
     );
 
     const layerDownloadOptions = useMemo(
@@ -274,7 +268,9 @@ const LegendItem = memo(
           {typeof children === 'string' ? (
             <LegendMarkdown>{children}</LegendMarkdown>
           ) : (
-            <Typography variant="h5">{children}</Typography>
+            <Typography variant="h5" sx={legendBodyTextSx}>
+              {children}
+            </Typography>
           )}
         </Grid>
       );
@@ -294,7 +290,8 @@ const LegendItem = memo(
     return (
       <ListItem disableGutters dense>
         <Paper
-          className={`${classes.paper} legend-card`}
+          className="legend-card"
+          sx={legendItemPaperSx}
           elevation={forPrinting ? 0 : undefined}
           style={
             forPrinting
@@ -317,7 +314,7 @@ const LegendItem = memo(
               <LoadingBar layerId={id} />
               {renderedChildren}
               {coverageText && (
-                <Typography variant="h5" style={{ marginTop: 8 }}>
+                <Typography variant="h5" sx={legendCoverageTextSx}>
                   {t('Coverage')}: {coverageText}
                 </Typography>
               )}
@@ -326,12 +323,7 @@ const LegendItem = memo(
           {!forPrinting && (
             <>
               <Divider style={{ margin: '8px 0px' }} />
-              <Box
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                }}
-              >
+              <Box sx={legendItemActionsSx}>
                 <Tooltip title={t('Opacity') as string}>
                   <IconButton size="small" onClick={openOpacity}>
                     <Opacity fontSize="small" />
@@ -380,38 +372,6 @@ const LegendItem = memo(
       </ListItem>
     );
   },
-);
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    paper: {
-      padding: 8,
-      width: 180,
-      borderRadius: '8px',
-    },
-    slider: {
-      padding: '0 5px',
-    },
-    opacityBox: {
-      backgroundColor: 'white',
-      width: 172,
-      overflow: 'hidden',
-    },
-    opacitySliderRoot: {
-      color: '#4CA1AD',
-      flexGrow: 1,
-      padding: '18px 0',
-    },
-    opacitySliderThumb: {
-      backgroundColor: '#4CA1AD',
-    },
-    opacityText: {
-      color: '#4CA1AD',
-      marginRight: 5,
-      width: 28,
-      lineHeight: '36px',
-    },
-  }),
 );
 
 export interface DateCoverage {

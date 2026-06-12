@@ -1,37 +1,34 @@
-import { Typography } from '@mui/material';
-import { ClassNameMap } from '@mui/styles';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { Box, Typography } from '@mui/material';
+import type { ReactNode } from 'react';
 import Markdown, { type Components } from 'react-markdown';
+
+import { legendBodyTextSx, legendLinkSx } from './legendStyles';
 
 interface LegendMarkdownProps {
   children: string;
 }
 
-const p = (
-  classes: ClassNameMap<'legendTextMarkdown'>,
-): NonNullable<Components['p']> =>
-  function LegendParagraph({ children }) {
-    return (
-      <Typography variant="h5" className={classes.legendTextMarkdown}>
-        {children}
-      </Typography>
-    );
-  };
+function LegendParagraph({ children }: { children?: ReactNode }) {
+  return (
+    <Typography variant="h5" sx={legendBodyTextSx}>
+      {children}
+    </Typography>
+  );
+}
 
 function LegendMarkdown({ children }: LegendMarkdownProps) {
-  const classes = useStyles();
   const components: Components = {
-    p: p(classes),
+    p: LegendParagraph,
     a: ({ children: linkChildren, href }) => (
-      <a
+      <Box
+        component="a"
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className={classes.legendLink}
+        sx={legendLinkSx}
       >
         {linkChildren}
-      </a>
+      </Box>
     ),
   };
 
@@ -44,18 +41,5 @@ function LegendMarkdown({ children }: LegendMarkdownProps) {
     </Markdown>
   );
 }
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    legendTextMarkdown: {
-      '& a': {
-        textDecoration: 'underline',
-      },
-    },
-    legendLink: {
-      textDecoration: 'underline',
-    },
-  }),
-);
 
 export default LegendMarkdown;

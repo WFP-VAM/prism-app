@@ -8,7 +8,6 @@ import {
   RadioProps,
   useRadioGroup,
 } from '@mui/material';
-import withStyles from '@mui/styles/withStyles';
 import {
   LIGHT_BLUE_HEX,
   LIGHT_GREEN_HEX,
@@ -20,9 +19,10 @@ import {
   AnticipatoryActionDataRow,
 } from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { useSafeTranslation } from 'i18n';
-import { black, borderGray, lightGrey } from 'muiTheme';
+import { lightGrey } from 'muiTheme';
 
 import AAIcon from '../AAIcon';
+import { aaDroughtRadioSx } from '../aaPanelStyles';
 
 // Centralized colors for AA Drought
 export const AADroughtColors = {
@@ -48,24 +48,14 @@ export const AADroughtColors = {
   },
 } as const;
 
-const StyledRadio = withStyles({
-  root: {
-    '&$checked': {
-      color: black,
-    },
-    padding: '0.25rem',
-  },
-})((props: RadioProps) => <Radio color="default" {...props} />);
+const StyledRadio = (props: RadioProps) => (
+  <Radio color="default" sx={aaDroughtRadioSx.radio} {...props} />
+);
 
-export const StyledRadioLabel = withStyles({
-  root: {
-    border: `1px solid ${borderGray}`,
-    borderRadius: '32px',
-    height: '1.75rem',
-    marginLeft: 0,
-    marginRight: '0.5rem',
-  },
-})(({ label, ...props }: Omit<FormControlLabelProps, 'control'>) => {
+export const StyledRadioLabel = ({
+  label,
+  ...props
+}: Omit<FormControlLabelProps, 'control'>) => {
   const { t } = useSafeTranslation();
   const radioGroup = useRadioGroup();
   const checked = radioGroup?.value === props.value;
@@ -79,6 +69,7 @@ export const StyledRadioLabel = withStyles({
 
   return (
     <FormControlLabel
+      sx={aaDroughtRadioSx.radioLabel}
       style={{ background: checked ? lightGrey : undefined }}
       label={
         <span style={{ marginRight: '1rem' }}>
@@ -100,39 +91,26 @@ export const StyledRadioLabel = withStyles({
       {...props}
     />
   );
-});
+};
 
-const StyledCheckbox = withStyles({
-  root: {
-    '&$checked': {
-      color: black,
-    },
-    padding: '0.2rem',
-  },
-})((props: CheckboxProps) => <Checkbox color="default" {...props} />);
+const StyledCheckbox = (props: CheckboxProps) => (
+  <Checkbox color="default" sx={aaDroughtRadioSx.checkbox} {...props} />
+);
 
-export const StyledCheckboxLabel = withStyles({
-  root: {
-    border: `1px solid ${borderGray}`,
-    borderRadius: '2px',
-    height: '1.75rem',
-    marginLeft: 0,
-  },
-})(
-  ({
-    label,
-    checkBoxProps,
-    ...props
-  }: Omit<FormControlLabelProps, 'control'> & {
-    checkBoxProps: CheckboxProps;
-  }) => (
-    <FormControlLabel
-      style={{ background: checkBoxProps.checked ? lightGrey : undefined }}
-      label={<span style={{ marginRight: '0.5rem' }}>{label}</span>}
-      control={<StyledCheckbox {...checkBoxProps} />}
-      {...props}
-    />
-  ),
+export const StyledCheckboxLabel = ({
+  label,
+  checkBoxProps,
+  ...props
+}: Omit<FormControlLabelProps, 'control'> & {
+  checkBoxProps: CheckboxProps;
+}) => (
+  <FormControlLabel
+    sx={aaDroughtRadioSx.checkboxLabel}
+    style={{ background: checkBoxProps.checked ? lightGrey : undefined }}
+    label={<span style={{ marginRight: '0.5rem' }}>{label}</span>}
+    control={<StyledCheckbox {...checkBoxProps} />}
+    {...props}
+  />
 );
 
 const AACategoryPhaseMap: { [key: string]: any } = {

@@ -3,13 +3,14 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-grow makeStyles-dateItem-3 css-1ynczkt-MuiGrid-root"
+    class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-grow css-65xsgw-MuiGrid-root"
     data-date-index="0"
     data-mui-internal-clone-element="true"
   >
     <div />
     <div
-      class="makeStyles-dayItem-19"
+      class="prism-timeline-day-item MuiBox-root css-f9ui2e"
+      role="presentation"
     />
   </div>
 </div>

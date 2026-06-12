@@ -3,7 +3,7 @@
 exports[`renders as expected 1`] = `
 <div>
   <button
-    class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary makeStyles-buttonStyle-1 css-1qx1r4x-MuiButtonBase-root-MuiButton-root"
+    class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary css-1grkf2k-MuiButtonBase-root-MuiButton-root"
     tabindex="0"
     type="button"
   >

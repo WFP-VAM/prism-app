@@ -1,7 +1,5 @@
-import { Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { ToggleButton, ToggleButtonGroup } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import { formatInUTC } from 'components/MapView/Layers/AnticipatoryActionStormLayer/utils';
 import { AAStormColors } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
 import { DateRangeType } from 'config/types';
@@ -18,12 +16,21 @@ import { getFormattedDate } from 'utils/date-utils';
 import { useUrlHistory } from 'utils/url-utils';
 
 import { useWindStatesByTime } from '../hooks';
+import {
+  aaStormTooltipContainerSx,
+  aaStormTooltipCycloneNameSx,
+  aaStormTooltipCycloneRowSx,
+  aaStormTooltipCyclonesContainerSx,
+  aaStormTooltipDateAndCyclonesContainerSx,
+  aaStormTooltipDateSx,
+  aaStormTooltipTimeSx,
+  aaStormTooltipToggleButtonSx,
+} from '../timelineItemsStyles';
 
 function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
   const { updateHistory } = useUrlHistory();
   const stormData = useSelector(AADataSelector);
   const allWindStates = useWindStatesByTime(date.value);
-  const classes = useStyles();
   const dispatch = useDispatch();
 
   const hourToggleHandler = (
@@ -63,17 +70,16 @@ function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
   };
 
   return (
-    <div className={classes.container}>
-      <div className={classes.dateAndCyclonesContainer}>
-        <div className={classes.cyclonesContainer}>
-          {}
+    <Box sx={aaStormTooltipContainerSx}>
+      <Box sx={aaStormTooltipDateAndCyclonesContainerSx}>
+        <Box sx={aaStormTooltipCyclonesContainerSx}>
           {allWindStates
             .sort((a, b) =>
               (a.cycloneName || '').localeCompare(b.cycloneName || ''),
             )
             .map(windStates => (
-              <div key={windStates.cycloneName} className={classes.cycloneRow}>
-                <Typography className={classes.cycloneName}>
+              <Box key={windStates.cycloneName} sx={aaStormTooltipCycloneRowSx}>
+                <Typography sx={aaStormTooltipCycloneNameSx}>
                   {windStates.cycloneName?.toUpperCase()}
                 </Typography>
                 <ToggleButtonGroup
@@ -95,7 +101,7 @@ function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
                         key={`${windStates.cycloneName}::${itemDate.valueOf()}::${index}`}
                         value={`${windStates.cycloneName?.toUpperCase()}::${item.ref_time}`}
                         onMouseDown={e => e.preventDefault()}
-                        className={classes.toggleButton}
+                        sx={aaStormTooltipToggleButtonSx}
                         style={{
                           backgroundColor: `${getButtonColor(item.state)}${
                             `${windStates.cycloneName?.toUpperCase()}::${item.ref_time}` ===
@@ -107,69 +113,23 @@ function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
                           }`,
                         }}
                       >
-                        <Typography className={classes.time}>
+                        <Typography sx={aaStormTooltipTimeSx}>
                           {formattedItemTime}
                         </Typography>
                       </ToggleButton>
                     );
                   })}
                 </ToggleButtonGroup>
-              </div>
+              </Box>
             ))}
-        </div>
-        <Typography className={classes.date}>
+        </Box>
+        <Typography sx={aaStormTooltipDateSx}>
           {formatInUTC(new Date(date.value), 'MM/dd/yy')}
         </Typography>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    container: {
-      display: 'flex',
-      flexDirection: 'column',
-    },
-    dateAndCyclonesContainer: {
-      display: 'flex',
-      alignItems: 'center',
-    },
-    date: {
-      minWidth: 'fit-content',
-      gap: '8px',
-    },
-    cyclonesContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '8px',
-      width: '100%',
-    },
-    cycloneRow: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '8px',
-      justifyContent: 'flex-end',
-      width: '100%',
-    },
-    cycloneName: {
-      fontSize: '12px',
-      fontWeight: 500,
-      minWidth: 'fit-content',
-    },
-    time: {
-      fontSize: '12px',
-      fontWeight: 400,
-      lineHeight: '15px',
-      color: '#101010',
-      whiteSpace: 'nowrap',
-    },
-    toggleButton: {
-      padding: '6px 6px',
-      minHeight: 0,
-    },
-  }),
-);
 
 interface AAStormTooltipContentProps {
   date: DateRangeType;

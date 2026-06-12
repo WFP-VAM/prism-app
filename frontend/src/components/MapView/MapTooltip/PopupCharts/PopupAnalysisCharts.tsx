@@ -1,5 +1,4 @@
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { Box } from '@mui/material';
 import ChartSection from 'components/MapView/LeftPanel/ChartsPanel/ChartSection';
 import { oneYearInMs } from 'components/MapView/LeftPanel/utils';
 import { appConfig } from 'config';
@@ -22,24 +21,10 @@ import { useSelector } from 'react-redux';
 import { getLayerMapId } from 'utils/map-utils';
 import { useBoundaryData } from 'utils/useBoundaryData';
 
+import { chartContainerSx, chartSectionSx } from '../mapTooltipStyles';
 import PopupChartWrapper from './PopupChartWrapper';
 
 const { country } = appConfig;
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    chartContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '8px',
-    },
-    chartSection: {
-      height: '240px',
-      width: '400px',
-      flexGrow: 1,
-    },
-  }),
-);
 
 const boundaryLayer = getBoundaryLayersByAdminLevel();
 
@@ -78,7 +63,6 @@ function PopupAnalysisCharts({
   adminLevel,
   adminLevelsNames,
 }: PopupChartProps) {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
   const dataForCsv = useRef<{ [key: string]: any[] }>({});
   const { data } = useBoundaryData(boundaryLayer.id);
@@ -114,8 +98,8 @@ function PopupAnalysisCharts({
   return (
     <PopupChartWrapper key={adminProperties?.id}>
       {filteredChartLayers.map(filteredChartLayer => (
-        <div key={filteredChartLayer.id} className={classes.chartContainer}>
-          <div className={classes.chartSection}>
+        <Box key={filteredChartLayer.id} sx={chartContainerSx}>
+          <Box sx={chartSectionSx}>
             <ChartSection
               key={`${filteredChartLayer.id}-${adminCode}-${adminLevel}-${chartStartDate}-${chartEndDate}`}
               chartLayer={filteredChartLayer}
@@ -130,8 +114,8 @@ function PopupAnalysisCharts({
                 downloadFilenamePrefix: [t(country), ...adminLevelsNames()],
               }}
             />
-          </div>
-        </div>
+          </Box>
+        </Box>
       ))}
     </PopupChartWrapper>
   );

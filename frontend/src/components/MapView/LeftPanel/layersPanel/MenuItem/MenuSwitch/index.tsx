@@ -8,13 +8,14 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import { Extent } from 'components/MapView/Layers/raster-utils';
+import {
+  activeLayersCountChipSx,
+  menuSwitchAccordionSx,
+} from 'components/MapView/LeftPanel/layersPanel/layerPanelStyles';
 import { filterActiveLayers } from 'components/MapView/utils';
 import { LayerType } from 'config/types';
 import { useSafeTranslation } from 'i18n';
-import { cyanBlue, lightGrey } from 'muiTheme';
 import {
   memo,
   type SyntheticEvent,
@@ -28,36 +29,6 @@ import { useMapState } from 'utils/useMapState';
 import { makeSafeIDFromTitle } from '../utils';
 import SwitchItems from './SwitchItems';
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      position: 'inherit',
-      maxWidth: '100%',
-    },
-    rootSummary: {
-      backgroundColor: lightGrey,
-    },
-    rootDetails: {
-      padding: 0,
-      backgroundColor: '#FFFFFF',
-    },
-    expandIcon: {
-      color: 'black',
-    },
-    summaryContent: {
-      alignItems: 'center',
-    },
-    chipRoot: {
-      marginLeft: '1.5%',
-    },
-    title: {
-      color: 'black',
-      fontSize: '14px',
-      fontWeight: 400,
-    },
-  }),
-);
-
 interface MenuSwitchProps {
   title: string;
   layers: LayerType[];
@@ -68,7 +39,6 @@ const MenuSwitch = memo(({ title, layers, extent }: MenuSwitchProps) => {
   const { t } = useSafeTranslation();
   const mapState = useMapState();
   const selectedLayers = mapState.layers;
-  const classes = useStyles();
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleAccordionExpand = useCallback(
@@ -115,13 +85,11 @@ const MenuSwitch = memo(({ title, layers, extent }: MenuSwitchProps) => {
       <Chip
         onMouseEnter={handleChipOnMouseEnter}
         onMouseLeave={handleChipOnMouseLeave}
-        classes={{ root: classes.chipRoot }}
-        style={{ backgroundColor: cyanBlue }}
+        sx={activeLayersCountChipSx}
         label={informationChipLabel}
       />
     );
   }, [
-    classes.chipRoot,
     handleChipOnMouseEnter,
     handleChipOnMouseLeave,
     informationChipLabel,
@@ -131,24 +99,20 @@ const MenuSwitch = memo(({ title, layers, extent }: MenuSwitchProps) => {
   return (
     <Accordion
       elevation={0}
-      classes={{ root: classes.root }}
+      sx={menuSwitchAccordionSx.root}
       onChange={handleAccordionExpand}
       slotProps={{ transition: { unmountOnExit: true } }}
     >
       <AccordionSummary
         expandIcon={isExpanded ? <RemoveIcon /> : <AddIcon />}
-        classes={{
-          root: classes.rootSummary,
-          expandIconWrapper: classes.expandIcon,
-          content: classes.summaryContent,
-        }}
+        sx={menuSwitchAccordionSx.summary}
         aria-controls={title}
         id={`level2-${makeSafeIDFromTitle(title)}`}
       >
-        <Typography classes={{ root: classes.title }}>{t(title)}</Typography>
+        <Typography sx={menuSwitchAccordionSx.title}>{t(title)}</Typography>
         {renderedSelectedLayerInformation}
       </AccordionSummary>
-      <AccordionDetails classes={{ root: classes.rootDetails }}>
+      <AccordionDetails sx={menuSwitchAccordionSx.details}>
         <Stack direction="column">
           <SwitchItems layers={layers} extent={extent} />
         </Stack>

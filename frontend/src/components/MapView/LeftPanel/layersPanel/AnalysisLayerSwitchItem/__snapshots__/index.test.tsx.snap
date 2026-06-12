@@ -3,7 +3,7 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="makeStyles-analysisLayerSwitchRootItem-1 MuiBox-root css-0"
+    class="MuiBox-root css-14r34si"
     style="display: flex; flex-direction: column; max-width: 100%;"
   >
     <div
@@ -14,10 +14,10 @@ exports[`renders as expected 1`] = `
         style="display: flex;"
       >
         <span
-          class="MuiSwitch-root MuiSwitch-sizeSmall makeStyles-switch-7 css-fzgmul-MuiSwitch-root"
+          class="MuiSwitch-root MuiSwitch-sizeSmall css-1gm5r7z-MuiSwitch-root"
         >
           <span
-            class="MuiButtonBase-root MuiSwitch-switchBase makeStyles-switchBase-9 MuiSwitch-colorPrimary Mui-checked PrivateSwitchBase-root MuiSwitch-switchBase makeStyles-switchBase-9 MuiSwitch-colorPrimary Mui-checked Mui-checked css-tznl3-MuiButtonBase-root-MuiSwitchBase-root-MuiSwitch-switchBase"
+            class="MuiButtonBase-root MuiSwitch-switchBase MuiSwitch-colorPrimary Mui-checked PrivateSwitchBase-root MuiSwitch-switchBase MuiSwitch-colorPrimary Mui-checked Mui-checked css-tznl3-MuiButtonBase-root-MuiSwitchBase-root-MuiSwitch-switchBase"
           >
             <input
               aria-label="Some Analysis Layer Title"
@@ -31,11 +31,11 @@ exports[`renders as expected 1`] = `
             />
           </span>
           <span
-            class="MuiSwitch-track makeStyles-switchTrack-8 css-pm6g3f-MuiSwitch-track"
+            class="MuiSwitch-track css-pm6g3f-MuiSwitch-track"
           />
         </span>
         <p
-          class="MuiTypography-root MuiTypography-body1 makeStyles-title-2 css-l0p3u8-MuiTypography-root"
+          class="MuiTypography-root MuiTypography-body1 css-whxbpl-MuiTypography-root"
         >
           Some Analysis Layer Title
         </p>
@@ -50,7 +50,7 @@ exports[`renders as expected 1`] = `
           data-mui-internal-clone-element="true"
         >
           <button
-            class="MuiButtonBase-root MuiIconButton-root makeStyles-opacityRoot-10 MuiIconButton-sizeLarge css-1log9d8-MuiButtonBase-root-MuiIconButton-root"
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-1k2af70-MuiButtonBase-root-MuiIconButton-root"
             tabindex="0"
             type="button"
           >
@@ -69,7 +69,7 @@ exports[`renders as expected 1`] = `
         </span>
         <button
           aria-label="Download"
-          class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-1log9d8-MuiButtonBase-root-MuiIconButton-root"
+          class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-154kngp-MuiButtonBase-root-MuiIconButton-root"
           data-mui-internal-clone-element="true"
           tabindex="0"
           type="button"

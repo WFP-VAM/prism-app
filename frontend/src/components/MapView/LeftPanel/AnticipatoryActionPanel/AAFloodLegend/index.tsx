@@ -1,85 +1,13 @@
 import { Visibility } from '@mui/icons-material';
 import { Box, Divider, Typography } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import { AAFloodColors } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionFloodPanel/constants';
 import { getFloodRiskColor } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
 import { useSafeTranslation } from 'i18n';
 import { black } from 'muiTheme';
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      padding: '0.5rem',
-      minWidth: '350px',
-      maxWidth: '400px',
-    },
-    header: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      marginBottom: '1rem',
-    },
-    title: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '0.5rem',
-      fontWeight: 'bold',
-      fontSize: '1.1rem',
-    },
-    closeButton: {
-      padding: '4px',
-    },
-    sectionTitle: {
-      fontWeight: 'bold',
-      marginBottom: '0.75rem',
-      fontSize: '0.95rem',
-    },
-    itemWrapper: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '0.75rem',
-      marginBottom: '0.5rem',
-    },
-    categoryCircle: {
-      width: '12px',
-      height: '12px',
-      borderRadius: '50%',
-      flexShrink: 0,
-    },
-    trendTriangle: {
-      width: 0,
-      height: 0,
-      flexShrink: 0,
-    },
-    itemText: {
-      fontSize: '0.9rem',
-    },
-    divider: {
-      margin: '0.75rem 0',
-    },
-    description: {
-      fontSize: '0.85rem',
-      color: '#666',
-      lineHeight: 1.4,
-    },
-    link: {
-      textDecoration: 'underline',
-      color: '#1976d2',
-      cursor: 'pointer',
-    },
-    opacitySection: {
-      marginBottom: '1rem',
-    },
-    sliderContainer: {
-      paddingLeft: '0.5rem',
-      paddingRight: '0.5rem',
-    },
-  }),
-);
+import { aaFloodLegendSx } from '../aaPanelStyles';
 
 function AAFloodLegend() {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
 
   const categories = [
@@ -111,8 +39,8 @@ function AAFloodLegend() {
 
   return (
     <div>
-      <Box className={classes.header}>
-        <Box className={classes.title}>
+      <Box sx={aaFloodLegendSx.header}>
+        <Box sx={aaFloodLegendSx.title}>
           <Visibility style={{ color: black }} />
           <Typography variant="h3" style={{ fontWeight: 'bold' }}>
             {t('Legend')}
@@ -120,30 +48,31 @@ function AAFloodLegend() {
         </Box>
       </Box>
 
-      <Typography className={classes.sectionTitle}>
+      <Typography sx={aaFloodLegendSx.sectionTitle}>
         {t('Riverine flood forecast')}
       </Typography>
 
       {categories.map(category => (
-        <div key={category.label} className={classes.itemWrapper}>
-          <div
-            className={classes.categoryCircle}
+        <Box key={category.label} sx={aaFloodLegendSx.itemWrapper}>
+          <Box
+            sx={aaFloodLegendSx.categoryCircle}
             style={{ backgroundColor: category.color }}
           />
-          <Typography className={classes.itemText}>
+          <Typography sx={aaFloodLegendSx.itemText}>
             {t(category.label)}
           </Typography>
-        </div>
+        </Box>
       ))}
 
-      <Divider className={classes.divider} />
+      <Divider sx={aaFloodLegendSx.divider} />
 
-      <Typography className={classes.description}>
+      <Typography sx={aaFloodLegendSx.description}>
         {t(
           'Probability of flooding at various severity categories based on GloFAS data. Visit',
         )}{' '}
-        <span
-          className={classes.link}
+        <Box
+          component="span"
+          sx={aaFloodLegendSx.link}
           onClick={handleGlofasClick}
           role="button"
           tabIndex={0}
@@ -154,7 +83,7 @@ function AAFloodLegend() {
           }}
         >
           {t('GloFAS')}
-        </span>{' '}
+        </Box>{' '}
         {t('to learn more about flood forecasting models.')}
       </Typography>
     </div>

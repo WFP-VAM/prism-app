@@ -3,61 +3,61 @@
 exports[`AAStormLandfallPopup component renders as expected 1`] = `
 <div>
   <div
-    class="makeStyles-itemsContainer-2"
+    class="MuiBox-root css-3a3hw0"
   >
     <p
-      class="MuiTypography-root MuiTypography-body1 makeStyles-text-4 makeStyles-title-5 css-l0p3u8-MuiTypography-root"
+      class="MuiTypography-root MuiTypography-body1 css-9d5aah-MuiTypography-root"
     >
       Report date
       : 
       2024-03-01 8pm (GMT+2)
     </p>
     <div
-      class="makeStyles-itemContainer-3"
+      class="MuiBox-root css-19ar6yu"
     >
       <p
-        class="MuiTypography-root MuiTypography-body1 makeStyles-text-4 css-l0p3u8-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-body1 css-1ioxswh-MuiTypography-root"
         style="max-width: 100px;"
       >
         Landfall estimated time
       </p>
       <p
-        class="MuiTypography-root MuiTypography-body1 makeStyles-text-4 makeStyles-textAlignRight-6 css-l0p3u8-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-body1 css-1mdc7jx-MuiTypography-root"
       >
         2024-03-12 03:00 GMT+2
         <span
-          class="makeStyles-block-1"
+          class="MuiBox-root css-13o7eu2"
         >
           += 5 hours
         </span>
       </p>
     </div>
     <div
-      class="makeStyles-itemContainer-3"
+      class="MuiBox-root css-19ar6yu"
     >
       <p
-        class="MuiTypography-root MuiTypography-body1 makeStyles-text-4 css-l0p3u8-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-body1 css-1ioxswh-MuiTypography-root"
         style="max-width: 150px;"
       >
         Landfall estimated leadtime
       </p>
       <p
-        class="MuiTypography-root MuiTypography-body1 makeStyles-text-4 makeStyles-textAlignRight-6 css-l0p3u8-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-body1 css-1mdc7jx-MuiTypography-root"
       >
         247 - 252 hrs
       </p>
     </div>
     <div
-      class="makeStyles-itemContainer-3"
+      class="MuiBox-root css-19ar6yu"
     >
       <p
-        class="MuiTypography-root MuiTypography-body1 makeStyles-text-4 css-l0p3u8-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-body1 css-1ioxswh-MuiTypography-root"
         style="max-width: 150px;"
       >
         District impacted by landfall
       </p>
       <p
-        class="MuiTypography-root MuiTypography-body1 makeStyles-text-4 makeStyles-textAlignRight-6 css-l0p3u8-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-body1 css-1mdc7jx-MuiTypography-root"
       >
         Inhassoro
       </p>

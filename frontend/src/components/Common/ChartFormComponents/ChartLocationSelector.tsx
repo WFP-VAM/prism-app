@@ -1,5 +1,5 @@
 import { Box, MenuItem, TextField, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import type { SxProps, Theme } from '@mui/material/styles';
 import {
   AdminBoundaryTree,
   getAdminBoundaryTree,
@@ -16,6 +16,29 @@ import { GeoJsonProperties } from 'geojson';
 import { useSafeTranslation } from 'i18n';
 import { sortBy } from 'lodash';
 import React from 'react';
+
+import {
+  colorBlackSx,
+  formContainerSx,
+  selectRootSx,
+} from '../formComponentStyles';
+
+const containerSx = formContainerSx(20);
+
+const labelSx = {
+  ...colorBlackSx,
+  fontWeight: 600,
+} satisfies SxProps<Theme>;
+
+const fieldsRowSx = {
+  display: 'flex',
+  gap: '16px',
+  width: '100%',
+} satisfies SxProps<Theme>;
+
+const removeAdminSx = {
+  fontWeight: 'bold',
+} satisfies SxProps<Theme>;
 
 interface ChartLocationSelectorProps {
   boundaryLayerData: BoundaryLayerData | undefined;
@@ -58,7 +81,6 @@ function ChartLocationSelector({
   hideLabel = false,
   labelMarginBottom = 8,
 }: ChartLocationSelectorProps) {
-  const classes = useStyles();
   const { t, i18n: i18nLocale } = useSafeTranslation();
 
   // In multi-country deployments the boundary hierarchy starts at the country
@@ -198,10 +220,10 @@ function ChartLocationSelector({
     ));
 
   return (
-    <div className={classes.container}>
+    <Box sx={containerSx}>
       {!hideLabel && (
         <Typography
-          className={classes.label}
+          sx={labelSx}
           variant="body2"
           style={{ marginBottom: labelMarginBottom }}
         >
@@ -209,13 +231,13 @@ function ChartLocationSelector({
         </Typography>
       )}
 
-      <div
-        className={classes.fieldsRow}
+      <Box
+        sx={fieldsRowSx}
         style={{ flexDirection: stacked ? 'column' : 'row' }}
       >
         {showCountryLevel && (
           <TextField
-            classes={{ root: classes.selectRoot }}
+            sx={selectRootSx}
             select
             label={t('Country')}
             value={selectedCountry?.adminCode ?? ''}
@@ -233,7 +255,7 @@ function ChartLocationSelector({
         )}
 
         <TextField
-          classes={{ root: classes.selectRoot }}
+          sx={selectRootSx}
           select
           label={t('Admin 1')}
           value={selectedAdmin1Area?.adminCode ?? ''}
@@ -247,7 +269,7 @@ function ChartLocationSelector({
           disabled={disabled || orderedAdmin1Areas.length === 0}
         >
           <MenuItem value="">
-            <Box className={classes.removeAdmin}>
+            <Box sx={removeAdminSx}>
               {showCountryLevel ? t('Remove Admin 1') : t('Country Level')}
             </Box>
           </MenuItem>
@@ -256,7 +278,7 @@ function ChartLocationSelector({
 
         {admin1Key && orderedAdmin2Areas.length > 0 && (
           <TextField
-            classes={{ root: classes.selectRoot }}
+            sx={selectRootSx}
             select
             label={t('Admin 2')}
             value={selectedAdmin2Area?.adminCode ?? ''}
@@ -270,53 +292,14 @@ function ChartLocationSelector({
             disabled={disabled}
           >
             <MenuItem value="">
-              <Box className={classes.removeAdmin}>{t('Remove Admin 2')}</Box>
+              <Box sx={removeAdminSx}>{t('Remove Admin 2')}</Box>
             </MenuItem>
             {renderMenuItemList(orderedAdmin2Areas)}
           </TextField>
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
-
-const useStyles = makeStyles(() => ({
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginBottom: 20,
-    marginLeft: 10,
-    width: '90%',
-    color: 'black',
-  },
-  label: {
-    color: 'black',
-    fontWeight: 600,
-  },
-  fieldsRow: {
-    display: 'flex',
-    gap: '16px',
-    width: '100%',
-  },
-  removeAdmin: {
-    fontWeight: 'bold',
-  },
-  selectRoot: {
-    flex: 1,
-    color: 'black',
-    '& .MuiFormLabel-root': {
-      color: 'black',
-    },
-    '& .MuiOutlinedInput-notchedOutline': {
-      borderColor: '#333333',
-    },
-    '&:hover .MuiOutlinedInput-notchedOutline': {
-      borderColor: '#333333',
-    },
-    '& .MuiSelect-root': {
-      color: 'black',
-    },
-  },
-}));
 
 export default ChartLocationSelector;

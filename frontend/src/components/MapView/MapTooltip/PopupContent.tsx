@@ -1,7 +1,4 @@
-import { Typography } from '@mui/material';
-import { ClassNameMap } from '@mui/styles';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { Box, Typography } from '@mui/material';
 import { PopupData, PopupMetaData } from 'context/tooltipStateSlice';
 import { Position } from 'geojson';
 import { useSafeTranslation } from 'i18n';
@@ -9,25 +6,11 @@ import { isEmpty, isEqual, sum } from 'lodash';
 import React, { Fragment, memo } from 'react';
 import { TFunction } from 'utils/data-utils';
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    phasePopulationTable: {
-      tableLayout: 'fixed',
-      borderCollapse: 'collapse',
-      width: '100%',
-      borderWidth: '1px;',
-      borderColor: 'inherit',
-      borderStyle: 'solid',
-      border: '1px solid white',
-    },
-    phasePopulationTableRow: {
-      border: '1px solid white',
-    },
-    text: {
-      marginBottom: '4px',
-    },
-  }),
-);
+import {
+  mapTooltipTextSx,
+  phasePopulationTableRowSx,
+  phasePopulationTableSx,
+} from './mapTooltipStyles';
 
 // This function prepares phasePopulationTable for rendering and is specific
 // to the data structure of the phase classification layer.
@@ -36,7 +19,6 @@ const useStyles = makeStyles(() =>
 const generatePhasePopulationTable = (
   popupData: PopupData,
   t: TFunction,
-  classes: ClassNameMap,
 ): React.JSX.Element | null => {
   const phasePopulations: Record<string, number> = Object.entries(
     popupData,
@@ -74,14 +56,14 @@ const generatePhasePopulationTable = (
       <Typography variant="h4" color="inherit">
         {t('Population and percentage by phase classification')}
       </Typography>
-      <table className={classes.phasePopulationTable}>
+      <Box component="table" sx={phasePopulationTableSx}>
         <tbody>
-          <tr className={classes.phasePopulationTableRow}>
+          <Box component="tr" sx={phasePopulationTableRowSx}>
             {Object.keys(phasePopulations).map((phaseName: string) => (
               <th key={phaseName}>{t(phaseName)}</th>
             ))}
-          </tr>
-          <tr className={classes.phasePopulationTableRow}>
+          </Box>
+          <Box component="tr" sx={phasePopulationTableRowSx}>
             {Object.values(phasePopulations).map(
               (populationInPhase: number) => (
                 <th key={populationInPhase}>
@@ -89,8 +71,8 @@ const generatePhasePopulationTable = (
                 </th>
               ),
             )}
-          </tr>
-          <tr className={classes.phasePopulationTableRow}>
+          </Box>
+          <Box component="tr" sx={phasePopulationTableRowSx}>
             {Object.values(phasePopulations).map(
               (populationInPhase: number) => (
                 <th key={`perc_${populationInPhase}`}>
@@ -101,9 +83,9 @@ const generatePhasePopulationTable = (
                 </th>
               ),
             )}
-          </tr>
+          </Box>
         </tbody>
-      </table>
+      </Box>
     </div>
   );
 
@@ -116,14 +98,9 @@ interface PopupContentProps {
 }
 
 const PopupContent = memo(({ popupData, coordinates }: PopupContentProps) => {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
 
-  const phasePopulationTable = generatePhasePopulationTable(
-    popupData,
-    t,
-    classes,
-  );
+  const phasePopulationTable = generatePhasePopulationTable(popupData, t);
   // If a table is displayed, filter out popupData where key value contains "Population in phase"
   const popupDataWithoutPhasePopulations: PopupData = !phasePopulationTable
     ? popupData
@@ -177,7 +154,7 @@ const PopupContent = memo(({ popupData, coordinates }: PopupContentProps) => {
                       component="span"
                       variant="h4"
                       color="inherit"
-                      className={classes.text}
+                      sx={mapTooltipTextSx}
                     >
                       {isKeyValuePair ? `${t(key)}: ` : t(key)}
                     </Typography>
@@ -187,7 +164,7 @@ const PopupContent = memo(({ popupData, coordinates }: PopupContentProps) => {
                     component="span"
                     variant="h4"
                     color="inherit"
-                    className={classes.text}
+                    sx={mapTooltipTextSx}
                   >
                     {`${value.data}`}
                   </Typography>

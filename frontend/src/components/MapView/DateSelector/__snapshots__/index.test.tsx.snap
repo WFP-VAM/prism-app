@@ -128,17 +128,17 @@ exports[`calculates correct coverageWindow for a date array 1`] = `
 exports[`renders as expected with a single date 1`] = `
 <div>
   <div
-    class="makeStyles-container-1"
+    class="MuiBox-root css-czgxyw"
     style="z-index: 1300;"
   >
     <div
-      class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row makeStyles-datePickerContainer-3 css-o66a3z-MuiGrid-root"
+      class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row css-1c7n71r-MuiGrid-root"
     >
       <div
-        class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-12 MuiGrid-grid-sm-1 makeStyles-datePickerGrid-7 css-36ci00-MuiGrid-root"
+        class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-12 MuiGrid-grid-sm-1 css-1d7trdl-MuiGrid-root"
       >
         <button
-          class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-13hs1jc-MuiButtonBase-root-MuiButton-root"
+          class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-tng5c-MuiButtonBase-root-MuiButton-root"
           tabindex="0"
           type="button"
         >
@@ -162,7 +162,7 @@ exports[`renders as expected with a single date 1`] = `
             class="react-datepicker__input-container"
           >
             <button
-              class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary makeStyles-buttonStyle-13 makeStyles-datePickerInput-5 css-1qx1r4x-MuiButtonBase-root-MuiButton-root"
+              class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary css-1grkf2k-MuiButtonBase-root-MuiButton-root"
               tabindex="0"
               type="button"
             >
@@ -171,7 +171,7 @@ exports[`renders as expected with a single date 1`] = `
           </div>
         </div>
         <button
-          class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-13hs1jc-MuiButtonBase-root-MuiButton-root"
+          class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-tng5c-MuiButtonBase-root-MuiButton-root"
           tabindex="0"
           type="button"
         >
@@ -190,10 +190,10 @@ exports[`renders as expected with a single date 1`] = `
         </button>
       </div>
       <div
-        class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-12 MuiGrid-grid-sm-grow makeStyles-slider-8 css-1hz2gq3-MuiGrid-root"
+        class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-12 MuiGrid-grid-sm-grow css-25gep9-MuiGrid-root"
       >
         <button
-          class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary makeStyles-chevronDate-2 css-13hs1jc-MuiButtonBase-root-MuiButton-root"
+          class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-fiirae-MuiButtonBase-root-MuiButton-root"
           id="chevronLeftButton"
           tabindex="0"
           type="button"
@@ -211,21 +211,21 @@ exports[`renders as expected with a single date 1`] = `
           </svg>
         </button>
         <div
-          class="MuiGrid-root MuiGrid-direction-xs-row makeStyles-dateContainer-9 css-17fpwt7-MuiGrid-root"
+          class="MuiGrid-root MuiGrid-direction-xs-row css-16lp2s-MuiGrid-root"
         >
           <div
-            class="makeStyles-timeline-11 react-draggable"
+            class="react-draggable MuiBox-root css-qo6dc9"
             id="dateTimelineSelector"
             style="transform: translate(-276px,0px);"
           >
             <div
-              class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row makeStyles-dateLabelContainer-10 css-1p9u5dx-MuiGrid-root"
+              class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row css-taj9po-MuiGrid-root"
               style="min-width: 1460px;"
             >
               mock-timelineitems
             </div>
             <div
-              class="makeStyles-pointer-12 react-draggable"
+              class="react-draggable MuiBox-root css-1nsplq8"
               id="datePointerSelector"
               style="transform: translate(276px,0px);"
             >
@@ -238,7 +238,7 @@ exports[`renders as expected with a single date 1`] = `
           </div>
         </div>
         <button
-          class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary makeStyles-chevronDate-2 css-13hs1jc-MuiButtonBase-root-MuiButton-root"
+          class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-fiirae-MuiButtonBase-root-MuiButton-root"
           id="chevronRightButton"
           tabindex="0"
           type="button"

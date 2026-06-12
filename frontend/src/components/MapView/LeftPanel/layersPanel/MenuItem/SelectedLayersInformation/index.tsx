@@ -1,18 +1,8 @@
 import { Chip } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { selectedLayersChipSx } from 'components/MapView/LeftPanel/layersPanel/layerPanelStyles';
 import { LayerType } from 'config/types';
 import { useSafeTranslation } from 'i18n';
-import { cyanBlue } from 'muiTheme';
 import { memo, useCallback, useEffect, useState } from 'react';
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    chipRoot: {
-      marginLeft: '3%',
-    },
-  }),
-);
 
 interface SelectedLayersInformationProps {
   selectedCategoryLayers: LayerType[];
@@ -20,7 +10,6 @@ interface SelectedLayersInformationProps {
 
 const SelectedLayersInformation = memo(
   ({ selectedCategoryLayers }: SelectedLayersInformationProps) => {
-    const classes = useStyles();
     const { t } = useSafeTranslation();
     const [informationChipLabel, setInformationChipLabel] = useState<string>(
       selectedCategoryLayers.length.toString(),
@@ -50,8 +39,7 @@ const SelectedLayersInformation = memo(
       <Chip
         onMouseEnter={handleChipOnMouseEnter}
         onMouseLeave={handleChipOnMouseLeave}
-        classes={{ root: classes.chipRoot }}
-        style={{ backgroundColor: cyanBlue }}
+        sx={selectedLayersChipSx}
         label={informationChipLabel}
       />
     );

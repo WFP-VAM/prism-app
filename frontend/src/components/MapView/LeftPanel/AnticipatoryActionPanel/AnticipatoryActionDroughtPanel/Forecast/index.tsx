@@ -1,7 +1,5 @@
 import { ClearAll, Reply } from '@mui/icons-material';
-import { Button, Typography } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { Box, Button, Typography } from '@mui/material';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {
   AADataSelector,
@@ -16,12 +14,11 @@ import {
 } from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
-import { lightGrey } from 'muiTheme';
 import { Scatter } from 'react-chartjs-2';
 import { useDispatch, useSelector } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
 
-import { useAACommonStyles } from '../../utils';
+import { aaCommonSx, aaForecastSx } from '../../aaPanelStyles';
 import { getAAColor } from '../utils';
 import { chartOptions, forecastTransform, getChartData } from './utils';
 
@@ -33,8 +30,6 @@ interface ForecastProps {
 }
 
 function Forecast({ dialogs }: ForecastProps) {
-  const classes = useForecastStyle();
-  const commonClasses = useAACommonStyles();
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
   const AAData = useSelector(AADataSelector);
@@ -63,13 +58,13 @@ function Forecast({ dialogs }: ForecastProps) {
 
   if (indexes.length === 0) {
     return (
-      <div className={classes.noData}>
+      <Box sx={aaForecastSx.noData}>
         <Typography>
           {t(
             `No data available yet for ${selectedDistrict}. Please pick a later date.`,
           )}
         </Typography>
-      </div>
+      </Box>
     );
   }
 
@@ -79,16 +74,16 @@ function Forecast({ dialogs }: ForecastProps) {
         {t('Forecast data as of ')}
         {getFormattedDate(selectedDate, 'locale', t('date_locale'))}
       </Typography>
-      <div className={classes.charts}>
-        <div className={classes.chartsHeader}>
-          <div style={{ minWidth: '3rem' }} />
+      <Box sx={aaForecastSx.charts}>
+        <Box sx={aaForecastSx.chartsHeader}>
+          <Box sx={{ minWidth: '3rem' }} />
           {indexes.map(x => (
-            <Typography key={x} className={classes.label}>
+            <Typography key={x} sx={aaForecastSx.label}>
               {t(x)}
             </Typography>
           ))}
-          <div style={{ minWidth: '10px' }} />
-        </div>
+          <Box sx={{ minWidth: '10px' }} />
+        </Box>
 
         {Object.entries(chartData)
           .filter(([sev, _]) => filters.categories[sev as AACategoryType])
@@ -107,13 +102,13 @@ function Forecast({ dialogs }: ForecastProps) {
           .map(([sev, indexData]) => {
             const color = getAAColor(sev as AACategoryType, 'Ready');
             return (
-              <div className={classes.chartLine} key={sev}>
-                <div
-                  className={classes.textWrap}
+              <Box sx={aaForecastSx.chartLine} key={sev}>
+                <Box
+                  sx={aaForecastSx.textWrap}
                   style={{ backgroundColor: color }}
                 >
                   <Typography
-                    className={classes.text}
+                    sx={aaForecastSx.text}
                     style={{
                       color: sev === 'Severe' ? 'white' : ' black',
                       border: `1px solid ${
@@ -123,25 +118,25 @@ function Forecast({ dialogs }: ForecastProps) {
                   >
                     {t(sev)}
                   </Typography>
-                </div>
+                </Box>
 
-                <div className={classes.chartWrapper}>
+                <Box sx={aaForecastSx.chartWrapper}>
                   <Scatter
                     data={getChartData(indexData, color) as any}
                     plugins={[ChartDataLabels]}
                     options={chartOptions as any}
                   />
-                </div>
-              </div>
+                </Box>
+              </Box>
             );
           })}
-      </div>
-      <div className={commonClasses.footerWrapperVert}>
-        <div className={commonClasses.footerActionsWrapper}>
+      </Box>
+      <Box sx={aaCommonSx.footerWrapperVert}>
+        <Box sx={aaCommonSx.footerActionsWrapper}>
           {forecastButtons.map(x => (
             <Button
               key={x.text}
-              className={commonClasses.footerButton}
+              sx={aaCommonSx.footerButton}
               variant="outlined"
               fullWidth
               onClick={x.onClick}
@@ -150,84 +145,22 @@ function Forecast({ dialogs }: ForecastProps) {
               <Typography>{t(x.text)}</Typography>
             </Button>
           ))}
-        </div>
-        <div className={commonClasses.footerDialogsWrapperVert}>
+        </Box>
+        <Box sx={aaCommonSx.footerDialogsWrapperVert}>
           {dialogs.map(dialog => (
             <Typography
               key={dialog.text}
-              className={commonClasses.footerDialog}
+              sx={aaCommonSx.footerDialog}
               component="button"
               onClick={() => dialog.onclick()}
             >
               {t(dialog.text)}
             </Typography>
           ))}
-        </div>
-      </div>
+        </Box>
+      </Box>
     </>
   );
 }
-
-const useForecastStyle = makeStyles(() =>
-  createStyles({
-    noData: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100%',
-    },
-    charts: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '1rem',
-      width: '100%',
-      background: lightGrey,
-    },
-    chartsHeader: {
-      display: 'flex',
-      flexDirection: 'row',
-      flexWrap: 'nowrap',
-      paddingLeft: '2.6rem',
-      paddingRight: '0.5rem',
-      marginBottom: '-1rem',
-      background: 'white',
-    },
-    chartLine: {
-      display: 'flex',
-      flexDirection: 'row',
-      flexWrap: 'nowrap',
-      background: 'white',
-    },
-    textWrap: {
-      width: '2.6rem',
-      display: 'flex',
-      justifyContent: 'center',
-    },
-    text: {
-      fontSize: '0.9rem',
-      fontWeight: 400,
-      borderRadius: '2px',
-      writingMode: 'vertical-lr',
-      textTransform: 'uppercase',
-      transform: 'rotate(180deg)',
-      padding: '0.5rem 0.1rem',
-      margin: 'auto',
-    },
-    chartWrapper: {
-      paddingBottom: '0.5rem',
-      height: '7rem',
-      width: '100%',
-    },
-    label: {
-      background: lightGrey,
-      margin: '0.5rem',
-      borderRadius: '4px',
-      textAlign: 'center',
-      textTransform: 'uppercase',
-      lineHeight: '2rem',
-      width: '100%',
-    },
-  }),
-);
 
 export default Forecast;

@@ -1,6 +1,4 @@
-import { Drawer, Theme } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { Box, Drawer } from '@mui/material';
 import { AnticipatoryAction, Panel } from 'config/types';
 import {
   AALayerIds,
@@ -27,6 +25,7 @@ import AnticipatoryActionFloodPanel from './AnticipatoryActionPanel/Anticipatory
 import ChartsPanel from './ChartsPanel';
 import LayersPanel from './layersPanel';
 import { toggleRemoveLayer } from './layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
+import { leftPanelRootSx, tabsWrapperSx } from './leftPanelStyles';
 import TablesPanel from './TablesPanel';
 import {
   areTablesAvailable,
@@ -73,8 +72,6 @@ const LeftPanel = memo(() => {
   const AALayerInUrl = selectedLayers.find(x =>
     AALayerIds.includes(x.id as AnticipatoryAction),
   );
-
-  const classes = useStyles({ tabValue });
 
   const isPanelHidden = tabValue === Panel.None;
 
@@ -204,8 +201,8 @@ const LeftPanel = memo(() => {
       anchor="left"
       open={!isPanelHidden}
     >
-      <div className={classes.root}>
-        <div className={classes.tabsWrapper}>
+      <Box sx={leftPanelRootSx(tabValue)}>
+        <Box sx={tabsWrapperSx}>
           <TabPanel value={tabValue} index={Panel.Layers}>
             <LayersPanel />
           </TabPanel>
@@ -218,35 +215,10 @@ const LeftPanel = memo(() => {
           {renderedAnticipatoryActionPanel}
           {/* Empty panel to remove warnings */}
           <TabPanel value={tabValue} index={Panel.None} />
-        </div>
-      </div>
+        </Box>
+      </Box>
     </Drawer>
   );
 });
-
-interface StyleProps {
-  tabValue: Panel;
-}
-
-const useStyles = makeStyles<Theme, StyleProps>(() =>
-  createStyles({
-    root: {
-      display: 'flex',
-      flexDirection: 'row',
-      height: '100%',
-      overflowX: 'hidden',
-      overflowY: ({ tabValue }) =>
-        tabValue === Panel.Charts || tabValue === Panel.Tables
-          ? 'hidden'
-          : 'auto',
-    },
-    tabsWrapper: {
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100%',
-      order: -2,
-    },
-  }),
-);
 
 export default LeftPanel;

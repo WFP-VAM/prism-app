@@ -11,10 +11,10 @@ exports[`renders as expected 1`] = `
       style="display: flex; align-items: center;"
     >
       <span
-        class="MuiSwitch-root MuiSwitch-sizeMedium makeStyles-switch-6 css-rehya9-MuiSwitch-root"
+        class="MuiSwitch-root MuiSwitch-sizeMedium css-7d0t2y-MuiSwitch-root"
       >
         <span
-          class="MuiButtonBase-root MuiSwitch-switchBase makeStyles-switchBase-9 MuiSwitch-colorPrimary PrivateSwitchBase-root MuiSwitch-switchBase makeStyles-switchBase-9 MuiSwitch-colorPrimary css-tznl3-MuiButtonBase-root-MuiSwitchBase-root-MuiSwitch-switchBase"
+          class="MuiButtonBase-root MuiSwitch-switchBase MuiSwitch-colorPrimary PrivateSwitchBase-root MuiSwitch-switchBase MuiSwitch-colorPrimary css-tznl3-MuiButtonBase-root-MuiSwitchBase-root-MuiSwitch-switchBase"
         >
           <input
             aria-label=""
@@ -27,15 +27,18 @@ exports[`renders as expected 1`] = `
           />
         </span>
         <span
-          class="MuiSwitch-track makeStyles-switchTrack-7 css-pm6g3f-MuiSwitch-track"
+          class="MuiSwitch-track css-pm6g3f-MuiSwitch-track"
         />
       </span>
       <span
-        class="MuiTypography-root MuiTypography-body1 makeStyles-titleUnchecked-11 css-l0p3u8-MuiTypography-root"
-        role="button"
-        style="cursor: pointer;"
-        tabindex="0"
-      />
+        class="MuiBox-root css-1nj48cr"
+      >
+        <span
+          class="MuiTypography-root MuiTypography-body1 css-1h08j4q-MuiTypography-root"
+          role="button"
+          tabindex="0"
+        />
+      </span>
       <span
         aria-label="Opacity"
         class=""
@@ -43,7 +46,7 @@ exports[`renders as expected 1`] = `
         style="margin-left: auto;"
       >
         <button
-          class="MuiButtonBase-root Mui-disabled MuiIconButton-root makeStyles-opacityRoot-4 Mui-disabled MuiIconButton-sizeLarge css-1log9d8-MuiButtonBase-root-MuiIconButton-root"
+          class="MuiButtonBase-root Mui-disabled MuiIconButton-root Mui-disabled MuiIconButton-sizeLarge css-1k2af70-MuiButtonBase-root-MuiIconButton-root"
           disabled=""
           tabindex="-1"
           type="button"

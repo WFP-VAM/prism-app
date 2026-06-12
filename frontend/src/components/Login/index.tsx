@@ -1,15 +1,13 @@
 import { useMsal } from '@azure/msal-react';
-import { Button, Grid, Typography } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { Box, Button, Grid, Typography } from '@mui/material';
 import { usePostHog } from '@posthog/react';
 import { wfpLogo } from 'assets/images';
 import { msalRequest } from 'config';
-import { colors } from 'muiTheme';
 import { useCallback } from 'react';
 
+import { loginContainerSx, loginContentSx, loginImageSx } from './loginStyles';
+
 function Login() {
-  const classes = useStyles();
   const { instance } = useMsal();
   const posthog = usePostHog();
 
@@ -19,8 +17,8 @@ function Login() {
   }, [instance, posthog]);
 
   return (
-    <div className={classes.container}>
-      <Grid container spacing={3} className={classes.content}>
+    <Box sx={loginContainerSx}>
+      <Grid container spacing={3} sx={loginContentSx}>
         <Grid>
           <Typography variant="h3" color="textPrimary" gutterBottom>
             Login Required
@@ -36,37 +34,16 @@ function Login() {
         </Grid>
 
         <Grid>
-          <img
-            className={classes.image}
+          <Box
+            component="img"
+            sx={loginImageSx}
             src={wfpLogo}
             alt="World Food Programme logo"
           />
         </Grid>
       </Grid>
-    </div>
+    </Box>
   );
 }
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    container: {
-      width: '100vw',
-      height: '100vh',
-      backgroundColor: colors.greyBlue,
-      display: 'flex',
-      justifyContent: 'center',
-    },
-
-    content: {
-      margin: 'auto',
-      maxWidth: '50vw',
-    },
-
-    image: {
-      width: '90%',
-      opacity: '0.5',
-    },
-  }),
-);
 
 export default Login;

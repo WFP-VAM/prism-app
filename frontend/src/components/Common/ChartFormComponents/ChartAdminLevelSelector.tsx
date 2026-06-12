@@ -1,10 +1,11 @@
-import { Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { Box, Typography } from '@mui/material';
 import SimpleDropdown from 'components/Common/SimpleDropdown';
 import { AdminLevelType } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 import { range } from 'lodash';
 import { getAdminLevelCount } from 'utils/admin-utils';
+
+import { colorBlackSx, formContainerSx } from '../formComponentStyles';
 
 interface ChartAdminLevelSelectorProps {
   value: AdminLevelType;
@@ -17,7 +18,6 @@ function ChartAdminLevelSelector({
   onChange,
   disabled = false,
 }: ChartAdminLevelSelectorProps) {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
 
   const adminLevelOptions: [AdminLevelType, string][] = range(
@@ -25,33 +25,19 @@ function ChartAdminLevelSelector({
   ).map(i => [(i + 1) as AdminLevelType, `Admin ${i + 1}`]);
 
   return (
-    <div className={classes.container}>
-      <Typography className={classes.colorBlack} variant="body2">
+    <Box sx={formContainerSx()}>
+      <Typography sx={colorBlackSx} variant="body2">
         {t('Admin Level')}
       </Typography>
       <SimpleDropdown
         value={value}
         options={adminLevelOptions}
         onChange={onChange}
-        textClass={classes.colorBlack}
+        textSx={colorBlackSx}
         disabled={disabled}
       />
-    </div>
+    </Box>
   );
 }
-
-const useStyles = makeStyles(() => ({
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginBottom: 30,
-    marginLeft: 10,
-    width: '90%',
-    color: 'black',
-  },
-  colorBlack: {
-    color: 'black',
-  },
-}));
 
 export default ChartAdminLevelSelector;

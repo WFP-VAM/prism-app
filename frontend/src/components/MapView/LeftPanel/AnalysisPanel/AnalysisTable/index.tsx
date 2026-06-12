@@ -7,11 +7,9 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
-  Theme,
   Typography,
 } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { useTheme } from '@mui/material/styles';
 import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import { hidePopup } from 'context/tooltipStateSlice';
@@ -19,6 +17,21 @@ import { useSafeTranslation } from 'i18n';
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Column } from 'utils/analysis-utils';
+
+import {
+  tableBodyCellCompactSx,
+  tableBodyTextCompactSx,
+  tableBodyTextSx,
+  tableContainerCompactSx,
+  tableContainerLowZIndexSx,
+  tableHeadCompactSx,
+  tableHeaderTextCompactSx,
+  tableHeaderTextSx,
+  tableHeadSx,
+  tablePaginationBackButtonSx,
+  tablePaginationNextButtonSx,
+  tablePaginationSx,
+} from '../../leftPanelStyles';
 
 const AnalysisTable = memo(
   ({
@@ -33,7 +46,7 @@ const AnalysisTable = memo(
   }: AnalysisTableProps) => {
     // only display local names if local language is selected, otherwise display english name
     const { t } = useSafeTranslation();
-    const classes = useStyles();
+    const theme = useTheme();
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(maxRows ?? 10);
     const map = useSelector(mapSelector);
@@ -82,7 +95,7 @@ const AnalysisTable = memo(
         columns.map(column => (
           <TableCell
             key={column.id}
-            className={`${classes.tableHead} ${compact ? classes.tableHeadCompact : ''}`}
+            sx={[tableHeadSx, compact && tableHeadCompactSx]}
           >
             <TableSortLabel
               active={tableSortLabelIsActive(column)}
@@ -90,7 +103,7 @@ const AnalysisTable = memo(
               onClick={onTableSortLabelClick(column)}
             >
               <Typography
-                className={`${classes.tableHeaderText} ${compact ? classes.tableHeaderTextCompact : ''}`}
+                sx={[tableHeaderTextSx, compact && tableHeaderTextCompactSx]}
               >
                 {t(column.label)}
               </Typography>
@@ -98,10 +111,6 @@ const AnalysisTable = memo(
           </TableCell>
         )),
       [
-        classes.tableHead,
-        classes.tableHeadCompact,
-        classes.tableHeaderText,
-        classes.tableHeaderTextCompact,
         columns,
         compact,
         onTableSortLabelClick,
@@ -148,24 +157,16 @@ const AnalysisTable = memo(
         columns.map(column => (
           <TableCell
             key={column.id}
-            className={`${classes.tableBodyCell} ${compact ? classes.tableBodyCellCompact : ''}`}
+            sx={compact ? tableBodyCellCompactSx : undefined}
           >
             <Typography
-              className={`${classes.tableBodyText} ${compact ? classes.tableBodyTextCompact : ''}`}
+              sx={[tableBodyTextSx, compact && tableBodyTextCompactSx]}
             >
               {renderedTableBodyCellValue(row[column.id], column)}
             </Typography>
           </TableCell>
         )),
-      [
-        classes.tableBodyCell,
-        classes.tableBodyCellCompact,
-        classes.tableBodyText,
-        classes.tableBodyTextCompact,
-        columns,
-        compact,
-        renderedTableBodyCellValue,
-      ],
+      [columns, compact, renderedTableBodyCellValue],
     );
 
     const renderedTableBodyRows = useMemo(
@@ -197,7 +198,12 @@ const AnalysisTable = memo(
     return (
       <>
         <TableContainer
-          className={`${classes.tableContainer} ${compact ? classes.tableContainerCompact : ''} ${disableHighZIndex ? classes.tableContainerLowZIndex : ''}`}
+          sx={{
+            marginTop: '10px',
+            zIndex: theme.zIndex.modal + 1,
+            ...(compact ? tableContainerCompactSx : {}),
+            ...(disableHighZIndex ? tableContainerLowZIndexSx : {}),
+          }}
         >
           <Table stickyHeader aria-label="analysis table">
             <TableHead>
@@ -221,21 +227,14 @@ const AnalysisTable = memo(
               count !== -1 ? count : `${t('more than')} ${to}`
             }`
           }
-          classes={{
-            root: compact
-              ? classes.tablePaginationCompact
-              : classes.tablePagination,
-            select: classes.select,
-            displayedRows: classes.caption,
-            spacer: classes.spacer,
-          }}
+          sx={tablePaginationSx}
           slotProps={{
             actions: {
               nextButton: {
-                className: classes.nextButton,
+                sx: tablePaginationNextButtonSx,
               },
               previousButton: {
-                className: classes.backButton,
+                sx: tablePaginationBackButtonSx,
               },
             },
           }}
@@ -243,98 +242,6 @@ const AnalysisTable = memo(
       </>
     );
   },
-);
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    tableContainer: {
-      marginTop: 10,
-      zIndex: theme.zIndex.modal + 1,
-    },
-    tableContainerCompact: {
-      marginTop: 0,
-      backgroundColor: 'white',
-      borderRadius: 8,
-      overflow: 'hidden',
-      boxShadow: 'none',
-      border: `1px solid ${theme.palette.divider}`,
-    },
-    tableContainerLowZIndex: {
-      zIndex: 'auto !important' as any,
-    },
-    tableHead: {
-      backgroundColor: '#EBEBEB',
-      boxShadow: 'inset 0px -1px 0px rgba(0, 0, 0, 0.25)',
-    },
-    tableHeadCompact: {
-      backgroundColor: `${theme.palette.divider} !important`,
-      boxShadow: 'none !important',
-      padding: '4px 8px !important',
-      border: 'none !important',
-      borderBottom: `1px solid ${theme.palette.divider} !important`,
-      '&:first-child': {
-        paddingLeft: '16px !important',
-      },
-      '&:last-child': {
-        paddingRight: '16px !important',
-      },
-    },
-    tableHeaderText: {
-      color: 'black',
-      fontWeight: 500,
-    },
-    tableHeaderTextCompact: {
-      fontWeight: '600 !important' as any,
-      fontSize: '14px !important',
-    },
-    tableBodyCell: {},
-    tableBodyCellCompact: {
-      padding: '4px !important',
-      border: 'none !important',
-      '&:first-child': {
-        paddingLeft: '16px !important',
-      },
-      '&:last-child': {
-        paddingRight: '16px !important',
-      },
-    },
-    tableBodyText: {
-      color: 'black',
-    },
-    tableBodyTextCompact: {
-      fontSize: '14px !important',
-    },
-    innerAnalysisButton: {
-      backgroundColor: theme.surfaces?.dark,
-    },
-    tablePagination: {
-      display: 'flex',
-      justifyContent: 'center',
-      color: 'black',
-      flexShrink: 0,
-    },
-    tablePaginationCompact: {
-      color: 'black',
-    },
-    select: {
-      flex: '1 1 10%',
-      marginRight: 0,
-    },
-    caption: {
-      flex: '1 2 30%',
-      marginLeft: 0,
-    },
-    backButton: {
-      flex: '1 1 5%',
-    },
-    nextButton: {
-      flex: '1 1 5%',
-    },
-    spacer: {
-      flex: '1 1 5%',
-      maxWidth: '5%',
-    },
-  }),
 );
 
 interface AnalysisTableProps {

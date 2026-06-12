@@ -1,5 +1,4 @@
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { Box } from '@mui/material';
 import Chart from 'components/Common/Chart';
 import { ChartConfig } from 'config/types';
 import {
@@ -12,24 +11,12 @@ import { useSelector } from 'react-redux';
 import { isAdminBoundary } from 'utils/admin-utils';
 import { GoogleFloodParams } from 'utils/google-flood-utils';
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    chartContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '8px',
-      paddingTop: '8px', // leave room for the close icon
-    },
-    chartSection: {
-      paddingTop: '16px', // leave room for the download icons
-      height: '200px',
-      width: '400px',
-    },
-  }),
-);
+import {
+  pointDataChartContainerSx,
+  pointDataChartSectionSx,
+} from '../mapTooltipStyles';
 
 const PopupPointDataChart = memo(() => {
-  const classes = useStyles();
   const {
     data: dataset,
     datasetParams,
@@ -57,8 +44,8 @@ const PopupPointDataChart = memo(() => {
     : undefined;
 
   return (
-    <div className={classes.chartContainer}>
-      <div className={classes.chartSection}>
+    <Box sx={pointDataChartContainerSx}>
+      <Box sx={pointDataChartSectionSx}>
         <Chart
           title={t(title, datasetParams)}
           config={config}
@@ -69,8 +56,8 @@ const PopupPointDataChart = memo(() => {
           iconStyles={{ color: 'white', marginTop: '20px' }}
           units={t((datasetParams as GoogleFloodParams).unit)}
         />
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 });
 

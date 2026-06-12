@@ -1,6 +1,4 @@
 import { Box } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import { getDisplayBoundaryLayers } from 'config/utils';
 import {
   pointDataLayerDatesRequested,
@@ -24,8 +22,6 @@ import OtherFeatures from './OtherFeatures';
 const displayedBoundaryLayers = getDisplayBoundaryLayers().reverse();
 
 const MapView = memo(() => {
-  const classes = useStyles();
-
   // Selectors
   const { actions, maplibreMap } = useMapState();
   const map = maplibreMap();
@@ -55,33 +51,12 @@ const MapView = memo(() => {
   ]);
 
   return (
-    <Box className={classes.root}>
+    <Box sx={{ height: '100%', width: '100%', position: 'relative' }}>
       <LeftPanel />
       <OtherFeatures />
       <MapComponent />
     </Box>
   );
 });
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      height: '100%',
-      width: '100%',
-      position: 'relative',
-    },
-    loading: {
-      position: 'absolute',
-      height: '100%',
-      width: '100%',
-      backgroundColor: 'black',
-      opacity: 0.75,
-      zIndex: 1,
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-  }),
-);
 
 export default MapView;

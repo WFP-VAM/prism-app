@@ -10,8 +10,6 @@ import {
 } from '@mui/material';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import Switch from 'components/Common/Switch';
 import RootAccordionItems from 'components/MapView/LeftPanel/layersPanel/RootAccordionItems';
 import { MapInstanceProvider } from 'components/MapView/MapInstanceContext';
@@ -55,6 +53,27 @@ import MapComponent from '../MapView/Map';
 import BlockPreviewHeader from './BlockPreviewHeader';
 import type { ExportConfig } from './DashboardContent';
 import DashboardLegends from './DashboardLegends';
+import {
+  mapBlockDateSelectorContainerSx,
+  mapBlockLeftPanelSx,
+  mapBlockLegendPositionWrapperSx,
+  mapBlockLegendSettingsContainerSx,
+  mapBlockLegendToggleWrapperSx,
+  mapBlockLoadingSx,
+  mapBlockMapContainerEditSx,
+  mapBlockMapContainerPreviewSx,
+  mapBlockPreviewHeaderContainerSx,
+  mapBlockRightPanelPreviewSx,
+  mapBlockRightPanelSx,
+  mapBlockRootPreviewSx,
+  mapBlockRootSx,
+  mapBlockTitleInputContainerSx,
+  mapBlockTitleInputRowSx,
+  mapBlockTitleInputSx,
+  mapBlockTitleLabelSx,
+  mapBlockToggleButtonGroupSx,
+  mapBlockToggleButtonSx,
+} from './mapBlockStyles';
 
 /*
   reverse the order off adding layers so that the first boundary layer will be placed at the very bottom,
@@ -88,7 +107,6 @@ interface MapBlockProps {
 }
 
 const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
   const { selectedLayersWithDateSupport } = useLayers();
   const { actions, maplibreMap, layers, dateRange, mapTitle } = useMapState();
@@ -289,11 +307,11 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
   return (
     <>
       {mode === DashboardMode.EDIT && (
-        <Box className={classes.titleInputContainer}>
-          <Typography variant="h3" className={classes.titleLabel}>
+        <Box sx={mapBlockTitleInputContainerSx}>
+          <Typography variant="h3" sx={mapBlockTitleLabelSx}>
             {t('Map Title')}
           </Typography>
-          <Box className={classes.titleInputRow}>
+          <Box sx={mapBlockTitleInputRowSx}>
             <TextField
               value={mapTitle || ''}
               onChange={handleTitleChange}
@@ -301,20 +319,20 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
               variant="outlined"
               size="small"
               fullWidth
-              className={classes.titleInput}
+              sx={mapBlockTitleInputSx}
             />
           </Box>
         </Box>
       )}
       <Box
-        className={
-          mode === DashboardMode.VIEW ? classes.rootPreview : classes.root
+        sx={
+          mode === DashboardMode.VIEW ? mapBlockRootPreviewSx : mapBlockRootSx
         }
       >
         {mode === DashboardMode.EDIT && (
-          <div className={classes.leftPanel}>
-            <Box className={classes.legendSettingsContainer}>
-              <Box className={classes.legendToggleWrapper}>
+          <Box sx={mapBlockLeftPanelSx}>
+            <Box sx={mapBlockLegendSettingsContainerSx}>
+              <Box sx={mapBlockLegendToggleWrapperSx}>
                 <Box
                   style={{
                     display: 'flex',
@@ -330,7 +348,7 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
                 </Box>
 
                 {legendVisible && (
-                  <Box className={classes.legendPositionWrapper}>
+                  <Box sx={mapBlockLegendPositionWrapperSx}>
                     <Typography
                       component="h4"
                       style={{
@@ -345,12 +363,12 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
                       value={legendPositionValue}
                       exclusive
                       onChange={handleLegendPositionChange}
-                      className={classes.toggleButtonGroup}
+                      sx={mapBlockToggleButtonGroupSx}
                     >
                       {legendPositionOptions.map(option => (
                         <ToggleButton
                           key={option.value}
-                          className={classes.toggleButton}
+                          sx={mapBlockToggleButtonSx}
                           value={option.value}
                         >
                           {option.comp}
@@ -362,17 +380,17 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
               </Box>
             </Box>
             <RootAccordionItems />
-          </div>
+          </Box>
         )}
-        <div
-          className={
+        <Box
+          sx={
             mode === DashboardMode.VIEW
-              ? classes.rightPanelPreview
-              : classes.rightPanel
+              ? mapBlockRightPanelPreviewSx
+              : mapBlockRightPanelSx
           }
         >
           {mode === DashboardMode.VIEW && (
-            <div className={classes.previewHeaderContainer}>
+            <Box sx={mapBlockPreviewHeaderContainerSx}>
               <BlockPreviewHeader
                 title={t(title || '')}
                 subtitle={mapSubtitle}
@@ -386,20 +404,20 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
                   )
                 }
               />
-            </div>
+            </Box>
           )}
-          <div
+          <Box
             ref={mapContainerRef}
-            className={
+            sx={
               mode === DashboardMode.VIEW
-                ? classes.mapContainerPreview
-                : classes.mapContainerEdit
+                ? mapBlockMapContainerPreviewSx
+                : mapBlockMapContainerEditSx
             }
           >
             {datesLoading && (
-              <div className={classes.loading}>
+              <Box sx={mapBlockLoadingSx}>
                 <CircularProgress size={100} />
-              </div>
+              </Box>
             )}
             <MapComponent
               hideMapLabels={
@@ -434,12 +452,12 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
                 legendPosition={legendPosition}
               />
             )}
-          </div>
+          </Box>
           {mode === DashboardMode.EDIT &&
             selectedLayersWithDateSupport.length > 0 &&
             !datesLoading && (
-              <div
-                className={classes.dateSelectorContainer}
+              <Box
+                sx={mapBlockDateSelectorContainerSx}
                 style={
                   useLatestAvailableDate
                     ? { opacity: 0.4, pointerEvents: 'none' }
@@ -447,9 +465,9 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
                 }
               >
                 <DateSelector />
-              </div>
+              </Box>
             )}
-        </div>
+        </Box>
       </Box>
     </>
   );
@@ -467,155 +485,5 @@ const MapBlock = memo(({ elementId, exportConfig }: MapBlockProps) => {
     </MapInstanceProvider>
   );
 });
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      display: 'flex',
-      minHeight: 0,
-      width: '100%',
-      position: 'relative',
-      gap: '16px',
-      overflow: 'hidden',
-      flex: 1,
-    },
-    rootPreview: {
-      display: 'flex',
-      height: '100%',
-      width: '100%',
-      position: 'relative',
-      gap: 0,
-      overflow: 'hidden',
-      flex: 1,
-    },
-    loading: {
-      position: 'absolute',
-      height: '100%',
-      width: '100%',
-      backgroundColor: 'black',
-      opacity: 0.75,
-      zIndex: 1,
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    leftPanel: {
-      flex: '0 0 33.333%',
-      minWidth: 0,
-      overflow: 'auto',
-      maxHeight: '100%',
-    },
-    titleInputContainer: {
-      padding: '12px',
-      marginBottom: '8px',
-      borderBottom: '1px solid #e0e0e0',
-      backgroundColor: '#fff',
-    },
-    legendSettingsContainer: {
-      padding: '12px',
-      marginBottom: '8px',
-      borderBottom: '1px solid #e0e0e0',
-      backgroundColor: '#fff',
-    },
-    titleLabel: {
-      marginBottom: '6px',
-      fontSize: '14px',
-      fontWeight: 600,
-    },
-    titleInputRow: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '12px',
-    },
-    titleInput: {
-      '& .MuiOutlinedInput-input': {
-        padding: '8px 12px',
-      },
-    },
-    legendToggleWrapper: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      flexWrap: 'wrap',
-      gap: '8px',
-      '& h4': {
-        fontSize: '13px',
-      },
-    },
-    legendPositionWrapper: {
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginLeft: 0,
-      '& h4': {
-        fontSize: '13px',
-        margin: 0,
-        marginRight: '0.5rem',
-      },
-    },
-    toggleButtonGroup: {
-      display: 'flex',
-    },
-    toggleButton: {
-      backgroundColor: 'white',
-      height: '32px',
-      width: '36px',
-      padding: '4px',
-      fontSize: '0.8rem',
-      borderLeft: '1px solid rgba(0, 0, 0, 0.12) !important',
-    },
-    rightPanel: {
-      flex: '0 0 66.667%',
-      minWidth: 0,
-      display: 'flex',
-      flexDirection: 'column',
-      overflow: 'hidden',
-    },
-    rightPanelPreview: {
-      flex: '1 1 100%',
-      minWidth: 0,
-      display: 'flex',
-      flexDirection: 'column',
-      overflow: 'hidden',
-    },
-    previewHeaderContainer: {
-      flex: '0 0 auto',
-      background: 'white',
-      borderRadius: 8,
-    },
-    mapContainerEdit: {
-      flex: '0 0 550px',
-      height: '550px',
-      position: 'relative',
-      '& > div': {
-        height: '100%',
-        width: '100%',
-      },
-    },
-    mapContainerPreview: {
-      flex: '1',
-      height: '100%',
-      minHeight: 0,
-      position: 'relative',
-      '& > div': {
-        height: '100%',
-        width: '100%',
-      },
-    },
-    dateSelectorContainer: {
-      flex: '0 0 auto',
-      height: 'auto',
-      width: '100%',
-      '& > div': {
-        position: 'relative !important',
-        bottom: 'auto !important',
-        width: '100% !important',
-      },
-      '& h3': {
-        marginBottom: '8px',
-      },
-    },
-  }),
-);
 
 export default MapBlock;

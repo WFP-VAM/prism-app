@@ -1,57 +1,21 @@
 import { Box, MenuItem, TextField, Typography } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import {
   AdminBoundaryTree,
   getAdminBoundaryTree,
 } from 'components/MapView/Layers/BoundaryDropdown/utils';
-import { AdminCodeString, BoundaryLayerProps, PanelSize } from 'config/types';
+import { AdminCodeString, BoundaryLayerProps } from 'config/types';
 import { BoundaryLayerData } from 'context/layers/boundary';
 import { useSafeTranslation } from 'i18n';
 import { sortBy } from 'lodash';
 import React, { memo, ReactNode } from 'react';
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    chartsPanelParams: {
-      marginTop: 10,
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      width: PanelSize.medium,
-      flexShrink: 0,
-    },
-    removeAdmin: {
-      fontWeight: 'bold',
-    },
-    selectRoot: {
-      marginBottom: 30,
-      color: 'black',
-      minWidth: '300px',
-      maxWidth: '350px',
-      width: 'auto',
-      '& label': {
-        color: '#333333',
-      },
-      '& .MuiInputBase-root': {
-        '&:hover fieldset': {
-          borderColor: '#333333',
-        },
-        '&.Mui-focused fieldset': {
-          borderColor: '#333333',
-        },
-      },
-    },
-    wrapper: {
-      marginLeft: 20,
-      marginTop: 20,
-    },
-    wrapperLabel: {
-      color: 'black',
-      fontWeight: 'bold',
-    },
-  }),
-);
+import {
+  chartsPanelParamsCompactSx,
+  locationSelectorRemoveAdminSx,
+  locationSelectorSelectRootSx,
+  locationSelectorWrapperLabelSx,
+  locationSelectorWrapperSx,
+} from '../chartsPanelStyles';
 
 const LocationSelector = memo(
   ({
@@ -73,7 +37,6 @@ const LocationSelector = memo(
     setSelectedAdmin2Area,
     title,
   }: LocationSelectorProps) => {
-    const styles = useStyles();
     const { t, i18n: i18nLocale } = useSafeTranslation();
 
     const adminBoundaryTree = getAdminBoundaryTree(
@@ -182,15 +145,15 @@ const LocationSelector = memo(
       ));
 
     return (
-      <Box className={styles.wrapper}>
+      <Box sx={locationSelectorWrapperSx}>
         {title && (
-          <Typography className={styles.wrapperLabel} variant="body2">
+          <Typography sx={locationSelectorWrapperLabelSx} variant="body2">
             {title}
           </Typography>
         )}
-        <Box className={styles.chartsPanelParams}>
+        <Box sx={chartsPanelParamsCompactSx}>
           <TextField
-            classes={{ root: styles.selectRoot }}
+            sx={locationSelectorSelectRootSx}
             id="outlined-admin-1"
             select
             label={multiCountry ? t('Country') : country}
@@ -211,7 +174,7 @@ const LocationSelector = memo(
           </TextField>
 
           <TextField
-            classes={{ root: styles.selectRoot }}
+            sx={locationSelectorSelectRootSx}
             id="outlined-admin-1"
             select
             label={t('Admin 1')}
@@ -226,7 +189,7 @@ const LocationSelector = memo(
             disabled={orderedAdmin1areas().length === 0}
           >
             <MenuItem divider>
-              <Box className={styles.removeAdmin}>
+              <Box sx={locationSelectorRemoveAdminSx}>
                 {' '}
                 {t('Remove {{adminLevel}}', { adminLevel: t('Admin 1') })}
               </Box>
@@ -235,7 +198,7 @@ const LocationSelector = memo(
           </TextField>
           {admin1Key && (
             <TextField
-              classes={{ root: styles.selectRoot }}
+              sx={locationSelectorSelectRootSx}
               id="outlined-admin-2"
               select
               label={t('Admin 2')}
@@ -249,7 +212,7 @@ const LocationSelector = memo(
               variant="outlined"
             >
               <MenuItem divider>
-                <Box className={styles.removeAdmin}>
+                <Box sx={locationSelectorRemoveAdminSx}>
                   {' '}
                   {t('Remove {{adminLevel}}', { adminLevel: t('Admin 2') })}
                 </Box>

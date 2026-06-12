@@ -3,7 +3,7 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root makeStyles-root-1 MuiAccordion-rounded MuiAccordion-gutters css-z8u0ml-MuiPaper-root-MuiAccordion-root"
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded MuiAccordion-gutters css-1eyih7r-MuiPaper-root-MuiAccordion-root"
     style="--Paper-shadow: none;"
   >
     <h3
@@ -12,22 +12,21 @@ exports[`renders as expected 1`] = `
       <button
         aria-controls="Some Analysis Layer Title"
         aria-expanded="false"
-        class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-2 MuiAccordionSummary-gutters css-pqdk18-MuiButtonBase-root-MuiAccordionSummary-root"
+        class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters css-fwo7tk-MuiButtonBase-root-MuiAccordionSummary-root"
         id="Some Analysis Layer Title"
         tabindex="0"
         type="button"
       >
         <span
-          class="MuiAccordionSummary-content makeStyles-summaryContent-5 css-1rqjdob-MuiAccordionSummary-content"
+          class="MuiAccordionSummary-content css-1rqjdob-MuiAccordionSummary-content"
         >
           <p
-            class="MuiTypography-root makeStyles-title-6 MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+            class="MuiTypography-root MuiTypography-body1 css-1n3gmsb-MuiTypography-root"
           >
             Some Analysis Layer Title
           </p>
           <div
-            class="MuiChip-root makeStyles-chipRoot-7 MuiChip-filled MuiChip-sizeMedium MuiChip-colorDefault css-1uxqplt-MuiChip-root"
-            style="background-color: rgb(99, 178, 189);"
+            class="MuiChip-root MuiChip-filled MuiChip-sizeMedium MuiChip-colorDefault css-2hegm2-MuiChip-root"
           >
             <span
               class="MuiChip-label css-1dybbl5-MuiChip-label"
@@ -37,7 +36,7 @@ exports[`renders as expected 1`] = `
           </div>
         </span>
         <span
-          class="MuiAccordionSummary-expandIconWrapper makeStyles-expandIcon-4 css-1wnau0r-MuiAccordionSummary-expandIconWrapper"
+          class="MuiAccordionSummary-expandIconWrapper css-1wnau0r-MuiAccordionSummary-expandIconWrapper"
         >
           <svg
             aria-hidden="true"
@@ -70,14 +69,13 @@ exports[`renders as expected 1`] = `
             role="region"
           >
             <div
-              class="MuiAccordionDetails-root makeStyles-rootDetails-3 css-ttfn4f-MuiAccordionDetails-root"
+              class="MuiAccordionDetails-root css-1e9hqp5-MuiAccordionDetails-root"
             >
               <div
-                class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row css-d64g0g-MuiGrid-root"
-                style="padding-left: 12px;"
+                class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row css-1bmszvq-MuiGrid-root"
               >
                 <div
-                  class="makeStyles-analysisLayerSwitchRootItem-8 MuiBox-root css-0"
+                  class="MuiBox-root css-14r34si"
                   style="display: flex; flex-direction: column; max-width: 100%;"
                 >
                   <div
@@ -88,10 +86,10 @@ exports[`renders as expected 1`] = `
                       style="display: flex;"
                     >
                       <span
-                        class="MuiSwitch-root MuiSwitch-sizeSmall makeStyles-switch-14 css-fzgmul-MuiSwitch-root"
+                        class="MuiSwitch-root MuiSwitch-sizeSmall css-1gm5r7z-MuiSwitch-root"
                       >
                         <span
-                          class="MuiButtonBase-root MuiSwitch-switchBase makeStyles-switchBase-16 MuiSwitch-colorPrimary Mui-checked PrivateSwitchBase-root MuiSwitch-switchBase makeStyles-switchBase-16 MuiSwitch-colorPrimary Mui-checked Mui-checked css-tznl3-MuiButtonBase-root-MuiSwitchBase-root-MuiSwitch-switchBase"
+                          class="MuiButtonBase-root MuiSwitch-switchBase MuiSwitch-colorPrimary Mui-checked PrivateSwitchBase-root MuiSwitch-switchBase MuiSwitch-colorPrimary Mui-checked Mui-checked css-tznl3-MuiButtonBase-root-MuiSwitchBase-root-MuiSwitch-switchBase"
                         >
                           <input
                             aria-label=""
@@ -105,11 +103,11 @@ exports[`renders as expected 1`] = `
                           />
                         </span>
                         <span
-                          class="MuiSwitch-track makeStyles-switchTrack-15 css-pm6g3f-MuiSwitch-track"
+                          class="MuiSwitch-track css-pm6g3f-MuiSwitch-track"
                         />
                       </span>
                       <p
-                        class="MuiTypography-root MuiTypography-body1 makeStyles-title-9 css-l0p3u8-MuiTypography-root"
+                        class="MuiTypography-root MuiTypography-body1 css-whxbpl-MuiTypography-root"
                       />
                     </div>
                     <div
@@ -122,7 +120,7 @@ exports[`renders as expected 1`] = `
                         data-mui-internal-clone-element="true"
                       >
                         <button
-                          class="MuiButtonBase-root MuiIconButton-root makeStyles-opacityRoot-17 MuiIconButton-sizeLarge css-1log9d8-MuiButtonBase-root-MuiIconButton-root"
+                          class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-1k2af70-MuiButtonBase-root-MuiIconButton-root"
                           tabindex="0"
                           type="button"
                         >
@@ -141,7 +139,7 @@ exports[`renders as expected 1`] = `
                       </span>
                       <button
                         aria-label="Download"
-                        class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-1log9d8-MuiButtonBase-root-MuiIconButton-root"
+                        class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-154kngp-MuiButtonBase-root-MuiIconButton-root"
                         data-mui-internal-clone-element="true"
                         tabindex="0"
                         type="button"

@@ -3,7 +3,7 @@ import 'chartjs-plugin-annotation';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import ImageIcon from '@mui/icons-material/Image';
 import { IconButton, Tooltip } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import type { SxProps, Theme } from '@mui/material/styles';
 import { ChartOptions } from 'chart.js';
 import colormap from 'colormap';
 import { buildCsvFileName, downloadToFile } from 'components/MapView/utils';
@@ -31,20 +31,19 @@ function downloadChartPng(ref: React.RefObject<Bar | Line>, filename: string) {
   downloadToFile({ content: file, isUrl: true }, filename, 'image/png');
 }
 
-const useStyles = makeStyles(() => ({
-  firstIcon: {
-    position: 'absolute',
-    top: '8px',
-    right: '0rem',
-    padding: '0.25rem',
-  },
-  secondIcon: {
-    position: 'absolute',
-    top: '8px',
-    right: '1.75rem',
-    padding: '0.25rem',
-  },
-}));
+const firstIconSx = {
+  position: 'absolute',
+  top: '8px',
+  right: '0rem',
+  padding: '0.25rem',
+} satisfies SxProps<Theme>;
+
+const secondIconSx = {
+  position: 'absolute',
+  top: '8px',
+  right: '1.75rem',
+  padding: '0.25rem',
+} satisfies SxProps<Theme>;
 
 export type ChartProps = {
   title: string;
@@ -89,7 +88,6 @@ const Chart = memo(
       forwardedRef,
     ) => {
       const { t } = useSafeTranslation();
-      const classes = useStyles();
       const localChartRef = React.useRef<Bar | Line>(null);
       const chartRef = (forwardedRef || localChartRef) as React.RefObject<
         Bar | Line
@@ -538,7 +536,7 @@ const Chart = memo(
                 <Tooltip title={t('Download PNG') as string}>
                   <IconButton
                     onClick={() => downloadChartPng(chartRef, downloadFilename)}
-                    className={classes.firstIcon}
+                    sx={firstIconSx}
                     style={iconStyles}
                     size="large"
                   >
@@ -561,7 +559,7 @@ const Chart = memo(
                         ],
                       ])();
                     }}
-                    className={classes.secondIcon}
+                    sx={secondIconSx}
                     style={iconStyles}
                     size="large"
                   >
@@ -601,8 +599,6 @@ const Chart = memo(
           chartConfig,
           chartData,
           chartRef,
-          classes.firstIcon,
-          classes.secondIcon,
           config.type,
           data,
           datasetFields,

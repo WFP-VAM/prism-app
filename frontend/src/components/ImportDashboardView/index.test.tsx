@@ -1,14 +1,6 @@
 import '@testing-library/jest-dom';
 
-import {
-  StyledEngineProvider,
-  Theme,
-  ThemeProvider,
-} from '@mui/material/styles';
-import {
-  StylesProvider,
-  ThemeProvider as StylesThemeProvider,
-} from '@mui/styles';
+import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { DashboardElementType } from 'config/types';
 import {
@@ -22,10 +14,6 @@ import { Provider } from 'react-redux';
 import { TestBrowserRouter } from 'test/TestBrowserRouter';
 
 import ImportDashboardView from '.';
-
-declare module '@mui/styles/defaultTheme' {
-  interface DefaultTheme extends Theme {}
-}
 
 const minimalValidDashboard = {
   title: 'Imported Dashboard',
@@ -64,11 +52,7 @@ function renderImportView() {
       <Provider store={store}>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={muiTheme}>
-            <StylesThemeProvider theme={muiTheme}>
-              <StylesProvider injectFirst>
-                <ImportDashboardView />
-              </StylesProvider>
-            </StylesThemeProvider>
+            <ImportDashboardView />
           </ThemeProvider>
         </StyledEngineProvider>
       </Provider>

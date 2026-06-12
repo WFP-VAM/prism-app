@@ -3,94 +3,94 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="makeStyles-root-1"
+    class="MuiBox-root css-cgemuh"
   >
     <div
-      class="makeStyles-districtViewWrapper-2"
+      class="MuiBox-root css-ra19wb"
     >
       <div
-        class="makeStyles-windowWrapper-18"
+        class="MuiBox-root css-hj2ibs"
       >
         <div
-          style="text-align: center;"
+          class="MuiBox-root css-xi606m"
         >
           <h4
-            class="MuiTypography-root MuiTypography-h4 makeStyles-headerText-24 css-1iolqh3-MuiTypography-root"
+            class="MuiTypography-root MuiTypography-h4 css-7yqz6i-MuiTypography-root"
           >
             Window 1
           </h4>
         </div>
         <div
-          class="makeStyles-tableWrapper-19"
+          class="MuiBox-root css-3a3hw0"
         >
           <div
-            class="makeStyles-headRowWrapper-21"
+            class="MuiBox-root css-1h91iox"
           >
             <div
-              class="makeStyles-headColumn-22"
+              class="MuiBox-root css-o2hcjj"
             >
               <p
-                class="MuiTypography-root MuiTypography-body1 makeStyles-monthText-25 css-l0p3u8-MuiTypography-root"
+                class="MuiTypography-root MuiTypography-body1 css-r4n4df-MuiTypography-root"
               >
                 Aug
               </p>
             </div>
             <div
-              class="makeStyles-headColumn-22"
+              class="MuiBox-root css-o2hcjj"
             >
               <p
-                class="MuiTypography-root MuiTypography-body1 makeStyles-monthText-25 css-l0p3u8-MuiTypography-root"
+                class="MuiTypography-root MuiTypography-body1 css-r4n4df-MuiTypography-root"
               >
                 Sep
               </p>
             </div>
             <div
-              class="makeStyles-headColumn-22"
+              class="MuiBox-root css-o2hcjj"
             >
               <p
-                class="MuiTypography-root MuiTypography-body1 makeStyles-monthText-25 css-l0p3u8-MuiTypography-root"
+                class="MuiTypography-root MuiTypography-body1 css-r4n4df-MuiTypography-root"
               >
                 Oct
               </p>
             </div>
             <div
-              class="makeStyles-headColumn-22"
+              class="MuiBox-root css-o2hcjj"
             >
               <p
-                class="MuiTypography-root MuiTypography-body1 makeStyles-monthText-25 css-l0p3u8-MuiTypography-root"
+                class="MuiTypography-root MuiTypography-body1 css-r4n4df-MuiTypography-root"
               >
                 Nov
               </p>
             </div>
           </div>
           <div
-            class="makeStyles-rowWrapper-20"
+            class="MuiBox-root css-3a3gur"
           >
             <div
-              class="makeStyles-column-23"
+              class="MuiBox-root css-bs9ciu"
             />
             <div
-              class="makeStyles-column-23"
+              class="MuiBox-root css-bs9ciu"
             >
               <div
-                class="makeStyles-iconWrapper-26"
+                class="MuiBox-root css-uwwqev"
               >
                 <div
-                  class="makeStyles-iconWrapper-31"
+                  class="MuiBox-root css-nqs5w4"
                   style="background: rgb(255, 213, 45);"
                 >
                   <div
-                    class="makeStyles-centerContainer-32"
+                    class="MuiBox-root css-fi9omk"
                     style="border: 1px solid black; color: black;"
                   >
                     <div
-                      class="makeStyles-topTextContainer-33"
+                      class="MuiBox-root css-1g5ndk4"
                       style="border-bottom: 1px solid black; background: rgb(255, 213, 45);"
                     >
                       R
                     </div>
                     <div
-                      class="makeStyles-bottomTextContainer-34"
+                      class="MuiBox-root css-1vqiaa9"
                       style="background: rgb(255, 213, 45);"
                     >
                       MOD
@@ -100,27 +100,27 @@ exports[`renders as expected 1`] = `
               </div>
             </div>
             <div
-              class="makeStyles-column-23"
+              class="MuiBox-root css-bs9ciu"
             >
               <div
-                class="makeStyles-iconWrapper-26"
+                class="MuiBox-root css-uwwqev"
               >
                 <div
-                  class="makeStyles-iconWrapper-31"
+                  class="MuiBox-root css-nqs5w4"
                   style="background: rgb(255, 213, 45);"
                 >
                   <div
-                    class="makeStyles-centerContainer-32"
+                    class="MuiBox-root css-fi9omk"
                     style="border: 1px solid black; color: black;"
                   >
                     <div
-                      class="makeStyles-topTextContainer-33"
+                      class="MuiBox-root css-1g5ndk4"
                       style="border-bottom: 1px solid black; background: rgb(255, 213, 45);"
                     >
                       R
                     </div>
                     <div
-                      class="makeStyles-bottomTextContainer-34"
+                      class="MuiBox-root css-1vqiaa9"
                       style="background: rgb(255, 213, 45);"
                     >
                       MOD
@@ -130,27 +130,27 @@ exports[`renders as expected 1`] = `
               </div>
             </div>
             <div
-              class="makeStyles-column-23"
+              class="MuiBox-root css-bs9ciu"
             >
               <div
-                class="makeStyles-iconWrapper-26"
+                class="MuiBox-root css-uwwqev"
               >
                 <div
-                  class="makeStyles-iconWrapper-31"
+                  class="MuiBox-root css-nqs5w4"
                   style="background: rgb(241, 241, 241);"
                 >
                   <div
-                    class="makeStyles-centerContainer-32"
+                    class="MuiBox-root css-fi9omk"
                     style="border: 1px solid black; color: black;"
                   >
                     <div
-                      class="makeStyles-topTextContainer-33"
+                      class="MuiBox-root css-1g5ndk4"
                       style="border-bottom: 1px solid black; background: rgb(241, 241, 241);"
                     >
                       na
                     </div>
                     <div
-                      class="makeStyles-bottomTextContainer-34"
+                      class="MuiBox-root css-1vqiaa9"
                       style="background: rgb(241, 241, 241);"
                     >
                       MOD
@@ -161,30 +161,30 @@ exports[`renders as expected 1`] = `
             </div>
           </div>
           <div
-            class="makeStyles-rowWrapper-20"
+            class="MuiBox-root css-3a3gur"
           >
             <div
-              class="makeStyles-column-23"
+              class="MuiBox-root css-bs9ciu"
             >
               <div
-                class="makeStyles-iconWrapper-26"
+                class="MuiBox-root css-uwwqev"
               >
                 <div
-                  class="makeStyles-iconWrapper-31"
+                  class="MuiBox-root css-nqs5w4"
                   style="background: rgb(241, 241, 241);"
                 >
                   <div
-                    class="makeStyles-centerContainer-32"
+                    class="MuiBox-root css-fi9omk"
                     style="border: 1px solid black; color: black;"
                   >
                     <div
-                      class="makeStyles-topTextContainer-33"
+                      class="MuiBox-root css-1g5ndk4"
                       style="border-bottom: 1px solid black; background: rgb(241, 241, 241);"
                     >
                       na
                     </div>
                     <div
-                      class="makeStyles-bottomTextContainer-34"
+                      class="MuiBox-root css-1vqiaa9"
                       style="background: rgb(241, 241, 241);"
                     >
                       MIL
@@ -194,27 +194,27 @@ exports[`renders as expected 1`] = `
               </div>
             </div>
             <div
-              class="makeStyles-column-23"
+              class="MuiBox-root css-bs9ciu"
             >
               <div
-                class="makeStyles-iconWrapper-26"
+                class="MuiBox-root css-uwwqev"
               >
                 <div
-                  class="makeStyles-iconWrapper-31"
+                  class="MuiBox-root css-nqs5w4"
                   style="background: rgb(241, 241, 241);"
                 >
                   <div
-                    class="makeStyles-centerContainer-32"
+                    class="MuiBox-root css-fi9omk"
                     style="border: 1px solid black; color: black;"
                   >
                     <div
-                      class="makeStyles-topTextContainer-33"
+                      class="MuiBox-root css-1g5ndk4"
                       style="border-bottom: 1px solid black; background: rgb(241, 241, 241);"
                     >
                       na
                     </div>
                     <div
-                      class="makeStyles-bottomTextContainer-34"
+                      class="MuiBox-root css-1vqiaa9"
                       style="background: rgb(241, 241, 241);"
                     >
                       MIL
@@ -224,27 +224,27 @@ exports[`renders as expected 1`] = `
               </div>
             </div>
             <div
-              class="makeStyles-column-23"
+              class="MuiBox-root css-bs9ciu"
             >
               <div
-                class="makeStyles-iconWrapper-26"
+                class="MuiBox-root css-uwwqev"
               >
                 <div
-                  class="makeStyles-iconWrapper-31"
+                  class="MuiBox-root css-nqs5w4"
                   style="background: rgb(255, 252, 179);"
                 >
                   <div
-                    class="makeStyles-centerContainer-32"
+                    class="MuiBox-root css-fi9omk"
                     style="border: 1px solid black; color: black;"
                   >
                     <div
-                      class="makeStyles-topTextContainer-33"
+                      class="MuiBox-root css-1g5ndk4"
                       style="border-bottom: 1px solid black; background: rgb(255, 252, 179);"
                     >
                       R
                     </div>
                     <div
-                      class="makeStyles-bottomTextContainer-34"
+                      class="MuiBox-root css-1vqiaa9"
                       style="background: rgb(255, 252, 179);"
                     >
                       MIL
@@ -254,27 +254,27 @@ exports[`renders as expected 1`] = `
               </div>
             </div>
             <div
-              class="makeStyles-column-23"
+              class="MuiBox-root css-bs9ciu"
             >
               <div
-                class="makeStyles-iconWrapper-26"
+                class="MuiBox-root css-uwwqev"
               >
                 <div
-                  class="makeStyles-iconWrapper-31"
+                  class="MuiBox-root css-nqs5w4"
                   style="background: rgb(255, 245, 3);"
                 >
                   <div
-                    class="makeStyles-centerContainer-32"
+                    class="MuiBox-root css-fi9omk"
                     style="border: 1px solid black; color: black;"
                   >
                     <div
-                      class="makeStyles-topTextContainer-33"
+                      class="MuiBox-root css-1g5ndk4"
                       style="border-bottom: 1px solid black; background: rgb(255, 245, 3);"
                     >
                       S
                     </div>
                     <div
-                      class="makeStyles-bottomTextContainer-34"
+                      class="MuiBox-root css-1vqiaa9"
                       style="background: rgb(255, 245, 3);"
                     >
                       MIL
@@ -286,10 +286,10 @@ exports[`renders as expected 1`] = `
           </div>
         </div>
         <div
-          class="makeStyles-actionsWrapper-27"
+          class="MuiBox-root css-1xxo83h"
         >
           <div
-            style="text-align: center;"
+            class="MuiBox-root css-xi606m"
           >
             <h3
               class="MuiTypography-root MuiTypography-h3 css-ae1vz0-MuiTypography-root"
@@ -298,10 +298,10 @@ exports[`renders as expected 1`] = `
             </h3>
           </div>
           <div
-            class="makeStyles-actionBoxesWrapper-28"
+            class="MuiBox-root css-1xhj18k"
           >
             <button
-              class="makeStyles-actionBox-29"
+              class="MuiBox-root css-bwpf6v"
               id="2023-08-01"
               style="justify-content: center; cursor: pointer;"
               type="button"
@@ -326,7 +326,7 @@ exports[`renders as expected 1`] = `
               </div>
             </button>
             <button
-              class="makeStyles-actionBox-29"
+              class="MuiBox-root css-bwpf6v"
               id="2023-09-01"
               style="justify-content: center; cursor: pointer;"
               type="button"
@@ -351,7 +351,7 @@ exports[`renders as expected 1`] = `
               </div>
             </button>
             <button
-              class="makeStyles-actionBox-29"
+              class="MuiBox-root css-bwpf6v"
               id="2023-10-01"
               style="justify-content: center; cursor: pointer;"
               type="button"
@@ -376,7 +376,7 @@ exports[`renders as expected 1`] = `
               </div>
             </button>
             <button
-              class="makeStyles-actionBox-29"
+              class="MuiBox-root css-bwpf6v"
               id="2023-11-01"
               style="justify-content: center; cursor: pointer;"
               type="button"
@@ -406,13 +406,13 @@ exports[`renders as expected 1`] = `
     </div>
   </div>
   <div
-    class="makeStyles-footerWrapper-3"
+    class="MuiBox-root css-j7qwjs"
   >
     <div
-      class="makeStyles-footerActionsWrapper-4"
+      class="MuiBox-root css-jekkxf"
     >
       <button
-        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary MuiButton-fullWidth makeStyles-footerButton-6 css-nlocxw-MuiButtonBase-root-MuiButton-root"
+        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary MuiButton-fullWidth css-1jqm0xi-MuiButtonBase-root-MuiButton-root"
         tabindex="0"
         type="button"
       >
@@ -438,7 +438,7 @@ exports[`renders as expected 1`] = `
         </p>
       </button>
       <button
-        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary MuiButton-fullWidth makeStyles-footerButton-6 css-nlocxw-MuiButtonBase-root-MuiButton-root"
+        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary MuiButton-fullWidth css-1jqm0xi-MuiButtonBase-root-MuiButton-root"
         tabindex="0"
         type="button"
       >
@@ -464,7 +464,7 @@ exports[`renders as expected 1`] = `
         </p>
       </button>
       <button
-        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary MuiButton-fullWidth makeStyles-footerButton-6 css-nlocxw-MuiButtonBase-root-MuiButton-root"
+        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary MuiButton-fullWidth css-1jqm0xi-MuiButtonBase-root-MuiButton-root"
         tabindex="0"
         type="button"
       >
@@ -491,10 +491,10 @@ exports[`renders as expected 1`] = `
       </button>
     </div>
     <div
-      class="makeStyles-footerDialogsWrapper-5"
+      class="MuiBox-root css-ralmko"
     >
       <button
-        class="MuiTypography-root MuiTypography-body1 makeStyles-footerDialog-7 css-l0p3u8-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-body1 css-1uj4td3-MuiTypography-root"
       >
         How to read this screen
       </button>

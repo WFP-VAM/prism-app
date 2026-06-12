@@ -2,6 +2,7 @@ import 'chartjs-plugin-annotation';
 
 import { Close, GetApp, TableChart } from '@mui/icons-material';
 import {
+  Box,
   Button,
   CircularProgress,
   IconButton,
@@ -16,8 +17,6 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import {
   AAFloodDataSelector,
   setAAFloodStationDetailActiveTab,
@@ -32,137 +31,10 @@ import { Line } from 'react-chartjs-2';
 import { useDispatch, useSelector } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
 
-import {
-  AAFloodColors,
-  CHART_WIDTH,
-  ForecastWindowPerCountry,
-  TABLE_WIDTH,
-} from '../constants';
+import { aaStationChartsSx } from '../../aaPanelStyles';
+import { AAFloodColors, ForecastWindowPerCountry } from '../constants';
 
 const forecastWindow = ForecastWindowPerCountry.mozambique;
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    container: {
-      position: 'fixed',
-      top: '56px',
-      left: TABLE_WIDTH + 16,
-      width: CHART_WIDTH,
-      marginLeft: '2rem',
-      maxHeight: '70vh',
-      zIndex: 1000,
-      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
-    },
-    paper: {
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-    },
-    header: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      padding: '1rem 1rem 0 1rem',
-    },
-    title: {
-      fontWeight: 'bold',
-      fontSize: '1.2rem',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '0.5rem',
-      paddingBottom: '0.5rem',
-    },
-    closeButton: {
-      marginTop: '-1rem',
-    },
-    tabs: {
-      minHeight: '34px',
-      borderBottom: '1px solid #D4D4D4',
-      display: 'flex',
-      gap: '4px',
-      margin: '0 1rem',
-    },
-    tab: {
-      border: '1px solid #D4D4D4',
-      borderBottom: 'none',
-      borderRadius: '4px 4px 0 0',
-      fontSize: '12px',
-      color: '#000',
-      textTransform: 'none',
-      background: '#F1F1F1',
-      minWidth: '150px',
-    },
-    selectedTab: {
-      background: '#FFF',
-      fontWeight: 'bold',
-    },
-    tabPanel: {
-      flex: 1,
-      margin: '0 1rem',
-      border: '1px solid #D4D4D4',
-      borderTop: 'none',
-      padding: '0.5rem',
-      overflow: 'auto',
-    },
-    chartContainer: {
-      height: '400px',
-      position: 'relative',
-    },
-    chartTitle: {
-      marginBottom: '1rem',
-      fontWeight: 'bold',
-      fontSize: '1rem',
-    },
-    noDataMessage: {
-      textAlign: 'center',
-      color: '#666',
-      fontStyle: 'italic',
-      padding: '2rem',
-    },
-    actionButtons: {
-      display: 'flex',
-      justifyContent: 'flex-start',
-    },
-    actionButton: {
-      textTransform: 'none',
-      fontSize: '0.9rem',
-      color: '#333',
-      '&:hover': {
-        backgroundColor: 'rgba(0, 0, 0, 0.04)',
-      },
-    },
-    tableContainer: {
-      height: '400px',
-      overflow: 'auto',
-      color: '#000',
-    },
-    tableCell: {
-      fontSize: '0.8rem',
-      padding: '8px',
-      color: '#000000',
-    },
-    tableHeader: {
-      fontWeight: 'bold',
-      fontSize: '0.8rem',
-      minWidth: '40px',
-      backgroundColor: '#f5f5f5',
-    },
-    loadingOverlay: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: 'rgba(255, 255, 255, 0.8)',
-      zIndex: 10,
-      flexDirection: 'column',
-      gap: '1rem',
-    },
-  }),
-);
 
 // (removed unused chartFillColor helper)
 
@@ -172,7 +44,6 @@ interface StationChartsProps {
 }
 
 function StationCharts({ station, onClose }: StationChartsProps) {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const floodState = useSelector(AAFloodDataSelector);
@@ -831,74 +702,80 @@ function StationCharts({ station, onClose }: StationChartsProps) {
 
   if (!floodState.probabilitiesData[station.station_name]) {
     return (
-      <div className={classes.container}>
-        <Paper className={classes.paper}>
-          <div className={classes.header}>
-            <Typography className={classes.title}>
+      <Box sx={aaStationChartsSx.container}>
+        <Paper sx={aaStationChartsSx.paper}>
+          <Box sx={aaStationChartsSx.header}>
+            <Typography sx={aaStationChartsSx.title}>
               {station.station_name}
             </Typography>
             {onClose && (
               <IconButton
-                className={classes.closeButton}
+                sx={aaStationChartsSx.closeButton}
                 onClick={onClose}
                 size="small"
               >
                 <Close />
               </IconButton>
             )}
-          </div>
-          <div className={classes.tabPanel}>
-            <Typography className={classes.noDataMessage}>
+          </Box>
+          <Box sx={aaStationChartsSx.tabPanel}>
+            <Typography sx={aaStationChartsSx.noDataMessage}>
               {t('No historical data available for {{station}}', {
                 station: station.station_name,
               })}
             </Typography>
-          </div>
+          </Box>
         </Paper>
-      </div>
+      </Box>
     );
   }
 
   return (
-    <div className={classes.container}>
-      <Paper className={classes.paper}>
-        <div className={classes.header}>
-          <Typography className={classes.title}>
+    <Box sx={aaStationChartsSx.container}>
+      <Paper sx={aaStationChartsSx.paper}>
+        <Box sx={aaStationChartsSx.header}>
+          <Typography sx={aaStationChartsSx.title}>
             {station.station_name}
           </Typography>
           {onClose && (
             <IconButton
-              className={classes.closeButton}
+              sx={aaStationChartsSx.closeButton}
               onClick={onClose}
               size="small"
             >
               <Close />
             </IconButton>
           )}
-        </div>
+        </Box>
 
-        <div className={classes.tabs}>
+        <Box sx={aaStationChartsSx.tabs}>
           <Button
             disableRipple
-            className={`${classes.tab} ${activeTab === 0 ? classes.selectedTab : ''}`}
+            sx={[
+              aaStationChartsSx.tab,
+              activeTab === 0 && aaStationChartsSx.selectedTab,
+            ]}
             onClick={() => handleTabChange(0)}
           >
             {t('Trigger probability')}
           </Button>
           <Button
             disableRipple
-            className={`${classes.tab} ${activeTab === 1 ? classes.selectedTab : ''}`}
+            sx={[
+              aaStationChartsSx.tab,
+              activeTab === 1 && aaStationChartsSx.selectedTab,
+            ]}
             onClick={() => handleTabChange(1)}
           >
             {t('Hydrograph')}
           </Button>
-        </div>
+        </Box>
 
-        <div className={classes.tabPanel}>
+        <Box sx={aaStationChartsSx.tabPanel}>
           {activeTab === 1 && (
             <>
-              <div
-                className={classes.chartContainer}
+              <Box
+                sx={aaStationChartsSx.chartContainer}
                 style={{ display: viewMode === 'chart' ? 'block' : 'none' }}
               >
                 {hydrographData && (
@@ -909,16 +786,16 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                   />
                 )}
                 {isDownloading && (
-                  <div className={classes.loadingOverlay}>
+                  <Box sx={aaStationChartsSx.loadingOverlay}>
                     <CircularProgress />
                     <Typography variant="body2">
                       {t('Preparing chart for download...')}
                     </Typography>
-                  </div>
+                  </Box>
                 )}
-              </div>
+              </Box>
               <TableContainer
-                className={classes.tableContainer}
+                sx={aaStationChartsSx.tableContainer}
                 key={`hydrograph-table-${station.station_name}`}
                 style={{ display: viewMode === 'table' ? 'block' : 'none' }}
               >
@@ -928,7 +805,10 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                       {hydrographTableData?.columnNames.map(columnName => (
                         <TableCell
                           key={columnName}
-                          className={`${classes.tableCell} ${classes.tableHeader}`}
+                          sx={[
+                            aaStationChartsSx.tableCell,
+                            aaStationChartsSx.tableHeader,
+                          ]}
                         >
                           {columnName}
                         </TableCell>
@@ -941,7 +821,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                         {row.map((cellValue, cellIndex) => (
                           <TableCell
                             key={`hydrograph-cell-${row[0] || rowIndex}-${cellIndex}`}
-                            className={classes.tableCell}
+                            sx={aaStationChartsSx.tableCell}
                           >
                             {cellValue}
                           </TableCell>
@@ -956,8 +836,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
 
           {activeTab === 0 && (
             <>
-              <div
-                className={classes.chartContainer}
+              <Box
+                sx={aaStationChartsSx.chartContainer}
                 style={{ display: viewMode === 'chart' ? 'block' : 'none' }}
               >
                 {triggerProbabilityData && (
@@ -968,16 +848,16 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                   />
                 )}
                 {isDownloading && (
-                  <div className={classes.loadingOverlay}>
+                  <Box sx={aaStationChartsSx.loadingOverlay}>
                     <CircularProgress />
                     <Typography variant="body2">
                       {t('Preparing chart for download...')}
                     </Typography>
-                  </div>
+                  </Box>
                 )}
-              </div>
+              </Box>
               <TableContainer
-                className={classes.tableContainer}
+                sx={aaStationChartsSx.tableContainer}
                 key={`trigger-probability-table-${station.station_name}`}
                 style={{ display: viewMode === 'table' ? 'block' : 'none' }}
               >
@@ -988,7 +868,10 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                         columnName => (
                           <TableCell
                             key={columnName}
-                            className={`${classes.tableCell} ${classes.tableHeader}`}
+                            sx={[
+                              aaStationChartsSx.tableCell,
+                              aaStationChartsSx.tableHeader,
+                            ]}
                           >
                             {columnName}
                           </TableCell>
@@ -1005,7 +888,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                           {row.map((cellValue, cellIndex) => (
                             <TableCell
                               key={`probability-cell-${row[0] || rowIndex}-${cellIndex}`}
-                              className={classes.tableCell}
+                              sx={aaStationChartsSx.tableCell}
                             >
                               {cellValue}
                             </TableCell>
@@ -1018,11 +901,11 @@ function StationCharts({ station, onClose }: StationChartsProps) {
               </TableContainer>
             </>
           )}
-        </div>
+        </Box>
 
-        <div className={classes.actionButtons}>
+        <Box sx={aaStationChartsSx.actionButtons}>
           <Button
-            className={classes.actionButton}
+            sx={aaStationChartsSx.actionButton}
             type="button"
             startIcon={<TableChart />}
             onClick={toggleViewMode}
@@ -1030,7 +913,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             {viewMode === 'chart' ? t('View table') : t('View chart')}
           </Button>
           <Button
-            className={classes.actionButton}
+            sx={aaStationChartsSx.actionButton}
             type="button"
             startIcon={
               isDownloading ? <CircularProgress size={16} /> : <GetApp />
@@ -1073,9 +956,9 @@ function StationCharts({ station, onClose }: StationChartsProps) {
               {t('Download CSV')}
             </MenuItem>
           </Menu>
-        </div>
+        </Box>
       </Paper>
-    </div>
+    </Box>
   );
 }
 

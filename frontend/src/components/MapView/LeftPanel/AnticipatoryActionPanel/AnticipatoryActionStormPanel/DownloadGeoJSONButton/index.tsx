@@ -3,11 +3,10 @@ import { AADataSelector } from 'context/anticipatoryAction/AAStormStateSlice';
 import { useSafeTranslation } from 'i18n';
 import { useSelector } from 'react-redux';
 
-import { useAACommonStyles } from '../../utils';
+import { aaCommonSx } from '../../aaPanelStyles';
 
 function DownloadGeoJSONButton() {
   const { t } = useSafeTranslation();
-  const commonClasses = useAACommonStyles();
   const parsedStormData = useSelector(AADataSelector);
 
   const handleDownloadGeoJSON = () => {
@@ -41,7 +40,7 @@ function DownloadGeoJSONButton() {
         width: '50%',
         margin: '1rem auto',
       }}
-      className={commonClasses.footerButton}
+      sx={aaCommonSx.footerButton}
       variant="outlined"
       fullWidth
       onClick={handleDownloadGeoJSON}

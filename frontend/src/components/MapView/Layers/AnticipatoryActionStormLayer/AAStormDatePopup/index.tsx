@@ -1,6 +1,8 @@
 import { Typography } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import {
+  STORM_DATE_POPUP_CLASS,
+  stormDateTooltipTextSx,
+} from 'components/MapView/Layers/layerPopupStyles';
 import {
   AAStormTimeSeriesFeature,
   FeaturePropertyDataType,
@@ -17,7 +19,6 @@ interface AAStormDatePopupProps {
 }
 
 function AAStormDatePopup({ timeSeries }: AAStormDatePopupProps) {
-  const classes = useStyles();
   const [selectedFeature, setSelectedFeature] =
     useState<AAStormTimeSeriesFeature | null>(null);
 
@@ -73,6 +74,7 @@ function AAStormDatePopup({ timeSeries }: AAStormDatePopupProps) {
     return (
       <Popup
         key={feature.id}
+        className={STORM_DATE_POPUP_CLASS}
         longitude={lng}
         latitude={lat}
         anchor="top"
@@ -80,9 +82,8 @@ function AAStormDatePopup({ timeSeries }: AAStormDatePopupProps) {
         closeButton={false}
         onClose={() => null}
         closeOnClick={false}
-        className={classes.popup}
       >
-        <Typography className={classes.toolTipDate} variant="body1">
+        <Typography sx={stormDateTooltipTextSx} variant="body1">
           {formatWindPointDate(time)}
         </Typography>
       </Popup>
@@ -108,40 +109,5 @@ function AAStormDatePopup({ timeSeries }: AAStormDatePopupProps) {
     </>
   );
 }
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    toolTipDate: {
-      fontSize: '14px',
-      fontWeight: 600,
-      lineHeight: '14px',
-    },
-    popup: {
-      '& > .maplibregl-popup-content': {
-        border: 'none',
-        padding: '4px',
-        borderRadius: '4px',
-        background: 'white',
-        boxShadow: 'inset 0px 0px 0px 1px #A4A4A4',
-        position: 'relative',
-      },
-      '& > .maplibregl-popup-tip': {
-        display: 'none',
-      },
-      // hack to display the popup tip without overlapping border
-      '&::after': {
-        content: '""',
-        position: 'absolute',
-        left: '50%',
-        top: -5,
-        width: '10px',
-        height: '10px',
-        background: 'white',
-        transform: 'translateX(-50%) rotate(45deg)',
-        boxShadow: 'inset 1px 1px 0px 0px #A4A4A4',
-      },
-    },
-  }),
-);
 
 export default AAStormDatePopup;

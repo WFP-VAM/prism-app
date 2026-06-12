@@ -1,6 +1,8 @@
 import { Typography } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import {
+  LANDFALL_MARKER_POPUP_CLASS,
+  landfallMarkerTooltipTextSx,
+} from 'components/MapView/Layers/layerPopupStyles';
 import { ParsedStormData } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import _React from 'react';
 import { Popup } from 'react-map-gl/maplibre';
@@ -9,8 +11,6 @@ import { formatWindPointDate } from '../../utils';
 import { findLandfallWindPoint, hasLandfallOccured } from '../utils';
 
 function AAStormLandfallMarker({ stormData }: AAStormLandfallPopupProps) {
-  const classes = useStyles();
-
   const windpoint = findLandfallWindPoint(stormData);
 
   if (!windpoint) {
@@ -27,15 +27,15 @@ function AAStormLandfallMarker({ stormData }: AAStormLandfallPopupProps) {
 
   return (
     <Popup
+      className={LANDFALL_MARKER_POPUP_CLASS}
       longitude={lng}
       latitude={lat}
       anchor="bottom"
       offset={25}
       closeButton={false}
       closeOnClick={false}
-      className={classes.popup}
     >
-      <Typography className={classes.tooltipText} variant="body1">
+      <Typography sx={landfallMarkerTooltipTextSx} variant="body1">
         LF: {formatWindPointDate(windpoint.properties.time)}
       </Typography>
     </Popup>
@@ -45,46 +45,5 @@ function AAStormLandfallMarker({ stormData }: AAStormLandfallPopupProps) {
 interface AAStormLandfallPopupProps {
   stormData: ParsedStormData;
 }
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    tooltipText: {
-      fontSize: '14px',
-      fontWeight: 600,
-      lineHeight: '14px',
-      paddingBottom: '2px',
-    },
-
-    popup: {
-      '& > .maplibregl-popup-content': {
-        border: 'none',
-        padding: '4px',
-        borderRadius: '4px',
-        background: 'white',
-        boxShadow: 'inset 0px 0px 0px 1px #A4A4A4',
-        position: 'relative',
-      },
-
-      '& > .maplibregl-popup-tip': {
-        display: 'none',
-      },
-
-      // hack to display the popup tip without overlapping border
-      '&::after': {
-        content: '""',
-        position: 'absolute',
-        left: '50%',
-        bottom: '-5px',
-        width: '10px',
-        height: '10px',
-        background: 'white',
-        transform: 'translateX(-50%) rotate(45deg)',
-        borderWidth: '0px 1px 1px 0px',
-        borderColor: '#A4A4A4',
-        borderStyle: 'solid',
-      },
-    },
-  }),
-);
 
 export default AAStormLandfallMarker;

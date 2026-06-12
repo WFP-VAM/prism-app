@@ -10,8 +10,6 @@ import {
 import { SelectChangeEvent } from '@mui/material/Select';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import {
   AspectRatio,
   isAutoRatio,
@@ -29,85 +27,24 @@ interface AspectRatioSelectorProps {
   setValue: (value: AspectRatio) => void;
 }
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    wrapper: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '0.5rem',
-    },
-    header: {
-      fontSize: '14px',
-      fontWeight: 400,
-    },
-    buttonGroup: {
-      display: 'flex',
-      flexWrap: 'nowrap',
-      width: '100%',
-    },
-    button: {
-      backgroundColor: 'white',
-      height: '32px',
-      flex: 1,
-      padding: '4px 6px',
-      fontSize: '0.7rem',
-      border: '1px solid rgba(0, 0, 0, 0.12) !important',
-      textTransform: 'none',
-      '&.Mui-selected': {
-        backgroundColor: 'rgba(0, 0, 0, 0.08)',
-      },
-    },
-    buttonContent: {
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: '4px',
-      justifyContent: 'center',
-    },
-    tooltip: {
-      fontSize: '0.75em',
-    },
-    select: {
-      backgroundColor: 'white',
-      '& .MuiOutlinedInput-input': {
-        padding: '8px 12px',
-        fontSize: '0.875rem',
-      },
-    },
-    menuItem: {
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: '8px',
-    },
-    customInputs: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '8px',
-      padding: '8px',
-      backgroundColor: '#F1F1F1',
-      borderRadius: '4px',
-      '& .MuiTextField-root': {
-        width: '60px',
-      },
-      '& input': {
-        fontSize: '0.875rem',
-        padding: '6px 8px',
-      },
-    },
-    colon: {
-      fontSize: '1rem',
-      fontWeight: 500,
-    },
-  }),
-);
+const toggleButtonSx = {
+  backgroundColor: 'white',
+  height: '32px',
+  flex: 1,
+  padding: '4px 6px',
+  fontSize: '0.7rem',
+  border: '1px solid rgba(0, 0, 0, 0.12) !important',
+  textTransform: 'none',
+  '&.Mui-selected': {
+    backgroundColor: 'rgba(0, 0, 0, 0.08)',
+  },
+};
 
 export function AspectRatioSelector({
   value,
   options: _options,
   setValue,
 }: AspectRatioSelectorProps) {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
 
   const isAutoActive = isAutoRatio(value);
@@ -192,8 +129,20 @@ export function AspectRatioSelector({
   };
 
   return (
-    <div className={classes.wrapper}>
-      <Typography variant="h4" className={classes.header}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '0.5rem',
+      }}
+    >
+      <Typography
+        variant="h4"
+        sx={{
+          fontSize: '14px',
+          fontWeight: 400,
+        }}
+      >
         {t('Aspect Ratio')}
       </Typography>
 
@@ -202,37 +151,77 @@ export function AspectRatioSelector({
         value={getCurrentValue()}
         exclusive
         onChange={handleChange}
-        className={classes.buttonGroup}
+        sx={{
+          display: 'flex',
+          flexWrap: 'nowrap',
+          width: '100%',
+        }}
       >
-        <ToggleButton value="Auto" className={classes.button}>
+        <ToggleButton value="Auto" sx={toggleButtonSx}>
           <Tooltip
             title={t('Map resizes based on browser window')}
             arrow
-            classes={{ tooltip: classes.tooltip }}
+            slotProps={{
+              tooltip: {
+                sx: { fontSize: '0.75em' },
+              },
+            }}
           >
-            <div className={classes.buttonContent}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: '4px',
+                justifyContent: 'center',
+              }}
+            >
               <AspectRatioGlyph aspectRatio="Auto" size={16} />
               <span>{getLabel('Auto')}</span>
-            </div>
+            </Box>
           </Tooltip>
         </ToggleButton>
-        <ToggleButton value="A4-P" className={classes.button}>
-          <div className={classes.buttonContent}>
+        <ToggleButton value="A4-P" sx={toggleButtonSx}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: '4px',
+              justifyContent: 'center',
+            }}
+          >
             <AspectRatioGlyph aspectRatio="A4-P" size={16} />
             <span>{getLabel('A4-P')}</span>
-          </div>
+          </Box>
         </ToggleButton>
-        <ToggleButton value="A4-L" className={classes.button}>
-          <div className={classes.buttonContent}>
+        <ToggleButton value="A4-L" sx={toggleButtonSx}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: '4px',
+              justifyContent: 'center',
+            }}
+          >
             <AspectRatioGlyph aspectRatio="A4-L" size={16} />
             <span>{getLabel('A4-L')}</span>
-          </div>
+          </Box>
         </ToggleButton>
-        <ToggleButton value="Other" className={classes.button}>
-          <div className={classes.buttonContent}>
+        <ToggleButton value="Other" sx={toggleButtonSx}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: '4px',
+              justifyContent: 'center',
+            }}
+          >
             <TuneIcon fontSize="small" />
             <span>{getLabel('Other')}</span>
-          </div>
+          </Box>
         </ToggleButton>
       </ToggleButtonGroup>
 
@@ -242,30 +231,66 @@ export function AspectRatioSelector({
           onChange={handleDropdownChange}
           variant="outlined"
           fullWidth
-          className={classes.select}
+          sx={{
+            backgroundColor: 'white',
+            '& .MuiOutlinedInput-input': {
+              padding: '8px 12px',
+              fontSize: '0.875rem',
+            },
+          }}
         >
           {presetRatios.map(ratio => (
             <MenuItem key={ratio} value={ratio}>
-              <div className={classes.menuItem}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+              >
                 <AspectRatioGlyph
                   aspectRatio={ratio as AspectRatio}
                   size={16}
                 />
                 <span>{ratio}</span>
-              </div>
+              </Box>
             </MenuItem>
           ))}
           <MenuItem value="Custom">
-            <div className={classes.menuItem}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: '8px',
+              }}
+            >
               <TuneIcon fontSize="small" />
               <span>{getLabel('Custom')}</span>
-            </div>
+            </Box>
           </MenuItem>
         </Select>
       )}
 
       {isCustomActive && (
-        <Box className={classes.customInputs}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '8px',
+            backgroundColor: '#F1F1F1',
+            borderRadius: '4px',
+            '& .MuiTextField-root': {
+              width: '60px',
+            },
+            '& input': {
+              fontSize: '0.875rem',
+              padding: '6px 8px',
+            },
+          }}
+        >
           <TextField
             type="number"
             label={t('Width')}
@@ -275,7 +300,15 @@ export function AspectRatioSelector({
             size="small"
             slotProps={{ htmlInput: { min: 0.1, max: 100, step: 0.1 } }}
           />
-          <span className={classes.colon}>:</span>
+          <Box
+            component="span"
+            sx={{
+              fontSize: '1rem',
+              fontWeight: 500,
+            }}
+          >
+            :
+          </Box>
           <TextField
             type="number"
             label={t('Height')}
@@ -287,7 +320,7 @@ export function AspectRatioSelector({
           />
         </Box>
       )}
-    </div>
+    </Box>
   );
 }
 

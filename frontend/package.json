@@ -64,7 +64,6 @@
     "@mui/icons-material": "^9.1.1",
     "@mui/material": "^9.1.1",
     "@mui/utils": "^7.3.1",
-    "@mui/styles": "^6.4.8",
     "@posthog/react": "^1.9.0",
     "@react-pdf/renderer": "^4.3.1",
     "@reduxjs/toolkit": "^1.4.0",

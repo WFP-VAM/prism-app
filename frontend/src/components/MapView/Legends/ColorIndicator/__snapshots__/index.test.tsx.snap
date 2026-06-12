@@ -3,14 +3,14 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="makeStyles-container-1"
+    class="MuiBox-root css-70qvj9"
   >
     <div
-      class="makeStyles-indicator-2"
+      class="MuiBox-root css-1mgg1lf"
       style="background-color: rgba(239, 50, 2, 0.7); border-radius: 0;"
     />
     <p
-      class="MuiTypography-root MuiTypography-body1 css-1dhkdrw-MuiTypography-root"
+      class="MuiTypography-root MuiTypography-body1 css-7csfbm-MuiTypography-root"
     >
       Vegetation
     </p>

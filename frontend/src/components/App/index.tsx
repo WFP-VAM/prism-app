@@ -2,15 +2,7 @@
 import './app.css';
 
 import { useIsAuthenticated } from '@azure/msal-react';
-import {
-  StyledEngineProvider,
-  Theme,
-  ThemeProvider,
-} from '@mui/material/styles';
-import {
-  StylesProvider,
-  ThemeProvider as StylesThemeProvider,
-} from '@mui/styles';
+import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import { Font } from '@react-pdf/renderer';
 import * as Sentry from '@sentry/browser';
 import AuthModal from 'components/AuthModal';
@@ -36,10 +28,6 @@ import {
   Switch,
   useParams,
 } from 'react-router-dom';
-
-declare module '@mui/styles/defaultTheme' {
-  interface DefaultTheme extends Theme {}
-}
 
 if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development') {
   if (process.env.REACT_APP_SENTRY_URL) {
@@ -135,13 +123,9 @@ function App() {
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={muiTheme}>
-        <StylesThemeProvider theme={muiTheme}>
-          <StylesProvider injectFirst>
-            {/* Used to show notifications from redux as a snackbar. Notifications are stored in notificationState */}
-            <Notifier />
-            <Router>{renderedContent}</Router>
-          </StylesProvider>
-        </StylesThemeProvider>
+        {/* Used to show notifications from redux as a snackbar. Notifications are stored in notificationState */}
+        <Notifier />
+        <Router>{renderedContent}</Router>
       </ThemeProvider>
     </StyledEngineProvider>
   );

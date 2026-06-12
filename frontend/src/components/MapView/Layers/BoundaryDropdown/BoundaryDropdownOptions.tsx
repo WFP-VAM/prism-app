@@ -5,7 +5,6 @@ import {
   TextField,
   TextFieldProps,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import bbox from '@turf/bbox';
 import { LayerKey } from 'config/types';
 import { getDisplayBoundaryLayers } from 'config/utils';
@@ -17,6 +16,10 @@ import React, { useMemo } from 'react';
 import { FixedSizeList as List } from 'react-window';
 import { boundaryCache } from 'utils/boundary-cache';
 
+import {
+  menuItemLevelSx,
+  searchFieldSx,
+} from './boundaryDropdownOptionsStyles';
 import {
   BoundaryDropdownProps,
   flattenAreaTree,
@@ -41,12 +44,11 @@ const SearchField = React.forwardRef(
     },
     ref: TextFieldProps['ref'],
   ) => {
-    const styles = useStyles();
     return (
       <TextField
         ref={ref}
         onKeyDown={e => e.stopPropagation()}
-        className={styles.searchField}
+        sx={searchFieldSx}
         value={search}
         onChange={e => {
           setSearch(e.target.value);
@@ -85,7 +87,6 @@ const BoundaryDropdownOptions = React.forwardRef(
     }: BoundaryDropdownOptionsProps,
     ref,
   ) => {
-    const styles = useStyles();
     const { t, i18n: i18nLocale } = useSafeTranslation();
     const baseBoundaryLayerData = boundaryCache.getCachedData(
       boundaryLayers[0].id,
@@ -164,13 +165,6 @@ const BoundaryDropdownOptions = React.forwardRef(
     // note that level actually used is different from the
     // official admin level, as we subtract the root level
     // from each item's level, when displaying
-    const clsName: { [key: number]: any } = {
-      0: styles.menuItem0,
-      1: styles.menuItem1,
-      2: styles.menuItem2,
-      3: styles.menuItem3,
-      4: styles.menuItem3,
-    };
     return (
       <>
         <SearchField search={search} setSearch={setSearch} />
@@ -195,9 +189,7 @@ const BoundaryDropdownOptions = React.forwardRef(
             return (
               <MenuItem
                 ref={ref as any}
-                classes={{
-                  root: clsName[(area.level - rootLevel) as number],
-                }}
+                sx={menuItemLevelSx[(area.level - rootLevel) as number]}
                 key={area.adminCode}
                 value={area.adminCode}
                 style={style as any}
@@ -252,50 +244,6 @@ const BoundaryDropdownOptions = React.forwardRef(
     );
   },
 );
-
-const useStyles = makeStyles({
-  searchField: {
-    '&>div': {
-      color: 'black',
-    },
-  },
-  formControl: {
-    width: '140px',
-    marginLeft: '10px',
-  },
-  icon: {
-    alignSelf: 'end',
-    marginBottom: '0.4em',
-  },
-  menuItem0: {
-    textTransform: 'uppercase',
-    letterSpacing: '3px',
-    fontSize: '0.7em',
-    '&$selected': {
-      backgroundColor: '#ADD8E6',
-    },
-  },
-  menuItem1: {
-    paddingLeft: '2em',
-    '&$selected': {
-      backgroundColor: '#ADD8E6',
-    },
-  },
-  menuItem2: {
-    paddingLeft: '3em',
-    fontSize: '0.9em',
-    '&$selected': {
-      backgroundColor: '#ADD8E6',
-    },
-  },
-  menuItem3: {
-    paddingLeft: '4em',
-    fontSize: '0.9em',
-    '&$selected': {
-      backgroundColor: '#ADD8E6',
-    },
-  },
-});
 
 interface BoundaryDropdownOptionsProps {
   search: string;

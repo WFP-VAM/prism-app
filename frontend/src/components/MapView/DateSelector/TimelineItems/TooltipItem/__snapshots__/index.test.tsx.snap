@@ -3,12 +3,14 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="makeStyles-tooltipItemContainer-1"
+    class="MuiBox-root css-u4p24i"
   >
     <div
-      class="makeStyles-tooltipItemColor-2"
+      class="MuiBox-root css-1yr807i"
     />
-    <div>
+    <div
+      class="MuiBox-root css-0"
+    >
       Some Title
     </div>
   </div>

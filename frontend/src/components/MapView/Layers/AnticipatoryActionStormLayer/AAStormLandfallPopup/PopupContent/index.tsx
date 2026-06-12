@@ -1,6 +1,4 @@
-import { Typography } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { Box, Typography } from '@mui/material';
 import { LandfallInfo } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import { useSafeTranslation } from 'i18n';
 
@@ -10,101 +8,53 @@ import {
   formatLandfallTimeRange,
   formatReportDate,
 } from '../../utils';
+import {
+  blockSx,
+  itemContainerSx,
+  itemsContainerSx,
+  textAlignRightSx,
+  textSx,
+  titleSx,
+} from './popupContentStyles';
 
 function PopupContent({ landfallInfo, reportDate }: PopupContentProps) {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
 
   return (
-    <div className={classes.itemsContainer}>
-      <Typography
-        variant="body1"
-        className={`${classes.text} ${classes.title}`}
-      >
+    <Box sx={itemsContainerSx}>
+      <Typography variant="body1" sx={[textSx, titleSx]}>
         {t('Report date')}: {formatReportDate(reportDate)}
       </Typography>
-      <div className={classes.itemContainer}>
-        <Typography
-          variant="body1"
-          className={classes.text}
-          style={{ maxWidth: 100 }}
-        >
+      <Box sx={itemContainerSx}>
+        <Typography variant="body1" sx={textSx} style={{ maxWidth: 100 }}>
           {t('Landfall estimated time')}
         </Typography>
-        <Typography
-          variant="body1"
-          className={`${classes.text} ${classes.textAlignRight}`}
-        >
+        <Typography variant="body1" sx={[textSx, textAlignRightSx]}>
           {formatLandfallDate(landfallInfo.time)}
-          <span className={classes.block}>
+          <Box component="span" sx={blockSx}>
             {formatLandfallTimeRange(landfallInfo.time)}
-          </span>
+          </Box>
         </Typography>
-      </div>
-      <div className={classes.itemContainer}>
-        <Typography
-          variant="body1"
-          className={classes.text}
-          style={{ maxWidth: 150 }}
-        >
+      </Box>
+      <Box sx={itemContainerSx}>
+        <Typography variant="body1" sx={textSx} style={{ maxWidth: 150 }}>
           {t('Landfall estimated leadtime')}
         </Typography>
-        <Typography
-          variant="body1"
-          className={`${classes.text} ${classes.textAlignRight}`}
-        >
+        <Typography variant="body1" sx={[textSx, textAlignRightSx]}>
           {formatLandfallEstimatedLeadtime(landfallInfo.time, reportDate)}
         </Typography>
-      </div>
-      <div className={classes.itemContainer}>
-        <Typography
-          variant="body1"
-          className={classes.text}
-          style={{ maxWidth: 150 }}
-        >
+      </Box>
+      <Box sx={itemContainerSx}>
+        <Typography variant="body1" sx={textSx} style={{ maxWidth: 150 }}>
           {t('District impacted by landfall')}
         </Typography>
-        <Typography
-          variant="body1"
-          className={`${classes.text} ${classes.textAlignRight}`}
-        >
+        <Typography variant="body1" sx={[textSx, textAlignRightSx]}>
           {landfallInfo.district}
         </Typography>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    block: {
-      display: 'block',
-    },
-    itemsContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '2px',
-    },
-    itemContainer: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      padding: '8px',
-      background: '#FFFFFF',
-    },
-    text: {
-      fontSize: '14px',
-      lineHeight: '18px',
-      fontWeight: 400,
-    },
-    title: {
-      fontWeight: 700,
-      padding: '2px 0px 2px 8px',
-    },
-    textAlignRight: {
-      textAlign: 'right',
-    },
-  }),
-);
 
 interface PopupContentProps {
   landfallInfo: LandfallInfo;

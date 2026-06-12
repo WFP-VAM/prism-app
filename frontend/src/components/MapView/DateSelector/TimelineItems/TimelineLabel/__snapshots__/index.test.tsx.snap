@@ -3,7 +3,7 @@
 exports[`TimelineLabel renders as expected 1`] = `
 <div>
   <p
-    class="MuiTypography-root MuiTypography-body2 makeStyles-dateItemLabel-1 css-1p5whhv-MuiTypography-root"
+    class="MuiTypography-root MuiTypography-body2 css-1tls8et-MuiTypography-root"
     style="cursor: default;"
   >
     déc.

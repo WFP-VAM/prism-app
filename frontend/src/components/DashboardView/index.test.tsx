@@ -1,12 +1,4 @@
-import {
-  StyledEngineProvider,
-  Theme,
-  ThemeProvider,
-} from '@mui/material/styles';
-import {
-  StylesProvider,
-  ThemeProvider as StylesThemeProvider,
-} from '@mui/styles';
+import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import { configureStore } from '@reduxjs/toolkit';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { downloadToFile } from 'components/MapView/utils';
@@ -19,10 +11,6 @@ import { Provider } from 'react-redux';
 import { TestBrowserRouter } from 'test/TestBrowserRouter';
 
 import DashboardView from '.';
-
-declare module '@mui/styles/defaultTheme' {
-  interface DefaultTheme extends Theme {}
-}
 
 jest.mock('components/MapView/utils', () => ({
   downloadToFile: jest.fn(),
@@ -72,11 +60,7 @@ function renderDashboardView() {
       <Provider store={makeStore()}>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={muiTheme}>
-            <StylesThemeProvider theme={muiTheme}>
-              <StylesProvider injectFirst>
-                <DashboardView />
-              </StylesProvider>
-            </StylesThemeProvider>
+            <DashboardView />
           </ThemeProvider>
         </StyledEngineProvider>
       </Provider>

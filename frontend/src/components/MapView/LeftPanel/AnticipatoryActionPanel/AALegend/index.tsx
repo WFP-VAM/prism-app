@@ -1,6 +1,4 @@
 import { ListItem, Paper } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import { Panel } from 'config/types';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { lightGrey } from 'muiTheme';
@@ -8,6 +6,7 @@ import { useSelector } from 'react-redux';
 
 import AADroughtLegend from '../AADroughtLegend';
 import AAFloodLegend from '../AAFloodLegend';
+import { aaLegendPaperSx } from '../aaPanelStyles';
 import AAStormLegend from '../AAStormLegend';
 
 export interface AALegendProps {
@@ -19,8 +18,6 @@ function AALegend({
   forPrinting = false,
   showDescription = true,
 }: AALegendProps) {
-  const classes = useStyles();
-
   const tabPanel = useSelector(leftPanelTabValueSelector);
   const isStormAA = tabPanel === Panel.AnticipatoryActionStorm;
   const isDroughtAA = tabPanel === Panel.AnticipatoryActionDrought;
@@ -29,7 +26,8 @@ function AALegend({
   return (
     <ListItem disableGutters dense>
       <Paper
-        className={`${classes.paper} legend-card`}
+        className="legend-card"
+        sx={aaLegendPaperSx}
         elevation={forPrinting ? 0 : undefined}
         style={
           forPrinting
@@ -46,18 +44,5 @@ function AALegend({
     </ListItem>
   );
 }
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    paper: {
-      padding: 8,
-      width: 180,
-      borderRadius: '8px',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '0.5rem',
-    },
-  }),
-);
 
 export default AALegend;

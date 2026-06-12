@@ -1,25 +1,12 @@
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { Box } from '@mui/material';
 import { Extent } from 'components/MapView/Layers/raster-utils';
+import { compositeLayersContainerSx } from 'components/MapView/LeftPanel/layersPanel/layerPanelStyles';
 import { CompositeLayerProps, LayerType } from 'config/types';
 import { getCompositeLayers } from 'config/utils';
 import { Fragment, memo } from 'react';
 import { useMapState } from 'utils/useMapState';
 
 import SwitchItem from './SwitchItem';
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    compositeLayersContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      marginLeft: '24px',
-      marginBottom: '12px',
-      fontStyle: 'italic',
-      borderLeft: '1px #B1D6DB solid',
-    },
-  }),
-);
 
 interface SwitchItemsProps {
   layers: LayerType[];
@@ -28,7 +15,6 @@ interface SwitchItemsProps {
 const SwitchItems = memo(({ layers, extent }: SwitchItemsProps) => {
   const mapState = useMapState();
   const selectedLayers = mapState.layers;
-  const classes = useStyles();
   return (
     <>
       {layers.map((layer: LayerType) => {
@@ -47,7 +33,7 @@ const SwitchItems = memo(({ layers, extent }: SwitchItemsProps) => {
           <Fragment key={layer.id}>
             <SwitchItem layer={layer} extent={extent} />
             {compositeLayers.length ? (
-              <div className={classes.compositeLayersContainer}>
+              <Box sx={compositeLayersContainerSx}>
                 {compositeLayers.map(compositeLayer => (
                   <SwitchItem
                     key={compositeLayer.id}
@@ -61,7 +47,7 @@ const SwitchItems = memo(({ layers, extent }: SwitchItemsProps) => {
                     disabledMenuSelection
                   />
                 ))}
-              </div>
+              </Box>
             ) : null}
           </Fragment>
         );

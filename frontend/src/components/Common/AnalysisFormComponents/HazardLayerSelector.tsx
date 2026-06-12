@@ -1,7 +1,9 @@
-import makeStyles from '@mui/styles/makeStyles';
+import { Box } from '@mui/material';
 import LayerDropdown from 'components/MapView/Layers/LayerDropdown';
 import { LayerKey } from 'config/types';
 import { useSafeTranslation } from 'i18n';
+
+import { dropdownFullWidthSx, formContainerSx } from '../formComponentStyles';
 
 interface HazardLayerSelectorProps {
   value: LayerKey | undefined;
@@ -16,37 +18,23 @@ function HazardLayerSelector({
   className,
   disabled = false,
 }: HazardLayerSelectorProps) {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
 
   return (
-    <div className={classes.container}>
-      <LayerDropdown
-        type="wms"
-        value={value || ''}
-        setValue={onChange}
-        className={className || classes.dropdown}
-        label={t('Hazard Layer')}
-        placeholder="Choose hazard layer"
-        disabled={disabled}
-      />
-    </div>
+    <Box sx={formContainerSx()}>
+      <Box sx={dropdownFullWidthSx}>
+        <LayerDropdown
+          type="wms"
+          value={value || ''}
+          setValue={onChange}
+          className={className}
+          label={t('Hazard Layer')}
+          placeholder="Choose hazard layer"
+          disabled={disabled}
+        />
+      </Box>
+    </Box>
   );
 }
-
-const useStyles = makeStyles(() => ({
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginBottom: 30,
-    marginLeft: 10,
-    width: '90%',
-    color: 'black',
-  },
-  dropdown: {
-    width: '100%',
-    color: 'black',
-  },
-}));
 
 export default HazardLayerSelector;

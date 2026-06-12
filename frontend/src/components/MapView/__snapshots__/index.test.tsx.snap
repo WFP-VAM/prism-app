@@ -3,20 +3,20 @@
 exports[`MapView renders as expected 1`] = `
 <div>
   <div
-    class="makeStyles-root-1 MuiBox-root css-0"
+    class="MuiBox-root css-1uds6oo"
   >
     <div
       class="MuiDrawer-root MuiDrawer-anchorLeft MuiDrawer-docked css-1e1tgjm-MuiDrawer-docked"
     >
       <div
-        class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation1 MuiDrawer-paper css-1vivt8v-MuiPaper-root-MuiDrawer-paper"
+        class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation1 MuiDrawer-paper css-xt7a9e-MuiPaper-root-MuiDrawer-paper"
         style="--Paper-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12); margin-top: 56px; height: 80vh; background-color: white; max-width: 100%; border-radius: 0 8px 8px 8px;"
       >
         <div
-          class="makeStyles-root-3 makeStyles-root-5"
+          class="MuiBox-root css-13tjae1"
         >
           <div
-            class="makeStyles-tabsWrapper-4"
+            class="MuiBox-root css-1sj2ex1"
           >
             <div
               aria-labelledby="full-width-tab-layers"
@@ -32,7 +32,7 @@ exports[`MapView renders as expected 1`] = `
                   style="padding: 0.5rem;"
                 >
                   <div
-                    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root makeStyles-root-6 MuiAccordion-rounded MuiAccordion-gutters css-z8u0ml-MuiPaper-root-MuiAccordion-root"
+                    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded MuiAccordion-gutters css-1eyih7r-MuiPaper-root-MuiAccordion-root"
                     style="--Paper-shadow: none;"
                   >
                     <h3
@@ -41,22 +41,22 @@ exports[`MapView renders as expected 1`] = `
                       <button
                         aria-controls="Rainfall"
                         aria-expanded="false"
-                        class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-7 MuiAccordionSummary-gutters css-pqdk18-MuiButtonBase-root-MuiAccordionSummary-root"
+                        class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters css-fwo7tk-MuiButtonBase-root-MuiAccordionSummary-root"
                         id="level1-Rainfall"
                         tabindex="0"
                         type="button"
                       >
                         <span
-                          class="MuiAccordionSummary-content makeStyles-summaryContent-10 css-1rqjdob-MuiAccordionSummary-content"
+                          class="MuiAccordionSummary-content css-1rqjdob-MuiAccordionSummary-content"
                         >
                           <p
-                            class="MuiTypography-root makeStyles-title-11 MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+                            class="MuiTypography-root MuiTypography-body1 css-1n3gmsb-MuiTypography-root"
                           >
                             Rainfall
                           </p>
                         </span>
                         <span
-                          class="MuiAccordionSummary-expandIconWrapper makeStyles-expandIcon-9 css-1wnau0r-MuiAccordionSummary-expandIconWrapper"
+                          class="MuiAccordionSummary-expandIconWrapper css-1wnau0r-MuiAccordionSummary-expandIconWrapper"
                         >
                           <svg
                             aria-hidden="true"
@@ -74,7 +74,7 @@ exports[`MapView renders as expected 1`] = `
                     </h3>
                   </div>
                   <div
-                    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root makeStyles-root-6 MuiAccordion-rounded MuiAccordion-gutters css-z8u0ml-MuiPaper-root-MuiAccordion-root"
+                    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded MuiAccordion-gutters css-1eyih7r-MuiPaper-root-MuiAccordion-root"
                     style="--Paper-shadow: none;"
                   >
                     <h3
@@ -83,22 +83,22 @@ exports[`MapView renders as expected 1`] = `
                       <button
                         aria-controls="Vegetation"
                         aria-expanded="false"
-                        class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-7 MuiAccordionSummary-gutters css-pqdk18-MuiButtonBase-root-MuiAccordionSummary-root"
+                        class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters css-fwo7tk-MuiButtonBase-root-MuiAccordionSummary-root"
                         id="level1-Vegetation"
                         tabindex="0"
                         type="button"
                       >
                         <span
-                          class="MuiAccordionSummary-content makeStyles-summaryContent-10 css-1rqjdob-MuiAccordionSummary-content"
+                          class="MuiAccordionSummary-content css-1rqjdob-MuiAccordionSummary-content"
                         >
                           <p
-                            class="MuiTypography-root makeStyles-title-11 MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+                            class="MuiTypography-root MuiTypography-body1 css-1n3gmsb-MuiTypography-root"
                           >
                             Vegetation
                           </p>
                         </span>
                         <span
-                          class="MuiAccordionSummary-expandIconWrapper makeStyles-expandIcon-9 css-1wnau0r-MuiAccordionSummary-expandIconWrapper"
+                          class="MuiAccordionSummary-expandIconWrapper css-1wnau0r-MuiAccordionSummary-expandIconWrapper"
                         >
                           <svg
                             aria-hidden="true"
@@ -116,7 +116,7 @@ exports[`MapView renders as expected 1`] = `
                     </h3>
                   </div>
                   <div
-                    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root makeStyles-root-6 MuiAccordion-rounded MuiAccordion-gutters css-z8u0ml-MuiPaper-root-MuiAccordion-root"
+                    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded MuiAccordion-gutters css-1eyih7r-MuiPaper-root-MuiAccordion-root"
                     style="--Paper-shadow: none;"
                   >
                     <h3
@@ -125,22 +125,22 @@ exports[`MapView renders as expected 1`] = `
                       <button
                         aria-controls="Temperature"
                         aria-expanded="false"
-                        class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-7 MuiAccordionSummary-gutters css-pqdk18-MuiButtonBase-root-MuiAccordionSummary-root"
+                        class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters css-fwo7tk-MuiButtonBase-root-MuiAccordionSummary-root"
                         id="level1-Temperature"
                         tabindex="0"
                         type="button"
                       >
                         <span
-                          class="MuiAccordionSummary-content makeStyles-summaryContent-10 css-1rqjdob-MuiAccordionSummary-content"
+                          class="MuiAccordionSummary-content css-1rqjdob-MuiAccordionSummary-content"
                         >
                           <p
-                            class="MuiTypography-root makeStyles-title-11 MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+                            class="MuiTypography-root MuiTypography-body1 css-1n3gmsb-MuiTypography-root"
                           >
                             Temperature
                           </p>
                         </span>
                         <span
-                          class="MuiAccordionSummary-expandIconWrapper makeStyles-expandIcon-9 css-1wnau0r-MuiAccordionSummary-expandIconWrapper"
+                          class="MuiAccordionSummary-expandIconWrapper css-1wnau0r-MuiAccordionSummary-expandIconWrapper"
                         >
                           <svg
                             aria-hidden="true"
@@ -158,7 +158,7 @@ exports[`MapView renders as expected 1`] = `
                     </h3>
                   </div>
                   <div
-                    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root makeStyles-root-6 MuiAccordion-rounded MuiAccordion-gutters css-z8u0ml-MuiPaper-root-MuiAccordion-root"
+                    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded MuiAccordion-gutters css-1eyih7r-MuiPaper-root-MuiAccordion-root"
                     style="--Paper-shadow: none;"
                   >
                     <h3
@@ -167,22 +167,22 @@ exports[`MapView renders as expected 1`] = `
                       <button
                         aria-controls="Vulnerability"
                         aria-expanded="false"
-                        class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-7 MuiAccordionSummary-gutters css-pqdk18-MuiButtonBase-root-MuiAccordionSummary-root"
+                        class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters css-fwo7tk-MuiButtonBase-root-MuiAccordionSummary-root"
                         id="level1-Vulnerability"
                         tabindex="0"
                         type="button"
                       >
                         <span
-                          class="MuiAccordionSummary-content makeStyles-summaryContent-10 css-1rqjdob-MuiAccordionSummary-content"
+                          class="MuiAccordionSummary-content css-1rqjdob-MuiAccordionSummary-content"
                         >
                           <p
-                            class="MuiTypography-root makeStyles-title-11 MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+                            class="MuiTypography-root MuiTypography-body1 css-1n3gmsb-MuiTypography-root"
                           >
                             Vulnerability
                           </p>
                         </span>
                         <span
-                          class="MuiAccordionSummary-expandIconWrapper makeStyles-expandIcon-9 css-1wnau0r-MuiAccordionSummary-expandIconWrapper"
+                          class="MuiAccordionSummary-expandIconWrapper css-1wnau0r-MuiAccordionSummary-expandIconWrapper"
                         >
                           <svg
                             aria-hidden="true"
@@ -200,7 +200,7 @@ exports[`MapView renders as expected 1`] = `
                     </h3>
                   </div>
                   <div
-                    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root makeStyles-root-6 MuiAccordion-rounded MuiAccordion-gutters css-z8u0ml-MuiPaper-root-MuiAccordion-root"
+                    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded MuiAccordion-gutters css-1eyih7r-MuiPaper-root-MuiAccordion-root"
                     style="--Paper-shadow: none;"
                   >
                     <h3
@@ -209,22 +209,22 @@ exports[`MapView renders as expected 1`] = `
                       <button
                         aria-controls="Exposure"
                         aria-expanded="false"
-                        class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-7 MuiAccordionSummary-gutters css-pqdk18-MuiButtonBase-root-MuiAccordionSummary-root"
+                        class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters css-fwo7tk-MuiButtonBase-root-MuiAccordionSummary-root"
                         id="level1-Exposure"
                         tabindex="0"
                         type="button"
                       >
                         <span
-                          class="MuiAccordionSummary-content makeStyles-summaryContent-10 css-1rqjdob-MuiAccordionSummary-content"
+                          class="MuiAccordionSummary-content css-1rqjdob-MuiAccordionSummary-content"
                         >
                           <p
-                            class="MuiTypography-root makeStyles-title-11 MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+                            class="MuiTypography-root MuiTypography-body1 css-1n3gmsb-MuiTypography-root"
                           >
                             Exposure
                           </p>
                         </span>
                         <span
-                          class="MuiAccordionSummary-expandIconWrapper makeStyles-expandIcon-9 css-1wnau0r-MuiAccordionSummary-expandIconWrapper"
+                          class="MuiAccordionSummary-expandIconWrapper css-1wnau0r-MuiAccordionSummary-expandIconWrapper"
                         >
                           <svg
                             aria-hidden="true"
@@ -286,10 +286,10 @@ exports[`MapView renders as expected 1`] = `
       </div>
     </div>
     <div
-      class="makeStyles-container-52 MuiBox-root css-0"
+      class="MuiBox-root css-14ljl1j"
     >
       <div
-        class="makeStyles-optionContainer-53 MuiBox-root css-0"
+        class="MuiBox-root css-1vm2eqo"
       />
     </div>
     <div

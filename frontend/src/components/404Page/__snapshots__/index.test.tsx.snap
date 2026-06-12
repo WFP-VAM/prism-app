@@ -3,21 +3,21 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="makeStyles-container-1"
+    class="MuiBox-root css-1645awd"
   >
     <div
-      class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row MuiGrid-spacing-xs-3 makeStyles-content-2 css-1wp13g6-MuiGrid-root"
+      class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row MuiGrid-spacing-xs-3 css-10hs8dy-MuiGrid-root"
     >
       <div
         class="MuiGrid-root MuiGrid-direction-xs-row css-17fpwt7-MuiGrid-root"
       >
         <h3
-          class="MuiTypography-root MuiTypography-h3 MuiTypography-gutterBottom css-dsvqwl-MuiTypography-root"
+          class="MuiTypography-root MuiTypography-h3 MuiTypography-gutterBottom css-15afoz4-MuiTypography-root"
         >
           404 Page Not Found
         </h3>
         <h5
-          class="MuiTypography-root MuiTypography-h5 MuiTypography-gutterBottom css-hhux6s-MuiTypography-root"
+          class="MuiTypography-root MuiTypography-h5 MuiTypography-gutterBottom css-d3oylg-MuiTypography-root"
         >
           Sorry, it seems we ran into a problem. We already collected information about this error.
         </h5>
@@ -34,7 +34,7 @@ exports[`renders as expected 1`] = `
           href="/"
         >
           <button
-            class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-sizeMedium MuiButton-colorPrimary css-tnebnx-MuiButtonBase-root-MuiButton-root"
+            class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-sizeMedium MuiButton-colorPrimary css-1wwmw43-MuiButtonBase-root-MuiButton-root"
             tabindex="0"
             type="button"
           >
@@ -47,7 +47,7 @@ exports[`renders as expected 1`] = `
       >
         <img
           alt="World Food Programme logo"
-          class="makeStyles-image-3"
+          class="MuiBox-root css-x2s52o"
           src="test-file-stub"
         />
       </div>

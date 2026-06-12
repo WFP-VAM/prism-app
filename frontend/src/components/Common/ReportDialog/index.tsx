@@ -11,8 +11,7 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import type { SxProps } from '@mui/material/styles';
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
 import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
 import { ReportType } from 'config/types';
@@ -33,9 +32,60 @@ import ReportDoc from './reportDoc';
 
 type Format = 'png' | 'jpeg';
 
+const documentLoadingContainerSx = {
+  zIndex: 1000,
+  backgroundColor: 'white',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: '100%',
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '100%',
+} satisfies SxProps<Theme>;
+
+const documentLoaderTextSx = {
+  color: 'black',
+} satisfies SxProps<Theme>;
+
+const titleRootSx = (theme: Theme): SxProps<Theme> => ({
+  background: theme.dialog?.border,
+  padding: 0,
+});
+
+const titleSx = {
+  display: 'flex',
+  flexWrap: 'nowrap',
+  alignItems: 'center',
+} satisfies SxProps<Theme>;
+
+const titleTextSx = {
+  flexGrow: 1,
+  textAlign: 'center',
+  fontSize: 18,
+} satisfies SxProps<Theme>;
+
+const titleIconButtonSx = {
+  color: '#FFFFFF',
+} satisfies SxProps<Theme>;
+
+const actionsSx = (theme: Theme): SxProps<Theme> => ({
+  background: theme.dialog?.border,
+  display: 'flex',
+  justifyContent: 'space-between',
+  flexDirection: 'row',
+});
+
+const signatureSx = {
+  fontSize: 12,
+  fontWeight: 500,
+  paddingLeft: '1em',
+} satisfies SxProps<Theme>;
+
 const ReportDialog = memo(
   ({ open, reportConfig, handleClose, tableData, columns }: ReportProps) => {
-    const classes = useStyles();
     const theme = useTheme();
     const { t } = useSafeTranslation();
     const [mapImage, setMapImage] = useState<string | null>(null);
@@ -183,10 +233,10 @@ const ReportDialog = memo(
         onClose={() => handleClose()}
         maxWidth={false}
       >
-        <DialogTitle className={classes.titleRoot}>
-          <div className={classes.title}>
+        <DialogTitle sx={titleRootSx(theme)}>
+          <Box sx={titleSx}>
             <IconButton
-              className={classes.titleIconButton}
+              sx={titleIconButtonSx}
               onClick={() => {
                 handleClose();
               }}
@@ -194,8 +244,10 @@ const ReportDialog = memo(
             >
               <ArrowBack />
             </IconButton>
-            <span className={classes.titleText}>{t(reportConfig.title)}</span>
-          </div>
+            <Box component="span" sx={titleTextSx}>
+              {t(reportConfig.title)}
+            </Box>
+          </Box>
         </DialogTitle>
         <DialogContent
           style={{
@@ -205,9 +257,9 @@ const ReportDialog = memo(
           }}
         >
           {documentIsLoading && (
-            <Box className={classes.documentLoadingContainer}>
+            <Box sx={documentLoadingContainerSx}>
               <Typography
-                className={classes.documentLoaderText}
+                sx={documentLoaderTextSx}
                 variant="body1"
                 component="span"
               >
@@ -218,67 +270,15 @@ const ReportDialog = memo(
           )}
           {renderedPdfViewer}
         </DialogContent>
-        <DialogActions className={classes.actions}>
-          <span className={classes.signature}>{renderedSignatureText}</span>
+        <DialogActions sx={actionsSx(theme)}>
+          <Box component="span" sx={signatureSx}>
+            {renderedSignatureText}
+          </Box>
           {renderedDownloadPdfButton}
         </DialogActions>
       </Dialog>
     );
   },
-);
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    documentLoadingContainer: {
-      zIndex: 1000,
-      backgroundColor: 'white',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100%',
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      width: '100%',
-    },
-    documentLoaderText: {
-      color: 'black',
-    },
-    titleRoot: {
-      background: theme.dialog?.border,
-      padding: 0,
-    },
-    title: {
-      display: 'flex',
-      flexWrap: 'nowrap',
-      alignItems: 'center',
-    },
-    titleText: {
-      flexGrow: 1,
-      textAlign: 'center',
-      fontSize: 18,
-    },
-    titleIconButton: {
-      color: '#FFFFFF',
-    },
-    actions: {
-      background: theme.dialog?.border,
-      display: 'flex',
-      justifyContent: 'space-between',
-      flexDirection: 'row',
-    },
-    actionButton: {
-      background: '#FFFFFF',
-      color: theme.dialog?.actionButton,
-      fontSize: 12,
-    },
-    signature: {
-      fontSize: 12,
-      fontWeight: 500,
-      paddingLeft: '1em',
-    },
-  }),
 );
 
 export interface ReportProps {

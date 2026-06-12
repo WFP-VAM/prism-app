@@ -1,3 +1,4 @@
+import type { SxProps, Theme } from '@mui/material/styles';
 import {
   CycloneName,
   ShortDate,
@@ -6,9 +7,9 @@ import {
 
 export type DateItemStyle = {
   color: string;
-  coverageTick?: string;
-  validityTick?: string;
-  queryTick?: string;
+  coverageTick?: SxProps<Theme>;
+  validityTick?: SxProps<Theme>;
+  queryTick?: SxProps<Theme>;
 };
 
 export type DateJSON = Record<ShortDate, Record<CycloneName, TimeAndState[]>>;

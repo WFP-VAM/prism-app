@@ -6,7 +6,7 @@ exports[`renders as expected 1`] = `
     class="MuiListItem-root MuiListItem-dense MuiListItem-padding css-r9txlw-MuiListItem-root"
   >
     <div
-      class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 makeStyles-paper-1 legend-card css-kah35m-MuiPaper-root"
+      class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 legend-card css-nk69oc-MuiPaper-root"
       style="--Paper-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);"
     >
       <div
@@ -32,21 +32,21 @@ exports[`renders as expected 1`] = `
         />
       </div>
       <span
-        class="MuiLinearProgress-root makeStyles-root-10 MuiLinearProgress-colorPrimary MuiLinearProgress-indeterminate css-1xzy3du-MuiLinearProgress-root"
+        class="MuiLinearProgress-root MuiLinearProgress-colorPrimary MuiLinearProgress-indeterminate css-1kahi2i-MuiLinearProgress-root"
         role="progressbar"
       >
         <span
-          class="MuiLinearProgress-bar makeStyles-hide-12 MuiLinearProgress-bar1 css-zem646-MuiLinearProgress-bar1"
+          class="MuiLinearProgress-bar MuiLinearProgress-bar1 css-zem646-MuiLinearProgress-bar1"
         />
         <span
-          class="MuiLinearProgress-bar makeStyles-hide-12 MuiLinearProgress-bar2 css-nqjg0w-MuiLinearProgress-bar2"
+          class="MuiLinearProgress-bar MuiLinearProgress-bar2 css-nqjg0w-MuiLinearProgress-bar2"
         />
       </span>
       <div
         class="MuiGrid-root MuiGrid-direction-xs-row css-17fpwt7-MuiGrid-root"
       >
         <h5
-          class="MuiTypography-root MuiTypography-h5 css-1yfnqf6-MuiTypography-root"
+          class="MuiTypography-root MuiTypography-h5 css-1lqr591-MuiTypography-root"
         >
           <div>
             Test Children
@@ -58,12 +58,11 @@ exports[`renders as expected 1`] = `
         style="margin: 8px 0px;"
       />
       <div
-        class="MuiBox-root css-0"
-        style="display: flex; justify-content: space-between;"
+        class="MuiBox-root css-1b6zvlt"
       >
         <button
           aria-label="Opacity"
-          class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-iksamw-MuiButtonBase-root-MuiIconButton-root"
+          class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-155wbr6-MuiButtonBase-root-MuiIconButton-root"
           data-mui-internal-clone-element="true"
           tabindex="0"
           type="button"
@@ -82,7 +81,7 @@ exports[`renders as expected 1`] = `
         </button>
         <button
           aria-label="Remove layer"
-          class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-iksamw-MuiButtonBase-root-MuiIconButton-root"
+          class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-155wbr6-MuiButtonBase-root-MuiIconButton-root"
           data-mui-internal-clone-element="true"
           tabindex="0"
           type="button"

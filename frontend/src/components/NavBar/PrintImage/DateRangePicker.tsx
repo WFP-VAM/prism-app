@@ -1,6 +1,4 @@
-import { Box, Theme, Typography } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { Box, Typography } from '@mui/material';
 import { WMSLayerProps } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
 import { availableDatesSelector } from 'context/serverStateSlice';
@@ -14,7 +12,6 @@ import { getPossibleDatesForLayer } from 'utils/server-utils';
 import PrintConfigContext from './printConfig.context';
 
 function DateRangePicker() {
-  const classes = useStyles();
   const { t } = useTranslation();
   const { printConfig } = useContext(PrintConfigContext);
   const availableDates = useSelector(availableDatesSelector);
@@ -71,10 +68,39 @@ function DateRangePicker() {
   };
 
   return (
-    <Box className={classes.wrapper}>
-      <Box className={classes.container}>
-        <Box className={classes.dateInputContainer}>
-          <Typography variant="body1" className={classes.label}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      <Box
+        sx={theme => ({
+          display: 'flex',
+          flexDirection: 'row',
+          gap: theme.spacing(2),
+        })}
+      >
+        <Box
+          sx={{
+            flex: '1 0 0',
+            display: 'flex',
+            flexDirection: 'column',
+            '& > div': {
+              width: '100%',
+            },
+            '& input': {
+              width: '100%',
+              boxSizing: 'border-box',
+            },
+          }}
+        >
+          <Typography
+            variant="body1"
+            sx={theme => ({
+              marginBottom: theme.spacing(0.5),
+            })}
+          >
             {t('Start date')}
           </Typography>
           <DatePicker
@@ -95,8 +121,26 @@ function DateRangePicker() {
           />
         </Box>
 
-        <Box className={classes.dateInputContainer}>
-          <Typography variant="body1" className={classes.label}>
+        <Box
+          sx={{
+            flex: '1 0 0',
+            display: 'flex',
+            flexDirection: 'column',
+            '& > div': {
+              width: '100%',
+            },
+            '& input': {
+              width: '100%',
+              boxSizing: 'border-box',
+            },
+          }}
+        >
+          <Typography
+            variant="body1"
+            sx={theme => ({
+              marginBottom: theme.spacing(0.5),
+            })}
+          >
             {t('End date')}
           </Typography>
           <DatePicker
@@ -120,38 +164,5 @@ function DateRangePicker() {
     </Box>
   );
 }
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    wrapper: {
-      display: 'flex',
-      flexDirection: 'column',
-    },
-    container: {
-      display: 'flex',
-      flexDirection: 'row',
-      gap: theme.spacing(2),
-    },
-    dateInputContainer: {
-      flex: '1 0 0',
-      display: 'flex',
-      flexDirection: 'column',
-      '& > div': {
-        width: '100%',
-      },
-      '& input': {
-        width: '100%',
-        boxSizing: 'border-box',
-      },
-    },
-    label: {
-      marginBottom: theme.spacing(0.5),
-    },
-    error: {
-      marginTop: theme.spacing(1),
-      width: '100%',
-    },
-  }),
-);
 
 export default DateRangePicker;

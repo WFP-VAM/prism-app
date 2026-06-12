@@ -3,42 +3,42 @@
 exports[`renders as expected 1`] = `
 <div>
   <header
-    class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation4 MuiAppBar-root MuiAppBar-colorPrimary MuiAppBar-positionFixed makeStyles-appBar-1 mui-fixed css-8wwcj1-MuiPaper-root-MuiAppBar-root"
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation4 MuiAppBar-root MuiAppBar-colorPrimary MuiAppBar-positionFixed mui-fixed css-136j12-MuiPaper-root-MuiAppBar-root"
     style="--Paper-shadow: 0px 2px 4px -1px rgba(0,0,0,0.2),0px 4px 5px 0px rgba(0,0,0,0.14),0px 1px 10px 0px rgba(0,0,0,0.12);"
   >
     <div
       class="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-1juq9ev-MuiToolbar-root"
     >
       <div
-        class="makeStyles-navbarContainer-2"
+        class="MuiBox-root css-bjdzlg"
       >
         <div
-          class="makeStyles-leftSideContainer-3"
+          class="MuiBox-root css-n9wnr3"
         >
           <div
-            class="makeStyles-titleContainer-6"
+            class="MuiBox-root css-10h2chj"
           >
             <img
               alt="logo"
-              class="makeStyles-logo-8"
+              class="MuiBox-root css-85ebrq"
               src="test-file-stub"
             />
             <div
-              class="makeStyles-titleBox-7 MuiBox-root css-0"
+              class="MuiBox-root css-j7qwjs"
             >
               <h6
-                class="MuiTypography-root MuiTypography-h6 makeStyles-title-9 css-w2f0zo-MuiTypography-root"
+                class="MuiTypography-root MuiTypography-h6 css-1m7t1gj-MuiTypography-root"
               >
                 PRISM
               </h6>
             </div>
           </div>
           <div
-            class="makeStyles-panelsContainer-4"
+            class="MuiBox-root css-dt1mif"
           >
             <button
               aria-label="Layers"
-              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-iksamw-MuiButtonBase-root-MuiIconButton-root"
+              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-155wbr6-MuiButtonBase-root-MuiIconButton-root"
               style="background-color: rgb(99, 178, 189); color: rgb(16, 16, 16);"
               tabindex="0"
               type="button"
@@ -57,7 +57,7 @@ exports[`renders as expected 1`] = `
             </button>
             <button
               aria-label="Charts"
-              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-iksamw-MuiButtonBase-root-MuiIconButton-root"
+              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-155wbr6-MuiButtonBase-root-MuiIconButton-root"
               style="color: white;"
               tabindex="0"
               type="button"
@@ -76,7 +76,7 @@ exports[`renders as expected 1`] = `
             </button>
             <button
               aria-label="Analysis"
-              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-iksamw-MuiButtonBase-root-MuiIconButton-root"
+              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-155wbr6-MuiButtonBase-root-MuiIconButton-root"
               style="color: white;"
               tabindex="0"
               type="button"
@@ -95,7 +95,7 @@ exports[`renders as expected 1`] = `
             </button>
             <button
               aria-label="A. Actions"
-              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-iksamw-MuiButtonBase-root-MuiIconButton-root"
+              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-155wbr6-MuiButtonBase-root-MuiIconButton-root"
               style="color: white;"
               tabindex="0"
               type="button"
@@ -113,7 +113,7 @@ exports[`renders as expected 1`] = `
               </svg>
             </button>
             <button
-              class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-13hs1jc-MuiButtonBase-root-MuiButton-root"
+              class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-tng5c-MuiButtonBase-root-MuiButton-root"
               tabindex="0"
               type="button"
             >
@@ -145,7 +145,7 @@ exports[`renders as expected 1`] = `
               </p>
             </button>
             <button
-              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-1log9d8-MuiButtonBase-root-MuiIconButton-root"
+              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-154kngp-MuiButtonBase-root-MuiIconButton-root"
               style="color: white;"
               tabindex="0"
               type="button"
@@ -170,11 +170,11 @@ exports[`renders as expected 1`] = `
           </div>
         </div>
         <div
-          class="makeStyles-rightSideContainer-5"
+          class="MuiBox-root css-dxvjay"
         >
           <button
             aria-label="Legend"
-            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary makeStyles-triggerButton-14 css-13hs1jc-MuiButtonBase-root-MuiButton-root"
+            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-1r51r0c-MuiButtonBase-root-MuiButton-root"
             style="background-color: rgb(99, 178, 189);"
             tabindex="0"
             type="button"
@@ -184,7 +184,7 @@ exports[`renders as expected 1`] = `
             >
               <svg
                 aria-hidden="true"
-                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium makeStyles-icon-16 css-1umw9bq-MuiSvgIcon-root"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1kie56c-MuiSvgIcon-root"
                 data-testid="VisibilityOffOutlinedIcon"
                 focusable="false"
                 style="color: rgb(16, 16, 16);"
@@ -204,14 +204,14 @@ exports[`renders as expected 1`] = `
           </button>
           <button
             aria-label="Legend"
-            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-iksamw-MuiButtonBase-root-MuiIconButton-root"
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-155wbr6-MuiButtonBase-root-MuiIconButton-root"
             style="background-color: rgb(99, 178, 189);"
             tabindex="0"
             type="button"
           >
             <svg
               aria-hidden="true"
-              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium makeStyles-icon-16 css-1umw9bq-MuiSvgIcon-root"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1kie56c-MuiSvgIcon-root"
               data-testid="VisibilityOffOutlinedIcon"
               focusable="false"
               style="color: rgb(16, 16, 16);"
@@ -223,12 +223,12 @@ exports[`renders as expected 1`] = `
             </svg>
           </button>
           <ul
-            class="MuiList-root makeStyles-list-15 css-54zhjy-MuiList-root"
+            class="MuiList-root css-1xcvwwv-MuiList-root"
           />
           <mock-printimage />
           <a
             aria-label="GitHub"
-            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-1log9d8-MuiButtonBase-root-MuiIconButton-root"
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-154kngp-MuiButtonBase-root-MuiIconButton-root"
             href="https://github.com/wfp-VAM/prism-app"
             style="color: white;"
             tabindex="0"
@@ -248,7 +248,7 @@ exports[`renders as expected 1`] = `
             </svg>
           </a>
           <a
-            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-13hs1jc-MuiButtonBase-root-MuiButton-root"
+            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-tng5c-MuiButtonBase-root-MuiButton-root"
             href="https://innovation.wfp.org/project/prism"
             style="font-size: 1.25rem; color: white;"
             tabindex="0"
@@ -271,7 +271,7 @@ exports[`renders as expected 1`] = `
               </svg>
             </span>
             <p
-              class="MuiTypography-root MuiTypography-body1 css-1qnc9cu-MuiTypography-root"
+              class="MuiTypography-root MuiTypography-body1 css-aelobi-MuiTypography-root"
               style="text-transform: none;"
             >
               About
@@ -279,13 +279,13 @@ exports[`renders as expected 1`] = `
           </a>
           <button
             aria-label="language-select-dropdown-button"
-            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-13hs1jc-MuiButtonBase-root-MuiButton-root"
+            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-tng5c-MuiButtonBase-root-MuiButton-root"
             style="padding-left: 0px;"
             tabindex="0"
             type="button"
           >
             <p
-              class="MuiTypography-root MuiTypography-body1 css-1qnc9cu-MuiTypography-root"
+              class="MuiTypography-root MuiTypography-body1 css-aelobi-MuiTypography-root"
               style="text-transform: none;"
             >
               en

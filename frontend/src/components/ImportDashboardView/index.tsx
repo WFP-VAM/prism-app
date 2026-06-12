@@ -4,7 +4,6 @@ import {
   ErrorOutlined,
 } from '@mui/icons-material';
 import { Box, Button, CircularProgress, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import type { Dashboard } from 'config/types';
 import {
   dashboardsListSelector,
@@ -20,6 +19,27 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { generateSlugFromTitle } from 'utils/string-utils';
+
+import {
+  importDashboardBrowseButtonSx,
+  importDashboardCardSx,
+  importDashboardCtaButtonSx,
+  importDashboardDropTextSx,
+  importDashboardDropZoneDraggingSx,
+  importDashboardDropZoneSx,
+  importDashboardErrorDetailSx,
+  importDashboardErrorHeaderSx,
+  importDashboardErrorHeadlineSx,
+  importDashboardErrorIconSx,
+  importDashboardErrorSx,
+  importDashboardFeedbackContainerSx,
+  importDashboardFeedbackTextSx,
+  importDashboardRootSx,
+  importDashboardSubtitleSx,
+  importDashboardSuccessIconSx,
+  importDashboardTitleSx,
+  importDashboardUploadIconSx,
+} from './importDashboardStyles';
 
 type ViewState =
   | { status: 'idle' }
@@ -45,7 +65,6 @@ const normalize = ({ isDraft: _isDraft, ...rest }: Dashboard) =>
   JSON.stringify(rest, sortedReplacer);
 
 function ImportDashboardView() {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -143,19 +162,22 @@ function ImportDashboardView() {
   };
 
   return (
-    <Box className={classes.root}>
-      <Box className={classes.card}>
+    <Box sx={importDashboardRootSx}>
+      <Box sx={importDashboardCardSx}>
         {viewState.status === 'idle' || viewState.status === 'error' ? (
           <>
-            <Typography variant="h2" className={classes.title}>
+            <Typography variant="h2" sx={importDashboardTitleSx}>
               {t('Import dashboard')}
             </Typography>
-            <Typography variant="body1" className={classes.subtitle}>
+            <Typography variant="body1" sx={importDashboardSubtitleSx}>
               {t('Upload a JSON file exported from a Prism dashboard.')}
             </Typography>
 
             <Box
-              className={`${classes.dropZone} ${dragging ? classes.dropZoneDragging : ''}`}
+              sx={[
+                importDashboardDropZoneSx,
+                dragging && importDashboardDropZoneDraggingSx,
+              ]}
               onDragOver={e => {
                 e.preventDefault();
                 setDragging(true);
@@ -164,8 +186,8 @@ function ImportDashboardView() {
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
             >
-              <CloudUploadOutlined className={classes.uploadIcon} />
-              <Typography variant="body1" className={classes.dropText}>
+              <CloudUploadOutlined sx={importDashboardUploadIconSx} />
+              <Typography variant="body1" sx={importDashboardDropTextSx}>
                 {t('Drag & drop a JSON file here')}
               </Typography>
               <Typography variant="body1" color="textSecondary">
@@ -175,7 +197,7 @@ function ImportDashboardView() {
                 variant="outlined"
                 color="primary"
                 size="small"
-                className={classes.browseButton}
+                sx={importDashboardBrowseButtonSx}
                 onClick={e => {
                   e.stopPropagation();
                   fileInputRef.current?.click();
@@ -193,45 +215,45 @@ function ImportDashboardView() {
             </Box>
 
             {viewState.status === 'error' && (
-              <Box className={classes.error}>
-                <Box className={classes.errorHeader}>
-                  <ErrorOutlined className={classes.errorIcon} />
+              <Box sx={importDashboardErrorSx}>
+                <Box sx={importDashboardErrorHeaderSx}>
+                  <ErrorOutlined sx={importDashboardErrorIconSx} />
                   <Typography
                     variant="subtitle2"
-                    className={classes.errorHeadline}
+                    sx={importDashboardErrorHeadlineSx}
                   >
                     {t('Invalid dashboard file')}
                   </Typography>
                 </Box>
-                <Typography variant="body1" className={classes.errorDetail}>
+                <Typography variant="body1" sx={importDashboardErrorDetailSx}>
                   {viewState.detail}
                 </Typography>
               </Box>
             )}
           </>
         ) : viewState.status === 'loading' ? (
-          <Box className={classes.feedbackContainer}>
+          <Box sx={importDashboardFeedbackContainerSx}>
             <CircularProgress size={48} />
-            <Typography variant="body1" className={classes.feedbackText}>
+            <Typography variant="body1" sx={importDashboardFeedbackTextSx}>
               {t('Importing dashboard…')}
             </Typography>
           </Box>
         ) : (
-          <Box className={classes.feedbackContainer}>
-            <CheckCircleOutlined className={classes.successIcon} />
-            <Typography variant="h2" className={classes.title}>
+          <Box sx={importDashboardFeedbackContainerSx}>
+            <CheckCircleOutlined sx={importDashboardSuccessIconSx} />
+            <Typography variant="h2" sx={importDashboardTitleSx}>
               {viewState.alreadyExists
                 ? t('Dashboard already exists')
                 : t('Import complete')}
             </Typography>
-            <Typography variant="body1" className={classes.subtitle}>
+            <Typography variant="body1" sx={importDashboardSubtitleSx}>
               <strong>{viewState.dashboardTitle}</strong>{' '}
               {t('is ready to view.')}
             </Typography>
             <Button
               variant="contained"
               color="primary"
-              className={classes.ctaButton}
+              sx={importDashboardCtaButtonSx}
               onClick={() => handleViewDashboard(viewState.dashboardPath)}
             >
               {t('View dashboard')}
@@ -242,118 +264,5 @@ function ImportDashboardView() {
     </Box>
   );
 }
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 'calc(100vh - 56px)',
-    background: '#F8F8F8',
-  },
-  card: {
-    background: 'white',
-    borderRadius: 8,
-    padding: theme.spacing(4),
-    width: 480,
-    maxWidth: '90vw',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.10)',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: theme.spacing(2),
-  },
-  title: {
-    fontWeight: 600,
-  },
-  subtitle: {
-    color: theme.palette.text.secondary,
-    '& strong': {
-      fontWeight: 700,
-    },
-  },
-  dropZone: {
-    border: `2px dashed ${theme.palette.divider}`,
-    borderRadius: 8,
-    padding: theme.spacing(4),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: theme.spacing(1),
-    cursor: 'pointer',
-    transition: 'border-color 0.15s, background 0.15s',
-    '&:hover': {
-      borderColor: theme.palette.primary.main,
-      background: '#F0F7FF',
-    },
-  },
-  dropZoneDragging: {
-    borderColor: theme.palette.primary.main,
-    background: '#F0F7FF',
-  },
-  uploadIcon: {
-    fontSize: 48,
-    color: theme.palette.text.secondary,
-    marginBottom: theme.spacing(0.5),
-  },
-  dropText: {
-    fontWeight: 500,
-  },
-  browseButton: {
-    marginTop: theme.spacing(1),
-    '& span': {
-      textTransform: 'none',
-    },
-  },
-  error: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: theme.spacing(0.75),
-    padding: theme.spacing(1.5),
-    background: '#FFF3F3',
-    border: `1px solid ${theme.palette.error.light}`,
-    borderRadius: 6,
-    color: theme.palette.error.dark,
-  },
-  errorHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: theme.spacing(0.75),
-  },
-  errorHeadline: {
-    fontWeight: 600,
-    color: theme.palette.error.dark,
-  },
-  errorIcon: {
-    fontSize: 18,
-    flexShrink: 0,
-    color: theme.palette.error.dark,
-  },
-  errorDetail: {
-    fontSize: '0.8rem',
-    color: theme.palette.error.dark,
-    paddingLeft: theme.spacing(3.25),
-  },
-  feedbackContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: theme.spacing(2),
-    padding: theme.spacing(2, 0),
-    textAlign: 'center',
-  },
-  feedbackText: {
-    color: theme.palette.text.secondary,
-  },
-  successIcon: {
-    fontSize: 56,
-    color: theme.palette.success?.main ?? '#4CAF50',
-  },
-  ctaButton: {
-    marginTop: theme.spacing(1),
-    '& span': {
-      textTransform: 'none',
-    },
-  },
-}));
 
 export default ImportDashboardView;

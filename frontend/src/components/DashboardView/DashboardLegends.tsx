@@ -1,5 +1,4 @@
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { Box } from '@mui/material';
 import { DashboardMode } from 'config/types';
 import { dashboardModeSelector } from 'context/dashboardStateSlice';
 import { memo } from 'react';
@@ -7,6 +6,7 @@ import { useSelector } from 'react-redux';
 
 import LegendItemsList from '../MapView/Legends/LegendItemsList';
 import type { ExportConfig } from './DashboardContent';
+import { dashboardLegendsContainerSx } from './dashboardLegendsStyles';
 
 interface DashboardLegendsProps {
   exportConfig?: ExportConfig;
@@ -16,7 +16,6 @@ interface DashboardLegendsProps {
 
 const DashboardLegends = memo(
   ({ exportConfig, legendVisible, legendPosition }: DashboardLegendsProps) => {
-    const classes = useStyles();
     const mode = useSelector(dashboardModeSelector);
 
     // Priority: exportConfig takes precedence if present, otherwise use map state values
@@ -32,9 +31,10 @@ const DashboardLegends = memo(
     }
 
     return (
-      <aside
-        className={classes.container}
-        style={{
+      <Box
+        component="aside"
+        sx={{
+          ...dashboardLegendsContainerSx,
           left: position % 2 === 0 ? '12px' : 'auto',
           right: position % 2 === 0 ? 'auto' : '12px',
           transform: `scale(${scale})`,
@@ -42,20 +42,9 @@ const DashboardLegends = memo(
         }}
       >
         <LegendItemsList forPrinting={mode !== DashboardMode.EDIT} />
-      </aside>
+      </Box>
     );
   },
-);
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    container: {
-      position: 'absolute',
-      top: '8px',
-      maxHeight: 'calc(100% - 48px)',
-      overflowY: 'auto',
-    },
-  }),
 );
 
 export default DashboardLegends;

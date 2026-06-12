@@ -1,9 +1,12 @@
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { Box, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
-import makeStyles from '@mui/styles/makeStyles';
 import { LayerKey, WMSLayerProps } from 'config/types';
 import { getWMSLayersWithChart } from 'config/utils';
 import { useSafeTranslation } from 'i18n';
+
+import { chartFormControlSx, formContainerSx } from '../formComponentStyles';
+
+const containerSx = formContainerSx(30);
 
 interface ChartLayerSelectorProps {
   value: LayerKey | undefined;
@@ -18,7 +21,6 @@ function ChartLayerSelector({
   className,
   disabled = false,
 }: ChartLayerSelectorProps) {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
 
   const chartLayers = getWMSLayersWithChart();
@@ -28,10 +30,11 @@ function ChartLayerSelector({
   };
 
   return (
-    <div className={classes.container}>
+    <Box sx={containerSx}>
       <FormControl
         variant="outlined"
-        className={className || classes.formControl}
+        className={className}
+        sx={chartFormControlSx}
         disabled={disabled}
       >
         <InputLabel id="chart-layer-selector-label">
@@ -54,31 +57,8 @@ function ChartLayerSelector({
           ))}
         </Select>
       </FormControl>
-    </div>
+    </Box>
   );
 }
-
-const useStyles = makeStyles(() => ({
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginBottom: 30,
-    marginLeft: 10,
-    width: '90%',
-    color: 'black',
-  },
-  formControl: {
-    width: '100%',
-    '& .MuiFormLabel-root': {
-      color: 'black',
-    },
-    '& .MuiOutlinedInput-notchedOutline': {
-      borderColor: '#333333',
-    },
-    '&:hover .MuiOutlinedInput-notchedOutline': {
-      borderColor: '#333333',
-    },
-  },
-}));
 
 export default ChartLayerSelector;

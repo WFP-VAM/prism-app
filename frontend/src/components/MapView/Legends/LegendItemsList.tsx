@@ -1,4 +1,5 @@
 import { List } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
 import {
   AnticipatoryAction,
   LayerType,
@@ -27,13 +28,13 @@ import { invertLegendColors } from './utils';
 
 interface LegendItemsListProps {
   forPrinting?: boolean;
-  listStyle?: string;
+  listSx?: SxProps<Theme>;
   showDescription?: boolean;
   overrideLayers?: LayerType[];
 }
 
 function LegendItemsList({
-  listStyle,
+  listSx,
   forPrinting = false,
   showDescription = true,
   overrideLayers,
@@ -218,7 +219,7 @@ function LegendItemsList({
   ]);
 
   return (
-    <List disablePadding className={listStyle}>
+    <List disablePadding sx={listSx}>
       {legendItems}
     </List>
   );

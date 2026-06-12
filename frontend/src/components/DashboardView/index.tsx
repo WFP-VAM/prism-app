@@ -11,7 +11,6 @@ import {
   DialogContent,
   DialogContentText,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import { usePostHog } from '@posthog/react';
 import { downloadToFile } from 'components/MapView/utils';
 import { DashboardMode } from 'config/types';
@@ -33,9 +32,16 @@ import {
 import { generateSlugFromTitle } from '../../utils/string-utils';
 import DashboardContent from './DashboardContent';
 import { DashboardExportDialog } from './DashboardExport';
+import {
+  dashboardContainerSx,
+  dashboardEditLayoutSx,
+  dashboardPreviewLayoutSx,
+  dashboardPreviewModeContainerSx,
+  dashboardToolbarButtonSx,
+  dashboardToolbarSx,
+} from './dashboardViewStyles';
 
 function DashboardView() {
-  const classes = useStyles();
   const dashboardConfig = useSelector(dashboardConfigSelector);
   const dashboards = useSelector(dashboardsListSelector);
   const {
@@ -153,30 +159,30 @@ function DashboardView() {
 
   return (
     <Box
-      className={
+      sx={
         mode === DashboardMode.VIEW
-          ? classes.previewModeContainer
-          : classes.container
+          ? dashboardPreviewModeContainerSx
+          : dashboardContainerSx
       }
     >
       <DashboardContent
         showTitle
-        className={
+        layoutSx={
           mode === DashboardMode.EDIT
-            ? classes.editLayout
-            : classes.previewLayout
+            ? dashboardEditLayoutSx
+            : dashboardPreviewLayoutSx
         }
         onEditClick={dashboardConfig.isDraft ? handleClosePreview : undefined}
       />
       {mode === DashboardMode.EDIT && (
-        <Box className={classes.toolbar}>
+        <Box sx={dashboardToolbarSx}>
           {dashboardConfig.isDraft && (
             <Button
               variant="outlined"
               color="secondary"
               startIcon={<DeleteOutlined />}
               onClick={() => setDeleteDialogOpen(true)}
-              className={classes.toolbarButton}
+              sx={dashboardToolbarButtonSx}
               size="medium"
             >
               {t('Delete')}
@@ -187,7 +193,7 @@ function DashboardView() {
             color="primary"
             startIcon={<VisibilityOutlined />}
             onClick={handlePreviewClick}
-            className={classes.toolbarButton}
+            sx={dashboardToolbarButtonSx}
             size="medium"
           >
             {t('Preview Dashboard')}
@@ -197,7 +203,7 @@ function DashboardView() {
             color="primary"
             startIcon={<DescriptionOutlined />}
             onClick={handleExportJSON}
-            className={classes.toolbarButton}
+            sx={dashboardToolbarButtonSx}
             size="medium"
           >
             {t('Export JSON')}
@@ -240,179 +246,5 @@ function DashboardView() {
     </Box>
   );
 }
-
-const useStyles = makeStyles(() => ({
-  blockLabel: {
-    fontWeight: 600,
-    fontSize: 16,
-    marginBottom: 12,
-  },
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    height: 'calc(100vh - 56px)',
-    position: 'relative',
-  },
-  dynamicColumnLayout: {
-    display: 'flex',
-    padding: 16,
-    margin: '0 16px 16px 16px',
-    gap: 16,
-    flex: 1,
-    overflow: 'auto',
-    paddingBottom: 80, // Add extra padding to account for fixed toolbar
-  },
-  dynamicColumnPreviewLayout: {
-    display: 'flex',
-    padding: 16,
-    margin: 16,
-    gap: 16,
-    flex: 1,
-    overflow: 'auto',
-  },
-  mapColumn: {
-    flex: 2, // Larger for columns containing maps
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 16,
-    minWidth: 0,
-  },
-  contentColumn: {
-    flex: 1, // Smaller for columns without maps
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 16,
-    minWidth: 0,
-  },
-  grayCard: {
-    background: '#F1F1F1',
-    borderRadius: 8,
-    marginBottom: 16,
-    padding: 12,
-  },
-  titleCard: {
-    display: 'flex',
-    background: '#F1F1F1',
-    borderRadius: 8,
-    marginBottom: 0, // No bottom margin for title card
-    padding: 12,
-  },
-  titleBarLabel: {
-    display: 'flex',
-    alignItems: 'center',
-    marginRight: 16,
-    fontWeight: 600,
-    fontSize: 16,
-    flex: 1,
-  },
-  titleBarTypography: {
-    flex: '1 0 fit-content',
-    marginInlineEnd: 16,
-  },
-  titleBarInput: {
-    width: '100%',
-    padding: '8px 12px',
-    borderRadius: 4,
-    fontSize: 16,
-    border: 'none',
-    outline: 'none',
-    background: 'white',
-    fontFamily: 'Roboto',
-  },
-  toolbar: {
-    position: 'fixed',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    background: 'white',
-    borderTop: '1px solid #E0E0E0',
-    padding: '12px 16px',
-    display: 'flex',
-    justifyContent: 'center',
-    gap: '8px',
-    zIndex: 1400,
-  },
-  toolbarButton: {
-    textTransform: 'none',
-  },
-  previewDialog: {
-    '& .MuiDialog-paper': {
-      margin: '48px 0 0 0',
-      height: '100vh',
-      background: '#F8F8F8',
-    },
-    '& .MuiDialog-paperFullWidth ': {
-      maxWidth: 'calc(100% - 16px)',
-      width: '100%',
-    },
-  },
-  dialogContent: {
-    padding: 0,
-  },
-  previewContainer: {
-    background: 'white',
-    borderRadius: 8,
-    padding: 16,
-  },
-  previewTitle: {
-    padding: 16,
-    fontWeight: 500,
-    fontSize: 20,
-    margin: 0,
-  },
-  previewModeContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    position: 'relative',
-    background: '#F8F8F8',
-    height: 'calc(100vh - 56px)',
-    padding: '32px',
-    boxSizing: 'border-box',
-  },
-  previewActions: {
-    position: 'sticky',
-    top: 0,
-    left: 0,
-    right: 0,
-    background: 'white',
-    borderBottom: '1px solid #E0E0E0',
-    padding: '12px 16px',
-    display: 'flex',
-    justifyContent: 'flex-start',
-    gap: '12px',
-    zIndex: 1300,
-  },
-  titleSection: {
-    padding: '0 16px',
-    margin: '16px 16px 0 16px',
-  },
-  mapHeaderContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  editLayout: {
-    display: 'flex',
-    gap: 16,
-    flex: 1,
-  },
-  previewLayout: {
-    display: 'flex',
-    flexDirection: 'column',
-    flex: 1,
-    minHeight: 0,
-  },
-  syncToggle: {
-    margin: 0,
-    '& .MuiFormControlLabel-label': {
-      fontSize: '12px',
-      fontWeight: 500,
-    },
-    '& .MuiSwitch-root': {
-      marginRight: 4,
-    },
-  },
-}));
 
 export default DashboardView;

@@ -3,47 +3,46 @@
 exports[`HomeTable renders as expected 1`] = `
 <div>
   <div
-    class="makeStyles-tableWrapper-1"
+    class="MuiBox-root css-m9gx6h"
   >
     <div
-      class="makeStyles-rowWrapper-11"
-      style="height: 1.5rem;"
+      class="MuiBox-root css-ewygwr"
     >
       <div
-        class="makeStyles-iconCol-12"
+        class="MuiBox-root css-89wc4q"
       />
       <div
-        style="width: calc(100% - 3rem);"
+        class="MuiBox-root css-rtv7g1"
       >
         <h4
-          class="MuiTypography-root MuiTypography-h4 makeStyles-windowHeader-10 css-1iolqh3-MuiTypography-root"
+          class="MuiTypography-root MuiTypography-h4 css-5wnl04-MuiTypography-root"
         >
           Window 1
         </h4>
       </div>
     </div>
     <div
-      class="makeStyles-rowWrapper-11"
+      class="MuiBox-root css-aqq2uw"
     >
       <div
-        class="makeStyles-iconCol-12"
+        class="MuiBox-root css-89wc4q"
       >
         <div
-          class="makeStyles-iconWrapper-16"
+          class="MuiBox-root css-nqs5w4"
           style="background: rgb(131, 31, 0);"
         >
           <div
-            class="makeStyles-centerContainer-17"
+            class="MuiBox-root css-fi9omk"
             style="border: 1px solid white; color: white;"
           >
             <div
-              class="makeStyles-topTextContainer-18"
+              class="MuiBox-root css-1g5ndk4"
               style="border-bottom: 1px solid white; background: rgb(131, 31, 0);"
             >
               S
             </div>
             <div
-              class="makeStyles-bottomTextContainer-19"
+              class="MuiBox-root css-1vqiaa9"
               style="background: rgb(131, 31, 0);"
             >
               SEV
@@ -52,16 +51,16 @@ exports[`HomeTable renders as expected 1`] = `
         </div>
       </div>
       <div
-        style="width: calc(100% - 3rem);"
+        class="MuiBox-root css-rtv7g1"
       >
         <div
-          class="makeStyles-windowBackground-13"
+          class="MuiBox-root css-1ol1b3g"
         >
           <div
-            class="makeStyles-tagWrapper-14"
+            class="MuiBox-root css-10ojd4r"
           >
             <p
-              class="MuiTypography-root MuiTypography-body1 makeStyles-emptyText-15 css-l0p3u8-MuiTypography-root"
+              class="MuiTypography-root MuiTypography-body1 css-13f7o5w-MuiTypography-root"
             >
               (
               no district
@@ -72,27 +71,27 @@ exports[`HomeTable renders as expected 1`] = `
       </div>
     </div>
     <div
-      class="makeStyles-rowWrapper-11"
+      class="MuiBox-root css-aqq2uw"
     >
       <div
-        class="makeStyles-iconCol-12"
+        class="MuiBox-root css-89wc4q"
       >
         <div
-          class="makeStyles-iconWrapper-16"
+          class="MuiBox-root css-nqs5w4"
           style="background: rgb(230, 55, 1);"
         >
           <div
-            class="makeStyles-centerContainer-17"
+            class="MuiBox-root css-fi9omk"
             style="border: 1px solid white; color: white;"
           >
             <div
-              class="makeStyles-topTextContainer-18"
+              class="MuiBox-root css-1g5ndk4"
               style="border-bottom: 1px solid white; background: rgb(230, 55, 1);"
             >
               R
             </div>
             <div
-              class="makeStyles-bottomTextContainer-19"
+              class="MuiBox-root css-1vqiaa9"
               style="background: rgb(230, 55, 1);"
             >
               SEV
@@ -101,16 +100,16 @@ exports[`HomeTable renders as expected 1`] = `
         </div>
       </div>
       <div
-        style="width: calc(100% - 3rem);"
+        class="MuiBox-root css-rtv7g1"
       >
         <div
-          class="makeStyles-windowBackground-13"
+          class="MuiBox-root css-1ol1b3g"
         >
           <div
-            class="makeStyles-tagWrapper-14"
+            class="MuiBox-root css-10ojd4r"
           >
             <p
-              class="MuiTypography-root MuiTypography-body1 makeStyles-emptyText-15 css-l0p3u8-MuiTypography-root"
+              class="MuiTypography-root MuiTypography-body1 css-13f7o5w-MuiTypography-root"
             >
               (
               no district
@@ -121,27 +120,27 @@ exports[`HomeTable renders as expected 1`] = `
       </div>
     </div>
     <div
-      class="makeStyles-rowWrapper-11"
+      class="MuiBox-root css-aqq2uw"
     >
       <div
-        class="makeStyles-iconCol-12"
+        class="MuiBox-root css-89wc4q"
       >
         <div
-          class="makeStyles-iconWrapper-16"
+          class="MuiBox-root css-nqs5w4"
           style="background: rgb(255, 137, 52);"
         >
           <div
-            class="makeStyles-centerContainer-17"
+            class="MuiBox-root css-fi9omk"
             style="border: 1px solid black; color: black;"
           >
             <div
-              class="makeStyles-topTextContainer-18"
+              class="MuiBox-root css-1g5ndk4"
               style="border-bottom: 1px solid black; background: rgb(255, 137, 52);"
             >
               S
             </div>
             <div
-              class="makeStyles-bottomTextContainer-19"
+              class="MuiBox-root css-1vqiaa9"
               style="background: rgb(255, 137, 52);"
             >
               MOD
@@ -150,16 +149,16 @@ exports[`HomeTable renders as expected 1`] = `
         </div>
       </div>
       <div
-        style="width: calc(100% - 3rem);"
+        class="MuiBox-root css-rtv7g1"
       >
         <div
-          class="makeStyles-windowBackground-13"
+          class="MuiBox-root css-1ol1b3g"
         >
           <div
-            class="makeStyles-tagWrapper-14"
+            class="MuiBox-root css-10ojd4r"
           >
             <p
-              class="MuiTypography-root MuiTypography-body1 makeStyles-emptyText-15 css-l0p3u8-MuiTypography-root"
+              class="MuiTypography-root MuiTypography-body1 css-13f7o5w-MuiTypography-root"
             >
               (
               no district
@@ -170,27 +169,27 @@ exports[`HomeTable renders as expected 1`] = `
       </div>
     </div>
     <div
-      class="makeStyles-rowWrapper-11"
+      class="MuiBox-root css-aqq2uw"
     >
       <div
-        class="makeStyles-iconCol-12"
+        class="MuiBox-root css-89wc4q"
       >
         <div
-          class="makeStyles-iconWrapper-16"
+          class="MuiBox-root css-nqs5w4"
           style="background: rgb(255, 213, 45);"
         >
           <div
-            class="makeStyles-centerContainer-17"
+            class="MuiBox-root css-fi9omk"
             style="border: 1px solid black; color: black;"
           >
             <div
-              class="makeStyles-topTextContainer-18"
+              class="MuiBox-root css-1g5ndk4"
               style="border-bottom: 1px solid black; background: rgb(255, 213, 45);"
             >
               R
             </div>
             <div
-              class="makeStyles-bottomTextContainer-19"
+              class="MuiBox-root css-1vqiaa9"
               style="background: rgb(255, 213, 45);"
             >
               MOD
@@ -199,16 +198,16 @@ exports[`HomeTable renders as expected 1`] = `
         </div>
       </div>
       <div
-        style="width: calc(100% - 3rem);"
+        class="MuiBox-root css-rtv7g1"
       >
         <div
-          class="makeStyles-windowBackground-13"
+          class="MuiBox-root css-1ol1b3g"
         >
           <div
-            class="makeStyles-tagWrapper-14"
+            class="MuiBox-root css-10ojd4r"
           >
             <button
-              class="makeStyles-areaTagWrapper-20"
+              class="MuiBox-root css-1k9jfk1"
               type="button"
             >
               <p
@@ -222,27 +221,27 @@ exports[`HomeTable renders as expected 1`] = `
       </div>
     </div>
     <div
-      class="makeStyles-rowWrapper-11"
+      class="MuiBox-root css-aqq2uw"
     >
       <div
-        class="makeStyles-iconCol-12"
+        class="MuiBox-root css-89wc4q"
       >
         <div
-          class="makeStyles-iconWrapper-16"
+          class="MuiBox-root css-nqs5w4"
           style="background: rgb(255, 245, 3);"
         >
           <div
-            class="makeStyles-centerContainer-17"
+            class="MuiBox-root css-fi9omk"
             style="border: 1px solid black; color: black;"
           >
             <div
-              class="makeStyles-topTextContainer-18"
+              class="MuiBox-root css-1g5ndk4"
               style="border-bottom: 1px solid black; background: rgb(255, 245, 3);"
             >
               S
             </div>
             <div
-              class="makeStyles-bottomTextContainer-19"
+              class="MuiBox-root css-1vqiaa9"
               style="background: rgb(255, 245, 3);"
             >
               MIL
@@ -251,16 +250,16 @@ exports[`HomeTable renders as expected 1`] = `
         </div>
       </div>
       <div
-        style="width: calc(100% - 3rem);"
+        class="MuiBox-root css-rtv7g1"
       >
         <div
-          class="makeStyles-windowBackground-13"
+          class="MuiBox-root css-1ol1b3g"
         >
           <div
-            class="makeStyles-tagWrapper-14"
+            class="MuiBox-root css-10ojd4r"
           >
             <p
-              class="MuiTypography-root MuiTypography-body1 makeStyles-emptyText-15 css-l0p3u8-MuiTypography-root"
+              class="MuiTypography-root MuiTypography-body1 css-13f7o5w-MuiTypography-root"
             >
               (
               no district
@@ -271,27 +270,27 @@ exports[`HomeTable renders as expected 1`] = `
       </div>
     </div>
     <div
-      class="makeStyles-rowWrapper-11"
+      class="MuiBox-root css-aqq2uw"
     >
       <div
-        class="makeStyles-iconCol-12"
+        class="MuiBox-root css-89wc4q"
       >
         <div
-          class="makeStyles-iconWrapper-16"
+          class="MuiBox-root css-nqs5w4"
           style="background: rgb(255, 252, 179);"
         >
           <div
-            class="makeStyles-centerContainer-17"
+            class="MuiBox-root css-fi9omk"
             style="border: 1px solid black; color: black;"
           >
             <div
-              class="makeStyles-topTextContainer-18"
+              class="MuiBox-root css-1g5ndk4"
               style="border-bottom: 1px solid black; background: rgb(255, 252, 179);"
             >
               R
             </div>
             <div
-              class="makeStyles-bottomTextContainer-19"
+              class="MuiBox-root css-1vqiaa9"
               style="background: rgb(255, 252, 179);"
             >
               MIL
@@ -300,16 +299,16 @@ exports[`HomeTable renders as expected 1`] = `
         </div>
       </div>
       <div
-        style="width: calc(100% - 3rem);"
+        class="MuiBox-root css-rtv7g1"
       >
         <div
-          class="makeStyles-windowBackground-13"
+          class="MuiBox-root css-1ol1b3g"
         >
           <div
-            class="makeStyles-tagWrapper-14"
+            class="MuiBox-root css-10ojd4r"
           >
             <button
-              class="makeStyles-areaTagWrapper-20"
+              class="MuiBox-root css-1k9jfk1"
               type="button"
             >
               <p
@@ -324,13 +323,13 @@ exports[`HomeTable renders as expected 1`] = `
     </div>
   </div>
   <div
-    class="makeStyles-footerWrapper-2"
+    class="MuiBox-root css-j7qwjs"
   >
     <div
-      class="makeStyles-footerActionsWrapper-3"
+      class="MuiBox-root css-jekkxf"
     >
       <a
-        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary MuiButton-fullWidth makeStyles-footerButton-5 css-nlocxw-MuiButtonBase-root-MuiButton-root"
+        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary MuiButton-fullWidth css-1jqm0xi-MuiButtonBase-root-MuiButton-root"
         download="2023-12-01-aa_probabilities_triggers_moz.csv"
         href="https://data.earthobservation.vam.wfp.org/public-share/aa/aa_probabilities_triggers_moz.csv?date=2024-12-01-00-00"
         tabindex="0"
@@ -357,7 +356,7 @@ exports[`HomeTable renders as expected 1`] = `
         </p>
       </a>
       <button
-        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary MuiButton-fullWidth makeStyles-footerButton-5 css-nlocxw-MuiButtonBase-root-MuiButton-root"
+        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary MuiButton-fullWidth css-1jqm0xi-MuiButtonBase-root-MuiButton-root"
         tabindex="0"
         type="button"
       >
@@ -384,10 +383,10 @@ exports[`HomeTable renders as expected 1`] = `
       </button>
     </div>
     <div
-      class="makeStyles-footerDialogsWrapper-4"
+      class="MuiBox-root css-ralmko"
     >
       <button
-        class="MuiTypography-root MuiTypography-body1 makeStyles-footerDialog-6 css-l0p3u8-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-body1 css-1uj4td3-MuiTypography-root"
       >
         How to read this screen
       </button>

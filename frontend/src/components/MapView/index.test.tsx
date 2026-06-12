@@ -1,22 +1,10 @@
-import {
-  StyledEngineProvider,
-  Theme,
-  ThemeProvider,
-} from '@mui/material/styles';
-import {
-  StylesProvider,
-  ThemeProvider as StylesThemeProvider,
-} from '@mui/styles';
+import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import { render } from '@testing-library/react';
 import { store } from 'context/store';
 import muiTheme from 'muiTheme';
 import { Provider } from 'react-redux';
 
 import MapView from '.';
-
-declare module '@mui/styles/defaultTheme' {
-  interface DefaultTheme extends Theme {}
-}
 
 jest.mock('./Layers/WMSLayer', () => 'mock-WMSLayer');
 jest.mock('./Layers/ImpactLayer', () => 'mock-ImpactLayer');
@@ -52,11 +40,7 @@ describe('MapView', () => {
       <Provider store={store}>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={muiTheme}>
-            <StylesThemeProvider theme={muiTheme}>
-              <StylesProvider injectFirst>
-                <MapView />
-              </StylesProvider>
-            </StylesThemeProvider>
+            <MapView />
           </ThemeProvider>
         </StyledEngineProvider>
       </Provider>,

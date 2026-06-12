@@ -12,8 +12,6 @@ import {
   TableSortLabel,
   Typography,
 } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import SimpleDropdown from 'components/Common/SimpleDropdown';
 import { AnticipatoryAction } from 'config/types';
 import { setAAFloodSelectedStation } from 'context/anticipatoryAction/AAFloodStateSlice';
@@ -23,87 +21,14 @@ import {
 } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
-import { cyanBlue } from 'muiTheme';
 import { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
 
+import { aaFloodPanelSx } from '../aaPanelStyles';
 import { useAnticipatoryAction } from '../useAnticipatoryAction';
-import { TABLE_WIDTH } from './constants';
 import StationCharts from './StationCharts';
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    container: {
-      padding: '1rem',
-      height: 'calc(100% - 40px)',
-    },
-    title: {
-      marginBottom: '1rem',
-      fontWeight: 'bold',
-    },
-    tableContainer: {
-      maxHeight: '68vh',
-      overflow: 'auto',
-    },
-    table: {
-      minWidth: TABLE_WIDTH,
-    },
-    headerCell: {
-      backgroundColor: '#f1f1f1', // Gray header background
-      color: '#000',
-      '& .MuiTableSortLabel-root.MuiTableSortLabel-active': {
-        color: '#333 !important',
-      },
-    },
-    row: {
-      cursor: 'pointer',
-      '&:hover': {
-        backgroundColor: '#f5f5f5',
-      },
-      '&:nth-of-type(even)': {
-        backgroundColor: '#f9f9f9', // Very light gray for even rows
-      },
-      '&:nth-of-type(odd)': {
-        backgroundColor: '#ffffff', // White for odd rows
-      },
-    },
-    selectedRow: {
-      backgroundColor: `${cyanBlue} !important`,
-      '& $firstCell': {
-        color: '#000000', // Black text for first cell when selected
-      },
-    },
-    tableCell: {
-      color: '#000000', // Black text color
-    },
-    firstCell: {
-      color: `${cyanBlue}`,
-      fontWeight: 'bold',
-    },
-    pagination: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      marginTop: '1rem',
-      color: '#666',
-      position: 'absolute',
-      width: '90%',
-      bottom: '10px',
-    },
-    rowsPerPageContainer: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '0.5rem',
-    },
-    pageNavigation: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '0.5rem',
-    },
-  }),
-);
 
 type SortField = 'station_name' | 'date' | 'risk_level';
 type SortDirection = 'asc' | 'desc';
@@ -116,7 +41,6 @@ const rowsPerPageOptions: [number, string][] = [
 ];
 
 function AnticipatoryActionFloodPanel() {
-  const classes = useStyles();
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
   const { AAData } = useAnticipatoryAction(AnticipatoryAction.flood);
@@ -252,37 +176,37 @@ function AnticipatoryActionFloodPanel() {
 
   if (loading) {
     return (
-      <div className={classes.container}>
+      <Box sx={aaFloodPanelSx.container}>
         <Typography>{t('Loading flood data...')}</Typography>
-        <TableContainer component={Paper} className={classes.tableContainer}>
-          <Table className={classes.table} size="small">
+        <TableContainer component={Paper} sx={aaFloodPanelSx.tableContainer}>
+          <Table sx={aaFloodPanelSx.table} size="small">
             <TableBody />
           </Table>
         </TableContainer>
-      </div>
+      </Box>
     );
   }
 
   if (error) {
     return (
-      <div className={classes.container}>
+      <Box sx={aaFloodPanelSx.container}>
         <Typography color="error">
           {t('Error loading flood data: {{error}}', { error })}
         </Typography>
-      </div>
+      </Box>
     );
   }
 
   return (
-    <div className={classes.container}>
-      <Typography variant="h6" className={classes.title}>
+    <Box sx={aaFloodPanelSx.container}>
+      <Typography variant="h6" sx={aaFloodPanelSx.title}>
         {t('River gauge status overview')}
       </Typography>
-      <TableContainer component={Paper} className={classes.tableContainer}>
-        <Table className={classes.table} size="small">
+      <TableContainer component={Paper} sx={aaFloodPanelSx.tableContainer}>
+        <Table sx={aaFloodPanelSx.table} size="small">
           <TableHead>
             <TableRow>
-              <TableCell className={classes.headerCell}>
+              <TableCell sx={aaFloodPanelSx.headerCell}>
                 <TableSortLabel
                   active={sortField === 'station_name'}
                   direction={
@@ -293,7 +217,7 @@ function AnticipatoryActionFloodPanel() {
                   {t('Gauge station')}
                 </TableSortLabel>
               </TableCell>
-              <TableCell className={classes.headerCell}>
+              <TableCell sx={aaFloodPanelSx.headerCell}>
                 <TableSortLabel
                   active={sortField === 'date'}
                   direction={sortField === 'date' ? sortDirection : 'asc'}
@@ -302,7 +226,7 @@ function AnticipatoryActionFloodPanel() {
                   {t('Date')}
                 </TableSortLabel>
               </TableCell>
-              <TableCell className={classes.headerCell}>
+              <TableCell sx={aaFloodPanelSx.headerCell}>
                 <TableSortLabel
                   active={sortField === 'risk_level'}
                   direction={sortField === 'risk_level' ? sortDirection : 'asc'}
@@ -316,34 +240,35 @@ function AnticipatoryActionFloodPanel() {
           <TableBody>
             {paginatedStations.map(station => {
               const stationData = getStationDataForDate(station);
+              const isSelected = selectedStation === station.station_name;
               return (
                 <TableRow
                   key={station.station_name}
-                  className={`${classes.row} ${
-                    selectedStation === station.station_name
-                      ? classes.selectedRow
-                      : ''
-                  }`}
+                  sx={[
+                    aaFloodPanelSx.row,
+                    isSelected && aaFloodPanelSx.selectedRow,
+                  ]}
                   onClick={() => handleRowClick(station.station_name)}
                 >
-                  <TableCell className={classes.firstCell}>
+                  <TableCell sx={aaFloodPanelSx.firstCell}>
                     {station.station_name || '-'}
                   </TableCell>
-                  <TableCell className={classes.tableCell}>
+                  <TableCell sx={aaFloodPanelSx.tableCell}>
                     {stationData ? formatDateForDisplay(stationData.time) : '-'}
                   </TableCell>
-                  <TableCell className={classes.tableCell}>
+                  <TableCell sx={aaFloodPanelSx.tableCell}>
                     {stationData ? (
-                      <div
-                        style={{
+                      <Box
+                        sx={{
                           display: 'flex',
                           alignItems: 'center',
-                          gap: 8,
+                          gap: 1,
                         }}
                       >
                         <Typography>{t(stationData.risk_level)}</Typography>
-                        <span
-                          style={{
+                        <Box
+                          component="span"
+                          sx={{
                             display: 'inline-block',
                             width: 10,
                             height: 10,
@@ -353,7 +278,7 @@ function AnticipatoryActionFloodPanel() {
                             ),
                           }}
                         />
-                      </div>
+                      </Box>
                     ) : (
                       <Typography>{t('No data')}</Typography>
                     )}
@@ -364,8 +289,8 @@ function AnticipatoryActionFloodPanel() {
           </TableBody>
         </Table>
       </TableContainer>
-      <Box className={classes.pagination}>
-        <Box className={classes.rowsPerPageContainer}>
+      <Box sx={aaFloodPanelSx.pagination}>
+        <Box sx={aaFloodPanelSx.rowsPerPageContainer}>
           <Typography>{t('Rows per page')}:</Typography>
           <SimpleDropdown
             options={rowsPerPageOptions}
@@ -374,7 +299,7 @@ function AnticipatoryActionFloodPanel() {
             textClass=""
           />
         </Box>
-        <Box className={classes.pageNavigation}>
+        <Box sx={aaFloodPanelSx.pageNavigation}>
           <IconButton
             onClick={handlePreviousPage}
             disabled={!canGoPrevious}
@@ -403,7 +328,7 @@ function AnticipatoryActionFloodPanel() {
           onClose={() => dispatch(setAAFloodSelectedStation(''))}
         />
       )}
-    </div>
+    </Box>
   );
 }
 

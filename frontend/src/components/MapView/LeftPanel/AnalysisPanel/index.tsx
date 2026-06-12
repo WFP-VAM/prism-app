@@ -5,11 +5,9 @@ import {
   CircularProgress,
   IconButton,
   LinearProgress,
-  Theme,
   Typography,
 } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { useTheme } from '@mui/material/styles';
 import { usePostHog } from '@posthog/react';
 import {
   AdminLevelSelector,
@@ -20,6 +18,7 @@ import {
   StatisticSelector,
   ThresholdInputs,
 } from 'components/Common/AnalysisFormComponents';
+import { analysisPanelParamTextSx } from 'components/Common/formComponentStyles';
 import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
 import {
   AdminLevelDataLayerProps,
@@ -53,7 +52,7 @@ import { addLayer, removeLayer } from 'context/mapStateSlice';
 import { layersSelector, mapSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
 import { orderBy } from 'lodash';
-import { black, cyanBlue } from 'muiTheme';
+import { black } from 'muiTheme';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useAnalysisExecution, useAnalysisForm } from 'utils/analysis-hooks';
 import {
@@ -68,6 +67,20 @@ import { refreshBoundaries, safeDispatchAddLayer } from 'utils/map-utils';
 import { useUrlHistory } from 'utils/url-utils';
 
 import { getExposureAnalysisTableData } from '../../utils';
+import {
+  analysisButtonContainerSx,
+  analysisButtonSx,
+  analysisPanelParamsSx,
+  analysisPanelRootSx,
+  analysisPanelSx,
+  analysisTableCloseButtonSx,
+  analysisTableContainerSx,
+  analysisTableTitleSx,
+  bottomButtonSx,
+  exposureAnalysisLoadingContainerSx,
+  exposureAnalysisLoadingTextContainerSx,
+  exposureAnalysisLoadingTextSx,
+} from '../leftPanelStyles';
 import AnalysisTable from './AnalysisTable';
 import ExposureAnalysisTable from './AnalysisTable/ExposureAnalysisTable';
 import ExposureAnalysisActions from './ExposureAnalysisActions';
@@ -75,7 +88,7 @@ import ExposureAnalysisActions from './ExposureAnalysisActions';
 const tabPanelType = Panel.Analysis;
 
 const AnalysisPanel = memo(() => {
-  const classes = useStyles();
+  const theme = useTheme();
   const dispatch = useDispatch();
   const map = useSelector(mapSelector);
   const selectedLayers = useSelector(layersSelector);
@@ -350,11 +363,11 @@ const AnalysisPanel = memo(() => {
       return null;
     }
     return (
-      <Box className={classes.exposureAnalysisLoadingContainer}>
+      <Box sx={exposureAnalysisLoadingContainerSx}>
         <CircularProgress size={100} />
-        <Box className={classes.exposureAnalysisLoadingTextContainer}>
+        <Box sx={exposureAnalysisLoadingTextContainerSx}>
           <Typography
-            className={classes.exposureAnalysisLoadingText}
+            sx={exposureAnalysisLoadingTextSx}
             variant="body1"
             component="span"
           >
@@ -364,13 +377,7 @@ const AnalysisPanel = memo(() => {
         </Box>
       </Box>
     );
-  }, [
-    classes.exposureAnalysisLoadingContainer,
-    classes.exposureAnalysisLoadingText,
-    classes.exposureAnalysisLoadingTextContainer,
-    isExposureAnalysisLoading,
-    t,
-  ]);
+  }, [isExposureAnalysisLoading, t]);
 
   const renderedExposureAnalysisTable = useMemo(() => {
     if (!(analysisResult instanceof ExposedPopulationResult)) {
@@ -431,7 +438,6 @@ const AnalysisPanel = memo(() => {
         <BaselineLayerSelector
           value={baselineLayerId}
           onChange={setBaselineLayerId}
-          className={classes.analysisPanelParamText}
         />
         <StatisticSelector
           value={statistic}
@@ -457,7 +463,6 @@ const AnalysisPanel = memo(() => {
     );
   }, [
     hazardDataType,
-    classes.analysisPanelParamText,
     baselineLayerId,
     setBaselineLayerId,
     statistic,
@@ -483,20 +488,19 @@ const AnalysisPanel = memo(() => {
       return null;
     }
     return (
-      <div id="analysis-parameters" className={classes.analysisPanelParams}>
-        <HazardLayerSelector
-          value={hazardLayerId}
-          onChange={setHazardLayerId}
-          className={classes.analysisPanelParamText}
-        />
+      <Box id="analysis-parameters" sx={analysisPanelParamsSx}>
+        <Box sx={analysisPanelParamTextSx}>
+          <HazardLayerSelector
+            value={hazardLayerId}
+            onChange={setHazardLayerId}
+          />
+        </Box>
         {renderedPolygonHazardType}
         {renderedRasterType}
-      </div>
+      </Box>
     );
   }, [
     analysisResult,
-    classes.analysisPanelParams,
-    classes.analysisPanelParamText,
     hazardLayerId,
     setHazardLayerId,
     isExposureAnalysisLoading,
@@ -513,14 +517,14 @@ const AnalysisPanel = memo(() => {
       return null;
     }
     return (
-      <div
-        className={classes.analysisButtonContainer}
+      <Box
+        sx={analysisButtonContainerSx(theme)}
         style={{
           width: PanelSize.medium,
         }}
       >
         <Button
-          className={classes.analysisButton}
+          sx={analysisButtonSx}
           disabled={!analysisResult}
           onClick={() => {
             posthog?.capture('analysis_table_toggled', {
@@ -533,11 +537,11 @@ const AnalysisPanel = memo(() => {
             {showTable ? t('Hide Table') : t('View Table')}
           </Typography>
         </Button>
-        <Button className={classes.analysisButton} onClick={clearAnalysis}>
+        <Button sx={analysisButtonSx} onClick={clearAnalysis}>
           <Typography variant="body2">{t('Clear Analysis')}</Typography>
         </Button>
         <Button
-          className={classes.bottomButton}
+          sx={bottomButtonSx}
           onClick={() => {
             if (
               analysisResult &&
@@ -560,20 +564,18 @@ const AnalysisPanel = memo(() => {
         >
           <Typography variant="body2">{t('Download CSV')}</Typography>
         </Button>
-      </div>
+      </Box>
     );
   }, [
     analysisIsAscending,
     analysisResult,
     isAnalysisLoading,
     analysisSortColumn,
-    classes.analysisButton,
-    classes.analysisButtonContainer,
-    classes.bottomButton,
     clearAnalysis,
     selectedDate,
     showTable,
     t,
+    theme,
     translatedColumns,
   ]);
 
@@ -583,10 +585,10 @@ const AnalysisPanel = memo(() => {
       return null;
     }
     return (
-      <div className={classes.analysisButtonContainer}>
+      <Box sx={analysisButtonContainerSx(theme)}>
         {isAnalysisLoading ? <LinearProgress /> : null}
         <Button
-          className={classes.bottomButton}
+          sx={bottomButtonSx}
           onClick={wrappedRunAnalyser}
           startIcon={<BarChartOutlined style={{ color: black }} />}
           disabled={
@@ -603,7 +605,7 @@ const AnalysisPanel = memo(() => {
         >
           <Typography variant="body2">{t('Run Analysis')}</Typography>
         </Button>
-      </div>
+      </Box>
     );
   }, [
     analysisResult,
@@ -620,10 +622,9 @@ const AnalysisPanel = memo(() => {
     statistic,
     exposureValue.operator,
     exposureValue.value,
-    classes.analysisButtonContainer,
-    classes.bottomButton,
     wrappedRunAnalyser,
     t,
+    theme,
   ]);
 
   const renderedExposureAnalysisActions = useMemo(() => {
@@ -635,27 +636,25 @@ const AnalysisPanel = memo(() => {
       return null;
     }
     return (
-      <div className={classes.analysisButtonContainer}>
+      <Box sx={analysisButtonContainerSx(theme)}>
         <ExposureAnalysisActions
           key={`${exposureAnalysisSortColumn} - ${exposureAnalysisIsAscending}`}
-          analysisButton={classes.analysisButton}
-          bottomButton={classes.bottomButton}
+          analysisButtonSx={analysisButtonSx}
+          bottomButtonSx={bottomButtonSx}
           clearAnalysis={clearAnalysis}
           tableData={exposureAnalysisTableData}
           columns={translatedColumns}
         />
-      </div>
+      </Box>
     );
   }, [
     analysisResult,
     isAnalysisLoading,
-    classes.analysisButton,
-    classes.analysisButtonContainer,
-    classes.bottomButton,
     clearAnalysis,
     exposureAnalysisIsAscending,
     exposureAnalysisSortColumn,
     exposureAnalysisTableData,
+    theme,
     translatedColumns,
   ]);
 
@@ -666,22 +665,22 @@ const AnalysisPanel = memo(() => {
 
     return (
       <div style={{ display: 'flex', flexDirection: 'row', height: '100%' }}>
-        <div className={classes.root}>
-          <div className={classes.analysisPanel}>
+        <Box sx={analysisPanelRootSx}>
+          <Box sx={analysisPanelSx}>
             {renderedExposureAnalysisLoading}
             {renderedExposureAnalysisTable}
             {renderedAnalysisPanelInfo}
             {renderedAnalysisActions}
             {renderedRunAnalysisButton}
-          </div>
+          </Box>
           {renderedExposureAnalysisActions}
-        </div>
+        </Box>
         {showTable &&
           !isAnalysisLoading &&
           analysisResult &&
           (analysisResult instanceof BaselineLayerResult ||
             analysisResult instanceof PolygonAnalysisResult) && (
-            <Box className={classes.analysisTableContainer}>
+            <Box sx={analysisTableContainerSx}>
               <div
                 style={{
                   display: 'flex',
@@ -693,12 +692,12 @@ const AnalysisPanel = memo(() => {
                 <IconButton
                   aria-label="close"
                   onClick={() => setShowTable(false)}
-                  className={classes.analysisTableCloseButton}
+                  sx={analysisTableCloseButtonSx(theme)}
                   size="large"
                 >
                   <CloseRounded />
                 </IconButton>
-                <Typography className={classes.analysisTableTitle}>
+                <Typography sx={analysisTableTitleSx}>
                   {t(selectedHazardLayer?.title as any)}
                 </Typography>
               </div>
@@ -720,11 +719,6 @@ const AnalysisPanel = memo(() => {
     selectedHazardLayer,
     analysisSortColumn,
     analysisTableData,
-    classes.analysisPanel,
-    classes.analysisTableCloseButton,
-    classes.analysisTableContainer,
-    classes.analysisTableTitle,
-    classes.root,
     handleAnalysisTableOrderBy,
     renderedAnalysisActions,
     renderedAnalysisPanelInfo,
@@ -735,171 +729,9 @@ const AnalysisPanel = memo(() => {
     showTable,
     t,
     tabValue,
+    theme,
     translatedColumns,
   ]);
 });
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      display: 'flex',
-      flexDirection: 'column',
-      width: PanelSize.medium,
-      height: '100%',
-      overflow: 'hidden',
-    },
-    analysisPanel: {
-      display: 'flex',
-      flexDirection: 'column',
-      width: PanelSize.medium,
-      flex: 1,
-      minHeight: 0,
-      overflow: 'auto',
-    },
-    exposureAnalysisLoadingContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '2.5rem',
-      height: '100%',
-      width: '100%',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    exposureValueContainer: {
-      display: 'flex',
-      flexDirection: 'row',
-      gap: '16px',
-    },
-    exposureValueOptionsInputContainer: {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      margin: '8px 0',
-    },
-    exposureValueOptionsSelect: {
-      width: '100%',
-      '& .MuiFormLabel-root': {
-        color: 'black',
-        '&:hover fieldset': {
-          borderColor: '#333333',
-        },
-      },
-    },
-    exposureAnalysisLoadingTextContainer: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    exposureAnalysisLoadingText: {
-      color: 'black',
-    },
-    analysisPanelParams: {
-      padding: '30px 10px 10px 10px',
-      flex: 1,
-      minHeight: 0,
-      overflow: 'auto',
-    },
-    colorBlack: {
-      color: 'black',
-    },
-    analysisPanelParamText: {
-      width: '100%',
-      color: 'black',
-    },
-    analysisPanelParamContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      marginBottom: 30,
-      marginLeft: 10,
-      width: '90%',
-      color: 'black',
-    },
-    analysisTableContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      padding: '0 1rem',
-    },
-    datePickerContainer: {
-      marginLeft: 10,
-      width: 'auto',
-      color: 'black',
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    radioOptions: {
-      color: '#333333',
-      opacity: 0.6,
-    },
-    radioOptionsChecked: {
-      color: '#4CA1AD',
-      opacity: 1,
-    },
-    analysisButtonContainer: {
-      backgroundColor: theme.palette.primary.main,
-      width: '100%',
-    },
-    analysisButton: {
-      backgroundColor: '#788489',
-      '&:hover': {
-        backgroundColor: '#788489',
-      },
-      marginTop: 10,
-      marginBottom: 10,
-      marginLeft: '25%',
-      marginRight: '25%',
-      width: '50%',
-      '&.Mui-disabled': { opacity: 0.5 },
-    },
-    bottomButton: {
-      backgroundColor: cyanBlue,
-      marginTop: 10,
-      marginBottom: 10,
-      marginLeft: '25%',
-      marginRight: '25%',
-      width: '50%',
-      '&.Mui-disabled': {
-        opacity: 0.5,
-        backgroundColor: '#788489',
-        '&:hover': {
-          backgroundColor: '#788489',
-        },
-      },
-    },
-    numberField: {
-      paddingRight: '10px',
-      maxWidth: '140px',
-      '& label': {
-        color: '#333333',
-      },
-    },
-    rowInputContainer: {
-      display: 'flex',
-      alignItems: 'center',
-      marginTop: '10px',
-    },
-    calendarPopper: {
-      zIndex: 3,
-    },
-    dateRangePicker: {
-      display: 'inline-block',
-      marginRight: '15px',
-      marginTop: '15px',
-      minWidth: '125px',
-      width: '100px',
-    },
-    analysisTableTitle: {
-      fontSize: '16px',
-      fontWeight: 400,
-      color: 'black',
-    },
-    analysisTableCloseButton: {
-      zIndex: theme.zIndex.modal,
-      marginLeft: 'auto',
-    },
-  }),
-);
 
 export default AnalysisPanel;

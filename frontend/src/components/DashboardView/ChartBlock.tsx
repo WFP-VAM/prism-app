@@ -12,7 +12,6 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import Chart from 'components/Common/Chart';
 import {
   ChartDateRangeSelector,
@@ -52,6 +51,31 @@ import {
   updateBlockConfig,
 } from '../../context/dashboardStateSlice';
 import BlockPreviewHeader from './BlockPreviewHeader';
+import {
+  chartBlockChartWrapperSx,
+  chartBlockConstrainedChartWrapperSx,
+  chartBlockDateRangeLabelSx,
+  chartBlockEmptyStateSx,
+  chartBlockErrorContainerSx,
+  chartBlockFormContainerSx,
+  chartBlockFormControlSx,
+  chartBlockFormSectionSx,
+  chartBlockGrayCardSx,
+  chartBlockLatestPeriodRowSx,
+  chartBlockLayerSelectorFlexSx,
+  chartBlockLayerSelectorRowSx,
+  chartBlockLoadingContainerSx,
+  chartBlockPeriodControlSx,
+  chartBlockPreviewContainerSx,
+  chartBlockPreviewSectionSx,
+  chartBlockRerunButtonSx,
+  chartBlockRerunRowSx,
+  chartBlockSmallChartWrapperSx,
+  chartBlockSmallEmptyStateSx,
+  chartBlockSmallErrorContainerSx,
+  chartBlockSmallLoadingContainerSx,
+  chartBlockTitleSx,
+} from './chartBlockStyles';
 import { CHART_HEIGHTS } from './chartConstants';
 
 interface ChartBlockProps extends Partial<DashboardChartConfig> {
@@ -80,7 +104,6 @@ function ChartBlock({
   isOverflowing,
   headerSlot,
 }: ChartBlockProps) {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const mode = useSelector(dashboardModeSelector);
@@ -289,7 +312,7 @@ function ChartBlock({
     const canDownload =
       allowDownload && !isLoading && !error && chartDataset && chartConfig;
     return (
-      <Box className={classes.previewContainer}>
+      <Box sx={chartBlockPreviewContainerSx}>
         {formState.selectedChartLayer ? (
           <>
             <BlockPreviewHeader
@@ -314,7 +337,7 @@ function ChartBlock({
             />
 
             {isLoading && (
-              <Box className={classes.loadingContainer}>
+              <Box sx={chartBlockLoadingContainerSx}>
                 <CircularProgress size={40} />
                 <Typography variant="body2" style={{ marginTop: 16 }}>
                   {t('Loading chart data...')}
@@ -323,7 +346,7 @@ function ChartBlock({
             )}
 
             {error && (
-              <Box className={classes.errorContainer}>
+              <Box sx={chartBlockErrorContainerSx}>
                 <Typography color="error" variant="body1">
                   {error}
                 </Typography>
@@ -332,10 +355,10 @@ function ChartBlock({
 
             {!isLoading && !error && chartDataset && chartConfig && (
               <Box
-                className={
+                sx={
                   isOverflowing
-                    ? classes.constrainedChartWrapper
-                    : classes.chartWrapper
+                    ? chartBlockConstrainedChartWrapperSx
+                    : chartBlockChartWrapperSx
                 }
               >
                 <Chart
@@ -358,7 +381,7 @@ function ChartBlock({
             )}
 
             {!isLoading && !error && !chartDataset && (
-              <Box className={classes.emptyState}>
+              <Box sx={chartBlockEmptyStateSx}>
                 <Typography variant="body1" color="textSecondary">
                   {formState.selectedChartLayer?.chartData
                     ? t('No chart data available')
@@ -370,7 +393,7 @@ function ChartBlock({
             )}
           </>
         ) : (
-          <Box className={classes.emptyState}>
+          <Box sx={chartBlockEmptyStateSx}>
             <Typography variant="body1" color="textSecondary" align="center">
               {t('No chart configured')}
             </Typography>
@@ -383,7 +406,7 @@ function ChartBlock({
   const renderEditPreviewChart = () => {
     if (isLoading) {
       return (
-        <Box className={classes.smallLoadingContainer}>
+        <Box sx={chartBlockSmallLoadingContainerSx}>
           <CircularProgress size={30} />
           <Typography variant="body2" style={{ marginTop: 8 }}>
             {t('Loading...')}
@@ -394,7 +417,7 @@ function ChartBlock({
 
     if (error) {
       return (
-        <Box className={classes.smallErrorContainer}>
+        <Box sx={chartBlockSmallErrorContainerSx}>
           <Typography color="error" variant="body2">
             {error}
           </Typography>
@@ -404,7 +427,7 @@ function ChartBlock({
 
     if (!chartDataset || !chartConfig) {
       return (
-        <Box className={classes.smallEmptyState}>
+        <Box sx={chartBlockSmallEmptyStateSx}>
           <Typography variant="body2" color="textSecondary">
             {formState.chartLayerId
               ? t('Configure parameters to see chart preview')
@@ -415,7 +438,7 @@ function ChartBlock({
     }
 
     return (
-      <Box className={classes.smallChartWrapper}>
+      <Box sx={chartBlockSmallChartWrapperSx}>
         <Chart
           title={t(chartTitle)}
           subtitle={t(chartSubtitle)}
@@ -433,33 +456,34 @@ function ChartBlock({
 
   // Edit mode rendering
   return (
-    <Box className={classes.grayCard}>
+    <Box sx={chartBlockGrayCardSx}>
       {headerSlot ?? (
-        <Typography variant="h3" className={classes.blockTitle}>
+        <Typography variant="h3" sx={chartBlockTitleSx}>
           {t('Chart Block')} #{index + 1}
         </Typography>
       )}
 
-      <Box className={classes.formContainer}>
-        <Box className={classes.formSection}>
-          <Box className={classes.layerSelectorRow}>
-            <ChartLayerSelector
-              value={formState.chartLayerId}
-              onChange={handleLayerChange}
-              className={classes.layerSelectorFlex}
-            />
+      <Box sx={chartBlockFormContainerSx}>
+        <Box sx={chartBlockFormSectionSx}>
+          <Box sx={chartBlockLayerSelectorRowSx}>
+            <Box sx={chartBlockLayerSelectorFlexSx}>
+              <ChartLayerSelector
+                value={formState.chartLayerId}
+                onChange={handleLayerChange}
+              />
+            </Box>
           </Box>
         </Box>
 
-        <Box className={classes.formSection}>
+        <Box sx={chartBlockFormSectionSx}>
           {!useLatest && (
-            <Typography variant="body2" className={classes.dateRangeLabel}>
+            <Typography variant="body2" sx={chartBlockDateRangeLabelSx}>
               {t('Date Range')}
             </Typography>
           )}
           {useLatest ? (
-            <Box className={classes.latestPeriodRow}>
-              <FormControl variant="outlined" className={classes.periodControl}>
+            <Box sx={chartBlockLatestPeriodRowSx}>
+              <FormControl variant="outlined" sx={chartBlockPeriodControlSx}>
                 <InputLabel>{t('Date Range')}</InputLabel>
                 <Select
                   value={period}
@@ -524,7 +548,7 @@ function ChartBlock({
               );
             }}
           />
-          <FormControl variant="outlined" className={classes.formControl}>
+          <FormControl variant="outlined" sx={chartBlockFormControlSx}>
             <InputLabel>{t('Chart Height')}</InputLabel>
             <Select
               value={chartHeightOption}
@@ -539,13 +563,13 @@ function ChartBlock({
             </Select>
           </FormControl>
           {hasFormChanged && formState.chartLayerId && (
-            <Box className={classes.rerunRow}>
+            <Box sx={chartBlockRerunRowSx}>
               <Button
                 variant="outlined"
                 color="primary"
                 onClick={() => refetch().catch(console.error)}
                 disabled={isLoading}
-                className={classes.rerunButton}
+                sx={chartBlockRerunButtonSx}
               >
                 {t('Rerun Chart')}
               </Button>
@@ -555,217 +579,11 @@ function ChartBlock({
 
         {/* Small preview section */}
         {formState.chartLayerId && (
-          <Box className={classes.previewSection}>
-            {renderEditPreviewChart()}
-          </Box>
+          <Box sx={chartBlockPreviewSectionSx}>{renderEditPreviewChart()}</Box>
         )}
       </Box>
     </Box>
   );
 }
-
-const useStyles = makeStyles(theme => ({
-  grayCard: {
-    background: '#F1F1F1',
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 16,
-  },
-  previewContainer: {
-    background: 'white',
-    borderRadius: 8,
-    padding: 16,
-    maxWidth: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    overflow: 'hidden',
-    flex: 1,
-    minHeight: 0,
-  },
-  previewHeader: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    alignItems: 'baseline',
-    marginBottom: theme.spacing(2),
-    gap: theme.spacing(1),
-  },
-  previewTitle: {
-    flex: '1 1 auto',
-    minWidth: '60%',
-  },
-  previewDate: {
-    flex: '0 0 auto',
-    fontSize: '0.875rem',
-  },
-  blockTitle: {
-    fontWeight: 600,
-    marginBottom: theme.spacing(1),
-  },
-  formContainer: {
-    background: 'white',
-    borderRadius: 4,
-    padding: theme.spacing(2),
-    paddingTop: theme.spacing(4),
-    display: 'flex',
-    flexDirection: 'column',
-    marginTop: theme.spacing(1),
-  },
-  formSection: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: theme.spacing(1),
-  },
-  layerSelectorRow: {
-    display: 'flex',
-    alignItems: 'flex-end',
-    gap: theme.spacing(2),
-    width: '100%',
-  },
-  layerSelectorFlex: {
-    flex: 1,
-    marginBottom: 0,
-  },
-  dateRangeLabel: {
-    fontWeight: 600,
-    color: 'black',
-    paddingTop: 9,
-    flexShrink: 0,
-    marginRight: theme.spacing(1),
-    marginLeft: 10,
-    marginBottom: 4,
-  },
-  latestPeriodRow: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    alignItems: 'flex-end',
-    gap: theme.spacing(1),
-    marginLeft: 10,
-    width: '90%',
-    marginBottom: 8,
-  },
-  periodControl: {
-    flex: '1 1 140px',
-    minWidth: 140,
-    marginBottom: 0,
-    '& .MuiFormLabel-root': {
-      color: 'black',
-    },
-    '& .MuiOutlinedInput-notchedOutline': {
-      borderColor: '#333333',
-    },
-    '&:hover .MuiOutlinedInput-notchedOutline': {
-      borderColor: '#333333',
-    },
-  },
-  rerunRow: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: theme.spacing(2),
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-    '& > *:first-child': {
-      flex: 1,
-    },
-  },
-  rerunButton: {
-    height: 40,
-    minWidth: 140,
-    marginBottom: theme.spacing(4),
-    whiteSpace: 'nowrap',
-  },
-  previewSection: {
-    marginTop: theme.spacing(2),
-  },
-  loadingContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: theme.spacing(4),
-    flex: 1,
-  },
-  errorContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: theme.spacing(4),
-    flex: 1,
-  },
-  chartWrapper: {
-    flex: 1,
-    maxWidth: '100%',
-    position: 'relative',
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    overflow: 'auto',
-    '& > *': {
-      maxWidth: '100%',
-    },
-  },
-  constrainedChartWrapper: {
-    flex: 1,
-    maxWidth: '100%',
-    position: 'relative',
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    overflow: 'hidden',
-    minHeight: 0,
-    '& > *': {
-      maxWidth: '100%',
-    },
-  },
-  emptyState: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flex: 1,
-    minHeight: 200,
-  },
-  // Small preview styles for edit mode
-  smallChartWrapper: {
-    height: 240,
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  smallLoadingContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: theme.spacing(3),
-    height: 240,
-  },
-  smallErrorContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: theme.spacing(3),
-    height: 240,
-  },
-  smallEmptyState: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 240,
-    textAlign: 'center',
-  },
-  formControl: {
-    width: '90%',
-    marginLeft: 10,
-    marginBottom: 8,
-    '& .MuiFormLabel-root': {
-      color: 'black',
-    },
-    '& .MuiOutlinedInput-notchedOutline': {
-      borderColor: '#333333',
-    },
-    '&:hover .MuiOutlinedInput-notchedOutline': {
-      borderColor: '#333333',
-    },
-  },
-}));
 
 export default ChartBlock;

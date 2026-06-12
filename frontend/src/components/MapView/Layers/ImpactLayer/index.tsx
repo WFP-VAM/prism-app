@@ -1,6 +1,5 @@
-import { Theme } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { Box } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
 import { legendToStops } from 'components/MapView/Layers/layer-utils';
 import { Extent, getExtent } from 'components/MapView/Layers/raster-utils';
 import { getFeatureInfoPropsData } from 'components/MapView/utils';
@@ -84,8 +83,24 @@ const onClick =
     );
   };
 
+const impactMessageSx = {
+  position: 'absolute',
+  height: '100%',
+  width: '100%',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+} satisfies SxProps<Theme>;
+
+const impactMessageContainerSx = (theme: Theme) => ({
+  fontSize: 24,
+  paddingLeft: theme.spacing(2),
+  paddingRight: theme.spacing(2),
+  backgroundColor: theme.palette.grey.A100,
+  borderRadius: theme.spacing(2),
+});
+
 const ImpactLayer = memo(({ layer, before }: ComponentProps) => {
-  const classes = useStyles();
   const { maplibreMap, dateRange } = useMapState();
   const map = maplibreMap();
   // Load the layer default date if no date is selected
@@ -155,11 +170,11 @@ const ImpactLayer = memo(({ layer, before }: ComponentProps) => {
 
   if (!data) {
     return selectedDate ? null : (
-      <div className={classes.message}>
-        <div className={classes.messageContainer}>
+      <Box sx={impactMessageSx}>
+        <Box sx={impactMessageContainerSx}>
           <h2>{t('Select an available date to view data')}</h2>
-        </div>
-      </div>
+        </Box>
+      </Box>
     );
   }
 
@@ -197,26 +212,6 @@ const ImpactLayer = memo(({ layer, before }: ComponentProps) => {
     </Source>
   );
 });
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    message: {
-      position: 'absolute',
-      height: '100%',
-      width: '100%',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    messageContainer: {
-      fontSize: 24,
-      paddingLeft: theme.spacing(2),
-      paddingRight: theme.spacing(2),
-      backgroundColor: theme.palette.grey.A100,
-      borderRadius: theme.spacing(2),
-    },
-  }),
-);
 
 interface ComponentProps {
   layer: ImpactLayerProps;

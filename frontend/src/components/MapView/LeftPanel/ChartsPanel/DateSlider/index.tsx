@@ -2,26 +2,11 @@ import 'react-range-slider-input/dist/style.css';
 import './slider.css';
 
 import { Box, Typography } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import { useSafeTranslation } from 'i18n';
 import React from 'react';
 import RangeSlider from 'react-range-slider-input';
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    sliderContainer: {
-      width: 'calc(100% - 4rem)',
-      marginLeft: 'auto',
-      marginRight: 'auto',
-      paddingTop: '1rem',
-      paddingBottom: '2rem',
-    },
-    textLabel: {
-      color: 'black',
-    },
-  }),
-);
+import { chartsTextLabelSx, dateSliderContainerSx } from '../chartsPanelStyles';
 
 interface DateSliderProps {
   chartSelectedDateRange: [string, string];
@@ -38,12 +23,10 @@ function DateSlider({
   maxDataTicks,
   disabled,
 }: DateSliderProps) {
-  const classes = useStyles();
-
   const { t } = useSafeTranslation();
 
   return (
-    <Box className={classes.sliderContainer}>
+    <Box sx={dateSliderContainerSx}>
       <Box
         style={{
           display: 'flex',
@@ -59,11 +42,11 @@ function DateSlider({
             alignItems: 'center',
           }}
         >
-          <Typography className={classes.textLabel} variant="body2">
+          <Typography sx={chartsTextLabelSx} variant="body2">
             {t('Start')}
           </Typography>
           {': '}
-          <Typography className={classes.textLabel}>
+          <Typography sx={chartsTextLabelSx}>
             {chartSelectedDateRange[0]}
           </Typography>
         </Box>
@@ -75,11 +58,11 @@ function DateSlider({
             alignItems: 'center',
           }}
         >
-          <Typography className={classes.textLabel} variant="body2">
+          <Typography sx={chartsTextLabelSx} variant="body2">
             {t('End')}
           </Typography>
           {': '}
-          <Typography className={classes.textLabel}>
+          <Typography sx={chartsTextLabelSx}>
             {chartSelectedDateRange[1]}
           </Typography>
         </Box>

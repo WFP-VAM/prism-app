@@ -1,44 +1,35 @@
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { Box } from '@mui/material';
+import { keyframes } from '@mui/material/styles';
 import { memo } from 'react';
 
+const blink = keyframes`
+  50% {
+    color: transparent;
+  }
+`;
+
+const dotSx = (delay: string) => ({
+  animation: `${blink} 1s infinite`,
+  animationDelay: delay,
+});
+
 const LoadingBlinkingDots = memo(({ dotColor }: LoadingBlinkingDotsProps) => {
-  const classes = useStyles();
   const colorStyle = { color: dotColor || 'black' };
   return (
     <>
       &nbsp;
-      <span className={classes.dot} style={colorStyle}>
+      <Box component="span" sx={dotSx('0ms')} style={colorStyle}>
         .
-      </span>
-      <span className={classes.dot} style={colorStyle}>
+      </Box>
+      <Box component="span" sx={dotSx('250ms')} style={colorStyle}>
         .
-      </span>
-      <span className={classes.dot} style={colorStyle}>
+      </Box>
+      <Box component="span" sx={dotSx('500ms')} style={colorStyle}>
         .
-      </span>
+      </Box>
     </>
   );
 });
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    '@keyframes blink': {
-      '50%': {
-        color: 'transparent',
-      },
-    },
-    dot: {
-      animation: '1s $blink infinite',
-      '&:nth-child(2)': {
-        animationDelay: '250ms',
-      },
-      '&:nth-child(3)': {
-        animationDelay: '500ms',
-      },
-    },
-  }),
-);
 
 export interface LoadingBlinkingDotsProps {
   dotColor?: string;

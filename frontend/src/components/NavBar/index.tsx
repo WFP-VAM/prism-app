@@ -9,9 +9,7 @@ import {
   TableChartOutlined,
   TimerOutlined,
 } from '@mui/icons-material';
-import { AppBar, Theme, Toolbar, useMediaQuery, useTheme } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { AppBar, Box, Toolbar, useMediaQuery, useTheme } from '@mui/material';
 import GoToBoundaryDropdown from 'components/Common/BoundaryDropdown/goto';
 import {
   areTablesAvailable,
@@ -29,6 +27,7 @@ import {
   setTabValue,
 } from 'context/leftPanelStateSlice';
 import { useSafeTranslation } from 'i18n';
+import { white } from 'muiTheme';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -41,12 +40,24 @@ import Title from './Title';
 
 const { alertFormActive } = appConfig;
 
+/** Nav chrome only — avoid styling fixed legend list descendants */
+const toolbarSurfaceSx = {
+  '& > .MuiButton-root': {
+    color: white,
+  },
+  '& > .MuiIconButton-root': {
+    color: white,
+  },
+  '& .MuiButton-startIcon, & .MuiButton-endIcon': {
+    color: 'inherit',
+  },
+};
+
 function NavBar() {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const history = useHistory();
   const location = useLocation();
-  const classes = useStyles();
   const tabValue = useSelector(leftPanelTabValueSelector);
   const dashboards = useSelector(dashboardsListSelector);
   const hasDashboards = dashboards.length > 0;
@@ -204,12 +215,52 @@ function NavBar() {
   };
 
   return (
-    <AppBar position="fixed" className={classes.appBar}>
+    <AppBar
+      position="fixed"
+      sx={{
+        backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
+        height: '56px',
+        minHeight: '56px',
+        maxHeight: '56px',
+        display: 'flex',
+        justifyContent: 'center',
+        top: 0,
+        zIndex: theme.zIndex.drawer + 1,
+      }}
+    >
       <Toolbar variant="dense">
-        <div className={classes.navbarContainer}>
-          <div className={classes.leftSideContainer}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            flexDirection: 'row',
+            width: '100%',
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'start',
+              gap: '5rem',
+              [theme.breakpoints.down('md')]: {
+                gap: '1rem',
+              },
+            }}
+          >
             <Title />
-            <div className={classes.panelsContainer}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'start',
+                gap: '1rem',
+                alignItems: 'center',
+                [theme.breakpoints.down('md')]: {
+                  gap: '0.5rem',
+                },
+              }}
+            >
               {panels.map(panel => {
                 const selected =
                   tabValue === panel.panel ||
@@ -251,63 +302,25 @@ function NavBar() {
                 );
               })}
               <GoToBoundaryDropdown />
-            </div>
-          </div>
-          <div className={classes.rightSideContainer}>
+            </Box>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'start',
+              gap: '0.5rem',
+              alignItems: 'center',
+              ...toolbarSurfaceSx,
+            }}
+          >
             {!isDashboardMode && <Legends />}
             <RightSideMenu />
-          </div>
-        </div>
+          </Box>
+        </Box>
       </Toolbar>
     </AppBar>
   );
 }
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    appBar: {
-      backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
-      height: '56px',
-      minHeight: '56px',
-      maxHeight: '56px',
-      display: 'flex',
-      justifyContent: 'center',
-      top: 0,
-      zIndex: theme.zIndex.drawer + 1,
-    },
-    navbarContainer: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      flexDirection: 'row',
-      width: '100%',
-    },
-    leftSideContainer: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'start',
-      gap: '5rem',
-      [theme.breakpoints.down('md')]: {
-        gap: '1rem',
-      },
-    },
-    panelsContainer: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'start',
-      gap: '1rem',
-      alignItems: 'center',
-      [theme.breakpoints.down('md')]: {
-        gap: '0.5rem',
-      },
-    },
-    rightSideContainer: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'start',
-      gap: '0.5rem',
-      alignItems: 'center',
-    },
-  }),
-);
 
 export default NavBar;

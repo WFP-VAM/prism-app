@@ -3,7 +3,7 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root makeStyles-root-1 MuiAccordion-rounded MuiAccordion-gutters css-z8u0ml-MuiPaper-root-MuiAccordion-root"
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded MuiAccordion-gutters css-1dqh0z2-MuiPaper-root-MuiAccordion-root"
     style="--Paper-shadow: none;"
   >
     <h3
@@ -12,22 +12,22 @@ exports[`renders as expected 1`] = `
       <button
         aria-controls="Category 1"
         aria-expanded="false"
-        class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-2 MuiAccordionSummary-gutters css-pqdk18-MuiButtonBase-root-MuiAccordionSummary-root"
+        class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters css-56pto6-MuiButtonBase-root-MuiAccordionSummary-root"
         id="level2-Category1"
         tabindex="0"
         type="button"
       >
         <span
-          class="MuiAccordionSummary-content makeStyles-summaryContent-5 css-1rqjdob-MuiAccordionSummary-content"
+          class="MuiAccordionSummary-content css-1rqjdob-MuiAccordionSummary-content"
         >
           <p
-            class="MuiTypography-root makeStyles-title-7 MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+            class="MuiTypography-root MuiTypography-body1 css-lzrth6-MuiTypography-root"
           >
             Category 1
           </p>
         </span>
         <span
-          class="MuiAccordionSummary-expandIconWrapper makeStyles-expandIcon-4 css-1wnau0r-MuiAccordionSummary-expandIconWrapper"
+          class="MuiAccordionSummary-expandIconWrapper css-1wnau0r-MuiAccordionSummary-expandIconWrapper"
         >
           <svg
             aria-hidden="true"

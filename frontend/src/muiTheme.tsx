@@ -4,7 +4,7 @@ import React from 'react';
 const skyBlue: string = '#009EE0';
 const greyBlue: string = '#5A686C';
 const darkGreyBlue: string = '#2D3436';
-const white = '#FFFFFF';
+export const white = '#FFFFFF';
 const midnightSlate = '#323638';
 export const borderGray = '#A4A4A4';
 export const lightGrey = '#F1F1F1';
@@ -68,6 +68,10 @@ declare module '@mui/material/styles' {
   }
 }
 
+/**
+ * Base theme for light-surface panels (layers, charts, tables, dialogs).
+ * Dark AppBar chrome is styled locally in NavBar sx — not via global overrides.
+ */
 const theme = createTheme({
   typography: {
     fontFamily:
@@ -86,7 +90,6 @@ const theme = createTheme({
     },
     h5: {
       fontSize: 11,
-      color: greyBlue,
     },
     body1: {
       fontSize: 13,
@@ -125,10 +128,16 @@ const theme = createTheme({
     primary: {
       main: midnightSlate,
       dark: darkGreyBlue,
+      contrastText: white,
+    },
+    // MUI v4 default — Layers nav badge used color="secondary"
+    secondary: {
+      main: '#f50057',
+      contrastText: white,
     },
     text: {
-      primary: white,
-      secondary: black,
+      primary: black,
+      secondary: greyBlue,
     },
     grey: {
       500: grey,
@@ -148,7 +157,18 @@ const theme = createTheme({
         root: {
           color: black,
         },
+        h5: {
+          color: greyBlue,
+        },
       },
+      variants: [
+        {
+          props: { color: 'secondary' },
+          style: {
+            color: white,
+          },
+        },
+      ],
     },
     MuiListItemButton: {
       styleOverrides: {
@@ -180,7 +200,6 @@ const theme = createTheme({
     MuiAccordionSummary: {
       styleOverrides: {
         root: {
-          backgroundColor: greyBlue,
           minHeight: '2.5rem',
           '&.Mui-expanded': {
             minHeight: '2.5rem',
@@ -201,9 +220,6 @@ const theme = createTheme({
     MuiAccordionDetails: {
       styleOverrides: {
         root: {
-          backgroundColor: darkGreyBlue,
-          opacity: 0.9,
-          padding: 16,
           marginLeft: '12px',
         },
       },
@@ -212,42 +228,17 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           pointerEvents: 'none',
-          padding: 10,
+          padding: '10px',
         },
         sticky: {
           backgroundColor: 'white',
         },
       },
     },
-    MuiFormLabel: {
-      styleOverrides: {
-        root: {
-          color: 'white',
-        },
-      },
-    },
     MuiTableSortLabel: {
       styleOverrides: {
-        root: {
-          color: white,
-          '&:hover': {
-            color: white,
-            opacity: 0.5,
-          },
-          '&.Mui-active': {
-            color: white,
-            '& .MuiTableSortLabel-icon': {
-              opacity: 1,
-              color: black,
-            },
-          },
-        },
         icon: {
           color: black,
-          opacity: 0.2,
-          '&:hover': {
-            opacity: 0.5,
-          },
         },
       },
     },
@@ -264,13 +255,6 @@ const theme = createTheme({
         },
         text: {
           padding: '6px 12px',
-        },
-      },
-    },
-    MuiIconButton: {
-      styleOverrides: {
-        root: {
-          color: black,
         },
       },
     },
