@@ -3,7 +3,7 @@
 exports[`renders as expected 1`] = `
 <div>
   <mock-button
-    classname="makeStyles-buttonStyle-1"
+    classes="[object Object]"
     variant="outlined"
   >
     Some Value

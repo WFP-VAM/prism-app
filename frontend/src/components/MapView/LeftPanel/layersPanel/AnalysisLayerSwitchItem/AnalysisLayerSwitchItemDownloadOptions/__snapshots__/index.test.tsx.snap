@@ -31,8 +31,7 @@ exports[`renders as expected 1`] = `
   </mock-tooltip>
   <mock-menu
     id="download-menu"
-    keepmounted="true"
-    open="false"
+    keepmounted=""
   >
     <mock-menuitem>
       Download as CSV

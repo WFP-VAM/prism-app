@@ -38,9 +38,8 @@ exports[`renders as expected 1`] = `
   </div>
   <mock-dialog
     aria-labelledby="dialog-preview"
-    keepmounted="true"
+    keepmounted=""
     maxwidth="xl"
-    open="false"
   >
     <mock-dialogcontent>
       <div
@@ -87,7 +86,7 @@ exports[`renders as expected 1`] = `
               class="makeStyles-optionWrap-10"
             >
               <mock-textfield
-                fullwidth="true"
+                fullwidth=""
                 inputprops="[object Object]"
                 placeholder="Title"
                 size="small"
@@ -99,7 +98,7 @@ exports[`renders as expected 1`] = `
               class="makeStyles-wrapper-28"
             >
               <mock-typography
-                classname="makeStyles-header-29"
+                class="makeStyles-header-26"
                 variant="h4"
               >
                 Aspect Ratio
@@ -119,7 +118,7 @@ exports[`renders as expected 1`] = `
                     class="MuiToggleButton-label"
                   >
                     <mock-tooltip
-                      arrow="true"
+                      arrow=""
                       classes="[object Object]"
                       title="Map resizes based on browser window"
                     >
@@ -271,9 +270,9 @@ exports[`renders as expected 1`] = `
                 class="makeStyles-collapsibleWrapper-11 makeStyles-collapsibleWrapperExpanded-12"
               >
                 <mock-switch
-                  checked="true"
+                  checked=""
+                  class="makeStyles-switch-35"
                   classes="[object Object]"
-                  classname="makeStyles-switch-38"
                   color="primary"
                   inputprops="[object Object]"
                 />
@@ -451,9 +450,9 @@ exports[`renders as expected 1`] = `
                 class="makeStyles-collapsibleWrapper-11 "
               >
                 <mock-switch
-                  checked="true"
+                  checked=""
+                  class="makeStyles-switch-35"
                   classes="[object Object]"
-                  classname="makeStyles-switch-38"
                   color="primary"
                   inputprops="[object Object]"
                 />
@@ -470,9 +469,8 @@ exports[`renders as expected 1`] = `
                 class="makeStyles-collapsibleWrapper-11 "
               >
                 <mock-switch
-                  checked="false"
+                  class="makeStyles-switch-35"
                   classes="[object Object]"
-                  classname="makeStyles-switch-38"
                   color="primary"
                   inputprops="[object Object]"
                 />
@@ -511,9 +509,9 @@ exports[`renders as expected 1`] = `
                 class="makeStyles-collapsibleWrapper-11 makeStyles-collapsibleWrapperExpanded-12"
               >
                 <mock-switch
-                  checked="true"
+                  checked=""
+                  class="makeStyles-switch-35"
                   classes="[object Object]"
-                  classname="makeStyles-switch-38"
                   color="primary"
                   inputprops="[object Object]"
                 />
@@ -603,9 +601,9 @@ exports[`renders as expected 1`] = `
                             class="makeStyles-collapsibleWrapper-11"
                           >
                             <mock-switch
-                              checked="true"
+                              checked=""
+                              class="makeStyles-switch-35"
                               classes="[object Object]"
-                              classname="makeStyles-switch-38"
                               color="primary"
                               inputprops="[object Object]"
                             />
@@ -762,9 +760,9 @@ exports[`renders as expected 1`] = `
                 class="makeStyles-collapsibleWrapper-11 makeStyles-collapsibleWrapperExpanded-12"
               >
                 <mock-switch
-                  checked="true"
+                  checked=""
+                  class="makeStyles-switch-35"
                   classes="[object Object]"
-                  classname="makeStyles-switch-38"
                   color="primary"
                   inputprops="[object Object]"
                 />
@@ -914,11 +912,12 @@ exports[`renders as expected 1`] = `
                         class="MuiBox-root MuiBox-root-54"
                       >
                         <mock-textfield
-                          fullwidth="true"
+                          defaultvalue=""
+                          fullwidth=""
                           inputprops="[object Object]"
                           maxrows="6"
                           minrows="3"
-                          multiline="true"
+                          multiline=""
                           size="small"
                           style="background-color: white; border-radius: 5px;"
                           variant="outlined"
@@ -932,18 +931,25 @@ exports[`renders as expected 1`] = `
             <div
               class="MuiBox-root MuiBox-root-55 makeStyles-batchMapsSection-20"
             >
-              <div
-                class="MuiBox-root MuiBox-root-56 makeStyles-batchMapsHeader-21"
-              >
-                <div
-                  class="MuiBox-root MuiBox-root-57 makeStyles-batchMapsToggle-22"
+              <div>
+                <mock-tooltip
+                  arrow=""
+                  classes="[object Object]"
+                  placement="top"
+                  title="Selecting this option will apply the template above to create multiple maps over a time period of your choice."
                 >
-                  <div>
-                    <mock-tooltip
-                      arrow="true"
+                  <div
+                    class="makeStyles-collapsibleWrapper-11 "
+                  >
+                    <mock-switch
+                      class="makeStyles-switch-35"
                       classes="[object Object]"
-                      placement="top"
-                      title="Selecting this option will apply the template above to create multiple maps over a time period of your choice."
+                      color="primary"
+                      inputprops="[object Object]"
+                    />
+                    <mock-typography
+                      style="padding-left: 0.5rem;"
+                      variant="h4"
                     >
                       <div
                         class="makeStyles-collapsibleWrapper-11 "
@@ -969,7 +975,7 @@ exports[`renders as expected 1`] = `
               </div>
               <div>
                 <mock-tooltip
-                  arrow="true"
+                  arrow=""
                   classes="[object Object]"
                   placement="top"
                   title="Selecting this option will apply the template above to create maps as new data becomes available."
@@ -978,11 +984,10 @@ exports[`renders as expected 1`] = `
                     class="makeStyles-collapsibleWrapper-11 "
                   >
                     <mock-switch
-                      checked="false"
+                      class="makeStyles-switch-35"
                       classes="[object Object]"
-                      classname="makeStyles-switch-38"
                       color="primary"
-                      disabled="true"
+                      disabled=""
                       inputprops="[object Object]"
                     />
                     <mock-typography
@@ -1008,11 +1013,10 @@ exports[`renders as expected 1`] = `
               </div>
             </div>
             <mock-button
-              classname="makeStyles-gutter-5 makeStyles-primaryButtonActive-6"
+              class="makeStyles-gutter-5 makeStyles-primaryButtonActive-6"
               color="primary"
-              disabled="false"
               endicon="[object Object]"
-              fullwidth="true"
+              fullwidth=""
               variant="contained"
             >
               <span>
@@ -1020,8 +1024,7 @@ exports[`renders as expected 1`] = `
               </span>
             </mock-button>
             <mock-menu
-              keepmounted="true"
-              open="false"
+              keepmounted=""
             >
               <mock-menuitem>
                 Download PNG
