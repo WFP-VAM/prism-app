@@ -344,5 +344,13 @@
   "Exporting...": "កំពុងនាំចេញ...",
   "Unknown error": "កំហុសមិនស្គាល់",
   "Create dashboard": "បង្កើតផ្ទាំងគ្រប់គ្រង",
-  "Dashboard": "ផ្ទាំងគ្រប់គ្រង"
+  "Dashboard": "ផ្ទាំងគ្រប់គ្រង",
+  "Chart Layer": "ស្រទាប់តារាង",
+  "Select a chart layer": "ជ្រើសស្រទាប់តារាង",
+  "Location": "ទីតាំង",
+  "Country": "ប្រទេស",
+  "Country Level": "កម្រិតប្រទេស",
+  "Remove Admin 1": "លុបអ្នកគ្រប់គ្រង ១",
+  "Remove Admin 2": "លុបអ្នកគ្រប់គ្រង ២",
+  "End date must be after start date": "កាលបរិច្ឆេទបញ្ចប់ត្រូវតែក្រោយកាលបរិច្ឆេទចាប់ផ្តើម"
 }

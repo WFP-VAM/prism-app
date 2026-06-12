@@ -229,5 +229,13 @@
   "Exporting...": "Exportando...",
   "Unknown error": "Error desconocido",
   "Create dashboard": "Crear panel",
-  "Dashboard": "Panel"
+  "Dashboard": "Panel",
+  "Chart Layer": "Capa de gráfico",
+  "Select a chart layer": "Seleccione una capa de gráfico",
+  "Location": "Ubicación",
+  "Country": "País",
+  "Country Level": "Nivel país",
+  "Remove Admin 1": "Eliminar Admin 1",
+  "Remove Admin 2": "Eliminar Admin 2",
+  "End date must be after start date": "La fecha de fin debe ser posterior a la fecha de inicio"
 }

@@ -438,5 +438,13 @@
   "Exporting...": "جارٍ التصدير...",
   "Unknown error": "خطأ غير معروف",
   "Create dashboard": "إنشاء لوحة معلومات",
-  "Dashboard": "لوحة المعلومات"
+  "Dashboard": "لوحة المعلومات",
+  "Chart Layer": "طبقة المخطط",
+  "Select a chart layer": "اختر طبقة مخطط",
+  "Location": "الموقع",
+  "Country": "البلد",
+  "Country Level": "مستوى البلد",
+  "Remove Admin 1": "إزالة المستوى الاداري 1",
+  "Remove Admin 2": "إزالة المستوى الاداري 2",
+  "End date must be after start date": "يجب أن يكون تاريخ الانتهاء بعد تاريخ البدء"
 }

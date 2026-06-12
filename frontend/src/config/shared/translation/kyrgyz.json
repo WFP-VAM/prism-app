@@ -355,5 +355,13 @@
   "Exporting...": "Экспорттолууда...",
   "Unknown error": "Белгисиз ката",
   "Create dashboard": "Dashboard түзүү",
-  "Dashboard": "Dashboard"
+  "Dashboard": "Dashboard",
+  "Chart Layer": "Диаграмма катмары",
+  "Select a chart layer": "Диаграмма катмарын тандаңыз",
+  "Country": "Өлкө",
+  "Country Level": "Өлкө деңгээли",
+  "Remove Admin 1": "Админ 1 өчүрүү",
+  "Remove Admin 2": "Админ 2 өчүрүү",
+  "Today": "Бүгүн",
+  "End date must be after start date": "Аяктоо датасы башталган датадан кийин болушу керек"
 }

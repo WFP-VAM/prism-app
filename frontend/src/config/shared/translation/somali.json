@@ -443,5 +443,14 @@
   "Exporting...": "Waa la dhoofinayaa...",
   "Unknown error": "Khalad aan la aqoon",
   "Create dashboard": "Abuur dashboard",
-  "Dashboard": "Dashboard"
+  "Dashboard": "Dashboard",
+  "Chart Layer": "Lakabka shaxa",
+  "Select a chart layer": "Dooro lakab shax",
+  "Location": "Goobta",
+  "Country": "Waddanka",
+  "Country Level": "Heerka waddanka",
+  "Remove Admin 1": "Ka saar Maamulka 1",
+  "Remove Admin 2": "Ka saar Maamulka 2",
+  "Today": "Maanta",
+  "End date must be after start date": "Taariikhda dhamaadka waa inay ka dambeysaa taariikhda bilowga"
 }

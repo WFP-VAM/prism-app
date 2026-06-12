@@ -242,5 +242,14 @@
   "Exporting...": "Экспортлож байна...",
   "Unknown error": "Тодорхойгүй алдаа",
   "Create dashboard": "Dashboard үүсгэх",
-  "Dashboard": "Dashboard"
+  "Dashboard": "Dashboard",
+  "Chart Layer": "Графикийн давхарга",
+  "Select a chart layer": "Графикийн давхарга сонгоно уу",
+  "Location": "Байршил",
+  "Country": "Улс",
+  "Country Level": "Улсын түвшин",
+  "Remove Admin 1": "Админ 1 устгах",
+  "Remove Admin 2": "Админ 2 устгах",
+  "Today": "Өнөөдөр",
+  "End date must be after start date": "Дуусах огноо эхлэх огнооноос хойш байх ёстой"
 }

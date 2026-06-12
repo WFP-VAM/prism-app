@@ -669,5 +669,14 @@
   "Exporting...": "A exportar...",
   "Unknown error": "Erro desconhecido",
   "Create dashboard": "Criar painel",
-  "Dashboard": "Painel"
+  "Dashboard": "Painel",
+  "Chart Layer": "Camada de gráfico",
+  "Select a chart layer": "Selecione uma camada de gráfico",
+  "Location": "Localização",
+  "Country": "País",
+  "Country Level": "Nível nacional",
+  "Remove Admin 1": "Remover província",
+  "Remove Admin 2": "Remover distrito",
+  "Today": "Hoje",
+  "End date must be after start date": "A data de fim deve ser posterior à data de início"
 }

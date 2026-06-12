@@ -355,5 +355,13 @@
   "Exporting...": "Экспорт...",
   "Unknown error": "Неизвестная ошибка",
   "Create dashboard": "Создать панель",
-  "Dashboard": "Панель"
+  "Dashboard": "Панель",
+  "Chart Layer": "Слой диаграммы",
+  "Select a chart layer": "Выберите слой диаграммы",
+  "Country": "Страна",
+  "Country Level": "Уровень страны",
+  "Remove Admin 1": "Удалить Админ 1",
+  "Remove Admin 2": "Удалить Админ 2",
+  "Today": "Сегодня",
+  "End date must be after start date": "Дата окончания должна быть позже даты начала"
 }

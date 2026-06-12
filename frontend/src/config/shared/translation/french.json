@@ -483,5 +483,12 @@
   "Exporting...": "Exportation...",
   "Unknown error": "Erreur inconnue",
   "Create dashboard": "Créer un tableau de bord",
-  "Dashboard": "Tableau de bord"
+  "Dashboard": "Tableau de bord",
+  "Chart Layer": "Couche de graphique",
+  "Select a chart layer": "Sélectionner une couche de graphique",
+  "Location": "Emplacement",
+  "Country Level": "Niveau pays",
+  "Remove Admin 1": "Supprimer zone admin 1",
+  "Remove Admin 2": "Supprimer zone admin 2",
+  "End date must be after start date": "La date de fin doit être postérieure à la date de début"
 }
