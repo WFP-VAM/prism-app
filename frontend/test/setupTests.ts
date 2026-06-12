@@ -7,6 +7,41 @@ import '@testing-library/jest-dom';
 import 'cross-fetch/polyfill';
 
 import { randomBytes } from 'crypto';
+
+// jsdom exposes a partial Performance API; maplibre-gl expects mark/measure.
+const perf = global.performance;
+if (perf && typeof perf.mark !== 'function') {
+  Object.assign(perf, {
+    mark: jest.fn(),
+    measure: jest.fn(),
+    clearMarks: jest.fn(),
+    clearMeasures: jest.fn(),
+    getEntriesByName: jest.fn(() => []),
+    getEntriesByType: jest.fn(() => []),
+  });
+}
+
+// node-fetch (via cross-fetch in Node) rejects relative URLs. React 19 flushes
+// passive effects during render/act more aggressively; boundary hooks call fetch.
+const crossFetch = global.fetch;
+global.fetch = (input: RequestInfo | URL, init?: RequestInit) => {
+  const url =
+    typeof input === 'string'
+      ? input
+      : input instanceof URL
+        ? input.href
+        : input.url;
+  if (!/^https?:\/\//i.test(url)) {
+    return Promise.resolve(
+      new Response('{}', {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+  }
+  return crossFetch(input, init);
+};
+
 import React from 'react';
 
 // Polyfill TextEncoder and TextDecoder for jsPDF compatibility

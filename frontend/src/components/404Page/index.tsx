@@ -31,7 +31,6 @@ function NotFound() {
         </Grid>
 
         <Grid item>
-          {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
           <Link to="/">
             <Button variant="contained">Back To Home</Button>
           </Link>
