@@ -62,7 +62,7 @@ function PrintPreview() {
   const { t } = useSafeTranslation();
 
   const { logo } = appConfig.header || {};
-  const { selectedLayersWithDateSupport } = useLayers();
+  const { selectedLayersWithDateSupport, selectedLayers } = useLayers();
   const selectedLayerId = printConfig?.selectedLayerId ?? null;
   // Style clone + MapExportLayout remount are expensive; defer so layer Select can
   // close and paint before cloneDeep runs (keeps preview correct once caught up).
@@ -87,8 +87,20 @@ function PrintPreview() {
         ...getDisplayBoundaryLayers().reverse(),
       ];
     }
+
+    // Normal print + admin-area clip: same as ExportView — render active main-map
+    // layers via MapExportLayout so the data overlay can apply clip-path.
+    if (printConfig?.toggles.countryMask && selectedLayers.length > 0) {
+      return selectedLayers;
+    }
+
     return [];
-  }, [deferredLayerIdForPreview, printConfig?.toggles.batchMapsVisibility]);
+  }, [
+    deferredLayerIdForPreview,
+    printConfig?.toggles.batchMapsVisibility,
+    printConfig?.toggles.countryMask,
+    selectedLayers,
+  ]);
 
   const mapLabelsVisibility = printConfig?.toggles.mapLabelsVisibility ?? true;
 
@@ -126,11 +138,10 @@ function PrintPreview() {
     }
     const style = cloneDeep(rawStyle);
 
-    // When batch maps has a selected layer, strip application layers from this
-    // snapshot (raster tiles and all `layer-` prefixed entries), leaving a pure
-    // basemap. Boundary layers and the WMS/date layer are drawn by React children
-    // (`MapExportLayout`) so order stays explicit and we avoid main-map side
-    // effects (e.g. a layer with `boundary` that removes other boundary layers).
+    // When layers are rendered by MapExportLayout (batch export or admin-area clip),
+    // strip application layers from this snapshot (raster tiles and all `layer-`
+    // prefixed entries), leaving a pure basemap. Boundary and data layers are drawn
+    // by React children so order stays explicit and we avoid main-map side effects.
     if (printSelectedLayers.length > 0) {
       const isLayerToRemove = (layer: { id: string; type: string }) =>
         layer.type === 'raster' || layer.id.startsWith('layer-');
@@ -196,10 +207,12 @@ function PrintPreview() {
         deferredLayerIdForPreview ?? '',
         String(previewDate ?? ''),
         togglesSlice?.batchMapsVisibility ? '1' : '0',
+        togglesSlice?.countryMask ? '1' : '0',
         togglesSlice?.mapLabelsVisibility ? '1' : '0',
       ].join('|'),
     [
       togglesSlice?.batchMapsVisibility,
+      togglesSlice?.countryMask,
       togglesSlice?.mapLabelsVisibility,
       previewDate,
       deferredLayerIdForPreview,
