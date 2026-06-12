@@ -87,7 +87,8 @@ function ImportDashboardView() {
               field &&
               issue.message.toLowerCase().includes('received undefined')
                 ? t(
-                    `${String(field)} is missing, please check your config file and try again`,
+                    '{{field}} is missing, please check your config file and try again',
+                    { field: String(field) },
                   )
                 : formatDashboardValidationError(result.error);
             setViewState({ status: 'error', detail });

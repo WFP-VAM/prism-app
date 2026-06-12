@@ -259,7 +259,7 @@ function DashboardContent({
     return (
       <Box className={classes.blockTypeRow}>
         <Typography variant="h3" className={classes.blockLabel}>
-          {t(`Block #${elementIndex + 1}`)}
+          {t('Block #{{number}}', { number: elementIndex + 1 })}
         </Typography>
         <Select
           value={currentType}
@@ -958,7 +958,9 @@ function MapEditHeader({
         component="h3"
         className={`${classes.blockLabel} ${classes.mapHeaderTitle}`}
       >
-        {mapCount > 1 ? t(`Map ${mapIndex + 1}`) : t('Map block')} —{' '}
+        {mapCount > 1
+          ? t('Map {{number}}', { number: mapIndex + 1 })
+          : t('Map block')}{' '}
         {t('Choose map layers')}
       </Typography>
       <Box className={classes.mapHeaderActions}>

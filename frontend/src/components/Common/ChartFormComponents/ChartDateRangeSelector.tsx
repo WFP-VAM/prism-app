@@ -65,6 +65,8 @@ function ChartDateRangeSelector({
             {t('Start')}
           </Typography>
           <DatePicker
+            locale={t('date_locale')}
+            dateFormat="PP"
             selected={startDate ? new Date(startDate) : null}
             onChange={handleStartDateChange}
             maxDate={new Date()}
@@ -74,7 +76,6 @@ function ChartDateRangeSelector({
             showYearDropdown
             dropdownMode="select"
             disabled={disabled}
-            dateFormat="MMM d, yyyy"
             customInput={<Input className={classes.chartPanelParamText} />}
             popperClassName={classes.calendarPopper}
           />
@@ -84,6 +85,8 @@ function ChartDateRangeSelector({
             {t('End')}
           </Typography>
           <DatePicker
+            locale={t('date_locale')}
+            dateFormat="PP"
             selected={endDate ? new Date(endDate) : null}
             onChange={handleEndDateChange}
             maxDate={new Date()}
@@ -93,7 +96,6 @@ function ChartDateRangeSelector({
             showYearDropdown
             dropdownMode="select"
             disabled={disabled}
-            dateFormat="MMM d, yyyy"
             customInput={<Input className={classes.chartPanelParamText} />}
             popperClassName={classes.calendarPopper}
           />
