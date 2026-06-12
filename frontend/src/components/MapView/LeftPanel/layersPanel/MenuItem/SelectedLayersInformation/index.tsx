@@ -1,4 +1,6 @@
-import { Chip, createStyles, makeStyles } from '@material-ui/core';
+import { Chip } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { LayerType } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 import { cyanBlue } from 'muiTheme';

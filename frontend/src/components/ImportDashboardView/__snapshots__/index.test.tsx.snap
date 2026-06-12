@@ -3,47 +3,46 @@
 exports[`ImportDashboardView detects duplicate when imported JSON has different key ordering 1`] = `
 <div>
   <div
-    class="MuiBox-root MuiBox-root-84 makeStyles-root-66"
+    class="makeStyles-root-55 MuiBox-root css-0"
   >
     <div
-      class="MuiBox-root MuiBox-root-85 makeStyles-card-67"
+      class="makeStyles-card-56 MuiBox-root css-0"
     >
       <div
-        class="MuiBox-root MuiBox-root-87 makeStyles-feedbackContainer-80"
+        class="makeStyles-feedbackContainer-69 MuiBox-root css-0"
       >
         <svg
           aria-hidden="true"
-          class="MuiSvgIcon-root makeStyles-successIcon-82"
+          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium makeStyles-successIcon-71 css-1umw9bq-MuiSvgIcon-root"
+          data-testid="CheckCircleOutlinedIcon"
           focusable="false"
           viewBox="0 0 24 24"
         >
           <path
-            d="M16.59 7.58L10 14.17l-3.59-3.58L5 12l5 5 8-8zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8m4.59-12.42L10 14.17l-2.59-2.58L6 13l4 4 8-8z"
           />
         </svg>
-        <mock-typography
-          class="makeStyles-title-68"
-          variant="h2"
+        <h2
+          class="MuiTypography-root MuiTypography-h2 makeStyles-title-57 css-3y61ws-MuiTypography-root"
         >
           Dashboard already exists
-        </mock-typography>
-        <mock-typography
-          class="makeStyles-subtitle-69"
-          variant="body1"
+        </h2>
+        <p
+          class="MuiTypography-root MuiTypography-body1 makeStyles-subtitle-58 css-l0p3u8-MuiTypography-root"
         >
           <strong>
             Imported Dashboard
           </strong>
            
           is ready to view.
-        </mock-typography>
-        <mock-button
-          class="makeStyles-ctaButton-83"
-          color="primary"
-          variant="contained"
+        </p>
+        <button
+          class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-sizeMedium MuiButton-colorPrimary makeStyles-ctaButton-72 css-tnebnx-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
         >
           View dashboard
-        </mock-button>
+        </button>
       </div>
     </div>
   </div>
@@ -53,56 +52,52 @@ exports[`ImportDashboardView detects duplicate when imported JSON has different 
 exports[`ImportDashboardView renders idle state 1`] = `
 <div>
   <div
-    class="MuiBox-root MuiBox-root-19 makeStyles-root-1"
+    class="makeStyles-root-1 MuiBox-root css-0"
   >
     <div
-      class="MuiBox-root MuiBox-root-20 makeStyles-card-2"
+      class="makeStyles-card-2 MuiBox-root css-0"
     >
-      <mock-typography
-        class="makeStyles-title-3"
-        variant="h2"
+      <h2
+        class="MuiTypography-root MuiTypography-h2 makeStyles-title-3 css-3y61ws-MuiTypography-root"
       >
         Import dashboard
-      </mock-typography>
-      <mock-typography
-        class="makeStyles-subtitle-4"
-        variant="body1"
+      </h2>
+      <p
+        class="MuiTypography-root MuiTypography-body1 makeStyles-subtitle-4 css-l0p3u8-MuiTypography-root"
       >
         Upload a JSON file exported from a Prism dashboard.
-      </mock-typography>
+      </p>
       <div
-        class="MuiBox-root MuiBox-root-21 makeStyles-dropZone-5 "
+        class="makeStyles-dropZone-5 MuiBox-root css-0"
       >
         <svg
           aria-hidden="true"
-          class="MuiSvgIcon-root makeStyles-uploadIcon-7"
+          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium makeStyles-uploadIcon-7 css-1umw9bq-MuiSvgIcon-root"
+          data-testid="CloudUploadOutlinedIcon"
           focusable="false"
           viewBox="0 0 24 24"
         >
           <path
-            d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3zM8 13h2.55v3h2.9v-3H16l-4-4z"
+            d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96M19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3M8 13h2.55v3h2.9v-3H16l-4-4z"
           />
         </svg>
-        <mock-typography
-          class="makeStyles-dropText-8"
-          variant="body1"
+        <p
+          class="MuiTypography-root MuiTypography-body1 makeStyles-dropText-8 css-l0p3u8-MuiTypography-root"
         >
           Drag & drop a JSON file here
-        </mock-typography>
-        <mock-typography
-          color="textSecondary"
-          variant="body1"
+        </p>
+        <p
+          class="MuiTypography-root MuiTypography-body1 css-1dhkdrw-MuiTypography-root"
         >
           or
-        </mock-typography>
-        <mock-button
-          class="makeStyles-browseButton-9"
-          color="primary"
-          size="small"
-          variant="outlined"
+        </p>
+        <button
+          class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeSmall MuiButton-colorPrimary makeStyles-browseButton-9 css-vd6rqb-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
         >
           Browse files
-        </mock-button>
+        </button>
         <input
           accept=".json,application/json"
           style="display: none;"
@@ -117,47 +112,46 @@ exports[`ImportDashboardView renders idle state 1`] = `
 exports[`ImportDashboardView shows already-exists when imported dashboard matches one in store 1`] = `
 <div>
   <div
-    class="MuiBox-root MuiBox-root-62 makeStyles-root-44"
+    class="makeStyles-root-37 MuiBox-root css-0"
   >
     <div
-      class="MuiBox-root MuiBox-root-63 makeStyles-card-45"
+      class="makeStyles-card-38 MuiBox-root css-0"
     >
       <div
-        class="MuiBox-root MuiBox-root-65 makeStyles-feedbackContainer-58"
+        class="makeStyles-feedbackContainer-51 MuiBox-root css-0"
       >
         <svg
           aria-hidden="true"
-          class="MuiSvgIcon-root makeStyles-successIcon-60"
+          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium makeStyles-successIcon-53 css-1umw9bq-MuiSvgIcon-root"
+          data-testid="CheckCircleOutlinedIcon"
           focusable="false"
           viewBox="0 0 24 24"
         >
           <path
-            d="M16.59 7.58L10 14.17l-3.59-3.58L5 12l5 5 8-8zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8m4.59-12.42L10 14.17l-2.59-2.58L6 13l4 4 8-8z"
           />
         </svg>
-        <mock-typography
-          class="makeStyles-title-46"
-          variant="h2"
+        <h2
+          class="MuiTypography-root MuiTypography-h2 makeStyles-title-39 css-3y61ws-MuiTypography-root"
         >
           Dashboard already exists
-        </mock-typography>
-        <mock-typography
-          class="makeStyles-subtitle-47"
-          variant="body1"
+        </h2>
+        <p
+          class="MuiTypography-root MuiTypography-body1 makeStyles-subtitle-40 css-l0p3u8-MuiTypography-root"
         >
           <strong>
             Imported Dashboard
           </strong>
            
           is ready to view.
-        </mock-typography>
-        <mock-button
-          class="makeStyles-ctaButton-61"
-          color="primary"
-          variant="contained"
+        </p>
+        <button
+          class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-sizeMedium MuiButton-colorPrimary makeStyles-ctaButton-54 css-tnebnx-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
         >
           View dashboard
-        </mock-button>
+        </button>
       </div>
     </div>
   </div>
@@ -167,56 +161,52 @@ exports[`ImportDashboardView shows already-exists when imported dashboard matche
 exports[`ImportDashboardView shows parse error for invalid JSON 1`] = `
 <div>
   <div
-    class="MuiBox-root MuiBox-root-106 makeStyles-root-88"
+    class="makeStyles-root-73 MuiBox-root css-0"
   >
     <div
-      class="MuiBox-root MuiBox-root-107 makeStyles-card-89"
+      class="makeStyles-card-74 MuiBox-root css-0"
     >
-      <mock-typography
-        class="makeStyles-title-90"
-        variant="h2"
+      <h2
+        class="MuiTypography-root MuiTypography-h2 makeStyles-title-75 css-3y61ws-MuiTypography-root"
       >
         Import dashboard
-      </mock-typography>
-      <mock-typography
-        class="makeStyles-subtitle-91"
-        variant="body1"
+      </h2>
+      <p
+        class="MuiTypography-root MuiTypography-body1 makeStyles-subtitle-76 css-l0p3u8-MuiTypography-root"
       >
         Upload a JSON file exported from a Prism dashboard.
-      </mock-typography>
+      </p>
       <div
-        class="MuiBox-root MuiBox-root-108 makeStyles-dropZone-92 "
+        class="makeStyles-dropZone-77 MuiBox-root css-0"
       >
         <svg
           aria-hidden="true"
-          class="MuiSvgIcon-root makeStyles-uploadIcon-94"
+          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium makeStyles-uploadIcon-79 css-1umw9bq-MuiSvgIcon-root"
+          data-testid="CloudUploadOutlinedIcon"
           focusable="false"
           viewBox="0 0 24 24"
         >
           <path
-            d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3zM8 13h2.55v3h2.9v-3H16l-4-4z"
+            d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96M19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3M8 13h2.55v3h2.9v-3H16l-4-4z"
           />
         </svg>
-        <mock-typography
-          class="makeStyles-dropText-95"
-          variant="body1"
+        <p
+          class="MuiTypography-root MuiTypography-body1 makeStyles-dropText-80 css-l0p3u8-MuiTypography-root"
         >
           Drag & drop a JSON file here
-        </mock-typography>
-        <mock-typography
-          color="textSecondary"
-          variant="body1"
+        </p>
+        <p
+          class="MuiTypography-root MuiTypography-body1 css-1dhkdrw-MuiTypography-root"
         >
           or
-        </mock-typography>
-        <mock-button
-          class="makeStyles-browseButton-96"
-          color="primary"
-          size="small"
-          variant="outlined"
+        </p>
+        <button
+          class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeSmall MuiButton-colorPrimary makeStyles-browseButton-81 css-vd6rqb-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
         >
           Browse files
-        </mock-button>
+        </button>
         <input
           accept=".json,application/json"
           style="display: none;"
@@ -224,34 +214,33 @@ exports[`ImportDashboardView shows parse error for invalid JSON 1`] = `
         />
       </div>
       <div
-        class="MuiBox-root MuiBox-root-109 makeStyles-error-97"
+        class="makeStyles-error-82 MuiBox-root css-0"
       >
         <div
-          class="MuiBox-root MuiBox-root-110 makeStyles-errorHeader-98"
+          class="makeStyles-errorHeader-83 MuiBox-root css-0"
         >
           <svg
             aria-hidden="true"
-            class="MuiSvgIcon-root makeStyles-errorIcon-100"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium makeStyles-errorIcon-85 css-1umw9bq-MuiSvgIcon-root"
+            data-testid="ErrorOutlinedIcon"
             focusable="false"
             viewBox="0 0 24 24"
           >
             <path
-              d="M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m1 15h-2v-2h2zm0-4h-2V7h2z"
             />
           </svg>
-          <mock-typography
-            class="makeStyles-errorHeadline-99"
-            variant="subtitle2"
+          <h6
+            class="MuiTypography-root MuiTypography-subtitle2 makeStyles-errorHeadline-84 css-q34nll-MuiTypography-root"
           >
             Invalid dashboard file
-          </mock-typography>
+          </h6>
         </div>
-        <mock-typography
-          class="makeStyles-errorDetail-101"
-          variant="body1"
+        <p
+          class="MuiTypography-root MuiTypography-body1 makeStyles-errorDetail-86 css-l0p3u8-MuiTypography-root"
         >
           Could not parse file as JSON.
-        </mock-typography>
+        </p>
       </div>
     </div>
   </div>
@@ -261,47 +250,46 @@ exports[`ImportDashboardView shows parse error for invalid JSON 1`] = `
 exports[`ImportDashboardView shows success after a valid dashboard file is imported 1`] = `
 <div>
   <div
-    class="MuiBox-root MuiBox-root-40 makeStyles-root-22"
+    class="makeStyles-root-19 MuiBox-root css-0"
   >
     <div
-      class="MuiBox-root MuiBox-root-41 makeStyles-card-23"
+      class="makeStyles-card-20 MuiBox-root css-0"
     >
       <div
-        class="MuiBox-root MuiBox-root-43 makeStyles-feedbackContainer-36"
+        class="makeStyles-feedbackContainer-33 MuiBox-root css-0"
       >
         <svg
           aria-hidden="true"
-          class="MuiSvgIcon-root makeStyles-successIcon-38"
+          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium makeStyles-successIcon-35 css-1umw9bq-MuiSvgIcon-root"
+          data-testid="CheckCircleOutlinedIcon"
           focusable="false"
           viewBox="0 0 24 24"
         >
           <path
-            d="M16.59 7.58L10 14.17l-3.59-3.58L5 12l5 5 8-8zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8m4.59-12.42L10 14.17l-2.59-2.58L6 13l4 4 8-8z"
           />
         </svg>
-        <mock-typography
-          class="makeStyles-title-24"
-          variant="h2"
+        <h2
+          class="MuiTypography-root MuiTypography-h2 makeStyles-title-21 css-3y61ws-MuiTypography-root"
         >
           Import complete
-        </mock-typography>
-        <mock-typography
-          class="makeStyles-subtitle-25"
-          variant="body1"
+        </h2>
+        <p
+          class="MuiTypography-root MuiTypography-body1 makeStyles-subtitle-22 css-l0p3u8-MuiTypography-root"
         >
           <strong>
             Imported Dashboard
           </strong>
            
           is ready to view.
-        </mock-typography>
-        <mock-button
-          class="makeStyles-ctaButton-39"
-          color="primary"
-          variant="contained"
+        </p>
+        <button
+          class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-sizeMedium MuiButton-colorPrimary makeStyles-ctaButton-36 css-tnebnx-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
         >
           View dashboard
-        </mock-button>
+        </button>
       </div>
     </div>
   </div>
@@ -311,56 +299,52 @@ exports[`ImportDashboardView shows success after a valid dashboard file is impor
 exports[`ImportDashboardView shows validation error when JSON fails schema checks 1`] = `
 <div>
   <div
-    class="MuiBox-root MuiBox-root-129 makeStyles-root-111"
+    class="makeStyles-root-91 MuiBox-root css-0"
   >
     <div
-      class="MuiBox-root MuiBox-root-130 makeStyles-card-112"
+      class="makeStyles-card-92 MuiBox-root css-0"
     >
-      <mock-typography
-        class="makeStyles-title-113"
-        variant="h2"
+      <h2
+        class="MuiTypography-root MuiTypography-h2 makeStyles-title-93 css-3y61ws-MuiTypography-root"
       >
         Import dashboard
-      </mock-typography>
-      <mock-typography
-        class="makeStyles-subtitle-114"
-        variant="body1"
+      </h2>
+      <p
+        class="MuiTypography-root MuiTypography-body1 makeStyles-subtitle-94 css-l0p3u8-MuiTypography-root"
       >
         Upload a JSON file exported from a Prism dashboard.
-      </mock-typography>
+      </p>
       <div
-        class="MuiBox-root MuiBox-root-131 makeStyles-dropZone-115 "
+        class="makeStyles-dropZone-95 MuiBox-root css-0"
       >
         <svg
           aria-hidden="true"
-          class="MuiSvgIcon-root makeStyles-uploadIcon-117"
+          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium makeStyles-uploadIcon-97 css-1umw9bq-MuiSvgIcon-root"
+          data-testid="CloudUploadOutlinedIcon"
           focusable="false"
           viewBox="0 0 24 24"
         >
           <path
-            d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3zM8 13h2.55v3h2.9v-3H16l-4-4z"
+            d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96M19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3M8 13h2.55v3h2.9v-3H16l-4-4z"
           />
         </svg>
-        <mock-typography
-          class="makeStyles-dropText-118"
-          variant="body1"
+        <p
+          class="MuiTypography-root MuiTypography-body1 makeStyles-dropText-98 css-l0p3u8-MuiTypography-root"
         >
           Drag & drop a JSON file here
-        </mock-typography>
-        <mock-typography
-          color="textSecondary"
-          variant="body1"
+        </p>
+        <p
+          class="MuiTypography-root MuiTypography-body1 css-1dhkdrw-MuiTypography-root"
         >
           or
-        </mock-typography>
-        <mock-button
-          class="makeStyles-browseButton-119"
-          color="primary"
-          size="small"
-          variant="outlined"
+        </p>
+        <button
+          class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeSmall MuiButton-colorPrimary makeStyles-browseButton-99 css-vd6rqb-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
         >
           Browse files
-        </mock-button>
+        </button>
         <input
           accept=".json,application/json"
           style="display: none;"
@@ -368,34 +352,33 @@ exports[`ImportDashboardView shows validation error when JSON fails schema check
         />
       </div>
       <div
-        class="MuiBox-root MuiBox-root-132 makeStyles-error-120"
+        class="makeStyles-error-100 MuiBox-root css-0"
       >
         <div
-          class="MuiBox-root MuiBox-root-133 makeStyles-errorHeader-121"
+          class="makeStyles-errorHeader-101 MuiBox-root css-0"
         >
           <svg
             aria-hidden="true"
-            class="MuiSvgIcon-root makeStyles-errorIcon-123"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium makeStyles-errorIcon-103 css-1umw9bq-MuiSvgIcon-root"
+            data-testid="ErrorOutlinedIcon"
             focusable="false"
             viewBox="0 0 24 24"
           >
             <path
-              d="M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m1 15h-2v-2h2zm0-4h-2V7h2z"
             />
           </svg>
-          <mock-typography
-            class="makeStyles-errorHeadline-122"
-            variant="subtitle2"
+          <h6
+            class="MuiTypography-root MuiTypography-subtitle2 makeStyles-errorHeadline-102 css-q34nll-MuiTypography-root"
           >
             Invalid dashboard file
-          </mock-typography>
+          </h6>
         </div>
-        <mock-typography
-          class="makeStyles-errorDetail-124"
-          variant="body1"
+        <p
+          class="MuiTypography-root MuiTypography-body1 makeStyles-errorDetail-104 css-l0p3u8-MuiTypography-root"
         >
           Invalid dashboard configuration: firstColumn.0.type: Invalid input
-        </mock-typography>
+        </p>
       </div>
     </div>
   </div>

@@ -1,14 +1,10 @@
-import {
-  createStyles,
-  makeStyles,
-  MenuItem,
-  MenuProps,
-  Select,
-  Typography,
-} from '@material-ui/core';
+import { MenuItem, MenuProps, Select, Typography } from '@mui/material';
+import { SelectChangeEvent } from '@mui/material/Select';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { LayerType, MenuGroupItem } from 'config/types';
 import { useSafeTranslation } from 'i18n';
-import React, { memo, useCallback } from 'react';
+import { memo, useCallback } from 'react';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -51,7 +47,6 @@ const getFilteredMenuGroupItems = (menus: MenuGroupItem[], filter?: string) =>
 
 /** Nested accordions + drawer: anchor positioning / scroll lock can break MUI Select menu. */
 const switchItemSelectMenuProps: Partial<MenuProps> = {
-  getContentAnchorEl: null,
   disableScrollLock: true,
 };
 
@@ -81,7 +76,7 @@ const SwitchItemTitle = memo(
     const { group } = layer;
 
     const handleSelect = useCallback(
-      (event: React.ChangeEvent<{ value: string | unknown }>) => {
+      (event: SelectChangeEvent<string>) => {
         const selectedId = event.target.value;
         setActiveLayerId(selectedId as string);
         toggleLayerValue(selectedId as string, true);

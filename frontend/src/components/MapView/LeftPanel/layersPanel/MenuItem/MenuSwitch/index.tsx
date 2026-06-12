@@ -1,23 +1,23 @@
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Chip,
-  createStyles,
-  Grid,
-  makeStyles,
+  Stack,
   Typography,
-} from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Remove';
+} from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import { filterActiveLayers } from 'components/MapView/utils';
 import { LayerType } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 import { cyanBlue, lightGrey } from 'muiTheme';
 import {
-  ChangeEvent,
   memo,
+  type SyntheticEvent,
   useCallback,
   useEffect,
   useMemo,
@@ -72,7 +72,7 @@ const MenuSwitch = memo(({ title, layers, extent }: MenuSwitchProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleAccordionExpand = useCallback(
-    (_event: ChangeEvent<{}>, expanded: boolean) => {
+    (_event: SyntheticEvent, expanded: boolean) => {
       setIsExpanded(expanded);
     },
     [],
@@ -133,13 +133,13 @@ const MenuSwitch = memo(({ title, layers, extent }: MenuSwitchProps) => {
       elevation={0}
       classes={{ root: classes.root }}
       onChange={handleAccordionExpand}
-      TransitionProps={{ unmountOnExit: true }}
+      slotProps={{ transition: { unmountOnExit: true } }}
     >
       <AccordionSummary
         expandIcon={isExpanded ? <RemoveIcon /> : <AddIcon />}
         classes={{
           root: classes.rootSummary,
-          expandIcon: classes.expandIcon,
+          expandIconWrapper: classes.expandIcon,
           content: classes.summaryContent,
         }}
         aria-controls={title}
@@ -149,9 +149,9 @@ const MenuSwitch = memo(({ title, layers, extent }: MenuSwitchProps) => {
         {renderedSelectedLayerInformation}
       </AccordionSummary>
       <AccordionDetails classes={{ root: classes.rootDetails }}>
-        <Grid container direction="column">
+        <Stack direction="column">
           <SwitchItems layers={layers} extent={extent} />
-        </Grid>
+        </Stack>
       </AccordionDetails>
     </Accordion>
   );

@@ -1,4 +1,5 @@
-import { createStyles, makeStyles } from '@material-ui/core';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { LandfallInfo } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import { Offset } from 'maplibre-gl';
 import { AAStormTimeSeriesFeature } from 'prism-common/';

@@ -1,4 +1,6 @@
-import { createStyles, Drawer, makeStyles, Theme } from '@material-ui/core';
+import { Drawer, Theme } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { AnticipatoryAction, Panel } from 'config/types';
 import {
   AALayerIds,
@@ -186,14 +188,16 @@ const LeftPanel = memo(() => {
 
   return (
     <Drawer
-      PaperProps={{
-        elevation: 1,
-        style: {
-          marginTop: '56px',
-          height: tabValue === Panel.Charts ? 'calc(100vh - 56px)' : '80vh',
-          backgroundColor: 'white',
-          maxWidth: '100%',
-          borderRadius: '0 8px 8px 8px',
+      slotProps={{
+        paper: {
+          elevation: 1,
+          style: {
+            marginTop: '56px',
+            height: tabValue === Panel.Charts ? 'calc(100vh - 56px)' : '80vh',
+            backgroundColor: 'white',
+            maxWidth: '100%',
+            borderRadius: '0 8px 8px 8px',
+          },
         },
       }}
       variant="persistent"

@@ -1,13 +1,13 @@
+import { VisibilityOffOutlined, VisibilityOutlined } from '@mui/icons-material';
 import {
   Button,
-  createStyles,
   IconButton,
-  makeStyles,
   Typography,
   useMediaQuery,
   useTheme,
-} from '@material-ui/core';
-import { VisibilityOffOutlined, VisibilityOutlined } from '@material-ui/icons';
+} from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { Panel } from 'config/types';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { useSafeTranslation } from 'i18n';
@@ -26,7 +26,7 @@ const Legends = memo(() => {
   const classes = useStyles();
   const { t } = useSafeTranslation();
   const theme = useTheme();
-  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
+  const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
   const tabValue = useSelector(leftPanelTabValueSelector);
 

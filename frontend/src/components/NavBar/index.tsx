@@ -1,13 +1,4 @@
 import {
-  AppBar,
-  createStyles,
-  makeStyles,
-  Theme,
-  Toolbar,
-  useMediaQuery,
-  useTheme,
-} from '@material-ui/core';
-import {
   AddOutlined,
   BarChartOutlined,
   ImageAspectRatioOutlined,
@@ -17,7 +8,10 @@ import {
   SpeedOutlined,
   TableChartOutlined,
   TimerOutlined,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
+import { AppBar, Theme, Toolbar, useMediaQuery, useTheme } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import GoToBoundaryDropdown from 'components/Common/BoundaryDropdown/goto';
 import {
   areTablesAvailable,
@@ -292,7 +286,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'row',
       justifyContent: 'start',
       gap: '5rem',
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         gap: '1rem',
       },
     },
@@ -302,7 +296,7 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'start',
       gap: '1rem',
       alignItems: 'center',
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         gap: '0.5rem',
       },
     },

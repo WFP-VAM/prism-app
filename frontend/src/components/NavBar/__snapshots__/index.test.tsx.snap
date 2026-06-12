@@ -2,12 +2,12 @@
 
 exports[`renders as expected 1`] = `
 <div>
-  <mock-appbar
-    class="makeStyles-appBar-1"
-    position="fixed"
+  <header
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation4 MuiAppBar-root MuiAppBar-colorPrimary MuiAppBar-positionFixed makeStyles-appBar-1 mui-fixed css-8wwcj1-MuiPaper-root-MuiAppBar-root"
+    style="--Paper-shadow: 0px 2px 4px -1px rgba(0,0,0,0.2),0px 4px 5px 0px rgba(0,0,0,0.14),0px 1px 10px 0px rgba(0,0,0,0.12);"
   >
-    <mock-toolbar
-      variant="dense"
+    <div
+      class="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-1juq9ev-MuiToolbar-root"
     >
       <div
         class="makeStyles-navbarContainer-2"
@@ -24,15 +24,13 @@ exports[`renders as expected 1`] = `
               src="test-file-stub"
             />
             <div
-              class="MuiBox-root MuiBox-root-11 makeStyles-titleBox-7"
+              class="makeStyles-titleBox-7 MuiBox-root css-0"
             >
-              <mock-typography
-                class="makeStyles-title-9"
-                color="secondary"
-                variant="h6"
+              <h6
+                class="MuiTypography-root MuiTypography-h6 makeStyles-title-9 css-w2f0zo-MuiTypography-root"
               >
                 PRISM
-              </mock-typography>
+              </h6>
             </div>
           </div>
           <div
@@ -40,147 +38,97 @@ exports[`renders as expected 1`] = `
           >
             <button
               aria-label="Layers"
-              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall"
+              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-iksamw-MuiButtonBase-root-MuiIconButton-root"
               style="background-color: rgb(99, 178, 189); color: rgb(16, 16, 16);"
               tabindex="0"
               type="button"
             >
-              <span
-                class="MuiIconButton-label"
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+                data-testid="LayersOutlinedIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
               >
-                <svg
-                  aria-hidden="true"
-                  class="MuiSvgIcon-root"
-                  focusable="false"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M11.99 18.54l-7.37-5.73L3 14.07l9 7 9-7-1.63-1.27zM12 16l7.36-5.73L21 9l-9-7-9 7 1.63 1.27L12 16zm0-11.47L17.74 9 12 13.47 6.26 9 12 4.53z"
-                  />
-                </svg>
-              </span>
-              <span
-                class="MuiTouchRipple-root"
-              />
+                <path
+                  d="m11.99 18.54-7.37-5.73L3 14.07l9 7 9-7-1.63-1.27zM12 16l7.36-5.73L21 9l-9-7-9 7 1.63 1.27zm0-11.47L17.74 9 12 13.47 6.26 9z"
+                />
+              </svg>
             </button>
             <button
               aria-label="Charts"
-              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall"
+              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-iksamw-MuiButtonBase-root-MuiIconButton-root"
               style="color: white;"
               tabindex="0"
               type="button"
             >
-              <span
-                class="MuiIconButton-label"
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+                data-testid="BarChartOutlinedIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
               >
-                <svg
-                  aria-hidden="true"
-                  class="MuiSvgIcon-root"
-                  focusable="false"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M5 9.2h3V19H5V9.2zM10.6 5h2.8v14h-2.8V5zm5.6 8H19v6h-2.8v-6z"
-                  />
-                </svg>
-              </span>
-              <span
-                class="MuiTouchRipple-root"
-              />
+                <path
+                  d="M4 9h4v11H4zm12 4h4v7h-4zm-6-9h4v16h-4z"
+                />
+              </svg>
             </button>
             <button
               aria-label="Analysis"
-              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall"
+              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-iksamw-MuiButtonBase-root-MuiIconButton-root"
               style="color: white;"
               tabindex="0"
               type="button"
             >
-              <span
-                class="MuiIconButton-label"
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+                data-testid="ImageAspectRatioOutlinedIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
               >
-                <svg
-                  aria-hidden="true"
-                  class="MuiSvgIcon-root"
-                  focusable="false"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M16 10h-2v2h2v-2zm0 4h-2v2h2v-2zm-8-4H6v2h2v-2zm4 0h-2v2h2v-2zm8-6H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12z"
-                  />
-                </svg>
-              </span>
-              <span
-                class="MuiTouchRipple-root"
-              />
+                <path
+                  d="M16 10h-2v2h2zm0 4h-2v2h2zm-8-4H6v2h2zm4 0h-2v2h2zm8-6H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2m0 14H4V6h16z"
+                />
+              </svg>
             </button>
             <button
               aria-label="A. Actions"
-              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall"
+              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-iksamw-MuiButtonBase-root-MuiIconButton-root"
               style="color: white;"
               tabindex="0"
               type="button"
             >
-              <span
-                class="MuiIconButton-label"
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+                data-testid="TimerOutlinedIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
               >
-                <svg
-                  aria-hidden="true"
-                  class="MuiSvgIcon-root"
-                  focusable="false"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M15.07 1.01h-6v2h6v-2zm-4 13h2v-6h-2v6zm8.03-6.62l1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42 1.42C16.14 4.74 14.19 4 12.07 4c-4.97 0-9 4.03-9 9s4.02 9 9 9 9-4.03 9-9c0-2.11-.74-4.06-1.97-5.61zm-7.03 12.62c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"
-                  />
-                </svg>
-              </span>
-              <span
-                class="MuiTouchRipple-root"
-              />
+                <path
+                  d="M15 1H9v2h6zm-4 13h2V8h-2zm8.03-6.61 1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42 1.42C16.07 4.74 14.12 4 12 4c-4.97 0-9 4.03-9 9s4.02 9 9 9 9-4.03 9-9c0-2.12-.74-4.07-1.97-5.61M12 20c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7"
+                />
+              </svg>
             </button>
-            <mock-menu>
-              <mock-menuitem
-                class="makeStyles-menuItem-12"
-              >
-                A. Action Drought
-              </mock-menuitem>
-              <mock-menuitem
-                class="makeStyles-menuItem-12"
-              >
-                A. Action Storm
-              </mock-menuitem>
-              <mock-menuitem
-                class="makeStyles-menuItem-12"
-              >
-                A. Action Flood
-              </mock-menuitem>
-            </mock-menu>
-            <mock-button
-              starticon="[object Object]"
-            >
-              <mock-typography
-                style="color: rgb(255, 255, 255); text-transform: none;"
-              >
-                Go To
-              </mock-typography>
-            </mock-button>
             <button
-              class="MuiButtonBase-root MuiIconButton-root"
-              style="color: white;"
+              class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-13hs1jc-MuiButtonBase-root-MuiButton-root"
               tabindex="0"
               type="button"
             >
               <span
-                class="MuiIconButton-label"
+                class="MuiButton-icon MuiButton-startIcon css-1eozbo-MuiButton-startIcon"
               >
                 <svg
                   aria-hidden="true"
-                  class="MuiSvgIcon-root"
+                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+                  data-testid="RoomOutlinedIcon"
                   focusable="false"
                   viewBox="0 0 24 24"
                 >
                   <path
-                    d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zM7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 2.88-2.88 7.19-5 9.88C9.92 16.21 7 11.85 7 9z"
+                    d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7M7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 2.88-2.88 7.19-5 9.88C9.92 16.21 7 11.85 7 9"
                   />
                   <circle
                     cx="12"
@@ -189,136 +137,178 @@ exports[`renders as expected 1`] = `
                   />
                 </svg>
               </span>
-              <span
-                class="MuiTouchRipple-root"
-              />
+              <p
+                class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+                style="color: rgb(255, 255, 255); text-transform: none;"
+              >
+                Go To
+              </p>
             </button>
-            <mock-menu
-              keepmounted=""
-            />
+            <button
+              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-1log9d8-MuiButtonBase-root-MuiIconButton-root"
+              style="color: white;"
+              tabindex="0"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+                data-testid="RoomOutlinedIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7M7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 2.88-2.88 7.19-5 9.88C9.92 16.21 7 11.85 7 9"
+                />
+                <circle
+                  cx="12"
+                  cy="9"
+                  r="2.5"
+                />
+              </svg>
+            </button>
           </div>
         </div>
         <div
           class="makeStyles-rightSideContainer-5"
         >
-          <mock-button
-            aria-label="Legend"
-            class="makeStyles-triggerButton-22"
-            starticon="[object Object]"
-            style="background-color: rgb(99, 178, 189);"
-          >
-            <mock-typography
-              style="color: rgb(16, 16, 16); text-transform: none;"
-            >
-              Legend
-            </mock-typography>
-          </mock-button>
           <button
             aria-label="Legend"
-            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall"
+            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary makeStyles-triggerButton-14 css-13hs1jc-MuiButtonBase-root-MuiButton-root"
             style="background-color: rgb(99, 178, 189);"
             tabindex="0"
             type="button"
           >
             <span
-              class="MuiIconButton-label"
+              class="MuiButton-icon MuiButton-startIcon css-1eozbo-MuiButton-startIcon"
             >
               <svg
                 aria-hidden="true"
-                class="MuiSvgIcon-root makeStyles-icon-24"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium makeStyles-icon-16 css-1umw9bq-MuiSvgIcon-root"
+                data-testid="VisibilityOffOutlinedIcon"
                 focusable="false"
                 style="color: rgb(16, 16, 16);"
                 viewBox="0 0 24 24"
               >
                 <path
-                  d="M12 6c3.79 0 7.17 2.13 8.82 5.5-.59 1.22-1.42 2.27-2.41 3.12l1.41 1.41c1.39-1.23 2.49-2.77 3.18-4.53C21.27 7.11 17 4 12 4c-1.27 0-2.49.2-3.64.57l1.65 1.65C10.66 6.09 11.32 6 12 6zm-1.07 1.14L13 9.21c.57.25 1.03.71 1.28 1.28l2.07 2.07c.08-.34.14-.7.14-1.07C16.5 9.01 14.48 7 12 7c-.37 0-.72.05-1.07.14zM2.01 3.87l2.68 2.68C3.06 7.83 1.77 9.53 1 11.5 2.73 15.89 7 19 12 19c1.52 0 2.98-.29 4.32-.82l3.42 3.42 1.41-1.41L3.42 2.45 2.01 3.87zm7.5 7.5l2.61 2.61c-.04.01-.08.02-.12.02-1.38 0-2.5-1.12-2.5-2.5 0-.05.01-.08.01-.13zm-3.4-3.4l1.75 1.75c-.23.55-.36 1.15-.36 1.78 0 2.48 2.02 4.5 4.5 4.5.63 0 1.23-.13 1.77-.36l.98.98c-.88.24-1.8.38-2.75.38-3.79 0-7.17-2.13-8.82-5.5.7-1.43 1.72-2.61 2.93-3.53z"
+                  d="M12 6c3.79 0 7.17 2.13 8.82 5.5-.59 1.22-1.42 2.27-2.41 3.12l1.41 1.41c1.39-1.23 2.49-2.77 3.18-4.53C21.27 7.11 17 4 12 4c-1.27 0-2.49.2-3.64.57l1.65 1.65C10.66 6.09 11.32 6 12 6m-1.07 1.14L13 9.21c.57.25 1.03.71 1.28 1.28l2.07 2.07c.08-.34.14-.7.14-1.07C16.5 9.01 14.48 7 12 7c-.37 0-.72.05-1.07.14M2.01 3.87l2.68 2.68C3.06 7.83 1.77 9.53 1 11.5 2.73 15.89 7 19 12 19c1.52 0 2.98-.29 4.32-.82l3.42 3.42 1.41-1.41L3.42 2.45zm7.5 7.5 2.61 2.61c-.04.01-.08.02-.12.02-1.38 0-2.5-1.12-2.5-2.5 0-.05.01-.08.01-.13m-3.4-3.4 1.75 1.75c-.23.55-.36 1.15-.36 1.78 0 2.48 2.02 4.5 4.5 4.5.63 0 1.23-.13 1.77-.36l.98.98c-.88.24-1.8.38-2.75.38-3.79 0-7.17-2.13-8.82-5.5.7-1.43 1.72-2.61 2.93-3.53"
                 />
               </svg>
             </span>
-            <span
-              class="MuiTouchRipple-root"
-            />
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+              style="color: rgb(16, 16, 16); text-transform: none;"
+            >
+              Legend
+            </p>
           </button>
-          <mock-list
-            class="makeStyles-list-23"
-            disablepadding=""
+          <button
+            aria-label="Legend"
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-iksamw-MuiButtonBase-root-MuiIconButton-root"
+            style="background-color: rgb(99, 178, 189);"
+            tabindex="0"
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium makeStyles-icon-16 css-1umw9bq-MuiSvgIcon-root"
+              data-testid="VisibilityOffOutlinedIcon"
+              focusable="false"
+              style="color: rgb(16, 16, 16);"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M12 6c3.79 0 7.17 2.13 8.82 5.5-.59 1.22-1.42 2.27-2.41 3.12l1.41 1.41c1.39-1.23 2.49-2.77 3.18-4.53C21.27 7.11 17 4 12 4c-1.27 0-2.49.2-3.64.57l1.65 1.65C10.66 6.09 11.32 6 12 6m-1.07 1.14L13 9.21c.57.25 1.03.71 1.28 1.28l2.07 2.07c.08-.34.14-.7.14-1.07C16.5 9.01 14.48 7 12 7c-.37 0-.72.05-1.07.14M2.01 3.87l2.68 2.68C3.06 7.83 1.77 9.53 1 11.5 2.73 15.89 7 19 12 19c1.52 0 2.98-.29 4.32-.82l3.42 3.42 1.41-1.41L3.42 2.45zm7.5 7.5 2.61 2.61c-.04.01-.08.02-.12.02-1.38 0-2.5-1.12-2.5-2.5 0-.05.01-.08.01-.13m-3.4-3.4 1.75 1.75c-.23.55-.36 1.15-.36 1.78 0 2.48 2.02 4.5 4.5 4.5.63 0 1.23-.13 1.77-.36l.98.98c-.88.24-1.8.38-2.75.38-3.79 0-7.17-2.13-8.82-5.5.7-1.43 1.72-2.61 2.93-3.53"
+              />
+            </svg>
+          </button>
+          <ul
+            class="MuiList-root makeStyles-list-15 css-54zhjy-MuiList-root"
           />
           <mock-printimage />
           <a
-            aria-disabled="false"
             aria-label="GitHub"
-            class="MuiButtonBase-root MuiIconButton-root"
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-1log9d8-MuiButtonBase-root-MuiIconButton-root"
             href="https://github.com/wfp-VAM/prism-app"
             style="color: white;"
             tabindex="0"
             target="_blank"
           >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+              data-testid="GitHubIcon"
+              focusable="false"
+              style="font-size: 1.5rem;"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"
+              />
+            </svg>
+          </a>
+          <a
+            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-13hs1jc-MuiButtonBase-root-MuiButton-root"
+            href="https://innovation.wfp.org/project/prism"
+            style="font-size: 1.25rem; color: white;"
+            tabindex="0"
+            target="_blank"
+          >
             <span
-              class="MuiIconButton-label"
+              class="MuiButton-icon MuiButton-startIcon css-1eozbo-MuiButton-startIcon"
             >
               <svg
                 aria-hidden="true"
-                class="MuiSvgIcon-root"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+                data-testid="InfoOutlinedIcon"
                 focusable="false"
                 style="font-size: 1.5rem;"
                 viewBox="0 0 24 24"
               >
                 <path
-                  d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2 0 1.9 1.2 1.9 1.2 1 1.8 2.8 1.3 3.5 1 0-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.3-3.1-.2-.4-.6-1.6 0-3.2 0 0 1-.3 3.4 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8 0 3.2.9.8 1.3 1.9 1.3 3.2 0 4.6-2.8 5.6-5.5 5.9.5.4.9 1 .9 2.2v3.3c0 .3.1.7.8.6A12 12 0 0 0 12 .3"
+                  d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8"
                 />
               </svg>
             </span>
-            <span
-              class="MuiTouchRipple-root"
-            />
-          </a>
-          <mock-button
-            component="a"
-            href="https://innovation.wfp.org/project/prism"
-            starticon="[object Object]"
-            style="font-size: 1.25rem; color: white;"
-            target="_blank"
-          >
-            <mock-typography
-              color="secondary"
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-1qnc9cu-MuiTypography-root"
               style="text-transform: none;"
             >
               About
-            </mock-typography>
-          </mock-button>
-          <mock-button
+            </p>
+          </a>
+          <button
             aria-label="language-select-dropdown-button"
-            endicon="[object Object]"
+            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-13hs1jc-MuiButtonBase-root-MuiButton-root"
             style="padding-left: 0px;"
+            tabindex="0"
+            type="button"
           >
-            <mock-typography
-              color="secondary"
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-1qnc9cu-MuiTypography-root"
               style="text-transform: none;"
             >
               en
-            </mock-typography>
-          </mock-button>
-          <mock-menu
-            class="makeStyles-block-26"
-          >
-            <mock-menuitem
-              aria-label="language-select-dropdown-menu-item-en"
+            </p>
+            <span
+              class="MuiButton-icon MuiButton-endIcon css-1w1lyga-MuiButton-endIcon"
             >
-              <mock-typography>
-                en
-              </mock-typography>
-            </mock-menuitem>
-            <mock-menuitem
-              aria-label="language-select-dropdown-menu-item-pt"
-            >
-              <mock-typography>
-                pt
-              </mock-typography>
-            </mock-menuitem>
-          </mock-menu>
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-120dh41-MuiSvgIcon-root"
+                data-testid="ArrowDropDownIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="m7 10 5 5 5-5z"
+                />
+              </svg>
+            </span>
+          </button>
         </div>
       </div>
-    </mock-toolbar>
-  </mock-appbar>
+    </div>
+  </header>
 </div>
 `;

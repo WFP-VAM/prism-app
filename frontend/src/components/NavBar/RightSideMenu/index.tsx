@@ -1,17 +1,17 @@
 import {
-  createStyles,
-  Drawer,
-  IconButton,
-  makeStyles,
-  Theme,
-  useMediaQuery,
-  useTheme,
-} from '@material-ui/core';
-import {
   GitHub as GitHubIcon,
   Menu,
   OpenInNew as OpenInNewIcon,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
+import {
+  Drawer,
+  IconButton,
+  Theme,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { appConfig } from 'config';
 import React, { useState } from 'react';
 
@@ -54,7 +54,7 @@ function RightSideMenuContent({ buttons }: { buttons: React.ReactNode }) {
 function RightSideMenu() {
   const classes = useStyles();
   const theme = useTheme();
-  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
+  const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -99,6 +99,7 @@ function RightSideMenu() {
         href={href}
         style={{ color: 'white' }}
         aria-label={title}
+        size="large"
       >
         {icon}
       </IconButton>
@@ -114,6 +115,7 @@ function RightSideMenu() {
           onClick={() => setMobileMenuOpen(true)}
           style={{ color: 'white' }}
           aria-label="Open menu"
+          size="large"
         >
           <Menu />
         </IconButton>

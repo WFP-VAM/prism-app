@@ -6,47 +6,44 @@ exports[`renders as expected 1`] = `
     class="makeStyles-container-1"
   >
     <div
-      class="MuiGrid-root makeStyles-content-2 MuiGrid-container MuiGrid-spacing-xs-3"
+      class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row MuiGrid-spacing-xs-3 makeStyles-content-2 css-1wp13g6-MuiGrid-root"
     >
       <div
-        class="MuiGrid-root MuiGrid-item"
+        class="MuiGrid-root MuiGrid-direction-xs-row css-17fpwt7-MuiGrid-root"
       >
-        <mock-typography
-          color="textPrimary"
-          gutterbottom=""
-          variant="h3"
+        <h3
+          class="MuiTypography-root MuiTypography-h3 MuiTypography-gutterBottom css-dsvqwl-MuiTypography-root"
         >
           404 Page Not Found
-        </mock-typography>
-        <mock-typography
-          color="textPrimary"
-          gutterbottom=""
-          variant="h5"
+        </h3>
+        <h5
+          class="MuiTypography-root MuiTypography-h5 MuiTypography-gutterBottom css-hhux6s-MuiTypography-root"
         >
           Sorry, it seems we ran into a problem. We already collected information about this error.
-        </mock-typography>
-        <mock-typography
-          gutterbottom=""
-          variant="body1"
+        </h5>
+        <p
+          class="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-982e7i-MuiTypography-root"
         >
           If you have typed the address of this web page, you may have misspelled it or if you redirected to this page, it may be moved to another location. Please go back to the website home page and try to find your page from the website navigation.
-        </mock-typography>
+        </p>
       </div>
       <div
-        class="MuiGrid-root MuiGrid-item"
+        class="MuiGrid-root MuiGrid-direction-xs-row css-17fpwt7-MuiGrid-root"
       >
         <a
           href="/"
         >
-          <mock-button
-            variant="contained"
+          <button
+            class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-sizeMedium MuiButton-colorPrimary css-tnebnx-MuiButtonBase-root-MuiButton-root"
+            tabindex="0"
+            type="button"
           >
             Back To Home
-          </mock-button>
+          </button>
         </a>
       </div>
       <div
-        class="MuiGrid-root MuiGrid-item"
+        class="MuiGrid-root MuiGrid-direction-xs-row css-17fpwt7-MuiGrid-root"
       >
         <img
           alt="World Food Programme logo"

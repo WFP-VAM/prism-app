@@ -1,10 +1,7 @@
-import {
-  Button,
-  createStyles,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
-import { ClearAll, Reply } from '@material-ui/icons';
+import { ClearAll, Reply } from '@mui/icons-material';
+import { Button, Typography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {
   AADataSelector,

@@ -3,170 +3,161 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="MuiPaper-root MuiAccordion-root makeStyles-root-1 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root makeStyles-root-1 MuiAccordion-rounded MuiAccordion-gutters css-z8u0ml-MuiPaper-root-MuiAccordion-root"
+    style="--Paper-shadow: none;"
   >
-    <div
-      aria-controls="Some Analysis Layer Title"
-      aria-disabled="false"
-      aria-expanded="false"
-      class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-2"
-      id="Some Analysis Layer Title"
-      role="button"
-      tabindex="0"
+    <h3
+      class="MuiAccordion-heading css-cy7rkm-MuiAccordion-heading"
     >
-      <div
-        class="MuiAccordionSummary-content makeStyles-summaryContent-5"
-      >
-        <mock-typography
-          classes="[object Object]"
-        >
-          Some Analysis Layer Title
-        </mock-typography>
-        <mock-chip
-          classes="[object Object]"
-          label="1"
-          style="background-color: rgb(99, 178, 189);"
-        />
-      </div>
-      <div
-        aria-disabled="false"
-        aria-hidden="true"
-        class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-4 MuiIconButton-edgeEnd"
+      <button
+        aria-controls="Some Analysis Layer Title"
+        aria-expanded="false"
+        class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-2 MuiAccordionSummary-gutters css-pqdk18-MuiButtonBase-root-MuiAccordionSummary-root"
+        id="Some Analysis Layer Title"
+        tabindex="0"
+        type="button"
       >
         <span
-          class="MuiIconButton-label"
+          class="MuiAccordionSummary-content makeStyles-summaryContent-5 css-1rqjdob-MuiAccordionSummary-content"
+        >
+          <p
+            class="MuiTypography-root makeStyles-title-6 MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+          >
+            Some Analysis Layer Title
+          </p>
+          <div
+            class="MuiChip-root makeStyles-chipRoot-7 MuiChip-filled MuiChip-sizeMedium MuiChip-colorDefault css-1uxqplt-MuiChip-root"
+            style="background-color: rgb(99, 178, 189);"
+          >
+            <span
+              class="MuiChip-label css-1dybbl5-MuiChip-label"
+            >
+              1
+            </span>
+          </div>
+        </span>
+        <span
+          class="MuiAccordionSummary-expandIconWrapper makeStyles-expandIcon-4 css-1wnau0r-MuiAccordionSummary-expandIconWrapper"
         >
           <svg
             aria-hidden="true"
-            class="MuiSvgIcon-root"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="ExpandMoreIcon"
             focusable="false"
             viewBox="0 0 24 24"
           >
             <path
-              d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+              d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
             />
           </svg>
         </span>
-        <span
-          class="MuiTouchRipple-root"
-        />
-      </div>
-    </div>
+      </button>
+    </h3>
     <div
-      class="MuiCollapse-root MuiCollapse-hidden"
+      class="MuiCollapse-root MuiCollapse-vertical MuiCollapse-hidden css-cwrbtg-MuiCollapse-root"
       style="min-height: 0px;"
     >
       <div
-        class="MuiCollapse-wrapper"
+        class="MuiCollapse-wrapper MuiCollapse-vertical css-1x6hinx-MuiCollapse-wrapper"
       >
         <div
-          class="MuiCollapse-wrapperInner"
+          class="MuiCollapse-wrapperInner MuiCollapse-vertical css-1i4ywhz-MuiCollapse-wrapperInner"
         >
           <div
             aria-labelledby="Some Analysis Layer Title"
+            class="MuiAccordion-region css-at4ued-MuiAccordion-region"
             id="Some Analysis Layer Title"
             role="region"
           >
             <div
-              class="MuiAccordionDetails-root makeStyles-rootDetails-3"
+              class="MuiAccordionDetails-root makeStyles-rootDetails-3 css-ttfn4f-MuiAccordionDetails-root"
             >
               <div
-                class="MuiGrid-root MuiGrid-container"
+                class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row css-d64g0g-MuiGrid-root"
                 style="padding-left: 12px;"
               >
                 <div
-                  class="MuiBox-root MuiBox-root-22 makeStyles-analysisLayerSwitchRootItem-8"
+                  class="makeStyles-analysisLayerSwitchRootItem-8 MuiBox-root css-0"
                   style="display: flex; flex-direction: column; max-width: 100%;"
                 >
                   <div
-                    class="MuiBox-root MuiBox-root-23"
+                    class="MuiBox-root css-0"
                     style="display: flex; align-items: center;"
                   >
                     <div
                       style="display: flex;"
                     >
-                      <mock-switch
-                        checked=""
-                        class="makeStyles-switch-14"
-                        classes="[object Object]"
-                        inputprops="[object Object]"
-                        size="small"
-                      />
-                      <mock-typography
-                        class="makeStyles-title-9"
+                      <span
+                        class="MuiSwitch-root MuiSwitch-sizeSmall makeStyles-switch-14 css-fzgmul-MuiSwitch-root"
+                      >
+                        <span
+                          class="MuiButtonBase-root MuiSwitch-switchBase makeStyles-switchBase-16 MuiSwitch-colorPrimary Mui-checked PrivateSwitchBase-root MuiSwitch-switchBase makeStyles-switchBase-16 MuiSwitch-colorPrimary Mui-checked Mui-checked css-tznl3-MuiButtonBase-root-MuiSwitchBase-root-MuiSwitch-switchBase"
+                        >
+                          <input
+                            aria-label=""
+                            checked=""
+                            class="PrivateSwitchBase-input MuiSwitch-input css-12xagqm-MuiSwitchBase-root"
+                            role="switch"
+                            type="checkbox"
+                          />
+                          <span
+                            class="MuiSwitch-thumb css-1mw77bv-MuiSwitch-thumb"
+                          />
+                        </span>
+                        <span
+                          class="MuiSwitch-track makeStyles-switchTrack-15 css-pm6g3f-MuiSwitch-track"
+                        />
+                      </span>
+                      <p
+                        class="MuiTypography-root MuiTypography-body1 makeStyles-title-9 css-l0p3u8-MuiTypography-root"
                       />
                     </div>
                     <div
-                      class="MuiBox-root MuiBox-root-24"
+                      class="MuiBox-root css-0"
                       style="display: flex; align-items: center;"
                     >
-                      <mock-tooltip
-                        title="Opacity"
-                      >
-                        <span>
-                          <button
-                            class="MuiButtonBase-root MuiIconButton-root makeStyles-opacityRoot-17"
-                            tabindex="0"
-                            type="button"
-                          >
-                            <span
-                              class="MuiIconButton-label"
-                            >
-                              <svg
-                                aria-hidden="true"
-                                class="MuiSvgIcon-root"
-                                focusable="false"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
-                                />
-                              </svg>
-                            </span>
-                            <span
-                              class="MuiTouchRipple-root"
-                            />
-                          </button>
-                        </span>
-                      </mock-tooltip>
-                      <mock-tooltip
-                        title="Download"
+                      <span
+                        aria-label="Opacity"
+                        class=""
+                        data-mui-internal-clone-element="true"
                       >
                         <button
-                          class="MuiButtonBase-root MuiIconButton-root"
+                          class="MuiButtonBase-root MuiIconButton-root makeStyles-opacityRoot-17 MuiIconButton-sizeLarge css-1log9d8-MuiButtonBase-root-MuiIconButton-root"
                           tabindex="0"
                           type="button"
                         >
-                          <span
-                            class="MuiIconButton-label"
+                          <svg
+                            aria-hidden="true"
+                            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+                            data-testid="OpacityIcon"
+                            focusable="false"
+                            viewBox="0 0 24 24"
                           >
-                            <svg
-                              aria-hidden="true"
-                              class="MuiSvgIcon-root"
-                              focusable="false"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
-                              />
-                            </svg>
-                          </span>
-                          <span
-                            class="MuiTouchRipple-root"
-                          />
+                            <path
+                              d="M17.66 8 12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8M6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14z"
+                            />
+                          </svg>
                         </button>
-                      </mock-tooltip>
-                      <mock-menu
-                        id="download-menu"
-                        keepmounted=""
+                      </span>
+                      <button
+                        aria-label="Download"
+                        class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-1log9d8-MuiButtonBase-root-MuiIconButton-root"
+                        data-mui-internal-clone-element="true"
+                        tabindex="0"
+                        type="button"
                       >
-                        <mock-menuitem>
-                          Download as CSV
-                        </mock-menuitem>
-                        <mock-menuitem>
-                          Download as GeoJSON
-                        </mock-menuitem>
-                      </mock-menu>
+                        <svg
+                          aria-hidden="true"
+                          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+                          data-testid="GetAppIcon"
+                          focusable="false"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M19 9h-4V3H9v6H5l7 7zM5 18v2h14v-2z"
+                          />
+                        </svg>
+                      </button>
                     </div>
                   </div>
                 </div>

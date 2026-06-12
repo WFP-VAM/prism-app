@@ -1,13 +1,13 @@
 import {
   FormControl,
   FormControlLabel,
-  makeStyles,
   MenuItem,
   Radio,
   RadioGroup,
   TextField,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import {
   AggregationOperations,
   ExposureOperator,

@@ -1,3 +1,4 @@
+import { ArrowDropDown } from '@mui/icons-material';
 import {
   Button,
   Grid,
@@ -6,10 +7,9 @@ import {
   Theme,
   useMediaQuery,
   useTheme,
-  withStyles,
-} from '@material-ui/core';
-import Menu, { MenuProps } from '@material-ui/core/Menu';
-import { ArrowDropDown } from '@material-ui/icons';
+} from '@mui/material';
+import Menu, { MenuProps } from '@mui/material/Menu';
+import withStyles from '@mui/styles/withStyles';
 import { useSafeTranslation } from 'i18n';
 import React, { useState } from 'react';
 
@@ -21,7 +21,6 @@ const StyledMenu = withStyles((theme: Theme) => ({
 }))((props: MenuProps) => (
   <Menu
     elevation={0}
-    getContentAnchorEl={null}
     anchorOrigin={{
       vertical: 'bottom',
       horizontal: 'center',
@@ -57,7 +56,7 @@ function MultiOptionsButton({ mainLabel, options }: IProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const { t } = useSafeTranslation();
   const theme = useTheme();
-  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
+  const smDown = useMediaQuery(theme.breakpoints.down('md'));
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -73,7 +72,7 @@ function MultiOptionsButton({ mainLabel, options }: IProps) {
   };
 
   return (
-    <Grid item>
+    <Grid>
       <StyledButton
         variant="contained"
         color="primary"

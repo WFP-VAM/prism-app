@@ -1,4 +1,6 @@
-import { createStyles, makeStyles, Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { getImageUrl, iconNorthArrow } from 'assets/images';
 // Layer components - keep in sync with MapView/Map/index.tsx
 import {

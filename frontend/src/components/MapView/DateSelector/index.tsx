@@ -1,15 +1,9 @@
 import 'react-datepicker/dist/react-datepicker.css';
 
-import {
-  Button,
-  createStyles,
-  Grid,
-  makeStyles,
-  Theme,
-  useMediaQuery,
-  useTheme,
-} from '@material-ui/core';
-import { ChevronLeft, ChevronRight } from '@material-ui/icons';
+import { ChevronLeft, ChevronRight } from '@mui/icons-material';
+import { Button, Grid, Theme, useMediaQuery, useTheme } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { getTimelineOffset } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
 import {
   AnticipatoryAction,
@@ -140,7 +134,7 @@ const DateSelector = memo(() => {
   const { updateHistory } = useUrlHistory();
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
-  const xsDown = useMediaQuery(theme.breakpoints.down('xs'));
+  const xsDown = useMediaQuery(theme.breakpoints.down('sm'));
 
   useEffect(() => {
     const closestDate = checkSelectedDateForLayerSupport(stateStartDate);
@@ -735,8 +729,7 @@ const DateSelector = memo(() => {
     >
       <Grid
         container
-        alignItems="center"
-        justifyContent="center"
+        sx={{ alignItems: 'center', justifyContent: 'center' }}
         className={
           isGlobalMap
             ? classes.datePickerContainer
@@ -744,7 +737,7 @@ const DateSelector = memo(() => {
         }
       >
         {/* Mobile */}
-        <Grid item xs={12} sm={1} className={classes.datePickerGrid}>
+        <Grid size={{ xs: 12, sm: 1 }} className={classes.datePickerGrid}>
           {!smUp && (
             <Button onClick={decrementDate}>
               <ChevronLeft style={{ color: '#101010' }} />
@@ -787,7 +780,7 @@ const DateSelector = memo(() => {
         </Grid>
 
         {/* Desktop */}
-        <Grid item xs={12} sm className={classes.slider}>
+        <Grid size={{ xs: 12, sm: 'grow' }} className={classes.slider}>
           {!xsDown && (
             <Button
               id="chevronLeftButton"
@@ -816,7 +809,7 @@ const DateSelector = memo(() => {
               <div className={classes.timeline} id={TIMELINE_ID}>
                 <Grid
                   container
-                  alignItems="stretch"
+                  sx={{ alignItems: 'stretch' }}
                   className={classes.dateLabelContainer}
                   style={{
                     minWidth: `${dateRange.length * TIMELINE_ITEM_WIDTH}px`,
@@ -940,7 +933,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       minWidth: 150,
       justifyContent: 'center',
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         marginBottom: theme.spacing(1),
       },
     },

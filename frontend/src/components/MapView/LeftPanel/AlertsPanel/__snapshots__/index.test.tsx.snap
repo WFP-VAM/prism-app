@@ -3,7 +3,7 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="MuiBox-root MuiBox-root-9 makeStyles-alertFormMenu-1"
+    class="makeStyles-alertFormMenu-1 MuiBox-root css-0"
   >
     <div
       class="makeStyles-newAlertFormContainer-2"
@@ -22,82 +22,209 @@ exports[`renders as expected 1`] = `
       <div
         class="makeStyles-alertFormOptions-3"
       >
-        <mock-typography
-          variant="body2"
+        <p
+          class="MuiTypography-root MuiTypography-body2 css-1p5whhv-MuiTypography-root"
         >
           Threshold
-        </mock-typography>
+        </p>
         <div
           class="makeStyles-thresholdInputsContainer-6"
         >
-          <mock-textfield
-            class="makeStyles-numberField-7"
-            helpertext=""
-            id="filled-number"
-            label="Below"
-            type="number"
-            value=""
-          />
-          <mock-textfield
-            class="makeStyles-numberField-7"
-            id="filled-number"
-            label="Above"
-            type="number"
-            value=""
-          />
+          <div
+            class="MuiFormControl-root MuiTextField-root makeStyles-numberField-7 css-1xp5r68-MuiFormControl-root-MuiTextField-root"
+          >
+            <label
+              class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined css-1hahfxa-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="false"
+              for="filled-number"
+              id="filled-number-label"
+            >
+              Below
+            </label>
+            <div
+              class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl css-1q7yynz-MuiInputBase-root-MuiOutlinedInput-root"
+            >
+              <input
+                aria-invalid="false"
+                class="MuiInputBase-input MuiOutlinedInput-input css-18k0hkx-MuiInputBase-input-MuiOutlinedInput-input"
+                id="filled-number"
+                type="number"
+                value=""
+              />
+              <fieldset
+                aria-hidden="true"
+                class="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
+              >
+                <legend
+                  class="css-1n64csd-MuiNotchedOutlined-root"
+                >
+                  <span>
+                    Below
+                  </span>
+                </legend>
+              </fieldset>
+            </div>
+          </div>
+          <div
+            class="MuiFormControl-root MuiTextField-root makeStyles-numberField-7 css-1xp5r68-MuiFormControl-root-MuiTextField-root"
+          >
+            <label
+              class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined css-1hahfxa-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="false"
+              for="filled-number"
+              id="filled-number-label"
+            >
+              Above
+            </label>
+            <div
+              class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl css-1q7yynz-MuiInputBase-root-MuiOutlinedInput-root"
+            >
+              <input
+                aria-invalid="false"
+                class="MuiInputBase-input MuiOutlinedInput-input css-18k0hkx-MuiInputBase-input-MuiOutlinedInput-input"
+                id="filled-number"
+                type="number"
+                value=""
+              />
+              <fieldset
+                aria-hidden="true"
+                class="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
+              >
+                <legend
+                  class="css-1n64csd-MuiNotchedOutlined-root"
+                >
+                  <span>
+                    Above
+                  </span>
+                </legend>
+              </fieldset>
+            </div>
+          </div>
         </div>
       </div>
       <div
         class="makeStyles-alertFormOptions-3"
       >
-        <mock-typography
-          variant="body2"
+        <p
+          class="MuiTypography-root MuiTypography-body2 css-1p5whhv-MuiTypography-root"
         >
           Regions
-        </mock-typography>
-        <mock-circularprogress
-          color="inherit"
-          size="24"
-          style="padding: 2px;"
-        />
+        </p>
+        <span
+          class="MuiCircularProgress-root MuiCircularProgress-indeterminate MuiCircularProgress-colorInherit css-gxw4l9-MuiCircularProgress-root"
+          role="progressbar"
+          style="width: 24px; height: 24px; padding: 2px;"
+        >
+          <svg
+            class="MuiCircularProgress-svg css-54pwck-MuiCircularProgress-svg"
+            viewBox="22 22 44 44"
+          >
+            <circle
+              class="MuiCircularProgress-circle css-19t5dcl-MuiCircularProgress-circle"
+              cx="44"
+              cy="44"
+              fill="none"
+              r="20.2"
+              stroke-width="3.6"
+            />
+          </svg>
+        </span>
       </div>
       <div
         class="makeStyles-alertFormOptions-3"
       >
-        <mock-textfield
-          fullwidth=""
-          id="alert-name"
-          inputlabelprops="[object Object]"
-          inputprops="[object Object]"
-          label="Alert Name"
-          type="text"
-          value=""
-        />
+        <div
+          class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-cmpglg-MuiFormControl-root-MuiTextField-root"
+        >
+          <label
+            class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined css-1hahfxa-MuiFormLabel-root-MuiInputLabel-root"
+            data-shrink="false"
+            for="alert-name"
+            id="alert-name-label"
+            style="color: black;"
+          >
+            Alert Name
+          </label>
+          <div
+            class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-1nyx9jl-MuiInputBase-root-MuiOutlinedInput-root"
+            style="color: black;"
+          >
+            <input
+              aria-invalid="false"
+              class="MuiInputBase-input MuiOutlinedInput-input css-18k0hkx-MuiInputBase-input-MuiOutlinedInput-input"
+              id="alert-name"
+              type="text"
+              value=""
+            />
+            <fieldset
+              aria-hidden="true"
+              class="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
+            >
+              <legend
+                class="css-1n64csd-MuiNotchedOutlined-root"
+              >
+                <span>
+                  Alert Name
+                </span>
+              </legend>
+            </fieldset>
+          </div>
+        </div>
       </div>
       <div
         class="makeStyles-alertFormOptions-3"
       >
-        <mock-textfield
-          fullwidth=""
-          id="email-address"
-          inputlabelprops="[object Object]"
-          inputprops="[object Object]"
-          label="Email Address"
-          type="text"
-        />
+        <div
+          class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-cmpglg-MuiFormControl-root-MuiTextField-root"
+        >
+          <label
+            class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined css-1hahfxa-MuiFormLabel-root-MuiInputLabel-root"
+            data-shrink="false"
+            for="email-address"
+            id="email-address-label"
+            style="color: black;"
+          >
+            Email Address
+          </label>
+          <div
+            class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-1nyx9jl-MuiInputBase-root-MuiOutlinedInput-root"
+            style="color: black;"
+          >
+            <input
+              aria-invalid="false"
+              class="MuiInputBase-input MuiOutlinedInput-input css-18k0hkx-MuiInputBase-input-MuiOutlinedInput-input"
+              id="email-address"
+              type="text"
+            />
+            <fieldset
+              aria-hidden="true"
+              class="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
+            >
+              <legend
+                class="css-1n64csd-MuiNotchedOutlined-root"
+              >
+                <span>
+                  Email Address
+                </span>
+              </legend>
+            </fieldset>
+          </div>
+        </div>
       </div>
     </div>
-    <mock-button
-      class="makeStyles-innerCreateAlertButton-8"
+    <button
+      class="MuiButtonBase-root Mui-disabled MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary makeStyles-innerCreateAlertButton-8 css-13hs1jc-MuiButtonBase-root-MuiButton-root"
       disabled=""
+      tabindex="-1"
+      type="button"
     >
-      <mock-typography
+      <p
+        class="MuiTypography-root MuiTypography-body2 css-1p5whhv-MuiTypography-root"
         style="color: white;"
-        variant="body2"
       >
         Create Alert
-      </mock-typography>
-    </mock-button>
+      </p>
+    </button>
   </div>
 </div>
 `;

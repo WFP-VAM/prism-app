@@ -1,10 +1,6 @@
-import {
-  createStyles,
-  Input,
-  makeStyles,
-  MenuItem,
-  Typography,
-} from '@material-ui/core';
+import { Input, MenuItem, Typography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { AnticipatoryAction, PanelSize } from 'config/types';
 import {
   ExtendedDateItem,

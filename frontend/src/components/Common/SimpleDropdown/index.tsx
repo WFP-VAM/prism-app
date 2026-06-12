@@ -1,6 +1,7 @@
-import { FormControl, MenuItem, Select, Typography } from '@material-ui/core';
+import { FormControl, MenuItem, Select, Typography } from '@mui/material';
+import { SelectChangeEvent } from '@mui/material/Select';
 import { useSafeTranslation } from 'i18n';
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 
 type OptionLabel = string;
 
@@ -21,7 +22,7 @@ export default function SimpleDropdown<OptionValue extends number | string>({
   const { t } = useSafeTranslation();
 
   const handleChange = useCallback(
-    (e: React.ChangeEvent<{ name?: string; value: unknown }>) => {
+    (e: SelectChangeEvent<OptionValue>) => {
       onChange(e.target.value as OptionValue);
     },
     [onChange],

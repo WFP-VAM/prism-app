@@ -1,9 +1,6 @@
-import {
-  createStyles,
-  makeStyles,
-  Switch as SwitchUI,
-  Typography,
-} from '@material-ui/core';
+import { Switch as SwitchUI, Typography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { cyanBlue } from 'muiTheme';
 import React from 'react';
 
@@ -27,8 +24,10 @@ function Switch({
           switchBase: classes.switchBase,
           track: classes.switchTrack,
         }}
-        inputProps={{
-          'aria-label': ariaLabel ?? title,
+        slotProps={{
+          input: {
+            'aria-label': ariaLabel ?? title,
+          },
         }}
       />
       {!!title && (

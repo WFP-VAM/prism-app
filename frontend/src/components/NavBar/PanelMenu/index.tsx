@@ -1,4 +1,5 @@
-import { Chip, Divider, makeStyles, Menu, MenuItem } from '@material-ui/core';
+import { Chip, Divider, Menu, MenuItem } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import { Panel, PanelItem } from 'config/types';
 import { selectedDashboardIndexSelector } from 'context/dashboardStateSlice';
 import { useSafeTranslation } from 'i18n';

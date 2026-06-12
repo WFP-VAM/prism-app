@@ -1,5 +1,7 @@
-import { createStyles, makeStyles, Typography } from '@material-ui/core';
-import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
+import { Typography } from '@mui/material';
+import { ToggleButton, ToggleButtonGroup } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { formatInUTC } from 'components/MapView/Layers/AnticipatoryActionStormLayer/utils';
 import { AAStormColors } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
 import { DateRangeType } from 'config/types';

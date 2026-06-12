@@ -1,15 +1,15 @@
+import { Cancel, Close } from '@mui/icons-material';
 import {
   Button,
-  createStyles,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
-  makeStyles,
   Typography,
-} from '@material-ui/core';
-import { Cancel, Close } from '@material-ui/icons';
+} from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { useSafeTranslation } from 'i18n';
 import { black, cyanBlue } from 'muiTheme';
 
@@ -30,7 +30,11 @@ function ActionsModal({ open, onClose, actions }: ActionsModalProps) {
       <DialogTitle>
         <div className={classes.titleWrapper}>
           <Typography variant="h2">{t('Recommended actions')}</Typography>
-          <IconButton style={{ padding: 0 }} onClick={() => onClose()}>
+          <IconButton
+            style={{ padding: 0 }}
+            onClick={() => onClose()}
+            size="large"
+          >
             <Cancel />
           </IconButton>
         </div>

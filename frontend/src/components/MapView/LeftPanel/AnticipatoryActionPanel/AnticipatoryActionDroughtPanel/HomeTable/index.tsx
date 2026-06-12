@@ -1,10 +1,7 @@
-import {
-  Button,
-  createStyles,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
-import { BarChartOutlined, GetApp } from '@material-ui/icons';
+import { BarChartOutlined, GetApp } from '@mui/icons-material';
+import { Button, Typography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { appConfig } from 'config';
 import { PanelSize } from 'config/types';
 import { AAWindowKeys } from 'config/utils';

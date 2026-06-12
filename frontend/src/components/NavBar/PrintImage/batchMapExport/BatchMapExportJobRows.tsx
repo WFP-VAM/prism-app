@@ -1,15 +1,15 @@
 import {
   Box,
   Button,
-  createStyles,
   Divider,
   LinearProgress,
   List,
   ListItem,
-  makeStyles,
   Theme,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { addNotification } from 'context/notificationStateSlice';
 import { useSafeTranslation } from 'i18n';
 import type { TFunction } from 'i18next';

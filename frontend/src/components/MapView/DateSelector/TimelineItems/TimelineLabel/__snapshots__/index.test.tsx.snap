@@ -2,12 +2,11 @@
 
 exports[`TimelineLabel renders as expected 1`] = `
 <div>
-  <mock-typography
-    class="makeStyles-dateItemLabel-1"
+  <p
+    class="MuiTypography-root MuiTypography-body2 makeStyles-dateItemLabel-1 css-1p5whhv-MuiTypography-root"
     style="cursor: default;"
-    variant="body2"
   >
     déc.
-  </mock-typography>
+  </p>
 </div>
 `;

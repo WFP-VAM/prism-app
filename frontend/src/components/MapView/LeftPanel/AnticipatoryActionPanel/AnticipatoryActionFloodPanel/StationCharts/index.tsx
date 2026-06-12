@@ -1,11 +1,10 @@
 import 'chartjs-plugin-annotation';
 
+import { Close, GetApp, TableChart } from '@mui/icons-material';
 import {
   Button,
   CircularProgress,
-  createStyles,
   IconButton,
-  makeStyles,
   Menu,
   MenuItem,
   Paper,
@@ -16,8 +15,9 @@ import {
   TableHead,
   TableRow,
   Typography,
-} from '@material-ui/core';
-import { Close, GetApp, TableChart } from '@material-ui/icons';
+} from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import {
   AAFloodDataSelector,
   setAAFloodStationDetailActiveTab,

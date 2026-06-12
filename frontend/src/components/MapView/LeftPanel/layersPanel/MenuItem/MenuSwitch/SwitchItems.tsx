@@ -1,4 +1,5 @@
-import { createStyles, makeStyles } from '@material-ui/core';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import { CompositeLayerProps, LayerType } from 'config/types';
 import { getCompositeLayers } from 'config/utils';

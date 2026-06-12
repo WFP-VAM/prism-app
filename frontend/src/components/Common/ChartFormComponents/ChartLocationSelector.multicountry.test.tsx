@@ -68,9 +68,9 @@ jest.mock('config/utils', () => ({
 // The global test setup stubs Material-UI components to strings, which makes
 // the <TextField select> impossible to interact with. Replace the few pieces
 // this component uses with native equivalents so onChange actually fires.
-jest.mock('@material-ui/core', () => {
+jest.mock('@mui/material', () => {
   const React = require('react');
-  const actual = jest.requireActual('@material-ui/core');
+  const actual = jest.requireActual('@mui/material');
   return {
     ...actual,
     Box: ({ children }: any) =>

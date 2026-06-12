@@ -1,14 +1,14 @@
+import { ArrowBackIos } from '@mui/icons-material';
 import {
-  createStyles,
   FormControl,
   IconButton,
   Input,
-  makeStyles,
   MenuItem,
   RadioGroup,
   Typography,
-} from '@material-ui/core';
-import { ArrowBackIos } from '@material-ui/icons';
+} from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { usePostHog } from '@posthog/react';
 import { AnticipatoryAction, PanelSize } from 'config/types';
 import { AAWindowKeys } from 'config/utils';
@@ -130,6 +130,7 @@ function AnticipatoryActionDroughtPanel() {
                     dispatch(setAAView(AAView.District));
                   }
                 }}
+                size="large"
               >
                 <ArrowBackIos fontSize="small" />
               </IconButton>

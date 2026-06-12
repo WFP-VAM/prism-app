@@ -1,15 +1,10 @@
 import {
-  Box,
-  Button,
-  CircularProgress,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
-import {
-  CheckCircleOutline,
+  CheckCircleOutlined,
   CloudUploadOutlined,
-  ErrorOutline,
-} from '@material-ui/icons';
+  ErrorOutlined,
+} from '@mui/icons-material';
+import { Box, Button, CircularProgress, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import type { Dashboard } from 'config/types';
 import {
   dashboardsListSelector,
@@ -200,7 +195,7 @@ function ImportDashboardView() {
             {viewState.status === 'error' && (
               <Box className={classes.error}>
                 <Box className={classes.errorHeader}>
-                  <ErrorOutline className={classes.errorIcon} />
+                  <ErrorOutlined className={classes.errorIcon} />
                   <Typography
                     variant="subtitle2"
                     className={classes.errorHeadline}
@@ -223,7 +218,7 @@ function ImportDashboardView() {
           </Box>
         ) : (
           <Box className={classes.feedbackContainer}>
-            <CheckCircleOutline className={classes.successIcon} />
+            <CheckCircleOutlined className={classes.successIcon} />
             <Typography variant="h2" className={classes.title}>
               {viewState.alreadyExists
                 ? t('Dashboard already exists')

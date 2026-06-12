@@ -1,19 +1,19 @@
+import { Cancel, GetApp } from '@mui/icons-material';
 import {
   Box,
   Button,
   Collapse,
-  createStyles,
   Divider,
   Icon,
   IconButton,
-  makeStyles,
   Menu,
   MenuItem,
   Theme,
-} from '@material-ui/core';
-import { Cancel, GetApp } from '@material-ui/icons';
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+} from '@mui/material';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import Switch from 'components/Common/Switch';
 import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
 import { useSafeTranslation } from 'i18n';
@@ -105,8 +105,8 @@ function SectionToggle({
 function GreyContainer({ children }: { children: React.ReactNode }) {
   return (
     <Box
-      bgcolor="#F1F1F1"
       sx={{
+        bgcolor: '#F1F1F1',
         borderRadius: '4px',
         padding: 4,
       }}
@@ -218,11 +218,14 @@ function DashboardExportConfig() {
     <Box className={classes.configContainer}>
       <div>
         <Box className={classes.title}>{t('Export Options')}</Box>
-        <IconButton className={classes.closeButton} onClick={handleClose}>
+        <IconButton
+          className={classes.closeButton}
+          onClick={handleClose}
+          size="large"
+        >
           <Cancel />
         </IconButton>
       </div>
-
       {/* Logo */}
       <SectionToggle
         title={t('Logo')}
@@ -270,7 +273,6 @@ function DashboardExportConfig() {
           </GreyContainerSection>
         </GreyContainer>
       </SectionToggle>
-
       {/* Map Labels */}
       <SectionToggle
         title={t('Map Labels')}
@@ -282,7 +284,6 @@ function DashboardExportConfig() {
           }))
         }
       />
-
       {/* Admin Areas */}
       <SectionToggle
         title={t('Admin Areas')}
@@ -310,7 +311,6 @@ function DashboardExportConfig() {
           />
         </Box>
       </SectionToggle>
-
       {/* Legend */}
       <SectionToggle
         title={t('Legend')}
@@ -348,7 +348,6 @@ function DashboardExportConfig() {
           </GreyContainerSection>
         </GreyContainer>
       </SectionToggle>
-
       <Button
         style={{ backgroundColor: cyanBlue, color: 'black' }}
         variant="contained"

@@ -2,191 +2,19 @@
 
 exports[`renders as expected 1`] = `
 <div>
-  <mock-listitem
-    dense=""
-    disablegutters=""
+  <li
+    class="MuiListItem-root MuiListItem-dense MuiListItem-padding css-r9txlw-MuiListItem-root"
   >
     <div
-      class="MuiPaper-root makeStyles-paper-1 legend-card MuiPaper-elevation1 MuiPaper-rounded"
+      class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 makeStyles-paper-1 legend-card css-kah35m-MuiPaper-root"
+      style="--Paper-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);"
     >
-      <mock-dialog>
-        <mock-dialogtitle>
-          <div
-            class="makeStyles-titleWrapper-13"
-          >
-            <mock-typography
-              variant="h2"
-            >
-              How to read this screen
-            </mock-typography>
-            <button
-              class="MuiButtonBase-root MuiIconButton-root"
-              style="padding: 0px;"
-              tabindex="0"
-              type="button"
-            >
-              <span
-                class="MuiIconButton-label"
-              >
-                <svg
-                  aria-hidden="true"
-                  class="MuiSvgIcon-root"
-                  focusable="false"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                  />
-                </svg>
-              </span>
-              <span
-                class="MuiTouchRipple-root"
-              />
-            </button>
-          </div>
-        </mock-dialogtitle>
-        <mock-dialogcontent
-          dividers=""
-        >
-          <div
-            class="makeStyles-contentWrapper-14"
-          >
-            <div
-              class="makeStyles-contentItem-15"
-            >
-              <mock-typography
-                style="font-weight: bold;"
-                variant="h3"
-              >
-                Window 1
-              </mock-typography>
-               
-              <mock-typography
-                variant="h3"
-              >
-                Start to mid of the rainfall season.
-              </mock-typography>
-               
-            </div>
-            <div
-              class="makeStyles-contentItem-15"
-            >
-              <mock-typography
-                style="font-weight: bold;"
-                variant="h3"
-              >
-                Window 2
-              </mock-typography>
-               
-              <mock-typography
-                variant="h3"
-              >
-                Mid to end of the rainfall season.
-              </mock-typography>
-               
-            </div>
-            <div
-              class="makeStyles-contentItem-15"
-            >
-              <mock-typography
-                style="font-weight: bold;"
-                variant="h3"
-              >
-                Severe category
-              </mock-typography>
-               
-              <mock-typography
-                variant="h3"
-              >
-                Drought events that typically occur once every 7 years.
-              </mock-typography>
-               
-            </div>
-            <div
-              class="makeStyles-contentItem-15"
-            >
-              <mock-typography
-                style="font-weight: bold;"
-                variant="h3"
-              >
-                Moderate category
-              </mock-typography>
-               
-              <mock-typography
-                variant="h3"
-              >
-                Drought events that typically occur once every 5 years.
-              </mock-typography>
-               
-            </div>
-            <div
-              class="makeStyles-contentItem-15"
-            >
-              <mock-typography
-                style="font-weight: bold;"
-                variant="h3"
-              >
-                Mild category
-              </mock-typography>
-               
-              <mock-typography
-                variant="h3"
-              >
-                Drought events that typically occur once every 4 years.
-              </mock-typography>
-               
-            </div>
-            <div
-              class="makeStyles-contentItem-15"
-            >
-              <mock-typography
-                style="font-weight: bold;"
-                variant="h3"
-              >
-                Ready, Set and Go phases
-              </mock-typography>
-               
-              <mock-typography
-                variant="h3"
-              >
-                The "Ready, Set & Go!" system uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).
-              </mock-typography>
-               
-            </div>
-          </div>
-        </mock-dialogcontent>
-        <mock-dialogactions
-          class="makeStyles-dialogActionsWrapper-16"
-        >
-          <mock-button
-            class="makeStyles-dialogButton-17"
-            component="a"
-            href="mailto:anticipatory_action@wfp.org"
-            starticon="[object Object]"
-            target="_blank"
-            variant="outlined"
-          >
-            <mock-typography>
-              I STILL NEED HELP
-            </mock-typography>
-          </mock-button>
-          <mock-button
-            class="makeStyles-dialogButton-17"
-            starticon="[object Object]"
-            variant="outlined"
-          >
-            <mock-typography>
-              Close
-            </mock-typography>
-          </mock-button>
-        </mock-dialogactions>
-      </mock-dialog>
-      <mock-typography
+      <h3
+        class="MuiTypography-root MuiTypography-h3 css-ae1vz0-MuiTypography-root"
         style="font-weight: bold;"
-        variant="h3"
       >
         Phases
-      </mock-typography>
+      </h3>
       <div
         style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.75rem;"
       >
@@ -215,16 +43,18 @@ exports[`renders as expected 1`] = `
             </div>
           </div>
           <div>
-            <mock-typography
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
               style="white-space: nowrap;"
             >
               Set
-            </mock-typography>
-            <mock-typography
+            </p>
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
               style="white-space: nowrap;"
             >
               Severe
-            </mock-typography>
+            </p>
           </div>
         </div>
         <div
@@ -252,16 +82,18 @@ exports[`renders as expected 1`] = `
             </div>
           </div>
           <div>
-            <mock-typography
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
               style="white-space: nowrap;"
             >
               Ready
-            </mock-typography>
-            <mock-typography
+            </p>
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
               style="white-space: nowrap;"
             >
               Severe
-            </mock-typography>
+            </p>
           </div>
         </div>
         <div
@@ -289,16 +121,18 @@ exports[`renders as expected 1`] = `
             </div>
           </div>
           <div>
-            <mock-typography
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
               style="white-space: nowrap;"
             >
               Set
-            </mock-typography>
-            <mock-typography
+            </p>
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
               style="white-space: nowrap;"
             >
               Moderate
-            </mock-typography>
+            </p>
           </div>
         </div>
         <div
@@ -326,16 +160,18 @@ exports[`renders as expected 1`] = `
             </div>
           </div>
           <div>
-            <mock-typography
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
               style="white-space: nowrap;"
             >
               Ready
-            </mock-typography>
-            <mock-typography
+            </p>
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
               style="white-space: nowrap;"
             >
               Moderate
-            </mock-typography>
+            </p>
           </div>
         </div>
         <div
@@ -363,16 +199,18 @@ exports[`renders as expected 1`] = `
             </div>
           </div>
           <div>
-            <mock-typography
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
               style="white-space: nowrap;"
             >
               Set
-            </mock-typography>
-            <mock-typography
+            </p>
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
               style="white-space: nowrap;"
             >
               Mild
-            </mock-typography>
+            </p>
           </div>
         </div>
         <div
@@ -400,16 +238,18 @@ exports[`renders as expected 1`] = `
             </div>
           </div>
           <div>
-            <mock-typography
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
               style="white-space: nowrap;"
             >
               Ready
-            </mock-typography>
-            <mock-typography
+            </p>
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
               style="white-space: nowrap;"
             >
               Mild
-            </mock-typography>
+            </p>
           </div>
         </div>
         <div
@@ -431,11 +271,12 @@ exports[`renders as expected 1`] = `
             </div>
           </div>
           <div>
-            <mock-typography
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
               style="white-space: nowrap;"
             >
               No Action
-            </mock-typography>
+            </p>
           </div>
         </div>
         <div
@@ -457,15 +298,18 @@ exports[`renders as expected 1`] = `
             </div>
           </div>
           <div>
-            <mock-typography
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
               style="white-space: nowrap;"
             >
               Not Yet Monitored
-            </mock-typography>
+            </p>
           </div>
         </div>
       </div>
-      <mock-typography>
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+      >
         <span
           class="makeStyles-dialogButton-3"
           role="button"
@@ -475,14 +319,16 @@ exports[`renders as expected 1`] = `
         </span>
          
         uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).
-      </mock-typography>
-      <mock-divider />
-      <mock-typography
+      </p>
+      <hr
+        class="MuiDivider-root MuiDivider-fullWidth css-1jpc804-MuiDivider-root"
+      />
+      <h3
+        class="MuiTypography-root MuiTypography-h3 css-ae1vz0-MuiTypography-root"
         style="font-weight: bold;"
-        variant="h3"
       >
         Districts
-      </mock-typography>
+      </h3>
       <div
         style="display: flex; flex-direction: column; gap: 0.5rem;"
       >
@@ -492,9 +338,11 @@ exports[`renders as expected 1`] = `
           <div
             style="min-width: 2.2rem; border: 1px solid rgb(164, 164, 164); border-radius: 2px;"
           />
-          <mock-typography>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+          >
             District
-          </mock-typography>
+          </p>
         </div>
         <div
           class="makeStyles-itemWrapper-2"
@@ -504,12 +352,14 @@ exports[`renders as expected 1`] = `
           >
             NEW
           </div>
-          <mock-typography>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+          >
             District in new phase this month
-          </mock-typography>
+          </p>
         </div>
       </div>
     </div>
-  </mock-listitem>
+  </li>
 </div>
 `;

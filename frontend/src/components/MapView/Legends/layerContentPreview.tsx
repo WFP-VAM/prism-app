@@ -1,11 +1,7 @@
-import {
-  createStyles,
-  Grid,
-  IconButton,
-  makeStyles,
-  Theme,
-} from '@material-ui/core';
-import InfoIcon from '@material-ui/icons/Info';
+import InfoIcon from '@mui/icons-material/Info';
+import { Grid, IconButton, Theme } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import ContentDialog from 'components/NavBar/ContentDialog';
 import { LayerType } from 'config/types';
 import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
@@ -62,7 +58,7 @@ const LayerContentPreview = memo(({ layerId }: PreviewProps) => {
       return null;
     }
     return (
-      <Grid item>
+      <Grid>
         <IconButton
           onClick={handleIconButtonClick}
           size="small"

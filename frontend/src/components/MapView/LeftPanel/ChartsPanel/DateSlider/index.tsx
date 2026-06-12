@@ -1,7 +1,9 @@
 import 'react-range-slider-input/dist/style.css';
 import './slider.css';
 
-import { Box, createStyles, makeStyles, Typography } from '@material-ui/core';
+import { Box, Typography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { useSafeTranslation } from 'i18n';
 import React from 'react';
 import RangeSlider from 'react-range-slider-input';

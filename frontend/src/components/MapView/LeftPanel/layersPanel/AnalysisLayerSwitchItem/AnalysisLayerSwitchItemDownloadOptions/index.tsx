@@ -1,5 +1,5 @@
-import { IconButton, Menu, MenuItem, Tooltip } from '@material-ui/core';
-import GetAppIcon from '@material-ui/icons/GetApp';
+import GetAppIcon from '@mui/icons-material/GetApp';
+import { IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
 import {
   downloadToFile,
   getExposureAnalysisColumnsToRender,
@@ -80,14 +80,18 @@ const AnalysisLayerSwitchItemDownloadOptions = memo(
     const renderedDownloadButton = useMemo(() => {
       if (!selected) {
         return (
-          <IconButton disabled={!selected} onClick={handleDownloadMenuOpen}>
+          <IconButton
+            disabled={!selected}
+            onClick={handleDownloadMenuOpen}
+            size="large"
+          >
             <GetAppIcon />
           </IconButton>
         );
       }
       return (
         <Tooltip title={t('Download') as string}>
-          <IconButton onClick={handleDownloadMenuOpen}>
+          <IconButton onClick={handleDownloadMenuOpen} size="large">
             <GetAppIcon />
           </IconButton>
         </Tooltip>

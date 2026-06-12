@@ -1,3 +1,4 @@
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   Accordion,
   AccordionDetails,
@@ -5,8 +6,7 @@ import {
   Chip,
   Grid,
   Typography,
-} from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+} from '@mui/material';
 import AnalysisLayerSwitchItem from 'components/MapView/LeftPanel/layersPanel/AnalysisLayerSwitchItem';
 import { useLayerMenuItemStyles } from 'components/MapView/LeftPanel/layersPanel/MenuItem/utils';
 import { useSafeTranslation } from 'i18n';
@@ -58,7 +58,7 @@ const AnalysisLayerMenuItem = memo(
           expandIcon={<ExpandMoreIcon />}
           classes={{
             root: classes.rootSummary,
-            expandIcon: classes.expandIcon,
+            expandIconWrapper: classes.expandIcon,
             content: classes.summaryContent,
           }}
           aria-controls={title}

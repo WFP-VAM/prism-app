@@ -1,10 +1,6 @@
-import {
-  Box,
-  CircularProgress,
-  createStyles,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
+import { Box, CircularProgress, Typography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import Chart, { ChartProps } from 'components/Common/Chart';
 import { AdminLevelType, WMSLayerProps } from 'config/types';
 import { CHART_DATA_PREFIXES } from 'context/datasetStateSlice';

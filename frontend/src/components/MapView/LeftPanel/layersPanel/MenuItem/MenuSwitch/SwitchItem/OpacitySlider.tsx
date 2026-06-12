@@ -1,12 +1,8 @@
-import {
-  Box,
-  createStyles,
-  makeStyles,
-  Slider,
-  Typography,
-} from '@material-ui/core';
+import { Box, Slider, Typography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { LayerType } from 'config/types';
-import { ChangeEvent, memo, useCallback } from 'react';
+import { memo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useMapState } from 'utils/useMapState';
 import { useOpacityState } from 'utils/useOpacityState';
@@ -44,7 +40,7 @@ const OpacitySlider = memo(
     const map = mapState.maplibreMap();
 
     const handleOnChangeSliderValue = useCallback(
-      (_event: ChangeEvent<{}>, newValue: number | number[]) => {
+      (_event: Event, newValue: number | number[]) => {
         opacityState.setOpacity({
           map,
           value: newValue as number,

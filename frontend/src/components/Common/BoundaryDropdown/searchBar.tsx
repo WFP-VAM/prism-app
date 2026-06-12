@@ -1,10 +1,6 @@
-import {
-  InputAdornment,
-  makeStyles,
-  TextField,
-  Theme,
-} from '@material-ui/core';
-import { Search } from '@material-ui/icons';
+import { Search } from '@mui/icons-material';
+import { InputAdornment, TextField, Theme } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import { forwardRef, Ref } from 'react';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -33,12 +29,14 @@ const SearchBar = forwardRef(
           autoFocus
           className={styles.searchField}
           fullWidth
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Search />
-              </InputAdornment>
-            ),
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search />
+                </InputAdornment>
+              ),
+            },
           }}
           onChange={e => setSearch(e.target.value)}
           onKeyDown={e => {

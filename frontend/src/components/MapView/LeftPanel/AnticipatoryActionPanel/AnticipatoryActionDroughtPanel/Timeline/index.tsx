@@ -1,10 +1,7 @@
-import {
-  Button,
-  createStyles,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
-import { Equalizer, Reply } from '@material-ui/icons';
+import { Equalizer, Reply } from '@mui/icons-material';
+import { Button, Typography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import {
   AADataSelector,
   AAFiltersSelector,

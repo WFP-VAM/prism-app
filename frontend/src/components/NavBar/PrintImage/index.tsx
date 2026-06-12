@@ -1,5 +1,5 @@
-import { IconButton, useMediaQuery, useTheme } from '@material-ui/core';
-import PrintOutlined from '@material-ui/icons/PrintOutlined';
+import PrintOutlined from '@mui/icons-material/PrintOutlined';
+import { IconButton, useMediaQuery, useTheme } from '@mui/material';
 import { usePostHog } from '@posthog/react';
 import { DashboardExportDialog } from 'components/DashboardView/DashboardExport';
 import { Panel } from 'config/types';
@@ -86,6 +86,7 @@ function PrintImage() {
               backgroundColor: 'transparent',
               color: 'white',
             }}
+            size="large"
           >
             <PrintOutlined style={{ fontSize: mdUp ? '1.25rem' : '1.5rem' }} />
           </IconButton>

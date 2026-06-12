@@ -2,20 +2,21 @@ import {
   Box,
   Button,
   Checkbox,
-  createStyles,
   FormControl,
   FormControlLabel,
   FormGroup,
   Input,
   InputLabel,
   ListItemText,
-  makeStyles,
   MenuItem,
   MenuProps,
   Select,
   Switch,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
+import { SelectChangeEvent } from '@mui/material/Select';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { usePostHog } from '@posthog/react';
 import {
   ChartDateRangeSelector,
@@ -64,11 +65,12 @@ import TimePeriodSelector from './TimePeriodSelector';
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const menuProps: Partial<MenuProps> = {
-  getContentAnchorEl: null,
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 'auto',
+  slotProps: {
+    paper: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 'auto',
+      },
     },
   },
 };
@@ -212,7 +214,7 @@ const ChartsPanel = memo(() => {
   const tabValue = useSelector(leftPanelTabValueSelector);
 
   const onChangeChartLayers = useCallback(
-    (event: React.ChangeEvent<{ value: unknown }>) => {
+    (event: SelectChangeEvent<string[]>) => {
       const newTitles =
         compareLocations || comparePeriods
           ? ([event.target.value] as string[])
@@ -641,8 +643,10 @@ const ChartsPanel = memo(() => {
                   track: classes.switchTrack,
                 }}
                 onChange={handleOnChangeCompareLocationsSwitch}
-                inputProps={{
-                  'aria-label': 'Compare Locations',
+                slotProps={{
+                  input: {
+                    'aria-label': 'Compare Locations',
+                  },
                 }}
               />
             }
@@ -777,8 +781,10 @@ const ChartsPanel = memo(() => {
                   track: classes.switchTrack,
                 }}
                 onChange={handleOnChangeComparePeriodsSwitch}
-                inputProps={{
-                  'aria-label': 'Compare Periods',
+                slotProps={{
+                  input: {
+                    'aria-label': 'Compare Periods',
+                  },
                 }}
               />
             }

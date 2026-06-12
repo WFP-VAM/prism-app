@@ -1,4 +1,5 @@
-import { makeStyles, TextField, Typography } from '@material-ui/core';
+import { TextField, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import { AggregationOperations } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 import React, { useCallback, useState } from 'react';

@@ -1,11 +1,8 @@
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  createStyles,
-  IconButton,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
+import { IconButton, Typography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import Loader from 'components/Common/Loader';
 import { appConfig } from 'config';
 import { AdminLevelType } from 'config/types';

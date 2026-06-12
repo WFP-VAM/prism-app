@@ -1,4 +1,5 @@
-import { createStyles, makeStyles } from '@material-ui/core';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import ChartSection from 'components/MapView/LeftPanel/ChartsPanel/ChartSection';
 import { oneYearInMs } from 'components/MapView/LeftPanel/utils';
 import { appConfig } from 'config';

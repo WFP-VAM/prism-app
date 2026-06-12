@@ -1,18 +1,18 @@
+import { Close, Opacity, SwapVert } from '@mui/icons-material';
 import {
   Box,
-  createStyles,
   Divider,
   Grid,
   IconButton,
   ListItem,
-  makeStyles,
   Paper,
   Popover,
   Slider,
   Tooltip,
   Typography,
-} from '@material-ui/core';
-import { Close, Opacity, SwapVert } from '@material-ui/icons';
+} from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import LayerDownloadOptions from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch/SwitchItem/LayerDownloadOptions';
 import { toggleRemoveLayer } from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
@@ -262,7 +262,7 @@ const LegendItem = memo(
       if (!legend) {
         return null;
       }
-      return <Grid item>{renderedLegendUrl}</Grid>;
+      return <Grid>{renderedLegendUrl}</Grid>;
     }, [legend, renderedLegendUrl]);
 
     const renderedChildren = useMemo(() => {
@@ -270,7 +270,7 @@ const LegendItem = memo(
         return null;
       }
       return (
-        <Grid item>
+        <Grid>
           {typeof children === 'string' ? (
             <LegendMarkdown>{children}</LegendMarkdown>
           ) : (
@@ -304,7 +304,7 @@ const LegendItem = memo(
               : undefined
           }
         >
-          <Grid item style={{ display: 'flex' }}>
+          <Grid style={{ display: 'flex' }}>
             <Typography style={{ flexGrow: 1 }} variant="h4">
               {title}
             </Typography>

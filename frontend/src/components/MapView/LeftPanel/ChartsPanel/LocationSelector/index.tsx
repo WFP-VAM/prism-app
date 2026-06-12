@@ -1,11 +1,6 @@
-import {
-  Box,
-  createStyles,
-  makeStyles,
-  MenuItem,
-  TextField,
-  Typography,
-} from '@material-ui/core';
+import { Box, MenuItem, TextField, Typography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import {
   AdminBoundaryTree,
   getAdminBoundaryTree,
@@ -200,8 +195,10 @@ const LocationSelector = memo(
             select
             label={multiCountry ? t('Country') : country}
             value={admin0Key ?? country}
-            SelectProps={{
-              renderValue: renderAdmin0Value,
+            slotProps={{
+              select: {
+                renderValue: renderAdmin0Value,
+              },
             }}
             onChange={onChangeAdmin0Area}
             variant="outlined"
@@ -219,8 +216,10 @@ const LocationSelector = memo(
             select
             label={t('Admin 1')}
             value={selectedAdmin1Area()?.adminCode ?? ''}
-            SelectProps={{
-              renderValue: renderAdmin1Value,
+            slotProps={{
+              select: {
+                renderValue: renderAdmin1Value,
+              },
             }}
             onChange={onChangeAdmin1Area}
             variant="outlined"
@@ -241,8 +240,10 @@ const LocationSelector = memo(
               select
               label={t('Admin 2')}
               value={selectedAdmin2Area()?.adminCode ?? ''}
-              SelectProps={{
-                renderValue: renderAdmin2Value,
+              slotProps={{
+                select: {
+                  renderValue: renderAdmin2Value,
+                },
               }}
               onChange={onChangeAdmin2Area}
               variant="outlined"

@@ -1,10 +1,6 @@
-import {
-  createStyles,
-  makeStyles,
-  Paper,
-  TextField,
-  Theme,
-} from '@material-ui/core';
+import { Paper, TextField, Theme } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { useSelector } from 'context/hooks';
 import {
   boundsSelector,

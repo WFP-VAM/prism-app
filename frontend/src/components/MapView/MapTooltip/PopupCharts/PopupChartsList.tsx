@@ -1,6 +1,8 @@
 import { faChartBar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, createStyles, makeStyles } from '@material-ui/core';
+import { Button } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { AdminLevelType, WMSLayerProps } from 'config/types';
 import { t } from 'i18next';
 import React, { memo } from 'react';

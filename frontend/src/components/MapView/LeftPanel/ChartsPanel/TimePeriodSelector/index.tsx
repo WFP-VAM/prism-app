@@ -1,12 +1,7 @@
-import {
-  Box,
-  createStyles,
-  Input,
-  InputAdornment,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
-import { DateRangeRounded } from '@material-ui/icons';
+import { DateRangeRounded } from '@mui/icons-material';
+import { Box, Input, InputAdornment, Typography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { useSafeTranslation } from 'i18n';
 import React, { memo } from 'react';
 import DatePicker from 'react-datepicker';
@@ -61,7 +56,7 @@ const TimePeriodSelector = memo(
           </Typography>
         )}
         <Box className={styles.datePickerContainer}>
-          <Box p={2} style={{ borderBottom: '1px solid #858585' }}>
+          <Box sx={{ p: 2 }} style={{ borderBottom: '1px solid #858585' }}>
             <Typography className={styles.textLabel} variant="body2">
               {`${t(startLabel)}: `}
             </Typography>
@@ -93,7 +88,7 @@ const TimePeriodSelector = memo(
             />
           </Box>
 
-          <Box p={2} style={{ borderBottom: '1px solid #858585' }}>
+          <Box sx={{ p: 2 }} style={{ borderBottom: '1px solid #858585' }}>
             <Typography className={styles.textLabel} variant="body2">
               {`${t(endLabel)}: `}
             </Typography>

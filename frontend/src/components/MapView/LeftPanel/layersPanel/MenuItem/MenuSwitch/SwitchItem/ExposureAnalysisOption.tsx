@@ -1,5 +1,5 @@
-import { IconButton, Tooltip } from '@material-ui/core';
-import { ImageAspectRatioOutlined } from '@material-ui/icons';
+import { ImageAspectRatioOutlined } from '@mui/icons-material';
+import { IconButton, Tooltip } from '@mui/material';
 import { usePostHog } from '@posthog/react';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import { generateUniqueTableKey } from 'components/MapView/utils';
@@ -99,6 +99,7 @@ function ExposureAnalysisOption({
           aria-label="Exposure Analysis"
           disabled={!selected}
           onClick={handleExposureAnalysis}
+          size="large"
         >
           <ImageAspectRatioOutlined />
         </IconButton>

@@ -1,10 +1,6 @@
-import {
-  createStyles,
-  Fade,
-  Grid,
-  makeStyles,
-  Tooltip,
-} from '@material-ui/core';
+import { Fade, Grid, Tooltip } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import {
   DateCompatibleLayerWithDateItems,
   TIMELINE_ITEM_WIDTH,
@@ -113,8 +109,22 @@ const TimelineItems = memo(
             <Tooltip
               key={date.value}
               title={<>{getTooltipContent(date)}</>}
-              TransitionComponent={Fade}
-              TransitionProps={{ timeout: 0 }}
+              slots={{ transition: Fade }}
+              slotProps={{
+                transition: { timeout: 0 },
+                tooltip: {
+                  className:
+                    isShowingAAStormLayer || isShowingAAFloodLayer
+                      ? classes.AAStormTooltip
+                      : classes.defaultTooltip,
+                },
+                arrow: {
+                  className:
+                    isShowingAAStormLayer || isShowingAAFloodLayer
+                      ? classes.AAStormTooltipArrow
+                      : undefined,
+                },
+              }}
               placement="top"
               arrow
               {...(isShowingAAStormLayer
@@ -124,21 +134,10 @@ const TimelineItems = memo(
                     interactive: true,
                   }
                 : null)}
-              classes={{
-                tooltip:
-                  isShowingAAStormLayer || isShowingAAFloodLayer
-                    ? classes.AAStormTooltip
-                    : classes.defaultTooltip,
-                arrow:
-                  isShowingAAStormLayer || isShowingAAFloodLayer
-                    ? classes.AAStormTooltipArrow
-                    : undefined,
-              }}
             >
               <Grid
                 key={`Root-${date.label}-${date.value}`}
-                item
-                xs
+                size="grow"
                 className={`${
                   date.isFirstDay ? classes.dateItemFull : classes.dateItem
                 }`}

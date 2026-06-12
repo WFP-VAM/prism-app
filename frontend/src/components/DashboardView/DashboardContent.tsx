@@ -1,3 +1,4 @@
+import { Close, Edit } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -8,13 +9,12 @@ import {
   DialogContentText,
   FormControlLabel,
   IconButton,
-  makeStyles,
   MenuItem,
   Select,
   Switch,
   Typography,
-} from '@material-ui/core';
-import { Close, Edit } from '@material-ui/icons';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import { getImageUrl } from 'assets/images';
 import { useSafeTranslation } from 'i18n';
 import { type ReactNode, useEffect, useState } from 'react';
@@ -654,7 +654,7 @@ function DashboardContent({
       <Dialog
         open={dialogOpen}
         onClose={cancelPendingAction}
-        TransitionProps={{ onExited: () => setPendingAction(null) }}
+        slotProps={{ transition: { onExited: () => setPendingAction(null) } }}
         maxWidth="xs"
         fullWidth
       >

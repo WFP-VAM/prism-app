@@ -1,17 +1,17 @@
 import {
+  DeleteOutlined,
+  DescriptionOutlined,
+  VisibilityOutlined,
+} from '@mui/icons-material';
+import {
   Box,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
-  makeStyles,
-} from '@material-ui/core';
-import {
-  DeleteOutlined,
-  DescriptionOutlined,
-  VisibilityOutlined,
-} from '@material-ui/icons';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import { usePostHog } from '@posthog/react';
 import { downloadToFile } from 'components/MapView/utils';
 import { DashboardMode } from 'config/types';

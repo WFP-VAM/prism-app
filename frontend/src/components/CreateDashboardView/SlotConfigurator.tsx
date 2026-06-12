@@ -1,17 +1,12 @@
 import {
-  Box,
-  Button,
-  IconButton,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
-import {
   AddOutlined,
   BarChartOutlined,
   CloseOutlined,
   NotesOutlined,
   TableChart,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
+import { Box, Button, IconButton, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import { DashboardElementType } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 
@@ -259,7 +254,7 @@ const useStyles = makeStyles(theme => ({
     flex: 1,
     minHeight: 240,
     background:
-      theme.palette.type === 'dark' ? 'rgba(176, 190, 197, 0.35)' : '#CFD8DC',
+      theme.palette.mode === 'dark' ? 'rgba(176, 190, 197, 0.35)' : '#CFD8DC',
     borderRadius: 6,
     display: 'flex',
     alignItems: 'center',
@@ -344,7 +339,7 @@ const useStyles = makeStyles(theme => ({
     padding: '10px 12px',
     borderRadius: 6,
     background:
-      theme.palette.type === 'dark'
+      theme.palette.mode === 'dark'
         ? 'rgba(255,255,255,0.05)'
         : 'rgba(0,0,0,0.03)',
   },

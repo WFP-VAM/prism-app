@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core';
+import makeStyles from '@mui/styles/makeStyles';
 import LayerDropdown from 'components/MapView/Layers/LayerDropdown';
 import { LayerKey } from 'config/types';
 import { useSafeTranslation } from 'i18n';

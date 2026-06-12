@@ -15,12 +15,11 @@ exports[`HomeTable renders as expected 1`] = `
       <div
         style="width: calc(100% - 3rem);"
       >
-        <mock-typography
-          class="makeStyles-windowHeader-10"
-          variant="h4"
+        <h4
+          class="MuiTypography-root MuiTypography-h4 makeStyles-windowHeader-10 css-1iolqh3-MuiTypography-root"
         >
           Window 1
-        </mock-typography>
+        </h4>
       </div>
     </div>
     <div
@@ -61,13 +60,13 @@ exports[`HomeTable renders as expected 1`] = `
           <div
             class="makeStyles-tagWrapper-14"
           >
-            <mock-typography
-              class="makeStyles-emptyText-15"
+            <p
+              class="MuiTypography-root MuiTypography-body1 makeStyles-emptyText-15 css-l0p3u8-MuiTypography-root"
             >
               (
               no district
               )
-            </mock-typography>
+            </p>
           </div>
         </div>
       </div>
@@ -110,13 +109,13 @@ exports[`HomeTable renders as expected 1`] = `
           <div
             class="makeStyles-tagWrapper-14"
           >
-            <mock-typography
-              class="makeStyles-emptyText-15"
+            <p
+              class="MuiTypography-root MuiTypography-body1 makeStyles-emptyText-15 css-l0p3u8-MuiTypography-root"
             >
               (
               no district
               )
-            </mock-typography>
+            </p>
           </div>
         </div>
       </div>
@@ -159,13 +158,13 @@ exports[`HomeTable renders as expected 1`] = `
           <div
             class="makeStyles-tagWrapper-14"
           >
-            <mock-typography
-              class="makeStyles-emptyText-15"
+            <p
+              class="MuiTypography-root MuiTypography-body1 makeStyles-emptyText-15 css-l0p3u8-MuiTypography-root"
             >
               (
               no district
               )
-            </mock-typography>
+            </p>
           </div>
         </div>
       </div>
@@ -212,9 +211,11 @@ exports[`HomeTable renders as expected 1`] = `
               class="makeStyles-areaTagWrapper-20"
               type="button"
             >
-              <mock-typography>
+              <p
+                class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+              >
                 Changara
-              </mock-typography>
+              </p>
             </button>
           </div>
         </div>
@@ -258,13 +259,13 @@ exports[`HomeTable renders as expected 1`] = `
           <div
             class="makeStyles-tagWrapper-14"
           >
-            <mock-typography
-              class="makeStyles-emptyText-15"
+            <p
+              class="MuiTypography-root MuiTypography-body1 makeStyles-emptyText-15 css-l0p3u8-MuiTypography-root"
             >
               (
               no district
               )
-            </mock-typography>
+            </p>
           </div>
         </div>
       </div>
@@ -311,9 +312,11 @@ exports[`HomeTable renders as expected 1`] = `
               class="makeStyles-areaTagWrapper-20"
               type="button"
             >
-              <mock-typography>
+              <p
+                class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+              >
                 Changara
-              </mock-typography>
+              </p>
             </button>
           </div>
         </div>
@@ -326,39 +329,68 @@ exports[`HomeTable renders as expected 1`] = `
     <div
       class="makeStyles-footerActionsWrapper-3"
     >
-      <mock-button
-        class="makeStyles-footerButton-5"
-        component="a"
+      <a
+        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary MuiButton-fullWidth makeStyles-footerButton-5 css-nlocxw-MuiButtonBase-root-MuiButton-root"
         download="2023-12-01-aa_probabilities_triggers_moz.csv"
-        fullwidth=""
         href="https://data.earthobservation.vam.wfp.org/public-share/aa/aa_probabilities_triggers_moz.csv?date=2024-12-01-00-00"
-        starticon="[object Object]"
-        variant="outlined"
+        tabindex="0"
       >
-        <mock-typography>
+        <span
+          class="MuiButton-icon MuiButton-startIcon css-1eozbo-MuiButton-startIcon"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="GetAppIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M19 9h-4V3H9v6H5l7 7zM5 18v2h14v-2z"
+            />
+          </svg>
+        </span>
+        <p
+          class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+        >
           Assets
-        </mock-typography>
-      </mock-button>
-      <mock-button
-        class="makeStyles-footerButton-5"
-        fullwidth=""
-        starticon="[object Object]"
-        variant="outlined"
+        </p>
+      </a>
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary MuiButton-fullWidth makeStyles-footerButton-5 css-nlocxw-MuiButtonBase-root-MuiButton-root"
+        tabindex="0"
+        type="button"
       >
-        <mock-typography>
+        <span
+          class="MuiButton-icon MuiButton-startIcon css-1eozbo-MuiButton-startIcon"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="BarChartOutlinedIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M4 9h4v11H4zm12 4h4v7h-4zm-6-9h4v16h-4z"
+            />
+          </svg>
+        </span>
+        <p
+          class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+        >
           Forecast
-        </mock-typography>
-      </mock-button>
+        </p>
+      </button>
     </div>
     <div
       class="makeStyles-footerDialogsWrapper-4"
     >
-      <mock-typography
-        class="makeStyles-footerDialog-6"
-        component="button"
+      <button
+        class="MuiTypography-root MuiTypography-body1 makeStyles-footerDialog-6 css-l0p3u8-MuiTypography-root"
       >
         How to read this screen
-      </mock-typography>
+      </button>
     </div>
   </div>
 </div>

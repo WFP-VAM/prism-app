@@ -1,4 +1,5 @@
-import { Input, makeStyles, Typography } from '@material-ui/core';
+import { Input, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import { useSafeTranslation } from 'i18n';
 import { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';

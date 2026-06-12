@@ -1,6 +1,4 @@
 import {
-  createStyles,
-  makeStyles,
   Table,
   TableBody,
   TableCell,
@@ -11,7 +9,9 @@ import {
   TableSortLabel,
   Theme,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import { hidePopup } from 'context/tooltipStateSlice';
@@ -226,17 +226,17 @@ const AnalysisTable = memo(
               ? classes.tablePaginationCompact
               : classes.tablePagination,
             select: classes.select,
-            caption: classes.caption,
+            displayedRows: classes.caption,
             spacer: classes.spacer,
           }}
-          nextIconButtonProps={{
-            classes: {
-              root: classes.nextButton,
-            },
-          }}
-          backIconButtonProps={{
-            classes: {
-              root: classes.backButton,
+          slotProps={{
+            actions: {
+              nextButton: {
+                className: classes.nextButton,
+              },
+              previousButton: {
+                className: classes.backButton,
+              },
             },
           }}
         />

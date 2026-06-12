@@ -1,4 +1,5 @@
-import { Box, makeStyles, Typography } from '@material-ui/core';
+import { Box, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import { DashboardMode } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 import { type ReactNode } from 'react';

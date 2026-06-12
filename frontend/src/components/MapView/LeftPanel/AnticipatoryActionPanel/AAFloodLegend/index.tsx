@@ -1,11 +1,7 @@
-import {
-  Box,
-  createStyles,
-  Divider,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
-import { Visibility } from '@material-ui/icons';
+import { Visibility } from '@mui/icons-material';
+import { Box, Divider, Typography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { AAFloodColors } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionFloodPanel/constants';
 import { getFloodRiskColor } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
 import { useSafeTranslation } from 'i18n';

@@ -1,4 +1,6 @@
-import { createStyles, ListItem, makeStyles, Paper } from '@material-ui/core';
+import { ListItem, Paper } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { Panel } from 'config/types';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { lightGrey } from 'muiTheme';

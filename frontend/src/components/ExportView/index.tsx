@@ -1,4 +1,14 @@
-import { createTheme, ThemeProvider } from '@material-ui/core';
+import {
+  createTheme,
+  StyledEngineProvider,
+  Theme,
+  ThemeProvider,
+} from '@mui/material/styles';
+import {
+  StylesProvider,
+  ThemeProvider as StylesThemeProvider,
+} from '@mui/styles';
+import { deepmerge } from '@mui/utils';
 import mask from '@turf/mask';
 import MapExportLayout from 'components/MapExport/MapExportLayout';
 import { mapStyle } from 'components/MapView/Map/utils';
@@ -28,6 +38,10 @@ import { useBoundaryData } from 'utils/useBoundaryData';
 import { useExportParams } from 'utils/useExportParams';
 import { useMapState } from 'utils/useMapState';
 import useResizeObserver from 'utils/useOnResizeObserver';
+
+declare module '@mui/styles/defaultTheme' {
+  interface DefaultTheme extends Theme {}
+}
 
 /**
  * ExportView is a component that displays a map and allows the user to export it as a PDF or ZIP file.
@@ -65,16 +79,18 @@ const ExportView = memo(() => {
   const exportFontStack = getExportFontStack(exportLang);
   const exportTheme = useMemo(
     () =>
-      createTheme(muiTheme, {
-        typography: {
-          fontFamily: exportFontStack,
-          h4: { fontFamily: exportFontStack },
-          h5: { fontFamily: exportFontStack },
-          h6: { fontFamily: exportFontStack },
-          body1: { fontFamily: exportFontStack },
-          body2: { fontFamily: exportFontStack },
-        },
-      }),
+      createTheme(
+        deepmerge(muiTheme, {
+          typography: {
+            fontFamily: exportFontStack,
+            h4: { fontFamily: exportFontStack },
+            h5: { fontFamily: exportFontStack },
+            h6: { fontFamily: exportFontStack },
+            body1: { fontFamily: exportFontStack },
+            body2: { fontFamily: exportFontStack },
+          },
+        }),
+      ),
     [exportFontStack],
   );
   const exportParams = useExportParams();
@@ -242,36 +258,44 @@ const ExportView = memo(() => {
   }
 
   return (
-    <ThemeProvider theme={exportTheme}>
-      {/* Paint order: MapExportLayout stacks boundaries before rasters */}
-      <MapExportLayout
-        toggles={exportParams.toggles}
-        aspectRatio={exportParams.aspectRatio}
-        titleText={exportParams.titleText}
-        footerText={exportParams.footerText}
-        footerTextSize={exportParams.footerTextSize}
-        layerDate={exportParams.date}
-        logo={logo}
-        logoPosition={exportParams.logoPosition}
-        logoScale={exportParams.logoScale}
-        titleHeight={titleHeight}
-        legendPosition={exportParams.legendPosition}
-        legendScale={exportParams.legendScale}
-        bounds={exportParams.bounds ?? undefined}
-        mapStyle={processedMapStyle}
-        invertedAdminBoundaryLimitPolygon={invertedAdminBoundaryLimitPolygon}
-        printRef={printRef}
-        titleRef={titleRef}
-        footerRef={footerRef}
-        footerHeight={footerHeight}
-        bottomLogo={bottomLogo}
-        bottomLogoScale={exportParams.bottomLogoScale}
-        adminLevelLayersWithFillPattern={adminLevelLayersWithFillPattern}
-        selectedLayers={selectedLayers}
-        layersCoverage={layersCoverage}
-        signalExportReady
-      />
-    </ThemeProvider>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={exportTheme}>
+        <StylesThemeProvider theme={exportTheme}>
+          <StylesProvider injectFirst>
+            {/* Paint order: MapExportLayout stacks boundaries before rasters */}
+            <MapExportLayout
+              toggles={exportParams.toggles}
+              aspectRatio={exportParams.aspectRatio}
+              titleText={exportParams.titleText}
+              footerText={exportParams.footerText}
+              footerTextSize={exportParams.footerTextSize}
+              layerDate={exportParams.date}
+              logo={logo}
+              logoPosition={exportParams.logoPosition}
+              logoScale={exportParams.logoScale}
+              titleHeight={titleHeight}
+              legendPosition={exportParams.legendPosition}
+              legendScale={exportParams.legendScale}
+              bounds={exportParams.bounds ?? undefined}
+              mapStyle={processedMapStyle}
+              invertedAdminBoundaryLimitPolygon={
+                invertedAdminBoundaryLimitPolygon
+              }
+              printRef={printRef}
+              titleRef={titleRef}
+              footerRef={footerRef}
+              footerHeight={footerHeight}
+              bottomLogo={bottomLogo}
+              bottomLogoScale={exportParams.bottomLogoScale}
+              adminLevelLayersWithFillPattern={adminLevelLayersWithFillPattern}
+              selectedLayers={selectedLayers}
+              layersCoverage={layersCoverage}
+              signalExportReady
+            />
+          </StylesProvider>
+        </StylesThemeProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 });
 

@@ -1,11 +1,7 @@
-import {
-  Button,
-  createStyles,
-  makeStyles,
-  Tooltip,
-  Typography,
-} from '@material-ui/core';
-import { ClearAll, Equalizer, Reply } from '@material-ui/icons';
+import { ClearAll, Equalizer, Reply } from '@mui/icons-material';
+import { Button, Tooltip, Typography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { AAWindowKeys } from 'config/utils';
 import {
   AADataSelector,

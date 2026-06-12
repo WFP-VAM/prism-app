@@ -1,12 +1,6 @@
-import {
-  Box,
-  Button,
-  createStyles,
-  makeStyles,
-  TextField,
-  Theme,
-  Typography,
-} from '@material-ui/core';
+import { Box, Button, TextField, Theme, Typography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import BoundaryDropdown from 'components/MapView/Layers/BoundaryDropdown';
 import LayerDropdown from 'components/MapView/Layers/LayerDropdown';
 import { LayerKey, PanelSize, WMSLayerProps } from 'config/types';
@@ -201,11 +195,13 @@ function AlertsPanel() {
               id="alert-name"
               label={t('Alert Name')}
               type="text"
-              InputLabelProps={{
-                style: { color: 'black' },
-              }}
-              InputProps={{
-                style: { color: 'black' },
+              slotProps={{
+                inputLabel: {
+                  style: { color: 'black' },
+                },
+                input: {
+                  style: { color: 'black' },
+                },
               }}
               value={alertName}
               onChange={e => setAlertName(e.target.value)}
@@ -217,11 +213,13 @@ function AlertsPanel() {
               id="email-address"
               label={t('Email Address')}
               type="text"
-              InputLabelProps={{
-                style: { color: 'black' },
-              }}
-              InputProps={{
-                style: { color: 'black' },
+              slotProps={{
+                inputLabel: {
+                  style: { color: 'black' },
+                },
+                input: {
+                  style: { color: 'black' },
+                },
               }}
               onChange={onChangeEmail}
               fullWidth

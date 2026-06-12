@@ -1,11 +1,7 @@
-import {
-  createStyles,
-  Dialog,
-  DialogContent,
-  makeStyles,
-  Snackbar,
-} from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
+import { Dialog, DialogContent, Snackbar } from '@mui/material';
+import { Alert } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { usePostHog } from '@posthog/react';
 import mask from '@turf/mask';
 import { downloadToFile } from 'components/MapView/utils';

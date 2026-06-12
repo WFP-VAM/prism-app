@@ -1,8 +1,7 @@
+import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import {
   Box,
-  createStyles,
   IconButton,
-  makeStyles,
   Paper,
   Table,
   TableBody,
@@ -12,8 +11,9 @@ import {
   TableRow,
   TableSortLabel,
   Typography,
-} from '@material-ui/core';
-import { ChevronLeft, ChevronRight } from '@material-ui/icons';
+} from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import SimpleDropdown from 'components/Common/SimpleDropdown';
 import { AnticipatoryAction } from 'config/types';
 import { setAAFloodSelectedStation } from 'context/anticipatoryAction/AAFloodStateSlice';

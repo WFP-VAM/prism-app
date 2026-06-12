@@ -1,15 +1,14 @@
+import { Cancel, GetApp } from '@mui/icons-material';
 import {
   Box,
   Button,
   CircularProgress,
   Collapse,
-  createStyles,
   Divider,
   FormControl,
   Icon,
   IconButton,
   InputLabel,
-  makeStyles,
   Menu,
   MenuItem,
   Select,
@@ -17,10 +16,11 @@ import {
   Theme,
   Tooltip,
   Typography,
-} from '@material-ui/core';
-import { Cancel, GetApp } from '@material-ui/icons';
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+} from '@mui/material';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import Switch from 'components/Common/Switch';
 import { AspectRatio } from 'components/MapExport/types';
 import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
@@ -192,8 +192,8 @@ function SectionToggle({
 function GreyContainer({ children }: { children: React.ReactNode }) {
   return (
     <Box
-      bgcolor="#F1F1F1"
       sx={{
+        bgcolor: '#F1F1F1',
         borderRadius: '4px',
         padding: 4,
       }}
@@ -474,6 +474,7 @@ function PrintConfig() {
           <IconButton
             className={classes.closeButton}
             onClick={() => handleClose()}
+            size="large"
           >
             <Cancel />
           </IconButton>
@@ -486,7 +487,8 @@ function PrintConfig() {
             placeholder={t('Title')}
             fullWidth
             size="small"
-            inputProps={{ label: t('Title'), style: { color: 'black' } }}
+            slotProps={{ htmlInput: { style: { color: 'black' } } }}
+            label={t('Title')}
             onChange={event => {
               setLocalTitle(event.target.value);
               debounceCallback(setTitleText, event.target.value);
@@ -721,7 +723,9 @@ function PrintConfig() {
                 key={defaultFooterText}
                 multiline
                 defaultValue={defaultFooterText}
-                inputProps={{ style: { color: 'black', fontSize: '0.8rem' } }}
+                slotProps={{
+                  htmlInput: { style: { color: 'black', fontSize: '0.8rem' } },
+                }}
                 style={{ backgroundColor: 'white', borderRadius: '5px' }}
                 minRows={3}
                 maxRows={6}

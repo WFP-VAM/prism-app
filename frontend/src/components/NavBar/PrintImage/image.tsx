@@ -1,10 +1,6 @@
-import {
-  Box,
-  createStyles,
-  Dialog,
-  DialogContent,
-  makeStyles,
-} from '@material-ui/core';
+import { Box, Dialog, DialogContent } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { usePostHog } from '@posthog/react';
 import mask from '@turf/mask';
 import { appConfig, rawLayers, safeCountry } from 'config';

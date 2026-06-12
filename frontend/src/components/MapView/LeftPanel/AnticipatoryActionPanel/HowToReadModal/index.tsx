@@ -1,15 +1,15 @@
+import { Cancel, Close, HelpOutlined } from '@mui/icons-material';
 import {
   Button,
-  createStyles,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
-  makeStyles,
   Typography,
-} from '@material-ui/core';
-import { Cancel, Close, HelpOutline } from '@material-ui/icons';
+} from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { useSafeTranslation } from 'i18n';
 import { black, cyanBlue } from 'muiTheme';
 
@@ -31,7 +31,11 @@ function HowToReadModal({ open, onClose }: HowToReadModalProps) {
       <DialogTitle>
         <div className={classes.titleWrapper}>
           <Typography variant="h2">{t('How to read this screen')}</Typography>
-          <IconButton style={{ padding: 0 }} onClick={() => onClose()}>
+          <IconButton
+            style={{ padding: 0 }}
+            onClick={() => onClose()}
+            size="large"
+          >
             <Cancel />
           </IconButton>
         </div>
@@ -55,7 +59,7 @@ function HowToReadModal({ open, onClose }: HowToReadModalProps) {
           target="_blank"
           className={classes.dialogButton}
           variant="outlined"
-          startIcon={<HelpOutline />}
+          startIcon={<HelpOutlined />}
         >
           <Typography>{t('I STILL NEED HELP')}</Typography>
         </Button>

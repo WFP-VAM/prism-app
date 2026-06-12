@@ -1,11 +1,6 @@
-import {
-  Box,
-  createStyles,
-  makeStyles,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from '@material-ui/core';
+import { Box, Typography, useMediaQuery, useTheme } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { getImageUrl } from 'assets/images';
 import { appConfig } from 'config';
 import { t } from 'i18next';
@@ -16,7 +11,7 @@ function Title() {
   const classes = useStyles();
   const theme = useTheme();
 
-  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
+  const smDown = useMediaQuery(theme.breakpoints.down('md'));
 
   const { title, subtitle, logo } = header || {
     title: 'PRISM',

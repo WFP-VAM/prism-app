@@ -1,13 +1,6 @@
-import {
-  Box,
-  createStyles,
-  makeStyles,
-  Paper,
-  Portal,
-  Slide,
-  Theme,
-  Typography,
-} from '@material-ui/core';
+import { Box, Paper, Portal, Slide, Theme, Typography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { useSafeTranslation } from 'i18n';
 
 import BatchMapExportJobRows from './BatchMapExportJobRows';
@@ -40,7 +33,11 @@ function BatchMapExportGlobalTray({ printDialogOpen }: Props) {
         <Typography variant="subtitle1" className={classes.title}>
           {t('Batch map exports')}
         </Typography>
-        <Typography variant="caption" color="textSecondary" display="block">
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{ display: 'block' }}
+        >
           {t(
             'Track batch export progress here. You can run several jobs at once.',
           )}
@@ -75,7 +72,7 @@ const useStyles = makeStyles((theme: Theme) =>
       bottom: theme.spacing(2),
       maxWidth: TRAY_MAX_WIDTH_PX,
       // Avoid `100vw` (includes scrollbar width) clipping fixed-position tray at viewport edge.
-      width: `min(${TRAY_MAX_WIDTH_PX}px, calc(100% - ${theme.spacing(4)}px))`,
+      width: `min(${TRAY_MAX_WIDTH_PX}px, calc(100% - ${theme.spacing(4)}))`,
       margin: 0,
       // Above DateSelector timeline (1300); keep below tooltips / default snackbar layering.
       zIndex: theme.zIndex.modal + 50,

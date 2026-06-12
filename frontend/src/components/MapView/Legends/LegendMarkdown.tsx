@@ -1,5 +1,7 @@
-import { createStyles, makeStyles, Typography } from '@material-ui/core';
-import { ClassNameMap } from '@material-ui/styles';
+import { Typography } from '@mui/material';
+import { ClassNameMap } from '@mui/styles';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import Markdown, { type Components } from 'react-markdown';
 
 interface LegendMarkdownProps {

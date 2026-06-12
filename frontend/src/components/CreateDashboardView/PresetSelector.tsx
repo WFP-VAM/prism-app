@@ -1,4 +1,5 @@
-import { Box, Button, makeStyles, Typography } from '@material-ui/core';
+import { Box, Button, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import { useSafeTranslation } from 'i18n';
 import { type ReactNode, useState } from 'react';
 

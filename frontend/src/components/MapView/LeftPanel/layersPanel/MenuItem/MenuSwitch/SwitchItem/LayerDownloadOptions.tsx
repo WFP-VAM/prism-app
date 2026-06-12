@@ -1,3 +1,4 @@
+import GetAppIcon from '@mui/icons-material/GetApp';
 import {
   Box,
   CircularProgress,
@@ -5,8 +6,7 @@ import {
   Menu,
   MenuItem,
   Tooltip,
-} from '@material-ui/core';
-import GetAppIcon from '@material-ui/icons/GetApp';
+} from '@mui/material';
 import {
   downloadGeotiff,
   Extent,

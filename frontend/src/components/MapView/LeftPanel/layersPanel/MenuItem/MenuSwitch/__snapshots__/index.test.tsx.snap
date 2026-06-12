@@ -3,50 +3,46 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="MuiPaper-root MuiAccordion-root makeStyles-root-1 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root makeStyles-root-1 MuiAccordion-rounded MuiAccordion-gutters css-z8u0ml-MuiPaper-root-MuiAccordion-root"
+    style="--Paper-shadow: none;"
   >
-    <div
-      aria-controls="Category 1"
-      aria-disabled="false"
-      aria-expanded="false"
-      class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-2"
-      id="level2-Category1"
-      role="button"
-      tabindex="0"
+    <h3
+      class="MuiAccordion-heading css-cy7rkm-MuiAccordion-heading"
     >
-      <div
-        class="MuiAccordionSummary-content makeStyles-summaryContent-5"
-      >
-        <mock-typography
-          classes="[object Object]"
-        >
-          Category 1
-        </mock-typography>
-      </div>
-      <div
-        aria-disabled="false"
-        aria-hidden="true"
-        class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-4 MuiIconButton-edgeEnd"
+      <button
+        aria-controls="Category 1"
+        aria-expanded="false"
+        class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-2 MuiAccordionSummary-gutters css-pqdk18-MuiButtonBase-root-MuiAccordionSummary-root"
+        id="level2-Category1"
+        tabindex="0"
+        type="button"
       >
         <span
-          class="MuiIconButton-label"
+          class="MuiAccordionSummary-content makeStyles-summaryContent-5 css-1rqjdob-MuiAccordionSummary-content"
+        >
+          <p
+            class="MuiTypography-root makeStyles-title-7 MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+          >
+            Category 1
+          </p>
+        </span>
+        <span
+          class="MuiAccordionSummary-expandIconWrapper makeStyles-expandIcon-4 css-1wnau0r-MuiAccordionSummary-expandIconWrapper"
         >
           <svg
             aria-hidden="true"
-            class="MuiSvgIcon-root"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="AddIcon"
             focusable="false"
             viewBox="0 0 24 24"
           >
             <path
-              d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"
+              d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"
             />
           </svg>
         </span>
-        <span
-          class="MuiTouchRipple-root"
-        />
-      </div>
-    </div>
+      </button>
+    </h3>
   </div>
 </div>
 `;

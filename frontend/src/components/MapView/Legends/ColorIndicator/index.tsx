@@ -1,5 +1,7 @@
-import { createStyles, makeStyles, Typography } from '@material-ui/core';
-import { alpha } from '@material-ui/core/styles';
+import { Typography } from '@mui/material';
+import { alpha } from '@mui/material/styles';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles(() =>
   createStyles({

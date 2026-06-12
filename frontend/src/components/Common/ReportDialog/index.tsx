@@ -1,18 +1,18 @@
+import { ArrowBack } from '@mui/icons-material';
 import {
   Box,
   Button,
-  createStyles,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
-  makeStyles,
   Theme,
   Typography,
   useTheme,
-} from '@material-ui/core';
-import { ArrowBack } from '@material-ui/icons';
+} from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
 import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
 import { ReportType } from 'config/types';
@@ -190,6 +190,7 @@ const ReportDialog = memo(
               onClick={() => {
                 handleClose();
               }}
+              size="large"
             >
               <ArrowBack />
             </IconButton>

@@ -1,4 +1,5 @@
-import { makeStyles, Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import SimpleDropdown from 'components/Common/SimpleDropdown';
 import { AdminLevelType } from 'config/types';
 import { useSafeTranslation } from 'i18n';

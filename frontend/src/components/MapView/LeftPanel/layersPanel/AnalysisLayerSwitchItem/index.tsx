@@ -1,14 +1,14 @@
+import OpacityIcon from '@mui/icons-material/Opacity';
 import {
   Box,
   IconButton,
-  makeStyles,
   Slider,
   Switch,
   Tooltip,
   Typography,
-} from '@material-ui/core';
-import OpacityIcon from '@material-ui/icons/Opacity';
-import { createStyles } from '@material-ui/styles';
+} from '@mui/material';
+import { createStyles } from '@mui/styles';
+import makeStyles from '@mui/styles/makeStyles';
 import { clearAnalysisResult } from 'context/analysisResultStateSlice';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import {
@@ -16,14 +16,7 @@ import {
   setOpacity as setStateOpacity,
 } from 'context/opacityStateSlice';
 import { useSafeTranslation } from 'i18n';
-import {
-  ChangeEvent,
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   BaselineLayerResult,
@@ -116,7 +109,7 @@ const AnalysisLayerSwitchItem = memo(
                 root: classes.opacitySliderRoot,
                 thumb: classes.opacitySliderThumb,
               }}
-              onChange={(_event: ChangeEvent<{}>, value: number | number[]) => {
+              onChange={(_event: Event, value: number | number[]) => {
                 setOpacity(value as number);
               }}
             />
@@ -144,6 +137,7 @@ const AnalysisLayerSwitchItem = memo(
                 : classes.opacityRoot,
             }}
             onClick={handleOpacityClick}
+            size="large"
           >
             <OpacityIcon />
           </IconButton>
@@ -160,6 +154,7 @@ const AnalysisLayerSwitchItem = memo(
                   : classes.opacityRoot,
               }}
               onClick={handleOpacityClick}
+              size="large"
             >
               <OpacityIcon />
             </IconButton>
@@ -200,8 +195,10 @@ const AnalysisLayerSwitchItem = memo(
               }}
               checked={selected}
               onChange={handleOnChangeSwitch}
-              inputProps={{
-                'aria-label': title,
+              slotProps={{
+                input: {
+                  'aria-label': title,
+                },
               }}
             />
             <Typography

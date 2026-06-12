@@ -1,4 +1,4 @@
-import { Box, Typography } from '@material-ui/core';
+import { Box, Typography } from '@mui/material';
 import { formatInUTC } from 'components/MapView/Layers/AnticipatoryActionStormLayer/utils';
 import { DateRangeType } from 'config/types';
 import { RootState } from 'context/store';

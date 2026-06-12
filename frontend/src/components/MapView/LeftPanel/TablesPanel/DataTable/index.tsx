@@ -1,7 +1,6 @@
 import {
   Box,
   CircularProgress,
-  makeStyles,
   Table,
   TableBody,
   TableCell,
@@ -12,8 +11,9 @@ import {
   TableSortLabel,
   Theme,
   Typography,
-} from '@material-ui/core';
-import { createStyles } from '@material-ui/styles';
+} from '@mui/material';
+import { createStyles } from '@mui/styles';
+import makeStyles from '@mui/styles/makeStyles';
 import Chart from 'components/Common/Chart';
 import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
 import { ChartConfig } from 'config/types';

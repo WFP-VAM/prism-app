@@ -1,6 +1,8 @@
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { createStyles, Link, makeStyles, Typography } from '@material-ui/core';
+import { Link, Typography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { memo } from 'react';
 
 const useStyles = makeStyles(() =>

@@ -3,311 +3,293 @@
 exports[`MapView renders as expected 1`] = `
 <div>
   <div
-    class="MuiBox-root MuiBox-root-3 makeStyles-root-1"
+    class="makeStyles-root-1 MuiBox-root css-0"
   >
-    <mock-drawer
-      anchor="left"
-      open=""
-      paperprops="[object Object]"
-      variant="persistent"
+    <div
+      class="MuiDrawer-root MuiDrawer-anchorLeft MuiDrawer-docked css-1e1tgjm-MuiDrawer-docked"
     >
       <div
-        class="makeStyles-root-4 makeStyles-root-6"
+        class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation1 MuiDrawer-paper css-1vivt8v-MuiPaper-root-MuiDrawer-paper"
+        style="--Paper-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12); margin-top: 56px; height: 80vh; background-color: white; max-width: 100%; border-radius: 0 8px 8px 8px;"
       >
         <div
-          class="makeStyles-tabsWrapper-5"
+          class="makeStyles-root-3 makeStyles-root-5"
         >
           <div
-            aria-labelledby="full-width-tab-layers"
-            id="full-width-tabpanel-layers"
-            role="tabpanel"
-            style="display: block; flex-grow: 1; height: calc(100vh - 48px + 56px); order: -1; overflow-x: hidden;"
+            class="makeStyles-tabsWrapper-4"
           >
             <div
-              class="MuiBox-root MuiBox-root-7"
-              style="width: 425px; display: flex; flex-direction: column; height: 100%;"
+              aria-labelledby="full-width-tab-layers"
+              id="full-width-tabpanel-layers"
+              role="tabpanel"
+              style="display: block; flex-grow: 1; height: calc(100vh - 48px + 56px); order: -1; overflow-x: hidden;"
             >
               <div
-                style="padding: 0.5rem;"
+                class="MuiBox-root css-0"
+                style="width: 425px; display: flex; flex-direction: column; height: 100%;"
               >
                 <div
-                  class="MuiPaper-root MuiAccordion-root makeStyles-root-8 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                  style="padding: 0.5rem;"
                 >
                   <div
-                    aria-controls="Rainfall"
-                    aria-disabled="false"
-                    aria-expanded="false"
-                    class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-9"
-                    id="level1-Rainfall"
-                    role="button"
-                    tabindex="0"
+                    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root makeStyles-root-6 MuiAccordion-rounded MuiAccordion-gutters css-z8u0ml-MuiPaper-root-MuiAccordion-root"
+                    style="--Paper-shadow: none;"
                   >
-                    <div
-                      class="MuiAccordionSummary-content makeStyles-summaryContent-12"
+                    <h3
+                      class="MuiAccordion-heading css-cy7rkm-MuiAccordion-heading"
                     >
-                      <mock-typography
-                        classes="[object Object]"
+                      <button
+                        aria-controls="Rainfall"
+                        aria-expanded="false"
+                        class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-7 MuiAccordionSummary-gutters css-pqdk18-MuiButtonBase-root-MuiAccordionSummary-root"
+                        id="level1-Rainfall"
+                        tabindex="0"
+                        type="button"
                       >
-                        Rainfall
-                      </mock-typography>
-                    </div>
-                    <div
-                      aria-disabled="false"
-                      aria-hidden="true"
-                      class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-11 MuiIconButton-edgeEnd"
-                    >
-                      <span
-                        class="MuiIconButton-label"
-                      >
-                        <svg
-                          aria-hidden="true"
-                          class="MuiSvgIcon-root"
-                          focusable="false"
-                          viewBox="0 0 24 24"
+                        <span
+                          class="MuiAccordionSummary-content makeStyles-summaryContent-10 css-1rqjdob-MuiAccordionSummary-content"
                         >
-                          <path
-                            d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-                          />
-                        </svg>
-                      </span>
-                      <span
-                        class="MuiTouchRipple-root"
-                      />
-                    </div>
+                          <p
+                            class="MuiTypography-root makeStyles-title-11 MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+                          >
+                            Rainfall
+                          </p>
+                        </span>
+                        <span
+                          class="MuiAccordionSummary-expandIconWrapper makeStyles-expandIcon-9 css-1wnau0r-MuiAccordionSummary-expandIconWrapper"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+                            data-testid="ExpandMoreIcon"
+                            focusable="false"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                            />
+                          </svg>
+                        </span>
+                      </button>
+                    </h3>
+                  </div>
+                  <div
+                    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root makeStyles-root-6 MuiAccordion-rounded MuiAccordion-gutters css-z8u0ml-MuiPaper-root-MuiAccordion-root"
+                    style="--Paper-shadow: none;"
+                  >
+                    <h3
+                      class="MuiAccordion-heading css-cy7rkm-MuiAccordion-heading"
+                    >
+                      <button
+                        aria-controls="Vegetation"
+                        aria-expanded="false"
+                        class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-7 MuiAccordionSummary-gutters css-pqdk18-MuiButtonBase-root-MuiAccordionSummary-root"
+                        id="level1-Vegetation"
+                        tabindex="0"
+                        type="button"
+                      >
+                        <span
+                          class="MuiAccordionSummary-content makeStyles-summaryContent-10 css-1rqjdob-MuiAccordionSummary-content"
+                        >
+                          <p
+                            class="MuiTypography-root makeStyles-title-11 MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+                          >
+                            Vegetation
+                          </p>
+                        </span>
+                        <span
+                          class="MuiAccordionSummary-expandIconWrapper makeStyles-expandIcon-9 css-1wnau0r-MuiAccordionSummary-expandIconWrapper"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+                            data-testid="ExpandMoreIcon"
+                            focusable="false"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                            />
+                          </svg>
+                        </span>
+                      </button>
+                    </h3>
+                  </div>
+                  <div
+                    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root makeStyles-root-6 MuiAccordion-rounded MuiAccordion-gutters css-z8u0ml-MuiPaper-root-MuiAccordion-root"
+                    style="--Paper-shadow: none;"
+                  >
+                    <h3
+                      class="MuiAccordion-heading css-cy7rkm-MuiAccordion-heading"
+                    >
+                      <button
+                        aria-controls="Temperature"
+                        aria-expanded="false"
+                        class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-7 MuiAccordionSummary-gutters css-pqdk18-MuiButtonBase-root-MuiAccordionSummary-root"
+                        id="level1-Temperature"
+                        tabindex="0"
+                        type="button"
+                      >
+                        <span
+                          class="MuiAccordionSummary-content makeStyles-summaryContent-10 css-1rqjdob-MuiAccordionSummary-content"
+                        >
+                          <p
+                            class="MuiTypography-root makeStyles-title-11 MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+                          >
+                            Temperature
+                          </p>
+                        </span>
+                        <span
+                          class="MuiAccordionSummary-expandIconWrapper makeStyles-expandIcon-9 css-1wnau0r-MuiAccordionSummary-expandIconWrapper"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+                            data-testid="ExpandMoreIcon"
+                            focusable="false"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                            />
+                          </svg>
+                        </span>
+                      </button>
+                    </h3>
+                  </div>
+                  <div
+                    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root makeStyles-root-6 MuiAccordion-rounded MuiAccordion-gutters css-z8u0ml-MuiPaper-root-MuiAccordion-root"
+                    style="--Paper-shadow: none;"
+                  >
+                    <h3
+                      class="MuiAccordion-heading css-cy7rkm-MuiAccordion-heading"
+                    >
+                      <button
+                        aria-controls="Vulnerability"
+                        aria-expanded="false"
+                        class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-7 MuiAccordionSummary-gutters css-pqdk18-MuiButtonBase-root-MuiAccordionSummary-root"
+                        id="level1-Vulnerability"
+                        tabindex="0"
+                        type="button"
+                      >
+                        <span
+                          class="MuiAccordionSummary-content makeStyles-summaryContent-10 css-1rqjdob-MuiAccordionSummary-content"
+                        >
+                          <p
+                            class="MuiTypography-root makeStyles-title-11 MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+                          >
+                            Vulnerability
+                          </p>
+                        </span>
+                        <span
+                          class="MuiAccordionSummary-expandIconWrapper makeStyles-expandIcon-9 css-1wnau0r-MuiAccordionSummary-expandIconWrapper"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+                            data-testid="ExpandMoreIcon"
+                            focusable="false"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                            />
+                          </svg>
+                        </span>
+                      </button>
+                    </h3>
+                  </div>
+                  <div
+                    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root makeStyles-root-6 MuiAccordion-rounded MuiAccordion-gutters css-z8u0ml-MuiPaper-root-MuiAccordion-root"
+                    style="--Paper-shadow: none;"
+                  >
+                    <h3
+                      class="MuiAccordion-heading css-cy7rkm-MuiAccordion-heading"
+                    >
+                      <button
+                        aria-controls="Exposure"
+                        aria-expanded="false"
+                        class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-7 MuiAccordionSummary-gutters css-pqdk18-MuiButtonBase-root-MuiAccordionSummary-root"
+                        id="level1-Exposure"
+                        tabindex="0"
+                        type="button"
+                      >
+                        <span
+                          class="MuiAccordionSummary-content makeStyles-summaryContent-10 css-1rqjdob-MuiAccordionSummary-content"
+                        >
+                          <p
+                            class="MuiTypography-root makeStyles-title-11 MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+                          >
+                            Exposure
+                          </p>
+                        </span>
+                        <span
+                          class="MuiAccordionSummary-expandIconWrapper makeStyles-expandIcon-9 css-1wnau0r-MuiAccordionSummary-expandIconWrapper"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+                            data-testid="ExpandMoreIcon"
+                            focusable="false"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                            />
+                          </svg>
+                        </span>
+                      </button>
+                    </h3>
                   </div>
                 </div>
                 <div
-                  class="MuiPaper-root MuiAccordion-root makeStyles-root-8 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                  class="MuiBox-root css-0"
+                  style="flex-grow: 1;"
+                />
+                <a
+                  href="https://github.com/WFP-VAM/prism-app/tree/sample_hash"
+                  rel="noopener noreferrer"
+                  style="color: rgb(245, 247, 248); font-size: 0.7rem; left: 1rem;"
+                  target="_blank"
                 >
-                  <div
-                    aria-controls="Vegetation"
-                    aria-disabled="false"
-                    aria-expanded="false"
-                    class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-9"
-                    id="level1-Vegetation"
-                    role="button"
-                    tabindex="0"
-                  >
-                    <div
-                      class="MuiAccordionSummary-content makeStyles-summaryContent-12"
-                    >
-                      <mock-typography
-                        classes="[object Object]"
-                      >
-                        Vegetation
-                      </mock-typography>
-                    </div>
-                    <div
-                      aria-disabled="false"
-                      aria-hidden="true"
-                      class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-11 MuiIconButton-edgeEnd"
-                    >
-                      <span
-                        class="MuiIconButton-label"
-                      >
-                        <svg
-                          aria-hidden="true"
-                          class="MuiSvgIcon-root"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-                          />
-                        </svg>
-                      </span>
-                      <span
-                        class="MuiTouchRipple-root"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="MuiPaper-root MuiAccordion-root makeStyles-root-8 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
-                >
-                  <div
-                    aria-controls="Temperature"
-                    aria-disabled="false"
-                    aria-expanded="false"
-                    class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-9"
-                    id="level1-Temperature"
-                    role="button"
-                    tabindex="0"
-                  >
-                    <div
-                      class="MuiAccordionSummary-content makeStyles-summaryContent-12"
-                    >
-                      <mock-typography
-                        classes="[object Object]"
-                      >
-                        Temperature
-                      </mock-typography>
-                    </div>
-                    <div
-                      aria-disabled="false"
-                      aria-hidden="true"
-                      class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-11 MuiIconButton-edgeEnd"
-                    >
-                      <span
-                        class="MuiIconButton-label"
-                      >
-                        <svg
-                          aria-hidden="true"
-                          class="MuiSvgIcon-root"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-                          />
-                        </svg>
-                      </span>
-                      <span
-                        class="MuiTouchRipple-root"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="MuiPaper-root MuiAccordion-root makeStyles-root-8 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
-                >
-                  <div
-                    aria-controls="Vulnerability"
-                    aria-disabled="false"
-                    aria-expanded="false"
-                    class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-9"
-                    id="level1-Vulnerability"
-                    role="button"
-                    tabindex="0"
-                  >
-                    <div
-                      class="MuiAccordionSummary-content makeStyles-summaryContent-12"
-                    >
-                      <mock-typography
-                        classes="[object Object]"
-                      >
-                        Vulnerability
-                      </mock-typography>
-                    </div>
-                    <div
-                      aria-disabled="false"
-                      aria-hidden="true"
-                      class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-11 MuiIconButton-edgeEnd"
-                    >
-                      <span
-                        class="MuiIconButton-label"
-                      >
-                        <svg
-                          aria-hidden="true"
-                          class="MuiSvgIcon-root"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-                          />
-                        </svg>
-                      </span>
-                      <span
-                        class="MuiTouchRipple-root"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="MuiPaper-root MuiAccordion-root makeStyles-root-8 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
-                >
-                  <div
-                    aria-controls="Exposure"
-                    aria-disabled="false"
-                    aria-expanded="false"
-                    class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-9"
-                    id="level1-Exposure"
-                    role="button"
-                    tabindex="0"
-                  >
-                    <div
-                      class="MuiAccordionSummary-content makeStyles-summaryContent-12"
-                    >
-                      <mock-typography
-                        classes="[object Object]"
-                      >
-                        Exposure
-                      </mock-typography>
-                    </div>
-                    <div
-                      aria-disabled="false"
-                      aria-hidden="true"
-                      class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-11 MuiIconButton-edgeEnd"
-                    >
-                      <span
-                        class="MuiIconButton-label"
-                      >
-                        <svg
-                          aria-hidden="true"
-                          class="MuiSvgIcon-root"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-                          />
-                        </svg>
-                      </span>
-                      <span
-                        class="MuiTouchRipple-root"
-                      />
-                    </div>
-                  </div>
-                </div>
+                  version hash: 
+                  sample_hash
+                </a>
               </div>
-              <div
-                class="MuiBox-root MuiBox-root-16"
-                style="flex-grow: 1;"
-              />
-              <a
-                href="https://github.com/WFP-VAM/prism-app/tree/sample_hash"
-                rel="noopener noreferrer"
-                style="color: rgb(245, 247, 248); font-size: 0.7rem; left: 1rem;"
-                target="_blank"
-              >
-                version hash: 
-                sample_hash
-              </a>
             </div>
+            <div
+              aria-labelledby="full-width-tab-charts"
+              id="full-width-tabpanel-charts"
+              role="tabpanel"
+              style="display: none; flex-grow: 1; height: calc(100vh - 48px + 56px); overflow-x: auto;"
+            />
+            <div
+              aria-labelledby="full-width-tab-analysis"
+              id="full-width-tabpanel-analysis"
+              role="tabpanel"
+              style="display: none; flex-grow: 1; height: calc(100vh - 48px + 56px); overflow-x: auto;"
+            />
+            <div
+              aria-labelledby="full-width-tab-alerts"
+              id="full-width-tabpanel-alerts"
+              role="tabpanel"
+              style="display: none; flex-grow: 1; height: calc(100vh - 48px + 56px); overflow-x: auto;"
+            />
+            <div
+              aria-labelledby="full-width-tab-none"
+              id="full-width-tabpanel-none"
+              role="tabpanel"
+              style="display: none; flex-grow: 1; height: calc(100vh - 48px + 56px); overflow-x: auto;"
+            />
           </div>
-          <div
-            aria-labelledby="full-width-tab-charts"
-            id="full-width-tabpanel-charts"
-            role="tabpanel"
-            style="display: none; flex-grow: 1; height: calc(100vh - 48px + 56px); overflow-x: auto;"
-          />
-          <div
-            aria-labelledby="full-width-tab-analysis"
-            id="full-width-tabpanel-analysis"
-            role="tabpanel"
-            style="display: none; flex-grow: 1; height: calc(100vh - 48px + 56px); overflow-x: auto;"
-          />
-          <div
-            aria-labelledby="full-width-tab-alerts"
-            id="full-width-tabpanel-alerts"
-            role="tabpanel"
-            style="display: none; flex-grow: 1; height: calc(100vh - 48px + 56px); overflow-x: auto;"
-          />
-          <div
-            aria-labelledby="full-width-tab-none"
-            id="full-width-tabpanel-none"
-            role="tabpanel"
-            style="display: none; flex-grow: 1; height: calc(100vh - 48px + 56px); overflow-x: auto;"
-          />
         </div>
       </div>
-    </mock-drawer>
+    </div>
     <div
-      class="MuiBox-root MuiBox-root-57 makeStyles-container-55"
+      class="makeStyles-container-52 MuiBox-root css-0"
     >
       <div
-        class="MuiBox-root MuiBox-root-58 makeStyles-optionContainer-56"
+        class="makeStyles-optionContainer-53 MuiBox-root css-0"
       />
     </div>
     <div

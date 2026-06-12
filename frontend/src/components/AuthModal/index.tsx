@@ -1,15 +1,15 @@
+import { Close, Send } from '@mui/icons-material';
 import {
   Box,
   Button,
-  createStyles,
   Dialog,
   DialogTitle,
-  makeStyles,
   TextField,
   Theme,
   Typography,
-} from '@material-ui/core';
-import { Close, Send } from '@material-ui/icons';
+} from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { UserAuth } from 'config/types';
 import { removeLayer } from 'context/mapStateSlice';
 import { layersSelector } from 'context/mapStateSlice/selectors';

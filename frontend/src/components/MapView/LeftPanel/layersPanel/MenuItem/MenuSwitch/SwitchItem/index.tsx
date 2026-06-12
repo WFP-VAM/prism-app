@@ -1,11 +1,7 @@
-import {
-  Box,
-  createStyles,
-  IconButton,
-  makeStyles,
-  Tooltip,
-} from '@material-ui/core';
-import OpacityIcon from '@material-ui/icons/Opacity';
+import OpacityIcon from '@mui/icons-material/Opacity';
+import { Box, IconButton, Tooltip } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { usePostHog } from '@posthog/react';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
@@ -259,6 +255,7 @@ const SwitchItem = memo(
                 onClick={() =>
                   setIsOpacitySelected(opacitySelected => !opacitySelected)
                 }
+                size="large"
               >
                 <OpacityIcon />
               </IconButton>

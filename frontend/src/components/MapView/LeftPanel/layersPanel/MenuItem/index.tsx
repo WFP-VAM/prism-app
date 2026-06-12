@@ -1,11 +1,11 @@
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Grid,
+  Stack,
   Typography,
-} from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+} from '@mui/material';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import MenuSwitch from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch';
 import { filterActiveLayers } from 'components/MapView/utils';
@@ -47,13 +47,13 @@ const MenuItem = memo(({ title, layersCategories, extent }: MenuItemProps) => {
     <Accordion
       elevation={0}
       classes={{ root: classes.root }}
-      TransitionProps={{ unmountOnExit: true }}
+      slotProps={{ transition: { unmountOnExit: true } }}
     >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         classes={{
           root: classes.rootSummary,
-          expandIcon: classes.expandIcon,
+          expandIconWrapper: classes.expandIcon,
           content: classes.summaryContent,
         }}
         aria-controls={title}
@@ -65,7 +65,7 @@ const MenuItem = memo(({ title, layersCategories, extent }: MenuItemProps) => {
         />
       </AccordionSummary>
       <AccordionDetails classes={{ root: classes.rootDetails }}>
-        <Grid container direction="column" wrap="nowrap">
+        <Stack direction="column" sx={{ flexWrap: 'nowrap' }}>
           {layersCategories.map((layerCategory: LayersCategoryType) => (
             <MenuSwitch
               key={layerCategory.title}
@@ -74,7 +74,7 @@ const MenuItem = memo(({ title, layersCategories, extent }: MenuItemProps) => {
               extent={extent}
             />
           ))}
-        </Grid>
+        </Stack>
       </AccordionDetails>
     </Accordion>
   );

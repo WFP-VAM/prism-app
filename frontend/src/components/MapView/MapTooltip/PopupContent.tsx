@@ -1,5 +1,7 @@
-import { createStyles, makeStyles, Typography } from '@material-ui/core';
-import { ClassNameMap } from '@material-ui/styles';
+import { Typography } from '@mui/material';
+import { ClassNameMap } from '@mui/styles';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { PopupData, PopupMetaData } from 'context/tooltipStateSlice';
 import { Position } from 'geojson';
 import { useSafeTranslation } from 'i18n';
@@ -65,7 +67,7 @@ const generatePhasePopulationTable = (
 
   const phasePopulationTable = (
     <div>
-      <Typography display="inline" variant="h4" color="inherit">
+      <Typography component="span" variant="h4" color="inherit">
         {t('Ref. period')}: {popupData['Reference period start']?.data} -{' '}
         {popupData['Reference period end']?.data}
       </Typography>
@@ -172,7 +174,7 @@ const PopupContent = memo(({ popupData, coordinates }: PopupContentProps) => {
                 {!key.includes('do_not_display') &&
                   key !== 'Population in phase 1' && (
                     <Typography
-                      display="inline"
+                      component="span"
                       variant="h4"
                       color="inherit"
                       className={classes.text}
@@ -182,7 +184,7 @@ const PopupContent = memo(({ popupData, coordinates }: PopupContentProps) => {
                   )}
                 {key !== 'Population in phase 1' && isKeyValuePair && (
                   <Typography
-                    display="inline"
+                    component="span"
                     variant="h4"
                     color="inherit"
                     className={classes.text}

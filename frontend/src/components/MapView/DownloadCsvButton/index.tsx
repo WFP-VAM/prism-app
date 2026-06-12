@@ -1,9 +1,6 @@
-import {
-  Button,
-  createStyles,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
+import { Button, Typography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { usePostHog } from '@posthog/react';
 import { t } from 'i18next';
 import { cyanBlue } from 'muiTheme';

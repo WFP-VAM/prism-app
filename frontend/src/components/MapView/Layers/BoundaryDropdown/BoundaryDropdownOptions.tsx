@@ -1,11 +1,11 @@
+import { Search } from '@mui/icons-material';
 import {
   InputAdornment,
-  makeStyles,
   MenuItem,
   TextField,
   TextFieldProps,
-} from '@material-ui/core';
-import { Search } from '@material-ui/icons';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import bbox from '@turf/bbox';
 import { LayerKey } from 'config/types';
 import { getDisplayBoundaryLayers } from 'config/utils';
@@ -57,12 +57,14 @@ const SearchField = React.forwardRef(
             target.focus();
           }, TIMEOUT_ANIMATION_DELAY);
         }}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="end">
-              <Search />
-            </InputAdornment>
-          ),
+        slotProps={{
+          input: {
+            startAdornment: (
+              <InputAdornment position="end">
+                <Search />
+              </InputAdornment>
+            ),
+          },
         }}
       />
     );

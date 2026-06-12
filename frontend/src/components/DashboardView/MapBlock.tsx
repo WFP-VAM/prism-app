@@ -1,17 +1,17 @@
+import ImageIcon from '@mui/icons-material/Image';
 import {
   Box,
   CircularProgress,
-  createStyles,
   Icon,
   IconButton,
-  makeStyles,
   TextField,
   Tooltip,
   Typography,
-} from '@material-ui/core';
-import ImageIcon from '@material-ui/icons/Image';
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+} from '@mui/material';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import Switch from 'components/Common/Switch';
 import RootAccordionItems from 'components/MapView/LeftPanel/layersPanel/RootAccordionItems';
 import { MapInstanceProvider } from 'components/MapView/MapInstanceContext';

@@ -1,13 +1,13 @@
 import {
   LinearProgress,
   ListSubheader,
-  makeStyles,
   MenuItem,
   TextField,
   Theme,
   Typography,
-} from '@material-ui/core';
-import { createStyles } from '@material-ui/styles';
+} from '@mui/material';
+import { createStyles } from '@mui/styles';
+import makeStyles from '@mui/styles/makeStyles';
 import { usePostHog } from '@posthog/react';
 import {
   LayersCategoryType,
@@ -173,15 +173,17 @@ const TablesPanel = memo(() => {
             placeholder={t('Choose a table')}
             label={t('Tables')}
             defaultValue=""
-            InputProps={{
-              classes: {
-                focused: classes.focused,
-                input: classes.input,
+            slotProps={{
+              input: {
+                classes: {
+                  focused: classes.focused,
+                  input: classes.input,
+                },
               },
-            }}
-            InputLabelProps={{
-              classes: {
-                root: classes.label,
+              inputLabel: {
+                classes: {
+                  root: classes.label,
+                },
               },
             }}
           >

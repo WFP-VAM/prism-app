@@ -1,12 +1,12 @@
 import {
-  createStyles,
   FormControl,
   ListSubheader,
-  makeStyles,
   MenuItem,
   TextField,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { menuList } from 'components/MapView/LeftPanel/utils';
 import { appConfig } from 'config';
 import { LayerKey, LayerType } from 'config/types';
@@ -137,15 +137,17 @@ function LayerDropdown({
         select
         label={label}
         disabled={disabled}
-        InputProps={{
-          classes: {
-            focused: classes.focused,
-            input: classes.input,
+        slotProps={{
+          input: {
+            classes: {
+              focused: classes.focused,
+              input: classes.input,
+            },
           },
-        }}
-        InputLabelProps={{
-          classes: {
-            root: classes.label,
+          inputLabel: {
+            classes: {
+              root: classes.label,
+            },
           },
         }}
       >

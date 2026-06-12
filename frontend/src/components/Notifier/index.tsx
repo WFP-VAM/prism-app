@@ -1,5 +1,6 @@
-import { createStyles, makeStyles } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
+import { Alert } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import {
   Notification,
   notificationsSelector,

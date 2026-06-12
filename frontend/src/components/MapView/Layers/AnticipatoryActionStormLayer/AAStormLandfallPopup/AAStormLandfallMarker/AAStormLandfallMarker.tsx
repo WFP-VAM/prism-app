@@ -1,4 +1,6 @@
-import { createStyles, makeStyles, Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { ParsedStormData } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import _React from 'react';
 import { Popup } from 'react-map-gl/maplibre';

@@ -7,8 +7,8 @@ import {
   Radio,
   RadioProps,
   useRadioGroup,
-  withStyles,
-} from '@material-ui/core';
+} from '@mui/material';
+import withStyles from '@mui/styles/withStyles';
 import {
   LIGHT_BLUE_HEX,
   LIGHT_GREEN_HEX,

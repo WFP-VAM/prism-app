@@ -1,10 +1,5 @@
-import {
-  Box,
-  makeStyles,
-  MenuItem,
-  TextField,
-  Typography,
-} from '@material-ui/core';
+import { Box, MenuItem, TextField, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import {
   AdminBoundaryTree,
   getAdminBoundaryTree,
@@ -224,8 +219,10 @@ function ChartLocationSelector({
             select
             label={t('Country')}
             value={selectedCountry?.adminCode ?? ''}
-            SelectProps={{
-              renderValue: renderCountryValue,
+            slotProps={{
+              select: {
+                renderValue: renderCountryValue,
+              },
             }}
             onChange={handleCountryChange}
             variant="outlined"
@@ -240,8 +237,10 @@ function ChartLocationSelector({
           select
           label={t('Admin 1')}
           value={selectedAdmin1Area?.adminCode ?? ''}
-          SelectProps={{
-            renderValue: renderAdmin1Value,
+          slotProps={{
+            select: {
+              renderValue: renderAdmin1Value,
+            },
           }}
           onChange={handleAdmin1Change}
           variant="outlined"
@@ -261,8 +260,10 @@ function ChartLocationSelector({
             select
             label={t('Admin 2')}
             value={selectedAdmin2Area?.adminCode ?? ''}
-            SelectProps={{
-              renderValue: renderAdmin2Value,
+            slotProps={{
+              select: {
+                renderValue: renderAdmin2Value,
+              },
             }}
             onChange={handleAdmin2Change}
             variant="outlined"

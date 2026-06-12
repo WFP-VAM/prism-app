@@ -1,4 +1,5 @@
-import { LinearProgress, makeStyles } from '@material-ui/core';
+import { LinearProgress } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import { LayerKey } from 'config/types';
 import { loadingLayerIdsSelector as vectorLayerIdsSelector } from 'context/mapStateSlice/selectors';
 import { loadingLayerIdsSelector as tileLayerIdsSelector } from 'context/mapTileLoadingStateSlice';

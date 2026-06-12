@@ -1,14 +1,14 @@
+import GetAppIcon from '@mui/icons-material/GetApp';
 import {
   Box,
   Button,
   CircularProgress,
   IconButton,
-  makeStyles,
   TextField,
   Tooltip,
   Typography,
-} from '@material-ui/core';
-import GetAppIcon from '@material-ui/icons/GetApp';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import {
   AdminLevelSelector,
   BaselineLayerSelector,
@@ -653,7 +653,7 @@ function TableBlock({
                     Math.max(1, parseInt(e.target.value, 10) || 1),
                   )
                 }
-                inputProps={{ min: 1, max: 25 }}
+                slotProps={{ htmlInput: { min: 1, max: 25 } }}
                 className={classes.maxRowsInput}
                 size="small"
                 variant="outlined"

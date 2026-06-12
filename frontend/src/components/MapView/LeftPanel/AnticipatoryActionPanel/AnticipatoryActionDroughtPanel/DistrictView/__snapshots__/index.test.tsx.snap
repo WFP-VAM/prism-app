@@ -5,63 +5,6 @@ exports[`renders as expected 1`] = `
   <div
     class="makeStyles-root-1"
   >
-    <mock-dialog>
-      <mock-dialogtitle>
-        <div
-          class="makeStyles-titleWrapper-12"
-        >
-          <mock-typography
-            variant="h2"
-          >
-            Recommended actions
-          </mock-typography>
-          <button
-            class="MuiButtonBase-root MuiIconButton-root"
-            style="padding: 0px;"
-            tabindex="0"
-            type="button"
-          >
-            <span
-              class="MuiIconButton-label"
-            >
-              <svg
-                aria-hidden="true"
-                class="MuiSvgIcon-root"
-                focusable="false"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                />
-              </svg>
-            </span>
-            <span
-              class="MuiTouchRipple-root"
-            />
-          </button>
-        </div>
-      </mock-dialogtitle>
-      <mock-dialogcontent
-        dividers=""
-      >
-        <div
-          class="makeStyles-contentWrapper-13"
-        />
-      </mock-dialogcontent>
-      <mock-dialogactions
-        class="makeStyles-dialogActionsWrapper-16"
-      >
-        <mock-button
-          class="makeStyles-dialogButton-17"
-          starticon="[object Object]"
-          variant="outlined"
-        >
-          <mock-typography>
-            Close
-          </mock-typography>
-        </mock-button>
-      </mock-dialogactions>
-    </mock-dialog>
     <div
       class="makeStyles-districtViewWrapper-2"
     >
@@ -71,12 +14,11 @@ exports[`renders as expected 1`] = `
         <div
           style="text-align: center;"
         >
-          <mock-typography
-            class="makeStyles-headerText-24"
-            variant="h4"
+          <h4
+            class="MuiTypography-root MuiTypography-h4 makeStyles-headerText-24 css-1iolqh3-MuiTypography-root"
           >
             Window 1
-          </mock-typography>
+          </h4>
         </div>
         <div
           class="makeStyles-tableWrapper-19"
@@ -87,38 +29,38 @@ exports[`renders as expected 1`] = `
             <div
               class="makeStyles-headColumn-22"
             >
-              <mock-typography
-                class="makeStyles-monthText-25"
+              <p
+                class="MuiTypography-root MuiTypography-body1 makeStyles-monthText-25 css-l0p3u8-MuiTypography-root"
               >
                 Aug
-              </mock-typography>
+              </p>
             </div>
             <div
               class="makeStyles-headColumn-22"
             >
-              <mock-typography
-                class="makeStyles-monthText-25"
+              <p
+                class="MuiTypography-root MuiTypography-body1 makeStyles-monthText-25 css-l0p3u8-MuiTypography-root"
               >
                 Sep
-              </mock-typography>
+              </p>
             </div>
             <div
               class="makeStyles-headColumn-22"
             >
-              <mock-typography
-                class="makeStyles-monthText-25"
+              <p
+                class="MuiTypography-root MuiTypography-body1 makeStyles-monthText-25 css-l0p3u8-MuiTypography-root"
               >
                 Oct
-              </mock-typography>
+              </p>
             </div>
             <div
               class="makeStyles-headColumn-22"
             >
-              <mock-typography
-                class="makeStyles-monthText-25"
+              <p
+                class="MuiTypography-root MuiTypography-body1 makeStyles-monthText-25 css-l0p3u8-MuiTypography-root"
               >
                 Nov
-              </mock-typography>
+              </p>
             </div>
           </div>
           <div
@@ -349,11 +291,11 @@ exports[`renders as expected 1`] = `
           <div
             style="text-align: center;"
           >
-            <mock-typography
-              variant="h3"
+            <h3
+              class="MuiTypography-root MuiTypography-h3 css-ae1vz0-MuiTypography-root"
             >
               ACTIONS
-            </mock-typography>
+            </h3>
           </div>
           <div
             class="makeStyles-actionBoxesWrapper-28"
@@ -364,23 +306,24 @@ exports[`renders as expected 1`] = `
               style="justify-content: center; cursor: pointer;"
               type="button"
             >
-              <mock-tooltip
-                title="No anticipatory action linked to Mild levels"
+              <div
+                aria-label="No anticipatory action linked to Mild levels"
+                class=""
+                data-mui-internal-clone-element="true"
               >
-                <div>
-                  <svg
-                    aria-hidden="true"
-                    class="MuiSvgIcon-root"
-                    focusable="false"
-                    style="font-size: 1rem; color: darkgrey;"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M19 13H5v-2h14v2z"
-                    />
-                  </svg>
-                </div>
-              </mock-tooltip>
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+                  data-testid="RemoveIcon"
+                  focusable="false"
+                  style="font-size: 1rem; color: darkgrey;"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M19 13H5v-2h14z"
+                  />
+                </svg>
+              </div>
             </button>
             <button
               class="makeStyles-actionBox-29"
@@ -388,23 +331,24 @@ exports[`renders as expected 1`] = `
               style="justify-content: center; cursor: pointer;"
               type="button"
             >
-              <mock-tooltip
-                title="Launch tenders and other procurement procedures"
+              <div
+                aria-label="Launch tenders and other procurement procedures"
+                class=""
+                data-mui-internal-clone-element="true"
               >
-                <div>
-                  <svg
-                    aria-hidden="true"
-                    class="MuiSvgIcon-root"
-                    focusable="false"
-                    style="font-size: 1rem;"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M22 11V3h-7v3H9V3H2v8h7V8h2v10h4v3h7v-8h-7v3h-2V8h2v3z"
-                    />
-                  </svg>
-                </div>
-              </mock-tooltip>
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+                  data-testid="AccountTreeIcon"
+                  focusable="false"
+                  style="font-size: 1rem;"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M22 11V3h-7v3H9V3H2v8h7V8h2v10h4v3h7v-8h-7v3h-2V8h2v3z"
+                  />
+                </svg>
+              </div>
             </button>
             <button
               class="makeStyles-actionBox-29"
@@ -412,23 +356,24 @@ exports[`renders as expected 1`] = `
               style="justify-content: center; cursor: pointer;"
               type="button"
             >
-              <mock-tooltip
-                title="Launch tenders and other procurement procedures"
+              <div
+                aria-label="Launch tenders and other procurement procedures"
+                class=""
+                data-mui-internal-clone-element="true"
               >
-                <div>
-                  <svg
-                    aria-hidden="true"
-                    class="MuiSvgIcon-root"
-                    focusable="false"
-                    style="font-size: 1rem;"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M22 11V3h-7v3H9V3H2v8h7V8h2v10h4v3h7v-8h-7v3h-2V8h2v3z"
-                    />
-                  </svg>
-                </div>
-              </mock-tooltip>
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+                  data-testid="AccountTreeIcon"
+                  focusable="false"
+                  style="font-size: 1rem;"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M22 11V3h-7v3H9V3H2v8h7V8h2v10h4v3h7v-8h-7v3h-2V8h2v3z"
+                  />
+                </svg>
+              </div>
             </button>
             <button
               class="makeStyles-actionBox-29"
@@ -436,23 +381,24 @@ exports[`renders as expected 1`] = `
               style="justify-content: center; cursor: pointer;"
               type="button"
             >
-              <mock-tooltip
-                title="No anticipatory action linked to Mild levels"
+              <div
+                aria-label="No anticipatory action linked to Mild levels"
+                class=""
+                data-mui-internal-clone-element="true"
               >
-                <div>
-                  <svg
-                    aria-hidden="true"
-                    class="MuiSvgIcon-root"
-                    focusable="false"
-                    style="font-size: 1rem; color: darkgrey;"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M19 13H5v-2h14v2z"
-                    />
-                  </svg>
-                </div>
-              </mock-tooltip>
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+                  data-testid="RemoveIcon"
+                  focusable="false"
+                  style="font-size: 1rem; color: darkgrey;"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M19 13H5v-2h14z"
+                  />
+                </svg>
+              </div>
             </button>
           </div>
         </div>
@@ -465,46 +411,93 @@ exports[`renders as expected 1`] = `
     <div
       class="makeStyles-footerActionsWrapper-4"
     >
-      <mock-button
-        class="makeStyles-footerButton-6"
-        fullwidth=""
-        starticon="[object Object]"
-        variant="outlined"
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary MuiButton-fullWidth makeStyles-footerButton-6 css-nlocxw-MuiButtonBase-root-MuiButton-root"
+        tabindex="0"
+        type="button"
       >
-        <mock-typography>
+        <span
+          class="MuiButton-icon MuiButton-startIcon css-1eozbo-MuiButton-startIcon"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="ClearAllIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M5 13h14v-2H5zm-2 4h14v-2H3zM7 7v2h14V7z"
+            />
+          </svg>
+        </span>
+        <p
+          class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+        >
           Timeline
-        </mock-typography>
-      </mock-button>
-      <mock-button
-        class="makeStyles-footerButton-6"
-        fullwidth=""
-        starticon="[object Object]"
-        variant="outlined"
+        </p>
+      </button>
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary MuiButton-fullWidth makeStyles-footerButton-6 css-nlocxw-MuiButtonBase-root-MuiButton-root"
+        tabindex="0"
+        type="button"
       >
-        <mock-typography>
+        <span
+          class="MuiButton-icon MuiButton-startIcon css-1eozbo-MuiButton-startIcon"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="EqualizerIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M10 20h4V4h-4zm-6 0h4v-8H4zM16 9v11h4V9z"
+            />
+          </svg>
+        </span>
+        <p
+          class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+        >
           Forecast
-        </mock-typography>
-      </mock-button>
-      <mock-button
-        class="makeStyles-footerButton-6"
-        fullwidth=""
-        starticon="[object Object]"
-        variant="outlined"
+        </p>
+      </button>
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary MuiButton-fullWidth makeStyles-footerButton-6 css-nlocxw-MuiButtonBase-root-MuiButton-root"
+        tabindex="0"
+        type="button"
       >
-        <mock-typography>
+        <span
+          class="MuiButton-icon MuiButton-startIcon css-1eozbo-MuiButton-startIcon"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="ReplyIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11"
+            />
+          </svg>
+        </span>
+        <p
+          class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+        >
           Summary
-        </mock-typography>
-      </mock-button>
+        </p>
+      </button>
     </div>
     <div
       class="makeStyles-footerDialogsWrapper-5"
     >
-      <mock-typography
-        class="makeStyles-footerDialog-7"
-        component="button"
+      <button
+        class="MuiTypography-root MuiTypography-body1 makeStyles-footerDialog-7 css-l0p3u8-MuiTypography-root"
       >
         How to read this screen
-      </mock-typography>
+      </button>
     </div>
   </div>
 </div>

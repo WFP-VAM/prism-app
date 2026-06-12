@@ -1,10 +1,6 @@
-import {
-  Button,
-  ButtonProps,
-  createStyles,
-  makeStyles,
-  Theme,
-} from '@material-ui/core';
+import { Button, ButtonProps, Theme } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { forwardRef } from 'react';
 
 export type DateSelectorInputProps = Omit<ButtonProps, 'children'> & {
@@ -28,9 +24,11 @@ const DateSelectorInput = forwardRef<HTMLButtonElement, DateSelectorInputProps>(
         {...rest}
         ref={ref}
         variant="outlined"
-        classes={{
-          root: rootClassName,
-          label: classes.labelNoPointer,
+        className={rootClassName}
+        sx={{
+          '& .MuiButton-label': {
+            pointerEvents: 'none',
+          },
         }}
         onMouseDown={e => {
           onMouseDown?.(e);
@@ -55,7 +53,7 @@ const useStyles = makeStyles((theme: Theme) =>
         fontWeight: 'bold',
         border: '1px solid rgba(0, 0, 0, 0.23)',
         borderRadius: theme.shape.borderRadius,
-        padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+        padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
         fontSize: theme.typography.button.fontSize,
         fontFamily: theme.typography.fontFamily,
         lineHeight: 1.75,

@@ -1,15 +1,15 @@
+import { BarChartOutlined, CloseRounded } from '@mui/icons-material';
 import {
   Box,
   Button,
   CircularProgress,
-  createStyles,
   IconButton,
   LinearProgress,
-  makeStyles,
   Theme,
   Typography,
-} from '@material-ui/core';
-import { BarChartOutlined, CloseRounded } from '@material-ui/icons';
+} from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { usePostHog } from '@posthog/react';
 import {
   AdminLevelSelector,
@@ -694,6 +694,7 @@ const AnalysisPanel = memo(() => {
                   aria-label="close"
                   onClick={() => setShowTable(false)}
                   className={classes.analysisTableCloseButton}
+                  size="large"
                 >
                   <CloseRounded />
                 </IconButton>

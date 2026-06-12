@@ -1,11 +1,7 @@
 import { useMsal } from '@azure/msal-react';
-import {
-  Button,
-  createStyles,
-  Grid,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
+import { Button, Grid, Typography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { usePostHog } from '@posthog/react';
 import { wfpLogo } from 'assets/images';
 import { msalRequest } from 'config';
@@ -25,7 +21,7 @@ function Login() {
   return (
     <div className={classes.container}>
       <Grid container spacing={3} className={classes.content}>
-        <Grid item>
+        <Grid>
           <Typography variant="h3" color="textPrimary" gutterBottom>
             Login Required
           </Typography>
@@ -39,7 +35,7 @@ function Login() {
           </Button>
         </Grid>
 
-        <Grid item>
+        <Grid>
           <img
             className={classes.image}
             src={wfpLogo}

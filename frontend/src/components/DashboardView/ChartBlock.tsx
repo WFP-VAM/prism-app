@@ -1,3 +1,5 @@
+import GetAppIcon from '@mui/icons-material/GetApp';
+import ImageIcon from '@mui/icons-material/Image';
 import {
   Box,
   Button,
@@ -5,14 +7,12 @@ import {
   FormControl,
   IconButton,
   InputLabel,
-  makeStyles,
   MenuItem,
   Select,
   Tooltip,
   Typography,
-} from '@material-ui/core';
-import GetAppIcon from '@material-ui/icons/GetApp';
-import ImageIcon from '@material-ui/icons/Image';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import Chart from 'components/Common/Chart';
 import {
   ChartDateRangeSelector,

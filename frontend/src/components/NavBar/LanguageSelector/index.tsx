@@ -1,12 +1,7 @@
-import {
-  Button,
-  createStyles,
-  makeStyles,
-  Menu,
-  MenuItem,
-  Typography,
-} from '@material-ui/core';
-import ArrowDownward from '@material-ui/icons/ArrowDropDown';
+import ArrowDownward from '@mui/icons-material/ArrowDropDown';
+import { Button, Menu, MenuItem, Typography } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { usePostHog } from '@posthog/react';
 import { appConfig } from 'config';
 import { languages, useSafeTranslation } from 'i18n';

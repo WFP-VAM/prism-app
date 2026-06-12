@@ -1,3 +1,4 @@
+import RoomOutlinedIcon from '@mui/icons-material/RoomOutlined';
 import {
   Button,
   IconButton,
@@ -5,8 +6,7 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
-} from '@material-ui/core';
-import RoomOutlinedIcon from '@material-ui/icons/RoomOutlined';
+} from '@mui/material';
 import BoundaryDropdownOptions from 'components/MapView/Layers/BoundaryDropdown/BoundaryDropdownOptions';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
@@ -19,7 +19,7 @@ function GoToBoundaryDropdown() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [search, setSearch] = React.useState('');
   const theme = useTheme();
-  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
+  const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -40,7 +40,11 @@ function GoToBoundaryDropdown() {
         </Button>
       )}
       {!mdUp && (
-        <IconButton style={{ color: 'white' }} onClick={handleClick}>
+        <IconButton
+          style={{ color: 'white' }}
+          onClick={handleClick}
+          size="large"
+        >
           <RoomOutlinedIcon />
         </IconButton>
       )}

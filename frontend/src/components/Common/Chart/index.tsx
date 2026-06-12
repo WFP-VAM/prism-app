@@ -1,8 +1,9 @@
 import 'chartjs-plugin-annotation';
 
-import { IconButton, makeStyles, Tooltip } from '@material-ui/core';
-import GetAppIcon from '@material-ui/icons/GetApp';
-import ImageIcon from '@material-ui/icons/Image';
+import GetAppIcon from '@mui/icons-material/GetApp';
+import ImageIcon from '@mui/icons-material/Image';
+import { IconButton, Tooltip } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import { ChartOptions } from 'chart.js';
 import colormap from 'colormap';
 import { buildCsvFileName, downloadToFile } from 'components/MapView/utils';
@@ -353,13 +354,16 @@ const Chart = memo(
         () =>
           ({
             maintainAspectRatio: !(notMaintainAspectRatio ?? false),
+
             title: {
               fontColor: '#CCC',
               display: true,
               text: subtitle ? [title, subtitle] : title,
               fontSize: 14,
             },
+
             responsive,
+
             scales: {
               xAxes: [
                 {
@@ -419,6 +423,7 @@ const Chart = memo(
                 },
               ],
             },
+
             tooltips: {
               mode: 'index',
               callbacks: {
@@ -461,16 +466,19 @@ const Chart = memo(
                 },
               },
             },
+
             legend: {
               display: config.displayLegend,
               position: legendAtBottom ? 'bottom' : 'right',
               labels: { boxWidth: 12, boxHeight: 12 },
             },
+
             animation: {
               onComplete: () => {
                 setIsChartReady(true);
               },
             },
+
             ...(isGoogleFloodChart
               ? {
                   annotation: {
@@ -532,6 +540,7 @@ const Chart = memo(
                     onClick={() => downloadChartPng(chartRef, downloadFilename)}
                     className={classes.firstIcon}
                     style={iconStyles}
+                    size="large"
                   >
                     <ImageIcon />
                   </IconButton>
@@ -554,6 +563,7 @@ const Chart = memo(
                     }}
                     className={classes.secondIcon}
                     style={iconStyles}
+                    size="large"
                   >
                     <GetAppIcon />
                   </IconButton>

@@ -1,12 +1,8 @@
-import {
-  Box,
-  createStyles,
-  makeStyles,
-  TextField,
-  Typography,
-} from '@material-ui/core';
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import { Box, TextField, Typography } from '@mui/material';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { useContext } from 'react';
 import { BatchCadence, MAX_DEKAD_INTERVAL } from 'utils/batchCadenceUtils';
 import { getFormattedDate } from 'utils/date-utils';
@@ -154,7 +150,7 @@ export default function CadenceSelector() {
             variant="outlined"
             label={t('Dekad interval')}
             value={dekadInterval}
-            inputProps={{ min: 1, max: MAX_DEKAD_INTERVAL }}
+            slotProps={{ htmlInput: { min: 1, max: MAX_DEKAD_INTERVAL } }}
             onChange={e => {
               const val = parseInt(e.target.value, 10);
               if (Number.isNaN(val)) {

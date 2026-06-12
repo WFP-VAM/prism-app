@@ -1,5 +1,6 @@
-import { Box, Button, makeStyles } from '@material-ui/core';
-import { ArrowBackOutlined } from '@material-ui/icons';
+import { ArrowBackOutlined } from '@mui/icons-material';
+import { Box, Button } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import { DashboardElementType } from 'config/types';
 import {
   dashboardsListSelector,

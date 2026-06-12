@@ -1,16 +1,17 @@
+import TuneIcon from '@mui/icons-material/Tune';
 import {
   Box,
-  createStyles,
-  makeStyles,
   MenuItem,
   Select,
   TextField,
   Tooltip,
   Typography,
-} from '@material-ui/core';
-import TuneIcon from '@material-ui/icons/Tune';
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+} from '@mui/material';
+import { SelectChangeEvent } from '@mui/material/Select';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import {
   AspectRatio,
   isAutoRatio,
@@ -172,9 +173,7 @@ export function AspectRatioSelector({
     }
   };
 
-  const handleDropdownChange = (
-    event: React.ChangeEvent<{ value: unknown }>,
-  ) => {
+  const handleDropdownChange = (event: SelectChangeEvent<string>) => {
     const newValue = event.target.value as string;
     setDropdownValue(newValue);
     setValue(
@@ -274,7 +273,7 @@ export function AspectRatioSelector({
             onChange={handleCustomChange('w')}
             variant="outlined"
             size="small"
-            inputProps={{ min: 0.1, max: 100, step: 0.1 }}
+            slotProps={{ htmlInput: { min: 0.1, max: 100, step: 0.1 } }}
           />
           <span className={classes.colon}>:</span>
           <TextField
@@ -284,7 +283,7 @@ export function AspectRatioSelector({
             onChange={handleCustomChange('h')}
             variant="outlined"
             size="small"
-            inputProps={{ min: 0.1, max: 100, step: 0.1 }}
+            slotProps={{ htmlInput: { min: 0.1, max: 100, step: 0.1 } }}
           />
         </Box>
       )}
