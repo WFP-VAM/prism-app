@@ -180,7 +180,8 @@ jobs:
         uses: actions-ecosystem/action-regex-match@v2
         with:
           text: ${{ github.event.pull_request.title }}
-          regex: '(?i)country=(\w+)'
+          regex: 'country=(\w+)'
+          flags: i
       - name: Echo country variable
         run: echo "Country env is ${{ steps.country_regex.outputs.group1 }}"
 
