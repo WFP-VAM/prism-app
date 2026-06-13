@@ -30,6 +30,10 @@ interface LegendItemsListProps {
   listStyle?: string;
   showDescription?: boolean;
   overrideLayers?: LayerType[];
+  /** Print/export legend size (0.5–1). Scales layout instead of CSS transform. */
+  legendScale?: number;
+  /** WMS GetLegendGraphic DPI for server-side export (e.g. 192 for DPR 2). */
+  legendGraphicDpi?: number;
 }
 
 function LegendItemsList({
@@ -37,6 +41,8 @@ function LegendItemsList({
   forPrinting = false,
   showDescription = true,
   overrideLayers,
+  legendScale = 1,
+  legendGraphicDpi,
 }: LegendItemsListProps) {
   const { t } = useSafeTranslation();
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
@@ -80,9 +86,13 @@ function LegendItemsList({
         ? createGetLegendGraphicUrl({
             base: layer.baseUrl,
             layer: layer.serverLayerName,
+            dpi: legendGraphicDpi,
+            fontSize: forPrinting
+              ? Math.max(8, Math.round(13 * legendScale))
+              : undefined,
           })
         : undefined,
-    [],
+    [forPrinting, legendGraphicDpi, legendScale],
   );
 
   // memoized values from selectors
@@ -137,6 +147,7 @@ function LegendItemsList({
         opacity={analysisLayerOpacity}
         forPrinting={forPrinting}
         showDescription={showDescription}
+        legendScale={legendScale}
         dateCoverage={{
           startDate: analysisResult?.coverageStartDate,
           endDate: analysisResult?.coverageEndDate,
@@ -154,6 +165,7 @@ function LegendItemsList({
     analysisLayerOpacity,
     forPrinting,
     showDescription,
+    legendScale,
     renderedLegendImpactResult,
   ]);
 
@@ -179,6 +191,7 @@ function LegendItemsList({
             extent={adminBoundariesExtent}
             forPrinting={forPrinting}
             showDescription={showDescription}
+            legendScale={legendScale}
             dateCoverage={layerCoverageMap[layer.id]}
           >
             {t(layer.legendText)}
@@ -192,6 +205,7 @@ function LegendItemsList({
       adminBoundariesExtent,
       forPrinting,
       showDescription,
+      legendScale,
       layerCoverageMap,
     ],
   );
@@ -203,6 +217,7 @@ function LegendItemsList({
             key="AA"
             forPrinting={forPrinting}
             showDescription={showDescription}
+            legendScale={legendScale}
           />,
         ]
       : [];
@@ -215,6 +230,7 @@ function LegendItemsList({
     forPrinting,
     layersLegendItems,
     showDescription,
+    legendScale,
   ]);
 
   return (

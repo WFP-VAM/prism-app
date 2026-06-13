@@ -24,12 +24,18 @@ jest.mock('components/MapView/Legends/LegendItemsList', () => {
   const React = require('react');
   return {
     __esModule: true,
-    default: () =>
-      React.createElement(
-        'div',
-        { 'data-testid': 'legend-items' },
-        'mock-LegendItemsList',
-      ),
+    default: ({
+      legendScale,
+      legendGraphicDpi,
+    }: {
+      legendScale?: number;
+      legendGraphicDpi?: number;
+    }) =>
+      React.createElement('div', {
+        'data-testid': 'legend-items',
+        'data-legend-scale': legendScale,
+        'data-legend-graphic-dpi': legendGraphicDpi,
+      }),
   };
 });
 
@@ -291,17 +297,30 @@ describe('MapExportLayout', () => {
   });
 
   test('applies legend scale correctly', () => {
-    const { container } = render(
+    const { getByTestId } = render(
       <Provider store={store}>
         <ThemeProvider theme={createTheme()}>
           <MapExportLayout {...defaultProps} legendScale={0.7} />
         </ThemeProvider>
       </Provider>,
     );
-    const legendContainer = container.querySelector(
-      '[data-testid="legend-items"]',
-    )?.parentElement;
-    expect(legendContainer?.style.transform).toBe('scale(0.7)');
+    const legendItems = getByTestId('legend-items');
+    expect(legendItems).toHaveAttribute('data-legend-scale', '0.7');
+    expect(legendItems).not.toHaveAttribute('data-legend-graphic-dpi');
+  });
+
+  test('requests high-DPI WMS legend graphics for server export', () => {
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout {...defaultProps} signalExportReady />
+        </ThemeProvider>
+      </Provider>,
+    );
+    expect(getByTestId('legend-items')).toHaveAttribute(
+      'data-legend-graphic-dpi',
+      '192',
+    );
   });
 
   test('applies footer text size correctly', () => {

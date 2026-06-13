@@ -11,13 +11,16 @@ import AAStormLegend from '../AAStormLegend';
 export interface AALegendProps {
   forPrinting?: boolean;
   showDescription?: boolean;
+  legendScale?: number;
 }
 
 function AALegend({
   forPrinting = false,
   showDescription = true,
+  legendScale = 1,
 }: AALegendProps) {
   const classes = useStyles();
+  const printScale = forPrinting ? legendScale : 1;
 
   const tabPanel = useSelector(leftPanelTabValueSelector);
   const isStormAA = tabPanel === Panel.AnticipatoryActionStorm;
@@ -33,6 +36,8 @@ function AALegend({
           forPrinting
             ? {
                 border: `1px solid ${lightGrey}`,
+                width: 180 * printScale,
+                padding: 8 * printScale,
               }
             : undefined
         }

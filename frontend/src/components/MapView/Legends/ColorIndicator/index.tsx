@@ -20,9 +20,9 @@ const getShapeStyles = (
   iconShape: 'point' | 'square' | 'triangle' | 'diamond' | undefined,
   color: string,
   opacity: number,
+  size: number,
 ) => {
   const baseColor = alpha(color, opacity);
-  const size = 10;
 
   if (iconShape === 'triangle') {
     return {
@@ -65,16 +65,18 @@ function ColorIndicator({
   opacity,
   fillPattern,
   iconShape,
+  size = 10,
 }: ColorIndicatorProps) {
   const classes = useStyles();
 
-  const shapeStyles = getShapeStyles(iconShape, color, opacity);
+  const shapeStyles = getShapeStyles(iconShape, color, opacity, size);
 
   return (
     <div className={classes.container}>
       <div
         className={classes.indicator}
         style={{
+          ...(size !== 10 ? { height: size, width: size } : {}),
           ...shapeStyles,
           ...(fillPattern
             ? {
@@ -103,6 +105,7 @@ export interface ColorIndicatorProps {
   opacity: number;
   fillPattern?: 'left' | 'right';
   iconShape?: 'point' | 'square' | 'triangle' | 'diamond';
+  size?: number;
 }
 
 export default ColorIndicator;

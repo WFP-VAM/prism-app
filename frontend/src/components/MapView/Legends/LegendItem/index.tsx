@@ -54,6 +54,12 @@ import { useOpacityState } from 'utils/useOpacityState';
 import LegendMarkdown from '../LegendMarkdown';
 import LoadingBar from '../LoadingBar';
 
+const LEGEND_PRINT_BASE_WIDTH = 180;
+const LEGEND_PRINT_BASE_PADDING = 8;
+const LEGEND_PRINT_TITLE_FONT_SIZE = 14;
+const LEGEND_PRINT_BODY_FONT_SIZE = 12;
+const LEGEND_PRINT_SWATCH_SIZE = 10;
+
 // Children here is legendText
 const LegendItem = memo(
   ({
@@ -68,6 +74,7 @@ const LegendItem = memo(
     extent,
     forPrinting = false,
     showDescription = true,
+    legendScale = 1,
     dateCoverage,
   }: LegendItemProps) => {
     const classes = useStyles();
@@ -232,6 +239,20 @@ const LegendItem = memo(
       [],
     );
 
+    const printScale = forPrinting ? legendScale : 1;
+
+    const printPaperStyle = useMemo(
+      () =>
+        forPrinting
+          ? {
+              border: `1px solid ${lightGrey}`,
+              width: LEGEND_PRINT_BASE_WIDTH * printScale,
+              padding: LEGEND_PRINT_BASE_PADDING * printScale,
+            }
+          : undefined,
+      [forPrinting, printScale],
+    );
+
     const renderedLegendDefinitionItems = useMemo(
       () =>
         legend?.map((item: LegendDefinitionItem) => (
@@ -246,17 +267,44 @@ const LegendItem = memo(
                 ? (layer as PointDataLayerProps).iconShape
                 : undefined
             }
+            size={
+              forPrinting ? LEGEND_PRINT_SWATCH_SIZE * printScale : undefined
+            }
           />
         )),
-      [fillPattern, getColorIndicatorKey, legend, opacity, t, type, layer],
+      [
+        fillPattern,
+        forPrinting,
+        getColorIndicatorKey,
+        legend,
+        layer,
+        opacity,
+        printScale,
+        t,
+        type,
+      ],
     );
 
     const renderedLegendUrl = useMemo(() => {
       if (legendUrl) {
-        return <img src={legendUrl} alt={title} />;
+        return (
+          <img
+            src={legendUrl}
+            alt={title}
+            style={
+              forPrinting
+                ? {
+                    width: '100%',
+                    height: 'auto',
+                    display: 'block',
+                  }
+                : undefined
+            }
+          />
+        );
       }
       return renderedLegendDefinitionItems;
-    }, [legendUrl, renderedLegendDefinitionItems, title]);
+    }, [forPrinting, legendUrl, renderedLegendDefinitionItems, title]);
 
     const renderedLegend = useMemo(() => {
       if (!legend) {
@@ -274,7 +322,16 @@ const LegendItem = memo(
           {typeof children === 'string' ? (
             <LegendMarkdown>{children}</LegendMarkdown>
           ) : (
-            <Typography variant="h5">{children}</Typography>
+            <Typography
+              variant="h5"
+              style={
+                forPrinting
+                  ? { fontSize: LEGEND_PRINT_BODY_FONT_SIZE * printScale }
+                  : undefined
+              }
+            >
+              {children}
+            </Typography>
           )}
         </Grid>
       );
@@ -296,16 +353,18 @@ const LegendItem = memo(
         <Paper
           className={`${classes.paper} legend-card`}
           elevation={forPrinting ? 0 : undefined}
-          style={
-            forPrinting
-              ? {
-                  border: `1px solid ${lightGrey}`,
-                }
-              : undefined
-          }
+          style={printPaperStyle}
         >
           <Grid item style={{ display: 'flex' }}>
-            <Typography style={{ flexGrow: 1 }} variant="h4">
+            <Typography
+              style={{
+                flexGrow: 1,
+                ...(forPrinting
+                  ? { fontSize: LEGEND_PRINT_TITLE_FONT_SIZE * printScale }
+                  : {}),
+              }}
+              variant="h4"
+            >
               {title}
             </Typography>
             <LayerContentPreview layerId={id} />
@@ -317,7 +376,15 @@ const LegendItem = memo(
               <LoadingBar layerId={id} />
               {renderedChildren}
               {coverageText && (
-                <Typography variant="h5" style={{ marginTop: 8 }}>
+                <Typography
+                  variant="h5"
+                  style={{
+                    marginTop: 8,
+                    ...(forPrinting
+                      ? { fontSize: LEGEND_PRINT_BODY_FONT_SIZE * printScale }
+                      : {}),
+                  }}
+                >
                   {t('Coverage')}: {coverageText}
                 </Typography>
               )}
@@ -430,6 +497,7 @@ interface LegendItemProps extends PropsWithChildren<{}> {
   extent?: Extent;
   forPrinting?: boolean;
   showDescription?: boolean;
+  legendScale?: number;
   dateCoverage?: DateCoverage;
 }
 
