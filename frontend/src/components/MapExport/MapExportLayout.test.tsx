@@ -24,12 +24,11 @@ jest.mock('components/MapView/Legends/LegendItemsList', () => {
   const React = require('react');
   return {
     __esModule: true,
-    default: () =>
-      React.createElement(
-        'div',
-        { 'data-testid': 'legend-items' },
-        'mock-LegendItemsList',
-      ),
+    default: ({ legendGraphicDpi }: { legendGraphicDpi?: number }) =>
+      React.createElement('div', {
+        'data-testid': 'legend-items',
+        'data-legend-graphic-dpi': legendGraphicDpi,
+      }),
   };
 });
 
@@ -290,18 +289,40 @@ describe('MapExportLayout', () => {
     expect(logoImg?.style.height).toBe('48px');
   });
 
-  test('applies legend scale correctly', () => {
-    const { container } = render(
+  test('applies legend scale via CSS transform in print preview', () => {
+    const { getByTestId } = render(
       <Provider store={store}>
         <ThemeProvider theme={createTheme()}>
           <MapExportLayout {...defaultProps} legendScale={0.7} />
         </ThemeProvider>
       </Provider>,
     );
-    const legendContainer = container.querySelector(
-      '[data-testid="legend-items"]',
-    )?.parentElement;
+    const legendContainer = getByTestId('legend-items').parentElement;
     expect(legendContainer?.style.transform).toBe('scale(0.7)');
+    expect(legendContainer?.style.transformOrigin).toBe('top left');
+    expect(getByTestId('legend-items')).not.toHaveAttribute(
+      'data-legend-graphic-dpi',
+    );
+  });
+
+  test('uses the same CSS transform for server export and requests high-DPI WMS legends', () => {
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout
+            {...defaultProps}
+            legendScale={0.7}
+            signalExportReady
+          />
+        </ThemeProvider>
+      </Provider>,
+    );
+    const legendContainer = getByTestId('legend-items').parentElement;
+    expect(legendContainer?.style.transform).toBe('scale(0.7)');
+    expect(getByTestId('legend-items')).toHaveAttribute(
+      'data-legend-graphic-dpi',
+      '192',
+    );
   });
 
   test('applies footer text size correctly', () => {

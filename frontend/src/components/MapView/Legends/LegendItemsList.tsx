@@ -30,6 +30,8 @@ interface LegendItemsListProps {
   listStyle?: string;
   showDescription?: boolean;
   overrideLayers?: LayerType[];
+  /** WMS GetLegendGraphic DPI for server-side export (e.g. 192 for DPR 2). */
+  legendGraphicDpi?: number;
 }
 
 function LegendItemsList({
@@ -37,6 +39,7 @@ function LegendItemsList({
   forPrinting = false,
   showDescription = true,
   overrideLayers,
+  legendGraphicDpi,
 }: LegendItemsListProps) {
   const { t } = useSafeTranslation();
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
@@ -80,9 +83,10 @@ function LegendItemsList({
         ? createGetLegendGraphicUrl({
             base: layer.baseUrl,
             layer: layer.serverLayerName,
+            dpi: legendGraphicDpi,
           })
         : undefined,
-    [],
+    [legendGraphicDpi],
   );
 
   // memoized values from selectors

@@ -648,14 +648,16 @@ function MapExportLayout({
             justifyContent:
               legendPosition % 2 === 0 ? 'flex-start' : 'flex-end',
             width: '20px',
-            // Use transform scale to adjust size based on legendScale
             transform: `scale(${legendScale})`,
+            transformOrigin:
+              legendPosition % 2 === 0 ? 'top left' : 'top right',
           }}
         >
           <LegendItemsList
             forPrinting
             listStyle={classes.legendListStyle}
             showDescription={toggles.fullLayerDescription}
+            legendGraphicDpi={signalExportReady ? 192 : undefined}
             overrideLayers={
               selectedLayers && selectedLayers.length > 0
                 ? selectedLayers
