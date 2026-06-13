@@ -24,16 +24,9 @@ jest.mock('components/MapView/Legends/LegendItemsList', () => {
   const React = require('react');
   return {
     __esModule: true,
-    default: ({
-      legendScale,
-      legendGraphicDpi,
-    }: {
-      legendScale?: number;
-      legendGraphicDpi?: number;
-    }) =>
+    default: ({ legendGraphicDpi }: { legendGraphicDpi?: number }) =>
       React.createElement('div', {
         'data-testid': 'legend-items',
-        'data-legend-scale': legendScale,
         'data-legend-graphic-dpi': legendGraphicDpi,
       }),
   };
@@ -296,8 +289,8 @@ describe('MapExportLayout', () => {
     expect(logoImg?.style.height).toBe('48px');
   });
 
-  test('applies legend scale correctly in print preview', () => {
-    const { container, getByTestId } = render(
+  test('applies legend scale via CSS transform in print preview', () => {
+    const { getByTestId } = render(
       <Provider store={store}>
         <ThemeProvider theme={createTheme()}>
           <MapExportLayout {...defaultProps} legendScale={0.7} />
@@ -306,14 +299,13 @@ describe('MapExportLayout', () => {
     );
     const legendContainer = getByTestId('legend-items').parentElement;
     expect(legendContainer?.style.transform).toBe('scale(0.7)');
-    expect(getByTestId('legend-items')).toHaveAttribute(
-      'data-legend-scale',
-      '1',
+    expect(legendContainer?.style.transformOrigin).toBe('top left');
+    expect(getByTestId('legend-items')).not.toHaveAttribute(
+      'data-legend-graphic-dpi',
     );
-    expect(container.querySelector('[data-legend-graphic-dpi]')).toBeNull();
   });
 
-  test('uses intrinsic legend scale for server export', () => {
+  test('uses the same CSS transform for server export and requests high-DPI WMS legends', () => {
     const { getByTestId } = render(
       <Provider store={store}>
         <ThemeProvider theme={createTheme()}>
@@ -326,11 +318,7 @@ describe('MapExportLayout', () => {
       </Provider>,
     );
     const legendContainer = getByTestId('legend-items').parentElement;
-    expect(legendContainer?.style.transform).toBe('');
-    expect(getByTestId('legend-items')).toHaveAttribute(
-      'data-legend-scale',
-      '0.7',
-    );
+    expect(legendContainer?.style.transform).toBe('scale(0.7)');
     expect(getByTestId('legend-items')).toHaveAttribute(
       'data-legend-graphic-dpi',
       '192',
