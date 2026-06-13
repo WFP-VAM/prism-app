@@ -76,4 +76,7 @@ export const chartFormControlSx = {
 export const dropdownFullWidthSx = {
   width: '100%',
   color: 'black',
+  // Stretch the LayerDropdown's FormControl to fill the wrapper (legacy
+  // classes.dropdown width:100% was lost in the MUI migration)
+  '& .MuiFormControl-root': { width: '100%' },
 } satisfies SxProps<Theme>;

@@ -354,6 +354,10 @@ export const aaDroughtRadioSx = {
       '&.Mui-checked': {
         color: black,
       },
+      // Disabled-checked should grey out (legacy look), not stay solid black
+      '&.Mui-checked.Mui-disabled': {
+        color: 'rgba(0, 0, 0, 0.26)',
+      },
     },
   } satisfies SxProps<Theme>,
   checkboxLabel: {

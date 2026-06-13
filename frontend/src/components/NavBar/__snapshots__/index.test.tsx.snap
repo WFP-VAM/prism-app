@@ -113,7 +113,7 @@ exports[`renders as expected 1`] = `
               </svg>
             </button>
             <button
-              class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-tng5c-MuiButtonBase-root-MuiButton-root"
+              class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-lca9ic-MuiButtonBase-root-MuiButton-root"
               tabindex="0"
               type="button"
             >

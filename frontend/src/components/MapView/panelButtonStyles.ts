@@ -5,7 +5,10 @@ export const panelActionButtonSx = (backgroundColor: string) => ({
   '&&': {
     backgroundColor,
     color: white,
-    textTransform: 'none',
+    // Match legacy body2 button label styling (uppercase, spaced, 11px)
+    textTransform: 'uppercase',
+    fontSize: 11,
+    letterSpacing: 3.5,
     '&:hover': {
       backgroundColor,
     },

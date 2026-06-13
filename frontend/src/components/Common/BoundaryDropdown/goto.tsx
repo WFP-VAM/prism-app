@@ -33,7 +33,11 @@ function GoToBoundaryDropdown() {
   return (
     <>
       {!smDown && (
-        <Button startIcon={<RoomOutlinedIcon />} onClick={handleClick}>
+        <Button
+          startIcon={<RoomOutlinedIcon />}
+          onClick={handleClick}
+          sx={{ color: 'white' }}
+        >
           <Typography style={{ color: '#FFF', textTransform: 'none' }}>
             {t('Go To')}
           </Typography>

@@ -206,7 +206,8 @@ function GreyContainer({ children }: { children: React.ReactNode }) {
       sx={{
         bgcolor: '#F1F1F1',
         borderRadius: '4px',
-        padding: 4,
+        // 4px literal (JSS px), not theme.spacing(4)=24px — keeps the box compact
+        padding: '4px',
       }}
     >
       {children}
@@ -223,7 +224,7 @@ function GreyContainerSection({
 }) {
   return (
     <>
-      <Box sx={{ margin: 4 }}>{children}</Box>
+      <Box sx={{ margin: '4px' }}>{children}</Box>
       {!isLast && <Divider style={{ background: '#ffffff' }} />}
     </>
   );

@@ -852,11 +852,10 @@ const ChartsPanel = memo(() => {
             ...chartsLayerFormControlSx,
             '& .MuiInputLabel-root': { color: 'black' },
             '& .MuiSelect-select': { color: 'black' },
-            '& .MuiOutlinedInput-notchedOutline': { borderColor: '#333333' },
           }}
           select
           label={t('Select Charts')}
-          variant="outlined"
+          variant="standard"
           fullWidth
           value={selectedLayerTitles}
           onChange={event =>
