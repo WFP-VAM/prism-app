@@ -1,4 +1,5 @@
 import { Tooltip } from '@material-ui/core';
+import { useClip } from 'components/MapExport/clipContext';
 import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils';
 import {
   AdminLevelDataLayerProps,
@@ -29,6 +30,7 @@ import {
   Source,
 } from 'react-map-gl/maplibre';
 import { useDispatch, useSelector } from 'react-redux';
+import { clipFeatureCollectionToPolygon } from 'utils/clipVectorData';
 import {
   calculateCentroids,
   useAAMarkerScalePercent,
@@ -61,6 +63,7 @@ const AnticipatoryActionDroughtLayer = React.memo(
     const { selectedWindow } = useSelector(AAFiltersSelector);
     const selectedDistrict = useSelector(AASelectedDistrictSelector);
     const markers = useSelector(AAMarkersSelector);
+    const clip = useClip();
 
     useMapCallback(
       'click',
@@ -139,6 +142,18 @@ const AnticipatoryActionDroughtLayer = React.memo(
       };
     }, [data, shouldRenderData]);
 
+    const clippedColoredDistrictsLayer = React.useMemo(
+      () =>
+        coloredDistrictsLayer && clip
+          ? clipFeatureCollectionToPolygon(
+              coloredDistrictsLayer as any,
+              clip.clipPolygon,
+              clip.clipId,
+            )
+          : coloredDistrictsLayer,
+      [coloredDistrictsLayer, clip],
+    );
+
     const scalePercent = useAAMarkerScalePercent(map);
 
     const mainLayerBefore = selectedDistrict
@@ -183,12 +198,12 @@ const AnticipatoryActionDroughtLayer = React.memo(
             }}
           />
         </Source>
-        {coloredDistrictsLayer && (
+        {clippedColoredDistrictsLayer && (
           <Source
             key="anticipatory-action"
             id="anticipatory-action-"
             type="geojson"
-            data={coloredDistrictsLayer}
+            data={clippedColoredDistrictsLayer}
           >
             <Layer
               beforeId={mainLayerBefore}

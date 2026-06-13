@@ -71,6 +71,7 @@
     "@turf/bbox": "^7",
     "@turf/boolean-point-in-polygon": "^7",
     "@turf/centroid": "^7",
+    "@turf/intersect": "^7",
     "@turf/mask": "^7",
     "@turf/simplify": "^7",
     "@turf/union": "^7",

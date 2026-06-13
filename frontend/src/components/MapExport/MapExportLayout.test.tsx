@@ -235,26 +235,27 @@ describe('MapExportLayout', () => {
     expect(container.querySelector('.footerOverlay')).not.toBeInTheDocument();
   });
 
-  test('does not render legacy mask overlay when countryMask is enabled', () => {
-    const toggles = { ...defaultToggles, countryMask: true };
-    const mockPolygon = {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [0, 0],
-            [1, 0],
-            [1, 1],
-            [0, 1],
-            [0, 0],
-          ],
+  const mockPolygon = {
+    type: 'Feature',
+    geometry: {
+      type: 'Polygon',
+      coordinates: [
+        [
+          [0, 0],
+          [1, 0],
+          [1, 1],
+          [0, 1],
+          [0, 0],
         ],
-      },
-      properties: {},
-    };
+      ],
+    },
+    properties: {},
+  };
 
-    const { container } = render(
+  test('renders a single map (no overlay maps) when countryMask is enabled', () => {
+    const toggles = { ...defaultToggles, countryMask: true };
+
+    const { getAllByTestId } = render(
       <Provider store={store}>
         <ThemeProvider theme={createTheme()}>
           <MapExportLayout
@@ -266,7 +267,9 @@ describe('MapExportLayout', () => {
       </Provider>,
     );
 
-    expect(container.textContent).not.toContain('mock-Source');
+    // Source-level clipping renders everything on one map rather than the old
+    // base + data + boundaries + labels overlay stack.
+    expect(getAllByTestId('map-gl')).toHaveLength(1);
   });
 
   test('applies logo scale correctly', () => {

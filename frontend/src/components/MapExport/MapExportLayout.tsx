@@ -21,7 +21,7 @@ import { ensureSDFIconsLoaded } from 'components/MapView/Layers/icon-utils';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
 import { mapStyle } from 'components/MapView/Map/utils';
 import { DiscriminateUnion, LayerType, Panel } from 'config/types';
-import type { StyleSpecification } from 'maplibre-gl';
+import { addNotification } from 'context/notificationStateSlice';
 import maplibregl from 'maplibre-gl';
 import { lightGrey } from 'muiTheme';
 import React, {
@@ -34,12 +34,12 @@ import React, {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import MapGL, { MapRef, Marker } from 'react-map-gl/maplibre';
+import MapGL, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';
+import { useDispatch } from 'react-redux';
 import {
-  applyAdminAreaClipPath,
-  isMapFullyLoaded,
-  syncMapView,
-} from 'utils/adminAreaMapClip';
+  isClipDebugEnabled,
+  setClipErrorHandler,
+} from 'utils/clipRasterProtocol';
 import { formatCoverageText, getFormattedDate } from 'utils/date-utils';
 import {
   getFirstBoundaryLayerMapId,
@@ -47,20 +47,11 @@ import {
   layerUsesSymbolAnchorOnly,
   stackLayersForMapPaintOrder,
 } from 'utils/map-layer-before-utils';
-import {
-  getLayerMapId,
-  isLayerOnView,
-  useAAMarkerScalePercent,
-} from 'utils/map-utils';
+import { isBasemapLabelLayer, useAAMarkerScalePercent } from 'utils/map-utils';
 import useResizeObserver from 'utils/useOnResizeObserver';
 
 import { getAspectRatioDecimal } from './aspectRatioConstants';
-import {
-  isBasemapLabelLayer,
-  removeBasemapLabelLayersFromMap,
-  splitExportMapStyleForClipping,
-} from './splitExportMapStyleForClipping';
-import { transparentDataOverlayMapStyle } from './transparentDataOverlayMapStyle';
+import { ClipProvider } from './ClipProvider';
 import { MapExportLayoutProps } from './types';
 
 /**
@@ -73,6 +64,14 @@ import { MapExportLayoutProps } from './types';
  * SYNC NOTE: The layer rendering logic (componentTypes mapping) must be kept
  * in sync with MapView/Map/index.tsx to ensure consistent layer rendering.
  * If you add a new layer type, update both files.
+ *
+ * Country mask: when `toggles.countryMask` is on and an `adminAreaClipPolygon`
+ * is provided, layers are clipped at the SOURCE via the ClipProvider:
+ *  - raster layers route tiles through the `clip://` protocol (masked once per
+ *    tile, then cached by MapLibre),
+ *  - vector layers are clipped with turf at load.
+ * Everything renders on a single map and the basemap shows through outside the
+ * country, so there is no per-frame clip-path recomputation.
  */
 
 // Layer component mapping - KEEP IN SYNC with MapView/Map/index.tsx
@@ -104,6 +103,10 @@ const componentTypes: LayerComponentsMap<LayerType> = {
     component: AnticipatoryActionFloodLayer,
   },
 };
+
+function isMapFullyLoaded(map: maplibregl.Map): boolean {
+  return Boolean(map.isStyleLoaded() && map.areTilesLoaded() && map.loaded());
+}
 
 /** Playwright (/export, signalExportReady): min consecutive "fully loaded" samples before PRISM_READY. */
 const MAP_EXPORT_STABLE_LOADED_TICKS = 2;
@@ -150,15 +153,9 @@ function MapExportLayout({
   layersCoverage = [],
 }: MapExportLayoutProps) {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const northArrowRef = useRef<HTMLImageElement>(null);
   const baseMapRef = React.useRef<MapRef>(null);
-  const dataMapRef = React.useRef<MapRef>(null);
-  const boundariesMapRef = React.useRef<MapRef>(null);
-  const labelsMapRef = React.useRef<MapRef>(null);
-  const dataLayersClipContainerRef = useRef<HTMLDivElement>(null);
-  const [baseMapReadyVersion, setBaseMapReadyVersion] = useState(0);
-  const [runtimeLabelsOverlayStyle, setRuntimeLabelsOverlayStyle] =
-    useState<StyleSpecification | null>(null);
 
   // Track container dimensions to calculate proper map size
   const [containerRef, containerDimensions] =
@@ -176,19 +173,8 @@ function MapExportLayout({
     [selectedLayers],
   );
 
-  const shouldClipDataLayers = Boolean(
-    toggles.countryMask && adminAreaClipPolygon,
-  );
-
-  const boundaryLayers = useMemo(
-    () => stackLayers.filter(layer => layer.type === 'boundary'),
-    [stackLayers],
-  );
-
-  const dataLayers = useMemo(
-    () => stackLayers.filter(layer => layer.type !== 'boundary'),
-    [stackLayers],
-  );
+  const clipPolygon =
+    toggles.countryMask && adminAreaClipPolygon ? adminAreaClipPolygon : null;
 
   // Process map style to filter labels if needed
   const processedMapStyle = useMemo(() => {
@@ -207,33 +193,7 @@ function MapExportLayout({
     return mapStyleProp;
   }, [mapStyleProp, toggles.mapLabelsVisibility]);
 
-  useEffect(() => {
-    setRuntimeLabelsOverlayStyle(null);
-  }, [processedMapStyle, shouldClipDataLayers, toggles.mapLabelsVisibility]);
-
-  const clippedExportStyles = useMemo(() => {
-    if (!shouldClipDataLayers || typeof processedMapStyle !== 'object') {
-      return null;
-    }
-
-    return splitExportMapStyleForClipping(
-      processedMapStyle,
-      toggles.mapLabelsVisibility,
-    );
-  }, [processedMapStyle, shouldClipDataLayers, toggles.mapLabelsVisibility]);
-
-  const basemapMapStyle =
-    clippedExportStyles?.basemapStyle ??
-    processedMapStyle ??
-    mapStyle.toString();
-  const labelsOverlayStyle =
-    runtimeLabelsOverlayStyle ?? clippedExportStyles?.labelsStyle;
-  const shouldShowLabelsOverlay = Boolean(
-    shouldClipDataLayers && labelsOverlayStyle,
-  );
-  const shouldShowBoundariesOverlay = Boolean(
-    shouldClipDataLayers && boundaryLayers.length > 0,
-  );
+  const basemapMapStyle = processedMapStyle ?? mapStyle.toString();
 
   const firstBoundaryLayerMapId = getFirstBoundaryLayerMapId(
     baseMapRef.current?.getMap(),
@@ -243,98 +203,39 @@ function MapExportLayout({
     (index: number, aboveBoundaries: boolean = false) =>
       getLayerBeforeId(index, {
         aboveBoundaries,
-        stackLayers: shouldClipDataLayers ? boundaryLayers : stackLayers,
+        stackLayers,
         map: baseMapRef.current?.getMap(),
         firstSymbolId,
         firstBoundaryLayerMapId,
       }),
-    [
-      boundaryLayers,
-      firstBoundaryLayerMapId,
-      firstSymbolId,
-      shouldClipDataLayers,
-      stackLayers,
-    ],
-  );
-
-  const getBoundaryOverlayBeforeId = useCallback(
-    (index: number) => {
-      if (index === 0) {
-        return undefined;
-      }
-
-      const previousLayerId = boundaryLayers[index - 1].id;
-      if (isLayerOnView(boundariesMapRef.current?.getMap(), previousLayerId)) {
-        return getLayerMapId(previousLayerId);
-      }
-
-      return undefined;
-    },
-    [boundaryLayers],
-  );
-
-  const getDataLayerBeforeId = useCallback(
-    (index: number, aboveBoundaries: boolean = false) => {
-      if (!shouldClipDataLayers) {
-        return getBasemapLayerBeforeId(index, aboveBoundaries);
-      }
-
-      if (aboveBoundaries) {
-        return undefined;
-      }
-
-      if (index === 0) {
-        return undefined;
-      }
-
-      const previousLayerId = dataLayers[index - 1].id;
-      if (isLayerOnView(dataMapRef.current?.getMap(), previousLayerId)) {
-        return getLayerMapId(previousLayerId);
-      }
-
-      return undefined;
-    },
-    [dataLayers, getBasemapLayerBeforeId, shouldClipDataLayers],
+    [firstBoundaryLayerMapId, firstSymbolId, stackLayers],
   );
 
   const areExportMapsLoaded = useCallback(() => {
     const baseMap = baseMapRef.current?.getMap();
-    if (!baseMap || !isMapFullyLoaded(baseMap)) {
-      return false;
-    }
-
-    if (shouldClipDataLayers) {
-      const dataMap = dataMapRef.current?.getMap();
-      if (!dataMap || !isMapFullyLoaded(dataMap)) {
-        return false;
-      }
-    }
-
-    if (shouldShowBoundariesOverlay) {
-      const boundariesMap = boundariesMapRef.current?.getMap();
-      if (!boundariesMap || !isMapFullyLoaded(boundariesMap)) {
-        return false;
-      }
-    }
-
-    if (shouldShowLabelsOverlay) {
-      const labelsMap = labelsMapRef.current?.getMap();
-      if (!labelsMap || !isMapFullyLoaded(labelsMap)) {
-        return false;
-      }
-    }
-
-    return true;
-  }, [
-    shouldClipDataLayers,
-    shouldShowBoundariesOverlay,
-    shouldShowLabelsOverlay,
-  ]);
+    return Boolean(baseMap && isMapFullyLoaded(baseMap));
+  }, []);
 
   // Scale percent for AA markers based on map zoom
   const scalePercent = useAAMarkerScalePercent(baseMapRef.current?.getMap());
 
   const { t } = useTranslation();
+
+  // Surface clip:// tile fetch/CORS failures to the user as a notification.
+  useEffect(() => {
+    if (!clipPolygon) {
+      return undefined;
+    }
+    setClipErrorHandler(error => {
+      dispatch(
+        addNotification({
+          message: `Country mask could not load some map tiles: ${error.message}`,
+          type: 'warning',
+        }),
+      );
+    });
+    return () => setClipErrorHandler(null);
+  }, [clipPolygon, dispatch]);
 
   // Process title text to replace {date} and {coverage} placeholders
   const processedTitleText = useMemo(() => {
@@ -463,50 +364,6 @@ function MapExportLayout({
     [bounds],
   );
 
-  const syncOverlayMapsToBasemap = useCallback(() => {
-    const baseMap = baseMapRef.current?.getMap();
-    if (!baseMap) {
-      return;
-    }
-
-    const dataMap = dataMapRef.current?.getMap();
-    if (dataMap) {
-      syncMapView(baseMap, dataMap);
-    }
-
-    const boundariesMap = boundariesMapRef.current?.getMap();
-    if (boundariesMap) {
-      syncMapView(baseMap, boundariesMap);
-    }
-
-    const labelsMap = labelsMapRef.current?.getMap();
-    if (labelsMap) {
-      syncMapView(baseMap, labelsMap);
-    }
-  }, []);
-
-  const applyDataLayersClipPath = useCallback(() => {
-    const container = dataLayersClipContainerRef.current;
-    if (!shouldClipDataLayers || !adminAreaClipPolygon) {
-      if (container) {
-        container.style.clipPath = '';
-      }
-      return;
-    }
-
-    const map = dataMapRef.current?.getMap();
-    if (!map || !container) {
-      return;
-    }
-
-    applyAdminAreaClipPath(map, container, adminAreaClipPolygon);
-  }, [adminAreaClipPolygon, shouldClipDataLayers]);
-
-  const syncClippedExportView = useCallback(() => {
-    syncOverlayMapsToBasemap();
-    applyDataLayersClipPath();
-  }, [applyDataLayersClipPath, syncOverlayMapsToBasemap]);
-
   const startExportReadyTracking = useCallback(
     (map: maplibregl.Map, onLoadEvent: unknown) => {
       let hasSignaledReady = false;
@@ -593,24 +450,8 @@ function MapExportLayout({
       }
     }
 
-    if (!shouldClipDataLayers) {
-      loadDataLayerAssets(map);
-    } else if (
-      toggles.mapLabelsVisibility &&
-      typeof processedMapStyle === 'string' &&
-      map?.getStyle()
-    ) {
-      const { labelsStyle } = splitExportMapStyleForClipping(
-        map.getStyle(),
-        true,
-      );
-      removeBasemapLabelLayersFromMap(map);
-      setRuntimeLabelsOverlayStyle(labelsStyle);
-    }
-
+    loadDataLayerAssets(map);
     fitMapToBounds(map);
-    syncClippedExportView();
-    setBaseMapReadyVersion(version => version + 1);
 
     if (onBoundsChange && map) {
       let lastBoundsStr: string | null = null;
@@ -627,7 +468,6 @@ function MapExportLayout({
             onBoundsChange(mapBounds, zoom);
           }
         }
-        syncClippedExportView();
       };
 
       reportBounds();
@@ -636,42 +476,13 @@ function MapExportLayout({
 
     const shouldTrackTileLoading = signalExportReady || onMapLoad;
 
-    if (
-      shouldTrackTileLoading &&
-      map &&
-      !signalExportReady &&
-      onMapLoad &&
-      !shouldClipDataLayers
-    ) {
-      onMapLoad(e);
-      return;
-    }
-
     if (shouldTrackTileLoading && map && signalExportReady) {
       startExportReadyTracking(map, e);
-    } else if (onMapLoad && !shouldClipDataLayers) {
+    } else if (onMapLoad) {
       onMapLoad(e);
     }
   };
 
-  const handleDataMapLoad = (e: any) => {
-    const map = dataMapRef.current?.getMap();
-    loadDataLayerAssets(map);
-    fitMapToBounds(map);
-    syncClippedExportView();
-
-    if (onMapLoad && !signalExportReady) {
-      onMapLoad(e);
-    }
-  };
-
-  const handleBoundariesMapLoad = () => {
-    syncClippedExportView();
-  };
-
-  const handleLabelsMapLoad = () => {
-    syncClippedExportView();
-  };
   // Calculate map dimensions based on container size and aspect ratio
   const mapDimensions = useMemo(() => {
     const { width: containerWidth, height: containerHeight } =
@@ -722,52 +533,6 @@ function MapExportLayout({
       onMapDimensionsChange(mapDimensions.width, mapDimensions.height);
     }
   }, [mapDimensions, onMapDimensionsChange]);
-
-  useEffect(() => {
-    if (!shouldClipDataLayers) {
-      applyDataLayersClipPath();
-      return undefined;
-    }
-
-    const baseMap = baseMapRef.current?.getMap();
-    if (!baseMap) {
-      return undefined;
-    }
-
-    let rafId = 0;
-    const syncOnMove = () => {
-      if (rafId !== 0) {
-        cancelAnimationFrame(rafId);
-      }
-      rafId = requestAnimationFrame(() => {
-        rafId = 0;
-        syncClippedExportView();
-      });
-    };
-
-    syncClippedExportView();
-    baseMap.on('move', syncOnMove);
-    baseMap.on('moveend', syncClippedExportView);
-    baseMap.on('resize', syncClippedExportView);
-    baseMap.on('zoom', syncOnMove);
-
-    return () => {
-      if (rafId !== 0) {
-        cancelAnimationFrame(rafId);
-      }
-      baseMap.off('move', syncOnMove);
-      baseMap.off('moveend', syncClippedExportView);
-      baseMap.off('resize', syncClippedExportView);
-      baseMap.off('zoom', syncOnMove);
-      applyDataLayersClipPath();
-    };
-  }, [
-    applyDataLayersClipPath,
-    baseMapReadyVersion,
-    mapDimensions,
-    shouldClipDataLayers,
-    syncClippedExportView,
-  ]);
 
   // The map content (title, legend, footer, map itself)
   const mapContent = (
@@ -913,8 +678,17 @@ function MapExportLayout({
           mapStyle={basemapMapStyle}
           style={{ width: '100%', height: '100%' }}
         >
-          {!shouldClipDataLayers &&
-            stackLayers.map((layer, index) => {
+          <ClipProvider polygon={clipPolygon}>
+            {clipPolygon && isClipDebugEnabled() && (
+              <Source id="clip-debug-outline" type="geojson" data={clipPolygon}>
+                <Layer
+                  id="clip-debug-outline-line"
+                  type="line"
+                  paint={{ 'line-color': '#ff00ff', 'line-width': 2 }}
+                />
+              </Source>
+            )}
+            {stackLayers.map((layer, index) => {
               const { component } = componentTypes[layer.type];
               return createElement(component as any, {
                 key: layer.id,
@@ -926,132 +700,30 @@ function MapExportLayout({
                 ),
               });
             })}
-          {!shouldClipDataLayers && (
-            <>
-              {activePanel === Panel.AnticipatoryActionDrought &&
-                aaMarkers.map(marker => (
-                  <Marker
-                    key={`marker-${marker.district}`}
-                    longitude={marker.longitude}
-                    latitude={marker.latitude}
-                    anchor="center"
-                  >
-                    <div style={{ transform: `scale(${scalePercent})` }}>
-                      {marker.icon}
-                    </div>
-                  </Marker>
-                ))}
-              {activePanel === Panel.AnticipatoryActionFlood &&
-                floodStations.map(station => (
-                  <FloodStationMarker
-                    key={`flood-station-${station.station_id}`}
-                    station={station}
-                    stationSummary={station}
-                    interactive={false}
-                  />
-                ))}
-            </>
-          )}
+            {activePanel === Panel.AnticipatoryActionDrought &&
+              aaMarkers.map(marker => (
+                <Marker
+                  key={`marker-${marker.district}`}
+                  longitude={marker.longitude}
+                  latitude={marker.latitude}
+                  anchor="center"
+                >
+                  <div style={{ transform: `scale(${scalePercent})` }}>
+                    {marker.icon}
+                  </div>
+                </Marker>
+              ))}
+            {activePanel === Panel.AnticipatoryActionFlood &&
+              floodStations.map(station => (
+                <FloodStationMarker
+                  key={`flood-station-${station.station_id}`}
+                  station={station}
+                  stationSummary={station}
+                  interactive={false}
+                />
+              ))}
+          </ClipProvider>
         </MapGL>
-        {shouldClipDataLayers && (
-          <div
-            ref={dataLayersClipContainerRef}
-            className={classes.dataLayersClipOverlay}
-          >
-            <MapGL
-              ref={dataMapRef}
-              dragPan={false}
-              scrollZoom={false}
-              doubleClickZoom={false}
-              touchZoomRotate={false}
-              dragRotate={false}
-              preserveDrawingBuffer
-              initialViewState={effectiveInitialViewState}
-              onLoad={handleDataMapLoad}
-              mapStyle={transparentDataOverlayMapStyle}
-              style={{ width: '100%', height: '100%' }}
-            >
-              {dataLayers.map((layer, index) => {
-                const { component } = componentTypes[layer.type];
-                return createElement(component as any, {
-                  key: layer.id,
-                  layer,
-                  mapRef: dataMapRef,
-                  before: getDataLayerBeforeId(
-                    index,
-                    layerUsesSymbolAnchorOnly(layer),
-                  ),
-                });
-              })}
-              {activePanel === Panel.AnticipatoryActionDrought &&
-                aaMarkers.map(marker => (
-                  <Marker
-                    key={`marker-${marker.district}`}
-                    longitude={marker.longitude}
-                    latitude={marker.latitude}
-                    anchor="center"
-                  >
-                    <div style={{ transform: `scale(${scalePercent})` }}>
-                      {marker.icon}
-                    </div>
-                  </Marker>
-                ))}
-              {activePanel === Panel.AnticipatoryActionFlood &&
-                floodStations.map(station => (
-                  <FloodStationMarker
-                    key={`flood-station-${station.station_id}`}
-                    station={station}
-                    stationSummary={station}
-                    interactive={false}
-                  />
-                ))}
-            </MapGL>
-          </div>
-        )}
-        {shouldShowBoundariesOverlay && (
-          <div className={classes.boundariesMapOverlay}>
-            <MapGL
-              ref={boundariesMapRef}
-              dragPan={false}
-              scrollZoom={false}
-              doubleClickZoom={false}
-              touchZoomRotate={false}
-              dragRotate={false}
-              preserveDrawingBuffer
-              initialViewState={effectiveInitialViewState}
-              onLoad={handleBoundariesMapLoad}
-              mapStyle={transparentDataOverlayMapStyle}
-              style={{ width: '100%', height: '100%' }}
-            >
-              {boundaryLayers.map((layer, index) => {
-                const { component } = componentTypes[layer.type];
-                return createElement(component as any, {
-                  key: layer.id,
-                  layer,
-                  mapRef: boundariesMapRef,
-                  before: getBoundaryOverlayBeforeId(index),
-                });
-              })}
-            </MapGL>
-          </div>
-        )}
-        {shouldShowLabelsOverlay && labelsOverlayStyle && (
-          <div className={classes.labelsMapOverlay}>
-            <MapGL
-              ref={labelsMapRef}
-              dragPan={false}
-              scrollZoom={false}
-              doubleClickZoom={false}
-              touchZoomRotate={false}
-              dragRotate={false}
-              preserveDrawingBuffer
-              initialViewState={effectiveInitialViewState}
-              onLoad={handleLabelsMapLoad}
-              mapStyle={labelsOverlayStyle}
-              style={{ width: '100%', height: '100%' }}
-            />
-          </div>
-        )}
       </div>
     </div>
   );
@@ -1104,33 +776,6 @@ const useStyles = makeStyles(() =>
       height: '100%',
       width: '100%',
       zIndex: 1,
-    },
-    dataLayersClipOverlay: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      height: '100%',
-      width: '100%',
-      zIndex: 2,
-      pointerEvents: 'none',
-    },
-    labelsMapOverlay: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      height: '100%',
-      width: '100%',
-      zIndex: 4,
-      pointerEvents: 'none',
-    },
-    boundariesMapOverlay: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      height: '100%',
-      width: '100%',
-      zIndex: 3,
-      pointerEvents: 'none',
     },
     titleOverlay: {
       display: 'flex',

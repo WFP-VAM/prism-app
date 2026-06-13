@@ -1,3 +1,4 @@
+import { useClip } from 'components/MapExport/clipContext';
 import { addPopupParams } from 'components/MapView/Layers/layer-utils';
 import { fillPaintData } from 'components/MapView/Layers/styles';
 import {
@@ -13,10 +14,11 @@ import { addNotification } from 'context/notificationStateSlice';
 import { opacitySelector } from 'context/opacityStateSlice';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { FillLayerSpecification } from 'maplibre-gl';
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useMemo } from 'react';
 import { Layer, MapLayerMouseEvent, Source } from 'react-map-gl/maplibre';
 import { useDispatch, useSelector } from 'react-redux';
 import { boundaryCache } from 'utils/boundary-cache';
+import { clipFeatureCollectionToPolygon } from 'utils/clipVectorData';
 import {
   firstBoundaryOnView,
   getLayerMapId,
@@ -63,6 +65,15 @@ const AdminLevelDataLayers = memo(
       | LayerData<AdminLevelDataLayerProps>
       | undefined;
     const { data } = layerData || {};
+
+    const clip = useClip();
+    const clippedData = useMemo(
+      () =>
+        data && clip
+          ? clipFeatureCollectionToPolygon(data, clip.clipPolygon, clip.clipId)
+          : data,
+      [data, clip],
+    );
 
     useEffect(() => {
       addFillPatternImagesInMap(layer, map);
@@ -117,7 +128,7 @@ const AdminLevelDataLayers = memo(
     }
 
     return (
-      <Source type="geojson" data={data}>
+      <Source type="geojson" data={clippedData}>
         <Layer
           id={getLayerMapId(layer.id)}
           type="fill"
