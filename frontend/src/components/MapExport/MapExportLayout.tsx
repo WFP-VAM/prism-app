@@ -48,6 +48,7 @@ import {
   stackLayersForMapPaintOrder,
 } from 'utils/map-layer-before-utils';
 import { isBasemapLabelLayer, useAAMarkerScalePercent } from 'utils/map-utils';
+import { scheduleAfterNextPaint } from 'utils/scheduleAfterNextPaint';
 import useResizeObserver from 'utils/useOnResizeObserver';
 
 import { getAspectRatioDecimal } from './aspectRatioConstants';
@@ -111,11 +112,6 @@ function isMapFullyLoaded(map: maplibregl.Map): boolean {
 /** Playwright (/export, signalExportReady): min consecutive "fully loaded" samples before PRISM_READY. */
 const MAP_EXPORT_STABLE_LOADED_TICKS = 2;
 
-function scheduleAfterNextPaint(callback: () => void): void {
-  requestAnimationFrame(() => {
-    requestAnimationFrame(callback);
-  });
-}
 /** Poll when map idle is slow (ms). 0 uses the shortest practical interval (browser clamps ~4ms). */
 const MAP_EXPORT_LOAD_POLL_MS = 0;
 

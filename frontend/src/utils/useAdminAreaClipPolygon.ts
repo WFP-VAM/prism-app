@@ -18,6 +18,8 @@ export function useAdminAreaClipPolygon(options: {
   getLayerData: (
     layerId: string,
   ) => LayerData<BoundaryLayerProps>['data'] | undefined;
+  /** Bump when async boundary layer loads complete (e.g. admin1/admin2). */
+  boundaryLayersVersion?: number;
 }): AdminAreaClipPolygon | null {
   const [adminAreaClipPolygon, setAdminAreaClipPolygon] =
     useState<AdminAreaClipPolygon | null>(null);
@@ -30,6 +32,7 @@ export function useAdminAreaClipPolygon(options: {
     boundaryLayer,
     i18nLocale,
     getLayerData,
+    boundaryLayersVersion = 0,
   } = options;
 
   useEffect(() => {
@@ -71,6 +74,7 @@ export function useAdminAreaClipPolygon(options: {
     boundaryLayer,
     i18nLocale,
     getLayerData,
+    boundaryLayersVersion,
   ]);
 
   return adminAreaClipPolygon;

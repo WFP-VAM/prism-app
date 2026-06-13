@@ -18,7 +18,10 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { boundaryCache } from 'utils/boundary-cache';
+import {
+  boundaryCache,
+  getCachedBoundaryLayerData,
+} from 'utils/boundary-cache';
 import { getExportFontStack, loadExportFonts } from 'utils/exportFontFamily';
 import { exportLanguage } from 'utils/exportLanguage';
 import useLayers from 'utils/layers-utils';
@@ -28,6 +31,7 @@ import { useBoundaryData } from 'utils/useBoundaryData';
 import { useExportParams } from 'utils/useExportParams';
 import { useMapState } from 'utils/useMapState';
 import useResizeObserver from 'utils/useOnResizeObserver';
+import { usePreloadBoundaryLayersForClip } from 'utils/usePreloadBoundaryLayersForClip';
 
 /**
  * ExportView is a component that displays a map and allows the user to export it as a PDF or ZIP file.
@@ -111,10 +115,11 @@ const ExportView = memo(() => {
   const boundaryLayer = getBoundaryLayerSingleton();
   const { data: boundaryData } = useBoundaryData(boundaryLayer.id, map);
 
-  const getBoundaryLayerData = useCallback(
-    (layerId: string) => boundaryCache.getCachedData(layerId),
-    [],
-  );
+  const boundaryLayersVersion = usePreloadBoundaryLayersForClip({
+    enabled: exportParams.toggles.countryMask,
+    dispatch,
+    map,
+  });
 
   const adminAreaClipPolygon = useAdminAreaClipPolygon({
     enabled: exportParams.toggles.countryMask,
@@ -123,7 +128,8 @@ const ExportView = memo(() => {
     boundaryData,
     boundaryLayer,
     i18nLocale: i18n,
-    getLayerData: getBoundaryLayerData,
+    getLayerData: getCachedBoundaryLayerData,
+    boundaryLayersVersion,
   });
 
   // Preload dates and load boundary layers
