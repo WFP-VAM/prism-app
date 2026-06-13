@@ -296,26 +296,40 @@ describe('MapExportLayout', () => {
     expect(logoImg?.style.height).toBe('48px');
   });
 
-  test('applies legend scale correctly', () => {
-    const { getByTestId } = render(
+  test('applies legend scale correctly in print preview', () => {
+    const { container, getByTestId } = render(
       <Provider store={store}>
         <ThemeProvider theme={createTheme()}>
           <MapExportLayout {...defaultProps} legendScale={0.7} />
         </ThemeProvider>
       </Provider>,
     );
-    const legendItems = getByTestId('legend-items');
-    expect(legendItems).toHaveAttribute('data-legend-scale', '0.7');
-    expect(legendItems).not.toHaveAttribute('data-legend-graphic-dpi');
+    const legendContainer = getByTestId('legend-items').parentElement;
+    expect(legendContainer?.style.transform).toBe('scale(0.7)');
+    expect(getByTestId('legend-items')).toHaveAttribute(
+      'data-legend-scale',
+      '1',
+    );
+    expect(container.querySelector('[data-legend-graphic-dpi]')).toBeNull();
   });
 
-  test('requests high-DPI WMS legend graphics for server export', () => {
+  test('uses intrinsic legend scale for server export', () => {
     const { getByTestId } = render(
       <Provider store={store}>
         <ThemeProvider theme={createTheme()}>
-          <MapExportLayout {...defaultProps} signalExportReady />
+          <MapExportLayout
+            {...defaultProps}
+            legendScale={0.7}
+            signalExportReady
+          />
         </ThemeProvider>
       </Provider>,
+    );
+    const legendContainer = getByTestId('legend-items').parentElement;
+    expect(legendContainer?.style.transform).toBe('');
+    expect(getByTestId('legend-items')).toHaveAttribute(
+      'data-legend-scale',
+      '0.7',
     );
     expect(getByTestId('legend-items')).toHaveAttribute(
       'data-legend-graphic-dpi',

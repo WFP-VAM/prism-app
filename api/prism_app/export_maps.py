@@ -216,7 +216,7 @@ async def render_single_map(
         else:  # PNG
             result = await page.screenshot(
                 type="png",
-                full_page=False,
+                full_page=True,
             )
 
         await page.close()

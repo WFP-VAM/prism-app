@@ -647,13 +647,23 @@ function MapExportLayout({
             display: 'flex',
             justifyContent:
               legendPosition % 2 === 0 ? 'flex-start' : 'flex-end',
+            // Print preview: uniform scale via CSS transform (matches main).
+            // Server export: intrinsic sizing in LegendItemsList (crisp at DPR 2).
+            ...(signalExportReady
+              ? {}
+              : {
+                  width: '20px',
+                  transform: `scale(${legendScale})`,
+                  transformOrigin:
+                    legendPosition % 2 === 0 ? 'top left' : 'top right',
+                }),
           }}
         >
           <LegendItemsList
             forPrinting
             listStyle={classes.legendListStyle}
             showDescription={toggles.fullLayerDescription}
-            legendScale={legendScale}
+            legendScale={signalExportReady ? legendScale : 1}
             legendGraphicDpi={signalExportReady ? 192 : undefined}
             overrideLayers={
               selectedLayers && selectedLayers.length > 0
