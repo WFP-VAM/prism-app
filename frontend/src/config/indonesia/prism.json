@@ -7,9 +7,7 @@
   "enableNavigationDropdown": true,
   "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "serversUrls": {
-    "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms"
-    ]
+    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
     "boundingBox": [94, -10.36, 141.03, 5.48]

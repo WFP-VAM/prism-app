@@ -15,9 +15,7 @@
     "state_admin_boundaries"
   ],
   "serversUrls": {
-    "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms"
-    ]
+    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "categories": {
     "floods": {

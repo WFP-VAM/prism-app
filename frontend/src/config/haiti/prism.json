@@ -4,9 +4,7 @@
   "alertFormActive": false,
   "enableNavigationDropdown": true,
   "serversUrls": {
-    "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms"
-    ]
+    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
     "boundingBox": [

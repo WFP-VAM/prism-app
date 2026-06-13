@@ -4,9 +4,7 @@
   "alertFormActive": false,
   "defaultLayer": "precip_blended_dekad",
   "serversUrls": {
-    "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms"
-    ]
+    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
     "boundingBox": [79.7, 5.97, 81.79, 9.82]
