@@ -20,14 +20,14 @@ exports[`renders as expected 1`] = `
           >
             <img
               alt="logo"
-              class="MuiBox-root css-85ebrq"
+              class="MuiBox-root css-121pi40"
               src="test-file-stub"
             />
             <div
               class="MuiBox-root css-j7qwjs"
             >
               <h6
-                class="MuiTypography-root MuiTypography-h6 css-1m7t1gj-MuiTypography-root"
+                class="MuiTypography-root MuiTypography-h6 css-plyial-MuiTypography-root"
               >
                 PRISM
               </h6>
@@ -170,7 +170,7 @@ exports[`renders as expected 1`] = `
           </div>
         </div>
         <div
-          class="MuiBox-root css-dxvjay"
+          class="MuiBox-root css-1i32clf"
         >
           <button
             aria-label="Legend"
@@ -271,7 +271,7 @@ exports[`renders as expected 1`] = `
               </svg>
             </span>
             <p
-              class="MuiTypography-root MuiTypography-body1 css-aelobi-MuiTypography-root"
+              class="MuiTypography-root MuiTypography-body1 css-1oyv38s-MuiTypography-root"
               style="text-transform: none;"
             >
               About
@@ -285,7 +285,7 @@ exports[`renders as expected 1`] = `
             type="button"
           >
             <p
-              class="MuiTypography-root MuiTypography-body1 css-aelobi-MuiTypography-root"
+              class="MuiTypography-root MuiTypography-body1 css-1oyv38s-MuiTypography-root"
               style="text-transform: none;"
             >
               en

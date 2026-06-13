@@ -6,7 +6,7 @@ exports[`renders as expected 1`] = `
     class="MuiListItem-root MuiListItem-dense MuiListItem-padding css-r9txlw-MuiListItem-root"
   >
     <div
-      class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 legend-card css-1veg7v4-MuiPaper-root"
+      class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 legend-card css-122sbun-MuiPaper-root"
       style="--Paper-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);"
     >
       <h3

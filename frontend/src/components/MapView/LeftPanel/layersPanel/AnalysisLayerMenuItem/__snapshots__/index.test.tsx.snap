@@ -3,7 +3,7 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded MuiAccordion-gutters css-1eyih7r-MuiPaper-root-MuiAccordion-root"
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded MuiAccordion-gutters css-qk7z7-MuiPaper-root-MuiAccordion-root"
     style="--Paper-shadow: none;"
   >
     <h3
@@ -12,7 +12,7 @@ exports[`renders as expected 1`] = `
       <button
         aria-controls="Some Analysis Layer Title"
         aria-expanded="false"
-        class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters css-fwo7tk-MuiButtonBase-root-MuiAccordionSummary-root"
+        class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters css-objw89-MuiButtonBase-root-MuiAccordionSummary-root"
         id="Some Analysis Layer Title"
         tabindex="0"
         type="button"
@@ -69,7 +69,7 @@ exports[`renders as expected 1`] = `
             role="region"
           >
             <div
-              class="MuiAccordionDetails-root css-1e9hqp5-MuiAccordionDetails-root"
+              class="MuiAccordionDetails-root css-129caui-MuiAccordionDetails-root"
             >
               <div
                 class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row css-1bmszvq-MuiGrid-root"
