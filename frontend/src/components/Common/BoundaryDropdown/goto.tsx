@@ -13,6 +13,8 @@ import { useSafeTranslation } from 'i18n';
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+const GO_TO_MENU_WIDTH = 350;
+
 function GoToBoundaryDropdown() {
   const { t } = useSafeTranslation();
   const map = useSelector(mapSelector);
@@ -57,12 +59,19 @@ function GoToBoundaryDropdown() {
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
+        slotProps={{
+          paper: { sx: { width: GO_TO_MENU_WIDTH } },
+          list: { disablePadding: true },
+        }}
       >
         <BoundaryDropdownOptions
           search={search}
           setSearch={setSearch}
           selectedBoundaries={[]}
           map={map}
+          goto
+          multiple={false}
+          listWidth={GO_TO_MENU_WIDTH}
         />
       </Menu>
     </>

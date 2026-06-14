@@ -1,6 +1,8 @@
 import type { SxProps, Theme } from '@mui/material/styles';
 
 export const searchFieldSx = {
+  boxSizing: 'border-box',
+  padding: '8px 16px',
   '&>div': {
     color: 'black',
   },

@@ -47,6 +47,7 @@ const SearchField = React.forwardRef(
     return (
       <TextField
         ref={ref}
+        fullWidth
         onKeyDown={e => e.stopPropagation()}
         sx={searchFieldSx}
         value={search}
@@ -62,7 +63,7 @@ const SearchField = React.forwardRef(
         slotProps={{
           input: {
             startAdornment: (
-              <InputAdornment position="end">
+              <InputAdornment position="start">
                 <Search />
               </InputAdornment>
             ),
@@ -84,6 +85,7 @@ const BoundaryDropdownOptions = React.forwardRef(
       goto,
       map,
       multiple = true,
+      listWidth = 350,
     }: BoundaryDropdownOptionsProps,
     ref,
   ) => {
@@ -182,7 +184,7 @@ const BoundaryDropdownOptions = React.forwardRef(
           height={700}
           itemCount={flattenedAreaList.length}
           itemSize={35}
-          width="350px"
+          width={listWidth}
         >
           {({ index, style }) => {
             const area = flattenedAreaList[index];
@@ -254,6 +256,7 @@ interface BoundaryDropdownOptionsProps {
   goto?: boolean | undefined;
   map: MaplibreMap | undefined;
   multiple?: boolean;
+  listWidth?: number;
 }
 
 export default BoundaryDropdownOptions;
