@@ -1703,7 +1703,7 @@
       "form_id": "aMLBShjyyhYeS5ERuRy8s3",
       "datetime_field": "Date_report",
       "measure_field": "NumPeoAff",
-      "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets/",
+      "kobo_url": "https://eu.kobotoolbox.org/api/v2/assets/",
       "filters": { "status": "Approved" }
     },
     "opacity": 0.9,
@@ -1779,7 +1779,7 @@
       "form_id": "a9McqLCW7H4Vfpb2Tsij29",
       "datetime_field": "Date_Dis",
       "measure_field": "NumPeoAff",
-      "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets/",
+      "kobo_url": "https://eu.kobotoolbox.org/api/v2/assets/",
       "filters": { "status": "Approved" }
     },
     "opacity": 0.9,
@@ -1855,7 +1855,7 @@
       "form_id": "amkeQ3jwDf9YpifKBh3sez",
       "datetime_field": "Date_Dis",
       "measure_field": "DisTyp",
-      "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets/",
+      "kobo_url": "https://eu.kobotoolbox.org/api/v2/assets/",
       "filters": { "status": "Approved" }
     },
     "opacity": 0.9,
