@@ -45,6 +45,7 @@ const SearchField = React.forwardRef(
     return (
       <TextField
         ref={ref}
+        fullWidth
         onKeyDown={e => e.stopPropagation()}
         className={styles.searchField}
         value={search}
@@ -59,7 +60,7 @@ const SearchField = React.forwardRef(
         }}
         InputProps={{
           startAdornment: (
-            <InputAdornment position="end">
+            <InputAdornment position="start">
               <Search />
             </InputAdornment>
           ),
@@ -80,6 +81,7 @@ const BoundaryDropdownOptions = React.forwardRef(
       goto,
       map,
       multiple = true,
+      listWidth = 350,
     }: BoundaryDropdownOptionsProps,
     ref,
   ) => {
@@ -186,7 +188,7 @@ const BoundaryDropdownOptions = React.forwardRef(
           height={700}
           itemCount={flattenedAreaList.length}
           itemSize={35}
-          width="350px"
+          width={listWidth}
         >
           {({ index, style }) => {
             const area = flattenedAreaList[index];
@@ -253,6 +255,8 @@ const BoundaryDropdownOptions = React.forwardRef(
 
 const useStyles = makeStyles({
   searchField: {
+    boxSizing: 'border-box',
+    padding: '8px 16px',
     '&>div': {
       color: 'black',
     },
@@ -304,6 +308,7 @@ interface BoundaryDropdownOptionsProps {
   goto?: boolean | undefined;
   map: MaplibreMap | undefined;
   multiple?: boolean;
+  listWidth?: number;
 }
 
 export default BoundaryDropdownOptions;
