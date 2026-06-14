@@ -88,7 +88,11 @@ export async function resolveAdminAreaClipPolygon(options: {
 
   try {
     return await fetchUnifiedCountryBoundaryPolygon(country);
-  } catch {
+  } catch (error) {
+    console.warn(
+      `Unified country boundary unavailable for ${country}, falling back to boundary layer union:`,
+      error,
+    );
     return buildCountryClipPolygonFromBoundaryData(effectiveBoundaryData);
   }
 }

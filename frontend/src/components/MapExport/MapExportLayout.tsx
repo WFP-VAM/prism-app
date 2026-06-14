@@ -112,8 +112,8 @@ function isMapFullyLoaded(map: maplibregl.Map): boolean {
 /** Playwright (/export, signalExportReady): min consecutive "fully loaded" samples before PRISM_READY. */
 const MAP_EXPORT_STABLE_LOADED_TICKS = 2;
 
-/** Poll when map idle is slow (ms). 0 uses the shortest practical interval (browser clamps ~4ms). */
-const MAP_EXPORT_LOAD_POLL_MS = 0;
+/** Fallback poll when map idle is slow (ms). */
+const MAP_EXPORT_LOAD_POLL_MS = 50;
 
 function MapExportLayout({
   toggles,

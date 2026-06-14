@@ -28,6 +28,7 @@ interface RegisteredClip {
   rings3857: Ring3857[];
   /** Original lng/lat geometry, kept for tile classification with turf. */
   feature: Feature<Polygon | MultiPolygon>;
+  lngLatBbox: [number, number, number, number];
 }
 
 const CLIP_SCHEME = 'clip';
@@ -168,6 +169,7 @@ export type TileClipClass = 'inside' | 'outside' | 'partial';
 export function classifyTileAgainstClip(
   bbox3857: Bbox3857,
   feature: Feature<Polygon | MultiPolygon>,
+  polyBbox = lngLatBboxOfGeometry(feature.geometry),
 ): TileClipClass {
   const [minX, minY, maxX, maxY] = bbox3857;
   const sw = meters3857ToLngLat([minX, minY]);
@@ -175,7 +177,6 @@ export function classifyTileAgainstClip(
   const [west, south] = sw;
   const [east, north] = ne;
 
-  const polyBbox = lngLatBboxOfGeometry(feature.geometry);
   const disjoint =
     east < polyBbox[0] ||
     west > polyBbox[2] ||
@@ -235,6 +236,7 @@ export function registerClipPolygon(
     clipRegistry.set(clipId, {
       rings3857: geometryTo3857Rings(feature.geometry),
       feature,
+      lngLatBbox: lngLatBboxOfGeometry(feature.geometry),
     });
   }
   return clipId;
@@ -389,7 +391,11 @@ export function initClipRasterProtocol(): void {
       return { cancel: () => (aborted.value = true) };
     }
 
-    const tileClass = classifyTileAgainstClip(bbox3857, clip.feature);
+    const tileClass = classifyTileAgainstClip(
+      bbox3857,
+      clip.feature,
+      clip.lngLatBbox,
+    );
 
     if (tileClass === 'outside') {
       getTransparentTile()

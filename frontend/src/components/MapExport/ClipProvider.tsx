@@ -1,4 +1,4 @@
-import { ReactNode, useMemo } from 'react';
+import { ReactNode, useEffect, useMemo } from 'react';
 import type { AdminAreaClipPolygon } from 'utils/adminAreaClipPolygon';
 import {
   initClipRasterProtocol,
@@ -19,11 +19,14 @@ export function ClipProvider({
   polygon: AdminAreaClipPolygon | null | undefined;
   children: ReactNode;
 }) {
+  useEffect(() => {
+    initClipRasterProtocol();
+  }, []);
+
   const value = useMemo<ClipContextValue | null>(() => {
     if (!polygon) {
       return null;
     }
-    initClipRasterProtocol();
     return { clipPolygon: polygon, clipId: registerClipPolygon(polygon) };
   }, [polygon]);
 

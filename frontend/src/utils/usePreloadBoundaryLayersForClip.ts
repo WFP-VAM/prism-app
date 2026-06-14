@@ -5,11 +5,9 @@ import { useEffect, useState } from 'react';
 
 import { boundaryCache } from './boundary-cache';
 
-type DispatchFunction = Dispatch<any>;
-
 export function usePreloadBoundaryLayersForClip(options: {
   enabled: boolean;
-  dispatch: DispatchFunction;
+  dispatch: Dispatch<any>;
   map?: MaplibreMap;
 }): number {
   const { enabled, dispatch, map } = options;
