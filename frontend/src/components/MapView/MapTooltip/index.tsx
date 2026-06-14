@@ -1,6 +1,6 @@
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Box, IconButton, Typography } from '@mui/material';
+import { GlobalStyles, IconButton, Typography } from '@mui/material';
 import Loader from 'components/Common/Loader';
 import { appConfig } from 'config';
 import { AdminLevelType } from 'config/types';
@@ -18,9 +18,10 @@ import { Popup } from 'react-map-gl/maplibre';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
+  MAP_TOOLTIP_POPUP_CLASS,
+  MAP_TOOLTIP_POPUP_EXPANDED_CLASS,
   mapTooltipCloseButtonSx,
-  mapTooltipPopupExpandedSx,
-  mapTooltipPopupSx,
+  mapTooltipPopupGlobalStyles,
   mapTooltipTitleSx,
 } from './mapTooltipStyles';
 import PopupPointDataChart from './PointDataChart/PopupPointDataChart';
@@ -90,69 +91,73 @@ const MapTooltip = memo(() => {
 
   if (dataset) {
     return (
-      <Box
-        component={Popup}
-        key={key}
-        latitude={popup.coordinates?.[1]}
-        longitude={popup.coordinates?.[0]}
-        sx={mapTooltipPopupSx}
-        closeButton={false}
-      >
-        <IconButton
-          aria-label="close"
-          sx={mapTooltipCloseButtonSx}
-          onClick={() => dispatch(hidePopup())}
-          size="small"
+      <>
+        <GlobalStyles styles={mapTooltipPopupGlobalStyles} />
+        <Popup
+          key={key}
+          className={MAP_TOOLTIP_POPUP_CLASS}
+          latitude={popup.coordinates?.[1]}
+          longitude={popup.coordinates?.[0]}
+          closeButton={false}
         >
-          <FontAwesomeIcon icon={faTimes} style={{ paddingRight: '3px' }} />
-        </IconButton>
-        <PopupPointDataChart />
-      </Box>
+          <IconButton
+            aria-label="close"
+            sx={mapTooltipCloseButtonSx}
+            onClick={() => dispatch(hidePopup())}
+            size="small"
+          >
+            <FontAwesomeIcon icon={faTimes} style={{ paddingRight: '3px' }} />
+          </IconButton>
+          <PopupPointDataChart />
+        </Popup>
+      </>
     );
   }
 
   return (
-    <Box
-      component={Popup}
-      key={key}
-      latitude={popup.coordinates?.[1]}
-      longitude={popup.coordinates?.[0]}
-      sx={mapTooltipPopupExpandedSx}
-      closeButton={false}
-    >
-      {adminLevel === undefined && (
-        <RedirectToDMP
-          dmpDisTyp={popupData.dmpDisTyp}
-          dmpSubmissionId={popupData.dmpSubmissionId}
+    <>
+      <GlobalStyles styles={mapTooltipPopupGlobalStyles} />
+      <Popup
+        key={key}
+        className={MAP_TOOLTIP_POPUP_EXPANDED_CLASS}
+        latitude={popup.coordinates?.[1]}
+        longitude={popup.coordinates?.[0]}
+        closeButton={false}
+      >
+        {adminLevel === undefined && (
+          <RedirectToDMP
+            dmpDisTyp={popupData.dmpDisTyp}
+            dmpSubmissionId={popupData.dmpSubmissionId}
+          />
+        )}
+        <Typography variant="h4" color="inherit" sx={mapTooltipTitleSx}>
+          {popupTitle || defaultPopupTitle}
+        </Typography>
+        {adminLevel === undefined && (
+          <PopupContent popupData={popupData} coordinates={popup.coordinates} />
+        )}
+        {availableAdminLevels.length > 0 && adminLevel !== undefined && (
+          <IconButton
+            aria-label="close"
+            sx={mapTooltipCloseButtonSx}
+            onClick={() => setAdminLevel(undefined)}
+            size="small"
+          >
+            <FontAwesomeIcon icon={faTimes} style={{ paddingRight: '3px' }} />
+          </IconButton>
+        )}
+        <PopupCharts
+          setPopupTitle={setPopupTitle}
+          adminCode={popup.locationAdminCode}
+          adminSelectorKey={popup.locationSelectorKey}
+          adminLevel={adminLevel}
+          setAdminLevel={setAdminLevel}
+          adminLevelsNames={adminLevelsNames}
+          availableAdminLevels={availableAdminLevels}
         />
-      )}
-      <Typography variant="h4" color="inherit" sx={mapTooltipTitleSx}>
-        {popupTitle || defaultPopupTitle}
-      </Typography>
-      {adminLevel === undefined && (
-        <PopupContent popupData={popupData} coordinates={popup.coordinates} />
-      )}
-      {availableAdminLevels.length > 0 && adminLevel !== undefined && (
-        <IconButton
-          aria-label="close"
-          sx={mapTooltipCloseButtonSx}
-          onClick={() => setAdminLevel(undefined)}
-          size="small"
-        >
-          <FontAwesomeIcon icon={faTimes} style={{ paddingRight: '3px' }} />
-        </IconButton>
-      )}
-      <PopupCharts
-        setPopupTitle={setPopupTitle}
-        adminCode={popup.locationAdminCode}
-        adminSelectorKey={popup.locationSelectorKey}
-        adminLevel={adminLevel}
-        setAdminLevel={setAdminLevel}
-        adminLevelsNames={adminLevelsNames}
-        availableAdminLevels={availableAdminLevels}
-      />
-      <Loader showLoader={popup.wmsGetFeatureInfoLoading} />
-    </Box>
+        <Loader showLoader={popup.wmsGetFeatureInfoLoading} />
+      </Popup>
+    </>
   );
 });
 
