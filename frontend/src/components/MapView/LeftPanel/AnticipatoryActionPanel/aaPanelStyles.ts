@@ -819,6 +819,9 @@ export const aaFloodPanelSx = {
   headerCell: {
     backgroundColor: '#f1f1f1',
     color: '#000',
+    fontSize: '0.875rem',
+    textTransform: 'none',
+    letterSpacing: 'normal',
     '&& .MuiTableSortLabel-root.MuiTableSortLabel-active': {
       color: '#333 !important',
     },
@@ -843,10 +846,16 @@ export const aaFloodPanelSx = {
   } satisfies SxProps<Theme>,
   tableCell: {
     color: '#000000',
+    fontSize: '0.875rem',
+    textTransform: 'none',
+    letterSpacing: 'normal',
   } satisfies SxProps<Theme>,
   firstCell: {
     color: cyanBlue,
     fontWeight: 'bold',
+    fontSize: '0.875rem',
+    textTransform: 'none',
+    letterSpacing: 'normal',
   } satisfies SxProps<Theme>,
   pagination: {
     display: 'flex',
