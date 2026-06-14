@@ -1,21 +1,14 @@
 import type { SxProps, Theme } from '@mui/material/styles';
 
-export const MAP_TOOLTIP_POPUP_CLASS = 'prism-map-tooltip-popup';
-export const MAP_TOOLTIP_POPUP_EXPANDED_CLASS =
-  'prism-map-tooltip-popup-expanded';
-
 const mapTooltipPopupContentSx = {
-  '& > .maplibregl-popup-content': {
+  '& div.maplibregl-popup-content': {
     background: 'black',
     color: 'white',
     padding: '5px 5px 5px 5px',
     maxHeight: '400px',
     overflow: 'auto',
-    '& .MuiTypography-root': {
-      color: 'white',
-    },
   },
-  '& > .maplibregl-popup-tip': {
+  '& div.maplibregl-popup-tip': {
     borderTopColor: 'black',
     borderBottomColor: 'black',
   },
@@ -139,9 +132,3 @@ export const pointDataChartSectionSx = {
   height: '200px',
   width: '400px',
 } satisfies SxProps<Theme>;
-
-/** GlobalStyles map for maplibre Popup classNames */
-export const mapTooltipPopupGlobalStyles = {
-  [`.${MAP_TOOLTIP_POPUP_CLASS}`]: mapTooltipPopupSx,
-  [`.${MAP_TOOLTIP_POPUP_EXPANDED_CLASS}`]: mapTooltipPopupExpandedSx,
-} satisfies Record<string, SxProps<Theme>>;

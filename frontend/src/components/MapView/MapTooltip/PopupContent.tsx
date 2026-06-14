@@ -49,11 +49,11 @@ const generatePhasePopulationTable = (
 
   const phasePopulationTable = (
     <div>
-      <Typography component="span" variant="h4" color="inherit">
+      <Typography component="span" variant="h4" sx={mapTooltipTextSx}>
         {t('Ref. period')}: {popupData['Reference period start']?.data} -{' '}
         {popupData['Reference period end']?.data}
       </Typography>
-      <Typography variant="h4" color="inherit">
+      <Typography variant="h4" sx={mapTooltipTextSx}>
         {t('Population and percentage by phase classification')}
       </Typography>
       <Box component="table" sx={phasePopulationTableSx}>
@@ -153,7 +153,6 @@ const PopupContent = memo(({ popupData, coordinates }: PopupContentProps) => {
                     <Typography
                       component="span"
                       variant="h4"
-                      color="inherit"
                       sx={mapTooltipTextSx}
                     >
                       {isKeyValuePair ? `${t(key)}: ` : t(key)}
@@ -163,7 +162,6 @@ const PopupContent = memo(({ popupData, coordinates }: PopupContentProps) => {
                   <Typography
                     component="span"
                     variant="h4"
-                    color="inherit"
                     sx={mapTooltipTextSx}
                   >
                     {`${value.data}`}
