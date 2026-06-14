@@ -45,16 +45,8 @@ _MAX_ROW_ERRORS = 25
 
 @dataclass
 class AaDroughtValidationResult:
-    """Outcome of validating one uploaded CSV (errors block save; warnings don't)."""
-
     row_count: int = 0
-    districts: list[str] = field(default_factory=list)
-    seasons: list[str] = field(default_factory=list)
-    date_min: str | None = None
-    date_max: str | None = None
-    trigger_breaches: int = 0
     errors: list[str] = field(default_factory=list)
-    warnings: list[str] = field(default_factory=list)
 
     @property
     def ok(self) -> bool:
@@ -72,15 +64,8 @@ def _parse_unit_interval(value: str) -> float | None:
         return None
 
 
-def validate_aa_drought_csv(
-    csv_text: str, *, prior_row_count: int | None = None
-) -> AaDroughtValidationResult:
-    """Validate raw CSV text against the AA drought contract.
-
-    ``prior_row_count`` is the data-row count of the currently published dataset
-    for this country, if any. Because uploads are full-replace (cumulative), a
-    drop in row count is surfaced as a warning so reviewers notice lost history.
-    """
+def validate_aa_drought_csv(csv_text: str) -> AaDroughtValidationResult:
+    """Validate raw CSV text against the AA drought contract."""
     result = AaDroughtValidationResult()
 
     if _is_blank(csv_text):
@@ -98,9 +83,6 @@ def validate_aa_drought_csv(
         result.errors.append(f"Missing required columns: {', '.join(missing)}.")
         return result
 
-    districts: set[str] = set()
-    seasons: set[str] = set()
-    dates: list[str] = []
     row_errors: list[str] = []
     data_rows = 0
 
@@ -128,8 +110,6 @@ def validate_aa_drought_csv(
             row_errors.append(
                 f"Row {line_no}: season '{season}' must match YYYY-YY (e.g. 2024-25)."
             )
-        else:
-            seasons.add(season)
 
         for prob_field in _PROB_FIELDS:
             raw = row.get(prob_field)
@@ -154,39 +134,10 @@ def validate_aa_drought_csv(
                 row_errors.append(
                     f"Row {line_no}: {date_field} '{raw}' must be ISO YYYY-MM-DD."
                 )
-            elif date_field == "date_ready":
-                dates.append(stamp)
-
-        district = (row.get("district") or "").strip()
-        if district:
-            districts.add(district)
-
-        # Summary only: a "breach" is probability meeting or exceeding trigger.
-        prob_ready = _parse_unit_interval((row.get("prob_ready") or "").strip())
-        trigger_ready = _parse_unit_interval((row.get("trigger_ready") or "").strip())
-        if (
-            prob_ready is not None
-            and trigger_ready is not None
-            and prob_ready >= trigger_ready > 0
-        ):
-            result.trigger_breaches += 1
 
     if data_rows == 0:
         result.errors.append("No data rows (every row has an empty prob_ready).")
 
     result.errors.extend(row_errors)
     result.row_count = data_rows
-    result.districts = sorted(districts)
-    result.seasons = sorted(seasons)
-    if dates:
-        result.date_min = min(dates)
-        result.date_max = max(dates)
-
-    if prior_row_count is not None and data_rows < prior_row_count and result.ok:
-        result.warnings.append(
-            f"This upload has {data_rows} data rows but the currently published "
-            f"dataset has {prior_row_count}. Uploads are full-replace — confirm "
-            "the file includes all historical seasons."
-        )
-
     return result

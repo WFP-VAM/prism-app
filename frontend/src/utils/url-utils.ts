@@ -210,23 +210,16 @@ export function getAADroughtCdnUrl(appConfig: any): string | undefined {
 /**
  * Returns the fetch URL for the anticipatory action drought CSV, cache-busted.
  *
- * When a `country` key is provided, routes through the PRISM API
- * (`/aa/drought/{country}.csv`), which serves a government-uploaded dataset
- * when one is published and otherwise redirects to the configured CDN URL
- * (passed as `fallback`). Without a country key it falls back to the CDN URL
- * directly, preserving the pre-API behavior.
+ * Routes through the PRISM API (`/aa/drought/{country}.csv`), which serves a
+ * government-uploaded dataset when one is published and otherwise redirects to
+ * the configured CDN URL (passed as `fallback`).
  */
 export function getAADroughtUrl(
   appConfig: any,
-  country?: string,
+  country: string,
 ): string | undefined {
   const cdnUrl = getAADroughtCdnUrl(appConfig);
   const cacheBust = getCurrentDateTimeForUrl();
-
-  if (!country) {
-    return cdnUrl ? `${cdnUrl}?date=${cacheBust}` : undefined;
-  }
-
   const params = new URLSearchParams({ date: cacheBust });
   if (getStagingParam()) {
     params.set('include_staging', 'true');

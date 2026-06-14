@@ -23,16 +23,13 @@ def test_valid_csv_passes() -> None:
     result = validate_aa_drought_csv(_csv(_GOOD_ROW))
     assert result.ok
     assert result.row_count == 1
-    assert result.districts == ["Gwembe"]
-    assert result.seasons == ["2024-25"]
-    assert result.date_min == "2024-08-01"
 
 
 def test_leading_index_column_tolerated() -> None:
     """Malawi exports carry an unnamed leading column; it must not break validation."""
     result = validate_aa_drought_csv(_csv(_MALAWI_ROW, header=_MALAWI_HEADER))
     assert result.ok
-    assert result.districts == ["Machinga"]
+    assert result.row_count == 1
 
 
 def test_empty_file_rejected() -> None:
@@ -88,9 +85,3 @@ def test_duplicate_grain_rows_allowed() -> None:
     result = validate_aa_drought_csv(_csv(_GOOD_ROW, _GOOD_ROW))
     assert result.ok
     assert result.row_count == 2
-
-
-def test_row_count_drop_warns_against_prior() -> None:
-    result = validate_aa_drought_csv(_csv(_GOOD_ROW), prior_row_count=10)
-    assert result.ok
-    assert any("full-replace" in w for w in result.warnings)

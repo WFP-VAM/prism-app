@@ -108,22 +108,19 @@ class AaDroughtAdminView(ModelView):
         if errors:
             raise FormValidationError(cast(dict[str | int, Any], errors))
 
-    def _apply_row_count(self, obj: Any) -> None:
-        """Recompute ``row_count`` from the stored CSV (excluded fields are not
-        populated from form data by starlette-admin's create/edit flow)."""
-        csv_text = getattr(obj, "csv_content", None)
-        if isinstance(csv_text, str) and csv_text.strip():
-            obj.row_count = validate_aa_drought_csv(csv_text).row_count
-
     async def before_create(
         self, request: Request, data: dict[str, Any], obj: Any
     ) -> None:
-        self._apply_row_count(obj)
+        row_count = data.get("row_count")
+        if isinstance(row_count, int):
+            obj.row_count = row_count
 
     async def before_edit(
         self, request: Request, data: dict[str, Any], obj: Any
     ) -> None:
-        self._apply_row_count(obj)
+        row_count = data.get("row_count")
+        if isinstance(row_count, int):
+            obj.row_count = row_count
 
     def handle_exception(self, exc: Exception) -> None:
         """Convert the partial unique index violation (two published rows for one

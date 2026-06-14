@@ -30,20 +30,6 @@ _EXISTING_FIELD_SUFFIX = "__existing"
 _PREVIEW_MAX_LINES = 80
 
 
-def format_aa_drought_csv_for_display(data: Any) -> str:
-    """Truncated CSV preview for admin detail and edit views."""
-    if not data:
-        return ""
-    text = data if isinstance(data, str) else str(data)
-    lines = text.splitlines()
-    if len(lines) <= _PREVIEW_MAX_LINES:
-        return text
-    shown = lines[:_PREVIEW_MAX_LINES]
-    remaining = len(lines) - _PREVIEW_MAX_LINES
-    shown.append(f"… ({remaining} more rows)")
-    return "\n".join(shown)
-
-
 def _is_csv_upload(file: UploadFile) -> bool:
     filename = (file.filename or "").strip().lower()
     if filename and not filename.endswith(".csv"):
@@ -63,7 +49,16 @@ class AaDroughtCsvFileField(BaseField):
     display_template: str = "displays/aa_drought_csv.html"
 
     def format_display(self, data: Any) -> str:
-        return format_aa_drought_csv_for_display(data)
+        if not data:
+            return ""
+        text = data if isinstance(data, str) else str(data)
+        lines = text.splitlines()
+        if len(lines) <= _PREVIEW_MAX_LINES:
+            return text
+        shown = lines[:_PREVIEW_MAX_LINES]
+        remaining = len(lines) - _PREVIEW_MAX_LINES
+        shown.append(f"… ({remaining} more rows)")
+        return "\n".join(shown)
 
     def input_params(self) -> str:
         return html_params(
@@ -83,14 +78,11 @@ class AaDroughtCsvFileField(BaseField):
                 return None
             try:
                 return (await file.read()).decode("utf-8-sig")
-            except UnicodeDecodeError:
-                return None
+            except UnicodeDecodeError as exc:
+                raise ValueError("CSV must be UTF-8 encoded.") from exc
 
         if action == RequestAction.EDIT:
             existing = form_data.get(f"{self.id}{_EXISTING_FIELD_SUFFIX}")
             if existing:
-                try:
-                    return json.loads(existing)
-                except json.JSONDecodeError:
-                    return existing
+                return json.loads(existing)
         return None

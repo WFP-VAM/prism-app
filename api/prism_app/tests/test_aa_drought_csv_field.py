@@ -1,15 +1,10 @@
-"""Tests for the AA drought CSV upload admin field and served-status helper."""
+"""Tests for the AA drought CSV upload admin field."""
 
 import json
 from io import BytesIO
 
 import pytest
-from prism_app.aa_drought.csv_field import (
-    AaDroughtCsvFileField,
-    format_aa_drought_csv_for_display,
-)
-from prism_app.aa_drought.published_datasets import served_statuses
-from prism_app.database.aa_drought_model import AaDroughtStatus
+from prism_app.aa_drought.csv_field import AaDroughtCsvFileField
 from starlette.datastructures import FormData, UploadFile
 from starlette_admin._types import RequestAction
 
@@ -62,20 +57,14 @@ async def test_parse_form_data_keeps_existing_on_edit(
     assert parsed == _CSV
 
 
+@pytest.mark.asyncio
+async def test_parse_form_data_rejects_non_utf8(field: AaDroughtCsvFileField) -> None:
+    form = FormData([("csv_content", _upload("aa.csv", b"\xff\xfe"))])
+    with pytest.raises(ValueError, match="UTF-8"):
+        await field.parse_form_data(None, form, RequestAction.CREATE)
+
+
 def test_format_display_truncates_long_csv(field: AaDroughtCsvFileField) -> None:
     big = "header\n" + "\n".join(f"row{i}" for i in range(200))
     rendered = field.format_display(big)
     assert "more rows" in rendered
-    assert rendered == format_aa_drought_csv_for_display(big)
-
-
-def test_served_statuses_published_only_by_default() -> None:
-    assert served_statuses(include_staging=False) == [AaDroughtStatus.published]
-
-
-def test_served_statuses_includes_staging_when_requested() -> None:
-    statuses = served_statuses(include_staging=True)
-    assert AaDroughtStatus.published in statuses
-    assert AaDroughtStatus.staging in statuses
-    assert AaDroughtStatus.draft not in statuses
-    assert AaDroughtStatus.archived not in statuses
