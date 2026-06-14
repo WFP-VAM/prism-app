@@ -14,14 +14,14 @@ exports[`renders as expected 1`] = `
         style="display: flex;"
       >
         <mock-switch
-          checked="true"
+          checked=""
+          class="makeStyles-switch-7"
           classes="[object Object]"
-          classname="makeStyles-switch-7"
           inputprops="[object Object]"
           size="small"
         />
         <mock-typography
-          classname="makeStyles-title-2"
+          class="makeStyles-title-2"
         >
           Some Analysis Layer Title
         </mock-typography>
@@ -88,8 +88,7 @@ exports[`renders as expected 1`] = `
         </mock-tooltip>
         <mock-menu
           id="download-menu"
-          keepmounted="true"
-          open="false"
+          keepmounted=""
         >
           <mock-menuitem>
             Download as CSV

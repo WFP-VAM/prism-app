@@ -1,8 +1,4 @@
-import {
-  expandBoundingBox,
-  getWMSUrl,
-} from 'components/MapView/Layers/raster-utils';
-import { appConfig } from 'config';
+import { getWMSUrl } from 'components/MapView/Layers/raster-utils';
 import { WMSLayerProps } from 'config/types';
 import { opacitySelector } from 'context/opacityStateSlice';
 import { availableDatesSelector } from 'context/serverStateSlice';
@@ -21,13 +17,6 @@ const WMSLayers = memo(
     const selectedDate = useDefaultDate(id);
     const serverAvailableDates = useSelector(availableDatesSelector);
     const opacityState = useSelector(opacitySelector(id));
-
-    const expansionFactor = 2;
-    // @ts-expect-error #TS6133 see TODO below
-    const _expandedBoundingBox = expandBoundingBox(
-      appConfig.map.boundingBox,
-      expansionFactor,
-    );
 
     if (!selectedDate) {
       return null;
@@ -53,8 +42,6 @@ const WMSLayers = memo(
           })}&bbox={bbox-epsg-3857}`,
         ]}
         tileSize={256}
-        // TODO - activate after reviewing bbox for all countries
-        // bounds={expandedBoundingBox}
       >
         <Layer
           beforeId={before}

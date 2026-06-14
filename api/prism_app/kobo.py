@@ -192,13 +192,14 @@ def parse_datetime_params(
 
 
 def get_responses_from_kobo(
-    form_url: str, auth: tuple[str, str], form_id: str
+    form_url: str | HttpUrl, auth: tuple[str, str], form_id: str
 ) -> tuple[Any, dict[str, str]]:
     """
     Request kobo api to collect all the information related to a form.
 
     Also, retrieve the form responses for parsing and filtering.
     """
+    form_url = str(form_url)
     form_id_quote: str = quote_plus(form_id)
     kobo_data_cached = get_kobo_form_cached(form_id_quote)
     if kobo_data_cached is not None:
