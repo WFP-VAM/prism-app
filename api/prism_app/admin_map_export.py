@@ -2,13 +2,15 @@
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Dict, Optional, Sequence
 from uuid import UUID
 
 from prism_app.admin import PrismGatedModelView, ReadOnlyModelView
 from prism_app.auth.admin_request import (
     admin_user_from_request,
+    request_can_manage_map_exports,
     request_has_prism_admin_access,
 )
 from prism_app.dashboard.dashboard_config_field import PrettyJSONField
@@ -39,13 +41,32 @@ from starlette.requests import Request
 from starlette.responses import Response
 from starlette_admin import EnumField, HasOne, StringField
 from starlette_admin._types import RequestAction
-from starlette_admin.actions import link_row_action
+from starlette_admin.actions import action, link_row_action
 from starlette_admin.contrib.sqla import Admin
 from starlette_admin.contrib.sqla.helpers import OPERATORS
-from starlette_admin.exceptions import FormValidationError
+from starlette_admin.exceptions import ActionFailed, FormValidationError
+from starlette_admin.fields import BaseField
+from starlette_admin.i18n import ngettext
 
 _DEFAULT_EQ = OPERATORS["eq"]
 _DEFAULT_NEQ = OPERATORS["neq"]
+
+# Starlette-admin batch actions take pre-rendered HTML for ``form``, not a template
+# path. The list page embeds this string in each action link's ``data-form``
+# attribute; client JS copies it into the confirmation modal on click. Unlike
+# create/edit/list pages, there is no request-time TemplateResponse hook for it.
+_BULK_UPDATE_STATUS_FORM = """
+<form>
+    <div class="mt-3">
+        <label class="form-label" for="bulk-status">Status</label>
+        <select id="bulk-status" class="form-select" name="status" required>
+            <option value="">Select status…</option>
+            <option value="active">Active</option>
+            <option value="stopped">Stopped</option>
+        </select>
+    </div>
+</form>
+"""
 
 _CASE_INSENSITIVE_STRING_OPERATORS: Dict[str, Callable[..., ClauseElement]] = {
     **OPERATORS,
@@ -351,6 +372,13 @@ class MapExportOutputDirectoryField(StringField):
 class PrismAdmin(Admin):
     """Admin with clone-prefill support for map export schedules."""
 
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        if "templates_dir" not in kwargs:
+            kwargs["templates_dir"] = os.path.join(
+                os.path.dirname(__file__), "templates"
+            )
+        super().__init__(*args, **kwargs)
+
     async def _render_create(self, request: Request) -> Response:
         if request.method == "GET" and (
             clone_from := request.query_params.get("clone_from")
@@ -376,6 +404,7 @@ class PrismAdmin(Admin):
 
 class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelView):
     label = "Map export schedules"
+    list_template = "map_export_schedule_list.html"
     create_template = "map_export_schedule_create.html"
     edit_template = "map_export_schedule_edit.html"
     fields = (
@@ -452,11 +481,65 @@ class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelVie
         "created_at",
     )
     fields_default_sort = [("created_at", True)]
-    actions: list[str] = []
+    actions = ["update_status", "delete"]
     row_actions = ["view", "edit", "clone", "delete"]
 
+    _ADMIN_ONLY_FIELD_NAMES = frozenset({"country"})
+
+    def _admin_only_field_names(self, request: Request) -> frozenset[str]:
+        if request_has_prism_admin_access(request):
+            return frozenset()
+        return self._ADMIN_ONLY_FIELD_NAMES
+
+    def get_fields_list(
+        self,
+        request: Request,
+        action: RequestAction = RequestAction.LIST,
+    ) -> Sequence[BaseField]:
+        hidden = self._admin_only_field_names(request)
+        if not hidden:
+            return super().get_fields_list(request, action)
+        return [
+            field
+            for field in super().get_fields_list(request, action)
+            if field.name not in hidden
+        ]
+
+    def _searchable_fields_for_request(self, request: Request) -> tuple[str, ...]:
+        hidden = self._admin_only_field_names(request)
+        return tuple(
+            name
+            for name in self.searchable_fields  # type: ignore[union-attr]
+            if name not in hidden
+        )
+
+    async def _configs(self, request: Request) -> dict[str, Any]:
+        configs = await super()._configs(request)
+        hidden = self._admin_only_field_names(request)
+        if not hidden:
+            return configs
+        searchable = self._searchable_fields_for_request(request)
+        exportable = tuple(
+            name for name in self.export_fields if name not in hidden  # type: ignore[union-attr]
+        )
+        configs["searchColumns"] = [f"{name}:name" for name in searchable]
+        configs["exportColumns"] = [f"{name}:name" for name in exportable]
+        return configs
+
+    def is_accessible(self, request: Request) -> bool:
+        return request_can_manage_map_exports(request)
+
+    def can_view_details(self, request: Request) -> bool:
+        return request_can_manage_map_exports(request)
+
+    def can_edit(self, request: Request) -> bool:
+        return request_can_manage_map_exports(request)
+
+    def can_delete(self, request: Request) -> bool:
+        return request_has_prism_admin_access(request)
+
     def can_create(self, request: Request) -> bool:
-        if not super().can_create(request):
+        if not request_can_manage_map_exports(request):
             return False
         return "clone_from" in request.query_params
 
@@ -490,7 +573,7 @@ class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelVie
         if not term_lower:
             return None
         clauses = []
-        for field_name in self.searchable_fields:
+        for field_name in self._searchable_fields_for_request(request):
             attr = getattr(self.model, field_name, None)
             if attr is None:
                 continue
@@ -575,6 +658,60 @@ class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelVie
         serialized["last_enqueued_date"] = None
         serialized["created_by_user"] = None
         return serialized
+
+    @action(
+        name="update_status",
+        text="Update status",
+        confirmation="Update the status of the selected map export schedules?",
+        submit_btn_text="Update status",
+        submit_btn_class="btn-primary",
+        icon_class="fa-solid fa-toggle-on",
+        form=_BULK_UPDATE_STATUS_FORM,
+    )
+    async def update_status_action(self, request: Request, pks: List[Any]) -> str:
+        data = await request.form()
+        status_raw = data.get("status")
+        if not status_raw:
+            raise ActionFailed("Status is required")
+        try:
+            new_status = MapExportScheduleStatus(str(status_raw))
+        except ValueError as exc:
+            raise ActionFailed(f"Invalid status: {status_raw}") from exc
+
+        session: Session = request.state.session
+        schedules = list(await self.find_by_pks(request, pks))
+        if not schedules:
+            raise ActionFailed("No accessible schedules selected")
+
+        now = utc_now()
+        for schedule in schedules:
+            schedule.status = new_status
+            schedule.updated_at = now
+            session.add(schedule)
+        session.commit()
+
+        count = len(schedules)
+        label = new_status.value
+        return f"Updated {count} schedule{'s' if count != 1 else ''} to {label}."
+
+    @action(
+        name="delete",
+        text="Delete schedules",
+        confirmation=(
+            "Are you sure you want to delete the selected map export schedules? "
+            "This cannot be undone."
+        ),
+        submit_btn_text="Yes, delete",
+        submit_btn_class="btn-danger",
+        icon_class="fa-solid fa-trash",
+    )
+    async def delete_action(self, request: Request, pks: List[Any]) -> str:
+        affected_rows = await self.delete(request, pks)
+        return ngettext(
+            "Schedule was successfully deleted",
+            "%(count)d schedules were successfully deleted",
+            affected_rows or 0,
+        ) % {"count": affected_rows}
 
     @link_row_action(
         name="clone",

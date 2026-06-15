@@ -29,6 +29,7 @@ import { cyanBlue } from 'muiTheme';
 import React, { useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
+  BATCH_MAP_LAYER_URL_KEY,
   MAP_EXPORT_MAX_URLS_PER_REQUEST,
   PRISM_SIGN_IN_URL,
 } from 'utils/constants';
@@ -409,6 +410,9 @@ function PrintConfig() {
       params.set('printModal', '1');
       params.set('batchMaps', '1');
       params.set('schedule', '1');
+      if (selectedLayerId) {
+        params.set(BATCH_MAP_LAYER_URL_KEY, selectedLayerId);
+      }
       const returnUrl = `${window.location.origin}${
         location.pathname
       }?${params.toString()}`;

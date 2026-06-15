@@ -131,7 +131,9 @@ export function useMapCallback<T extends keyof MapLayerEventType, U>(
   const dispatch = useDispatch();
   const map = useSelector(mapSelector);
   const { t } = useSafeTranslation();
-  const savedListener = useRef<(ev: MapLayerEventType[T] & Object) => void>();
+  const savedListener = useRef<
+    ((ev: MapLayerEventType[T] & Object) => void) | undefined
+  >(undefined);
 
   React.useEffect(() => {
     if (!map) {

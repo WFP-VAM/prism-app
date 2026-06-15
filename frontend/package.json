@@ -103,14 +103,14 @@
     "pmtiles": "^4.2.1",
     "posthog-js": "^1.372.9",
     "prism-common": "file:../common",
-    "react": "^18",
+    "react": "^19.2.0",
     "react-chartjs-2": "^2.9.0",
-    "react-datepicker": "^2.14.1",
-    "react-dom": "^18",
+    "react-datepicker": "^9.1.0",
+    "react-dom": "^19.2.0",
     "react-draggable": "^4.4.6 ",
     "react-i18next": "^14.1.2",
     "react-map-gl": "^7.1.0",
-    "react-markdown": "^8.0.7",
+    "react-markdown": "^10",
     "react-range-slider-input": "^3.0.7",
     "react-redux": "^9.2.0",
     "react-router-dom": "^5.3.4",
@@ -136,7 +136,7 @@
     "lodash": "^4.18.0",
     "dompurify": "^3.4.0",
     "protocol-buffers-schema": ">=3.6.1",
-    "protobufjs": "^7.5.8"
+    "protobufjs": "^7.6.3"
   },
   "_resolutionsNotes": {
     "node-notifier": "Build compatibility - keep",
@@ -153,7 +153,7 @@
     "qs": "CVE-2025-15284 - Security fix - GHSA-6rw7-vpxm-498p - Parent: cypress>@cypress/request - arrayLimit bypass DoS vulnerability - Forces v6.14.1+",
     "lodash": "Lodash security fixes - GHSA-r5fr-rjxr-66jc / GHSA-f23m-r3pf-42rh (CVE-2026-4800 / CVE-2026-2950) and prior - Forces v4.18.0+",
     "protocol-buffers-schema": "CVE-2026-5758 - Security fix - GHSA-j452-xhg8-qg39 - Parent: geotiff - Forces v3.6.1+",
-    "protobufjs": "CVE-2026-45740 - Security fix - GHSA-jggg-4jg4-v7c6 - Parent: posthog-js>@opentelemetry/otlp-transformer - Forces v7.5.8+"
+    "protobufjs": "CVE-2026-45740 + CVE-2026-54269 - Force protobufjs >=7.6.3 for posthog-js>@opentelemetry/otlp-transformer transitive dependency."
   },
   "_comment": "The 'defaults' and 'not ie 11' are needed to avoid build issues with maplibre-gl.",
   "browserslist": {
@@ -190,9 +190,8 @@
     "@types/marked": "^4.0.2",
     "@types/node": "20.8.8",
     "@types/papaparse": "^5.0.3",
-    "@types/react": "^18.2.52",
-    "@types/react-datepicker": "^2.11.0",
-    "@types/react-dom": "^18.2.18",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
     "@types/react-redux": "^7.1.7",
     "@types/react-router-dom": "^5.3.3",
     "@types/redux-mock-store": "^1.0.6",
@@ -216,7 +215,7 @@
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-prettier": "^5.1.3",
     "eslint-plugin-react": "^7.37.2",
-    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-react-hooks": "^7",
     "eslint-plugin-react-refresh": "^0.4.24",
     "eslint-plugin-simple-import-sort": "^13.0.0",
     "fast-glob": "^3.3.2",

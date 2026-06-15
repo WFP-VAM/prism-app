@@ -218,7 +218,7 @@ function PMTilesAnalysisLayer({
   effectiveBoundaryId,
 }: {
   before?: string;
-  mapRef: RefObject<MapRef>;
+  mapRef: RefObject<MapRef | null>;
   legend: LegendDefinition;
   boundaryLayerId?: string;
   effectiveBoundaryId?: string;
@@ -353,7 +353,7 @@ function AnalysisLayer({
   mapRef,
 }: {
   before?: string;
-  mapRef: RefObject<MapRef>;
+  mapRef: RefObject<MapRef | null>;
 }) {
   const analysisData = useSelector(analysisResultSelector);
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
