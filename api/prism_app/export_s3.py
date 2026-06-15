@@ -201,6 +201,25 @@ def _s3_console_folder_url(bucket: str, key_prefix: str) -> str:
     )
 
 
+def public_maps_root_folder_uri() -> str:
+    """Root folder for all scheduled public maps (S3 or local file URI)."""
+    bucket, object_prefix = get_export_map_s3_bucket_and_prefix()
+    base = "public_maps/"
+    op = normalize_export_map_s3_object_prefix(object_prefix)
+    key_prefix = f"{op}/{base}" if op else base
+    if bucket:
+        return f"s3://{bucket}/{key_prefix}"
+    local_raw = os.environ.get("EXPORT_MAP_LOCAL_OUTPUT_DIR", "").strip()
+    if local_raw:
+        return (Path(local_raw).resolve() / base).as_uri()
+    return key_prefix
+
+
+def public_maps_root_admin_output_path() -> str:
+    """Admin list banner: root public-maps folder path or browser-openable URL."""
+    return storage_uri_to_admin_output_path(public_maps_root_folder_uri())
+
+
 def storage_uri_to_admin_output_path(storage_uri: str) -> str:
     """Admin display value: local filesystem path or browser-openable URL."""
     uri = storage_uri.strip()

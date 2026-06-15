@@ -1,7 +1,0 @@
-{% if data %}
-    {% if data.startswith('http://') or data.startswith('https://') %}
-        <a href="{{ data }}" target="_blank" rel="noopener noreferrer">{{ data }}</a>
-    {% else %}
-        <code class="text-break">{{ data }}</code>
-    {% endif %}
-{% endif %}

@@ -12,6 +12,8 @@ from prism_app.export_s3 import (
     parse_s3_uri,
     public_maps_folder_prefix,
     public_maps_folder_uri,
+    public_maps_root_admin_output_path,
+    public_maps_root_folder_uri,
     put_map_export_bytes_local,
     s3_key_for_map_export,
     slug_s3_path_segment,
@@ -74,6 +76,31 @@ def test_public_maps_folder_uri_includes_bucket_and_prefix(
         "s3://prism-wfp/batch-maps/public_maps/mozambique/precip_blended_dekad/"
     )
     assert get_export_map_s3_bucket_and_prefix() == ("prism-wfp", "batch-maps")
+
+
+def test_public_maps_root_folder_uri_s3(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("EXPORT_MAP_LOCAL_OUTPUT_DIR", raising=False)
+    monkeypatch.delenv("EXPORT_MAP_S3_BUCKET", raising=False)
+    assert public_maps_root_folder_uri() == (
+        "s3://prism-wfp/batch-maps/public_maps/"
+    )
+    link = public_maps_root_admin_output_path()
+    assert "s3.console.aws.amazon.com/s3/buckets/prism-wfp" in link
+    assert "prefix=batch-maps/public_maps/" in link
+
+
+def test_public_maps_root_folder_uri_local(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    monkeypatch.setenv("EXPORT_MAP_S3_BUCKET", "")
+    monkeypatch.setenv("EXPORT_MAP_LOCAL_OUTPUT_DIR", str(tmp_path))
+    assert public_maps_root_folder_uri().startswith("file://")
+    path = public_maps_root_admin_output_path()
+    assert path == str((tmp_path / "public_maps").resolve())
+    assert not path.startswith("file:")
 
 
 def test_storage_uri_to_admin_output_path_s3_console(

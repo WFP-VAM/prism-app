@@ -6,7 +6,6 @@ from uuid import uuid4
 import pytest
 from prism_app.admin_map_export import (
     MapExportJobView,
-    MapExportOutputDirectoryField,
     MapExportScheduleView,
     _apply_job_owner_filter,
     _apply_schedule_owner_filter,
@@ -15,7 +14,6 @@ from prism_app.admin_map_export import (
     _validate_dekad_interval,
 )
 from prism_app.auth.permission_codes import ADMIN_ACCESS
-from prism_app.export_s3 import public_maps_folder_uri
 from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.database.map_export_schedule_model import (
     MAX_DEKAD_INTERVAL,
@@ -145,68 +143,9 @@ def test_schedule_searchable_fields_include_cadence_and_format() -> None:
     assert "format" in view.searchable_fields
 
 
-@pytest.mark.asyncio
-async def test_output_directory_field_local_path(
-    monkeypatch: pytest.MonkeyPatch,
-    tmp_path,
-) -> None:
-    monkeypatch.setenv("EXPORT_MAP_S3_BUCKET", "")
-    monkeypatch.setenv("EXPORT_MAP_LOCAL_OUTPUT_DIR", str(tmp_path))
-    schedule = MapExportSchedule(
-        id=uuid4(),
-        name="moz precip",
-        country="mozambique",
-        layer_id="precip_blended_dekad",
-        cadence="monthly",
-        export_url=(
-            "https://prism.example/export?date={date}"
-            "&hazardLayerIds=precip_blended_dekad"
-        ),
-        format="pdf",
-        export_options={"origin": "https://prism.example"},
-    )
-    schedule._admin_output_directory = public_maps_folder_uri(  # noqa: SLF001
-        schedule.export_url,
-        country=schedule.country,
-    )
-    field = MapExportOutputDirectoryField("output_directory")
-    request = _request(admin_access=True)
-    path = await field.parse_obj(request, schedule)
-    assert path is not None
-    assert path.startswith(str(tmp_path.resolve()))
-    assert "public_maps/mozambique/precip_blended_dekad" in path
-    assert not path.startswith("file:")
-
-
-@pytest.mark.asyncio
-async def test_output_directory_field_s3_console_link(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    monkeypatch.delenv("EXPORT_MAP_LOCAL_OUTPUT_DIR", raising=False)
-    monkeypatch.delenv("EXPORT_MAP_S3_BUCKET", raising=False)
-    schedule = MapExportSchedule(
-        id=uuid4(),
-        name="moz precip",
-        country="mozambique",
-        layer_id="precip_blended_dekad",
-        cadence="monthly",
-        export_url=(
-            "https://prism.example/export?date={date}"
-            "&hazardLayerIds=precip_blended_dekad"
-        ),
-        format="pdf",
-        export_options={"origin": "https://prism.example"},
-    )
-    schedule._admin_output_directory = public_maps_folder_uri(  # noqa: SLF001
-        schedule.export_url,
-        country=schedule.country,
-    )
-    field = MapExportOutputDirectoryField("output_directory")
-    request = _request(admin_access=True)
-    link = await field.parse_obj(request, schedule)
-    assert link is not None
-    assert "s3.console.aws.amazon.com/s3/buckets/prism-wfp" in link
-    assert "public_maps/mozambique/precip_blended_dekad/" in link
+def test_schedule_view_includes_download_row_action() -> None:
+    view = MapExportScheduleView(MapExportSchedule)
+    assert "download" in view.row_actions
 
 
 def test_schedule_view_can_create_only_with_clone_from() -> None:

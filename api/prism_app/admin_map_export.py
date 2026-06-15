@@ -21,7 +21,10 @@ from prism_app.database.map_export_schedule_model import (
     MapExportScheduleStatus,
 )
 from prism_app.database.user_model import User
-from prism_app.export_s3 import public_maps_folder_uri, storage_uri_to_admin_output_path
+from prism_app.export_jobs.schedule_download import (
+    latest_succeeded_job_for_schedule,
+    schedule_export_download_response,
+)
 from prism_app.export_schedules.routes import format_map_export_schedule_name
 from prism_app.map_export_layer_catalog import (
     get_deployment_country,
@@ -39,10 +42,10 @@ from starlette.requests import Request
 from starlette.responses import Response
 from starlette_admin import EnumField, HasOne, StringField
 from starlette_admin._types import RequestAction
-from starlette_admin.actions import link_row_action
+from starlette_admin.actions import link_row_action, row_action
 from starlette_admin.contrib.sqla import Admin
 from starlette_admin.contrib.sqla.helpers import OPERATORS
-from starlette_admin.exceptions import FormValidationError
+from starlette_admin.exceptions import ActionFailed, FormValidationError
 
 _DEFAULT_EQ = OPERATORS["eq"]
 _DEFAULT_NEQ = OPERATORS["neq"]
@@ -274,16 +277,6 @@ def _enrich_schedules_for_admin(
     )
     for item in schedules:
         item._admin_last_executed_at = last_executed.get(item.id)  # noqa: SLF001
-        if item.export_url and item.country:
-            try:
-                item._admin_output_directory = public_maps_folder_uri(  # noqa: SLF001
-                    item.export_url,
-                    country=item.country,
-                )
-            except ValueError:
-                item._admin_output_directory = None  # noqa: SLF001
-        else:
-            item._admin_output_directory = None  # noqa: SLF001
 
 
 @dataclass
@@ -337,24 +330,6 @@ class ScheduleLayerIdField(EnumField):
         return schedule_layer_label(country, layer_id)
 
 
-@dataclass
-class MapExportOutputDirectoryField(StringField):
-    exclude_from_create = True
-    exclude_from_edit = True
-    searchable = False
-    orderable = False
-    display_template: str = "displays/map_export_output_path.html"
-
-    async def parse_obj(self, request: Request, obj: Any) -> Any:  # noqa: ARG002
-        storage_uri = getattr(obj, "_admin_output_directory", None)
-        if not storage_uri:
-            return None
-        try:
-            return storage_uri_to_admin_output_path(storage_uri)
-        except ValueError:
-            return None
-
-
 class PrismAdmin(Admin):
     """Admin with clone-prefill support for map export schedules."""
 
@@ -399,10 +374,6 @@ class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelVie
         "dekad_interval",
         EnumField("format", enum=MapExportScheduleFormat),
         ScheduleLastExecutedField("last_executed_at", label="Last executed"),
-        MapExportOutputDirectoryField(
-            "output_directory",
-            label="Output path",
-        ),
         StringField("export_url", read_only=True),
         PrettyJSONField("export_options", read_only=True),
         HasOne("created_by_user", label="Scheduled by", identity="user"),
@@ -420,7 +391,6 @@ class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelVie
         "last_enqueued_at",
         "last_enqueued_date",
         "last_executed_at",
-        "output_directory",
         "created_by_user",
         "created_at",
         "updated_at",
@@ -434,7 +404,6 @@ class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelVie
         "last_enqueued_at",
         "last_enqueued_date",
         "last_executed_at",
-        "output_directory",
         "created_by_user",
         "created_at",
         "updated_at",
@@ -460,7 +429,7 @@ class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelVie
     )
     fields_default_sort = [("created_at", True)]
     actions: list[str] = []
-    row_actions = ["view", "edit", "clone", "delete"]
+    row_actions = ["view", "edit", "clone", "download", "delete"]
 
     def can_create(self, request: Request) -> bool:
         if not super().can_create(request):
@@ -595,6 +564,30 @@ class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelVie
             request.url_for(route_name + ":create", identity=self.identity),
         )
         return f"{base}?clone_from={pk}"
+
+    @row_action(
+        name="download",
+        text="Download",
+        icon_class="fa-solid fa-download",
+        custom_response=True,
+        action_btn_class="btn-secondary",
+    )
+    async def download_latest_export_row_action(
+        self,
+        request: Request,
+        pk: Any,
+    ) -> Response:
+        schedule = await self.find_by_pk(request, pk)
+        if schedule is None:
+            raise ActionFailed("Schedule not found or not accessible")
+        session: Session = request.state.session
+        job = latest_succeeded_job_for_schedule(session, schedule.id)
+        if job is None:
+            raise ActionFailed("No completed export available for this schedule yet")
+        try:
+            return schedule_export_download_response(job)
+        except HTTPException as exc:
+            raise ActionFailed(str(exc.detail)) from exc
 
     async def validate(self, request: Request, data: dict[str, Any]) -> None:
         errors: dict[str, str] = {}
