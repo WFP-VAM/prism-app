@@ -113,9 +113,9 @@ export interface MapExportLayoutProps {
   invertedAdminBoundaryLimitPolygon?: GeoJSON.Feature | null;
 
   // For capturing the rendered output
-  printRef?: React.RefObject<HTMLDivElement>;
-  titleRef?: React.RefObject<HTMLDivElement>;
-  footerRef?: React.RefObject<HTMLDivElement>;
+  printRef?: React.RefObject<HTMLDivElement | null>;
+  titleRef?: React.RefObject<HTMLDivElement | null>;
+  footerRef?: React.RefObject<HTMLDivElement | null>;
 
   // Footer height for positioning scale bar and north arrow
   footerHeight?: number;

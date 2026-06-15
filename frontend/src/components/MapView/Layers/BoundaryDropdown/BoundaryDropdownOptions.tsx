@@ -191,7 +191,6 @@ const BoundaryDropdownOptions = React.forwardRef(
         {search && flattenedAreaList.length === 0 && (
           <MenuItem disabled>{t('No Results')}</MenuItem>
         )}
-        {/* @ts-expect-error - react-window types incompatible with React 18 */}
         <List
           height={700}
           itemCount={flattenedAreaList.length}

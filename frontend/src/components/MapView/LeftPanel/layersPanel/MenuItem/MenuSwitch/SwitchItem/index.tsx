@@ -113,8 +113,7 @@ const SwitchItem = memo(
     const initialActiveLayerId = useMemo(
       () =>
         selectedActiveLayer.length > 0 ? selectedActiveLayer[0].id : layer.id,
-
-      [layer.id],
+      [layer.id, selectedActiveLayer],
     );
 
     const [activeLayerId, setActiveLayerId] = useState(
@@ -230,6 +229,7 @@ const SwitchItem = memo(
             display: 'flex',
             alignItems: 'center',
           }}
+          onMouseDown={e => e.stopPropagation()}
         >
           <SwitchAction
             activeLayerId={activeLayerId}

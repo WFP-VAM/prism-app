@@ -88,13 +88,10 @@ const AppShell = memo(({ countryPrefix = '' }: { countryPrefix?: string }) => (
   <div id="app">
     <NavBar />
     <div style={{ paddingTop: '56px', height: 'calc(100% - 56px)' }}>
-      {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
       <Switch>
-        {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
         <Route path={`${countryPrefix}/dashboard/:path?`} exact>
           <DashboardRouteSwitcher />
         </Route>
-        {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
         <Route path={countryPrefix || '/'}>
           <MapView />
           <AuthModal />
@@ -108,20 +105,16 @@ function AppRoutes() {
   const isUniversal = isUniversalDeployment();
 
   return (
-    // @ts-expect-error - react-router-dom v5 types incompatible with React 18
     <Switch>
-      {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
       <Route path="/export" exact>
         <ExportView />
       </Route>
       {isUniversal && (
         <>
-          {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
           <Route path="/" exact>
             <UniversalPlaceholder />
           </Route>
 
-          {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
           <Route path="/country/:iso3">
             <CountryIsoProvider>
               <AppShell countryPrefix="/country/:iso3" />
@@ -130,7 +123,6 @@ function AppRoutes() {
         </>
       )}
       {!isUniversal && (
-        // @ts-expect-error - react-router-dom v5 types incompatible with React 18
         <Route>
           <AppShell />
         </Route>
@@ -156,7 +148,6 @@ function App() {
     <ThemeProvider theme={muiTheme}>
       {/* Used to show notifications from redux as a snackbar. Notifications are stored in notificationState */}
       <Notifier />
-      {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
       <Router>{renderedContent}</Router>
     </ThemeProvider>
   );
