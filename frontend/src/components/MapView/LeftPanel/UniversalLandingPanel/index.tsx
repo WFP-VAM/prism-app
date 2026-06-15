@@ -27,7 +27,7 @@ const UniversalLandingPanel = memo(() => {
   const history = useHistory();
   const { t } = useSafeTranslation();
   const map = useMapState().maplibreMap();
-  const { data, loading } = useBoundaryData(UNIVERSAL_ADMIN0_LAYER_ID, map);
+  const { data, error } = useBoundaryData(UNIVERSAL_ADMIN0_LAYER_ID, map);
   const [query, setQuery] = useState('');
 
   const countries = useMemo(
@@ -63,11 +63,22 @@ const UniversalLandingPanel = memo(() => {
         {t('Countries')}
       </Typography>
 
-      {countries.length === 0 ? (
+      {countries.length === 0 && error ? (
+        <Typography variant="body2" className={classes.emptyState}>
+          {t('Unable to load countries. Please try again.')}
+        </Typography>
+      ) : null}
+
+      {countries.length === 0 && !error ? (
         <Box className={classes.loading}>
-          <CircularProgress size={24} />
+          <CircularProgress size={32} />
+          <Typography variant="body2" className={classes.loadingText}>
+            {t('Loading countries…')}
+          </Typography>
         </Box>
-      ) : (
+      ) : null}
+
+      {countries.length > 0 ? (
         <>
           <TextField
             className={classes.searchField}
@@ -108,7 +119,7 @@ const UniversalLandingPanel = memo(() => {
             </List>
           )}
         </>
-      )}
+      ) : null}
     </Box>
   );
 });
@@ -169,8 +180,15 @@ const useStyles = makeStyles(() =>
     },
     loading: {
       display: 'flex',
-      justifyContent: 'center',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      gap: '0.75rem',
+      flexGrow: 1,
       padding: '2rem 0',
+    },
+    loadingText: {
+      color: '#666',
     },
   }),
 );
