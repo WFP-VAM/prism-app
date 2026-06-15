@@ -174,7 +174,7 @@ def process_alert_row(
     max_date_aware = max_date.replace(tzinfo=timezone.utc)
     msg = calculate_alert(max_date_aware, alert, api_url=api_url, client=client)
     hazard_id = cfg["id"]
-    deactivate = f"{api_url}/alerts/{aid}?deactivate=true&email={alert['email']}"
+    deactivate = f"{api_url}/alerts/{aid}?{urlencode({'deactivate': 'true', 'email': alert['email']})}"
     url_params = format_prism_url(
         alert["prism_url"],
         {
