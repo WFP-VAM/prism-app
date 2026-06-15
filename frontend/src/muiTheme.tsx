@@ -240,6 +240,36 @@ const theme = createTheme({
         icon: {
           color: black,
         },
+        root: {
+          textTransform: 'none',
+          letterSpacing: 'normal',
+        },
+      },
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          fontSize: '0.875rem',
+          textTransform: 'none',
+          letterSpacing: 'normal',
+        },
+      },
+    },
+    MuiTablePagination: {
+      styleOverrides: {
+        root: {
+          fontSize: '0.875rem',
+          textTransform: 'none',
+          letterSpacing: 'normal',
+        },
+        selectLabel: {
+          textTransform: 'none',
+          letterSpacing: 'normal',
+        },
+        displayedRows: {
+          textTransform: 'none',
+          letterSpacing: 'normal',
+        },
       },
     },
     MuiButton: {

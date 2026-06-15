@@ -291,7 +291,9 @@ function AnticipatoryActionFloodPanel() {
       </TableContainer>
       <Box sx={aaFloodPanelSx.pagination}>
         <Box sx={aaFloodPanelSx.rowsPerPageContainer}>
-          <Typography>{t('Rows per page')}:</Typography>
+          <Typography sx={aaFloodPanelSx.paginationText}>
+            {t('Rows per page')}:
+          </Typography>
           <SimpleDropdown
             options={rowsPerPageOptions}
             value={rowsPerPage}
@@ -307,7 +309,7 @@ function AnticipatoryActionFloodPanel() {
           >
             <ChevronLeft />
           </IconButton>
-          <Typography>
+          <Typography sx={aaFloodPanelSx.paginationText}>
             {totalStations > 0 ? `${startIndex}-${endIndex}` : '0-0'} {t('of')}{' '}
             {totalStations}
           </Typography>

@@ -867,6 +867,12 @@ export const aaFloodPanelSx = {
     width: '90%',
     bottom: '10px',
   } satisfies SxProps<Theme>,
+  paginationText: {
+    textTransform: 'none',
+    letterSpacing: 'normal',
+    fontSize: '0.875rem',
+    color: '#666',
+  } satisfies SxProps<Theme>,
   rowsPerPageContainer: {
     display: 'flex',
     alignItems: 'center',

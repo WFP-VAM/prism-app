@@ -4,6 +4,8 @@ import type { SxProps, Theme } from '@mui/material/styles';
 import { useSafeTranslation } from 'i18n';
 import { useCallback } from 'react';
 
+import { simpleDropdownSelectSx } from './simpleDropdownStyles';
+
 type OptionLabel = string;
 
 export default function SimpleDropdown<OptionValue extends number | string>({
@@ -32,11 +34,13 @@ export default function SimpleDropdown<OptionValue extends number | string>({
   );
 
   return (
-    <FormControl {...rest}>
+    <FormControl size="small" {...rest}>
       <Select
         value={value === undefined ? '' : value}
         onChange={handleChange}
         disabled={disabled}
+        variant="outlined"
+        sx={simpleDropdownSelectSx}
       >
         {options.map(([val, text]) => (
           <MenuItem key={val} value={val}>

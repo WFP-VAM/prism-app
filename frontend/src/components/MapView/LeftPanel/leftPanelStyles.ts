@@ -272,6 +272,9 @@ export const tableHeadCompactSx = {
 export const tableHeaderTextSx = {
   color: 'black',
   fontWeight: 500,
+  textTransform: 'none',
+  letterSpacing: 'normal',
+  fontSize: '0.875rem',
 } satisfies SxProps<Theme>;
 
 export const tableHeaderTextCompactSx = {
@@ -294,6 +297,9 @@ export const tableBodyCellCompactSx = {
 
 export const tableBodyTextSx = {
   color: 'black',
+  textTransform: 'none',
+  letterSpacing: 'normal',
+  fontSize: '0.875rem',
 } satisfies SxProps<Theme>;
 
 export const tableBodyTextCompactSx = {
@@ -321,8 +327,12 @@ export const tableContainerLowZIndexSx = {
 export const tablePaginationSx: SxProps<Theme> = {
   display: 'flex',
   justifyContent: 'center',
+  alignItems: 'center',
   color: 'black',
   flexShrink: 0,
+  textTransform: 'none',
+  letterSpacing: 'normal',
+  fontSize: '0.875rem',
   '& .MuiTablePagination-select': {
     flex: '1 1 10%',
     marginRight: 0,
@@ -330,6 +340,9 @@ export const tablePaginationSx: SxProps<Theme> = {
   '& .MuiTablePagination-displayedRows': {
     flex: '1 2 30%',
     marginLeft: 0,
+    textTransform: 'none',
+    letterSpacing: 'normal',
+    fontSize: '0.875rem',
   },
   '& .MuiTablePagination-spacer': {
     flex: '1 1 5%',
@@ -340,16 +353,22 @@ export const tablePaginationSx: SxProps<Theme> = {
 export const exposureTablePaginationSx: SxProps<Theme> = {
   display: 'flex',
   justifyContent: 'center',
+  alignItems: 'center',
   color: 'black',
   overflow: 'unset',
+  textTransform: 'none',
+  letterSpacing: 'normal',
+  fontSize: '0.875rem',
   '& .MuiTablePagination-select': {
     flex: '1 1 10%',
     marginRight: 0,
   },
   '& .MuiTablePagination-displayedRows': {
     flex: '1 2 40%',
-    fontSize: '0.5rem',
     marginLeft: 0,
+    textTransform: 'none',
+    letterSpacing: 'normal',
+    fontSize: '0.875rem',
   },
   '& .MuiTablePagination-spacer': {
     flex: '1 1 5%',
@@ -431,6 +450,10 @@ export const dataTablePaginationSx: SxProps<Theme> = {
   alignSelf: 'flex-end',
   display: 'flex',
   justifyContent: 'center',
+  alignItems: 'center',
   color: 'black',
   flexShrink: 0,
+  textTransform: 'none',
+  letterSpacing: 'normal',
+  fontSize: '0.875rem',
 };
