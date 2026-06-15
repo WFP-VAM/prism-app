@@ -292,6 +292,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           color: black,
+          fontSize: '1rem',
         },
       },
     },
@@ -299,9 +300,17 @@ const theme = createTheme({
       styleOverrides: {
         input: {
           color: black,
+          fontSize: '1rem',
         },
         root: {
           color: black,
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        input: {
+          fontSize: '1rem',
         },
       },
     },

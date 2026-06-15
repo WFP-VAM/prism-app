@@ -7,6 +7,7 @@ import {
   MenuItem,
   Tooltip,
 } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
 import {
   downloadGeotiff,
   Extent,
@@ -44,6 +45,7 @@ function LayerDownloadOptions({
   extent,
   selected,
   size,
+  iconButtonSx,
 }: LayerDownloadOptionsProps) {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
@@ -281,6 +283,7 @@ function LayerDownloadOptions({
               disabled={!selected || isGeotiffLoading}
               onClick={handleDownloadMenuOpen}
               size={size || 'medium'}
+              sx={iconButtonSx}
             >
               <GetAppIcon fontSize={size || 'medium'} />
             </IconButton>
@@ -332,6 +335,7 @@ interface LayerDownloadOptionsProps {
   extent: Extent | undefined;
   selected: boolean;
   size?: 'small' | undefined;
+  iconButtonSx?: SxProps<Theme>;
 }
 
 export default LayerDownloadOptions;

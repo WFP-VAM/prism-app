@@ -122,7 +122,7 @@ const AnalysisLayerSwitchItem = memo(
         return (
           <IconButton
             disabled={!selected}
-            sx={switchItemOpacityButtonSx(isOpacitySelected)}
+            sx={switchItemOpacityButtonSx(selected, isOpacitySelected)}
             onClick={handleOpacityClick}
             size="large"
           >
@@ -135,7 +135,7 @@ const AnalysisLayerSwitchItem = memo(
           <span>
             <IconButton
               disabled={!selected}
-              sx={switchItemOpacityButtonSx(isOpacitySelected)}
+              sx={switchItemOpacityButtonSx(selected, isOpacitySelected)}
               onClick={handleOpacityClick}
               size="large"
             >

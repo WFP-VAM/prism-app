@@ -2,7 +2,10 @@ import OpacityIcon from '@mui/icons-material/Opacity';
 import { Box, IconButton, Tooltip } from '@mui/material';
 import { usePostHog } from '@posthog/react';
 import { Extent } from 'components/MapView/Layers/raster-utils';
-import { switchItemOpacityButtonSx } from 'components/MapView/LeftPanel/layersPanel/layerPanelStyles';
+import {
+  switchItemActionButtonSx,
+  switchItemOpacityButtonSx,
+} from 'components/MapView/LeftPanel/layersPanel/layerPanelStyles';
 import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
 import { LayerKey, LayerType } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
@@ -245,7 +248,10 @@ const SwitchItem = memo(
             <span style={{ marginLeft: 'auto' }}>
               <IconButton
                 disabled={!someLayerAreSelected}
-                sx={switchItemOpacityButtonSx(isOpacitySelected)}
+                sx={switchItemOpacityButtonSx(
+                  someLayerAreSelected,
+                  isOpacitySelected,
+                )}
                 onClick={() =>
                   setIsOpacitySelected(opacitySelected => !opacitySelected)
                 }
@@ -265,6 +271,7 @@ const SwitchItem = memo(
             layerId={activeLayerId}
             extent={extent}
             selected={someLayerAreSelected}
+            iconButtonSx={switchItemActionButtonSx(someLayerAreSelected)}
           />
         </Box>
         {someLayerAreSelected && isOpacitySelected && (

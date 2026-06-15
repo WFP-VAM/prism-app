@@ -1,6 +1,6 @@
 import type { MenuProps } from '@mui/material';
 import type { SxProps, Theme } from '@mui/material/styles';
-import { cyanBlue, lightGrey } from 'muiTheme';
+import { black, cyanBlue, lightGrey } from 'muiTheme';
 
 /** Nested accordions + drawer: anchor positioning / scroll lock can break MUI Select menu. */
 export const layerDaySelectMenuProps: Partial<MenuProps> = {
@@ -131,11 +131,19 @@ export const layerDaySelectTitleSx = (
   '&:focus': { outline: 'none' },
 });
 
-export const switchItemOpacityButtonSx = (
+export const switchItemActionButtonSx = (
   selected: boolean,
 ): SxProps<Theme> => ({
+  ...(selected ? { color: black } : {}),
+});
+
+export const switchItemOpacityButtonSx = (
+  selected: boolean,
+  isOpacitySelected: boolean,
+): SxProps<Theme> => ({
   ml: 'auto',
-  ...(selected
+  ...switchItemActionButtonSx(selected && !isOpacitySelected),
+  ...(selected && isOpacitySelected
     ? {
         bgcolor: '#4CA1AD',
         color: '#F2F2F2',

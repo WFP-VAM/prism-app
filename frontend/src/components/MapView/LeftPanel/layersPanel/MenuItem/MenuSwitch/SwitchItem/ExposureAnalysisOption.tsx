@@ -2,6 +2,7 @@ import { ImageAspectRatioOutlined } from '@mui/icons-material';
 import { IconButton, Tooltip } from '@mui/material';
 import { usePostHog } from '@posthog/react';
 import { Extent } from 'components/MapView/Layers/raster-utils';
+import { switchItemActionButtonSx } from 'components/MapView/LeftPanel/layersPanel/layerPanelStyles';
 import { generateUniqueTableKey } from 'components/MapView/utils';
 import {
   AggregationOperations,
@@ -100,6 +101,7 @@ function ExposureAnalysisOption({
           disabled={!selected}
           onClick={handleExposureAnalysis}
           size="large"
+          sx={switchItemActionButtonSx(selected)}
         >
           <ImageAspectRatioOutlined />
         </IconButton>

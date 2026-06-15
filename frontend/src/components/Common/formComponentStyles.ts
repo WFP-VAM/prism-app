@@ -39,7 +39,8 @@ export const CALENDAR_POPPER_CLASS = 'prism-form-calendar-popper';
 
 export const calendarPopperGlobalStyles = {
   [`.${CALENDAR_POPPER_CLASS}`]: {
-    zIndex: 3,
+    // Above left-panel content; matches map DateSelector popper
+    zIndex: 1300,
   },
 };
 

@@ -1,5 +1,6 @@
 import GetAppIcon from '@mui/icons-material/GetApp';
 import { IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
+import { switchItemActionButtonSx } from 'components/MapView/LeftPanel/layersPanel/layerPanelStyles';
 import {
   downloadToFile,
   getExposureAnalysisColumnsToRender,
@@ -84,6 +85,7 @@ const AnalysisLayerSwitchItemDownloadOptions = memo(
             disabled={!selected}
             onClick={handleDownloadMenuOpen}
             size="large"
+            sx={switchItemActionButtonSx(selected)}
           >
             <GetAppIcon />
           </IconButton>
@@ -91,7 +93,11 @@ const AnalysisLayerSwitchItemDownloadOptions = memo(
       }
       return (
         <Tooltip title={t('Download') as string}>
-          <IconButton onClick={handleDownloadMenuOpen} size="large">
+          <IconButton
+            onClick={handleDownloadMenuOpen}
+            size="large"
+            sx={switchItemActionButtonSx(selected)}
+          >
             <GetAppIcon />
           </IconButton>
         </Tooltip>
