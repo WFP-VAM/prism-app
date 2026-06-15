@@ -4,8 +4,9 @@
 // learn more: https://github.com/testing-library/jest-dom
 // import '@testing-library/jest-dom/extend-expect';
 import '@testing-library/jest-dom';
-import { cleanup } from '@testing-library/react/pure';
 import 'cross-fetch/polyfill';
+
+import { cleanup } from '@testing-library/react/pure';
 
 // @testing-library/react/pure (used via test/render.tsx) does not auto-cleanup.
 afterEach(() => {

@@ -1,4 +1,7 @@
-import { render as rtlRender, type RenderOptions } from '@testing-library/react/pure';
+import {
+  render as rtlRender,
+  type RenderOptions,
+} from '@testing-library/react/pure';
 import type { PropsWithChildren, ReactElement } from 'react';
 
 import TestMuiProviders from './TestMuiProviders';

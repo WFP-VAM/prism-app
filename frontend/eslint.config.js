@@ -206,6 +206,12 @@ export default [
     },
   },
   {
+    files: ['test/**/*.{js,jsx,ts,tsx}'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
+  {
     files: ['cypress.config.ts'],
     rules: {
       '@typescript-eslint/no-unused-vars': [
