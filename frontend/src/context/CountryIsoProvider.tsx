@@ -22,6 +22,11 @@ export function CountryIsoProvider({
   const isKnown = isKnownIso3(iso3);
   const admin3Available = hasAdmin3ForCountry(iso3);
 
+  // TODO: `isValid`/`isKnown` are exposed but not yet consumed, so an unknown or
+  // malformed ISO3 (e.g. /country/ZZZ) silently renders an empty map. Wire these
+  // up to render a fallback (UniversalPlaceholder or a dedicated invalid-country
+  // page) instead of the map shell.
+
   const value = useMemo(
     () => ({
       iso3,

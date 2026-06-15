@@ -87,7 +87,6 @@ export const getChartAdminBoundaryParams = (
           resolveChartBoundaryProperty(properties, item.name) ||
           properties[adminLevelNames[Number(item.level) - levelOffset]],
         localName:
-          resolveChartBoundaryProperty(properties, item.name) ||
           properties[adminLevelLocalNames[Number(item.level) - levelOffset]],
       },
     }),

@@ -6,6 +6,7 @@ import { BoundaryLayerProps, MapEventWrapFunctionProps } from 'config/types';
 import { getDisplayBoundaryLayers, isPrimaryBoundaryLayer } from 'config/utils';
 import { toggleSelectedBoundary } from 'context/mapSelectionLayerStateSlice';
 import { setBoundaryRelationData } from 'context/mapStateSlice';
+import { addNotification } from 'context/notificationStateSlice';
 import { showPopup } from 'context/tooltipStateSlice';
 import { useCountryIso } from 'context/useCountryIso';
 import { languages } from 'i18n';
@@ -144,6 +145,12 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
     if (layer.format !== 'pmtiles' || !boundaryDataError) {
       return;
     }
+    dispatch(
+      addNotification({
+        message: boundaryDataError,
+        type: 'warning',
+      }),
+    );
   }, [boundaryDataError, dispatch, layer.format]);
 
   useEffect(() => {
