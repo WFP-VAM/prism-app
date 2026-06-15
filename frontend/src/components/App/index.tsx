@@ -83,15 +83,18 @@ function DashboardRouteSwitcher() {
   return <DashboardView />;
 }
 
-const AppShell = memo(({ countryPrefix = '' }: { countryPrefix?: string }) => (
+const AppShell = memo(() => (
   <div id="app">
     <NavBar />
     <div style={{ paddingTop: '56px', height: 'calc(100% - 56px)' }}>
       <Switch>
-        <Route path={`${countryPrefix}/dashboard/:path?`} exact>
+        <Route
+          path={['/country/:iso3/dashboard/:path?', '/dashboard/:path?']}
+          exact
+        >
           <DashboardRouteSwitcher />
         </Route>
-        <Route path={countryPrefix || '/'}>
+        <Route path={['/country/:iso3', '/']}>
           <MapView />
           <AuthModal />
         </Route>
@@ -109,19 +112,11 @@ function AppRoutes() {
         <ExportView />
       </Route>
       {isUniversal && (
-        <>
-          <Route path="/" exact>
-            <CountryIsoProvider>
-              <AppShell />
-            </CountryIsoProvider>
-          </Route>
-
-          <Route path="/country/:iso3">
-            <CountryIsoProvider>
-              <AppShell countryPrefix="/country/:iso3" />
-            </CountryIsoProvider>
-          </Route>
-        </>
+        <Route path={['/country/:iso3', '/']}>
+          <CountryIsoProvider>
+            <AppShell />
+          </CountryIsoProvider>
+        </Route>
       )}
       {!isUniversal && (
         <Route>

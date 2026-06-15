@@ -1,5 +1,7 @@
 import {
+  getCountriesFromAdmin0Features,
   getCountryBbox,
+  getUniversalAdmin0LandingFilter,
   hasAdmin3ForCountry,
   isKnownIso3,
   isValidIso3Format,
@@ -65,5 +67,25 @@ describe('universal-utils', () => {
     expect(
       resolveChartBoundaryProperty(properties, 'dv_adm2_id'),
     ).toBeUndefined();
+  });
+
+  it('returns a MapLibre filter excluding iso3 codes starting with lowercase x', () => {
+    expect(getUniversalAdmin0LandingFilter()).toEqual([
+      '!=',
+      ['slice', ['get', 'iso3'], 0, 1],
+      'x',
+    ]);
+  });
+
+  it('excludes pseudo-countries whose raw iso3 starts with lowercase x from the country list', () => {
+    const countries = getCountriesFromAdmin0Features([
+      { properties: { iso3: 'MOZ', adm0_name: 'Mozambique' } },
+      { properties: { iso3: 'xKO', adm0_name: 'Pseudo Korea' } },
+      { properties: { iso3: 'ITA', adm0_name: 'Italy' } },
+    ]);
+    expect(countries).toEqual([
+      { iso3: 'ITA', name: 'Italy' },
+      { iso3: 'MOZ', name: 'Mozambique' },
+    ]);
   });
 });

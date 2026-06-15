@@ -1,3 +1,4 @@
+import { createStyles, makeStyles } from '@material-ui/core';
 import {
   BoundaryRelationData,
   loadBoundaryRelations,
@@ -12,7 +13,12 @@ import { useCountryIso } from 'context/useCountryIso';
 import { languages } from 'i18n';
 import { Map as MaplibreMap } from 'maplibre-gl';
 import { memo, useEffect, useState } from 'react';
-import { Layer, MapLayerMouseEvent, Source } from 'react-map-gl/maplibre';
+import {
+  Layer,
+  MapLayerMouseEvent,
+  Popup,
+  Source,
+} from 'react-map-gl/maplibre';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
@@ -26,6 +32,7 @@ import { getUniversalMapPath } from 'utils/universal-routing';
 import {
   getIso3FromPathname,
   getIso3MapFilter,
+  getUniversalAdmin0LandingFilter,
   isUniversalDeployment,
   isUniversalLandingMode,
 } from 'utils/universal-utils';
@@ -115,19 +122,23 @@ const onMouseLeave = () => (evt: MapLayerMouseEvent) =>
   onToggleHover('', evt.target);
 
 const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
+  const styleClasses = useStyles();
   const selectedMap = useMapState()?.maplibreMap();
   const history = useHistory();
   const { iso3 } = useCountryIso();
   const isLandingMode = isUniversalLandingMode(iso3);
   // maplibre rejects an `undefined` filter ("array expected, undefined found"),
-  // so when no country is selected (landing) fall back to a match-everything
-  // filter to render the whole-world admin0 boundaries.
+  // so when no country is selected (landing) fall back to a filter that
+  // renders the whole-world admin0 boundaries except pseudo-countries.
   const iso3Filter = isUniversalDeployment()
-    ? ((getIso3MapFilter(iso3) ?? ['all']) as any)
+    ? ((getIso3MapFilter(iso3) ?? getUniversalAdmin0LandingFilter()) as any)
     : undefined;
   const [isZoomLevelSufficient, setIsZoomLevelSufficient] = useState(
     !layer.minZoom,
   );
+  const [hovered, setHovered] = useState<
+    { iso3: string; name: string; lng: number; lat: number } | undefined
+  >(undefined);
 
   const { data, error: boundaryDataError } = useBoundaryData(
     layer.id,
@@ -162,6 +173,43 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
       selectedMap.off('click', layerId, onLandingClick);
     };
   }, [selectedMap, isLandingMode, layer.id, layerId, history]);
+
+  useEffect(() => {
+    if (
+      !selectedMap ||
+      !isLandingMode ||
+      layer.id !== UNIVERSAL_ADMIN0_LAYER_ID
+    ) {
+      return undefined;
+    }
+
+    const onLandingMouseMove = (evt: MapLayerMouseEvent) => {
+      const feature = findFeature(layerId, evt);
+      const countryIso3 = feature?.properties?.iso3;
+      const countryName = feature?.properties?.adm0_name;
+      if (countryIso3 && countryName) {
+        setHovered({
+          iso3: String(countryIso3),
+          name: String(countryName),
+          lng: evt.lngLat.lng,
+          lat: evt.lngLat.lat,
+        });
+      } else {
+        setHovered(undefined);
+      }
+    };
+
+    const onLandingMouseLeave = () => {
+      setHovered(undefined);
+    };
+
+    selectedMap.on('mousemove', layerId, onLandingMouseMove);
+    selectedMap.on('mouseleave', layerId, onLandingMouseLeave);
+    return () => {
+      selectedMap.off('mousemove', layerId, onLandingMouseMove);
+      selectedMap.off('mouseleave', layerId, onLandingMouseLeave);
+    };
+  }, [selectedMap, isLandingMode, layer.id, layerId]);
 
   // Control the zoom level threshold above which the layer will not be displayed
   useEffect(() => {
@@ -216,36 +264,74 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
   }, [data, dispatch, layer, isPrimaryLayer]);
 
   if (layer.format === 'pmtiles') {
+    const isAdmin0Landing =
+      isLandingMode && layer.id === UNIVERSAL_ADMIN0_LAYER_ID;
+
     return (
-      <Source
-        id={`source-${layer.id}`}
-        type="vector"
-        url={`pmtiles://${layer.path}`}
-      >
-        <Layer
-          id={getLayerMapId(layer.id)}
-          type="line"
-          source={`source-${layer.id}`}
-          source-layer={layer.layerName}
-          filter={iso3Filter}
-          paint={{
-            ...layer.styles.line,
-            'line-opacity': isZoomLevelSufficient
-              ? layer.styles.line?.['line-opacity']
-              : 0,
-          }}
-          beforeId={before}
-        />
-        <Layer
-          id={layerId}
-          type="fill"
-          source={`source-${layer.id}`}
-          source-layer={layer.layerName}
-          filter={iso3Filter}
-          paint={layer.styles.fill}
-          beforeId={before}
-        />
-      </Source>
+      <>
+        <Source
+          id={`source-${layer.id}`}
+          type="vector"
+          url={`pmtiles://${layer.path}`}
+        >
+          <Layer
+            id={getLayerMapId(layer.id)}
+            type="line"
+            source={`source-${layer.id}`}
+            source-layer={layer.layerName}
+            filter={iso3Filter}
+            paint={{
+              ...layer.styles.line,
+              'line-opacity': isZoomLevelSufficient
+                ? layer.styles.line?.['line-opacity']
+                : 0,
+            }}
+            beforeId={before}
+          />
+          <Layer
+            id={layerId}
+            type="fill"
+            source={`source-${layer.id}`}
+            source-layer={layer.layerName}
+            filter={iso3Filter}
+            paint={layer.styles.fill}
+            beforeId={before}
+          />
+          {isAdmin0Landing && (
+            <Layer
+              id={`${getLayerMapId(layer.id)}-highlight`}
+              type="line"
+              source={`source-${layer.id}`}
+              source-layer={layer.layerName}
+              filter={
+                [
+                  'all',
+                  getUniversalAdmin0LandingFilter(),
+                  ['==', ['get', 'iso3'], hovered?.iso3 ?? '__none__'],
+                ] as any
+              }
+              paint={{
+                'line-color': '#000000',
+                'line-width': 1,
+                'line-opacity': 1,
+              }}
+              beforeId={before}
+            />
+          )}
+        </Source>
+        {isAdmin0Landing && hovered && (
+          <Popup
+            className={styleClasses.popup}
+            longitude={hovered.lng}
+            latitude={hovered.lat}
+            closeButton={false}
+            closeOnClick={false}
+            offset={12}
+          >
+            {hovered.name}
+          </Popup>
+        )}
+      </>
     );
   }
 
@@ -276,5 +362,27 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
     </Source>
   );
 });
+
+const useStyles = makeStyles(() =>
+  createStyles({
+    popup: {
+      '& .maplibregl-popup-content': {
+        background: '#323638',
+        color: '#FFFFFF',
+        padding: '6px 10px',
+        borderRadius: '4px',
+        boxShadow: '0 6px 18px rgba(0, 0, 0, 0.4)',
+        fontSize: '14px',
+        fontWeight: 500,
+        lineHeight: 1.3,
+        textAlign: 'center',
+      },
+      '& .maplibregl-popup-tip': {
+        borderTopColor: '#323638',
+        borderBottomColor: '#323638',
+      },
+    },
+  }),
+);
 
 export default BoundaryLayer;

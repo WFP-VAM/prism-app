@@ -1,4 +1,5 @@
 import { Box, createStyles, makeStyles } from '@material-ui/core';
+import { appConfig } from 'config';
 import { getBoundaryLayers } from 'config/utils';
 import { clearAnalysisResult } from 'context/analysisResultStateSlice';
 import {
@@ -8,7 +9,7 @@ import {
   WMSLayerDatesRequested,
 } from 'context/serverPreloadStateSlice';
 import { useCountryIso } from 'context/useCountryIso';
-import { memo, useEffect, useMemo } from 'react';
+import { memo, useEffect, useMemo, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { boundaryCache } from 'utils/boundary-cache';
 import {
@@ -36,6 +37,32 @@ const MapView = memo(() => {
   const datesPreloadingForWMS = useSelector(WMSLayerDatesRequested);
   const datesPreloadingForPointData = useSelector(pointDataLayerDatesRequested);
   const dispatch = useDispatch();
+  const prevIso3Ref = useRef(iso3);
+
+  useEffect(() => {
+    if (!isUniversalDeployment() || !map) {
+      prevIso3Ref.current = iso3;
+      return;
+    }
+
+    const previousIso3 = prevIso3Ref.current;
+    prevIso3Ref.current = iso3;
+
+    if (previousIso3 && !iso3) {
+      const [minLon, minLat, maxLon, maxLat] = appConfig.map.boundingBox;
+      map.fitBounds(
+        [
+          [minLon, minLat],
+          [maxLon, maxLat],
+        ],
+        {
+          padding: { top: 70, right: 60, bottom: 150, left: 500 },
+          animate: true,
+          duration: 1500,
+        },
+      );
+    }
+  }, [iso3, map]);
 
   useEffect(() => {
     if (!isUniversalDeployment() || !iso3) {
@@ -76,7 +103,8 @@ const MapView = memo(() => {
         ],
         {
           padding: { top: 40, right: 40, bottom: 40, left: 420 },
-          animate: false,
+          animate: true,
+          duration: 1500,
         },
       );
     }

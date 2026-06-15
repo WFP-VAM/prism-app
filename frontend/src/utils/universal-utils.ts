@@ -49,6 +49,11 @@ export function getIso3MapFilter(iso3: string | undefined) {
     : undefined;
 }
 
+/** Landing map should hide pseudo-countries whose raw iso3 starts with lowercase "x". */
+export function getUniversalAdmin0LandingFilter() {
+  return ['!=', ['slice', ['get', 'iso3'], 0, 1], 'x'] as const;
+}
+
 export function filterFeaturesByIso3<
   T extends { properties?: Record<string, unknown> | null },
 >(features: T[], iso3: string | undefined): T[] {
@@ -92,7 +97,11 @@ export function getCountriesFromAdmin0Features(
 
   const countriesByIso3 = new Map<string, string>();
   features.forEach(feature => {
-    const iso3 = normalizeIso3(String(feature.properties?.iso3 ?? ''));
+    const rawIso3 = String(feature.properties?.iso3 ?? '');
+    if (rawIso3.startsWith('x')) {
+      return;
+    }
+    const iso3 = normalizeIso3(rawIso3);
     const name = String(feature.properties?.adm0_name ?? '').trim();
     if (!iso3 || !name || countriesByIso3.has(iso3)) {
       return;
