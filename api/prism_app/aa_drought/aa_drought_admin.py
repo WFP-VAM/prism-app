@@ -17,12 +17,12 @@ from sqlalchemy import select
 from sqlalchemy.engine import Engine
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, sessionmaker
+from sqlmodel import col
 from starlette.requests import Request
 from starlette.routing import Route
 from starlette_admin.contrib.sqla import Admin, ModelView
 from starlette_admin.exceptions import FormValidationError
 from starlette_admin.fields import EnumField
-from sqlmodel import col
 
 _AA_COUNTRY_CHOICES = [(c.value, c.value) for c in AaDroughtCountry]
 _AA_STATUS_CHOICES = [(s.value, s.value) for s in AaDroughtStatus]
