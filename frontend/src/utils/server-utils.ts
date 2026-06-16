@@ -53,6 +53,7 @@ import {
 } from './date-utils';
 import { LocalError } from './error-utils';
 import { createEWSDatesArray } from './ews-utils';
+import { fetchJsonOrNull } from './fetchJsonOrNull';
 import { fetchWithTimeout } from './fetch-with-timeout';
 import { queryParamsToString } from './url-utils';
 
@@ -817,17 +818,11 @@ async function fetchPreprocessedDates(): Promise<
 > {
   if (cachedPreprocessedDates === undefined) {
     try {
-      // preprocessed-layer-dates.json is generated using "yarn preprocess-layers"
-      // which runs ./scripts/preprocess-layers.js - preprocessValidityPeriods
-      const response = await fetch(
+      const data = await fetchJsonOrNull<Record<string, StartEndDate[]>>(
         `data/${safeCountry}/preprocessed-layer-dates.json`,
       );
-      if (!response.ok) {
-        console.error(`HTTP error! status: ${response.status}`);
-        cachedPreprocessedDates = {};
-      }
-      cachedPreprocessedDates = await response.json();
-    } catch (_error) {
+      cachedPreprocessedDates = data ?? {};
+    } catch {
       cachedPreprocessedDates = {};
     }
   }

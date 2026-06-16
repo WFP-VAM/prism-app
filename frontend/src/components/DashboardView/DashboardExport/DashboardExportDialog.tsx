@@ -23,6 +23,7 @@ import { jsPDF } from 'jspdf';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
+import { fetchJsonOrNull } from 'utils/fetchJsonOrNull';
 
 import DashboardExportContext, {
   ExportToggles,
@@ -118,10 +119,9 @@ function DashboardExportDialog({
   // Load boundary layer data directly
   useEffect(() => {
     if (open && !boundaryData) {
-      fetch(boundaryLayer.path)
-        .then(response => response.json())
+      fetchJsonOrNull(boundaryLayer.path)
         .then(data => {
-          setBoundaryData(data);
+          if (data) setBoundaryData(data);
         })
         .catch(error => console.error('Error loading boundary data:', error));
     }
@@ -136,9 +136,9 @@ function DashboardExportDialog({
 
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
     if (selectedBoundaries.length === 0) {
-      fetch(`data/${safeCountry}/admin-boundary-unified-polygon.json`)
-        .then(response => response.json())
+      fetchJsonOrNull(`data/${safeCountry}/admin-boundary-unified-polygon.json`)
         .then(polygonData => {
+          if (!polygonData) return;
           const maskedPolygon = mask(polygonData as any);
           setAdminBoundaryPolygon(maskedPolygon as any);
         })
@@ -166,9 +166,9 @@ function DashboardExportDialog({
 
     if (filteredData.features.length === 0) {
       // Fall back to full country mask if no features match
-      fetch(`data/${safeCountry}/admin-boundary-unified-polygon.json`)
-        .then(response => response.json())
+      fetchJsonOrNull(`data/${safeCountry}/admin-boundary-unified-polygon.json`)
         .then(polygonData => {
+          if (!polygonData) return;
           const maskedPolygon = mask(polygonData as any);
           setAdminBoundaryPolygon(maskedPolygon as any);
         });

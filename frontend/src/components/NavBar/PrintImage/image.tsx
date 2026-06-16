@@ -37,6 +37,7 @@ import {
 } from 'utils/adminAreaSelection';
 import { isBoundaryLayer } from 'utils/boundary-layers-utils';
 import { dateWithoutTime, getFormattedDate } from 'utils/date-utils';
+import { fetchJsonOrNull } from 'utils/fetchJsonOrNull';
 import useLayers, { isWmsSelectableForBatchPrint } from 'utils/layers-utils';
 import {
   DateCompatibleLayer,
@@ -604,9 +605,9 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
     // which runs ./scripts/preprocess-layers.js
     if (selectedBoundaries.length === 0) {
-      fetch(`/data/${safeCountry}/admin-boundary-unified-polygon.json`)
-        .then(response => response.json())
+      fetchJsonOrNull(`/data/${safeCountry}/admin-boundary-unified-polygon.json`)
         .then(polygonData => {
+          if (!polygonData) return;
           const maskedPolygon = mask(polygonData as any);
           setAdminBoundaryPolygon(maskedPolygon as any);
         })
