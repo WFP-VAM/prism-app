@@ -33,8 +33,8 @@ def test_bulk_status_select_form_renders_tuple_labels() -> None:
 
 def test_dashboard_view_uses_shared_bulk_status_form() -> None:
     from prism_app.dashboard.dashboard_admin import (
-        DashboardAdminView,
         _DASHBOARD_BULK_UPDATE_STATUS_FORM,
+        DashboardAdminView,
     )
     from prism_app.database.dashboard_model import DashboardModel
 
@@ -44,8 +44,8 @@ def test_dashboard_view_uses_shared_bulk_status_form() -> None:
 
 def test_map_export_view_uses_shared_bulk_status_form() -> None:
     from prism_app.admin_map_export import (
-        MapExportScheduleView,
         _MAP_EXPORT_BULK_UPDATE_STATUS_FORM,
+        MapExportScheduleView,
     )
     from prism_app.database.map_export_schedule_model import MapExportSchedule
 

@@ -22,9 +22,7 @@ def bulk_status_select_form(
     option_lines = [f'<option value="">{escape(placeholder)}</option>']
     for choice in choices:
         value, label = _value_and_label(choice)
-        option_lines.append(
-            f'<option value="{escape(value)}">{escape(label)}</option>'
-        )
+        option_lines.append(f'<option value="{escape(value)}">{escape(label)}</option>')
     options_html = "\n            ".join(option_lines)
     return f"""
 <form>
