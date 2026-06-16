@@ -205,6 +205,7 @@ function AnticipatoryActionDroughtPanel() {
               id={x.id}
               checkBoxProps={{
                 checked: categoryFilters[x.id],
+                disabled: categories.length === 1,
                 onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
                   const { checked } = e.target;
                   dispatch(setAAFilters({ categories: { [x.id]: checked } }));
