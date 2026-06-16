@@ -3,6 +3,7 @@
 import json
 from typing import Any, cast
 
+from prism_app.admin_bulk_actions import bulk_status_select_form
 from prism_app.dashboard.dashboard_config_field import DashboardConfigJsonFileField
 from prism_app.database.dashboard_model import DashboardCountry, DashboardStatus
 from prism_app.utils import utc_now
@@ -24,23 +25,7 @@ _DUPLICATE_DASHBOARD_FALLBACK_MSG = (
     "Change the title in your config JSON or edit the existing dashboard."
 )
 
-# Starlette-admin batch actions take pre-rendered HTML for ``form``, not a template
-# path. The list page embeds this string in each action link's ``data-form``
-# attribute; client JS copies it into the confirmation modal on click.
-_BULK_UPDATE_STATUS_FORM = """
-<form>
-    <div class="mt-3">
-        <label class="form-label" for="bulk-status">Status</label>
-        <select id="bulk-status" class="form-select" name="status" required>
-            <option value="">Select status…</option>
-            <option value="draft">draft</option>
-            <option value="published">published</option>
-            <option value="staging">staging</option>
-            <option value="archived">archived</option>
-        </select>
-    </div>
-</form>
-"""
+_DASHBOARD_BULK_UPDATE_STATUS_FORM = bulk_status_select_form(DashboardStatus)
 
 
 class DashboardAdminView(ModelView):
@@ -114,7 +99,7 @@ class DashboardAdminView(ModelView):
         submit_btn_text="Update status",
         submit_btn_class="btn-primary",
         icon_class="fa-solid fa-toggle-on",
-        form=_BULK_UPDATE_STATUS_FORM,
+        form=_DASHBOARD_BULK_UPDATE_STATUS_FORM,
     )
     async def update_status_action(self, request: Request, pks: list[Any]) -> str:
         data = await request.form()
