@@ -51,7 +51,7 @@
   "dependencies": {
     "@azure/msal-browser": "^2.19.0",
     "@azure/msal-react": "^1.1.1",
-    "@babel/core": "^7.0.0-0",
+    "@babel/core": "^7.29.6",
     "@date-fns/tz": "^1.2.0",
     "@fontsource/noto-sans-arabic": "5.2.5",
     "@fortawesome/fontawesome-free": "^6.5.1",
@@ -86,7 +86,7 @@
     "d3-fetch": "^1.1.2",
     "date-fns": "^4.1.0",
     "domhandler": "^4.2.2",
-    "dompurify": "^3.4.0",
+    "dompurify": "^3.4.10",
     "geojson": "^0.5.0",
     "geotiff": "^2.1.3",
     "h3-js": "^3.7.0",
@@ -103,7 +103,7 @@
     "max-inscribed-circle": "^2.0.1",
     "papaparse": "^5.2.0",
     "pmtiles": "^4.2.1",
-    "posthog-js": "^1.372.9",
+    "posthog-js": "^1.386.8",
     "prism-common": "file:../common",
     "react": "^19.2.0",
     "react-chartjs-2": "^2.9.0",
@@ -136,9 +136,9 @@
     "systeminformation": "^5.27.14",
     "qs": "^6.14.1",
     "lodash": "^4.18.0",
-    "dompurify": "^3.4.0",
+    "dompurify": "^3.4.10",
     "protocol-buffers-schema": ">=3.6.1",
-    "protobufjs": "^7.5.8"
+    "protobufjs": "^7.6.3"
   },
   "_resolutionsNotes": {
     "node-notifier": "Build compatibility - keep",
@@ -155,7 +155,7 @@
     "qs": "CVE-2025-15284 - Security fix - GHSA-6rw7-vpxm-498p - Parent: cypress>@cypress/request - arrayLimit bypass DoS vulnerability - Forces v6.14.1+",
     "lodash": "Lodash security fixes - GHSA-r5fr-rjxr-66jc / GHSA-f23m-r3pf-42rh (CVE-2026-4800 / CVE-2026-2950) and prior - Forces v4.18.0+",
     "protocol-buffers-schema": "CVE-2026-5758 - Security fix - GHSA-j452-xhg8-qg39 - Parent: geotiff - Forces v3.6.1+",
-    "protobufjs": "CVE-2026-45740 - Security fix - GHSA-jggg-4jg4-v7c6 - Parent: posthog-js>@opentelemetry/otlp-transformer - Forces v7.5.8+"
+    "protobufjs": "CVE-2026-45740 + CVE-2026-54269 - Force protobufjs >=7.6.3 for posthog-js>@opentelemetry/otlp-transformer transitive dependency."
   },
   "_comment": "The 'defaults' and 'not ie 11' are needed to avoid build issues with maplibre-gl.",
   "browserslist": {
@@ -232,7 +232,7 @@
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.2",
     "typescript": "5.9.3",
-    "vite": "^6.4.2",
+    "vite": "^6.4.3",
     "vite-plugin-node-polyfills": "^0.21.0"
   },
   "engines": {
