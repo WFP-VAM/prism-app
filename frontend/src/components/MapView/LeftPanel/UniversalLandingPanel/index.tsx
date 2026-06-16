@@ -149,6 +149,8 @@ const useStyles = makeStyles(() =>
       color: '#666',
       marginTop: '0.75rem',
       lineHeight: 1.5,
+      textTransform: 'none',
+      letterSpacing: 'normal',
     },
     listHeading: {
       fontWeight: 600,
@@ -172,11 +174,15 @@ const useStyles = makeStyles(() =>
     },
     countryName: {
       color: '#333',
+      textTransform: 'none',
+      letterSpacing: 'normal',
     },
     emptyState: {
       color: '#666',
       padding: '1rem 0',
       textAlign: 'center',
+      textTransform: 'none',
+      letterSpacing: 'normal',
     },
     loading: {
       display: 'flex',
@@ -189,6 +195,8 @@ const useStyles = makeStyles(() =>
     },
     loadingText: {
       color: '#666',
+      textTransform: 'none',
+      letterSpacing: 'normal',
     },
   }),
 );
