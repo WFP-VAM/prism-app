@@ -1,0 +1,6 @@
+{% extends "@starlette-admin/list.html" %}
+
+{% block head_css %}
+    {{ super() }}
+    {% include "includes/map_export_schedule_download_tooltip.css.html" %}
+{% endblock %}

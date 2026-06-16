@@ -26,7 +26,7 @@ from prism_app.export_jobs.db import get_export_jobs_session_factory
 from prism_app.export_maps import export_maps
 from prism_app.export_s3 import (
     get_export_map_s3_bucket_and_prefix,
-    map_export_s3_client,
+    get_map_export_s3_client,
     put_map_export_bytes,
     put_map_export_bytes_local,
 )
@@ -159,7 +159,7 @@ async def amain() -> None:
 
     if bucket:
         local_dir: Path | None = None
-        s3 = map_export_s3_client()
+        s3 = get_map_export_s3_client(required=True)
         logger.info(
             "export_map_worker S3 mode (bucket=%s prefix=%s)",
             bucket,

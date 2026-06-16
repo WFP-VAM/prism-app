@@ -9,11 +9,12 @@ from prism_app.export_jobs.fingerprint import (
     canonical_request_dict,
     compute_request_fingerprint,
 )
-from prism_app.export_jobs.routes import get_s3_client_for_presign, router
+from prism_app.export_jobs.routes import router
 from prism_app.export_jobs.service import (
     create_queued_map_export_job,
     enqueue_map_export_job,
 )
+from prism_app.export_s3 import get_map_export_s3_client
 
 __all__ = [
     "canonical_request_dict",
@@ -23,6 +24,6 @@ __all__ = [
     "enqueue_map_export_job",
     "get_export_jobs_session",
     "get_export_jobs_session_factory",
-    "get_s3_client_for_presign",
+    "get_map_export_s3_client",
     "router",
 ]

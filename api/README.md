@@ -55,7 +55,7 @@ make db-migrate
 make db-seed
 ```
 
-`db-migrate` applies Alembic migrations (`upgrade head`). `db-seed` runs migrations first, then inserts sample dev data (Mozambique AA metadata, a `local_dev_user`, and example alert rows).
+`db-migrate` applies Alembic migrations (`upgrade head`). `db-seed` runs migrations first, then inserts sample dev data (Mozambique AA metadata, a `local_dev_user`, example alert rows, and five `[Seed]` map export schedules for cron/download QA).
 
 ### 4. Verify
 

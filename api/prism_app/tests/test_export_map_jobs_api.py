@@ -11,7 +11,6 @@ import pytest
 from fastapi.testclient import TestClient
 from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.export_jobs.db import get_export_jobs_session
-from prism_app.export_jobs.routes import get_s3_client_for_presign
 from prism_app.main import app
 from prism_app.models import MapExportRequestModel
 from prism_app.tests.fixtures.moz_export import (
@@ -139,7 +138,7 @@ def test_post_export_map_jobs_returns_422_when_too_many_urls(
 
 
 def test_get_succeeded_returns_presigned_url(
-    api_client: TestClient, sqlite_engine
+    api_client: TestClient, sqlite_engine, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     SessionLocal = sessionmaker(
         bind=sqlite_engine, class_=Session, expire_on_commit=False
@@ -161,11 +160,17 @@ def test_get_succeeded_returns_presigned_url(
     mock_s3 = MagicMock()
     mock_s3.generate_presigned_url.return_value = "https://example.com/presigned"
     mock_s3.head_object.return_value = {}
-    app.dependency_overrides[get_s3_client_for_presign] = lambda: mock_s3
-    try:
-        r = api_client.get(f"/export-map/jobs/{job_id}")
-    finally:
-        del app.dependency_overrides[get_s3_client_for_presign]
+    monkeypatch.setattr(
+        "prism_app.export_jobs.routes.map_export_artifact_exists",
+        lambda *_a, **_k: True,
+    )
+    monkeypatch.setattr(
+        "prism_app.export_jobs.routes.get_map_export_s3_client",
+        lambda *, for_presign=False, required=False, **kwargs: (
+            mock_s3 if for_presign else None
+        ),
+    )
+    r = api_client.get(f"/export-map/jobs/{job_id}")
     mock_s3.generate_presigned_url.assert_called_once()
     _gc_args, gc_kw = mock_s3.generate_presigned_url.call_args
     assert "attachment" in gc_kw["Params"]["ResponseContentDisposition"]
@@ -178,7 +183,10 @@ def test_get_succeeded_returns_presigned_url(
 
 
 def test_get_succeeded_file_uri_returns_local_path_skips_presign(
-    api_client: TestClient, sqlite_engine, tmp_path: Path
+    api_client: TestClient,
+    sqlite_engine,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     pdf = tmp_path / "mock-export.pdf"
     pdf.write_bytes(b"%PDF-")
@@ -202,11 +210,11 @@ def test_get_succeeded_file_uri_returns_local_path_skips_presign(
         job_id = job.id
 
     mock_s3 = MagicMock()
-    app.dependency_overrides[get_s3_client_for_presign] = lambda: mock_s3
-    try:
-        r = api_client.get(f"/export-map/jobs/{job_id}")
-    finally:
-        del app.dependency_overrides[get_s3_client_for_presign]
+    monkeypatch.setattr(
+        "prism_app.export_jobs.routes.get_map_export_s3_client",
+        lambda *, for_presign=False, required=False, **kwargs: mock_s3,
+    )
+    r = api_client.get(f"/export-map/jobs/{job_id}")
     mock_s3.generate_presigned_url.assert_not_called()
 
     assert r.status_code == 200

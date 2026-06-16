@@ -16,6 +16,40 @@ services:
       retries: 12
       start_period: 30s
 
+  # Local S3-compatible storage for map export artifacts (dev only).
+  minio:
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://127.0.0.1:9000/minio/health/live || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+  minio-init:
+    image: minio/mc:latest
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: /bin/sh
+    command:
+      - -c
+      - |
+        until mc alias set local http://minio:9000 minioadmin minioadmin 2>/dev/null; do
+          echo "waiting for minio..."
+          sleep 2
+        done
+        mc mb --ignore-existing local/prism-dev
+
   api:
     env_file:
       - path: .env
@@ -23,6 +57,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
     volumes:
       - ./prism_app:/prism_app
       - ./pyproject.toml:/pyproject.toml
@@ -52,18 +88,27 @@ services:
       - VECTOR_STORE_ACCESS_KEY_ID=${VECTOR_STORE_ACCESS_KEY_ID}
       - VECTOR_STORE_SECRET_ACCESS_KEY=${VECTOR_STORE_SECRET_ACCESS_KEY}
       - VECTOR_STORE_DEFAULT_REGION=${VECTOR_STORE_DEFAULT_REGION}
+      # Map export artifacts → local MinIO 
+      - EXPORT_MAP_S3_BUCKET=prism-dev
+      - EXPORT_MAP_LOCAL_OUTPUT_DIR=
+      - AWS_ACCESS_KEY_ID=minioadmin
+      - AWS_SECRET_ACCESS_KEY=minioadmin
+      - AWS_DEFAULT_REGION=us-east-1
+      - AWS_ENDPOINT_URL=http://minio:9000
+      - AWS_PRESIGN_ENDPOINT_URL=http://localhost:9000
     command: uvicorn prism_app.main:app --host 0.0.0.0 --port 80 --reload
     # Infinite loop, to keep it alive, for debugging
     # command: bash -c "while true; do echo 'sleeping...' && sleep 10; done"
-  
+
   export_map_worker:
     shm_size: "2gb"
     depends_on:
       db:
         condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
     volumes:
       - ./prism_app:/prism_app
-      - ./cache:/cache:rw
     build:
       context: ./
       dockerfile: ./Dockerfile.export-map-worker
@@ -74,14 +119,16 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_PORT=5432
       - POSTGRES_PASSWORD=!ChangeMe!
-      - EXPORT_MAP_S3_BUCKET=${EXPORT_MAP_S3_BUCKET:-}
-      - EXPORT_MAP_LOCAL_OUTPUT_DIR=/cache/map_exports
-      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
+      - EXPORT_MAP_S3_BUCKET=prism-dev
+      - EXPORT_MAP_LOCAL_OUTPUT_DIR=
+      - AWS_ACCESS_KEY_ID=minioadmin
+      - AWS_SECRET_ACCESS_KEY=minioadmin
+      - AWS_DEFAULT_REGION=us-east-1
+      - AWS_ENDPOINT_URL=http://minio:9000
       - BROWSER_POOL_SIZE=1
     working_dir: /prism_app
     command: [ "python", "-m", "prism_app.workers.export_map_worker" ]
 
 volumes:
   db_data:
+  minio_data:

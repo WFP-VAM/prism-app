@@ -19,39 +19,16 @@ from prism_app.export_jobs.service import (
     enqueue_map_export_job,
 )
 from prism_app.export_s3 import (
+    get_map_export_s3_client,
+    get_map_export_s3_client_for_artifact,
     is_file_artifact_uri,
     local_path_from_file_uri,
     map_export_artifact_exists,
-    map_export_s3_client,
     presign_export_get,
 )
 from prism_app.models import MapExportJobEnqueueRequest
 from prism_app.utils import utc_now
 from sqlmodel import Session
-
-
-def get_s3_client_for_presign() -> object | None:
-    """
-    Return an S3 client when boto3 can configure one; else None (local-artifact dev).
-
-    Callers that need presign or head_object create a client on demand or no-op safely.
-    """
-    try:
-        return map_export_s3_client()
-    except Exception:  # noqa: BLE001 — NoRegionError, missing creds, etc.
-        return None
-
-
-def _s3_client_for_artifact(uri: str | None, injected: object | None) -> object | None:
-    if not uri or is_file_artifact_uri(uri):
-        return None
-    if injected is not None:
-        return injected
-    try:
-        return map_export_s3_client()
-    except Exception:
-        return None
-
 
 router = APIRouter(prefix="/export-map", tags=["export-map"])
 
@@ -60,10 +37,9 @@ router = APIRouter(prefix="/export-map", tags=["export-map"])
 def create_map_export_job(
     body: MapExportJobEnqueueRequest,
     session: Session = Depends(get_export_jobs_session),
-    s3_client: object | None = Depends(get_s3_client_for_presign),
 ) -> JSONResponse:
     req = body.to_queued_request()
-    job, status_code = enqueue_map_export_job(session, req, s3_client)
+    job, status_code = enqueue_map_export_job(session, req, get_map_export_s3_client())
     fingerprint = compute_request_fingerprint(req)
     payload: dict[str, Any] = {
         "job_id": job.id,
@@ -79,13 +55,12 @@ def create_map_export_job(
 def read_map_export_job(
     job_id: str,
     session: Session = Depends(get_export_jobs_session),
-    s3_client: object | None = Depends(get_s3_client_for_presign),
 ) -> dict[str, Any]:
     job = session.get(MapExportJob, job_id)
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
 
-    verify_client = _s3_client_for_artifact(job.s3_uri, s3_client)
+    verify_client = get_map_export_s3_client_for_artifact(job.s3_uri, None)
 
     if job.status == "succeeded" and job.s3_uri:
         if not map_export_artifact_exists(job.s3_uri, s3_client=verify_client):
@@ -113,9 +88,7 @@ def read_map_export_job(
         if is_file_artifact_uri(job.s3_uri):
             local_artifact_path = local_path_from_file_uri(job.s3_uri)
         else:
-            presign_client = verify_client or _s3_client_for_artifact(
-                job.s3_uri, s3_client
-            )
+            presign_client = get_map_export_s3_client(for_presign=True)
             if presign_client is None:
                 raise HTTPException(
                     status_code=503,

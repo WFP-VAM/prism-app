@@ -8,6 +8,7 @@ from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.export_jobs.schedule_download import (
     latest_succeeded_job_for_schedule,
     schedule_export_download_response,
+    schedule_ids_with_downloadable_export,
 )
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -111,3 +112,34 @@ def test_schedule_export_download_response_missing_artifact() -> None:
     )
     with pytest.raises(HTTPException, match="missing or inaccessible"):
         schedule_export_download_response(job, s3_client=object())
+
+
+def test_schedule_ids_with_downloadable_export(db_session: Session) -> None:
+    schedule_with = uuid4()
+    schedule_without = uuid4()
+    db_session.add(
+        MapExportJob(
+            id="job-1",
+            request_fingerprint="fp",
+            request_payload_json={"urls": ["http://x"], "format": "pdf"},
+            status="succeeded",
+            s3_uri="s3://b/k/file.pdf",
+            map_export_schedule_id=schedule_with,
+        )
+    )
+    db_session.add(
+        MapExportJob(
+            id="job-2",
+            request_fingerprint="fp2",
+            request_payload_json={"urls": ["http://x"], "format": "pdf"},
+            status="failed",
+            map_export_schedule_id=schedule_without,
+        )
+    )
+    db_session.commit()
+
+    available = schedule_ids_with_downloadable_export(
+        db_session,
+        [schedule_with, schedule_without],
+    )
+    assert available == frozenset({schedule_with})
