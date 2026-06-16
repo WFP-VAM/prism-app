@@ -16,13 +16,33 @@ const p = (classes: ClassNameMap<'legendTextMarkdown'>) =>
     );
   };
 
+const a = (classes: ClassNameMap<'legendLink'>) =>
+  function _a({
+    children: linkChildren,
+    href,
+  }: {
+    children: React.ReactNode;
+    href?: string;
+  }) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={classes.legendLink}
+      >
+        {linkChildren}
+      </a>
+    );
+  };
+
 function LegendMarkdown({ children }: LegendMarkdownProps) {
   const classes = useStyles();
   return (
     <Markdown
-      linkTarget="_blank"
       components={{
         p: p(classes),
+        a: a(classes),
       }}
       allowedElements={['p', 'h5', 'strong', 'em', 'a']}
     >
@@ -37,6 +57,9 @@ const useStyles = makeStyles(() =>
       '& a': {
         textDecoration: 'underline',
       },
+    },
+    legendLink: {
+      textDecoration: 'underline',
     },
   }),
 );

@@ -47,7 +47,7 @@ def latest_succeeded_job_for_schedule(
     schedule_id: UUID,
 ) -> MapExportJob | None:
     """Most recent succeeded export job with an artifact for ``schedule_id``."""
-    return session.exec(
+    stmt = (
         select(MapExportJob)
         .where(
             MapExportJob.map_export_schedule_id == schedule_id,
@@ -55,8 +55,9 @@ def latest_succeeded_job_for_schedule(
             MapExportJob.s3_uri.isnot(None),
         )
         .order_by(MapExportJob.finished_at.desc())
-        .limit(1),
-    ).first()
+        .limit(1)
+    )
+    return session.scalars(stmt).first()
 
 
 def schedule_export_download_response(
