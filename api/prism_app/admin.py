@@ -1,6 +1,9 @@
 """Starlette Admin: read-only alerts; full CRUD for dashboards."""
 
-from prism_app.aa_drought.aa_drought_admin import AaDroughtAdminView
+from prism_app.aa_drought.aa_drought_admin import (
+    AaDroughtAdminView,
+    register_aa_drought_admin_routes,
+)
 from prism_app.auth.admin_request import (
     request_can_manage_aa_data,
     request_can_manage_dashboards,
@@ -137,6 +140,7 @@ class UserPermissionView(PrismGatedModelView):
 
 
 def register_alerts_admin_views(admin: Admin) -> None:
+    register_aa_drought_admin_routes(admin)
     admin.add_view(AlertView(AlertModel))
     admin.add_view(KoboUserView(KoboUser))
     admin.add_view(AnticipatoryActionAlertsView(AnticipatoryActionAlerts))

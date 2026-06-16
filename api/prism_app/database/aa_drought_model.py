@@ -63,12 +63,13 @@ class AaDroughtDatasetModel(SQLModel, table=True):
 
     __tablename__ = "aa_drought_dataset"
     __table_args__ = (
-        # One published dataset per country (partial unique index).
+        # One non-archived dataset per (country, status); archived rows may repeat.
         Index(
-            "uq_aa_drought_published_country",
+            "uq_aa_drought_country_status",
             "country",
+            "status",
             unique=True,
-            postgresql_where=text("status = 'published'"),
+            postgresql_where=text("status != 'archived'"),
         ),
         Index("ix_aa_drought_country_status", "country", "status"),
         Index("ix_aa_drought_country", "country"),

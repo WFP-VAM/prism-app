@@ -1,23 +1,72 @@
 """Starlette Admin: full CRUD for AA drought CSV datasets (raw CSV + lifecycle)."""
 
+from __future__ import annotations
+
+import uuid
 from typing import Any, cast
 
 from prism_app.aa_drought.csv_field import AaDroughtCsvFileField
+from prism_app.aa_drought.validate_csv import validate_aa_drought_csv_upload
 from prism_app.aa_drought.validation import validate_aa_drought_csv
-from prism_app.database.aa_drought_model import AaDroughtCountry, AaDroughtStatus
+from prism_app.database.aa_drought_model import (
+    AaDroughtCountry,
+    AaDroughtDatasetModel,
+    AaDroughtStatus,
+)
+from sqlalchemy import select
+from sqlalchemy.engine import Engine
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session, sessionmaker
 from starlette.requests import Request
-from starlette_admin.contrib.sqla import ModelView
+from starlette.routing import Route
+from starlette_admin.contrib.sqla import Admin, ModelView
 from starlette_admin.exceptions import FormValidationError
 from starlette_admin.fields import EnumField
+from sqlmodel import col
 
 _AA_COUNTRY_CHOICES = [(c.value, c.value) for c in AaDroughtCountry]
 _AA_STATUS_CHOICES = [(s.value, s.value) for s in AaDroughtStatus]
 
-_DUPLICATE_PUBLISHED_MSG = (
-    "Another dataset for this country is already published. Archive or unpublish "
-    "it first, or set this one to draft/staging."
+_DUPLICATE_COUNTRY_STATUS_MSG = (
+    "Another dataset for this country already has this status. Archive or change "
+    "the other dataset's status first."
 )
+_CSV_NOT_VALIDATED_MSG = "Click Validate and fix any errors before saving."
+
+
+def register_aa_drought_admin_routes(admin: Admin) -> None:
+    """AJAX CSV validation used by the admin upload form."""
+    admin.routes.append(
+        Route(
+            "/aa-drought/validate-csv",
+            validate_aa_drought_csv_upload,
+            methods=["POST"],
+            name="aa_drought_validate_csv",
+        )
+    )
+
+
+def _duplicate_country_status(
+    engine: Engine,
+    country: AaDroughtCountry,
+    status: AaDroughtStatus,
+    *,
+    exclude_id: uuid.UUID | None = None,
+) -> bool:
+    """True when another non-edit row already uses this country + status."""
+    if status == AaDroughtStatus.archived:
+        return False
+
+    SessionLocal = sessionmaker(engine, class_=Session, expire_on_commit=False)
+    with SessionLocal() as session:
+        stmt = (
+            select(AaDroughtDatasetModel.id)
+            .where(col(AaDroughtDatasetModel.country) == country)
+            .where(col(AaDroughtDatasetModel.status) == status)
+        )
+        if exclude_id is not None:
+            stmt = stmt.where(col(AaDroughtDatasetModel.id) != exclude_id)
+        return session.scalar(stmt) is not None
 
 
 class AaDroughtAdminView(ModelView):
@@ -30,6 +79,8 @@ class AaDroughtAdminView(ModelView):
 
     label = "AA drought data"
     name = "aa_drought_dataset"
+    create_template = "create_no_add_another.html"
+    edit_template = "edit_no_add_another.html"
     fields = [
         EnumField(
             "country",
@@ -76,21 +127,29 @@ class AaDroughtAdminView(ModelView):
     async def validate(self, request: Request, data: dict[str, Any]) -> None:
         errors: dict[str, str] = {}
 
+        form = await request.form()
+        if form.get("aa_drought_csv_validated") != "1":
+            errors["csv_content"] = _CSV_NOT_VALIDATED_MSG
+
         status_val = data.get("status")
+        status: AaDroughtStatus | None = None
         if not status_val:
             errors["status"] = "Status is required."
         else:
             try:
-                data["status"] = AaDroughtStatus(status_val)
+                status = AaDroughtStatus(status_val)
+                data["status"] = status
             except ValueError:
                 errors["status"] = f"Invalid status value '{status_val}'."
 
         country_val = data.get("country")
+        country: AaDroughtCountry | None = None
         if not country_val:
             errors["country"] = "Country is required."
         else:
             try:
-                data["country"] = AaDroughtCountry(country_val)
+                country = AaDroughtCountry(country_val)
+                data["country"] = country
             except ValueError:
                 errors["country"] = f"Invalid country value '{country_val}'."
 
@@ -104,6 +163,20 @@ class AaDroughtAdminView(ModelView):
             else:
                 data["csv_content"] = csv_text
                 data["row_count"] = result.row_count
+
+        if country is not None and status is not None and "status" not in errors:
+            exclude_id: uuid.UUID | None = None
+            pk = request.path_params.get("pk")
+            if pk:
+                try:
+                    exclude_id = uuid.UUID(str(pk))
+                except ValueError:
+                    pass
+            engine = request.app.state.admin_engine
+            if _duplicate_country_status(
+                engine, country, status, exclude_id=exclude_id
+            ):
+                errors["status"] = _DUPLICATE_COUNTRY_STATUS_MSG
 
         if errors:
             raise FormValidationError(cast(dict[str | int, Any], errors))
@@ -123,15 +196,17 @@ class AaDroughtAdminView(ModelView):
             obj.row_count = row_count
 
     def handle_exception(self, exc: Exception) -> None:
-        """Convert the partial unique index violation (two published rows for one
-        country) into a friendly form error."""
+        """Convert partial unique index violations into friendly form errors."""
         if isinstance(exc, IntegrityError):
             error_msg = str(exc.orig) if hasattr(exc, "orig") else str(exc)
-            if "uq_aa_drought_published_country" in error_msg:
+            if (
+                "uq_aa_drought_country_status" in error_msg
+                or "uq_aa_drought_published_country" in error_msg
+            ):
                 raise FormValidationError(
                     cast(
                         dict[str | int, Any],
-                        {"status": _DUPLICATE_PUBLISHED_MSG},
+                        {"status": _DUPLICATE_COUNTRY_STATUS_MSG},
                     )
                 )
         return super().handle_exception(exc)
