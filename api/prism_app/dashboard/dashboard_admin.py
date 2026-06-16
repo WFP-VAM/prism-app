@@ -5,11 +5,15 @@ from typing import Any, cast
 
 from prism_app.dashboard.dashboard_config_field import DashboardConfigJsonFileField
 from prism_app.database.dashboard_model import DashboardCountry, DashboardStatus
+from prism_app.utils import utc_now
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
 from starlette.requests import Request
+from starlette_admin.actions import action
 from starlette_admin.contrib.sqla import ModelView
-from starlette_admin.exceptions import FormValidationError
+from starlette_admin.exceptions import ActionFailed, FormValidationError
 from starlette_admin.fields import EnumField
+from starlette_admin.i18n import ngettext
 
 _DASHBOARD_COUNTRY_CHOICES = [
     (country.value, country.value) for country in DashboardCountry
@@ -19,6 +23,24 @@ _DUPLICATE_DASHBOARD_FALLBACK_MSG = (
     "A dashboard with this title already exists for the selected country. "
     "Change the title in your config JSON or edit the existing dashboard."
 )
+
+# Starlette-admin batch actions take pre-rendered HTML for ``form``, not a template
+# path. The list page embeds this string in each action link's ``data-form``
+# attribute; client JS copies it into the confirmation modal on click.
+_BULK_UPDATE_STATUS_FORM = """
+<form>
+    <div class="mt-3">
+        <label class="form-label" for="bulk-status">Status</label>
+        <select id="bulk-status" class="form-select" name="status" required>
+            <option value="">Select status…</option>
+            <option value="draft">draft</option>
+            <option value="published">published</option>
+            <option value="staging">staging</option>
+            <option value="archived">archived</option>
+        </select>
+    </div>
+</form>
+"""
 
 
 class DashboardAdminView(ModelView):
@@ -33,6 +55,7 @@ class DashboardAdminView(ModelView):
 
     label = "Dashboards"
     name = "dashboard"
+    list_template = "dashboard_list.html"
     detail_template = "detail_dashboard.html"
     edit_template = "edit_no_add_another.html"
     create_template = "create_no_add_another.html"
@@ -82,6 +105,61 @@ class DashboardAdminView(ModelView):
         "status",
         "country",
     ]
+    actions = ["update_status", "delete"]
+
+    @action(
+        name="update_status",
+        text="Update status",
+        confirmation="Update the status of the selected dashboards?",
+        submit_btn_text="Update status",
+        submit_btn_class="btn-primary",
+        icon_class="fa-solid fa-toggle-on",
+        form=_BULK_UPDATE_STATUS_FORM,
+    )
+    async def update_status_action(self, request: Request, pks: list[Any]) -> str:
+        data = await request.form()
+        status_raw = data.get("status")
+        if not status_raw:
+            raise ActionFailed("Status is required")
+        try:
+            new_status = DashboardStatus(str(status_raw))
+        except ValueError as exc:
+            raise ActionFailed(f"Invalid status: {status_raw}") from exc
+
+        session: Session = request.state.session
+        dashboards = list(await self.find_by_pks(request, pks))
+        if not dashboards:
+            raise ActionFailed("No accessible dashboards selected")
+
+        now = utc_now()
+        for dashboard in dashboards:
+            dashboard.status = new_status
+            dashboard.updated_at = now
+            session.add(dashboard)
+        session.commit()
+
+        count = len(dashboards)
+        label = new_status.value
+        return f"Updated {count} dashboard{'s' if count != 1 else ''} to {label}."
+
+    @action(
+        name="delete",
+        text="Delete dashboards",
+        confirmation=(
+            "Are you sure you want to delete the selected dashboards? "
+            "This cannot be undone."
+        ),
+        submit_btn_text="Yes, delete",
+        submit_btn_class="btn-danger",
+        icon_class="fa-solid fa-trash",
+    )
+    async def delete_action(self, request: Request, pks: list[Any]) -> str:
+        affected_rows = await self.delete(request, pks)
+        return ngettext(
+            "Dashboard was successfully deleted",
+            "%(count)d dashboards were successfully deleted",
+            affected_rows or 0,
+        ) % {"count": affected_rows}
 
     async def validate(self, request: Request, data: dict[str, Any]) -> None:
         errors: dict[str, str] = {}
