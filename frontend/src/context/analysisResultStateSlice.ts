@@ -444,21 +444,37 @@ async function createAPIRequestParams(
 ): Promise<ApiData> {
   // Get default values for groupBy and admin boundary file path at the proper adminLevel
 
+  const adminLevelDataLayer =
+    params && 'dataField' in params
+      ? (params as AdminLevelDataLayerProps)
+      : undefined;
+  const boundaryParams =
+    params && !adminLevelDataLayer ? (params as BoundaryLayerProps) : undefined;
+
   const adminLevel =
-    (params as AdminLevelDataLayerProps)?.adminLevel ??
-    (params as BoundaryLayerProps)?.adminLevelCodes?.length;
+    adminLevelDataLayer?.adminLevel ?? boundaryParams?.adminLevelCodes?.length;
 
-  const boundaryLayer = getBoundaryLayersByAdminLevel(adminLevel);
+  const boundaryLayer =
+    (adminLevelDataLayer?.boundary
+      ? (LayerDefinitions[adminLevelDataLayer.boundary] as BoundaryLayerProps)
+      : undefined) ?? getBoundaryLayersByAdminLevel(adminLevel);
 
-  const adminBoundariesPath =
-    (params as BoundaryLayerProps)?.path ?? boundaryLayer.path;
-  const groupBy =
-    (params as BoundaryLayerProps)?.adminCode ?? boundaryLayer.adminCode;
-  const zonesPath =
-    (params as BoundaryLayerProps)?.zonesPath ?? boundaryLayer.zonesPath;
+  let adminBoundariesPath: string;
+  let groupBy: string;
+  let zonesPath: string | undefined;
+
+  if (adminLevelDataLayer && !adminLevelDataLayer.boundary) {
+    adminBoundariesPath = adminLevelDataLayer.path;
+    groupBy = adminLevelDataLayer.adminCode;
+    zonesPath = undefined;
+  } else {
+    adminBoundariesPath = boundaryParams?.path ?? boundaryLayer.path;
+    groupBy = boundaryParams?.adminCode ?? boundaryLayer.adminCode;
+    zonesPath = boundaryParams?.zonesPath ?? boundaryLayer.zonesPath;
+  }
+
   const simplifyTolerance =
-    (params as BoundaryLayerProps)?.simplifyTolerance ??
-    boundaryLayer.simplifyTolerance;
+    boundaryParams?.simplifyTolerance ?? boundaryLayer.simplifyTolerance;
 
   // Note - This may not work when running locally as the function
   // will default to the boundary layer hosted in S3.
@@ -1077,6 +1093,12 @@ export const analysisResultSlice = createSlice({
     },
     clearAnalysisResult: state => {
       state.result = undefined;
+      if (state.currentCacheKey) {
+        delete state.cache[state.currentCacheKey];
+      }
+      state.currentCacheKey = undefined;
+      state.isLoading = false;
+      state.error = undefined;
     },
   },
   extraReducers: builder => {

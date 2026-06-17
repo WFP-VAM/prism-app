@@ -90,7 +90,13 @@ const componentTypes: LayerComponentsMap<LayerType> = {
 };
 
 /** Playwright (/export, signalExportReady): min consecutive "fully loaded" samples before PRISM_READY. */
-const MAP_EXPORT_STABLE_LOADED_TICKS = 1;
+const MAP_EXPORT_STABLE_LOADED_TICKS = 2;
+
+function scheduleAfterNextPaint(callback: () => void): void {
+  requestAnimationFrame(() => {
+    requestAnimationFrame(callback);
+  });
+}
 /** Poll when map idle is slow (ms). 0 uses the shortest practical interval (browser clamps ~4ms). */
 const MAP_EXPORT_LOAD_POLL_MS = 0;
 
@@ -366,10 +372,24 @@ function MapExportLayout({
           clearInterval(pollInterval);
         }
 
-        // eslint-disable-next-line no-console
-        console.info('All tiles loaded, setting PRISM_READY to true');
-        (window as any).PRISM_READY = true;
-        onMapLoad?.(e);
+        const finish = () => {
+          if (signalExportReady) {
+            // eslint-disable-next-line no-console
+            console.info('All tiles loaded, setting PRISM_READY to true');
+            (window as any).PRISM_READY = true;
+          }
+          if (onMapLoad) {
+            onMapLoad(e);
+          }
+        };
+
+        // Map idle + areTilesLoaded can run before the compositor paints (React 19 / concurrent
+        // rendering). Playwright screenshot right after PRISM_READY then captured a partial frame.
+        if (signalExportReady) {
+          scheduleAfterNextPaint(finish);
+        } else {
+          finish();
+        }
       };
 
       const checkFullyLoaded = (): boolean => {

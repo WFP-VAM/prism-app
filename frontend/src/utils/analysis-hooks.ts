@@ -292,24 +292,47 @@ export const useAnalysisForm = (
     }
   }, [availableHazardDates, hazardDataType, initialStartDate]);
 
-  const cacheKey = getCacheKey(
-    useCache,
-    hazardLayerId,
-    hazardDataType,
-    startDate,
-    endDate,
-    adminLevel,
-    adminLevelLayer,
-    adminLevelLayerData,
-    baselineLayerId,
-    selectedDate,
-    statistic,
-    aboveThreshold,
-    belowThreshold,
-    exposureValue,
+  const cacheKey = useMemo(
+    () =>
+      getCacheKey(
+        useCache,
+        hazardLayerId,
+        hazardDataType,
+        startDate,
+        endDate,
+        adminLevel,
+        adminLevelLayer,
+        adminLevelLayerData,
+        baselineLayerId,
+        selectedDate,
+        statistic,
+        aboveThreshold,
+        belowThreshold,
+        exposureValue,
+      ),
+    [
+      useCache,
+      hazardLayerId,
+      hazardDataType,
+      startDate,
+      endDate,
+      adminLevel,
+      adminLevelLayer,
+      adminLevelLayerData,
+      baselineLayerId,
+      selectedDate,
+      statistic,
+      aboveThreshold,
+      belowThreshold,
+      exposureValue,
+    ],
   );
-  const cachedResult = useSelector(getCachedAnalysisResult(cacheKey));
-  const analysisResult = cachedResult || currentResult;
+  const selectCachedResult = useMemo(
+    () => getCachedAnalysisResult(cacheKey),
+    [cacheKey],
+  );
+  const cachedResult = useSelector(selectCachedResult);
+  const analysisResult = currentResult ?? cachedResult;
 
   return {
     // Form state
@@ -360,6 +383,8 @@ export interface UseAnalysisExecutionReturn {
   scaleThreshold: (threshold: number) => number;
   activateUniqueBoundary: (forceAdminLevel?: BoundaryLayerProps) => void;
   hasFormChanged: boolean;
+  /** Resets run-button snapshot; pair with Redux clear when clearing outside runAnalyser */
+  resetLastExecutedForm: () => void;
 }
 
 const getFormStateSnapshot = (formState: UseAnalysisFormReturn) =>
@@ -397,6 +422,15 @@ export const useAnalysisExecution = (
   // Track form state at last execution
   const lastExecutedFormRef = useRef<string | null>(null);
 
+  const invokeClearAnalysis = useCallback(() => {
+    lastExecutedFormRef.current = null;
+    if (clearAnalysisFunction) {
+      clearAnalysisFunction();
+    } else {
+      dispatch(clearAnalysisResult());
+    }
+  }, [clearAnalysisFunction, dispatch]);
+
   // Cleanup on unmount - abort any pending analysis and clear results
   useEffect(
     () => () => {
@@ -408,14 +442,10 @@ export const useAnalysisExecution = (
           analysisRequestRef.current.abort();
           analysisRequestRef.current = null;
         }
-        if (clearAnalysisFunction) {
-          clearAnalysisFunction();
-        } else {
-          dispatch(clearAnalysisResult());
-        }
+        invokeClearAnalysis();
       }
     },
-    [dispatch, clearAnalysisFunction, clearOnUnmount],
+    [invokeClearAnalysis, clearOnUnmount],
   );
 
   // Check if form has changed since last execution
@@ -492,11 +522,7 @@ export const useAnalysisExecution = (
     lastExecutedFormRef.current = getFormStateSnapshot(formState);
 
     if (formState.analysisResult) {
-      if (clearAnalysisFunction) {
-        clearAnalysisFunction();
-      } else {
-        dispatch(clearAnalysisResult());
-      }
+      invokeClearAnalysis();
     }
 
     if (!extent) {
@@ -615,13 +641,18 @@ export const useAnalysisExecution = (
     activateUniqueBoundary,
     scaleThreshold,
     onUrlUpdate,
-    clearAnalysisFunction,
+    invokeClearAnalysis,
   ]);
+
+  const resetLastExecutedForm = useCallback(() => {
+    lastExecutedFormRef.current = null;
+  }, []);
 
   return {
     runAnalyser,
     scaleThreshold,
     activateUniqueBoundary,
     hasFormChanged,
+    resetLastExecutedForm,
   };
 };
