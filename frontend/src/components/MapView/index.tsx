@@ -19,6 +19,7 @@ import {
 } from 'utils/universal-utils';
 import { useMapState } from 'utils/useMapState';
 
+import BoundaryLoadingOverlay from './BoundaryLoadingOverlay';
 import LeftPanel from './LeftPanel';
 import MapComponent from './Map';
 import OtherFeatures from './OtherFeatures';
@@ -31,6 +32,13 @@ const MapView = memo(() => {
     const layers = getDisplayBoundaryLayersForIso3(iso3).reverse();
     return layers;
   }, [iso3]);
+
+  const displayedBoundaryLayerIds = useMemo(
+    () => displayedBoundaryLayers.map(layer => layer.id),
+    [displayedBoundaryLayers],
+  );
+
+  const boundaryLoadingViewKey = iso3 ?? 'landing';
 
   const { actions, maplibreMap } = useMapState();
   const map = maplibreMap();
@@ -132,6 +140,10 @@ const MapView = memo(() => {
       <LeftPanel />
       <OtherFeatures />
       <MapComponent />
+      <BoundaryLoadingOverlay
+        displayedBoundaryLayerIds={displayedBoundaryLayerIds}
+        viewKey={boundaryLoadingViewKey}
+      />
     </Box>
   );
 });
@@ -142,17 +154,6 @@ const useStyles = makeStyles(() =>
       height: '100%',
       width: '100%',
       position: 'relative',
-    },
-    loading: {
-      position: 'absolute',
-      height: '100%',
-      width: '100%',
-      backgroundColor: 'black',
-      opacity: 0.75,
-      zIndex: 1,
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
     },
   }),
 );
