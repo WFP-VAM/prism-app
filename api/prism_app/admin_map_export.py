@@ -8,6 +8,7 @@ from typing import Any, Callable, Dict, Optional, Sequence
 from uuid import UUID
 
 from prism_app.admin import PrismGatedModelView, ReadOnlyModelView
+from prism_app.admin_bulk_actions import bulk_status_select_form
 from prism_app.auth.admin_request import (
     admin_user_from_request,
     request_can_manage_map_exports,
@@ -51,22 +52,7 @@ from starlette_admin.i18n import ngettext
 _DEFAULT_EQ = OPERATORS["eq"]
 _DEFAULT_NEQ = OPERATORS["neq"]
 
-# Starlette-admin batch actions take pre-rendered HTML for ``form``, not a template
-# path. The list page embeds this string in each action link's ``data-form``
-# attribute; client JS copies it into the confirmation modal on click. Unlike
-# create/edit/list pages, there is no request-time TemplateResponse hook for it.
-_BULK_UPDATE_STATUS_FORM = """
-<form>
-    <div class="mt-3">
-        <label class="form-label" for="bulk-status">Status</label>
-        <select id="bulk-status" class="form-select" name="status" required>
-            <option value="">Select status…</option>
-            <option value="active">Active</option>
-            <option value="stopped">Stopped</option>
-        </select>
-    </div>
-</form>
-"""
+_MAP_EXPORT_BULK_UPDATE_STATUS_FORM = bulk_status_select_form(MapExportScheduleStatus)
 
 _CASE_INSENSITIVE_STRING_OPERATORS: Dict[str, Callable[..., ClauseElement]] = {
     **OPERATORS,
@@ -666,7 +652,7 @@ class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelVie
         submit_btn_text="Update status",
         submit_btn_class="btn-primary",
         icon_class="fa-solid fa-toggle-on",
-        form=_BULK_UPDATE_STATUS_FORM,
+        form=_MAP_EXPORT_BULK_UPDATE_STATUS_FORM,
     )
     async def update_status_action(self, request: Request, pks: List[Any]) -> str:
         data = await request.form()
