@@ -583,6 +583,26 @@ def test_build_flood_payload_not_exceeded(mock_shot: MagicMock) -> None:
     "prism_app.alert_workers.aa_flood.capture_screenshot_from_url",
     return_value="",
 )
+def test_build_flood_payload_test_mode_not_exceeded(mock_shot: MagicMock) -> None:
+    client = MagicMock(spec=httpx.Client)
+    payload = build_flood_payload(
+        client,
+        date_iso="2025-01-15T00:00:00Z",
+        trigger_status="not exceeded",
+        prism_url="https://prism.moz.wfp.org/",
+        emails=["a@x.com"],
+        station_summary_url=None,
+        is_test=True,
+    )
+    assert payload is not None
+    assert payload["bcc"] == ["a@x.com"]
+    mock_shot.assert_called_once()
+
+
+@patch(
+    "prism_app.alert_workers.aa_flood.capture_screenshot_from_url",
+    return_value="",
+)
 def test_build_flood_payload_moderate(mock_shot: MagicMock) -> None:
     csv_text = (
         "station_name,station_id,river_name,trigger_status\n"

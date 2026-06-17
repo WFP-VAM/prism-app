@@ -121,9 +121,15 @@ def build_flood_payload(
     prism_url: str,
     emails: list[str],
     station_summary_url: str | None,
+    is_test: bool = False,
 ) -> dict[str, Any] | None:
-    if not should_send_flood_email(trigger_status):
+    if not is_test and not should_send_flood_email(trigger_status):
         return None
+    if is_test and not should_send_flood_email(trigger_status):
+        logger.info(
+            "Test email: sending despite trigger_status=%r (no live alert)",
+            trigger_status,
+        )
     redirect = flood_prism_url(prism_url, _format_date(date_iso, "YYYY-MM-DD"))
     b64 = capture_screenshot_from_url(
         redirect,
@@ -182,6 +188,7 @@ def build_flood_payload(
 
 def run_flood_worker(override_emails: list[str] | None = None) -> None:
     country = settings.aa_alert_country()
+    is_test = bool(override_emails)
     with httpx.Client(verify=settings.http_verify_ssl(), timeout=120.0) as client:
         dates = fetch_flood_dates_json(client)
         latest = latest_flood_date(dates)
@@ -244,6 +251,7 @@ def run_flood_worker(override_emails: list[str] | None = None) -> None:
                     prism_url=str(alert["prism_url"]),
                     emails=list(alert["emails"]),
                     station_summary_url=summary_url,
+                    is_test=is_test,
                 )
                 if payload:
                     smtp_mailer.send_email(
@@ -254,6 +262,13 @@ def run_flood_worker(override_emails: list[str] | None = None) -> None:
                         text_body=payload["text"],
                         html_body=payload["html"],
                         attachments=payload["attachments"],
+                    )
+                elif is_test:
+                    logger.error("Could not build flood test email payload")
+                else:
+                    logger.info(
+                        "No flood alert to send (trigger_status=%r)",
+                        trigger_status,
                     )
 
                 if not override_emails:
