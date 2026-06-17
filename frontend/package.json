@@ -52,7 +52,7 @@
   "dependencies": {
     "@azure/msal-browser": "^2.19.0",
     "@azure/msal-react": "^1.1.1",
-    "@babel/core": "^7.0.0-0",
+    "@babel/core": "^7.29.6",
     "@date-fns/tz": "^1.2.0",
     "@fontsource/noto-sans-arabic": "5.2.5",
     "@fortawesome/fontawesome-free": "^6.5.1",
@@ -231,7 +231,7 @@
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.2",
     "typescript": "5.9.3",
-    "vite": "^6.4.2",
+    "vite": "^6.4.3",
     "vite-plugin-node-polyfills": "^0.21.0"
   },
   "engines": {
