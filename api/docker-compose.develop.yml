@@ -37,8 +37,8 @@ services:
       - "80:80"
     environment:
       - "RUN=uvicorn prism_app.main:app --host 0.0.0.0 --port 80"
-      # Clear URL so DB_URI is built from POSTGRES_* variables below (!getenv(...) or format(...) in database.py).
-      - PRISM_ALERTS_DATABASE_URL=
+      # Override host .env (127.0.0.1:54321) with Docker network hostname for api + alert workers.
+      - PRISM_ALERTS_DATABASE_URL=postgresql://postgres:!ChangeMe!@db:5432/postgres
       - POSTGRES_HOST=db
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
@@ -68,12 +68,7 @@ services:
       context: ./
       dockerfile: ./Dockerfile.export-map-worker
     environment:
-      - PRISM_ALERTS_DATABASE_URL=
-      - POSTGRES_HOST=db
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=postgres
-      - POSTGRES_PORT=5432
-      - POSTGRES_PASSWORD=!ChangeMe!
+      - PRISM_ALERTS_DATABASE_URL=postgresql://postgres:!ChangeMe!@db:5432/postgres
       - EXPORT_MAP_S3_BUCKET=${EXPORT_MAP_S3_BUCKET:-}
       - EXPORT_MAP_LOCAL_OUTPUT_DIR=${EXPORT_MAP_LOCAL_OUTPUT_DIR:-/cache/map_exports}
       - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-}
