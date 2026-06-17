@@ -162,7 +162,7 @@ SKIP_GDAL_MASK_STATS_TEST=1 PYTHONPATH=. poetry run pytest \
 
 **Manual — alert workers:** From `api/` run **`docker compose run --rm export_map_worker python -m prism_app.workers.alert_runner threshold`** (and `aa-storm` / `aa-flood`) against a seeded dev database. For local iteration without Docker: **`PYTHONPATH=. poetry run python -m prism_app.workers.alert_runner …`**.
 
-**Local alerts database:** `docker compose up alerting-db` starts PostGIS on host port **54321** (see `PRISM_ALERTS_DATABASE_URL` in `.env.example`).
+**Local alerts database:** Use the **`db`** service from [`docker-compose.develop.yml`](./docker-compose.develop.yml) (see **Start the API and database** above). To run Postgres only: `docker compose -f docker-compose.yml -f docker-compose.develop.yml up db`. Host port **54321**; see `PRISM_ALERTS_DATABASE_URL` in `.env.example`.
 
 **Server crons:** Scripts under [`crons/`](./crons/) run one-shot commands in **`export_map_worker`** (same image as scheduled public maps):
 

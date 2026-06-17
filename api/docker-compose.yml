@@ -46,16 +46,3 @@ services:
       - AA_ALERT_COUNTRY=${AA_ALERT_COUNTRY:-mozambique}
       - PRISM_ALERT_HTTP_VERIFY_SSL=${PRISM_ALERT_HTTP_VERIFY_SSL:-true}
     command: [ "python", "-m", "prism_app.workers.export_map_worker" ]
-
-  # Local dev only: PostGIS for alerts DB (host port 54321). Not used in production deploy.
-  alerting-db:
-    image: kartoza/postgis:16-3
-    restart: unless-stopped
-    ports:
-      - "54321:5432"
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_DB: postgres
-      POSTGRES_PASSWORD: "!ChangeMe!"
-    volumes:
-      - ./alerting_db_data:/var/lib/postgresql
