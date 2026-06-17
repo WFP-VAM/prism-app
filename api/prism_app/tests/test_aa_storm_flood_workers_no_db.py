@@ -10,6 +10,7 @@ from unittest.mock import MagicMock, patch
 
 import httpx
 import pytest
+from prism_app.alert_workers.aa_flood import _format_date as flood_format_date
 from prism_app.alert_workers.aa_flood import (
     build_flood_payload,
     fetch_station_summary,
@@ -19,7 +20,6 @@ from prism_app.alert_workers.aa_flood import (
     transform_last_flood,
     transform_station_name,
 )
-from prism_app.alert_workers.aa_flood import _format_date as flood_format_date
 from prism_app.alert_workers.aa_storm import (
     WindState,
     build_email_payloads,
@@ -46,7 +46,8 @@ def _build_landfall_info(
     landfall_time: list[str] | None = None,
 ) -> dict[str, Any]:
     return {
-        "landfall_time": landfall_time or ["2025-01-13 06:00:00", "2025-01-13 18:00:00"],
+        "landfall_time": landfall_time
+        or ["2025-01-13 06:00:00", "2025-01-13 18:00:00"],
         "landfall_impact_district": "Mogincual",
         "landfall_impact_intensity": [],
         "landfall_leadtime_hours": [0.0, 12.0],
@@ -327,7 +328,9 @@ def test_should_send_storm_email(
     past_landfall: bool,
     expected: bool,
 ) -> None:
-    assert should_send_storm_email(status, exposed48, exposed64, past_landfall) is expected
+    assert (
+        should_send_storm_email(status, exposed48, exposed64, past_landfall) is expected
+    )
 
 
 def test_has_landfall_occurred_skipped_in_test_mode() -> None:
@@ -409,7 +412,9 @@ def test_build_email_payloads_activation64(mock_shot: MagicMock) -> None:
 
 
 @patch("prism_app.alert_workers.aa_storm.capture_screenshot_from_url", return_value="")
-def test_build_email_payloads_activation48_no_pilot_districts(mock_shot: MagicMock) -> None:
+def test_build_email_payloads_activation48_no_pilot_districts(
+    mock_shot: MagicMock,
+) -> None:
     short = [
         {
             "ref_time": "2025-01-31T06:00:00Z",
@@ -435,7 +440,9 @@ def test_build_email_payloads_activation48_no_pilot_districts(mock_shot: MagicMo
 
 
 @patch("prism_app.alert_workers.aa_storm.capture_screenshot_from_url", return_value="")
-def test_build_email_payloads_activation64_no_exposed_districts(mock_shot: MagicMock) -> None:
+def test_build_email_payloads_activation64_no_exposed_districts(
+    mock_shot: MagicMock,
+) -> None:
     short = [
         {
             "ref_time": "2025-01-31T06:00:00Z",
