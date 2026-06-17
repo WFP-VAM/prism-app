@@ -39,8 +39,10 @@ describe('universal-utils', () => {
 
   it('returns a fitBounds-safe bbox for USA', () => {
     const bbox = getCountryBbox('USA');
-    expect(bbox).toEqual([-179.1489, 18.9104, -65.0, 71.3652]);
-    expect(bbox![2] - bbox![0]).toBeLessThanOrEqual(180);
+    expect(bbox).toEqual([172.4617, 18.9104, -66.9499, 71.3652]);
+    const longitudeSpan =
+      bbox![0] <= bbox![2] ? bbox![2] - bbox![0] : 360 - bbox![0] + bbox![2];
+    expect(longitudeSpan).toBeLessThanOrEqual(180);
   });
 
   it('returns undefined bbox for unknown countries', () => {
