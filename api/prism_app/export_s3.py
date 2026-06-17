@@ -27,7 +27,7 @@ def map_export_s3_client(*, for_presign: bool = False, **kwargs: Any) -> Any:
 
     Set ``for_presign=True`` for browser-facing presigned GET URLs (``AWS_PRESIGN_ENDPOINT_URL``,
     falling back to ``AWS_ENDPOINT_URL``). Otherwise uses ``AWS_ENDPOINT_URL`` for in-cluster
-    put/head/verify (e.g. ``http://minio:9000`` in local Docker).
+    put/head/verify (e.g. ``http://rustfs:9000`` in local Docker).
     """
     kwargs.setdefault("region_name", MAP_EXPORT_S3_SIGNING_REGION)
     if for_presign:

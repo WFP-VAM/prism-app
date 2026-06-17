@@ -17,38 +17,45 @@ services:
       start_period: 30s
 
   # Local S3-compatible storage for map export artifacts (dev only).
-  minio:
-    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
-    command: server /data --console-address ":9001"
+  rustfs:
+    image: rustfs/rustfs:latest
     ports:
       - "9000:9000"
       - "9001:9001"
     environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
+      RUSTFS_ACCESS_KEY: rustfsadmin
+      RUSTFS_SECRET_KEY: rustfsadmin
+      RUSTFS_CONSOLE_ENABLE: "true"
+      RUSTFS_ADDRESS: 0.0.0.0:9000
+      RUSTFS_CONSOLE_ADDRESS: 0.0.0.0:9001
     volumes:
-      - minio_data:/data
+      - rustfs_data:/data
+    command: ["/data"]
     healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://127.0.0.1:9000/minio/health/live || exit 1"]
+      test: ["CMD-SHELL", "curl -sf http://127.0.0.1:9000/health || exit 1"]
       interval: 5s
       timeout: 5s
       retries: 12
-      start_period: 10s
+      start_period: 40s
 
-  minio-init:
-    image: minio/mc:latest
+  rustfs-init:
+    image: amazon/aws-cli:2.27.50
     depends_on:
-      minio:
+      rustfs:
         condition: service_healthy
+    environment:
+      AWS_ACCESS_KEY_ID: rustfsadmin
+      AWS_SECRET_ACCESS_KEY: rustfsadmin
+      AWS_DEFAULT_REGION: us-east-1
     entrypoint: /bin/sh
     command:
       - -c
       - |
-        until mc alias set local http://minio:9000 minioadmin minioadmin 2>/dev/null; do
-          echo "waiting for minio..."
+        until aws --endpoint-url http://rustfs:9000 s3 ls >/dev/null 2>&1; do
+          echo "waiting for rustfs..."
           sleep 2
         done
-        mc mb --ignore-existing local/prism-dev
+        aws --endpoint-url http://rustfs:9000 s3 mb s3://prism-dev 2>/dev/null || true
 
   api:
     env_file:
@@ -57,7 +64,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      minio-init:
+      rustfs-init:
         condition: service_completed_successfully
     volumes:
       - ./prism_app:/prism_app
@@ -88,13 +95,13 @@ services:
       - VECTOR_STORE_ACCESS_KEY_ID=${VECTOR_STORE_ACCESS_KEY_ID}
       - VECTOR_STORE_SECRET_ACCESS_KEY=${VECTOR_STORE_SECRET_ACCESS_KEY}
       - VECTOR_STORE_DEFAULT_REGION=${VECTOR_STORE_DEFAULT_REGION}
-      # Map export artifacts → local MinIO 
+      # Map export artifacts → local RustFS
       - EXPORT_MAP_S3_BUCKET=prism-dev
       - EXPORT_MAP_LOCAL_OUTPUT_DIR=
-      - AWS_ACCESS_KEY_ID=minioadmin
-      - AWS_SECRET_ACCESS_KEY=minioadmin
+      - AWS_ACCESS_KEY_ID=rustfsadmin
+      - AWS_SECRET_ACCESS_KEY=rustfsadmin
       - AWS_DEFAULT_REGION=us-east-1
-      - AWS_ENDPOINT_URL=http://minio:9000
+      - AWS_ENDPOINT_URL=http://rustfs:9000
       - AWS_PRESIGN_ENDPOINT_URL=http://localhost:9000
     command: uvicorn prism_app.main:app --host 0.0.0.0 --port 80 --reload
     # Infinite loop, to keep it alive, for debugging
@@ -105,7 +112,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      minio-init:
+      rustfs-init:
         condition: service_completed_successfully
     volumes:
       - ./prism_app:/prism_app
@@ -121,14 +128,14 @@ services:
       - POSTGRES_PASSWORD=!ChangeMe!
       - EXPORT_MAP_S3_BUCKET=prism-dev
       - EXPORT_MAP_LOCAL_OUTPUT_DIR=
-      - AWS_ACCESS_KEY_ID=minioadmin
-      - AWS_SECRET_ACCESS_KEY=minioadmin
+      - AWS_ACCESS_KEY_ID=rustfsadmin
+      - AWS_SECRET_ACCESS_KEY=rustfsadmin
       - AWS_DEFAULT_REGION=us-east-1
-      - AWS_ENDPOINT_URL=http://minio:9000
+      - AWS_ENDPOINT_URL=http://rustfs:9000
       - BROWSER_POOL_SIZE=1
     working_dir: /prism_app
     command: [ "python", "-m", "prism_app.workers.export_map_worker" ]
 
 volumes:
   db_data:
-  minio_data:
+  rustfs_data:

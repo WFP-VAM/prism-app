@@ -26,12 +26,12 @@ def test_default_export_map_s3_bucket_parses():
 def test_map_export_s3_client_uses_internal_and_public_endpoints(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setenv("AWS_ENDPOINT_URL", "http://minio:9000")
+    monkeypatch.setenv("AWS_ENDPOINT_URL", "http://rustfs:9000")
     monkeypatch.setenv("AWS_PRESIGN_ENDPOINT_URL", "http://localhost:9000")
     with patch("prism_app.export_s3.boto3.client") as mock_client:
         map_export_s3_client()
         map_export_s3_client(for_presign=True)
-    assert mock_client.call_args_list[0].kwargs["endpoint_url"] == "http://minio:9000"
+    assert mock_client.call_args_list[0].kwargs["endpoint_url"] == "http://rustfs:9000"
     assert (
         mock_client.call_args_list[1].kwargs["endpoint_url"] == "http://localhost:9000"
     )

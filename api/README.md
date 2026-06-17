@@ -44,22 +44,23 @@ make api
 
 This starts four containers via `docker-compose.develop.yml`:
 - **`db`** — PostGIS (Postgres) on host port **54321**
-- **`minio`** — local S3-compatible storage for map export artifacts (API port **9000**, console **9001**)
+- **`rustfs`** — local S3-compatible storage for map export artifacts (API port **9000**, console **9001**)
 - **`api`** — FastAPI (uvicorn with hot reload) on host port **80**
-- **`export_map_worker`** — polls `map_export_jobs`, runs Playwright export, writes artifacts to MinIO
+- **`export_map_worker`** — polls `map_export_jobs`, runs Playwright export, writes artifacts to RustFS
 
-### Local map export storage (MinIO)
+### Local map export storage (RustFS)
 
-Production stores batch and scheduled map exports in **AWS S3** (`EXPORT_MAP_S3_BUCKET`, e.g. `s3://prism-wfp/batch-maps`). Local dev uses **MinIO** so the same code paths run without real AWS credentials for artifacts.
+Production stores batch and scheduled map exports in **AWS S3** (`EXPORT_MAP_S3_BUCKET`, e.g. `s3://prism-wfp/batch-maps`). Local dev uses **RustFS** so the same code paths run without real AWS credentials for artifacts.
 
 `docker-compose.develop.yml` sets this automatically for **`api`** and **`export_map_worker`**:
 
 | Variable | Local value | Role |
 |---|---|---|
-| `EXPORT_MAP_S3_BUCKET` | `prism-dev` | Bucket created by `minio-init` |
-| `AWS_ENDPOINT_URL` | `http://minio:9000` | Server-side S3 calls (worker, API inside Docker) |
+| `EXPORT_MAP_S3_BUCKET` | `prism-dev` | Bucket created by `rustfs-init` |
+| `AWS_ENDPOINT_URL` | `http://rustfs:9000` | Server-side S3 calls (worker, API inside Docker) |
 | `AWS_PRESIGN_ENDPOINT_URL` | `http://localhost:9000` | Presigned download URLs the browser can reach |
 
+RustFS console: **http://localhost:9001** (login `rustfsadmin` / `rustfsadmin`).
 
 These flows stay aligned with production when `EXPORT_MAP_S3_BUCKET` is set and `EXPORT_MAP_LOCAL_OUTPUT_DIR` is empty (the compose default):
 
@@ -67,7 +68,7 @@ These flows stay aligned with production when `EXPORT_MAP_S3_BUCKET` is set and 
 2. **Dedupe** — `POST /export-map/jobs` and `scheduled_public_maps` cron
 3. **Download** — `GET /export-map/jobs/{id}` and admin schedule download
 
-The alternative dev mode, `EXPORT_MAP_LOCAL_OUTPUT_DIR`, writes `file://…` URIs to disk instead of S3 and skips the MinIO/prod-aligned path.
+The alternative dev mode, `EXPORT_MAP_LOCAL_OUTPUT_DIR`, writes `file://…` URIs to disk instead of S3 and skips the RustFS/prod-aligned path.
 
 ### 3. Run migrations and seed data
 
