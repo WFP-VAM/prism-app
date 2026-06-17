@@ -11,7 +11,7 @@
  * data keeps a stable reference and does not churn the MapLibre source.
  */
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
-import { featureCollection } from '@turf/helpers';
+import { featureCollection, point } from '@turf/helpers';
 import intersect from '@turf/intersect';
 import type {
   Feature,
@@ -20,11 +20,50 @@ import type {
   MultiPolygon,
   Point,
   Polygon,
+  Position,
 } from 'geojson';
 
 export type ClipPolygon = Feature<Polygon | MultiPolygon>;
 
 const memo = new WeakMap<FeatureCollection, Map<string, FeatureCollection>>();
+
+type Bbox = [number, number, number, number]; // [minLng, minLat, maxLng, maxLat]
+
+function updateBboxFromPosition(bbox: Bbox, [lng, lat]: Position): void {
+  // Guard: some datasets can have junk coordinates; treat as "needs clip".
+  if (!Number.isFinite(lng) || !Number.isFinite(lat)) {
+    return;
+  }
+  bbox[0] = Math.min(bbox[0], lng);
+  bbox[1] = Math.min(bbox[1], lat);
+  bbox[2] = Math.max(bbox[2], lng);
+  bbox[3] = Math.max(bbox[3], lat);
+}
+
+function bboxOfPolygonOrMultiPolygon(geometry: Polygon | MultiPolygon): Bbox {
+  const bbox: Bbox = [Infinity, Infinity, -Infinity, -Infinity];
+  const polys =
+    geometry.type === 'Polygon' ? [geometry.coordinates] : geometry.coordinates;
+  polys.forEach(rings => {
+    rings.forEach(ring => {
+      ring.forEach(pos => updateBboxFromPosition(bbox, pos));
+    });
+  });
+  return bbox;
+}
+
+function bboxCorners([minLng, minLat, maxLng, maxLat]: Bbox): Position[] {
+  return [
+    [minLng, minLat],
+    [maxLng, minLat],
+    [maxLng, maxLat],
+    [minLng, maxLat],
+  ];
+}
+
+function bboxDisjoint(a: Bbox, b: Bbox): boolean {
+  return a[2] < b[0] || a[0] > b[2] || a[3] < b[1] || a[1] > b[3];
+}
 
 function clipFeature(
   feature: Feature,
@@ -36,6 +75,23 @@ function clipFeature(
   }
 
   if (geometry.type === 'Polygon' || geometry.type === 'MultiPolygon') {
+    // Fast-path: avoid expensive turf intersect when feature is fully inside clip.
+    // This is common for admin polygons well within the country boundary, and it
+    // prevents huge main-thread stalls (e.g. RBD admin2 layers).
+    const clipBbox = bboxOfPolygonOrMultiPolygon(clipPolygon.geometry);
+    const featureBbox = bboxOfPolygonOrMultiPolygon(
+      geometry as Polygon | MultiPolygon,
+    );
+    if (bboxDisjoint(featureBbox, clipBbox)) {
+      return null;
+    }
+    const allBboxCornersInside = bboxCorners(featureBbox).every(corner =>
+      booleanPointInPolygon(point(corner), clipPolygon),
+    );
+    if (allBboxCornersInside) {
+      return feature;
+    }
+
     const clipped = intersect(
       featureCollection([
         feature as Feature<Polygon | MultiPolygon>,

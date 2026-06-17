@@ -111,18 +111,16 @@ function PrintPreview() {
 
   // MapLibre mutates `getStyle()` in place after load; React only sees stable
   // `selectedMap` ref → memoized clones go stale until something else changes deps.
-  // Bump epoch on open + styledata while print dialog visible.
+  // Bump epoch on open. Avoid subscribing to `styledata`: some layers emit it
+  // continuously (especially with clip), which can keep the preview map in a
+  // perpetual "reloading" state.
   const [mainMapStyleEpoch, setMainMapStyleEpoch] = useState(0);
   useEffect(() => {
     if (!selectedMap || !printConfig?.open) {
       return undefined;
     }
-    const bumpEpoch = () => setMainMapStyleEpoch(n => n + 1);
-    bumpEpoch();
-    selectedMap.on('styledata', bumpEpoch);
-    return () => {
-      selectedMap.off('styledata', bumpEpoch);
-    };
+    setMainMapStyleEpoch(n => n + 1);
+    return undefined;
   }, [printConfig?.open, selectedMap]);
 
   // Clone the main map style for the preview MapGL instance. Never mutate
