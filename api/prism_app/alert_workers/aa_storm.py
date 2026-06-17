@@ -139,6 +139,17 @@ def _exposed_districts(report: dict[str, Any]) -> tuple[list[str], list[str]]:
     return d48, d64
 
 
+def _parse_landfall_timestamp(raw: str) -> datetime:
+    text = str(raw).strip()
+    if " " in text and "T" not in text:
+        text = text.replace(" ", "T", 1)
+    text = text.replace("Z", "+00:00")
+    dt = datetime.fromisoformat(text)
+    if dt.tzinfo is None:
+        return dt.replace(tzinfo=timezone.utc)
+    return dt
+
+
 def has_landfall_occurred(report: dict[str, Any], *, is_test: bool) -> bool:
     if is_test:
         return False
@@ -146,9 +157,7 @@ def has_landfall_occurred(report: dict[str, Any], *, is_test: bool) -> bool:
     if isinstance(li, dict) and "landfall_time" in li:
         times = li.get("landfall_time")
         if isinstance(times, list) and len(times) > 1:
-            return datetime.now(timezone.utc) > datetime.fromisoformat(
-                str(times[1]).replace("Z", "+00:00"),
-            )
+            return datetime.now(timezone.utc) > _parse_landfall_timestamp(str(times[1]))
     return False
 
 

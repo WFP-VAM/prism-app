@@ -119,10 +119,13 @@ jobs:
         run: |
           cd api
           poetry install
-      - name: pytest test_alert_workers_no_db
+      - name: pytest alert worker unit tests (no DB)
         run: |
           cd api
-          PYTHONPATH=. poetry run pytest prism_app/tests/test_alert_workers_no_db.py -v --tb=short
+          PYTHONPATH=. poetry run pytest \
+            prism_app/tests/test_alert_workers_no_db.py \
+            prism_app/tests/test_aa_storm_flood_workers_no_db.py \
+            -v --tb=short
 
   # Trivy: OS + language packages inside the built images (pip-audit above is Poetry-only).
   docker_image_cve_scan:
