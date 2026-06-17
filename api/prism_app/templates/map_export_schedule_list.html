@@ -1,6 +1,12 @@
-{% extends "@starlette-admin/list.html" %}
+{% extends "list.html" %}
 
 {% block head_css %}
     {{ super() }}
     {% include "includes/map_export_schedule_download_tooltip.css.html" %}
+{% endblock %}
+
+{% block modal %}
+    {% include "modals/loading.html" %}
+    {% include "modals/error.html" %}
+    {% include "modals/bulk_action_confirm.html" %}
 {% endblock %}

@@ -22,13 +22,13 @@ exports[`ImportDashboardView detects duplicate when imported JSON has different 
           />
         </svg>
         <mock-typography
-          classname="makeStyles-title-68"
+          class="makeStyles-title-68"
           variant="h2"
         >
           Dashboard already exists
         </mock-typography>
         <mock-typography
-          classname="makeStyles-subtitle-69"
+          class="makeStyles-subtitle-69"
           variant="body1"
         >
           <strong>
@@ -38,7 +38,7 @@ exports[`ImportDashboardView detects duplicate when imported JSON has different 
           is ready to view.
         </mock-typography>
         <mock-button
-          classname="makeStyles-ctaButton-83"
+          class="makeStyles-ctaButton-83"
           color="primary"
           variant="contained"
         >
@@ -59,13 +59,13 @@ exports[`ImportDashboardView renders idle state 1`] = `
       class="MuiBox-root MuiBox-root-20 makeStyles-card-2"
     >
       <mock-typography
-        classname="makeStyles-title-3"
+        class="makeStyles-title-3"
         variant="h2"
       >
         Import dashboard
       </mock-typography>
       <mock-typography
-        classname="makeStyles-subtitle-4"
+        class="makeStyles-subtitle-4"
         variant="body1"
       >
         Upload a JSON file exported from a Prism dashboard.
@@ -84,7 +84,7 @@ exports[`ImportDashboardView renders idle state 1`] = `
           />
         </svg>
         <mock-typography
-          classname="makeStyles-dropText-8"
+          class="makeStyles-dropText-8"
           variant="body1"
         >
           Drag & drop a JSON file here
@@ -96,7 +96,7 @@ exports[`ImportDashboardView renders idle state 1`] = `
           or
         </mock-typography>
         <mock-button
-          classname="makeStyles-browseButton-9"
+          class="makeStyles-browseButton-9"
           color="primary"
           size="small"
           variant="outlined"
@@ -136,13 +136,13 @@ exports[`ImportDashboardView shows already-exists when imported dashboard matche
           />
         </svg>
         <mock-typography
-          classname="makeStyles-title-46"
+          class="makeStyles-title-46"
           variant="h2"
         >
           Dashboard already exists
         </mock-typography>
         <mock-typography
-          classname="makeStyles-subtitle-47"
+          class="makeStyles-subtitle-47"
           variant="body1"
         >
           <strong>
@@ -152,7 +152,7 @@ exports[`ImportDashboardView shows already-exists when imported dashboard matche
           is ready to view.
         </mock-typography>
         <mock-button
-          classname="makeStyles-ctaButton-61"
+          class="makeStyles-ctaButton-61"
           color="primary"
           variant="contained"
         >
@@ -173,13 +173,13 @@ exports[`ImportDashboardView shows parse error for invalid JSON 1`] = `
       class="MuiBox-root MuiBox-root-107 makeStyles-card-89"
     >
       <mock-typography
-        classname="makeStyles-title-90"
+        class="makeStyles-title-90"
         variant="h2"
       >
         Import dashboard
       </mock-typography>
       <mock-typography
-        classname="makeStyles-subtitle-91"
+        class="makeStyles-subtitle-91"
         variant="body1"
       >
         Upload a JSON file exported from a Prism dashboard.
@@ -198,7 +198,7 @@ exports[`ImportDashboardView shows parse error for invalid JSON 1`] = `
           />
         </svg>
         <mock-typography
-          classname="makeStyles-dropText-95"
+          class="makeStyles-dropText-95"
           variant="body1"
         >
           Drag & drop a JSON file here
@@ -210,7 +210,7 @@ exports[`ImportDashboardView shows parse error for invalid JSON 1`] = `
           or
         </mock-typography>
         <mock-button
-          classname="makeStyles-browseButton-96"
+          class="makeStyles-browseButton-96"
           color="primary"
           size="small"
           variant="outlined"
@@ -240,14 +240,14 @@ exports[`ImportDashboardView shows parse error for invalid JSON 1`] = `
             />
           </svg>
           <mock-typography
-            classname="makeStyles-errorHeadline-99"
+            class="makeStyles-errorHeadline-99"
             variant="subtitle2"
           >
             Invalid dashboard file
           </mock-typography>
         </div>
         <mock-typography
-          classname="makeStyles-errorDetail-101"
+          class="makeStyles-errorDetail-101"
           variant="body1"
         >
           Could not parse file as JSON.
@@ -280,13 +280,13 @@ exports[`ImportDashboardView shows success after a valid dashboard file is impor
           />
         </svg>
         <mock-typography
-          classname="makeStyles-title-24"
+          class="makeStyles-title-24"
           variant="h2"
         >
           Import complete
         </mock-typography>
         <mock-typography
-          classname="makeStyles-subtitle-25"
+          class="makeStyles-subtitle-25"
           variant="body1"
         >
           <strong>
@@ -296,7 +296,7 @@ exports[`ImportDashboardView shows success after a valid dashboard file is impor
           is ready to view.
         </mock-typography>
         <mock-button
-          classname="makeStyles-ctaButton-39"
+          class="makeStyles-ctaButton-39"
           color="primary"
           variant="contained"
         >
@@ -317,13 +317,13 @@ exports[`ImportDashboardView shows validation error when JSON fails schema check
       class="MuiBox-root MuiBox-root-130 makeStyles-card-112"
     >
       <mock-typography
-        classname="makeStyles-title-113"
+        class="makeStyles-title-113"
         variant="h2"
       >
         Import dashboard
       </mock-typography>
       <mock-typography
-        classname="makeStyles-subtitle-114"
+        class="makeStyles-subtitle-114"
         variant="body1"
       >
         Upload a JSON file exported from a Prism dashboard.
@@ -342,7 +342,7 @@ exports[`ImportDashboardView shows validation error when JSON fails schema check
           />
         </svg>
         <mock-typography
-          classname="makeStyles-dropText-118"
+          class="makeStyles-dropText-118"
           variant="body1"
         >
           Drag & drop a JSON file here
@@ -354,7 +354,7 @@ exports[`ImportDashboardView shows validation error when JSON fails schema check
           or
         </mock-typography>
         <mock-button
-          classname="makeStyles-browseButton-119"
+          class="makeStyles-browseButton-119"
           color="primary"
           size="small"
           variant="outlined"
@@ -384,14 +384,14 @@ exports[`ImportDashboardView shows validation error when JSON fails schema check
             />
           </svg>
           <mock-typography
-            classname="makeStyles-errorHeadline-122"
+            class="makeStyles-errorHeadline-122"
             variant="subtitle2"
           >
             Invalid dashboard file
           </mock-typography>
         </div>
         <mock-typography
-          classname="makeStyles-errorDetail-124"
+          class="makeStyles-errorDetail-124"
           variant="body1"
         >
           Invalid dashboard configuration: firstColumn.0.type: Invalid input

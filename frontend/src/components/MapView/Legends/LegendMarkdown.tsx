@@ -1,29 +1,24 @@
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
 import { ClassNameMap } from '@material-ui/styles';
-import React from 'react';
-import Markdown from 'react-markdown';
+import Markdown, { type Components } from 'react-markdown';
 
 interface LegendMarkdownProps {
   children: string;
 }
 
-const p = (classes: ClassNameMap<'legendTextMarkdown'>) =>
-  function _p({ children: pChildren }: { children: React.ReactNode }) {
+const p = (
+  classes: ClassNameMap<'legendTextMarkdown'>,
+): NonNullable<Components['p']> =>
+  function LegendParagraph({ children }) {
     return (
       <Typography variant="h5" className={classes.legendTextMarkdown}>
-        {pChildren}
+        {children}
       </Typography>
     );
   };
 
-const a = (classes: ClassNameMap<'legendLink'>) =>
-  function _a({
-    children: linkChildren,
-    href,
-  }: {
-    children: React.ReactNode;
-    href?: string;
-  }) {
+const a = (classes: ClassNameMap<'legendLink'>): NonNullable<Components['a']> =>
+  function LegendLink({ children, href }) {
     return (
       <a
         href={href}
@@ -31,19 +26,21 @@ const a = (classes: ClassNameMap<'legendLink'>) =>
         rel="noopener noreferrer"
         className={classes.legendLink}
       >
-        {linkChildren}
+        {children}
       </a>
     );
   };
 
 function LegendMarkdown({ children }: LegendMarkdownProps) {
   const classes = useStyles();
+  const components: Components = {
+    p: p(classes),
+    a: a(classes),
+  };
+
   return (
     <Markdown
-      components={{
-        p: p(classes),
-        a: a(classes),
-      }}
+      components={components}
       allowedElements={['p', 'h5', 'strong', 'em', 'a']}
     >
       {children}

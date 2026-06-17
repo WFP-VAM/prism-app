@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Literal
 from urllib.parse import parse_qs, urlparse
 
-_UNSAFE_FILENAME_CHARS = frozenset('<>:"/\\|?*')
+_UNSAFE_FILENAME_CHARS = frozenset(' <>:"/\\|?*')
 
 
 def sanitize_filename_part(value: str) -> str:
@@ -51,14 +51,18 @@ def build_map_export_download_filename(
     layer_id: str,
     urls: list[str],
     format_type: Literal["pdf", "png"],
+    admin_area: str | None = None,
 ) -> str:
     safe_country = sanitize_filename_part(country) or "export"
+    safe_area = sanitize_filename_part(admin_area) if admin_area else None
     safe_layer = sanitize_filename_part(layer_id) or "layer"
     ext = ".pdf" if format_type == "pdf" else ".zip"
 
+    prefix = f"{safe_country}_{safe_area}" if safe_area else safe_country
+
     dates = extract_dates_from_urls_sorted(urls)
     if not dates:
-        return f"{safe_country}_{safe_layer}_export{ext}"
+        return f"{prefix}_{safe_layer}_export{ext}"
 
     snakes = [iso_date_to_snake(d) for d in dates]
     start_snake = snakes[0]
@@ -66,7 +70,7 @@ def build_map_export_download_filename(
     date_stem = (
         start_snake if start_snake == end_snake else f"{start_snake}_to_{end_snake}"
     )
-    base = f"{safe_country}_{safe_layer}_{date_stem}"
+    base = f"{prefix}_{safe_layer}_{date_stem}"
     return f"{base}{ext}"
 
 
@@ -84,4 +88,5 @@ def map_export_download_filename_from_payload(payload: dict) -> str | None:
         layer_id=layer_id,
         urls=req.urls,
         format_type=req.format,
+        admin_area=req.adminArea,
     )

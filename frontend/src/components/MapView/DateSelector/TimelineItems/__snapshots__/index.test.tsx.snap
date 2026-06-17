@@ -3,7 +3,7 @@
 exports[`renders as expected 1`] = `
 <div>
   <mock-tooltip
-    arrow="true"
+    arrow=""
     classes="[object Object]"
     placement="top"
     title="[object Object]"

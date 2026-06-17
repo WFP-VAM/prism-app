@@ -79,6 +79,18 @@ const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
 const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 const chartLayers = getWMSLayersWithChart();
 
+// Resolves the admin area name for a chart level from boundary feature
+// properties. Multi-country deployments use 0-based levels (level 0 = country),
+// single-country deployments use 1-based levels (level 1 = admin 1).
+const getAdminAreaName = (
+  properties: GeoJsonProperties,
+  level: AdminLevelType,
+): string => {
+  const nameKey =
+    boundaryLayer?.adminLevelNames?.[level - (multiCountry ? 0 : 1)];
+  return (nameKey && properties?.[nameKey]) || '';
+};
+
 // Time constants
 const yearsToFetchDataFor = 5;
 const oneYearInTicks = 34;
@@ -92,7 +104,9 @@ const ChartsPanel = memo(() => {
   const [comparePeriods, setComparePeriods] = useState(false);
 
   // first location state
-  const [admin0Key] = useState<AdminCodeString>('' as AdminCodeString);
+  const [admin0Key, setAdmin0Key] = useState<AdminCodeString>(
+    '' as AdminCodeString,
+  );
   const [admin1Key, setAdmin1Key] = useState<AdminCodeString>(
     '' as AdminCodeString,
   );
@@ -534,6 +548,9 @@ const ChartsPanel = memo(() => {
     // reset the admin level
     setAdminLevel((countryAdmin0Id ? 0 : 1) as AdminLevelType);
     setSecondAdminLevel((countryAdmin0Id ? 0 : 1) as AdminLevelType);
+    // reset the country selection (multi-country deployments)
+    setAdmin0Key('' as AdminCodeString);
+    setSecondAdmin0Key('' as AdminCodeString);
     // reset admin 1 titles
     setAdmin1Key('' as AdminCodeString);
     setSecondAdmin1Key('' as AdminCodeString);
@@ -660,31 +677,37 @@ const ChartsPanel = memo(() => {
             <ChartLocationSelector
               boundaryLayerData={data}
               boundaryLayer={boundaryLayer}
+              admin0Key={admin0Key}
               admin1Key={admin1Key}
               admin2Key={admin2Key}
               stacked
               hideLabel={compareLocations}
+              onAdmin0Change={(key, properties, level) => {
+                setAdmin0Key(key);
+                setAdmin1Key('' as AdminCodeString);
+                setAdmin2Key('' as AdminCodeString);
+                setAdminLevel(level);
+                setAdminProperties(properties);
+                setSelectedAdmin1Area('');
+                setSelectedAdmin2Area('');
+              }}
               onAdmin1Change={(key, properties, level) => {
                 setAdmin1Key(key);
                 setAdmin2Key('' as AdminCodeString);
                 setAdminLevel(level);
                 setAdminProperties(properties);
-                const admin1Name =
-                  data &&
-                  boundaryLayer?.adminLevelNames?.[level - 1] &&
-                  properties?.[boundaryLayer.adminLevelNames[level - 1]];
-                setSelectedAdmin1Area(admin1Name || '');
+                setSelectedAdmin1Area(
+                  key && data ? getAdminAreaName(properties, level) : '',
+                );
                 setSelectedAdmin2Area('');
               }}
               onAdmin2Change={(key, properties, level) => {
                 setAdmin2Key(key);
                 setAdminLevel(level);
                 setAdminProperties(properties);
-                const admin2Name =
-                  data &&
-                  boundaryLayer?.adminLevelNames?.[level - 1] &&
-                  properties?.[boundaryLayer.adminLevelNames[level - 1]];
-                setSelectedAdmin2Area(admin2Name || '');
+                setSelectedAdmin2Area(
+                  key && data ? getAdminAreaName(properties, level) : '',
+                );
               }}
             />
           </Box>
@@ -704,31 +727,37 @@ const ChartsPanel = memo(() => {
               <ChartLocationSelector
                 boundaryLayerData={data}
                 boundaryLayer={boundaryLayer}
+                admin0Key={secondAdmin0Key}
                 admin1Key={secondAdmin1Key}
                 admin2Key={secondAdmin2Key}
                 stacked
                 hideLabel
+                onAdmin0Change={(key, properties, level) => {
+                  setSecondAdmin0Key(key);
+                  setSecondAdmin1Key('' as AdminCodeString);
+                  setSecondAdmin2Key('' as AdminCodeString);
+                  setSecondAdminLevel(level);
+                  setSecondAdminProperties(properties);
+                  setSecondSelectedAdmin1Area('');
+                  setSecondSelectedAdmin2Area('');
+                }}
                 onAdmin1Change={(key, properties, level) => {
                   setSecondAdmin1Key(key);
                   setSecondAdmin2Key('' as AdminCodeString);
                   setSecondAdminLevel(level);
                   setSecondAdminProperties(properties);
-                  const admin1Name =
-                    data &&
-                    boundaryLayer?.adminLevelNames?.[level - 1] &&
-                    properties?.[boundaryLayer.adminLevelNames[level - 1]];
-                  setSecondSelectedAdmin1Area(admin1Name || '');
+                  setSecondSelectedAdmin1Area(
+                    key && data ? getAdminAreaName(properties, level) : '',
+                  );
                   setSecondSelectedAdmin2Area('');
                 }}
                 onAdmin2Change={(key, properties, level) => {
                   setSecondAdmin2Key(key);
                   setSecondAdminLevel(level);
                   setSecondAdminProperties(properties);
-                  const admin2Name =
-                    data &&
-                    boundaryLayer?.adminLevelNames?.[level - 1] &&
-                    properties?.[boundaryLayer.adminLevelNames[level - 1]];
-                  setSecondSelectedAdmin2Area(admin2Name || '');
+                  setSecondSelectedAdmin2Area(
+                    key && data ? getAdminAreaName(properties, level) : '',
+                  );
                 }}
               />
             </Box>

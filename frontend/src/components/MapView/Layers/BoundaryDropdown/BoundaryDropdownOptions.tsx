@@ -182,7 +182,6 @@ const BoundaryDropdownOptions = React.forwardRef(
         {search && flattenedAreaList.length === 0 && (
           <MenuItem disabled>{t('No Results')}</MenuItem>
         )}
-        {/* @ts-expect-error - react-window types incompatible with React 18 */}
         <List
           height={700}
           itemCount={flattenedAreaList.length}
@@ -215,15 +214,10 @@ const BoundaryDropdownOptions = React.forwardRef(
                     newSelectedBoundaries.splice(itemIndex, 1);
                   }
                   if (setSelectedBoundaries !== undefined) {
-                    const boundariesToSelect = flattenedAreaList
-                      .filter(b =>
-                        newSelectedBoundaries.some((v: string) =>
-                          b.adminCode.startsWith(v),
-                        ),
-                      )
-                      .map(b => b.adminCode);
-
-                    setSelectedBoundaries(boundariesToSelect, event.shiftKey);
+                    setSelectedBoundaries(
+                      newSelectedBoundaries,
+                      event.shiftKey,
+                    );
                     if (!goto) {
                       return;
                     }

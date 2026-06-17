@@ -135,7 +135,7 @@ exports[`renders as expected with a single date 1`] = `
       class="MuiGrid-root makeStyles-datePickerContainer-3 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-content-xs-center"
     >
       <div
-        class="MuiGrid-root makeStyles-datePickerGrid-6 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-1"
+        class="MuiGrid-root makeStyles-datePickerGrid-7 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-1"
       >
         <mock-button>
           <mock-chevronleft
@@ -149,7 +149,7 @@ exports[`renders as expected with a single date 1`] = `
             class="react-datepicker__input-container"
           >
             <mock-button
-              classname="makeStyles-buttonStyle-12"
+              classes="[object Object]"
               variant="outlined"
             >
               Mar 11, 2023
@@ -163,30 +163,30 @@ exports[`renders as expected with a single date 1`] = `
         </mock-button>
       </div>
       <div
-        class="MuiGrid-root makeStyles-slider-7 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-true"
+        class="MuiGrid-root makeStyles-slider-8 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-true"
       >
         <mock-button
-          classname="makeStyles-chevronDate-2"
+          class="makeStyles-chevronDate-2"
           id="chevronLeftButton"
         >
           <mock-chevronleft />
         </mock-button>
         <div
-          class="MuiGrid-root makeStyles-dateContainer-8"
+          class="MuiGrid-root makeStyles-dateContainer-9"
         >
           <div
-            class="makeStyles-timeline-10 react-draggable"
+            class="makeStyles-timeline-11 react-draggable"
             id="dateTimelineSelector"
             style="transform: translate(-276px,0px);"
           >
             <div
-              class="MuiGrid-root makeStyles-dateLabelContainer-9 MuiGrid-container"
+              class="MuiGrid-root makeStyles-dateLabelContainer-10 MuiGrid-container"
               style="min-width: 1460px;"
             >
               mock-timelineitems
             </div>
             <div
-              class="makeStyles-pointer-11 react-draggable"
+              class="makeStyles-pointer-12 react-draggable"
               id="datePointerSelector"
               style="transform: translate(276px,0px);"
             >
@@ -199,7 +199,7 @@ exports[`renders as expected with a single date 1`] = `
           </div>
         </div>
         <mock-button
-          classname="makeStyles-chevronDate-2"
+          class="makeStyles-chevronDate-2"
           id="chevronRightButton"
         >
           <mock-chevronright />
