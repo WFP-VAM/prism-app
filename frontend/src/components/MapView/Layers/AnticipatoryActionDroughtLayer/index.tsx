@@ -30,13 +30,13 @@ import {
   Source,
 } from 'react-map-gl/maplibre';
 import { useDispatch, useSelector } from 'react-redux';
-import { clipFeatureCollectionToPolygon } from 'utils/clipVectorData';
 import {
   calculateCentroids,
   useAAMarkerScalePercent,
   useMapCallback,
 } from 'utils/map-utils';
 import { useBoundaryData } from 'utils/useBoundaryData';
+import { useClippedFeatureCollection } from 'utils/useClippedFeatureCollection';
 import { useDefaultDate } from 'utils/useDefaultDate';
 
 // Use admin level 2 boundary layer for Anticipatory Action
@@ -142,16 +142,9 @@ const AnticipatoryActionDroughtLayer = React.memo(
       };
     }, [data, shouldRenderData]);
 
-    const clippedColoredDistrictsLayer = React.useMemo(
-      () =>
-        coloredDistrictsLayer && clip
-          ? clipFeatureCollectionToPolygon(
-              coloredDistrictsLayer as any,
-              clip.clipPolygon,
-              clip.clipId,
-            )
-          : coloredDistrictsLayer,
-      [coloredDistrictsLayer, clip],
+    const clippedColoredDistrictsLayer = useClippedFeatureCollection(
+      coloredDistrictsLayer as any,
+      clip,
     );
 
     const scalePercent = useAAMarkerScalePercent(map);

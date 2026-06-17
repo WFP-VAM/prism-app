@@ -1,7 +1,10 @@
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import type { Feature, FeatureCollection, Point, Polygon } from 'geojson';
 
-import { clipFeatureCollectionToPolygon } from './clipVectorData';
+import {
+  clearClipVectorDataCacheForTests,
+  clipFeatureCollectionToPolygon,
+} from './clipVectorData';
 
 const clipPolygon: Feature<Polygon> = {
   type: 'Feature',
@@ -31,6 +34,10 @@ function pointFeature(lng: number, lat: number): Feature<Point> {
 }
 
 describe('clipFeatureCollectionToPolygon', () => {
+  beforeEach(() => {
+    clearClipVectorDataCacheForTests();
+  });
+
   it('returns the input unchanged when there is no clip polygon', () => {
     const fc: FeatureCollection = {
       type: 'FeatureCollection',
@@ -119,5 +126,31 @@ describe('clipFeatureCollectionToPolygon', () => {
     const first = clipFeatureCollectionToPolygon(fc, clipPolygon, CLIP_ID);
     const second = clipFeatureCollectionToPolygon(fc, clipPolygon, CLIP_ID);
     expect(first).toBe(second);
+  });
+
+  it('keeps fully interior polygon features without geometric clipping', () => {
+    const interior: Feature<Polygon> = {
+      type: 'Feature',
+      properties: { id: 'inside' },
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [2, 2],
+            [8, 2],
+            [8, 8],
+            [2, 8],
+            [2, 2],
+          ],
+        ],
+      },
+    };
+    const fc: FeatureCollection = {
+      type: 'FeatureCollection',
+      features: [interior],
+    };
+    const result = clipFeatureCollectionToPolygon(fc, clipPolygon, CLIP_ID);
+    expect(result.features).toHaveLength(1);
+    expect(result.features[0]).toBe(interior);
   });
 });

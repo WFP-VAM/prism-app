@@ -14,11 +14,10 @@ import { addNotification } from 'context/notificationStateSlice';
 import { opacitySelector } from 'context/opacityStateSlice';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { FillLayerSpecification } from 'maplibre-gl';
-import { memo, useEffect, useMemo } from 'react';
+import { memo, useEffect } from 'react';
 import { Layer, MapLayerMouseEvent, Source } from 'react-map-gl/maplibre';
 import { useDispatch, useSelector } from 'react-redux';
 import { boundaryCache } from 'utils/boundary-cache';
-import { clipFeatureCollectionToPolygon } from 'utils/clipVectorData';
 import {
   firstBoundaryOnView,
   getLayerMapId,
@@ -26,6 +25,7 @@ import {
   useMapCallback,
 } from 'utils/map-utils';
 import { getPossibleDatesForLayer, getRequestDate } from 'utils/server-utils';
+import { useClippedFeatureCollection } from 'utils/useClippedFeatureCollection';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { useMapState } from 'utils/useMapState';
 
@@ -67,13 +67,7 @@ const AdminLevelDataLayers = memo(
     const { data } = layerData || {};
 
     const clip = useClip();
-    const clippedData = useMemo(
-      () =>
-        data && clip
-          ? clipFeatureCollectionToPolygon(data, clip.clipPolygon, clip.clipId)
-          : data,
-      [data, clip],
-    );
+    const clippedData = useClippedFeatureCollection(data, clip);
 
     useEffect(() => {
       addFillPatternImagesInMap(layer, map);
@@ -119,7 +113,7 @@ const AdminLevelDataLayers = memo(
       removeLayer,
     ]);
 
-    if (!data) {
+    if (!data || !clippedData) {
       return null;
     }
 

@@ -20,7 +20,6 @@ import {
 import { memo, useEffect, useRef } from 'react';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { useDispatch, useSelector } from 'react-redux';
-import { clipFeatureCollectionToPolygon } from 'utils/clipVectorData';
 import { getRoundedData } from 'utils/data-utils';
 import {
   findFeature,
@@ -28,6 +27,7 @@ import {
   getLayerMapId,
   useMapCallback,
 } from 'utils/map-utils';
+import { useClippedFeatureCollection } from 'utils/useClippedFeatureCollection';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { useMapState } from 'utils/useMapState';
 
@@ -102,6 +102,13 @@ const ImpactLayer = memo(({ layer, before }: ComponentProps) => {
   const isLayerLoading = loadingLayerIds.includes(layer.id);
   const clip = useClip();
 
+  const sourceData =
+    data &&
+    (data.impactFeatures.features.length === 0
+      ? data.boundaries
+      : data.impactFeatures);
+  const clippedSourceData = useClippedFeatureCollection(sourceData, clip);
+
   // Track the last attempted date/extent to prevent infinite retry loops on failure
   const lastAttemptedRef = useRef<{
     date?: number;
@@ -164,13 +171,12 @@ const ImpactLayer = memo(({ layer, before }: ComponentProps) => {
     );
   }
 
-  const { impactFeatures, boundaries } = data;
+  const { impactFeatures } = data;
   const noMatchingDistricts = impactFeatures.features.length === 0;
 
-  const sourceData = noMatchingDistricts ? boundaries : impactFeatures;
-  const clippedSourceData = clip
-    ? clipFeatureCollectionToPolygon(sourceData, clip.clipPolygon, clip.clipId)
-    : sourceData;
+  if (!clippedSourceData) {
+    return null;
+  }
 
   // TODO: maplibre: fix any
   const fillPaint: FillLayerSpecification['paint'] = {

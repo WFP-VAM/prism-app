@@ -37,16 +37,16 @@ import {
   MapLayerMouseEvent,
   SymbolLayerSpecification,
 } from 'maplibre-gl';
-import { memo, useEffect, useMemo } from 'react';
+import { memo, useEffect } from 'react';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { useDispatch, useSelector } from 'react-redux';
-import { clipFeatureCollectionToPolygon } from 'utils/clipVectorData';
 import { getFormattedDate } from 'utils/date-utils';
 import { createEWSDatasetParams } from 'utils/ews-utils';
 import { createGoogleFloodDatasetParams } from 'utils/google-flood-utils';
 import { findFeature, getLayerMapId, useMapCallback } from 'utils/map-utils';
 import { getRequestDate } from 'utils/server-utils';
 import { useUrlHistory } from 'utils/url-utils';
+import { useClippedFeatureCollection } from 'utils/useClippedFeatureCollection';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { useMapState } from 'utils/useMapState';
 
@@ -130,13 +130,7 @@ const PointDataLayer = memo(({ layer, before }: LayersProps) => {
   const { data } = layerData || {};
 
   const clip = useClip();
-  const clippedData = useMemo(
-    () =>
-      data && clip
-        ? clipFeatureCollectionToPolygon(data, clip.clipPolygon, clip.clipId)
-        : data,
-    [data, clip],
-  );
+  const clippedData = useClippedFeatureCollection(data, clip);
 
   useEffect(() => {
     if (layer.authRequired && !userAuth) {

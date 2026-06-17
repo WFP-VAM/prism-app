@@ -4,11 +4,11 @@ import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { opacitySelector } from 'context/opacityStateSlice';
 import { FillLayerSpecification } from 'maplibre-gl';
-import { memo, useEffect, useMemo } from 'react';
+import { memo, useEffect } from 'react';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { useDispatch, useSelector } from 'react-redux';
-import { clipFeatureCollectionToPolygon } from 'utils/clipVectorData';
 import { getLayerMapId } from 'utils/map-utils';
+import { useClippedFeatureCollection } from 'utils/useClippedFeatureCollection';
 
 const paintProps: (
   legend: LegendDefinition,
@@ -38,13 +38,7 @@ const GeojsonDataLayer = memo(({ layer, before }: LayersProps) => {
   const { data } = layerData || {};
 
   const clip = useClip();
-  const clippedData = useMemo(
-    () =>
-      data && clip
-        ? clipFeatureCollectionToPolygon(data, clip.clipPolygon, clip.clipId)
-        : data,
-    [data, clip],
-  );
+  const clippedData = useClippedFeatureCollection(data, clip);
 
   useEffect(() => {
     dispatch(loadLayerData({ layer }));
