@@ -1,10 +1,15 @@
 import type { FC, ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 
-/** Renders calendar popper in document.body so overflow ancestors do not clip it. */
-const DatePickerPopperPortal: FC<{ children?: ReactNode }> = ({ children }) =>
-  typeof document !== 'undefined'
-    ? createPortal(<>{children}</>, document.body)
-    : null;
+import { getDatePickerPortalTarget } from './datePickerUtils';
+
+/** Escape overflow ancestors; stay inside MUI Dialog when one is open (aria-hidden). */
+const DatePickerPopperPortal: FC<{ children?: ReactNode }> = ({ children }) => {
+  if (typeof document === 'undefined') {
+    return null;
+  }
+
+  return createPortal(<>{children}</>, getDatePickerPortalTarget());
+};
 
 export default DatePickerPopperPortal;

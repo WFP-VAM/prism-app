@@ -1,13 +1,11 @@
-import { Box, GlobalStyles, Input, Typography } from '@mui/material';
+import { Box, Input, Typography } from '@mui/material';
 import type { SxProps, Theme } from '@mui/material/styles';
+import { datePickerPopperProps } from 'components/Common/datePickerPopperProps';
 import { useSafeTranslation } from 'i18n';
 import DatePicker from 'react-datepicker';
 
-import DatePickerPopperPortal from '../DatePickerPopperPortal';
 import {
   analysisPanelParamTextSx,
-  CALENDAR_POPPER_CLASS,
-  calendarPopperGlobalStyles,
   colorBlackSx,
   formContainerSx,
 } from '../formComponentStyles';
@@ -49,7 +47,6 @@ function DateRangeSelector({
 
   return (
     <Box sx={formContainerSx()}>
-      <GlobalStyles styles={calendarPopperGlobalStyles} />
       <Typography sx={colorBlackSx} variant="body2">
         {t('Date Range')}
       </Typography>
@@ -68,8 +65,7 @@ function DateRangeSelector({
           dropdownMode="select"
           disabled={disabled}
           customInput={<Input sx={analysisPanelParamTextSx} />}
-          popperClassName={CALENDAR_POPPER_CLASS}
-          popperContainer={DatePickerPopperPortal}
+          {...datePickerPopperProps}
           includeDates={availableDates}
         />
       </Box>
@@ -88,8 +84,7 @@ function DateRangeSelector({
           dropdownMode="select"
           disabled={disabled}
           customInput={<Input sx={analysisPanelParamTextSx} />}
-          popperClassName={CALENDAR_POPPER_CLASS}
-          popperContainer={DatePickerPopperPortal}
+          {...datePickerPopperProps}
           includeDates={availableDates}
         />
       </Box>

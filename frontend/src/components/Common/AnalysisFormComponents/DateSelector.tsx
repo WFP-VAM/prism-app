@@ -1,22 +1,11 @@
 import { DateRangeRounded } from '@mui/icons-material';
-import {
-  Box,
-  GlobalStyles,
-  Input,
-  InputAdornment,
-  Typography,
-} from '@mui/material';
+import { Box, Input, InputAdornment, Typography } from '@mui/material';
 import type { SxProps, Theme } from '@mui/material/styles';
+import { datePickerPopperProps } from 'components/Common/datePickerPopperProps';
 import { useSafeTranslation } from 'i18n';
 import DatePicker from 'react-datepicker';
 
-import DatePickerPopperPortal from '../DatePickerPopperPortal';
-import {
-  analysisPanelParamTextSx,
-  CALENDAR_POPPER_CLASS,
-  calendarPopperGlobalStyles,
-  colorBlackSx,
-} from '../formComponentStyles';
+import { analysisPanelParamTextSx, colorBlackSx } from '../formComponentStyles';
 
 const datePickerContainerSx = {
   marginLeft: '10px',
@@ -51,7 +40,6 @@ function DateSelector({
 
   return (
     <Box sx={datePickerContainerSx}>
-      <GlobalStyles styles={calendarPopperGlobalStyles} />
       <Typography sx={colorBlackSx} variant="body2">
         {`${label || t('Date')}: `}
       </Typography>
@@ -79,8 +67,7 @@ function DateSelector({
             }
           />
         }
-        popperClassName={CALENDAR_POPPER_CLASS}
-        popperContainer={DatePickerPopperPortal}
+        {...datePickerPopperProps}
         includeDates={availableDates}
       />
     </Box>

@@ -1,13 +1,11 @@
-import { Box, GlobalStyles, Input, Typography } from '@mui/material';
+import { Box, Input, Typography } from '@mui/material';
 import type { SxProps, Theme } from '@mui/material/styles';
+import { datePickerPopperProps } from 'components/Common/datePickerPopperProps';
 import { useSafeTranslation } from 'i18n';
 import { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 
-import DatePickerPopperPortal from '../DatePickerPopperPortal';
 import {
-  CALENDAR_POPPER_CLASS,
-  calendarPopperGlobalStyles,
   chartPanelParamTextSx,
   colorBlackSx,
   formContainerSx,
@@ -92,7 +90,6 @@ function ChartDateRangeSelector({
 
   return (
     <Box sx={containerSx}>
-      <GlobalStyles styles={calendarPopperGlobalStyles} />
       {!hideLabel && (
         <Typography sx={labelSx} variant="body2">
           {t('Date Range')}
@@ -119,8 +116,7 @@ function ChartDateRangeSelector({
             dropdownMode="select"
             disabled={disabled}
             customInput={<Input sx={chartPanelParamTextSx} />}
-            popperClassName={CALENDAR_POPPER_CLASS}
-            popperContainer={DatePickerPopperPortal}
+            {...datePickerPopperProps}
           />
         </Box>
         <Box sx={dateFieldSx}>
@@ -140,8 +136,7 @@ function ChartDateRangeSelector({
             dropdownMode="select"
             disabled={disabled}
             customInput={<Input sx={chartPanelParamTextSx} />}
-            popperClassName={CALENDAR_POPPER_CLASS}
-            popperContainer={DatePickerPopperPortal}
+            {...datePickerPopperProps}
           />
         </Box>
       </Box>

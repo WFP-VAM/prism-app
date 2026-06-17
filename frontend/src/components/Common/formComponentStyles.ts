@@ -40,12 +40,6 @@ export const CALENDAR_POPPER_CLASS = 'prism-form-calendar-popper';
 /** Above analysis table container (theme.zIndex.modal + 1 = 1301). */
 export const CALENDAR_POPPER_Z_INDEX = 1302;
 
-export const calendarPopperGlobalStyles = {
-  [`.${CALENDAR_POPPER_CLASS}`]: {
-    zIndex: CALENDAR_POPPER_Z_INDEX,
-  },
-};
-
 export const selectRootSx = {
   flex: 1,
   color: 'black',

@@ -188,30 +188,3 @@ const activeLayerChipSx = (marginLeft: string): SxProps<Theme> => ({
 
 export const selectedLayersChipSx = activeLayerChipSx('3%');
 export const activeLayersCountChipSx = activeLayerChipSx('1.5%');
-
-/** Analysis result layer row in layers panel */
-export const analysisLayerSwitchItemSx = {
-  root: {
-    bgcolor: '#FFFFFF',
-  } satisfies SxProps<Theme>,
-  title: (selected: boolean): SxProps<Theme> => ({
-    lineHeight: 1.8,
-    fontWeight: 400,
-    ...(selected ? { color: 'black' } : {}),
-  }),
-  switch: {
-    mr: '2px',
-    '& .MuiSwitch-track': {
-      bgcolor: '#E0E0E0',
-    },
-    '& .MuiSwitch-switchBase': {
-      color: '#E0E0E0',
-      '&.Mui-checked': {
-        color: '#53888F',
-      },
-      '&.Mui-checked + .MuiSwitch-track': {
-        bgcolor: '#B1D6DB',
-      },
-    },
-  } satisfies SxProps<Theme>,
-};

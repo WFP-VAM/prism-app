@@ -1,16 +1,9 @@
 import 'react-datepicker/dist/react-datepicker.css';
 
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
+import { Box, Button, Grid, useMediaQuery, useTheme } from '@mui/material';
+import { datePickerPopperProps } from 'components/Common/datePickerPopperProps';
 import {
-  Box,
-  Button,
-  GlobalStyles,
-  Grid,
-  useMediaQuery,
-  useTheme,
-} from '@mui/material';
-import {
-  DATE_PICKER_POPPER_CLASS,
   dateContainerSx,
   dateLabelContainerSx,
   datePickerContainerDashboardSx,
@@ -39,18 +32,8 @@ import { RootState } from 'context/store';
 import { format } from 'date-fns';
 import { locales, useSafeTranslation } from 'i18n';
 import { findIndex, get } from 'lodash';
-import {
-  type FC,
-  memo,
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import DatePicker from 'react-datepicker';
-import { createPortal } from 'react-dom';
 import Draggable, { DraggableEvent } from 'react-draggable';
 import { useSelector } from 'react-redux';
 import {
@@ -81,12 +64,6 @@ type Point = {
   x: number;
   y: number;
 };
-
-/** Renders popper in body so Floating UI + map stacking/ancestors do not swallow pointer events. */
-const DatePickerPopperPortal: FC<{ children?: ReactNode }> = ({ children }) =>
-  typeof document !== 'undefined'
-    ? createPortal(<>{children}</>, document.body)
-    : null;
 
 const TIMELINE_ID = 'dateTimelineSelector';
 const POINTER_ID = 'datePointerSelector';
@@ -745,13 +722,6 @@ const DateSelector = memo(() => {
       sx={dateSelectorContainerSx}
       style={{ zIndex: tabValue === Panel.Charts ? -1 : 1300 }}
     >
-      <GlobalStyles
-        styles={{
-          [`.${DATE_PICKER_POPPER_CLASS}`]: {
-            zIndex: theme.zIndex.modal,
-          },
-        }}
-      />
       <Grid
         container
         sx={{
@@ -782,9 +752,8 @@ const DateSelector = memo(() => {
             onClickOutside={closeDatePicker}
             onCalendarClose={closeDatePicker}
             preventOpenOnFocus
-            popperContainer={DatePickerPopperPortal}
+            {...datePickerPopperProps}
             popperPlacement="top-start"
-            popperClassName={DATE_PICKER_POPPER_CLASS}
             onChange={handleDatePickerChangeAndClose}
             maxDate={maxDate}
             todayButton={t('Today')}

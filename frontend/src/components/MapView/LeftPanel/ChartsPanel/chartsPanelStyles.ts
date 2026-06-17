@@ -143,9 +143,6 @@ export const locationSelectorSelectRootSx: SxProps<Theme> = {
   },
 };
 
-export const timePeriodCalendarPopperClass =
-  'charts-time-period-calendar-popper';
-
 export const timePeriodWrapperSx: SxProps<Theme> = {
   marginTop: '20px',
   paddingLeft: '20px',

@@ -84,5 +84,3 @@ export const pointerSx = {
   height: '16px',
   cursor: 'grab',
 } satisfies SxProps<Theme>;
-
-export const DATE_PICKER_POPPER_CLASS = 'prism-date-picker-popper';

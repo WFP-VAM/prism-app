@@ -1,14 +1,8 @@
 import OpacityIcon from '@mui/icons-material/Opacity';
+import { Box, IconButton, Slider, Tooltip, Typography } from '@mui/material';
+import Switch from 'components/Common/Switch';
 import {
-  Box,
-  IconButton,
-  Slider,
-  Switch,
-  Tooltip,
-  Typography,
-} from '@mui/material';
-import {
-  analysisLayerSwitchItemSx,
+  layerDaySelectTitleSx,
   opacitySliderSx,
   switchItemOpacityButtonSx,
 } from 'components/MapView/LeftPanel/layersPanel/layerPanelStyles';
@@ -19,7 +13,14 @@ import {
   setOpacity as setStateOpacity,
 } from 'context/opacityStateSlice';
 import { useSafeTranslation } from 'i18n';
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  ChangeEvent,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   BaselineLayerResult,
@@ -64,11 +65,13 @@ const AnalysisLayerSwitchItem = memo(
       }
     }, [initialOpacity, opacity, setOpacity]);
 
-    const handleOnChangeSwitch = useCallback(() => {
-      setSelected(!selected);
-      // The toggle button will be by default toggled
-      dispatch(clearAnalysisResult());
-    }, [dispatch, selected]);
+    const handleOnChangeSwitch = useCallback(
+      (event: ChangeEvent<HTMLInputElement>) => {
+        setSelected(event.target.checked);
+        dispatch(clearAnalysisResult());
+      },
+      [dispatch],
+    );
 
     const handleOpacityClick = useCallback(() => {
       setIsOpacitySelected(!isOpacitySelected);
@@ -117,38 +120,8 @@ const AnalysisLayerSwitchItem = memo(
       );
     }, [isOpacitySelected, opacity, selected, setOpacity]);
 
-    const renderedOpacityIconButton = useMemo(() => {
-      if (!selected) {
-        return (
-          <IconButton
-            disabled={!selected}
-            sx={switchItemOpacityButtonSx(selected, isOpacitySelected)}
-            onClick={handleOpacityClick}
-            size="large"
-          >
-            <OpacityIcon />
-          </IconButton>
-        );
-      }
-      return (
-        <Tooltip title={t('Opacity') as string}>
-          <span>
-            <IconButton
-              disabled={!selected}
-              sx={switchItemOpacityButtonSx(selected, isOpacitySelected)}
-              onClick={handleOpacityClick}
-              size="large"
-            >
-              <OpacityIcon />
-            </IconButton>
-          </span>
-        </Tooltip>
-      );
-    }, [handleOpacityClick, isOpacitySelected, selected, t]);
-
     return (
       <Box
-        sx={analysisLayerSwitchItemSx.root}
         style={{
           display: 'flex',
           flexDirection: 'column',
@@ -160,38 +133,34 @@ const AnalysisLayerSwitchItem = memo(
             display: 'flex',
             alignItems: 'center',
           }}
+          onMouseDown={e => e.stopPropagation()}
         >
-          <div style={{ display: 'flex' }}>
-            <Switch
-              size="small"
-              sx={analysisLayerSwitchItemSx.switch}
-              checked={selected}
-              onChange={handleOnChangeSwitch}
-              slotProps={{
-                input: {
-                  'aria-label': title,
-                },
-              }}
-            />
-            <Typography sx={analysisLayerSwitchItemSx.title(selected)}>
-              {title}
-            </Typography>
-          </div>
-          <Box
-            key="analysis-layer"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            {renderedOpacityIconButton}
-            <AnalysisLayerSwitchItemDownloadOptions
-              analysisData={analysisData}
-              analysisResultSortByKey={analysisResultSortByKey}
-              analysisResultSortOrder={analysisResultSortOrder}
-              selected={selected}
-            />
-          </Box>
+          <Switch
+            checked={selected}
+            onChange={handleOnChangeSwitch}
+            ariaLabel={title}
+          />
+          <Typography sx={layerDaySelectTitleSx(selected, false)}>
+            {title}
+          </Typography>
+          <Tooltip title={t('Opacity') as string}>
+            <span style={{ marginLeft: 'auto' }}>
+              <IconButton
+                disabled={!selected}
+                sx={switchItemOpacityButtonSx(selected, isOpacitySelected)}
+                onClick={handleOpacityClick}
+                size="large"
+              >
+                <OpacityIcon />
+              </IconButton>
+            </span>
+          </Tooltip>
+          <AnalysisLayerSwitchItemDownloadOptions
+            analysisData={analysisData}
+            analysisResultSortByKey={analysisResultSortByKey}
+            analysisResultSortOrder={analysisResultSortOrder}
+            selected={selected}
+          />
         </Box>
         {renderedOpacitySlider}
       </Box>
