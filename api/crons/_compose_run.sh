@@ -20,6 +20,7 @@ if [[ -f ./set_envs.sh ]]; then
 fi
 
 docker compose run --rm --no-deps \
+  -e POSTGRES_SSL=true \
   export_map_worker \
   "$@" \
   2>&1 | tee -a "${API_ROOT}/${LOG_BASENAME}.log"
