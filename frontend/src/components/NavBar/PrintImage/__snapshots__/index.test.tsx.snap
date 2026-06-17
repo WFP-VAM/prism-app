@@ -98,7 +98,7 @@ exports[`renders as expected 1`] = `
               class="makeStyles-wrapper-28"
             >
               <mock-typography
-                class="makeStyles-header-26"
+                class="makeStyles-header-29"
                 variant="h4"
               >
                 Aspect Ratio
@@ -271,7 +271,7 @@ exports[`renders as expected 1`] = `
               >
                 <mock-switch
                   checked=""
-                  class="makeStyles-switch-35"
+                  class="makeStyles-switch-38"
                   classes="[object Object]"
                   color="primary"
                   inputprops="[object Object]"
@@ -451,7 +451,7 @@ exports[`renders as expected 1`] = `
               >
                 <mock-switch
                   checked=""
-                  class="makeStyles-switch-35"
+                  class="makeStyles-switch-38"
                   classes="[object Object]"
                   color="primary"
                   inputprops="[object Object]"
@@ -469,7 +469,7 @@ exports[`renders as expected 1`] = `
                 class="makeStyles-collapsibleWrapper-11 "
               >
                 <mock-switch
-                  class="makeStyles-switch-35"
+                  class="makeStyles-switch-38"
                   classes="[object Object]"
                   color="primary"
                   inputprops="[object Object]"
@@ -510,7 +510,7 @@ exports[`renders as expected 1`] = `
               >
                 <mock-switch
                   checked=""
-                  class="makeStyles-switch-35"
+                  class="makeStyles-switch-38"
                   classes="[object Object]"
                   color="primary"
                   inputprops="[object Object]"
@@ -602,7 +602,7 @@ exports[`renders as expected 1`] = `
                           >
                             <mock-switch
                               checked=""
-                              class="makeStyles-switch-35"
+                              class="makeStyles-switch-38"
                               classes="[object Object]"
                               color="primary"
                               inputprops="[object Object]"
@@ -761,7 +761,7 @@ exports[`renders as expected 1`] = `
               >
                 <mock-switch
                   checked=""
-                  class="makeStyles-switch-35"
+                  class="makeStyles-switch-38"
                   classes="[object Object]"
                   color="primary"
                   inputprops="[object Object]"
@@ -931,35 +931,26 @@ exports[`renders as expected 1`] = `
             <div
               class="MuiBox-root MuiBox-root-55 makeStyles-batchMapsSection-20"
             >
-              <div>
-                <mock-tooltip
-                  arrow=""
-                  classes="[object Object]"
-                  placement="top"
-                  title="Selecting this option will apply the template above to create multiple maps over a time period of your choice."
+              <div
+                class="MuiBox-root MuiBox-root-56 makeStyles-batchMapsHeader-21"
+              >
+                <div
+                  class="MuiBox-root MuiBox-root-57 makeStyles-batchMapsToggle-22"
                 >
-                  <div
-                    class="makeStyles-collapsibleWrapper-11 "
-                  >
-                    <mock-switch
-                      class="makeStyles-switch-35"
+                  <div>
+                    <mock-tooltip
+                      arrow=""
                       classes="[object Object]"
-                      color="primary"
-                      inputprops="[object Object]"
-                    />
-                    <mock-typography
-                      style="padding-left: 0.5rem;"
-                      variant="h4"
+                      placement="top"
+                      title="Selecting this option will apply the template above to create multiple maps over a time period of your choice."
                     >
                       <div
                         class="makeStyles-collapsibleWrapper-11 "
                       >
                         <mock-switch
-                          checked="false"
+                          class="makeStyles-switch-38"
                           classes="[object Object]"
-                          classname="makeStyles-switch-38"
                           color="primary"
-                          disabled="false"
                           inputprops="[object Object]"
                         />
                         <mock-typography
@@ -984,7 +975,7 @@ exports[`renders as expected 1`] = `
                     class="makeStyles-collapsibleWrapper-11 "
                   >
                     <mock-switch
-                      class="makeStyles-switch-35"
+                      class="makeStyles-switch-38"
                       classes="[object Object]"
                       color="primary"
                       disabled=""
