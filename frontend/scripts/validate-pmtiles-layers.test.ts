@@ -1,6 +1,7 @@
 import {
   collectPmtilesLayers,
   getRequiredPropertyKeys,
+  getUniversalHdcChartPropertyKeys,
   RawPmtilesBoundaryLayer,
   validateLayerAgainstMetadata,
   validatePmtilesUrl,
@@ -37,6 +38,25 @@ describe('validate-pmtiles-layers', () => {
     const keys = getRequiredPropertyKeys(sampleLayer);
     expect(keys).toContain('adm2_id');
     expect(keys).toContain('adm2_name');
+    expect(keys).toContain('dv_adm0_id');
+    expect(keys).toContain('dv_adm2_id');
+    expect(keys).not.toContain('dv_adm0_name');
+  });
+
+  it('getUniversalHdcChartPropertyKeys returns dv id keys per admin level', () => {
+    expect(getUniversalHdcChartPropertyKeys(sampleLayer)).toEqual([
+      'dv_adm0_id',
+      'dv_adm1_id',
+      'dv_adm2_id',
+    ]);
+  });
+
+  it('getRequiredPropertyKeys omits dv keys for non-universal layers', () => {
+    const sharedLayer: RawPmtilesBoundaryLayer = {
+      ...sampleLayer,
+      configCountry: 'shared',
+    };
+    const keys = getRequiredPropertyKeys(sharedLayer);
     expect(keys).not.toContain('dv_adm0_id');
   });
 
@@ -52,6 +72,9 @@ describe('validate-pmtiles-layers', () => {
             adm1_name: 'String',
             adm2_id: 'Number',
             adm2_name: 'String',
+            dv_adm0_id: 'Number',
+            dv_adm1_id: 'Number',
+            dv_adm2_id: 'Number',
           },
         },
       ],
@@ -66,6 +89,25 @@ describe('validate-pmtiles-layers', () => {
     expect(
       errors.some(e => e.includes('source layer "admin2" not found')),
     ).toBe(true);
+  });
+
+  it('validateLayerAgainstMetadata fails when dv chart id keys are missing on universal layer', () => {
+    const errors = validateLayerAgainstMetadata(sampleLayer, {
+      vector_layers: [
+        {
+          id: 'admin2',
+          fields: {
+            adm0_id: 'Number',
+            adm0_name: 'String',
+            adm1_id: 'Number',
+            adm1_name: 'String',
+            adm2_id: 'Number',
+            adm2_name: 'String',
+          },
+        },
+      ],
+    });
+    expect(errors.some(e => e.includes('dv_adm2_id'))).toBe(true);
   });
 
   it('validateLayerAgainstMetadata fails when property keys are missing', () => {
@@ -111,6 +153,9 @@ describe('validate-pmtiles-layers', () => {
                 adm1_name: 'String',
                 adm2_id: 'Number',
                 adm2_name: 'String',
+                dv_adm0_id: 'Number',
+                dv_adm1_id: 'Number',
+                dv_adm2_id: 'Number',
               },
             },
           ],
