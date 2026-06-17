@@ -42,6 +42,23 @@ def map_export_s3_client(*, for_presign: bool = False, **kwargs: Any) -> Any:
     return boto3.client("s3", config=_S3_SIGV4, **kwargs)
 
 
+def get_s3_client_for_presign() -> object:
+    """S3 client for browser-facing presigned GET URLs."""
+    return map_export_s3_client(for_presign=True)
+
+
+def s3_client_for_artifact(
+    uri: str | None,
+    injected: object | None = None,
+) -> object | None:
+    """S3 client for verifying a non-local artifact URI, or ``None`` for file:// / missing URI."""
+    if not uri or is_file_artifact_uri(uri):
+        return None
+    if injected is not None:
+        return injected
+    return map_export_s3_client()
+
+
 def parse_s3_uri(s3_uri: str) -> tuple[str, str]:
     if not s3_uri.startswith("s3://"):
         raise ValueError(f"Expected s3:// URI, got {s3_uri!r}")
@@ -174,82 +191,6 @@ def get_export_map_s3_bucket_and_prefix() -> tuple[str, str]:
     else:
         bucket_raw = os.environ.get("EXPORT_MAP_S3_BUCKET", "").strip()
     return parse_export_map_s3_bucket_env(bucket_raw)
-
-
-def public_maps_folder_prefix(
-    export_url: str,
-    *,
-    country: str,
-    object_prefix: str = "",
-) -> str:
-    """Directory prefix for scheduled public maps (same layout as ``s3_key_for_map_export``)."""
-    from prism_app.utils import public_map_upload_path_segments
-
-    c_seg, l_seg = public_map_upload_path_segments(export_url, country=country)
-    base = f"public_maps/{c_seg}/{l_seg}/"
-    op = normalize_export_map_s3_object_prefix(object_prefix)
-    return f"{op}/{base}" if op else base
-
-
-def public_maps_folder_uri(export_url: str, *, country: str) -> str:
-    """Full storage URI for the schedule's public-maps folder (S3 or local file URI)."""
-    bucket, object_prefix = get_export_map_s3_bucket_and_prefix()
-    key_prefix = public_maps_folder_prefix(
-        export_url,
-        country=country,
-        object_prefix=object_prefix,
-    )
-    if bucket:
-        return f"s3://{bucket}/{key_prefix}"
-    local_raw = os.environ.get("EXPORT_MAP_LOCAL_OUTPUT_DIR", "").strip()
-    if local_raw:
-        return (Path(local_raw).resolve() / key_prefix).as_uri()
-    return key_prefix
-
-
-def _s3_console_folder_url(bucket: str, key_prefix: str) -> str:
-    prefix = key_prefix if key_prefix.endswith("/") else f"{key_prefix}/"
-    return (
-        f"https://s3.console.aws.amazon.com/s3/buckets/{bucket}"
-        f"?region={MAP_EXPORT_S3_SIGNING_REGION}&prefix={quote(prefix)}"
-    )
-
-
-def public_maps_root_folder_uri() -> str:
-    """Root folder for all scheduled public maps (S3 or local file URI)."""
-    bucket, object_prefix = get_export_map_s3_bucket_and_prefix()
-    base = "public_maps/"
-    op = normalize_export_map_s3_object_prefix(object_prefix)
-    key_prefix = f"{op}/{base}" if op else base
-    if bucket:
-        return f"s3://{bucket}/{key_prefix}"
-    local_raw = os.environ.get("EXPORT_MAP_LOCAL_OUTPUT_DIR", "").strip()
-    if local_raw:
-        return (Path(local_raw).resolve() / base).as_uri()
-    return key_prefix
-
-
-def public_maps_root_admin_output_path() -> str:
-    """Admin list banner: root public-maps folder path or browser-openable URL."""
-    return storage_uri_to_admin_output_path(public_maps_root_folder_uri())
-
-
-def storage_uri_to_admin_output_path(storage_uri: str) -> str:
-    """Admin display value: local filesystem path or browser-openable URL."""
-    uri = storage_uri.strip()
-    if not uri:
-        raise ValueError("storage URI is empty")
-    if uri.startswith("file://"):
-        return local_path_from_file_uri(uri)
-    if uri.startswith("s3://"):
-        bucket, key = parse_s3_uri(uri)
-        return _s3_console_folder_url(bucket, key)
-    if uri.startswith(("http://", "https://")):
-        return uri
-    bucket, _ = get_export_map_s3_bucket_and_prefix()
-    if bucket:
-        return _s3_console_folder_url(bucket, uri)
-    raise ValueError(f"Cannot build output path for {storage_uri!r}")
 
 
 def put_map_export_bytes(

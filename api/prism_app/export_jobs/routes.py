@@ -19,30 +19,19 @@ from prism_app.export_jobs.service import (
     enqueue_map_export_job,
 )
 from prism_app.export_s3 import (
+    get_s3_client_for_presign,
     is_file_artifact_uri,
     local_path_from_file_uri,
     map_export_artifact_exists,
     map_export_s3_client,
     presign_export_get,
+    s3_client_for_artifact,
 )
 from prism_app.models import MapExportJobEnqueueRequest
 from prism_app.utils import utc_now
 from sqlmodel import Session
 
 router = APIRouter(prefix="/export-map", tags=["export-map"])
-
-
-def get_s3_client_for_presign() -> object:
-    """S3 client for browser-facing presigned GET URLs."""
-    return map_export_s3_client(for_presign=True)
-
-
-def _s3_client_for_artifact(uri: str | None, injected: object | None) -> object | None:
-    if not uri or is_file_artifact_uri(uri):
-        return None
-    if injected is not None:
-        return injected
-    return map_export_s3_client()
 
 
 @router.post("/jobs")
@@ -72,7 +61,7 @@ def read_map_export_job(
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
 
-    verify_client = _s3_client_for_artifact(job.s3_uri, None)
+    verify_client = s3_client_for_artifact(job.s3_uri, None)
 
     if job.status == "succeeded" and job.s3_uri:
         if not map_export_artifact_exists(job.s3_uri, s3_client=verify_client):
