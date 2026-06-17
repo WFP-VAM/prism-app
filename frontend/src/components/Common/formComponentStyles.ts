@@ -37,10 +37,12 @@ export const chartPanelParamTextSx = {
 
 export const CALENDAR_POPPER_CLASS = 'prism-form-calendar-popper';
 
+/** Above analysis table container (theme.zIndex.modal + 1 = 1301). */
+export const CALENDAR_POPPER_Z_INDEX = 1302;
+
 export const calendarPopperGlobalStyles = {
   [`.${CALENDAR_POPPER_CLASS}`]: {
-    // Above left-panel content; matches map DateSelector popper
-    zIndex: 1300,
+    zIndex: CALENDAR_POPPER_Z_INDEX,
   },
 };
 

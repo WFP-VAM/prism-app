@@ -1,4 +1,9 @@
-import { Box, Typography } from '@mui/material';
+import { Box, GlobalStyles, Typography } from '@mui/material';
+import DatePickerPopperPortal from 'components/Common/DatePickerPopperPortal';
+import {
+  CALENDAR_POPPER_CLASS,
+  calendarPopperGlobalStyles,
+} from 'components/Common/formComponentStyles';
 import { WMSLayerProps } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
 import { availableDatesSelector } from 'context/serverStateSlice';
@@ -74,6 +79,7 @@ function DateRangePicker() {
         flexDirection: 'column',
       }}
     >
+      <GlobalStyles styles={calendarPopperGlobalStyles} />
       <Box
         sx={theme => ({
           display: 'flex',
@@ -118,6 +124,8 @@ function DateRangePicker() {
             dropdownMode="select"
             placeholderText="dd/mm/yyyy"
             showPopperArrow={false}
+            popperClassName={CALENDAR_POPPER_CLASS}
+            popperContainer={DatePickerPopperPortal}
           />
         </Box>
 
@@ -158,6 +166,8 @@ function DateRangePicker() {
             dropdownMode="select"
             placeholderText="dd/mm/yyyy"
             showPopperArrow={false}
+            popperClassName={CALENDAR_POPPER_CLASS}
+            popperContainer={DatePickerPopperPortal}
           />
         </Box>
       </Box>

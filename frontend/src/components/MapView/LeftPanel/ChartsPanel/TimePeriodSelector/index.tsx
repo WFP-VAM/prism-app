@@ -2,6 +2,7 @@ import './timePeriodSelector.css';
 
 import { DateRangeRounded } from '@mui/icons-material';
 import { Box, Input, InputAdornment, Typography } from '@mui/material';
+import DatePickerPopperPortal from 'components/Common/DatePickerPopperPortal';
 import { useSafeTranslation } from 'i18n';
 import React, { memo } from 'react';
 import DatePicker from 'react-datepicker';
@@ -64,6 +65,7 @@ const TimePeriodSelector = memo(
                 />
               }
               popperClassName={timePeriodCalendarPopperClass}
+              popperContainer={DatePickerPopperPortal}
             />
           </Box>
 
@@ -96,6 +98,7 @@ const TimePeriodSelector = memo(
                 />
               }
               popperClassName={timePeriodCalendarPopperClass}
+              popperContainer={DatePickerPopperPortal}
             />
           </Box>
         </Box>

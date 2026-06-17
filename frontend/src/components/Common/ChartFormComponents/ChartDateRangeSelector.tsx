@@ -4,6 +4,7 @@ import { useSafeTranslation } from 'i18n';
 import { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 
+import DatePickerPopperPortal from '../DatePickerPopperPortal';
 import {
   CALENDAR_POPPER_CLASS,
   calendarPopperGlobalStyles,
@@ -119,6 +120,7 @@ function ChartDateRangeSelector({
             disabled={disabled}
             customInput={<Input sx={chartPanelParamTextSx} />}
             popperClassName={CALENDAR_POPPER_CLASS}
+            popperContainer={DatePickerPopperPortal}
           />
         </Box>
         <Box sx={dateFieldSx}>
@@ -139,6 +141,7 @@ function ChartDateRangeSelector({
             disabled={disabled}
             customInput={<Input sx={chartPanelParamTextSx} />}
             popperClassName={CALENDAR_POPPER_CLASS}
+            popperContainer={DatePickerPopperPortal}
           />
         </Box>
       </Box>

@@ -10,6 +10,7 @@ import type { SxProps, Theme } from '@mui/material/styles';
 import { useSafeTranslation } from 'i18n';
 import DatePicker from 'react-datepicker';
 
+import DatePickerPopperPortal from '../DatePickerPopperPortal';
 import {
   analysisPanelParamTextSx,
   CALENDAR_POPPER_CLASS,
@@ -79,6 +80,7 @@ function DateSelector({
           />
         }
         popperClassName={CALENDAR_POPPER_CLASS}
+        popperContainer={DatePickerPopperPortal}
         includeDates={availableDates}
       />
     </Box>

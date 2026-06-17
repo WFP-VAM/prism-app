@@ -3,6 +3,7 @@ import type { SxProps, Theme } from '@mui/material/styles';
 import { useSafeTranslation } from 'i18n';
 import DatePicker from 'react-datepicker';
 
+import DatePickerPopperPortal from '../DatePickerPopperPortal';
 import {
   analysisPanelParamTextSx,
   CALENDAR_POPPER_CLASS,
@@ -68,6 +69,7 @@ function DateRangeSelector({
           disabled={disabled}
           customInput={<Input sx={analysisPanelParamTextSx} />}
           popperClassName={CALENDAR_POPPER_CLASS}
+          popperContainer={DatePickerPopperPortal}
           includeDates={availableDates}
         />
       </Box>
@@ -87,6 +89,7 @@ function DateRangeSelector({
           disabled={disabled}
           customInput={<Input sx={analysisPanelParamTextSx} />}
           popperClassName={CALENDAR_POPPER_CLASS}
+          popperContainer={DatePickerPopperPortal}
           includeDates={availableDates}
         />
       </Box>
