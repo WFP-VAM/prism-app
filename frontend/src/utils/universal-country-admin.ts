@@ -32,16 +32,18 @@ export function getEffectiveMultiCountry(): boolean {
   return isUniversalDeployment() ? false : Boolean(appConfig.multiCountry);
 }
 
-/** Deepest boundary layer available for the active country. */
+/** Deepest boundary layer available for charts and analysis. */
 export function useEffectiveBoundaryLayer(): BoundaryLayerProps {
-  const { iso3, admin3Available } = useCountryIso();
+  const { iso3 } = useCountryIso();
 
   return useMemo(() => {
     if (isUniversalDeployment()) {
-      return getBoundaryLayersByAdminLevel(admin3Available ? 4 : 3);
+      // Universal deployment is capped at Admin 2 (adm0 + adm1 + adm2) for
+      // charts and analysis, even when admin-3 boundary data exists.
+      return getBoundaryLayersByAdminLevel(3);
     }
     return getBoundaryLayersByAdminLevel(appConfig.multiCountry ? 3 : 2);
-  }, [iso3, admin3Available]);
+  }, [iso3]);
 }
 
 /**
