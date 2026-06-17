@@ -82,27 +82,11 @@ export function collectPmtilesLayers(
 export function getRequiredPropertyKeys(
   layer: RawPmtilesBoundaryLayer,
 ): string[] {
-  const keys = [
+  return [
     ...layer.admin_level_codes,
     ...layer.admin_level_names,
     ...layer.admin_level_local_names,
   ];
-  if (layer.configCountry === 'universal') {
-    keys.push(...getUniversalHdcChartPropertyKeys(layer));
-  }
-  return keys;
-}
-
-/** HDC chart id/name keys expected on universal PMTiles (one per admin level). */
-export function getUniversalHdcChartPropertyKeys(
-  layer: RawPmtilesBoundaryLayer,
-): string[] {
-  const levelCount = layer.admin_level_codes.length;
-  const keys: string[] = [];
-  for (let level = 0; level < levelCount; level += 1) {
-    keys.push(`dv_adm${level}_id`, `dv_adm${level}_name`);
-  }
-  return keys;
 }
 
 export function validateLayerAgainstMetadata(
