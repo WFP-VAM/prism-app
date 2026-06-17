@@ -67,7 +67,8 @@ const AdminLevelDataLayers = memo(
     const { data } = layerData || {};
 
     const clip = useClip();
-    const clippedData = useClippedFeatureCollection(data, clip);
+    const clipForAdminData = clip && clip.clipAdminLevelData ? clip : null;
+    const clippedData = useClippedFeatureCollection(data, clipForAdminData);
 
     useEffect(() => {
       addFillPatternImagesInMap(layer, map);

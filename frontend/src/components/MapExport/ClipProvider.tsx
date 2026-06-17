@@ -14,9 +14,11 @@ import { ClipContext, ClipContextValue } from './clipContext';
  */
 export function ClipProvider({
   polygon,
+  clipAdminLevelData = false,
   children,
 }: {
   polygon: AdminAreaClipPolygon | null | undefined;
+  clipAdminLevelData?: boolean;
   children: ReactNode;
 }) {
   useEffect(() => {
@@ -27,8 +29,12 @@ export function ClipProvider({
     if (!polygon) {
       return null;
     }
-    return { clipPolygon: polygon, clipId: registerClipPolygon(polygon) };
-  }, [polygon]);
+    return {
+      clipPolygon: polygon,
+      clipId: registerClipPolygon(polygon),
+      clipAdminLevelData,
+    };
+  }, [clipAdminLevelData, polygon]);
 
   return <ClipContext.Provider value={value}>{children}</ClipContext.Provider>;
 }

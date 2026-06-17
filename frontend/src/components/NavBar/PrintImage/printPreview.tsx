@@ -246,6 +246,7 @@ function PrintPreview() {
     legendPosition,
     legendScale,
     adminAreaClipPolygon,
+    selectedBoundaries,
     printRef,
     footerHeight,
     bottomLogo,
@@ -328,6 +329,7 @@ function PrintPreview() {
         mapStyle={processedMapStyle}
         maxBounds={maxBounds}
         adminAreaClipPolygon={adminAreaClipPolygon}
+        selectedBoundaries={selectedBoundaries}
         printRef={printRef}
         titleRef={titleRef}
         footerRef={footerRef}

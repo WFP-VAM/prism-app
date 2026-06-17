@@ -67,12 +67,9 @@ import { MapExportLayoutProps } from './types';
  * If you add a new layer type, update both files.
  *
  * Country mask: when `toggles.countryMask` is on and an `adminAreaClipPolygon`
- * is provided, layers are clipped at the SOURCE via the ClipProvider:
- *  - raster layers route tiles through the `clip://` protocol (masked once per
- *    tile, then cached by MapLibre),
- *  - vector layers are clipped with turf at load.
- * Everything renders on a single map and the basemap shows through outside the
- * country, so there is no per-frame clip-path recomputation.
+ * is provided, raster layers route tiles through the `clip://` protocol.
+ * Vector layers clip only when needed (e.g. admin_level_data when specific
+ * admin areas are selected — full-region masks skip redundant vector clip).
  */
 
 // Layer component mapping - KEEP IN SYNC with MapView/Map/index.tsx
@@ -131,6 +128,7 @@ function MapExportLayout({
   bounds,
   mapStyle: mapStyleProp,
   adminAreaClipPolygon,
+  selectedBoundaries = [],
   printRef,
   titleRef,
   footerRef,
@@ -676,7 +674,10 @@ function MapExportLayout({
           mapStyle={basemapMapStyle}
           style={{ width: '100%', height: '100%' }}
         >
-          <ClipProvider polygon={clipPolygon}>
+          <ClipProvider
+            polygon={clipPolygon}
+            clipAdminLevelData={selectedBoundaries.length > 0}
+          >
             {clipPolygon && isClipDebugEnabled() && (
               <Source id="clip-debug-outline" type="geojson" data={clipPolygon}>
                 <Layer

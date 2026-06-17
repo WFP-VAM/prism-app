@@ -114,6 +114,9 @@ export interface MapExportLayoutProps {
     GeoJSON.Polygon | GeoJSON.MultiPolygon
   > | null;
 
+  /** Admin codes selected for regional mask; empty = full-country mask. */
+  selectedBoundaries?: AdminCodeString[];
+
   // For capturing the rendered output
   printRef?: React.RefObject<HTMLDivElement | null>;
   titleRef?: React.RefObject<HTMLDivElement | null>;

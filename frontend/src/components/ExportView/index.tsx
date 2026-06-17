@@ -218,6 +218,7 @@ const ExportView = memo(() => {
         bounds={exportParams.bounds ?? undefined}
         mapStyle={processedMapStyle}
         adminAreaClipPolygon={adminAreaClipPolygon}
+        selectedBoundaries={exportParams.selectedBoundaries}
         printRef={printRef}
         titleRef={titleRef}
         footerRef={footerRef}
