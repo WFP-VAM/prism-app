@@ -8,9 +8,8 @@ import { FloodChartConfigObject } from 'context/tableStateSlice';
 import GeoJSON, { FeatureCollection, Point } from 'geojson';
 import { Dispatch } from 'redux';
 
-import { getFormattedDate } from './date-utils';
 import { fetchWithTimeout } from './fetch-with-timeout';
-import { DateFormat } from './name-utils';
+import { combineURLs, queryParamsToString } from './url-utils';
 
 export const EWSTriggersConfig: FloodChartConfigObject = {
   normal: {
@@ -49,6 +48,27 @@ type EWSTriggerLevels = {
   watch_level: number;
 };
 
+type EWSWaterHeightPoint = {
+  timestamp: number;
+  water_height: number;
+};
+
+const EMPTY_LOCATIONS: FeatureCollection = {
+  type: 'FeatureCollection',
+  features: [],
+};
+
+let locationsCache: { baseUrl: string; data: FeatureCollection } | null = null;
+
+const isEWSTriggerLevels = (
+  triggerLevels: unknown,
+): triggerLevels is EWSTriggerLevels =>
+  typeof triggerLevels === 'object' &&
+  triggerLevels != null &&
+  'watch_level' in triggerLevels &&
+  'warning' in triggerLevels &&
+  'severe_warning' in triggerLevels;
+
 // generate an array with every day since the beginning
 // of January 2021.
 // input parameter is used here only for testing
@@ -79,7 +99,11 @@ const fetchEWSLocations = async (
   baseUrl: string,
   dispatch: Dispatch,
 ): Promise<FeatureCollection> => {
-  const url = `${baseUrl}/location.geojson?type=River`;
+  if (locationsCache?.baseUrl === baseUrl) {
+    return locationsCache.data;
+  }
+
+  const url = combineURLs(baseUrl, 'sensor-locations');
   try {
     const resp = await fetchWithTimeout(
       url,
@@ -87,12 +111,51 @@ const fetchEWSLocations = async (
       {},
       `Request failed for fetching EWS locations at ${url}`,
     );
+    const data = (await resp.json()) as FeatureCollection;
+    locationsCache = {
+      baseUrl,
+      data: {
+        ...data,
+        features: data.features.filter(
+          feature => feature.properties?.source !== 'google',
+        ),
+      },
+    };
+    return locationsCache.data;
+  } catch {
+    return EMPTY_LOCATIONS;
+  }
+};
+
+const fetchEWSWaterHeight = async (
+  baseUrl: string,
+  locationId: number,
+  date: number,
+  dispatch: Dispatch,
+): Promise<EWSWaterHeightPoint[]> => {
+  const endDate = new Date(date);
+  endDate.setUTCHours(23, 59, 59, 999);
+  const startDate = new Date(endDate.getTime() - oneDayInMs);
+  const query = queryParamsToString(
+    {
+      location_id: String(locationId),
+      start_date: startDate.toISOString(),
+      end_date: endDate.toISOString(),
+    },
+    true,
+  );
+  const url = `${combineURLs(baseUrl, 'water-height')}?${query}`;
+
+  try {
+    const resp = await fetchWithTimeout(
+      url,
+      dispatch,
+      {},
+      `Request failed for fetching EWS water height at ${url}`,
+    );
     return await resp.json();
   } catch {
-    return {
-      type: 'FeatureCollection',
-      features: [],
-    };
+    return [];
   }
 };
 
@@ -100,32 +163,14 @@ export const fetchEWSDataPointsByLocation = async (
   baseUrl: string,
   date: number,
   dispatch: Dispatch,
-  externalId?: string,
+  locationId: number,
 ): Promise<EWSSensorData[]> => {
-  const endDate = new Date(date);
-  endDate.setUTCHours(23, 59, 59, 999);
-  // FIXME: pass start/end here? why the 24h delta?
-  const startDate = new Date(endDate.getTime() - oneDayInMs);
-  const format = DateFormat.ISO;
+  const points = await fetchEWSWaterHeight(baseUrl, locationId, date, dispatch);
 
-  const url = `${baseUrl}/sensors/sensor_event?start=${getFormattedDate(
-    startDate,
-    format,
-  )}&end=${getFormattedDate(endDate, format)}`;
-
-  const resource = externalId ? `${url}&external_id=${externalId}` : url;
-
-  try {
-    const resp = await fetchWithTimeout(
-      resource,
-      dispatch,
-      {},
-      `Request failed for fetching EWS data points by location at ${resource}`,
-    );
-    return await resp.json();
-  } catch (_error) {
-    return [];
-  }
+  return points.map(point => ({
+    location_id: locationId,
+    value: [new Date(point.timestamp * 1000).toISOString(), point.water_height],
+  }));
 };
 
 const getLevelStatus = (
@@ -135,15 +180,12 @@ const getLevelStatus = (
   if (currentLevel < levels.watch_level) {
     return EWSLevelStatus.NORMAL;
   }
-
-  if (currentLevel >= levels.watch_level && currentLevel < levels.warning) {
+  if (currentLevel < levels.warning) {
     return EWSLevelStatus.WATCH;
   }
-
-  if (currentLevel >= levels.warning && currentLevel < levels.severe_warning) {
+  if (currentLevel < levels.severe_warning) {
     return EWSLevelStatus.WARNING;
   }
-
   return EWSLevelStatus.SEVEREWARNING;
 };
 
@@ -152,53 +194,63 @@ export const fetchEWSData = async (
   date: number,
   dispatch: Dispatch,
 ): Promise<PointLayerData> => {
-  const [locations, values] = await Promise.all([
-    fetchEWSLocations(baseUrl, dispatch),
-    fetchEWSDataPointsByLocation(baseUrl, date, dispatch),
-  ]);
+  const locations = await fetchEWSLocations(baseUrl, dispatch);
+  const valuesByLocation = new Map<number, number[]>();
 
-  const processedFeatures: PointData[] = locations.features.reduce(
-    (pointDataArray, feature) => {
-      const { properties, geometry } = feature;
-
-      if (!properties) {
-        return pointDataArray;
+  await Promise.all(
+    locations.features.map(async feature => {
+      const locationId = feature.properties?.id as number | undefined;
+      if (!locationId) {
+        return;
       }
 
-      const locationValues: number[] = values
-        .filter(v => v.location_id === properties.id)
-        .map(v => v.value[1]);
-
-      if (locationValues.length === 0) {
-        return pointDataArray;
-      }
-
-      const mean =
-        locationValues.reduce((acc, item) => acc + item, 0) /
-        locationValues.length;
-      const min = Math.min(...locationValues);
-      const max = Math.max(...locationValues);
-
-      const { coordinates } = geometry as Point;
-
-      const pointData: PointData = {
-        lon: coordinates[0],
-        lat: coordinates[1],
+      const points = await fetchEWSWaterHeight(
+        baseUrl,
+        locationId,
         date,
-        mean: parseFloat(mean.toFixed(2)),
-        min,
-        max,
-        ...properties,
-        status: getLevelStatus(
-          max,
-          properties.trigger_levels as EWSTriggerLevels,
-        ),
-      };
-
-      return [...pointDataArray, pointData];
-    },
-    [] as PointData[],
+        dispatch,
+      );
+      if (points.length > 0) {
+        valuesByLocation.set(
+          locationId,
+          points.map(point => point.water_height),
+        );
+      }
+    }),
   );
+
+  const processedFeatures: PointData[] = [];
+
+  for (const feature of locations.features) {
+    const { properties, geometry } = feature;
+
+    if (!properties || !isEWSTriggerLevels(properties.trigger_levels)) {
+      continue;
+    }
+
+    const locationValues = valuesByLocation.get(properties.id as number) ?? [];
+    if (locationValues.length === 0) {
+      continue;
+    }
+
+    const mean =
+      locationValues.reduce((acc, item) => acc + item, 0) /
+      locationValues.length;
+    const min = Math.min(...locationValues);
+    const max = Math.max(...locationValues);
+    const { coordinates } = geometry as Point;
+
+    processedFeatures.push({
+      lon: coordinates[0],
+      lat: coordinates[1],
+      date,
+      mean: parseFloat(mean.toFixed(2)),
+      min,
+      max,
+      ...properties,
+      status: getLevelStatus(max, properties.trigger_levels),
+    });
+  }
 
   return GeoJSON.parse(processedFeatures, {
     Point: ['lat', 'lon'],
@@ -206,22 +258,24 @@ export const fetchEWSData = async (
 };
 
 export const createEWSDatasetParams = (
-  featureProperties: any,
+  featureProperties: {
+    id: number;
+    name: string;
+    external_id: string;
+    trigger_levels: EWSTriggerLevels;
+  },
   baseUrl: string,
 ) => {
-  const { name, external_id, trigger_levels } = featureProperties;
+  const { name, external_id, id, trigger_levels } = featureProperties;
   const chartTitle = `River level - ${name} (${external_id})`;
 
-  const parsedLevels = JSON.parse(trigger_levels);
-  const triggerLevels = {
-    watchLevel: parsedLevels.watch_level,
-    warning: parsedLevels.warning,
-    severeWarning: parsedLevels.severe_warning,
-  };
-
   return {
-    externalId: external_id,
-    triggerLevels,
+    locationId: id,
+    triggerLevels: {
+      watchLevel: trigger_levels.watch_level,
+      warning: trigger_levels.warning,
+      severeWarning: trigger_levels.severe_warning,
+    },
     chartTitle,
     baseUrl,
   };
