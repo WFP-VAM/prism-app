@@ -10,20 +10,32 @@ from prism_app.export_jobs.download_filename import (
     map_export_download_filename_from_payload,
 )
 from prism_app.export_s3 import (
-    get_map_export_s3_client,
-    get_map_export_s3_client_for_artifact,
     is_file_artifact_uri,
     local_path_from_file_uri,
     map_export_artifact_exists,
+    map_export_s3_client,
     presign_export_get,
 )
 from sqlalchemy.orm import Session
 from sqlmodel import select
 from starlette.exceptions import HTTPException
 from starlette.responses import FileResponse, RedirectResponse, Response
-from starlette.status import HTTP_303_SEE_OTHER, HTTP_503_SERVICE_UNAVAILABLE
+from starlette.status import HTTP_303_SEE_OTHER
 
 SCHEDULE_DOWNLOAD_UNAVAILABLE_MSG = "No maps to download for this schedule"
+
+
+def get_s3_client_for_presign() -> object:
+    """S3 client for browser-facing presigned GET URLs."""
+    return map_export_s3_client(for_presign=True)
+
+
+def _s3_client_for_artifact(uri: str | None, injected: object | None) -> object | None:
+    if not uri or is_file_artifact_uri(uri):
+        return None
+    if injected is not None:
+        return injected
+    return map_export_s3_client()
 
 
 def schedule_ids_with_downloadable_export(
@@ -72,7 +84,7 @@ def schedule_export_download_response(
     if job.status != "succeeded" or not job.s3_uri:
         raise HTTPException(status_code=404, detail="Export not available")
 
-    verify_client = get_map_export_s3_client_for_artifact(job.s3_uri, s3_client)
+    verify_client = _s3_client_for_artifact(job.s3_uri, s3_client)
     if not map_export_artifact_exists(job.s3_uri, s3_client=verify_client):
         raise HTTPException(
             status_code=404,
@@ -89,16 +101,7 @@ def schedule_export_download_response(
         path = Path(local_path_from_file_uri(job.s3_uri))
         return FileResponse(path, filename=download_filename or path.name)
 
-    presign_client = (
-        s3_client
-        if s3_client is not None
-        else get_map_export_s3_client(for_presign=True)
-    )
-    if presign_client is None:
-        raise HTTPException(
-            status_code=HTTP_503_SERVICE_UNAVAILABLE,
-            detail="S3 is not configured; cannot download this export",
-        )
+    presign_client = s3_client if s3_client is not None else get_s3_client_for_presign()
     url = presign_export_get(
         job.s3_uri,
         presign_client,

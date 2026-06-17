@@ -165,10 +165,8 @@ def test_get_succeeded_returns_presigned_url(
         lambda *_a, **_k: True,
     )
     monkeypatch.setattr(
-        "prism_app.export_jobs.routes.get_map_export_s3_client",
-        lambda *, for_presign=False, required=False, **kwargs: (
-            mock_s3 if for_presign else None
-        ),
+        "prism_app.export_jobs.routes.get_s3_client_for_presign",
+        lambda: mock_s3,
     )
     r = api_client.get(f"/export-map/jobs/{job_id}")
     mock_s3.generate_presigned_url.assert_called_once()
@@ -211,8 +209,8 @@ def test_get_succeeded_file_uri_returns_local_path_skips_presign(
 
     mock_s3 = MagicMock()
     monkeypatch.setattr(
-        "prism_app.export_jobs.routes.get_map_export_s3_client",
-        lambda *, for_presign=False, required=False, **kwargs: mock_s3,
+        "prism_app.export_jobs.routes.get_s3_client_for_presign",
+        lambda: mock_s3,
     )
     r = api_client.get(f"/export-map/jobs/{job_id}")
     mock_s3.generate_presigned_url.assert_not_called()

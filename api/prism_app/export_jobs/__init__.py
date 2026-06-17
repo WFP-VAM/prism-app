@@ -14,7 +14,7 @@ from prism_app.export_jobs.service import (
     create_queued_map_export_job,
     enqueue_map_export_job,
 )
-from prism_app.export_s3 import get_map_export_s3_client
+from prism_app.export_s3 import map_export_s3_client
 
 __all__ = [
     "canonical_request_dict",
@@ -24,6 +24,6 @@ __all__ = [
     "enqueue_map_export_job",
     "get_export_jobs_session",
     "get_export_jobs_session_factory",
-    "get_map_export_s3_client",
+    "map_export_s3_client",
     "router",
 ]

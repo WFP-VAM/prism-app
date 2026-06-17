@@ -2,15 +2,13 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-from botocore.exceptions import NoRegionError
 from prism_app.export_s3 import (
     DEFAULT_EXPORT_MAP_S3_BUCKET,
     MAP_EXPORT_S3_SIGNING_REGION,
-    MapExportS3ClientError,
     get_export_map_s3_bucket_and_prefix,
-    get_map_export_s3_client,
     is_file_artifact_uri,
     local_path_from_file_uri,
+    map_export_s3_client,
     normalize_export_map_s3_object_prefix,
     parse_export_map_s3_bucket_env,
     parse_s3_uri,
@@ -38,33 +36,12 @@ def test_map_export_s3_client_uses_internal_and_public_endpoints(
     monkeypatch.setenv("AWS_ENDPOINT_URL", "http://minio:9000")
     monkeypatch.setenv("AWS_PRESIGN_ENDPOINT_URL", "http://localhost:9000")
     with patch("prism_app.export_s3.boto3.client") as mock_client:
-        get_map_export_s3_client()
-        get_map_export_s3_client(for_presign=True)
+        map_export_s3_client()
+        map_export_s3_client(for_presign=True)
     assert mock_client.call_args_list[0].kwargs["endpoint_url"] == "http://minio:9000"
     assert (
         mock_client.call_args_list[1].kwargs["endpoint_url"] == "http://localhost:9000"
     )
-
-
-def test_get_map_export_s3_client_returns_none_on_boto_error(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    with patch(
-        "prism_app.export_s3.boto3.client",
-        side_effect=NoRegionError(region_name="us-east-2"),
-    ):
-        assert get_map_export_s3_client() is None
-
-
-def test_get_map_export_s3_client_required_raises(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    with patch(
-        "prism_app.export_s3.boto3.client",
-        side_effect=NoRegionError(region_name="us-east-2"),
-    ):
-        with pytest.raises(MapExportS3ClientError):
-            get_map_export_s3_client(required=True)
 
 
 def test_s3_key_for_map_export_pdf_zip():

@@ -10,48 +10,24 @@ from urllib.parse import quote, unquote, urlparse
 
 import boto3
 from botocore.config import Config
-from botocore.exceptions import (
-    BotoCoreError,
-    NoCredentialsError,
-    NoRegionError,
-    PartialCredentialsError,
-)
 
 # When ``EXPORT_MAP_S3_BUCKET`` is unset and ``EXPORT_MAP_LOCAL_OUTPUT_DIR`` is unset (worker).
 DEFAULT_EXPORT_MAP_S3_BUCKET = "s3://prism-wfp/batch-maps"
 
 # Region for default map-export bucket (prism-wfp). SigV4 presigns must match bucket region.
+# Callers for other buckets can pass ``region_name=...`` into ``map_export_s3_client``.
 MAP_EXPORT_S3_SIGNING_REGION = "us-east-2"
 
 # Buckets/regions often reject legacy SigV2 presigned URLs (`AWSAccessKeyId=…` query params).
 _S3_SIGV4 = Config(signature_version="s3v4")
 
-_CLIENT_CREATION_ERRORS = (
-    BotoCoreError,
-    NoCredentialsError,
-    NoRegionError,
-    PartialCredentialsError,
-    OSError,
-)
 
-
-class MapExportS3ClientError(RuntimeError):
-    """Map-export S3 client could not be created (missing region, creds, etc.)."""
-
-
-def get_map_export_s3_client(
-    *,
-    for_presign: bool = False,
-    required: bool = False,
-    **kwargs: Any,
-) -> object | None:
-    """Return a boto3 S3 client for map-export artifacts.
+def map_export_s3_client(*, for_presign: bool = False, **kwargs: Any) -> Any:
+    """S3 client using AWS SigV4; default region matches ``DEFAULT_EXPORT_MAP_S3_BUCKET``.
 
     Set ``for_presign=True`` for browser-facing presigned GET URLs (``AWS_PRESIGN_ENDPOINT_URL``,
     falling back to ``AWS_ENDPOINT_URL``). Otherwise uses ``AWS_ENDPOINT_URL`` for in-cluster
     put/head/verify (e.g. ``http://minio:9000`` in local Docker).
-
-    Returns ``None`` when boto3 cannot configure a client unless ``required=True`` (workers).
     """
     kwargs.setdefault("region_name", MAP_EXPORT_S3_SIGNING_REGION)
     if for_presign:
@@ -63,26 +39,7 @@ def get_map_export_s3_client(
         endpoint = os.environ.get("AWS_ENDPOINT_URL", "").strip()
     if endpoint:
         kwargs["endpoint_url"] = endpoint
-    try:
-        return boto3.client("s3", config=_S3_SIGV4, **kwargs)
-    except _CLIENT_CREATION_ERRORS as exc:
-        if required:
-            raise MapExportS3ClientError(
-                "Could not create map-export S3 client"
-            ) from exc
-        return None
-
-
-def get_map_export_s3_client_for_artifact(
-    uri: str | None,
-    injected: object | None = None,
-) -> object | None:
-    """S3 client for verifying a non-local artifact URI, or ``None`` for file:// / missing URI."""
-    if not uri or is_file_artifact_uri(uri):
-        return None
-    if injected is not None:
-        return injected
-    return get_map_export_s3_client()
+    return boto3.client("s3", config=_S3_SIGV4, **kwargs)
 
 
 def parse_s3_uri(s3_uri: str) -> tuple[str, str]:

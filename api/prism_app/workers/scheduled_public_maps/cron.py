@@ -36,7 +36,7 @@ from prism_app.database.map_export_schedule_model import (
 from prism_app.export_jobs.db import get_export_jobs_session_factory
 from prism_app.export_jobs.priority import MAP_EXPORT_JOB_PRIORITY_SCHEDULED_PUBLIC
 from prism_app.export_jobs.service import enqueue_map_export_job
-from prism_app.export_s3 import get_map_export_s3_client
+from prism_app.export_s3 import map_export_s3_client
 from prism_app.map_export_layer_catalog import schedule_layer_wms_name
 from prism_app.models import MapExportRequestModel
 from prism_app.utils import utc_now
@@ -297,7 +297,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     timeout_sec = _CAPABILITIES_HTTP_TIMEOUT_SEC
-    s3_client = None if args.dry_run else get_map_export_s3_client(required=True)
+    s3_client = None if args.dry_run else map_export_s3_client()
 
     factory = get_export_jobs_session_factory()
     enqueued, skipped = process_active_schedules(
