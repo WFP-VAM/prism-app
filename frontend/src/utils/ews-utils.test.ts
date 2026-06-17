@@ -92,6 +92,34 @@ describe('fetchEWSDataPointsByLocation', () => {
       expect.objectContaining({ signal: expect.any(AbortSignal) }),
     );
   });
+
+  it('retries transient water-height failures before returning empty data', async () => {
+    jest.useFakeTimers();
+    global.fetch = jest
+      .fn()
+      .mockRejectedValueOnce(new Error('network'))
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => [{ timestamp: 1781650480, water_height: 2180 }],
+      });
+
+    const resultPromise = fetchEWSDataPointsByLocation(
+      'https://ews1294.com/wp-json/api/v1',
+      Date.UTC(2026, 5, 16, 12),
+      jest.fn(),
+      410,
+    );
+
+    await jest.runAllTimersAsync();
+    await expect(resultPromise).resolves.toEqual([
+      {
+        location_id: 410,
+        value: ['2026-06-16T22:54:40.000Z', 2180],
+      },
+    ]);
+    expect(global.fetch).toHaveBeenCalledTimes(2);
+    jest.useRealTimers();
+  });
 });
 
 const testEndDate = 1611741612345;

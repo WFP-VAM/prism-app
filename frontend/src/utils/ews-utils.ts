@@ -60,6 +60,34 @@ const EMPTY_LOCATIONS: FeatureCollection = {
 
 let locationsCache: { baseUrl: string; data: FeatureCollection } | null = null;
 
+const EWS_WATER_HEIGHT_RETRIES = 3;
+const EWS_WATER_HEIGHT_RETRY_DELAY_MS = 300;
+const EWS_WATER_HEIGHT_CONCURRENCY = 6;
+
+const sleep = (ms: number) =>
+  new Promise<void>(resolve => {
+    setTimeout(resolve, ms);
+  });
+
+const runWithConcurrency = async (
+  tasks: (() => Promise<void>)[],
+  concurrency: number,
+): Promise<void> => {
+  let nextIndex = 0;
+
+  const runWorker = async () => {
+    while (nextIndex < tasks.length) {
+      const currentIndex = nextIndex;
+      nextIndex += 1;
+      await tasks[currentIndex]();
+    }
+  };
+
+  await Promise.all(
+    Array.from({ length: Math.min(concurrency, tasks.length) }, runWorker),
+  );
+};
+
 const isEWSTriggerLevels = (
   triggerLevels: unknown,
 ): triggerLevels is EWSTriggerLevels =>
@@ -132,6 +160,7 @@ const fetchEWSWaterHeight = async (
   locationId: number,
   date: number,
   dispatch: Dispatch,
+  { notifyOnFailure = false }: { notifyOnFailure?: boolean } = {},
 ): Promise<EWSWaterHeightPoint[]> => {
   const endDate = new Date(date);
   endDate.setUTCHours(23, 59, 59, 999);
@@ -145,18 +174,25 @@ const fetchEWSWaterHeight = async (
     true,
   );
   const url = `${combineURLs(baseUrl, 'water-height')}?${query}`;
+  const fetchErrorMessage = `Request failed for fetching EWS water height at ${url}`;
 
-  try {
-    const resp = await fetchWithTimeout(
-      url,
-      dispatch,
-      {},
-      `Request failed for fetching EWS water height at ${url}`,
-    );
-    return await resp.json();
-  } catch {
-    return [];
+  for (let attempt = 0; attempt < EWS_WATER_HEIGHT_RETRIES; attempt += 1) {
+    try {
+      const resp = await fetchWithTimeout(
+        url,
+        dispatch,
+        { silent: !notifyOnFailure },
+        fetchErrorMessage,
+      );
+      return await resp.json();
+    } catch {
+      if (attempt < EWS_WATER_HEIGHT_RETRIES - 1) {
+        await sleep(EWS_WATER_HEIGHT_RETRY_DELAY_MS * (attempt + 1));
+      }
+    }
   }
+
+  return [];
 };
 
 export const fetchEWSDataPointsByLocation = async (
@@ -165,7 +201,15 @@ export const fetchEWSDataPointsByLocation = async (
   dispatch: Dispatch,
   locationId: number,
 ): Promise<EWSSensorData[]> => {
-  const points = await fetchEWSWaterHeight(baseUrl, locationId, date, dispatch);
+  const points = await fetchEWSWaterHeight(
+    baseUrl,
+    locationId,
+    date,
+    dispatch,
+    {
+      notifyOnFailure: true,
+    },
+  );
 
   return points.map(point => ({
     location_id: locationId,
@@ -197,26 +241,25 @@ export const fetchEWSData = async (
   const locations = await fetchEWSLocations(baseUrl, dispatch);
   const valuesByLocation = new Map<number, number[]>();
 
-  await Promise.all(
-    locations.features.map(async feature => {
-      const locationId = feature.properties?.id as number | undefined;
-      if (!locationId) {
-        return;
-      }
-
-      const points = await fetchEWSWaterHeight(
-        baseUrl,
-        locationId,
-        date,
-        dispatch,
-      );
-      if (points.length > 0) {
-        valuesByLocation.set(
+  await runWithConcurrency(
+    locations.features
+      .map(feature => feature.properties?.id as number | undefined)
+      .filter((id): id is number => id != null)
+      .map(locationId => async () => {
+        const points = await fetchEWSWaterHeight(
+          baseUrl,
           locationId,
-          points.map(point => point.water_height),
+          date,
+          dispatch,
         );
-      }
-    }),
+        if (points.length > 0) {
+          valuesByLocation.set(
+            locationId,
+            points.map(point => point.water_height),
+          );
+        }
+      }),
+    EWS_WATER_HEIGHT_CONCURRENCY,
   );
 
   const processedFeatures: PointData[] = [];
