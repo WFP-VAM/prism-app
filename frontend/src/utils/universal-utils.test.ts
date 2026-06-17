@@ -4,6 +4,7 @@ import {
   isKnownIso3,
   isValidIso3Format,
   normalizeIso3,
+  resolveChartBoundaryProperty,
 } from './universal-utils';
 
 describe('universal-utils', () => {
@@ -45,5 +46,22 @@ describe('universal-utils', () => {
   it('returns undefined bbox for unknown countries', () => {
     expect(getCountryBbox('QQQ')).toBeUndefined();
     expect(getCountryBbox(undefined)).toBeUndefined();
+  });
+
+  it('returns dv_adm id when present on feature properties', () => {
+    const properties = {
+      dv_adm0_id: 100,
+      dv_adm1_id: 200,
+      adm0_id: 1,
+      adm1_id: 2,
+    };
+    expect(resolveChartBoundaryProperty(properties, 'dv_adm1_id')).toBe(200);
+  });
+
+  it('does not fall back to GAUL adm id when dv id is missing', () => {
+    const properties = { adm2_id: 999, adm2_name: 'District' };
+    expect(
+      resolveChartBoundaryProperty(properties, 'dv_adm2_id'),
+    ).toBeUndefined();
   });
 });

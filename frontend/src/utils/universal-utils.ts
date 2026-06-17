@@ -81,7 +81,12 @@ export function getIso3FromPathname(
   return normalizeIso3(match?.[1]);
 }
 
-/** Map HDC chart field keys (dv_adm*) to universal PMTiles property keys (adm*). */
+/**
+ * Resolve HDC chart field keys (dv_adm{N}_id / dv_adm{N}_name) from boundary
+ * feature properties. dv_adm{N}_id is the authoritative HDC id_code; GAUL
+ * adm{N}_id is never substituted. For display names only, universal PMTiles
+ * may fall back to adm{N}_name when dv_adm{N}_name is absent.
+ */
 export function resolveChartBoundaryProperty(
   properties: Record<string, unknown> | null | undefined,
   chartFieldKey: string,
@@ -98,12 +103,12 @@ export function resolveChartBoundaryProperty(
   if (!isUniversalDeployment()) {
     return undefined;
   }
-  const universalKey = chartFieldKey.replace(
-    /^dv_adm(\d)_(id|name)$/,
-    'adm$1_$2',
+  const nameFallbackKey = chartFieldKey.replace(
+    /^dv_adm(\d)_name$/,
+    'adm$1_name',
   );
-  if (universalKey !== chartFieldKey) {
-    return properties[universalKey];
+  if (nameFallbackKey !== chartFieldKey) {
+    return properties[nameFallbackKey];
   }
   return undefined;
 }
