@@ -221,6 +221,10 @@ function LegendItemsList({
     showDescription,
   ]);
 
+  if (forPrinting) {
+    return <div className={listStyle}>{legendItems}</div>;
+  }
+
   return (
     <List disablePadding className={listStyle}>
       {legendItems}
