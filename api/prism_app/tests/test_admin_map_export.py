@@ -4,6 +4,7 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
+from prism_app.admin_bulk_actions import bulk_status_select_form
 from prism_app.admin_map_export import (
     MapExportJobView,
     MapExportScheduleView,
@@ -182,9 +183,9 @@ def test_schedule_view_bulk_actions_include_update_status_and_delete() -> None:
     assert "delete" in view._actions
     assert view._actions["update_status"]["confirmation"]
     assert view._actions["delete"]["confirmation"]
-    assert 'name="status"' in view._actions["update_status"]["form"]
-    assert 'value="active"' in view._actions["update_status"]["form"]
-    assert 'value="stopped"' in view._actions["update_status"]["form"]
+    assert view._actions["update_status"]["form"] == bulk_status_select_form(
+        MapExportScheduleStatus
+    )
 
 
 @pytest.mark.asyncio
