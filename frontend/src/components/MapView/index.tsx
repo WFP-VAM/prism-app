@@ -140,10 +140,12 @@ const MapView = memo(() => {
       <LeftPanel />
       <OtherFeatures />
       <MapComponent />
-      <BoundaryLoadingOverlay
-        displayedBoundaryLayerIds={displayedBoundaryLayerIds}
-        viewKey={boundaryLoadingViewKey}
-      />
+      {isUniversalDeployment() && (
+        <BoundaryLoadingOverlay
+          displayedBoundaryLayerIds={displayedBoundaryLayerIds}
+          viewKey={boundaryLoadingViewKey}
+        />
+      )}
     </Box>
   );
 });
