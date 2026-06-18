@@ -17,20 +17,25 @@ const p = (
     );
   };
 
-function LegendMarkdown({ children }: LegendMarkdownProps) {
-  const classes = useStyles();
-  const components: Components = {
-    p: p(classes),
-    a: ({ children: linkChildren, href }) => (
+const a = (classes: ClassNameMap<'legendLink'>): NonNullable<Components['a']> =>
+  function LegendLink({ children, href }) {
+    return (
       <a
         href={href}
         target="_blank"
         rel="noopener noreferrer"
         className={classes.legendLink}
       >
-        {linkChildren}
+        {children}
       </a>
-    ),
+    );
+  };
+
+function LegendMarkdown({ children }: LegendMarkdownProps) {
+  const classes = useStyles();
+  const components: Components = {
+    p: p(classes),
+    a: a(classes),
   };
 
   return (
