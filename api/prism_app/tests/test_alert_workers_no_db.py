@@ -170,6 +170,37 @@ def test_require_smtp_configured_ok_with_credentials(
     smtp_mailer.require_smtp_configured()
 
 
+def test_require_smtp_configured_rejects_ethereal_in_production(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("PRISM_ENV", "production")
+    monkeypatch.setenv("PRISM_ALERTS_USE_ETHEREAL", "true")
+    with pytest.raises(RuntimeError, match="PRISM_ALERTS_USE_ETHEREAL"):
+        smtp_mailer.require_smtp_configured()
+
+
+def test_send_email_ethereal_forbidden_in_production(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("PRISM_ENV", "production")
+    monkeypatch.setenv("PRISM_ALERTS_USE_ETHEREAL", "true")
+    with pytest.raises(RuntimeError, match="PRISM_ALERTS_USE_ETHEREAL"):
+        smtp_mailer.send_email(
+            from_addr="a@b.org",
+            to_addrs="t@b.org",
+            subject="s",
+            text_body="hi",
+        )
+
+
+def test_create_ethereal_test_account_forbidden_in_production(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("PRISM_ENV", "production")
+    with pytest.raises(RuntimeError, match="PRISM_ALERTS_USE_ETHEREAL"):
+        smtp_mailer.create_ethereal_test_account()
+
+
 def test_send_email_no_credentials_raises_in_production(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

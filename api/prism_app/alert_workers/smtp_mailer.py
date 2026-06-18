@@ -20,8 +20,10 @@ logger = logging.getLogger(__name__)
 
 _SMTP_MISSING_MSG = (
     "PRISM_ALERTS_EMAIL_USER and PRISM_ALERTS_EMAIL_PASSWORD are required "
-    "when PRISM_ENV=production (or prod). For local/dev testing, unset "
-    "PRISM_ENV or set PRISM_ALERTS_USE_ETHEREAL=true."
+    "when PRISM_ENV=production."
+)
+_ETHEREAL_FORBIDDEN_IN_PROD_MSG = (
+    "PRISM_ALERTS_USE_ETHEREAL is not allowed when PRISM_ENV=production."
 )
 
 DEFAULT_HOST = "email-smtp.eu-west-1.amazonaws.com"
@@ -106,6 +108,8 @@ def _is_ethereal_host(host: str) -> bool:
 
 def create_ethereal_test_account() -> dict:
     """Create disposable inbox via Nodemailer Ethereal API (same payload as ``nodemailer.createTestAccount``)."""
+    if settings.is_production():
+        raise RuntimeError(_ETHEREAL_FORBIDDEN_IN_PROD_MSG)
     r = httpx.post(
         _NODEMAILER_USER_API,
         json={
@@ -158,6 +162,9 @@ class _SmtpTransport:
 
 def _resolve_smtp_transport() -> _SmtpTransport | None:
     """Resolve SMTP connection settings; create Ethereal creds when configured."""
+    if settings.is_production() and _use_ethereal_auto():
+        raise RuntimeError(_ETHEREAL_FORBIDDEN_IN_PROD_MSG)
+
     password = os.environ.get("PRISM_ALERTS_EMAIL_PASSWORD")
     user = os.environ.get("PRISM_ALERTS_EMAIL_USER", "")
     host = os.environ.get("PRISM_ALERTS_EMAIL_HOST", DEFAULT_HOST)
@@ -232,9 +239,10 @@ def require_smtp_configured() -> None:
     """Fail fast in production when real SMTP credentials are missing."""
     if not settings.is_production():
         return
-    if _use_ethereal_auto() or _smtp_credentials_present():
-        return
-    raise RuntimeError(_SMTP_MISSING_MSG)
+    if _use_ethereal_auto():
+        raise RuntimeError(_ETHEREAL_FORBIDDEN_IN_PROD_MSG)
+    if not _smtp_credentials_present():
+        raise RuntimeError(_SMTP_MISSING_MSG)
 
 
 def send_email(
