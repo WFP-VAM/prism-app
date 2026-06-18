@@ -206,88 +206,91 @@ def build_email_payloads(
         path = short_report.get("path")
         if not path:
             continue
-        url = (
-            "https://data.earthobservation.vam.wfp.org/public-share/"
-            f"aa/ts/outputs/{path}?v2"
-        )
-        r = client.get(url, timeout=120.0)
-        r.raise_for_status()
-        detailed: dict[str, Any] = r.json()
-        exposed48, exposed64 = _exposed_districts(detailed)
-        rsr = detailed.get("ready_set_results") or {}
-        status = rsr.get("status")
-        past = has_landfall_occurred(detailed, is_test=is_test)
-        if not should_send_storm_email(status, exposed48, exposed64, past):
-            continue
-        fd = detailed.get("forecast_details") or {}
-        ref_time = str(fd.get("reference_time", ""))
-        prism_url = build_prism_storm_url(basic_prism_url, ref_time)
-        b64 = capture_screenshot_from_url(
-            prism_url,
-            elements_to_hide=[".MuiDrawer-root", ".MuiList-root", ".MuiGrid-root"],
-            crop=Crop(900, 50, 1000, 950),
-        )
-        cyclone_name = str(fd.get("cyclone_name", ""))
-        cyclone_time = _format_storm_time(ref_time)
         try:
-            ws = WindState(str(status)) if status else None
-        except ValueError:
-            ws = None
-        windspeed = DISPLAY_WIND.get(ws) if ws else None
-        readiness = str(status) == WindState.ready.value
-        if windspeed:
-            alert_title = (
-                f"Activation Triggers detected for windspeed {windspeed} "
-                f"for {cyclone_name} in {country_disp}"
+            url = (
+                "https://data.earthobservation.vam.wfp.org/public-share/"
+                f"aa/ts/outputs/{path}?v2"
             )
-        elif str(status) == WindState.ready.value:
-            alert_title = (
-                f"Readiness Triggers detected for {cyclone_name} in {country_disp}"
+            r = client.get(url, timeout=120.0)
+            r.raise_for_status()
+            detailed: dict[str, Any] = r.json()
+            exposed48, exposed64 = _exposed_districts(detailed)
+            rsr = detailed.get("ready_set_results") or {}
+            status = rsr.get("status")
+            past = has_landfall_occurred(detailed, is_test=is_test)
+            if not should_send_storm_email(status, exposed48, exposed64, past):
+                continue
+            fd = detailed.get("forecast_details") or {}
+            ref_time = str(fd.get("reference_time", ""))
+            prism_url = build_prism_storm_url(basic_prism_url, ref_time)
+            b64 = capture_screenshot_from_url(
+                prism_url,
+                elements_to_hide=[".MuiDrawer-root", ".MuiList-root", ".MuiGrid-root"],
+                crop=Crop(900, 50, 1000, 950),
             )
-        else:
-            continue
-        act: dict[str, str] | None = None
-        if windspeed:
-            act = {
-                "districts48kt": ", ".join(exposed48),
-                "districts64kt": ", ".join(exposed64),
-                "windspeed": windspeed,
-            }
-        html, text = render_storm_mail(
-            alert_title=alert_title,
-            cyclone_name=cyclone_name,
-            cyclone_time=cyclone_time,
-            readiness=readiness,
-            activated_triggers=act,
-            redirect_url=prism_url,
-        )
-        asset_dir = __import__("pathlib").Path(__file__).resolve().parent / "assets"
-        out.append(
-            {
-                "html": html,
-                "text": text,
-                "subject": alert_title,
-                "bcc": emails,
-                "attachments": [
-                    {
-                        "filename": "map-icon.png",
-                        "path": asset_dir / "mapIcon.png",
-                        "cid": "map-icon",
-                    },
-                    {
-                        "filename": "arrow-forward-icon.png",
-                        "path": asset_dir / "arrowForwardIcon.png",
-                        "cid": "arrow-forward-icon",
-                    },
-                    {
-                        "filename": "storm-map.jpg",
-                        "content": base64.b64decode(b64),
-                        "cid": "storm-image-cid",
-                        "subtype": "jpeg",
-                    },
-                ],
-            },
-        )
+            cyclone_name = str(fd.get("cyclone_name", ""))
+            cyclone_time = _format_storm_time(ref_time)
+            try:
+                ws = WindState(str(status)) if status else None
+            except ValueError:
+                ws = None
+            windspeed = DISPLAY_WIND.get(ws) if ws else None
+            readiness = str(status) == WindState.ready.value
+            if windspeed:
+                alert_title = (
+                    f"Activation Triggers detected for windspeed {windspeed} "
+                    f"for {cyclone_name} in {country_disp}"
+                )
+            elif str(status) == WindState.ready.value:
+                alert_title = (
+                    f"Readiness Triggers detected for {cyclone_name} in {country_disp}"
+                )
+            else:
+                continue
+            act: dict[str, str] | None = None
+            if windspeed:
+                act = {
+                    "districts48kt": ", ".join(exposed48),
+                    "districts64kt": ", ".join(exposed64),
+                    "windspeed": windspeed,
+                }
+            html, text = render_storm_mail(
+                alert_title=alert_title,
+                cyclone_name=cyclone_name,
+                cyclone_time=cyclone_time,
+                readiness=readiness,
+                activated_triggers=act,
+                redirect_url=prism_url,
+            )
+            asset_dir = __import__("pathlib").Path(__file__).resolve().parent / "assets"
+            out.append(
+                {
+                    "html": html,
+                    "text": text,
+                    "subject": alert_title,
+                    "bcc": emails,
+                    "attachments": [
+                        {
+                            "filename": "map-icon.png",
+                            "path": asset_dir / "mapIcon.png",
+                            "cid": "map-icon",
+                        },
+                        {
+                            "filename": "arrow-forward-icon.png",
+                            "path": asset_dir / "arrowForwardIcon.png",
+                            "cid": "arrow-forward-icon",
+                        },
+                        {
+                            "filename": "storm-map.jpg",
+                            "content": base64.b64decode(b64),
+                            "cid": "storm-image-cid",
+                            "subtype": "jpeg",
+                        },
+                    ],
+                },
+            )
+        except Exception:
+            logger.exception("Storm email payload failed for report %s", path)
     return out
 
 
@@ -312,36 +315,44 @@ def run_storm_worker(override_emails: list[str] | None = None) -> None:
                 logger.error("No storm AA for %s", country)
                 return
             for alert in rows:
-                last_states = alert.get("last_states")
-                if not isinstance(last_states, dict):
-                    last_states = {}
-                filtered = filter_out_already_processed(
-                    latest_reports,
-                    last_states if not is_test else None,
-                )
-                payloads = build_email_payloads(
-                    client,
-                    filtered,
-                    str(alert["prism_url"]),
-                    list(alert["emails"]),
-                    country,
-                    is_test=is_test,
-                )
-                for p in payloads:
-                    smtp_mailer.send_email(
-                        from_addr="wfp.prism@wfp.org",
-                        to_addrs="",
-                        bcc=p["bcc"],
-                        subject=p["subject"],
-                        text_body=p["text"],
-                        html_body=p["html"],
-                        attachments=p["attachments"],
+                try:
+                    last_states = alert.get("last_states")
+                    if not isinstance(last_states, dict):
+                        last_states = {}
+                    filtered = filter_out_already_processed(
+                        latest_reports,
+                        last_states if not is_test else None,
                     )
-                if not is_test:
-                    db.update_aa_alert(
-                        conn,
-                        alert_id=alert["id"],
-                        last_states=transform_reports_to_last_processed(latest_reports),
-                        last_ran_at=now,
-                        last_triggered_at=now if payloads else None,
+                    payloads = build_email_payloads(
+                        client,
+                        filtered,
+                        str(alert["prism_url"]),
+                        list(alert["emails"]),
+                        country,
+                        is_test=is_test,
+                    )
+                    for p in payloads:
+                        smtp_mailer.send_email(
+                            from_addr="wfp.prism@wfp.org",
+                            to_addrs="",
+                            bcc=p["bcc"],
+                            subject=p["subject"],
+                            text_body=p["text"],
+                            html_body=p["html"],
+                            attachments=p["attachments"],
+                        )
+                    if not is_test:
+                        db.update_aa_alert(
+                            conn,
+                            alert_id=alert["id"],
+                            last_states=transform_reports_to_last_processed(
+                                latest_reports,
+                            ),
+                            last_ran_at=now,
+                            last_triggered_at=now if payloads else None,
+                        )
+                except Exception:
+                    logger.exception(
+                        "Error processing storm AA alert %s",
+                        alert.get("id"),
                     )

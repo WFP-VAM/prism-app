@@ -26,3 +26,8 @@ def http_verify_ssl() -> bool:
         "true",
         "yes",
     )
+
+
+def is_production() -> bool:
+    """Match ``PRISM_ENV`` checks in ``prism_app.auth.admin_settings``."""
+    return os.getenv("PRISM_ENV", "").strip().lower() in {"production", "prod"}

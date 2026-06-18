@@ -138,6 +138,7 @@ def test_send_email_no_credentials_logs_only(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     caplog.set_level("WARNING")
+    monkeypatch.delenv("PRISM_ENV", raising=False)
     monkeypatch.delenv("PRISM_ALERTS_EMAIL_USER", raising=False)
     monkeypatch.delenv("PRISM_ALERTS_EMAIL_PASSWORD", raising=False)
     smtp_mailer.send_email(
@@ -149,6 +150,42 @@ def test_send_email_no_credentials_logs_only(
     assert any("skipping outbound mail" in r.message for r in caplog.records)
 
 
+def test_require_smtp_configured_fails_in_production(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("PRISM_ENV", "production")
+    monkeypatch.delenv("PRISM_ALERTS_EMAIL_USER", raising=False)
+    monkeypatch.delenv("PRISM_ALERTS_EMAIL_PASSWORD", raising=False)
+    monkeypatch.delenv("PRISM_ALERTS_USE_ETHEREAL", raising=False)
+    with pytest.raises(RuntimeError, match="PRISM_ALERTS_EMAIL_USER"):
+        smtp_mailer.require_smtp_configured()
+
+
+def test_require_smtp_configured_ok_with_credentials(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("PRISM_ENV", "production")
+    monkeypatch.setenv("PRISM_ALERTS_EMAIL_USER", "u")
+    monkeypatch.setenv("PRISM_ALERTS_EMAIL_PASSWORD", "p")
+    smtp_mailer.require_smtp_configured()
+
+
+def test_send_email_no_credentials_raises_in_production(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("PRISM_ENV", "production")
+    monkeypatch.delenv("PRISM_ALERTS_EMAIL_USER", raising=False)
+    monkeypatch.delenv("PRISM_ALERTS_EMAIL_PASSWORD", raising=False)
+    monkeypatch.delenv("PRISM_ALERTS_USE_ETHEREAL", raising=False)
+    with pytest.raises(RuntimeError, match="PRISM_ALERTS_EMAIL_USER"):
+        smtp_mailer.send_email(
+            from_addr="a@b.org",
+            to_addrs="t@b.org",
+            subject="s",
+            text_body="hi",
+        )
+
+
 @patch("prism_app.alert_workers.smtp_mailer.smtplib.SMTP_SSL")
 def test_send_email_uses_ssl_when_creds_set(
     mock_ssl: MagicMock, monkeypatch: pytest.MonkeyPatch
@@ -158,6 +195,7 @@ def test_send_email_uses_ssl_when_creds_set(
     monkeypatch.setenv("PRISM_ALERTS_EMAIL_HOST", "smtp.example.com")
     monkeypatch.setenv("PRISM_ALERTS_EMAIL_STARTTLS", "false")
     monkeypatch.setenv("PRISM_ALERTS_EMAIL_PORT", "465")
+    monkeypatch.delenv("PRISM_ALERTS_USE_ETHEREAL", raising=False)
 
     inst = mock_ssl.return_value.__enter__.return_value
     smtp_mailer.send_email(
@@ -220,6 +258,7 @@ def test_send_email_ethereal_host_uses_starttls(
     monkeypatch.setenv("PRISM_ALERTS_EMAIL_USER", "eth")
     monkeypatch.setenv("PRISM_ALERTS_EMAIL_PASSWORD", "secret")
     monkeypatch.setenv("PRISM_ALERTS_EMAIL_HOST", "smtp.ethereal.email")
+    monkeypatch.delenv("PRISM_ALERTS_USE_ETHEREAL", raising=False)
 
     inst = mock_smtp.return_value.__enter__.return_value
 
@@ -325,3 +364,34 @@ def test_ethereal_live_preview_url_works(
     assert token.lower() in low, "preview should list subject/body token"
     assert "station alpha" in low
     assert "access dashboard" in low
+
+
+def test_prepare_test_email_smtp_enables_ethereal_in_dev(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("PRISM_ENV", raising=False)
+    monkeypatch.delenv("PRISM_ALERTS_EMAIL_USER", raising=False)
+    monkeypatch.delenv("PRISM_ALERTS_EMAIL_PASSWORD", raising=False)
+    monkeypatch.delenv("PRISM_ALERTS_USE_ETHEREAL", raising=False)
+    smtp_mailer.prepare_test_email_smtp(use_test_email=True)
+    assert os.environ.get("PRISM_ALERTS_USE_ETHEREAL") == "true"
+
+
+def test_prepare_test_email_smtp_noop_in_production(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("PRISM_ENV", "production")
+    monkeypatch.delenv("PRISM_ALERTS_USE_ETHEREAL", raising=False)
+    smtp_mailer.prepare_test_email_smtp(use_test_email=True)
+    assert "PRISM_ALERTS_USE_ETHEREAL" not in os.environ
+
+
+def test_prepare_test_email_smtp_keeps_existing_creds(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("PRISM_ENV", raising=False)
+    monkeypatch.setenv("PRISM_ALERTS_EMAIL_USER", "u")
+    monkeypatch.setenv("PRISM_ALERTS_EMAIL_PASSWORD", "p")
+    monkeypatch.delenv("PRISM_ALERTS_USE_ETHEREAL", raising=False)
+    smtp_mailer.prepare_test_email_smtp(use_test_email=True)
+    assert "PRISM_ALERTS_USE_ETHEREAL" not in os.environ

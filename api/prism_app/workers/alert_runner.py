@@ -9,6 +9,10 @@ import sys
 from prism_app.alert_workers import db, settings
 from prism_app.alert_workers.aa_flood import run_flood_worker
 from prism_app.alert_workers.aa_storm import run_storm_worker
+from prism_app.alert_workers.smtp_mailer import (
+    prepare_test_email_smtp,
+    require_smtp_configured,
+)
 from prism_app.alert_workers.threshold_worker import run_threshold_alert_worker
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s %(message)s")
@@ -51,20 +55,27 @@ def main() -> None:
     args = p.parse_args()
 
     if args.cmd == "threshold":
+        require_smtp_configured()
         run_threshold_alert_worker()
     elif args.cmd == "smoke":
         smoke_ci()
     elif args.cmd == "aa-storm":
+        use_test = bool(getattr(args, "test_email", None))
+        prepare_test_email_smtp(use_test_email=use_test)
+        require_smtp_configured()
         emails = (
             [e.strip() for e in args.test_email.split(",") if e.strip()]
-            if getattr(args, "test_email", None)
+            if use_test
             else None
         )
         run_storm_worker(emails)
     elif args.cmd == "aa-flood":
+        use_test = bool(getattr(args, "test_email", None))
+        prepare_test_email_smtp(use_test_email=use_test)
+        require_smtp_configured()
         emails = (
             [e.strip() for e in args.test_email.split(",") if e.strip()]
-            if getattr(args, "test_email", None)
+            if use_test
             else None
         )
         run_flood_worker(emails)

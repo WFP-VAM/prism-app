@@ -386,6 +386,51 @@ def test_build_email_payloads_readiness(mock_shot: MagicMock) -> None:
 
 
 @patch("prism_app.alert_workers.aa_storm.capture_screenshot_from_url", return_value="")
+def test_build_email_payloads_continues_after_report_failure(
+    mock_shot: MagicMock,
+) -> None:
+    short = [
+        {
+            "ref_time": "2025-01-31T06:00:00Z",
+            "state": WindState.ready.value,
+            "path": "bad/2025-01-31T06:00:00Z.json",
+        },
+        {
+            "ref_time": "2025-02-01T06:00:00Z",
+            "state": WindState.ready.value,
+            "path": "good/2025-02-01T06:00:00Z.json",
+        },
+    ]
+    detailed = _build_detailed_report(
+        status=WindState.ready.value,
+        affected_64kt=["Namacurra"],
+    )
+    bad = MagicMock()
+    bad.raise_for_status.side_effect = httpx.HTTPStatusError(
+        "404",
+        request=MagicMock(),
+        response=MagicMock(),
+    )
+    good = MagicMock()
+    good.json.return_value = detailed
+    good.raise_for_status = MagicMock()
+    client = MagicMock(spec=httpx.Client)
+    client.get.side_effect = [bad, good]
+
+    payloads = build_email_payloads(
+        client,
+        short,
+        "https://prism.wfp.org",
+        ["test@test.com"],
+        "mozambique",
+        is_test=True,
+    )
+    assert len(payloads) == 1
+    assert "Readiness Triggers" in payloads[0]["subject"]
+    mock_shot.assert_called_once()
+
+
+@patch("prism_app.alert_workers.aa_storm.capture_screenshot_from_url", return_value="")
 def test_build_email_payloads_activation64(mock_shot: MagicMock) -> None:
     short = [
         {

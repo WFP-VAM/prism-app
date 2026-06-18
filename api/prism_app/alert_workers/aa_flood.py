@@ -221,61 +221,67 @@ def run_flood_worker(override_emails: list[str] | None = None) -> None:
                 return
 
             for alert in rows:
-                last_states = alert.get("last_states") or {}
-                moz = (
-                    last_states.get("moz_flood")
-                    if isinstance(last_states, dict)
-                    else None
-                )
-                last_ref = moz.get("refTime") if isinstance(moz, dict) else None
-                is_new = not last_ref or datetime.fromisoformat(
-                    latest.replace("Z", "+00:00"),
-                ) > datetime.fromisoformat(str(last_ref).replace("Z", "+00:00"))
-
-                if not is_new and not override_emails:
-                    db.update_aa_alert(
-                        conn,
-                        alert_id=alert["id"],
-                        last_states=(
-                            last_states if isinstance(last_states, dict) else {}
-                        ),
-                        last_ran_at=now,
-                        last_triggered_at=None,
+                try:
+                    last_states = alert.get("last_states") or {}
+                    moz = (
+                        last_states.get("moz_flood")
+                        if isinstance(last_states, dict)
+                        else None
                     )
-                    continue
+                    last_ref = moz.get("refTime") if isinstance(moz, dict) else None
+                    is_new = not last_ref or datetime.fromisoformat(
+                        latest.replace("Z", "+00:00"),
+                    ) > datetime.fromisoformat(str(last_ref).replace("Z", "+00:00"))
 
-                payload = build_flood_payload(
-                    client,
-                    date_iso=latest,
-                    trigger_status=trigger_status,
-                    prism_url=str(alert["prism_url"]),
-                    emails=list(alert["emails"]),
-                    station_summary_url=summary_url,
-                    is_test=is_test,
-                )
-                if payload:
-                    smtp_mailer.send_email(
-                        from_addr="wfp.prism@wfp.org",
-                        to_addrs="",
-                        bcc=payload["bcc"],
-                        subject=payload["subject"],
-                        text_body=payload["text"],
-                        html_body=payload["html"],
-                        attachments=payload["attachments"],
-                    )
-                elif is_test:
-                    logger.error("Could not build flood test email payload")
-                else:
-                    logger.info(
-                        "No flood alert to send (trigger_status=%r)",
-                        trigger_status,
-                    )
+                    if not is_new and not override_emails:
+                        db.update_aa_alert(
+                            conn,
+                            alert_id=alert["id"],
+                            last_states=(
+                                last_states if isinstance(last_states, dict) else {}
+                            ),
+                            last_ran_at=now,
+                            last_triggered_at=None,
+                        )
+                        continue
 
-                if not override_emails:
-                    db.update_aa_alert(
-                        conn,
-                        alert_id=alert["id"],
-                        last_states=transform_last_flood(latest, trigger_status),
-                        last_ran_at=now,
-                        last_triggered_at=now if payload else None,
+                    payload = build_flood_payload(
+                        client,
+                        date_iso=latest,
+                        trigger_status=trigger_status,
+                        prism_url=str(alert["prism_url"]),
+                        emails=list(alert["emails"]),
+                        station_summary_url=summary_url,
+                        is_test=is_test,
+                    )
+                    if payload:
+                        smtp_mailer.send_email(
+                            from_addr="wfp.prism@wfp.org",
+                            to_addrs="",
+                            bcc=payload["bcc"],
+                            subject=payload["subject"],
+                            text_body=payload["text"],
+                            html_body=payload["html"],
+                            attachments=payload["attachments"],
+                        )
+                    elif is_test:
+                        logger.error("Could not build flood test email payload")
+                    else:
+                        logger.info(
+                            "No flood alert to send (trigger_status=%r)",
+                            trigger_status,
+                        )
+
+                    if not override_emails:
+                        db.update_aa_alert(
+                            conn,
+                            alert_id=alert["id"],
+                            last_states=transform_last_flood(latest, trigger_status),
+                            last_ran_at=now,
+                            last_triggered_at=now if payload else None,
+                        )
+                except Exception:
+                    logger.exception(
+                        "Error processing flood AA alert %s",
+                        alert.get("id"),
                     )

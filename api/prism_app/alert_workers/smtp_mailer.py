@@ -6,6 +6,7 @@ import logging
 import os
 import re
 import smtplib
+from dataclasses import dataclass
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -13,8 +14,15 @@ from email.utils import make_msgid
 from typing import Iterable
 
 import httpx
+from prism_app.alert_workers import settings
 
 logger = logging.getLogger(__name__)
+
+_SMTP_MISSING_MSG = (
+    "PRISM_ALERTS_EMAIL_USER and PRISM_ALERTS_EMAIL_PASSWORD are required "
+    "when PRISM_ENV=production (or prod). For local/dev testing, unset "
+    "PRISM_ENV or set PRISM_ALERTS_USE_ETHEREAL=true."
+)
 
 DEFAULT_HOST = "email-smtp.eu-west-1.amazonaws.com"
 _ETHEREAL_HOST = "smtp.ethereal.email"
@@ -122,16 +130,34 @@ def _log_ethereal_preview(url: str) -> None:
     print(url, flush=True)
 
 
-def send_email(
-    *,
-    from_addr: str,
-    to_addrs: str | Iterable[str],
-    subject: str,
-    text_body: str,
-    html_body: str | None = None,
-    bcc: str | Iterable[str] | None = None,
-    attachments: list[dict] | None = None,
-) -> None:
+def _use_ethereal_auto() -> bool:
+    return os.environ.get("PRISM_ALERTS_USE_ETHEREAL", "").lower() in (
+        "1",
+        "true",
+        "yes",
+    )
+
+
+def _smtp_credentials_present() -> bool:
+    return bool(
+        os.environ.get("PRISM_ALERTS_EMAIL_PASSWORD")
+        and os.environ.get("PRISM_ALERTS_EMAIL_USER", "")
+    )
+
+
+@dataclass(frozen=True)
+class _SmtpTransport:
+    user: str
+    password: str
+    host: str
+    port: int
+    use_starttls: bool
+    ethereal_preview: bool
+    ethereal_web: str
+
+
+def _resolve_smtp_transport() -> _SmtpTransport | None:
+    """Resolve SMTP connection settings; create Ethereal creds when configured."""
     password = os.environ.get("PRISM_ALERTS_EMAIL_PASSWORD")
     user = os.environ.get("PRISM_ALERTS_EMAIL_USER", "")
     host = os.environ.get("PRISM_ALERTS_EMAIL_HOST", DEFAULT_HOST)
@@ -142,18 +168,13 @@ def send_email(
         "yes",
     )
 
-    use_ethereal_auto = os.environ.get("PRISM_ALERTS_USE_ETHEREAL", "").lower() in (
-        "1",
-        "true",
-        "yes",
-    )
+    use_ethereal_auto = _use_ethereal_auto()
     ethereal_preview = False
-    # Public web UI base for preview links (from API when auto-creating Ethereal inbox).
     ethereal_web = _DEFAULT_ETHEREAL_WEB
     if use_ethereal_auto:
         acc = create_ethereal_test_account()
-        user = acc["user"]
-        password = acc["pass"]
+        user = str(acc["user"])
+        password = str(acc["pass"])
         smtp_cfg = acc["smtp"]
         host = str(smtp_cfg["host"])
         port = int(smtp_cfg.get("port") or 587)
@@ -178,6 +199,61 @@ def send_email(
         port = 587
     if not port:
         port = 587 if use_starttls else 465
+
+    if not (password and user):
+        if settings.is_production():
+            raise RuntimeError(_SMTP_MISSING_MSG)
+        return None
+
+    return _SmtpTransport(
+        user=user,
+        password=password,
+        host=host,
+        port=port,
+        use_starttls=use_starttls,
+        ethereal_preview=ethereal_preview,
+        ethereal_web=ethereal_web,
+    )
+
+
+def prepare_test_email_smtp(*, use_test_email: bool) -> None:
+    """Use Ethereal for ``--test-email`` in non-prod when real SMTP is not configured."""
+    if not use_test_email or settings.is_production():
+        return
+    if _use_ethereal_auto() or _smtp_credentials_present():
+        return
+    os.environ["PRISM_ALERTS_USE_ETHEREAL"] = "true"
+    logger.info(
+        "Non-prod --test-email without SMTP creds: auto-enabled Ethereal",
+    )
+
+
+def require_smtp_configured() -> None:
+    """Fail fast in production when real SMTP credentials are missing."""
+    if not settings.is_production():
+        return
+    if _use_ethereal_auto() or _smtp_credentials_present():
+        return
+    raise RuntimeError(_SMTP_MISSING_MSG)
+
+
+def send_email(
+    *,
+    from_addr: str,
+    to_addrs: str | Iterable[str],
+    subject: str,
+    text_body: str,
+    html_body: str | None = None,
+    bcc: str | Iterable[str] | None = None,
+    attachments: list[dict] | None = None,
+) -> None:
+    transport = _resolve_smtp_transport()
+    if transport is None:
+        logger.warning(
+            "PRISM_ALERTS_EMAIL_USER / PRISM_ALERTS_EMAIL_PASSWORD not set; "
+            "skipping outbound mail (dev). For Ethereal, set PRISM_ALERTS_USE_ETHEREAL=true",
+        )
+        return
 
     to_list = [to_addrs] if isinstance(to_addrs, str) else list(to_addrs)
     bcc_list = [bcc] if isinstance(bcc, str) else list(bcc or []) if bcc else []
@@ -217,48 +293,41 @@ def send_email(
             )
             root.attach(img)
 
-    if password and user:
-        smtp_cls = (
-            (CapturingSMTP if use_starttls else CapturingSMTP_SSL)
-            if ethereal_preview
-            else (smtplib.SMTP if use_starttls else smtplib.SMTP_SSL)
-        )
-        if use_starttls:
-            with smtp_cls(host, port, timeout=120) as smtp:
-                smtp.starttls()
-                smtp.login(user, password)
-                smtp.send_message(
-                    root,
-                    from_addr=from_addr,
-                    to_addrs=[*to_list, *bcc_list],
-                )
-                data_reply = getattr(smtp, "last_smtp_data_reply", None)
-        else:
-            with smtp_cls(host, port, timeout=120) as smtp:
-                smtp.login(user, password)
-                smtp.send_message(
-                    root,
-                    from_addr=from_addr,
-                    to_addrs=[*to_list, *bcc_list],
-                )
-                data_reply = getattr(smtp, "last_smtp_data_reply", None)
-        logger.debug("Message sent using %s", user)
-        if ethereal_preview:
-            preview = _ethereal_preview_url_from_smtp(
-                web_base=ethereal_web,
-                smtp_data_reply=data_reply,
-            )
-            if preview:
-                _log_ethereal_preview(preview)
-            else:
-                logger.warning(
-                    "Ethereal SMTP accepted mail but could not parse MSGID from "
-                    "server reply (expected '[STATUS=... MSGID=...]'): %r",
-                    data_reply,
-                )
-        return
-
-    logger.warning(
-        "PRISM_ALERTS_EMAIL_USER / PRISM_ALERTS_EMAIL_PASSWORD not set; "
-        "skipping outbound mail (dev). For Ethereal, set PRISM_ALERTS_USE_ETHEREAL=true",
+    smtp_cls = (
+        (CapturingSMTP if transport.use_starttls else CapturingSMTP_SSL)
+        if transport.ethereal_preview
+        else (smtplib.SMTP if transport.use_starttls else smtplib.SMTP_SSL)
     )
+    if transport.use_starttls:
+        with smtp_cls(transport.host, transport.port, timeout=120) as smtp:
+            smtp.starttls()
+            smtp.login(transport.user, transport.password)
+            smtp.send_message(
+                root,
+                from_addr=from_addr,
+                to_addrs=[*to_list, *bcc_list],
+            )
+            data_reply = getattr(smtp, "last_smtp_data_reply", None)
+    else:
+        with smtp_cls(transport.host, transport.port, timeout=120) as smtp:
+            smtp.login(transport.user, transport.password)
+            smtp.send_message(
+                root,
+                from_addr=from_addr,
+                to_addrs=[*to_list, *bcc_list],
+            )
+            data_reply = getattr(smtp, "last_smtp_data_reply", None)
+    logger.debug("Message sent using %s", transport.user)
+    if transport.ethereal_preview:
+        preview = _ethereal_preview_url_from_smtp(
+            web_base=transport.ethereal_web,
+            smtp_data_reply=data_reply,
+        )
+        if preview:
+            _log_ethereal_preview(preview)
+        else:
+            logger.warning(
+                "Ethereal SMTP accepted mail but could not parse MSGID from "
+                "server reply (expected '[STATUS=... MSGID=...]'): %r",
+                data_reply,
+            )
