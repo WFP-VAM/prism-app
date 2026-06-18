@@ -65,6 +65,15 @@ jest.mock('config/utils', () => ({
   getBoundaryLayersByAdminLevel: () => BOUNDARY_LAYER,
 }));
 
+jest.mock('hooks/useAdminNameTranslations', () => ({
+  useAdminNameTranslations: () => ({
+    language: 'en',
+    scope: 'common',
+    dict: undefined,
+    status: 'idle',
+  }),
+}));
+
 // The global test setup stubs Material-UI components to strings, which makes
 // the <TextField select> impossible to interact with. Replace the few pieces
 // this component uses with native equivalents so onChange actually fires.
