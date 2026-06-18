@@ -247,32 +247,36 @@ const ChartsPanel = memo(() => {
   );
 
   useEffect(() => {
-    if (!adminProperties && countryAdmin0Id && data) {
-      const properties = isUniversal
-        ? getProperties(
-            data,
-            String(countryAdmin0Id) as AdminCodeString,
-            0 as AdminLevelType,
-          )
-        : getProperties(data);
+    if (!countryAdmin0Id || !data) {
+      return;
+    }
+    if (adminProperties && secondAdminProperties) {
+      return;
+    }
+
+    const properties = isUniversal
+      ? getProperties(
+          data,
+          String(countryAdmin0Id) as AdminCodeString,
+          0 as AdminLevelType,
+        )
+      : getProperties(data);
+
+    if (!adminProperties) {
       setAdminProperties(properties);
       setAdminLevel(0 as AdminLevelType);
     }
-  }, [adminProperties, countryAdmin0Id, data, isUniversal]);
-
-  useEffect(() => {
-    if (!secondAdminProperties && countryAdmin0Id && data) {
-      const properties = isUniversal
-        ? getProperties(
-            data,
-            String(countryAdmin0Id) as AdminCodeString,
-            0 as AdminLevelType,
-          )
-        : getProperties(data);
+    if (!secondAdminProperties) {
       setSecondAdminProperties(properties);
       setSecondAdminLevel(0 as AdminLevelType);
     }
-  }, [secondAdminProperties, countryAdmin0Id, data, isUniversal]);
+  }, [
+    adminProperties,
+    secondAdminProperties,
+    countryAdmin0Id,
+    data,
+    isUniversal,
+  ]);
 
   const singleChartFilenamePrefix = React.useMemo(
     () =>
