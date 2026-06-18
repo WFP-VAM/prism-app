@@ -14,6 +14,7 @@ import Login from 'components/Login';
 import MapView from 'components/MapView';
 import NavBar from 'components/NavBar';
 import Notifier from 'components/Notifier';
+import UniversalBetaDisclaimerModal from 'components/UniversalBetaDisclaimerModal';
 import { authRequired } from 'config';
 import { CountryIsoProvider } from 'context/CountryIsoProvider';
 import KhmerFont from 'fonts/Khmer-Regular.ttf';
@@ -100,6 +101,7 @@ const AppShell = memo(() => (
         </Route>
       </Switch>
     </div>
+    {isUniversalDeployment() && <UniversalBetaDisclaimerModal />}
   </div>
 ));
 
