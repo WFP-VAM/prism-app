@@ -11,6 +11,7 @@ import { LayerKey } from 'config/types';
 import { BoundaryLayerData } from 'context/layers/boundary';
 import { useCountryIso } from 'context/useCountryIso';
 import { BBox } from 'geojson';
+import { useAdminNameTranslations } from 'hooks/useAdminNameTranslations';
 import { useSafeTranslation } from 'i18n';
 import { Map as MaplibreMap } from 'maplibre-gl';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -82,6 +83,7 @@ const BoundaryDropdownOptions = React.forwardRef(
   ) => {
     const styles = useStyles();
     const { t, i18n: i18nLocale } = useSafeTranslation();
+    const { dict: adminNameDict } = useAdminNameTranslations();
     const { iso3 } = useCountryIso();
     const boundaryLayers = getDisplayBoundaryLayersForIso3(iso3).filter(
       layer => !layer.hideInGoTo,
@@ -135,8 +137,9 @@ const BoundaryDropdownOptions = React.forwardRef(
           baseBoundaryLayerData as BoundaryLayerData,
           boundaryLayers[0],
           i18nLocale,
+          adminNameDict,
         ),
-      [baseBoundaryLayerData, boundaryLayers, i18nLocale],
+      [adminNameDict, baseBoundaryLayerData, boundaryLayers, i18nLocale],
     );
 
     const flattenedAreaList = useMemo(

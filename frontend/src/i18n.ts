@@ -124,6 +124,11 @@ export function useSafeTranslation(): {
   };
 }
 
+export {
+  ADMIN_NAME_SIDECAR_LANGUAGES,
+  hasAdminNameSidecar,
+} from 'context/adminNameTranslationStateSlice';
+
 export function isEnglishLanguageSelected(lang: typeof i18n): boolean {
   return lang.resolvedLanguage === 'en';
 }

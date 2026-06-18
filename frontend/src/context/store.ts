@@ -5,6 +5,7 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 
+import adminNameTranslationStateReduce from './adminNameTranslationStateSlice';
 import analysisResultStateReduce from './analysisResultStateSlice';
 import anticipatoryActionDroughtStateReduce from './anticipatoryAction/AADroughtStateSlice';
 import anticipatoryActionFloodStateReduce from './anticipatoryAction/AAFloodStateSlice';
@@ -27,6 +28,7 @@ import tooltipStateReduce from './tooltipStateSlice';
 
 const reducer = combineReducers({
   mapState: mapStateReduce,
+  adminNameTranslationState: adminNameTranslationStateReduce,
   serverState: serverStateReduce,
   serverPreloadState: serverPreloadStateReduce,
   tableState: tableStateReduce,

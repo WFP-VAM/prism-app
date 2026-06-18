@@ -1,16 +1,24 @@
 import { createStyles, makeStyles } from '@material-ui/core';
 import {
   BoundaryRelationData,
+  BoundaryRelationsDict,
   loadBoundaryRelations,
 } from 'components/Common/BoundaryDropdown/utils';
 import { BoundaryLayerProps, MapEventWrapFunctionProps } from 'config/types';
 import { getDisplayBoundaryLayers, isPrimaryBoundaryLayer } from 'config/utils';
+import {
+  hasAdminNameSidecar,
+  selectAdminNameDict,
+} from 'context/adminNameTranslationStateSlice';
 import { toggleSelectedBoundary } from 'context/mapSelectionLayerStateSlice';
 import { setBoundaryRelationData } from 'context/mapStateSlice';
 import { addNotification } from 'context/notificationStateSlice';
+import { store } from 'context/store';
 import { showPopup } from 'context/tooltipStateSlice';
 import { useCountryIso } from 'context/useCountryIso';
+import { useAdminNameTranslations } from 'hooks/useAdminNameTranslations';
 import { languages } from 'i18n';
+import i18n from 'i18next';
 import { Map as MaplibreMap } from 'maplibre-gl';
 import { memo, useEffect, useState } from 'react';
 import {
@@ -21,6 +29,13 @@ import {
 } from 'react-map-gl/maplibre';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import {
+  getActiveAdminNameLanguage,
+  getAdminDisplayLocationName,
+  localizeBoundaryRelationData,
+  localizeName,
+  usesAdminNameSidecar,
+} from 'utils/admin-name-utils';
 import {
   findFeature,
   getEvtCoords,
@@ -99,10 +114,14 @@ const onClick =
     const locationSelectorKey = layer.adminCode;
     const locationAdminCode = feature.properties[layer.adminCode];
     const locationName = getFullLocationName(layer.adminLevelNames, feature);
-
-    const locationLocalName = getFullLocationName(
-      layer.adminLevelLocalNames,
+    const language = getActiveAdminNameLanguage(i18n);
+    const dict = selectAdminNameDict(store.getState(), language);
+    const locationLocalName = getAdminDisplayLocationName(
+      layer,
+      layer.adminLevelNames,
       feature,
+      language,
+      dict,
     );
 
     dispatch(
@@ -139,6 +158,8 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
   const [hovered, setHovered] = useState<
     { iso3: string; name: string; lng: number; lat: number } | undefined
   >(undefined);
+  const { language, dict } = useAdminNameTranslations();
+  const localizedHoveredName = localizeName(hovered?.name ?? '', dict);
 
   const { data, error: boundaryDataError } = useBoundaryData(
     layer.id,
@@ -247,21 +268,37 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
       return;
     }
 
-    const dataDict = languages.reduce((relationsDict, lang) => {
-      const locationLevelNames =
-        lang === 'en' ? layer.adminLevelNames : layer.adminLevelLocalNames;
+    const englishRelations = loadBoundaryRelations(
+      data,
+      layer.adminLevelNames,
+      layer,
+    );
 
-      const relations: BoundaryRelationData = loadBoundaryRelations(
-        data,
-        locationLevelNames,
-        layer,
-      );
+    if (!usesAdminNameSidecar(layer)) {
+      const dataDict = languages.reduce((relationsDict, lang) => {
+        const locationLevelNames =
+          lang === 'en' ? layer.adminLevelNames : layer.adminLevelLocalNames;
 
-      return { ...relationsDict, [lang]: relations };
-    }, {});
+        const relations: BoundaryRelationData = loadBoundaryRelations(
+          data,
+          locationLevelNames,
+          layer,
+        );
+
+        return { ...relationsDict, [lang]: relations };
+      }, {} as BoundaryRelationsDict);
+
+      dispatch(setBoundaryRelationData(dataDict));
+      return;
+    }
+
+    const dataDict: BoundaryRelationsDict = { en: englishRelations };
+    if (language !== 'en' && hasAdminNameSidecar(language)) {
+      dataDict[language] = localizeBoundaryRelationData(englishRelations, dict);
+    }
 
     dispatch(setBoundaryRelationData(dataDict));
-  }, [data, dispatch, layer, isPrimaryLayer]);
+  }, [data, dict, dispatch, isPrimaryLayer, language, layer]);
 
   if (layer.format === 'pmtiles') {
     const isAdmin0Landing =
@@ -328,7 +365,7 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
             closeOnClick={false}
             offset={12}
           >
-            {hovered.name}
+            {localizedHoveredName}
           </Popup>
         )}
       </>

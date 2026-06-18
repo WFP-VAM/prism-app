@@ -8,9 +8,11 @@ import {
   getBoundaryLayerSingleton,
   getDisplayBoundaryLayers,
 } from 'config/utils';
+import type { AdminNameDict } from 'context/adminNameTranslationStateSlice';
 import { AdminBoundaryParams, EWSParams } from 'context/datasetStateSlice';
 import { CHART_API_URL } from 'utils/constants';
 
+import { localizeName, usesAdminNameSidecar } from './admin-name-utils';
 import { GoogleFloodParams } from './google-flood-utils';
 import {
   getDeepestAnalysisBoundaryLayer,
@@ -63,6 +65,7 @@ const getLowestLevelBoundaryId = (levels: DatasetLevel[]): string =>
 export const getChartAdminBoundaryParams = (
   layer: WMSLayerProps,
   properties: { [key: string]: any },
+  adminNameDict?: AdminNameDict,
 ): AdminBoundaryParams => {
   const { serverLayerName, chartData } = layer;
   const { adminLevelNames, adminLevelLocalNames } = boundaryLayer;
@@ -78,21 +81,24 @@ export const getChartAdminBoundaryParams = (
   const levelOffset = multiCountry || isUniversal ? 0 : 1;
 
   // TODO - why not reduce this by level directly?
-  const boundaryProps = levels.reduce(
-    (obj, item) => ({
+  const boundaryProps = levels.reduce((obj, item) => {
+    const nameIndex = Number(item.level) - levelOffset;
+    const englishName =
+      resolveChartBoundaryProperty(properties, item.name) ||
+      properties[adminLevelNames[nameIndex]];
+
+    return {
       ...obj,
       [item.id]: {
         code: resolveChartBoundaryProperty(properties, item.id),
         level: item.level,
-        name:
-          resolveChartBoundaryProperty(properties, item.name) ||
-          properties[adminLevelNames[Number(item.level) - levelOffset]],
-        localName:
-          properties[adminLevelLocalNames[Number(item.level) - levelOffset]],
+        name: englishName,
+        localName: usesAdminNameSidecar(boundaryLayer)
+          ? localizeName(englishName ?? '', adminNameDict)
+          : properties[adminLevelLocalNames[nameIndex]],
       },
-    }),
-    {},
-  );
+    };
+  }, {});
 
   const adminBoundaryParams: AdminBoundaryParams = {
     boundaryProps,
