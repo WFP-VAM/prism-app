@@ -35,6 +35,7 @@ import {
   useMapCallback,
 } from 'utils/map-utils';
 import { useBoundaryData } from 'utils/useBoundaryData';
+import { useClippedFeatureCollection } from 'utils/useClippedFeatureCollection';
 import { useDefaultDate } from 'utils/useDefaultDate';
 
 // Use admin level 2 boundary layer for Anticipatory Action
@@ -139,6 +140,10 @@ const AnticipatoryActionDroughtLayer = React.memo(
       };
     }, [data, shouldRenderData]);
 
+    const clippedColoredDistrictsLayer = useClippedFeatureCollection(
+      coloredDistrictsLayer as any,
+    );
+
     const scalePercent = useAAMarkerScalePercent(map);
 
     const mainLayerBefore = selectedDistrict
@@ -183,12 +188,12 @@ const AnticipatoryActionDroughtLayer = React.memo(
             }}
           />
         </Source>
-        {coloredDistrictsLayer && (
+        {clippedColoredDistrictsLayer && (
           <Source
             key="anticipatory-action"
             id="anticipatory-action-"
             type="geojson"
-            data={coloredDistrictsLayer}
+            data={clippedColoredDistrictsLayer}
           >
             <Layer
               beforeId={mainLayerBefore}

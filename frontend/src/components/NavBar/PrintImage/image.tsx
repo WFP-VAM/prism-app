@@ -6,7 +6,6 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import { usePostHog } from '@posthog/react';
-import mask from '@turf/mask';
 import { appConfig, rawLayers, safeCountry } from 'config';
 import { AdminCodeString, LayerKey } from 'config/types';
 import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
@@ -32,9 +31,9 @@ import { useHistory, useLocation } from 'react-router-dom';
 import {
   adminAreaFilenameSegment,
   buildCountryAdminFilenameStem,
-  filterFeaturesBySelectedAdminCodes,
   resolveAdminAreaRefs,
 } from 'utils/adminAreaSelection';
+import { getCachedBoundaryLayerData } from 'utils/boundary-cache';
 import { isBoundaryLayer } from 'utils/boundary-layers-utils';
 import { dateWithoutTime, getFormattedDate } from 'utils/date-utils';
 import useLayers, { isWmsSelectableForBatchPrint } from 'utils/layers-utils';
@@ -43,8 +42,10 @@ import {
   getPossibleDatesForLayer,
 } from 'utils/server-utils';
 import { stringHash } from 'utils/string-utils';
+import { useAdminAreaClipPolygon } from 'utils/useAdminAreaClipPolygon';
 import { useBoundaryData } from 'utils/useBoundaryData';
 import useResizeObserver from 'utils/useOnResizeObserver';
+import { usePreloadBoundaryLayersForClip } from 'utils/usePreloadBoundaryLayersForClip';
 
 import {
   dateRangeSelector,
@@ -158,17 +159,21 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const [previewMapWidth, setPreviewMapWidth] = useState<number | null>(null);
   const [previewMapHeight, setPreviewMapHeight] = useState<number | null>(null);
 
-  // Get the style and layers of the old map
-  const selectedMapStyle = selectedMap?.getStyle();
+  const boundaryLayersVersion = usePreloadBoundaryLayersForClip({
+    enabled: open && toggles.countryMask,
+    dispatch,
+  });
 
-  if (selectedMapStyle && !toggles.mapLabelsVisibility) {
-    selectedMapStyle.layers = selectedMapStyle?.layers.filter(
-      x => !x.id.includes('label'),
-    );
-  }
-
-  const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] =
-    useState(null);
+  const adminAreaClipPolygon = useAdminAreaClipPolygon({
+    enabled: toggles.countryMask,
+    country: safeCountry,
+    selectedBoundaries,
+    boundaryData: data,
+    boundaryLayer,
+    i18nLocale: i18n,
+    getLayerData: getCachedBoundaryLayerData,
+    boundaryLayersVersion,
+  });
 
   const [dateRangeForBatchMaps, setDateRangeForBatchMaps] = useState<{
     startDate: number | null;
@@ -600,32 +605,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     t,
   ]);
 
-  useEffect(() => {
-    // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
-    // which runs ./scripts/preprocess-layers.js
-    if (selectedBoundaries.length === 0) {
-      fetch(`/data/${safeCountry}/admin-boundary-unified-polygon.json`)
-        .then(response => response.json())
-        .then(polygonData => {
-          const maskedPolygon = mask(polygonData as any);
-          setAdminBoundaryPolygon(maskedPolygon as any);
-        })
-        .catch(error => console.error('Error:', error));
-      return;
-    }
-
-    const filteredData = data && {
-      ...data,
-      features: filterFeaturesBySelectedAdminCodes(
-        data.features,
-        boundaryLayer,
-        selectedBoundaries,
-      ),
-    };
-    const masked = mask(filteredData as any);
-    setAdminBoundaryPolygon(masked as any);
-  }, [data, selectedBoundaries, selectedBoundaries.length]);
-
   const handleDownloadMenuClose = () => {
     setDownloadMenuAnchorEl(null);
   };
@@ -648,7 +627,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       getFormattedDate(dateRange.startDate, 'snake') || 'no_date'
     }`;
     const docGeneration = async () => {
-      // png is generally preferred for images containing lines and text.
       const ext = format === 'pdf' ? 'png' : format;
       const elem = printRef.current;
       if (!elem) {
@@ -879,7 +857,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       legendPosition,
       legendScale,
       printRef,
-      invertedAdminBoundaryLimitPolygon,
+      adminAreaClipPolygon,
       handleClose,
       setTitleText,
       debounceCallback,
