@@ -68,8 +68,8 @@ import { MapExportLayoutProps } from './types';
  *
  * Country mask: when `toggles.countryMask` is on and an `adminAreaClipPolygon`
  * is provided, raster layers route tiles through the `clip://` protocol.
- * Vector layers clip only when needed (e.g. admin_level_data when specific
- * admin areas are selected — full-region masks skip redundant vector clip).
+ * Vector data layers clip only when specific admin areas are selected;
+ * full-region masks skip redundant vector clip. Raster layers always clip.
  */
 
 // Layer component mapping - KEEP IN SYNC with MapView/Map/index.tsx

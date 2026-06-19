@@ -1,5 +1,5 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
-import { useClip } from 'components/MapExport/clipContext';
+import { useClipForSelectedAdminAreas } from 'components/MapExport/clipContext';
 import { legendToStops } from 'components/MapView/Layers/layer-utils';
 import { Extent, getExtent } from 'components/MapView/Layers/raster-utils';
 import { getFeatureInfoPropsData } from 'components/MapView/utils';
@@ -100,7 +100,7 @@ const ImpactLayer = memo(({ layer, before }: ComponentProps) => {
   const opacityState = useSelector(opacitySelector(layer.id));
   const loadingLayerIds = useSelector(loadingLayerIdsSelector);
   const isLayerLoading = loadingLayerIds.includes(layer.id);
-  const clip = useClip();
+  const clip = useClipForSelectedAdminAreas();
 
   const sourceData =
     data &&

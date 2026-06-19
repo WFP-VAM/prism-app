@@ -1,4 +1,4 @@
-import { useClip } from 'components/MapExport/clipContext';
+import { useClipForSelectedAdminAreas } from 'components/MapExport/clipContext';
 import {
   ensureSDFIconsLoaded,
   IconShape,
@@ -129,7 +129,7 @@ const PointDataLayer = memo(({ layer, before }: LayersProps) => {
 
   const { data } = layerData || {};
 
-  const clip = useClip();
+  const clip = useClipForSelectedAdminAreas();
   const clippedData = useClippedFeatureCollection(data, clip);
 
   useEffect(() => {
