@@ -175,6 +175,14 @@ def test_schedule_searchable_fields_include_cadence_and_format() -> None:
     assert "format" in view.searchable_fields
 
 
+def test_schedule_view_has_download_row_action() -> None:
+    view = MapExportScheduleView(MapExportSchedule)
+    assert view.list_template == "map_export_schedule_list.html"
+    assert view.detail_template == "map_export_schedule_detail.html"
+    assert "download" in view.row_actions
+    assert view._row_actions["download"]["custom_response"] is True
+
+
 def test_schedule_view_bulk_actions_include_update_status_and_delete() -> None:
     view = MapExportScheduleView(MapExportSchedule)
     assert view.list_template == "map_export_schedule_list.html"
