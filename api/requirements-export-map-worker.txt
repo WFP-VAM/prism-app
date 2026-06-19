@@ -3,7 +3,7 @@
 # Scope: Playwright, PDF merge, Postgres job queue, S3, Pydantic models — no GDAL/raster/GIS stack.
 
 playwright==1.53.0
-pypdf==6.12.0
+pypdf==6.13.3
 boto3==1.41.5
 botocore==1.41.5
 sqlmodel==0.0.22

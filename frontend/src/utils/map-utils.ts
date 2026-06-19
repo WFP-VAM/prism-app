@@ -44,6 +44,10 @@ export function clickedBoundaryFillLayer(
   );
 }
 
+/** Basemap label layers are identified by an `id` containing "label". */
+export const isBasemapLabelLayer = (layer: { id: string }): boolean =>
+  layer.id.includes('label');
+
 /**
  * Checks weither given layer is on view
  * @param map the Maplibre Map object

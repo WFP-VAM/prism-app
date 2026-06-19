@@ -223,3 +223,9 @@ class BoundaryCacheManager {
 }
 
 export const boundaryCache = new BoundaryCacheManager();
+
+export function getCachedBoundaryLayerData(
+  layerId: string,
+): BoundaryLayerData | undefined {
+  return boundaryCache.getCachedData(layerId);
+}
