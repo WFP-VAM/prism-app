@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  Link,
   makeStyles,
   Typography,
 } from '@material-ui/core';
@@ -49,8 +50,9 @@ function UniversalBetaDisclaimerModal() {
       <DialogContent dividers>
         <Typography variant="body1">
           {t(
-            'This deployment is currently in beta. Administrative boundaries and their names may not be accurate. Please report any inaccuracies to the Prism team.',
-          )}
+            'This deployment is currently in beta. Administrative boundaries and their names may not be accurate. Please report any inaccuracies to the Prism team at',
+          )}{' '}
+          <Link href="mailto:wfp.prism@wfp.org">wfp.prism@wfp.org</Link>.
         </Typography>
       </DialogContent>
     </Dialog>
