@@ -23,6 +23,7 @@ import {
   useMapCallback,
 } from 'utils/map-utils';
 import { getRequestDateItem } from 'utils/server-utils';
+import { useClippedFeatureCollection } from 'utils/useClippedFeatureCollection';
 import { useDefaultDate } from 'utils/useDefaultDate';
 
 import { legendToStops } from '../layer-utils';
@@ -176,25 +177,33 @@ const CompositeLayer = memo(({ layer, before }: Props) => {
     onClick,
   );
 
-  if (selectedDate && data && adminBoundaryLimitPolygon) {
-    const filteredData = {
+  const filteredData = useMemo(() => {
+    if (!selectedDate || !data || !adminBoundaryLimitPolygon) {
+      return undefined;
+    }
+    return {
       ...data,
       features: finalFeatures,
     };
-    return (
-      <Source key={requestDate} type="geojson" data={filteredData}>
-        <Layer
-          key={requestDate}
-          id={getLayerMapId(layer.id)}
-          type="fill"
-          paint={paintProps(layer.legend || [], opacityState || layer.opacity)}
-          beforeId={before}
-        />
-      </Source>
-    );
+  }, [adminBoundaryLimitPolygon, data, finalFeatures, selectedDate]);
+
+  const clippedData = useClippedFeatureCollection(filteredData as any);
+
+  if (!selectedDate || !filteredData || !clippedData) {
+    return null;
   }
 
-  return null;
+  return (
+    <Source key={requestDate} type="geojson" data={clippedData}>
+      <Layer
+        key={requestDate}
+        id={getLayerMapId(layer.id)}
+        type="fill"
+        paint={paintProps(layer.legend || [], opacityState || layer.opacity)}
+        beforeId={before}
+      />
+    </Source>
+  );
 });
 
 export default CompositeLayer;

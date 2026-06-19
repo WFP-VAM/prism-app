@@ -1,0 +1,15 @@
+{% extends "@starlette-admin/detail.html" %}
+
+{% block head_css %}
+    {{ super() }}
+    {% include "includes/map_export_schedule_download_tooltip.css.html" %}
+{% endblock %}
+
+{% block script %}
+    {{ super() }}
+    <script>
+        window.mapExportScheduleDownloadAvailable =
+            {{ download_available | tojson }};
+    </script>
+    {% include "includes/map_export_schedule_download_unavailable.js.html" %}
+{% endblock %}

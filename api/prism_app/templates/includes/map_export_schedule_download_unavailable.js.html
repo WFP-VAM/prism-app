@@ -1,0 +1,22 @@
+<script>
+(function () {
+    if (window.mapExportScheduleDownloadAvailable !== false) {
+        return;
+    }
+
+    const tooltip = "No maps to download for this schedule";
+    document
+        .querySelectorAll('a[data-name="download"][data-is-row-action="true"]')
+        .forEach(function (anchor) {
+            const span = document.createElement("span");
+            span.className =
+                "map-export-download-unavailable text-muted opacity-50" +
+                (anchor.classList.contains("btn") ? " btn disabled" : "");
+            span.style.cursor = "not-allowed";
+            span.dataset.tooltip = tooltip;
+            span.setAttribute("aria-disabled", "true");
+            span.innerHTML = anchor.innerHTML;
+            anchor.replaceWith(span);
+        });
+})();
+</script>

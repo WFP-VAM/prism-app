@@ -22,10 +22,41 @@ MAP_EXPORT_S3_SIGNING_REGION = "us-east-2"
 _S3_SIGV4 = Config(signature_version="s3v4")
 
 
-def map_export_s3_client(**kwargs: Any) -> Any:
-    """S3 client using AWS SigV4; default region matches ``DEFAULT_EXPORT_MAP_S3_BUCKET``."""
+def map_export_s3_client(*, for_presign: bool = False, **kwargs: Any) -> Any:
+    """S3 client using AWS SigV4; default region matches ``DEFAULT_EXPORT_MAP_S3_BUCKET``.
+
+    Set ``for_presign=True`` for browser-facing presigned GET URLs (``AWS_PRESIGN_ENDPOINT_URL``,
+    falling back to ``AWS_ENDPOINT_URL``). Otherwise uses ``AWS_ENDPOINT_URL`` for in-cluster
+    put/head/verify (e.g. ``http://rustfs:9000`` in local Docker).
+    """
     kwargs.setdefault("region_name", MAP_EXPORT_S3_SIGNING_REGION)
+    if for_presign:
+        endpoint = (
+            os.environ.get("AWS_PRESIGN_ENDPOINT_URL", "").strip()
+            or os.environ.get("AWS_ENDPOINT_URL", "").strip()
+        )
+    else:
+        endpoint = os.environ.get("AWS_ENDPOINT_URL", "").strip()
+    if endpoint:
+        kwargs["endpoint_url"] = endpoint
     return boto3.client("s3", config=_S3_SIGV4, **kwargs)
+
+
+def get_s3_client_for_presign() -> object:
+    """S3 client for browser-facing presigned GET URLs."""
+    return map_export_s3_client(for_presign=True)
+
+
+def s3_client_for_artifact(
+    uri: str | None,
+    injected: object | None = None,
+) -> object | None:
+    """S3 client for verifying a non-local artifact URI, or ``None`` for file:// / missing URI."""
+    if not uri or is_file_artifact_uri(uri):
+        return None
+    if injected is not None:
+        return injected
+    return map_export_s3_client()
 
 
 def parse_s3_uri(s3_uri: str) -> tuple[str, str]:
@@ -160,37 +191,6 @@ def get_export_map_s3_bucket_and_prefix() -> tuple[str, str]:
     else:
         bucket_raw = os.environ.get("EXPORT_MAP_S3_BUCKET", "").strip()
     return parse_export_map_s3_bucket_env(bucket_raw)
-
-
-def public_maps_folder_prefix(
-    export_url: str,
-    *,
-    country: str,
-    object_prefix: str = "",
-) -> str:
-    """Directory prefix for scheduled public maps (same layout as ``s3_key_for_map_export``)."""
-    from prism_app.utils import public_map_upload_path_segments
-
-    c_seg, l_seg = public_map_upload_path_segments(export_url, country=country)
-    base = f"public_maps/{c_seg}/{l_seg}/"
-    op = normalize_export_map_s3_object_prefix(object_prefix)
-    return f"{op}/{base}" if op else base
-
-
-def public_maps_folder_uri(export_url: str, *, country: str) -> str:
-    """Full storage URI for the schedule's public-maps folder (S3 or local file URI)."""
-    bucket, object_prefix = get_export_map_s3_bucket_and_prefix()
-    key_prefix = public_maps_folder_prefix(
-        export_url,
-        country=country,
-        object_prefix=object_prefix,
-    )
-    if bucket:
-        return f"s3://{bucket}/{key_prefix}"
-    local_raw = os.environ.get("EXPORT_MAP_LOCAL_OUTPUT_DIR", "").strip()
-    if local_raw:
-        return (Path(local_raw).resolve() / key_prefix).as_uri()
-    return key_prefix
 
 
 def put_map_export_bytes(

@@ -1,0 +1,30 @@
+<style>
+    .map-export-download-unavailable[data-tooltip] {
+        position: relative;
+    }
+
+    .map-export-download-unavailable[data-tooltip]::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        bottom: calc(100% + 6px);
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+        line-height: 1.4;
+        color: var(--tblr-bg-surface, #fff);
+        background: var(--tblr-gray-800, #1e293b);
+        border-radius: var(--tblr-border-radius-sm, 4px);
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        z-index: 1080;
+        transition: opacity 50ms ease 30ms, visibility 0s linear 30ms;
+    }
+
+    .map-export-download-unavailable[data-tooltip]:hover::after {
+        opacity: 1;
+        visibility: visible;
+    }
+</style>

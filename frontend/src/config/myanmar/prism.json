@@ -1,7 +1,7 @@
 {
   "country": "Myanmar",
   "countryAdmin0Id": 273,
-  "WFPAuthRequired": false,
+  "WFPAuthRequired": true,
   "alertFormActive": false,
   "map": {
     "latitude": 19.467,
@@ -224,7 +224,6 @@
     },
     "exposure": {
       "population": ["total_pop"],
-      "conflict": ["conflict_fatalities", "conflict_type"],
       "historical_climate_exposure": [
         "population_exposed_historical_river_floods",
         "population_exposed_historical_storm_surge"
