@@ -1,7 +1,7 @@
 import {
-  getCountriesFromAdmin0Features,
   getCountryBbox,
   getUniversalAdmin0LandingFilter,
+  getUniversalCountries,
   hasAdmin3ForCountry,
   isKnownIso3,
   isValidIso3Format,
@@ -77,15 +77,55 @@ describe('universal-utils', () => {
     ]);
   });
 
-  it('excludes pseudo-countries whose raw iso3 starts with lowercase x from the country list', () => {
-    const countries = getCountriesFromAdmin0Features([
-      { properties: { iso3: 'MOZ', adm0_name: 'Mozambique' } },
-      { properties: { iso3: 'xKO', adm0_name: 'Pseudo Korea' } },
-      { properties: { iso3: 'ITA', adm0_name: 'Italy' } },
-    ]);
-    expect(countries).toEqual([
-      { iso3: 'ITA', name: 'Italy' },
-      { iso3: 'MOZ', name: 'Mozambique' },
-    ]);
+  it('returns a complete sorted country list from metadata', () => {
+    const countries = getUniversalCountries();
+    expect(countries.length).toBeGreaterThan(200);
+    expect(countries.some(c => c.iso3 === 'MOZ')).toBe(true);
+    expect(countries.some(c => c.iso3 === 'KHM')).toBe(true);
+    const names = countries.map(c => c.name);
+    expect(names).toEqual([...names].sort((a, b) => a.localeCompare(b)));
+  });
+
+  it('excludes pseudo-countries whose iso3 starts with lowercase x', () => {
+    const countries = getUniversalCountries();
+    expect(countries.some(c => c.iso3 === 'xJK')).toBe(false);
+    expect(countries.every(c => !c.iso3.startsWith('x'))).toBe(true);
+  });
+
+  it('falls back to iso3 when countryNames entry is missing', () => {
+    jest.isolateModules(() => {
+      jest.doMock('config/universal/metadata.json', () => ({
+        admin3Countries: [],
+        countries: { MOZ: [0, 0, 1, 1] },
+      }));
+      const {
+        getUniversalCountries: getCountries,
+      } = require('./universal-utils');
+      expect(getCountries()).toEqual([{ iso3: 'MOZ', name: 'MOZ' }]);
+    });
+  });
+
+  it('uses countryNames from metadata when present', () => {
+    jest.isolateModules(() => {
+      jest.doMock('config/universal/metadata.json', () => ({
+        admin3Countries: [],
+        countries: {
+          MOZ: [0, 0, 1, 1],
+          ITA: [0, 0, 1, 1],
+          xKO: [0, 0, 1, 1],
+        },
+        countryNames: {
+          MOZ: 'Mozambique',
+          ITA: 'Italy',
+        },
+      }));
+      const {
+        getUniversalCountries: getCountries,
+      } = require('./universal-utils');
+      expect(getCountries()).toEqual([
+        { iso3: 'ITA', name: 'Italy' },
+        { iso3: 'MOZ', name: 'Mozambique' },
+      ]);
+    });
   });
 });

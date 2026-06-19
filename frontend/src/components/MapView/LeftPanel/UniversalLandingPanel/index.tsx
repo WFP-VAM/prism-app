@@ -1,6 +1,5 @@
 import {
   Box,
-  CircularProgress,
   createStyles,
   InputAdornment,
   List,
@@ -16,24 +15,15 @@ import { useSafeTranslation } from 'i18n';
 import { memo, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { getUniversalMapPath } from 'utils/universal-routing';
-import { getCountriesFromAdmin0Features } from 'utils/universal-utils';
-import { useBoundaryData } from 'utils/useBoundaryData';
-import { useMapState } from 'utils/useMapState';
-
-const UNIVERSAL_ADMIN0_LAYER_ID = 'universal_admin0_boundaries';
+import { getUniversalCountries } from 'utils/universal-utils';
 
 const UniversalLandingPanel = memo(() => {
   const classes = useStyles();
   const history = useHistory();
   const { t } = useSafeTranslation();
-  const map = useMapState().maplibreMap();
-  const { data, error } = useBoundaryData(UNIVERSAL_ADMIN0_LAYER_ID, map);
   const [query, setQuery] = useState('');
 
-  const countries = useMemo(
-    () => getCountriesFromAdmin0Features(data?.features),
-    [data],
-  );
+  const countries = useMemo(() => getUniversalCountries(), []);
 
   const filteredCountries = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -63,63 +53,44 @@ const UniversalLandingPanel = memo(() => {
         {t('Countries')}
       </Typography>
 
-      {countries.length === 0 && error ? (
+      <TextField
+        className={classes.searchField}
+        fullWidth
+        size="small"
+        variant="outlined"
+        placeholder={t('Search')}
+        value={query}
+        onChange={e => setQuery(e.target.value)}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <Search fontSize="small" />
+            </InputAdornment>
+          ),
+        }}
+      />
+
+      {filteredCountries.length === 0 ? (
         <Typography variant="body2" className={classes.emptyState}>
-          {t('Unable to load countries. Please try again.')}
+          {t('No countries match "{{query}}"', { query })}
         </Typography>
-      ) : null}
-
-      {countries.length === 0 && !error ? (
-        <Box className={classes.loading}>
-          <CircularProgress size={32} />
-          <Typography variant="body2" className={classes.loadingText}>
-            {t('Loading countries…')}
-          </Typography>
-        </Box>
-      ) : null}
-
-      {countries.length > 0 ? (
-        <>
-          <TextField
-            className={classes.searchField}
-            fullWidth
-            size="small"
-            variant="outlined"
-            placeholder={t('Search')}
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search fontSize="small" />
-                </InputAdornment>
-              ),
-            }}
-          />
-
-          {filteredCountries.length === 0 ? (
-            <Typography variant="body2" className={classes.emptyState}>
-              {t('No countries match "{{query}}"', { query })}
-            </Typography>
-          ) : (
-            <List className={classes.list} dense>
-              {filteredCountries.map(country => (
-                <ListItem
-                  key={country.iso3}
-                  button
-                  className={classes.listItem}
-                  onClick={() => handleCountryClick(country.iso3)}
-                >
-                  <ListItemText
-                    primary={country.name}
-                    primaryTypographyProps={{ className: classes.countryName }}
-                  />
-                </ListItem>
-              ))}
-            </List>
-          )}
-        </>
-      ) : null}
+      ) : (
+        <List className={classes.list} dense>
+          {filteredCountries.map(country => (
+            <ListItem
+              key={country.iso3}
+              button
+              className={classes.listItem}
+              onClick={() => handleCountryClick(country.iso3)}
+            >
+              <ListItemText
+                primary={country.name}
+                primaryTypographyProps={{ className: classes.countryName }}
+              />
+            </ListItem>
+          ))}
+        </List>
+      )}
     </Box>
   );
 });
@@ -181,20 +152,6 @@ const useStyles = makeStyles(() =>
       color: '#666',
       padding: '1rem 0',
       textAlign: 'center',
-      textTransform: 'none',
-      letterSpacing: 'normal',
-    },
-    loading: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'flex-start',
-      gap: '0.75rem',
-      flexGrow: 1,
-      padding: '2rem 0',
-    },
-    loadingText: {
-      color: '#666',
       textTransform: 'none',
       letterSpacing: 'normal',
     },

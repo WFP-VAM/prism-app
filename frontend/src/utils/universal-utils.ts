@@ -88,31 +88,20 @@ export type UniversalCountryOption = {
   name: string;
 };
 
-export function getCountriesFromAdmin0Features(
-  features: { properties?: Record<string, unknown> | null }[] | undefined,
-): UniversalCountryOption[] {
-  if (!features?.length) {
-    return [];
-  }
+type UniversalMetadataWithNames = typeof universalMetadata & {
+  countryNames?: Record<string, string>;
+};
 
-  const countriesByIso3 = new Map<string, string>();
-  features.forEach(feature => {
-    const rawIso3 = String(feature.properties?.iso3 ?? '');
-    if (rawIso3.startsWith('x')) {
-      return;
-    }
-    const iso3 = normalizeIso3(rawIso3);
-    const name = String(feature.properties?.adm0_name ?? '').trim();
-    if (!iso3 || !name || countriesByIso3.has(iso3)) {
-      return;
-    }
-    countriesByIso3.set(iso3, name);
-  });
+/** Complete country list from static metadata (viewport-independent). */
+export function getUniversalCountries(): UniversalCountryOption[] {
+  const countryNames =
+    (universalMetadata as UniversalMetadataWithNames).countryNames ?? {};
 
-  return Array.from(countriesByIso3.entries())
-    .map(([countryIso3, countryName]) => ({
-      iso3: countryIso3,
-      name: countryName,
+  return Object.keys(universalMetadata.countries)
+    .filter(iso3 => !iso3.startsWith('x'))
+    .map(iso3 => ({
+      iso3,
+      name: countryNames[iso3]?.trim() || iso3,
     }))
     .sort((a, b) => a.name.localeCompare(b.name));
 }
