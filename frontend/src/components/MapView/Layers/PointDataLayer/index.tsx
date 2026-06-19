@@ -1,4 +1,3 @@
-import { useClipForSelectedAdminAreas } from 'components/MapExport/clipContext';
 import {
   ensureSDFIconsLoaded,
   IconShape,
@@ -129,8 +128,7 @@ const PointDataLayer = memo(({ layer, before }: LayersProps) => {
 
   const { data } = layerData || {};
 
-  const clip = useClipForSelectedAdminAreas();
-  const clippedData = useClippedFeatureCollection(data, clip);
+  const clippedData = useClippedFeatureCollection(data);
 
   useEffect(() => {
     if (layer.authRequired && !userAuth) {
@@ -191,7 +189,7 @@ const PointDataLayer = memo(({ layer, before }: LayersProps) => {
     removeLayerData,
   ]);
 
-  if (!data || !validateLayerDate) {
+  if (!data || !clippedData || !validateLayerDate) {
     return null;
   }
 

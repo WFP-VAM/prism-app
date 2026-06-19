@@ -1,4 +1,3 @@
-import { useClipForSelectedAdminAreas } from 'components/MapExport/clipContext';
 import { GeojsonDataLayerProps, LegendDefinition } from 'config/types';
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
@@ -37,8 +36,7 @@ const GeojsonDataLayer = memo(({ layer, before }: LayersProps) => {
 
   const { data } = layerData || {};
 
-  const clip = useClipForSelectedAdminAreas();
-  const clippedData = useClippedFeatureCollection(data, clip);
+  const clippedData = useClippedFeatureCollection(data);
 
   useEffect(() => {
     dispatch(loadLayerData({ layer }));

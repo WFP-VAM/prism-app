@@ -1,5 +1,4 @@
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
-import { useClipForSelectedAdminAreas } from 'components/MapExport/clipContext';
 import { safeCountry } from 'config';
 import {
   CompositeLayerProps,
@@ -59,7 +58,6 @@ const CompositeLayer = memo(({ layer, before }: Props) => {
   const serverAvailableDates = useSelector(availableDatesSelector);
   const opacityState = useSelector(opacitySelector(layer.id));
   const dispatch = useDispatch();
-  const clip = useClipForSelectedAdminAreas();
 
   const layerAvailableDates =
     serverAvailableDates[layer.id] || serverAvailableDates[layer.dateLayer];
@@ -189,7 +187,7 @@ const CompositeLayer = memo(({ layer, before }: Props) => {
     };
   }, [adminBoundaryLimitPolygon, data, finalFeatures, selectedDate]);
 
-  const clippedData = useClippedFeatureCollection(filteredData as any, clip);
+  const clippedData = useClippedFeatureCollection(filteredData as any);
 
   if (!selectedDate || !filteredData || !clippedData) {
     return null;

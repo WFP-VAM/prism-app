@@ -1,5 +1,4 @@
 import { Tooltip } from '@material-ui/core';
-import { useClip } from 'components/MapExport/clipContext';
 import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils';
 import {
   AdminLevelDataLayerProps,
@@ -63,7 +62,6 @@ const AnticipatoryActionDroughtLayer = React.memo(
     const { selectedWindow } = useSelector(AAFiltersSelector);
     const selectedDistrict = useSelector(AASelectedDistrictSelector);
     const markers = useSelector(AAMarkersSelector);
-    const clip = useClip();
 
     useMapCallback(
       'click',
@@ -144,7 +142,6 @@ const AnticipatoryActionDroughtLayer = React.memo(
 
     const clippedColoredDistrictsLayer = useClippedFeatureCollection(
       coloredDistrictsLayer as any,
-      clip,
     );
 
     const scalePercent = useAAMarkerScalePercent(map);

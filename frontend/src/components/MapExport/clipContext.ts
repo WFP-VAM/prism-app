@@ -1,11 +1,5 @@
 /**
- * Context carrying the active admin-area clip polygon to data layer components
- * so they can clip at the source (raster via the `clip://` protocol; vector via
- * turf for layers that opt in). Outside export/print the value is `null`, so
- * layer components render exactly as before on the live map.
- *
- * The provider lives in ./ClipProvider so this module only exports a hook,
- * context, and types (keeping react-refresh happy).
+ * Context for export/print clipping. Outside export the value is `null`.
  */
 import { createContext, useContext } from 'react';
 import type { AdminAreaClipPolygon } from 'utils/adminAreaClipPolygon';

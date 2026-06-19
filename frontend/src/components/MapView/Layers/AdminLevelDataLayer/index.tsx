@@ -1,4 +1,3 @@
-import { useClipForSelectedAdminAreas } from 'components/MapExport/clipContext';
 import { addPopupParams } from 'components/MapView/Layers/layer-utils';
 import { fillPaintData } from 'components/MapView/Layers/styles';
 import {
@@ -66,8 +65,7 @@ const AdminLevelDataLayers = memo(
       | undefined;
     const { data } = layerData || {};
 
-    const clip = useClipForSelectedAdminAreas();
-    const clippedData = useClippedFeatureCollection(data, clip);
+    const clippedData = useClippedFeatureCollection(data);
 
     useEffect(() => {
       addFillPatternImagesInMap(layer, map);

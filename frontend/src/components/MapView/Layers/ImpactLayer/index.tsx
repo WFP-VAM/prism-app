@@ -1,5 +1,4 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
-import { useClipForSelectedAdminAreas } from 'components/MapExport/clipContext';
 import { legendToStops } from 'components/MapView/Layers/layer-utils';
 import { Extent, getExtent } from 'components/MapView/Layers/raster-utils';
 import { getFeatureInfoPropsData } from 'components/MapView/utils';
@@ -100,14 +99,13 @@ const ImpactLayer = memo(({ layer, before }: ComponentProps) => {
   const opacityState = useSelector(opacitySelector(layer.id));
   const loadingLayerIds = useSelector(loadingLayerIdsSelector);
   const isLayerLoading = loadingLayerIds.includes(layer.id);
-  const clip = useClipForSelectedAdminAreas();
 
   const sourceData =
     data &&
     (data.impactFeatures.features.length === 0
       ? data.boundaries
       : data.impactFeatures);
-  const clippedSourceData = useClippedFeatureCollection(sourceData, clip);
+  const clippedSourceData = useClippedFeatureCollection(sourceData);
 
   // Track the last attempted date/extent to prevent infinite retry loops on failure
   const lastAttemptedRef = useRef<{
