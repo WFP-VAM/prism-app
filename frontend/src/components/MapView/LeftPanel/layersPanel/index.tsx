@@ -2,9 +2,7 @@ import { Box, useMediaQuery, useTheme } from '@material-ui/core';
 import HashText from 'components/Common/HashText';
 import { PanelSize } from 'config/types';
 import { memo } from 'react';
-import { isUniversalDeployment } from 'utils/universal-utils';
 
-import BackToGlobalButton from './BackToGlobalButton';
 import RootAccordionItems from './RootAccordionItems';
 import RootAnalysisAccordionItems from './RootAnalysisAccordionItems';
 
@@ -30,7 +28,6 @@ const LayersPanel = memo(() => {
           flexGrow: 1,
         }}
       />
-      {isUniversalDeployment() && <BackToGlobalButton />}
       <HashText />
     </Box>
   );

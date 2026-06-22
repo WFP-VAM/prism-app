@@ -1,4 +1,10 @@
-import { Button, createStyles, makeStyles } from '@material-ui/core';
+import {
+  Button,
+  IconButton,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@material-ui/core';
 import { Public } from '@material-ui/icons';
 import { clearAnalysisResult } from 'context/analysisResultStateSlice';
 import { useSafeTranslation } from 'i18n';
@@ -11,10 +17,12 @@ import { useMapState } from 'utils/useMapState';
 const UNIVERSAL_ADMIN0_LAYER_ID = 'universal_admin0_boundaries';
 
 const BackToGlobalButton = memo(() => {
-  const classes = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
+  const theme = useTheme();
+  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
+  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
   const {
     layers,
     actions: { removeLayer },
@@ -34,34 +42,25 @@ const BackToGlobalButton = memo(() => {
   }, [layers, removeLayer, dispatch, history]);
 
   return (
-    <div className={classes.root}>
-      <Button
-        className={classes.button}
-        fullWidth
-        variant="outlined"
-        startIcon={<Public />}
-        onClick={handleClick}
-      >
-        {t('Back to global')}
-      </Button>
-    </div>
+    <>
+      {!smDown && (
+        <Button startIcon={<Public />} onClick={handleClick}>
+          <Typography style={{ color: '#FFF', textTransform: 'none' }}>
+            {t('Back to global')}
+          </Typography>
+        </Button>
+      )}
+      {!mdUp && (
+        <IconButton
+          style={{ color: 'white' }}
+          onClick={handleClick}
+          aria-label={t('Back to global')}
+        >
+          <Public />
+        </IconButton>
+      )}
+    </>
   );
 });
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      flexShrink: 0,
-      padding: '0.5rem',
-      borderTop: '1px solid #E0E0E0',
-    },
-    button: {
-      color: '#323638',
-      borderColor: '#323638',
-      textTransform: 'none',
-      fontWeight: 600,
-    },
-  }),
-);
 
 export default BackToGlobalButton;
