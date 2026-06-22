@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PRISM Scheduled Map Export</title>
+    <style>
+        @media screen and (max-width: 600px) {
+            .content-wrapper {
+                padding: 20px !important;
+            }
+        }
+    </style>
+</head>
+<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; color:black;">
+    <div class="container" style="color:black; width: 600px; margin: 20px auto; background: #ffffff;">
+        <header class="header" style="padding-top: 30px;">
+            <p class="title" style="font-size: 20px; font-weight: 500; line-height: 23.44px; text-align: center;">
+                PRISM</p>
+        </header>
+        <main>
+            <div class="content-wrapper" style="padding: 50px; font-size: 14px;">
+                <h1 class="content-title"
+                    style="font-size: 24px; font-weight: 700; line-height: 30px; color: #333; margin: 0 0 10px;">
+                    {{ heading_title }}
+                </h1>
+                <p class="content-subtitle" style="margin: 0 0 20px; font-size: 14px;">
+                    Scheduled map export — WFP PRISM (same styling as Anticipatory Action notification emails).
+                </p>
+                <p style="margin: 0 0 12px;"><strong>Schedule:</strong> {{ schedule_name }}</p>
+                <p style="margin: 0 0 8px;"><strong>Layer:</strong> {{ layer_title }}
+                    <span style="color: #666;">({{ layer_id }})</span>
+                </p>
+                <p style="margin: 0 0 8px;"><strong>Country:</strong> {{ country }}</p>
+                {% if map_date %}
+                <p style="margin: 0 0 20px;"><strong>Map date:</strong> {{ map_date }}</p>
+                {% endif %}
+                <p style="margin: 0 0 20px;">
+                    A new {{ format_label }} map from your export schedule is ready to download.
+                </p>
+                <div class="button-container" style="text-align: center; margin: 20px 0;">
+                    <a href="{{ download_url }}" target="_blank" rel="noopener noreferrer"
+                        aria-label="Download scheduled map export (opens in a new tab)" class="button"
+                        style="display: inline-block; text-align: center; background: rgba(99, 178, 189, 1); color: black; padding: 12px; text-decoration: none; border-radius: 5px; white-space: nowrap; font-weight: 600;">
+                        <span style="vertical-align: middle">DOWNLOAD MAP</span>
+                        <img src="cid:arrow-forward-icon" alt=""
+                            style="width: 16px; height: 16px; vertical-align: middle; margin-left: 6px;">
+                    </a>
+                </div>
+                <p style="margin-top: 20px;">
+                    The download link above is valid for {{ link_expiry_days }} days. After it expires, you can
+                    download the latest map for this schedule from the PRISM admin interface:
+                    <a href="{{ admin_schedules_url }}" style="color: rgba(99, 178, 189, 1); font-weight: 600;">Map export schedules</a>.
+                </p>
+                {% if prism_url %}
+                <p style="margin-top: 16px;">
+                    <a href="{{ prism_url }}" style="color: rgba(99, 178, 189, 1); font-weight: 600;">Open this map in PRISM</a>
+                </p>
+                {% endif %}
+                <p class="gray-box"
+                    style="background-color: rgba(241, 241, 241, 1); padding: 20px; margin-top: 20px; color: black;">
+                    <strong>Disclaimer</strong>: This message was automatically generated when a scheduled map export completed in PRISM. It does not represent an official government or WFP hazard activation.
+                </p>
+            </div>
+        </main>
+        <footer class="footer"
+            style="font-size: 12px; color: white; padding-top: 15px; width: 100%; background-color: rgba(99, 178, 189, 1);">
+            <p class="title"
+                style="margin-bottom: 15px; font-size: 20px; font-weight: 500; line-height: 23.44px; text-align: center;">
+                PRISM</p>
+            <p style="margin-bottom: 15px; text-align: center;">This message was automatically generated.</p>
+            <p style="background-color:black; text-align: center; vertical-align: middle; padding:5px">Legal notice
+                Data Protection Policy</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,19 @@
+PRISM SCHEDULED MAP EXPORT — {{ heading_title }}
+
+Scheduled map export — WFP PRISM.
+
+Schedule: {{ schedule_name }}
+Layer: {{ layer_title }} ({{ layer_id }})
+Country: {{ country }}
+{% if map_date %}Map date: {{ map_date }}
+{% endif %}
+A new {{ format_label }} map from your export schedule is ready to download.
+
+Download map: {{ download_url }}
+
+The download link is valid for {{ link_expiry_days }} days. After it expires, download the latest map for this schedule from the PRISM admin interface:
+{{ admin_schedules_url }}
+
+{% if prism_url %}Open in PRISM: {{ prism_url }}
+{% endif %}
+Disclaimer: This message was automatically generated when a scheduled map export completed in PRISM. It does not represent an official government or WFP hazard activation.
