@@ -75,7 +75,7 @@ export const opacityStateSlice = createSlice({
         // see https://github.com/maplibre/maplibre-gl-js/issues/3373
         // TODO - check if the above issue got resolved from time to time.
 
-        map.style._updateLayer(mapLayerId as any);
+        map.triggerRepaint();
       }
 
       if (callback !== undefined) {

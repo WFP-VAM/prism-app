@@ -19,7 +19,7 @@ import { loadStormIcons } from 'components/MapView/Layers/AnticipatoryActionStor
 import GeojsonDataLayer from 'components/MapView/Layers/GeojsonDataLayer';
 import { ensureSDFIconsLoaded } from 'components/MapView/Layers/icon-utils';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
-import { mapStyle } from 'components/MapView/Map/utils';
+import { initMapProjection, mapStyle } from 'components/MapView/Map/utils';
 import { DiscriminateUnion, LayerType, Panel } from 'config/types';
 import { addNotification } from 'context/notificationStateSlice';
 import maplibregl from 'maplibre-gl';
@@ -322,17 +322,17 @@ function MapExportLayout({
   }, [bounds]);
 
   const loadDataLayerAssets = useCallback(
-    (map: maplibregl.Map | undefined) => {
+    async (map: maplibregl.Map | undefined) => {
       if (!map) {
         return;
       }
 
-      Promise.all(
-        adminLevelLayersWithFillPattern.map(layer =>
+      await Promise.all([
+        ...adminLevelLayersWithFillPattern.map(layer =>
           addFillPatternImagesInMap(layer, map),
         ),
-      );
-      loadStormIcons(map, false);
+        loadStormIcons(map, false),
+      ]);
       ensureSDFIconsLoaded(map);
     },
     [adminLevelLayersWithFillPattern],
@@ -437,6 +437,8 @@ function MapExportLayout({
 
     const map = baseMapRef.current?.getMap();
     if (map) {
+      initMapProjection(map);
+
       const { layers } = map.getStyle();
       const symbolLayer = layers?.find(layer => layer.type === 'symbol');
       if (symbolLayer) {
@@ -668,7 +670,7 @@ function MapExportLayout({
         <MapGL
           ref={baseMapRef}
           dragRotate={false}
-          preserveDrawingBuffer
+          canvasContextAttributes={{ preserveDrawingBuffer: true }}
           initialViewState={effectiveInitialViewState}
           onLoad={handleBaseMapLoad}
           mapStyle={basemapMapStyle}

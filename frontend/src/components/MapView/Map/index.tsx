@@ -56,7 +56,7 @@ import { useMapState } from 'utils/useMapState';
 
 import AnticipatoryActionFloodLayer from '../Layers/AnticipatoryActionFloodLayer';
 import GeojsonDataLayer from '../Layers/GeojsonDataLayer';
-import { mapStyle } from './utils';
+import { initMapProjection, mapStyle } from './utils';
 
 initPmtilesProtocol();
 
@@ -228,6 +228,8 @@ const MapComponent = memo(
         }
         const map = mapRef.current.getMap();
 
+        initMapProjection(map);
+
         const { layers } = map.getStyle();
         // Find the first symbol on the map to make sure we add boundary layers below them.
         setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
@@ -322,7 +324,7 @@ const MapComponent = memo(
         key={smDown ? 'mobile' : 'desktop'}
         ref={mapRef}
         // preserveDrawingBuffer is required for the map to be exported as an image. Used in reportDoc.tsx
-        preserveDrawingBuffer
+        canvasContextAttributes={{ preserveDrawingBuffer: true }}
         dragRotate={false}
         minZoom={minZoom}
         maxZoom={maxZoom}

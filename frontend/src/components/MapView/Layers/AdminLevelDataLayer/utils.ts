@@ -17,7 +17,7 @@ const createFillPatternsForLayerLegends = async (
     ),
   );
 
-const addFillPatternImageInMap = (
+const addFillPatternImageInMap = async (
   layer: AdminLevelDataLayerProps,
   map: Map | undefined,
   index: number,
@@ -30,29 +30,21 @@ const addFillPatternImageInMap = (
   ) {
     return;
   }
-  map.loadImage(convertedImage, (err: any, image) => {
-    // Throw an error if something goes wrong.
-    if (err) {
-      throw err;
-    }
-    if (!image) {
-      return;
-    }
-    // Add the image to the map style if it doesn't already exist
-    const imageId = `fill-pattern-${layer.id}-legend-${index}`;
-    if (!map.hasImage(imageId)) {
-      // Add the image since it doesn't exist
-      map.addImage(imageId, image, { pixelRatio: 4 });
-    }
-  });
+  const { data: image } = await map.loadImage(convertedImage);
+  const imageId = `fill-pattern-${layer.id}-legend-${index}`;
+  if (!map.hasImage(imageId)) {
+    map.addImage(imageId, image, { pixelRatio: 4 });
+  }
 };
 
 export const addFillPatternImagesInMap = async (
   layer: AdminLevelDataLayerProps,
-  map: any,
+  map: Map | undefined,
 ) => {
   const fillPatternsForLayer = await createFillPatternsForLayerLegends(layer);
-  fillPatternsForLayer.forEach((base64Image, index) => {
-    addFillPatternImageInMap(layer, map, index, base64Image);
-  });
+  await Promise.all(
+    fillPatternsForLayer.map((base64Image, index) =>
+      addFillPatternImageInMap(layer, map, index, base64Image),
+    ),
+  );
 };
