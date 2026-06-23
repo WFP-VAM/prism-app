@@ -39,7 +39,6 @@ yarn-error.log*
 .idea/
 .log/
 *.bak
-.cursor/
 
 # ignore shared code packages build files
 packages/*/dist/
