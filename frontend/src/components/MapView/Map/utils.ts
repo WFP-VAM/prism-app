@@ -7,9 +7,14 @@ export const mapStyle =
 /** Canvas/container fallback behind the WebGL globe (matches app lightGrey). */
 export const mapBackdropColor = '#637178';
 
-/** Applied via MapGL `projection` prop (re-applied on style.load by react-map-gl). */
+/** Globe projection for universal landing view and zoom-to-country animation. */
 export const mapProjection: ProjectionSpecification = {
   type: 'globe',
+};
+
+/** Flat projection used after country zoom completes and in non-landing views. */
+export const mapFlatProjection: ProjectionSpecification = {
+  type: 'mercator',
 };
 
 /** Light gray sky/atmosphere for globe projection (re-applied on style.load by react-map-gl). */

@@ -55,13 +55,20 @@ import {
 import { initPmtilesProtocol } from 'utils/pmtiles-utils';
 import {
   getUniversalLandingView,
+  isUniversalDeployment,
   isUniversalLandingMode,
 } from 'utils/universal-utils';
 import { useMapState } from 'utils/useMapState';
 
 import AnticipatoryActionFloodLayer from '../Layers/AnticipatoryActionFloodLayer';
 import GeojsonDataLayer from '../Layers/GeojsonDataLayer';
-import { mapBackdropColor, mapProjection, mapSky, mapStyle } from './utils';
+import {
+  mapBackdropColor,
+  mapFlatProjection,
+  mapProjection,
+  mapSky,
+  mapStyle,
+} from './utils';
 
 initPmtilesProtocol();
 
@@ -122,6 +129,10 @@ const MapComponent = memo(
     const { iso3 } = useCountryIso();
     const universalLandingView = getUniversalLandingView();
     const isUniversalLanding = isUniversalLandingMode(iso3);
+    const [projection, setProjection] = useState(() =>
+      isUniversalLandingMode(iso3) ? mapProjection : mapFlatProjection,
+    );
+    const isGlobeProjection = projection.type === 'globe';
     const selectedMap = mapState?.maplibreMap();
     const isGlobalMap = mapState?.isGlobalMap;
     const dashboardMode = useSelector(dashboardModeSelector);
@@ -317,6 +328,29 @@ const MapComponent = memo(
       });
     }, [hideMapLabels]);
 
+    useEffect(() => {
+      const map = mapRef.current?.getMap();
+      if (!map) {
+        return undefined;
+      }
+
+      if (isUniversalLanding) {
+        setProjection(mapProjection);
+        return undefined;
+      }
+
+      if (!isUniversalDeployment()) {
+        setProjection(mapFlatProjection);
+        return undefined;
+      }
+
+      const switchToFlat = () => setProjection(mapFlatProjection);
+      map.once('moveend', switchToFlat);
+      return () => {
+        map.off('moveend', switchToFlat);
+      };
+    }, [iso3, isUniversalLanding, selectedMap]);
+
     // Use captured viewport if available and not in edit mode
     const initialBounds =
       isUniversalLanding && universalLandingView
@@ -350,12 +384,12 @@ const MapComponent = memo(
               }),
         }}
         mapStyle={mapStyle}
-        projection={mapProjection}
-        sky={mapSky}
+        projection={projection}
+        sky={isGlobeProjection ? mapSky : undefined}
         style={{
           width: '100%',
           height: '100%',
-          background: mapBackdropColor,
+          ...(isGlobeProjection ? { background: mapBackdropColor } : {}),
         }}
         onLoad={onMapLoadWithLabelFilter}
         onClick={mapOnClick}
