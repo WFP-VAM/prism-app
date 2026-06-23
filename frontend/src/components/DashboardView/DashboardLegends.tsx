@@ -30,14 +30,21 @@ const DashboardLegends = memo(
       return null;
     }
 
+    // position: 0 = top-left, 1 = top-right, 2 = bottom-left, 3 = bottom-right
+    const isBottom = position >= 2;
+    const isLeft = position % 2 === 0;
     return (
       <aside
         className={classes.container}
         style={{
-          left: position % 2 === 0 ? '12px' : 'auto',
-          right: position % 2 === 0 ? 'auto' : '12px',
+          top: isBottom ? 'auto' : '8px',
+          bottom: isBottom ? '8px' : 'auto',
+          left: isLeft ? '12px' : 'auto',
+          right: isLeft ? 'auto' : '12px',
           transform: `scale(${scale})`,
-          transformOrigin: position % 2 === 0 ? 'top left' : 'top right',
+          transformOrigin: `${isBottom ? 'bottom' : 'top'} ${
+            isLeft ? 'left' : 'right'
+          }`,
         }}
       >
         <LegendItemsList forPrinting={mode !== DashboardMode.EDIT} />

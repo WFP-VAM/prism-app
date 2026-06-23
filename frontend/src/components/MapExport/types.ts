@@ -62,7 +62,7 @@ export interface ExportParams {
   // Position/scale options
   logoPosition: number; // 0 = left, 1 = right
   logoScale: number; // 0.5, 1, 1.5
-  legendPosition: number; // 0 = left, 1 = right
+  legendPosition: number; // 0 = top-left, 1 = top-right, 2 = bottom-left, 3 = bottom-right; -1 = hidden
   legendScale: number; // 0.5 to 1 (50% to 100%)
   bottomLogoScale: number; // 0.5, 1, 1.5
 

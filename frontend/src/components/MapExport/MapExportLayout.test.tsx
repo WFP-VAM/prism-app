@@ -24,10 +24,17 @@ jest.mock('components/MapView/Legends/LegendItemsList', () => {
   const React = require('react');
   return {
     __esModule: true,
-    default: ({ legendGraphicDpi }: { legendGraphicDpi?: number }) =>
+    default: ({
+      legendGraphicDpi,
+      listStyle,
+    }: {
+      legendGraphicDpi?: number;
+      listStyle?: string;
+    }) =>
       React.createElement('div', {
         'data-testid': 'legend-items',
         'data-legend-graphic-dpi': legendGraphicDpi,
+        className: listStyle,
       }),
   };
 });
@@ -323,6 +330,214 @@ describe('MapExportLayout', () => {
       'data-legend-graphic-dpi',
       '192',
     );
+  });
+
+  test('positions legend top-left when legendPosition is 0', () => {
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout {...defaultProps} legendPosition={0} />
+        </ThemeProvider>
+      </Provider>,
+    );
+    const legend = getByTestId('legend-items').parentElement as HTMLElement;
+    expect(legend.style.left).toBe('8px');
+    expect(legend.style.right).toBe('auto');
+    expect(legend.style.top).not.toBe('');
+    expect(legend.style.bottom).toBe('auto');
+    expect(legend.style.transformOrigin).toBe('top left');
+  });
+
+  test('positions legend top-right when legendPosition is 1', () => {
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout {...defaultProps} legendPosition={1} />
+        </ThemeProvider>
+      </Provider>,
+    );
+    const legend = getByTestId('legend-items').parentElement as HTMLElement;
+    expect(legend.style.left).toBe('auto');
+    expect(legend.style.right).toBe('8px');
+    expect(legend.style.top).not.toBe('');
+    expect(legend.style.bottom).toBe('auto');
+    expect(legend.style.transformOrigin).toBe('top right');
+  });
+
+  test('positions legend bottom-left when legendPosition is 2', () => {
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout {...defaultProps} legendPosition={2} />
+        </ThemeProvider>
+      </Provider>,
+    );
+    const legend = getByTestId('legend-items').parentElement as HTMLElement;
+    expect(legend.style.left).toBe('8px');
+    expect(legend.style.right).toBe('auto');
+    expect(legend.style.top).toBe('auto');
+    // (footerHeight || 20) + 10, no bottom logo clearance
+    expect(legend.style.bottom).toBe('30px');
+    expect(legend.style.transformOrigin).toBe('bottom left');
+    // The inner list must anchor to the bottom so it grows upward (not hidden
+    // behind the footer).
+    expect(getByTestId('legend-items').className).toMatch(
+      /legendListStyleBottom/,
+    );
+  });
+
+  test('positions legend bottom-right when legendPosition is 3', () => {
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout {...defaultProps} legendPosition={3} />
+        </ThemeProvider>
+      </Provider>,
+    );
+    const legend = getByTestId('legend-items').parentElement as HTMLElement;
+    expect(legend.style.left).toBe('auto');
+    expect(legend.style.right).toBe('8px');
+    expect(legend.style.top).toBe('auto');
+    expect(legend.style.bottom).toBe('30px');
+    expect(legend.style.transformOrigin).toBe('bottom right');
+  });
+
+  test('lifts a bottom-left legend above the bottom logo', () => {
+    const toggles = { ...defaultToggles, bottomLogoVisibility: true };
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout
+            {...defaultProps}
+            toggles={toggles}
+            bottomLogo="test-bottom-logo.png"
+            legendPosition={2}
+          />
+        </ThemeProvider>
+      </Provider>,
+    );
+    const legend = getByTestId('legend-items').parentElement as HTMLElement;
+    // base 30 + clearance (32 logo height + 14 gap) = 76
+    expect(legend.style.bottom).toBe('76px');
+  });
+
+  test('keeps north arrow bottom-right unless legend is bottom-right', () => {
+    const { container } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout {...defaultProps} legendPosition={2} />
+        </ThemeProvider>
+      </Provider>,
+    );
+    const northArrow = container.querySelector(
+      'img[alt="northArrow"]',
+    ) as HTMLElement;
+    expect(northArrow.style.right).toBe('10px');
+    expect(northArrow.style.left).toBe('auto');
+  });
+
+  test('moves north arrow to bottom-left when legend is bottom-right', () => {
+    const { container } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout {...defaultProps} legendPosition={3} />
+        </ThemeProvider>
+      </Provider>,
+    );
+    const northArrow = container.querySelector(
+      'img[alt="northArrow"]',
+    ) as HTMLElement;
+    expect(northArrow.style.left).toBe('10px');
+    expect(northArrow.style.right).toBe('auto');
+  });
+
+  const withInjectedScaleBar = (cb: (scale: HTMLElement) => void) => {
+    const scale = document.createElement('div');
+    scale.className = 'maplibregl-ctrl maplibregl-ctrl-scale';
+    document.body.appendChild(scale);
+    try {
+      cb(scale);
+    } finally {
+      scale.parentElement?.removeChild(scale);
+    }
+  };
+
+  test('relocates the scale bar under the north arrow (bottom-left) when legend is bottom-right', () => {
+    withInjectedScaleBar(scale => {
+      const { getByTestId } = render(
+        <Provider store={store}>
+          <ThemeProvider theme={createTheme()}>
+            <MapExportLayout {...defaultProps} legendPosition={3} />
+          </ThemeProvider>
+        </Provider>,
+      );
+      const anchor = getByTestId('scale-anchor');
+      // scale bar pulled out of MapLibre's group into our anchor
+      expect(scale.parentElement).toBe(anchor);
+      // anchor shares the north arrow's left edge
+      expect(anchor.style.left).toBe('10px');
+      expect(anchor.style.right).toBe('auto');
+    });
+  });
+
+  test('keeps the relocated scale bar on the right for other legend positions', () => {
+    withInjectedScaleBar(scale => {
+      const { getByTestId } = render(
+        <Provider store={store}>
+          <ThemeProvider theme={createTheme()}>
+            <MapExportLayout {...defaultProps} legendPosition={2} />
+          </ThemeProvider>
+        </Provider>,
+      );
+      const anchor = getByTestId('scale-anchor');
+      expect(scale.parentElement).toBe(anchor);
+      expect(anchor.style.right).toBe('10px');
+      expect(anchor.style.left).toBe('auto');
+    });
+  });
+
+  test('keeps the scale bar aligned directly beneath the north arrow', () => {
+    withInjectedScaleBar(() => {
+      const { getByTestId, container } = render(
+        <Provider store={store}>
+          <ThemeProvider theme={createTheme()}>
+            <MapExportLayout {...defaultProps} legendPosition={3} />
+          </ThemeProvider>
+        </Provider>,
+      );
+      const anchor = getByTestId('scale-anchor');
+      const northArrow = container.querySelector(
+        'img[alt="northArrow"]',
+      ) as HTMLElement;
+      // Same horizontal anchor, north arrow sits 30px above the scale bar.
+      expect(anchor.style.left).toBe(northArrow.style.left);
+      expect(anchor.style.right).toBe(northArrow.style.right);
+      const arrowBottom = parseInt(northArrow.style.bottom, 10);
+      const scaleBottom = parseInt(anchor.style.bottom, 10);
+      expect(arrowBottom - scaleBottom).toBe(30);
+    });
+  });
+
+  test('lifts the relocated north arrow above the bottom logo', () => {
+    const toggles = { ...defaultToggles, bottomLogoVisibility: true };
+    const { container } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapExportLayout
+            {...defaultProps}
+            toggles={toggles}
+            bottomLogo="test-bottom-logo.png"
+            legendPosition={3}
+          />
+        </ThemeProvider>
+      </Provider>,
+    );
+    const northArrow = container.querySelector(
+      'img[alt="northArrow"]',
+    ) as HTMLElement;
+    // baseHeight (footerHeight||12 = 12, + 8 = 20) + 40 + clearance 46 = 106
+    expect(northArrow.style.left).toBe('10px');
+    expect(northArrow.style.bottom).toBe('106px');
   });
 
   test('applies footer text size correctly', () => {

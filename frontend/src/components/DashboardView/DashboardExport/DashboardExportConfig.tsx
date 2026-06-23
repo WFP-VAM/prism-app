@@ -142,20 +142,20 @@ const legendScaleSelectorOptions = [
 
 const legendPositionOptions = [
   {
-    value: 0,
-    comp: (
-      <Icon style={{ color: 'black', transform: 'rotate(90deg)' }}>
-        vertical_align_bottom
-      </Icon>
-    ),
+    value: 0, // top-left
+    comp: <Icon style={{ color: 'black' }}>north_west</Icon>,
   },
   {
-    value: 1,
-    comp: (
-      <Icon style={{ color: 'black', transform: 'rotate(270deg)' }}>
-        vertical_align_bottom
-      </Icon>
-    ),
+    value: 1, // top-right
+    comp: <Icon style={{ color: 'black' }}>north_east</Icon>,
+  },
+  {
+    value: 2, // bottom-left
+    comp: <Icon style={{ color: 'black' }}>south_west</Icon>,
+  },
+  {
+    value: 3, // bottom-right
+    comp: <Icon style={{ color: 'black' }}>south_east</Icon>,
   },
 ];
 

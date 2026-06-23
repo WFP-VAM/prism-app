@@ -149,6 +149,9 @@ function MapExportLayout({
   const classes = useStyles();
   const dispatch = useDispatch();
   const northArrowRef = useRef<HTMLImageElement>(null);
+  // Empty container we relocate MapLibre's scale bar into, so it shares the
+  // north arrow's coordinate space and stays glued directly beneath it.
+  const scaleAnchorRef = useRef<HTMLDivElement>(null);
   const baseMapRef = React.useRef<MapRef>(null);
 
   // Track container dimensions to calculate proper map size
@@ -274,27 +277,62 @@ function MapExportLayout({
     return `${t('Data coverage')}: ${coverageText}`;
   }, [layersCoverage, t]);
 
+  // Whether a bottom-left logo is rendered, and how much vertical room it needs.
+  // Other bottom-left content (legend / scale bar / north arrow) stacks above it.
+  const bottomLogoVisible = !!(
+    toggles.bottomLogoVisibility && getImageUrl(bottomLogo)
+  );
+  const bottomLogoHeight = 32 * bottomLogoScale;
+  const bottomLeftLogoClearance = bottomLogoVisible ? bottomLogoHeight + 14 : 0;
+
+  // Legend corner: 0 = top-left, 1 = top-right, 2 = bottom-left, 3 = bottom-right.
+  const isLegendBottom = legendPosition >= 2;
+  const isLegendLeft = legendPosition % 2 === 0;
+
   const updateScaleBarAndNorthArrow = useCallback(() => {
     const elem = document.querySelector(
       '.maplibregl-ctrl-scale',
-    ) as HTMLElement;
+    ) as HTMLElement | null;
 
     // this takes into account the watermark
     const baseHeight = (footerHeight || 12) + 8;
 
-    if (elem) {
+    // The north arrow and scale bar live bottom-right by default, but that
+    // conflicts with a bottom-right legend, so in that case they move to the
+    // bottom-left (and lift above the bottom logo if one is present there).
+    const moveToLeft = legendPosition === 3;
+    const leftClearance = moveToLeft ? bottomLeftLogoClearance : 0;
+    const horizontal = moveToLeft
+      ? { left: '10px', right: 'auto' }
+      : { left: 'auto', right: '10px' };
+
+    // MapLibre's scale bar is a floated child of its own absolutely-positioned
+    // control group, so styling it in place fights the group's anchoring. Pull
+    // it out into our own anchor (a sibling of the north arrow) so we control it
+    // directly and it always stays glued beneath the north arrow.
+    if (elem && scaleAnchorRef.current) {
+      if (elem.parentElement !== scaleAnchorRef.current) {
+        scaleAnchorRef.current.appendChild(elem);
+      }
       Object.assign(elem.style, {
-        position: 'absolute',
-        right: '10px',
-        bottom: `${baseHeight + 10}px`,
+        position: 'static',
+        float: 'none',
         margin: 0,
       });
     }
 
-    if (northArrowRef.current) {
-      northArrowRef.current.style.bottom = `${baseHeight + 40}px`;
+    if (scaleAnchorRef.current) {
+      Object.assign(scaleAnchorRef.current.style, horizontal, {
+        bottom: `${baseHeight + 10 + leftClearance}px`,
+      });
     }
-  }, [footerHeight]);
+
+    if (northArrowRef.current) {
+      Object.assign(northArrowRef.current.style, horizontal, {
+        bottom: `${baseHeight + 40 + leftClearance}px`,
+      });
+    }
+  }, [footerHeight, legendPosition, bottomLeftLogoClearance]);
 
   useEffect(() => {
     updateScaleBarAndNorthArrow();
@@ -558,6 +596,18 @@ function MapExportLayout({
         src={iconNorthArrow}
         alt="northArrow"
       />
+      {/* MapLibre's scale bar is relocated into this anchor at runtime so it
+          stays directly beneath the north arrow (see updateScaleBarAndNorthArrow). */}
+      <div
+        ref={scaleAnchorRef}
+        data-testid="scale-anchor"
+        style={{
+          position: 'absolute',
+          zIndex: 3,
+          bottom: `${(footerHeight || 20) + 10}px`,
+          right: '10px',
+        }}
+      />
       {titleText && (
         <div
           ref={titleRef}
@@ -633,27 +683,40 @@ function MapExportLayout({
           style={{
             position: 'absolute',
             zIndex: 2,
-            // Position legend below title bar (use measured height or fallback)
-            // When titleText exists but titleHeight hasn't been measured yet, use a minimum offset
-            top:
-              (titleText ? Math.max(titleHeight, 48) : titleHeight) +
-              (!titleText && logoPosition === legendPosition
-                ? logoHeight + 4
-                : 0),
-            left: legendPosition % 2 === 0 ? '8px' : 'auto',
-            right: legendPosition % 2 === 0 ? 'auto' : '8px',
+            // Top positions sit below the title bar (measured height or fallback);
+            // bottom positions sit above the footer, lifting over the bottom logo
+            // when the legend shares its (left) side.
+            top: isLegendBottom
+              ? 'auto'
+              : (titleText ? Math.max(titleHeight, 48) : titleHeight) +
+                (!titleText && logoPosition === legendPosition
+                  ? logoHeight + 4
+                  : 0),
+            bottom: isLegendBottom
+              ? `${
+                  (footerHeight || 20) +
+                  10 +
+                  (isLegendLeft ? bottomLeftLogoClearance : 0)
+                }px`
+              : 'auto',
+            left: isLegendLeft ? '8px' : 'auto',
+            right: isLegendLeft ? 'auto' : '8px',
             display: 'flex',
-            justifyContent:
-              legendPosition % 2 === 0 ? 'flex-start' : 'flex-end',
+            justifyContent: isLegendLeft ? 'flex-start' : 'flex-end',
             width: '20px',
             transform: `scale(${legendScale})`,
-            transformOrigin:
-              legendPosition % 2 === 0 ? 'top left' : 'top right',
+            transformOrigin: `${isLegendBottom ? 'bottom' : 'top'} ${
+              isLegendLeft ? 'left' : 'right'
+            }`,
           }}
         >
           <LegendItemsList
             forPrinting
-            listStyle={classes.legendListStyle}
+            listStyle={
+              isLegendBottom
+                ? classes.legendListStyleBottom
+                : classes.legendListStyle
+            }
             showDescription={toggles.fullLayerDescription}
             legendGraphicDpi={signalExportReady ? 192 : undefined}
             overrideLayers={
@@ -809,6 +872,13 @@ const useStyles = makeStyles(() =>
     legendListStyle: {
       position: 'absolute',
       top: '8px',
+      zIndex: 2,
+    },
+    // Anchored to the bottom so the legend grows upward for bottom positions.
+    legendListStyleBottom: {
+      position: 'absolute',
+      bottom: '8px',
+      top: 'auto',
       zIndex: 2,
     },
     sameRowToggles: {

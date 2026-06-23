@@ -64,6 +64,8 @@ interface ToggleSelectorProps {
   }[];
   iconProp?: number;
   align?: 'start' | 'end';
+  /** Lay the options out as a 2-per-row square grid instead of a single row. */
+  square?: boolean;
   setValue: (v: number | string) => void;
 }
 
@@ -78,6 +80,12 @@ const toggleSelectorStyles = makeStyles(() => ({
     },
   },
   buttonGroup: { display: 'flex' },
+  // Wrap the options into a 2-column square (e.g. the 4 corner positions).
+  buttonGroupSquare: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    width: '36px',
+  },
   button: {
     backgroundColor: 'white',
     height: '32px',
@@ -85,6 +93,12 @@ const toggleSelectorStyles = makeStyles(() => ({
     padding: '4px',
     fontSize: '0.8rem',
     borderLeft: '1px solid rgba(0, 0, 0, 0.12) !important',
+  },
+  // Half-size buttons for the compact 2x2 square (matches the reduced icons).
+  buttonSquare: {
+    height: '16px',
+    width: '18px',
+    padding: '2px',
   },
 }));
 
@@ -94,6 +108,7 @@ function ToggleSelector({
   value,
   iconProp: _iconProp,
   align,
+  square,
   setValue,
 }: ToggleSelectorProps) {
   const classes = toggleSelectorStyles();
@@ -108,13 +123,15 @@ function ToggleSelector({
       <ToggleButtonGroup
         value={value}
         exclusive
-        className={classes.buttonGroup}
+        className={square ? classes.buttonGroupSquare : classes.buttonGroup}
         style={{ justifyContent: align }}
       >
         {options.map(x => (
           <ToggleButton
             key={x.value}
-            className={classes.button}
+            className={`${classes.button}${
+              square ? ` ${classes.buttonSquare}` : ''
+            }`}
             value={x.value}
             onClick={() => {
               setValue(x.value);
@@ -227,27 +244,24 @@ const legendScaleSelectorOptions = [
   { value: 1, comp: <div>100%</div> },
 ];
 
+// Half the default Material icon size (1.5rem) so the 2x2 position grid stays compact.
+const legendPositionIconStyle = { color: 'black', fontSize: '0.75rem' };
 const legendPositionOptions = [
   {
-    value: 0,
-    comp: (
-      <Icon
-        style={{
-          color: 'black',
-          transform: 'rotate(90deg)',
-        }}
-      >
-        vertical_align_bottom
-      </Icon>
-    ),
+    value: 0, // top-left
+    comp: <Icon style={legendPositionIconStyle}>north_west</Icon>,
   },
   {
-    value: 1,
-    comp: (
-      <Icon style={{ color: 'black', transform: 'rotate(270deg)' }}>
-        vertical_align_bottom
-      </Icon>
-    ),
+    value: 1, // top-right
+    comp: <Icon style={legendPositionIconStyle}>north_east</Icon>,
+  },
+  {
+    value: 2, // bottom-left
+    comp: <Icon style={legendPositionIconStyle}>south_west</Icon>,
+  },
+  {
+    value: 3, // bottom-right
+    comp: <Icon style={legendPositionIconStyle}>south_east</Icon>,
   },
 ];
 
@@ -657,6 +671,7 @@ function PrintConfig() {
                   value={legendPosition > -1 ? legendPosition : -1}
                   options={legendPositionOptions}
                   iconProp={legendPosition}
+                  square
                   setValue={(v: number | string) =>
                     setLegendPosition(Number(v))
                   }
