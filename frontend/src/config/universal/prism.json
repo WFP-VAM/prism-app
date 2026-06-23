@@ -10,7 +10,7 @@
   "map": {
     "boundingBox": [-180, -85, 180, 85],
     "landingView": {
-      "bounds": [-18, -36, 54, 38],
+      "bounds": [5, -10, 95, 55],
       "padding": {
         "top": 70,
         "right": 30,
