@@ -8,6 +8,7 @@ import sqlalchemy as sa
 from markupsafe import escape
 from sqlalchemy import Column, DateTime, ForeignKey, String, Text, text
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
+from sqlalchemy.orm import relationship
 from sqlmodel import Field, Relationship, SQLModel
 
 
@@ -79,5 +80,19 @@ class UserPermission(SQLModel, table=True):
             server_default=sa.text("now()"),
         ),
     )
-    user: "User" = Relationship()
-    permission: Permission = Relationship()
+    user: "User" = Relationship(
+        sa_relationship=relationship(
+            "User",
+            primaryjoin="UserPermission.user_id == User.id",
+            foreign_keys="UserPermission.user_id",
+            uselist=False,
+        ),
+    )
+    permission: Permission = Relationship(
+        sa_relationship=relationship(
+            Permission,
+            primaryjoin="UserPermission.permission_id == Permission.id",
+            foreign_keys="UserPermission.permission_id",
+            uselist=False,
+        ),
+    )
