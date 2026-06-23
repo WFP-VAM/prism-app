@@ -4,6 +4,7 @@
   "alertFormActive": false,
   "enableNavigationDropdown": true,
   "anticipatoryActionDroughtUrl": "data/zambia/aa_probabilities_triggers_zambia.csv",
+  "anticipatoryActionDroughtStagingUrl": "https://hip-workshop-sharing-public-eu-central-1-485262375119.s3.eu-central-1.amazonaws.com/anticipatory-action/zmb/prism/aa_probabilities_triggers_zmb.csv",
   "serversUrls": {
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
