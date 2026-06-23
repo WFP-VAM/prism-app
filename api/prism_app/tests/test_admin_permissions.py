@@ -1,6 +1,9 @@
 """Admin panel permission helpers and view gates."""
 
-from prism_app.admin import AlertView
+from uuid import uuid4
+
+import pytest
+from prism_app.admin import AlertView, UserPermissionView
 from prism_app.admin_map_export import MapExportScheduleView
 from prism_app.auth.admin_request import (
     request_can_manage_dashboards,
@@ -18,7 +21,11 @@ from prism_app.auth.permission_codes import (
 )
 from prism_app.database.alert_model import AlertModel
 from prism_app.database.map_export_schedule_model import MapExportSchedule
+from prism_app.database.permission_model import Permission, UserPermission
+from prism_app.database.user_model import User
 from starlette.requests import Request
+from starlette_admin._types import RequestAction
+from starlette_admin.exceptions import FormValidationError
 
 
 def _request_with_codes(codes: set[str]) -> Request:
@@ -76,3 +83,54 @@ def test_map_export_manager_sees_only_schedule_view_in_admin() -> None:
 
     assert schedule_view.is_accessible(request) is True
     assert alert_view.is_accessible(request) is False
+
+
+def _admin_create_request() -> Request:
+    scope = {
+        "type": "http",
+        "method": "POST",
+        "path": "/admin/user-permission/create",
+        "headers": [],
+    }
+    request = Request(scope)
+    request.state.action = RequestAction.CREATE
+    return request
+
+
+def test_user_permission_relationship_assign_does_not_sync_fk_columns() -> None:
+    """Starlette-admin sets relationships; SQLModel leaves FK columns unset without help."""
+    user = User(id=uuid4(), ciam_sub="ciam-sub")
+    permission = Permission(id=uuid4(), code="prism.admin.access", label="Admin")
+    link = UserPermission()
+    link.user = user
+    link.permission = permission
+    assert link.user_id is None
+    assert link.permission_id is None
+
+
+@pytest.mark.asyncio
+async def test_user_permission_populate_obj_sets_foreign_keys() -> None:
+    view = UserPermissionView(UserPermission)
+    request = _admin_create_request()
+    user = User(id=uuid4(), ciam_sub="ciam-sub")
+    permission = Permission(id=uuid4(), code="prism.admin.access", label="Admin")
+    data = {"user": user, "permission": permission, "granted_at": None}
+
+    obj = await view._populate_obj(request, UserPermission(), data)
+
+    assert obj.user_id == user.id
+    assert obj.permission_id == permission.id
+
+
+@pytest.mark.asyncio
+async def test_user_permission_validate_requires_user_and_permission() -> None:
+    view = UserPermissionView(UserPermission)
+    request = _admin_create_request()
+
+    with pytest.raises(FormValidationError) as exc_info:
+        await view.validate(request, {"user": None, "permission": None})
+
+    assert exc_info.value.errors == {
+        "user": "Select a user.",
+        "permission": "Select a permission.",
+    }

@@ -12,7 +12,9 @@ from prism_app.database.kobo_user_model import KoboUser
 from prism_app.database.permission_model import Permission, UserPermission
 from prism_app.database.user_model import User
 from starlette.requests import Request
+from starlette_admin import HasOne
 from starlette_admin.contrib.sqla import Admin, ModelView
+from starlette_admin.exceptions import FormValidationError
 
 
 class PrismGatedModelView(ModelView):
@@ -110,8 +112,38 @@ class UserPermissionView(PrismGatedModelView):
     """Grant or revoke capability codes (e.g. ``prism.admin.access``, ``prism.content.view``)."""
 
     label = "User permissions"
-    fields = ("user", "permission", "granted_at")
+    fields = (
+        HasOne("user", label="User", identity="user"),
+        HasOne("permission", label="Permission", identity="permission"),
+        "granted_at",
+    )
     exclude_fields_from_create = ("granted_at",)  # auto-set to now() by DB default
+
+    async def _populate_obj(
+        self,
+        request: Request,
+        obj: UserPermission,
+        data: dict,
+        is_edit: bool = False,
+    ) -> UserPermission:
+        obj = await super()._populate_obj(request, obj, data, is_edit)
+        user = data.get("user")
+        permission = data.get("permission")
+        if user is not None:
+            obj.user_id = user.id
+        if permission is not None:
+            obj.permission_id = permission.id
+        return obj
+
+    async def validate(self, request: Request, data: dict) -> None:
+        errors: dict[str, str] = {}
+        if data.get("user") is None:
+            errors["user"] = "Select a user."
+        if data.get("permission") is None:
+            errors["permission"] = "Select a permission."
+        if errors:
+            raise FormValidationError(errors)
+        await super().validate(request, data)
 
 
 def register_alerts_admin_views(admin: Admin) -> None:

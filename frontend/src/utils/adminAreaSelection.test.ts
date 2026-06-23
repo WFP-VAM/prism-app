@@ -1,13 +1,17 @@
 import { getAdminBoundaryTree } from 'components/MapView/Layers/BoundaryDropdown/utils';
 import type { BoundaryLayerProps } from 'config/types';
+import * as configUtils from 'config/utils';
 import i18n from 'i18next';
 
 import {
   adminAreaFilenameSegment,
+  adminCodesEqual,
   buildCountryAdminFilenameStem,
   featureMatchesSelectedAdminCode,
   formatAdminAreaRefsForDisplay,
+  normalizeAdminCode,
   resolveAdminAreaRefs,
+  resolveFeaturesForAdminCodes,
   sanitizeFilenamePart,
 } from './adminAreaSelection';
 
@@ -86,6 +90,88 @@ describe('resolveAdminAreaRefs', () => {
     expect(
       resolveAdminAreaRefs(['MZ01' as never], data as never, layer, i18n),
     ).toEqual([{ area_id: 'MZ01', name: 'Cabo Delgado' }]);
+  });
+});
+
+describe('admin code normalization', () => {
+  test('treats numeric and string boundary IDs as equal', () => {
+    expect(adminCodesEqual(4, '4')).toBe(true);
+    expect(normalizeAdminCode(4)).toBe('4');
+  });
+});
+
+describe('resolveFeaturesForAdminCodes', () => {
+  const treeLayer = {
+    id: 'admin_boundaries',
+    adminCode: 'leaf_code',
+    adminLevelCodes: ['parent_code', 'mid_code', 'leaf_code'],
+    adminLevelNames: ['parent_n', 'mid_n', 'leaf_n'],
+    adminLevelLocalNames: ['parent_n', 'mid_n', 'leaf_n'],
+  } as BoundaryLayerProps;
+
+  const treeData = {
+    type: 'FeatureCollection',
+    features: [
+      {
+        type: 'Feature',
+        properties: {
+          parent_n: 'Northern',
+          parent_code: 4,
+          mid_n: 'Jaffna',
+          mid_code: '41',
+          leaf_n: 'Jaffna',
+          leaf_code: '4101',
+        },
+        geometry: { type: 'Point', coordinates: [0, 0] },
+      },
+    ],
+  };
+
+  const admin1Data = {
+    type: 'FeatureCollection',
+    features: [
+      {
+        type: 'Feature',
+        properties: { parent_n: 'Northern', parent_code: 4 },
+        geometry: {
+          type: 'Polygon',
+          coordinates: [
+            [
+              [0, 0],
+              [1, 0],
+              [1, 1],
+              [0, 1],
+              [0, 0],
+            ],
+          ],
+        },
+      },
+    ],
+  };
+
+  test('resolves parent-level polygons when tree stores numeric IDs', () => {
+    jest.spyOn(configUtils, 'getBoundaryLayers').mockReturnValue([
+      {
+        id: 'admin1_boundaries',
+        type: 'boundary',
+        adminCode: 'parent_code',
+        adminLevelCodes: ['parent_code'],
+        adminLevelNames: ['parent_n'],
+        adminLevelLocalNames: ['parent_n'],
+      } as BoundaryLayerProps,
+    ]);
+
+    const features = resolveFeaturesForAdminCodes(
+      ['4' as never],
+      treeData as never,
+      treeLayer,
+      i18n,
+      layerId =>
+        layerId === 'admin1_boundaries' ? (admin1Data as never) : undefined,
+    );
+
+    expect(features).toHaveLength(1);
+    expect(features[0].properties?.parent_code).toBe(4);
   });
 });
 
