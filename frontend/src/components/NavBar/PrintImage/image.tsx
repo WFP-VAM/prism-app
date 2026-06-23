@@ -33,7 +33,6 @@ import {
   buildCountryAdminFilenameStem,
   resolveAdminAreaRefs,
 } from 'utils/adminAreaSelection';
-import { getCachedBoundaryLayerData } from 'utils/boundary-cache';
 import { isBoundaryLayer } from 'utils/boundary-layers-utils';
 import { dateWithoutTime, getFormattedDate } from 'utils/date-utils';
 import useLayers, { isWmsSelectableForBatchPrint } from 'utils/layers-utils';
@@ -42,7 +41,7 @@ import {
   getPossibleDatesForLayer,
 } from 'utils/server-utils';
 import { stringHash } from 'utils/string-utils';
-import { useAdminAreaClipPolygon } from 'utils/useAdminAreaClipPolygon';
+import { useAdminAreaClipForExport } from 'utils/useAdminAreaClipForExport';
 import { useBoundaryData } from 'utils/useBoundaryData';
 import useResizeObserver from 'utils/useOnResizeObserver';
 import { usePreloadBoundaryLayersForClip } from 'utils/usePreloadBoundaryLayersForClip';
@@ -164,15 +163,15 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     dispatch,
   });
 
-  const adminAreaClipPolygon = useAdminAreaClipPolygon({
+  const adminAreaClipPolygon = useAdminAreaClipForExport({
     enabled: toggles.countryMask,
     country: safeCountry,
     selectedBoundaries,
     boundaryData: data,
     boundaryLayer,
     i18nLocale: i18n,
-    getLayerData: getCachedBoundaryLayerData,
     boundaryLayersVersion,
+    map: selectedMap,
   });
 
   const [dateRangeForBatchMaps, setDateRangeForBatchMaps] = useState<{

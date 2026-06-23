@@ -1,6 +1,9 @@
 import { BoundaryLayerProps } from 'config/types';
 import { fetchBoundaryLayerData } from 'context/layers/boundary';
-import { boundaryCache } from 'utils/boundary-cache';
+import {
+  boundaryCache,
+  getCachedBoundaryLayerData,
+} from 'utils/boundary-cache';
 
 jest.mock('context/layers/boundary', () => ({
   fetchBoundaryLayerData: jest.fn(),
@@ -82,5 +85,36 @@ describe('boundary-cache forceRefresh', () => {
 
     expect(result?.features).toHaveLength(0);
     expect(boundaryCache.getCachedData(pmtilesLayer.id)).toBeUndefined();
+  });
+
+  it('getCachedBoundaryLayerData resolves ISO3-scoped cache entries', async () => {
+    const iso3Data = {
+      type: 'FeatureCollection' as const,
+      features: [
+        {
+          type: 'Feature' as const,
+          properties: { iso3: 'MOZ', adm1_id: 'MOZ01' },
+          geometry: {
+            type: 'Polygon' as const,
+            coordinates: [
+              [
+                [0, 0],
+                [1, 0],
+                [1, 1],
+                [0, 1],
+                [0, 0],
+              ],
+            ],
+          },
+        },
+      ],
+    };
+
+    mockFetchBoundaryLayerData.mockImplementation(() => async () => iso3Data);
+
+    await boundaryCache.getBoundaryData(layer, dispatch, undefined, 'MOZ');
+
+    expect(getCachedBoundaryLayerData(layer.id)).toBeUndefined();
+    expect(getCachedBoundaryLayerData(layer.id, 'MOZ')).toEqual(iso3Data);
   });
 });

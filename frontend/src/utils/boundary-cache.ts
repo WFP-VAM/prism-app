@@ -226,6 +226,7 @@ export const boundaryCache = new BoundaryCacheManager();
 
 export function getCachedBoundaryLayerData(
   layerId: string,
+  iso3?: string,
 ): BoundaryLayerData | undefined {
-  return boundaryCache.getCachedData(layerId);
+  return boundaryCache.getCachedData(layerId, iso3);
 }
