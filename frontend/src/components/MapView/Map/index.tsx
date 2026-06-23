@@ -28,6 +28,7 @@ import { dashboardModeSelector } from 'context/dashboardStateSlice';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { setBounds, setLocation } from 'context/mapBoundaryInfoStateSlice';
 import { setLoadingLayerIds } from 'context/mapTileLoadingStateSlice';
+import { useCountryIso } from 'context/useCountryIso';
 import {
   LngLatBoundsLike,
   Map as MaplibreMap,
@@ -52,11 +53,15 @@ import {
   stackLayersForMapPaintOrder,
 } from 'utils/map-layer-before-utils';
 import { initPmtilesProtocol } from 'utils/pmtiles-utils';
+import {
+  getUniversalLandingView,
+  isUniversalLandingMode,
+} from 'utils/universal-utils';
 import { useMapState } from 'utils/useMapState';
 
 import AnticipatoryActionFloodLayer from '../Layers/AnticipatoryActionFloodLayer';
 import GeojsonDataLayer from '../Layers/GeojsonDataLayer';
-import { initMapProjection, mapStyle } from './utils';
+import { mapBackdropColor, mapProjection, mapSky, mapStyle } from './utils';
 
 initPmtilesProtocol();
 
@@ -114,6 +119,9 @@ const MapComponent = memo(
     const { selectedLayers, boundaryLayerId } = useLayers();
 
     const mapState = useMapState();
+    const { iso3 } = useCountryIso();
+    const universalLandingView = getUniversalLandingView();
+    const isUniversalLanding = isUniversalLandingMode(iso3);
     const selectedMap = mapState?.maplibreMap();
     const isGlobalMap = mapState?.isGlobalMap;
     const dashboardMode = useSelector(dashboardModeSelector);
@@ -228,8 +236,6 @@ const MapComponent = memo(
         }
         const map = mapRef.current.getMap();
 
-        initMapProjection(map);
-
         const { layers } = map.getStyle();
         // Find the first symbol on the map to make sure we add boundary layers below them.
         setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
@@ -313,11 +319,13 @@ const MapComponent = memo(
 
     // Use captured viewport if available and not in edit mode
     const initialBounds =
-      !isGlobalMap &&
-      dashboardMode !== DashboardMode.EDIT &&
-      mapState.capturedViewport
-        ? mapState.capturedViewport
-        : mapState.minMapBounds;
+      isUniversalLanding && universalLandingView
+        ? universalLandingView.bounds
+        : !isGlobalMap &&
+            dashboardMode !== DashboardMode.EDIT &&
+            mapState.capturedViewport
+          ? mapState.capturedViewport
+          : mapState.minMapBounds;
 
     return (
       <MapGL
@@ -330,11 +338,25 @@ const MapComponent = memo(
         maxZoom={maxZoom}
         initialViewState={{
           bounds: initialBounds as LngLatBoundsLike,
-          fitBoundsOptions: smDown
-            ? undefined
-            : { padding: fitBoundsOptions.padding },
+          ...(isUniversalLanding && universalLandingView && !smDown
+            ? {
+                padding: universalLandingView.padding,
+                fitBoundsOptions: { padding: universalLandingView.padding },
+              }
+            : {
+                fitBoundsOptions: smDown
+                  ? undefined
+                  : { padding: fitBoundsOptions.padding },
+              }),
         }}
         mapStyle={mapStyle}
+        projection={mapProjection}
+        sky={mapSky}
+        style={{
+          width: '100%',
+          height: '100%',
+          background: mapBackdropColor,
+        }}
         onLoad={onMapLoadWithLabelFilter}
         onClick={mapOnClick}
         maxBounds={maxBounds}

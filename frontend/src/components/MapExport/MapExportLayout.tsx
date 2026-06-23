@@ -19,7 +19,12 @@ import { loadStormIcons } from 'components/MapView/Layers/AnticipatoryActionStor
 import GeojsonDataLayer from 'components/MapView/Layers/GeojsonDataLayer';
 import { ensureSDFIconsLoaded } from 'components/MapView/Layers/icon-utils';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
-import { initMapProjection, mapStyle } from 'components/MapView/Map/utils';
+import {
+  mapBackdropColor,
+  mapProjection,
+  mapSky,
+  mapStyle,
+} from 'components/MapView/Map/utils';
 import { DiscriminateUnion, LayerType, Panel } from 'config/types';
 import { addNotification } from 'context/notificationStateSlice';
 import maplibregl from 'maplibre-gl';
@@ -437,8 +442,6 @@ function MapExportLayout({
 
     const map = baseMapRef.current?.getMap();
     if (map) {
-      initMapProjection(map);
-
       const { layers } = map.getStyle();
       const symbolLayer = layers?.find(layer => layer.type === 'symbol');
       if (symbolLayer) {
@@ -674,7 +677,13 @@ function MapExportLayout({
           initialViewState={effectiveInitialViewState}
           onLoad={handleBaseMapLoad}
           mapStyle={basemapMapStyle}
-          style={{ width: '100%', height: '100%' }}
+          projection={mapProjection}
+          sky={mapSky}
+          style={{
+            width: '100%',
+            height: '100%',
+            background: mapBackdropColor,
+          }}
         >
           <ClipProvider
             polygon={clipPolygon}
