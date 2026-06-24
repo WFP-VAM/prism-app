@@ -45,17 +45,15 @@ def test_render_schedule_export_mail_plain_format() -> None:
     assert "https://example.com/presigned.pdf" in html
     assert "valid for 7 days" in html
     assert "admin/map-export-schedule/list" in html
-    assert "https://prism.example/map?date=2026-05-21" in html
-    assert (
-        'Go to precip_blended_dekad — Blended precipitation <a href="https://prism.example/map?date=2026-05-21">'
-        in html
-    )
+    assert "click here" in html
     assert "World Food Programme" in html
     assert "rgba(99, 178, 189, 1)" not in html
     assert "cid:arrow-forward-icon" not in html
+    assert "https://prism.example/map?date=2026-05-21" not in html
     assert "Your scheduled map export Moz monthly precip is ready." in text
     assert "Layer: precip_blended_dekad" in text
     assert "valid for 7 days" in text
+    assert "https://prism.example/map?date=2026-05-21" not in text
 
 
 def test_map_export_schedules_admin_url() -> None:
