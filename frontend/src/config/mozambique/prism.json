@@ -1,8 +1,8 @@
 {
   "country": "Mozambique",
   "defaultLanguage": "en",
-  "anticipatoryActionDroughtUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/aa_probabilities_triggers_moz.csv",
-  "anticipatoryActionDroughtStagingUrl": "https://hip-workshop-sharing-public-eu-central-1-485262375119.s3.eu-central-1.amazonaws.com/anticipatory-action/moz/prism/aa_probabilities_triggers_moz.csv",
+  "anticipatoryActionDroughtUrl": "https://hip-workshop-sharing-public-eu-central-1-485262375119.s3.eu-central-1.amazonaws.com/anticipatory-action/moz/prism/aa_probabilities_triggers_moz.csv",
+  "anticipatoryActionDroughtStagingUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/staging/aa_probabilities_triggers_moz.csv",
   "anticipatoryActionStormUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/latest.json.",
   "anticipatoryActionFloodUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/flood/moz/dates.json",
   "header": {
