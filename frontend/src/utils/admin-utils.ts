@@ -5,7 +5,6 @@ import {
   WMSLayerProps,
 } from 'config/types';
 import {
-  getBoundaryLayersByAdminLevel,
   getBoundaryLayerSingleton,
   getDisplayBoundaryLayers,
 } from 'config/utils';
@@ -13,7 +12,10 @@ import { AdminBoundaryParams, EWSParams } from 'context/datasetStateSlice';
 import { CHART_API_URL } from 'utils/constants';
 
 import { GoogleFloodParams } from './google-flood-utils';
-import { getEffectiveMultiCountry } from './universal-country-admin';
+import {
+  getDeepestAnalysisBoundaryLayer,
+  getEffectiveMultiCountry,
+} from './universal-country-admin';
 import {
   isUniversalDeployment,
   resolveChartBoundaryProperty,
@@ -23,8 +25,7 @@ const multiCountry = getEffectiveMultiCountry();
 // Universal deployments use the same boundary layer structure as multiCountry (adm0 included),
 // so name lookups must use the level index directly without subtracting 1.
 const isUniversal = isUniversalDeployment();
-const MAX_ADMIN_LEVEL = isUniversal ? 4 : multiCountry ? 3 : 2;
-const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
+const boundaryLayer = getDeepestAnalysisBoundaryLayer();
 
 export function getAdminLevelLayer(
   adminLevel: AdminLevelType = 1,
