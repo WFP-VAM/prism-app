@@ -147,3 +147,9 @@ class BoundaryCacheManager {
 
 // Export singleton instance
 export const boundaryCache = new BoundaryCacheManager();
+
+export function getCachedBoundaryLayerData(
+  layerId: string,
+): BoundaryLayerData | undefined {
+  return boundaryCache.getCachedData(layerId);
+}
