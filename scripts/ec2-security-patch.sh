@@ -267,7 +267,7 @@ if [[ -n "$PROJECT_ROOT" ]]; then
     
     # Update Node.js lock files (yarn.lock)
     if command -v yarn &> /dev/null; then
-        for dir in "frontend" "alerting" "common"; do
+        for dir in "frontend" "common"; do
             if [[ -f "$PROJECT_ROOT/$dir/package.json" ]]; then
                 log "${YELLOW}[INFO]${NC} Updating $dir dependencies (yarn.lock)..."
                 if [[ "$DRY_RUN" == "true" ]]; then
