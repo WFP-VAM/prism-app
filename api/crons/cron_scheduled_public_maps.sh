@@ -12,17 +12,6 @@
 # Priority: cron enqueues at priority 100; API export jobs default 200 (see export_jobs/claim.py).
 # WMS dates: GetCapabilities against https://api.earthobservation.vam.wfp.org/ows
 
-set -euo pipefail
-
-API_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$API_ROOT"
-
-if [[ -f ./set_envs.sh ]]; then
-  # shellcheck source=/dev/null
-  source ./set_envs.sh
-fi
-
-docker compose run --rm \
-  export_map_worker \
-  python -m prism_app.workers.scheduled_public_maps.cron \
-  2>&1 | tee -a "${API_ROOT}/scheduled_public_maps_cron.log"
+CRONS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+exec "${CRONS_DIR}/_compose_run.sh" scheduled_public_maps_cron -- \
+  python -m prism_app.workers.scheduled_public_maps.cron

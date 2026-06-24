@@ -24,6 +24,7 @@ import {
   useMapCallback,
 } from 'utils/map-utils';
 import { getPossibleDatesForLayer, getRequestDate } from 'utils/server-utils';
+import { useClippedFeatureCollection } from 'utils/useClippedFeatureCollection';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { useMapState } from 'utils/useMapState';
 
@@ -63,6 +64,8 @@ const AdminLevelDataLayers = memo(
       | LayerData<AdminLevelDataLayerProps>
       | undefined;
     const { data } = layerData || {};
+
+    const clippedData = useClippedFeatureCollection(data);
 
     useEffect(() => {
       addFillPatternImagesInMap(layer, map);
@@ -108,7 +111,7 @@ const AdminLevelDataLayers = memo(
       removeLayer,
     ]);
 
-    if (!data) {
+    if (!data || !clippedData) {
       return null;
     }
 
@@ -117,7 +120,7 @@ const AdminLevelDataLayers = memo(
     }
 
     return (
-      <Source type="geojson" data={data}>
+      <Source type="geojson" data={clippedData}>
         <Layer
           id={getLayerMapId(layer.id)}
           type="fill"
