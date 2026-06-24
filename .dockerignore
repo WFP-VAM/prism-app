@@ -2,7 +2,5 @@
 # NOT for the python api (see api/.dockerignore for that)
 common/node_modules/**
 frontend/node_modules/**
-alerting/db_data/*
-alerting/node_modules/*
 api/*
 docs/*

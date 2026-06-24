@@ -69,6 +69,7 @@ import {
 } from '../../../utils/mapExportSchedulesApi';
 import { ALL_ASPECT_RATIO_OPTIONS } from '../../MapExport/aspectRatioConstants';
 import { downloadToFile } from '../../MapView/utils';
+import { formatExportUrlForClipboard } from './batchExportUrls';
 import { buildBatchExportDatesDisplay } from './batchMapExport/batchExportArtifactFilename';
 import { useBatchMapExportJobsActions } from './batchMapExport/useBatchMapExportJobs';
 import { useMapExportTemplate } from './batchMapExport/useMapExportTemplate';
@@ -665,6 +666,67 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     setDownloadMenuAnchorEl(null);
   };
 
+  const copyBatchMapUrls = async () => {
+    const { startDate, endDate } = dateRangeForBatchMaps;
+
+    if (!startDate || !endDate) {
+      dispatch(
+        addNotification({
+          type: 'error',
+          message: t('Date range not set for batch download'),
+        }),
+      );
+      return;
+    }
+
+    if (!printSelectedLayer) {
+      dispatch(
+        addNotification({
+          type: 'error',
+          message: t('Select a layer for batch maps'),
+        }),
+      );
+      return;
+    }
+
+    const timestampsForCopy =
+      filteredBatchDates.length > 0 ? [filteredBatchDates[0]] : [];
+    const constructedUrls = mapExportTemplate.buildBatchUrlsForTimestamps(
+      timestampsForCopy,
+      printSelectedLayer,
+    );
+
+    if (constructedUrls.length === 0) {
+      dispatch(
+        addNotification({
+          type: 'error',
+          message: t('No dates found in the selected range'),
+        }),
+      );
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(
+        formatExportUrlForClipboard(constructedUrls[0]),
+      );
+      dispatch(
+        addNotification({
+          type: 'success',
+          message: t('Batch map URL copied to clipboard.'),
+        }),
+      );
+    } catch (error) {
+      dispatch(
+        addNotification({
+          type: 'error',
+          message: t('Could not copy batch map settings. Please try again.'),
+        }),
+      );
+      console.error('Copy batch map settings failed:', error);
+    }
+  };
+
   const downloadBatch = async (format: 'pdf' | 'png') => {
     const { startDate, endDate } = dateRangeForBatchMaps;
 
@@ -877,6 +939,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       handleDownloadMenuClose,
       download,
       downloadBatch,
+      copyBatchMapUrls,
       isDownloading,
       defaultFooterText,
       setSelectedBoundaries,

@@ -1,0 +1,16 @@
+PRISM THRESHOLD ALERT — {{ heading_title }}
+
+Layer statistics threshold alert — WFP PRISM.
+
+{% if alert_name %}Alert name: {{ alert_name }}
+{% endif %}
+Layer: {{ layer_title }} ({{ layer_server_name }})
+Date (reference data): {{ trigger_date }}
+
+{{ stats_message }}
+
+Open in PRISM: {{ prism_url }}
+
+Unsubscribe / deactivate: {{ deactivate_url }}
+
+Disclaimer: This message was automatically generated when statistics for your configured area crossed the thresholds you set in PRISM. It does not represent an official government or WFP hazard activation.
