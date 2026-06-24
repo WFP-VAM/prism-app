@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import logging
 import smtplib
-from pathlib import Path
 from uuid import UUID
 
 from prism_app.alert_workers import mail_render, settings, smtp_mailer
@@ -29,7 +28,6 @@ from sqlmodel import Session
 
 logger = logging.getLogger(__name__)
 
-_ASSET_DIR = Path(__file__).resolve().parents[1] / "alert_workers" / "assets"
 _SCHEDULE_EXPORT_ADMIN_IDENTITY = "map-export-schedule"
 _MAP_EXPORT_EMAIL_FROM = "wfp.prism@wfp.org"
 _MAP_EXPORT_EMAIL_SUBJECT = "PRISM scheduled map export ready"
@@ -167,13 +165,6 @@ def send_schedule_export_email(
             subject=_MAP_EXPORT_EMAIL_SUBJECT,
             text_body=text_body,
             html_body=html_body,
-            attachments=[
-                {
-                    "filename": "arrow-forward-icon.png",
-                    "path": _ASSET_DIR / "arrowForwardIcon.png",
-                    "cid": "arrow-forward-icon",
-                },
-            ],
         )
         logger.info(
             "Sent schedule export email for job %s to %s",

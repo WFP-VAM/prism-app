@@ -1,19 +1,12 @@
-PRISM SCHEDULED MAP EXPORT — {{ heading_title }}
+Your scheduled map export {{ schedule_name }} is ready.
 
-Scheduled map export — WFP PRISM.
-
-Schedule: {{ schedule_name }}
-Layer: {{ layer_title }} ({{ layer_id }})
-Country: {{ country }}
-{% if map_date %}Map date: {{ map_date }}
+Layer: {{ layer_id }}
+{% if map_date %}Date: {{ map_date }}
 {% endif %}
-A new {{ format_label }} map from your export schedule is ready to download.
+Download your {{ format_label }} map<{{ download_url }}>.
 
-Download map: {{ download_url }}
+The download link is valid for {{ link_expiry_days }} days.
 
-The download link is valid for {{ link_expiry_days }} days. After it expires, download the latest map for this schedule from the PRISM admin interface:
-{{ admin_schedules_url }}
+Manage your export schedules, click here<{{ admin_schedules_url }}>.
 
-{% if prism_url %}Open in PRISM: {{ prism_url }}
-{% endif %}
-Disclaimer: This message was automatically generated when a scheduled map export completed in PRISM. It does not represent an official government or WFP hazard activation.
+The information contained in this electronic message and any attachments is intended for specific individuals or entities, and may be confidential, proprietary or privileged. If you are not the intended recipient, please notify the sender immediately, delete this message and do not disclose, distribute or copy it to any third party or otherwise use this message. The content of this message does not necessarily reflect the official position of the World Food Programme. Electronic messages are not secure or error free and may contain viruses or may be delayed, and the sender is not liable for any of these occurrences. The sender reserves the right to monitor, record and retain electronic messages.

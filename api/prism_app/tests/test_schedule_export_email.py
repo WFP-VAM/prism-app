@@ -24,7 +24,7 @@ from prism_app.export_jobs.schedule_export_email import (
 from prism_app.tests.fixtures.moz_export import MAP_EXPORT_FIXTURE_BASE_URL
 
 
-def test_render_schedule_export_mail_matches_aa_styling() -> None:
+def test_render_schedule_export_mail_plain_format() -> None:
     html, text = render_schedule_export_mail(
         heading_title="Scheduled map export ready",
         schedule_name="Moz monthly precip",
@@ -38,14 +38,23 @@ def test_render_schedule_export_mail_matches_aa_styling() -> None:
         link_expiry_days=7,
         prism_url="https://prism.example/map?date=2026-05-21",
     )
-    assert "Scheduled map export ready" in html
-    assert "rgba(99, 178, 189, 1)" in html
-    assert "cid:arrow-forward-icon" in html
+    assert "Your scheduled map export Moz monthly precip is ready." in html
+    assert "Layer: precip_blended_dekad" in html
+    assert "Date: 2026-05-21" in html
+    assert "Download your PDF map" in html
     assert "https://example.com/presigned.pdf" in html
     assert "valid for 7 days" in html
     assert "admin/map-export-schedule/list" in html
     assert "https://prism.example/map?date=2026-05-21" in html
-    assert "Moz monthly precip" in text
+    assert (
+        'Go to precip_blended_dekad — Blended precipitation <a href="https://prism.example/map?date=2026-05-21">'
+        in html
+    )
+    assert "World Food Programme" in html
+    assert "rgba(99, 178, 189, 1)" not in html
+    assert "cid:arrow-forward-icon" not in html
+    assert "Your scheduled map export Moz monthly precip is ready." in text
+    assert "Layer: precip_blended_dekad" in text
     assert "valid for 7 days" in text
 
 
