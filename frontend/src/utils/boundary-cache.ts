@@ -5,6 +5,7 @@ import {
   fetchBoundaryLayerData,
 } from 'context/layers/boundary';
 import { Map as MaplibreMap } from 'maplibre-gl';
+import { normalizeIso3 } from 'utils/universal-utils';
 
 // Use a generic Dispatch type to avoid circular dependency with context/store
 type DispatchFunction = Dispatch<any>;
@@ -15,51 +16,111 @@ interface BoundaryCacheEntry {
   error?: string;
 }
 
-type BoundaryCache = Map<LayerKey, BoundaryCacheEntry>;
+type BoundaryCache = Map<string, BoundaryCacheEntry>;
+type CacheListener = () => void;
 
 class BoundaryCacheManager {
   private cache: BoundaryCache = new Map();
-  private loadingPromises: Map<
-    LayerKey,
-    Promise<BoundaryLayerData | undefined>
-  > = new Map();
+
+  private loadingPromises: Map<string, Promise<BoundaryLayerData | undefined>> =
+    new Map();
+
+  private loadGenerations: Map<string, number> = new Map();
+
+  private listeners: Set<CacheListener> = new Set();
+
+  private getCacheKey(layerId: LayerKey, iso3?: string): string {
+    const normalizedIso3 = normalizeIso3(iso3);
+    return normalizedIso3 ? `${layerId}::${normalizedIso3}` : layerId;
+  }
+
+  subscribe(listener: CacheListener): () => void {
+    this.listeners.add(listener);
+    return () => {
+      this.listeners.delete(listener);
+    };
+  }
+
+  private notifyListeners(): void {
+    this.listeners.forEach(listener => listener());
+  }
+
+  private deleteCacheEntry(cacheKey: string): void {
+    this.cache.delete(cacheKey);
+    this.loadingPromises.delete(cacheKey);
+    this.loadGenerations.set(
+      cacheKey,
+      (this.loadGenerations.get(cacheKey) ?? 0) + 1,
+    );
+  }
+
+  private isCurrentLoad(cacheKey: string, loadGeneration: number): boolean {
+    return loadGeneration === (this.loadGenerations.get(cacheKey) ?? 0);
+  }
 
   /**
    * Get boundary data from cache or trigger load
    * @param layer - The boundary layer to fetch
    * @param dispatch - Redux dispatch function (required for fetching)
    * @param map - Optional MapLibre map instance (needed for PMTiles)
+   * @param iso3 - Optional ISO3 filter for universal deployment
+   * @param forceRefresh - When true, bypass cached data and reload
    */
   async getBoundaryData(
     layer: BoundaryLayerProps,
     dispatch: DispatchFunction,
     map?: MaplibreMap,
+    iso3?: string,
+    forceRefresh = false,
   ): Promise<BoundaryLayerData | undefined> {
-    const cacheKey = layer.id;
-    const cached = this.cache.get(cacheKey);
+    const cacheKey = this.getCacheKey(layer.id, iso3);
 
-    if (cached?.data) {
-      return cached.data;
+    if (forceRefresh) {
+      const stalePromise = this.loadingPromises.get(cacheKey);
+      this.deleteCacheEntry(cacheKey);
+      if (stalePromise) {
+        await stalePromise.catch(() => undefined);
+      }
+    } else {
+      const cached = this.cache.get(cacheKey);
+      if (cached?.data) {
+        return cached.data;
+      }
+
+      // Return existing loading promise to avoid duplicate fetches
+      if (this.loadingPromises.has(cacheKey)) {
+        return this.loadingPromises.get(cacheKey);
+      }
     }
 
-    // Return existing loading promise to avoid duplicate fetches
-    if (this.loadingPromises.has(cacheKey)) {
-      return this.loadingPromises.get(cacheKey);
-    }
-
+    const loadGeneration = this.loadGenerations.get(cacheKey) ?? 0;
     this.cache.set(cacheKey, { data: undefined, loading: true });
 
-    const loadPromise = this.loadBoundaryData(layer, dispatch, map);
+    const loadPromise = this.loadBoundaryData(layer, dispatch, map, iso3);
     this.loadingPromises.set(cacheKey, loadPromise);
 
     try {
       const data = await loadPromise;
-      this.cache.set(cacheKey, {
-        data: data as BoundaryLayerData | undefined,
-        loading: false,
-      });
+      if (!this.isCurrentLoad(cacheKey, loadGeneration)) {
+        return data;
+      }
+
+      const isEmpty = !data?.features?.length && layer.format === 'pmtiles';
+      if (isEmpty) {
+        this.deleteCacheEntry(cacheKey);
+      } else {
+        this.cache.set(cacheKey, {
+          data: data as BoundaryLayerData | undefined,
+          loading: false,
+        });
+      }
+      this.notifyListeners();
       return data;
     } catch (error) {
+      if (!this.isCurrentLoad(cacheKey, loadGeneration)) {
+        throw error;
+      }
+
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
       this.cache.set(cacheKey, {
@@ -67,9 +128,12 @@ class BoundaryCacheManager {
         loading: false,
         error: errorMessage,
       });
+      this.notifyListeners();
       throw error;
     } finally {
-      this.loadingPromises.delete(cacheKey);
+      if (this.loadingPromises.get(cacheKey) === loadPromise) {
+        this.loadingPromises.delete(cacheKey);
+      }
     }
   }
 
@@ -77,21 +141,20 @@ class BoundaryCacheManager {
     layer: BoundaryLayerProps,
     dispatch: DispatchFunction,
     map?: MaplibreMap,
+    iso3?: string,
   ): Promise<BoundaryLayerData | undefined> {
-    // Use existing fetchBoundaryLayerData logic
-    // Pass a no-op function as the recursive loader (boundary layer doesn't use it)
     const loader = fetchBoundaryLayerData((() => {}) as any);
 
     const params = {
       layer,
       map,
       date: Date.now(),
+      iso3Filter: normalizeIso3(iso3),
     };
 
-    // Create minimal API object with dispatch
     const api = {
       dispatch,
-      getState: () => ({}) as any, // Not used by boundary fetcher
+      getState: () => ({}) as any,
       requestId: '',
       signal: new AbortController().signal,
       rejectWithValue: (value: any) => value,
@@ -101,43 +164,57 @@ class BoundaryCacheManager {
     return loader(params as any, api as any);
   }
 
-  getCachedData(layerId: string): BoundaryLayerData | undefined {
-    return this.cache.get(layerId)?.data || undefined;
+  async refreshBoundaryData(
+    layer: BoundaryLayerProps,
+    dispatch: DispatchFunction,
+    map?: MaplibreMap,
+    iso3?: string,
+  ): Promise<BoundaryLayerData | undefined> {
+    return this.getBoundaryData(layer, dispatch, map, iso3, true);
   }
 
-  isLoading(layerId: string): boolean {
-    return this.cache.get(layerId)?.loading || false;
+  async refreshBoundaries(
+    layers: BoundaryLayerProps[],
+    dispatch: DispatchFunction,
+    map?: MaplibreMap,
+    iso3?: string,
+  ): Promise<void> {
+    await Promise.all(
+      layers.map(layer => this.refreshBoundaryData(layer, dispatch, map, iso3)),
+    );
   }
 
-  /**
-   * Get error if any - not used yet
-   */
-  getError(layerId: string): string | undefined {
-    return this.cache.get(layerId)?.error;
+  getCachedData(layerId: string, iso3?: string): BoundaryLayerData | undefined {
+    const cacheKey = this.getCacheKey(layerId as LayerKey, iso3);
+    return this.cache.get(cacheKey)?.data || undefined;
   }
 
-  /**
-   * Preload all boundary layers
-   * @param layers - Array of boundary layers to preload
-   * @param dispatch - Redux dispatch function
-   * @param map - Optional MapLibre map instance (needed for PMTiles)
-   */
+  isLoading(layerId: string, iso3?: string): boolean {
+    const cacheKey = this.getCacheKey(layerId as LayerKey, iso3);
+    return this.cache.get(cacheKey)?.loading || false;
+  }
+
+  getError(layerId: string, iso3?: string): string | undefined {
+    const cacheKey = this.getCacheKey(layerId as LayerKey, iso3);
+    return this.cache.get(cacheKey)?.error;
+  }
+
   async preloadBoundaries(
     layers: BoundaryLayerProps[],
     dispatch: DispatchFunction,
     map?: MaplibreMap,
+    iso3?: string,
   ): Promise<void> {
     await Promise.all(
-      layers.map(layer => this.getBoundaryData(layer, dispatch, map)),
+      layers.map(layer => this.getBoundaryData(layer, dispatch, map, iso3)),
     );
   }
 
-  /**
-   * Clear cache (useful for testing or forced refresh)
-   */
   clearCache(): void {
     this.cache.clear();
     this.loadingPromises.clear();
+    this.loadGenerations.clear();
+    this.notifyListeners();
   }
 
   getCachedLayerIds(): string[] {
@@ -145,11 +222,11 @@ class BoundaryCacheManager {
   }
 }
 
-// Export singleton instance
 export const boundaryCache = new BoundaryCacheManager();
 
 export function getCachedBoundaryLayerData(
   layerId: string,
+  iso3?: string,
 ): BoundaryLayerData | undefined {
-  return boundaryCache.getCachedData(layerId);
+  return boundaryCache.getCachedData(layerId, iso3);
 }

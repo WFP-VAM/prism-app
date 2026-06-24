@@ -18,15 +18,12 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import {
-  boundaryCache,
-  getCachedBoundaryLayerData,
-} from 'utils/boundary-cache';
+import { boundaryCache } from 'utils/boundary-cache';
 import { getExportFontStack, loadExportFonts } from 'utils/exportFontFamily';
 import { exportLanguage } from 'utils/exportLanguage';
 import useLayers from 'utils/layers-utils';
 import { getLayersCoverage } from 'utils/server-utils';
-import { useAdminAreaClipPolygon } from 'utils/useAdminAreaClipPolygon';
+import { useAdminAreaClipForExport } from 'utils/useAdminAreaClipForExport';
 import { useBoundaryData } from 'utils/useBoundaryData';
 import { useExportParams } from 'utils/useExportParams';
 import { useMapState } from 'utils/useMapState';
@@ -121,15 +118,15 @@ const ExportView = memo(() => {
     map,
   });
 
-  const adminAreaClipPolygon = useAdminAreaClipPolygon({
+  const adminAreaClipPolygon = useAdminAreaClipForExport({
     enabled: exportParams.toggles.countryMask,
     country: safeCountry,
     selectedBoundaries: exportParams.selectedBoundaries,
     boundaryData,
     boundaryLayer,
     i18nLocale: i18n,
-    getLayerData: getCachedBoundaryLayerData,
     boundaryLayersVersion,
+    map,
   });
 
   // Preload dates and load boundary layers

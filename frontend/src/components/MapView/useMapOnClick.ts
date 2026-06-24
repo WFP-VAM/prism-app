@@ -10,6 +10,7 @@ import { useCallback } from 'react';
 import { MapRef } from 'react-map-gl/maplibre';
 import { useDispatch, useSelector } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
+import { clickedBoundaryFillLayer } from 'utils/map-utils';
 import { makeFeatureInfoRequest } from 'utils/server-utils';
 import { useBoundaryData } from 'utils/useBoundaryData';
 
@@ -54,7 +55,9 @@ const useMapOnClick = (boundaryLayerId: string, mapRef: MapRef | null) => {
 
   return (e: MapLayerMouseEvent) => {
     const defaultFunction = (mapEvent: MapLayerMouseEvent) => {
-      dispatch(hidePopup());
+      if (!clickedBoundaryFillLayer(mapEvent.features)) {
+        dispatch(hidePopup());
+      }
       dispatch(clearDataset());
       // Hide the alert popup if we click outside the target country (outside boundary bbox)
       const featureInfoLayers = getFeatureInfoLayers(mapEvent.features);
