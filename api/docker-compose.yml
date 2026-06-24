@@ -3,6 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    shm_size: "2gb"
     volumes:
       - "./cache:/cache:rw"
       - ./prism_app:/prism_app:ro
@@ -21,7 +22,7 @@ services:
     ports:
       - "80:80"
 
-  # Map batch export worker (map_export_jobs). Slim image: no GDAL/raster stack.
+  # Playwright worker image: map export queue, scheduled public maps cron, alert crons.
   export_map_worker:
     build:
       context: ./
@@ -38,4 +39,10 @@ services:
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
       - BROWSER_POOL_SIZE=1
+      - PRISM_ALERTS_EMAIL_HOST=${PRISM_ALERTS_EMAIL_HOST:-}
+      - PRISM_ALERTS_EMAIL_USER=${PRISM_ALERTS_EMAIL_USER:-}
+      - PRISM_ALERTS_EMAIL_PASSWORD=${PRISM_ALERTS_EMAIL_PASSWORD:-}
+      - API_URL=${API_URL:-}
+      - AA_ALERT_COUNTRY=${AA_ALERT_COUNTRY:-mozambique}
+      - PRISM_ALERT_HTTP_VERIFY_SSL=${PRISM_ALERT_HTTP_VERIFY_SSL:-true}
     command: [ "python", "-m", "prism_app.workers.export_map_worker" ]

@@ -130,7 +130,7 @@ openssl rand -hex 32
 
 ## Alerts database migrations (Alembic)
 
-The alerts/auth PostgreSQL schema (`alert`, `kobo_users`, `anticipatory_action_alerts`, `users`, `permissions`, `user_permissions`, related enums) is modeled in SQLModel under `prism_app/database/`. **New schema changes use Alembic** in this directory (`alembic.ini`, `alembic/env.py`, `alembic/versions/`). The TypeORM files under `alerting/migration/` are **historical reference only** for some tables.
+The alerts/auth PostgreSQL schema (`alert`, `kobo_users`, `anticipatory_action_alerts`, `users`, `permissions`, `user_permissions`, related enums) is modeled in SQLModel under `prism_app/database/`. **New schema changes use Alembic** in this directory (`alembic.ini`, `alembic/env.py`, `alembic/versions/`).
 **Connection URL** is the same as the API: `PRISM_ALERTS_DATABASE_URL`, or the `POSTGRES_*` variables documented in `prism_app/database/database.py`. For local `poetry run alembic` commands, you can put `PRISM_ALERTS_DATABASE_URL` in `api/.env`; `alembic/env.py` loads that file into the process environment before connecting (unlike the shell, Python does not read `.env` by itself).
 
 From the `api/` directory:
@@ -166,11 +166,11 @@ make test
 
 #### Alerts database (CI integration + local
 
-GitHub Actions job **`alerts_db_alembic_and_alerting`** (`.github/workflows/api.yml`) applies **`alembic upgrade head`** to an empty Postgres instance, runs the Node **alerts DB contract** and **`yarn smoke-alerting-workers`** from `alerting/`, then runs **`pytest`** on `prism_app/tests/test_api.py`, `test_alerting.py`, and **`test_alerts_db_integration.py`** against that same database.
+GitHub Actions job **`alerts_db_alembic_and_alerting`** (`.github/workflows/api.yml`) applies **`alembic upgrade head`** to an empty Postgres instance, runs the **Python** alerts DB contract + worker smoke (`prism_app.ci.*`, `prism_app.workers.alert_runner smoke`), then runs **`pytest`** on `prism_app/tests/test_api.py`, `test_alerting.py`, and **`test_alerts_db_integration.py`** against that same database.
 
 On the lightweight Ubuntu runner, **`test_stats_endpoint_masked`** is skipped (`SKIP_GDAL_MASK_STATS_TEST=1`) because it needs a full **GDAL** CLI (`gdal_calc.py`). **`make api-test`** in Docker still executes the full API test module, including the masked stats case.
 
-Locally (migrated alerts DB, same env vars as elsewhere). Use a real URL; placeholder hosts such as `...` or Docker-only names like `alerting-db` will skip DB-backed tests or fail DNS (`could not translate host name`). From the **repository root**:
+Locally (migrated alerts DB, same env vars as elsewhere). Use a real URL; placeholder hosts such as `...` will skip DB-backed tests or fail DNS. From **`api/`**:
 
 ```bash
 cd api
@@ -184,7 +184,26 @@ SKIP_GDAL_MASK_STATS_TEST=1 PYTHONPATH=. poetry run pytest \
 
 **Manual — Starlette Admin (read-only):** With the API up on the alerts database, open **`/admin`**, then list routes **`/admin/alert-model/list`**, **`/admin/kobo-user/list`**, **`/admin/anticipatory-action-alerts/list`**. Confirm list and detail views; create/edit/delete remain off until auth is added.
 
-**Manual — Node workers:** From `alerting/`, run **`yarn alert-worker`** and one AA worker **without** `--testEmail` against a seeded dev database so the real **`pg`** pool is used (see [alerting/README.md](../alerting/README.md)).
+**Manual — alert workers:** From `api/` run **`docker compose run --rm export_map_worker python -m prism_app.workers.alert_runner threshold`** (and `aa-storm` / `aa-flood`) against a seeded dev database. For local iteration without Docker: **`PYTHONPATH=. poetry run python -m prism_app.workers.alert_runner …`**.
+
+**Local alerts database:** Use the **`db`** service from [`docker-compose.develop.yml`](./docker-compose.develop.yml) (see **Start the API and database** above). To run Postgres only: `docker compose -f docker-compose.yml -f docker-compose.develop.yml up db`. Host port **54321**; see `PRISM_ALERTS_DATABASE_URL` in `.env.example`.
+
+**Server crons:** Scripts under [`crons/`](./crons/) run one-shot commands in **`export_map_worker`** (same image as scheduled public maps):
+
+```
+0 * * * *  ~/prism-app/api/crons/cron_aa_storm_alert_run.sh
+10 * * * * ~/prism-app/api/crons/cron_aa_flood_alert_run.sh
+0 1 * * *  ~/prism-app/api/crons/cron_alert_run.sh
+```
+
+AA emails use Playwright against **`prism_url`** on each alert row (typically a public frontend `/export` URL reachable from the container).
+
+AA test recipients:
+
+```bash
+docker compose run --rm export_map_worker python -m prism_app.workers.alert_runner aa-storm --test-email='a@x.com,b@y.com'
+docker compose run --rm export_map_worker python -m prism_app.workers.alert_runner aa-flood --test-email='a@x.com'
+```
 
 #### Debugging playwright tests
 
