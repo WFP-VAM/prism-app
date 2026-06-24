@@ -159,6 +159,16 @@ def send_schedule_export_email(
     )
 
     try:
+        smtp_mailer.require_smtp_configured()
+    except RuntimeError as exc:
+        logger.error(
+            "Schedule export email for job %s not sent: %s",
+            job.id,
+            exc,
+        )
+        return
+
+    try:
         smtp_mailer.send_email(
             from_addr=_MAP_EXPORT_EMAIL_FROM,
             to_addrs=to_email,

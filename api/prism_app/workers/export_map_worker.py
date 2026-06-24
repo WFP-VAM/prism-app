@@ -20,7 +20,6 @@ import os
 from pathlib import Path
 from typing import Any
 
-from prism_app.alert_workers.smtp_mailer import require_smtp_configured
 from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.export_jobs.claim import claim_next_queued_map_export_job
 from prism_app.export_jobs.db import get_export_jobs_session_factory
@@ -164,8 +163,6 @@ def _mark_job_failed(session: Session, job_id: str, exc: BaseException) -> None:
 
 
 async def amain() -> None:
-    require_smtp_configured()
-
     local_raw = os.environ.get("EXPORT_MAP_LOCAL_OUTPUT_DIR", "").strip()
     bucket, s3_prefix = get_export_map_s3_bucket_and_prefix()
 
