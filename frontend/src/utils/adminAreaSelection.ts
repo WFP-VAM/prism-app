@@ -202,11 +202,15 @@ export function resolveFeaturesForAdminCodes(
 
     const boundaryLayer = getBoundaryLayerForTreeLevel(treeLayer, level);
     const layerData = getLayerData(boundaryLayer.id);
-    const feature = layerData?.features?.find(f =>
+    const matches = (layerData?.features ?? []).filter(f =>
       adminCodesEqual(f.properties?.[boundaryLayer.adminCode], normalizedCode),
     );
 
-    return feature ? [feature] : [];
+    if (boundaryLayer.format === 'pmtiles') {
+      return matches;
+    }
+
+    return matches.slice(0, 1);
   });
 }
 

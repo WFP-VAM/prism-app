@@ -208,6 +208,7 @@ def _calculate_stats(
     filter_by: Optional[tuple[str, str]] = None,
     admin_level: Optional[int] = None,
     simplify_tolerance: Optional[float] = None,
+    iso3_filter: Optional[str] = None,
 ):
     """Calculate stats."""
     return calculate_stats(
@@ -224,6 +225,7 @@ def _calculate_stats(
         filter_by=filter_by,
         admin_level=admin_level,
         simplify_tolerance=simplify_tolerance,
+        iso3_filter=iso3_filter,
     )
 
 
@@ -242,6 +244,7 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
     mask_geotiff_url = stats_model.mask_url
     mask_calc_expr = stats_model.mask_calc_expr
     simplify_tolerance = stats_model.simplify_tolerance
+    iso3_filter = stats_model.iso3_filter
 
     filter_by = None
     # Tuple transformation fixes unhashable type error caused by timed decorator.
@@ -296,6 +299,7 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
         filter_by=filter_by,
         admin_level=stats_model.admin_level,
         simplify_tolerance=simplify_tolerance,
+        iso3_filter=iso3_filter,
     )
 
     return features

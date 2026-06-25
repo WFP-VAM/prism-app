@@ -10,9 +10,11 @@ import {
 import { menuList } from 'components/MapView/LeftPanel/utils';
 import { appConfig } from 'config';
 import { LayerKey, LayerType } from 'config/types';
-import { getDisplayBoundaryLayers, LayerDefinitions } from 'config/utils';
+import { LayerDefinitions } from 'config/utils';
+import { useCountryIso } from 'context/useCountryIso';
 import { useSafeTranslation } from 'i18n';
-import { ReactElement } from 'react';
+import { ReactElement, useMemo } from 'react';
+import { getDisplayBoundaryLayersForIso3 } from 'utils/universal-utils';
 
 import { getLayerGeometryIcon } from './layer-utils';
 
@@ -54,6 +56,11 @@ function LayerDropdown({
 
   const { t } = useSafeTranslation();
   const classes = useStyles();
+  const { iso3 } = useCountryIso();
+  const adminBoundaries = useMemo(
+    () => getDisplayBoundaryLayersForIso3(iso3),
+    [iso3],
+  );
   // Filter out layers that are not supported by the analysis tool
   const filterLayersForAnalysis = (layer: LayerType) => {
     if (layer.disableAnalysis) {
@@ -67,8 +74,6 @@ function LayerDropdown({
     return true;
   };
 
-  // Only take first boundary for now
-  const adminBoundaries = getDisplayBoundaryLayers();
   const AdminBoundaryCategory = {
     title: 'Admin Levels',
     layers: adminBoundaries
