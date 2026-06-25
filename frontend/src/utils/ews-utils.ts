@@ -5,10 +5,15 @@ import {
   ReferenceDateTimestamp,
 } from 'config/types';
 import { FloodChartConfigObject } from 'context/tableStateSlice';
-import GeoJSON, { FeatureCollection, Point } from 'geojson';
+import { addNotification } from 'context/notificationStateSlice';
+import GeoJSON, { Feature, FeatureCollection, Point } from 'geojson';
 import { Dispatch } from 'redux';
 
-import { fetchWithTimeout } from './fetch-with-timeout';
+import { datesAreEqualWithoutTime } from './date-utils';
+import {
+  fetchWithTimeout,
+  type FetchWithTimeoutOptions,
+} from './fetch-with-timeout';
 import { combineURLs, queryParamsToString } from './url-utils';
 
 export const EWSTriggersConfig: FloodChartConfigObject = {
@@ -37,15 +42,15 @@ enum EWSLevelStatus {
   SEVEREWARNING = 3,
 }
 
-export type EWSSensorData = {
-  location_id: number;
-  value: [string, number];
-};
-
-type EWSTriggerLevels = {
+export type EWSTriggerLevels = {
   warning: number;
   severe_warning: number;
   watch_level: number;
+};
+
+export type EWSSensorData = {
+  location_id: number;
+  value: [string, number];
 };
 
 type EWSWaterHeightPoint = {
@@ -53,21 +58,71 @@ type EWSWaterHeightPoint = {
   water_height: number;
 };
 
-const EMPTY_LOCATIONS: FeatureCollection = {
+type EWSSensorDataFeatureProperties = {
+  id: number;
+  name: string;
+  external_id: string;
+  trigger_levels: EWSTriggerLevels;
+  daily_min?: number;
+  daily_max?: number;
+  daily_mean?: number;
+  status?: string;
+  source?: string;
+};
+
+const EMPTY_FEATURE_COLLECTION: FeatureCollection = {
   type: 'FeatureCollection',
   features: [],
 };
 
-let locationsCache: { baseUrl: string; data: FeatureCollection } | null = null;
-
 const EWS_WATER_HEIGHT_RETRIES = 3;
 const EWS_WATER_HEIGHT_RETRY_DELAY_MS = 300;
 const EWS_WATER_HEIGHT_CONCURRENCY = 6;
+const EWS_SENSOR_DATA_CACHE_MS = 15 * 60 * 1000;
+const EWS_API_KEY_MISSING_MESSAGE =
+  'EWS token not set, contact site administrator.';
+
+let sensorDataCache: {
+  baseUrl: string;
+  fetchedAt: number;
+  data: FeatureCollection;
+} | null = null;
+let hasWarnedMissingEwsApiKey = false;
 
 const sleep = (ms: number) =>
   new Promise<void>(resolve => {
     setTimeout(resolve, ms);
   });
+
+const getEWSRequestInit = ({
+  silent = false,
+}: { silent?: boolean } = {}): FetchWithTimeoutOptions => {
+  const apiKey = process.env.REACT_APP_EWS_API_KEY?.trim();
+  const headers = apiKey ? { 'X-API-Key': apiKey } : undefined;
+
+  return {
+    headers,
+    silent,
+  };
+};
+
+const ensureEWSApiKey = (dispatch: Dispatch): boolean => {
+  if (process.env.REACT_APP_EWS_API_KEY?.trim()) {
+    return true;
+  }
+
+  if (!hasWarnedMissingEwsApiKey) {
+    hasWarnedMissingEwsApiKey = true;
+    dispatch(
+      addNotification({
+        message: EWS_API_KEY_MISSING_MESSAGE,
+        type: 'warning',
+      }),
+    );
+  }
+
+  return false;
+};
 
 const runWithConcurrency = async (
   tasks: (() => Promise<void>)[],
@@ -123,35 +178,45 @@ export const createEWSDatesArray = (
   return datesArray;
 };
 
-const fetchEWSLocations = async (
+const fetchEWSSensorData = async (
   baseUrl: string,
   dispatch: Dispatch,
 ): Promise<FeatureCollection> => {
-  if (locationsCache?.baseUrl === baseUrl) {
-    return locationsCache.data;
+  if (!ensureEWSApiKey(dispatch)) {
+    return EMPTY_FEATURE_COLLECTION;
   }
 
-  const url = combineURLs(baseUrl, 'sensor-locations');
+  if (
+    sensorDataCache &&
+    sensorDataCache.baseUrl === baseUrl &&
+    Date.now() - sensorDataCache.fetchedAt < EWS_SENSOR_DATA_CACHE_MS
+  ) {
+    return sensorDataCache.data;
+  }
+
+  const url = combineURLs(baseUrl, 'external/sensor-data');
   try {
     const resp = await fetchWithTimeout(
       url,
       dispatch,
-      {},
-      `Request failed for fetching EWS locations at ${url}`,
+      getEWSRequestInit(),
+      `Request failed for fetching EWS sensor data at ${url}`,
     );
     const data = (await resp.json()) as FeatureCollection;
-    locationsCache = {
-      baseUrl,
-      data: {
-        ...data,
-        features: data.features.filter(
-          feature => feature.properties?.source !== 'google',
-        ),
-      },
+    const filteredData = {
+      ...data,
+      features: data.features.filter(
+        feature => feature.properties?.source !== 'google',
+      ),
     };
-    return locationsCache.data;
+    sensorDataCache = {
+      baseUrl,
+      fetchedAt: Date.now(),
+      data: filteredData,
+    };
+    return filteredData;
   } catch {
-    return EMPTY_LOCATIONS;
+    return sensorDataCache?.data ?? EMPTY_FEATURE_COLLECTION;
   }
 };
 
@@ -162,6 +227,10 @@ const fetchEWSWaterHeight = async (
   dispatch: Dispatch,
   { notifyOnFailure = false }: { notifyOnFailure?: boolean } = {},
 ): Promise<EWSWaterHeightPoint[]> => {
+  if (!ensureEWSApiKey(dispatch)) {
+    return [];
+  }
+
   const endDate = new Date(date);
   endDate.setUTCHours(23, 59, 59, 999);
   const startDate = new Date(endDate.getTime() - oneDayInMs);
@@ -181,7 +250,7 @@ const fetchEWSWaterHeight = async (
       const resp = await fetchWithTimeout(
         url,
         dispatch,
-        { silent: !notifyOnFailure },
+        getEWSRequestInit({ silent: !notifyOnFailure }),
         fetchErrorMessage,
       );
       return await resp.json();
@@ -233,16 +302,67 @@ const getLevelStatus = (
   return EWSLevelStatus.SEVEREWARNING;
 };
 
-export const fetchEWSData = async (
+const featureToPointData = (
+  feature: Feature<Point, EWSSensorDataFeatureProperties>,
+  date: number,
+): PointData | null => {
+  const { properties, geometry } = feature;
+
+  if (!properties || !isEWSTriggerLevels(properties.trigger_levels)) {
+    return null;
+  }
+
+  if (properties.status === 'inactive' || properties.daily_max == null) {
+    return null;
+  }
+
+  const { coordinates } = geometry;
+
+  return {
+    lon: coordinates[0],
+    lat: coordinates[1],
+    date,
+    mean: properties.daily_mean ?? properties.daily_max,
+    min: properties.daily_min ?? properties.daily_max,
+    max: properties.daily_max,
+    id: properties.id,
+    name: properties.name,
+    external_id: properties.external_id,
+    trigger_levels: properties.trigger_levels,
+    status: getLevelStatus(properties.daily_max, properties.trigger_levels),
+  };
+};
+
+const fetchEWSCurrentData = async (
   baseUrl: string,
   date: number,
   dispatch: Dispatch,
 ): Promise<PointLayerData> => {
-  const locations = await fetchEWSLocations(baseUrl, dispatch);
+  const sensorData = await fetchEWSSensorData(baseUrl, dispatch);
+  const processedFeatures = sensorData.features
+    .map(feature =>
+      featureToPointData(
+        feature as Feature<Point, EWSSensorDataFeatureProperties>,
+        date,
+      ),
+    )
+    .filter((feature): feature is PointData => feature != null);
+
+  return GeoJSON.parse(processedFeatures, {
+    Point: ['lat', 'lon'],
+  }) as unknown as PointLayerData;
+};
+
+const fetchEWSHistoricalData = async (
+  baseUrl: string,
+  date: number,
+  dispatch: Dispatch,
+): Promise<PointLayerData> => {
+  const sensorData = await fetchEWSSensorData(baseUrl, dispatch);
   const valuesByLocation = new Map<number, number[]>();
 
   await runWithConcurrency(
-    locations.features
+    sensorData.features
       .map(feature => feature.properties?.id as number | undefined)
       .filter((id): id is number => id != null)
       .map(locationId => async () => {
@@ -264,7 +384,7 @@ export const fetchEWSData = async (
 
   const processedFeatures: PointData[] = [];
 
-  for (const feature of locations.features) {
+  for (const feature of sensorData.features) {
     const { properties, geometry } = feature;
 
     if (!properties || !isEWSTriggerLevels(properties.trigger_levels)) {
@@ -290,14 +410,34 @@ export const fetchEWSData = async (
       mean: parseFloat(mean.toFixed(2)),
       min,
       max,
-      ...properties,
+      id: properties.id,
+      name: properties.name,
+      external_id: properties.external_id,
+      trigger_levels: properties.trigger_levels,
       status: getLevelStatus(max, properties.trigger_levels),
     });
   }
 
   return GeoJSON.parse(processedFeatures, {
     Point: ['lat', 'lon'],
-  }) as any as PointLayerData;
+  }) as unknown as PointLayerData;
+};
+
+export const fetchEWSData = async (
+  baseUrl: string,
+  date: number,
+  dispatch: Dispatch,
+): Promise<PointLayerData> => {
+  if (datesAreEqualWithoutTime(date, Date.now())) {
+    return fetchEWSCurrentData(baseUrl, date, dispatch);
+  }
+
+  return fetchEWSHistoricalData(baseUrl, date, dispatch);
+};
+
+export const clearEWSSensorDataCacheForTests = (): void => {
+  sensorDataCache = null;
+  hasWarnedMissingEwsApiKey = false;
 };
 
 export const createEWSDatasetParams = (
