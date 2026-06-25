@@ -202,7 +202,10 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
   } | null>(null);
   const registeredIdsRef = useRef<string[]>([]);
   const presignedUrls = useMemo(
-    () => (fetchedData?.dateString === dateString ? fetchedData.urls : []),
+    () =>
+      fetchedData !== null && fetchedData.dateString === dateString
+        ? fetchedData.urls
+        : [],
     [fetchedData, dateString],
   );
 
