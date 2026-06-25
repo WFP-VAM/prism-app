@@ -12,7 +12,7 @@ import {
   ThresholdDefinition,
   WMSLayerProps,
 } from 'config/types';
-import { getDisplayBoundaryLayers, LayerDefinitions } from 'config/utils';
+import { LayerDefinitions } from 'config/utils';
 import {
   AnalysisDispatchParams,
   analysisResultSelector,
@@ -31,15 +31,16 @@ import {
   availableDatesSelector,
   loadAvailableDatesForLayer,
 } from 'context/serverStateSlice';
+import { useCountryIso } from 'context/useCountryIso';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAdminLevelLayer } from 'utils/admin-utils';
 import type { AnalysisResult } from 'utils/analysis-utils';
 import { getDateFromList, parseNumberOrUndefined } from 'utils/data-utils';
 import { getFormattedDate } from 'utils/date-utils';
 import useLayers from 'utils/layers-utils';
 import { safeDispatchAddLayer, safeDispatchRemoveLayer } from 'utils/map-utils';
 import { getPossibleDatesForLayer } from 'utils/server-utils';
+import { getDisplayBoundaryLayersForIso3 } from 'utils/universal-utils';
 
 import { useBoundaryData } from './useBoundaryData';
 
@@ -177,6 +178,7 @@ export const useAnalysisForm = (
   } = options;
 
   const dispatch = useDispatch();
+  const { iso3 } = useCountryIso();
   const availableDates = useSelector(availableDatesSelector);
   const currentResult = useSelector(analysisResultSelector);
   const isAnalysisLoading = useSelector(isAnalysisLoadingSelector);
@@ -221,10 +223,14 @@ export const useAnalysisForm = (
     [selectedHazardLayer],
   );
 
-  const adminLevelLayer = useMemo(
-    () => getAdminLevelLayer(adminLevel),
-    [adminLevel],
-  );
+  const adminLevelLayer = useMemo(() => {
+    const boundaryLayers = getDisplayBoundaryLayersForIso3(iso3);
+    return (
+      boundaryLayers.find(
+        layer => layer.adminLevelNames.length === adminLevel,
+      ) || boundaryLayers[0]
+    );
+  }, [adminLevel, iso3]);
 
   const boundaryDataResult = useBoundaryData(adminLevelLayer?.id || '');
 
@@ -410,6 +416,7 @@ export const useAnalysisExecution = (
 ): UseAnalysisExecutionReturn => {
   const { onUrlUpdate, clearAnalysisFunction, clearOnUnmount } = options;
   const dispatch = useDispatch();
+  const { iso3 } = useCountryIso();
   const map = useSelector(mapSelector);
   const { adminBoundariesExtent: extent } = useLayers();
 
@@ -470,7 +477,7 @@ export const useAnalysisExecution = (
     (forceAdminLevel?: BoundaryLayerProps) => {
       if (forceAdminLevel) {
         // Remove displayed boundaries
-        getDisplayBoundaryLayers().forEach(l => {
+        getDisplayBoundaryLayersForIso3(iso3).forEach(l => {
           if (l.id !== forceAdminLevel.id) {
             safeDispatchRemoveLayer(map, l, dispatch);
           }
@@ -497,7 +504,7 @@ export const useAnalysisExecution = (
           baselineLayer.boundary
         ] as BoundaryLayerProps;
         // Remove displayed boundaries
-        getDisplayBoundaryLayers().forEach(l => {
+        getDisplayBoundaryLayersForIso3(iso3).forEach(l => {
           if (l.id !== boundaryLayer.id) {
             safeDispatchRemoveLayer(map, l, dispatch);
           }
@@ -509,12 +516,12 @@ export const useAnalysisExecution = (
           dispatch,
         );
       } else {
-        getDisplayBoundaryLayers().forEach(l => {
+        getDisplayBoundaryLayersForIso3(iso3).forEach(l => {
           safeDispatchAddLayer(map, l, dispatch);
         });
       }
     },
-    [formState.baselineLayerId, dispatch, map],
+    [formState.baselineLayerId, dispatch, map, iso3],
   );
 
   const runAnalyser = useCallback(async () => {

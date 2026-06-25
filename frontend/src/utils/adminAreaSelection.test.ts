@@ -173,6 +173,71 @@ describe('resolveFeaturesForAdminCodes', () => {
     expect(features).toHaveLength(1);
     expect(features[0].properties?.parent_code).toBe(4);
   });
+
+  test('returns all PMTiles fragments for the same admin code', () => {
+    jest.spyOn(configUtils, 'getBoundaryLayers').mockReturnValue([
+      {
+        id: 'universal_admin1_boundaries',
+        type: 'boundary',
+        format: 'pmtiles',
+        adminCode: 'parent_code',
+        adminLevelCodes: ['parent_code'],
+        adminLevelNames: ['parent_n'],
+        adminLevelLocalNames: ['parent_n'],
+      } as BoundaryLayerProps,
+    ]);
+
+    const pmtilesData = {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          properties: { parent_code: 4 },
+          geometry: {
+            type: 'Polygon',
+            coordinates: [
+              [
+                [0, 0],
+                [0.5, 0],
+                [0.5, 0.5],
+                [0, 0.5],
+                [0, 0],
+              ],
+            ],
+          },
+        },
+        {
+          type: 'Feature',
+          properties: { parent_code: 4 },
+          geometry: {
+            type: 'Polygon',
+            coordinates: [
+              [
+                [0.5, 0],
+                [1, 0],
+                [1, 0.5],
+                [0.5, 0.5],
+                [0.5, 0],
+              ],
+            ],
+          },
+        },
+      ],
+    };
+
+    const features = resolveFeaturesForAdminCodes(
+      ['4' as never],
+      treeData as never,
+      treeLayer,
+      i18n,
+      layerId =>
+        layerId === 'universal_admin1_boundaries'
+          ? (pmtilesData as never)
+          : undefined,
+    );
+
+    expect(features).toHaveLength(2);
+  });
 });
 
 describe('export filename helpers', () => {
