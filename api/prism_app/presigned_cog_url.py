@@ -105,7 +105,10 @@ def _presign_href(href: str) -> str:
         aws_access_key_id=STAC_AWS_ACCESS_KEY_ID,
         aws_secret_access_key=STAC_AWS_SECRET_ACCESS_KEY,
         region_name=region,
-        config=Config(signature_version="s3v4"),
+        config=Config(
+            signature_version="s3v4",
+            ignore_configured_endpoint_urls=True,
+        ),
     )
 
     presigned_url = s3_client.generate_presigned_url(

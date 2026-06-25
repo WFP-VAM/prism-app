@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from fastapi.testclient import TestClient
 from prism_app.main import app
-from prism_app.presigned_cog_url import _parse_s3_href, get_presigned_cog_urls
+from prism_app.presigned_cog_url import _parse_s3_href, _presign_href, get_presigned_cog_urls
 
 client = TestClient(app)
 
@@ -53,6 +53,34 @@ class TestParseS3Href:
     def test_plain_http_raises(self):
         with pytest.raises(ValueError, match="Unrecognised S3 href format"):
             _parse_s3_href("http://not-s3.com/file.tif")
+
+
+# ---------------------------------------------------------------------------
+# Regression: AWS_ENDPOINT_URL must not hijack STAC/COG presigning
+# ---------------------------------------------------------------------------
+
+
+@patch("prism_app.presigned_cog_url._get_bucket_region", return_value="eu-central-1")
+@patch("prism_app.presigned_cog_url.boto3.client")
+def test_presign_ignores_rustfs_endpoint_env(mock_boto3_client, _mock_region, monkeypatch):
+    """COG presigning must target real AWS S3 even when AWS_ENDPOINT_URL points at RustFS."""
+    monkeypatch.setenv("AWS_ENDPOINT_URL", "http://rustfs:9000")
+
+    mock_s3 = MagicMock()
+    mock_s3.generate_presigned_url.return_value = (
+        "https://wfp-seasmon.s3.eu-central-1.amazonaws.com/output/file.tif?X-Amz-Signature=abc"
+    )
+    mock_boto3_client.return_value = mock_s3
+
+    url = _presign_href("s3://wfp-seasmon/output/file.tif")
+
+    assert url.endswith(".amazonaws.com/output/file.tif?X-Amz-Signature=abc")
+    assert "rustfs" not in url
+
+    _, kwargs = mock_boto3_client.call_args
+    config = kwargs["config"]
+    assert config.signature_version == "s3v4"
+    assert config.ignore_configured_endpoint_urls is True
 
 
 # ---------------------------------------------------------------------------

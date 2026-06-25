@@ -9,6 +9,9 @@ export const TYPES_ALLOWED_TO_OVERLAP = [
   'static_raster',
 ];
 
+// WMS and COG raster hazard layers are mutually exclusive with each other.
+const RASTER_HAZARD_TYPES = new Set<LayerType['type']>(['wms', 'cog']);
+
 // finds layer's group as defined in "categories" in "prism.json"
 function getLayerGroup(layer: LayerType) {
   let group: MenuGroup | undefined;
@@ -39,6 +42,14 @@ export function keepLayer(layer: LayerType, newLayer: LayerType) {
 
   if (newLayer.type === layer.type && isAnticipatoryActionLayer(layer.type)) {
     return true;
+  }
+
+  // WMS and COG raster hazards cannot overlap (same exclusivity class).
+  if (
+    RASTER_HAZARD_TYPES.has(newLayer.type) &&
+    RASTER_HAZARD_TYPES.has(layer.type)
+  ) {
+    return false;
   }
 
   // Different types of layers can overlap.

@@ -4,6 +4,7 @@ import os
 
 import boto3
 import pystac
+from botocore.config import Config
 from cachetools import TTLCache, cached
 from fastapi import HTTPException
 from odc.geo.xr import write_cog
@@ -133,6 +134,7 @@ def upload_to_s3(file_path: str) -> str:
         "s3",
         aws_access_key_id=STAC_AWS_ACCESS_KEY_ID,
         aws_secret_access_key=STAC_AWS_SECRET_ACCESS_KEY,
+        config=Config(ignore_configured_endpoint_urls=True),
     )
     s3_filename = os.path.basename(file_path)
 
@@ -171,6 +173,7 @@ def get_geotiff(
         "s3",
         aws_access_key_id=STAC_AWS_ACCESS_KEY_ID,
         aws_secret_access_key=STAC_AWS_SECRET_ACCESS_KEY,
+        config=Config(ignore_configured_endpoint_urls=True),
     )
 
     params = {"Bucket": GEOTIFF_BUCKET_NAME, "Key": s3_filename}

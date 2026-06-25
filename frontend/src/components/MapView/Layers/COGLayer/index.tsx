@@ -21,7 +21,7 @@ import type { CogLayerProps, LegendDefinition } from 'config/types';
 import { addNotification } from 'context/notificationStateSlice';
 import { opacitySelector } from 'context/opacityStateSlice';
 import { availableDatesSelector } from 'context/serverStateSlice';
-import { memo, useEffect, useRef } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { COG_PROXY_API } from 'utils/constants';
@@ -190,11 +190,21 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
 
   const effectiveOpacity = opacityState ?? opacity;
 
-  const layerAvailableDates = serverAvailableDates[layer.serverLayerName];
+  const layerAvailableDates = serverAvailableDates[id];
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
   const dateString = selectedDate
     ? (queryDate ? new Date(queryDate) : new Date()).toISOString().slice(0, 10)
     : undefined;
+
+  const [fetchedData, setFetchedData] = useState<{
+    dateString: string;
+    urls: PresignedCogUrl[];
+  } | null>(null);
+  const registeredIdsRef = useRef<string[]>([]);
+  const presignedUrls = useMemo(
+    () => (fetchedData?.dateString === dateString ? fetchedData.urls : []),
+    [fetchedData, dateString],
+  );
 
   // Derive max value from the last legend entry
   const maxValue = legend?.length
@@ -227,71 +237,29 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
     tileHandlersRef.current = createTileHandlers(renderConfigRef.current);
   }
 
+  // Effect A: fetch presigned URLs when date/collection changes only.
   useEffect(() => {
     if (!dateString) {
+      setFetchedData(null);
       return undefined;
     }
 
     let cancelled = false;
-    const registeredIds: string[] = [];
 
     const deploymentBbox = appConfig.map.boundingBox as
       | [number, number, number, number]
       | undefined;
 
     getPresignedCogUrls(collection, dateString, band, deploymentBbox)
-      .then((presignedUrls: PresignedCogUrl[]) => {
-        if (cancelled || !presignedUrls.length) {
-          return;
+      .then((urls: PresignedCogUrl[]) => {
+        if (!cancelled) {
+          setFetchedData({ dateString, urls });
         }
-
-        const handlers = tileHandlersRef.current;
-        if (!handlers) {
-          return;
-        }
-
-        // NOTE: We render each COG as an individual DeckCOGLayer rather than
-        // using MosaicLayer. MosaicLayer requires WGS84 bounding boxes to
-        // determine which sources intersect the viewport, but the STAC catalog
-        // for MODIS collections returns bbox in sinusoidal meters (not WGS84).
-        // Since server-side bbox filtering (via the `bbox` query param on
-        // /cog_presigned_url) already limits results to ~4 tiles for the
-        // deployment region, viewport culling is unnecessary.
-        //
-        // To re-enable MosaicLayer in the future (e.g. for global deployments
-        // with many tiles), convert the sinusoidal bbox to WGS84 on the API
-        // using pyproj (already available via rasterio):
-        //   from pyproj import Transformer
-        //   t = Transformer.from_crs("ESRI:54008", "EPSG:4326", always_xy=True)
-        //   min_lon, min_lat = t.transform(xmin, ymin)
-        //   max_lon, max_lat = t.transform(xmax, ymax)
-        // Then pass those WGS84 bboxes as MosaicSource.bbox values.
-        presignedUrls.forEach(({ item_id, url }) => {
-          const deckLayerId = `cog-${id}-${item_id}`;
-          registeredIds.push(deckLayerId);
-
-          const proxyUrl = `${COG_PROXY_API}?url=${encodeURIComponent(url)}`;
-
-          registerRef.current(
-            deckLayerId,
-            new DeckCOGLayer<TileData>({
-              id: deckLayerId,
-              geotiff: proxyUrl,
-              getTileData: handlers.getTileData,
-              renderTile: handlers.renderTile,
-              opacity: effectiveOpacity,
-              onGeoTIFFLoad: geotiff => {
-                nodataRef.current = geotiff.nodata;
-              },
-              // @ts-expect-error beforeId is injected by @deck.gl/mapbox in interleaved mode
-              beforeId: before,
-            }),
-          );
-        });
       })
       .catch(err => {
         if (!cancelled) {
           console.error(`COGLayer [${id}]: failed to load presigned URLs`, err);
+          setFetchedData(null);
           dispatch(
             addNotification({
               message: `Failed to load COG layer "${layer.title}": ${err.message}`,
@@ -303,19 +271,68 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
 
     return () => {
       cancelled = true;
-      registeredIds.forEach(lid => unregisterRef.current(lid));
+      registeredIdsRef.current.forEach(lid => unregisterRef.current(lid));
+      registeredIdsRef.current = [];
+      setFetchedData(null);
     };
-  }, [
-    id,
-    collection,
-    band,
-    before,
-    dateString,
-    effectiveOpacity,
-    dispatch,
-    layer.title,
-    currentLegendKey,
-  ]);
+  }, [id, collection, band, dateString, dispatch, layer.title]);
+
+  // Effect B: register/update deck layers when urls, opacity, or z-order change.
+  useEffect(() => {
+    if (!presignedUrls.length) {
+      return undefined;
+    }
+
+    const handlers = tileHandlersRef.current;
+    if (!handlers) {
+      return undefined;
+    }
+
+    const deckLayerIds: string[] = [];
+
+    // NOTE: We render each COG as an individual DeckCOGLayer rather than
+    // using MosaicLayer. MosaicLayer requires WGS84 bounding boxes to
+    // determine which sources intersect the viewport, but the STAC catalog
+    // for MODIS collections returns bbox in sinusoidal meters (not WGS84).
+    // Since server-side bbox filtering (via the `bbox` query param on
+    // /cog_presigned_url) already limits results to ~4 tiles for the
+    // deployment region, viewport culling is unnecessary.
+    //
+    // To re-enable MosaicLayer in the future (e.g. for global deployments
+    // with many tiles), convert the sinusoidal bbox to WGS84 on the API
+    // using pyproj (already available via rasterio):
+    //   from pyproj import Transformer
+    //   t = Transformer.from_crs("ESRI:54008", "EPSG:4326", always_xy=True)
+    //   min_lon, min_lat = t.transform(xmin, ymin)
+    //   max_lon, max_lat = t.transform(xmax, ymax)
+    // Then pass those WGS84 bboxes as MosaicSource.bbox values.
+    presignedUrls.forEach(({ item_id, url }) => {
+      const deckLayerId = `cog-${id}-${item_id}`;
+      deckLayerIds.push(deckLayerId);
+
+      const proxyUrl = `${COG_PROXY_API}?url=${encodeURIComponent(url)}`;
+
+      registerRef.current(
+        deckLayerId,
+        new DeckCOGLayer<TileData>({
+          id: deckLayerId,
+          geotiff: proxyUrl,
+          getTileData: handlers.getTileData,
+          renderTile: handlers.renderTile,
+          opacity: effectiveOpacity,
+          onGeoTIFFLoad: geotiff => {
+            nodataRef.current = geotiff.nodata;
+          },
+          // @ts-expect-error beforeId is injected by @deck.gl/mapbox in interleaved mode
+          beforeId: before,
+        }),
+      );
+    });
+
+    registeredIdsRef.current = deckLayerIds;
+
+    return undefined;
+  }, [id, presignedUrls, effectiveOpacity, before, currentLegendKey]);
 
   return null;
 });

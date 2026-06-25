@@ -231,6 +231,7 @@ export const getPossibleDatesForLayer = (
     case 'point_data':
     case 'static_raster':
     case 'wms':
+    case 'cog':
       // get available dates for the layer and its fallback layers
       // eslint-disable-next-line no-case-declarations
       const { fallbackLayerKeys } = layer as AdminLevelDataLayerProps;
