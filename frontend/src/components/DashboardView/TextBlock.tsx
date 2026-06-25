@@ -1,12 +1,13 @@
-import React from 'react';
 import { Box, makeStyles, Typography } from '@material-ui/core';
-import { useDispatch, useSelector } from 'react-redux';
-import Markdown from 'react-markdown';
-import { useSafeTranslation } from 'i18n';
 import { DashboardMode } from 'config/types';
+import { useSafeTranslation } from 'i18n';
+import { type ReactNode } from 'react';
+import Markdown, { type Components } from 'react-markdown';
+import { useDispatch, useSelector } from 'react-redux';
+
 import {
-  setTextContent,
   dashboardModeSelector,
+  setTextContent,
 } from '../../context/dashboardStateSlice';
 
 interface TextBlockProps {
@@ -14,40 +15,41 @@ interface TextBlockProps {
   content: string;
   columnIndex: number;
   elementIndex: number;
+  headerSlot?: ReactNode;
 }
 
-const createMarkdownComponents = (classes: any) => ({
-  p: ({ children }: { children: React.ReactNode }) => (
+const createMarkdownComponents = (classes: any): Components => ({
+  p: ({ children }) => (
     <Typography variant="body1" className={classes.previewText}>
       {children}
     </Typography>
   ),
-  h1: ({ children }: { children: React.ReactNode }) => (
+  h1: ({ children }) => (
     <Typography variant="h4" className={classes.previewHeading}>
       {children}
     </Typography>
   ),
-  h2: ({ children }: { children: React.ReactNode }) => (
+  h2: ({ children }) => (
     <Typography variant="h5" className={classes.previewHeading}>
       {children}
     </Typography>
   ),
-  h3: ({ children }: { children: React.ReactNode }) => (
+  h3: ({ children }) => (
     <Typography variant="h6" className={classes.previewHeading}>
       {children}
     </Typography>
   ),
-  strong: ({ children }: { children: React.ReactNode }) => (
+  strong: ({ children }) => (
     <Typography component="span" style={{ fontWeight: 600 }}>
       {children}
     </Typography>
   ),
-  em: ({ children }: { children: React.ReactNode }) => (
+  em: ({ children }) => (
     <Typography component="span" style={{ fontStyle: 'italic' }}>
       {children}
     </Typography>
   ),
-  a: ({ children, href }: { children: React.ReactNode; href?: string }) => (
+  a: ({ children, href }) => (
     <Typography
       component="a"
       href={href}
@@ -58,7 +60,7 @@ const createMarkdownComponents = (classes: any) => ({
       {children}
     </Typography>
   ),
-  img: ({ src, alt }: { src?: string; alt?: string }) => (
+  img: ({ src, alt }) => (
     <img
       src={src}
       alt={alt || ''}
@@ -72,6 +74,7 @@ function TextBlock({
   elementIndex,
   label = `Block #${elementIndex + 1}`,
   content,
+  headerSlot,
 }: TextBlockProps) {
   const dispatch = useDispatch();
   const classes = useStyles();
@@ -79,40 +82,45 @@ function TextBlock({
   const mode = useSelector(dashboardModeSelector);
 
   if (mode === DashboardMode.VIEW) {
-    if (!content || content.trim() === '') {
-      return null;
-    }
-
     return (
       <Box className={classes.previewContainer}>
-        <Markdown
-          linkTarget="_blank"
-          components={createMarkdownComponents(classes)}
-          allowedElements={[
-            'p',
-            'h1',
-            'h2',
-            'h3',
-            'strong',
-            'em',
-            'a',
-            'ul',
-            'ol',
-            'li',
-            'img',
-          ]}
-        >
-          {t(content)}
-        </Markdown>
+        {content && content.trim() !== '' ? (
+          <Markdown
+            components={createMarkdownComponents(classes)}
+            allowedElements={[
+              'p',
+              'h1',
+              'h2',
+              'h3',
+              'strong',
+              'em',
+              'a',
+              'ul',
+              'ol',
+              'li',
+              'img',
+            ]}
+          >
+            {t(content)}
+          </Markdown>
+        ) : (
+          <Box className={classes.emptyState}>
+            <Typography variant="body1" color="textSecondary" align="center">
+              {t('No text configured')}
+            </Typography>
+          </Box>
+        )}
       </Box>
     );
   }
 
   return (
     <Box className={classes.grayCard}>
-      <Typography variant="h3" className={classes.blockLabel}>
-        {t(label)}
-      </Typography>
+      {headerSlot ?? (
+        <Typography variant="h3" className={classes.blockLabel}>
+          {t(label)}
+        </Typography>
+      )}
       <textarea
         name="text-block"
         className={classes.textarea}
@@ -143,6 +151,12 @@ const useStyles = makeStyles(() => ({
     fontWeight: 600,
     fontSize: 16,
     marginBottom: 12,
+  },
+  emptyState: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
   },
   textarea: {
     width: '95%',

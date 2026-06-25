@@ -1,45 +1,47 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   AdminLevelDataLayerProps,
   AdminLevelType,
   AggregationOperations,
   BoundaryLayerProps,
+  ExposureOperator,
+  ExposureValue,
   GeometryType,
   HazardDataType,
   LayerKey,
   RasterType,
   ThresholdDefinition,
   WMSLayerProps,
-  ExposureValue,
-  ExposureOperator,
 } from 'config/types';
+import { LayerDefinitions } from 'config/utils';
 import {
   AnalysisDispatchParams,
-  PolygonAnalysisDispatchParams,
   analysisResultSelector,
   clearAnalysisResult,
+  generatePolygonCacheKey,
+  generateRasterCacheKey,
+  getCachedAnalysisResult,
   isAnalysisLoadingSelector,
+  PolygonAnalysisDispatchParams,
   requestAndStoreAnalysis,
   requestAndStorePolygonAnalysis,
-  getCachedAnalysisResult,
-  generateRasterCacheKey,
-  generatePolygonCacheKey,
 } from 'context/analysisResultStateSlice';
+import { LayerData } from 'context/layers/layer-data';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import {
   availableDatesSelector,
   loadAvailableDatesForLayer,
 } from 'context/serverStateSlice';
-import { LayerData } from 'context/layers/layer-data';
-import { getAdminLevelLayer } from 'utils/admin-utils';
-import { safeDispatchAddLayer, safeDispatchRemoveLayer } from 'utils/map-utils';
-import useLayers from 'utils/layers-utils';
-import { getPossibleDatesForLayer } from 'utils/server-utils';
+import { useCountryIso } from 'context/useCountryIso';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import type { AnalysisResult } from 'utils/analysis-utils';
 import { getDateFromList, parseNumberOrUndefined } from 'utils/data-utils';
 import { getFormattedDate } from 'utils/date-utils';
-import { LayerDefinitions, getDisplayBoundaryLayers } from 'config/utils';
-import type { AnalysisResult } from 'utils/analysis-utils';
+import useLayers from 'utils/layers-utils';
+import { safeDispatchAddLayer, safeDispatchRemoveLayer } from 'utils/map-utils';
+import { getPossibleDatesForLayer } from 'utils/server-utils';
+import { getDisplayBoundaryLayersForIso3 } from 'utils/universal-utils';
+
 import { useBoundaryData } from './useBoundaryData';
 
 export interface UseAnalysisFormOptions {
@@ -176,6 +178,7 @@ export const useAnalysisForm = (
   } = options;
 
   const dispatch = useDispatch();
+  const { iso3 } = useCountryIso();
   const availableDates = useSelector(availableDatesSelector);
   const currentResult = useSelector(analysisResultSelector);
   const isAnalysisLoading = useSelector(isAnalysisLoadingSelector);
@@ -220,10 +223,14 @@ export const useAnalysisForm = (
     [selectedHazardLayer],
   );
 
-  const adminLevelLayer = useMemo(
-    () => getAdminLevelLayer(adminLevel),
-    [adminLevel],
-  );
+  const adminLevelLayer = useMemo(() => {
+    const boundaryLayers = getDisplayBoundaryLayersForIso3(iso3);
+    return (
+      boundaryLayers.find(
+        layer => layer.adminLevelNames.length === adminLevel,
+      ) || boundaryLayers[0]
+    );
+  }, [adminLevel, iso3]);
 
   const boundaryDataResult = useBoundaryData(adminLevelLayer?.id || '');
 
@@ -264,10 +271,7 @@ export const useAnalysisForm = (
 
   // Load available dates for selected hazard layer
   useEffect(() => {
-    if (
-      hazardLayerId !== undefined &&
-      availableDates[hazardLayerId] === undefined
-    ) {
+    if (hazardLayerId && availableDates[hazardLayerId] === undefined) {
       dispatch(loadAvailableDatesForLayer(hazardLayerId));
     }
   }, [availableDates, dispatch, hazardLayerId]);
@@ -294,24 +298,47 @@ export const useAnalysisForm = (
     }
   }, [availableHazardDates, hazardDataType, initialStartDate]);
 
-  const cacheKey = getCacheKey(
-    useCache,
-    hazardLayerId,
-    hazardDataType,
-    startDate,
-    endDate,
-    adminLevel,
-    adminLevelLayer,
-    adminLevelLayerData,
-    baselineLayerId,
-    selectedDate,
-    statistic,
-    aboveThreshold,
-    belowThreshold,
-    exposureValue,
+  const cacheKey = useMemo(
+    () =>
+      getCacheKey(
+        useCache,
+        hazardLayerId,
+        hazardDataType,
+        startDate,
+        endDate,
+        adminLevel,
+        adminLevelLayer,
+        adminLevelLayerData,
+        baselineLayerId,
+        selectedDate,
+        statistic,
+        aboveThreshold,
+        belowThreshold,
+        exposureValue,
+      ),
+    [
+      useCache,
+      hazardLayerId,
+      hazardDataType,
+      startDate,
+      endDate,
+      adminLevel,
+      adminLevelLayer,
+      adminLevelLayerData,
+      baselineLayerId,
+      selectedDate,
+      statistic,
+      aboveThreshold,
+      belowThreshold,
+      exposureValue,
+    ],
   );
-  const cachedResult = useSelector(getCachedAnalysisResult(cacheKey));
-  const analysisResult = cachedResult || currentResult;
+  const selectCachedResult = useMemo(
+    () => getCachedAnalysisResult(cacheKey),
+    [cacheKey],
+  );
+  const cachedResult = useSelector(selectCachedResult);
+  const analysisResult = currentResult ?? cachedResult;
 
   return {
     // Form state
@@ -362,6 +389,8 @@ export interface UseAnalysisExecutionReturn {
   scaleThreshold: (threshold: number) => number;
   activateUniqueBoundary: (forceAdminLevel?: BoundaryLayerProps) => void;
   hasFormChanged: boolean;
+  /** Resets run-button snapshot; pair with Redux clear when clearing outside runAnalyser */
+  resetLastExecutedForm: () => void;
 }
 
 const getFormStateSnapshot = (formState: UseAnalysisFormReturn) =>
@@ -387,6 +416,7 @@ export const useAnalysisExecution = (
 ): UseAnalysisExecutionReturn => {
   const { onUrlUpdate, clearAnalysisFunction, clearOnUnmount } = options;
   const dispatch = useDispatch();
+  const { iso3 } = useCountryIso();
   const map = useSelector(mapSelector);
   const { adminBoundariesExtent: extent } = useLayers();
 
@@ -399,6 +429,15 @@ export const useAnalysisExecution = (
   // Track form state at last execution
   const lastExecutedFormRef = useRef<string | null>(null);
 
+  const invokeClearAnalysis = useCallback(() => {
+    lastExecutedFormRef.current = null;
+    if (clearAnalysisFunction) {
+      clearAnalysisFunction();
+    } else {
+      dispatch(clearAnalysisResult());
+    }
+  }, [clearAnalysisFunction, dispatch]);
+
   // Cleanup on unmount - abort any pending analysis and clear results
   useEffect(
     () => () => {
@@ -410,14 +449,10 @@ export const useAnalysisExecution = (
           analysisRequestRef.current.abort();
           analysisRequestRef.current = null;
         }
-        if (clearAnalysisFunction) {
-          clearAnalysisFunction();
-        } else {
-          dispatch(clearAnalysisResult());
-        }
+        invokeClearAnalysis();
       }
     },
-    [dispatch, clearAnalysisFunction, clearOnUnmount],
+    [invokeClearAnalysis, clearOnUnmount],
   );
 
   // Check if form has changed since last execution
@@ -442,7 +477,7 @@ export const useAnalysisExecution = (
     (forceAdminLevel?: BoundaryLayerProps) => {
       if (forceAdminLevel) {
         // Remove displayed boundaries
-        getDisplayBoundaryLayers().forEach(l => {
+        getDisplayBoundaryLayersForIso3(iso3).forEach(l => {
           if (l.id !== forceAdminLevel.id) {
             safeDispatchRemoveLayer(map, l, dispatch);
           }
@@ -469,7 +504,7 @@ export const useAnalysisExecution = (
           baselineLayer.boundary
         ] as BoundaryLayerProps;
         // Remove displayed boundaries
-        getDisplayBoundaryLayers().forEach(l => {
+        getDisplayBoundaryLayersForIso3(iso3).forEach(l => {
           if (l.id !== boundaryLayer.id) {
             safeDispatchRemoveLayer(map, l, dispatch);
           }
@@ -481,12 +516,12 @@ export const useAnalysisExecution = (
           dispatch,
         );
       } else {
-        getDisplayBoundaryLayers().forEach(l => {
+        getDisplayBoundaryLayersForIso3(iso3).forEach(l => {
           safeDispatchAddLayer(map, l, dispatch);
         });
       }
     },
-    [formState.baselineLayerId, dispatch, map],
+    [formState.baselineLayerId, dispatch, map, iso3],
   );
 
   const runAnalyser = useCallback(async () => {
@@ -494,11 +529,7 @@ export const useAnalysisExecution = (
     lastExecutedFormRef.current = getFormStateSnapshot(formState);
 
     if (formState.analysisResult) {
-      if (clearAnalysisFunction) {
-        clearAnalysisFunction();
-      } else {
-        dispatch(clearAnalysisResult());
-      }
+      invokeClearAnalysis();
     }
 
     if (!extent) {
@@ -617,13 +648,18 @@ export const useAnalysisExecution = (
     activateUniqueBoundary,
     scaleThreshold,
     onUrlUpdate,
-    clearAnalysisFunction,
+    invokeClearAnalysis,
   ]);
+
+  const resetLastExecutedForm = useCallback(() => {
+    lastExecutedFormRef.current = null;
+  }, []);
 
   return {
     runAnalyser,
     scaleThreshold,
     activateUniqueBoundary,
     hasFormChanged,
+    resetLastExecutedForm,
   };
 };

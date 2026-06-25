@@ -1,12 +1,17 @@
 """Dev-only CLI: seed local rows into the alerts DB. Not part of the prism_app package or API.
 
-Executes ``seed_local_alerts_dev.sql``, which inserts:
+Inserts anticipatory-action metadata, kobo_users, sample alerts, and five
+``[Seed]`` map export schedules (see ``seed_local_alerts_dev.sql``) for QA:
 
-- ``anticipatory_action_alerts`` (Mozambique storm + flood, if missing)
-- ``user_info`` (local dev admin user; ON CONFLICT DO NOTHING)
-- ``alert`` (two sample threshold rows; re-run replaces fixed seed emails)
+- ``a0000001`` — active; cron should enqueue a PDF job
+- ``a0000002`` — active; skips (``last_enqueued_date`` already ahead of WMS data)
+- ``a0000003`` — active; skips (layer id absent from WMS GetCapabilities)
+- ``a0000004`` — stopped; cron ignores
+- ``a0000005`` — active; cron should enqueue a PNG (ZIP) job
 
-See alerting/README.md and api/README.md (Local dev seed data).
+After seeding: ``make schedule-cron-dry-run`` then ``make schedule-cron``.
+Requires ``yarn start`` (frontend on :3000) and ``REACT_APP_API_URL=http://host.docker.internal``
+in ``frontend/.env`` so the worker browser can reach the API.
 """
 
 from __future__ import annotations
@@ -86,6 +91,10 @@ def main() -> None:
         conn.close()
 
     print(f"Seeded alerts DB using {sql_path.name}")
+    print(
+        "Map export QA: open Admin → Map export schedules ([Seed] rows), "
+        "then run make schedule-cron-dry-run and make schedule-cron."
+    )
 
 
 if __name__ == "__main__":

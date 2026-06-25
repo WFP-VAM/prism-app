@@ -104,4 +104,45 @@ describe('Export View', () => {
     // The raw {date} placeholder should NOT be visible
     cy.contains('{date}').should('not.exist');
   });
+
+  it('clips a raster layer to the country via the clip:// protocol when countryMask is on', () => {
+    // The clip:// protocol fetches the real WMS tiles itself, so the masked
+    // export still issues GetMap requests to the WMS backend.
+    cy.intercept('GET', '**/ows/**').as('wmsTiles');
+
+    const exportUrl = new URL(`${frontendUrl}/export`);
+    exportUrl.searchParams.set('hazardLayerIds', 'ndvi_dekad');
+    exportUrl.searchParams.set('date', '2024-05-15');
+    exportUrl.searchParams.set('title', 'Country mask clip test');
+    exportUrl.searchParams.set('bounds', '32,-27,41,-10');
+    exportUrl.searchParams.set('countryMask', 'true');
+
+    cy.visit(exportUrl.toString());
+
+    // Single map renders (no overlay-map stack).
+    cy.get('.maplibregl-canvas', { timeout: 60000 }).should('have.length', 1);
+
+    // Masked raster tiles are still fetched from the WMS backend.
+    cy.wait('@wmsTiles', { timeout: 60000 });
+
+    // PRISM_READY should be signalled once the (single) map finishes loading.
+    cy.window({ timeout: 60000 }).its('PRISM_READY').should('eq', true);
+
+    cy.contains('Country mask clip test').should('be.visible');
+  });
+
+  it('renders translated layer legend when language param is set', () => {
+    const exportUrl = new URL(`${frontendUrl}/export`);
+    exportUrl.searchParams.set('hazardLayerIds', 'precip_blended_dekad');
+    exportUrl.searchParams.set('date', '2024-05-15');
+    exportUrl.searchParams.set('bounds', '32,-27,41,-10');
+    exportUrl.searchParams.set('language', 'pt');
+
+    cy.visit(exportUrl.toString());
+
+    cy.get('.maplibregl-canvas', { timeout: 60000 }).should('exist');
+    cy.contains('Precipitação acumulada combinada INAM/CHIRP (10 dias)').should(
+      'be.visible',
+    );
+  });
 });

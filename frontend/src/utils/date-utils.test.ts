@@ -1,11 +1,14 @@
+import { ChartLatestPeriod } from 'config/types';
+
 import {
   binaryFind,
-  dateWithoutTime,
   datesAreEqualWithoutTime,
+  dateWithoutTime,
   findClosestDate,
   generateDateItemsRange,
   generateDatesRange,
   getFormattedDate,
+  getLatestPeriodRange,
   getTimeInMilliseconds,
   StartEndDate,
 } from './date-utils';
@@ -240,4 +243,45 @@ describe('can find closest date', () => {
     ],
     result: '2023-12-11T12:00:00.000Z',
   };
+});
+
+describe('getLatestPeriodRange', () => {
+  const latestMay28 = Date.UTC(2026, 4, 28, 12);
+
+  it('returns a rolling month ending at the latest date', () => {
+    const { startDate, endDate } = getLatestPeriodRange(
+      latestMay28,
+      ChartLatestPeriod.MONTH,
+    );
+    expect(startDate).toBe(Date.UTC(2026, 3, 28, 12));
+    expect(endDate).toBe(latestMay28);
+  });
+
+  it('returns a rolling quarter ending at the latest date', () => {
+    const { startDate, endDate } = getLatestPeriodRange(
+      latestMay28,
+      ChartLatestPeriod.QUARTER,
+    );
+    expect(startDate).toBe(Date.UTC(2026, 1, 28, 12));
+    expect(endDate).toBe(latestMay28);
+  });
+
+  it('returns a rolling year ending at the latest date', () => {
+    const { startDate, endDate } = getLatestPeriodRange(
+      latestMay28,
+      ChartLatestPeriod.YEAR,
+    );
+    expect(startDate).toBe(Date.UTC(2025, 4, 28, 12));
+    expect(endDate).toBe(latestMay28);
+  });
+
+  it('handles month rollover when rolling back one month', () => {
+    const latestMar31 = Date.UTC(2026, 2, 31, 12);
+    const { startDate, endDate } = getLatestPeriodRange(
+      latestMar31,
+      ChartLatestPeriod.MONTH,
+    );
+    expect(startDate).toBe(Date.UTC(2026, 2, 3, 12));
+    expect(endDate).toBe(latestMar31);
+  });
 });

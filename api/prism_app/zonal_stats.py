@@ -75,6 +75,7 @@ def _read_zones(
     admin_level: Optional[int] = None,
     bbox: Optional[tuple[float, float, float, float]] = None,
     simplify_tolerance: Optional[float] = None,
+    iso3_filter: Optional[str] = None,
 ) -> GeoJSON:
     """
     Read the zones file from either a local GeoJSON or an S3-hosted (or local) GeoParquet,
@@ -105,12 +106,20 @@ def _read_zones(
         query = f"CREATE VIEW {view_name} AS SELECT *"
         if simplify_tolerance is not None:
             query += f" exclude(geometry), ST_Simplify(geometry, {simplify_tolerance}) AS geometry"
-        query += f" FROM read_parquet('{zones_filepath}')"
+        query += f" FROM read_parquet('{zones_filepath}', hive_partitioning=true)"
+        conditions: list[str] = []
         if admin_level is not None:
-            query += f" WHERE admin_level = {admin_level}"
+            conditions.append(f"admin_level = {admin_level}")
+        if iso3_filter is not None:
+            safe_iso3 = iso3_filter.replace("'", "''")
+            conditions.append(f"iso3 = '{safe_iso3}'")
         if bbox is not None:
             minx, miny, maxx, maxy = bbox
-            query += f" AND ST_Contains(ST_MakeEnvelope({minx}, {miny}, {maxx}, {maxy}), geometry)"
+            conditions.append(
+                f"ST_Contains(ST_MakeEnvelope({minx}, {miny}, {maxx}, {maxy}), geometry)"
+            )
+        if conditions:
+            query += " WHERE " + " AND ".join(conditions)
         con.execute(query)
         # Export to temp GeoJSON using GDAL extension
         temp_geojson = os.path.join(caching.CACHE_DIRECTORY, "temp_zones.geojson")
@@ -136,9 +145,13 @@ def _extract_features_properties(
     zones_filename: FilePath,
     admin_level: Optional[int] = None,
     simplify_tolerance: Optional[float] = None,
+    iso3_filter: Optional[str] = None,
 ) -> list:
     zones = _read_zones(
-        zones_filename, admin_level=admin_level, simplify_tolerance=simplify_tolerance
+        zones_filename,
+        admin_level=admin_level,
+        simplify_tolerance=simplify_tolerance,
+        iso3_filter=iso3_filter,
     )
     return [f["properties"] for f in zones.get("features", [])]
 
@@ -148,18 +161,29 @@ def _group_zones(
     group_by: GroupBy,
     admin_level: Optional[int] = None,
     simplify_tolerance: Optional[float] = None,
+    iso3_filter: Optional[str] = None,
 ) -> FilePath:
     """Group zones by a key id and merge polygons."""
     safe_filename = zones_filepath.replace("/", "_").replace("s3://", "")
     cache_filename = safe_filename.replace("parquet", "json")
-    output_filename: FilePath = "{zones}.{simplify_tolerance}.{group_by}".format(
-        zones=cache_filename, group_by=group_by, simplify_tolerance=simplify_tolerance
+    grouped_basename = (
+        "{zones}.{simplify_tolerance}.{group_by}.{admin_level}.{iso3}".format(
+            zones=cache_filename,
+            group_by=group_by,
+            simplify_tolerance=simplify_tolerance,
+            admin_level=admin_level if admin_level is not None else "all",
+            iso3=iso3_filter if iso3_filter is not None else "all",
+        )
     )
+    output_filename: FilePath = os.path.join(caching.CACHE_DIRECTORY, grouped_basename)
     if is_file_valid(output_filename):
         return output_filename
 
     geojson_data = _read_zones(
-        zones_filepath, admin_level=admin_level, simplify_tolerance=simplify_tolerance
+        zones_filepath,
+        admin_level=admin_level,
+        simplify_tolerance=simplify_tolerance,
+        iso3_filter=iso3_filter,
     )
 
     features = geojson_data.get("features", [])
@@ -388,6 +412,7 @@ def calculate_stats(
     filter_by: Optional[tuple[str, str]] = None,
     admin_level: Optional[int] = None,
     simplify_tolerance: Optional[float] = None,
+    iso3_filter: Optional[str] = None,
 ) -> list[dict[str, Any]]:
     """Calculate stats."""
 
@@ -412,8 +437,9 @@ def calculate_stats(
                 [x if x.isalnum() else "" for x in (slugified_calc)]
             )[:20]
 
-        masked_pop_geotiff: FilePath = (
-            f"{caching.CACHE_DIRECTORY}raster_masked_{geotiff_layer}_{slugified_calc}_{cache_hash}.tif"
+        masked_pop_geotiff: FilePath = os.path.join(
+            caching.CACHE_DIRECTORY,
+            f"raster_masked_{geotiff_layer}_{slugified_calc}_{cache_hash}.tif",
         )
 
         if not is_file_valid(masked_pop_geotiff):
@@ -433,8 +459,9 @@ def calculate_stats(
                 )
                 reproj_cache_key = f"{geotiff}_reproj_on_{mask_geotiff}"
                 reproj_hash = _hash_value(reproj_cache_key)
-                reproj_pop_geotiff: FilePath = (
-                    f"{caching.CACHE_DIRECTORY}raster_reproj_{geotiff_layer}_on_{mask_layer}_{reproj_hash}.tif"
+                reproj_pop_geotiff: FilePath = os.path.join(
+                    caching.CACHE_DIRECTORY,
+                    f"raster_reproj_{geotiff_layer}_on_{mask_layer}_{reproj_hash}.tif",
                 )
                 if not is_file_valid(reproj_pop_geotiff):
                     reproj_match(
@@ -454,7 +481,11 @@ def calculate_stats(
 
     if group_by:
         zones_filepath = _group_zones(
-            zones_filepath, group_by, admin_level, simplify_tolerance
+            zones_filepath,
+            group_by,
+            admin_level,
+            simplify_tolerance,
+            iso3_filter,
         )
 
     stats_input = (
@@ -560,7 +591,7 @@ def calculate_stats(
 
     if not geojson_out:
         feature_properties = _extract_features_properties(
-            zones_filepath, admin_level, simplify_tolerance
+            zones_filepath, admin_level, simplify_tolerance, iso3_filter
         )
 
         if filter_by is not None:

@@ -1,5 +1,5 @@
-import { ChangeEvent, memo, useCallback } from 'react';
 import Switch from 'components/Common/Switch';
+import { ChangeEvent, memo, useCallback } from 'react';
 
 interface SwitchActionProps {
   someLayerAreSelected: boolean;

@@ -1,6 +1,6 @@
 import fnmatch
 import logging
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Final
 from urllib.parse import parse_qs, urlparse
 
@@ -9,6 +9,11 @@ from fastapi import HTTPException
 from requests.adapters import Retry
 
 logger = logging.getLogger(__name__)
+
+
+def utc_now() -> datetime:
+    """Single UTC clock for models, API, and workers."""
+    return datetime.now(UTC)
 
 
 def forward_http_error(resp: requests.Response, excluded_codes: list[int]) -> None:
@@ -94,7 +99,7 @@ def make_request_with_retries(
 EXPORT_ALLOWED_DOMAINS: Final[list[str]] = [
     "*.wfp.org",
     "staging.*.amplifyapp.com",
-    "staging-prism-frontend--*.web.app",  # Firebase preview builds
+    "*prism-frontend--*.web.app",  # Firebase preview builds
 ]
 
 
@@ -191,6 +196,38 @@ def validate_export_url(url: str) -> None:
             f"Domain '{hostname}' is not allowed. "
             f"Allowed domains: {', '.join(EXPORT_ALLOWED_DOMAINS)}"
         )
+
+
+def public_map_upload_path_segments(
+    export_url: str, *, country: str | None = None
+) -> tuple[str, str]:
+    """
+    ``(country, layer)`` slug segments for ``public_maps/{country}/{layer}/`` from one export URL.
+
+    **Country must be passed explicitly** (job ``country`` field); it is never inferred from the URL.
+    Layer: first entry of ``hazardLayerIds`` query param (comma-separated → first token).
+    """
+    from prism_app.export_s3 import slug_s3_path_segment
+
+    explicit = (country or "").strip()
+    if not explicit:
+        raise ValueError(
+            "public map upload requires an explicit country field (URL hostname is not used)"
+        )
+
+    parsed = urlparse(export_url)
+    qs = parse_qs(parsed.query, keep_blank_values=True)
+    if "hazardLayerIds" not in qs or not (qs["hazardLayerIds"][0] or "").strip():
+        raise ValueError(
+            "publicMapUpload requires hazardLayerIds in the export URL for storage path"
+        )
+    layer_raw = qs["hazardLayerIds"][0].split(",")[0].strip()
+    if not layer_raw:
+        raise ValueError(
+            "publicMapUpload requires a non-empty hazardLayerIds value in the export URL"
+        )
+
+    return slug_s3_path_segment(explicit), slug_s3_path_segment(layer_raw)
 
 
 def extract_dates_from_urls(urls: list[str]) -> list[str]:

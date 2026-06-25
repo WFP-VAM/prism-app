@@ -1,23 +1,36 @@
-import { memo, useMemo } from 'react';
-import * as Sentry from '@sentry/browser';
-import { useIsAuthenticated } from '@azure/msal-react';
-import { ThemeProvider } from '@material-ui/core/styles';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { Font } from '@react-pdf/renderer';
-import { authRequired } from 'config';
-import { useDashboardConfig } from 'hooks/useDashboardConfig';
-import NavBar from 'components/NavBar';
-import MapView from 'components/MapView';
-import DashboardView from 'components/DashboardView';
-import Login from 'components/Login';
-import ExportView from 'components/ExportView';
-import muiTheme from 'muiTheme';
-import Notifier from 'components/Notifier';
-import AuthModal from 'components/AuthModal';
 // Basic CSS Layout for the whole page
 import './app.css';
-import RobotoFont from 'fonts/Roboto-Regular.ttf';
+
+import { useIsAuthenticated } from '@azure/msal-react';
+import { ThemeProvider } from '@material-ui/core/styles';
+import { Font } from '@react-pdf/renderer';
+import * as Sentry from '@sentry/browser';
+import AuthModal from 'components/AuthModal';
+import CreateDashboardView from 'components/CreateDashboardView';
+import DashboardView from 'components/DashboardView';
+import ExportView from 'components/ExportView';
+import ImportDashboardView from 'components/ImportDashboardView';
+import Login from 'components/Login';
+import MapView from 'components/MapView';
+import NavBar from 'components/NavBar';
+import Notifier from 'components/Notifier';
+import UniversalPlaceholder from 'components/UniversalPlaceholder';
+import { authRequired } from 'config';
+import { CountryIsoProvider } from 'context/CountryIsoProvider';
 import KhmerFont from 'fonts/Khmer-Regular.ttf';
+import RobotoFont from 'fonts/Roboto-Regular.ttf';
+import { useDashboardConfig } from 'hooks/useDashboardConfig';
+import { useDocumentLocale } from 'hooks/useDocumentLocale';
+import { usePersistDraftDashboards } from 'hooks/usePersistDraftDashboards';
+import muiTheme from 'muiTheme';
+import { memo, useMemo } from 'react';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  useParams,
+} from 'react-router-dom';
+import { isUniversalDeployment } from 'utils/universal-utils';
 
 if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development') {
   if (process.env.REACT_APP_SENTRY_URL) {
@@ -59,18 +72,27 @@ Font.register({
   ],
 });
 
-const Wrapper = memo(() => (
+function DashboardRouteSwitcher() {
+  const { path } = useParams<{ path?: string }>();
+  usePersistDraftDashboards();
+  if (path === 'create') {
+    return <CreateDashboardView />;
+  }
+  if (path === 'import') {
+    return <ImportDashboardView />;
+  }
+  return <DashboardView />;
+}
+
+const AppShell = memo(({ countryPrefix = '' }: { countryPrefix?: string }) => (
   <div id="app">
     <NavBar />
     <div style={{ paddingTop: '56px', height: 'calc(100% - 56px)' }}>
-      {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
       <Switch>
-        {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
-        <Route path="/dashboard/:path?" exact>
-          <DashboardView />
+        <Route path={`${countryPrefix}/dashboard/:path?`} exact>
+          <DashboardRouteSwitcher />
         </Route>
-        {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
-        <Route>
+        <Route path={countryPrefix || '/'}>
           <MapView />
           <AuthModal />
         </Route>
@@ -79,26 +101,45 @@ const Wrapper = memo(() => (
   </div>
 ));
 
+function AppRoutes() {
+  const isUniversal = isUniversalDeployment();
+
+  return (
+    <Switch>
+      <Route path="/export" exact>
+        <ExportView />
+      </Route>
+      {isUniversal && (
+        <>
+          <Route path="/" exact>
+            <UniversalPlaceholder />
+          </Route>
+
+          <Route path="/country/:iso3">
+            <CountryIsoProvider>
+              <AppShell countryPrefix="/country/:iso3" />
+            </CountryIsoProvider>
+          </Route>
+        </>
+      )}
+      {!isUniversal && (
+        <Route>
+          <AppShell />
+        </Route>
+      )}
+    </Switch>
+  );
+}
+
 function App() {
   useDashboardConfig();
+  useDocumentLocale();
   const isAuthenticated = useIsAuthenticated();
 
   // The rendered content
   const renderedContent = useMemo(() => {
     if (isAuthenticated || !authRequired) {
-      return (
-        // @ts-expect-error - react-router-dom v5 types incompatible with React 18
-        <Switch>
-          {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
-          <Route path="/export" exact>
-            <ExportView />
-          </Route>
-          {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
-          <Route>
-            <Wrapper />
-          </Route>
-        </Switch>
-      );
+      return <AppRoutes />;
     }
     return <Login />;
   }, [isAuthenticated]);
@@ -107,7 +148,6 @@ function App() {
     <ThemeProvider theme={muiTheme}>
       {/* Used to show notifications from redux as a snackbar. Notifications are stored in notificationState */}
       <Notifier />
-      {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
       <Router>{renderedContent}</Router>
     </ThemeProvider>
   );

@@ -1,18 +1,20 @@
-import { FeatureCollection, GeoJSON } from 'geojson';
-import { every, map } from 'lodash';
 import 'reflect-metadata';
+
+import { FeatureCollection, GeoJSON } from 'geojson';
+import { TFunction } from 'i18next';
+import { every, map } from 'lodash';
 import {
   FillLayerSpecification,
   LineLayerSpecification,
   MapLayerMouseEvent,
 } from 'maplibre-gl';
-import { Dispatch } from 'redux';
-import { TFunction } from 'i18next';
 import React from 'react';
-import { AggregationOperations } from './aggregationOperations';
-import { rawLayers } from '.';
-import type { ReportKey, TableKey } from './utils';
+import { Dispatch } from 'redux';
+
 import type { PopupMetaData } from '../context/tooltipStateSlice';
+import { rawLayers } from '.';
+import { AggregationOperations } from './aggregationOperations';
+import type { ReportKey, TableKey } from './utils';
 
 // TODO currently unused. Could be harnessed within admin levels key typing
 export type BoundaryKey = 'CODE' | 'CODE1' | 'CODE2';
@@ -871,6 +873,8 @@ export type PanelItem = {
   children?: PanelItem[];
   reportIndex?: number;
   reportPath?: string;
+  isDraft?: boolean;
+  dividerBefore?: boolean;
 };
 
 export enum Panel {
@@ -1089,11 +1093,11 @@ export class AnticipatoryActionLayerProps extends CommonLayerProps {
 
 export {
   ChartHeight,
+  ChartLatestPeriod,
   DashboardElementType,
   DashboardMapPosition,
   DashboardMode,
 } from '../dashboardConfig/dashboardEnums';
-
 export type {
   Dashboard,
   DashboardChartConfig,

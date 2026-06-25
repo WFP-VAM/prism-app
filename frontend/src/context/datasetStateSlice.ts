@@ -1,24 +1,25 @@
-import { orderBy } from 'lodash';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ChartType, DatasetField } from 'config/types';
-import { DateFormat } from 'utils/name-utils';
+import { orderBy } from 'lodash';
+import { getFormattedDate, getTimeInMilliseconds } from 'utils/date-utils';
 import {
   EWSSensorData,
   EWSTriggersConfig,
   fetchEWSDataPointsByLocation,
 } from 'utils/ews-utils';
 import { fetchWithTimeout } from 'utils/fetch-with-timeout';
-import { getFormattedDate, getTimeInMilliseconds } from 'utils/date-utils';
 import {
   FloodSensorData,
   GoogleFloodParams,
   GoogleFloodTriggersConfig,
 } from 'utils/google-flood-utils';
+import { DateFormat } from 'utils/name-utils';
+
 import type { AppDispatch, CreateAsyncThunkTypes, RootState } from './store';
 import { TableData } from './tableStateSlice';
 
 export type EWSParams = {
-  externalId: string;
+  locationId: number;
   triggerLevels: EWSTriggerLevels;
   baseUrl: string;
 };
@@ -129,13 +130,13 @@ export const loadEWSDataset = async (
   params: EWSDataPointsRequestParams,
   dispatch: AppDispatch,
 ): Promise<TableData> => {
-  const { date, externalId, triggerLevels, baseUrl } = params;
+  const { date, locationId, triggerLevels, baseUrl } = params;
 
   const dataPoints: EWSSensorData[] = await fetchEWSDataPointsByLocation(
     baseUrl,
     date,
     dispatch,
-    externalId,
+    locationId,
   );
 
   const results: DataItem[] = dataPoints.map(item => {
@@ -396,11 +397,11 @@ export const datasetResultStateSlice = createSlice({
       state,
       { payload }: PayloadAction<EWSParams & { chartTitle: string }>,
     ): DatasetState => {
-      const { externalId, chartTitle, triggerLevels, baseUrl } = payload;
+      const { locationId, chartTitle, triggerLevels, baseUrl } = payload;
 
       return {
         ...state,
-        datasetParams: { externalId, triggerLevels, baseUrl },
+        datasetParams: { locationId, triggerLevels, baseUrl },
         title: chartTitle,
       };
     },

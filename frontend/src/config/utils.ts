@@ -1,5 +1,6 @@
-import { camelCase, get, map, mapKeys, isPlainObject, mapValues } from 'lodash';
+import { camelCase, get, isPlainObject, map, mapKeys, mapValues } from 'lodash';
 import { generateSlugFromTitle } from 'utils/string-utils';
+
 import { appConfig, rawLayers, rawReports, rawTables } from '.';
 import {
   AdminLevelDataLayerProps,
@@ -8,6 +9,7 @@ import {
   AvailableDates,
   BoundaryLayerProps,
   checkRequiredKeys,
+  CogLayerProps,
   CompositeLayerProps,
   Dashboard,
   DateItem,
@@ -22,7 +24,6 @@ import {
   StatsApi,
   TableType,
   WMSLayerProps,
-  CogLayerProps,
 } from './types';
 
 // Typescript does not handle our configuration methods very well

@@ -1,28 +1,34 @@
-import { memo, useEffect, useRef, useState, useMemo, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Box, createStyles, makeStyles } from '@material-ui/core';
+import { createTheme, ThemeProvider } from '@material-ui/core';
+import MapExportLayout from 'components/MapExport/MapExportLayout';
+import { mapStyle } from 'components/MapView/Map/utils';
+import { appConfig, safeCountry } from 'config';
+import { SelectedDateTimestamp } from 'config/types';
 import {
-  getDisplayBoundaryLayers,
   getBoundaryLayerSingleton,
+  getDisplayBoundaryLayers,
 } from 'config/utils';
 import {
-  WMSLayerDatesRequested,
   pointDataLayerDatesRequested,
   preloadLayerDatesArraysForPointData,
   preloadLayerDatesArraysForWMS,
+  WMSLayerDatesRequested,
 } from 'context/serverPreloadStateSlice';
-import { useMapState } from 'utils/useMapState';
+import muiTheme from 'muiTheme';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { boundaryCache } from 'utils/boundary-cache';
-import { useExportParams } from 'utils/useExportParams';
-import { appConfig, safeCountry } from 'config';
-import { useBoundaryData } from 'utils/useBoundaryData';
-import { mapStyle } from 'components/MapView/Map/utils';
-import mask from '@turf/mask';
-import MapExportLayout from 'components/MapExport/MapExportLayout';
+import { getExportFontStack, loadExportFonts } from 'utils/exportFontFamily';
+import { exportLanguage } from 'utils/exportLanguage';
 import useLayers from 'utils/layers-utils';
-import useResizeObserver from 'utils/useOnResizeObserver';
 import { getLayersCoverage } from 'utils/server-utils';
-import { SelectedDateTimestamp } from 'config/types';
+import { useAdminAreaClipForExport } from 'utils/useAdminAreaClipForExport';
+import { useBoundaryData } from 'utils/useBoundaryData';
+import { useExportParams } from 'utils/useExportParams';
+import { useMapState } from 'utils/useMapState';
+import useResizeObserver from 'utils/useOnResizeObserver';
+import { usePreloadBoundaryLayersForClip } from 'utils/usePreloadBoundaryLayersForClip';
 
 /**
  * ExportView is a component that displays a map and allows the user to export it as a PDF or ZIP file.
@@ -39,7 +45,39 @@ import { SelectedDateTimestamp } from 'config/types';
 const displayedBoundaryLayers = getDisplayBoundaryLayers().reverse();
 
 const ExportView = memo(() => {
-  const classes = useStyles();
+  const { search } = useLocation();
+  const { i18n } = useTranslation();
+  const exportLang = exportLanguage(search, { apply: true });
+  const [exportFontsReady, setExportFontsReady] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    setExportFontsReady(false);
+    void loadExportFonts(exportLang).then(() => {
+      if (!cancelled) {
+        setExportFontsReady(true);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [exportLang]);
+
+  const exportFontStack = getExportFontStack(exportLang);
+  const exportTheme = useMemo(
+    () =>
+      createTheme(muiTheme, {
+        typography: {
+          fontFamily: exportFontStack,
+          h4: { fontFamily: exportFontStack },
+          h5: { fontFamily: exportFontStack },
+          h6: { fontFamily: exportFontStack },
+          body1: { fontFamily: exportFontStack },
+          body2: { fontFamily: exportFontStack },
+        },
+      }),
+    [exportFontStack],
+  );
   const exportParams = useExportParams();
   const printRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
@@ -70,72 +108,26 @@ const ExportView = memo(() => {
   // Load layers from URL params - useLayers already handles this
   const { selectedLayers, selectedLayersWithDateSupport } = useLayers();
 
-  // Get boundary layer for mask computation
+  // Get boundary layer for admin area clip
   const boundaryLayer = getBoundaryLayerSingleton();
   const { data: boundaryData } = useBoundaryData(boundaryLayer.id, map);
 
-  // Compute inverted admin boundary polygon for mask
-  const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] =
-    useState<GeoJSON.Feature | null>(null);
+  const boundaryLayersVersion = usePreloadBoundaryLayersForClip({
+    enabled: exportParams.toggles.countryMask,
+    dispatch,
+    map,
+  });
 
-  useEffect(() => {
-    if (!exportParams.toggles.countryMask) {
-      setAdminBoundaryPolygon(null);
-      return;
-    }
-
-    // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
-    if (exportParams.selectedBoundaries.length === 0) {
-      fetch(`/data/${safeCountry}/admin-boundary-unified-polygon.json`)
-        .then(response => response.json())
-        .then(polygonData => {
-          const maskedPolygon = mask(polygonData as any);
-          setAdminBoundaryPolygon(maskedPolygon as any);
-        })
-        .catch(error =>
-          console.error('Error loading admin boundary polygon:', error),
-        );
-      return;
-    }
-
-    // Wait for boundary data to be loaded
-    if (!boundaryData) {
-      return;
-    }
-
-    // Filter features based on selected boundaries
-    const filteredData = {
-      ...boundaryData,
-      features: boundaryData.features.filter((cell: any) => {
-        const featureAdminCode = cell.properties?.[boundaryLayer.adminCode];
-        return exportParams.selectedBoundaries.some(selectedCode =>
-          String(featureAdminCode).startsWith(selectedCode),
-        );
-      }),
-    };
-
-    if (filteredData.features.length === 0) {
-      // Fall back to full country mask if no features match
-      fetch(`/data/${safeCountry}/admin-boundary-unified-polygon.json`)
-        .then(response => response.json())
-        .then(polygonData => {
-          const maskedPolygon = mask(polygonData as any);
-          setAdminBoundaryPolygon(maskedPolygon as any);
-        })
-        .catch(error =>
-          console.error('Error loading admin boundary polygon:', error),
-        );
-      return;
-    }
-
-    const masked = mask(filteredData as any);
-    setAdminBoundaryPolygon(masked as any);
-  }, [
+  const adminAreaClipPolygon = useAdminAreaClipForExport({
+    enabled: exportParams.toggles.countryMask,
+    country: safeCountry,
+    selectedBoundaries: exportParams.selectedBoundaries,
     boundaryData,
-    exportParams.selectedBoundaries,
-    exportParams.toggles.countryMask,
-    boundaryLayer.adminCode,
-  ]);
+    boundaryLayer,
+    i18nLocale: i18n,
+    boundaryLayersVersion,
+    map,
+  });
 
   // Preload dates and load boundary layers
   useEffect(() => {
@@ -200,8 +192,13 @@ const ExportView = memo(() => {
   const footerHeight =
     measuredFooterHeight || (exportParams.toggles.footerVisibility ? 60 : 0);
 
+  if (i18n.resolvedLanguage !== exportLang || !exportFontsReady) {
+    return null;
+  }
+
   return (
-    <Box className={classes.root}>
+    <ThemeProvider theme={exportTheme}>
+      {/* Paint order: MapExportLayout stacks boundaries before rasters */}
       <MapExportLayout
         toggles={exportParams.toggles}
         aspectRatio={exportParams.aspectRatio}
@@ -217,7 +214,8 @@ const ExportView = memo(() => {
         legendScale={exportParams.legendScale}
         bounds={exportParams.bounds ?? undefined}
         mapStyle={processedMapStyle}
-        invertedAdminBoundaryLimitPolygon={invertedAdminBoundaryLimitPolygon}
+        adminAreaClipPolygon={adminAreaClipPolygon}
+        selectedBoundaries={exportParams.selectedBoundaries}
         printRef={printRef}
         titleRef={titleRef}
         footerRef={footerRef}
@@ -229,18 +227,8 @@ const ExportView = memo(() => {
         layersCoverage={layersCoverage}
         signalExportReady
       />
-    </Box>
+    </ThemeProvider>
   );
 });
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      height: '100vh',
-      width: '100%',
-      position: 'relative',
-    },
-  }),
-);
 
 export default ExportView;

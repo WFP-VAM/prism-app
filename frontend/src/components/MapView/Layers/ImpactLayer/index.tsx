@@ -1,33 +1,34 @@
-import { memo, useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { get } from 'lodash';
-import { createStyles, Theme, makeStyles } from '@material-ui/core';
-import { getExtent, Extent } from 'components/MapView/Layers/raster-utils';
+import { createStyles, makeStyles, Theme } from '@material-ui/core';
 import { legendToStops } from 'components/MapView/Layers/layer-utils';
+import { Extent, getExtent } from 'components/MapView/Layers/raster-utils';
+import { getFeatureInfoPropsData } from 'components/MapView/utils';
 import { ImpactLayerProps, MapEventWrapFunctionProps } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
-import { Layer, Source } from 'react-map-gl/maplibre';
-import { addPopupData } from 'context/tooltipStateSlice';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
-import { useMapState } from 'utils/useMapState';
-import { getFeatureInfoPropsData } from 'components/MapView/utils';
+import { loadingLayerIdsSelector } from 'context/mapStateSlice/selectors';
+import { opacitySelector } from 'context/opacityStateSlice';
+import { addPopupData } from 'context/tooltipStateSlice';
 import { i18nTranslator, useSafeTranslation } from 'i18n';
-import { getRoundedData } from 'utils/data-utils';
+import { get } from 'lodash';
 import {
   FillLayerSpecification,
   LineLayerSpecification,
   MapLayerMouseEvent,
 } from 'maplibre-gl';
+import { memo, useEffect, useRef } from 'react';
+import { Layer, Source } from 'react-map-gl/maplibre';
+import { useDispatch, useSelector } from 'react-redux';
+import { getRoundedData } from 'utils/data-utils';
 import {
   findFeature,
   getEvtCoords,
   getLayerMapId,
   useMapCallback,
 } from 'utils/map-utils';
-import { opacitySelector } from 'context/opacityStateSlice';
+import { useClippedFeatureCollection } from 'utils/useClippedFeatureCollection';
 import { useDefaultDate } from 'utils/useDefaultDate';
-import { loadingLayerIdsSelector } from 'context/mapStateSlice/selectors';
+import { useMapState } from 'utils/useMapState';
 
 const linePaint: LineLayerSpecification['paint'] = {
   'line-color': 'grey',
@@ -99,6 +100,13 @@ const ImpactLayer = memo(({ layer, before }: ComponentProps) => {
   const loadingLayerIds = useSelector(loadingLayerIdsSelector);
   const isLayerLoading = loadingLayerIds.includes(layer.id);
 
+  const sourceData =
+    data &&
+    (data.impactFeatures.features.length === 0
+      ? data.boundaries
+      : data.impactFeatures);
+  const clippedSourceData = useClippedFeatureCollection(sourceData);
+
   // Track the last attempted date/extent to prevent infinite retry loops on failure
   const lastAttemptedRef = useRef<{
     date?: number;
@@ -161,8 +169,12 @@ const ImpactLayer = memo(({ layer, before }: ComponentProps) => {
     );
   }
 
-  const { impactFeatures, boundaries } = data;
+  const { impactFeatures } = data;
   const noMatchingDistricts = impactFeatures.features.length === 0;
+
+  if (!clippedSourceData) {
+    return null;
+  }
 
   // TODO: maplibre: fix any
   const fillPaint: FillLayerSpecification['paint'] = {
@@ -176,10 +188,7 @@ const ImpactLayer = memo(({ layer, before }: ComponentProps) => {
   };
 
   return (
-    <Source
-      type="geojson"
-      data={noMatchingDistricts ? boundaries : impactFeatures}
-    >
+    <Source type="geojson" data={clippedSourceData}>
       <Layer
         id={getLayerMapId(layer.id, 'line')}
         type="line"

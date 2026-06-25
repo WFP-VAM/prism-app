@@ -1,10 +1,10 @@
-import React from 'react';
-import type {
-  StyleSpecification,
-  LngLatBoundsLike,
-  LngLatBounds,
-} from 'maplibre-gl';
 import { AdminCodeString, LayerType } from 'config/types';
+import type {
+  LngLatBounds,
+  LngLatBoundsLike,
+  StyleSpecification,
+} from 'maplibre-gl';
+import React from 'react';
 import { LayerDateCoverage } from 'utils/server-utils';
 
 // Re-export aspect ratio types and utilities from the single source of truth
@@ -12,8 +12,8 @@ import { LayerDateCoverage } from 'utils/server-utils';
 export type {
   AspectRatio,
   AspectRatioOption,
-  PresetAspectRatio,
   CustomAspectRatio,
+  PresetAspectRatio,
 } from './aspectRatioConstants';
 // Re-export type guard functions (values, not types)
 export {
@@ -50,7 +50,6 @@ export interface ExportParams {
 
   // Map bounds (new)
   bounds: ExportMapBounds | null;
-  zoom: number | null;
 
   // Print config options
   mapWidth: number; // 50-100
@@ -70,7 +69,7 @@ export interface ExportParams {
   // Toggles
   toggles: MapExportToggles;
 
-  // Admin boundary selection for mask
+  // Admin boundary selection for regional clip
   selectedBoundaries: AdminCodeString[];
 }
 
@@ -101,13 +100,6 @@ export interface MapExportLayoutProps {
   legendPosition: number;
   legendScale: number;
 
-  // Map view state
-  initialViewState?: {
-    longitude: number;
-    latitude: number;
-    zoom: number;
-  };
-
   // Bounds to fit map to
   bounds?: ExportMapBounds;
 
@@ -117,13 +109,18 @@ export interface MapExportLayoutProps {
   // Optional bounds constraint
   maxBounds?: LngLatBoundsLike;
 
-  // Country mask polygon (computed from selected boundaries)
-  invertedAdminBoundaryLimitPolygon?: GeoJSON.Feature | null;
+  // Admin area clip polygon (computed from selected boundaries)
+  adminAreaClipPolygon?: GeoJSON.Feature<
+    GeoJSON.Polygon | GeoJSON.MultiPolygon
+  > | null;
+
+  /** Admin codes selected for regional mask; empty = full-country mask. */
+  selectedBoundaries?: AdminCodeString[];
 
   // For capturing the rendered output
-  printRef?: React.RefObject<HTMLDivElement>;
-  titleRef?: React.RefObject<HTMLDivElement>;
-  footerRef?: React.RefObject<HTMLDivElement>;
+  printRef?: React.RefObject<HTMLDivElement | null>;
+  titleRef?: React.RefObject<HTMLDivElement | null>;
+  footerRef?: React.RefObject<HTMLDivElement | null>;
 
   // Footer height for positioning scale bar and north arrow
   footerHeight?: number;

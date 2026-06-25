@@ -1,19 +1,11 @@
-import React from 'react';
+import { Tooltip } from '@material-ui/core';
+import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils';
 import {
   AdminLevelDataLayerProps,
   AnticipatoryActionLayerProps,
   MapEventWrapFunctionProps,
 } from 'config/types';
-import { useDefaultDate } from 'utils/useDefaultDate';
-import { useDispatch, useSelector } from 'react-redux';
-import { mapSelector } from 'context/mapStateSlice/selectors';
-import { useBoundaryData } from 'utils/useBoundaryData';
-import {
-  Layer,
-  MapLayerMouseEvent,
-  Marker,
-  Source,
-} from 'react-map-gl/maplibre';
+import { getBoundaryLayersByAdminLevel } from 'config/utils';
 import {
   AAFiltersSelector,
   AAMarkersSelector,
@@ -23,19 +15,28 @@ import {
   setAASelectedDistrict,
   setAAView,
 } from 'context/anticipatoryAction/AADroughtStateSlice';
-import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils';
+import { AAView } from 'context/anticipatoryAction/AADroughtStateSlice/types';
+import {
+  calculateAAMarkers,
+  calculateCombinedAAMapData,
+} from 'context/anticipatoryAction/AADroughtStateSlice/utils';
+import { mapSelector } from 'context/mapStateSlice/selectors';
+import React from 'react';
+import {
+  Layer,
+  MapLayerMouseEvent,
+  Marker,
+  Source,
+} from 'react-map-gl/maplibre';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   calculateCentroids,
   useAAMarkerScalePercent,
   useMapCallback,
 } from 'utils/map-utils';
-import { getBoundaryLayersByAdminLevel } from 'config/utils';
-import {
-  calculateAAMarkers,
-  calculateCombinedAAMapData,
-} from 'context/anticipatoryAction/AADroughtStateSlice/utils';
-import { AAView } from 'context/anticipatoryAction/AADroughtStateSlice/types';
-import { Tooltip } from '@material-ui/core';
+import { useBoundaryData } from 'utils/useBoundaryData';
+import { useClippedFeatureCollection } from 'utils/useClippedFeatureCollection';
+import { useDefaultDate } from 'utils/useDefaultDate';
 
 // Use admin level 2 boundary layer for Anticipatory Action
 const boundaryLayer = getBoundaryLayersByAdminLevel(2);
@@ -139,6 +140,10 @@ const AnticipatoryActionDroughtLayer = React.memo(
       };
     }, [data, shouldRenderData]);
 
+    const clippedColoredDistrictsLayer = useClippedFeatureCollection(
+      coloredDistrictsLayer as any,
+    );
+
     const scalePercent = useAAMarkerScalePercent(map);
 
     const mainLayerBefore = selectedDistrict
@@ -183,12 +188,12 @@ const AnticipatoryActionDroughtLayer = React.memo(
             }}
           />
         </Source>
-        {coloredDistrictsLayer && (
+        {clippedColoredDistrictsLayer && (
           <Source
             key="anticipatory-action"
             id="anticipatory-action-"
             type="geojson"
-            data={coloredDistrictsLayer}
+            data={clippedColoredDistrictsLayer}
           >
             <Layer
               beforeId={mainLayerBefore}

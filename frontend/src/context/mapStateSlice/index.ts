@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
 import { LayerKey, LayerType } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
 import {
@@ -6,9 +7,8 @@ import {
   LayerDataTypes,
   loadLayerData,
 } from 'context/layers/layer-data';
-import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
-import { keepLayer } from 'utils/keep-layer-utils';
 import { Map as MaplibreMap } from 'maplibre-gl';
+import { keepLayer } from 'utils/keep-layer-utils';
 
 export interface DateRange {
   startDate?: number;

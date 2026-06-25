@@ -7,12 +7,15 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-import { ReactElement } from 'react';
 import { menuList } from 'components/MapView/LeftPanel/utils';
-import { LayerKey, LayerType } from 'config/types';
-import { getDisplayBoundaryLayers, LayerDefinitions } from 'config/utils';
-import { useSafeTranslation } from 'i18n';
 import { appConfig } from 'config';
+import { LayerKey, LayerType } from 'config/types';
+import { LayerDefinitions } from 'config/utils';
+import { useCountryIso } from 'context/useCountryIso';
+import { useSafeTranslation } from 'i18n';
+import { ReactElement, useMemo } from 'react';
+import { getDisplayBoundaryLayersForIso3 } from 'utils/universal-utils';
+
 import { getLayerGeometryIcon } from './layer-utils';
 
 const { multiCountry } = appConfig;
@@ -53,6 +56,11 @@ function LayerDropdown({
 
   const { t } = useSafeTranslation();
   const classes = useStyles();
+  const { iso3 } = useCountryIso();
+  const adminBoundaries = useMemo(
+    () => getDisplayBoundaryLayersForIso3(iso3),
+    [iso3],
+  );
   // Filter out layers that are not supported by the analysis tool
   const filterLayersForAnalysis = (layer: LayerType) => {
     if (layer.disableAnalysis) {
@@ -66,8 +74,6 @@ function LayerDropdown({
     return true;
   };
 
-  // Only take first boundary for now
-  const adminBoundaries = getDisplayBoundaryLayers();
   const AdminBoundaryCategory = {
     title: 'Admin Levels',
     layers: adminBoundaries

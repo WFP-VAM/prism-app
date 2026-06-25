@@ -1,6 +1,6 @@
-import { DateCompatibleLayer } from 'utils/server-utils';
 import { DateItem, DisplayDateTimestamp } from 'config/types';
 import { datesAreEqualWithoutTime } from 'utils/date-utils';
+import { DateCompatibleLayer } from 'utils/server-utils';
 
 export const TIMELINE_ITEM_WIDTH = 4;
 

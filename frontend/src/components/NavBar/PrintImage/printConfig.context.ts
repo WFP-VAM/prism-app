@@ -1,11 +1,13 @@
-import React, { createContext } from 'react';
-import type { LngLatBounds } from 'maplibre-gl';
-import { AdminCodeString } from 'config/types';
 import {
   AspectRatio,
   AspectRatioOption,
 } from 'components/MapExport/aspectRatioConstants';
+import { AdminCodeString, LayerKey } from 'config/types';
+import type { LngLatBounds } from 'maplibre-gl';
+import React, { createContext } from 'react';
+import type { AdminAreaClipPolygon } from 'utils/adminAreaClipPolygon';
 import { BatchCadence } from 'utils/batchCadenceUtils';
+import { DateCompatibleLayer } from 'utils/server-utils';
 
 // Re-export for backwards compatibility
 export type { AspectRatioOption };
@@ -58,6 +60,7 @@ export type PrintConfigContextType = {
     handleDownloadMenuClose: () => void;
     download: (format: 'pdf' | 'jpeg' | 'png') => void;
     downloadBatch: (format: 'pdf' | 'png') => Promise<void>;
+    copyBatchMapUrls: () => Promise<void>;
     isDownloading: boolean;
     defaultFooterText: string;
     selectedBoundaries: AdminCodeString[];
@@ -70,12 +73,12 @@ export type PrintConfigContextType = {
     footerHeight: number;
     setDownloadMenuAnchorEl: (anchorEl: HTMLElement | null) => void;
     titleText: string;
-    titleRef: React.RefObject<HTMLDivElement>;
+    titleRef: React.RefObject<HTMLDivElement | null>;
     footerText: string;
-    footerRef: React.RefObject<HTMLDivElement>;
+    footerRef: React.RefObject<HTMLDivElement | null>;
     titleHeight: number;
-    invertedAdminBoundaryLimitPolygon: any;
-    printRef: React.RefObject<HTMLDivElement>;
+    adminAreaClipPolygon: AdminAreaClipPolygon | null;
+    printRef: React.RefObject<HTMLDivElement | null>;
     dateRange: {
       startDate: number | null;
       endDate: number | null;
@@ -105,6 +108,12 @@ export type PrintConfigContextType = {
     setPreviewMapWidth: React.Dispatch<React.SetStateAction<number | null>>;
     previewMapHeight: number | null;
     setPreviewMapHeight: React.Dispatch<React.SetStateAction<number | null>>;
+    selectableLayers: DateCompatibleLayer[];
+    selectedLayerId: LayerKey | null;
+    setSelectedLayerId: React.Dispatch<React.SetStateAction<LayerKey | null>>;
+    createScheduledMaps: boolean;
+    setCreateScheduledMaps: React.Dispatch<React.SetStateAction<boolean>>;
+    createSchedule: (format: 'pdf' | 'png') => Promise<void>;
   };
 };
 

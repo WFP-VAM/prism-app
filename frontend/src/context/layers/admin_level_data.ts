@@ -1,15 +1,16 @@
-import { FeatureCollection } from 'geojson';
-import { compact, get, isNull, isString, pick } from 'lodash';
 import {
-  BoundaryLayerProps,
   AdminLevelDataLayerProps,
+  BoundaryLayerProps,
   LayerKey,
 } from 'config/types';
-import type { AppDispatch, ThunkApi } from 'context/store';
 import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
+import type { AppDispatch, ThunkApi } from 'context/store';
+import { FeatureCollection } from 'geojson';
+import { compact, get, isNull, isString, pick } from 'lodash';
 import { boundaryCache } from 'utils/boundary-cache';
-import { fetchWithTimeout } from 'utils/fetch-with-timeout';
 import { getFormattedDate } from 'utils/date-utils';
+import { fetchWithTimeout } from 'utils/fetch-with-timeout';
+
 import type { LayerDataParams, LazyLoader } from './layer-data';
 
 export type DataRecord = {

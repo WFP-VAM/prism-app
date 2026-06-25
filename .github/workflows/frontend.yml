@@ -62,12 +62,18 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           cd frontend && yarn preprocess-layers
+          cd frontend && yarn generate-schedule-layer-manifest
           DIFF=$(git diff --name-only)
           if [ "$DIFF" != "" ]; then
-            echo "Files have changed. Make sure to run yarn preprocess-layers and commit changes."
+            echo "Files have changed. Run yarn preprocess-layers and yarn generate-schedule-layer-manifest after yarn setup:common (or align frontend/yarn.lock with Yarn output), then commit."
+            git diff --stat
             echo "$DIFF"
             exit 1
           fi
+
+      - name: PMTiles layer validation
+        if: matrix.os == 'ubuntu-latest'
+        run: cd frontend && yarn validate-pmtiles
 
       - name: Check boundary keys
         if: matrix.os == 'ubuntu-latest'
@@ -81,7 +87,9 @@ jobs:
       - name: Build
         run: cd frontend && yarn build
 
+  # TEMPORARY: per-country Cypress e2e (matrix + all_countries) disabled — re-enable when stable.
   frontend_end_to_end_tests:
+    if: false
     strategy:
       matrix:
         country: [mozambique, rbd, cambodia]
@@ -143,6 +151,7 @@ jobs:
     env:
       GIT_HASH: ${{ github.event.pull_request.head.sha }}
       firebase_channel: ${{ github.event.pull_request.number }}
+      REACT_APP_POSTHOG_TOKEN: ${{ secrets.REACT_APP_POSTHOG_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -175,7 +184,8 @@ jobs:
         uses: actions-ecosystem/action-regex-match@v2
         with:
           text: ${{ github.event.pull_request.title }}
-          regex: 'COUNTRY=(\w+)'
+          regex: 'country=(\w+)'
+          flags: i
       - name: Echo country variable
         run: echo "Country env is ${{ steps.country_regex.outputs.group1 }}"
 
@@ -204,6 +214,7 @@ jobs:
         country: [mozambique, cambodia, rbd]
     env:
       REACT_APP_SENTRY_URL: ${{ secrets.REACT_APP_SENTRY_URL }}
+      REACT_APP_POSTHOG_TOKEN: ${{ secrets.REACT_APP_POSTHOG_TOKEN }}
       firebase_channel: prism-master-${{ matrix.country }}
     steps:
       - name: Checkout

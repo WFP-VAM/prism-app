@@ -1,5 +1,5 @@
+import { Box, makeStyles, Typography } from '@material-ui/core';
 import { ReactNode } from 'react';
-import { Box, Typography, makeStyles } from '@material-ui/core';
 
 interface BlockPreviewHeaderProps {
   title: string;
@@ -22,7 +22,7 @@ function BlockPreviewHeader({
         </Typography>
         {subtitle && (
           <Typography variant="body1" className={classes.previewSubtitle}>
-            - {subtitle}
+            {subtitle}
           </Typography>
         )}
       </Box>

@@ -1,14 +1,18 @@
-import { useEffect, useRef, useState } from 'react';
 import type React from 'react';
-import { DashboardMode, DashboardElements } from '../../config/types';
+import { useEffect, useRef, useState } from 'react';
+
+import { DashboardElements, DashboardMode } from '../../config/types';
 import type { ExportConfig } from './DashboardContent';
 
 // A constant for the gap between various columns and padding
 export const GAP = 16;
 
+// Buffer to prevent overflow/fit oscillation when scrollbars appear/disappear
+const OVERFLOW_HYSTERESIS = 20;
+
 interface HeightConfig {
   flex: string;
-  overflow: 'auto' | 'visible';
+  overflow: 'scroll' | 'visible';
 }
 
 interface UseColumnHeightManagementParams {
@@ -21,7 +25,6 @@ interface UseColumnHeightManagementReturn {
   componentHeights: Map<string, HeightConfig>;
   columnRefs: React.MutableRefObject<Map<number, HTMLDivElement>>;
   componentRefs: React.MutableRefObject<Map<string, HTMLDivElement>>;
-  recalculationCount: number;
 }
 
 /**
@@ -42,7 +45,6 @@ export function useColumnHeightManagement({
   const [componentHeights, setComponentHeights] = useState<
     Map<string, HeightConfig>
   >(new Map());
-  const [recalculationCount, setRecalculationCount] = useState(0);
   const columnRefs = useRef<Map<number, HTMLDivElement>>(new Map());
   const componentRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const checkTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -113,8 +115,16 @@ export function useColumnHeightManagement({
           }
         });
 
-        // If total natural height fits, let components use natural heights
-        if (totalNaturalHeight <= availableHeight) {
+        const wasOverflowing = tempComponentHeights.some(({ id }) =>
+          previousHeightsRef.current.has(id),
+        );
+
+        // Hysteresis prevents fit/overflow toggling when scrollbar presence shifts layout
+        const fitsInColumn = wasOverflowing
+          ? totalNaturalHeight <= availableHeight - OVERFLOW_HYSTERESIS
+          : totalNaturalHeight <= availableHeight;
+
+        if (fitsInColumn) {
           return;
         }
 
@@ -152,11 +162,12 @@ export function useColumnHeightManagement({
               overflow: 'visible',
             });
           } else {
-            // Large component: use redistributed height (with scroll)
+            // Large component: use redistributed height (with scroll).
+            // Use overflow: scroll (not auto) so scrollbar gutter stays stable.
             const flexBasis = `${redistributedHeight}px`;
             newHeights.set(id, {
               flex: `0 0 ${flexBasis}`,
-              overflow: 'auto',
+              overflow: 'scroll',
             });
           }
         });
@@ -191,9 +202,6 @@ export function useColumnHeightManagement({
       if (hasChanged) {
         previousHeightsRef.current = newHeights;
         setComponentHeights(newHeights);
-        // Increment recalculation count only when heights meaningfully changed
-        // This signals to components (like ChartBlock) to reset their state
-        setRecalculationCount(prev => prev + 1);
       }
     };
 
@@ -256,6 +264,5 @@ export function useColumnHeightManagement({
     componentHeights,
     columnRefs,
     componentRefs,
-    recalculationCount,
   };
 }

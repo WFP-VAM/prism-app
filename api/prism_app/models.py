@@ -78,6 +78,7 @@ class StatsModel(BaseModel):
     mask_calc_expr: Optional[str] = None
     filter_by: Optional[FilterProperty] = None
     simplify_tolerance: Optional[float] = None
+    iso3_filter: Optional[str] = None
 
     @model_validator(mode="after")
     def check_zones_or_zones_url(self):
@@ -172,12 +173,29 @@ class AlertsModel(BaseModel):
 
 ExportFormat = Literal["pdf", "png"]
 
+# Cap concurrent renders per job to reduce load on tile/WMS infra (batch + sync export).
+MAP_EXPORT_MAX_URLS_PER_REQUEST = 12
+
+
+def _validate_map_export_urls(urls: list[str]) -> None:
+    from prism_app.utils import validate_export_url
+
+    if not urls:
+        raise ValueError("URLs are required")
+    for url in urls:
+        try:
+            validate_export_url(url)
+        except ValueError as e:
+            raise ValueError(f"Invalid URL: {url}. {str(e)}") from e
+
 
 class MapExportRequestModel(BaseModel):
     """Schema for export request data to be passed to /export-map endpoint."""
 
     urls: list[str] = Field(
         ...,
+        min_length=1,
+        max_length=MAP_EXPORT_MAX_URLS_PER_REQUEST,
         description="Map URLs containing all parameters necessary to render print view "
         "including layer ID(s), layer opacity, bounding box, legend config, etc.",
         examples=[
@@ -203,16 +221,97 @@ class MapExportRequestModel(BaseModel):
         description="Output format: 'pdf' for merged PDF, 'png' for ZIP archive of PNGs",
         examples=["png"],
     )
+    country: str = Field(
+        default="",
+        max_length=200,
+        description=(
+            "Country or instance label for download filenames and job metadata "
+            "(e.g. appConfig country slug). Required (non-empty) when publicMapUpload is true; "
+            "never inferred from the export URL."
+        ),
+    )
+    adminArea: Optional[str] = Field(
+        default=None,
+        max_length=200,
+        description=(
+            "Sanitized admin area label for download filenames when export uses a regional mask "
+            "(e.g. Cabo_Delgado)."
+        ),
+    )
+    publicMapUpload: bool = Field(
+        default=False,
+        description=(
+            "When true, map export worker writes under public_maps/{country}/{layer}/. "
+            "Requires non-empty ``country`` and ``hazardLayerIds`` on the export URL. "
+            "Not settable via POST /export-map/jobs."
+        ),
+    )
 
     @model_validator(mode="after")
     def validate_urls(self):
-        from prism_app.utils import validate_export_url
-
-        if not self.urls:
-            raise ValueError("URLs are required")
-        for url in self.urls:
-            try:
-                validate_export_url(url)
-            except ValueError as e:
-                raise ValueError(f"Invalid URL: {url}. {str(e)}") from e
+        _validate_map_export_urls(self.urls)
         return self
+
+    @model_validator(mode="after")
+    def public_upload_needs_derivable_storage_path(self):
+        if self.publicMapUpload:
+            if not (self.country and self.country.strip()):
+                raise ValueError(
+                    "country is required when publicMapUpload is true (not inferred from URL)"
+                )
+            from prism_app.utils import public_map_upload_path_segments
+
+            try:
+                public_map_upload_path_segments(self.urls[0], country=self.country)
+            except ValueError as exc:
+                raise ValueError(str(exc)) from exc
+        return self
+
+
+class MapExportJobEnqueueRequest(BaseModel):
+    """JSON body for ``POST /export-map/jobs``. Unknown keys ignored; ``publicMapUpload`` is never accepted (cron-only)."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    urls: list[str] = Field(
+        ...,
+        min_length=1,
+        max_length=MAP_EXPORT_MAX_URLS_PER_REQUEST,
+        description="Map URLs (same rules as ``MapExportRequestModel``).",
+    )
+    viewportWidth: int = Field(
+        default=1200,
+        ge=800,
+        le=2400,
+        description="Canvas width in pixels for rendering",
+    )
+    viewportHeight: int = Field(
+        default=849,
+        ge=400,
+        le=2400,
+        description="Canvas height in pixels for rendering",
+    )
+    format: ExportFormat = Field(
+        ...,
+        description="Output format: 'pdf' or 'png'.",
+    )
+    country: str = Field(
+        default="",
+        max_length=200,
+        description="Country or instance label for download filenames and job metadata.",
+    )
+    adminArea: Optional[str] = Field(
+        default=None,
+        max_length=200,
+        description="Sanitized admin area label for download filenames when export uses a regional mask.",
+    )
+
+    @model_validator(mode="after")
+    def validate_urls_enqueue(self):
+        _validate_map_export_urls(self.urls)
+        return self
+
+    def to_queued_request(self) -> MapExportRequestModel:
+        return MapExportRequestModel.model_validate(
+            {**self.model_dump(mode="json"), "publicMapUpload": False}
+        )

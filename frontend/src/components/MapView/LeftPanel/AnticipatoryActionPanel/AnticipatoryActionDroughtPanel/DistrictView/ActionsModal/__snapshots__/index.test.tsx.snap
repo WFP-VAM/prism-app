@@ -3,7 +3,7 @@
 exports[`renders actions modal 1`] = `
 <div>
   <mock-dialog
-    open="true"
+    open=""
   >
     <mock-dialogtitle>
       <div
@@ -41,7 +41,7 @@ exports[`renders actions modal 1`] = `
       </div>
     </mock-dialogtitle>
     <mock-dialogcontent
-      dividers="true"
+      dividers=""
     >
       <div
         class="makeStyles-contentWrapper-2"
@@ -638,10 +638,10 @@ exports[`renders actions modal 1`] = `
       </div>
     </mock-dialogcontent>
     <mock-dialogactions
-      classname="makeStyles-dialogActionsWrapper-5"
+      class="makeStyles-dialogActionsWrapper-5"
     >
       <mock-button
-        classname="makeStyles-dialogButton-6"
+        class="makeStyles-dialogButton-6"
         starticon="[object Object]"
         variant="outlined"
       >

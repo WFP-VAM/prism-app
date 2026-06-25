@@ -434,23 +434,15 @@ Impact layers are computed by combining a raster layer with a vector layer based
 To display additional metadata about a layer, you can add a `content_path` attribute to any layer. The attribute expects a path to a `.md` or `.html` file that is stored in `public/data/${REACT_APP_COUNTRY}/filename.ext` directory. For example: `public/data/myanmar/contents.md`
 The application will show an icon next to the layer in the legend if this attribute is configured, and will display the content in a modal window if the icon is clicked.
 
+## Batch Map Exports
+
+The API exposes an export endpoint that fetches map tiles from a remote URL and bundles them into an output. To prevent the API from being used as an open proxy, every export URL is validated against an allowlist defined in `api/prism_app/utils.py` as the `EXPORT_ALLOWED_DOMAINS` constant.
+
 ## Dashboards
 
-Dashboards are customizable reports that combine maps, charts, tables, and text blocks in a flexible layout. Definitions are loaded at **runtime** from object storage, not from the JS bundle.
+Dashboards are customizable reports that combine maps, charts, tables, and text blocks in a flexible layout. Definitions are loaded at **runtime** from the **geospatial API** (`GET /dashboards?country=<REACT_APP_COUNTRY>&status=published`), not from the JS bundle. Point **`REACT_APP_API_URL`** at the API (see `frontend/src/utils/constants.ts` for defaults and overrides). If the API returns an empty array, the Dashboard nav link is hidden.
 
-Set **`REACT_APP_DASHBOARD_CONFIG_BUCKET_URL`** to the HTTPS base of your dashboard bucket (no trailing slash). The app requests:
-
-`{REACT_APP_DASHBOARD_CONFIG_BUCKET_URL}/{REACT_APP_COUNTRY}/dashboard.json`
-
-For example, with `REACT_APP_COUNTRY=mozambique` and bucket URL `https://my-bucket.s3.amazonaws.com`, the file must be available at `https://my-bucket.s3.amazonaws.com/mozambique/dashboard.json`.
-
-If this variable is **unset**, the app **fetches** `/data/<REACT_APP_COUNTRY>/dashboard.json` from the dev server or static host (Vite serves `frontend/public/` at the site root). Add `frontend/public/data/<country>/dashboard.json` to test dashboards locally; if the file is missing, dashboards stay empty and the Dashboard nav link is hidden.
-
-**Local development:** Copy a sample file to `public/data/<REACT_APP_COUNTRY>/dashboard.json` (e.g. `public/data/mozambique/dashboard.json` when testing Mozambique). Use [`frontend/test/fixtures/dashboard-config.sample.json`](frontend/test/fixtures/dashboard-config.sample.json) as a starting point—it is a **test fixture** and reference payload, not a country’s real deployed config.
-
-Alternatively, set `REACT_APP_DASHBOARD_CONFIG_BUCKET_URL` to your dev server origin (e.g. `http://localhost:3000` with the default Vite port in `vite.config.ts`) so the app requests `{origin}/{country}/dashboard.json` the same way as against S3.
-
-The JSON shape is documented below (same schema as historically used in repo `dashboards.json` files).
+Admins manage published dashboard JSON in the API’s Starlette Admin (`/admin` on the same service). For the JSON shape, use [`frontend/test/fixtures/dashboard-config.sample.json`](frontend/test/fixtures/dashboard-config.sample.json) as a test fixture and reference payload.
 
 ### Dashboard Configuration Structure
 
@@ -486,7 +478,8 @@ Displays an interactive map with pre-selected layers.
 ```json
 {
   "type": "MAP",
-  "defaultDate": "2025-04-01",
+  "date": "2025-04-01",
+  "useLatestAvailableDate": false,
   "mapPosition": "left",
   "minMapBounds": [31, -25, 40, -11],
   "title": "Temperature Anomaly Map",
@@ -504,7 +497,8 @@ Displays an interactive map with pre-selected layers.
 - `preSelectedMapLayers` (required): Array of layer objects to display on the map
   - `layerId`: Layer ID from `layers.json`
   - `opacity` (optional): Layer opacity (0.0 to 1.0). Defaults to 1.0
-- `defaultDate` (optional): Initial date for the map in `YYYY-MM-DD` format
+- `date` (optional): Fixed date for the map in `YYYY-MM-DD` format. Omit when `useLatestAvailableDate` is `true`.
+- `useLatestAvailableDate` (optional): When `true`, the map uses the latest available date for the selected layer(s) on each load. Defaults to `false`.
 - `mapPosition` (optional): `"left"` or `"right"` - used for side-by-side map comparison
 - `minMapBounds` (optional): Map extent as `[west, south, east, north]`
 - `title` (optional): Custom title for the map
@@ -523,15 +517,19 @@ Displays time-series chart data for a WMS layer.
   "layerId": "precip_blended_dekad",
   "adminUnitLevel": 1,
   "adminUnitId": 12345,
-  "chartHeight": "tall"
+  "chartHeight": "tall",
+  "useLatestAvailableDate": false,
+  "latestPeriod": "month"
 }
 ```
 
 **Properties:**
 - `type`: Must be `"CHART"`
-- `startDate` (required): Start date for chart data in `YYYY-MM-DD` format
+- `startDate` (optional): Start date for chart data in `YYYY-MM-DD` format. Required when `useLatestAvailableDate` is `false`.
 - `layerId` (required): Layer ID from `layers.json` (must have `chartData` configured)
 - `endDate` (optional): End date for chart data. If omitted, only `startDate` is used
+- `useLatestAvailableDate` (optional): When `true`, the chart uses the latest available date for the layer and a single period bucket (`latestPeriod`) instead of explicit start/end dates. Defaults to `false`.
+- `latestPeriod` (optional): When `useLatestAvailableDate` is `true`, the period bucket to use: `"dekad"`, `"month"`, `"quarter"`, or `"year"`. Defaults to `"month"`.
 - `adminUnitLevel` (optional): Administrative level (0, 1, 2, etc.) to aggregate data by
 - `adminUnitId` (optional): Specific admin unit ID to filter chart data
 - `chartHeight` (optional): Height of the chart. Options: `"tall"`, `"medium"`, `"short"`. Defaults to `"tall"`
@@ -544,6 +542,7 @@ Displays analysis results in a table format, combining a hazard layer with a bas
 {
   "type": "TABLE",
   "startDate": "2025-04-01",
+  "useLatestAvailableDate": false,
   "hazardLayerId": "spi_blended_2m",
   "baselineLayerId": "admin1_boundaries",
   "threshold": { "below": -1.5, "above": 1.5 },
@@ -557,7 +556,8 @@ Displays analysis results in a table format, combining a hazard layer with a bas
 
 **Properties:**
 - `type`: Must be `"TABLE"`
-- `startDate` (required): Date for analysis in `YYYY-MM-DD` format
+- `startDate` (optional): Date for analysis in `YYYY-MM-DD` format. Required when `useLatestAvailableDate` is `false`.
+- `useLatestAvailableDate` (optional): When `true`, the table uses the latest available date for the hazard layer on each load. Defaults to `false`.
 - `hazardLayerId` (required): Hazard layer ID from `layers.json`
 - `baselineLayerId` (required): Baseline layer ID (typically a boundary or admin level layer)
 - `stat` (required): Aggregation statistic. Options:
@@ -708,4 +708,4 @@ Use `frontend/scripts/country_build.sh` from the `frontend` folder:
 - `yarn batch:build`: build zips for chosen countries into `frontend/builds/`
 - `yarn deploy:tests`: deploy Firebase preview channels for chosen countries
 
-You’ll be prompted for a list of countries (or select `all`). For deploys, ensure Firebase CLI is installed and authenticated.
+You’ll be prompted for a list of countries (or select `all`). For deploys, ensure Firebase CLI is installed and authenticated, and that your project is set to `prism-frontend`

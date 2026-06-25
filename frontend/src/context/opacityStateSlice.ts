@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { LayerType } from 'config/types';
-import { getLayerMapId } from 'utils/map-utils';
 import { Map as MaplibreMap } from 'maplibre-gl';
+import { getLayerMapId } from 'utils/map-utils';
+
 import type { RootState } from './store';
 
 interface OpacityEntry {

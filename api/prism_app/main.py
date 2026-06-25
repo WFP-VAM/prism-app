@@ -6,7 +6,7 @@ import logging
 import os
 import re
 from datetime import date
-from typing import Annotated, Any, Optional
+from typing import Annotated, Any, Literal, Optional
 from urllib.parse import ParseResult, urlencode, urlparse, urlunparse
 
 import httpx
@@ -15,12 +15,25 @@ from fastapi import Depends, FastAPI, HTTPException, Path, Query, Request, Respo
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from prism_app.admin import register_alerts_admin_views
-from prism_app.auth import optional_validate_user, validate_user
+from prism_app.admin_map_export import PrismAdmin, register_map_export_admin_views
+from prism_app.auth import auth_oidc
+from prism_app.auth.access_pages import access_not_configured_response
+from prism_app.auth.admin_oidc_auth import PrismAdminAuthProvider
+from prism_app.auth.admin_settings import get_admin_auth_settings
+from prism_app.auth.deps import require_permissions, require_prism_session
+from prism_app.auth.permission_codes import ADMIN_ACCESS
+from prism_app.auth_legacy import optional_validate_user, validate_user
 from prism_app.caching import FilePath, cache_file, cache_geojson
+from prism_app.dashboard.published_dashboards import (
+    merge_published_dashboard_rows_for_country,
+)
 from prism_app.database.alert_model import AlchemyEncoder, AlertModel
 from prism_app.database.database import DB_URI, AlertsDataBase
-from prism_app.database.user_info_model import UserInfoModel
+from prism_app.database.kobo_user_model import KoboUser
+from prism_app.database.user_model import User
+from prism_app.export_jobs import router as export_map_jobs_router
 from prism_app.export_maps import export_maps
+from prism_app.export_schedules import router as export_map_schedules_router
 from prism_app.googleflood import (
     get_google_flood_dates,
     get_google_floods_gauge_forecast,
@@ -43,6 +56,7 @@ from prism_app.zonal_stats import (
 from pydantic import EmailStr, HttpUrl, ValidationError
 from requests import get
 from sqlalchemy import create_engine
+from starlette.middleware.sessions import SessionMiddleware
 from starlette_admin.contrib.sqla import Admin
 
 from .geotiff_from_stac_api import get_geotiff
@@ -81,9 +95,65 @@ app.add_middleware(
     expose_headers=["Content-Range", "Accept-Ranges", "Content-Length"],
 )
 
+_admin_session_settings = get_admin_auth_settings()
+
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=_admin_session_settings.session_secret,
+    session_cookie=_admin_session_settings.session_cookie_name,
+    max_age=_admin_session_settings.session_ttl_seconds,
+    path="/",
+    same_site=_admin_session_settings.session_cookie_samesite,  # type: ignore[arg-type]
+    https_only=_admin_session_settings.session_cookie_secure,
+)
+app.include_router(export_map_jobs_router)
+app.include_router(export_map_schedules_router)
+
 admin_engine = create_engine(DB_URI)
-admin = Admin(admin_engine, title="PRISM Admin", base_url="/admin")
+app.state.admin_engine = admin_engine
+
+app.include_router(auth_oidc.router)
+
+
+@app.get("/access-not-configured")
+def access_not_configured_page():
+    """Allowlisted page for signed-in users with no ``user_permissions`` rows."""
+    settings = get_admin_auth_settings()
+    return access_not_configured_response(settings.access_support_email)
+
+
+_AdminSession = Annotated[
+    tuple[User, set[str]],
+    Depends(require_permissions(ADMIN_ACCESS)),
+]
+
+_AnySession = Annotated[
+    tuple[User, set[str]],
+    Depends(require_prism_session),
+]
+
+
+@app.get("/whoami")
+def whoami(prism: _AnySession):
+    """Return current user identity and permissions (any authenticated user)."""
+    user, codes = prism
+    return {
+        "user_id": str(user.id),
+        "ciam_sub": user.ciam_sub,
+        "email": user.email,
+        "permissions": sorted(codes),
+    }
+
+
+admin_auth_settings = get_admin_auth_settings()
+admin = PrismAdmin(
+    admin_engine,
+    title="PRISM Admin",
+    base_url="/admin",
+    auth_provider=PrismAdminAuthProvider(admin_engine, admin_auth_settings),
+)
 register_alerts_admin_views(admin)
+register_map_export_admin_views(admin)
 admin.mount_to(app)
 
 alert_db = AlertsDataBase()
@@ -93,6 +163,38 @@ alert_db = AlertsDataBase()
 def healthcheck() -> str:
     """Verify that the server is healthy."""
     return "All good!"
+
+
+@app.get(
+    "/dashboards",
+    responses={503: {"description": "Dashboard database unavailable"}},
+    summary="Published dashboard configs (country-scoped)",
+)
+def get_published_dashboards(
+    country: str = Query(
+        ...,
+        min_length=1,
+        description="Country key (frontend configMap key)",
+    ),
+    include_staging: bool = Query(
+        False,
+        description="Include status=staging rows (for staging frontends)",
+    ),
+) -> list[Any]:
+    """Return merged dashboard rows for the served ``dashboard`` rows in this country.
+
+    The response is a single JSON array, the same top-level shape as the static
+    ``dashboards.json`` consumed by PRISM. ``published`` rows are always
+    included; ``staging`` rows are included only when ``include_staging`` is set.
+    Drafts and archived rows are never included.
+    """
+    if not alert_db.active or alert_db.engine is None:
+        raise HTTPException(
+            status_code=503, detail="Dashboard data is temporarily unavailable"
+        )
+    return merge_published_dashboard_rows_for_country(
+        alert_db.engine, country, include_staging=include_staging
+    )
 
 
 @timed
@@ -112,6 +214,7 @@ def _calculate_stats(
     filter_by: Optional[tuple[str, str]] = None,
     admin_level: Optional[int] = None,
     simplify_tolerance: Optional[float] = None,
+    iso3_filter: Optional[str] = None,
 ):
     """Calculate stats."""
     return calculate_stats(
@@ -128,6 +231,7 @@ def _calculate_stats(
         filter_by=filter_by,
         admin_level=admin_level,
         simplify_tolerance=simplify_tolerance,
+        iso3_filter=iso3_filter,
     )
 
 
@@ -146,6 +250,7 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
     mask_geotiff_url = stats_model.mask_url
     mask_calc_expr = stats_model.mask_calc_expr
     simplify_tolerance = stats_model.simplify_tolerance
+    iso3_filter = stats_model.iso3_filter
 
     filter_by = None
     # Tuple transformation fixes unhashable type error caused by timed decorator.
@@ -200,6 +305,7 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
         filter_by=filter_by,
         admin_level=stats_model.admin_level,
         simplify_tolerance=simplify_tolerance,
+        iso3_filter=iso3_filter,
     )
 
     return features
@@ -266,9 +372,7 @@ def get_kobo_form_dates(
         default=False,
         description="If True, return all dates regardless of user province access",
     ),
-    user_info: Annotated[
-        Optional[UserInfoModel], Depends(optional_validate_user)
-    ] = None,
+    user_info: Annotated[Optional[KoboUser], Depends(optional_validate_user)] = None,
 ):
     """Get all form response dates. By default, filters by user's province access if available."""
     # Return empty list if no user/auth provided
@@ -293,7 +397,7 @@ def get_kobo_forms(
     formId: str,
     datetimeField: str,
     koboUrl: HttpUrl,
-    user_info: Annotated[UserInfoModel, Depends(validate_user)],
+    user_info: Annotated[KoboUser, Depends(validate_user)],
     geomField: Optional[str] = None,
     filters: Optional[str] = None,
     beginDateTime=Query(default="2000-01-01"),

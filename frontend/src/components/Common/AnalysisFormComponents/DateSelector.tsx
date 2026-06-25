@@ -1,12 +1,12 @@
 import {
-  Typography,
   Input,
   InputAdornment,
   makeStyles,
+  Typography,
 } from '@material-ui/core';
 import { DateRangeRounded } from '@material-ui/icons';
-import DatePicker from 'react-datepicker';
 import { useSafeTranslation } from 'i18n';
+import DatePicker from 'react-datepicker';
 
 interface DateSelectorProps {
   selectedDate: number | null;
@@ -35,7 +35,6 @@ function DateSelector({
       <Typography className={classes.colorBlack} variant="body2">
         {`${label || t('Date')}: `}
       </Typography>
-      {/* @ts-expect-error - react-datepicker v2 types incompatible with React 18 */}
       <DatePicker
         locale={t('date_locale')}
         dateFormat="PP"

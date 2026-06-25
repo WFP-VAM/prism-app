@@ -1,11 +1,7 @@
+import simplify from '@turf/simplify';
 import {
-  MapLayerEventType,
-  MapLayerMouseEvent,
-  Map as MaplibreMap,
-} from 'maplibre-gl';
-import {
-  LayerKey,
   BoundaryLayerProps,
+  LayerKey,
   LayerType,
   MapEventWrapFunctionProps,
 } from 'config/types';
@@ -13,13 +9,17 @@ import {
   getBoundaryLayerSingleton,
   getDisplayBoundaryLayers,
 } from 'config/utils';
-import React, { useRef } from 'react';
-import simplify from '@turf/simplify';
-import { useDispatch, useSelector } from 'react-redux';
+import { BoundaryLayerData } from 'context/layers/boundary';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
+import {
+  Map as MaplibreMap,
+  MapLayerEventType,
+  MapLayerMouseEvent,
+} from 'maplibre-gl';
 import maxInscribedCircle from 'max-inscribed-circle'; // ts-ignore
-import { BoundaryLayerData } from 'context/layers/boundary';
+import React, { useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 /**
  * Gets the map layer ID for a given layer key
@@ -28,6 +28,25 @@ import { BoundaryLayerData } from 'context/layers/boundary';
  */
 export const getLayerMapId = (layerId: string, type?: 'fill' | 'line') =>
   `layer-${layerId}${type ? `-${type}` : ''}`;
+
+const boundaryFillLayerIds = new Set(
+  getDisplayBoundaryLayers().map(layer => getLayerMapId(layer.id, 'fill')),
+);
+
+/** True when the click hit a configured boundary fill layer (map popup source). */
+export function clickedBoundaryFillLayer(
+  features?: { layer?: { id?: string } }[],
+): boolean {
+  return Boolean(
+    features?.some(feature =>
+      boundaryFillLayerIds.has(feature.layer?.id ?? ''),
+    ),
+  );
+}
+
+/** Basemap label layers are identified by an `id` containing "label". */
+export const isBasemapLabelLayer = (layer: { id: string }): boolean =>
+  layer.id.includes('label');
 
 /**
  * Checks weither given layer is on view
@@ -131,7 +150,9 @@ export function useMapCallback<T extends keyof MapLayerEventType, U>(
   const dispatch = useDispatch();
   const map = useSelector(mapSelector);
   const { t } = useSafeTranslation();
-  const savedListener = useRef<(ev: MapLayerEventType[T] & Object) => void>();
+  const savedListener = useRef<
+    ((ev: MapLayerEventType[T] & Object) => void) | undefined
+  >(undefined);
 
   React.useEffect(() => {
     if (!map) {

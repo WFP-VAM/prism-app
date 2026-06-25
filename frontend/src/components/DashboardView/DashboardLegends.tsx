@@ -1,8 +1,9 @@
 import { createStyles, makeStyles } from '@material-ui/core';
-import { memo } from 'react';
 import { DashboardMode } from 'config/types';
 import { dashboardModeSelector } from 'context/dashboardStateSlice';
+import { memo } from 'react';
 import { useSelector } from 'react-redux';
+
 import LegendItemsList from '../MapView/Legends/LegendItemsList';
 import type { ExportConfig } from './DashboardContent';
 

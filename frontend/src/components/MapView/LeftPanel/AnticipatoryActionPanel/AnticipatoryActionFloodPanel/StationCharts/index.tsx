@@ -1,40 +1,42 @@
-import { useMemo, useState, useRef } from 'react';
-import type { MouseEvent as ReactMouseEvent } from 'react';
+import 'chartjs-plugin-annotation';
+
 import {
-  Typography,
-  makeStyles,
+  Button,
+  CircularProgress,
   createStyles,
   IconButton,
+  makeStyles,
+  Menu,
+  MenuItem,
   Paper,
-  Button,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  CircularProgress,
-  Menu,
-  MenuItem,
+  Typography,
 } from '@material-ui/core';
-import { Close, TableChart, GetApp } from '@material-ui/icons';
-import { Line } from 'react-chartjs-2';
-import 'chartjs-plugin-annotation';
-import { useSafeTranslation } from 'i18n';
-import { FloodStation } from 'context/anticipatoryAction/AAFloodStateSlice/types';
-import { useDispatch, useSelector } from 'react-redux';
+import { Close, GetApp, TableChart } from '@material-ui/icons';
 import {
   AAFloodDataSelector,
   setAAFloodStationDetailActiveTab,
   setAAFloodStationDetailViewMode,
 } from 'context/anticipatoryAction/AAFloodStateSlice';
+import { FloodStation } from 'context/anticipatoryAction/AAFloodStateSlice/types';
+import { useSafeTranslation } from 'i18n';
 import sortBy from 'lodash/sortBy';
+import type { MouseEvent as ReactMouseEvent } from 'react';
+import { useMemo, useRef, useState } from 'react';
+import { Line } from 'react-chartjs-2';
+import { useDispatch, useSelector } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
+
 import {
+  AAFloodColors,
   CHART_WIDTH,
   ForecastWindowPerCountry,
   TABLE_WIDTH,
-  AAFloodColors,
 } from '../constants';
 
 const forecastWindow = ForecastWindowPerCountry.mozambique;

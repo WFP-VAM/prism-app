@@ -1,3 +1,5 @@
+import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
+import { safeCountry } from 'config';
 import {
   CompositeLayerProps,
   LegendDefinition,
@@ -5,25 +7,25 @@ import {
 } from 'config/types';
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
+import { opacitySelector } from 'context/opacityStateSlice';
+import { availableDatesSelector } from 'context/serverStateSlice';
+import { addPopupData } from 'context/tooltipStateSlice';
+import { Point } from 'geojson';
+import { geoToH3, h3ToGeoBoundary } from 'h3-js'; // ts-ignore
+import { FillLayerSpecification, MapLayerMouseEvent } from 'maplibre-gl';
 import { memo, useEffect, useMemo, useState } from 'react';
+import { Layer, Source } from 'react-map-gl/maplibre';
 import { useDispatch, useSelector } from 'react-redux';
-import { Source, Layer } from 'react-map-gl/maplibre';
 import {
   findFeature,
   getEvtCoords,
   getLayerMapId,
   useMapCallback,
 } from 'utils/map-utils';
-import { FillLayerSpecification, MapLayerMouseEvent } from 'maplibre-gl';
-import { Point } from 'geojson';
-import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
-import { availableDatesSelector } from 'context/serverStateSlice';
-import { useDefaultDate } from 'utils/useDefaultDate';
 import { getRequestDateItem } from 'utils/server-utils';
-import { safeCountry } from 'config';
-import { geoToH3, h3ToGeoBoundary } from 'h3-js'; // ts-ignore
-import { opacitySelector } from 'context/opacityStateSlice';
-import { addPopupData } from 'context/tooltipStateSlice';
+import { useClippedFeatureCollection } from 'utils/useClippedFeatureCollection';
+import { useDefaultDate } from 'utils/useDefaultDate';
+
 import { legendToStops } from '../layer-utils';
 
 interface Props {
@@ -175,25 +177,33 @@ const CompositeLayer = memo(({ layer, before }: Props) => {
     onClick,
   );
 
-  if (selectedDate && data && adminBoundaryLimitPolygon) {
-    const filteredData = {
+  const filteredData = useMemo(() => {
+    if (!selectedDate || !data || !adminBoundaryLimitPolygon) {
+      return undefined;
+    }
+    return {
       ...data,
       features: finalFeatures,
     };
-    return (
-      <Source key={requestDate} type="geojson" data={filteredData}>
-        <Layer
-          key={requestDate}
-          id={getLayerMapId(layer.id)}
-          type="fill"
-          paint={paintProps(layer.legend || [], opacityState || layer.opacity)}
-          beforeId={before}
-        />
-      </Source>
-    );
+  }, [adminBoundaryLimitPolygon, data, finalFeatures, selectedDate]);
+
+  const clippedData = useClippedFeatureCollection(filteredData as any);
+
+  if (!selectedDate || !filteredData || !clippedData) {
+    return null;
   }
 
-  return null;
+  return (
+    <Source key={requestDate} type="geojson" data={clippedData}>
+      <Layer
+        key={requestDate}
+        id={getLayerMapId(layer.id)}
+        type="fill"
+        paint={paintProps(layer.legend || [], opacityState || layer.opacity)}
+        beforeId={before}
+      />
+    </Source>
+  );
 });
 
 export default CompositeLayer;

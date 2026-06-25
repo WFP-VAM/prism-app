@@ -1,11 +1,3 @@
-import React, {
-  memo,
-  PropsWithChildren,
-  useCallback,
-  useEffect,
-  useState,
-  useMemo,
-} from 'react';
 import {
   Box,
   createStyles,
@@ -13,45 +5,54 @@ import {
   Grid,
   IconButton,
   ListItem,
+  makeStyles,
   Paper,
   Popover,
   Slider,
   Tooltip,
   Typography,
-  makeStyles,
 } from '@material-ui/core';
 import { Close, Opacity, SwapVert } from '@material-ui/icons';
-import { useDispatch, useSelector } from 'react-redux';
+import { Extent } from 'components/MapView/Layers/raster-utils';
+import LayerDownloadOptions from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch/SwitchItem/LayerDownloadOptions';
+import { toggleRemoveLayer } from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
+import AnalysisDownloadButton from 'components/MapView/Legends//AnalysisDownloadButton';
+import ColorIndicator from 'components/MapView/Legends/ColorIndicator';
+import LayerContentPreview from 'components/MapView/Legends/layerContentPreview';
+import { getLegendItemLabel } from 'components/MapView/utils';
 import {
   LayerType,
   LegendDefinitionItem,
   Panel,
   PointDataLayerProps,
 } from 'config/types';
-import { useMapState } from 'utils/useMapState';
-import { clearDataset } from 'context/datasetStateSlice';
-import { useSafeTranslation } from 'i18n';
 import {
-  clearAnalysisResult,
   analysisLayerInvertColors,
+  clearAnalysisResult,
   setIsMapLayerActive,
 } from 'context/analysisResultStateSlice';
-import LayerContentPreview from 'components/MapView/Legends/layerContentPreview';
-import ColorIndicator from 'components/MapView/Legends/ColorIndicator';
-import { getLegendItemLabel } from 'components/MapView/utils';
-import { Extent } from 'components/MapView/Layers/raster-utils';
-import { getUrlKey, useUrlHistory } from 'utils/url-utils';
-import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { dashboardModeSelector } from 'context/dashboardStateSlice';
-import LayerDownloadOptions from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch/SwitchItem/LayerDownloadOptions';
-import AnalysisDownloadButton from 'components/MapView/Legends//AnalysisDownloadButton';
-import { toggleRemoveLayer } from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
-import { useOpacityState } from 'utils/useOpacityState';
+import { clearDataset } from 'context/datasetStateSlice';
+import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { useSafeTranslation } from 'i18n';
 import { lightGrey } from 'muiTheme';
+import React, {
+  memo,
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { formatCoverageRange } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
-import LoadingBar from '../LoadingBar';
+import { getUrlKey, useUrlHistory } from 'utils/url-utils';
+import { useMapState } from 'utils/useMapState';
+import { useOpacityState } from 'utils/useOpacityState';
+
 import LegendMarkdown from '../LegendMarkdown';
+import LoadingBar from '../LoadingBar';
 
 // Children here is legendText
 const LegendItem = memo(
@@ -285,98 +286,101 @@ const LegendItem = memo(
           dateCoverage?.startDate,
           dateCoverage?.endDate,
           DateFormat.DayFirstHyphenMonthName,
+          t('date_locale'),
         ),
-      [dateCoverage],
+      [dateCoverage, t],
     );
 
-    return (
-      <ListItem disableGutters dense>
-        <Paper
-          className={classes.paper}
-          elevation={forPrinting ? 0 : undefined}
-          style={
-            forPrinting
-              ? {
-                  border: `1px solid ${lightGrey}`,
-                }
-              : undefined
-          }
-        >
-          <Grid item style={{ display: 'flex' }}>
-            <Typography style={{ flexGrow: 1 }} variant="h4">
-              {title}
-            </Typography>
-            <LayerContentPreview layerId={id} />
-          </Grid>
-          <Divider />
-          {renderedLegend}
-          {showDescription && (
-            <>
-              <LoadingBar layerId={id} />
-              {renderedChildren}
-              {coverageText && (
-                <Typography variant="h5" style={{ marginTop: 8 }}>
-                  {t('Coverage')}:
-                  <br />
-                  {coverageText}
-                </Typography>
-              )}
-            </>
-          )}
-          {!forPrinting && (
-            <>
-              <Divider style={{ margin: '8px 0px' }} />
-              <Box
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <Tooltip title={t('Opacity') as string}>
-                  <IconButton size="small" onClick={openOpacity}>
-                    <Opacity fontSize="small" />
+    const legendCard = (
+      <Paper
+        className={`${classes.paper} legend-card`}
+        elevation={forPrinting ? 0 : undefined}
+        style={
+          forPrinting
+            ? {
+                border: `1px solid ${lightGrey}`,
+              }
+            : undefined
+        }
+      >
+        <Grid item style={{ display: 'flex' }}>
+          <Typography style={{ flexGrow: 1 }} variant="h4">
+            {title}
+          </Typography>
+          {!forPrinting && <LayerContentPreview layerId={id} />}
+        </Grid>
+        <Divider />
+        {renderedLegend}
+        {showDescription && (
+          <>
+            {!forPrinting && <LoadingBar layerId={id} />}
+            {renderedChildren}
+            {coverageText && (
+              <Typography variant="h5" style={{ marginTop: 8 }}>
+                {t('Coverage')}: {coverageText}
+              </Typography>
+            )}
+          </>
+        )}
+        {!forPrinting && (
+          <>
+            <Divider style={{ margin: '8px 0px' }} />
+            <Box
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Tooltip title={t('Opacity') as string}>
+                <IconButton size="small" onClick={openOpacity}>
+                  <Opacity fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              {isAnalysis && (
+                <Tooltip title={t('Reverse colors') as string}>
+                  <IconButton
+                    size="small"
+                    onClick={() => dispatch(analysisLayerInvertColors())}
+                  >
+                    <SwapVert fontSize="small" />
                   </IconButton>
                 </Tooltip>
-                {isAnalysis && (
-                  <Tooltip title={t('Reverse colors') as string}>
-                    <IconButton
-                      size="small"
-                      onClick={() => dispatch(analysisLayerInvertColors())}
-                    >
-                      <SwapVert fontSize="small" />
+              )}
+              <>
+                <Popover
+                  id={opacityId}
+                  open={open}
+                  anchorEl={opacityEl}
+                  onClose={closeOpacity}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                  }}
+                >
+                  {renderedOpacitySlider}
+                </Popover>
+                {isAnalysis ? <AnalysisDownloadButton /> : layerDownloadOptions}
+                {canShowRemoveButton && (
+                  <Tooltip title={t('Remove layer') as string}>
+                    <IconButton size="small" onClick={remove}>
+                      <Close fontSize="small" />
                     </IconButton>
                   </Tooltip>
                 )}
-                <>
-                  <Popover
-                    id={opacityId}
-                    open={open}
-                    anchorEl={opacityEl}
-                    onClose={closeOpacity}
-                    anchorOrigin={{
-                      vertical: 'bottom',
-                      horizontal: 'left',
-                    }}
-                  >
-                    {renderedOpacitySlider}
-                  </Popover>
-                  {isAnalysis ? (
-                    <AnalysisDownloadButton />
-                  ) : (
-                    layerDownloadOptions
-                  )}
-                  {canShowRemoveButton && (
-                    <Tooltip title={t('Remove layer') as string}>
-                      <IconButton size="small" onClick={remove}>
-                        <Close fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                </>
-              </Box>
-            </>
-          )}
-        </Paper>
+              </>
+            </Box>
+          </>
+        )}
+      </Paper>
+    );
+
+    if (forPrinting) {
+      return <div>{legendCard}</div>;
+    }
+
+    return (
+      <ListItem disableGutters dense>
+        {legendCard}
       </ListItem>
     );
   },

@@ -4,12 +4,6 @@
  */
 
 // Logos (used in prism.json config)
-import wfpLogo from './logos/wfp_logo.png';
-import mozFlagInamLogo from './logos/moz-flag-inam-logo.png';
-import somaliaHeader from './logos/somalia-header.png';
-import mwiMet from './logos/mwi-met.png';
-import somaliaBottomLogo from './logos/somalia-bottom-logo.png';
-
 // Category icons (used in prism.json icons config)
 import iconAssessment from './icons/categories/icon_assessment.png';
 import iconBasemap from './icons/categories/icon_basemap.png';
@@ -29,6 +23,11 @@ import iconTable from './icons/categories/icon_table.png';
 import iconTropicalStorm from './icons/categories/icon_tropical_storm.png';
 import iconVeg from './icons/categories/icon_veg.png';
 import iconVulnerable from './icons/categories/icon_vulnerable.png';
+import mozFlagInamLogo from './logos/moz-flag-inam-logo.png';
+import mwiMet from './logos/mwi-met.png';
+import somaliaBottomLogo from './logos/somalia-bottom-logo.png';
+import somaliaHeader from './logos/somalia-header.png';
+import wfpLogo from './logos/wfp_logo.png';
 
 // Map config paths to bundled asset URLs
 const IMAGE_REGISTRY: Record<string, string> = {
@@ -75,5 +74,5 @@ export { wfpLogo };
 export { default as iconNorthArrow } from './map-export/icon_north_arrow.png';
 // SVG imports return URL string in Vite
 export { default as iconPoint } from './icons/layer-types/icon_point.svg';
-export { default as iconRaster } from './icons/layer-types/icon_raster.svg';
 export { default as iconPolygon } from './icons/layer-types/icon_polygon.svg';
+export { default as iconRaster } from './icons/layer-types/icon_raster.svg';

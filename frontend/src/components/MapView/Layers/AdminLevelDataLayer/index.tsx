@@ -1,31 +1,33 @@
-import { memo, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Source, Layer, MapLayerMouseEvent } from 'react-map-gl/maplibre';
+import { addPopupParams } from 'components/MapView/Layers/layer-utils';
+import { fillPaintData } from 'components/MapView/Layers/styles';
 import {
   AdminLevelDataLayerProps,
   BoundaryLayerProps,
   LayerKey,
   MapEventWrapFunctionProps,
 } from 'config/types';
+import { getBoundaryLayers, LayerDefinitions } from 'config/utils';
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
-import { useMapState } from 'utils/useMapState';
-import { boundaryCache } from 'utils/boundary-cache';
-import { useDefaultDate } from 'utils/useDefaultDate';
-import { getBoundaryLayers, LayerDefinitions } from 'config/utils';
 import { addNotification } from 'context/notificationStateSlice';
+import { opacitySelector } from 'context/opacityStateSlice';
+import { availableDatesSelector } from 'context/serverStateSlice';
+import { FillLayerSpecification } from 'maplibre-gl';
+import { memo, useEffect } from 'react';
+import { Layer, MapLayerMouseEvent, Source } from 'react-map-gl/maplibre';
+import { useDispatch, useSelector } from 'react-redux';
+import { boundaryCache } from 'utils/boundary-cache';
 import {
   firstBoundaryOnView,
   getLayerMapId,
   isLayerOnView,
   useMapCallback,
 } from 'utils/map-utils';
-import { fillPaintData } from 'components/MapView/Layers/styles';
-import { availableDatesSelector } from 'context/serverStateSlice';
 import { getPossibleDatesForLayer, getRequestDate } from 'utils/server-utils';
-import { addPopupParams } from 'components/MapView/Layers/layer-utils';
-import { FillLayerSpecification } from 'maplibre-gl';
-import { opacitySelector } from 'context/opacityStateSlice';
+import { useClippedFeatureCollection } from 'utils/useClippedFeatureCollection';
+import { useDefaultDate } from 'utils/useDefaultDate';
+import { useMapState } from 'utils/useMapState';
+
 import { addFillPatternImagesInMap } from './utils';
 
 const onClick =
@@ -62,6 +64,8 @@ const AdminLevelDataLayers = memo(
       | LayerData<AdminLevelDataLayerProps>
       | undefined;
     const { data } = layerData || {};
+
+    const clippedData = useClippedFeatureCollection(data);
 
     useEffect(() => {
       addFillPatternImagesInMap(layer, map);
@@ -107,7 +111,7 @@ const AdminLevelDataLayers = memo(
       removeLayer,
     ]);
 
-    if (!data) {
+    if (!data || !clippedData) {
       return null;
     }
 
@@ -116,7 +120,7 @@ const AdminLevelDataLayers = memo(
     }
 
     return (
-      <Source type="geojson" data={data}>
+      <Source type="geojson" data={clippedData}>
         <Layer
           id={getLayerMapId(layer.id)}
           type="fill"

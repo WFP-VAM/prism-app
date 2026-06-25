@@ -1,10 +1,12 @@
-import {
-  validateDashboardConfig,
-  formatDashboardValidationError,
-} from './schema';
 import { ChartHeight, DashboardElementType } from 'config/types';
-import { DashboardMapPosition } from './dashboardEnums';
 import dashboardConfigSample from 'test/fixtures/dashboard-config.sample.json';
+
+import { DashboardMapPosition } from './dashboardEnums';
+import {
+  formatDashboardValidationError,
+  validateDashboardConfig,
+  validateImportedDashboardConfig,
+} from './schema';
 
 const minimalValidDashboard = [
   {
@@ -104,7 +106,6 @@ describe('validateDashboardConfig', () => {
       return;
     }
     const row = result.data[0];
-    expect(row.isEditable).toBe(false);
     const [mapEl, chartEl, tableEl] = row.firstColumn;
     expect(mapEl.type).toBe(DashboardElementType.MAP);
     if (mapEl.type === DashboardElementType.MAP) {
@@ -166,4 +167,53 @@ describe('validateDashboardConfig', () => {
       expect(msg).toMatch(/Invalid dashboard configuration/);
     }
   });
+});
+
+const minimalValidImportedDashboard = {
+  title: 'Test',
+  firstColumn: [
+    {
+      type: DashboardElementType.TEXT,
+      content: 'Hello',
+    },
+  ],
+};
+
+const INVALID_IMPORTED_DASHBOARD_CONFIG_CASES: ReadonlyArray<{
+  description: string;
+  raw: unknown;
+}> = [
+  { description: 'null root', raw: null },
+  { description: 'root is array, not object', raw: [] },
+  { description: 'empty object', raw: {} },
+  { description: 'dashboard missing title', raw: { firstColumn: [] } },
+  { description: 'dashboard missing firstColumn', raw: { title: 'x' } },
+  {
+    description: 'element has unknown type discriminator',
+    raw: { title: 'x', firstColumn: [{ type: 'BOGUS' }] },
+  },
+];
+
+describe('validateImportedDashboardConfig', () => {
+  it('accepts minimal valid dashboard object', () => {
+    const result = validateImportedDashboardConfig(
+      minimalValidImportedDashboard,
+    );
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.path).toBeTruthy();
+      expect(result.data.firstColumn[0].type).toBe(DashboardElementType.TEXT);
+    }
+  });
+
+  it.each(INVALID_IMPORTED_DASHBOARD_CONFIG_CASES)(
+    'rejects when $description',
+    ({ raw }) => {
+      const result = validateImportedDashboardConfig(raw);
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.issues.length).toBeGreaterThan(0);
+      }
+    },
+  );
 });

@@ -1,74 +1,76 @@
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  Button,
-  createStyles,
-  LinearProgress,
-  Typography,
-  IconButton,
-  Theme,
-  CircularProgress,
   Box,
+  Button,
+  CircularProgress,
+  createStyles,
+  IconButton,
+  LinearProgress,
   makeStyles,
+  Theme,
+  Typography,
 } from '@material-ui/core';
 import { BarChartOutlined, CloseRounded } from '@material-ui/icons';
-import { useDispatch, useSelector } from 'context/hooks';
-import { orderBy } from 'lodash';
-import { mapSelector, layersSelector } from 'context/mapStateSlice/selectors';
-import { useUrlHistory } from 'utils/url-utils';
+import { usePostHog } from '@posthog/react';
 import {
-  clearAnalysisResult,
-  setIsMapLayerActive,
-  isExposureAnalysisLoadingSelector,
-  analysisResultSortByKeySelector,
-  analysisResultSortOrderSelector,
-  setAnalysisResultSortByKey,
-  setAnalysisResultSortOrder,
-  exposureAnalysisResultSortByKeySelector,
-  exposureAnalysisResultSortOrderSelector,
-  setExposureAnalysisResultSortByKey,
-  setExposureAnalysisResultSortOrder,
-  TableRow,
-} from 'context/analysisResultStateSlice';
+  AdminLevelSelector,
+  BaselineLayerSelector,
+  DateRangeSelector,
+  DateSelector,
+  HazardLayerSelector,
+  StatisticSelector,
+  ThresholdInputs,
+} from 'components/Common/AnalysisFormComponents';
+import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
 import {
   AdminLevelDataLayerProps,
   AggregationOperations,
   GeometryType,
-  PanelSize,
   Panel,
+  PanelSize,
   RasterType,
 } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
-import { useSafeTranslation } from 'i18n';
 import {
-  downloadCSVFromTableData,
-  BaselineLayerResult,
-  ExposedPopulationResult,
-  PolygonAnalysisResult,
-  useAnalysisTableColumns,
-  Column,
-} from 'utils/analysis-utils';
-import { refreshBoundaries, safeDispatchAddLayer } from 'utils/map-utils';
-import { addLayer, removeLayer } from 'context/mapStateSlice';
+  analysisResultSortByKeySelector,
+  analysisResultSortOrderSelector,
+  clearAnalysisResult,
+  exposureAnalysisResultSortByKeySelector,
+  exposureAnalysisResultSortOrderSelector,
+  isExposureAnalysisLoadingSelector,
+  setAnalysisResultSortByKey,
+  setAnalysisResultSortOrder,
+  setExposureAnalysisResultSortByKey,
+  setExposureAnalysisResultSortOrder,
+  setIsMapLayerActive,
+  TableRow,
+} from 'context/analysisResultStateSlice';
+import { useDispatch, useSelector } from 'context/hooks';
 import {
   leftPanelTabValueSelector,
   setTabValue,
 } from 'context/leftPanelStateSlice';
-import {
-  HazardLayerSelector,
-  BaselineLayerSelector,
-  StatisticSelector,
-  ThresholdInputs,
-  DateSelector,
-  DateRangeSelector,
-  AdminLevelSelector,
-} from 'components/Common/AnalysisFormComponents';
-import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
+import { addLayer, removeLayer } from 'context/mapStateSlice';
+import { layersSelector, mapSelector } from 'context/mapStateSlice/selectors';
+import { useSafeTranslation } from 'i18n';
+import { orderBy } from 'lodash';
 import { black, cyanBlue } from 'muiTheme';
-import { useAnalysisForm, useAnalysisExecution } from 'utils/analysis-hooks';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { useAnalysisExecution, useAnalysisForm } from 'utils/analysis-hooks';
+import {
+  BaselineLayerResult,
+  Column,
+  downloadCSVFromTableData,
+  ExposedPopulationResult,
+  PolygonAnalysisResult,
+  useAnalysisTableColumns,
+} from 'utils/analysis-utils';
+import { refreshBoundaries, safeDispatchAddLayer } from 'utils/map-utils';
+import { useUrlHistory } from 'utils/url-utils';
+
+import { getExposureAnalysisTableData } from '../../utils';
 import AnalysisTable from './AnalysisTable';
 import ExposureAnalysisTable from './AnalysisTable/ExposureAnalysisTable';
 import ExposureAnalysisActions from './ExposureAnalysisActions';
-import { getExposureAnalysisTableData } from '../../utils';
 
 const tabPanelType = Panel.Analysis;
 
@@ -171,31 +173,6 @@ const AnalysisPanel = memo(() => {
     isAnalysisLoading,
   } = formState;
 
-  const { runAnalyser, hasFormChanged } = useAnalysisExecution(formState, {
-    onUrlUpdate: updateAnalysisParams,
-    clearAnalysisFunction: () => {
-      const isClearingExposureAnalysis =
-        analysisResult instanceof ExposedPopulationResult;
-      dispatch(clearAnalysisResult());
-      if (isClearingExposureAnalysis) {
-        dispatch(setTabValue(Panel.Layers));
-      }
-      resetAnalysisParams();
-      refreshBoundaries(map, { addLayer, removeLayer });
-
-      if (previousBaselineId) {
-        const previousBaseline = LayerDefinitions[
-          previousBaselineId
-        ] as AdminLevelDataLayerProps;
-        updateHistory(BASELINE_URL_LAYER_KEY, previousBaselineId);
-        safeDispatchAddLayer(map, previousBaseline, dispatch);
-        dispatch(setIsMapLayerActive(true));
-      }
-    },
-    // Don't clear on unmount for the main analysis panel - preserve results when navigating away
-    clearOnUnmount: false,
-  });
-
   const BASELINE_URL_LAYER_KEY = 'baselineLayerId';
   const preSelectedBaselineLayer = selectedLayers.find(
     l => l.type === 'admin_level_data',
@@ -204,6 +181,66 @@ const AnalysisPanel = memo(() => {
     preSelectedBaselineLayer?.id,
   );
 
+  const restoreMapAfterAnalysisClear = useCallback(() => {
+    resetAnalysisParams();
+    refreshBoundaries(map, { addLayer, removeLayer });
+
+    if (previousBaselineId) {
+      const previousBaseline = LayerDefinitions[
+        previousBaselineId
+      ] as AdminLevelDataLayerProps;
+      updateHistory(BASELINE_URL_LAYER_KEY, previousBaselineId);
+      safeDispatchAddLayer(map, previousBaseline, dispatch);
+      dispatch(setIsMapLayerActive(true));
+    }
+  }, [dispatch, map, previousBaselineId, resetAnalysisParams, updateHistory]);
+
+  const clearAnalysisState = useCallback(
+    (options?: { resetFormFromUrl?: boolean }) => {
+      const isClearingExposureAnalysis =
+        analysisResult instanceof ExposedPopulationResult;
+      dispatch(clearAnalysisResult());
+      if (isClearingExposureAnalysis) {
+        dispatch(setTabValue(Panel.Layers));
+      }
+      if (options?.resetFormFromUrl) {
+        setHazardLayerId(hazardLayerIdFromUrl);
+        setStatistic(
+          (selectedStatisticFromUrl as AggregationOperations) || statistic,
+        );
+        setBaselineLayerId(baselineLayerIdFromUrl);
+        setBelowThreshold(belowThresholdFromUrl || '');
+        setAboveThreshold(aboveThresholdFromUrl || '');
+      }
+      restoreMapAfterAnalysisClear();
+    },
+    [
+      analysisResult,
+      baselineLayerIdFromUrl,
+      belowThresholdFromUrl,
+      aboveThresholdFromUrl,
+      dispatch,
+      hazardLayerIdFromUrl,
+      restoreMapAfterAnalysisClear,
+      selectedStatisticFromUrl,
+      setBaselineLayerId,
+      setBelowThreshold,
+      setAboveThreshold,
+      setHazardLayerId,
+      setStatistic,
+      statistic,
+    ],
+  );
+
+  const { runAnalyser, hasFormChanged, resetLastExecutedForm } =
+    useAnalysisExecution(formState, {
+      onUrlUpdate: updateAnalysisParams,
+      clearAnalysisFunction: () => clearAnalysisState(),
+      // Don't clear on unmount for the main analysis panel - preserve results when navigating away
+      clearOnUnmount: false,
+    });
+
+  const posthog = usePostHog();
   const { t } = useSafeTranslation();
   const { translatedColumns } = useAnalysisTableColumns(
     analysisResult || undefined,
@@ -244,50 +281,9 @@ const AnalysisPanel = memo(() => {
   );
 
   const clearAnalysis = useCallback(() => {
-    const isClearingExposureAnalysis =
-      analysisResult instanceof ExposedPopulationResult;
-    dispatch(clearAnalysisResult());
-    if (isClearingExposureAnalysis) {
-      dispatch(setTabValue(Panel.Layers));
-    }
-    setHazardLayerId(hazardLayerIdFromUrl);
-    setStatistic(
-      (selectedStatisticFromUrl as AggregationOperations) || statistic,
-    );
-    setBaselineLayerId(baselineLayerIdFromUrl);
-    setBelowThreshold(belowThresholdFromUrl || '');
-    setAboveThreshold(aboveThresholdFromUrl || '');
-
-    resetAnalysisParams();
-    refreshBoundaries(map, { addLayer, removeLayer });
-
-    if (previousBaselineId) {
-      const previousBaseline = LayerDefinitions[
-        previousBaselineId
-      ] as AdminLevelDataLayerProps;
-      updateHistory(BASELINE_URL_LAYER_KEY, previousBaselineId);
-      safeDispatchAddLayer(map, previousBaseline, dispatch);
-      dispatch(setIsMapLayerActive(true));
-    }
-  }, [
-    analysisResult,
-    setHazardLayerId,
-    hazardLayerIdFromUrl,
-    setStatistic,
-    selectedStatisticFromUrl,
-    statistic,
-    setBaselineLayerId,
-    baselineLayerIdFromUrl,
-    setBelowThreshold,
-    belowThresholdFromUrl,
-    setAboveThreshold,
-    aboveThresholdFromUrl,
-    dispatch,
-    resetAnalysisParams,
-    map,
-    previousBaselineId,
-    updateHistory,
-  ]);
+    resetLastExecutedForm();
+    clearAnalysisState({ resetFormFromUrl: true });
+  }, [clearAnalysisState, resetLastExecutedForm]);
 
   const wrappedRunAnalyser = useCallback(async () => {
     if (preSelectedBaselineLayer) {
@@ -295,6 +291,13 @@ const AnalysisPanel = memo(() => {
       removeKeyFromUrl(BASELINE_URL_LAYER_KEY);
       dispatch(removeLayer(preSelectedBaselineLayer));
     }
+
+    posthog?.capture('analysis_run', {
+      hazard_layer_id: hazardLayerId,
+      baseline_layer_id: baselineLayerId,
+      statistic,
+      hazard_data_type: hazardDataType,
+    });
 
     // Only clear the analysis result, don't reset form values
     // This allows users to change parameters and run new analysis without losing their changes
@@ -519,7 +522,12 @@ const AnalysisPanel = memo(() => {
         <Button
           className={classes.analysisButton}
           disabled={!analysisResult}
-          onClick={() => setShowTable(!showTable)}
+          onClick={() => {
+            posthog?.capture('analysis_table_toggled', {
+              visible: !showTable,
+            });
+            setShowTable(!showTable);
+          }}
         >
           <Typography variant="body2">
             {showTable ? t('Hide Table') : t('View Table')}
@@ -530,18 +538,25 @@ const AnalysisPanel = memo(() => {
         </Button>
         <Button
           className={classes.bottomButton}
-          onClick={() =>
-            analysisResult &&
-            (analysisResult instanceof BaselineLayerResult ||
-              analysisResult instanceof PolygonAnalysisResult) &&
-            downloadCSVFromTableData(
-              analysisResult,
-              translatedColumns,
-              selectedDate,
-              analysisSortColumn,
-              analysisIsAscending ? 'asc' : 'desc',
-            )
-          }
+          onClick={() => {
+            if (
+              analysisResult &&
+              (analysisResult instanceof BaselineLayerResult ||
+                analysisResult instanceof PolygonAnalysisResult)
+            ) {
+              posthog?.capture('analysis_csv_downloaded', {
+                hazard_layer_id: hazardLayerId,
+                date: selectedDate,
+              });
+              downloadCSVFromTableData(
+                analysisResult,
+                translatedColumns,
+                selectedDate,
+                analysisSortColumn,
+                analysisIsAscending ? 'asc' : 'desc',
+              );
+            }
+          }}
         >
           <Typography variant="body2">{t('Download CSV')}</Typography>
         </Button>

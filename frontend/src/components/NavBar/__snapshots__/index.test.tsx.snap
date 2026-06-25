@@ -3,7 +3,7 @@
 exports[`renders as expected 1`] = `
 <div>
   <mock-appbar
-    classname="makeStyles-appBar-1"
+    class="makeStyles-appBar-1"
     position="fixed"
   >
     <mock-toolbar
@@ -27,7 +27,7 @@ exports[`renders as expected 1`] = `
               class="MuiBox-root MuiBox-root-11 makeStyles-titleBox-7"
             >
               <mock-typography
-                classname="makeStyles-title-9"
+                class="makeStyles-title-9"
                 color="secondary"
                 variant="h6"
               >
@@ -138,21 +138,19 @@ exports[`renders as expected 1`] = `
                 class="MuiTouchRipple-root"
               />
             </button>
-            <mock-menu
-              open="false"
-            >
+            <mock-menu>
               <mock-menuitem
-                selected="false"
+                class="makeStyles-menuItem-12"
               >
                 A. Action Drought
               </mock-menuitem>
               <mock-menuitem
-                selected="false"
+                class="makeStyles-menuItem-12"
               >
                 A. Action Storm
               </mock-menuitem>
               <mock-menuitem
-                selected="false"
+                class="makeStyles-menuItem-12"
               >
                 A. Action Flood
               </mock-menuitem>
@@ -196,8 +194,7 @@ exports[`renders as expected 1`] = `
               />
             </button>
             <mock-menu
-              keepmounted="true"
-              open="false"
+              keepmounted=""
             />
           </div>
         </div>
@@ -206,7 +203,7 @@ exports[`renders as expected 1`] = `
         >
           <mock-button
             aria-label="Legend"
-            classname="makeStyles-triggerButton-19"
+            class="makeStyles-triggerButton-22"
             starticon="[object Object]"
             style="background-color: rgb(99, 178, 189);"
           >
@@ -228,7 +225,7 @@ exports[`renders as expected 1`] = `
             >
               <svg
                 aria-hidden="true"
-                class="MuiSvgIcon-root makeStyles-icon-21"
+                class="MuiSvgIcon-root makeStyles-icon-24"
                 focusable="false"
                 style="color: rgb(16, 16, 16);"
                 viewBox="0 0 24 24"
@@ -243,8 +240,8 @@ exports[`renders as expected 1`] = `
             />
           </button>
           <mock-list
-            classname="makeStyles-list-20"
-            disablepadding="true"
+            class="makeStyles-list-23"
+            disablepadding=""
           />
           <mock-printimage />
           <a
@@ -302,8 +299,7 @@ exports[`renders as expected 1`] = `
             </mock-typography>
           </mock-button>
           <mock-menu
-            classname="makeStyles-block-23"
-            open="false"
+            class="makeStyles-block-26"
           >
             <mock-menuitem
               aria-label="language-select-dropdown-menu-item-en"

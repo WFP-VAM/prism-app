@@ -1,57 +1,60 @@
-import React, { memo, useEffect, useCallback, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
-  Typography,
   CircularProgress,
   createStyles,
-  makeStyles,
-  IconButton,
-  Tooltip,
-  TextField,
   Icon,
+  IconButton,
+  makeStyles,
+  TextField,
+  Tooltip,
+  Typography,
 } from '@material-ui/core';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import Switch from 'components/Common/Switch';
 import ImageIcon from '@material-ui/icons/Image';
-import { Source, Layer } from 'react-map-gl/maplibre';
-import html2canvas from 'html2canvas';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import Switch from 'components/Common/Switch';
+import RootAccordionItems from 'components/MapView/LeftPanel/layersPanel/RootAccordionItems';
+import { MapInstanceProvider } from 'components/MapView/MapInstanceContext';
+import { downloadToFile } from 'components/MapView/utils';
+import { DashboardMode, SelectedDateTimestamp } from 'config/types';
 import { getDisplayBoundaryLayers, LayerDefinitions } from 'config/utils';
 import {
-  isLoading as areDatesLoading,
-  loadAvailableDatesForLayer,
-} from 'context/serverStateSlice';
-import { useMapState } from 'utils/useMapState';
-import { useDashboardMapSync } from 'utils/useDashboardMapSync';
-import { MapInstanceProvider } from 'components/MapView/MapInstanceContext';
-import { boundaryCache } from 'utils/boundary-cache';
-import {
+  dashboardMapStateSelector,
+  dashboardModeSelector,
   selectedDashboardIndexSelector,
   setCapturedViewport,
-  dashboardModeSelector,
-  dashboardMapStateSelector,
-  setLegendVisible,
   setLegendPosition,
+  setLegendVisible,
 } from 'context/dashboardStateSlice';
-import useLayers from 'utils/layers-utils';
-import { getNonBoundaryLayers } from 'utils/boundary-layers-utils';
-import RootAccordionItems from 'components/MapView/LeftPanel/layersPanel/RootAccordionItems';
 import {
   pointDataLayerDatesRequested,
   preloadLayerDatesArraysForPointData,
   preloadLayerDatesArraysForWMS,
   WMSLayerDatesRequested,
 } from 'context/serverPreloadStateSlice';
+import {
+  isLoading as areDatesLoading,
+  loadAvailableDatesForLayer,
+} from 'context/serverStateSlice';
+import html2canvas from 'html2canvas';
 import { useSafeTranslation } from 'i18n';
-import { DashboardMode } from 'config/types';
-import { downloadToFile } from 'components/MapView/utils';
-import { getFormattedDate } from 'utils/date-utils';
-import MapComponent from '../MapView/Map';
+import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react';
+import { Layer, Source } from 'react-map-gl/maplibre';
+import { useDispatch, useSelector } from 'react-redux';
+import { boundaryCache } from 'utils/boundary-cache';
+import { getNonBoundaryLayers } from 'utils/boundary-layers-utils';
+import { formatCoverageText, getFormattedDate } from 'utils/date-utils';
+import useLayers from 'utils/layers-utils';
+import { DateFormat } from 'utils/name-utils';
+import { getLayersCoverage } from 'utils/server-utils';
+import { useDashboardMapSync } from 'utils/useDashboardMapSync';
+import { useMapState } from 'utils/useMapState';
+
 import DateSelector from '../MapView/DateSelector';
-import DashboardLegends from './DashboardLegends';
+import MapComponent from '../MapView/Map';
 import BlockPreviewHeader from './BlockPreviewHeader';
 import type { ExportConfig } from './DashboardContent';
+import DashboardLegends from './DashboardLegends';
 
 /*
   reverse the order off adding layers so that the first boundary layer will be placed at the very bottom,
@@ -102,6 +105,7 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
 
   const legendVisible = mapState?.legendVisible ?? true;
   const legendPosition = mapState?.legendPosition ?? 'right';
+  const useLatestAvailableDate = mapState?.useLatestAvailableDate ?? false;
   // Convert 'left'/'right' to 0/1 for ToggleButtonGroup
   const legendPositionValue = legendPosition === 'left' ? 0 : 1;
 
@@ -122,14 +126,46 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
       return '';
     }
 
-    const startDateStr = getFormattedDate(startDate, 'localeShortUTC');
+    // Use a locale-aware format so the month name follows the selected language.
+    const dateLocale = t('date_locale');
+    const startDateStr = getFormattedDate(
+      startDate,
+      DateFormat.DayFirstHyphenMonthName,
+      dateLocale,
+    );
 
     if (endDate) {
-      const endDateStr = getFormattedDate(endDate, 'localeShortUTC');
+      const endDateStr = getFormattedDate(
+        endDate,
+        DateFormat.DayFirstHyphenMonthName,
+        dateLocale,
+      );
       return `${startDateStr} - ${endDateStr}`;
     }
     return startDateStr;
   };
+
+  // When the displayed layer(s) have a configured coverage period, show that
+  // instead of the plain selected date to give the proper context of the map.
+  const coverageText = useMemo(
+    () =>
+      formatCoverageText(
+        getLayersCoverage(
+          selectedLayersWithDateSupport,
+          dateRange.startDate as SelectedDateTimestamp,
+        ),
+        t,
+        DateFormat.DayFirstHyphenMonthName,
+      ),
+    [selectedLayersWithDateSupport, dateRange.startDate, t],
+  );
+
+  // Only show a date/coverage subtitle when the map actually has a layer with
+  // date context. Layers without dates (e.g. Multidimensional Poverty Index)
+  // should not get a date appended to their title.
+  const mapSubtitle =
+    coverageText ||
+    (selectedLayersWithDateSupport.length > 0 ? formatMapDate() : '');
 
   const handleDownloadMap = async () => {
     if (!mapContainerRef.current) {
@@ -257,15 +293,17 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
           <Typography variant="h3" className={classes.titleLabel}>
             {t('Map Title')}
           </Typography>
-          <TextField
-            value={mapTitle || ''}
-            onChange={handleTitleChange}
-            placeholder={t('Enter map title') as string}
-            variant="outlined"
-            size="small"
-            fullWidth
-            className={classes.titleInput}
-          />
+          <Box className={classes.titleInputRow}>
+            <TextField
+              value={mapTitle || ''}
+              onChange={handleTitleChange}
+              placeholder={t('Enter map title') as string}
+              variant="outlined"
+              size="small"
+              fullWidth
+              className={classes.titleInput}
+            />
+          </Box>
         </Box>
       )}
       <Box
@@ -337,7 +375,7 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
             <div className={classes.previewHeaderContainer}>
               <BlockPreviewHeader
                 title={t(title || '')}
-                subtitle={formatMapDate()}
+                subtitle={mapSubtitle}
                 downloadActions={
                   !exportConfig && (
                     <Tooltip title={t('Download PNG') as string}>
@@ -400,7 +438,14 @@ const MapBlockContent = memo(({ exportConfig, elementId }: MapBlockProps) => {
           {mode === DashboardMode.EDIT &&
             selectedLayersWithDateSupport.length > 0 &&
             !datesLoading && (
-              <div className={classes.dateSelectorContainer}>
+              <div
+                className={classes.dateSelectorContainer}
+                style={
+                  useLatestAvailableDate
+                    ? { opacity: 0.4, pointerEvents: 'none' }
+                    : undefined
+                }
+              >
                 <DateSelector />
               </div>
             )}
@@ -476,6 +521,11 @@ const useStyles = makeStyles(() =>
       marginBottom: '6px',
       fontSize: '14px',
       fontWeight: 600,
+    },
+    titleInputRow: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '12px',
     },
     titleInput: {
       '& .MuiOutlinedInput-input': {

@@ -1,14 +1,13 @@
-import { memo, useEffect } from 'react';
-import { Layer, Source } from 'react-map-gl/maplibre';
-
-import { useDispatch, useSelector } from 'react-redux';
 import { GeojsonDataLayerProps, LegendDefinition } from 'config/types';
-
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
-import { getLayerMapId } from 'utils/map-utils';
 import { opacitySelector } from 'context/opacityStateSlice';
 import { FillLayerSpecification } from 'maplibre-gl';
+import { memo, useEffect } from 'react';
+import { Layer, Source } from 'react-map-gl/maplibre';
+import { useDispatch, useSelector } from 'react-redux';
+import { getLayerMapId } from 'utils/map-utils';
+import { useClippedFeatureCollection } from 'utils/useClippedFeatureCollection';
 
 const paintProps: (
   legend: LegendDefinition,
@@ -37,16 +36,18 @@ const GeojsonDataLayer = memo(({ layer, before }: LayersProps) => {
 
   const { data } = layerData || {};
 
+  const clippedData = useClippedFeatureCollection(data);
+
   useEffect(() => {
     dispatch(loadLayerData({ layer }));
   }, [dispatch, layer]);
 
-  if (!data) {
+  if (!clippedData) {
     return null;
   }
 
   return (
-    <Source data={data} type="geojson">
+    <Source data={clippedData} type="geojson">
       <Layer
         beforeId={before}
         id={layerId}

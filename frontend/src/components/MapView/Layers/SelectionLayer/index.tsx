@@ -1,13 +1,14 @@
-import { useSelector } from 'react-redux';
-import { Layer, Source } from 'react-map-gl/maplibre';
+import { getBoundaryLayerSingleton } from 'config/utils';
 import {
   getIsSelectionMode,
   getSelectedBoundaries,
 } from 'context/mapSelectionLayerStateSlice';
-import { getBoundaryLayerSingleton } from 'config/utils';
 import { mapSelector } from 'context/mapStateSlice/selectors';
-import { useBoundaryData } from 'utils/useBoundaryData';
 import { LineLayerSpecification } from 'maplibre-gl';
+import { Layer, Source } from 'react-map-gl/maplibre';
+import { useSelector } from 'react-redux';
+import { filterFeaturesBySelectedAdminCodes } from 'utils/adminAreaSelection';
+import { useBoundaryData } from 'utils/useBoundaryData';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 const LINE_PAINT_DATA: LineLayerSpecification['paint'] = {
@@ -31,8 +32,10 @@ function SelectionLayer({ before }: { before?: string }) {
 
   const filteredData = {
     ...data,
-    features: data.features.filter(cell =>
-      selectedBoundaries.includes(cell.properties?.[boundaryLayer.adminCode]),
+    features: filterFeaturesBySelectedAdminCodes(
+      data.features,
+      boundaryLayer,
+      selectedBoundaries,
     ),
   };
 

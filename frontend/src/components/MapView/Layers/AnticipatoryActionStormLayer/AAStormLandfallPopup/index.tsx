@@ -1,8 +1,9 @@
 import { createStyles, makeStyles } from '@material-ui/core';
-import { Offset } from 'maplibre-gl';
-import { Popup } from 'react-map-gl/maplibre';
 import { LandfallInfo } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
+import { Offset } from 'maplibre-gl';
 import { AAStormTimeSeriesFeature } from 'prism-common/';
+import { Popup } from 'react-map-gl/maplibre';
+
 import PopupContent from './PopupContent';
 import { isFeatureAtLandfallEstimateTime } from './utils';
 

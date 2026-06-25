@@ -1,22 +1,24 @@
-import React, { useState } from 'react';
 import {
+  createStyles,
+  Drawer,
   IconButton,
   makeStyles,
-  useTheme,
-  useMediaQuery,
-  Drawer,
-  createStyles,
   Theme,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 import {
-  Menu,
   GitHub as GitHubIcon,
+  Menu,
   OpenInNew as OpenInNewIcon,
 } from '@material-ui/icons';
 import { appConfig } from 'config';
+import React, { useState } from 'react';
+
 import About from '../About';
 import LanguageSelector from '../LanguageSelector';
 import PrintImage from '../PrintImage';
+import PrismLogoutLink from '../PrismLogoutLink';
 
 type ConfigRightSideLink = {
   title: string;
@@ -44,6 +46,7 @@ function RightSideMenuContent({ buttons }: { buttons: React.ReactNode }) {
       {buttons}
       <About />
       <LanguageSelector />
+      <PrismLogoutLink />
     </>
   );
 }

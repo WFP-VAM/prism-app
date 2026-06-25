@@ -1,24 +1,26 @@
-import { useCallback } from 'react';
+import { useMsal } from '@azure/msal-react';
 import {
-  createStyles,
-  Typography,
   Button,
+  createStyles,
   Grid,
   makeStyles,
+  Typography,
 } from '@material-ui/core';
-import { useMsal } from '@azure/msal-react';
-import { msalRequest } from 'config';
-
-import { colors } from 'muiTheme';
+import { usePostHog } from '@posthog/react';
 import { wfpLogo } from 'assets/images';
+import { msalRequest } from 'config';
+import { colors } from 'muiTheme';
+import { useCallback } from 'react';
 
 function Login() {
   const classes = useStyles();
   const { instance } = useMsal();
+  const posthog = usePostHog();
 
   const handleLogin = useCallback(() => {
+    posthog?.capture('login_clicked');
     instance.loginPopup(msalRequest).catch(() => {});
-  }, [instance]);
+  }, [instance, posthog]);
 
   return (
     <div className={classes.container}>

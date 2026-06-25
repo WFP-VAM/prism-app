@@ -1,12 +1,3 @@
-import { orderBy, snakeCase, values } from 'lodash';
-import { TFunction } from 'i18next';
-import type { AppDispatch } from 'context/store';
-import {
-  getBoundaryLayersByAdminLevel,
-  isAnticipatoryActionLayer,
-  LayerDefinitions,
-} from 'config/utils';
-import { formatFeatureInfo } from 'utils/server-utils';
 import {
   AdminCodeString,
   AdminLevelType,
@@ -21,19 +12,30 @@ import {
   LegendDefinitionItem,
   WMSLayerProps,
 } from 'config/types';
-import { loadAvailableDatesForLayer } from 'context/serverStateSlice';
-import { TableData } from 'context/tableStateSlice';
-import { getUrlKey, UrlLayerKey } from 'utils/url-utils';
-import { addNotification } from 'context/notificationStateSlice';
-import { LocalError } from 'utils/error-utils';
-import { Column, quoteAndEscapeCell } from 'utils/analysis-utils';
+import {
+  getBoundaryLayersByAdminLevel,
+  isAnticipatoryActionLayer,
+  LayerDefinitions,
+} from 'config/utils';
 import { TableRow } from 'context/analysisResultStateSlice';
-import { MapRef, Point } from 'react-map-gl/maplibre';
-import { PopupData } from 'context/tooltipStateSlice';
-import { getTitle } from 'utils/title-utils';
 import { LayerData } from 'context/layers/layer-data';
+import { addNotification } from 'context/notificationStateSlice';
+import { loadAvailableDatesForLayer } from 'context/serverStateSlice';
+import type { AppDispatch } from 'context/store';
+import { TableData } from 'context/tableStateSlice';
+import { PopupData } from 'context/tooltipStateSlice';
 import { GeoJsonProperties } from 'geojson';
-import { appConfig } from 'config';
+import { TFunction } from 'i18next';
+import { orderBy, snakeCase, values } from 'lodash';
+import { MapRef, Point } from 'react-map-gl/maplibre';
+import { Column, quoteAndEscapeCell } from 'utils/analysis-utils';
+import { LocalError } from 'utils/error-utils';
+import { formatFeatureInfo } from 'utils/server-utils';
+import { getTitle } from 'utils/title-utils';
+import { getEffectiveMultiCountry } from 'utils/universal-country-admin';
+import { isUniversalDeployment } from 'utils/universal-utils';
+import { getUrlKey, UrlLayerKey } from 'utils/url-utils';
+
 import { getExtent } from './Layers/raster-utils';
 
 // TODO: maplibre: fix feature
@@ -345,8 +347,9 @@ export const getExposureAnalysisTableData = (
  * @param adminLevel - Optional administrative level type
  * @returns GeoJSON properties for the matching feature
  */
-const { multiCountry } = appConfig;
-const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
+const multiCountry = getEffectiveMultiCountry();
+const isUniversal = isUniversalDeployment();
+const MAX_ADMIN_LEVEL = isUniversal ? 4 : multiCountry ? 3 : 2;
 const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
 export const getProperties = (
@@ -357,10 +360,10 @@ export const getProperties = (
   if (id === undefined || adminLevel === undefined) {
     return layerData.features[0].properties;
   }
-  const indexLevel = multiCountry ? adminLevel : adminLevel - 1;
+  const indexLevel = multiCountry || isUniversal ? adminLevel : adminLevel - 1;
   const adminCode = boundaryLayer.adminLevelCodes[indexLevel];
   const item = layerData.features.find(
-    elem => elem.properties && elem.properties[adminCode] === id,
+    elem => elem.properties && String(elem.properties[adminCode]) === id,
   );
   return item?.properties ?? {};
 };

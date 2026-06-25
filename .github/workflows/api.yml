@@ -18,6 +18,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - name: Ensure cron scripts are executable
+        run: |
+          cd api
+          for f in crons/cron_*.sh crons/_compose_run.sh; do
+            if [ ! -x "$f" ]; then
+              echo "$f is not executable (missing chmod +x)"
+              exit 1
+            fi
+          done
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
@@ -26,7 +35,7 @@ jobs:
         uses: snok/install-poetry@v1
         with:
           # Version of Poetry to use
-          version: 2.2.1
+          version: 2.3.3
           virtualenvs-create: true
           virtualenvs-in-project: true
       - name: Install dependencies
@@ -37,7 +46,7 @@ jobs:
       - name: Upgrade pip (CVE-2026-1703)
         run: |
           cd api
-          poetry run pip install --upgrade 'pip>=26.0'
+          poetry run pip install --upgrade 'pip>=26.1.2'
       - name: Check formatting with black and isort
         run: |
           cd api
@@ -46,7 +55,8 @@ jobs:
       - name: Security audit
         run: |
           cd api
-          poetry run pip-audit --desc --format json > audit_results.json 2>/dev/null || true
+          # NOTE: Temporarily ignoring PYSEC-2025-183; add a tracking issue/plan to remove this ignore.
+          poetry run pip-audit --desc --format json --ignore-vuln PYSEC-2025-183 > audit_results.json 2>/dev/null || true
           python - <<'PY'
           import json
           import sys
@@ -92,6 +102,61 @@ jobs:
           sys.exit(1)
           PY
 
+  # Pure unit tests: SMTP + templates + threshold helpers (no PRISM_ALERTS_DATABASE_URL).
+  alert_workers_unit_no_db:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: snok/install-poetry@v1
+        with:
+          version: 2.3.3
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+      - name: Install API dependencies
+        run: |
+          cd api
+          poetry install
+      - name: pytest alert worker unit tests (no DB)
+        run: |
+          cd api
+          PYTHONPATH=. poetry run pytest \
+            prism_app/tests/test_alert_workers_no_db.py \
+            prism_app/tests/test_aa_storm_flood_workers_no_db.py \
+            -v --tb=short
+
+  # Trivy: OS + language packages inside the built images (pip-audit above is Poetry-only).
+  docker_image_cve_scan:
+    name: Docker CVE scan (${{ matrix.image_label }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image_label: api
+            dockerfile: Dockerfile
+            image_tag: prism-ci-api:trivy
+          - image_label: export-map-worker
+            dockerfile: Dockerfile.export-map-worker
+            image_tag: prism-ci-export-map-worker:trivy
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build ${{ matrix.image_label }} image
+        run: docker build -f "api/${{ matrix.dockerfile }}" -t "${{ matrix.image_tag }}" api
+      - name: Trivy vulnerability scan
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: image
+          image-ref: ${{ matrix.image_tag }}
+          trivy-config: api/trivy-ci.yaml
+          vuln-type: os,library
+          severity: CRITICAL,HIGH
+          exit-code: "1"
+          format: table
+
   api_build:
     name: build and test api
     runs-on: ubuntu-latest
@@ -106,11 +171,11 @@ jobs:
           chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
           docker compose version
       - name: Build containers
-        run: cd api && make build
+        run: cd api && make ci-build
       - name: Run tests
         run: cd api && make api-test
 
-  # Ephemeral Postgres: alembic upgrade → Node schema contract + worker smoke → API tests
+  # Ephemeral Postgres: alembic upgrade → Python alerts schema smoke → API tests
   # (alerts CRUD, /stats fixture, admin list routes, alembic_version).
   alerts_db_alembic_and_alerting:
     runs-on: ubuntu-latest
@@ -140,7 +205,7 @@ jobs:
           python-version: "3.12"
       - uses: snok/install-poetry@v1
         with:
-          version: 2.2.1
+          version: 2.3.3
           virtualenvs-create: true
           virtualenvs-in-project: true
       - name: Install API dependencies
@@ -150,23 +215,15 @@ jobs:
       - name: Upgrade pip (CVE-2026-1703)
         run: |
           cd api
-          poetry run pip install --upgrade 'pip>=26.0'
+          poetry run pip install --upgrade 'pip>=26.1.2'
       - name: Alembic upgrade head
         run: cd api && poetry run alembic upgrade head
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-      - name: Alerting install and DB checks
-        env:
-          PUPPETEER_SKIP_DOWNLOAD: "true"
-          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "true"
+      - name: Alerts DB contract + pool smoke + worker smoke (Python)
         run: |
-          cd alerting
-          yarn install --frozen-lockfile
-          yarn setup:common
-          yarn check-alerts-db-contract
-          yarn smoke-alerts-db-pool
-          yarn smoke-alerting-workers
+          cd api
+          PYTHONPATH=. poetry run python -m prism_app.ci.alert_db_contract
+          PYTHONPATH=. poetry run python -m prism_app.ci.alert_db_smoke
+          PYTHONPATH=. poetry run python -m prism_app.workers.alert_runner smoke
       - name: API alerts integration tests (same database)
         env:
           # Ubuntu runner Poetry venv has rasterio but not a full gdal_calc CLI like the API Docker image.

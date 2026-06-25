@@ -1,19 +1,16 @@
+import 'react-datepicker/dist/react-datepicker.css';
+
 import {
   Button,
-  Grid,
-  Theme,
   createStyles,
+  Grid,
   makeStyles,
+  Theme,
   useMediaQuery,
   useTheme,
 } from '@material-ui/core';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
-import { findIndex, get } from 'lodash';
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import Draggable, { DraggableEvent } from 'react-draggable';
-import { useSelector } from 'react-redux';
+import { getTimelineOffset } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
 import {
   AnticipatoryAction,
   DateItem,
@@ -22,40 +19,61 @@ import {
   Panel,
   SelectedDateTimestamp,
 } from 'config/types';
-import { useMapState } from 'utils/useMapState';
-import { locales, useSafeTranslation } from 'i18n';
-import {
-  dateStrToUpperCase,
-  dateWithoutTime,
-  datesAreEqualWithoutTime,
-  getFormattedDate,
-} from 'utils/date-utils';
-import { DateFormat } from 'utils/name-utils';
-import { useUrlHistory } from 'utils/url-utils';
-import useLayers from 'utils/layers-utils';
-import { format } from 'date-fns';
-import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
-import { getRequestDate } from 'utils/server-utils';
 import { isAnticipatoryActionLayer, isWindowedDates } from 'config/utils';
 import { getAAConfig } from 'context/anticipatoryAction/config';
+import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { RootState } from 'context/store';
-import { getTimelineOffset } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
-import TickSvg from './tick.svg';
+import { format } from 'date-fns';
+import { locales, useSafeTranslation } from 'i18n';
+import { findIndex, get } from 'lodash';
+import {
+  type FC,
+  memo,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import DatePicker from 'react-datepicker';
+import { createPortal } from 'react-dom';
+import Draggable, { DraggableEvent } from 'react-draggable';
+import { useSelector } from 'react-redux';
+import {
+  datesAreEqualWithoutTime,
+  dateStrToUpperCase,
+  dateWithoutTime,
+  getFormattedDate,
+} from 'utils/date-utils';
+import useLayers from 'utils/layers-utils';
+import { DateFormat } from 'utils/name-utils';
+import { getRequestDate } from 'utils/server-utils';
+import { useUrlHistory } from 'utils/url-utils';
+import { useMapState } from 'utils/useMapState';
+
+import { oneDayInMs } from '../LeftPanel/utils';
 import DateSelectorInput from './DateSelectorInput';
+import TickSvg from './tick.svg';
 import TimelineItems from './TimelineItems';
 import {
   DateCompatibleLayerWithDateItems,
-  TIMELINE_ITEM_WIDTH,
-  getDefaultCompatibleDate,
   findDateIndex,
   findMatchingDateBetweenLayers,
+  getDefaultCompatibleDate,
+  TIMELINE_ITEM_WIDTH,
 } from './utils';
-import { oneDayInMs } from '../LeftPanel/utils';
 
 type Point = {
   x: number;
   y: number;
 };
+
+/** Renders popper in body so Floating UI + map stacking/ancestors do not swallow pointer events. */
+const DatePickerPopperPortal: FC<{ children?: ReactNode }> = ({ children }) =>
+  typeof document !== 'undefined'
+    ? createPortal(<>{children}</>, document.body)
+    : null;
 
 const TIMELINE_ID = 'dateTimelineSelector';
 const POINTER_ID = 'datePointerSelector';
@@ -112,6 +130,7 @@ const DateSelector = memo(() => {
     x: 0,
     y: 0,
   });
+  const [isDatePickerOpen, setDatePickerOpen] = useState(false);
   const today = new Date();
   today.setUTCHours(12, 0, 0, 0); // Normalize today's date
 
@@ -667,11 +686,24 @@ const DateSelector = memo(() => {
     [updateStartDate],
   );
 
-  // Memoize the selected date to prevent react-datepicker v2 from calling
-  // setState in componentDidUpdate on every render. The v2 DatePicker uses
-  // reference comparison (prevProps.selected !== this.props.selected) which
-  // always triggers when we create a new Date object inline. During rapid
-  // layer switches this amplifies state updates and hits React's max depth.
+  const closeDatePicker = useCallback(() => setDatePickerOpen(false), []);
+
+  const handleDatePickerChangeAndClose = useCallback(
+    (date: Date | null) => {
+      if (date) {
+        handleOnDatePickerChange(date);
+      }
+      setDatePickerOpen(false);
+    },
+    [handleOnDatePickerChange],
+  );
+
+  const handleDatePickerInputClick = useCallback(() => {
+    setDatePickerOpen(prev => !prev);
+  }, []);
+
+  // Stable `selected` instance when the calendar day is unchanged so rapid layer /
+  // date churn does not force extra DatePicker internal updates.
   const selectedPickerDate = useMemo(() => {
     if (!effectiveSelectedDate) {
       return new Date();
@@ -719,13 +751,20 @@ const DateSelector = memo(() => {
             </Button>
           )}
 
-          {/* @ts-expect-error - react-datepicker v2 types incompatible with React 18 */}
           <DatePicker
             locale={t('date_locale')}
             dateFormat="PP"
             className={classes.datePickerInput}
             selected={selectedPickerDate}
-            onChange={handleOnDatePickerChange}
+            open={isDatePickerOpen}
+            onInputClick={handleDatePickerInputClick}
+            onClickOutside={closeDatePicker}
+            onCalendarClose={closeDatePicker}
+            preventOpenOnFocus
+            popperContainer={DatePickerPopperPortal}
+            popperPlacement="top-start"
+            popperClassName={classes.datePickerCalendarPopper}
+            onChange={handleDatePickerChangeAndClose}
             maxDate={maxDate}
             todayButton={t('Today')}
             peekNextMonth
@@ -891,6 +930,10 @@ const useStyles = makeStyles((theme: Theme) =>
       color: '#101010',
       paddingBottom: theme.spacing(2),
       paddingTop: theme.spacing(2),
+    },
+
+    datePickerCalendarPopper: {
+      zIndex: theme.zIndex.modal,
     },
 
     datePickerGrid: {

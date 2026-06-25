@@ -1,9 +1,9 @@
-import { createContext } from 'react';
+import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
 import { LayerType } from 'config/types';
 import { DateRange } from 'context/mapStateSlice';
-import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
 import { RootState } from 'context/store';
 import { Map as MaplibreMap } from 'maplibre-gl';
+import { createContext } from 'react';
 
 type MapGetter = () => MaplibreMap | undefined;
 

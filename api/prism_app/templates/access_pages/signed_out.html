@@ -1,0 +1,16 @@
+{% extends "access_pages_base.html" %}
+{% set title = "Signed out (PRISM)" %}
+{% set heading = "Signed out" %}
+
+{% block content %}
+<p>
+    Your PRISM admin session cookies for this host have been cleared. If you arrived here after
+    CIAM logout, your identity provider session for this application should also have ended
+    (per your CIAM client settings).
+</p>
+<p>Continue to the welcome page to sign in again.</p>
+<div class="d-flex gap-2 flex-wrap">
+    <a class="btn btn-outline-secondary" href="/auth/welcome">Go to welcome page</a>
+    <a class="btn btn-primary" href="/auth/sign-in?next=/admin/">Sign in again</a>
+</div>
+{% endblock %}

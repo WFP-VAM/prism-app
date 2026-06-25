@@ -1,7 +1,8 @@
 import { oneDayInMs } from 'components/MapView/LeftPanel/utils';
-import { get, snakeCase } from 'lodash';
-import { WFS, WMS, fetchCoverageLayerDays, formatUrl } from 'prism-common';
 import type { AppDispatch, RootState } from 'context/store';
+import { get, snakeCase } from 'lodash';
+import { fetchCoverageLayerDays, formatUrl, WFS, WMS } from 'prism-common';
+
 import {
   appConfig,
   countriesWithPreprocessedDates,
@@ -30,27 +31,26 @@ import type {
 } from '../config/types';
 import {
   AdminLevelDataLayerProps,
+  CogLayerProps,
   DataType,
   DateItem,
   DatesPropagation,
   FeatureInfoType,
   ImpactLayerProps,
-  CogLayerProps,
   PointDataLoader,
   StaticRasterLayerProps,
   WMSLayerProps,
 } from '../config/types';
-
 import { LayerDefinitions } from '../config/utils';
 import { addNotification } from '../context/notificationStateSlice';
 import { fetchACLEDDates } from './acled-utils';
 import {
-  StartEndDate,
   datesAreEqualWithoutTime,
   generateDateItemsRange,
   generateDatesRange,
   getFormattedDate,
   getSeasonBounds,
+  StartEndDate,
 } from './date-utils';
 import { LocalError } from './error-utils';
 import { createEWSDatesArray } from './ews-utils';
@@ -183,6 +183,29 @@ export function getLayersCoverageMap(
     },
     {} as Record<string, { startDate?: number; endDate?: number }>,
   );
+}
+
+/**
+ * Compute the coverage period (start/end date) for a single layer at a given
+ * date, based on the layer's configured `validity` / `coverageWindow`.
+ *
+ * Returns an empty object when the layer has no coverage information, so it can
+ * be passed safely to analysis result constructors.
+ */
+export function getCoverageForLayerAndDate(
+  layer: DateCompatibleLayer,
+  serverAvailableDates: AvailableDates,
+  selectedDate: number | null | undefined,
+): { startDate?: number; endDate?: number } {
+  const dateItems = getPossibleDatesForLayer(layer, serverAvailableDates);
+  const dateItem = getRequestDateItem(
+    dateItems,
+    selectedDate as SelectedDateTimestamp,
+  );
+  if (dateItem?.startDate || dateItem?.endDate) {
+    return { startDate: dateItem.startDate, endDate: dateItem.endDate };
+  }
+  return {};
 }
 
 // Note: PRISM's date picker is designed to work with dates in the UTC timezone

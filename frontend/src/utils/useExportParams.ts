@@ -1,18 +1,19 @@
-import { useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
+import { parseAspectRatio } from 'components/MapExport/aspectRatioConstants';
 import {
-  ExportParams,
   ExportMapBounds,
+  ExportParams,
   MapExportToggles,
 } from 'components/MapExport/types';
-import { parseAspectRatio } from 'components/MapExport/aspectRatioConstants';
 import { AdminCodeString } from 'config/types';
+import { useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
+
 import {
-  param,
   defineParam,
-  parseUrlParams,
   getBoolParam,
   getNumParam,
+  param,
+  parseUrlParams,
 } from './urlParamSchema';
 
 const DEFAULT_TOGGLES: MapExportToggles = {
@@ -36,7 +37,6 @@ const exportParamsSchema = {
   date: defineParam('date', param.stringOrNull()),
 
   // Map bounds
-  zoom: defineParam('zoom', param.number(5)),
   bounds: defineParam(
     'bounds',
     param.custom<ExportMapBounds | null>(v => {

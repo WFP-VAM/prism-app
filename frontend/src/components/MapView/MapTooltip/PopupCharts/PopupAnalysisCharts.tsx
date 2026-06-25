@@ -1,25 +1,29 @@
 import { createStyles, makeStyles } from '@material-ui/core';
 import ChartSection from 'components/MapView/LeftPanel/ChartsPanel/ChartSection';
 import { oneYearInMs } from 'components/MapView/LeftPanel/utils';
+import { appConfig } from 'config';
 import {
+  AdminCodeString,
   AdminLevelType,
   BoundaryLayerProps,
   WMSLayerProps,
-  AdminCodeString,
 } from 'config/types';
-import { getBoundaryLayersByAdminLevel } from 'config/utils';
+import {
+  getBoundaryLayersByAdminLevel,
+  getDisplayBoundaryLayers,
+} from 'config/utils';
 import { BoundaryLayerData } from 'context/layers/boundary';
 import { LayerData } from 'context/layers/layer-data';
 import {
   dateRangeSelector,
   mapSelector,
 } from 'context/mapStateSlice/selectors';
-import { useBoundaryData } from 'utils/useBoundaryData';
-import { useRef } from 'react';
-import { useSelector } from 'react-redux';
-import { appConfig } from 'config';
 import { useSafeTranslation } from 'i18n';
+import { useMemo, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { getLayerMapId } from 'utils/map-utils';
+import { useBoundaryData } from 'utils/useBoundaryData';
+
 import PopupChartWrapper from './PopupChartWrapper';
 
 const { country } = appConfig;
@@ -38,8 +42,6 @@ const useStyles = makeStyles(() =>
     },
   }),
 );
-
-const boundaryLayer = getBoundaryLayersByAdminLevel();
 
 const getProperties = (
   layerData: LayerData<BoundaryLayerProps>['data'],
@@ -79,8 +81,23 @@ function PopupAnalysisCharts({
   const classes = useStyles();
   const { t } = useSafeTranslation();
   const dataForCsv = useRef<{ [key: string]: any[] }>({});
-  const { data } = useBoundaryData(boundaryLayer.id);
   const map = useSelector(mapSelector);
+
+  // Resolve against the clicked (deepest available) boundary layer, identified
+  // by the selector key used when the popup was opened. Its features carry the
+  // full admin hierarchy (adm0..admN names/codes), so a single feature serves
+  // every chart level; adminLevel only controls the aggregation level passed to
+  // ChartSection. Falling back to the deepest configured layer preserves the
+  // previous single-country behavior.
+  const boundaryLayer = useMemo(
+    () =>
+      getDisplayBoundaryLayers().find(
+        layer => layer.adminCode === adminSelectorKey,
+      ) ?? getBoundaryLayersByAdminLevel(),
+    [adminSelectorKey],
+  );
+
+  const { data } = useBoundaryData(boundaryLayer.id);
 
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const chartEndDate = selectedDate || new Date().getTime();

@@ -6,26 +6,23 @@ import {
   Theme,
   useMediaQuery,
 } from '@material-ui/core';
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { AdminCodeString } from 'config/types';
+import { getBoundaryLayerSingleton } from 'config/utils';
 import {
   getSelectedBoundaries,
   setIsSelectionMode,
   setSelectedBoundaries as setSelectedBoundariesRedux,
 } from 'context/mapSelectionLayerStateSlice';
-import { getBoundaryLayerSingleton } from 'config/utils';
+import { useCountryIso } from 'context/useCountryIso';
 import { useSafeTranslation } from 'i18n';
+import React, { useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { resolveAdminAreaRefs } from 'utils/adminAreaSelection';
+import { getDisplayBoundaryLayersForIso3 } from 'utils/universal-utils';
 import { useBoundaryData } from 'utils/useBoundaryData';
-import {
-  BoundaryDropdownProps,
-  flattenAreaTree,
-  getAdminBoundaryTree,
-  TIMEOUT_ANIMATION_DELAY,
-} from './utils';
-import BoundaryDropdownOptions from './BoundaryDropdownOptions';
 
-const boundaryLayer = getBoundaryLayerSingleton();
+import BoundaryDropdownOptions from './BoundaryDropdownOptions';
+import { BoundaryDropdownProps, TIMEOUT_ANIMATION_DELAY } from './utils';
 
 /**
  * This component allows you to give the user the ability to select several admin_boundary cells.
@@ -44,7 +41,16 @@ export function SimpleBoundaryDropdown({
   ...rest
 }: BoundaryDropdownProps) {
   const { i18n: i18nLocale } = useSafeTranslation();
+  const { iso3 } = useCountryIso();
   const [search, setSearch] = React.useState('');
+
+  const boundaryLayer = useMemo(
+    () =>
+      getDisplayBoundaryLayersForIso3(iso3).filter(
+        layer => !layer.hideInGoTo,
+      )[0] ?? getBoundaryLayerSingleton(),
+    [iso3],
+  );
 
   const { data } = useBoundaryData(boundaryLayer.id);
 
@@ -54,9 +60,6 @@ export function SimpleBoundaryDropdown({
       <CircularProgress size={24} color="inherit" style={{ padding: '2px' }} />
     );
   }
-
-  const areaTree = getAdminBoundaryTree(data, boundaryLayer, i18nLocale);
-  const flattenedAreaList = flattenAreaTree(areaTree, search).slice(1);
 
   // It's important for this to be another component, since the Select component
   // acts on the `value` prop, which we need to hide from <Select /> since this isn't a menu item.
@@ -75,12 +78,13 @@ export function SimpleBoundaryDropdown({
         value={selectedBoundaries}
         // This is a workaround to display the selected items as a comma separated list.
         renderValue={selected =>
-          (selected as AdminCodeString[])
-            .map(
-              adminCode =>
-                flattenedAreaList.find(area => area.adminCode === adminCode)
-                  ?.label || adminCode,
-            )
+          resolveAdminAreaRefs(
+            selected as AdminCodeString[],
+            data,
+            boundaryLayer,
+            i18nLocale,
+          )
+            .map(ref => ref.name)
             .join(', ')
         }
         {...selectProps}

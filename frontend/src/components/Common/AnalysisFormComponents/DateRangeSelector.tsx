@@ -1,6 +1,6 @@
-import { Typography, Input, makeStyles } from '@material-ui/core';
-import DatePicker from 'react-datepicker';
+import { Input, makeStyles, Typography } from '@material-ui/core';
 import { useSafeTranslation } from 'i18n';
+import DatePicker from 'react-datepicker';
 
 interface DateRangeSelectorProps {
   startDate: number | null;
@@ -39,7 +39,6 @@ function DateRangeSelector({
         <Typography className={classes.colorBlack} variant="body2">
           {t('Start')}
         </Typography>
-        {/* @ts-expect-error - react-datepicker v2 types incompatible with React 18 */}
         <DatePicker
           selected={startDate ? new Date(startDate) : null}
           onChange={handleStartDateChange}
@@ -59,7 +58,6 @@ function DateRangeSelector({
         <Typography className={classes.colorBlack} variant="body2">
           {t('End')}
         </Typography>
-        {/* @ts-expect-error - react-datepicker v2 types incompatible with React 18 */}
         <DatePicker
           selected={endDate ? new Date(endDate) : null}
           onChange={handleEndDateChange}

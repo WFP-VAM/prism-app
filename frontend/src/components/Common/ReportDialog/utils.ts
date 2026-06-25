@@ -1,6 +1,6 @@
 export const getReportFontFamily = (selectedLanguage: string): string => {
   switch (selectedLanguage) {
-    case 'kh':
+    case 'km':
       return 'Khmer';
     default:
       return 'Roboto';

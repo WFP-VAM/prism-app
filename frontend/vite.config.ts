@@ -1,9 +1,9 @@
-import { defineConfig, Plugin } from 'vite';
 import react from '@vitejs/plugin-react-swc';
-import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
+import { defineConfig, Plugin } from 'vite';
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 // Load environment variables that start with REACT_APP_
 dotenv.config({ path: '.env' });
@@ -104,21 +104,36 @@ export default defineConfig({
     host: true,
   },
   resolve: {
-    alias: {
-      assets: path.resolve(__dirname, 'src/assets'),
-      components: '/src/components',
-      config: '/src/config',
-      context: '/src/context',
-      dashboardConfig: '/src/dashboardConfig',
-      hooks: '/src/hooks',
-      utils: '/src/utils',
-      muiTheme: '/src/muiTheme',
-      i18n: '/src/i18n',
-      fonts: '/src/fonts',
-      serviceWorker: '/src/serviceWorker',
-      src: '/src',
-      test: '/test',
-      public: '/public',
-    },
+    dedupe: ['react', 'react-dom'],
+    alias: [
+      {
+        find: /^react-dom$/,
+        replacement: path.resolve(__dirname, 'src/shims/react-dom.ts'),
+      },
+      {
+        find: 'react-dom-vendor',
+        replacement: path.resolve(__dirname, 'node_modules/react-dom'),
+      },
+    ].concat(
+      Object.entries({
+        assets: path.resolve(__dirname, 'src/assets'),
+        components: '/src/components',
+        config: '/src/config',
+        context: '/src/context',
+        dashboardConfig: '/src/dashboardConfig',
+        hooks: '/src/hooks',
+        utils: '/src/utils',
+        muiTheme: '/src/muiTheme',
+        i18n: '/src/i18n',
+        fonts: '/src/fonts',
+        serviceWorker: '/src/serviceWorker',
+        src: '/src',
+        test: '/test',
+        public: '/public',
+      }).map(([find, replacement_]) => ({
+        find,
+        replacement: replacement_,
+      })),
+    ),
   },
 });

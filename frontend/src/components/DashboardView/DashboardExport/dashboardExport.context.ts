@@ -1,5 +1,5 @@
-import React, { createContext } from 'react';
 import { AdminCodeString } from 'config/types';
+import React, { createContext } from 'react';
 
 // Supporting ONLY A4 as of Oct 2025
 export enum PaperSize {
@@ -31,7 +31,7 @@ export type DashboardExportContextType = {
     handleClose: () => void;
     download: (format: 'pdf' | 'png') => void;
     isExporting: boolean;
-    printRef: React.RefObject<HTMLDivElement>;
+    printRef: React.RefObject<HTMLDivElement | null>;
     paperSize: PaperSize;
     setPaperSize: React.Dispatch<React.SetStateAction<PaperSize>>;
     toggles: ExportToggles;

@@ -1,20 +1,26 @@
-import { RefObject } from 'react';
-import { get } from 'lodash';
-import { Layer, MapRef, Source } from 'react-map-gl/maplibre';
-import { useSelector } from 'react-redux';
-import { addPopupData } from 'context/tooltipStateSlice';
-import {
-  analysisResultSelector,
-  invertedColorsSelector,
-  isAnalysisLayerActiveSelector,
-} from 'context/analysisResultStateSlice';
 import { legendToStops } from 'components/MapView/Layers/layer-utils';
+import { invertLegendColors } from 'components/MapView/Legends/utils';
+import { formatIntersectPercentageAttribute } from 'components/MapView/utils';
 import {
   AggregationOperations,
   LegendDefinition,
   MapEventWrapFunctionProps,
   units,
 } from 'config/types';
+import { LayerDefinitions } from 'config/utils';
+import {
+  analysisResultSelector,
+  invertedColorsSelector,
+  isAnalysisLayerActiveSelector,
+} from 'context/analysisResultStateSlice';
+import { layersSelector } from 'context/mapStateSlice/selectors';
+import { opacitySelector } from 'context/opacityStateSlice';
+import { addPopupData } from 'context/tooltipStateSlice';
+import { get } from 'lodash';
+import { FillLayerSpecification, MapLayerMouseEvent } from 'maplibre-gl';
+import { RefObject } from 'react';
+import { Layer, MapRef, Source } from 'react-map-gl/maplibre';
+import { useSelector } from 'react-redux';
 import {
   AnalysisResult,
   BaselineLayerResult,
@@ -22,19 +28,13 @@ import {
   PolygonAnalysisResult,
 } from 'utils/analysis-utils';
 import { getRoundedData } from 'utils/data-utils';
-import { LayerDefinitions } from 'config/utils';
-import { formatIntersectPercentageAttribute } from 'components/MapView/utils';
-import { FillLayerSpecification, MapLayerMouseEvent } from 'maplibre-gl';
+import { getFormattedDate } from 'utils/date-utils';
 import {
   findFeature,
   getEvtCoords,
   getLayerMapId,
   useMapCallback,
 } from 'utils/map-utils';
-import { opacitySelector } from 'context/opacityStateSlice';
-import { getFormattedDate } from 'utils/date-utils';
-import { invertLegendColors } from 'components/MapView/Legends/utils';
-import { layersSelector } from 'context/mapStateSlice/selectors';
 
 const layerId = getLayerMapId('analysis');
 
@@ -218,7 +218,7 @@ function PMTilesAnalysisLayer({
   effectiveBoundaryId,
 }: {
   before?: string;
-  mapRef: RefObject<MapRef>;
+  mapRef: RefObject<MapRef | null>;
   legend: LegendDefinition;
   boundaryLayerId?: string;
   effectiveBoundaryId?: string;
@@ -353,7 +353,7 @@ function AnalysisLayer({
   mapRef,
 }: {
   before?: string;
-  mapRef: RefObject<MapRef>;
+  mapRef: RefObject<MapRef | null>;
 }) {
   const analysisData = useSelector(analysisResultSelector);
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);

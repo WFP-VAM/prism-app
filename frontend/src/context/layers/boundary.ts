@@ -1,10 +1,12 @@
-import { FeatureCollection } from 'geojson';
 import { BoundaryLayerProps } from 'config/types';
-import { coordFirst } from 'utils/data-utils';
-import { fetchWithTimeout } from 'utils/fetch-with-timeout';
-import { LocalError } from 'utils/error-utils';
 import { addNotification } from 'context/notificationStateSlice';
+import { FeatureCollection } from 'geojson';
+import { coordFirst } from 'utils/data-utils';
+import { LocalError } from 'utils/error-utils';
+import { fetchWithTimeout } from 'utils/fetch-with-timeout';
 import { getPmtilesInstance } from 'utils/pmtiles-utils';
+import { filterFeaturesByIso3 } from 'utils/universal-utils';
+
 import type { LayerDataParams, LazyLoader } from './layer-data';
 
 export interface BoundaryLayerData extends FeatureCollection {}
@@ -12,21 +14,40 @@ export interface BoundaryLayerData extends FeatureCollection {}
 export const fetchBoundaryLayerData: LazyLoader<BoundaryLayerProps> =
   () =>
   async (params: LayerDataParams<BoundaryLayerProps>, { dispatch }) => {
-    const { layer, map } = params;
+    const { layer, map, iso3Filter } = params;
     const { path, format } = layer;
 
     try {
       if (format === 'pmtiles') {
-        const p = getPmtilesInstance(path);
-        const header = await p.getHeader();
+        let p;
+        let header;
+        try {
+          p = getPmtilesInstance(path);
+          header = await p.getHeader();
+        } catch (headerError) {
+          const message = `Failed to load boundary layer: PMTiles archive at ${path} is unreachable`;
+          console.error(message, headerError);
+          dispatch(
+            addNotification({
+              message,
+              type: 'warning',
+            }),
+          );
+          return undefined;
+        }
 
         const allFeatures = map.querySourceFeatures(`source-${layer.id}`, {
           sourceLayer: layer.layerName,
         });
 
+        const features = filterFeaturesByIso3(
+          allFeatures,
+          iso3Filter as string | undefined,
+        );
+
         return {
           type: 'FeatureCollection',
-          features: allFeatures,
+          features,
           properties: { header },
         };
       }
@@ -55,6 +76,15 @@ export const fetchBoundaryLayerData: LazyLoader<BoundaryLayerProps> =
           );
         }
       });
+      if (iso3Filter) {
+        return {
+          ...geojson,
+          features: filterFeaturesByIso3(
+            geojson.features ?? [],
+            iso3Filter as string,
+          ),
+        };
+      }
       return geojson;
     } catch (error) {
       if (!(error instanceof LocalError)) {
