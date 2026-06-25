@@ -59,6 +59,19 @@ export const resources = merge(
   formattedTranslation,
 );
 
+// Sidecar-only locales (e.g. universal `zh`) have no UI translation file. An
+// empty namespace makes i18next resolve to fallbackLng (`en`), so the language
+// dropdown and admin-name sidecars never activate the selected locale.
+for (const [lng, bundle] of Object.entries(resources)) {
+  if (lng === 'en') {
+    continue;
+  }
+  const keys = Object.keys(bundle?.translation ?? {});
+  if (keys.length === 0) {
+    resources[lng] = { ...bundle, translation: { ...englishKeys } };
+  }
+}
+
 export const languages = Object.keys(resources);
 
 const isDevelopment = ['development'].includes(process.env.NODE_ENV || '');
