@@ -139,10 +139,10 @@ jobs:
           spec: |
             cypress/e2e/${{ matrix.country }}.cy.ts
             cypress/e2e/all_countries.cy.ts
-    env:
-      REACT_APP_COUNTRY: ${{ matrix.country }}
-      REACT_APP_EWS_API_KEY: ${{ secrets.REACT_APP_EWS_API_KEY }}
-      # CI runners are slow; layer dates (preprocessed, WMS) can take 30s+
+        env:
+          REACT_APP_COUNTRY: ${{ matrix.country }}
+          REACT_APP_EWS_API_KEY: ${{ secrets.REACT_APP_EWS_API_KEY }}
+          # CI runners are slow; layer dates (preprocessed, WMS) can take 30s+
           CYPRESS_DEFAULT_COMMAND_TIMEOUT: 45000
 
   frontend_build_and_deploy:
