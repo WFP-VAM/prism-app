@@ -51,7 +51,9 @@ const englishKeys = Object.keys(translation)
     {},
   );
 
-export const resources = merge(
+type ResourceBundle = { translation: Record<string, string> };
+
+const mergedResources: Record<string, ResourceBundle> = merge(
   {
     en: { translation: englishKeys },
   },
@@ -62,15 +64,14 @@ export const resources = merge(
 // Sidecar-only locales (e.g. universal `zh`) have no UI translation file. An
 // empty namespace makes i18next resolve to fallbackLng (`en`), so the language
 // dropdown and admin-name sidecars never activate the selected locale.
-for (const [lng, bundle] of Object.entries(resources)) {
-  if (lng === 'en') {
-    continue;
-  }
-  const keys = Object.keys(bundle?.translation ?? {});
-  if (keys.length === 0) {
-    resources[lng] = { ...bundle, translation: { ...englishKeys } };
-  }
-}
+export const resources: Record<string, ResourceBundle> = Object.fromEntries(
+  Object.entries(mergedResources).map(([lng, bundle]) => {
+    if (lng === 'en' || Object.keys(bundle.translation).length > 0) {
+      return [lng, bundle];
+    }
+    return [lng, { ...bundle, translation: { ...englishKeys } }];
+  }),
+);
 
 export const languages = Object.keys(resources);
 
