@@ -71,6 +71,10 @@ jobs:
             exit 1
           fi
 
+      - name: PMTiles layer validation
+        if: matrix.os == 'ubuntu-latest'
+        run: cd frontend && yarn validate-pmtiles
+
       - name: Check boundary keys
         if: matrix.os == 'ubuntu-latest'
         run: cd frontend && yarn check-boundary-keys

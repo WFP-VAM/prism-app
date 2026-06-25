@@ -51,6 +51,10 @@ countryDirs.forEach(country => {
   );
 
   layersToProcess.forEach(([key, layer]) => {
+    if (layer.format === 'pmtiles' || layer.path.startsWith('http')) {
+      // Validated separately by validate-pmtiles script
+      return;
+    }
     const filePath = path.join(__dirname, `../public/${layer.path}`);
     if (fs.existsSync(filePath)) {
       checkKeysExistence(layer, filePath);

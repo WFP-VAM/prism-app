@@ -68,6 +68,8 @@ export function getAdminBoundaryTree(
     }
     const newBranch = addBranchToTree(
       partialTree.children[branchCode] ?? {
+        // Normalize to string so all UI state (selection, dropdown values, URL
+        // params) is consistent. Universal PMTiles store these as numbers.
         adminCode: branchCode,
         key: fp[layer.adminLevelNames[level]],
         label: fp[locationLevelNames[level]] ?? '',

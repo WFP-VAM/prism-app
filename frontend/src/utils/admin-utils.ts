@@ -1,4 +1,3 @@
-import { appConfig } from 'config';
 import {
   AdminLevelType,
   BoundaryLayerProps,
@@ -14,9 +13,17 @@ import { AdminBoundaryParams, EWSParams } from 'context/datasetStateSlice';
 import { CHART_API_URL } from 'utils/constants';
 
 import { GoogleFloodParams } from './google-flood-utils';
+import { getEffectiveMultiCountry } from './universal-country-admin';
+import {
+  isUniversalDeployment,
+  resolveChartBoundaryProperty,
+} from './universal-utils';
 
-const { multiCountry } = appConfig;
-const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
+const multiCountry = getEffectiveMultiCountry();
+// Universal deployments use the same boundary layer structure as multiCountry (adm0 included),
+// so name lookups must use the level index directly without subtracting 1.
+const isUniversal = isUniversalDeployment();
+const MAX_ADMIN_LEVEL = isUniversal ? 4 : multiCountry ? 3 : 2;
 const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
 export function getAdminLevelLayer(
@@ -64,22 +71,23 @@ export const getChartAdminBoundaryParams = (
   // Take in chart url if provided, otherwise use default CHART_API_URL
   const url = chartUrl || CHART_API_URL;
 
+  // In multiCountry and universal deployments the boundary layer includes adm0,
+  // so the chart level index maps directly (offset = 0). Single-country deployments
+  // start their boundary codes at adm1, so we subtract 1 to align them.
+  const levelOffset = multiCountry || isUniversal ? 0 : 1;
+
   // TODO - why not reduce this by level directly?
   const boundaryProps = levels.reduce(
     (obj, item) => ({
       ...obj,
       [item.id]: {
-        code: properties[item.id],
+        code: resolveChartBoundaryProperty(properties, item.id),
         level: item.level,
         name:
-          properties[item.name] ||
-          properties[
-            adminLevelNames[Number(item.level) - (multiCountry ? 0 : 1)]
-          ],
+          resolveChartBoundaryProperty(properties, item.name) ||
+          properties[adminLevelNames[Number(item.level) - levelOffset]],
         localName:
-          properties[
-            adminLevelLocalNames[Number(item.level) - (multiCountry ? 0 : 1)]
-          ],
+          properties[adminLevelLocalNames[Number(item.level) - levelOffset]],
       },
     }),
     {},
