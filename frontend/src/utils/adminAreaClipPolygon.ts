@@ -1,3 +1,4 @@
+import turfBbox from '@turf/bbox';
 import { featureCollection } from '@turf/helpers';
 import union from '@turf/union';
 import type { AdminCodeString, BoundaryLayerProps } from 'config/types';
@@ -8,6 +9,11 @@ import type i18n from 'i18next';
 import { resolveFeaturesForAdminCodes } from './adminAreaSelection';
 
 export type AdminAreaClipPolygon = Feature<Polygon | MultiPolygon>;
+
+export type LngLatBbox = [number, number, number, number];
+
+/** Default inset (degrees) when checking clip polygon against loaded map bounds. */
+export const CLIP_COVERAGE_BOUNDS_MARGIN = 0.001;
 
 function isPolygonOrMultiPolygonFeature(
   feature: Feature,
@@ -33,6 +39,29 @@ export function mergeAdminAreaClipFeatures(
   }
 
   return features[0];
+}
+
+export function bboxOfClipPolygon(polygon: AdminAreaClipPolygon): LngLatBbox {
+  return turfBbox(polygon).slice(0, 4) as LngLatBbox;
+}
+
+/**
+ * True when `bbox` lies fully inside `bounds` with a small inset margin.
+ * Used to detect PMTiles clip polygons that only cover loaded viewport tiles.
+ */
+export function isBboxWithinBounds(
+  bbox: LngLatBbox,
+  bounds: LngLatBbox,
+  margin = CLIP_COVERAGE_BOUNDS_MARGIN,
+): boolean {
+  const [minLng, minLat, maxLng, maxLat] = bbox;
+  const [west, south, east, north] = bounds;
+  return (
+    minLng >= west + margin &&
+    minLat >= south + margin &&
+    maxLng <= east - margin &&
+    maxLat <= north - margin
+  );
 }
 
 export function buildCountryClipPolygonFromBoundaryData(

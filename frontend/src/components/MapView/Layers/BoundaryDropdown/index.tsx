@@ -13,16 +13,16 @@ import {
   setIsSelectionMode,
   setSelectedBoundaries as setSelectedBoundariesRedux,
 } from 'context/mapSelectionLayerStateSlice';
+import { useCountryIso } from 'context/useCountryIso';
 import { useSafeTranslation } from 'i18n';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { resolveAdminAreaRefs } from 'utils/adminAreaSelection';
+import { getDisplayBoundaryLayersForIso3 } from 'utils/universal-utils';
 import { useBoundaryData } from 'utils/useBoundaryData';
 
 import BoundaryDropdownOptions from './BoundaryDropdownOptions';
 import { BoundaryDropdownProps, TIMEOUT_ANIMATION_DELAY } from './utils';
-
-const boundaryLayer = getBoundaryLayerSingleton();
 
 /**
  * This component allows you to give the user the ability to select several admin_boundary cells.
@@ -41,7 +41,16 @@ export function SimpleBoundaryDropdown({
   ...rest
 }: BoundaryDropdownProps) {
   const { i18n: i18nLocale } = useSafeTranslation();
+  const { iso3 } = useCountryIso();
   const [search, setSearch] = React.useState('');
+
+  const boundaryLayer = useMemo(
+    () =>
+      getDisplayBoundaryLayersForIso3(iso3).filter(
+        layer => !layer.hideInGoTo,
+      )[0] ?? getBoundaryLayerSingleton(),
+    [iso3],
+  );
 
   const { data } = useBoundaryData(boundaryLayer.id);
 

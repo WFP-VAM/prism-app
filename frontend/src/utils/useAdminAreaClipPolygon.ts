@@ -5,8 +5,12 @@ import { useEffect, useState } from 'react';
 
 import {
   type AdminAreaClipPolygon,
+  bboxOfClipPolygon,
+  isBboxWithinBounds,
+  type LngLatBbox,
   resolveAdminAreaClipPolygon,
 } from './adminAreaClipPolygon';
+import { isUniversalDeployment } from './universal-utils';
 
 export function useAdminAreaClipPolygon(options: {
   enabled: boolean;
@@ -20,6 +24,9 @@ export function useAdminAreaClipPolygon(options: {
   ) => LayerData<BoundaryLayerProps>['data'] | undefined;
   /** Bump when async boundary layer loads complete (e.g. admin1/admin2). */
   boundaryLayersVersion?: number;
+  /** Main map bounds [west, south, east, north] for PMTiles coverage checks. */
+  coverageBounds?: LngLatBbox;
+  onIncompleteCoverage?: () => void;
 }): AdminAreaClipPolygon | null {
   const [adminAreaClipPolygon, setAdminAreaClipPolygon] =
     useState<AdminAreaClipPolygon | null>(null);
@@ -33,6 +40,8 @@ export function useAdminAreaClipPolygon(options: {
     i18nLocale,
     getLayerData,
     boundaryLayersVersion = 0,
+    coverageBounds,
+    onIncompleteCoverage,
   } = options;
 
   useEffect(() => {
@@ -52,9 +61,25 @@ export function useAdminAreaClipPolygon(options: {
       getLayerData,
     })
       .then(polygon => {
-        if (!cancelled) {
-          setAdminAreaClipPolygon(polygon);
+        if (cancelled) {
+          return;
         }
+
+        let result = polygon;
+        if (
+          result &&
+          isUniversalDeployment() &&
+          selectedBoundaries.length > 0 &&
+          coverageBounds
+        ) {
+          const clipBbox = bboxOfClipPolygon(result);
+          if (!isBboxWithinBounds(clipBbox, coverageBounds)) {
+            onIncompleteCoverage?.();
+            result = null;
+          }
+        }
+
+        setAdminAreaClipPolygon(result);
       })
       .catch(error => {
         if (!cancelled) {
@@ -75,6 +100,8 @@ export function useAdminAreaClipPolygon(options: {
     i18nLocale,
     getLayerData,
     boundaryLayersVersion,
+    coverageBounds,
+    onIncompleteCoverage,
   ]);
 
   return adminAreaClipPolygon;

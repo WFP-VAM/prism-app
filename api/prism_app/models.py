@@ -78,6 +78,7 @@ class StatsModel(BaseModel):
     mask_calc_expr: Optional[str] = None
     filter_by: Optional[FilterProperty] = None
     simplify_tolerance: Optional[float] = None
+    iso3_filter: Optional[str] = None
 
     @model_validator(mode="after")
     def check_zones_or_zones_url(self):
