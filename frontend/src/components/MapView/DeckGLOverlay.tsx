@@ -1,7 +1,8 @@
-import { memo, useEffect } from 'react';
-import { useControl } from 'react-map-gl/maplibre';
 import { MapboxOverlay } from '@deck.gl/mapbox';
 import type { IControl } from 'maplibre-gl';
+import { memo, useEffect } from 'react';
+import { useControl } from 'react-map-gl/maplibre';
+
 import { useDeckGLLayers } from './DeckGLLayersContext';
 
 /**

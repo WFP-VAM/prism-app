@@ -1,4 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
+import type { Layer } from '@deck.gl/core';
 import React, {
   createContext,
   useCallback,
@@ -7,7 +8,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import type { Layer } from '@deck.gl/core';
 
 interface DeckGLLayersContextValue {
   /** All currently registered deck.gl layers, keyed by logical layer id. */

@@ -6,7 +6,7 @@ import logging
 import os
 import re
 from datetime import date
-from typing import Annotated, Any, Literal, Optional
+from typing import Annotated, Any, Optional
 from urllib.parse import ParseResult, urlencode, urlparse, urlunparse
 
 import httpx
@@ -60,8 +60,8 @@ from starlette.middleware.sessions import SessionMiddleware
 from starlette_admin.contrib.sqla import Admin
 
 from .geotiff_from_stac_api import get_geotiff
-from .presigned_cog_url import get_presigned_cog_urls
 from .models import AlertsModel, StatsModel
+from .presigned_cog_url import get_presigned_cog_urls
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)-8s %(message)s",
@@ -649,7 +649,10 @@ _FORWARD_HEADERS = {
         502: {"description": "Upstream S3 request failed"},
     },
 )
-async def cog_proxy(url: str = Query(..., description="Presigned S3 URL to proxy"), request: Request = None):
+async def cog_proxy(
+    url: str = Query(..., description="Presigned S3 URL to proxy"),
+    request: Request = None,
+):
     """Proxy byte-range requests for COG assets to S3.
 
     The S3 buckets hosting WFP COG files do not include CORS headers, so the
@@ -674,7 +677,9 @@ async def cog_proxy(url: str = Query(..., description="Presigned S3 URL to proxy
             upstream = await client.get(url, headers=upstream_headers)
     except httpx.RequestError as exc:
         logger.error("COG proxy upstream error: %s", exc)
-        raise HTTPException(status_code=502, detail=f"Upstream S3 request failed: {exc}") from exc
+        raise HTTPException(
+            status_code=502, detail=f"Upstream S3 request failed: {exc}"
+        ) from exc
 
     if upstream.status_code not in (200, 206):
         raise HTTPException(
@@ -683,9 +688,7 @@ async def cog_proxy(url: str = Query(..., description="Presigned S3 URL to proxy
         )
 
     response_headers = {
-        k: v
-        for k, v in upstream.headers.items()
-        if k.title() in _FORWARD_HEADERS
+        k: v for k, v in upstream.headers.items() if k.title() in _FORWARD_HEADERS
     }
 
     return StreamingResponse(

@@ -83,6 +83,7 @@ const removeFilesPlugin = (): Plugin => ({
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), nodePolyfills(), removeFilesPlugin()],
+  worker: { format: 'es' },
   define: {
     'process.env': env,
   },

@@ -1,6 +1,3 @@
-import { memo, useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
 import type { GetTileDataOptions } from '@developmentseed/deck.gl-geotiff';
 import { COGLayer as DeckCOGLayer } from '@developmentseed/deck.gl-geotiff';
 import type {
@@ -9,24 +6,27 @@ import type {
 } from '@developmentseed/deck.gl-raster';
 import {
   Colormap,
+  createColormapTexture,
   CreateTexture,
   FilterNoDataVal,
   LinearRescale,
-  createColormapTexture,
 } from '@developmentseed/deck.gl-raster/gpu-modules';
 import type { GeoTIFF, Overview } from '@developmentseed/geotiff';
 import type { Texture } from '@luma.gl/core';
-import type { CogLayerProps, LegendDefinition } from 'config/types';
-import { appConfig } from 'config';
-import { useDefaultDate } from 'utils/useDefaultDate';
-import { getRequestDate } from 'utils/server-utils';
-import { availableDatesSelector } from 'context/serverStateSlice';
-import { opacitySelector } from 'context/opacityStateSlice';
+import { useDeckGLLayers } from 'components/MapView/DeckGLLayersContext';
 import type { PresignedCogUrl } from 'components/MapView/Layers/raster-utils';
 import { getPresignedCogUrls } from 'components/MapView/Layers/raster-utils';
-import { useDeckGLLayers } from 'components/MapView/DeckGLLayersContext';
+import { appConfig } from 'config';
+import type { CogLayerProps, LegendDefinition } from 'config/types';
 import { addNotification } from 'context/notificationStateSlice';
+import { opacitySelector } from 'context/opacityStateSlice';
+import { availableDatesSelector } from 'context/serverStateSlice';
+import { memo, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { COG_PROXY_API } from 'utils/constants';
+import { getRequestDate } from 'utils/server-utils';
+import { useDefaultDate } from 'utils/useDefaultDate';
 
 export interface COGLayerComponentProps {
   layer: CogLayerProps;
