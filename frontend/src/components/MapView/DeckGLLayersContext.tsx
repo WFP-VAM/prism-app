@@ -12,14 +12,9 @@ import React, {
 interface DeckGLLayersContextValue {
   /** All currently registered deck.gl layers, keyed by logical layer id. */
   layers: Map<string, Layer>;
-  /** Register or replace a deck.gl layer. */
   registerLayer: (id: string, layer: Layer) => void;
-  /** Remove a deck.gl layer. */
   unregisterLayer: (id: string) => void;
-  /**
-   * Version counter that increments on every register/unregister, letting the
-   * DeckGLOverlay component know it needs to call setProps.
-   */
+  /** Version counter that increments on every register/unregister */
   version: number;
 }
 
@@ -55,8 +50,6 @@ export function DeckGLLayersProvider({
       unregisterLayer,
       version,
     }),
-    // version changes trigger consumers to re-read layers
-
     [registerLayer, unregisterLayer, version],
   );
 

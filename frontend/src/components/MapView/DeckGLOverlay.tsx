@@ -10,18 +10,12 @@ import { useDeckGLLayers } from './DeckGLLayersContext';
  * (via react-map-gl's `useControl`) and keeps it in sync with the shared
  * DeckGLLayersContext.
  *
- * Must be rendered as a child of the react-map-gl <Map> component, inside a
- * <DeckGLLayersProvider>.
- *
  * We use `interleaved: true` so that deck.gl layers share the MapLibre WebGL2
  * context and respect `beforeId` layer ordering (e.g. render below labels).
  */
 const DeckGLOverlay = memo(() => {
   const { layers, version } = useDeckGLLayers();
 
-  // useControl runs once to create the MapboxOverlay IControl.
-  // The type cast works around a TypeScript structural mismatch between
-  // @deck.gl/mapbox's MapboxOverlay and maplibre-gl's IControl.
   const overlay = useControl(
     () =>
       new MapboxOverlay({

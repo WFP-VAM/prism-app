@@ -1155,7 +1155,7 @@
     "@math.gl/web-mercator" "^4.1.0"
     earcut "^2.2.4"
 
-"@deck.gl/mapbox@^9.3.1":
+"@deck.gl/mapbox@^9.3.4":
   version "9.3.4"
   resolved "https://registry.yarnpkg.com/@deck.gl/mapbox/-/mapbox-9.3.4.tgz#2d93d664ffeebf312c78cf8bcc03c4ecc2b19385"
   integrity sha512-chAEyVc8qD5I/tvy+VO2b/W01LP19LJTQLamR0gVCMkCm58hnKh83nQtj/XGqrHk61LOpnN/ASfksXa7XNc0hA==

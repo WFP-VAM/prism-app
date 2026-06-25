@@ -58,7 +58,6 @@ function buildColormapImageData(
   for (let i = 0; i < 256; i++) {
     const value = (i / 255) * maxValue;
 
-    // Find the last legend entry whose value <= the pixel value
     let colorHex = legend[0]?.color ?? '#000000';
     for (let j = legend.length - 1; j >= 0; j--) {
       const threshold = Number(legend[j].value);
@@ -214,13 +213,8 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
     ? Number(legend[legend.length - 1].value)
     : 300;
 
-  // Scale factor from wcsConfig (e.g. NDVI = 0.0001, rainfall = 1)
   const scale = wcsConfig?.scale ?? 1;
-
-  // Stable ref for nodata — populated when GeoTIFF metadata loads
   const nodataRef = useRef<number | null>(null);
-
-  // Stable ref for render config so closures stay current
   const renderConfigRef = useRef<COGRenderConfig>({
     legend,
     maxValue,
@@ -229,7 +223,6 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
   });
   renderConfigRef.current = { legend, maxValue, scale, nodataRef };
 
-  // Stable tile handlers — recreated only when legend or scale changes
   const tileHandlersRef = useRef<ReturnType<typeof createTileHandlers> | null>(
     null,
   );
@@ -293,22 +286,6 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
 
     const deckLayerIds: string[] = [];
 
-    // NOTE: We render each COG as an individual DeckCOGLayer rather than
-    // using MosaicLayer. MosaicLayer requires WGS84 bounding boxes to
-    // determine which sources intersect the viewport, but the STAC catalog
-    // for MODIS collections returns bbox in sinusoidal meters (not WGS84).
-    // Since server-side bbox filtering (via the `bbox` query param on
-    // /cog_presigned_url) already limits results to ~4 tiles for the
-    // deployment region, viewport culling is unnecessary.
-    //
-    // To re-enable MosaicLayer in the future (e.g. for global deployments
-    // with many tiles), convert the sinusoidal bbox to WGS84 on the API
-    // using pyproj (already available via rasterio):
-    //   from pyproj import Transformer
-    //   t = Transformer.from_crs("ESRI:54008", "EPSG:4326", always_xy=True)
-    //   min_lon, min_lat = t.transform(xmin, ymin)
-    //   max_lon, max_lat = t.transform(xmax, ymax)
-    // Then pass those WGS84 bboxes as MosaicSource.bbox values.
     presignedUrls.forEach(({ item_id, url }) => {
       const deckLayerId = `cog-${id}-${item_id}`;
       deckLayerIds.push(deckLayerId);
