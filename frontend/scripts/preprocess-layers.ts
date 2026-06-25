@@ -112,6 +112,13 @@ async function preprocessBoundaryLayer(country, boundaryLayer) {
   if (country === 'shared' || !boundaryLayer?.path) {
     return;
   }
+  if (
+    !boundaryLayer ||
+    boundaryLayer.format === 'pmtiles' ||
+    boundaryLayer.path?.startsWith('http')
+  ) {
+    return;
+  }
   const outputFilePath = path.join(
     __dirname,
     `../public/data/${country}/admin-boundary-unified-polygon.json`,

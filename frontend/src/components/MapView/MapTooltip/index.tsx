@@ -7,7 +7,6 @@ import {
   Typography,
 } from '@material-ui/core';
 import Loader from 'components/Common/Loader';
-import { appConfig } from 'config';
 import { AdminLevelType } from 'config/types';
 import {
   hidePopup,
@@ -21,6 +20,8 @@ import { omit } from 'lodash';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { Popup } from 'react-map-gl/maplibre';
 import { useDispatch, useSelector } from 'react-redux';
+import { getEffectiveMultiCountry } from 'utils/universal-country-admin';
+import { isUniversalDeployment } from 'utils/universal-utils';
 
 import PopupPointDataChart from './PointDataChart/PopupPointDataChart';
 import usePointDataChart from './PointDataChart/usePointDataChart';
@@ -74,8 +75,9 @@ const useStyles = makeStyles(() =>
   }),
 );
 
-const { multiCountry } = appConfig;
-const availableAdminLevels: AdminLevelType[] = multiCountry
+const useZeroBasedAdminLevels =
+  isUniversalDeployment() || getEffectiveMultiCountry();
+const availableAdminLevels: AdminLevelType[] = useZeroBasedAdminLevels
   ? [0, 1, 2]
   : [1, 2];
 
@@ -122,7 +124,7 @@ const MapTooltip = memo(() => {
     const adminLevelLimit =
       adminLevel === undefined
         ? availableAdminLevels.length
-        : adminLevel + (multiCountry ? 1 : 0);
+        : adminLevel + (useZeroBasedAdminLevels ? 1 : 0);
     // If adminLevel is undefined, return the whole array
 
     return splitNames.splice(0, adminLevelLimit);
