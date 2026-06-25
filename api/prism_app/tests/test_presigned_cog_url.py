@@ -5,7 +5,11 @@ from unittest.mock import MagicMock, patch
 import pytest
 from fastapi.testclient import TestClient
 from prism_app.main import app
-from prism_app.presigned_cog_url import _parse_s3_href, _presign_href, get_presigned_cog_urls
+from prism_app.presigned_cog_url import (
+    _parse_s3_href,
+    _presign_href,
+    get_presigned_cog_urls,
+)
 
 client = TestClient(app)
 
@@ -62,14 +66,14 @@ class TestParseS3Href:
 
 @patch("prism_app.presigned_cog_url._get_bucket_region", return_value="eu-central-1")
 @patch("prism_app.presigned_cog_url.boto3.client")
-def test_presign_ignores_rustfs_endpoint_env(mock_boto3_client, _mock_region, monkeypatch):
+def test_presign_ignores_rustfs_endpoint_env(
+    mock_boto3_client, _mock_region, monkeypatch
+):
     """COG presigning must target real AWS S3 even when AWS_ENDPOINT_URL points at RustFS."""
     monkeypatch.setenv("AWS_ENDPOINT_URL", "http://rustfs:9000")
 
     mock_s3 = MagicMock()
-    mock_s3.generate_presigned_url.return_value = (
-        "https://wfp-seasmon.s3.eu-central-1.amazonaws.com/output/file.tif?X-Amz-Signature=abc"
-    )
+    mock_s3.generate_presigned_url.return_value = "https://wfp-seasmon.s3.eu-central-1.amazonaws.com/output/file.tif?X-Amz-Signature=abc"
     mock_boto3_client.return_value = mock_s3
 
     url = _presign_href("s3://wfp-seasmon/output/file.tif")
