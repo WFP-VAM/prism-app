@@ -110,6 +110,13 @@ function AppRoutes() {
 
   return (
     <Switch>
+      {isUniversal && (
+        <Route path="/country/:iso3/export" exact>
+          <CountryIsoProvider>
+            <ExportView />
+          </CountryIsoProvider>
+        </Route>
+      )}
       <Route path="/export" exact>
         <ExportView />
       </Route>
