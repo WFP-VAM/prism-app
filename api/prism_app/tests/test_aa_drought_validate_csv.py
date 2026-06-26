@@ -86,3 +86,20 @@ async def test_validate_csv_upload_forbidden_without_permission() -> None:
     form = FormData([("csv_content", _upload("aa.csv", _GOOD_CSV.encode()))])
     response = await validate_aa_drought_csv_upload(_request(form, can_manage=False))
     assert response.status_code == 403
+
+
+@pytest.mark.asyncio
+async def test_validate_csv_upload_rejects_wrong_country_for_aa_manager(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("REACT_APP_COUNTRY", "malawi")
+    form = FormData(
+        [
+            ("country", "zambia"),
+            ("csv_content", _upload("aa.csv", _GOOD_CSV.encode())),
+        ]
+    )
+    response = await validate_aa_drought_csv_upload(_request(form))
+    assert response.status_code == 403
+    payload = json.loads(response.body)
+    assert payload["ok"] is False
