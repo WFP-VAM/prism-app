@@ -21,6 +21,7 @@ import { loadStormIcons } from 'components/MapView/Layers/AnticipatoryActionStor
 import COGLayerComponent from 'components/MapView/Layers/COGLayer';
 import GeojsonDataLayer from 'components/MapView/Layers/GeojsonDataLayer';
 import { ensureSDFIconsLoaded } from 'components/MapView/Layers/icon-utils';
+import ZarrLayerComponent from 'components/MapView/Layers/ZarrLayer';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
 import { mapStyle } from 'components/MapView/Map/utils';
 import { DiscriminateUnion, LayerType, Panel } from 'config/types';
@@ -89,6 +90,7 @@ const componentTypes: LayerComponentsMap<LayerType> = {
   boundary: { component: BoundaryLayer },
   wms: { component: WMSLayer },
   cog: { component: COGLayerComponent },
+  zarr: { component: ZarrLayerComponent },
   admin_level_data: { component: AdminLevelDataLayer },
   impact: { component: ImpactLayer },
   point_data: { component: PointDataLayer },

@@ -441,5 +441,63 @@
     { "value": 3, "label": "3 - Crisis", "color": "#E67800" },
     { "value": 4, "label": "4 - Emergency", "color": "#C80000" },
     { "value": 5, "label": "5 - Famine", "color": "#640000" }
+  ],
+  "dynamical_t2m": [
+    { "value": -40, "label": "-40°C", "color": "#30123b" },
+    { "value": -35, "label": "-35°C", "color": "#341f57" },
+    { "value": -30, "label": "-30°C", "color": "#382c73" },
+    { "value": -25, "label": "-25°C", "color": "#3d388f" },
+    { "value": -20, "label": "-20°C", "color": "#4145ab" },
+    { "value": -15, "label": "-15°C", "color": "#4251b4" },
+    { "value": -10, "label": "-10°C", "color": "#445dbe" },
+    { "value": -5, "label": "-5°C", "color": "#4569c8" },
+    { "value": 0, "label": "0°C", "color": "#4675d1" },
+    { "value": 5, "label": "5°C", "color": "#408ba4" },
+    { "value": 10, "label": "10°C", "color": "#39a176" },
+    { "value": 15, "label": "15°C", "color": "#98c44b" },
+    { "value": 20, "label": "20°C", "color": "#f8e620" },
+    { "value": 25, "label": "25°C", "color": "#f8be30" },
+    { "value": 30, "label": "30°C", "color": "#f89540" },
+    { "value": 35, "label": "35°C", "color": "#dc6836" },
+    { "value": 40, "label": "40°C", "color": "#c03a2b" },
+    { "value": 45, "label": "45°C", "color": "#9d1f17" },
+    { "value": 50, "label": "50°C", "color": "#7a0403" }
+  ],
+  "dynamical_precip_rate": [
+    { "value": 0, "label": "0 mm/h", "color": "#fafafa" },
+    { "value": 0.000028, "label": "0.1 mm/h", "color": "#e8f4fa" },
+    { "value": 0.000139, "label": "0.5 mm/h", "color": "#c6e6f5" },
+    { "value": 0.000278, "label": "1 mm/h", "color": "#9dd3ef" },
+    { "value": 0.000694, "label": "2.5 mm/h", "color": "#6bb6e0" },
+    { "value": 0.001389, "label": "5 mm/h", "color": "#3d96d0" },
+    { "value": 0.002778, "label": "10 mm/h", "color": "#1878c0" },
+    { "value": 0.004167, "label": "15 mm/h", "color": "#0052a3" },
+    { "value": 0.006, "label": "≥ 20 mm/h", "color": "#003080" }
+  ],
+  "dynamical_rh": [
+    { "value": 0, "label": "0%", "color": "#fff5eb" },
+    { "value": 10, "label": "10%", "color": "#feeedc" },
+    { "value": 20, "label": "20%", "color": "#fee6ce" },
+    { "value": 30, "label": "30%", "color": "#fed0a9" },
+    { "value": 40, "label": "40%", "color": "#fdbb84" },
+    { "value": 50, "label": "50%", "color": "#fca46e" },
+    { "value": 60, "label": "60%", "color": "#fc8d59" },
+    { "value": 70, "label": "70%", "color": "#ea5e3c" },
+    { "value": 80, "label": "80%", "color": "#d7301f" },
+    { "value": 90, "label": "90%", "color": "#ab1810" },
+    { "value": 100, "label": "100%", "color": "#7f0000" }
+  ],
+  "dynamical_cloud": [
+    { "value": 0, "label": "0%", "color": "#ffffff" },
+    { "value": 10, "label": "10%", "color": "#f0f0f0" },
+    { "value": 20, "label": "20%", "color": "#e0e0e0" },
+    { "value": 30, "label": "30%", "color": "#cecece" },
+    { "value": 40, "label": "40%", "color": "#bdbdbd" },
+    { "value": 50, "label": "50%", "color": "#aeaeae" },
+    { "value": 60, "label": "60%", "color": "#9e9e9e" },
+    { "value": 70, "label": "70%", "color": "#8a8a8a" },
+    { "value": 80, "label": "80%", "color": "#757575" },
+    { "value": 90, "label": "90%", "color": "#5c5c5c" },
+    { "value": 100, "label": "100%", "color": "#424242" }
   ]
 }

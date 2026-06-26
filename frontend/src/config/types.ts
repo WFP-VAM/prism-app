@@ -26,6 +26,7 @@ export type LayerType =
   | BoundaryLayerProps
   | WMSLayerProps
   | CogLayerProps
+  | ZarrLayerProps
   | AdminLevelDataLayerProps
   | ImpactLayerProps
   | PointDataLayerProps
@@ -565,6 +566,46 @@ export class CogLayerProps extends CommonLayerProps {
 
   @optional
   wcsConfig?: { scale?: number; offset?: number };
+}
+
+export class ZarrLayerProps extends CommonLayerProps {
+  type: 'zarr' = 'zarr';
+
+  /** Data source subtype — `dynamical` resolves repo URL from dynamical STAC. */
+  subtype: 'dynamical' = 'dynamical';
+
+  /** STAC collection or item URL (source of truth for repo URL and temporal extent). */
+  stacItem: string;
+
+  /** Zarr variable name, e.g. `temperature_2m`. */
+  variable: string;
+
+  @optional
+  repoUrl?: string;
+
+  @optional
+  valueRange?: [number, number];
+
+  @optional
+  colormap?: string;
+
+  @optional
+  units?: string;
+
+  @makeRequired
+  declare title: string;
+
+  @makeRequired
+  declare legend: LegendDefinition;
+
+  @makeRequired
+  declare legendText: string;
+
+  @optional
+  attribution?: string;
+
+  @optional
+  startDate?: string;
 }
 
 enum AggregationOptions {

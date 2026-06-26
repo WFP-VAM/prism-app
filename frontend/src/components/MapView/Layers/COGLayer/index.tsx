@@ -1,21 +1,13 @@
 import type { GetTileDataOptions } from '@developmentseed/deck.gl-geotiff';
 import { COGLayer as DeckCOGLayer } from '@developmentseed/deck.gl-geotiff';
-import type {
-  RasterModule,
-  RenderTileResult,
-} from '@developmentseed/deck.gl-raster';
-import {
-  Colormap,
-  createColormapTexture,
-  CreateTexture,
-  FilterNoDataVal,
-  LinearRescale,
-} from '@developmentseed/deck.gl-raster/gpu-modules';
 import type { GeoTIFF, Overview } from '@developmentseed/geotiff';
-import type { Texture } from '@luma.gl/core';
-import { useDeckGLLayers } from 'components/MapView/DeckGLLayersContext';
+import {
+  createLegendGpuPipeline,
+  type RasterTileData,
+} from 'components/MapView/Layers/raster-gpu-pipeline';
 import type { PresignedCogUrl } from 'components/MapView/Layers/raster-utils';
 import { getPresignedCogUrls } from 'components/MapView/Layers/raster-utils';
+import { useDeckGLRegistration } from 'components/MapView/Layers/useDeckGLRegistration';
 import { appConfig } from 'config';
 import type { CogLayerProps, LegendDefinition } from 'config/types';
 import { addNotification } from 'context/notificationStateSlice';
@@ -33,75 +25,28 @@ export interface COGLayerComponentProps {
   before?: string;
 }
 
-// --- Colormap helpers ---
-
-function hexToRgb(hex: string): [number, number, number] {
-  const h = hex.replace('#', '');
-  return [
-    parseInt(h.slice(0, 2), 16),
-    parseInt(h.slice(2, 4), 16),
-    parseInt(h.slice(4, 6), 16),
-  ];
-}
-
-/**
- * Build a 256×1 RGBA ImageData from legend breakpoints.
- * Each texel i maps to value = (i/255)*maxValue; we find the legend bin
- * whose threshold is <= that value and assign its color.
- */
-function buildColormapImageData(
-  legend: LegendDefinition,
-  maxValue: number,
-): ImageData {
-  const data = new Uint8ClampedArray(256 * 4);
-
-  for (let i = 0; i < 256; i++) {
-    const value = (i / 255) * maxValue;
-
-    let colorHex = legend[0]?.color ?? '#000000';
-    for (let j = legend.length - 1; j >= 0; j--) {
-      const threshold = Number(legend[j].value);
-      if (value >= threshold) {
-        colorHex = legend[j].color;
-        break;
-      }
-    }
-
-    const [r, g, b] = hexToRgb(colorHex);
-    data[i * 4] = r;
-    data[i * 4 + 1] = g;
-    data[i * 4 + 2] = b;
-    data[i * 4 + 3] = 255;
-  }
-
-  return new ImageData(data, 256, 1);
-}
-
-// --- Tile data types ---
-
-type TileData = {
-  height: number;
-  width: number;
-  texture: Texture;
-  byteLength: number;
-};
-
-// --- Factory for per-layer getTileData / renderTile closures ---
-
-interface COGRenderConfig {
+interface CogRenderConfig {
   legend: LegendDefinition;
   maxValue: number;
   scale: number;
   nodataRef: { current: number | null };
 }
 
-function createTileHandlers(config: COGRenderConfig) {
-  let colormapTex: Texture | null = null;
+function createCogTileHandlers(config: CogRenderConfig) {
+  const pipeline = createLegendGpuPipeline({
+    legend: config.legend,
+    minValue: 0,
+    maxValue: config.maxValue,
+    getNodata: () => {
+      const nodata = config.nodataRef.current;
+      return nodata !== null ? nodata * config.scale : null;
+    },
+  });
 
   const getTileData = async (
     image: GeoTIFF | Overview,
     options: GetTileDataOptions,
-  ): Promise<TileData> => {
+  ): Promise<RasterTileData> => {
     const { device, x, y, signal, pool } = options;
     const tile = await image.fetchTile(x, y, {
       signal,
@@ -116,62 +61,17 @@ function createTileHandlers(config: COGRenderConfig) {
 
     const { width, height, data } = array;
 
-    // Convert Int16 (or any integer type) to Float32 for GPU compatibility,
-    // applying the wcsConfig scale factor if present (e.g. NDVI uses 0.0001).
     const floatData = new Float32Array(data.length);
     const scale = config.scale;
     for (let i = 0; i < data.length; i++) {
       floatData[i] = data[i]! * scale;
     }
 
-    const texture = device.createTexture({
-      data: floatData,
-      format: 'r32float',
-      width,
-      height,
-      sampler: { minFilter: 'nearest', magFilter: 'nearest' },
-    });
-
-    // Lazily create the colormap texture on first tile load
-    if (!colormapTex) {
-      colormapTex = createColormapTexture(
-        device,
-        buildColormapImageData(config.legend, config.maxValue),
-      );
-    }
-
-    return { texture, width, height, byteLength: floatData.byteLength };
+    return pipeline.uploadTile(device, floatData, width, height);
   };
 
-  const renderTile = (tileData: TileData): RenderTileResult => {
-    const nodata = config.nodataRef.current;
-    // When a scale factor is applied, nodata must also be scaled for comparison.
-    const scaledNodata = nodata !== null ? nodata * config.scale : null;
-    const pipeline: RasterModule[] = [
-      { module: CreateTexture, props: { textureName: tileData.texture } },
-      ...(scaledNodata !== null
-        ? [{ module: FilterNoDataVal, props: { value: scaledNodata } }]
-        : []),
-      {
-        module: LinearRescale,
-        props: { rescaleMin: 0, rescaleMax: config.maxValue },
-      },
-      ...(colormapTex
-        ? [
-            {
-              module: Colormap,
-              props: { colormapTexture: colormapTex, colormapIndex: 0 },
-            },
-          ]
-        : []),
-    ];
-    return { renderPipeline: pipeline };
-  };
-
-  return { getTileData, renderTile };
+  return { getTileData, renderTile: pipeline.renderTile };
 }
-
-// --- React component ---
 
 const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
   const { id, collection, band, opacity, legend, wcsConfig } = layer;
@@ -181,11 +81,7 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
   const serverAvailableDates = useSelector(availableDatesSelector);
   const opacityState = useSelector(opacitySelector(id));
 
-  const { registerLayer, unregisterLayer } = useDeckGLLayers();
-  const registerRef = useRef(registerLayer);
-  const unregisterRef = useRef(unregisterLayer);
-  registerRef.current = registerLayer;
-  unregisterRef.current = unregisterLayer;
+  const { registerRef, unregisterRef } = useDeckGLRegistration();
 
   const effectiveOpacity = opacityState ?? opacity;
 
@@ -208,14 +104,13 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
     [fetchedData, dateString],
   );
 
-  // Derive max value from the last legend entry
   const maxValue = legend?.length
     ? Number(legend[legend.length - 1].value)
     : 300;
 
   const scale = wcsConfig?.scale ?? 1;
   const nodataRef = useRef<number | null>(null);
-  const renderConfigRef = useRef<COGRenderConfig>({
+  const renderConfigRef = useRef<CogRenderConfig>({
     legend,
     maxValue,
     scale,
@@ -223,17 +118,16 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
   });
   renderConfigRef.current = { legend, maxValue, scale, nodataRef };
 
-  const tileHandlersRef = useRef<ReturnType<typeof createTileHandlers> | null>(
-    null,
-  );
+  const tileHandlersRef = useRef<ReturnType<
+    typeof createCogTileHandlers
+  > | null>(null);
   const legendKeyRef = useRef<string>('');
   const currentLegendKey = `${legend?.map(l => l.color).join(',') ?? ''}:${scale}`;
   if (currentLegendKey !== legendKeyRef.current) {
     legendKeyRef.current = currentLegendKey;
-    tileHandlersRef.current = createTileHandlers(renderConfigRef.current);
+    tileHandlersRef.current = createCogTileHandlers(renderConfigRef.current);
   }
 
-  // Effect A: fetch presigned URLs when date/collection changes only.
   useEffect(() => {
     if (!dateString) {
       setFetchedData(null);
@@ -271,9 +165,8 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
       registeredIdsRef.current = [];
       setFetchedData(null);
     };
-  }, [id, collection, band, dateString, dispatch, layer.title]);
+  }, [id, collection, band, dateString, dispatch, layer.title, unregisterRef]);
 
-  // Effect B: register/update deck layers when urls, opacity, or z-order change.
   useEffect(() => {
     if (!presignedUrls.length) {
       return undefined;
@@ -294,7 +187,7 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
 
       registerRef.current(
         deckLayerId,
-        new DeckCOGLayer<TileData>({
+        new DeckCOGLayer<RasterTileData>({
           id: deckLayerId,
           geotiff: proxyUrl,
           getTileData: handlers.getTileData,
@@ -312,7 +205,14 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
     registeredIdsRef.current = deckLayerIds;
 
     return undefined;
-  }, [id, presignedUrls, effectiveOpacity, before, currentLegendKey]);
+  }, [
+    id,
+    presignedUrls,
+    effectiveOpacity,
+    before,
+    currentLegendKey,
+    registerRef,
+  ]);
 
   return null;
 });

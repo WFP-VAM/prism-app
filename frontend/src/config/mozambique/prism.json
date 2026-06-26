@@ -430,6 +430,41 @@
     },
     "exposure": {
       "population": ["pop_proj_2025"]
+    },
+    "nwp": {
+      "dynamical": [
+        {
+          "group_title": "GFS Analysis (dynamical.org)",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "dynamical_gfs_t2m",
+              "label": "Temperature 2m",
+              "main": true
+            },
+            {
+              "id": "dynamical_gfs_tmax",
+              "label": "Maximum temperature 2m"
+            },
+            {
+              "id": "dynamical_gfs_tmin",
+              "label": "Minimum temperature 2m"
+            },
+            {
+              "id": "dynamical_gfs_precip",
+              "label": "Precipitation rate"
+            },
+            {
+              "id": "dynamical_gfs_rh",
+              "label": "Relative humidity 2m"
+            },
+            {
+              "id": "dynamical_gfs_cloud",
+              "label": "Total cloud cover"
+            }
+          ]
+        }
+      ]
     }
   }
 }
