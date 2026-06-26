@@ -19,6 +19,7 @@ import {
 import AnalysisLayer from 'components/MapView/Layers/AnalysisLayer';
 import type { COGLayerComponentProps } from 'components/MapView/Layers/COGLayer';
 import SelectionLayer from 'components/MapView/Layers/SelectionLayer';
+import ZarrLayerComponent from 'components/MapView/Layers/ZarrLayer';
 import MapTooltip from 'components/MapView/MapTooltip';
 import useMapOnClick from 'components/MapView/useMapOnClick';
 import { appConfig } from 'config';
@@ -112,6 +113,7 @@ const componentTypes: LayerComponentsMap<LayerType> = {
   boundary: { component: BoundaryLayer },
   wms: { component: WMSLayer },
   cog: { component: COGLayerComponent },
+  zarr: { component: ZarrLayerComponent },
   admin_level_data: { component: AdminLevelDataLayer },
   impact: { component: ImpactLayer },
   point_data: { component: PointDataLayer },

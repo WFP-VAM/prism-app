@@ -59,6 +59,7 @@ const dateSupportLayerTypes: Array<LayerType['type']> = [
   'point_data',
   'wms',
   'cog',
+  'zarr',
   'static_raster',
   AnticipatoryAction.drought,
   AnticipatoryAction.storm,
@@ -83,8 +84,8 @@ export function isDateCompatibleLayer(
     // some point_data layers might not have a date URL (i.e. static data)
     return Boolean(layer.dateUrl);
   }
-  if (layer.type === 'wms' || layer.type === 'cog') {
-    // some WMS/COG layers might not have a date dimension (i.e. static data)
+  if (layer.type === 'wms' || layer.type === 'cog' || layer.type === 'zarr') {
+    // some WMS/COG/Zarr layers might not have a date dimension (i.e. static data)
     return layer.id in serverAvailableDates;
   }
   if (layer.type === 'composite') {

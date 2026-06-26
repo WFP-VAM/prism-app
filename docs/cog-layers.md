@@ -89,7 +89,9 @@ This is what lets PRISM display sinusoidal MODIS COGs (and any other CRS) direct
 
 ## Rendering pipeline
 
-Pixel values become colors entirely on the GPU using `@developmentseed/deck.gl-raster` modules (in `createTileHandlers`):
+Pixel values become colors entirely on the GPU using `@developmentseed/deck.gl-raster` modules. COG-specific fetch logic lives in [`COGLayer/index.tsx`](../frontend/src/components/MapView/Layers/COGLayer/index.tsx); the colormap LUT and GPU pipeline are shared with Zarr layers via [`raster-gpu-pipeline.ts`](../frontend/src/components/MapView/Layers/raster-gpu-pipeline.ts) and [`raster-colormap.ts`](../frontend/src/components/MapView/Layers/raster-colormap.ts). See also [zarr-layers.md](zarr-layers.md#rendering-pipeline).
+
+In `createCogTileHandlers`:
 
 1. **`getTileData`** — fetch a tile, convert the integer raster to `Float32` applying `wcsConfig.scale`, upload it as an `r32float` texture. The legend is baked into a 256×1 RGBA colormap texture on first tile load (`buildColormapImageData`).
 2. **`renderTile`** — assemble the render modules: `CreateTexture` (bind tile) → `FilterNoDataVal` (discard scaled `nodata`) → `LinearRescale` (`[0, maxValue]`, from the last legend value) → `Colormap` (sample the legend texture).

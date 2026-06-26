@@ -24,6 +24,7 @@ import {
   StatsApi,
   TableType,
   WMSLayerProps,
+  ZarrLayerProps,
 } from './types';
 
 // Typescript does not handle our configuration methods very well
@@ -113,6 +114,11 @@ export const getLayerByKey = (layerKey: LayerKey): LayerType => {
       return throwInvalidLayer();
     case 'cog':
       if (checkRequiredKeys(CogLayerProps, definition, true)) {
+        return definition;
+      }
+      return throwInvalidLayer();
+    case 'zarr':
+      if (checkRequiredKeys(ZarrLayerProps, definition, true)) {
         return definition;
       }
       return throwInvalidLayer();
