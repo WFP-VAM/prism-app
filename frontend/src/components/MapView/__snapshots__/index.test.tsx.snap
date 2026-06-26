@@ -3,7 +3,7 @@
 exports[`MapView renders as expected 1`] = `
 <div>
   <div
-    class="MuiBox-root MuiBox-root-3 makeStyles-root-1"
+    class="MuiBox-root MuiBox-root-2 makeStyles-root-1"
   >
     <mock-drawer
       anchor="left"
@@ -12,10 +12,10 @@ exports[`MapView renders as expected 1`] = `
       variant="persistent"
     >
       <div
-        class="makeStyles-root-4 makeStyles-root-6"
+        class="makeStyles-root-3 makeStyles-root-5"
       >
         <div
-          class="makeStyles-tabsWrapper-5"
+          class="makeStyles-tabsWrapper-4"
         >
           <div
             aria-labelledby="full-width-tab-layers"
@@ -24,26 +24,26 @@ exports[`MapView renders as expected 1`] = `
             style="display: block; flex-grow: 1; height: calc(100vh - 48px + 56px); order: -1; overflow-x: hidden;"
           >
             <div
-              class="MuiBox-root MuiBox-root-7"
+              class="MuiBox-root MuiBox-root-6"
               style="width: 425px; display: flex; flex-direction: column; height: 100%;"
             >
               <div
                 style="padding: 0.5rem;"
               >
                 <div
-                  class="MuiPaper-root MuiAccordion-root makeStyles-root-8 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                  class="MuiPaper-root MuiAccordion-root makeStyles-root-7 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
                 >
                   <div
                     aria-controls="Rainfall"
                     aria-disabled="false"
                     aria-expanded="false"
-                    class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-9"
+                    class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-8"
                     id="level1-Rainfall"
                     role="button"
                     tabindex="0"
                   >
                     <div
-                      class="MuiAccordionSummary-content makeStyles-summaryContent-12"
+                      class="MuiAccordionSummary-content makeStyles-summaryContent-11"
                     >
                       <mock-typography
                         classes="[object Object]"
@@ -54,7 +54,7 @@ exports[`MapView renders as expected 1`] = `
                     <div
                       aria-disabled="false"
                       aria-hidden="true"
-                      class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-11 MuiIconButton-edgeEnd"
+                      class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-10 MuiIconButton-edgeEnd"
                     >
                       <span
                         class="MuiIconButton-label"
@@ -77,19 +77,19 @@ exports[`MapView renders as expected 1`] = `
                   </div>
                 </div>
                 <div
-                  class="MuiPaper-root MuiAccordion-root makeStyles-root-8 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                  class="MuiPaper-root MuiAccordion-root makeStyles-root-7 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
                 >
                   <div
                     aria-controls="Vegetation"
                     aria-disabled="false"
                     aria-expanded="false"
-                    class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-9"
+                    class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-8"
                     id="level1-Vegetation"
                     role="button"
                     tabindex="0"
                   >
                     <div
-                      class="MuiAccordionSummary-content makeStyles-summaryContent-12"
+                      class="MuiAccordionSummary-content makeStyles-summaryContent-11"
                     >
                       <mock-typography
                         classes="[object Object]"
@@ -100,7 +100,7 @@ exports[`MapView renders as expected 1`] = `
                     <div
                       aria-disabled="false"
                       aria-hidden="true"
-                      class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-11 MuiIconButton-edgeEnd"
+                      class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-10 MuiIconButton-edgeEnd"
                     >
                       <span
                         class="MuiIconButton-label"
@@ -123,19 +123,19 @@ exports[`MapView renders as expected 1`] = `
                   </div>
                 </div>
                 <div
-                  class="MuiPaper-root MuiAccordion-root makeStyles-root-8 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                  class="MuiPaper-root MuiAccordion-root makeStyles-root-7 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
                 >
                   <div
                     aria-controls="Temperature"
                     aria-disabled="false"
                     aria-expanded="false"
-                    class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-9"
+                    class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-8"
                     id="level1-Temperature"
                     role="button"
                     tabindex="0"
                   >
                     <div
-                      class="MuiAccordionSummary-content makeStyles-summaryContent-12"
+                      class="MuiAccordionSummary-content makeStyles-summaryContent-11"
                     >
                       <mock-typography
                         classes="[object Object]"
@@ -146,7 +146,7 @@ exports[`MapView renders as expected 1`] = `
                     <div
                       aria-disabled="false"
                       aria-hidden="true"
-                      class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-11 MuiIconButton-edgeEnd"
+                      class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-10 MuiIconButton-edgeEnd"
                     >
                       <span
                         class="MuiIconButton-label"
@@ -169,19 +169,19 @@ exports[`MapView renders as expected 1`] = `
                   </div>
                 </div>
                 <div
-                  class="MuiPaper-root MuiAccordion-root makeStyles-root-8 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                  class="MuiPaper-root MuiAccordion-root makeStyles-root-7 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
                 >
                   <div
                     aria-controls="Vulnerability"
                     aria-disabled="false"
                     aria-expanded="false"
-                    class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-9"
+                    class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-8"
                     id="level1-Vulnerability"
                     role="button"
                     tabindex="0"
                   >
                     <div
-                      class="MuiAccordionSummary-content makeStyles-summaryContent-12"
+                      class="MuiAccordionSummary-content makeStyles-summaryContent-11"
                     >
                       <mock-typography
                         classes="[object Object]"
@@ -192,7 +192,7 @@ exports[`MapView renders as expected 1`] = `
                     <div
                       aria-disabled="false"
                       aria-hidden="true"
-                      class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-11 MuiIconButton-edgeEnd"
+                      class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-10 MuiIconButton-edgeEnd"
                     >
                       <span
                         class="MuiIconButton-label"
@@ -215,19 +215,19 @@ exports[`MapView renders as expected 1`] = `
                   </div>
                 </div>
                 <div
-                  class="MuiPaper-root MuiAccordion-root makeStyles-root-8 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                  class="MuiPaper-root MuiAccordion-root makeStyles-root-7 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
                 >
                   <div
                     aria-controls="Exposure"
                     aria-disabled="false"
                     aria-expanded="false"
-                    class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-9"
+                    class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-8"
                     id="level1-Exposure"
                     role="button"
                     tabindex="0"
                   >
                     <div
-                      class="MuiAccordionSummary-content makeStyles-summaryContent-12"
+                      class="MuiAccordionSummary-content makeStyles-summaryContent-11"
                     >
                       <mock-typography
                         classes="[object Object]"
@@ -238,7 +238,7 @@ exports[`MapView renders as expected 1`] = `
                     <div
                       aria-disabled="false"
                       aria-hidden="true"
-                      class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-11 MuiIconButton-edgeEnd"
+                      class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-10 MuiIconButton-edgeEnd"
                     >
                       <span
                         class="MuiIconButton-label"
@@ -262,7 +262,7 @@ exports[`MapView renders as expected 1`] = `
                 </div>
               </div>
               <div
-                class="MuiBox-root MuiBox-root-16"
+                class="MuiBox-root MuiBox-root-15"
                 style="flex-grow: 1;"
               />
               <a
@@ -304,10 +304,10 @@ exports[`MapView renders as expected 1`] = `
       </div>
     </mock-drawer>
     <div
-      class="MuiBox-root MuiBox-root-57 makeStyles-container-55"
+      class="MuiBox-root MuiBox-root-56 makeStyles-container-54"
     >
       <div
-        class="MuiBox-root MuiBox-root-58 makeStyles-optionContainer-56"
+        class="MuiBox-root MuiBox-root-57 makeStyles-optionContainer-55"
       />
     </div>
     <div
