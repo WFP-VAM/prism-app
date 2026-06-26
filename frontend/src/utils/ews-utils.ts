@@ -4,8 +4,8 @@ import {
   PointLayerData,
   ReferenceDateTimestamp,
 } from 'config/types';
-import { FloodChartConfigObject } from 'context/tableStateSlice';
 import { addNotification } from 'context/notificationStateSlice';
+import { FloodChartConfigObject } from 'context/tableStateSlice';
 import GeoJSON, { Feature, FeatureCollection, Point } from 'geojson';
 import { Dispatch } from 'redux';
 
