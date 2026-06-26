@@ -794,6 +794,10 @@ export class PmtilesVectorLayerProps extends CommonLayerProps {
   @optional
   minZoom?: number;
 
+  /** When true, hide features outside the deployment country (MapLibre within filter). */
+  @optional
+  clipToDeployment?: boolean;
+
   @makeRequired
   declare title: string;
 

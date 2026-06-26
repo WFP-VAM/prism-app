@@ -43,6 +43,7 @@ import {
   stackLayersForMapPaintOrder,
 } from 'utils/map-layer-before-utils';
 import { useAAMarkerScalePercent } from 'utils/map-utils';
+import { initPmtilesProtocol } from 'utils/pmtiles-utils';
 import useResizeObserver from 'utils/useOnResizeObserver';
 
 import { getAspectRatioDecimal } from './aspectRatioConstants';
@@ -132,6 +133,8 @@ function MapExportLayout({
   const classes = useStyles();
   const northArrowRef = useRef<HTMLImageElement>(null);
   const mapRef = React.useRef<MapRef>(null);
+
+  useEffect(() => initPmtilesProtocol(), []);
 
   // Track container dimensions to calculate proper map size
   const [containerRef, containerDimensions] =

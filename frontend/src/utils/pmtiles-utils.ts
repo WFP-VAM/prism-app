@@ -10,6 +10,7 @@
  * - Maintains a singleton protocol instance to handle all PMTiles requests
  * - Caches PMTiles instances to prevent redundant loading
  * - Supports range requests for efficient tile loading
+ * - Optional per-URL vector tile clipping to a deployment country polygon
  *
  * Usage:
  * 1. Initialize the protocol when the app starts:
@@ -22,6 +23,10 @@
 
 import MapLibreGL from 'maplibre-gl';
 import { PMTiles, Protocol } from 'pmtiles';
+import {
+  clipMvtTileToPolygon,
+  type ClipPolygon,
+} from 'utils/clipPmtilesVectorTile';
 
 // Create a singleton instance of the protocol
 const protocol = new Protocol();
@@ -29,11 +34,68 @@ const protocol = new Protocol();
 // Map to store PMTiles instances
 const pmtilesInstances = new Map<string, PMTiles>();
 
+const pmtilesClipByUrl = new Map<string, ClipPolygon>();
+
 let protocolRefCount = 0;
+
+const TILE_URL_RE = /pmtiles:\/\/(.+)\/(\d+)\/(\d+)\/(\d+)/;
+
+function runClippedTile(
+  params: { url: string },
+  callback: (
+    err?: Error | null,
+    data?: unknown,
+    cacheControl?: string,
+    expires?: string,
+  ) => void,
+) {
+  protocol.tile(params, (err, data, cacheControl, expires) => {
+    if (err || !data) {
+      callback(err ?? null, data, cacheControl, expires);
+      return;
+    }
+
+    const match = params.url.match(TILE_URL_RE);
+    if (!match) {
+      callback(err ?? null, data, cacheControl, expires);
+      return;
+    }
+
+    const pmtilesUrl = match[1];
+    const clipPolygon = pmtilesClipByUrl.get(pmtilesUrl);
+    if (!clipPolygon) {
+      callback(err ?? null, data, cacheControl, expires);
+      return;
+    }
+
+    try {
+      const z = Number(match[2]);
+      const x = Number(match[3]);
+      const y = Number(match[4]);
+      const tileBytes =
+        data instanceof Uint8Array ? data : new Uint8Array(data as ArrayBuffer);
+      const clipped = clipMvtTileToPolygon(tileBytes, z, x, y, clipPolygon);
+      callback(undefined, clipped, cacheControl, expires);
+    } catch (clipError) {
+      callback(clipError as Error);
+    }
+  });
+}
+
+export function setPmtilesClipPolygon(
+  pmtilesUrl: string,
+  clipPolygon: ClipPolygon | null,
+) {
+  if (clipPolygon) {
+    pmtilesClipByUrl.set(pmtilesUrl, clipPolygon);
+  } else {
+    pmtilesClipByUrl.delete(pmtilesUrl);
+  }
+}
 
 export const initPmtilesProtocol = () => {
   if (protocolRefCount === 0) {
-    MapLibreGL.addProtocol('pmtiles', protocol.tile);
+    MapLibreGL.addProtocol('pmtiles', runClippedTile);
   }
   protocolRefCount += 1;
   return () => {

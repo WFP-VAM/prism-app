@@ -4,7 +4,8 @@ import { memo, useEffect } from 'react';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
 import { getLayerMapId } from 'utils/map-utils';
-import { getPmtilesInstance } from 'utils/pmtiles-utils';
+import { getPmtilesInstance, setPmtilesClipPolygon } from 'utils/pmtiles-utils';
+import { useDeploymentClipPolygon } from 'utils/useDeploymentClipPolygon';
 import { useMapState } from 'utils/useMapState';
 
 function getSubLayerId(
@@ -69,10 +70,27 @@ const PmtilesVectorLayer = memo(
     const sourceId = `source-${layer.id}`;
     const layerVisibility = visible ? 'visible' : 'none';
     const selectedMap = useMapState()?.maplibreMap();
+    const deploymentClipPolygon = useDeploymentClipPolygon();
+
+    const returningNull = layer.clipToDeployment && !deploymentClipPolygon;
 
     useEffect(() => {
       getPmtilesInstance(layer.path);
     }, [layer.path]);
+
+    useEffect(() => {
+      if (!layer.clipToDeployment) {
+        setPmtilesClipPolygon(layer.path, null);
+        return undefined;
+      }
+      if (!deploymentClipPolygon) {
+        return undefined;
+      }
+      setPmtilesClipPolygon(layer.path, deploymentClipPolygon);
+      return () => {
+        setPmtilesClipPolygon(layer.path, null);
+      };
+    }, [deploymentClipPolygon, layer.clipToDeployment, layer.path, layer.id]);
 
     // Keep layout visibility in sync when toggling without unmounting the source.
     useEffect(() => {
@@ -90,8 +108,21 @@ const PmtilesVectorLayer = memo(
       });
     }, [layer, layerVisibility, selectedMap]);
 
+    if (returningNull) {
+      return null;
+    }
+
+    const sourceKey = `${sourceId}-${
+      layer.clipToDeployment ? 'country-clipped' : 'global'
+    }`;
+
     return (
-      <Source id={sourceId} type="vector" url={`pmtiles://${layer.path}`}>
+      <Source
+        key={sourceKey}
+        id={sourceId}
+        type="vector"
+        url={`pmtiles://${layer.path}`}
+      >
         {layer.sourceLayers.flatMap((sourceLayer, index) => {
           const fillId =
             index === 0
