@@ -431,7 +431,7 @@
     "exposure": {
       "population": ["pop_proj_2025"]
     },
-    "nwp": {
+    "prototype": {
       "dynamical": [
         {
           "group_title": "GFS Analysis (dynamical.org)",
