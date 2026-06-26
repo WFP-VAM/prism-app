@@ -2,13 +2,18 @@
 
 from __future__ import annotations
 
+import json
+import os
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, Optional
+from json import JSONDecodeError
+from typing import Any, Callable, Dict, Optional, Sequence
 from uuid import UUID
 
 from prism_app.admin import PrismGatedModelView, ReadOnlyModelView
+from prism_app.admin_bulk_actions import bulk_status_select_form
 from prism_app.auth.admin_request import (
     admin_user_from_request,
+    request_can_manage_map_exports,
     request_has_prism_admin_access,
 )
 from prism_app.dashboard.dashboard_config_field import PrettyJSONField
@@ -21,7 +26,12 @@ from prism_app.database.map_export_schedule_model import (
     MapExportScheduleStatus,
 )
 from prism_app.database.user_model import User
-from prism_app.export_s3 import public_maps_folder_uri
+from prism_app.export_jobs.schedule_download import (
+    SCHEDULE_DOWNLOAD_UNAVAILABLE_MSG,
+    latest_succeeded_job_for_schedule,
+    schedule_export_download_response,
+    schedule_ids_with_downloadable_export,
+)
 from prism_app.export_schedules.routes import format_map_export_schedule_name
 from prism_app.map_export_layer_catalog import (
     get_deployment_country,
@@ -36,16 +46,21 @@ from sqlalchemy.sql import ClauseElement
 from sqlalchemy.types import String
 from starlette.exceptions import HTTPException
 from starlette.requests import Request
-from starlette.responses import Response
+from starlette.responses import JSONResponse, Response
+from starlette.status import HTTP_403_FORBIDDEN
 from starlette_admin import EnumField, HasOne, StringField
 from starlette_admin._types import RequestAction
-from starlette_admin.actions import link_row_action
+from starlette_admin.actions import action, link_row_action, row_action
 from starlette_admin.contrib.sqla import Admin
 from starlette_admin.contrib.sqla.helpers import OPERATORS
-from starlette_admin.exceptions import FormValidationError
+from starlette_admin.exceptions import ActionFailed, FormValidationError
+from starlette_admin.fields import BaseField
+from starlette_admin.i18n import ngettext
 
 _DEFAULT_EQ = OPERATORS["eq"]
 _DEFAULT_NEQ = OPERATORS["neq"]
+
+_MAP_EXPORT_BULK_UPDATE_STATUS_FORM = bulk_status_select_form(MapExportScheduleStatus)
 
 _CASE_INSENSITIVE_STRING_OPERATORS: Dict[str, Callable[..., ClauseElement]] = {
     **OPERATORS,
@@ -274,16 +289,6 @@ def _enrich_schedules_for_admin(
     )
     for item in schedules:
         item._admin_last_executed_at = last_executed.get(item.id)  # noqa: SLF001
-        if item.export_url and item.country:
-            try:
-                item._admin_output_directory = public_maps_folder_uri(  # noqa: SLF001
-                    item.export_url,
-                    country=item.country,
-                )
-            except ValueError:
-                item._admin_output_directory = None  # noqa: SLF001
-        else:
-            item._admin_output_directory = None  # noqa: SLF001
 
 
 @dataclass
@@ -337,19 +342,136 @@ class ScheduleLayerIdField(EnumField):
         return schedule_layer_label(country, layer_id)
 
 
-@dataclass
-class MapExportOutputDirectoryField(StringField):
-    exclude_from_create = True
-    exclude_from_edit = True
-    searchable = False
-    orderable = False
-
-    async def parse_obj(self, request: Request, obj: Any) -> Any:  # noqa: ARG002
-        return getattr(obj, "_admin_output_directory", None)
-
-
 class PrismAdmin(Admin):
     """Admin with clone-prefill support for map export schedules."""
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        if "templates_dir" not in kwargs:
+            kwargs["templates_dir"] = os.path.join(
+                os.path.dirname(__file__), "templates"
+            )
+        super().__init__(*args, **kwargs)
+
+    async def _render_api(self, request: Request) -> Response:
+        identity = request.path_params.get("identity")
+        model = self._find_model_from_identity(identity)
+        if not model.is_accessible(request):
+            return JSONResponse(None, status_code=HTTP_403_FORBIDDEN)
+        skip = int(request.query_params.get("skip") or "0")
+        limit = int(request.query_params.get("limit") or "100")
+        order_by = request.query_params.getlist("order_by")
+        where = request.query_params.get("where")
+        pks = request.query_params.getlist("pks")
+        select2 = "select2" in request.query_params
+        request.state.action = RequestAction.API if select2 else RequestAction.LIST
+        if len(pks) > 0:
+            items = await model.find_by_pks(request, pks)
+            total = len(items)
+        else:
+            if where is not None:
+                try:
+                    where = json.loads(where)
+                except JSONDecodeError:
+                    where = str(where)
+            items = await model.find_all(
+                request=request,
+                skip=skip,
+                limit=limit,
+                where=where,
+                order_by=order_by,
+            )
+            total = await model.count(request=request, where=where)
+        serialized_items = [
+            (
+                await model.serialize(
+                    item,
+                    request,
+                    RequestAction.API if select2 else RequestAction.LIST,
+                    include_relationships=not select2,
+                    include_select2=select2,
+                )
+            )
+            for item in items
+        ]
+
+        if not select2:
+            row_actions = await model.get_all_row_actions(request)
+            assert model.pk_attr
+            download_available_by_pk: dict[str, bool] = {}
+            if isinstance(model, MapExportScheduleView):
+                session: Session = request.state.session
+                schedule_ids = [
+                    model._schedule_pk_as_uuid(serialized_item[model.pk_attr])
+                    for serialized_item in serialized_items
+                ]
+                available = schedule_ids_with_downloadable_export(
+                    session,
+                    schedule_ids,
+                )
+                download_available_by_pk = {
+                    str(schedule_id): schedule_id in available
+                    for schedule_id in schedule_ids
+                }
+            for serialized_item in serialized_items:
+                pk = serialized_item[model.pk_attr]
+                if isinstance(model, MapExportScheduleView):
+                    serialized_item["_meta"]["rowActions"] = (
+                        model.render_row_actions_html(
+                            templates=self.templates,
+                            request=request,
+                            pk=pk,
+                            actions=row_actions,
+                            download_available=download_available_by_pk.get(
+                                str(pk),
+                                False,
+                            ),
+                        )
+                    )
+                else:
+                    serialized_item["_meta"][
+                        "rowActions"
+                    ] = self.templates.get_template("row-actions.html").render(
+                        _actions=row_actions,
+                        display_type=model.row_actions_display_type,
+                        pk=pk,
+                        request=request,
+                        model=model,
+                    )
+
+        return JSONResponse(
+            {
+                "items": serialized_items,
+                "total": total,
+            }
+        )
+
+    async def _render_detail(self, request: Request) -> Response:
+        request.state.action = RequestAction.DETAIL
+        identity = request.path_params.get("identity")
+        model = self._find_model_from_identity(identity)
+        if not model.is_accessible(request) or not model.can_view_details(request):
+            raise HTTPException(status_code=HTTP_403_FORBIDDEN)
+        pk = request.path_params.get("pk")
+        obj = await model.find_by_pk(request, pk)
+        if obj is None:
+            raise HTTPException(status_code=404)
+        context: dict[str, Any] = {
+            "title": model.title(request),
+            "model": model,
+            "raw_obj": obj,
+            "_actions": await model.get_all_row_actions(request),
+            "obj": await model.serialize(obj, request, RequestAction.DETAIL),
+        }
+        if isinstance(model, MapExportScheduleView):
+            context["download_available"] = await model.schedule_download_available(
+                request,
+                obj.id,
+            )
+        return self.templates.TemplateResponse(
+            request=request,
+            name=model.detail_template,
+            context=context,
+        )
 
     async def _render_create(self, request: Request) -> Response:
         if request.method == "GET" and (
@@ -376,6 +498,8 @@ class PrismAdmin(Admin):
 
 class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelView):
     label = "Map export schedules"
+    list_template = "map_export_schedule_list.html"
+    detail_template = "map_export_schedule_detail.html"
     create_template = "map_export_schedule_create.html"
     edit_template = "map_export_schedule_edit.html"
     fields = (
@@ -392,10 +516,6 @@ class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelVie
         "dekad_interval",
         EnumField("format", enum=MapExportScheduleFormat),
         ScheduleLastExecutedField("last_executed_at", label="Last executed"),
-        MapExportOutputDirectoryField(
-            "output_directory",
-            label="Output location",
-        ),
         StringField("export_url", read_only=True),
         PrettyJSONField("export_options", read_only=True),
         HasOne("created_by_user", label="Scheduled by", identity="user"),
@@ -413,7 +533,6 @@ class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelVie
         "last_enqueued_at",
         "last_enqueued_date",
         "last_executed_at",
-        "output_directory",
         "created_by_user",
         "created_at",
         "updated_at",
@@ -427,7 +546,6 @@ class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelVie
         "last_enqueued_at",
         "last_enqueued_date",
         "last_executed_at",
-        "output_directory",
         "created_by_user",
         "created_at",
         "updated_at",
@@ -452,13 +570,102 @@ class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelVie
         "created_at",
     )
     fields_default_sort = [("created_at", True)]
-    actions: list[str] = []
-    row_actions = ["view", "edit", "clone", "delete"]
+    actions = ["update_status", "delete"]
+    row_actions = ["view", "edit", "clone", "download", "delete"]
+
+    _ADMIN_ONLY_FIELD_NAMES = frozenset({"country"})
+
+    def _admin_only_field_names(self, request: Request) -> frozenset[str]:
+        if request_has_prism_admin_access(request):
+            return frozenset()
+        return self._ADMIN_ONLY_FIELD_NAMES
+
+    def get_fields_list(
+        self,
+        request: Request,
+        action: RequestAction = RequestAction.LIST,
+    ) -> Sequence[BaseField]:
+        hidden = self._admin_only_field_names(request)
+        if not hidden:
+            return super().get_fields_list(request, action)
+        return [
+            field
+            for field in super().get_fields_list(request, action)
+            if field.name not in hidden
+        ]
+
+    def _searchable_fields_for_request(self, request: Request) -> tuple[str, ...]:
+        hidden = self._admin_only_field_names(request)
+        return tuple(
+            name
+            for name in self.searchable_fields  # type: ignore[union-attr]
+            if name not in hidden
+        )
+
+    async def _configs(self, request: Request) -> dict[str, Any]:
+        configs = await super()._configs(request)
+        hidden = self._admin_only_field_names(request)
+        if not hidden:
+            return configs
+        searchable = self._searchable_fields_for_request(request)
+        exportable = tuple(
+            name for name in self.export_fields if name not in hidden  # type: ignore[union-attr]
+        )
+        configs["searchColumns"] = [f"{name}:name" for name in searchable]
+        configs["exportColumns"] = [f"{name}:name" for name in exportable]
+        return configs
+
+    def is_accessible(self, request: Request) -> bool:
+        return request_can_manage_map_exports(request)
+
+    def can_view_details(self, request: Request) -> bool:
+        return request_can_manage_map_exports(request)
+
+    def can_edit(self, request: Request) -> bool:
+        return request_can_manage_map_exports(request)
+
+    def can_delete(self, request: Request) -> bool:
+        return request_has_prism_admin_access(request)
 
     def can_create(self, request: Request) -> bool:
-        if not super().can_create(request):
+        if not request_can_manage_map_exports(request):
             return False
         return "clone_from" in request.query_params
+
+    @staticmethod
+    def _schedule_pk_as_uuid(pk: Any) -> UUID:
+        if isinstance(pk, UUID):
+            return pk
+        return UUID(str(pk))
+
+    async def schedule_download_available(
+        self,
+        request: Request,
+        schedule_id: UUID,
+    ) -> bool:
+        session: Session = request.state.session
+        return schedule_id in schedule_ids_with_downloadable_export(
+            session,
+            [schedule_id],
+        )
+
+    def render_row_actions_html(
+        self,
+        *,
+        templates: Any,
+        request: Request,
+        pk: Any,
+        actions: list[dict[str, Any]],
+        download_available: bool,
+    ) -> str:
+        return templates.get_template("map_export_schedule_row_actions.html").render(
+            _actions=actions,
+            display_type=self.row_actions_display_type,
+            pk=pk,
+            request=request,
+            model=self,
+            download_available=download_available,
+        )
 
     def get_list_query(self, request: Request) -> Select:
         stmt = (
@@ -490,7 +697,7 @@ class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelVie
         if not term_lower:
             return None
         clauses = []
-        for field_name in self.searchable_fields:
+        for field_name in self._searchable_fields_for_request(request):
             attr = getattr(self.model, field_name, None)
             if attr is None:
                 continue
@@ -576,6 +783,60 @@ class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelVie
         serialized["created_by_user"] = None
         return serialized
 
+    @action(
+        name="update_status",
+        text="Update status",
+        confirmation="Update the status of the selected map export schedules?",
+        submit_btn_text="Update status",
+        submit_btn_class="btn-primary",
+        icon_class="fa-solid fa-toggle-on",
+        form=_MAP_EXPORT_BULK_UPDATE_STATUS_FORM,
+    )
+    async def update_status_action(self, request: Request, pks: List[Any]) -> str:
+        data = await request.form()
+        status_raw = data.get("status")
+        if not status_raw:
+            raise ActionFailed("Status is required")
+        try:
+            new_status = MapExportScheduleStatus(str(status_raw))
+        except ValueError as exc:
+            raise ActionFailed(f"Invalid status: {status_raw}") from exc
+
+        session: Session = request.state.session
+        schedules = list(await self.find_by_pks(request, pks))
+        if not schedules:
+            raise ActionFailed("No accessible schedules selected")
+
+        now = utc_now()
+        for schedule in schedules:
+            schedule.status = new_status
+            schedule.updated_at = now
+            session.add(schedule)
+        session.commit()
+
+        count = len(schedules)
+        label = new_status.value
+        return f"Updated {count} schedule{'s' if count != 1 else ''} to {label}."
+
+    @action(
+        name="delete",
+        text="Delete schedules",
+        confirmation=(
+            "Are you sure you want to delete the selected map export schedules? "
+            "This cannot be undone."
+        ),
+        submit_btn_text="Yes, delete",
+        submit_btn_class="btn-danger",
+        icon_class="fa-solid fa-trash",
+    )
+    async def delete_action(self, request: Request, pks: List[Any]) -> str:
+        affected_rows = await self.delete(request, pks)
+        return ngettext(
+            "Schedule was successfully deleted",
+            "%(count)d schedules were successfully deleted",
+            affected_rows or 0,
+        ) % {"count": affected_rows}
+
     @link_row_action(
         name="clone",
         text="Clone",
@@ -588,6 +849,30 @@ class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelVie
             request.url_for(route_name + ":create", identity=self.identity),
         )
         return f"{base}?clone_from={pk}"
+
+    @row_action(
+        name="download",
+        text="Download",
+        icon_class="fa-solid fa-download",
+        action_btn_class="btn-secondary",
+        custom_response=True,
+    )
+    async def download_latest_export_row_action(
+        self,
+        request: Request,
+        pk: Any,
+    ) -> Response:
+        schedule = await self.find_by_pk(request, pk)
+        if schedule is None:
+            raise ActionFailed("Schedule not found or not accessible")
+        session: Session = request.state.session
+        job = latest_succeeded_job_for_schedule(session, schedule.id)
+        if job is None:
+            raise ActionFailed(SCHEDULE_DOWNLOAD_UNAVAILABLE_MSG)
+        try:
+            return schedule_export_download_response(job)
+        except HTTPException as exc:
+            raise ActionFailed(str(exc.detail)) from exc
 
     async def validate(self, request: Request, data: dict[str, Any]) -> None:
         errors: dict[str, str] = {}

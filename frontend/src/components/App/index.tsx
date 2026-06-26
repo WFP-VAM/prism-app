@@ -14,7 +14,9 @@ import Login from 'components/Login';
 import MapView from 'components/MapView';
 import NavBar from 'components/NavBar';
 import Notifier from 'components/Notifier';
+import UniversalBetaDisclaimerModal from 'components/UniversalBetaDisclaimerModal';
 import { authRequired } from 'config';
+import { CountryIsoProvider } from 'context/CountryIsoProvider';
 import KhmerFont from 'fonts/Khmer-Regular.ttf';
 import RobotoFont from 'fonts/Roboto-Regular.ttf';
 import { useDashboardConfig } from 'hooks/useDashboardConfig';
@@ -28,6 +30,7 @@ import {
   Switch,
   useParams,
 } from 'react-router-dom';
+import { isUniversalDeployment } from 'utils/universal-utils';
 
 if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development') {
   if (process.env.REACT_APP_SENTRY_URL) {
@@ -81,25 +84,57 @@ function DashboardRouteSwitcher() {
   return <DashboardView />;
 }
 
-const Wrapper = memo(() => (
+const AppShell = memo(() => (
   <div id="app">
     <NavBar />
     <div style={{ paddingTop: '56px', height: 'calc(100% - 56px)' }}>
-      {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
       <Switch>
-        {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
-        <Route path="/dashboard/:path?" exact>
+        <Route
+          path={['/country/:iso3/dashboard/:path?', '/dashboard/:path?']}
+          exact
+        >
           <DashboardRouteSwitcher />
         </Route>
-        {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
-        <Route>
+        <Route path={['/country/:iso3', '/']}>
           <MapView />
           <AuthModal />
         </Route>
       </Switch>
     </div>
+    {isUniversalDeployment() && <UniversalBetaDisclaimerModal />}
   </div>
 ));
+
+function AppRoutes() {
+  const isUniversal = isUniversalDeployment();
+
+  return (
+    <Switch>
+      {isUniversal && (
+        <Route path="/country/:iso3/export" exact>
+          <CountryIsoProvider>
+            <ExportView />
+          </CountryIsoProvider>
+        </Route>
+      )}
+      <Route path="/export" exact>
+        <ExportView />
+      </Route>
+      {isUniversal && (
+        <Route path={['/country/:iso3', '/']}>
+          <CountryIsoProvider>
+            <AppShell />
+          </CountryIsoProvider>
+        </Route>
+      )}
+      {!isUniversal && (
+        <Route>
+          <AppShell />
+        </Route>
+      )}
+    </Switch>
+  );
+}
 
 function App() {
   useDashboardConfig();
@@ -109,19 +144,7 @@ function App() {
   // The rendered content
   const renderedContent = useMemo(() => {
     if (isAuthenticated || !authRequired) {
-      return (
-        // @ts-expect-error - react-router-dom v5 types incompatible with React 18
-        <Switch>
-          {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
-          <Route path="/export" exact>
-            <ExportView />
-          </Route>
-          {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
-          <Route>
-            <Wrapper />
-          </Route>
-        </Switch>
-      );
+      return <AppRoutes />;
     }
     return <Login />;
   }, [isAuthenticated]);
@@ -130,7 +153,6 @@ function App() {
     <ThemeProvider theme={muiTheme}>
       {/* Used to show notifications from redux as a snackbar. Notifications are stored in notificationState */}
       <Notifier />
-      {/* @ts-expect-error - react-router-dom v5 types incompatible with React 18 */}
       <Router>{renderedContent}</Router>
     </ThemeProvider>
   );

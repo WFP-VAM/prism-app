@@ -4,6 +4,7 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
+from prism_app.admin_bulk_actions import bulk_status_select_form
 from prism_app.admin_map_export import (
     MapExportJobView,
     MapExportScheduleView,
@@ -13,19 +14,28 @@ from prism_app.admin_map_export import (
     _normalize_dekad_interval,
     _validate_dekad_interval,
 )
-from prism_app.auth.permission_codes import ADMIN_ACCESS
+from prism_app.auth.permission_codes import ADMIN_ACCESS, MAP_EXPORTS_MANAGE
 from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.database.map_export_schedule_model import (
     MAX_DEKAD_INTERVAL,
     MapExportSchedule,
     MapExportScheduleCadence,
+    MapExportScheduleStatus,
 )
 from sqlalchemy import select
+from starlette.datastructures import FormData
 from starlette.requests import Request
-from starlette_admin.exceptions import FormValidationError
+from starlette_admin._types import RequestAction
+from starlette_admin.exceptions import ActionFailed, FormValidationError
 
 
-def _request(*, admin_access: bool, user_id=None, query_string: bytes = b"") -> Request:
+def _request(
+    *,
+    admin_access: bool,
+    map_exports_manage: bool = False,
+    user_id=None,
+    query_string: bytes = b"",
+) -> Request:
     scope = {
         "type": "http",
         "method": "GET",
@@ -34,7 +44,12 @@ def _request(*, admin_access: bool, user_id=None, query_string: bytes = b"") -> 
         "headers": [],
     }
     request = Request(scope)
-    request.state.permission_codes = {ADMIN_ACCESS} if admin_access else set()
+    codes: set[str] = set()
+    if admin_access:
+        codes.add(ADMIN_ACCESS)
+    if map_exports_manage:
+        codes.add(MAP_EXPORTS_MANAGE)
+    request.state.permission_codes = codes
     if user_id is not None:
         request.state.prism_user = SimpleNamespace(id=user_id)
     return request
@@ -65,6 +80,23 @@ def test_schedule_view_allows_delete_for_admin() -> None:
     view = MapExportScheduleView(MapExportSchedule)
     assert view.can_delete(_request(admin_access=True)) is True
     assert view.can_delete(_request(admin_access=False)) is False
+    assert (
+        view.can_delete(_request(admin_access=False, map_exports_manage=True)) is False
+    )
+
+
+def test_schedule_view_accessible_to_map_export_manager_only() -> None:
+    view = MapExportScheduleView(MapExportSchedule)
+    manager_request = _request(admin_access=False, map_exports_manage=True)
+
+    assert view.is_accessible(manager_request) is True
+    assert view.can_view_details(manager_request) is True
+    assert view.can_edit(manager_request) is True
+
+
+def test_schedule_view_not_accessible_without_map_exports_or_admin() -> None:
+    view = MapExportScheduleView(MapExportSchedule)
+    assert view.is_accessible(_request(admin_access=False)) is False
 
 
 def test_normalize_dekad_interval_only_for_every_n_dekads() -> None:
@@ -143,10 +175,143 @@ def test_schedule_searchable_fields_include_cadence_and_format() -> None:
     assert "format" in view.searchable_fields
 
 
+def test_schedule_view_has_download_row_action() -> None:
+    view = MapExportScheduleView(MapExportSchedule)
+    assert view.list_template == "map_export_schedule_list.html"
+    assert view.detail_template == "map_export_schedule_detail.html"
+    assert "download" in view.row_actions
+    assert view._row_actions["download"]["custom_response"] is True
+
+
+def test_schedule_view_bulk_actions_include_update_status_and_delete() -> None:
+    view = MapExportScheduleView(MapExportSchedule)
+    assert view.list_template == "map_export_schedule_list.html"
+    assert view.actions == ["update_status", "delete"]
+    assert "update_status" in view._actions
+    assert "delete" in view._actions
+    assert view._actions["update_status"]["confirmation"]
+    assert view._actions["delete"]["confirmation"]
+    assert view._actions["update_status"]["form"] == bulk_status_select_form(
+        MapExportScheduleStatus
+    )
+
+
+@pytest.mark.asyncio
+async def test_update_status_action_requires_status(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    view = MapExportScheduleView(MapExportSchedule)
+    request = _request(admin_access=True)
+    request._form = FormData([])  # noqa: SLF001
+
+    async def _fake_form() -> FormData:
+        return request._form  # noqa: SLF001
+
+    request.form = _fake_form  # type: ignore[method-assign]
+
+    with pytest.raises(ActionFailed, match="Status is required"):
+        await view.update_status_action(request, ["sched-1"])
+
+
+@pytest.mark.asyncio
+async def test_update_status_action_updates_selected_schedules(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from unittest.mock import AsyncMock, MagicMock
+
+    view = MapExportScheduleView(MapExportSchedule)
+    schedule = MapExportSchedule(
+        id="sched-1",
+        name="mozambique precip monthly PDF",
+        status="active",
+        country="mozambique",
+        layer_id="precip_blended_dekad",
+        cadence="monthly",
+        export_url="http://x/export",
+        format="pdf",
+        export_options={"origin": "http://x"},
+    )
+    request = _request(admin_access=True)
+    request._form = FormData([("status", "stopped")])  # noqa: SLF001
+
+    async def _fake_form() -> FormData:
+        return request._form  # noqa: SLF001
+
+    request.form = _fake_form  # type: ignore[method-assign]
+
+    session = MagicMock()
+    request.state.session = session
+    monkeypatch.setattr(
+        view,
+        "find_by_pks",
+        AsyncMock(return_value=[schedule]),
+    )
+
+    message = await view.update_status_action(request, ["sched-1"])
+
+    assert schedule.status == MapExportScheduleStatus.stopped
+    assert schedule.updated_at is not None
+    session.add.assert_called_once_with(schedule)
+    session.commit.assert_called_once()
+    assert "1 schedule" in message
+    assert "stopped" in message
+
+
+def test_schedule_list_hides_country_for_map_export_manager() -> None:
+    view = MapExportScheduleView(MapExportSchedule)
+    manager_request = _request(admin_access=False, map_exports_manage=True)
+    admin_request = _request(admin_access=True)
+
+    manager_fields = {
+        f.name for f in view.get_fields_list(manager_request, RequestAction.LIST)
+    }
+    admin_fields = {
+        f.name for f in view.get_fields_list(admin_request, RequestAction.LIST)
+    }
+
+    assert "country" not in manager_fields
+    assert "country" in admin_fields
+
+
+def test_schedule_detail_hides_country_for_map_export_manager() -> None:
+    view = MapExportScheduleView(MapExportSchedule)
+    manager_request = _request(admin_access=False, map_exports_manage=True)
+    admin_request = _request(admin_access=True)
+
+    manager_fields = {
+        f.name for f in view.get_fields_list(manager_request, RequestAction.DETAIL)
+    }
+    admin_fields = {
+        f.name for f in view.get_fields_list(admin_request, RequestAction.DETAIL)
+    }
+
+    assert "country" not in manager_fields
+    assert "country" in admin_fields
+
+
+def test_schedule_search_excludes_country_for_map_export_manager() -> None:
+    view = MapExportScheduleView(MapExportSchedule)
+    manager_request = _request(admin_access=False, map_exports_manage=True)
+    clause = view.get_search_query(manager_request, "mozambique")
+    compiled = str(clause.compile(compile_kwargs={"literal_binds": True}))
+    assert "country" not in compiled.lower()
+
+
+def test_schedule_search_includes_country_for_admin() -> None:
+    view = MapExportScheduleView(MapExportSchedule)
+    admin_request = _request(admin_access=True)
+    clause = view.get_search_query(admin_request, "mozambique")
+    compiled = str(clause.compile(compile_kwargs={"literal_binds": True}))
+    assert "country" in compiled.lower()
+
+
 def test_schedule_view_can_create_only_with_clone_from() -> None:
     view = MapExportScheduleView(MapExportSchedule)
     assert view.create_template == "map_export_schedule_create.html"
     assert view.can_create(_request(admin_access=True)) is False
+    assert (
+        view.can_create(_request(admin_access=False, map_exports_manage=True)) is False
+    )
     scope = {
         "type": "http",
         "method": "GET",
@@ -157,6 +322,17 @@ def test_schedule_view_can_create_only_with_clone_from() -> None:
     request = Request(scope)
     request.state.permission_codes = {ADMIN_ACCESS}
     assert view.can_create(request) is True
+
+    manager_scope = {
+        "type": "http",
+        "method": "GET",
+        "path": "/",
+        "query_string": b"clone_from=abc",
+        "headers": [],
+    }
+    manager_request = Request(manager_scope)
+    manager_request.state.permission_codes = {MAP_EXPORTS_MANAGE}
+    assert view.can_create(manager_request) is True
 
 
 @pytest.mark.asyncio

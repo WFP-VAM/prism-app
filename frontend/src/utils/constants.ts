@@ -34,6 +34,9 @@ export const ADMIN_ACCESS_PERMISSION = 'prism.admin.access';
 export const PRISM_SIGN_IN_URL = `${API_URL}/auth/sign-in`;
 export const PRISM_SIGN_OUT_URL = `${API_URL}/auth/sign-out`;
 
+/** Print-modal batch map layer; distinct from main-app `hazardLayerIds`. */
+export const BATCH_MAP_LAYER_URL_KEY = 'batchMapLayerId';
+
 /** Must match MAP_EXPORT_MAX_URLS_PER_REQUEST in api/prism_app/models.py */
 export const MAP_EXPORT_MAX_URLS_PER_REQUEST = 12;
 // Default to the VAM URL for HDC data.

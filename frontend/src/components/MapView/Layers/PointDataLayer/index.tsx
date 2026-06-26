@@ -45,6 +45,7 @@ import { createGoogleFloodDatasetParams } from 'utils/google-flood-utils';
 import { findFeature, getLayerMapId, useMapCallback } from 'utils/map-utils';
 import { getRequestDate } from 'utils/server-utils';
 import { useUrlHistory } from 'utils/url-utils';
+import { useClippedFeatureCollection } from 'utils/useClippedFeatureCollection';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { useMapState } from 'utils/useMapState';
 
@@ -127,6 +128,8 @@ const PointDataLayer = memo(({ layer, before }: LayersProps) => {
 
   const { data } = layerData || {};
 
+  const clippedData = useClippedFeatureCollection(data);
+
   useEffect(() => {
     if (layer.authRequired && !userAuth) {
       return;
@@ -186,14 +189,14 @@ const PointDataLayer = memo(({ layer, before }: LayersProps) => {
     removeLayerData,
   ]);
 
-  if (!data || !validateLayerDate) {
+  if (!data || !clippedData || !validateLayerDate) {
     return null;
   }
 
   if (layer.hexDisplay) {
     const finalFeatures =
-      data &&
-      data.features
+      clippedData &&
+      clippedData.features
         .map(feature => {
           const point = feature.geometry as Point;
 
@@ -217,7 +220,7 @@ const PointDataLayer = memo(({ layer, before }: LayersProps) => {
         .filter(Boolean);
 
     const filteredData = {
-      ...data,
+      ...clippedData,
       features: finalFeatures,
     };
 
@@ -235,7 +238,7 @@ const PointDataLayer = memo(({ layer, before }: LayersProps) => {
 
   if (layer.adminLevelDisplay) {
     return (
-      <Source data={data} type="geojson">
+      <Source data={clippedData} type="geojson">
         <Layer
           id={layerId}
           type="fill"
@@ -255,7 +258,7 @@ const PointDataLayer = memo(({ layer, before }: LayersProps) => {
   const iconShape: IconShape = (layer.iconShape || 'point') as IconShape;
 
   return (
-    <Source data={data} type="geojson">
+    <Source data={clippedData} type="geojson">
       <Layer
         beforeId={before}
         id={layerId}

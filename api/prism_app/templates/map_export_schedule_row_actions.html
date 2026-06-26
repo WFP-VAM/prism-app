@@ -1,0 +1,109 @@
+{% macro action_data_attributes(action) -%}
+    {% if action.is_link -%}
+        href="{{ model._row_actions_handlers.get(action.name)(request, pk) }}"
+    {% else %}
+        href="#"
+        {% if action.confirmation is not none -%}
+            data-bs-toggle="modal"
+            data-bs-target="#modal-action"
+            data-confirmation="{{ action.confirmation }}"
+        {% else %}
+            data-no-confirmation-action="true"
+        {% endif %}
+        {% if action.custom_response -%}
+            data-custom-response="true"
+        {% endif %}
+        data-submit-btn-text="{{ action.submit_btn_text }}"
+        data-submit-btn-class="{{ action.submit_btn_class }}"
+        data-form="{{ action.form |forceescape }}"
+    {% endif %}
+    data-is-row-action="true"
+    data-name="{{ action.name }}"
+{% endmacro %}
+
+{% macro render_download_action(action, display) -%}
+    {% if action.name == "download" and not download_available %}
+        {% if display == "icon" -%}
+            <span data-tooltip="No maps to download for this schedule"
+                  class="map-export-download-unavailable text-muted opacity-50"
+                  style="cursor: not-allowed;"
+                  aria-disabled="true">
+                <span class="me-1"><i class="{{ action.icon_class }}"></i></span>
+            </span>
+        {% elif display == "dropdown" -%}
+            <span class="dropdown-item text-muted map-export-download-unavailable"
+                  style="cursor: not-allowed;"
+                  data-tooltip="No maps to download for this schedule"
+                  aria-disabled="true">
+                {% if action.icon_class -%}
+                    <i class="{{ action.icon_class }} me-2"></i>
+                {% endif -%}
+                {{ action.text }}
+            </span>
+        {% else -%}
+            <span class="btn {{ action.action_btn_class or '' }} disabled text-muted opacity-50 map-export-download-unavailable"
+                  style="cursor: not-allowed;"
+                  data-tooltip="No maps to download for this schedule"
+                  aria-disabled="true">
+                {% if action.icon_class -%}
+                    <i class="{{ action.icon_class }} me-2"></i>
+                {% endif -%}
+                {{ action.text }}
+            </span>
+        {% endif -%}
+    {% else %}
+        {% if display == "icon" -%}
+            <a title="{{ action.text }}"
+                    {{ action_data_attributes(action) }}>
+                <span class="me-1"><i class="{{ action.icon_class }}"></i></span>
+            </a>
+        {% elif display == "dropdown" -%}
+            <a class="dropdown-item row-action-item"
+               type="button"
+                    {{ action_data_attributes(action) }}
+            >
+                {% if action.icon_class -%}
+                    <i class="{{ action.icon_class }} me-2"></i>
+                {% endif -%}
+                {{ action.text }}
+            </a>
+        {% else -%}
+            <a class="row-action-item btn {{ action.action_btn_class or '' }}"
+               role="button"
+                    {{ action_data_attributes(action) }}
+            >
+                {% if action.icon_class -%}
+                    <i class="{{ action.icon_class }} me-2"></i>
+                {% endif -%}
+                {{ action.text }}
+            </a>
+        {% endif -%}
+    {% endif %}
+{% endmacro %}
+
+{% if display_type == "ICON_LIST" -%}
+    <div class="d-flex">
+        {% for action in _actions -%}
+            {{ render_download_action(action, "icon") }}
+        {% endfor %}
+    </div>
+{% elif display_type == "DROPDOWN" -%}
+    <div class="dropdown" id="actions-dropdown">
+        <button type="button"
+                class="btn dropdown-toggle"
+                data-bs-toggle="dropdown">
+            {{ _("Actions") }}
+        </button>
+        <div class="dropdown-menu">
+            {% for action in _actions -%}
+                {{ render_download_action(action, "dropdown") }}
+            {% endfor %}
+        </div>
+    </div>
+{% else -%}
+    <div class="btn-list">
+        {% for action in _actions -%}
+            {{ render_download_action(action, "detail") }}
+        {% endfor %}
+    </div>
+{% endif %}

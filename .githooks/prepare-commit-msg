@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Remove Cursor co-author trailers (IDE/agent sometimes inject these).
+set -euo pipefail
+
+MSG_FILE="${1:?}"
+
+if [[ ! -f "$MSG_FILE" ]]; then
+  exit 0
+fi
+
+# Portable in-place sed (GNU vs BSD).
+strip_cursor_trailers() {
+  grep -Ev '^Co-authored-by:[[:space:]]*Cursor[[:space:]]*<' "$MSG_FILE" > "${MSG_FILE}.tmp" || true
+  if [[ -s "${MSG_FILE}.tmp" ]] || [[ ! -s "$MSG_FILE" ]]; then
+    mv "${MSG_FILE}.tmp" "$MSG_FILE"
+  else
+    rm -f "${MSG_FILE}.tmp"
+  fi
+}
+
+strip_cursor_trailers

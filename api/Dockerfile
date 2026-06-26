@@ -43,7 +43,7 @@ RUN --mount=type=cache,target=/root/.cache \
     poetry install
 
 # Upgrade pip + tooling (CVE-2026-1703 pip, CVE-2026-24049 wheel, CVE-2026-23949 jaraco.context via setuptools vendor refresh)
-RUN poetry run pip install --upgrade 'pip>=26.0' 'setuptools>=82.0.0' 'wheel>=0.46.2' 'jaraco.context>=6.1.0'
+RUN poetry run pip install --upgrade 'pip>=26.1.2' 'setuptools>=82.0.0' 'wheel>=0.46.2' 'jaraco.context>=6.1.0'
 
 # we must run the playwright install command without mounting the cache, as it seems
 # that installed binaries end up being removed from the image if the cache is used

@@ -173,31 +173,6 @@ const AnalysisPanel = memo(() => {
     isAnalysisLoading,
   } = formState;
 
-  const { runAnalyser, hasFormChanged } = useAnalysisExecution(formState, {
-    onUrlUpdate: updateAnalysisParams,
-    clearAnalysisFunction: () => {
-      const isClearingExposureAnalysis =
-        analysisResult instanceof ExposedPopulationResult;
-      dispatch(clearAnalysisResult());
-      if (isClearingExposureAnalysis) {
-        dispatch(setTabValue(Panel.Layers));
-      }
-      resetAnalysisParams();
-      refreshBoundaries(map, { addLayer, removeLayer });
-
-      if (previousBaselineId) {
-        const previousBaseline = LayerDefinitions[
-          previousBaselineId
-        ] as AdminLevelDataLayerProps;
-        updateHistory(BASELINE_URL_LAYER_KEY, previousBaselineId);
-        safeDispatchAddLayer(map, previousBaseline, dispatch);
-        dispatch(setIsMapLayerActive(true));
-      }
-    },
-    // Don't clear on unmount for the main analysis panel - preserve results when navigating away
-    clearOnUnmount: false,
-  });
-
   const BASELINE_URL_LAYER_KEY = 'baselineLayerId';
   const preSelectedBaselineLayer = selectedLayers.find(
     l => l.type === 'admin_level_data',
@@ -205,6 +180,65 @@ const AnalysisPanel = memo(() => {
   const [previousBaselineId, setPreviousBaselineId] = useState(
     preSelectedBaselineLayer?.id,
   );
+
+  const restoreMapAfterAnalysisClear = useCallback(() => {
+    resetAnalysisParams();
+    refreshBoundaries(map, { addLayer, removeLayer });
+
+    if (previousBaselineId) {
+      const previousBaseline = LayerDefinitions[
+        previousBaselineId
+      ] as AdminLevelDataLayerProps;
+      updateHistory(BASELINE_URL_LAYER_KEY, previousBaselineId);
+      safeDispatchAddLayer(map, previousBaseline, dispatch);
+      dispatch(setIsMapLayerActive(true));
+    }
+  }, [dispatch, map, previousBaselineId, resetAnalysisParams, updateHistory]);
+
+  const clearAnalysisState = useCallback(
+    (options?: { resetFormFromUrl?: boolean }) => {
+      const isClearingExposureAnalysis =
+        analysisResult instanceof ExposedPopulationResult;
+      dispatch(clearAnalysisResult());
+      if (isClearingExposureAnalysis) {
+        dispatch(setTabValue(Panel.Layers));
+      }
+      if (options?.resetFormFromUrl) {
+        setHazardLayerId(hazardLayerIdFromUrl);
+        setStatistic(
+          (selectedStatisticFromUrl as AggregationOperations) || statistic,
+        );
+        setBaselineLayerId(baselineLayerIdFromUrl);
+        setBelowThreshold(belowThresholdFromUrl || '');
+        setAboveThreshold(aboveThresholdFromUrl || '');
+      }
+      restoreMapAfterAnalysisClear();
+    },
+    [
+      analysisResult,
+      baselineLayerIdFromUrl,
+      belowThresholdFromUrl,
+      aboveThresholdFromUrl,
+      dispatch,
+      hazardLayerIdFromUrl,
+      restoreMapAfterAnalysisClear,
+      selectedStatisticFromUrl,
+      setBaselineLayerId,
+      setBelowThreshold,
+      setAboveThreshold,
+      setHazardLayerId,
+      setStatistic,
+      statistic,
+    ],
+  );
+
+  const { runAnalyser, hasFormChanged, resetLastExecutedForm } =
+    useAnalysisExecution(formState, {
+      onUrlUpdate: updateAnalysisParams,
+      clearAnalysisFunction: () => clearAnalysisState(),
+      // Don't clear on unmount for the main analysis panel - preserve results when navigating away
+      clearOnUnmount: false,
+    });
 
   const posthog = usePostHog();
   const { t } = useSafeTranslation();
@@ -247,50 +281,9 @@ const AnalysisPanel = memo(() => {
   );
 
   const clearAnalysis = useCallback(() => {
-    const isClearingExposureAnalysis =
-      analysisResult instanceof ExposedPopulationResult;
-    dispatch(clearAnalysisResult());
-    if (isClearingExposureAnalysis) {
-      dispatch(setTabValue(Panel.Layers));
-    }
-    setHazardLayerId(hazardLayerIdFromUrl);
-    setStatistic(
-      (selectedStatisticFromUrl as AggregationOperations) || statistic,
-    );
-    setBaselineLayerId(baselineLayerIdFromUrl);
-    setBelowThreshold(belowThresholdFromUrl || '');
-    setAboveThreshold(aboveThresholdFromUrl || '');
-
-    resetAnalysisParams();
-    refreshBoundaries(map, { addLayer, removeLayer });
-
-    if (previousBaselineId) {
-      const previousBaseline = LayerDefinitions[
-        previousBaselineId
-      ] as AdminLevelDataLayerProps;
-      updateHistory(BASELINE_URL_LAYER_KEY, previousBaselineId);
-      safeDispatchAddLayer(map, previousBaseline, dispatch);
-      dispatch(setIsMapLayerActive(true));
-    }
-  }, [
-    analysisResult,
-    setHazardLayerId,
-    hazardLayerIdFromUrl,
-    setStatistic,
-    selectedStatisticFromUrl,
-    statistic,
-    setBaselineLayerId,
-    baselineLayerIdFromUrl,
-    setBelowThreshold,
-    belowThresholdFromUrl,
-    setAboveThreshold,
-    aboveThresholdFromUrl,
-    dispatch,
-    resetAnalysisParams,
-    map,
-    previousBaselineId,
-    updateHistory,
-  ]);
+    resetLastExecutedForm();
+    clearAnalysisState({ resetFormFromUrl: true });
+  }, [clearAnalysisState, resetLastExecutedForm]);
 
   const wrappedRunAnalyser = useCallback(async () => {
     if (preSelectedBaselineLayer) {

@@ -10,7 +10,7 @@ import {
   LayerKey,
   WMSLayerProps,
 } from 'config/types';
-import { getBoundaryLayersByAdminLevel, LayerDefinitions } from 'config/utils';
+import { LayerDefinitions } from 'config/utils';
 import {
   AdminBoundaryRequestParams,
   CHART_DATA_PREFIXES,
@@ -29,12 +29,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getChartAdminBoundaryParams } from 'utils/admin-utils';
 import { getLatestPeriodRange, getTimeInMilliseconds } from 'utils/date-utils';
 import { getPossibleDatesForLayer } from 'utils/server-utils';
+import {
+  getEffectiveMultiCountry,
+  useEffectiveBoundaryLayer,
+  useEffectiveCountryAdmin0Id,
+} from 'utils/universal-country-admin';
+import { isUniversalDeployment } from 'utils/universal-utils';
 
 import { useBoundaryData } from './useBoundaryData';
-
-const { multiCountry, countryAdmin0Id } = appConfig;
-const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
-const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
 // Default date range: last 1 year
 const yearsToFetchDataFor = 1;
@@ -50,44 +52,72 @@ export interface UseChartFormOptions {
   latestPeriod?: ChartLatestPeriod;
 }
 
+/**
+ * Resolves the persisted admin unit id (the boundary code that getProperties
+ * uses on restore) for the currently-selected level.
+ *
+ * In multi-country deployments the hierarchy is country (0) -> admin 1 (1) ->
+ * admin 2 (2), so level 0 stores the selected country. In single-country
+ * deployments level 0 is the whole country and has no admin unit id.
+ */
 export function adminUnitIdFromKeys(
+  admin0Key: AdminCodeString,
   admin1Key: AdminCodeString,
   admin2Key: AdminCodeString,
   level: AdminLevelType,
 ): string | undefined {
-  if (level === 0) {
-    return undefined;
-  }
+  const multiCountry = isUniversalDeployment() || getEffectiveMultiCountry();
   if (level === 2 && admin2Key) {
     return String(admin2Key);
   }
-  if (admin1Key) {
+  if (level === 1 && admin1Key) {
     return String(admin1Key);
+  }
+  if (level === 0) {
+    return multiCountry && admin0Key ? String(admin0Key) : undefined;
   }
   return undefined;
 }
 
-function deriveAdminKeysFromProperties(
+/**
+ * Rebuilds the admin key hierarchy (country / admin 1 / admin 2) from a restored
+ * boundary feature's properties, accounting for the multi-country level offset.
+ */
+export function deriveAdminKeysFromProperties(
   properties: GeoJsonProperties,
   level: AdminLevelType,
   deepestCode: string,
   adminLevelCodes: string[],
-): { admin1Key: AdminCodeString; admin2Key: AdminCodeString } {
+): {
+  admin0Key: AdminCodeString;
+  admin1Key: AdminCodeString;
+  admin2Key: AdminCodeString;
+} {
+  const multiCountry = isUniversalDeployment() || getEffectiveMultiCountry();
+  const empty = '' as AdminCodeString;
+  const admin0CodeField = adminLevelCodes[0];
+  const admin1CodeField = adminLevelCodes[multiCountry ? 1 : 0];
+
+  const restoredAdmin0 = multiCountry
+    ? ((properties?.[admin0CodeField] ?? '') as AdminCodeString)
+    : empty;
+
   if (level === 0) {
     return {
-      admin1Key: '' as AdminCodeString,
-      admin2Key: '' as AdminCodeString,
+      admin0Key: multiCountry ? (deepestCode as AdminCodeString) : empty,
+      admin1Key: empty,
+      admin2Key: empty,
     };
   }
-  const admin1Index = multiCountry ? 1 : 0;
-  const admin1CodeField = adminLevelCodes[admin1Index];
   if (level === 1) {
     return {
+      admin0Key: restoredAdmin0,
       admin1Key: deepestCode as AdminCodeString,
-      admin2Key: '' as AdminCodeString,
+      admin2Key: empty,
     };
   }
   return {
+    admin0Key: restoredAdmin0,
     admin1Key: (properties?.[admin1CodeField] ?? '') as AdminCodeString,
     admin2Key: deepestCode as AdminCodeString,
   };
@@ -97,10 +127,12 @@ export interface UseChartFormReturn {
   // Form state
   chartLayerId: LayerKey | undefined;
   setChartLayerId: (id: LayerKey | undefined) => void;
+  admin0Key: AdminCodeString;
   admin1Key: AdminCodeString;
   admin2Key: AdminCodeString;
   adminLevel: AdminLevelType;
   setLocation: (
+    admin0Key: AdminCodeString,
     admin1Key: AdminCodeString,
     admin2Key: AdminCodeString,
     properties: GeoJsonProperties,
@@ -126,6 +158,8 @@ export interface UseChartFormReturn {
 export const useChartForm = (
   options: UseChartFormOptions = {},
 ): UseChartFormReturn => {
+  const countryAdmin0Id = useEffectiveCountryAdmin0Id();
+  const boundaryLayer = useEffectiveBoundaryLayer();
   const {
     initialChartLayerId,
     initialStartDate,
@@ -143,6 +177,9 @@ export const useChartForm = (
   // Form state
   const [chartLayerId, setChartLayerId] = useState<LayerKey | undefined>(
     initialChartLayerId,
+  );
+  const [admin0Key, setAdmin0Key] = useState<AdminCodeString>(
+    '' as AdminCodeString,
   );
   const [admin1Key, setAdmin1Key] = useState<AdminCodeString>(
     '' as AdminCodeString,
@@ -174,11 +211,13 @@ export const useChartForm = (
   >(undefined);
 
   const setLocationInternal = (
+    newAdmin0Key: AdminCodeString,
     newAdmin1Key: AdminCodeString,
     newAdmin2Key: AdminCodeString,
     properties: GeoJsonProperties,
     level: AdminLevelType,
   ) => {
+    setAdmin0Key(newAdmin0Key);
     setAdmin1Key(newAdmin1Key);
     setAdmin2Key(newAdmin2Key);
     setAdminLevel(level);
@@ -186,12 +225,19 @@ export const useChartForm = (
   };
 
   const setLocation = (
+    newAdmin0Key: AdminCodeString,
     newAdmin1Key: AdminCodeString,
     newAdmin2Key: AdminCodeString,
     properties: GeoJsonProperties,
     level: AdminLevelType,
   ) => {
-    setLocationInternal(newAdmin1Key, newAdmin2Key, properties, level);
+    setLocationInternal(
+      newAdmin0Key,
+      newAdmin1Key,
+      newAdmin2Key,
+      properties,
+      level,
+    );
   };
 
   const boundaryDataResult = useBoundaryData(boundaryLayer.id);
@@ -207,7 +253,7 @@ export const useChartForm = (
         data: boundaryDataResult.data,
         date: Date.now(),
       };
-    }, [boundaryDataResult.data]);
+    }, [boundaryDataResult.data, boundaryLayer]);
 
   // Derived values
   const selectedChartLayer = useMemo(
@@ -235,16 +281,25 @@ export const useChartForm = (
     const level = (initialAdminLevel ?? 0) as AdminLevelType;
     const code = String(initialAdminUnitId) as AdminCodeString;
     const properties = getProperties(boundaryLayerData.data, code, level);
-    const { admin1Key: restoredAdmin1, admin2Key: restoredAdmin2 } =
-      deriveAdminKeysFromProperties(
-        properties,
-        level,
-        String(initialAdminUnitId),
-        boundaryLayer.adminLevelCodes,
-      );
+    const {
+      admin0Key: restoredAdmin0,
+      admin1Key: restoredAdmin1,
+      admin2Key: restoredAdmin2,
+    } = deriveAdminKeysFromProperties(
+      properties,
+      level,
+      String(initialAdminUnitId),
+      boundaryLayer.adminLevelCodes,
+    );
 
     hasRestoredAdminRef.current = true;
-    setLocationInternal(restoredAdmin1, restoredAdmin2, properties, level);
+    setLocationInternal(
+      restoredAdmin0,
+      restoredAdmin1,
+      restoredAdmin2,
+      properties,
+      level,
+    );
   }, [
     boundaryLayerData,
     initialAdminUnitId,
@@ -263,7 +318,7 @@ export const useChartForm = (
       return;
     }
     setAdminProperties(getProperties(boundaryLayerData.data));
-  }, [adminProperties, boundaryLayerData]);
+  }, [adminProperties, boundaryLayerData, countryAdmin0Id]);
 
   // Ensure adminLevel matches what's actually selected
   useEffect(() => {
@@ -323,6 +378,7 @@ export const useChartForm = (
     // Form state
     chartLayerId,
     setChartLayerId,
+    admin0Key,
     admin1Key,
     admin2Key,
     adminLevel,
@@ -367,6 +423,7 @@ export interface UseChartDataReturn {
 export const useChartData = (
   options: UseChartDataOptions,
 ): UseChartDataReturn => {
+  const countryAdmin0Id = useEffectiveCountryAdmin0Id();
   const {
     chartLayer,
     adminProperties,
@@ -398,20 +455,28 @@ export const useChartData = (
     const params = getChartAdminBoundaryParams(chartLayer, adminProperties);
     const { levels } = chartLayer.chartData;
     const levelsDict = Object.fromEntries(levels.map(x => [x.level, x.id]));
+
     const adminKey = levelsDict[adminLevel.toString()];
 
     const { code: adminCode } = params.boundaryProps[adminKey] || {
-      code: appConfig.countryAdmin0Id,
+      code: countryAdmin0Id ?? appConfig.countryAdmin0Id,
     };
 
     return {
       ...params,
       level: adminLevel.toString(),
-      adminCode: adminCode || appConfig.countryAdmin0Id,
+      adminCode: adminCode || countryAdmin0Id || appConfig.countryAdmin0Id,
       startDate,
       endDate,
     };
-  }, [chartLayer, adminProperties, adminLevel, startDate, endDate]);
+  }, [
+    chartLayer,
+    adminProperties,
+    adminLevel,
+    startDate,
+    endDate,
+    countryAdmin0Id,
+  ]);
 
   const fetchData = useCallback(async () => {
     if (!requestParams || !enabled) {

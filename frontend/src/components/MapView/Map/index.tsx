@@ -62,6 +62,8 @@ import GeojsonDataLayer from '../Layers/GeojsonDataLayer';
 import PmtilesVectorLayer from '../Layers/PmtilesVectorLayer';
 import { mapStyle } from './utils';
 
+initPmtilesProtocol();
+
 type LayerComponentsMap<U extends LayerType> = {
   [T in U['type']]: {
     component: ComponentType<{

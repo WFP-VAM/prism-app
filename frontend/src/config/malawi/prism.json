@@ -1,7 +1,7 @@
 {
   "country": "Malawi",
-  "anticipatoryActionDroughtUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/aa_probabilities_triggers_mwi.csv",
-  "anticipatoryActionDroughtStagingUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/staging/aa_probabilities_triggers_mwi.csv",
+  "anticipatoryActionDroughtUrl": "https://hip-workshop-sharing-public-eu-central-1-485262375119.s3.eu-central-1.amazonaws.com/anticipatory-action/mwi/prism/aa_probabilities_triggers_mwi.csv",
+  "anticipatoryActionDroughtStagingUrl": "https://hip-workshop-sharing-public-eu-central-1-485262375119.s3.eu-central-1.amazonaws.com/anticipatory-action/mwi/prism/staging/aa_probabilities_triggers_mwi.csv",
   "countryAdmin0Id": 152,
   "alertFormActive": false,
   "enableNavigationDropdown": true,

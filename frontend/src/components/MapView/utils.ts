@@ -1,4 +1,3 @@
-import { appConfig } from 'config';
 import {
   AdminCodeString,
   AdminLevelType,
@@ -33,6 +32,8 @@ import { Column, quoteAndEscapeCell } from 'utils/analysis-utils';
 import { LocalError } from 'utils/error-utils';
 import { formatFeatureInfo } from 'utils/server-utils';
 import { getTitle } from 'utils/title-utils';
+import { getEffectiveMultiCountry } from 'utils/universal-country-admin';
+import { isUniversalDeployment } from 'utils/universal-utils';
 import { getUrlKey, UrlLayerKey } from 'utils/url-utils';
 
 import { getExtent } from './Layers/raster-utils';
@@ -346,8 +347,9 @@ export const getExposureAnalysisTableData = (
  * @param adminLevel - Optional administrative level type
  * @returns GeoJSON properties for the matching feature
  */
-const { multiCountry } = appConfig;
-const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
+const multiCountry = getEffectiveMultiCountry();
+const isUniversal = isUniversalDeployment();
+const MAX_ADMIN_LEVEL = isUniversal ? 4 : multiCountry ? 3 : 2;
 const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
 export const getProperties = (
@@ -358,10 +360,10 @@ export const getProperties = (
   if (id === undefined || adminLevel === undefined) {
     return layerData.features[0].properties;
   }
-  const indexLevel = multiCountry ? adminLevel : adminLevel - 1;
+  const indexLevel = multiCountry || isUniversal ? adminLevel : adminLevel - 1;
   const adminCode = boundaryLayer.adminLevelCodes[indexLevel];
   const item = layerData.features.find(
-    elem => elem.properties && elem.properties[adminCode] === id,
+    elem => elem.properties && String(elem.properties[adminCode]) === id,
   );
   return item?.properties ?? {};
 };

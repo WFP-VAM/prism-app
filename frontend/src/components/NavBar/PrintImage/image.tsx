@@ -6,7 +6,6 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import { usePostHog } from '@posthog/react';
-import mask from '@turf/mask';
 import { appConfig, rawLayers, safeCountry } from 'config';
 import { AdminCodeString, LayerKey } from 'config/types';
 import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
@@ -29,6 +28,11 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
+import {
+  adminAreaFilenameSegment,
+  buildCountryAdminFilenameStem,
+  resolveAdminAreaRefs,
+} from 'utils/adminAreaSelection';
 import { isBoundaryLayer } from 'utils/boundary-layers-utils';
 import { dateWithoutTime, getFormattedDate } from 'utils/date-utils';
 import useLayers, { isWmsSelectableForBatchPrint } from 'utils/layers-utils';
@@ -37,8 +41,10 @@ import {
   getPossibleDatesForLayer,
 } from 'utils/server-utils';
 import { stringHash } from 'utils/string-utils';
+import { useAdminAreaClipForExport } from 'utils/useAdminAreaClipForExport';
 import { useBoundaryData } from 'utils/useBoundaryData';
 import useResizeObserver from 'utils/useOnResizeObserver';
+import { usePreloadBoundaryLayersForClip } from 'utils/usePreloadBoundaryLayersForClip';
 
 import {
   dateRangeSelector,
@@ -52,7 +58,10 @@ import {
   getDisabledCadences,
   resolveValidCadence,
 } from '../../../utils/batchCadenceUtils';
-import { MAP_EXPORT_MAX_URLS_PER_REQUEST } from '../../../utils/constants';
+import {
+  BATCH_MAP_LAYER_URL_KEY,
+  MAP_EXPORT_MAX_URLS_PER_REQUEST,
+} from '../../../utils/constants';
 import { exportLanguage } from '../../../utils/exportLanguage';
 import {
   cadenceToApi,
@@ -60,6 +69,7 @@ import {
 } from '../../../utils/mapExportSchedulesApi';
 import { ALL_ASPECT_RATIO_OPTIONS } from '../../MapExport/aspectRatioConstants';
 import { downloadToFile } from '../../MapView/utils';
+import { formatExportUrlForClipboard } from './batchExportUrls';
 import { buildBatchExportDatesDisplay } from './batchMapExport/batchExportArtifactFilename';
 import { useBatchMapExportJobsActions } from './batchMapExport/useBatchMapExportJobs';
 import { useMapExportTemplate } from './batchMapExport/useMapExportTemplate';
@@ -149,17 +159,21 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const [previewMapWidth, setPreviewMapWidth] = useState<number | null>(null);
   const [previewMapHeight, setPreviewMapHeight] = useState<number | null>(null);
 
-  // Get the style and layers of the old map
-  const selectedMapStyle = selectedMap?.getStyle();
+  const boundaryLayersVersion = usePreloadBoundaryLayersForClip({
+    enabled: open && toggles.countryMask,
+    dispatch,
+  });
 
-  if (selectedMapStyle && !toggles.mapLabelsVisibility) {
-    selectedMapStyle.layers = selectedMapStyle?.layers.filter(
-      x => !x.id.includes('label'),
-    );
-  }
-
-  const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] =
-    useState(null);
+  const adminAreaClipPolygon = useAdminAreaClipForExport({
+    enabled: toggles.countryMask,
+    country: safeCountry,
+    selectedBoundaries,
+    boundaryData: data,
+    boundaryLayer,
+    i18nLocale: i18n,
+    boundaryLayersVersion,
+    map: selectedMap,
+  });
 
   const [dateRangeForBatchMaps, setDateRangeForBatchMaps] = useState<{
     startDate: number | null;
@@ -210,6 +224,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       countryLayerIds.has(l.id),
   );
   const [selectedLayerId, setSelectedLayerId] = useState<LayerKey | null>(null);
+  const printLayerInitializedRef = useRef(false);
 
   useEffect(() => {
     if (!open) {
@@ -234,13 +249,85 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
   const { selectedLayersWithDateSupport, selectedLayers } = useLayers();
 
-  useEffect(() => {
-    if (open) {
-      setSelectedLayerId(
-        (selectedLayersWithDateSupport[0]?.id as LayerKey) ?? null,
-      );
+  const defaultBatchMapLayerId = useMemo((): LayerKey | null => {
+    if (selectableLayers.length === 0) {
+      return null;
     }
-  }, [open]);
+    const selectableIds = new Set(selectableLayers.map(layer => layer.id));
+    const fromMainMap = selectedLayersWithDateSupport.find(layer =>
+      selectableIds.has(layer.id),
+    )?.id as LayerKey | undefined;
+    return fromMainMap ?? selectableLayers[0].id;
+  }, [selectableLayers, selectedLayersWithDateSupport]);
+
+  // Batch-map layer in the print dialog is separate from the main map's
+  // `hazardLayerIds`. On open, read `batchMapLayerId` once (e.g. after login
+  // redirect); otherwise default to the first batch-printable main-map layer, or
+  // the first selectable batch-print layer. The ref ensures we do not re-run
+  // when the sync effect below updates the URL.
+  useEffect(() => {
+    if (!open) {
+      printLayerInitializedRef.current = false;
+      return;
+    }
+    if (printLayerInitializedRef.current) {
+      return;
+    }
+
+    const params = new URLSearchParams(location.search);
+    const batchMapLayerId = params.get(BATCH_MAP_LAYER_URL_KEY);
+
+    if (batchMapLayerId) {
+      const batchMapLayerValid = selectableLayers.some(
+        layer => layer.id === batchMapLayerId,
+      );
+      if (!batchMapLayerValid && selectableLayers.length === 0) {
+        return;
+      }
+      if (batchMapLayerValid) {
+        setSelectedLayerId(batchMapLayerId as LayerKey);
+        printLayerInitializedRef.current = true;
+        return;
+      }
+    }
+
+    if (defaultBatchMapLayerId === null) {
+      return;
+    }
+
+    printLayerInitializedRef.current = true;
+    setSelectedLayerId(defaultBatchMapLayerId);
+  }, [open, selectableLayers, defaultBatchMapLayerId]);
+
+  // Keep `batchMapLayerId` in the URL while batch maps is enabled so login
+  // redirect and modal restore preserve the print-layer choice. Intentionally
+  // omit `location.search` from deps so URL updates do not re-trigger init above.
+  // Skip syncing when `schedule=1` is present: the post-login redirect URL already
+  // carries `batchMapLayerId`, and replacing search here re-triggers schedule init
+  // and whoami work on every layer tweak.
+  useEffect(() => {
+    if (!open || !toggles.batchMapsVisibility || !selectedLayerId) {
+      return;
+    }
+    const params = new URLSearchParams(location.search);
+    if (params.get('schedule') === '1') {
+      return;
+    }
+    if (params.get(BATCH_MAP_LAYER_URL_KEY) === selectedLayerId) {
+      return;
+    }
+    params.set(BATCH_MAP_LAYER_URL_KEY, selectedLayerId);
+    history.replace({
+      pathname: location.pathname,
+      search: params.toString() ? `?${params.toString()}` : '',
+    });
+  }, [
+    open,
+    toggles.batchMapsVisibility,
+    selectedLayerId,
+    history,
+    location.pathname,
+  ]);
 
   useEffect(() => {
     if (!toggles.batchMapsVisibility) {
@@ -277,10 +364,10 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   }, [open, selectedMap]);
 
   useEffect(() => {
-    if (selectedLayerId === null && selectableLayers.length > 0) {
-      setSelectedLayerId(selectableLayers[0].id);
+    if (selectedLayerId === null && defaultBatchMapLayerId !== null) {
+      setSelectedLayerId(defaultBatchMapLayerId);
     }
-  }, [selectableLayers, selectedLayerId]);
+  }, [defaultBatchMapLayerId, selectedLayerId]);
 
   const printSelectedLayer = useMemo(
     () =>
@@ -423,6 +510,11 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     }
   }, [availableCadences, cadence, createScheduledMaps, disabledCadences]);
 
+  const adminAreaRefs = useMemo(
+    () => resolveAdminAreaRefs(selectedBoundaries, data, boundaryLayer, i18n),
+    [data, selectedBoundaries, i18n],
+  );
+
   const mapExportTemplate = useMapExportTemplate({
     mapBounds: previewBounds,
     mapDimensions,
@@ -438,6 +530,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     bottomLogoScale,
     toggles,
     selectedBoundaries,
+    adminAreaRefs,
     language: exportLanguage(location.search, {
       activeLanguage: i18n.resolvedLanguage,
     }),
@@ -512,30 +605,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     t,
   ]);
 
-  useEffect(() => {
-    // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
-    // which runs ./scripts/preprocess-layers.js
-    if (selectedBoundaries.length === 0) {
-      fetch(`/data/${safeCountry}/admin-boundary-unified-polygon.json`)
-        .then(response => response.json())
-        .then(polygonData => {
-          const maskedPolygon = mask(polygonData as any);
-          setAdminBoundaryPolygon(maskedPolygon as any);
-        })
-        .catch(error => console.error('Error:', error));
-      return;
-    }
-
-    const filteredData = data && {
-      ...data,
-      features: data.features.filter(cell =>
-        selectedBoundaries.includes(cell.properties?.[boundaryLayer.adminCode]),
-      ),
-    };
-    const masked = mask(filteredData as any);
-    setAdminBoundaryPolygon(masked as any);
-  }, [data, selectedBoundaries, selectedBoundaries.length]);
-
   const handleDownloadMenuClose = () => {
     setDownloadMenuAnchorEl(null);
   };
@@ -550,11 +619,14 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       title: titleText,
       date: getFormattedDate(dateRange.startDate, 'default'),
     });
-    const filename: string = `${titleText || country}_${
+    const maskedFilenameStem =
+      toggles.countryMask && adminAreaRefs.length > 0
+        ? buildCountryAdminFilenameStem(safeCountry, adminAreaRefs)
+        : undefined;
+    const filename: string = `${maskedFilenameStem ?? (titleText || country)}_${
       getFormattedDate(dateRange.startDate, 'snake') || 'no_date'
     }`;
     const docGeneration = async () => {
-      // png is generally preferred for images containing lines and text.
       const ext = format === 'pdf' ? 'png' : format;
       const elem = printRef.current;
       if (!elem) {
@@ -592,6 +664,67 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
     handleClose();
     setDownloadMenuAnchorEl(null);
+  };
+
+  const copyBatchMapUrls = async () => {
+    const { startDate, endDate } = dateRangeForBatchMaps;
+
+    if (!startDate || !endDate) {
+      dispatch(
+        addNotification({
+          type: 'error',
+          message: t('Date range not set for batch download'),
+        }),
+      );
+      return;
+    }
+
+    if (!printSelectedLayer) {
+      dispatch(
+        addNotification({
+          type: 'error',
+          message: t('Select a layer for batch maps'),
+        }),
+      );
+      return;
+    }
+
+    const timestampsForCopy =
+      filteredBatchDates.length > 0 ? [filteredBatchDates[0]] : [];
+    const constructedUrls = mapExportTemplate.buildBatchUrlsForTimestamps(
+      timestampsForCopy,
+      printSelectedLayer,
+    );
+
+    if (constructedUrls.length === 0) {
+      dispatch(
+        addNotification({
+          type: 'error',
+          message: t('No dates found in the selected range'),
+        }),
+      );
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(
+        formatExportUrlForClipboard(constructedUrls[0]),
+      );
+      dispatch(
+        addNotification({
+          type: 'success',
+          message: t('Batch map URL copied to clipboard.'),
+        }),
+      );
+    } catch (error) {
+      dispatch(
+        addNotification({
+          type: 'error',
+          message: t('Could not copy batch map settings. Please try again.'),
+        }),
+      );
+      console.error('Copy batch map settings failed:', error);
+    }
   };
 
   const downloadBatch = async (format: 'pdf' | 'png') => {
@@ -648,6 +781,9 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         viewportHeight: canvasHeight,
         format,
         country: safeCountry,
+        ...(toggles.countryMask && adminAreaRefs.length > 0
+          ? { adminArea: adminAreaFilenameSegment(adminAreaRefs) }
+          : {}),
         layerDisplayName,
         datesSummary,
         mapTotal: constructedUrls.length,
@@ -782,7 +918,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       legendPosition,
       legendScale,
       printRef,
-      invertedAdminBoundaryLimitPolygon,
+      adminAreaClipPolygon,
       handleClose,
       setTitleText,
       debounceCallback,
@@ -803,6 +939,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       handleDownloadMenuClose,
       download,
       downloadBatch,
+      copyBatchMapUrls,
       isDownloading,
       defaultFooterText,
       setSelectedBoundaries,

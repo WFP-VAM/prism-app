@@ -8,14 +8,15 @@ import {
 import { Search } from '@material-ui/icons';
 import bbox from '@turf/bbox';
 import { LayerKey } from 'config/types';
-import { getDisplayBoundaryLayers } from 'config/utils';
 import { BoundaryLayerData } from 'context/layers/boundary';
+import { useCountryIso } from 'context/useCountryIso';
 import { BBox } from 'geojson';
 import { useSafeTranslation } from 'i18n';
 import { Map as MaplibreMap } from 'maplibre-gl';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { FixedSizeList as List } from 'react-window';
 import { boundaryCache } from 'utils/boundary-cache';
+import { getDisplayBoundaryLayersForIso3 } from 'utils/universal-utils';
 
 import {
   BoundaryDropdownProps,
@@ -23,10 +24,6 @@ import {
   getAdminBoundaryTree,
   TIMEOUT_ANIMATION_DELAY,
 } from './utils';
-
-const boundaryLayers = getDisplayBoundaryLayers().filter(
-  layer => !layer.hideInGoTo,
-);
 
 const SearchField = React.forwardRef(
   (
@@ -85,14 +82,26 @@ const BoundaryDropdownOptions = React.forwardRef(
   ) => {
     const styles = useStyles();
     const { t, i18n: i18nLocale } = useSafeTranslation();
+    const { iso3 } = useCountryIso();
+    const boundaryLayers = getDisplayBoundaryLayersForIso3(iso3).filter(
+      layer => !layer.hideInGoTo,
+    );
+    const [, setCacheVersion] = useState(0);
+
+    useEffect(
+      () => boundaryCache.subscribe(() => setCacheVersion(v => v + 1)),
+      [],
+    );
+
     const baseBoundaryLayerData = boundaryCache.getCachedData(
-      boundaryLayers[0].id,
+      boundaryLayers[0]?.id,
+      iso3,
     );
 
     // Get all boundary layer data from cache
     const allBoundaryLayerData = boundaryLayers.reduce(
       (acc, layer) => {
-        acc[layer.id] = boundaryCache.getCachedData(layer.id);
+        acc[layer.id] = boundaryCache.getCachedData(layer.id, iso3);
         return acc;
       },
       {} as Record<LayerKey, BoundaryLayerData | undefined>,
@@ -118,7 +127,7 @@ const BoundaryDropdownOptions = React.forwardRef(
           return layer?.hideInGoTo ? [] : data.features || [];
         }),
       };
-    }, [allBoundaryLayerData]);
+    }, [allBoundaryLayerData, boundaryLayers]);
 
     const areaTree = useMemo(
       () =>
@@ -127,7 +136,7 @@ const BoundaryDropdownOptions = React.forwardRef(
           boundaryLayers[0],
           i18nLocale,
         ),
-      [baseBoundaryLayerData, i18nLocale],
+      [baseBoundaryLayerData, boundaryLayers, i18nLocale],
     );
 
     const flattenedAreaList = useMemo(
@@ -135,7 +144,7 @@ const BoundaryDropdownOptions = React.forwardRef(
       [areaTree, search],
     );
 
-    if (!combinedData) {
+    if (!combinedData || !boundaryLayers.length) {
       return null;
     }
 
@@ -182,7 +191,6 @@ const BoundaryDropdownOptions = React.forwardRef(
         {search && flattenedAreaList.length === 0 && (
           <MenuItem disabled>{t('No Results')}</MenuItem>
         )}
-        {/* @ts-expect-error - react-window types incompatible with React 18 */}
         <List
           height={700}
           itemCount={flattenedAreaList.length}
@@ -215,15 +223,11 @@ const BoundaryDropdownOptions = React.forwardRef(
                     newSelectedBoundaries.splice(itemIndex, 1);
                   }
                   if (setSelectedBoundaries !== undefined) {
-                    const boundariesToSelect = flattenedAreaList
-                      .filter(b =>
-                        newSelectedBoundaries.some((v: string) =>
-                          b.adminCode.startsWith(v),
-                        ),
-                      )
-                      .map(b => b.adminCode);
+                    setSelectedBoundaries(
+                      newSelectedBoundaries,
+                      event.shiftKey,
+                    );
 
-                    setSelectedBoundaries(boundariesToSelect, event.shiftKey);
                     if (!goto) {
                       return;
                     }

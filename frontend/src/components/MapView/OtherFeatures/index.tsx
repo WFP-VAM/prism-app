@@ -13,11 +13,14 @@ const useStyles = makeStyles(() =>
       position: 'absolute',
       top: 0,
       right: 0,
+      /* Full-viewport shell must not eat clicks meant for LeftPanel / map — restore hits only on children. */
+      pointerEvents: 'none',
     },
     optionContainer: {
       position: 'relative',
       height: '100%',
       display: 'flex',
+      pointerEvents: 'none',
     },
   }),
 );
@@ -34,8 +37,16 @@ const OtherFeatures = memo(() => {
   return (
     <Box className={classes.container}>
       <Box className={classes.optionContainer}>
-        {selectedLayersWithDateSupport.length > 0 && <DateSelector />}
-        {showBoundaryInfo && <BoundaryInfoBox />}
+        {selectedLayersWithDateSupport.length > 0 && (
+          <Box style={{ pointerEvents: 'auto' }}>
+            <DateSelector />
+          </Box>
+        )}
+        {showBoundaryInfo && (
+          <Box style={{ pointerEvents: 'auto' }}>
+            <BoundaryInfoBox />
+          </Box>
+        )}
       </Box>
     </Box>
   );

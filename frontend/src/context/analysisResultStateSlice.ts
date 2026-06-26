@@ -68,13 +68,18 @@ import { ANALYSIS_API_URL } from 'utils/constants';
 import { getRoundedData } from 'utils/data-utils';
 import { getFormattedDate } from 'utils/date-utils';
 import { getFullLocationName } from 'utils/name-utils';
-import { fetchWMSLayerAsGeoJSON } from 'utils/server-utils';
+import {
+  fetchWMSLayerAsGeoJSON,
+  getCoverageForLayerAndDate,
+} from 'utils/server-utils';
+import { getIso3FromPathname } from 'utils/universal-utils';
 import { calculate } from 'utils/zonal-utils';
 
 import { DataRecord } from './layers/admin_level_data';
 import { BoundaryLayerData } from './layers/boundary';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { layerDataSelector } from './mapStateSlice/selectors';
+import { availableDatesSelector } from './serverStateSlice';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 
 export type TableRowType = { [key: string]: string | number };
@@ -383,6 +388,11 @@ export type PolygonAnalysisDispatchParams = {
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 const MAX_CACHE_SIZE = 4;
 
+function getAnalysisIso3Suffix(): string {
+  const iso3 = getIso3FromPathname();
+  return iso3 ? `_${iso3}` : '';
+}
+
 export function generateRasterCacheKey(params: AnalysisDispatchParams): string {
   const {
     hazardLayer,
@@ -392,14 +402,14 @@ export function generateRasterCacheKey(params: AnalysisDispatchParams): string {
     threshold,
     exposureValue,
   } = params;
-  return `raster_${hazardLayer.id}_${baselineLayer.id}_${date}_${statistic}_${threshold.above ?? ''}_${threshold.below ?? ''}_${exposureValue.operator}_${exposureValue.value}`;
+  return `raster_${hazardLayer.id}_${baselineLayer.id}_${date}_${statistic}_${threshold.above ?? ''}_${threshold.below ?? ''}_${exposureValue.operator}_${exposureValue.value}${getAnalysisIso3Suffix()}`;
 }
 
 export function generatePolygonCacheKey(
   params: PolygonAnalysisDispatchParams,
 ): string {
   const { hazardLayer, adminLevel, startDate, endDate } = params;
-  return `polygon_${hazardLayer.id}_${adminLevel}_${startDate}_${endDate}`;
+  return `polygon_${hazardLayer.id}_${adminLevel}_${startDate}_${endDate}${getAnalysisIso3Suffix()}`;
 }
 
 const isCacheStale = (timestamp: number): boolean =>
@@ -440,21 +450,37 @@ async function createAPIRequestParams(
 ): Promise<ApiData> {
   // Get default values for groupBy and admin boundary file path at the proper adminLevel
 
+  const adminLevelDataLayer =
+    params && 'dataField' in params
+      ? (params as AdminLevelDataLayerProps)
+      : undefined;
+  const boundaryParams =
+    params && !adminLevelDataLayer ? (params as BoundaryLayerProps) : undefined;
+
   const adminLevel =
-    (params as AdminLevelDataLayerProps)?.adminLevel ??
-    (params as BoundaryLayerProps)?.adminLevelCodes?.length;
+    adminLevelDataLayer?.adminLevel ?? boundaryParams?.adminLevelCodes?.length;
 
-  const boundaryLayer = getBoundaryLayersByAdminLevel(adminLevel);
+  const boundaryLayer =
+    (adminLevelDataLayer?.boundary
+      ? (LayerDefinitions[adminLevelDataLayer.boundary] as BoundaryLayerProps)
+      : undefined) ?? getBoundaryLayersByAdminLevel(adminLevel);
 
-  const adminBoundariesPath =
-    (params as BoundaryLayerProps)?.path ?? boundaryLayer.path;
-  const groupBy =
-    (params as BoundaryLayerProps)?.adminCode ?? boundaryLayer.adminCode;
-  const zonesPath =
-    (params as BoundaryLayerProps)?.zonesPath ?? boundaryLayer.zonesPath;
+  let adminBoundariesPath: string;
+  let groupBy: string;
+  let zonesPath: string | undefined;
+
+  if (adminLevelDataLayer && !adminLevelDataLayer.boundary) {
+    adminBoundariesPath = adminLevelDataLayer.path;
+    groupBy = adminLevelDataLayer.adminCode;
+    zonesPath = undefined;
+  } else {
+    adminBoundariesPath = boundaryParams?.path ?? boundaryLayer.path;
+    groupBy = boundaryParams?.adminCode ?? boundaryLayer.adminCode;
+    zonesPath = boundaryParams?.zonesPath ?? boundaryLayer.zonesPath;
+  }
+
   const simplifyTolerance =
-    (params as BoundaryLayerProps)?.simplifyTolerance ??
-    boundaryLayer.simplifyTolerance;
+    boundaryParams?.simplifyTolerance ?? boundaryLayer.simplifyTolerance;
 
   // Note - This may not work when running locally as the function
   // will default to the boundary layer hosted in S3.
@@ -494,6 +520,8 @@ async function createAPIRequestParams(
 
   // we force group_by to be defined with &
 
+  const iso3Filter = getIso3FromPathname();
+
   const apiRequest: ApiData = {
     geotiff_url: geotiffUrl,
     zones_url: zonesUrl,
@@ -507,6 +535,7 @@ async function createAPIRequestParams(
         ? `${exposureValue?.operator}${exposureValue?.value}`
         : undefined,
     simplify_tolerance: simplifyTolerance,
+    ...(iso3Filter ? { iso3_filter: iso3Filter } : {}),
   };
 
   return apiRequest;
@@ -561,10 +590,13 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       params;
 
     const adminBoundaries = getBoundaryLayerSingleton();
+    const iso3 = getIso3FromPathname();
 
     const boundaryData = await boundaryCache.getBoundaryData(
       adminBoundaries,
       api.dispatch,
+      undefined,
+      iso3,
     );
     if (!boundaryData) {
       throw new Error('Boundary Layer not loaded!');
@@ -702,6 +734,12 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       );
     }
 
+    const coverage = getCoverageForLayerAndDate(
+      populationLayer,
+      availableDatesSelector(api.getState()),
+      date,
+    );
+
     return new ExposedPopulationResult(
       tableRows,
       collection,
@@ -712,6 +750,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       key,
       date,
       tableColumns,
+      coverage,
     );
   },
 );
@@ -755,10 +794,13 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     (baselineLayer as AdminLevelDataLayerProps)?.adminLevel ||
     (baselineLayer as BoundaryLayerProps)?.adminLevelCodes?.length;
   const adminBoundaries = getBoundaryLayersByAdminLevel(adminLevel);
+  const iso3 = getIso3FromPathname();
 
   const boundaryData = await boundaryCache.getBoundaryData(
     adminBoundaries,
     api.dispatch,
+    undefined,
+    iso3,
   );
   if (!boundaryData && adminBoundaries.format !== 'pmtiles') {
     throw new Error('Boundary Layer not loaded!');
@@ -862,6 +904,12 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     [], // no extra columns
   );
 
+  const coverage = getCoverageForLayerAndDate(
+    hazardLayer,
+    availableDatesSelector(api.getState()),
+    date,
+  );
+
   return new BaselineLayerResult(
     tableRows,
     {
@@ -878,6 +926,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     statsByAdminId,
     date,
     adminBoundaries.format,
+    coverage,
   );
 });
 
@@ -980,6 +1029,12 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
 
   const boundaryId = getAdminLevelLayer(adminLevel).id;
 
+  const coverage = getCoverageForLayerAndDate(
+    hazardLayer,
+    availableDatesSelector(api.getState()),
+    startDate,
+  );
+
   return new PolygonAnalysisResult(
     tableRows,
     tableColumns,
@@ -991,6 +1046,7 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
     undefined,
     startDate,
     endDate,
+    coverage,
   );
 });
 
@@ -1052,6 +1108,12 @@ export const analysisResultSlice = createSlice({
     },
     clearAnalysisResult: state => {
       state.result = undefined;
+      if (state.currentCacheKey) {
+        delete state.cache[state.currentCacheKey];
+      }
+      state.currentCacheKey = undefined;
+      state.isLoading = false;
+      state.error = undefined;
     },
   },
   extraReducers: builder => {

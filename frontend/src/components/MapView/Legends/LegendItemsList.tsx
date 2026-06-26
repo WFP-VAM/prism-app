@@ -11,7 +11,6 @@ import {
   invertedColorsSelector,
   isAnalysisLayerActiveSelector,
 } from 'context/analysisResultStateSlice';
-import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
 import { createGetLegendGraphicUrl } from 'prism-common';
 import React, { useCallback, useMemo } from 'react';
@@ -19,6 +18,7 @@ import { useSelector } from 'react-redux';
 import { BaselineLayerResult } from 'utils/analysis-utils';
 import useLayers from 'utils/layers-utils';
 import { getLayersCoverageMap } from 'utils/server-utils';
+import { useMapState } from 'utils/useMapState';
 
 import AALegend from '../LeftPanel/AnticipatoryActionPanel/AALegend';
 import LegendImpactResult from './LegendImpactResult';
@@ -30,6 +30,8 @@ interface LegendItemsListProps {
   listStyle?: string;
   showDescription?: boolean;
   overrideLayers?: LayerType[];
+  /** WMS GetLegendGraphic DPI for server-side export (e.g. 192 for DPR 2). */
+  legendGraphicDpi?: number;
 }
 
 function LegendItemsList({
@@ -37,13 +39,16 @@ function LegendItemsList({
   forPrinting = false,
   showDescription = true,
   overrideLayers,
+  legendGraphicDpi,
 }: LegendItemsListProps) {
   const { t } = useSafeTranslation();
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
   const analysisResult = useSelector(analysisResultSelector);
   const invertedColorsForAnalysis = useSelector(invertedColorsSelector);
   const analysisLayerOpacity = useSelector(analysisResultOpacitySelector);
-  const dateRange = useSelector(dateRangeSelector);
+  // Use the instance-scoped date range so that dashboard maps (each with their
+  // own selected date) compute coverage for the correct date, not the global map's.
+  const { dateRange } = useMapState();
   const {
     selectedLayers: globalMapLayers,
     adminBoundariesExtent,
@@ -78,9 +83,10 @@ function LegendItemsList({
         ? createGetLegendGraphicUrl({
             base: layer.baseUrl,
             layer: layer.serverLayerName,
+            dpi: legendGraphicDpi,
           })
         : undefined,
-    [],
+    [legendGraphicDpi],
   );
 
   // memoized values from selectors
@@ -135,6 +141,10 @@ function LegendItemsList({
         opacity={analysisLayerOpacity}
         forPrinting={forPrinting}
         showDescription={showDescription}
+        dateCoverage={{
+          startDate: analysisResult?.coverageStartDate,
+          endDate: analysisResult?.coverageEndDate,
+        }}
       >
         {renderedLegendImpactResult}
       </LegendItem>,
@@ -210,6 +220,10 @@ function LegendItemsList({
     layersLegendItems,
     showDescription,
   ]);
+
+  if (forPrinting) {
+    return <div className={listStyle}>{legendItems}</div>;
+  }
 
   return (
     <List disablePadding className={listStyle}>

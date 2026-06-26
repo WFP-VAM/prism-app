@@ -52,6 +52,10 @@ const sharedTemplate = {
   bottomLogoScale: 1,
   toggles: defaultToggles,
   selectedBoundaries: ['MOZ01', 'MOZ02'],
+  adminAreaRefs: [
+    { area_id: 'MOZ01', name: 'Maputo' },
+    { area_id: 'MOZ02', name: 'Gaza' },
+  ],
   language: 'en',
 };
 
@@ -145,14 +149,18 @@ describe('buildScheduleExportUrl', () => {
 });
 
 describe('buildScheduleExportPayload', () => {
-  test('includes comma-separated admin_areas for schedule storage', () => {
+  test('stores admin area names and structured adminAreas metadata', () => {
     const payload = buildScheduleExportPayload({
       ...sharedTemplate,
       viewportWidth: 1200,
       viewportHeight: 900,
     });
 
-    expect(payload.admin_areas).toBe('MOZ01,MOZ02');
+    expect(payload.admin_areas).toBe('Maputo, Gaza');
+    expect(payload.export_options.adminAreas).toEqual([
+      { area_id: 'MOZ01', name: 'Maputo' },
+      { area_id: 'MOZ02', name: 'Gaza' },
+    ]);
     expect(payload.export_url).toContain('date={date}');
     expect(payload.export_options.queryParams.selectedBoundaries).toEqual([
       'MOZ01',
@@ -179,6 +187,10 @@ describe('buildScheduleExportOptions', () => {
     expect(options.queryParams.toggles?.fullLayerDescription).toBe(true);
     expect(options.queryParams).not.toHaveProperty('date');
     expect(options.queryParams).not.toHaveProperty('hazardLayerIds');
+    expect(options.adminAreas).toEqual([
+      { area_id: 'MOZ01', name: 'Maputo' },
+      { area_id: 'MOZ02', name: 'Gaza' },
+    ]);
   });
 });
 

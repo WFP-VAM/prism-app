@@ -142,6 +142,7 @@ export type ApiData = {
   group_by: string;
   geojson_out?: boolean;
   wfs_params?: WfsRequestParams;
+  iso3_filter?: string;
 };
 
 export type AlertRequest = {
@@ -455,6 +456,8 @@ export class ExposedPopulationResult {
   tableData: TableRow[];
   analysisDate: ReturnType<Date['getTime']>;
   tableColumns: any;
+  coverageStartDate?: number;
+  coverageEndDate?: number;
 
   getTitle = (t: i18nTranslator): string => t('Population Exposure');
 
@@ -476,6 +479,7 @@ export class ExposedPopulationResult {
     key: string,
     analysisDate: ReturnType<Date['getTime']>,
     tableColumns: any,
+    coverage?: { startDate?: number; endDate?: number },
   ) {
     this.tableData = tableData;
     this.featureCollection = featureCollection;
@@ -486,6 +490,8 @@ export class ExposedPopulationResult {
     this.key = key;
     this.analysisDate = analysisDate;
     this.tableColumns = tableColumns;
+    this.coverageStartDate = coverage?.startDate;
+    this.coverageEndDate = coverage?.endDate;
   }
 }
 
@@ -505,6 +511,8 @@ export class BaselineLayerResult {
   baselineLayerId: AdminLevelDataLayerProps['id'] | BoundaryLayerProps['id'];
   boundaryId: AdminLevelDataLayerProps['boundary'];
   analysisDate?: ReturnType<Date['getTime']>;
+  coverageStartDate?: number;
+  coverageEndDate?: number;
 
   constructor(
     tableData: TableRow[],
@@ -517,6 +525,7 @@ export class BaselineLayerResult {
     statsByAdminId?: KeyValueResponse[],
     analysisDate?: ReturnType<Date['getTime']>,
     adminBoundariesFormat?: string,
+    coverage?: { startDate?: number; endDate?: number },
   ) {
     this.featureCollection = featureCollection;
     this.tableData = tableData;
@@ -531,6 +540,8 @@ export class BaselineLayerResult {
     this.baselineLayerId = baselineLayer.id;
     this.boundaryId = baselineLayer.boundary;
     this.analysisDate = analysisDate;
+    this.coverageStartDate = coverage?.startDate;
+    this.coverageEndDate = coverage?.endDate;
   }
 
   getHazardLayer(): WMSLayerProps {
@@ -677,6 +688,8 @@ export class PolygonAnalysisResult {
   boundaryId: string;
   startDate?: ReturnType<Date['getTime']>;
   endDate?: ReturnType<Date['getTime']>;
+  coverageStartDate?: number;
+  coverageEndDate?: number;
 
   constructor(
     tableData: TableRow[],
@@ -689,6 +702,7 @@ export class PolygonAnalysisResult {
     threshold?: ThresholdDefinition,
     startDate?: ReturnType<Date['getTime']>,
     endDate?: ReturnType<Date['getTime']>,
+    coverage?: { startDate?: number; endDate?: number },
   ) {
     this.featureCollection = featureCollection;
     this.tableData = tableData;
@@ -699,6 +713,8 @@ export class PolygonAnalysisResult {
     this.boundaryId = boundaryId;
     this.startDate = startDate;
     this.endDate = endDate;
+    this.coverageStartDate = coverage?.startDate;
+    this.coverageEndDate = coverage?.endDate;
     // Use the shared percentage-based legend for consistency
     this.legend = EXPOSURE_LEVEL_LEGEND;
 

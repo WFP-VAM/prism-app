@@ -22,7 +22,7 @@ function BlockPreviewHeader({
         </Typography>
         {subtitle && (
           <Typography variant="body1" className={classes.previewSubtitle}>
-            - {subtitle}
+            {subtitle}
           </Typography>
         )}
       </Box>

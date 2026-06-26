@@ -1,0 +1,102 @@
+{
+  "universal_admin3_boundaries": {
+    "type": "boundary",
+    "format": "pmtiles",
+    "zones_path": "s3://prism-vector-storage/universal_admin_boundaries/admin_level=3/admin_boundaries.parquet",
+    "path": "https://pmtiles-hosting.s3.eu-central-1.amazonaws.com/universal/global_admin_boundaries.pmtiles",
+    "layer_name": "admin3",
+    "hideInGoTo": true,
+    "opacity": 0.8,
+    "isPrimary": true,
+    "disableAnalysis": true,
+    "minZoom": 5,
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 0.2,
+        "line-opacity": 0.8
+      }
+    },
+    "admin_code": "adm3_id",
+    "admin_level": 3,
+    "admin_level_codes": ["adm0_id", "adm1_id", "adm2_id", "adm3_id"],
+    "admin_level_names": ["adm0_name", "adm1_name", "adm2_name", "adm3_name"],
+    "admin_level_local_names": ["adm0_name", "adm1_name", "adm2_name", "adm3_name"],
+    "simplify_tolerance": 0.1
+  },
+  "universal_admin2_boundaries": {
+    "type": "boundary",
+    "format": "pmtiles",
+    "zones_path": "s3://prism-vector-storage/universal_admin_boundaries/admin_level=2/admin_boundaries.parquet",
+    "path": "https://pmtiles-hosting.s3.eu-central-1.amazonaws.com/universal/global_admin_boundaries.pmtiles",
+    "layer_name": "admin2",
+    "opacity": 0.8,
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1,
+        "line-opacity": 0.8
+      }
+    },
+    "admin_code": "adm2_id",
+    "admin_level": 2,
+    "admin_level_codes": ["adm0_id", "adm1_id", "adm2_id"],
+    "admin_level_names": ["adm0_name", "adm1_name", "adm2_name"],
+    "admin_level_local_names": ["adm0_name", "adm1_name", "adm2_name"],
+    "simplify_tolerance": 0.1
+  },
+  "universal_admin1_boundaries": {
+    "type": "boundary",
+    "format": "pmtiles",
+    "zones_path": "s3://prism-vector-storage/universal_admin_boundaries/admin_level=1/admin_boundaries.parquet",
+    "path": "https://pmtiles-hosting.s3.eu-central-1.amazonaws.com/universal/global_admin_boundaries.pmtiles",
+    "layer_name": "admin1",
+    "opacity": 0.8,
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 2,
+        "line-opacity": 0.8
+      }
+    },
+    "admin_code": "adm1_id",
+    "admin_level": 1,
+    "admin_level_codes": ["adm0_id", "adm1_id"],
+    "admin_level_names": ["adm0_name", "adm1_name"],
+    "admin_level_local_names": ["adm0_name", "adm1_name"],
+    "simplify_tolerance": 0.1
+  },
+  "universal_admin0_boundaries": {
+    "type": "boundary",
+    "format": "pmtiles",
+    "zones_path": "s3://prism-vector-storage/universal_admin_boundaries/admin_level=0/admin_boundaries.parquet",
+    "path": "https://pmtiles-hosting.s3.eu-central-1.amazonaws.com/universal/global_admin_boundaries.pmtiles",
+    "layer_name": "admin0",
+    "opacity": 0.8,
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 2,
+        "line-opacity": 0.8
+      }
+    },
+    "admin_code": "adm0_id",
+    "admin_level": 0,
+    "admin_level_codes": ["adm0_id"],
+    "admin_level_names": ["adm0_name"],
+    "admin_level_local_names": ["adm0_name"],
+    "simplify_tolerance": 0.1
+  }
+}
