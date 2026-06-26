@@ -9,6 +9,7 @@ import {
   MenuItemType,
 } from 'config/types';
 import {
+  getBoundaryLayersByAdminLevel,
   getWMSLayersWithChart,
   isTableKey,
   LayerDefinitions,
@@ -17,13 +18,20 @@ import {
 } from 'config/utils';
 import { GeoJsonProperties } from 'geojson';
 import { camelCase, get, map, mapKeys, startCase } from 'lodash';
+import { getEffectiveMultiCountry } from 'utils/universal-country-admin';
+import {
+  isUniversalDeployment,
+  resolveChartBoundaryProperty,
+} from 'utils/universal-utils';
 
 const { multiCountry, country } = appConfig;
 const chartLayers = getWMSLayersWithChart();
-const adminLookup =
-  chartLayers.length > 0
-    ? chartLayers[0]?.chartData?.levels[0]?.name
-    : undefined;
+const effectiveMultiCountry = getEffectiveMultiCountry();
+const isUniversal = isUniversalDeployment();
+const boundaryLayer = getBoundaryLayersByAdminLevel(
+  isUniversal ? 4 : effectiveMultiCountry ? 3 : 2,
+);
+const levelOffset = effectiveMultiCountry || isUniversal ? 0 : 1;
 
 type LayersCategoriesType = LayersCategoryType[];
 
@@ -154,26 +162,30 @@ export const oneYearInMs = 365 * oneDayInMs;
  *
  * Behavior:
  * - For single country mode: Returns the configured country name
- * - For multi-country mode:
+ * - For multi-country / universal mode:
  *   1. Returns empty string if no properties provided
- *   2. Uses adminLookup property if configured
- *   3. Falls back to admin0Name property
- *   4. Returns empty string if no valid name found
+ *   2. Resolves the level-0 admin name via resolveChartBoundaryProperty
+ *      with a boundary-layer fallback (same logic as the in-chart subtitle)
+ *   3. Returns empty string if no valid name found
  */
 export const getCountryName = (admProps: GeoJsonProperties): string => {
   if (!multiCountry) {
     return country;
   }
 
-  if (!admProps) {
+  if (!admProps || chartLayers.length === 0) {
     return '';
   }
 
-  if (adminLookup) {
-    return admProps[adminLookup] as string;
+  const level0Name = chartLayers[0].chartData?.levels[0]?.name;
+  if (!level0Name) {
+    return (admProps.admin0Name as string) || '';
   }
 
-  return (admProps.admin0Name as string) || '';
+  const name =
+    resolveChartBoundaryProperty(admProps, level0Name) ||
+    admProps[boundaryLayer.adminLevelNames[Number('0') - levelOffset]];
+  return (name as string) || '';
 };
 
 /**

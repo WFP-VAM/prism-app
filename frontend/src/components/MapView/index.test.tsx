@@ -1,7 +1,8 @@
 import { createTheme, ThemeProvider } from '@material-ui/core';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { store } from 'context/store';
 import { Provider } from 'react-redux';
+import { isUniversalDeployment } from 'utils/universal-utils';
 
 import MapView from '.';
 
@@ -22,6 +23,15 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
+jest.mock('utils/universal-utils', () => ({
+  ...jest.requireActual('utils/universal-utils'),
+  isUniversalDeployment: jest.fn(() => false),
+}));
+
+const mockIsUniversalDeployment = isUniversalDeployment as jest.MockedFunction<
+  typeof isUniversalDeployment
+>;
+
 describe('MapView', () => {
   beforeAll(() => {
     // Mock the date to a specific value
@@ -34,6 +44,10 @@ describe('MapView', () => {
     jest.useRealTimers();
   });
 
+  afterEach(() => {
+    mockIsUniversalDeployment.mockReturnValue(false);
+  });
+
   test('renders as expected', () => {
     const { container } = render(
       <Provider store={store}>
@@ -43,5 +57,19 @@ describe('MapView', () => {
       </Provider>,
     );
     expect(container).toMatchSnapshot();
+  });
+
+  test('shows boundary loading overlay in universal deployments', () => {
+    mockIsUniversalDeployment.mockReturnValue(true);
+
+    render(
+      <Provider store={store}>
+        <ThemeProvider theme={createTheme()}>
+          <MapView />
+        </ThemeProvider>
+      </Provider>,
+    );
+
+    expect(screen.getByText('Loading boundaries…')).toBeInTheDocument();
   });
 });

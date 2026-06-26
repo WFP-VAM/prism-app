@@ -40,6 +40,7 @@ import { getFormattedDate } from 'utils/date-utils';
 import useLayers from 'utils/layers-utils';
 import { safeDispatchAddLayer, safeDispatchRemoveLayer } from 'utils/map-utils';
 import { getPossibleDatesForLayer } from 'utils/server-utils';
+import { getAnalysisBoundaryLayersForIso3 } from 'utils/universal-country-admin';
 import { getDisplayBoundaryLayersForIso3 } from 'utils/universal-utils';
 
 import { useBoundaryData } from './useBoundaryData';
@@ -224,7 +225,7 @@ export const useAnalysisForm = (
   );
 
   const adminLevelLayer = useMemo(() => {
-    const boundaryLayers = getDisplayBoundaryLayersForIso3(iso3);
+    const boundaryLayers = getAnalysisBoundaryLayersForIso3(iso3);
     return (
       boundaryLayers.find(
         layer => layer.adminLevelNames.length === adminLevel,

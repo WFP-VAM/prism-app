@@ -14,7 +14,7 @@ import Login from 'components/Login';
 import MapView from 'components/MapView';
 import NavBar from 'components/NavBar';
 import Notifier from 'components/Notifier';
-import UniversalPlaceholder from 'components/UniversalPlaceholder';
+import UniversalBetaDisclaimerModal from 'components/UniversalBetaDisclaimerModal';
 import { authRequired } from 'config';
 import { CountryIsoProvider } from 'context/CountryIsoProvider';
 import KhmerFont from 'fonts/Khmer-Regular.ttf';
@@ -84,20 +84,24 @@ function DashboardRouteSwitcher() {
   return <DashboardView />;
 }
 
-const AppShell = memo(({ countryPrefix = '' }: { countryPrefix?: string }) => (
+const AppShell = memo(() => (
   <div id="app">
     <NavBar />
     <div style={{ paddingTop: '56px', height: 'calc(100% - 56px)' }}>
       <Switch>
-        <Route path={`${countryPrefix}/dashboard/:path?`} exact>
+        <Route
+          path={['/country/:iso3/dashboard/:path?', '/dashboard/:path?']}
+          exact
+        >
           <DashboardRouteSwitcher />
         </Route>
-        <Route path={countryPrefix || '/'}>
+        <Route path={['/country/:iso3', '/']}>
           <MapView />
           <AuthModal />
         </Route>
       </Switch>
     </div>
+    {isUniversalDeployment() && <UniversalBetaDisclaimerModal />}
   </div>
 ));
 
@@ -106,21 +110,22 @@ function AppRoutes() {
 
   return (
     <Switch>
+      {isUniversal && (
+        <Route path="/country/:iso3/export" exact>
+          <CountryIsoProvider>
+            <ExportView />
+          </CountryIsoProvider>
+        </Route>
+      )}
       <Route path="/export" exact>
         <ExportView />
       </Route>
       {isUniversal && (
-        <>
-          <Route path="/" exact>
-            <UniversalPlaceholder />
-          </Route>
-
-          <Route path="/country/:iso3">
-            <CountryIsoProvider>
-              <AppShell countryPrefix="/country/:iso3" />
-            </CountryIsoProvider>
-          </Route>
-        </>
+        <Route path={['/country/:iso3', '/']}>
+          <CountryIsoProvider>
+            <AppShell />
+          </CountryIsoProvider>
+        </Route>
       )}
       {!isUniversal && (
         <Route>
