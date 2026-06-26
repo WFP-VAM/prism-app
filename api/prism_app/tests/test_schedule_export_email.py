@@ -26,7 +26,7 @@ from prism_app.tests.fixtures.moz_export import MAP_EXPORT_FIXTURE_BASE_URL
 
 def test_render_schedule_export_mail_plain_format() -> None:
     html, text = render_schedule_export_mail(
-        heading_title="Scheduled map export ready",
+        heading_title="Map export ready",
         schedule_name="Moz monthly precip",
         layer_title="precip_blended_dekad — Blended precipitation",
         layer_id="precip_blended_dekad",
@@ -38,19 +38,22 @@ def test_render_schedule_export_mail_plain_format() -> None:
         link_expiry_days=7,
         prism_url="https://prism.example/map?date=2026-05-21",
     )
-    assert "Your scheduled map export Moz monthly precip is ready." in html
-    assert "Layer: precip_blended_dekad" in html
-    assert "Date: 2026-05-21" in html
-    assert "Download your PDF map" in html
-    assert "https://example.com/presigned.pdf" in html
+    assert "Map export ready" in html
+    assert "Your map export Moz monthly precip is ready." in html
+    assert "precip_blended_dekad — Blended precipitation" in html
+    assert "(precip_blended_dekad)" in html
+    assert "<strong>Date:</strong> 2026-05-21" in html
+    assert "DOWNLOAD MAP PDF" in html
+    assert 'href="https://example.com/presigned.pdf"' in html
+    assert "&lt;https://example.com/presigned.pdf&gt;" not in html
     assert "valid for 7 days" in html
-    assert "admin/map-export-schedule/list" in html
-    assert "click here" in html
-    assert "World Food Programme" in html
-    assert "rgba(99, 178, 189, 1)" not in html
-    assert "cid:arrow-forward-icon" not in html
+    assert 'href="https://api.example.org/admin/map-export-schedule/list"' in html
+    assert "Manage export schedules" in html
+    assert "&lt;https://api.example.org/admin/map-export-schedule/list&gt;" not in html
+    assert "rgba(99, 178, 189, 1)" in html
+    assert "cid:arrow-forward-icon" in html
     assert "https://prism.example/map?date=2026-05-21" not in html
-    assert "Your scheduled map export Moz monthly precip is ready." in text
+    assert "Your map export Moz monthly precip is ready." in text
     assert "Layer: precip_blended_dekad" in text
     assert "valid for 7 days" in text
     assert "https://prism.example/map?date=2026-05-21" not in text
@@ -187,7 +190,12 @@ def test_send_schedule_export_email_sends_in_production(
     assert kwargs["expires_in"] == 7 * 24 * 3600
     send.assert_called_once()
     assert send.call_args.kwargs["to_addrs"] == user.email
-    assert send.call_args.kwargs["subject"] == "PRISM scheduled map export ready"
+    assert send.call_args.kwargs["subject"] == "PRISM map export ready"
+    attachments = send.call_args.kwargs["attachments"]
+    assert len(attachments) == 1
+    assert attachments[0]["cid"] == "arrow-forward-icon"
+    assert attachments[0]["filename"] == "arrow-forward-icon.png"
+    assert "arrowForwardIcon.png" in str(attachments[0]["path"])
     assert "https://example.com/presigned.pdf" in send.call_args.kwargs["html_body"]
 
 

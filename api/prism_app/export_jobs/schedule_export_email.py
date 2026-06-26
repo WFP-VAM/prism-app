@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import smtplib
+from pathlib import Path
 from uuid import UUID
 
 from prism_app.alert_workers import mail_render, settings, smtp_mailer
@@ -30,8 +31,16 @@ logger = logging.getLogger(__name__)
 
 _SCHEDULE_EXPORT_ADMIN_IDENTITY = "map-export-schedule"
 _MAP_EXPORT_EMAIL_FROM = "wfp.prism@wfp.org"
-_MAP_EXPORT_EMAIL_SUBJECT = "PRISM scheduled map export ready"
+_MAP_EXPORT_EMAIL_SUBJECT = "PRISM map export ready"
 _LINK_EXPIRY_DAYS = MAP_EXPORT_EMAIL_PRESIGN_EXPIRES_IN // (24 * 3600)
+_ARROW_ATTACHMENT = {
+    "filename": "arrow-forward-icon.png",
+    "path": Path(__file__).resolve().parent.parent
+    / "alert_workers"
+    / "assets"
+    / "arrowForwardIcon.png",
+    "cid": "arrow-forward-icon",
+}
 
 
 def map_export_schedules_admin_url() -> str:
@@ -145,7 +154,7 @@ def send_schedule_export_email(
     prism_url = req.urls[0].strip() if req.urls else None
 
     html_body, text_body = mail_render.render_schedule_export_mail(
-        heading_title="Scheduled map export ready",
+        heading_title="Map export ready",
         schedule_name=schedule.name,
         layer_title=layer_title,
         layer_id=schedule.layer_id,
@@ -175,6 +184,7 @@ def send_schedule_export_email(
             subject=_MAP_EXPORT_EMAIL_SUBJECT,
             text_body=text_body,
             html_body=html_body,
+            attachments=[_ARROW_ATTACHMENT],
         )
         logger.info(
             "Sent schedule export email for job %s to %s",

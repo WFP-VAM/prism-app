@@ -3,23 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>PRISM Scheduled Map Export</title>
+    <title>PRISM Map Export</title>
+    <style>
+        @media screen and (max-width: 600px) {
+            .content-wrapper {
+                padding: 20px !important;
+            }
+        }
+    </style>
 </head>
-<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; color: black;">
-    <p>Your scheduled map export {{ schedule_name }} is ready.</p>
-    <p>Layer: {{ layer_id }}</p>
-    {% if map_date %}
-    <p>Date: {{ map_date }}</p>
-    {% endif %}
-    <p>
-        <a href="{{ download_url }}">Download your {{ format_label }} map</a>&lt;{{ download_url }}&gt;.
-    </p>
-    <p>The download link is valid for {{ link_expiry_days }} days.</p>
-    <p>
-        Manage your export schedules, <a href="{{ admin_schedules_url }}">click here</a>&lt;{{ admin_schedules_url }}&gt;.
-    </p>
-    <p style="font-size: smaller;">
-        The information contained in this electronic message and any attachments is intended for specific individuals or entities, and may be confidential, proprietary or privileged. If you are not the intended recipient, please notify the sender immediately, delete this message and do not disclose, distribute or copy it to any third party or otherwise use this message. The content of this message does not necessarily reflect the official position of the World Food Programme. Electronic messages are not secure or error free and may contain viruses or may be delayed, and the sender is not liable for any of these occurrences. The sender reserves the right to monitor, record and retain electronic messages.
-    </p>
+<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; color:black;">
+    <div class="container" style="color:black; width: 600px; margin: 20px auto; background: #ffffff;">
+        <header class="header" style="padding-top: 30px;">
+            <p class="title" style="font-size: 20px; font-weight: 500; line-height: 23.44px; text-align: center;">
+                PRISM</p>
+        </header>
+        <main>
+            <div class="content-wrapper" style="padding: 50px; font-size: 14px;">
+                <h1 class="content-title"
+                    style="font-size: 24px; font-weight: 700; line-height: 30px; color: #333; margin: 0 0 10px;">
+                    {{ heading_title }}
+                </h1>
+                <p class="content-subtitle" style="margin: 0 0 20px; font-size: 14px;">
+                    Map export notification — WFP PRISM (same styling as Anticipatory Action notification emails).
+                </p>
+                <p class="trigger-title"
+                    style="margin: 10px 0 20px; width: 100%; font-weight: bold; font-size: 16px;">
+                    Your map export {{ schedule_name }} is ready.
+                </p>
+                <p style="margin: 0 0 8px;"><strong>Layer:</strong> {{ layer_title }}
+                    <span style="color: #666;">({{ layer_id }})</span>
+                </p>
+                {% if map_date %}
+                <p style="margin: 0 0 20px;"><strong>Date:</strong> {{ map_date }}</p>
+                {% endif %}
+                <div class="button-container" style="text-align: center; margin: 20px 0;">
+                    <a href="{{ download_url }}" target="_blank" rel="noopener noreferrer"
+                        aria-label="Download your {{ format_label }} map (opens in a new tab)" class="button"
+                        style="display: inline-block; text-align: center; background: rgba(99, 178, 189, 1); color: black; padding: 12px; text-decoration: none; border-radius: 5px; white-space: nowrap; font-weight: 600;">
+                        <span style="vertical-align: middle">DOWNLOAD MAP {{ format_label }}</span>
+                        <img src="cid:arrow-forward-icon" alt=""
+                            style="width: 16px; height: 16px; vertical-align: middle; margin-left: 6px;">
+                    </a>
+                </div>
+                <p style="margin-top: 20px;">
+                    The download link is valid for {{ link_expiry_days }} days.
+                </p>
+                <p style="margin-top: 16px;">
+                    To manage your export schedules, use the link below.
+                </p>
+                <p style="text-align: center; margin: 16px 0;">
+                    <a href="{{ admin_schedules_url }}" style="color: rgba(99, 178, 189, 1); font-weight: 600;">Manage export schedules</a>
+                </p>
+                <p class="gray-box"
+                    style="background-color: rgba(241, 241, 241, 1); padding: 20px; margin-top: 20px; color: black;">
+                    <strong>Disclaimer</strong>: This message was automatically generated when a map export you configured in PRISM completed successfully.
+                </p>
+            </div>
+        </main>
+        <footer class="footer"
+            style="font-size: 12px; color: white; padding-top: 15px; width: 100%; background-color: rgba(99, 178, 189, 1);">
+            <p class="title"
+                style="margin-bottom: 15px; font-size: 20px; font-weight: 500; line-height: 23.44px; text-align: center;">
+                PRISM</p>
+            <p style="margin-bottom: 15px; text-align: center;">This message was automatically generated.</p>
+            <p style="background-color:black; text-align: center; vertical-align: middle; padding:5px">Legal notice
+                Data Protection Policy</p>
+        </footer>
+    </div>
 </body>
 </html>
