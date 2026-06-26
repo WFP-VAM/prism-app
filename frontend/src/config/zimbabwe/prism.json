@@ -4,7 +4,7 @@
   "alertFormActive": false,
   "enableNavigationDropdown": true,
   "anticipatoryActionDroughtUrl": "https://hip-workshop-sharing-public-eu-central-1-485262375119.s3.eu-central-1.amazonaws.com/anticipatory-action/zwe/prism/aa_probabilities_triggers_zwe.csv",
-  "anticipatoryActionDroughtStagingUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/staging/aa_probabilities_triggers_zwe.csv",
+  "anticipatoryActionDroughtStagingUrl": "https://hip-workshop-sharing-public-eu-central-1-485262375119.s3.eu-central-1.amazonaws.com/anticipatory-action/zwe/prism/staging/aa_probabilities_triggers_zwe.csv",
   "serversUrls": {
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
