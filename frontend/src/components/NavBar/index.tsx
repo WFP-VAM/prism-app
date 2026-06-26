@@ -44,8 +44,12 @@ import {
   getUniversalDashboardPath,
   getUniversalMapPath,
 } from 'utils/universal-routing';
-import { isUniversalDeployment } from 'utils/universal-utils';
+import {
+  isUniversalDeployment,
+  isUniversalLandingMode,
+} from 'utils/universal-utils';
 
+import BackToGlobalButton from './BackToGlobalButton';
 import PanelButton from './PanelButton';
 import PanelMenu from './PanelMenu';
 import RightSideMenu from './RightSideMenu';
@@ -65,6 +69,7 @@ function NavBar() {
   const isDashboardMode = tabValue === Panel.Dashboard;
   const isUniversal = isUniversalDeployment();
   const { iso3 } = useCountryIso();
+  const isLandingMode = isUniversalLandingMode(iso3);
   const mapPath = isUniversal ? getUniversalMapPath(iso3) : '/';
   const dashboardBasePath = isUniversal
     ? getUniversalDashboardPath(iso3)
@@ -233,9 +238,10 @@ function NavBar() {
             <div className={classes.panelsContainer}>
               {panels.map(panel => {
                 const selected =
-                  tabValue === panel.panel ||
-                  (panel.children &&
-                    panel.children.some(child => tabValue === child.panel));
+                  !isLandingMode &&
+                  (tabValue === panel.panel ||
+                    (panel.children &&
+                      panel.children.some(child => tabValue === child.panel)));
 
                 const buttonText =
                   selectedChild[panel.label] && panel.panel !== Panel.Dashboard
@@ -247,7 +253,11 @@ function NavBar() {
                     <PanelButton
                       panel={panel}
                       selected={selected || false}
+                      disabled={isLandingMode}
                       handleClick={e => {
+                        if (isLandingMode) {
+                          return;
+                        }
                         if (panel.children) {
                           handleMenuOpen(panel.label, e);
                         } else if (panel.panel) {
@@ -271,7 +281,8 @@ function NavBar() {
                   </React.Fragment>
                 );
               })}
-              <GoToBoundaryDropdown />
+              <GoToBoundaryDropdown disabled={isLandingMode} />
+              {isUniversal && !isLandingMode && <BackToGlobalButton />}
             </div>
           </div>
           <div className={classes.rightSideContainer}>
