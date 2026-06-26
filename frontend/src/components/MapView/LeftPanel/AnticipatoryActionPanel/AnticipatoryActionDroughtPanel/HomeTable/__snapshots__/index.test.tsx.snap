@@ -331,7 +331,7 @@ exports[`HomeTable renders as expected 1`] = `
         component="a"
         download="2023-12-01-aa_probabilities_triggers_moz.csv"
         fullwidth=""
-        href="https://data.earthobservation.vam.wfp.org/public-share/aa/aa_probabilities_triggers_moz.csv?date=2024-12-01-00-00"
+        href="https://hip-workshop-sharing-public-eu-central-1-485262375119.s3.eu-central-1.amazonaws.com/anticipatory-action/moz/prism/aa_probabilities_triggers_moz.csv?date=2024-12-01-00-00"
         starticon="[object Object]"
         variant="outlined"
       >
