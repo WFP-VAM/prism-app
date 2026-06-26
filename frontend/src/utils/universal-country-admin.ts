@@ -1,11 +1,13 @@
 import { appConfig } from 'config';
 import { AdminLevelType, BoundaryLayerProps } from 'config/types';
-import { getBoundaryLayersByAdminLevel } from 'config/utils';
 import { useCountryIso } from 'context/useCountryIso';
 import { useMemo } from 'react';
 import { useBoundaryData } from 'utils/useBoundaryData';
 
-import { isUniversalDeployment } from './universal-utils';
+import {
+  getDisplayBoundaryLayersForIso3,
+  isUniversalDeployment,
+} from './universal-utils';
 
 export function useEffectiveCountryAdmin0Id(): number | undefined {
   const { iso3 } = useCountryIso();
@@ -32,18 +34,34 @@ export function getEffectiveMultiCountry(): boolean {
   return isUniversalDeployment() ? false : Boolean(appConfig.multiCountry);
 }
 
+/** Boundary layers available for charts and analysis (excludes disableAnalysis layers). */
+export function getAnalysisBoundaryLayersForIso3(
+  iso3?: string,
+): BoundaryLayerProps[] {
+  return getDisplayBoundaryLayersForIso3(iso3).filter(
+    layer => !layer.disableAnalysis,
+  );
+}
+
+/** Deepest boundary layer enabled for charts and analysis. */
+export function getDeepestAnalysisBoundaryLayer(
+  iso3?: string,
+): BoundaryLayerProps {
+  const layers = getAnalysisBoundaryLayersForIso3(iso3);
+  return layers.reduce(
+    (deepest, layer) =>
+      layer.adminLevelNames.length > deepest.adminLevelNames.length
+        ? layer
+        : deepest,
+    layers[0],
+  );
+}
+
 /** Deepest boundary layer available for charts and analysis. */
 export function useEffectiveBoundaryLayer(): BoundaryLayerProps {
   const { iso3 } = useCountryIso();
 
-  return useMemo(() => {
-    if (isUniversalDeployment()) {
-      // Universal deployment is capped at Admin 2 (adm0 + adm1 + adm2) for
-      // charts and analysis, even when admin-3 boundary data exists.
-      return getBoundaryLayersByAdminLevel(3);
-    }
-    return getBoundaryLayersByAdminLevel(appConfig.multiCountry ? 3 : 2);
-  }, [iso3]);
+  return useMemo(() => getDeepestAnalysisBoundaryLayer(iso3), [iso3]);
 }
 
 /**
