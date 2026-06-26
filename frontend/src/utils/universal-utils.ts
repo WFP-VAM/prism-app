@@ -5,6 +5,7 @@ import { getDisplayBoundaryLayers } from 'config/utils';
 
 type CountriesKey = keyof typeof universalMetadata.countries;
 
+const UNIVERSAL_ADMIN0_LAYER_ID: LayerKey = 'universal_admin0_boundaries';
 const UNIVERSAL_ADMIN3_LAYER_ID: LayerKey = 'universal_admin3_boundaries';
 
 const ISO3_CODE_REGEX = /^[A-Z0-9]{3}$/;
@@ -48,6 +49,11 @@ export function getIso3MapFilter(iso3: string | undefined) {
     : undefined;
 }
 
+/** Landing map should hide pseudo-countries whose raw iso3 starts with lowercase "x". */
+export function getUniversalAdmin0LandingFilter() {
+  return ['!=', ['slice', ['get', 'iso3'], 0, 1], 'x'] as const;
+}
+
 export function filterFeaturesByIso3<
   T extends { properties?: Record<string, unknown> | null },
 >(features: T[], iso3: string | undefined): T[] {
@@ -57,17 +63,47 @@ export function filterFeaturesByIso3<
     : features;
 }
 
+export function isUniversalLandingMode(iso3?: string): boolean {
+  return isUniversalDeployment() && !iso3;
+}
+
 export function getDisplayBoundaryLayersForIso3(
   iso3?: string,
 ): BoundaryLayerProps[] {
   const layers = getDisplayBoundaryLayers();
-  if (!isUniversalDeployment() || !iso3) {
+  if (!isUniversalDeployment()) {
     return layers;
+  }
+  if (!iso3) {
+    return layers.filter(layer => layer.id === UNIVERSAL_ADMIN0_LAYER_ID);
   }
   if (hasAdmin3ForCountry(iso3)) {
     return layers;
   }
   return layers.filter(layer => layer.id !== UNIVERSAL_ADMIN3_LAYER_ID);
+}
+
+export type UniversalCountryOption = {
+  iso3: string;
+  name: string;
+};
+
+type UniversalMetadataWithNames = typeof universalMetadata & {
+  countryNames?: Record<string, string>;
+};
+
+/** Complete country list from static metadata (viewport-independent). */
+export function getUniversalCountries(): UniversalCountryOption[] {
+  const countryNames =
+    (universalMetadata as UniversalMetadataWithNames).countryNames ?? {};
+
+  return Object.keys(universalMetadata.countries)
+    .filter(iso3 => !iso3.startsWith('x'))
+    .map(iso3 => ({
+      iso3,
+      name: countryNames[iso3]?.trim() || iso3,
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name));
 }
 
 /** Returns the normalized ISO3 code from the URL pathname, or undefined for non-universal deployments. */
