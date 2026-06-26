@@ -165,6 +165,7 @@ def test_send_schedule_export_email_sends_in_production(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setenv("PRISM_ENV", "production")
+    monkeypatch.delenv("PRISM_ALERTS_USE_ETHEREAL", raising=False)
     monkeypatch.setenv("PRISM_ALERTS_EMAIL_USER", "smtp-user")
     monkeypatch.setenv("PRISM_ALERTS_EMAIL_PASSWORD", "smtp-pass")
     job, schedule, user = _schedule_export_fixtures()
@@ -250,6 +251,7 @@ def test_send_schedule_export_email_logs_smtp_delivery_failure(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setenv("PRISM_ENV", "production")
+    monkeypatch.delenv("PRISM_ALERTS_USE_ETHEREAL", raising=False)
     monkeypatch.setenv("PRISM_ALERTS_EMAIL_USER", "smtp-user")
     monkeypatch.setenv("PRISM_ALERTS_EMAIL_PASSWORD", "smtp-pass")
     job, schedule, user = _schedule_export_fixtures()
@@ -276,6 +278,7 @@ def test_send_schedule_export_email_skips_when_smtp_not_configured_in_production
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setenv("PRISM_ENV", "production")
+    monkeypatch.delenv("PRISM_ALERTS_USE_ETHEREAL", raising=False)
     monkeypatch.delenv("PRISM_ALERTS_EMAIL_USER", raising=False)
     monkeypatch.delenv("PRISM_ALERTS_EMAIL_PASSWORD", raising=False)
     job, schedule, user = _schedule_export_fixtures()
