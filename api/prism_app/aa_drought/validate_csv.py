@@ -5,7 +5,6 @@ from __future__ import annotations
 import json
 from typing import Any
 
-from prism_app.aa_drought.country_scope import aa_country_scope_error, enforce_aa_country_value
 from prism_app.aa_drought.validation import validate_aa_drought_csv
 from prism_app.auth.admin_request import request_can_manage_aa_data
 from starlette.datastructures import UploadFile
@@ -25,17 +24,6 @@ async def validate_aa_drought_csv_upload(request: Request) -> Response:
         )
 
     form = await request.form()
-    scope_err = aa_country_scope_error(request)
-    if scope_err:
-        return JSONResponse({"ok": False, "errors": [scope_err]}, status_code=403)
-    country_val = form.get("country")
-    _, country_error = enforce_aa_country_value(
-        request,
-        str(country_val).strip() if country_val else None,
-    )
-    if country_error:
-        return JSONResponse({"ok": False, "errors": [country_error]}, status_code=403)
-
     csv_text = await _csv_text_from_form(form)
     if csv_text is None:
         return JSONResponse(

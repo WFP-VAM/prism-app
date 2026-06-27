@@ -93,8 +93,9 @@
             form.appendChild(validatedInput);
         }
 
-        const hasCsvSource = () =>
-            Boolean(input.files?.[0]) || Boolean(existingInput?.value);
+        const hasExistingCsv = () => Boolean(existingInput?.value);
+        const hasNewUpload = () => Boolean(input.files?.[0]);
+        const hasCsvSource = () => hasNewUpload() || hasExistingCsv();
 
         const setSaveEnabled = (enabled) => {
             saveBtn.disabled = !enabled;
@@ -137,7 +138,12 @@
 
         const isCsvFile = (file) => file.name.toLowerCase().endsWith(".csv");
 
-        invalidate();
+        if (hasExistingCsv() && !hasNewUpload()) {
+            // Edit: unchanged CSV was already saved; status-only edits need not re-validate.
+            setSaveEnabled(true);
+        } else {
+            invalidate();
+        }
         syncValidateButton();
 
         input.addEventListener("change", () => {
@@ -147,12 +153,30 @@
                 if (filenameEl) {
                     filenameEl.hidden = true;
                 }
-                invalidate();
+                if (hasExistingCsv()) {
+                    setSaveEnabled(true);
+                    clearValidationResult();
+                } else {
+                    invalidate();
+                }
                 syncValidateButton();
                 return;
             }
-            showFilename(file);
-            invalidate();
+            if (file) {
+                showFilename(file);
+                invalidate();
+            } else if (hasExistingCsv()) {
+                if (filenameEl) {
+                    filenameEl.hidden = true;
+                }
+                setSaveEnabled(true);
+                clearValidationResult();
+            } else {
+                if (filenameEl) {
+                    filenameEl.hidden = true;
+                }
+                invalidate();
+            }
             syncValidateButton();
         });
 

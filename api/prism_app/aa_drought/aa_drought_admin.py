@@ -3,14 +3,11 @@
 from __future__ import annotations
 
 import uuid
-from collections.abc import Sequence
 from typing import Any, cast
 
-from prism_app.aa_drought.country_scope import apply_aa_country_filter, enforce_aa_country_value
 from prism_app.aa_drought.csv_field import AaDroughtCsvFileField
 from prism_app.aa_drought.validate_csv import validate_aa_drought_csv_upload
 from prism_app.aa_drought.validation import validate_aa_drought_csv
-from prism_app.auth.admin_request import request_has_prism_admin_access
 from prism_app.database.aa_drought_model import (
     AaDroughtCountry,
     AaDroughtDatasetModel,
@@ -19,12 +16,9 @@ from prism_app.database.aa_drought_model import (
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
-from sqlalchemy.sql import Select
 from sqlmodel import col
 from starlette.requests import Request
 from starlette.routing import Route
-from starlette_admin import BaseField
-from starlette_admin._types import RequestAction
 from starlette_admin.contrib.sqla import Admin, ModelView
 from starlette_admin.exceptions import FormValidationError
 from starlette_admin.fields import EnumField
@@ -127,57 +121,6 @@ class AaDroughtAdminView(ModelView):
     )
     searchable_fields = ["status", "country"]
 
-    _ADMIN_ONLY_FIELD_NAMES = frozenset({"country"})
-
-    def _admin_only_field_names(self, request: Request) -> frozenset[str]:
-        if request_has_prism_admin_access(request):
-            return frozenset()
-        return self._ADMIN_ONLY_FIELD_NAMES
-
-    def get_fields_list(
-        self,
-        request: Request,
-        action: RequestAction = RequestAction.LIST,
-    ) -> Sequence[BaseField]:
-        hidden = self._admin_only_field_names(request)
-        if not hidden:
-            return super().get_fields_list(request, action)
-        return [
-            field
-            for field in super().get_fields_list(request, action)
-            if field.name not in hidden
-        ]
-
-    def _searchable_fields_for_request(self, request: Request) -> tuple[str, ...]:
-        hidden = self._admin_only_field_names(request)
-        return tuple(
-            name
-            for name in self.searchable_fields  # type: ignore[union-attr]
-            if name not in hidden
-        )
-
-    async def _configs(self, request: Request) -> dict[str, Any]:
-        configs = await super()._configs(request)
-        hidden = self._admin_only_field_names(request)
-        if not hidden:
-            return configs
-        searchable = self._searchable_fields_for_request(request)
-        exportable = tuple(
-            name for name in self.export_fields if name not in hidden  # type: ignore[union-attr]
-        )
-        configs["searchColumns"] = [f"{name}:name" for name in searchable]
-        configs["exportColumns"] = [f"{name}:name" for name in exportable]
-        return configs
-
-    def get_list_query(self, request: Request) -> Select:
-        return apply_aa_country_filter(super().get_list_query(request), request)
-
-    def get_count_query(self, request: Request) -> Select:
-        return apply_aa_country_filter(super().get_count_query(request), request)
-
-    def get_details_query(self, request: Request) -> Select:
-        return apply_aa_country_filter(super().get_details_query(request), request)
-
     async def validate(self, request: Request, data: dict[str, Any]) -> None:
         errors: dict[str, str] = {}
 
@@ -198,15 +141,14 @@ class AaDroughtAdminView(ModelView):
 
         country_val = data.get("country")
         country: AaDroughtCountry | None = None
-        if "country" not in errors:
-            country, country_error = enforce_aa_country_value(
-                request,
-                str(country_val).strip() if country_val else None,
-            )
-            if country_error:
-                errors["country"] = country_error
-            elif country is not None:
+        if not country_val:
+            errors["country"] = "Country is required."
+        else:
+            try:
+                country = AaDroughtCountry(country_val)
                 data["country"] = country
+            except ValueError:
+                errors["country"] = f"Invalid country value '{country_val}'."
 
         csv_text = data.get("csv_content")
         if not isinstance(csv_text, str) or not csv_text.strip():
@@ -241,9 +183,6 @@ class AaDroughtAdminView(ModelView):
     async def before_create(
         self, request: Request, data: dict[str, Any], obj: Any
     ) -> None:
-        country = data.get("country")
-        if isinstance(country, AaDroughtCountry):
-            obj.country = country
         row_count = data.get("row_count")
         if isinstance(row_count, int):
             obj.row_count = row_count
@@ -251,9 +190,6 @@ class AaDroughtAdminView(ModelView):
     async def before_edit(
         self, request: Request, data: dict[str, Any], obj: Any
     ) -> None:
-        country = data.get("country")
-        if isinstance(country, AaDroughtCountry):
-            obj.country = country
         row_count = data.get("row_count")
         if isinstance(row_count, int):
             obj.row_count = row_count
