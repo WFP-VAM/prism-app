@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>PRISM Threshold Alert</title>
+    <title>PRISM Map Export</title>
     <style>
         @media screen and (max-width: 600px) {
             .content-wrapper {
@@ -24,38 +24,37 @@
                     style="font-size: 24px; font-weight: 700; line-height: 30px; color: #333; margin: 0 0 10px;">
                     {{ heading_title }}
                 </h1>
-                {% if alert_name %}
-                <p style="margin: 0 0 12px;"><strong>Alert name:</strong> {{ alert_name }}</p>
-                {% endif %}
-                <p style="margin: 0 0 8px;"><strong>Layer:</strong> {{ layer_title }}
-                    <span style="color: #666;">({{ layer_server_name }})</span>
-                </p>
-                <p style="margin: 0 0 20px;"><strong>Date (reference data):</strong> {{ trigger_date }}</p>
                 <p class="trigger-title"
                     style="margin: 10px 0 20px; width: 100%; font-weight: bold; font-size: 16px;">
-                    {{ stats_message }}
+                    Your map export {{ schedule_name }} is ready.
                 </p>
+                <p style="margin: 0 0 8px;"><strong>Layer:</strong> {{ layer_title }}
+                    <span style="color: #666;">({{ layer_id }})</span>
+                </p>
+                {% if map_date %}
+                <p style="margin: 0 0 20px;"><strong>Date:</strong> {{ map_date }}</p>
+                {% endif %}
                 <div class="button-container" style="text-align: center; margin: 20px 0;">
-                    <a href="{{ prism_url }}" target="_blank" rel="noopener noreferrer"
-                        aria-label="Open PRISM map for this layer (opens in a new tab)" class="button"
+                    <a href="{{ download_url }}" target="_blank" rel="noopener noreferrer"
+                        aria-label="Download your {{ format_label }} map (opens in a new tab)" class="button"
                         style="display: inline-block; text-align: center; background: rgba(99, 178, 189, 1); color: black; padding: 12px; text-decoration: none; border-radius: 5px; white-space: nowrap; font-weight: 600;">
-                        <span style="vertical-align: middle">OPEN IN PRISM</span>
+                        <span style="vertical-align: middle">DOWNLOAD MAP {{ format_label }}</span>
                         <img src="cid:arrow-forward-icon" alt=""
                             style="width: 16px; height: 16px; vertical-align: middle; margin-left: 6px;">
                     </a>
                 </div>
                 <p style="margin-top: 20px;">
-                    Use the link above to inspect the layer in PRISM with the same hazard and date as this alert.
+                    The download link is valid for {{ link_expiry_days }} days.
                 </p>
                 <p style="margin-top: 16px;">
-                    To cancel email notifications for this alert, use the link below.
+                    To manage your export schedules, use the link below.
                 </p>
                 <p style="text-align: center; margin: 16px 0;">
-                    <a href="{{ deactivate_url }}" style="color: rgba(99, 178, 189, 1); font-weight: 600;">Unsubscribe / deactivate this alert</a>
+                    <a href="{{ admin_schedules_url }}" style="color: rgba(99, 178, 189, 1); font-weight: 600;">Manage export schedules</a>
                 </p>
                 <p class="gray-box"
                     style="background-color: rgba(241, 241, 241, 1); padding: 20px; margin-top: 20px; color: black;">
-                    <strong>Disclaimer</strong>: This message was automatically generated when statistics for your configured area crossed the thresholds you set in PRISM. It does not represent an official government or WFP hazard activation.
+                    <strong>Disclaimer</strong>: This message was automatically generated when a map export you configured in PRISM completed successfully.
                 </p>
             </div>
         </main>
