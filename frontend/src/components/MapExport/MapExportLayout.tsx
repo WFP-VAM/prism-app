@@ -23,7 +23,7 @@ import { loadStormIcons } from 'components/MapView/Layers/AnticipatoryActionStor
 import type { COGLayerComponentProps } from 'components/MapView/Layers/COGLayer';
 import GeojsonDataLayer from 'components/MapView/Layers/GeojsonDataLayer';
 import { ensureSDFIconsLoaded } from 'components/MapView/Layers/icon-utils';
-import ZarrLayerComponent from 'components/MapView/Layers/ZarrLayer';
+import type { ZarrLayerComponentProps } from 'components/MapView/Layers/ZarrLayer';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
 import { mapStyle } from 'components/MapView/Map/utils';
 import { DiscriminateUnion, LayerType, Panel } from 'config/types';
@@ -65,10 +65,17 @@ import { MapExportLayoutProps } from './types';
 
 const DeckGLOverlay = lazy(() => import('components/MapView/DeckGLOverlay'));
 const COGLayerLazy = lazy(() => import('components/MapView/Layers/COGLayer'));
+const ZarrLayerLazy = lazy(() => import('components/MapView/Layers/ZarrLayer'));
 
 const COGLayerComponent = (props: COGLayerComponentProps) => (
   <Suspense fallback={null}>
     <COGLayerLazy {...props} />
+  </Suspense>
+);
+
+const ZarrLayerComponent = (props: ZarrLayerComponentProps) => (
+  <Suspense fallback={null}>
+    <ZarrLayerLazy {...props} />
   </Suspense>
 );
 
