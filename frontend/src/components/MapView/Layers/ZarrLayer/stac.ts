@@ -136,3 +136,33 @@ export function generateDailyDatesFromExtent(
 
   return dates;
 }
+
+/**
+ * Build daily DateItem[] for forecast valid times from the latest init_time
+ * through init + max lead_time.
+ */
+export function generateValidTimeDates(
+  initTimes: Float64Array,
+  leadTimes: Float64Array,
+  generateDefaultDateItem: (date: number) => DateItem,
+): DateItem[] {
+  if (initTimes.length === 0 || leadTimes.length === 0) {
+    return [];
+  }
+
+  const latestInitSec = initTimes[initTimes.length - 1]!;
+  const maxLeadSec = leadTimes[leadTimes.length - 1]!;
+  const startMs = latestInitSec * 1000;
+  const endMs = (latestInitSec + maxLeadSec) * 1000;
+
+  const dates: DateItem[] = [];
+  const cursor = new Date(startMs);
+  cursor.setUTCHours(12, 0, 0, 0);
+
+  while (cursor.getTime() <= endMs) {
+    dates.push(generateDefaultDateItem(cursor.getTime()));
+    cursor.setUTCDate(cursor.getUTCDate() + 1);
+  }
+
+  return dates;
+}

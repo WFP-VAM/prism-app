@@ -452,33 +452,71 @@
     "prototype": {
       "dynamical": [
         {
-          "group_title": "GFS Analysis (dynamical.org)",
+          "group_title": "ECMWF AIFS Single forecast (dynamical.org)",
           "activate_all": false,
           "layers": [
             {
-              "id": "dynamical_gfs_t2m",
+              "id": "ecmwf_aifs_single_t2m",
               "label": "Temperature 2m",
               "main": true
             },
             {
-              "id": "dynamical_gfs_tmax",
-              "label": "Maximum temperature 2m"
-            },
-            {
-              "id": "dynamical_gfs_tmin",
-              "label": "Minimum temperature 2m"
-            },
-            {
-              "id": "dynamical_gfs_precip",
+              "id": "ecmwf_aifs_single_precip",
               "label": "Precipitation rate"
             },
             {
-              "id": "dynamical_gfs_rh",
-              "label": "Relative humidity 2m"
+              "id": "ecmwf_aifs_single_cloud",
+              "label": "Total cloud cover"
             },
             {
-              "id": "dynamical_gfs_cloud",
+              "id": "ecmwf_aifs_single_dewpoint",
+              "label": "Dew point 2m"
+            }
+          ]
+        },
+        {
+          "group_title": "ECMWF AIFS ENS forecast (dynamical.org)",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ecmwf_aifs_ens_t2m",
+              "label": "Temperature 2m",
+              "main": true
+            },
+            {
+              "id": "ecmwf_aifs_ens_precip",
+              "label": "Precipitation rate"
+            },
+            {
+              "id": "ecmwf_aifs_ens_cloud",
               "label": "Total cloud cover"
+            },
+            {
+              "id": "ecmwf_aifs_ens_dewpoint",
+              "label": "Dew point 2m"
+            }
+          ]
+        },
+        {
+          "group_title": "ECMWF IFS ENS forecast (dynamical.org)",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ecmwf_ifs_ens_t2m",
+              "label": "Temperature 2m",
+              "main": true
+            },
+            {
+              "id": "ecmwf_ifs_ens_precip",
+              "label": "Precipitation rate"
+            },
+            {
+              "id": "ecmwf_ifs_ens_cloud",
+              "label": "Total cloud cover"
+            },
+            {
+              "id": "ecmwf_ifs_ens_dewpoint",
+              "label": "Dew point 2m"
             }
           ]
         }

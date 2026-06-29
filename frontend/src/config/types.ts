@@ -571,8 +571,11 @@ export class CogLayerProps extends CommonLayerProps {
 export class ZarrLayerProps extends CommonLayerProps {
   type: 'zarr' = 'zarr';
 
-  /** Data source subtype — `dynamical` resolves repo URL from dynamical STAC. */
-  subtype: 'dynamical' = 'dynamical';
+  /**
+   * Data source subtype — `dynamical` for analysis cubes (`time` dim);
+   * `dynamical_forecast` for init_time + lead_time forecast cubes.
+   */
+  subtype: 'dynamical' | 'dynamical_forecast' = 'dynamical';
 
   /** STAC collection or item URL (source of truth for repo URL and temporal extent). */
   stacItem: string;
@@ -583,6 +586,14 @@ export class ZarrLayerProps extends CommonLayerProps {
   @optional
   repoUrl?: string;
 
+  /** Forecast ensemble dataset; requires `subtype: dynamical_forecast`. Renders ensemble mean. */
+  @optional
+  ensemble?: boolean;
+
+  /** Multiplier applied after CF scaling (e.g. 3600 for mm/s → mm/h). */
+  @optional
+  valueScale?: number;
+
   @optional
   valueRange?: [number, number];
 
@@ -591,6 +602,15 @@ export class ZarrLayerProps extends CommonLayerProps {
 
   @optional
   units?: string;
+
+  @optional
+  initTimeDim?: string;
+
+  @optional
+  leadTimeDim?: string;
+
+  @optional
+  ensembleDim?: string;
 
   @makeRequired
   declare title: string;
