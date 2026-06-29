@@ -8,6 +8,7 @@
     "hideInGoTo": true,
     "opacity": 0.8,
     "isPrimary": true,
+    "disableAnalysis": true,
     "minZoom": 5,
     "styles:": {
       "fill": {

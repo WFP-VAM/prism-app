@@ -4,6 +4,7 @@ import type { Map as MaplibreMap } from 'maplibre-gl';
 import { useEffect, useState } from 'react';
 
 import { boundaryCache } from './boundary-cache';
+import { isUniversalDeployment } from './universal-utils';
 
 export function usePreloadBoundaryLayersForClip(options: {
   enabled: boolean;
@@ -20,8 +21,12 @@ export function usePreloadBoundaryLayersForClip(options: {
 
     let cancelled = false;
 
+    const layersToPreload = getBoundaryLayers().filter(
+      layer => isUniversalDeployment() || layer.format !== 'pmtiles',
+    );
+
     void boundaryCache
-      .preloadBoundaries(getBoundaryLayers(), dispatch, map)
+      .preloadBoundaries(layersToPreload, dispatch, map)
       .then(() => {
         if (!cancelled) {
           setBoundaryLayersVersion(version => version + 1);

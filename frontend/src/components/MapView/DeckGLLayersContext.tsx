@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import type { Layer } from '@deck.gl/core';
+import type { LayerType } from 'config/types';
 import React, {
   createContext,
   useCallback,
@@ -8,6 +9,11 @@ import React, {
   useRef,
   useState,
 } from 'react';
+
+/** Layer types that require deck.gl (MapboxOverlay + lazy chunk). */
+export const DECK_GL_LAYER_TYPES: ReadonlySet<LayerType['type']> = new Set([
+  'cog',
+]);
 
 interface DeckGLLayersContextValue {
   /** All currently registered deck.gl layers, keyed by logical layer id. */

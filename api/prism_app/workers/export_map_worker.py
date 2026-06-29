@@ -23,6 +23,7 @@ from typing import Any
 from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.export_jobs.claim import claim_next_queued_map_export_job
 from prism_app.export_jobs.db import get_export_jobs_session_factory
+from prism_app.export_jobs.schedule_export_email import send_schedule_export_email
 from prism_app.export_maps import export_maps
 from prism_app.export_s3 import (
     get_export_map_s3_bucket_and_prefix,
@@ -136,6 +137,14 @@ async def run_export_job(
     job.updated_at = fin
     session.add(job)
     session.commit()
+
+    try:
+        send_schedule_export_email(session, job)
+    except Exception:
+        logger.exception(
+            "Schedule export email failed for job %s (export succeeded)",
+            job_id,
+        )
 
 
 def _mark_job_failed(session: Session, job_id: str, exc: BaseException) -> None:

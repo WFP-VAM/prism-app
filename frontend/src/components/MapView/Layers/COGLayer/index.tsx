@@ -183,6 +183,8 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
       const deckLayerId = `cog-${id}-${item_id}`;
       deckLayerIds.push(deckLayerId);
 
+      // TODO(cog-cors): Pass presigned `url` directly to `geotiff` once HDC bucket
+      // CORS allows GET + Range from PRISM; drop COG_PROXY_API wrapper.
       const proxyUrl = `${COG_PROXY_API}?url=${encodeURIComponent(url)}`;
 
       registerRef.current(

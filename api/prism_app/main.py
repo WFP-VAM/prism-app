@@ -625,6 +625,9 @@ def get_cog_presigned_url(
     return JSONResponse(content={"urls": urls}, status_code=200)
 
 
+# TODO(cog-cors): POC-only. Remove /cog_proxy once HDC/STAC S3 buckets allow
+# browser GET + Range from PRISM origins (see docs/cog-layers.md).
+
 # Allowlist of S3 hostname patterns that the proxy is permitted to fetch.
 # Presigned S3 URLs use virtual-hosted style: <bucket>.s3[.<region>].amazonaws.com
 _S3_HOST_RE = re.compile(
