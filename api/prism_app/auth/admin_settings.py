@@ -5,13 +5,48 @@ import os
 import secrets
 from functools import lru_cache
 
+from pydantic import BaseModel, ConfigDict, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 logger = logging.getLogger(__name__)
 
+# Identity provider ids used in /auth/sign-in?provider=..., the OIDC state JWT,
+# the browser session, and users.auth_provider.
+PROVIDER_CIAM = "ciam"
+PROVIDER_ENTRA = "entra"
+DEFAULT_OIDC_PROVIDER_ID = PROVIDER_CIAM
+
+# https://learn.microsoft.com/en-us/entra/identity-platform/v2-protocols
+ENTRA_ISSUER_TEMPLATE = "https://login.microsoftonline.com/{tenant_id}/v2.0"
+
+_TOKEN_ENDPOINT_AUTH_METHODS = frozenset(
+    {"client_secret_basic", "client_secret_post", "none"}
+)
+
 
 def _deployment_is_production() -> bool:
     return os.getenv("PRISM_ENV", "").strip().lower() in {"production", "prod"}
+
+
+class OidcProviderConfig(BaseModel):
+    """Resolved OIDC client configuration for one identity provider.
+
+    Built by :meth:`AdminAuthSettings.oidc_providers`; OIDC helpers and auth
+    routes consume this instead of reading provider fields off the settings.
+    """
+
+    model_config = ConfigDict(frozen=True)
+
+    provider_id: str
+    display_name: str
+    issuer: str
+    client_id: str
+    # Empty only when token_endpoint_auth_method is "none" (public client, PKCE-only).
+    client_secret: str = ""
+    redirect_uri: str
+    scopes: str = "openid profile email"
+    authorize_prompt: str = ""
+    token_endpoint_auth_method: str = "client_secret_basic"
 
 
 class AdminAuthSettings(BaseSettings):
@@ -33,6 +68,17 @@ class AdminAuthSettings(BaseSettings):
     # Optional authorize URL `prompt` (e.g. `login` asks CIAM to show login despite an SSO cookie).
     oidc_authorize_prompt: str = ""
 
+    # Microsoft Entra ID (domain users). Single-tenant app registration: the issuer is
+    # derived from the directory (tenant) ID. Leave unset to keep Entra sign-in disabled.
+    # Shares PRISM_OIDC_REDIRECT_URI.
+    entra_oidc_tenant_id: str = ""
+    entra_oidc_client_id: str = ""
+    # From the app registration's "Certificates & secrets".
+    entra_oidc_client_secret: str = ""
+    entra_oidc_scopes: str = "openid profile email"
+    entra_oidc_authorize_prompt: str = ""
+    entra_oidc_token_endpoint_auth_method: str = "client_secret_basic"
+
     session_secret: str = ""
     session_cookie_name: str = "prism_session"
     session_cookie_secure: bool = True
@@ -52,6 +98,17 @@ class AdminAuthSettings(BaseSettings):
     access_support_email: str = ""
     admin_auth_disabled: bool = False
 
+    @field_validator("entra_oidc_token_endpoint_auth_method")
+    @classmethod
+    def _normalize_token_endpoint_auth_method(cls, value: str) -> str:
+        method = value.strip().lower() or "client_secret_basic"
+        if method not in _TOKEN_ENDPOINT_AUTH_METHODS:
+            raise ValueError(
+                "PRISM_ENTRA_OIDC_TOKEN_ENDPOINT_AUTH_METHOD must be one of "
+                f"{sorted(_TOKEN_ENDPOINT_AUTH_METHODS)}, got {value!r}"
+            )
+        return method
+
     @property
     def oidc_configured(self) -> bool:
         return bool(
@@ -60,6 +117,57 @@ class AdminAuthSettings(BaseSettings):
             and self.oidc_client_secret.strip()
             and self.oidc_redirect_uri.strip()
         )
+
+    @property
+    def entra_oidc_issuer(self) -> str:
+        tenant = self.entra_oidc_tenant_id.strip()
+        return ENTRA_ISSUER_TEMPLATE.format(tenant_id=tenant) if tenant else ""
+
+    @property
+    def entra_oidc_configured(self) -> bool:
+        has_client_auth = (
+            bool(self.entra_oidc_client_secret.strip())
+            or self.entra_oidc_token_endpoint_auth_method == "none"
+        )
+        return bool(
+            self.entra_oidc_tenant_id.strip()
+            and self.entra_oidc_client_id.strip()
+            and self.oidc_redirect_uri.strip()
+            and has_client_auth
+        )
+
+    def oidc_providers(self) -> dict[str, OidcProviderConfig]:
+        """Configured identity providers keyed by provider id.
+
+        A provider whose env vars are unset is simply absent, so single-provider
+        (CIAM-only) deployments are unaffected by the Entra fields existing.
+        """
+        providers: dict[str, OidcProviderConfig] = {}
+        if self.oidc_configured:
+            providers[PROVIDER_CIAM] = OidcProviderConfig(
+                provider_id=PROVIDER_CIAM,
+                display_name="WFP CIAM",
+                issuer=self.oidc_issuer.strip(),
+                client_id=self.oidc_client_id.strip(),
+                client_secret=self.oidc_client_secret,
+                redirect_uri=self.oidc_redirect_uri.strip(),
+                scopes=self.oidc_scopes,
+                authorize_prompt=self.oidc_authorize_prompt,
+                token_endpoint_auth_method="client_secret_basic",
+            )
+        if self.entra_oidc_configured:
+            providers[PROVIDER_ENTRA] = OidcProviderConfig(
+                provider_id=PROVIDER_ENTRA,
+                display_name="Microsoft Entra ID",
+                issuer=self.entra_oidc_issuer,
+                client_id=self.entra_oidc_client_id.strip(),
+                client_secret=self.entra_oidc_client_secret,
+                redirect_uri=self.oidc_redirect_uri.strip(),
+                scopes=self.entra_oidc_scopes,
+                authorize_prompt=self.entra_oidc_authorize_prompt,
+                token_endpoint_auth_method=self.entra_oidc_token_endpoint_auth_method,
+            )
+        return providers
 
     def missing_oidc_env_names(self) -> list[str]:
         """PRISM_* env vars that are blank here and block redirects to CIAM."""
@@ -99,6 +207,13 @@ class AdminAuthSettings(BaseSettings):
             "issuer_non_empty_chars": len(issuer),
             "redirect_non_empty_chars": len(redirect),
             "scopes_non_empty_chars": len(self.oidc_scopes.strip()),
+            "entra_oidc_configured": self.entra_oidc_configured,
+            "PRISM_ENTRA_OIDC_TENANT_ID_set": bool(self.entra_oidc_tenant_id.strip()),
+            "PRISM_ENTRA_OIDC_CLIENT_ID_set": bool(self.entra_oidc_client_id.strip()),
+            "PRISM_ENTRA_OIDC_CLIENT_SECRET_set": bool(
+                self.entra_oidc_client_secret.strip()
+            ),
+            "entra_token_endpoint_auth_method": self.entra_oidc_token_endpoint_auth_method,
         }
 
 
