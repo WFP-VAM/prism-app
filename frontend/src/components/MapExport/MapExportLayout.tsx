@@ -144,6 +144,7 @@ function MapExportLayout({
   activePanel,
   adminLevelLayersWithFillPattern = [],
   selectedLayers = [],
+  onBaseMapReady,
   onMapLoad,
   onBoundsChange,
   onMapDimensionsChange,
@@ -441,6 +442,8 @@ function MapExportLayout({
 
     const map = baseMapRef.current?.getMap();
     if (map) {
+      onBaseMapReady?.(map);
+
       const { layers } = map.getStyle();
       const symbolLayer = layers?.find(layer => layer.type === 'symbol');
       if (symbolLayer) {

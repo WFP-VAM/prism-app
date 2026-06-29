@@ -406,6 +406,7 @@ def test_prepare_test_email_smtp_enables_ethereal_in_dev(
     monkeypatch.delenv("PRISM_ALERTS_USE_ETHEREAL", raising=False)
     smtp_mailer.prepare_test_email_smtp(use_test_email=True)
     assert os.environ.get("PRISM_ALERTS_USE_ETHEREAL") == "true"
+    monkeypatch.delenv("PRISM_ALERTS_USE_ETHEREAL", raising=False)
 
 
 def test_prepare_test_email_smtp_noop_in_production(

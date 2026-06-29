@@ -127,6 +127,7 @@ services:
       - AWS_SECRET_ACCESS_KEY=rustfsadmin
       - AWS_DEFAULT_REGION=us-east-1
       - AWS_ENDPOINT_URL=http://rustfs:9000
+      - AWS_PRESIGN_ENDPOINT_URL=http://localhost:9000
       - BROWSER_POOL_SIZE=1
     working_dir: /prism_app
     command: [ "python", "-m", "prism_app.workers.export_map_worker" ]

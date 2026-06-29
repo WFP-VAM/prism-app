@@ -1,4 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import {
   hasAdmin3ForCountry,
@@ -8,6 +10,7 @@ import {
 } from 'utils/universal-utils';
 
 import { CountryIsoContext } from './countryIsoContext';
+import { addNotification } from './notificationStateSlice';
 
 export function CountryIsoProvider({
   children,
@@ -16,26 +19,39 @@ export function CountryIsoProvider({
   children: React.ReactNode;
   countryAdmin0Id?: number;
 }) {
+  const dispatch = useDispatch();
+  const { t } = useTranslation();
   const { iso3: iso3Param } = useParams<{ iso3?: string }>();
   const iso3 = normalizeIso3(iso3Param);
   const isValid = isValidIso3Format(iso3);
   const isKnown = isKnownIso3(iso3);
   const admin3Available = hasAdmin3ForCountry(iso3);
+  const isUnknownCountry = Boolean(iso3) && !isKnown;
+  const effectiveIso3 = isKnown ? iso3 : undefined;
 
-  // TODO: `isValid`/`isKnown` are exposed but not yet consumed, so an unknown or
-  // malformed ISO3 (e.g. /country/ZZZ) silently renders an empty map. Wire these
-  // up to render a fallback (UniversalPlaceholder or a dedicated invalid-country
-  // page) instead of the map shell.
+  useEffect(() => {
+    if (isUnknownCountry) {
+      dispatch(
+        addNotification({
+          type: 'warning',
+          message: t(
+            'The country code "{{iso3}}" does not match any available country in PRISM. Showing all countries instead.',
+            { iso3 },
+          ),
+        }),
+      );
+    }
+  }, [isUnknownCountry, iso3, dispatch, t]);
 
   const value = useMemo(
     () => ({
-      iso3,
+      iso3: effectiveIso3,
       isValid,
       isKnown,
       admin3Available,
       countryAdmin0Id,
     }),
-    [iso3, countryAdmin0Id],
+    [effectiveIso3, isValid, isKnown, admin3Available, countryAdmin0Id],
   );
 
   return (
