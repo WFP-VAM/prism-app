@@ -140,7 +140,7 @@ class PrismAdminAuthMiddleware(BaseHTTPMiddleware):
         if is_public:
             return await call_next(request)
 
-        if not settings.oidc_configured:
+        if not settings.oidc_providers():
             log_oidc_configuration_blocked(settings, where="Starlette-admin middleware")
             return PlainTextResponse(
                 "OIDC is not configured for this deployment.",
