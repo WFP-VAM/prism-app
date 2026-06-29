@@ -1,8 +1,10 @@
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 import { useMediaQuery, useTheme } from '@material-ui/core';
-import { DeckGLLayersProvider } from 'components/MapView/DeckGLLayersContext';
-import DeckGLOverlay from 'components/MapView/DeckGLOverlay';
+import {
+  DECK_GL_LAYER_TYPES,
+  DeckGLLayersProvider,
+} from 'components/MapView/DeckGLLayersContext';
 import {
   AdminLevelDataLayer,
   AnticipatoryActionDroughtLayer,
@@ -15,7 +17,7 @@ import {
   WMSLayer,
 } from 'components/MapView/Layers';
 import AnalysisLayer from 'components/MapView/Layers/AnalysisLayer';
-import COGLayerComponent from 'components/MapView/Layers/COGLayer';
+import type { COGLayerComponentProps } from 'components/MapView/Layers/COGLayer';
 import SelectionLayer from 'components/MapView/Layers/SelectionLayer';
 import MapTooltip from 'components/MapView/MapTooltip';
 import useMapOnClick from 'components/MapView/useMapOnClick';
@@ -39,7 +41,9 @@ import {
 import React, {
   ComponentType,
   createElement,
+  lazy,
   memo,
+  Suspense,
   useCallback,
   useEffect,
   useMemo,
@@ -62,6 +66,19 @@ import GeojsonDataLayer from '../Layers/GeojsonDataLayer';
 import { mapStyle } from './utils';
 
 initPmtilesProtocol();
+
+const SHOW_BOUNDARY_INFO = JSON.parse(
+  process.env.REACT_APP_SHOW_MAP_INFO || 'false',
+);
+
+const DeckGLOverlay = lazy(() => import('components/MapView/DeckGLOverlay'));
+const COGLayerLazy = lazy(() => import('components/MapView/Layers/COGLayer'));
+
+const COGLayerComponent = (props: COGLayerComponentProps) => (
+  <Suspense fallback={null}>
+    <COGLayerLazy {...props} />
+  </Suspense>
+);
 
 type LayerComponentsMap<U extends LayerType> = {
   [T in U['type']]: {
@@ -151,11 +168,6 @@ const MapComponent = memo(
       [panelHidden, isGlobalMap],
     );
 
-    const showBoundaryInfo = useMemo(
-      () => JSON.parse(process.env.REACT_APP_SHOW_MAP_INFO || 'false'),
-      [],
-    );
-
     const onDragEnd = useCallback(
       (map: MaplibreMap) => () => {
         const bounds = map.getBounds();
@@ -236,17 +248,21 @@ const MapComponent = memo(
         // Find the first symbol on the map to make sure we add boundary layers below them.
         setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
         mapState.actions.setMap(() => mapRef.current?.getMap() || undefined);
-        if (showBoundaryInfo) {
+        if (SHOW_BOUNDARY_INFO) {
           watchBoundaryChange(map);
         }
         trackLoadingLayers(map);
       },
-      [mapState, showBoundaryInfo, watchBoundaryChange, trackLoadingLayers],
+      [mapState, watchBoundaryChange, trackLoadingLayers],
     );
 
     const stackLayers = useMemo(
       () => stackLayersForMapPaintOrder(selectedLayers),
       [selectedLayers],
+    );
+
+    const hasDeckLayers = stackLayers.some(l =>
+      DECK_GL_LAYER_TYPES.has(l.type),
     );
 
     const firstBoundaryId = getFirstBoundaryLayerMapId(selectedMap);
@@ -342,7 +358,11 @@ const MapComponent = memo(
           onClick={mapOnClick}
           maxBounds={maxBounds}
         >
-          <DeckGLOverlay />
+          {hasDeckLayers && (
+            <Suspense fallback={null}>
+              <DeckGLOverlay />
+            </Suspense>
+          )}
           {stackLayers.map((layer, index) => {
             const { component } = componentTypes[layer.type];
             return createElement(component as any, {

@@ -1,7 +1,9 @@
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
 import { getImageUrl, iconNorthArrow } from 'assets/images';
-import { DeckGLLayersProvider } from 'components/MapView/DeckGLLayersContext';
-import DeckGLOverlay from 'components/MapView/DeckGLOverlay';
+import {
+  DECK_GL_LAYER_TYPES,
+  DeckGLLayersProvider,
+} from 'components/MapView/DeckGLLayersContext';
 // Layer components - keep in sync with MapView/Map/index.tsx
 import {
   AdminLevelDataLayer,
@@ -18,7 +20,7 @@ import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelD
 import AnticipatoryActionFloodLayer from 'components/MapView/Layers/AnticipatoryActionFloodLayer';
 import { FloodStationMarker } from 'components/MapView/Layers/AnticipatoryActionFloodLayer/FloodStationMarker';
 import { loadStormIcons } from 'components/MapView/Layers/AnticipatoryActionStormLayer/constants';
-import COGLayerComponent from 'components/MapView/Layers/COGLayer';
+import type { COGLayerComponentProps } from 'components/MapView/Layers/COGLayer';
 import GeojsonDataLayer from 'components/MapView/Layers/GeojsonDataLayer';
 import { ensureSDFIconsLoaded } from 'components/MapView/Layers/icon-utils';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
@@ -30,6 +32,8 @@ import { lightGrey } from 'muiTheme';
 import React, {
   ComponentType,
   createElement,
+  lazy,
+  Suspense,
   useCallback,
   useEffect,
   useMemo,
@@ -57,6 +61,15 @@ import useResizeObserver from 'utils/useOnResizeObserver';
 import { getAspectRatioDecimal } from './aspectRatioConstants';
 import { ClipProvider } from './ClipProvider';
 import { MapExportLayoutProps } from './types';
+
+const DeckGLOverlay = lazy(() => import('components/MapView/DeckGLOverlay'));
+const COGLayerLazy = lazy(() => import('components/MapView/Layers/COGLayer'));
+
+const COGLayerComponent = (props: COGLayerComponentProps) => (
+  <Suspense fallback={null}>
+    <COGLayerLazy {...props} />
+  </Suspense>
+);
 
 /**
  * MapExportLayout - Shared component for rendering map exports
@@ -171,6 +184,8 @@ function MapExportLayout({
     () => stackLayersForMapPaintOrder(selectedLayers),
     [selectedLayers],
   );
+
+  const hasDeckLayers = stackLayers.some(l => DECK_GL_LAYER_TYPES.has(l.type));
 
   const clipPolygon =
     toggles.countryMask && adminAreaClipPolygon ? adminAreaClipPolygon : null;
@@ -682,7 +697,11 @@ function MapExportLayout({
             mapStyle={basemapMapStyle}
             style={{ width: '100%', height: '100%' }}
           >
-            <DeckGLOverlay />
+            {hasDeckLayers && (
+              <Suspense fallback={null}>
+                <DeckGLOverlay />
+              </Suspense>
+            )}
             <ClipProvider
               polygon={clipPolygon}
               clipAdminLevelData={selectedBoundaries.length > 0}
