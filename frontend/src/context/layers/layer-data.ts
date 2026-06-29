@@ -6,6 +6,7 @@ import {
   DiscriminateUnion,
   GeojsonLayerData,
   LayerType,
+  PmtilesVectorLayerProps,
   PointLayerData,
   StaticRasterLayerProps,
 } from 'config/types';
@@ -25,7 +26,9 @@ import { fetchWCSLayerData, WMSLayerData } from './wms';
 
 export type LayerAcceptingDataType = Exclude<
   LayerType,
-  StaticRasterLayerProps | AnticipatoryActionLayerProps
+  | StaticRasterLayerProps
+  | AnticipatoryActionLayerProps
+  | PmtilesVectorLayerProps
 >;
 
 type LayerSpecificDataTypes = {

@@ -17,6 +17,7 @@ import {
   LayerKey,
   LayersMap,
   LayerType,
+  PmtilesVectorLayerProps,
   PointDataLayerProps,
   ReportType,
   StaticRasterLayerProps,
@@ -162,6 +163,11 @@ export const getLayerByKey = (layerKey: LayerKey): LayerType => {
       return throwInvalidLayer();
     case 'geojson_polygon':
       if (!checkRequiredKeys(GeojsonDataLayerProps, definition, true)) {
+        return throwInvalidLayer();
+      }
+      return definition;
+    case 'pmtiles_vector':
+      if (!checkRequiredKeys(PmtilesVectorLayerProps, definition, true)) {
         return throwInvalidLayer();
       }
       return definition;

@@ -31,7 +31,8 @@ export type LayerType =
   | CompositeLayerProps
   | StaticRasterLayerProps
   | AnticipatoryActionLayerProps
-  | GeojsonDataLayerProps;
+  | GeojsonDataLayerProps
+  | PmtilesVectorLayerProps;
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   k: infer I,
@@ -777,6 +778,34 @@ export class PointDataLayerProps extends CommonLayerProps {
 
   @optional
   iconShape?: 'point' | 'square' | 'triangle' | 'diamond';
+}
+
+export type PmtilesVectorSourceLayerStyle = {
+  name: string;
+  fill?: FillLayerSpecification['paint'];
+  line?: LineLayerSpecification['paint'];
+};
+
+export class PmtilesVectorLayerProps extends CommonLayerProps {
+  type: 'pmtiles_vector' = 'pmtiles_vector';
+  path: FilePath;
+  sourceLayers: PmtilesVectorSourceLayerStyle[];
+
+  @optional
+  minZoom?: number;
+
+  /** When true, hide features outside the deployment country (MapLibre within filter). */
+  @optional
+  clipToDeployment?: boolean;
+
+  @makeRequired
+  declare title: string;
+
+  @makeRequired
+  declare legend: LegendDefinition;
+
+  @makeRequired
+  declare legendText: string;
 }
 
 export class GeojsonDataLayerProps extends CommonLayerProps {

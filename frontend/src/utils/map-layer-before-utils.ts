@@ -3,6 +3,7 @@ import type { Map as MaplibreMap } from 'maplibre-gl';
 import {
   firstBoundaryOnView,
   getLayerMapId,
+  getTopLayerMapId,
   isLayerOnView,
 } from 'utils/map-utils';
 
@@ -13,6 +14,7 @@ import {
 export const LAYERS_ABOVE_BOUNDARIES = [
   'anticipatory_action',
   'geojson_polygon',
+  'pmtiles_vector',
 ] as const;
 
 export function layerUsesSymbolAnchorOnly(layer: LayerType): boolean {
@@ -67,7 +69,7 @@ export function getLayerBeforeId(
   }
   const previousLayerId = stackLayers[index - 1].id;
   if (isLayerOnView(map, previousLayerId)) {
-    return getLayerMapId(previousLayerId);
+    return getTopLayerMapId(map, previousLayerId);
   }
   return firstBoundaryLayerMapId || firstSymbolId;
 }
