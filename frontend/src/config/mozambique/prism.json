@@ -452,7 +452,7 @@
     "prototype": {
       "dynamical": [
         {
-          "group_title": "ECMWF AIFS Single forecast (dynamical.org)",
+          "group_title": "ECMWF AIFS Single forecast",
           "activate_all": false,
           "layers": [
             {
@@ -475,7 +475,7 @@
           ]
         },
         {
-          "group_title": "ECMWF AIFS ENS forecast (dynamical.org)",
+          "group_title": "ECMWF AIFS ENS forecast",
           "activate_all": false,
           "layers": [
             {
@@ -498,7 +498,7 @@
           ]
         },
         {
-          "group_title": "ECMWF IFS ENS forecast (dynamical.org)",
+          "group_title": "ECMWF IFS ENS forecast",
           "activate_all": false,
           "layers": [
             {
