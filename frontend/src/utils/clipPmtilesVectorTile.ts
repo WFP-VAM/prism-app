@@ -1,11 +1,8 @@
 import { VectorTile } from '@mapbox/vector-tile';
-import booleanIntersects from '@turf/boolean-intersects';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import centroid from '@turf/centroid';
-import { featureCollection } from '@turf/helpers';
-import intersect from '@turf/intersect';
 import simplify from '@turf/simplify';
-import type { Feature, MultiPolygon, Point, Polygon, Position } from 'geojson';
+import type { Feature, MultiPolygon, Point, Polygon } from 'geojson';
 import Protobuf from 'pbf';
 import { fromGeojsonVt } from 'vt-pbf';
 
@@ -87,58 +84,6 @@ function bboxesIntersect(
   return !(a[0] > b[2] || a[2] < b[0] || a[1] > b[3] || a[3] < b[1]);
 }
 
-function lonLatToTilePoint(
-  lon: number,
-  lat: number,
-  z: number,
-  x: number,
-  y: number,
-): [number, number] {
-  const n = 2 ** z;
-  const worldSize = MVT_EXTENT * n;
-  const px = ((lon + 180) / 360) * worldSize;
-  const latRad = (lat * Math.PI) / 180;
-  const py =
-    ((1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2) *
-    worldSize;
-  return [Math.round(px - x * MVT_EXTENT), Math.round(py - y * MVT_EXTENT)];
-}
-
-function forEachCoordinate(
-  geometry: Polygon | MultiPolygon,
-  fn: (position: Position) => void,
-) {
-  const polygons =
-    geometry.type === 'Polygon' ? [geometry.coordinates] : geometry.coordinates;
-  polygons.forEach(rings => {
-    rings.forEach(ring => {
-      ring.forEach(fn);
-    });
-  });
-}
-
-function geometryFullyInside(
-  geometry: Polygon | MultiPolygon,
-  clipPolygon: ClipPolygon,
-): boolean {
-  let inside = true;
-  forEachCoordinate(geometry, coord => {
-    if (
-      !booleanPointInPolygon(
-        {
-          type: 'Feature',
-          properties: {},
-          geometry: { type: 'Point', coordinates: coord },
-        },
-        clipPolygon,
-      )
-    ) {
-      inside = false;
-    }
-  });
-  return inside;
-}
-
 type MvtFeature = {
   type: number;
   geometry: number[][][];
@@ -146,81 +91,10 @@ type MvtFeature = {
   id?: number;
 };
 
-function polygonPartsToMvtFeatures(
-  geometry: Polygon | MultiPolygon,
-  z: number,
-  x: number,
-  y: number,
-  tags: Record<string, string | number | boolean>,
-  id?: number,
-): MvtFeature[] {
-  const parts =
-    geometry.type === 'Polygon' ? [geometry.coordinates] : geometry.coordinates;
-
-  return parts.map(rings => ({
-    type: 3,
-    geometry: rings.map(ring =>
-      ring.map(([lon, lat]) => lonLatToTilePoint(lon, lat, z, x, y)),
-    ),
-    tags,
-    ...(typeof id === 'number' ? { id } : {}),
-  }));
-}
-
-function clipFeatureToMvt(
-  feature: ReturnType<VectorTile['layers'][string]['feature']>,
-  z: number,
-  x: number,
-  y: number,
-  clipPolygon: ClipPolygon,
-): MvtFeature[] {
-  const geojson = feature.toGeoJSON(x, y, z) as Feature<Polygon | MultiPolygon>;
-  const center = centroid(geojson) as Feature<Point>;
-
-  if (!booleanPointInPolygon(center, clipPolygon)) {
-    return [];
-  }
-
-  if (geometryFullyInside(geojson.geometry, clipPolygon)) {
-    return [
-      {
-        type: feature.type,
-        geometry: feature
-          .loadGeometry()
-          .map(ring => ring.map(point => [point.x, point.y])),
-        tags: feature.properties,
-        ...(typeof feature.id === 'number' ? { id: feature.id } : {}),
-      },
-    ];
-  }
-
-  if (!booleanIntersects(geojson, clipPolygon)) {
-    return [];
-  }
-
-  const clipped = intersect(
-    featureCollection([
-      geojson as Feature<Polygon | MultiPolygon>,
-      clipPolygon,
-    ]),
-  );
-  if (!clipped?.geometry) {
-    return [];
-  }
-
-  return polygonPartsToMvtFeatures(
-    clipped.geometry,
-    z,
-    x,
-    y,
-    feature.properties,
-    typeof feature.id === 'number' ? feature.id : undefined,
-  );
-}
-
 /**
- * Keep vector-tile features inside the clip polygon; border features are
- * geometrically clipped instead of centroid-filtered.
+ * Keep vector-tile features whose centroid falls inside the clip polygon.
+ * ponytail: ~3x faster than geometric intersect; border-straddling fields may
+ * still render outside the country. Upgrade path is preprocess country PMTiles.
  */
 export function clipMvtTileToPolygon(
   data: Uint8Array,
@@ -247,17 +121,22 @@ export function clipMvtTileToPolygon(
 
     for (let i = 0; i < layer.length; i++) {
       const feature = layer.feature(i);
-      const clippedFeatures = clipFeatureToMvt(
-        feature,
-        z,
-        x,
-        y,
-        simplified as ClipPolygon,
-      );
+      const center = centroid(
+        feature.toGeoJSON(x, y, z) as Feature<Polygon | MultiPolygon>,
+      ) as Feature<Point>;
 
-      if (clippedFeatures.length) {
-        keptFeatures.push(...clippedFeatures);
+      if (!booleanPointInPolygon(center, simplified as ClipPolygon)) {
+        continue;
       }
+
+      keptFeatures.push({
+        type: feature.type,
+        geometry: feature
+          .loadGeometry()
+          .map(ring => ring.map(point => [point.x, point.y])),
+        tags: feature.properties,
+        ...(typeof feature.id === 'number' ? { id: feature.id } : {}),
+      });
     }
 
     if (keptFeatures.length) {

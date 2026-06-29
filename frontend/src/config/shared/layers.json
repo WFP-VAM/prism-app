@@ -1472,6 +1472,7 @@
     "opacity": 0.9,
     "disable_analysis": true,
     "clip_to_deployment": true,
+    "minZoom": 10,
     "legend_text": "Crop fields and field boundaries from FTW global predictions, scoped to the deployment country. Tile detail peaks around zoom levels 10–12; zooming past level 15 will not reveal additional fields.",
     "legend": [
       { "label": "Crop field (2025)", "color": "#4a90d9" },
