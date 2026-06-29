@@ -49,7 +49,7 @@ function runClippedTile(
     expires?: string,
   ) => void,
 ) {
-  protocol.tile(params, (err, data, cacheControl, expires) => {
+  return protocol.tile(params, (err, data, cacheControl, expires) => {
     if (err || !data) {
       callback(err ?? null, data, cacheControl, expires);
       return;

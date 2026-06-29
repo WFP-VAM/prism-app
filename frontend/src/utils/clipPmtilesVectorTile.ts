@@ -125,7 +125,11 @@ function geometryFullyInside(
   forEachCoordinate(geometry, coord => {
     if (
       !booleanPointInPolygon(
-        { type: 'Feature', geometry: { type: 'Point', coordinates: coord } },
+        {
+          type: 'Feature',
+          properties: {},
+          geometry: { type: 'Point', coordinates: coord },
+        },
         clipPolygon,
       )
     ) {
