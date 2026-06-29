@@ -2,6 +2,7 @@ import { AdminCodeString, LayerType } from 'config/types';
 import type {
   LngLatBounds,
   LngLatBoundsLike,
+  Map as MaplibreMap,
   StyleSpecification,
 } from 'maplibre-gl';
 import React from 'react';
@@ -141,6 +142,9 @@ export interface MapExportLayoutProps {
   // Selected layers to render on the map
   // NOTE: Layer rendering logic must be kept in sync with MapView/Map/index.tsx
   selectedLayers?: LayerType[];
+
+  // Callback when the export map instance is ready (for PMTiles boundary queries)
+  onBaseMapReady?: (map: MaplibreMap) => void;
 
   // Callback for map load (called after all sources are loaded)
   onMapLoad?: (e: any) => void;

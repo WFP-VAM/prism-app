@@ -297,6 +297,48 @@ describe('adminAreaClipPolygon', () => {
     expect(polygon?.geometry.type).toBe('Polygon');
   });
 
+  test('buildAdminAreaClipPolygonFromSelection falls back to singleton data when per-level layer is uncached', () => {
+    // Singleton (deepest) features carry every level code, but the per-level
+    // admin1 layer is not cached, so geometry must come from the singleton.
+    const treeLayer = {
+      id: 'universal_admin3_boundaries',
+      adminCode: 'adm3_id',
+      adminLevelCodes: ['adm0_id', 'adm1_id', 'adm2_id', 'adm3_id'],
+      adminLevelNames: ['adm0_name', 'adm1_name', 'adm2_name', 'adm3_name'],
+      adminLevelLocalNames: [],
+    } as unknown as BoundaryLayerProps;
+
+    const ward = (id: string, x: number): any => ({
+      type: 'Feature',
+      properties: { adm1_id: '903532', adm3_id: id },
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [x, 0],
+            [x + 0.5, 0],
+            [x + 0.5, 0.5],
+            [x, 0.5],
+            [x, 0],
+          ],
+        ],
+      },
+    });
+
+    const polygon = buildAdminAreaClipPolygonFromSelection(
+      ['903532' as never],
+      {
+        type: 'FeatureCollection',
+        features: [ward('w1', 0), ward('w2', 0.5)],
+      } as never,
+      treeLayer,
+      { language: 'en' } as any,
+      () => undefined, // no per-level layer cached
+    );
+
+    expect(polygon).not.toBeNull();
+  });
+
   test('resolveAdminAreaClipPolygon uses ISO3-bound getLayerData for admin selection', async () => {
     const treeLayer = {
       id: 'admin_boundaries',

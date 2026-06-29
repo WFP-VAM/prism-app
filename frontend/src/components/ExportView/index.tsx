@@ -13,6 +13,7 @@ import {
   preloadLayerDatesArraysForWMS,
   WMSLayerDatesRequested,
 } from 'context/serverPreloadStateSlice';
+import type { Map as MaplibreMap } from 'maplibre-gl';
 import muiTheme from 'muiTheme';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -98,9 +99,13 @@ const ExportView = memo(() => {
   );
   useResizeObserver(footerRef, onFooterResize);
 
+  const [exportMap, setExportMap] = useState<MaplibreMap | undefined>();
+  const onBaseMapReady = useCallback((map: MaplibreMap) => {
+    setExportMap(map);
+  }, []);
+
   // Selectors
-  const { actions, maplibreMap } = useMapState();
-  const map = maplibreMap();
+  const { actions } = useMapState();
   const datesPreloadingForWMS = useSelector(WMSLayerDatesRequested);
   const datesPreloadingForPointData = useSelector(pointDataLayerDatesRequested);
   const dispatch = useDispatch();
@@ -110,12 +115,12 @@ const ExportView = memo(() => {
 
   // Get boundary layer for admin area clip
   const boundaryLayer = getBoundaryLayerSingleton();
-  const { data: boundaryData } = useBoundaryData(boundaryLayer.id, map);
+  const { data: boundaryData } = useBoundaryData(boundaryLayer.id, exportMap);
 
   const boundaryLayersVersion = usePreloadBoundaryLayersForClip({
     enabled: exportParams.toggles.countryMask,
     dispatch,
-    map,
+    map: exportMap,
   });
 
   const adminAreaClipPolygon = useAdminAreaClipForExport({
@@ -126,7 +131,7 @@ const ExportView = memo(() => {
     boundaryLayer,
     i18nLocale: i18n,
     boundaryLayersVersion,
-    map,
+    map: exportMap,
   });
 
   // Preload dates and load boundary layers
@@ -142,12 +147,16 @@ const ExportView = memo(() => {
     // 2. Prevent situations where a user can toggle a layer like NSO (depends on Boundaries) before Boundaries finish loading.
     displayedBoundaryLayers.forEach(l => actions.addLayer(l));
     // Load boundary data into global cache (shared across all maps)
-    boundaryCache.preloadBoundaries(displayedBoundaryLayers, dispatch, map);
+    boundaryCache.preloadBoundaries(
+      displayedBoundaryLayers,
+      dispatch,
+      exportMap,
+    );
   }, [
     dispatch,
     datesPreloadingForWMS,
     datesPreloadingForPointData,
-    map,
+    exportMap,
     actions,
   ]);
 
@@ -225,6 +234,7 @@ const ExportView = memo(() => {
         adminLevelLayersWithFillPattern={adminLevelLayersWithFillPattern}
         selectedLayers={selectedLayers}
         layersCoverage={layersCoverage}
+        onBaseMapReady={onBaseMapReady}
         signalExportReady
       />
     </ThemeProvider>

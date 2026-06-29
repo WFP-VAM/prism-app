@@ -6,7 +6,10 @@ import type { LayerData } from 'context/layers/layer-data';
 import type { Feature, MultiPolygon, Polygon } from 'geojson';
 import type i18n from 'i18next';
 
-import { resolveFeaturesForAdminCodes } from './adminAreaSelection';
+import {
+  filterFeaturesBySelectedAdminCodes,
+  resolveFeaturesForAdminCodes,
+} from './adminAreaSelection';
 
 export type AdminAreaClipPolygon = Feature<Polygon | MultiPolygon>;
 
@@ -188,7 +191,20 @@ export function buildAdminAreaClipPolygonFromSelection(
     getLayerData,
   );
 
-  return mergeAdminAreaClipFeatures(
-    features.filter(isPolygonOrMultiPolygonFeature),
-  );
+  const polygonFeatures = features.filter(isPolygonOrMultiPolygonFeature);
+  if (polygonFeatures.length > 0) {
+    return mergeAdminAreaClipFeatures(polygonFeatures);
+  }
+
+  // Fallback: the per-level path needs a separate boundary layer cached under
+  // the right ISO3 key, which isn't guaranteed in export/preview. Resolve from
+  // the already-loaded singleton data instead, matching the selected code at
+  // any admin level and unioning the matches.
+  const fallbackFeatures = filterFeaturesBySelectedAdminCodes(
+    boundaryData.features ?? [],
+    boundaryLayer,
+    selectedBoundaries,
+  ).filter(isPolygonOrMultiPolygonFeature);
+
+  return mergeAdminAreaClipFeatures(fallbackFeatures);
 }
