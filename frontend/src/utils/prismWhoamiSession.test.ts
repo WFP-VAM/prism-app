@@ -21,6 +21,7 @@ describe('fetchPrismWhoami', () => {
   test('returns payload when authenticated', async () => {
     const payload = {
       user_id: 'uid-1',
+      auth_provider: 'ciam',
       ciam_sub: 'sub-1',
       email: 'user@example.org',
       permissions: ['prism.content.view'],
@@ -38,6 +39,7 @@ describe('fetchPrismWhoami', () => {
       ok: true,
       json: async () => ({
         user_id: 'uid-1',
+        auth_provider: 'ciam',
         ciam_sub: 'sub-1',
         email: null,
         permissions: [],
