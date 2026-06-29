@@ -9,7 +9,14 @@ const rawLayers = {
 
 const rawTables = {};
 const rawReports = {};
-const translation = {};
+const translation = {
+  // UN-6 sidecar languages; empty objects inherit shared UI strings from config/shared.
+  fr: {},
+  es: {},
+  ar: {},
+  ru: {},
+  zh: {},
+};
 
 export default {
   appConfig,

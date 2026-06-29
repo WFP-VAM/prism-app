@@ -421,6 +421,10 @@ export class BoundaryLayerProps extends CommonLayerProps {
   // Note that the layer is still loaded, but not displayed.
   @optional
   minZoom?: number;
+
+  /** URL template for per-language admin name sidecar JSON ({lang} placeholder). */
+  @optional
+  translationsPath?: string;
 }
 
 export enum DataType {

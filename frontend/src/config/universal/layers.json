@@ -25,6 +25,7 @@
     "admin_level_codes": ["adm0_id", "adm1_id", "adm2_id", "adm3_id"],
     "admin_level_names": ["adm0_name", "adm1_name", "adm2_name", "adm3_name"],
     "admin_level_local_names": ["adm0_name", "adm1_name", "adm2_name", "adm3_name"],
+    "translations_path": "bundled:universal/translations/{scope}/{lang}.json",
     "simplify_tolerance": 0.1
   },
   "universal_admin2_boundaries": {
@@ -97,6 +98,7 @@
     "admin_level_codes": ["adm0_id"],
     "admin_level_names": ["adm0_name"],
     "admin_level_local_names": ["adm0_name"],
+    "translations_path": "bundled:universal/translations/{scope}/{lang}.json",
     "simplify_tolerance": 0.1
   }
 }

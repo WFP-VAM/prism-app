@@ -56,6 +56,15 @@ jest.mock('config/utils', () => ({
   getBoundaryLayersByAdminLevel: () => BOUNDARY_LAYER,
 }));
 
+jest.mock('hooks/useAdminNameTranslations', () => ({
+  useAdminNameTranslations: () => ({
+    language: 'en',
+    scope: 'common',
+    dict: undefined,
+    status: 'idle',
+  }),
+}));
+
 jest.mock('@material-ui/core', () => {
   const React = require('react');
   const actual = jest.requireActual('@material-ui/core');

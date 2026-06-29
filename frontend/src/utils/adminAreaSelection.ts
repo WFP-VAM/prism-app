@@ -8,6 +8,7 @@ import type {
   BoundaryLayerProps,
 } from 'config/types';
 import { getBoundaryLayers, getBoundaryLayersByAdminLevel } from 'config/utils';
+import type { AdminNameDict } from 'context/adminNameTranslationStateSlice';
 import type { LayerData } from 'context/layers/layer-data';
 import type { Feature, FeatureCollection } from 'geojson';
 import type i18n from 'i18next';
@@ -46,12 +47,15 @@ export function resolveAdminAreaRefs(
   data: LayerData<BoundaryLayerProps>['data'] | undefined,
   layer: BoundaryLayerProps,
   i18nLocale: typeof i18n,
+  adminNameDict?: AdminNameDict,
 ): AdminAreaRef[] {
   if (!data || codes.length === 0) {
     return [];
   }
 
-  const flat = flattenAreaTree(getAdminBoundaryTree(data, layer, i18nLocale));
+  const flat = flattenAreaTree(
+    getAdminBoundaryTree(data, layer, i18nLocale, adminNameDict),
+  );
 
   return codes.map(code => {
     const entry = flat.find(area => adminCodesEqual(area.adminCode, code));
@@ -174,13 +178,14 @@ export function resolveFeaturesForAdminCodes(
   getLayerData: (
     layerId: string,
   ) => LayerData<BoundaryLayerProps>['data'] | undefined,
+  adminNameDict?: AdminNameDict,
 ): Feature[] {
   if (!treeData || codes.length === 0) {
     return [];
   }
 
   const flat = flattenAreaTree(
-    getAdminBoundaryTree(treeData, treeLayer, i18nLocale),
+    getAdminBoundaryTree(treeData, treeLayer, i18nLocale, adminNameDict),
   );
   const codeToLevel = new Map<AdminCodeString, AdminLevelType>(
     flat.flatMap(area => {

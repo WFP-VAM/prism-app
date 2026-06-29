@@ -33,6 +33,7 @@ import {
 import { getWMSLayersWithChart } from 'config/utils';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { GeoJsonProperties } from 'geojson';
+import { useAdminNameTranslations } from 'hooks/useAdminNameTranslations';
 import { useSafeTranslation } from 'i18n';
 import React, {
   memo,
@@ -43,6 +44,7 @@ import React, {
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
+import { localizeName, usesAdminNameSidecar } from 'utils/admin-name-utils';
 import {
   getEffectiveMultiCountry,
   useEffectiveBoundaryLayer,
@@ -90,6 +92,7 @@ const ChartsPanel = memo(() => {
   const isUniversal = isUniversalDeployment();
   const multiCountry = getEffectiveMultiCountry();
   const { data } = useBoundaryData(boundaryLayer.id);
+  const { language, dict } = useAdminNameTranslations();
 
   // Resolves the admin area name for a chart level from boundary feature
   // properties. Universal (URL-driven) and multi-country deployments use
@@ -101,7 +104,18 @@ const ChartsPanel = memo(() => {
   ): string => {
     const nameIndex = isUniversal || multiCountry ? level : level - 1;
     const nameKey = boundaryLayer?.adminLevelNames?.[nameIndex];
-    return (nameKey && properties?.[nameKey]) || '';
+    const englishName = (nameKey && properties?.[nameKey]) || '';
+
+    if (language === 'en') {
+      return englishName;
+    }
+
+    if (usesAdminNameSidecar(boundaryLayer)) {
+      return localizeName(englishName, dict);
+    }
+
+    const localKey = boundaryLayer?.adminLevelLocalNames?.[nameIndex];
+    return (localKey && properties?.[localKey]) || englishName;
   };
   const classes = useStyles();
   const [compareLocations, setCompareLocations] = useState(false);
