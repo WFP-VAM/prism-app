@@ -66,12 +66,15 @@ class AnticipatoryActionAlertsView(ReadOnlyModelView):
 
 
 class UserEditView(PrismGatedModelView):
-    """CIAM-mapped users: provision metadata; permissions use User permissions."""
+    """OIDC-provisioned users: edit metadata; permissions use User permissions."""
 
-    label = "Users (CIAM)"
+    label = "Users"
     edit_template = "edit_no_add_another.html"  # Save + Cancel only
+    exclude_fields_from_list = ("ciam_sub",)
+    exclude_fields_from_detail = ("ciam_sub",)
     exclude_fields_from_edit = (
         "id",
+        "auth_provider",
         "ciam_sub",
         "created_at",
         "updated_at",

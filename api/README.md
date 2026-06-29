@@ -1,7 +1,7 @@
 # PRISM API
 
 The PRISM API encompasses a broad set of capabilities:
-- The PRISM Admin Console (CIAM OIDC authentication)
+- The PRISM Admin Console (CIAM and optional Entra OIDC authentication)
 - Zonal statistics — aggregate rasters over polygons
 - Raster GeoTIFF generation from STAC-backed sources
 - Alerts REST API and related anticipatory-action records
@@ -28,7 +28,7 @@ Edit `api/.env` and set:
 PRISM_ADMIN_AUTH_DISABLED=true
 ```
 
-This skips CIAM OIDC so you can access `/admin` without credentials. See [Admin UI and CIAM OIDC](#admin-ui-starlette-admin-and-ciam-oidc) for the full auth setup.
+This skips OIDC so you can access `/admin` without credentials. See [Admin UI and OIDC](#admin-ui-starlette-admin-and-oidc) for the full auth setup.
 
 You also need `KOBO_USERNAME` and `KOBO_PASSWORD` exported in your shell (the compose file requires them):
 
@@ -88,7 +88,7 @@ make db-seed
 | API docs | http://localhost/docs |
 | Admin UI | http://localhost/admin |
 
-Environment variables and CIAM-related settings are documented in [AUTH.md](AUTH.md#environment-variables).
+Environment variables and OIDC settings (CIAM and Entra) are documented in [AUTH.md](AUTH.md#auth-specific-environment-variables).
 
 ## Endpoints
 
@@ -96,9 +96,14 @@ Full, interactive API documentation (request/response schemas, "Try it out") is 
 
 For local development the same docs are served at <http://localhost/docs> once the API is running.
 
-## Admin UI (Starlette Admin) and CIAM OIDC
+## Admin UI (Starlette Admin) and OIDC
 
-`/admin` is gated by **CIAM OpenID Connect** (authorization-code flow, confidential client). [CIAM Documentation](https://docs.ciam.auth.wfp.org/) is the authoritative reference for OIDC flow details, client registration, and errors.
+`/admin` is gated by **OpenID Connect** (authorization-code flow, confidential client). Two providers are supported:
+
+- **WFP CIAM** — partners / non-domain users ([CIAM documentation](https://docs.ciam.auth.wfp.org/))
+- **Microsoft Entra ID** — optional; domain / staff users in a single tenant ([Entra registration guide](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app))
+
+Unauthenticated users are sent to **`/auth/welcome`** to choose a provider, then `/auth/sign-in?provider=…` redirects to the IdP.
 
 > **Note:** HTTP Basic auth (`prism_app/auth.py`, `kobo_users` table) is separate and only gates geospatial API routes — not Admin.
 
@@ -106,11 +111,11 @@ For local development the same docs are served at <http://localhost/docs> once t
 
 | Concept | Detail |
 |---|---|
-| Identity | `users` table, keyed on stable `ciam_sub` from the ID token |
+| Identity | `users` table, keyed on `(auth_provider, ciam_sub)` from the ID token |
 | Authorization | `user_permissions` → `permissions.code` |
 | Library | [Authlib](https://docs.authlib.org/) (PKCE, token endpoint, JWKS) + joserfc |
 
-OIDC and related environment variables are listed in [AUTH.md](AUTH.md#ciam-oidc-and-admin-session).
+OIDC and related environment variables are listed in [AUTH.md](AUTH.md#auth-specific-environment-variables) (CIAM and Entra tables).
 
 ### Session secret (`PRISM_SESSION_SECRET`)
 

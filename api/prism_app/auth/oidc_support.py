@@ -1,16 +1,11 @@
-"""OIDC discovery, token exchange, and ID token verification for WFP CIAM.
-
-Authoritative product docs: https://docs.ciam.auth.wfp.org/
+"""OIDC discovery, token exchange, and ID token verification.
 
 Uses **Authlib** for the OAuth2 client (authorize URL with PKCE S256 via ``OAuth2Client``,
-``AsyncOAuth2Client`` token exchange with ``client_secret_basic``) and **joserfc**
-with Authlib ``CodeIDToken`` for JWKS-backed signature verification and claim validation.
+``AsyncOAuth2Client`` token exchange) and **joserfc** with Authlib ``CodeIDToken`` for
+JWKS-backed signature verification and claim validation.
 
-``PRISM_OIDC_ISSUER`` should match discovery JSON ``issuer``. A mistakenly pasted
-``.well-known/openid-configuration`` suffix is stripped before fetching discovery.
-
-Token exchange: authorization code grant with optional ``code_verifier`` (PKCE), confidential
-client authenticated with HTTP Basic per Authlib defaults.
+Provider-specific client settings come from :class:`~prism_app.auth.admin_settings.OidcProviderConfig`;
+session signing and post-logout redirect defaults still use :class:`~prism_app.auth.admin_settings.AdminAuthSettings`.
 """
 
 from __future__ import annotations
@@ -31,7 +26,7 @@ from authlib.oidc.core import CodeIDToken
 from joserfc import jwt as joserfc_jwt
 from joserfc.errors import InvalidKeyIdError
 from joserfc.jwk import KeySet
-from prism_app.auth.admin_settings import AdminAuthSettings
+from prism_app.auth.admin_settings import AdminAuthSettings, OidcProviderConfig
 
 logger = logging.getLogger(__name__)
 
@@ -78,34 +73,30 @@ def generate_pkce_pair() -> tuple[str, str]:
 
 
 def build_authorize_url(
-    settings: AdminAuthSettings,
+    provider: OidcProviderConfig,
     state: str,
     nonce: str,
     *,
     code_verifier: str,
 ) -> str:
-    """Build the CIAM authorization redirect URL (PKCE S256 via Authlib).
+    """Build the authorization redirect URL (PKCE S256 via Authlib).
 
     ``code_verifier`` is required; Authlib derives the ``code_challenge`` internally.
-
-    .. todo:: If a non-PKCE or pre-computed ``code_challenge`` flow is needed later,
-       add ``code_challenge`` / ``code_challenge_method`` keyword parameters and
-       fall back to manual ``urlencode`` construction (see git history).
     """
-    doc = get_oidc_discovery_doc(settings.oidc_issuer)
+    doc = get_oidc_discovery_doc(provider.issuer)
     auth_ep = doc["authorization_endpoint"]
     token_ep = doc["token_endpoint"]
 
-    prompt = settings.oidc_authorize_prompt.strip()
+    prompt = provider.authorize_prompt.strip()
     extra: dict[str, str] = {}
     if prompt:
         extra["prompt"] = prompt
 
     client = OAuth2Client(
         session=None,
-        client_id=settings.oidc_client_id,
-        redirect_uri=settings.oidc_redirect_uri,
-        scope=settings.oidc_scopes,
+        client_id=provider.client_id,
+        redirect_uri=provider.redirect_uri,
+        scope=provider.scopes,
         code_challenge_method="S256",
         authorization_endpoint=auth_ep,
         token_endpoint=token_ep,
@@ -121,6 +112,7 @@ def build_authorize_url(
 
 
 def build_rp_initiated_logout_url(
+    provider: OidcProviderConfig,
     settings: AdminAuthSettings,
     id_token_hint: str | None,
     *,
@@ -128,11 +120,8 @@ def build_rp_initiated_logout_url(
     post_logout_redirect_uri: str | None = None,
 ) -> str | None:
     """RP-initiated logout via discovery ``end_session_endpoint``."""
-    if not settings.oidc_configured:
-        return None
-
     try:
-        doc = get_oidc_discovery_doc(settings.oidc_issuer)
+        doc = get_oidc_discovery_doc(provider.issuer)
     except Exception as exc:  # noqa: BLE001
         logger.warning("OIDC discovery failed while building logout URL: %s", exc)
         return None
@@ -184,18 +173,23 @@ def verify_logout_return_state(
 
 
 async def exchange_code_for_tokens(
-    settings: AdminAuthSettings, code: str, code_verifier: str | None = None
+    provider: OidcProviderConfig, code: str, code_verifier: str | None = None
 ) -> dict[str, Any]:
     """Exchange authorization code for tokens using Authlib ``AsyncOAuth2Client``."""
-    doc = get_oidc_discovery_doc(settings.oidc_issuer)
+    doc = get_oidc_discovery_doc(provider.issuer)
     auth_ep = doc["authorization_endpoint"]
     token_ep = doc["token_endpoint"]
+    client_secret = (
+        provider.client_secret
+        if provider.token_endpoint_auth_method != "none"
+        else None
+    )
     async with AsyncOAuth2Client(
-        client_id=settings.oidc_client_id,
-        client_secret=settings.oidc_client_secret,
-        redirect_uri=settings.oidc_redirect_uri,
-        scope=settings.oidc_scopes,
-        token_endpoint_auth_method="client_secret_basic",
+        client_id=provider.client_id,
+        client_secret=client_secret,
+        redirect_uri=provider.redirect_uri,
+        scope=provider.scopes,
+        token_endpoint_auth_method=provider.token_endpoint_auth_method,
         code_challenge_method="S256",
         authorization_endpoint=auth_ep,
         token_endpoint=token_ep,
@@ -206,23 +200,23 @@ async def exchange_code_for_tokens(
             token_ep,
             grant_type="authorization_code",
             code=code,
-            redirect_uri=settings.oidc_redirect_uri,
+            redirect_uri=provider.redirect_uri,
             code_verifier=code_verifier,
         )
     return dict(token)
 
 
 def verify_id_token(
-    settings: AdminAuthSettings,
+    provider: OidcProviderConfig,
     id_token: str,
     *,
     nonce: str,
     access_token: str | None = None,
 ) -> dict[str, Any]:
     """Validate JWKS signature and OIDC ``CodeIDToken`` claims (issuer, audience, expiry, nonce)."""
-    doc = get_oidc_discovery_doc(settings.oidc_issuer)
+    doc = get_oidc_discovery_doc(provider.issuer)
     jwks_uri = doc["jwks_uri"]
-    issuer = doc.get("issuer", normalize_issuer_for_discovery(settings.oidc_issuer))
+    issuer = doc.get("issuer", normalize_issuer_for_discovery(provider.issuer))
 
     advertised = doc.get("id_token_signing_alg_values_supported")
     if isinstance(advertised, list) and advertised:
@@ -254,7 +248,7 @@ def verify_id_token(
 
     claims_params: dict[str, Any] = {
         "nonce": nonce,
-        "client_id": settings.oidc_client_id,
+        "client_id": provider.client_id,
     }
     if access_token:
         claims_params["access_token"] = access_token

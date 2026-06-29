@@ -2,6 +2,7 @@ import { PRISM_WHOAMI_API_URL } from './constants';
 
 export type PrismWhoami = {
   user_id: string;
+  auth_provider: string;
   ciam_sub: string;
   email: string | null;
   permissions: string[];
