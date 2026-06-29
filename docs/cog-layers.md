@@ -112,6 +112,14 @@ Params: `collection` (required), `date`, `band`, `bbox` (`minLon,minLat,maxLon,m
 
 WFP S3 buckets don't emit CORS headers, so the browser can't read them directly. `/cog_proxy?url=<presigned>` forwards the request server-side (preserving the `Range` header) and streams the response back with CORS headers from `CORSMiddleware`. The target host must match the S3 virtual-hosted allowlist regex (prevents open-proxy abuse); only a small set of content headers are forwarded; `200`/`206` pass through, anything else becomes `502`.
 
+This endpoint is **POC-only**. For production, configure CORS on the HDC/STAC S3 buckets instead of routing TIFF bytes through the API.
+
+#### Production path
+
+1. **Bucket CORS** — On each HDC/STAC bucket that serves COG assets, allow browser `GET` and `HEAD` from PRISM origins (production hosts plus local dev as needed). Expose `Content-Length`, `Content-Range`, `Accept-Ranges`, and `ETag`; allow the `Range` request header (required for COG byte-range reads).
+2. **Frontend** — In [`COGLayer/index.tsx`](../frontend/src/components/MapView/Layers/COGLayer/index.tsx), pass the presigned S3 URL directly to `DeckCOGLayer`'s `geotiff` prop instead of wrapping it in `/cog_proxy?url=...`.
+3. **Backend cleanup** — Remove `/cog_proxy`, `_S3_HOST_RE`, and `COG_PROXY_API` once direct fetches work in all deployed environments.
+
 ## UI parity with WMS
 
 COG layers reuse WMS plumbing wherever possible:
