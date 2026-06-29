@@ -1,5 +1,10 @@
+import type { Layer } from '@deck.gl/core';
 import type { GetTileDataOptions } from '@developmentseed/deck.gl-geotiff';
-import { COGLayer as DeckCOGLayer } from '@developmentseed/deck.gl-geotiff';
+import {
+  COGLayer as DeckCOGLayer,
+  type COGLayerProps as DeckCOGLayerProps,
+} from '@developmentseed/deck.gl-geotiff';
+import type { MinimalTileData } from '@developmentseed/deck.gl-raster';
 import type { GeoTIFF, Overview } from '@developmentseed/geotiff';
 import {
   createLegendGpuPipeline,
@@ -10,6 +15,10 @@ import { getPresignedCogUrls } from 'components/MapView/Layers/raster-utils';
 import { useDeckGLRegistration } from 'components/MapView/Layers/useDeckGLRegistration';
 import { appConfig } from 'config';
 import type { CogLayerProps, LegendDefinition } from 'config/types';
+import {
+  finishLayerLoading,
+  startLayerLoading,
+} from 'context/cogLayerLoadingStateSlice';
 import { addNotification } from 'context/notificationStateSlice';
 import { opacitySelector } from 'context/opacityStateSlice';
 import { availableDatesSelector } from 'context/serverStateSlice';
@@ -23,6 +32,37 @@ import { useDefaultDate } from 'utils/useDefaultDate';
 export interface COGLayerComponentProps {
   layer: CogLayerProps;
   before?: string;
+}
+
+type PrismCOGLayerExtraProps = {
+  onViewportTilesLoaded?: () => void;
+  onTileLoadFailed?: () => void;
+};
+
+/**
+ * RasterTileLayer does not forward TileLayer load callbacks. Re-inject
+ * `onViewportLoad` / `onTileError` on the inner TileLayer via `clone()` so the
+ * legend loading bar can track COG tile fetch + render completion.
+ */
+class PrismCOGLayer<
+  DataT extends MinimalTileData = MinimalTileData,
+> extends DeckCOGLayer<DataT> {
+  static layerName = 'PrismCOGLayer';
+
+  renderLayers(): Layer | null {
+    const inner = super.renderLayers();
+    if (!inner) {
+      return inner;
+    }
+    const { onViewportTilesLoaded, onTileLoadFailed } = this
+      .props as DeckCOGLayerProps<DataT> & PrismCOGLayerExtraProps;
+    return inner.clone({
+      onViewportLoad: onViewportTilesLoaded,
+      onTileError: () => {
+        onTileLoadFailed?.();
+      },
+    } as Parameters<Layer['clone']>[0]);
+  }
 }
 
 interface CogRenderConfig {
@@ -96,6 +136,15 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
     urls: PresignedCogUrl[];
   } | null>(null);
   const registeredIdsRef = useRef<string[]>([]);
+  const pendingItemsRef = useRef<Set<string>>(new Set());
+  const pendingUrlsKeyRef = useRef<string>('');
+  const markItemCompleteRef = useRef<(itemId: string) => void>(() => {});
+  markItemCompleteRef.current = (itemId: string) => {
+    pendingItemsRef.current.delete(itemId);
+    if (pendingItemsRef.current.size === 0) {
+      dispatch(finishLayerLoading(id));
+    }
+  };
   const presignedUrls = useMemo(
     () =>
       fetchedData !== null && fetchedData.dateString === dateString
@@ -136,6 +185,8 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
 
     let cancelled = false;
 
+    dispatch(startLayerLoading(id));
+
     const deploymentBbox = appConfig.map.boundingBox as
       | [number, number, number, number]
       | undefined;
@@ -144,12 +195,16 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
       .then((urls: PresignedCogUrl[]) => {
         if (!cancelled) {
           setFetchedData({ dateString, urls });
+          if (urls.length === 0) {
+            dispatch(finishLayerLoading(id));
+          }
         }
       })
       .catch(err => {
         if (!cancelled) {
           console.error(`COGLayer [${id}]: failed to load presigned URLs`, err);
           setFetchedData(null);
+          dispatch(finishLayerLoading(id));
           dispatch(
             addNotification({
               message: `Failed to load COG layer "${layer.title}": ${err.message}`,
@@ -163,6 +218,9 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
       cancelled = true;
       registeredIdsRef.current.forEach(lid => unregisterRef.current(lid));
       registeredIdsRef.current = [];
+      pendingItemsRef.current = new Set();
+      pendingUrlsKeyRef.current = '';
+      dispatch(finishLayerLoading(id));
       setFetchedData(null);
     };
   }, [id, collection, band, dateString, dispatch, layer.title, unregisterRef]);
@@ -178,6 +236,13 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
     }
 
     const deckLayerIds: string[] = [];
+    const urlsKey = `${dateString ?? ''}:${presignedUrls
+      .map(u => u.item_id)
+      .join(',')}`;
+    if (pendingUrlsKeyRef.current !== urlsKey) {
+      pendingUrlsKeyRef.current = urlsKey;
+      pendingItemsRef.current = new Set(presignedUrls.map(u => u.item_id));
+    }
 
     presignedUrls.forEach(({ item_id, url }) => {
       const deckLayerId = `cog-${id}-${item_id}`;
@@ -189,18 +254,19 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
 
       registerRef.current(
         deckLayerId,
-        new DeckCOGLayer<RasterTileData>({
+        new PrismCOGLayer<RasterTileData>({
           id: deckLayerId,
           geotiff: proxyUrl,
           getTileData: handlers.getTileData,
           renderTile: handlers.renderTile,
           opacity: effectiveOpacity,
-          onGeoTIFFLoad: geotiff => {
+          onGeoTIFFLoad: (geotiff: GeoTIFF) => {
             nodataRef.current = geotiff.nodata;
           },
-          // @ts-expect-error beforeId is injected by @deck.gl/mapbox in interleaved mode
+          onViewportTilesLoaded: () => markItemCompleteRef.current(item_id),
+          onTileLoadFailed: () => markItemCompleteRef.current(item_id),
           beforeId: before,
-        }),
+        } as DeckCOGLayerProps<RasterTileData> & PrismCOGLayerExtraProps),
       );
     });
 
@@ -210,6 +276,7 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
   }, [
     id,
     presignedUrls,
+    dateString,
     effectiveOpacity,
     before,
     currentLegendKey,

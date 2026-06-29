@@ -1,5 +1,6 @@
 import { LinearProgress, makeStyles } from '@material-ui/core';
 import { LayerKey } from 'config/types';
+import { cogLoadingLayerIdsSelector } from 'context/cogLayerLoadingStateSlice';
 import { loadingLayerIdsSelector as vectorLayerIdsSelector } from 'context/mapStateSlice/selectors';
 import { loadingLayerIdsSelector as tileLayerIdsSelector } from 'context/mapTileLoadingStateSlice';
 import { layersLoadingDatesIdsSelector } from 'context/serverStateSlice';
@@ -27,10 +28,12 @@ function LoadingBar({ layerId }: LoadingBarProps) {
   const tileLayerIds = useSelector(tileLayerIdsSelector);
   const vectorLayerIds = useSelector(vectorLayerIdsSelector);
   const layersLoadingDatesIds = useSelector(layersLoadingDatesIdsSelector);
+  const cogLayerIds = useSelector(cogLoadingLayerIdsSelector);
   const loading = layerId
     ? tileLayerIds.includes(layerId) ||
       vectorLayerIds.includes(layerId) ||
-      layersLoadingDatesIds.includes(layerId)
+      layersLoadingDatesIds.includes(layerId) ||
+      cogLayerIds.includes(layerId)
     : false;
   const classes = useStyles();
   return (
