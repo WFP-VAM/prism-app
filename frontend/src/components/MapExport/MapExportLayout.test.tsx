@@ -261,14 +261,16 @@ describe('MapExportLayout', () => {
             <MapExportLayout
               {...defaultProps}
               toggles={toggles}
-              invertedAdminBoundaryLimitPolygon={mockPolygon as any}
+              adminAreaClipPolygon={mockPolygon as any}
             />
           </ThemeProvider>
         </StyledEngineProvider>
       </Provider>,
     );
-    // Source should be rendered for mask
-    expect(container.textContent).toContain('mock-Source');
+    // ClipProvider wraps map layers when a clip polygon is supplied
+    expect(
+      container.querySelector('[data-testid="map-gl"]'),
+    ).toBeInTheDocument();
   });
   test('applies logo scale correctly', () => {
     const { container } = render(

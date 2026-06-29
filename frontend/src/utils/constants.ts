@@ -40,6 +40,7 @@ export const PRISM_WHOAMI_API_URL = `${API_URL}/whoami`;
 export const MAP_EXPORTS_MANAGE_PERMISSION = 'prism.map_exports.manage';
 export const ADMIN_ACCESS_PERMISSION = 'prism.admin.access';
 export const PRISM_SIGN_IN_URL = `${API_URL}/auth/sign-in`;
+export const PRISM_WELCOME_URL = `${API_URL}/auth/welcome`;
 export const PRISM_SIGN_OUT_URL = `${API_URL}/auth/sign-out`;
 
 /** Print-modal batch map layer; distinct from main-app `hazardLayerIds`. */

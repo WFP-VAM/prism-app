@@ -81,6 +81,48 @@ exports[`MapView renders as expected 1`] = `
                       class="MuiAccordion-heading css-cy7rkm-MuiAccordion-heading"
                     >
                       <button
+                        aria-controls="Water Anomaly"
+                        aria-expanded="false"
+                        class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters css-objw89-MuiButtonBase-root-MuiAccordionSummary-root"
+                        id="level1-WaterAnomaly"
+                        tabindex="0"
+                        type="button"
+                      >
+                        <span
+                          class="MuiAccordionSummary-content css-1rqjdob-MuiAccordionSummary-content"
+                        >
+                          <p
+                            class="MuiTypography-root MuiTypography-body1 css-1n3gmsb-MuiTypography-root"
+                          >
+                            Water Anomaly
+                          </p>
+                        </span>
+                        <span
+                          class="MuiAccordionSummary-expandIconWrapper css-1wnau0r-MuiAccordionSummary-expandIconWrapper"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+                            data-testid="ExpandMoreIcon"
+                            focusable="false"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                            />
+                          </svg>
+                        </span>
+                      </button>
+                    </h3>
+                  </div>
+                  <div
+                    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded MuiAccordion-gutters css-qk7z7-MuiPaper-root-MuiAccordion-root"
+                    style="--Paper-shadow: none;"
+                  >
+                    <h3
+                      class="MuiAccordion-heading css-cy7rkm-MuiAccordion-heading"
+                    >
+                      <button
                         aria-controls="Vegetation"
                         aria-expanded="false"
                         class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters css-objw89-MuiButtonBase-root-MuiAccordionSummary-root"

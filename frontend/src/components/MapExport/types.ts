@@ -2,6 +2,7 @@ import { AdminCodeString, LayerType } from 'config/types';
 import type {
   LngLatBounds,
   LngLatBoundsLike,
+  Map as MaplibreMap,
   StyleSpecification,
 } from 'maplibre-gl';
 import React from 'react';
@@ -69,7 +70,7 @@ export interface ExportParams {
   // Toggles
   toggles: MapExportToggles;
 
-  // Admin boundary selection for mask
+  // Admin boundary selection for regional clip
   selectedBoundaries: AdminCodeString[];
 }
 
@@ -109,8 +110,13 @@ export interface MapExportLayoutProps {
   // Optional bounds constraint
   maxBounds?: LngLatBoundsLike;
 
-  // Country mask polygon (computed from selected boundaries)
-  invertedAdminBoundaryLimitPolygon?: GeoJSON.Feature | null;
+  // Admin area clip polygon (computed from selected boundaries)
+  adminAreaClipPolygon?: GeoJSON.Feature<
+    GeoJSON.Polygon | GeoJSON.MultiPolygon
+  > | null;
+
+  /** Admin codes selected for regional mask; empty = full-country mask. */
+  selectedBoundaries?: AdminCodeString[];
 
   // For capturing the rendered output
   printRef?: React.RefObject<HTMLDivElement | null>;
@@ -136,6 +142,9 @@ export interface MapExportLayoutProps {
   // Selected layers to render on the map
   // NOTE: Layer rendering logic must be kept in sync with MapView/Map/index.tsx
   selectedLayers?: LayerType[];
+
+  // Callback when the export map instance is ready (for PMTiles boundary queries)
+  onBaseMapReady?: (map: MaplibreMap) => void;
 
   // Callback for map load (called after all sources are loaded)
   onMapLoad?: (e: any) => void;

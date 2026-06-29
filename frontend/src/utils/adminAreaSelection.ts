@@ -2,17 +2,44 @@ import {
   flattenAreaTree,
   getAdminBoundaryTree,
 } from 'components/MapView/Layers/BoundaryDropdown/utils';
-import type { AdminCodeString, BoundaryLayerProps } from 'config/types';
-import { getBoundaryLayersByAdminLevel } from 'config/utils';
+import type {
+  AdminCodeString,
+  AdminLevelType,
+  BoundaryLayerProps,
+} from 'config/types';
+import { getBoundaryLayers, getBoundaryLayersByAdminLevel } from 'config/utils';
 import type { LayerData } from 'context/layers/layer-data';
 import type { Feature, FeatureCollection } from 'geojson';
 import type i18n from 'i18next';
+
+import { adminCodesEqual, normalizeAdminCode } from './adminAreaCodes';
+
+export { adminCodesEqual, normalizeAdminCode } from './adminAreaCodes';
 
 /** Admin area identity for schedules, alerts, and admin display. */
 export type AdminAreaRef = {
   area_id: string;
   name: string;
 };
+
+/** Map a tree depth to the boundary layer file that owns that admin level. */
+export function getBoundaryLayerForTreeLevel(
+  treeLayer: BoundaryLayerProps,
+  treeLevel: AdminLevelType,
+): BoundaryLayerProps {
+  const levelIndex = treeLevel - 1;
+  if (levelIndex >= 0 && levelIndex < treeLayer.adminLevelCodes.length) {
+    const codeProperty = treeLayer.adminLevelCodes[levelIndex];
+    const matchingLayer = getBoundaryLayers().find(
+      layer => layer.adminCode === codeProperty,
+    );
+    if (matchingLayer) {
+      return matchingLayer;
+    }
+  }
+
+  return getBoundaryLayersByAdminLevel(treeLevel);
+}
 
 export function resolveAdminAreaRefs(
   codes: AdminCodeString[],
@@ -27,10 +54,10 @@ export function resolveAdminAreaRefs(
   const flat = flattenAreaTree(getAdminBoundaryTree(data, layer, i18nLocale));
 
   return codes.map(code => {
-    const entry = flat.find(area => area.adminCode === code);
+    const entry = flat.find(area => adminCodesEqual(area.adminCode, code));
     return {
-      area_id: code,
-      name: entry?.label ?? code,
+      area_id: normalizeAdminCode(code) ?? code,
+      name: entry?.label ?? String(code),
     };
   });
 }
@@ -95,15 +122,24 @@ export function featureMatchesSelectedAdminCode(
   }
 
   if (
-    layer.adminLevelCodes.some(
-      levelCode => String(properties[levelCode]) === code,
+    layer.adminLevelCodes.some(levelCode =>
+      adminCodesEqual(properties[levelCode], code),
     )
   ) {
     return true;
   }
 
   const leafCode = properties[layer.adminCode];
-  return String(leafCode) === code || String(leafCode).startsWith(code);
+  const normalizedCode = normalizeAdminCode(code);
+  if (normalizedCode === null) {
+    return false;
+  }
+
+  const normalizedLeaf = normalizeAdminCode(leafCode);
+  return (
+    normalizedLeaf === normalizedCode ||
+    (normalizedLeaf !== null && normalizedLeaf.startsWith(normalizedCode))
+  );
 }
 
 export function filterFeaturesBySelectedAdminCodes(
@@ -146,23 +182,35 @@ export function resolveFeaturesForAdminCodes(
   const flat = flattenAreaTree(
     getAdminBoundaryTree(treeData, treeLayer, i18nLocale),
   );
-  const codeToLevel = new Map(
-    flat.map(area => [area.adminCode, area.level] as const),
+  const codeToLevel = new Map<AdminCodeString, AdminLevelType>(
+    flat.flatMap(area => {
+      const normalizedCode = normalizeAdminCode(area.adminCode);
+      return normalizedCode ? [[normalizedCode, area.level] as const] : [];
+    }),
   );
 
   return codes.flatMap(code => {
-    const level = codeToLevel.get(code);
+    const normalizedCode = normalizeAdminCode(code);
+    if (normalizedCode === null) {
+      return [];
+    }
+
+    const level = codeToLevel.get(normalizedCode);
     if (level === undefined) {
       return [];
     }
 
-    const boundaryLayer = getBoundaryLayersByAdminLevel(level);
+    const boundaryLayer = getBoundaryLayerForTreeLevel(treeLayer, level);
     const layerData = getLayerData(boundaryLayer.id);
-    const feature = layerData?.features?.find(
-      f => String(f.properties?.[boundaryLayer.adminCode]) === code,
+    const matches = (layerData?.features ?? []).filter(f =>
+      adminCodesEqual(f.properties?.[boundaryLayer.adminCode], normalizedCode),
     );
 
-    return feature ? [feature] : [];
+    if (boundaryLayer.format === 'pmtiles') {
+      return matches;
+    }
+
+    return matches.slice(0, 1);
   });
 }
 

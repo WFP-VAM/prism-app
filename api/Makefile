@@ -64,6 +64,30 @@ BACKEND_COVERAGE=poetry run pytest --cov=. --cov-fail-under=50 --cov-report term
 api-coverage:
 	docker compose run --no-deps api ${BACKEND_COVERAGE}
 
+# AA flood + storm + threshold emails → Ethereal (Playwright in api image). PRISM_E2E_* optional on host.
+api-alert-email-e2e:
+	./scripts/alert_email_ethereal_e2e_docker.sh
+
+# AA test email via Ethereal (develop ``db`` on Docker network + Playwright map capture).
+# Usage: make send-test-email EMAIL=you@example.com [WORKER=aa-flood|aa-storm]
+WORKER ?= aa-flood
+EMAIL ?= you@example.com
+send-test-email:
+	PRISM_ALERTS_USE_ETHEREAL=true $(DEV_COMPOSE) run --rm \
+	  -e PRISM_ALERTS_USE_ETHEREAL \
+	  export_map_worker \
+	  python -m prism_app.workers.alert_runner $(WORKER) --test-email='$(EMAIL)'
+
+# Scheduled map export notification via Ethereal (sample job; no DB). Preview URL on stdout.
+# Usage: make send-schedule-export-test-email EMAIL=you@example.com [JOB_ID=<uuid>]
+JOB_ID ?=
+send-schedule-export-test-email:
+	PRISM_ALERTS_USE_ETHEREAL=true $(DEV_COMPOSE) run --rm \
+	  -e PRISM_ALERTS_USE_ETHEREAL \
+	  export_map_worker \
+	  python -m prism_app.workers.schedule_export_email_runner --test-email='$(EMAIL)' \
+	  $(if $(JOB_ID),--job-id=$(JOB_ID),)
+
 # Run tests for all components.
 test:
 	$(MAKE) api-lint

@@ -2,8 +2,7 @@ import { Box, Typography } from '@mui/material';
 import SimpleDropdown from 'components/Common/SimpleDropdown';
 import { AdminLevelType } from 'config/types';
 import { useSafeTranslation } from 'i18n';
-import { range } from 'lodash';
-import { getAdminLevelCount } from 'utils/admin-utils';
+import { useEffectiveAdminLevelOptions } from 'utils/universal-country-admin';
 
 import { colorBlackSx, formContainerSx } from '../formComponentStyles';
 
@@ -19,10 +18,10 @@ function AdminLevelSelector({
   disabled = false,
 }: AdminLevelSelectorProps) {
   const { t } = useSafeTranslation();
-
-  const adminLevelOptions: [AdminLevelType, string][] = range(
-    getAdminLevelCount(),
-  ).map(i => [(i + 1) as AdminLevelType, t(`Admin ${i + 1}`)]);
+  const rawOptions = useEffectiveAdminLevelOptions();
+  const adminLevelOptions = rawOptions.map(
+    ([level, label]) => [level, t(label)] as [AdminLevelType, string],
+  );
 
   return (
     <Box sx={formContainerSx()}>

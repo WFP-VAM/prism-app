@@ -10,7 +10,7 @@ interface LegendMarkdownProps {
 
 function LegendParagraph({ children }: { children?: ReactNode }) {
   return (
-    <Typography variant="h5" sx={legendBodyTextSx}>
+    <Typography variant="h5" component="p" sx={legendBodyTextSx}>
       {children}
     </Typography>
   );
@@ -20,25 +20,28 @@ function LegendMarkdown({ children }: LegendMarkdownProps) {
   const components: Components = {
     p: LegendParagraph,
     a: ({ children: linkChildren, href }) => (
-      <Box
+      <Typography
         component="a"
+        variant="h5"
         href={href}
         target="_blank"
         rel="noopener noreferrer"
         sx={legendLinkSx}
       >
         {linkChildren}
-      </Box>
+      </Typography>
     ),
   };
 
   return (
-    <Markdown
-      components={components}
-      allowedElements={['p', 'h5', 'strong', 'em', 'a']}
-    >
-      {children}
-    </Markdown>
+    <Box sx={{ overflow: 'visible' }}>
+      <Markdown
+        components={components}
+        allowedElements={['p', 'h5', 'strong', 'em', 'a', 'br']}
+      >
+        {children}
+      </Markdown>
+    </Box>
   );
 }
 

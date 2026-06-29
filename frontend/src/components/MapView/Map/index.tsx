@@ -51,11 +51,14 @@ import {
   layerUsesSymbolAnchorOnly,
   stackLayersForMapPaintOrder,
 } from 'utils/map-layer-before-utils';
+import { initPmtilesProtocol } from 'utils/pmtiles-utils';
 import { useMapState } from 'utils/useMapState';
 
 import AnticipatoryActionFloodLayer from '../Layers/AnticipatoryActionFloodLayer';
 import GeojsonDataLayer from '../Layers/GeojsonDataLayer';
 import { mapStyle } from './utils';
+
+initPmtilesProtocol();
 
 type LayerComponentsMap<U extends LayerType> = {
   [T in U['type']]: {

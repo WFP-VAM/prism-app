@@ -65,14 +65,12 @@ def signed_out_response() -> HTMLResponse:
     return _render_template("signed_out.html", status_code=200)
 
 
-def welcome_response(
-    *, sign_in_href: str = "/auth/sign-in?next=%2Fadmin%2F"
-) -> HTMLResponse:
-    """Landing page for unauthenticated admin access; links to the CIAM sign-in flow."""
+def welcome_response(*, sign_in_options: list[dict[str, str]]) -> HTMLResponse:
+    """Landing page for unauthenticated admin access; links to configured sign-in providers."""
     return _render_template(
         "welcome.html",
         status_code=200,
-        sign_in_href=sign_in_href,
+        sign_in_options=sign_in_options,
     )
 
 

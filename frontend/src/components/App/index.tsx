@@ -14,7 +14,9 @@ import Login from 'components/Login';
 import MapView from 'components/MapView';
 import NavBar from 'components/NavBar';
 import Notifier from 'components/Notifier';
+import UniversalBetaDisclaimerModal from 'components/UniversalBetaDisclaimerModal';
 import { authRequired } from 'config';
+import { CountryIsoProvider } from 'context/CountryIsoProvider';
 import KhmerFont from 'fonts/Khmer-Regular.ttf';
 import RobotoFont from 'fonts/Roboto-Regular.ttf';
 import { useDashboardConfig } from 'hooks/useDashboardConfig';
@@ -28,6 +30,7 @@ import {
   Switch,
   useParams,
 } from 'react-router-dom';
+import { isUniversalDeployment } from 'utils/universal-utils';
 
 if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development') {
   if (process.env.REACT_APP_SENTRY_URL) {
@@ -81,22 +84,57 @@ function DashboardRouteSwitcher() {
   return <DashboardView />;
 }
 
-const Wrapper = memo(() => (
+const AppShell = memo(() => (
   <div id="app">
     <NavBar />
     <div style={{ paddingTop: '56px', height: 'calc(100% - 56px)' }}>
       <Switch>
-        <Route path="/dashboard/:path?" exact>
+        <Route
+          path={['/country/:iso3/dashboard/:path?', '/dashboard/:path?']}
+          exact
+        >
           <DashboardRouteSwitcher />
         </Route>
-        <Route>
+        <Route path={['/country/:iso3', '/']}>
           <MapView />
           <AuthModal />
         </Route>
       </Switch>
     </div>
+    {isUniversalDeployment() && <UniversalBetaDisclaimerModal />}
   </div>
 ));
+
+function AppRoutes() {
+  const isUniversal = isUniversalDeployment();
+
+  return (
+    <Switch>
+      {isUniversal && (
+        <Route path="/country/:iso3/export" exact>
+          <CountryIsoProvider>
+            <ExportView />
+          </CountryIsoProvider>
+        </Route>
+      )}
+      <Route path="/export" exact>
+        <ExportView />
+      </Route>
+      {isUniversal && (
+        <Route path={['/country/:iso3', '/']}>
+          <CountryIsoProvider>
+            <AppShell />
+          </CountryIsoProvider>
+        </Route>
+      )}
+      {!isUniversal && (
+        <Route>
+          <AppShell />
+        </Route>
+      )}
+    </Switch>
+  );
+}
 
 function App() {
   useDashboardConfig();
@@ -106,16 +144,7 @@ function App() {
   // The rendered content
   const renderedContent = useMemo(() => {
     if (isAuthenticated || !authRequired) {
-      return (
-        <Switch>
-          <Route path="/export" exact>
-            <ExportView />
-          </Route>
-          <Route>
-            <Wrapper />
-          </Route>
-        </Switch>
-      );
+      return <AppRoutes />;
     }
     return <Login />;
   }, [isAuthenticated]);

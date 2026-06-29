@@ -13,12 +13,14 @@ function PanelButton({
   handleClick,
   isMobile,
   buttonText,
+  disabled = false,
 }: {
   panel: any;
   selected: boolean;
   handleClick: (event: React.MouseEvent<HTMLElement>) => void;
   isMobile: boolean;
   buttonText: string;
+  disabled?: boolean;
 }) {
   const { numberOfActiveLayers } = useLayers();
   const analysisData = useSelector(analysisResultSelector);
@@ -41,14 +43,15 @@ function PanelButton({
       : ({ children }: { children: React.ReactNode }) => children;
 
   const commonStyles = {
-    backgroundColor: selected ? cyanBlue : undefined,
-    color: selected ? black : 'white',
+    backgroundColor: selected && !disabled ? cyanBlue : undefined,
+    color: selected && !disabled ? black : 'white',
+    opacity: disabled ? 0.45 : undefined,
   };
 
   const renderButtonContent = (
     <Typography
       style={{
-        color: selected ? black : '#FFFF',
+        color: selected && !disabled ? black : '#FFFF',
         textTransform: 'none',
       }}
     >
@@ -62,6 +65,7 @@ function PanelButton({
       style={commonStyles}
       onClick={handleClick}
       aria-label={buttonText}
+      disabled={disabled}
     >
       <Wrap>{panel.icon}</Wrap>
     </IconButton>
@@ -71,6 +75,7 @@ function PanelButton({
       startIcon={<Wrap>{panel.icon}</Wrap>}
       endIcon={panel.children ? <ExpandMore fontSize="small" /> : null}
       onClick={handleClick}
+      disabled={disabled}
     >
       {renderButtonContent}
     </Button>

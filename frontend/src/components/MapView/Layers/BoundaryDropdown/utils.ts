@@ -9,6 +9,7 @@ import { isEnglishLanguageSelected } from 'i18n';
 import i18n from 'i18next';
 import { sortBy } from 'lodash';
 import { Map as MaplibreMap } from 'maplibre-gl';
+import { normalizeAdminCode } from 'utils/adminAreaCodes';
 
 /**
  * A tree of admin boundary areas, starting from
@@ -61,9 +62,15 @@ export function getAdminBoundaryTree(
       return partialTree;
     }
     const [currentLevelCode, ...otherLevelsCodes] = levelsLeft;
+    const branchCode = normalizeAdminCode(fp[currentLevelCode]);
+    if (branchCode === null) {
+      return partialTree;
+    }
     const newBranch = addBranchToTree(
-      partialTree.children[fp[currentLevelCode]] ?? {
-        adminCode: fp[currentLevelCode],
+      partialTree.children[branchCode] ?? {
+        // Normalize to string so all UI state (selection, dropdown values, URL
+        // params) is consistent. Universal PMTiles store these as numbers.
+        adminCode: branchCode,
         key: fp[layer.adminLevelNames[level]],
         label: fp[locationLevelNames[level]] ?? '',
         level: (level + 1) as AdminLevelType,
@@ -79,7 +86,7 @@ export function getAdminBoundaryTree(
     }
     const newChildren = {
       ...partialTree.children,
-      [fp[currentLevelCode]]: newBranch,
+      [branchCode]: newBranch,
     };
     return { ...partialTree, children: newChildren };
   };

@@ -1,6 +1,5 @@
 import { Box, Dialog, DialogContent } from '@mui/material';
 import { usePostHog } from '@posthog/react';
-import mask from '@turf/mask';
 import { appConfig, rawLayers, safeCountry } from 'config';
 import { AdminCodeString, LayerKey } from 'config/types';
 import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
@@ -26,7 +25,6 @@ import { useHistory, useLocation } from 'react-router-dom';
 import {
   adminAreaFilenameSegment,
   buildCountryAdminFilenameStem,
-  filterFeaturesBySelectedAdminCodes,
   resolveAdminAreaRefs,
 } from 'utils/adminAreaSelection';
 import { isBoundaryLayer } from 'utils/boundary-layers-utils';
@@ -37,8 +35,10 @@ import {
   getPossibleDatesForLayer,
 } from 'utils/server-utils';
 import { stringHash } from 'utils/string-utils';
+import { useAdminAreaClipForExport } from 'utils/useAdminAreaClipForExport';
 import { useBoundaryData } from 'utils/useBoundaryData';
 import useResizeObserver from 'utils/useOnResizeObserver';
+import { usePreloadBoundaryLayersForClip } from 'utils/usePreloadBoundaryLayersForClip';
 
 import {
   dateRangeSelector,
@@ -63,6 +63,7 @@ import {
 } from '../../../utils/mapExportSchedulesApi';
 import { ALL_ASPECT_RATIO_OPTIONS } from '../../MapExport/aspectRatioConstants';
 import { downloadToFile } from '../../MapView/utils';
+import { formatExportUrlForClipboard } from './batchExportUrls';
 import { buildBatchExportDatesDisplay } from './batchMapExport/batchExportArtifactFilename';
 import { useBatchMapExportJobsActions } from './batchMapExport/useBatchMapExportJobs';
 import { useMapExportTemplate } from './batchMapExport/useMapExportTemplate';
@@ -151,17 +152,21 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const [previewMapWidth, setPreviewMapWidth] = useState<number | null>(null);
   const [previewMapHeight, setPreviewMapHeight] = useState<number | null>(null);
 
-  // Get the style and layers of the old map
-  const selectedMapStyle = selectedMap?.getStyle();
+  const boundaryLayersVersion = usePreloadBoundaryLayersForClip({
+    enabled: open && toggles.countryMask,
+    dispatch,
+  });
 
-  if (selectedMapStyle && !toggles.mapLabelsVisibility) {
-    selectedMapStyle.layers = selectedMapStyle?.layers.filter(
-      x => !x.id.includes('label'),
-    );
-  }
-
-  const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] =
-    useState(null);
+  const adminAreaClipPolygon = useAdminAreaClipForExport({
+    enabled: toggles.countryMask,
+    country: safeCountry,
+    selectedBoundaries,
+    boundaryData: data,
+    boundaryLayer,
+    i18nLocale: i18n,
+    boundaryLayersVersion,
+    map: selectedMap,
+  });
 
   const [dateRangeForBatchMaps, setDateRangeForBatchMaps] = useState<{
     startDate: number | null;
@@ -593,32 +598,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     t,
   ]);
 
-  useEffect(() => {
-    // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
-    // which runs ./scripts/preprocess-layers.js
-    if (selectedBoundaries.length === 0) {
-      fetch(`/data/${safeCountry}/admin-boundary-unified-polygon.json`)
-        .then(response => response.json())
-        .then(polygonData => {
-          const maskedPolygon = mask(polygonData as any);
-          setAdminBoundaryPolygon(maskedPolygon as any);
-        })
-        .catch(error => console.error('Error:', error));
-      return;
-    }
-
-    const filteredData = data && {
-      ...data,
-      features: filterFeaturesBySelectedAdminCodes(
-        data.features,
-        boundaryLayer,
-        selectedBoundaries,
-      ),
-    };
-    const masked = mask(filteredData as any);
-    setAdminBoundaryPolygon(masked as any);
-  }, [data, selectedBoundaries, selectedBoundaries.length]);
-
   const handleDownloadMenuClose = () => {
     setDownloadMenuAnchorEl(null);
   };
@@ -641,7 +620,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       getFormattedDate(dateRange.startDate, 'snake') || 'no_date'
     }`;
     const docGeneration = async () => {
-      // png is generally preferred for images containing lines and text.
       const ext = format === 'pdf' ? 'png' : format;
       const elem = printRef.current;
       if (!elem) {
@@ -679,6 +657,67 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
 
     handleClose();
     setDownloadMenuAnchorEl(null);
+  };
+
+  const copyBatchMapUrls = async () => {
+    const { startDate, endDate } = dateRangeForBatchMaps;
+
+    if (!startDate || !endDate) {
+      dispatch(
+        addNotification({
+          type: 'error',
+          message: t('Date range not set for batch download'),
+        }),
+      );
+      return;
+    }
+
+    if (!printSelectedLayer) {
+      dispatch(
+        addNotification({
+          type: 'error',
+          message: t('Select a layer for batch maps'),
+        }),
+      );
+      return;
+    }
+
+    const timestampsForCopy =
+      filteredBatchDates.length > 0 ? [filteredBatchDates[0]] : [];
+    const constructedUrls = mapExportTemplate.buildBatchUrlsForTimestamps(
+      timestampsForCopy,
+      printSelectedLayer,
+    );
+
+    if (constructedUrls.length === 0) {
+      dispatch(
+        addNotification({
+          type: 'error',
+          message: t('No dates found in the selected range'),
+        }),
+      );
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(
+        formatExportUrlForClipboard(constructedUrls[0]),
+      );
+      dispatch(
+        addNotification({
+          type: 'success',
+          message: t('Batch map URL copied to clipboard.'),
+        }),
+      );
+    } catch (error) {
+      dispatch(
+        addNotification({
+          type: 'error',
+          message: t('Could not copy batch map settings. Please try again.'),
+        }),
+      );
+      console.error('Copy batch map settings failed:', error);
+    }
   };
 
   const downloadBatch = async (format: 'pdf' | 'png') => {
@@ -872,7 +911,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       legendPosition,
       legendScale,
       printRef,
-      invertedAdminBoundaryLimitPolygon,
+      adminAreaClipPolygon,
       handleClose,
       setTitleText,
       debounceCallback,
@@ -893,6 +932,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
       handleDownloadMenuClose,
       download,
       downloadBatch,
+      copyBatchMapUrls,
       isDownloading,
       defaultFooterText,
       setSelectedBoundaries,

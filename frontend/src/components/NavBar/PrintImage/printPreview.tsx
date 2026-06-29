@@ -27,8 +27,12 @@ import {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import useLayers from 'utils/layers-utils';
-import { getLayersCoverage } from 'utils/server-utils';
+import useLayers, { isDateCompatibleLayer } from 'utils/layers-utils';
+import { isBasemapLabelLayer } from 'utils/map-utils';
+import {
+  getLayersCoverage,
+  getPossibleDatesForLayer,
+} from 'utils/server-utils';
 
 import {
   dateRangeSelector,
@@ -61,7 +65,7 @@ function PrintPreview() {
   const { t } = useSafeTranslation();
 
   const { logo } = appConfig.header || {};
-  const { selectedLayersWithDateSupport } = useLayers();
+  const { selectedLayersWithDateSupport, selectedLayers } = useLayers();
   const selectedLayerId = printConfig?.selectedLayerId ?? null;
   // Style clone + MapExportLayout remount are expensive; defer so layer Select can
   // close and paint before cloneDeep runs (keeps preview correct once caught up).
@@ -86,8 +90,20 @@ function PrintPreview() {
         ...getDisplayBoundaryLayers().reverse(),
       ];
     }
+
+    // Normal print + admin-area clip: same as ExportView — render active main-map
+    // layers via MapExportLayout so the data overlay can apply clip-path.
+    if (printConfig?.toggles.countryMask && selectedLayers.length > 0) {
+      return selectedLayers;
+    }
+
     return [];
-  }, [deferredLayerIdForPreview, printConfig?.toggles.batchMapsVisibility]);
+  }, [
+    deferredLayerIdForPreview,
+    printConfig?.toggles.batchMapsVisibility,
+    printConfig?.toggles.countryMask,
+    selectedLayers,
+  ]);
 
   const mapLabelsVisibility = printConfig?.toggles.mapLabelsVisibility ?? true;
 
@@ -98,18 +114,16 @@ function PrintPreview() {
 
   // MapLibre mutates `getStyle()` in place after load; React only sees stable
   // `selectedMap` ref → memoized clones go stale until something else changes deps.
-  // Bump epoch on open + styledata while print dialog visible.
+  // Bump epoch on open. Avoid subscribing to `styledata`: some layers emit it
+  // continuously (especially with clip), which can keep the preview map in a
+  // perpetual "reloading" state.
   const [mainMapStyleEpoch, setMainMapStyleEpoch] = useState(0);
   useEffect(() => {
     if (!selectedMap || !printConfig?.open) {
       return undefined;
     }
-    const bumpEpoch = () => setMainMapStyleEpoch(n => n + 1);
-    bumpEpoch();
-    selectedMap.on('styledata', bumpEpoch);
-    return () => {
-      selectedMap.off('styledata', bumpEpoch);
-    };
+    setMainMapStyleEpoch(n => n + 1);
+    return undefined;
   }, [printConfig?.open, selectedMap]);
 
   // Clone the main map style for the preview MapGL instance. Never mutate
@@ -125,11 +139,10 @@ function PrintPreview() {
     }
     const style = cloneDeep(rawStyle);
 
-    // When batch maps has a selected layer, strip application layers from this
-    // snapshot (raster tiles and all `layer-` prefixed entries), leaving a pure
-    // basemap. Boundary layers and the WMS/date layer are drawn by React children
-    // (`MapExportLayout`) so order stays explicit and we avoid main-map side
-    // effects (e.g. a layer with `boundary` that removes other boundary layers).
+    // When layers are rendered by MapExportLayout (batch export or admin-area clip),
+    // strip application layers from this snapshot (raster tiles and all `layer-`
+    // prefixed entries), leaving a pure basemap. Boundary and data layers are drawn
+    // by React children so order stays explicit and we avoid main-map side effects.
     if (printSelectedLayers.length > 0) {
       const isLayerToRemove = (layer: { id: string; type: string }) =>
         layer.type === 'raster' || layer.id.startsWith('layer-');
@@ -148,7 +161,7 @@ function PrintPreview() {
     }
     // Respect the print dialog “map labels” toggle on this clone only.
     if (!mapLabelsVisibility) {
-      style.layers = style.layers.filter(x => !x.id.includes('label'));
+      style.layers = style.layers.filter(layer => !isBasemapLabelLayer(layer));
     }
     return style;
   }, [
@@ -170,17 +183,44 @@ function PrintPreview() {
       ? filteredBatchDates[filteredBatchDates.length - 1]
       : dateRange.startDate;
 
+  const layersForCoverage = useMemo(() => {
+    if (
+      printConfig?.toggles.batchMapsVisibility &&
+      deferredLayerIdForPreview &&
+      LayerDefinitions[deferredLayerIdForPreview] &&
+      isDateCompatibleLayer(
+        LayerDefinitions[deferredLayerIdForPreview],
+        availableDates,
+      )
+    ) {
+      const batchLayer = LayerDefinitions[deferredLayerIdForPreview];
+      return [
+        {
+          ...batchLayer,
+          dateItems: getPossibleDatesForLayer(batchLayer, availableDates),
+        },
+      ];
+    }
+
+    return selectedLayersWithDateSupport.filter(
+      layer =>
+        layer.id !== 'anticipatory_action_flood' &&
+        layer.id !== 'anticipatory_action_storm',
+    );
+  }, [
+    printConfig?.toggles.batchMapsVisibility,
+    deferredLayerIdForPreview,
+    availableDates,
+    selectedLayersWithDateSupport,
+  ]);
+
   const layersCoverage = useMemo(
     () =>
       getLayersCoverage(
-        selectedLayersWithDateSupport.filter(
-          layer =>
-            layer.id !== 'anticipatory_action_flood' &&
-            layer.id !== 'anticipatory_action_storm',
-        ),
+        layersForCoverage,
         previewDate as SelectedDateTimestamp,
       ),
-    [previewDate, selectedLayersWithDateSupport],
+    [previewDate, layersForCoverage],
   );
 
   const filteredFloodStations = useFilteredFloodStations(
@@ -195,10 +235,12 @@ function PrintPreview() {
         deferredLayerIdForPreview ?? '',
         String(previewDate ?? ''),
         togglesSlice?.batchMapsVisibility ? '1' : '0',
+        togglesSlice?.countryMask ? '1' : '0',
         togglesSlice?.mapLabelsVisibility ? '1' : '0',
       ].join('|'),
     [
       togglesSlice?.batchMapsVisibility,
+      togglesSlice?.countryMask,
       togglesSlice?.mapLabelsVisibility,
       previewDate,
       deferredLayerIdForPreview,
@@ -233,7 +275,8 @@ function PrintPreview() {
     logoScale,
     legendPosition,
     legendScale,
-    invertedAdminBoundaryLimitPolygon,
+    adminAreaClipPolygon,
+    selectedBoundaries,
     printRef,
     footerHeight,
     bottomLogo,
@@ -315,7 +358,8 @@ function PrintPreview() {
         bounds={geographicBoundsForExport}
         mapStyle={processedMapStyle}
         maxBounds={maxBounds}
-        invertedAdminBoundaryLimitPolygon={invertedAdminBoundaryLimitPolygon}
+        adminAreaClipPolygon={adminAreaClipPolygon}
+        selectedBoundaries={selectedBoundaries}
         printRef={printRef}
         titleRef={titleRef}
         footerRef={footerRef}

@@ -1,5 +1,6 @@
 // Pre-process layers availability dates to avoid doing it on each page load.
 // @ts-nocheck
+import area from '@turf/area';
 import { featureCollection } from '@turf/helpers';
 import simplify from '@turf/simplify';
 import union from '@turf/union';
@@ -12,25 +13,110 @@ import { getFormattedDate } from '../src/utils/date-utils';
 // the same dates are generated on all machines
 process.env.TZ = 'UTC';
 
+// @turf/area returns square meters; drop tiny islands below this threshold.
+const MIN_ISLAND_AREA_M2 = 10_000_000;
+
+const isValidFeature = feature =>
+  feature?.type === 'Feature' && feature?.geometry?.coordinates;
+
+const preprocessFeature = feature => {
+  if (feature.geometry.type === 'Polygon') {
+    const polygonFeature = {
+      type: 'Feature',
+      properties: {},
+      geometry: feature.geometry,
+    };
+    const polygonArea = area(polygonFeature);
+    if (polygonArea < MIN_ISLAND_AREA_M2) {
+      return null;
+    }
+    return {
+      ...feature,
+      geometry: {
+        type: 'Polygon',
+        coordinates: [feature.geometry.coordinates[0]],
+      },
+    };
+  }
+
+  if (feature.geometry.type === 'MultiPolygon') {
+    const coordinates = feature.geometry.coordinates
+      .map(polygon => {
+        const nestedPolygonFeature = {
+          type: 'Feature',
+          properties: {},
+          geometry: {
+            type: 'Polygon',
+            coordinates: polygon,
+          },
+        };
+        const nestedArea = area(nestedPolygonFeature);
+        if (nestedArea < MIN_ISLAND_AREA_M2) {
+          console.warn('Nested MultiPolygon area too small:', nestedArea);
+          return null;
+        }
+        return [polygon[0]];
+      })
+      .filter(Boolean);
+
+    if (coordinates.length === 0) {
+      return null;
+    }
+
+    return {
+      ...feature,
+      geometry: {
+        type: 'MultiPolygon',
+        coordinates,
+      },
+    };
+  }
+
+  console.warn('Invalid geometry type:', feature.geometry.type);
+  return null;
+};
+
 // Function to merge boundary data and return a single polygon
 const mergeBoundaryData = boundaryData => {
-  const features = (boundaryData?.features || []).filter(
-    f => f?.geometry?.coordinates,
-  );
+  const features = (boundaryData?.features ?? [])
+    .map(preprocessFeature)
+    .filter(isValidFeature);
+
   if (features.length === 0) {
     return null;
   }
+
+  let mergedBoundaryData;
   if (features.length === 1) {
-    return simplify(features[0], { tolerance: 0.02 });
+    mergedBoundaryData = features[0];
+  } else {
+    try {
+      mergedBoundaryData = union(featureCollection(features));
+    } catch (error) {
+      console.warn('Warning: Failed to union boundary features.', error);
+      return null;
+    }
   }
 
-  // @turf/union v7+ expects FeatureCollection, not (a,b) pairwise union.
-  const mergedBoundaryData = union(featureCollection(features));
-  return simplify(mergedBoundaryData, { tolerance: 0.02 });
+  if (!mergedBoundaryData?.geometry?.coordinates) {
+    return null;
+  }
+
+  return simplify(mergedBoundaryData, {
+    tolerance: 0.001,
+    highQuality: true,
+  });
 };
 
 async function preprocessBoundaryLayer(country, boundaryLayer) {
-  if (country === 'shared') {
+  if (country === 'shared' || !boundaryLayer?.path) {
+    return;
+  }
+  if (
+    !boundaryLayer ||
+    boundaryLayer.format === 'pmtiles' ||
+    boundaryLayer.path?.startsWith('http')
+  ) {
     return;
   }
   const outputFilePath = path.join(
@@ -38,24 +124,26 @@ async function preprocessBoundaryLayer(country, boundaryLayer) {
     `../public/data/${country}/admin-boundary-unified-polygon.json`,
   );
 
-  // Check if the output file already exists
-  if (!fs.existsSync(outputFilePath)) {
-    const filePath = boundaryLayer.path;
-    const fileContent = fs.readFileSync(
-      path.join(__dirname, '../public/', filePath),
-      'utf-8',
-    );
-    const boundaryData = JSON.parse(fileContent);
-    try {
-      const preprocessedData = mergeBoundaryData(boundaryData);
-      fs.writeFileSync(outputFilePath, JSON.stringify(preprocessedData));
-    } catch (error) {
+  const filePath = boundaryLayer.path;
+  const fileContent = fs.readFileSync(
+    path.join(__dirname, '../public/', filePath),
+    'utf-8',
+  );
+  const boundaryData = JSON.parse(fileContent);
+  try {
+    const preprocessedData = mergeBoundaryData(boundaryData);
+    if (!preprocessedData) {
       console.warn(
-        `Warning: Failed to merge boundary data for ${country}.`,
-        error,
+        `Warning: No valid boundary geometry produced for ${country}.`,
       );
       return;
     }
+    fs.writeFileSync(outputFilePath, JSON.stringify(preprocessedData));
+  } catch (error) {
+    console.warn(
+      `Warning: Failed to merge boundary data for ${country}.`,
+      error,
+    );
   }
 }
 
@@ -155,13 +243,20 @@ const countryDirs = fs
       );
       await preprocessValidityPeriods(country, dateLayersToProcess);
 
+      // Indonesia uses a manually curated admin-boundary-unified-polygon.json
+      if (country === 'indonesia') {
+        return dateLayersToProcess.length > 0 ? country : null;
+      }
+
       const boundaryLayerToProcess = Object.values(layersData)
         .filter(layer => layer.type === 'boundary' && layer.admin_level_names)
         .sort(
           (a, b) => a.admin_level_names.length - b.admin_level_names.length,
         )[0];
 
-      await preprocessBoundaryLayer(country, boundaryLayerToProcess);
+      if (boundaryLayerToProcess) {
+        await preprocessBoundaryLayer(country, boundaryLayerToProcess);
+      }
 
       return dateLayersToProcess.length > 0 ? country : null;
     }),

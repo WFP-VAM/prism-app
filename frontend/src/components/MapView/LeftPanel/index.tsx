@@ -1,5 +1,5 @@
 import { Box, Drawer } from '@mui/material';
-import { AnticipatoryAction, Panel } from 'config/types';
+import { AnticipatoryAction, Panel, PanelSize } from 'config/types';
 import {
   AALayerIds,
   areChartLayersAvailable,
@@ -10,8 +10,10 @@ import {
   setTabValue,
 } from 'context/leftPanelStateSlice';
 import { setSelectedBoundaries } from 'context/mapSelectionLayerStateSlice';
+import { useCountryIso } from 'context/useCountryIso';
 import React, { memo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { isUniversalLandingMode } from 'utils/universal-utils';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
 import { useMapState } from 'utils/useMapState';
 
@@ -27,6 +29,7 @@ import LayersPanel from './layersPanel';
 import { toggleRemoveLayer } from './layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 import { leftPanelRootSx, tabsWrapperSx } from './leftPanelStyles';
 import TablesPanel from './TablesPanel';
+import UniversalLandingPanel from './UniversalLandingPanel';
 import {
   areTablesAvailable,
   isAnticipatoryActionDroughtAvailable,
@@ -60,6 +63,8 @@ const TabPanel = memo(({ children, value, index, ...other }: TabPanelProps) => (
 
 const LeftPanel = memo(() => {
   const dispatch = useDispatch();
+  const { iso3 } = useCountryIso();
+  const isLandingMode = isUniversalLandingMode(iso3);
   const tabValue = useSelector(leftPanelTabValueSelector);
   const {
     actions: { addLayer, removeLayer },
@@ -73,7 +78,7 @@ const LeftPanel = memo(() => {
     AALayerIds.includes(x.id as AnticipatoryAction),
   );
 
-  const isPanelHidden = tabValue === Panel.None;
+  const isPanelHidden = !isLandingMode && tabValue === Panel.None;
 
   const renderedChartsPanel = React.useMemo(() => {
     if (!areChartLayersAvailable) {
@@ -182,6 +187,31 @@ const LeftPanel = memo(() => {
     }
     return null;
   }, [tabValue]);
+
+  if (isLandingMode) {
+    return (
+      <Drawer
+        slotProps={{
+          paper: {
+            elevation: 1,
+            style: {
+              marginTop: '56px',
+              height: 'calc(100vh - 56px)',
+              backgroundColor: 'white',
+              maxWidth: '100%',
+              width: PanelSize.medium,
+              borderRadius: '0 8px 8px 8px',
+            },
+          },
+        }}
+        variant="persistent"
+        anchor="left"
+        open
+      >
+        <UniversalLandingPanel />
+      </Drawer>
+    );
+  }
 
   return (
     <Drawer

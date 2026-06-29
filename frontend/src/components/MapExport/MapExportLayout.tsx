@@ -43,7 +43,9 @@ import {
 import { useAAMarkerScalePercent } from 'utils/map-utils';
 import useResizeObserver from 'utils/useOnResizeObserver';
 
+import { isClipDebugEnabled } from '../../utils/clipRasterProtocol';
 import { getAspectRatioDecimal } from './aspectRatioConstants';
+import { ClipProvider } from './ClipProvider';
 import {
   mapExportFooterOverlaySx,
   mapExportMapContainerSx,
@@ -121,7 +123,8 @@ function MapExportLayout({
   legendScale,
   bounds,
   mapStyle: mapStyleProp,
-  invertedAdminBoundaryLimitPolygon,
+  adminAreaClipPolygon,
+  selectedBoundaries = [],
   printRef,
   titleRef,
   footerRef,
@@ -133,6 +136,7 @@ function MapExportLayout({
   activePanel,
   adminLevelLayersWithFillPattern = [],
   selectedLayers = [],
+  onBaseMapReady,
   onMapLoad,
   onBoundsChange,
   onMapDimensionsChange,
@@ -157,6 +161,9 @@ function MapExportLayout({
     () => stackLayersForMapPaintOrder(selectedLayers),
     [selectedLayers],
   );
+
+  const clipPolygon =
+    toggles.countryMask && adminAreaClipPolygon ? adminAreaClipPolygon : null;
 
   const firstBoundaryLayerMapId = getFirstBoundaryLayerMapId(
     mapRef.current?.getMap(),
@@ -292,6 +299,8 @@ function MapExportLayout({
     // Data layers should be inserted below symbols/labels
     const map = mapRef.current?.getMap();
     if (map) {
+      onBaseMapReady?.(map);
+
       const { layers } = map.getStyle();
       const symbolLayer = layers?.find(layer => layer.type === 'symbol');
       if (symbolLayer) {
@@ -643,58 +652,50 @@ function MapExportLayout({
           onLoad={handleMapLoad}
           mapStyle={processedMapStyle || mapStyle.toString()}
         >
-          {/* Render selected layers - KEEP IN SYNC with MapView/Map/index.tsx */}
-          {/* Pass 'before' prop to insert layers below labels/symbols */}
-          {stackLayers.map((layer, index) => {
-            const { component } = componentTypes[layer.type];
-            return createElement(component as any, {
-              key: layer.id,
-              layer,
-              before: getBeforeId(index, layerUsesSymbolAnchorOnly(layer)),
-            });
-          })}
-          {/* AA Drought markers */}
-          {activePanel === Panel.AnticipatoryActionDrought &&
-            aaMarkers.map(marker => (
-              <Marker
-                key={`marker-${marker.district}`}
-                longitude={marker.longitude}
-                latitude={marker.latitude}
-                anchor="center"
-              >
-                <div style={{ transform: `scale(${scalePercent})` }}>
-                  {marker.icon}
-                </div>
-              </Marker>
-            ))}
-          {/* AA Flood station markers */}
-          {activePanel === Panel.AnticipatoryActionFlood &&
-            floodStations.map(station => (
-              <FloodStationMarker
-                key={`flood-station-${station.station_id}`}
-                station={station}
-                stationSummary={station}
-                interactive={false}
-              />
-            ))}
-          {toggles.countryMask && invertedAdminBoundaryLimitPolygon && (
-            <Source
-              id="mask-overlay"
-              type="geojson"
-              data={invertedAdminBoundaryLimitPolygon}
-            >
-              <Layer
-                id="mask-layer-overlay"
-                type="fill"
-                source="mask-overlay"
-                layout={{}}
-                paint={{
-                  'fill-color': '#000',
-                  'fill-opacity': 0.7,
-                }}
-              />
-            </Source>
-          )}
+          <ClipProvider
+            polygon={clipPolygon}
+            clipAdminLevelData={selectedBoundaries.length > 0}
+          >
+            {clipPolygon && isClipDebugEnabled() && (
+              <Source id="clip-debug-outline" type="geojson" data={clipPolygon}>
+                <Layer
+                  id="clip-debug-outline-line"
+                  type="line"
+                  paint={{ 'line-color': '#ff00ff', 'line-width': 2 }}
+                />
+              </Source>
+            )}
+            {stackLayers.map((layer, index) => {
+              const { component } = componentTypes[layer.type];
+              return createElement(component as any, {
+                key: layer.id,
+                layer,
+                before: getBeforeId(index, layerUsesSymbolAnchorOnly(layer)),
+              });
+            })}
+            {activePanel === Panel.AnticipatoryActionDrought &&
+              aaMarkers.map(marker => (
+                <Marker
+                  key={`marker-${marker.district}`}
+                  longitude={marker.longitude}
+                  latitude={marker.latitude}
+                  anchor="center"
+                >
+                  <div style={{ transform: `scale(${scalePercent})` }}>
+                    {marker.icon}
+                  </div>
+                </Marker>
+              ))}
+            {activePanel === Panel.AnticipatoryActionFlood &&
+              floodStations.map(station => (
+                <FloodStationMarker
+                  key={`flood-station-${station.station_id}`}
+                  station={station}
+                  stationSummary={station}
+                  interactive={false}
+                />
+              ))}
+          </ClipProvider>
         </MapGL>
       </Box>
     </Box>

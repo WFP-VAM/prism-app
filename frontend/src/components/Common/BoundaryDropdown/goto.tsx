@@ -15,7 +15,7 @@ import { useSelector } from 'react-redux';
 
 const GO_TO_MENU_WIDTH = 350;
 
-function GoToBoundaryDropdown() {
+function GoToBoundaryDropdown({ disabled = false }: { disabled?: boolean }) {
   const { t } = useSafeTranslation();
   const map = useSelector(mapSelector);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -25,6 +25,9 @@ function GoToBoundaryDropdown() {
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (disabled) {
+      return;
+    }
     setAnchorEl(event.currentTarget);
   };
 
@@ -32,13 +35,16 @@ function GoToBoundaryDropdown() {
     setAnchorEl(null);
   };
 
+  const disabledStyles = disabled ? { opacity: 0.45 } : undefined;
+
   return (
     <>
       {!smDown && (
         <Button
           startIcon={<RoomOutlinedIcon />}
           onClick={handleClick}
-          sx={{ color: 'white' }}
+          disabled={disabled}
+          sx={{ color: 'white', ...disabledStyles }}
         >
           <Typography style={{ color: '#FFF', textTransform: 'none' }}>
             {t('Go To')}
@@ -47,8 +53,9 @@ function GoToBoundaryDropdown() {
       )}
       {!mdUp && (
         <IconButton
-          style={{ color: 'white' }}
+          style={{ color: 'white', ...disabledStyles }}
           onClick={handleClick}
+          disabled={disabled}
           size="large"
         >
           <RoomOutlinedIcon />

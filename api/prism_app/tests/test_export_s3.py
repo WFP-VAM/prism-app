@@ -1,16 +1,15 @@
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 from prism_app.export_s3 import (
     DEFAULT_EXPORT_MAP_S3_BUCKET,
-    get_export_map_s3_bucket_and_prefix,
     is_file_artifact_uri,
     local_path_from_file_uri,
+    map_export_s3_client,
     normalize_export_map_s3_object_prefix,
     parse_export_map_s3_bucket_env,
     parse_s3_uri,
-    public_maps_folder_prefix,
-    public_maps_folder_uri,
     put_map_export_bytes_local,
     s3_key_for_map_export,
     slug_s3_path_segment,
@@ -21,6 +20,20 @@ def test_default_export_map_s3_bucket_parses():
     assert parse_export_map_s3_bucket_env(DEFAULT_EXPORT_MAP_S3_BUCKET) == (
         "prism-wfp",
         "batch-maps",
+    )
+
+
+def test_map_export_s3_client_uses_internal_and_public_endpoints(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("AWS_ENDPOINT_URL", "http://rustfs:9000")
+    monkeypatch.setenv("AWS_PRESIGN_ENDPOINT_URL", "http://localhost:9000")
+    with patch("prism_app.export_s3.boto3.client") as mock_client:
+        map_export_s3_client()
+        map_export_s3_client(for_presign=True)
+    assert mock_client.call_args_list[0].kwargs["endpoint_url"] == "http://rustfs:9000"
+    assert (
+        mock_client.call_args_list[1].kwargs["endpoint_url"] == "http://localhost:9000"
     )
 
 
@@ -49,41 +62,6 @@ def test_s3_key_for_map_export_public_maps():
         )
         == "public_maps/mozambique/precip_blended_dekad/jid.pdf"
     )
-    export_url = (
-        "https://prism.example/export?date={date}"
-        "&hazardLayerIds=precip_blended_dekad"
-    )
-    assert (
-        public_maps_folder_prefix(export_url, country="Mozambique")
-        == "public_maps/mozambique/precip_blended_dekad/"
-    )
-
-
-def test_public_maps_folder_uri_includes_bucket_and_prefix(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    monkeypatch.delenv("EXPORT_MAP_LOCAL_OUTPUT_DIR", raising=False)
-    monkeypatch.delenv("EXPORT_MAP_S3_BUCKET", raising=False)
-    export_url = (
-        "https://prism.example/export?date={date}"
-        "&hazardLayerIds=precip_blended_dekad"
-    )
-    assert public_maps_folder_uri(export_url, country="Mozambique") == (
-        "s3://prism-wfp/batch-maps/public_maps/mozambique/precip_blended_dekad/"
-    )
-    assert get_export_map_s3_bucket_and_prefix() == ("prism-wfp", "batch-maps")
-
-
-def test_public_maps_folder_uri_local_file_scheme(
-    monkeypatch: pytest.MonkeyPatch,
-    tmp_path: Path,
-) -> None:
-    monkeypatch.setenv("EXPORT_MAP_S3_BUCKET", "")
-    monkeypatch.setenv("EXPORT_MAP_LOCAL_OUTPUT_DIR", str(tmp_path))
-    export_url = "https://prism.example/export?date={date}&hazardLayerIds=my_layer"
-    uri = public_maps_folder_uri(export_url, country="cambodia")
-    assert uri.startswith("file://")
-    assert "public_maps/cambodia/my_layer" in uri
     assert (
         s3_key_for_map_export(
             "jid",

@@ -27,6 +27,7 @@ import {
   getLayerMapId,
   useMapCallback,
 } from 'utils/map-utils';
+import { useClippedFeatureCollection } from 'utils/useClippedFeatureCollection';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { useMapState } from 'utils/useMapState';
 
@@ -116,6 +117,13 @@ const ImpactLayer = memo(({ layer, before }: ComponentProps) => {
   const loadingLayerIds = useSelector(loadingLayerIdsSelector);
   const isLayerLoading = loadingLayerIds.includes(layer.id);
 
+  const sourceData =
+    data &&
+    (data.impactFeatures.features.length === 0
+      ? data.boundaries
+      : data.impactFeatures);
+  const clippedSourceData = useClippedFeatureCollection(sourceData);
+
   // Track the last attempted date/extent to prevent infinite retry loops on failure
   const lastAttemptedRef = useRef<{
     date?: number;
@@ -178,8 +186,12 @@ const ImpactLayer = memo(({ layer, before }: ComponentProps) => {
     );
   }
 
-  const { impactFeatures, boundaries } = data;
+  const { impactFeatures } = data;
   const noMatchingDistricts = impactFeatures.features.length === 0;
+
+  if (!clippedSourceData) {
+    return null;
+  }
 
   // TODO: maplibre: fix any
   const fillPaint: FillLayerSpecification['paint'] = {
@@ -193,10 +205,7 @@ const ImpactLayer = memo(({ layer, before }: ComponentProps) => {
   };
 
   return (
-    <Source
-      type="geojson"
-      data={noMatchingDistricts ? boundaries : impactFeatures}
-    >
+    <Source type="geojson" data={clippedSourceData}>
       <Layer
         id={getLayerMapId(layer.id, 'line')}
         type="line"

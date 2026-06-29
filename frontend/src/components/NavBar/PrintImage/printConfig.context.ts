@@ -5,6 +5,7 @@ import {
 import { AdminCodeString, LayerKey } from 'config/types';
 import type { LngLatBounds } from 'maplibre-gl';
 import React, { createContext } from 'react';
+import type { AdminAreaClipPolygon } from 'utils/adminAreaClipPolygon';
 import { BatchCadence } from 'utils/batchCadenceUtils';
 import { DateCompatibleLayer } from 'utils/server-utils';
 
@@ -59,6 +60,7 @@ export type PrintConfigContextType = {
     handleDownloadMenuClose: () => void;
     download: (format: 'pdf' | 'jpeg' | 'png') => void;
     downloadBatch: (format: 'pdf' | 'png') => Promise<void>;
+    copyBatchMapUrls: () => Promise<void>;
     isDownloading: boolean;
     defaultFooterText: string;
     selectedBoundaries: AdminCodeString[];
@@ -75,7 +77,7 @@ export type PrintConfigContextType = {
     footerText: string;
     footerRef: React.RefObject<HTMLDivElement | null>;
     titleHeight: number;
-    invertedAdminBoundaryLimitPolygon: any;
+    adminAreaClipPolygon: AdminAreaClipPolygon | null;
     printRef: React.RefObject<HTMLDivElement | null>;
     dateRange: {
       startDate: number | null;

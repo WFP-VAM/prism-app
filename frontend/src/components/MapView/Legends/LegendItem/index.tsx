@@ -287,88 +287,92 @@ const LegendItem = memo(
       [dateCoverage, t],
     );
 
-    return (
-      <ListItem disableGutters dense>
-        <Paper
-          className="legend-card"
-          sx={legendItemPaperSx}
-          elevation={forPrinting ? 0 : undefined}
-          style={
-            forPrinting
-              ? {
-                  border: `1px solid ${lightGrey}`,
-                }
-              : undefined
-          }
-        >
-          <Grid style={{ display: 'flex' }}>
-            <Typography style={{ flexGrow: 1 }} variant="h4">
-              {title}
-            </Typography>
-            <LayerContentPreview layerId={id} />
-          </Grid>
-          <Divider />
-          {renderedLegend}
-          {showDescription && (
-            <>
-              <LoadingBar layerId={id} />
-              {renderedChildren}
-              {coverageText && (
-                <Typography variant="h5" sx={legendCoverageTextSx}>
-                  {t('Coverage')}: {coverageText}
-                </Typography>
-              )}
-            </>
-          )}
-          {!forPrinting && (
-            <>
-              <Divider style={{ margin: '8px 0px' }} />
-              <Box sx={legendItemActionsSx}>
-                <Tooltip title={t('Opacity') as string}>
-                  <IconButton size="small" onClick={openOpacity}>
-                    <Opacity fontSize="small" />
+    const legendCard = (
+      <Paper
+        className="legend-card"
+        sx={legendItemPaperSx}
+        elevation={forPrinting ? 0 : undefined}
+        style={
+          forPrinting
+            ? {
+                border: `1px solid ${lightGrey}`,
+              }
+            : undefined
+        }
+      >
+        <Grid style={{ display: 'flex' }}>
+          <Typography style={{ flexGrow: 1 }} variant="h4">
+            {title}
+          </Typography>
+          {!forPrinting && <LayerContentPreview layerId={id} />}
+        </Grid>
+        <Divider />
+        {renderedLegend}
+        {showDescription && (
+          <>
+            {!forPrinting && <LoadingBar layerId={id} />}
+            {renderedChildren}
+            {coverageText && (
+              <Typography variant="h5" sx={legendCoverageTextSx}>
+                {t('Coverage')}: {coverageText}
+              </Typography>
+            )}
+          </>
+        )}
+        {!forPrinting && (
+          <>
+            <Divider style={{ margin: '8px 0px' }} />
+            <Box sx={legendItemActionsSx}>
+              <Tooltip title={t('Opacity') as string}>
+                <IconButton size="small" onClick={openOpacity}>
+                  <Opacity fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              {isAnalysis && (
+                <Tooltip title={t('Reverse colors') as string}>
+                  <IconButton
+                    size="small"
+                    onClick={() => dispatch(analysisLayerInvertColors())}
+                  >
+                    <SwapVert fontSize="small" />
                   </IconButton>
                 </Tooltip>
-                {isAnalysis && (
-                  <Tooltip title={t('Reverse colors') as string}>
-                    <IconButton
-                      size="small"
-                      onClick={() => dispatch(analysisLayerInvertColors())}
-                    >
-                      <SwapVert fontSize="small" />
+              )}
+              <>
+                <Popover
+                  id={opacityId}
+                  open={open}
+                  anchorEl={opacityEl}
+                  onClose={closeOpacity}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                  }}
+                >
+                  {renderedOpacitySlider}
+                </Popover>
+                {isAnalysis ? <AnalysisDownloadButton /> : layerDownloadOptions}
+                {canShowRemoveButton && (
+                  <Tooltip title={t('Remove layer') as string}>
+                    <IconButton size="small" onClick={remove}>
+                      <Close fontSize="small" />
                     </IconButton>
                   </Tooltip>
                 )}
-                <>
-                  <Popover
-                    id={opacityId}
-                    open={open}
-                    anchorEl={opacityEl}
-                    onClose={closeOpacity}
-                    anchorOrigin={{
-                      vertical: 'bottom',
-                      horizontal: 'left',
-                    }}
-                  >
-                    {renderedOpacitySlider}
-                  </Popover>
-                  {isAnalysis ? (
-                    <AnalysisDownloadButton />
-                  ) : (
-                    layerDownloadOptions
-                  )}
-                  {canShowRemoveButton && (
-                    <Tooltip title={t('Remove layer') as string}>
-                      <IconButton size="small" onClick={remove}>
-                        <Close fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                </>
-              </Box>
-            </>
-          )}
-        </Paper>
+              </>
+            </Box>
+          </>
+        )}
+      </Paper>
+    );
+
+    if (forPrinting) {
+      return <div>{legendCard}</div>;
+    }
+
+    return (
+      <ListItem disableGutters dense>
+        {legendCard}
       </ListItem>
     );
   },
