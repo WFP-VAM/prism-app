@@ -19,9 +19,25 @@ export function coordsToAffine(
   return [dLon, 0, lons[0]!, 0, dLat, lats[0]!];
 }
 
+const Y_LABELS = new Set(['y', 'latitude', 'lat']);
+const X_LABELS = new Set(['x', 'longitude', 'lon']);
+
+/** Pick the [y, x] spatial dim names from the full ordered dim list. */
+export function resolveSpatialDims(dims: string[]): [string, string] {
+  const yDim =
+    dims.find(d => Y_LABELS.has(d.toLowerCase())) ?? dims[dims.length - 2];
+  const xDim =
+    dims.find(d => X_LABELS.has(d.toLowerCase())) ?? dims[dims.length - 1];
+  return [yDim!, xDim!];
+}
+
 /**
  * Synthesize GeoZarr group attrs for plain CF-style cubes that lack
  * spatial / geo-proj conventions. Passed to deck.gl-zarr via `metadata`.
+ *
+ * `spatial:dimensions` lists only the spatial (y, x) axes — deck.gl-zarr reads
+ * the full ordered dim list from the zarr array itself and pins the remaining
+ * non-spatial dims (e.g. init_time, lead_time, ensemble_member) via `selection`.
  */
 export function buildGeoZarrMetadata(
   dims: string[],
@@ -32,7 +48,7 @@ export function buildGeoZarrMetadata(
   const width = lons.length;
 
   const metadata: GeoZarrMetadataAttrs = {
-    'spatial:dimensions': dims,
+    'spatial:dimensions': resolveSpatialDims(dims),
     'spatial:transform': coordsToAffine(lats, lons),
     'spatial:shape': [height, width],
     'spatial:registration': 'pixel',

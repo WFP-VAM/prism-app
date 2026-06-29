@@ -6,6 +6,7 @@ import { fetchCoverageLayerDays, formatUrl, WFS, WMS } from 'prism-common';
 import {
   fetchDynamicalStacMetadata,
   generateDailyDatesFromExtent,
+  generateValidTimeDates,
 } from '../components/MapView/Layers/ZarrLayer/stac';
 import {
   appConfig,
@@ -901,6 +902,25 @@ export async function getAvailableDatesForLayer(
       zarrLayer.stacItem,
       zarrLayer.repoUrl,
     );
+
+    if (zarrLayer.subtype === 'dynamical_forecast') {
+      const { openZarrDataset } =
+        await import('../components/MapView/Layers/ZarrLayer/icechunk-store');
+      const dataset = await openZarrDataset(meta.repoUrl, zarrLayer.variable, {
+        mode: 'forecast',
+        ensemble: zarrLayer.ensemble ?? false,
+        initTimeDim: zarrLayer.initTimeDim,
+        leadTimeDim: zarrLayer.leadTimeDim,
+        ensembleDim: zarrLayer.ensembleDim,
+      });
+      const dates = generateValidTimeDates(
+        dataset.initTimes!,
+        dataset.leadTimes!,
+        date => generateDefaultDateItem(date),
+      );
+      return { [layerId]: dates };
+    }
+
     const dates = generateDailyDatesFromExtent(
       meta.temporalStart,
       meta.temporalEnd,

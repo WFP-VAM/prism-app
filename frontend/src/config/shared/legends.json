@@ -512,5 +512,16 @@
     { "value": 80, "label": "80%", "color": "#757575" },
     { "value": 90, "label": "90%", "color": "#5c5c5c" },
     { "value": 100, "label": "100%", "color": "#424242" }
+  ],
+  "dynamical_precip_mmh": [
+    { "value": 0, "label": "0 mm/h", "color": "#fafafa" },
+    { "value": 0.1, "label": "0.1 mm/h", "color": "#e8f4fa" },
+    { "value": 0.5, "label": "0.5 mm/h", "color": "#c6e6f5" },
+    { "value": 1, "label": "1 mm/h", "color": "#9dd3ef" },
+    { "value": 2.5, "label": "2.5 mm/h", "color": "#6bb6e0" },
+    { "value": 5, "label": "5 mm/h", "color": "#3d96d0" },
+    { "value": 10, "label": "10 mm/h", "color": "#1878c0" },
+    { "value": 15, "label": "15 mm/h", "color": "#0052a3" },
+    { "value": 20, "label": "≥ 20 mm/h", "color": "#003080" }
   ]
 }
