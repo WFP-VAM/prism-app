@@ -134,6 +134,7 @@ def whoami(prism: _AnySession):
     user, codes = prism
     return {
         "user_id": str(user.id),
+        "auth_provider": user.auth_provider,
         "ciam_sub": user.ciam_sub,
         "email": user.email,
         "permissions": sorted(codes),
