@@ -4,7 +4,7 @@ Replaces the published-only partial unique index with a broader constraint so
 admin cannot create two draft or staging rows for the same country.
 
 Revision ID: aa_drought_unique_country_status
-Revises: add_aa_drought_dataset_table
+Revises: add_users_auth_provider
 Create Date: 2026-06-16
 
 """
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 from alembic import op
 
 revision = "aa_drought_unique_country_status"
-down_revision = "add_aa_drought_dataset_table"
+down_revision = "add_users_auth_provider"
 branch_labels = None
 depends_on = None
 
