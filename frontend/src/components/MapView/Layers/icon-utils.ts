@@ -75,19 +75,20 @@ export const ensureSDFIconsLoaded = (map: Map | undefined) => {
       return;
     }
 
-    // Create SDF-compatible icon if it doesn't exist
+    // Create SDF-compatible icon if it doesn't exist in the map style sprite
     const canvas = createSDFIcon(iconName, 11);
     const dataUrl = canvas.toDataURL();
 
-    map.loadImage(dataUrl, (err, image) => {
-      if (err) {
+    void map
+      .loadImage(dataUrl)
+      .then(({ data: image }) => {
+        if (!map.hasImage(iconName)) {
+          // Add as SDF icon so icon-color works properly
+          map.addImage(iconName, image, { sdf: true });
+        }
+      })
+      .catch(err => {
         console.error(`Failed to load SDF icon ${iconName}:`, err);
-        return;
-      }
-      if (image && !map.hasImage(iconName)) {
-        // Add as SDF icon so icon-color works
-        map.addImage(iconName, image, { sdf: true });
-      }
-    });
+      });
   });
 };

@@ -323,17 +323,17 @@ function MapExportLayout({
   }, [bounds]);
 
   const loadDataLayerAssets = useCallback(
-    (map: maplibregl.Map | undefined) => {
+    async (map: maplibregl.Map | undefined) => {
       if (!map) {
         return;
       }
 
-      Promise.all(
-        adminLevelLayersWithFillPattern.map(layer =>
+      await Promise.all([
+        ...adminLevelLayersWithFillPattern.map(layer =>
           addFillPatternImagesInMap(layer, map),
         ),
-      );
-      loadStormIcons(map, false);
+        loadStormIcons(map, false),
+      ]);
       ensureSDFIconsLoaded(map);
     },
     [adminLevelLayersWithFillPattern],
@@ -671,7 +671,7 @@ function MapExportLayout({
         <MapGL
           ref={baseMapRef}
           dragRotate={false}
-          preserveDrawingBuffer
+          canvasContextAttributes={{ preserveDrawingBuffer: true }}
           initialViewState={effectiveInitialViewState}
           onLoad={handleBaseMapLoad}
           mapStyle={basemapMapStyle}

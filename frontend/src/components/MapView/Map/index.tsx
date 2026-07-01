@@ -28,6 +28,7 @@ import { dashboardModeSelector } from 'context/dashboardStateSlice';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { setBounds, setLocation } from 'context/mapBoundaryInfoStateSlice';
 import { setLoadingLayerIds } from 'context/mapTileLoadingStateSlice';
+import { useCountryIso } from 'context/useCountryIso';
 import {
   LngLatBoundsLike,
   Map as MaplibreMap,
@@ -52,11 +53,22 @@ import {
   stackLayersForMapPaintOrder,
 } from 'utils/map-layer-before-utils';
 import { initPmtilesProtocol } from 'utils/pmtiles-utils';
+import {
+  getUniversalLandingView,
+  isUniversalDeployment,
+  isUniversalLandingMode,
+} from 'utils/universal-utils';
 import { useMapState } from 'utils/useMapState';
 
 import AnticipatoryActionFloodLayer from '../Layers/AnticipatoryActionFloodLayer';
 import GeojsonDataLayer from '../Layers/GeojsonDataLayer';
-import { mapStyle } from './utils';
+import {
+  mapBackdropColor,
+  mapFlatProjection,
+  mapProjection,
+  mapSky,
+  mapStyle,
+} from './utils';
 
 initPmtilesProtocol();
 
@@ -114,6 +126,16 @@ const MapComponent = memo(
     const { selectedLayers, boundaryLayerId } = useLayers();
 
     const mapState = useMapState();
+    const { iso3 } = useCountryIso();
+    const universalLandingView = getUniversalLandingView();
+    const isUniversalLanding = isUniversalLandingMode(iso3);
+    // Globe projection is scoped to the universal deployment only. It is used on
+    // first load, through the zoom-in animation, and for the entire session.
+    // Every other deployment always stays on the flat (mercator) projection.
+    const projection = isUniversalDeployment()
+      ? mapProjection
+      : mapFlatProjection;
+    const isGlobeProjection = projection.type === 'globe';
     const selectedMap = mapState?.maplibreMap();
     const isGlobalMap = mapState?.isGlobalMap;
     const dashboardMode = useSelector(dashboardModeSelector);
@@ -311,28 +333,44 @@ const MapComponent = memo(
 
     // Use captured viewport if available and not in edit mode
     const initialBounds =
-      !isGlobalMap &&
-      dashboardMode !== DashboardMode.EDIT &&
-      mapState.capturedViewport
-        ? mapState.capturedViewport
-        : mapState.minMapBounds;
+      isUniversalLanding && universalLandingView
+        ? universalLandingView.bounds
+        : !isGlobalMap &&
+            dashboardMode !== DashboardMode.EDIT &&
+            mapState.capturedViewport
+          ? mapState.capturedViewport
+          : mapState.minMapBounds;
 
     return (
       <MapGL
         key={smDown ? 'mobile' : 'desktop'}
         ref={mapRef}
         // preserveDrawingBuffer is required for the map to be exported as an image. Used in reportDoc.tsx
-        preserveDrawingBuffer
+        canvasContextAttributes={{ preserveDrawingBuffer: true }}
         dragRotate={false}
         minZoom={minZoom}
         maxZoom={maxZoom}
         initialViewState={{
           bounds: initialBounds as LngLatBoundsLike,
-          fitBoundsOptions: smDown
-            ? undefined
-            : { padding: fitBoundsOptions.padding },
+          ...(isUniversalLanding && universalLandingView && !smDown
+            ? {
+                padding: universalLandingView.padding,
+                fitBoundsOptions: { padding: universalLandingView.padding },
+              }
+            : {
+                fitBoundsOptions: smDown
+                  ? undefined
+                  : { padding: fitBoundsOptions.padding },
+              }),
         }}
         mapStyle={mapStyle}
+        projection={projection}
+        sky={isGlobeProjection ? mapSky : undefined}
+        style={{
+          width: '100%',
+          height: '100%',
+          ...(isGlobeProjection ? { background: mapBackdropColor } : {}),
+        }}
         onLoad={onMapLoadWithLabelFilter}
         onClick={mapOnClick}
         maxBounds={maxBounds}

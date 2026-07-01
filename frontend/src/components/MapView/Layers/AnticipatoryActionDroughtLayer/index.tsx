@@ -21,6 +21,7 @@ import {
   calculateCombinedAAMapData,
 } from 'context/anticipatoryAction/AADroughtStateSlice/utils';
 import { mapSelector } from 'context/mapStateSlice/selectors';
+import type { Feature, FeatureCollection } from 'geojson';
 import React from 'react';
 import {
   Layer,
@@ -96,17 +97,17 @@ const AnticipatoryActionDroughtLayer = React.memo(
     }, [data, dispatch, renderedDistricts, selectedWindow]);
 
     const highlightDistrictLine = React.useMemo(
-      () => ({
-        ...data,
+      (): FeatureCollection => ({
+        type: 'FeatureCollection',
         features: [
           data?.features.find(
             f =>
               f.properties?.[boundaryLayer.adminLevelLocalNames[1]] ===
               selectedDistrict,
           ),
-        ].filter(x => x),
+        ].filter((x): x is Feature => x != null),
       }),
-      [data, selectedDistrict],
+      [data, selectedDistrict, boundaryLayer.adminLevelLocalNames],
     );
 
     const coloredDistrictsLayer = React.useMemo(() => {
