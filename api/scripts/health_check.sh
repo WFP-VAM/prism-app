@@ -102,7 +102,7 @@ check_export_map_worker() {
 main() {
   log "=== deploy health check ==="
 
-  log "[note] requires env vars set in set_envs.sh"
+  echo "[note] requires env vars set in set_envs.sh"
 
   check_api_local || true
   check_api_public || true
