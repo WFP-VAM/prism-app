@@ -45,7 +45,7 @@ check_api_local() {
   local attempt body
   for attempt in $(seq 1 "$API_RETRIES"); do
     if body="$(curl -sf --max-time 5 "$API_URL" 2>/dev/null)" && [[ "$body" == *"All good!"* ]]; then
-      log "[api] OK (http 200, attempt ${attempt}/${API_RETRIES})"
+      log "✅ [api] OK (http 200, attempt ${attempt}/${API_RETRIES})"
       record_pass
       return 0
     fi
@@ -53,23 +53,23 @@ check_api_local() {
       sleep "$API_RETRY_INTERVAL"
     fi
   done
-  log "[api] FAIL (no response from ${API_URL} after ${API_RETRIES} attempts)"
+  log "❌ [api] FAIL (no response from ${API_URL} after ${API_RETRIES} attempts)"
   record_fail
   return 1
 }
 
 check_api_public() {
   if [[ -z "${HOSTNAME:-}" ]]; then
-    log "[api-public] SKIP (HOSTNAME not set)"
+    log "⏭️  [api-public] SKIP (HOSTNAME not set)"
     return 0
   fi
 
   local url="https://${HOSTNAME}/"
   if body="$(curl -sf --max-time 10 "$url" 2>/dev/null)" && [[ "$body" == *"All good!"* ]]; then
-    log "[api-public] OK (${url})"
+    log "✅ [api-public] OK (${url})"
     return 0
   fi
-  log "[api-public] WARN (could not reach ${url}; local api check is authoritative)"
+  log "⚠️  [api-public] WARN (could not reach ${url}; local api check is authoritative)"
   return 0
 }
 
@@ -77,11 +77,11 @@ check_traefik() {
   local container_id
   container_id="$($COMPOSE ps --status running -q traefik 2>/dev/null | head -n 1 || true)"
   if [[ -n "$container_id" ]]; then
-    log "[traefik] OK (container running)"
+    log "✅ [traefik] OK (container running)"
     record_pass
     return 0
   fi
-  log "[traefik] FAIL (no running container)"
+  log "❌ [traefik] FAIL (no running container)"
   record_fail
   return 1
 }
@@ -90,11 +90,11 @@ check_export_map_worker() {
   local count
   count="$($COMPOSE ps --status running -q export_map_worker 2>/dev/null | wc -l | tr -d ' ')"
   if [[ "$count" -ge "$WORKER_REPLICAS" ]]; then
-    log "[export_map_worker] OK (${count}/${WORKER_REPLICAS} replicas running)"
+    log "✅ [export_map_worker] OK (${count}/${WORKER_REPLICAS} replicas running)"
     record_pass
     return 0
   fi
-  log "[export_map_worker] FAIL (${count}/${WORKER_REPLICAS} replicas running)"
+  log "❌ [export_map_worker] FAIL (${count}/${WORKER_REPLICAS} replicas running)"
   record_fail
   return 1
 }
@@ -102,12 +102,18 @@ check_export_map_worker() {
 main() {
   log "=== deploy health check ==="
 
+  log "[note] requires env vars set in set_envs.sh"
+
   check_api_local || true
   check_api_public || true
   check_traefik || true
   check_export_map_worker || true
 
-  log "SUMMARY: ${healthy}/${total} healthy"
+  if [[ "$failed" -eq 0 ]]; then
+    log "✅ SUMMARY: ${healthy}/${total} healthy"
+  else
+    log "❌ SUMMARY: ${healthy}/${total} healthy"
+  fi
 
   if [[ "$failed" -gt 0 ]]; then
     if [[ "${HEALTHCHECK_STRICT:-}" == "1" ]]; then
