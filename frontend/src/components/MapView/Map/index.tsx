@@ -129,9 +129,12 @@ const MapComponent = memo(
     const { iso3 } = useCountryIso();
     const universalLandingView = getUniversalLandingView();
     const isUniversalLanding = isUniversalLandingMode(iso3);
-    const [projection, setProjection] = useState(() =>
-      isUniversalLandingMode(iso3) ? mapProjection : mapFlatProjection,
-    );
+    // Globe projection is scoped to the universal deployment only. It is used on
+    // first load, through the zoom-in animation, and for the entire session.
+    // Every other deployment always stays on the flat (mercator) projection.
+    const projection = isUniversalDeployment()
+      ? mapProjection
+      : mapFlatProjection;
     const isGlobeProjection = projection.type === 'globe';
     const selectedMap = mapState?.maplibreMap();
     const isGlobalMap = mapState?.isGlobalMap;
@@ -327,29 +330,6 @@ const MapComponent = memo(
         }
       });
     }, [hideMapLabels]);
-
-    useEffect(() => {
-      const map = mapRef.current?.getMap();
-      if (!map) {
-        return undefined;
-      }
-
-      if (isUniversalLanding) {
-        setProjection(mapProjection);
-        return undefined;
-      }
-
-      if (!isUniversalDeployment()) {
-        setProjection(mapFlatProjection);
-        return undefined;
-      }
-
-      const switchToFlat = () => setProjection(mapFlatProjection);
-      map.once('moveend', switchToFlat);
-      return () => {
-        map.off('moveend', switchToFlat);
-      };
-    }, [iso3, isUniversalLanding, selectedMap]);
 
     // Use captured viewport if available and not in edit mode
     const initialBounds =
