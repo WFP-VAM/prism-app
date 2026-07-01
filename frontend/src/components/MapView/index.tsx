@@ -1,4 +1,5 @@
 import { Box, createStyles, makeStyles } from '@material-ui/core';
+import { usePostHog } from '@posthog/react';
 import { appConfig } from 'config';
 import { getBoundaryLayers } from 'config/utils';
 import { clearAnalysisResult } from 'context/analysisResultStateSlice';
@@ -9,6 +10,7 @@ import {
   WMSLayerDatesRequested,
 } from 'context/serverPreloadStateSlice';
 import { useCountryIso } from 'context/useCountryIso';
+import { usePerformanceMonitor } from 'hooks/usePerformanceMonitor';
 import { memo, useEffect, useMemo, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { boundaryCache } from 'utils/boundary-cache';
@@ -26,7 +28,14 @@ import OtherFeatures from './OtherFeatures';
 
 const MapView = memo(() => {
   const classes = useStyles();
+  const posthog = usePostHog();
   const { iso3 } = useCountryIso();
+
+  usePerformanceMonitor({
+    onSignificantChange: (fps, change) => {
+      posthog?.capture('frame_rate', { fps, change });
+    },
+  });
 
   const displayedBoundaryLayers = useMemo(() => {
     const layers = getDisplayBoundaryLayersForIso3(iso3).reverse();
