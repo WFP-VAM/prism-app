@@ -10,6 +10,7 @@ import {
   filterFeaturesBySelectedAdminCodes,
   resolveFeaturesForAdminCodes,
 } from './adminAreaSelection';
+import { isUniversalDeployment } from './universal-utils';
 
 export type AdminAreaClipPolygon = Feature<Polygon | MultiPolygon>;
 
@@ -116,6 +117,10 @@ export async function resolveAdminAreaClipPolygon(options: {
     if (fromSelection) {
       return fromSelection;
     }
+  }
+
+  if (isUniversalDeployment()) {
+    return buildCountryClipPolygonFromBoundaryData(effectiveBoundaryData);
   }
 
   try {

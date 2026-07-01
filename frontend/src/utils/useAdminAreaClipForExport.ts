@@ -13,7 +13,10 @@ import {
   type LngLatBbox,
 } from './adminAreaClipPolygon';
 import { getCachedBoundaryLayerData } from './boundary-cache';
-import { isUniversalDeployment } from './universal-utils';
+import {
+  getDisplayBoundaryLayersForIso3,
+  isUniversalDeployment,
+} from './universal-utils';
 import { useAdminAreaClipPolygon } from './useAdminAreaClipPolygon';
 
 /**
@@ -38,7 +41,33 @@ export function useAdminAreaClipForExport(options: {
   const { t } = useSafeTranslation();
   const { iso3 } = useCountryIso();
 
-  const { map, ...clipOptions } = options;
+  const {
+    map,
+    boundaryLayer,
+    boundaryData,
+    boundaryLayersVersion,
+    ...clipOptions
+  } = options;
+
+  const effectiveBoundaryLayer = useMemo(() => {
+    if (!isUniversalDeployment()) {
+      return boundaryLayer;
+    }
+    return (
+      getDisplayBoundaryLayersForIso3(iso3).find(layer => !layer.hideInGoTo) ??
+      boundaryLayer
+    );
+  }, [boundaryLayer, iso3]);
+
+  const effectiveBoundaryData = useMemo(() => {
+    if (!isUniversalDeployment()) {
+      return boundaryData;
+    }
+    return (
+      getCachedBoundaryLayerData(effectiveBoundaryLayer.id, iso3) ??
+      boundaryData
+    );
+  }, [boundaryData, effectiveBoundaryLayer.id, iso3, boundaryLayersVersion]);
 
   const getLayerData = useCallback(
     (layerId: string) =>
@@ -75,6 +104,9 @@ export function useAdminAreaClipForExport(options: {
 
   return useAdminAreaClipPolygon({
     ...clipOptions,
+    boundaryLayer: effectiveBoundaryLayer,
+    boundaryData: effectiveBoundaryData,
+    boundaryLayersVersion,
     getLayerData,
     coverageBounds,
     onIncompleteCoverage,
