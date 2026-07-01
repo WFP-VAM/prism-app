@@ -1,31 +1,10 @@
-import {
-  Box,
-  createStyles,
-  makeStyles,
-  Slider,
-  Typography,
-} from '@material-ui/core';
+import { Box, Slider, Typography } from '@mui/material';
+import { opacitySliderSx } from 'components/MapView/LeftPanel/layersPanel/layerPanelStyles';
 import { LayerType } from 'config/types';
-import { ChangeEvent, memo, useCallback } from 'react';
+import { memo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useMapState } from 'utils/useMapState';
 import { useOpacityState } from 'utils/useOpacityState';
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    opacityText: {
-      color: '#4CA1AD',
-      marginBottom: '10px',
-    },
-    opacitySliderRoot: {
-      color: '#4CA1AD',
-      height: 8,
-    },
-    opacitySliderThumb: {
-      backgroundColor: '#4CA1AD',
-    },
-  }),
-);
 
 interface OpacitySliderProps {
   activeLayerId: string;
@@ -34,7 +13,6 @@ interface OpacitySliderProps {
 }
 const OpacitySlider = memo(
   ({ activeLayerId, layerId, layerType }: OpacitySliderProps) => {
-    const classes = useStyles();
     const opacityState = useOpacityState();
     const currentLayerId = activeLayerId || layerId;
     const opacity = useSelector(
@@ -44,7 +22,7 @@ const OpacitySlider = memo(
     const map = mapState.maplibreMap();
 
     const handleOnChangeSliderValue = useCallback(
-      (_event: ChangeEvent<{}>, newValue: number | number[]) => {
+      (_event: Event, newValue: number | number[]) => {
         opacityState.setOpacity({
           map,
           value: newValue as number,
@@ -57,37 +35,25 @@ const OpacitySlider = memo(
 
     return (
       <Box
-        style={{
+        sx={{
           display: 'flex',
           justifyContent: 'flex-end',
           alignItems: 'center',
         }}
       >
-        <Box
-          style={{
-            paddingRight: '3em',
-          }}
-        >
+        <Box sx={{ pr: '3em' }}>
           <Typography
-            classes={{ root: classes.opacityText }}
+            sx={opacitySliderSx.text}
           >{`Opacity ${Math.round((opacity || 0) * 100)}%`}</Typography>
         </Box>
-        <Box
-          style={{
-            width: '25%',
-            paddingRight: 3,
-          }}
-        >
+        <Box sx={{ width: '25%', pr: 3 }}>
           <Slider
             value={opacity}
             step={0.01}
             min={0}
             max={1}
             aria-labelledby="left-opacity-slider"
-            classes={{
-              root: classes.opacitySliderRoot,
-              thumb: classes.opacitySliderThumb,
-            }}
+            sx={opacitySliderSx.root}
             onChange={handleOnChangeSliderValue}
           />
         </Box>

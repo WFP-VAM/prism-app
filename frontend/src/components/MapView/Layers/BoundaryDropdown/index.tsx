@@ -5,7 +5,7 @@ import {
   Select,
   Theme,
   useMediaQuery,
-} from '@material-ui/core';
+} from '@mui/material';
 import { AdminCodeString } from 'config/types';
 import { getBoundaryLayerSingleton } from 'config/utils';
 import {
@@ -69,7 +69,6 @@ export function SimpleBoundaryDropdown({
       <Select
         style={{ color: 'black' }}
         multiple
-        placeholder={labelMessage}
         onClose={() => {
           // empty search so that component shows correct options
           // otherwise, we would only show selected options which satisfy the search

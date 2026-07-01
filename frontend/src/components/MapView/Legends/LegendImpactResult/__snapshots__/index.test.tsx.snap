@@ -3,6 +3,10 @@
 exports[`renders as expected 1`] = `
 <div>
   Impact Analysis on:
-  Some test legend text
+  <div
+    class="MuiBox-root css-da5oxk"
+  >
+    Some test legend text
+  </div>
 </div>
 `;

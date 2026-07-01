@@ -1,12 +1,5 @@
-import {
-  Button,
-  createStyles,
-  makeStyles,
-  Menu,
-  MenuItem,
-  Typography,
-} from '@material-ui/core';
-import ArrowDownward from '@material-ui/icons/ArrowDropDown';
+import ArrowDownward from '@mui/icons-material/ArrowDropDown';
+import { Button, Menu, MenuItem, Typography } from '@mui/material';
 import { usePostHog } from '@posthog/react';
 import { appConfig } from 'config';
 import { languages, useSafeTranslation } from 'i18n';
@@ -23,7 +16,6 @@ function languageDropdownLabel(code: string): string {
 }
 
 function LanguageSelector() {
-  const classes = useStyles();
   const { i18n } = useSafeTranslation();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const posthog = usePostHog();
@@ -76,7 +68,10 @@ function LanguageSelector() {
       <Menu
         open={Boolean(anchorEl)}
         onClose={handleClose}
-        className={classes.block}
+        sx={{
+          paddingLeft: '10px',
+          paddingTop: '4px',
+        }}
         anchorEl={anchorEl}
       >
         {languages.map(lng => (
@@ -92,15 +87,6 @@ function LanguageSelector() {
     </>
   );
 }
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    block: {
-      paddingLeft: '10px',
-      paddingTop: '4px',
-    },
-  }),
-);
 
 export interface LanguageSelectorProps {}
 

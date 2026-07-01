@@ -1,11 +1,11 @@
+import { Public } from '@mui/icons-material';
 import {
   Button,
   IconButton,
   Typography,
   useMediaQuery,
   useTheme,
-} from '@material-ui/core';
-import { Public } from '@material-ui/icons';
+} from '@mui/material';
 import { clearAnalysisResult } from 'context/analysisResultStateSlice';
 import { useSafeTranslation } from 'i18n';
 import { memo, useCallback } from 'react';
@@ -29,22 +29,21 @@ const BackToGlobalButton = memo(() => {
   } = useMapState();
 
   const handleClick = useCallback(() => {
-    // Reset everything so the global view only shows the admin0 country
-    // boundaries. The admin0 boundary layer is kept and simply re-filtered to
-    // the whole world once no country is selected.
     layers
       .filter(layer => layer.id !== UNIVERSAL_ADMIN0_LAYER_ID)
       .forEach(layer => removeLayer(layer));
     dispatch(clearAnalysisResult());
-    // Navigating to "/" clears the layer/date query params from the URL, which
-    // prevents them from being re-added by the url-driven layer loader.
     history.push(getUniversalMapPath());
   }, [layers, removeLayer, dispatch, history]);
 
   return (
     <>
       {!smDown && (
-        <Button startIcon={<Public />} onClick={handleClick}>
+        <Button
+          startIcon={<Public />}
+          onClick={handleClick}
+          sx={{ color: 'white' }}
+        >
           <Typography style={{ color: '#FFF', textTransform: 'none' }}>
             {t('Back to global')}
           </Typography>
@@ -55,6 +54,7 @@ const BackToGlobalButton = memo(() => {
           style={{ color: 'white' }}
           onClick={handleClick}
           aria-label={t('Back to global')}
+          size="large"
         >
           <Public />
         </IconButton>

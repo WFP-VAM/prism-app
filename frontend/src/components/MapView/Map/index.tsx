@@ -1,6 +1,6 @@
 import 'maplibre-gl/dist/maplibre-gl.css';
 
-import { useMediaQuery, useTheme } from '@material-ui/core';
+import { useMediaQuery, useTheme } from '@mui/material';
 import {
   AdminLevelDataLayer,
   AnticipatoryActionDroughtLayer,
@@ -109,7 +109,7 @@ const MapComponent = memo(
   ({ children, hideMapLabels = false }: MapComponentProps = {}) => {
     const mapRef = React.useRef<MapRef>(null);
     const theme = useTheme();
-    const smDown = useMediaQuery(theme.breakpoints.down('sm'));
+    const smDown = useMediaQuery(theme.breakpoints.down('md'));
     const dispatch = useDispatch();
     const { selectedLayers, boundaryLayerId } = useLayers();
 

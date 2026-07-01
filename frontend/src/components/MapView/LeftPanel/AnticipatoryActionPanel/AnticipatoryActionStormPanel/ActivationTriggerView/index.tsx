@@ -1,11 +1,11 @@
-import { createStyles, makeStyles, Typography } from '@material-ui/core';
+import { Box, Typography } from '@mui/material';
 import { AADataSelector } from 'context/anticipatoryAction/AAStormStateSlice';
 import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import { useSafeTranslation } from 'i18n';
 import { useSelector } from 'react-redux';
 
-import { useAACommonStyles } from '../../utils';
-import { AAStormColors, getAAColor } from '../utils';
+import { aaActivationTriggerSx, aaCommonSx } from '../../aaPanelStyles';
+import { getAAColor } from '../utils';
 import { AADisplayCategory, AAPanelCategories } from './types';
 
 interface AreaTagProps {
@@ -17,51 +17,19 @@ interface AreaTagProps {
 }
 
 function AreaTag({ name, color }: AreaTagProps) {
-  const classes = useAreaTagStyles();
   const { t } = useSafeTranslation();
 
   return (
-    <button
+    <Box
+      component="button"
       type="button"
-      className={classes.areaTagWrapper}
+      sx={aaActivationTriggerSx.areaTagWrapper}
       style={{ borderColor: color.background, color: color.text }}
     >
       <Typography>{t(name)}</Typography>
-    </button>
+    </Box>
   );
 }
-
-const useAreaTagStyles = makeStyles(() =>
-  createStyles({
-    areaTagWrapper: {
-      border: `1px solid`,
-      height: 'calc(2rem - 2px)',
-      borderRadius: '4px',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '0.25em',
-      padding: '0 0.25em',
-      background: 'none',
-      boxShadow: 'none',
-      '&:hover': {
-        cursor: 'pointer',
-      },
-    },
-  }),
-);
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    categoryText: {
-      borderRadius: '4px 4px 0px 0px',
-      textAlign: 'left',
-      textTransform: 'uppercase',
-      lineHeight: '2rem',
-      width: '100%',
-      paddingLeft: '0.5rem',
-    },
-  }),
-);
 
 interface CategoryTextProps {
   color: {
@@ -72,11 +40,9 @@ interface CategoryTextProps {
 }
 
 function CategoryText({ color, text }: CategoryTextProps) {
-  const classes = useStyles();
-
   return (
     <Typography
-      className={classes.categoryText}
+      sx={aaActivationTriggerSx.categoryText}
       style={{ backgroundColor: color.background, color: color.text }}
     >
       {text}
@@ -93,9 +59,7 @@ interface ActivationTriggerProps {
 
 function ActivationTrigger({ dialogs }: ActivationTriggerProps) {
   const { t } = useSafeTranslation();
-  const classes = useActivationTriggerStyles();
   const parsedStormData = useSelector(AADataSelector);
-  const commonClasses = useAACommonStyles();
 
   const filteredActiveDistricts = parsedStormData.activeDistricts
     ? Object.entries(parsedStormData.activeDistricts).filter(([category]) =>
@@ -125,12 +89,12 @@ function ActivationTrigger({ dialogs }: ActivationTriggerProps) {
   }
 
   return (
-    <div className={classes.root}>
-      <Typography className={classes.headerText}>
+    <Box sx={aaActivationTriggerSx.root}>
+      <Typography sx={aaActivationTriggerSx.headerText}>
         {t('Activation trigger')}
       </Typography>
 
-      <div className={classes.ActivationTriggerWrapper}>
+      <Box sx={aaActivationTriggerSx.wrapper}>
         {filteredActiveDistricts.map(([category, data]) => {
           const names =
             (category as AACategory) === AACategory.Moderate
@@ -142,94 +106,47 @@ function ActivationTrigger({ dialogs }: ActivationTriggerProps) {
           }
 
           return (
-            <div
+            <Box
               key={`${category}-active`}
-              className={classes.headColumnWrapper}
+              sx={aaActivationTriggerSx.headColumnWrapper}
             >
               {/* Active districts */}
-              <div className={classes.headColumn}>
+              <Box sx={aaActivationTriggerSx.headColumn}>
                 <CategoryText
                   color={getAAColor(category as AACategory, 'Active', true)}
                   text={t(`${AADisplayCategory[category as AACategory]}`)}
                 />
-              </div>
-              <div className={classes.rowWrapper}>
+              </Box>
+              <Box sx={aaActivationTriggerSx.rowWrapper}>
                 {names.map((name: string) => (
-                  <div className={classes.tagWrapper} key={name}>
+                  <Box sx={aaActivationTriggerSx.tagWrapper} key={name}>
                     <AreaTag
                       name={name}
                       color={getAAColor(category as AACategory, 'Active', true)}
                     />
-                  </div>
+                  </Box>
                 ))}
-              </div>
-            </div>
+              </Box>
+            </Box>
           );
         })}
-      </div>
-      <div className={commonClasses.footerWrapper}>
-        <div className={commonClasses.footerDialogsWrapper}>
+      </Box>
+      <Box sx={aaCommonSx.footerWrapper}>
+        <Box sx={aaCommonSx.footerDialogsWrapper}>
           {dialogs.map(dialog => (
             <Typography
               key={dialog.text}
-              className={commonClasses.footerDialog}
+              sx={aaCommonSx.footerDialog}
               component="button"
               onClick={() => dialog.onclick()}
             >
               {t(dialog.text)}
             </Typography>
           ))}
-        </div>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </Box>
   );
 }
-
-const useActivationTriggerStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      display: 'flex',
-      flexDirection: 'column',
-      width: '100%',
-    },
-    ActivationTriggerWrapper: {
-      width: '100%',
-      background: AAStormColors.background,
-    },
-    headColumnWrapper: {
-      display: 'flex',
-      flexDirection: 'column',
-      minHeight: '2.5rem',
-      margin: '1.5rem 1.5rem',
-    },
-    headColumn: {
-      width: '10rem',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    headerText: {
-      fontWeight: 'bold',
-      textTransform: 'uppercase',
-      height: '2rem',
-      display: 'flex',
-      margin: '0.2rem 1.5rem',
-    },
-    rowWrapper: {
-      display: 'flex',
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      padding: '0.5rem',
-      gap: '0.5rem',
-      background: 'white',
-    },
-    tagWrapper: {
-      display: 'flex',
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      justifyContent: 'flex-start',
-    },
-  }),
-);
 
 export default ActivationTrigger;

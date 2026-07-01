@@ -1,4 +1,9 @@
-import { createTheme, ThemeProvider } from '@material-ui/core';
+import {
+  createTheme,
+  StyledEngineProvider,
+  ThemeProvider,
+} from '@mui/material/styles';
+import { deepmerge } from '@mui/utils';
 import MapExportLayout from 'components/MapExport/MapExportLayout';
 import { mapStyle } from 'components/MapView/Map/utils';
 import { appConfig, safeCountry } from 'config';
@@ -67,16 +72,18 @@ const ExportView = memo(() => {
   const exportFontStack = getExportFontStack(exportLang);
   const exportTheme = useMemo(
     () =>
-      createTheme(muiTheme, {
-        typography: {
-          fontFamily: exportFontStack,
-          h4: { fontFamily: exportFontStack },
-          h5: { fontFamily: exportFontStack },
-          h6: { fontFamily: exportFontStack },
-          body1: { fontFamily: exportFontStack },
-          body2: { fontFamily: exportFontStack },
-        },
-      }),
+      createTheme(
+        deepmerge(muiTheme, {
+          typography: {
+            fontFamily: exportFontStack,
+            h4: { fontFamily: exportFontStack },
+            h5: { fontFamily: exportFontStack },
+            h6: { fontFamily: exportFontStack },
+            body1: { fontFamily: exportFontStack },
+            body2: { fontFamily: exportFontStack },
+          },
+        }),
+      ),
     [exportFontStack],
   );
   const exportParams = useExportParams();
@@ -104,7 +111,6 @@ const ExportView = memo(() => {
     setExportMap(map);
   }, []);
 
-  // Selectors
   const { actions } = useMapState();
   const datesPreloadingForWMS = useSelector(WMSLayerDatesRequested);
   const datesPreloadingForPointData = useSelector(pointDataLayerDatesRequested);
@@ -113,7 +119,6 @@ const ExportView = memo(() => {
   // Load layers from URL params - useLayers already handles this
   const { selectedLayers, selectedLayersWithDateSupport } = useLayers();
 
-  // Get boundary layer for admin area clip
   const boundaryLayer = getBoundaryLayerSingleton();
   const { data: boundaryData } = useBoundaryData(boundaryLayer.id, exportMap);
 
@@ -142,11 +147,7 @@ const ExportView = memo(() => {
     if (!datesPreloadingForWMS) {
       dispatch(preloadLayerDatesArraysForWMS());
     }
-    // we must load boundary layer here for two reasons
-    // 1. Stop showing two loading screens on startup - maplibre renders its children very late, so we can't rely on BoundaryLayer to load internally
-    // 2. Prevent situations where a user can toggle a layer like NSO (depends on Boundaries) before Boundaries finish loading.
     displayedBoundaryLayers.forEach(l => actions.addLayer(l));
-    // Load boundary data into global cache (shared across all maps)
     boundaryCache.preloadBoundaries(
       displayedBoundaryLayers,
       dispatch,
@@ -206,38 +207,40 @@ const ExportView = memo(() => {
   }
 
   return (
-    <ThemeProvider theme={exportTheme}>
-      {/* Paint order: MapExportLayout stacks boundaries before rasters */}
-      <MapExportLayout
-        toggles={exportParams.toggles}
-        aspectRatio={exportParams.aspectRatio}
-        titleText={exportParams.titleText}
-        footerText={exportParams.footerText}
-        footerTextSize={exportParams.footerTextSize}
-        layerDate={exportParams.date}
-        logo={logo}
-        logoPosition={exportParams.logoPosition}
-        logoScale={exportParams.logoScale}
-        titleHeight={titleHeight}
-        legendPosition={exportParams.legendPosition}
-        legendScale={exportParams.legendScale}
-        bounds={exportParams.bounds ?? undefined}
-        mapStyle={processedMapStyle}
-        adminAreaClipPolygon={adminAreaClipPolygon}
-        selectedBoundaries={exportParams.selectedBoundaries}
-        printRef={printRef}
-        titleRef={titleRef}
-        footerRef={footerRef}
-        footerHeight={footerHeight}
-        bottomLogo={bottomLogo}
-        bottomLogoScale={exportParams.bottomLogoScale}
-        adminLevelLayersWithFillPattern={adminLevelLayersWithFillPattern}
-        selectedLayers={selectedLayers}
-        layersCoverage={layersCoverage}
-        onBaseMapReady={onBaseMapReady}
-        signalExportReady
-      />
-    </ThemeProvider>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={exportTheme}>
+        {/* Paint order: MapExportLayout stacks boundaries before rasters */}
+        <MapExportLayout
+          toggles={exportParams.toggles}
+          aspectRatio={exportParams.aspectRatio}
+          titleText={exportParams.titleText}
+          footerText={exportParams.footerText}
+          footerTextSize={exportParams.footerTextSize}
+          layerDate={exportParams.date}
+          logo={logo}
+          logoPosition={exportParams.logoPosition}
+          logoScale={exportParams.logoScale}
+          titleHeight={titleHeight}
+          legendPosition={exportParams.legendPosition}
+          legendScale={exportParams.legendScale}
+          bounds={exportParams.bounds ?? undefined}
+          mapStyle={processedMapStyle}
+          adminAreaClipPolygon={adminAreaClipPolygon}
+          selectedBoundaries={exportParams.selectedBoundaries}
+          printRef={printRef}
+          titleRef={titleRef}
+          footerRef={footerRef}
+          footerHeight={footerHeight}
+          bottomLogo={bottomLogo}
+          bottomLogoScale={exportParams.bottomLogoScale}
+          adminLevelLayersWithFillPattern={adminLevelLayersWithFillPattern}
+          selectedLayers={selectedLayers}
+          layersCoverage={layersCoverage}
+          onBaseMapReady={onBaseMapReady}
+          signalExportReady
+        />
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 });
 

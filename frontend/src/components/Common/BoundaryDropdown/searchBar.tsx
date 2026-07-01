@@ -1,22 +1,11 @@
-import {
-  InputAdornment,
-  makeStyles,
-  TextField,
-  Theme,
-} from '@material-ui/core';
-import { Search } from '@material-ui/icons';
+import { Search } from '@mui/icons-material';
+import { Box, InputAdornment, TextField } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
 import { forwardRef, Ref } from 'react';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  searchField: {
-    '&>div': {
-      color: theme.palette.primary.main,
-    },
-  },
-  container: {
-    padding: '0.7em',
-  },
-}));
+const containerSx = {
+  padding: '0.7em',
+} satisfies SxProps<Theme>;
 
 type SearchBarProps = {
   setSearch: (val: string) => void;
@@ -24,21 +13,25 @@ type SearchBarProps = {
 
 const SearchBar = forwardRef(
   ({ setSearch }: SearchBarProps, ref: Ref<HTMLDivElement>) => {
-    const styles = useStyles();
-
     return (
-      <div ref={ref} className={styles.container}>
+      <Box ref={ref} sx={containerSx}>
         <TextField
           size="small"
           autoFocus
-          className={styles.searchField}
+          sx={theme => ({
+            '&>div': {
+              color: theme.palette.primary.main,
+            },
+          })}
           fullWidth
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Search />
-              </InputAdornment>
-            ),
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search />
+                </InputAdornment>
+              ),
+            },
           }}
           onChange={e => setSearch(e.target.value)}
           onKeyDown={e => {
@@ -48,7 +41,7 @@ const SearchBar = forwardRef(
             }
           }}
         />
-      </div>
+      </Box>
     );
   },
 );

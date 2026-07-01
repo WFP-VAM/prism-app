@@ -1,4 +1,4 @@
-import { createStyles, makeStyles, Typography } from '@material-ui/core';
+import { Box, Typography } from '@mui/material';
 import { getImageUrl, iconNorthArrow } from 'assets/images';
 // Layer components - keep in sync with MapView/Map/index.tsx
 import {
@@ -21,9 +21,7 @@ import { ensureSDFIconsLoaded } from 'components/MapView/Layers/icon-utils';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
 import { mapStyle } from 'components/MapView/Map/utils';
 import { DiscriminateUnion, LayerType, Panel } from 'config/types';
-import { addNotification } from 'context/notificationStateSlice';
 import maplibregl from 'maplibre-gl';
-import { lightGrey } from 'muiTheme';
 import React, {
   ComponentType,
   createElement,
@@ -35,11 +33,6 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import MapGL, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';
-import { useDispatch } from 'react-redux';
-import {
-  isClipDebugEnabled,
-  setClipErrorHandler,
-} from 'utils/clipRasterProtocol';
 import { formatCoverageText, getFormattedDate } from 'utils/date-utils';
 import {
   getFirstBoundaryLayerMapId,
@@ -47,12 +40,19 @@ import {
   layerUsesSymbolAnchorOnly,
   stackLayersForMapPaintOrder,
 } from 'utils/map-layer-before-utils';
-import { isBasemapLabelLayer, useAAMarkerScalePercent } from 'utils/map-utils';
-import { scheduleAfterNextPaint } from 'utils/scheduleAfterNextPaint';
+import { useAAMarkerScalePercent } from 'utils/map-utils';
 import useResizeObserver from 'utils/useOnResizeObserver';
 
+import { isClipDebugEnabled } from '../../utils/clipRasterProtocol';
 import { getAspectRatioDecimal } from './aspectRatioConstants';
 import { ClipProvider } from './ClipProvider';
+import {
+  mapExportFooterOverlaySx,
+  mapExportMapContainerSx,
+  mapExportPreviewContainerSx,
+  mapExportPrintContainerSx,
+  mapExportTitleOverlaySx,
+} from './mapExportLayoutStyles';
 import { MapExportLayoutProps } from './types';
 
 /**
@@ -65,11 +65,6 @@ import { MapExportLayoutProps } from './types';
  * SYNC NOTE: The layer rendering logic (componentTypes mapping) must be kept
  * in sync with MapView/Map/index.tsx to ensure consistent layer rendering.
  * If you add a new layer type, update both files.
- *
- * Country mask: when `toggles.countryMask` is on and an `adminAreaClipPolygon`
- * is provided, raster layers route tiles through the `clip://` protocol.
- * Vector data layers clip only when specific admin areas are selected;
- * full-region masks skip redundant vector clip. Raster layers always clip.
  */
 
 // Layer component mapping - KEEP IN SYNC with MapView/Map/index.tsx
@@ -102,15 +97,16 @@ const componentTypes: LayerComponentsMap<LayerType> = {
   },
 };
 
-function isMapFullyLoaded(map: maplibregl.Map): boolean {
-  return Boolean(map.isStyleLoaded() && map.areTilesLoaded() && map.loaded());
-}
-
 /** Playwright (/export, signalExportReady): min consecutive "fully loaded" samples before PRISM_READY. */
 const MAP_EXPORT_STABLE_LOADED_TICKS = 2;
 
-/** Fallback poll when map idle is slow (ms). */
-const MAP_EXPORT_LOAD_POLL_MS = 50;
+function scheduleAfterNextPaint(callback: () => void): void {
+  requestAnimationFrame(() => {
+    requestAnimationFrame(callback);
+  });
+}
+/** Poll when map idle is slow (ms). 0 uses the shortest practical interval (browser clamps ~4ms). */
+const MAP_EXPORT_LOAD_POLL_MS = 0;
 
 function MapExportLayout({
   toggles,
@@ -147,10 +143,8 @@ function MapExportLayout({
   signalExportReady = false,
   layersCoverage = [],
 }: MapExportLayoutProps) {
-  const classes = useStyles();
-  const dispatch = useDispatch();
   const northArrowRef = useRef<HTMLImageElement>(null);
-  const baseMapRef = React.useRef<MapRef>(null);
+  const mapRef = React.useRef<MapRef>(null);
 
   // Track container dimensions to calculate proper map size
   const [containerRef, containerDimensions] =
@@ -171,66 +165,26 @@ function MapExportLayout({
   const clipPolygon =
     toggles.countryMask && adminAreaClipPolygon ? adminAreaClipPolygon : null;
 
-  // Process map style to filter labels if needed
-  const processedMapStyle = useMemo(() => {
-    if (
-      typeof mapStyleProp === 'object' &&
-      mapStyleProp.layers &&
-      !toggles.mapLabelsVisibility
-    ) {
-      return {
-        ...mapStyleProp,
-        layers: mapStyleProp.layers.filter(
-          layer => !isBasemapLabelLayer(layer),
-        ),
-      };
-    }
-    return mapStyleProp;
-  }, [mapStyleProp, toggles.mapLabelsVisibility]);
-
-  const basemapMapStyle = processedMapStyle ?? mapStyle.toString();
-
   const firstBoundaryLayerMapId = getFirstBoundaryLayerMapId(
-    baseMapRef.current?.getMap(),
+    mapRef.current?.getMap(),
   );
 
-  const getBasemapLayerBeforeId = useCallback(
+  const getBeforeId = useCallback(
     (index: number, aboveBoundaries: boolean = false) =>
       getLayerBeforeId(index, {
         aboveBoundaries,
         stackLayers,
-        map: baseMapRef.current?.getMap(),
+        map: mapRef.current?.getMap(),
         firstSymbolId,
         firstBoundaryLayerMapId,
       }),
     [firstBoundaryLayerMapId, firstSymbolId, stackLayers],
   );
 
-  const areExportMapsLoaded = useCallback(() => {
-    const baseMap = baseMapRef.current?.getMap();
-    return Boolean(baseMap && isMapFullyLoaded(baseMap));
-  }, []);
-
   // Scale percent for AA markers based on map zoom
-  const scalePercent = useAAMarkerScalePercent(baseMapRef.current?.getMap());
+  const scalePercent = useAAMarkerScalePercent(mapRef.current?.getMap());
 
   const { t } = useTranslation();
-
-  // Surface clip:// tile fetch/CORS failures to the user as a notification.
-  useEffect(() => {
-    if (!clipPolygon) {
-      return undefined;
-    }
-    setClipErrorHandler(error => {
-      dispatch(
-        addNotification({
-          message: `Country mask could not load some map tiles: ${error.message}`,
-          type: 'warning',
-        }),
-      );
-    });
-    return () => setClipErrorHandler(null);
-  }, [clipPolygon, dispatch]);
 
   // Process title text to replace {date} and {coverage} placeholders
   const processedTitleText = useMemo(() => {
@@ -301,6 +255,21 @@ function MapExportLayout({
     updateScaleBarAndNorthArrow();
   }, [updateScaleBarAndNorthArrow]);
 
+  // Process map style to filter labels if needed
+  const processedMapStyle = useMemo(() => {
+    if (
+      typeof mapStyleProp === 'object' &&
+      mapStyleProp.layers &&
+      !toggles.mapLabelsVisibility
+    ) {
+      return {
+        ...mapStyleProp,
+        layers: mapStyleProp.layers.filter((x: any) => !x.id.includes('label')),
+      };
+    }
+    return mapStyleProp;
+  }, [mapStyleProp, toggles.mapLabelsVisibility]);
+
   const logoHeightMultipler = 32;
   const logoHeight = logoHeightMultipler * logoScale;
   // Title min height is based on the logo size but only if visible
@@ -322,29 +291,39 @@ function MapExportLayout({
     return { longitude: 0, latitude: 0, zoom: 2 };
   }, [bounds]);
 
-  const loadDataLayerAssets = useCallback(
-    (map: maplibregl.Map | undefined) => {
-      if (!map) {
-        return;
+  const handleMapLoad = (e: any) => {
+    e.target.addControl(new maplibregl.ScaleControl({}), 'bottom-right');
+    updateScaleBarAndNorthArrow();
+
+    // Find the first symbol layer for proper layer ordering
+    // Data layers should be inserted below symbols/labels
+    const map = mapRef.current?.getMap();
+    if (map) {
+      onBaseMapReady?.(map);
+
+      const { layers } = map.getStyle();
+      const symbolLayer = layers?.find(layer => layer.type === 'symbol');
+      if (symbolLayer) {
+        setFirstSymbolId(symbolLayer.id);
       }
+    }
 
-      Promise.all(
-        adminLevelLayersWithFillPattern.map(layer =>
-          addFillPatternImagesInMap(layer, map),
-        ),
-      );
-      loadStormIcons(map, false);
-      ensureSDFIconsLoaded(map);
-    },
-    [adminLevelLayersWithFillPattern],
-  );
+    // Load fill pattern images to this new map instance if needed.
+    Promise.all(
+      adminLevelLayersWithFillPattern.map(layer =>
+        addFillPatternImagesInMap(layer, mapRef.current?.getMap()),
+      ),
+    );
 
-  const fitMapToBounds = useCallback(
-    (map: maplibregl.Map | undefined) => {
-      if (!bounds || !map) {
-        return;
-      }
+    // Load storm icons for anticipatory action storm layers
+    loadStormIcons(mapRef.current?.getMap(), false); // Don't throw on error for print preview
 
+    // Load SDF icons for point data layers
+    ensureSDFIconsLoaded(mapRef.current?.getMap());
+
+    // If bounds are provided, fit the map to those bounds.
+    // This ensures precise geographic extent matching (e.g., for exports).
+    if (bounds && map) {
       map.fitBounds(
         [
           [bounds.west, bounds.south],
@@ -355,12 +334,43 @@ function MapExportLayout({
           animate: false,
         },
       );
-    },
-    [bounds],
-  );
+    }
 
-  const startExportReadyTracking = useCallback(
-    (map: maplibregl.Map, onLoadEvent: unknown) => {
+    // Capture preview bounds/zoom (must run before print-preview early return below).
+    // Use moveend (fires after fitBounds and user pan/zoom) rather than idle
+    // (which waits for all tiles to load and may not fire before export is captured).
+    if (onBoundsChange && map) {
+      let lastBoundsStr: string | null = null;
+      let lastZoom: number | null = null;
+
+      const reportBounds = () => {
+        const mapBounds = map.getBounds();
+        const zoom = map.getZoom();
+        if (mapBounds) {
+          const boundsStr = `${mapBounds.getWest()},${mapBounds.getSouth()},${mapBounds.getEast()},${mapBounds.getNorth()}`;
+          if (boundsStr !== lastBoundsStr || zoom !== lastZoom) {
+            lastBoundsStr = boundsStr;
+            lastZoom = zoom;
+            onBoundsChange(mapBounds, zoom);
+          }
+        }
+      };
+
+      // Capture immediately (fitBounds with animate:false is synchronous)
+      reportBounds();
+      map.on('moveend', reportBounds);
+    }
+
+    // Track tile loading using idle event and areTilesLoaded() for robust detection
+    const shouldTrackTileLoading = signalExportReady || onMapLoad;
+
+    // Print preview passes onMapLoad only; /export uses signalExportReady + tile wait.
+    if (shouldTrackTileLoading && map && !signalExportReady && onMapLoad) {
+      onMapLoad(e);
+      return;
+    }
+
+    if (shouldTrackTileLoading && map && signalExportReady) {
       let hasSignaledReady = false;
       let stableLoadedTicks = 0;
       let pollInterval: ReturnType<typeof setInterval> | undefined;
@@ -383,7 +393,7 @@ function MapExportLayout({
             (window as any).PRISM_READY = true;
           }
           if (onMapLoad) {
-            onMapLoad(onLoadEvent);
+            onMapLoad(e);
           }
         };
 
@@ -396,11 +406,20 @@ function MapExportLayout({
         }
       };
 
+      const checkFullyLoaded = (): boolean => {
+        // areTilesLoaded() can return void
+        const areTilesLoaded = Boolean(map.areTilesLoaded());
+        const isStyleLoaded = map.isStyleLoaded();
+        const isLoaded = map.loaded();
+
+        return Boolean(isStyleLoaded && areTilesLoaded && isLoaded);
+      };
+
       const bumpStableLoaded = () => {
         if (hasSignaledReady) {
           return;
         }
-        if (areExportMapsLoaded()) {
+        if (checkFullyLoaded()) {
           stableLoadedTicks += 1;
           if (stableLoadedTicks >= MAP_EXPORT_STABLE_LOADED_TICKS) {
             signalReady();
@@ -415,6 +434,7 @@ function MapExportLayout({
       };
 
       map.on('idle', idleHandler);
+
       pollInterval = setInterval(() => {
         bumpStableLoaded();
       }, MAP_EXPORT_LOAD_POLL_MS);
@@ -428,58 +448,10 @@ function MapExportLayout({
           signalReady();
         }
       }, 60_000);
-    },
-    [areExportMapsLoaded, onMapLoad, signalExportReady],
-  );
-
-  const handleBaseMapLoad = (e: any) => {
-    e.target.addControl(new maplibregl.ScaleControl({}), 'bottom-right');
-    updateScaleBarAndNorthArrow();
-
-    const map = baseMapRef.current?.getMap();
-    if (map) {
-      onBaseMapReady?.(map);
-
-      const { layers } = map.getStyle();
-      const symbolLayer = layers?.find(layer => layer.type === 'symbol');
-      if (symbolLayer) {
-        setFirstSymbolId(symbolLayer.id);
-      }
-    }
-
-    loadDataLayerAssets(map);
-    fitMapToBounds(map);
-
-    if (onBoundsChange && map) {
-      let lastBoundsStr: string | null = null;
-      let lastZoom: number | null = null;
-
-      const reportBounds = () => {
-        const mapBounds = map.getBounds();
-        const zoom = map.getZoom();
-        if (mapBounds) {
-          const boundsStr = `${mapBounds.getWest()},${mapBounds.getSouth()},${mapBounds.getEast()},${mapBounds.getNorth()}`;
-          if (boundsStr !== lastBoundsStr || zoom !== lastZoom) {
-            lastBoundsStr = boundsStr;
-            lastZoom = zoom;
-            onBoundsChange(mapBounds, zoom);
-          }
-        }
-      };
-
-      reportBounds();
-      map.on('moveend', reportBounds);
-    }
-
-    const shouldTrackTileLoading = signalExportReady || onMapLoad;
-
-    if (shouldTrackTileLoading && map && signalExportReady) {
-      startExportReadyTracking(map, e);
     } else if (onMapLoad) {
       onMapLoad(e);
     }
   };
-
   // Calculate map dimensions based on container size and aspect ratio
   const mapDimensions = useMemo(() => {
     const { width: containerWidth, height: containerHeight } =
@@ -533,7 +505,7 @@ function MapExportLayout({
 
   // The map content (title, legend, footer, map itself)
   const mapContent = (
-    <div ref={printRef} className={`${classes.printContainer} layout-ltr`}>
+    <Box ref={printRef} className="layout-ltr" sx={mapExportPrintContainerSx}>
       {toggles.bottomLogoVisibility && getImageUrl(bottomLogo) && (
         <img
           style={{
@@ -562,9 +534,9 @@ function MapExportLayout({
         alt="northArrow"
       />
       {titleText && (
-        <div
+        <Box
           ref={titleRef}
-          className={classes.titleOverlay}
+          sx={mapExportTitleOverlaySx}
           style={{ minHeight: `${titleMinHeight}px` }}
         >
           {toggles.logoVisibility && getImageUrl(logo) && (
@@ -586,13 +558,14 @@ function MapExportLayout({
           <Typography variant="h6" style={{ maxWidth: titleMaxWidth }}>
             {processedTitleText}
           </Typography>
-        </div>
+        </Box>
       )}
       {toggles.footerVisibility &&
         (footerText || footerDateText || footerCoverageText) && (
-          <div
+          <Box
             ref={footerRef}
-            className={`${classes.footerOverlay} print-footer-overlay`}
+            className="print-footer-overlay"
+            sx={mapExportFooterOverlaySx}
           >
             {footerText && (
               <Typography
@@ -613,7 +586,7 @@ function MapExportLayout({
                 {footerDateText} {footerCoverageText ? footerCoverageText : ''}
               </Typography>
             )}
-          </div>
+          </Box>
         )}
       {toggles.logoVisibility && !titleText && getImageUrl(logo) && (
         <img
@@ -649,16 +622,18 @@ function MapExportLayout({
             justifyContent:
               legendPosition % 2 === 0 ? 'flex-start' : 'flex-end',
             width: '20px',
+            // Use transform scale to adjust size based on legendScale
             transform: `scale(${legendScale})`,
-            transformOrigin:
-              legendPosition % 2 === 0 ? 'top left' : 'top right',
           }}
         >
           <LegendItemsList
             forPrinting
-            listStyle={classes.legendListStyle}
+            listSx={{
+              position: 'absolute',
+              top: '8px',
+              zIndex: 2,
+            }}
             showDescription={toggles.fullLayerDescription}
-            legendGraphicDpi={signalExportReady ? 192 : undefined}
             overrideLayers={
               selectedLayers && selectedLayers.length > 0
                 ? selectedLayers
@@ -667,15 +642,15 @@ function MapExportLayout({
           />
         </div>
       )}
-      <div className={classes.mapContainer}>
+      <Box sx={mapExportMapContainerSx}>
         <MapGL
-          ref={baseMapRef}
+          ref={mapRef}
           dragRotate={false}
+          // preserveDrawingBuffer is required for the map to be exported as an image
           preserveDrawingBuffer
           initialViewState={effectiveInitialViewState}
-          onLoad={handleBaseMapLoad}
-          mapStyle={basemapMapStyle}
-          style={{ width: '100%', height: '100%' }}
+          onLoad={handleMapLoad}
+          mapStyle={processedMapStyle || mapStyle.toString()}
         >
           <ClipProvider
             polygon={clipPolygon}
@@ -695,11 +670,7 @@ function MapExportLayout({
               return createElement(component as any, {
                 key: layer.id,
                 layer,
-                mapRef: baseMapRef,
-                before: getBasemapLayerBeforeId(
-                  index,
-                  layerUsesSymbolAnchorOnly(layer),
-                ),
+                before: getBeforeId(index, layerUsesSymbolAnchorOnly(layer)),
               });
             })}
             {activePanel === Panel.AnticipatoryActionDrought &&
@@ -726,12 +697,12 @@ function MapExportLayout({
               ))}
           </ClipProvider>
         </MapGL>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 
   return (
-    <div className={classes.previewContainer}>
+    <Box sx={mapExportPreviewContainerSx}>
       <div
         ref={containerRef}
         style={{
@@ -761,74 +732,8 @@ function MapExportLayout({
           </div>
         )}
       </div>
-    </div>
+    </Box>
   );
 }
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    printContainer: {
-      width: '100%',
-      height: '100%',
-    },
-    mapContainer: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      height: '100%',
-      width: '100%',
-      zIndex: 1,
-    },
-    titleOverlay: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      zIndex: 2,
-      color: 'black',
-      backgroundColor: 'white',
-      width: '100%',
-      textAlign: 'center',
-      fontSize: '1.25rem',
-      fontWeight: 600,
-      padding: '8px 0 8px 0',
-      borderBottom: `1px solid ${lightGrey}`,
-      '& h6': {},
-    },
-    footerOverlay: {
-      padding: '8px',
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      zIndex: 3,
-      color: 'black',
-      backgroundColor: 'white',
-      width: '100%',
-      boxSizing: 'border-box',
-      borderTop: `1px solid ${lightGrey}`,
-    },
-    legendListStyle: {
-      position: 'absolute',
-      top: '8px',
-      zIndex: 2,
-    },
-    sameRowToggles: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-    },
-    previewContainer: {
-      height: '100%',
-      width: '100%',
-      minWidth: 0,
-      minHeight: 0,
-      flex: 1,
-      display: 'flex',
-      overflow: 'hidden',
-    },
-  }),
-);
 
 export default MapExportLayout;

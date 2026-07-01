@@ -6,6 +6,13 @@
 import '@testing-library/jest-dom';
 import 'cross-fetch/polyfill';
 
+import { cleanup } from '@testing-library/react/pure';
+
+// @testing-library/react/pure (used via test/render.tsx) does not auto-cleanup.
+afterEach(() => {
+  cleanup();
+});
+
 import { randomBytes } from 'crypto';
 
 // jsdom exposes a partial Performance API; maplibre-gl expects mark/measure.
@@ -100,13 +107,6 @@ jest.mock(
 
 jest.mock('max-inscribed-circle', () => ({}));
 
-function stubMuiComponent(componentName: string) {
-  jest.doMock(
-    `@material-ui/core/${componentName}/${componentName}`,
-    () => `mock-${componentName}`,
-  );
-}
-
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useLocation: () => ({
@@ -123,60 +123,6 @@ jest.mock('react-router-dom', () => ({
 //     }),
 //   },
 // }));
-
-stubMuiComponent('Typography');
-stubMuiComponent('Button');
-stubMuiComponent('TextField');
-stubMuiComponent('Avatar');
-stubMuiComponent('Tabs');
-stubMuiComponent('Tab');
-stubMuiComponent('AppBar');
-stubMuiComponent('Toolbar');
-stubMuiComponent('Tooltip');
-stubMuiComponent('Link');
-stubMuiComponent('Card');
-stubMuiComponent('CardContent');
-stubMuiComponent('Chip');
-stubMuiComponent('List');
-stubMuiComponent('ListItem');
-stubMuiComponent('ListItemText');
-stubMuiComponent('Menu');
-stubMuiComponent('MenuItem');
-stubMuiComponent('Modal');
-stubMuiComponent('Popover');
-stubMuiComponent('CircularProgress');
-stubMuiComponent('Hidden');
-stubMuiComponent('ExpansionPanel');
-stubMuiComponent('ExpansionPanelSummary');
-stubMuiComponent('ExpansionPanelDetails');
-stubMuiComponent('Checkbox');
-stubMuiComponent('Drawer');
-stubMuiComponent('Divider');
-stubMuiComponent('Snackbar');
-stubMuiComponent('Stepper');
-stubMuiComponent('StepButton');
-stubMuiComponent('Step');
-stubMuiComponent('Switch');
-stubMuiComponent('Dialog');
-stubMuiComponent('DialogActions');
-stubMuiComponent('DialogContent');
-stubMuiComponent('DialogContentText');
-stubMuiComponent('DialogTitle');
-stubMuiComponent('Icon');
-stubMuiComponent('Radio');
-
-function stubMuiIcon(iconName: any) {
-  jest.doMock(`@material-ui/icons/${iconName}`, () => `mock-${iconName}`);
-}
-
-stubMuiIcon('ArrowDropDown');
-stubMuiIcon('BarChart');
-stubMuiIcon('ChevronLeft');
-stubMuiIcon('ChevronRight');
-stubMuiIcon('CloudDownload');
-stubMuiIcon('Image');
-stubMuiIcon('Visibility');
-stubMuiIcon('VisibilityOff');
 
 // mock getContext based on https://github.com/hustcc/jest-canvas-mock/issues/2
 

@@ -2,23 +2,16 @@
 
 exports[`renders as expected 1`] = `
 <div>
-  <mock-tooltip
-    arrow=""
-    classes="[object Object]"
-    placement="top"
-    title="[object Object]"
-    transitioncomponent="[object Object]"
-    transitionprops="[object Object]"
+  <div
+    class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-grow css-65xsgw-MuiGrid-root"
+    data-date-index="0"
+    data-mui-internal-clone-element="true"
   >
+    <div />
     <div
-      class="MuiGrid-root makeStyles-dateItem-3 MuiGrid-item MuiGrid-grid-xs-true"
-      data-date-index="0"
-    >
-      <div />
-      <div
-        class="makeStyles-dayItem-19"
-      />
-    </div>
-  </mock-tooltip>
+      class="prism-timeline-day-item MuiBox-root css-f9ui2e"
+      role="presentation"
+    />
+  </div>
 </div>
 `;

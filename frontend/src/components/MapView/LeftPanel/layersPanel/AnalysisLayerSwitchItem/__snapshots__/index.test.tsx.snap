@@ -3,101 +3,82 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="MuiBox-root MuiBox-root-15 makeStyles-analysisLayerSwitchRootItem-1"
+    class="MuiBox-root css-0"
     style="display: flex; flex-direction: column; max-width: 100%;"
   >
     <div
-      class="MuiBox-root MuiBox-root-16"
+      class="MuiBox-root css-0"
       style="display: flex; align-items: center;"
     >
-      <div
-        style="display: flex;"
+      <span
+        class="MuiSwitch-root MuiSwitch-sizeMedium css-7d0t2y-MuiSwitch-root"
       >
-        <mock-switch
-          checked=""
-          class="makeStyles-switch-7"
-          classes="[object Object]"
-          inputprops="[object Object]"
-          size="small"
+        <span
+          class="MuiButtonBase-root MuiSwitch-switchBase MuiSwitch-colorPrimary Mui-checked PrivateSwitchBase-root MuiSwitch-switchBase MuiSwitch-colorPrimary Mui-checked Mui-checked css-tznl3-MuiButtonBase-root-MuiSwitchBase-root-MuiSwitch-switchBase"
+        >
+          <input
+            aria-label="Some Analysis Layer Title"
+            checked=""
+            class="PrivateSwitchBase-input MuiSwitch-input css-12xagqm-MuiSwitchBase-root"
+            role="switch"
+            type="checkbox"
+          />
+          <span
+            class="MuiSwitch-thumb css-1mw77bv-MuiSwitch-thumb"
+          />
+        </span>
+        <span
+          class="MuiSwitch-track css-pm6g3f-MuiSwitch-track"
         />
-        <mock-typography
-          class="makeStyles-title-2"
-        >
-          Some Analysis Layer Title
-        </mock-typography>
-      </div>
-      <div
-        class="MuiBox-root MuiBox-root-17"
-        style="display: flex; align-items: center;"
+      </span>
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-nx2ers-MuiTypography-root"
       >
-        <mock-tooltip
-          title="Opacity"
+        Some Analysis Layer Title
+      </p>
+      <span
+        aria-label="Opacity"
+        class=""
+        data-mui-internal-clone-element="true"
+        style="margin-left: auto;"
+      >
+        <button
+          class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-1fjq9g0-MuiButtonBase-root-MuiIconButton-root"
+          tabindex="0"
+          type="button"
         >
-          <span>
-            <button
-              class="MuiButtonBase-root MuiIconButton-root makeStyles-opacityRoot-10"
-              tabindex="0"
-              type="button"
-            >
-              <span
-                class="MuiIconButton-label"
-              >
-                <svg
-                  aria-hidden="true"
-                  class="MuiSvgIcon-root"
-                  focusable="false"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
-                  />
-                </svg>
-              </span>
-              <span
-                class="MuiTouchRipple-root"
-              />
-            </button>
-          </span>
-        </mock-tooltip>
-        <mock-tooltip
-          title="Download"
-        >
-          <button
-            class="MuiButtonBase-root MuiIconButton-root"
-            tabindex="0"
-            type="button"
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="OpacityIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
           >
-            <span
-              class="MuiIconButton-label"
-            >
-              <svg
-                aria-hidden="true"
-                class="MuiSvgIcon-root"
-                focusable="false"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
-                />
-              </svg>
-            </span>
-            <span
-              class="MuiTouchRipple-root"
+            <path
+              d="M17.66 8 12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8M6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14z"
             />
-          </button>
-        </mock-tooltip>
-        <mock-menu
-          id="download-menu"
-          keepmounted=""
+          </svg>
+        </button>
+      </span>
+      <button
+        aria-label="Download"
+        class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-1ia9pca-MuiButtonBase-root-MuiIconButton-root"
+        data-mui-internal-clone-element="true"
+        tabindex="0"
+        type="button"
+      >
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+          data-testid="GetAppIcon"
+          focusable="false"
+          viewBox="0 0 24 24"
         >
-          <mock-menuitem>
-            Download as CSV
-          </mock-menuitem>
-          <mock-menuitem>
-            Download as GeoJSON
-          </mock-menuitem>
-        </mock-menu>
-      </div>
+          <path
+            d="M19 9h-4V3H9v6H5l7 7zM5 18v2h14v-2z"
+          />
+        </svg>
+      </button>
     </div>
   </div>
 </div>

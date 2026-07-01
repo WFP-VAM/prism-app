@@ -3,59 +3,67 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="MuiBox-root MuiBox-root-6"
+    class="MuiBox-root css-0"
     style="display: flex; flex-direction: column; max-width: 100%;"
   >
     <div
-      class="MuiBox-root MuiBox-root-7"
+      class="MuiBox-root css-0"
       style="display: flex; align-items: center;"
     >
-      <mock-switch
-        class="makeStyles-switch-8"
-        classes="[object Object]"
-        color="primary"
-        inputprops="[object Object]"
-      />
-      <mock-typography
-        class="makeStyles-titleUnchecked-13"
-        component="span"
-        role="button"
-        style="cursor: pointer;"
-        tabindex="0"
-      />
-      <mock-tooltip
-        title="Opacity"
+      <span
+        class="MuiSwitch-root MuiSwitch-sizeMedium css-7d0t2y-MuiSwitch-root"
       >
         <span
-          style="margin-left: auto;"
+          class="MuiButtonBase-root MuiSwitch-switchBase MuiSwitch-colorPrimary PrivateSwitchBase-root MuiSwitch-switchBase MuiSwitch-colorPrimary css-tznl3-MuiButtonBase-root-MuiSwitchBase-root-MuiSwitch-switchBase"
         >
-          <button
-            class="MuiButtonBase-root MuiIconButton-root makeStyles-opacityRoot-4 Mui-disabled Mui-disabled"
-            disabled=""
-            tabindex="-1"
-            type="button"
-          >
-            <span
-              class="MuiIconButton-label"
-            >
-              <svg
-                aria-hidden="true"
-                class="MuiSvgIcon-root"
-                focusable="false"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
-                />
-              </svg>
-            </span>
-          </button>
+          <input
+            aria-label=""
+            class="PrivateSwitchBase-input MuiSwitch-input css-12xagqm-MuiSwitchBase-root"
+            role="switch"
+            type="checkbox"
+          />
+          <span
+            class="MuiSwitch-thumb css-1mw77bv-MuiSwitch-thumb"
+          />
         </span>
-      </mock-tooltip>
-      <mock-menu
-        id="download-menu"
-        keepmounted=""
-      />
+        <span
+          class="MuiSwitch-track css-pm6g3f-MuiSwitch-track"
+        />
+      </span>
+      <span
+        class="MuiBox-root css-1nj48cr"
+      >
+        <span
+          class="MuiTypography-root MuiTypography-body1 css-1h08j4q-MuiTypography-root"
+          role="button"
+          tabindex="0"
+        />
+      </span>
+      <span
+        aria-label="Opacity"
+        class=""
+        data-mui-internal-clone-element="true"
+        style="margin-left: auto;"
+      >
+        <button
+          class="MuiButtonBase-root Mui-disabled MuiIconButton-root Mui-disabled MuiIconButton-sizeLarge css-1k2af70-MuiButtonBase-root-MuiIconButton-root"
+          disabled=""
+          tabindex="-1"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="OpacityIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M17.66 8 12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8M6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14z"
+            />
+          </svg>
+        </button>
+      </span>
     </div>
   </div>
 </div>

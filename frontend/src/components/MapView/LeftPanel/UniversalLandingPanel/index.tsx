@@ -1,15 +1,13 @@
+import { Search } from '@mui/icons-material';
 import {
   Box,
-  createStyles,
   InputAdornment,
   List,
-  ListItem,
+  ListItemButton,
   ListItemText,
-  makeStyles,
   TextField,
   Typography,
-} from '@material-ui/core';
-import { Search } from '@material-ui/icons';
+} from '@mui/material';
 import { PanelSize } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 import { memo, useMemo, useState } from 'react';
@@ -18,7 +16,6 @@ import { getUniversalMapPath } from 'utils/universal-routing';
 import { getUniversalCountries } from 'utils/universal-utils';
 
 const UniversalLandingPanel = memo(() => {
-  const classes = useStyles();
   const history = useHistory();
   const { t } = useSafeTranslation();
   const [query, setQuery] = useState('');
@@ -40,122 +37,103 @@ const UniversalLandingPanel = memo(() => {
   };
 
   return (
-    <Box className={classes.root}>
-      <Box className={classes.intro}>
-        <Typography variant="body2" className={classes.description}>
+    <Box
+      sx={{
+        width: PanelSize.medium,
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        p: '1rem',
+        boxSizing: 'border-box',
+      }}
+    >
+      <Box sx={{ mb: '1rem' }}>
+        <Typography
+          variant="body2"
+          sx={{
+            color: '#666',
+            mt: '0.75rem',
+            lineHeight: 1.5,
+            textTransform: 'none',
+            letterSpacing: 'normal',
+          }}
+        >
           {t(
             'Select a country to explore hazard and vulnerability data across the world.',
           )}
         </Typography>
       </Box>
 
-      <Typography variant="subtitle2" className={classes.listHeading}>
+      <Typography
+        variant="subtitle2"
+        sx={{ fontWeight: 600, color: '#333', mb: '0.5rem' }}
+      >
         {t('Countries')}
       </Typography>
 
       <TextField
-        className={classes.searchField}
+        sx={{ mb: '0.5rem', flexShrink: 0 }}
         fullWidth
         size="small"
         variant="outlined"
         placeholder={t('Search')}
         value={query}
         onChange={e => setQuery(e.target.value)}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <Search fontSize="small" />
-            </InputAdornment>
-          ),
+        slotProps={{
+          input: {
+            startAdornment: (
+              <InputAdornment position="start">
+                <Search fontSize="small" />
+              </InputAdornment>
+            ),
+          },
         }}
       />
 
       {filteredCountries.length === 0 ? (
-        <Typography variant="body2" className={classes.emptyState}>
+        <Typography
+          variant="body2"
+          sx={{
+            color: '#666',
+            py: '1rem 0',
+            textAlign: 'center',
+            textTransform: 'none',
+            letterSpacing: 'normal',
+          }}
+        >
           {t('No countries match "{{query}}"', { query })}
         </Typography>
       ) : (
-        <List className={classes.list} dense>
+        <List sx={{ flexGrow: 1, overflowY: 'auto', p: 0 }} dense>
           {filteredCountries.map(country => (
-            <ListItem
+            <ListItemButton
               key={country.iso3}
-              button
-              className={classes.listItem}
+              sx={{
+                borderRadius: 1,
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 158, 224, 0.08)',
+                },
+              }}
               onClick={() => handleCountryClick(country.iso3)}
             >
               <ListItemText
                 primary={country.name}
-                primaryTypographyProps={{ className: classes.countryName }}
+                slotProps={{
+                  primary: {
+                    sx: {
+                      color: '#333',
+                      textTransform: 'none',
+                      letterSpacing: 'normal',
+                    },
+                  },
+                }}
               />
-            </ListItem>
+            </ListItemButton>
           ))}
         </List>
       )}
     </Box>
   );
 });
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      width: PanelSize.medium,
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100%',
-      padding: '1rem',
-      boxSizing: 'border-box',
-    },
-    intro: {
-      marginBottom: '1rem',
-    },
-    title: {
-      fontWeight: 600,
-      color: '#333',
-    },
-    subtitle: {
-      color: '#666',
-      marginTop: '0.25rem',
-    },
-    description: {
-      color: '#666',
-      marginTop: '0.75rem',
-      lineHeight: 1.5,
-      textTransform: 'none',
-      letterSpacing: 'normal',
-    },
-    listHeading: {
-      fontWeight: 600,
-      color: '#333',
-      marginBottom: '0.5rem',
-    },
-    searchField: {
-      marginBottom: '0.5rem',
-      flexShrink: 0,
-    },
-    list: {
-      flexGrow: 1,
-      overflowY: 'auto',
-      padding: 0,
-    },
-    listItem: {
-      borderRadius: 4,
-      '&:hover': {
-        backgroundColor: 'rgba(0, 158, 224, 0.08)',
-      },
-    },
-    countryName: {
-      color: '#333',
-      textTransform: 'none',
-      letterSpacing: 'normal',
-    },
-    emptyState: {
-      color: '#666',
-      padding: '1rem 0',
-      textAlign: 'center',
-      textTransform: 'none',
-      letterSpacing: 'normal',
-    },
-  }),
-);
 
 export default UniversalLandingPanel;

@@ -1,15 +1,21 @@
 import 'react-datepicker/dist/react-datepicker.css';
 
+import { ChevronLeft, ChevronRight } from '@mui/icons-material';
+import { Box, Button, Grid, useMediaQuery, useTheme } from '@mui/material';
+import { datePickerPopperProps } from 'components/Common/datePickerPopperProps';
 import {
-  Button,
-  createStyles,
-  Grid,
-  makeStyles,
-  Theme,
-  useMediaQuery,
-  useTheme,
-} from '@material-ui/core';
-import { ChevronLeft, ChevronRight } from '@material-ui/icons';
+  dateContainerSx,
+  dateLabelContainerSx,
+  datePickerContainerDashboardSx,
+  datePickerContainerSx,
+  datePickerGridMobileSx,
+  datePickerGridSx,
+  dateSelectorChevronSx,
+  dateSelectorContainerSx,
+  dateSelectorSliderSx,
+  pointerSx,
+  timelineSx,
+} from 'components/MapView/DateSelector/dateSelectorStyles';
 import { getTimelineOffset } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
 import {
   AnticipatoryAction,
@@ -26,18 +32,8 @@ import { RootState } from 'context/store';
 import { format } from 'date-fns';
 import { locales, useSafeTranslation } from 'i18n';
 import { findIndex, get } from 'lodash';
-import {
-  type FC,
-  memo,
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import DatePicker from 'react-datepicker';
-import { createPortal } from 'react-dom';
 import Draggable, { DraggableEvent } from 'react-draggable';
 import { useSelector } from 'react-redux';
 import {
@@ -69,12 +65,6 @@ type Point = {
   y: number;
 };
 
-/** Renders popper in body so Floating UI + map stacking/ancestors do not swallow pointer events. */
-const DatePickerPopperPortal: FC<{ children?: ReactNode }> = ({ children }) =>
-  typeof document !== 'undefined'
-    ? createPortal(<>{children}</>, document.body)
-    : null;
-
 const TIMELINE_ID = 'dateTimelineSelector';
 const POINTER_ID = 'datePointerSelector';
 
@@ -101,7 +91,6 @@ const calculateStartAndEndDates = (startDate: Date, selectedTab: string) => {
 const DateSelector = memo(() => {
   const mapState = useMapState();
   const isGlobalMap = mapState?.isGlobalMap;
-  const classes = useStyles();
   const {
     areLayerDatesLoading,
     selectedLayerDates: availableDates,
@@ -140,7 +129,7 @@ const DateSelector = memo(() => {
   const { updateHistory } = useUrlHistory();
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
-  const xsDown = useMediaQuery(theme.breakpoints.down('xs'));
+  const xsDown = useMediaQuery(theme.breakpoints.down('sm'));
 
   useEffect(() => {
     const closestDate = checkSelectedDateForLayerSupport(stateStartDate);
@@ -729,22 +718,25 @@ const DateSelector = memo(() => {
   }
 
   return (
-    <div
-      className={classes.container}
+    <Box
+      sx={dateSelectorContainerSx}
       style={{ zIndex: tabValue === Panel.Charts ? -1 : 1300 }}
     >
       <Grid
         container
-        alignItems="center"
-        justifyContent="center"
-        className={
-          isGlobalMap
-            ? classes.datePickerContainer
-            : classes.datePickerContainerDashboard
-        }
+        sx={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          ...(isGlobalMap
+            ? datePickerContainerSx
+            : datePickerContainerDashboardSx),
+        }}
       >
         {/* Mobile */}
-        <Grid item xs={12} sm={1} className={classes.datePickerGrid}>
+        <Grid
+          size={{ xs: 12, sm: 1 }}
+          sx={[datePickerGridSx, !smUp && datePickerGridMobileSx]}
+        >
           {!smUp && (
             <Button onClick={decrementDate}>
               <ChevronLeft style={{ color: '#101010' }} />
@@ -754,16 +746,14 @@ const DateSelector = memo(() => {
           <DatePicker
             locale={t('date_locale')}
             dateFormat="PP"
-            className={classes.datePickerInput}
             selected={selectedPickerDate}
             open={isDatePickerOpen}
             onInputClick={handleDatePickerInputClick}
             onClickOutside={closeDatePicker}
             onCalendarClose={closeDatePicker}
             preventOpenOnFocus
-            popperContainer={DatePickerPopperPortal}
+            {...datePickerPopperProps}
             popperPlacement="top-start"
-            popperClassName={classes.datePickerCalendarPopper}
             onChange={handleDatePickerChangeAndClose}
             maxDate={maxDate}
             todayButton={t('Today')}
@@ -787,17 +777,17 @@ const DateSelector = memo(() => {
         </Grid>
 
         {/* Desktop */}
-        <Grid item xs={12} sm className={classes.slider}>
+        <Grid size={{ xs: 12, sm: 'grow' }} sx={dateSelectorSliderSx}>
           {!xsDown && (
             <Button
               id="chevronLeftButton"
               onClick={decrementDate}
-              className={classes.chevronDate}
+              sx={dateSelectorChevronSx}
             >
               <ChevronLeft />
             </Button>
           )}
-          <Grid className={classes.dateContainer} ref={timeLine}>
+          <Grid sx={dateContainerSx} ref={timeLine}>
             <Draggable
               axis="x"
               handle={`#${TIMELINE_ID}`}
@@ -813,11 +803,10 @@ const DateSelector = memo(() => {
               onStop={onTimelineStop}
               enableUserSelectHack={false}
             >
-              <div className={classes.timeline} id={TIMELINE_ID}>
+              <Box component="div" sx={timelineSx} id={TIMELINE_ID}>
                 <Grid
                   container
-                  alignItems="stretch"
-                  className={classes.dateLabelContainer}
+                  sx={{ alignItems: 'stretch', ...dateLabelContainerSx }}
                   style={{
                     minWidth: `${dateRange.length * TIMELINE_ITEM_WIDTH}px`,
                   }}
@@ -854,131 +843,31 @@ const DateSelector = memo(() => {
                     onDrag={onPointerDrag}
                     enableUserSelectHack={false}
                   >
-                    <div className={classes.pointer} id={POINTER_ID}>
+                    <Box component="div" sx={pointerSx} id={POINTER_ID}>
                       <img
                         src={TickSvg}
                         alt="Tick Svg"
                         style={{ pointerEvents: 'none', marginTop: -29 }}
                       />
-                    </div>
+                    </Box>
                   </Draggable>
                 )}
-              </div>
+              </Box>
             </Draggable>
           </Grid>
           {!xsDown && (
             <Button
               id="chevronRightButton"
               onClick={incrementDate}
-              className={classes.chevronDate}
+              sx={dateSelectorChevronSx}
             >
               <ChevronRight />
             </Button>
           )}
         </Grid>
       </Grid>
-    </div>
+    </Box>
   );
 });
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    container: {
-      position: 'absolute',
-      bottom: '1.5rem',
-      width: '100%',
-    },
-
-    chevronDate: {
-      // Use && to increase specificity — bypassing MUI dev environment issue
-      '&&': {
-        padding: 0,
-        minWidth: '24px',
-        marginBottom: 'auto',
-        marginTop: 'auto',
-        marginRight: '10px',
-        marginLeft: '10px',
-        color: '#101010',
-      },
-      '&:hover': {
-        backgroundColor: 'rgba(211,211,211, 0.3)',
-      },
-    },
-
-    datePickerContainer: {
-      border: '1px solid #D4D4D4',
-      boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
-      backgroundColor: 'white',
-      color: '#101010',
-      borderRadius: '8px',
-      width: '90%',
-      margin: 'auto',
-      textAlign: 'center',
-    },
-    datePickerContainerDashboard: {
-      border: '1px solid #D4D4D4',
-      boxShadow: 'none',
-      backgroundColor: 'white',
-      color: '#101010',
-      borderRadius: '8px',
-      width: 'calc(100% - 16px)',
-      textAlign: 'center',
-    },
-
-    datePickerInput: {
-      backgroundColor: 'white',
-      color: '#101010',
-      paddingBottom: theme.spacing(2),
-      paddingTop: theme.spacing(2),
-    },
-
-    datePickerCalendarPopper: {
-      zIndex: theme.zIndex.modal,
-    },
-
-    datePickerGrid: {
-      display: 'flex',
-      minWidth: 150,
-      justifyContent: 'center',
-      [theme.breakpoints.down('xs')]: {
-        marginBottom: theme.spacing(1),
-      },
-    },
-
-    slider: {
-      display: 'flex',
-    },
-
-    dateContainer: {
-      position: 'relative',
-      height: 54,
-      flexGrow: 1,
-      overflow: 'hidden',
-    },
-
-    dateLabelContainer: {
-      position: 'absolute',
-      flexWrap: 'nowrap',
-    },
-
-    timeline: {
-      position: 'absolute',
-      top: 8,
-      touchAction: 'pan-x',
-      WebkitTouchCallout: 'none',
-      WebkitUserSelect: 'none',
-      userSelect: 'none',
-    },
-
-    pointer: {
-      position: 'absolute',
-      zIndex: 5,
-      marginTop: 22,
-      left: -11,
-      height: '16px',
-      cursor: 'grab',
-    },
-  }),
-);
 
 export default DateSelector;

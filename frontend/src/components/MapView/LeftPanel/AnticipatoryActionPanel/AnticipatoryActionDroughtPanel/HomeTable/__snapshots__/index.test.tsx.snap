@@ -3,48 +3,46 @@
 exports[`HomeTable renders as expected 1`] = `
 <div>
   <div
-    class="makeStyles-tableWrapper-1"
+    class="MuiBox-root css-m9gx6h"
   >
     <div
-      class="makeStyles-rowWrapper-11"
-      style="height: 1.5rem;"
+      class="MuiBox-root css-ewygwr"
     >
       <div
-        class="makeStyles-iconCol-12"
+        class="MuiBox-root css-89wc4q"
       />
       <div
-        style="width: calc(100% - 3rem);"
+        class="MuiBox-root css-rtv7g1"
       >
-        <mock-typography
-          class="makeStyles-windowHeader-10"
-          variant="h4"
+        <h4
+          class="MuiTypography-root MuiTypography-h4 css-5wnl04-MuiTypography-root"
         >
           Window 1
-        </mock-typography>
+        </h4>
       </div>
     </div>
     <div
-      class="makeStyles-rowWrapper-11"
+      class="MuiBox-root css-aqq2uw"
     >
       <div
-        class="makeStyles-iconCol-12"
+        class="MuiBox-root css-89wc4q"
       >
         <div
-          class="makeStyles-iconWrapper-16"
+          class="MuiBox-root css-nqs5w4"
           style="background: rgb(131, 31, 0);"
         >
           <div
-            class="makeStyles-centerContainer-17"
+            class="MuiBox-root css-fi9omk"
             style="border: 1px solid white; color: white;"
           >
             <div
-              class="makeStyles-topTextContainer-18"
+              class="MuiBox-root css-1g5ndk4"
               style="border-bottom: 1px solid white; background: rgb(131, 31, 0);"
             >
               S
             </div>
             <div
-              class="makeStyles-bottomTextContainer-19"
+              class="MuiBox-root css-1vqiaa9"
               style="background: rgb(131, 31, 0);"
             >
               SEV
@@ -53,47 +51,47 @@ exports[`HomeTable renders as expected 1`] = `
         </div>
       </div>
       <div
-        style="width: calc(100% - 3rem);"
+        class="MuiBox-root css-rtv7g1"
       >
         <div
-          class="makeStyles-windowBackground-13"
+          class="MuiBox-root css-1ol1b3g"
         >
           <div
-            class="makeStyles-tagWrapper-14"
+            class="MuiBox-root css-10ojd4r"
           >
-            <mock-typography
-              class="makeStyles-emptyText-15"
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-13f7o5w-MuiTypography-root"
             >
               (
               no district
               )
-            </mock-typography>
+            </p>
           </div>
         </div>
       </div>
     </div>
     <div
-      class="makeStyles-rowWrapper-11"
+      class="MuiBox-root css-aqq2uw"
     >
       <div
-        class="makeStyles-iconCol-12"
+        class="MuiBox-root css-89wc4q"
       >
         <div
-          class="makeStyles-iconWrapper-16"
+          class="MuiBox-root css-nqs5w4"
           style="background: rgb(230, 55, 1);"
         >
           <div
-            class="makeStyles-centerContainer-17"
+            class="MuiBox-root css-fi9omk"
             style="border: 1px solid white; color: white;"
           >
             <div
-              class="makeStyles-topTextContainer-18"
+              class="MuiBox-root css-1g5ndk4"
               style="border-bottom: 1px solid white; background: rgb(230, 55, 1);"
             >
               R
             </div>
             <div
-              class="makeStyles-bottomTextContainer-19"
+              class="MuiBox-root css-1vqiaa9"
               style="background: rgb(230, 55, 1);"
             >
               SEV
@@ -102,47 +100,47 @@ exports[`HomeTable renders as expected 1`] = `
         </div>
       </div>
       <div
-        style="width: calc(100% - 3rem);"
+        class="MuiBox-root css-rtv7g1"
       >
         <div
-          class="makeStyles-windowBackground-13"
+          class="MuiBox-root css-1ol1b3g"
         >
           <div
-            class="makeStyles-tagWrapper-14"
+            class="MuiBox-root css-10ojd4r"
           >
-            <mock-typography
-              class="makeStyles-emptyText-15"
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-13f7o5w-MuiTypography-root"
             >
               (
               no district
               )
-            </mock-typography>
+            </p>
           </div>
         </div>
       </div>
     </div>
     <div
-      class="makeStyles-rowWrapper-11"
+      class="MuiBox-root css-aqq2uw"
     >
       <div
-        class="makeStyles-iconCol-12"
+        class="MuiBox-root css-89wc4q"
       >
         <div
-          class="makeStyles-iconWrapper-16"
+          class="MuiBox-root css-nqs5w4"
           style="background: rgb(255, 137, 52);"
         >
           <div
-            class="makeStyles-centerContainer-17"
+            class="MuiBox-root css-fi9omk"
             style="border: 1px solid black; color: black;"
           >
             <div
-              class="makeStyles-topTextContainer-18"
+              class="MuiBox-root css-1g5ndk4"
               style="border-bottom: 1px solid black; background: rgb(255, 137, 52);"
             >
               S
             </div>
             <div
-              class="makeStyles-bottomTextContainer-19"
+              class="MuiBox-root css-1vqiaa9"
               style="background: rgb(255, 137, 52);"
             >
               MOD
@@ -151,47 +149,47 @@ exports[`HomeTable renders as expected 1`] = `
         </div>
       </div>
       <div
-        style="width: calc(100% - 3rem);"
+        class="MuiBox-root css-rtv7g1"
       >
         <div
-          class="makeStyles-windowBackground-13"
+          class="MuiBox-root css-1ol1b3g"
         >
           <div
-            class="makeStyles-tagWrapper-14"
+            class="MuiBox-root css-10ojd4r"
           >
-            <mock-typography
-              class="makeStyles-emptyText-15"
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-13f7o5w-MuiTypography-root"
             >
               (
               no district
               )
-            </mock-typography>
+            </p>
           </div>
         </div>
       </div>
     </div>
     <div
-      class="makeStyles-rowWrapper-11"
+      class="MuiBox-root css-aqq2uw"
     >
       <div
-        class="makeStyles-iconCol-12"
+        class="MuiBox-root css-89wc4q"
       >
         <div
-          class="makeStyles-iconWrapper-16"
+          class="MuiBox-root css-nqs5w4"
           style="background: rgb(255, 213, 45);"
         >
           <div
-            class="makeStyles-centerContainer-17"
+            class="MuiBox-root css-fi9omk"
             style="border: 1px solid black; color: black;"
           >
             <div
-              class="makeStyles-topTextContainer-18"
+              class="MuiBox-root css-1g5ndk4"
               style="border-bottom: 1px solid black; background: rgb(255, 213, 45);"
             >
               R
             </div>
             <div
-              class="makeStyles-bottomTextContainer-19"
+              class="MuiBox-root css-1vqiaa9"
               style="background: rgb(255, 213, 45);"
             >
               MOD
@@ -200,48 +198,50 @@ exports[`HomeTable renders as expected 1`] = `
         </div>
       </div>
       <div
-        style="width: calc(100% - 3rem);"
+        class="MuiBox-root css-rtv7g1"
       >
         <div
-          class="makeStyles-windowBackground-13"
+          class="MuiBox-root css-1ol1b3g"
         >
           <div
-            class="makeStyles-tagWrapper-14"
+            class="MuiBox-root css-10ojd4r"
           >
             <button
-              class="makeStyles-areaTagWrapper-20"
+              class="MuiBox-root css-1k9jfk1"
               type="button"
             >
-              <mock-typography>
+              <p
+                class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+              >
                 Changara
-              </mock-typography>
+              </p>
             </button>
           </div>
         </div>
       </div>
     </div>
     <div
-      class="makeStyles-rowWrapper-11"
+      class="MuiBox-root css-aqq2uw"
     >
       <div
-        class="makeStyles-iconCol-12"
+        class="MuiBox-root css-89wc4q"
       >
         <div
-          class="makeStyles-iconWrapper-16"
+          class="MuiBox-root css-nqs5w4"
           style="background: rgb(255, 245, 3);"
         >
           <div
-            class="makeStyles-centerContainer-17"
+            class="MuiBox-root css-fi9omk"
             style="border: 1px solid black; color: black;"
           >
             <div
-              class="makeStyles-topTextContainer-18"
+              class="MuiBox-root css-1g5ndk4"
               style="border-bottom: 1px solid black; background: rgb(255, 245, 3);"
             >
               S
             </div>
             <div
-              class="makeStyles-bottomTextContainer-19"
+              class="MuiBox-root css-1vqiaa9"
               style="background: rgb(255, 245, 3);"
             >
               MIL
@@ -250,47 +250,47 @@ exports[`HomeTable renders as expected 1`] = `
         </div>
       </div>
       <div
-        style="width: calc(100% - 3rem);"
+        class="MuiBox-root css-rtv7g1"
       >
         <div
-          class="makeStyles-windowBackground-13"
+          class="MuiBox-root css-1ol1b3g"
         >
           <div
-            class="makeStyles-tagWrapper-14"
+            class="MuiBox-root css-10ojd4r"
           >
-            <mock-typography
-              class="makeStyles-emptyText-15"
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-13f7o5w-MuiTypography-root"
             >
               (
               no district
               )
-            </mock-typography>
+            </p>
           </div>
         </div>
       </div>
     </div>
     <div
-      class="makeStyles-rowWrapper-11"
+      class="MuiBox-root css-aqq2uw"
     >
       <div
-        class="makeStyles-iconCol-12"
+        class="MuiBox-root css-89wc4q"
       >
         <div
-          class="makeStyles-iconWrapper-16"
+          class="MuiBox-root css-nqs5w4"
           style="background: rgb(255, 252, 179);"
         >
           <div
-            class="makeStyles-centerContainer-17"
+            class="MuiBox-root css-fi9omk"
             style="border: 1px solid black; color: black;"
           >
             <div
-              class="makeStyles-topTextContainer-18"
+              class="MuiBox-root css-1g5ndk4"
               style="border-bottom: 1px solid black; background: rgb(255, 252, 179);"
             >
               R
             </div>
             <div
-              class="makeStyles-bottomTextContainer-19"
+              class="MuiBox-root css-1vqiaa9"
               style="background: rgb(255, 252, 179);"
             >
               MIL
@@ -299,21 +299,23 @@ exports[`HomeTable renders as expected 1`] = `
         </div>
       </div>
       <div
-        style="width: calc(100% - 3rem);"
+        class="MuiBox-root css-rtv7g1"
       >
         <div
-          class="makeStyles-windowBackground-13"
+          class="MuiBox-root css-1ol1b3g"
         >
           <div
-            class="makeStyles-tagWrapper-14"
+            class="MuiBox-root css-10ojd4r"
           >
             <button
-              class="makeStyles-areaTagWrapper-20"
+              class="MuiBox-root css-1k9jfk1"
               type="button"
             >
-              <mock-typography>
+              <p
+                class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+              >
                 Changara
-              </mock-typography>
+              </p>
             </button>
           </div>
         </div>
@@ -321,44 +323,73 @@ exports[`HomeTable renders as expected 1`] = `
     </div>
   </div>
   <div
-    class="makeStyles-footerWrapper-2"
+    class="MuiBox-root css-j7qwjs"
   >
     <div
-      class="makeStyles-footerActionsWrapper-3"
+      class="MuiBox-root css-jekkxf"
     >
-      <mock-button
-        class="makeStyles-footerButton-5"
-        component="a"
+      <a
+        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary MuiButton-fullWidth css-1jqm0xi-MuiButtonBase-root-MuiButton-root"
         download="2023-12-01-aa_probabilities_triggers_moz.csv"
-        fullwidth=""
         href="https://hip-workshop-sharing-public-eu-central-1-485262375119.s3.eu-central-1.amazonaws.com/anticipatory-action/moz/prism/aa_probabilities_triggers_moz.csv?date=2024-12-01-00-00"
-        starticon="[object Object]"
-        variant="outlined"
+        tabindex="0"
       >
-        <mock-typography>
+        <span
+          class="MuiButton-icon MuiButton-startIcon css-1eozbo-MuiButton-startIcon"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="GetAppIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M19 9h-4V3H9v6H5l7 7zM5 18v2h14v-2z"
+            />
+          </svg>
+        </span>
+        <p
+          class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+        >
           Assets
-        </mock-typography>
-      </mock-button>
-      <mock-button
-        class="makeStyles-footerButton-5"
-        fullwidth=""
-        starticon="[object Object]"
-        variant="outlined"
+        </p>
+      </a>
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary MuiButton-fullWidth css-1jqm0xi-MuiButtonBase-root-MuiButton-root"
+        tabindex="0"
+        type="button"
       >
-        <mock-typography>
+        <span
+          class="MuiButton-icon MuiButton-startIcon css-1eozbo-MuiButton-startIcon"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="BarChartOutlinedIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M4 9h4v11H4zm12 4h4v7h-4zm-6-9h4v16h-4z"
+            />
+          </svg>
+        </span>
+        <p
+          class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+        >
           Forecast
-        </mock-typography>
-      </mock-button>
+        </p>
+      </button>
     </div>
     <div
-      class="makeStyles-footerDialogsWrapper-4"
+      class="MuiBox-root css-ralmko"
     >
-      <mock-typography
-        class="makeStyles-footerDialog-6"
-        component="button"
+      <button
+        class="MuiTypography-root MuiTypography-body1 css-1uj4td3-MuiTypography-root"
       >
         How to read this screen
-      </mock-typography>
+      </button>
     </div>
   </div>
 </div>

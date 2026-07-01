@@ -1,11 +1,10 @@
+import { Search } from '@mui/icons-material';
 import {
   InputAdornment,
-  makeStyles,
   MenuItem,
   TextField,
   TextFieldProps,
-} from '@material-ui/core';
-import { Search } from '@material-ui/icons';
+} from '@mui/material';
 import bbox from '@turf/bbox';
 import { LayerKey } from 'config/types';
 import { BoundaryLayerData } from 'context/layers/boundary';
@@ -18,6 +17,10 @@ import { FixedSizeList as List } from 'react-window';
 import { boundaryCache } from 'utils/boundary-cache';
 import { getDisplayBoundaryLayersForIso3 } from 'utils/universal-utils';
 
+import {
+  menuItemLevelSx,
+  searchFieldSx,
+} from './boundaryDropdownOptionsStyles';
 import {
   BoundaryDropdownProps,
   flattenAreaTree,
@@ -38,12 +41,12 @@ const SearchField = React.forwardRef(
     },
     ref: TextFieldProps['ref'],
   ) => {
-    const styles = useStyles();
     return (
       <TextField
         ref={ref}
+        fullWidth
         onKeyDown={e => e.stopPropagation()}
-        className={styles.searchField}
+        sx={searchFieldSx}
         value={search}
         onChange={e => {
           setSearch(e.target.value);
@@ -54,12 +57,14 @@ const SearchField = React.forwardRef(
             target.focus();
           }, TIMEOUT_ANIMATION_DELAY);
         }}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="end">
-              <Search />
-            </InputAdornment>
-          ),
+        slotProps={{
+          input: {
+            startAdornment: (
+              <InputAdornment position="start">
+                <Search />
+              </InputAdornment>
+            ),
+          },
         }}
       />
     );
@@ -77,10 +82,10 @@ const BoundaryDropdownOptions = React.forwardRef(
       goto,
       map,
       multiple = true,
+      listWidth = 350,
     }: BoundaryDropdownOptionsProps,
     ref,
   ) => {
-    const styles = useStyles();
     const { t, i18n: i18nLocale } = useSafeTranslation();
     const { iso3 } = useCountryIso();
     const boundaryLayers = getDisplayBoundaryLayersForIso3(iso3).filter(
@@ -171,13 +176,6 @@ const BoundaryDropdownOptions = React.forwardRef(
     // note that level actually used is different from the
     // official admin level, as we subtract the root level
     // from each item's level, when displaying
-    const clsName: { [key: number]: any } = {
-      0: styles.menuItem0,
-      1: styles.menuItem1,
-      2: styles.menuItem2,
-      3: styles.menuItem3,
-      4: styles.menuItem3,
-    };
     return (
       <>
         <SearchField search={search} setSearch={setSearch} />
@@ -195,16 +193,14 @@ const BoundaryDropdownOptions = React.forwardRef(
           height={700}
           itemCount={flattenedAreaList.length}
           itemSize={35}
-          width="350px"
+          width={listWidth}
         >
           {({ index, style }) => {
             const area = flattenedAreaList[index];
             return (
               <MenuItem
                 ref={ref as any}
-                classes={{
-                  root: clsName[(area.level - rootLevel) as number],
-                }}
+                sx={menuItemLevelSx[(area.level - rootLevel) as number]}
                 key={area.adminCode}
                 value={area.adminCode}
                 style={style as any}
@@ -261,50 +257,6 @@ const BoundaryDropdownOptions = React.forwardRef(
   },
 );
 
-const useStyles = makeStyles({
-  searchField: {
-    '&>div': {
-      color: 'black',
-    },
-  },
-  formControl: {
-    width: '140px',
-    marginLeft: '10px',
-  },
-  icon: {
-    alignSelf: 'end',
-    marginBottom: '0.4em',
-  },
-  menuItem0: {
-    textTransform: 'uppercase',
-    letterSpacing: '3px',
-    fontSize: '0.7em',
-    '&$selected': {
-      backgroundColor: '#ADD8E6',
-    },
-  },
-  menuItem1: {
-    paddingLeft: '2em',
-    '&$selected': {
-      backgroundColor: '#ADD8E6',
-    },
-  },
-  menuItem2: {
-    paddingLeft: '3em',
-    fontSize: '0.9em',
-    '&$selected': {
-      backgroundColor: '#ADD8E6',
-    },
-  },
-  menuItem3: {
-    paddingLeft: '4em',
-    fontSize: '0.9em',
-    '&$selected': {
-      backgroundColor: '#ADD8E6',
-    },
-  },
-});
-
 interface BoundaryDropdownOptionsProps {
   search: string;
   setSearch: (v: string) => void;
@@ -314,6 +266,7 @@ interface BoundaryDropdownOptionsProps {
   goto?: boolean | undefined;
   map: MaplibreMap | undefined;
   multiple?: boolean;
+  listWidth?: number;
 }
 
 export default BoundaryDropdownOptions;

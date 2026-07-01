@@ -1,5 +1,5 @@
-import { Box, Button, makeStyles } from '@material-ui/core';
-import { ArrowBackOutlined } from '@material-ui/icons';
+import { ArrowBackOutlined } from '@mui/icons-material';
+import { Box, Button } from '@mui/material';
 import { DashboardElementType } from 'config/types';
 import {
   dashboardsListSelector,
@@ -10,6 +10,11 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
+import {
+  createDashboardBackBarSx,
+  createDashboardBackButtonSx,
+  createDashboardRootSx,
+} from './createDashboardStyles';
 import PresetSelector from './PresetSelector';
 import SlotConfigurator from './SlotConfigurator';
 import {
@@ -21,7 +26,6 @@ import {
 } from './utils';
 
 function CreateDashboardView() {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -76,13 +80,13 @@ function CreateDashboardView() {
   };
 
   return (
-    <Box className={classes.root}>
+    <Box sx={createDashboardRootSx}>
       {step !== 'preset-selection' && (
-        <Box className={classes.backBar}>
+        <Box sx={createDashboardBackBarSx}>
           <Button
             startIcon={<ArrowBackOutlined />}
             onClick={handleBack}
-            className={classes.backButton}
+            sx={createDashboardBackButtonSx}
             size="small"
           >
             {t('Start over')}
@@ -107,27 +111,5 @@ function CreateDashboardView() {
     </Box>
   );
 }
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    height: 'calc(100vh - 56px)',
-    overflow: 'auto',
-    background: '#F8F8F8',
-  },
-  backBar: {
-    padding: '8px 16px',
-    borderBottom: '1px solid #E0E0E0',
-    background: 'white',
-  },
-  backButton: {
-    textTransform: 'none',
-    color: theme.palette.text.secondary,
-    '& .MuiButton-startIcon': {
-      color: theme.palette.text.secondary,
-    },
-  },
-}));
 
 export default CreateDashboardView;

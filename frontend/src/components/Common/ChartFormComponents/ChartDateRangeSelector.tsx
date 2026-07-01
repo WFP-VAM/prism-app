@@ -1,7 +1,47 @@
-import { Input, makeStyles, Typography } from '@material-ui/core';
+import { Box, Input, Typography } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
+import { datePickerPopperProps } from 'components/Common/datePickerPopperProps';
 import { useSafeTranslation } from 'i18n';
 import { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
+
+import {
+  chartPanelParamTextSx,
+  colorBlackSx,
+  formContainerSx,
+} from '../formComponentStyles';
+
+const containerSx = formContainerSx(20);
+
+const labelSx = {
+  ...colorBlackSx,
+  marginBottom: '8px',
+  fontWeight: 600,
+} satisfies SxProps<Theme>;
+
+const fieldLabelSx = {
+  ...colorBlackSx,
+  marginBottom: '8px',
+  fontSize: '0.875rem',
+} satisfies SxProps<Theme>;
+
+const dateFieldsRowSx = {
+  display: 'flex',
+  gap: '16px',
+  width: '100%',
+} satisfies SxProps<Theme>;
+
+const dateFieldSx = {
+  flex: 1,
+  display: 'flex',
+  flexDirection: 'column',
+} satisfies SxProps<Theme>;
+
+const errorTextSx = {
+  color: '#d32f2f',
+  marginTop: '8px',
+  fontSize: '0.75rem',
+} satisfies SxProps<Theme>;
 
 interface ChartDateRangeSelectorProps {
   startDate: number | null;
@@ -22,7 +62,6 @@ function ChartDateRangeSelector({
   stacked = false,
   hideLabel = false,
 }: ChartDateRangeSelectorProps) {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
   const [dateError, setDateError] = useState<string | null>(null);
 
@@ -50,18 +89,18 @@ function ChartDateRangeSelector({
   };
 
   return (
-    <div className={classes.container}>
+    <Box sx={containerSx}>
       {!hideLabel && (
-        <Typography className={classes.label} variant="body2">
+        <Typography sx={labelSx} variant="body2">
           {t('Date Range')}
         </Typography>
       )}
-      <div
-        className={classes.dateFieldsRow}
+      <Box
+        sx={dateFieldsRowSx}
         style={{ flexDirection: stacked ? 'column' : 'row' }}
       >
-        <div className={classes.dateField}>
-          <Typography className={classes.fieldLabel} variant="body2">
+        <Box sx={dateFieldSx}>
+          <Typography sx={fieldLabelSx} variant="body2">
             {t('Start')}
           </Typography>
           <DatePicker
@@ -76,12 +115,12 @@ function ChartDateRangeSelector({
             showYearDropdown
             dropdownMode="select"
             disabled={disabled}
-            customInput={<Input className={classes.chartPanelParamText} />}
-            popperClassName={classes.calendarPopper}
+            customInput={<Input sx={chartPanelParamTextSx} />}
+            {...datePickerPopperProps}
           />
-        </div>
-        <div className={classes.dateField}>
-          <Typography className={classes.fieldLabel} variant="body2">
+        </Box>
+        <Box sx={dateFieldSx}>
+          <Typography sx={fieldLabelSx} variant="body2">
             {t('End')}
           </Typography>
           <DatePicker
@@ -96,67 +135,18 @@ function ChartDateRangeSelector({
             showYearDropdown
             dropdownMode="select"
             disabled={disabled}
-            customInput={<Input className={classes.chartPanelParamText} />}
-            popperClassName={classes.calendarPopper}
+            customInput={<Input sx={chartPanelParamTextSx} />}
+            {...datePickerPopperProps}
           />
-        </div>
-      </div>
+        </Box>
+      </Box>
       {dateError && (
-        <Typography className={classes.errorText} variant="caption">
+        <Typography sx={errorTextSx} variant="caption">
           {dateError}
         </Typography>
       )}
-    </div>
+    </Box>
   );
 }
-
-const useStyles = makeStyles(() => ({
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginBottom: 20,
-    marginLeft: 10,
-    width: '90%',
-    color: 'black',
-  },
-  label: {
-    color: 'black',
-    marginBottom: 8,
-    fontWeight: 600,
-  },
-  fieldLabel: {
-    color: 'black',
-    marginBottom: 8,
-    fontSize: '0.875rem',
-  },
-  dateFieldsRow: {
-    display: 'flex',
-    gap: '16px',
-    width: '100%',
-  },
-  dateField: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  chartPanelParamText: {
-    width: '100%',
-    color: 'black',
-    '&.MuiInput-underline:before': {
-      borderBottomColor: 'rgba(0, 0, 0, 0.42)',
-    },
-    '&.MuiInput-underline:hover:before': {
-      borderBottomColor: 'rgba(0, 0, 0, 0.87)',
-    },
-  },
-  calendarPopper: {
-    zIndex: 3,
-  },
-  errorText: {
-    color: '#d32f2f',
-    marginTop: 8,
-    fontSize: '0.75rem',
-  },
-}));
 
 export default ChartDateRangeSelector;

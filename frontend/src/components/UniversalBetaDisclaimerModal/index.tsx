@@ -1,14 +1,13 @@
+import { Cancel } from '@mui/icons-material';
 import {
-  createStyles,
+  Box,
   Dialog,
   DialogContent,
   DialogTitle,
   IconButton,
   Link,
-  makeStyles,
   Typography,
-} from '@material-ui/core';
-import { Cancel } from '@material-ui/icons';
+} from '@mui/material';
 import { useSafeTranslation } from 'i18n';
 import { useCallback, useState } from 'react';
 import { isUniversalDeployment } from 'utils/universal-utils';
@@ -21,7 +20,6 @@ const backdropStyle = { backgroundColor: 'rgba(204, 204, 204, 0.6)' };
 
 function UniversalBetaDisclaimerModal() {
   const { t } = useSafeTranslation();
-  const classes = useStyles();
   const [open, setOpen] = useState(() => !isUniversalBetaDisclaimerDismissed());
 
   const handleClose = useCallback(() => {
@@ -37,15 +35,22 @@ function UniversalBetaDisclaimerModal() {
     <Dialog
       open={open}
       onClose={handleClose}
-      BackdropProps={{ style: backdropStyle }}
+      slotProps={{ backdrop: { style: backdropStyle } }}
     >
       <DialogTitle>
-        <div className={classes.titleWrapper}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            flexWrap: 'nowrap',
+            justifyContent: 'space-between',
+          }}
+        >
           <Typography variant="h2">{t('Beta notice')}</Typography>
           <IconButton style={{ padding: 0 }} onClick={handleClose}>
             <Cancel />
           </IconButton>
-        </div>
+        </Box>
       </DialogTitle>
       <DialogContent dividers>
         <Typography variant="body1">
@@ -58,16 +63,5 @@ function UniversalBetaDisclaimerModal() {
     </Dialog>
   );
 }
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    titleWrapper: {
-      display: 'flex',
-      flexDirection: 'row',
-      flexWrap: 'nowrap',
-      justifyContent: 'space-between',
-    },
-  }),
-);
 
 export default UniversalBetaDisclaimerModal;

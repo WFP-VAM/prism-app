@@ -1,12 +1,6 @@
-import {
-  Button,
-  createStyles,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
-import { BarChartOutlined, GetApp } from '@material-ui/icons';
+import { BarChartOutlined, GetApp } from '@mui/icons-material';
+import { Box, Button, Typography } from '@mui/material';
 import { appConfig } from 'config';
-import { PanelSize } from 'config/types';
 import { AAWindowKeys } from 'config/utils';
 import {
   AAFiltersSelector,
@@ -18,13 +12,12 @@ import {
 } from 'context/anticipatoryAction/AADroughtStateSlice';
 import { AAView } from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { useSafeTranslation } from 'i18n';
-import { borderGray, grey, lightGrey } from 'muiTheme';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCurrentDateTimeForUrl } from 'utils/date-utils';
 import { getAADroughtUrl } from 'utils/url-utils';
 
-import { useAACommonStyles } from '../../utils';
+import { aaCommonSx, aaHomeTableSx } from '../../aaPanelStyles';
 import { AADataSeverityOrder, getAAIcon } from '../utils';
 import { getRowCategories } from '../utils/countryConfig';
 
@@ -35,36 +28,20 @@ interface AreaTagProps {
 }
 
 function AreaTag({ name, isNew, onClick }: AreaTagProps) {
-  const classes = useAreaTagStyles();
-  const commonClasses = useAACommonStyles();
   const { t } = useSafeTranslation();
 
   return (
-    <button type="button" className={classes.areaTagWrapper} onClick={onClick}>
+    <Box
+      component="button"
+      type="button"
+      sx={aaHomeTableSx.areaTagWrapper}
+      onClick={onClick}
+    >
       <Typography>{t(name)}</Typography>
-      {isNew && <div className={commonClasses.newTag}>{t('NEW')}</div>}
-    </button>
+      {isNew && <Box sx={aaCommonSx.newTag}>{t('NEW')}</Box>}
+    </Box>
   );
 }
-
-const useAreaTagStyles = makeStyles(() =>
-  createStyles({
-    areaTagWrapper: {
-      border: `1px solid ${borderGray}`,
-      height: 'calc(2rem - 2px)',
-      borderRadius: '4px',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '0.25em',
-      padding: '0 0.25em',
-      background: 'none',
-      boxShadow: 'none',
-      '&:hover': {
-        cursor: 'pointer',
-      },
-    },
-  }),
-);
 
 export interface RowProps {
   iconContent: React.ReactNode;
@@ -73,96 +50,65 @@ export interface RowProps {
 }
 
 function Row({ iconContent, windows, header }: RowProps) {
-  const classes = useRowStyles();
-  const commonClasses = useAACommonStyles();
   const { t } = useSafeTranslation();
 
   if (header) {
     return (
-      <div className={classes.rowWrapper} style={{ height: '1.5rem' }}>
-        <div className={classes.iconCol}>{iconContent}</div>
+      <Box sx={{ ...aaHomeTableSx.rowWrapper, height: '1.5rem' }}>
+        <Box sx={aaHomeTableSx.iconCol}>{iconContent}</Box>
         {header.map(name => (
-          <div
+          <Box
             key={name}
-            style={{
+            sx={{
               width:
                 header.length > 1 ? 'calc(50% - 1.75rem)' : 'calc(100% - 3rem)',
             }}
           >
-            <Typography variant="h4" className={commonClasses.windowHeader}>
+            <Typography variant="h4" sx={aaCommonSx.windowHeader}>
               {t(name)}
             </Typography>
-          </div>
+          </Box>
         ))}
-      </div>
+      </Box>
     );
   }
 
   return (
-    <div className={classes.rowWrapper}>
-      <div className={classes.iconCol}>{iconContent}</div>
+    <Box sx={aaHomeTableSx.rowWrapper}>
+      <Box sx={aaHomeTableSx.iconCol}>{iconContent}</Box>
       {windows.map((col, index) => {
         // we may have 2 entries for multiple indexes
         const unique = [...new Map(col.map(x => [x.name, x])).values()];
         return (
-          <div
+          <Box
             // we can actually use the index as key here, since we know each index is a window
 
             key={index}
-            style={{
+            sx={{
               width:
                 windows.length > 1
                   ? 'calc(50% - 1.75rem)'
                   : 'calc(100% - 3rem)',
             }}
           >
-            <div className={classes.windowBackground}>
-              <div className={classes.tagWrapper}>
+            <Box sx={aaHomeTableSx.windowBackground}>
+              <Box sx={aaHomeTableSx.tagWrapper}>
                 {unique.map(x => (
                   <AreaTag key={x.name} {...x} />
                 ))}
                 {unique.length === 0 && (
-                  <Typography className={classes.emptyText}>
+                  <Typography sx={aaHomeTableSx.emptyText}>
                     ({t('no district')})
                   </Typography>
                 )}
-              </div>
-            </div>
-          </div>
+              </Box>
+            </Box>
+          </Box>
         );
       })}
-    </div>
+    </Box>
   );
 }
-
-const useRowStyles = makeStyles(() =>
-  createStyles({
-    rowWrapper: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      padding: '0.125rem 0.5rem',
-      paddingRight: 0,
-    },
-    iconCol: { width: '3rem', minHeight: '4rem' },
-    windowBackground: {
-      background: 'white',
-      height: '100%',
-      width: '100%',
-    },
-    tagWrapper: {
-      padding: '0.5rem 0.5rem',
-      display: 'flex',
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      justifyContent: 'flex-start',
-      gap: '0.5em',
-    },
-    emptyText: {
-      color: borderGray,
-    },
-  }),
-);
 
 const rowCategories = getRowCategories();
 
@@ -176,8 +122,6 @@ interface HomeTableProps {
 }
 
 function HomeTable({ dialogs }: HomeTableProps) {
-  const classes = useHomeTableStyles();
-  const commonClasses = useAACommonStyles();
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const { selectedWindow, categories } = useSelector(AAFiltersSelector);
@@ -253,17 +197,17 @@ function HomeTable({ dialogs }: HomeTableProps) {
 
   return (
     <>
-      <div className={classes.tableWrapper}>
+      <Box sx={aaHomeTableSx.tableWrapper}>
         {rows.map(({ id, ...r }) => (
           <Row key={id} {...r} />
         ))}
-      </div>
-      <div className={commonClasses.footerWrapper}>
-        <div className={commonClasses.footerActionsWrapper}>
+      </Box>
+      <Box sx={aaCommonSx.footerWrapper}>
+        <Box sx={aaCommonSx.footerActionsWrapper}>
           {homeButtons.map(({ text, ...rest }) => (
             <Button
               key={text}
-              className={commonClasses.footerButton}
+              sx={aaCommonSx.footerButton}
               variant="outlined"
               fullWidth
               {...rest}
@@ -271,51 +215,22 @@ function HomeTable({ dialogs }: HomeTableProps) {
               <Typography>{t(text)}</Typography>
             </Button>
           ))}
-        </div>
-        <div className={commonClasses.footerDialogsWrapper}>
+        </Box>
+        <Box sx={aaCommonSx.footerDialogsWrapper}>
           {dialogs.map(dialog => (
             <Typography
               key={dialog.text}
-              className={commonClasses.footerDialog}
+              sx={aaCommonSx.footerDialog}
               component="button"
               onClick={() => dialog.onclick()}
             >
               {t(dialog.text)}
             </Typography>
           ))}
-        </div>
-      </div>
+        </Box>
+      </Box>
     </>
   );
 }
-
-const useHomeTableStyles = makeStyles(() =>
-  createStyles({
-    tableWrapper: {
-      display: 'flex',
-      flexDirection: 'column',
-      width: PanelSize.medium,
-      background: lightGrey,
-      padding: '0.5rem 0',
-      overflowY: 'scroll',
-      borderBottom: `1px solid ${grey}`,
-      // Browser-specific properties for forcing scrollbar visibility and styling
-      '&::-webkit-scrollbar': {
-        width: '0.5rem',
-        height: '0.5rem',
-      },
-      '&::-webkit-scrollbar-thumb': {
-        background: '#888',
-        borderRadius: '0.25rem', // Rounded corners for the scrollbar thumb
-      },
-      '&::-webkit-scrollbar-thumb:hover': {
-        background: '#555',
-      },
-      '&::-webkit-scrollbar-track': {
-        borderRadius: '0.25rem', // Rounded corners for the scrollbar track
-      },
-    },
-  }),
-);
 
 export default HomeTable;

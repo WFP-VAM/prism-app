@@ -1,10 +1,4 @@
-import {
-  Box,
-  createStyles,
-  Dialog,
-  DialogContent,
-  makeStyles,
-} from '@material-ui/core';
+import { Box, Dialog, DialogContent } from '@mui/material';
 import { usePostHog } from '@posthog/react';
 import { appConfig, rawLayers, safeCountry } from 'config';
 import { AdminCodeString, LayerKey } from 'config/types';
@@ -103,7 +97,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const { country, header } = appConfig;
   const logo = header?.logo;
   const bottomLogo = get(appConfig, 'printConfig.bottomLogo', undefined);
-  const classes = useStyles();
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
   const printRef = useRef<HTMLDivElement>(null);
@@ -984,7 +977,21 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
         aria-labelledby="dialog-preview"
       >
         <DialogContent>
-          <Box className={classes.contentContainer}>
+          <Box
+            sx={{
+              fontFamily: 'Roboto',
+              display: 'flex',
+              gap: '1rem',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              width: '90vw',
+              height: '90vh',
+              maxWidth: '100%',
+              maxHeight: '100%',
+              boxSizing: 'border-box',
+              paddingBottom: '20px',
+            }}
+          >
             <PrintPreview />
             <PrintConfig />
           </Box>
@@ -993,24 +1000,6 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
     </PrintConfigContext.Provider>
   );
 }
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    contentContainer: {
-      fontFamily: 'Roboto',
-      display: 'flex',
-      gap: '1rem',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      width: '90vw',
-      height: '90vh',
-      maxWidth: '100%',
-      maxHeight: '100%',
-      boxSizing: 'border-box',
-      paddingBottom: '20px',
-    },
-  }),
-);
 
 export interface DownloadImageProps {
   open: boolean;

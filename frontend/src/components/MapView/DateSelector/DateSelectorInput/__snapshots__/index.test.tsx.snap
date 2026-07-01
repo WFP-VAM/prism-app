@@ -2,11 +2,12 @@
 
 exports[`renders as expected 1`] = `
 <div>
-  <mock-button
-    classes="[object Object]"
-    variant="outlined"
+  <button
+    class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary css-1grkf2k-MuiButtonBase-root-MuiButton-root"
+    tabindex="0"
+    type="button"
   >
     Some Value
-  </mock-button>
+  </button>
 </div>
 `;

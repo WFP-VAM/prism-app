@@ -1,4 +1,4 @@
-import { createStyles, makeStyles } from '@material-ui/core';
+import { Box } from '@mui/material';
 import ChartSection from 'components/MapView/LeftPanel/ChartsPanel/ChartSection';
 import { oneYearInMs } from 'components/MapView/LeftPanel/utils';
 import { appConfig } from 'config';
@@ -8,10 +8,7 @@ import {
   BoundaryLayerProps,
   WMSLayerProps,
 } from 'config/types';
-import {
-  getBoundaryLayersByAdminLevel,
-  getDisplayBoundaryLayers,
-} from 'config/utils';
+import { getBoundaryLayersByAdminLevel } from 'config/utils';
 import { BoundaryLayerData } from 'context/layers/boundary';
 import { LayerData } from 'context/layers/layer-data';
 import {
@@ -19,29 +16,17 @@ import {
   mapSelector,
 } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
-import { useMemo, useRef } from 'react';
+import { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { getLayerMapId } from 'utils/map-utils';
 import { useBoundaryData } from 'utils/useBoundaryData';
 
+import { chartContainerSx, chartSectionSx } from '../mapTooltipStyles';
 import PopupChartWrapper from './PopupChartWrapper';
 
 const { country } = appConfig;
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    chartContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '8px',
-    },
-    chartSection: {
-      height: '240px',
-      width: '400px',
-      flexGrow: 1,
-    },
-  }),
-);
+const boundaryLayer = getBoundaryLayersByAdminLevel();
 
 const getProperties = (
   layerData: LayerData<BoundaryLayerProps>['data'],
@@ -78,26 +63,10 @@ function PopupAnalysisCharts({
   adminLevel,
   adminLevelsNames,
 }: PopupChartProps) {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
   const dataForCsv = useRef<{ [key: string]: any[] }>({});
-  const map = useSelector(mapSelector);
-
-  // Resolve against the clicked (deepest available) boundary layer, identified
-  // by the selector key used when the popup was opened. Its features carry the
-  // full admin hierarchy (adm0..admN names/codes), so a single feature serves
-  // every chart level; adminLevel only controls the aggregation level passed to
-  // ChartSection. Falling back to the deepest configured layer preserves the
-  // previous single-country behavior.
-  const boundaryLayer = useMemo(
-    () =>
-      getDisplayBoundaryLayers().find(
-        layer => layer.adminCode === adminSelectorKey,
-      ) ?? getBoundaryLayersByAdminLevel(),
-    [adminSelectorKey],
-  );
-
   const { data } = useBoundaryData(boundaryLayer.id);
+  const map = useSelector(mapSelector);
 
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const chartEndDate = selectedDate || new Date().getTime();
@@ -129,8 +98,8 @@ function PopupAnalysisCharts({
   return (
     <PopupChartWrapper key={adminProperties?.id}>
       {filteredChartLayers.map(filteredChartLayer => (
-        <div key={filteredChartLayer.id} className={classes.chartContainer}>
-          <div className={classes.chartSection}>
+        <Box key={filteredChartLayer.id} sx={chartContainerSx}>
+          <Box sx={chartSectionSx}>
             <ChartSection
               key={`${filteredChartLayer.id}-${adminCode}-${adminLevel}-${chartStartDate}-${chartEndDate}`}
               chartLayer={filteredChartLayer}
@@ -145,8 +114,8 @@ function PopupAnalysisCharts({
                 downloadFilenamePrefix: [t(country), ...adminLevelsNames()],
               }}
             />
-          </div>
-        </div>
+          </Box>
+        </Box>
       ))}
     </PopupChartWrapper>
   );

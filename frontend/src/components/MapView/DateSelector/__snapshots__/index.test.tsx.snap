@@ -128,65 +128,104 @@ exports[`calculates correct coverageWindow for a date array 1`] = `
 exports[`renders as expected with a single date 1`] = `
 <div>
   <div
-    class="makeStyles-container-1"
+    class="MuiBox-root css-czgxyw"
     style="z-index: 1300;"
   >
     <div
-      class="MuiGrid-root makeStyles-datePickerContainer-3 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-content-xs-center"
+      class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row css-1c7n71r-MuiGrid-root"
     >
       <div
-        class="MuiGrid-root makeStyles-datePickerGrid-7 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-1"
+        class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-12 MuiGrid-grid-sm-1 css-1d7trdl-MuiGrid-root"
       >
-        <mock-button>
-          <mock-chevronleft
+        <button
+          class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-tng5c-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="ChevronLeftIcon"
+            focusable="false"
             style="color: rgb(16, 16, 16);"
-          />
-        </mock-button>
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"
+            />
+          </svg>
+        </button>
         <div
           class="react-datepicker-wrapper"
         >
           <div
             class="react-datepicker__input-container"
           >
-            <mock-button
-              classes="[object Object]"
-              variant="outlined"
+            <button
+              class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary css-1grkf2k-MuiButtonBase-root-MuiButton-root"
+              tabindex="0"
+              type="button"
             >
               Mar 11, 2023
-            </mock-button>
+            </button>
           </div>
         </div>
-        <mock-button>
-          <mock-chevronright
+        <button
+          class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-tng5c-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="ChevronRightIcon"
+            focusable="false"
             style="color: rgb(16, 16, 16);"
-          />
-        </mock-button>
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"
+            />
+          </svg>
+        </button>
       </div>
       <div
-        class="MuiGrid-root makeStyles-slider-8 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-true"
+        class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-12 MuiGrid-grid-sm-grow css-25gep9-MuiGrid-root"
       >
-        <mock-button
-          class="makeStyles-chevronDate-2"
+        <button
+          class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-fiirae-MuiButtonBase-root-MuiButton-root"
           id="chevronLeftButton"
+          tabindex="0"
+          type="button"
         >
-          <mock-chevronleft />
-        </mock-button>
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="ChevronLeftIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"
+            />
+          </svg>
+        </button>
         <div
-          class="MuiGrid-root makeStyles-dateContainer-9"
+          class="MuiGrid-root MuiGrid-direction-xs-row css-16lp2s-MuiGrid-root"
         >
           <div
-            class="makeStyles-timeline-11 react-draggable"
+            class="react-draggable MuiBox-root css-qo6dc9"
             id="dateTimelineSelector"
             style="transform: translate(-276px,0px);"
           >
             <div
-              class="MuiGrid-root makeStyles-dateLabelContainer-10 MuiGrid-container"
+              class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row css-taj9po-MuiGrid-root"
               style="min-width: 1460px;"
             >
               mock-timelineitems
             </div>
             <div
-              class="makeStyles-pointer-12 react-draggable"
+              class="react-draggable MuiBox-root css-1nsplq8"
               id="datePointerSelector"
               style="transform: translate(276px,0px);"
             >
@@ -198,12 +237,24 @@ exports[`renders as expected with a single date 1`] = `
             </div>
           </div>
         </div>
-        <mock-button
-          class="makeStyles-chevronDate-2"
+        <button
+          class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-fiirae-MuiButtonBase-root-MuiButton-root"
           id="chevronRightButton"
+          tabindex="0"
+          type="button"
         >
-          <mock-chevronright />
-        </mock-button>
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="ChevronRightIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"
+            />
+          </svg>
+        </button>
       </div>
     </div>
   </div>

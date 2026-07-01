@@ -1,3 +1,4 @@
+import RoomOutlinedIcon from '@mui/icons-material/RoomOutlined';
 import {
   Button,
   IconButton,
@@ -5,13 +6,14 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
-} from '@material-ui/core';
-import RoomOutlinedIcon from '@material-ui/icons/RoomOutlined';
+} from '@mui/material';
 import BoundaryDropdownOptions from 'components/MapView/Layers/BoundaryDropdown/BoundaryDropdownOptions';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
 import React from 'react';
 import { useSelector } from 'react-redux';
+
+const GO_TO_MENU_WIDTH = 350;
 
 function GoToBoundaryDropdown({ disabled = false }: { disabled?: boolean }) {
   const { t } = useSafeTranslation();
@@ -19,7 +21,7 @@ function GoToBoundaryDropdown({ disabled = false }: { disabled?: boolean }) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [search, setSearch] = React.useState('');
   const theme = useTheme();
-  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
+  const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -42,7 +44,7 @@ function GoToBoundaryDropdown({ disabled = false }: { disabled?: boolean }) {
           startIcon={<RoomOutlinedIcon />}
           onClick={handleClick}
           disabled={disabled}
-          style={disabledStyles}
+          sx={{ color: 'white', ...disabledStyles }}
         >
           <Typography style={{ color: '#FFF', textTransform: 'none' }}>
             {t('Go To')}
@@ -54,6 +56,7 @@ function GoToBoundaryDropdown({ disabled = false }: { disabled?: boolean }) {
           style={{ color: 'white', ...disabledStyles }}
           onClick={handleClick}
           disabled={disabled}
+          size="large"
         >
           <RoomOutlinedIcon />
         </IconButton>
@@ -63,12 +66,19 @@ function GoToBoundaryDropdown({ disabled = false }: { disabled?: boolean }) {
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
+        slotProps={{
+          paper: { sx: { width: GO_TO_MENU_WIDTH } },
+          list: { disablePadding: true },
+        }}
       >
         <BoundaryDropdownOptions
           search={search}
           setSearch={setSearch}
           selectedBoundaries={[]}
           map={map}
+          goto
+          multiple={false}
+          listWidth={GO_TO_MENU_WIDTH}
         />
       </Menu>
     </>

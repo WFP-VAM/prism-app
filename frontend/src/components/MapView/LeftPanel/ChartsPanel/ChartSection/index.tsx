@@ -1,10 +1,4 @@
-import {
-  Box,
-  CircularProgress,
-  createStyles,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
+import { Box, CircularProgress, Typography } from '@mui/material';
 import Chart, { ChartProps } from 'components/Common/Chart';
 import { AdminLevelType, WMSLayerProps } from 'config/types';
 import { CHART_DATA_PREFIXES } from 'context/datasetStateSlice';
@@ -17,6 +11,10 @@ import { useChartData } from 'utils/chart-hooks';
 import { createCsvDataFromDataKeyMap, createDataKeyMap } from 'utils/csv-utils';
 import { getFormattedDate } from 'utils/date-utils';
 
+import {
+  chartSectionErrorContainerSx,
+  chartSectionLoadingSx,
+} from '../chartsPanelStyles';
 import { generateDateStrings } from './utils';
 
 /**
@@ -96,7 +94,6 @@ const ChartSection = memo(
     minChartValue,
     chartProps,
   }: ChartSectionProps) => {
-    const classes = useStyles();
     const { t } = useSafeTranslation();
 
     const {
@@ -289,14 +286,14 @@ const ChartSection = memo(
     return useMemo(() => {
       if (isLoading) {
         return (
-          <div className={classes.loading}>
+          <Box sx={chartSectionLoadingSx}>
             <CircularProgress size={50} />
-          </div>
+          </Box>
         );
       }
       if (error) {
         return (
-          <Box className={classes.errorContainer}>
+          <Box sx={chartSectionErrorContainerSx}>
             <Typography color="error" component="p" variant="h4">
               {`${t('Error: Impossible to get data for')} ${t(chartLayer.title)}`}
             </Typography>
@@ -324,8 +321,6 @@ const ChartSection = memo(
       error,
       extendedChartDataset,
       overriddenConfig,
-      classes.loading,
-      classes.errorContainer,
       t,
       chartTitle,
       chartSubtitle,
@@ -335,25 +330,6 @@ const ChartSection = memo(
       chartProps,
     ]);
   },
-);
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    errorContainer: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      width: '100%',
-      height: '100%',
-    },
-    loading: {
-      height: 240,
-      width: '100%',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-  }),
 );
 
 export interface ChartSectionProps {

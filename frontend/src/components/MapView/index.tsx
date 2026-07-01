@@ -1,4 +1,4 @@
-import { Box, createStyles, makeStyles } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { appConfig } from 'config';
 import { getBoundaryLayers } from 'config/utils';
 import { clearAnalysisResult } from 'context/analysisResultStateSlice';
@@ -25,7 +25,6 @@ import MapComponent from './Map';
 import OtherFeatures from './OtherFeatures';
 
 const MapView = memo(() => {
-  const classes = useStyles();
   const { iso3 } = useCountryIso();
 
   const displayedBoundaryLayers = useMemo(() => {
@@ -136,7 +135,7 @@ const MapView = memo(() => {
   ]);
 
   return (
-    <Box className={classes.root}>
+    <Box sx={{ height: '100%', width: '100%', position: 'relative' }}>
       <LeftPanel />
       <OtherFeatures />
       <MapComponent />
@@ -149,15 +148,5 @@ const MapView = memo(() => {
     </Box>
   );
 });
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      height: '100%',
-      width: '100%',
-      position: 'relative',
-    },
-  }),
-);
 
 export default MapView;

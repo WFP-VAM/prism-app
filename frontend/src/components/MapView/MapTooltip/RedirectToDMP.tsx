@@ -1,20 +1,9 @@
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { createStyles, Link, makeStyles, Typography } from '@material-ui/core';
+import { Link, Typography } from '@mui/material';
 import { memo } from 'react';
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    externalLinkContainer: {
-      display: 'flex',
-      gap: '8px',
-      color: '#5b9bd5',
-      fontWeight: 'bold',
-      marginBottom: '8px',
-      alignItems: 'center',
-    },
-  }),
-);
+import { externalLinkContainerSx } from './mapTooltipStyles';
 
 interface RedirectToDMPProps {
   dmpDisTyp: string | undefined;
@@ -36,7 +25,6 @@ const computeDisasterTypeFromDistTyp = (distTyp: string) => {
 
 const RedirectToDMP = memo(
   ({ dmpDisTyp, dmpSubmissionId }: RedirectToDMPProps) => {
-    const classes = useStyles();
     if (!dmpDisTyp) {
       return null;
     }
@@ -47,7 +35,7 @@ const RedirectToDMP = memo(
         )}/${dmpSubmissionId}`}
         target="_blank"
       >
-        <Typography className={classes.externalLinkContainer}>
+        <Typography sx={externalLinkContainerSx}>
           <u>Report details</u>
           <FontAwesomeIcon icon={faExternalLinkAlt} />
         </Typography>

@@ -1,5 +1,5 @@
-import { Badge, Button, IconButton, Typography } from '@material-ui/core';
-import { ExpandMore } from '@material-ui/icons';
+import { ExpandMore } from '@mui/icons-material';
+import { Badge, Button, IconButton, Typography } from '@mui/material';
 import { Panel } from 'config/types';
 import { analysisResultSelector } from 'context/analysisResultStateSlice';
 import { black, cyanBlue } from 'muiTheme';

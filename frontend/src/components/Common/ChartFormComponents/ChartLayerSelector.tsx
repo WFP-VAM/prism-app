@@ -1,14 +1,12 @@
-import {
-  FormControl,
-  InputLabel,
-  makeStyles,
-  MenuItem,
-  Select,
-} from '@material-ui/core';
+import { Box, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { SelectChangeEvent } from '@mui/material/Select';
 import { LayerKey, WMSLayerProps } from 'config/types';
 import { getWMSLayersWithChart } from 'config/utils';
 import { useSafeTranslation } from 'i18n';
-import React from 'react';
+
+import { chartFormControlSx, formContainerSx } from '../formComponentStyles';
+
+const containerSx = formContainerSx(30);
 
 interface ChartLayerSelectorProps {
   value: LayerKey | undefined;
@@ -23,20 +21,20 @@ function ChartLayerSelector({
   className,
   disabled = false,
 }: ChartLayerSelectorProps) {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
 
   const chartLayers = getWMSLayersWithChart();
 
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleChange = (event: SelectChangeEvent<string>) => {
     onChange(event.target.value as LayerKey);
   };
 
   return (
-    <div className={classes.container}>
+    <Box sx={containerSx}>
       <FormControl
         variant="outlined"
-        className={className || classes.formControl}
+        className={className}
+        sx={chartFormControlSx}
         disabled={disabled}
       >
         <InputLabel id="chart-layer-selector-label">
@@ -59,31 +57,8 @@ function ChartLayerSelector({
           ))}
         </Select>
       </FormControl>
-    </div>
+    </Box>
   );
 }
-
-const useStyles = makeStyles(() => ({
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginBottom: 30,
-    marginLeft: 10,
-    width: '90%',
-    color: 'black',
-  },
-  formControl: {
-    width: '100%',
-    '& .MuiFormLabel-root': {
-      color: 'black',
-    },
-    '& .MuiOutlinedInput-notchedOutline': {
-      borderColor: '#333333',
-    },
-    '&:hover .MuiOutlinedInput-notchedOutline': {
-      borderColor: '#333333',
-    },
-  },
-}));
 
 export default ChartLayerSelector;

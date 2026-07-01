@@ -2,43 +2,24 @@
 
 exports[`renders as expected 1`] = `
 <div>
-  <mock-tooltip
-    title="Download"
+  <button
+    aria-label="Download"
+    class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-1ia9pca-MuiButtonBase-root-MuiIconButton-root"
+    data-mui-internal-clone-element="true"
+    tabindex="0"
+    type="button"
   >
-    <button
-      class="MuiButtonBase-root MuiIconButton-root"
-      tabindex="0"
-      type="button"
+    <svg
+      aria-hidden="true"
+      class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+      data-testid="GetAppIcon"
+      focusable="false"
+      viewBox="0 0 24 24"
     >
-      <span
-        class="MuiIconButton-label"
-      >
-        <svg
-          aria-hidden="true"
-          class="MuiSvgIcon-root"
-          focusable="false"
-          viewBox="0 0 24 24"
-        >
-          <path
-            d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
-          />
-        </svg>
-      </span>
-      <span
-        class="MuiTouchRipple-root"
+      <path
+        d="M19 9h-4V3H9v6H5l7 7zM5 18v2h14v-2z"
       />
-    </button>
-  </mock-tooltip>
-  <mock-menu
-    id="download-menu"
-    keepmounted=""
-  >
-    <mock-menuitem>
-      Download as CSV
-    </mock-menuitem>
-    <mock-menuitem>
-      Download as GeoJSON
-    </mock-menuitem>
-  </mock-menu>
+    </svg>
+  </button>
 </div>
 `;

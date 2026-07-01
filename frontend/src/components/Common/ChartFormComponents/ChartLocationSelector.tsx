@@ -1,10 +1,5 @@
-import {
-  Box,
-  makeStyles,
-  MenuItem,
-  TextField,
-  Typography,
-} from '@material-ui/core';
+import { Box, MenuItem, TextField, Typography } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
 import {
   AdminBoundaryTree,
   getAdminBoundaryTree,
@@ -22,6 +17,29 @@ import { sortBy } from 'lodash';
 import React from 'react';
 import { getEffectiveMultiCountry } from 'utils/universal-country-admin';
 import { isUniversalDeployment } from 'utils/universal-utils';
+
+import {
+  colorBlackSx,
+  formContainerSx,
+  selectRootSx,
+} from '../formComponentStyles';
+
+const containerSx = formContainerSx(20);
+
+const labelSx = {
+  ...colorBlackSx,
+  fontWeight: 600,
+} satisfies SxProps<Theme>;
+
+const fieldsRowSx = {
+  display: 'flex',
+  gap: '16px',
+  width: '100%',
+} satisfies SxProps<Theme>;
+
+const removeAdminSx = {
+  fontWeight: 'bold',
+} satisfies SxProps<Theme>;
 
 interface ChartLocationSelectorProps {
   boundaryLayerData: BoundaryLayerData | undefined;
@@ -74,7 +92,6 @@ function ChartLocationSelector({
   hideLabel = false,
   labelMarginBottom = 8,
 }: ChartLocationSelectorProps) {
-  const classes = useStyles();
   const { t, i18n: i18nLocale } = useSafeTranslation();
 
   // Universal (URL-driven) deployments fix the country via the URL and drill in
@@ -266,10 +283,10 @@ function ChartLocationSelector({
     isUniversal && admin2Key && orderedAdmin3Areas.length > 0;
 
   return (
-    <div className={classes.container}>
+    <Box sx={containerSx}>
       {!hideLabel && (
         <Typography
-          className={classes.label}
+          sx={labelSx}
           variant="body2"
           style={{ marginBottom: labelMarginBottom }}
         >
@@ -277,19 +294,21 @@ function ChartLocationSelector({
         </Typography>
       )}
 
-      <div
-        className={classes.fieldsRow}
+      <Box
+        sx={fieldsRowSx}
         style={{ flexDirection: stacked ? 'column' : 'row' }}
       >
         {showCountryLevel && (
           <TextField
-            classes={{ root: classes.selectRoot }}
+            sx={selectRootSx}
             select
             label={t('Country')}
             value={selectedCountry?.adminCode ?? ''}
-            SelectProps={{
-              renderValue: (value: unknown) =>
-                renderCountryValue(value as string),
+            slotProps={{
+              select: {
+                renderValue: (value: unknown) =>
+                  renderCountryValue(value as string),
+              },
             }}
             onChange={handleCountryChange}
             variant="outlined"
@@ -300,19 +319,22 @@ function ChartLocationSelector({
         )}
 
         <TextField
-          classes={{ root: classes.selectRoot }}
+          sx={selectRootSx}
           select
           label={t('Admin 1')}
           value={selectedAdmin1Area?.adminCode ?? ''}
-          SelectProps={{
-            renderValue: (value: unknown) => renderAdmin1Value(value as string),
+          slotProps={{
+            select: {
+              renderValue: (value: unknown) =>
+                renderAdmin1Value(value as string),
+            },
           }}
           onChange={handleAdmin1Change}
           variant="outlined"
           disabled={disabled || orderedAdmin1Areas.length === 0}
         >
           <MenuItem value="">
-            <Box className={classes.removeAdmin}>
+            <Box sx={removeAdminSx}>
               {showCountryLevel ? t('Remove Admin 1') : t('Country Level')}
             </Box>
           </MenuItem>
@@ -321,20 +343,22 @@ function ChartLocationSelector({
 
         {admin1Key && orderedAdmin2Areas.length > 0 && (
           <TextField
-            classes={{ root: classes.selectRoot }}
+            sx={selectRootSx}
             select
             label={t('Admin 2')}
             value={selectedAdmin2Area?.adminCode ?? ''}
-            SelectProps={{
-              renderValue: (value: unknown) =>
-                renderAdmin2Value(value as string),
+            slotProps={{
+              select: {
+                renderValue: (value: unknown) =>
+                  renderAdmin2Value(value as string),
+              },
             }}
             onChange={handleAdmin2Change}
             variant="outlined"
             disabled={disabled}
           >
             <MenuItem value="">
-              <Box className={classes.removeAdmin}>{t('Remove Admin 2')}</Box>
+              <Box sx={removeAdminSx}>{t('Remove Admin 2')}</Box>
             </MenuItem>
             {renderMenuItemList(orderedAdmin2Areas)}
           </TextField>
@@ -342,66 +366,29 @@ function ChartLocationSelector({
 
         {showAdmin3Dropdown && (
           <TextField
-            classes={{ root: classes.selectRoot }}
+            sx={selectRootSx}
             select
             label={t('Admin 3')}
             value={selectedAdmin3Area?.adminCode ?? ''}
-            SelectProps={{
-              renderValue: (value: unknown) =>
-                renderAdmin3Value(value as string),
+            slotProps={{
+              select: {
+                renderValue: (value: unknown) =>
+                  renderAdmin3Value(value as string),
+              },
             }}
             onChange={handleAdmin3Change}
             variant="outlined"
             disabled={disabled}
           >
             <MenuItem value="">
-              <Box className={classes.removeAdmin}>{t('Remove Admin 3')}</Box>
+              <Box sx={removeAdminSx}>{t('Remove Admin 3')}</Box>
             </MenuItem>
             {renderMenuItemList(orderedAdmin3Areas)}
           </TextField>
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
-
-const useStyles = makeStyles(() => ({
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginBottom: 20,
-    marginLeft: 10,
-    width: '90%',
-    color: 'black',
-  },
-  label: {
-    color: 'black',
-    fontWeight: 600,
-  },
-  fieldsRow: {
-    display: 'flex',
-    gap: '16px',
-    width: '100%',
-  },
-  removeAdmin: {
-    fontWeight: 'bold',
-  },
-  selectRoot: {
-    flex: 1,
-    color: 'black',
-    '& .MuiFormLabel-root': {
-      color: 'black',
-    },
-    '& .MuiOutlinedInput-notchedOutline': {
-      borderColor: '#333333',
-    },
-    '&:hover .MuiOutlinedInput-notchedOutline': {
-      borderColor: '#333333',
-    },
-    '& .MuiSelect-root': {
-      color: 'black',
-    },
-  },
-}));
 
 export default ChartLocationSelector;

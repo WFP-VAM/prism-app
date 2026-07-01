@@ -1,13 +1,12 @@
 import {
+  Box,
   LinearProgress,
   ListSubheader,
-  makeStyles,
   MenuItem,
   TextField,
-  Theme,
   Typography,
-} from '@material-ui/core';
-import { createStyles } from '@material-ui/styles';
+} from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { usePostHog } from '@posthog/react';
 import {
   LayersCategoryType,
@@ -35,6 +34,13 @@ import {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import {
+  tablesActionsContainerSx,
+  tablesPanelLinearProgressSx,
+  tablesPanelRootSx,
+  tablesPanelSx,
+  tablesSelectRootSx,
+} from '../leftPanelStyles';
 import { tablesMenuItems } from '../utils';
 import DataTable from './DataTable';
 import TablesActions from './TablesActions';
@@ -46,7 +52,7 @@ const tableCategories = tablesMenuItems
 const tabPanelType = Panel.Tables;
 
 const TablesPanel = memo(() => {
-  const classes = useStyles();
+  const theme = useTheme();
   const dispatch = useDispatch();
   const dataTableIsLoading = useSelector(tableLoading);
   const tableDefinition = useSelector(getTableDefinition);
@@ -79,16 +85,16 @@ const TablesPanel = memo(() => {
     if (!dataTableIsLoading) {
       return null;
     }
-    return <LinearProgress className={classes.linearProgress} />;
-  }, [classes.linearProgress, dataTableIsLoading]);
+    return <LinearProgress sx={tablesPanelLinearProgressSx} />;
+  }, [dataTableIsLoading]);
 
   const renderedTablesActions = useMemo(() => {
     if (!tableDefinition || !tableData || !tableShowing) {
       return null;
     }
     return (
-      <div
-        className={classes.tablesActionsContainer}
+      <Box
+        sx={tablesActionsContainerSx(theme)}
         style={{
           width: PanelSize.medium,
         }}
@@ -99,16 +105,16 @@ const TablesPanel = memo(() => {
           showTable={showDataTable}
           csvTableData={tableDefinition?.table}
         />
-      </div>
+      </Box>
     );
   }, [
-    classes.tablesActionsContainer,
     handleShowDataTable,
     renderedTablesActionsLoader,
     showDataTable,
     tableData,
     tableDefinition,
     tableShowing,
+    theme,
   ]);
 
   const renderTablesMenuItems = useCallback(
@@ -162,10 +168,10 @@ const TablesPanel = memo(() => {
         width: showDataTable ? PanelSize.xlarge : PanelSize.medium,
       }}
     >
-      <div className={classes.root}>
-        <div className={classes.tablesPanel}>
+      <Box sx={tablesPanelRootSx}>
+        <Box sx={tablesPanelSx}>
           <TextField
-            classes={{ root: classes.selectRoot }}
+            sx={tablesSelectRootSx}
             variant="outlined"
             onChange={handleTableDropdownChange}
             value={tableValue}
@@ -173,23 +179,12 @@ const TablesPanel = memo(() => {
             placeholder={t('Choose a table')}
             label={t('Tables')}
             defaultValue=""
-            InputProps={{
-              classes: {
-                focused: classes.focused,
-                input: classes.input,
-              },
-            }}
-            InputLabelProps={{
-              classes: {
-                root: classes.label,
-              },
-            }}
           >
             {renderedTextFieldBody}
           </TextField>
-        </div>
+        </Box>
         {renderedTablesActions}
-      </div>
+      </Box>
       {showDataTable && (
         <DataTable
           title={tableDefinition?.title}
@@ -202,56 +197,5 @@ const TablesPanel = memo(() => {
     </div>
   );
 });
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      position: 'relative',
-      display: 'flex',
-      width: PanelSize.medium,
-      height: '100%',
-    },
-    linearProgress: {
-      width: '100%',
-      position: 'absolute',
-      top: 0,
-    },
-    tablesPanel: {
-      display: 'flex',
-      justifyContent: 'center',
-      paddingTop: 40,
-      width: PanelSize.medium,
-    },
-    tablesActionsContainer: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      position: 'absolute',
-      backgroundColor: theme.palette.primary.main,
-      width: '100%',
-      bottom: 0,
-      paddingTop: 10,
-      paddingBottom: 10,
-    },
-    selectRoot: {
-      width: '90%',
-      '& .MuiInputBase-root': {
-        '&:hover fieldset': {
-          borderColor: '#333333',
-        },
-      },
-    },
-    input: {
-      color: '#333333',
-    },
-    focused: {
-      borderColor: '#333333',
-      color: '#333333',
-    },
-    label: {
-      color: '#333333',
-    },
-  }),
-);
 
 export default TablesPanel;

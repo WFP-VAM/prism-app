@@ -2,35 +2,35 @@ import {
   Box,
   Button,
   Checkbox,
-  createStyles,
-  FormControl,
   FormControlLabel,
   FormGroup,
-  Input,
-  InputLabel,
   ListItemText,
-  makeStyles,
   MenuItem,
   MenuProps,
-  Select,
   Switch,
+  TextField,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
+import { SelectChangeEvent } from '@mui/material/Select';
 import { usePostHog } from '@posthog/react';
 import {
   ChartDateRangeSelector,
   ChartLocationSelector,
 } from 'components/Common/ChartFormComponents';
 import DownloadCsvButton from 'components/MapView/DownloadCsvButton';
+import { clearAllButtonSx } from 'components/MapView/panelButtonStyles';
 import { buildCsvFileName, getProperties } from 'components/MapView/utils';
+import { appConfig } from 'config';
 import {
   AdminCodeString,
   AdminLevelType,
   Panel,
-  PanelSize,
   WMSLayerProps,
 } from 'config/types';
-import { getWMSLayersWithChart } from 'config/utils';
+import {
+  getBoundaryLayersByAdminLevel,
+  getWMSLayersWithChart,
+} from 'config/utils';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { GeoJsonProperties } from 'geojson';
 import { useSafeTranslation } from 'i18n';
@@ -43,12 +43,6 @@ import React, {
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  getEffectiveMultiCountry,
-  useEffectiveBoundaryLayer,
-  useEffectiveCountryAdmin0Id,
-} from 'utils/universal-country-admin';
-import { isUniversalDeployment } from 'utils/universal-utils';
 import { useBoundaryData } from 'utils/useBoundaryData';
 
 import {
@@ -59,6 +53,17 @@ import {
   oneYearInMs,
 } from '../utils';
 import ChartSection from './ChartSection';
+import {
+  chartsContainerSx,
+  chartsFormGroupSx,
+  chartsLayerFormControlSx,
+  chartsPanelChartsSx,
+  chartsPanelParamsSx,
+  chartsTextLabelSx,
+  compareSwitchSx,
+  compareSwitchTitleSx,
+  compareSwitchTitleUncheckedSx,
+} from './chartsPanelStyles';
 import DateSlider from './DateSlider';
 import TimePeriodSelector from './TimePeriodSelector';
 
@@ -66,17 +71,33 @@ import TimePeriodSelector from './TimePeriodSelector';
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const menuProps: Partial<MenuProps> = {
-  getContentAnchorEl: null,
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 'auto',
+  slotProps: {
+    paper: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 'auto',
+      },
     },
   },
 };
 
 // Chart configuration
+const { multiCountry, countryAdmin0Id } = appConfig;
+const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
+const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 const chartLayers = getWMSLayersWithChart();
+
+// Resolves the admin area name for a chart level from boundary feature
+// properties. Multi-country deployments use 0-based levels (level 0 = country),
+// single-country deployments use 1-based levels (level 1 = admin 1).
+const getAdminAreaName = (
+  properties: GeoJsonProperties,
+  level: AdminLevelType,
+): string => {
+  const nameKey =
+    boundaryLayer?.adminLevelNames?.[level - (multiCountry ? 0 : 1)];
+  return (nameKey && properties?.[nameKey]) || '';
+};
 
 // Time constants
 const yearsToFetchDataFor = 5;
@@ -85,25 +106,7 @@ const oneYearInTicks = 34;
 const tabPanelType = Panel.Charts;
 
 const ChartsPanel = memo(() => {
-  const countryAdmin0Id = useEffectiveCountryAdmin0Id();
-  const boundaryLayer = useEffectiveBoundaryLayer();
-  const isUniversal = isUniversalDeployment();
-  const multiCountry = getEffectiveMultiCountry();
   const { data } = useBoundaryData(boundaryLayer.id);
-
-  // Resolves the admin area name for a chart level from boundary feature
-  // properties. Universal (URL-driven) and multi-country deployments use
-  // 0-based levels (level 0 = country), single-country deployments use 1-based
-  // levels (level 1 = admin 1).
-  const getAdminAreaName = (
-    properties: GeoJsonProperties,
-    level: AdminLevelType,
-  ): string => {
-    const nameIndex = isUniversal || multiCountry ? level : level - 1;
-    const nameKey = boundaryLayer?.adminLevelNames?.[nameIndex];
-    return (nameKey && properties?.[nameKey]) || '';
-  };
-  const classes = useStyles();
   const [compareLocations, setCompareLocations] = useState(false);
   const [comparePeriods, setComparePeriods] = useState(false);
 
@@ -115,9 +118,6 @@ const ChartsPanel = memo(() => {
     '' as AdminCodeString,
   );
   const [admin2Key, setAdmin2Key] = useState<AdminCodeString>(
-    '' as AdminCodeString,
-  );
-  const [admin3Key, setAdmin3Key] = useState<AdminCodeString>(
     '' as AdminCodeString,
   );
   const [selectedAdmin1Area, setSelectedAdmin1Area] = useState('');
@@ -133,9 +133,6 @@ const ChartsPanel = memo(() => {
     '' as AdminCodeString,
   );
   const [secondAdmin2Key, setSecondAdmin2Key] = useState<AdminCodeString>(
-    '' as AdminCodeString,
-  );
-  const [secondAdmin3Key, setSecondAdmin3Key] = useState<AdminCodeString>(
     '' as AdminCodeString,
   );
   const [secondSelectedAdmin1Area, setSecondSelectedAdmin1Area] = useState('');
@@ -222,7 +219,7 @@ const ChartsPanel = memo(() => {
   const tabValue = useSelector(leftPanelTabValueSelector);
 
   const onChangeChartLayers = useCallback(
-    (event: React.ChangeEvent<{ value: unknown }>) => {
+    (event: SelectChangeEvent<string[]>) => {
       const newTitles =
         compareLocations || comparePeriods
           ? ([event.target.value] as string[])
@@ -247,36 +244,16 @@ const ChartsPanel = memo(() => {
   );
 
   useEffect(() => {
-    if (!countryAdmin0Id || !data) {
-      return;
+    if (!adminProperties && countryAdmin0Id && data) {
+      setAdminProperties(getProperties(data));
     }
-    if (adminProperties && secondAdminProperties) {
-      return;
-    }
+  }, [adminProperties, data]);
 
-    const properties = isUniversal
-      ? getProperties(
-          data,
-          String(countryAdmin0Id) as AdminCodeString,
-          0 as AdminLevelType,
-        )
-      : getProperties(data);
-
-    if (!adminProperties) {
-      setAdminProperties(properties);
-      setAdminLevel(0 as AdminLevelType);
+  useEffect(() => {
+    if (!secondAdminProperties && countryAdmin0Id && data) {
+      setSecondAdminProperties(getProperties(data));
     }
-    if (!secondAdminProperties) {
-      setSecondAdminProperties(properties);
-      setSecondAdminLevel(0 as AdminLevelType);
-    }
-  }, [
-    adminProperties,
-    secondAdminProperties,
-    countryAdmin0Id,
-    data,
-    isUniversal,
-  ]);
+  }, [secondAdminProperties, data]);
 
   const singleChartFilenamePrefix = React.useMemo(
     () =>
@@ -516,7 +493,7 @@ const ChartsPanel = memo(() => {
           position: 'relative',
         }}
       >
-        <Typography className={classes.textLabel}>{title[0]}</Typography>
+        <Typography sx={chartsTextLabelSx}>{title[0]}</Typography>
       </Box>
     ));
     // add a location string above everything if comparing periods
@@ -531,7 +508,7 @@ const ChartsPanel = memo(() => {
             position: 'relative',
           }}
         >
-          <Typography className={classes.textLabel}>
+          <Typography sx={chartsTextLabelSx}>
             {formatLocationString(
               getCountryName(adminProperties),
               selectedAdmin1Area,
@@ -547,7 +524,6 @@ const ChartsPanel = memo(() => {
     adminProperties,
     chartMaxDateRange,
     chartRange,
-    classes.textLabel,
     compareLocations,
     comparePeriods,
     endDate1,
@@ -587,9 +563,6 @@ const ChartsPanel = memo(() => {
     // reset the admin 2 titles
     setAdmin2Key('' as AdminCodeString);
     setSecondAdmin2Key('' as AdminCodeString);
-    // reset the admin 3 titles
-    setAdmin3Key('' as AdminCodeString);
-    setSecondAdmin3Key('' as AdminCodeString);
   }, [posthog]);
 
   const handleOnChangeCompareLocationsSwitch = useCallback(() => {
@@ -660,31 +633,29 @@ const ChartsPanel = memo(() => {
         width: showChartsPanel ? '100vw' : undefined,
       }}
     >
-      <Box className={classes.chartsPanelParams}>
-        <FormGroup className={classes.formGroup}>
+      <Box sx={chartsPanelParamsSx}>
+        <FormGroup sx={chartsFormGroupSx}>
           <FormControlLabel
             style={{ marginLeft: 20 }}
             control={
               <Switch
                 checked={compareLocations}
                 size="small"
-                className={classes.switch}
-                classes={{
-                  switchBase: classes.switchBase,
-                  track: classes.switchTrack,
-                }}
+                sx={compareSwitchSx}
                 onChange={handleOnChangeCompareLocationsSwitch}
-                inputProps={{
-                  'aria-label': 'Compare Locations',
+                slotProps={{
+                  input: {
+                    'aria-label': 'Compare Locations',
+                  },
                 }}
               />
             }
             label={
               <Typography
-                className={
+                sx={
                   compareLocations
-                    ? classes.switchTitle
-                    : classes.switchTitleUnchecked
+                    ? compareSwitchTitleSx
+                    : compareSwitchTitleUncheckedSx
                 }
               >
                 {t('Compare Locations')}
@@ -699,8 +670,8 @@ const ChartsPanel = memo(() => {
                 style={{
                   color: 'black',
                   fontWeight: 600,
-                  marginBottom: 8,
-                  marginLeft: 10,
+                  marginBottom: '8px',
+                  marginLeft: '10px',
                 }}
                 variant="body2"
               >
@@ -713,8 +684,6 @@ const ChartsPanel = memo(() => {
               admin0Key={admin0Key}
               admin1Key={admin1Key}
               admin2Key={admin2Key}
-              admin3Key={admin3Key}
-              countryAdm0Id={countryAdmin0Id}
               stacked
               hideLabel={compareLocations}
               onAdmin0Change={(key, properties, level) => {
@@ -729,7 +698,6 @@ const ChartsPanel = memo(() => {
               onAdmin1Change={(key, properties, level) => {
                 setAdmin1Key(key);
                 setAdmin2Key('' as AdminCodeString);
-                setAdmin3Key('' as AdminCodeString);
                 setAdminLevel(level);
                 setAdminProperties(properties);
                 setSelectedAdmin1Area(
@@ -739,17 +707,11 @@ const ChartsPanel = memo(() => {
               }}
               onAdmin2Change={(key, properties, level) => {
                 setAdmin2Key(key);
-                setAdmin3Key('' as AdminCodeString);
                 setAdminLevel(level);
                 setAdminProperties(properties);
                 setSelectedAdmin2Area(
                   key && data ? getAdminAreaName(properties, level) : '',
                 );
-              }}
-              onAdmin3Change={(key, properties, level) => {
-                setAdmin3Key(key);
-                setAdminLevel(level);
-                setAdminProperties(properties);
               }}
             />
           </Box>
@@ -759,8 +721,8 @@ const ChartsPanel = memo(() => {
                 style={{
                   color: 'black',
                   fontWeight: 600,
-                  marginBottom: 8,
-                  marginLeft: 10,
+                  marginBottom: '8px',
+                  marginLeft: '10px',
                 }}
                 variant="body2"
               >
@@ -772,8 +734,6 @@ const ChartsPanel = memo(() => {
                 admin0Key={secondAdmin0Key}
                 admin1Key={secondAdmin1Key}
                 admin2Key={secondAdmin2Key}
-                admin3Key={secondAdmin3Key}
-                countryAdm0Id={countryAdmin0Id}
                 stacked
                 hideLabel
                 onAdmin0Change={(key, properties, level) => {
@@ -788,7 +748,6 @@ const ChartsPanel = memo(() => {
                 onAdmin1Change={(key, properties, level) => {
                   setSecondAdmin1Key(key);
                   setSecondAdmin2Key('' as AdminCodeString);
-                  setSecondAdmin3Key('' as AdminCodeString);
                   setSecondAdminLevel(level);
                   setSecondAdminProperties(properties);
                   setSecondSelectedAdmin1Area(
@@ -798,47 +757,39 @@ const ChartsPanel = memo(() => {
                 }}
                 onAdmin2Change={(key, properties, level) => {
                   setSecondAdmin2Key(key);
-                  setSecondAdmin3Key('' as AdminCodeString);
                   setSecondAdminLevel(level);
                   setSecondAdminProperties(properties);
                   setSecondSelectedAdmin2Area(
                     key && data ? getAdminAreaName(properties, level) : '',
                   );
                 }}
-                onAdmin3Change={(key, properties, level) => {
-                  setSecondAdmin3Key(key);
-                  setSecondAdminLevel(level);
-                  setSecondAdminProperties(properties);
-                }}
               />
             </Box>
           )}
         </FormGroup>
 
-        <FormGroup className={classes.formGroup}>
+        <FormGroup sx={chartsFormGroupSx}>
           <FormControlLabel
             style={{ marginLeft: 20 }}
             control={
               <Switch
                 checked={comparePeriods}
                 size="small"
-                className={classes.switch}
-                classes={{
-                  switchBase: classes.switchBase,
-                  track: classes.switchTrack,
-                }}
+                sx={compareSwitchSx}
                 onChange={handleOnChangeComparePeriodsSwitch}
-                inputProps={{
-                  'aria-label': 'Compare Periods',
+                slotProps={{
+                  input: {
+                    'aria-label': 'Compare Periods',
+                  },
                 }}
               />
             }
             label={
               <Typography
-                className={
+                sx={
                   comparePeriods
-                    ? classes.switchTitle
-                    : classes.switchTitleUnchecked
+                    ? compareSwitchTitleSx
+                    : compareSwitchTitleUncheckedSx
                 }
               >
                 {t('Compare Periods')}
@@ -854,8 +805,8 @@ const ChartsPanel = memo(() => {
                   style={{
                     color: 'black',
                     fontWeight: 600,
-                    marginBottom: 8,
-                    marginLeft: 10,
+                    marginBottom: '8px',
+                    marginLeft: '10px',
                   }}
                   variant="body2"
                 >
@@ -875,8 +826,8 @@ const ChartsPanel = memo(() => {
                   style={{
                     color: 'black',
                     fontWeight: 600,
-                    marginBottom: 8,
-                    marginLeft: 10,
+                    marginBottom: '8px',
+                    marginLeft: '10px',
                   }}
                   variant="body2"
                 >
@@ -895,34 +846,44 @@ const ChartsPanel = memo(() => {
           )}
         </FormGroup>
 
-        <FormControl className={classes.layerFormControl}>
-          <InputLabel id="chart-layers-mutiple-checkbox-label">
-            {t('Select Charts')}
-          </InputLabel>
-          <Select
-            labelId="chart-layers-mutiple-checkbox-label"
-            id="chart-layers-mutiple-checkbox"
-            multiple={!(compareLocations || comparePeriods)}
-            value={selectedLayerTitles}
-            onChange={onChangeChartLayers}
-            input={<Input />}
-            renderValue={chartsSelectRenderValue}
-            MenuProps={menuProps}
-          >
-            {chartLayers.map(layer => (
-              <MenuItem key={layer.id} value={layer.title}>
-                <Checkbox
-                  checked={selectedLayerTitles.indexOf(layer.title) > -1}
-                  color="primary"
-                />
-                <ListItemText
-                  classes={{ primary: classes.textLabel }}
-                  primary={t(layer.title)}
-                />
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <TextField
+          id="chart-layers-mutiple-checkbox"
+          sx={{
+            ...chartsLayerFormControlSx,
+            '& .MuiInputLabel-root': { color: 'black' },
+            '& .MuiSelect-select': { color: 'black' },
+          }}
+          select
+          label={t('Select Charts')}
+          variant="standard"
+          fullWidth
+          value={selectedLayerTitles}
+          onChange={event =>
+            onChangeChartLayers(event as SelectChangeEvent<string[]>)
+          }
+          slotProps={{
+            select: {
+              multiple: !(compareLocations || comparePeriods),
+              renderValue: chartsSelectRenderValue,
+              MenuProps: menuProps,
+            },
+          }}
+        >
+          {chartLayers.map(layer => (
+            <MenuItem key={layer.id} value={layer.title}>
+              <Checkbox
+                checked={selectedLayerTitles.indexOf(layer.title) > -1}
+                color="primary"
+              />
+              <ListItemText
+                slotProps={{
+                  primary: { sx: chartsTextLabelSx },
+                }}
+                primary={t(layer.title)}
+              />
+            </MenuItem>
+          ))}
+        </TextField>
         <DownloadCsvButton
           filesData={[
             {
@@ -944,7 +905,8 @@ const ChartsPanel = memo(() => {
           }
         />
         <Button
-          className={classes.clearAllSelectionsButton}
+          variant="contained"
+          disableElevation
           onClick={handleClearAllSelectedCharts}
           disabled={
             !(
@@ -954,13 +916,21 @@ const ChartsPanel = memo(() => {
               selectedLayerTitles.length >= 1
             )
           }
+          sx={{
+            ...clearAllButtonSx,
+            marginTop: '10px',
+            marginBottom: '10px',
+            marginLeft: '25%',
+            marginRight: '25%',
+            width: '50%',
+          }}
         >
-          <Typography variant="body2">{t('Clear All')}</Typography>
+          {t('Clear All')}
         </Button>
       </Box>
       {showChartsPanel && (
-        <Box className={classes.chartsContainer}>
-          <Box className={classes.chartsPanelCharts}>{renderResultsPage}</Box>
+        <Box sx={chartsContainerSx}>
+          <Box sx={chartsPanelChartsSx}>{renderResultsPage}</Box>
           {showSlider && maxDataTicks > 1 && (
             <>
               <TimePeriodSelector
@@ -987,100 +957,5 @@ const ChartsPanel = memo(() => {
     </div>
   );
 });
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      display: 'flex',
-      flexDirection: 'row',
-      width: '100%',
-      height: '100%',
-    },
-    formGroup: {
-      marginBottom: 20,
-      marginLeft: 20,
-      width: '100%',
-    },
-    chartsPanelParams: {
-      marginTop: 30,
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      width: PanelSize.medium,
-      flexShrink: 0,
-    },
-    layerFormControl: {
-      marginTop: 30,
-      marginBottom: '2em',
-      minWidth: '300px',
-      maxWidth: '350px',
-      '& .MuiFormLabel-root': {
-        color: 'black',
-      },
-      '& .MuiSelect-root': {
-        color: 'black',
-      },
-    },
-    textLabel: {
-      color: 'black',
-    },
-    chartsContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      width: '100%',
-    },
-    chartsPanelCharts: {
-      alignContent: 'start',
-      overflowY: 'auto',
-      overflowX: 'hidden',
-      display: 'flex',
-      justifyContent: 'center',
-      flexWrap: 'wrap',
-      flexGrow: 4,
-      gap: '16px',
-      padding: '16px',
-      marginTop: 0,
-      paddingBottom: '1em',
-    },
-    clearAllSelectionsButton: {
-      backgroundColor: '#788489',
-      '&:hover': {
-        backgroundColor: '#788489',
-      },
-      marginTop: 10,
-      marginBottom: 10,
-      marginLeft: '25%',
-      marginRight: '25%',
-      width: '50%',
-      '&.Mui-disabled': { opacity: 0.5 },
-    },
-    switch: {
-      marginRight: 2,
-      marginBottom: 10,
-    },
-    switchTrack: {
-      backgroundColor: '#E0E0E0',
-    },
-    switchBase: {
-      color: '#E0E0E0',
-      '&.Mui-checked': {
-        color: '#53888F',
-      },
-      '&.Mui-checked + .MuiSwitch-track': {
-        backgroundColor: '#B1D6DB',
-      },
-    },
-    switchTitle: {
-      lineHeight: 1.8,
-      color: 'black',
-      fontWeight: 400,
-    },
-    switchTitleUnchecked: {
-      lineHeight: 1.8,
-      fontWeight: 400,
-    },
-  }),
-);
 
 export default ChartsPanel;

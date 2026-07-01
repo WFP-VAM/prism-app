@@ -1,7 +1,24 @@
-import { makeStyles, TextField, Typography } from '@material-ui/core';
+import { Box, TextField, Typography } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
 import { AggregationOperations } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 import React, { useCallback, useState } from 'react';
+
+import { colorBlackSx, formContainerSx } from '../formComponentStyles';
+
+const rowInputContainerSx = {
+  display: 'flex',
+  alignItems: 'center',
+  marginTop: '10px',
+} satisfies SxProps<Theme>;
+
+const numberFieldSx = {
+  paddingRight: '10px',
+  maxWidth: '140px',
+  '& label': {
+    color: '#333333',
+  },
+} satisfies SxProps<Theme>;
 
 interface ThresholdInputsProps {
   belowThreshold: string;
@@ -22,7 +39,6 @@ function ThresholdInputs({
   requiredThresholdNotSet = false,
   disabled = false,
 }: ThresholdInputsProps) {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
   const [thresholdError, setThresholdError] = useState<string | null>(null);
 
@@ -63,8 +79,8 @@ function ThresholdInputs({
     statistic === AggregationOperations['Area exposed'];
 
   return (
-    <div className={classes.container}>
-      <Typography className={classes.colorBlack} variant="body2">
+    <Box sx={formContainerSx()}>
+      <Typography sx={colorBlackSx} variant="body2">
         {t('Threshold')}
       </Typography>
 
@@ -76,12 +92,12 @@ function ThresholdInputs({
         </Typography>
       )}
 
-      <div className={classes.rowInputContainer}>
+      <Box sx={rowInputContainerSx}>
         <TextField
           id="outlined-number-low"
           error={!!thresholdError}
           helperText={t(thresholdError || '')}
-          className={classes.numberField}
+          sx={numberFieldSx}
           label={t('Below')}
           type="number"
           value={belowThreshold}
@@ -92,7 +108,7 @@ function ThresholdInputs({
         <TextField
           id="outlined-number-high"
           label={t('Above')}
-          classes={{ root: classes.numberField }}
+          sx={numberFieldSx}
           value={aboveThreshold}
           onChange={handleAboveThresholdChange}
           type="number"
@@ -100,39 +116,13 @@ function ThresholdInputs({
           disabled={disabled}
         />
         {showPercentageLabel && (
-          <Typography className={classes.colorBlack} variant="body1">
+          <Typography sx={colorBlackSx} variant="body1">
             %
           </Typography>
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
-
-const useStyles = makeStyles(() => ({
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginBottom: 30,
-    marginLeft: 10,
-    width: '90%',
-    color: 'black',
-  },
-  colorBlack: {
-    color: 'black',
-  },
-  rowInputContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    marginTop: '10px',
-  },
-  numberField: {
-    paddingRight: '10px',
-    maxWidth: '140px',
-    '& label': {
-      color: '#333333',
-    },
-  },
-}));
 
 export default ThresholdInputs;

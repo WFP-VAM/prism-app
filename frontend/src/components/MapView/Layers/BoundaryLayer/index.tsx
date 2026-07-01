@@ -1,4 +1,4 @@
-import { createStyles, makeStyles } from '@material-ui/core';
+import { GlobalStyles } from '@mui/material';
 import {
   BoundaryRelationData,
   loadBoundaryRelations,
@@ -121,8 +121,27 @@ const onMouseEnter = () => (evt: MapLayerMouseEvent) =>
 const onMouseLeave = () => (evt: MapLayerMouseEvent) =>
   onToggleHover('', evt.target);
 
+const BOUNDARY_POPUP_CLASS = 'boundary-layer-popup';
+
+const boundaryPopupGlobalStyles = {
+  [`.${BOUNDARY_POPUP_CLASS} .maplibregl-popup-content`]: {
+    background: '#323638',
+    color: '#FFFFFF',
+    padding: '6px 10px',
+    borderRadius: '4px',
+    boxShadow: '0 6px 18px rgba(0, 0, 0, 0.4)',
+    fontSize: '14px',
+    fontWeight: 500,
+    lineHeight: 1.3,
+    textAlign: 'center',
+  },
+  [`.${BOUNDARY_POPUP_CLASS} .maplibregl-popup-tip`]: {
+    borderTopColor: '#323638',
+    borderBottomColor: '#323638',
+  },
+};
+
 const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
-  const styleClasses = useStyles();
   const selectedMap = useMapState()?.maplibreMap();
   const history = useHistory();
   const { iso3 } = useCountryIso();
@@ -269,6 +288,7 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
 
     return (
       <>
+        <GlobalStyles styles={boundaryPopupGlobalStyles} />
         <Source
           id={`source-${layer.id}`}
           type="vector"
@@ -321,7 +341,7 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
         </Source>
         {isAdmin0Landing && hovered && (
           <Popup
-            className={styleClasses.popup}
+            className={BOUNDARY_POPUP_CLASS}
             longitude={hovered.lng}
             latitude={hovered.lat}
             closeButton={false}
@@ -362,27 +382,5 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
     </Source>
   );
 });
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    popup: {
-      '& .maplibregl-popup-content': {
-        background: '#323638',
-        color: '#FFFFFF',
-        padding: '6px 10px',
-        borderRadius: '4px',
-        boxShadow: '0 6px 18px rgba(0, 0, 0, 0.4)',
-        fontSize: '14px',
-        fontWeight: 500,
-        lineHeight: 1.3,
-        textAlign: 'center',
-      },
-      '& .maplibregl-popup-tip': {
-        borderTopColor: '#323638',
-        borderBottomColor: '#323638',
-      },
-    },
-  }),
-);
 
 export default BoundaryLayer;

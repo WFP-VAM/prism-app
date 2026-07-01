@@ -219,11 +219,19 @@ export const loadBoundaryRelations = (
   };
 };
 
-export const setMenuItemStyle = (
+import type { SxProps, Theme } from '@mui/material/styles';
+
+export type BoundaryMenuItemStyles = {
+  header: SxProps<Theme>;
+  subHeader: SxProps<Theme>;
+  menuItem: SxProps<Theme>;
+};
+
+export const getMenuItemSx = (
   level: number,
   levels: number[],
-  styles: { [key: string]: string },
-): string => {
+  styles: BoundaryMenuItemStyles,
+): SxProps<Theme> => {
   switch (level) {
     case levels[0]:
       return styles.header;
