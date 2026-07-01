@@ -708,11 +708,6 @@ export const dashboardStateSlice = createSlice({
       // update map
       if (map.getLayer(mapLayerId) !== undefined && value !== undefined) {
         map.setPaintProperty(mapLayerId, opacityType, value);
-        // force a update of the map style to ensure the change is reflected
-        // see https://github.com/maplibre/maplibre-gl-js/issues/3373
-        // TODO - check if the above issue got resolved from time to time.
-
-        map.triggerRepaint();
       }
 
       if (callback !== undefined) {
