@@ -19,6 +19,7 @@ import {
 import AnalysisLayer from 'components/MapView/Layers/AnalysisLayer';
 import type { COGLayerComponentProps } from 'components/MapView/Layers/COGLayer';
 import SelectionLayer from 'components/MapView/Layers/SelectionLayer';
+import type { ZarrLayerComponentProps } from 'components/MapView/Layers/ZarrLayer';
 import MapTooltip from 'components/MapView/MapTooltip';
 import useMapOnClick from 'components/MapView/useMapOnClick';
 import { appConfig } from 'config';
@@ -73,10 +74,17 @@ const SHOW_BOUNDARY_INFO = JSON.parse(
 
 const DeckGLOverlay = lazy(() => import('components/MapView/DeckGLOverlay'));
 const COGLayerLazy = lazy(() => import('components/MapView/Layers/COGLayer'));
+const ZarrLayerLazy = lazy(() => import('components/MapView/Layers/ZarrLayer'));
 
 const COGLayerComponent = (props: COGLayerComponentProps) => (
   <Suspense fallback={null}>
     <COGLayerLazy {...props} />
+  </Suspense>
+);
+
+const ZarrLayerComponent = (props: ZarrLayerComponentProps) => (
+  <Suspense fallback={null}>
+    <ZarrLayerLazy {...props} />
   </Suspense>
 );
 
@@ -100,6 +108,7 @@ const componentTypes: LayerComponentsMap<LayerType> = {
   boundary: { component: BoundaryLayer },
   wms: { component: WMSLayer },
   cog: { component: COGLayerComponent },
+  zarr: { component: ZarrLayerComponent },
   admin_level_data: { component: AdminLevelDataLayer },
   impact: { component: ImpactLayer },
   point_data: { component: PointDataLayer },

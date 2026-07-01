@@ -9,8 +9,8 @@ export const TYPES_ALLOWED_TO_OVERLAP = [
   'static_raster',
 ];
 
-// WMS and COG raster hazard layers are mutually exclusive with each other.
-const RASTER_HAZARD_TYPES = new Set<LayerType['type']>(['wms', 'cog']);
+// WMS, COG, and Zarr raster hazard layers are mutually exclusive with each other.
+const RASTER_HAZARD_TYPES = new Set<LayerType['type']>(['wms', 'cog', 'zarr']);
 
 // finds layer's group as defined in "categories" in "prism.json"
 function getLayerGroup(layer: LayerType) {

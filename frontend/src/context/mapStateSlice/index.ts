@@ -70,6 +70,7 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
       | 'composite'
       | 'wms'
       | 'cog'
+      | 'zarr'
       | 'admin_level_data'
       | 'pattern_admin_level_data'
       | 'impact'
@@ -91,6 +92,7 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
     composite: 6,
     wms: 7,
     cog: 7,
+    zarr: 7,
     static_raster: 8,
     anticipatory_action_drought: 9,
     anticipatory_action_storm: 10,

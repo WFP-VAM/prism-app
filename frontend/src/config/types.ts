@@ -26,6 +26,7 @@ export type LayerType =
   | BoundaryLayerProps
   | WMSLayerProps
   | CogLayerProps
+  | ZarrLayerProps
   | AdminLevelDataLayerProps
   | ImpactLayerProps
   | PointDataLayerProps
@@ -565,6 +566,66 @@ export class CogLayerProps extends CommonLayerProps {
 
   @optional
   wcsConfig?: { scale?: number; offset?: number };
+}
+
+export class ZarrLayerProps extends CommonLayerProps {
+  type: 'zarr' = 'zarr';
+
+  /**
+   * Data source subtype — `dynamical` for analysis cubes (`time` dim);
+   * `dynamical_forecast` for init_time + lead_time forecast cubes.
+   */
+  subtype: 'dynamical' | 'dynamical_forecast' = 'dynamical';
+
+  /** STAC collection or item URL (source of truth for repo URL and temporal extent). */
+  stacItem: string;
+
+  /** Zarr variable name, e.g. `temperature_2m`. */
+  variable: string;
+
+  @optional
+  repoUrl?: string;
+
+  /** Forecast ensemble dataset; requires `subtype: dynamical_forecast`. Renders ensemble mean. */
+  @optional
+  ensemble?: boolean;
+
+  /** Multiplier applied after CF scaling (e.g. 3600 for mm/s → mm/h). */
+  @optional
+  valueScale?: number;
+
+  @optional
+  valueRange?: [number, number];
+
+  @optional
+  colormap?: string;
+
+  @optional
+  units?: string;
+
+  @optional
+  initTimeDim?: string;
+
+  @optional
+  leadTimeDim?: string;
+
+  @optional
+  ensembleDim?: string;
+
+  @makeRequired
+  declare title: string;
+
+  @makeRequired
+  declare legend: LegendDefinition;
+
+  @makeRequired
+  declare legendText: string;
+
+  @optional
+  attribution?: string;
+
+  @optional
+  startDate?: string;
 }
 
 enum AggregationOptions {

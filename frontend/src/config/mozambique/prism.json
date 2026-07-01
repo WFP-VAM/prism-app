@@ -448,6 +448,79 @@
     },
     "exposure": {
       "population": ["pop_proj_2025"]
+    },
+    "prototype": {
+      "dynamical": [
+        {
+          "group_title": "ECMWF AIFS Single forecast",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ecmwf_aifs_single_t2m",
+              "label": "Temperature 2m",
+              "main": true
+            },
+            {
+              "id": "ecmwf_aifs_single_precip",
+              "label": "Precipitation rate"
+            },
+            {
+              "id": "ecmwf_aifs_single_cloud",
+              "label": "Total cloud cover"
+            },
+            {
+              "id": "ecmwf_aifs_single_dewpoint",
+              "label": "Dew point 2m"
+            }
+          ]
+        },
+        {
+          "group_title": "ECMWF AIFS ENS forecast",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ecmwf_aifs_ens_t2m",
+              "label": "Temperature 2m",
+              "main": true
+            },
+            {
+              "id": "ecmwf_aifs_ens_precip",
+              "label": "Precipitation rate"
+            },
+            {
+              "id": "ecmwf_aifs_ens_cloud",
+              "label": "Total cloud cover"
+            },
+            {
+              "id": "ecmwf_aifs_ens_dewpoint",
+              "label": "Dew point 2m"
+            }
+          ]
+        },
+        {
+          "group_title": "ECMWF IFS ENS forecast",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ecmwf_ifs_ens_t2m",
+              "label": "Temperature 2m",
+              "main": true
+            },
+            {
+              "id": "ecmwf_ifs_ens_precip",
+              "label": "Precipitation rate"
+            },
+            {
+              "id": "ecmwf_ifs_ens_cloud",
+              "label": "Total cloud cover"
+            },
+            {
+              "id": "ecmwf_ifs_ens_dewpoint",
+              "label": "Dew point 2m"
+            }
+          ]
+        }
+      ]
     }
   }
 }

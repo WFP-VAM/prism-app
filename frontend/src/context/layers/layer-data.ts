@@ -9,6 +9,7 @@ import {
   LayerType,
   PointLayerData,
   StaticRasterLayerProps,
+  ZarrLayerProps,
 } from 'config/types';
 import type { CreateAsyncThunkTypes, ThunkApi } from 'context/store';
 
@@ -26,7 +27,10 @@ import { fetchWCSLayerData, WMSLayerData } from './wms';
 
 export type LayerAcceptingDataType = Exclude<
   LayerType,
-  StaticRasterLayerProps | AnticipatoryActionLayerProps | CogLayerProps
+  | StaticRasterLayerProps
+  | AnticipatoryActionLayerProps
+  | CogLayerProps
+  | ZarrLayerProps
 >;
 
 type LayerSpecificDataTypes = {

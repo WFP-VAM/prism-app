@@ -12,6 +12,7 @@ The new PRISM frontend is built as a static website to minimize cross dependenci
 - Load admin level (vector) data as JSON, and link it to administrative boundaries
 - Display WMS layers from Geoserver or Open Data Cube endpoints, with date selection capabilities
 - Display COG (Cloud Optimized GeoTIFF) layers streamed directly from a STAC catalog and rendered client-side with deck.gl
+- Display Zarr layers from [dynamical.org](https://dynamical.org/) Icechunk repositories (global NWP analysis), viewport-tiled and rendered client-side with deck.gl
 - Display point layers by applying symbology to numeric values associated with a geographic coordinate
 - Display CSV tables in a left side panel
 
@@ -214,7 +215,7 @@ Under `categories`, you can specify the menu structure and reference to any laye
 
 In this file, we define the specific layer settings for data access, titles, and legends. You can define a new layer from scratch, or override a layer that exists in the `shared/layers.json`. In that case, you only need to specify the fields that need to be overriden. Similarly, legends can be predefined in `shared/legends.json` and simply reference to by id. The `"legend_text"` attribute describes the source of the data and can use Markdown syntax to render [links](example.com), _italics_, and **bold** text within our H5 typography.
 
-There are 4 main types of layers.
+There are several main layer types (raster/WMS, COG, Zarr, admin level, point, boundaries, etc.).
 
 #### raster
 
@@ -276,6 +277,43 @@ Fields specific to `cog` layers:
 - `legend` (required): legend breakpoints (inline or a reference into `shared/legends.json`). The color ramp is built from these values and applied on the GPU.
 
 The `title`, `legend`, `legend_text`, `opacity`, `date_interval`, and `validity` fields work the same as for other layer types. See [docs/cog-layers.md](docs/cog-layers.md) for how COG layers are fetched, proxied, and rendered.
+
+#### zarr (dynamical.org)
+
+These layers are referred to as type `zarr` with subtype `dynamical`. They stream a [Zarr](https://zarr.dev/) dataset from an [Icechunk](https://icechunk.io/) repository published on [dynamical.org's STAC catalog](https://stac.dynamical.org/catalog.json). Like COG layers, they behave like a WMS raster in the UI (date selection, opacity, mutual exclusivity, ordering below admin boundaries) but pixels are fetched and colorized client-side with deck.gl. Unlike COG layers, there is no PRISM API proxy — the browser reads the Icechunk repo directly from S3, and tiling follows the **live map viewport** rather than the deployment bounding box.
+
+Use a `zarr` layer for dynamical.org global gridded products (e.g. NOAA GFS analysis); use `cog` for STAC-hosted GeoTIFFs that go through the presign/proxy API; use `wms` when a map server already renders tiles for you.
+
+```json
+"dynamical_gfs_t2m": {
+  "title": "Temperature 2m (GFS analysis, dynamical.org)",
+  "type": "zarr",
+  "subtype": "dynamical",
+  "stac_item": "https://stac.dynamical.org/noaa-gfs-analysis/collection.json",
+  "variable": "temperature_2m",
+  "value_range": [-40, 50],
+  "units": "°C",
+  "legend": "dynamical_t2m",
+  "legend_text": "2m air temperature (°C). Source: dynamical.org, CC-BY-4.0",
+  "attribution": "NOAA NWS NCEP GFS data processed by dynamical.org (CC-BY-4.0)",
+  "opacity": 0.75
+}
+```
+
+Fields specific to `zarr` layers:
+
+- `subtype` (required): must be `"dynamical"` — resolves the Icechunk repo URL and temporal extent from dynamical STAC.
+- `stac_item` (required): full URL to a dynamical STAC **collection** document (e.g. `https://stac.dynamical.org/noaa-gfs-analysis/collection.json`).
+- `variable` (required): Zarr array name within the repo, as listed under `cube:variables` in the STAC collection (e.g. `"temperature_2m"`, `"precipitation_surface"`).
+- `repo_url` (optional): skip STAC resolution and open this Icechunk HTTPS URL directly (useful for local testing).
+- `value_range` (optional): `[min, max]` passed to the GPU rescale step. Defaults to the first and last `legend` breakpoint values.
+- `units` (optional): shown in the legend / layer metadata.
+- `attribution` (optional): data credit string (dynamical datasets are [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/)).
+- `legend` (required): legend breakpoints (inline or a reference into `shared/legends.json`). The color ramp is built on the GPU (same pipeline as COG).
+
+Multiple layers can share the same `stac_item` with different `variable` values. Available timeline dates are derived from the STAC collection temporal extent (daily entries), not from WMS GetCapabilities.
+
+The `title`, `legend`, `legend_text`, `opacity`, `date_interval`, and `validity` fields work the same as for other layer types. See [docs/zarr-layers.md](docs/zarr-layers.md) for the full fetch/render pipeline, GeoZarr shim, and supported STAC collections.
 
 #### admin level
 

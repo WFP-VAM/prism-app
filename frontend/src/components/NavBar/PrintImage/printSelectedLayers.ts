@@ -6,7 +6,7 @@ import { getDisplayBoundaryLayers, LayerDefinitions } from 'config/utils';
  * Layers passed to MapExportLayout in the print dialog preview.
  *
  * Default print mode clones the main map's MapLibre style (works for WMS rasters).
- * COG layers render via deck.gl and are not in that style — they must be drawn by
+ * COG/Zarr render via deck.gl and are not in that style — they must be drawn by
  * MapExportLayout (same path as country-mask and batch export).
  */
 export function getPrintSelectedLayers({

@@ -4,6 +4,11 @@ import { get, snakeCase } from 'lodash';
 import { fetchCoverageLayerDays, formatUrl, WFS, WMS } from 'prism-common';
 
 import {
+  fetchDynamicalStacMetadata,
+  generateDailyDatesFromExtent,
+  generateValidTimeDates,
+} from '../components/MapView/Layers/ZarrLayer/stac';
+import {
   appConfig,
   countriesWithPreprocessedDates,
   safeCountry,
@@ -40,6 +45,7 @@ import {
   PointDataLoader,
   StaticRasterLayerProps,
   WMSLayerProps,
+  ZarrLayerProps,
 } from '../config/types';
 import { LayerDefinitions } from '../config/utils';
 import { addNotification } from '../context/notificationStateSlice';
@@ -216,6 +222,7 @@ export type DateCompatibleLayer =
   | AdminLevelDataLayerProps
   | WMSLayerProps
   | CogLayerProps
+  | ZarrLayerProps
   | ImpactLayerProps
   | PointDataLayerProps
   | StaticRasterLayerProps
@@ -232,6 +239,7 @@ export const getPossibleDatesForLayer = (
     case 'static_raster':
     case 'wms':
     case 'cog':
+    case 'zarr':
       // get available dates for the layer and its fallback layers
       // eslint-disable-next-line no-case-declarations
       const { fallbackLayerKeys } = layer as AdminLevelDataLayerProps;
@@ -887,6 +895,39 @@ export async function getAvailableDatesForLayer(
   layerId: LayerKey,
 ): Promise<AvailableDates> {
   const LayerDefinition = LayerDefinitions[layerId];
+
+  if (LayerDefinition.type === 'zarr') {
+    const zarrLayer = LayerDefinition as ZarrLayerProps;
+    const meta = await fetchDynamicalStacMetadata(
+      zarrLayer.stacItem,
+      zarrLayer.repoUrl,
+    );
+
+    if (zarrLayer.subtype === 'dynamical_forecast') {
+      const { openZarrDataset } =
+        await import('../components/MapView/Layers/ZarrLayer/icechunk-store');
+      const dataset = await openZarrDataset(meta.repoUrl, zarrLayer.variable, {
+        mode: 'forecast',
+        ensemble: zarrLayer.ensemble ?? false,
+        initTimeDim: zarrLayer.initTimeDim,
+        leadTimeDim: zarrLayer.leadTimeDim,
+        ensembleDim: zarrLayer.ensembleDim,
+      });
+      const dates = generateValidTimeDates(
+        dataset.initTimes!,
+        dataset.leadTimes!,
+        date => generateDefaultDateItem(date),
+      );
+      return { [layerId]: dates };
+    }
+
+    const dates = generateDailyDatesFromExtent(
+      meta.temporalStart,
+      meta.temporalEnd,
+      date => generateDefaultDateItem(date),
+    );
+    return { [layerId]: dates };
+  }
 
   // At this point, all network data should have been preloaded in
   // the redux state, so we just need to process it into the right

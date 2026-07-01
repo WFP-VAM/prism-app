@@ -3,6 +3,7 @@ import { LayerType } from 'config/types';
 import { getPrintSelectedLayers } from './printSelectedLayers';
 
 const wmsLayer = { id: 'precip_blended_dekad', type: 'wms' } as LayerType;
+const zarrLayer = { id: 'ecmwf_aifs_t2m', type: 'zarr' } as LayerType;
 const cogLayer = { id: 'some_cog', type: 'cog' } as LayerType;
 const boundaryLayer = { id: 'admin_boundaries', type: 'boundary' } as LayerType;
 
@@ -16,6 +17,17 @@ describe('getPrintSelectedLayers', () => {
         selectedLayers: [boundaryLayer, wmsLayer],
       }),
     ).toEqual([]);
+  });
+
+  test('returns selected layers in default print mode when a Zarr layer is active', () => {
+    expect(
+      getPrintSelectedLayers({
+        batchMapsVisibility: false,
+        countryMask: false,
+        deferredLayerIdForPreview: null,
+        selectedLayers: [boundaryLayer, zarrLayer],
+      }),
+    ).toEqual([boundaryLayer, zarrLayer]);
   });
 
   test('returns selected layers in default print mode when a COG layer is active', () => {
