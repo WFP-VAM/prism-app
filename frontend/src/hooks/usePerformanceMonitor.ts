@@ -137,7 +137,8 @@ export const usePerformanceMonitor = (
       setFps(currentFps);
 
       if (callbackRef.current.logToConsole) {
-        console.log(`Current FPS: ${currentFps}, Change: ${change}`);
+        // eslint-disable-next-line no-console
+        console.info(`Current FPS: ${currentFps}, Change: ${change}`);
       }
 
       if (callbackRef.current.onFPSUpdate) {
