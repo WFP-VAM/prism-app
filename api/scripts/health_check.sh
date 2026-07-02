@@ -102,7 +102,7 @@ check_export_map_worker() {
 main() {
   log "=== deploy health check ==="
 
-  echo "[note] requires env vars set in set_envs.sh"
+  echo "💡 requires env vars set in set_envs.sh"
 
   check_api_local || true
   check_api_public || true
@@ -113,6 +113,7 @@ main() {
     log "✅ SUMMARY: ${healthy}/${total} healthy"
   else
     log "❌ SUMMARY: ${healthy}/${total} healthy"
+    echo "💡 To roll back to the previous deploy: ./crons/rollback_api_to_prev.sh"
   fi
 
   if [[ "$failed" -gt 0 ]]; then
