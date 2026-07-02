@@ -125,6 +125,7 @@ class PrismAdminAuthMiddleware(BaseHTTPMiddleware):
 
         if settings.admin_auth_disabled:
             request.state.permission_codes = set(ALL_CAPABILITIES)
+            request.state.permission_scopes = {}
             return await call_next(request)
 
         is_public = (
@@ -147,7 +148,7 @@ class PrismAdminAuthMiddleware(BaseHTTPMiddleware):
                 status_code=503,
             )
 
-        user, codes, _ = load_user_from_session(
+        user, codes, scopes, _ = load_user_from_session(
             request,
             prov.engine,
             settings,
@@ -170,4 +171,5 @@ class PrismAdminAuthMiddleware(BaseHTTPMiddleware):
 
         request.state.prism_user = user
         request.state.permission_codes = codes
+        request.state.permission_scopes = scopes
         return await call_next(request)

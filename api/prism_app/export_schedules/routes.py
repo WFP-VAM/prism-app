@@ -8,6 +8,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends
 from prism_app.auth.deps import require_any_permission
 from prism_app.auth.permission_codes import ADMIN_ACCESS, MAP_EXPORTS_MANAGE
+from prism_app.auth.permission_scopes import PermissionScopes
 from prism_app.database.map_export_schedule_model import (
     MAX_DEKAD_INTERVAL,
     MapExportSchedule,
@@ -23,7 +24,7 @@ from sqlmodel import Session
 router = APIRouter(prefix="/export-map", tags=["export-map"])
 
 _ScheduleCreateSession = Annotated[
-    tuple[User, set[str]],
+    tuple[User, set[str], PermissionScopes],
     Depends(require_any_permission(MAP_EXPORTS_MANAGE, ADMIN_ACCESS)),
 ]
 
@@ -79,7 +80,7 @@ def create_map_export_schedule(
     prism: _ScheduleCreateSession,
     session: Session = Depends(get_export_jobs_session),
 ) -> MapExportScheduleCreateResponse:
-    user, _codes = prism
+    user, _codes, _scopes = prism
 
     schedule = MapExportSchedule(
         name=body.name.strip(),

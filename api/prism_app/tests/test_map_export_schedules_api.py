@@ -58,8 +58,8 @@ def api_client(sqlite_engine) -> Generator[TestClient, None, None]:
         name="Scheduler User",
     )
 
-    def override_prism_session() -> tuple[User, set[str]]:
-        return user, {MAP_EXPORTS_MANAGE}
+    def override_prism_session() -> tuple[User, set[str], dict[str, frozenset[str] | None]]:
+        return user, {MAP_EXPORTS_MANAGE}, {}
 
     app.dependency_overrides[get_export_jobs_session] = override_session
     app.dependency_overrides[require_prism_session] = override_prism_session
@@ -85,8 +85,8 @@ def api_client_without_permission(sqlite_engine) -> Generator[TestClient, None, 
         name="Viewer User",
     )
 
-    def override_prism_session() -> tuple[User, set[str]]:
-        return user, set()
+    def override_prism_session() -> tuple[User, set[str], dict[str, frozenset[str] | None]]:
+        return user, set(), {}
 
     app.dependency_overrides[get_export_jobs_session] = override_session
     app.dependency_overrides[require_prism_session] = override_prism_session
@@ -255,8 +255,8 @@ def test_post_export_map_schedule_allows_admin_access_without_map_exports_manage
         name="Admin User",
     )
 
-    def override_prism_session() -> tuple[User, set[str]]:
-        return user, {ADMIN_ACCESS}
+    def override_prism_session() -> tuple[User, set[str], dict[str, frozenset[str] | None]]:
+        return user, {ADMIN_ACCESS}, {}
 
     app.dependency_overrides[get_export_jobs_session] = override_session
     app.dependency_overrides[require_prism_session] = override_prism_session

@@ -47,13 +47,14 @@ def test_load_user_from_session_rejects_auth_provider_mismatch(
 
     monkeypatch.setattr(
         "prism_app.auth.deps.load_user_and_permissions",
-        lambda engine, user_id: (user, set()),
+        lambda engine, user_id: (user, set(), {}),
     )
 
-    loaded, codes, sub = load_user_from_session(request, Mock(), Mock())
+    loaded, codes, scopes, sub = load_user_from_session(request, Mock(), Mock())
 
     assert loaded is None
     assert codes == set()
+    assert scopes == {}
     assert request.session == {}
 
 
@@ -74,13 +75,14 @@ def test_load_user_from_session_accepts_matching_auth_provider(
 
     monkeypatch.setattr(
         "prism_app.auth.deps.load_user_and_permissions",
-        lambda engine, user_id: (user, {"prism.admin.access"}),
+        lambda engine, user_id: (user, {"prism.admin.access"}, {}),
     )
 
-    loaded, codes, sub = load_user_from_session(request, Mock(), Mock())
+    loaded, codes, scopes, sub = load_user_from_session(request, Mock(), Mock())
 
     assert loaded is user
     assert codes == {"prism.admin.access"}
+    assert scopes == {}
     assert sub == "entra-sub"
 
 
@@ -100,10 +102,10 @@ def test_load_user_from_session_defaults_missing_auth_provider_to_ciam(
 
     monkeypatch.setattr(
         "prism_app.auth.deps.load_user_and_permissions",
-        lambda engine, user_id: (user, set()),
+        lambda engine, user_id: (user, set(), {}),
     )
 
-    loaded, _, _ = load_user_from_session(request, Mock(), Mock())
+    loaded, _, _, _ = load_user_from_session(request, Mock(), Mock())
 
     assert loaded is user
 
@@ -116,8 +118,8 @@ def test_whoami_includes_auth_provider() -> None:
         email="staff@example.org",
     )
 
-    def override_prism_session():
-        return user, {"prism.admin.access"}
+    def override_prism_session() -> tuple[User, set[str], dict[str, frozenset[str] | None]]:
+        return user, {"prism.admin.access"}, {}
 
     app.dependency_overrides[require_prism_session] = override_prism_session
     try:
@@ -133,4 +135,5 @@ def test_whoami_includes_auth_provider() -> None:
         "ciam_sub": "entra-sub",
         "email": "staff@example.org",
         "permissions": ["prism.admin.access"],
+        "permission_scopes": {},
     }
