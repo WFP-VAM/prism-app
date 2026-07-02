@@ -248,16 +248,20 @@ To deploy, ssh into the EC2 instance:
 
 ### Automated deploys (cron)
 
-`api/crons/cron_api_auto_deploy.sh` is a cron-safe script that automatically redeploys the API when the target branch advances. It is idempotent (no-ops if the branch SHA is unchanged), uses `flock` for mutual exclusion, and optionally gates a successful deploy on a healthcheck URL.
+`api/crons/cron_api_auto_deploy.sh` is a cron-safe script that automatically redeploys the API when the target branch advances. It is idempotent (no-ops if the branch SHA is unchanged), uses `flock` for mutual exclusion, and gates a successful deploy on the full health check (`scripts/health_check.sh`, run with `HEALTHCHECK_STRICT=1`). If any of the api, traefik, or `export_map_worker` checks fail, the new SHA is not recorded and cron retries on the next run.
 
 Add a daily crontab entry on the EC2 instance (edit with `crontab -e`):
 
 ```bash
-# Daily at 01:00 – auto-deploy API when master advances
-0 1 * * * APP_DIR="$HOME/prism-app/api" BRANCH=master HEALTHCHECK_URL="http://127.0.0.1/health" $HOME/prism-app/api/crons/cron_api_auto_deploy.sh >> $HOME/prism-app/api/auto_deploy.log 2>&1
+# Daily at 01:00 – auto-deploy API when master advances (health-gated)
+0 1 * * * BRANCH=master $HOME/prism-app/api/crons/cron_api_auto_deploy.sh >> $HOME/prism-app/api/auto_deploy.log 2>&1
 ```
 
-To roll back to the previously deployed SHA, run `api/crons/rollback_api_to_prev.sh`.
+The health check expects 2 `export_map_worker` replicas by default (matching `make deploy`). To relax that in the cron gate, set `WORKER_REPLICAS=1` in the crontab entry.
+
+If the health check fails after deploying the new SHA, the cron **automatically rolls back**: it re-checks out the previous SHA, redeploys, and re-runs the health check, leaving the instance on the last known-good build. The failed target SHA is not recorded, so cron retries it on the next run (a persistently broken commit will redeploy-and-roll-back each cycle until fixed).
+
+To roll back manually to the previously deployed SHA, run `api/crons/rollback_api_to_prev.sh`. It reads `prev_sha` from the same state directory the cron writes (`api/.auto_deploy_state` by default); override with `STATE_DIR=... APP_DIR=...` if you relocated it.
 
 There are a few known issues happening from time to time
 

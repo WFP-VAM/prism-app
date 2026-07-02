@@ -2,7 +2,8 @@
 set -euo pipefail
 
 APP_DIR="${APP_DIR:-$HOME/prism-app/api}"
-STATE_DIR="${STATE_DIR:-/var/lib/prism-api-deployer}"
+# Must match STATE_DIR in cron_api_auto_deploy.sh, which records prev_sha there.
+STATE_DIR="${STATE_DIR:-$APP_DIR/.auto_deploy_state}"
 
 if [[ ! -f "$STATE_DIR/prev_sha" ]]; then
   echo "missing $STATE_DIR/prev_sha (no previous deploy recorded)"
