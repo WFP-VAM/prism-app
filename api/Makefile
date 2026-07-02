@@ -50,6 +50,12 @@ db-downgrade:
 db-seed: db-migrate
 	$(DEV_COMPOSE) exec -T api bash -c "poetry run python /scripts/seed_alerts_db.py"
 
+# Verify all worker entrypoints import in the slim worker image (CI parity).
+worker-import-smoke:
+	docker compose -f docker-compose.yml build export_map_worker
+	docker compose -f docker-compose.yml run --rm --no-deps export_map_worker \
+	  python -m prism_app.ci.worker_import_smoke
+
 # Enqueue map_export_jobs from active map_export_schedules (requires `make api` running).
 schedule-cron:
 	$(DEV_COMPOSE) exec -T api poetry run python -m prism_app.workers.scheduled_public_maps.cron
