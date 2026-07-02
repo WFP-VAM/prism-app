@@ -110,9 +110,9 @@ def main() -> None:
             permission_id = permission_row[0]
             cur.execute(
                 """
-                INSERT INTO user_permissions (user_id, permission_id)
-                VALUES (%s::uuid, %s::uuid)
-                ON CONFLICT (user_id, permission_id) DO NOTHING
+                INSERT INTO user_permissions (user_id, permission_id, country)
+                VALUES (%s::uuid, %s::uuid, '*')
+                ON CONFLICT (user_id, permission_id, country) DO NOTHING
                 """,
                 (str(user_id), str(permission_id)),
             )
