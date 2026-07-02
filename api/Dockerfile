@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.4
-FROM ghcr.io/osgeo/gdal:ubuntu-full-3.11.5
-# gdal 3.11.1 uses ubuntu 24.04 and python 3.12
+FROM ghcr.io/osgeo/gdal:ubuntu-full-3.13.1
+# gdal 3.13.1 uses ubuntu 26.04 and python 3.14
 
 # we use poetry to install our dependencies in a venv separate from
 # the docker image system python environment
