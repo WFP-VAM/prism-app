@@ -67,10 +67,24 @@ run_deploy() {
   make deploy
 
   # Gate the deploy on the full health check (api + traefik + export_map_worker).
-  # HEALTHCHECK_STRICT=1 makes it exit non-zero if any required service is unhealthy,
-  # so a partial deploy is not recorded and cron retries on the next run.
+  # HEALTHCHECK_STRICT=1 makes it exit non-zero if any required service is unhealthy.
+  # On failure, automatically roll back to the previous SHA and redeploy so the
+  # instance is left on a known-good build; the failed target SHA is not recorded,
+  # so cron retries it on the next run.
   if ! HEALTHCHECK_STRICT=1 ./scripts/health_check.sh; then
-    echo "error: healthcheck failed" >&2
+    echo "error: healthcheck failed for $target_sha; rolling back to $prev_sha" >&2
+
+    git checkout --detach "$prev_sha"
+    # shellcheck disable=SC1091
+    source ./set_envs.sh
+    make deploy
+
+    if ! HEALTHCHECK_STRICT=1 ./scripts/health_check.sh; then
+      echo "error: rollback to $prev_sha also failed healthcheck" >&2
+      return 1
+    fi
+
+    echo "rolled back to: $prev_sha (failed target: $target_sha)"
     return 1
   fi
 

@@ -259,7 +259,9 @@ Add a daily crontab entry on the EC2 instance (edit with `crontab -e`):
 
 The health check expects 2 `export_map_worker` replicas by default (matching `make deploy`). To relax that in the cron gate, set `WORKER_REPLICAS=1` in the crontab entry.
 
-To roll back to the previously deployed SHA, run `api/crons/rollback_api_to_prev.sh`.
+If the health check fails after deploying the new SHA, the cron **automatically rolls back**: it re-checks out the previous SHA, redeploys, and re-runs the health check, leaving the instance on the last known-good build. The failed target SHA is not recorded, so cron retries it on the next run (a persistently broken commit will redeploy-and-roll-back each cycle until fixed).
+
+To roll back manually to the previously deployed SHA, run `api/crons/rollback_api_to_prev.sh`. It reads `prev_sha` from the same state directory the cron writes (`api/.auto_deploy_state` by default); override with `STATE_DIR=... APP_DIR=...` if you relocated it.
 
 There are a few known issues happening from time to time
 
