@@ -1,10 +1,16 @@
 """Starlette Admin: read-only alerts; full CRUD for dashboards."""
 
+from prism_app.aa_drought.aa_drought_admin import (
+    AaDroughtAdminView,
+    register_aa_drought_admin_routes,
+)
 from prism_app.auth.admin_request import (
+    request_can_manage_aa_data,
     request_can_manage_dashboards,
     request_has_prism_admin_access,
 )
 from prism_app.dashboard.dashboard_admin import DashboardAdminView
+from prism_app.database.aa_drought_model import AaDroughtDatasetModel
 from prism_app.database.alert_model import AlertModel
 from prism_app.database.anticipatory_action_alerts_model import AnticipatoryActionAlerts
 from prism_app.database.dashboard_model import DashboardModel
@@ -111,6 +117,25 @@ class GatedDashboardAdminView(DashboardAdminView):
         return request_can_manage_dashboards(request)
 
 
+class GatedAaDroughtAdminView(AaDroughtAdminView):
+    """AA drought dataset CRUD for ``prism.admin.access`` or ``prism.aa_data.manage`` only."""
+
+    def is_accessible(self, request: Request) -> bool:
+        return request_can_manage_aa_data(request)
+
+    def can_view_details(self, request: Request) -> bool:
+        return request_can_manage_aa_data(request)
+
+    def can_create(self, request: Request) -> bool:
+        return request_can_manage_aa_data(request)
+
+    def can_edit(self, request: Request) -> bool:
+        return request_can_manage_aa_data(request)
+
+    def can_delete(self, request: Request) -> bool:
+        return request_can_manage_aa_data(request)
+
+
 class UserPermissionView(PrismGatedModelView):
     """Grant or revoke capability codes (e.g. ``prism.admin.access``, ``prism.content.view``)."""
 
@@ -150,10 +175,12 @@ class UserPermissionView(PrismGatedModelView):
 
 
 def register_alerts_admin_views(admin: Admin) -> None:
+    register_aa_drought_admin_routes(admin)
     admin.add_view(AlertView(AlertModel))
     admin.add_view(KoboUserView(KoboUser))
     admin.add_view(AnticipatoryActionAlertsView(AnticipatoryActionAlerts))
     admin.add_view(GatedDashboardAdminView(DashboardModel))
+    admin.add_view(GatedAaDroughtAdminView(AaDroughtDatasetModel))
     admin.add_view(UserEditView(User))
     admin.add_view(PermissionView(Permission))
     admin.add_view(UserPermissionView(UserPermission))

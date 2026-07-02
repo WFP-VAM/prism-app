@@ -11,7 +11,8 @@ from urllib.parse import ParseResult, urlencode, urlunparse
 import rasterio  # type: ignore
 from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
+from prism_app.aa_drought.published_datasets import get_served_aa_drought_csv
 from prism_app.admin import register_alerts_admin_views
 from prism_app.admin_map_export import PrismAdmin, register_map_export_admin_views
 from prism_app.auth import auth_oidc
@@ -189,6 +190,55 @@ def get_published_dashboards(
         )
     return merge_published_dashboard_rows_for_country(
         alert_db.engine, country, include_staging=include_staging
+    )
+
+
+@app.get(
+    "/aa/drought/{country}.csv",
+    responses={
+        307: {"description": "No DB dataset; redirect to the configured fallback URL"},
+        404: {"description": "No served dataset and no fallback provided"},
+        503: {"description": "AA drought database unavailable"},
+    },
+    summary="Served AA drought CSV (country-scoped)",
+)
+def get_aa_drought_csv(
+    country: str = Path(..., min_length=1, description="AA drought country key"),
+    include_staging: bool = Query(
+        False,
+        description="Serve the staging dataset if one exists (for staging frontends)",
+    ),
+    fallback: Optional[str] = Query(
+        None,
+        description=(
+            "URL to redirect to when no dataset is stored for this country "
+            "(typically the country's existing CDN CSV URL)."
+        ),
+    ),
+) -> Response:
+    """Return the raw CSV served for ``country`` from Postgres.
+
+    When no served dataset exists, redirect to ``fallback`` if provided (so the
+    frontend transparently falls back to the legacy CDN URL), otherwise 404.
+    ``published`` is always served; ``staging`` only when ``include_staging``.
+    """
+    if not alert_db.active or alert_db.engine is None:
+        raise HTTPException(
+            status_code=503, detail="AA drought data is temporarily unavailable"
+        )
+    csv_text = get_served_aa_drought_csv(
+        alert_db.engine, country, include_staging=include_staging
+    )
+    if csv_text is None:
+        if fallback:
+            return RedirectResponse(url=fallback, status_code=307)
+        raise HTTPException(
+            status_code=404, detail=f"No AA drought dataset for '{country}'"
+        )
+    return Response(
+        content=csv_text,
+        media_type="text/csv",
+        headers={"Cache-Control": "public, max-age=300"},
     )
 
 

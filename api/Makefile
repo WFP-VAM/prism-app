@@ -20,8 +20,8 @@ logs:
 	source set_envs.sh && docker compose -f docker-compose.yml -f docker-compose.deploy.yml logs --tail=500 -f --timestamps
 
 api-lint:
-	docker compose run --no-deps api bash -c "poetry run black ."
-	docker compose run --no-deps api bash -c "poetry run isort ."
+	poetry run black --check .
+	poetry run isort --check .
 
 api-typecheck:
 	docker compose run --no-deps api bash -c "mypy ."
