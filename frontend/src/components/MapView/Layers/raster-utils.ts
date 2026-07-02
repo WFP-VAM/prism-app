@@ -1,4 +1,4 @@
-import bbox from '@turf/bbox';
+import turfBbox from '@turf/bbox';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import { point } from '@turf/helpers';
 import { addNotification } from 'context/notificationStateSlice';
@@ -8,7 +8,7 @@ import { fromArrayBuffer, GeoTIFFImage } from 'geotiff';
 import { Map as MaplibreMap } from 'maplibre-gl';
 import { createGetMapUrl } from 'prism-common';
 import { Dispatch } from 'redux';
-import { RASTER_API_URL } from 'utils/constants';
+import { COG_PRESIGNED_URL_API, RASTER_API_URL } from 'utils/constants';
 import { LocalError } from 'utils/error-utils';
 import {
   ANALYSIS_REQUEST_TIMEOUT,
@@ -108,7 +108,7 @@ export function featureIntersectsImage(
   feature: GeoJsonBoundary,
   image: GeoTIFFImage,
 ) {
-  const featureExtent = bbox(feature);
+  const featureExtent = turfBbox(feature);
   const imageExtent = image.getBoundingBox();
 
   const xWithinImage = (x: number) =>
@@ -128,7 +128,7 @@ export function pixelsInFeature(
   width: number,
   transform: TransformMatrix,
 ): number[] {
-  const [minX, minY, maxX, maxY] = bbox(feature);
+  const [minX, minY, maxX, maxY] = turfBbox(feature);
 
   const { row: startRow, col: startCol } = geoCoordsToRowCol(
     minX,
@@ -232,6 +232,57 @@ export async function getDownloadGeotiffURL(
   const responseJson = await response.json();
 
   return responseJson.download_url;
+}
+
+export interface PresignedCogUrl {
+  item_id: string;
+  url: string;
+  bbox?: [number, number, number, number]; // WGS84 [minLon, minLat, maxLon, maxLat]
+}
+
+/**
+ * Fetch short-lived (5-minute) pre-signed S3 URLs for every COG asset in a
+ * STAC collection matching the given date.  For tiled collections (e.g. MODIS
+ * sinusoidal grid) this returns one URL per spatial tile.  Each URL supports
+ * HTTP byte-range requests for efficient browser-side COG streaming.
+ *
+ * @param bbox Optional WGS84 bounding box [minLon, minLat, maxLon, maxLat]
+ *             to spatially filter results to a deployment region.
+ */
+export async function getPresignedCogUrls(
+  collection: string,
+  date?: string,
+  band?: string,
+  bbox?: [number, number, number, number],
+): Promise<PresignedCogUrl[]> {
+  const params = new URLSearchParams({ collection });
+  if (date) {
+    params.set('date', date);
+  }
+  if (band) {
+    params.set('band', band);
+  }
+  if (bbox) {
+    params.set('bbox', bbox.join(','));
+  }
+
+  const response = await fetch(
+    `${COG_PRESIGNED_URL_API}?${params.toString()}`,
+    {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+    },
+  );
+
+  if (!response.ok) {
+    const detail = await response.text();
+    throw new Error(
+      `Failed to get pre-signed COG URLs for collection '${collection}': ${response.status} ${detail}`,
+    );
+  }
+
+  const json = await response.json();
+  return json.urls as PresignedCogUrl[];
 }
 
 export async function downloadGeotiff(

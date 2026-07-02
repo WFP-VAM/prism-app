@@ -1,5 +1,9 @@
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
 import { getImageUrl, iconNorthArrow } from 'assets/images';
+import {
+  DECK_GL_LAYER_TYPES,
+  DeckGLLayersProvider,
+} from 'components/MapView/DeckGLLayersContext';
 // Layer components - keep in sync with MapView/Map/index.tsx
 import {
   AdminLevelDataLayer,
@@ -16,6 +20,7 @@ import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelD
 import AnticipatoryActionFloodLayer from 'components/MapView/Layers/AnticipatoryActionFloodLayer';
 import { FloodStationMarker } from 'components/MapView/Layers/AnticipatoryActionFloodLayer/FloodStationMarker';
 import { loadStormIcons } from 'components/MapView/Layers/AnticipatoryActionStormLayer/constants';
+import type { COGLayerComponentProps } from 'components/MapView/Layers/COGLayer';
 import GeojsonDataLayer from 'components/MapView/Layers/GeojsonDataLayer';
 import { ensureSDFIconsLoaded } from 'components/MapView/Layers/icon-utils';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
@@ -27,6 +32,8 @@ import { lightGrey } from 'muiTheme';
 import React, {
   ComponentType,
   createElement,
+  lazy,
+  Suspense,
   useCallback,
   useEffect,
   useMemo,
@@ -54,6 +61,15 @@ import useResizeObserver from 'utils/useOnResizeObserver';
 import { getAspectRatioDecimal } from './aspectRatioConstants';
 import { ClipProvider } from './ClipProvider';
 import { MapExportLayoutProps } from './types';
+
+const DeckGLOverlay = lazy(() => import('components/MapView/DeckGLOverlay'));
+const COGLayerLazy = lazy(() => import('components/MapView/Layers/COGLayer'));
+
+const COGLayerComponent = (props: COGLayerComponentProps) => (
+  <Suspense fallback={null}>
+    <COGLayerLazy {...props} />
+  </Suspense>
+);
 
 /**
  * MapExportLayout - Shared component for rendering map exports
@@ -85,6 +101,7 @@ type LayerComponentsMap<U extends LayerType> = {
 const componentTypes: LayerComponentsMap<LayerType> = {
   boundary: { component: BoundaryLayer },
   wms: { component: WMSLayer },
+  cog: { component: COGLayerComponent },
   admin_level_data: { component: AdminLevelDataLayer },
   impact: { component: ImpactLayer },
   point_data: { component: PointDataLayer },
@@ -167,6 +184,8 @@ function MapExportLayout({
     () => stackLayersForMapPaintOrder(selectedLayers),
     [selectedLayers],
   );
+
+  const hasDeckLayers = stackLayers.some(l => DECK_GL_LAYER_TYPES.has(l.type));
 
   const clipPolygon =
     toggles.countryMask && adminAreaClipPolygon ? adminAreaClipPolygon : null;
@@ -668,64 +687,75 @@ function MapExportLayout({
         </div>
       )}
       <div className={classes.mapContainer}>
-        <MapGL
-          ref={baseMapRef}
-          dragRotate={false}
-          preserveDrawingBuffer
-          initialViewState={effectiveInitialViewState}
-          onLoad={handleBaseMapLoad}
-          mapStyle={basemapMapStyle}
-          style={{ width: '100%', height: '100%' }}
-        >
-          <ClipProvider
-            polygon={clipPolygon}
-            clipAdminLevelData={selectedBoundaries.length > 0}
+        <DeckGLLayersProvider>
+          <MapGL
+            ref={baseMapRef}
+            dragRotate={false}
+            preserveDrawingBuffer
+            initialViewState={effectiveInitialViewState}
+            onLoad={handleBaseMapLoad}
+            mapStyle={basemapMapStyle}
+            style={{ width: '100%', height: '100%' }}
           >
-            {clipPolygon && isClipDebugEnabled() && (
-              <Source id="clip-debug-outline" type="geojson" data={clipPolygon}>
-                <Layer
-                  id="clip-debug-outline-line"
-                  type="line"
-                  paint={{ 'line-color': '#ff00ff', 'line-width': 2 }}
-                />
-              </Source>
+            {hasDeckLayers && (
+              <Suspense fallback={null}>
+                <DeckGLOverlay />
+              </Suspense>
             )}
-            {stackLayers.map((layer, index) => {
-              const { component } = componentTypes[layer.type];
-              return createElement(component as any, {
-                key: layer.id,
-                layer,
-                mapRef: baseMapRef,
-                before: getBasemapLayerBeforeId(
-                  index,
-                  layerUsesSymbolAnchorOnly(layer),
-                ),
-              });
-            })}
-            {activePanel === Panel.AnticipatoryActionDrought &&
-              aaMarkers.map(marker => (
-                <Marker
-                  key={`marker-${marker.district}`}
-                  longitude={marker.longitude}
-                  latitude={marker.latitude}
-                  anchor="center"
+            <ClipProvider
+              polygon={clipPolygon}
+              clipAdminLevelData={selectedBoundaries.length > 0}
+            >
+              {clipPolygon && isClipDebugEnabled() && (
+                <Source
+                  id="clip-debug-outline"
+                  type="geojson"
+                  data={clipPolygon}
                 >
-                  <div style={{ transform: `scale(${scalePercent})` }}>
-                    {marker.icon}
-                  </div>
-                </Marker>
-              ))}
-            {activePanel === Panel.AnticipatoryActionFlood &&
-              floodStations.map(station => (
-                <FloodStationMarker
-                  key={`flood-station-${station.station_id}`}
-                  station={station}
-                  stationSummary={station}
-                  interactive={false}
-                />
-              ))}
-          </ClipProvider>
-        </MapGL>
+                  <Layer
+                    id="clip-debug-outline-line"
+                    type="line"
+                    paint={{ 'line-color': '#ff00ff', 'line-width': 2 }}
+                  />
+                </Source>
+              )}
+              {stackLayers.map((layer, index) => {
+                const { component } = componentTypes[layer.type];
+                return createElement(component as any, {
+                  key: layer.id,
+                  layer,
+                  mapRef: baseMapRef,
+                  before: getBasemapLayerBeforeId(
+                    index,
+                    layerUsesSymbolAnchorOnly(layer),
+                  ),
+                });
+              })}
+              {activePanel === Panel.AnticipatoryActionDrought &&
+                aaMarkers.map(marker => (
+                  <Marker
+                    key={`marker-${marker.district}`}
+                    longitude={marker.longitude}
+                    latitude={marker.latitude}
+                    anchor="center"
+                  >
+                    <div style={{ transform: `scale(${scalePercent})` }}>
+                      {marker.icon}
+                    </div>
+                  </Marker>
+                ))}
+              {activePanel === Panel.AnticipatoryActionFlood &&
+                floodStations.map(station => (
+                  <FloodStationMarker
+                    key={`flood-station-${station.station_id}`}
+                    station={station}
+                    stationSummary={station}
+                    interactive={false}
+                  />
+                ))}
+            </ClipProvider>
+          </MapGL>
+        </DeckGLLayersProvider>
       </div>
     </div>
   );

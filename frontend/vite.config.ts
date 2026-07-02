@@ -83,11 +83,19 @@ const removeFilesPlugin = (): Plugin => ({
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), nodePolyfills(), removeFilesPlugin()],
+  worker: { format: 'es' },
   define: {
     'process.env': env,
   },
   build: {
     outDir: 'build',
+    target: 'es2022',
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      target: 'es2022',
+    },
+    exclude: ['@developmentseed/geotiff'],
   },
   server: {
     allowedHosts: true,

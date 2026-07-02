@@ -9,6 +9,7 @@ import analysisResultStateReduce from './analysisResultStateSlice';
 import anticipatoryActionDroughtStateReduce from './anticipatoryAction/AADroughtStateSlice';
 import anticipatoryActionFloodStateReduce from './anticipatoryAction/AAFloodStateSlice';
 import anticipatoryActionStormStateReduce from './anticipatoryAction/AAStormStateSlice';
+import cogLayerLoadingStateReduce from './cogLayerLoadingStateSlice';
 import dashboardStateReduce from './dashboardStateSlice';
 import datasetResultStateReduce from './datasetStateSlice';
 import leftPanelStateReduce from './leftPanelStateSlice';
@@ -37,6 +38,7 @@ const reducer = combineReducers({
   mapBoundaryInfoState: mapBoundaryInfoStateReduce,
   datasetState: datasetResultStateReduce,
   mapTileLoadingState: mapTileLoadingStateReduce,
+  cogLayerLoadingState: cogLayerLoadingStateReduce,
   leftPanelState: leftPanelStateReduce,
   opacityState: opacityStateReduce,
   dashboardState: dashboardStateReduce,

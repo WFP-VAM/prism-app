@@ -4,14 +4,16 @@ import functools
 import json
 import logging
 import os
+import re
 from datetime import date
-from typing import Annotated, Any, Literal, Optional
-from urllib.parse import ParseResult, urlencode, urlunparse
+from typing import Annotated, Any, Optional
+from urllib.parse import ParseResult, urlencode, urlparse, urlunparse
 
+import httpx
 import rasterio  # type: ignore
-from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
+from fastapi import Depends, FastAPI, HTTPException, Path, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from prism_app.admin import register_alerts_admin_views
 from prism_app.admin_map_export import PrismAdmin, register_map_export_admin_views
 from prism_app.auth import auth_oidc
@@ -59,6 +61,7 @@ from starlette_admin.contrib.sqla import Admin
 
 from .geotiff_from_stac_api import get_geotiff
 from .models import AlertsModel, StatsModel
+from .presigned_cog_url import get_presigned_cog_urls
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)-8s %(message)s",
@@ -87,6 +90,9 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    # Expose byte-range response headers so that COG readers in the browser
+    # (e.g. deck.gl-geotiff) can see Content-Range and Accept-Ranges.
+    expose_headers=["Content-Range", "Accept-Ranges", "Content-Length"],
 )
 
 _admin_session_settings = get_admin_auth_settings()
@@ -568,6 +574,132 @@ def post_raster_geotiff(raster_geotiff: RasterGeotiffModel):
 
     return JSONResponse(
         content={"download_url": presigned_download_url}, status_code=200
+    )
+
+
+@app.get(
+    "/cog_presigned_url",
+    responses={
+        404: {"description": "Collection or asset not found in STAC catalog"},
+        500: {"description": "Internal server error"},
+    },
+)
+def get_cog_presigned_url(
+    collection: str = Query(..., description="STAC collection ID"),
+    date: Optional[str] = Query(
+        None, description="ISO-8601 date string for temporal filtering"
+    ),
+    band: Optional[str] = Query(
+        None, description="Asset key / band name within the STAC item"
+    ),
+    bbox: Optional[str] = Query(
+        None,
+        description=(
+            "WGS84 bounding box as comma-separated minLon,minLat,maxLon,maxLat. "
+            "Used to spatially filter tiled collections to a deployment region."
+        ),
+    ),
+):
+    """Return short-lived pre-signed S3 URLs for COG assets in a collection.
+
+    For tiled collections (e.g. MODIS sinusoidal grid) a single date may
+    return many items, one per spatial tile.  Each matching item gets its
+    own presigned URL.
+
+    The URLs are valid for 5 minutes and support HTTP byte-range requests,
+    enabling efficient browser-side COG streaming without downloading full
+    files.
+    """
+    bbox_tuple = None
+    if bbox:
+        try:
+            parts = [float(x.strip()) for x in bbox.split(",")]
+            if len(parts) != 4:
+                raise ValueError("bbox must have exactly 4 values")
+            bbox_tuple = tuple(parts)
+        except (ValueError, TypeError) as e:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid bbox parameter: {e}",
+            )
+    urls = get_presigned_cog_urls(collection, date, band, bbox_tuple)
+    return JSONResponse(content={"urls": urls}, status_code=200)
+
+
+# TODO(cog-cors): POC-only. Remove /cog_proxy once HDC/STAC S3 buckets allow
+# browser GET + Range from PRISM origins (see docs/cog-layers.md).
+
+# Allowlist of S3 hostname patterns that the proxy is permitted to fetch.
+# Presigned S3 URLs use virtual-hosted style: <bucket>.s3[.<region>].amazonaws.com
+_S3_HOST_RE = re.compile(
+    r"^[a-z0-9._-]+\.s3(?:\.[a-z0-9-]+)?\.amazonaws\.com$", re.IGNORECASE
+)
+
+# Headers forwarded from S3 to the client.
+_FORWARD_HEADERS = {
+    "Content-Type",
+    "Content-Length",
+    "Content-Range",
+    "Accept-Ranges",
+    "ETag",
+    "Last-Modified",
+}
+
+
+@app.get(
+    "/cog_proxy",
+    responses={
+        400: {"description": "URL is missing or not an allowed S3 host"},
+        502: {"description": "Upstream S3 request failed"},
+    },
+)
+async def cog_proxy(
+    url: str = Query(..., description="Presigned S3 URL to proxy"),
+    request: Request = None,
+):
+    """Proxy byte-range requests for COG assets to S3.
+
+    The S3 buckets hosting WFP COG files do not include CORS headers, so the
+    browser cannot fetch them directly.  This endpoint forwards the request
+    (including any Range header) to S3 server-side and streams the response
+    back with CORS headers added by FastAPI's CORSMiddleware.
+    """
+    parsed = urlparse(url)
+    if not _S3_HOST_RE.match(parsed.netloc):
+        raise HTTPException(
+            status_code=400,
+            detail=f"URL host '{parsed.netloc}' is not an allowed S3 endpoint.",
+        )
+
+    # Forward the Range header if present (COG tile readers use byte-ranges).
+    upstream_headers = {}
+    if request and "range" in request.headers:
+        upstream_headers["Range"] = request.headers["range"]
+
+    try:
+        async with httpx.AsyncClient(follow_redirects=True, timeout=60.0) as client:
+            upstream = await client.get(url, headers=upstream_headers)
+    except httpx.RequestError as exc:
+        logger.error("COG proxy upstream error: %s", exc)
+        raise HTTPException(
+            status_code=502, detail=f"Upstream S3 request failed: {exc}"
+        ) from exc
+
+    if upstream.status_code not in (200, 206):
+        raise HTTPException(
+            status_code=502,
+            detail=f"S3 returned {upstream.status_code}",
+        )
+
+    response_headers = {
+        k: v for k, v in upstream.headers.items() if k.title() in _FORWARD_HEADERS
+    }
+
+    return StreamingResponse(
+        upstream.aiter_bytes(chunk_size=65536),
+        status_code=upstream.status_code,
+        headers=response_headers,
+        media_type=upstream.headers.get("content-type", "image/tiff"),
     )
 
 

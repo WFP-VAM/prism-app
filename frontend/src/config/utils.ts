@@ -9,6 +9,7 @@ import {
   AvailableDates,
   BoundaryLayerProps,
   checkRequiredKeys,
+  CogLayerProps,
   CompositeLayerProps,
   Dashboard,
   DateItem,
@@ -107,6 +108,11 @@ export const getLayerByKey = (layerKey: LayerKey): LayerType => {
   switch (definition.type) {
     case 'wms':
       if (checkRequiredKeys(WMSLayerProps, definition, true)) {
+        return definition;
+      }
+      return throwInvalidLayer();
+    case 'cog':
+      if (checkRequiredKeys(CogLayerProps, definition, true)) {
         return definition;
       }
       return throwInvalidLayer();
