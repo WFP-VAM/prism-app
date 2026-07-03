@@ -79,7 +79,7 @@ make db-migrate
 make db-seed
 ```
 
-`db-migrate` applies Alembic migrations (`upgrade head`). `db-seed` runs migrations first, then inserts sample dev data (Mozambique AA metadata, a `local_dev_user`, example alert rows, twelve scoped RBAC test users, and five `[Seed]` map export schedules for cron/download QA).
+`db-migrate` applies Alembic migrations (`upgrade head`). `db-seed` runs migrations first, then inserts sample dev data (Mozambique AA metadata, a `local_dev_user`, example alert rows, nine country-scoped RBAC test users, and five `[Seed]` map export schedules for cron/download QA).
 
 ### 4. Verify
 
@@ -171,7 +171,7 @@ PRISM_ALERTS_DATABASE_URL="postgresql://user:pass@host:5432/dbname" poetry run a
 poetry run alembic upgrade head
 ```
 
-Then insert the shared local-dev rows used by alerting workers and API smoke tests (Mozambique anticipatory-action metadata, a `local_dev_user` in `kobo_users`, two sample `alert` rows, twelve scoped RBAC test users, and five `[Seed]` map export schedules):
+Then insert the shared local-dev rows used by alerting workers and API smoke tests (Mozambique anticipatory-action metadata, a `local_dev_user` in `kobo_users`, two sample `alert` rows, nine country-scoped RBAC test users, and five `[Seed]` map export schedules):
 
 ```bash
 poetry run python scripts/seed_alerts_db.py

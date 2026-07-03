@@ -1,8 +1,8 @@
 """Dev-only CLI: seed local rows into the alerts DB. Not part of the prism_app package or API.
 
 Inserts anticipatory-action metadata, kobo_users, sample alerts, five
-``[Seed]`` map export schedules (see ``seed_local_alerts_dev.sql``), and twelve
-scoped **PRISM RBAC test users** (aa / dashboard / scheduled_map / admin for
+``[Seed]`` map export schedules (see ``seed_local_alerts_dev.sql``), and nine
+country-scoped **PRISM RBAC test users** (aa / dashboard / scheduled_map for
 cambodia, malawi, mozambique).
 
 Map export QA schedules:
@@ -14,7 +14,7 @@ Map export QA schedules:
 - ``a0000005`` — active; cron should enqueue a PNG (ZIP) job
 
 RBAC test users: see ``seed_local_alerts_dev.sql`` and api/README.md (UUIDs
-``b0000001`` … ``b000000c``). Impersonate with ``PRISM_DEV_USER_ID`` when
+``b0000001`` … ``b000000b``). Impersonate with ``PRISM_DEV_USER_ID`` when
 ``PRISM_ADMIN_AUTH_DISABLED=true``.
 
 After seeding: ``make schedule-cron-dry-run`` then ``make schedule-cron``.
@@ -108,9 +108,7 @@ def main() -> None:
         conn.close()
 
     print(f"Seeded alerts DB using {sql_path.name}")
-    print(
-        "RBAC: 12 test users (b0000001…b000000c). See api/README.md for the full matrix."
-    )
+    print("RBAC: 9 country-scoped test users (b0000001…b000000b). See api/README.md.")
     for user_id, email in _SEED_RBAC_USERS:
         print(f"  PRISM_DEV_USER_ID={user_id}  # {email}")
     print(
