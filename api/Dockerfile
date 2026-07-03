@@ -73,7 +73,11 @@ RUN --mount=type=cache,target=/root/.cache \
     DEBIAN_FRONTEND=noninteractive poetry run playwright install-deps chromium
 
 # Verify Chromium launches after install-deps (CI export_maps tests depend on this).
-RUN poetry run python -c "from playwright.sync_api import sync_playwright; p = sync_playwright().start(); b = p.chromium.launch(args=['--no-sandbox', '--disable-dev-shm-usage']); b.close(); p.stop()"
+# The GDAL base image sets LD_PRELOAD=libtcmalloc_minimal.so.4 for GDAL performance,
+# but that system tcmalloc conflicts with Chromium's bundled allocator on this image's
+# glibc and crashes headless_shell (SIGILL). Runtime strips LD_PRELOAD for the browser
+# subprocess via prism_app.utils.chromium_launch_env; mirror that here for the check.
+RUN LD_PRELOAD= poetry run python -c "from playwright.sync_api import sync_playwright; p = sync_playwright().start(); b = p.chromium.launch(args=['--no-sandbox', '--disable-dev-shm-usage']); b.close(); p.stop()"
 
 # keep this copy towards the end to help with caching previous layers
 COPY ./prism_app /prism_app
