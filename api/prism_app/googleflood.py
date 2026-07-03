@@ -11,15 +11,32 @@ from urllib.parse import urlencode
 
 import geopandas as gpd
 import pandas as pd
+import pyogrio
 import requests
 from fastapi import HTTPException
-from fiona.drvsupport import supported_drivers
 from pydantic import BaseModel
+from pyogrio.errors import DataSourceError
 
 from .caching import cache_geojson, get_cache_by_key
 from .utils import make_request_with_retries
 
-supported_drivers["LIBKML"] = "rw"
+
+def _read_kml_file(path: str) -> gpd.GeoDataFrame:
+    """Read KML via pyogrio, preferring LIBKML when GDAL exposes it."""
+    available_drivers = pyogrio.list_drivers()
+    drivers = [driver for driver in ("LIBKML", "KML") if driver in available_drivers]
+    if not drivers:
+        raise RuntimeError("No KML vector driver available in pyogrio/GDAL")
+
+    last_error: Exception | None = None
+    for driver in drivers:
+        try:
+            return pyogrio.read_dataframe(path, driver=driver)
+        except DataSourceError as exc:
+            last_error = exc
+
+    raise RuntimeError(f"Failed to read KML file: {path}") from last_error
+
 
 logger = logging.getLogger(__name__)
 
@@ -346,7 +363,7 @@ def get_google_floods_inundations(
         kml_file = os.path.join(tmp_path, f"{level}.kml")
         with open(kml_file, "w") as f:
             f.write(kml)
-        gdf = gpd.read_file(kml_file, driver="KML")
+        gdf = _read_kml_file(kml_file)
         gdf["level"] = level
         gdf_buff.append(gdf)
 

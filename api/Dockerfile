@@ -26,18 +26,20 @@ ENV POETRY_VIRTUALENVS_IN_PROJECT=true
 # $POETRY_HOME/bin is where poetry itself is
 ENV PATH="/.venv/bin:$POETRY_HOME/bin:$PATH"
 
-RUN --mount=type=cache,target=/root/.cache curl -sSL https://install.python-poetry.org | python3 -
+# Ubuntu 26.04 GDAL base image does not ship curl; install it before Poetry bootstrap.
+RUN --mount=type=cache,target=/var/cache/apt \
+    DEBIAN_FRONTEND=noninteractive apt-get update --fix-missing && \
+    DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y python3-pip libpq-dev curl python3-dev build-essential && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # copy pyproject so that black and isort use the right config
 COPY pyproject.toml /
 
 COPY poetry.lock /
 
-RUN --mount=type=cache,target=/var/cache/apt \
-    DEBIAN_FRONTEND=noninteractive apt-get update --fix-missing && \
-    DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y python3-pip libpq-dev curl python3-dev build-essential && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+RUN --mount=type=cache,target=/root/.cache \
+    curl -fsSL https://install.python-poetry.org | python3 - && poetry --version
 
 RUN --mount=type=cache,target=/root/.cache \
     poetry install
