@@ -5,7 +5,7 @@ staging/published/archived lifecycle), served back to PRISM by the read API.
 At most one published dataset per country (partial unique index).
 
 Revision ID: add_aa_drought_dataset_table
-Revises: add_staging_status
+Revises: add_users_auth_provider
 Create Date: 2026-06-11
 
 """
@@ -15,7 +15,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 revision = "add_aa_drought_dataset_table"
-down_revision = "add_staging_status"
+down_revision = "add_users_auth_provider"
 branch_labels = None
 depends_on = None
 
@@ -32,8 +32,17 @@ _AA_STATUSES = ("draft", "published", "staging", "archived")
 
 def upgrade() -> None:
     country_values = ", ".join(f"'{code}'" for code in _AA_COUNTRY_CODES)
+    # ponytail: prod may already have types/table from a partial deploy; skip duplicates.
     op.execute(
-        sa.text(f"CREATE TYPE aa_drought_country_enum AS ENUM ({country_values})")
+        sa.text(
+            f"""
+            DO $$ BEGIN
+                CREATE TYPE aa_drought_country_enum AS ENUM ({country_values});
+            EXCEPTION
+                WHEN duplicate_object THEN NULL;
+            END $$;
+            """
+        )
     )
     country_type = postgresql.ENUM(
         *_AA_COUNTRY_CODES,
@@ -42,7 +51,17 @@ def upgrade() -> None:
     )
 
     status_values = ", ".join(f"'{s}'" for s in _AA_STATUSES)
-    op.execute(sa.text(f"CREATE TYPE aa_drought_status_enum AS ENUM ({status_values})"))
+    op.execute(
+        sa.text(
+            f"""
+            DO $$ BEGIN
+                CREATE TYPE aa_drought_status_enum AS ENUM ({status_values});
+            EXCEPTION
+                WHEN duplicate_object THEN NULL;
+            END $$;
+            """
+        )
+    )
     status_type = postgresql.ENUM(
         *_AA_STATUSES,
         name="aa_drought_status_enum",
@@ -74,26 +93,30 @@ def upgrade() -> None:
             nullable=False,
         ),
         sa.PrimaryKeyConstraint("id"),
+        if_not_exists=True,
     )
-    # At most one published dataset per country.
+    # At most one published dataset per country (replaced in aa_drought_unique_country_status).
     op.create_index(
         "uq_aa_drought_published_country",
         "aa_drought_dataset",
         ["country"],
         unique=True,
         postgresql_where=sa.text("status = 'published'"),
+        if_not_exists=True,
     )
     op.create_index(
         "ix_aa_drought_country_status",
         "aa_drought_dataset",
         ["country", "status"],
         unique=False,
+        if_not_exists=True,
     )
     op.create_index(
         "ix_aa_drought_country",
         "aa_drought_dataset",
         ["country"],
         unique=False,
+        if_not_exists=True,
     )
 
     op.execute("""
