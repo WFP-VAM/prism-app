@@ -65,7 +65,7 @@ class TestParseS3Href:
 
 
 @patch("prism_app.presigned_cog_url._get_bucket_region", return_value="eu-central-1")
-@patch("prism_app.presigned_cog_url.boto3.client")
+@patch("prism_app.stac_config.boto3.client")
 def test_presign_ignores_rustfs_endpoint_env(
     mock_boto3_client, _mock_region, monkeypatch
 ):
@@ -111,9 +111,9 @@ def _make_mock_item(
 
 
 @patch("prism_app.presigned_cog_url._get_bucket_region", return_value="eu-central-1")
-@patch("prism_app.presigned_cog_url.boto3.client")
+@patch("prism_app.presigned_cog_url.stac_s3_client")
 @patch("prism_app.presigned_cog_url.Client")
-def test_single_item_happy_path(mock_stac_client_cls, mock_boto3_client, _mock_region):
+def test_single_item_happy_path(mock_stac_client_cls, mock_stac_s3_client, _mock_region):
     """Returns a single presigned URL for a collection with one item."""
     mock_item = _make_mock_item(
         "rfh_dekad-202009d1",
@@ -125,7 +125,7 @@ def test_single_item_happy_path(mock_stac_client_cls, mock_boto3_client, _mock_r
 
     mock_s3 = MagicMock()
     mock_s3.generate_presigned_url.return_value = FAKE_PRESIGNED_URL
-    mock_boto3_client.return_value = mock_s3
+    mock_stac_s3_client.return_value = mock_s3
 
     get_presigned_cog_urls.cache.clear()
 
@@ -145,10 +145,10 @@ def test_single_item_happy_path(mock_stac_client_cls, mock_boto3_client, _mock_r
 
 
 @patch("prism_app.presigned_cog_url._get_bucket_region", return_value="eu-central-1")
-@patch("prism_app.presigned_cog_url.boto3.client")
+@patch("prism_app.presigned_cog_url.stac_s3_client")
 @patch("prism_app.presigned_cog_url.Client")
 def test_multiple_items_tiled_collection(
-    mock_stac_client_cls, mock_boto3_client, _mock_region
+    mock_stac_client_cls, mock_stac_s3_client, _mock_region
 ):
     """Returns presigned URLs (with bbox) for every tile in a tiled collection."""
     tile_bboxes = {
@@ -179,7 +179,7 @@ def test_multiple_items_tiled_collection(
 
     mock_s3 = MagicMock()
     mock_s3.generate_presigned_url.return_value = FAKE_PRESIGNED_URL
-    mock_boto3_client.return_value = mock_s3
+    mock_stac_s3_client.return_value = mock_s3
 
     get_presigned_cog_urls.cache.clear()
 
@@ -199,10 +199,10 @@ def test_multiple_items_tiled_collection(
 
 
 @patch("prism_app.presigned_cog_url._get_bucket_region", return_value="eu-central-1")
-@patch("prism_app.presigned_cog_url.boto3.client")
+@patch("prism_app.presigned_cog_url.stac_s3_client")
 @patch("prism_app.presigned_cog_url.Client")
 def test_bbox_forwarded_to_stac_search(
-    mock_stac_client_cls, mock_boto3_client, _mock_region
+    mock_stac_client_cls, mock_stac_s3_client, _mock_region
 ):
     """When a bbox is provided, it is forwarded to the STAC catalog search."""
     mock_item = _make_mock_item(
@@ -216,7 +216,7 @@ def test_bbox_forwarded_to_stac_search(
 
     mock_s3 = MagicMock()
     mock_s3.generate_presigned_url.return_value = FAKE_PRESIGNED_URL
-    mock_boto3_client.return_value = mock_s3
+    mock_stac_s3_client.return_value = mock_s3
 
     get_presigned_cog_urls.cache.clear()
 
@@ -233,9 +233,9 @@ def test_bbox_forwarded_to_stac_search(
 
 
 @patch("prism_app.presigned_cog_url._get_bucket_region", return_value="eu-central-1")
-@patch("prism_app.presigned_cog_url.boto3.client")
+@patch("prism_app.presigned_cog_url.stac_s3_client")
 @patch("prism_app.presigned_cog_url.Client")
-def test_fallback_to_first_asset(mock_stac_client_cls, mock_boto3_client, _mock_region):
+def test_fallback_to_first_asset(mock_stac_client_cls, mock_stac_s3_client, _mock_region):
     """Falls back to the first asset when the requested band is not present."""
     mock_item = _make_mock_item(
         "item-1",
@@ -247,7 +247,7 @@ def test_fallback_to_first_asset(mock_stac_client_cls, mock_boto3_client, _mock_
 
     mock_s3 = MagicMock()
     mock_s3.generate_presigned_url.return_value = FAKE_PRESIGNED_URL
-    mock_boto3_client.return_value = mock_s3
+    mock_stac_s3_client.return_value = mock_s3
 
     get_presigned_cog_urls.cache.clear()
 

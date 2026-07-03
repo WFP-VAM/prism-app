@@ -1,23 +1,16 @@
 import logging
-import os
 import re
 import urllib.error
 import urllib.request
 from functools import lru_cache
 from urllib.parse import urlparse
 
-import boto3
-from botocore.config import Config
 from cachetools import TTLCache, cached
 from fastapi import HTTPException
+from prism_app.stac_config import STAC_URL, stac_s3_client
 from pystac_client import Client
 
 logger = logging.getLogger(__name__)
-
-STAC_URL = "https://api.earthobservation.vam.wfp.org/stac"
-
-STAC_AWS_ACCESS_KEY_ID = os.getenv("STAC_AWS_ACCESS_KEY_ID")
-STAC_AWS_SECRET_ACCESS_KEY = os.getenv("STAC_AWS_SECRET_ACCESS_KEY")
 
 # 5-minute presigned URL lifetime; cache slightly under that to avoid serving stale URLs
 PRESIGNED_URL_EXPIRES_IN = 300
@@ -100,16 +93,7 @@ def _presign_href(href: str) -> str:
     bucket, key, region_from_href = _parse_s3_href(href)
     region = region_from_href or _get_bucket_region(bucket)
 
-    s3_client = boto3.client(
-        "s3",
-        aws_access_key_id=STAC_AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=STAC_AWS_SECRET_ACCESS_KEY,
-        region_name=region,
-        config=Config(
-            signature_version="s3v4",
-            ignore_configured_endpoint_urls=True,
-        ),
-    )
+    s3_client = stac_s3_client(region_name=region)
 
     presigned_url = s3_client.generate_presigned_url(
         "get_object",
