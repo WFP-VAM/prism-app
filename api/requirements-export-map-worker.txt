@@ -6,7 +6,7 @@ playwright==1.61.0
 pypdf==6.13.3
 boto3==1.41.5
 botocore==1.41.5
-sqlmodel==0.0.22
+sqlmodel==0.0.32
 SQLAlchemy==2.0.48
 psycopg2-binary==2.9.11
 pydantic[email]==2.12.5

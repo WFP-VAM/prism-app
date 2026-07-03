@@ -66,6 +66,7 @@ RUN --mount=type=cache,target=/var/lib/apt \
     DEBIAN_FRONTEND=noninteractive apt-get purge -y \
       build-essential python3-dev linux-libc-dev libpq-dev \
       gstreamer1.0-plugins-bad libgstreamer-plugins-bad1.0-0 && \
+    rm -f /usr/bin/pebble && \
     DEBIAN_FRONTEND=noninteractive apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
