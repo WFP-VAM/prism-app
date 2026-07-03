@@ -23,6 +23,16 @@ from sqlalchemy.orm import Session
 
 _DASHBOARD_COUNTRY_CODES = frozenset(c.value for c in DashboardCountry)
 _AA_DROUGHT_COUNTRY_CODES = frozenset(c.value for c in AaDroughtCountry)
+_ALL_GRANT_COUNTRY_CODES = (
+    _DASHBOARD_COUNTRY_CODES | schedule_countries() | _AA_DROUGHT_COUNTRY_CODES
+)
+
+
+def user_permission_country_choices() -> list[tuple[str, str]]:
+    """Dropdown choices for the User permissions admin form."""
+    choices = [(GLOBAL_ALL_COUNTRIES, f"{GLOBAL_ALL_COUNTRIES} (all countries)")]
+    choices.extend((code, code) for code in sorted(_ALL_GRANT_COUNTRY_CODES))
+    return choices
 
 
 def normalize_grant_country(raw: str | None) -> str:

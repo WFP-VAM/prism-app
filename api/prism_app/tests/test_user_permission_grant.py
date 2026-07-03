@@ -13,6 +13,7 @@ from prism_app.auth.permission_codes import (
 from prism_app.auth.permission_scopes import GLOBAL_ALL_COUNTRIES
 from prism_app.auth.user_permission_grant import (
     normalize_grant_country,
+    user_permission_country_choices,
     validate_grant_country_conflicts,
     validate_grant_country_for_permission,
 )
@@ -24,6 +25,15 @@ def test_normalize_grant_country_defaults_to_star() -> None:
     assert normalize_grant_country(None) == GLOBAL_ALL_COUNTRIES
     assert normalize_grant_country("  *  ") == GLOBAL_ALL_COUNTRIES
     assert normalize_grant_country("Malawi") == "malawi"
+
+
+def test_user_permission_country_choices_includes_star_and_known_countries() -> None:
+    choices = user_permission_country_choices()
+    values = [value for value, _label in choices]
+    assert values[0] == GLOBAL_ALL_COUNTRIES
+    assert "malawi" in values
+    assert "mozambique" in values
+    assert values == sorted(values, key=lambda v: (v != GLOBAL_ALL_COUNTRIES, v))
 
 
 def test_validate_global_only_permission_requires_star() -> None:

@@ -18,6 +18,7 @@ from prism_app.auth.permission_codes import AA_DATA_MANAGE, DASHBOARD_MANAGE
 from prism_app.auth.user_permission_grant import (
     existing_grant_countries,
     normalize_grant_country,
+    user_permission_country_choices,
     validate_grant_country_conflicts,
     validate_grant_country_for_permission,
 )
@@ -33,7 +34,7 @@ from prism_app.database.user_model import User
 from sqlalchemy import Select
 from sqlalchemy.orm import Session
 from starlette.requests import Request
-from starlette_admin import HasOne, StringField
+from starlette_admin import EnumField, HasOne
 from starlette_admin.actions import action
 from starlette_admin.contrib.sqla import Admin, ModelView
 from starlette_admin.exceptions import ActionFailed, FormValidationError
@@ -368,13 +369,14 @@ class UserPermissionView(PrismGatedModelView):
     fields = (
         HasOne("user", label="User", identity="user"),
         HasOne("permission", label="Permission", identity="permission"),
-        StringField(
+        EnumField(
             "country",
             label="Country",
             required=True,
+            choices=user_permission_country_choices(),
             help_text=(
                 "Use * for all countries (required for admin and other global permissions). "
-                "For dashboard, map export, or AA drought managers, use * or a PRISM country code."
+                "For dashboard, map export, or AA drought managers, use * or a country below."
             ),
         ),
         "granted_at",

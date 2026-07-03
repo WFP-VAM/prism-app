@@ -11,6 +11,7 @@ from prism_app.auth.admin_settings import (
     AdminAuthSettings,
     get_admin_auth_settings,
 )
+from prism_app.auth.dev_impersonation import load_dev_impersonation, parse_dev_user_id
 from prism_app.auth.permission_scopes import PermissionScopes
 from prism_app.auth.prism_auth_service import is_active, load_user_and_permissions
 from prism_app.database.user_model import User
@@ -122,6 +123,21 @@ def require_prism_session(
 ) -> tuple[User, set[str], PermissionScopes]:
     """Load user + permission codes from Starlette session; 401 if missing or inconsistent."""
     if settings.admin_auth_disabled:
+        dev_user_id = parse_dev_user_id(settings)
+        if dev_user_id is not None:
+            loaded = load_dev_impersonation(engine, dev_user_id)
+            if loaded is None:
+                raise HTTPException(
+                    status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                    detail=f"PRISM_DEV_USER_ID user not found or inactive: {dev_user_id}",
+                )
+            user, codes, scopes = loaded
+            if not is_active(user):
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="User inactive or unknown",
+                )
+            return user, codes, scopes
         raise HTTPException(
             status_code=status.HTTP_501_NOT_IMPLEMENTED,
             detail="Session API not available when PRISM_ADMIN_AUTH_DISABLED is true.",

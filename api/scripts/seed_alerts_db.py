@@ -1,13 +1,21 @@
 """Dev-only CLI: seed local rows into the alerts DB. Not part of the prism_app package or API.
 
-Inserts anticipatory-action metadata, kobo_users, sample alerts, and five
-``[Seed]`` map export schedules (see ``seed_local_alerts_dev.sql``) for QA:
+Inserts anticipatory-action metadata, kobo_users, sample alerts, five
+``[Seed]`` map export schedules (see ``seed_local_alerts_dev.sql``), and twelve
+scoped **PRISM RBAC test users** (aa / dashboard / scheduled_map / admin for
+cambodia, malawi, mozambique).
+
+Map export QA schedules:
 
 - ``a0000001`` — active; cron should enqueue a PDF job
 - ``a0000002`` — active; skips (``last_enqueued_date`` already ahead of WMS data)
 - ``a0000003`` — active; skips (layer id absent from WMS GetCapabilities)
 - ``a0000004`` — stopped; cron ignores
 - ``a0000005`` — active; cron should enqueue a PNG (ZIP) job
+
+RBAC test users: see ``seed_local_alerts_dev.sql`` and api/README.md (UUIDs
+``b0000001`` … ``b000000c``). Impersonate with ``PRISM_DEV_USER_ID`` when
+``PRISM_ADMIN_AUTH_DISABLED=true``.
 
 After seeding: ``make schedule-cron-dry-run`` then ``make schedule-cron``.
 Requires ``yarn start`` (frontend on :3000) and ``REACT_APP_API_URL=http://host.docker.internal``
@@ -23,6 +31,12 @@ from pathlib import Path
 from urllib.parse import quote_plus
 
 import psycopg2
+
+_SEED_RBAC_USERS = (
+    ("b000000b-0000-4000-8000-00000000000b", "seed-mozambique-scheduled-map@example.com"),
+    ("b0000007-0000-4000-8000-000000000007", "seed-malawi-scheduled-map@example.com"),
+    ("b0000005-0000-4000-8000-000000000005", "seed-malawi-aa@example.com"),
+)
 
 
 def _api_root() -> Path:
@@ -91,6 +105,9 @@ def main() -> None:
         conn.close()
 
     print(f"Seeded alerts DB using {sql_path.name}")
+    print("RBAC: 12 test users (b0000001…b000000c). See api/README.md for the full matrix.")
+    for user_id, email in _SEED_RBAC_USERS:
+        print(f"  PRISM_DEV_USER_ID={user_id}  # {email}")
     print(
         "Map export QA: open Admin → Map export schedules ([Seed] rows), "
         "then run make schedule-cron-dry-run and make schedule-cron."
