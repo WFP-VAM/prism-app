@@ -118,10 +118,14 @@ def test_gated_dashboard_list_query_filters_by_country_scope() -> None:
     admin_request = _scoped_dashboard_request(admin_access=True)
 
     scoped_sql = str(
-        view.get_list_query(scoped_request).compile(compile_kwargs={"literal_binds": True})
+        view.get_list_query(scoped_request).compile(
+            compile_kwargs={"literal_binds": True}
+        )
     ).lower()
     admin_sql = str(
-        view.get_list_query(admin_request).compile(compile_kwargs={"literal_binds": True})
+        view.get_list_query(admin_request).compile(
+            compile_kwargs={"literal_binds": True}
+        )
     ).lower()
 
     assert "mozambique" in scoped_sql

@@ -5,8 +5,8 @@ from __future__ import annotations
 from collections.abc import Iterable
 
 from prism_app.auth.permission_codes import (
-    ADMIN_ACCESS,
     AA_DATA_MANAGE,
+    ADMIN_ACCESS,
     CONTENT_VIEW,
     DASHBOARD_MANAGE,
     DEPLOYMENT_MANAGE,

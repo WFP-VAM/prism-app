@@ -58,7 +58,9 @@ def api_client(sqlite_engine) -> Generator[TestClient, None, None]:
         name="Scheduler User",
     )
 
-    def override_prism_session() -> tuple[User, set[str], dict[str, frozenset[str] | None]]:
+    def override_prism_session() -> (
+        tuple[User, set[str], dict[str, frozenset[str] | None]]
+    ):
         return user, {MAP_EXPORTS_MANAGE}, {}
 
     app.dependency_overrides[get_export_jobs_session] = override_session
@@ -85,7 +87,9 @@ def api_client_without_permission(sqlite_engine) -> Generator[TestClient, None, 
         name="Viewer User",
     )
 
-    def override_prism_session() -> tuple[User, set[str], dict[str, frozenset[str] | None]]:
+    def override_prism_session() -> (
+        tuple[User, set[str], dict[str, frozenset[str] | None]]
+    ):
         return user, set(), {}
 
     app.dependency_overrides[get_export_jobs_session] = override_session
@@ -255,7 +259,9 @@ def test_post_export_map_schedule_allows_admin_access_without_map_exports_manage
         name="Admin User",
     )
 
-    def override_prism_session() -> tuple[User, set[str], dict[str, frozenset[str] | None]]:
+    def override_prism_session() -> (
+        tuple[User, set[str], dict[str, frozenset[str] | None]]
+    ):
         return user, {ADMIN_ACCESS}, {}
 
     app.dependency_overrides[get_export_jobs_session] = override_session
@@ -294,8 +300,14 @@ def test_post_export_map_schedule_rejects_country_outside_scope(
         name="Scoped User",
     )
 
-    def override_prism_session() -> tuple[User, set[str], dict[str, frozenset[str] | None]]:
-        return user, {MAP_EXPORTS_MANAGE}, {MAP_EXPORTS_MANAGE: frozenset({"mozambique"})}
+    def override_prism_session() -> (
+        tuple[User, set[str], dict[str, frozenset[str] | None]]
+    ):
+        return (
+            user,
+            {MAP_EXPORTS_MANAGE},
+            {MAP_EXPORTS_MANAGE: frozenset({"mozambique"})},
+        )
 
     app.dependency_overrides[get_export_jobs_session] = override_session
     app.dependency_overrides[require_prism_session] = override_prism_session
@@ -327,8 +339,14 @@ def test_post_export_map_schedule_allows_country_in_scope(
         name="Scoped Mozambique User",
     )
 
-    def override_prism_session() -> tuple[User, set[str], dict[str, frozenset[str] | None]]:
-        return user, {MAP_EXPORTS_MANAGE}, {MAP_EXPORTS_MANAGE: frozenset({"mozambique"})}
+    def override_prism_session() -> (
+        tuple[User, set[str], dict[str, frozenset[str] | None]]
+    ):
+        return (
+            user,
+            {MAP_EXPORTS_MANAGE},
+            {MAP_EXPORTS_MANAGE: frozenset({"mozambique"})},
+        )
 
     app.dependency_overrides[get_export_jobs_session] = override_session
     app.dependency_overrides[require_prism_session] = override_prism_session

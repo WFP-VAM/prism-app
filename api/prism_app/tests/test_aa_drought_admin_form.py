@@ -1,7 +1,6 @@
 """AA drought admin form: country dropdown for admins; inferred for AA managers."""
 
 import pytest
-
 from prism_app.admin import GatedAaDroughtAdminView
 from prism_app.auth.permission_codes import AA_DATA_MANAGE, ADMIN_ACCESS
 from prism_app.database.aa_drought_model import (
@@ -38,9 +37,7 @@ def test_country_field_visible_for_admin_only() -> None:
         assert "country" not in manager_fields
 
     # Starlette-admin list config calls get_fields_list(request) without action.
-    manager_list_fields = {
-        f.name for f in view.get_fields_list(manager_request)
-    }
+    manager_list_fields = {f.name for f in view.get_fields_list(manager_request)}
     assert "country" not in manager_list_fields
 
 

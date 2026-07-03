@@ -60,9 +60,7 @@ def test_production_rejects_dev_user_id(monkeypatch: pytest.MonkeyPatch) -> None
     monkeypatch.setenv("PRISM_ENV", "production")
     monkeypatch.setenv("PRISM_SESSION_SECRET", "0123456789abcdef" * 2)
     monkeypatch.setenv("PRISM_ADMIN_AUTH_DISABLED", "false")
-    monkeypatch.setenv(
-        "PRISM_DEV_USER_ID", "b000000b-0000-4000-8000-00000000000b"
-    )
+    monkeypatch.setenv("PRISM_DEV_USER_ID", "b000000b-0000-4000-8000-00000000000b")
     get_admin_auth_settings.cache_clear()
     try:
         with pytest.raises(ValueError, match="PRISM_DEV_USER_ID"):
@@ -74,9 +72,7 @@ def test_production_rejects_dev_user_id(monkeypatch: pytest.MonkeyPatch) -> None
 def test_dev_user_id_requires_auth_disabled(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("PRISM_ENV", raising=False)
     monkeypatch.setenv("PRISM_ADMIN_AUTH_DISABLED", "false")
-    monkeypatch.setenv(
-        "PRISM_DEV_USER_ID", "b000000b-0000-4000-8000-00000000000b"
-    )
+    monkeypatch.setenv("PRISM_DEV_USER_ID", "b000000b-0000-4000-8000-00000000000b")
     get_admin_auth_settings.cache_clear()
     try:
         with pytest.raises(ValueError, match="PRISM_DEV_USER_ID requires"):

@@ -33,7 +33,10 @@ from urllib.parse import quote_plus
 import psycopg2
 
 _SEED_RBAC_USERS = (
-    ("b000000b-0000-4000-8000-00000000000b", "seed-mozambique-scheduled-map@example.com"),
+    (
+        "b000000b-0000-4000-8000-00000000000b",
+        "seed-mozambique-scheduled-map@example.com",
+    ),
     ("b0000007-0000-4000-8000-000000000007", "seed-malawi-scheduled-map@example.com"),
     ("b0000005-0000-4000-8000-000000000005", "seed-malawi-aa@example.com"),
 )
@@ -105,7 +108,9 @@ def main() -> None:
         conn.close()
 
     print(f"Seeded alerts DB using {sql_path.name}")
-    print("RBAC: 12 test users (b0000001…b000000c). See api/README.md for the full matrix.")
+    print(
+        "RBAC: 12 test users (b0000001…b000000c). See api/README.md for the full matrix."
+    )
     for user_id, email in _SEED_RBAC_USERS:
         print(f"  PRISM_DEV_USER_ID={user_id}  # {email}")
     print(

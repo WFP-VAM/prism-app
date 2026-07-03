@@ -10,6 +10,7 @@ from prism_app.aa_drought.country_scope import (
     aa_drought_country_field_visible,
     apply_inferred_aa_drought_country,
 )
+from prism_app.admin_bulk_actions import bulk_status_select_form
 from prism_app.auth.admin_request import (
     apply_country_scope_filter,
     request_can_access_country,
@@ -17,7 +18,6 @@ from prism_app.auth.admin_request import (
     request_can_manage_dashboards,
     request_has_prism_admin_access,
 )
-from prism_app.admin_bulk_actions import bulk_status_select_form
 from prism_app.auth.permission_codes import AA_DATA_MANAGE, DASHBOARD_MANAGE
 from prism_app.auth.user_permission_grant import (
     existing_grant_countries,
@@ -30,18 +30,22 @@ from prism_app.dashboard.dashboard_admin import DashboardAdminView
 from prism_app.database.aa_drought_model import AaDroughtCountry, AaDroughtDatasetModel
 from prism_app.database.alert_model import AlertModel
 from prism_app.database.anticipatory_action_alerts_model import AnticipatoryActionAlerts
-from prism_app.database.dashboard_model import DashboardCountry, DashboardModel, DashboardStatus
-from prism_app.utils import utc_now
+from prism_app.database.dashboard_model import (
+    DashboardCountry,
+    DashboardModel,
+    DashboardStatus,
+)
 from prism_app.database.kobo_user_model import KoboUser
 from prism_app.database.permission_model import Permission, UserPermission
 from prism_app.database.user_model import User
+from prism_app.utils import utc_now
 from sqlalchemy import Select, String, cast, func
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import or_
 from starlette.requests import Request
 from starlette_admin import EnumField, HasOne
-from starlette_admin.actions import action
 from starlette_admin._types import RequestAction
+from starlette_admin.actions import action
 from starlette_admin.contrib.sqla import Admin, ModelView
 from starlette_admin.exceptions import ActionFailed, FormValidationError
 
@@ -184,7 +188,9 @@ class GatedDashboardAdminView(DashboardAdminView):
             DashboardModel.country,
         )
 
-    def _assert_obj_country_in_scope(self, request: Request, obj: DashboardModel) -> None:
+    def _assert_obj_country_in_scope(
+        self, request: Request, obj: DashboardModel
+    ) -> None:
         if not request_can_access_country(
             request,
             DASHBOARD_MANAGE,

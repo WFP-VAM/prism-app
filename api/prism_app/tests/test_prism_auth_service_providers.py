@@ -118,7 +118,9 @@ def test_whoami_includes_auth_provider() -> None:
         email="staff@example.org",
     )
 
-    def override_prism_session() -> tuple[User, set[str], dict[str, frozenset[str] | None]]:
+    def override_prism_session() -> (
+        tuple[User, set[str], dict[str, frozenset[str] | None]]
+    ):
         return user, {"prism.admin.access"}, {}
 
     app.dependency_overrides[require_prism_session] = override_prism_session
