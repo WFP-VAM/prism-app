@@ -55,7 +55,7 @@ RUN poetry run playwright install chromium
 RUN --mount=type=cache,target=/root/.cache \
     --mount=type=cache,target=/var/lib/apt \
     --mount=type=cache,target=/var/cache/apt \
-    DEBIAN_FRONTEND=noninteractive poetry run playwright install-deps
+    DEBIAN_FRONTEND=noninteractive poetry run playwright install-deps chromium
 
 # Apply security updates (e.g. GnuPG CVE-2025-68973, libtiff CVE-2025-9900); drop build-only headers
 # (linux-libc-dev); remove GStreamer "bad" codecs not required for headless map export.

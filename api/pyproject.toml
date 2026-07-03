@@ -10,7 +10,7 @@ package-mode = false
 PyJWT = ">=2.13.0"
 python = ">=3.12,<3.15"
 requests = "^2.33.0"
-playwright = "^1.53.0"
+playwright = "^1.61.0"
 fastapi = "^0.136.0"
 starlette-admin = "^0.16.0"
 httpx = "^0.28.0"

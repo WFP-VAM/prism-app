@@ -2,7 +2,7 @@
 # Install: pip install -r requirements-export-map-worker.txt
 # Scope: Playwright worker image — map export queue, scheduled public maps cron, alert workers.
 
-playwright==1.53.0
+playwright==1.61.0
 pypdf==6.13.3
 boto3==1.41.5
 botocore==1.41.5
