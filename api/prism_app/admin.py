@@ -6,6 +6,10 @@ from prism_app.aa_drought.aa_drought_admin import (
     AaDroughtAdminView,
     register_aa_drought_admin_routes,
 )
+from prism_app.aa_drought.country_scope import (
+    aa_drought_country_field_visible,
+    apply_inferred_aa_drought_country,
+)
 from prism_app.auth.admin_request import (
     apply_country_scope_filter,
     request_can_access_country,
@@ -31,11 +35,13 @@ from prism_app.utils import utc_now
 from prism_app.database.kobo_user_model import KoboUser
 from prism_app.database.permission_model import Permission, UserPermission
 from prism_app.database.user_model import User
-from sqlalchemy import Select
+from sqlalchemy import Select, String, cast, func
 from sqlalchemy.orm import Session
+from sqlalchemy.sql import or_
 from starlette.requests import Request
 from starlette_admin import EnumField, HasOne
 from starlette_admin.actions import action
+from starlette_admin._types import RequestAction
 from starlette_admin.contrib.sqla import Admin, ModelView
 from starlette_admin.exceptions import ActionFailed, FormValidationError
 
@@ -284,6 +290,33 @@ class GatedAaDroughtAdminView(AaDroughtAdminView):
     def can_delete(self, request: Request) -> bool:
         return request_can_manage_aa_data(request)
 
+    def get_fields_list(
+        self,
+        request: Request,
+        action: RequestAction = RequestAction.LIST,
+    ) -> list[Any]:
+        fields = super().get_fields_list(request, action)
+        if aa_drought_country_field_visible(request):
+            return fields
+        return [field for field in fields if field.name != "country"]
+
+    def _aa_drought_searchable_fields(self, request: Request) -> tuple[str, ...]:
+        if aa_drought_country_field_visible(request):
+            return tuple(self.searchable_fields)
+        return tuple(name for name in self.searchable_fields if name != "country")
+
+    def get_search_query(self, request: Request, term: str) -> Any:
+        term_lower = term.strip().lower()
+        if not term_lower:
+            return None
+        clauses = []
+        for field_name in self._aa_drought_searchable_fields(request):
+            attr = getattr(self.model, field_name, None)
+            if attr is None:
+                continue
+            clauses.append(func.lower(cast(attr, String)).contains(term_lower))
+        return or_(*clauses) if clauses else None
+
     def get_list_query(self, request: Request) -> Select:
         return apply_country_scope_filter(
             super().get_list_query(request),
@@ -334,7 +367,28 @@ class GatedAaDroughtAdminView(AaDroughtAdminView):
             ):
                 raise ActionFailed("One or more selected datasets are not accessible")
 
+    async def _populate_obj(
+        self,
+        request: Request,
+        obj: Any,
+        data: dict[str, Any],
+        is_edit: bool = False,
+    ) -> Any:
+        # ponytail: starlette-admin only populates fields from get_fields_list; country
+        # is hidden for scoped managers but must still be written to the model.
+        apply_inferred_aa_drought_country(request, data)
+        obj = await super()._populate_obj(request, obj, data, is_edit)
+        if data.get("country") is not None and getattr(obj, "country", None) is None:
+            country = data["country"]
+            obj.country = (
+                country
+                if isinstance(country, AaDroughtCountry)
+                else AaDroughtCountry(str(country))
+            )
+        return obj
+
     async def validate(self, request: Request, data: dict[str, Any]) -> None:
+        apply_inferred_aa_drought_country(request, data)
         country = data.get("country")
         if country is not None and not request_can_access_country(
             request,

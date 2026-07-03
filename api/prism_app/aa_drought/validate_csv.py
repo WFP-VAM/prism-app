@@ -5,6 +5,10 @@ from __future__ import annotations
 import json
 from typing import Any
 
+from prism_app.aa_drought.country_scope import (
+    aa_drought_country_field_visible,
+    infer_aa_drought_country,
+)
 from prism_app.aa_drought.validation import validate_aa_drought_csv
 from prism_app.auth.admin_request import (
     request_can_access_country,
@@ -29,6 +33,8 @@ async def validate_aa_drought_csv_upload(request: Request) -> Response:
 
     form = await request.form()
     country_raw = form.get("country")
+    if not country_raw and not aa_drought_country_field_visible(request):
+        country_raw = infer_aa_drought_country(request).value
     if country_raw:
         country = str(country_raw).strip().lower()
         if not request_can_access_country(request, AA_DATA_MANAGE, country):
