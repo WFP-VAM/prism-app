@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from prism_app.auth.permission_codes import (
     ADMIN_ACCESS,
+    can_manage_aa_data_in_admin,
     can_manage_dashboards_in_admin,
     can_manage_map_exports_in_admin,
 )
@@ -28,6 +29,12 @@ def request_can_manage_map_exports(request: Request) -> bool:
     """Map export schedules view in admin: full admins or map export managers."""
     codes = getattr(request.state, "permission_codes", None)
     return bool(codes and can_manage_map_exports_in_admin(codes))
+
+
+def request_can_manage_aa_data(request: Request) -> bool:
+    """AA drought dataset view in admin: full admins or AA data managers."""
+    codes = getattr(request.state, "permission_codes", None)
+    return bool(codes and can_manage_aa_data_in_admin(codes))
 
 
 def admin_user_from_request(request: Request) -> User:
