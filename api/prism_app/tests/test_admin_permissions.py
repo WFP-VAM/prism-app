@@ -6,16 +6,19 @@ import pytest
 from prism_app.admin import AlertView, UserPermissionView
 from prism_app.admin_map_export import MapExportScheduleView
 from prism_app.auth.admin_request import (
+    request_can_manage_aa_data,
     request_can_manage_dashboards,
     request_can_manage_map_exports,
     request_has_prism_admin_access,
 )
 from prism_app.auth.permission_codes import (
+    AA_DATA_MANAGE,
     ADMIN_ACCESS,
     CONTENT_VIEW,
     DASHBOARD_MANAGE,
     MAP_EXPORTS_MANAGE,
     can_access_admin_panel,
+    can_manage_aa_data_in_admin,
     can_manage_dashboards_in_admin,
     can_manage_map_exports_in_admin,
 )
@@ -39,8 +42,16 @@ def test_can_access_admin_panel() -> None:
     assert can_access_admin_panel({ADMIN_ACCESS})
     assert can_access_admin_panel({DASHBOARD_MANAGE})
     assert can_access_admin_panel({MAP_EXPORTS_MANAGE})
+    assert can_access_admin_panel({AA_DATA_MANAGE})
     assert not can_access_admin_panel({CONTENT_VIEW})
     assert not can_access_admin_panel(set())
+
+
+def test_can_manage_aa_data_in_admin() -> None:
+    assert can_manage_aa_data_in_admin({AA_DATA_MANAGE})
+    assert can_manage_aa_data_in_admin({ADMIN_ACCESS})
+    assert not can_manage_aa_data_in_admin({DASHBOARD_MANAGE})
+    assert not can_manage_aa_data_in_admin({CONTENT_VIEW})
 
 
 def test_can_manage_dashboards_in_admin() -> None:
@@ -74,6 +85,13 @@ def test_request_can_manage_map_exports() -> None:
     assert request_can_manage_map_exports(_request_with_codes({ADMIN_ACCESS}))
     assert not request_can_manage_map_exports(_request_with_codes({DASHBOARD_MANAGE}))
     assert not request_can_manage_map_exports(_request_with_codes({CONTENT_VIEW}))
+
+
+def test_request_can_manage_aa_data() -> None:
+    assert request_can_manage_aa_data(_request_with_codes({AA_DATA_MANAGE}))
+    assert request_can_manage_aa_data(_request_with_codes({ADMIN_ACCESS}))
+    assert not request_can_manage_aa_data(_request_with_codes({DASHBOARD_MANAGE}))
+    assert not request_can_manage_aa_data(_request_with_codes({CONTENT_VIEW}))
 
 
 def test_map_export_manager_sees_only_schedule_view_in_admin() -> None:
