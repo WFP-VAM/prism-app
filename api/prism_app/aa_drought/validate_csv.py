@@ -6,7 +6,11 @@ import json
 from typing import Any
 
 from prism_app.aa_drought.validation import validate_aa_drought_csv
-from prism_app.auth.admin_request import request_can_manage_aa_data
+from prism_app.auth.admin_request import (
+    request_can_access_country,
+    request_can_manage_aa_data,
+)
+from prism_app.auth.permission_codes import AA_DATA_MANAGE
 from starlette.datastructures import UploadFile
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
@@ -24,6 +28,15 @@ async def validate_aa_drought_csv_upload(request: Request) -> Response:
         )
 
     form = await request.form()
+    country_raw = form.get("country")
+    if country_raw:
+        country = str(country_raw).strip().lower()
+        if not request_can_access_country(request, AA_DATA_MANAGE, country):
+            return JSONResponse(
+                {"ok": False, "errors": ["Not authorized for this country."]},
+                status_code=403,
+            )
+
     csv_text = await _csv_text_from_form(form)
     if csv_text is None:
         return JSONResponse(

@@ -4,12 +4,17 @@ from __future__ import annotations
 
 from uuid import UUID
 
-from prism_app.auth.permission_codes import DASHBOARD_MANAGE, MAP_EXPORTS_MANAGE
+from prism_app.auth.permission_codes import (
+    AA_DATA_MANAGE,
+    DASHBOARD_MANAGE,
+    MAP_EXPORTS_MANAGE,
+)
 from prism_app.auth.permission_scopes import (
     COUNTRY_SCOPED_PERMISSIONS,
     GLOBAL_ALL_COUNTRIES,
     GLOBAL_ONLY_PERMISSIONS,
 )
+from prism_app.database.aa_drought_model import AaDroughtCountry
 from prism_app.database.dashboard_model import DashboardCountry
 from prism_app.database.permission_model import UserPermission
 from prism_app.map_export_layer_catalog import schedule_countries
@@ -17,6 +22,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 _DASHBOARD_COUNTRY_CODES = frozenset(c.value for c in DashboardCountry)
+_AA_DROUGHT_COUNTRY_CODES = frozenset(c.value for c in AaDroughtCountry)
 
 
 def normalize_grant_country(raw: str | None) -> str:
@@ -52,6 +58,11 @@ def validate_grant_country_for_permission(
     if permission_code == MAP_EXPORTS_MANAGE:
         if country not in schedule_countries():
             return f"Unknown map export country '{country}'."
+        return None
+
+    if permission_code == AA_DATA_MANAGE:
+        if country not in _AA_DROUGHT_COUNTRY_CODES:
+            return f"Unknown AA drought country '{country}'."
         return None
 
     return None

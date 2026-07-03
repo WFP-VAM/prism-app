@@ -4,6 +4,7 @@ from uuid import uuid4
 
 import pytest
 from prism_app.auth.permission_codes import (
+    AA_DATA_MANAGE,
     ADMIN_ACCESS,
     CONTENT_VIEW,
     DASHBOARD_MANAGE,
@@ -46,6 +47,14 @@ def test_validate_map_export_country() -> None:
     assert validate_grant_country_for_permission(
         MAP_EXPORTS_MANAGE, "not-a-country"
     ) == "Unknown map export country 'not-a-country'."
+
+
+def test_validate_aa_drought_country() -> None:
+    assert validate_grant_country_for_permission(AA_DATA_MANAGE, "*") is None
+    assert validate_grant_country_for_permission(AA_DATA_MANAGE, "malawi") is None
+    assert validate_grant_country_for_permission(
+        AA_DATA_MANAGE, "not-a-country"
+    ) == "Unknown AA drought country 'not-a-country'."
 
 
 def test_validate_grant_country_conflicts_star_with_specific() -> None:

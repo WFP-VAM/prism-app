@@ -6,6 +6,7 @@ from collections.abc import Iterable
 
 from prism_app.auth.permission_codes import (
     ADMIN_ACCESS,
+    AA_DATA_MANAGE,
     CONTENT_VIEW,
     DASHBOARD_MANAGE,
     DEPLOYMENT_MANAGE,
@@ -19,6 +20,7 @@ PermissionScopes = dict[str, frozenset[str] | None]
 
 COUNTRY_SCOPED_PERMISSIONS = frozenset(
     {
+        AA_DATA_MANAGE,
         DASHBOARD_MANAGE,
         MAP_EXPORTS_MANAGE,
     }
