@@ -1,0 +1,265 @@
+{% if action.name == 'EDIT' and data %}
+    <div class="aa-drought-csv-readonly mb-3">
+        <p class="text-muted small mb-2">Current CSV (read-only preview).</p>
+        <pre class="aa-drought-csv-preview mb-0">{{ field.format_display(data) }}</pre>
+        <p class="aa-drought-csv-preview-note small mb-0">
+            Note: to replace this dataset, use the drag-and-drop below.
+        </p>
+    </div>
+{% endif %}
+<div
+    class="aa-drought-csv-drop border border-2 rounded p-4 text-center {% if error %}{{ field.error_class }}{% endif %}"
+    data-aa-drought-csv-drop
+    id="{{ field.id }}_drop"
+>
+    <p class="mb-2">Drag and drop a CSV file here, or browse to choose one.</p>
+    <p class="text-muted small mb-3">Only <code>.csv</code> files are accepted.</p>
+    <input
+        type="file"
+        class="form-control aa-drought-csv-file-input {% if error %}is-invalid{% endif %}"
+        id="{{ field.id }}"
+        name="{{ field.id }}"
+        {{ field.input_params() | safe }}
+    />
+    <p class="text-muted small mt-2 mb-0" data-aa-drought-csv-filename hidden></p>
+    {% if field.help_text %}
+        <small class="form-hint d-block mt-2">{{ field.help_text }}</small>
+    {% endif %}
+</div>
+<div class="aa-drought-csv-validation mt-3" data-aa-drought-csv-validation>
+    <button
+        type="button"
+        class="btn btn-primary"
+        data-aa-drought-validate-btn
+        disabled
+    >
+        Validate CSV
+    </button>
+    <div
+        class="aa-drought-csv-validation-result mt-2"
+        data-aa-drought-validation-result
+        hidden
+    ></div>
+</div>
+{% if action.name == 'EDIT' and data %}
+    <input
+        type="hidden"
+        name="{{ field.id }}__existing"
+        value="{{ data|tojson|forceescape }}"
+    />
+    <p class="text-muted small mt-2 mb-0">
+        Current CSV is kept unless you upload a new file.
+    </p>
+{% endif %}
+{% include "forms/_error.html" %}
+{% include "includes/aa_drought_csv_preview_styles.html" %}
+<style>
+    .aa-drought-csv-drop.is-dragover {
+        border-color: var(--tblr-primary, #206bc4);
+        background-color: rgba(32, 107, 196, 0.05);
+    }
+    .aa-drought-csv-validation-result.is-success {
+        color: var(--tblr-success, #2fb344);
+    }
+    .aa-drought-csv-validation-result.is-error {
+        color: var(--tblr-danger, #d63939);
+    }
+</style>
+<script>
+    (() => {
+        const init = () => {
+        const dropZone = document.getElementById("{{ field.id }}_drop");
+        if (!dropZone) {
+            return;
+        }
+        const fieldRoot = dropZone.closest(".mb-3");
+        const form = dropZone.closest("form");
+        const input = dropZone.querySelector(".aa-drought-csv-file-input");
+        const filenameEl = dropZone.querySelector("[data-aa-drought-csv-filename]");
+        const validateBtn = fieldRoot?.querySelector("[data-aa-drought-validate-btn]");
+        const resultEl = fieldRoot?.querySelector("[data-aa-drought-validation-result]");
+        const existingInput = form?.querySelector('input[name="{{ field.id }}__existing"]');
+        const saveBtn = form?.querySelector('button[type="submit"]');
+        if (!input || !form || !validateBtn || !resultEl || !saveBtn) {
+            return;
+        }
+
+        const validatedFieldName = "aa_drought_csv_validated";
+        let validatedInput = form.querySelector(`input[name="${validatedFieldName}"]`);
+        if (!validatedInput) {
+            validatedInput = document.createElement("input");
+            validatedInput.type = "hidden";
+            validatedInput.name = validatedFieldName;
+            form.appendChild(validatedInput);
+        }
+
+        const hasExistingCsv = () => Boolean(existingInput?.value);
+        const hasNewUpload = () => Boolean(input.files?.[0]);
+        const hasCsvSource = () => hasNewUpload() || hasExistingCsv();
+
+        const setSaveEnabled = (enabled) => {
+            saveBtn.disabled = !enabled;
+            validatedInput.value = enabled ? "1" : "";
+        };
+
+        const clearValidationResult = () => {
+            resultEl.hidden = true;
+            resultEl.textContent = "";
+            resultEl.classList.remove("is-success", "is-error");
+        };
+
+        const invalidate = () => {
+            setSaveEnabled(false);
+            clearValidationResult();
+        };
+
+        const showValidationResult = (ok, message) => {
+            resultEl.hidden = false;
+            resultEl.textContent = message;
+            resultEl.classList.toggle("is-success", ok);
+            resultEl.classList.toggle("is-error", !ok);
+        };
+
+        const syncValidateButton = () => {
+            validateBtn.disabled = !hasCsvSource();
+        };
+
+        const showFilename = (file) => {
+            if (!filenameEl || !file) {
+                return;
+            }
+            filenameEl.textContent = `Selected file: ${file.name}`;
+            filenameEl.hidden = false;
+        };
+
+        const setDragOver = (active) => {
+            dropZone.classList.toggle("is-dragover", active);
+        };
+
+        const isCsvFile = (file) => file.name.toLowerCase().endsWith(".csv");
+
+        if (hasExistingCsv() && !hasNewUpload()) {
+            // Edit: unchanged CSV was already saved; status-only edits need not re-validate.
+            setSaveEnabled(true);
+        } else {
+            invalidate();
+        }
+        syncValidateButton();
+
+        input.addEventListener("change", () => {
+            const file = input.files?.[0];
+            if (file && !isCsvFile(file)) {
+                input.value = "";
+                if (filenameEl) {
+                    filenameEl.hidden = true;
+                }
+                if (hasExistingCsv()) {
+                    setSaveEnabled(true);
+                    clearValidationResult();
+                } else {
+                    invalidate();
+                }
+                syncValidateButton();
+                return;
+            }
+            if (file) {
+                showFilename(file);
+                invalidate();
+            } else if (hasExistingCsv()) {
+                if (filenameEl) {
+                    filenameEl.hidden = true;
+                }
+                setSaveEnabled(true);
+                clearValidationResult();
+            } else {
+                if (filenameEl) {
+                    filenameEl.hidden = true;
+                }
+                invalidate();
+            }
+            syncValidateButton();
+        });
+
+        ["dragenter", "dragover"].forEach((eventName) => {
+            dropZone.addEventListener(eventName, (event) => {
+                event.preventDefault();
+                setDragOver(true);
+            });
+        });
+
+        ["dragleave", "drop"].forEach((eventName) => {
+            dropZone.addEventListener(eventName, (event) => {
+                event.preventDefault();
+                setDragOver(false);
+            });
+        });
+
+        dropZone.addEventListener("drop", (event) => {
+            const file = event.dataTransfer?.files?.[0];
+            if (!file || !isCsvFile(file)) {
+                return;
+            }
+            const transfer = new DataTransfer();
+            transfer.items.add(file);
+            input.files = transfer.files;
+            showFilename(file);
+            invalidate();
+            syncValidateButton();
+        });
+
+        validateBtn.addEventListener("click", async () => {
+            if (!hasCsvSource()) {
+                showValidationResult(false, "Upload a CSV file before validating.");
+                return;
+            }
+
+            validateBtn.disabled = true;
+            clearValidationResult();
+
+            const body = new FormData(form);
+            try {
+                const response = await fetch("/admin/aa-drought/validate-csv", {
+                    method: "POST",
+                    body,
+                    credentials: "same-origin",
+                });
+                const payload = await response.json();
+                if (payload.ok) {
+                    const rows = payload.row_count ?? 0;
+                    showValidationResult(
+                        true,
+                        `Validation passed. ${rows} data row${rows === 1 ? "" : "s"} ready to save.`,
+                    );
+                    setSaveEnabled(true);
+                } else {
+                    const errors = Array.isArray(payload.errors)
+                        ? payload.errors.join(" ")
+                        : "Validation failed.";
+                    showValidationResult(false, errors);
+                    setSaveEnabled(false);
+                }
+            } catch {
+                showValidationResult(
+                    false,
+                    "Validation request failed. Try again.",
+                );
+                setSaveEnabled(false);
+            } finally {
+                syncValidateButton();
+            }
+        });
+
+        form.addEventListener("submit", (event) => {
+            if (validatedInput.value !== "1") {
+                event.preventDefault();
+                showValidationResult(false, "Validate the CSV before saving.");
+            }
+        });
+        };
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", init);
+        } else {
+            init();
+        }
+    })();
+</script>

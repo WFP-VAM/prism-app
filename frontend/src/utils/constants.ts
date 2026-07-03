@@ -24,6 +24,7 @@ export { API_URL };
 export const ANALYSIS_API_URL = `${API_URL}/stats`;
 export const ALERT_API_URL = `${API_URL}/alerts`;
 export const DASHBOARDS_API_URL = `${API_URL}/dashboards`;
+export const AA_DROUGHT_API_URL = `${API_URL}/aa/drought`;
 export const KOBO_API_URL = `${API_URL}/kobo`;
 export const RASTER_API_URL = `${API_URL}/raster_geotiff`;
 export const EXPORT_MAP_JOBS_API_URL = `${API_URL}/export-map/jobs`;

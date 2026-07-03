@@ -1,0 +1,2 @@
+district,index,category,window,issue_ready,issue_set,trigger_ready,trigger_set,vulnerability,prob_ready,prob_set,season,date_ready,date_set
+Gwembe,SPI DJF,Moderate,Window 1,8,9,0.3,0.35,GT,0.3,0.55,2024-25,2024-08-01,2024-09-01
