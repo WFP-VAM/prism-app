@@ -35,6 +35,7 @@ def _request(
     map_exports_manage: bool = False,
     user_id=None,
     query_string: bytes = b"",
+    countries: frozenset[str] | None = None,
 ) -> Request:
     scope = {
         "type": "http",
@@ -50,6 +51,10 @@ def _request(
     if map_exports_manage:
         codes.add(MAP_EXPORTS_MANAGE)
     request.state.permission_codes = codes
+    scopes: dict[str, frozenset[str] | None] = {}
+    if map_exports_manage and countries is not None:
+        scopes[MAP_EXPORTS_MANAGE] = countries
+    request.state.permission_scopes = scopes
     if user_id is not None:
         request.state.prism_user = SimpleNamespace(id=user_id)
     return request
@@ -257,50 +262,75 @@ async def test_update_status_action_updates_selected_schedules(
     assert "stopped" in message
 
 
-def test_schedule_list_hides_country_for_map_export_manager() -> None:
+def test_schedule_list_query_filters_by_country_scope() -> None:
+    view = MapExportScheduleView(MapExportSchedule)
+    owner_id = uuid4()
+    scoped_request = _request(
+        admin_access=False,
+        map_exports_manage=True,
+        user_id=owner_id,
+        countries=frozenset({"mozambique"}),
+    )
+    admin_request = _request(admin_access=True, user_id=owner_id)
+
+    scoped_sql = str(
+        view.get_list_query(scoped_request).compile(compile_kwargs={"literal_binds": True})
+    ).lower()
+    admin_sql = str(
+        view.get_list_query(admin_request).compile(compile_kwargs={"literal_binds": True})
+    ).lower()
+
+    assert "mozambique" in scoped_sql
+    assert "lower" in scoped_sql
+    assert str(owner_id).replace("-", "") in scoped_sql
+    assert "mozambique" not in admin_sql
+
+
+def test_job_list_query_filters_by_schedule_country_scope() -> None:
+    owner_id = uuid4()
+    scoped_request = _request(
+        admin_access=False,
+        map_exports_manage=True,
+        user_id=owner_id,
+        countries=frozenset({"mozambique"}),
+    )
+
+    scoped_sql = str(
+        MapExportJobView(MapExportJob)
+        .get_list_query(scoped_request)
+        .compile(compile_kwargs={"literal_binds": True})
+    ).lower()
+
+    assert "mozambique" in scoped_sql
+    assert "map_export_schedules" in scoped_sql
+
+
+def test_schedule_list_shows_country_for_map_export_manager() -> None:
     view = MapExportScheduleView(MapExportSchedule)
     manager_request = _request(admin_access=False, map_exports_manage=True)
-    admin_request = _request(admin_access=True)
 
     manager_fields = {
         f.name for f in view.get_fields_list(manager_request, RequestAction.LIST)
     }
-    admin_fields = {
-        f.name for f in view.get_fields_list(admin_request, RequestAction.LIST)
-    }
 
-    assert "country" not in manager_fields
-    assert "country" in admin_fields
+    assert "country" in manager_fields
 
 
-def test_schedule_detail_hides_country_for_map_export_manager() -> None:
+def test_schedule_detail_shows_country_for_map_export_manager() -> None:
     view = MapExportScheduleView(MapExportSchedule)
     manager_request = _request(admin_access=False, map_exports_manage=True)
-    admin_request = _request(admin_access=True)
 
     manager_fields = {
         f.name for f in view.get_fields_list(manager_request, RequestAction.DETAIL)
     }
-    admin_fields = {
-        f.name for f in view.get_fields_list(admin_request, RequestAction.DETAIL)
-    }
 
-    assert "country" not in manager_fields
-    assert "country" in admin_fields
+    assert "country" in manager_fields
 
 
-def test_schedule_search_excludes_country_for_map_export_manager() -> None:
+def test_schedule_search_includes_country_for_map_export_manager() -> None:
     view = MapExportScheduleView(MapExportSchedule)
     manager_request = _request(admin_access=False, map_exports_manage=True)
     clause = view.get_search_query(manager_request, "mozambique")
-    compiled = str(clause.compile(compile_kwargs={"literal_binds": True}))
-    assert "country" not in compiled.lower()
-
-
-def test_schedule_search_includes_country_for_admin() -> None:
-    view = MapExportScheduleView(MapExportSchedule)
-    admin_request = _request(admin_access=True)
-    clause = view.get_search_query(admin_request, "mozambique")
     compiled = str(clause.compile(compile_kwargs={"literal_binds": True}))
     assert "country" in compiled.lower()
 
@@ -464,3 +494,152 @@ async def test_serialize_clone_prefill_clears_layer_and_cadence(
     assert prefill["layer_id"] == ""
     assert prefill["cadence"] == ""
     assert prefill["export_options"] == source.export_options
+
+
+@pytest.mark.asyncio
+async def test_validate_rejects_country_outside_scope(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from contextlib import nullcontext
+    from unittest.mock import MagicMock
+
+    view = MapExportScheduleView(MapExportSchedule)
+    source = MapExportSchedule(
+        id="sched-1",
+        name="malawi precip monthly PDF",
+        country="malawi",
+        layer_id="precip_blended_dekad",
+        cadence="monthly",
+        export_url="http://x/export",
+        format="pdf",
+        export_options={"origin": "http://x"},
+    )
+    request = _request(
+        admin_access=False,
+        map_exports_manage=True,
+        countries=frozenset({"mozambique"}),
+        query_string=b"clone_from=sched-1",
+    )
+    session = MagicMock()
+    session.no_autoflush.return_value = nullcontext()
+    session.get.return_value = source
+    request.state.session = session
+
+    async def _fake_find_by_pk(_request: Request, pk: str) -> MapExportSchedule:
+        assert pk == "sched-1"
+        return source
+
+    monkeypatch.setattr(view, "find_by_pk", _fake_find_by_pk)
+
+    with pytest.raises(FormValidationError) as exc_info:
+        await view.validate(
+            request,
+            {
+                "layer_id": "precip_blended_dekad",
+                "cadence": "monthly",
+            },
+        )
+
+    assert exc_info.value.errors["__all__"] == (
+        "You do not have permission to manage map exports for this country."
+    )
+
+
+@pytest.mark.asyncio
+async def test_before_create_rejects_clone_source_outside_scope(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from contextlib import nullcontext
+    from unittest.mock import MagicMock
+
+    view = MapExportScheduleView(MapExportSchedule)
+    source = MapExportSchedule(
+        id="sched-1",
+        name="malawi precip monthly PDF",
+        country="malawi",
+        layer_id="precip_blended_dekad",
+        cadence="monthly",
+        export_url="http://x/export?date={date}&hazardLayerIds={layer_id}",
+        format="pdf",
+        export_options={"origin": "http://x"},
+    )
+    obj = MapExportSchedule(
+        name="temp",
+        status="active",
+        country="mozambique",
+        layer_id="precip_blended_1y",
+        cadence="monthly",
+        format="pdf",
+        export_options={},
+        export_url="",
+    )
+    request = _request(
+        admin_access=False,
+        map_exports_manage=True,
+        user_id=uuid4(),
+        countries=frozenset({"mozambique"}),
+        query_string=b"clone_from=sched-1",
+    )
+    session = MagicMock()
+    session.no_autoflush.return_value = nullcontext()
+    request.state.session = session
+
+    async def _fake_find_by_pk(_request: Request, pk: str) -> MapExportSchedule:
+        assert pk == "sched-1"
+        return source
+
+    monkeypatch.setattr(view, "find_by_pk", _fake_find_by_pk)
+
+    with pytest.raises(FormValidationError) as exc_info:
+        await view.before_create(
+            request,
+            {
+                "layer_id": "precip_blended_1y",
+                "cadence": "monthly",
+                "format": "pdf",
+            },
+            obj,
+        )
+
+    assert exc_info.value.errors["__all__"] == (
+        "You do not have permission to manage map exports for this country."
+    )
+
+
+@pytest.mark.asyncio
+async def test_update_status_action_rejects_pk_outside_scope(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from unittest.mock import AsyncMock
+
+    view = MapExportScheduleView(MapExportSchedule)
+    schedule = MapExportSchedule(
+        id="sched-1",
+        name="malawi precip monthly PDF",
+        status="active",
+        country="malawi",
+        layer_id="precip_blended_dekad",
+        cadence="monthly",
+        export_url="http://x/export",
+        format="pdf",
+        export_options={"origin": "http://x"},
+    )
+    request = _request(
+        admin_access=False,
+        map_exports_manage=True,
+        countries=frozenset({"mozambique"}),
+    )
+    request._form = FormData([("status", "stopped")])  # noqa: SLF001
+
+    async def _fake_form() -> FormData:
+        return request._form  # noqa: SLF001
+
+    request.form = _fake_form  # type: ignore[method-assign]
+    monkeypatch.setattr(
+        view,
+        "find_by_pks",
+        AsyncMock(return_value=[schedule]),
+    )
+
+    with pytest.raises(ActionFailed, match="not accessible"):
+        await view.update_status_action(request, ["sched-1", "sched-2"])
