@@ -4,6 +4,12 @@ from prism_app.auth.admin_request import (
     request_can_manage_dashboards,
     request_has_prism_admin_access,
 )
+from prism_app.auth.user_permission_grant import (
+    existing_grant_countries,
+    normalize_grant_country,
+    validate_grant_country_conflicts,
+    validate_grant_country_for_permission,
+)
 from prism_app.dashboard.dashboard_admin import DashboardAdminView
 from prism_app.database.alert_model import AlertModel
 from prism_app.database.anticipatory_action_alerts_model import AnticipatoryActionAlerts
@@ -11,8 +17,9 @@ from prism_app.database.dashboard_model import DashboardModel
 from prism_app.database.kobo_user_model import KoboUser
 from prism_app.database.permission_model import Permission, UserPermission
 from prism_app.database.user_model import User
+from sqlalchemy.orm import Session
 from starlette.requests import Request
-from starlette_admin import HasOne
+from starlette_admin import HasOne, StringField
 from starlette_admin.contrib.sqla import Admin, ModelView
 from starlette_admin.exceptions import FormValidationError
 
@@ -118,9 +125,22 @@ class UserPermissionView(PrismGatedModelView):
     fields = (
         HasOne("user", label="User", identity="user"),
         HasOne("permission", label="Permission", identity="permission"),
+        StringField(
+            "country",
+            label="Country",
+            required=True,
+            help_text=(
+                "Use * for all countries (required for admin and other global permissions). "
+                "For dashboard or map export managers, use * or a PRISM country code."
+            ),
+        ),
         "granted_at",
     )
     exclude_fields_from_create = ("granted_at",)  # auto-set to now() by DB default
+
+    def can_edit(self, request: Request) -> bool:
+        # Grants are immutable; revoke and create a new row to change scope.
+        return False
 
     async def _populate_obj(
         self,
@@ -136,14 +156,43 @@ class UserPermissionView(PrismGatedModelView):
             obj.user_id = user.id
         if permission is not None:
             obj.permission_id = permission.id
+        obj.country = normalize_grant_country(data.get("country"))
         return obj
 
     async def validate(self, request: Request, data: dict) -> None:
         errors: dict[str, str] = {}
-        if data.get("user") is None:
+        user = data.get("user")
+        permission = data.get("permission")
+        if user is None:
             errors["user"] = "Select a user."
-        if data.get("permission") is None:
+        if permission is None:
             errors["permission"] = "Select a permission."
+
+        country = normalize_grant_country(data.get("country"))
+        data["country"] = country
+
+        if permission is not None and "permission" not in errors:
+            code_error = validate_grant_country_for_permission(permission.code, country)
+            if code_error:
+                errors["country"] = code_error
+
+        if (
+            user is not None
+            and permission is not None
+            and "user" not in errors
+            and "permission" not in errors
+            and "country" not in errors
+        ):
+            session: Session = request.state.session
+            existing = existing_grant_countries(
+                session,
+                user_id=user.id,
+                permission_id=permission.id,
+            )
+            conflict_error = validate_grant_country_conflicts(existing, country)
+            if conflict_error:
+                errors["country"] = conflict_error
+
         if errors:
             raise FormValidationError(errors)
         await super().validate(request, data)
