@@ -113,7 +113,9 @@ def _make_mock_item(
 @patch("prism_app.presigned_cog_url._get_bucket_region", return_value="eu-central-1")
 @patch("prism_app.presigned_cog_url.stac_s3_client")
 @patch("prism_app.presigned_cog_url.Client")
-def test_single_item_happy_path(mock_stac_client_cls, mock_stac_s3_client, _mock_region):
+def test_single_item_happy_path(
+    mock_stac_client_cls, mock_stac_s3_client, _mock_region
+):
     """Returns a single presigned URL for a collection with one item."""
     mock_item = _make_mock_item(
         "rfh_dekad-202009d1",
@@ -235,7 +237,9 @@ def test_bbox_forwarded_to_stac_search(
 @patch("prism_app.presigned_cog_url._get_bucket_region", return_value="eu-central-1")
 @patch("prism_app.presigned_cog_url.stac_s3_client")
 @patch("prism_app.presigned_cog_url.Client")
-def test_fallback_to_first_asset(mock_stac_client_cls, mock_stac_s3_client, _mock_region):
+def test_fallback_to_first_asset(
+    mock_stac_client_cls, mock_stac_s3_client, _mock_region
+):
     """Falls back to the first asset when the requested band is not present."""
     mock_item = _make_mock_item(
         "item-1",
