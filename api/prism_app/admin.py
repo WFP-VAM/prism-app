@@ -1,9 +1,15 @@
 """Starlette Admin: read-only alerts; full CRUD for dashboards."""
 
+from typing import Any
+
 from prism_app.auth.admin_request import (
+    apply_country_scope_filter,
+    request_can_access_country,
     request_can_manage_dashboards,
     request_has_prism_admin_access,
 )
+from prism_app.admin_bulk_actions import bulk_status_select_form
+from prism_app.auth.permission_codes import DASHBOARD_MANAGE
 from prism_app.auth.user_permission_grant import (
     existing_grant_countries,
     normalize_grant_country,
@@ -13,15 +19,18 @@ from prism_app.auth.user_permission_grant import (
 from prism_app.dashboard.dashboard_admin import DashboardAdminView
 from prism_app.database.alert_model import AlertModel
 from prism_app.database.anticipatory_action_alerts_model import AnticipatoryActionAlerts
-from prism_app.database.dashboard_model import DashboardModel
+from prism_app.database.dashboard_model import DashboardCountry, DashboardModel, DashboardStatus
+from prism_app.utils import utc_now
 from prism_app.database.kobo_user_model import KoboUser
 from prism_app.database.permission_model import Permission, UserPermission
 from prism_app.database.user_model import User
+from sqlalchemy import Select
 from sqlalchemy.orm import Session
 from starlette.requests import Request
 from starlette_admin import HasOne, StringField
+from starlette_admin.actions import action
 from starlette_admin.contrib.sqla import Admin, ModelView
-from starlette_admin.exceptions import FormValidationError
+from starlette_admin.exceptions import ActionFailed, FormValidationError
 
 
 class PrismGatedModelView(ModelView):
@@ -99,6 +108,18 @@ class PermissionView(ReadOnlyModelView):
     exclude_fields_from_list = ("id",)
 
 
+_COUNTRY_ACCESS_DENIED = (
+    "You do not have permission to manage dashboards for this country."
+)
+_DASHBOARD_BULK_UPDATE_STATUS_FORM = bulk_status_select_form(DashboardStatus)
+
+
+def _dashboard_country_code(country: DashboardCountry | Any) -> str:
+    if isinstance(country, DashboardCountry):
+        return country.value
+    return str(country)
+
+
 class GatedDashboardAdminView(DashboardAdminView):
     """Dashboard CRUD for ``prism.admin.access`` or ``prism.dashboard.manage`` only."""
 
@@ -116,6 +137,117 @@ class GatedDashboardAdminView(DashboardAdminView):
 
     def can_delete(self, request: Request) -> bool:
         return request_can_manage_dashboards(request)
+
+    def get_list_query(self, request: Request) -> Select:
+        return apply_country_scope_filter(
+            super().get_list_query(request),
+            request,
+            DASHBOARD_MANAGE,
+            DashboardModel.country,
+        )
+
+    def get_count_query(self, request: Request) -> Select:
+        return apply_country_scope_filter(
+            super().get_count_query(request),
+            request,
+            DASHBOARD_MANAGE,
+            DashboardModel.country,
+        )
+
+    def get_details_query(self, request: Request) -> Select:
+        return apply_country_scope_filter(
+            super().get_details_query(request),
+            request,
+            DASHBOARD_MANAGE,
+            DashboardModel.country,
+        )
+
+    def _assert_obj_country_in_scope(self, request: Request, obj: DashboardModel) -> None:
+        if not request_can_access_country(
+            request,
+            DASHBOARD_MANAGE,
+            _dashboard_country_code(obj.country),
+        ):
+            raise FormValidationError({"config": _COUNTRY_ACCESS_DENIED})
+
+    def _validate_bulk_dashboard_scope(
+        self,
+        request: Request,
+        dashboards: list[Any],
+        pks: list[Any],
+    ) -> None:
+        if len(dashboards) != len(pks):
+            raise ActionFailed("One or more selected dashboards are not accessible")
+        for dashboard in dashboards:
+            if not request_can_access_country(
+                request,
+                DASHBOARD_MANAGE,
+                _dashboard_country_code(dashboard.country),
+            ):
+                raise ActionFailed("One or more selected dashboards are not accessible")
+
+    async def validate(self, request: Request, data: dict[str, Any]) -> None:
+        await super().validate(request, data)
+        country = data.get("country")
+        if country is not None and not request_can_access_country(
+            request,
+            DASHBOARD_MANAGE,
+            _dashboard_country_code(country),
+        ):
+            raise FormValidationError({"config": _COUNTRY_ACCESS_DENIED})
+
+    async def before_create(
+        self, request: Request, data: dict[str, Any], obj: Any
+    ) -> None:
+        await super().before_create(request, data, obj)
+        self._assert_obj_country_in_scope(request, obj)
+
+    async def before_edit(
+        self, request: Request, data: dict[str, Any], obj: Any
+    ) -> None:
+        await super().before_edit(request, data, obj)
+        self._assert_obj_country_in_scope(request, obj)
+
+    @action(
+        name="update_status",
+        text="Update status",
+        confirmation="Update the status of the selected dashboards?",
+        submit_btn_text="Update status",
+        submit_btn_class="btn-primary",
+        icon_class="fa-solid fa-toggle-on",
+        form=_DASHBOARD_BULK_UPDATE_STATUS_FORM,
+    )
+    async def update_status_action(self, request: Request, pks: list[Any]) -> str:
+        data = await request.form()
+        status_raw = data.get("status")
+        if not status_raw:
+            raise ActionFailed("Status is required")
+        try:
+            new_status = DashboardStatus(str(status_raw))
+        except ValueError as exc:
+            raise ActionFailed(f"Invalid status: {status_raw}") from exc
+
+        dashboards = list(await self.find_by_pks(request, pks))
+        self._validate_bulk_dashboard_scope(request, dashboards, pks)
+        if not dashboards:
+            raise ActionFailed("No accessible dashboards selected")
+
+        session: Session = request.state.session
+        now = utc_now()
+        for dashboard in dashboards:
+            dashboard.status = new_status
+            dashboard.updated_at = now
+            session.add(dashboard)
+        session.commit()
+
+        count = len(dashboards)
+        label = new_status.value
+        return f"Updated {count} dashboard{'s' if count != 1 else ''} to {label}."
+
+    async def delete(self, request: Request, pks: list[Any]) -> int | None:
+        dashboards = list(await self.find_by_pks(request, pks))
+        self._validate_bulk_dashboard_scope(request, dashboards, pks)
+        return await super().delete(request, pks)
 
 
 class UserPermissionView(PrismGatedModelView):
