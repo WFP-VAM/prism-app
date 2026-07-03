@@ -21,13 +21,9 @@ RUN pip install --no-cache-dir --upgrade 'pip>=26.1.2' 'setuptools>=82.0.0' 'whe
     && pip install --no-cache-dir -r /requirements-export-map-worker.txt \
     && pip install --no-cache-dir --upgrade 'setuptools>=82.0.0' 'wheel>=0.46.2'
 
-# Browser + OS deps (same pattern as main api/Dockerfile)
-RUN playwright install chromium \
-    && playwright install-deps chromium \
-    && rm -rf /root/.cache/ms-playwright/.links
-
 # Security updates + trim packages not needed for headless Chromium (Xvfb/Xorg CVE noise,
-# dev headers, optional GStreamer "bad" codecs).
+# dev headers, optional GStreamer "bad" codecs). Before Playwright so autoremove cannot
+# strip browser runtime libraries.
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get -y upgrade \
     && DEBIAN_FRONTEND=noninteractive apt-get purge -y \
@@ -37,6 +33,12 @@ RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get autoremove -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+# Browser + OS deps (same pattern as main api/Dockerfile)
+RUN playwright install chromium \
+    && playwright install-deps chromium \
+    && rm -rf /root/.cache/ms-playwright/.links \
+    && python -c "from playwright.sync_api import sync_playwright; p = sync_playwright().start(); b = p.chromium.launch(args=['--no-sandbox', '--disable-dev-shm-usage']); b.close(); p.stop()"
 
 COPY ./prism_app /prism_app
 

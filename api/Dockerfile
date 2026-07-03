@@ -47,18 +47,9 @@ RUN --mount=type=cache,target=/root/.cache \
 # Upgrade pip + tooling (CVE-2026-1703 pip, CVE-2026-24049 wheel, CVE-2026-23949 jaraco.context via setuptools vendor refresh)
 RUN poetry run pip install --upgrade 'pip>=26.1.2' 'setuptools>=82.0.0' 'wheel>=0.46.2' 'jaraco.context>=6.1.0'
 
-# we must run the playwright install command without mounting the cache, as it seems
-# that installed binaries end up being removed from the image if the cache is used
-RUN poetry run playwright install chromium
-
-# playwright installs a lot of apt packages to support its browser
-RUN --mount=type=cache,target=/root/.cache \
-    --mount=type=cache,target=/var/lib/apt \
-    --mount=type=cache,target=/var/cache/apt \
-    DEBIAN_FRONTEND=noninteractive poetry run playwright install-deps chromium
-
 # Apply security updates (e.g. GnuPG CVE-2025-68973, libtiff CVE-2025-9900); drop build-only headers
 # (linux-libc-dev); remove GStreamer "bad" codecs not required for headless map export.
+# Must run before Playwright: autoremove after install-deps strips Chromium runtime libraries.
 RUN --mount=type=cache,target=/var/lib/apt \
     --mount=type=cache,target=/var/cache/apt \
     DEBIAN_FRONTEND=noninteractive apt-get update && \
@@ -70,6 +61,19 @@ RUN --mount=type=cache,target=/var/lib/apt \
     DEBIAN_FRONTEND=noninteractive apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
+
+# we must run the playwright install command without mounting the cache, as it seems
+# that installed binaries end up being removed from the image if the cache is used
+RUN poetry run playwright install chromium
+
+# playwright installs a lot of apt packages to support its browser
+RUN --mount=type=cache,target=/root/.cache \
+    --mount=type=cache,target=/var/lib/apt \
+    --mount=type=cache,target=/var/cache/apt \
+    DEBIAN_FRONTEND=noninteractive poetry run playwright install-deps chromium
+
+# Verify Chromium launches after install-deps (CI export_maps tests depend on this).
+RUN poetry run python -c "from playwright.sync_api import sync_playwright; p = sync_playwright().start(); b = p.chromium.launch(args=['--no-sandbox', '--disable-dev-shm-usage']); b.close(); p.stop()"
 
 # keep this copy towards the end to help with caching previous layers
 COPY ./prism_app /prism_app
