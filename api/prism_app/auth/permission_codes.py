@@ -13,20 +13,27 @@ ADMIN_ACCESS = "prism.admin.access"
 DEPLOYMENT_MANAGE = "prism.deployment.manage"
 USERS_MANAGE = "prism.users.manage"
 MAP_EXPORTS_MANAGE = "prism.map_exports.manage"
+AA_DATA_MANAGE = "prism.aa_data.manage"
 
 
 def can_access_admin_panel(codes: set[str] | frozenset[str]) -> bool:
-    """Enter Starlette-admin: full admins, dashboard managers, or map export managers."""
+    """Enter Starlette-admin: full admins, dashboard, map export, or AA data managers."""
     return (
         ADMIN_ACCESS in codes
         or DASHBOARD_MANAGE in codes
         or MAP_EXPORTS_MANAGE in codes
+        or AA_DATA_MANAGE in codes
     )
 
 
 def can_manage_dashboards_in_admin(codes: set[str] | frozenset[str]) -> bool:
     """Dashboard model view in admin: full admins or dashboard managers."""
     return ADMIN_ACCESS in codes or DASHBOARD_MANAGE in codes
+
+
+def can_manage_aa_data_in_admin(codes: set[str] | frozenset[str]) -> bool:
+    """AA drought dataset view in admin: full admins or AA data managers."""
+    return ADMIN_ACCESS in codes or AA_DATA_MANAGE in codes
 
 
 def can_manage_map_exports_in_admin(codes: set[str] | frozenset[str]) -> bool:
@@ -43,5 +50,6 @@ ALL_CAPABILITIES = frozenset(
         DEPLOYMENT_MANAGE,
         USERS_MANAGE,
         MAP_EXPORTS_MANAGE,
+        AA_DATA_MANAGE,
     }
 )
