@@ -1,9 +1,9 @@
 import { AA_DROUGHT_API_URL } from './constants';
 import {
-  getAACsvPreviewParam,
   getAADroughtCdnUrl,
+  getAADroughtPreviewParam,
+  getAADroughtStagingParam,
   getAADroughtUrl,
-  getStagingParam,
 } from './url-utils';
 
 const PROD_URL = 'https://cdn.example.com/zimbabwe/aa_drought.csv';
@@ -20,19 +20,19 @@ function setSearch(search: string) {
 
 afterEach(() => setSearch(''));
 
-describe('getStagingParam / getAACsvPreviewParam', () => {
+describe('getAADroughtStagingParam / getAADroughtPreviewParam', () => {
   test('read their own params independently', () => {
-    setSearch('staging=true');
-    expect(getStagingParam()).toBe(true);
-    expect(getAACsvPreviewParam()).toBe(false);
+    setSearch('aa-drought-staging=true');
+    expect(getAADroughtStagingParam()).toBe(true);
+    expect(getAADroughtPreviewParam()).toBe(false);
 
-    setSearch('aa-csv-preview=true');
-    expect(getStagingParam()).toBe(false);
-    expect(getAACsvPreviewParam()).toBe(true);
+    setSearch('aa-drought-preview=true');
+    expect(getAADroughtStagingParam()).toBe(false);
+    expect(getAADroughtPreviewParam()).toBe(true);
 
     setSearch('');
-    expect(getStagingParam()).toBe(false);
-    expect(getAACsvPreviewParam()).toBe(false);
+    expect(getAADroughtStagingParam()).toBe(false);
+    expect(getAADroughtPreviewParam()).toBe(false);
   });
 });
 
@@ -42,18 +42,18 @@ describe('getAADroughtCdnUrl', () => {
     expect(getAADroughtCdnUrl(appConfig)).toBe(PROD_URL);
   });
 
-  test('returns the S3 preview URL only for aa-csv-preview=true', () => {
-    setSearch('aa-csv-preview=true');
+  test('returns the S3 preview URL only for aa-drought-preview=true', () => {
+    setSearch('aa-drought-preview=true');
     expect(getAADroughtCdnUrl(appConfig)).toBe(PREVIEW_URL);
   });
 
-  test('staging=true does not select the S3 preview URL', () => {
-    setSearch('staging=true');
+  test('aa-drought-staging=true does not select the S3 preview URL', () => {
+    setSearch('aa-drought-staging=true');
     expect(getAADroughtCdnUrl(appConfig)).toBe(PROD_URL);
   });
 
   test('falls back to prod URL when no preview URL is configured', () => {
-    setSearch('aa-csv-preview=true');
+    setSearch('aa-drought-preview=true');
     expect(getAADroughtCdnUrl({ anticipatoryActionDroughtUrl: PROD_URL })).toBe(
       PROD_URL,
     );
@@ -72,8 +72,8 @@ describe('getAADroughtUrl', () => {
     expect(url.searchParams.get('date')).toBeTruthy();
   });
 
-  test('staging=true: routes through the API with include_staging=true', () => {
-    setSearch('staging=true');
+  test('aa-drought-staging=true: routes through the API with include_staging=true', () => {
+    setSearch('aa-drought-staging=true');
     const url = new URL(getAADroughtUrl(appConfig, 'zimbabwe') as string);
     expect(`${url.origin}${url.pathname}`).toBe(
       `${AA_DROUGHT_API_URL}/zimbabwe.csv`,
@@ -82,22 +82,22 @@ describe('getAADroughtUrl', () => {
     expect(url.searchParams.get('fallback')).toBe(PROD_URL);
   });
 
-  test('aa-csv-preview=true: fetches the S3 preview URL directly (bypasses API)', () => {
-    setSearch('aa-csv-preview=true');
+  test('aa-drought-preview=true: fetches the S3 preview URL directly (bypasses API)', () => {
+    setSearch('aa-drought-preview=true');
     const url = new URL(getAADroughtUrl(appConfig, 'zimbabwe') as string);
     expect(`${url.origin}${url.pathname}`).toBe(PREVIEW_URL);
     expect(url.searchParams.get('date')).toBeTruthy();
   });
 
   test('both params: S3 preview wins over the DB staging path', () => {
-    setSearch('aa-csv-preview=true&staging=true');
+    setSearch('aa-drought-preview=true&aa-drought-staging=true');
     const url = new URL(getAADroughtUrl(appConfig, 'zimbabwe') as string);
     expect(`${url.origin}${url.pathname}`).toBe(PREVIEW_URL);
     expect(url.searchParams.get('include_staging')).toBeNull();
   });
 
-  test('aa-csv-preview=true without a preview URL falls back to the API path', () => {
-    setSearch('aa-csv-preview=true');
+  test('aa-drought-preview=true without a preview URL falls back to the API path', () => {
+    setSearch('aa-drought-preview=true');
     const url = new URL(
       getAADroughtUrl(
         { anticipatoryActionDroughtUrl: PROD_URL },

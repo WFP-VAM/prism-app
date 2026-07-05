@@ -185,43 +185,46 @@ export function combineURLs(baseURL: string, relativeURL: string) {
 }
 
 /**
- * Returns true if the URL contains staging=true, otherwise false.
+ * Returns true if the URL contains aa-drought-staging=true, otherwise false.
  *
  * Controls whether the read API includes DB-uploaded status=staging datasets
  * (via the `include_staging` query param).
  */
-export function getStagingParam(): boolean {
+export function getAADroughtStagingParam(): boolean {
   if (typeof window === 'undefined') {
     return false;
   }
   const params = new URLSearchParams(window.location.search);
-  return params.get('staging') === 'true';
+  return params.get('aa-drought-staging') === 'true';
 }
 
 /**
- * Returns true if the URL contains aa-csv-preview=true, otherwise false.
+ * Returns true if the URL contains aa-drought-preview=true, otherwise false.
  *
- * Enables previewing an AA drought CSV hosted on a remote (staging) S3 bucket,
+ * Enables previewing an AA drought CSV hosted on a remote (preview) S3 bucket,
  * configured via `anticipatoryActionDroughtPreviewUrl` in prism.json. Kept
- * separate from `staging=true` (which controls whether the read API serves
- * DB-uploaded status=staging datasets) so the S3 bucket can be previewed
+ * separate from `aa-drought-staging=true` (which controls whether the read API
+ * serves DB-uploaded status=staging datasets) so the S3 bucket can be previewed
  * independently.
  */
-export function getAACsvPreviewParam(): boolean {
+export function getAADroughtPreviewParam(): boolean {
   if (typeof window === 'undefined') {
     return false;
   }
   const params = new URLSearchParams(window.location.search);
-  return params.get('aa-csv-preview') === 'true';
+  return params.get('aa-drought-preview') === 'true';
 }
 
 /**
  * Returns the configured CDN URL for the anticipatory action drought CSV.
- * Only returns the preview (S3 bucket) URL if aa-csv-preview=true is set and
- * the staging URL exists.
+ * Only returns the preview (S3 bucket) URL if aa-drought-preview=true is set
+ * and the preview URL exists.
  */
 export function getAADroughtCdnUrl(appConfig: any): string | undefined {
-  if (getAACsvPreviewParam() && appConfig.anticipatoryActionDroughtPreviewUrl) {
+  if (
+    getAADroughtPreviewParam() &&
+    appConfig.anticipatoryActionDroughtPreviewUrl
+  ) {
     return appConfig.anticipatoryActionDroughtPreviewUrl;
   }
   return appConfig.anticipatoryActionDroughtUrl;
@@ -230,7 +233,7 @@ export function getAADroughtCdnUrl(appConfig: any): string | undefined {
 /**
  * Returns the fetch URL for the anticipatory action drought CSV, cache-busted.
  *
- * When `aa-csv-preview=true` is set, fetches the configured S3 staging CSV
+ * When `aa-drought-preview=true` is set, fetches the configured S3 preview CSV
  * directly (bypassing the API) so the remote preview is always shown, even when
  * a DB-uploaded dataset exists for the country.
  *
@@ -248,13 +251,13 @@ export function getAADroughtUrl(
   // S3 preview always wins: fetch the remote CSV directly, skipping the
   // DB-first API so a published/staging DB dataset cannot shadow the preview.
   const previewUrl = appConfig.anticipatoryActionDroughtPreviewUrl;
-  if (getAACsvPreviewParam() && previewUrl) {
+  if (getAADroughtPreviewParam() && previewUrl) {
     const previewParams = new URLSearchParams({ date: cacheBust });
     return `${previewUrl}?${previewParams.toString()}`;
   }
 
   const params = new URLSearchParams({ date: cacheBust });
-  if (getStagingParam()) {
+  if (getAADroughtStagingParam()) {
     params.set('include_staging', 'true');
   }
   if (cdnUrl) {
