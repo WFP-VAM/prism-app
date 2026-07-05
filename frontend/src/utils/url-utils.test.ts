@@ -7,11 +7,11 @@ import {
 } from './url-utils';
 
 const PROD_URL = 'https://cdn.example.com/zimbabwe/aa_drought.csv';
-const STAGING_URL = 'https://staging.example.com/zimbabwe/aa_drought.csv';
+const PREVIEW_URL = 'https://preview.example.com/zimbabwe/aa_drought.csv';
 
 const appConfig = {
   anticipatoryActionDroughtUrl: PROD_URL,
-  anticipatoryActionDroughtStagingUrl: STAGING_URL,
+  anticipatoryActionDroughtPreviewUrl: PREVIEW_URL,
 };
 
 function setSearch(search: string) {
@@ -42,17 +42,17 @@ describe('getAADroughtCdnUrl', () => {
     expect(getAADroughtCdnUrl(appConfig)).toBe(PROD_URL);
   });
 
-  test('returns the S3 staging URL only for aa-csv-preview=true', () => {
+  test('returns the S3 preview URL only for aa-csv-preview=true', () => {
     setSearch('aa-csv-preview=true');
-    expect(getAADroughtCdnUrl(appConfig)).toBe(STAGING_URL);
+    expect(getAADroughtCdnUrl(appConfig)).toBe(PREVIEW_URL);
   });
 
-  test('staging=true does not select the S3 staging URL', () => {
+  test('staging=true does not select the S3 preview URL', () => {
     setSearch('staging=true');
     expect(getAADroughtCdnUrl(appConfig)).toBe(PROD_URL);
   });
 
-  test('falls back to prod URL when no staging URL is configured', () => {
+  test('falls back to prod URL when no preview URL is configured', () => {
     setSearch('aa-csv-preview=true');
     expect(getAADroughtCdnUrl({ anticipatoryActionDroughtUrl: PROD_URL })).toBe(
       PROD_URL,
@@ -82,21 +82,21 @@ describe('getAADroughtUrl', () => {
     expect(url.searchParams.get('fallback')).toBe(PROD_URL);
   });
 
-  test('aa-csv-preview=true: fetches the S3 staging URL directly (bypasses API)', () => {
+  test('aa-csv-preview=true: fetches the S3 preview URL directly (bypasses API)', () => {
     setSearch('aa-csv-preview=true');
     const url = new URL(getAADroughtUrl(appConfig, 'zimbabwe') as string);
-    expect(`${url.origin}${url.pathname}`).toBe(STAGING_URL);
+    expect(`${url.origin}${url.pathname}`).toBe(PREVIEW_URL);
     expect(url.searchParams.get('date')).toBeTruthy();
   });
 
   test('both params: S3 preview wins over the DB staging path', () => {
     setSearch('aa-csv-preview=true&staging=true');
     const url = new URL(getAADroughtUrl(appConfig, 'zimbabwe') as string);
-    expect(`${url.origin}${url.pathname}`).toBe(STAGING_URL);
+    expect(`${url.origin}${url.pathname}`).toBe(PREVIEW_URL);
     expect(url.searchParams.get('include_staging')).toBeNull();
   });
 
-  test('aa-csv-preview=true without a staging URL falls back to the API path', () => {
+  test('aa-csv-preview=true without a preview URL falls back to the API path', () => {
     setSearch('aa-csv-preview=true');
     const url = new URL(
       getAADroughtUrl(

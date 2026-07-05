@@ -202,7 +202,7 @@ export function getStagingParam(): boolean {
  * Returns true if the URL contains aa-csv-preview=true, otherwise false.
  *
  * Enables previewing an AA drought CSV hosted on a remote (staging) S3 bucket,
- * configured via `anticipatoryActionDroughtStagingUrl` in prism.json. Kept
+ * configured via `anticipatoryActionDroughtPreviewUrl` in prism.json. Kept
  * separate from `staging=true` (which controls whether the read API serves
  * DB-uploaded status=staging datasets) so the S3 bucket can be previewed
  * independently.
@@ -221,8 +221,8 @@ export function getAACsvPreviewParam(): boolean {
  * the staging URL exists.
  */
 export function getAADroughtCdnUrl(appConfig: any): string | undefined {
-  if (getAACsvPreviewParam() && appConfig.anticipatoryActionDroughtStagingUrl) {
-    return appConfig.anticipatoryActionDroughtStagingUrl;
+  if (getAACsvPreviewParam() && appConfig.anticipatoryActionDroughtPreviewUrl) {
+    return appConfig.anticipatoryActionDroughtPreviewUrl;
   }
   return appConfig.anticipatoryActionDroughtUrl;
 }
@@ -247,10 +247,10 @@ export function getAADroughtUrl(
 
   // S3 preview always wins: fetch the remote CSV directly, skipping the
   // DB-first API so a published/staging DB dataset cannot shadow the preview.
-  const stagingUrl = appConfig.anticipatoryActionDroughtStagingUrl;
-  if (getAACsvPreviewParam() && stagingUrl) {
+  const previewUrl = appConfig.anticipatoryActionDroughtPreviewUrl;
+  if (getAACsvPreviewParam() && previewUrl) {
     const previewParams = new URLSearchParams({ date: cacheBust });
-    return `${stagingUrl}?${previewParams.toString()}`;
+    return `${previewUrl}?${previewParams.toString()}`;
   }
 
   const params = new URLSearchParams({ date: cacheBust });
