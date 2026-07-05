@@ -217,7 +217,7 @@ export function getAACsvPreviewParam(): boolean {
 
 /**
  * Returns the configured CDN URL for the anticipatory action drought CSV.
- * Only returns the staging (S3 bucket) URL if aa-csv-preview=true is set and
+ * Only returns the preview (S3 bucket) URL if aa-csv-preview=true is set and
  * the staging URL exists.
  */
 export function getAADroughtCdnUrl(appConfig: any): string | undefined {
