@@ -7,6 +7,8 @@ import logging
 import time
 from dataclasses import dataclass
 
+from prism_app.utils import chromium_launch_env
+
 logger = logging.getLogger(__name__)
 
 sync_playwright = __import__(
@@ -43,6 +45,7 @@ def capture_screenshot_from_url(
                 "--disable-dev-shm-usage",
                 "--window-size=1920,1080",
             ],
+            env=chromium_launch_env(),
         )
         try:
             page = browser.new_page(viewport={"width": 1920, "height": 1080})

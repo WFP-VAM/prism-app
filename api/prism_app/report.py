@@ -5,6 +5,7 @@ from urllib.parse import parse_qs, urlparse
 
 import prism_app.caching as caching
 from playwright.async_api import async_playwright, expect
+from prism_app.utils import chromium_launch_env
 
 # Html selectors
 LAYER_ACCORDION_SELECTOR: Final[str] = (
@@ -39,7 +40,7 @@ async def download_report(
         await route.fulfill(json=j)
 
     async with async_playwright() as p:
-        browser = await p.chromium.launch()
+        browser = await p.chromium.launch(env=chromium_launch_env())
         page = await browser.new_page(viewport={"width": 1280, "height": 720})
 
         # TODO - this should only be done in CI
