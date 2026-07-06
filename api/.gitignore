@@ -9,6 +9,7 @@ cache/
 *.cache
 
 .venv
+audit_results.json
 
 # Test files
 **.json.*
