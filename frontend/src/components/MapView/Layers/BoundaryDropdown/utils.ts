@@ -4,11 +4,16 @@ import {
   AdminLevelType,
   BoundaryLayerProps,
 } from 'config/types';
+import { AdminNameDict } from 'context/adminNameTranslationStateSlice';
 import { LayerData } from 'context/layers/layer-data';
-import { isEnglishLanguageSelected } from 'i18n';
 import i18n from 'i18next';
 import { sortBy } from 'lodash';
 import { Map as MaplibreMap } from 'maplibre-gl';
+import {
+  getActiveAdminNameLanguage,
+  localizeName,
+  usesAdminNameSidecar,
+} from 'utils/admin-name-utils';
 import { normalizeAdminCode } from 'utils/adminAreaCodes';
 
 /**
@@ -33,10 +38,11 @@ export function getAdminBoundaryTree(
   data: LayerData<BoundaryLayerProps>['data'] | undefined,
   layer: BoundaryLayerProps,
   i18nLocale: typeof i18n,
+  adminNameDict?: AdminNameDict,
 ): AdminBoundaryTree {
-  const locationLevelNames = isEnglishLanguageSelected(i18nLocale)
-    ? layer.adminLevelNames
-    : layer.adminLevelLocalNames;
+  const language = getActiveAdminNameLanguage(i18nLocale);
+  const useSidecar = usesAdminNameSidecar(layer);
+  const englishLevelNames = layer.adminLevelNames;
   const { adminLevelCodes } = layer;
   const { features } = data || {};
 
@@ -66,13 +72,23 @@ export function getAdminBoundaryTree(
     if (branchCode === null) {
       return partialTree;
     }
+    const englishLabel = fp[englishLevelNames[level]] ?? '';
+    const label = useSidecar
+      ? language === 'en'
+        ? englishLabel
+        : localizeName(englishLabel, adminNameDict)
+      : (fp[
+          (language === 'en'
+            ? layer.adminLevelNames
+            : layer.adminLevelLocalNames)[level]
+        ] ?? '');
     const newBranch = addBranchToTree(
       partialTree.children[branchCode] ?? {
         // Normalize to string so all UI state (selection, dropdown values, URL
         // params) is consistent. Universal PMTiles store these as numbers.
         adminCode: branchCode,
         key: fp[layer.adminLevelNames[level]],
-        label: fp[locationLevelNames[level]] ?? '',
+        label,
         level: (level + 1) as AdminLevelType,
         children: {},
       },
