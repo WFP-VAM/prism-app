@@ -2,6 +2,7 @@
 
 import logging
 import os
+import shutil
 import subprocess
 
 import rasterio
@@ -23,7 +24,11 @@ def gdal_calc(
     nodata="0",
 ):
     """Utility function to run gdal_calc between two rasters."""
-    gdal_calc_path = os.path.join("/usr/bin/", "gdal_calc.py")
+    gdal_calc_path = shutil.which("gdal_calc.py") or "/usr/bin/gdal_calc.py"
+    if not os.path.isfile(gdal_calc_path):
+        raise FileNotFoundError(
+            f"gdal_calc.py not found (looked up via PATH and {gdal_calc_path})"
+        )
 
     # Add a proper default for the calculation expression
     calc_expr = calc_expr or "A*(B==1)"

@@ -19,7 +19,7 @@ from playwright.async_api import async_playwright
 from pypdf import PdfReader, PdfWriter
 
 from .models import ExportFormat
-from .utils import extract_dates_from_urls
+from .utils import chromium_launch_env, extract_dates_from_urls
 
 logger = logging.getLogger(__name__)
 
@@ -66,7 +66,9 @@ class BrowserPool:
         pool = cls(playwright=playwright, size=size)
 
         for i in range(size):
-            browser = await playwright.chromium.launch(args=BROWSER_LAUNCH_ARGS)
+            browser = await playwright.chromium.launch(
+                args=BROWSER_LAUNCH_ARGS, env=chromium_launch_env()
+            )
             context = await browser.new_context(device_scale_factor=DEVICE_SCALE_FACTOR)
             # context = await browser.new_context()
             pool.browsers.append(browser)
