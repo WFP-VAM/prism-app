@@ -267,6 +267,11 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
     const isAdmin0Landing =
       isLandingMode && layer.id === UNIVERSAL_ADMIN0_LAYER_ID;
 
+    // maplibre rejects `filter: undefined` ("array expected, undefined found"),
+    // so only pass the prop when we actually have a filter (universal deployment).
+    // Non-universal deployments (e.g. global) render the layer unfiltered.
+    const filterProp = iso3Filter ? { filter: iso3Filter } : {};
+
     return (
       <>
         <Source
@@ -279,7 +284,7 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
             type="line"
             source={`source-${layer.id}`}
             source-layer={layer.layerName}
-            filter={iso3Filter}
+            {...filterProp}
             paint={{
               ...layer.styles.line,
               'line-opacity': isZoomLevelSufficient
@@ -293,7 +298,7 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
             type="fill"
             source={`source-${layer.id}`}
             source-layer={layer.layerName}
-            filter={iso3Filter}
+            {...filterProp}
             paint={layer.styles.fill}
             beforeId={before}
           />
