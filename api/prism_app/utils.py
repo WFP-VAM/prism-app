@@ -1,5 +1,6 @@
 import fnmatch
 import logging
+import os
 from datetime import UTC, datetime
 from typing import Final
 from urllib.parse import parse_qs, urlparse
@@ -14,6 +15,21 @@ logger = logging.getLogger(__name__)
 def utc_now() -> datetime:
     """Single UTC clock for models, API, and workers."""
     return datetime.now(UTC)
+
+
+def chromium_launch_env() -> dict[str, str]:
+    """Environment for Playwright's Chromium subprocess with ``LD_PRELOAD`` removed.
+
+    The ``ghcr.io/osgeo/gdal`` base image sets ``LD_PRELOAD=libtcmalloc_minimal.so.4``
+    to speed up GDAL. That system tcmalloc conflicts with Chromium's bundled allocator
+    on the image's glibc (2.43), crashing ``headless_shell`` on launch with
+    ``tcmalloc.cc: Attempt to free invalid pointer`` (SIGILL). Passing this env to
+    ``chromium.launch(env=...)`` strips ``LD_PRELOAD`` from the browser subprocess only,
+    so GDAL in the main process keeps its tcmalloc optimization.
+    """
+    env = dict(os.environ)
+    env.pop("LD_PRELOAD", None)
+    return env
 
 
 def forward_http_error(resp: requests.Response, excluded_codes: list[int]) -> None:
