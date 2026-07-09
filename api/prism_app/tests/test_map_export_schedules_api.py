@@ -317,6 +317,10 @@ def test_post_export_map_schedule_rejects_country_outside_scope(
             body["country"] = "malawi"
             response = client.post("/export-map/schedules", json=body)
         assert response.status_code == 403
+        assert response.json()["detail"] == (
+            "You do not have the right permissions for this request. "
+            "Contact wfp.prism@wfp.org for more information."
+        )
     finally:
         app.dependency_overrides.clear()
 

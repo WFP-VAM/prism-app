@@ -23,6 +23,11 @@ from sqlmodel import Session
 
 router = APIRouter(prefix="/export-map", tags=["export-map"])
 
+_SCHEDULE_COUNTRY_FORBIDDEN_DETAIL = (
+    "You do not have the right permissions for this request. "
+    "Contact wfp.prism@wfp.org for more information."
+)
+
 _ScheduleCreateSession = Annotated[
     tuple[User, set[str], PermissionScopes],
     Depends(require_any_permission(MAP_EXPORTS_MANAGE, ADMIN_ACCESS)),
@@ -87,7 +92,7 @@ def create_map_export_schedule(
         permission_code=MAP_EXPORTS_MANAGE,
         country=body.country,
     ):
-        raise HTTPException(status_code=403, detail="Forbidden")
+        raise HTTPException(status_code=403, detail=_SCHEDULE_COUNTRY_FORBIDDEN_DETAIL)
 
     schedule = MapExportSchedule(
         name=body.name.strip(),
