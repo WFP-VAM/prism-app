@@ -14,6 +14,7 @@ import {
   setSelectedBoundaries as setSelectedBoundariesRedux,
 } from 'context/mapSelectionLayerStateSlice';
 import { useCountryIso } from 'context/useCountryIso';
+import { useAdminNameTranslations } from 'hooks/useAdminNameTranslations';
 import { useSafeTranslation } from 'i18n';
 import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -41,6 +42,7 @@ export function SimpleBoundaryDropdown({
   ...rest
 }: BoundaryDropdownProps) {
   const { i18n: i18nLocale } = useSafeTranslation();
+  const { dict: adminNameDict } = useAdminNameTranslations();
   const { iso3 } = useCountryIso();
   const [search, setSearch] = React.useState('');
 
@@ -83,6 +85,7 @@ export function SimpleBoundaryDropdown({
             data,
             boundaryLayer,
             i18nLocale,
+            adminNameDict,
           )
             .map(ref => ref.name)
             .join(', ')

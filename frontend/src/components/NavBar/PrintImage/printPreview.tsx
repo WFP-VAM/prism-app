@@ -27,9 +27,12 @@ import {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import useLayers from 'utils/layers-utils';
+import useLayers, { isDateCompatibleLayer } from 'utils/layers-utils';
 import { isBasemapLabelLayer } from 'utils/map-utils';
-import { getLayersCoverage } from 'utils/server-utils';
+import {
+  getLayersCoverage,
+  getPossibleDatesForLayer,
+} from 'utils/server-utils';
 
 import {
   dateRangeSelector,
@@ -180,17 +183,44 @@ function PrintPreview() {
       ? filteredBatchDates[filteredBatchDates.length - 1]
       : dateRange.startDate;
 
+  const layersForCoverage = useMemo(() => {
+    if (
+      printConfig?.toggles.batchMapsVisibility &&
+      deferredLayerIdForPreview &&
+      LayerDefinitions[deferredLayerIdForPreview] &&
+      isDateCompatibleLayer(
+        LayerDefinitions[deferredLayerIdForPreview],
+        availableDates,
+      )
+    ) {
+      const batchLayer = LayerDefinitions[deferredLayerIdForPreview];
+      return [
+        {
+          ...batchLayer,
+          dateItems: getPossibleDatesForLayer(batchLayer, availableDates),
+        },
+      ];
+    }
+
+    return selectedLayersWithDateSupport.filter(
+      layer =>
+        layer.id !== 'anticipatory_action_flood' &&
+        layer.id !== 'anticipatory_action_storm',
+    );
+  }, [
+    printConfig?.toggles.batchMapsVisibility,
+    deferredLayerIdForPreview,
+    availableDates,
+    selectedLayersWithDateSupport,
+  ]);
+
   const layersCoverage = useMemo(
     () =>
       getLayersCoverage(
-        selectedLayersWithDateSupport.filter(
-          layer =>
-            layer.id !== 'anticipatory_action_flood' &&
-            layer.id !== 'anticipatory_action_storm',
-        ),
+        layersForCoverage,
         previewDate as SelectedDateTimestamp,
       ),
-    [previewDate, selectedLayersWithDateSupport],
+    [previewDate, layersForCoverage],
   );
 
   const filteredFloodStations = useFilteredFloodStations(

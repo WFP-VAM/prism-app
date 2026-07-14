@@ -33,6 +33,12 @@ export PRISM_OIDC_REDIRECT_URI=$(aws secretsmanager get-secret-value     --secre
 export PRISM_OIDC_CLIENT_ID=$(aws secretsmanager get-secret-value     --secret-id PRISM_OIDC | jq .SecretString | jq fromjson | jq -r .PRISM_OIDC_CLIENT_ID)
 export PRISM_OIDC_CLIENT_SECRET=$(aws secretsmanager get-secret-value     --secret-id PRISM_OIDC | jq .SecretString | jq fromjson | jq -r .PRISM_OIDC_CLIENT_SECRET)
 
+# Entra ID OIDC (optional second provider, for domain users). Missing secret or keys
+# resolve to empty values, which leaves Entra sign-in disabled.
+export PRISM_ENTRA_OIDC_TENANT_ID=$(aws secretsmanager get-secret-value     --secret-id PRISM_ENTRA_OIDC 2>/dev/null | jq .SecretString | jq fromjson | jq -r '.PRISM_ENTRA_OIDC_TENANT_ID // empty')
+export PRISM_ENTRA_OIDC_CLIENT_ID=$(aws secretsmanager get-secret-value     --secret-id PRISM_ENTRA_OIDC 2>/dev/null | jq .SecretString | jq fromjson | jq -r '.PRISM_ENTRA_OIDC_CLIENT_ID // empty')
+export PRISM_ENTRA_OIDC_CLIENT_SECRET=$(aws secretsmanager get-secret-value     --secret-id PRISM_ENTRA_OIDC 2>/dev/null | jq .SecretString | jq fromjson | jq -r '.PRISM_ENTRA_OIDC_CLIENT_SECRET // empty')
+
 # Session (signs cookie + OIDC state; rotating logs everyone out)
 export PRISM_SESSION_SECRET=$(aws secretsmanager get-secret-value     --secret-id PRISM_SESSION_SECRET | jq .SecretString | jq fromjson | jq -r .PRISM_SESSION_SECRET)
 export PRISM_SESSION_TTL_SECONDS=604800

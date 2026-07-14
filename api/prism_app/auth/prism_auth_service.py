@@ -1,4 +1,4 @@
-"""Load CIAM-mapped users and permission codes from the alerts DB."""
+"""Load OIDC-mapped users and permission codes from the alerts DB."""
 
 from __future__ import annotations
 
@@ -6,6 +6,7 @@ import logging
 from typing import Any, Mapping
 from uuid import UUID
 
+from prism_app.auth.admin_settings import DEFAULT_OIDC_PROVIDER_ID
 from prism_app.auth.oidc_id_token_profile import IdTokenProfileClaims
 from prism_app.database.permission_model import Permission, UserPermission
 from prism_app.database.user_model import User, UserStatus
@@ -20,18 +21,20 @@ logger = logging.getLogger(__name__)
 def ensure_user_for_oidc(
     engine: Engine,
     *,
+    auth_provider: str,
     ciam_sub: str,
     claims: Mapping[str, Any],
 ) -> tuple[User | None, set[str]]:
-    """Load user by CIAM ``sub``; JIT-insert an active row when missing.
+    """Load user by provider + OIDC ``sub``; JIT-insert an active row when missing.
 
-    Subsequent logins refresh ``email`` / ``name`` from the same OIDC claims (CIAM-driven profile).
+    Subsequent logins refresh ``email`` / ``name`` from the same OIDC claims.
     New users start with zero ``user_permissions`` until granted in Admin.
 
     Raises:
-        ValueError: if ``ciam_sub`` is missing or whitespace-only (caller should fail the sign-in).
+        ValueError: if ``auth_provider`` or ``ciam_sub`` is missing or whitespace-only.
     """
 
+    trimmed_provider = (auth_provider or "").strip() or DEFAULT_OIDC_PROVIDER_ID
     trimmed_sub = (ciam_sub or "").strip()
     if not trimmed_sub:
         raise ValueError("ciam_sub is required and cannot be empty")
@@ -41,12 +44,16 @@ def ensure_user_for_oidc(
     with Session(engine) as session:
         try:
             user = session.scalars(
-                select(User).where(User.ciam_sub == trimmed_sub)
+                select(User).where(
+                    User.auth_provider == trimmed_provider,
+                    User.ciam_sub == trimmed_sub,
+                )
             ).first()
 
             if user is None:
                 session.add(
                     User(
+                        auth_provider=trimmed_provider,
                         ciam_sub=trimmed_sub,
                         email=email,
                         name=display_name,
@@ -54,10 +61,17 @@ def ensure_user_for_oidc(
                 )
                 session.commit()
                 user = session.scalars(
-                    select(User).where(User.ciam_sub == trimmed_sub)
+                    select(User).where(
+                        User.auth_provider == trimmed_provider,
+                        User.ciam_sub == trimmed_sub,
+                    )
                 ).first()
                 if user:
-                    logger.info("JIT user created uid=%s", user.id)
+                    logger.info(
+                        "JIT user created uid=%s provider=%s",
+                        user.id,
+                        trimmed_provider,
+                    )
             else:
                 if user.email != email or user.name != display_name:
                     user.email = email
@@ -68,32 +82,52 @@ def ensure_user_for_oidc(
         except IntegrityError:
             session.rollback()
             logger.warning(
-                "JIT user concurrent insert; reloading by ciam_sub — %s",
+                "JIT user concurrent insert; reloading by provider+ciam_sub — %s %s",
+                trimmed_provider,
                 trimmed_sub[:80],
             )
 
-    return load_user_and_permissions(engine, ciam_sub=trimmed_sub)
+    return load_user_and_permissions(
+        engine,
+        auth_provider=trimmed_provider,
+        ciam_sub=trimmed_sub,
+    )
 
 
 def load_user_and_permissions(
     engine: Engine,
     *,
     user_id: UUID | None = None,
+    auth_provider: str | None = None,
     ciam_sub: str | None = None,
 ) -> tuple[User | None, set[str]]:
     """Return the user row and set of permission codes (empty if missing user).
 
-    Either ``user_id`` or ``ciam_sub`` must be provided.
+    Provide ``user_id`` or both ``auth_provider`` and ``ciam_sub``.
     """
-    if (user_id is None) == (ciam_sub is None):
-        raise ValueError("Provide exactly one of user_id or ciam_sub")
+    if user_id is not None:
+        if auth_provider is not None or ciam_sub is not None:
+            raise ValueError("Provide user_id or (auth_provider, ciam_sub), not both")
+    elif ciam_sub is None:
+        raise ValueError("Provide user_id or (auth_provider, ciam_sub)")
+
+    lookup_provider = (
+        (auth_provider or "").strip() or DEFAULT_OIDC_PROVIDER_ID
+        if ciam_sub is not None
+        else None
+    )
+    trimmed_sub = ciam_sub.strip() if ciam_sub is not None else None
 
     with Session(engine) as session:
         if user_id is not None:
             user = session.get(User, user_id)
         else:
+            assert lookup_provider is not None and trimmed_sub is not None
             user = session.scalars(
-                select(User).where(User.ciam_sub == ciam_sub)
+                select(User).where(
+                    User.auth_provider == lookup_provider,
+                    User.ciam_sub == trimmed_sub,
+                )
             ).first()
         if user is None:
             return None, set()

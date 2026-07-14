@@ -77,3 +77,35 @@ def render_threshold_mail(
     html = _env.get_template("threshold_alert.html.j2").render(**ctx)
     text = _env.get_template("threshold_alert.txt.j2").render(**ctx)
     return html, text
+
+
+def render_schedule_export_mail(
+    *,
+    heading_title: str,
+    schedule_name: str,
+    layer_title: str,
+    layer_id: str,
+    country: str,
+    map_date: str | None,
+    format_label: str,
+    download_url: str,
+    admin_schedules_url: str,
+    link_expiry_days: int,
+    prism_url: str | None = None,
+) -> tuple[str, str]:
+    ctx = {
+        "heading_title": heading_title,
+        "schedule_name": schedule_name,
+        "layer_title": layer_title,
+        "layer_id": layer_id,
+        "country": country,
+        "map_date": map_date,
+        "format_label": format_label,
+        "download_url": download_url,
+        "admin_schedules_url": admin_schedules_url,
+        "link_expiry_days": link_expiry_days,
+        "prism_url": prism_url,
+    }
+    html = _env.get_template("schedule_export.html.j2").render(**ctx)
+    text = _env.get_template("schedule_export.txt.j2").render(**ctx)
+    return html, text

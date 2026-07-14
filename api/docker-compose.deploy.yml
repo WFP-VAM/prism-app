@@ -63,6 +63,10 @@ services:
       - PRISM_OIDC_REDIRECT_URI=${PRISM_OIDC_REDIRECT_URI:?"Provide the OIDC redirect URI."}
       - PRISM_OIDC_CLIENT_ID=${PRISM_OIDC_CLIENT_ID:?"Provide the CIAM OIDC client ID."}
       - PRISM_OIDC_CLIENT_SECRET=${PRISM_OIDC_CLIENT_SECRET:?"Provide the CIAM OIDC client secret."}
+      # Entra ID OIDC is optional; empty values leave Entra sign-in disabled.
+      - PRISM_ENTRA_OIDC_TENANT_ID=${PRISM_ENTRA_OIDC_TENANT_ID:-}
+      - PRISM_ENTRA_OIDC_CLIENT_ID=${PRISM_ENTRA_OIDC_CLIENT_ID:-}
+      - PRISM_ENTRA_OIDC_CLIENT_SECRET=${PRISM_ENTRA_OIDC_CLIENT_SECRET:-}
       - PRISM_SESSION_SECRET=${PRISM_SESSION_SECRET:?"Provide the session signing secret."}
       - PRISM_SESSION_TTL_SECONDS=${PRISM_SESSION_TTL_SECONDS:-604800}
       - PRISM_ENV=${PRISM_ENV:-development}

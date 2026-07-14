@@ -245,15 +245,32 @@ def test_safe_sign_out_next_allows_welcome_path() -> None:
 
 
 def test_welcome_page_renders() -> None:
-    client = TestClient(app, base_url=_HTTPS)
-    r = client.get("/auth/welcome")
+    def _fake_admin_auth_settings():
+        return _oidc_sign_out_test_settings()
+
+    app.dependency_overrides[get_admin_auth_settings] = _fake_admin_auth_settings
+    try:
+        client = TestClient(app, base_url=_HTTPS)
+        r = client.get("/auth/welcome")
+    finally:
+        app.dependency_overrides.pop(get_admin_auth_settings, None)
+
     assert r.status_code == 200
     assert "Welcome" in r.text
-    assert "/auth/sign-in?next=%2Fadmin%2F" in r.text
+    assert "/auth/sign-in?provider=ciam&amp;next=%2Fadmin%2F" in r.text
+    assert ">Sign in</a>" in r.text
 
 
 def test_welcome_page_honors_next_for_sign_in_link() -> None:
-    client = TestClient(app, base_url=_HTTPS)
-    r = client.get("/auth/welcome?next=%2Fadmin%2Flist")
+    def _fake_admin_auth_settings():
+        return _oidc_sign_out_test_settings()
+
+    app.dependency_overrides[get_admin_auth_settings] = _fake_admin_auth_settings
+    try:
+        client = TestClient(app, base_url=_HTTPS)
+        r = client.get("/auth/welcome?next=%2Fadmin%2Flist")
+    finally:
+        app.dependency_overrides.pop(get_admin_auth_settings, None)
+
     assert r.status_code == 200
-    assert "/auth/sign-in?next=%2Fadmin%2Flist" in r.text
+    assert "/auth/sign-in?provider=ciam&amp;next=%2Fadmin%2Flist" in r.text

@@ -41,9 +41,15 @@ import {
   Geometry,
   Position,
 } from 'geojson';
+import i18n from 'i18next';
 import { get, groupBy as _groupBy, uniq } from 'lodash';
 import { createGetCoverageUrl } from 'prism-common';
 import { isLocalhost } from 'serviceWorker';
+import {
+  getActiveAdminNameLanguage,
+  getLocalizedFullLocationName,
+  usesAdminNameSidecar,
+} from 'utils/admin-name-utils';
 import { getAdminLevelLayer, getAdminNameProperty } from 'utils/admin-utils';
 import {
   AnalysisResult,
@@ -250,6 +256,12 @@ const getLabeledColumns = (
   return {};
 };
 
+const getAdminNameDictForAnalysis = (getState: () => RootState) => {
+  const language = getActiveAdminNameLanguage(i18n);
+  const entry = getState().adminNameTranslationState.byLanguage[language];
+  return entry?.status === 'ready' ? entry.dict : undefined;
+};
+
 const generateTableFromApiData = (
   statistics: AllAggregationOperations[],
   aggregateData: AsyncReturnType<typeof fetchApiData>, // data from api
@@ -263,6 +275,7 @@ const generateTableFromApiData = (
   extraColumns: string[],
   key?: string,
   isExposureAnalysisTable: boolean = false,
+  adminNameDict?: Record<string, string>,
 ): TableRow[] => {
   // find the key that will let us reference the names of the bounding boxes.
   // We get the one corresponding to the specific level of baseline, or the first if we fail.
@@ -302,10 +315,16 @@ const generateTableFromApiData = (
       adminLevelNames.slice(0, adminIndex + 1),
       featureBoundary,
     );
-    const localName = getFullLocationName(
-      adminLevelLocalNames.slice(0, adminIndex + 1),
-      featureBoundary,
-    );
+    const localName = usesAdminNameSidecar(adminLayer)
+      ? getLocalizedFullLocationName(
+          adminLevelNames.slice(0, adminIndex + 1),
+          featureBoundary,
+          adminNameDict,
+        )
+      : getFullLocationName(
+          adminLevelLocalNames.slice(0, adminIndex + 1),
+          featureBoundary,
+        );
 
     // we are searching the data of baseline layer to find the data associated with this feature
     // adminKey here refers to a specific feature (could be several) where the data is attached to.
@@ -723,6 +742,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       [], // no extra columns
       key,
       true,
+      getAdminNameDictForAnalysis(api.getState),
     );
 
     // If a key exists, we are likely running an exposure analysis for storms or earthquakes.
@@ -902,6 +922,9 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     apiRequest.group_by,
     loadedAndCheckedBaselineData.layerData,
     [], // no extra columns
+    undefined,
+    false,
+    getAdminNameDictForAnalysis(api.getState),
   );
 
   const coverage = getCoverageForLayerAndDate(
@@ -1025,6 +1048,9 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
     adminLevelName,
     null, // no baseline layer
     classProperties || [], // extra columns
+    undefined,
+    false,
+    getAdminNameDictForAnalysis(api.getState),
   );
 
   const boundaryId = getAdminLevelLayer(adminLevel).id;

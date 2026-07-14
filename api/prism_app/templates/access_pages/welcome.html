@@ -4,10 +4,20 @@
 
 {% block content %}
 <p>
-    You are not signed in to PRISM Admin. Sign in with your CIAM account to manage
-    alerts, dashboards, and map exports.
+    You are not signed in to PRISM Admin.
+    {% if sign_in_options|length > 1 %}
+    Choose how to sign in to manage alerts, dashboards, and map exports.
+    {% elif sign_in_options %}
+    Sign in to manage alerts, dashboards, and map exports.
+    {% else %}
+    Sign-in is not configured for this deployment.
+    {% endif %}
 </p>
+{% if sign_in_options %}
 <div class="d-flex gap-2 flex-wrap">
-    <a class="btn btn-primary" href="{{ sign_in_href }}">Sign in</a>
+    {% for option in sign_in_options %}
+    <a class="btn btn-primary" href="{{ option.href }}">{{ option.label }}</a>
+    {% endfor %}
 </div>
+{% endif %}
 {% endblock %}

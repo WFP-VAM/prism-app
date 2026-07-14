@@ -31,7 +31,7 @@ import { useLocation } from 'react-router-dom';
 import {
   BATCH_MAP_LAYER_URL_KEY,
   MAP_EXPORT_MAX_URLS_PER_REQUEST,
-  PRISM_SIGN_IN_URL,
+  PRISM_WELCOME_URL,
 } from 'utils/constants';
 
 import { useSafeTranslation } from '../../../i18n';
@@ -417,7 +417,7 @@ function PrintConfig() {
         location.pathname
       }?${params.toString()}`;
       window.location.assign(
-        `${PRISM_SIGN_IN_URL}?next=${encodeURIComponent(returnUrl)}`,
+        `${PRISM_WELCOME_URL}?next=${encodeURIComponent(returnUrl)}`,
       );
       return;
     }

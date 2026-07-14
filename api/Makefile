@@ -20,8 +20,8 @@ logs:
 	source set_envs.sh && docker compose -f docker-compose.yml -f docker-compose.deploy.yml logs --tail=500 -f --timestamps
 
 api-lint:
-	docker compose run --no-deps api bash -c "poetry run black ."
-	docker compose run --no-deps api bash -c "poetry run isort ."
+	poetry run black --check .
+	poetry run isort --check .
 
 api-typecheck:
 	docker compose run --no-deps api bash -c "mypy ."
@@ -50,6 +50,12 @@ db-downgrade:
 db-seed: db-migrate
 	$(DEV_COMPOSE) exec -T api bash -c "poetry run python /scripts/seed_alerts_db.py"
 
+# Verify all worker entrypoints import in the slim worker image (CI parity).
+worker-import-smoke:
+	docker compose -f docker-compose.yml build export_map_worker
+	docker compose -f docker-compose.yml run --rm --no-deps export_map_worker \
+	  python -m prism_app.ci.worker_import_smoke
+
 # Enqueue map_export_jobs from active map_export_schedules (requires `make api` running).
 schedule-cron:
 	$(DEV_COMPOSE) exec -T api poetry run python -m prism_app.workers.scheduled_public_maps.cron
@@ -77,6 +83,16 @@ send-test-email:
 	  -e PRISM_ALERTS_USE_ETHEREAL \
 	  export_map_worker \
 	  python -m prism_app.workers.alert_runner $(WORKER) --test-email='$(EMAIL)'
+
+# Scheduled map export notification via Ethereal (sample job; no DB). Preview URL on stdout.
+# Usage: make send-schedule-export-test-email EMAIL=you@example.com [JOB_ID=<uuid>]
+JOB_ID ?=
+send-schedule-export-test-email:
+	PRISM_ALERTS_USE_ETHEREAL=true $(DEV_COMPOSE) run --rm \
+	  -e PRISM_ALERTS_USE_ETHEREAL \
+	  export_map_worker \
+	  python -m prism_app.workers.schedule_export_email_runner --test-email='$(EMAIL)' \
+	  $(if $(JOB_ID),--job-id=$(JOB_ID),)
 
 # Run tests for all components.
 test:

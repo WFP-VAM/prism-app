@@ -86,6 +86,10 @@ def format_content_disposition_attachment(filename: str) -> str:
     return f'attachment; filename="{escaped}"'
 
 
+# Presigned GET lifetime for schedule-export notification emails (7 days).
+MAP_EXPORT_EMAIL_PRESIGN_EXPIRES_IN = 7 * 24 * 3600
+
+
 def presign_export_get(
     s3_uri: str,
     s3_client: object,
