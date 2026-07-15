@@ -148,12 +148,12 @@ exports[`renders as expected with a single date 1`] = `
           <div
             class="react-datepicker__input-container"
           >
-            <mock-button
-              classes="[object Object]"
-              variant="outlined"
+            <button
+              class="makeStyles-buttonStyle-13 makeStyles-datePickerInput-5"
+              type="button"
             >
               Mar 11, 2023
-            </mock-button>
+            </button>
           </div>
         </div>
         <mock-button>
