@@ -21,7 +21,8 @@ export function useDefaultDate(
   const mainLayer = isMainLayer(layerId as string, layers);
   const { startDate: selectedDate } = dateRange;
 
-  const { updateHistory } = useUrlHistory();
+  const { urlParams, updateHistory } = useUrlHistory();
+  const urlDate = urlParams.get('date');
 
   // TODO - use getPossibleDatesForLayer
   const possibleDates = useSelector(availableDatesSelector)[layerId];
@@ -33,12 +34,13 @@ export function useDefaultDate(
   // React doesn't allow updating other components within another component
   // useEffect removes this error and updates DateSelector correctly in the lifecycle.
   useEffect(() => {
-    if (!selectedDate && defaultDate && mainLayer) {
-      // Update both URL and Redux state to ensure DateSelector re-renders properly
-      updateHistory('date', getFormattedDate(defaultDate, 'default') as string);
-      if (!mapState.isGlobalMap) {
-        mapState.actions.updateDateRange({ startDate: defaultDate });
-      }
+    if (urlDate || selectedDate || !defaultDate || !mainLayer) {
+      return;
+    }
+    // Update both URL and Redux state to ensure DateSelector re-renders properly
+    updateHistory('date', getFormattedDate(defaultDate, 'default') as string);
+    if (!mapState.isGlobalMap) {
+      mapState.actions.updateDateRange({ startDate: defaultDate });
     }
   }, [
     defaultDate,
@@ -48,6 +50,7 @@ export function useDefaultDate(
     mainLayer,
     mapState.isGlobalMap,
     mapState.actions,
+    urlDate,
   ]);
 
   return (selectedDate as SelectedDateTimestamp) || defaultDate;

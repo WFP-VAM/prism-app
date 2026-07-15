@@ -169,53 +169,100 @@ export const convertSvgToPngBaseBlobImage = async (
   }
 };
 
+// Original Illustrator hatch had 19 lines ~11 units apart; stride 3 ≈ 33 units (~3× spacing).
+const HATCH_LINE_STRIDE = 3;
+
+const RIGHT_DIAGONAL_LINES: Array<[number, number, number, number]> = [
+  [-13.41, 53.03, 93.66, -53.03],
+  [-7.86, 58.59, 99.22, -47.48],
+  [-2.3, 64.14, 104.78, -41.92],
+  [3.26, 69.7, 110.34, -36.37],
+  [8.81, 75.26, 115.89, -30.81],
+  [14.37, 80.81, 121.44, -25.26],
+  [19.92, 86.37, 126.99, -19.7],
+  [25.48, 91.92, 132.55, -14.14],
+  [31.03, 97.48, 138.1, -8.59],
+  [36.59, 103.03, 143.66, -3.03],
+  [42.14, 108.59, 149.21, 2.52],
+  [47.7, 114.14, 154.77, 8.08],
+  [53.26, 119.7, 160.33, 13.63],
+  [58.81, 125.26, 165.88, 19.19],
+  [64.37, 130.81, 171.44, 24.74],
+  [69.92, 136.37, 176.99, 30.3],
+  [75.48, 141.92, 182.55, 35.86],
+  [81.03, 147.48, 188.1, 41.41],
+  [86.59, 153.03, 193.66, 46.97],
+];
+
+const LEFT_DIAGONAL_LINES: Array<[number, number, number, number]> = [
+  [153.03, 53.03, 46.97, -53.03],
+  [147.48, 58.59, 41.41, -47.48],
+  [141.92, 64.14, 35.86, -41.92],
+  [136.37, 69.7, 30.3, -36.37],
+  [130.81, 75.26, 24.74, -30.81],
+  [125.26, 80.81, 19.19, -25.26],
+  [119.7, 86.37, 13.63, -19.7],
+  [114.14, 91.92, 8.08, -14.14],
+  [108.59, 97.48, 2.52, -8.59],
+  [103.03, 103.03, -3.03, -3.03],
+  [97.48, 108.59, -8.59, 2.52],
+  [91.92, 114.14, -14.14, 8.08],
+  [86.37, 119.7, -19.7, 13.63],
+  [80.81, 125.26, -25.26, 19.19],
+  [75.26, 130.81, -30.81, 24.74],
+  [69.7, 136.37, -36.37, 30.3],
+  [64.14, 141.92, -41.92, 35.86],
+  [58.59, 147.48, -47.48, 41.41],
+  [53.03, 153.03, -53.03, 46.97],
+];
+
+const diagonalHatchSvg = (strokeColor: string, direction: 'left' | 'right') => {
+  const patternTransform =
+    direction === 'right'
+      ? 'translate(-13.41 -30.89)'
+      : 'translate(-86.59 -30.89)';
+
+  const sourceLines =
+    direction === 'right' ? RIGHT_DIAGONAL_LINES : LEFT_DIAGONAL_LINES;
+  const lines = sourceLines.filter(
+    (_, index) => index % HATCH_LINE_STRIDE === 0,
+  );
+
+  const lineElements = lines
+    .map(
+      ([x1, y1, x2, y2]) =>
+        `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${strokeColor}" stroke-width="3" stroke-miterlimit="10"/>`,
+    )
+    .join('');
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="50" height="50">
+    <defs>
+      <clipPath id="clip-path-${direction}">
+        <rect width="100" height="100"/>
+      </clipPath>
+      <pattern id="diagonal-${direction}" width="100" height="100" patternTransform="${patternTransform}" patternUnits="userSpaceOnUse" viewBox="0 0 100 100">
+        <rect width="100" height="100" fill="none"/>
+        <g clip-path="url(#clip-path-${direction})">${lineElements}</g>
+      </pattern>
+    </defs>
+    <rect width="100" height="100" fill="url(#diagonal-${direction})"/>
+  </svg>`;
+};
+
 export const getSVGShape = (
   strokeColor = '#000000',
   direction: 'left' | 'right' | 'solid' = 'solid',
 ) => {
   switch (direction) {
     case 'right':
-      // Right Diagonal lines svg (///////)
-      return `
-        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
-          <defs>
-            <pattern id="right-diagonal" patternUnits="userSpaceOnUse" width="80" height="80">
-              <line x1="0" y1="80" x2="80" y2="0" stroke="${strokeColor}" stroke-width="4"/>
-              <line x1="0" y1="60" x2="60" y2="0" stroke="${strokeColor}" stroke-width="4"/>
-              <line x1="0" y1="40" x2="40" y2="0" stroke="${strokeColor}" stroke-width="4"/>
-              <line x1="0" y1="20" x2="20" y2="0" stroke="${strokeColor}" stroke-width="4"/>
-              <line x1="20" y1="80" x2="80" y2="20" stroke="${strokeColor}" stroke-width="4"/>
-              <line x1="40" y1="80" x2="80" y2="40" stroke="${strokeColor}" stroke-width="4"/>
-              <line x1="60" y1="80" x2="80" y2="60" stroke="${strokeColor}" stroke-width="4"/>
-            </pattern>
-          </defs>
-          <rect width="80" height="80" fill="url(#right-diagonal)" />
-        </svg>
-      `;
+      return diagonalHatchSvg(strokeColor, 'right');
     case 'solid':
-      // Solid color square
       return `
         <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
           <rect width="80" height="80" fill="${strokeColor}" />
         </svg>
       `;
     default:
-      // Defaults to left diagonal lines (\\\\\\\)
-      return `
-        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
-          <defs>
-            <pattern id="left-diagonal" patternUnits="userSpaceOnUse" width="80" height="80">
-              <line x1="0" y1="0" x2="80" y2="80" stroke="${strokeColor}" stroke-width="4"/>
-              <line x1="0" y1="20" x2="20" y2="80" stroke="${strokeColor}" stroke-width="4"/>
-              <line x1="0" y1="40" x2="40" y2="80" stroke="${strokeColor}" stroke-width="4"/>
-              <line x1="0" y1="60" x2="60" y2="80" stroke="${strokeColor}" stroke-width="4"/>
-              <line x1="20" y1="0" x2="80" y2="60" stroke="${strokeColor}" stroke-width="4"/>
-              <line x1="40" y1="0" x2="80" y2="40" stroke="${strokeColor}" stroke-width="4"/>
-              <line x1="60" y1="0" x2="80" y2="20" stroke="${strokeColor}" stroke-width="4"/>
-            </pattern>
-          </defs>
-          <rect width="80" height="80" fill="url(#left-diagonal)" />
-        </svg>
-      `;
+      return diagonalHatchSvg(strokeColor, 'left');
   }
 };

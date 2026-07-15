@@ -4035,6 +4035,7 @@
   "ch_idps_phase": {
     "title": "IDPs - phase classification",
     "type": "admin_level_data",
+    "fillPattern": "left",
     "path": "data/rbd/ch/idps_admin2_{YYYY_MM_DD}.json",
     "dates": [
       "2019-10-01",

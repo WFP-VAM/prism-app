@@ -34,7 +34,7 @@ import {
 import { RootState } from 'context/store';
 import { useSafeTranslation } from 'i18n';
 import { countBy, get, pickBy, uniqBy } from 'lodash';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { LocalError } from 'utils/error-utils';
 import { DateFormat } from 'utils/name-utils';
 import {
@@ -125,6 +125,7 @@ const useLayers = () => {
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
   const [defaultLayerAttempted, setDefaultLayerAttempted] = useState(false);
+  const prevUrlDateRef = useRef<string | null>(null);
 
   const { urlParams, updateHistory, removeLayerFromUrl } = useUrlHistory();
   const boundaryLayerId = getBoundaryLayerSingleton().id;
@@ -449,6 +450,26 @@ const useLayers = () => {
       : undefined;
 
     if (dateInt === selectedDate) {
+      prevUrlDateRef.current = urlDate;
+      return;
+    }
+
+    const formattedSelectedDate =
+      selectedDate !== undefined
+        ? (getFormattedDate(selectedDate, 'default') as string)
+        : undefined;
+    const urlDateChangedExternally = urlDate !== prevUrlDateRef.current;
+    prevUrlDateRef.current = urlDate;
+
+    // Layer compatibility may set Redux before the URL catches up — don't snap back
+    // to a stale URL date. External navigation (back/forward) still updates Redux.
+    if (
+      !urlDateChangedExternally &&
+      missingLayers.length === 0 &&
+      formattedSelectedDate !== undefined &&
+      urlDate !== formattedSelectedDate
+    ) {
+      updateHistory('date', formattedSelectedDate);
       return;
     }
 
@@ -475,6 +496,7 @@ const useLayers = () => {
     dispatch,
     hazardLayerIds,
     invalidLayersIds,
+    missingLayers.length,
     selectedDate,
     serverAvailableDatesAreEmpty,
     updateHistory,
@@ -589,8 +611,7 @@ const useLayers = () => {
       if (!providedSelectedDate || selectedLayerDates.length === 0) {
         return null;
       }
-      let closestDate: number | null = null;
-      selectedLayersWithDateSupport.forEach(layer => {
+      for (const layer of selectedLayersWithDateSupport) {
         const jsSelectedDate = new Date(providedSelectedDate);
 
         const AADatesLoaded =
@@ -602,10 +623,13 @@ const useLayers = () => {
           possibleDatesForLayerIncludeSelectedDate(layer, jsSelectedDate) ||
           !AADatesLoaded
         ) {
-          return;
+          continue;
         }
 
-        closestDate = findClosestDate(providedSelectedDate, selectedLayerDates);
+        const closestDate = findClosestDate(
+          providedSelectedDate,
+          selectedLayerDates,
+        );
 
         if (
           datesAreEqualWithoutTime(
@@ -617,37 +641,38 @@ const useLayers = () => {
           console.warn(
             'closest dates is the same as selected date, not updating url',
           );
-        } else {
-          updateHistory(
-            'date',
-            getFormattedDate(closestDate, DateFormat.Default) as string,
-          );
-
-          dispatch(
-            addNotification({
-              message: t(
-                'No data was found for layer "{{layerTitle}}" on {{selectedDate}}. The closest date {{closestDate}} has been loaded instead.',
-                {
-                  layerTitle: t(layer.title),
-                  selectedDate: getFormattedDate(
-                    jsSelectedDate,
-                    DateFormat.Default,
-                  ),
-                  closestDate: getFormattedDate(
-                    closestDate,
-                    DateFormat.Default,
-                  ),
-                },
-              ),
-              type: 'warning',
-            }),
-          );
+          return null;
         }
-      });
-      return closestDate;
+
+        updateHistory(
+          'date',
+          getFormattedDate(closestDate, DateFormat.Default) as string,
+        );
+        mapState.actions.updateDateRange({ startDate: closestDate });
+
+        dispatch(
+          addNotification({
+            message: t(
+              'No data was found for layer "{{layerTitle}}" on {{selectedDate}}. The closest date {{closestDate}} has been loaded instead.',
+              {
+                layerTitle: t(layer.title),
+                selectedDate: getFormattedDate(
+                  jsSelectedDate,
+                  DateFormat.Default,
+                ),
+                closestDate: getFormattedDate(closestDate, DateFormat.Default),
+              },
+            ),
+            type: 'warning',
+          }),
+        );
+        return closestDate;
+      }
+      return null;
     },
     [
       dispatch,
+      mapState.actions,
       possibleDatesForLayerIncludeSelectedDate,
       selectedLayerDates,
       selectedLayersWithDateSupport,
@@ -660,7 +685,11 @@ const useLayers = () => {
 
   useEffect(() => {
     checkSelectedDateForLayerSupport(selectedDate);
-  }, [checkSelectedDateForLayerSupport, selectedDate]);
+  }, [
+    checkSelectedDateForLayerSupport,
+    selectedDate,
+    selectedLayersWithDateSupport,
+  ]);
 
   return {
     adminBoundariesExtent,
