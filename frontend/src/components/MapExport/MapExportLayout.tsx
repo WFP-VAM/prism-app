@@ -648,7 +648,6 @@ function MapExportLayout({
             display: 'flex',
             justifyContent:
               legendPosition % 2 === 0 ? 'flex-start' : 'flex-end',
-            width: '20px',
             transform: `scale(${legendScale})`,
             transformOrigin:
               legendPosition % 2 === 0 ? 'top left' : 'top right',
@@ -810,7 +809,6 @@ const useStyles = makeStyles(() =>
       borderTop: `1px solid ${lightGrey}`,
     },
     legendListStyle: {
-      position: 'absolute',
       top: '8px',
       zIndex: 2,
     },
