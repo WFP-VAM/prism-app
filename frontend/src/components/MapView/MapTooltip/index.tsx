@@ -8,6 +8,7 @@ import {
 } from '@material-ui/core';
 import Loader from 'components/Common/Loader';
 import { AdminLevelType } from 'config/types';
+import { getBoundaryLayerSingleton } from 'config/utils';
 import {
   hidePopup,
   PopupData,
@@ -15,11 +16,13 @@ import {
   PopupTitleData,
   tooltipSelector,
 } from 'context/tooltipStateSlice';
+import { useAdminNameTranslations } from 'hooks/useAdminNameTranslations';
 import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
 import { omit } from 'lodash';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { Popup } from 'react-map-gl/maplibre';
 import { useDispatch, useSelector } from 'react-redux';
+import { localizeName, usesAdminNameSidecar } from 'utils/admin-name-utils';
 import { getEffectiveMultiCountry } from 'utils/universal-country-admin';
 import { isUniversalDeployment } from 'utils/universal-utils';
 
@@ -86,6 +89,8 @@ const MapTooltip = memo(() => {
   const dispatch = useDispatch();
   const popup = useSelector(tooltipSelector);
   const { t, i18n } = useSafeTranslation();
+  const { language, dict } = useAdminNameTranslations();
+  const boundaryLayer = getBoundaryLayerSingleton();
   const [popupTitle, setPopupTitle] = useState<string>('');
   const [adminLevel, setAdminLevel] = useState<AdminLevelType | undefined>(
     undefined,
@@ -97,6 +102,25 @@ const MapTooltip = memo(() => {
   const popupData: PopupData & PopupMetaData = providedPopupTitle
     ? omit(popup.data, 'title', providedPopupTitle.prop)
     : popup.data;
+  const localizedLocationName = useMemo(() => {
+    if (language === 'en') {
+      return popup.locationName;
+    }
+    if (usesAdminNameSidecar(boundaryLayer)) {
+      return popup.locationName
+        .split(', ')
+        .map(part => localizeName(part, dict))
+        .join(', ');
+    }
+    return popup.locationLocalName;
+  }, [
+    boundaryLayer,
+    dict,
+    language,
+    popup.locationLocalName,
+    popup.locationName,
+  ]);
+
   const defaultPopupTitle = useMemo(() => {
     if (providedPopupTitle) {
       // Title can be a template requiring interpolation
@@ -105,20 +129,14 @@ const MapTooltip = memo(() => {
     if (isEnglishLanguageSelected(i18n)) {
       return popup.locationName;
     }
-    return popup.locationLocalName;
-  }, [
-    i18n,
-    popup.locationLocalName,
-    popup.locationName,
-    providedPopupTitle,
-    t,
-  ]);
+    return localizedLocationName;
+  }, [i18n, localizedLocationName, popup.locationName, providedPopupTitle, t]);
 
   // TODO - simplify logic once we revamp admin levels object
   const adminLevelsNames = useCallback(() => {
     const locationName = isEnglishLanguageSelected(i18n)
       ? popup.locationName
-      : popup.locationLocalName;
+      : localizedLocationName;
     const splitNames = locationName.split(', ');
 
     const adminLevelLimit =
@@ -128,7 +146,7 @@ const MapTooltip = memo(() => {
     // If adminLevel is undefined, return the whole array
 
     return splitNames.splice(0, adminLevelLimit);
-  }, [adminLevel, i18n, popup]);
+  }, [adminLevel, i18n, localizedLocationName, popup.locationName]);
 
   if (isLoading || !popup.showing || !popup.coordinates) {
     return null;

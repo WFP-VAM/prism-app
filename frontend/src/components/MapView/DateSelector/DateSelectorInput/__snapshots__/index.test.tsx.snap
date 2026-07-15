@@ -2,11 +2,11 @@
 
 exports[`renders as expected 1`] = `
 <div>
-  <mock-button
-    classes="[object Object]"
-    variant="outlined"
+  <button
+    class="makeStyles-buttonStyle-1"
+    type="button"
   >
     Some Value
-  </mock-button>
+  </button>
 </div>
 `;

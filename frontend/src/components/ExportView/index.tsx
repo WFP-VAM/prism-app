@@ -100,12 +100,26 @@ const ExportView = memo(() => {
   useResizeObserver(footerRef, onFooterResize);
 
   const [exportMap, setExportMap] = useState<MaplibreMap | undefined>();
-  const onBaseMapReady = useCallback((map: MaplibreMap) => {
-    setExportMap(map);
-  }, []);
+  const { actions } = useMapState();
+
+  // Admin/boundary layers use useMapState().maplibreMap(); MapView is not mounted on
+  // /export, so register the export MapGL instance here (same as MapView onLoad).
+  const onBaseMapReady = useCallback(
+    (map: MaplibreMap) => {
+      setExportMap(map);
+      actions.setMap(() => map);
+    },
+    [actions],
+  );
+
+  useEffect(
+    () => () => {
+      actions.setMap(() => undefined);
+    },
+    [actions],
+  );
 
   // Selectors
-  const { actions } = useMapState();
   const datesPreloadingForWMS = useSelector(WMSLayerDatesRequested);
   const datesPreloadingForPointData = useSelector(pointDataLayerDatesRequested);
   const dispatch = useDispatch();

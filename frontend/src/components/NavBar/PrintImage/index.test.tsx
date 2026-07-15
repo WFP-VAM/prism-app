@@ -54,6 +54,9 @@ test('renders as expected', () => {
       columns: [],
       selectedDashboardIndex: 0,
     },
+    adminNameTranslationState: {
+      byLanguage: {},
+    },
   });
 
   const { container } = render(

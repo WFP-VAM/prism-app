@@ -11,6 +11,7 @@ import {
   WMSLayerProps,
 } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
+import { selectAdminNameDict } from 'context/adminNameTranslationStateSlice';
 import {
   AdminBoundaryRequestParams,
   CHART_DATA_PREFIXES,
@@ -21,11 +22,16 @@ import {
   availableDatesSelector,
   loadAvailableDatesForLayer,
 } from 'context/serverStateSlice';
+import type { RootState } from 'context/store';
 import { TableData } from 'context/tableStateSlice';
 import { GeoJsonProperties } from 'geojson';
 import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import {
+  getActiveAdminNameLanguage,
+  getAdminNameDictForLanguage,
+} from 'utils/admin-name-utils';
 import { getChartAdminBoundaryParams } from 'utils/admin-utils';
 import { getLatestPeriodRange, getTimeInMilliseconds } from 'utils/date-utils';
 import { getPossibleDatesForLayer } from 'utils/server-utils';
@@ -435,6 +441,13 @@ export const useChartData = (
 
   const dispatch = useDispatch();
   const { i18n: i18nLocale } = useSafeTranslation();
+  const adminNameLanguage = getActiveAdminNameLanguage(i18nLocale);
+  const adminNameDict = getAdminNameDictForLanguage(
+    adminNameLanguage,
+    useSelector((state: RootState) =>
+      selectAdminNameDict(state, adminNameLanguage),
+    ),
+  );
   const [chartDataset, setChartDataset] = useState<TableData | undefined>(
     undefined,
   );
@@ -452,7 +465,11 @@ export const useChartData = (
       return null;
     }
 
-    const params = getChartAdminBoundaryParams(chartLayer, adminProperties);
+    const params = getChartAdminBoundaryParams(
+      chartLayer,
+      adminProperties,
+      adminNameDict,
+    );
     const { levels } = chartLayer.chartData;
     const levelsDict = Object.fromEntries(levels.map(x => [x.level, x.id]));
 
@@ -476,6 +493,8 @@ export const useChartData = (
     startDate,
     endDate,
     countryAdmin0Id,
+    i18nLocale.resolvedLanguage,
+    adminNameDict,
   ]);
 
   const fetchData = useCallback(async () => {
