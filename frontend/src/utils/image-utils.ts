@@ -171,28 +171,7 @@ export const convertSvgToPngBaseBlobImage = async (
 
 // Original Illustrator hatch had 19 lines ~11 units apart; stride 3 ≈ 33 units (~3× spacing).
 const HATCH_LINE_STRIDE = 3;
-
-const RIGHT_DIAGONAL_LINES: Array<[number, number, number, number]> = [
-  [-13.41, 53.03, 93.66, -53.03],
-  [-7.86, 58.59, 99.22, -47.48],
-  [-2.3, 64.14, 104.78, -41.92],
-  [3.26, 69.7, 110.34, -36.37],
-  [8.81, 75.26, 115.89, -30.81],
-  [14.37, 80.81, 121.44, -25.26],
-  [19.92, 86.37, 126.99, -19.7],
-  [25.48, 91.92, 132.55, -14.14],
-  [31.03, 97.48, 138.1, -8.59],
-  [36.59, 103.03, 143.66, -3.03],
-  [42.14, 108.59, 149.21, 2.52],
-  [47.7, 114.14, 154.77, 8.08],
-  [53.26, 119.7, 160.33, 13.63],
-  [58.81, 125.26, 165.88, 19.19],
-  [64.37, 130.81, 171.44, 24.74],
-  [69.92, 136.37, 176.99, 30.3],
-  [75.48, 141.92, 182.55, 35.86],
-  [81.03, 147.48, 188.1, 41.41],
-  [86.59, 153.03, 193.66, 46.97],
-];
+const PATTERN_SIZE = 100;
 
 const LEFT_DIAGONAL_LINES: Array<[number, number, number, number]> = [
   [153.03, 53.03, 46.97, -53.03],
@@ -216,17 +195,25 @@ const LEFT_DIAGONAL_LINES: Array<[number, number, number, number]> = [
   [53.03, 153.03, -53.03, 46.97],
 ];
 
-const diagonalHatchSvg = (strokeColor: string, direction: 'left' | 'right') => {
-  const patternTransform =
-    direction === 'right'
-      ? 'translate(-13.41 -30.89)'
-      : 'translate(-86.59 -30.89)';
+const subsampledHatchLines = (lines: Array<[number, number, number, number]>) =>
+  lines.filter((_, index) => index % HATCH_LINE_STRIDE === 0);
 
-  const sourceLines =
-    direction === 'right' ? RIGHT_DIAGONAL_LINES : LEFT_DIAGONAL_LINES;
-  const lines = sourceLines.filter(
-    (_, index) => index % HATCH_LINE_STRIDE === 0,
-  );
+/** Mirror working \ lines to / — same tile phase + transform as left. */
+const mirrorLinesForRight = (
+  lines: Array<[number, number, number, number]>,
+): Array<[number, number, number, number]> =>
+  lines.map(([x1, y1, x2, y2]) => [
+    PATTERN_SIZE - x1,
+    y1,
+    PATTERN_SIZE - x2,
+    y2,
+  ]);
+
+const diagonalHatchSvg = (strokeColor: string, direction: 'left' | 'right') => {
+  const patternTransform = 'translate(-86.59 -30.89)';
+  const sourceLines = subsampledHatchLines(LEFT_DIAGONAL_LINES);
+  const lines =
+    direction === 'right' ? mirrorLinesForRight(sourceLines) : sourceLines;
 
   const lineElements = lines
     .map(
@@ -235,17 +222,17 @@ const diagonalHatchSvg = (strokeColor: string, direction: 'left' | 'right') => {
     )
     .join('');
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="50" height="50">
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${PATTERN_SIZE} ${PATTERN_SIZE}" width="50" height="50">
     <defs>
       <clipPath id="clip-path-${direction}">
-        <rect width="100" height="100"/>
+        <rect width="${PATTERN_SIZE}" height="${PATTERN_SIZE}"/>
       </clipPath>
-      <pattern id="diagonal-${direction}" width="100" height="100" patternTransform="${patternTransform}" patternUnits="userSpaceOnUse" viewBox="0 0 100 100">
-        <rect width="100" height="100" fill="none"/>
+      <pattern id="diagonal-${direction}" width="${PATTERN_SIZE}" height="${PATTERN_SIZE}" patternTransform="${patternTransform}" patternUnits="userSpaceOnUse" viewBox="0 0 ${PATTERN_SIZE} ${PATTERN_SIZE}">
+        <rect width="${PATTERN_SIZE}" height="${PATTERN_SIZE}" fill="none"/>
         <g clip-path="url(#clip-path-${direction})">${lineElements}</g>
       </pattern>
     </defs>
-    <rect width="100" height="100" fill="url(#diagonal-${direction})"/>
+    <rect width="${PATTERN_SIZE}" height="${PATTERN_SIZE}" fill="url(#diagonal-${direction})"/>
   </svg>`;
 };
 
