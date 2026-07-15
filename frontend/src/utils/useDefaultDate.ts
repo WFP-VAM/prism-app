@@ -1,7 +1,7 @@
 import { isMainLayer, LayerKey, SelectedDateTimestamp } from 'config/types';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { getFormattedDate } from './date-utils';
 import { useUrlHistory } from './url-utils';
@@ -15,7 +15,6 @@ import { useMapState } from './useMapState';
 export function useDefaultDate(
   layerId: LayerKey,
 ): SelectedDateTimestamp | undefined {
-  const dispatch = useDispatch();
   const { dateRange, layers, ...mapState } = useMapState();
   // check layer without group or main layer in group
   const mainLayer = isMainLayer(layerId as string, layers);
@@ -44,7 +43,6 @@ export function useDefaultDate(
     }
   }, [
     defaultDate,
-    dispatch,
     selectedDate,
     updateHistory,
     mainLayer,
