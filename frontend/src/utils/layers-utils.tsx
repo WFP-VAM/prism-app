@@ -473,7 +473,7 @@ const useLayers = () => {
       return;
     }
 
-    if (!Number.isNaN(dateInt)) {
+    if (dateInt !== undefined && !Number.isNaN(dateInt)) {
       mapState.actions.updateDateRange({ startDate: dateInt });
       updateHistory('date', getFormattedDate(dateInt, 'default') as string);
       return;
