@@ -12,7 +12,7 @@ export const mapProjection: ProjectionSpecification = {
   type: 'globe',
 };
 
-/** Flat projection used after country zoom completes and in non-landing views. */
+/** Flat (mercator) projection used for non-universal deployments. */
 export const mapFlatProjection: ProjectionSpecification = {
   type: 'mercator',
 };
