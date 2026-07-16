@@ -323,17 +323,17 @@ function MapExportLayout({
   }, [bounds]);
 
   const loadDataLayerAssets = useCallback(
-    (map: maplibregl.Map | undefined) => {
+    async (map: maplibregl.Map | undefined) => {
       if (!map) {
         return;
       }
 
-      Promise.all(
-        adminLevelLayersWithFillPattern.map(layer =>
+      await Promise.all([
+        ...adminLevelLayersWithFillPattern.map(layer =>
           addFillPatternImagesInMap(layer, map),
         ),
-      );
-      loadStormIcons(map, false);
+        loadStormIcons(map, false),
+      ]);
       ensureSDFIconsLoaded(map);
     },
     [adminLevelLayersWithFillPattern],
@@ -648,7 +648,6 @@ function MapExportLayout({
             display: 'flex',
             justifyContent:
               legendPosition % 2 === 0 ? 'flex-start' : 'flex-end',
-            width: '20px',
             transform: `scale(${legendScale})`,
             transformOrigin:
               legendPosition % 2 === 0 ? 'top left' : 'top right',
@@ -671,7 +670,7 @@ function MapExportLayout({
         <MapGL
           ref={baseMapRef}
           dragRotate={false}
-          preserveDrawingBuffer
+          canvasContextAttributes={{ preserveDrawingBuffer: true }}
           initialViewState={effectiveInitialViewState}
           onLoad={handleBaseMapLoad}
           mapStyle={basemapMapStyle}
@@ -810,7 +809,6 @@ const useStyles = makeStyles(() =>
       borderTop: `1px solid ${lightGrey}`,
     },
     legendListStyle: {
-      position: 'absolute',
       top: '8px',
       zIndex: 2,
     },
