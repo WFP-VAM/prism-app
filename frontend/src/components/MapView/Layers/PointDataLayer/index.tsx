@@ -29,7 +29,7 @@ import {
   userAuthSelector,
 } from 'context/serverStateSlice';
 import { loadAvailableDatesForLayer } from 'context/serverStateSlice';
-import { Point } from 'geojson';
+import { FeatureCollection, Point } from 'geojson';
 import { geoToH3, h3ToGeoBoundary } from 'h3-js';
 import {
   FillLayerSpecification,
@@ -194,33 +194,26 @@ const PointDataLayer = memo(({ layer, before }: LayersProps) => {
   }
 
   if (layer.hexDisplay) {
-    const finalFeatures =
-      clippedData &&
-      clippedData.features
-        .map(feature => {
-          const point = feature.geometry as Point;
+    const finalFeatures = clippedData.features.flatMap(feature => {
+      const point = feature.geometry as Point;
 
-          // Convert the point to a hexagon
-          const hexagon = geoToH3(
-            point.coordinates[1],
-            point.coordinates[0],
-            6.9, // resolution, adjust as needed
-          );
-          if (!feature?.properties?.F2023_an_1) {
-            return null;
-          }
-          return {
-            ...feature,
-            geometry: {
-              type: 'Polygon',
-              coordinates: [h3ToGeoBoundary(hexagon, true)], // Convert the hexagon to a GeoJSON polygon
-            },
-          };
-        })
-        .filter(Boolean);
+      const hexagon = geoToH3(point.coordinates[1], point.coordinates[0], 6.9);
+      if (!feature?.properties?.F2023_an_1) {
+        return [];
+      }
+      return [
+        {
+          ...feature,
+          geometry: {
+            type: 'Polygon' as const,
+            coordinates: [h3ToGeoBoundary(hexagon, true)],
+          },
+        },
+      ];
+    });
 
-    const filteredData = {
-      ...clippedData,
+    const filteredData: FeatureCollection = {
+      type: 'FeatureCollection',
       features: finalFeatures,
     };
 

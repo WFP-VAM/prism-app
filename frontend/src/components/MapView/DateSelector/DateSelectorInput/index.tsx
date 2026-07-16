@@ -1,37 +1,27 @@
-import {
-  Button,
-  ButtonProps,
-  createStyles,
-  makeStyles,
-  Theme,
-} from '@material-ui/core';
-import { forwardRef } from 'react';
+import { createStyles, makeStyles, Theme } from '@material-ui/core';
+import { ButtonHTMLAttributes, forwardRef } from 'react';
 
-export type DateSelectorInputProps = Omit<ButtonProps, 'children'> & {
+export type DateSelectorInputProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   value?: string;
 };
 
 /**
- * MUI puts label text in `.MuiButton-label`. react-datepicker decides "outside click" via
- * `target.classList.contains('react-datepicker-ignore-onclickoutside')` on the event target;
- * clicks on the label would hit the span, not the root. `pointer-events: none` on the label
- * makes hits target the root button instead.
+ * Native button for react-datepicker `customInput`. Avoids MUI Button ref
+ * composition (setRef/composeRefs), which can loop under React 19 when the
+ * picker re-clones the input during rapid layer/date updates.
  */
 const DateSelectorInput = forwardRef<HTMLButtonElement, DateSelectorInputProps>(
-  ({ value, className, onMouseDown, ...rest }, ref) => {
+  ({ value, className, onMouseDown, type = 'button', ...rest }, ref) => {
     const classes = useStyles();
     const rootClassName = [classes.buttonStyle, className]
       .filter(Boolean)
       .join(' ');
     return (
-      <Button
+      <button
         {...rest}
         ref={ref}
-        variant="outlined"
-        classes={{
-          root: rootClassName,
-          label: classes.labelNoPointer,
-        }}
+        type={type}
+        className={rootClassName}
         onMouseDown={e => {
           onMouseDown?.(e);
           // document-level mousedown listener in react-datepicker + map canvas bubbling
@@ -39,40 +29,36 @@ const DateSelectorInput = forwardRef<HTMLButtonElement, DateSelectorInputProps>(
         }}
       >
         {value}
-      </Button>
+      </button>
     );
   },
 );
 
+DateSelectorInput.displayName = 'DateSelectorInput';
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     buttonStyle: {
-      // Use && to increase specificity — bypassing MUI dev environment issue
-      '&&': {
-        margin: 0,
-        boxSizing: 'border-box',
-        color: '#101010',
-        fontWeight: 'bold',
-        border: '1px solid rgba(0, 0, 0, 0.23)',
-        borderRadius: theme.shape.borderRadius,
-        padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
-        fontSize: theme.typography.button.fontSize,
-        fontFamily: theme.typography.fontFamily,
-        lineHeight: 1.75,
-        textTransform: 'none',
-        backgroundColor: theme.palette.common.white,
-        cursor: 'pointer',
-      },
-      '&&:hover': {
+      margin: 0,
+      boxSizing: 'border-box',
+      color: '#101010',
+      fontWeight: 'bold',
+      border: '1px solid rgba(0, 0, 0, 0.23)',
+      borderRadius: theme.shape.borderRadius,
+      padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+      fontSize: theme.typography.button.fontSize,
+      fontFamily: theme.typography.fontFamily,
+      lineHeight: 1.75,
+      textTransform: 'none',
+      backgroundColor: theme.palette.common.white,
+      cursor: 'pointer',
+      '&:hover': {
         backgroundColor: 'rgba(0, 0, 0, 0.04)',
       },
-      '&&:disabled': {
+      '&:disabled': {
         color: theme.palette.action.disabled,
         cursor: 'default',
       },
-    },
-    labelNoPointer: {
-      pointerEvents: 'none',
     },
   }),
 );
