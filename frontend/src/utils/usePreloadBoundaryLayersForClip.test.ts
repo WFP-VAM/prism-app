@@ -3,7 +3,7 @@ import { BoundaryLayerProps } from 'config/types';
 import { getBoundaryLayers } from 'config/utils';
 
 import { boundaryCache } from './boundary-cache';
-import { isUniversalDeployment } from './universal-utils';
+import { usesPmtilesBoundaries } from './universal-utils';
 import { usePreloadBoundaryLayersForClip } from './usePreloadBoundaryLayersForClip';
 
 jest.mock('config/utils', () => ({
@@ -17,7 +17,7 @@ jest.mock('./boundary-cache', () => ({
 }));
 
 jest.mock('./universal-utils', () => ({
-  isUniversalDeployment: jest.fn(),
+  usesPmtilesBoundaries: jest.fn(),
 }));
 
 const mockGetBoundaryLayers = getBoundaryLayers as jest.MockedFunction<
@@ -27,8 +27,8 @@ const mockPreloadBoundaries =
   boundaryCache.preloadBoundaries as jest.MockedFunction<
     typeof boundaryCache.preloadBoundaries
   >;
-const mockIsUniversalDeployment = isUniversalDeployment as jest.MockedFunction<
-  typeof isUniversalDeployment
+const mockUsesPmtilesBoundaries = usesPmtilesBoundaries as jest.MockedFunction<
+  typeof usesPmtilesBoundaries
 >;
 
 const geojsonLayer = {
@@ -39,10 +39,10 @@ const geojsonLayer = {
 } as BoundaryLayerProps;
 
 const pmtilesLayer = {
-  id: 'global_admin1_boundaries',
+  id: 'universal_admin1_boundaries',
   type: 'boundary',
   format: 'pmtiles',
-  path: 'https://pmtiles-hosting.s3.eu-central-1.amazonaws.com/global/global_admin_boundaries_no_drop.pmtiles',
+  path: 'https://pmtiles-hosting.s3.eu-central-1.amazonaws.com/universal/global_admin_boundaries.pmtiles',
 } as BoundaryLayerProps;
 
 const dispatch = jest.fn();
@@ -51,14 +51,14 @@ describe('usePreloadBoundaryLayersForClip', () => {
   beforeEach(() => {
     mockGetBoundaryLayers.mockReturnValue([geojsonLayer, pmtilesLayer]);
     mockPreloadBoundaries.mockResolvedValue(undefined);
-    mockIsUniversalDeployment.mockReturnValue(false);
+    mockUsesPmtilesBoundaries.mockReturnValue(false);
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('preloads only non-PMTiles boundary layers in non-universal deployments', async () => {
+  it('preloads only non-PMTiles boundary layers for GeoJSON-boundary deployments', async () => {
     renderHook(() =>
       usePreloadBoundaryLayersForClip({
         enabled: true,
@@ -75,8 +75,8 @@ describe('usePreloadBoundaryLayersForClip', () => {
     });
   });
 
-  it('preloads all boundary layers in universal deployments', async () => {
-    mockIsUniversalDeployment.mockReturnValue(true);
+  it('preloads all boundary layers for PMTiles-boundary deployments', async () => {
+    mockUsesPmtilesBoundaries.mockReturnValue(true);
 
     renderHook(() =>
       usePreloadBoundaryLayersForClip({

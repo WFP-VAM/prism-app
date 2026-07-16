@@ -2,7 +2,10 @@ import { createTheme, ThemeProvider } from '@material-ui/core';
 import { render, screen } from '@testing-library/react';
 import { store } from 'context/store';
 import { Provider } from 'react-redux';
-import { isUniversalDeployment } from 'utils/universal-utils';
+import {
+  isUniversalDeployment,
+  usesPmtilesBoundaries,
+} from 'utils/universal-utils';
 
 import MapView from '.';
 
@@ -26,10 +29,15 @@ jest.mock('react-router-dom', () => ({
 jest.mock('utils/universal-utils', () => ({
   ...jest.requireActual('utils/universal-utils'),
   isUniversalDeployment: jest.fn(() => false),
+  usesPmtilesBoundaries: jest.fn(() => false),
 }));
 
 const mockIsUniversalDeployment = isUniversalDeployment as jest.MockedFunction<
   typeof isUniversalDeployment
+>;
+
+const mockUsesPmtilesBoundaries = usesPmtilesBoundaries as jest.MockedFunction<
+  typeof usesPmtilesBoundaries
 >;
 
 describe('MapView', () => {
@@ -46,6 +54,7 @@ describe('MapView', () => {
 
   afterEach(() => {
     mockIsUniversalDeployment.mockReturnValue(false);
+    mockUsesPmtilesBoundaries.mockReturnValue(false);
   });
 
   test('renders as expected', () => {
@@ -59,8 +68,8 @@ describe('MapView', () => {
     expect(container).toMatchSnapshot();
   });
 
-  test('shows boundary loading overlay in universal deployments', () => {
-    mockIsUniversalDeployment.mockReturnValue(true);
+  test('shows boundary loading overlay for PMTiles-boundary deployments', () => {
+    mockUsesPmtilesBoundaries.mockReturnValue(true);
 
     render(
       <Provider store={store}>

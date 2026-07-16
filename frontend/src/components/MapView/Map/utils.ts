@@ -1,3 +1,4 @@
+import { appConfig } from 'config';
 import { ProjectionSpecification, SkySpecification } from 'maplibre-gl';
 
 export const mapStyle =
@@ -7,15 +8,22 @@ export const mapStyle =
 /** Canvas/container fallback behind the WebGL globe (matches app lightGrey). */
 export const mapBackdropColor = '#637178';
 
-/** Globe projection for universal landing view and zoom-to-country animation. */
+/** Globe projection (Global / Universal when map.globeProjection is enabled). */
 export const mapProjection: ProjectionSpecification = {
   type: 'globe',
 };
 
-/** Flat (mercator) projection used for non-universal deployments. */
+/** Flat (mercator) projection used when globeProjection is not enabled. */
 export const mapFlatProjection: ProjectionSpecification = {
   type: 'mercator',
 };
+
+/** True when the active deployment's prism.json sets map.globeProjection. */
+export function usesGlobeProjection(): boolean {
+  return Boolean(
+    (appConfig as { map?: { globeProjection?: boolean } }).map?.globeProjection,
+  );
+}
 
 /** Light gray sky/atmosphere for globe projection (re-applied on style.load by react-map-gl). */
 export const mapSky: SkySpecification = {

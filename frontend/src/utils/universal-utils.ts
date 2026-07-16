@@ -22,6 +22,16 @@ export function isUniversalDeployment(): boolean {
   return Boolean(config.universal ?? config.urlDriven);
 }
 
+/**
+ * True when the deployment's displayed boundaries are served from PMTiles
+ * (Global and Universal). These load asynchronously in the map, so they need
+ * the boundary loading overlay on first render and explicit preloading before
+ * clip/export. GeoJSON-boundary country deployments (e.g. Mozambique) do not.
+ */
+export function usesPmtilesBoundaries(): boolean {
+  return getDisplayBoundaryLayers().some(layer => layer.format === 'pmtiles');
+}
+
 export function normalizeIso3(iso3: string | undefined): string | undefined {
   return iso3?.trim().toUpperCase();
 }
@@ -105,12 +115,11 @@ export function applyUniversalLandingViewport(
   );
 }
 
-/** Initial / return-to-landing map viewport for universal deployments. */
+/**
+ * Initial / return-to-landing map viewport when prism.json defines map.landingView.
+ * Used by Universal (landing) and Global (initial load).
+ */
 export function getUniversalLandingView(): UniversalLandingView | undefined {
-  if (!isUniversalDeployment()) {
-    return undefined;
-  }
-
   const landingView = (appConfig.map as { landingView?: UniversalLandingView })
     .landingView;
 

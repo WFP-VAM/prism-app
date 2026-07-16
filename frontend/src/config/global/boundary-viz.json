@@ -1,0 +1,57 @@
+{
+  "universal_admin3_boundaries": {
+    "opacity": 0.3,
+    "minZoom": 8,
+    "styles": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 0.2,
+        "line-opacity": 0.8
+      }
+    }
+  },
+  "universal_admin2_boundaries": {
+    "opacity": 0.5,
+    "minZoom": 6,
+    "styles": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1,
+        "line-opacity": 0.8
+      }
+    }
+  },
+  "universal_admin1_boundaries": {
+    "opacity": 0.7,
+    "minZoom": 4,
+    "styles": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1.5,
+        "line-opacity": 0.8
+      }
+    }
+  },
+  "universal_admin0_boundaries": {
+    "opacity": 0.8,
+    "styles": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 2,
+        "line-opacity": 0.8
+      }
+    }
+  }
+}

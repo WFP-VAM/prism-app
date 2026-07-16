@@ -153,7 +153,7 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
     ? ((getIso3MapFilter(iso3) ?? getUniversalAdmin0LandingFilter()) as any)
     : undefined;
   const [isZoomLevelSufficient, setIsZoomLevelSufficient] = useState(
-    !layer.minZoom,
+    !layer.minZoom && layer.maxZoom === undefined,
   );
   const [hovered, setHovered] = useState<
     { iso3: string; name: string; lng: number; lat: number } | undefined
@@ -232,21 +232,27 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
     };
   }, [selectedMap, isLandingMode, layer.id, layerId]);
 
-  // Control the zoom level threshold above which the layer will not be displayed
+  // Control zoom thresholds so the layer is only painted within [minZoom, maxZoom].
+  // The layer stays loaded; opacity is set to 0 outside the range.
   useEffect(() => {
-    if (!selectedMap || !layer.minZoom) {
+    if (
+      !selectedMap ||
+      (layer.minZoom === undefined && layer.maxZoom === undefined)
+    ) {
       return undefined;
     }
     const checkZoom = () => {
       const zoom = selectedMap.getZoom();
-      setIsZoomLevelSufficient(zoom > layer.minZoom!);
+      const aboveMin = layer.minZoom === undefined || zoom > layer.minZoom;
+      const belowMax = layer.maxZoom === undefined || zoom <= layer.maxZoom;
+      setIsZoomLevelSufficient(aboveMin && belowMax);
     };
     checkZoom(); // Initial check
     selectedMap.on('zoomend', checkZoom);
     return () => {
       selectedMap.off('zoomend', checkZoom);
     };
-  }, [selectedMap, layer.minZoom]);
+  }, [selectedMap, layer.minZoom, layer.maxZoom]);
 
   const dispatch = useDispatch();
   const isPrimaryLayer = isPrimaryBoundaryLayer(layer);

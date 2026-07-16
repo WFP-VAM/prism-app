@@ -16,6 +16,7 @@ import {
   getCountryBbox,
   getDisplayBoundaryLayersForIso3,
   isUniversalDeployment,
+  usesPmtilesBoundaries,
 } from 'utils/universal-utils';
 import { useMapState } from 'utils/useMapState';
 
@@ -129,7 +130,7 @@ const MapView = memo(() => {
       <LeftPanel />
       <OtherFeatures />
       <MapComponent />
-      {isUniversalDeployment() && (
+      {usesPmtilesBoundaries() && (
         <BoundaryLoadingOverlay
           displayedBoundaryLayerIds={displayedBoundaryLayerIds}
           viewKey={boundaryLoadingViewKey}

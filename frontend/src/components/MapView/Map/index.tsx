@@ -68,6 +68,7 @@ import {
   mapProjection,
   mapSky,
   mapStyle,
+  usesGlobeProjection,
 } from './utils';
 
 initPmtilesProtocol();
@@ -127,12 +128,14 @@ const MapComponent = memo(
 
     const mapState = useMapState();
     const { iso3 } = useCountryIso();
-    const universalLandingView = getUniversalLandingView();
+    const landingView = getUniversalLandingView();
     const isUniversalLanding = isUniversalLandingMode(iso3);
-    // Globe projection is scoped to the universal deployment only. It is used on
-    // first load, through the zoom-in animation, and for the entire session.
-    // Every other deployment always stays on the flat (mercator) projection.
-    const projection = isUniversalDeployment()
+    // Universal: landing view only on country-list screen. Global: always on load.
+    const useLandingViewBounds =
+      Boolean(landingView) && (isUniversalLanding || !isUniversalDeployment());
+    // Globe when prism.json sets map.globeProjection (Global and Universal).
+    // Used for the entire session; other deployments stay mercator.
+    const projection = usesGlobeProjection()
       ? mapProjection
       : mapFlatProjection;
     const isGlobeProjection = projection.type === 'globe';
@@ -333,8 +336,8 @@ const MapComponent = memo(
 
     // Use captured viewport if available and not in edit mode
     const initialBounds =
-      isUniversalLanding && universalLandingView
-        ? universalLandingView.bounds
+      useLandingViewBounds && landingView
+        ? landingView.bounds
         : !isGlobalMap &&
             dashboardMode !== DashboardMode.EDIT &&
             mapState.capturedViewport
@@ -352,10 +355,10 @@ const MapComponent = memo(
         maxZoom={maxZoom}
         initialViewState={{
           bounds: initialBounds as LngLatBoundsLike,
-          ...(isUniversalLanding && universalLandingView && !smDown
+          ...(useLandingViewBounds && landingView && !smDown
             ? {
-                padding: universalLandingView.padding,
-                fitBoundsOptions: { padding: universalLandingView.padding },
+                padding: landingView.padding,
+                fitBoundsOptions: { padding: landingView.padding },
               }
             : {
                 fitBoundsOptions: smDown

@@ -422,6 +422,11 @@ export class BoundaryLayerProps extends CommonLayerProps {
   @optional
   minZoom?: number;
 
+  // Maximum zoom level to display the boundary.
+  // Note that the layer is still loaded, but not displayed above this zoom.
+  @optional
+  maxZoom?: number;
+
   /** URL template for per-language admin name sidecar JSON ({lang} placeholder). */
   @optional
   translationsPath?: string;
