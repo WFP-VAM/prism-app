@@ -157,6 +157,7 @@ exports[`renders as expected 1`] = `
             </mock-menu>
             <mock-button
               starticon="[object Object]"
+              style="color: white;"
             >
               <mock-typography
                 style="color: rgb(255, 255, 255); text-transform: none;"

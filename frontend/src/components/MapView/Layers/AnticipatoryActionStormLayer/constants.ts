@@ -25,28 +25,27 @@ export const WIND_TYPE_TO_ICON_MAP: Record<string, string> = {
  * @param map - The MapLibre GL map instance to load icons into
  * @param throwOnError - Whether to throw errors or just log warnings (default: false)
  */
-export const loadStormIcons = (map: Map | undefined, throwOnError = false) => {
+export const loadStormIcons = async (
+  map: Map | undefined,
+  throwOnError = false,
+) => {
   if (!map) {
     return;
   }
 
-  const loadImage = (url: string, name: string) => {
-    map.loadImage(url, (error, image) => {
-      if (error) {
+  await Promise.all(
+    Object.entries(WIND_TYPE_TO_ICON_MAP).map(async ([name, url]) => {
+      try {
+        const { data: image } = await map.loadImage(url);
+        if (!map.hasImage(name)) {
+          map.addImage(name, image);
+        }
+      } catch (error) {
         if (throwOnError) {
           throw error;
-        } else {
-          console.warn(`Failed to load storm icon ${name}:`, error);
-          return;
         }
+        console.warn(`Failed to load storm icon ${name}:`, error);
       }
-      if (!map.hasImage(name)) {
-        map.addImage(name, image!);
-      }
-    });
-  };
-
-  Object.entries(WIND_TYPE_TO_ICON_MAP).forEach(([name, url]) => {
-    loadImage(url, name);
-  });
+    }),
+  );
 };
