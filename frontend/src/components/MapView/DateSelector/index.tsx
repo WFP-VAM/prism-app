@@ -142,14 +142,6 @@ const DateSelector = memo(() => {
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const xsDown = useMediaQuery(theme.breakpoints.down('xs'));
 
-  useEffect(() => {
-    const closestDate = checkSelectedDateForLayerSupport(stateStartDate);
-    if (closestDate) {
-      updateStartDate(new Date(closestDate), true);
-    }
-    // Recalculate when layers or available dates change
-  }, [selectedLayers, availableDates]);
-
   const maxDate = useMemo(
     () => new Date(Math.max(...availableDates, new Date().getTime())),
     [availableDates],
@@ -702,6 +694,11 @@ const DateSelector = memo(() => {
     setDatePickerOpen(prev => !prev);
   }, []);
 
+  // Stable element reference — inline `<DateSelectorInput />` on every render makes
+  // react-datepicker re-clone the input and re-run MUI ref composition (setRef),
+  // which can hit React 19's max update depth during rapid layer/date churn.
+  const datePickerCustomInput = useMemo(() => <DateSelectorInput />, []);
+
   // Stable `selected` instance when the calendar day is unchanged so rapid layer /
   // date churn does not force extra DatePicker internal updates.
   const selectedPickerDate = useMemo(() => {
@@ -771,7 +768,7 @@ const DateSelector = memo(() => {
             showMonthDropdown
             showYearDropdown
             dropdownMode="select"
-            customInput={<DateSelectorInput />}
+            customInput={datePickerCustomInput}
             // Include "today" so that the user can select it and get an error message if
             // the selected date is not available
             filterDate={(date: Date) =>
