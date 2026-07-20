@@ -70,3 +70,31 @@ def test_can_access_country_scoped_grant() -> None:
         permission_code=DASHBOARD_MANAGE,
         country="mozambique",
     )
+
+
+def test_can_access_country_star_grant_is_unrestricted() -> None:
+    assert can_access_country(
+        codes={MAP_EXPORTS_MANAGE},
+        scopes={MAP_EXPORTS_MANAGE: None},
+        permission_code=MAP_EXPORTS_MANAGE,
+        country="malawi",
+    )
+
+
+def test_can_access_country_missing_scope_denies() -> None:
+    # Permission in codes but absent from scopes must not fail open as *.
+    assert not can_access_country(
+        codes={MAP_EXPORTS_MANAGE},
+        scopes={},
+        permission_code=MAP_EXPORTS_MANAGE,
+        country="malawi",
+    )
+
+
+def test_can_access_country_empty_scope_denies() -> None:
+    assert not can_access_country(
+        codes={MAP_EXPORTS_MANAGE},
+        scopes={MAP_EXPORTS_MANAGE: frozenset()},
+        permission_code=MAP_EXPORTS_MANAGE,
+        country="malawi",
+    )

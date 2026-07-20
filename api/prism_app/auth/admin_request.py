@@ -52,10 +52,17 @@ def request_allowed_countries(
     request: Request,
     permission_code: str,
 ) -> frozenset[str] | None:
-    """Allowed countries for ``permission_code``; ``None`` means unrestricted."""
+    """Allowed countries for ``permission_code``; ``None`` means unrestricted.
+
+    Missing ``permission_code`` in scopes is empty (deny), not unrestricted.
+    Only an explicit ``None`` value means ``*`` (all countries).
+    """
     if request_has_prism_admin_access(request):
         return None
-    return _permission_scopes(request).get(permission_code)
+    scopes = _permission_scopes(request)
+    if permission_code not in scopes:
+        return frozenset()
+    return scopes[permission_code]
 
 
 def request_can_access_country(

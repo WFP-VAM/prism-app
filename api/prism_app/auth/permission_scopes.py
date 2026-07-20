@@ -73,7 +73,10 @@ def can_access_country(
         return True
     if permission_code not in codes:
         return False
-    allowed = scopes.get(permission_code)
+    # Missing key is deny (not unrestricted). Only an explicit None value means *.
+    if permission_code not in scopes:
+        return False
+    allowed = scopes[permission_code]
     if allowed is None:
         return True
     if not allowed:

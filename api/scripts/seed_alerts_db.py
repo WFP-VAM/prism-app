@@ -33,12 +33,18 @@ from urllib.parse import quote_plus
 import psycopg2
 
 _SEED_RBAC_USERS = (
+    ("b0000001-0000-4000-8000-000000000001", "seed-cambodia-aa@example.com"),
+    ("b0000002-0000-4000-8000-000000000002", "seed-cambodia-dashboard@example.com"),
+    ("b0000003-0000-4000-8000-000000000003", "seed-cambodia-scheduled-map@example.com"),
+    ("b0000005-0000-4000-8000-000000000005", "seed-malawi-aa@example.com"),
+    ("b0000006-0000-4000-8000-000000000006", "seed-malawi-dashboard@example.com"),
+    ("b0000007-0000-4000-8000-000000000007", "seed-malawi-scheduled-map@example.com"),
+    ("b0000009-0000-4000-8000-000000000009", "seed-mozambique-aa@example.com"),
+    ("b000000a-0000-4000-8000-00000000000a", "seed-mozambique-dashboard@example.com"),
     (
         "b000000b-0000-4000-8000-00000000000b",
         "seed-mozambique-scheduled-map@example.com",
     ),
-    ("b0000007-0000-4000-8000-000000000007", "seed-malawi-scheduled-map@example.com"),
-    ("b0000005-0000-4000-8000-000000000005", "seed-malawi-aa@example.com"),
 )
 
 
