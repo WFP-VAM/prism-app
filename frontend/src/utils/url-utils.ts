@@ -124,6 +124,9 @@ export const useUrlHistory = () => {
 
   const updateHistory = useCallback(
     (key: string, value: string) => {
+      if (urlParams.get(key) === value) {
+        return;
+      }
       urlParams.set(key, value);
       replace({ search: urlParams.toString() });
     },

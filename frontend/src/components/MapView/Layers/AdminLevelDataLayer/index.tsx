@@ -68,7 +68,9 @@ const AdminLevelDataLayers = memo(
     const clippedData = useClippedFeatureCollection(data);
 
     useEffect(() => {
-      addFillPatternImagesInMap(layer, map);
+      void addFillPatternImagesInMap(layer, map).catch(error => {
+        console.error('Failed to add fill pattern images:', error);
+      });
     }, [layer, map]);
 
     useEffect(() => {
