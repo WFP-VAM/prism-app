@@ -61,7 +61,7 @@ def api_client(sqlite_engine) -> Generator[TestClient, None, None]:
     def override_prism_session() -> (
         tuple[User, set[str], dict[str, frozenset[str] | None]]
     ):
-        return user, {MAP_EXPORTS_MANAGE}, {}
+        return user, {MAP_EXPORTS_MANAGE}, {MAP_EXPORTS_MANAGE: None}
 
     app.dependency_overrides[get_export_jobs_session] = override_session
     app.dependency_overrides[require_prism_session] = override_prism_session
