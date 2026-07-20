@@ -204,7 +204,7 @@ exports[`renders as expected 1`] = `
         >
           <mock-button
             aria-label="Legend"
-            class="makeStyles-triggerButton-22"
+            class="makeStyles-triggerButton-24"
             starticon="[object Object]"
             style="background-color: rgb(99, 178, 189);"
           >
@@ -226,7 +226,7 @@ exports[`renders as expected 1`] = `
             >
               <svg
                 aria-hidden="true"
-                class="MuiSvgIcon-root makeStyles-icon-24"
+                class="MuiSvgIcon-root makeStyles-icon-26"
                 focusable="false"
                 style="color: rgb(16, 16, 16);"
                 viewBox="0 0 24 24"
@@ -241,7 +241,7 @@ exports[`renders as expected 1`] = `
             />
           </button>
           <mock-list
-            class="makeStyles-list-23"
+            class="makeStyles-list-25"
             disablepadding=""
           />
           <mock-printimage />
@@ -300,7 +300,7 @@ exports[`renders as expected 1`] = `
             </mock-typography>
           </mock-button>
           <mock-menu
-            class="makeStyles-block-26"
+            class="makeStyles-block-28"
           >
             <mock-menuitem
               aria-label="language-select-dropdown-menu-item-en"
