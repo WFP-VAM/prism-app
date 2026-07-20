@@ -1,6 +1,5 @@
 {
   "universal_admin3_boundaries": {
-    "opacity": 0.8,
     "minZoom": 5,
     "styles": {
       "fill": {
@@ -14,7 +13,6 @@
     }
   },
   "universal_admin2_boundaries": {
-    "opacity": 0.8,
     "styles": {
       "fill": {
         "fill-opacity": 0
@@ -27,7 +25,6 @@
     }
   },
   "universal_admin1_boundaries": {
-    "opacity": 0.8,
     "styles": {
       "fill": {
         "fill-opacity": 0
@@ -40,7 +37,6 @@
     }
   },
   "universal_admin0_boundaries": {
-    "opacity": 0.8,
     "styles": {
       "fill": {
         "fill-opacity": 0
