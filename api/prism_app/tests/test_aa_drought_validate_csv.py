@@ -108,6 +108,20 @@ async def test_validate_csv_upload_infers_country_for_scoped_manager() -> None:
 
 
 @pytest.mark.asyncio
+async def test_validate_csv_upload_accepts_explicit_country_for_unrestricted_scope() -> (
+    None
+):
+    form = FormData(
+        [
+            ("country", "zimbabwe"),
+            ("csv_content", _upload("aa.csv", _GOOD_CSV.encode())),
+        ]
+    )
+    response = await validate_aa_drought_csv_upload(_request(form, countries=None))
+    assert response.status_code == 200
+
+
+@pytest.mark.asyncio
 async def test_validate_csv_upload_forbidden_for_country_outside_scope() -> None:
     form = FormData(
         [

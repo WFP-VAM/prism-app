@@ -7,6 +7,7 @@ from prism_app.aa_drought.aa_drought_admin import (
     register_aa_drought_admin_routes,
 )
 from prism_app.aa_drought.country_scope import (
+    aa_drought_country_choices,
     aa_drought_country_field_visible,
     apply_inferred_aa_drought_country,
 )
@@ -302,9 +303,24 @@ class GatedAaDroughtAdminView(AaDroughtAdminView):
         action: RequestAction = RequestAction.LIST,
     ) -> list[Any]:
         fields = super().get_fields_list(request, action)
-        if aa_drought_country_field_visible(request):
+        if not aa_drought_country_field_visible(request):
+            return [field for field in fields if field.name != "country"]
+        if request_has_prism_admin_access(request):
             return fields
-        return [field for field in fields if field.name != "country"]
+        scoped_fields: list[Any] = []
+        for field in fields:
+            if field.name != "country":
+                scoped_fields.append(field)
+                continue
+            scoped_fields.append(
+                EnumField(
+                    "country",
+                    label=field.label,
+                    required=True,
+                    choices_loader=aa_drought_country_choices,
+                )
+            )
+        return scoped_fields
 
     def _aa_drought_searchable_fields(self, request: Request) -> tuple[str, ...]:
         if aa_drought_country_field_visible(request):
