@@ -132,12 +132,18 @@ async def test_user_permission_populate_obj_sets_foreign_keys() -> None:
     request = _admin_create_request()
     user = User(id=uuid4(), ciam_sub="ciam-sub")
     permission = Permission(id=uuid4(), code="prism.admin.access", label="Admin")
-    data = {"user": user, "permission": permission, "granted_at": None}
+    data = {
+        "user": user,
+        "permission": permission,
+        "country": "*",
+        "granted_at": None,
+    }
 
     obj = await view._populate_obj(request, UserPermission(), data)
 
     assert obj.user_id == user.id
     assert obj.permission_id == permission.id
+    assert obj.country == "*"
 
 
 @pytest.mark.asyncio

@@ -53,7 +53,7 @@ class Permission(SQLModel, table=True):
 
 
 class UserPermission(SQLModel, table=True):
-    """Links a PRISM user to a permission (many-to-many)."""
+    """Links a PRISM user to a permission (many-to-many, optional country scope)."""
 
     __tablename__ = "user_permissions"
 
@@ -72,6 +72,10 @@ class UserPermission(SQLModel, table=True):
             primary_key=True,
             nullable=False,
         ),
+    )
+    country: str = Field(
+        default="*",
+        sa_column=Column(String, primary_key=True, nullable=False, server_default="*"),
     )
     granted_at: datetime.datetime = Field(
         sa_column=Column(

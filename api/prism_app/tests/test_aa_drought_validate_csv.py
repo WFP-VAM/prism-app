@@ -5,6 +5,7 @@ from io import BytesIO
 
 import pytest
 from prism_app.aa_drought.validate_csv import validate_aa_drought_csv_upload
+from prism_app.auth.permission_codes import AA_DATA_MANAGE
 from starlette.datastructures import FormData, UploadFile
 from starlette.requests import Request
 
@@ -27,7 +28,12 @@ def _upload(name: str, payload: bytes) -> UploadFile:
     )
 
 
-def _request(form: FormData, *, can_manage: bool = True) -> Request:
+def _request(
+    form: FormData,
+    *,
+    can_manage: bool = True,
+    countries: frozenset[str] | None = frozenset({"malawi"}),
+) -> Request:
     async def receive():
         return {"type": "http.request", "body": b"", "more_body": False}
 
@@ -39,7 +45,12 @@ def _request(form: FormData, *, can_manage: bool = True) -> Request:
     }
     request = Request(scope, receive)
     request._form = form  # type: ignore[attr-defined]
-    request.state.permission_codes = {"prism.aa_data.manage"} if can_manage else set()
+    if can_manage:
+        request.state.permission_codes = {AA_DATA_MANAGE}
+        request.state.permission_scopes = {AA_DATA_MANAGE: countries}
+    else:
+        request.state.permission_codes = set()
+        request.state.permission_scopes = {}
     return request
 
 
@@ -86,3 +97,27 @@ async def test_validate_csv_upload_forbidden_without_permission() -> None:
     form = FormData([("csv_content", _upload("aa.csv", _GOOD_CSV.encode()))])
     response = await validate_aa_drought_csv_upload(_request(form, can_manage=False))
     assert response.status_code == 403
+
+
+@pytest.mark.asyncio
+async def test_validate_csv_upload_infers_country_for_scoped_manager() -> None:
+    form = FormData([("csv_content", _upload("aa.csv", _GOOD_CSV.encode()))])
+    request = _request(form, countries=frozenset({"malawi"}))
+    response = await validate_aa_drought_csv_upload(request)
+    assert response.status_code == 200
+
+
+@pytest.mark.asyncio
+async def test_validate_csv_upload_forbidden_for_country_outside_scope() -> None:
+    form = FormData(
+        [
+            ("country", "malawi"),
+            ("csv_content", _upload("aa.csv", _GOOD_CSV.encode())),
+        ]
+    )
+    response = await validate_aa_drought_csv_upload(
+        _request(form, countries=frozenset({"mozambique"}))
+    )
+    assert response.status_code == 403
+    payload = json.loads(response.body)
+    assert payload["errors"] == ["Not authorized for this country."]

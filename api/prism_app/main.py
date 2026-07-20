@@ -21,6 +21,7 @@ from prism_app.auth.admin_oidc_auth import PrismAdminAuthProvider
 from prism_app.auth.admin_settings import get_admin_auth_settings
 from prism_app.auth.deps import require_permissions, require_prism_session
 from prism_app.auth.permission_codes import ADMIN_ACCESS
+from prism_app.auth.permission_scopes import PermissionScopes, scopes_for_api
 from prism_app.auth_legacy import optional_validate_user, validate_user
 from prism_app.caching import FilePath, cache_file, cache_geojson
 from prism_app.dashboard.published_dashboards import (
@@ -118,12 +119,12 @@ def access_not_configured_page():
 
 
 _AdminSession = Annotated[
-    tuple[User, set[str]],
+    tuple[User, set[str], PermissionScopes],
     Depends(require_permissions(ADMIN_ACCESS)),
 ]
 
 _AnySession = Annotated[
-    tuple[User, set[str]],
+    tuple[User, set[str], PermissionScopes],
     Depends(require_prism_session),
 ]
 
@@ -131,13 +132,14 @@ _AnySession = Annotated[
 @app.get("/whoami")
 def whoami(prism: _AnySession):
     """Return current user identity and permissions (any authenticated user)."""
-    user, codes = prism
+    user, codes, scopes = prism
     return {
         "user_id": str(user.id),
         "auth_provider": user.auth_provider,
         "ciam_sub": user.ciam_sub,
         "email": user.email,
         "permissions": sorted(codes),
+        "permission_scopes": scopes_for_api(scopes),
     }
 
 

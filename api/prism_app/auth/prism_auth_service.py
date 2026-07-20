@@ -8,6 +8,7 @@ from uuid import UUID
 
 from prism_app.auth.admin_settings import DEFAULT_OIDC_PROVIDER_ID
 from prism_app.auth.oidc_id_token_profile import IdTokenProfileClaims
+from prism_app.auth.permission_scopes import PermissionScopes, build_permission_scopes
 from prism_app.database.permission_model import Permission, UserPermission
 from prism_app.database.user_model import User, UserStatus
 from sqlalchemy import select
@@ -87,11 +88,12 @@ def ensure_user_for_oidc(
                 trimmed_sub[:80],
             )
 
-    return load_user_and_permissions(
+    user, _codes, _scopes = load_user_and_permissions(
         engine,
         auth_provider=trimmed_provider,
         ciam_sub=trimmed_sub,
     )
+    return user, _codes
 
 
 def load_user_and_permissions(
@@ -100,8 +102,8 @@ def load_user_and_permissions(
     user_id: UUID | None = None,
     auth_provider: str | None = None,
     ciam_sub: str | None = None,
-) -> tuple[User | None, set[str]]:
-    """Return the user row and set of permission codes (empty if missing user).
+) -> tuple[User | None, set[str], PermissionScopes]:
+    """Return user, permission codes, and country scopes (empty if missing user).
 
     Provide ``user_id`` or both ``auth_provider`` and ``ciam_sub``.
     """
@@ -130,14 +132,15 @@ def load_user_and_permissions(
                 )
             ).first()
         if user is None:
-            return None, set()
+            return None, set(), {}
         rows = session.execute(
-            select(Permission.code)
+            select(Permission.code, UserPermission.country)
             .join(UserPermission, UserPermission.permission_id == Permission.id)
             .where(UserPermission.user_id == user.id)
         ).all()
         codes = {r[0] for r in rows}
-        return user, codes
+        scopes = build_permission_scopes((code, country) for code, country in rows)
+        return user, codes, scopes
 
 
 def touch_last_login(engine: Engine, user_id: UUID) -> None:
