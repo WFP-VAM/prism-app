@@ -27,31 +27,6 @@ export type BoundaryRelation = {
 };
 
 /*
- * Recursive function that finds the relation matching name and level.
- * If there are children relations, the function is applied for each.
- */
-const getFeatures = (
-  relations: BoundaryRelation[],
-  name: string,
-  level: AdminLevelType,
-): BoundaryRelation[] => {
-  const relation = relations.find(i => i.level === level && i.name === name);
-
-  if (!relation) {
-    return [];
-  }
-
-  // Apply function to the children of the relation.
-  const relChildren: BoundaryRelation[] = relation.children
-    .map(childName =>
-      getFeatures(relations, childName, (relation.level + 1) as AdminLevelType),
-    )
-    .reduce((acc, child) => [...acc, ...child], []);
-
-  return [relation, ...relChildren];
-};
-
-/*
  * Recursive function that returns the parent of a given relation.
  * If the parent relation has another parent. The function is applied also.
  */
@@ -122,8 +97,7 @@ const buildRelationTree = (
         levelMap.set(searchName, []);
       }
 
-      const existingFeatures = levelMap.get(searchName)!;
-      levelMap.set(searchName, [...existingFeatures, feature]);
+      levelMap.get(searchName)!.push(feature);
     });
   });
 
@@ -181,9 +155,8 @@ const buildRelationTree = (
 
 /*
  * Main function that creates the relations array using the buildRelationTree function.
- * Then, to render the dropdown menu, the function takes the first level relations and the
- * getFeatures function is called for each to make sure the children relations are included recursively
- * right after.
+ * Then, to render the dropdown menu, first-level relations are sorted and each subtree is
+ * walked in preorder (parent, then alphabetically sorted children) via an indexed DFS.
  */
 export const loadBoundaryRelations = (
   boundaryLayerData: BoundaryLayerData,
@@ -200,17 +173,29 @@ export const loadBoundaryRelations = (
     (_, index) => index as AdminLevelType,
   );
 
-  const firstLevelRelations = relations.filter(
-    rel => rel.level === adminLevelNumbers[0],
-  );
-  const sortedFirstLevelRelations = sortBy(firstLevelRelations, 'name');
+  // Index for O(1) lookup. The previous recursive relations.find + array
+  // spreads were O(n^2) and dominated global landing load (~3s+ of main thread).
+  const relByKey = new Map<string, BoundaryRelation>();
+  relations.forEach(rel => {
+    relByKey.set(`${rel.level}:${rel.name}`, rel);
+  });
 
-  const results = sortedFirstLevelRelations.reduce(
-    (acc, rel) => [
-      ...acc,
-      ...getFeatures(relations, rel.name, adminLevelNumbers[0]),
-    ],
-    [] as BoundaryRelation[],
+  const sortedFirstLevelRelations = sortBy(
+    relations.filter(rel => rel.level === adminLevelNumbers[0]),
+    'name',
+  );
+
+  const results: BoundaryRelation[] = [];
+  const visit = (name: string, level: AdminLevelType) => {
+    const rel = relByKey.get(`${level}:${name}`);
+    if (!rel) {
+      return;
+    }
+    results.push(rel);
+    rel.children.forEach(child => visit(child, (level + 1) as AdminLevelType));
+  };
+  sortedFirstLevelRelations.forEach(rel =>
+    visit(rel.name, adminLevelNumbers[0]),
   );
 
   return {

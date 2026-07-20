@@ -57,66 +57,52 @@ export function getAdminBoundaryTree(
     return rootNode;
   }
 
-  const addBranchToTree = (
-    partialTree: AdminBoundaryTree,
-    levelsLeft: AdminCodeString[],
-    feature: any, // TODO: maplibre: feature
-    level: AdminLevelType,
-  ): AdminBoundaryTree => {
-    const fp = feature.properties;
-    if (levelsLeft.length === 0) {
-      return partialTree;
+  // Mutate rootNode in place. Spreading children on every feature is O(n^2)
+  // and freezes the main thread on the unfiltered global feature set.
+  features.forEach(feature => {
+    const fp = (feature as any).properties;
+    if (!fp) {
+      return;
     }
-    const [currentLevelCode, ...otherLevelsCodes] = levelsLeft;
-    const branchCode = normalizeAdminCode(fp[currentLevelCode]);
-    if (branchCode === null) {
-      return partialTree;
-    }
-    const englishLabel = fp[englishLevelNames[level]] ?? '';
-    const label = useSidecar
-      ? language === 'en'
-        ? englishLabel
-        : localizeName(englishLabel, adminNameDict)
-      : (fp[
-          (language === 'en'
-            ? layer.adminLevelNames
-            : layer.adminLevelLocalNames)[level]
-        ] ?? '');
-    const newBranch = addBranchToTree(
-      partialTree.children[branchCode] ?? {
+    let node: AdminBoundaryTree = rootNode;
+    for (let level = 0; level < adminLevelCodes.length; level += 1) {
+      const branchCode = normalizeAdminCode(fp[adminLevelCodes[level]]);
+      if (branchCode === null) {
+        break;
+      }
+      const englishLabel = fp[englishLevelNames[level]] ?? '';
+      const label = useSidecar
+        ? language === 'en'
+          ? englishLabel
+          : localizeName(englishLabel, adminNameDict)
+        : (fp[
+            (language === 'en'
+              ? englishLevelNames
+              : layer.adminLevelLocalNames)[level]
+          ] ?? '');
+      const key = fp[englishLevelNames[level]];
+      // Filter out invalid branches (missing label or key in source data)
+      if (label === '' || key === undefined) {
+        break;
+      }
+      let child = node.children[branchCode];
+      if (!child) {
         // Normalize to string so all UI state (selection, dropdown values, URL
         // params) is consistent. Universal PMTiles store these as numbers.
-        adminCode: branchCode,
-        key: fp[layer.adminLevelNames[level]],
-        label,
-        level: (level + 1) as AdminLevelType,
-        children: {},
-      },
-      otherLevelsCodes,
-      feature,
-      (level + 1) as AdminLevelType,
-    );
-    // Filter out invalid branches (missing label or key in source data)
-    if (newBranch.label === '' || newBranch.key === undefined) {
-      return partialTree;
+        child = {
+          adminCode: branchCode,
+          key,
+          label,
+          level: (level + 1) as AdminLevelType,
+          children: {},
+        };
+        node.children[branchCode] = child;
+      }
+      node = child;
     }
-    const newChildren = {
-      ...partialTree.children,
-      [branchCode]: newBranch,
-    };
-    return { ...partialTree, children: newChildren };
-  };
+  });
 
-  return features.reduce<AdminBoundaryTree>(
-    (outputTree, feature) =>
-      addBranchToTree(
-        outputTree,
-        adminLevelCodes,
-        feature,
-        0 as AdminLevelType,
-      ),
-    rootNode,
-  );
+  return rootNode;
 }
 
 export interface BoundaryDropdownProps {
