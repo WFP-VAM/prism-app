@@ -211,6 +211,7 @@ const MapTooltip = memo(() => {
         setPopupTitle={setPopupTitle}
         adminCode={popup.locationAdminCode}
         adminSelectorKey={popup.locationSelectorKey}
+        selectorProperties={popup.locationSelectorProperties}
         adminLevel={adminLevel}
         setAdminLevel={setAdminLevel}
         adminLevelsNames={adminLevelsNames}

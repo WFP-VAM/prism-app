@@ -65,39 +65,36 @@ interface ComponentProps {
 
 const UNIVERSAL_ADMIN0_LAYER_ID = 'universal_admin0_boundaries';
 
+const getBoundaryFillLayerIdsOnMap = (map: MaplibreMap): string[] =>
+  getDisplayBoundaryLayers()
+    .map(boundaryLayer => getLayerMapId(boundaryLayer.id, 'fill'))
+    .filter(fillLayerId => map.getLayer(fillLayerId));
+
 const onClick =
   ({ dispatch, layer }: MapEventWrapFunctionProps<BoundaryLayerProps>) =>
   (evt: MapLayerMouseEvent) => {
+    // Universal landing (no country selected): clicks navigate, not select.
     if (isUniversalDeployment() && !getIso3FromPathname()) {
       return;
     }
 
     const layerId = getLayerMapId(layer.id, 'fill');
 
-    if (isUniversalDeployment()) {
-      const currentDepth = layer.adminLevelNames.length;
-      // Only query layers that are actually present on the map. maplibre's
-      // queryRenderedFeatures returns nothing for the entire query if any
-      // requested layer id is missing (e.g. admin3 for countries without it),
-      // which would otherwise make every level defer and admin0 always win.
-      const deeperFillLayerIds = getDisplayBoundaryLayers()
-        .filter(
-          boundaryLayer => boundaryLayer.adminLevelNames.length > currentDepth,
-        )
-        .map(boundaryLayer => getLayerMapId(boundaryLayer.id, 'fill'))
-        .filter(fillLayerId => evt.target.getLayer(fillLayerId));
+    // Deepest available admin level wins: defer if a deeper layer has a feature
+    // here. Only query layers on the map (a missing layer id voids the query).
+    const currentDepth = layer.adminLevelNames.length;
+    const deeperFillLayerIds = getDisplayBoundaryLayers()
+      .filter(
+        boundaryLayer => boundaryLayer.adminLevelNames.length > currentDepth,
+      )
+      .map(boundaryLayer => getLayerMapId(boundaryLayer.id, 'fill'))
+      .filter(fillLayerId => evt.target.getLayer(fillLayerId));
 
-      if (deeperFillLayerIds.length > 0) {
-        const deeperFeatures = evt.target.queryRenderedFeatures(evt.point, {
-          layers: deeperFillLayerIds,
-        });
-        if (deeperFeatures.length > 0) {
-          return;
-        }
-      }
-    } else {
-      const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
-      if (!isPrimaryLayer) {
+    if (deeperFillLayerIds.length > 0) {
+      const deeperFeatures = evt.target.queryRenderedFeatures(evt.point, {
+        layers: deeperFillLayerIds,
+      });
+      if (deeperFeatures.length > 0) {
         return;
       }
     }
@@ -131,14 +128,31 @@ const onClick =
         locationAdminCode,
         locationName,
         locationLocalName,
+        // Persist admin hierarchy so the chart resolves codes without
+        // re-querying rendered tiles (which fail off-screen/zoomed out).
+        locationSelectorProperties: feature.properties,
       }),
     );
   };
 
 const onMouseEnter = () => (evt: MapLayerMouseEvent) =>
   onToggleHover('pointer', evt.target);
-const onMouseLeave = () => (evt: MapLayerMouseEvent) =>
+
+// Clear the pointer only after leaving every boundary fill, so leaving admin3
+// while still over admin2 doesn't reset to grab.
+const onMouseLeave = () => (evt: MapLayerMouseEvent) => {
+  const fillLayerIds = getBoundaryFillLayerIdsOnMap(evt.target);
+  if (fillLayerIds.length > 0) {
+    const stillOverBoundary = evt.target.queryRenderedFeatures(evt.point, {
+      layers: fillLayerIds,
+    });
+    if (stillOverBoundary.length > 0) {
+      onToggleHover('pointer', evt.target);
+      return;
+    }
+  }
   onToggleHover('', evt.target);
+};
 
 const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
   const styleClasses = useStyles();
