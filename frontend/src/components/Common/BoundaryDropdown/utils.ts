@@ -173,8 +173,7 @@ export const loadBoundaryRelations = (
     (_, index) => index as AdminLevelType,
   );
 
-  // Index for O(1) lookup. The previous recursive relations.find + array
-  // spreads were O(n^2) and dominated global landing load (~3s+ of main thread).
+  // Index for lookup - O(1)
   const relByKey = new Map<string, BoundaryRelation>();
   relations.forEach(rel => {
     relByKey.set(`${rel.level}:${rel.name}`, rel);
