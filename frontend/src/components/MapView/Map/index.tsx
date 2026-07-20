@@ -68,7 +68,6 @@ import {
   mapProjection,
   mapSky,
   mapStyle,
-  usesGlobeProjection,
 } from './utils';
 
 initPmtilesProtocol();
@@ -133,16 +132,41 @@ const MapComponent = memo(
     // Universal: landing view only on country-list screen. Global: always on load.
     const useLandingViewBounds =
       Boolean(landingView) && (isUniversalLanding || !isUniversalDeployment());
-    // Globe when prism.json sets map.globeProjection (Global and Universal).
-    // Used for the entire session; other deployments stay mercator.
-    const projection = usesGlobeProjection()
-      ? mapProjection
-      : mapFlatProjection;
-    const isGlobeProjection = projection.type === 'globe';
+    // Globe when enabled via navbar toggle (defaults from map.globeProjection config).
+    const isGlobeProjection = Boolean(mapState?.globeProjectionEnabled);
+    const projection = isGlobeProjection ? mapProjection : mapFlatProjection;
     const selectedMap = mapState?.maplibreMap();
     const isGlobalMap = mapState?.isGlobalMap;
     const dashboardMode = useSelector(dashboardModeSelector);
     const tabValue = useSelector(leftPanelTabValueSelector);
+
+    // Drive sky imperatively: react-map-gl does not clear sky when the prop
+    // becomes undefined, and that leaves its internal cache stale on re-enable.
+    useEffect(() => {
+      const map = mapRef.current?.getMap();
+      if (!map) {
+        return undefined;
+      }
+
+      const applySky = () => {
+        if (isGlobeProjection) {
+          map.setSky(mapSky);
+        } else {
+          // MapLibre clears atmosphere when sky is omitted (runtime); typings require an arg.
+          (map.setSky as (sky?: typeof mapSky) => void)(undefined);
+        }
+      };
+
+      if (map.isStyleLoaded()) {
+        applySky();
+        return undefined;
+      }
+
+      map.once('style.load', applySky);
+      return () => {
+        map.off('style.load', applySky);
+      };
+    }, [isGlobeProjection]);
 
     const panelHidden = tabValue === Panel.None;
 
@@ -372,7 +396,8 @@ const MapComponent = memo(
         style={{
           width: '100%',
           height: '100%',
-          ...(isGlobeProjection ? { background: mapBackdropColor } : {}),
+          background: isGlobeProjection ? mapBackdropColor : 'transparent',
+          transition: 'background-color 300ms ease',
         }}
         onLoad={onMapLoadWithLabelFilter}
         onClick={mapOnClick}
