@@ -3,6 +3,72 @@
 -- Idempotent: kobo_users uses ON CONFLICT; AA rows only insert if missing for country+type;
 -- seed alerts replace rows with the fixed seed emails.
 
+-- ---------------------------------------------------------------------------
+-- PRISM RBAC test users (fixed UUIDs b0000001…b000000b; auth_provider = ciam)
+-- Matrix: aa / dashboard / scheduled_map × cambodia / malawi / mozambique.
+-- Re-run replaces their user_permissions rows (see DELETE below).
+-- Use with PRISM_ADMIN_AUTH_DISABLED=true and PRISM_DEV_USER_ID=<uuid> to impersonate.
+-- ---------------------------------------------------------------------------
+DELETE FROM user_permissions
+WHERE user_id IN (
+  'b0000001-0000-4000-8000-000000000001'::uuid,
+  'b0000002-0000-4000-8000-000000000002'::uuid,
+  'b0000003-0000-4000-8000-000000000003'::uuid,
+  'b0000004-0000-4000-8000-000000000004'::uuid,
+  'b0000005-0000-4000-8000-000000000005'::uuid,
+  'b0000006-0000-4000-8000-000000000006'::uuid,
+  'b0000007-0000-4000-8000-000000000007'::uuid,
+  'b0000008-0000-4000-8000-000000000008'::uuid,
+  'b0000009-0000-4000-8000-000000000009'::uuid,
+  'b000000a-0000-4000-8000-00000000000a'::uuid,
+  'b000000b-0000-4000-8000-00000000000b'::uuid,
+  'b000000c-0000-4000-8000-00000000000c'::uuid,
+  'b000000d-0000-4000-8000-00000000000d'::uuid
+);
+
+-- Retired admin seed users (no longer created).
+DELETE FROM users
+WHERE id IN (
+  'b0000004-0000-4000-8000-000000000004'::uuid,
+  'b0000008-0000-4000-8000-000000000008'::uuid,
+  'b000000c-0000-4000-8000-00000000000c'::uuid,
+  'b000000d-0000-4000-8000-00000000000d'::uuid
+);
+
+INSERT INTO users (id, ciam_sub, email, name, status, auth_provider)
+VALUES
+  ('b0000001-0000-4000-8000-000000000001'::uuid, 'seed-dev-cambodia-aa', 'seed-cambodia-aa@example.com', 'Seed Cambodia AA manager', 'active'::user_status, 'ciam'),
+  ('b0000002-0000-4000-8000-000000000002'::uuid, 'seed-dev-cambodia-dashboard', 'seed-cambodia-dashboard@example.com', 'Seed Cambodia dashboard manager', 'active'::user_status, 'ciam'),
+  ('b0000003-0000-4000-8000-000000000003'::uuid, 'seed-dev-cambodia-scheduled-map', 'seed-cambodia-scheduled-map@example.com', 'Seed Cambodia scheduled map manager', 'active'::user_status, 'ciam'),
+  ('b0000005-0000-4000-8000-000000000005'::uuid, 'seed-dev-malawi-aa', 'seed-malawi-aa@example.com', 'Seed Malawi AA manager', 'active'::user_status, 'ciam'),
+  ('b0000006-0000-4000-8000-000000000006'::uuid, 'seed-dev-malawi-dashboard', 'seed-malawi-dashboard@example.com', 'Seed Malawi dashboard manager', 'active'::user_status, 'ciam'),
+  ('b0000007-0000-4000-8000-000000000007'::uuid, 'seed-dev-malawi-scheduled-map', 'seed-malawi-scheduled-map@example.com', 'Seed Malawi scheduled map manager', 'active'::user_status, 'ciam'),
+  ('b0000009-0000-4000-8000-000000000009'::uuid, 'seed-dev-mozambique-aa', 'seed-mozambique-aa@example.com', 'Seed Mozambique AA manager', 'active'::user_status, 'ciam'),
+  ('b000000a-0000-4000-8000-00000000000a'::uuid, 'seed-dev-mozambique-dashboard', 'seed-mozambique-dashboard@example.com', 'Seed Mozambique dashboard manager', 'active'::user_status, 'ciam'),
+  ('b000000b-0000-4000-8000-00000000000b'::uuid, 'seed-dev-mozambique-scheduled-map', 'seed-mozambique-scheduled-map@example.com', 'Seed Mozambique scheduled map manager', 'active'::user_status, 'ciam')
+ON CONFLICT (auth_provider, ciam_sub) DO UPDATE SET
+  email = EXCLUDED.email,
+  name = EXCLUDED.name,
+  status = EXCLUDED.status;
+
+INSERT INTO user_permissions (user_id, permission_id, country)
+SELECT u.id, p.id, grants.country
+FROM (
+  VALUES
+    ('b0000001-0000-4000-8000-000000000001'::uuid, 'prism.aa_data.manage', 'cambodia'),
+    ('b0000002-0000-4000-8000-000000000002'::uuid, 'prism.dashboard.manage', 'cambodia'),
+    ('b0000003-0000-4000-8000-000000000003'::uuid, 'prism.map_exports.manage', 'cambodia'),
+    ('b0000005-0000-4000-8000-000000000005'::uuid, 'prism.aa_data.manage', 'malawi'),
+    ('b0000006-0000-4000-8000-000000000006'::uuid, 'prism.dashboard.manage', 'malawi'),
+    ('b0000007-0000-4000-8000-000000000007'::uuid, 'prism.map_exports.manage', 'malawi'),
+    ('b0000009-0000-4000-8000-000000000009'::uuid, 'prism.aa_data.manage', 'mozambique'),
+    ('b000000a-0000-4000-8000-00000000000a'::uuid, 'prism.dashboard.manage', 'mozambique'),
+    ('b000000b-0000-4000-8000-00000000000b'::uuid, 'prism.map_exports.manage', 'mozambique')
+) AS grants (user_id, permission_code, country)
+JOIN users u ON u.id = grants.user_id
+JOIN permissions p ON p.code = grants.permission_code
+ON CONFLICT (user_id, permission_id, country) DO NOTHING;
+
 -- Anticipatory action (Mozambique) — skip if that country+type already exists
 INSERT INTO anticipatory_action_alerts (country, emails, prism_url, type)
 SELECT
