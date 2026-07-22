@@ -8,7 +8,16 @@
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
-    "boundingBox": [-180, -85, 180, 85]
+    "boundingBox": [-180, -85, 180, 85],
+    "landingView": {
+      "bounds": [-5, -30, 75, 45],
+      "padding": {
+        "top": 70,
+        "right": 30,
+        "bottom": 150,
+        "left": 425
+      }
+    }
   },
   "defaultDisplayBoundaries": [
     "universal_admin3_boundaries",

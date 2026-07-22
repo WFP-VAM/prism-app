@@ -58,8 +58,10 @@ def api_client(sqlite_engine) -> Generator[TestClient, None, None]:
         name="Scheduler User",
     )
 
-    def override_prism_session() -> tuple[User, set[str]]:
-        return user, {MAP_EXPORTS_MANAGE}
+    def override_prism_session() -> (
+        tuple[User, set[str], dict[str, frozenset[str] | None]]
+    ):
+        return user, {MAP_EXPORTS_MANAGE}, {MAP_EXPORTS_MANAGE: None}
 
     app.dependency_overrides[get_export_jobs_session] = override_session
     app.dependency_overrides[require_prism_session] = override_prism_session
@@ -85,8 +87,10 @@ def api_client_without_permission(sqlite_engine) -> Generator[TestClient, None, 
         name="Viewer User",
     )
 
-    def override_prism_session() -> tuple[User, set[str]]:
-        return user, set()
+    def override_prism_session() -> (
+        tuple[User, set[str], dict[str, frozenset[str] | None]]
+    ):
+        return user, set(), {}
 
     app.dependency_overrides[get_export_jobs_session] = override_session
     app.dependency_overrides[require_prism_session] = override_prism_session
@@ -255,8 +259,10 @@ def test_post_export_map_schedule_allows_admin_access_without_map_exports_manage
         name="Admin User",
     )
 
-    def override_prism_session() -> tuple[User, set[str]]:
-        return user, {ADMIN_ACCESS}
+    def override_prism_session() -> (
+        tuple[User, set[str], dict[str, frozenset[str] | None]]
+    ):
+        return user, {ADMIN_ACCESS}, {}
 
     app.dependency_overrides[get_export_jobs_session] = override_session
     app.dependency_overrides[require_prism_session] = override_prism_session
@@ -274,3 +280,83 @@ def test_export_map_schedules_does_not_expose_prism_list_api(
     response = api_client.get("/export-map/schedules")
 
     assert response.status_code == 405
+
+
+def test_post_export_map_schedule_rejects_country_outside_scope(
+    sqlite_engine,
+) -> None:
+    SessionLocal = sessionmaker(
+        bind=sqlite_engine, class_=Session, expire_on_commit=False
+    )
+
+    def override_session() -> Generator[Session, None, None]:
+        with SessionLocal() as session:
+            yield session
+
+    user = User.model_construct(
+        id=UUID("00000000-0000-4000-8000-000000000126"),
+        ciam_sub="ciam-sub-scoped",
+        email="scoped@example.org",
+        name="Scoped User",
+    )
+
+    def override_prism_session() -> (
+        tuple[User, set[str], dict[str, frozenset[str] | None]]
+    ):
+        return (
+            user,
+            {MAP_EXPORTS_MANAGE},
+            {MAP_EXPORTS_MANAGE: frozenset({"mozambique"})},
+        )
+
+    app.dependency_overrides[get_export_jobs_session] = override_session
+    app.dependency_overrides[require_prism_session] = override_prism_session
+    try:
+        with TestClient(app) as client:
+            body = _schedule_body()
+            body["country"] = "malawi"
+            response = client.post("/export-map/schedules", json=body)
+        assert response.status_code == 403
+        assert response.json()["detail"] == (
+            "You do not have the right permissions for this request. "
+            "Contact wfp.prism@wfp.org for more information."
+        )
+    finally:
+        app.dependency_overrides.clear()
+
+
+def test_post_export_map_schedule_allows_country_in_scope(
+    sqlite_engine,
+) -> None:
+    SessionLocal = sessionmaker(
+        bind=sqlite_engine, class_=Session, expire_on_commit=False
+    )
+
+    def override_session() -> Generator[Session, None, None]:
+        with SessionLocal() as session:
+            yield session
+
+    user = User.model_construct(
+        id=UUID("00000000-0000-4000-8000-000000000127"),
+        ciam_sub="ciam-sub-scoped-moz",
+        email="scoped-moz@example.org",
+        name="Scoped Mozambique User",
+    )
+
+    def override_prism_session() -> (
+        tuple[User, set[str], dict[str, frozenset[str] | None]]
+    ):
+        return (
+            user,
+            {MAP_EXPORTS_MANAGE},
+            {MAP_EXPORTS_MANAGE: frozenset({"mozambique"})},
+        )
+
+    app.dependency_overrides[get_export_jobs_session] = override_session
+    app.dependency_overrides[require_prism_session] = override_prism_session
+    try:
+        with TestClient(app) as client:
+            response = client.post("/export-map/schedules", json=_schedule_body())
+        assert response.status_code == 201, response.text
+    finally:
+        app.dependency_overrides.clear()

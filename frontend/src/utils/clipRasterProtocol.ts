@@ -366,54 +366,62 @@ function drawRingsPath(
 
 // --- Protocol registration ------------------------------------------------
 
+async function fetchTile(
+  realUrl: string,
+  signal: AbortSignal,
+): Promise<{ data: ArrayBuffer }> {
+  const response = await fetch(realUrl, { signal });
+  if (!response.ok) {
+    throw new Error(`Tile request failed (${response.status}): ${realUrl}`);
+  }
+  const data = await response.arrayBuffer();
+  return { data };
+}
+
 export function initClipRasterProtocol(): void {
   if (protocolRegistered) {
     return;
   }
   protocolRegistered = true;
 
-  maplibregl.addProtocol(CLIP_SCHEME, ((params: any, callback: any) => {
-    const aborted = { value: false };
+  maplibregl.addProtocol(CLIP_SCHEME, async (params, abortController) => {
+    const { signal } = abortController;
     const parsed = parseClipTileUrl(params.url);
 
     if (!parsed) {
-      callback(new Error(`Invalid clip URL: ${params.url}`));
-      return { cancel: () => {} };
+      throw new Error(`Invalid clip URL: ${params.url}`);
     }
 
     const { clipId, realUrl } = parsed;
     const clip = clipRegistry.get(clipId);
     const bbox3857 = resolveTileBbox(realUrl);
 
-    if (!clip || !bbox3857) {
-      // No clip context (or no bbox) -> behave like a normal raster fetch.
-      fetchTile(realUrl, aborted, callback);
-      return { cancel: () => (aborted.value = true) };
-    }
+    try {
+      if (!clip || !bbox3857) {
+        // No clip context (or no bbox) -> behave like a normal raster fetch.
+        return fetchTile(realUrl, signal);
+      }
 
-    const tileClass = classifyTileAgainstClip(
-      bbox3857,
-      clip.feature,
-      clip.lngLatBbox,
-    );
+      const tileClass = classifyTileAgainstClip(
+        bbox3857,
+        clip.feature,
+        clip.lngLatBbox,
+      );
 
-    if (tileClass === 'outside') {
-      getTransparentTile()
-        .then(buf => !aborted.value && callback(null, buf, null, null))
-        .catch(err => !aborted.value && callback(err));
-      return { cancel: () => (aborted.value = true) };
-    }
+      if (tileClass === 'outside') {
+        const data = await getTransparentTile();
+        return { data };
+      }
 
-    const startMs = performance.now();
-    (async () => {
-      const response = await fetch(realUrl);
+      const startMs = performance.now();
+      const response = await fetch(realUrl, { signal });
       if (!response.ok) {
         throw new Error(`Tile request failed (${response.status}): ${realUrl}`);
       }
       const tileBytes = await response.arrayBuffer();
 
       if (tileClass === 'inside') {
-        return tileBytes;
+        return { data: tileBytes };
       }
 
       const masked = await maskTile(tileBytes, bbox3857, clip);
@@ -426,43 +434,16 @@ export function initClipRasterProtocol(): void {
           maskMs: performance.now() - startMs,
         });
       }
-      return masked;
-    })()
-      .then(buf => !aborted.value && callback(null, buf, null, null))
-      .catch(err => {
-        if (aborted.value) {
-          return;
-        }
-        console.error('[clip] tile masking failed', err);
-        onClipError?.(err as Error, realUrl);
-        callback(err);
-      });
-
-    return { cancel: () => (aborted.value = true) };
-  }) as any);
-}
-
-function fetchTile(
-  realUrl: string,
-  aborted: { value: boolean },
-  callback: any,
-): void {
-  fetch(realUrl)
-    .then(async response => {
-      if (!response.ok) {
-        throw new Error(`Tile request failed (${response.status}): ${realUrl}`);
+      return { data: masked };
+    } catch (err) {
+      if (signal.aborted) {
+        throw err;
       }
-      return response.arrayBuffer();
-    })
-    .then(buf => !aborted.value && callback(null, buf, null, null))
-    .catch(err => {
-      if (aborted.value) {
-        return;
-      }
-      console.error('[clip] tile fetch failed', err);
+      console.error('[clip] tile request failed', err);
       onClipError?.(err as Error, realUrl);
-      callback(err);
-    });
+      throw err;
+    }
+  });
 }
 
 /** Test-only: reset module state between unit tests. */

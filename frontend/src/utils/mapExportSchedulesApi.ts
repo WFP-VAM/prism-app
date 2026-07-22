@@ -83,7 +83,16 @@ export async function createMapExportSchedule(
   });
   const text = await response.text();
   if (!response.ok) {
-    throw new Error(text || `HTTP ${response.status}`);
+    let message = text || `HTTP ${response.status}`;
+    try {
+      const parsed = JSON.parse(text) as { detail?: string };
+      if (typeof parsed.detail === 'string') {
+        message = parsed.detail;
+      }
+    } catch {
+      // keep raw body
+    }
+    throw new Error(message);
   }
   return JSON.parse(text) as MapExportScheduleCreateResponse;
 }
