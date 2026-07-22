@@ -82,11 +82,27 @@ const onClick =
 
     // Deepest available admin level wins: defer if a deeper layer has a feature
     // here. Only query layers on the map (a missing layer id voids the query).
+    const zoom = evt.target.getZoom();
+    const inZoomRange =
+      (layer.minZoom === undefined || zoom > layer.minZoom) &&
+      (layer.maxZoom === undefined || zoom <= layer.maxZoom);
+    if (!inZoomRange) {
+      return;
+    }
+
     const currentDepth = layer.adminLevelNames.length;
     const deeperFillLayerIds = getDisplayBoundaryLayers()
-      .filter(
-        boundaryLayer => boundaryLayer.adminLevelNames.length > currentDepth,
-      )
+      .filter(boundaryLayer => {
+        const aboveMin =
+          boundaryLayer.minZoom === undefined || zoom > boundaryLayer.minZoom;
+        const belowMax =
+          boundaryLayer.maxZoom === undefined || zoom <= boundaryLayer.maxZoom;
+        return (
+          boundaryLayer.adminLevelNames.length > currentDepth &&
+          aboveMin &&
+          belowMax
+        );
+      })
       .map(boundaryLayer => getLayerMapId(boundaryLayer.id, 'fill'))
       .filter(fillLayerId => evt.target.getLayer(fillLayerId));
 
