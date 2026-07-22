@@ -9,6 +9,21 @@ import { get } from 'lodash';
 
 import { getFullLocationName } from './name-utils';
 
+/** Raw English admin names treated as placeholders (language-independent). */
+export const ADMIN_NAME_SENTINELS = [
+  'n/a',
+  'name unknown',
+  'administrative unit not available',
+  '????',
+];
+
+export function isAdminNameSentinel(name?: string): boolean {
+  if (!name) {
+    return false;
+  }
+  return ADMIN_NAME_SENTINELS.includes(name.trim().toLowerCase());
+}
+
 export function localizeName(
   englishName: string,
   dict?: AdminNameDict,

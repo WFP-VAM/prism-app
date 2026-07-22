@@ -11,6 +11,7 @@ import { sortBy } from 'lodash';
 import { Map as MaplibreMap } from 'maplibre-gl';
 import {
   getActiveAdminNameLanguage,
+  isAdminNameSentinel,
   localizeName,
   usesAdminNameSidecar,
 } from 'utils/admin-name-utils';
@@ -81,8 +82,13 @@ export function getAdminBoundaryTree(
               : layer.adminLevelLocalNames)[level]
           ] ?? '');
       const key = fp[englishLevelNames[level]];
-      // Filter out invalid branches (missing label or key in source data)
-      if (label === '' || key === undefined) {
+      // Filter out invalid or placeholder branches using the raw English name
+      // so filtering is language-independent (sidecars may translate "N/A").
+      if (
+        label === '' ||
+        key === undefined ||
+        isAdminNameSentinel(englishLabel)
+      ) {
         break;
       }
       let child = node.children[branchCode];
