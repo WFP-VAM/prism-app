@@ -77,10 +77,11 @@
   },
   "precip_blended_dekad": {
     "title": "Blended rainfall aggregate (10-day)",
-    "type": "cog",
-    "collection": "rfb_blended_moz_dekad",
+    "type": "wms",
     "server_layer_name": "rfb_blended_moz_dekad",
-    "band": "rfb",
+    "additional_query_params": {
+      "styles": "rfb_blended"
+    },
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
@@ -109,6 +110,7 @@
       ],
       "type": "bar"
     },
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "validity": {
       "forward": 1,

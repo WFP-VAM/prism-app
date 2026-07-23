@@ -635,8 +635,28 @@ def post_raster_geotiff(raster_geotiff: RasterGeotiffModel):
     )
 
 
+# COG POC endpoints (/cog_presigned_url, /cog_proxy; see docs/cog-layers.md).
+# Disabled by default: when the flag is unset they 404 before any logic runs and
+# are hidden from the schema. Set COG_ENDPOINTS_ENABLED truthy to re-enable.
+COG_ENDPOINTS_ENABLED = os.getenv("COG_ENDPOINTS_ENABLED", "").strip().lower() == "true"
+
+
+def require_cog_poc_enabled() -> None:
+    """Gate the COG POC endpoints.
+
+    Raises 404 (matching FastAPI's default "Not Found" response for unknown
+    paths) when ``COG_ENDPOINTS_ENABLED`` is unset, so the POC endpoints stay
+    disabled in production while the code remains in place. Tests re-enable the
+    endpoints via ``app.dependency_overrides``.
+    """
+    if not COG_ENDPOINTS_ENABLED:
+        raise HTTPException(status_code=404, detail="Not Found")
+
+
 @app.get(
     "/cog_presigned_url",
+    dependencies=[Depends(require_cog_poc_enabled)],
+    include_in_schema=COG_ENDPOINTS_ENABLED,
     responses={
         404: {"description": "Collection or asset not found in STAC catalog"},
         500: {"description": "Internal server error"},
@@ -706,6 +726,8 @@ _FORWARD_HEADERS = {
 
 @app.get(
     "/cog_proxy",
+    dependencies=[Depends(require_cog_poc_enabled)],
+    include_in_schema=COG_ENDPOINTS_ENABLED,
     responses={
         400: {"description": "URL is missing or not an allowed S3 host"},
         502: {"description": "Upstream S3 request failed"},

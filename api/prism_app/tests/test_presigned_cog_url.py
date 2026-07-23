@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from fastapi.testclient import TestClient
-from prism_app.main import app
+from prism_app.main import app, require_cog_poc_enabled
 from prism_app.presigned_cog_url import (
     _parse_s3_href,
     _presign_href,
@@ -314,8 +314,33 @@ FAKE_URLS_RESPONSE = [
 ]
 
 
+@pytest.fixture
+def cog_endpoints_enabled():
+    """Enable the (POC, disabled-by-default) COG endpoints for one test.
+
+    Production ships with COG_ENDPOINTS_ENABLED unset, so the routes 404 via
+    ``require_cog_poc_enabled``. Overriding that dependency exercises the
+    endpoint logic as if the flag were on.
+    """
+    app.dependency_overrides[require_cog_poc_enabled] = lambda: None
+    yield
+    app.dependency_overrides.pop(require_cog_poc_enabled, None)
+
+
+def test_cog_endpoints_disabled_by_default():
+    """With COG_ENDPOINTS_ENABLED unset the POC endpoints behave as if absent."""
+    presigned = client.get("/cog_presigned_url", params={"collection": "rfh_dekad"})
+    assert presigned.status_code == 404
+
+    proxy = client.get(
+        "/cog_proxy",
+        params={"url": "https://bucket.s3.amazonaws.com/file.tif"},
+    )
+    assert proxy.status_code == 404
+
+
 @patch("prism_app.main.get_presigned_cog_urls")
-def test_endpoint_returns_urls(mock_get_presigned):
+def test_endpoint_returns_urls(mock_get_presigned, cog_endpoints_enabled):
     """GET /cog_presigned_url returns JSON {"urls": [...]} on success."""
     mock_get_presigned.return_value = FAKE_URLS_RESPONSE
 
@@ -330,7 +355,7 @@ def test_endpoint_returns_urls(mock_get_presigned):
 
 
 @patch("prism_app.main.get_presigned_cog_urls")
-def test_endpoint_without_optional_params(mock_get_presigned):
+def test_endpoint_without_optional_params(mock_get_presigned, cog_endpoints_enabled):
     """GET /cog_presigned_url works with only the required collection param."""
     mock_get_presigned.return_value = FAKE_URLS_RESPONSE
 
@@ -345,7 +370,7 @@ def test_endpoint_without_optional_params(mock_get_presigned):
 
 
 @patch("prism_app.main.get_presigned_cog_urls")
-def test_endpoint_with_bbox(mock_get_presigned):
+def test_endpoint_with_bbox(mock_get_presigned, cog_endpoints_enabled):
     """GET /cog_presigned_url forwards bbox as a tuple to the service function."""
     mock_get_presigned.return_value = FAKE_URLS_RESPONSE
 
@@ -366,14 +391,14 @@ def test_endpoint_with_bbox(mock_get_presigned):
     )
 
 
-def test_endpoint_missing_collection():
+def test_endpoint_missing_collection(cog_endpoints_enabled):
     """GET /cog_presigned_url returns 422 when collection is omitted."""
     response = client.get("/cog_presigned_url")
     assert response.status_code == 422
 
 
 @patch("prism_app.main.get_presigned_cog_urls")
-def test_endpoint_propagates_404(mock_get_presigned):
+def test_endpoint_propagates_404(mock_get_presigned, cog_endpoints_enabled):
     """GET /cog_presigned_url propagates HTTPException from the service layer."""
     from fastapi import HTTPException
 
