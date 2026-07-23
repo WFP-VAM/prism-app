@@ -63,6 +63,7 @@ from prism_app.zonal_stats import (
 from pydantic import EmailStr, HttpUrl, ValidationError
 from requests import get
 from sqlalchemy import create_engine
+from starlette.background import BackgroundTask
 from starlette.middleware.sessions import SessionMiddleware
 from starlette_admin.contrib.sqla import Admin
 
@@ -722,10 +723,10 @@ async def cog_proxy(
     back with CORS headers added by FastAPI's CORSMiddleware.
     """
     parsed = urlparse(url)
-    if not _S3_HOST_RE.match(parsed.netloc):
+    if parsed.scheme != "https" or not _S3_HOST_RE.match(parsed.netloc):
         raise HTTPException(
             status_code=400,
-            detail=f"URL host '{parsed.netloc}' is not an allowed S3 endpoint.",
+            detail=f"URL '{url}' is not an allowed https S3 endpoint.",
         )
 
     # Forward the Range header if present (COG tile readers use byte-ranges).
@@ -733,30 +734,43 @@ async def cog_proxy(
     if request and "range" in request.headers:
         upstream_headers["Range"] = request.headers["range"]
 
+    # follow_redirects=False so a 3xx from S3 cannot escape the allowlisted host
+    # checked above.  send(stream=True) returns after the headers are read but
+    # before the body is pulled, so large COGs are streamed rather than buffered.
+    client = httpx.AsyncClient(follow_redirects=False, timeout=60.0)
     try:
-        async with httpx.AsyncClient(follow_redirects=True, timeout=60.0) as client:
-            upstream = await client.get(url, headers=upstream_headers)
+        req = client.build_request("GET", url, headers=upstream_headers)
+        upstream = await client.send(req, stream=True)
     except httpx.RequestError as exc:
+        await client.aclose()
         logger.error("COG proxy upstream error: %s", exc)
         raise HTTPException(
             status_code=502, detail=f"Upstream S3 request failed: {exc}"
         ) from exc
 
     if upstream.status_code not in (200, 206):
+        status_code = upstream.status_code
+        await upstream.aclose()
+        await client.aclose()
         raise HTTPException(
             status_code=502,
-            detail=f"S3 returned {upstream.status_code}",
+            detail=f"S3 returned {status_code}",
         )
 
     response_headers = {
         k: v for k, v in upstream.headers.items() if k.title() in _FORWARD_HEADERS
     }
 
+    async def _close_upstream() -> None:
+        await upstream.aclose()
+        await client.aclose()
+
     return StreamingResponse(
         upstream.aiter_bytes(chunk_size=65536),
         status_code=upstream.status_code,
         headers=response_headers,
         media_type=upstream.headers.get("content-type", "image/tiff"),
+        background=BackgroundTask(_close_upstream),
     )
 
 
