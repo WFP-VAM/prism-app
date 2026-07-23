@@ -26,12 +26,19 @@ import LeftPanel from './LeftPanel';
 import MapComponent from './Map';
 import OtherFeatures from './OtherFeatures';
 
+// Sample the frame-rate monitor for a subset of sessions. The decision is made
+// once at module load so it stays stable for the whole session and gates both
+// the requestAnimationFrame loop and the PostHog telemetry it produces.
+const PERF_MONITOR_SAMPLE_RATE = 0.1;
+const isPerfMonitorSampled = Math.random() < PERF_MONITOR_SAMPLE_RATE;
+
 const MapView = memo(() => {
   const classes = useStyles();
   const posthog = usePostHog();
   const { iso3 } = useCountryIso();
 
   usePerformanceMonitor({
+    enabled: isPerfMonitorSampled,
     onSignificantChange: (fps, change) => {
       posthog?.capture('frame_rate', { fps, change });
     },
