@@ -276,7 +276,7 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
     null,
   );
   const legendKeyRef = useRef<string>('');
-  const currentLegendKey = `${legend?.map(l => l.color).join(',') ?? ''}:${scale}`;
+  const currentLegendKey = `${legend?.map(l => `${l.value}:${l.color}`).join(',') ?? ''}:${scale}`;
   if (currentLegendKey !== legendKeyRef.current) {
     legendKeyRef.current = currentLegendKey;
     tileHandlersRef.current = createTileHandlers(renderConfigRef.current);
