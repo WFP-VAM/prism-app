@@ -2,9 +2,9 @@ import { IcechunkStore } from 'icechunk-js';
 import * as zarr from 'zarrita';
 
 import type { ZarrDatasetCoords } from './georef';
-import { snapToNearestTimeIndex } from './georef';
+import { nearestIndex, snapToNearestTimeIndex, toFloat64Array } from './georef';
 import type { GeoZarrMetadataAttrs } from './geozarr-shim';
-import { buildGeoZarrMetadata, readCoordValues } from './geozarr-shim';
+import { buildGeoZarrMetadata } from './geozarr-shim';
 
 export type ZarrDatasetMode = 'analysis' | 'forecast';
 
@@ -17,14 +17,9 @@ export interface OpenZarrDatasetOptions {
 }
 
 export interface ZarrVariableMeta {
-  shape: number[];
-  chunks: number[];
-  dims: string[];
-  dtype: string;
   fillValue: number | undefined;
   scaleFactor: number;
   addOffset: number;
-  units: string | undefined;
 }
 
 export interface OpenZarrDataset {
@@ -74,7 +69,7 @@ async function readCoordArray(
 ): Promise<Float64Array> {
   const arr = await zarr.open(store.resolve(name), { kind: 'array' });
   const result = await zarr.get(arr);
-  return readCoordValues(result);
+  return toFloat64Array(result);
 }
 
 function parseFillValue(attrs: Record<string, unknown>): number | undefined {
@@ -137,14 +132,9 @@ export async function openZarrDataset(
   ]) as string[];
 
   const meta: ZarrVariableMeta = {
-    shape: [...varArray.shape],
-    chunks: [...(varArray.chunks ?? varArray.shape)],
-    dims,
-    dtype: String(varArray.dtype),
     fillValue: parseFillValue(attrs),
     scaleFactor: Number(attrs.scale_factor ?? 1),
     addOffset: Number(attrs.add_offset ?? 0),
-    units: attrs.units as string | undefined,
   };
 
   const latDim =
@@ -155,6 +145,17 @@ export async function openZarrDataset(
   const lats = await readCoordArray(store, latDim);
   const lons = await readCoordArray(store, lonDim);
   const geozarrMetadata = buildGeoZarrMetadata(dims, lats, lons);
+
+  const base = {
+    repoUrl,
+    snapshotId,
+    variable,
+    meta,
+    varArray,
+    geozarrMetadata,
+  };
+
+  let dataset: OpenZarrDataset;
 
   if (options.mode === 'forecast') {
     const initTimeDim = options.initTimeDim ?? DEFAULT_INIT_TIME_DIM;
@@ -173,14 +174,9 @@ export async function openZarrDataset(
       ensembleSize = varArray.shape[ensembleIndex];
     }
 
-    const dataset: OpenZarrDataset = {
-      repoUrl,
-      snapshotId,
-      variable,
-      meta,
-      coords: { times: initTimes, lats, lons },
-      varArray,
-      geozarrMetadata,
+    dataset = {
+      ...base,
+      coords: { times: initTimes },
       mode: 'forecast',
       ensemble: options.ensemble ?? false,
       timeDim: initTimeDim,
@@ -191,26 +187,18 @@ export async function openZarrDataset(
       leadTimes,
       ensembleSize,
     };
+  } else {
+    const timeDim = resolveTimeDim(dims);
+    const times = await readCoordArray(store, timeDim);
 
-    datasetCache.set(key, { dataset, store });
-    return dataset;
+    dataset = {
+      ...base,
+      coords: { times },
+      mode: 'analysis',
+      ensemble: false,
+      timeDim,
+    };
   }
-
-  const timeDim = resolveTimeDim(dims);
-  const times = await readCoordArray(store, timeDim);
-
-  const dataset: OpenZarrDataset = {
-    repoUrl,
-    snapshotId,
-    variable,
-    meta,
-    coords: { times, lats, lons },
-    varArray,
-    geozarrMetadata,
-    mode: 'analysis',
-    ensemble: false,
-    timeDim,
-  };
 
   datasetCache.set(key, { dataset, store });
   return dataset;
@@ -257,17 +245,8 @@ export function resolveForecastSelection(
   const latestIdx = initTimes.length - 1;
   const initSec = initTimes[latestIdx]!;
   const targetSec = selectedDateMs / 1000;
-
-  let bestLeadIdx = 0;
-  let bestDiff = Infinity;
-  for (let j = 0; j < leadTimes.length; j++) {
-    const validSec = initSec + leadTimes[j]!;
-    const diff = Math.abs(validSec - targetSec);
-    if (diff < bestDiff) {
-      bestDiff = diff;
-      bestLeadIdx = j;
-    }
-  }
+  const validTimes = Float64Array.from(leadTimes, lead => initSec + lead);
+  const bestLeadIdx = nearestIndex(validTimes, targetSec);
 
   const selection: Record<string, number | null> = {
     [initTimeDim]: latestIdx,
@@ -279,8 +258,4 @@ export function resolveForecastSelection(
   }
 
   return selection;
-}
-
-export function clearZarrDatasetCache(): void {
-  datasetCache.clear();
 }

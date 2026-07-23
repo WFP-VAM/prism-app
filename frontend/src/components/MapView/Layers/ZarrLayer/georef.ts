@@ -1,7 +1,5 @@
 export interface ZarrDatasetCoords {
   times: Float64Array;
-  lats: Float64Array;
-  lons: Float64Array;
 }
 
 function isArrayLikeView(
@@ -49,10 +47,6 @@ export function toFloat64Array(data: unknown): Float64Array {
     return data;
   }
 
-  if (data instanceof Float32Array) {
-    return Float64Array.from(data);
-  }
-
   if (data instanceof BigInt64Array || data instanceof BigUint64Array) {
     return Float64Array.from(data, value => Number(value));
   }
@@ -86,17 +80,16 @@ export function toFloat64Array(data: unknown): Float64Array {
   );
 }
 
-/** Snap a selected timestamp to the nearest index in a time coordinate array. */
-export function snapToNearestTimeIndex(
-  times: Float64Array,
-  selectedMs: number,
+/** Index of the value nearest to `target` in a numeric array. */
+export function nearestIndex(
+  values: ArrayLike<number>,
+  target: number,
 ): number {
-  const targetSec = selectedMs / 1000;
   let bestIdx = 0;
   let bestDiff = Infinity;
 
-  for (let i = 0; i < times.length; i++) {
-    const diff = Math.abs(times[i]! - targetSec);
+  for (let i = 0; i < values.length; i++) {
+    const diff = Math.abs(values[i]! - target);
     if (diff < bestDiff) {
       bestDiff = diff;
       bestIdx = i;
@@ -104,4 +97,12 @@ export function snapToNearestTimeIndex(
   }
 
   return bestIdx;
+}
+
+/** Snap a selected timestamp (ms) to the nearest index in a time coord array (sec). */
+export function snapToNearestTimeIndex(
+  times: Float64Array,
+  selectedMs: number,
+): number {
+  return nearestIndex(times, selectedMs / 1000);
 }

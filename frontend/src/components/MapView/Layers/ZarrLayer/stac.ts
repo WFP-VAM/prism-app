@@ -25,7 +25,6 @@ export interface StacDocument {
 
 export interface DynamicalStacMetadata {
   repoUrl: string;
-  attribution: string;
   temporalStart: Date;
   temporalEnd: Date | null;
 }
@@ -105,16 +104,29 @@ export async function fetchDynamicalStacMetadata(
   }
 
   const { start, end } = parseTemporalExtent(doc);
-  const attribution =
-    doc.attribution ??
-    'Data from dynamical.org (CC-BY-4.0). See stac.dynamical.org for attribution details.';
 
   return {
     repoUrl,
-    attribution,
     temporalStart: start,
     temporalEnd: end,
   };
+}
+
+function buildDailyDateItems(
+  startMs: number,
+  endMs: number,
+  generateDefaultDateItem: (date: number) => DateItem,
+): DateItem[] {
+  const dates: DateItem[] = [];
+  const cursor = new Date(startMs);
+  cursor.setUTCHours(12, 0, 0, 0);
+
+  while (cursor.getTime() <= endMs) {
+    dates.push(generateDefaultDateItem(cursor.getTime()));
+    cursor.setUTCDate(cursor.getUTCDate() + 1);
+  }
+
+  return dates;
 }
 
 /** Build daily DateItem[] from a STAC temporal extent (coarse timeline control). */
@@ -123,18 +135,11 @@ export function generateDailyDatesFromExtent(
   end: Date | null,
   generateDefaultDateItem: (date: number) => DateItem,
 ): DateItem[] {
-  const endDate = end ?? new Date();
-  const dates: DateItem[] = [];
-  const cursor = new Date(start);
-  cursor.setUTCHours(12, 0, 0, 0);
-
-  const endMs = endDate.getTime();
-  while (cursor.getTime() <= endMs) {
-    dates.push(generateDefaultDateItem(cursor.getTime()));
-    cursor.setUTCDate(cursor.getUTCDate() + 1);
-  }
-
-  return dates;
+  return buildDailyDateItems(
+    start.getTime(),
+    (end ?? new Date()).getTime(),
+    generateDefaultDateItem,
+  );
 }
 
 /**
@@ -152,17 +157,9 @@ export function generateValidTimeDates(
 
   const latestInitSec = initTimes[initTimes.length - 1]!;
   const maxLeadSec = leadTimes[leadTimes.length - 1]!;
-  const startMs = latestInitSec * 1000;
-  const endMs = (latestInitSec + maxLeadSec) * 1000;
-
-  const dates: DateItem[] = [];
-  const cursor = new Date(startMs);
-  cursor.setUTCHours(12, 0, 0, 0);
-
-  while (cursor.getTime() <= endMs) {
-    dates.push(generateDefaultDateItem(cursor.getTime()));
-    cursor.setUTCDate(cursor.getUTCDate() + 1);
-  }
-
-  return dates;
+  return buildDailyDateItems(
+    latestInitSec * 1000,
+    (latestInitSec + maxLeadSec) * 1000,
+    generateDefaultDateItem,
+  );
 }

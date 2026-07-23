@@ -1,8 +1,6 @@
 import type { SpatialAttrs } from '@developmentseed/geozarr';
 import { parseGeoZarrMetadata } from '@developmentseed/geozarr';
 
-import { toFloat64Array } from './georef';
-
 export type GeoZarrMetadataAttrs = SpatialAttrs & {
   'proj:code': string;
 };
@@ -58,9 +56,4 @@ export function buildGeoZarrMetadata(
   parseGeoZarrMetadata(metadata);
 
   return metadata;
-}
-
-/** Normalize a zarrita coordinate read result to Float64Array. */
-export function readCoordValues(result: unknown): Float64Array {
-  return toFloat64Array(result);
 }

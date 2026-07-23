@@ -32,6 +32,13 @@ type PrismZarrLayerExtraProps = {
   onTileLoadFailed?: () => void;
 };
 
+type PrismZarrLayerProps = DeckZarrLayerProps<
+  zarr.Readable,
+  zarr.DataType,
+  MinimalTileData
+> &
+  PrismZarrLayerExtraProps;
+
 /**
  * deck.gl-raster's RasterTileLayer only forwards `updateTriggers.renderTile`
  * to its inner deck.gl TileLayer (as `renderSubLayers`), and drops
@@ -58,12 +65,7 @@ class PrismZarrLayer<
       this.props.updateTriggers as Record<string, unknown> | undefined
     )?.getTileData;
     const { onViewportTilesLoaded, onTileLoadFailed } = this
-      .props as unknown as DeckZarrLayerProps<
-      zarr.Readable,
-      zarr.DataType,
-      DataT
-    > &
-      PrismZarrLayerExtraProps;
+      .props as unknown as PrismZarrLayerProps;
     return inner.clone({
       updateTriggers: {
         ...inner.props.updateTriggers,
@@ -93,6 +95,23 @@ function toOpenOptions(layer: ZarrLayerProps): OpenZarrDatasetOptions {
   };
 }
 
+function notifyLoadFailure(
+  dispatch: ReturnType<typeof useDispatch>,
+  id: string,
+  logLabel: string,
+  err: unknown,
+  message: string,
+): void {
+  console.error(logLabel, err);
+  dispatch(finishLayerLoading(id));
+  dispatch(
+    addNotification({
+      message,
+      type: 'warning',
+    }),
+  );
+}
+
 const ZarrLayerComponent = memo(
   ({ layer, before }: ZarrLayerComponentProps) => {
     const {
@@ -118,9 +137,6 @@ const ZarrLayerComponent = memo(
     const { registerRef, unregisterRef } = useDeckGLRegistration();
     const openOptions = useMemo(() => toOpenOptions(layer), [layer]);
 
-    const [repoUrl, setRepoUrl] = useState<string | null>(
-      repoUrlOverride ?? null,
-    );
     const [dataset, setDataset] = useState<OpenZarrDataset | null>(null);
 
     const minValue = valueRange?.[0] ?? Number(legend?.[0]?.value ?? -40);
@@ -168,13 +184,8 @@ const ZarrLayerComponent = memo(
       [selection],
     );
 
-    // Effect A: resolve STAC → repo URL
+    // Resolve STAC → open Icechunk/Zarr dataset
     useEffect(() => {
-      if (repoUrlOverride) {
-        setRepoUrl(repoUrlOverride);
-        return undefined;
-      }
-
       if (selectedDate === undefined) {
         return undefined;
       }
@@ -183,87 +194,47 @@ const ZarrLayerComponent = memo(
 
       dispatch(startLayerLoading(id));
 
-      fetchDynamicalStacMetadata(stacItem)
-        .then(meta => {
+      (async () => {
+        try {
+          const repoUrl =
+            repoUrlOverride ??
+            (await fetchDynamicalStacMetadata(stacItem)).repoUrl;
+          const opened = await openZarrDataset(repoUrl, variable, openOptions);
           if (!cancelled) {
-            setRepoUrl(meta.repoUrl);
+            setDataset(opened);
           }
-        })
-        .catch(err => {
+        } catch (err) {
           if (!cancelled) {
-            console.error(`ZarrLayer [${id}]: failed to resolve STAC`, err);
-            setRepoUrl(null);
-            dispatch(finishLayerLoading(id));
-            dispatch(
-              addNotification({
-                message: `Failed to load Zarr layer "${layer.title}": ${err.message}`,
-                type: 'warning',
-              }),
+            setDataset(null);
+            notifyLoadFailure(
+              dispatch,
+              id,
+              `ZarrLayer [${id}]: failed to load dataset`,
+              err,
+              `Failed to load Zarr layer "${layer.title}": ${
+                err instanceof Error ? err.message : String(err)
+              }`,
             );
           }
-        });
+        }
+      })();
 
       return () => {
         cancelled = true;
         dispatch(finishLayerLoading(id));
       };
-    }, [stacItem, repoUrlOverride, id, layer.title, dispatch, selectedDate]);
-
-    // Effect A (cont.): open dataset once repo URL is known
-    useEffect(() => {
-      if (!repoUrl) {
-        setDataset(null);
-        return undefined;
-      }
-
-      if (selectedDate === undefined) {
-        return undefined;
-      }
-
-      let cancelled = false;
-
-      if (repoUrlOverride) {
-        dispatch(startLayerLoading(id));
-      }
-
-      openZarrDataset(repoUrl, variable, openOptions)
-        .then(opened => {
-          if (!cancelled) {
-            setDataset(opened);
-          }
-        })
-        .catch(err => {
-          if (!cancelled) {
-            console.error(`ZarrLayer [${id}]: failed to open dataset`, err);
-            setDataset(null);
-            dispatch(finishLayerLoading(id));
-            dispatch(
-              addNotification({
-                message: `Failed to open Zarr dataset for "${layer.title}": ${err.message}`,
-                type: 'warning',
-              }),
-            );
-          }
-        });
-
-      return () => {
-        cancelled = true;
-        if (repoUrlOverride) {
-          dispatch(finishLayerLoading(id));
-        }
-      };
     }, [
-      repoUrl,
+      stacItem,
+      repoUrlOverride,
       variable,
       openOptions,
       id,
       layer.title,
       dispatch,
       selectedDate,
-      repoUrlOverride,
     ]);
 
-    // Effect B: register deck.gl-zarr ZarrLayer (viewport-tiled)
+    // Register deck.gl-zarr ZarrLayer (viewport-tiled)
     useEffect(() => {
       const deckLayerId = `zarr-${id}`;
 
@@ -292,12 +263,7 @@ const ZarrLayerComponent = memo(
             getTileData: [selectionKey, dataset.snapshotId, reduceEnsemble],
             renderTile: [selectionKey, minValue, maxValue, valueScale],
           },
-        } as unknown as DeckZarrLayerProps<
-          zarr.Readable,
-          zarr.DataType,
-          MinimalTileData
-        > &
-          PrismZarrLayerExtraProps),
+        } as unknown as PrismZarrLayerProps),
       );
 
       return () => {
