@@ -83,7 +83,7 @@ const AdminLevelDataLayers = memo(
       if ('boundary' in layer) {
         if (Object.keys(LayerDefinitions).includes(boundaryId)) {
           boundaryLayers.map(l => removeLayer(l));
-          addLayer({ ...boundaryLayer, isPrimary: true });
+          addLayer(boundaryLayer);
 
           // load unique boundary only once
           // to avoid double loading which proven to be performance issue

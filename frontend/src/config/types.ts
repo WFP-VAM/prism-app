@@ -400,9 +400,6 @@ export class BoundaryLayerProps extends CommonLayerProps {
   styles: LayerStyleProps; // Maplibre line and fill properties.,
 
   @optional
-  isPrimary?: boolean | undefined;
-
-  @optional
   format?: 'pmtiles' | 'geojson' = 'geojson';
 
   @optional

@@ -5,7 +5,10 @@ import {
   loadBoundaryRelations,
 } from 'components/Common/BoundaryDropdown/utils';
 import { BoundaryLayerProps, MapEventWrapFunctionProps } from 'config/types';
-import { getDisplayBoundaryLayers, isPrimaryBoundaryLayer } from 'config/utils';
+import {
+  getDisplayBoundaryLayers,
+  getRelationSourceBoundaryLayer,
+} from 'config/utils';
 import {
   hasAdminNameSidecar,
   selectAdminNameDict,
@@ -285,7 +288,8 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
   }, [selectedMap, layer.minZoom, layer.maxZoom]);
 
   const dispatch = useDispatch();
-  const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
+  const isRelationSourceLayer =
+    layer.id === getRelationSourceBoundaryLayer().id;
 
   useEffect(() => {
     if (layer.format !== 'pmtiles' || !boundaryDataError) {
@@ -300,7 +304,7 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
   }, [boundaryDataError, dispatch, layer.format]);
 
   useEffect(() => {
-    if (!data || !isPrimaryLayer || layer.format !== 'pmtiles') {
+    if (!data || !isRelationSourceLayer || layer.format !== 'pmtiles') {
       return;
     }
 
@@ -334,7 +338,7 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
     }
 
     dispatch(setBoundaryRelationData(dataDict));
-  }, [data, dict, dispatch, isPrimaryLayer, language, layer]);
+  }, [data, dict, dispatch, isRelationSourceLayer, language, layer]);
 
   if (layer.format === 'pmtiles') {
     const isAdmin0Landing =

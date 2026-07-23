@@ -6,7 +6,6 @@
     "path": "https://pmtiles-hosting.s3.eu-central-1.amazonaws.com/universal/global_admin_boundaries.pmtiles",
     "layer_name": "admin3",
     "hideInGoTo": true,
-    "isPrimary": true,
     "disableAnalysis": true,
     "admin_code": "adm3_id",
     "admin_level": 3,
