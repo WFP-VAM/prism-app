@@ -720,7 +720,7 @@ const localWMSGetLayerDates = async (
  */
 const mapServerDatesToLayerIds = (
   serverDates: Record<string, number[]>,
-  layers: (WMSLayerProps | CompositeLayerProps)[],
+  layers: (WMSLayerProps | CogLayerProps | CompositeLayerProps)[],
 ): Record<LayerKey, ReferenceDateTimestamp[]> =>
   layers.reduce((acc: Record<string, ReferenceDateTimestamp[]>, layer) => {
     const serverLayerName =
@@ -777,11 +777,11 @@ export async function preloadLayerDatesForWMS(
   const wcsServerUrls: string[] = get(appConfig, 'serversUrls.wcs', []);
 
   const WCSWMSLayers = Object.values(LayerDefinitions).filter(
-    (layer): layer is WMSLayerProps =>
+    (layer): layer is WMSLayerProps | CogLayerProps | CompositeLayerProps =>
       layer.type === 'wms' ||
       layer.type === 'cog' ||
       compositeLayersWithDateLayerTypeMap[layer.id] === 'wms',
-  ) as WMSLayerProps[];
+  );
   const allWMSDates = wmsServerUrls.map(async url => {
     const serverDates = await localWMSGetLayerDates(url, dispatch);
     return mapServerDatesToLayerIds(serverDates, WCSWMSLayers);
