@@ -86,17 +86,20 @@ function hexToRgb(hex: string): [number, number, number] {
 
 /**
  * Build a 256×1 RGBA ImageData from legend breakpoints.
- * Each texel i maps to value = (i/255)*maxValue; we find the legend bin
- * whose threshold is <= that value and assign its color.
+ * Texel i maps to value = minValue + (i/255)*(maxValue-minValue) and takes the
+ * color of the matching legend bin; the [minValue, maxValue] domain supports
+ * negative thresholds.
  */
 function buildColormapImageData(
   legend: LegendDefinition,
+  minValue: number,
   maxValue: number,
 ): ImageData {
   const data = new Uint8ClampedArray(256 * 4);
+  const range = maxValue - minValue;
 
   for (let i = 0; i < 256; i++) {
-    const value = (i / 255) * maxValue;
+    const value = minValue + (i / 255) * range;
 
     let colorHex = legend[0]?.color ?? '#000000';
     for (let j = legend.length - 1; j >= 0; j--) {
@@ -130,6 +133,7 @@ type TileData = {
 
 interface COGRenderConfig {
   legend: LegendDefinition;
+  minValue: number;
   maxValue: number;
   scale: number;
   offset: number;
@@ -179,7 +183,7 @@ function createTileHandlers(config: COGRenderConfig) {
     if (!colormapTex) {
       colormapTex = createColormapTexture(
         device,
-        buildColormapImageData(config.legend, config.maxValue),
+        buildColormapImageData(config.legend, config.minValue, config.maxValue),
       );
     }
 
@@ -199,7 +203,7 @@ function createTileHandlers(config: COGRenderConfig) {
         : []),
       {
         module: LinearRescale,
-        props: { rescaleMin: 0, rescaleMax: config.maxValue },
+        props: { rescaleMin: config.minValue, rescaleMax: config.maxValue },
       },
       ...(colormapTex
         ? [
@@ -262,22 +266,33 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
     [fetchedData, dateString],
   );
 
-  // Derive max value from the last legend entry
-  const maxValue = legend?.length
-    ? Number(legend[legend.length - 1].value)
-    : 300;
+  // Value domain from the sorted legend breakpoints; a non-zero min lets
+  // negative-valued legends (e.g. SPI) render instead of clamping below 0.
+  const rawMax = legend?.length ? Number(legend[legend.length - 1].value) : 300;
+  const rawMin = legend?.length ? Number(legend[0].value) : 0;
+  // Guard against a degenerate/inverted range (divide-by-zero in rescale).
+  const minValue = Math.min(rawMin, rawMax);
+  const maxValue = rawMax > rawMin ? rawMax : rawMin + 1;
 
   const scale = wcsConfig?.scale ?? 1;
   const offset = wcsConfig?.offset ?? 0;
   const nodataRef = useRef<number | null>(null);
   const renderConfigRef = useRef<COGRenderConfig>({
     legend,
+    minValue,
     maxValue,
     scale,
     offset,
     nodataRef,
   });
-  renderConfigRef.current = { legend, maxValue, scale, offset, nodataRef };
+  renderConfigRef.current = {
+    legend,
+    minValue,
+    maxValue,
+    scale,
+    offset,
+    nodataRef,
+  };
 
   const tileHandlersRef = useRef<ReturnType<typeof createTileHandlers> | null>(
     null,
