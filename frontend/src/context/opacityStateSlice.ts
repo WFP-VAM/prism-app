@@ -46,6 +46,7 @@ export const opacityStateSlice = createSlice({
       const [mapLayerId, opacityType] = ((): [string, string] => {
         switch (layerType) {
           case 'wms':
+          case 'cog':
             return [getLayerMapId(layerId), 'raster-opacity'];
           case 'static_raster':
             return [getLayerMapId(layerId), 'raster-opacity'];

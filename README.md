@@ -11,6 +11,7 @@ The new PRISM frontend is built as a static website to minimize cross dependenci
 - Load administrative boundaries as GeoJSON (`src/config/admin_boundaries.json`)
 - Load admin level (vector) data as JSON, and link it to administrative boundaries
 - Display WMS layers from Geoserver or Open Data Cube endpoints, with date selection capabilities
+- Display COG (Cloud Optimized GeoTIFF) layers streamed directly from a STAC catalog and rendered client-side with deck.gl
 - Display point layers by applying symbology to numeric values associated with a geographic coordinate
 - Display CSV tables in a left side panel
 
@@ -244,6 +245,37 @@ These layers are simply processed as raster images from a WMS server and are ref
     ]
 }
 ```
+
+#### cog
+
+These layers are referred to as type `cog` and stream a [Cloud Optimized GeoTIFF](https://www.cogeo.org/) directly from a STAC catalog. They behave like a `wms` raster layer in the UI (date selection, opacity, mutual exclusivity, ordering below admin boundaries) but the pixels are fetched and colorized client-side with deck.gl instead of being rendered into images by a map server. This gives smoother zooming and lets the frontend control the color ramp.
+
+Use a `cog` layer when the data is available as a COG in a STAC catalog and you want client-side rendering; use `wms` when a tile/image server already renders the layer for you.
+
+```json
+"ndvi_dekad": {
+  "title": "10-day NDVI (MODIS)",
+  "type": "cog",
+  "collection": "mxd13a2_vim_dekad",
+  "server_layer_name": "mxd13a2_vim_dekad",
+  "date_interval": "days",
+  "validity": { "forward": 1, "mode": "dekad" },
+  "opacity": 0.7,
+  "wcsConfig": { "scale": 0.0001, "offset": 0 },
+  "legend_text": "Normalized Difference Vegetation Index (NDVI) derived from MODIS TERRA/AQUA",
+  "legend": "ndvi"
+}
+```
+
+Fields specific to `cog` layers:
+
+- `collection` (required): STAC collection ID used to look up COG assets via the `/cog_presigned_url` endpoint.
+- `server_layer_name` (required): the WMS layer name used only to discover available dates for the timeline (via WMS GetCapabilities). Set it to the same value as `collection` unless the WMS name differs from the STAC collection ID.
+- `band` (optional): STAC asset key / band to fetch when an item exposes multiple assets (e.g. `"rfb"`). Defaults to the first asset.
+- `wcsConfig.scale` / `wcsConfig.offset` (optional): linear transform applied to raw pixel values before they are mapped to the legend (e.g. NDVI stored as Int16 uses `scale: 0.0001`).
+- `legend` (required): legend breakpoints (inline or a reference into `shared/legends.json`). The color ramp is built from these values and applied on the GPU.
+
+The `title`, `legend`, `legend_text`, `opacity`, `date_interval`, and `validity` fields work the same as for other layer types. See [docs/cog-layers.md](docs/cog-layers.md) for how COG layers are fetched, proxied, and rendered.
 
 #### admin level
 

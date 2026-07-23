@@ -2,6 +2,10 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 
 import { useMediaQuery, useTheme } from '@material-ui/core';
 import {
+  DECK_GL_LAYER_TYPES,
+  DeckGLLayersProvider,
+} from 'components/MapView/DeckGLLayersContext';
+import {
   AdminLevelDataLayer,
   AnticipatoryActionDroughtLayer,
   AnticipatoryActionStormLayer,
@@ -13,6 +17,7 @@ import {
   WMSLayer,
 } from 'components/MapView/Layers';
 import AnalysisLayer from 'components/MapView/Layers/AnalysisLayer';
+import type { COGLayerComponentProps } from 'components/MapView/Layers/COGLayer';
 import SelectionLayer from 'components/MapView/Layers/SelectionLayer';
 import MapTooltip from 'components/MapView/MapTooltip';
 import useMapOnClick from 'components/MapView/useMapOnClick';
@@ -37,7 +42,9 @@ import {
 import React, {
   ComponentType,
   createElement,
+  lazy,
   memo,
+  Suspense,
   useCallback,
   useEffect,
   useMemo,
@@ -72,6 +79,19 @@ import {
 
 initPmtilesProtocol();
 
+const SHOW_BOUNDARY_INFO = JSON.parse(
+  process.env.REACT_APP_SHOW_MAP_INFO || 'false',
+);
+
+const DeckGLOverlay = lazy(() => import('components/MapView/DeckGLOverlay'));
+const COGLayerLazy = lazy(() => import('components/MapView/Layers/COGLayer'));
+
+const COGLayerComponent = (props: COGLayerComponentProps) => (
+  <Suspense fallback={null}>
+    <COGLayerLazy {...props} />
+  </Suspense>
+);
+
 type LayerComponentsMap<U extends LayerType> = {
   [T in U['type']]: {
     component: ComponentType<{
@@ -91,6 +111,7 @@ type LayerComponentsMap<U extends LayerType> = {
 const componentTypes: LayerComponentsMap<LayerType> = {
   boundary: { component: BoundaryLayer },
   wms: { component: WMSLayer },
+  cog: { component: COGLayerComponent },
   admin_level_data: { component: AdminLevelDataLayer },
   impact: { component: ImpactLayer },
   point_data: { component: PointDataLayer },
@@ -167,11 +188,6 @@ const MapComponent = memo(
             },
       }),
       [panelHidden, isGlobalMap],
-    );
-
-    const showBoundaryInfo = useMemo(
-      () => JSON.parse(process.env.REACT_APP_SHOW_MAP_INFO || 'false'),
-      [],
     );
 
     const onDragEnd = useCallback(
@@ -254,17 +270,21 @@ const MapComponent = memo(
         // Find the first symbol on the map to make sure we add boundary layers below them.
         setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
         mapState.actions.setMap(() => mapRef.current?.getMap() || undefined);
-        if (showBoundaryInfo) {
+        if (SHOW_BOUNDARY_INFO) {
           watchBoundaryChange(map);
         }
         trackLoadingLayers(map);
       },
-      [mapState, showBoundaryInfo, watchBoundaryChange, trackLoadingLayers],
+      [mapState, watchBoundaryChange, trackLoadingLayers],
     );
 
     const stackLayers = useMemo(
       () => stackLayersForMapPaintOrder(selectedLayers),
       [selectedLayers],
+    );
+
+    const hasDeckLayers = stackLayers.some(l =>
+      DECK_GL_LAYER_TYPES.has(l.type),
     );
 
     const firstBoundaryId = getFirstBoundaryLayerMapId(selectedMap);
@@ -342,52 +362,59 @@ const MapComponent = memo(
           : mapState.minMapBounds;
 
     return (
-      <MapGL
-        key={smDown ? 'mobile' : 'desktop'}
-        ref={mapRef}
-        // preserveDrawingBuffer is required for the map to be exported as an image. Used in reportDoc.tsx
-        canvasContextAttributes={{ preserveDrawingBuffer: true }}
-        dragRotate={false}
-        minZoom={minZoom}
-        maxZoom={maxZoom}
-        initialViewState={{
-          bounds: initialBounds as LngLatBoundsLike,
-          ...(isUniversalLanding && universalLandingView && !smDown
-            ? {
-                padding: universalLandingView.padding,
-                fitBoundsOptions: { padding: universalLandingView.padding },
-              }
-            : {
-                fitBoundsOptions: smDown
-                  ? undefined
-                  : { padding: fitBoundsOptions.padding },
-              }),
-        }}
-        mapStyle={mapStyle}
-        projection={projection}
-        sky={isGlobeProjection ? mapSky : undefined}
-        style={{
-          width: '100%',
-          height: '100%',
-          ...(isGlobeProjection ? { background: mapBackdropColor } : {}),
-        }}
-        onLoad={onMapLoadWithLabelFilter}
-        onClick={mapOnClick}
-        maxBounds={maxBounds}
-      >
-        {stackLayers.map((layer, index) => {
-          const { component } = componentTypes[layer.type];
-          return createElement(component as any, {
-            key: layer.id,
-            layer,
-            before: getBeforeId(index, layerUsesSymbolAnchorOnly(layer)),
-          });
-        })}
-        <AnalysisLayer before={firstBoundaryId} mapRef={mapRef} />
-        <SelectionLayer before={firstSymbolId} />
-        <MapTooltip />
-        {children}
-      </MapGL>
+      <DeckGLLayersProvider>
+        <MapGL
+          key={smDown ? 'mobile' : 'desktop'}
+          ref={mapRef}
+          // preserveDrawingBuffer is required for the map to be exported as an image. Used in reportDoc.tsx
+          canvasContextAttributes={{ preserveDrawingBuffer: true }}
+          dragRotate={false}
+          minZoom={minZoom}
+          maxZoom={maxZoom}
+          initialViewState={{
+            bounds: initialBounds as LngLatBoundsLike,
+            ...(isUniversalLanding && universalLandingView && !smDown
+              ? {
+                  padding: universalLandingView.padding,
+                  fitBoundsOptions: { padding: universalLandingView.padding },
+                }
+              : {
+                  fitBoundsOptions: smDown
+                    ? undefined
+                    : { padding: fitBoundsOptions.padding },
+                }),
+          }}
+          mapStyle={mapStyle}
+          projection={projection}
+          sky={isGlobeProjection ? mapSky : undefined}
+          style={{
+            width: '100%',
+            height: '100%',
+            ...(isGlobeProjection ? { background: mapBackdropColor } : {}),
+          }}
+          onLoad={onMapLoadWithLabelFilter}
+          onClick={mapOnClick}
+          maxBounds={maxBounds}
+        >
+          {hasDeckLayers && (
+            <Suspense fallback={null}>
+              <DeckGLOverlay />
+            </Suspense>
+          )}
+          {stackLayers.map((layer, index) => {
+            const { component } = componentTypes[layer.type];
+            return createElement(component as any, {
+              key: layer.id,
+              layer,
+              before: getBeforeId(index, layerUsesSymbolAnchorOnly(layer)),
+            });
+          })}
+          <AnalysisLayer before={firstBoundaryId} mapRef={mapRef} />
+          <SelectionLayer before={firstSymbolId} />
+          <MapTooltip />
+          {children}
+        </MapGL>
+      </DeckGLLayersProvider>
     );
   },
 );
