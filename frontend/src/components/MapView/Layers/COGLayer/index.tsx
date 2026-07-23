@@ -132,6 +132,7 @@ interface COGRenderConfig {
   legend: LegendDefinition;
   maxValue: number;
   scale: number;
+  offset: number;
   nodataRef: { current: number | null };
 }
 
@@ -157,11 +158,13 @@ function createTileHandlers(config: COGRenderConfig) {
     const { width, height, data } = array;
 
     // Convert Int16 (or any integer type) to Float32 for GPU compatibility,
-    // applying the wcsConfig scale factor if present (e.g. NDVI uses 0.0001).
+    // applying the wcsConfig affine transform (value * scale + offset) so
+    // rendered values match the rest of the app (e.g. NDVI uses scale 0.0001,
+    // temperature layers use offset -273 for Kelvin -> Celsius).
     const floatData = new Float32Array(data.length);
-    const scale = config.scale;
+    const { scale, offset } = config;
     for (let i = 0; i < data.length; i++) {
-      floatData[i] = data[i]! * scale;
+      floatData[i] = data[i]! * scale + offset;
     }
 
     const texture = device.createTexture({
@@ -185,8 +188,10 @@ function createTileHandlers(config: COGRenderConfig) {
 
   const renderTile = (tileData: TileData): RenderTileResult => {
     const nodata = config.nodataRef.current;
-    // When a scale factor is applied, nodata must also be scaled for comparison.
-    const scaledNodata = nodata !== null ? nodata * config.scale : null;
+    // FilterNoDataVal compares against the transformed float values, so the
+    // nodata sentinel must go through the same affine transform (scale + offset).
+    const scaledNodata =
+      nodata !== null ? nodata * config.scale + config.offset : null;
     const pipeline: RasterModule[] = [
       { module: CreateTexture, props: { textureName: tileData.texture } },
       ...(scaledNodata !== null
@@ -263,20 +268,22 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
     : 300;
 
   const scale = wcsConfig?.scale ?? 1;
+  const offset = wcsConfig?.offset ?? 0;
   const nodataRef = useRef<number | null>(null);
   const renderConfigRef = useRef<COGRenderConfig>({
     legend,
     maxValue,
     scale,
+    offset,
     nodataRef,
   });
-  renderConfigRef.current = { legend, maxValue, scale, nodataRef };
+  renderConfigRef.current = { legend, maxValue, scale, offset, nodataRef };
 
   const tileHandlersRef = useRef<ReturnType<typeof createTileHandlers> | null>(
     null,
   );
   const legendKeyRef = useRef<string>('');
-  const currentLegendKey = `${legend?.map(l => `${l.value}:${l.color}`).join(',') ?? ''}:${scale}`;
+  const currentLegendKey = `${legend?.map(l => `${l.value}:${l.color}`).join(',') ?? ''}:${scale}:${offset}`;
   if (currentLegendKey !== legendKeyRef.current) {
     legendKeyRef.current = currentLegendKey;
     tileHandlersRef.current = createTileHandlers(renderConfigRef.current);
