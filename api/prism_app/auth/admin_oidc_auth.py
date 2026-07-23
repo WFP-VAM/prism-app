@@ -11,6 +11,7 @@ from prism_app.auth.admin_settings import (
     log_oidc_configuration_blocked,
 )
 from prism_app.auth.deps import load_user_from_session
+from prism_app.auth.dev_impersonation import load_dev_impersonation, parse_dev_user_id
 from prism_app.auth.permission_codes import ALL_CAPABILITIES, can_access_admin_panel
 from prism_app.auth.prism_auth_service import is_active
 from sqlalchemy.engine import Engine
@@ -82,12 +83,14 @@ class PrismAdminAuthProvider(BaseAuthProvider):
 
     def get_admin_user(self, request: Request) -> AdminUser | None:
         user = getattr(request.state, "prism_user", None)
+        if user is not None:
+            label = user.email or user.name or user.ciam_sub
+            if self.settings.admin_auth_disabled and parse_dev_user_id(self.settings):
+                return AdminUser(username=f"{label} (dev impersonation)")
+            return AdminUser(username=label)
         if self.settings.admin_auth_disabled:
             return AdminUser(username="(auth disabled — local only)")
-        if user is None:
-            return None
-        label = user.email or user.name or user.ciam_sub
-        return AdminUser(username=label)
+        return None
 
     def get_admin_config(self, request: Request):
         return None  # pragma: no cover
@@ -124,7 +127,26 @@ class PrismAdminAuthMiddleware(BaseHTTPMiddleware):
         settings = prov.settings
 
         if settings.admin_auth_disabled:
+            dev_user_id = parse_dev_user_id(settings)
+            if dev_user_id is not None:
+                loaded = load_dev_impersonation(prov.engine, dev_user_id)
+                if loaded is None:
+                    return PlainTextResponse(
+                        f"PRISM_DEV_USER_ID user not found or inactive: {dev_user_id}",
+                        status_code=503,
+                    )
+                user, codes, scopes = loaded
+                if not can_access_admin_panel(codes):
+                    return PlainTextResponse(
+                        "PRISM_DEV_USER_ID user cannot access the admin panel.",
+                        status_code=403,
+                    )
+                request.state.prism_user = user
+                request.state.permission_codes = codes
+                request.state.permission_scopes = scopes
+                return await call_next(request)
             request.state.permission_codes = set(ALL_CAPABILITIES)
+            request.state.permission_scopes = {}
             return await call_next(request)
 
         is_public = (
@@ -147,7 +169,7 @@ class PrismAdminAuthMiddleware(BaseHTTPMiddleware):
                 status_code=503,
             )
 
-        user, codes, _ = load_user_from_session(
+        user, codes, scopes, _ = load_user_from_session(
             request,
             prov.engine,
             settings,
@@ -170,4 +192,5 @@ class PrismAdminAuthMiddleware(BaseHTTPMiddleware):
 
         request.state.prism_user = user
         request.state.permission_codes = codes
+        request.state.permission_scopes = scopes
         return await call_next(request)

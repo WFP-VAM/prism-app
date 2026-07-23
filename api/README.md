@@ -28,7 +28,7 @@ Edit `api/.env` and set:
 PRISM_ADMIN_AUTH_DISABLED=true
 ```
 
-This skips OIDC so you can access `/admin` without credentials. See [Admin UI and OIDC](#admin-ui-starlette-admin-and-oidc) for the full auth setup.
+This skips OIDC so you can access `/admin` without credentials. By default you get **all** capabilities (no country scoping). To test scoped permissions, seed the RBAC test users (`make db-seed`) and set `PRISM_DEV_USER_ID` to one of their UUIDs (see [Local dev seed data](#local-dev-seed-data)). See [Admin UI and OIDC](#admin-ui-starlette-admin-and-oidc) for the full auth setup.
 
 You also need `KOBO_USERNAME` and `KOBO_PASSWORD` exported in your shell (the compose file requires them):
 
@@ -79,7 +79,7 @@ make db-migrate
 make db-seed
 ```
 
-`db-migrate` applies Alembic migrations (`upgrade head`). `db-seed` runs migrations first, then inserts sample dev data (Mozambique AA metadata, a `local_dev_user`, example alert rows, and five `[Seed]` map export schedules for cron/download QA).
+`db-migrate` applies Alembic migrations (`upgrade head`). `db-seed` runs migrations first, then inserts sample dev data (Mozambique AA metadata, a `local_dev_user`, example alert rows, nine country-scoped RBAC test users, and five `[Seed]` map export schedules for cron/download QA).
 
 ### 4. Verify
 
@@ -117,6 +117,24 @@ Unauthenticated users are sent to **`/auth/welcome`** to choose a provider, then
 
 OIDC and related environment variables are listed in [AUTH.md](AUTH.md#auth-specific-environment-variables) (CIAM and Entra tables).
 
+### Local auth bypass and dev impersonation
+
+| Variable | Purpose |
+|---|---|
+| `PRISM_ADMIN_AUTH_DISABLED=true` | Skip OIDC; `/admin` works without sign-in. Grants **all** capabilities unless `PRISM_DEV_USER_ID` is set. |
+| `PRISM_DEV_USER_ID=<users.id UUID>` | Requires auth disabled. Loads that user's permission codes and country scopes for admin, `/whoami`, and `POST /export-map/schedules`. |
+
+Never set either variable in production (`PRISM_ENV=production` rejects them at startup).
+
+Example — test Mozambique scheduled-map scoping after `make db-seed`:
+
+```bash
+PRISM_ADMIN_AUTH_DISABLED=true
+PRISM_DEV_USER_ID=b000000b-0000-4000-8000-00000000000b
+```
+
+Unset `PRISM_DEV_USER_ID` to return to full admin access while auth remains disabled.
+
 ### Session secret (`PRISM_SESSION_SECRET`)
 
 Signs the session cookie and OIDC state tokens.
@@ -153,11 +171,13 @@ PRISM_ALERTS_DATABASE_URL="postgresql://user:pass@host:5432/dbname" poetry run a
 poetry run alembic upgrade head
 ```
 
-Then insert the shared local-dev rows used by alerting workers and API smoke tests (Mozambique anticipatory-action metadata, a `local_dev_user` in `kobo_users`, and two sample `alert` rows):
+Then insert the shared local-dev rows used by alerting workers and API smoke tests (Mozambique anticipatory-action metadata, a `local_dev_user` in `kobo_users`, two sample `alert` rows, nine country-scoped RBAC test users, and five `[Seed]` map export schedules):
 
 ```bash
 poetry run python scripts/seed_alerts_db.py
 ```
+
+
 
 This is a **standalone dev script** under [`scripts/`](./scripts/) (not part of the importable `prism_app` package or FastAPI surface). It reads [`scripts/seed_local_alerts_dev.sql`](./scripts/seed_local_alerts_dev.sql) and connects with the same `PRISM_ALERTS_DATABASE_URL` / `POSTGRES_*` rules as [`database.py`](./prism_app/database/database.py). Put those variables in `api/.env` (loaded by the script the same way as `alembic/env.py`). The seed is safe to re-run: see comments in the SQL file.
 

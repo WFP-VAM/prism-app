@@ -35,8 +35,10 @@ poetry run python scripts/grant_admin_permission.py <user_id>
 1. Have the user sign in via CIAM or Entra (any PRISM page that triggers auth).
 2. They'll land on an "access not configured" page. Their `users` row now exists.
 3. An admin navigates to `/admin` → **User permissions** → **Create**.
-4. Select the user and the desired permission (e.g. `prism.content.view`).
+4. Select the user, the desired permission (e.g. `prism.dashboard.manage`), and a **country** scope (see below).
 5. The user refreshes — gated content is now accessible.
+
+For **country-scoped** permissions, create one row per country (or a single row with `*` for all countries). Example: grant `prism.dashboard.manage` for `malawi` and a second row for `mozambique`.
 
 ---
 
@@ -51,15 +53,42 @@ No manual user provisioning is needed; identities come from the chosen IdP.
 
 ## Permission Codes
 
-| Code | Purpose | Status |
-|------|---------|--------|
-| `prism.admin.access` | Access the `/admin` panel | Active |
-| `prism.content.view` | Read sign-in–gated content | Not enforced |
-| `prism.dashboard.manage` | Create/edit/publish dashboards | Not enforced |
-| `prism.deployment.manage` | Change deployment/system config | Not enforced |
-| `prism.users.manage` | Provision users and assign permissions | Not enforced |
+| Code | Purpose | Country scope |
+|------|---------|---------------|
+| `prism.admin.access` | Full admin panel (users, permissions, alerts, etc.) | Global only (`*`) |
+| `prism.content.view` | Read sign-in–gated content | Global only (`*`) |
+| `prism.dashboard.manage` | Create/edit/publish dashboards | Per country or `*` |
+| `prism.map_exports.manage` | Scheduled map exports (admin + API) | Per country or `*` |
+| `prism.aa_data.manage` | AA drought CSV uploads (admin) | Per country or `*` |
+| `prism.deployment.manage` | Change deployment/system config | Global only (`*`) |
+| `prism.users.manage` | Provision users and assign permissions | Global only (`*`) |
 
 These are seeded by the `prism_users_permissions` Alembic migration.
+
+### Country-scoped grants
+
+The `user_permissions` table includes a **`country`** column (part of the primary key):
+
+| user_id | permission_id | country |
+|---------|---------------|---------|
+| alice | prism.dashboard.manage | malawi |
+| alice | prism.dashboard.manage | mozambique |
+| bob | prism.dashboard.manage | `*` |
+
+- **`country = '*'`** — unrestricted for that permission (all countries).
+- **Multiple rows** per `(user, permission)` — one row per allowed country.
+- **Do not mix** `*` and specific countries on the same `(user, permission)`; the admin form rejects this.
+- **`prism.admin.access`** always uses `*` and bypasses country filters on feature views.
+
+Valid country codes depend on the permission:
+
+| Permission | Valid countries |
+|------------|-----------------|
+| `prism.dashboard.manage` | `DashboardCountry` enum (PRISM deployment countries) |
+| `prism.map_exports.manage` | Countries in the schedule layer manifest |
+| `prism.aa_data.manage` | AA drought deployments: malawi, mozambique, tanzania, zambia, zimbabwe |
+
+The **User permissions** admin form uses a country dropdown (`*` plus all known codes). Server-side validation still enforces the correct subset per permission.
 
 ## Feature Gating
 
@@ -71,15 +100,38 @@ from prism_app.auth.deps import require_permissions
 # Require specific permission(s) on a route:
 @app.get("/api/protected")
 def protected(session=Depends(require_permissions("prism.content.view"))):
-    user, codes = session
+    user, codes, scopes = session
     ...
 ```
 
 `require_permissions(*codes)` chains through `require_prism_session` (validates active session + active user status) then asserts all listed codes are present — returns **401** if unauthenticated, **403** if missing permissions.
 
+For country-scoped routes, use helpers from `prism_app.auth.admin_request` or `prism_app.auth.permission_scopes`:
+
+```python
+from prism_app.auth.permission_scopes import can_access_country
+
+if not can_access_country(
+    codes=codes,
+    scopes=scopes,
+    permission_code="prism.dashboard.manage",
+    country=country_slug,
+):
+    raise HTTPException(status_code=403)
+```
+
 ### Admin panel views
 
-All `/admin` model views inherit `PrismGatedModelView`, which checks `prism.admin.access` via `request.state.permission_codes` (set by `PrismAdminAuthMiddleware`).
+Admin access is tiered:
+
+| View | Required capability |
+|------|---------------------|
+| Users, Permissions, User permissions, Kobo users, Alerts, AA alerts | `prism.admin.access` |
+| Dashboards | `prism.admin.access` or `prism.dashboard.manage` (country-scoped) |
+| Scheduled maps | `prism.admin.access` or `prism.map_exports.manage` (country-scoped) |
+| AA drought data | `prism.admin.access` or `prism.aa_data.manage` (country-scoped) |
+
+`request.state.permission_codes` and `request.state.permission_scopes` are set by `PrismAdminAuthMiddleware` on every admin request.
 
 ## Auth-specific environment variables
 
@@ -132,9 +184,14 @@ Authenticated clients receive:
   "auth_provider": "ciam",
   "ciam_sub": "<oidc sub>",
   "email": "user@example.org",
-  "permissions": ["prism.admin.access"]
+  "permissions": ["prism.dashboard.manage"],
+  "permission_scopes": {
+    "prism.dashboard.manage": ["malawi", "mozambique"]
+  }
 }
 ```
+
+`permission_scopes` maps each granted code to either `null` (unrestricted / `*`) or a sorted list of allowed country slugs.
 
 See [`.env.example`](.env.example) for a ready-to-copy template.
 
@@ -142,4 +199,11 @@ Post-login returns to the React print modal use the same hostname allowlist as m
 
 ## Dev Mode
 
-Set `PRISM_ADMIN_AUTH_DISABLED=true` to bypass OIDC entirely for local development. All permission gates are satisfied with the full capability set in this mode.
+Set `PRISM_ADMIN_AUTH_DISABLED=true` to bypass OIDC entirely for local development.
+
+| Configuration | Admin | `/whoami` | Country scoping |
+|---------------|-------|-----------|-----------------|
+| Auth disabled only | All capabilities | 501 | No |
+| Auth disabled + `PRISM_DEV_USER_ID=<uuid>` | Seeded user's permissions | Works | Yes |
+
+`PRISM_DEV_USER_ID` requires auth disabled and is rejected in production. Restart the API after changing it.

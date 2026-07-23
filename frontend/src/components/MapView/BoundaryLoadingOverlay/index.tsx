@@ -4,11 +4,14 @@ import {
   createStyles,
   makeStyles,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 import { LayerKey } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 import { Map as MaplibreMap } from 'maplibre-gl';
 import { memo, useEffect, useState } from 'react';
+import { getUniversalLandingView } from 'utils/universal-utils';
 import { useMapState } from 'utils/useMapState';
 
 export interface BoundaryLoadingOverlayProps {
@@ -31,6 +34,10 @@ const areBoundarySourcesLoaded = (
 
 const BoundaryLoadingOverlay = memo(
   ({ displayedBoundaryLayerIds, viewKey }: BoundaryLoadingOverlayProps) => {
+    const theme = useTheme();
+    const smDown = useMediaQuery(theme.breakpoints.down('sm'));
+    const landingView =
+      viewKey === 'landing' && !smDown ? getUniversalLandingView() : undefined;
     const classes = useStyles();
     const { t } = useSafeTranslation();
     const map = useMapState().maplibreMap();
@@ -69,7 +76,14 @@ const BoundaryLoadingOverlay = memo(
     }
 
     return (
-      <Box className={classes.overlay} aria-live="polite" aria-busy="true">
+      <Box
+        className={classes.overlay}
+        style={
+          landingView ? { paddingLeft: landingView.padding.left } : undefined
+        }
+        aria-live="polite"
+        aria-busy="true"
+      >
         <Box className={classes.card}>
           <CircularProgress size={36} />
           <Typography variant="body2" className={classes.label}>

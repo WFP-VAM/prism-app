@@ -15,7 +15,7 @@ import {
   mapSelector,
 } from 'context/mapStateSlice/selectors';
 import { hidePopup } from 'context/tooltipStateSlice';
-import { Feature, Point } from 'geojson';
+import { Feature, FeatureCollection, Point } from 'geojson';
 import maplibregl from 'maplibre-gl';
 import { AAStormTimeSeriesFeature, TimeSeries } from 'prism-common/';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -236,8 +236,8 @@ const AnticipatoryActionStormLayer = React.memo(
     }
 
     // Load all images from the mapping
-    const loadImages = useCallback(() => {
-      loadStormIcons(map, true); // Throw on error for main map
+    const loadImages = useCallback(async () => {
+      await loadStormIcons(map, true); // Throw on error for main map
     }, [map]);
 
     useEffect(() => {
@@ -378,27 +378,27 @@ const AnticipatoryActionStormLayer = React.memo(
 
       return {
         ...boundaryData,
-        features: boundaryData.features
-          .map(feature => {
-            const districtName =
-              feature.properties?.[boundaryLayer.adminLevelLocalNames[1]];
-            const colorInfo = getDistrictColor(districtName, stormData);
+        features: boundaryData.features.flatMap(feature => {
+          const districtName =
+            feature.properties?.[boundaryLayer.adminLevelLocalNames[1]];
+          const colorInfo = getDistrictColor(districtName, stormData);
 
-            if (!colorInfo) {
-              return null;
-            }
+          if (!colorInfo) {
+            return [];
+          }
 
-            return {
+          return [
+            {
               ...feature,
               properties: {
                 ...feature.properties,
                 fillColor: colorInfo.color.background,
                 fillOpacity: colorInfo.opacity,
               },
-            };
-          })
-          .filter(Boolean),
-      };
+            },
+          ];
+        }),
+      } as FeatureCollection;
     }, [boundaryData, stormData]);
 
     if (!boundaryData || !stormData) {

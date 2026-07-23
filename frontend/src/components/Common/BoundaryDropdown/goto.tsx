@@ -33,7 +33,11 @@ function GoToBoundaryDropdown({ disabled = false }: { disabled?: boolean }) {
     setAnchorEl(null);
   };
 
-  const disabledStyles = disabled ? { opacity: 0.45 } : undefined;
+  // Preserve white icon color; MUI disabled sets action.disabled via currentColor.
+  const buttonStyles = {
+    color: 'white',
+    ...(disabled ? { opacity: 0.45 } : {}),
+  };
 
   return (
     <>
@@ -42,7 +46,7 @@ function GoToBoundaryDropdown({ disabled = false }: { disabled?: boolean }) {
           startIcon={<RoomOutlinedIcon />}
           onClick={handleClick}
           disabled={disabled}
-          style={disabledStyles}
+          style={buttonStyles}
         >
           <Typography style={{ color: '#FFF', textTransform: 'none' }}>
             {t('Go To')}
@@ -51,7 +55,7 @@ function GoToBoundaryDropdown({ disabled = false }: { disabled?: boolean }) {
       )}
       {!mdUp && (
         <IconButton
-          style={{ color: 'white', ...disabledStyles }}
+          style={buttonStyles}
           onClick={handleClick}
           disabled={disabled}
         >

@@ -67,12 +67,14 @@ describe('createMapExportSchedule', () => {
   });
 
   test('throws when response is not ok', async () => {
+    const detail =
+      'You do not have the right permissions for this request. Contact wfp.prism@wfp.org for more information.';
     jest.spyOn(global, 'fetch').mockResolvedValue({
       ok: false,
       status: 403,
-      text: async () => 'Forbidden',
+      text: async () => JSON.stringify({ detail }),
     } as Response);
 
-    await expect(createMapExportSchedule(body)).rejects.toThrow('Forbidden');
+    await expect(createMapExportSchedule(body)).rejects.toThrow(detail);
   });
 });

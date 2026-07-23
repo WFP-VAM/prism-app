@@ -1,6 +1,5 @@
 import { Box, createStyles, makeStyles } from '@material-ui/core';
 import { usePostHog } from '@posthog/react';
-import { appConfig } from 'config';
 import { getBoundaryLayers } from 'config/utils';
 import { clearAnalysisResult } from 'context/analysisResultStateSlice';
 import {
@@ -15,6 +14,7 @@ import { memo, useEffect, useMemo, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { boundaryCache } from 'utils/boundary-cache';
 import {
+  applyUniversalLandingViewport,
   getCountryBbox,
   getDisplayBoundaryLayersForIso3,
   isUniversalDeployment,
@@ -66,18 +66,7 @@ const MapView = memo(() => {
     prevIso3Ref.current = iso3;
 
     if (previousIso3 && !iso3) {
-      const [minLon, minLat, maxLon, maxLat] = appConfig.map.boundingBox;
-      map.fitBounds(
-        [
-          [minLon, minLat],
-          [maxLon, maxLat],
-        ],
-        {
-          padding: { top: 70, right: 60, bottom: 150, left: 500 },
-          animate: true,
-          duration: 1500,
-        },
-      );
+      applyUniversalLandingViewport(map, { animate: true, duration: 1500 });
     }
   }, [iso3, map]);
 

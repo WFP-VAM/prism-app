@@ -97,6 +97,8 @@ class AdminAuthSettings(BaseSettings):
 
     access_support_email: str = ""
     admin_auth_disabled: bool = False
+    # When auth is disabled, load this users.id for admin + session APIs (scoped QA).
+    dev_user_id: str = ""
 
     @field_validator("entra_oidc_token_endpoint_auth_method")
     @classmethod
@@ -237,12 +239,20 @@ def get_admin_auth_settings() -> AdminAuthSettings:
                 "PRISM_ADMIN_AUTH_DISABLED cannot be enabled when PRISM_ENV is production (or prod). "
                 "Admin auth bypass is for local development only."
             )
+        if settings.dev_user_id.strip():
+            raise ValueError(
+                "PRISM_DEV_USER_ID cannot be set when PRISM_ENV is production (or prod). "
+                "Dev impersonation is for local development only."
+            )
         if not settings.session_secret.strip():
             raise ValueError(
                 "PRISM_SESSION_SECRET is required when PRISM_ENV is production (or prod). "
                 "Generate one locally: openssl rand -hex 32 — see api/README.md."
             )
         return settings
+    from prism_app.auth.dev_impersonation import validate_dev_user_settings
+
+    validate_dev_user_settings(settings)
     if not settings.session_secret.strip():
         logger.warning(
             "PRISM_SESSION_SECRET empty: generating ephemeral signing key for "
