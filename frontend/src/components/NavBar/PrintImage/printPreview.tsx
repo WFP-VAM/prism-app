@@ -7,7 +7,6 @@ import {
   SelectedDateTimestamp,
 } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
-import { getDisplayBoundaryLayers } from 'config/utils';
 import { AAMarkersSelector } from 'context/anticipatoryAction/AADroughtStateSlice';
 import { AAFloodDataSelector } from 'context/anticipatoryAction/AAFloodStateSlice';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
@@ -42,6 +41,7 @@ import { useSafeTranslation } from '../../../i18n';
 import MapExportLayout from '../../MapExport/MapExportLayout';
 import type { ExportMapBounds } from '../../MapExport/types';
 import PrintConfigContext from './printConfig.context';
+import { getPrintSelectedLayers } from './printSelectedLayers';
 
 function lngLatBoundsToExport(b: LngLatBounds): ExportMapBounds {
   return {
@@ -79,31 +79,21 @@ function PrintPreview() {
     }
   }, [selectedLayerId, availableDates, dispatch]);
 
-  const printSelectedLayers = useMemo(() => {
-    if (
-      printConfig?.toggles.batchMapsVisibility &&
-      deferredLayerIdForPreview &&
-      LayerDefinitions[deferredLayerIdForPreview]
-    ) {
-      return [
-        LayerDefinitions[deferredLayerIdForPreview],
-        ...getDisplayBoundaryLayers().reverse(),
-      ];
-    }
-
-    // Normal print + admin-area clip: same as ExportView — render active main-map
-    // layers via MapExportLayout so the data overlay can apply clip-path.
-    if (printConfig?.toggles.countryMask && selectedLayers.length > 0) {
-      return selectedLayers;
-    }
-
-    return [];
-  }, [
-    deferredLayerIdForPreview,
-    printConfig?.toggles.batchMapsVisibility,
-    printConfig?.toggles.countryMask,
-    selectedLayers,
-  ]);
+  const printSelectedLayers = useMemo(
+    () =>
+      getPrintSelectedLayers({
+        batchMapsVisibility: Boolean(printConfig?.toggles.batchMapsVisibility),
+        countryMask: Boolean(printConfig?.toggles.countryMask),
+        deferredLayerIdForPreview,
+        selectedLayers,
+      }),
+    [
+      deferredLayerIdForPreview,
+      printConfig?.toggles.batchMapsVisibility,
+      printConfig?.toggles.countryMask,
+      selectedLayers,
+    ],
+  );
 
   const mapLabelsVisibility = printConfig?.toggles.mapLabelsVisibility ?? true;
 
