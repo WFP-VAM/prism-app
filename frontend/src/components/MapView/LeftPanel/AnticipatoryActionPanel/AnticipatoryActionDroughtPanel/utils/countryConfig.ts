@@ -163,13 +163,20 @@ const createCountryConfig = (options: {
 
 const AADROUGHT_COUNTRY_CONFIGS: Record<string, AADroughtCountryConfig> = {
   malawi: createCountryConfig({
-    categories: [{ label: 'Below Normal', id: 'Normal' }],
+    categories: [
+      { label: 'Mild', id: 'Mild' },
+      { label: 'Below Normal', id: 'Normal' },
+    ],
     seasonStartMonth: 7,
     forecastSource: 'ECMWF',
     customContent: {
       howToReadContent: [
         { title: 'NDJ', text: 'November to January' },
         { title: 'JFM', text: 'January to March' },
+        {
+          title: 'Mild category',
+          text: 'Drought events that typically occur once every 4 years.',
+        },
         {
           title: 'Below normal category',
           text: 'Drought events that typically occur once every 3 years.',
