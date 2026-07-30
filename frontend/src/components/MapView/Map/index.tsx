@@ -28,7 +28,9 @@ import {
   LayerKey,
   LayerType,
   Panel,
+  PmtilesVectorLayerProps,
 } from 'config/types';
+import { LayerDefinitions } from 'config/utils';
 import { dashboardModeSelector } from 'context/dashboardStateSlice';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { setBounds, setLocation } from 'context/mapBoundaryInfoStateSlice';
@@ -48,6 +50,7 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import MapGL, { MapEvent, MapRef } from 'react-map-gl/maplibre';
@@ -69,6 +72,7 @@ import { useMapState } from 'utils/useMapState';
 
 import AnticipatoryActionFloodLayer from '../Layers/AnticipatoryActionFloodLayer';
 import GeojsonDataLayer from '../Layers/GeojsonDataLayer';
+import PmtilesVectorLayer from '../Layers/PmtilesVectorLayer';
 import {
   mapBackdropColor,
   mapFlatProjection,
@@ -116,6 +120,7 @@ const componentTypes: LayerComponentsMap<LayerType> = {
   impact: { component: ImpactLayer },
   point_data: { component: PointDataLayer },
   geojson_polygon: { component: GeojsonDataLayer },
+  pmtiles_vector: { component: PmtilesVectorLayer },
   static_raster: { component: StaticRasterLayer },
   composite: { component: CompositeLayer },
   anticipatory_action_drought: {
@@ -283,6 +288,19 @@ const MapComponent = memo(
       [selectedLayers],
     );
 
+    const paintStackLayers = useMemo(
+      () => stackLayers.filter(layer => layer.type !== 'pmtiles_vector'),
+      [stackLayers],
+    );
+
+    // Keep PMTiles sources mounted after first use so MapLibre retains its tile cache.
+    const warmedPmtilesLayersRef = useRef<Set<LayerKey>>(new Set());
+    selectedLayers
+      .filter(layer => layer.type === 'pmtiles_vector')
+      .forEach(layer => warmedPmtilesLayersRef.current.add(layer.id));
+
+    useEffect(() => initPmtilesProtocol(), []);
+
     const hasDeckLayers = stackLayers.some(l =>
       DECK_GL_LAYER_TYPES.has(l.type),
     );
@@ -295,12 +313,12 @@ const MapComponent = memo(
       (index: number, aboveBoundaries: boolean = false) =>
         getLayerBeforeId(index, {
           aboveBoundaries,
-          stackLayers,
+          stackLayers: paintStackLayers,
           map: selectedMap,
           firstSymbolId,
           firstBoundaryLayerMapId: firstBoundaryId,
         }),
-      [firstBoundaryId, firstSymbolId, stackLayers, selectedMap],
+      [firstBoundaryId, firstSymbolId, paintStackLayers, selectedMap],
     );
 
     // Handler to filter out label layers when hideMapLabels is true
@@ -401,13 +419,26 @@ const MapComponent = memo(
               <DeckGLOverlay />
             </Suspense>
           )}
-          {stackLayers.map((layer, index) => {
+          {paintStackLayers.map((layer, index) => {
             const { component } = componentTypes[layer.type];
             return createElement(component as any, {
               key: layer.id,
               layer,
               before: getBeforeId(index, layerUsesSymbolAnchorOnly(layer)),
             });
+          })}
+          {[...warmedPmtilesLayersRef.current].map(layerId => {
+            const layer = LayerDefinitions[layerId] as PmtilesVectorLayerProps;
+            return (
+              <PmtilesVectorLayer
+                key={layerId}
+                layer={layer}
+                before={firstSymbolId}
+                visible={selectedLayers.some(
+                  selectedLayer => selectedLayer.id === layerId,
+                )}
+              />
+            );
           })}
           <AnalysisLayer before={firstBoundaryId} mapRef={mapRef} />
           <SelectionLayer before={firstSymbolId} />

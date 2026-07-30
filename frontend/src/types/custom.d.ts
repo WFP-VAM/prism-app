@@ -31,3 +31,4 @@ declare module '*.ttf';
 declare module 'react-range-slider-input';
 
 declare module 'max-inscribed-circle';
+declare module 'vt-pbf';
