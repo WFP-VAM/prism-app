@@ -6,16 +6,19 @@ import json
 import os
 from dataclasses import dataclass
 from json import JSONDecodeError
-from typing import Any, Callable, Dict, Optional, Sequence
+from typing import Any, Callable, Dict, Optional
 from uuid import UUID
 
 from prism_app.admin import PrismGatedModelView, ReadOnlyModelView
 from prism_app.admin_bulk_actions import bulk_status_select_form
 from prism_app.auth.admin_request import (
     admin_user_from_request,
+    apply_country_scope_filter,
+    request_can_access_country,
     request_can_manage_map_exports,
     request_has_prism_admin_access,
 )
+from prism_app.auth.permission_codes import MAP_EXPORTS_MANAGE
 from prism_app.dashboard.dashboard_config_field import PrettyJSONField
 from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.database.map_export_schedule_model import (
@@ -54,7 +57,6 @@ from starlette_admin.actions import action, link_row_action, row_action
 from starlette_admin.contrib.sqla import Admin
 from starlette_admin.contrib.sqla.helpers import OPERATORS
 from starlette_admin.exceptions import ActionFailed, FormValidationError
-from starlette_admin.fields import BaseField
 from starlette_admin.i18n import ngettext
 
 _DEFAULT_EQ = OPERATORS["eq"]
@@ -186,11 +188,37 @@ def _apply_schedule_owner_filter(stmt: Select, request: Request) -> Select:
     return stmt.where(MapExportSchedule.created_by_user_id == user_id)
 
 
+def _apply_schedule_access_filter(stmt: Select, request: Request) -> Select:
+    stmt = _apply_schedule_owner_filter(stmt, request)
+    return apply_country_scope_filter(
+        stmt,
+        request,
+        MAP_EXPORTS_MANAGE,
+        MapExportSchedule.country,
+    )
+
+
 def _apply_job_owner_filter(stmt: Select, request: Request) -> Select:
     if request_has_prism_admin_access(request):
         return stmt
     user_id = admin_user_from_request(request).id
     return stmt.where(MapExportJob.created_by_user_id == user_id)
+
+
+def _apply_job_access_filter(stmt: Select, request: Request) -> Select:
+    stmt = _apply_job_owner_filter(stmt, request)
+    if request_has_prism_admin_access(request):
+        return stmt
+    stmt = stmt.join(
+        MapExportSchedule,
+        MapExportJob.map_export_schedule_id == MapExportSchedule.id,
+    )
+    return apply_country_scope_filter(
+        stmt,
+        request,
+        MAP_EXPORTS_MANAGE,
+        MapExportSchedule.country,
+    )
 
 
 def _schedule_country_for_request(request: Request) -> str:
@@ -573,48 +601,6 @@ class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelVie
     actions = ["update_status", "delete"]
     row_actions = ["view", "edit", "clone", "download", "delete"]
 
-    _ADMIN_ONLY_FIELD_NAMES = frozenset({"country"})
-
-    def _admin_only_field_names(self, request: Request) -> frozenset[str]:
-        if request_has_prism_admin_access(request):
-            return frozenset()
-        return self._ADMIN_ONLY_FIELD_NAMES
-
-    def get_fields_list(
-        self,
-        request: Request,
-        action: RequestAction = RequestAction.LIST,
-    ) -> Sequence[BaseField]:
-        hidden = self._admin_only_field_names(request)
-        if not hidden:
-            return super().get_fields_list(request, action)
-        return [
-            field
-            for field in super().get_fields_list(request, action)
-            if field.name not in hidden
-        ]
-
-    def _searchable_fields_for_request(self, request: Request) -> tuple[str, ...]:
-        hidden = self._admin_only_field_names(request)
-        return tuple(
-            name
-            for name in self.searchable_fields  # type: ignore[union-attr]
-            if name not in hidden
-        )
-
-    async def _configs(self, request: Request) -> dict[str, Any]:
-        configs = await super()._configs(request)
-        hidden = self._admin_only_field_names(request)
-        if not hidden:
-            return configs
-        searchable = self._searchable_fields_for_request(request)
-        exportable = tuple(
-            name for name in self.export_fields if name not in hidden  # type: ignore[union-attr]
-        )
-        configs["searchColumns"] = [f"{name}:name" for name in searchable]
-        configs["exportColumns"] = [f"{name}:name" for name in exportable]
-        return configs
-
     def is_accessible(self, request: Request) -> bool:
         return request_can_manage_map_exports(request)
 
@@ -675,10 +661,13 @@ class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelVie
                 joinedload(MapExportSchedule.created_by_user),
             )
         )
-        return _apply_schedule_owner_filter(stmt, request)
+        return _apply_schedule_access_filter(stmt, request)
 
     def get_count_query(self, request: Request) -> Select:
-        return _apply_schedule_owner_filter(super().get_count_query(request), request)
+        return _apply_schedule_access_filter(
+            super().get_count_query(request),
+            request,
+        )
 
     def get_details_query(self, request: Request) -> Select:
         stmt = (
@@ -688,7 +677,25 @@ class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelVie
                 joinedload(MapExportSchedule.created_by_user),
             )
         )
-        return _apply_schedule_owner_filter(stmt, request)
+        return _apply_schedule_access_filter(stmt, request)
+
+    def _validate_bulk_schedule_scope(
+        self,
+        request: Request,
+        schedules: list[Any],
+        pks: list[Any],
+    ) -> None:
+        if len(schedules) != len(pks):
+            raise ActionFailed("One or more selected schedules are not accessible")
+        for schedule in schedules:
+            if not request_can_access_country(
+                request,
+                MAP_EXPORTS_MANAGE,
+                schedule.country,
+            ):
+                raise ActionFailed(
+                    "One or more selected schedules are not accessible",
+                )
 
     def get_search_query(self, request: Request, term: str) -> Any:
         """Case-insensitive search across schedule columns and scheduler identity."""
@@ -697,7 +704,7 @@ class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelVie
         if not term_lower:
             return None
         clauses = []
-        for field_name in self._searchable_fields_for_request(request):
+        for field_name in self.searchable_fields:
             attr = getattr(self.model, field_name, None)
             if attr is None:
                 continue
@@ -792,7 +799,7 @@ class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelVie
         icon_class="fa-solid fa-toggle-on",
         form=_MAP_EXPORT_BULK_UPDATE_STATUS_FORM,
     )
-    async def update_status_action(self, request: Request, pks: List[Any]) -> str:
+    async def update_status_action(self, request: Request, pks: list[Any]) -> str:
         data = await request.form()
         status_raw = data.get("status")
         if not status_raw:
@@ -802,11 +809,12 @@ class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelVie
         except ValueError as exc:
             raise ActionFailed(f"Invalid status: {status_raw}") from exc
 
-        session: Session = request.state.session
         schedules = list(await self.find_by_pks(request, pks))
+        self._validate_bulk_schedule_scope(request, schedules, pks)
         if not schedules:
             raise ActionFailed("No accessible schedules selected")
 
+        session: Session = request.state.session
         now = utc_now()
         for schedule in schedules:
             schedule.status = new_status
@@ -829,7 +837,12 @@ class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelVie
         submit_btn_class="btn-danger",
         icon_class="fa-solid fa-trash",
     )
-    async def delete_action(self, request: Request, pks: List[Any]) -> str:
+    async def delete(self, request: Request, pks: list[Any]) -> int | None:
+        schedules = list(await self.find_by_pks(request, pks))
+        self._validate_bulk_schedule_scope(request, schedules, pks)
+        return await super().delete(request, pks)
+
+    async def delete_action(self, request: Request, pks: list[Any]) -> str:
         affected_rows = await self.delete(request, pks)
         return ngettext(
             "Schedule was successfully deleted",
@@ -874,9 +887,15 @@ class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelVie
         except HTTPException as exc:
             raise ActionFailed(str(exc.detail)) from exc
 
+    _COUNTRY_ACCESS_DENIED = (
+        "You do not have permission to manage map exports for this country."
+    )
+
     async def validate(self, request: Request, data: dict[str, Any]) -> None:
         errors: dict[str, str] = {}
         country = _schedule_country_for_request(request)
+        if not request_can_access_country(request, MAP_EXPORTS_MANAGE, country):
+            raise FormValidationError({"__all__": self._COUNTRY_ACCESS_DENIED})
         layer_id = data.get("layer_id")
         if not layer_id:
             errors["layer_id"] = "Layer is required"
@@ -914,6 +933,12 @@ class MapExportScheduleView(CaseInsensitiveColumnFilterMixin, PrismGatedModelVie
                 },
             )
         source = await self._load_clone_source(request, clone_from)
+        if not request_can_access_country(
+            request,
+            MAP_EXPORTS_MANAGE,
+            source.country,
+        ):
+            raise FormValidationError({"__all__": self._COUNTRY_ACCESS_DENIED})
         obj.export_url = source.export_url
         obj.export_options = source.export_options
         obj.admin_areas = source.admin_areas
@@ -971,13 +996,13 @@ class MapExportJobView(ReadOnlyModelView):
     fields_default_sort = [("created_at", True)]
 
     def get_list_query(self, request: Request) -> Select:
-        return _apply_job_owner_filter(super().get_list_query(request), request)
+        return _apply_job_access_filter(super().get_list_query(request), request)
 
     def get_count_query(self, request: Request) -> Select:
-        return _apply_job_owner_filter(super().get_count_query(request), request)
+        return _apply_job_access_filter(super().get_count_query(request), request)
 
     def get_details_query(self, request: Request) -> Select:
-        return _apply_job_owner_filter(super().get_details_query(request), request)
+        return _apply_job_access_filter(super().get_details_query(request), request)
 
 
 def register_map_export_admin_views(admin: Admin) -> None:

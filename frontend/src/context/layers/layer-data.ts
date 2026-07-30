@@ -2,6 +2,7 @@ import { AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import {
   AnticipatoryActionLayerProps,
+  CogLayerProps,
   DateItem,
   DiscriminateUnion,
   GeojsonLayerData,
@@ -25,7 +26,7 @@ import { fetchWCSLayerData, WMSLayerData } from './wms';
 
 export type LayerAcceptingDataType = Exclude<
   LayerType,
-  StaticRasterLayerProps | AnticipatoryActionLayerProps
+  StaticRasterLayerProps | AnticipatoryActionLayerProps | CogLayerProps
 >;
 
 type LayerSpecificDataTypes = {

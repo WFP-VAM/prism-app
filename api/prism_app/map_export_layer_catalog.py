@@ -88,3 +88,8 @@ def schedule_layer_choices_with_extra(
             choices.append((layer_id, layer_id))
             known.add(layer_id)
     return tuple(choices)
+
+
+def schedule_countries() -> frozenset[str]:
+    """Country slugs that appear in the schedule layer manifest."""
+    return frozenset(_load_manifest().get("countries", {}).keys())
