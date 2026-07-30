@@ -985,7 +985,7 @@ export type DateItem = {
 export type AvailableDates = {
   [key in
     | WMSLayerProps['serverLayerName']
-    | CogLayerProps['serverLayerName']
+    | NonNullable<CogLayerProps['serverLayerName']>
     | PointDataLayerProps['id']]: DateItem[];
 };
 

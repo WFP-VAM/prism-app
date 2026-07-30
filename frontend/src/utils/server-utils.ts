@@ -727,6 +727,9 @@ const mapServerDatesToLayerIds = (
       layer.type === 'composite'
         ? (LayerDefinitions[layer.dateLayer] as WMSLayerProps).serverLayerName
         : layer.serverLayerName;
+    if (!serverLayerName) {
+      return acc;
+    }
     const layerDates = serverDates[serverLayerName] as ReferenceDateTimestamp[];
     if (layerDates) {
       // Filter WMS layers by startDate, used for forecast layers in particular.

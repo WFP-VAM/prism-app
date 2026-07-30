@@ -30,14 +30,14 @@ exports[`renders as expected 1`] = `
         />
       </div>
       <div
-        class="MuiLinearProgress-root makeStyles-root-10 MuiLinearProgress-colorPrimary MuiLinearProgress-indeterminate"
+        class="MuiLinearProgress-root makeStyles-root-13 MuiLinearProgress-colorPrimary MuiLinearProgress-indeterminate"
         role="progressbar"
       >
         <div
-          class="MuiLinearProgress-bar makeStyles-hide-12 MuiLinearProgress-barColorPrimary MuiLinearProgress-bar1Indeterminate"
+          class="MuiLinearProgress-bar makeStyles-hide-15 MuiLinearProgress-barColorPrimary MuiLinearProgress-bar1Indeterminate"
         />
         <div
-          class="MuiLinearProgress-bar makeStyles-hide-12 MuiLinearProgress-bar2Indeterminate MuiLinearProgress-barColorPrimary"
+          class="MuiLinearProgress-bar makeStyles-hide-15 MuiLinearProgress-bar2Indeterminate MuiLinearProgress-barColorPrimary"
         />
       </div>
       <div
@@ -55,7 +55,7 @@ exports[`renders as expected 1`] = `
         style="margin: 8px 0px;"
       />
       <div
-        class="MuiBox-root MuiBox-root-13"
+        class="MuiBox-root MuiBox-root-16"
         style="display: flex; justify-content: space-between;"
       >
         <mock-tooltip
@@ -89,7 +89,7 @@ exports[`renders as expected 1`] = `
           anchororigin="[object Object]"
         >
           <div
-            class="MuiBox-root MuiBox-root-14 makeStyles-opacityBox-3"
+            class="MuiBox-root MuiBox-root-17 makeStyles-opacityBox-6"
             style="padding-left: 2px; padding-right: 2px; display: flex;"
           >
             <mock-typography
@@ -98,7 +98,7 @@ exports[`renders as expected 1`] = `
               50%
             </mock-typography>
             <span
-              class="MuiSlider-root makeStyles-opacitySliderRoot-4 MuiSlider-colorPrimary"
+              class="MuiSlider-root makeStyles-opacitySliderRoot-7 MuiSlider-colorPrimary"
             >
               <span
                 class="MuiSlider-rail"
@@ -117,7 +117,7 @@ exports[`renders as expected 1`] = `
                 aria-valuemax="1"
                 aria-valuemin="0"
                 aria-valuenow="0.5"
-                class="MuiSlider-thumb makeStyles-opacitySliderThumb-5 MuiSlider-thumbColorPrimary"
+                class="MuiSlider-thumb makeStyles-opacitySliderThumb-8 MuiSlider-thumbColorPrimary"
                 data-index="0"
                 role="slider"
                 style="left: 50%;"

@@ -32,3 +32,30 @@ declare module 'react-range-slider-input';
 
 declare module 'max-inscribed-circle';
 declare module 'vt-pbf';
+// @mapbox/vector-tile has no bundled types; @types/mapbox__vector-tile pulls a
+// stub @types/mapbox__point-geometry that breaks tsc (TS2688).
+declare module '@mapbox/vector-tile' {
+  import type Pbf from 'pbf';
+
+  export class VectorTileFeature {
+    type: number;
+    properties: Record<string, string | number | boolean>;
+    id?: number;
+    loadGeometry(): Array<Array<{ x: number; y: number }>>;
+    toGeoJSON(
+      x: number,
+      y: number,
+      z: number,
+    ): GeoJSON.Feature<GeoJSON.Geometry>;
+  }
+
+  export class VectorTileLayer {
+    length: number;
+    feature(i: number): VectorTileFeature;
+  }
+
+  export class VectorTile {
+    constructor(pbf: Pbf);
+    layers: Record<string, VectorTileLayer>;
+  }
+}

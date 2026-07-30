@@ -19,7 +19,10 @@ RUN apt-get update && \
 COPY requirements-export-map-worker.txt /
 RUN pip install --no-cache-dir --upgrade 'pip>=26.1.2' 'setuptools>=82.0.0' 'wheel>=0.46.2' 'jaraco.context>=6.1.0' \
     && pip install --no-cache-dir -r /requirements-export-map-worker.txt \
-    && pip install --no-cache-dir --upgrade 'setuptools>=82.0.0' 'wheel>=0.46.2'
+    && pip install --no-cache-dir --upgrade --force-reinstall 'setuptools>=82.0.0' 'wheel>=0.46.2' 'msgpack>=1.2.1' \
+    && pip uninstall -y setuptools \
+    && pip install --no-cache-dir 'setuptools>=82.0.0' \
+    && python -c "import importlib.metadata as m; assert tuple(int(x) for x in m.version('msgpack').split('.')[:3]) >= (1,2,1); assert tuple(int(x) for x in m.version('setuptools').split('.')[:2]) >= (82,0)"
 
 # Security updates + trim packages not needed for headless Chromium (Xvfb/Xorg CVE noise,
 # dev headers, optional GStreamer "bad" codecs). Before Playwright so autoremove cannot
