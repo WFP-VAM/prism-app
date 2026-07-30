@@ -5,6 +5,7 @@ pip 26.2 vendors msgpack 1.1.2 (GHSA-6v7p-g79w-8964) and lists setuptools
 70.3.0 in vendor.txt / bom.cdx.json (CVE-2025-47273) even when the
 top-level installs are already fixed. Trivy reads bom.cdx.json.
 """
+
 from __future__ import annotations
 
 import shutil
