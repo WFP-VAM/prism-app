@@ -47,10 +47,12 @@ RUN --mount=type=cache,target=/root/.cache \
 # Upgrade pip + tooling (CVE-2026-1703 pip, CVE-2026-24049 wheel, CVE-2026-23949 jaraco.context via setuptools vendor refresh)
 RUN poetry run pip install --upgrade 'pip>=26.1.2' 'setuptools>=82.0.0' 'wheel>=0.46.2' 'jaraco.context>=6.1.0' 'msgpack>=1.2.1'
 
+# pip still vendors msgpack 1.1.2 / lists setuptools 70.3.0 in bom.cdx.json (Trivy).
+COPY docker/patch_pip_vendor_cves.py /tmp/patch_pip_vendor_cves.py
+RUN poetry run python /tmp/patch_pip_vendor_cves.py && rm -f /tmp/patch_pip_vendor_cves.py
+
 # Apply security updates (e.g. GnuPG CVE-2025-68973, libtiff CVE-2025-9900); drop build-only headers
 # (linux-libc-dev); remove GStreamer "bad" codecs not required for headless map export.
-# Purge distro setuptools/msgpack so Trivy does not flag superseded system copies
-# (venv already has setuptools>=82 and msgpack>=1.2.1).
 # Must run before Playwright: autoremove after install-deps strips Chromium runtime libraries.
 RUN --mount=type=cache,target=/var/lib/apt \
     --mount=type=cache,target=/var/cache/apt \
@@ -58,8 +60,7 @@ RUN --mount=type=cache,target=/var/lib/apt \
     DEBIAN_FRONTEND=noninteractive apt-get -y upgrade && \
     DEBIAN_FRONTEND=noninteractive apt-get purge -y \
       build-essential python3-dev linux-libc-dev libpq-dev \
-      gstreamer1.0-plugins-bad libgstreamer-plugins-bad1.0-0 \
-      python3-setuptools python3-pkg-resources python3-msgpack && \
+      gstreamer1.0-plugins-bad libgstreamer-plugins-bad1.0-0 && \
     rm -f /usr/bin/pebble && \
     DEBIAN_FRONTEND=noninteractive apt-get autoremove -y && \
     apt-get clean && \
