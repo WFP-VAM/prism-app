@@ -605,6 +605,10 @@ export class CogLayerProps extends CommonLayerProps {
 
   @optional
   minZoom?: number;
+
+  /** When true, mask pixels outside the deployment country outline. */
+  @optional
+  clipToDeployment?: boolean;
 }
 
 enum AggregationOptions {

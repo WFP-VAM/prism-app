@@ -67,7 +67,12 @@ interface ComponentProps {
 
 const PmtilesVectorLayer = memo(
   ({ layer, before, visible = true }: ComponentProps) => {
-    const opacity = useSelector(opacitySelector(layer.id)) ?? layer.opacity;
+    // activateAll groups (FTW): opacity slider targets the main layer id.
+    const opacityLayerId = layer.group?.activateAll
+      ? (layer.group.layers.find(l => l.main)?.id ?? layer.id)
+      : layer.id;
+    const opacity =
+      useSelector(opacitySelector(opacityLayerId)) ?? layer.opacity;
     const sourceId = `source-${layer.id}`;
     const layerVisibility = visible ? 'visible' : 'none';
     const selectedMap = useMapState()?.maplibreMap();

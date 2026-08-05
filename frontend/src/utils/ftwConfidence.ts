@@ -28,9 +28,10 @@ export function ftwConfidenceMaskMin(percent: number): number {
 
 /** MapLibre filter keeping features above the UI percent threshold. */
 export function ftwConfidenceFilter(percent: number): FilterSpecification {
+  // tippecanoe stores confidence_* as strings; MapLibre won't coerce for `>`.
   return [
     '>',
-    ['get', FTW_CONFIDENCE_PROPERTY],
+    ['to-number', ['get', FTW_CONFIDENCE_PROPERTY]],
     ftwConfidenceRawThreshold(percent),
   ];
 }

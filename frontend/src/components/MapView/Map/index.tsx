@@ -428,7 +428,9 @@ const MapComponent = memo(
             });
           })}
           {[...warmedPmtilesLayersRef.current].map(layerId => {
-            const layer = LayerDefinitions[layerId] as PmtilesVectorLayerProps;
+            // Prefer the selected layer (keeps activateAll `group` for opacity).
+            const layer = (selectedLayers.find(l => l.id === layerId) ??
+              LayerDefinitions[layerId]) as PmtilesVectorLayerProps;
             return (
               <PmtilesVectorLayer
                 key={layerId}

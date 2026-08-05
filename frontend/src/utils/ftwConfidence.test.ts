@@ -14,9 +14,10 @@ describe('ftwConfidence', () => {
   });
 
   test('builds a MapLibre filter on confidence_mean', () => {
+    // PMTiles tippecanoe stores confidence_* as strings — coerce before `>`.
     expect(ftwConfidenceFilter(70)).toEqual([
       '>',
-      ['get', 'confidence_mean'],
+      ['to-number', ['get', 'confidence_mean']],
       ftwConfidenceRawThreshold(70),
     ]);
   });

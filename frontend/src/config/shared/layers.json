@@ -1472,6 +1472,7 @@
     "path": "https://data.source.coop/ftw/global-data/predictions/confidence/field-density/prue_v1_field_area_500m_fieldsonly_uint8_3857.tif",
     "opacity": 0.9,
     "disable_analysis": true,
+    "clip_to_deployment": true,
     "maxZoom": 11,
     "wcsConfig": {
       "noData": [0, 255],
@@ -1491,6 +1492,7 @@
     "path": "https://data.source.coop/ftw/global-data/predictions/confidence/field-density/prue_v1_field_area_500m_fieldsonly_uint8_3857.tif",
     "opacity": 0.9,
     "disable_analysis": true,
+    "clip_to_deployment": true,
     "maxZoom": 11,
     "wcsConfig": {
       "noData": [0, 255],

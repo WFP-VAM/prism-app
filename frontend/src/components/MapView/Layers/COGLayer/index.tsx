@@ -24,6 +24,11 @@ import {
   ftwConfidenceMaskMin,
   resolveMaskImage,
 } from 'components/MapView/Layers/COGLayer/confidenceMask';
+import {
+  applyDeploymentClip,
+  type DeploymentClipFeature,
+  geotiffTileBbox3857,
+} from 'components/MapView/Layers/COGLayer/deploymentClip';
 import type { PresignedCogUrl } from 'components/MapView/Layers/raster-utils';
 import { getPresignedCogUrls } from 'components/MapView/Layers/raster-utils';
 import { appConfig } from 'config';
@@ -41,6 +46,7 @@ import { useDispatch } from 'react-redux';
 import { COG_PROXY_API } from 'utils/constants';
 import { getRequestDate } from 'utils/server-utils';
 import { useDefaultDate } from 'utils/useDefaultDate';
+import { useDeploymentClipPolygon } from 'utils/useDeploymentClipPolygon';
 
 export interface COGLayerComponentProps {
   layer: CogLayerProps;
@@ -201,6 +207,8 @@ interface COGRenderConfig {
   maskGeotiffRef: { current: GeoTIFF | null };
   /** Keep density pixels with mask >= maskMin. */
   maskMin?: number;
+  /** Deployment country outline; pixels outside are set to nodata. */
+  clipFeatureRef: { current: DeploymentClipFeature | null };
 }
 
 function createTileHandlers(config: COGRenderConfig) {
@@ -261,6 +269,18 @@ function createTileHandlers(config: COGRenderConfig) {
         throw new Error('Expected pixel-interleaved mask layout');
       }
       applyConfidenceMask(data, maskArray.data, maskMin, primaryNodata);
+    }
+
+    const clipFeature = config.clipFeatureRef.current;
+    if (clipFeature) {
+      applyDeploymentClip(
+        data,
+        width,
+        height,
+        geotiffTileBbox3857(image, x, y, width, height),
+        clipFeature,
+        primaryNodata,
+      );
     }
 
     for (let i = 0; i < data.length; i++) {
@@ -347,6 +367,7 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
     path,
     maxZoom,
     minZoom,
+    clipToDeployment,
   } = layer;
 
   const dispatch = useDispatch();
@@ -357,6 +378,7 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
     ? (layer.group.layers.find(l => l.main)?.id ?? id)
     : id;
   const opacityState = useSelector(opacitySelector(opacityLayerId));
+  const deploymentClipPolygon = useDeploymentClipPolygon();
 
   const { registerLayer, unregisterLayer } = useDeckGLLayers();
   const registerRef = useRef(registerLayer);
@@ -365,6 +387,7 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
   unregisterRef.current = unregisterLayer;
 
   const effectiveOpacity = opacityState ?? opacity;
+  const clipReady = !clipToDeployment || deploymentClipPolygon != null;
 
   const layerAvailableDates = serverAvailableDates[id];
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
@@ -425,6 +448,8 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
   nodataRef.current =
     nodataFromConfig.length > 0 ? nodataFromConfig : nodataRef.current;
   const maskGeotiffRef = useRef<GeoTIFF | null>(null);
+  const clipFeatureRef = useRef<DeploymentClipFeature | null>(null);
+  clipFeatureRef.current = clipToDeployment ? deploymentClipPolygon : null;
   const [maskReady, setMaskReady] = useState(!maskPath);
 
   useEffect(() => {
@@ -470,6 +495,7 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
     interpolate,
     maskGeotiffRef,
     maskMin,
+    clipFeatureRef,
   });
   renderConfigRef.current = {
     legend,
@@ -481,6 +507,7 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
     interpolate,
     maskGeotiffRef,
     maskMin,
+    clipFeatureRef,
   };
 
   const tileHandlersRef = useRef<ReturnType<typeof createTileHandlers> | null>(
@@ -560,7 +587,8 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
 
   // Effect B: register/update deck layers when urls, opacity, or z-order change.
   useEffect(() => {
-    if (!presignedUrls.length || !maskReady) {
+    // Wait for confidence mask + deployment clip (same gate as PMTiles).
+    if (!presignedUrls.length || !maskReady || !clipReady) {
       return undefined;
     }
 
@@ -628,6 +656,7 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
     before,
     currentLegendKey,
     maskReady,
+    clipReady,
     dispatch,
   ]);
 
