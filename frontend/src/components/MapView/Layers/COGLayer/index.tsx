@@ -16,9 +16,14 @@ import {
   FilterNoDataVal,
   LinearRescale,
 } from '@developmentseed/deck.gl-raster/gpu-modules';
-import type { GeoTIFF, Overview } from '@developmentseed/geotiff';
+import { GeoTIFF, type Overview } from '@developmentseed/geotiff';
 import type { Texture } from '@luma.gl/core';
 import { useDeckGLLayers } from 'components/MapView/DeckGLLayersContext';
+import {
+  applyConfidenceMask,
+  ftwConfidenceMaskMin,
+  resolveMaskImage,
+} from 'components/MapView/Layers/COGLayer/confidenceMask';
 import type { PresignedCogUrl } from 'components/MapView/Layers/raster-utils';
 import { getPresignedCogUrls } from 'components/MapView/Layers/raster-utils';
 import { appConfig } from 'config';
@@ -192,6 +197,10 @@ interface COGRenderConfig {
   nodataRef: { current: number[] };
   /** Linear blend between legend stops (continuous ramps). Default is discrete bins. */
   interpolate: boolean;
+  /** Same-grid confidence COG; loaded async before tiles register. */
+  maskGeotiffRef: { current: GeoTIFF | null };
+  /** Keep density pixels with mask >= maskMin. */
+  maskMin?: number;
 }
 
 function createTileHandlers(config: COGRenderConfig) {
@@ -202,11 +211,27 @@ function createTileHandlers(config: COGRenderConfig) {
     options: GetTileDataOptions,
   ): Promise<TileData> => {
     const { device, x, y, signal, pool } = options;
-    const tile = await image.fetchTile(x, y, {
-      signal,
-      pool,
-      boundless: false,
-    });
+    const maskGeotiff = config.maskGeotiffRef.current;
+    const maskMin = config.maskMin;
+    const maskImage =
+      maskGeotiff != null && maskMin != null
+        ? resolveMaskImage(maskGeotiff, image)
+        : null;
+
+    const [tile, maskTile] = await Promise.all([
+      image.fetchTile(x, y, {
+        signal,
+        pool,
+        boundless: false,
+      }),
+      maskImage
+        ? maskImage.fetchTile(x, y, {
+            signal,
+            pool,
+            boundless: false,
+          })
+        : Promise.resolve(null),
+    ]);
     const { array } = tile;
 
     if (array.layout === 'band-separate') {
@@ -227,10 +252,20 @@ function createTileHandlers(config: COGRenderConfig) {
     const { scale, offset } = config;
     const nodataValues = config.nodataRef.current;
     const nodataSet = new Set(nodataValues);
-    const primaryNodata = nodataValues[0];
+    const primaryNodata = nodataValues[0] ?? 0;
+
+    // FTW overview: hide density where confidence uint8 is below threshold.
+    if (maskTile && maskMin != null) {
+      const maskArray = maskTile.array;
+      if (maskArray.layout === 'band-separate') {
+        throw new Error('Expected pixel-interleaved mask layout');
+      }
+      applyConfidenceMask(data, maskArray.data, maskMin, primaryNodata);
+    }
+
     for (let i = 0; i < data.length; i++) {
       const raw = data[i]!;
-      const v = nodataSet.has(raw) ? (primaryNodata ?? raw) : raw;
+      const v = nodataSet.has(raw) ? primaryNodata : raw;
       floatData[i] = v * scale + offset;
     }
 
@@ -374,6 +409,11 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
   const scale = wcsConfig?.scale ?? 1;
   const offset = wcsConfig?.offset ?? 0;
   const interpolate = wcsConfig?.interpolate ?? false;
+  const maskPath = wcsConfig?.maskPath;
+  const maskMin =
+    wcsConfig?.confidenceThreshold != null
+      ? ftwConfidenceMaskMin(wcsConfig.confidenceThreshold)
+      : undefined;
   const nodataFromConfig =
     wcsConfig?.noData === undefined
       ? []
@@ -384,6 +424,42 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
   // Keep in sync if config changes without remounting.
   nodataRef.current =
     nodataFromConfig.length > 0 ? nodataFromConfig : nodataRef.current;
+  const maskGeotiffRef = useRef<GeoTIFF | null>(null);
+  const [maskReady, setMaskReady] = useState(!maskPath);
+
+  useEffect(() => {
+    if (!maskPath) {
+      maskGeotiffRef.current = null;
+      setMaskReady(true);
+      return undefined;
+    }
+    let cancelled = false;
+    setMaskReady(false);
+    maskGeotiffRef.current = null;
+    GeoTIFF.fromUrl(maskPath)
+      .then(geotiff => {
+        if (!cancelled) {
+          maskGeotiffRef.current = geotiff;
+          setMaskReady(true);
+        }
+      })
+      .catch(err => {
+        if (!cancelled) {
+          console.error(`COGLayer [${id}]: failed to load mask COG`, err);
+          dispatch(
+            addNotification({
+              message: `Failed to load confidence mask for "${layer.title}": ${err.message}`,
+              type: 'warning',
+            }),
+          );
+          setMaskReady(false);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [maskPath, id, dispatch, layer.title]);
+
   const renderConfigRef = useRef<COGRenderConfig>({
     legend,
     minValue,
@@ -392,6 +468,8 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
     offset,
     nodataRef,
     interpolate,
+    maskGeotiffRef,
+    maskMin,
   });
   renderConfigRef.current = {
     legend,
@@ -401,13 +479,15 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
     offset,
     nodataRef,
     interpolate,
+    maskGeotiffRef,
+    maskMin,
   };
 
   const tileHandlersRef = useRef<ReturnType<typeof createTileHandlers> | null>(
     null,
   );
   const legendKeyRef = useRef<string>('');
-  const currentLegendKey = `${legend?.map(l => `${l.value}:${l.color}`).join(',') ?? ''}:${scale}:${offset}:${interpolate}`;
+  const currentLegendKey = `${legend?.map(l => `${l.value}:${l.color}`).join(',') ?? ''}:${scale}:${offset}:${interpolate}:${maskPath ?? ''}:${maskMin ?? ''}`;
   if (currentLegendKey !== legendKeyRef.current) {
     legendKeyRef.current = currentLegendKey;
     tileHandlersRef.current = createTileHandlers(renderConfigRef.current);
@@ -480,7 +560,7 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
 
   // Effect B: register/update deck layers when urls, opacity, or z-order change.
   useEffect(() => {
-    if (!presignedUrls.length) {
+    if (!presignedUrls.length || !maskReady) {
       return undefined;
     }
 
@@ -547,6 +627,7 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
     effectiveOpacity,
     before,
     currentLegendKey,
+    maskReady,
     dispatch,
   ]);
 

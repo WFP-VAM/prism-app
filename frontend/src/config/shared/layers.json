@@ -1473,8 +1473,13 @@
     "opacity": 0.9,
     "disable_analysis": true,
     "maxZoom": 11,
-    "wcsConfig": { "noData": [0, 255], "interpolate": true },
-    "legend_text": "Field density (500 m). Shown when zoomed out; zoom to 11+ for field boundaries.",
+    "wcsConfig": {
+      "noData": [0, 255],
+      "interpolate": true,
+      "maskPath": "https://data.source.coop/ftw/global-data/predictions/confidence/confidence/prue_v1_confidence_global_uint8_3857.tif",
+      "confidenceThreshold": 70
+    },
+    "legend_text": "Field density (500 m), fixed at ≥70% confidence (FTW Explorer default). Shown when zoomed out; zoom to 11+ for field boundaries.",
     "legend": [
       { "value": 0, "color": "#ff00ee", "label": "0%" },
       { "value": 200, "color": "#00ff00", "label": "100%" }
@@ -1487,8 +1492,13 @@
     "opacity": 0.9,
     "disable_analysis": true,
     "maxZoom": 11,
-    "wcsConfig": { "noData": [0, 255], "interpolate": true },
-    "legend_text": "Field density (500 m). Shown when zoomed out; zoom to 11+ for field boundaries.",
+    "wcsConfig": {
+      "noData": [0, 255],
+      "interpolate": true,
+      "maskPath": "https://data.source.coop/ftw/global-data/predictions/confidence/confidence/prue_v1_confidence_global_uint8_3857.tif",
+      "confidenceThreshold": 70
+    },
+    "legend_text": "Field density (500 m), fixed at ≥70% confidence (FTW Explorer default). Shown when zoomed out; zoom to 11+ for field boundaries.",
     "legend": [
       { "value": 0, "color": "#ff00ee", "label": "0%" },
       { "value": 200, "color": "#00ff00", "label": "100%" }
@@ -1497,31 +1507,19 @@
   "ftw_field_boundaries": {
     "title": "FTW crop fields (2025)",
     "type": "pmtiles_vector",
-    "path": "https://data.source.coop/ftw/global-data/predictions/vectors/alpha/global.pmtiles",
+    "path": "https://data.source.coop/ftw/global-field-boundaries/pmtiles/ftw-global-fields-2025.pmtiles",
     "opacity": 0.9,
     "disable_analysis": true,
     "clip_to_deployment": true,
     "minZoom": 11,
-    "legend_text": "Crop fields from FTW global predictions (2025). Vectors load from zoom 11+, matching the FTW Explorer; zoom 12+ for full field detail.",
+    "confidenceThreshold": 70,
+    "legend_text": "Crop fields from FTW global predictions (2025), fixed at ≥70% confidence (FTW Explorer default). Vectors load from zoom 11+.",
     "legend": [
-      { "label": "Crop field (2025)", "color": "#4a90d9" },
-      { "label": "Field boundary (2025)", "color": "#e67e22" }
+      { "label": "Crop field (2025)", "color": "#4a90d9" }
     ],
     "source_layers": [
       {
-        "name": "field_boundaries-2025-01-01 00:00:00",
-        "fill": {
-          "fill-color": "#e67e22",
-          "fill-opacity": 0.1
-        },
-        "line": {
-          "line-color": "#e67e22",
-          "line-width": 0.5,
-          "line-opacity": 0.85
-        }
-      },
-      {
-        "name": "field-2025-01-01 00:00:00",
+        "name": "fields",
         "fill": {
           "fill-color": "#4a90d9",
           "fill-opacity": 0.28
@@ -1537,31 +1535,19 @@
   "ftw_field_boundaries_2024": {
     "title": "FTW crop fields (2024)",
     "type": "pmtiles_vector",
-    "path": "https://data.source.coop/ftw/global-data/predictions/vectors/alpha/global.pmtiles",
+    "path": "https://data.source.coop/ftw/global-data/predictions/vectors/alpha/2024_with_confidence.pmtiles",
     "opacity": 0.9,
     "disable_analysis": true,
     "clip_to_deployment": true,
     "minZoom": 11,
-    "legend_text": "Crop fields from FTW global predictions (2024). Vectors load from zoom 11+.",
+    "confidenceThreshold": 70,
+    "legend_text": "Crop fields from FTW global predictions (2024), fixed at ≥70% confidence (FTW Explorer default). Vectors load from zoom 11+.",
     "legend": [
-      { "label": "Crop field (2024)", "color": "#9b59b6" },
-      { "label": "Field boundary (2024)", "color": "#27ae60" }
+      { "label": "Crop field (2024)", "color": "#9b59b6" }
     ],
     "source_layers": [
       {
-        "name": "field_boundaries-2024-01-01 00:00:00",
-        "fill": {
-          "fill-color": "#27ae60",
-          "fill-opacity": 0.08
-        },
-        "line": {
-          "line-color": "#27ae60",
-          "line-width": 0.5,
-          "line-opacity": 0.75
-        }
-      },
-      {
-        "name": "field-2024-01-01 00:00:00",
+        "name": "2024",
         "fill": {
           "fill-color": "#9b59b6",
           "fill-opacity": 0.25

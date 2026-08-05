@@ -1,8 +1,9 @@
 import { PmtilesVectorLayerProps } from 'config/types';
 import { opacitySelector } from 'context/opacityStateSlice';
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useMemo } from 'react';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
+import { ftwConfidenceFilter } from 'utils/ftwConfidence';
 import { getLayerMapId } from 'utils/map-utils';
 import { getPmtilesInstance, setPmtilesClipPolygon } from 'utils/pmtiles-utils';
 import { useDeploymentClipPolygon } from 'utils/useDeploymentClipPolygon';
@@ -74,6 +75,14 @@ const PmtilesVectorLayer = memo(
 
     const returningNull = layer.clipToDeployment && !deploymentClipPolygon;
 
+    // FTW confidenceThreshold wins over a static filter (keeps density + vectors in sync).
+    const layerFilter = useMemo(() => {
+      if (layer.confidenceThreshold != null) {
+        return ftwConfidenceFilter(layer.confidenceThreshold);
+      }
+      return layer.filter;
+    }, [layer.confidenceThreshold, layer.filter]);
+
     useEffect(() => {
       getPmtilesInstance(layer.path);
     }, [layer.path]);
@@ -135,6 +144,9 @@ const PmtilesVectorLayer = memo(
 
           const layers = [];
 
+          // maplibre rejects `filter: undefined` ("array expected, undefined found")
+          const filterProp = layerFilter != null ? { filter: layerFilter } : {};
+
           if (sourceLayer.fill) {
             layers.push(
               <Layer
@@ -146,6 +158,7 @@ const PmtilesVectorLayer = memo(
                 beforeId={before}
                 layout={{ visibility: layerVisibility }}
                 {...(layer.minZoom != null ? { minzoom: layer.minZoom } : {})}
+                {...filterProp}
                 paint={scaleOpacity(sourceLayer.fill, 'fill-opacity', opacity)}
               />,
             );
@@ -162,6 +175,7 @@ const PmtilesVectorLayer = memo(
                 beforeId={before}
                 layout={{ visibility: layerVisibility }}
                 {...(layer.minZoom != null ? { minzoom: layer.minZoom } : {})}
+                {...filterProp}
                 paint={scaleOpacity(sourceLayer.line, 'line-opacity', opacity)}
               />,
             );

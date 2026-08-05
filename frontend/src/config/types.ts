@@ -5,6 +5,7 @@ import { TFunction } from 'i18next';
 import { every, map } from 'lodash';
 import {
   FillLayerSpecification,
+  FilterSpecification,
   LineLayerSpecification,
   MapLayerMouseEvent,
 } from 'maplibre-gl';
@@ -586,6 +587,16 @@ export class CogLayerProps extends CommonLayerProps {
     noData?: number | number[];
     /** Linear blend between legend colors (continuous ramps like FTW density). */
     interpolate?: boolean;
+    /**
+     * Optional same-grid mask COG (e.g. FTW confidence). Pixels where the mask
+     * value is nodata (255) or below the threshold are treated as transparent.
+     */
+    maskPath?: string;
+    /**
+     * FTW Explorer confidence percent (0–100). Converted to the uint8 mask
+     * cutoff via `ftwConfidenceMaskMin`.
+     */
+    confidenceThreshold?: number;
   };
 
   /** Hide deck.gl tiles above this zoom (e.g. hand off to vector at z11). */
@@ -865,6 +876,17 @@ export class PmtilesVectorLayerProps extends CommonLayerProps {
   /** When true, hide features outside the deployment country (MapLibre within filter). */
   @optional
   clipToDeployment?: boolean;
+
+  /** Optional MapLibre feature filter applied to every source layer. */
+  @optional
+  filter?: FilterSpecification;
+
+  /**
+   * FTW Explorer confidence percent (0–100). When set, builds the vector
+   * filter via `ftwConfidenceFilter` (overrides `filter`).
+   */
+  @optional
+  confidenceThreshold?: number;
 
   @makeRequired
   declare title: string;
