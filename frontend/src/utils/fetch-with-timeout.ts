@@ -3,7 +3,7 @@ import { Dispatch } from 'redux';
 
 import { HTTPError } from './error-utils';
 
-interface FetchWithTimeoutOptions extends RequestInit {
+export interface FetchWithTimeoutOptions extends RequestInit {
   timeout?: number;
   /** When true, failures are thrown without dispatching a user notification. */
   silent?: boolean;
