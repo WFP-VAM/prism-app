@@ -41,6 +41,14 @@ RUN playwright install chromium \
     && rm -rf /root/.cache/ms-playwright/.links \
     && python -c "from playwright.sync_api import sync_playwright; p = sync_playwright().start(); b = p.chromium.launch(args=['--no-sandbox', '--disable-dev-shm-usage']); b.close(); p.stop()"
 
+# Distro python3-* from install-deps + ensurepip bundled wheels: Trivy still reports
+# setuptools 70.3.0 / msgpack 1.1.2 next to the patched pip copies.
+RUN apt-get purge -y python3-setuptools python3-pkg-resources python3-msgpack 2>/dev/null || true \
+ && apt-get autoremove -y \
+ && rm -rf /var/lib/apt/lists/* \
+ && find /usr -path '*ensurepip/_bundled/setuptools*.whl' -delete \
+ && pip install --no-cache-dir --upgrade 'setuptools>=82.0.0' 'msgpack>=1.2.1'
+
 COPY ./prism_app /prism_app
 
 WORKDIR /prism_app/

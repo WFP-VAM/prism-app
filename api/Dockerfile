@@ -79,6 +79,18 @@ RUN --mount=type=cache,target=/root/.cache \
 # subprocess via prism_app.utils.chromium_launch_env; mirror that here for the check.
 RUN LD_PRELOAD= poetry run python -c "from playwright.sync_api import sync_playwright; p = sync_playwright().start(); b = p.chromium.launch(args=['--no-sandbox', '--disable-dev-shm-usage']); b.close(); p.stop()"
 
+# Distro python3-pip / playwright install-deps leave python3-setuptools 70.3 + python3-msgpack 1.1.2.
+# Trivy python-pkg flags those even when the Poetry venv already has patched copies.
+# ensurepip ships a bundled setuptools wheel at the same 70.3.0.
+RUN apt-get purge -y python3-setuptools python3-pkg-resources python3-msgpack 2>/dev/null || true \
+ && apt-get autoremove -y \
+ && rm -rf /var/lib/apt/lists/* \
+ && find /usr /opt -path '*ensurepip/_bundled/setuptools*.whl' -delete \
+ && if [ -x "$POETRY_HOME/venv/bin/pip" ]; then \
+      "$POETRY_HOME/venv/bin/pip" install --upgrade 'setuptools>=82.0.0' 'msgpack>=1.2.1'; \
+    fi \
+ && poetry run pip install --upgrade 'setuptools>=82.0.0' 'msgpack>=1.2.1'
+
 # keep this copy towards the end to help with caching previous layers
 COPY ./prism_app /prism_app
 COPY ./alembic.ini /alembic.ini
