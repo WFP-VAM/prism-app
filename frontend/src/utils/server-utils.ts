@@ -31,6 +31,7 @@ import type {
 } from '../config/types';
 import {
   AdminLevelDataLayerProps,
+  CogLayerProps,
   DataType,
   DateItem,
   DatesPropagation,
@@ -214,6 +215,7 @@ export function getCoverageForLayerAndDate(
 export type DateCompatibleLayer =
   | AdminLevelDataLayerProps
   | WMSLayerProps
+  | CogLayerProps
   | ImpactLayerProps
   | PointDataLayerProps
   | StaticRasterLayerProps
@@ -229,6 +231,7 @@ export const getPossibleDatesForLayer = (
     case 'point_data':
     case 'static_raster':
     case 'wms':
+    case 'cog':
       // get available dates for the layer and its fallback layers
       // eslint-disable-next-line no-case-declarations
       const { fallbackLayerKeys } = layer as AdminLevelDataLayerProps;
@@ -717,7 +720,7 @@ const localWMSGetLayerDates = async (
  */
 const mapServerDatesToLayerIds = (
   serverDates: Record<string, number[]>,
-  layers: (WMSLayerProps | CompositeLayerProps)[],
+  layers: (WMSLayerProps | CogLayerProps | CompositeLayerProps)[],
 ): Record<LayerKey, ReferenceDateTimestamp[]> =>
   layers.reduce((acc: Record<string, ReferenceDateTimestamp[]>, layer) => {
     const serverLayerName =
@@ -774,8 +777,9 @@ export async function preloadLayerDatesForWMS(
   const wcsServerUrls: string[] = get(appConfig, 'serversUrls.wcs', []);
 
   const WCSWMSLayers = Object.values(LayerDefinitions).filter(
-    (layer): layer is WMSLayerProps =>
+    (layer): layer is WMSLayerProps | CogLayerProps | CompositeLayerProps =>
       layer.type === 'wms' ||
+      layer.type === 'cog' ||
       compositeLayersWithDateLayerTypeMap[layer.id] === 'wms',
   );
   const allWMSDates = wmsServerUrls.map(async url => {
@@ -864,7 +868,7 @@ export const getLayerType = (
   ) {
     return 'staticRasterLayer';
   }
-  if (l.type === 'wms') {
+  if (l.type === 'wms' || l.type === 'cog') {
     return 'WMSLayer';
   }
   if (l.type === 'impact') {

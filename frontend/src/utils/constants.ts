@@ -27,6 +27,10 @@ export const DASHBOARDS_API_URL = `${API_URL}/dashboards`;
 export const AA_DROUGHT_API_URL = `${API_URL}/aa/drought`;
 export const KOBO_API_URL = `${API_URL}/kobo`;
 export const RASTER_API_URL = `${API_URL}/raster_geotiff`;
+export const COG_PRESIGNED_URL_API = `${API_URL}/cog_presigned_url`;
+// TODO(cog-cors): Remove when COGLayer fetches presigned S3 URLs directly.
+export const COG_PROXY_API = `${API_URL}/cog_proxy`;
+export const EXPORT_API_URL = `${API_URL}/export-map`;
 export const EXPORT_MAP_JOBS_API_URL = `${API_URL}/export-map/jobs`;
 export const EXPORT_MAP_SCHEDULES_API_URL = `${API_URL}/export-map/schedules`;
 export const PRISM_WHOAMI_API_URL = `${API_URL}/whoami`;

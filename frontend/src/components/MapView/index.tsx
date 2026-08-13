@@ -1,4 +1,5 @@
 import { Box, createStyles, makeStyles } from '@material-ui/core';
+import { usePostHog } from '@posthog/react';
 import { getBoundaryLayers } from 'config/utils';
 import { clearAnalysisResult } from 'context/analysisResultStateSlice';
 import {
@@ -8,6 +9,7 @@ import {
   WMSLayerDatesRequested,
 } from 'context/serverPreloadStateSlice';
 import { useCountryIso } from 'context/useCountryIso';
+import { usePerformanceMonitor } from 'hooks/usePerformanceMonitor';
 import { memo, useEffect, useMemo, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { boundaryCache } from 'utils/boundary-cache';
@@ -25,9 +27,23 @@ import LeftPanel from './LeftPanel';
 import MapComponent from './Map';
 import OtherFeatures from './OtherFeatures';
 
+// Sample the frame-rate monitor for a subset of sessions. The decision is made
+// once at module load so it stays stable for the whole session and gates both
+// the requestAnimationFrame loop and the PostHog telemetry it produces.
+const PERF_MONITOR_SAMPLE_RATE = 0.1;
+const isPerfMonitorSampled = Math.random() < PERF_MONITOR_SAMPLE_RATE;
+
 const MapView = memo(() => {
   const classes = useStyles();
+  const posthog = usePostHog();
   const { iso3 } = useCountryIso();
+
+  usePerformanceMonitor({
+    enabled: isPerfMonitorSampled,
+    onSignificantChange: (fps, change) => {
+      posthog?.capture('frame_rate', { fps, change });
+    },
+  });
 
   const displayedBoundaryLayers = useMemo(() => {
     const layers = getDisplayBoundaryLayersForIso3(iso3).reverse();

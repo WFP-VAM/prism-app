@@ -73,6 +73,7 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
       | 'boundary'
       | 'composite'
       | 'wms'
+      | 'cog'
       | 'admin_level_data'
       | 'pattern_admin_level_data'
       | 'impact'
@@ -93,6 +94,7 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
     impact: 6,
     composite: 6,
     wms: 7,
+    cog: 7,
     static_raster: 8,
     anticipatory_action_drought: 9,
     anticipatory_action_storm: 10,
@@ -110,11 +112,13 @@ export const mapStateSlice = createSlice({
   initialState,
   reducers: {
     addLayer: ({ layers, ...rest }, { payload }: PayloadAction<LayerType>) => {
-      const layersToAdd = payload?.group?.activateAll
-        ? Object.values(LayerDefinitions).filter(l =>
-            payload?.group?.layers?.map(layer => layer.id).includes(l.id),
-          )
-        : [payload];
+      const layersToAdd = (
+        payload?.group?.activateAll
+          ? Object.values(LayerDefinitions).filter(l =>
+              payload?.group?.layers?.map(layer => layer.id).includes(l.id),
+            )
+          : [payload]
+      ).map(l => ({ ...l }));
 
       // TODO: something is wrong with the types imported by 'maplibre-gl' in config/types.ts
       //  @ts-ignore
