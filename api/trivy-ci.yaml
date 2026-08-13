@@ -7,9 +7,6 @@ list-all-pkgs: false
 scan:
   scanners:
     - vuln
-  # Bundled installers, not runtime. Distro/pip copies are handled in the Dockerfiles.
-  skip-files:
-    - "**/ensurepip/_bundled/*"
 # Bookworm slim often reports CVEs with no Debian security update yet; fail only when
 # a fix exists in the distro (actionable).
 vulnerability:
