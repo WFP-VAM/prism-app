@@ -131,4 +131,77 @@ describe('getAdminBoundaryTree sentinel filtering', () => {
 
     expect(labels).toEqual(['Abyei']);
   });
+
+  it('localizes admin2-style Go To labels from the sidecar dict', () => {
+    const admin2Layer = {
+      ...mockLayer,
+      translationsPath: 'bundled:universal/translations/{scope}/{lang}.json',
+    } as BoundaryLayerProps;
+
+    const frenchI18n = {
+      language: 'fr',
+      resolvedLanguage: 'fr',
+    } as typeof i18n;
+
+    const data = {
+      type: 'FeatureCollection' as const,
+      features: [
+        {
+          type: 'Feature' as const,
+          properties: {
+            adm0_id: 'ETH',
+            adm0_name: 'Ethiopia',
+            adm1_id: 'ETH01',
+            adm1_name: 'Tigray',
+            adm2_id: 'ETH0101',
+            adm2_name: 'Central Gondar',
+          },
+          geometry: null,
+        },
+      ],
+    };
+
+    const tree = getAdminBoundaryTree(data, admin2Layer, frenchI18n, {
+      Ethiopia: 'Éthiopie',
+      Tigray: 'Tigré',
+      'Central Gondar': 'Nord Gondar',
+    });
+    const labels = flattenAreaTree(tree).map(area => area.label);
+
+    expect(labels).toEqual(['Éthiopie', 'Tigré', 'Nord Gondar']);
+  });
+
+  it('localizes labels from a provided dict even without translationsPath', () => {
+    const frenchI18n = {
+      language: 'fr',
+      resolvedLanguage: 'fr',
+    } as typeof i18n;
+
+    const data = {
+      type: 'FeatureCollection' as const,
+      features: [
+        {
+          type: 'Feature' as const,
+          properties: {
+            adm0_id: 'ETH',
+            adm0_name: 'Ethiopia',
+            adm1_id: 'ETH01',
+            adm1_name: 'Tigray',
+            adm2_id: 'ETH0101',
+            adm2_name: 'Central Gondar',
+          },
+          geometry: null,
+        },
+      ],
+    };
+
+    const tree = getAdminBoundaryTree(data, mockLayer, frenchI18n, {
+      Ethiopia: 'Éthiopie',
+      Tigray: 'Tigré',
+      'Central Gondar': 'Nord Gondar',
+    });
+    const labels = flattenAreaTree(tree).map(area => area.label);
+
+    expect(labels).toEqual(['Éthiopie', 'Tigré', 'Nord Gondar']);
+  });
 });
