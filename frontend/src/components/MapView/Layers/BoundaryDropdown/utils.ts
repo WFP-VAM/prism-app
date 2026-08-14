@@ -72,15 +72,15 @@ export function getAdminBoundaryTree(
         break;
       }
       const englishLabel = fp[englishLevelNames[level]] ?? '';
-      const label = useSidecar
-        ? language === 'en'
-          ? englishLabel
-          : localizeName(englishLabel, adminNameDict)
-        : (fp[
-            (language === 'en'
-              ? englishLevelNames
-              : layer.adminLevelLocalNames)[level]
-          ] ?? '');
+      // Localize whenever a sidecar dict is loaded, even if this layer
+      // omitted translationsPath (Go To uses admin2; path used to live only
+      // on admin0/admin3).
+      const label =
+        language !== 'en' && (useSidecar || adminNameDict)
+          ? localizeName(englishLabel, adminNameDict)
+          : language === 'en'
+            ? englishLabel
+            : (fp[layer.adminLevelLocalNames[level]] ?? '');
       const key = fp[englishLevelNames[level]];
       // Filter out invalid or placeholder branches using the raw English name
       // so filtering is language-independent (sidecars may translate "N/A").

@@ -403,6 +403,7 @@
   "This layer is not configured for charts. Please select a layer with chart data.": "Lakabkan looma qaabeyn shaxyo. Fadlan dooro lakab leh xog shax ah.",
   "No chart configured": "Shax lama qaabeynin",
   "Loading...": "Waa la rarayaa...",
+  "Loading boundaries": "Waxaa la rarayaa xuduudaha maamulka",
   "Configure parameters to see chart preview": "Qaabee xuduudaha si aad u aragto horudhaca shaxda",
   "Select a chart layer to start": "Dooro lakab shax si aad u bilowdo",
   "Chart Block": "Block shax",

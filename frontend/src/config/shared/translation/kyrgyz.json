@@ -318,6 +318,7 @@
   "This layer is not configured for charts. Please select a layer with chart data.": "Бул катмар диаграммалар үчүн конфигурацияланган эмес. Диаграмма маалыматтары бар катмарды тандаңыз.",
   "No chart configured": "Диаграмма конфигурацияланган эмес",
   "Loading...": "Жүктөө...",
+  "Loading boundaries": "Административдик чек араларды жүктөө",
   "Configure parameters to see chart preview": "Диаграмманы алдын ала көрүү үчүн параметрлерди конфигурациялаңыз",
   "Select a chart layer to start": "Баштоо үчүн диаграмма катмарын тандаңыз",
   "Chart Block": "Диаграмма блоку",

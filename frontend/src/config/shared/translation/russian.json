@@ -318,6 +318,7 @@
   "This layer is not configured for charts. Please select a layer with chart data.": "Этот слой не настроен для диаграмм. Выберите слой с данными диаграммы.",
   "No chart configured": "Диаграмма не настроена",
   "Loading...": "Загрузка...",
+  "Loading boundaries": "Загрузка административных границ",
   "Configure parameters to see chart preview": "Настройте параметры для предпросмотра диаграммы",
   "Select a chart layer to start": "Выберите слой диаграммы, чтобы начать",
   "Chart Block": "Блок диаграммы",

@@ -27,6 +27,7 @@
     "admin_level_codes": ["adm0_id", "adm1_id", "adm2_id"],
     "admin_level_names": ["adm0_name", "adm1_name", "adm2_name"],
     "admin_level_local_names": ["adm0_name", "adm1_name", "adm2_name"],
+    "translations_path": "bundled:universal/translations/{scope}/{lang}.json",
     "simplify_tolerance": 0.1,
     "opacity": 1
   },
@@ -41,6 +42,7 @@
     "admin_level_codes": ["adm0_id", "adm1_id"],
     "admin_level_names": ["adm0_name", "adm1_name"],
     "admin_level_local_names": ["adm0_name", "adm1_name"],
+    "translations_path": "bundled:universal/translations/{scope}/{lang}.json",
     "simplify_tolerance": 0.1,
     "opacity": 1
   },

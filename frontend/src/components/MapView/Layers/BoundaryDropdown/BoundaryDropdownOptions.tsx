@@ -147,8 +147,12 @@ const BoundaryDropdownOptions = React.forwardRef(
       [areaTree, search],
     );
 
-    if (!combinedData || !boundaryLayers.length) {
+    if (!boundaryLayers.length) {
       return null;
+    }
+
+    if (!combinedData) {
+      return <MenuItem disabled>{t('Loading boundaries')}</MenuItem>;
     }
 
     const rootLevel = flattenedAreaList[0]?.level;

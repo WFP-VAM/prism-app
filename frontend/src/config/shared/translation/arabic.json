@@ -400,6 +400,7 @@
   "This layer is not configured for charts. Please select a layer with chart data.": "لم يتم تكوين هذه الطبقة للمخططات. يرجى اختيار طبقة تحتوي على بيانات مخطط.",
   "No chart configured": "لم يتم تكوين مخطط",
   "Loading...": "جارٍ التحميل...",
+  "Loading boundaries": "جارٍ تحميل الحدود الإدارية",
   "Configure parameters to see chart preview": "قم بتكوين المعلمات لمعاينة المخطط",
   "Select a chart layer to start": "اختر طبقة مخطط للبدء",
   "Chart Block": "كتلة مخطط",

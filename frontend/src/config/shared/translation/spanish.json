@@ -193,6 +193,7 @@
   "This layer is not configured for charts. Please select a layer with chart data.": "Esta capa no está configurada para gráficos. Seleccione una capa con datos de gráfico.",
   "No chart configured": "Sin gráfico configurado",
   "Loading...": "Cargando...",
+  "Loading boundaries": "Cargando límites administrativos",
   "Configure parameters to see chart preview": "Configure los parámetros para ver la vista previa del gráfico",
   "Select a chart layer to start": "Seleccione una capa de gráfico para comenzar",
   "Chart Block": "Bloque de gráfico",

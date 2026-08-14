@@ -629,6 +629,7 @@
   "This layer is not configured for charts. Please select a layer with chart data.": "Esta camada não está configurada para gráficos. Selecione uma camada com dados de gráfico.",
   "No chart configured": "Sem gráfico configurado",
   "Loading...": "A carregar...",
+  "Loading boundaries": "A carregar limites administrativos",
   "Configure parameters to see chart preview": "Configure os parâmetros para ver a pré-visualização do gráfico",
   "Select a chart layer to start": "Selecione uma camada de gráfico para começar",
   "Chart Block": "Bloco de gráfico",

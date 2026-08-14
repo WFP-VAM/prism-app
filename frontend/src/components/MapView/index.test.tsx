@@ -79,6 +79,6 @@ describe('MapView', () => {
       </Provider>,
     );
 
-    expect(screen.getByText('Loading boundaries…')).toBeInTheDocument();
+    expect(screen.getByText('Loading boundaries')).toBeInTheDocument();
   });
 });

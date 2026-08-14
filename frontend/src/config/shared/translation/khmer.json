@@ -307,6 +307,7 @@
   "This layer is not configured for charts. Please select a layer with chart data.": "ស្រទាប់ីនេះមិនបានកំណត់សម្រាប់តារាងទេ។ សូមជ្រើសស្រទាប់ីដែលមានទិន្នន័យតារាង។",
   "No chart configured": "មិនមានតារាងបានកំណត់",
   "Loading...": "កំពុងផ្ទុក...",
+  "Loading boundaries": "កំពុងផ្ទុកព្រំដែនរដ្ឋបាល",
   "Configure parameters to see chart preview": "កំណត់ប៉ារ៉ាម៉ែត្រដើម្បីមើលតារាងជាមុន",
   "Select a chart layer to start": "ជ្រើសស្រទាប់ីតារាងដើម្បីចាប់ផ្តើម",
   "Chart Block": "Blok តារាង",

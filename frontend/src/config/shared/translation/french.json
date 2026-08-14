@@ -447,6 +447,7 @@
   "This layer is not configured for charts. Please select a layer with chart data.": "Cette couche n’est pas configurée pour les graphiques. Veuillez sélectionner une couche avec des données graphiques.",
   "No chart configured": "Aucun graphique configuré",
   "Loading...": "Chargement...",
+  "Loading boundaries": "Chargement des limites administratives",
   "Configure parameters to see chart preview": "Configurez les paramètres pour voir l’aperçu du graphique",
   "Select a chart layer to start": "Sélectionnez une couche de graphique pour commencer",
   "Chart Block": "Bloc graphique",

@@ -131,4 +131,38 @@ describe('getAdminBoundaryTree sentinel filtering', () => {
 
     expect(labels).toEqual(['Abyei']);
   });
+
+  it('localizes labels from a sidecar dict even without translationsPath', () => {
+    const frenchI18n = {
+      language: 'fr',
+      resolvedLanguage: 'fr',
+    } as typeof i18n;
+
+    const data = {
+      type: 'FeatureCollection' as const,
+      features: [
+        {
+          type: 'Feature' as const,
+          properties: {
+            adm0_id: 'MOZ',
+            adm0_name: 'Mozambique',
+            adm1_id: 'MOZ01',
+            adm1_name: 'Cabo Delgado',
+            adm2_id: 'MOZ0101',
+            adm2_name: 'Chiure',
+          },
+          geometry: null,
+        },
+      ],
+    };
+
+    const tree = getAdminBoundaryTree(data, mockLayer, frenchI18n, {
+      Mozambique: 'Mozambique',
+      'Cabo Delgado': 'Cabo Delgado',
+      Chiure: 'Chiúre',
+    });
+    const labels = flattenAreaTree(tree).map(area => area.label);
+
+    expect(labels).toEqual(['Mozambique', 'Cabo Delgado', 'Chiúre']);
+  });
 });
