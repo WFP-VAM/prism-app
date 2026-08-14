@@ -37,6 +37,7 @@ RUN apt-get update \
 # Browser + OS deps (same pattern as main api/Dockerfile)
 RUN playwright install chromium \
     && playwright install-deps chromium \
+    && pip install --no-cache-dir --upgrade 'setuptools>=82.0.0' 'msgpack>=1.2.1' \
     && rm -rf /root/.cache/ms-playwright/.links \
     && python -c "from playwright.sync_api import sync_playwright; p = sync_playwright().start(); b = p.chromium.launch(args=['--no-sandbox', '--disable-dev-shm-usage']); b.close(); p.stop()"
 

@@ -27,6 +27,13 @@ const config: Config = {
       '<rootDir>/test/fileMock.ts',
     '\\.(css|less)$': '<rootDir>/test/fileMock.ts',
     '^test/(.*)$': '<rootDir>/test/$1',
+    '^components/MapView/Layers/COGLayer$':
+      '<rootDir>/test/deckGlComponentMock.tsx',
+    '^components/MapView/DeckGLOverlay$':
+      '<rootDir>/test/deckGlComponentMock.tsx',
+    '^@deck\\.gl/(.*)$': '<rootDir>/test/fileMock.ts',
+    '^@developmentseed/(.*)$': '<rootDir>/test/fileMock.ts',
+    '^@luma\\.gl/(.*)$': '<rootDir>/test/fileMock.ts',
   },
   setupFilesAfterEnv: ['<rootDir>/test/setupTests.ts'],
   moduleDirectories: ['node_modules', 'src'],

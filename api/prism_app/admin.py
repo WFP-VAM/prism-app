@@ -1,26 +1,54 @@
 """Starlette Admin: read-only alerts; full CRUD for dashboards."""
 
+from typing import Any
+
 from prism_app.aa_drought.aa_drought_admin import (
     AaDroughtAdminView,
     register_aa_drought_admin_routes,
 )
+from prism_app.aa_drought.country_scope import (
+    aa_drought_country_choices,
+    aa_drought_country_field_visible,
+    apply_inferred_aa_drought_country,
+)
+from prism_app.admin_bulk_actions import bulk_status_select_form
 from prism_app.auth.admin_request import (
+    apply_country_scope_filter,
+    request_can_access_country,
     request_can_manage_aa_data,
     request_can_manage_dashboards,
     request_has_prism_admin_access,
 )
+from prism_app.auth.permission_codes import AA_DATA_MANAGE, DASHBOARD_MANAGE
+from prism_app.auth.user_permission_grant import (
+    existing_grant_countries,
+    normalize_grant_country,
+    user_permission_country_choices,
+    validate_grant_country_conflicts,
+    validate_grant_country_for_permission,
+)
 from prism_app.dashboard.dashboard_admin import DashboardAdminView
-from prism_app.database.aa_drought_model import AaDroughtDatasetModel
+from prism_app.database.aa_drought_model import AaDroughtCountry, AaDroughtDatasetModel
 from prism_app.database.alert_model import AlertModel
 from prism_app.database.anticipatory_action_alerts_model import AnticipatoryActionAlerts
-from prism_app.database.dashboard_model import DashboardModel
+from prism_app.database.dashboard_model import (
+    DashboardCountry,
+    DashboardModel,
+    DashboardStatus,
+)
 from prism_app.database.kobo_user_model import KoboUser
 from prism_app.database.permission_model import Permission, UserPermission
 from prism_app.database.user_model import User
+from prism_app.utils import utc_now
+from sqlalchemy import Select, String, cast, func
+from sqlalchemy.orm import Session
+from sqlalchemy.sql import or_
 from starlette.requests import Request
-from starlette_admin import HasOne
+from starlette_admin import EnumField, HasOne
+from starlette_admin._types import RequestAction
+from starlette_admin.actions import action
 from starlette_admin.contrib.sqla import Admin, ModelView
-from starlette_admin.exceptions import FormValidationError
+from starlette_admin.exceptions import ActionFailed, FormValidationError
 
 
 class PrismGatedModelView(ModelView):
@@ -98,6 +126,27 @@ class PermissionView(ReadOnlyModelView):
     exclude_fields_from_list = ("id",)
 
 
+_COUNTRY_ACCESS_DENIED = (
+    "You do not have permission to manage dashboards for this country."
+)
+_AA_COUNTRY_ACCESS_DENIED = (
+    "You do not have permission to manage AA drought data for this country."
+)
+_DASHBOARD_BULK_UPDATE_STATUS_FORM = bulk_status_select_form(DashboardStatus)
+
+
+def _dashboard_country_code(country: DashboardCountry | Any) -> str:
+    if isinstance(country, DashboardCountry):
+        return country.value
+    return str(country)
+
+
+def _aa_drought_country_code(country: AaDroughtCountry | Any) -> str:
+    if isinstance(country, AaDroughtCountry):
+        return country.value
+    return str(country)
+
+
 class GatedDashboardAdminView(DashboardAdminView):
     """Dashboard CRUD for ``prism.admin.access`` or ``prism.dashboard.manage`` only."""
 
@@ -115,6 +164,119 @@ class GatedDashboardAdminView(DashboardAdminView):
 
     def can_delete(self, request: Request) -> bool:
         return request_can_manage_dashboards(request)
+
+    def get_list_query(self, request: Request) -> Select:
+        return apply_country_scope_filter(
+            super().get_list_query(request),
+            request,
+            DASHBOARD_MANAGE,
+            DashboardModel.country,
+        )
+
+    def get_count_query(self, request: Request) -> Select:
+        return apply_country_scope_filter(
+            super().get_count_query(request),
+            request,
+            DASHBOARD_MANAGE,
+            DashboardModel.country,
+        )
+
+    def get_details_query(self, request: Request) -> Select:
+        return apply_country_scope_filter(
+            super().get_details_query(request),
+            request,
+            DASHBOARD_MANAGE,
+            DashboardModel.country,
+        )
+
+    def _assert_obj_country_in_scope(
+        self, request: Request, obj: DashboardModel
+    ) -> None:
+        if not request_can_access_country(
+            request,
+            DASHBOARD_MANAGE,
+            _dashboard_country_code(obj.country),
+        ):
+            raise FormValidationError({"config": _COUNTRY_ACCESS_DENIED})
+
+    def _validate_bulk_dashboard_scope(
+        self,
+        request: Request,
+        dashboards: list[Any],
+        pks: list[Any],
+    ) -> None:
+        if len(dashboards) != len(pks):
+            raise ActionFailed("One or more selected dashboards are not accessible")
+        for dashboard in dashboards:
+            if not request_can_access_country(
+                request,
+                DASHBOARD_MANAGE,
+                _dashboard_country_code(dashboard.country),
+            ):
+                raise ActionFailed("One or more selected dashboards are not accessible")
+
+    async def validate(self, request: Request, data: dict[str, Any]) -> None:
+        await super().validate(request, data)
+        country = data.get("country")
+        if country is not None and not request_can_access_country(
+            request,
+            DASHBOARD_MANAGE,
+            _dashboard_country_code(country),
+        ):
+            raise FormValidationError({"config": _COUNTRY_ACCESS_DENIED})
+
+    async def before_create(
+        self, request: Request, data: dict[str, Any], obj: Any
+    ) -> None:
+        await super().before_create(request, data, obj)
+        self._assert_obj_country_in_scope(request, obj)
+
+    async def before_edit(
+        self, request: Request, data: dict[str, Any], obj: Any
+    ) -> None:
+        await super().before_edit(request, data, obj)
+        self._assert_obj_country_in_scope(request, obj)
+
+    @action(
+        name="update_status",
+        text="Update status",
+        confirmation="Update the status of the selected dashboards?",
+        submit_btn_text="Update status",
+        submit_btn_class="btn-primary",
+        icon_class="fa-solid fa-toggle-on",
+        form=_DASHBOARD_BULK_UPDATE_STATUS_FORM,
+    )
+    async def update_status_action(self, request: Request, pks: list[Any]) -> str:
+        data = await request.form()
+        status_raw = data.get("status")
+        if not status_raw:
+            raise ActionFailed("Status is required")
+        try:
+            new_status = DashboardStatus(str(status_raw))
+        except ValueError as exc:
+            raise ActionFailed(f"Invalid status: {status_raw}") from exc
+
+        dashboards = list(await self.find_by_pks(request, pks))
+        self._validate_bulk_dashboard_scope(request, dashboards, pks)
+        if not dashboards:
+            raise ActionFailed("No accessible dashboards selected")
+
+        session: Session = request.state.session
+        now = utc_now()
+        for dashboard in dashboards:
+            dashboard.status = new_status
+            dashboard.updated_at = now
+            session.add(dashboard)
+        session.commit()
+
+        count = len(dashboards)
+        label = new_status.value
+        return f"Updated {count} dashboard{'s' if count != 1 else ''} to {label}."
+
+    async def delete(self, request: Request, pks: list[Any]) -> int | None:
+        dashboards = list(await self.find_by_pks(request, pks))
+        self._validate_bulk_dashboard_scope(request, dashboards, pks)
+        return await super().delete(request, pks)
 
 
 class GatedAaDroughtAdminView(AaDroughtAdminView):
@@ -135,6 +297,146 @@ class GatedAaDroughtAdminView(AaDroughtAdminView):
     def can_delete(self, request: Request) -> bool:
         return request_can_manage_aa_data(request)
 
+    def get_fields_list(
+        self,
+        request: Request,
+        action: RequestAction = RequestAction.LIST,
+    ) -> list[Any]:
+        fields = super().get_fields_list(request, action)
+        if not aa_drought_country_field_visible(request):
+            return [field for field in fields if field.name != "country"]
+        if request_has_prism_admin_access(request):
+            return fields
+        scoped_fields: list[Any] = []
+        for field in fields:
+            if field.name != "country":
+                scoped_fields.append(field)
+                continue
+            scoped_fields.append(
+                EnumField(
+                    "country",
+                    label=field.label,
+                    required=True,
+                    choices_loader=aa_drought_country_choices,
+                )
+            )
+        return scoped_fields
+
+    def _aa_drought_searchable_fields(self, request: Request) -> tuple[str, ...]:
+        if aa_drought_country_field_visible(request):
+            return tuple(self.searchable_fields)
+        return tuple(name for name in self.searchable_fields if name != "country")
+
+    def get_search_query(self, request: Request, term: str) -> Any:
+        term_lower = term.strip().lower()
+        if not term_lower:
+            return None
+        clauses = []
+        for field_name in self._aa_drought_searchable_fields(request):
+            attr = getattr(self.model, field_name, None)
+            if attr is None:
+                continue
+            clauses.append(func.lower(cast(attr, String)).contains(term_lower))
+        return or_(*clauses) if clauses else None
+
+    def get_list_query(self, request: Request) -> Select:
+        return apply_country_scope_filter(
+            super().get_list_query(request),
+            request,
+            AA_DATA_MANAGE,
+            AaDroughtDatasetModel.country,
+        )
+
+    def get_count_query(self, request: Request) -> Select:
+        return apply_country_scope_filter(
+            super().get_count_query(request),
+            request,
+            AA_DATA_MANAGE,
+            AaDroughtDatasetModel.country,
+        )
+
+    def get_details_query(self, request: Request) -> Select:
+        return apply_country_scope_filter(
+            super().get_details_query(request),
+            request,
+            AA_DATA_MANAGE,
+            AaDroughtDatasetModel.country,
+        )
+
+    def _assert_obj_country_in_scope(
+        self, request: Request, obj: AaDroughtDatasetModel
+    ) -> None:
+        if not request_can_access_country(
+            request,
+            AA_DATA_MANAGE,
+            _aa_drought_country_code(obj.country),
+        ):
+            raise FormValidationError({"country": _AA_COUNTRY_ACCESS_DENIED})
+
+    def _validate_bulk_aa_drought_scope(
+        self,
+        request: Request,
+        datasets: list[Any],
+        pks: list[Any],
+    ) -> None:
+        if len(datasets) != len(pks):
+            raise ActionFailed("One or more selected datasets are not accessible")
+        for dataset in datasets:
+            if not request_can_access_country(
+                request,
+                AA_DATA_MANAGE,
+                _aa_drought_country_code(dataset.country),
+            ):
+                raise ActionFailed("One or more selected datasets are not accessible")
+
+    async def _populate_obj(
+        self,
+        request: Request,
+        obj: Any,
+        data: dict[str, Any],
+        is_edit: bool = False,
+    ) -> Any:
+        # ponytail: starlette-admin only populates fields from get_fields_list; country
+        # is hidden for scoped managers but must still be written to the model.
+        apply_inferred_aa_drought_country(request, data)
+        obj = await super()._populate_obj(request, obj, data, is_edit)
+        if data.get("country") is not None and getattr(obj, "country", None) is None:
+            country = data["country"]
+            obj.country = (
+                country
+                if isinstance(country, AaDroughtCountry)
+                else AaDroughtCountry(str(country))
+            )
+        return obj
+
+    async def validate(self, request: Request, data: dict[str, Any]) -> None:
+        apply_inferred_aa_drought_country(request, data)
+        country = data.get("country")
+        if country is not None and not request_can_access_country(
+            request,
+            AA_DATA_MANAGE,
+            _aa_drought_country_code(country),
+        ):
+            raise FormValidationError({"country": _AA_COUNTRY_ACCESS_DENIED})
+        await super().validate(request, data)
+
+    async def before_create(
+        self, request: Request, data: dict[str, Any], obj: Any
+    ) -> None:
+        await super().before_create(request, data, obj)
+        self._assert_obj_country_in_scope(request, obj)
+
+    async def before_edit(
+        self, request: Request, data: dict[str, Any], obj: Any
+    ) -> None:
+        await super().before_edit(request, data, obj)
+        self._assert_obj_country_in_scope(request, obj)
+
+    async def delete(self, request: Request, pks: list[Any]) -> int | None:
+        datasets = list(await self.find_by_pks(request, pks))
+        self._validate_bulk_aa_drought_scope(request, datasets, pks)
+        return await super().delete(request, pks)
+
 
 class UserPermissionView(PrismGatedModelView):
     """Grant or revoke capability codes (e.g. ``prism.admin.access``, ``prism.content.view``)."""
@@ -143,9 +445,23 @@ class UserPermissionView(PrismGatedModelView):
     fields = (
         HasOne("user", label="User", identity="user"),
         HasOne("permission", label="Permission", identity="permission"),
+        EnumField(
+            "country",
+            label="Country",
+            required=True,
+            choices=user_permission_country_choices(),
+            help_text=(
+                "Use * for all countries (required for admin and other global permissions). "
+                "For dashboard, map export, or AA drought managers, use * or a country below."
+            ),
+        ),
         "granted_at",
     )
     exclude_fields_from_create = ("granted_at",)  # auto-set to now() by DB default
+
+    def can_edit(self, request: Request) -> bool:
+        # Grants are immutable; revoke and create a new row to change scope.
+        return False
 
     async def _populate_obj(
         self,
@@ -161,14 +477,43 @@ class UserPermissionView(PrismGatedModelView):
             obj.user_id = user.id
         if permission is not None:
             obj.permission_id = permission.id
+        obj.country = normalize_grant_country(data.get("country"))
         return obj
 
     async def validate(self, request: Request, data: dict) -> None:
         errors: dict[str, str] = {}
-        if data.get("user") is None:
+        user = data.get("user")
+        permission = data.get("permission")
+        if user is None:
             errors["user"] = "Select a user."
-        if data.get("permission") is None:
+        if permission is None:
             errors["permission"] = "Select a permission."
+
+        country = normalize_grant_country(data.get("country"))
+        data["country"] = country
+
+        if permission is not None and "permission" not in errors:
+            code_error = validate_grant_country_for_permission(permission.code, country)
+            if code_error:
+                errors["country"] = code_error
+
+        if (
+            user is not None
+            and permission is not None
+            and "user" not in errors
+            and "permission" not in errors
+            and "country" not in errors
+        ):
+            session: Session = request.state.session
+            existing = existing_grant_countries(
+                session,
+                user_id=user.id,
+                permission_id=permission.id,
+            )
+            conflict_error = validate_grant_country_conflicts(existing, country)
+            if conflict_error:
+                errors["country"] = conflict_error
+
         if errors:
             raise FormValidationError(errors)
         await super().validate(request, data)
