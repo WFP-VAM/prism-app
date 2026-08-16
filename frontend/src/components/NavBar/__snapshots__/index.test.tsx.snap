@@ -196,7 +196,13 @@ exports[`renders as expected 1`] = `
             </button>
             <mock-menu
               keepmounted=""
-            />
+            >
+              <mock-menuitem
+                disabled=""
+              >
+                Loading boundaries
+              </mock-menuitem>
+            </mock-menu>
           </div>
         </div>
         <div
