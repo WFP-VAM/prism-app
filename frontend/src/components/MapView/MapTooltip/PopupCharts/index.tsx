@@ -55,6 +55,7 @@ const PopupCharts = memo(
             adminLevelsNames={adminLevelsNames}
             availableAdminLevels={availableAdminLevels}
             filteredChartLayers={filteredChartLayers}
+            selectorProperties={selectorProperties}
             setAdminLevel={setAdminLevel}
           />
         )}

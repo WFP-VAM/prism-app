@@ -42,7 +42,7 @@ export function getAdminBoundaryTree(
   adminNameDict?: AdminNameDict,
 ): AdminBoundaryTree {
   const language = getActiveAdminNameLanguage(i18nLocale);
-  const useSidecar = usesAdminNameSidecar(layer);
+  const useSidecar = usesAdminNameSidecar(layer) || Boolean(adminNameDict);
   const englishLevelNames = layer.adminLevelNames;
   const { adminLevelCodes } = layer;
   const { features } = data || {};

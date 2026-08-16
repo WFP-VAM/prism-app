@@ -7,22 +7,9 @@ import {
 import i18n from 'i18next';
 import { get } from 'lodash';
 
-import { getFullLocationName } from './name-utils';
+import { getFullLocationName, isAdminNameSentinel } from './name-utils';
 
-/** Raw English admin names treated as placeholders (language-independent). */
-export const ADMIN_NAME_SENTINELS = [
-  'n/a',
-  'name unknown',
-  'administrative unit not available',
-  '????',
-];
-
-export function isAdminNameSentinel(name?: string): boolean {
-  if (!name) {
-    return false;
-  }
-  return ADMIN_NAME_SENTINELS.includes(name.trim().toLowerCase());
-}
+export { ADMIN_NAME_SENTINELS, isAdminNameSentinel } from './name-utils';
 
 export function localizeName(
   englishName: string,
@@ -44,7 +31,7 @@ export function getLocalizedFullLocationName(
 ): string {
   const parts = levelNames
     .map(level => get(featureBoundary, ['properties', level], '') as string)
-    .filter(Boolean)
+    .filter(name => Boolean(name) && !isAdminNameSentinel(name))
     .map(name => localizeName(name, dict));
 
   return parts.join(', ') || 'No Name';
