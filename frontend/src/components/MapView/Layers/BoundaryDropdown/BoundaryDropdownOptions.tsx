@@ -136,10 +136,6 @@ const BoundaryDropdownOptions = React.forwardRef(
       return <MenuItem disabled>{t('Loading boundaries')}</MenuItem>;
     }
 
-    if (!combinedData) {
-      return <MenuItem disabled>{t('Loading boundaries')}</MenuItem>;
-    }
-
     const rootLevel = flattenedAreaList[0]?.level;
 
     const selectOrDeselectAll = (e: React.MouseEvent) => {
