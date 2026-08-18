@@ -46,7 +46,7 @@ function renderOverlay(
   );
 }
 
-const overlayText = () => screen.queryByText('Loading boundaries…');
+const overlayText = () => screen.queryByText('Loading boundaries');
 
 describe('BoundaryLoadingOverlay', () => {
   afterEach(() => {

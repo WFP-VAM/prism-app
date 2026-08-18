@@ -27,6 +27,57 @@ export interface PmtilesMetadata {
   vector_layers?: VectorLayerMeta[];
 }
 
+type RawBoundaryLayerJson = Record<
+  string,
+  {
+    type?: string;
+    format?: string;
+    path?: string;
+    layer_name?: string;
+    admin_level_codes?: string[];
+    admin_level_names?: string[];
+    admin_level_local_names?: string[];
+  }
+>;
+
+function pushPmtilesLayersFromFile(
+  layers: RawPmtilesBoundaryLayer[],
+  layersPath: string,
+  configCountry: string,
+): void {
+  if (!fs.existsSync(layersPath)) {
+    return;
+  }
+  const layersData = JSON.parse(
+    fs.readFileSync(layersPath, 'utf-8'),
+  ) as RawBoundaryLayerJson;
+
+  Object.entries(layersData).forEach(([layerId, layer]) => {
+    if (
+      layer.type === 'boundary' &&
+      layer.format === 'pmtiles' &&
+      layer.path &&
+      layer.layer_name
+    ) {
+      layers.push({
+        configCountry,
+        layerId,
+        path: layer.path,
+        layer_name: layer.layer_name,
+        admin_level_codes: layer.admin_level_codes ?? [],
+        admin_level_names: layer.admin_level_names ?? [],
+        admin_level_local_names: layer.admin_level_local_names ?? [],
+      });
+    }
+  });
+}
+
+export function isUniversalAdminBoundaryLayer(
+  layer: Pick<RawPmtilesBoundaryLayer, 'layerId'>,
+): boolean {
+  return layer.layerId.startsWith('universal_admin');
+}
+
 export function collectPmtilesLayers(
   configDir: string,
 ): RawPmtilesBoundaryLayer[] {
@@ -37,44 +88,19 @@ export function collectPmtilesLayers(
     .sort((a, b) => a.localeCompare(b));
 
   countryDirs.forEach(country => {
-    const layersPath = path.join(configDir, country, 'layers.json');
-    if (!fs.existsSync(layersPath)) {
-      return;
-    }
-    const layersData = JSON.parse(
-      fs.readFileSync(layersPath, 'utf-8'),
-    ) as Record<
-      string,
-      {
-        type?: string;
-        format?: string;
-        path?: string;
-        layer_name?: string;
-        admin_level_codes?: string[];
-        admin_level_names?: string[];
-        admin_level_local_names?: string[];
-      }
-    >;
-
-    Object.entries(layersData).forEach(([layerId, layer]) => {
-      if (
-        layer.type === 'boundary' &&
-        layer.format === 'pmtiles' &&
-        layer.path &&
-        layer.layer_name
-      ) {
-        layers.push({
-          configCountry: country,
-          layerId,
-          path: layer.path,
-          layer_name: layer.layer_name,
-          admin_level_codes: layer.admin_level_codes ?? [],
-          admin_level_names: layer.admin_level_names ?? [],
-          admin_level_local_names: layer.admin_level_local_names ?? [],
-        });
-      }
-    });
+    pushPmtilesLayersFromFile(
+      layers,
+      path.join(configDir, country, 'layers.json'),
+      country,
+    );
   });
+
+  // Dual-owned Global/Universal stack — not merged via shared/layers.json.
+  pushPmtilesLayersFromFile(
+    layers,
+    path.join(configDir, 'shared', 'universal-admin-boundaries.json'),
+    'shared',
+  );
 
   return layers;
 }
@@ -87,7 +113,7 @@ export function getRequiredPropertyKeys(
     ...layer.admin_level_names,
     ...layer.admin_level_local_names,
   ];
-  if (layer.configCountry === 'universal') {
+  if (isUniversalAdminBoundaryLayer(layer)) {
     keys.push(...getUniversalHdcChartPropertyKeys(layer));
   }
   return keys;

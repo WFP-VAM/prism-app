@@ -87,7 +87,7 @@ const BoundaryLoadingOverlay = memo(
         <Box className={classes.card}>
           <CircularProgress size={36} />
           <Typography variant="body2" className={classes.label}>
-            {t('Loading boundaries…')}
+            {t('Loading boundaries')}
           </Typography>
         </Box>
       </Box>

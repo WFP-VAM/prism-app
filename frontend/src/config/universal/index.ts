@@ -1,10 +1,21 @@
+import { merge } from 'lodash';
+
 import globalLayers from '../global/layers.json';
-import rawBoundaryLayers from './layers.json';
+import boundarySources from '../shared/universal-admin-boundaries.json';
+import boundaryViz from './boundary-viz.json';
 import appConfig from './prism.json';
+
+const viz = boundaryViz as Record<string, object>;
+const boundaries = Object.fromEntries(
+  Object.entries(boundarySources).map(([key, source]) => [
+    key,
+    merge({}, source, viz[key] ?? {}),
+  ]),
+);
 
 const rawLayers = {
   ...globalLayers,
-  ...rawBoundaryLayers,
+  ...boundaries,
 };
 
 const rawTables = {};
