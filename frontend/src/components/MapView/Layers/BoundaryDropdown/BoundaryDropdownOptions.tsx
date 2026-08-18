@@ -6,11 +6,9 @@ import {
   TextFieldProps,
 } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
-import bbox from '@turf/bbox';
 import { LayerKey } from 'config/types';
 import { BoundaryLayerData } from 'context/layers/boundary';
 import { useCountryIso } from 'context/useCountryIso';
-import { BBox } from 'geojson';
 import { useAdminNameTranslations } from 'hooks/useAdminNameTranslations';
 import { useSafeTranslation } from 'i18n';
 import { Map as MaplibreMap } from 'maplibre-gl';
@@ -19,6 +17,7 @@ import { FixedSizeList as List } from 'react-window';
 import { boundaryCache } from 'utils/boundary-cache';
 import { getDisplayBoundaryLayersForIso3 } from 'utils/universal-utils';
 
+import { getGoToBounds } from './goto-utils';
 import {
   BoundaryDropdownProps,
   flattenAreaTree,
@@ -109,27 +108,9 @@ const BoundaryDropdownOptions = React.forwardRef(
       {} as Record<LayerKey, BoundaryLayerData | undefined>,
     );
 
-    // Combine the data from all layers
-    const combinedData = useMemo(() => {
-      const layerData = Object.entries(allBoundaryLayerData)
-        .filter(([, data]) => data !== undefined)
-        .map(([layerId, data]) => ({
-          layerId,
-          data: data as BoundaryLayerData,
-        }));
-
-      if (!layerData.length) {
-        return undefined;
-      }
-
-      return {
-        type: 'FeatureCollection' as const,
-        features: layerData.flatMap(({ layerId, data }) => {
-          const layer = boundaryLayers.find(l => l.id === layerId);
-          return layer?.hideInGoTo ? [] : data.features || [];
-        }),
-      };
-    }, [allBoundaryLayerData, boundaryLayers]);
+    const hasBoundaryData = Object.values(allBoundaryLayerData).some(
+      data => data !== undefined,
+    );
 
     const areaTree = useMemo(
       () =>
@@ -149,6 +130,10 @@ const BoundaryDropdownOptions = React.forwardRef(
 
     if (!boundaryLayers.length) {
       return null;
+    }
+
+    if (!hasBoundaryData) {
+      return <MenuItem disabled>{t('Loading boundaries')}</MenuItem>;
     }
 
     if (!combinedData) {
@@ -242,19 +227,14 @@ const BoundaryDropdownOptions = React.forwardRef(
                   if (map === undefined) {
                     return;
                   }
-                  const features = combinedData.features.filter(f =>
-                    boundaryLayers.some(layer =>
-                      String(f.properties?.[layer.adminCode])?.startsWith(
-                        area.adminCode,
-                      ),
-                    ),
+                  const goToBounds = getGoToBounds(
+                    area,
+                    boundaryLayers[0],
+                    boundaryLayers,
+                    allBoundaryLayerData,
                   );
-                  const bboxUnion: BBox = bbox({
-                    type: 'FeatureCollection',
-                    features,
-                  });
-                  if (bboxUnion.length === 4) {
-                    map.fitBounds(bboxUnion, { padding: 60 });
+                  if (goToBounds) {
+                    map.fitBounds(goToBounds, { padding: 60 });
                   }
                 }}
               >

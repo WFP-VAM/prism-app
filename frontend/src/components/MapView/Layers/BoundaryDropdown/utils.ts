@@ -26,6 +26,7 @@ export interface AdminBoundaryTree {
   key: AdminCodeString; // FIXME: duplicate of adminCode below?
   adminCode: AdminCodeString;
   level: AdminLevelType;
+  iso3?: string;
   // children are indexed by AdminCodeStrings, not strings
   // but typescript won't allow being more specific
   children: { [code: string]: AdminBoundaryTree };
@@ -100,6 +101,7 @@ export function getAdminBoundaryTree(
           key,
           label,
           level: (level + 1) as AdminLevelType,
+          iso3: typeof fp.iso3 === 'string' ? fp.iso3 : undefined,
           children: {},
         };
         node.children[branchCode] = child;
@@ -133,11 +135,12 @@ export const TIMEOUT_ANIMATION_DELAY = 10;
  * Flattened version of the tree above, used to build
  * dropdowns.
  */
-interface FlattenedAdminBoundary {
+export interface FlattenedAdminBoundary {
   label: string;
   key: AdminCodeString;
   adminCode: AdminCodeString;
   level: AdminLevelType;
+  iso3?: string;
 }
 
 /**

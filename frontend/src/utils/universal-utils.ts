@@ -220,10 +220,18 @@ export function resolveChartBoundaryProperty(
 export function getCountryBbox(
   iso3: string | undefined,
 ): [number, number, number, number] | undefined {
-  const normalized = normalizeIso3(iso3);
-  if (!normalized || !isKnownIso3(normalized)) {
+  const trimmed = iso3?.trim();
+  if (!trimmed) {
     return undefined;
   }
-  const [a, b, c, d] = universalMetadata.countries[normalized as CountriesKey];
+  // Preserve pseudo-country keys such as "xAB"; uppercasing them would make
+  // them impossible to resolve from metadata.
+  const key = (
+    trimmed in universalMetadata.countries ? trimmed : normalizeIso3(trimmed)
+  ) as CountriesKey | undefined;
+  if (!key || !(key in universalMetadata.countries)) {
+    return undefined;
+  }
+  const [a, b, c, d] = universalMetadata.countries[key];
   return [a, b, c, d];
 }

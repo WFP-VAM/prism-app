@@ -43,6 +43,7 @@ describe('getAdminBoundaryTree sentinel filtering', () => {
         {
           type: 'Feature' as const,
           properties: {
+            iso3: 'AFG',
             adm0_id: 'AFG',
             adm0_name: 'Afghanistan',
             adm1_id: 'AFG01',
@@ -91,6 +92,7 @@ describe('getAdminBoundaryTree sentinel filtering', () => {
     expect(labels).not.toContain('N/A');
     expect(labels).not.toContain('????');
     expect(labels).not.toContain('Name Unknown');
+    expect(flat.find(area => area.label === 'Afghanistan')?.iso3).toBe('AFG');
   });
 
   it('filters sentinels using the raw English name even when localized', () => {
