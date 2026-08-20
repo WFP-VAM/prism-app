@@ -67,6 +67,7 @@ interface PopupChartProps {
   filteredChartLayers: WMSLayerProps[];
   adminCode: AdminCodeString;
   adminSelectorKey: string;
+  selectorProperties?: GeoJSON.GeoJsonProperties;
   adminLevel: AdminLevelType;
   adminLevelsNames: () => string[];
 }
@@ -75,6 +76,7 @@ function PopupAnalysisCharts({
   filteredChartLayers,
   adminCode,
   adminSelectorKey,
+  selectorProperties,
   adminLevel,
   adminLevelsNames,
 }: PopupChartProps) {
@@ -104,18 +106,27 @@ function PopupAnalysisCharts({
   const chartStartDate = chartEndDate - oneYearInMs;
 
   const layerId = getLayerMapId(boundaryLayer.id, 'fill');
-  const features = map?.queryRenderedFeatures(undefined, { layers: [layerId] });
 
   // Normalize adminCode to string for comparison
   const normalizedAdminCode = String(adminCode);
+
+  // Prefer properties captured at click time; queryRenderedFeatures misses
+  // regions not rendered at the current zoom. Fall back to the query otherwise.
+  const features =
+    selectorProperties && selectorProperties[adminSelectorKey] !== undefined
+      ? undefined
+      : map?.queryRenderedFeatures(undefined, { layers: [layerId] });
+
   const adminProperties =
-    data && boundaryLayer?.format !== 'pmtiles'
-      ? getProperties(data as BoundaryLayerData, adminCode, adminSelectorKey)
-      : (features?.find(
-          f =>
-            f.properties?.[adminSelectorKey] &&
-            String(f.properties[adminSelectorKey]) === normalizedAdminCode,
-        )?.properties ?? null);
+    selectorProperties && selectorProperties[adminSelectorKey] !== undefined
+      ? selectorProperties
+      : data && boundaryLayer?.format !== 'pmtiles'
+        ? getProperties(data as BoundaryLayerData, adminCode, adminSelectorKey)
+        : (features?.find(
+            f =>
+              f.properties?.[adminSelectorKey] &&
+              String(f.properties[adminSelectorKey]) === normalizedAdminCode,
+          )?.properties ?? null);
 
   if (filteredChartLayers.length < 1) {
     return null;

@@ -6,12 +6,23 @@
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
-    "boundingBox": [-130, -50, 177, 50]
+    "boundingBox": [-180, -85, 180, 85],
+    "globeProjection": true,
+    "landingView": {
+      "bounds": [-5, -30, 75, 45],
+      "padding": {
+        "top": 70,
+        "right": 30,
+        "bottom": 150,
+        "left": 425
+      }
+    }
   },
   "defaultDisplayBoundaries": [
-    "global_admin2_boundaries",
-    "global_admin1_boundaries",
-    "global_admin0_boundaries"
+    "universal_admin3_boundaries",
+    "universal_admin2_boundaries",
+    "universal_admin1_boundaries",
+    "universal_admin0_boundaries"
   ],
   "categories": {
     "rainfall": {
@@ -212,6 +223,41 @@
         "lst_nighttime",
         "lst_anomaly",
         "lst_amplitude"
+      ]
+    },
+    "water_anomaly": {
+      "water_anomaly_index": [
+        {
+          "group_title": "Water Anomaly Index",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "monthly_water_anomaly",
+              "label": "Monthly",
+              "main": true
+            },
+            {
+              "id": "2m_water_anomaly",
+              "label": "2-month"
+            },
+            {
+              "id": "3m_water_anomaly",
+              "label": "3-month"
+            },
+            {
+              "id": "4m_water_anomaly",
+              "label": "4-month"
+            },
+            {
+              "id": "5m_water_anomaly",
+              "label": "5-month"
+            },
+            {
+              "id": "6m_water_anomaly",
+              "label": "6-month"
+            }
+          ]
+        }
       ]
     }
   }

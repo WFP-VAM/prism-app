@@ -169,6 +169,7 @@ const createMapStateFromConfig = (
     layersData: [],
     loadingLayerIds: [],
     boundaryRelationData: {},
+    globeProjectionEnabled: false,
     opacityMap: initialOpacityMap,
     minMapBounds: mapConfig.minMapBounds || [],
     title: mapConfig.title || '',

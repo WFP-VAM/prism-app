@@ -9,6 +9,7 @@
   },
   "map": {
     "boundingBox": [-180, -85, 180, 85],
+    "globeProjection": true,
     "landingView": {
       "bounds": [-5, -30, 75, 45],
       "padding": {
@@ -20,7 +21,6 @@
     }
   },
   "defaultDisplayBoundaries": [
-    "universal_admin3_boundaries",
     "universal_admin2_boundaries",
     "universal_admin1_boundaries",
     "universal_admin0_boundaries"
@@ -47,12 +47,32 @@
               "label": "1-month"
             },
             {
+              "id": "rainfall_agg_2month",
+              "label": "2-month"
+            },
+            {
               "id": "rainfall_agg_3month",
               "label": "3-month"
             },
             {
+              "id": "rainfall_agg_4month",
+              "label": "4-month"
+            },
+            {
+              "id": "rainfall_agg_5month",
+              "label": "5-month"
+            },
+            {
               "id": "rainfall_agg_6month",
               "label": "6-month"
+            },
+            {
+              "id": "rainfall_agg_7month",
+              "label": "7-month"
+            },
+            {
+              "id": "rainfall_agg_8month",
+              "label": "8-month"
             },
             {
               "id": "rainfall_agg_9month",
@@ -80,12 +100,32 @@
               "label": "1-month"
             },
             {
+              "id": "rain_anomaly_2month",
+              "label": "2-month"
+            },
+            {
               "id": "rain_anomaly_3month",
               "label": "3-month"
             },
             {
+              "id": "rain_anomaly_4month",
+              "label": "4-month"
+            },
+            {
+              "id": "rain_anomaly_5month",
+              "label": "5-month"
+            },
+            {
               "id": "rain_anomaly_6month",
               "label": "6-month"
+            },
+            {
+              "id": "rain_anomaly_7month",
+              "label": "7-month"
+            },
+            {
+              "id": "rain_anomaly_8month",
+              "label": "8-month"
             },
             {
               "id": "rain_anomaly_9month",
@@ -184,6 +224,41 @@
         "lst_nighttime",
         "lst_anomaly",
         "lst_amplitude"
+      ]
+    },
+    "water_anomaly": {
+      "water_anomaly_index": [
+        {
+          "group_title": "Water Anomaly Index",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "monthly_water_anomaly",
+              "label": "Monthly",
+              "main": true
+            },
+            {
+              "id": "2m_water_anomaly",
+              "label": "2-month"
+            },
+            {
+              "id": "3m_water_anomaly",
+              "label": "3-month"
+            },
+            {
+              "id": "4m_water_anomaly",
+              "label": "4-month"
+            },
+            {
+              "id": "5m_water_anomaly",
+              "label": "5-month"
+            },
+            {
+              "id": "6m_water_anomaly",
+              "label": "6-month"
+            }
+          ]
+        }
       ]
     }
   }

@@ -1,7 +1,7 @@
 import { extractTranslationItems } from 'config/config.test.utils';
 import { enUS, es, fr, km, mn, pt, ru } from 'date-fns/locale';
 import i18n from 'i18next';
-import { merge } from 'lodash';
+import { get, merge } from 'lodash';
 import { registerLocale } from 'react-datepicker';
 import { initReactI18next, useTranslation } from 'react-i18next';
 
@@ -93,6 +93,19 @@ if (TRANSLATION_DEBUG || isDevelopment) {
   console.log('Missing translation keys:', missingKeys.en);
 }
 
+function getInitialLanguage(): string {
+  try {
+    const saved = localStorage.getItem('userLanguage');
+    if (saved && languages.includes(saved)) {
+      return saved;
+    }
+  } catch {
+    // localStorage can throw in privacy mode
+  }
+  const defaultLocale = get(appConfig, 'defaultLanguage', 'en');
+  return languages.includes(defaultLocale) ? defaultLocale : 'en';
+}
+
 function logMissingKey(lng: string, key: string) {
   if (TRANSLATION_DEBUG || isDevelopment) {
     if (!missingKeys[lng]) {
@@ -111,7 +124,7 @@ i18n
   .use(initReactI18next) // passes i18n down to react-i18next
   .init({
     resources,
-    lng: 'en',
+    lng: getInitialLanguage(),
     interpolation: {
       escapeValue: false, // react already safes from xss
     },

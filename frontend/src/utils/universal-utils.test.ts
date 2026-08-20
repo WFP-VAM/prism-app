@@ -47,6 +47,10 @@ describe('universal-utils', () => {
     expect(longitudeSpan).toBeLessThanOrEqual(180);
   });
 
+  it('preserves lowercase pseudo-country keys when resolving bboxes', () => {
+    expect(getCountryBbox('xAB')).toEqual([27.8333, 9.3432, 29, 10.1672]);
+  });
+
   it('returns undefined bbox for unknown countries', () => {
     expect(getCountryBbox('QQQ')).toBeUndefined();
     expect(getCountryBbox(undefined)).toBeUndefined();

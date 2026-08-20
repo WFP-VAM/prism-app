@@ -402,9 +402,6 @@ export class BoundaryLayerProps extends CommonLayerProps {
   styles: LayerStyleProps; // Maplibre line and fill properties.,
 
   @optional
-  isPrimary?: boolean | undefined;
-
-  @optional
   format?: 'pmtiles' | 'geojson' = 'geojson';
 
   @optional
@@ -423,6 +420,11 @@ export class BoundaryLayerProps extends CommonLayerProps {
   // Note that the layer is still loaded, but not displayed.
   @optional
   minZoom?: number;
+
+  // Maximum zoom level to display the boundary.
+  // Note that the layer is still loaded, but not displayed above this zoom.
+  @optional
+  maxZoom?: number;
 
   /** URL template for per-language admin name sidecar JSON ({lang} placeholder). */
   @optional

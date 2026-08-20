@@ -26,6 +26,7 @@ import {
   isAnticipatoryActionStormAvailable,
 } from 'components/MapView/LeftPanel/utils';
 import Legends from 'components/MapView/Legends';
+import GlobeProjectionToggle from 'components/NavBar/GlobeProjectionToggle';
 import { appConfig } from 'config';
 import { Panel, PanelItem } from 'config/types';
 import { areChartLayersAvailable } from 'config/utils';
@@ -286,6 +287,7 @@ function NavBar() {
             </div>
           </div>
           <div className={classes.rightSideContainer}>
+            {!isDashboardMode && <GlobeProjectionToggle />}
             {!isDashboardMode && <Legends />}
             <RightSideMenu />
           </div>

@@ -157,19 +157,46 @@ const MapComponent = memo(
 
     const mapState = useMapState();
     const { iso3 } = useCountryIso();
-    const universalLandingView = getUniversalLandingView();
+    const landingView = getUniversalLandingView();
     const isUniversalLanding = isUniversalLandingMode(iso3);
-    // Globe projection is scoped to the universal deployment only. It is used on
-    // first load, through the zoom-in animation, and for the entire session.
-    // Every other deployment always stays on the flat (mercator) projection.
-    const projection = isUniversalDeployment()
-      ? mapProjection
-      : mapFlatProjection;
-    const isGlobeProjection = projection.type === 'globe';
+    // Universal: landing view only on country-list screen. Global: always on load.
+    const useLandingViewBounds =
+      Boolean(landingView) && (isUniversalLanding || !isUniversalDeployment());
+    // Globe when enabled via navbar toggle (defaults from map.globeProjection config).
+    const isGlobeProjection = Boolean(mapState?.globeProjectionEnabled);
+    const projection = isGlobeProjection ? mapProjection : mapFlatProjection;
     const selectedMap = mapState?.maplibreMap();
     const isGlobalMap = mapState?.isGlobalMap;
     const dashboardMode = useSelector(dashboardModeSelector);
     const tabValue = useSelector(leftPanelTabValueSelector);
+
+    // Drive sky imperatively: react-map-gl does not clear sky when the prop
+    // becomes undefined, and that leaves its internal cache stale on re-enable.
+    useEffect(() => {
+      const map = mapRef.current?.getMap();
+      if (!map) {
+        return undefined;
+      }
+
+      const applySky = () => {
+        if (isGlobeProjection) {
+          map.setSky(mapSky);
+        } else {
+          // MapLibre clears atmosphere when sky is omitted (runtime); typings require an arg.
+          (map.setSky as (sky?: typeof mapSky) => void)(undefined);
+        }
+      };
+
+      if (map.isStyleLoaded()) {
+        applySky();
+        return undefined;
+      }
+
+      map.once('style.load', applySky);
+      return () => {
+        map.off('style.load', applySky);
+      };
+    }, [isGlobeProjection]);
 
     const panelHidden = tabValue === Panel.None;
 
@@ -362,8 +389,8 @@ const MapComponent = memo(
 
     // Use captured viewport if available and not in edit mode
     const initialBounds =
-      isUniversalLanding && universalLandingView
-        ? universalLandingView.bounds
+      useLandingViewBounds && landingView
+        ? landingView.bounds
         : !isGlobalMap &&
             dashboardMode !== DashboardMode.EDIT &&
             mapState.capturedViewport
@@ -382,10 +409,10 @@ const MapComponent = memo(
           maxZoom={maxZoom}
           initialViewState={{
             bounds: initialBounds as LngLatBoundsLike,
-            ...(isUniversalLanding && universalLandingView && !smDown
+            ...(useLandingViewBounds && landingView && !smDown
               ? {
-                  padding: universalLandingView.padding,
-                  fitBoundsOptions: { padding: universalLandingView.padding },
+                  padding: landingView.padding,
+                  fitBoundsOptions: { padding: landingView.padding },
                 }
               : {
                   fitBoundsOptions: smDown
@@ -399,7 +426,8 @@ const MapComponent = memo(
           style={{
             width: '100%',
             height: '100%',
-            ...(isGlobeProjection ? { background: mapBackdropColor } : {}),
+            background: isGlobeProjection ? mapBackdropColor : 'transparent',
+            transition: 'background-color 300ms ease',
           }}
           onLoad={onMapLoadWithLabelFilter}
           onClick={mapOnClick}

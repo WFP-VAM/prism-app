@@ -2,13 +2,14 @@ import {
   collectPmtilesLayers,
   getRequiredPropertyKeys,
   getUniversalHdcChartPropertyKeys,
+  isUniversalAdminBoundaryLayer,
   RawPmtilesBoundaryLayer,
   validateLayerAgainstMetadata,
   validatePmtilesUrl,
 } from './validate-pmtiles-layers';
 
 const sampleLayer: RawPmtilesBoundaryLayer = {
-  configCountry: 'universal',
+  configCountry: 'shared',
   layerId: 'universal_admin2_boundaries',
   path: 'https://example.com/test.pmtiles',
   layer_name: 'admin2',
@@ -18,18 +19,22 @@ const sampleLayer: RawPmtilesBoundaryLayer = {
 };
 
 describe('validate-pmtiles-layers', () => {
-  it('collectPmtilesLayers finds universal and shared PMTiles boundaries', () => {
+  it('collectPmtilesLayers finds dual-owned universal admin PMTiles boundaries', () => {
     const configDir = `${__dirname}/../src/config`;
     const layers = collectPmtilesLayers(configDir);
     expect(layers.length).toBeGreaterThan(0);
     expect(
       layers.some(
-        l => l.configCountry === 'universal' && l.layer_name === 'admin2',
+        l =>
+          l.layerId === 'universal_admin2_boundaries' &&
+          l.layer_name === 'admin2',
       ),
     ).toBe(true);
     expect(
       layers.some(
-        l => l.configCountry === 'shared' && l.layer_name === 'admin0',
+        l =>
+          l.layerId === 'universal_admin0_boundaries' &&
+          l.layer_name === 'admin0',
       ),
     ).toBe(true);
   });
@@ -51,12 +56,22 @@ describe('validate-pmtiles-layers', () => {
     ]);
   });
 
-  it('getRequiredPropertyKeys omits dv keys for non-universal layers', () => {
-    const sharedLayer: RawPmtilesBoundaryLayer = {
+  it('isUniversalAdminBoundaryLayer keys off layer id prefix', () => {
+    expect(isUniversalAdminBoundaryLayer(sampleLayer)).toBe(true);
+    expect(
+      isUniversalAdminBoundaryLayer({
+        layerId: 'admin1_boundaries',
+      }),
+    ).toBe(false);
+  });
+
+  it('getRequiredPropertyKeys omits dv keys for non-universal-admin layers', () => {
+    const countryLayer: RawPmtilesBoundaryLayer = {
       ...sampleLayer,
-      configCountry: 'shared',
+      configCountry: 'mozambique',
+      layerId: 'admin2_boundaries',
     };
-    const keys = getRequiredPropertyKeys(sharedLayer);
+    const keys = getRequiredPropertyKeys(countryLayer);
     expect(keys).not.toContain('dv_adm0_id');
   });
 

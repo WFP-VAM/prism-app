@@ -8,7 +8,6 @@ import sys
 from pathlib import Path
 
 AUDIT_JSON = Path("audit_results.json")
-IGNORE_VULN = "PYSEC-2025-183"
 
 
 def main() -> None:
@@ -20,7 +19,6 @@ def main() -> None:
             "--desc",
             "--format",
             "json",
-            f"--ignore-vuln={IGNORE_VULN}",
             "--output",
             str(AUDIT_JSON),
         ],
