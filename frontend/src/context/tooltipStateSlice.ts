@@ -33,6 +33,9 @@ export interface MapTooltipState {
   locationSelectorKey: string;
   locationName: string;
   locationLocalName: string;
+  // Clicked feature's admin hierarchy, captured so charts avoid re-querying
+  // rendered tiles (which fail for regions not rendered at the current zoom).
+  locationSelectorProperties?: GeoJSON.GeoJsonProperties;
   data: (PopupData & PopupMetaData) | PopupTitleData;
   showing: boolean;
   wmsGetFeatureInfoLoading: boolean;
@@ -45,6 +48,7 @@ type ShowPopupType = {
   locationAdminCode: AdminCodeString;
   locationName: string;
   locationLocalName: string;
+  locationSelectorProperties?: GeoJSON.GeoJsonProperties;
 };
 
 const initialState: MapTooltipState = {
@@ -52,6 +56,7 @@ const initialState: MapTooltipState = {
   locationSelectorKey: '',
   locationName: '',
   locationLocalName: '',
+  locationSelectorProperties: undefined,
   data: {},
   showing: false,
   wmsGetFeatureInfoLoading: false,
@@ -92,6 +97,7 @@ export const tooltipStateSlice = createSlice({
       locationAdminCode: payload.locationAdminCode,
       locationName: payload.locationName,
       locationLocalName: payload.locationLocalName,
+      locationSelectorProperties: payload.locationSelectorProperties,
       coordinates: payload.coordinates,
     }),
 

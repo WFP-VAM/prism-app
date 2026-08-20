@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
+import { usesGlobeProjection } from 'components/MapView/Map/utils';
 import { LayerKey, LayerType } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
 import {
@@ -31,6 +32,8 @@ export type MapState = {
   loadingLayerIds: LayerKey[];
   boundaryRelationData: BoundaryRelationsDict;
   title?: string;
+  /** Runtime override for globe vs mercator; defaults from map.globeProjection config. */
+  globeProjectionEnabled: boolean;
 };
 
 // Maplibre's map type contains some kind of cyclic dependency that causes an infinite loop in immers's change
@@ -47,6 +50,7 @@ const initialState: MapState = {
   layersData: [],
   loadingLayerIds: [],
   boundaryRelationData: {},
+  globeProjectionEnabled: usesGlobeProjection(),
 };
 
 const getTypeOrder = (layer: LayerType) => {
@@ -183,6 +187,14 @@ export const mapStateSlice = createSlice({
       boundaryRelationData: payload,
     }),
 
+    setGlobeProjectionEnabled: (
+      state,
+      { payload }: PayloadAction<boolean>,
+    ) => ({
+      ...state,
+      globeProjectionEnabled: payload,
+    }),
+
     dismissError: (
       { errors, ...rest },
       { payload }: PayloadAction<string>,
@@ -235,6 +247,7 @@ export const {
   setMap,
   removeLayerData,
   setBoundaryRelationData,
+  setGlobeProjectionEnabled,
 } = mapStateSlice.actions;
 
 export default mapStateSlice.reducer;

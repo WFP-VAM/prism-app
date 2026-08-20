@@ -7,6 +7,7 @@ import {
   localizeName,
   usesAdminNameSidecar,
 } from './admin-name-utils';
+import { getFullLocationName } from './name-utils';
 
 const layerWithSidecar = {
   adminLevelNames: ['adm0_name', 'adm1_name'],
@@ -51,6 +52,41 @@ describe('admin-name-utils', () => {
     expect(
       getLocalizedFullLocationName(['adm0_name', 'adm1_name'], feature, dict),
     ).toBe('Moçambique, Cab Delgado FR');
+  });
+
+  it('getFullLocationName omits sentinel admin names', () => {
+    const abyei = {
+      ...feature,
+      properties: {
+        adm0_name: 'Abyei',
+        adm1_name: 'N/A',
+        adm2_name: 'N/A',
+      },
+    };
+
+    expect(
+      getFullLocationName(['adm0_name', 'adm1_name', 'adm2_name'], abyei),
+    ).toBe('Abyei');
+  });
+
+  it('getLocalizedFullLocationName omits sentinel admin names before localizing', () => {
+    const abyei = {
+      ...feature,
+      properties: {
+        adm0_name: 'Abyei',
+        adm1_name: 'N/A',
+        adm2_name: 'Name Unknown',
+      },
+    };
+    const dict = { Abyei: 'أبيي', 'N/A': 'N/D' };
+
+    expect(
+      getLocalizedFullLocationName(
+        ['adm0_name', 'adm1_name', 'adm2_name'],
+        abyei,
+        dict,
+      ),
+    ).toBe('أبيي');
   });
 
   it('usesAdminNameSidecar reflects translationsPath config', () => {
