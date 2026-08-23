@@ -22,6 +22,16 @@ export function isUniversalDeployment(): boolean {
   return Boolean(config.universal ?? config.urlDriven);
 }
 
+/**
+ * True when the deployment's displayed boundaries are served from PMTiles
+ * (Global and Universal). These load asynchronously in the map, so they need
+ * the boundary loading overlay on first render and explicit preloading before
+ * clip/export. GeoJSON-boundary country deployments (e.g. Mozambique) do not.
+ */
+export function usesPmtilesBoundaries(): boolean {
+  return getDisplayBoundaryLayers().some(layer => layer.format === 'pmtiles');
+}
+
 export function normalizeIso3(iso3: string | undefined): string | undefined {
   return iso3?.trim().toUpperCase();
 }
@@ -105,12 +115,11 @@ export function applyUniversalLandingViewport(
   );
 }
 
-/** Initial / return-to-landing map viewport for universal deployments. */
+/**
+ * Initial / return-to-landing map viewport when prism.json defines map.landingView.
+ * Used by Universal (landing) and Global (initial load).
+ */
 export function getUniversalLandingView(): UniversalLandingView | undefined {
-  if (!isUniversalDeployment()) {
-    return undefined;
-  }
-
   const landingView = (appConfig.map as { landingView?: UniversalLandingView })
     .landingView;
 
@@ -211,10 +220,18 @@ export function resolveChartBoundaryProperty(
 export function getCountryBbox(
   iso3: string | undefined,
 ): [number, number, number, number] | undefined {
-  const normalized = normalizeIso3(iso3);
-  if (!normalized || !isKnownIso3(normalized)) {
+  const trimmed = iso3?.trim();
+  if (!trimmed) {
     return undefined;
   }
-  const [a, b, c, d] = universalMetadata.countries[normalized as CountriesKey];
+  // Preserve pseudo-country keys such as "xAB"; uppercasing them would make
+  // them impossible to resolve from metadata.
+  const key = (
+    trimmed in universalMetadata.countries ? trimmed : normalizeIso3(trimmed)
+  ) as CountriesKey | undefined;
+  if (!key || !(key in universalMetadata.countries)) {
+    return undefined;
+  }
+  const [a, b, c, d] = universalMetadata.countries[key];
   return [a, b, c, d];
 }

@@ -55,11 +55,58 @@ exports[`renders as expected 1`] = `
         >
           Regions
         </mock-typography>
-        <mock-circularprogress
-          color="inherit"
-          size="24"
-          style="padding: 2px;"
-        />
+        <div
+          class="MuiFormControl-root makeStyles-regionSelector-5"
+        >
+          <label
+            class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated"
+            data-shrink="false"
+          >
+            Click the map to select
+          </label>
+          <div
+            class="MuiInputBase-root MuiInput-root MuiInput-underline Mui-disabled Mui-disabled MuiInputBase-formControl MuiInput-formControl"
+            style="color: black;"
+          >
+            <div
+              aria-disabled="true"
+              aria-haspopup="listbox"
+              class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input Mui-disabled Mui-disabled Mui-disabled"
+              role="button"
+            >
+              Loading boundaries
+            </div>
+            <input
+              aria-hidden="true"
+              class="MuiSelect-nativeInput"
+              tabindex="-1"
+              value=""
+            />
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-root MuiSelect-icon Mui-disabled"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M7 10l5 5 5-5z"
+              />
+            </svg>
+            <mock-menu
+              anchorel="[object HTMLDivElement]"
+              id="menu-"
+              menulistprops="[object Object]"
+              paperprops="[object Object]"
+            >
+              <mock-menuitem
+                disabled=""
+                role="option"
+              >
+                Loading boundaries
+              </mock-menuitem>
+            </mock-menu>
+          </div>
+        </div>
       </div>
       <div
         class="makeStyles-alertFormOptions-3"
