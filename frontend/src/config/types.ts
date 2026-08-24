@@ -574,14 +574,38 @@ export class CogLayerProps extends CommonLayerProps {
   wcsConfig?: { scale?: number; offset?: number };
 }
 
+/**
+ * Cube time layouts PRISM can select indices for.
+ */
+export const SUPPORTED_ZARR_TIME_LAYOUTS = ['analysis', 'forecast'] as const;
+
+export type ZarrTimeLayout = (typeof SUPPORTED_ZARR_TIME_LAYOUTS)[number];
+
+/**
+ * Store protocols PRISM can open. Only Icechunk v2 is implemented; see
+ * `docs/zarr-layers.md` for the roadmap (`http` plain Zarr, Icechunk v1).
+ */
+export const SUPPORTED_ZARR_STORES = ['icechunk'] as const;
+
+export type ZarrStore = (typeof SUPPORTED_ZARR_STORES)[number];
+
 export class ZarrLayerProps extends CommonLayerProps {
   type: 'zarr' = 'zarr';
 
   /**
-   * Data source subtype — `dynamical` for analysis cubes (`time` dim);
-   * `dynamical_forecast` for init_time + lead_time forecast cubes.
+   * Cube time layout only — `analysis` for a single `time` dim; `forecast` for
+   * `init_time` + `lead_time` (plus an optional ensemble dim).
    */
-  subtype: 'dynamical' | 'dynamical_forecast' = 'dynamical';
+  timeLayout: ZarrTimeLayout = 'analysis';
+
+  /**
+   * Store protocol — how bytes are opened, not how the data is described.
+   * Omitting this is equivalent to `icechunk` (v2), the only implemented store.
+   *
+   * TODO: add `http` (plain Zarr) and Icechunk v1 (see docs/zarr-layers.md).
+   */
+  @optional
+  store?: ZarrStore;
 
   /** STAC collection or item URL (source of truth for repo URL and temporal extent). */
   stacItem: string;
@@ -592,7 +616,7 @@ export class ZarrLayerProps extends CommonLayerProps {
   @optional
   repoUrl?: string;
 
-  /** Forecast ensemble dataset; requires `subtype: dynamical_forecast`. Renders ensemble mean. */
+  /** Forecast ensemble dataset; requires `timeLayout: forecast`. Renders ensemble mean. */
   @optional
   ensemble?: boolean;
 

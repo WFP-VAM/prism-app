@@ -31,7 +31,11 @@ export interface DynamicalStacMetadata {
 
 const ICECHUNK_ASSET_TITLES = ['Icechunk v2 repository', 'icechunk'];
 
-/** Convert `s3://bucket/prefix` to anonymous HTTPS URL for icechunk-js. */
+/**
+ * Convert `s3://bucket/prefix` to anonymous HTTPS URL for icechunk-js.
+ *
+ * TODO: buckets outside the default region need a `repo_url` override.
+ */
 export function s3ToHttpsUrl(s3Url: string, region = 'us-west-2'): string {
   const match = /^s3:\/\/([^/]+)\/(.*)$/.exec(s3Url);
   if (!match) {
@@ -42,6 +46,7 @@ export function s3ToHttpsUrl(s3Url: string, region = 'us-west-2'): string {
   return `https://${bucket}.s3.${region}.amazonaws.com/${normalizedPrefix}`;
 }
 
+/** TODO: resolve plain Zarr asset roles too when an `http` store is supported. */
 function resolveIcechunkAssetHref(doc: StacDocument): string | undefined {
   if (!doc.assets) {
     return undefined;

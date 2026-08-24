@@ -85,10 +85,9 @@ export interface ZarrLayerComponentProps {
 }
 
 function toOpenOptions(layer: ZarrLayerProps): OpenZarrDatasetOptions {
-  const isForecast = layer.subtype === 'dynamical_forecast';
   return {
-    mode: isForecast ? 'forecast' : 'analysis',
-    ensemble: isForecast ? layer.ensemble : false,
+    mode: layer.timeLayout,
+    ensemble: layer.timeLayout === 'forecast' ? layer.ensemble : false,
     initTimeDim: layer.initTimeDim,
     leadTimeDim: layer.leadTimeDim,
     ensembleDim: layer.ensembleDim,
@@ -123,7 +122,7 @@ const ZarrLayerComponent = memo(
       legend,
       valueRange,
       valueScale = 1,
-      subtype,
+      timeLayout,
       ensemble,
     } = layer;
 
@@ -131,8 +130,7 @@ const ZarrLayerComponent = memo(
     const selectedDate = useDefaultDate(id);
     const opacityState = useSelector(opacitySelector(id));
     const effectiveOpacity = opacityState ?? opacity ?? 0.8;
-    const reduceEnsemble =
-      subtype === 'dynamical_forecast' && ensemble === true;
+    const reduceEnsemble = timeLayout === 'forecast' && ensemble === true;
 
     const { registerRef, unregisterRef } = useDeckGLRegistration();
     const openOptions = useMemo(() => toOpenOptions(layer), [layer]);
@@ -147,11 +145,11 @@ const ZarrLayerComponent = memo(
       if (!dataset || selectedDate === undefined) {
         return undefined;
       }
-      if (subtype === 'dynamical_forecast') {
+      if (timeLayout === 'forecast') {
         return resolveForecastSelection(dataset, selectedDate);
       }
       return { [dataset.timeDim]: resolveTimeIndex(dataset, selectedDate) };
-    }, [dataset, selectedDate, subtype]);
+    }, [dataset, selectedDate, timeLayout]);
 
     const tileHandlers = useMemo(
       () =>

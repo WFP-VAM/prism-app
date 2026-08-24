@@ -1394,7 +1394,7 @@
   "ecmwf_aifs_single_t2m": {
     "title": "Temperature 2m (ECMWF AIFS Single forecast, dynamical.org)",
     "type": "zarr",
-    "subtype": "dynamical_forecast",
+    "time_layout": "forecast",
     "stac_item": "https://stac.dynamical.org/ecmwf-aifs-single-forecast/collection.json",
     "variable": "temperature_2m",
     "value_range": [-40, 50],
@@ -1407,7 +1407,7 @@
   "ecmwf_aifs_single_precip": {
     "title": "Precipitation rate (ECMWF AIFS Single forecast, dynamical.org)",
     "type": "zarr",
-    "subtype": "dynamical_forecast",
+    "time_layout": "forecast",
     "stac_item": "https://stac.dynamical.org/ecmwf-aifs-single-forecast/collection.json",
     "variable": "precipitation_surface",
     "value_range": [0, 20],
@@ -1421,7 +1421,7 @@
   "ecmwf_aifs_single_cloud": {
     "title": "Total cloud cover (ECMWF AIFS Single forecast, dynamical.org)",
     "type": "zarr",
-    "subtype": "dynamical_forecast",
+    "time_layout": "forecast",
     "stac_item": "https://stac.dynamical.org/ecmwf-aifs-single-forecast/collection.json",
     "variable": "total_cloud_cover_atmosphere",
     "value_range": [0, 100],
@@ -1434,7 +1434,7 @@
   "ecmwf_aifs_single_dewpoint": {
     "title": "Dew point 2m (ECMWF AIFS Single forecast, dynamical.org)",
     "type": "zarr",
-    "subtype": "dynamical_forecast",
+    "time_layout": "forecast",
     "stac_item": "https://stac.dynamical.org/ecmwf-aifs-single-forecast/collection.json",
     "variable": "dew_point_temperature_2m",
     "value_range": [-40, 50],
@@ -1447,7 +1447,7 @@
   "ecmwf_aifs_ens_t2m": {
     "title": "Temperature 2m (ECMWF AIFS ENS forecast, dynamical.org)",
     "type": "zarr",
-    "subtype": "dynamical_forecast",
+    "time_layout": "forecast",
     "ensemble": true,
     "stac_item": "https://stac.dynamical.org/ecmwf-aifs-ens-forecast/collection.json",
     "variable": "temperature_2m",
@@ -1461,7 +1461,7 @@
   "ecmwf_aifs_ens_precip": {
     "title": "Precipitation rate (ECMWF AIFS ENS forecast, dynamical.org)",
     "type": "zarr",
-    "subtype": "dynamical_forecast",
+    "time_layout": "forecast",
     "ensemble": true,
     "stac_item": "https://stac.dynamical.org/ecmwf-aifs-ens-forecast/collection.json",
     "variable": "precipitation_surface",
@@ -1476,7 +1476,7 @@
   "ecmwf_aifs_ens_cloud": {
     "title": "Total cloud cover (ECMWF AIFS ENS forecast, dynamical.org)",
     "type": "zarr",
-    "subtype": "dynamical_forecast",
+    "time_layout": "forecast",
     "ensemble": true,
     "stac_item": "https://stac.dynamical.org/ecmwf-aifs-ens-forecast/collection.json",
     "variable": "total_cloud_cover_atmosphere",
@@ -1490,7 +1490,7 @@
   "ecmwf_aifs_ens_dewpoint": {
     "title": "Dew point 2m (ECMWF AIFS ENS forecast, dynamical.org)",
     "type": "zarr",
-    "subtype": "dynamical_forecast",
+    "time_layout": "forecast",
     "ensemble": true,
     "stac_item": "https://stac.dynamical.org/ecmwf-aifs-ens-forecast/collection.json",
     "variable": "dew_point_temperature_2m",
@@ -1504,7 +1504,7 @@
   "ecmwf_ifs_ens_t2m": {
     "title": "Temperature 2m (ECMWF IFS ENS forecast, dynamical.org)",
     "type": "zarr",
-    "subtype": "dynamical_forecast",
+    "time_layout": "forecast",
     "ensemble": true,
     "stac_item": "https://stac.dynamical.org/ecmwf-ifs-ens-forecast-15-day-0-25-degree/collection.json",
     "variable": "temperature_2m",
@@ -1518,7 +1518,7 @@
   "ecmwf_ifs_ens_precip": {
     "title": "Precipitation rate (ECMWF IFS ENS forecast, dynamical.org)",
     "type": "zarr",
-    "subtype": "dynamical_forecast",
+    "time_layout": "forecast",
     "ensemble": true,
     "stac_item": "https://stac.dynamical.org/ecmwf-ifs-ens-forecast-15-day-0-25-degree/collection.json",
     "variable": "precipitation_surface",
@@ -1533,7 +1533,7 @@
   "ecmwf_ifs_ens_cloud": {
     "title": "Total cloud cover (ECMWF IFS ENS forecast, dynamical.org)",
     "type": "zarr",
-    "subtype": "dynamical_forecast",
+    "time_layout": "forecast",
     "ensemble": true,
     "stac_item": "https://stac.dynamical.org/ecmwf-ifs-ens-forecast-15-day-0-25-degree/collection.json",
     "variable": "total_cloud_cover_atmosphere",
@@ -1547,7 +1547,7 @@
   "ecmwf_ifs_ens_dewpoint": {
     "title": "Dew point 2m (ECMWF IFS ENS forecast, dynamical.org)",
     "type": "zarr",
-    "subtype": "dynamical_forecast",
+    "time_layout": "forecast",
     "ensemble": true,
     "stac_item": "https://stac.dynamical.org/ecmwf-ifs-ens-forecast-15-day-0-25-degree/collection.json",
     "variable": "dew_point_temperature_2m",

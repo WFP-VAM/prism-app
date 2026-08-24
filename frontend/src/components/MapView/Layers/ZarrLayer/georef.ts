@@ -99,7 +99,12 @@ export function nearestIndex(
   return bestIdx;
 }
 
-/** Snap a selected timestamp (ms) to the nearest index in a time coord array (sec). */
+/**
+ * Snap a selected timestamp (ms) to the nearest index in a time coord array (sec).
+ *
+ * TODO: parse CF `units` instead of assuming epoch seconds, which snaps to a
+ * wrong index silently for other encodings.
+ */
 export function snapToNearestTimeIndex(
   times: Float64Array,
   selectedMs: number,

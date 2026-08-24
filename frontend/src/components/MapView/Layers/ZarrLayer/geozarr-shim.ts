@@ -36,6 +36,10 @@ export function resolveSpatialDims(dims: string[]): [string, string] {
  * `spatial:dimensions` lists only the spatial (y, x) axes — deck.gl-zarr reads
  * the full ordered dim list from the zarr array itself and pins the remaining
  * non-spatial dims (e.g. init_time, lead_time, ensemble_member) via `selection`.
+ *
+ * Assumes EPSG:4326, longitudes in -180..180, and a regular grid.
+ *
+ * TODO: detect native GeoZarr group attrs and only fall back to this shim.
  */
 export function buildGeoZarrMetadata(
   dims: string[],

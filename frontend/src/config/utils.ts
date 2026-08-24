@@ -22,6 +22,8 @@ import {
   ReportType,
   StaticRasterLayerProps,
   StatsApi,
+  SUPPORTED_ZARR_STORES,
+  SUPPORTED_ZARR_TIME_LAYOUTS,
   TableType,
   WMSLayerProps,
   ZarrLayerProps,
@@ -119,6 +121,23 @@ export const getLayerByKey = (layerKey: LayerKey): LayerType => {
       return throwInvalidLayer();
     case 'zarr':
       if (checkRequiredKeys(ZarrLayerProps, definition, true)) {
+        // Both unions are intentionally limited to implemented behavior, so
+        // reject unknown values loudly instead of failing deeper in the stack.
+        if (!SUPPORTED_ZARR_TIME_LAYOUTS.includes(definition.timeLayout)) {
+          console.error(
+            `time_layout '${definition.timeLayout}' in layer ${definition.id} is not supported; expected one of ${SUPPORTED_ZARR_TIME_LAYOUTS.join(', ')}.`,
+          );
+          return throwInvalidLayer();
+        }
+        if (
+          definition.store !== undefined &&
+          !SUPPORTED_ZARR_STORES.includes(definition.store)
+        ) {
+          console.error(
+            `store '${definition.store}' in layer ${definition.id} is not yet supported; only ${SUPPORTED_ZARR_STORES.join(', ')} (Icechunk v2) is implemented. See docs/zarr-layers.md for the store roadmap.`,
+          );
+          return throwInvalidLayer();
+        }
         return definition;
       }
       return throwInvalidLayer();

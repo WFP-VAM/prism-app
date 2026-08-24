@@ -280,7 +280,7 @@ The `title`, `legend`, `legend_text`, `opacity`, `date_interval`, and `validity`
 
 #### zarr (dynamical.org)
 
-These layers are referred to as type `zarr` with subtype `dynamical`. They stream a [Zarr](https://zarr.dev/) dataset from an [Icechunk](https://icechunk.io/) repository published on [dynamical.org's STAC catalog](https://stac.dynamical.org/catalog.json). Like COG layers, they behave like a WMS raster in the UI (date selection, opacity, mutual exclusivity, ordering below admin boundaries) but pixels are fetched and colorized client-side with deck.gl. Unlike COG layers, there is no PRISM API proxy — the browser reads the Icechunk repo directly from S3, and tiling follows the **live map viewport** rather than the deployment bounding box.
+These layers are referred to as type `zarr`. They stream a [Zarr](https://zarr.dev/) dataset from an [Icechunk](https://icechunk.io/) repository published on [dynamical.org's STAC catalog](https://stac.dynamical.org/catalog.json). Like COG layers, they behave like a WMS raster in the UI (date selection, opacity, mutual exclusivity, ordering below admin boundaries) but pixels are fetched and colorized client-side with deck.gl. Unlike COG layers, there is no PRISM API proxy — the browser reads the Icechunk repo directly from S3, and tiling follows the **live map viewport** rather than the deployment bounding box.
 
 Use a `zarr` layer for dynamical.org global gridded products (e.g. NOAA GFS analysis); use `cog` for STAC-hosted GeoTIFFs that go through the presign/proxy API; use `wms` when a map server already renders tiles for you.
 
@@ -288,7 +288,7 @@ Use a `zarr` layer for dynamical.org global gridded products (e.g. NOAA GFS anal
 "dynamical_gfs_t2m": {
   "title": "Temperature 2m (GFS analysis, dynamical.org)",
   "type": "zarr",
-  "subtype": "dynamical",
+  "time_layout": "analysis",
   "stac_item": "https://stac.dynamical.org/noaa-gfs-analysis/collection.json",
   "variable": "temperature_2m",
   "value_range": [-40, 50],
@@ -302,10 +302,14 @@ Use a `zarr` layer for dynamical.org global gridded products (e.g. NOAA GFS anal
 
 Fields specific to `zarr` layers:
 
-- `subtype` (required): must be `"dynamical"` — resolves the Icechunk repo URL and temporal extent from dynamical STAC.
-- `stac_item` (required): full URL to a dynamical STAC **collection** document (e.g. `https://stac.dynamical.org/noaa-gfs-analysis/collection.json`).
+- `time_layout` (required): `"analysis"` for cubes with a single `time` dimension, or `"forecast"` for `init_time + lead_time` cubes. This controls **cube time layout only** — it is not a data-vintage flag (an archive of past model runs is still `"forecast"`) and not a provider name.
+- `store` (optional): store protocol, i.e. how the bytes are opened. Only `"icechunk"` (Icechunk v2) is implemented, and omitting the field is equivalent to it. Unsupported values are rejected at config load. Note that GeoZarr is a metadata convention rather than a store, so it is not a value here — see [docs/zarr-layers.md](docs/zarr-layers.md#supported-today-vs-roadmap) for the roadmap.
+- `stac_item` (required): full URL to a STAC **collection** document (e.g. `https://stac.dynamical.org/noaa-gfs-analysis/collection.json`); resolves the Icechunk repo URL and temporal extent.
 - `variable` (required): Zarr array name within the repo, as listed under `cube:variables` in the STAC collection (e.g. `"temperature_2m"`, `"precipitation_surface"`).
-- `repo_url` (optional): skip STAC resolution and open this Icechunk HTTPS URL directly (useful for local testing).
+- `ensemble` (optional): for cubes with an `ensemble_member` dimension, read the whole ensemble axis per tile and render the **ensemble mean**. Requires `time_layout: "forecast"`.
+- `value_scale` (optional): unit multiplier applied after CF `scale_factor` / `add_offset` (e.g. `3600` to convert mm/s to mm/h).
+- `init_time_dim` / `lead_time_dim` / `ensemble_dim` (optional): override the dimension names used for forecast cubes; default to `init_time`, `lead_time`, and `ensemble_member`.
+- `repo_url` (optional): skip STAC resolution and open this Icechunk HTTPS URL directly (useful for local testing, or for buckets outside `us-west-2`).
 - `value_range` (optional): `[min, max]` passed to the GPU rescale step. Defaults to the first and last `legend` breakpoint values.
 - `units` (optional): shown in the legend / layer metadata.
 - `attribution` (optional): data credit string (dynamical datasets are [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/)).
@@ -313,7 +317,7 @@ Fields specific to `zarr` layers:
 
 Multiple layers can share the same `stac_item` with different `variable` values. Available timeline dates are derived from the STAC collection temporal extent (daily entries), not from WMS GetCapabilities.
 
-The `title`, `legend`, `legend_text`, `opacity`, `date_interval`, and `validity` fields work the same as for other layer types. See [docs/zarr-layers.md](docs/zarr-layers.md) for the full fetch/render pipeline, GeoZarr shim, and supported STAC collections.
+The `title`, `legend`, `legend_text`, `opacity`, `date_interval`, and `validity` fields work the same as for other layer types. See [docs/zarr-layers.md](docs/zarr-layers.md) for the full fetch/render pipeline, GeoZarr shim, and what is [supported today vs on the roadmap](docs/zarr-layers.md#supported-today-vs-roadmap).
 
 #### admin level
 

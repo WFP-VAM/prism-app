@@ -107,7 +107,12 @@ function requireDim(dims: string[], dimName: string, variable: string): number {
   return index;
 }
 
-/** Open an Icechunk repo, pin snapshot, and read variable metadata + coordinates. */
+/**
+ * Open an Icechunk repo, pin snapshot, and read variable metadata + coordinates.
+ *
+ * TODO: select an opener per `ZarrLayerProps.store` to support `http` and
+ * Icechunk v1 (see docs/zarr-layers.md).
+ */
 export async function openZarrDataset(
   repoUrl: string,
   variable: string,

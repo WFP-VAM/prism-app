@@ -1,6 +1,6 @@
-# Zarr layers (dynamical.org)
+# Zarr layers
 
-How PRISM renders **Zarr** layers from [dynamical.org](https://dynamical.org/) Icechunk repositories: how they differ from WMS and COG, the request/render pipeline, GeoZarr metadata synthesis, and configuration.
+How PRISM renders **Zarr** layers: how they differ from WMS and COG, the request/render pipeline, GeoZarr metadata synthesis, and configuration. Every layer configured today happens to come from a [dynamical.org](https://dynamical.org/) Icechunk repository, but no code branches on the provider.
 
 For user-facing configuration, see the `zarr` section in the main [README](../README.md). For the date model (reference date, validity, query date), see [dates.md](dates.md). For the shared GPU colormap pipeline used by both COG and Zarr layers, see [cog-layers.md](cog-layers.md#rendering-pipeline).
 
@@ -11,19 +11,11 @@ A Zarr layer streams a cloud-optimized Zarr dataset from dynamical.org's [STAC c
 | Concern | WMS layer | COG layer | Zarr layer |
 | --- | --- | --- | --- |
 | Rendering | Map server returns PNG/JPEG tiles | Browser reads GeoTIFF bytes, colorizes on GPU | Browser reads Zarr chunks, colorizes on GPU |
-| Map technology | MapLibre raster `Source` + `Layer` | deck.gl `COGLayer` | deck.gl `ZarrLayer` |
-| Color ramp | Baked into server-side style | Built from layer `legend` on client | Same as COG (shared GPU pipeline) |
 | Spatial coverage | Server tiles | Presigned URLs filtered to deployment `bbox` | **Live viewport** (pan/zoom loads new chunks) |
-| Data discovery | WMS GetCapabilities | STAC → `/cog_presigned_url` API | STAC collection → Icechunk asset href |
 | PRISM API | Optional | Required (`/cog_presigned_url`, `/cog_proxy`) | **None** — browser reads S3 over HTTPS |
-| Date source | WMS / WCS server | WMS GetCapabilities (same as WMS name) | STAC temporal extent (daily timeline) |
+| Date source | WMS / WCS server | WMS GetCapabilities | STAC temporal extent or forecast valid times |
 
 Zarr layers are designed to **behave like WMS/COG layers** in the UI (date selection, opacity, mutual exclusivity, render below admin boundaries). See [UI parity](#ui-parity-with-wms-and-cog).
-
-Currently two subtypes are implemented, both hosted as Icechunk v2 repositories on AWS Open Data:
-
-- **`dynamical`** — analysis cubes with a single `time × latitude × longitude` layout (e.g. NOAA GFS analysis).
-- **`dynamical_forecast`** — forecast cubes with `init_time + lead_time` (and optionally `ensemble_member`) declared explicitly in config.
 
 ## Configuration
 
@@ -32,10 +24,11 @@ Zarr layers are defined in per-country or shared `layers.json` with `type: "zarr
 ```ts
 export class ZarrLayerProps extends CommonLayerProps {
   type: 'zarr' = 'zarr';
-  subtype: 'dynamical' | 'dynamical_forecast' = 'dynamical';
-  stacItem: string;           // dynamical STAC collection URL
+  timeLayout: ZarrTimeLayout = 'analysis';  // 'analysis' | 'forecast' — cube time layout only
+  store?: ZarrStore;          // 'icechunk' only; omitting is equivalent to 'icechunk'
+  stacItem: string;           // STAC collection URL
   variable: string;           // Zarr array name, e.g. temperature_2m
-  ensemble?: boolean;         // forecast ensemble; requires dynamical_forecast (renders ensemble mean)
+  ensemble?: boolean;         // forecast ensemble; requires timeLayout: forecast (renders ensemble mean)
   valueScale?: number;        // unit multiplier after CF scaling (e.g. 3600 for mm/s → mm/h)
   repoUrl?: string;           // optional override; normally resolved from STAC
   valueRange?: [number, number];  // GPU rescale min/max (defaults from legend)
@@ -48,13 +41,24 @@ export class ZarrLayerProps extends CommonLayerProps {
 }
 ```
 
+### Two independent axes
+
+The two fields above that describe the dataset itself answer different questions, and neither is named after a data provider (config keys are snake_case and camelCased on load):
+
+- **`time_layout`** (required) — how time indices are selected from the cube. `analysis` for a single `time × latitude × longitude` layout (e.g. NOAA GFS analysis); `forecast` for `init_time + lead_time` (and optionally `ensemble_member`), declared explicitly in config. This describes **layout, not data vintage**: an archived forecast cube full of past model runs is still `forecast`, because the layout is what drives index selection.
+- **`store`** (optional, defaults to Icechunk v2) — how the bytes are opened. Only `icechunk` is implemented.
+
+A third concern — the **metadata convention** (native [GeoZarr](https://github.com/zarr-developers/geozarr-spec) attrs vs. plain CF cubes needing the [shim](#geozarr-metadata-shim)) — is deliberately **not** a config field. GeoZarr is a convention, not a store: GeoZarr data can live in an `http` store or inside an Icechunk repo, so it is never a `store` value and should be detected from group attrs at runtime instead of declared. See the [roadmap](#supported-today-vs-roadmap).
+
+Unsupported values for either field are rejected at config load by `getLayerByKey` in [`frontend/src/config/utils.ts`](../frontend/src/config/utils.ts) with an explicit error, rather than failing deeper in the stack. The implemented values are listed once in `SUPPORTED_ZARR_TIME_LAYOUTS` / `SUPPORTED_ZARR_STORES` in [`types.ts`](../frontend/src/config/types.ts), which both the TypeScript unions and that validation derive from.
+
 Multiple layer entries can share the same `stac_item` (same Icechunk repo) with different `variable` names.
 
-### Analysis layers (`subtype: dynamical`)
+### Analysis layers (`time_layout: analysis`)
 
 Snap the selected timeline date to the nearest index in the `time` coordinate array.
 
-### Forecast layers (`subtype: dynamical_forecast`)
+### Forecast layers (`time_layout: forecast`)
 
 Forecast behavior is **declared in config**, not inferred from Zarr dims:
 
@@ -68,7 +72,8 @@ Example forecast layer entry:
 "ecmwf_aifs_ens_t2m": {
   "title": "Temperature 2m (ECMWF AIFS ENS forecast, dynamical.org)",
   "type": "zarr",
-  "subtype": "dynamical_forecast",
+  "time_layout": "forecast",
+  "store": "icechunk",
   "ensemble": true,
   "stac_item": "https://stac.dynamical.org/ecmwf-aifs-ens-forecast/collection.json",
   "variable": "temperature_2m",
@@ -83,93 +88,71 @@ Example forecast layer entry:
 
 ## End-to-end data flow
 
-```mermaid
-sequenceDiagram
-  participant Cfg as layers.json
-  participant Cmp as ZarrLayerComponent
-  participant STAC as stac.dynamical.org
-  participant IC as IcechunkStore
-  participant S3 as AWS S3 HTTPS
-  participant Deck as DeckZarrLayer
-
-  Cfg->>Cmp: stacItem, variable, legend, valueRange
-  Cmp->>STAC: GET collection.json
-  STAC-->>Cmp: Icechunk asset href s3://...
-  Cmp->>Cmp: s3ToHttpsUrl
-  Cmp->>IC: open repo, pin snapshot
-  IC->>S3: read zarr metadata + coords
-  Cmp->>Cmp: buildGeoZarrMetadata lat/lon affine
-  Note over Cmp: snap selectedDate to time index
-  Cmp->>Deck: register DeckZarrLayer node, metadata, selection time
-  loop per visible viewport tile
-    Deck->>IC: zarr.get arr sliceSpec
-    IC->>S3: HTTP range reads for chunk bytes
-    S3-->>IC: chunk data
-    IC-->>Deck: Float32 tile
-    Deck->>Deck: GPU colormap pipeline
-  end
-```
-
 1. **Resolve STAC** — [`fetchDynamicalStacMetadata`](../frontend/src/components/MapView/Layers/ZarrLayer/stac.ts) fetches the collection document, finds the `icechunk` (or "Icechunk v2 repository") asset, and converts `s3://` hrefs to anonymous HTTPS URLs (`https://{bucket}.s3.us-west-2.amazonaws.com/{prefix}/`).
 2. **Open dataset** — [`openZarrDataset`](../frontend/src/components/MapView/Layers/ZarrLayer/icechunk-store.ts) opens the repo with `icechunk-js`, pins a snapshot, reads variable metadata and `time` / `latitude` / `longitude` coordinate arrays, and caches per `(repoUrl, variable)`.
 3. **GeoZarr shim** — [`buildGeoZarrMetadata`](../frontend/src/components/MapView/Layers/ZarrLayer/geozarr-shim.ts) synthesizes `spatial:*` and `proj:code` attrs that dynamical's plain CF cubes lack, validated with `@developmentseed/geozarr`'s `parseGeoZarrMetadata`.
-4. **Time selection** — for `dynamical`, snap the selected date to the nearest `time` index. For `dynamical_forecast`, pin latest `init_time` and nearest `lead_time` for valid time; when `ensemble: true`, leave `ensemble_member` unpinned (`null`) and reduce to the mean in [`tile-handlers.ts`](../frontend/src/components/MapView/Layers/ZarrLayer/tile-handlers.ts) ([`resolveForecastSelection`](../frontend/src/components/MapView/Layers/ZarrLayer/icechunk-store.ts)).
+4. **Time selection** — for `analysis`, snap the selected date to the nearest `time` index. For `forecast`, pin latest `init_time` and nearest `lead_time` for valid time; when `ensemble: true`, leave `ensemble_member` unpinned (`null`) and reduce to the mean in [`tile-handlers.ts`](../frontend/src/components/MapView/Layers/ZarrLayer/tile-handlers.ts) ([`resolveForecastSelection`](../frontend/src/components/MapView/Layers/ZarrLayer/icechunk-store.ts)).
 5. **Register deck.gl layer** — a single `DeckZarrLayer` is registered in [`DeckGLLayersContext`](../frontend/src/components/MapView/DeckGLLayersContext.tsx) and rendered via [`DeckGLOverlay`](../frontend/src/components/MapView/DeckGLOverlay.tsx) (`interleaved: true`, `beforeId` for z-order).
 
 Unlike COG layers, there is **no presign or proxy step** — the Icechunk store reads S3 directly from the browser. dynamical.org buckets are on AWS Open Data and expose CORS for anonymous reads.
 
 ## Viewport tiling
 
-`@developmentseed/deck.gl-zarr`'s `ZarrLayer` extends `RasterTileLayer`: it pairs the Zarr **native chunk grid** with deck.gl's tile layer so only chunks intersecting the **current deck viewport** are requested. Panning and zooming fetch new chunks; coverage is not limited to `appConfig.map.boundingBox` (unlike COG presign filtering).
-
-For each visible tile the layer builds a `sliceSpec` (spatial dims bounded to the tile, `time` pinned from `selection`) and calls the app's `getTileData`, which runs `zarr.get(arr, sliceSpec)`.
+`@developmentseed/deck.gl-zarr`'s `ZarrLayer` extends `RasterTileLayer`: it pairs the Zarr **native chunk grid** with deck.gl's tile layer so only chunks intersecting the **current deck viewport** are requested. Panning and zooming fetch new chunks; coverage is not limited to `appConfig.map.boundingBox` (unlike COG presign filtering). For each visible tile the layer builds a `sliceSpec` (spatial dims bounded to the tile, non-spatial dims pinned from `selection`) and calls the app's `getTileData`, which runs `zarr.get(arr, sliceSpec)`.
 
 ## GeoZarr metadata shim
 
-dynamical.org GFS analysis cubes are plain CF Zarr (`time`, `latitude`, `longitude` coordinate arrays) without GeoZarr convention attributes. deck.gl-zarr requires GeoZarr metadata to derive the tile pyramid, affine transform, and CRS.
+dynamical.org cubes are plain CF Zarr (`time`, `latitude`, `longitude` coordinate arrays) without GeoZarr convention attributes, and deck.gl-zarr needs GeoZarr metadata to derive the tile pyramid, affine transform, and CRS.
 
-The shim ([`geozarr-shim.ts`](../frontend/src/components/MapView/Layers/ZarrLayer/geozarr-shim.ts)) computes:
-
-- **`spatial:dimensions`** — spatial (y, x) dim names only, e.g. `["latitude", "longitude"]` (non-spatial dims come from the zarr array and `selection`)
-- **`spatial:transform`** — 6-parameter affine from lon/lat coordinate spacing (GFS: 0.25° grid, north-first latitude)
-- **`spatial:shape`** — `[721, 1440]` (height × width)
-- **`proj:code`** — `EPSG:4326`
-
-These attrs are passed to `DeckZarrLayer` via the `metadata` prop (not written back to the store). If dynamical changes storage layout or adds native GeoZarr attrs, update this single module.
+[`geozarr-shim.ts`](../frontend/src/components/MapView/Layers/ZarrLayer/geozarr-shim.ts) synthesizes `spatial:dimensions` (the y/x dim names only — non-spatial dims come from the zarr array and `selection`), `spatial:transform` (a 6-parameter affine derived from coordinate spacing), `spatial:shape`, and `proj:code`, validates them with `@developmentseed/geozarr`'s `parseGeoZarrMetadata`, and passes them to `DeckZarrLayer` via the `metadata` prop rather than writing them back to the store. Datasets that already follow GeoZarr carry these attrs natively — see the [metadata convention roadmap](#metadata-convention-no-config-field).
 
 ## Rendering pipeline
 
-Pixel values become colors on the GPU using the same shared modules as COG layers ([`raster-gpu-pipeline.ts`](../frontend/src/components/MapView/Layers/raster-gpu-pipeline.ts) + [`raster-colormap.ts`](../frontend/src/components/MapView/Layers/raster-colormap.ts)):
-
-1. **`getTileData`** (Zarr-specific) — `zarr.get` → coerce to `Float32` (ensemble mean when `ensemble: true`) → apply CF `scale_factor` / `add_offset` / optional `value_scale` → upload as `r32float` texture via `createLegendGpuPipeline().uploadTile`.
-2. **`renderTile`** (shared) — `CreateTexture` → optional `FilterNoDataVal` (scaled `_FillValue`) → `LinearRescale` (`valueRange` or legend bounds) → `Colormap` (256×1 legend texture).
+Only `getTileData` is Zarr-specific: `zarr.get` → coerce to `Float32` (ensemble mean when `ensemble: true`) → apply CF `scale_factor` / `add_offset` / optional `value_scale` → upload as an `r32float` texture. From there `renderTile` is the shared COG path (rescale + colormap), documented in [cog-layers.md](cog-layers.md#rendering-pipeline).
 
 When the time index changes, the component re-registers the layer with `updateTriggers` on `getTileData` / `renderTile` so cached tiles are invalidated.
 
 ## Date discovery
 
-Zarr layers do **not** use WMS GetCapabilities. Available dates depend on `subtype`:
+Zarr layers do **not** use WMS GetCapabilities. Available dates depend on `time_layout`:
 
-- **`dynamical`** — [`generateDailyDatesFromExtent`](../frontend/src/components/MapView/Layers/ZarrLayer/stac.ts) produces one `DateItem` per UTC day from the STAC temporal extent.
-- **`dynamical_forecast`** — [`generateValidTimeDates`](../frontend/src/components/MapView/Layers/ZarrLayer/stac.ts) reads the latest `init_time` and `lead_time` coords from the open dataset and produces daily valid-time steps from init through init + max lead (~16 days).
+- **`analysis`** — [`generateDailyDatesFromExtent`](../frontend/src/components/MapView/Layers/ZarrLayer/stac.ts) produces one `DateItem` per UTC day from the STAC temporal extent.
+- **`forecast`** — [`generateValidTimeDates`](../frontend/src/components/MapView/Layers/ZarrLayer/stac.ts) reads the latest `init_time` and `lead_time` coords from the open dataset and produces daily valid-time steps from init through init + max lead (~16 days).
 
 Dates are fetched **lazily** when a Zarr layer is activated (not during the WMS preload pass at app startup).
 
-## dynamical.org STAC catalog
+## Supported today vs roadmap
 
-Browse collections at [stac.dynamical.org/catalog.json](https://stac.dynamical.org/catalog.json). Each collection document includes:
+The config schema intentionally exposes **only implemented values**, so everything below is a TODO rather than a selectable option. Each item is also marked with a `TODO` comment at the code boundary that would have to change.
 
-- **`cube:variables`** — variable names, units, and dimension layout
-- **`cube:dimensions`** — spatial and temporal extents
-- **`assets.icechunk`** — S3 URI for the Icechunk v2 repository
+Browse source collections at [stac.dynamical.org](https://stac.dynamical.org/catalog.json); each document declares `cube:variables` (names, units, dim layout), `cube:dimensions` (extents), and `assets.icechunk` (the repo S3 URI).
 
-**Supported in PRISM:**
+**Working today:** analysis cubes with a single `time` dim ([NOAA GFS](https://stac.dynamical.org/noaa-gfs-analysis/collection.json)), `init_time + lead_time` forecasts ([ECMWF AIFS Single](https://stac.dynamical.org/ecmwf-aifs-single-forecast/collection.json)), and ensemble forecasts rendered as the ensemble mean via `ensemble: true` ([ECMWF AIFS ENS](https://stac.dynamical.org/ecmwf-aifs-ens-forecast/collection.json), [ECMWF IFS ENS](https://stac.dynamical.org/ecmwf-ifs-ens-forecast-15-day-0-25-degree/collection.json)).
 
-- **Analysis** — single `time` dimension + `latitude` / `longitude` (e.g. [NOAA GFS analysis](https://stac.dynamical.org/noaa-gfs-analysis/collection.json)).
-- **Forecast** — `init_time + lead_time` with `subtype: dynamical_forecast` (e.g. [ECMWF AIFS Single forecast](https://stac.dynamical.org/ecmwf-aifs-single-forecast/collection.json)).
-- **Forecast ensemble** — add `ensemble: true` for cubes with an `ensemble_member` dimension; PRISM renders the **ensemble mean** (e.g. [ECMWF AIFS ENS](https://stac.dynamical.org/ecmwf-aifs-ens-forecast/collection.json), [ECMWF IFS ENS](https://stac.dynamical.org/ecmwf-ifs-ens-forecast-15-day-0-25-degree/collection.json)).
+### Store axis (`store`)
 
-**Not yet supported:** regional-only grids without GeoZarr shim changes, derived quantities requiring U/V wind combination, and selectable model run (`init_time`) on the timeline (forecasts always use the latest run).
+- **Icechunk v2** — supported, via `IcechunkStore.open` in [`icechunk-store.ts`](../frontend/src/components/MapView/Layers/ZarrLayer/icechunk-store.ts).
+- **Icechunk v1** — TODO: opener selection in `openZarrDataset`.
+- **`http` (plain Zarr over HTTPS)** — TODO: opener selection (`zarr.FetchStore`), plus generalizing the `IcechunkStore` type params to `zarr.Readable` and replacing the `snapshotId` cache key, which only exists for versioned stores.
+
+Any new store value also needs the STAC asset resolver to recognize non-Icechunk asset roles ([`stac.ts`](../frontend/src/components/MapView/Layers/ZarrLayer/stac.ts)).
+
+### Metadata convention (no config field)
+
+Plain CF cubes are supported today through the [shim](#geozarr-metadata-shim). Reading **native GeoZarr attrs** instead is a TODO: detect `spatial:*` / `proj:code` on the group and bypass the shim, which also removes the grid assumptions below.
+
+This gets no config field and is never a `store` value: GeoZarr is a metadata convention that can appear in any store, and it is discoverable from the data.
+
+### Data assumptions (independent of both axes)
+
+These hold for dynamical.org's cubes but are not universal, and no configuration vocabulary fixes them:
+
+- **Time units** — epoch-second `time` / `init_time` and second-based `lead_time` are assumed; CF `units` is never parsed. Other encodings ("hours since ...", nanosecond datetime64) snap to a wrong index **silently**. See `snapToNearestTimeIndex` in [`georef.ts`](../frontend/src/components/MapView/Layers/ZarrLayer/georef.ts).
+- **Grid and CRS** — `EPSG:4326`, longitudes in `-180..180`, and regular spacing sampled from the first two coordinates. 0-360 longitudes, projected grids (e.g. Lambert conformal), and Gaussian grids are mis-georeferenced.
+- **STAC requirement** — date discovery always needs a fetchable `stac_item`; dates cannot yet be derived from the cube's own `time` coordinate.
+- **Bucket CORS** — chunks are read directly from the browser, so the host bucket must send CORS headers for the deployment origin.
+- **Region** — `s3ToHttpsUrl` defaults to `us-west-2`; other regions need a `repo_url` override.
+- **Other gaps** — regional-only grids without shim changes, derived quantities requiring U/V wind combination, and selectable model run (`init_time`) on the timeline (forecasts always use the latest run).
 
 ## UI parity with WMS and COG
 
@@ -179,10 +162,10 @@ Browse collections at [stac.dynamical.org/catalog.json](https://stac.dynamical.o
 - **Opacity** — same Redux opacity path as COG/WMS; passed to `DeckZarrLayer`.
 - **Data loading** — excluded from the Redux `loadLayerData` thunk; the component self-fetches STAC + opens Icechunk.
 
-## Adding a new dynamical Zarr layer
+## Adding a new Zarr layer
 
 1. **Explore STAC** — open [stac.dynamical.org](https://stac.dynamical.org/catalog.json), pick a collection, and note the **`variable`** name from `cube:variables`.
-2. **Choose subtype** — use `dynamical` for analysis (`time` dim) or `dynamical_forecast` for forecast cubes; set `ensemble: true` when the cube has an ensemble dimension.
+2. **Choose `time_layout`** — use `analysis` for a single `time` dim or `forecast` for `init_time + lead_time` cubes; set `ensemble: true` when the cube has an ensemble dimension. Leave `store` unset unless a second store protocol has been implemented.
 3. **Add legend** — define breakpoints in [`frontend/src/config/shared/legends.json`](../frontend/src/config/shared/legends.json). Set `value_range` to match the GPU rescale domain (display units after CF scaling and optional `value_scale`).
 4. **Add layer entry** — in shared or country `layers.json` (see forecast example above).
 5. **Wire the menu** — reference the layer ID under a category in `prism.json`.
@@ -201,10 +184,4 @@ Browse collections at [stac.dynamical.org/catalog.json](https://stac.dynamical.o
 
 ## Dependencies
 
-Frontend packages (see [`frontend/package.json`](../frontend/package.json)):
-
-- `@developmentseed/deck.gl-zarr` — viewport-tiled Zarr rendering
-- `@developmentseed/geozarr` — GeoZarr metadata parsing
-- `@developmentseed/deck.gl-raster` — GPU colormap modules
-- `icechunk-js` — Icechunk v2 store for `zarrita`
-- `zarrita` — Zarr v3 reads
+Rendering comes from `@developmentseed/deck.gl-zarr`, `geozarr`, and `deck.gl-raster`; reads come from `icechunk-js` (Icechunk v2 store) on top of `zarrita` (Zarr v3). Versions are in [`frontend/package.json`](../frontend/package.json).

@@ -903,7 +903,7 @@ export async function getAvailableDatesForLayer(
       zarrLayer.repoUrl,
     );
 
-    if (zarrLayer.subtype === 'dynamical_forecast') {
+    if (zarrLayer.timeLayout === 'forecast') {
       const { openZarrDataset } =
         await import('../components/MapView/Layers/ZarrLayer/icechunk-store');
       const dataset = await openZarrDataset(meta.repoUrl, zarrLayer.variable, {
