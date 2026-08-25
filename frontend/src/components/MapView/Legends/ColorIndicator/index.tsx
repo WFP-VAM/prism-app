@@ -66,7 +66,8 @@ function ColorIndicator({
           ...shapeStyles,
           ...(fillPattern
             ? {
-                backgroundColor: `linear-gradient(
+                backgroundColor: 'white',
+                backgroundImage: `linear-gradient(
           to ${fillPattern} bottom, 
           ${color} calc(100% / 7),  
           white calc(100% / 7) calc(100% / 7 * 2), 

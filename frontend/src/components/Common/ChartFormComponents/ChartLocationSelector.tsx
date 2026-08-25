@@ -12,6 +12,7 @@ import {
 } from 'config/types';
 import { BoundaryLayerData } from 'context/layers/boundary';
 import { GeoJsonProperties } from 'geojson';
+import { useAdminNameTranslations } from 'hooks/useAdminNameTranslations';
 import { useSafeTranslation } from 'i18n';
 import { sortBy } from 'lodash';
 import React from 'react';
@@ -93,6 +94,7 @@ function ChartLocationSelector({
   labelMarginBottom = 8,
 }: ChartLocationSelectorProps) {
   const { t, i18n: i18nLocale } = useSafeTranslation();
+  const { dict: adminNameDict } = useAdminNameTranslations();
 
   // Universal (URL-driven) deployments fix the country via the URL and drill in
   // to show Admin 1/2/3 directly, so the country picker is never shown there
@@ -126,6 +128,7 @@ function ChartLocationSelector({
     boundaryLayerData,
     boundaryLayer,
     i18nLocale,
+    adminNameDict,
   );
 
   // Countries are only selectable when the country dropdown is shown.

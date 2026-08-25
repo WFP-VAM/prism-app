@@ -2,6 +2,7 @@ import { appConfig } from 'config';
 import { BoundaryLayerProps, LayerKey } from 'config/types';
 import universalMetadata from 'config/universal/metadata.json';
 import { getDisplayBoundaryLayers } from 'config/utils';
+import type { Map as MaplibreMap } from 'maplibre-gl';
 
 type CountriesKey = keyof typeof universalMetadata.countries;
 
@@ -19,6 +20,16 @@ const ADMIN3_ISO3_CODES = new Set(
 export function isUniversalDeployment(): boolean {
   const config = appConfig as { universal?: boolean; urlDriven?: boolean };
   return Boolean(config.universal ?? config.urlDriven);
+}
+
+/**
+ * True when the deployment's displayed boundaries are served from PMTiles
+ * (Global and Universal). These load asynchronously in the map, so they need
+ * the boundary loading overlay on first render and explicit preloading before
+ * clip/export. GeoJSON-boundary country deployments (e.g. Mozambique) do not.
+ */
+export function usesPmtilesBoundaries(): boolean {
+  return getDisplayBoundaryLayers().some(layer => layer.format === 'pmtiles');
 }
 
 export function normalizeIso3(iso3: string | undefined): string | undefined {
@@ -65,6 +76,62 @@ export function filterFeaturesByIso3<
 
 export function isUniversalLandingMode(iso3?: string): boolean {
   return isUniversalDeployment() && !iso3;
+}
+
+export type UniversalLandingView = {
+  bounds: [number, number, number, number];
+  padding: {
+    top: number;
+    right: number;
+    bottom: number;
+    left: number;
+  };
+};
+
+/** Shift the globe into the map area to the right of the country list. */
+export function applyUniversalLandingViewport(
+  map: MaplibreMap,
+  options?: { animate?: boolean; duration?: number },
+): void {
+  const landingView = getUniversalLandingView();
+  if (!landingView) {
+    return;
+  }
+
+  const { animate = false, duration = 0 } = options ?? {};
+  map.setPadding(landingView.padding);
+
+  const [minLon, minLat, maxLon, maxLat] = landingView.bounds;
+  map.fitBounds(
+    [
+      [minLon, minLat],
+      [maxLon, maxLat],
+    ],
+    {
+      padding: landingView.padding,
+      animate,
+      duration,
+    },
+  );
+}
+
+/**
+ * Initial / return-to-landing map viewport when prism.json defines map.landingView.
+ * Used by Universal (landing) and Global (initial load).
+ */
+export function getUniversalLandingView(): UniversalLandingView | undefined {
+  const landingView = (appConfig.map as { landingView?: UniversalLandingView })
+    .landingView;
+
+  if (
+    !landingView?.bounds ||
+    landingView.bounds.length !== 4 ||
+    !landingView.padding
+  ) {
+    return undefined;
+  }
+
+  return landingView;
 }
 
 export function getDisplayBoundaryLayersForIso3(
@@ -153,10 +220,18 @@ export function resolveChartBoundaryProperty(
 export function getCountryBbox(
   iso3: string | undefined,
 ): [number, number, number, number] | undefined {
-  const normalized = normalizeIso3(iso3);
-  if (!normalized || !isKnownIso3(normalized)) {
+  const trimmed = iso3?.trim();
+  if (!trimmed) {
     return undefined;
   }
-  const [a, b, c, d] = universalMetadata.countries[normalized as CountriesKey];
+  // Preserve pseudo-country keys such as "xAB"; uppercasing them would make
+  // them impossible to resolve from metadata.
+  const key = (
+    trimmed in universalMetadata.countries ? trimmed : normalizeIso3(trimmed)
+  ) as CountriesKey | undefined;
+  if (!key || !(key in universalMetadata.countries)) {
+    return undefined;
+  }
+  const [a, b, c, d] = universalMetadata.countries[key];
   return [a, b, c, d];
 }

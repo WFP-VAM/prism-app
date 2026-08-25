@@ -9,18 +9,29 @@ import {
   Typography,
 } from '@mui/material';
 import { PanelSize } from 'config/types';
+import { useAdminNameTranslations } from 'hooks/useAdminNameTranslations';
 import { useSafeTranslation } from 'i18n';
 import { memo, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { localizeName } from 'utils/admin-name-utils';
 import { getUniversalMapPath } from 'utils/universal-routing';
 import { getUniversalCountries } from 'utils/universal-utils';
 
 const UniversalLandingPanel = memo(() => {
   const history = useHistory();
-  const { t } = useSafeTranslation();
+  const { t, i18n } = useSafeTranslation();
+  const { dict } = useAdminNameTranslations();
   const [query, setQuery] = useState('');
 
-  const countries = useMemo(() => getUniversalCountries(), []);
+  const countries = useMemo(() => {
+    const locale = i18n.resolvedLanguage ?? i18n.language;
+    return getUniversalCountries()
+      .map(country => ({
+        ...country,
+        displayName: localizeName(country.name, dict),
+      }))
+      .sort((a, b) => a.displayName.localeCompare(b.displayName, locale));
+  }, [dict, i18n.language, i18n.resolvedLanguage]);
 
   const filteredCountries = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -28,7 +39,10 @@ const UniversalLandingPanel = memo(() => {
       return countries;
     }
     return countries.filter(
-      c => c.name.toLowerCase().includes(q) || c.iso3.toLowerCase().includes(q),
+      c =>
+        c.displayName.toLowerCase().includes(q) ||
+        c.name.toLowerCase().includes(q) ||
+        c.iso3.toLowerCase().includes(q),
     );
   }, [countries, query]);
 
@@ -117,7 +131,7 @@ const UniversalLandingPanel = memo(() => {
               onClick={() => handleCountryClick(country.iso3)}
             >
               <ListItemText
-                primary={country.name}
+                primary={country.displayName}
                 slotProps={{
                   primary: {
                     sx: {

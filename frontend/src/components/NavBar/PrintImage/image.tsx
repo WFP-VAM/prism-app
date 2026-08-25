@@ -8,6 +8,7 @@ import {
   removeNotification,
 } from 'context/notificationStateSlice';
 import { availableDatesSelector } from 'context/serverStateSlice';
+import { useAdminNameTranslations } from 'hooks/useAdminNameTranslations';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { debounce, get } from 'lodash';
@@ -104,6 +105,7 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const dispatch = useDispatch();
   const posthog = usePostHog();
   const { t, i18n } = useSafeTranslation();
+  const { dict: adminNameDict } = useAdminNameTranslations();
   const { enqueueBatchMapExportJob } = useBatchMapExportJobsActions();
 
   // list of toggles
@@ -504,8 +506,15 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   }, [availableCadences, cadence, createScheduledMaps, disabledCadences]);
 
   const adminAreaRefs = useMemo(
-    () => resolveAdminAreaRefs(selectedBoundaries, data, boundaryLayer, i18n),
-    [data, selectedBoundaries, i18n],
+    () =>
+      resolveAdminAreaRefs(
+        selectedBoundaries,
+        data,
+        boundaryLayer,
+        i18n,
+        adminNameDict,
+      ),
+    [adminNameDict, data, selectedBoundaries, i18n],
   );
 
   const mapExportTemplate = useMapExportTemplate({

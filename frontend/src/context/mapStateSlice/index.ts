@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
+import { usesGlobeProjection } from 'components/MapView/Map/utils';
 import { LayerKey, LayerType } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
 import {
@@ -31,6 +32,8 @@ export type MapState = {
   loadingLayerIds: LayerKey[];
   boundaryRelationData: BoundaryRelationsDict;
   title?: string;
+  /** Runtime override for globe vs mercator; defaults from map.globeProjection config. */
+  globeProjectionEnabled: boolean;
 };
 
 // Maplibre's map type contains some kind of cyclic dependency that causes an infinite loop in immers's change
@@ -47,6 +50,7 @@ const initialState: MapState = {
   layersData: [],
   loadingLayerIds: [],
   boundaryRelationData: {},
+  globeProjectionEnabled: usesGlobeProjection(),
 };
 
 const getTypeOrder = (layer: LayerType) => {
@@ -69,6 +73,7 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
       | 'boundary'
       | 'composite'
       | 'wms'
+      | 'cog'
       | 'admin_level_data'
       | 'pattern_admin_level_data'
       | 'impact'
@@ -89,6 +94,7 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
     impact: 6,
     composite: 6,
     wms: 7,
+    cog: 7,
     static_raster: 8,
     anticipatory_action_drought: 9,
     anticipatory_action_storm: 10,
@@ -106,11 +112,13 @@ export const mapStateSlice = createSlice({
   initialState,
   reducers: {
     addLayer: ({ layers, ...rest }, { payload }: PayloadAction<LayerType>) => {
-      const layersToAdd = payload?.group?.activateAll
-        ? Object.values(LayerDefinitions).filter(l =>
-            payload?.group?.layers?.map(layer => layer.id).includes(l.id),
-          )
-        : [payload];
+      const layersToAdd = (
+        payload?.group?.activateAll
+          ? Object.values(LayerDefinitions).filter(l =>
+              payload?.group?.layers?.map(layer => layer.id).includes(l.id),
+            )
+          : [payload]
+      ).map(l => ({ ...l }));
 
       // TODO: something is wrong with the types imported by 'maplibre-gl' in config/types.ts
       //  @ts-ignore
@@ -173,6 +181,14 @@ export const mapStateSlice = createSlice({
       boundaryRelationData: payload,
     }),
 
+    setGlobeProjectionEnabled: (
+      state,
+      { payload }: PayloadAction<boolean>,
+    ) => ({
+      ...state,
+      globeProjectionEnabled: payload,
+    }),
+
     dismissError: (
       { errors, ...rest },
       { payload }: PayloadAction<string>,
@@ -225,6 +241,7 @@ export const {
   setMap,
   removeLayerData,
   setBoundaryRelationData,
+  setGlobeProjectionEnabled,
 } = mapStateSlice.actions;
 
 export default mapStateSlice.reducer;

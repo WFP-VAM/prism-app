@@ -1,4 +1,20 @@
 import { get } from 'lodash';
+
+/** Raw English admin names treated as placeholders (language-independent). */
+export const ADMIN_NAME_SENTINELS = [
+  'n/a',
+  'name unknown',
+  'administrative unit not available',
+  '????',
+];
+
+export function isAdminNameSentinel(name?: string): boolean {
+  if (!name) {
+    return false;
+  }
+  return ADMIN_NAME_SENTINELS.includes(name.trim().toLowerCase());
+}
+
 /**
  * Format full location name in ascending admin levels
  * @param layer admin layer, both props and data
@@ -16,6 +32,7 @@ export function getFullLocationName(
   return (
     levelNames
       .map(level => get(featureBoundary, ['properties', level], '') as string)
+      .filter(name => Boolean(name) && !isAdminNameSentinel(name))
       .join(', ') || 'No Name'
   );
 }

@@ -1,7 +1,7 @@
 import {
-  CircularProgress,
   FormControl,
   InputLabel,
+  MenuItem,
   Select,
   Theme,
   useMediaQuery,
@@ -14,6 +14,7 @@ import {
   setSelectedBoundaries as setSelectedBoundariesRedux,
 } from 'context/mapSelectionLayerStateSlice';
 import { useCountryIso } from 'context/useCountryIso';
+import { useAdminNameTranslations } from 'hooks/useAdminNameTranslations';
 import { useSafeTranslation } from 'i18n';
 import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -40,7 +41,8 @@ export function SimpleBoundaryDropdown({
   multiple = true,
   ...rest
 }: BoundaryDropdownProps) {
-  const { i18n: i18nLocale } = useSafeTranslation();
+  const { t, i18n: i18nLocale } = useSafeTranslation();
+  const { dict: adminNameDict } = useAdminNameTranslations();
   const { iso3 } = useCountryIso();
   const [search, setSearch] = React.useState('');
 
@@ -55,9 +57,19 @@ export function SimpleBoundaryDropdown({
   const { data } = useBoundaryData(boundaryLayer.id);
 
   if (!data) {
-    // padding is used to make sure the loading spinner doesn't shift the menu size
     return (
-      <CircularProgress size={24} color="inherit" style={{ padding: '2px' }} />
+      <FormControl {...rest}>
+        <InputLabel>{labelMessage}</InputLabel>
+        <Select
+          style={{ color: 'black' }}
+          disabled
+          displayEmpty
+          value=""
+          renderValue={() => t('Loading boundaries')}
+        >
+          <MenuItem disabled>{t('Loading boundaries')}</MenuItem>
+        </Select>
+      </FormControl>
     );
   }
 
@@ -82,6 +94,7 @@ export function SimpleBoundaryDropdown({
             data,
             boundaryLayer,
             i18nLocale,
+            adminNameDict,
           )
             .map(ref => ref.name)
             .join(', ')

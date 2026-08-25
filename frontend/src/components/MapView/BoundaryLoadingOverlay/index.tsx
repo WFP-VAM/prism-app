@@ -1,8 +1,15 @@
-import { Box, CircularProgress, Typography } from '@mui/material';
+import {
+  Box,
+  CircularProgress,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import { LayerKey } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 import { Map as MaplibreMap } from 'maplibre-gl';
 import { memo, useEffect, useState } from 'react';
+import { getUniversalLandingView } from 'utils/universal-utils';
 import { useMapState } from 'utils/useMapState';
 
 export interface BoundaryLoadingOverlayProps {
@@ -46,6 +53,10 @@ const areBoundarySourcesLoaded = (
 
 const BoundaryLoadingOverlay = memo(
   ({ displayedBoundaryLayerIds, viewKey }: BoundaryLoadingOverlayProps) => {
+    const theme = useTheme();
+    const smDown = useMediaQuery(theme.breakpoints.down('sm'));
+    const landingView =
+      viewKey === 'landing' && !smDown ? getUniversalLandingView() : undefined;
     const { t } = useSafeTranslation();
     const map = useMapState().maplibreMap();
     const [visible, setVisible] = useState(true);
@@ -74,11 +85,18 @@ const BoundaryLoadingOverlay = memo(
     }
 
     return (
-      <Box sx={overlaySx} aria-live="polite" aria-busy="true">
+      <Box
+        sx={{
+          ...overlaySx,
+          ...(landingView ? { paddingLeft: landingView.padding.left } : {}),
+        }}
+        aria-live="polite"
+        aria-busy="true"
+      >
         <Box sx={cardSx}>
           <CircularProgress size={36} />
           <Typography variant="body2" color="text.secondary">
-            {t('Loading boundaries…')}
+            {t('Loading boundaries')}
           </Typography>
         </Box>
       </Box>

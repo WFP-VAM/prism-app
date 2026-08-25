@@ -11,6 +11,8 @@ from prism_app.auth.admin_settings import (
     AdminAuthSettings,
     get_admin_auth_settings,
 )
+from prism_app.auth.dev_impersonation import load_dev_impersonation, parse_dev_user_id
+from prism_app.auth.permission_scopes import PermissionScopes
 from prism_app.auth.prism_auth_service import is_active, load_user_and_permissions
 from prism_app.database.user_model import User
 from sqlalchemy.engine import Engine
@@ -85,19 +87,19 @@ def get_admin_engine(request: Request) -> Engine:
 
 def load_user_from_session(
     request: Request, engine: Engine, settings: AdminAuthSettings
-) -> tuple[User | None, set[str], str | None]:
+) -> tuple[User | None, set[str], PermissionScopes, str | None]:
     """Resolve ``prism_uid`` (+ optional ``ciam_sub``) from session → DB user."""
     uid_raw = request.session.get(PRISM_SESSION_USER_ID)
     if uid_raw is None:
-        return None, set(), None
+        return None, set(), {}, None
     if PRISM_SESSION_CIAM_SUB not in request.session:
         clear_prism_browser_session(request)
-        return None, set(), None
+        return None, set(), {}, None
     try:
         user_id = UUID(str(uid_raw).strip())
     except ValueError:
         clear_prism_browser_session(request)
-        return None, set(), None
+        return None, set(), {}, None
     sess_sub_raw = request.session.get(PRISM_SESSION_CIAM_SUB)
     sess_sub = str(sess_sub_raw).strip() if sess_sub_raw is not None else None
     sess_provider_raw = request.session.get(PRISM_SESSION_AUTH_PROVIDER)
@@ -106,26 +108,41 @@ def load_user_from_session(
         if isinstance(sess_provider_raw, str) and sess_provider_raw.strip()
         else DEFAULT_OIDC_PROVIDER_ID
     )
-    user, codes = load_user_and_permissions(engine, user_id=user_id)
+    user, codes, scopes = load_user_and_permissions(engine, user_id=user_id)
     if user is not None and sess_sub:
         if user.ciam_sub != sess_sub or user.auth_provider != sess_provider:
             clear_prism_browser_session(request)
-            return None, set(), None
-    return user, codes, sess_sub
+            return None, set(), {}, None
+    return user, codes, scopes, sess_sub
 
 
 def require_prism_session(
     request: Request,
     settings: Annotated[AdminAuthSettings, Depends(get_admin_auth_settings)],
     engine: Annotated[Engine, Depends(get_admin_engine)],
-) -> tuple[User, set[str]]:
+) -> tuple[User, set[str], PermissionScopes]:
     """Load user + permission codes from Starlette session; 401 if missing or inconsistent."""
     if settings.admin_auth_disabled:
+        dev_user_id = parse_dev_user_id(settings)
+        if dev_user_id is not None:
+            loaded = load_dev_impersonation(engine, dev_user_id)
+            if loaded is None:
+                raise HTTPException(
+                    status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                    detail=f"PRISM_DEV_USER_ID user not found or inactive: {dev_user_id}",
+                )
+            user, codes, scopes = loaded
+            if not is_active(user):
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="User inactive or unknown",
+                )
+            return user, codes, scopes
         raise HTTPException(
             status_code=status.HTTP_501_NOT_IMPLEMENTED,
             detail="Session API not available when PRISM_ADMIN_AUTH_DISABLED is true.",
         )
-    user, codes, _ = load_user_from_session(request, engine, settings)
+    user, codes, scopes, _ = load_user_from_session(request, engine, settings)
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -137,23 +154,25 @@ def require_prism_session(
             detail="User inactive or unknown",
         )
     assert user is not None
-    return user, codes
+    return user, codes, scopes
 
 
 def require_permissions(*required: str):
     """Dependency factory: all listed permission codes must be present."""
 
     def _dep(
-        session: Annotated[tuple[User, set[str]], Depends(require_prism_session)],
-    ) -> tuple[User, set[str]]:
-        user, codes = session
+        session: Annotated[
+            tuple[User, set[str], PermissionScopes], Depends(require_prism_session)
+        ],
+    ) -> tuple[User, set[str], PermissionScopes]:
+        user, codes, scopes = session
         missing = set(required) - codes
         if missing:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail=f"Missing permissions: {sorted(missing)}",
             )
-        return user, codes
+        return user, codes, scopes
 
     return _dep
 
@@ -162,14 +181,16 @@ def require_any_permission(*allowed: str):
     """Dependency factory: at least one listed permission code must be present."""
 
     def _dep(
-        session: Annotated[tuple[User, set[str]], Depends(require_prism_session)],
-    ) -> tuple[User, set[str]]:
-        user, codes = session
+        session: Annotated[
+            tuple[User, set[str], PermissionScopes], Depends(require_prism_session)
+        ],
+    ) -> tuple[User, set[str], PermissionScopes]:
+        user, codes, scopes = session
         if not set(allowed) & codes:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail=f"Missing one of permissions: {sorted(allowed)}",
             )
-        return user, codes
+        return user, codes, scopes
 
     return _dep

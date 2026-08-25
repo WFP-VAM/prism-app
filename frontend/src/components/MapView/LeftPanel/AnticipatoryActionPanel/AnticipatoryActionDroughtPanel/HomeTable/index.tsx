@@ -1,6 +1,6 @@
 import { BarChartOutlined, GetApp } from '@mui/icons-material';
 import { Box, Button, Typography } from '@mui/material';
-import { appConfig } from 'config';
+import { appConfig, safeCountry } from 'config';
 import { AAWindowKeys } from 'config/utils';
 import {
   AAFiltersSelector,
@@ -14,8 +14,7 @@ import { AAView } from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { useSafeTranslation } from 'i18n';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCurrentDateTimeForUrl } from 'utils/date-utils';
-import { getAADroughtUrl } from 'utils/url-utils';
+import { getAADroughtCdnUrl, getAADroughtUrl } from 'utils/url-utils';
 
 import { aaCommonSx, aaHomeTableSx } from '../../aaPanelStyles';
 import { AADataSeverityOrder, getAAIcon } from '../utils';
@@ -129,14 +128,14 @@ function HomeTable({ dialogs }: HomeTableProps) {
   const monitoredDistrict = useSelector(AAMonitoredDistrictsSelector);
   const { 'Window 2': window2Range } = useSelector(AAWindowRangesSelector);
 
-  const filename = getAADroughtUrl(appConfig)?.split('/').at(-1);
+  const filename = getAADroughtCdnUrl(appConfig)?.split('/').at(-1);
 
   const homeButtons = [
     {
       startIcon: <GetApp />,
       text: 'Assets',
       component: 'a',
-      href: `${getAADroughtUrl(appConfig)}?date=${getCurrentDateTimeForUrl()}`,
+      href: getAADroughtUrl(appConfig, safeCountry),
       download: `${window2Range?.end}-${filename}`,
     },
     {

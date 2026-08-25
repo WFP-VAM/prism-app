@@ -2,11 +2,31 @@
 
 const { spawnSync } = require('node:child_process');
 
+// Unfixed HIGHs with no compatible patched release:
+// - image-size <=2.0.2 ICNS DoS (upstream archived). Transitive via
+//   @deck.gl → @loaders.gl → texture-compressor (0.7.x).
+// - extract-zip symlink traversal (maintainer unresponsive). Transitive via
+//   puppeteer → @puppeteer/browsers (Chrome zip unpack, not untrusted user archives).
+const IGNORE_ADVISORIES = new Set([
+  'GHSA-w3rx-r6r6-pgpr', // CVE-2025-71330 image-size
+  'GHSA-5p2g-fcmc-qvqq', // CVE-2025-71329 image-size
+  'GHSA-jmr9-qjv8-65gv', // CVE-2026-56876 extract-zip
+]);
+
 function getAuditOptions() {
   return {
     level: 'moderate',
     groups: ['dependencies', 'optionalDependencies'],
   };
+}
+
+function advisoryIgnoreIds(advisory) {
+  return [advisory.github_advisory_id, ...(advisory.cves || [])].filter(Boolean);
+}
+
+function isIgnoredAdvisory(advisoryData) {
+  const advisory = advisoryData.advisory || {};
+  return advisoryIgnoreIds(advisory).some((id) => IGNORE_ADVISORIES.has(id));
 }
 
 function parseAuditLines(lines) {
@@ -94,7 +114,7 @@ function run() {
 
   let advisories = [];
   try {
-    advisories = parseAuditLines(lines);
+    advisories = parseAuditLines(lines).filter((entry) => !isIgnoredAdvisory(entry));
   } catch (error) {
     if (stdout) process.stdout.write(stdout);
     if (stderr) process.stderr.write(stderr);
@@ -123,6 +143,8 @@ if (require.main === module) {
 }
 
 module.exports = {
+  IGNORE_ADVISORIES,
   formatAuditFailureReport,
   getAuditOptions,
+  isIgnoredAdvisory,
 };

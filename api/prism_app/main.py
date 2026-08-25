@@ -4,14 +4,22 @@ import functools
 import json
 import logging
 import os
+import re
 from datetime import date
-from typing import Annotated, Any, Literal, Optional
-from urllib.parse import ParseResult, urlencode, urlunparse
+from typing import Annotated, Any, Optional
+from urllib.parse import ParseResult, urlencode, urlparse, urlunparse
 
+import httpx
 import rasterio  # type: ignore
-from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
+from fastapi import Depends, FastAPI, HTTPException, Path, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import (
+    FileResponse,
+    JSONResponse,
+    RedirectResponse,
+    StreamingResponse,
+)
+from prism_app.aa_drought.published_datasets import get_served_aa_drought_csv
 from prism_app.admin import register_alerts_admin_views
 from prism_app.admin_map_export import PrismAdmin, register_map_export_admin_views
 from prism_app.auth import auth_oidc
@@ -20,6 +28,7 @@ from prism_app.auth.admin_oidc_auth import PrismAdminAuthProvider
 from prism_app.auth.admin_settings import get_admin_auth_settings
 from prism_app.auth.deps import require_permissions, require_prism_session
 from prism_app.auth.permission_codes import ADMIN_ACCESS
+from prism_app.auth.permission_scopes import PermissionScopes, scopes_for_api
 from prism_app.auth_legacy import optional_validate_user, validate_user
 from prism_app.caching import FilePath, cache_file, cache_geojson
 from prism_app.dashboard.published_dashboards import (
@@ -54,11 +63,13 @@ from prism_app.zonal_stats import (
 from pydantic import EmailStr, HttpUrl, ValidationError
 from requests import get
 from sqlalchemy import create_engine
+from starlette.background import BackgroundTask
 from starlette.middleware.sessions import SessionMiddleware
 from starlette_admin.contrib.sqla import Admin
 
 from .geotiff_from_stac_api import get_geotiff
 from .models import AlertsModel, StatsModel
+from .presigned_cog_url import get_presigned_cog_urls
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)-8s %(message)s",
@@ -87,6 +98,9 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    # Expose byte-range response headers so that COG readers in the browser
+    # (e.g. deck.gl-geotiff) can see Content-Range and Accept-Ranges.
+    expose_headers=["Content-Range", "Accept-Ranges", "Content-Length"],
 )
 
 _admin_session_settings = get_admin_auth_settings()
@@ -117,12 +131,12 @@ def access_not_configured_page():
 
 
 _AdminSession = Annotated[
-    tuple[User, set[str]],
+    tuple[User, set[str], PermissionScopes],
     Depends(require_permissions(ADMIN_ACCESS)),
 ]
 
 _AnySession = Annotated[
-    tuple[User, set[str]],
+    tuple[User, set[str], PermissionScopes],
     Depends(require_prism_session),
 ]
 
@@ -130,13 +144,14 @@ _AnySession = Annotated[
 @app.get("/whoami")
 def whoami(prism: _AnySession):
     """Return current user identity and permissions (any authenticated user)."""
-    user, codes = prism
+    user, codes, scopes = prism
     return {
         "user_id": str(user.id),
         "auth_provider": user.auth_provider,
         "ciam_sub": user.ciam_sub,
         "email": user.email,
         "permissions": sorted(codes),
+        "permission_scopes": scopes_for_api(scopes),
     }
 
 
@@ -189,6 +204,55 @@ def get_published_dashboards(
         )
     return merge_published_dashboard_rows_for_country(
         alert_db.engine, country, include_staging=include_staging
+    )
+
+
+@app.get(
+    "/aa/drought/{country}.csv",
+    responses={
+        307: {"description": "No DB dataset; redirect to the configured fallback URL"},
+        404: {"description": "No served dataset and no fallback provided"},
+        503: {"description": "AA drought database unavailable"},
+    },
+    summary="Served AA drought CSV (country-scoped)",
+)
+def get_aa_drought_csv(
+    country: str = Path(..., min_length=1, description="AA drought country key"),
+    include_staging: bool = Query(
+        False,
+        description="Serve the staging dataset if one exists (for staging frontends)",
+    ),
+    fallback: Optional[str] = Query(
+        None,
+        description=(
+            "URL to redirect to when no dataset is stored for this country "
+            "(typically the country's existing CDN CSV URL)."
+        ),
+    ),
+) -> Response:
+    """Return the raw CSV served for ``country`` from Postgres.
+
+    When no served dataset exists, redirect to ``fallback`` if provided (so the
+    frontend transparently falls back to the legacy CDN URL), otherwise 404.
+    ``published`` is always served; ``staging`` only when ``include_staging``.
+    """
+    if not alert_db.active or alert_db.engine is None:
+        raise HTTPException(
+            status_code=503, detail="AA drought data is temporarily unavailable"
+        )
+    csv_text = get_served_aa_drought_csv(
+        alert_db.engine, country, include_staging=include_staging
+    )
+    if csv_text is None:
+        if fallback:
+            return RedirectResponse(url=fallback, status_code=307)
+        raise HTTPException(
+            status_code=404, detail=f"No AA drought dataset for '{country}'"
+        )
+    return Response(
+        content=csv_text,
+        media_type="text/csv",
+        headers={"Cache-Control": "public, max-age=300"},
     )
 
 
@@ -568,6 +632,167 @@ def post_raster_geotiff(raster_geotiff: RasterGeotiffModel):
 
     return JSONResponse(
         content={"download_url": presigned_download_url}, status_code=200
+    )
+
+
+# COG POC endpoints (/cog_presigned_url, /cog_proxy; see docs/cog-layers.md).
+# Disabled by default: when the flag is unset they 404 before any logic runs and
+# are hidden from the schema. Set COG_ENDPOINTS_ENABLED truthy to re-enable.
+COG_ENDPOINTS_ENABLED = os.getenv("COG_ENDPOINTS_ENABLED", "").strip().lower() == "true"
+
+
+def require_cog_poc_enabled() -> None:
+    """Gate the COG POC endpoints.
+
+    Raises 404 (matching FastAPI's default "Not Found" response for unknown
+    paths) when ``COG_ENDPOINTS_ENABLED`` is unset, so the POC endpoints stay
+    disabled in production while the code remains in place. Tests re-enable the
+    endpoints via ``app.dependency_overrides``.
+    """
+    if not COG_ENDPOINTS_ENABLED:
+        raise HTTPException(status_code=404, detail="Not Found")
+
+
+@app.get(
+    "/cog_presigned_url",
+    dependencies=[Depends(require_cog_poc_enabled)],
+    include_in_schema=COG_ENDPOINTS_ENABLED,
+    responses={
+        404: {"description": "Collection or asset not found in STAC catalog"},
+        500: {"description": "Internal server error"},
+    },
+)
+def get_cog_presigned_url(
+    collection: str = Query(..., description="STAC collection ID"),
+    date: Optional[str] = Query(
+        None, description="ISO-8601 date string for temporal filtering"
+    ),
+    band: Optional[str] = Query(
+        None, description="Asset key / band name within the STAC item"
+    ),
+    bbox: Optional[str] = Query(
+        None,
+        description=(
+            "WGS84 bounding box as comma-separated minLon,minLat,maxLon,maxLat. "
+            "Used to spatially filter tiled collections to a deployment region."
+        ),
+    ),
+):
+    """Return short-lived pre-signed S3 URLs for COG assets in a collection.
+
+    For tiled collections (e.g. MODIS sinusoidal grid) a single date may
+    return many items, one per spatial tile.  Each matching item gets its
+    own presigned URL.
+
+    The URLs are valid for 5 minutes and support HTTP byte-range requests,
+    enabling efficient browser-side COG streaming without downloading full
+    files.
+    """
+    bbox_tuple = None
+    if bbox:
+        try:
+            parts = [float(x.strip()) for x in bbox.split(",")]
+            if len(parts) != 4:
+                raise ValueError("bbox must have exactly 4 values")
+            bbox_tuple = tuple(parts)
+        except (ValueError, TypeError) as e:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid bbox parameter: {e}",
+            )
+    urls = get_presigned_cog_urls(collection, date, band, bbox_tuple)
+    return JSONResponse(content={"urls": urls}, status_code=200)
+
+
+# TODO(cog-cors): POC-only. Remove /cog_proxy once HDC/STAC S3 buckets allow
+# browser GET + Range from PRISM origins (see docs/cog-layers.md).
+
+# Allowlist of S3 hostname patterns that the proxy is permitted to fetch.
+# Presigned S3 URLs use virtual-hosted style: <bucket>.s3[.<region>].amazonaws.com
+_S3_HOST_RE = re.compile(
+    r"^[a-z0-9._-]+\.s3(?:\.[a-z0-9-]+)?\.amazonaws\.com$", re.IGNORECASE
+)
+
+# Headers forwarded from S3 to the client.
+_FORWARD_HEADERS = {
+    "Content-Type",
+    "Content-Length",
+    "Content-Range",
+    "Accept-Ranges",
+    "ETag",
+    "Last-Modified",
+}
+
+
+@app.get(
+    "/cog_proxy",
+    dependencies=[Depends(require_cog_poc_enabled)],
+    include_in_schema=COG_ENDPOINTS_ENABLED,
+    responses={
+        400: {"description": "URL is missing or not an allowed S3 host"},
+        502: {"description": "Upstream S3 request failed"},
+    },
+)
+async def cog_proxy(
+    url: str = Query(..., description="Presigned S3 URL to proxy"),
+    request: Request = None,
+):
+    """Proxy byte-range requests for COG assets to S3.
+
+    The S3 buckets hosting WFP COG files do not include CORS headers, so the
+    browser cannot fetch them directly.  This endpoint forwards the request
+    (including any Range header) to S3 server-side and streams the response
+    back with CORS headers added by FastAPI's CORSMiddleware.
+    """
+    parsed = urlparse(url)
+    if parsed.scheme != "https" or not _S3_HOST_RE.match(parsed.netloc):
+        raise HTTPException(
+            status_code=400,
+            detail=f"URL '{url}' is not an allowed https S3 endpoint.",
+        )
+
+    # Forward the Range header if present (COG tile readers use byte-ranges).
+    upstream_headers = {}
+    if request and "range" in request.headers:
+        upstream_headers["Range"] = request.headers["range"]
+
+    # follow_redirects=False so a 3xx from S3 cannot escape the allowlisted host
+    # checked above.  send(stream=True) returns after the headers are read but
+    # before the body is pulled, so large COGs are streamed rather than buffered.
+    client = httpx.AsyncClient(follow_redirects=False, timeout=60.0)
+    try:
+        req = client.build_request("GET", url, headers=upstream_headers)
+        upstream = await client.send(req, stream=True)
+    except httpx.RequestError as exc:
+        await client.aclose()
+        logger.error("COG proxy upstream error: %s", exc)
+        raise HTTPException(
+            status_code=502, detail=f"Upstream S3 request failed: {exc}"
+        ) from exc
+
+    if upstream.status_code not in (200, 206):
+        status_code = upstream.status_code
+        await upstream.aclose()
+        await client.aclose()
+        raise HTTPException(
+            status_code=502,
+            detail=f"S3 returned {status_code}",
+        )
+
+    response_headers = {
+        k: v for k, v in upstream.headers.items() if k.title() in _FORWARD_HEADERS
+    }
+
+    async def _close_upstream() -> None:
+        await upstream.aclose()
+        await client.aclose()
+
+    return StreamingResponse(
+        upstream.aiter_bytes(chunk_size=65536),
+        status_code=upstream.status_code,
+        headers=response_headers,
+        media_type=upstream.headers.get("content-type", "image/tiff"),
+        background=BackgroundTask(_close_upstream),
     )
 
 

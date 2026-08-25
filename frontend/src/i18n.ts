@@ -1,7 +1,7 @@
 import { extractTranslationItems } from 'config/config.test.utils';
 import { enUS, es, fr, km, mn, pt, ru } from 'date-fns/locale';
 import i18n from 'i18next';
-import { merge } from 'lodash';
+import { get, merge } from 'lodash';
 import { registerLocale } from 'react-datepicker';
 import { initReactI18next, useTranslation } from 'react-i18next';
 
@@ -51,12 +51,26 @@ const englishKeys = Object.keys(translation)
     {},
   );
 
-export const resources = merge(
+type ResourceBundle = { translation: Record<string, string> };
+
+const mergedResources: Record<string, ResourceBundle> = merge(
   {
     en: { translation: englishKeys },
   },
   appResources,
   formattedTranslation,
+);
+
+// Sidecar-only locales (e.g. universal `zh`) have no UI translation file. An
+// empty namespace makes i18next resolve to fallbackLng (`en`), so the language
+// dropdown and admin-name sidecars never activate the selected locale.
+export const resources: Record<string, ResourceBundle> = Object.fromEntries(
+  Object.entries(mergedResources).map(([lng, bundle]) => {
+    if (lng === 'en' || Object.keys(bundle.translation).length > 0) {
+      return [lng, bundle];
+    }
+    return [lng, { ...bundle, translation: { ...englishKeys } }];
+  }),
 );
 
 export const languages = Object.keys(resources);
@@ -79,6 +93,19 @@ if (TRANSLATION_DEBUG || isDevelopment) {
   console.log('Missing translation keys:', missingKeys.en);
 }
 
+function getInitialLanguage(): string {
+  try {
+    const saved = localStorage.getItem('userLanguage');
+    if (saved && languages.includes(saved)) {
+      return saved;
+    }
+  } catch {
+    // localStorage can throw in privacy mode
+  }
+  const defaultLocale = get(appConfig, 'defaultLanguage', 'en');
+  return languages.includes(defaultLocale) ? defaultLocale : 'en';
+}
+
 function logMissingKey(lng: string, key: string) {
   if (TRANSLATION_DEBUG || isDevelopment) {
     if (!missingKeys[lng]) {
@@ -97,7 +124,7 @@ i18n
   .use(initReactI18next) // passes i18n down to react-i18next
   .init({
     resources,
-    lng: 'en',
+    lng: getInitialLanguage(),
     interpolation: {
       escapeValue: false, // react already safes from xss
     },
@@ -123,6 +150,11 @@ export function useSafeTranslation(): {
     ...rest,
   };
 }
+
+export {
+  ADMIN_NAME_SIDECAR_LANGUAGES,
+  hasAdminNameSidecar,
+} from 'context/adminNameTranslationStateSlice';
 
 export function isEnglishLanguageSelected(lang: typeof i18n): boolean {
   return lang.resolvedLanguage === 'en';

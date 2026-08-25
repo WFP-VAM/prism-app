@@ -5,6 +5,7 @@ import {
 } from 'components/MapView/Layers/BoundaryDropdown/utils';
 import { AdminCodeString, BoundaryLayerProps } from 'config/types';
 import { BoundaryLayerData } from 'context/layers/boundary';
+import { useAdminNameTranslations } from 'hooks/useAdminNameTranslations';
 import { useSafeTranslation } from 'i18n';
 import { sortBy } from 'lodash';
 import React, { memo, ReactNode } from 'react';
@@ -38,11 +39,13 @@ const LocationSelector = memo(
     title,
   }: LocationSelectorProps) => {
     const { t, i18n: i18nLocale } = useSafeTranslation();
+    const { dict: adminNameDict } = useAdminNameTranslations();
 
     const adminBoundaryTree = getAdminBoundaryTree(
       data,
       boundaryLayer,
       i18nLocale,
+      adminNameDict,
     );
     const orderedAdmin0areas: () => AdminBoundaryTree[] = () => {
       if (!multiCountry) {

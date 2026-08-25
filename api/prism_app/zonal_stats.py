@@ -524,8 +524,8 @@ def calculate_stats(
         }
 
     try:
-        # preload the file contents for fiona 1.10.1 as it does not seem happy
-        # with a file path anymore: https://github.com/Toblerity/Fiona/issues/1455
+        # preload file contents; rasterstats/geopandas path handling is more reliable
+        # with in-memory GeoJSON than with some file paths
         with open(stats_input, "r") as stats_input_fp:
             stats_input_str = stats_input_fp.read()
 

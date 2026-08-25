@@ -7,6 +7,11 @@ list-all-pkgs: false
 scan:
   scanners:
     - vuln
+  # pip 26.2.1 vendors msgpack 1.1.2 + setuptools 70.3.0 (pkg_resources only).
+  # App venvs already have patched copies. pip 26.3 will refresh vendors
+  # (https://github.com/pypa/pip/issues/14224).
+  skip-dirs:
+    - "**/pip/_vendor/**"
 # Bookworm slim often reports CVEs with no Debian security update yet; fail only when
 # a fix exists in the distro (actionable).
 vulnerability:

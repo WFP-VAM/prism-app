@@ -25,6 +25,7 @@ const optionalMetadataKey = Symbol('optional_property');
 export type LayerType =
   | BoundaryLayerProps
   | WMSLayerProps
+  | CogLayerProps
   | AdminLevelDataLayerProps
   | ImpactLayerProps
   | PointDataLayerProps
@@ -400,9 +401,6 @@ export class BoundaryLayerProps extends CommonLayerProps {
   styles: LayerStyleProps; // Maplibre line and fill properties.,
 
   @optional
-  isPrimary?: boolean | undefined;
-
-  @optional
   format?: 'pmtiles' | 'geojson' = 'geojson';
 
   @optional
@@ -421,6 +419,15 @@ export class BoundaryLayerProps extends CommonLayerProps {
   // Note that the layer is still loaded, but not displayed.
   @optional
   minZoom?: number;
+
+  // Maximum zoom level to display the boundary.
+  // Note that the layer is still loaded, but not displayed above this zoom.
+  @optional
+  maxZoom?: number;
+
+  /** URL template for per-language admin name sidecar JSON ({lang} placeholder). */
+  @optional
+  translationsPath?: string;
 }
 
 export enum DataType {
@@ -525,6 +532,45 @@ export class WMSLayerProps extends CommonLayerProps {
 
   @optional
   startDate?: string; // limit the date range for the layer
+}
+
+export class CogLayerProps extends CommonLayerProps {
+  type: 'cog' = 'cog';
+
+  /**
+   * STAC collection ID used to look up COG assets via the /cog_presigned_url
+   * endpoint. Matches the server_layer_name of the equivalent WMS layer.
+   */
+  collection: string;
+
+  /**
+   * The WMS server_layer_name for the equivalent layer — used solely so that
+   * the existing date-availability machinery (GetCapabilities) can discover
+   * which dates are available in the timeline. Set to the same value as
+   * `collection` unless the WMS name differs from the STAC collection ID.
+   */
+  serverLayerName: string;
+
+  @makeRequired
+  declare title: string;
+
+  @makeRequired
+  declare legend: LegendDefinition;
+
+  @makeRequired
+  declare legendText: string;
+
+  @optional
+  band?: string; // STAC asset key / band name to fetch
+
+  @optional
+  chartData?: DatasetProps;
+
+  @optional
+  startDate?: string;
+
+  @optional
+  wcsConfig?: { scale?: number; offset?: number };
 }
 
 enum AggregationOptions {
@@ -888,6 +934,7 @@ export type DateItem = {
 export type AvailableDates = {
   [key in
     | WMSLayerProps['serverLayerName']
+    | CogLayerProps['serverLayerName']
     | PointDataLayerProps['id']]: DateItem[];
 };
 

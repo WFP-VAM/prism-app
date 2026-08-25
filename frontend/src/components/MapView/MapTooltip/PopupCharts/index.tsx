@@ -13,6 +13,7 @@ interface PopupChartsProps {
   setPopupTitle: React.Dispatch<React.SetStateAction<string>>;
   adminCode: AdminCodeString;
   adminSelectorKey: string;
+  selectorProperties?: GeoJSON.GeoJsonProperties;
   adminLevel: AdminLevelType | undefined;
   setAdminLevel: React.Dispatch<
     React.SetStateAction<AdminLevelType | undefined>
@@ -26,6 +27,7 @@ const PopupCharts = memo(
     setPopupTitle,
     adminCode,
     adminSelectorKey,
+    selectorProperties,
     adminLevel,
     setAdminLevel,
     adminLevelsNames,
@@ -53,6 +55,7 @@ const PopupCharts = memo(
             adminLevelsNames={adminLevelsNames}
             availableAdminLevels={availableAdminLevels}
             filteredChartLayers={filteredChartLayers}
+            selectorProperties={selectorProperties}
             setAdminLevel={setAdminLevel}
           />
         )}
@@ -61,6 +64,7 @@ const PopupCharts = memo(
             adminLevelsNames={adminLevelsNames}
             adminCode={adminCode}
             adminSelectorKey={adminSelectorKey}
+            selectorProperties={selectorProperties}
             adminLevel={adminLevel}
             filteredChartLayers={filteredChartLayers}
           />

@@ -41,3 +41,6 @@ export const loadingLayerIdsSelector = (state: RootState): LayerKey[] =>
 export const boundaryRelationSelector = (
   state: RootState,
 ): BoundaryRelationsDict => state.mapState.boundaryRelationData;
+
+export const globeProjectionEnabledSelector = (state: RootState): boolean =>
+  state.mapState.globeProjectionEnabled;

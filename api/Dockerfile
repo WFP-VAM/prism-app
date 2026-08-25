@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.4
-FROM ghcr.io/osgeo/gdal:ubuntu-full-3.11.5
-# gdal 3.11.1 uses ubuntu 24.04 and python 3.12
+FROM ghcr.io/osgeo/gdal:ubuntu-full-3.13.1
+# gdal 3.13.1 uses ubuntu 26.04 and python 3.14
 
 # we use poetry to install our dependencies in a venv separate from
 # the docker image system python environment
@@ -26,24 +26,41 @@ ENV POETRY_VIRTUALENVS_IN_PROJECT=true
 # $POETRY_HOME/bin is where poetry itself is
 ENV PATH="/.venv/bin:$POETRY_HOME/bin:$PATH"
 
-RUN --mount=type=cache,target=/root/.cache curl -sSL https://install.python-poetry.org | python3 -
-
-# copy pyproject so that black and isort use the right config
-COPY pyproject.toml /
-
-COPY poetry.lock /
-
+# Ubuntu 26.04 GDAL base image does not ship curl; install it before Poetry bootstrap.
 RUN --mount=type=cache,target=/var/cache/apt \
     DEBIAN_FRONTEND=noninteractive apt-get update --fix-missing && \
     DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y python3-pip libpq-dev curl python3-dev build-essential && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# copy pyproject so that black and isort use the right config
+COPY pyproject.toml /
+
+COPY poetry.lock /
+
+RUN --mount=type=cache,target=/root/.cache \
+    curl -fsSL https://install.python-poetry.org | python3 - && poetry --version
+
 RUN --mount=type=cache,target=/root/.cache \
     poetry install
 
 # Upgrade pip + tooling (CVE-2026-1703 pip, CVE-2026-24049 wheel, CVE-2026-23949 jaraco.context via setuptools vendor refresh)
 RUN poetry run pip install --upgrade 'pip>=26.1.2' 'setuptools>=82.0.0' 'wheel>=0.46.2' 'jaraco.context>=6.1.0'
+
+# Apply security updates (e.g. GnuPG CVE-2025-68973, libtiff CVE-2025-9900); drop build-only headers
+# (linux-libc-dev); remove GStreamer "bad" codecs not required for headless map export.
+# Must run before Playwright: autoremove after install-deps strips Chromium runtime libraries.
+RUN --mount=type=cache,target=/var/lib/apt \
+    --mount=type=cache,target=/var/cache/apt \
+    DEBIAN_FRONTEND=noninteractive apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y upgrade && \
+    DEBIAN_FRONTEND=noninteractive apt-get purge -y \
+      build-essential python3-dev linux-libc-dev libpq-dev \
+      gstreamer1.0-plugins-bad libgstreamer-plugins-bad1.0-0 && \
+    rm -f /usr/bin/pebble && \
+    DEBIAN_FRONTEND=noninteractive apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # we must run the playwright install command without mounting the cache, as it seems
 # that installed binaries end up being removed from the image if the cache is used
@@ -53,20 +70,14 @@ RUN poetry run playwright install chromium
 RUN --mount=type=cache,target=/root/.cache \
     --mount=type=cache,target=/var/lib/apt \
     --mount=type=cache,target=/var/cache/apt \
-    DEBIAN_FRONTEND=noninteractive poetry run playwright install-deps
+    DEBIAN_FRONTEND=noninteractive poetry run playwright install-deps chromium
 
-# Apply security updates (e.g. GnuPG CVE-2025-68973, libtiff CVE-2025-9900); drop build-only headers
-# (linux-libc-dev); remove GStreamer "bad" codecs not required for headless map export.
-RUN --mount=type=cache,target=/var/lib/apt \
-    --mount=type=cache,target=/var/cache/apt \
-    DEBIAN_FRONTEND=noninteractive apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get -y upgrade && \
-    DEBIAN_FRONTEND=noninteractive apt-get purge -y \
-      build-essential python3-dev linux-libc-dev libpq-dev \
-      gstreamer1.0-plugins-bad libgstreamer-plugins-bad1.0-0 && \
-    DEBIAN_FRONTEND=noninteractive apt-get autoremove -y && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# Verify Chromium launches after install-deps (CI export_maps tests depend on this).
+# The GDAL base image sets LD_PRELOAD=libtcmalloc_minimal.so.4 for GDAL performance,
+# but that system tcmalloc conflicts with Chromium's bundled allocator on this image's
+# glibc and crashes headless_shell (SIGILL). Runtime strips LD_PRELOAD for the browser
+# subprocess via prism_app.utils.chromium_launch_env; mirror that here for the check.
+RUN LD_PRELOAD= poetry run python -c "from playwright.sync_api import sync_playwright; p = sync_playwright().start(); b = p.chromium.launch(args=['--no-sandbox', '--disable-dev-shm-usage']); b.close(); p.stop()"
 
 # keep this copy towards the end to help with caching previous layers
 COPY ./prism_app /prism_app

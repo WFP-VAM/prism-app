@@ -14,6 +14,7 @@ import {
 } from 'context/mapStateSlice';
 import {
   dateRangeSelector,
+  globeProjectionEnabledSelector,
   layersSelector,
 } from 'context/mapStateSlice/selectors';
 import { Map as MaplibreMap } from 'maplibre-gl';
@@ -88,6 +89,13 @@ export function useMapState(): UnifiedMapState {
       : (_state: any) => undefined,
   );
 
+  // Dashboard maps stay mercator; only the main map honors the navbar toggle.
+  const globeProjectionEnabled = useSelector(
+    mapInstanceContext
+      ? (_state: any) => false
+      : globeProjectionEnabledSelector,
+  );
+
   const maplibreMap = mapGetter;
 
   const actions = useMemo(() => {
@@ -151,6 +159,7 @@ export function useMapState(): UnifiedMapState {
     layersData: [],
     loadingLayerIds: [],
     boundaryRelationData: {},
+    globeProjectionEnabled,
     isGlobalMap: !mapInstanceContext,
     elementId: mapInstanceContext?.elementId,
   };

@@ -4,11 +4,17 @@ import {
   AdminLevelType,
   BoundaryLayerProps,
 } from 'config/types';
+import { AdminNameDict } from 'context/adminNameTranslationStateSlice';
 import { LayerData } from 'context/layers/layer-data';
-import { isEnglishLanguageSelected } from 'i18n';
 import i18n from 'i18next';
 import { sortBy } from 'lodash';
 import { Map as MaplibreMap } from 'maplibre-gl';
+import {
+  getActiveAdminNameLanguage,
+  isAdminNameSentinel,
+  localizeName,
+  usesAdminNameSidecar,
+} from 'utils/admin-name-utils';
 import { normalizeAdminCode } from 'utils/adminAreaCodes';
 
 /**
@@ -20,6 +26,7 @@ export interface AdminBoundaryTree {
   key: AdminCodeString; // FIXME: duplicate of adminCode below?
   adminCode: AdminCodeString;
   level: AdminLevelType;
+  iso3?: string;
   // children are indexed by AdminCodeStrings, not strings
   // but typescript won't allow being more specific
   children: { [code: string]: AdminBoundaryTree };
@@ -33,10 +40,11 @@ export function getAdminBoundaryTree(
   data: LayerData<BoundaryLayerProps>['data'] | undefined,
   layer: BoundaryLayerProps,
   i18nLocale: typeof i18n,
+  adminNameDict?: AdminNameDict,
 ): AdminBoundaryTree {
-  const locationLevelNames = isEnglishLanguageSelected(i18nLocale)
-    ? layer.adminLevelNames
-    : layer.adminLevelLocalNames;
+  const language = getActiveAdminNameLanguage(i18nLocale);
+  const useSidecar = usesAdminNameSidecar(layer) || Boolean(adminNameDict);
+  const englishLevelNames = layer.adminLevelNames;
   const { adminLevelCodes } = layer;
   const { features } = data || {};
 
@@ -51,56 +59,58 @@ export function getAdminBoundaryTree(
     return rootNode;
   }
 
-  const addBranchToTree = (
-    partialTree: AdminBoundaryTree,
-    levelsLeft: AdminCodeString[],
-    feature: any, // TODO: maplibre: feature
-    level: AdminLevelType,
-  ): AdminBoundaryTree => {
-    const fp = feature.properties;
-    if (levelsLeft.length === 0) {
-      return partialTree;
+  // Mutate rootNode in place. Spreading children on every feature is O(n^2)
+  // and freezes the main thread on the unfiltered global feature set.
+  features.forEach(feature => {
+    const fp = (feature as any).properties;
+    if (!fp) {
+      return;
     }
-    const [currentLevelCode, ...otherLevelsCodes] = levelsLeft;
-    const branchCode = normalizeAdminCode(fp[currentLevelCode]);
-    if (branchCode === null) {
-      return partialTree;
-    }
-    const newBranch = addBranchToTree(
-      partialTree.children[branchCode] ?? {
+    let node: AdminBoundaryTree = rootNode;
+    for (let level = 0; level < adminLevelCodes.length; level += 1) {
+      const branchCode = normalizeAdminCode(fp[adminLevelCodes[level]]);
+      if (branchCode === null) {
+        break;
+      }
+      const englishLabel = fp[englishLevelNames[level]] ?? '';
+      // Localize whenever a sidecar dict is loaded, even if this layer
+      // omitted translationsPath (Go To uses admin2; path used to live only
+      // on admin0/admin3).
+      const label =
+        language !== 'en' && (useSidecar || adminNameDict)
+          ? localizeName(englishLabel, adminNameDict)
+          : language === 'en'
+            ? englishLabel
+            : (fp[layer.adminLevelLocalNames[level]] ?? '');
+      const key = fp[englishLevelNames[level]];
+      // Filter out invalid or placeholder branches using the raw English name
+      // so filtering is language-independent (sidecars may translate "N/A").
+      if (
+        label === '' ||
+        key === undefined ||
+        isAdminNameSentinel(englishLabel)
+      ) {
+        break;
+      }
+      let child = node.children[branchCode];
+      if (!child) {
         // Normalize to string so all UI state (selection, dropdown values, URL
         // params) is consistent. Universal PMTiles store these as numbers.
-        adminCode: branchCode,
-        key: fp[layer.adminLevelNames[level]],
-        label: fp[locationLevelNames[level]] ?? '',
-        level: (level + 1) as AdminLevelType,
-        children: {},
-      },
-      otherLevelsCodes,
-      feature,
-      (level + 1) as AdminLevelType,
-    );
-    // Filter out invalid branches (missing label or key in source data)
-    if (newBranch.label === '' || newBranch.key === undefined) {
-      return partialTree;
+        child = {
+          adminCode: branchCode,
+          key,
+          label,
+          level: (level + 1) as AdminLevelType,
+          iso3: typeof fp.iso3 === 'string' ? fp.iso3 : undefined,
+          children: {},
+        };
+        node.children[branchCode] = child;
+      }
+      node = child;
     }
-    const newChildren = {
-      ...partialTree.children,
-      [branchCode]: newBranch,
-    };
-    return { ...partialTree, children: newChildren };
-  };
+  });
 
-  return features.reduce<AdminBoundaryTree>(
-    (outputTree, feature) =>
-      addBranchToTree(
-        outputTree,
-        adminLevelCodes,
-        feature,
-        0 as AdminLevelType,
-      ),
-    rootNode,
-  );
+  return rootNode;
 }
 
 export interface BoundaryDropdownProps {
@@ -125,11 +135,12 @@ export const TIMEOUT_ANIMATION_DELAY = 10;
  * Flattened version of the tree above, used to build
  * dropdowns.
  */
-interface FlattenedAdminBoundary {
+export interface FlattenedAdminBoundary {
   label: string;
   key: AdminCodeString;
   adminCode: AdminCodeString;
   level: AdminLevelType;
+  iso3?: string;
 }
 
 /**

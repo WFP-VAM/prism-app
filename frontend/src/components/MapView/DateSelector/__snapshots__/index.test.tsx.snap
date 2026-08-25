@@ -162,11 +162,15 @@ exports[`renders as expected with a single date 1`] = `
             class="react-datepicker__input-container"
           >
             <button
-              class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary css-1grkf2k-MuiButtonBase-root-MuiButton-root"
-              tabindex="0"
+              class=""
+              style="margin: 0px; box-sizing: border-box; align-self: center; height: auto; min-height: unset; white-space: nowrap; color: rgb(16, 16, 16); font-weight: bold; border: 1px solid rgba(0, 0, 0, 0.23); border-radius: 4px; padding: 8px 16px; font-size: 0.875rem; line-height: 1.75; text-transform: none; background-color: rgb(255, 255, 255); cursor: pointer; pointer-events: auto;"
               type="button"
             >
-              Mar 11, 2023
+              <span
+                style="pointer-events: none;"
+              >
+                Mar 11, 2023
+              </span>
             </button>
           </div>
         </div>

@@ -2,6 +2,10 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 
 import { useMediaQuery, useTheme } from '@mui/material';
 import {
+  DECK_GL_LAYER_TYPES,
+  DeckGLLayersProvider,
+} from 'components/MapView/DeckGLLayersContext';
+import {
   AdminLevelDataLayer,
   AnticipatoryActionDroughtLayer,
   AnticipatoryActionStormLayer,
@@ -13,6 +17,7 @@ import {
   WMSLayer,
 } from 'components/MapView/Layers';
 import AnalysisLayer from 'components/MapView/Layers/AnalysisLayer';
+import type { COGLayerComponentProps } from 'components/MapView/Layers/COGLayer';
 import SelectionLayer from 'components/MapView/Layers/SelectionLayer';
 import MapTooltip from 'components/MapView/MapTooltip';
 import useMapOnClick from 'components/MapView/useMapOnClick';
@@ -28,6 +33,7 @@ import { dashboardModeSelector } from 'context/dashboardStateSlice';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { setBounds, setLocation } from 'context/mapBoundaryInfoStateSlice';
 import { setLoadingLayerIds } from 'context/mapTileLoadingStateSlice';
+import { useCountryIso } from 'context/useCountryIso';
 import {
   LngLatBoundsLike,
   Map as MaplibreMap,
@@ -36,7 +42,9 @@ import {
 import React, {
   ComponentType,
   createElement,
+  lazy,
   memo,
+  Suspense,
   useCallback,
   useEffect,
   useMemo,
@@ -52,13 +60,37 @@ import {
   stackLayersForMapPaintOrder,
 } from 'utils/map-layer-before-utils';
 import { initPmtilesProtocol } from 'utils/pmtiles-utils';
+import {
+  getUniversalLandingView,
+  isUniversalDeployment,
+  isUniversalLandingMode,
+} from 'utils/universal-utils';
 import { useMapState } from 'utils/useMapState';
 
 import AnticipatoryActionFloodLayer from '../Layers/AnticipatoryActionFloodLayer';
 import GeojsonDataLayer from '../Layers/GeojsonDataLayer';
-import { mapStyle } from './utils';
+import {
+  mapBackdropColor,
+  mapFlatProjection,
+  mapProjection,
+  mapSky,
+  mapStyle,
+} from './utils';
 
 initPmtilesProtocol();
+
+const SHOW_BOUNDARY_INFO = JSON.parse(
+  process.env.REACT_APP_SHOW_MAP_INFO || 'false',
+);
+
+const DeckGLOverlay = lazy(() => import('components/MapView/DeckGLOverlay'));
+const COGLayerLazy = lazy(() => import('components/MapView/Layers/COGLayer'));
+
+const COGLayerComponent = (props: COGLayerComponentProps) => (
+  <Suspense fallback={null}>
+    <COGLayerLazy {...props} />
+  </Suspense>
+);
 
 type LayerComponentsMap<U extends LayerType> = {
   [T in U['type']]: {
@@ -79,6 +111,7 @@ type LayerComponentsMap<U extends LayerType> = {
 const componentTypes: LayerComponentsMap<LayerType> = {
   boundary: { component: BoundaryLayer },
   wms: { component: WMSLayer },
+  cog: { component: COGLayerComponent },
   admin_level_data: { component: AdminLevelDataLayer },
   impact: { component: ImpactLayer },
   point_data: { component: PointDataLayer },
@@ -114,10 +147,47 @@ const MapComponent = memo(
     const { selectedLayers, boundaryLayerId } = useLayers();
 
     const mapState = useMapState();
+    const { iso3 } = useCountryIso();
+    const landingView = getUniversalLandingView();
+    const isUniversalLanding = isUniversalLandingMode(iso3);
+    // Universal: landing view only on country-list screen. Global: always on load.
+    const useLandingViewBounds =
+      Boolean(landingView) && (isUniversalLanding || !isUniversalDeployment());
+    // Globe when enabled via navbar toggle (defaults from map.globeProjection config).
+    const isGlobeProjection = Boolean(mapState?.globeProjectionEnabled);
+    const projection = isGlobeProjection ? mapProjection : mapFlatProjection;
     const selectedMap = mapState?.maplibreMap();
     const isGlobalMap = mapState?.isGlobalMap;
     const dashboardMode = useSelector(dashboardModeSelector);
     const tabValue = useSelector(leftPanelTabValueSelector);
+
+    // Drive sky imperatively: react-map-gl does not clear sky when the prop
+    // becomes undefined, and that leaves its internal cache stale on re-enable.
+    useEffect(() => {
+      const map = mapRef.current?.getMap();
+      if (!map) {
+        return undefined;
+      }
+
+      const applySky = () => {
+        if (isGlobeProjection) {
+          map.setSky(mapSky);
+        } else {
+          // MapLibre clears atmosphere when sky is omitted (runtime); typings require an arg.
+          (map.setSky as (sky?: typeof mapSky) => void)(undefined);
+        }
+      };
+
+      if (map.isStyleLoaded()) {
+        applySky();
+        return undefined;
+      }
+
+      map.once('style.load', applySky);
+      return () => {
+        map.off('style.load', applySky);
+      };
+    }, [isGlobeProjection]);
 
     const panelHidden = tabValue === Panel.None;
 
@@ -145,11 +215,6 @@ const MapComponent = memo(
             },
       }),
       [panelHidden, isGlobalMap],
-    );
-
-    const showBoundaryInfo = useMemo(
-      () => JSON.parse(process.env.REACT_APP_SHOW_MAP_INFO || 'false'),
-      [],
     );
 
     const onDragEnd = useCallback(
@@ -232,17 +297,21 @@ const MapComponent = memo(
         // Find the first symbol on the map to make sure we add boundary layers below them.
         setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
         mapState.actions.setMap(() => mapRef.current?.getMap() || undefined);
-        if (showBoundaryInfo) {
+        if (SHOW_BOUNDARY_INFO) {
           watchBoundaryChange(map);
         }
         trackLoadingLayers(map);
       },
-      [mapState, showBoundaryInfo, watchBoundaryChange, trackLoadingLayers],
+      [mapState, watchBoundaryChange, trackLoadingLayers],
     );
 
     const stackLayers = useMemo(
       () => stackLayersForMapPaintOrder(selectedLayers),
       [selectedLayers],
+    );
+
+    const hasDeckLayers = stackLayers.some(l =>
+      DECK_GL_LAYER_TYPES.has(l.type),
     );
 
     const firstBoundaryId = getFirstBoundaryLayerMapId(selectedMap);
@@ -311,45 +380,69 @@ const MapComponent = memo(
 
     // Use captured viewport if available and not in edit mode
     const initialBounds =
-      !isGlobalMap &&
-      dashboardMode !== DashboardMode.EDIT &&
-      mapState.capturedViewport
-        ? mapState.capturedViewport
-        : mapState.minMapBounds;
+      useLandingViewBounds && landingView
+        ? landingView.bounds
+        : !isGlobalMap &&
+            dashboardMode !== DashboardMode.EDIT &&
+            mapState.capturedViewport
+          ? mapState.capturedViewport
+          : mapState.minMapBounds;
 
     return (
-      <MapGL
-        key={smDown ? 'mobile' : 'desktop'}
-        ref={mapRef}
-        // preserveDrawingBuffer is required for the map to be exported as an image. Used in reportDoc.tsx
-        preserveDrawingBuffer
-        dragRotate={false}
-        minZoom={minZoom}
-        maxZoom={maxZoom}
-        initialViewState={{
-          bounds: initialBounds as LngLatBoundsLike,
-          fitBoundsOptions: smDown
-            ? undefined
-            : { padding: fitBoundsOptions.padding },
-        }}
-        mapStyle={mapStyle}
-        onLoad={onMapLoadWithLabelFilter}
-        onClick={mapOnClick}
-        maxBounds={maxBounds}
-      >
-        {stackLayers.map((layer, index) => {
-          const { component } = componentTypes[layer.type];
-          return createElement(component as any, {
-            key: layer.id,
-            layer,
-            before: getBeforeId(index, layerUsesSymbolAnchorOnly(layer)),
-          });
-        })}
-        <AnalysisLayer before={firstBoundaryId} mapRef={mapRef} />
-        <SelectionLayer before={firstSymbolId} />
-        <MapTooltip />
-        {children}
-      </MapGL>
+      <DeckGLLayersProvider>
+        <MapGL
+          key={smDown ? 'mobile' : 'desktop'}
+          ref={mapRef}
+          // preserveDrawingBuffer is required for the map to be exported as an image. Used in reportDoc.tsx
+          canvasContextAttributes={{ preserveDrawingBuffer: true }}
+          dragRotate={false}
+          minZoom={minZoom}
+          maxZoom={maxZoom}
+          initialViewState={{
+            bounds: initialBounds as LngLatBoundsLike,
+            ...(useLandingViewBounds && landingView && !smDown
+              ? {
+                  padding: landingView.padding,
+                  fitBoundsOptions: { padding: landingView.padding },
+                }
+              : {
+                  fitBoundsOptions: smDown
+                    ? undefined
+                    : { padding: fitBoundsOptions.padding },
+                }),
+          }}
+          mapStyle={mapStyle}
+          projection={projection}
+          sky={isGlobeProjection ? mapSky : undefined}
+          style={{
+            width: '100%',
+            height: '100%',
+            background: isGlobeProjection ? mapBackdropColor : 'transparent',
+            transition: 'background-color 300ms ease',
+          }}
+          onLoad={onMapLoadWithLabelFilter}
+          onClick={mapOnClick}
+          maxBounds={maxBounds}
+        >
+          {hasDeckLayers && (
+            <Suspense fallback={null}>
+              <DeckGLOverlay />
+            </Suspense>
+          )}
+          {stackLayers.map((layer, index) => {
+            const { component } = componentTypes[layer.type];
+            return createElement(component as any, {
+              key: layer.id,
+              layer,
+              before: getBeforeId(index, layerUsesSymbolAnchorOnly(layer)),
+            });
+          })}
+          <AnalysisLayer before={firstBoundaryId} mapRef={mapRef} />
+          <SelectionLayer before={firstSymbolId} />
+          <MapTooltip />
+          {children}
+        </MapGL>
+      </DeckGLLayersProvider>
     );
   },
 );

@@ -484,11 +484,7 @@ export const useAnalysisExecution = (
           }
         });
 
-        safeDispatchAddLayer(
-          map,
-          { ...forceAdminLevel, isPrimary: true },
-          dispatch,
-        );
+        safeDispatchAddLayer(map, forceAdminLevel, dispatch);
         return;
       }
 
@@ -511,11 +507,7 @@ export const useAnalysisExecution = (
           }
         });
 
-        safeDispatchAddLayer(
-          map,
-          { ...boundaryLayer, isPrimary: true },
-          dispatch,
-        );
+        safeDispatchAddLayer(map, boundaryLayer, dispatch);
       } else {
         getDisplayBoundaryLayersForIso3(iso3).forEach(l => {
           safeDispatchAddLayer(map, l, dispatch);

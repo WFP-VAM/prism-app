@@ -116,25 +116,65 @@ exports[`renders as expected 1`] = `
         <div
           class="MuiBox-root css-8atqhb"
         >
-          <span
-            class="MuiCircularProgress-root MuiCircularProgress-indeterminate MuiCircularProgress-colorInherit css-gxw4l9-MuiCircularProgress-root"
-            role="progressbar"
-            style="width: 24px; height: 24px; padding: 2px;"
+          <div
+            class="MuiFormControl-root css-1iw3t7y-MuiFormControl-root"
           >
-            <svg
-              class="MuiCircularProgress-svg css-54pwck-MuiCircularProgress-svg"
-              viewBox="22 22 44 44"
+            <label
+              class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined css-y2rmh8-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="false"
             >
-              <circle
-                class="MuiCircularProgress-circle css-19t5dcl-MuiCircularProgress-circle"
-                cx="44"
-                cy="44"
-                fill="none"
-                r="20.2"
-                stroke-width="3.6"
+              Click the map to select
+            </label>
+            <div
+              class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary Mui-disabled MuiInputBase-formControl MuiSelect-root css-1ueleqi-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root"
+              style="color: black;"
+            >
+              <div
+                aria-disabled="true"
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                class="MuiSelect-select MuiSelect-outlined Mui-disabled MuiInputBase-input MuiOutlinedInput-input Mui-disabled css-13n6fiv-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input"
+                role="combobox"
+              >
+                Loading boundaries
+              </div>
+              <input
+                aria-hidden="true"
+                aria-invalid="false"
+                class="MuiSelect-nativeInput css-j0riat-MuiSelect-nativeInput"
+                disabled=""
+                id="_r_5_"
+                tabindex="-1"
+                value=""
               />
-            </svg>
-          </span>
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon Mui-disabled css-1rfqz7c-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+                data-testid="ArrowDropDownIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M7 10l5 5 5-5z"
+                />
+              </svg>
+              <fieldset
+                aria-hidden="true"
+                class="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
+              >
+                <legend
+                  class="css-1nf2c5d-MuiNotchedOutlined-root"
+                >
+                  <span
+                    aria-hidden="true"
+                    class="notranslate"
+                  >
+                    ​
+                  </span>
+                </legend>
+              </fieldset>
+            </div>
+          </div>
         </div>
       </div>
       <div

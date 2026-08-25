@@ -9,6 +9,7 @@ import {
   AvailableDates,
   BoundaryLayerProps,
   checkRequiredKeys,
+  CogLayerProps,
   CompositeLayerProps,
   Dashboard,
   DateItem,
@@ -107,6 +108,11 @@ export const getLayerByKey = (layerKey: LayerKey): LayerType => {
   switch (definition.type) {
     case 'wms':
       if (checkRequiredKeys(WMSLayerProps, definition, true)) {
+        return definition;
+      }
+      return throwInvalidLayer();
+    case 'cog':
+      if (checkRequiredKeys(CogLayerProps, definition, true)) {
         return definition;
       }
       return throwInvalidLayer();
@@ -335,9 +341,14 @@ export function getBoundaryLayersByAdminLevel(adminLevel?: number) {
   return getBoundaryLayerSingleton();
 }
 
-export const isPrimaryBoundaryLayer = (layer: BoundaryLayerProps) =>
-  (layer.type === 'boundary' && layer.isPrimary) ||
-  layer.id === getBoundaryLayerSingleton().id;
+// Deepest boundary layer shown in the Go To / region dropdowns, used to build
+// the relation tree. Skips hideInGoTo layers to avoid the dense admin3 dataset.
+export function getRelationSourceBoundaryLayer(): BoundaryLayerProps {
+  const displayed = getDisplayBoundaryLayers();
+  return (
+    displayed.find(layer => !layer.hideInGoTo) ?? getBoundaryLayerSingleton()
+  );
+}
 
 export function getWMSLayersWithChart(): WMSLayerProps[] {
   return Object.values(LayerDefinitions).filter(
