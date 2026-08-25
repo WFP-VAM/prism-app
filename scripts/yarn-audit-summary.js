@@ -49,6 +49,9 @@ function formatAuditFailureReport(lines) {
   const grouped = new Map();
 
   for (const advisoryData of advisories) {
+    if (isIgnoredAdvisory(advisoryData)) {
+      continue;
+    }
     const advisory = advisoryData.advisory || {};
     const pathValue = advisoryData.resolution?.path || '(unknown path)';
     const ids = [
