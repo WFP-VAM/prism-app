@@ -11,12 +11,21 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
+# docker-compose.deploy.yml uses ${VAR:?} substitutions. Load them if missing
+# (make health / make deploy source set_envs.sh first; this covers direct invocation).
+if [[ -z "${INFO_EMAIL:-}" && -f "${ROOT}/set_envs.sh" ]]; then
+  # shellcheck disable=SC1091
+  source "${ROOT}/set_envs.sh"
+fi
+
 COMPOSE="docker compose -f docker-compose.yml -f docker-compose.deploy.yml"
 LOG_FILE="${ROOT}/logs/health.log"
 WORKER_REPLICAS="${WORKER_REPLICAS:-2}"
 API_URL="${HEALTHCHECK_API_URL:-http://localhost:80/}"
 API_RETRIES="${HEALTHCHECK_API_RETRIES:-5}"
 API_RETRY_INTERVAL="${HEALTHCHECK_API_RETRY_INTERVAL:-3}"
+# Do not fall back to OS HOSTNAME (often an EC2 internal name).
+PUBLIC_HOST="${HEALTHCHECK_PUBLIC_HOST:-}"
 
 mkdir -p "${ROOT}/logs"
 
@@ -59,12 +68,13 @@ check_api_local() {
 }
 
 check_api_public() {
-  if [[ -z "${HOSTNAME:-}" ]]; then
-    log "⏭️  [api-public] SKIP (HOSTNAME not set)"
+  local url body
+  if [[ -z "$PUBLIC_HOST" ]]; then
+    log "⏭️  [api-public] SKIP (HEALTHCHECK_PUBLIC_HOST not set)"
     return 0
   fi
 
-  local url="https://${HOSTNAME}/"
+  url="https://${PUBLIC_HOST}/"
   if body="$(curl -sf --max-time 10 "$url" 2>/dev/null)" && [[ "$body" == *"All good!"* ]]; then
     log "✅ [api-public] OK (${url})"
     return 0
@@ -88,7 +98,8 @@ check_traefik() {
 
 check_export_map_worker() {
   local count
-  count="$($COMPOSE ps --status running -q export_map_worker 2>/dev/null | wc -l | tr -d ' ')"
+  count="$($COMPOSE ps --status running -q export_map_worker 2>/dev/null | wc -l | tr -d ' ' || true)"
+  count="${count:-0}"
   if [[ "$count" -ge "$WORKER_REPLICAS" ]]; then
     log "✅ [export_map_worker] OK (${count}/${WORKER_REPLICAS} replicas running)"
     record_pass
@@ -101,8 +112,6 @@ check_export_map_worker() {
 
 main() {
   log "=== deploy health check ==="
-
-  echo "💡 requires env vars set in set_envs.sh"
 
   check_api_local || true
   check_api_public || true
