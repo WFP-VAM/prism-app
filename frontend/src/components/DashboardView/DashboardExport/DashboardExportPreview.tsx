@@ -1,11 +1,15 @@
-import { Box, makeStyles } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { useContext } from 'react';
 
 import DashboardContent from '../DashboardContent';
 import DashboardExportContext, { PAPER_SIZES } from './dashboardExport.context';
+import {
+  dashboardExportContentSx,
+  dashboardExportPreviewContainerSx,
+  dashboardExportPreviewWrapperSx,
+} from './dashboardExportStyles';
 
 function DashboardExportPreview() {
-  const classes = useStyles();
   const { exportConfig } = useContext(DashboardExportContext);
 
   if (!exportConfig) {
@@ -53,11 +57,11 @@ function DashboardExportPreview() {
   };
 
   return (
-    <Box className={classes.previewContainer}>
-      <Box className={classes.previewWrapper}>
-        <div
+    <Box sx={dashboardExportPreviewContainerSx}>
+      <Box sx={dashboardExportPreviewWrapperSx}>
+        <Box
           ref={printRef}
-          className={classes.exportContent}
+          sx={dashboardExportContentSx}
           style={containerStyle}
         >
           <DashboardContent
@@ -65,34 +69,10 @@ function DashboardExportPreview() {
             logoConfig={logoConfig}
             exportConfig={exportConfigForContent}
           />
-        </div>
+        </Box>
       </Box>
     </Box>
   );
 }
-
-const useStyles = makeStyles(() => ({
-  previewContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    flexGrow: 1,
-    overflow: 'auto',
-    backgroundColor: '#E0E0E0',
-  },
-  previewWrapper: {
-    display: 'flex',
-    alignItems: 'flex-start',
-    padding: 24,
-    minHeight: '100%',
-    minWidth: 'fit-content',
-    boxSizing: 'border-box',
-  },
-  exportContent: {
-    backgroundColor: '#F8F8F8',
-    display: 'flex',
-    flexDirection: 'column',
-    boxSizing: 'border-box',
-  },
-}));
 
 export default DashboardExportPreview;

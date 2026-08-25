@@ -1,11 +1,11 @@
 import {
   FormControl,
   InputLabel,
-  makeStyles,
   MenuItem,
   Select,
   Theme,
-} from '@material-ui/core';
+} from '@mui/material';
+import type { SxProps } from '@mui/material/styles';
 import {
   boundaryRelationSelector,
   mapSelector,
@@ -19,42 +19,47 @@ import SearchBar from './searchBar';
 import {
   containsText,
   createMatchesTree,
+  getMenuItemSx,
   MapInteraction,
-  setMenuItemStyle,
 } from './utils';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  header: {
+const headerSx = {
+  textTransform: 'uppercase',
+  letterSpacing: '3px',
+  fontSize: '0.7em',
+} satisfies SxProps<Theme>;
+
+const subHeaderSx = {
+  paddingLeft: '2em',
+} satisfies SxProps<Theme>;
+
+const menuItemSx = {
+  paddingLeft: '2.8em',
+  fontSize: '0.9em',
+} satisfies SxProps<Theme>;
+
+const menuItemStyles = {
+  header: headerSx,
+  subHeader: subHeaderSx,
+  menuItem: menuItemSx,
+};
+
+const formControlSx = (theme: Theme) => ({
+  width: '100%',
+  '& > .MuiInputLabel-shrink': { display: 'none' },
+  '& > .MuiInput-root': { margin: 0 },
+  '& label': {
     textTransform: 'uppercase',
     letterSpacing: '3px',
-    fontSize: '0.7em',
+    fontSize: '11px',
+    position: 'absolute',
+    top: '-13px',
   },
-  subHeader: {
-    paddingLeft: '2em',
+  '& .MuiSelect-icon': {
+    color: theme.palette.text.primary,
+    fontSize: '1.25rem',
   },
-  menuItem: {
-    paddingLeft: '2.8em',
-    fontSize: '0.9em',
-  },
-  select: {
-    '& .MuiSelect-icon': {
-      color: theme.palette.text.primary,
-      fontSize: '1.25rem',
-    },
-  },
-  formControl: {
-    width: '100%',
-    '& > .MuiInputLabel-shrink': { display: 'none' },
-    '& > .MuiInput-root': { margin: 0 },
-    '& label': {
-      textTransform: 'uppercase',
-      letterSpacing: '3px',
-      fontSize: '11px',
-      position: 'absolute',
-      top: '-13px',
-    },
-  },
-}));
+});
 
 type BoundaryDropdownProps = {
   labelText: string;
@@ -69,8 +74,6 @@ const BoundaryDropdown = memo(
 
     const map = useSelector(mapSelector);
     const { i18n: i18nLocale } = useSafeTranslation();
-
-    const styles = useStyles();
 
     const levelsRelations = useMemo(
       () => boundaryRelationDataDict[i18nLocale.language],
@@ -115,17 +118,17 @@ const BoundaryDropdown = memo(
       return relationsToRender.map(item => (
         <MenuItem
           key={`${item.name}-${item.parent}-${item.level}`}
-          className={setMenuItemStyle(
+          sx={getMenuItemSx(
             item.level,
             levelsRelations?.levels,
-            styles,
+            menuItemStyles,
           )}
           value={item.bbox.join(',')}
         >
           {item.name}
         </MenuItem>
       ));
-    }, [levelsRelations, relationsToRender, styles]);
+    }, [levelsRelations, relationsToRender]);
 
     const handleChange = useCallback(
       (event: any) => {
@@ -152,7 +155,7 @@ const BoundaryDropdown = memo(
         return null;
       }
       return (
-        <FormControl className={styles.formControl}>
+        <FormControl sx={formControlSx}>
           <InputLabel id="boundary-dropdown">{labelText}</InputLabel>
           <Select
             // Disables auto focus on MenuItems and allows search bar to be in focus
@@ -166,7 +169,6 @@ const BoundaryDropdown = memo(
             id="select-dropdown"
             value={selected}
             onChange={handleChange}
-            className={styles.select}
             onClose={() => setSearch('')}
           >
             <SearchBar setSearch={setSearch} />
@@ -181,8 +183,6 @@ const BoundaryDropdown = memo(
       labelText,
       map,
       selected,
-      styles.formControl,
-      styles.select,
     ]);
   },
 );

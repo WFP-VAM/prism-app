@@ -1,15 +1,12 @@
 import {
   Box,
   Button,
-  createStyles,
   Divider,
   LinearProgress,
   List,
   ListItem,
-  makeStyles,
-  Theme,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import { addNotification } from 'context/notificationStateSlice';
 import { useSafeTranslation } from 'i18n';
 import type { TFunction } from 'i18next';
@@ -46,7 +43,6 @@ type Props = {
 function BatchMapExportJobRows({ jobs, onDismiss, variant }: Props) {
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
-  const classes = useStyles();
   const dense = variant === 'compact';
 
   const sorted = useMemo(
@@ -61,14 +57,24 @@ function BatchMapExportJobRows({ jobs, onDismiss, variant }: Props) {
     return null;
   }
 
-  const listClass =
-    variant === 'panel' ? `${classes.list} ${classes.listPanel}` : classes.list;
-
   return (
     <List
       dense={dense}
       disablePadding
-      className={listClass}
+      sx={theme => ({
+        width: '100%',
+        maxWidth: '100%',
+        boxSizing: 'border-box',
+        ...(variant === 'panel'
+          ? {
+              backgroundColor: theme.palette.grey[50],
+              borderRadius: theme.shape.borderRadius,
+              border: `1px solid ${theme.palette.divider}`,
+              paddingTop: theme.spacing(0.5),
+              paddingBottom: theme.spacing(0.5),
+            }
+          : {}),
+      })}
       data-testid="batch-map-export-job-list"
     >
       {sorted.map((job, idx) => {
@@ -82,19 +88,39 @@ function BatchMapExportJobRows({ jobs, onDismiss, variant }: Props) {
         return (
           <React.Fragment key={job.clientId}>
             {idx > 0 && <Divider component="li" />}
-            <ListItem alignItems="flex-start" className={classes.listItem}>
-              <Box className={classes.jobBody}>
+            <ListItem
+              alignItems="flex-start"
+              sx={{
+                flexDirection: 'column',
+                alignItems: 'stretch',
+              }}
+            >
+              <Box
+                sx={{
+                  minWidth: 0,
+                  width: '100%',
+                  maxWidth: '100%',
+                  boxSizing: 'border-box',
+                }}
+              >
                 <Typography
                   variant="subtitle2"
                   component="div"
-                  className={classes.jobLineText}
+                  sx={{
+                    overflowWrap: 'break-word',
+                    wordBreak: 'break-word',
+                  }}
                 >
                   {t(job.layerDisplayName)}
                 </Typography>
                 <Typography
                   variant="subtitle2"
                   component="div"
-                  className={`${classes.datesLine} ${classes.jobLineText}`}
+                  sx={theme => ({
+                    overflowWrap: 'break-word',
+                    wordBreak: 'break-word',
+                    marginTop: theme.spacing(0.25),
+                  })}
                 >
                   {job.datesSummary}
                 </Typography>
@@ -103,7 +129,11 @@ function BatchMapExportJobRows({ jobs, onDismiss, variant }: Props) {
                     variant="subtitle2"
                     color="error"
                     component="div"
-                    className={`${classes.progressArea} ${classes.jobLineText}`}
+                    sx={theme => ({
+                      overflowWrap: 'break-word',
+                      wordBreak: 'break-word',
+                      marginTop: theme.spacing(1),
+                    })}
                   >
                     {job.error ??
                       t('Batch export failed: {{message}}', {
@@ -111,12 +141,17 @@ function BatchMapExportJobRows({ jobs, onDismiss, variant }: Props) {
                       })}
                   </Typography>
                 ) : showProgress ? (
-                  <Box className={classes.progressArea}>
+                  <Box sx={theme => ({ marginTop: theme.spacing(1) })}>
                     <Typography
                       variant="subtitle2"
                       color="textSecondary"
                       component="div"
-                      className={`${classes.statusProgressLine} ${classes.jobLineText}`}
+                      sx={theme => ({
+                        overflowWrap: 'break-word',
+                        wordBreak: 'break-word',
+                        textTransform: 'none',
+                        marginBottom: theme.spacing(0.75),
+                      })}
                     >
                       {t('batch_export_status_and_maps', {
                         status: batchExportStatusLabel(displayStatus, t),
@@ -125,13 +160,24 @@ function BatchMapExportJobRows({ jobs, onDismiss, variant }: Props) {
                       })}
                     </Typography>
                     <LinearProgress
-                      className={classes.progress}
+                      sx={theme => ({
+                        height: 6,
+                        borderRadius: theme.shape.borderRadius,
+                      })}
                       variant={barMode}
                       value={barValue}
                     />
                   </Box>
                 ) : null}
-                <Box className={classes.actions}>
+                <Box
+                  sx={theme => ({
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    justifyContent: 'flex-end',
+                    gap: theme.spacing(1),
+                    marginTop: theme.spacing(1),
+                  })}
+                >
                   <Button
                     color="primary"
                     size="small"
@@ -181,59 +227,5 @@ function BatchMapExportJobRows({ jobs, onDismiss, variant }: Props) {
     </List>
   );
 }
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    list: {
-      width: '100%',
-      maxWidth: '100%',
-      boxSizing: 'border-box',
-    },
-    listPanel: {
-      backgroundColor: theme.palette.grey[50],
-      borderRadius: theme.shape.borderRadius,
-      border: `1px solid ${theme.palette.divider}`,
-      paddingTop: theme.spacing(0.5),
-      paddingBottom: theme.spacing(0.5),
-      boxSizing: 'border-box',
-      maxWidth: '100%',
-    },
-    listItem: {
-      flexDirection: 'column',
-      alignItems: 'stretch',
-    },
-    jobBody: {
-      minWidth: 0,
-      width: '100%',
-      maxWidth: '100%',
-      boxSizing: 'border-box',
-    },
-    jobLineText: {
-      overflowWrap: 'break-word',
-      wordBreak: 'break-word',
-    },
-    datesLine: {
-      marginTop: theme.spacing(0.25),
-    },
-    progressArea: {
-      marginTop: theme.spacing(1),
-    },
-    statusProgressLine: {
-      textTransform: 'none',
-      marginBottom: theme.spacing(0.75),
-    },
-    progress: {
-      height: 6,
-      borderRadius: theme.shape.borderRadius,
-    },
-    actions: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      justifyContent: 'flex-end',
-      gap: theme.spacing(1),
-      marginTop: theme.spacing(1),
-    },
-  }),
-);
 
 export default BatchMapExportJobRows;

@@ -1,14 +1,11 @@
+import OpacityIcon from '@mui/icons-material/Opacity';
+import { Box, IconButton, Slider, Tooltip, Typography } from '@mui/material';
+import Switch from 'components/Common/Switch';
 import {
-  Box,
-  IconButton,
-  makeStyles,
-  Slider,
-  Switch,
-  Tooltip,
-  Typography,
-} from '@material-ui/core';
-import OpacityIcon from '@material-ui/icons/Opacity';
-import { createStyles } from '@material-ui/styles';
+  layerDaySelectTitleSx,
+  opacitySliderSx,
+  switchItemOpacityButtonSx,
+} from 'components/MapView/LeftPanel/layersPanel/layerPanelStyles';
 import { clearAnalysisResult } from 'context/analysisResultStateSlice';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import {
@@ -41,7 +38,6 @@ const AnalysisLayerSwitchItem = memo(
     analysisResultSortOrder,
     analysisResultSortByKey,
   }: AnalysisLayerSwitchItemProps) => {
-    const classes = useStyles();
     const dispatch = useDispatch();
     const map = useSelector(mapSelector);
     const [selected, setSelected] = useState<boolean>(true);
@@ -69,11 +65,13 @@ const AnalysisLayerSwitchItem = memo(
       }
     }, [initialOpacity, opacity, setOpacity]);
 
-    const handleOnChangeSwitch = useCallback(() => {
-      setSelected(!selected);
-      // The toggle button will be by default toggled
-      dispatch(clearAnalysisResult());
-    }, [dispatch, selected]);
+    const handleOnChangeSwitch = useCallback(
+      (event: ChangeEvent<HTMLInputElement>) => {
+        setSelected(event.target.checked);
+        dispatch(clearAnalysisResult());
+      },
+      [dispatch],
+    );
 
     const handleOpacityClick = useCallback(() => {
       setIsOpacitySelected(!isOpacitySelected);
@@ -97,7 +95,7 @@ const AnalysisLayerSwitchItem = memo(
             }}
           >
             <Typography
-              classes={{ root: classes.opacityText }}
+              sx={opacitySliderSx.text}
             >{`Opacity ${Math.round((opacity || 0) * 100)}%`}</Typography>
           </Box>
           <Box
@@ -112,72 +110,18 @@ const AnalysisLayerSwitchItem = memo(
               min={0}
               max={1}
               aria-labelledby="left-opacity-slider"
-              classes={{
-                root: classes.opacitySliderRoot,
-                thumb: classes.opacitySliderThumb,
-              }}
-              onChange={(_event: ChangeEvent<{}>, value: number | number[]) => {
+              sx={opacitySliderSx.root}
+              onChange={(_event: Event, value: number | number[]) => {
                 setOpacity(value as number);
               }}
             />
           </Box>
         </Box>
       );
-    }, [
-      classes.opacitySliderRoot,
-      classes.opacitySliderThumb,
-      classes.opacityText,
-      isOpacitySelected,
-      opacity,
-      selected,
-      setOpacity,
-    ]);
-
-    const renderedOpacityIconButton = useMemo(() => {
-      if (!selected) {
-        return (
-          <IconButton
-            disabled={!selected}
-            classes={{
-              root: isOpacitySelected
-                ? classes.opacityRootSelected
-                : classes.opacityRoot,
-            }}
-            onClick={handleOpacityClick}
-          >
-            <OpacityIcon />
-          </IconButton>
-        );
-      }
-      return (
-        <Tooltip title={t('Opacity') as string}>
-          <span>
-            <IconButton
-              disabled={!selected}
-              classes={{
-                root: isOpacitySelected
-                  ? classes.opacityRootSelected
-                  : classes.opacityRoot,
-              }}
-              onClick={handleOpacityClick}
-            >
-              <OpacityIcon />
-            </IconButton>
-          </span>
-        </Tooltip>
-      );
-    }, [
-      classes.opacityRoot,
-      classes.opacityRootSelected,
-      handleOpacityClick,
-      isOpacitySelected,
-      selected,
-      t,
-    ]);
+    }, [isOpacitySelected, opacity, selected, setOpacity]);
 
     return (
       <Box
-        className={classes.analysisLayerSwitchRootItem}
         style={{
           display: 'flex',
           flexDirection: 'column',
@@ -189,121 +133,39 @@ const AnalysisLayerSwitchItem = memo(
             display: 'flex',
             alignItems: 'center',
           }}
+          onMouseDown={e => e.stopPropagation()}
         >
-          <div style={{ display: 'flex' }}>
-            <Switch
-              size="small"
-              className={classes.switch}
-              classes={{
-                switchBase: classes.switchBase,
-                track: classes.switchTrack,
-              }}
-              checked={selected}
-              onChange={handleOnChangeSwitch}
-              inputProps={{
-                'aria-label': title,
-              }}
-            />
-            <Typography
-              className={selected ? classes.title : classes.titleUnchecked}
-            >
-              {title}
-            </Typography>
-          </div>
-          <Box
-            key="analysis-layer"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            {renderedOpacityIconButton}
-            <AnalysisLayerSwitchItemDownloadOptions
-              analysisData={analysisData}
-              analysisResultSortByKey={analysisResultSortByKey}
-              analysisResultSortOrder={analysisResultSortOrder}
-              selected={selected}
-            />
-          </Box>
+          <Switch
+            checked={selected}
+            onChange={handleOnChangeSwitch}
+            ariaLabel={title}
+          />
+          <Typography sx={layerDaySelectTitleSx(selected, false)}>
+            {title}
+          </Typography>
+          <Tooltip title={t('Opacity') as string}>
+            <span style={{ marginLeft: 'auto' }}>
+              <IconButton
+                disabled={!selected}
+                sx={switchItemOpacityButtonSx(selected, isOpacitySelected)}
+                onClick={handleOpacityClick}
+                size="large"
+              >
+                <OpacityIcon />
+              </IconButton>
+            </span>
+          </Tooltip>
+          <AnalysisLayerSwitchItemDownloadOptions
+            analysisData={analysisData}
+            analysisResultSortByKey={analysisResultSortByKey}
+            analysisResultSortOrder={analysisResultSortOrder}
+            selected={selected}
+          />
         </Box>
         {renderedOpacitySlider}
       </Box>
     );
   },
-);
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    analysisLayerSwitchRootItem: {
-      backgroundColor: '#FFFFFF',
-    },
-    title: {
-      lineHeight: 1.8,
-      color: 'black',
-      fontWeight: 400,
-    },
-    titleUnchecked: {
-      lineHeight: 1.8,
-      fontWeight: 400,
-    },
-    select: {
-      '&::before': {
-        border: 'none',
-      },
-    },
-    selectItem: {
-      whiteSpace: 'normal',
-      fontSize: 13,
-      fontWeight: 300,
-      color: 'black',
-      padding: 0,
-      marginLeft: 5,
-    },
-    selectItemUnchecked: {
-      whiteSpace: 'normal',
-      fontSize: 13,
-      fontWeight: 300,
-      padding: 0,
-      marginLeft: 5,
-    },
-    switch: {
-      marginRight: 2,
-    },
-    switchTrack: {
-      backgroundColor: '#E0E0E0',
-    },
-    switchBase: {
-      color: '#E0E0E0',
-      '&.Mui-checked': {
-        color: '#53888F',
-      },
-      '&.Mui-checked + .MuiSwitch-track': {
-        backgroundColor: '#B1D6DB',
-      },
-    },
-    opacityRoot: {
-      marginLeft: 'auto',
-    },
-    opacityRootSelected: {
-      backgroundColor: '#4CA1AD',
-      color: '#F2F2F2',
-      marginLeft: 'auto',
-      '&:hover': {
-        color: '#4CA1AD',
-      },
-    },
-    opacityText: {
-      color: '#4CA1AD',
-      marginBottom: '10px',
-    },
-    opacitySliderRoot: {
-      color: '#4CA1AD',
-      height: 8,
-    },
-    opacitySliderThumb: {
-      backgroundColor: '#4CA1AD',
-    },
-  }),
 );
 
 interface AnalysisLayerSwitchItemProps {

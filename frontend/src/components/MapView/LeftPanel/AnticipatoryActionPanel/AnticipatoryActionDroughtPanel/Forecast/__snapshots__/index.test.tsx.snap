@@ -2,47 +2,47 @@
 
 exports[`renders as expected 1`] = `
 <div>
-  <mock-typography
+  <h3
+    class="MuiTypography-root MuiTypography-h3 css-ae1vz0-MuiTypography-root"
     style="margin-left: 1rem;"
-    variant="h3"
   >
     Forecast data as of 
     December 1, 2023
-  </mock-typography>
+  </h3>
   <div
-    class="makeStyles-charts-2"
+    class="MuiBox-root css-dhqezv"
   >
     <div
-      class="makeStyles-chartsHeader-3"
+      class="MuiBox-root css-1jndf0t"
     >
       <div
-        style="min-width: 3rem;"
+        class="MuiBox-root css-1m78t8x"
       />
-      <mock-typography
-        class="makeStyles-label-8"
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-1hkxiz6-MuiTypography-root"
       >
         SPI DJF
-      </mock-typography>
+      </p>
       <div
-        style="min-width: 10px;"
+        class="MuiBox-root css-f1zsqn"
       />
     </div>
     <div
-      class="makeStyles-chartLine-4"
+      class="MuiBox-root css-12pms27"
     >
       <div
-        class="makeStyles-textWrap-5"
+        class="MuiBox-root css-1hroxk7"
         style="background-color: rgb(255, 213, 45);"
       >
-        <mock-typography
-          class="makeStyles-text-6"
+        <p
+          class="MuiTypography-root MuiTypography-body1 css-7g79ta-MuiTypography-root"
           style="color: black; border: 1px solid black;"
         >
           Moderate
-        </mock-typography>
+        </p>
       </div>
       <div
-        class="makeStyles-chartWrapper-7"
+        class="MuiBox-root css-1a46w9a"
       >
         <canvas
           height="150"
@@ -51,21 +51,21 @@ exports[`renders as expected 1`] = `
       </div>
     </div>
     <div
-      class="makeStyles-chartLine-4"
+      class="MuiBox-root css-12pms27"
     >
       <div
-        class="makeStyles-textWrap-5"
+        class="MuiBox-root css-1hroxk7"
         style="background-color: rgb(255, 252, 179);"
       >
-        <mock-typography
-          class="makeStyles-text-6"
+        <p
+          class="MuiTypography-root MuiTypography-body1 css-7g79ta-MuiTypography-root"
           style="color: black; border: 1px solid black;"
         >
           Mild
-        </mock-typography>
+        </p>
       </div>
       <div
-        class="makeStyles-chartWrapper-7"
+        class="MuiBox-root css-1a46w9a"
       >
         <canvas
           height="150"
@@ -75,41 +75,72 @@ exports[`renders as expected 1`] = `
     </div>
   </div>
   <div
-    class="makeStyles-footerWrapperVert-14"
+    class="MuiBox-root css-9jay18"
   >
     <div
-      class="makeStyles-footerActionsWrapper-10"
+      class="MuiBox-root css-jekkxf"
     >
-      <mock-button
-        class="makeStyles-footerButton-12"
-        fullwidth=""
-        starticon="[object Object]"
-        variant="outlined"
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary MuiButton-fullWidth css-1jqm0xi-MuiButtonBase-root-MuiButton-root"
+        tabindex="0"
+        type="button"
       >
-        <mock-typography>
+        <span
+          class="MuiButton-icon MuiButton-startIcon css-1eozbo-MuiButton-startIcon"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="ReplyIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11"
+            />
+          </svg>
+        </span>
+        <p
+          class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+        >
           Back
-        </mock-typography>
-      </mock-button>
-      <mock-button
-        class="makeStyles-footerButton-12"
-        fullwidth=""
-        starticon="[object Object]"
-        variant="outlined"
+        </p>
+      </button>
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary MuiButton-fullWidth css-1jqm0xi-MuiButtonBase-root-MuiButton-root"
+        tabindex="0"
+        type="button"
       >
-        <mock-typography>
+        <span
+          class="MuiButton-icon MuiButton-startIcon css-1eozbo-MuiButton-startIcon"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="ClearAllIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M5 13h14v-2H5zm-2 4h14v-2H3zM7 7v2h14V7z"
+            />
+          </svg>
+        </span>
+        <p
+          class="MuiTypography-root MuiTypography-body1 css-l0p3u8-MuiTypography-root"
+        >
           Timeline
-        </mock-typography>
-      </mock-button>
+        </p>
+      </button>
     </div>
     <div
-      class="makeStyles-footerDialogsWrapperVert-15"
+      class="MuiBox-root css-xggrxg"
     >
-      <mock-typography
-        class="makeStyles-footerDialog-13"
-        component="button"
+      <button
+        class="MuiTypography-root MuiTypography-body1 css-1uj4td3-MuiTypography-root"
       >
         How to read this screen
-      </mock-typography>
+      </button>
     </div>
   </div>
 </div>

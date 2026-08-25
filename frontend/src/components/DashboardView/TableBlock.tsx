@@ -1,14 +1,13 @@
+import GetAppIcon from '@mui/icons-material/GetApp';
 import {
   Box,
   Button,
   CircularProgress,
   IconButton,
-  makeStyles,
   TextField,
   Tooltip,
   Typography,
-} from '@material-ui/core';
-import GetAppIcon from '@material-ui/icons/GetApp';
+} from '@mui/material';
 import {
   AdminLevelSelector,
   BaselineLayerSelector,
@@ -54,6 +53,21 @@ import {
   updateTableState,
 } from '../../context/dashboardStateSlice';
 import BlockPreviewHeader from './BlockPreviewHeader';
+import {
+  tableBlockDateAnalysisRowSx,
+  tableBlockDateColumnSx,
+  tableBlockFormContainerSx,
+  tableBlockFormSectionSx,
+  tableBlockGrayCardSx,
+  tableBlockLoadingContainerSx,
+  tableBlockMaxRowsInputSx,
+  tableBlockPreviewContainerSx,
+  tableBlockPreviewHeaderWrapperSx,
+  tableBlockPreviewTableWrapperSx,
+  tableBlockRerunButtonSx,
+  tableBlockStatisticThresholdRowSx,
+  tableBlockTitleSx,
+} from './tableBlockStyles';
 
 interface TableBlockProps extends Partial<DashboardTableConfig> {
   index: number;
@@ -81,7 +95,6 @@ function TableBlock({
   sortOrder: _initialSortOrder = 'asc',
   headerSlot,
 }: TableBlockProps) {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const mode = useSelector(dashboardModeSelector);
@@ -391,7 +404,7 @@ function TableBlock({
           ? t('Preparing to load analysis...')
           : t('Loading analysis data...');
       return (
-        <Box className={classes.loadingContainer}>
+        <Box sx={tableBlockLoadingContainerSx}>
           <CircularProgress size={40} />
           <Typography variant="body2" style={{ marginTop: 16 }}>
             {message}
@@ -407,7 +420,7 @@ function TableBlock({
       hasInitiatedAnalysis
     ) {
       return (
-        <Box className={classes.loadingContainer}>
+        <Box sx={tableBlockLoadingContainerSx}>
           <Typography
             variant="body2"
             color="error"
@@ -521,10 +534,10 @@ function TableBlock({
 
   if (mode === DashboardMode.VIEW) {
     return (
-      <Box className={classes.previewContainer}>
+      <Box sx={tableBlockPreviewContainerSx}>
         {formState.selectedHazardLayer ? (
           <>
-            <Box className={classes.previewHeaderWrapper}>
+            <Box sx={tableBlockPreviewHeaderWrapperSx}>
               <BlockPreviewHeader
                 title={generatePreviewTitle()}
                 subtitle={previewSubtitle}
@@ -541,7 +554,7 @@ function TableBlock({
                 }
               />
             </Box>
-            <Box className={classes.previewTableWrapper}>
+            <Box sx={tableBlockPreviewTableWrapperSx}>
               {renderPreviewTable()}
             </Box>
           </>
@@ -564,15 +577,15 @@ function TableBlock({
   }
 
   return (
-    <Box className={classes.grayCard}>
+    <Box sx={tableBlockGrayCardSx}>
       {headerSlot ?? (
-        <Typography variant="h3" className={classes.blockTitle}>
+        <Typography variant="h3" sx={tableBlockTitleSx}>
           {t('Table Block')} #{index + 1}
         </Typography>
       )}
 
-      <Box className={classes.formContainer}>
-        <Box className={classes.formSection}>
+      <Box sx={tableBlockFormContainerSx}>
+        <Box sx={tableBlockFormSectionSx}>
           <HazardLayerSelector
             value={formState.hazardLayerId}
             onChange={handleHazardLayerChange}
@@ -580,7 +593,7 @@ function TableBlock({
         </Box>
 
         {formState.hazardDataType === GeometryType.Polygon ? (
-          <Box className={classes.formSection}>
+          <Box sx={tableBlockFormSectionSx}>
             {!useLatest && (
               <DateRangeSelector
                 startDate={formState.startDate}
@@ -590,7 +603,7 @@ function TableBlock({
                 availableDates={formState.availableHazardDates}
               />
             )}
-            <Box className={classes.dateAnalysisRow}>
+            <Box sx={tableBlockDateAnalysisRowSx}>
               <AdminLevelSelector
                 value={formState.adminLevel}
                 onChange={formState.setAdminLevel}
@@ -601,7 +614,7 @@ function TableBlock({
                   color="primary"
                   onClick={() => runAnalyser()}
                   disabled={formState.isAnalysisLoading}
-                  className={classes.rerunButton}
+                  sx={tableBlockRerunButtonSx}
                 >
                   {t('Rerun Analysis')}
                 </Button>
@@ -609,13 +622,13 @@ function TableBlock({
             </Box>
           </Box>
         ) : (
-          <Box className={classes.formSection}>
+          <Box sx={tableBlockFormSectionSx}>
             <BaselineLayerSelector
               value={formState.baselineLayerId}
               onChange={handleBaselineLayerChange}
             />
 
-            <Box className={classes.statisticThresholdRow}>
+            <Box sx={tableBlockStatisticThresholdRowSx}>
               <StatisticSelector
                 value={formState.statistic}
                 onChange={handleStatisticChange}
@@ -634,9 +647,9 @@ function TableBlock({
               />
             </Box>
 
-            <Box className={classes.dateAnalysisRow}>
+            <Box sx={tableBlockDateAnalysisRowSx}>
               {!useLatest && (
-                <Box className={classes.dateColumn}>
+                <Box sx={tableBlockDateColumnSx}>
                   <DateSelector
                     selectedDate={formState.selectedDate}
                     onDateChange={handleSelectedDateChange}
@@ -653,8 +666,8 @@ function TableBlock({
                     Math.max(1, parseInt(e.target.value, 10) || 1),
                   )
                 }
-                inputProps={{ min: 1, max: 25 }}
-                className={classes.maxRowsInput}
+                slotProps={{ htmlInput: { min: 1, max: 25 } }}
+                sx={tableBlockMaxRowsInputSx}
                 size="small"
                 variant="outlined"
               />
@@ -664,7 +677,7 @@ function TableBlock({
                   color="primary"
                   onClick={() => runAnalyser()}
                   disabled={formState.isAnalysisLoading}
-                  className={classes.rerunButton}
+                  sx={tableBlockRerunButtonSx}
                 >
                   {t('Rerun Analysis')}
                 </Button>
@@ -674,109 +687,10 @@ function TableBlock({
         )}
 
         {/* Preview section */}
-        {formState.hazardLayerId && (
-          <Box className={classes.previewSection}>{renderPreviewTable()}</Box>
-        )}
+        {formState.hazardLayerId && <Box>{renderPreviewTable()}</Box>}
       </Box>
     </Box>
   );
 }
-
-const useStyles = makeStyles(theme => ({
-  grayCard: {
-    background: '#F1F1F1',
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 16,
-  },
-  maxRowsInput: {
-    width: 100,
-    marginBottom: 16,
-  },
-  previewContainer: {
-    background: 'white',
-    borderRadius: 8,
-    padding: 16,
-    maxWidth: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    overflow: 'hidden',
-    flex: 1,
-    minHeight: 0,
-  },
-  previewHeaderWrapper: {
-    flexShrink: 0,
-  },
-  previewTableWrapper: {
-    flex: 1,
-    minHeight: 0,
-    overflow: 'auto',
-    marginTop: 8,
-  },
-  blockTitle: {
-    fontWeight: 600,
-    marginBottom: theme.spacing(1),
-  },
-  formContainer: {
-    background: 'white',
-    borderRadius: 4,
-    padding: theme.spacing(2),
-    paddingTop: theme.spacing(4),
-    display: 'flex',
-    flexDirection: 'column',
-    marginTop: theme.spacing(1),
-  },
-  formSection: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: theme.spacing(1),
-  },
-  statisticThresholdRow: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: theme.spacing(2),
-    alignItems: 'flex-start',
-    '& > *': {
-      flex: 1,
-    },
-  },
-  dateAnalysisRow: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: theme.spacing(2),
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-    '& > *:first-child': {
-      flex: 1,
-    },
-  },
-  dateColumn: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: theme.spacing(0.5),
-    '& > *': {
-      marginBottom: '0 !important',
-    },
-  },
-  rerunButton: {
-    height: 40,
-    minWidth: 140,
-    marginBottom: theme.spacing(4),
-    whiteSpace: 'nowrap',
-  },
-  previewSection: {},
-  tableTitle: {
-    marginBottom: theme.spacing(2),
-    fontWeight: 600,
-    color: theme.palette.text.primary,
-  },
-  loadingContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: theme.spacing(4),
-  },
-}));
 
 export default TableBlock;

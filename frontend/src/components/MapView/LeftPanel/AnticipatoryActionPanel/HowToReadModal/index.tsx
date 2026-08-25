@@ -1,18 +1,17 @@
+import { Cancel, Close, HelpOutlined } from '@mui/icons-material';
 import {
+  Box,
   Button,
-  createStyles,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
-  makeStyles,
   Typography,
-} from '@material-ui/core';
-import { Cancel, Close, HelpOutline } from '@material-ui/icons';
+} from '@mui/material';
 import { useSafeTranslation } from 'i18n';
-import { black, cyanBlue } from 'muiTheme';
 
+import { howToReadModalSx } from '../aaPanelStyles';
 import { getAADroughtCountryConfig } from '../AnticipatoryActionDroughtPanel/utils/countryConfig';
 
 const content = getAADroughtCountryConfig().howToReadContent;
@@ -24,43 +23,46 @@ interface HowToReadModalProps {
 
 function HowToReadModal({ open, onClose }: HowToReadModalProps) {
   const { t } = useSafeTranslation();
-  const classes = useStyles();
 
   return (
     <Dialog open={open}>
       <DialogTitle>
-        <div className={classes.titleWrapper}>
+        <Box sx={howToReadModalSx.titleWrapper}>
           <Typography variant="h2">{t('How to read this screen')}</Typography>
-          <IconButton style={{ padding: 0 }} onClick={() => onClose()}>
+          <IconButton
+            style={{ padding: 0 }}
+            onClick={() => onClose()}
+            size="large"
+          >
             <Cancel />
           </IconButton>
-        </div>
+        </Box>
       </DialogTitle>
       <DialogContent dividers>
-        <div className={classes.contentWrapper}>
+        <Box sx={howToReadModalSx.contentWrapper}>
           {content.map(x => (
-            <div className={classes.contentItem} key={x.title.toLowerCase()}>
+            <Box sx={howToReadModalSx.contentItem} key={x.title.toLowerCase()}>
               <Typography variant="h3" style={{ fontWeight: 'bold' }}>
                 {t(x.title)}
               </Typography>{' '}
               <Typography variant="h3">{t(x.text)}</Typography>{' '}
-            </div>
+            </Box>
           ))}
-        </div>
+        </Box>
       </DialogContent>
-      <DialogActions className={classes.dialogActionsWrapper}>
+      <DialogActions sx={howToReadModalSx.dialogActionsWrapper}>
         <Button
           component="a"
           href="mailto:anticipatory_action@wfp.org"
           target="_blank"
-          className={classes.dialogButton}
+          sx={howToReadModalSx.dialogButton}
           variant="outlined"
-          startIcon={<HelpOutline />}
+          startIcon={<HelpOutlined />}
         >
           <Typography>{t('I STILL NEED HELP')}</Typography>
         </Button>
         <Button
-          className={classes.dialogButton}
+          sx={howToReadModalSx.dialogButton}
           variant="outlined"
           startIcon={<Close />}
           onClick={() => onClose()}
@@ -71,24 +73,5 @@ function HowToReadModal({ open, onClose }: HowToReadModalProps) {
     </Dialog>
   );
 }
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    titleWrapper: {
-      display: 'flex',
-      flexDirection: 'row',
-      flexWrap: 'nowrap',
-      justifyContent: 'space-between',
-    },
-    contentWrapper: { display: 'flex', flexDirection: 'column', gap: '2rem' },
-    contentItem: { display: 'flex', flexDirection: 'column', gap: '1rem' },
-    dialogActionsWrapper: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      padding: '1rem',
-    },
-    dialogButton: { borderColor: cyanBlue, color: black },
-  }),
-);
 
 export default HowToReadModal;

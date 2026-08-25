@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, Typography } from '@material-ui/core';
+import { Dialog, DialogContent, Typography } from '@mui/material';
 import parse from 'html-react-parser';
 import { marked } from 'marked';
 import { memo, useEffect, useRef, useState } from 'react';

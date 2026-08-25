@@ -1,4 +1,4 @@
-import { Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import { StyleSheet, Text, View } from '@react-pdf/renderer';
 import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
 import { chunk } from 'lodash';

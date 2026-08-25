@@ -2,32 +2,28 @@ import {
   Box,
   Button,
   Checkbox,
-  createStyles,
-  FormControl,
   FormControlLabel,
   FormGroup,
-  Input,
-  InputLabel,
   ListItemText,
-  makeStyles,
   MenuItem,
   MenuProps,
-  Select,
   Switch,
+  TextField,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
+import { SelectChangeEvent } from '@mui/material/Select';
 import { usePostHog } from '@posthog/react';
 import {
   ChartDateRangeSelector,
   ChartLocationSelector,
 } from 'components/Common/ChartFormComponents';
 import DownloadCsvButton from 'components/MapView/DownloadCsvButton';
+import { clearAllButtonSx } from 'components/MapView/panelButtonStyles';
 import { buildCsvFileName, getProperties } from 'components/MapView/utils';
 import {
   AdminCodeString,
   AdminLevelType,
   Panel,
-  PanelSize,
   WMSLayerProps,
 } from 'config/types';
 import { getWMSLayersWithChart } from 'config/utils';
@@ -61,6 +57,17 @@ import {
   oneYearInMs,
 } from '../utils';
 import ChartSection from './ChartSection';
+import {
+  chartsContainerSx,
+  chartsFormGroupSx,
+  chartsLayerFormControlSx,
+  chartsPanelChartsSx,
+  chartsPanelParamsSx,
+  chartsTextLabelSx,
+  compareSwitchSx,
+  compareSwitchTitleSx,
+  compareSwitchTitleUncheckedSx,
+} from './chartsPanelStyles';
 import DateSlider from './DateSlider';
 import TimePeriodSelector from './TimePeriodSelector';
 
@@ -68,11 +75,12 @@ import TimePeriodSelector from './TimePeriodSelector';
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const menuProps: Partial<MenuProps> = {
-  getContentAnchorEl: null,
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 'auto',
+  slotProps: {
+    paper: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 'auto',
+      },
     },
   },
 };
@@ -117,7 +125,6 @@ const ChartsPanel = memo(() => {
     const localKey = boundaryLayer?.adminLevelLocalNames?.[nameIndex];
     return (localKey && properties?.[localKey]) || englishName;
   };
-  const classes = useStyles();
   const [compareLocations, setCompareLocations] = useState(false);
   const [comparePeriods, setComparePeriods] = useState(false);
 
@@ -236,7 +243,7 @@ const ChartsPanel = memo(() => {
   const tabValue = useSelector(leftPanelTabValueSelector);
 
   const onChangeChartLayers = useCallback(
-    (event: React.ChangeEvent<{ value: unknown }>) => {
+    (event: SelectChangeEvent<string[]>) => {
       const newTitles =
         compareLocations || comparePeriods
           ? ([event.target.value] as string[])
@@ -261,36 +268,16 @@ const ChartsPanel = memo(() => {
   );
 
   useEffect(() => {
-    if (!countryAdmin0Id || !data) {
-      return;
+    if (!adminProperties && countryAdmin0Id && data) {
+      setAdminProperties(getProperties(data));
     }
-    if (adminProperties && secondAdminProperties) {
-      return;
-    }
+  }, [adminProperties, data]);
 
-    const properties = isUniversal
-      ? getProperties(
-          data,
-          String(countryAdmin0Id) as AdminCodeString,
-          0 as AdminLevelType,
-        )
-      : getProperties(data);
-
-    if (!adminProperties) {
-      setAdminProperties(properties);
-      setAdminLevel(0 as AdminLevelType);
+  useEffect(() => {
+    if (!secondAdminProperties && countryAdmin0Id && data) {
+      setSecondAdminProperties(getProperties(data));
     }
-    if (!secondAdminProperties) {
-      setSecondAdminProperties(properties);
-      setSecondAdminLevel(0 as AdminLevelType);
-    }
-  }, [
-    adminProperties,
-    secondAdminProperties,
-    countryAdmin0Id,
-    data,
-    isUniversal,
-  ]);
+  }, [secondAdminProperties, data]);
 
   const singleChartFilenamePrefix = React.useMemo(
     () =>
@@ -530,7 +517,7 @@ const ChartsPanel = memo(() => {
           position: 'relative',
         }}
       >
-        <Typography className={classes.textLabel}>{title[0]}</Typography>
+        <Typography sx={chartsTextLabelSx}>{title[0]}</Typography>
       </Box>
     ));
     // add a location string above everything if comparing periods
@@ -545,7 +532,7 @@ const ChartsPanel = memo(() => {
             position: 'relative',
           }}
         >
-          <Typography className={classes.textLabel}>
+          <Typography sx={chartsTextLabelSx}>
             {formatLocationString(
               getCountryName(adminProperties),
               selectedAdmin1Area,
@@ -561,7 +548,6 @@ const ChartsPanel = memo(() => {
     adminProperties,
     chartMaxDateRange,
     chartRange,
-    classes.textLabel,
     compareLocations,
     comparePeriods,
     endDate1,
@@ -674,31 +660,29 @@ const ChartsPanel = memo(() => {
         width: showChartsPanel ? '100vw' : undefined,
       }}
     >
-      <Box className={classes.chartsPanelParams}>
-        <FormGroup className={classes.formGroup}>
+      <Box sx={chartsPanelParamsSx}>
+        <FormGroup sx={chartsFormGroupSx}>
           <FormControlLabel
             style={{ marginLeft: 20 }}
             control={
               <Switch
                 checked={compareLocations}
                 size="small"
-                className={classes.switch}
-                classes={{
-                  switchBase: classes.switchBase,
-                  track: classes.switchTrack,
-                }}
+                sx={compareSwitchSx}
                 onChange={handleOnChangeCompareLocationsSwitch}
-                inputProps={{
-                  'aria-label': 'Compare Locations',
+                slotProps={{
+                  input: {
+                    'aria-label': 'Compare Locations',
+                  },
                 }}
               />
             }
             label={
               <Typography
-                className={
+                sx={
                   compareLocations
-                    ? classes.switchTitle
-                    : classes.switchTitleUnchecked
+                    ? compareSwitchTitleSx
+                    : compareSwitchTitleUncheckedSx
                 }
               >
                 {t('Compare Locations')}
@@ -713,8 +697,8 @@ const ChartsPanel = memo(() => {
                 style={{
                   color: 'black',
                   fontWeight: 600,
-                  marginBottom: 8,
-                  marginLeft: 10,
+                  marginBottom: '8px',
+                  marginLeft: '10px',
                 }}
                 variant="body2"
               >
@@ -773,8 +757,8 @@ const ChartsPanel = memo(() => {
                 style={{
                   color: 'black',
                   fontWeight: 600,
-                  marginBottom: 8,
-                  marginLeft: 10,
+                  marginBottom: '8px',
+                  marginLeft: '10px',
                 }}
                 variant="body2"
               >
@@ -829,30 +813,28 @@ const ChartsPanel = memo(() => {
           )}
         </FormGroup>
 
-        <FormGroup className={classes.formGroup}>
+        <FormGroup sx={chartsFormGroupSx}>
           <FormControlLabel
             style={{ marginLeft: 20 }}
             control={
               <Switch
                 checked={comparePeriods}
                 size="small"
-                className={classes.switch}
-                classes={{
-                  switchBase: classes.switchBase,
-                  track: classes.switchTrack,
-                }}
+                sx={compareSwitchSx}
                 onChange={handleOnChangeComparePeriodsSwitch}
-                inputProps={{
-                  'aria-label': 'Compare Periods',
+                slotProps={{
+                  input: {
+                    'aria-label': 'Compare Periods',
+                  },
                 }}
               />
             }
             label={
               <Typography
-                className={
+                sx={
                   comparePeriods
-                    ? classes.switchTitle
-                    : classes.switchTitleUnchecked
+                    ? compareSwitchTitleSx
+                    : compareSwitchTitleUncheckedSx
                 }
               >
                 {t('Compare Periods')}
@@ -868,8 +850,8 @@ const ChartsPanel = memo(() => {
                   style={{
                     color: 'black',
                     fontWeight: 600,
-                    marginBottom: 8,
-                    marginLeft: 10,
+                    marginBottom: '8px',
+                    marginLeft: '10px',
                   }}
                   variant="body2"
                 >
@@ -889,8 +871,8 @@ const ChartsPanel = memo(() => {
                   style={{
                     color: 'black',
                     fontWeight: 600,
-                    marginBottom: 8,
-                    marginLeft: 10,
+                    marginBottom: '8px',
+                    marginLeft: '10px',
                   }}
                   variant="body2"
                 >
@@ -909,34 +891,44 @@ const ChartsPanel = memo(() => {
           )}
         </FormGroup>
 
-        <FormControl className={classes.layerFormControl}>
-          <InputLabel id="chart-layers-mutiple-checkbox-label">
-            {t('Select Charts')}
-          </InputLabel>
-          <Select
-            labelId="chart-layers-mutiple-checkbox-label"
-            id="chart-layers-mutiple-checkbox"
-            multiple={!(compareLocations || comparePeriods)}
-            value={selectedLayerTitles}
-            onChange={onChangeChartLayers}
-            input={<Input />}
-            renderValue={chartsSelectRenderValue}
-            MenuProps={menuProps}
-          >
-            {chartLayers.map(layer => (
-              <MenuItem key={layer.id} value={layer.title}>
-                <Checkbox
-                  checked={selectedLayerTitles.indexOf(layer.title) > -1}
-                  color="primary"
-                />
-                <ListItemText
-                  classes={{ primary: classes.textLabel }}
-                  primary={t(layer.title)}
-                />
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <TextField
+          id="chart-layers-mutiple-checkbox"
+          sx={{
+            ...chartsLayerFormControlSx,
+            '& .MuiInputLabel-root': { color: 'black' },
+            '& .MuiSelect-select': { color: 'black' },
+          }}
+          select
+          label={t('Select Charts')}
+          variant="standard"
+          fullWidth
+          value={selectedLayerTitles}
+          onChange={event =>
+            onChangeChartLayers(event as SelectChangeEvent<string[]>)
+          }
+          slotProps={{
+            select: {
+              multiple: !(compareLocations || comparePeriods),
+              renderValue: chartsSelectRenderValue,
+              MenuProps: menuProps,
+            },
+          }}
+        >
+          {chartLayers.map(layer => (
+            <MenuItem key={layer.id} value={layer.title}>
+              <Checkbox
+                checked={selectedLayerTitles.indexOf(layer.title) > -1}
+                color="primary"
+              />
+              <ListItemText
+                slotProps={{
+                  primary: { sx: chartsTextLabelSx },
+                }}
+                primary={t(layer.title)}
+              />
+            </MenuItem>
+          ))}
+        </TextField>
         <DownloadCsvButton
           filesData={[
             {
@@ -958,7 +950,8 @@ const ChartsPanel = memo(() => {
           }
         />
         <Button
-          className={classes.clearAllSelectionsButton}
+          variant="contained"
+          disableElevation
           onClick={handleClearAllSelectedCharts}
           disabled={
             !(
@@ -968,13 +961,21 @@ const ChartsPanel = memo(() => {
               selectedLayerTitles.length >= 1
             )
           }
+          sx={{
+            ...clearAllButtonSx,
+            marginTop: '10px',
+            marginBottom: '10px',
+            marginLeft: '25%',
+            marginRight: '25%',
+            width: '50%',
+          }}
         >
-          <Typography variant="body2">{t('Clear All')}</Typography>
+          {t('Clear All')}
         </Button>
       </Box>
       {showChartsPanel && (
-        <Box className={classes.chartsContainer}>
-          <Box className={classes.chartsPanelCharts}>{renderResultsPage}</Box>
+        <Box sx={chartsContainerSx}>
+          <Box sx={chartsPanelChartsSx}>{renderResultsPage}</Box>
           {showSlider && maxDataTicks > 1 && (
             <>
               <TimePeriodSelector
@@ -1001,100 +1002,5 @@ const ChartsPanel = memo(() => {
     </div>
   );
 });
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      display: 'flex',
-      flexDirection: 'row',
-      width: '100%',
-      height: '100%',
-    },
-    formGroup: {
-      marginBottom: 20,
-      marginLeft: 20,
-      width: '100%',
-    },
-    chartsPanelParams: {
-      marginTop: 30,
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      width: PanelSize.medium,
-      flexShrink: 0,
-    },
-    layerFormControl: {
-      marginTop: 30,
-      marginBottom: '2em',
-      minWidth: '300px',
-      maxWidth: '350px',
-      '& .MuiFormLabel-root': {
-        color: 'black',
-      },
-      '& .MuiSelect-root': {
-        color: 'black',
-      },
-    },
-    textLabel: {
-      color: 'black',
-    },
-    chartsContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      width: '100%',
-    },
-    chartsPanelCharts: {
-      alignContent: 'start',
-      overflowY: 'auto',
-      overflowX: 'hidden',
-      display: 'flex',
-      justifyContent: 'center',
-      flexWrap: 'wrap',
-      flexGrow: 4,
-      gap: '16px',
-      padding: '16px',
-      marginTop: 0,
-      paddingBottom: '1em',
-    },
-    clearAllSelectionsButton: {
-      backgroundColor: '#788489',
-      '&:hover': {
-        backgroundColor: '#788489',
-      },
-      marginTop: 10,
-      marginBottom: 10,
-      marginLeft: '25%',
-      marginRight: '25%',
-      width: '50%',
-      '&.Mui-disabled': { opacity: 0.5 },
-    },
-    switch: {
-      marginRight: 2,
-      marginBottom: 10,
-    },
-    switchTrack: {
-      backgroundColor: '#E0E0E0',
-    },
-    switchBase: {
-      color: '#E0E0E0',
-      '&.Mui-checked': {
-        color: '#53888F',
-      },
-      '&.Mui-checked + .MuiSwitch-track': {
-        backgroundColor: '#B1D6DB',
-      },
-    },
-    switchTitle: {
-      lineHeight: 1.8,
-      color: 'black',
-      fontWeight: 400,
-    },
-    switchTitleUnchecked: {
-      lineHeight: 1.8,
-      fontWeight: 400,
-    },
-  }),
-);
 
 export default ChartsPanel;

@@ -1,5 +1,5 @@
-import { IconButton, Menu, MenuItem, Tooltip } from '@material-ui/core';
-import GetAppIcon from '@material-ui/icons/GetApp';
+import GetAppIcon from '@mui/icons-material/GetApp';
+import { IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
 import { usePostHog } from '@posthog/react';
 import {
   downloadToFile,

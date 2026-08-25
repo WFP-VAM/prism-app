@@ -1,4 +1,12 @@
-const runLocally = !!process.env.REACT_APP_LOCAL;
+/** CRA env vars are always strings; "false" is truthy with `!!`. */
+const isTruthyEnv = (value: string | undefined): boolean => {
+  if (!value) {
+    return false;
+  }
+  return !['0', 'false', 'no', 'off'].includes(value.trim().toLowerCase());
+};
+
+const runLocally = isTruthyEnv(process.env.REACT_APP_LOCAL);
 
 const LOCAL_EXPORT_PAGE_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]']);
 

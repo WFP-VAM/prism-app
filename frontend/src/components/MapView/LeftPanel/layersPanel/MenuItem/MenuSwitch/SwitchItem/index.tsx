@@ -1,13 +1,11 @@
-import {
-  Box,
-  createStyles,
-  IconButton,
-  makeStyles,
-  Tooltip,
-} from '@material-ui/core';
-import OpacityIcon from '@material-ui/icons/Opacity';
+import OpacityIcon from '@mui/icons-material/Opacity';
+import { Box, IconButton, Tooltip } from '@mui/material';
 import { usePostHog } from '@posthog/react';
 import { Extent } from 'components/MapView/Layers/raster-utils';
+import {
+  switchItemActionButtonSx,
+  switchItemOpacityButtonSx,
+} from 'components/MapView/LeftPanel/layersPanel/layerPanelStyles';
 import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
 import { LayerKey, LayerType } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
@@ -47,7 +45,6 @@ const SwitchItem = memo(
       type: layerType,
       group,
     } = layer;
-    const classes = useStyles();
     const { t } = useSafeTranslation();
     const mapState = useMapState();
     const selectedLayers = mapState.layers;
@@ -251,14 +248,14 @@ const SwitchItem = memo(
             <span style={{ marginLeft: 'auto' }}>
               <IconButton
                 disabled={!someLayerAreSelected}
-                classes={{
-                  root: isOpacitySelected
-                    ? classes.opacityRootSelected
-                    : classes.opacityRoot,
-                }}
+                sx={switchItemOpacityButtonSx(
+                  someLayerAreSelected,
+                  isOpacitySelected,
+                )}
                 onClick={() =>
                   setIsOpacitySelected(opacitySelected => !opacitySelected)
                 }
+                size="large"
               >
                 <OpacityIcon />
               </IconButton>
@@ -274,6 +271,7 @@ const SwitchItem = memo(
             layerId={activeLayerId}
             extent={extent}
             selected={someLayerAreSelected}
+            iconButtonSx={switchItemActionButtonSx(someLayerAreSelected)}
           />
         </Box>
         {someLayerAreSelected && isOpacitySelected && (
@@ -286,37 +284,6 @@ const SwitchItem = memo(
       </Box>
     );
   },
-);
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    switch: {
-      marginRight: 2,
-    },
-    switchTrack: {
-      backgroundColor: '#E0E0E0',
-    },
-    switchBase: {
-      color: '#E0E0E0',
-      '&.Mui-checked': {
-        color: '#53888F',
-      },
-      '&.Mui-checked + .MuiSwitch-track': {
-        backgroundColor: '#B1D6DB',
-      },
-    },
-    opacityRoot: {
-      marginLeft: 'auto',
-    },
-    opacityRootSelected: {
-      backgroundColor: '#4CA1AD',
-      color: '#F2F2F2',
-      marginLeft: 'auto',
-      '&:hover': {
-        color: '#4CA1AD',
-      },
-    },
-  }),
 );
 
 export interface SwitchItemProps {

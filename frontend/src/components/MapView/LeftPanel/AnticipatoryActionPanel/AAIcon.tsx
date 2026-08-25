@@ -1,5 +1,7 @@
-import { createStyles, makeStyles } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { useSafeTranslation } from 'i18n';
+
+import { aaIconSx } from './aaPanelStyles';
 
 export interface AAIconProps {
   background?: string;
@@ -16,66 +18,34 @@ function AAIcon({
   color,
   fillBackground,
 }: AAIconProps) {
-  const classes = useAAIconStyles();
   const { t } = useSafeTranslation();
 
   return (
-    <div
+    <Box
+      sx={aaIconSx.iconWrapper}
       style={fillBackground ? { background } : undefined}
-      className={classes.iconWrapper}
     >
-      <div
+      <Box
+        sx={aaIconSx.centerContainer}
         style={{ border: `1px solid ${color}`, color }}
-        className={classes.centerContainer}
       >
-        <div
+        <Box
+          sx={aaIconSx.topTextContainer}
           style={{
             borderBottom: bottomText ? `1px solid ${color}` : undefined,
             background,
           }}
-          className={classes.topTextContainer}
         >
           {t(topText)}
-        </div>
+        </Box>
         {bottomText && (
-          <div style={{ background }} className={classes.bottomTextContainer}>
+          <Box sx={aaIconSx.bottomTextContainer} style={{ background }}>
             {t(bottomText)}
-          </div>
+          </Box>
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
-
-const useAAIconStyles = makeStyles(() =>
-  createStyles({
-    iconWrapper: {
-      height: '100%',
-      borderRadius: '2px 0 0 2px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontFamily: 'Roboto',
-    },
-    centerContainer: {
-      width: '2.1em',
-      borderRadius: '2px',
-      display: 'flex',
-      flexDirection: 'column',
-    },
-    topTextContainer: {
-      textAlign: 'center',
-      fontSize: '14px',
-      lineHeight: '17px',
-      fontWeight: 700,
-    },
-    bottomTextContainer: {
-      textAlign: 'center',
-      fontSize: '10px',
-      lineHeight: '17px',
-      fontWeight: 700,
-    },
-  }),
-);
 
 export default AAIcon;

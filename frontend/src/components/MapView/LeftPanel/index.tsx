@@ -1,4 +1,4 @@
-import { createStyles, Drawer, makeStyles, Theme } from '@material-ui/core';
+import { Box, Drawer } from '@mui/material';
 import { AnticipatoryAction, Panel, PanelSize } from 'config/types';
 import {
   AALayerIds,
@@ -27,6 +27,7 @@ import AnticipatoryActionFloodPanel from './AnticipatoryActionPanel/Anticipatory
 import ChartsPanel from './ChartsPanel';
 import LayersPanel from './layersPanel';
 import { toggleRemoveLayer } from './layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
+import { leftPanelRootSx, tabsWrapperSx } from './leftPanelStyles';
 import TablesPanel from './TablesPanel';
 import UniversalLandingPanel from './UniversalLandingPanel';
 import {
@@ -76,8 +77,6 @@ const LeftPanel = memo(() => {
   const AALayerInUrl = selectedLayers.find(x =>
     AALayerIds.includes(x.id as AnticipatoryAction),
   );
-
-  const classes = useStyles({ tabValue });
 
   const isPanelHidden = !isLandingMode && tabValue === Panel.None;
 
@@ -192,15 +191,17 @@ const LeftPanel = memo(() => {
   if (isLandingMode) {
     return (
       <Drawer
-        PaperProps={{
-          elevation: 1,
-          style: {
-            marginTop: '56px',
-            height: 'calc(100vh - 56px)',
-            backgroundColor: 'white',
-            maxWidth: '100%',
-            width: PanelSize.medium,
-            borderRadius: '0 8px 8px 8px',
+        slotProps={{
+          paper: {
+            elevation: 1,
+            style: {
+              marginTop: '56px',
+              height: 'calc(100vh - 56px)',
+              backgroundColor: 'white',
+              maxWidth: '100%',
+              width: PanelSize.medium,
+              borderRadius: '0 8px 8px 8px',
+            },
           },
         }}
         variant="persistent"
@@ -214,22 +215,24 @@ const LeftPanel = memo(() => {
 
   return (
     <Drawer
-      PaperProps={{
-        elevation: 1,
-        style: {
-          marginTop: '56px',
-          height: tabValue === Panel.Charts ? 'calc(100vh - 56px)' : '80vh',
-          backgroundColor: 'white',
-          maxWidth: '100%',
-          borderRadius: '0 8px 8px 8px',
+      slotProps={{
+        paper: {
+          elevation: 1,
+          style: {
+            marginTop: '56px',
+            height: tabValue === Panel.Charts ? 'calc(100vh - 56px)' : '80vh',
+            backgroundColor: 'white',
+            maxWidth: '100%',
+            borderRadius: '0 8px 8px 8px',
+          },
         },
       }}
       variant="persistent"
       anchor="left"
       open={!isPanelHidden}
     >
-      <div className={classes.root}>
-        <div className={classes.tabsWrapper}>
+      <Box sx={leftPanelRootSx(tabValue)}>
+        <Box sx={tabsWrapperSx}>
           <TabPanel value={tabValue} index={Panel.Layers}>
             <LayersPanel />
           </TabPanel>
@@ -242,35 +245,10 @@ const LeftPanel = memo(() => {
           {renderedAnticipatoryActionPanel}
           {/* Empty panel to remove warnings */}
           <TabPanel value={tabValue} index={Panel.None} />
-        </div>
-      </div>
+        </Box>
+      </Box>
     </Drawer>
   );
 });
-
-interface StyleProps {
-  tabValue: Panel;
-}
-
-const useStyles = makeStyles<Theme, StyleProps>(() =>
-  createStyles({
-    root: {
-      display: 'flex',
-      flexDirection: 'row',
-      height: '100%',
-      overflowX: 'hidden',
-      overflowY: ({ tabValue }) =>
-        tabValue === Panel.Charts || tabValue === Panel.Tables
-          ? 'hidden'
-          : 'auto',
-    },
-    tabsWrapper: {
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100%',
-      order: -2,
-    },
-  }),
-);
 
 export default LeftPanel;

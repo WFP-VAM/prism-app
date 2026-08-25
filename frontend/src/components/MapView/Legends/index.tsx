@@ -1,13 +1,11 @@
+import { VisibilityOffOutlined, VisibilityOutlined } from '@mui/icons-material';
 import {
   Button,
-  createStyles,
   IconButton,
-  makeStyles,
   Typography,
   useMediaQuery,
   useTheme,
-} from '@material-ui/core';
-import { VisibilityOffOutlined, VisibilityOutlined } from '@material-ui/icons';
+} from '@mui/material';
 import { Panel } from 'config/types';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { useSafeTranslation } from 'i18n';
@@ -16,6 +14,11 @@ import { memo, useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import LegendItemsList from './LegendItemsList';
+import {
+  legendIconSx,
+  legendListSx,
+  legendTriggerButtonSx,
+} from './legendStyles';
 
 /** Tabs where left panel is full-viewport data UI; floating legend lives under AppBar (z-index above Drawer) and would cover charts/tables (React 19 stacking unchanged—behavior was always wrong; upgrade made it more visible). */
 function shouldHideFloatingMapLegend(tabValue: Panel): boolean {
@@ -23,10 +26,9 @@ function shouldHideFloatingMapLegend(tabValue: Panel): boolean {
 }
 
 const Legends = memo(() => {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
   const theme = useTheme();
-  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
+  const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
   const tabValue = useSelector(leftPanelTabValueSelector);
 
@@ -44,18 +46,18 @@ const Legends = memo(() => {
     <>
       {!smDown && (
         <Button
-          className={classes.triggerButton}
+          sx={legendTriggerButtonSx}
           style={{ backgroundColor: open ? cyanBlue : undefined }}
           onClick={toggleLegendVisibility}
           aria-label={t('Legend')}
           startIcon={
             open ? (
               <VisibilityOffOutlined
-                className={classes.icon}
+                sx={legendIconSx}
                 style={{ color: black }}
               />
             ) : (
-              <VisibilityOutlined className={classes.icon} />
+              <VisibilityOutlined sx={legendIconSx} />
             )
           }
         >
@@ -75,36 +77,16 @@ const Legends = memo(() => {
           aria-label={t('Legend')}
         >
           {open ? (
-            <VisibilityOffOutlined
-              className={classes.icon}
-              style={{ color: black }}
-            />
+            <VisibilityOffOutlined sx={legendIconSx} style={{ color: black }} />
           ) : (
-            <VisibilityOutlined className={classes.icon} />
+            <VisibilityOutlined sx={legendIconSx} />
           )}
         </IconButton>
       )}
 
-      {open && <LegendItemsList listStyle={classes.list} />}
+      {open && <LegendItemsList listSx={legendListSx} />}
     </>
   );
 });
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    triggerButton: {
-      height: '2.5em',
-    },
-    list: {
-      overflowX: 'hidden',
-      overflowY: 'auto',
-      maxHeight: '78vh', // same size as the left panel
-      position: 'absolute',
-      right: '1rem',
-      top: 'calc(56px + 16px)',
-    },
-    icon: { color: 'white', fontSize: '1.5rem' },
-  }),
-);
 
 export default Legends;

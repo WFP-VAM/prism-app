@@ -1,5 +1,4 @@
-import { createStyles, makeStyles } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
+import { Alert, Box } from '@mui/material';
 import {
   Notification,
   notificationsSelector,
@@ -9,11 +8,12 @@ import omit from 'lodash/omit';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { alertSx, notificationsContainerSx } from './notifierStyles';
+
 const AUTO_CLOSE_TIME = 10 * 1000;
 
 function Notifier() {
   const dispatch = useDispatch();
-  const classes = useStyles();
   const notifications = useSelector(notificationsSelector);
   const [topOffset, setTopOffset] = useState(65);
 
@@ -73,37 +73,20 @@ function Notifier() {
   }
 
   return (
-    <div className={classes.notificationsContainer} style={{ top: topOffset }}>
+    <Box sx={{ ...notificationsContainerSx, top: topOffset }}>
       {notifications.map(notification => (
         <Alert
           variant="filled"
           severity={notification.type}
           key={notification.key}
           onClose={handleClose(notification)}
-          className={classes.alert}
+          sx={alertSx}
         >
           {notification.message}
         </Alert>
       ))}
-    </div>
+    </Box>
   );
 }
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    notificationsContainer: {
-      left: '50%',
-      transform: 'translateX(-50%)',
-      display: 'flex',
-      zIndex: 9999,
-      flexDirection: 'column',
-      position: 'fixed',
-      alignItems: 'center',
-    },
-    alert: {
-      marginBottom: '10px',
-    },
-  }),
-);
 
 export default Notifier;

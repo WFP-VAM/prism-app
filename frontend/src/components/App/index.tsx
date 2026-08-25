@@ -2,7 +2,7 @@
 import './app.css';
 
 import { useIsAuthenticated } from '@azure/msal-react';
-import { ThemeProvider } from '@material-ui/core/styles';
+import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import { Font } from '@react-pdf/renderer';
 import * as Sentry from '@sentry/browser';
 import AuthModal from 'components/AuthModal';
@@ -150,11 +150,13 @@ function App() {
   }, [isAuthenticated]);
 
   return (
-    <ThemeProvider theme={muiTheme}>
-      {/* Used to show notifications from redux as a snackbar. Notifications are stored in notificationState */}
-      <Notifier />
-      <Router>{renderedContent}</Router>
-    </ThemeProvider>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={muiTheme}>
+        {/* Used to show notifications from redux as a snackbar. Notifications are stored in notificationState */}
+        <Notifier />
+        <Router>{renderedContent}</Router>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 }
 

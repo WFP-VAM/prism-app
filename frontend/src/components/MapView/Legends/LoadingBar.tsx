@@ -1,4 +1,4 @@
-import { LinearProgress, makeStyles } from '@material-ui/core';
+import { LinearProgress } from '@mui/material';
 import { LayerKey } from 'config/types';
 import { cogLoadingLayerIdsSelector } from 'context/cogLayerLoadingStateSlice';
 import { loadingLayerIdsSelector as vectorLayerIdsSelector } from 'context/mapStateSlice/selectors';
@@ -6,23 +6,11 @@ import { loadingLayerIdsSelector as tileLayerIdsSelector } from 'context/mapTile
 import { layersLoadingDatesIdsSelector } from 'context/serverStateSlice';
 import { useSelector } from 'react-redux';
 
+import { loadingBarHiddenSx, loadingBarVisibleSx } from './legendStyles';
+
 export interface LoadingBarProps {
   layerId: LayerKey | undefined;
 }
-
-const useStyles = makeStyles({
-  root: {
-    marginTop: 5,
-    marginBottom: 5,
-    height: 2,
-  },
-  bar: {
-    opacity: 0.8,
-  },
-  hide: {
-    opacity: 0,
-  },
-});
 
 function LoadingBar({ layerId }: LoadingBarProps) {
   const tileLayerIds = useSelector(tileLayerIdsSelector);
@@ -35,14 +23,11 @@ function LoadingBar({ layerId }: LoadingBarProps) {
       layersLoadingDatesIds.includes(layerId) ||
       cogLayerIds.includes(layerId)
     : false;
-  const classes = useStyles();
+
   return (
     <LinearProgress
       variant="indeterminate"
-      classes={{
-        root: classes.root,
-        bar: loading ? classes.bar : classes.hide,
-      }}
+      sx={loading ? loadingBarVisibleSx : loadingBarHiddenSx}
     />
   );
 }

@@ -1,21 +1,25 @@
-import { createStyles, makeStyles, Typography } from '@material-ui/core';
+import { Box, Typography } from '@mui/material';
 import { DateRangeType } from 'config/types';
 import { format } from 'date-fns';
 import { locales } from 'i18n';
 import { DateFormat } from 'utils/name-utils';
+
+import {
+  dateItemLabelSx,
+  dayItemSx,
+  TIMELINE_DAY_ITEM_CLASS,
+} from '../timelineItemsStyles';
 
 function TimelineLabel({
   locale,
   date,
   showDraggingCursor,
 }: TimelineLabelProps) {
-  const classes = useStyles();
-
   if (date.isFirstDay) {
     return (
       <Typography
         variant="body2"
-        className={classes.dateItemLabel}
+        sx={dateItemLabelSx}
         style={{ cursor: showDraggingCursor ? 'ew-resize' : 'default' }}
         // prevent click on the label from triggering the date selection
         onClick={e => e.stopPropagation()}
@@ -32,30 +36,14 @@ function TimelineLabel({
       </Typography>
     );
   }
-  return <div className={classes.dayItem} />;
+  return (
+    <Box
+      className={TIMELINE_DAY_ITEM_CLASS}
+      sx={dayItemSx}
+      role="presentation"
+    />
+  );
 }
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    dateItemLabel: {
-      color: '#101010',
-      position: 'absolute',
-      top: 33,
-      textAlign: 'left',
-      paddingLeft: 2,
-      minWidth: 400,
-      fontWeight: 'bold',
-      zIndex: 1,
-    },
-    dayItem: {
-      position: 'absolute',
-      height: 10,
-      marginLeft: '-1px',
-      borderLeft: '1px solid #ededed',
-      zIndex: -1,
-    },
-  }),
-);
 
 export interface TimelineLabelProps {
   locale: string;

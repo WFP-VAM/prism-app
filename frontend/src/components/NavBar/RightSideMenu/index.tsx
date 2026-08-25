@@ -1,17 +1,15 @@
 import {
-  createStyles,
-  Drawer,
-  IconButton,
-  makeStyles,
-  Theme,
-  useMediaQuery,
-  useTheme,
-} from '@material-ui/core';
-import {
   GitHub as GitHubIcon,
   Menu,
   OpenInNew as OpenInNewIcon,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
+import {
+  Box,
+  Drawer,
+  IconButton,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import { appConfig } from 'config';
 import React, { useState } from 'react';
 
@@ -52,9 +50,8 @@ function RightSideMenuContent({ buttons }: { buttons: React.ReactNode }) {
 }
 
 function RightSideMenu() {
-  const classes = useStyles();
   const theme = useTheme();
-  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
+  const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -99,6 +96,7 @@ function RightSideMenu() {
         href={href}
         style={{ color: 'white' }}
         aria-label={title}
+        size="large"
       >
         {icon}
       </IconButton>
@@ -114,6 +112,7 @@ function RightSideMenu() {
           onClick={() => setMobileMenuOpen(true)}
           style={{ color: 'white' }}
           aria-label="Open menu"
+          size="large"
         >
           <Menu />
         </IconButton>
@@ -124,29 +123,25 @@ function RightSideMenu() {
           open={mobileMenuOpen}
           onClose={() => setMobileMenuOpen(false)}
         >
-          <div className={classes.mobileDrawerContent}>
+          <Box
+            sx={{
+              backgroundColor: theme.palette.primary.main,
+              width: '80px',
+              height: '100vh',
+              overflowX: 'hidden',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+              gap: '0.5rem',
+            }}
+          >
             <RightSideMenuContent buttons={buttons} />
-          </div>
+          </Box>
         </Drawer>
       )}
     </>
   );
 }
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    mobileDrawerContent: {
-      backgroundColor: theme.palette.primary.main,
-      width: '80px',
-      height: '100vh',
-      overflowX: 'hidden',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'flex-start',
-      gap: '0.5rem',
-    },
-  }),
-);
 
 export default RightSideMenu;

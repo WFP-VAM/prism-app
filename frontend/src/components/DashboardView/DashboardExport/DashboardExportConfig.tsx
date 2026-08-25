@@ -1,19 +1,17 @@
+import { Cancel, GetApp } from '@mui/icons-material';
 import {
   Box,
   Button,
   Collapse,
-  createStyles,
   Divider,
   Icon,
   IconButton,
-  makeStyles,
   Menu,
   MenuItem,
-  Theme,
-} from '@material-ui/core';
-import { Cancel, GetApp } from '@material-ui/icons';
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+} from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Switch from 'components/Common/Switch';
 import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
 import { useSafeTranslation } from 'i18n';
@@ -21,6 +19,19 @@ import { cyanBlue } from 'muiTheme';
 import React, { useContext } from 'react';
 
 import DashboardExportContext from './dashboardExport.context';
+import {
+  dashboardExportCollapsibleWrapperExpandedSx,
+  dashboardExportCollapsibleWrapperSx,
+  dashboardExportConfigCloseButtonSx,
+  dashboardExportConfigContainerSx,
+  dashboardExportConfigGutterSx,
+  dashboardExportConfigOptionWrapSx,
+  dashboardExportConfigTitleSx,
+  dashboardExportFormControlSx,
+  toggleSelectorButtonGroupSx,
+  toggleSelectorButtonSx,
+  toggleSelectorWrapperSx,
+} from './dashboardExportStyles';
 
 // Helper components
 interface ToggleSelectorProps {
@@ -42,9 +53,8 @@ function ToggleSelector({
   align,
   setValue,
 }: ToggleSelectorProps) {
-  const classes = useToggleSelectorStyles();
   return (
-    <div className={classes.wrapper}>
+    <Box sx={toggleSelectorWrapperSx}>
       <Box
         component="h4"
         style={{ textAlign: align, marginRight: '0.5rem', color: 'black' }}
@@ -54,13 +64,13 @@ function ToggleSelector({
       <ToggleButtonGroup
         value={value}
         exclusive
-        className={classes.buttonGroup}
+        sx={toggleSelectorButtonGroupSx}
         style={{ justifyContent: align }}
       >
         {options.map(x => (
           <ToggleButton
             key={x.value}
-            className={classes.button}
+            sx={toggleSelectorButtonSx}
             value={x.value}
             onClick={() => setValue(x.value)}
             disabled={x.disabled}
@@ -69,7 +79,7 @@ function ToggleSelector({
           </ToggleButton>
         ))}
       </ToggleButtonGroup>
-    </div>
+    </Box>
   );
 }
 
@@ -87,26 +97,30 @@ function SectionToggle({
     checked: boolean,
   ) => void;
 }) {
-  const classes = useStyles();
   return (
-    <div>
-      <div
-        className={`${classes.collapsibleWrapper} ${
-          expanded && children ? classes.collapsibleWrapperExpanded : ''
-        }`}
+    <Box>
+      <Box
+        sx={
+          [
+            dashboardExportCollapsibleWrapperSx,
+            expanded && children
+              ? dashboardExportCollapsibleWrapperExpandedSx
+              : undefined,
+          ] as SxProps<Theme>
+        }
       >
         <Switch checked={expanded} onChange={handleChange} title={title} />
-      </div>
+      </Box>
       <Collapse in={expanded}>{children}</Collapse>
-    </div>
+    </Box>
   );
 }
 
 function GreyContainer({ children }: { children: React.ReactNode }) {
   return (
     <Box
-      bgcolor="#F1F1F1"
       sx={{
+        bgcolor: '#F1F1F1',
         borderRadius: '4px',
         padding: 4,
       }}
@@ -179,7 +193,6 @@ const logoPositionOptions = [
 ];
 
 function DashboardExportConfig() {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
   const { exportConfig } = useContext(DashboardExportContext);
 
@@ -215,14 +228,17 @@ function DashboardExportConfig() {
   } = exportConfig;
 
   return (
-    <Box className={classes.configContainer}>
+    <Box sx={dashboardExportConfigContainerSx}>
       <div>
-        <Box className={classes.title}>{t('Export Options')}</Box>
-        <IconButton className={classes.closeButton} onClick={handleClose}>
+        <Box sx={dashboardExportConfigTitleSx}>{t('Export Options')}</Box>
+        <IconButton
+          sx={dashboardExportConfigCloseButtonSx}
+          onClick={handleClose}
+          size="large"
+        >
           <Cancel />
         </IconButton>
       </div>
-
       {/* Logo */}
       <SectionToggle
         title={t('Logo')}
@@ -270,7 +286,6 @@ function DashboardExportConfig() {
           </GreyContainerSection>
         </GreyContainer>
       </SectionToggle>
-
       {/* Map Labels */}
       <SectionToggle
         title={t('Map Labels')}
@@ -282,7 +297,6 @@ function DashboardExportConfig() {
           }))
         }
       />
-
       {/* Admin Areas */}
       <SectionToggle
         title={t('Admin Areas')}
@@ -294,23 +308,24 @@ function DashboardExportConfig() {
           }))
         }
       >
-        <Box className={classes.optionWrap}>
-          <SimpleBoundaryDropdown
-            selectAll
-            labelMessage={t('Select admin area')}
-            className={classes.formControl}
-            selectedBoundaries={selectedBoundaries}
-            setSelectedBoundaries={setSelectedBoundaries}
-            selectProps={{
-              variant: 'outlined',
-              fullWidth: true,
-            }}
-            multiple={false}
-            size="small"
-          />
+        <Box sx={dashboardExportConfigOptionWrapSx}>
+          <Box sx={dashboardExportFormControlSx}>
+            <SimpleBoundaryDropdown
+              className=""
+              selectAll
+              labelMessage={t('Select admin area')}
+              selectedBoundaries={selectedBoundaries}
+              setSelectedBoundaries={setSelectedBoundaries}
+              selectProps={{
+                variant: 'outlined',
+                fullWidth: true,
+              }}
+              multiple={false}
+              size="small"
+            />
+          </Box>
         </Box>
       </SectionToggle>
-
       {/* Legend */}
       <SectionToggle
         title={t('Legend')}
@@ -348,12 +363,11 @@ function DashboardExportConfig() {
           </GreyContainerSection>
         </GreyContainer>
       </SectionToggle>
-
       <Button
         style={{ backgroundColor: cyanBlue, color: 'black' }}
         variant="contained"
         color="primary"
-        className={classes.gutter}
+        sx={dashboardExportConfigGutterSx}
         endIcon={<GetApp />}
         onClick={e => handleDownloadMenuOpen(e)}
         disabled={isExporting}
@@ -372,90 +386,5 @@ function DashboardExportConfig() {
     </Box>
   );
 }
-
-const useToggleSelectorStyles = makeStyles(() => ({
-  wrapper: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
-    gap: '8px',
-    '& h4': {
-      fontSize: '14px',
-      margin: 0,
-    },
-  },
-  buttonGroup: { display: 'flex', flexWrap: 'wrap' },
-  button: {
-    backgroundColor: 'white',
-    height: '32px',
-    width: '36px',
-    padding: '4px',
-    fontSize: '0.8rem',
-    borderLeft: '1px solid rgba(0, 0, 0, 0.12) !important',
-  },
-}));
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    configContainer: {
-      display: 'flex',
-      height: '100%',
-      flexDirection: 'column',
-      gap: '0.5rem',
-      minHeight: '740px',
-      scrollbarGutter: 'stable',
-      overflow: 'auto',
-      zIndex: 4,
-      backgroundColor: 'white',
-    },
-    title: {
-      fontSize: 14,
-      fontWeight: 900,
-      marginBottom: '1em',
-      color: theme.palette.text.secondary,
-    },
-    closeButton: {
-      position: 'absolute',
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-    },
-    optionWrap: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '0.6rem',
-      marginBottom: '0.5rem',
-    },
-    gutter: {
-      marginTop: 16,
-      marginBottom: 10,
-    },
-    collapsibleWrapper: {
-      display: 'flex',
-      alignItems: 'center',
-      '& h4': {
-        fontSize: '14px',
-      },
-    },
-    collapsibleWrapperExpanded: {
-      marginBottom: '0.25rem',
-    },
-    formControl: {
-      width: '100%',
-      '& > .MuiInputLabel-shrink': { display: 'none' },
-      '& > .MuiInput-root': { margin: 0 },
-      '& label': {
-        color: '#000000',
-        opacity: 0.6,
-        fontSize: '14px',
-        marginLeft: '10px',
-        position: 'absolute',
-        top: '50%',
-        transform: 'translateY(-50%)',
-      },
-    },
-  }),
-);
 
 export default DashboardExportConfig;

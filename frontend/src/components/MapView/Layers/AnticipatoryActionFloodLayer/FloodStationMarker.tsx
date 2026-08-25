@@ -1,4 +1,4 @@
-import { Tooltip } from '@material-ui/core';
+import { Tooltip } from '@mui/material';
 import { FloodStation } from 'context/anticipatoryAction/AAFloodStateSlice/types';
 import {
   getCircleBorderColor,

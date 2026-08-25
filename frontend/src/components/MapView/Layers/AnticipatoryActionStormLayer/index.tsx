@@ -1,4 +1,6 @@
+import { GlobalStyles } from '@mui/material';
 import { useWindStatesByTime } from 'components/MapView/DateSelector/TimelineItems/hooks';
+import { layerPopupGlobalStyles } from 'components/MapView/Layers/layerPopupStyles';
 import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
 import { AnticipatoryActionLayerProps } from 'config/types';
 import { getBoundaryLayersByAdminLevel } from 'config/utils';
@@ -422,6 +424,7 @@ const AnticipatoryActionStormLayer = React.memo(
 
     return (
       <>
+        <GlobalStyles styles={layerPopupGlobalStyles} />
         {/* Render wind points first so they are available as beforeId */}
         {timeSeries && (
           <Source data={timeSeries} type="geojson">

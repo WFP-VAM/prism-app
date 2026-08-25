@@ -1,8 +1,9 @@
 import 'chartjs-plugin-annotation';
 
-import { IconButton, makeStyles, Tooltip } from '@material-ui/core';
-import GetAppIcon from '@material-ui/icons/GetApp';
-import ImageIcon from '@material-ui/icons/Image';
+import GetAppIcon from '@mui/icons-material/GetApp';
+import ImageIcon from '@mui/icons-material/Image';
+import { IconButton, Tooltip } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
 import { ChartOptions } from 'chart.js';
 import colormap from 'colormap';
 import { buildCsvFileName, downloadToFile } from 'components/MapView/utils';
@@ -30,20 +31,19 @@ function downloadChartPng(ref: React.RefObject<Bar | Line>, filename: string) {
   downloadToFile({ content: file, isUrl: true }, filename, 'image/png');
 }
 
-const useStyles = makeStyles(() => ({
-  firstIcon: {
-    position: 'absolute',
-    top: '8px',
-    right: '0rem',
-    padding: '0.25rem',
-  },
-  secondIcon: {
-    position: 'absolute',
-    top: '8px',
-    right: '1.75rem',
-    padding: '0.25rem',
-  },
-}));
+const firstIconSx = {
+  position: 'absolute',
+  top: '8px',
+  right: '0rem',
+  padding: '0.25rem',
+} satisfies SxProps<Theme>;
+
+const secondIconSx = {
+  position: 'absolute',
+  top: '8px',
+  right: '1.75rem',
+  padding: '0.25rem',
+} satisfies SxProps<Theme>;
 
 export type ChartProps = {
   title: string;
@@ -88,7 +88,6 @@ const Chart = memo(
       forwardedRef,
     ) => {
       const { t } = useSafeTranslation();
-      const classes = useStyles();
       const localChartRef = React.useRef<Bar | Line>(null);
       const chartRef = (forwardedRef || localChartRef) as React.RefObject<
         Bar | Line
@@ -353,13 +352,16 @@ const Chart = memo(
         () =>
           ({
             maintainAspectRatio: !(notMaintainAspectRatio ?? false),
+
             title: {
               fontColor: '#CCC',
               display: true,
               text: subtitle ? [title, subtitle] : title,
               fontSize: 14,
             },
+
             responsive,
+
             scales: {
               xAxes: [
                 {
@@ -419,6 +421,7 @@ const Chart = memo(
                 },
               ],
             },
+
             tooltips: {
               mode: 'index',
               callbacks: {
@@ -461,16 +464,19 @@ const Chart = memo(
                 },
               },
             },
+
             legend: {
               display: config.displayLegend,
               position: legendAtBottom ? 'bottom' : 'right',
               labels: { boxWidth: 12, boxHeight: 12 },
             },
+
             animation: {
               onComplete: () => {
                 setIsChartReady(true);
               },
             },
+
             ...(isGoogleFloodChart
               ? {
                   annotation: {
@@ -530,8 +536,9 @@ const Chart = memo(
                 <Tooltip title={t('Download PNG') as string}>
                   <IconButton
                     onClick={() => downloadChartPng(chartRef, downloadFilename)}
-                    className={classes.firstIcon}
+                    sx={firstIconSx}
                     style={iconStyles}
+                    size="large"
                   >
                     <ImageIcon />
                   </IconButton>
@@ -552,8 +559,9 @@ const Chart = memo(
                         ],
                       ])();
                     }}
-                    className={classes.secondIcon}
+                    sx={secondIconSx}
                     style={iconStyles}
+                    size="large"
                   >
                     <GetAppIcon />
                   </IconButton>
@@ -591,8 +599,6 @@ const Chart = memo(
           chartConfig,
           chartData,
           chartRef,
-          classes.firstIcon,
-          classes.secondIcon,
           config.type,
           data,
           datasetFields,

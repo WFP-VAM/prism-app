@@ -1,4 +1,4 @@
-import { Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import { StyleSheet, Text, View } from '@react-pdf/renderer';
 import { memo, useMemo } from 'react';
 import { Column } from 'utils/analysis-utils';

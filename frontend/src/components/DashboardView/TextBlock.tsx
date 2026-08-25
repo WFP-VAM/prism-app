@@ -1,4 +1,4 @@
-import { Box, makeStyles, Typography } from '@material-ui/core';
+import { Box, Typography } from '@mui/material';
 import { DashboardMode } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 import { type ReactNode } from 'react';
@@ -9,6 +9,15 @@ import {
   dashboardModeSelector,
   setTextContent,
 } from '../../context/dashboardStateSlice';
+import {
+  textBlockEmptyStateSx,
+  textBlockGrayCardSx,
+  textBlockLabelSx,
+  textBlockPreviewContainerSx,
+  textBlockPreviewHeadingSx,
+  textBlockPreviewTextSx,
+  textBlockTextareaSx,
+} from './textBlockStyles';
 
 interface TextBlockProps {
   label?: string;
@@ -18,24 +27,24 @@ interface TextBlockProps {
   headerSlot?: ReactNode;
 }
 
-const createMarkdownComponents = (classes: any): Components => ({
+const markdownComponents: Components = {
   p: ({ children }) => (
-    <Typography variant="body1" className={classes.previewText}>
+    <Typography variant="body1" sx={textBlockPreviewTextSx}>
       {children}
     </Typography>
   ),
   h1: ({ children }) => (
-    <Typography variant="h4" className={classes.previewHeading}>
+    <Typography variant="h4" sx={textBlockPreviewHeadingSx}>
       {children}
     </Typography>
   ),
   h2: ({ children }) => (
-    <Typography variant="h5" className={classes.previewHeading}>
+    <Typography variant="h5" sx={textBlockPreviewHeadingSx}>
       {children}
     </Typography>
   ),
   h3: ({ children }) => (
-    <Typography variant="h6" className={classes.previewHeading}>
+    <Typography variant="h6" sx={textBlockPreviewHeadingSx}>
       {children}
     </Typography>
   ),
@@ -67,7 +76,7 @@ const createMarkdownComponents = (classes: any): Components => ({
       style={{ maxWidth: '100%', height: 'auto' }}
     />
   ),
-});
+};
 
 function TextBlock({
   columnIndex,
@@ -77,16 +86,15 @@ function TextBlock({
   headerSlot,
 }: TextBlockProps) {
   const dispatch = useDispatch();
-  const classes = useStyles();
   const { t } = useSafeTranslation();
   const mode = useSelector(dashboardModeSelector);
 
   if (mode === DashboardMode.VIEW) {
     return (
-      <Box className={classes.previewContainer}>
+      <Box sx={textBlockPreviewContainerSx}>
         {content && content.trim() !== '' ? (
           <Markdown
-            components={createMarkdownComponents(classes)}
+            components={markdownComponents}
             allowedElements={[
               'p',
               'h1',
@@ -104,7 +112,7 @@ function TextBlock({
             {t(content)}
           </Markdown>
         ) : (
-          <Box className={classes.emptyState}>
+          <Box sx={textBlockEmptyStateSx}>
             <Typography variant="body1" color="textSecondary" align="center">
               {t('No text configured')}
             </Typography>
@@ -115,15 +123,16 @@ function TextBlock({
   }
 
   return (
-    <Box className={classes.grayCard}>
+    <Box sx={textBlockGrayCardSx}>
       {headerSlot ?? (
-        <Typography variant="h3" className={classes.blockLabel}>
+        <Typography variant="h3" sx={textBlockLabelSx}>
           {t(label)}
         </Typography>
       )}
-      <textarea
+      <Box
+        component="textarea"
         name="text-block"
-        className={classes.textarea}
+        sx={textBlockTextareaSx}
         placeholder={t('Add custom text here')}
         value={content}
         onChange={e =>
@@ -139,63 +148,5 @@ function TextBlock({
     </Box>
   );
 }
-
-const useStyles = makeStyles(() => ({
-  grayCard: {
-    background: '#F1F1F1',
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 16,
-  },
-  blockLabel: {
-    fontWeight: 600,
-    fontSize: 16,
-    marginBottom: 12,
-  },
-  emptyState: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flex: 1,
-  },
-  textarea: {
-    width: '95%',
-    minHeight: 120,
-    padding: '12px',
-    borderRadius: 4,
-    fontSize: 14,
-    border: 'none',
-    outline: 'none',
-    background: 'white',
-    fontFamily: 'Roboto',
-    resize: 'vertical',
-  },
-  previewContainer: {
-    background: 'white',
-    borderRadius: 8,
-    padding: 16,
-    maxWidth: '100%',
-    overflow: 'auto',
-    display: 'flex',
-    flexDirection: 'column',
-    flex: 1,
-    minHeight: 0,
-    '& *:last-child': {
-      marginBottom: 0,
-    },
-  },
-  previewText: {
-    fontSize: 14,
-    lineHeight: 1.6,
-    margin: '0 0 12px 0',
-  },
-  previewHeading: {
-    fontWeight: 600,
-    margin: '16px 0 8px 0',
-    '&:first-child': {
-      marginTop: 0,
-    },
-  },
-}));
 
 export default TextBlock;

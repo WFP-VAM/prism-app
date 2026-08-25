@@ -1,11 +1,5 @@
-import {
-  createStyles,
-  Dialog,
-  DialogContent,
-  makeStyles,
-  Snackbar,
-} from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
+import { Dialog, DialogContent, Snackbar } from '@mui/material';
+import { Alert } from '@mui/material';
 import { usePostHog } from '@posthog/react';
 import mask from '@turf/mask';
 import { downloadToFile } from 'components/MapView/utils';
@@ -30,6 +24,7 @@ import DashboardExportContext, {
 } from './dashboardExport.context';
 import DashboardExportConfig from './DashboardExportConfig';
 import DashboardExportPreview from './DashboardExportPreview';
+import { dashboardExportDialogContentSx } from './dashboardExportStyles';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
@@ -42,7 +37,6 @@ function DashboardExportDialog({
   open,
   handleClose,
 }: DashboardExportDialogProps) {
-  const classes = useStyles();
   const posthog = usePostHog();
   const { t } = useSafeTranslation();
   const printRef = useRef<HTMLDivElement>(null);
@@ -338,7 +332,7 @@ function DashboardExportDialog({
         onClose={handleClose}
         aria-labelledby="dashboard-export-dialog"
       >
-        <DialogContent className={classes.contentContainer}>
+        <DialogContent sx={dashboardExportDialogContentSx}>
           <DashboardExportPreview />
           <DashboardExportConfig />
         </DialogContent>
@@ -368,18 +362,5 @@ function DashboardExportDialog({
     </DashboardExportContext.Provider>
   );
 }
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    contentContainer: {
-      fontFamily: 'Roboto',
-      scrollbarGutter: 'stable',
-      display: 'flex',
-      gap: '1rem',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-    },
-  }),
-);
 
 export default DashboardExportDialog;

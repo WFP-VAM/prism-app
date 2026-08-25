@@ -1,6 +1,4 @@
 import {
-  createStyles,
-  makeStyles,
   Table,
   TableBody,
   TableCell,
@@ -9,9 +7,8 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
-  Theme,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import { hidePopup } from 'context/tooltipStateSlice';
@@ -19,6 +16,16 @@ import { useSafeTranslation } from 'i18n';
 import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Column } from 'utils/analysis-utils';
+
+import {
+  exposureTableBodySx,
+  exposureTablePaginationBackButtonSx,
+  exposureTablePaginationNextButtonSx,
+  exposureTablePaginationSx,
+  tableBodyTextSx,
+  tableHeaderTextSx,
+  tableHeadSx,
+} from '../../../leftPanelStyles';
 
 const ExposureAnalysisTable = memo(
   ({
@@ -30,7 +37,6 @@ const ExposureAnalysisTable = memo(
   }: ExposureAnalysisTableProps) => {
     // only display local names if local language is selected, otherwise display english name
     const { t } = useSafeTranslation();
-    const classes = useStyles();
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -75,21 +81,17 @@ const ExposureAnalysisTable = memo(
     const renderedTableHeaderCells = useMemo(
       () =>
         columns.map(column => (
-          <TableCell key={column.id} className={classes.tableHead}>
+          <TableCell key={column.id} sx={tableHeadSx}>
             <TableSortLabel
               active={tableSortLabelIsActive(column)}
               direction={tableSortLabelDirection(column)}
               onClick={onTableSortLabelClick(column)}
             >
-              <Typography className={classes.tableHeaderText}>
-                {t(column.label)}
-              </Typography>
+              <Typography sx={tableHeaderTextSx}>{t(column.label)}</Typography>
             </TableSortLabel>
           </TableCell>
         )),
       [
-        classes.tableHead,
-        classes.tableHeaderText,
         columns,
         onTableSortLabelClick,
         t,
@@ -113,12 +115,12 @@ const ExposureAnalysisTable = memo(
       (row: AnalysisTableRow) =>
         columns.map(column => (
           <TableCell key={column.id}>
-            <Typography className={classes.tableBodyText}>
+            <Typography sx={tableBodyTextSx}>
               {renderedTableBodyCellValue(row[column.id], column)}
             </Typography>
           </TableCell>
         )),
-      [classes.tableBodyText, columns, renderedTableBodyCellValue],
+      [columns, renderedTableBodyCellValue],
     );
 
     const handleClickTableBodyRow = useCallback(
@@ -171,7 +173,7 @@ const ExposureAnalysisTable = memo(
             <TableHead>
               <TableRow>{renderedTableHeaderCells}</TableRow>
             </TableHead>
-            <TableBody className={classes.tableBody}>
+            <TableBody sx={exposureTableBodySx}>
               {renderedTableBodyRows}
             </TableBody>
           </Table>
@@ -191,75 +193,21 @@ const ExposureAnalysisTable = memo(
               count !== -1 ? count : `${t('more than')} ${to}`
             }`
           }
-          classes={{
-            root: classes.tablePagination,
-            select: classes.select,
-            caption: classes.caption,
-            spacer: classes.spacer,
-          }}
-          nextIconButtonProps={{
-            classes: {
-              root: classes.nextButton,
-            },
-          }}
-          backIconButtonProps={{
-            classes: {
-              root: classes.backButton,
+          sx={exposureTablePaginationSx}
+          slotProps={{
+            actions: {
+              nextButton: {
+                sx: exposureTablePaginationNextButtonSx,
+              },
+              previousButton: {
+                sx: exposureTablePaginationBackButtonSx,
+              },
             },
           }}
         />
       </>
     );
   },
-);
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    tableHead: {
-      backgroundColor: '#EBEBEB',
-      boxShadow: 'inset 0px -1px 0px rgba(0, 0, 0, 0.25)',
-    },
-    tableHeaderText: {
-      color: 'black',
-      fontWeight: 500,
-    },
-    tableBody: {
-      padding: '8px',
-    },
-    tableBodyText: {
-      color: 'black',
-    },
-    innerAnalysisButton: {
-      backgroundColor: theme.surfaces?.dark,
-    },
-    tablePagination: {
-      display: 'flex',
-      justifyContent: 'center',
-      color: 'black',
-      overflow: 'unset',
-    },
-    select: {
-      flex: '1 1 10%',
-      marginRight: 0,
-    },
-    caption: {
-      flex: '1 2 40%',
-      fontSize: '0.5rem',
-      marginLeft: 0,
-    },
-    backButton: {
-      flex: '1 1 5%',
-      maxWidth: '10%',
-    },
-    nextButton: {
-      flex: '1 1 5%',
-      maxWidth: '10%',
-    },
-    spacer: {
-      flex: '1 1 5%',
-      maxWidth: '5%',
-    },
-  }),
 );
 
 interface ExposureAnalysisTableProps {

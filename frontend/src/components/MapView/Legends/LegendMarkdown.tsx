@@ -1,64 +1,48 @@
-import { createStyles, makeStyles, Typography } from '@material-ui/core';
-import { ClassNameMap } from '@material-ui/styles';
+import { Box, Typography } from '@mui/material';
+import type { ReactNode } from 'react';
 import Markdown, { type Components } from 'react-markdown';
+
+import { legendBodyTextSx, legendLinkSx } from './legendStyles';
 
 interface LegendMarkdownProps {
   children: string;
 }
 
-const p = (
-  classes: ClassNameMap<'legendTextMarkdown'>,
-): NonNullable<Components['p']> =>
-  function LegendParagraph({ children }) {
-    return (
-      <Typography variant="h5" className={classes.legendTextMarkdown}>
-        {children}
-      </Typography>
-    );
-  };
-
-const a = (classes: ClassNameMap<'legendLink'>): NonNullable<Components['a']> =>
-  function LegendLink({ children, href }) {
-    return (
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={classes.legendLink}
-      >
-        {children}
-      </a>
-    );
-  };
-
-function LegendMarkdown({ children }: LegendMarkdownProps) {
-  const classes = useStyles();
-  const components: Components = {
-    p: p(classes),
-    a: a(classes),
-  };
-
+function LegendParagraph({ children }: { children?: ReactNode }) {
   return (
-    <Markdown
-      components={components}
-      allowedElements={['p', 'h5', 'strong', 'em', 'a']}
-    >
+    <Typography variant="h5" component="p" sx={legendBodyTextSx}>
       {children}
-    </Markdown>
+    </Typography>
   );
 }
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    legendTextMarkdown: {
-      '& a': {
-        textDecoration: 'underline',
-      },
-    },
-    legendLink: {
-      textDecoration: 'underline',
-    },
-  }),
-);
+function LegendMarkdown({ children }: LegendMarkdownProps) {
+  const components: Components = {
+    p: LegendParagraph,
+    a: ({ children: linkChildren, href }) => (
+      <Typography
+        component="a"
+        variant="h5"
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        sx={legendLinkSx}
+      >
+        {linkChildren}
+      </Typography>
+    ),
+  };
+
+  return (
+    <Box sx={{ overflow: 'visible' }}>
+      <Markdown
+        components={components}
+        allowedElements={['p', 'h5', 'strong', 'em', 'a', 'br']}
+      >
+        {children}
+      </Markdown>
+    </Box>
+  );
+}
 
 export default LegendMarkdown;

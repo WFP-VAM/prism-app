@@ -1,15 +1,12 @@
+import { Close, Send } from '@mui/icons-material';
 import {
   Box,
   Button,
-  createStyles,
   Dialog,
   DialogTitle,
-  makeStyles,
   TextField,
-  Theme,
   Typography,
-} from '@material-ui/core';
-import { Close, Send } from '@material-ui/icons';
+} from '@mui/material';
 import { UserAuth } from 'config/types';
 import { removeLayer } from 'context/mapStateSlice';
 import { layersSelector } from 'context/mapStateSlice/selectors';
@@ -27,13 +24,20 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
 
+import {
+  authModalButtonWrapperSx,
+  authModalLabelSx,
+  authModalSx,
+  authModalTextFieldSx,
+  authModalTitleSx,
+} from './authModalStyles';
+
 const initialAuthState: UserAuth = {
   username: '',
   password: '',
 };
 
 const AuthModal = () => {
-  const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [auth, setAuth] = useState<UserAuth>(initialAuthState);
 
@@ -136,8 +140,8 @@ const AuthModal = () => {
         onClose={closeModal}
         aria-labelledby="dialog-preview"
       >
-        <div className={classes.modal}>
-          <DialogTitle className={classes.title} id="dialog-preview">
+        <Box sx={authModalSx}>
+          <DialogTitle sx={authModalTitleSx} id="dialog-preview">
             {t('Authentication required')}
           </DialogTitle>
 
@@ -159,13 +163,13 @@ const AuthModal = () => {
                   width: '45%',
                 }}
               >
-                <Typography className={classes.label} variant="body2">
+                <Typography sx={authModalLabelSx} variant="body2">
                   {t('Username')}
                 </Typography>
                 <TextField
                   id="username"
                   value={auth.username}
-                  className={classes.textField}
+                  sx={authModalTextFieldSx}
                   onChange={handleInputTextChanged('username')}
                 />
               </Box>
@@ -174,14 +178,14 @@ const AuthModal = () => {
                   width: '45%',
                 }}
               >
-                <Typography className={classes.label} variant="body2">
+                <Typography sx={authModalLabelSx} variant="body2">
                   {t('Password')}
                 </Typography>
                 <TextField
                   id="password"
                   value={auth.password}
                   type="password"
-                  className={classes.textField}
+                  sx={authModalTextFieldSx}
                   onChange={handleInputTextChanged('password')}
                 />
               </Box>
@@ -192,7 +196,7 @@ const AuthModal = () => {
                 justifyContent: 'flex-end',
               }}
             >
-              <div className={classes.buttonWrapper}>
+              <Box sx={authModalButtonWrapperSx}>
                 <Button
                   type="reset"
                   variant="outlined"
@@ -210,20 +214,15 @@ const AuthModal = () => {
                 >
                   {t('Send')}
                 </Button>
-              </div>
+              </Box>
             </Box>
           </form>
-        </div>
+        </Box>
       </Dialog>
     );
   }, [
     auth.password,
     auth.username,
-    classes.buttonWrapper,
-    classes.label,
-    classes.modal,
-    classes.textField,
-    classes.title,
     closeModal,
     handleInputTextChanged,
     isUserAuthenticated,
@@ -234,38 +233,5 @@ const AuthModal = () => {
     validateToken,
   ]);
 };
-
-const useStyles = makeStyles((theme: Theme) => {
-  const { secondary } = theme.palette.text;
-
-  const color = {
-    color: secondary,
-  };
-
-  const inputColor = {
-    '& .MuiInputBase-input': color,
-  };
-
-  return createStyles({
-    modal: {
-      width: '40vw',
-      padding: '1em 0.75em',
-    },
-    title: {
-      marginBottom: '1.5em',
-      padding: 0,
-      ...color,
-    },
-    label: color,
-    textField: { ...inputColor, width: '100%' },
-    buttonWrapper: {
-      marginTop: '2em',
-      marginBottom: '1em',
-      display: 'flex',
-      width: '33%',
-      justifyContent: 'space-between',
-    },
-  });
-});
 
 export default AuthModal;

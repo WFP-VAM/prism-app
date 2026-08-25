@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 
-import { createTheme, ThemeProvider } from '@material-ui/core';
+import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { DashboardElementType } from 'config/types';
 import {
@@ -9,6 +9,7 @@ import {
 } from 'context/dashboardStateSlice';
 import { store } from 'context/store';
 import { validateImportedDashboardConfig } from 'dashboardConfig/schema';
+import muiTheme from 'muiTheme';
 import { Provider } from 'react-redux';
 import { TestBrowserRouter } from 'test/TestBrowserRouter';
 
@@ -49,9 +50,11 @@ function renderImportView() {
   return render(
     <TestBrowserRouter>
       <Provider store={store}>
-        <ThemeProvider theme={createTheme()}>
-          <ImportDashboardView />
-        </ThemeProvider>
+        <StyledEngineProvider injectFirst>
+          <ThemeProvider theme={muiTheme}>
+            <ImportDashboardView />
+          </ThemeProvider>
+        </StyledEngineProvider>
       </Provider>
     </TestBrowserRouter>,
   );

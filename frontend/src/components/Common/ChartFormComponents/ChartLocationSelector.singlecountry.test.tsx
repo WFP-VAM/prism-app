@@ -65,9 +65,9 @@ jest.mock('hooks/useAdminNameTranslations', () => ({
   }),
 }));
 
-jest.mock('@material-ui/core', () => {
+jest.mock('@mui/material', () => {
   const React = require('react');
-  const actual = jest.requireActual('@material-ui/core');
+  const actual = jest.requireActual('@mui/material');
   return {
     ...actual,
     Box: ({ children }: any) =>

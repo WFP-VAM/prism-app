@@ -49,10 +49,13 @@ RUN poetry run pip install --upgrade 'pip>=26.1.2' 'setuptools>=82.0.0' 'wheel>=
 
 # Apply security updates (e.g. GnuPG CVE-2025-68973, libtiff CVE-2025-9900); drop build-only headers
 # (linux-libc-dev); remove GStreamer "bad" codecs not required for headless map export.
+# Purge OpenJDK before upgrade: GDAL ubuntu-full ships it, Python API does not use it, and
+# apt-get upgrade 404s when Ubuntu resolute supersedes the security-pocket JRE .deb.
+# Do not cache /var/lib/apt (package lists): stale lists + superseded pool = 404.
 # Must run before Playwright: autoremove after install-deps strips Chromium runtime libraries.
-RUN --mount=type=cache,target=/var/lib/apt \
-    --mount=type=cache,target=/var/cache/apt \
-    DEBIAN_FRONTEND=noninteractive apt-get update && \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    DEBIAN_FRONTEND=noninteractive apt-get update --fix-missing && \
+    (DEBIAN_FRONTEND=noninteractive apt-get purge -y 'openjdk-*' || true) && \
     DEBIAN_FRONTEND=noninteractive apt-get -y upgrade && \
     DEBIAN_FRONTEND=noninteractive apt-get purge -y \
       build-essential python3-dev linux-libc-dev libpq-dev \
@@ -68,8 +71,7 @@ RUN poetry run playwright install chromium
 
 # playwright installs a lot of apt packages to support its browser
 RUN --mount=type=cache,target=/root/.cache \
-    --mount=type=cache,target=/var/lib/apt \
-    --mount=type=cache,target=/var/cache/apt \
+    --mount=type=cache,target=/var/cache/apt,sharing=locked \
     DEBIAN_FRONTEND=noninteractive poetry run playwright install-deps chromium
 
 # Verify Chromium launches after install-deps (CI export_maps tests depend on this).
