@@ -16,3 +16,6 @@ audit_results.json
 **/.hypothesis/**
 app/__pycache__/**
 
+# Deploy health check logs
+logs/
+

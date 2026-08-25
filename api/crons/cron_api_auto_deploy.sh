@@ -4,20 +4,20 @@ set -euo pipefail
 # To set up cron on EC2:
 # crontab -e
 # Example (daily at 01:00, log to file):
-# 0 1 * * * BRANCH=master HEALTHCHECK_URL="http://127.0.0.1/" ~/prism-app/api/crons/cron_api_auto_deploy.sh >> ~/prism-app/api/auto_deploy.log 2>&1
+# 0 1 * * * BRANCH=master ~/prism-app/api/crons/cron_api_auto_deploy.sh >> ~/prism-app/api/auto_deploy.log 2>&1
 # Note: script no-ops if target branch SHA unchanged since last successful deploy.
 #
 # Auto-deploy API on EC2 when main/master advances.
-# Designed for cron usage: idempotent, locked, SHA-pinned, with optional healthcheck gate.
+# Designed for cron usage: idempotent, locked, SHA-pinned, and gated on the
+# full deploy health check (api + traefik + export_map_worker).
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 API_DIR="$(cd -- "$SCRIPT_DIR/.." && pwd)"
 BRANCH="${BRANCH:-master}"
 STATE_DIR="$API_DIR/.auto_deploy_state"
 LOCK_FILE="$STATE_DIR/auto_deploy.lock"
-HEALTHCHECK_URL="${HEALTHCHECK_URL:-}"
 
-export API_DIR BRANCH STATE_DIR LOCK_FILE HEALTHCHECK_URL
+export API_DIR BRANCH STATE_DIR LOCK_FILE
 
 mkdir -p "$STATE_DIR"
 
@@ -66,13 +66,26 @@ run_deploy() {
   source ./set_envs.sh
   make deploy
 
-  if [[ -n "$HEALTHCHECK_URL" ]]; then
-    curl -fsS --max-time 10 "$HEALTHCHECK_URL" >/dev/null
-    if [[ $? -ne 0 ]]; then
-      echo "error: healthcheck failed" >&2
+  # Gate the deploy on the full health check (api + traefik + export_map_worker).
+  # HEALTHCHECK_STRICT=1 makes it exit non-zero if any required service is unhealthy.
+  # On failure, automatically roll back to the previous SHA and redeploy so the
+  # instance is left on a known-good build; the failed target SHA is not recorded,
+  # so cron retries it on the next run.
+  if ! HEALTHCHECK_STRICT=1 ./scripts/health_check.sh; then
+    echo "error: healthcheck failed for $target_sha; rolling back to $prev_sha" >&2
+
+    git checkout --detach "$prev_sha"
+    # shellcheck disable=SC1091
+    source ./set_envs.sh
+    make deploy
+
+    if ! HEALTHCHECK_STRICT=1 ./scripts/health_check.sh; then
+      echo "error: rollback to $prev_sha also failed healthcheck" >&2
       return 1
     fi
-    echo "healthcheck passed"
+
+    echo "rolled back to: $prev_sha (failed target: $target_sha)"
+    return 1
   fi
 
   echo "$target_sha" > "$STATE_DIR/deployed_sha"
