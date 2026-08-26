@@ -12,5 +12,5 @@ export default {
   rawTables,
   rawReports,
   translation,
-  defaultBoundariesFile: 'moz_bnd_adm3_WFP.json',
+  defaultBoundariesFile: 'uga_admbnda_adm2.json',
 };
