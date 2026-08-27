@@ -13,6 +13,7 @@ import React, {
 /** Layer types that require deck.gl (MapboxOverlay + lazy chunk). */
 export const DECK_GL_LAYER_TYPES: ReadonlySet<LayerType['type']> = new Set([
   'cog',
+  'zarr',
 ]);
 
 interface DeckGLLayersContextValue {

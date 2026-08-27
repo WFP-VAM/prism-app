@@ -29,6 +29,8 @@ const config: Config = {
     '^test/(.*)$': '<rootDir>/test/$1',
     '^components/MapView/Layers/COGLayer$':
       '<rootDir>/test/deckGlComponentMock.tsx',
+    '^components/MapView/Layers/ZarrLayer$':
+      '<rootDir>/test/deckGlComponentMock.tsx',
     '^components/MapView/DeckGLOverlay$':
       '<rootDir>/test/deckGlComponentMock.tsx',
     '^@deck\\.gl/(.*)$': '<rootDir>/test/fileMock.ts',
