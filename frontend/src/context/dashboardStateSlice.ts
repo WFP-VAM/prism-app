@@ -106,6 +106,8 @@ const getMapLayerOpacityConfig = (
     case 'impact':
     case 'geojson_polygon':
       return [getLayerMapId(layerId), 'fill-opacity'];
+    case 'pmtiles_vector':
+      return [getLayerMapId(layerId, 'fill'), 'fill-opacity'];
     case 'point_data':
       if (layerId?.includes('_report')) {
         return [getLayerMapId(layerId), 'fill-opacity'];
@@ -527,11 +529,16 @@ export const dashboardStateSlice = createSlice({
         return state;
       }
 
-      const layersToAdd = layer?.group?.activateAll
-        ? Object.values(LayerDefinitions).filter(l =>
-            layer?.group?.layers?.map(subLayer => subLayer.id).includes(l.id),
-          )
-        : [layer];
+      const layersToAdd = (
+        layer?.group?.activateAll
+          ? Object.values(LayerDefinitions).filter(l =>
+              layer?.group?.layers?.map(subLayer => subLayer.id).includes(l.id),
+            )
+          : [layer]
+      ).map(l => ({
+        ...l,
+        ...(layer.group ? { group: layer.group } : {}),
+      }));
       const filteredLayers = mapState.layers.filter(l => keepLayer(l, layer));
 
       const newLayers =

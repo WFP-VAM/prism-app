@@ -79,6 +79,7 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
       | 'impact'
       | 'point_data'
       | 'geojson_polygon'
+      | 'pmtiles_vector'
       | 'polygon'
       | 'static_raster'
       | 'anticipatory_action_drought'
@@ -87,6 +88,7 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
   } = {
     point_data: 0,
     geojson_polygon: 1,
+    pmtiles_vector: 1,
     polygon: 2,
     boundary: 3,
     pattern_admin_level_data: 4,
@@ -118,7 +120,11 @@ export const mapStateSlice = createSlice({
               payload?.group?.layers?.map(layer => layer.id).includes(l.id),
             )
           : [payload]
-      ).map(l => ({ ...l }));
+      ).map(l => ({
+        ...l,
+        // Keep group on companions so remove/opacity/activateAll stay consistent.
+        ...(payload.group ? { group: payload.group } : {}),
+      }));
 
       // TODO: something is wrong with the types imported by 'maplibre-gl' in config/types.ts
       //  @ts-ignore

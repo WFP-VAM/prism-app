@@ -62,6 +62,7 @@
     "@deck.gl/mesh-layers": "^9.3.1",
     "@developmentseed/deck.gl-geotiff": "^0.6.1",
     "@developmentseed/deck.gl-raster": "^0.6.1",
+    "@developmentseed/geotiff": "0.6.1",
     "@fontsource/noto-sans-arabic": "5.2.5",
     "@fortawesome/fontawesome-free": "^6.5.1",
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
@@ -70,6 +71,7 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@luma.gl/core": "^9.3.3",
     "@luma.gl/shadertools": "^9.3.3",
+    "@mapbox/vector-tile": "^1.3.1",
     "@material-ui/core": "4.12.4",
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "4.0.0-alpha.61",
@@ -80,6 +82,7 @@
     "@sentry/browser": "^7.119.1",
     "@turf/area": "^7",
     "@turf/bbox": "^7",
+    "@turf/boolean-intersects": "^7",
     "@turf/boolean-point-in-polygon": "^7",
     "@turf/centroid": "^7",
     "@turf/intersect": "^7",
@@ -113,6 +116,7 @@
     "marked": "^4.0.10",
     "max-inscribed-circle": "^2.0.1",
     "papaparse": "^5.2.0",
+    "pbf": "^3.2.1",
     "pmtiles": "^4.2.1",
     "posthog-js": "^1.386.8",
     "prism-common": "file:../common",
@@ -131,6 +135,7 @@
     "redux": "^4.0.5",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^6.1.2",
+    "vt-pbf": "^3.1.3",
     "zod": "^4.3.6"
   },
   "resolutions": {
@@ -150,9 +155,11 @@
     "lodash": "^4.18.0",
     "dompurify": "^3.4.13",
     "protocol-buffers-schema": ">=3.6.1",
-    "protobufjs": "^7.6.3"
+    "protobufjs": "^7.6.3",
+    "@developmentseed/geotiff": "0.6.1"
   },
   "_resolutionsNotes": {
+    "@developmentseed/geotiff": "Align with @developmentseed/deck.gl-geotiff@0.6.1 — duplicate 0.6/0.7 copies break tsc (DecoderPool private fields).",
     "node-notifier": "Build compatibility — keep (native notify stack).",
     "canvas": "Stub via link: — skip native canvas install.",
     "glob": "CVE-2025-64756 / GHSA-23c5-xmqv-rm74 — force glob 13 (babel-jest still pulls 7.x).",
@@ -208,6 +215,7 @@
     "@types/marked": "^4.0.2",
     "@types/node": "20.8.8",
     "@types/papaparse": "^5.0.3",
+    "@types/pbf": "^3.0.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/react-redux": "^7.1.7",

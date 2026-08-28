@@ -184,6 +184,9 @@ function LegendItemsList({
             forPrinting={forPrinting}
             showDescription={showDescription}
             dateCoverage={layerCoverageMap[layer.id]}
+            interpolate={
+              layer.type === 'cog' && Boolean(layer.wcsConfig?.interpolate)
+            }
           >
             {t(layer.legendText)}
           </LegendItem>

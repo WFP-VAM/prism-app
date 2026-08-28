@@ -45,7 +45,11 @@ RUN --mount=type=cache,target=/root/.cache \
     poetry install
 
 # Upgrade pip + tooling (CVE-2026-1703 pip, CVE-2026-24049 wheel, CVE-2026-23949 jaraco.context via setuptools vendor refresh)
-RUN poetry run pip install --upgrade 'pip>=26.1.2' 'setuptools>=82.0.0' 'wheel>=0.46.2' 'jaraco.context>=6.1.0'
+RUN poetry run pip install --upgrade 'pip>=26.1.2' 'setuptools>=82.0.0' 'wheel>=0.46.2' 'jaraco.context>=6.1.0' 'msgpack>=1.2.1'
+
+# pip still vendors msgpack 1.1.2 / lists setuptools 70.3.0 in bom.cdx.json (Trivy).
+COPY docker/patch_pip_vendor_cves.py /tmp/patch_pip_vendor_cves.py
+RUN poetry run python /tmp/patch_pip_vendor_cves.py && rm -f /tmp/patch_pip_vendor_cves.py
 
 # Apply security updates (e.g. GnuPG CVE-2025-68973, libtiff CVE-2025-9900); drop build-only headers
 # (linux-libc-dev); remove GStreamer "bad" codecs not required for headless map export.

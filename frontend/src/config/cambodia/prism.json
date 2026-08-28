@@ -192,7 +192,40 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
+      "vegetation_conditions": [
+        "ndvi_dekad",
+        "ndvi_dekad_anomaly",
+        {
+          "group_title": "FTW crop fields (2025)",
+          "activate_all": true,
+          "layers": [
+            {
+              "id": "ftw_field_boundaries",
+              "label": "Fields",
+              "main": true
+            },
+            {
+              "id": "ftw_field_density",
+              "label": "Density"
+            }
+          ]
+        },
+        {
+          "group_title": "FTW crop fields (2024)",
+          "activate_all": true,
+          "layers": [
+            {
+              "id": "ftw_field_boundaries_2024",
+              "label": "Fields",
+              "main": true
+            },
+            {
+              "id": "ftw_field_density_2024",
+              "label": "Density"
+            }
+          ]
+        }
+      ]
     },
     "temperature": {
       "land_surface_temperature": [
