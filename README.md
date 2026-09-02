@@ -6,7 +6,7 @@ This project is the front-end interface for the World Food Programme's [PRISM pr
 
 ## Functionalities
 
-The new PRISM frontend is built as a static website to minimize cross dependencies and simplify deployments as much as possible. Currently, PRISM frontend provides the ability to:
+The PRISM frontend is built as a static website to minimize cross dependencies and simplify deployments as much as possible. Currently, PRISM frontend provides the ability to:
 
 - Load administrative boundaries as GeoJSON (`src/config/admin_boundaries.json`)
 - Load admin level (vector) data as JSON, and link it to administrative boundaries
