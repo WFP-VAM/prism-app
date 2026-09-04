@@ -151,7 +151,8 @@
     "dompurify": "^3.4.13",
     "protocol-buffers-schema": ">=3.6.1",
     "protobufjs": "^7.6.3",
-    "browserslist": "^4.28.7"
+    "browserslist": "^4.28.7",
+    "fflate": "0.8.3"
   },
   "_resolutionsNotes": {
     "node-notifier": "Build compatibility — keep (native notify stack).",
@@ -172,6 +173,7 @@
     "protocol-buffers-schema": "CVE-2026-5758 / GHSA-j452-xhg8-qg39 — geotiff transitive, >=3.6.1.",
     "protobufjs": "CVE-2026-45740 + CVE-2026-54269 — posthog-js>@opentelemetry/otlp-transformer, >=7.6.3.",
     "browserslist": "CVE-2026-73088 / CVE-2026-73089 — prototype pollution + unbounded cache; >=4.28.7.",
+    "fflate": "CVE-2026-45820 / GHSA-px8p-9vwx-vf98 — unzipSync Zip64 infinite loop. Flatten 0.4/0.7/0.8 lines to 0.8.3 (Yarn v1 cannot keep patched 0.4.9 + 0.7.5 beside 0.8.3).",
     "_picomatch": "CVE-2026-33671 / CVE-2026-33672 — lock-only: 2.x at 2.3.2+, 4.x separate (flat resolution cannot merge majors).",
     "_yaml": "CVE-2026-33532 — lock-only: yaml 1.x (husky>cosmiconfig) + 2.x (lint-staged); cannot flatten."
   },
