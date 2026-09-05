@@ -1,0 +1,40 @@
+{
+  "admin1_boundaries": {
+    "type": "boundary",
+    "path": "data/uganda/uga_admbnda_adm1.json",
+    "opacity": 0.8,
+    "admin_code": "adm1_pcode",
+    "admin_level_codes": ["adm1_pcode"],
+    "admin_level_names": ["adm1_name"],
+    "admin_level_local_names": ["adm1_name"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 2,
+        "line-opacity": 0.8
+      }
+    }
+  },
+  "admin2_boundaries": {
+    "type": "boundary",
+    "path": "data/uganda/uga_admbnda_adm2.json",
+    "opacity": 0.8,
+    "admin_code": "adm2_pcode",
+    "admin_level_codes": ["adm1_pcode", "adm2_pcode"],
+    "admin_level_names": ["adm1_name", "adm2_name"],
+    "admin_level_local_names": ["adm1_name", "adm2_name"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1,
+        "line-opacity": 0.8
+      }
+    }
+  }
+}

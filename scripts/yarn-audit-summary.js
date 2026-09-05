@@ -45,7 +45,9 @@ function parseAuditLines(lines) {
 }
 
 function formatAuditFailureReport(lines) {
-  const advisories = parseAuditLines(lines);
+  const advisories = parseAuditLines(lines).filter(
+    (entry) => !isIgnoredAdvisory(entry),
+  );
   const grouped = new Map();
 
   for (const advisoryData of advisories) {
