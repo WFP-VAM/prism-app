@@ -1,4 +1,4 @@
-import { Box, useMediaQuery, useTheme } from '@material-ui/core';
+import { Box, useMediaQuery, useTheme } from '@mui/material';
 import HashText from 'components/Common/HashText';
 import { PanelSize } from 'config/types';
 import { memo } from 'react';
@@ -8,7 +8,7 @@ import RootAnalysisAccordionItems from './RootAnalysisAccordionItems';
 
 const LayersPanel = memo(() => {
   const theme = useTheme();
-  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
+  const smDown = useMediaQuery(theme.breakpoints.down('md'));
 
   return (
     <Box

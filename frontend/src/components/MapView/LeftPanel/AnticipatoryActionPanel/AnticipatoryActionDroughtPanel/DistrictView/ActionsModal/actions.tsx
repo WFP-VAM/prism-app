@@ -22,7 +22,7 @@ import {
   Remove,
   School,
   //   Diversity3 in mui 5 for social assistance
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import { AAWindowKeys } from 'config/utils';
 import {
   AACategoryType,

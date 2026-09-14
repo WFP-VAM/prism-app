@@ -1,4 +1,4 @@
-import { Button, Typography } from '@material-ui/core';
+import { Button, Typography } from '@mui/material';
 import { useSafeTranslation } from 'i18n';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';

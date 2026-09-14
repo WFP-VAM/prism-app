@@ -21,6 +21,7 @@ const config: Config = {
   },
   transformIgnorePatterns: ['<rootDir>/node_modules/(?!(quick-lru)/)'],
   moduleNameMapper: {
+    '^@testing-library/react$': '<rootDir>/test/render.tsx',
     '^react-dom$': '<rootDir>/src/shims/react-dom.ts',
     '^react-dom-vendor$': '<rootDir>/node_modules/react-dom',
     '\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':

@@ -77,6 +77,7 @@ const onClick =
     const makeBaseEntries = (layerTitle: string) =>
       ({
         [t('Analysis layer')]: { data: layerTitle, coordinates },
+
         ...(analysisData.analysisDate
           ? {
               [t('Date analyzed')]: {

@@ -1,11 +1,11 @@
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import {
   Button,
   IconButton,
   Typography,
   useMediaQuery,
   useTheme,
-} from '@material-ui/core';
-import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+} from '@mui/material';
 import ContentDialog from 'components/NavBar/ContentDialog';
 import { appConfig } from 'config';
 import { useSafeTranslation } from 'i18n';
@@ -19,7 +19,7 @@ const About = memo(() => {
   const { aboutPath } = appConfig;
   const dispatch = useDispatch();
   const theme = useTheme();
-  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
+  const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
 
   const href = aboutPath ? '' : 'https://innovation.wfp.org/project/prism';
@@ -62,6 +62,7 @@ const About = memo(() => {
           onClick={handler}
           style={{ color: 'white' }}
           aria-label={t('About')}
+          size="large"
         >
           {icon}
         </IconButton>

@@ -1,12 +1,10 @@
 import {
   Box,
   CircularProgress,
-  createStyles,
-  makeStyles,
   Typography,
   useMediaQuery,
   useTheme,
-} from '@material-ui/core';
+} from '@mui/material';
 import { LayerKey } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 import { Map as MaplibreMap } from 'maplibre-gl';
@@ -18,6 +16,27 @@ export interface BoundaryLoadingOverlayProps {
   displayedBoundaryLayerIds: LayerKey[];
   viewKey: string;
 }
+
+const overlaySx = {
+  position: 'absolute',
+  inset: 0,
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  pointerEvents: 'none',
+  zIndex: 5,
+} as const;
+
+const cardSx = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: 1.5,
+  p: '16px 24px',
+  borderRadius: 1,
+  backgroundColor: 'rgba(255, 255, 255, 0.85)',
+  boxShadow: 3,
+} as const;
 
 const areBoundarySourcesLoaded = (
   map: MaplibreMap,
@@ -38,14 +57,10 @@ const BoundaryLoadingOverlay = memo(
     const smDown = useMediaQuery(theme.breakpoints.down('sm'));
     const landingView =
       viewKey === 'landing' && !smDown ? getUniversalLandingView() : undefined;
-    const classes = useStyles();
     const { t } = useSafeTranslation();
     const map = useMapState().maplibreMap();
     const [visible, setVisible] = useState(true);
 
-    // Each new view (the initial landing load or a freshly selected country)
-    // starts a transition: show the overlay until the higher-res boundaries for
-    // that view have settled.
     useEffect(() => {
       setVisible(true);
     }, [viewKey]);
@@ -54,12 +69,6 @@ const BoundaryLoadingOverlay = memo(
       if (!map) {
         return undefined;
       }
-      // The map only goes idle once it has stopped moving (e.g. after the
-      // fitBounds transition into a country) and all tiles are loaded. We
-      // dismiss only when the displayed boundary sources are fully loaded, so
-      // cached low-zoom tiles don't hide the overlay before the high-res
-      // boundaries finish loading. Because we only re-show on a view change,
-      // later pan/zoom tile loads within the same view never re-trigger it.
       const handleIdle = () => {
         if (areBoundarySourcesLoaded(map, displayedBoundaryLayerIds)) {
           setVisible(false);
@@ -77,49 +86,22 @@ const BoundaryLoadingOverlay = memo(
 
     return (
       <Box
-        className={classes.overlay}
-        style={
-          landingView ? { paddingLeft: landingView.padding.left } : undefined
-        }
+        sx={{
+          ...overlaySx,
+          ...(landingView ? { paddingLeft: landingView.padding.left } : {}),
+        }}
         aria-live="polite"
         aria-busy="true"
       >
-        <Box className={classes.card}>
+        <Box sx={cardSx}>
           <CircularProgress size={36} />
-          <Typography variant="body2" className={classes.label}>
+          <Typography variant="body2" color="text.secondary">
             {t('Loading boundaries')}
           </Typography>
         </Box>
       </Box>
     );
   },
-);
-
-const useStyles = makeStyles(theme =>
-  createStyles({
-    overlay: {
-      position: 'absolute',
-      inset: 0,
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      pointerEvents: 'none',
-      zIndex: 5,
-    },
-    card: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      gap: theme.spacing(1.5),
-      padding: theme.spacing(2, 3),
-      borderRadius: theme.shape.borderRadius,
-      backgroundColor: 'rgba(255, 255, 255, 0.85)',
-      boxShadow: theme.shadows[3],
-    },
-    label: {
-      color: theme.palette.text.secondary,
-    },
-  }),
 );
 
 export default BoundaryLoadingOverlay;

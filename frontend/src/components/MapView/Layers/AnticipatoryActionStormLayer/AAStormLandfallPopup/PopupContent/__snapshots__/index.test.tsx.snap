@@ -3,71 +3,64 @@
 exports[`AAStormLandfallPopup component renders as expected 1`] = `
 <div>
   <div
-    class="makeStyles-itemsContainer-2"
+    class="MuiBox-root css-3a3hw0"
   >
-    <mock-typography
-      class="makeStyles-text-4 makeStyles-title-5"
-      variant="body1"
+    <p
+      class="MuiTypography-root MuiTypography-body1 css-9d5aah-MuiTypography-root"
     >
       Report date
       : 
       2024-03-01 8pm (GMT+2)
-    </mock-typography>
+    </p>
     <div
-      class="makeStyles-itemContainer-3"
+      class="MuiBox-root css-19ar6yu"
     >
-      <mock-typography
-        class="makeStyles-text-4"
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-1ioxswh-MuiTypography-root"
         style="max-width: 100px;"
-        variant="body1"
       >
         Landfall estimated time
-      </mock-typography>
-      <mock-typography
-        class="makeStyles-text-4 makeStyles-textAlignRight-6"
-        variant="body1"
+      </p>
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-1mdc7jx-MuiTypography-root"
       >
         2024-03-12 03:00 GMT+2
         <span
-          class="makeStyles-block-1"
+          class="MuiBox-root css-13o7eu2"
         >
           += 5 hours
         </span>
-      </mock-typography>
+      </p>
     </div>
     <div
-      class="makeStyles-itemContainer-3"
+      class="MuiBox-root css-19ar6yu"
     >
-      <mock-typography
-        class="makeStyles-text-4"
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-1ioxswh-MuiTypography-root"
         style="max-width: 150px;"
-        variant="body1"
       >
         Landfall estimated leadtime
-      </mock-typography>
-      <mock-typography
-        class="makeStyles-text-4 makeStyles-textAlignRight-6"
-        variant="body1"
+      </p>
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-1mdc7jx-MuiTypography-root"
       >
         247 - 252 hrs
-      </mock-typography>
+      </p>
     </div>
     <div
-      class="makeStyles-itemContainer-3"
+      class="MuiBox-root css-19ar6yu"
     >
-      <mock-typography
-        class="makeStyles-text-4"
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-1ioxswh-MuiTypography-root"
         style="max-width: 150px;"
-        variant="body1"
       >
         District impacted by landfall
-      </mock-typography>
-      <mock-typography
-        class="makeStyles-text-4 makeStyles-textAlignRight-6"
-        variant="body1"
+      </p>
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-1mdc7jx-MuiTypography-root"
       >
         Inhassoro
-      </mock-typography>
+      </p>
     </div>
   </div>
 </div>

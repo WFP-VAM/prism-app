@@ -1,18 +1,17 @@
+import { Cancel, Close } from '@mui/icons-material';
 import {
+  Box,
   Button,
-  createStyles,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
-  makeStyles,
   Typography,
-} from '@material-ui/core';
-import { Cancel, Close } from '@material-ui/icons';
+} from '@mui/material';
 import { useSafeTranslation } from 'i18n';
-import { black, cyanBlue } from 'muiTheme';
 
+import { actionsModalSx } from '../../../aaPanelStyles';
 import { Action } from './actions';
 
 interface ActionsModalProps {
@@ -23,31 +22,34 @@ interface ActionsModalProps {
 
 function ActionsModal({ open, onClose, actions }: ActionsModalProps) {
   const { t } = useSafeTranslation();
-  const classes = useStyles();
 
   return (
     <Dialog open={open}>
       <DialogTitle>
-        <div className={classes.titleWrapper}>
+        <Box sx={actionsModalSx.titleWrapper}>
           <Typography variant="h2">{t('Recommended actions')}</Typography>
-          <IconButton style={{ padding: 0 }} onClick={() => onClose()}>
+          <IconButton
+            style={{ padding: 0 }}
+            onClick={() => onClose()}
+            size="large"
+          >
             <Cancel />
           </IconButton>
-        </div>
+        </Box>
       </DialogTitle>
       <DialogContent dividers>
-        <div className={classes.contentWrapper}>
+        <Box sx={actionsModalSx.contentWrapper}>
           {actions.map(action => (
-            <div key={action.name} className={classes.actionRow}>
-              <div className={classes.actionIconWrapper}>{action.icon}</div>
+            <Box key={action.name} sx={actionsModalSx.actionRow}>
+              <Box sx={actionsModalSx.actionIconWrapper}>{action.icon}</Box>
               <Typography variant="h3">{t(action.name)}</Typography>
-            </div>
+            </Box>
           ))}
-        </div>
+        </Box>
       </DialogContent>
-      <DialogActions className={classes.dialogActionsWrapper}>
+      <DialogActions sx={actionsModalSx.dialogActionsWrapper}>
         <Button
-          className={classes.dialogButton}
+          sx={actionsModalSx.dialogButton}
           variant="outlined"
           startIcon={<Close />}
           onClick={() => onClose()}
@@ -58,27 +60,5 @@ function ActionsModal({ open, onClose, actions }: ActionsModalProps) {
     </Dialog>
   );
 }
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    titleWrapper: {
-      display: 'flex',
-      flexDirection: 'row',
-      flexWrap: 'nowrap',
-      justifyContent: 'space-between',
-    },
-    contentWrapper: { display: 'flex', flexDirection: 'column', gap: '1rem' },
-    actionRow: {
-      display: 'flex',
-      flexDirection: 'row',
-      flexWrap: 'nowrap',
-      gap: '1rem',
-      color: 'black',
-    },
-    actionIconWrapper: { width: '2rem' },
-    dialogActionsWrapper: { display: 'flex', justifyContent: 'center' },
-    dialogButton: { borderColor: cyanBlue, color: black },
-  }),
-);
 
 export default ActionsModal;

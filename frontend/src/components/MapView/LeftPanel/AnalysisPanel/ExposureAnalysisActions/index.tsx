@@ -1,4 +1,5 @@
-import { Button, Typography } from '@material-ui/core';
+import { Button, Typography } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
 import { usePostHog } from '@posthog/react';
 import ReportDialog from 'components/Common/ReportDialog';
 import {
@@ -23,8 +24,8 @@ import { safeCountry } from '../../../../../config';
 import LoadingBlinkingDots from '../../../../Common/LoadingBlinkingDots';
 
 function ExposureAnalysisActions({
-  analysisButton,
-  bottomButton,
+  analysisButtonSx,
+  bottomButtonSx,
   clearAnalysis,
   tableData,
   columns,
@@ -127,7 +128,7 @@ function ExposureAnalysisActions({
   return (
     <>
       <Button
-        className={analysisButton}
+        sx={analysisButtonSx}
         onClick={() => {
           posthog?.capture('analysis_cleared', { layer_id: exposureLayerId });
           clearAnalysis();
@@ -136,14 +137,14 @@ function ExposureAnalysisActions({
         <Typography variant="body2">{t('Clear Analysis')}</Typography>
       </Button>
       {exposureAnalysisCsvData && (
-        <Button className={bottomButton} onClick={handleOnDownloadCsv}>
+        <Button sx={bottomButtonSx} onClick={handleOnDownloadCsv}>
           <Typography variant="body2">{t('Download as CSV')}</Typography>
         </Button>
       )}
       {/* TODO - Fix in backend, issue #1383 */}
       {exposureLayerId !== 'adamts_buffers' && (
         <Button
-          className={bottomButton}
+          sx={bottomButtonSx}
           onClick={handleDownloadReport}
           // FIXME - Temporarily disabled due to the unavailability of the population data
           disabled={downloadReportIsLoading || true} // TEMPORARILY DISABLED due to security concerns with react-pdf/renderer
@@ -180,8 +181,8 @@ function ExposureAnalysisActions({
 }
 
 interface ExposureAnalysisActionsProps {
-  analysisButton?: string;
-  bottomButton?: string;
+  analysisButtonSx?: SxProps<Theme>;
+  bottomButtonSx?: SxProps<Theme>;
   clearAnalysis: () => void;
   tableData: AnalysisTableRow[];
   columns: Column[];

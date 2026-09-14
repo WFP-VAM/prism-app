@@ -1,43 +1,16 @@
-import {
-  Box,
-  createStyles,
-  Input,
-  InputAdornment,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
-import { DateRangeRounded } from '@material-ui/icons';
+import { DateRangeRounded } from '@mui/icons-material';
+import { Box, Input, InputAdornment, Typography } from '@mui/material';
+import { datePickerPopperProps } from 'components/Common/datePickerPopperProps';
 import { useSafeTranslation } from 'i18n';
 import React, { memo } from 'react';
 import DatePicker from 'react-datepicker';
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    calendarPopper: {
-      zIndex: 3,
-    },
-    datePickerContainer: {
-      marginTop: 5,
-      width: 'auto',
-      color: 'black',
-      display: 'flex',
-      minWidth: 300,
-      justifyContent: 'space-between',
-    },
-    textLabel: {
-      color: 'black',
-    },
-    wrapper: {
-      marginTop: 20,
-      paddingLeft: 20,
-      paddingRight: 20,
-    },
-    wrapperLabel: {
-      color: 'black',
-      fontWeight: 'bold',
-    },
-  }),
-);
+import {
+  timePeriodDatePickerContainerSx,
+  timePeriodTextLabelSx,
+  timePeriodWrapperLabelSx,
+  timePeriodWrapperSx,
+} from '../chartsPanelStyles';
 
 const TimePeriodSelector = memo(
   ({
@@ -50,19 +23,18 @@ const TimePeriodSelector = memo(
     endLabel,
     wrapperStyle,
   }: TimePeriodSelectorProps) => {
-    const styles = useStyles();
     const { t } = useSafeTranslation();
 
     return (
-      <Box className={styles.wrapper} style={wrapperStyle}>
+      <Box sx={timePeriodWrapperSx} style={wrapperStyle}>
         {title && (
-          <Typography className={styles.wrapperLabel} variant="body2">
+          <Typography sx={timePeriodWrapperLabelSx} variant="body2">
             {title}
           </Typography>
         )}
-        <Box className={styles.datePickerContainer}>
-          <Box p={2} style={{ borderBottom: '1px solid #858585' }}>
-            <Typography className={styles.textLabel} variant="body2">
+        <Box sx={timePeriodDatePickerContainerSx}>
+          <Box sx={{ p: 2 }} style={{ borderBottom: '1px solid #858585' }}>
+            <Typography sx={timePeriodTextLabelSx} variant="body2">
               {`${t(startLabel)}: `}
             </Typography>
             <DatePicker
@@ -80,7 +52,7 @@ const TimePeriodSelector = memo(
               dropdownMode="select"
               customInput={
                 <Input
-                  className={styles.textLabel}
+                  sx={timePeriodTextLabelSx}
                   disableUnderline
                   endAdornment={
                     <InputAdornment position="end">
@@ -89,12 +61,12 @@ const TimePeriodSelector = memo(
                   }
                 />
               }
-              popperClassName={styles.calendarPopper}
+              {...datePickerPopperProps}
             />
           </Box>
 
-          <Box p={2} style={{ borderBottom: '1px solid #858585' }}>
-            <Typography className={styles.textLabel} variant="body2">
+          <Box sx={{ p: 2 }} style={{ borderBottom: '1px solid #858585' }}>
+            <Typography sx={timePeriodTextLabelSx} variant="body2">
               {`${t(endLabel)}: `}
             </Typography>
             <DatePicker
@@ -112,7 +84,7 @@ const TimePeriodSelector = memo(
               dropdownMode="select"
               customInput={
                 <Input
-                  className={styles.textLabel}
+                  sx={timePeriodTextLabelSx}
                   disableUnderline
                   endAdornment={
                     <InputAdornment position="end">
@@ -121,7 +93,7 @@ const TimePeriodSelector = memo(
                   }
                 />
               }
-              popperClassName={styles.calendarPopper}
+              {...datePickerPopperProps}
             />
           </Box>
         </Box>

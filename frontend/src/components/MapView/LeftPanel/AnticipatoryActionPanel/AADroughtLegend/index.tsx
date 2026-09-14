@@ -1,24 +1,17 @@
-import {
-  createStyles,
-  Divider,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
+import { Box, Divider, Typography } from '@mui/material';
 import { useSafeTranslation } from 'i18n';
 import { borderGray } from 'muiTheme';
 import React from 'react';
 
+import { aaCommonSx, aaDroughtLegendSx } from '../aaPanelStyles';
 import {
   getDescriptionText,
   getLegendPhases,
 } from '../AnticipatoryActionDroughtPanel/utils/countryConfig';
 import HowToReadModal from '../HowToReadModal';
-import { useAACommonStyles } from '../utils';
 
 function AADroughtLegend({ showDescription = true }: AADroughtLegendProps) {
   const [open, setOpen] = React.useState(false);
-  const classes = useStyles();
-  const commonClasses = useAACommonStyles();
   const { t } = useSafeTranslation();
 
   const phases = getLegendPhases();
@@ -31,8 +24,8 @@ function AADroughtLegend({ showDescription = true }: AADroughtLegendProps) {
       <Typography variant="h3" style={{ fontWeight: 'bold' }}>
         {t('Phases')}
       </Typography>
-      <div
-        style={{
+      <Box
+        sx={{
           display: 'flex',
           flexDirection: 'column',
           gap: '0.5rem',
@@ -40,7 +33,10 @@ function AADroughtLegend({ showDescription = true }: AADroughtLegendProps) {
         }}
       >
         {phases.map(x => (
-          <div key={`${x.phase}_${x.severity}`} className={classes.itemWrapper}>
+          <Box
+            key={`${x.phase}_${x.severity}`}
+            sx={aaDroughtLegendSx.itemWrapper}
+          >
             {x.icon}
             <div>
               <Typography style={{ whiteSpace: 'nowrap' }}>
@@ -52,24 +48,25 @@ function AADroughtLegend({ showDescription = true }: AADroughtLegendProps) {
                 </Typography>
               )}
             </div>
-          </div>
+          </Box>
         ))}
-      </div>
+      </Box>
       {showDescription && (
         <>
           <Typography>
             {
               // TODO: handle onKeyDown
 
-              <span
-                className={classes.dialogButton}
+              <Box
+                component="span"
+                sx={aaDroughtLegendSx.dialogButton}
                 onClick={() => setOpen(true)}
                 // onKeyDown={e => console.log(e)}
                 role="button"
                 tabIndex={0}
               >
                 {t('The "Ready, Set & Go!" system')}
-              </span>
+              </Box>
             }{' '}
             {t(descriptionText)}
           </Typography>
@@ -78,49 +75,33 @@ function AADroughtLegend({ showDescription = true }: AADroughtLegendProps) {
           <Typography variant="h3" style={{ fontWeight: 'bold' }}>
             {t('Districts')}
           </Typography>
-          <div
-            style={{
+          <Box
+            sx={{
               display: 'flex',
               flexDirection: 'column',
               gap: '0.5rem',
             }}
           >
-            <div className={classes.itemWrapper}>
-              <div
-                style={{
+            <Box sx={aaDroughtLegendSx.itemWrapper}>
+              <Box
+                sx={{
                   minWidth: '2.2rem',
                   border: `1px solid ${borderGray}`,
                   borderRadius: '2px',
                 }}
               />
               <Typography>{t('District')}</Typography>
-            </div>
-            <div className={classes.itemWrapper}>
-              <div className={commonClasses.newTag}>{t('NEW')}</div>
+            </Box>
+            <Box sx={aaDroughtLegendSx.itemWrapper}>
+              <Box sx={aaCommonSx.newTag}>{t('NEW')}</Box>
               <Typography>{t('District in new phase this month')}</Typography>
-            </div>
-          </div>
+            </Box>
+          </Box>
         </>
       )}
     </>
   );
 }
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    itemWrapper: {
-      display: 'flex',
-      flexDirection: 'row',
-      flexWrap: 'nowrap',
-      gap: '0.5rem',
-    },
-    dialogButton: {
-      fontWeight: 'bold',
-      textDecoration: 'underline',
-      cursor: 'pointer',
-    },
-  }),
-);
 
 interface AADroughtLegendProps {
   showDescription?: boolean;

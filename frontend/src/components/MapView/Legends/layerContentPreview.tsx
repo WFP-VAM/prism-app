@@ -1,11 +1,5 @@
-import {
-  createStyles,
-  Grid,
-  IconButton,
-  makeStyles,
-  Theme,
-} from '@material-ui/core';
-import InfoIcon from '@material-ui/icons/Info';
+import InfoIcon from '@mui/icons-material/Info';
+import { Grid, IconButton } from '@mui/material';
 import ContentDialog from 'components/NavBar/ContentDialog';
 import { LayerType } from 'config/types';
 import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
@@ -14,7 +8,6 @@ import { useDispatch } from 'react-redux';
 import { loadLayerContent } from 'utils/load-layer-utils';
 
 const LayerContentPreview = memo(({ layerId }: PreviewProps) => {
-  const classes = useStyles();
   const [content, setContent] = useState<string | undefined>(undefined);
 
   const dispatch = useDispatch();
@@ -62,41 +55,22 @@ const LayerContentPreview = memo(({ layerId }: PreviewProps) => {
       return null;
     }
     return (
-      <Grid item>
+      <Grid>
         <IconButton
           onClick={handleIconButtonClick}
           size="small"
-          className={classes.icon}
+          sx={{
+            top: '-4px',
+            fontSize: '14px',
+          }}
         >
           <InfoIcon fontSize="inherit" />
         </IconButton>
         {renderedContentDialog}
       </Grid>
     );
-  }, [
-    classes.icon,
-    handleIconButtonClick,
-    layer.contentPath,
-    renderedContentDialog,
-  ]);
+  }, [handleIconButtonClick, layer.contentPath, renderedContentDialog]);
 });
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    icon: {
-      top: '-4px',
-      fontSize: '14px',
-    },
-    label: {
-      marginLeft: '10px',
-    },
-    title: {
-      color: theme.palette.text.secondary,
-      fontWeight: 'bold',
-      minWidth: '600px',
-    },
-  }),
-);
 
 export interface PreviewProps {
   layerId: LayerType['id'] | 'analysis';

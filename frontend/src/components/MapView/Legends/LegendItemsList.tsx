@@ -1,4 +1,5 @@
-import { List } from '@material-ui/core';
+import { List } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
 import {
   AnticipatoryAction,
   LayerType,
@@ -27,7 +28,7 @@ import { invertLegendColors } from './utils';
 
 interface LegendItemsListProps {
   forPrinting?: boolean;
-  listStyle?: string;
+  listSx?: SxProps<Theme>;
   showDescription?: boolean;
   overrideLayers?: LayerType[];
   /** WMS GetLegendGraphic DPI for server-side export (e.g. 192 for DPR 2). */
@@ -35,7 +36,7 @@ interface LegendItemsListProps {
 }
 
 function LegendItemsList({
-  listStyle,
+  listSx,
   forPrinting = false,
   showDescription = true,
   overrideLayers,
@@ -222,11 +223,11 @@ function LegendItemsList({
   ]);
 
   if (forPrinting) {
-    return <div className={listStyle}>{legendItems}</div>;
+    return <div>{legendItems}</div>;
   }
 
   return (
-    <List disablePadding className={listStyle}>
+    <List disablePadding sx={listSx}>
       {legendItems}
     </List>
   );

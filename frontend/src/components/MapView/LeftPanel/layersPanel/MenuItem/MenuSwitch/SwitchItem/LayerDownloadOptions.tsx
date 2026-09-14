@@ -1,3 +1,4 @@
+import GetAppIcon from '@mui/icons-material/GetApp';
 import {
   Box,
   CircularProgress,
@@ -5,8 +6,8 @@ import {
   Menu,
   MenuItem,
   Tooltip,
-} from '@material-ui/core';
-import GetAppIcon from '@material-ui/icons/GetApp';
+} from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
 import {
   downloadGeotiff,
   Extent,
@@ -44,6 +45,7 @@ function LayerDownloadOptions({
   extent,
   selected,
   size,
+  iconButtonSx,
 }: LayerDownloadOptionsProps) {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
@@ -281,6 +283,7 @@ function LayerDownloadOptions({
               disabled={!selected || isGeotiffLoading}
               onClick={handleDownloadMenuOpen}
               size={size || 'medium'}
+              sx={iconButtonSx}
             >
               <GetAppIcon fontSize={size || 'medium'} />
             </IconButton>
@@ -332,6 +335,7 @@ interface LayerDownloadOptionsProps {
   extent: Extent | undefined;
   selected: boolean;
   size?: 'small' | undefined;
+  iconButtonSx?: SxProps<Theme>;
 }
 
 export default LayerDownloadOptions;

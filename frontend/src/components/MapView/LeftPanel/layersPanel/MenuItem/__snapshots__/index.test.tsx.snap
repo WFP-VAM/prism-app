@@ -3,50 +3,46 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="MuiPaper-root MuiAccordion-root makeStyles-root-1 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded MuiAccordion-gutters css-qk7z7-MuiPaper-root-MuiAccordion-root"
+    style="--Paper-shadow: none;"
   >
-    <div
-      aria-controls="title"
-      aria-disabled="false"
-      aria-expanded="false"
-      class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-2"
-      id="level1-title"
-      role="button"
-      tabindex="0"
+    <h3
+      class="MuiAccordion-heading css-cy7rkm-MuiAccordion-heading"
     >
-      <div
-        class="MuiAccordionSummary-content makeStyles-summaryContent-5"
-      >
-        <mock-typography
-          classes="[object Object]"
-        >
-          title
-        </mock-typography>
-      </div>
-      <div
-        aria-disabled="false"
-        aria-hidden="true"
-        class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-4 MuiIconButton-edgeEnd"
+      <button
+        aria-controls="title"
+        aria-expanded="false"
+        class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters css-objw89-MuiButtonBase-root-MuiAccordionSummary-root"
+        id="level1-title"
+        tabindex="0"
+        type="button"
       >
         <span
-          class="MuiIconButton-label"
+          class="MuiAccordionSummary-content css-1rqjdob-MuiAccordionSummary-content"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-1n3gmsb-MuiTypography-root"
+          >
+            title
+          </p>
+        </span>
+        <span
+          class="MuiAccordionSummary-expandIconWrapper css-1wnau0r-MuiAccordionSummary-expandIconWrapper"
         >
           <svg
             aria-hidden="true"
-            class="MuiSvgIcon-root"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="ExpandMoreIcon"
             focusable="false"
             viewBox="0 0 24 24"
           >
             <path
-              d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+              d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
             />
           </svg>
         </span>
-        <span
-          class="MuiTouchRipple-root"
-        />
-      </div>
-    </div>
+      </button>
+    </h3>
   </div>
 </div>
 `;

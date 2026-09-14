@@ -1,3 +1,4 @@
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   Accordion,
   AccordionDetails,
@@ -5,10 +6,9 @@ import {
   Chip,
   Grid,
   Typography,
-} from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+} from '@mui/material';
 import AnalysisLayerSwitchItem from 'components/MapView/LeftPanel/layersPanel/AnalysisLayerSwitchItem';
-import { useLayerMenuItemStyles } from 'components/MapView/LeftPanel/layersPanel/MenuItem/utils';
+import { layerMenuItemAccordionSx } from 'components/MapView/LeftPanel/layersPanel/layerPanelStyles';
 import { useSafeTranslation } from 'i18n';
 import { cyanBlue } from 'muiTheme';
 import { memo, useCallback, useState } from 'react';
@@ -38,9 +38,7 @@ const AnalysisLayerMenuItem = memo(
     analysisResultSortOrder,
   }: AnalysisLayerMenuItemProps) => {
     const { t } = useSafeTranslation();
-    const classes = useLayerMenuItemStyles();
 
-    // We will only have one analysis at a time so when the actual Menu item is visible it will also be enabled
     const [informationChipLabel, setInformationChipLabel] =
       useState<string>('1');
 
@@ -53,28 +51,25 @@ const AnalysisLayerMenuItem = memo(
     }, []);
 
     return (
-      <Accordion elevation={0} classes={{ root: classes.root }}>
+      <Accordion elevation={0} sx={layerMenuItemAccordionSx.root}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
-          classes={{
-            root: classes.rootSummary,
-            expandIcon: classes.expandIcon,
-            content: classes.summaryContent,
-          }}
+          sx={layerMenuItemAccordionSx.summary}
           aria-controls={title}
           id={title}
         >
-          <Typography classes={{ root: classes.title }}>{t(title)}</Typography>
+          <Typography sx={layerMenuItemAccordionSx.title}>
+            {t(title)}
+          </Typography>
           <Chip
             onMouseEnter={handleChipOnMouseEnter}
             onMouseLeave={handleChipOnMouseLeave}
-            classes={{ root: classes.chipRoot }}
-            style={{ backgroundColor: cyanBlue }}
+            sx={{ ...layerMenuItemAccordionSx.chip, bgcolor: cyanBlue }}
             label={informationChipLabel}
           />
         </AccordionSummary>
-        <AccordionDetails classes={{ root: classes.rootDetails }}>
-          <Grid container direction="row" style={{ paddingLeft: 12 }}>
+        <AccordionDetails sx={layerMenuItemAccordionSx.details}>
+          <Grid container direction="row" sx={{ pl: 1.5 }}>
             <AnalysisLayerSwitchItem
               initialOpacity={initialOpacity}
               analysisData={analysisData}

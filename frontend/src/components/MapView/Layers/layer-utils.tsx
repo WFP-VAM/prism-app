@@ -1,4 +1,4 @@
-import Tooltip from '@material-ui/core/Tooltip';
+import Tooltip from '@mui/material/Tooltip';
 import { iconPoint, iconPolygon, iconRaster } from 'assets/images';
 import { getFeatureInfoPropsData } from 'components/MapView/utils';
 import {

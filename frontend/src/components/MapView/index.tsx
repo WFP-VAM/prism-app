@@ -1,4 +1,4 @@
-import { Box, createStyles, makeStyles } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { usePostHog } from '@posthog/react';
 import { getBoundaryLayers } from 'config/utils';
 import { clearAnalysisResult } from 'context/analysisResultStateSlice';
@@ -34,7 +34,6 @@ const PERF_MONITOR_SAMPLE_RATE = 0.1;
 const isPerfMonitorSampled = Math.random() < PERF_MONITOR_SAMPLE_RATE;
 
 const MapView = memo(() => {
-  const classes = useStyles();
   const posthog = usePostHog();
   const { iso3 } = useCountryIso();
 
@@ -142,7 +141,7 @@ const MapView = memo(() => {
   ]);
 
   return (
-    <Box className={classes.root}>
+    <Box sx={{ height: '100%', width: '100%', position: 'relative' }}>
       <LeftPanel />
       <OtherFeatures />
       <MapComponent />
@@ -155,15 +154,5 @@ const MapView = memo(() => {
     </Box>
   );
 });
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      height: '100%',
-      width: '100%',
-      position: 'relative',
-    },
-  }),
-);
 
 export default MapView;

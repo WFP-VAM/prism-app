@@ -1,13 +1,12 @@
-import { createStyles, makeStyles, Typography } from '@material-ui/core';
+import { Box, Typography } from '@mui/material';
 import { AADataSelector } from 'context/anticipatoryAction/AAStormStateSlice';
 import { useSafeTranslation } from 'i18n';
 import { useSelector } from 'react-redux';
 
-import { AAStormColors } from '../utils';
+import { aaStormTriggerSx } from '../../aaPanelStyles';
 
 function ReadyTrigger() {
   const { t } = useSafeTranslation();
-  const classes = useActivationTriggerStyles();
   const parsedStormData = useSelector(AADataSelector);
 
   if (!parsedStormData.readiness) {
@@ -15,80 +14,29 @@ function ReadyTrigger() {
   }
 
   return (
-    <div className={classes.root}>
-      <Typography className={classes.headerText}>
+    <Box sx={aaStormTriggerSx.root}>
+      <Typography sx={aaStormTriggerSx.headerText}>
         {t('Readiness trigger')}
       </Typography>
 
-      <div className={classes.Wrapper}>
-        <div className={classes.headColumnWrapper}>
-          <div className={classes.headColumn}>
-            <Typography className={classes.headColumnText}>
+      <Box sx={aaStormTriggerSx.wrapper}>
+        <Box sx={aaStormTriggerSx.headColumnWrapper}>
+          <Box sx={aaStormTriggerSx.headColumn}>
+            <Typography sx={aaStormTriggerSx.headColumnText}>
               {t('Readiness')}
             </Typography>
-          </div>
-          <div className={classes.rowWrapper}>
+          </Box>
+          <Box sx={aaStormTriggerSx.rowWrapper}>
             <Typography>
               {t(
                 `A system with severe tropical storm-force winds (or stronger) is expected to impact any of the coastal provinces within the next five days, with a lead time of at least 72 hours.`,
               )}
             </Typography>
-          </div>
-        </div>
-      </div>
-    </div>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
   );
 }
-
-const useActivationTriggerStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      display: 'flex',
-      flexDirection: 'column',
-      width: '100%',
-    },
-    Wrapper: {
-      width: '100%',
-      background: AAStormColors.background,
-    },
-    headColumnWrapper: {
-      display: 'flex',
-      flexDirection: 'column',
-      minHeight: '2.5rem',
-      margin: '1.5rem 1.5rem',
-    },
-    headColumn: {
-      width: '10rem',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    headColumnText: {
-      borderRadius: '4px 4px 0px 0px',
-      textAlign: 'left',
-      textTransform: 'uppercase',
-      lineHeight: '2rem',
-      width: '100%',
-      paddingLeft: '0.5rem',
-      background: '#63b2bd',
-      color: 'black',
-    },
-    headerText: {
-      fontWeight: 'bold',
-      textTransform: 'uppercase',
-      height: '2rem',
-      display: 'flex',
-      margin: '0.2rem 1.5rem',
-    },
-    rowWrapper: {
-      display: 'flex',
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      padding: '0.125rem 0.5rem',
-      paddingRight: 0,
-      background: 'white',
-    },
-  }),
-);
 
 export default ReadyTrigger;

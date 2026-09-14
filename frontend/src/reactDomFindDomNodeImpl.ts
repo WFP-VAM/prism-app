@@ -1,5 +1,5 @@
 /**
- * findDOMNode replacement for React 19 (removed API). Used by @material-ui/core v4
+ * findDOMNode replacement for React 19 (removed API). Used by @mui/material v4
  * and react-transition-group via our react-dom shim default export.
  *
  * Fiber walk: non-enumerable __reactFiber* keys, BFS child/sibling/alternate.

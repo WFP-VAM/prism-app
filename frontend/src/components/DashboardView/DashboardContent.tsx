@@ -1,3 +1,4 @@
+import { Close, Edit } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -8,13 +9,12 @@ import {
   DialogContentText,
   FormControlLabel,
   IconButton,
-  makeStyles,
   MenuItem,
   Select,
   Switch,
   Typography,
-} from '@material-ui/core';
-import { Close, Edit } from '@material-ui/icons';
+} from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
 import { getImageUrl } from 'assets/images';
 import { useSafeTranslation } from 'i18n';
 import { type ReactNode, useEffect, useState } from 'react';
@@ -52,10 +52,40 @@ import { addNotification } from '../../context/notificationStateSlice';
 import { generateSlugFromTitle } from '../../utils/string-utils';
 import ChartBlock from './ChartBlock';
 import { CHART_HEIGHTS } from './chartConstants';
+import {
+  dashboardContentBlockLabelSx,
+  dashboardContentBlockTypeRowActionsSx,
+  dashboardContentBlockTypeRowSx,
+  dashboardContentBlockTypeSelectSx,
+  dashboardContentContentColumnSx,
+  dashboardContentDynamicColumnLayoutSx,
+  dashboardContentDynamicColumnPreviewLayoutSx,
+  dashboardContentGrayCardSx,
+  dashboardContentLayoutSx,
+  dashboardContentLogoSx,
+  dashboardContentMapBlockSwapButtonSx,
+  dashboardContentMapColumnSx,
+  dashboardContentMapHeaderActionsSx,
+  dashboardContentMapHeaderContainerSx,
+  dashboardContentMapHeaderTitleSx,
+  dashboardContentMapHeaderUseLatestCheckboxSx,
+  dashboardContentPreviewContainerSx,
+  dashboardContentRemoveBlockButtonSx,
+  dashboardContentRootSx,
+  dashboardContentSyncToggleSx,
+  dashboardContentTitleActionsSx,
+  dashboardContentTitleBarInputSx,
+  dashboardContentTitleBarLabelSx,
+  dashboardContentTitleBarTypographySx,
+  dashboardContentTitleSectionEditSx,
+  dashboardContentTitleSectionSx,
+  dashboardContentTitleSx,
+  dashboardContentUseLatestCheckboxSx,
+} from './dashboardContentStyles';
 import MapBlock from './MapBlock';
 import TableBlock from './TableBlock';
 import TextBlock from './TextBlock';
-import { GAP, useColumnHeightManagement } from './useColumnHeightManagement';
+import { useColumnHeightManagement } from './useColumnHeightManagement';
 
 interface LogoConfig {
   visible: boolean;
@@ -77,7 +107,7 @@ export interface ExportConfig {
 
 interface DashboardContentProps {
   showTitle?: boolean;
-  className?: string;
+  layoutSx?: SxProps<Theme>;
   logoConfig?: LogoConfig;
   exportConfig?: ExportConfig;
   onEditClick?: () => void;
@@ -89,12 +119,11 @@ interface DashboardContentProps {
  */
 function DashboardContent({
   showTitle = true,
-  className,
+  layoutSx,
   logoConfig,
   exportConfig,
   onEditClick,
 }: DashboardContentProps) {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
   const dashboardConfig = useSelector(dashboardConfigSelector);
   const { title: dashboardTitle } = dashboardConfig;
@@ -257,8 +286,8 @@ function DashboardContent({
       currentType === DashboardElementType.TABLE;
 
     return (
-      <Box className={classes.blockTypeRow}>
-        <Typography variant="h3" className={classes.blockLabel}>
+      <Box sx={dashboardContentBlockTypeRowSx}>
+        <Typography variant="h3" sx={dashboardContentBlockLabelSx}>
           {t('Block #{{number}}', { number: elementIndex + 1 })}
         </Typography>
         <Select
@@ -274,7 +303,7 @@ function DashboardContent({
               });
             }
           }}
-          className={classes.blockTypeSelect}
+          sx={dashboardContentBlockTypeSelectSx}
           disableUnderline
           variant="outlined"
         >
@@ -301,17 +330,17 @@ function DashboardContent({
               />
             }
             label={t('Use latest available data')}
-            className={classes.useLatestCheckbox}
+            sx={dashboardContentUseLatestCheckboxSx}
           />
         )}
-        <Box className={classes.blockTypeRowActions}>
+        <Box sx={dashboardContentBlockTypeRowActionsSx}>
           {extraContent}
           <IconButton
             size="small"
             onClick={() =>
               stagePendingAction({ kind: 'remove', columnIndex, elementIndex })
             }
-            className={classes.removeBlockButton}
+            sx={dashboardContentRemoveBlockButtonSx}
           >
             <Close fontSize="small" />
           </IconButton>
@@ -363,10 +392,10 @@ function DashboardContent({
         return (
           <Box
             key={`map-${selectedIndex}-${elementId}`}
-            className={
+            sx={
               mode === DashboardMode.VIEW
-                ? classes.previewContainer
-                : classes.grayCard
+                ? dashboardContentPreviewContainerSx
+                : dashboardContentGrayCardSx
             }
             style={{
               height: '100%',
@@ -510,9 +539,13 @@ function DashboardContent({
 
   return (
     <>
-      <Box className={classes.root}>
+      <Box sx={dashboardContentRootSx}>
         <Box
-          className={className || classes.layout}
+          sx={
+            layoutSx
+              ? ([dashboardContentLayoutSx, layoutSx] as SxProps<Theme>)
+              : dashboardContentLayoutSx
+          }
           style={{
             display: 'flex',
             flexDirection: 'column',
@@ -520,17 +553,18 @@ function DashboardContent({
         >
           {showTitle && (
             <Box
-              className={
+              sx={
                 mode === DashboardMode.EDIT
-                  ? classes.titleSectionEdit
-                  : classes.titleSection
+                  ? dashboardContentTitleSectionEditSx
+                  : dashboardContentTitleSectionSx
               }
             >
               {mode !== DashboardMode.EDIT ? (
                 <>
                   {logoConfig?.visible && getImageUrl(logo) && (
-                    <img
-                      className={classes.logo}
+                    <Box
+                      component="img"
+                      sx={dashboardContentLogoSx}
                       style={{
                         height: logoHeight,
                       }}
@@ -541,12 +575,12 @@ function DashboardContent({
                   <Typography
                     variant="h2"
                     component="h1"
-                    className={classes.title}
+                    sx={dashboardContentTitleSx}
                   >
                     {t(dashboardTitle || 'Untitled Dashboard')}
                   </Typography>
                   {mode === DashboardMode.VIEW && (
-                    <Box className={classes.titleActions}>
+                    <Box sx={dashboardContentTitleActionsSx}>
                       {onEditClick && (
                         <Button
                           color="primary"
@@ -563,25 +597,26 @@ function DashboardContent({
                   )}
                 </>
               ) : (
-                <Box className={classes.grayCard}>
-                  <label className={classes.titleBarLabel}>
+                <Box sx={dashboardContentGrayCardSx}>
+                  <Box component="label" sx={dashboardContentTitleBarLabelSx}>
                     <Typography
                       variant="h2"
                       component="span"
-                      className={classes.titleBarTypography}
+                      sx={dashboardContentTitleBarTypographySx}
                     >
                       {t('Dashboard title')}
                     </Typography>
-                    <input
+                    <Box
+                      component="input"
                       type="text"
-                      className={classes.titleBarInput}
+                      sx={dashboardContentTitleBarInputSx}
                       placeholder={t('Enter dashboard title')}
                       value={localTitle}
                       onChange={e => setLocalTitle(e.target.value)}
                       onBlur={handleTitleBlur}
                       name="dashboard-title"
                     />
-                  </label>
+                  </Box>
                 </Box>
               )}
               {mode === DashboardMode.EDIT && mapElements.length > 1 && (
@@ -595,17 +630,17 @@ function DashboardContent({
                     />
                   }
                   label={t('Sync maps')}
-                  className={classes.syncToggle}
+                  sx={dashboardContentSyncToggleSx}
                 />
               )}
             </Box>
           )}
           {columns.some(c => c.length > 0) && (
             <Box
-              className={
+              sx={
                 mode !== DashboardMode.EDIT
-                  ? classes.dynamicColumnPreviewLayout
-                  : classes.dynamicColumnLayout
+                  ? dashboardContentDynamicColumnPreviewLayoutSx
+                  : dashboardContentDynamicColumnLayoutSx
               }
             >
               {columns.map((column, columnIndex) => {
@@ -615,14 +650,14 @@ function DashboardContent({
                 const hasMapElements = column.some(
                   el => el.type === DashboardElementType.MAP,
                 );
-                const columnClass = hasMapElements
-                  ? classes.mapColumn
-                  : classes.contentColumn;
+                const columnSx = hasMapElements
+                  ? dashboardContentMapColumnSx
+                  : dashboardContentContentColumnSx;
 
                 return (
                   <Box
                     key={`column-${columnIndex}`}
-                    className={columnClass}
+                    sx={columnSx}
                     component="div"
                   >
                     <div
@@ -654,7 +689,7 @@ function DashboardContent({
       <Dialog
         open={dialogOpen}
         onClose={cancelPendingAction}
-        TransitionProps={{ onExited: () => setPendingAction(null) }}
+        slotProps={{ transition: { onExited: () => setPendingAction(null) } }}
         maxWidth="xs"
         fullWidth
       >
@@ -682,256 +717,6 @@ function DashboardContent({
   );
 }
 
-const useStyles = makeStyles(() => ({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    flex: 1,
-    height: '100%',
-    maxHeight: '100%',
-  },
-  blockLabel: {
-    fontWeight: 600,
-    fontSize: 16,
-    marginBottom: 12,
-  },
-  blockTypeRow: {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: 12,
-    gap: 8,
-    '& $blockLabel': {
-      marginBottom: 0,
-    },
-  },
-  useLatestCheckbox: {
-    margin: 0,
-    flexShrink: 0,
-    whiteSpace: 'nowrap',
-  },
-  blockTypeRowActions: {
-    display: 'flex',
-    alignItems: 'center',
-    marginLeft: 'auto',
-    gap: 8,
-  },
-  removeBlockButton: {
-    color: '#757575',
-    '&:hover': {
-      color: '#212121',
-    },
-  },
-  mapHeaderActions: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 8,
-    flexShrink: 0,
-    marginLeft: 'auto',
-  },
-  mapHeaderUseLatestCheckbox: {
-    margin: 0,
-    whiteSpace: 'nowrap',
-  },
-  blockTypeSelect: {
-    fontSize: 14,
-    fontWeight: 500,
-    background: 'white',
-    borderRadius: 4,
-    padding: '2px 8px',
-    '& .MuiSelect-root': {
-      paddingTop: 4,
-      paddingBottom: 4,
-    },
-  },
-  contentColumn: {
-    flex: 1, // Smaller for columns without maps
-    display: 'flex',
-    flexDirection: 'column',
-    gap: GAP,
-    minWidth: 0,
-    minHeight: 0,
-    overflow: 'hidden',
-  },
-  dynamicColumnLayout: {
-    display: 'flex',
-    padding: 16,
-    margin: '0 16px 16px 16px',
-    gap: GAP,
-    flex: 1,
-    overflow: 'auto',
-    paddingBottom: 80, // Add extra padding to account for fixed toolbar
-  },
-  dynamicColumnPreviewLayout: {
-    display: 'flex',
-    padding: 0,
-    margin: 0,
-    gap: GAP,
-    flex: 1,
-    overflow: 'hidden',
-    minHeight: 0,
-  },
-  previewContainer: {
-    background: 'white',
-    borderRadius: 8,
-    padding: 16,
-  },
-  grayCard: {
-    background: '#F1F1F1',
-    borderRadius: 8,
-    marginBottom: 16,
-    padding: 12,
-    flex: 1,
-  },
-  mapHeaderTitle: {
-    marginBottom: 0,
-    flex: '1 1 auto',
-    minWidth: 0,
-  },
-  mapBlockSwapButton: {
-    textTransform: 'none',
-    fontWeight: 500,
-    flexShrink: 0,
-  },
-  mapHeaderContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 12,
-  },
-  titleSection: {
-    position: 'relative',
-    display: 'flex',
-    margin: '16px 0',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: GAP,
-    flexWrap: 'wrap',
-  },
-  titleSectionEdit: {
-    display: 'flex',
-    padding: 16,
-    margin: '16px 16px -48px 16px',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: GAP,
-    flexWrap: 'wrap',
-  },
-  logo: {
-    flexShrink: 0,
-    objectFit: 'contain',
-  },
-  title: {
-    fontWeight: 'bold',
-    fontSize: 24,
-    margin: 0,
-    flex: '1 1 auto',
-    minWidth: 0,
-  },
-  titleActions: {
-    display: 'flex',
-    gap: '12px',
-    flexShrink: 0,
-  },
-  layout: {
-    display: 'flex',
-    padding: 12,
-    gap: 12,
-    flex: 1,
-    minHeight: 0,
-    maxHeight: '100%',
-    width: '100%',
-    maxWidth: '100%',
-    overflow: 'hidden',
-    boxSizing: 'border-box',
-  },
-  leadingContentArea: {
-    flex: '2',
-    minWidth: 0,
-    minHeight: 0,
-    maxHeight: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    alignSelf: 'stretch',
-  },
-  trailingContentArea: {
-    flex: '1',
-    minWidth: 0,
-    maxWidth: '100%',
-    width: '100%',
-    flexDirection: 'column',
-    gap: 12,
-  },
-  mapsContainer: {
-    display: 'flex',
-    gap: '12px',
-    width: '100%',
-    flex: 1,
-    minHeight: 0,
-    '& > .MuiBox-root': {
-      flex: 1,
-      minWidth: 0,
-      minHeight: 0,
-    },
-  },
-  mapColumn: {
-    flex: '2',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 0,
-    minWidth: 0,
-    minHeight: 0,
-    overflow: 'hidden',
-  },
-  mapColumnFlexElements: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 16,
-  },
-  mapContainer: {
-    background: 'white',
-    borderRadius: 8,
-    padding: 16,
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    minHeight: 0,
-  },
-  syncToggle: {
-    margin: 0,
-    '& .MuiFormControlLabel-label': {
-      fontSize: '12px',
-      fontWeight: 500,
-    },
-    '& .MuiSwitch-root': {
-      marginRight: 4,
-    },
-  },
-  titleBarLabel: {
-    display: 'flex',
-    alignItems: 'center',
-    marginRight: 16,
-    fontWeight: 600,
-    fontSize: 16,
-    flex: 1,
-  },
-  titleBarTypography: {
-    flex: '1 0 fit-content',
-    marginInlineEnd: 16,
-  },
-  titleBarInput: {
-    width: '100%',
-    padding: '8px 12px',
-    borderRadius: 4,
-    fontSize: 16,
-    border: 'none',
-    outline: 'none',
-    background: 'white',
-    fontFamily: 'Roboto',
-  },
-}));
-
 interface MapEditHeaderProps {
   elementId: string;
   mapIndex: number;
@@ -945,25 +730,24 @@ function MapEditHeader({
   mapCount,
   onSwapMapPosition,
 }: MapEditHeaderProps) {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const mapState = useSelector(dashboardMapStateSelector(elementId));
   const useLatestAvailableDate = mapState?.useLatestAvailableDate ?? false;
 
   return (
-    <div className={classes.mapHeaderContainer}>
+    <Box sx={dashboardContentMapHeaderContainerSx}>
       <Typography
         variant="h3"
         component="h3"
-        className={`${classes.blockLabel} ${classes.mapHeaderTitle}`}
+        sx={[dashboardContentBlockLabelSx, dashboardContentMapHeaderTitleSx]}
       >
         {mapCount > 1
           ? t('Map {{number}}', { number: mapIndex + 1 })
           : t('Map block')}{' '}
         {t('Choose map layers')}
       </Typography>
-      <Box className={classes.mapHeaderActions}>
+      <Box sx={dashboardContentMapHeaderActionsSx}>
         <FormControlLabel
           control={
             <Checkbox
@@ -975,19 +759,19 @@ function MapEditHeader({
             />
           }
           label={t('Use latest available data')}
-          className={classes.mapHeaderUseLatestCheckbox}
+          sx={dashboardContentMapHeaderUseLatestCheckboxSx}
         />
         <Button
           variant="outlined"
           color="primary"
           size="small"
           onClick={onSwapMapPosition}
-          className={classes.mapBlockSwapButton}
+          sx={dashboardContentMapBlockSwapButtonSx}
         >
           {t('Swap map position')}
         </Button>
       </Box>
-    </div>
+    </Box>
   );
 }
 

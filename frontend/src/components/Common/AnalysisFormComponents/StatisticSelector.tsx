@@ -1,13 +1,14 @@
 import {
+  Box,
   FormControl,
   FormControlLabel,
-  makeStyles,
   MenuItem,
   Radio,
   RadioGroup,
   TextField,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
 import {
   AggregationOperations,
   ExposureOperator,
@@ -16,6 +17,44 @@ import {
 } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 import React, { useMemo } from 'react';
+
+import {
+  analysisPanelParamTextSx,
+  colorBlackSx,
+  formContainerSx,
+} from '../formComponentStyles';
+
+const radioOptionsSx = {
+  color: '#333333',
+  opacity: 0.6,
+  '&.Mui-checked': {
+    color: '#4CA1AD',
+    opacity: 1,
+  },
+} satisfies SxProps<Theme>;
+
+const exposureValueContainerSx = {
+  display: 'flex',
+  flexDirection: 'row',
+  gap: '16px',
+} satisfies SxProps<Theme>;
+
+const exposureValueOptionsInputContainerSx = {
+  flex: 1,
+  flexDirection: 'row',
+  alignItems: 'center',
+  margin: '8px 0',
+} satisfies SxProps<Theme>;
+
+const exposureValueOptionsSelectSx = {
+  width: '100%',
+  '& .MuiFormLabel-root': {
+    color: 'black',
+    '&:hover fieldset': {
+      borderColor: '#333333',
+    },
+  },
+} satisfies SxProps<Theme>;
 
 interface StatisticSelectorProps {
   value: AggregationOperations;
@@ -34,7 +73,6 @@ function StatisticSelector({
   selectedHazardLayer,
   disabled = false,
 }: StatisticSelectorProps) {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
 
   const statisticOptions = useMemo(
@@ -48,30 +86,13 @@ function StatisticSelector({
             key={key}
             value={operationValue}
             disabled={disabled}
-            control={
-              <Radio
-                classes={{
-                  root: classes.radioOptions,
-                  checked: classes.radioOptionsChecked,
-                }}
-                color="default"
-                size="small"
-              />
-            }
+            control={<Radio sx={radioOptionsSx} color="default" size="small" />}
             label={
-              <Typography className={classes.analysisPanelParamText}>
-                {t(key)}
-              </Typography>
+              <Typography sx={analysisPanelParamTextSx}>{t(key)}</Typography>
             }
           />
         )),
-    [
-      classes.analysisPanelParamText,
-      classes.radioOptions,
-      classes.radioOptionsChecked,
-      t,
-      disabled,
-    ],
+    [t, disabled],
   );
 
   const handleStatisticChange = (
@@ -106,8 +127,8 @@ function StatisticSelector({
     value === AggregationOperations['Area exposed'];
 
   return (
-    <div className={classes.container}>
-      <Typography className={classes.colorBlack} variant="body2">
+    <Box sx={formContainerSx()}>
+      <Typography sx={colorBlackSx} variant="body2">
         {t('Statistic')}
       </Typography>
       <FormControl component="div">
@@ -121,16 +142,16 @@ function StatisticSelector({
       </FormControl>
 
       {showExposureValueControls && exposureValue && onExposureValueChange && (
-        <div className={classes.exposureValueContainer}>
+        <Box sx={exposureValueContainerSx}>
           <FormControl
             component="div"
-            className={classes.exposureValueOptionsInputContainer}
+            sx={exposureValueOptionsInputContainerSx}
           >
             <TextField
               select
               variant="outlined"
               label={t('Operator')}
-              className={classes.exposureValueOptionsSelect}
+              sx={exposureValueOptionsSelectSx}
               name="exposure-value-operator"
               value={exposureValue.operator}
               onChange={handleExposureOperatorChange}
@@ -145,13 +166,13 @@ function StatisticSelector({
           </FormControl>
           <FormControl
             component="div"
-            className={classes.exposureValueOptionsInputContainer}
+            sx={exposureValueOptionsInputContainerSx}
           >
             <TextField
               select
               variant="outlined"
               label={t('Exposure value')}
-              className={classes.exposureValueOptionsSelect}
+              sx={exposureValueOptionsSelectSx}
               name="exposure-value"
               value={exposureValue.value}
               onChange={handleExposureValueChange}
@@ -164,56 +185,10 @@ function StatisticSelector({
               ))}
             </TextField>
           </FormControl>
-        </div>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 }
-
-const useStyles = makeStyles(() => ({
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginBottom: 30,
-    marginLeft: 10,
-    width: '90%',
-    color: 'black',
-  },
-  colorBlack: {
-    color: 'black',
-  },
-  analysisPanelParamText: {
-    width: '100%',
-    color: 'black',
-  },
-  radioOptions: {
-    color: '#333333',
-    opacity: 0.6,
-  },
-  radioOptionsChecked: {
-    color: '#4CA1AD',
-    opacity: 1,
-  },
-  exposureValueContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: '16px',
-  },
-  exposureValueOptionsInputContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    margin: '8px 0',
-  },
-  exposureValueOptionsSelect: {
-    width: '100%',
-    '& .MuiFormLabel-root': {
-      color: 'black',
-      '&:hover fieldset': {
-        borderColor: '#333333',
-      },
-    },
-  },
-}));
 
 export default StatisticSelector;

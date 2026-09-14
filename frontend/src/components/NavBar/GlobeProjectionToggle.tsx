@@ -1,13 +1,11 @@
+import { Public, PublicOutlined } from '@mui/icons-material';
 import {
   Button,
-  createStyles,
   IconButton,
-  makeStyles,
   Typography,
   useMediaQuery,
   useTheme,
-} from '@material-ui/core';
-import { Public, PublicOutlined } from '@material-ui/icons';
+} from '@mui/material';
 import { usesGlobeProjection } from 'components/MapView/Map/utils';
 import { setGlobeProjectionEnabled } from 'context/mapStateSlice';
 import { globeProjectionEnabledSelector } from 'context/mapStateSlice/selectors';
@@ -16,11 +14,12 @@ import { black, cyanBlue } from 'muiTheme';
 import { memo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+const iconSx = { color: 'white', fontSize: '1.5rem' };
+
 const GlobeProjectionToggle = memo(() => {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
   const theme = useTheme();
-  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
+  const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
   const dispatch = useDispatch();
   const enabled = useSelector(globeProjectionEnabledSelector);
@@ -37,16 +36,18 @@ const GlobeProjectionToggle = memo(() => {
     <>
       {!smDown && (
         <Button
-          className={classes.triggerButton}
-          style={{ backgroundColor: enabled ? cyanBlue : undefined }}
+          sx={{
+            height: '2.5em',
+            backgroundColor: enabled ? cyanBlue : undefined,
+          }}
           onClick={toggle}
           aria-label={t('Globe Mode')}
           aria-pressed={enabled}
           startIcon={
             enabled ? (
-              <Public className={classes.icon} style={{ color: black }} />
+              <Public sx={{ ...iconSx, color: black }} />
             ) : (
-              <PublicOutlined className={classes.icon} />
+              <PublicOutlined sx={iconSx} />
             )
           }
         >
@@ -64,29 +65,20 @@ const GlobeProjectionToggle = memo(() => {
       {!mdUp && (
         <IconButton
           size="small"
-          style={{ backgroundColor: enabled ? cyanBlue : undefined }}
+          sx={{ backgroundColor: enabled ? cyanBlue : undefined }}
           onClick={toggle}
           aria-label={t('Globe Mode')}
           aria-pressed={enabled}
         >
           {enabled ? (
-            <Public className={classes.icon} style={{ color: black }} />
+            <Public sx={{ ...iconSx, color: black }} />
           ) : (
-            <PublicOutlined className={classes.icon} />
+            <PublicOutlined sx={iconSx} />
           )}
         </IconButton>
       )}
     </>
   );
 });
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    triggerButton: {
-      height: '2.5em',
-    },
-    icon: { color: 'white', fontSize: '1.5rem' },
-  }),
-);
 
 export default GlobeProjectionToggle;

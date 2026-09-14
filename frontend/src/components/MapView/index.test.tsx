@@ -1,6 +1,7 @@
-import { createTheme, ThemeProvider } from '@material-ui/core';
+import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import { render, screen } from '@testing-library/react';
 import { store } from 'context/store';
+import muiTheme from 'muiTheme';
 import { Provider } from 'react-redux';
 import {
   isUniversalDeployment,
@@ -60,9 +61,11 @@ describe('MapView', () => {
   test('renders as expected', () => {
     const { container } = render(
       <Provider store={store}>
-        <ThemeProvider theme={createTheme()}>
-          <MapView />
-        </ThemeProvider>
+        <StyledEngineProvider injectFirst>
+          <ThemeProvider theme={muiTheme}>
+            <MapView />
+          </ThemeProvider>
+        </StyledEngineProvider>
       </Provider>,
     );
     expect(container).toMatchSnapshot();
@@ -73,9 +76,11 @@ describe('MapView', () => {
 
     render(
       <Provider store={store}>
-        <ThemeProvider theme={createTheme()}>
-          <MapView />
-        </ThemeProvider>
+        <StyledEngineProvider injectFirst>
+          <ThemeProvider theme={muiTheme}>
+            <MapView />
+          </ThemeProvider>
+        </StyledEngineProvider>
       </Provider>,
     );
 

@@ -1,7 +1,6 @@
 import {
   Box,
   CircularProgress,
-  makeStyles,
   Table,
   TableBody,
   TableCell,
@@ -10,10 +9,9 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
-  Theme,
   Typography,
-} from '@material-ui/core';
-import { createStyles } from '@material-ui/styles';
+} from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import Chart from 'components/Common/Chart';
 import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
 import { ChartConfig } from 'config/types';
@@ -23,9 +21,24 @@ import { orderBy } from 'lodash';
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { getTableCellVal } from 'utils/data-utils';
 
+import {
+  dataTableChartContainerSx,
+  dataTableLegendTextSx,
+  dataTableLoadingContainerSx,
+  dataTablePaginationSx,
+  dataTableRootSx,
+  dataTableTextLoadingContainerSx,
+  dataTableTitleContainerSx,
+  dataTableTitleTextSx,
+  tableBodyTextSx,
+  tableContainerSx,
+  tableHeaderTextSx,
+  tableHeadSx,
+} from '../../leftPanelStyles';
+
 const DataTable = memo(
   ({ title, legendText, chart, tableData, tableLoading }: DataTableProps) => {
-    const classes = useStyles();
+    const theme = useTheme();
     const { t } = useSafeTranslation();
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -81,7 +94,7 @@ const DataTable = memo(
         return null;
       }
       return (
-        <Box className={classes.chartContainer}>
+        <Box sx={dataTableChartContainerSx}>
           <Chart
             notMaintainAspectRatio
             title={t(renderedTitle)}
@@ -90,7 +103,7 @@ const DataTable = memo(
           />
         </Box>
       );
-    }, [chart, classes.chartContainer, renderedTitle, t, tableData]);
+    }, [chart, renderedTitle, t, tableData]);
 
     // Whether the table sort label is active
     const tableSortLabelIsActive = useCallback(
@@ -118,13 +131,13 @@ const DataTable = memo(
         columns.map((column: string) => {
           const formattedColValue = getTableCellVal(rows[0], column, t);
           return (
-            <TableCell key={column} className={classes.tableHead}>
+            <TableCell key={column} sx={tableHeadSx}>
               <TableSortLabel
                 active={tableSortLabelIsActive(column)}
                 direction={tableSortLabelDirection(column)}
                 onClick={onTableSortLabelClick(column)}
               >
-                <Typography className={classes.tableHeaderText}>
+                <Typography sx={tableHeaderTextSx}>
                   {formattedColValue}
                 </Typography>
               </TableSortLabel>
@@ -132,8 +145,6 @@ const DataTable = memo(
           );
         }),
       [
-        classes.tableHead,
-        classes.tableHeaderText,
         columns,
         onTableSortLabelClick,
         rows,
@@ -149,13 +160,11 @@ const DataTable = memo(
           const formattedColValue = getTableCellVal(row, column, t);
           return (
             <TableCell key={column}>
-              <Typography className={classes.tableBodyText}>
-                {formattedColValue}
-              </Typography>
+              <Typography sx={tableBodyTextSx}>{formattedColValue}</Typography>
             </TableCell>
           );
         }),
-      [classes.tableBodyText, columns, t],
+      [columns, t],
     );
 
     const renderedTableBodyRows = useMemo(
@@ -175,7 +184,7 @@ const DataTable = memo(
       }
       return (
         <>
-          <TableContainer className={classes.tableContainer}>
+          <TableContainer sx={tableContainerSx(theme)}>
             <Table stickyHeader aria-label="data-table">
               <TableHead>
                 <TableRow>{renderedTableHeaderCells}</TableRow>
@@ -198,15 +207,11 @@ const DataTable = memo(
                 count !== -1 ? count : `${t('more than')} ${to}`
               }`
             }
-            classes={{
-              root: classes.tablePagination,
-            }}
+            sx={dataTablePaginationSx}
           />
         </>
       );
     }, [
-      classes.tableContainer,
-      classes.tablePagination,
       handleChangePage,
       handleChangeRowsPerPage,
       page,
@@ -216,14 +221,15 @@ const DataTable = memo(
       rowsPerPage,
       t,
       tableData,
+      theme,
     ]);
 
     const renderedChartTableContent = useMemo(() => {
       if (tableLoading) {
         return (
-          <Box className={classes.loadingContainer}>
+          <Box sx={dataTableLoadingContainerSx}>
             <CircularProgress size={100} color="primary" />
-            <div className={classes.textLoadingContainer}>
+            <Box sx={dataTableTextLoadingContainerSx}>
               <Typography
                 variant="body1"
                 color="textSecondary"
@@ -232,7 +238,7 @@ const DataTable = memo(
                 {t('Loading DataTable')}
               </Typography>
               <LoadingBlinkingDots />
-            </div>
+            </Box>
           </Box>
         );
       }
@@ -242,23 +248,16 @@ const DataTable = memo(
           {renderedTable}
         </>
       );
-    }, [
-      classes.loadingContainer,
-      classes.textLoadingContainer,
-      renderedChart,
-      renderedTable,
-      t,
-      tableLoading,
-    ]);
+    }, [renderedChart, renderedTable, t, tableLoading]);
 
     return (
-      <div className={classes.dataTableRoot}>
-        <div className={classes.titleContainer}>
+      <Box sx={dataTableRootSx}>
+        <Box sx={dataTableTitleContainerSx}>
           <Typography
             color="textSecondary"
             variant="h3"
             component="h2"
-            className={classes.titleText}
+            sx={dataTableTitleTextSx}
           >
             {t(renderedTitle)}
           </Typography>
@@ -266,83 +265,15 @@ const DataTable = memo(
             color="textSecondary"
             variant="body2"
             component="p"
-            className={classes.legendText}
+            sx={dataTableLegendTextSx}
           >
             {t(renderedLegendText)}
           </Typography>
-        </div>
+        </Box>
         {renderedChartTableContent}
-      </div>
+      </Box>
     );
   },
-);
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    dataTableRoot: {
-      display: 'flex',
-      flexDirection: 'column',
-      padding: '10px 5px 5px',
-      width: '100%',
-      overflowX: 'hidden',
-    },
-    titleContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 10,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    titleText: {
-      fontSize: '2rem',
-    },
-    legendText: {
-      fontSize: '9px',
-    },
-    chartContainer: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      width: '100%',
-      minHeight: '371px',
-    },
-    loadingContainer: {
-      height: '100%',
-      width: '100%',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      flexDirection: 'column',
-      gap: 10,
-    },
-    textLoadingContainer: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    tableContainer: {
-      marginTop: 10,
-      zIndex: theme.zIndex.modal + 1,
-    },
-    tableHead: {
-      backgroundColor: '#EBEBEB',
-      boxShadow: 'inset 0px -1px 0px rgba(0, 0, 0, 0.25)',
-    },
-    tableHeaderText: {
-      color: 'black',
-      fontWeight: 500,
-    },
-    tableBodyText: {
-      color: 'black',
-    },
-    tablePagination: {
-      alignSelf: 'flex-end',
-      display: 'flex',
-      justifyContent: 'center',
-      color: 'black',
-      flexShrink: 0,
-    },
-  }),
 );
 
 interface DataTableProps {

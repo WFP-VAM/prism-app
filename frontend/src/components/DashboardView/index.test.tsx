@@ -1,4 +1,4 @@
-import { createTheme, ThemeProvider } from '@material-ui/core';
+import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import { configureStore } from '@reduxjs/toolkit';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { downloadToFile } from 'components/MapView/utils';
@@ -6,6 +6,7 @@ import analysisResultReducer from 'context/analysisResultStateSlice';
 import dashboardReducer, {
   setDraftDashboard,
 } from 'context/dashboardStateSlice';
+import muiTheme from 'muiTheme';
 import { Provider } from 'react-redux';
 import { TestBrowserRouter } from 'test/TestBrowserRouter';
 
@@ -57,9 +58,11 @@ function renderDashboardView() {
   return render(
     <TestBrowserRouter>
       <Provider store={makeStore()}>
-        <ThemeProvider theme={createTheme()}>
-          <DashboardView />
-        </ThemeProvider>
+        <StyledEngineProvider injectFirst>
+          <ThemeProvider theme={muiTheme}>
+            <DashboardView />
+          </ThemeProvider>
+        </StyledEngineProvider>
       </Provider>
     </TestBrowserRouter>,
   );

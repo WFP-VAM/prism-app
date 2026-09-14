@@ -1,10 +1,5 @@
-import {
-  Button,
-  createStyles,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
-import { Equalizer, Reply } from '@material-ui/icons';
+import { Equalizer, Reply } from '@mui/icons-material';
+import { Box, Button, Typography } from '@mui/material';
 import {
   AADataSelector,
   AAFiltersSelector,
@@ -17,10 +12,13 @@ import {
   AnticipatoryActionDataRow,
 } from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { useSafeTranslation } from 'i18n';
-import { lightGrey } from 'muiTheme';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useAACommonStyles } from '../../utils';
+import {
+  aaCommonSx,
+  aaTimelineItemSx,
+  aaTimelineSx,
+} from '../../aaPanelStyles';
 import { dateSorter } from '../DistrictView/utils';
 import { getAAColor, getAAIcon } from '../utils';
 import { timelineTransform } from './utils';
@@ -30,7 +28,6 @@ interface TimelineItemProps {
 }
 
 function TimelineItem({ item }: TimelineItemProps) {
-  const classes = useTimelineItemStyles();
   const { t } = useSafeTranslation();
 
   const color = getAAColor(item.category, item.isValid ? item.phase : 'na');
@@ -46,63 +43,35 @@ function TimelineItem({ item }: TimelineItemProps) {
   const fontSize = calculateFontSize(item.index);
 
   return (
-    <div className={classes.wrapper} style={{ border: `1px solid ${color}` }}>
+    <Box sx={aaTimelineItemSx.wrapper} style={{ border: `1px solid ${color}` }}>
       <Typography variant="h3">{item.probability}</Typography>
       <Typography>
         {t('trig.')} {item.trigger}
       </Typography>
-      <div
-        className={classes.probabilityBar}
+      <Box
+        sx={aaTimelineItemSx.probabilityBar}
         style={{
           backgroundColor: color,
           width: `${item.probability * 100}%`,
         }}
       />
-      <div
-        className={classes.triggerBar}
+      <Box
+        sx={aaTimelineItemSx.triggerBar}
         style={{
           width: `${item.trigger * 100}%`,
         }}
       />
       <Typography
-        className={classes.indexText}
+        sx={aaTimelineItemSx.indexText}
         style={{
           fontSize: `${fontSize}rem`,
         }}
       >
         {item.index}
       </Typography>
-    </div>
+    </Box>
   );
 }
-
-const useTimelineItemStyles = makeStyles(() =>
-  createStyles({
-    wrapper: {
-      width: '100%',
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      borderRadius: '2px',
-      boxSizing: 'border-box',
-      padding: '0.25rem',
-    },
-    probabilityBar: {
-      height: '0.3rem',
-      marginBottom: '0.25rem',
-      borderRadius: '0 2px 2px 0',
-    },
-    triggerBar: {
-      height: '0.25rem',
-      backgroundColor: 'black',
-      borderRadius: '0 2px 2px 0',
-    },
-    indexText: {
-      whiteSpace: 'nowrap',
-      lineHeight: '1.2rem',
-    },
-  }),
-);
 
 interface TimelineProps {
   dialogs: {
@@ -112,8 +81,6 @@ interface TimelineProps {
 }
 
 function Timeline({ dialogs }: TimelineProps) {
-  const classes = useTimelineStyles();
-  const commonClasses = useAACommonStyles();
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const AAData = useSelector(AADataSelector);
@@ -147,67 +114,67 @@ function Timeline({ dialogs }: TimelineProps) {
 
   return (
     <>
-      <div className={classes.root}>
+      <Box sx={aaTimelineSx.root}>
         {Object.entries(windowData).map(([win, winData]) => {
           if (!winData || Object.keys(winData.rows).length === 0) {
             return (
-              <div key={win} className={classes.windowWrapper}>
+              <Box key={win} sx={aaTimelineSx.windowWrapper}>
                 {t('No Data')}{' '}
-              </div>
+              </Box>
             );
           }
           const { months, rows } = winData;
 
           return (
-            <div key={win} className={classes.windowWrapper}>
-              <Typography variant="h4" className={commonClasses.windowHeader}>
+            <Box key={win} sx={aaTimelineSx.windowWrapper}>
+              <Typography variant="h4" sx={aaCommonSx.windowHeader}>
                 {t(win)}
               </Typography>
-              <div className={classes.tableWrapper}>
-                <div className={classes.headRowWrapper}>
-                  <div className={classes.iconColumn} />
+              <Box sx={aaTimelineSx.tableWrapper}>
+                <Box sx={aaTimelineSx.headRowWrapper}>
+                  <Box sx={aaTimelineSx.iconColumn} />
                   {months.map(([date, label]) => (
-                    <div key={date} className={classes.headColumn}>
-                      <Typography className={classes.monthText}>
+                    <Box key={date} sx={aaTimelineSx.headColumn}>
+                      <Typography sx={aaTimelineSx.monthText}>
                         {t(label)}
                       </Typography>
-                    </div>
+                    </Box>
                   ))}
-                </div>
+                </Box>
                 {Object.entries({ ...allRows, ...rows })
                   .sort(dateSorter)
                   .map(([rowId, rowData]) => (
-                    <div key={rowId} className={classes.rowWrapper}>
-                      <div className={classes.iconColumn}>
+                    <Box key={rowId} sx={aaTimelineSx.rowWrapper}>
+                      <Box sx={aaTimelineSx.iconColumn}>
                         {getAAIcon(
                           rowData.status.category,
                           rowData.status.phase,
                         )}
-                      </div>
+                      </Box>
                       {months.map(([date, _label]) => {
                         const elem = rowData.data.find(z => z.date === date);
                         if (!elem) {
-                          return <div key={date} className={classes.column} />;
+                          return <Box key={date} sx={aaTimelineSx.column} />;
                         }
                         return (
-                          <div key={date} className={classes.column}>
+                          <Box key={date} sx={aaTimelineSx.column}>
                             <TimelineItem item={elem} />
-                          </div>
+                          </Box>
                         );
                       })}
-                    </div>
+                    </Box>
                   ))}
-              </div>
-            </div>
+              </Box>
+            </Box>
           );
         })}
-      </div>
-      <div className={commonClasses.footerWrapperVert}>
-        <div className={commonClasses.footerActionsWrapper}>
+      </Box>
+      <Box sx={aaCommonSx.footerWrapperVert}>
+        <Box sx={aaCommonSx.footerActionsWrapper}>
           {timelineButtons.map(x => (
             <Button
               key={x.text}
-              className={commonClasses.footerButton}
+              sx={aaCommonSx.footerButton}
               variant="outlined"
               fullWidth
               onClick={x.onClick}
@@ -216,96 +183,22 @@ function Timeline({ dialogs }: TimelineProps) {
               <Typography>{t(x.text)}</Typography>
             </Button>
           ))}
-        </div>
-        <div className={commonClasses.footerDialogsWrapperVert}>
+        </Box>
+        <Box sx={aaCommonSx.footerDialogsWrapperVert}>
           {dialogs.map(dialog => (
             <Typography
               key={dialog.text}
-              className={commonClasses.footerDialog}
+              sx={aaCommonSx.footerDialog}
               component="button"
               onClick={() => dialog.onclick()}
             >
               {t(dialog.text)}
             </Typography>
           ))}
-        </div>
-      </div>
+        </Box>
+      </Box>
     </>
   );
 }
-
-const useTimelineStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      display: 'flex',
-      flexDirection: 'row',
-      width: '100%',
-      background: lightGrey,
-      overflow: 'auto',
-      justifyContent: 'space-around',
-      overflowY: 'scroll',
-      // Browser-specific properties for forcing scrollbar visibility and styling
-      '&::-webkit-scrollbar': {
-        width: '0.5rem',
-        height: '0.5rem',
-      },
-      '&::-webkit-scrollbar-thumb': {
-        background: '#888',
-        borderRadius: '0.25rem', // Rounded corners for the scrollbar thumb
-      },
-      '&::-webkit-scrollbar-thumb:hover': {
-        background: '#555',
-      },
-      '&::-webkit-scrollbar-track': {
-        borderRadius: '0.25rem', // Rounded corners for the scrollbar track
-      },
-    },
-    windowWrapper: {
-      display: 'flex',
-      flexDirection: 'column',
-      padding: '0.5rem 0.25rem',
-      color: 'black',
-    },
-    tableWrapper: { display: 'flex', flexDirection: 'column', gap: '2px' },
-    headRowWrapper: {
-      display: 'flex',
-      flexDirection: 'row',
-      minHeight: '2.5rem',
-      background: 'white',
-    },
-    rowWrapper: {
-      display: 'flex',
-      flexDirection: 'row',
-      minHeight: '5.3rem',
-      background: 'white',
-    },
-    iconColumn: {
-      width: '3rem',
-      padding: '0.1rem 0.25rem',
-    },
-    headColumn: {
-      width: '4rem',
-      padding: '0.1rem 0.25rem',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    column: {
-      width: '4rem',
-      padding: '0.1rem 0.25rem',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    monthText: {
-      background: lightGrey,
-      borderRadius: '4px',
-      textAlign: 'center',
-      textTransform: 'uppercase',
-      lineHeight: '2rem',
-      width: '100%',
-    },
-  }),
-);
 
 export default Timeline;

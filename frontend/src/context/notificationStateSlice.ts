@@ -1,4 +1,4 @@
-import { Color } from '@material-ui/lab';
+import { AlertColor } from '@mui/material';
 import {
   AnyAction,
   createSlice,
@@ -12,12 +12,12 @@ import type { AppDispatch, RootState } from './store';
 // to test notification reaction to various error codes, http://httpstat.us/404 can be used where 404 is the status to test.
 type NotificationConstructor = {
   message: string;
-  type: Color;
+  type: AlertColor;
 };
 
 export class Notification {
   readonly message: string;
-  readonly type: Color;
+  readonly type: AlertColor;
   readonly key: string; // each notification needs a unique ID. We generate a hash from the notification message
 
   constructor({ message, type }: NotificationConstructor) {

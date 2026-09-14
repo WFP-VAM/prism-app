@@ -1,26 +1,23 @@
+import { Cancel, GetApp } from '@mui/icons-material';
 import {
   Box,
   Button,
   CircularProgress,
   Collapse,
-  createStyles,
   Divider,
   FormControl,
   Icon,
   IconButton,
   InputLabel,
-  makeStyles,
   Menu,
   MenuItem,
   Select,
   TextField,
-  Theme,
   Tooltip,
   Typography,
-} from '@material-ui/core';
-import { Cancel, FileCopy, GetApp } from '@material-ui/icons';
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+} from '@mui/material';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Switch from 'components/Common/Switch';
 import { AspectRatio } from 'components/MapExport/types';
 import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
@@ -31,7 +28,7 @@ import { useLocation } from 'react-router-dom';
 import {
   BATCH_MAP_LAYER_URL_KEY,
   MAP_EXPORT_MAX_URLS_PER_REQUEST,
-  PRISM_WELCOME_URL,
+  PRISM_SIGN_IN_URL,
 } from 'utils/constants';
 
 import { useSafeTranslation } from '../../../i18n';
@@ -67,26 +64,42 @@ interface ToggleSelectorProps {
   setValue: (v: number | string) => void;
 }
 
-const toggleSelectorStyles = makeStyles(() => ({
-  wrapper: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    '& h4': {
-      fontSize: '14px',
-    },
+const toggleSelectorWrapperSx = {
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  '& h4': {
+    fontSize: '14px',
   },
-  buttonGroup: { display: 'flex' },
-  button: {
-    backgroundColor: 'white',
-    height: '32px',
-    width: '36px',
-    padding: '4px',
-    fontSize: '0.8rem',
-    borderLeft: '1px solid rgba(0, 0, 0, 0.12) !important',
+};
+
+const toggleSelectorButtonSx = {
+  backgroundColor: 'white',
+  height: '32px',
+  width: '36px',
+  padding: '4px',
+  fontSize: '0.8rem',
+  borderLeft: '1px solid rgba(0, 0, 0, 0.12) !important',
+};
+
+const collapsibleWrapperSx = {
+  display: 'flex',
+  alignItems: 'center',
+  '& h4': {
+    fontSize: '14px',
   },
-}));
+};
+
+const collapsibleWrapperExpandedSx = {
+  marginBottom: '0.25rem',
+};
+
+const sectionTooltipSlotProps = {
+  tooltip: {
+    sx: { fontSize: '0.75em' },
+  },
+};
 
 function ToggleSelector({
   title,
@@ -96,9 +109,8 @@ function ToggleSelector({
   align,
   setValue,
 }: ToggleSelectorProps) {
-  const classes = toggleSelectorStyles();
   return (
-    <div className={classes.wrapper}>
+    <Box sx={toggleSelectorWrapperSx}>
       <Typography
         variant="h4"
         style={{ textAlign: align, marginRight: '0.5rem' }}
@@ -108,13 +120,13 @@ function ToggleSelector({
       <ToggleButtonGroup
         value={value}
         exclusive
-        className={classes.buttonGroup}
+        sx={{ display: 'flex' }}
         style={{ justifyContent: align }}
       >
         {options.map(x => (
           <ToggleButton
             key={x.value}
-            className={classes.button}
+            sx={toggleSelectorButtonSx}
             value={x.value}
             onClick={() => {
               setValue(x.value);
@@ -125,7 +137,7 @@ function ToggleSelector({
           </ToggleButton>
         ))}
       </ToggleButtonGroup>
-    </div>
+    </Box>
   );
 }
 // Mozambique - Blended Rainfall Aggregate (10-day) - May 2024
@@ -149,13 +161,12 @@ function SectionToggle({
   disabled?: boolean;
   tooltip?: string;
 }) {
-  const classes = useStyles();
-
   const switchElement = (
-    <div
-      className={`${classes.collapsibleWrapper} ${
-        expanded && children ? classes.collapsibleWrapperExpanded : ''
-      }`}
+    <Box
+      sx={{
+        ...collapsibleWrapperSx,
+        ...(expanded && children ? collapsibleWrapperExpandedSx : {}),
+      }}
     >
       <Switch
         checked={expanded}
@@ -163,7 +174,7 @@ function SectionToggle({
         title={title}
         disabled={disabled}
       />
-    </div>
+    </Box>
   );
 
   return (
@@ -173,7 +184,7 @@ function SectionToggle({
           title={tooltip}
           arrow
           placement="top"
-          classes={{ tooltip: classes.tooltip }}
+          slotProps={sectionTooltipSlotProps}
         >
           {switchElement}
         </Tooltip>
@@ -192,10 +203,11 @@ function SectionToggle({
 function GreyContainer({ children }: { children: React.ReactNode }) {
   return (
     <Box
-      bgcolor="#F1F1F1"
       sx={{
+        bgcolor: '#F1F1F1',
         borderRadius: '4px',
-        padding: 4,
+        // 4px literal (JSS px), not theme.spacing(4)=24px — keeps the box compact
+        padding: '4px',
       }}
     >
       {children}
@@ -212,7 +224,7 @@ function GreyContainerSection({
 }) {
   return (
     <>
-      <Box sx={{ margin: 4 }}>{children}</Box>
+      <Box sx={{ margin: '4px' }}>{children}</Box>
       {!isLast && <Divider style={{ background: '#ffffff' }} />}
     </>
   );
@@ -293,7 +305,6 @@ const footerTextSelectorOptions = [
 const DATE_PLACEHOLDER_SUFFIX = ': {date_coverage}';
 
 function PrintConfig() {
-  const classes = useStyles();
   const { t } = useSafeTranslation();
   const location = useLocation();
   const { jobs: activeBatchJobs } = useBatchMapExportJobsState();
@@ -371,7 +382,6 @@ function PrintConfig() {
     setFooterTextSize,
     download,
     downloadBatch,
-    copyBatchMapUrls,
     isDownloading,
     defaultFooterText,
     selectedBoundaries,
@@ -417,7 +427,7 @@ function PrintConfig() {
         location.pathname
       }?${params.toString()}`;
       window.location.assign(
-        `${PRISM_WELCOME_URL}?next=${encodeURIComponent(returnUrl)}`,
+        `${PRISM_SIGN_IN_URL}?next=${encodeURIComponent(returnUrl)}`,
       );
       return;
     }
@@ -459,8 +469,26 @@ function PrintConfig() {
   });
 
   return (
-    <Box className={classes.printPanelRoot}>
-      <div className={classes.optionsContainer}>
+    <Box sx={{ minWidth: 0, flexShrink: 1 }}>
+      <Box
+        sx={theme => ({
+          display: 'flex',
+          height: '100%',
+          flexDirection: 'column',
+          gap: '0.5rem',
+          minHeight: '740px',
+          width: '20.5rem',
+          minWidth: 0,
+          boxSizing: 'border-box',
+          paddingLeft: theme.spacing(1),
+          paddingRight: theme.spacing(1),
+          overflowY: 'auto',
+          overflowX: 'hidden',
+          scrollbarGutter: 'stable',
+          zIndex: 4,
+          backgroundColor: 'white',
+        })}
+      >
         <div>
           <Box
             style={{
@@ -468,33 +496,48 @@ function PrintConfig() {
               fontWeight: 900,
               marginBottom: '1em',
             }}
-            className={classes.title}
+            sx={theme => ({
+              color: theme.palette.text.secondary,
+            })}
           >
             {t('Map Options')}
           </Box>
           <IconButton
-            className={classes.closeButton}
+            sx={theme => ({
+              position: 'absolute',
+              right: theme.spacing(1),
+              top: theme.spacing(1),
+              zIndex: 10,
+            })}
             onClick={() => handleClose()}
+            size="large"
           >
             <Cancel />
           </IconButton>
         </div>
 
         {/* Title */}
-        <div className={classes.optionWrap}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.6rem',
+          }}
+        >
           <TextField
             value={localTitle}
             placeholder={t('Title')}
             fullWidth
             size="small"
-            inputProps={{ label: t('Title'), style: { color: 'black' } }}
+            slotProps={{ htmlInput: { style: { color: 'black' } } }}
+            label={t('Title')}
             onChange={event => {
               setLocalTitle(event.target.value);
               debounceCallback(setTitleText, event.target.value);
             }}
             variant="outlined"
           />
-        </div>
+        </Box>
 
         {/* Aspect Ratio */}
         <AspectRatioSelector
@@ -617,11 +660,32 @@ function PrintConfig() {
             }))
           }
         >
-          <div className={classes.optionWrap}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.6rem',
+              width: '100%',
+              '& .MuiFormControl-root': {
+                width: '100%',
+              },
+              '& .MuiInputLabel-shrink': { display: 'none' },
+              '& .MuiInput-root': { margin: 0 },
+              '& label': {
+                color: '#000000',
+                opacity: 0.6,
+                fontSize: '14px',
+                marginLeft: '10px',
+                position: 'absolute',
+                top: '50%',
+                transform: 'translateY(-50%)',
+              },
+            }}
+          >
             <SimpleBoundaryDropdown
               selectAll
               labelMessage={t('Select admin area')}
-              className={classes.formControl}
+              className=""
               selectedBoundaries={selectedBoundaries}
               setSelectedBoundaries={setSelectedBoundaries}
               selectProps={{
@@ -631,7 +695,7 @@ function PrintConfig() {
               multiple={false}
               size="small"
             />
-          </div>
+          </Box>
         </SectionToggle>
 
         {/* Legend */}
@@ -663,7 +727,7 @@ function PrintConfig() {
                   }
                   title={t('Position')}
                 />
-                <div className={classes.collapsibleWrapper}>
+                <Box sx={collapsibleWrapperSx}>
                   <Switch
                     title={t('Full Layer')}
                     checked={!!toggles.fullLayerDescription}
@@ -674,7 +738,7 @@ function PrintConfig() {
                       }));
                     }}
                   />
-                </div>
+                </Box>
               </Box>
             </GreyContainerSection>
             <GreyContainerSection isLast>
@@ -722,7 +786,9 @@ function PrintConfig() {
                 key={defaultFooterText}
                 multiline
                 defaultValue={defaultFooterText}
-                inputProps={{ style: { color: 'black', fontSize: '0.8rem' } }}
+                slotProps={{
+                  htmlInput: { style: { color: 'black', fontSize: '0.8rem' } },
+                }}
                 style={{ backgroundColor: 'white', borderRadius: '5px' }}
                 minRows={3}
                 maxRows={6}
@@ -738,65 +804,47 @@ function PrintConfig() {
 
         {/* Batch Maps */}
         {shouldEnableBatchMaps && (
-          <Box className={classes.batchMapsSection}>
-            <Box className={classes.batchMapsHeader}>
-              <Box className={classes.batchMapsToggle}>
-                <SectionToggle
-                  title={t('Create a sequence of maps')}
-                  expanded={toggles.batchMapsVisibility}
-                  disabled={shouldShowMultiLayerWarning}
-                  tooltip={t(
-                    shouldShowMultiLayerWarning
-                      ? 'Select one layer at a time to create a sequence of maps'
-                      : 'Selecting this option will apply the template above to create multiple maps over a time period of your choice.',
-                  )}
-                  handleChange={() => {
-                    const willBeEnabled = !toggles.batchMapsVisibility;
-
-                    if (willBeEnabled && !titleText.includes('{date}')) {
-                      // Append date placeholder
-                      setTitleText(prev => `${prev}${DATE_PLACEHOLDER_SUFFIX}`);
-                    } else if (
-                      !willBeEnabled &&
-                      titleText.endsWith(DATE_PLACEHOLDER_SUFFIX)
-                    ) {
-                      // Remove date placeholder suffix
-                      setTitleText(prev =>
-                        prev.slice(0, -DATE_PLACEHOLDER_SUFFIX.length),
-                      );
-                    }
-
-                    if (!willBeEnabled) {
-                      setCreateScheduledMaps(false);
-                    }
-
-                    setToggles(prev => ({
-                      ...prev,
-                      batchMapsVisibility: willBeEnabled,
-                    }));
-                  }}
-                />
-              </Box>
-              {toggles.batchMapsVisibility && (
-                <Tooltip
-                  title={t('Copy batch map settings')}
-                  arrow
-                  placement="top"
-                  classes={{ tooltip: classes.tooltip }}
-                >
-                  <button
-                    type="button"
-                    aria-label={t('Copy batch map settings')}
-                    className={classes.batchMapsCopyButton}
-                    onClick={() => {
-                      void copyBatchMapUrls();
-                    }}
-                  >
-                    <FileCopy fontSize="small" />
-                  </button>
-                </Tooltip>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            <SectionToggle
+              title={t('Create a sequence of maps')}
+              expanded={toggles.batchMapsVisibility}
+              disabled={shouldShowMultiLayerWarning}
+              tooltip={t(
+                shouldShowMultiLayerWarning
+                  ? 'Select one layer at a time to create a sequence of maps'
+                  : 'Selecting this option will apply the template above to create multiple maps over a time period of your choice.',
               )}
-            </Box>
+              handleChange={() => {
+                const willBeEnabled = !toggles.batchMapsVisibility;
+
+                if (willBeEnabled && !titleText.includes('{date}')) {
+                  // Append date placeholder
+                  setTitleText(prev => `${prev}${DATE_PLACEHOLDER_SUFFIX}`);
+                } else if (
+                  !willBeEnabled &&
+                  titleText.endsWith(DATE_PLACEHOLDER_SUFFIX)
+                ) {
+                  // Remove date placeholder suffix
+                  setTitleText(prev =>
+                    prev.slice(0, -DATE_PLACEHOLDER_SUFFIX.length),
+                  );
+                }
+
+                if (!willBeEnabled) {
+                  setCreateScheduledMaps(false);
+                }
+
+                setToggles(prev => ({
+                  ...prev,
+                  batchMapsVisibility: willBeEnabled,
+                }));
+              }}
+            />
             <SectionToggle
               title={t('Create maps for future data')}
               expanded={createScheduledMaps}
@@ -818,7 +866,10 @@ function PrintConfig() {
                       <Typography
                         variant="caption"
                         component="p"
-                        className={classes.batchExportTruncateHint}
+                        sx={theme => ({
+                          marginTop: theme.spacing(0.5),
+                          color: theme.palette.error.main,
+                        })}
                       >
                         {t(
                           'Sign in is required to create scheduled maps. Use Login to create schedule below.',
@@ -834,7 +885,10 @@ function PrintConfig() {
                       <Typography
                         variant="caption"
                         component="p"
-                        className={classes.batchExportTruncateHint}
+                        sx={theme => ({
+                          marginTop: theme.spacing(0.5),
+                          color: theme.palette.error.main,
+                        })}
                       >
                         {t(
                           'Could not verify your session. Check your connection and try again.',
@@ -851,7 +905,10 @@ function PrintConfig() {
                       <Typography
                         variant="caption"
                         component="p"
-                        className={classes.batchExportTruncateHint}
+                        sx={theme => ({
+                          marginTop: theme.spacing(0.5),
+                          color: theme.palette.error.main,
+                        })}
                       >
                         {t(
                           'You do not have permission to create schedules. Contact an administrator.',
@@ -862,7 +919,7 @@ function PrintConfig() {
                 )}
             </SectionToggle>
             {toggles.batchMapsVisibility && (
-              <Box className={classes.batchMapsForm}>
+              <Box sx={{ paddingTop: '10px' }}>
                 <GreyContainer>
                   <GreyContainerSection>
                     {/* Layer */}
@@ -893,17 +950,30 @@ function PrintConfig() {
                   </GreyContainerSection>
                   {!createScheduledMaps && (
                     <GreyContainerSection isLast>
-                      <Box className={classes.mapCountContainer}>
+                      <Box
+                        sx={theme => ({
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'flex-start',
+                          flexWrap: 'wrap',
+                          gap: theme.spacing(1),
+                        })}
+                      >
                         <Typography variant="body1">
                           {t('Number of maps generated')}
                         </Typography>
                         <Typography
                           variant="body1"
-                          className={`${classes.mapCountValue}${
-                            batchMapsWillTruncate
-                              ? ` ${classes.mapCountValueWarning}`
-                              : ''
-                          }`}
+                          sx={theme => ({
+                            borderRadius: '4px',
+                            padding: theme.spacing(0.25, 0.75),
+                            margin: theme.spacing(0.5, 1),
+                            backgroundColor: theme.palette.grey[300],
+                            lineHeight: 1.2,
+                            ...(batchMapsWillTruncate
+                              ? { color: theme.palette.error.main }
+                              : {}),
+                          })}
                         >
                           {mapCount}
                         </Typography>
@@ -912,7 +982,10 @@ function PrintConfig() {
                         <Typography
                           variant="caption"
                           component="p"
-                          className={classes.batchExportTruncateHint}
+                          sx={theme => ({
+                            marginTop: theme.spacing(0.5),
+                            color: theme.palette.error.main,
+                          })}
                         >
                           {t('batch_export_maps_truncated_panel', {
                             max: MAP_EXPORT_MAX_URLS_PER_REQUEST,
@@ -925,7 +998,13 @@ function PrintConfig() {
               </Box>
             )}
             {toggles.batchMapsVisibility && activeBatchJobs.length > 0 && (
-              <Box className={classes.batchExportsInPanelWrap}>
+              <Box
+                sx={theme => ({
+                  marginTop: theme.spacing(1.5),
+                  width: '100%',
+                  minWidth: 0,
+                })}
+              >
                 <GreyContainer>
                   <GreyContainerSection isLast>
                     <Typography
@@ -950,11 +1029,31 @@ function PrintConfig() {
           fullWidth
           variant="contained"
           color="primary"
-          className={`${classes.gutter} ${
+          sx={
             primaryDisabled
-              ? classes.primaryButtonDisabled
-              : classes.primaryButtonActive
-          }`}
+              ? theme => ({
+                  '&&': {
+                    marginBottom: 0,
+                    cursor: 'not-allowed',
+                    '&.Mui-disabled': {
+                      cursor: 'not-allowed',
+                      pointerEvents: 'auto',
+                      backgroundColor: theme.palette.grey[300],
+                      color: theme.palette.text.disabled,
+                    },
+                  },
+                })
+              : {
+                  '&&': {
+                    marginBottom: 0,
+                    backgroundColor: cyanBlue,
+                    color: 'black',
+                    '&:hover': {
+                      backgroundColor: cyanBlue,
+                    },
+                  },
+                }
+          }
           endIcon={<GetApp />}
           onClick={handlePrimaryButtonClick}
           disabled={primaryDisabled}
@@ -1019,158 +1118,10 @@ function PrintConfig() {
                   </MenuItem>,
                 ]}
         </Menu>
-      </div>
+      </Box>
     </Box>
   );
 }
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    printPanelRoot: {
-      minWidth: 0,
-      flexShrink: 1,
-    },
-    title: {
-      color: theme.palette.text.secondary,
-    },
-    gutter: {
-      marginBottom: 0,
-    },
-    primaryButtonActive: {
-      backgroundColor: cyanBlue,
-      color: 'black',
-      '&:hover': {
-        backgroundColor: cyanBlue,
-      },
-    },
-    primaryButtonDisabled: {
-      cursor: 'not-allowed',
-      '&.Mui-disabled': {
-        cursor: 'not-allowed',
-        pointerEvents: 'auto',
-        backgroundColor: theme.palette.grey[300],
-        color: theme.palette.text.disabled,
-      },
-    },
-    closeButton: {
-      position: 'absolute',
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-      zIndex: 10,
-    },
-    optionsContainer: {
-      display: 'flex',
-      height: '100%',
-      flexDirection: 'column',
-      gap: '0.5rem',
-      minHeight: '740px',
-      width: '20.5rem',
-      minWidth: 0,
-      boxSizing: 'border-box',
-      paddingLeft: theme.spacing(1),
-      paddingRight: theme.spacing(1),
-      overflowY: 'auto',
-      overflowX: 'hidden',
-      scrollbarGutter: 'stable',
-      zIndex: 4,
-      backgroundColor: 'white',
-    },
-    optionWrap: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '0.6rem',
-    },
-    collapsibleWrapper: {
-      display: 'flex',
-      alignItems: 'center',
-      '& h4': {
-        fontSize: '14px',
-      },
-    },
-    collapsibleWrapperExpanded: {
-      marginBottom: '0.25rem',
-    },
-    tooltip: {
-      fontSize: '0.75em',
-    },
-    formControl: {
-      width: '100%',
-      '& > .MuiInputLabel-shrink': { display: 'none' },
-      '& > .MuiInput-root': { margin: 0 },
-      '& label': {
-        color: '#000000',
-        opacity: 0.6,
-        fontSize: '14px',
-        marginLeft: '10px',
-        position: 'absolute',
-        top: '50%',
-        transform: 'translateY(-50%)',
-      },
-    },
-    sameRowToggles: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-    },
-    mapCountContainer: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'flex-start',
-      flexWrap: 'wrap',
-      gap: theme.spacing(1),
-    },
-    mapCountValue: {
-      borderRadius: '4px',
-      padding: theme.spacing(0.25, 0.75),
-      margin: theme.spacing(0.5, 1),
-      backgroundColor: theme.palette.grey[300],
-      lineHeight: 1.2,
-    },
-    mapCountValueWarning: {
-      color: theme.palette.error.main,
-    },
-    batchExportTruncateHint: {
-      marginTop: theme.spacing(0.5),
-      color: theme.palette.error.main,
-    },
-    batchMapsSection: {
-      display: 'flex',
-      flexDirection: 'column',
-    },
-    batchMapsHeader: {
-      display: 'flex',
-      alignItems: 'center',
-      width: '100%',
-    },
-    batchMapsToggle: {
-      flex: 1,
-      minWidth: 0,
-    },
-    batchMapsCopyButton: {
-      marginLeft: 'auto',
-      display: 'inline-flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: 8,
-      border: 'none',
-      background: 'transparent',
-      color: 'rgba(0, 0, 0, 0.54)',
-      cursor: 'pointer',
-      '&:hover': {
-        color: 'rgba(0, 0, 0, 0.87)',
-        backgroundColor: 'rgba(0, 0, 0, 0.04)',
-      },
-    },
-    batchMapsForm: {
-      paddingTop: '10px',
-    },
-    batchExportsInPanelWrap: {
-      marginTop: theme.spacing(1.5),
-      width: '100%',
-      minWidth: 0,
-    },
-  }),
-);
 
 export interface PrintConfigProps {}
 

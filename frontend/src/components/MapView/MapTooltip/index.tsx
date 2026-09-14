@@ -1,11 +1,6 @@
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  createStyles,
-  IconButton,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
+import { Box, IconButton, Typography } from '@mui/material';
 import Loader from 'components/Common/Loader';
 import { AdminLevelType } from 'config/types';
 import { getBoundaryLayerSingleton } from 'config/utils';
@@ -26,57 +21,17 @@ import { localizeName, usesAdminNameSidecar } from 'utils/admin-name-utils';
 import { getEffectiveMultiCountry } from 'utils/universal-country-admin';
 import { isUniversalDeployment } from 'utils/universal-utils';
 
+import {
+  mapTooltipCloseButtonSx,
+  mapTooltipPopupExpandedSx,
+  mapTooltipPopupSx,
+  mapTooltipTitleSx,
+} from './mapTooltipStyles';
 import PopupPointDataChart from './PointDataChart/PopupPointDataChart';
 import usePointDataChart from './PointDataChart/usePointDataChart';
 import PopupCharts from './PopupCharts';
 import PopupContent from './PopupContent';
 import RedirectToDMP from './RedirectToDMP';
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    phasePopulationTable: {
-      tableLayout: 'fixed',
-      borderCollapse: 'collapse',
-      width: '100%',
-      borderWidth: '1px;',
-      borderColor: 'inherit',
-      borderStyle: 'solid',
-      border: '1px solid white',
-    },
-    phasePopulationTableRow: {
-      border: '1px solid white',
-    },
-    title: {
-      fontWeight: 600,
-      marginBottom: '8px',
-    },
-    text: {
-      marginBottom: '4px',
-    },
-    popup: {
-      // Overrides the default maxWidth of 240px set by react-map-gl
-      maxWidth: '40em !important',
-      zIndex: 5,
-      '& div.maplibregl-popup-content': {
-        background: 'black',
-        color: 'white',
-        padding: '5px 5px 5px 5px',
-        maxHeight: '400px',
-        overflow: 'auto',
-      },
-      '& div.maplibregl-popup-tip': {
-        'border-top-color': 'black',
-        'border-bottom-color': 'black',
-      },
-    },
-    closeButton: {
-      color: 'white',
-      position: 'absolute',
-      right: 0,
-      top: 0,
-    },
-  }),
-);
 
 const useZeroBasedAdminLevels =
   isUniversalDeployment() || getEffectiveMultiCountry();
@@ -85,7 +40,6 @@ const availableAdminLevels: AdminLevelType[] = useZeroBasedAdminLevels
   : [1, 2];
 
 const MapTooltip = memo(() => {
-  const classes = useStyles();
   const dispatch = useDispatch();
   const popup = useSelector(tooltipSelector);
   const { t, i18n } = useSafeTranslation();
@@ -156,33 +110,34 @@ const MapTooltip = memo(() => {
 
   if (dataset) {
     return (
-      <Popup
+      <Box
+        component={Popup}
         key={key}
         latitude={popup.coordinates?.[1]}
         longitude={popup.coordinates?.[0]}
-        className={classes.popup}
+        sx={mapTooltipPopupSx}
         closeButton={false}
       >
         <IconButton
           aria-label="close"
-          className={classes.closeButton}
+          sx={mapTooltipCloseButtonSx}
           onClick={() => dispatch(hidePopup())}
           size="small"
         >
           <FontAwesomeIcon icon={faTimes} style={{ paddingRight: '3px' }} />
         </IconButton>
         <PopupPointDataChart />
-      </Popup>
+      </Box>
     );
   }
 
   return (
-    <Popup
+    <Box
+      component={Popup}
       key={key}
       latitude={popup.coordinates?.[1]}
       longitude={popup.coordinates?.[0]}
-      className={classes.popup}
-      style={{ zIndex: 5, maxWidth: 'none' }}
+      sx={mapTooltipPopupExpandedSx}
       closeButton={false}
     >
       {adminLevel === undefined && (
@@ -191,7 +146,7 @@ const MapTooltip = memo(() => {
           dmpSubmissionId={popupData.dmpSubmissionId}
         />
       )}
-      <Typography variant="h4" color="inherit" className={classes.title}>
+      <Typography variant="h4" sx={mapTooltipTitleSx}>
         {popupTitle || defaultPopupTitle}
       </Typography>
       {adminLevel === undefined && (
@@ -200,7 +155,7 @@ const MapTooltip = memo(() => {
       {availableAdminLevels.length > 0 && adminLevel !== undefined && (
         <IconButton
           aria-label="close"
-          className={classes.closeButton}
+          sx={mapTooltipCloseButtonSx}
           onClick={() => setAdminLevel(undefined)}
           size="small"
         >
@@ -218,7 +173,7 @@ const MapTooltip = memo(() => {
         availableAdminLevels={availableAdminLevels}
       />
       <Loader showLoader={popup.wmsGetFeatureInfoLoading} />
-    </Popup>
+    </Box>
   );
 });
 
