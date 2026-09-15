@@ -27,7 +27,7 @@ import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
 import { mapStyle } from 'components/MapView/Map/utils';
 import { DiscriminateUnion, LayerType, Panel } from 'config/types';
 import { addNotification } from 'context/notificationStateSlice';
-import maplibregl from 'maplibre-gl';
+import { Map as MaplibreMap, ScaleControl } from 'maplibre-gl';
 import { lightGrey } from 'muiTheme';
 import React, {
   ComponentType,
@@ -119,7 +119,7 @@ const componentTypes: LayerComponentsMap<LayerType> = {
   },
 };
 
-function isMapFullyLoaded(map: maplibregl.Map): boolean {
+function isMapFullyLoaded(map: MaplibreMap): boolean {
   return Boolean(map.isStyleLoaded() && map.areTilesLoaded() && map.loaded());
 }
 
@@ -342,7 +342,7 @@ function MapExportLayout({
   }, [bounds]);
 
   const loadDataLayerAssets = useCallback(
-    async (map: maplibregl.Map | undefined) => {
+    async (map: MaplibreMap | undefined) => {
       if (!map) {
         return;
       }
@@ -359,7 +359,7 @@ function MapExportLayout({
   );
 
   const fitMapToBounds = useCallback(
-    (map: maplibregl.Map | undefined) => {
+    (map: MaplibreMap | undefined) => {
       if (!bounds || !map) {
         return;
       }
@@ -379,7 +379,7 @@ function MapExportLayout({
   );
 
   const startExportReadyTracking = useCallback(
-    (map: maplibregl.Map, onLoadEvent: unknown) => {
+    (map: MaplibreMap, onLoadEvent: unknown) => {
       let hasSignaledReady = false;
       let stableLoadedTicks = 0;
       let pollInterval: ReturnType<typeof setInterval> | undefined;
@@ -452,7 +452,7 @@ function MapExportLayout({
   );
 
   const handleBaseMapLoad = (e: any) => {
-    e.target.addControl(new maplibregl.ScaleControl({}), 'bottom-right');
+    e.target.addControl(new ScaleControl({}), 'bottom-right');
     updateScaleBarAndNorthArrow();
 
     const map = baseMapRef.current?.getMap();

@@ -16,7 +16,7 @@ import {
 } from 'context/mapStateSlice/selectors';
 import { hidePopup } from 'context/tooltipStateSlice';
 import { Feature, FeatureCollection, Point } from 'geojson';
-import maplibregl from 'maplibre-gl';
+import { LngLatBounds } from 'maplibre-gl';
 import { AAStormTimeSeriesFeature, TimeSeries } from 'prism-common/';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Layer, MapLayerMouseEvent, Source } from 'react-map-gl/maplibre';
@@ -198,7 +198,7 @@ const AnticipatoryActionStormLayer = React.memo(
           // Only adjust zoom if no part of the storm is visible
           if (!isAnyPointVisible) {
             // Calculate the bounds of the storm path
-            const bounds = new maplibregl.LngLatBounds();
+            const bounds = new LngLatBounds();
             allCoordinates.forEach((coord: number[]) => {
               // Ensure coord is a valid [lng, lat] array before extending
               if (
