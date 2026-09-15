@@ -158,7 +158,7 @@
     "node-notifier": "Build compatibility — keep (native notify stack).",
     "canvas": "Stub via link: — skip native canvas install.",
     "glob": "CVE-2025-64756 / GHSA-23c5-xmqv-rm74 — force glob 13 (babel-jest still pulls 7.x).",
-    "js-yaml": "CVE-2025-64718 — flatten eslint/babel-jest 3.x to 4.x. Lock 4.1.1 (alerting prod path needs 4.3.1).",
+    "js-yaml": "CVE-2025-64718 — flatten eslint/babel-jest 3.x to 4.x. Lock 4.1.1.",
     "@isaacs/brace-expansion": "glob 13 / minimatch 10 scoped fork. Pin >=5.0.1 so Yarn v1 does not flatten onto unscoped v2.",
     "**/glob/minimatch": "CVE-2026-45149 — rimraf>glob: minimatch >=10.2.5.",
     "**/glob/minimatch/brace-expansion": "CVE-2026-69152 / GHSA-rgw5-rvv9-x895 — brace-expansion >=5.0.9 (5.0.8 maxLength bypass).",
