@@ -115,6 +115,43 @@ export function applyUniversalLandingViewport(
   );
 }
 
+/** Room for the country view's left panel. */
+const UNIVERSAL_COUNTRY_PADDING = { top: 40, right: 40, bottom: 40, left: 420 };
+
+/**
+ * Fit the map to a country when leaving the landing view.
+ *
+ * Clears the persistent padding set by applyUniversalLandingViewport (and the
+ * landing initialViewState) first: fitBounds adds the map's padding to its own,
+ * so keeping it would double the left offset and push the country right.
+ */
+export function applyUniversalCountryViewport(
+  map: MaplibreMap,
+  iso3: string,
+  options?: { animate?: boolean; duration?: number },
+): void {
+  const countryBbox = getCountryBbox(iso3);
+  if (!countryBbox) {
+    return;
+  }
+
+  const { animate = false, duration = 0 } = options ?? {};
+  map.setPadding({ top: 0, right: 0, bottom: 0, left: 0 });
+
+  const [minLon, minLat, maxLon, maxLat] = countryBbox;
+  map.fitBounds(
+    [
+      [minLon, minLat],
+      [maxLon, maxLat],
+    ],
+    {
+      padding: UNIVERSAL_COUNTRY_PADDING,
+      animate,
+      duration,
+    },
+  );
+}
+
 /**
  * Initial / return-to-landing map viewport when prism.json defines map.landingView.
  * Used by Universal (landing) and Global (initial load).
