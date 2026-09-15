@@ -210,7 +210,7 @@
     "@types/jsonpath": "^0.2.4",
     "@types/lodash": "^4.14.149",
     "@types/marked": "^4.0.2",
-    "@types/node": "20.8.8",
+    "@types/node": "22.20.2",
     "@types/papaparse": "^5.0.3",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -256,6 +256,6 @@
     "vite-plugin-node-polyfills": "^0.21.0"
   },
   "engines": {
-    "node": ">=20.6.0"
+    "node": ">=22.12.0"
   }
 }

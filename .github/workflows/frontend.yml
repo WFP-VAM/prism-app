@@ -23,10 +23,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Use Node.js 20.x
+      - name: Use Node.js 22.x
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version-file: frontend/.nvmrc
 
       - uses: actions/cache@v4
         id: yarn-cache
@@ -35,9 +35,9 @@ jobs:
             **/node_modules
             **/.eslintcache
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-2025-3-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-2026-1-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-2025-3
+            ${{ runner.os }}-yarn-2026-1
 
       - name: Install dependencies if needed.
         if: steps.yarn-cache.outputs.cache-hit != 'true'
@@ -101,10 +101,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Use Node.js 20.x
+      - name: Use Node.js 22.x
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version-file: frontend/.nvmrc
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -119,9 +119,9 @@ jobs:
             **/common/dist
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             ~/.cache/Cypress
-          key: ${{ runner.os }}-yarn-2025-4-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock', '**/common/src/**/*.ts') }}
+          key: ${{ runner.os }}-yarn-2026-2-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock', '**/common/src/**/*.ts') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-2025-4
+            ${{ runner.os }}-yarn-2026-2
 
       - name: setup 'common' package
         # skip yarn install in frontend, as cypress does it anyway
@@ -158,10 +158,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Use Node.js 20.x
+      - name: Use Node.js 22.x
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version-file: frontend/.nvmrc
 
       - uses: actions/cache@v4
         id: yarn-cache
@@ -170,9 +170,9 @@ jobs:
             **/node_modules
             **/.eslintcache
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-2025-3-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-2026-1-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-2025-3
+            ${{ runner.os }}-yarn-2026-1
 
       - name: Install dependencies if needed.
         if: steps.yarn-cache.outputs.cache-hit != 'true'
@@ -223,10 +223,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Use Node.js 20.x
+      - name: Use Node.js 22.x
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version-file: frontend/.nvmrc
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -239,9 +239,9 @@ jobs:
             **/node_modules
             **/.eslintcache
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-2025-4-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-2026-2-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-2025-4
+            ${{ runner.os }}-yarn-2026-2
 
       - name: Install dependencies if needed.
         if: steps.yarn-cache.outputs.cache-hit != 'true'
