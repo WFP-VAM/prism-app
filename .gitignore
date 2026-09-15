@@ -52,3 +52,6 @@ frontend/cypress/videos/
 # TypeScript composite / declaration emit scratch (if used locally)
 frontend/.tsbuild/
 /prism_db_backup
+
+# Graphify local code-graph output
+graphify-out/
