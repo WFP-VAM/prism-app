@@ -20,7 +20,7 @@
  *
  */
 
-import MapLibreGL from 'maplibre-gl';
+import { addProtocol, removeProtocol } from 'maplibre-gl';
 import { PMTiles, Protocol } from 'pmtiles';
 
 // Create a singleton instance of the protocol
@@ -36,9 +36,9 @@ export const initPmtilesProtocol = () => {
     return () => {};
   }
   protocolRegistered = true;
-  MapLibreGL.addProtocol('pmtiles', protocol.tile);
+  addProtocol('pmtiles', protocol.tile);
   return () => {
-    MapLibreGL.removeProtocol('pmtiles');
+    removeProtocol('pmtiles');
     protocolRegistered = false;
   };
 };

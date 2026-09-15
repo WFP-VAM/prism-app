@@ -20,9 +20,11 @@ import type { RootState } from './store';
 
 type MapGetter = () => MaplibreMap | undefined;
 
+type OpacityPaintProperty = Parameters<MaplibreMap['setPaintProperty']>[1];
+
 interface OpacityEntry {
   mapLayerId: string;
-  opacityType: string;
+  opacityType: OpacityPaintProperty;
   value: number;
 }
 
@@ -96,7 +98,7 @@ export function getDashboardConfigFromList(
 const getMapLayerOpacityConfig = (
   layerId: LayerType['id'],
   layerType: LayerType['type'] | 'analysis',
-): [string, string] => {
+): [string, OpacityPaintProperty] => {
   switch (layerType) {
     case 'wms':
     case 'static_raster':
