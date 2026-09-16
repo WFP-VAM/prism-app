@@ -15,7 +15,7 @@
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import { point } from '@turf/helpers';
 import type { Feature, MultiPolygon, Polygon, Position } from 'geojson';
-import maplibregl from 'maplibre-gl';
+import { addProtocol } from 'maplibre-gl';
 import { stringHash } from 'utils/string-utils';
 
 export type Bbox3857 = [number, number, number, number];
@@ -384,7 +384,7 @@ export function initClipRasterProtocol(): void {
   }
   protocolRegistered = true;
 
-  maplibregl.addProtocol(CLIP_SCHEME, async (params, abortController) => {
+  addProtocol(CLIP_SCHEME, async (params, abortController) => {
     const { signal } = abortController;
     const parsed = parseClipTileUrl(params.url);
 
