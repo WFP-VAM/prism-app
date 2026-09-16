@@ -14,8 +14,8 @@ import { memo, useEffect, useMemo, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { boundaryCache } from 'utils/boundary-cache';
 import {
+  applyUniversalCountryViewport,
   applyUniversalLandingViewport,
-  getCountryBbox,
   getDisplayBoundaryLayersForIso3,
   isUniversalDeployment,
   usesPmtilesBoundaries,
@@ -108,20 +108,7 @@ const MapView = memo(() => {
       return undefined;
     }
 
-    const countryBbox = getCountryBbox(iso3);
-    if (countryBbox) {
-      map.fitBounds(
-        [
-          [countryBbox[0], countryBbox[1]],
-          [countryBbox[2], countryBbox[3]],
-        ],
-        {
-          padding: { top: 40, right: 40, bottom: 40, left: 420 },
-          animate: true,
-          duration: 1500,
-        },
-      );
-    }
+    applyUniversalCountryViewport(map, iso3, { animate: true, duration: 1500 });
 
     boundaryCache.preloadBoundaries(
       displayedBoundaryLayers,

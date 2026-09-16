@@ -370,70 +370,239 @@ async function collectCountryInfo(): Promise<SetupConfig> {
   };
 }
 
-function generateCategories(layers: string[]): Record<string, any> {
-  const categories: Record<string, any> = {
-    rainfall: { rainfall_data: [] },
-    vegetation: { vegetation_data: [] },
-    temperature: { temperature_data: [] },
-    hazards: { tropical_storms: [] },
+type GroupLayerSpec = { id: string; label: string; main?: boolean };
+
+interface LayerGroupSpec {
+  group_title: string;
+  activate_all: boolean;
+  /** Top-level prism.json category key (rainfall, vegetation, ...) */
+  categoryKey: string;
+  /** Nested menu section key (global_rainfall_products, extreme_rain_events, ...) */
+  subcategoryKey: string;
+  layers: GroupLayerSpec[];
+}
+
+// Period-based shared layers should render as one menu row + selector,
+// matching existing country prism.json files (Mozambique, Namibia, etc.).
+const LAYER_GROUPS: LayerGroupSpec[] = [
+  {
+    group_title: 'Rainfall aggregate',
+    activate_all: false,
+    categoryKey: 'rainfall',
+    subcategoryKey: 'global_rainfall_products',
+    layers: [
+      { id: 'rainfall_daily', label: 'Daily' },
+      { id: 'rainfall_dekad', label: '10-day', main: true },
+      { id: 'rainfall_agg_1month', label: '1-month' },
+      { id: 'rainfall_agg_2month', label: '2-month' },
+      { id: 'rainfall_agg_3month', label: '3-month' },
+      { id: 'rainfall_agg_4month', label: '4-month' },
+      { id: 'rainfall_agg_5month', label: '5-month' },
+      { id: 'rainfall_agg_6month', label: '6-month' },
+      { id: 'rainfall_agg_7month', label: '7-month' },
+      { id: 'rainfall_agg_8month', label: '8-month' },
+      { id: 'rainfall_agg_9month', label: '9-month' },
+      { id: 'rainfall_agg_1year', label: '1-year' },
+    ],
+  },
+  {
+    group_title: 'Rainfall anomaly',
+    activate_all: false,
+    categoryKey: 'rainfall',
+    subcategoryKey: 'global_rainfall_products',
+    layers: [
+      { id: 'rain_anomaly_dekad', label: '10-day', main: true },
+      { id: 'rain_anomaly_1month', label: '1-month' },
+      { id: 'rain_anomaly_2month', label: '2-month' },
+      { id: 'rain_anomaly_3month', label: '3-month' },
+      { id: 'rain_anomaly_4month', label: '4-month' },
+      { id: 'rain_anomaly_5month', label: '5-month' },
+      { id: 'rain_anomaly_6month', label: '6-month' },
+      { id: 'rain_anomaly_7month', label: '7-month' },
+      { id: 'rain_anomaly_8month', label: '8-month' },
+      { id: 'rain_anomaly_9month', label: '9-month' },
+      { id: 'rain_anomaly_1year', label: '1-year' },
+    ],
+  },
+  {
+    group_title: 'SPI',
+    activate_all: false,
+    categoryKey: 'rainfall',
+    subcategoryKey: 'global_rainfall_products',
+    layers: [
+      { id: 'spi_1m', label: '1-month', main: true },
+      { id: 'spi_2m', label: '2-month' },
+      { id: 'spi_3m', label: '3-month' },
+      { id: 'spi_6m', label: '6-month' },
+      { id: 'spi_9m', label: '9-month' },
+      { id: 'spi_1y', label: '1-year' },
+    ],
+  },
+  {
+    group_title: 'Number of days of rainfall:',
+    activate_all: false,
+    categoryKey: 'rainfall',
+    subcategoryKey: 'extreme_rain_events',
+    layers: [
+      { id: 'days_heavy_rain', label: 'Heavy (>75th percentile)', main: true },
+      {
+        id: 'days_intense_rain',
+        label: 'Intense (>90th percentile)',
+        main: true,
+      },
+      {
+        id: 'days_extreme_rain',
+        label: 'Extreme (>95th percentile)',
+        main: true,
+      },
+    ],
+  },
+  {
+    group_title: 'Consecutive days of rainfall:',
+    activate_all: false,
+    categoryKey: 'rainfall',
+    subcategoryKey: 'extreme_rain_events',
+    layers: [
+      {
+        id: 'streak_heavy_rain',
+        label: 'Heavy (>75th percentile)',
+        main: true,
+      },
+      {
+        id: 'streak_intense_rain',
+        label: 'Intense (>90th percentile)',
+        main: true,
+      },
+      {
+        id: 'streak_extreme_rain',
+        label: 'Extreme (>95th percentile)',
+        main: true,
+      },
+    ],
+  },
+];
+
+const LAYER_SUBCATEGORY_OVERRIDE: Record<
+  string,
+  { categoryKey: string; subcategoryKey: string }
+> = {
+  daily_rainfall_forecast: {
+    categoryKey: 'rainfall',
+    subcategoryKey: 'forecasts',
+  },
+  dekad_rainfall_forecast: {
+    categoryKey: 'rainfall',
+    subcategoryKey: 'forecasts',
+  },
+  dekad_rainfall_anomaly_forecast: {
+    categoryKey: 'rainfall',
+    subcategoryKey: 'forecasts',
+  },
+  days_dry: { categoryKey: 'rainfall', subcategoryKey: 'dry_periods' },
+  streak_dry_days: { categoryKey: 'rainfall', subcategoryKey: 'dry_periods' },
+};
+
+const CATEGORY_KEY_BY_LAYER_CATEGORY: Record<string, string> = {
+  Rainfall: 'rainfall',
+  Vegetation: 'vegetation',
+  Temperature: 'temperature',
+  Hazards: 'hazards',
+  Exposure: 'exposure',
+};
+
+const DEFAULT_SUBCATEGORY_BY_CATEGORY_KEY: Record<string, string> = {
+  rainfall: 'global_rainfall_products',
+  vegetation: 'vegetation_conditions',
+  temperature: 'land_surface_temperature',
+  hazards: 'tropical_storms',
+  exposure: 'population_data',
+};
+
+function ensureSubcategory(
+  categories: Record<string, any>,
+  categoryKey: string,
+  subcategoryKey: string,
+): any[] {
+  if (!categories[categoryKey]) {
+    categories[categoryKey] = {};
+  }
+  if (!categories[categoryKey][subcategoryKey]) {
+    categories[categoryKey][subcategoryKey] = [];
+  }
+  return categories[categoryKey][subcategoryKey];
+}
+
+type GroupedMenuItem =
+  | string
+  | {
+      group_title: string;
+      activate_all: boolean;
+      layers: GroupLayerSpec[];
+    };
+
+function pickGroupFromSelection(
+  spec: LayerGroupSpec,
+  selected: Set<string>,
+): GroupedMenuItem | null {
+  const picked = spec.layers.filter(layer => selected.has(layer.id));
+  if (picked.length === 0) {
+    return null;
+  }
+  if (picked.length === 1) {
+    return picked[0].id;
+  }
+  const hasMain = picked.some(layer => layer.main);
+  return {
+    group_title: spec.group_title,
+    activate_all: spec.activate_all,
+    layers: picked.map((layer, index) => ({
+      id: layer.id,
+      label: layer.label,
+      ...(layer.main || (!hasMain && index === 0) ? { main: true } : {}),
+    })),
   };
+}
+
+function generateCategories(layers: string[]): Record<string, any> {
+  const selected = new Set(layers);
+  const consumed = new Set<string>();
+  const categories: Record<string, any> = {};
+
+  LAYER_GROUPS.forEach(spec => {
+    const item = pickGroupFromSelection(spec, selected);
+    if (item === null) {
+      return;
+    }
+    spec.layers.forEach(layer => {
+      if (selected.has(layer.id)) {
+        consumed.add(layer.id);
+      }
+    });
+    ensureSubcategory(categories, spec.categoryKey, spec.subcategoryKey).push(
+      item,
+    );
+  });
 
   layers.forEach(layerId => {
+    if (consumed.has(layerId)) {
+      return;
+    }
     const layer = SHARED_LAYERS.find(l => l.id === layerId);
     if (!layer) {
       return;
     }
-
-    switch (layer.category) {
-      case 'Rainfall':
-        if (!categories.rainfall.rainfall_data.includes(layerId)) {
-          categories.rainfall.rainfall_data.push(layerId);
-        }
-        break;
-      case 'Vegetation':
-        if (!categories.vegetation.vegetation_data.includes(layerId)) {
-          categories.vegetation.vegetation_data.push(layerId);
-        }
-        break;
-      case 'Temperature':
-        if (!categories.temperature.temperature_data.includes(layerId)) {
-          categories.temperature.temperature_data.push(layerId);
-        }
-        break;
-      case 'Hazards':
-        if (!categories.hazards.tropical_storms.includes(layerId)) {
-          categories.hazards.tropical_storms.push(layerId);
-        }
-        break;
-      case 'Exposure':
-        if (!categories.exposure) {
-          categories.exposure = { population_data: [] };
-        }
-        if (!categories.exposure.population_data.includes(layerId)) {
-          categories.exposure.population_data.push(layerId);
-        }
-        break;
-      default:
-        // Category not supported
-        break;
+    const override = LAYER_SUBCATEGORY_OVERRIDE[layerId];
+    const categoryKey =
+      override?.categoryKey || CATEGORY_KEY_BY_LAYER_CATEGORY[layer.category];
+    if (!categoryKey) {
+      return;
     }
-  });
-
-  // Remove empty categories
-  Object.keys(categories).forEach(key => {
-    const category = categories[key];
-    const hasContent = Object.values(category).some(
-      (arr: any) => Array.isArray(arr) && arr.length > 0,
-    );
-    if (!hasContent) {
-      delete categories[key];
-    } else {
-      // Clean up empty arrays
-      Object.keys(category).forEach(subKey => {
-        if (Array.isArray(category[subKey]) && category[subKey].length === 0) {
-          delete category[subKey];
-        }
-      });
+    const subcategoryKey =
+      override?.subcategoryKey ||
+      DEFAULT_SUBCATEGORY_BY_CATEGORY_KEY[categoryKey];
+    const bucket = ensureSubcategory(categories, categoryKey, subcategoryKey);
+    if (!bucket.includes(layerId)) {
+      bucket.push(layerId);
     }
   });
 
