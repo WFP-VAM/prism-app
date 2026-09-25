@@ -14,6 +14,7 @@ from prism_app.export_jobs.download_filename import (
     map_export_download_filename_from_payload,
 )
 from prism_app.export_jobs.fingerprint import compute_request_fingerprint
+from prism_app.export_jobs.schedule_download import schedule_export_download_response
 from prism_app.export_jobs.service import (
     cancel_map_export_job_if_queued,
     enqueue_map_export_job,
@@ -109,6 +110,22 @@ def read_map_export_job(
         "error": job.error_json,
     }
     return payload
+
+
+@router.get("/jobs/{job_id}/download")
+def download_map_export_job(
+    job_id: str,
+    session: Session = Depends(get_export_jobs_session),
+) -> Response:
+    """Redirect (or stream) the artifact; mints a fresh short-lived S3 URL on each click.
+
+    Used by schedule-export notification emails so links are not bound to STS
+    session tokens embedded in long-lived presigned URLs.
+    """
+    job = session.get(MapExportJob, job_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail="Job not found")
+    return schedule_export_download_response(job)
 
 
 @router.delete("/jobs/{job_id}", status_code=204)
