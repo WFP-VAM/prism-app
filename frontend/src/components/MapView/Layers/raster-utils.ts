@@ -8,7 +8,11 @@ import { fromArrayBuffer, GeoTIFFImage } from 'geotiff';
 import { Map as MaplibreMap } from 'maplibre-gl';
 import { createGetMapUrl } from 'prism-common';
 import { Dispatch } from 'redux';
-import { COG_PRESIGNED_URL_API, RASTER_API_URL } from 'utils/constants';
+import {
+  COG_PRESIGNED_URL_API,
+  RASTER_API_URL,
+  STAC_API_URL,
+} from 'utils/constants';
 import { LocalError } from 'utils/error-utils';
 import {
   ANALYSIS_REQUEST_TIMEOUT,
@@ -238,6 +242,7 @@ export interface PresignedCogUrl {
   item_id: string;
   url: string;
   bbox?: [number, number, number, number]; // WGS84 [minLon, minLat, maxLon, maxLat]
+  public?: boolean; // unsigned URL on a CORS-enabled host (e.g. source.coop)
 }
 
 /**
@@ -283,6 +288,73 @@ export async function getPresignedCogUrls(
 
   const json = await response.json();
   return json.urls as PresignedCogUrl[];
+}
+
+// Public Source Cooperative buckets, served over HTTPS with CORS enabled.
+const SOURCE_COOP_HREF_RE = /^s3:\/\/[a-z0-9-]+\.opendata\.source\.coop\/(.+)$/;
+
+/**
+ * Convert a public STAC asset href to a browser-fetchable HTTPS URL.
+ * Throws for hrefs that would need presigning.
+ */
+export function toPublicCogUrl(href: string): string {
+  const match = href.match(SOURCE_COOP_HREF_RE);
+  if (match) {
+    return `https://data.source.coop/${match[1]}`;
+  }
+  if (href.startsWith('https://')) {
+    return href;
+  }
+  throw new Error(`COG asset '${href}' is not publicly accessible`);
+}
+
+/**
+ * Look up public COG assets directly in the STAC API, without going through
+ * the PRISM API presigning endpoint. Returns the same shape as
+ * getPresignedCogUrls, with every URL flagged as public.
+ */
+export async function getPublicCogUrls(
+  collection: string,
+  date: string,
+  band?: string,
+  bbox?: [number, number, number, number],
+): Promise<PresignedCogUrl[]> {
+  const params = new URLSearchParams({
+    collections: collection,
+    datetime: `${date}T00:00:00Z/${date}T23:59:59Z`,
+    limit: '100',
+  });
+  if (bbox) {
+    params.set('bbox', bbox.join(','));
+  }
+
+  const response = await fetch(`${STAC_API_URL}/search?${params.toString()}`, {
+    method: 'GET',
+    headers: { Accept: 'application/geo+json' },
+  });
+  if (!response.ok) {
+    throw new Error(
+      `STAC search failed for collection '${collection}': ${response.status}`,
+    );
+  }
+
+  const { features } = await response.json();
+  return (
+    features as {
+      id: string;
+      bbox?: [number, number, number, number];
+      assets: Record<string, { href: string }>;
+    }[]
+  ).map(item => {
+    // Requested band first, else first asset (matches the API behaviour).
+    const asset = (band && item.assets[band]) || Object.values(item.assets)[0];
+    return {
+      item_id: item.id,
+      url: toPublicCogUrl(asset.href),
+      bbox: item.bbox,
+      public: true,
+    };
+  });
 }
 
 export async function downloadGeotiff(

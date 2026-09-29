@@ -30,6 +30,8 @@ export const RASTER_API_URL = `${API_URL}/raster_geotiff`;
 export const COG_PRESIGNED_URL_API = `${API_URL}/cog_presigned_url`;
 // TODO(cog-cors): Remove when COGLayer fetches presigned S3 URLs directly.
 export const COG_PROXY_API = `${API_URL}/cog_proxy`;
+// HDC STAC API, queried directly (CORS enabled) for COG layer dates.
+export const STAC_API_URL = 'https://api.earthobservation.vam.wfp.org/stac';
 export const EXPORT_API_URL = `${API_URL}/export-map`;
 export const EXPORT_MAP_JOBS_API_URL = `${API_URL}/export-map/jobs`;
 export const EXPORT_MAP_SCHEDULES_API_URL = `${API_URL}/export-map/schedules`;

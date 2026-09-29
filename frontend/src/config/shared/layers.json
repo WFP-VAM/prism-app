@@ -35,6 +35,22 @@
       "styles": "rfh_16_0_300"
     }
   },
+  "dekad_rainfall_forecast_cog": {
+    "title": "10-day rainfall forecast (COG)",
+    "type": "cog",
+    "collection": "chirps_dekad_forecast",
+    "band": "band",
+    "public_assets": true,
+    "start_date": "today",
+    "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "opacity": 0.7,
+    "legend_text": "CHIRPS3-GEFS global dekadal rainfall forecasts, streamed from Source Cooperative",
+    "legend": "rfh_16_0_300"
+  },
   "dekad_rainfall_anomaly_forecast": {
     "title": "10-day rainfall forecast anomaly",
     "type": "wms",
