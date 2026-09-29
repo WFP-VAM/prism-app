@@ -548,8 +548,11 @@ export class CogLayerProps extends CommonLayerProps {
    * the existing date-availability machinery (GetCapabilities) can discover
    * which dates are available in the timeline. Set to the same value as
    * `collection` unless the WMS name differs from the STAC collection ID.
+   * Omit for collections with no WMS equivalent (e.g. public source.coop
+   * datasets); dates are then read from the STAC API instead.
    */
-  serverLayerName: string;
+  @optional
+  serverLayerName?: string;
 
   @makeRequired
   declare title: string;
@@ -562,6 +565,14 @@ export class CogLayerProps extends CommonLayerProps {
 
   @optional
   band?: string; // STAC asset key / band name to fetch
+
+  /**
+   * Set when the collection's assets are public and CORS-enabled (e.g.
+   * source.coop). Items are then looked up directly in the STAC API and
+   * fetched by the browser, skipping the /cog_presigned_url endpoint.
+   */
+  @optional
+  publicAssets?: boolean;
 
   @optional
   chartData?: DatasetProps;
@@ -934,7 +945,7 @@ export type DateItem = {
 export type AvailableDates = {
   [key in
     | WMSLayerProps['serverLayerName']
-    | CogLayerProps['serverLayerName']
+    | NonNullable<CogLayerProps['serverLayerName']>
     | PointDataLayerProps['id']]: DateItem[];
 };
 

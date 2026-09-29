@@ -27,16 +27,19 @@ COG layers are defined in the shared or per-country `layers.json` with `type: "c
 export class CogLayerProps extends CommonLayerProps {
   type: 'cog' = 'cog';
   collection: string;       // STAC collection ID, used for /cog_presigned_url
-  serverLayerName: string;  // WMS layer name, used only for date discovery
+  serverLayerName?: string; // WMS layer name, used only for date discovery (omit to use STAC)
   band?: string;            // STAC asset key when items have multiple assets
+  publicAssets?: boolean;   // public, CORS-enabled assets: skip the PRISM API entirely
   wcsConfig?: { scale?: number; offset?: number };
   // title, legend, legendText required; chartData, startDate optional
 }
 ```
 
-The split between `collection` and `serverLayerName` is the key design decision: **dates come from WMS GetCapabilities (keyed by `serverLayerName`), pixels come from STAC (keyed by `collection`)**. They are usually identical, but keeping both lets a COG layer reuse the WMS date pipeline unchanged.
+The split between `collection` and `serverLayerName` is the key design decision: **dates come from WMS GetCapabilities (keyed by `serverLayerName`), pixels come from STAC (keyed by `collection`)**. They are usually identical, but keeping both lets a COG layer reuse the WMS date pipeline unchanged. When `serverLayerName` is omitted, dates are fetched directly from the STAC API (`/search` with only `properties.datetime`, see `fetchStacCollectionDates` in [`server-utils.ts`](../frontend/src/utils/server-utils.ts)) and normalized to noon UTC like WMS dates.
 
 ## End-to-end data flow
+
+Layers with `public_assets: true` (e.g. `dekad_rainfall_forecast_cog`, backed by source.coop) skip the PRISM API: `getPublicCogUrls` searches the STAC API from the browser, rewrites `s3://<region>.opendata.source.coop/...` hrefs to `https://data.source.coop/...`, and passes those URLs straight to `DeckCOGLayer`. The flow below applies to private assets.
 
 ```mermaid
 sequenceDiagram
@@ -133,6 +136,6 @@ COG layers reuse WMS plumbing wherever possible:
 ## Adding a new COG layer
 
 1. Confirm the data exists as a COG in the STAC catalog; note its **collection ID** and **band/asset key**.
-2. Add a `type: "cog"` entry to `layers.json` with `collection`, `server_layer_name`, `legend`, `legend_text`, and (if needed) `band` and `wcsConfig`. Set `validity` / `date_interval` as for the equivalent WMS layer.
+2. Add a `type: "cog"` entry to `layers.json` with `collection`, `server_layer_name` (omit if there is no WMS layer), `legend`, `legend_text`, and (if needed) `band` and `wcsConfig`. Set `validity` / `date_interval` as for the equivalent WMS layer.
 3. Reference the layer ID from the relevant category in `prism.json`.
 4. Verify: the timeline appears, the layer renders below boundaries, opacity drags smoothly, and switching to a WMS layer removes the COG (and vice versa).

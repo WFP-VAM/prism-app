@@ -270,7 +270,8 @@ Use a `cog` layer when the data is available as a COG in a STAC catalog and you 
 Fields specific to `cog` layers:
 
 - `collection` (required): STAC collection ID used to look up COG assets via the `/cog_presigned_url` endpoint.
-- `server_layer_name` (required): the WMS layer name used only to discover available dates for the timeline (via WMS GetCapabilities). Set it to the same value as `collection` unless the WMS name differs from the STAC collection ID.
+- `server_layer_name` (optional): the WMS layer name used only to discover available dates for the timeline (via WMS GetCapabilities). Set it to the same value as `collection` unless the WMS name differs from the STAC collection ID. Omit it for collections with no WMS equivalent (e.g. public [Source Cooperative](https://source.coop/wfp) datasets such as `chirps_dekad_forecast`); dates are then read directly from the STAC API.
+- `public_assets` (optional): set to `true` when the collection's files are public and CORS-enabled (e.g. source.coop). The browser then looks up items in the STAC API and fetches the files directly, without the PRISM API `/cog_presigned_url` and `/cog_proxy` endpoints.
 - `band` (optional): STAC asset key / band to fetch when an item exposes multiple assets (e.g. `"rfb"`). Defaults to the first asset.
 - `wcsConfig.scale` / `wcsConfig.offset` (optional): linear transform applied to raw pixel values before they are mapped to the legend (e.g. NDVI stored as Int16 uses `scale: 0.0001`).
 - `legend` (required): legend breakpoints (inline or a reference into `shared/legends.json`). The color ramp is built from these values and applied on the GPU.

@@ -4,6 +4,7 @@ import { memo, useEffect } from 'react';
 import { useControl } from 'react-map-gl/maplibre';
 
 import { useDeckGLLayers } from './DeckGLLayersContext';
+import { ensureMapTransform, type MapWithCamera } from './maplibre-compat';
 
 /**
  * DeckGLOverlay mounts a single deck.gl MapboxOverlay as a MapLibre IControl
@@ -16,13 +17,13 @@ import { useDeckGLLayers } from './DeckGLLayersContext';
 const DeckGLOverlay = memo(() => {
   const { layers, version } = useDeckGLLayers();
 
-  const overlay = useControl(
-    () =>
-      new MapboxOverlay({
-        interleaved: true,
-        layers: [],
-      }) as unknown as IControl,
-  ) as unknown as MapboxOverlay;
+  const overlay = useControl(({ map }) => {
+    ensureMapTransform(map.getMap() as unknown as MapWithCamera);
+    return new MapboxOverlay({
+      interleaved: true,
+      layers: [],
+    }) as unknown as IControl;
+  }) as unknown as MapboxOverlay;
 
   // Push updated layers to the overlay whenever the registry changes.
   useEffect(() => {

@@ -116,6 +116,7 @@
     "pmtiles": "^4.2.1",
     "posthog-js": "^1.386.8",
     "prism-common": "file:../common",
+    "proj4": "^2.20.4",
     "react": "^19.2.0",
     "react-chartjs-2": "^2.9.0",
     "react-datepicker": "^9.1.0",
