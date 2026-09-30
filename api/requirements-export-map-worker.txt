@@ -20,7 +20,7 @@ markupsafe==3.0.3
 requests==2.33.1
 python-dateutil==2.8.2
 croniter==6.2.2
-urllib3>=2.6.3,<3
+urllib3>=2.8.0,<3
 httpx==0.28.1
 shapely==2.1.2
 jinja2==3.1.6
