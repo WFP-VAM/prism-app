@@ -9550,7 +9550,7 @@ mjolnir.js@^3.0.0:
   resolved "https://registry.yarnpkg.com/mjolnir.js/-/mjolnir.js-3.0.1.tgz#68c87869a277d9b96f41b642734d269273034c4a"
   integrity sha512-/RMi8Jm3NKleOkVI8D2ai+1OVwtfRJsSVBVjbTXNm83nfsN4uORYaN3u1/hsg5CqVI+di8enTkvgDNDOywn6cQ==
 
-moment@^2.10.2, moment@^2.29.4, moment@^2.31.0:
+moment@^2.10.2, moment@^2.31.0:
   version "2.31.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.31.0.tgz#6e19184e8005a9dfc61c9351263d4d6ea2ace7aa"
   integrity sha512-0acOTfMiWOheYS4eoWb80yYMb/JLvVv9SHbs2PehaDzfUG0Bw855SKyk0IKTnPGa5+U2bmi3W68l1+sGLX/pvw==
@@ -10206,7 +10206,7 @@ pretty-format@^29.0.0, pretty-format@^29.7.0:
   dependencies:
     geojson "^0.5.0"
     lodash "^4.18.0"
-    moment "^2.29.4"
+    moment "^2.31.0"
     xml-utils "^1.6.0-0"
 
 process-nextick-args@~2.0.0:
