@@ -43,10 +43,10 @@ jobs:
           cd api
           poetry install
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-      - name: Upgrade pip (CVE-2026-1703)
+      - name: Upgrade pip (CVE-2026-13346)
         run: |
           cd api
-          poetry run pip install --upgrade 'pip>=26.1.2'
+          poetry run pip install --upgrade 'pip>=26.2'
       - name: Check formatting with black and isort
         run: |
           cd api
@@ -172,10 +172,10 @@ jobs:
         run: |
           cd api
           poetry install
-      - name: Upgrade pip (CVE-2026-1703)
+      - name: Upgrade pip (CVE-2026-13346)
         run: |
           cd api
-          poetry run pip install --upgrade 'pip>=26.1.2'
+          poetry run pip install --upgrade 'pip>=26.2'
       - name: Alembic upgrade head
         run: cd api && poetry run alembic upgrade head
       - name: Alerts DB contract + pool smoke + worker smoke (Python)

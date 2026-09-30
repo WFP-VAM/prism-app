@@ -48,4 +48,5 @@ export PRISM_ENV=production
 export EXPORT_MAP_S3_BUCKET="$(aws secretsmanager get-secret-value --secret-id PRISM_EXPORT_MAP_S3_BUCKET | jq .SecretString | jq fromjson | jq -r .PRISM_EXPORT_MAP_S3_BUCKET)"
 
 export HOSTNAME=prism-api.ovio.org
+export HEALTHCHECK_PUBLIC_HOST="${HEALTHCHECK_PUBLIC_HOST:-$HOSTNAME}"
 export INFO_EMAIL=info@ovio.org

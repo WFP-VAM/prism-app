@@ -21,7 +21,7 @@
  *
  */
 
-import MapLibreGL from 'maplibre-gl';
+import { addProtocol, removeProtocol } from 'maplibre-gl';
 import { PMTiles, Protocol } from 'pmtiles';
 import {
   clipMvtTileToPolygon,
@@ -92,13 +92,13 @@ export function setPmtilesClipPolygon(
 
 export const initPmtilesProtocol = () => {
   if (protocolRefCount === 0) {
-    MapLibreGL.addProtocol('pmtiles', runClippedTile);
+    addProtocol('pmtiles', runClippedTile);
   }
   protocolRefCount += 1;
   return () => {
     protocolRefCount -= 1;
     if (protocolRefCount === 0) {
-      MapLibreGL.removeProtocol('pmtiles');
+      removeProtocol('pmtiles');
     }
   };
 };

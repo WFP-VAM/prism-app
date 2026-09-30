@@ -180,6 +180,71 @@ def test_get_succeeded_returns_presigned_url(
     assert j["local_artifact_path"] is None
 
 
+def test_get_job_download_redirects_to_presigned_url(
+    api_client: TestClient, sqlite_engine, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    SessionLocal = sessionmaker(
+        bind=sqlite_engine, class_=Session, expire_on_commit=False
+    )
+    with SessionLocal() as session:
+        job = MapExportJob(
+            request_fingerprint="fp-dl",
+            request_payload_json=_body(),
+            status="succeeded",
+            origin_url=None,
+            s3_uri="s3://mybucket/path/to/file.pdf",
+            content_type="pdf",
+        )
+        session.add(job)
+        session.commit()
+        session.refresh(job)
+        job_id = job.id
+
+    mock_s3 = MagicMock()
+    mock_s3.generate_presigned_url.return_value = "https://example.com/presigned"
+    monkeypatch.setattr(
+        "prism_app.export_jobs.schedule_download.map_export_artifact_exists",
+        lambda *_a, **_k: True,
+    )
+    monkeypatch.setattr(
+        "prism_app.export_jobs.schedule_download.get_s3_client_for_presign",
+        lambda: mock_s3,
+    )
+    r = api_client.get(f"/export-map/jobs/{job_id}/download", follow_redirects=False)
+    assert r.status_code == 303
+    assert r.headers["location"] == "https://example.com/presigned"
+    mock_s3.generate_presigned_url.assert_called_once()
+
+
+def test_get_job_download_missing_job_returns_404(api_client: TestClient) -> None:
+    fake_id = "00000000-0000-4000-b000-000000000099"
+    r = api_client.get(f"/export-map/jobs/{fake_id}/download")
+    assert r.status_code == 404
+
+
+def test_get_job_download_queued_returns_404(
+    api_client: TestClient, sqlite_engine
+) -> None:
+    SessionLocal = sessionmaker(
+        bind=sqlite_engine, class_=Session, expire_on_commit=False
+    )
+    with SessionLocal() as session:
+        job = MapExportJob(
+            request_fingerprint="fp-queued-dl",
+            request_payload_json=_body(),
+            status="queued",
+            origin_url=None,
+            content_type="pdf",
+        )
+        session.add(job)
+        session.commit()
+        session.refresh(job)
+        job_id = job.id
+
+    r = api_client.get(f"/export-map/jobs/{job_id}/download")
+    assert r.status_code == 404
+
+
 def test_get_succeeded_file_uri_returns_local_path_skips_presign(
     api_client: TestClient,
     sqlite_engine,

@@ -34,6 +34,9 @@ const config: Config = {
     '^@deck\\.gl/(.*)$': '<rootDir>/test/fileMock.ts',
     '^@developmentseed/(.*)$': '<rootDir>/test/fileMock.ts',
     '^@luma\\.gl/(.*)$': '<rootDir>/test/fileMock.ts',
+    '^maplibre-gl$': '<rootDir>/test/maplibreMock.ts',
+    '^maplibre-gl/dist/maplibre-gl-worker\\.mjs\\?worker&url$':
+      '<rootDir>/test/fileMock.ts',
   },
   setupFilesAfterEnv: ['<rootDir>/test/setupTests.ts'],
   moduleDirectories: ['node_modules', 'src'],

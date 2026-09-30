@@ -6,9 +6,11 @@ import { getLayerMapId } from 'utils/map-utils';
 
 import type { RootState } from './store';
 
+type OpacityPaintProperty = Parameters<MaplibreMap['setPaintProperty']>[1];
+
 interface OpacityEntry {
   mapLayerId: string;
-  opacityType: string;
+  opacityType: OpacityPaintProperty;
   value: number;
 }
 
@@ -47,7 +49,7 @@ function activateAllTargetIds(layerId: string): string[] {
 function paintTargetForLayer(
   layerId: string,
   layerType: OpacityLayerType,
-): [string, string] {
+): [string, OpacityPaintProperty] {
   switch (layerType) {
     case 'wms':
     case 'cog':

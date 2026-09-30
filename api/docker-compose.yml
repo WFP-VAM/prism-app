@@ -33,6 +33,7 @@ services:
       - ./prism_app:/prism_app:ro
     environment:
       - PRISM_ALERTS_DATABASE_URL
+      - PRISM_ENV=${PRISM_ENV:-development}
       - EXPORT_MAP_S3_BUCKET=${EXPORT_MAP_S3_BUCKET:-}
       - EXPORT_MAP_LOCAL_OUTPUT_DIR=${EXPORT_MAP_LOCAL_OUTPUT_DIR:-}
       - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-}

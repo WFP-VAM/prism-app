@@ -7,11 +7,14 @@ import posthog from 'posthog-js';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
+import { initMaplibre } from 'utils/initMaplibre';
 
 import App from './components/App';
 import { msalInstance, safeCountry } from './config';
 import { AppStore, store } from './context/store';
 import * as serviceWorker from './serviceWorker';
+
+initMaplibre();
 
 posthog.init(process.env.REACT_APP_POSTHOG_TOKEN as string, {
   cookieless_mode: 'always',

@@ -90,7 +90,6 @@ def render_schedule_export_mail(
     format_label: str,
     download_url: str,
     admin_schedules_url: str,
-    link_expiry_days: int,
     prism_url: str | None = None,
 ) -> tuple[str, str]:
     ctx = {
@@ -103,7 +102,6 @@ def render_schedule_export_mail(
         "format_label": format_label,
         "download_url": download_url,
         "admin_schedules_url": admin_schedules_url,
-        "link_expiry_days": link_expiry_days,
         "prism_url": prism_url,
     }
     html = _env.get_template("schedule_export.html.j2").render(**ctx)

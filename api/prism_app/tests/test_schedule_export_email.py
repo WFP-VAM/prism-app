@@ -33,9 +33,8 @@ def test_render_schedule_export_mail_plain_format() -> None:
         country="mozambique",
         map_date="2026-05-21",
         format_label="PDF",
-        download_url="https://example.com/presigned.pdf",
+        download_url="https://api.example.org/export-map/jobs/abc/download",
         admin_schedules_url="https://api.example.org/admin/map-export-schedule/list",
-        link_expiry_days=7,
         prism_url="https://prism.example/map?date=2026-05-21",
     )
     assert "Map export ready" in html
@@ -44,9 +43,10 @@ def test_render_schedule_export_mail_plain_format() -> None:
     assert "(precip_blended_dekad)" in html
     assert "<strong>Date:</strong> 2026-05-21" in html
     assert "DOWNLOAD MAP PDF" in html
-    assert 'href="https://example.com/presigned.pdf"' in html
-    assert "&lt;https://example.com/presigned.pdf&gt;" not in html
-    assert "valid for 7 days" in html
+    assert 'href="https://api.example.org/export-map/jobs/abc/download"' in html
+    assert "&lt;https://api.example.org/export-map/jobs/abc/download&gt;" not in html
+    assert "stays valid while the map file is available" in html
+    assert "valid for 7 days" not in html
     assert 'href="https://api.example.org/admin/map-export-schedule/list"' in html
     assert "Manage export schedules" in html
     assert "&lt;https://api.example.org/admin/map-export-schedule/list&gt;" not in html
@@ -55,7 +55,8 @@ def test_render_schedule_export_mail_plain_format() -> None:
     assert "https://prism.example/map?date=2026-05-21" not in html
     assert "Your map export Moz monthly precip is ready." in text
     assert "Layer: precip_blended_dekad" in text
-    assert "valid for 7 days" in text
+    assert "stays valid while the map file is available" in text
+    assert "valid for 7 days" not in text
     assert "https://prism.example/map?date=2026-05-21" not in text
 
 
@@ -67,6 +68,21 @@ def test_map_export_schedules_admin_url() -> None:
         assert (
             map_export_schedules_admin_url()
             == "https://api.example.org/admin/map-export-schedule/list"
+        )
+
+
+def test_map_export_job_download_url() -> None:
+    with patch(
+        "prism_app.export_jobs.schedule_export_email.settings.api_base_url",
+        return_value="https://api.example.org",
+    ):
+        from prism_app.export_jobs.schedule_export_email import (
+            map_export_job_download_url,
+        )
+
+        assert (
+            map_export_job_download_url("job-123")
+            == "https://api.example.org/export-map/jobs/job-123/download"
         )
 
 
@@ -177,18 +193,15 @@ def test_send_schedule_export_email_sends_in_production(
             return_value=True,
         ),
         patch(
-            "prism_app.export_jobs.schedule_export_email.presign_export_get",
-            return_value="https://example.com/presigned.pdf",
-        ) as presign,
+            "prism_app.export_jobs.schedule_export_email.settings.api_base_url",
+            return_value="https://api.example.org",
+        ),
         patch(
             "prism_app.export_jobs.schedule_export_email.smtp_mailer.send_email",
         ) as send,
     ):
         send_schedule_export_email(session, job)
 
-    presign.assert_called_once()
-    _args, kwargs = presign.call_args
-    assert kwargs["expires_in"] == 7 * 24 * 3600
     send.assert_called_once()
     assert send.call_args.kwargs["to_addrs"] == user.email
     assert send.call_args.kwargs["subject"] == "PRISM map export ready"
@@ -197,7 +210,9 @@ def test_send_schedule_export_email_sends_in_production(
     assert attachments[0]["cid"] == "arrow-forward-icon"
     assert attachments[0]["filename"] == "arrow-forward-icon.png"
     assert "arrowForwardIcon.png" in str(attachments[0]["path"])
-    assert "https://example.com/presigned.pdf" in send.call_args.kwargs["html_body"]
+    expected = f"https://api.example.org/export-map/jobs/{job.id}/download"
+    assert expected in send.call_args.kwargs["html_body"]
+    assert "amazonaws.com" not in send.call_args.kwargs["html_body"]
 
 
 def test_send_schedule_export_email_skips_local_file_artifact(
@@ -226,10 +241,6 @@ def test_send_schedule_export_email_force_send_in_non_production(
         patch(
             "prism_app.export_jobs.schedule_export_email.map_export_artifact_exists",
             return_value=True,
-        ),
-        patch(
-            "prism_app.export_jobs.schedule_export_email.presign_export_get",
-            return_value="https://example.com/presigned.pdf",
         ),
         patch(
             "prism_app.export_jobs.schedule_export_email.smtp_mailer.send_email",
@@ -263,10 +274,6 @@ def test_send_schedule_export_email_logs_smtp_delivery_failure(
             return_value=True,
         ),
         patch(
-            "prism_app.export_jobs.schedule_export_email.presign_export_get",
-            return_value="https://example.com/presigned.pdf",
-        ),
-        patch(
             "prism_app.export_jobs.schedule_export_email.smtp_mailer.send_email",
             side_effect=smtplib.SMTPAuthenticationError(535, b"Auth failed"),
         ),
@@ -288,10 +295,6 @@ def test_send_schedule_export_email_skips_when_smtp_not_configured_in_production
         patch(
             "prism_app.export_jobs.schedule_export_email.map_export_artifact_exists",
             return_value=True,
-        ),
-        patch(
-            "prism_app.export_jobs.schedule_export_email.presign_export_get",
-            return_value="https://example.com/presigned.pdf",
         ),
         patch(
             "prism_app.export_jobs.schedule_export_email.smtp_mailer.send_email",

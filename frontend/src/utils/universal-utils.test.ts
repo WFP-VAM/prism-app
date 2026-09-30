@@ -1,4 +1,7 @@
+import type { Map as MaplibreMap } from 'maplibre-gl';
+
 import {
+  applyUniversalCountryViewport,
   getCountryBbox,
   getUniversalAdmin0LandingFilter,
   getUniversalCountries,
@@ -130,6 +133,55 @@ describe('universal-utils', () => {
         { iso3: 'ITA', name: 'Italy' },
         { iso3: 'MOZ', name: 'Mozambique' },
       ]);
+    });
+  });
+
+  describe('applyUniversalCountryViewport', () => {
+    const makeMap = () => {
+      const calls: string[] = [];
+      const map = {
+        setPadding: jest.fn(() => calls.push('setPadding')),
+        fitBounds: jest.fn(() => calls.push('fitBounds')),
+      };
+      return { map, calls, asMap: map as unknown as MaplibreMap };
+    };
+
+    it('clears landing padding before fitting the country bounds', () => {
+      const { map, calls, asMap } = makeMap();
+
+      applyUniversalCountryViewport(asMap, 'COD', {
+        animate: true,
+        duration: 1500,
+      });
+
+      expect(calls).toEqual(['setPadding', 'fitBounds']);
+      expect(map.setPadding).toHaveBeenCalledWith({
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+      });
+      const bbox = getCountryBbox('COD')!;
+      expect(map.fitBounds).toHaveBeenCalledWith(
+        [
+          [bbox[0], bbox[1]],
+          [bbox[2], bbox[3]],
+        ],
+        {
+          padding: { top: 40, right: 40, bottom: 40, left: 420 },
+          animate: true,
+          duration: 1500,
+        },
+      );
+    });
+
+    it('leaves the map untouched for unknown countries', () => {
+      const { map, asMap } = makeMap();
+
+      applyUniversalCountryViewport(asMap, 'QQQ');
+
+      expect(map.setPadding).not.toHaveBeenCalled();
+      expect(map.fitBounds).not.toHaveBeenCalled();
     });
   });
 });

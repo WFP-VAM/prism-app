@@ -6,8 +6,6 @@ import bhutan from './bhutan';
 import cambodia from './cambodia';
 import cameroon from './cameroon';
 import colombia from './colombia';
-// list countries that have a preprocessed-layer-dates.json file
-// to avoid a failed network call on each layer activation
 import countriesWithPreprocessedDates from './countriesWithPreprocessedDates.json';
 import cuba from './cuba';
 import ecuador from './ecuador';
@@ -33,6 +31,9 @@ import srilanka from './srilanka';
 import sudan from './sudan';
 import tajikistan from './tajikistan';
 import tanzania from './tanzania';
+// list countries that have a preprocessed-layer-dates.json file
+// to avoid a failed network call on each layer activation
+import uganda from './uganda';
 import ukraine from './ukraine';
 import universal from './universal';
 import zambia from './zambia';
@@ -75,6 +76,7 @@ export const configMap = {
   universal,
   zambia,
   zimbabwe,
+  uganda,
 } as const;
 
 export type Country = keyof typeof configMap;

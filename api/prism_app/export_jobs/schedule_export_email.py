@@ -11,16 +11,10 @@ from prism_app.alert_workers import mail_render, settings, smtp_mailer
 from prism_app.database.map_export_job_model import MapExportJob
 from prism_app.database.map_export_schedule_model import MapExportSchedule
 from prism_app.database.user_model import User
-from prism_app.export_jobs.download_filename import (
-    extract_dates_from_urls_sorted,
-    map_export_download_filename_from_payload,
-)
+from prism_app.export_jobs.download_filename import extract_dates_from_urls_sorted
 from prism_app.export_s3 import (
-    MAP_EXPORT_EMAIL_PRESIGN_EXPIRES_IN,
-    get_s3_client_for_presign,
     is_file_artifact_uri,
     map_export_artifact_exists,
-    presign_export_get,
     s3_client_for_artifact,
 )
 from prism_app.map_export_layer_catalog import schedule_layer_label
@@ -32,7 +26,6 @@ logger = logging.getLogger(__name__)
 _SCHEDULE_EXPORT_ADMIN_IDENTITY = "map-export-schedule"
 _MAP_EXPORT_EMAIL_FROM = "wfp.prism@wfp.org"
 _MAP_EXPORT_EMAIL_SUBJECT = "PRISM map export ready"
-_LINK_EXPIRY_DAYS = MAP_EXPORT_EMAIL_PRESIGN_EXPIRES_IN // (24 * 3600)
 _ARROW_ATTACHMENT = {
     "filename": "arrow-forward-icon.png",
     "path": Path(__file__).resolve().parent.parent
@@ -45,6 +38,11 @@ _ARROW_ATTACHMENT = {
 
 def map_export_schedules_admin_url() -> str:
     return f"{settings.api_base_url()}/admin/{_SCHEDULE_EXPORT_ADMIN_IDENTITY}/list"
+
+
+def map_export_job_download_url(job_id: str) -> str:
+    """Stable API URL that redirects to a fresh short-lived S3 presign on each click."""
+    return f"{settings.api_base_url()}/export-map/jobs/{job_id}/download"
 
 
 def _recipient_user_id(
@@ -136,16 +134,7 @@ def send_schedule_export_email(
         )
         return
 
-    download_filename = map_export_download_filename_from_payload(
-        job.request_payload_json
-    )
-    presign_client = get_s3_client_for_presign()
-    download_url = presign_export_get(
-        job.s3_uri,
-        presign_client,
-        expires_in=MAP_EXPORT_EMAIL_PRESIGN_EXPIRES_IN,
-        download_filename=download_filename,
-    )
+    download_url = map_export_job_download_url(job.id)
 
     dates = extract_dates_from_urls_sorted(req.urls)
     map_date = dates[0] if dates else None
@@ -163,7 +152,6 @@ def send_schedule_export_email(
         format_label=format_label,
         download_url=download_url,
         admin_schedules_url=map_export_schedules_admin_url(),
-        link_expiry_days=_LINK_EXPIRY_DAYS,
         prism_url=prism_url,
     )
 
