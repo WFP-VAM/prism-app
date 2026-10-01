@@ -379,7 +379,7 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
     : id;
   const opacityState = useSelector(opacitySelector(opacityLayerId));
   const { polygon: deploymentClipPolygon, failed: deploymentClipFailed } =
-    useDeploymentClipPolygon();
+    useDeploymentClipPolygon(Boolean(clipToDeployment));
 
   const { registerLayer, unregisterLayer } = useDeckGLLayers();
   const registerRef = useRef(registerLayer);
