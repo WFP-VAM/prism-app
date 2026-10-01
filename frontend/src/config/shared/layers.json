@@ -17,7 +17,7 @@
       "styles": "rfh_16_0_300"
     }
   },
-  "dekad_rainfall_forecast": {
+  "dekad_rainfall_forecast_chirps_v2": {
     "title": "10-day rainfall forecast",
     "type": "wms",
     "server_layer_name": "rfh_dekad_forecast",
@@ -29,7 +29,25 @@
       "mode": "dekad"
     },
     "opacity": 0.7,
-    "legend_text": "CHIRPS-GEFS global dekadal rainfall forecasts",
+    "legend_text": "CHIRPS-GEFS v2 global dekadal rainfall forecasts",
+    "legend": "rfh_16_0_300",
+    "additional_query_params": {
+      "styles": "rfh_16_0_300"
+    }
+  },
+  "dekad_rainfall_forecast": {
+    "title": "10-day rainfall forecast",
+    "type": "wms",
+    "server_layer_name": "chirps_dekad_forecast",
+    "start_date": "today",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
+    "opacity": 0.7,
+    "legend_text": "CHIRPS-GEFS v3 global dekadal rainfall forecasts",
     "legend": "rfh_16_0_300",
     "additional_query_params": {
       "styles": "rfh_16_0_300"
