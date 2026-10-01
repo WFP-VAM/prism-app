@@ -4,7 +4,7 @@ import centroid from '@turf/centroid';
 import simplify from '@turf/simplify';
 import type { Feature, MultiPolygon, Point, Polygon } from 'geojson';
 import Protobuf from 'pbf';
-import { fromGeojsonVt } from 'vt-pbf';
+import { fromVectorTileJs, GeoJSONWrapper } from 'vt-pbf';
 
 export type ClipPolygon = Feature<Polygon | MultiPolygon>;
 
@@ -12,7 +12,6 @@ const EMPTY_MVT = new Uint8Array();
 
 /** Simplify once per clip polygon so point-in-polygon stays fast per tile. */
 const CLIP_SIMPLIFY_TOLERANCE = 0.005;
-const MVT_EXTENT = 4096;
 
 const clipContextCache = new Map<
   string,
@@ -113,7 +112,10 @@ export function clipMvtTileToPolygon(
   }
 
   const tile = new VectorTile(new Protobuf(data));
-  const clippedLayers: Record<string, { features: MvtFeature[] }> = {};
+  const clippedLayers: Record<
+    string,
+    { features: MvtFeature[]; extent: number }
+  > = {};
 
   for (const layerName of Object.keys(tile.layers)) {
     const layer = tile.layers[layerName];
@@ -140,7 +142,13 @@ export function clipMvtTileToPolygon(
     }
 
     if (keptFeatures.length) {
-      clippedLayers[layerName] = { features: keptFeatures };
+      // Keep the source extent: geometry stays in the tile's own coordinate
+      // grid (FTW 2024 uses 1024, 2025 uses 4096). Re-encoding at a different
+      // extent shrinks/stretches every feature from the tile's top-left corner.
+      clippedLayers[layerName] = {
+        features: keptFeatures,
+        extent: layer.extent,
+      };
     }
   }
 
@@ -148,17 +156,18 @@ export function clipMvtTileToPolygon(
     return EMPTY_MVT;
   }
 
-  const wrapped: Record<string, unknown> = {};
+  // fromGeojsonVt forces one extent on every layer, so wrap each layer with
+  // its own extent and serialize directly.
+  const layers: Record<string, unknown> = {};
   for (const [name, layer] of Object.entries(clippedLayers)) {
-    wrapped[name] = {
-      features: layer.features,
-      name,
-      version: 2,
-      extent: MVT_EXTENT,
-    };
+    const wrapper = new GeoJSONWrapper(layer.features, {
+      extent: layer.extent,
+    });
+    wrapper.name = name;
+    wrapper.version = 2;
+    wrapper.extent = layer.extent;
+    layers[name] = wrapper;
   }
 
-  return new Uint8Array(
-    fromGeojsonVt(wrapped, { version: 2, extent: MVT_EXTENT }),
-  );
+  return new Uint8Array(fromVectorTileJs({ layers }));
 }

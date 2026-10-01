@@ -1392,7 +1392,7 @@
     "legend": []
   },
   "ftw_field_density": {
-    "title": "FTW field density",
+    "title": "FTW field density (2024–25)",
     "type": "cog",
     "path": "https://data.source.coop/ftw/global-data/predictions/confidence/field-density/prue_v1_field_area_500m_fieldsonly_uint8_3857.tif",
     "opacity": 0.9,
@@ -1405,14 +1405,14 @@
       "maskPath": "https://data.source.coop/ftw/global-data/predictions/confidence/confidence/prue_v1_confidence_global_uint8_3857.tif",
       "confidenceThreshold": 70
     },
-    "legend_text": "Field density (500 m), fixed at ≥70% confidence (FTW Explorer default). Shown when zoomed out; zoom to 11+ for field boundaries.",
+    "legend_text": "Field density (500 m), fixed at ≥70% confidence (FTW Explorer default). Single 2024–25 product (FTW: inferred 2025, pending confirmation); there is no year-specific density. Shown when zoomed out; zoom to 11+ for field boundaries.",
     "legend": [
       { "value": 0, "color": "#ff00ee", "label": "0%" },
       { "value": 200, "color": "#00ff00", "label": "100%" }
     ]
   },
   "ftw_field_density_2024": {
-    "title": "FTW field density (2024)",
+    "title": "FTW field density (2024–25)",
     "type": "cog",
     "path": "https://data.source.coop/ftw/global-data/predictions/confidence/field-density/prue_v1_field_area_500m_fieldsonly_uint8_3857.tif",
     "opacity": 0.9,
@@ -1425,7 +1425,7 @@
       "maskPath": "https://data.source.coop/ftw/global-data/predictions/confidence/confidence/prue_v1_confidence_global_uint8_3857.tif",
       "confidenceThreshold": 70
     },
-    "legend_text": "Field density (500 m), fixed at ≥70% confidence (FTW Explorer default). Shown when zoomed out; zoom to 11+ for field boundaries.",
+    "legend_text": "Field density (500 m), fixed at ≥70% confidence (FTW Explorer default). Single 2024–25 product (FTW: inferred 2025, pending confirmation); there is no year-specific density. Shown when zoomed out; zoom to 11+ for field boundaries.",
     "legend": [
       { "value": 0, "color": "#ff00ee", "label": "0%" },
       { "value": 200, "color": "#00ff00", "label": "100%" }

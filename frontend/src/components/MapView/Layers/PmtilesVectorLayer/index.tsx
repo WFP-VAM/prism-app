@@ -5,7 +5,10 @@ import { Layer, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
 import { ftwConfidenceFilter } from 'utils/ftwConfidence';
 import { getLayerMapId } from 'utils/map-utils';
-import { getPmtilesInstance, setPmtilesClipPolygon } from 'utils/pmtiles-utils';
+import {
+  getPmtilesInstance,
+  registerPmtilesClipPolygon,
+} from 'utils/pmtiles-utils';
 import { useDeploymentClipPolygon } from 'utils/useDeploymentClipPolygon';
 import { useMapState } from 'utils/useMapState';
 
@@ -76,7 +79,9 @@ const PmtilesVectorLayer = memo(
     const sourceId = `source-${layer.id}`;
     const layerVisibility = visible ? 'visible' : 'none';
     const selectedMap = useMapState()?.maplibreMap();
-    const deploymentClipPolygon = useDeploymentClipPolygon();
+    const { polygon: deploymentClipPolygon } = useDeploymentClipPolygon(
+      Boolean(layer.clipToDeployment),
+    );
 
     const returningNull = layer.clipToDeployment && !deploymentClipPolygon;
 
@@ -93,18 +98,12 @@ const PmtilesVectorLayer = memo(
     }, [layer.path]);
 
     useEffect(() => {
-      if (!layer.clipToDeployment) {
-        setPmtilesClipPolygon(layer.path, null);
+      if (!layer.clipToDeployment || !deploymentClipPolygon) {
         return undefined;
       }
-      if (!deploymentClipPolygon) {
-        return undefined;
-      }
-      setPmtilesClipPolygon(layer.path, deploymentClipPolygon);
-      return () => {
-        setPmtilesClipPolygon(layer.path, null);
-      };
-    }, [deploymentClipPolygon, layer.clipToDeployment, layer.path, layer.id]);
+      // Returns the release fn; clip stays active while any instance holds it.
+      return registerPmtilesClipPolygon(layer.path, deploymentClipPolygon);
+    }, [deploymentClipPolygon, layer.clipToDeployment, layer.path]);
 
     // Keep layout visibility in sync when toggling without unmounting the source.
     useEffect(() => {

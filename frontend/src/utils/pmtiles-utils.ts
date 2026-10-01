@@ -34,7 +34,13 @@ const protocol = new Protocol();
 // Map to store PMTiles instances
 const pmtilesInstances = new Map<string, PMTiles>();
 
-const pmtilesClipByUrl = new Map<string, ClipPolygon>();
+// Clip polygons are global per PMTiles URL, but several map instances (main
+// map, export, dashboard) can mount the same URL. Ref-count so one unmount
+// does not disable clipping for the others.
+const pmtilesClipByUrl = new Map<
+  string,
+  { polygon: ClipPolygon; refCount: number }
+>();
 
 let protocolRefCount = 0;
 
@@ -59,7 +65,7 @@ async function runClippedTile(
   }
 
   const pmtilesUrl = match[1];
-  const clipPolygon = pmtilesClipByUrl.get(pmtilesUrl);
+  const clipPolygon = pmtilesClipByUrl.get(pmtilesUrl)?.polygon;
   if (!clipPolygon) {
     return result;
   }
@@ -79,15 +85,39 @@ async function runClippedTile(
   };
 }
 
-export function setPmtilesClipPolygon(
+/**
+ * Clip tiles from `pmtilesUrl` to `clipPolygon` until the returned release
+ * function is called. The clip is removed only after the last consumer releases.
+ */
+export function registerPmtilesClipPolygon(
   pmtilesUrl: string,
-  clipPolygon: ClipPolygon | null,
-) {
-  if (clipPolygon) {
-    pmtilesClipByUrl.set(pmtilesUrl, clipPolygon);
-  } else {
-    pmtilesClipByUrl.delete(pmtilesUrl);
-  }
+  clipPolygon: ClipPolygon,
+): () => void {
+  const entry = pmtilesClipByUrl.get(pmtilesUrl);
+  pmtilesClipByUrl.set(pmtilesUrl, {
+    polygon: clipPolygon,
+    refCount: (entry?.refCount ?? 0) + 1,
+  });
+
+  let released = false;
+  return () => {
+    if (released) {
+      return;
+    }
+    released = true;
+    const current = pmtilesClipByUrl.get(pmtilesUrl);
+    if (!current) {
+      return;
+    }
+    if (current.refCount <= 1) {
+      pmtilesClipByUrl.delete(pmtilesUrl);
+    } else {
+      pmtilesClipByUrl.set(pmtilesUrl, {
+        ...current,
+        refCount: current.refCount - 1,
+      });
+    }
+  };
 }
 
 export const initPmtilesProtocol = () => {

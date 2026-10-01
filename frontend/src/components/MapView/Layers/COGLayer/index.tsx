@@ -378,7 +378,8 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
     ? (layer.group.layers.find(l => l.main)?.id ?? id)
     : id;
   const opacityState = useSelector(opacitySelector(opacityLayerId));
-  const deploymentClipPolygon = useDeploymentClipPolygon();
+  const { polygon: deploymentClipPolygon, failed: deploymentClipFailed } =
+    useDeploymentClipPolygon();
 
   const { registerLayer, unregisterLayer } = useDeckGLLayers();
   const registerRef = useRef(registerLayer);
@@ -478,6 +479,8 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
             }),
           );
           setMaskReady(false);
+          // Effect B never registers tiles without the mask; end the loading bar.
+          dispatch(finishLayerLoading(id));
         }
       });
     return () => {
@@ -584,6 +587,13 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
       setFetchedData(null);
     };
   }, [id, collection, band, dateString, dispatch, layer.title, path]);
+
+  // end the loading bar instead of spinning forever
+  useEffect(() => {
+    if (clipToDeployment && deploymentClipFailed) {
+      dispatch(finishLayerLoading(id));
+    }
+  }, [clipToDeployment, deploymentClipFailed, dispatch, id]);
 
   // Effect B: register/update deck layers when urls, opacity, or z-order change.
   useEffect(() => {

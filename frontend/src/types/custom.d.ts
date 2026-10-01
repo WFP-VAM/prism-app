@@ -51,6 +51,7 @@ declare module '@mapbox/vector-tile' {
 
   export class VectorTileLayer {
     length: number;
+    extent: number;
     feature(i: number): VectorTileFeature;
   }
 
