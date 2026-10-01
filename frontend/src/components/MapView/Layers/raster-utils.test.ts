@@ -1,4 +1,10 @@
-import { getPublicCogUrls, toPublicCogUrl } from './raster-utils';
+import type { AffineTransform } from './raster-utils';
+import {
+  getPublicCogUrls,
+  getStacTransformOverride,
+  overviewsFollowTransform,
+  toPublicCogUrl,
+} from './raster-utils';
 
 const SOURCE_COOP_HREF =
   's3://eu-central-1.opendata.source.coop/wfp/chirps-dekad-forecast/v3.0/2026/09/21/c3g_2026.09.3.tif';
@@ -38,6 +44,9 @@ describe('getPublicCogUrls', () => {
           {
             id: 'chirps_dekad_forecast-202609d3',
             bbox: [-180, -60, 180, 60],
+            properties: {
+              'proj:transform': [0.05, 0, -180, 0, -0.05, 60, 0, 0, 1],
+            },
             assets: { band: { href: SOURCE_COOP_HREF } },
           },
         ],
@@ -57,6 +66,7 @@ describe('getPublicCogUrls', () => {
         url: SOURCE_COOP_URL,
         bbox: [-180, -60, 180, 60],
         public: true,
+        transform: [0.05, 0, -180, 0, -0.05, 60],
       },
     ]);
     const requestUrl = new URL((global.fetch as jest.Mock).mock.calls[0][0]);
@@ -78,5 +88,60 @@ describe('getPublicCogUrls', () => {
     await expect(
       getPublicCogUrls('chirps_dekad_forecast', '2026-09-21'),
     ).rejects.toThrow('STAC search failed');
+  });
+});
+
+describe('getStacTransformOverride', () => {
+  // CHIRPS-GEFS dekad forecast, 7200 x 2400: header geotransform from gdalinfo
+  // vs the STAC item's proj:transform.
+  const FLOAT32_RES = 0.0500000007450581;
+  const HEADER: AffineTransform = [FLOAT32_RES, 0, -180, 0, -FLOAT32_RES, 60];
+  const STAC: AffineTransform = [0.05, 0, -180, 0, -0.05, 60];
+
+  it('prefers the STAC transform over float32 rounding in the header', () => {
+    expect(HEADER[2] + 7200 * HEADER[0]).toBeGreaterThan(180);
+    const override = getStacTransformOverride(HEADER, STAC, 7200, 2400);
+    expect(override).toBe(STAC);
+    expect(override![2] + 7200 * override![0]).toBe(180);
+  });
+
+  it('keeps the header when the grids differ by more than rounding', () => {
+    // Half-pixel shift, e.g. a cell-center vs cell-corner mix-up.
+    const shifted: AffineTransform = [0.05, 0, -179.975, 0, -0.05, 60];
+    expect(
+      getStacTransformOverride(HEADER, shifted, 7200, 2400),
+    ).toBeUndefined();
+  });
+
+  it('keeps the header when the item has no transform', () => {
+    expect(
+      getStacTransformOverride(HEADER, undefined, 7200, 2400),
+    ).toBeUndefined();
+  });
+
+  // Overviews scaled from a full-resolution transform, as
+  // @developmentseed/geotiff derives them.
+  const overviewsOf = (transform: AffineTransform) =>
+    [2, 4, 8].map(factor => ({
+      width: 7200 / factor,
+      height: 2400 / factor,
+      transform: [
+        transform[0] * factor,
+        0,
+        transform[2],
+        0,
+        transform[4] * factor,
+        transform[5],
+      ] as AffineTransform,
+    }));
+
+  it('detects overviews that follow the overridden transform', () => {
+    const image = { width: 7200, height: 2400, overviews: overviewsOf(STAC) };
+    expect(overviewsFollowTransform(image, STAC)).toBe(true);
+  });
+
+  it('detects overviews that still use the header transform', () => {
+    const image = { width: 7200, height: 2400, overviews: overviewsOf(HEADER) };
+    expect(overviewsFollowTransform(image, STAC)).toBe(false);
   });
 });
