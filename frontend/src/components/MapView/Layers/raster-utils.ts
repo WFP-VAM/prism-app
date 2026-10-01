@@ -238,11 +238,23 @@ export async function getDownloadGeotiffURL(
   return responseJson.download_url;
 }
 
+// Pixel-to-CRS affine in STAC `proj:transform` (rasterio) order [a, b, c, d, e, f]:
+// x = a * col + b * row + c, y = d * col + e * row + f.
+export type AffineTransform = readonly [
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+];
+
 export interface PresignedCogUrl {
   item_id: string;
   url: string;
   bbox?: [number, number, number, number]; // WGS84 [minLon, minLat, maxLon, maxLat]
   public?: boolean; // unsigned URL on a CORS-enabled host (e.g. source.coop)
+  transform?: AffineTransform; // STAC `proj:transform`, when the item has one
 }
 
 /**
@@ -308,6 +320,94 @@ export function toPublicCogUrl(href: string): string {
   throw new Error(`COG asset '${href}' is not publicly accessible`);
 }
 
+// STAC allows the full 3x3 matrix (9 values); the last row is always 0, 0, 1.
+function parseStacTransform(value: unknown): AffineTransform | undefined {
+  if (!Array.isArray(value) || value.length < 6) {
+    return undefined;
+  }
+  const affine = value.slice(0, 6);
+  return affine.every(Number.isFinite)
+    ? (affine as unknown as AffineTransform)
+    : undefined;
+}
+
+/**
+ * Return the STAC geotransform when it places the raster within float32
+ * rounding of the COG header's transform, or undefined to keep the header.
+ *
+ * Some COG headers store a float32-rounded pixel size (CHIRPS-GEFS:
+ * 0.0500000007 for 0.05). Over 7200 columns that puts a global grid's east
+ * edge at 180.0000054°, which proj4 wraps to -180° when projecting to web
+ * mercator, stretching the last tile column across the whole map. The STAC
+ * item records the intended grid, so prefer it when the two transforms place
+ * every corner within 1% of a pixel of each other.
+ */
+export function getStacTransformOverride(
+  header: AffineTransform,
+  stac: AffineTransform | undefined,
+  width: number,
+  height: number,
+): AffineTransform | undefined {
+  if (!stac) {
+    return undefined;
+  }
+  const tolerance = 0.01 * Math.min(Math.abs(stac[0]), Math.abs(stac[4]));
+  const corners = [
+    [0, 0],
+    [width, 0],
+    [0, height],
+    [width, height],
+  ];
+  const matches = corners.every(
+    ([col, row]) =>
+      Math.abs(
+        (stac[0] - header[0]) * col +
+          (stac[1] - header[1]) * row +
+          (stac[2] - header[2]),
+      ) <= tolerance &&
+      Math.abs(
+        (stac[3] - header[3]) * col +
+          (stac[4] - header[4]) * row +
+          (stac[5] - header[5]),
+      ) <= tolerance,
+  );
+  return matches ? stac : undefined;
+}
+
+interface SizedTransform {
+  width: number;
+  height: number;
+  transform: AffineTransform;
+}
+
+/**
+ * Whether every overview's transform is `transform` scaled to the overview's
+ * size. @developmentseed/geotiff derives overview transforms from the
+ * full-resolution one, which is what lets a single transform override cover
+ * every zoom level; this detects a library update that breaks that.
+ */
+export function overviewsFollowTransform(
+  image: { width: number; height: number; overviews: SizedTransform[] },
+  transform: AffineTransform,
+): boolean {
+  return image.overviews.every(overview => {
+    const sx = image.width / overview.width;
+    const sy = image.height / overview.height;
+    const expected = [
+      transform[0] * sx,
+      transform[1] * sy,
+      transform[2],
+      transform[3] * sx,
+      transform[4] * sy,
+      transform[5],
+    ];
+    return expected.every(
+      (value, i) =>
+        Math.abs(overview.transform[i] - value) <= Math.abs(value) * 1e-12,
+    );
+  });
+}
+
 /**
  * Look up public COG assets directly in the STAC API, without going through
  * the PRISM API presigning endpoint. Returns the same shape as
@@ -343,7 +443,8 @@ export async function getPublicCogUrls(
     features as {
       id: string;
       bbox?: [number, number, number, number];
-      assets: Record<string, { href: string }>;
+      properties?: { 'proj:transform'?: unknown };
+      assets: Record<string, { href: string; 'proj:transform'?: unknown }>;
     }[]
   ).map(item => {
     // Requested band first, else first asset (matches the API behaviour).
@@ -353,6 +454,10 @@ export async function getPublicCogUrls(
       url: toPublicCogUrl(asset.href),
       bbox: item.bbox,
       public: true,
+      // Asset-level projection fields override item-level ones in STAC.
+      transform: parseStacTransform(
+        asset['proj:transform'] ?? item.properties?.['proj:transform'],
+      ),
     };
   });
 }

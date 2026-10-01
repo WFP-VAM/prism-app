@@ -16,13 +16,18 @@ import {
   FilterNoDataVal,
   LinearRescale,
 } from '@developmentseed/deck.gl-raster/gpu-modules';
-import type { GeoTIFF, Overview } from '@developmentseed/geotiff';
+import { GeoTIFF, type Overview } from '@developmentseed/geotiff';
 import type { Texture } from '@luma.gl/core';
 import { useDeckGLLayers } from 'components/MapView/DeckGLLayersContext';
-import type { PresignedCogUrl } from 'components/MapView/Layers/raster-utils';
+import type {
+  AffineTransform,
+  PresignedCogUrl,
+} from 'components/MapView/Layers/raster-utils';
 import {
   getPresignedCogUrls,
   getPublicCogUrls,
+  getStacTransformOverride,
+  overviewsFollowTransform,
 } from 'components/MapView/Layers/raster-utils';
 import { appConfig } from 'config';
 import type { CogLayerProps, LegendDefinition } from 'config/types';
@@ -33,7 +38,6 @@ import {
 import { addNotification } from 'context/notificationStateSlice';
 import { opacitySelector } from 'context/opacityStateSlice';
 import { availableDatesSelector } from 'context/serverStateSlice';
-import proj4 from 'proj4';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
@@ -41,14 +45,36 @@ import { COG_PROXY_API } from 'utils/constants';
 import { getRequestDate } from 'utils/server-utils';
 import { useDefaultDate } from 'utils/useDefaultDate';
 
-// Disable proj4's longitude wrapping when projecting COGs to web mercator.
-// Global COGs with float32 pixel sizes can end a hair past 180° (CHIRPS-GEFS
-// ends at 180.0000054°), which proj4 wraps to -180°, stretching the last tile
-// column across the whole map. deck.gl-geotiff targets "EPSG:3857" by name.
-proj4.defs(
-  'EPSG:3857',
-  '+proj=merc +a=6378137 +b=6378137 +lat_ts=0 +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null +over +no_defs',
-);
+// A COG URL, plus the opened GeoTIFF when its STAC transform was applied.
+type CogSource = PresignedCogUrl & { geotiff?: GeoTIFF };
+
+/**
+ * Open a COG and render it with its STAC item's geotransform when that only
+ * corrects float32 rounding in the header (see getStacTransformOverride).
+ * Overviews derive their transforms from the full-resolution one, so the
+ * override covers every zoom level.
+ */
+async function openCogWithStacTransform(
+  url: string,
+  stacTransform: AffineTransform,
+): Promise<GeoTIFF> {
+  const geotiff = await GeoTIFF.fromUrl(url);
+  const override = getStacTransformOverride(
+    geotiff.transform,
+    stacTransform,
+    geotiff.width,
+    geotiff.height,
+  );
+  if (override) {
+    Object.defineProperty(geotiff, 'transform', { value: override });
+    if (!overviewsFollowTransform(geotiff, override)) {
+      console.warn(
+        `COGLayer: overviews of ${url} ignored the STAC transform override; zoomed-out tiles may be misplaced`,
+      );
+    }
+  }
+  return geotiff;
+}
 
 export interface COGLayerComponentProps {
   layer: CogLayerProps;
@@ -260,7 +286,7 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
 
   const [fetchedData, setFetchedData] = useState<{
     dateString: string;
-    urls: PresignedCogUrl[];
+    urls: CogSource[];
   } | null>(null);
   const registeredIdsRef = useRef<string[]>([]);
   const pendingItemsRef = useRef<Set<string>>(new Set());
@@ -335,7 +361,24 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
 
     const fetchCogUrls = publicAssets ? getPublicCogUrls : getPresignedCogUrls;
     fetchCogUrls(collection, dateString, band, deploymentBbox)
-      .then((urls: PresignedCogUrl[]) => {
+      // Open COGs with a STAC transform here rather than in Effect B, so the
+      // GeoTIFF instance stays stable: DeckCOGLayer re-parses whenever its
+      // `geotiff` prop changes identity. Only public STAC lookups carry a
+      // transform, so `url` is directly fetchable.
+      .then((urls: PresignedCogUrl[]) =>
+        Promise.all(
+          urls.map(
+            async (u): Promise<CogSource> =>
+              u.transform
+                ? {
+                    ...u,
+                    geotiff: await openCogWithStacTransform(u.url, u.transform),
+                  }
+                : u,
+          ),
+        ),
+      )
+      .then((urls: CogSource[]) => {
         if (!cancelled) {
           setFetchedData({ dateString, urls });
           if (urls.length === 0) {
@@ -388,7 +431,7 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
       pendingItemsRef.current = new Set(presignedUrls.map(u => u.item_id));
     }
 
-    presignedUrls.forEach(({ item_id, url, public: isPublic }) => {
+    presignedUrls.forEach(({ item_id, url, public: isPublic, geotiff }) => {
       const deckLayerId = `cog-${id}-${item_id}`;
       deckLayerIds.push(deckLayerId);
 
@@ -403,12 +446,12 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
         deckLayerId,
         new PrismCOGLayer<TileData>({
           id: deckLayerId,
-          geotiff: proxyUrl,
+          geotiff: geotiff ?? proxyUrl,
           getTileData: handlers.getTileData,
           renderTile: handlers.renderTile,
           opacity: effectiveOpacity,
-          onGeoTIFFLoad: (geotiff: GeoTIFF) => {
-            nodataRef.current = geotiff.nodata;
+          onGeoTIFFLoad: (loaded: GeoTIFF) => {
+            nodataRef.current = loaded.nodata;
           },
           onViewportTilesLoaded: () => markItemCompleteRef.current(item_id),
           onTileLoadFailed: () => markItemCompleteRef.current(item_id),
