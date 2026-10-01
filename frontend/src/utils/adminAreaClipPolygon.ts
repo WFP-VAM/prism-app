@@ -10,6 +10,7 @@ import {
   filterFeaturesBySelectedAdminCodes,
   resolveFeaturesForAdminCodes,
 } from './adminAreaSelection';
+import { fetchJsonOrNull } from './fetchJsonOrNull';
 import { isUniversalDeployment } from './universal-utils';
 
 export type AdminAreaClipPolygon = Feature<Polygon | MultiPolygon>;
@@ -148,16 +149,13 @@ export async function fetchUnifiedCountryBoundaryPolygon(
   }
 
   const request = (async () => {
-    const response = await fetch(
+    const polygon = await fetchJsonOrNull<Feature>(
       `/data/${country}/admin-boundary-unified-polygon.json`,
     );
-    if (!response.ok) {
-      throw new Error(
-        `Failed to load admin boundary polygon for ${country}: ${response.status}`,
-      );
+    if (polygon === null) {
+      throw new Error(`Missing admin boundary polygon for ${country}`);
     }
 
-    const polygon = await response.json();
     if (!isPolygonOrMultiPolygonFeature(polygon)) {
       throw new Error(
         `Invalid admin boundary polygon for ${country}: expected Polygon or MultiPolygon`,
