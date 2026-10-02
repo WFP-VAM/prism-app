@@ -14,11 +14,50 @@ from prism_app.alert_workers.mail_render import render_flood_mail
 
 logger = logging.getLogger(__name__)
 
-TRIGGER_STATUSES = ("not exceeded", "bankfull", "moderate", "severe")
 DATES_URL = (
     "https://data.earthobservation.vam.wfp.org/public-share/aa/flood/moz/dates.json"
 )
-SEVERITY_ORDER = ("severe", "moderate", "bankfull", "not exceeded")
+# Highest first. Legacy severity-only values rank with readiness of that severity.
+STATUS_RANK = {
+    "activation_severe": 7,
+    "activation_moderate": 6,
+    "activation_bankfull": 5,
+    "readiness_severe": 4,
+    "severe": 4,
+    "readiness_moderate": 3,
+    "moderate": 3,
+    "readiness_bankfull": 2,
+    "bankfull": 2,
+    "not_exceeded": 1,
+}
+
+
+def normalize_flood_status(raw: str | None) -> str:
+    if raw is None:
+        return ""
+    compact = "_".join(str(raw).strip().lower().replace("-", " ").split())
+    compact = compact.replace("bank_full", "bankfull")
+    if compact == "notexceeded":
+        compact = "not_exceeded"
+    if compact in STATUS_RANK:
+        return compact
+    return ""
+
+
+def flood_status_rank(raw: str | None) -> int:
+    return STATUS_RANK.get(normalize_flood_status(raw), 0)
+
+
+def email_status_label(raw: str | None) -> str:
+    status = normalize_flood_status(raw)
+    if not status:
+        return ""
+    if status == "not_exceeded":
+        return "not exceeded"
+    if "_" in status and status.split("_", 1)[0] in ("activation", "readiness"):
+        phase, severity = status.split("_", 1)
+        return f"{phase} {severity}"
+    return status
 
 
 def flood_prism_url(basic_prism_url: str, date_yyyy_mm_dd: str) -> str:
@@ -87,15 +126,24 @@ def fetch_station_summary(client: httpx.Client, url: str) -> list[dict[str, Any]
                 headers[i]: vals[i] if i < len(vals) else ""
                 for i in range(len(headers))
             }
-            if row.get("station_name"):
-                out.append(
-                    {
-                        "station_name": transform_station_name(row["station_name"]),
-                        "station_id": row.get("station_id", ""),
-                        "river_name": row.get("river_name"),
-                        "trigger_status": row.get("trigger_status"),
-                    },
-                )
+            if not row.get("station_name"):
+                continue
+            name = transform_station_name(row["station_name"])
+            raw_status = row.get("status") or row.get("trigger_status") or ""
+            status = normalize_flood_status(raw_status)
+            if not status:
+                status = str(raw_status).strip().lower()
+            candidate = {
+                "station_name": name,
+                "station_id": row.get("station_id", ""),
+                "river_name": row.get("river_name"),
+                "trigger_status": status,
+            }
+            prev = next((item for item in out if item["station_name"] == name), None)
+            if prev is None:
+                out.append(candidate)
+            elif flood_status_rank(status) > flood_status_rank(prev["trigger_status"]):
+                prev.update(candidate)
         return out
     except Exception as exc:
         logger.error("station summary: %s", exc)
@@ -103,10 +151,8 @@ def fetch_station_summary(client: httpx.Client, url: str) -> list[dict[str, Any]
 
 
 def should_send_flood_email(trigger: str | None) -> bool:
-    if not trigger:
-        return False
-    t = str(trigger).lower()
-    return t in TRIGGER_STATUSES and t != "not exceeded"
+    status = normalize_flood_status(trigger)
+    return bool(status) and status != "not_exceeded"
 
 
 def transform_last_flood(date: str, trigger: str) -> dict[str, dict[str, str]]:
@@ -143,13 +189,16 @@ def build_flood_payload(
     if station_summary_url:
         for s in fetch_station_summary(client, station_summary_url):
             st = s.get("trigger_status")
-            if st and str(st).lower() != "not exceeded":
-                by_status.setdefault(str(st).lower(), []).append(s["station_name"])
-        sorted_status: dict[str, list[str]] = {}
-        for status in SEVERITY_ORDER:
-            if status in by_status:
-                sorted_status[status] = by_status[status]
-        by_status = sorted_status
+            label = email_status_label(str(st) if st else None)
+            if label and label != "not exceeded":
+                by_status.setdefault(label, []).append(s["station_name"])
+        by_status = dict(
+            sorted(
+                by_status.items(),
+                key=lambda item: flood_status_rank(item[0]),
+                reverse=True,
+            ),
+        )
 
     html, text = render_flood_mail(
         title=title,

@@ -14,7 +14,7 @@ import {
 } from './types';
 import {
   buildAvailableFloodDatesFromDatesJson,
-  normalizeFloodTriggerStatus,
+  parseStationSummaryRows,
 } from './utils';
 
 const initialState: AnticipatoryActionFloodState = {
@@ -204,55 +204,9 @@ export const loadAAFloodDateData = createAsyncThunk<
     return { ...acc, [station]: data };
   }, {});
 
-  // Build stations with summary data
-  const stationSummary = summaryRows.reduce(
-    (acc: Record<string, FloodStation>, row: any) => {
-      const key: string = startCase(String(row.station_name || '').trim());
-      if (!key || !row.longitude || !row.latitude) {
-        return acc;
-      }
-      return {
-        ...acc,
-        [key]: {
-          station_name: key,
-          station_id: Number(row.station_id || 0),
-          river_name: String(row.river_name || ''),
-          longitude: Number(row.longitude ?? 0),
-          latitude: Number(row.latitude ?? 0),
-          forecast_issue_date: String(row.forecast_issue_date || date),
-          window_begin: String(row.window_begin || ''),
-          window_end: String(row.window_end || ''),
-          avg_bankfull_percentage:
-            typeof row.avg_bankfull_percentage === 'number'
-              ? Number(row.avg_bankfull_percentage) * 100
-              : undefined,
-          avg_moderate_percentage:
-            typeof row.avg_moderate_percentage === 'number'
-              ? Number(row.avg_moderate_percentage) * 100
-              : undefined,
-          avg_severe_percentage:
-            typeof row.avg_severe_percentage === 'number'
-              ? Number(row.avg_severe_percentage) * 100
-              : undefined,
-          trigger_bankfull:
-            typeof row.trigger_bankfull === 'number'
-              ? Number(row.trigger_bankfull) * 100
-              : undefined,
-          trigger_moderate:
-            typeof row.trigger_moderate === 'number'
-              ? Number(row.trigger_moderate) * 100
-              : undefined,
-          trigger_severe:
-            typeof row.trigger_severe === 'number'
-              ? Number(row.trigger_severe) * 100
-              : undefined,
-          trigger_status: normalizeFloodTriggerStatus(
-            String(row.trigger_status ?? ''),
-          ),
-        },
-      };
-    },
-    {},
+  const stationSummary = parseStationSummaryRows(
+    summaryRows as Record<string, unknown>[],
+    date,
   );
 
   // Extract basic station info for the stations array

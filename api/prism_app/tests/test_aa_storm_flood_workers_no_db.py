@@ -553,6 +553,9 @@ def test_build_email_payloads_skips_after_landfall(mock_shot: MagicMock) -> None
         ("moderate", True),
         ("severe", True),
         ("not exceeded", False),
+        ("not_exceeded", False),
+        ("activation_moderate", True),
+        ("readiness_bankfull", True),
         (None, False),
         ("", False),
     ],
@@ -582,6 +585,26 @@ def test_transform_station_name() -> None:
 def test_flood_format_date() -> None:
     assert flood_format_date("2025-03-05T12:00:00Z", "YYYY-MM-DD") == "2025-03-05"
     assert flood_format_date("2025-03-05T12:00:00Z", "DD-Month-YYYY") == "5-March-2025"
+
+
+def test_fetch_station_summary_keeps_highest_status() -> None:
+    csv_text = (
+        "station_name,station_id,river_name,phase,severity,status\n"
+        "beira_port,1,zambezi,readiness,severe,readiness_severe\n"
+        "beira_port,1,zambezi,activation,moderate,activation_moderate\n"
+        "gurue,2,licungo,readiness,bankfull,readiness_bankfull\n"
+    )
+    client = MagicMock(spec=httpx.Client)
+    response = MagicMock()
+    response.text = csv_text
+    response.raise_for_status = MagicMock()
+    client.get.return_value = response
+    rows = fetch_station_summary(client, "http://example/stations.csv")
+    by_name = {row["station_name"]: row["trigger_status"] for row in rows}
+    assert by_name == {
+        "Beira Port": "activation_moderate",
+        "Gurue": "readiness_bankfull",
+    }
 
 
 def test_flood_prism_url() -> None:
