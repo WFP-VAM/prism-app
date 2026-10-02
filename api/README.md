@@ -266,6 +266,28 @@ To deploy, ssh into the EC2 instance:
 - Optional: if any database migrations are in the deploying branch, open a bash shell to the API container. Use the `poetry run alembic heads` and `poetry run alembic current` commands first to ensure the proper migration will be applied, and once verified, run `poetry run alembic upgrade head` to run the migration.
 - Run `make deploy`
 
+### Staging on the same EC2
+
+`make deploy-staging` runs a second stack beside prod. It uses compose project `prism-staging`, joins the existing Traefik network, and does not publish host port 80. Prod `make deploy` and `cron_api_auto_deploy.sh` keep using the checkout they already run in. Give staging its own clone (for example `~/prism-app-staging`) so that prod auto-deploy can `git checkout` without replacing the staging tree.
+
+Before the first deploy:
+
+- DNS A record: `prism-api-staging.ovio.org` → this instance's public IP.
+- Register redirect URI `https://prism-api-staging.ovio.org/auth/callback` on the CIAM app and on the Entra app if Entra sign-in is enabled.
+- `set_envs.sh` present in the staging checkout (same AWS secrets as prod).
+
+`make deploy-staging` loads those secrets, then overrides the alerts database URL to the local PostGIS service, `EXPORT_MAP_S3_BUCKET` to `s3://prism-wfp/batch-maps-staging`, `API_URL` and the OIDC redirect to the staging hostname, and `MAIL_SUBJECT_PREFIX=[STAGING] `. `PRISM_ENV` stays `production`, so scheduled map-export mail still sends. Recipients come only from the staging database. The command exits before `docker compose` if the database URL is still the prod URL. It applies `alembic upgrade head` to the staging database. On migration failure the staging API and worker are left stopped. There is no automatic rollback.
+
+Caps: PostGIS 768 MB, API 1 GB (browser pool 1, shm 512 MB), one `export_map_worker` at 1.5 GB (browser pool 1, shm 1 GB). The staging database has no host port. Schema starts empty until you seed it.
+
+Alert and schedule crons for staging point at the staging checkout and set `PRISM_STAGING=1`. That flag is what applies the overrides inside `crons/_compose_run.sh`. Without it, those scripts keep the prod database. Example:
+
+```bash
+10 * * * * PRISM_STAGING=1 $HOME/prism-app-staging/api/crons/cron_aa_flood_alert_run.sh
+```
+
+Do not add a staging auto-deploy cron. Run `make deploy-staging` by hand. Logs: `make logs-staging`.
+
 ### Automated deploys (cron)
 
 `api/crons/cron_api_auto_deploy.sh` is a cron-safe script that automatically redeploys the API when the target branch advances. It is idempotent (no-ops if the branch SHA is unchanged), uses `flock` for mutual exclusion, and gates a successful deploy on the full health check (`scripts/health_check.sh`, run with `HEALTHCHECK_STRICT=1`). If any of the api, traefik, or `export_map_worker` checks fail, the new SHA is not recorded and cron retries on the next run.

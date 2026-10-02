@@ -17,11 +17,19 @@ deploy:
 	source set_envs.sh && docker compose build && docker compose -f docker-compose.yml -f docker-compose.deploy.yml up -d --scale export_map_worker=2
 	-source set_envs.sh && ./scripts/health_check.sh
 
+# Same EC2 as prod, separate compose project, local PostGIS, one worker.
+# Does not select the prod project. See api/README.md (Staging).
+deploy-staging:
+	./scripts/deploy_staging.sh
+
 health:
 	source set_envs.sh && ./scripts/health_check.sh
 
 logs:
 	source set_envs.sh && docker compose -f docker-compose.yml -f docker-compose.deploy.yml logs --tail=500 -f --timestamps
+
+logs-staging:
+	source set_envs.sh && source scripts/staging_env.sh && staging_apply_overrides && docker compose logs --tail=500 -f --timestamps
 
 api-lint:
 	poetry run black --check .
