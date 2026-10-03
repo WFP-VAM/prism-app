@@ -2,8 +2,18 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
-from prism_app.version import build_version
+from prism_app.version import _repo_root, build_version
+
+
+def test_image_layout_has_no_repo_root() -> None:
+    assert _repo_root(Path("/prism_app/version.py")) is None
+
+
+def test_local_checkout_repo_root() -> None:
+    assert _repo_root(Path("/repo/api/prism_app/version.py")) == Path("/repo")
 
 
 def test_version_prefers_env_over_git(

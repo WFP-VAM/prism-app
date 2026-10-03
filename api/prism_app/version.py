@@ -6,15 +6,25 @@ import os
 import subprocess
 from pathlib import Path
 
-_REPO_ROOT = Path(__file__).resolve().parents[2]
 _MISSING = {"", "unknown", "HEAD"}
 
 
+def _repo_root(start: Path | None = None) -> Path | None:
+    """Local checkout is <repo>/api/prism_app/version.py. The image file is /prism_app/version.py."""
+    path = (start or Path(__file__)).resolve()
+    if len(path.parents) <= 2:
+        return None
+    return path.parents[2]
+
+
 def _git(args: list[str]) -> str | None:
+    root = _repo_root()
+    if root is None:
+        return None
     try:
         out = subprocess.check_output(
             ["git", *args],
-            cwd=_REPO_ROOT,
+            cwd=root,
             stderr=subprocess.DEVNULL,
             timeout=2,
             text=True,
