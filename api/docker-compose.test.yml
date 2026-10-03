@@ -11,6 +11,8 @@ services:
       - ./alembic.ini:/alembic.ini:ro
       - ./alembic:/alembic:ro
       - ./utils/wait-for-it.sh:/wait-for-it.sh
+      # pytest cwd in api-test is /. staging_env.sh lives outside the prism_app mount.
+      - ./scripts:/scripts:ro
     environment:
       - "RUN=uvicorn prism_app.main:app --host 0.0.0.0 --port 80"
       - PRISM_ALERTS_DATABASE_URL=postgresql://postgres:!ChangeMe!@testdb:5432/postgres
