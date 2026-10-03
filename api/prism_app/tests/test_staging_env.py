@@ -9,15 +9,19 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
+# Host checkout: api/scripts. api-test container: /scripts (see docker-compose.test.yml).
+SCRIPT = ROOT / "scripts" / "staging_env.sh"
 PROD_URL = "postgresql://user:secret@alerts.example:5432/prism"
 
 
 def _bash(
     body: str, env: dict[str, str] | None = None
 ) -> subprocess.CompletedProcess[str]:
+    assert SCRIPT.is_file(), f"missing {SCRIPT}"
     merged = os.environ.copy()
     merged.pop("PRISM_STAGING", None)
     merged.pop("MAIL_SUBJECT_PREFIX", None)
+    merged["STAGING_ENV_SH"] = str(SCRIPT)
     if env:
         merged.update(env)
     return subprocess.run(
@@ -33,7 +37,7 @@ def _bash(
 def test_staging_override_uses_local_db_and_keeps_production_env() -> None:
     result = _bash(
         """
-        source scripts/staging_env.sh
+        source "$STAGING_ENV_SH"
         staging_apply_overrides
         printf '%s\\n' \\
           "$PRISM_ALERTS_DATABASE_URL" \\
@@ -64,7 +68,7 @@ def test_staging_override_uses_local_db_and_keeps_production_env() -> None:
 def test_staging_refuses_when_url_still_matches_prod() -> None:
     result = _bash(
         f"""
-        source scripts/staging_env.sh
+        source "$STAGING_ENV_SH"
         staging_assert_db_isolated {PROD_URL!r} {PROD_URL!r}
         """,
     )
@@ -75,7 +79,7 @@ def test_staging_refuses_when_url_still_matches_prod() -> None:
 def test_staging_refuses_non_db_host() -> None:
     result = _bash(
         """
-        source scripts/staging_env.sh
+        source "$STAGING_ENV_SH"
         staging_assert_db_isolated \\
           'postgresql://user:secret@alerts.example:5432/prism' \\
           'postgresql://user:secret@other:5432/prism'
@@ -88,7 +92,7 @@ def test_staging_refuses_non_db_host() -> None:
 def test_staging_refuses_empty_prod_url() -> None:
     result = _bash(
         """
-        source scripts/staging_env.sh
+        source "$STAGING_ENV_SH"
         staging_apply_overrides
         """,
         {"PRISM_ALERTS_DATABASE_URL": ""},
@@ -107,7 +111,7 @@ def test_staging_refuses_empty_prod_url() -> None:
 def test_staging_db_host(url: str, host: str) -> None:
     result = _bash(
         f"""
-        source scripts/staging_env.sh
+        source "$STAGING_ENV_SH"
         staging_db_host {url!r}
         """,
     )
