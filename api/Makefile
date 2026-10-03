@@ -1,5 +1,9 @@
 SHELL := /bin/bash
 
+GIT_SHA ?= $(shell git rev-parse HEAD 2>/dev/null || echo unknown)
+GIT_BRANCH ?= $(shell git rev-parse --abbrev-ref HEAD 2>/dev/null || echo unknown)
+export GIT_SHA GIT_BRANCH
+
 build:
 	docker compose -f docker-compose.yml -f docker-compose.test.yml build --no-cache
 	docker compose -f docker-compose.yml -f docker-compose.test.yml pull

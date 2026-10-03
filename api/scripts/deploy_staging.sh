@@ -17,6 +17,9 @@ source ./set_envs.sh
 source ./scripts/staging_env.sh
 staging_apply_overrides
 
+export GIT_SHA="${GIT_SHA:-$(git rev-parse HEAD 2>/dev/null || echo unknown)}"
+export GIT_BRANCH="${GIT_BRANCH:-$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo unknown)}"
+
 docker network create traefik_default || true
 
 docker compose build
