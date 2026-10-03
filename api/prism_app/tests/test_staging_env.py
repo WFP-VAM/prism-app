@@ -12,7 +12,9 @@ ROOT = Path(__file__).resolve().parents[2]
 PROD_URL = "postgresql://user:secret@alerts.example:5432/prism"
 
 
-def _bash(body: str, env: dict[str, str] | None = None) -> subprocess.CompletedProcess[str]:
+def _bash(
+    body: str, env: dict[str, str] | None = None
+) -> subprocess.CompletedProcess[str]:
     merged = os.environ.copy()
     merged.pop("PRISM_STAGING", None)
     merged.pop("MAIL_SUBJECT_PREFIX", None)
