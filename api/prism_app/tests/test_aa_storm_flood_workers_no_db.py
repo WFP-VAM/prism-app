@@ -13,11 +13,13 @@ import pytest
 from prism_app.alert_workers.aa_flood import _format_date as flood_format_date
 from prism_app.alert_workers.aa_flood import (
     build_flood_payload,
+    email_status_allow_list,
     fetch_station_summary,
     flood_prism_url,
     latest_flood_date,
     should_send_flood_email,
-    transform_last_flood,
+    station_summary_url,
+    transform_last_processed_flood,
     transform_station_name,
 )
 from prism_app.alert_workers.aa_storm import (
@@ -549,13 +551,14 @@ def test_build_email_payloads_skips_after_landfall(mock_shot: MagicMock) -> None
 @pytest.mark.parametrize(
     ("trigger", "expected"),
     [
-        ("bankfull", True),
+        ("bankfull", False),
         ("moderate", True),
         ("severe", True),
         ("not exceeded", False),
         ("not_exceeded", False),
         ("activation_moderate", True),
-        ("readiness_bankfull", True),
+        ("readiness_bankfull", False),
+        ("activation_bankfull", False),
         (None, False),
         ("", False),
     ],
@@ -573,9 +576,31 @@ def test_latest_flood_date() -> None:
 
 
 def test_transform_last_flood() -> None:
-    assert transform_last_flood("2025-01-15T00:00:00Z", "moderate") == {
-        "moz_flood": {"status": "moderate", "refTime": "2025-01-15T00:00:00Z"},
+    assert transform_last_processed_flood(
+        "2025-01-15T00:00:00Z",
+        "moderate",
+        "flood_alert_4",
+    ) == {
+        "flood_alert_4": {"status": "moderate", "refTime": "2025-01-15T00:00:00Z"},
     }
+
+
+def test_email_status_allow_list_override() -> None:
+    allowed = email_status_allow_list(
+        {"emailStatuses": ["bankfull", "activation_severe"]}
+    )
+    assert should_send_flood_email("bankfull", allowed) is True
+    assert should_send_flood_email("moderate", allowed) is False
+
+
+def test_station_summary_url_replaces_dates_json() -> None:
+    assert (
+        station_summary_url(
+            "https://data.example/aa/flood/moz/dates.json",
+            "station_summary.csv",
+        )
+        == "https://data.example/aa/flood/moz/station_summary.csv"
+    )
 
 
 def test_transform_station_name() -> None:
@@ -630,6 +655,8 @@ def test_fetch_station_summary_parses_csv() -> None:
             "station_id": "1",
             "river_name": "zambezi",
             "trigger_status": "moderate",
+            "window_begin": "",
+            "window_end": "",
         },
     ]
 
