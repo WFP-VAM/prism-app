@@ -41,6 +41,37 @@ staging_assert_db_isolated() {
   fi
 }
 
+# Prod secret comes from set_envs.sh. Staging value is PRISM_SESSION_SECRET_STAGING
+# in the environment, or the same key in Secrets Manager. Never commit the value.
+staging_fetch_session_secret() {
+  aws secretsmanager get-secret-value \
+    --secret-id PRISM_SESSION_SECRET_STAGING \
+    | jq -er '.SecretString | fromjson | .PRISM_SESSION_SECRET_STAGING'
+}
+
+staging_load_session_secret() {
+  local prod_secret="${PRISM_SESSION_SECRET:-}"
+  local staging_secret
+  if [[ -z "$prod_secret" ]]; then
+    echo "error: prod PRISM_SESSION_SECRET is empty; source set_envs.sh first" >&2
+    return 1
+  fi
+  if [[ -z "${PRISM_SESSION_SECRET_STAGING+x}" ]]; then
+    staging_secret="$(staging_fetch_session_secret)" || return 1
+  else
+    staging_secret="$PRISM_SESSION_SECRET_STAGING"
+  fi
+  if [[ -z "$staging_secret" || "$staging_secret" == "null" ]]; then
+    echo "error: PRISM_SESSION_SECRET_STAGING is empty" >&2
+    return 1
+  fi
+  if [[ "$staging_secret" == "$prod_secret" ]]; then
+    echo "error: staging session secret still matches prod; refusing to start" >&2
+    return 1
+  fi
+  export PRISM_SESSION_SECRET="$staging_secret"
+}
+
 staging_apply_overrides() {
   local prod_url="${PRISM_ALERTS_DATABASE_URL:-}"
 
@@ -59,5 +90,6 @@ staging_apply_overrides() {
   export PRISM_ALERTS_DATABASE_URL="$STAGING_ALERTS_DATABASE_URL"
   # PRISM_ENV stays production so scheduled map-export mail still sends.
 
-  staging_assert_db_isolated "$prod_url" "$PRISM_ALERTS_DATABASE_URL"
+  staging_assert_db_isolated "$prod_url" "$PRISM_ALERTS_DATABASE_URL" || return
+  staging_load_session_secret || return
 }

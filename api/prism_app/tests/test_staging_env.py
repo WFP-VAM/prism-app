@@ -12,6 +12,8 @@ ROOT = Path(__file__).resolve().parents[2]
 # Host checkout: api/scripts. api-test container: /scripts (see docker-compose.test.yml).
 SCRIPT = ROOT / "scripts" / "staging_env.sh"
 PROD_URL = "postgresql://user:secret@alerts.example:5432/prism"
+PROD_SESSION_SECRET = "prod-session-secret"
+STAGING_SESSION_SECRET = "staging-session-secret"
 
 
 def _bash(
@@ -21,6 +23,8 @@ def _bash(
     merged = os.environ.copy()
     merged.pop("PRISM_STAGING", None)
     merged.pop("MAIL_SUBJECT_PREFIX", None)
+    merged.pop("PRISM_SESSION_SECRET", None)
+    merged.pop("PRISM_SESSION_SECRET_STAGING", None)
     merged["STAGING_ENV_SH"] = str(SCRIPT)
     if env:
         merged.update(env)
@@ -47,9 +51,15 @@ def test_staging_override_uses_local_db_and_keeps_production_env() -> None:
           "$PRISM_OIDC_REDIRECT_URI" \\
           "$MAIL_SUBJECT_PREFIX" \\
           "$PRISM_ENV" \\
-          "$COMPOSE_PROJECT_NAME"
+          "$COMPOSE_PROJECT_NAME" \\
+          "$PRISM_SESSION_SECRET"
         """,
-        {"PRISM_ALERTS_DATABASE_URL": PROD_URL, "PRISM_ENV": "production"},
+        {
+            "PRISM_ALERTS_DATABASE_URL": PROD_URL,
+            "PRISM_ENV": "production",
+            "PRISM_SESSION_SECRET": PROD_SESSION_SECRET,
+            "PRISM_SESSION_SECRET_STAGING": STAGING_SESSION_SECRET,
+        },
     )
     assert result.returncode == 0, result.stderr
     lines = result.stdout.splitlines()
@@ -62,7 +72,40 @@ def test_staging_override_uses_local_db_and_keeps_production_env() -> None:
         "[STAGING] ",
         "production",
         "prism-staging",
+        STAGING_SESSION_SECRET,
     ]
+
+
+def test_staging_refuses_when_session_secret_matches_prod() -> None:
+    result = _bash(
+        """
+        source "$STAGING_ENV_SH"
+        staging_apply_overrides
+        """,
+        {
+            "PRISM_ALERTS_DATABASE_URL": PROD_URL,
+            "PRISM_SESSION_SECRET": PROD_SESSION_SECRET,
+            "PRISM_SESSION_SECRET_STAGING": PROD_SESSION_SECRET,
+        },
+    )
+    assert result.returncode != 0
+    assert "session secret still matches prod" in result.stderr
+
+
+def test_staging_refuses_empty_staging_session_secret() -> None:
+    result = _bash(
+        """
+        source "$STAGING_ENV_SH"
+        staging_apply_overrides
+        """,
+        {
+            "PRISM_ALERTS_DATABASE_URL": PROD_URL,
+            "PRISM_SESSION_SECRET": PROD_SESSION_SECRET,
+            "PRISM_SESSION_SECRET_STAGING": "",
+        },
+    )
+    assert result.returncode != 0
+    assert "PRISM_SESSION_SECRET_STAGING is empty" in result.stderr
 
 
 def test_staging_refuses_when_url_still_matches_prod() -> None:

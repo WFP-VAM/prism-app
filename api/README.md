@@ -275,8 +275,9 @@ Before the first deploy:
 - DNS A record: `prism-api-staging.ovio.org` → this instance's public IP.
 - Register redirect URI `https://prism-api-staging.ovio.org/auth/callback` on the CIAM app and on the Entra app if Entra sign-in is enabled.
 - `set_envs.sh` present in the staging checkout (same AWS secrets as prod).
+- Secrets Manager secret `PRISM_SESSION_SECRET_STAGING`, JSON key `PRISM_SESSION_SECRET_STAGING`, set to a different value from prod (`openssl rand -hex 32`). Do not commit it.
 
-`make deploy-staging` loads those secrets, then overrides the alerts database URL to the local PostGIS service, `EXPORT_MAP_S3_BUCKET` to `s3://prism-wfp/batch-maps-staging`, `API_URL` and the OIDC redirect to the staging hostname, and `MAIL_SUBJECT_PREFIX=[STAGING] `. `PRISM_ENV` stays `production`, so scheduled map-export mail still sends. Recipients come only from the staging database. The command exits before `docker compose` if the database URL is still the prod URL. It applies `alembic upgrade head` to the staging database. On migration failure the staging API and worker are left stopped. There is no automatic rollback.
+`make deploy-staging` loads those secrets, then overrides the alerts database URL to the local PostGIS service, `PRISM_SESSION_SECRET` from `PRISM_SESSION_SECRET_STAGING`, `EXPORT_MAP_S3_BUCKET` to `s3://prism-wfp/batch-maps-staging`, `API_URL` and the OIDC redirect to the staging hostname, and `MAIL_SUBJECT_PREFIX=[STAGING] `. `PRISM_ENV` stays `production`, so scheduled map-export mail still sends. Recipients come only from the staging database. The command exits before `docker compose` if the database URL is still the prod URL, or if the staging session secret is missing or equal to the prod secret. It applies `alembic upgrade head` to the staging database. On migration failure the staging API and worker are left stopped. There is no automatic rollback.
 
 Caps: PostGIS 768 MB, API 1 GB (browser pool 1, shm 512 MB), one `export_map_worker` at 1.5 GB (browser pool 1, shm 1 GB). The staging database has no host port. Schema starts empty until you seed it.
 
