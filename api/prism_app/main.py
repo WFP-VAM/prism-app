@@ -54,6 +54,7 @@ from prism_app.report import download_report
 from prism_app.timer import timed
 from prism_app.utils import extract_dates_from_urls
 from prism_app.validation import validate_intersect_parameter
+from prism_app.version import build_version
 from prism_app.zonal_stats import (
     DEFAULT_STATS,
     GroupBy,
@@ -173,6 +174,12 @@ alert_db = AlertsDataBase()
 def healthcheck() -> str:
     """Verify that the server is healthy."""
     return "All good!"
+
+
+@app.get("/version")
+def version() -> dict[str, str | None]:
+    """Git SHA baked into the image, plus the branch name when deploy was not detached."""
+    return build_version()
 
 
 @app.get(

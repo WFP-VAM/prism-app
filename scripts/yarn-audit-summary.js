@@ -2,14 +2,17 @@
 
 const { spawnSync } = require('node:child_process');
 
-// Unfixed HIGHs with no compatible patched release:
+// No compatible patched release:
 // - image-size <=2.0.2 ICNS DoS (upstream archived). Transitive via
 //   @deck.gl → @loaders.gl → texture-compressor (0.7.x).
+// - sprintf-js through 1.1.3 (latest on npm). Same texture-compressor chain,
+//   via argparse. Format strings are argparse's, not PRISM input.
 // - extract-zip symlink traversal (maintainer unresponsive). Transitive via
 //   puppeteer → @puppeteer/browsers (Chrome zip unpack, not untrusted user archives).
 const IGNORE_ADVISORIES = new Set([
   'GHSA-w3rx-r6r6-pgpr', // CVE-2025-71330 image-size
   'GHSA-5p2g-fcmc-qvqq', // CVE-2025-71329 image-size
+  'GHSA-hp3w-g68c-fv3c', // CVE-2026-97058 sprintf-js
   'GHSA-jmr9-qjv8-65gv', // CVE-2026-56876 extract-zip
 ]);
 
