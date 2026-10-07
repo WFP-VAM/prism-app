@@ -1,5 +1,9 @@
 SHELL := /bin/bash
 
+GIT_SHA ?= $(shell git rev-parse HEAD 2>/dev/null || echo unknown)
+GIT_BRANCH ?= $(shell git rev-parse --abbrev-ref HEAD 2>/dev/null || echo unknown)
+export GIT_SHA GIT_BRANCH
+
 build:
 	docker compose -f docker-compose.yml -f docker-compose.test.yml build --no-cache
 	docker compose -f docker-compose.yml -f docker-compose.test.yml pull
@@ -17,11 +21,19 @@ deploy:
 	source set_envs.sh && docker compose build && docker compose -f docker-compose.yml -f docker-compose.deploy.yml up -d --scale export_map_worker=2
 	-source set_envs.sh && ./scripts/health_check.sh
 
+# Same EC2 as prod, separate compose project, local PostGIS, one worker.
+# Does not select the prod project. See api/README.md (Staging).
+deploy-staging:
+	./scripts/deploy_staging.sh
+
 health:
 	source set_envs.sh && ./scripts/health_check.sh
 
 logs:
 	source set_envs.sh && docker compose -f docker-compose.yml -f docker-compose.deploy.yml logs --tail=500 -f --timestamps
+
+logs-staging:
+	source set_envs.sh && source scripts/staging_env.sh && staging_apply_overrides && docker compose logs --tail=500 -f --timestamps
 
 api-lint:
 	poetry run black --check .

@@ -90,4 +90,10 @@ COPY ./alembic /alembic
 
 WORKDIR /prism_app/
 
+# Set by `make deploy` / `make deploy-staging` from the checkout being built.
+ARG GIT_SHA=unknown
+ARG GIT_BRANCH=
+ENV GIT_SHA=${GIT_SHA}
+ENV GIT_BRANCH=${GIT_BRANCH}
+
 EXPOSE 80

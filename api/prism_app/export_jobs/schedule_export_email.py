@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import re
 import smtplib
 from pathlib import Path
 from uuid import UUID
@@ -34,6 +35,14 @@ _ARROW_ATTACHMENT = {
     / "arrowForwardIcon.png",
     "cid": "arrow-forward-icon",
 }
+
+
+def _resolve_schedule_name(name: str, map_date: str | None) -> str:
+    """Replace the frontend-only ``{date_coverage}``/``{date}`` placeholders."""
+    if map_date:
+        return name.replace("{date_coverage}", map_date).replace("{date}", map_date)
+    name = re.sub(r"\s*[:\-–—]?\s*\{date_coverage\}", "", name)
+    return name.replace("{date}", "").strip()
 
 
 def map_export_schedules_admin_url() -> str:
@@ -144,7 +153,7 @@ def send_schedule_export_email(
 
     html_body, text_body = mail_render.render_schedule_export_mail(
         heading_title="Map export ready",
-        schedule_name=schedule.name,
+        schedule_name=_resolve_schedule_name(schedule.name, map_date),
         layer_title=layer_title,
         layer_id=schedule.layer_id,
         country=schedule.country,
