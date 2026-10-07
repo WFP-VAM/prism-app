@@ -57,11 +57,11 @@
   "dependencies": {
     "geojson": "^0.5.0",
     "lodash": "^4.18.0",
-    "moment": "^2.29.4",
+    "moment": "^2.31.0",
     "xml-utils": "^1.6.0-0"
   },
   "resolutions": {
-    "brace-expansion": "^2.1.4",
+    "brace-expansion": "^2.1.7",
     "@isaacs/brace-expansion": ">=5.0.1",
     "lodash": "^4.18.0",
     "browserslist": "^4.28.7"

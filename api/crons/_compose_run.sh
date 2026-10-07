@@ -19,8 +19,21 @@ if [[ -f ./set_envs.sh ]]; then
   source ./set_envs.sh
 fi
 
+# Opt-in only. Prod crons leave PRISM_STAGING unset so they keep the prod database.
+if [[ "${PRISM_STAGING:-}" == "1" ]]; then
+  # shellcheck source=../scripts/staging_env.sh
+  source ./scripts/staging_env.sh
+  staging_apply_overrides
+fi
+
+# Prod RDS requires TLS. The staging PostGIS container does not.
+ssl_mode=true
+if [[ "${PRISM_STAGING:-}" == "1" ]]; then
+  ssl_mode=false
+fi
+
 docker compose run --rm --no-deps \
-  -e POSTGRES_SSL=true \
+  -e "POSTGRES_SSL=${ssl_mode}" \
   export_map_worker \
   "$@" \
   2>&1 | tee -a "${API_ROOT}/${LOG_BASENAME}.log"

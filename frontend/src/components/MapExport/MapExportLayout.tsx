@@ -23,6 +23,7 @@ import { loadStormIcons } from 'components/MapView/Layers/AnticipatoryActionStor
 import type { COGLayerComponentProps } from 'components/MapView/Layers/COGLayer';
 import GeojsonDataLayer from 'components/MapView/Layers/GeojsonDataLayer';
 import { ensureSDFIconsLoaded } from 'components/MapView/Layers/icon-utils';
+import PmtilesVectorLayer from 'components/MapView/Layers/PmtilesVectorLayer';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
 import { mapStyle } from 'components/MapView/Map/utils';
 import { DiscriminateUnion, LayerType, Panel } from 'config/types';
@@ -55,6 +56,7 @@ import {
   stackLayersForMapPaintOrder,
 } from 'utils/map-layer-before-utils';
 import { isBasemapLabelLayer, useAAMarkerScalePercent } from 'utils/map-utils';
+import { initPmtilesProtocol } from 'utils/pmtiles-utils';
 import { scheduleAfterNextPaint } from 'utils/scheduleAfterNextPaint';
 import useResizeObserver from 'utils/useOnResizeObserver';
 
@@ -106,6 +108,7 @@ const componentTypes: LayerComponentsMap<LayerType> = {
   impact: { component: ImpactLayer },
   point_data: { component: PointDataLayer },
   geojson_polygon: { component: GeojsonDataLayer },
+  pmtiles_vector: { component: PmtilesVectorLayer },
   static_raster: { component: StaticRasterLayer },
   composite: { component: CompositeLayer },
   anticipatory_action_drought: {
@@ -168,6 +171,8 @@ function MapExportLayout({
   const dispatch = useDispatch();
   const northArrowRef = useRef<HTMLImageElement>(null);
   const baseMapRef = React.useRef<MapRef>(null);
+
+  useEffect(() => initPmtilesProtocol(), []);
 
   // Track container dimensions to calculate proper map size
   const [containerRef, containerDimensions] =

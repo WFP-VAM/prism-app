@@ -268,6 +268,10 @@ def send_email(
     to_list = [a for a in to_list if a]
     bcc_list = [a for a in bcc_list if a]
 
+    prefix = os.environ.get("MAIL_SUBJECT_PREFIX", "")
+    if prefix and not subject.startswith(prefix):
+        subject = f"{prefix}{subject}"
+
     root = MIMEMultipart("related")
     root["Message-ID"] = make_msgid()
     root["Subject"] = subject

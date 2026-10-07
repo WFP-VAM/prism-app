@@ -1,6 +1,6 @@
 services:
   db:
-    image: kartoza/postgis:16-3
+    image: postgres:16.13-alpine
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
@@ -8,7 +8,7 @@ services:
     ports:
       - "54321:5432"
     volumes:
-      - db_data:/var/lib/postgresql
+      - db_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -h localhost -U postgres -d postgres"]
       interval: 5s

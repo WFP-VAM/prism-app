@@ -727,6 +727,9 @@ const mapServerDatesToLayerIds = (
       layer.type === 'composite'
         ? (LayerDefinitions[layer.dateLayer] as WMSLayerProps).serverLayerName
         : layer.serverLayerName;
+    if (!serverLayerName) {
+      return acc;
+    }
     const layerDates = serverDates[serverLayerName] as ReferenceDateTimestamp[];
     if (layerDates) {
       // Filter WMS layers by startDate, used for forecast layers in particular.
@@ -779,7 +782,7 @@ export async function preloadLayerDatesForWMS(
   const WCSWMSLayers = Object.values(LayerDefinitions).filter(
     (layer): layer is WMSLayerProps | CogLayerProps | CompositeLayerProps =>
       layer.type === 'wms' ||
-      layer.type === 'cog' ||
+      (layer.type === 'cog' && Boolean(layer.serverLayerName)) ||
       compositeLayersWithDateLayerTypeMap[layer.id] === 'wms',
   );
   const allWMSDates = wmsServerUrls.map(async url => {
@@ -867,6 +870,9 @@ export const getLayerType = (
       LayerDefinitions[l.dateLayer].type === 'static_raster')
   ) {
     return 'staticRasterLayer';
+  }
+  if (l.type === 'cog' && l.path) {
+    return 'invalidType';
   }
   if (l.type === 'wms' || l.type === 'cog') {
     return 'WMSLayer';

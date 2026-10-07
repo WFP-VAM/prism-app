@@ -3,7 +3,7 @@
 # Scope: Playwright worker image — map export queue, scheduled public maps cron, alert workers.
 
 playwright==1.61.0
-pypdf==6.17.0
+pypdf==6.19.0
 msgpack==1.2.1
 boto3==1.41.5
 botocore==1.41.5
@@ -20,7 +20,7 @@ markupsafe==3.0.3
 requests==2.33.1
 python-dateutil==2.8.2
 croniter==6.2.2
-urllib3>=2.6.3,<3
+urllib3>=2.8.0,<3
 httpx==0.28.1
 shapely==2.1.2
 jinja2==3.1.6
