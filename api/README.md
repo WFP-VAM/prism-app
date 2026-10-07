@@ -43,7 +43,7 @@ make api
 ```
 
 This starts four containers via `docker-compose.develop.yml`:
-- **`db`** — PostGIS (Postgres) on host port **54321**
+- **`db`** — Postgres 16.13 (same minor as RDS, no PostGIS) on host port **54321**
 - **`rustfs`** — local S3-compatible storage for map export artifacts (API port **9000**, console **9001**)
 - **`api`** — FastAPI (uvicorn with hot reload) on host port **80**
 - **`export_map_worker`** — polls `map_export_jobs`, runs Playwright export, writes artifacts to RustFS
@@ -277,9 +277,9 @@ Before the first deploy:
 - `set_envs.sh` present in the staging checkout (same AWS secrets as prod).
 - Secrets Manager secret `PRISM_SESSION_SECRET_STAGING`, JSON key `PRISM_SESSION_SECRET_STAGING`, set to a different value from prod (`openssl rand -hex 32`). Do not commit it.
 
-`make deploy-staging` loads those secrets, then overrides the alerts database URL to the local PostGIS service, `PRISM_SESSION_SECRET` from `PRISM_SESSION_SECRET_STAGING`, `EXPORT_MAP_S3_BUCKET` to `s3://prism-wfp/batch-maps-staging`, `API_URL` and the OIDC redirect to the staging hostname, and `MAIL_SUBJECT_PREFIX=[STAGING] `. `PRISM_ENV` stays `production`, so scheduled map-export mail still sends. Recipients come only from the staging database. The command exits before `docker compose` if the database URL is still the prod URL, or if the staging session secret is missing or equal to the prod secret. It applies `alembic upgrade head` to the staging database. On migration failure the staging API and worker are left stopped. There is no automatic rollback.
+`make deploy-staging` loads those secrets, then overrides the alerts database URL to the local Postgres 16.13 service, `PRISM_SESSION_SECRET` from `PRISM_SESSION_SECRET_STAGING`, `EXPORT_MAP_S3_BUCKET` to `s3://prism-wfp/batch-maps-staging`, `API_URL` and the OIDC redirect to the staging hostname, and `MAIL_SUBJECT_PREFIX=[STAGING] `. `PRISM_ENV` stays `production`, so scheduled map-export mail still sends. Recipients come only from the staging database. The command exits before `docker compose` if the database URL is still the prod URL, or if the staging session secret is missing or equal to the prod secret. It applies `alembic upgrade head` to the staging database. On migration failure the staging API and worker are left stopped. There is no automatic rollback.
 
-Caps: PostGIS 768 MB, API 1 GB (browser pool 1, shm 512 MB), one `export_map_worker` at 1.5 GB (browser pool 1, shm 1 GB). The staging database has no host port. Schema starts empty until you seed it.
+Caps: Postgres 768 MB, API 1 GB (browser pool 1, shm 512 MB), one `export_map_worker` at 1.5 GB (browser pool 1, shm 1 GB). The staging database has no host port. Schema starts empty until you seed it. A volume created by the old PostGIS image will not start under this image; remove that volume before the first boot.
 
 Alert and schedule crons for staging point at the staging checkout and set `PRISM_STAGING=1`. That flag is what applies the overrides inside `crons/_compose_run.sh`. Without it, those scripts keep the prod database. Example:
 

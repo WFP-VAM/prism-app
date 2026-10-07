@@ -21,11 +21,10 @@ services:
     # Infinite loop, to keep it alive, for debugging
     # command: bash -c "while true; do echo 'sleeping...' && sleep 10; done"
   testdb:
-    image: kartoza/postgis:16-3
+    image: postgres:16.13-alpine
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
-      - POSTGRES_PORT=5432
       - POSTGRES_PASSWORD=!ChangeMe!
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
