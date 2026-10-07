@@ -43,7 +43,7 @@ make api
 ```
 
 This starts four containers via `docker-compose.develop.yml`:
-- **`db`** — Postgres 16.13 (same minor as RDS, no PostGIS) on host port **54321**
+- **`db`** — Postgres 16.13 on host port **54321**
 - **`rustfs`** — local S3-compatible storage for map export artifacts (API port **9000**, console **9001**)
 - **`api`** — FastAPI (uvicorn with hot reload) on host port **80**
 - **`export_map_worker`** — polls `map_export_jobs`, runs Playwright export, writes artifacts to RustFS
