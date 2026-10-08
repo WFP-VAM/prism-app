@@ -14,6 +14,7 @@ import {
   AdminCodeString,
   AdminLevelType,
   BoundaryLayerProps,
+  WMSLayerProps,
 } from 'config/types';
 import { BoundaryLayerData } from 'context/layers/boundary';
 import { GeoJsonProperties } from 'geojson';
@@ -21,7 +22,11 @@ import { useAdminNameTranslations } from 'hooks/useAdminNameTranslations';
 import { useSafeTranslation } from 'i18n';
 import { sortBy } from 'lodash';
 import React from 'react';
-import { getEffectiveMultiCountry } from 'utils/universal-country-admin';
+import { getChartAdminCode } from 'utils/chart-admin-code';
+import {
+  getEffectiveMultiCountry,
+  useEffectiveCountryAdmin0Id,
+} from 'utils/universal-country-admin';
 import { isUniversalDeployment } from 'utils/universal-utils';
 
 interface ChartLocationSelectorProps {
@@ -32,6 +37,9 @@ interface ChartLocationSelectorProps {
   admin2Key: AdminCodeString;
   admin3Key?: AdminCodeString;
   countryAdm0Id?: number | string;
+  // When provided, areas none of these layers can chart (no HDC id at that
+  // level, e.g. a null dv_adm2_id) are shown disabled.
+  chartLayers?: WMSLayerProps[];
   onAdmin0Change?: (
     key: AdminCodeString,
     properties: GeoJsonProperties,
@@ -66,6 +74,7 @@ function ChartLocationSelector({
   admin2Key,
   admin3Key = '' as AdminCodeString,
   countryAdm0Id,
+  chartLayers,
   onAdmin0Change,
   onAdmin1Change,
   onAdmin2Change,
@@ -78,6 +87,7 @@ function ChartLocationSelector({
   const classes = useStyles();
   const { t, i18n: i18nLocale } = useSafeTranslation();
   const { dict: adminNameDict } = useAdminNameTranslations();
+  const countryAdmin0Id = useEffectiveCountryAdmin0Id();
 
   // Universal (URL-driven) deployments fix the country via the URL and drill in
   // to show Admin 1/2/3 directly, so the country picker is never shown there
@@ -258,9 +268,28 @@ function ChartLocationSelector({
     onAdmin3Change?.(admin3Id, properties, 3);
   };
 
-  const renderMenuItemList = (trees: AdminBoundaryTree[]) =>
+  const isChartable = (adminCode: AdminCodeString, level: AdminLevelType) => {
+    if (!chartLayers?.length) {
+      return true;
+    }
+    const properties = getProperties(boundaryLayerData, adminCode, level);
+    return chartLayers.some(
+      layer =>
+        getChartAdminCode(layer, properties, level, countryAdmin0Id) !==
+        undefined,
+    );
+  };
+
+  const renderMenuItemList = (
+    trees: AdminBoundaryTree[],
+    level?: AdminLevelType,
+  ) =>
     trees.map(option => (
-      <MenuItem key={option.adminCode} value={option.adminCode}>
+      <MenuItem
+        key={option.adminCode}
+        value={option.adminCode}
+        disabled={level !== undefined && !isChartable(option.adminCode, level)}
+      >
         {option.label}
       </MenuItem>
     ));
@@ -319,7 +348,7 @@ function ChartLocationSelector({
               {showCountryLevel ? t('Remove Admin 1') : t('Country Level')}
             </Box>
           </MenuItem>
-          {renderMenuItemList(orderedAdmin1Areas)}
+          {renderMenuItemList(orderedAdmin1Areas, admin1Level)}
         </TextField>
 
         {admin1Key && orderedAdmin2Areas.length > 0 && (
@@ -339,7 +368,7 @@ function ChartLocationSelector({
             <MenuItem value="">
               <Box className={classes.removeAdmin}>{t('Remove Admin 2')}</Box>
             </MenuItem>
-            {renderMenuItemList(orderedAdmin2Areas)}
+            {renderMenuItemList(orderedAdmin2Areas, admin2Level)}
           </TextField>
         )}
 
@@ -360,7 +389,7 @@ function ChartLocationSelector({
             <MenuItem value="">
               <Box className={classes.removeAdmin}>{t('Remove Admin 3')}</Box>
             </MenuItem>
-            {renderMenuItemList(orderedAdmin3Areas)}
+            {renderMenuItemList(orderedAdmin3Areas, 3 as AdminLevelType)}
           </TextField>
         )}
       </div>

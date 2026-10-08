@@ -161,6 +161,14 @@ const ChartsPanel = memo(() => {
   const [selectedLayerTitles, setSelectedLayerTitles] = useState<
     string[] | any[]
   >([]);
+  // Layers used to grey out areas with no HDC id; all chart layers until the
+  // user picks some.
+  const locationChartLayers = useMemo(() => {
+    const selected = chartLayers.filter(layer =>
+      selectedLayerTitles.includes(layer.title),
+    );
+    return selected.length > 0 ? selected : chartLayers;
+  }, [selectedLayerTitles]);
 
   const [startDate1, setStartDate1] = useState<number | null>(
     new Date().getTime() - oneYearInMs * yearsToFetchDataFor,
@@ -729,6 +737,7 @@ const ChartsPanel = memo(() => {
               admin2Key={admin2Key}
               admin3Key={admin3Key}
               countryAdm0Id={countryAdmin0Id}
+              chartLayers={locationChartLayers}
               stacked
               hideLabel={compareLocations}
               onAdmin0Change={(key, properties, level) => {
@@ -788,6 +797,7 @@ const ChartsPanel = memo(() => {
                 admin2Key={secondAdmin2Key}
                 admin3Key={secondAdmin3Key}
                 countryAdm0Id={countryAdmin0Id}
+                chartLayers={locationChartLayers}
                 stacked
                 hideLabel
                 onAdmin0Change={(key, properties, level) => {
