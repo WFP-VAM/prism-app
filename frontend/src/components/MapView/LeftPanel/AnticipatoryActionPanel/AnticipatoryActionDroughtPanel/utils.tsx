@@ -30,20 +30,20 @@ export const AADroughtColors = {
     na: { background: '#F1F1F1', text: 'black' },
     ny: { background: '#F1F1F1', text: 'black' },
     severe: {
-      set: { background: '#831F00', text: 'white' },
-      ready: { background: '#E63701', text: 'white' },
+      set: { background: '#800026', text: 'white' },
+      ready: { background: '#C20425', text: 'white' },
     },
     moderate: {
-      set: { background: '#FF8934', text: 'black' },
-      ready: { background: '#FFD52D', text: 'black' },
+      set: { background: '#EA2920', text: 'black' },
+      ready: { background: '#FC6932', text: 'black' },
     },
     mild: {
-      set: { background: '#FFF503', text: 'black' },
-      ready: { background: '#FFFCB3', text: 'black' },
+      set: { background: '#FEA245', text: 'black' },
+      ready: { background: '#FECE6A', text: 'black' },
     },
     normal: {
-      set: { background: '#FFF503', text: 'black' },
-      ready: { background: '#FFFCB3', text: 'black' },
+      set: { background: '#FFEA9A', text: 'black' },
+      ready: { background: '#FFFFCC', text: 'black' },
     },
   },
 } as const;
