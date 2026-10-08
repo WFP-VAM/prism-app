@@ -32,7 +32,7 @@ exports[`renders as expected 1`] = `
     >
       <div
         class="makeStyles-textWrap-5"
-        style="background-color: rgb(255, 213, 45);"
+        style="background-color: rgb(252, 105, 50);"
       >
         <mock-typography
           class="makeStyles-text-6"
@@ -55,7 +55,7 @@ exports[`renders as expected 1`] = `
     >
       <div
         class="makeStyles-textWrap-5"
-        style="background-color: rgb(255, 252, 179);"
+        style="background-color: rgb(254, 206, 106);"
       >
         <mock-typography
           class="makeStyles-text-6"

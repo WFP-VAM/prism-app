@@ -135,7 +135,7 @@ exports[`renders as expected 1`] = `
               >
                 <div
                   class="makeStyles-iconWrapper-31"
-                  style="background: rgb(255, 213, 45);"
+                  style="background: rgb(252, 105, 50);"
                 >
                   <div
                     class="makeStyles-centerContainer-32"
@@ -143,13 +143,13 @@ exports[`renders as expected 1`] = `
                   >
                     <div
                       class="makeStyles-topTextContainer-33"
-                      style="border-bottom: 1px solid black; background: rgb(255, 213, 45);"
+                      style="border-bottom: 1px solid black; background: rgb(252, 105, 50);"
                     >
                       R
                     </div>
                     <div
                       class="makeStyles-bottomTextContainer-34"
-                      style="background: rgb(255, 213, 45);"
+                      style="background: rgb(252, 105, 50);"
                     >
                       MOD
                     </div>
@@ -165,7 +165,7 @@ exports[`renders as expected 1`] = `
               >
                 <div
                   class="makeStyles-iconWrapper-31"
-                  style="background: rgb(255, 213, 45);"
+                  style="background: rgb(252, 105, 50);"
                 >
                   <div
                     class="makeStyles-centerContainer-32"
@@ -173,13 +173,13 @@ exports[`renders as expected 1`] = `
                   >
                     <div
                       class="makeStyles-topTextContainer-33"
-                      style="border-bottom: 1px solid black; background: rgb(255, 213, 45);"
+                      style="border-bottom: 1px solid black; background: rgb(252, 105, 50);"
                     >
                       R
                     </div>
                     <div
                       class="makeStyles-bottomTextContainer-34"
-                      style="background: rgb(255, 213, 45);"
+                      style="background: rgb(252, 105, 50);"
                     >
                       MOD
                     </div>
@@ -289,7 +289,7 @@ exports[`renders as expected 1`] = `
               >
                 <div
                   class="makeStyles-iconWrapper-31"
-                  style="background: rgb(255, 252, 179);"
+                  style="background: rgb(254, 206, 106);"
                 >
                   <div
                     class="makeStyles-centerContainer-32"
@@ -297,13 +297,13 @@ exports[`renders as expected 1`] = `
                   >
                     <div
                       class="makeStyles-topTextContainer-33"
-                      style="border-bottom: 1px solid black; background: rgb(255, 252, 179);"
+                      style="border-bottom: 1px solid black; background: rgb(254, 206, 106);"
                     >
                       R
                     </div>
                     <div
                       class="makeStyles-bottomTextContainer-34"
-                      style="background: rgb(255, 252, 179);"
+                      style="background: rgb(254, 206, 106);"
                     >
                       MIL
                     </div>
@@ -319,7 +319,7 @@ exports[`renders as expected 1`] = `
               >
                 <div
                   class="makeStyles-iconWrapper-31"
-                  style="background: rgb(255, 245, 3);"
+                  style="background: rgb(254, 162, 69);"
                 >
                   <div
                     class="makeStyles-centerContainer-32"
@@ -327,13 +327,13 @@ exports[`renders as expected 1`] = `
                   >
                     <div
                       class="makeStyles-topTextContainer-33"
-                      style="border-bottom: 1px solid black; background: rgb(255, 245, 3);"
+                      style="border-bottom: 1px solid black; background: rgb(254, 162, 69);"
                     >
                       S
                     </div>
                     <div
                       class="makeStyles-bottomTextContainer-34"
-                      style="background: rgb(255, 245, 3);"
+                      style="background: rgb(254, 162, 69);"
                     >
                       MIL
                     </div>

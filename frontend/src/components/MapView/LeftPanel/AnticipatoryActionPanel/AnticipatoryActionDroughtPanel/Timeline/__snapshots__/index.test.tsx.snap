@@ -68,7 +68,7 @@ exports[`renders as expected 1`] = `
           >
             <div
               class="makeStyles-iconWrapper-19"
-              style="background: rgb(255, 137, 52);"
+              style="background: rgb(234, 41, 32);"
             >
               <div
                 class="makeStyles-centerContainer-20"
@@ -76,13 +76,13 @@ exports[`renders as expected 1`] = `
               >
                 <div
                   class="makeStyles-topTextContainer-21"
-                  style="border-bottom: 1px solid black; background: rgb(255, 137, 52);"
+                  style="border-bottom: 1px solid black; background: rgb(234, 41, 32);"
                 >
                   S
                 </div>
                 <div
                   class="makeStyles-bottomTextContainer-22"
-                  style="background: rgb(255, 137, 52);"
+                  style="background: rgb(234, 41, 32);"
                 >
                   MOD
                 </div>
@@ -170,7 +170,7 @@ exports[`renders as expected 1`] = `
           >
             <div
               class="makeStyles-iconWrapper-19"
-              style="background: rgb(255, 213, 45);"
+              style="background: rgb(252, 105, 50);"
             >
               <div
                 class="makeStyles-centerContainer-20"
@@ -178,13 +178,13 @@ exports[`renders as expected 1`] = `
               >
                 <div
                   class="makeStyles-topTextContainer-21"
-                  style="border-bottom: 1px solid black; background: rgb(255, 213, 45);"
+                  style="border-bottom: 1px solid black; background: rgb(252, 105, 50);"
                 >
                   R
                 </div>
                 <div
                   class="makeStyles-bottomTextContainer-22"
-                  style="background: rgb(255, 213, 45);"
+                  style="background: rgb(252, 105, 50);"
                 >
                   MOD
                 </div>
@@ -199,7 +199,7 @@ exports[`renders as expected 1`] = `
           >
             <div
               class="makeStyles-wrapper-23"
-              style="border: 1px solid rgb(255, 213, 45);"
+              style="border: 1px solid rgb(252, 105, 50);"
             >
               <mock-typography
                 variant="h3"
@@ -213,7 +213,7 @@ exports[`renders as expected 1`] = `
               </mock-typography>
               <div
                 class="makeStyles-probabilityBar-24"
-                style="background-color: rgb(255, 213, 45); width: 19%;"
+                style="background-color: rgb(252, 105, 50); width: 19%;"
               />
               <div
                 class="makeStyles-triggerBar-25"
@@ -232,7 +232,7 @@ exports[`renders as expected 1`] = `
           >
             <div
               class="makeStyles-wrapper-23"
-              style="border: 1px solid rgb(255, 213, 45);"
+              style="border: 1px solid rgb(252, 105, 50);"
             >
               <mock-typography
                 variant="h3"
@@ -246,7 +246,7 @@ exports[`renders as expected 1`] = `
               </mock-typography>
               <div
                 class="makeStyles-probabilityBar-24"
-                style="background-color: rgb(255, 213, 45); width: 28.000000000000004%;"
+                style="background-color: rgb(252, 105, 50); width: 28.000000000000004%;"
               />
               <div
                 class="makeStyles-triggerBar-25"
@@ -272,7 +272,7 @@ exports[`renders as expected 1`] = `
           >
             <div
               class="makeStyles-iconWrapper-19"
-              style="background: rgb(255, 245, 3);"
+              style="background: rgb(254, 162, 69);"
             >
               <div
                 class="makeStyles-centerContainer-20"
@@ -280,13 +280,13 @@ exports[`renders as expected 1`] = `
               >
                 <div
                   class="makeStyles-topTextContainer-21"
-                  style="border-bottom: 1px solid black; background: rgb(255, 245, 3);"
+                  style="border-bottom: 1px solid black; background: rgb(254, 162, 69);"
                 >
                   S
                 </div>
                 <div
                   class="makeStyles-bottomTextContainer-22"
-                  style="background: rgb(255, 245, 3);"
+                  style="background: rgb(254, 162, 69);"
                 >
                   MIL
                 </div>
@@ -367,7 +367,7 @@ exports[`renders as expected 1`] = `
           >
             <div
               class="makeStyles-wrapper-23"
-              style="border: 1px solid rgb(255, 245, 3);"
+              style="border: 1px solid rgb(254, 162, 69);"
             >
               <mock-typography
                 variant="h3"
@@ -381,7 +381,7 @@ exports[`renders as expected 1`] = `
               </mock-typography>
               <div
                 class="makeStyles-probabilityBar-24"
-                style="background-color: rgb(255, 245, 3); width: 28.000000000000004%;"
+                style="background-color: rgb(254, 162, 69); width: 28.000000000000004%;"
               />
               <div
                 class="makeStyles-triggerBar-25"
@@ -404,7 +404,7 @@ exports[`renders as expected 1`] = `
           >
             <div
               class="makeStyles-iconWrapper-19"
-              style="background: rgb(255, 252, 179);"
+              style="background: rgb(254, 206, 106);"
             >
               <div
                 class="makeStyles-centerContainer-20"
@@ -412,13 +412,13 @@ exports[`renders as expected 1`] = `
               >
                 <div
                   class="makeStyles-topTextContainer-21"
-                  style="border-bottom: 1px solid black; background: rgb(255, 252, 179);"
+                  style="border-bottom: 1px solid black; background: rgb(254, 206, 106);"
                 >
                   R
                 </div>
                 <div
                   class="makeStyles-bottomTextContainer-22"
-                  style="background: rgb(255, 252, 179);"
+                  style="background: rgb(254, 206, 106);"
                 >
                   MIL
                 </div>
@@ -496,7 +496,7 @@ exports[`renders as expected 1`] = `
           >
             <div
               class="makeStyles-wrapper-23"
-              style="border: 1px solid rgb(255, 252, 179);"
+              style="border: 1px solid rgb(254, 206, 106);"
             >
               <mock-typography
                 variant="h3"
@@ -510,7 +510,7 @@ exports[`renders as expected 1`] = `
               </mock-typography>
               <div
                 class="makeStyles-probabilityBar-24"
-                style="background-color: rgb(255, 252, 179); width: 31%;"
+                style="background-color: rgb(254, 206, 106); width: 31%;"
               />
               <div
                 class="makeStyles-triggerBar-25"
