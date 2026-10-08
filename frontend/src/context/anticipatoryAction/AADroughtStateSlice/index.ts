@@ -39,6 +39,7 @@ const initialState: AnticipatoryActionState = {
     },
   },
   markers: [],
+  showPhaseLabels: true,
   selectedDistrict: '',
   renderedDistricts: emptyWindows,
   windowRanges: { 'Window 1': undefined, 'Window 2': undefined },
@@ -128,6 +129,13 @@ export const anticipatoryActionDroughtStateSlice = createSlice({
       ...state,
       markers: payload,
     }),
+    setAAShowPhaseLabels: (
+      state,
+      { payload }: PayloadAction<AnticipatoryActionState['showPhaseLabels']>,
+    ) => ({
+      ...state,
+      showPhaseLabels: payload,
+    }),
     setAAView: (
       state,
       { payload }: PayloadAction<AnticipatoryActionState['view']>,
@@ -202,6 +210,9 @@ export const AASelectedDistrictSelector = (state: RootState) =>
 export const AAMarkersSelector = (state: RootState) =>
   state.anticipatoryActionDroughtState.markers;
 
+export const AAShowPhaseLabelsSelector = (state: RootState) =>
+  state.anticipatoryActionDroughtState.showPhaseLabels;
+
 export const AAViewSelector = (state: RootState) =>
   state.anticipatoryActionDroughtState.view;
 
@@ -209,7 +220,12 @@ export const AAWindowRangesSelector = (state: RootState) =>
   state.anticipatoryActionDroughtState.windowRanges;
 
 // export actions
-export const { setAAFilters, setAASelectedDistrict, setAAMarkers, setAAView } =
-  anticipatoryActionDroughtStateSlice.actions;
+export const {
+  setAAFilters,
+  setAASelectedDistrict,
+  setAAMarkers,
+  setAAShowPhaseLabels,
+  setAAView,
+} = anticipatoryActionDroughtStateSlice.actions;
 
 export default anticipatoryActionDroughtStateSlice.reducer;

@@ -1,12 +1,19 @@
 import {
   createStyles,
   Divider,
+  FormControlLabel,
   makeStyles,
+  Switch,
   Typography,
 } from '@material-ui/core';
+import {
+  AAShowPhaseLabelsSelector,
+  setAAShowPhaseLabels,
+} from 'context/anticipatoryAction/AADroughtStateSlice';
 import { useSafeTranslation } from 'i18n';
 import { borderGray } from 'muiTheme';
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
   getDescriptionText,
@@ -15,8 +22,13 @@ import {
 import HowToReadModal from '../HowToReadModal';
 import { useAACommonStyles } from '../utils';
 
-function AADroughtLegend({ showDescription = true }: AADroughtLegendProps) {
+function AADroughtLegend({
+  showDescription = true,
+  forPrinting = false,
+}: AADroughtLegendProps) {
   const [open, setOpen] = React.useState(false);
+  const dispatch = useDispatch();
+  const showPhaseLabels = useSelector(AAShowPhaseLabelsSelector);
   const classes = useStyles();
   const commonClasses = useAACommonStyles();
   const { t } = useSafeTranslation();
@@ -55,6 +67,20 @@ function AADroughtLegend({ showDescription = true }: AADroughtLegendProps) {
           </div>
         ))}
       </div>
+      {!forPrinting && (
+        <FormControlLabel
+          className={classes.toggleLabel}
+          control={
+            <Switch
+              size="small"
+              color="primary"
+              checked={!showPhaseLabels}
+              onChange={e => dispatch(setAAShowPhaseLabels(!e.target.checked))}
+            />
+          }
+          label={<Typography>{t('Hide phase labels')}</Typography>}
+        />
+      )}
       {showDescription && (
         <>
           <Typography>
@@ -114,6 +140,10 @@ const useStyles = makeStyles(() =>
       flexWrap: 'nowrap',
       gap: '0.5rem',
     },
+    toggleLabel: {
+      marginLeft: 0,
+      marginBottom: '0.75rem',
+    },
     dialogButton: {
       fontWeight: 'bold',
       textDecoration: 'underline',
@@ -124,5 +154,6 @@ const useStyles = makeStyles(() =>
 
 interface AADroughtLegendProps {
   showDescription?: boolean;
+  forPrinting?: boolean;
 }
 export default AADroughtLegend;
