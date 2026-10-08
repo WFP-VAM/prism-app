@@ -7,7 +7,7 @@ import {
   MapEventWrapFunctionProps,
   units,
 } from 'config/types';
-import { LayerDefinitions } from 'config/utils';
+import { isAnticipatoryActionLayer, LayerDefinitions } from 'config/utils';
 import {
   analysisResultSelector,
   invertedColorsSelector,
@@ -388,7 +388,17 @@ function AnalysisLayer({
       ? invertLegendColors(analysisData.legend)
       : analysisData?.legend;
 
-  if (!analysisData || !isAnalysisLayerActive || !legend) {
+  // Hide analysis while an AA module is active (same as hazard layers).
+  const hasAnticipatoryActionLayer = layers.some(layer =>
+    isAnticipatoryActionLayer(layer.type),
+  );
+
+  if (
+    !analysisData ||
+    !isAnalysisLayerActive ||
+    !legend ||
+    hasAnticipatoryActionLayer
+  ) {
     return null;
   }
 

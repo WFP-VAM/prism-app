@@ -124,7 +124,8 @@ function LegendItemsList({
 
   // add analysis legend item if layer is active and analysis result exists
   const analysisLegendItem = useMemo(() => {
-    if (!isAnalysisLayerActive || !hasData) {
+    // Hide analysis while an AA module is active (same as hazard layers).
+    if (!isAnalysisLayerActive || !hasData || AALayerInUrl) {
       return [];
     }
     return [
@@ -152,6 +153,7 @@ function LegendItemsList({
   }, [
     isAnalysisLayerActive,
     hasData,
+    AALayerInUrl,
     analysisResult,
     invertedColorsForAnalysis,
     t,

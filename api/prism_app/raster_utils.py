@@ -34,7 +34,7 @@ def gdal_calc(
     calc_expr = calc_expr or "A*(B==1)"
 
     # Generate string of process.
-    gdal_calc_str = '{0} -A {1} -B {2} --outfile={3} --calc="{4}" --NoDataValue={5} --extent=intersect --overwrite > /dev/null'
+    gdal_calc_str = '{0} -A {1} -B {2} --outfile={3} --calc="{4}" --NoDataValue={5} --extent=intersect --overwrite'
     gdal_calc_process = gdal_calc_str.format(
         gdal_calc_path,
         input_file_path,
@@ -48,7 +48,14 @@ def gdal_calc(
     logger.debug(gdal_calc_process)
 
     # TODO - secure call input or remove shell=True
-    subprocess.check_call(str(gdal_calc_process), shell=True)
+    # Swallow child stderr: gdal_calc prints a full traceback on pixel-size
+    # mismatch before callers retry with reprojection (#1502).
+    subprocess.check_call(
+        str(gdal_calc_process),
+        shell=True,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
 
 
 @timed

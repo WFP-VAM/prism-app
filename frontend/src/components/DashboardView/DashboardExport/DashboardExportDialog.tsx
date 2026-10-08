@@ -22,6 +22,7 @@ import { useSafeTranslation } from 'i18n';
 import { jsPDF } from 'jspdf';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { fetchUnifiedCountryBoundaryPolygon } from 'utils/adminAreaClipPolygon';
 import { getFormattedDate } from 'utils/date-utils';
 
 import DashboardExportContext, {
@@ -134,10 +135,9 @@ function DashboardExportDialog({
       return;
     }
 
-    // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
+    // Shared cache with adminAreaClipPolygon / useDeploymentClipPolygon (#1567).
     if (selectedBoundaries.length === 0) {
-      fetch(`data/${safeCountry}/admin-boundary-unified-polygon.json`)
-        .then(response => response.json())
+      fetchUnifiedCountryBoundaryPolygon(safeCountry)
         .then(polygonData => {
           const maskedPolygon = mask(polygonData as any);
           setAdminBoundaryPolygon(maskedPolygon as any);
@@ -166,12 +166,14 @@ function DashboardExportDialog({
 
     if (filteredData.features.length === 0) {
       // Fall back to full country mask if no features match
-      fetch(`data/${safeCountry}/admin-boundary-unified-polygon.json`)
-        .then(response => response.json())
+      fetchUnifiedCountryBoundaryPolygon(safeCountry)
         .then(polygonData => {
           const maskedPolygon = mask(polygonData as any);
           setAdminBoundaryPolygon(maskedPolygon as any);
-        });
+        })
+        .catch(error =>
+          console.error('Error loading admin boundary polygon:', error),
+        );
       return;
     }
 

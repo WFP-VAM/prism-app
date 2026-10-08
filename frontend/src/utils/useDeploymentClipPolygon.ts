@@ -4,6 +4,8 @@ import type { Feature, MultiPolygon, Polygon } from 'geojson';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { fetchUnifiedCountryBoundaryPolygon } from './adminAreaClipPolygon';
+
 export type DeploymentClipPolygon = Feature<Polygon | MultiPolygon>;
 
 export type DeploymentClipPolygonState = {
@@ -12,30 +14,14 @@ export type DeploymentClipPolygonState = {
   failed: boolean;
 };
 
-// Shared across every consumer (COG + PMTiles, main map + export) so the
-// outline is fetched once and a failure is reported once.
-let polygonRequest: Promise<DeploymentClipPolygon> | null = null;
 let failureNotified = false;
-
-function loadDeploymentClipPolygon(): Promise<DeploymentClipPolygon> {
-  if (!polygonRequest) {
-    polygonRequest = fetch(
-      `/data/${safeCountry}/admin-boundary-unified-polygon.json`,
-    ).then(response => {
-      if (!response.ok) {
-        throw new Error(`${response.status} ${response.statusText}`);
-      }
-      return response.json() as Promise<DeploymentClipPolygon>;
-    });
-  }
-  return polygonRequest;
-}
 
 /**
  * Unified deployment country outline from preprocess-layers.
  * Used to scope global datasets (e.g. FTW PMTiles) to the active country.
  * Only fetches when `enabled`, so layers that don't clip never trigger the
  * request or its failure warning (e.g. deployments without the outline file).
+ * Shares the fetch cache with adminAreaClipPolygon and other callers.
  */
 export function useDeploymentClipPolygon(
   enabled: boolean,
@@ -52,7 +38,7 @@ export function useDeploymentClipPolygon(
     }
     let cancelled = false;
 
-    loadDeploymentClipPolygon()
+    fetchUnifiedCountryBoundaryPolygon(safeCountry)
       .then(polygon => {
         if (!cancelled) {
           setState({ polygon, failed: false });
