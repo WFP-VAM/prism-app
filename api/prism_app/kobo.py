@@ -3,7 +3,7 @@
 import logging
 from datetime import datetime, timedelta, timezone
 from os import getenv
-from typing import Any, Optional, TypedDict, TypeVar
+from typing import Any, Optional, TypedDict
 from urllib.parse import quote_plus, urljoin
 
 import requests
@@ -15,8 +15,6 @@ from pydantic import HttpUrl
 from shapely.geometry import Point, box
 
 logger = logging.getLogger(__name__)
-
-T = TypeVar("T")
 
 kobo_username = getenv("KOBO_USERNAME", "")
 if kobo_username == "":
@@ -33,9 +31,14 @@ class KoboForm(TypedDict):
     filters: dict
 
 
-def get_first(items_list: list[T]) -> Optional[T]:
-    """Safely return the first element of a list."""
-    return items_list[0] if items_list else None
+def find_value_by_key_suffix(
+    form_dict: dict[str, Any], suffix: str
+) -> Optional[Any]:
+    """Return the first dict value whose key ends with suffix, else None."""
+    for key, value in form_dict.items():
+        if key.endswith(suffix):
+            return value
+    return None
 
 
 def get_kobo_params(
@@ -107,9 +110,7 @@ def parse_form_response(
 
         # Otherwise, use the label as the end of the dictionary key.
         if value is None:
-            value = get_first(
-                [value for key, value in form_dict.items() if key.endswith(label_name)]
-            )
+            value = find_value_by_key_suffix(form_dict, label_name)
         # If the value is still None, no need to parse.
         if value is None:
             continue
@@ -117,14 +118,10 @@ def parse_form_response(
         form_data[label_name] = parse_form_field(value, label_type)
 
     datetime_field = form_fields.get("datetime", "DoesNotExist")
-    datetime_value_string = get_first(
-        [value for key, value in form_dict.items() if key.endswith(datetime_field)]
-    )
+    datetime_value_string = find_value_by_key_suffix(form_dict, datetime_field)
     if datetime_value_string is None:
         # Use the start date if the datetime field is missing.
-        datetime_value_string = datetime_value_string = get_first(
-            [value for key, value in form_dict.items() if key.endswith("start")]
-        )
+        datetime_value_string = find_value_by_key_suffix(form_dict, "start")
         if datetime_value_string:
             logger.warning(
                 "datetime_field %s is missing in form: %s, using start date instead",
@@ -143,9 +140,7 @@ def parse_form_response(
     )
 
     geom_field = form_fields.get("geom_field") or "DoesNotExist"
-    geom_value_string = get_first(
-        [value for key, value in form_dict.items() if key.endswith(geom_field)]
-    )
+    geom_value_string = find_value_by_key_suffix(form_dict, geom_field)
 
     # Some forms do not have geom_field properly setup. So we default to
     # 'geopoint' here and handle edge cases in parse_form_field.

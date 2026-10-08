@@ -3,12 +3,12 @@ import {
   IconButton,
   makeStyles,
   Slider,
-  Switch,
   Tooltip,
   Typography,
 } from '@material-ui/core';
 import OpacityIcon from '@material-ui/icons/Opacity';
 import { createStyles } from '@material-ui/styles';
+import Switch from 'components/Common/Switch';
 import { clearAnalysisResult } from 'context/analysisResultStateSlice';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import {
@@ -190,19 +190,11 @@ const AnalysisLayerSwitchItem = memo(
             alignItems: 'center',
           }}
         >
-          <div style={{ display: 'flex' }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
             <Switch
-              size="small"
-              className={classes.switch}
-              classes={{
-                switchBase: classes.switchBase,
-                track: classes.switchTrack,
-              }}
               checked={selected}
               onChange={handleOnChangeSwitch}
-              inputProps={{
-                'aria-label': title,
-              }}
+              ariaLabel={title}
             />
             <Typography
               className={selected ? classes.title : classes.titleUnchecked}
@@ -265,21 +257,6 @@ const useStyles = makeStyles(() =>
       fontWeight: 300,
       padding: 0,
       marginLeft: 5,
-    },
-    switch: {
-      marginRight: 2,
-    },
-    switchTrack: {
-      backgroundColor: '#E0E0E0',
-    },
-    switchBase: {
-      color: '#E0E0E0',
-      '&.Mui-checked': {
-        color: '#53888F',
-      },
-      '&.Mui-checked + .MuiSwitch-track': {
-        backgroundColor: '#B1D6DB',
-      },
     },
     opacityRoot: {
       marginLeft: 'auto',

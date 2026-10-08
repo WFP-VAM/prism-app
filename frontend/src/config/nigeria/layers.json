@@ -4043,8 +4043,6 @@
       "2019-10-01",
       "2021-02-01",
       "2021-06-01",
-      "2021-10-01",
-      "2022-02-01",
       "2022-06-01",
       "2022-10-01",
       "2023-06-01"
@@ -4152,10 +4150,8 @@
       "2019-10-01",
       "2021-02-01",
       "2021-06-01",
-      "2022-02-01",
       "2022-06-01",
       "2022-10-01",
-      "2023-02-01",
       "2023-06-01"
     ],
     "validityPeriod": {
@@ -4279,16 +4275,8 @@
     "fill_pattern": "left",
     "path": "data/nigeria/ch/al_admin2_{YYYY_MM_DD}.json",
     "dates": [
-      "2020-02-01",
-      "2020-06-01",
-      "2020-10-01",
-      "2021-02-01",
-      "2021-06-01",
-      "2021-10-01",
       "2022-02-01",
-      "2022-06-01",
-      "2022-10-01",
-      "2023-06-01"
+      "2022-06-01"
     ],
     "validityPeriod": {
       "start_date_field": "start_date",
@@ -4343,16 +4331,8 @@
     "fill_pattern": "left",
     "path": "data/nigeria/ch/al_admin2_{YYYY_MM_DD}.json",
     "dates": [
-      "2020-02-01",
-      "2020-06-01",
-      "2020-10-01",
-      "2021-02-01",
-      "2021-06-01",
-      "2021-10-01",
       "2022-02-01",
-      "2022-06-01",
-      "2022-10-01",
-      "2023-06-01"
+      "2022-06-01"
     ],
     "validityPeriod": {
       "start_date_field": "start_date",
@@ -4416,7 +4396,7 @@
     "type": "admin_level_data",
     "fill_pattern": "left",
     "path": "data/nigeria/ch/urb_admin2_{YYYY_MM_DD}.json",
-    "dates": ["2021-02-01", "2021-06-01", "2022-02-01", "2022-06-01"],
+    "dates": [],
     "validityPeriod": {
       "start_date_field": "start_date",
       "end_date_field": "end_date"
@@ -4469,7 +4449,7 @@
     "type": "admin_level_data",
     "fill_pattern": "left",
     "path": "data/nigeria/ch/urb_admin2_{YYYY_MM_DD}.json",
-    "dates": ["2022-02-01", "2022-06-01", "2023-06-01"],
+    "dates": [],
     "validityPeriod": {
       "start_date_field": "start_date",
       "end_date_field": "end_date"
