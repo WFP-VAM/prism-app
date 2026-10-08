@@ -647,7 +647,7 @@ function PrintConfig() {
         {/* AA drought phase labels */}
         {isDroughtAA && (
           <SectionToggle
-            title={t('Phase labels')}
+            title={t('Phase Labels')}
             expanded={showPhaseLabels}
             handleChange={({ target }) =>
               dispatch(setAAShowPhaseLabels(Boolean(target.checked)))
