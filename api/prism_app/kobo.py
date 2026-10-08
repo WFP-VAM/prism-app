@@ -31,9 +31,7 @@ class KoboForm(TypedDict):
     filters: dict
 
 
-def find_value_by_key_suffix(
-    form_dict: dict[str, Any], suffix: str
-) -> Optional[Any]:
+def find_value_by_key_suffix(form_dict: dict[str, Any], suffix: str) -> Optional[Any]:
     """Return the first dict value whose key ends with suffix, else None."""
     for key, value in form_dict.items():
         if key.endswith(suffix):
