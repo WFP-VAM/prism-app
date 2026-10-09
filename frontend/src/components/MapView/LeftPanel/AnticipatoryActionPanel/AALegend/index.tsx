@@ -36,7 +36,12 @@ function AALegend({
           : undefined
       }
     >
-      {isDroughtAA && <AADroughtLegend showDescription={showDescription} />}
+      {isDroughtAA && (
+        <AADroughtLegend
+          showDescription={showDescription}
+          forPrinting={forPrinting}
+        />
+      )}
       {isStormAA && <AAStormLegend />}
       {isFloodAA && <AAFloodLegend />}
     </Paper>

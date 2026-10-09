@@ -24,9 +24,15 @@ import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import Switch from 'components/Common/Switch';
 import { AspectRatio } from 'components/MapExport/types';
 import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
-import { LayerKey } from 'config/types';
+import { LayerKey, Panel } from 'config/types';
+import {
+  AAShowPhaseLabelsSelector,
+  setAAShowPhaseLabels,
+} from 'context/anticipatoryAction/AADroughtStateSlice';
+import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { cyanBlue } from 'muiTheme';
 import React, { useContext, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import {
   BATCH_MAP_LAYER_URL_KEY,
@@ -299,6 +305,10 @@ function PrintConfig() {
   const { jobs: activeBatchJobs } = useBatchMapExportJobsState();
   const { dismissBatchMapExportJob } = useBatchMapExportJobsActions();
   const { printConfig } = useContext(PrintConfigContext);
+  const dispatch = useDispatch();
+  const isDroughtAA =
+    useSelector(leftPanelTabValueSelector) === Panel.AnticipatoryActionDrought;
+  const showPhaseLabels = useSelector(AAShowPhaseLabelsSelector);
   const [isPrismAuthenticated, setIsPrismAuthenticated] = useState(false);
   const [canManageSchedules, setCanManageSchedules] = useState(false);
   const [scheduleSessionStatus, setScheduleSessionStatus] =
@@ -633,6 +643,17 @@ function PrintConfig() {
             />
           </div>
         </SectionToggle>
+
+        {/* AA drought phase labels */}
+        {isDroughtAA && (
+          <SectionToggle
+            title={t('Phase Labels')}
+            expanded={showPhaseLabels}
+            handleChange={({ target }) =>
+              dispatch(setAAShowPhaseLabels(Boolean(target.checked)))
+            }
+          />
+        )}
 
         {/* Legend */}
         <SectionToggle

@@ -11,6 +11,7 @@ import {
   AAMarkersSelector,
   AARenderedDistrictsSelector,
   AASelectedDistrictSelector,
+  AAShowPhaseLabelsSelector,
   setAAMarkers,
   setAASelectedDistrict,
   setAAView,
@@ -63,6 +64,7 @@ const AnticipatoryActionDroughtLayer = React.memo(
     const { selectedWindow } = useSelector(AAFiltersSelector);
     const selectedDistrict = useSelector(AASelectedDistrictSelector);
     const markers = useSelector(AAMarkersSelector);
+    const showPhaseLabels = useSelector(AAShowPhaseLabelsSelector);
 
     useMapCallback(
       'click',
@@ -153,25 +155,26 @@ const AnticipatoryActionDroughtLayer = React.memo(
 
     return (
       <>
-        {markers.map(marker => (
-          <Marker
-            key={`marker-${marker.district}`}
-            longitude={marker.longitude}
-            latitude={marker.latitude}
-            anchor="center"
-          >
-            <Tooltip title={marker.district} arrow>
-              <div
-                style={{
-                  transform: `scale(${scalePercent})`,
-                  cursor: 'pointer',
-                }}
-              >
-                {marker.icon}
-              </div>
-            </Tooltip>
-          </Marker>
-        ))}
+        {showPhaseLabels &&
+          markers.map(marker => (
+            <Marker
+              key={`marker-${marker.district}`}
+              longitude={marker.longitude}
+              latitude={marker.latitude}
+              anchor="center"
+            >
+              <Tooltip title={marker.district} arrow>
+                <div
+                  style={{
+                    transform: `scale(${scalePercent})`,
+                    cursor: 'pointer',
+                  }}
+                >
+                  {marker.icon}
+                </div>
+              </Tooltip>
+            </Marker>
+          ))}
         <Source
           id="anticipatory-action-selected"
           type="geojson"

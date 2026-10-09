@@ -31,7 +31,7 @@ exports[`HomeTable renders as expected 1`] = `
       >
         <div
           class="makeStyles-iconWrapper-16"
-          style="background: rgb(131, 31, 0);"
+          style="background: rgb(128, 0, 38);"
         >
           <div
             class="makeStyles-centerContainer-17"
@@ -39,13 +39,13 @@ exports[`HomeTable renders as expected 1`] = `
           >
             <div
               class="makeStyles-topTextContainer-18"
-              style="border-bottom: 1px solid white; background: rgb(131, 31, 0);"
+              style="border-bottom: 1px solid white; background: rgb(128, 0, 38);"
             >
               S
             </div>
             <div
               class="makeStyles-bottomTextContainer-19"
-              style="background: rgb(131, 31, 0);"
+              style="background: rgb(128, 0, 38);"
             >
               SEV
             </div>
@@ -80,7 +80,7 @@ exports[`HomeTable renders as expected 1`] = `
       >
         <div
           class="makeStyles-iconWrapper-16"
-          style="background: rgb(230, 55, 1);"
+          style="background: rgb(194, 4, 37);"
         >
           <div
             class="makeStyles-centerContainer-17"
@@ -88,13 +88,13 @@ exports[`HomeTable renders as expected 1`] = `
           >
             <div
               class="makeStyles-topTextContainer-18"
-              style="border-bottom: 1px solid white; background: rgb(230, 55, 1);"
+              style="border-bottom: 1px solid white; background: rgb(194, 4, 37);"
             >
               R
             </div>
             <div
               class="makeStyles-bottomTextContainer-19"
-              style="background: rgb(230, 55, 1);"
+              style="background: rgb(194, 4, 37);"
             >
               SEV
             </div>
@@ -129,7 +129,7 @@ exports[`HomeTable renders as expected 1`] = `
       >
         <div
           class="makeStyles-iconWrapper-16"
-          style="background: rgb(255, 137, 52);"
+          style="background: rgb(234, 41, 32);"
         >
           <div
             class="makeStyles-centerContainer-17"
@@ -137,13 +137,13 @@ exports[`HomeTable renders as expected 1`] = `
           >
             <div
               class="makeStyles-topTextContainer-18"
-              style="border-bottom: 1px solid black; background: rgb(255, 137, 52);"
+              style="border-bottom: 1px solid black; background: rgb(234, 41, 32);"
             >
               S
             </div>
             <div
               class="makeStyles-bottomTextContainer-19"
-              style="background: rgb(255, 137, 52);"
+              style="background: rgb(234, 41, 32);"
             >
               MOD
             </div>
@@ -178,7 +178,7 @@ exports[`HomeTable renders as expected 1`] = `
       >
         <div
           class="makeStyles-iconWrapper-16"
-          style="background: rgb(255, 213, 45);"
+          style="background: rgb(252, 105, 50);"
         >
           <div
             class="makeStyles-centerContainer-17"
@@ -186,13 +186,13 @@ exports[`HomeTable renders as expected 1`] = `
           >
             <div
               class="makeStyles-topTextContainer-18"
-              style="border-bottom: 1px solid black; background: rgb(255, 213, 45);"
+              style="border-bottom: 1px solid black; background: rgb(252, 105, 50);"
             >
               R
             </div>
             <div
               class="makeStyles-bottomTextContainer-19"
-              style="background: rgb(255, 213, 45);"
+              style="background: rgb(252, 105, 50);"
             >
               MOD
             </div>
@@ -228,7 +228,7 @@ exports[`HomeTable renders as expected 1`] = `
       >
         <div
           class="makeStyles-iconWrapper-16"
-          style="background: rgb(255, 245, 3);"
+          style="background: rgb(254, 162, 69);"
         >
           <div
             class="makeStyles-centerContainer-17"
@@ -236,13 +236,13 @@ exports[`HomeTable renders as expected 1`] = `
           >
             <div
               class="makeStyles-topTextContainer-18"
-              style="border-bottom: 1px solid black; background: rgb(255, 245, 3);"
+              style="border-bottom: 1px solid black; background: rgb(254, 162, 69);"
             >
               S
             </div>
             <div
               class="makeStyles-bottomTextContainer-19"
-              style="background: rgb(255, 245, 3);"
+              style="background: rgb(254, 162, 69);"
             >
               MIL
             </div>
@@ -277,7 +277,7 @@ exports[`HomeTable renders as expected 1`] = `
       >
         <div
           class="makeStyles-iconWrapper-16"
-          style="background: rgb(255, 252, 179);"
+          style="background: rgb(254, 206, 106);"
         >
           <div
             class="makeStyles-centerContainer-17"
@@ -285,13 +285,13 @@ exports[`HomeTable renders as expected 1`] = `
           >
             <div
               class="makeStyles-topTextContainer-18"
-              style="border-bottom: 1px solid black; background: rgb(255, 252, 179);"
+              style="border-bottom: 1px solid black; background: rgb(254, 206, 106);"
             >
               R
             </div>
             <div
               class="makeStyles-bottomTextContainer-19"
-              style="background: rgb(255, 252, 179);"
+              style="background: rgb(254, 206, 106);"
             >
               MIL
             </div>
