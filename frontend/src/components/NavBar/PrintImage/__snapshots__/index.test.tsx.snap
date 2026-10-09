@@ -565,7 +565,7 @@ exports[`renders as expected 1`] = `
                   style="padding-left: 0.5rem;"
                   variant="h4"
                 >
-                  Phase labels
+                  Phase Labels
                 </mock-typography>
               </div>
             </div>
