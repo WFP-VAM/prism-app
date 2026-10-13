@@ -188,6 +188,8 @@ function AnticipatoryActionFloodPanel() {
     return {
       time: avg.forecast_issue_date,
       risk_level: avg.trigger_status || 'Not exceeded',
+      floodStatus: avg.floodStatus,
+      phase: avg.phase,
     } as any;
   };
 
@@ -202,7 +204,7 @@ function AnticipatoryActionFloodPanel() {
         case 'date':
           return aData?.time || '';
         case 'risk_level':
-          return getFloodRiskSeverity(aData?.risk_level);
+          return getFloodRiskSeverity(aData?.floodStatus || aData?.risk_level);
         default:
           return '';
       }
@@ -215,7 +217,7 @@ function AnticipatoryActionFloodPanel() {
         case 'date':
           return bData?.time || '';
         case 'risk_level':
-          return getFloodRiskSeverity(bData?.risk_level);
+          return getFloodRiskSeverity(bData?.floodStatus || bData?.risk_level);
         default:
           return '';
       }
@@ -341,7 +343,15 @@ function AnticipatoryActionFloodPanel() {
                           gap: 8,
                         }}
                       >
-                        <Typography>{t(stationData.risk_level)}</Typography>
+                        <Typography>
+                          {stationData.phase
+                            ? `${t(
+                                stationData.phase === 'activation'
+                                  ? 'Activation'
+                                  : 'Readiness',
+                              )} · ${t(stationData.risk_level)}`
+                            : t(stationData.risk_level)}
+                        </Typography>
                         <span
                           style={{
                             display: 'inline-block',

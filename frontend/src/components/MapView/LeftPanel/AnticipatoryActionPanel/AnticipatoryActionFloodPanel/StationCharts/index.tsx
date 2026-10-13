@@ -24,6 +24,10 @@ import {
   setAAFloodStationDetailViewMode,
 } from 'context/anticipatoryAction/AAFloodStateSlice';
 import { FloodStation } from 'context/anticipatoryAction/AAFloodStateSlice/types';
+import {
+  isForecastDateInWindow,
+  parseFloodStatus,
+} from 'context/anticipatoryAction/AAFloodStateSlice/utils';
 import { useSafeTranslation } from 'i18n';
 import sortBy from 'lodash/sortBy';
 import type { MouseEvent as ReactMouseEvent } from 'react';
@@ -286,14 +290,42 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     };
   }, [floodState.forecastData, station.station_name, probs, t]);
 
-  const beginIdx = forecastWindow.start - 1;
-  const endIdx = forecastWindow.end - 1;
-
   // Prepare trigger probability data from fetched probabilities
   const sortedData = sortBy(probs, p => new Date(p.time).getTime());
   const labels = sortedData.map(
     d => getFormattedDate(d.time, 'shortDayFirst') as string,
   );
+
+  const usesCombinationWindows = Boolean(stationSummary?.combinations?.length);
+  const parsedStatus = parseFloodStatus(
+    stationSummary?.floodStatus || stationSummary?.trigger_status,
+  );
+  const activeCombination = usesCombinationWindows
+    ? stationSummary?.combinations?.find(
+        combo => `${combo.phase}_${combo.severity}` === parsedStatus.id,
+      )
+    : undefined;
+
+  let beginIdx = usesCombinationWindows ? -1 : forecastWindow.start - 1;
+  let endIdx = usesCombinationWindows ? -1 : forecastWindow.end - 1;
+  if (activeCombination) {
+    sortedData.forEach((point, idx) => {
+      if (
+        isForecastDateInWindow(
+          point.time,
+          activeCombination.windowBegin,
+          activeCombination.windowEnd,
+        )
+      ) {
+        if (beginIdx < 0) {
+          beginIdx = idx;
+        }
+        endIdx = idx;
+      }
+    });
+  }
+  const windowStartDay = beginIdx >= 0 ? beginIdx + 1 : undefined;
+  const windowEndDay = endIdx >= 0 ? endIdx + 1 : undefined;
 
   const triggerProbabilityData = useMemo(() => {
     if (!probs || probs.length === 0) {
@@ -304,10 +336,28 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     const moderateSeries = sortedData.map(d => d.moderatePercentage);
     const severeSeries = sortedData.map(d => d.severePercentage);
 
-    // Use averaged window means and triggers from station_summary_file.csv
-    const bankfullMean = stationSummary?.avg_bankfull_percentage ?? 0;
-    const moderateMean = stationSummary?.avg_moderate_percentage ?? 0;
-    const severeMean = stationSummary?.avg_severe_percentage ?? 0;
+    // Legacy files: means from the single window. New files: the active combination only.
+    const meanFor = (
+      severity: 'bankfull' | 'moderate' | 'severe',
+      legacy: number | undefined,
+    ): number | null => {
+      if (!usesCombinationWindows) {
+        return legacy ?? 0;
+      }
+      if (activeCombination?.severity !== severity) {
+        return null;
+      }
+      return activeCombination.avgProbability;
+    };
+    const bankfullMean = meanFor(
+      'bankfull',
+      stationSummary?.avg_bankfull_percentage,
+    );
+    const moderateMean = meanFor(
+      'moderate',
+      stationSummary?.avg_moderate_percentage,
+    );
+    const severeMean = meanFor('severe', stationSummary?.avg_severe_percentage);
 
     // Build flat series over the window only (NaN elsewhere)
     const flatWindowSeries = (value: number | null) =>
@@ -317,16 +367,30 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           : NaN,
       );
 
-    // Only show mean fill for the highest severity exceeded
-    const bankfullExceeded =
-      typeof stationSummary?.trigger_bankfull === 'number' &&
-      bankfullMean > stationSummary.trigger_bankfull;
-    const moderateExceeded =
-      typeof stationSummary?.trigger_moderate === 'number' &&
-      moderateMean > stationSummary.trigger_moderate;
-    const severeExceeded =
-      typeof stationSummary?.trigger_severe === 'number' &&
-      severeMean > stationSummary.trigger_severe;
+    // New files trust the pipeline status. Legacy files still compare mean > trigger.
+    const bankfullExceeded = usesCombinationWindows
+      ? activeCombination?.severity === 'bankfull'
+      : typeof stationSummary?.trigger_bankfull === 'number' &&
+        (bankfullMean ?? 0) > stationSummary.trigger_bankfull;
+    const moderateExceeded = usesCombinationWindows
+      ? activeCombination?.severity === 'moderate'
+      : typeof stationSummary?.trigger_moderate === 'number' &&
+        (moderateMean ?? 0) > stationSummary.trigger_moderate;
+    const severeExceeded = usesCombinationWindows
+      ? activeCombination?.severity === 'severe'
+      : typeof stationSummary?.trigger_severe === 'number' &&
+        (severeMean ?? 0) > stationSummary.trigger_severe;
+    const thresholdFillIndex = usesCombinationWindows
+      ? 0
+      : (() => {
+          if (severeExceeded) {
+            return 2;
+          }
+          if (moderateExceeded) {
+            return 1;
+          }
+          return 0;
+        })();
 
     const fillDatasets: any[] = (() => {
       if (severeExceeded) {
@@ -338,7 +402,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             backgroundColor: 'rgba(230, 55, 1, 0.25)',
             borderWidth: 0,
             pointRadius: 0,
-            fill: 2, // fill to Severe threshold dataset
+            fill: thresholdFillIndex,
             tension: 0,
             lineTension: 0,
           },
@@ -353,7 +417,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             backgroundColor: 'rgba(255, 140, 33, 0.25)',
             borderWidth: 0,
             pointRadius: 0,
-            fill: 1, // fill to Moderate threshold dataset
+            fill: thresholdFillIndex,
             tension: 0,
             lineTension: 0,
           },
@@ -368,7 +432,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             backgroundColor: 'rgba(255, 204, 0, 0.25)',
             borderWidth: 0,
             pointRadius: 0,
-            fill: 0, // fill to Bankfull threshold dataset
+            fill: thresholdFillIndex,
             tension: 0,
             lineTension: 0,
           },
@@ -377,47 +441,55 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       return [];
     })();
 
-    const thresholdDatasets = [
+    const thresholdColor = {
+      bankfull: 'rgba(255, 204, 0, 0.8)',
+      moderate: 'rgba(255, 140, 33, 0.8)',
+      severe: 'rgba(230, 55, 1, 0.8)',
+    };
+    const thresholdLabel = {
+      bankfull: t('Bankfull'),
+      moderate: t('Moderate'),
+      severe: t('Severe'),
+    };
+    const legacyThresholds = [
       stationSummary?.trigger_bankfull !== undefined && {
-        label: `${t('Bankfull')} ${t('threshold')}`,
-        data: Array.from(
-          { length: labels.length },
-          () => stationSummary!.trigger_bankfull as number,
-        ),
-        borderColor: 'rgba(255, 204, 0, 0.8)',
-        backgroundColor: 'transparent',
-        borderWidth: 2,
-        borderDash: [6, 6],
-        pointRadius: 0,
-        fill: false,
+        severity: 'bankfull' as const,
+        value: stationSummary!.trigger_bankfull as number,
       },
       stationSummary?.trigger_moderate !== undefined && {
-        label: `${t('Moderate')} ${t('threshold')}`,
-        data: Array.from(
-          { length: labels.length },
-          () => stationSummary!.trigger_moderate as number,
-        ),
-        borderColor: 'rgba(255, 140, 33, 0.8)',
-        backgroundColor: 'transparent',
-        borderWidth: 2,
-        borderDash: [6, 6],
-        pointRadius: 0,
-        fill: false,
+        severity: 'moderate' as const,
+        value: stationSummary!.trigger_moderate as number,
       },
       stationSummary?.trigger_severe !== undefined && {
-        label: `${t('Severe')} ${t('threshold')}`,
-        data: Array.from(
-          { length: labels.length },
-          () => stationSummary!.trigger_severe as number,
-        ),
-        borderColor: 'rgba(230, 55, 1, 0.8)',
-        backgroundColor: 'transparent',
-        borderWidth: 2,
-        borderDash: [6, 6],
-        pointRadius: 0,
-        fill: false,
+        severity: 'severe' as const,
+        value: stationSummary!.trigger_severe as number,
       },
-    ].filter(Boolean) as any[];
+    ].filter(Boolean) as {
+      severity: 'bankfull' | 'moderate' | 'severe';
+      value: number;
+    }[];
+    const activeThresholds =
+      usesCombinationWindows && typeof activeCombination?.trigger === 'number'
+        ? [
+            {
+              severity: activeCombination.severity,
+              value: activeCombination.trigger,
+            },
+          ]
+        : legacyThresholds;
+    const shownThresholds = usesCombinationWindows
+      ? activeThresholds
+      : legacyThresholds;
+    const thresholdDatasets = shownThresholds.map(item => ({
+      label: `${thresholdLabel[item.severity]} ${t('threshold')}`,
+      data: Array.from({ length: labels.length }, () => item.value),
+      borderColor: thresholdColor[item.severity],
+      backgroundColor: 'transparent',
+      borderWidth: 2,
+      borderDash: [6, 6],
+      pointRadius: 0,
+      fill: false,
+    }));
 
     return {
       labels,
@@ -498,7 +570,17 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         ...fillDatasets,
       ],
     };
-  }, [probs, stationSummary, sortedData, t, labels, beginIdx, endIdx]);
+  }, [
+    probs,
+    stationSummary,
+    sortedData,
+    t,
+    labels,
+    beginIdx,
+    endIdx,
+    usesCombinationWindows,
+    activeCombination,
+  ]);
 
   const hydrographOptions = useMemo(
     () => ({
@@ -594,6 +676,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       stationSummary?.trigger_bankfull,
       stationSummary?.trigger_moderate,
       stationSummary?.trigger_severe,
+      activeCombination?.trigger,
     ].filter((v): v is number => typeof v === 'number');
     const maxPct = Math.max(
       50,
@@ -625,7 +708,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                 enabled: true,
                 position: 'top',
                 content: t('{{day}}-day forecast', {
-                  day: forecastWindow.start,
+                  day: windowStartDay,
                 }),
                 backgroundColor: 'rgba(0,0,0,0)',
                 fontColor: AAFloodColors.annotation.forecastStart,
@@ -647,7 +730,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
               label: {
                 enabled: true,
                 position: 'top',
-                content: t('{{day}}-day forecast', { day: forecastWindow.end }),
+                content: t('{{day}}-day forecast', { day: windowEndDay }),
                 backgroundColor: 'rgba(0,0,0,0)',
                 fontColor: AAFloodColors.annotation.forecastEnd,
                 xAdjust: -50,
@@ -686,7 +769,18 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         annotations,
       },
     } as any;
-  }, [probs, stationSummary, labels, beginIdx, endIdx, t, hydrographOptions]);
+  }, [
+    probs,
+    stationSummary,
+    labels,
+    beginIdx,
+    endIdx,
+    t,
+    hydrographOptions,
+    windowStartDay,
+    windowEndDay,
+    activeCombination,
+  ]);
 
   const handleTabChange = (newValue: number) => {
     dispatch(setAAFloodStationDetailActiveTab(newValue));

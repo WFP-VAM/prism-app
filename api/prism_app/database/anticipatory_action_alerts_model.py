@@ -56,3 +56,8 @@ class AnticipatoryActionAlerts(SQLModel, table=True):
         default=None,
         sa_column=Column(JSONB, nullable=True),
     )
+    # Hazard-specific JSON. Column name in Postgres is metadata.
+    alert_metadata: dict | None = Field(
+        default=None,
+        sa_column=Column("metadata", JSONB, nullable=True),
+    )
