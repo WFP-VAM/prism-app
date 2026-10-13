@@ -1,9 +1,11 @@
+import { isAnticipatoryActionLayer } from 'config/utils';
 import {
   analysisResultOpacitySelector,
   analysisResultSelector,
   analysisResultSortByKeySelector,
   analysisResultSortOrderSelector,
 } from 'context/analysisResultStateSlice';
+import { layersSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
 import { memo } from 'react';
 import { useSelector } from 'react-redux';
@@ -15,9 +17,15 @@ const RootAnalysisAccordionItems = memo(() => {
   const analysisResultSortOrder = useSelector(analysisResultSortOrderSelector);
   const analysisResultSortByKey = useSelector(analysisResultSortByKeySelector);
   const analysisResultOpacity = useSelector(analysisResultOpacitySelector);
+  const selectedLayers = useSelector(layersSelector);
   const { t } = useSafeTranslation();
 
-  if (!analysisData) {
+  const hasAnticipatoryActionLayer = selectedLayers.some(layer =>
+    isAnticipatoryActionLayer(layer.type),
+  );
+
+  // Hide analysis results in the layers panel while an AA module is active.
+  if (!analysisData || hasAnticipatoryActionLayer) {
     return null;
   }
   return (

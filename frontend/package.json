@@ -26,7 +26,7 @@
     "lint:ci": "yarn lint --max-warnings 0",
     "lint": "eslint --cache \"**/*.{js,jsx,ts,tsx}\"",
     "preview": "vite preview",
-    "setup:common": "rimraf ./node_modules/prism-common && cd ../common && yarn install --network-timeout 600000 && yarn build && cd ../frontend && yarn install --check-files",
+    "setup:common": "rm -rf ./node_modules/prism-common && cd ../common && yarn install --network-timeout 600000 && yarn build && cd ../frontend && yarn install --check-files",
     "setup:common_in_ci": "rm -rf ./node_modules/prism-common && cd ../common && yarn install --network-timeout 600000 && yarn build_in_ci && cd ../frontend",
     "clean": "pushd ../common && rimraf ./node_modules && popd && rimraf ./node_modules",
     "analyze": "yarn build && npx source-map-explorer 'build/static/js/*.js'",
