@@ -207,6 +207,7 @@
   "Add custom text here": "Add custom text here",
   "Loading chart data...": "Loading chart data...",
   "No chart data available": "No chart data available",
+  "Chart data is not available for this area": "Chart data is not available for this area",
   "This layer is not configured for charts. Please select a layer with chart data.": "This layer is not configured for charts. Please select a layer with chart data.",
   "No chart configured": "No chart configured",
   "Loading...": "Loading...",

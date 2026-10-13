@@ -1,11 +1,10 @@
-import { appConfig } from 'config';
 import { WMSLayerProps } from 'config/types';
-import { resolveChartBoundaryProperty } from 'utils/universal-utils';
+import { getChartAdminCode } from 'utils/chart-admin-code';
 
 /**
  * Whether a tooltip chart row can resolve an HDC id_code for the given
  * admin level. Mirrors useChartData: prefer dv_adm{n}_id on the clicked
- * feature, then fall back to the country-level HDC id.
+ * feature, falling back to the country-level HDC id only for level 0.
  *
  * Returns true when properties are missing so the legacy popup path
  * (no captured feature properties) keeps showing chart rows.
@@ -20,13 +19,8 @@ export function hasChartAdminId(
     return true;
   }
 
-  const fallbackId = countryAdmin0Id ?? appConfig.countryAdmin0Id;
-  const levelEntry = chartLayer.chartData?.levels.find(
-    entry => Number(entry.level) === chartLevel,
+  return (
+    getChartAdminCode(chartLayer, properties, chartLevel, countryAdmin0Id) !==
+    undefined
   );
-  const resolvedId = levelEntry
-    ? resolveChartBoundaryProperty(properties, levelEntry.id)
-    : undefined;
-
-  return Boolean(resolvedId) || Boolean(fallbackId);
 }
