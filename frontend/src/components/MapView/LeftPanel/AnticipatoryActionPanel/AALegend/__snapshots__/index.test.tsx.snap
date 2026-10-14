@@ -202,13 +202,13 @@ exports[`renders as expected 1`] = `
             >
               <div
                 class="makeStyles-topTextContainer-21"
-                style="border-bottom: 1px solid white; background: rgb(128, 0, 38);"
+                style="border-bottom: 1px solid white; background: rgb(131, 31, 0);"
               >
                 S
               </div>
               <div
                 class="makeStyles-bottomTextContainer-22"
-                style="background: rgb(128, 0, 38);"
+                style="background: rgb(131, 31, 0);"
               >
                 SEV
               </div>
@@ -239,13 +239,13 @@ exports[`renders as expected 1`] = `
             >
               <div
                 class="makeStyles-topTextContainer-21"
-                style="border-bottom: 1px solid white; background: rgb(194, 4, 37);"
+                style="border-bottom: 1px solid white; background: rgb(230, 55, 1);"
               >
                 R
               </div>
               <div
                 class="makeStyles-bottomTextContainer-22"
-                style="background: rgb(194, 4, 37);"
+                style="background: rgb(230, 55, 1);"
               >
                 SEV
               </div>
@@ -276,13 +276,13 @@ exports[`renders as expected 1`] = `
             >
               <div
                 class="makeStyles-topTextContainer-21"
-                style="border-bottom: 1px solid black; background: rgb(234, 41, 32);"
+                style="border-bottom: 1px solid black; background: rgb(255, 137, 52);"
               >
                 S
               </div>
               <div
                 class="makeStyles-bottomTextContainer-22"
-                style="background: rgb(234, 41, 32);"
+                style="background: rgb(255, 137, 52);"
               >
                 MOD
               </div>
@@ -313,13 +313,13 @@ exports[`renders as expected 1`] = `
             >
               <div
                 class="makeStyles-topTextContainer-21"
-                style="border-bottom: 1px solid black; background: rgb(252, 105, 50);"
+                style="border-bottom: 1px solid black; background: rgb(255, 213, 45);"
               >
                 R
               </div>
               <div
                 class="makeStyles-bottomTextContainer-22"
-                style="background: rgb(252, 105, 50);"
+                style="background: rgb(255, 213, 45);"
               >
                 MOD
               </div>
@@ -350,13 +350,13 @@ exports[`renders as expected 1`] = `
             >
               <div
                 class="makeStyles-topTextContainer-21"
-                style="border-bottom: 1px solid black; background: rgb(254, 162, 69);"
+                style="border-bottom: 1px solid black; background: rgb(255, 245, 3);"
               >
                 S
               </div>
               <div
                 class="makeStyles-bottomTextContainer-22"
-                style="background: rgb(254, 162, 69);"
+                style="background: rgb(255, 245, 3);"
               >
                 MIL
               </div>
@@ -387,13 +387,13 @@ exports[`renders as expected 1`] = `
             >
               <div
                 class="makeStyles-topTextContainer-21"
-                style="border-bottom: 1px solid black; background: rgb(254, 206, 106);"
+                style="border-bottom: 1px solid black; background: rgb(255, 252, 179);"
               >
                 R
               </div>
               <div
                 class="makeStyles-bottomTextContainer-22"
-                style="background: rgb(254, 206, 106);"
+                style="background: rgb(255, 252, 179);"
               >
                 MIL
               </div>
