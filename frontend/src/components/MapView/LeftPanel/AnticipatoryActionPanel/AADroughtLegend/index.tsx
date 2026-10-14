@@ -15,10 +15,8 @@ import { borderGray } from 'muiTheme';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import {
-  getDescriptionText,
-  getLegendPhases,
-} from '../AnticipatoryActionDroughtPanel/utils/countryConfig';
+import { getLegendPhases } from '../AnticipatoryActionDroughtPanel/utils';
+import { getDescriptionText } from '../AnticipatoryActionDroughtPanel/utils/countryConfig';
 import HowToReadModal from '../HowToReadModal';
 import { useAACommonStyles } from '../utils';
 
