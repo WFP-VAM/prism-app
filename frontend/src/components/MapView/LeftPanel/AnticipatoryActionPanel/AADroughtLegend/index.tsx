@@ -1,11 +1,13 @@
 import {
+  Box,
   createStyles,
   Divider,
-  FormControlLabel,
+  IconButton,
   makeStyles,
-  Switch,
+  Tooltip,
   Typography,
 } from '@material-ui/core';
+import { Label, LabelOff } from '@material-ui/icons';
 import {
   AAShowPhaseLabelsSelector,
   setAAShowPhaseLabels,
@@ -33,6 +35,9 @@ function AADroughtLegend({
 
   const phases = getLegendPhases();
   const descriptionText = getDescriptionText();
+  const phaseLabelsActionLabel = showPhaseLabels
+    ? 'Hide phase labels'
+    : 'Show phase labels';
 
   return (
     <>
@@ -65,20 +70,6 @@ function AADroughtLegend({
           </div>
         ))}
       </div>
-      {!forPrinting && (
-        <FormControlLabel
-          className={classes.toggleLabel}
-          control={
-            <Switch
-              size="small"
-              color="primary"
-              checked={!showPhaseLabels}
-              onChange={e => dispatch(setAAShowPhaseLabels(!e.target.checked))}
-            />
-          }
-          label={<Typography>{t('Hide phase labels')}</Typography>}
-        />
-      )}
       {showDescription && (
         <>
           <Typography>
@@ -126,6 +117,26 @@ function AADroughtLegend({
           </div>
         </>
       )}
+      {!forPrinting && (
+        <>
+          <Divider style={{ margin: '8px 0px' }} />
+          <Box style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Tooltip title={t(phaseLabelsActionLabel) as string}>
+              <IconButton
+                size="small"
+                aria-label={t(phaseLabelsActionLabel) as string}
+                onClick={() => dispatch(setAAShowPhaseLabels(!showPhaseLabels))}
+              >
+                {showPhaseLabels ? (
+                  <LabelOff fontSize="small" />
+                ) : (
+                  <Label fontSize="small" />
+                )}
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </>
+      )}
     </>
   );
 }
@@ -137,10 +148,6 @@ const useStyles = makeStyles(() =>
       flexDirection: 'row',
       flexWrap: 'nowrap',
       gap: '0.5rem',
-    },
-    toggleLabel: {
-      marginLeft: 0,
-      marginBottom: '0.75rem',
     },
     dialogButton: {
       fontWeight: 'bold',
