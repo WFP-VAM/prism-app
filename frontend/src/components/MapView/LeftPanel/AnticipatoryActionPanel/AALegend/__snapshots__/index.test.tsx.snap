@@ -12,7 +12,7 @@ exports[`renders as expected 1`] = `
       <mock-dialog>
         <mock-dialogtitle>
           <div
-            class="makeStyles-titleWrapper-14"
+            class="makeStyles-titleWrapper-13"
           >
             <mock-typography
               variant="h2"
@@ -49,10 +49,10 @@ exports[`renders as expected 1`] = `
           dividers=""
         >
           <div
-            class="makeStyles-contentWrapper-15"
+            class="makeStyles-contentWrapper-14"
           >
             <div
-              class="makeStyles-contentItem-16"
+              class="makeStyles-contentItem-15"
             >
               <mock-typography
                 style="font-weight: bold;"
@@ -69,7 +69,7 @@ exports[`renders as expected 1`] = `
                
             </div>
             <div
-              class="makeStyles-contentItem-16"
+              class="makeStyles-contentItem-15"
             >
               <mock-typography
                 style="font-weight: bold;"
@@ -86,7 +86,7 @@ exports[`renders as expected 1`] = `
                
             </div>
             <div
-              class="makeStyles-contentItem-16"
+              class="makeStyles-contentItem-15"
             >
               <mock-typography
                 style="font-weight: bold;"
@@ -103,7 +103,7 @@ exports[`renders as expected 1`] = `
                
             </div>
             <div
-              class="makeStyles-contentItem-16"
+              class="makeStyles-contentItem-15"
             >
               <mock-typography
                 style="font-weight: bold;"
@@ -120,7 +120,7 @@ exports[`renders as expected 1`] = `
                
             </div>
             <div
-              class="makeStyles-contentItem-16"
+              class="makeStyles-contentItem-15"
             >
               <mock-typography
                 style="font-weight: bold;"
@@ -137,7 +137,7 @@ exports[`renders as expected 1`] = `
                
             </div>
             <div
-              class="makeStyles-contentItem-16"
+              class="makeStyles-contentItem-15"
             >
               <mock-typography
                 style="font-weight: bold;"
@@ -156,10 +156,10 @@ exports[`renders as expected 1`] = `
           </div>
         </mock-dialogcontent>
         <mock-dialogactions
-          class="makeStyles-dialogActionsWrapper-17"
+          class="makeStyles-dialogActionsWrapper-16"
         >
           <mock-button
-            class="makeStyles-dialogButton-18"
+            class="makeStyles-dialogButton-17"
             component="a"
             href="mailto:anticipatory_action@wfp.org"
             starticon="[object Object]"
@@ -171,7 +171,7 @@ exports[`renders as expected 1`] = `
             </mock-typography>
           </mock-button>
           <mock-button
-            class="makeStyles-dialogButton-18"
+            class="makeStyles-dialogButton-17"
             starticon="[object Object]"
             variant="outlined"
           >
@@ -194,20 +194,20 @@ exports[`renders as expected 1`] = `
           class="makeStyles-itemWrapper-2"
         >
           <div
-            class="makeStyles-iconWrapper-19"
+            class="makeStyles-iconWrapper-18"
           >
             <div
-              class="makeStyles-centerContainer-20"
+              class="makeStyles-centerContainer-19"
               style="border: 1px solid white; color: white;"
             >
               <div
-                class="makeStyles-topTextContainer-21"
+                class="makeStyles-topTextContainer-20"
                 style="border-bottom: 1px solid white; background: rgb(131, 31, 0);"
               >
                 S
               </div>
               <div
-                class="makeStyles-bottomTextContainer-22"
+                class="makeStyles-bottomTextContainer-21"
                 style="background: rgb(131, 31, 0);"
               >
                 SEV
@@ -231,20 +231,20 @@ exports[`renders as expected 1`] = `
           class="makeStyles-itemWrapper-2"
         >
           <div
-            class="makeStyles-iconWrapper-19"
+            class="makeStyles-iconWrapper-18"
           >
             <div
-              class="makeStyles-centerContainer-20"
+              class="makeStyles-centerContainer-19"
               style="border: 1px solid white; color: white;"
             >
               <div
-                class="makeStyles-topTextContainer-21"
+                class="makeStyles-topTextContainer-20"
                 style="border-bottom: 1px solid white; background: rgb(230, 55, 1);"
               >
                 R
               </div>
               <div
-                class="makeStyles-bottomTextContainer-22"
+                class="makeStyles-bottomTextContainer-21"
                 style="background: rgb(230, 55, 1);"
               >
                 SEV
@@ -268,20 +268,20 @@ exports[`renders as expected 1`] = `
           class="makeStyles-itemWrapper-2"
         >
           <div
-            class="makeStyles-iconWrapper-19"
+            class="makeStyles-iconWrapper-18"
           >
             <div
-              class="makeStyles-centerContainer-20"
+              class="makeStyles-centerContainer-19"
               style="border: 1px solid black; color: black;"
             >
               <div
-                class="makeStyles-topTextContainer-21"
+                class="makeStyles-topTextContainer-20"
                 style="border-bottom: 1px solid black; background: rgb(255, 137, 52);"
               >
                 S
               </div>
               <div
-                class="makeStyles-bottomTextContainer-22"
+                class="makeStyles-bottomTextContainer-21"
                 style="background: rgb(255, 137, 52);"
               >
                 MOD
@@ -305,20 +305,20 @@ exports[`renders as expected 1`] = `
           class="makeStyles-itemWrapper-2"
         >
           <div
-            class="makeStyles-iconWrapper-19"
+            class="makeStyles-iconWrapper-18"
           >
             <div
-              class="makeStyles-centerContainer-20"
+              class="makeStyles-centerContainer-19"
               style="border: 1px solid black; color: black;"
             >
               <div
-                class="makeStyles-topTextContainer-21"
+                class="makeStyles-topTextContainer-20"
                 style="border-bottom: 1px solid black; background: rgb(255, 213, 45);"
               >
                 R
               </div>
               <div
-                class="makeStyles-bottomTextContainer-22"
+                class="makeStyles-bottomTextContainer-21"
                 style="background: rgb(255, 213, 45);"
               >
                 MOD
@@ -342,20 +342,20 @@ exports[`renders as expected 1`] = `
           class="makeStyles-itemWrapper-2"
         >
           <div
-            class="makeStyles-iconWrapper-19"
+            class="makeStyles-iconWrapper-18"
           >
             <div
-              class="makeStyles-centerContainer-20"
+              class="makeStyles-centerContainer-19"
               style="border: 1px solid black; color: black;"
             >
               <div
-                class="makeStyles-topTextContainer-21"
+                class="makeStyles-topTextContainer-20"
                 style="border-bottom: 1px solid black; background: rgb(255, 245, 3);"
               >
                 S
               </div>
               <div
-                class="makeStyles-bottomTextContainer-22"
+                class="makeStyles-bottomTextContainer-21"
                 style="background: rgb(255, 245, 3);"
               >
                 MIL
@@ -379,20 +379,20 @@ exports[`renders as expected 1`] = `
           class="makeStyles-itemWrapper-2"
         >
           <div
-            class="makeStyles-iconWrapper-19"
+            class="makeStyles-iconWrapper-18"
           >
             <div
-              class="makeStyles-centerContainer-20"
+              class="makeStyles-centerContainer-19"
               style="border: 1px solid black; color: black;"
             >
               <div
-                class="makeStyles-topTextContainer-21"
+                class="makeStyles-topTextContainer-20"
                 style="border-bottom: 1px solid black; background: rgb(255, 252, 179);"
               >
                 R
               </div>
               <div
-                class="makeStyles-bottomTextContainer-22"
+                class="makeStyles-bottomTextContainer-21"
                 style="background: rgb(255, 252, 179);"
               >
                 MIL
@@ -416,14 +416,14 @@ exports[`renders as expected 1`] = `
           class="makeStyles-itemWrapper-2"
         >
           <div
-            class="makeStyles-iconWrapper-19"
+            class="makeStyles-iconWrapper-18"
           >
             <div
-              class="makeStyles-centerContainer-20"
+              class="makeStyles-centerContainer-19"
               style="border: 1px solid black; color: black;"
             >
               <div
-                class="makeStyles-topTextContainer-21"
+                class="makeStyles-topTextContainer-20"
                 style="background: rgb(241, 241, 241);"
               >
                 na
@@ -442,14 +442,14 @@ exports[`renders as expected 1`] = `
           class="makeStyles-itemWrapper-2"
         >
           <div
-            class="makeStyles-iconWrapper-19"
+            class="makeStyles-iconWrapper-18"
           >
             <div
-              class="makeStyles-centerContainer-20"
+              class="makeStyles-centerContainer-19"
               style="border: 1px solid black; color: black;"
             >
               <div
-                class="makeStyles-topTextContainer-21"
+                class="makeStyles-topTextContainer-20"
                 style="background: rgb(241, 241, 241);"
               >
                 ny
@@ -465,25 +465,9 @@ exports[`renders as expected 1`] = `
           </div>
         </div>
       </div>
-      <label
-        class="MuiFormControlLabel-root makeStyles-toggleLabel-3"
-      >
-        <mock-switch
-          color="primary"
-          size="small"
-        />
-        <mock-typography
-          class="MuiFormControlLabel-label"
-          component="span"
-        >
-          <mock-typography>
-            Hide phase labels
-          </mock-typography>
-        </mock-typography>
-      </label>
       <mock-typography>
         <span
-          class="makeStyles-dialogButton-4"
+          class="makeStyles-dialogButton-3"
           role="button"
           tabindex="0"
         >
@@ -516,7 +500,7 @@ exports[`renders as expected 1`] = `
           class="makeStyles-itemWrapper-2"
         >
           <div
-            class="makeStyles-newTag-12"
+            class="makeStyles-newTag-11"
           >
             NEW
           </div>
@@ -524,6 +508,42 @@ exports[`renders as expected 1`] = `
             District in new phase this month
           </mock-typography>
         </div>
+      </div>
+      <mock-divider
+        style="margin: 8px 0px;"
+      />
+      <div
+        class="MuiBox-root MuiBox-root-22"
+        style="display: flex; justify-content: space-between;"
+      >
+        <mock-tooltip
+          title="Hide phase labels"
+        >
+          <button
+            aria-label="Hide phase labels"
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall"
+            tabindex="0"
+            type="button"
+          >
+            <span
+              class="MuiIconButton-label"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M3.25 2.75l17 17L19 21l-2-2H5c-1.1 0-2-.9-2-2V7c0-.55.23-1.05.59-1.41L2 4l1.25-1.25zM22 12l-4.37-6.16C17.27 5.33 16.67 5 16 5H8l11 11 3-4z"
+                />
+              </svg>
+            </span>
+            <span
+              class="MuiTouchRipple-root"
+            />
+          </button>
+        </mock-tooltip>
       </div>
     </div>
   </mock-listitem>
