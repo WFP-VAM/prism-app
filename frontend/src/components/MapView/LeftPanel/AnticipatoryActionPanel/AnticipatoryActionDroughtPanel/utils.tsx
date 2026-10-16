@@ -21,32 +21,66 @@ import {
 } from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { useSafeTranslation } from 'i18n';
 import { black, borderGray, lightGrey } from 'muiTheme';
+import type { ReactElement } from 'react';
 
 import AAIcon from '../AAIcon';
+import {
+  AADroughtColorOverrides,
+  AADroughtPalette,
+  AAPhaseColor,
+  getAADroughtCountryConfig,
+} from './utils/countryConfig';
 
-// Centralized colors for AA Drought
-export const AADroughtColors = {
-  categories: {
-    na: { background: '#F1F1F1', text: 'black' },
-    ny: { background: '#F1F1F1', text: 'black' },
-    severe: {
-      set: { background: '#831F00', text: 'white' },
-      ready: { background: '#E63701', text: 'white' },
-    },
-    moderate: {
-      set: { background: '#FF8934', text: 'black' },
-      ready: { background: '#FFD52D', text: 'black' },
-    },
-    mild: {
-      set: { background: '#FFF503', text: 'black' },
-      ready: { background: '#FFFCB3', text: 'black' },
-    },
-    normal: {
-      set: { background: '#FFF503', text: 'black' },
-      ready: { background: '#FFFCB3', text: 'black' },
-    },
+// Default colors for AA Drought. Countries can override any of these via
+// `colors` in their country config (see utils/countryConfig.ts).
+export const DEFAULT_AA_DROUGHT_COLORS: AADroughtPalette = {
+  na: { background: '#F1F1F1', text: 'black' },
+  ny: { background: '#F1F1F1', text: 'black' },
+  severe: {
+    set: { background: '#831F00', text: 'white' },
+    ready: { background: '#E63701', text: 'white' },
   },
-} as const;
+  moderate: {
+    set: { background: '#FF8934', text: 'black' },
+    ready: { background: '#FFD52D', text: 'black' },
+  },
+  mild: {
+    set: { background: '#FFF503', text: 'black' },
+    ready: { background: '#FFFCB3', text: 'black' },
+  },
+  normal: {
+    set: { background: '#FFF503', text: 'black' },
+    ready: { background: '#FFFCB3', text: 'black' },
+  },
+};
+
+const mergePhaseColor = (
+  base: AAPhaseColor,
+  override?: Partial<AAPhaseColor>,
+): AAPhaseColor => ({ ...base, ...override });
+
+export const mergeAADroughtColors = (
+  overrides: AADroughtColorOverrides = {},
+): AADroughtPalette => {
+  const mergeCategory = (key: 'severe' | 'moderate' | 'mild' | 'normal') => ({
+    set: mergePhaseColor(
+      DEFAULT_AA_DROUGHT_COLORS[key].set,
+      overrides[key]?.set,
+    ),
+    ready: mergePhaseColor(
+      DEFAULT_AA_DROUGHT_COLORS[key].ready,
+      overrides[key]?.ready,
+    ),
+  });
+  return {
+    na: mergePhaseColor(DEFAULT_AA_DROUGHT_COLORS.na, overrides.na),
+    ny: mergePhaseColor(DEFAULT_AA_DROUGHT_COLORS.ny, overrides.ny),
+    severe: mergeCategory('severe'),
+    moderate: mergeCategory('moderate'),
+    mild: mergeCategory('mild'),
+    normal: mergeCategory('normal'),
+  };
+};
 
 const StyledRadio = withStyles({
   root: {
@@ -135,128 +169,134 @@ export const StyledCheckboxLabel = withStyles({
   ),
 );
 
-const AACategoryPhaseMap: { [key: string]: any } = {
+const buildAACategoryPhaseMap = (
+  colors: AADroughtPalette,
+): { [key: string]: any } => ({
   na: {
-    color: AADroughtColors.categories.na.background,
+    color: colors.na.background,
     iconProps: {
       topText: 'na',
       bottomText: '-',
-      color: AADroughtColors.categories.na.text,
+      color: colors.na.text,
     },
   },
   ny: {
-    color: AADroughtColors.categories.ny.background, // Note: Special handling required for 'ny' in getAAColor for non-layer usage
+    color: colors.ny.background, // Note: Special handling required for 'ny' in getAAColor for non-layer usage
     iconProps: {
       topText: 'ny',
       bottomText: '-',
-      color: AADroughtColors.categories.ny.text,
+      color: colors.ny.text,
     },
   },
   Severe: {
     Set: {
-      color: AADroughtColors.categories.severe.set.background,
+      color: colors.severe.set.background,
       iconProps: {
         topText: 'S',
         bottomText: 'SEV',
-        color: AADroughtColors.categories.severe.set.text,
+        color: colors.severe.set.text,
       },
     },
     Ready: {
-      color: AADroughtColors.categories.severe.ready.background,
+      color: colors.severe.ready.background,
       iconProps: {
         topText: 'R',
         bottomText: 'SEV',
-        color: AADroughtColors.categories.severe.ready.text,
+        color: colors.severe.ready.text,
       },
     },
     na: {
-      color: AADroughtColors.categories.na.background,
+      color: colors.na.background,
       iconProps: {
         topText: 'na',
         bottomText: 'SEV',
-        color: AADroughtColors.categories.na.text,
+        color: colors.na.text,
       },
     },
   },
   Moderate: {
     Set: {
-      color: AADroughtColors.categories.moderate.set.background,
+      color: colors.moderate.set.background,
       iconProps: {
         topText: 'S',
         bottomText: 'MOD',
-        color: AADroughtColors.categories.moderate.set.text,
+        color: colors.moderate.set.text,
       },
     },
     Ready: {
-      color: AADroughtColors.categories.moderate.ready.background,
+      color: colors.moderate.ready.background,
       iconProps: {
         topText: 'R',
         bottomText: 'MOD',
-        color: AADroughtColors.categories.moderate.ready.text,
+        color: colors.moderate.ready.text,
       },
     },
     na: {
-      color: AADroughtColors.categories.na.background,
+      color: colors.na.background,
       iconProps: {
         topText: 'na',
         bottomText: 'MOD',
-        color: AADroughtColors.categories.na.text,
+        color: colors.na.text,
       },
     },
   },
   Mild: {
     Set: {
-      color: AADroughtColors.categories.mild.set.background,
+      color: colors.mild.set.background,
       iconProps: {
         topText: 'S',
         bottomText: 'MIL',
-        color: AADroughtColors.categories.mild.set.text,
+        color: colors.mild.set.text,
       },
     },
     Ready: {
-      color: AADroughtColors.categories.mild.ready.background,
+      color: colors.mild.ready.background,
       iconProps: {
         topText: 'R',
         bottomText: 'MIL',
-        color: AADroughtColors.categories.mild.ready.text,
+        color: colors.mild.ready.text,
       },
     },
     na: {
-      color: AADroughtColors.categories.na.background,
+      color: colors.na.background,
       iconProps: {
         topText: 'na',
         bottomText: 'MIL',
-        color: AADroughtColors.categories.na.text,
+        color: colors.na.text,
       },
     },
   },
   Normal: {
     Set: {
-      color: AADroughtColors.categories.normal.set.background,
+      color: colors.normal.set.background,
       iconProps: {
         topText: 'S',
         bottomText: 'BNO',
-        color: AADroughtColors.categories.normal.set.text,
+        color: colors.normal.set.text,
       },
     },
     Ready: {
-      color: AADroughtColors.categories.normal.ready.background,
+      color: colors.normal.ready.background,
       iconProps: {
         topText: 'R',
         bottomText: 'BNO',
-        color: AADroughtColors.categories.normal.ready.text,
+        color: colors.normal.ready.text,
       },
     },
     na: {
-      color: AADroughtColors.categories.na.background,
+      color: colors.na.background,
       iconProps: {
         topText: 'na',
         bottomText: 'BNO',
-        color: AADroughtColors.categories.na.text,
+        color: colors.na.text,
       },
     },
   },
-};
+});
+
+const AACategoryPhaseMap = buildAACategoryPhaseMap(
+  mergeAADroughtColors(getAADroughtCountryConfig().colors),
+);
 
 export function getAAColor(
   category: AACategoryType,
@@ -267,8 +307,8 @@ export function getAAColor(
   if (category === 'ny' && !forLayer) {
     return `repeating-linear-gradient(
       -45deg,
-      ${AADroughtColors.categories.na.background},
-      ${AADroughtColors.categories.na.background} 10px,
+      ${DEFAULT_AA_DROUGHT_COLORS.na.background},
+      ${DEFAULT_AA_DROUGHT_COLORS.na.background} 10px,
       white 10px,
       white 20px
     )`;
@@ -326,3 +366,25 @@ export function AADataSeverityOrder(
 
   return catIndex * 10 + phaseBonus;
 }
+
+export const getLegendPhases = () => {
+  const config = getAADroughtCountryConfig();
+
+  return config.legendPhases.map(phase => {
+    let icon: ReactElement;
+
+    const category = config.categories.find(
+      cat => cat.label === phase.severity,
+    )?.id;
+
+    if (category) {
+      icon = getAAIcon(category, phase.phase as 'Ready' | 'Set', true);
+    } else if (phase.phase === 'No Action') {
+      icon = getAAIcon('na', 'na', true);
+    } else {
+      icon = getAAIcon('ny', 'ny', true);
+    }
+
+    return { ...phase, icon };
+  });
+};
