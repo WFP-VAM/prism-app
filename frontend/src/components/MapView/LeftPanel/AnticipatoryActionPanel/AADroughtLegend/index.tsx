@@ -7,7 +7,7 @@ import {
   Tooltip,
   Typography,
 } from '@material-ui/core';
-import { Label, LabelOff } from '@material-ui/icons';
+import { Visibility, VisibilityOff } from '@material-ui/icons';
 import {
   AAShowPhaseLabelsSelector,
   setAAShowPhaseLabels,
@@ -43,9 +43,26 @@ function AADroughtLegend({
     <>
       <HowToReadModal open={open} onClose={() => setOpen(false)} />
 
-      <Typography variant="h3" style={{ fontWeight: 'bold' }}>
-        {t('Phases')}
-      </Typography>
+      <Box className={classes.headerRow}>
+        <Typography variant="h3" style={{ fontWeight: 'bold' }}>
+          {t('Phases')}
+        </Typography>
+        {!forPrinting && (
+          <Tooltip title={t(phaseLabelsActionLabel) as string}>
+            <IconButton
+              size="small"
+              aria-label={t(phaseLabelsActionLabel) as string}
+              onClick={() => dispatch(setAAShowPhaseLabels(!showPhaseLabels))}
+            >
+              {showPhaseLabels ? (
+                <VisibilityOff fontSize="small" />
+              ) : (
+                <Visibility fontSize="small" />
+              )}
+            </IconButton>
+          </Tooltip>
+        )}
+      </Box>
       <div
         style={{
           display: 'flex',
@@ -117,32 +134,17 @@ function AADroughtLegend({
           </div>
         </>
       )}
-      {!forPrinting && (
-        <>
-          <Divider style={{ margin: '8px 0px' }} />
-          <Box style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Tooltip title={t(phaseLabelsActionLabel) as string}>
-              <IconButton
-                size="small"
-                aria-label={t(phaseLabelsActionLabel) as string}
-                onClick={() => dispatch(setAAShowPhaseLabels(!showPhaseLabels))}
-              >
-                {showPhaseLabels ? (
-                  <LabelOff fontSize="small" />
-                ) : (
-                  <Label fontSize="small" />
-                )}
-              </IconButton>
-            </Tooltip>
-          </Box>
-        </>
-      )}
     </>
   );
 }
 
 const useStyles = makeStyles(() =>
   createStyles({
+    headerRow: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
     itemWrapper: {
       display: 'flex',
       flexDirection: 'row',
