@@ -7,7 +7,10 @@ import {
   SelectedDateTimestamp,
 } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
-import { AAMarkersSelector } from 'context/anticipatoryAction/AADroughtStateSlice';
+import {
+  AAMarkersSelector,
+  AAShowPhaseLabelsSelector,
+} from 'context/anticipatoryAction/AADroughtStateSlice';
 import { AAFloodDataSelector } from 'context/anticipatoryAction/AAFloodStateSlice';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import {
@@ -60,6 +63,7 @@ function PrintPreview() {
   const dateRange = useSelector(dateRangeSelector);
   const availableDates = useSelector(availableDatesSelector);
   const AAMarkers = useSelector(AAMarkersSelector);
+  const showAAPhaseLabels = useSelector(AAShowPhaseLabelsSelector);
   const floodState = useSelector(AAFloodDataSelector);
   const tabValue = useSelector(leftPanelTabValueSelector);
   const { t } = useSafeTranslation();
@@ -356,7 +360,7 @@ function PrintPreview() {
         footerHeight={footerHeight}
         bottomLogo={bottomLogo}
         bottomLogoScale={bottomLogoScale}
-        aaMarkers={AAMarkers}
+        aaMarkers={showAAPhaseLabels ? AAMarkers : []}
         floodStations={filteredFloodStations}
         activePanel={activePanel}
         selectedLayers={printSelectedLayers}
