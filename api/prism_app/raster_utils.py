@@ -48,14 +48,27 @@ def gdal_calc(
     logger.debug(gdal_calc_process)
 
     # TODO - secure call input or remove shell=True
-    # Swallow child stderr: gdal_calc prints a full traceback on pixel-size
-    # mismatch before callers retry with reprojection (#1502).
-    subprocess.check_call(
+    # Capture child output instead of letting gdal_calc print a full traceback
+    # on recoverable pixel-size mismatch (#1502). Attach stderr to the raised
+    # error so unrecovered failures (e.g. the post-reprojection retry) stay
+    # diagnosable.
+    result = subprocess.run(
         str(gdal_calc_process),
         shell=True,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
+        capture_output=True,
+        text=True,
+        check=False,
     )
+    if result.returncode != 0:
+        detail = (result.stderr or result.stdout or "").strip()
+        if detail:
+            logger.debug("gdal_calc stderr: %s", detail)
+        # Put GDAL text in the exception message: CalledProcessError.__str__
+        # omits stderr, and the post-reprojection retry must stay diagnosable.
+        message = f"gdal_calc.py failed with exit {result.returncode}"
+        if detail:
+            message = f"{message}:\n{detail}"
+        raise RuntimeError(message)
 
 
 @timed
