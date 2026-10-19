@@ -82,6 +82,7 @@ export type AnticipatoryActionState = {
     icon: React.JSX.Element;
     centroid: any;
   }[];
+  showPhaseLabels: boolean;
   windowRanges: Record<
     (typeof AAWindowKeys)[number],
     { start: string; end: string } | undefined

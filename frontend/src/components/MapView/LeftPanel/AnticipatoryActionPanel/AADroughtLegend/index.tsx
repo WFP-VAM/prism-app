@@ -1,36 +1,68 @@
 import {
+  Box,
   createStyles,
   Divider,
+  IconButton,
   makeStyles,
+  Tooltip,
   Typography,
 } from '@material-ui/core';
+import { Visibility, VisibilityOff } from '@material-ui/icons';
+import {
+  AAShowPhaseLabelsSelector,
+  setAAShowPhaseLabels,
+} from 'context/anticipatoryAction/AADroughtStateSlice';
 import { useSafeTranslation } from 'i18n';
 import { borderGray } from 'muiTheme';
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import {
-  getDescriptionText,
-  getLegendPhases,
-} from '../AnticipatoryActionDroughtPanel/utils/countryConfig';
+import { getLegendPhases } from '../AnticipatoryActionDroughtPanel/utils';
+import { getDescriptionText } from '../AnticipatoryActionDroughtPanel/utils/countryConfig';
 import HowToReadModal from '../HowToReadModal';
 import { useAACommonStyles } from '../utils';
 
-function AADroughtLegend({ showDescription = true }: AADroughtLegendProps) {
+function AADroughtLegend({
+  showDescription = true,
+  forPrinting = false,
+}: AADroughtLegendProps) {
   const [open, setOpen] = React.useState(false);
+  const dispatch = useDispatch();
+  const showPhaseLabels = useSelector(AAShowPhaseLabelsSelector);
   const classes = useStyles();
   const commonClasses = useAACommonStyles();
   const { t } = useSafeTranslation();
 
   const phases = getLegendPhases();
   const descriptionText = getDescriptionText();
+  const phaseLabelsActionLabel = showPhaseLabels
+    ? 'Hide phase labels'
+    : 'Show phase labels';
 
   return (
     <>
       <HowToReadModal open={open} onClose={() => setOpen(false)} />
 
-      <Typography variant="h3" style={{ fontWeight: 'bold' }}>
-        {t('Phases')}
-      </Typography>
+      <Box className={classes.headerRow}>
+        <Typography variant="h3" style={{ fontWeight: 'bold' }}>
+          {t('Phases')}
+        </Typography>
+        {!forPrinting && (
+          <Tooltip title={t(phaseLabelsActionLabel) as string}>
+            <IconButton
+              size="small"
+              aria-label={t(phaseLabelsActionLabel) as string}
+              onClick={() => dispatch(setAAShowPhaseLabels(!showPhaseLabels))}
+            >
+              {showPhaseLabels ? (
+                <VisibilityOff fontSize="small" />
+              ) : (
+                <Visibility fontSize="small" />
+              )}
+            </IconButton>
+          </Tooltip>
+        )}
+      </Box>
       <div
         style={{
           display: 'flex',
@@ -108,6 +140,11 @@ function AADroughtLegend({ showDescription = true }: AADroughtLegendProps) {
 
 const useStyles = makeStyles(() =>
   createStyles({
+    headerRow: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
     itemWrapper: {
       display: 'flex',
       flexDirection: 'row',
@@ -124,5 +161,6 @@ const useStyles = makeStyles(() =>
 
 interface AADroughtLegendProps {
   showDescription?: boolean;
+  forPrinting?: boolean;
 }
 export default AADroughtLegend;
