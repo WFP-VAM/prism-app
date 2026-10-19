@@ -5,8 +5,6 @@ import {
 } from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import React from 'react';
 
-import { getAAIcon } from '../utils';
-
 /**
  * AA Drought Country Configuration Guide
  *
@@ -34,9 +32,42 @@ import { getAAIcon } from '../utils';
  *
  *   // 4. Forecast source (optional)
  *   forecastSource: 'ECMWF', // or 'default'
+ *
+ *   // 5. Phase colors (optional) - override any subset of the defaults
+ *   colors: {
+ *     severe: { set: { background: '#800026', text: 'white' } },
+ *   },
  * }
  * ```
  */
+
+export type AAPhaseColor = { background: string; text: string };
+
+type AACategoryColors = { set: AAPhaseColor; ready: AAPhaseColor };
+
+export type AADroughtPalette = {
+  na: AAPhaseColor;
+  ny: AAPhaseColor;
+  severe: AACategoryColors;
+  moderate: AACategoryColors;
+  mild: AACategoryColors;
+  normal: AACategoryColors;
+};
+
+type AACategoryColorOverrides = Partial<{
+  set: Partial<AAPhaseColor>;
+  ready: Partial<AAPhaseColor>;
+}>;
+
+// Any subset of the default palette; unspecified entries keep the defaults.
+export type AADroughtColorOverrides = Partial<{
+  na: Partial<AAPhaseColor>;
+  ny: Partial<AAPhaseColor>;
+  severe: AACategoryColorOverrides;
+  moderate: AACategoryColorOverrides;
+  mild: AACategoryColorOverrides;
+  normal: AACategoryColorOverrides;
+}>;
 
 export interface AADroughtCountryConfig {
   // Basic configuration
@@ -63,6 +94,9 @@ export interface AADroughtCountryConfig {
 
   // Forecast source (for country-specific descriptions)
   forecastSource?: string; // e.g., "ECMWF", "default"
+
+  // Phase color overrides (background and text), merged onto the defaults
+  colors?: AADroughtColorOverrides;
 }
 
 /**
@@ -77,6 +111,7 @@ const createCountryConfig = (options: {
   seasonStartMonth: number;
   forecastSource?: string;
   singleWindowMode?: boolean;
+  colors?: AADroughtColorOverrides;
   customContent?: {
     howToReadContent?: Array<{ title: string; text: string }>;
     descriptionText?: string;
@@ -87,6 +122,7 @@ const createCountryConfig = (options: {
     seasonStartMonth,
     forecastSource,
     singleWindowMode = false,
+    colors,
     customContent = {},
   } = options;
 
@@ -158,6 +194,7 @@ const createCountryConfig = (options: {
       customContent.descriptionText ||
       `uses seasonal forecasts${forecastSource && forecastSource !== 'default' ? ` from ${forecastSource}` : ''} with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).`,
     forecastSource,
+    colors,
   };
 };
 
@@ -169,6 +206,24 @@ const AADROUGHT_COUNTRY_CONFIGS: Record<string, AADroughtCountryConfig> = {
     ],
     seasonStartMonth: 7,
     forecastSource: 'ECMWF',
+    colors: {
+      severe: {
+        set: { background: '#800026', text: 'white' },
+        ready: { background: '#C20425', text: 'white' },
+      },
+      moderate: {
+        set: { background: '#EA2920', text: 'black' },
+        ready: { background: '#FC6932', text: 'black' },
+      },
+      mild: {
+        set: { background: '#FEA245', text: 'black' },
+        ready: { background: '#FECE6A', text: 'black' },
+      },
+      normal: {
+        set: { background: '#FFEA9A', text: 'black' },
+        ready: { background: '#FFFFCC', text: 'black' },
+      },
+    },
     customContent: {
       howToReadContent: [
         { title: 'NDJ', text: 'November to January' },
@@ -241,28 +296,6 @@ export const getRowCategories = (): {
 }[] => {
   const config = getAADroughtCountryConfig();
   return config.rowCategories;
-};
-
-export const getLegendPhases = () => {
-  const config = getAADroughtCountryConfig();
-
-  return config.legendPhases.map(phase => {
-    let icon: React.ReactElement;
-
-    const category = config.categories.find(
-      cat => cat.label === phase.severity,
-    )?.id;
-
-    if (category) {
-      icon = getAAIcon(category, phase.phase as 'Ready' | 'Set', true);
-    } else if (phase.phase === 'No Action') {
-      icon = getAAIcon('na', 'na', true);
-    } else {
-      icon = getAAIcon('ny', 'ny', true);
-    }
-
-    return { ...phase, icon };
-  });
 };
 
 export const getDescriptionText = (): string => {
