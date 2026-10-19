@@ -4,7 +4,8 @@ import {
   makeStyles,
   Typography,
 } from '@material-ui/core';
-import { BarChartOutlined, GetApp } from '@material-ui/icons';
+import { BarChartOutlined, GetApp, TableChart } from '@material-ui/icons';
+import { downloadToFile } from 'components/MapView/utils';
 import { appConfig, safeCountry } from 'config';
 import { PanelSize } from 'config/types';
 import { AAWindowKeys } from 'config/utils';
@@ -17,10 +18,12 @@ import {
   setAAView,
 } from 'context/anticipatoryAction/AADroughtStateSlice';
 import { AAView } from 'context/anticipatoryAction/AADroughtStateSlice/types';
+import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
 import { borderGray, grey, lightGrey } from 'muiTheme';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { getFormattedDate } from 'utils/date-utils';
 import { getAADroughtCdnUrl, getAADroughtUrl } from 'utils/url-utils';
 
 import { useAACommonStyles } from '../../utils';
@@ -183,8 +186,63 @@ function HomeTable({ dialogs }: HomeTableProps) {
   const renderedDistricts = useSelector(AARenderedDistrictsSelector);
   const monitoredDistrict = useSelector(AAMonitoredDistrictsSelector);
   const { 'Window 2': window2Range } = useSelector(AAWindowRangesSelector);
+  const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
   const filename = getAADroughtCdnUrl(appConfig)?.split('/').at(-1);
+
+  const downloadSummary = () => {
+    const windows = selectedWindow === 'All' ? AAWindowKeys : [selectedWindow];
+    const labels: Record<string, string> = {
+      na: 'No Action',
+      ny: 'Not Yet Monitored',
+    };
+    const label = (v: string) => t(labels[v] ?? v);
+    const escape = (v: string) =>
+      /[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v;
+    // Same content as the on-screen table, one row per district/window
+    const lines = rowCategories
+      .filter(x => categories[x.category])
+      .flatMap(x =>
+        windows.flatMap(win =>
+          Object.entries(renderedDistricts[win])
+            .filter(([, distData]) =>
+              distData.some(
+                d => d.category === x.category && d.phase === x.phase,
+              ),
+            )
+            .map(([district, distData]) => {
+              const isNew = distData.some(
+                d =>
+                  d.category === x.category && d.phase === x.phase && d.isNew,
+              );
+              return [
+                t(win),
+                label(x.category),
+                label(x.phase),
+                t(district),
+                isNew ? t('Yes') : '',
+              ]
+                .map(escape)
+                .join(',');
+            }),
+        ),
+      );
+    const header = ['Window', 'Category', 'Phase', 'District', 'New']
+      .map(h => escape(t(h)))
+      .join(',');
+    const csv = [header, ...lines].join('\n');
+    downloadToFile(
+      { content: csv, isUrl: false },
+      [
+        getFormattedDate(selectedDate, 'default'),
+        'aa-drought-summary',
+        safeCountry,
+      ]
+        .filter(Boolean)
+        .join('-'),
+      'text/csv',
+    );
+  };
 
   const homeButtons = [
     {
@@ -193,6 +251,11 @@ function HomeTable({ dialogs }: HomeTableProps) {
       component: 'a',
       href: getAADroughtUrl(appConfig, safeCountry),
       download: `${window2Range?.end}-${filename}`,
+    },
+    {
+      startIcon: <TableChart />,
+      text: 'Summary',
+      onClick: downloadSummary,
     },
     {
       startIcon: <BarChartOutlined />,
