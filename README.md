@@ -42,7 +42,7 @@ The tool automatically:
 - ✅ Organizes layers by category
 
 After running the tool, you'll only need to:
-1. Upload the boundary file to S3
+1. Put the boundary file in `frontend/public/data`. Local raster analysis sends that GeoJSON to the API, so a copy on S3 is not required. PMTiles layers that set `zones_path` still point the analysis at a remote parquet file.
 2. Run `REACT_APP_COUNTRY=newcountry yarn start` to test
 3. Build and deploy.
 

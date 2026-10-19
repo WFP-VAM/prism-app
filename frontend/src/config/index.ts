@@ -39,10 +39,6 @@ import universal from './universal';
 import zambia from './zambia';
 import zimbabwe from './zimbabwe';
 
-// Upload the boundary URL to S3 to enable the use of the API in a local environment.
-const DEFAULT_BOUNDARIES_FOLDER =
-  'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com';
-
 export const configMap = {
   afghanistan,
   bhutan,
@@ -103,11 +99,9 @@ const safeCountry =
     : DEFAULT;
 
 const {
-  defaultBoundariesFile,
   rawTables,
   rawReports,
 }: {
-  defaultBoundariesFile: string;
   rawTables: Record<string, any>;
   rawReports: Record<string, any>;
 } = configMap[safeCountry];
@@ -207,13 +201,10 @@ const enableNavigationDropdown: boolean = get(
   false,
 );
 
-const defaultBoundariesPath = `${DEFAULT_BOUNDARIES_FOLDER}/${defaultBoundariesFile}`;
-
 export {
   appConfig,
   authRequired,
   countriesWithPreprocessedDates,
-  defaultBoundariesPath,
   enableNavigationDropdown,
   msalInstance,
   msalRequest,
