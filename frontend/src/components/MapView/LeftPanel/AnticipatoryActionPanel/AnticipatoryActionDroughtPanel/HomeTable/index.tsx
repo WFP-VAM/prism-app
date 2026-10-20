@@ -4,7 +4,7 @@ import {
   makeStyles,
   Typography,
 } from '@material-ui/core';
-import { BarChartOutlined, GetApp, TableChart } from '@material-ui/icons';
+import { BarChartOutlined, GetApp } from '@material-ui/icons';
 import { downloadToFile } from 'components/MapView/utils';
 import { appConfig, safeCountry } from 'config';
 import { PanelSize } from 'config/types';
@@ -220,7 +220,7 @@ function HomeTable({ dialogs }: HomeTableProps) {
       download: `${window2Range?.end}-${filename}`,
     },
     {
-      startIcon: <TableChart />,
+      startIcon: <GetApp />,
       text: 'Summary',
       onClick: downloadSummary,
     },
