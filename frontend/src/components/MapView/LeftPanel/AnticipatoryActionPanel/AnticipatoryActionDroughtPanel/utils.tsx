@@ -13,11 +13,13 @@ import {
   LIGHT_BLUE_HEX,
   LIGHT_GREEN_HEX,
 } from 'components/MapView/DateSelector/TimelineItems/utils';
+import { AAWindowKeys } from 'config/utils';
 import {
   AAcategory,
   AACategoryType,
   AAPhaseType,
   AnticipatoryActionDataRow,
+  AnticipatoryActionState,
 } from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { useSafeTranslation } from 'i18n';
 import { black, borderGray, lightGrey } from 'muiTheme';
@@ -388,3 +390,60 @@ export const getLegendPhases = () => {
     return { ...phase, icon };
   });
 };
+
+interface BuildAASummaryCsvParams {
+  rowCategories: { category: AACategoryType; phase: AAPhaseType }[];
+  categories: AnticipatoryActionState['filters']['categories'];
+  selectedWindow: AnticipatoryActionState['filters']['selectedWindow'];
+  renderedDistricts: AnticipatoryActionState['renderedDistricts'];
+  t: (key: string) => string;
+}
+
+// Same content as the on-screen home table, one row per district/window
+export function buildAASummaryCsv({
+  rowCategories,
+  categories,
+  selectedWindow,
+  renderedDistricts,
+  t,
+}: BuildAASummaryCsvParams): string {
+  const windows = selectedWindow === 'All' ? AAWindowKeys : [selectedWindow];
+  const labels: Record<string, string> = {
+    na: 'No Action',
+    ny: 'Not Yet Monitored',
+  };
+  const label = (v: string) => t(labels[v] ?? v);
+  const escape = (v: string) =>
+    /[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v;
+  const lines = rowCategories
+    .filter(x => categories[x.category])
+    .flatMap(x =>
+      windows.flatMap(win =>
+        Object.entries(renderedDistricts[win])
+          .filter(([, distData]) =>
+            distData.some(
+              d => d.category === x.category && d.phase === x.phase,
+            ),
+          )
+          .map(([district, distData]) => {
+            const isNew =
+              distData
+                .filter(d => d.category === x.category && d.phase === x.phase)
+                .at(-1)?.isNew ?? false;
+            return [
+              t(win),
+              label(x.category === 'Normal' ? 'Below Normal' : x.category),
+              label(x.phase),
+              t(district),
+              isNew ? t('Yes') : '',
+            ]
+              .map(escape)
+              .join(',');
+          }),
+      ),
+    );
+  const header = ['Window', 'Category', 'Phase', 'District', 'New']
+    .map(h => escape(t(h)))
+    .join(',');
+  return [header, ...lines].join('\n');
+}

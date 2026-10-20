@@ -27,7 +27,7 @@ import { getFormattedDate } from 'utils/date-utils';
 import { getAADroughtCdnUrl, getAADroughtUrl } from 'utils/url-utils';
 
 import { useAACommonStyles } from '../../utils';
-import { AADataSeverityOrder, getAAIcon } from '../utils';
+import { AADataSeverityOrder, buildAASummaryCsv, getAAIcon } from '../utils';
 import { getRowCategories } from '../utils/countryConfig';
 
 interface AreaTagProps {
@@ -191,46 +191,13 @@ function HomeTable({ dialogs }: HomeTableProps) {
   const filename = getAADroughtCdnUrl(appConfig)?.split('/').at(-1);
 
   const downloadSummary = () => {
-    const windows = selectedWindow === 'All' ? AAWindowKeys : [selectedWindow];
-    const labels: Record<string, string> = {
-      na: 'No Action',
-      ny: 'Not Yet Monitored',
-    };
-    const label = (v: string) => t(labels[v] ?? v);
-    const escape = (v: string) =>
-      /[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v;
-    // Same content as the on-screen table, one row per district/window
-    const lines = rowCategories
-      .filter(x => categories[x.category])
-      .flatMap(x =>
-        windows.flatMap(win =>
-          Object.entries(renderedDistricts[win])
-            .filter(([, distData]) =>
-              distData.some(
-                d => d.category === x.category && d.phase === x.phase,
-              ),
-            )
-            .map(([district, distData]) => {
-              const isNew =
-                distData
-                  .filter(d => d.category === x.category && d.phase === x.phase)
-                  .at(-1)?.isNew ?? false;
-              return [
-                t(win),
-                label(x.category === 'Normal' ? 'Below Normal' : x.category),
-                label(x.phase),
-                t(district),
-                isNew ? t('Yes') : '',
-              ]
-                .map(escape)
-                .join(',');
-            }),
-        ),
-      );
-    const header = ['Window', 'Category', 'Phase', 'District', 'New']
-      .map(h => escape(t(h)))
-      .join(',');
-    const csv = [header, ...lines].join('\n');
+    const csv = buildAASummaryCsv({
+      rowCategories,
+      categories,
+      selectedWindow,
+      renderedDistricts,
+      t,
+    });
     downloadToFile(
       { content: csv, isUrl: false },
       [
