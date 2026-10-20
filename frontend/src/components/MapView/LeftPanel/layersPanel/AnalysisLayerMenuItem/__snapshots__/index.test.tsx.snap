@@ -75,29 +75,29 @@ exports[`renders as expected 1`] = `
                 style="padding-left: 12px;"
               >
                 <div
-                  class="MuiBox-root MuiBox-root-22 makeStyles-analysisLayerSwitchRootItem-8"
+                  class="MuiBox-root MuiBox-root-19 makeStyles-analysisLayerSwitchRootItem-8"
                   style="display: flex; flex-direction: column; max-width: 100%;"
                 >
                   <div
-                    class="MuiBox-root MuiBox-root-23"
+                    class="MuiBox-root MuiBox-root-20"
                     style="display: flex; align-items: center;"
                   >
                     <div
-                      style="display: flex;"
+                      style="display: flex; align-items: center;"
                     >
                       <mock-switch
                         checked=""
-                        class="makeStyles-switch-14"
+                        class="makeStyles-switch-21"
                         classes="[object Object]"
+                        color="primary"
                         inputprops="[object Object]"
-                        size="small"
                       />
                       <mock-typography
                         class="makeStyles-title-9"
                       />
                     </div>
                     <div
-                      class="MuiBox-root MuiBox-root-24"
+                      class="MuiBox-root MuiBox-root-25"
                       style="display: flex; align-items: center;"
                     >
                       <mock-tooltip
@@ -105,7 +105,7 @@ exports[`renders as expected 1`] = `
                       >
                         <span>
                           <button
-                            class="MuiButtonBase-root MuiIconButton-root makeStyles-opacityRoot-17"
+                            class="MuiButtonBase-root MuiIconButton-root makeStyles-opacityRoot-14"
                             tabindex="0"
                             type="button"
                           >

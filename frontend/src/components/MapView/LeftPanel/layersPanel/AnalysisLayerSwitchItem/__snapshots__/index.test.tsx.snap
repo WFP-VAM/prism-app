@@ -3,22 +3,22 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="MuiBox-root MuiBox-root-15 makeStyles-analysisLayerSwitchRootItem-1"
+    class="MuiBox-root MuiBox-root-12 makeStyles-analysisLayerSwitchRootItem-1"
     style="display: flex; flex-direction: column; max-width: 100%;"
   >
     <div
-      class="MuiBox-root MuiBox-root-16"
+      class="MuiBox-root MuiBox-root-13"
       style="display: flex; align-items: center;"
     >
       <div
-        style="display: flex;"
+        style="display: flex; align-items: center;"
       >
         <mock-switch
           checked=""
-          class="makeStyles-switch-7"
+          class="makeStyles-switch-14"
           classes="[object Object]"
+          color="primary"
           inputprops="[object Object]"
-          size="small"
         />
         <mock-typography
           class="makeStyles-title-2"
@@ -27,7 +27,7 @@ exports[`renders as expected 1`] = `
         </mock-typography>
       </div>
       <div
-        class="MuiBox-root MuiBox-root-17"
+        class="MuiBox-root MuiBox-root-18"
         style="display: flex; align-items: center;"
       >
         <mock-tooltip
@@ -35,7 +35,7 @@ exports[`renders as expected 1`] = `
         >
           <span>
             <button
-              class="MuiButtonBase-root MuiIconButton-root makeStyles-opacityRoot-10"
+              class="MuiButtonBase-root MuiIconButton-root makeStyles-opacityRoot-7"
               tabindex="0"
               type="button"
             >

@@ -34,7 +34,7 @@ def gdal_calc(
     calc_expr = calc_expr or "A*(B==1)"
 
     # Generate string of process.
-    gdal_calc_str = '{0} -A {1} -B {2} --outfile={3} --calc="{4}" --NoDataValue={5} --extent=intersect --overwrite > /dev/null'
+    gdal_calc_str = '{0} -A {1} -B {2} --outfile={3} --calc="{4}" --NoDataValue={5} --extent=intersect --overwrite'
     gdal_calc_process = gdal_calc_str.format(
         gdal_calc_path,
         input_file_path,
@@ -48,7 +48,27 @@ def gdal_calc(
     logger.debug(gdal_calc_process)
 
     # TODO - secure call input or remove shell=True
-    subprocess.check_call(str(gdal_calc_process), shell=True)
+    # Capture child output instead of letting gdal_calc print a full traceback
+    # on recoverable pixel-size mismatch (#1502). Attach stderr to the raised
+    # error so unrecovered failures (e.g. the post-reprojection retry) stay
+    # diagnosable.
+    result = subprocess.run(
+        str(gdal_calc_process),
+        shell=True,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        detail = (result.stderr or result.stdout or "").strip()
+        if detail:
+            logger.debug("gdal_calc stderr: %s", detail)
+        # Put GDAL text in the exception message: CalledProcessError.__str__
+        # omits stderr, and the post-reprojection retry must stay diagnosable.
+        message = f"gdal_calc.py failed with exit {result.returncode}"
+        if detail:
+            message = f"{message}:\n{detail}"
+        raise RuntimeError(message)
 
 
 @timed

@@ -16,6 +16,7 @@ import { FillLayerSpecification, MapLayerMouseEvent } from 'maplibre-gl';
 import { memo, useEffect, useMemo, useState } from 'react';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { useDispatch, useSelector } from 'react-redux';
+import { fetchUnifiedCountryBoundaryPolygon } from 'utils/adminAreaClipPolygon';
 import {
   findFeature,
   getEvtCoords,
@@ -73,11 +74,9 @@ const CompositeLayer = memo(({ layer, before }: Props) => {
     ) as LayerData<CompositeLayerProps>) || {};
 
   useEffect(() => {
-    // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
-    // which runs ./src/scripts/preprocess-layers.js
-    fetch(`/data/${safeCountry}/admin-boundary-unified-polygon.json`)
-      .then(response => response.json())
-      .then(polygonData => setAdminBoundaryPolygon(polygonData))
+    // Shared cache with adminAreaClipPolygon / useDeploymentClipPolygon (#1567).
+    fetchUnifiedCountryBoundaryPolygon(safeCountry)
+      .then(polygonData => setAdminBoundaryPolygon(polygonData as any))
       .catch(error => console.error('Error:', error));
   }, []);
 
