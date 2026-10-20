@@ -346,6 +346,16 @@ exports[`HomeTable renders as expected 1`] = `
         variant="outlined"
       >
         <mock-typography>
+          Summary
+        </mock-typography>
+      </mock-button>
+      <mock-button
+        class="makeStyles-footerButton-5"
+        fullwidth=""
+        starticon="[object Object]"
+        variant="outlined"
+      >
+        <mock-typography>
           Forecast
         </mock-typography>
       </mock-button>

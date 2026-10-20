@@ -298,6 +298,17 @@ export const getRowCategories = (): {
   return config.rowCategories;
 };
 
+const specialLabels: Record<string, string> = {
+  na: 'No Action',
+  ny: 'Not Yet Monitored',
+};
+
+// Display label (untranslated) for a category or phase, e.g. Normal -> Below Normal
+export const getAADisplayLabel = (value: AACategoryType | AAPhaseType) =>
+  specialLabels[value] ??
+  getAADroughtCountryConfig().categories?.find(c => c.id === value)?.label ??
+  value;
+
 export const getDescriptionText = (): string => {
   const config = getAADroughtCountryConfig();
   return config.descriptionText;
