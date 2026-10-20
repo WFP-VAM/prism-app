@@ -217,7 +217,7 @@ function HomeTable({ dialogs }: HomeTableProps) {
               );
               return [
                 t(win),
-                label(x.category),
+                label(x.category === 'Normal' ? 'Below Normal' : x.category),
                 label(x.phase),
                 t(district),
                 isNew ? t('Yes') : '',
