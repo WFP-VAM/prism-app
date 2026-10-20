@@ -1,12 +1,15 @@
 import {
   buildAASummaryCsv,
   DEFAULT_AA_DROUGHT_COLORS,
+  getAASummaryRows,
   mergeAADroughtColors,
 } from './utils';
 
-type CsvParams = Parameters<typeof buildAASummaryCsv>[0];
+type CsvParams = Parameters<typeof getAASummaryRows>[0] & {
+  t: (key: string) => string;
+};
 
-describe('buildAASummaryCsv', () => {
+describe('getAASummaryRows + buildAASummaryCsv', () => {
   const identity = (s: string) => s;
   const allCategories = {
     Severe: true,
@@ -32,21 +35,24 @@ describe('buildAASummaryCsv', () => {
       Delta: [{ category: 'ny', phase: 'ny', isNew: false }],
     },
   } as CsvParams['renderedDistricts'];
-  const build = (overrides: Partial<CsvParams> = {}) =>
-    buildAASummaryCsv({
+  const build = (overrides: Partial<CsvParams> = {}) => {
+    const { t, ...params }: CsvParams = {
       rowCategories,
       categories: allCategories,
       selectedWindow: 'All',
       renderedDistricts,
       t: identity,
       ...overrides,
-    });
+    };
+    return buildAASummaryCsv(getAASummaryRows(params), t);
+  };
 
   it('includes all windows with display labels', () => {
     expect(build().split('\n')).toEqual([
       'Window,Category,Phase,District,New',
       'Window 1,Moderate,Ready,Alpha,Yes',
-      'Window 1,Below Normal,Set,Beta,',
+      // test country has no Normal category, so no config label
+      'Window 1,Normal,Set,Beta,',
       'Window 2,No Action,No Action,Gamma,',
       'Window 2,Not Yet Monitored,Not Yet Monitored,Delta,',
     ]);
@@ -154,5 +160,25 @@ describe('getAAColor', () => {
       DEFAULT_AA_DROUGHT_COLORS.mild.set.background,
     );
     expect(getAAColor('Severe', 'Set')).toBe('#831F00');
+  });
+
+  it('uses country category labels in the summary CSV', () => {
+    const { buildAASummaryCsv: build, getAASummaryRows: getRows } =
+      loadForCountry('malawi');
+    const csv = build(
+      getRows({
+        rowCategories: [{ category: 'Normal', phase: 'Set' }],
+        categories: { Normal: true } as any,
+        selectedWindow: 'Window 1',
+        renderedDistricts: {
+          'Window 1': {
+            Beta: [{ category: 'Normal', phase: 'Set', isNew: false }],
+          },
+          'Window 2': {},
+        },
+      }),
+      s => s,
+    );
+    expect(csv.split('\n')[1]).toBe('Window 1,Below Normal,Set,Beta,');
   });
 });

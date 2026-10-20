@@ -27,7 +27,12 @@ import { getFormattedDate } from 'utils/date-utils';
 import { getAADroughtCdnUrl, getAADroughtUrl } from 'utils/url-utils';
 
 import { useAACommonStyles } from '../../utils';
-import { AADataSeverityOrder, buildAASummaryCsv, getAAIcon } from '../utils';
+import {
+  AADataSeverityOrder,
+  buildAASummaryCsv,
+  getAAIcon,
+  getAASummaryRows,
+} from '../utils';
 import { getRowCategories } from '../utils/countryConfig';
 
 interface AreaTagProps {
@@ -104,8 +109,6 @@ function Row({ iconContent, windows, header }: RowProps) {
     <div className={classes.rowWrapper}>
       <div className={classes.iconCol}>{iconContent}</div>
       {windows.map((col, index) => {
-        // we may have 2 entries for multiple indexes
-        const unique = [...new Map(col.map(x => [x.name, x])).values()];
         return (
           <div
             // we can actually use the index as key here, since we know each index is a window
@@ -120,10 +123,10 @@ function Row({ iconContent, windows, header }: RowProps) {
           >
             <div className={classes.windowBackground}>
               <div className={classes.tagWrapper}>
-                {unique.map(x => (
+                {col.map(x => (
                   <AreaTag key={x.name} {...x} />
                 ))}
-                {unique.length === 0 && (
+                {col.length === 0 && (
                   <Typography className={classes.emptyText}>
                     ({t('no district')})
                   </Typography>
@@ -190,14 +193,19 @@ function HomeTable({ dialogs }: HomeTableProps) {
 
   const filename = getAADroughtCdnUrl(appConfig)?.split('/').at(-1);
 
+  const summaryRows = React.useMemo(
+    () =>
+      getAASummaryRows({
+        rowCategories,
+        categories,
+        selectedWindow,
+        renderedDistricts,
+      }),
+    [categories, renderedDistricts, selectedWindow],
+  );
+
   const downloadSummary = () => {
-    const csv = buildAASummaryCsv({
-      rowCategories,
-      categories,
-      selectedWindow,
-      renderedDistricts,
-      t,
-    });
+    const csv = buildAASummaryCsv(summaryRows, t);
     downloadToFile(
       { content: csv, isUrl: false },
       [
@@ -243,39 +251,21 @@ function HomeTable({ dialogs }: HomeTableProps) {
 
   const districtRows: ExtendedRowProps[] = React.useMemo(
     () =>
-      rowCategories
-        .filter(x => categories[x.category])
-        .map(x => {
-          const getWinData = (win: (typeof AAWindowKeys)[number]) =>
-            Object.entries(renderedDistricts[win])
-              .map(([district, distData]) =>
-                distData.map(dist => {
-                  if (dist.category === x.category && dist.phase === x.phase) {
-                    return {
-                      name: district,
-                      isNew: dist.isNew,
-                      onClick: () => {
-                        dispatch(setAASelectedDistrict(district));
-                        dispatch(setAAView(AAView.District));
-                      },
-                    };
-                  }
-                  return undefined;
-                }),
-              )
-              .flat()
-              .filter(y => y !== undefined);
-
-          return {
-            id: AADataSeverityOrder(x.category, x.phase),
-            iconContent: getAAIcon(x.category, x.phase),
-            windows:
-              selectedWindow === 'All'
-                ? AAWindowKeys.map(winKey => getWinData(winKey))
-                : [getWinData(selectedWindow)],
-          } as any;
-        }),
-    [categories, dispatch, renderedDistricts, selectedWindow],
+      summaryRows.map(({ category, phase, windows }) => ({
+        id: AADataSeverityOrder(category, phase),
+        iconContent: getAAIcon(category, phase),
+        windows: windows.map(({ districts }) =>
+          districts.map(({ name, isNew }) => ({
+            name,
+            isNew,
+            onClick: () => {
+              dispatch(setAASelectedDistrict(name));
+              dispatch(setAAView(AAView.District));
+            },
+          })),
+        ),
+      })),
+    [dispatch, summaryRows],
   );
 
   const rows: ExtendedRowProps[] = [headerRow, ...districtRows];
