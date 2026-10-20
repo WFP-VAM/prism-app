@@ -211,10 +211,10 @@ function HomeTable({ dialogs }: HomeTableProps) {
               ),
             )
             .map(([district, distData]) => {
-              const isNew = distData.some(
-                d =>
-                  d.category === x.category && d.phase === x.phase && d.isNew,
-              );
+              const isNew =
+                distData
+                  .filter(d => d.category === x.category && d.phase === x.phase)
+                  .at(-1)?.isNew ?? false;
               return [
                 t(win),
                 label(x.category === 'Normal' ? 'Below Normal' : x.category),
