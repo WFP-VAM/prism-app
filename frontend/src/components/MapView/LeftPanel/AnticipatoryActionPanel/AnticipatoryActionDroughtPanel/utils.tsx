@@ -13,11 +13,13 @@ import {
   LIGHT_BLUE_HEX,
   LIGHT_GREEN_HEX,
 } from 'components/MapView/DateSelector/TimelineItems/utils';
+import { AAWindowKeys } from 'config/utils';
 import {
   AAcategory,
   AACategoryType,
   AAPhaseType,
   AnticipatoryActionDataRow,
+  AnticipatoryActionState,
 } from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { useSafeTranslation } from 'i18n';
 import { black, borderGray, lightGrey } from 'muiTheme';
@@ -28,6 +30,7 @@ import {
   AADroughtColorOverrides,
   AADroughtPalette,
   AAPhaseColor,
+  getAADisplayLabel,
   getAADroughtCountryConfig,
 } from './utils/countryConfig';
 
@@ -388,3 +391,78 @@ export const getLegendPhases = () => {
     return { ...phase, icon };
   });
 };
+
+type AAWindowKey = (typeof AAWindowKeys)[number];
+
+export interface AASummaryRow {
+  category: AACategoryType;
+  phase: AAPhaseType;
+  windows: {
+    window: AAWindowKey;
+    districts: { name: string; isNew: boolean }[];
+  }[];
+}
+
+interface GetAASummaryRowsParams {
+  rowCategories: { category: AACategoryType; phase: AAPhaseType }[];
+  categories: AnticipatoryActionState['filters']['categories'];
+  selectedWindow: AnticipatoryActionState['filters']['selectedWindow'];
+  renderedDistricts: AnticipatoryActionState['renderedDistricts'];
+}
+
+// Home table content, shared by the panel and the Summary CSV download
+export function getAASummaryRows({
+  rowCategories,
+  categories,
+  selectedWindow,
+  renderedDistricts,
+}: GetAASummaryRowsParams): AASummaryRow[] {
+  const windows = selectedWindow === 'All' ? AAWindowKeys : [selectedWindow];
+  return rowCategories
+    .filter(x => categories[x.category])
+    .map(({ category, phase }) => ({
+      category,
+      phase,
+      windows: windows.map(window => {
+        // a district may have several entries (one per index), last one wins
+        const districts = new Map<string, boolean>();
+        Object.entries(renderedDistricts[window]).forEach(([name, distData]) =>
+          distData
+            .filter(d => d.category === category && d.phase === phase)
+            .forEach(d => districts.set(name, d.isNew)),
+        );
+        return {
+          window,
+          districts: [...districts].map(([name, isNew]) => ({ name, isNew })),
+        };
+      }),
+    }));
+}
+
+// One CSV line per district/window
+export function buildAASummaryCsv(
+  rows: AASummaryRow[],
+  t: (key: string) => string,
+): string {
+  const escape = (v: string) =>
+    /[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v;
+  const lines = rows.flatMap(({ category, phase, windows }) =>
+    windows.flatMap(({ window, districts }) =>
+      districts.map(({ name, isNew }) =>
+        [
+          t(window),
+          t(getAADisplayLabel(category)),
+          t(getAADisplayLabel(phase)),
+          t(name),
+          isNew ? t('Yes') : '',
+        ]
+          .map(escape)
+          .join(','),
+      ),
+    ),
+  );
+  const header = ['Window', 'Category', 'Phase', 'District', 'New']
+    .map(h => escape(t(h)))
+    .join(',');
+  return [header, ...lines].join('\n');
+}

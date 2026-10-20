@@ -698,5 +698,13 @@
   "Remove Admin 1": "Remover província",
   "Remove Admin 2": "Remover distrito",
   "Today": "Hoje",
-  "End date must be after start date": "A data de fim deve ser posterior à data de início"
+  "End date must be after start date": "A data de fim deve ser posterior à data de início",
+  "Window": "Janela",
+  "Category": "Categoria",
+  "Phase": "Fase",
+  "New": "Novo",
+  "Yes": "Sim",
+  "Normal": "Normal",
+  "No Action": "Sem Ação",
+  "Below Normal": "Abaixo do Normal"
 }
