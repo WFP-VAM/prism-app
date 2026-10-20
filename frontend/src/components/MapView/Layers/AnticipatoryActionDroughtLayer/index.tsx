@@ -19,7 +19,7 @@ import {
 import { AAView } from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import {
   calculateAAMarkers,
-  getAAMapData,
+  calculateCombinedAAMapData,
 } from 'context/anticipatoryAction/AADroughtStateSlice/utils';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import type { Feature, FeatureCollection } from 'geojson';
@@ -73,10 +73,19 @@ const AnticipatoryActionDroughtLayer = React.memo(
       onDistrictClick,
     );
 
-    const shouldRenderData = React.useMemo(
-      () => getAAMapData(renderedDistricts, selectedWindow),
-      [renderedDistricts, selectedWindow],
-    );
+    const shouldRenderData = React.useMemo(() => {
+      if (selectedWindow === 'All') {
+        return calculateCombinedAAMapData(renderedDistricts);
+      }
+      if (selectedWindow) {
+        return Object.fromEntries(
+          Object.entries(renderedDistricts[selectedWindow]).map(
+            ([dist, values]) => [dist, values[0]],
+          ),
+        );
+      }
+      return {};
+    }, [renderedDistricts, selectedWindow]);
 
     // Calculate centroids only once per data change
     React.useEffect(() => {

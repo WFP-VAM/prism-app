@@ -288,16 +288,15 @@ export function calculateMapRenderedDistricts({
               .map(x => ({ ...x, computedRow: true }));
           }
 
-          const allValidData = dateData.filter(x => x.computedRow || x.isValid);
-          if (allValidData.length === 0) {
+          const validData = dateData.filter(
+            x => (x.computedRow || x.isValid) && categories[x.category],
+          );
+          if (validData.length === 0) {
             return [
               districtName,
               [{ category: 'na', phase: 'na', isNew: false }],
             ];
           }
-
-          // districts whose categories are all filtered out are hidden (empty list)
-          const validData = allValidData.filter(x => categories[x.category]);
 
           const sorted = validData.sort(sortFn);
           return [
@@ -336,64 +335,43 @@ export function calculateMapRenderedDistricts({
   return { ...emptyWindows, ...obj };
 }
 
-type AADistrictMapData = {
-  [district: string]: {
-    category: AACategoryType;
-    phase: AAPhaseType;
-    isNew: boolean;
-  };
-};
-
 export function calculateCombinedAAMapData(
   renderedDistricts: AnticipatoryActionState['renderedDistricts'],
-): AADistrictMapData {
-  const districts = new Set([
-    ...Object.keys(renderedDistricts['Window 1']),
-    ...Object.keys(renderedDistricts['Window 2']),
-  ]);
+) {
   return Object.fromEntries(
-    [...districts]
-      .map(district => {
-        const windowOneData = renderedDistricts['Window 1'][district]?.[0];
-        const windowTwoData = renderedDistricts['Window 2'][district]?.[0];
-        // a district can be hidden by filters in one window only
-        if (!windowOneData || !windowTwoData) {
-          const data = windowOneData ?? windowTwoData;
-          return data ? [district, data] : null;
+    Object.entries(renderedDistricts['Window 1'])
+      .map(([district, values]) => {
+        const windowOneData = values[0];
+        if (!windowOneData) {
+          return null;
         }
         const windowOneSev = AADataSeverityOrder(
           windowOneData.category,
           windowOneData.phase,
         );
+
+        const windowTwoData = renderedDistricts['Window 2'][district][0];
+        if (!windowTwoData) {
+          return null;
+        }
         const windowTwoSev = AADataSeverityOrder(
           windowTwoData.category,
           windowTwoData.phase,
         );
-        return [
-          district,
-          windowOneSev >= windowTwoSev ? windowOneData : windowTwoData,
-        ];
+        if (windowOneSev >= windowTwoSev) {
+          return [district, windowOneData];
+        }
+
+        return [district, windowTwoData];
       })
       .filter((x): x is any => x !== null),
-  );
-}
-
-// Data shown on the map for each visible district, for the selected window
-export function getAAMapData(
-  renderedDistricts: AnticipatoryActionState['renderedDistricts'],
-  selectedWindow: AnticipatoryActionState['filters']['selectedWindow'],
-): AADistrictMapData {
-  if (selectedWindow === 'All') {
-    return calculateCombinedAAMapData(renderedDistricts);
-  }
-  if (!selectedWindow) {
-    return {};
-  }
-  return Object.fromEntries(
-    Object.entries(renderedDistricts[selectedWindow])
-      .filter(([, values]) => values.length > 0)
-      .map(([dist, values]) => [dist, values[0]]),
-  );
+  ) as {
+    [district: string]: {
+      category: AACategoryType;
+      phase: AAPhaseType;
+      isNew: boolean;
+    };
+  };
 }
 
 interface CalculateAAMarkersParams {
@@ -409,7 +387,14 @@ export function calculateAAMarkers({
   selectedWindow,
   districtCentroids,
 }: CalculateAAMarkersParams) {
-  const AADistricts = getAAMapData(renderedDistricts, selectedWindow);
+  const AADistricts =
+    selectedWindow === 'All'
+      ? calculateCombinedAAMapData(renderedDistricts)
+      : Object.fromEntries(
+          Object.entries(renderedDistricts[selectedWindow]).map(
+            ([dist, val]) => [dist, val[0]],
+          ),
+        );
 
   return Object.entries(AADistricts).map(([district, { category, phase }]) => {
     const centroid = districtCentroids[district] || {
