@@ -28,7 +28,6 @@
   "categories": {
     "rainfall": {
       "forecasts": [
-        "daily_rainfall_forecast",
         "dekad_rainfall_forecast",
         "dekad_rainfall_anomaly_forecast"
       ],
