@@ -654,8 +654,9 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
     presignedUrls.forEach(({ item_id, url, public: isPublic }) => {
       const deckLayerId = `cog-${id}-${item_id}`;
       deckLayerIds.push(deckLayerId);
-      // Public path COGs (e.g. Source Cooperative) already send CORS; HDC
-      // STAC assets still need the API proxy until bucket CORS is fixed.
+      // Direct `path` COGs and public STAC assets (e.g. Source Cooperative)
+      // already send CORS; HDC STAC assets still need the API proxy until
+      // bucket CORS is fixed.
       const geotiff =
         path || isPublic
           ? url
