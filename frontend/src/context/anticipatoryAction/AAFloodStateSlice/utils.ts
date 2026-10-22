@@ -2,6 +2,7 @@ import { AAFloodColors } from 'components/MapView/LeftPanel/AnticipatoryActionPa
 import { startCase } from 'lodash';
 
 import {
+  forecastLeadDay,
   getFloodRiskSeverity,
   isForecastDateInWindow,
   parseFloodStatus,
@@ -16,7 +17,12 @@ import {
   FloodTriggerCombination,
 } from './types';
 
-export { getFloodRiskSeverity, isForecastDateInWindow, parseFloodStatus };
+export {
+  forecastLeadDay,
+  getFloodRiskSeverity,
+  isForecastDateInWindow,
+  parseFloodStatus,
+};
 
 export function getFloodRiskColor(riskLevel: AAFloodRiskLevelType): string {
   switch (riskLevel?.toLowerCase()) {
@@ -116,6 +122,19 @@ function isBlank(value: unknown): boolean {
   return value === undefined || value === null || String(value).trim() === '';
 }
 
+function rawNumber(value: unknown): number | null {
+  if (typeof value === 'number' && !Number.isNaN(value)) {
+    return value;
+  }
+  if (typeof value === 'string' && value.trim() !== '') {
+    const parsed = Number(value);
+    if (!Number.isNaN(parsed)) {
+      return parsed;
+    }
+  }
+  return null;
+}
+
 const PHASES = new Set<AAFloodPhase>(['activation', 'readiness']);
 const SEVERITIES = new Set<AAFloodSeverityKey>([
   'severe',
@@ -176,6 +195,7 @@ function parseCombination(
     windowEnd: String(row.window_end || ''),
     avgProbability: fractionToPercent(row.avg_probability) ?? 0,
     trigger: fractionToPercent(row.trigger) ?? null,
+    dischargeThreshold: rawNumber(row.threshold),
     exceeded: isExceeded(row.exceeded),
   };
 }
@@ -235,9 +255,15 @@ function parseLongSummary(
 export function parseStationSummaryRows(
   rows: Record<string, unknown>[],
   fallbackDate: string,
+  schemaVersion?: number,
 ): Record<string, FloodStation> {
   const usable = rows.filter(row => String(row.station_name || '').trim());
-  const isLong = usable.some(row => String(row.phase || '').trim());
+  // dates.json schema_version 2 is the long file. Older dates omit it.
+  // Sniff `phase` only when the caller has no version, so tests still work.
+  const isLong =
+    schemaVersion === undefined
+      ? usable.some(row => String(row.phase || '').trim())
+      : schemaVersion >= 2;
   if (isLong) {
     return parseLongSummary(usable, fallbackDate);
   }

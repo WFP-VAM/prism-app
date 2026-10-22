@@ -50,6 +50,7 @@ export const loadAAFloodData = createAsyncThunk<
     string,
     {
       trigger_status?: string;
+      schema_version?: number;
       probabilities_file?: string;
       discharge_file?: string;
       station_summary_file?: string;
@@ -204,9 +205,17 @@ export const loadAAFloodDateData = createAsyncThunk<
     return { ...acc, [station]: data };
   }, {});
 
+  const rawSchemaVersion = dateData.schema_version;
+  const schemaVersion =
+    rawSchemaVersion === undefined || rawSchemaVersion === null
+      ? undefined
+      : Number(rawSchemaVersion);
   const stationSummary = parseStationSummaryRows(
     summaryRows as Record<string, unknown>[],
     date,
+    schemaVersion !== undefined && Number.isFinite(schemaVersion)
+      ? schemaVersion
+      : undefined,
   );
 
   // Extract basic station info for the stations array

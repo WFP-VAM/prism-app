@@ -22,10 +22,10 @@ export type AAFloodSeverityKey = (typeof AAFloodSeverityKeys)[number];
 
 /**
  * One readiness/activation window for a station.
- * New station_summary.csv is long: one row per station × phase × severity.
- * Blank `trigger` means that combination does not apply.
- * `avg_probability` and `trigger` are fractions (0–1), same as the legacy file.
- * `status` on the row is the station status, e.g. `activation_moderate`.
+ * Schema 2 station_summary.csv is long: one row per configured combination.
+ * A combination that does not apply is omitted. `trigger` is a fraction (0–1).
+ * `threshold` is the discharge threshold in the same units as discharge.csv.
+ * `status` is the station status, repeated on every row, e.g. `activation_moderate`.
  */
 export interface FloodTriggerCombination {
   phase: AAFloodPhase;
@@ -33,7 +33,10 @@ export interface FloodTriggerCombination {
   windowBegin: string;
   windowEnd: string;
   avgProbability: number;
+  /** Probability trigger, percent (file value × 100). */
   trigger: number | null;
+  /** Discharge threshold. Null when the file has no `threshold` column. */
+  dischargeThreshold: number | null;
   exceeded: boolean;
 }
 

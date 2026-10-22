@@ -1,4 +1,5 @@
 import {
+  forecastLeadDay,
   getFloodRiskSeverity,
   isForecastDateInWindow,
   parseFloodStatus,
@@ -52,6 +53,20 @@ describe('flood status order', () => {
       isForecastDateInWindow('2025-12-28', '2025-12-30', '2026-01-01'),
     ).toBe(false);
   });
+
+  test('day 1 is the first valid_time, the day after issue', () => {
+    const times = [
+      '2025-12-28',
+      '2025-12-29',
+      '2025-12-30',
+      '2025-12-31',
+      '2026-01-01',
+    ];
+    expect(forecastLeadDay(times, '2025-12-27')).toBeUndefined();
+    expect(forecastLeadDay(times, '2025-12-28')).toBe(1);
+    expect(forecastLeadDay(times, '2025-12-30')).toBe(3);
+    expect(forecastLeadDay(times, '2026-01-01')).toBe(5);
+  });
 });
 
 describe('station summary parsing', () => {
@@ -100,6 +115,7 @@ describe('station summary parsing', () => {
           window_end: '2026-01-03',
           avg_probability: 0.2,
           trigger: 0.5,
+          threshold: 1200,
           exceeded: false,
           status: 'activation_moderate',
         },
@@ -145,6 +161,7 @@ describe('station summary parsing', () => {
         windowEnd: '2026-01-03',
         avgProbability: 20,
         trigger: 50,
+        dischargeThreshold: 1200,
         exceeded: false,
       },
       {
@@ -154,6 +171,7 @@ describe('station summary parsing', () => {
         windowEnd: '2026-01-01',
         avgProbability: 61,
         trigger: 40,
+        dischargeThreshold: null,
         exceeded: true,
       },
     ]);
@@ -192,5 +210,44 @@ describe('station summary parsing', () => {
 
     expect(stations.Franca.floodStatus).toBe('readiness_bankfull');
     expect(stations.Franca.phase).toBe('readiness');
+  });
+
+  test('schema_version 2 reads the long file and 1 keeps the wide file', () => {
+    const longRow = {
+      station_name: 'beira_port',
+      station_id: 1,
+      river_name: 'zambezi',
+      longitude: 34.8,
+      latitude: -19.8,
+      phase: 'activation',
+      severity: 'severe',
+      trigger: 0.4,
+      threshold: 900,
+      avg_probability: 0.5,
+      exceeded: true,
+      status: 'activation_severe',
+      window_begin: '2025-12-30',
+      window_end: '2026-01-01',
+    };
+    const versionTwo = parseStationSummaryRows([longRow], '2025-12-27', 2);
+    expect(versionTwo['Beira Port'].floodStatus).toBe('activation_severe');
+    expect(versionTwo['Beira Port'].combinations?.[0].dischargeThreshold).toBe(
+      900,
+    );
+
+    const versionOne = parseStationSummaryRows(
+      [
+        {
+          ...longRow,
+          trigger_status: 'moderate',
+          trigger_moderate: 0.3,
+          avg_moderate_percentage: 0.42,
+        },
+      ],
+      '2025-12-27',
+      1,
+    );
+    expect(versionOne['Beira Port'].floodStatus).toBe('moderate');
+    expect(versionOne['Beira Port'].combinations).toBeUndefined();
   });
 });

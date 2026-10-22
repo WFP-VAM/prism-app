@@ -136,3 +136,22 @@ export function isForecastDateInWindow(
   }
   return day >= start && day <= stop;
 }
+
+/**
+ * Lead day in the forecast series. Day 1 is the earliest valid_time.
+ * The pipeline labels that as the day after issue time, not the issue date.
+ */
+export function forecastLeadDay(
+  times: string[],
+  time: string,
+): number | undefined {
+  const target = forecastDateKey(time);
+  if (!target) {
+    return undefined;
+  }
+  const unique = [
+    ...new Set(times.map(forecastDateKey).filter(Boolean)),
+  ].sort();
+  const idx = unique.indexOf(target);
+  return idx >= 0 ? idx + 1 : undefined;
+}

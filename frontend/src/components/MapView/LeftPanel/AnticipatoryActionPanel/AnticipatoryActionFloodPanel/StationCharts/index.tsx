@@ -25,6 +25,7 @@ import {
 } from 'context/anticipatoryAction/AAFloodStateSlice';
 import { FloodStation } from 'context/anticipatoryAction/AAFloodStateSlice/types';
 import {
+  forecastLeadDay,
   isForecastDateInWindow,
   parseFloodStatus,
 } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
@@ -196,6 +197,12 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   const stationSummary = floodState.stationSummaryData
     ? floodState.stationSummaryData[station.station_name]
     : undefined;
+  const parsedStatus = parseFloodStatus(
+    stationSummary?.floodStatus || stationSummary?.trigger_status,
+  );
+  const activeCombination = stationSummary?.combinations?.find(
+    combo => `${combo.phase}_${combo.severity}` === parsedStatus.id,
+  );
 
   // Prepare hydrograph data using fetched forecast (discharge) data
   const hydrographData = useMemo(() => {
@@ -213,6 +220,14 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       return null;
     }
     const { thresholdBankfull, thresholdModerate, thresholdSevere } = probs[0];
+    const dischargeLine = (
+      severity: 'bankfull' | 'moderate' | 'severe',
+      fallback: number,
+    ) =>
+      activeCombination?.severity === severity &&
+      activeCombination.dischargeThreshold != null
+        ? activeCombination.dischargeThreshold
+        : fallback;
 
     const membersCount = forecast[0]?.ensemble_members?.length || 0;
     const ensembleDatasets = Array.from(
@@ -257,7 +272,9 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         },
         {
           label: `${t('Bankfull threshold')}`,
-          data: Array.from({ length: labels.length }, () => thresholdBankfull),
+          data: Array.from({ length: labels.length }, () =>
+            dischargeLine('bankfull', thresholdBankfull),
+          ),
           borderColor: AAFloodColors.chart.bankfull.solid,
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -267,7 +284,9 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         },
         {
           label: `${t('Moderate threshold')}`,
-          data: Array.from({ length: labels.length }, () => thresholdModerate),
+          data: Array.from({ length: labels.length }, () =>
+            dischargeLine('moderate', thresholdModerate),
+          ),
           borderColor: AAFloodColors.chart.moderate.solid,
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -277,7 +296,9 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         },
         {
           label: `${t('Severe threshold')}`,
-          data: Array.from({ length: labels.length }, () => thresholdSevere),
+          data: Array.from({ length: labels.length }, () =>
+            dischargeLine('severe', thresholdSevere),
+          ),
           borderColor: AAFloodColors.chart.severe.solid,
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -288,7 +309,13 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         ...ensembleDatasets,
       ],
     };
-  }, [floodState.forecastData, station.station_name, probs, t]);
+  }, [
+    activeCombination,
+    floodState.forecastData,
+    station.station_name,
+    probs,
+    t,
+  ]);
 
   // Prepare trigger probability data from fetched probabilities
   const sortedData = sortBy(probs, p => new Date(p.time).getTime());
@@ -297,14 +324,6 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   );
 
   const usesCombinationWindows = Boolean(stationSummary?.combinations?.length);
-  const parsedStatus = parseFloodStatus(
-    stationSummary?.floodStatus || stationSummary?.trigger_status,
-  );
-  const activeCombination = usesCombinationWindows
-    ? stationSummary?.combinations?.find(
-        combo => `${combo.phase}_${combo.severity}` === parsedStatus.id,
-      )
-    : undefined;
 
   let beginIdx = usesCombinationWindows ? -1 : forecastWindow.start - 1;
   let endIdx = usesCombinationWindows ? -1 : forecastWindow.end - 1;
@@ -324,8 +343,15 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       }
     });
   }
-  const windowStartDay = beginIdx >= 0 ? beginIdx + 1 : undefined;
-  const windowEndDay = endIdx >= 0 ? endIdx + 1 : undefined;
+  const leadTimes = sortedData.map(point => point.time);
+  const windowStartDay =
+    beginIdx >= 0
+      ? forecastLeadDay(leadTimes, sortedData[beginIdx].time)
+      : undefined;
+  const windowEndDay =
+    endIdx >= 0
+      ? forecastLeadDay(leadTimes, sortedData[endIdx].time)
+      : undefined;
 
   const triggerProbabilityData = useMemo(() => {
     if (!probs || probs.length === 0) {
