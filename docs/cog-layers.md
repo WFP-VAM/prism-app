@@ -35,11 +35,11 @@ export class CogLayerProps extends CommonLayerProps {
 }
 ```
 
-The split between `collection` and `serverLayerName` is the key design decision: **dates come from WMS GetCapabilities (keyed by `serverLayerName`), pixels come from STAC (keyed by `collection`)**. They are usually identical, but keeping both lets a COG layer reuse the WMS date pipeline unchanged. When `serverLayerName` is omitted, dates are fetched directly from the STAC API (`/search` with only `properties.datetime`, see `fetchStacCollectionDates` in [`server-utils.ts`](../frontend/src/utils/server-utils.ts)) and normalized to noon UTC like WMS dates.
+The split between `collection` and `serverLayerName` is the key design decision: **dates come from WMS GetCapabilities (keyed by `serverLayerName`), pixels come from STAC (keyed by `collection`)**. They are usually identical, but keeping both lets a COG layer reuse the WMS date pipeline unchanged. Layers with no WMS equivalent set `stacApiUrl` instead (exactly one of the two is required); dates are then fetched directly from that STAC API (`/search` with only `properties.datetime`, see `fetchStacCollectionDates` in [`server-utils.ts`](../frontend/src/utils/server-utils.ts)) and normalized to noon UTC like WMS dates.
 
 ## End-to-end data flow
 
-Layers with `public_assets: true` (e.g. `dekad_rainfall_forecast_cog`, backed by source.coop) skip the PRISM API: `getPublicCogUrls` searches the STAC API from the browser, rewrites `s3://<region>.opendata.source.coop/...` hrefs to `https://data.source.coop/...`, and passes those URLs straight to `DeckCOGLayer`. The flow below applies to private assets.
+Layers with `public_assets: true` (e.g. `dekad_rainfall_forecast_cog`, backed by source.coop) skip the PRISM API: `getPublicCogUrls` searches the layer's `stac_api_url` from the browser, rewrites `s3://<region>.opendata.source.coop/...` hrefs to `https://data.source.coop/...`, and passes those URLs straight to `DeckCOGLayer`. The flow below applies to private assets.
 
 ```mermaid
 sequenceDiagram

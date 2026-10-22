@@ -23,6 +23,8 @@ describe('toPublicCogUrl', () => {
   });
 });
 
+const STAC_API_URL = 'https://api.earthobservation.vam.wfp.org/stac';
+
 describe('getPublicCogUrls', () => {
   const originalFetch = global.fetch;
 
@@ -45,6 +47,7 @@ describe('getPublicCogUrls', () => {
     }) as jest.Mock;
 
     const urls = await getPublicCogUrls(
+      STAC_API_URL,
       'chirps_dekad_forecast',
       '2026-09-21',
       'band',
@@ -76,7 +79,7 @@ describe('getPublicCogUrls', () => {
       .mockResolvedValue({ ok: false, status: 500 }) as jest.Mock;
 
     await expect(
-      getPublicCogUrls('chirps_dekad_forecast', '2026-09-21'),
+      getPublicCogUrls(STAC_API_URL, 'chirps_dekad_forecast', '2026-09-21'),
     ).rejects.toThrow('STAC search failed');
   });
 });

@@ -8,11 +8,7 @@ import { fromArrayBuffer, GeoTIFFImage } from 'geotiff';
 import { Map as MaplibreMap } from 'maplibre-gl';
 import { createGetMapUrl } from 'prism-common';
 import { Dispatch } from 'redux';
-import {
-  COG_PRESIGNED_URL_API,
-  HDC_STAC_API_URL,
-  RASTER_API_URL,
-} from 'utils/constants';
+import { COG_PRESIGNED_URL_API, RASTER_API_URL } from 'utils/constants';
 import { LocalError } from 'utils/error-utils';
 import {
   ANALYSIS_REQUEST_TIMEOUT,
@@ -309,11 +305,12 @@ export function toPublicCogUrl(href: string): string {
 }
 
 /**
- * Look up public COG assets directly in the STAC API, without going through
+ * Look up public COG assets directly in a STAC API, without going through
  * the PRISM API presigning endpoint. Returns the same shape as
  * getPresignedCogUrls, with every URL flagged as public.
  */
 export async function getPublicCogUrls(
+  stacApiUrl: string,
   collection: string,
   date: string,
   band?: string,
@@ -328,13 +325,10 @@ export async function getPublicCogUrls(
     params.set('bbox', bbox.join(','));
   }
 
-  const response = await fetch(
-    `${HDC_STAC_API_URL}/search?${params.toString()}`,
-    {
-      method: 'GET',
-      headers: { Accept: 'application/geo+json' },
-    },
-  );
+  const response = await fetch(`${stacApiUrl}/search?${params.toString()}`, {
+    method: 'GET',
+    headers: { Accept: 'application/geo+json' },
+  });
   if (!response.ok) {
     throw new Error(
       `STAC search failed for collection '${collection}': ${response.status}`,

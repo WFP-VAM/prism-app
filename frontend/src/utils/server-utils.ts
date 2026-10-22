@@ -44,7 +44,6 @@ import {
 import { LayerDefinitions } from '../config/utils';
 import { addNotification } from '../context/notificationStateSlice';
 import { fetchACLEDDates } from './acled-utils';
-import { HDC_STAC_API_URL } from './constants';
 import {
   datesAreEqualWithoutTime,
   generateDateItemsRange,
@@ -717,6 +716,7 @@ const localWMSGetLayerDates = async (
  * no WMS equivalent. Timestamps are set to noon UTC to match WMS dates.
  */
 const fetchStacCollectionDates = async (
+  stacApiUrl: string,
   collection: string,
   dispatch: AppDispatch,
 ): Promise<{ [collection: string]: number[] }> => {
@@ -726,7 +726,7 @@ const fetchStacCollectionDates = async (
     sortby: 'datetime',
     fields: 'properties.datetime,-assets,-geometry,-links,-bbox',
   });
-  const url = `${HDC_STAC_API_URL}/search?${params.toString()}`;
+  const url = `${stacApiUrl}/search?${params.toString()}`;
   try {
     const response = await fetchWithTimeout(url);
     const { features } = await response.json();
@@ -830,11 +830,12 @@ export async function preloadLayerDatesForWMS(
     return mapServerDatesToLayerIds(serverDates, WCSWMSLayers);
   });
   const stacCogLayers = WCSWMSLayers.filter(
-    (layer): layer is CogLayerProps =>
-      layer.type === 'cog' && !layer.serverLayerName,
+    (layer): layer is CogLayerProps & { stacApiUrl: string } =>
+      layer.type === 'cog' && Boolean(layer.stacApiUrl),
   );
   const allStacDates = stacCogLayers.map(async layer => {
     const serverDates = await fetchStacCollectionDates(
+      layer.stacApiUrl,
       layer.collection,
       dispatch,
     );

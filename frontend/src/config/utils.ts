@@ -112,10 +112,22 @@ export const getLayerByKey = (layerKey: LayerKey): LayerType => {
       }
       return throwInvalidLayer();
     case 'cog':
-      if (checkRequiredKeys(CogLayerProps, definition, true)) {
-        return definition;
+      if (!checkRequiredKeys(CogLayerProps, definition, true)) {
+        return throwInvalidLayer();
       }
-      return throwInvalidLayer();
+      if (!definition.serverLayerName === !definition.stacApiUrl) {
+        console.error(
+          `COG layer '${layerKey}' must set exactly one of 'server_layer_name' or 'stac_api_url'.`,
+        );
+        return throwInvalidLayer();
+      }
+      if (definition.publicAssets && !definition.stacApiUrl) {
+        console.error(
+          `COG layer '${layerKey}' sets 'public_assets' and must also set 'stac_api_url'.`,
+        );
+        return throwInvalidLayer();
+      }
+      return definition;
     case 'admin_level_data':
       if (checkRequiredKeys(AdminLevelDataLayerProps, definition, true)) {
         if (typeof (definition.adminLevel as unknown) !== 'number') {

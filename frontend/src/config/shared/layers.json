@@ -41,6 +41,7 @@
     "collection": "chirps_dekad_forecast",
     "band": "band",
     "public_assets": true,
+    "stac_api_url": "https://api.earthobservation.vam.wfp.org/stac",
     "start_date": "today",
     "date_interval": "days",
     "validity": {

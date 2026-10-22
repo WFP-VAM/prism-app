@@ -236,8 +236,16 @@ function createTileHandlers(config: COGRenderConfig) {
 // --- React component ---
 
 const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
-  const { id, collection, band, opacity, legend, wcsConfig, publicAssets } =
-    layer;
+  const {
+    id,
+    collection,
+    band,
+    opacity,
+    legend,
+    wcsConfig,
+    publicAssets,
+    stacApiUrl,
+  } = layer;
 
   const dispatch = useDispatch();
   const selectedDate = useDefaultDate(id);
@@ -333,8 +341,17 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
       | [number, number, number, number]
       | undefined;
 
-    const fetchCogUrls = publicAssets ? getPublicCogUrls : getPresignedCogUrls;
-    fetchCogUrls(collection, dateString, band, deploymentBbox)
+    const urlsPromise =
+      publicAssets && stacApiUrl
+        ? getPublicCogUrls(
+            stacApiUrl,
+            collection,
+            dateString,
+            band,
+            deploymentBbox,
+          )
+        : getPresignedCogUrls(collection, dateString, band, deploymentBbox);
+    urlsPromise
       .then((urls: PresignedCogUrl[]) => {
         if (!cancelled) {
           setFetchedData({ dateString, urls });
@@ -366,7 +383,16 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
       dispatch(finishLayerLoading(id));
       setFetchedData(null);
     };
-  }, [id, collection, band, publicAssets, dateString, dispatch, layer.title]);
+  }, [
+    id,
+    collection,
+    band,
+    publicAssets,
+    stacApiUrl,
+    dateString,
+    dispatch,
+    layer.title,
+  ]);
 
   // Effect B: register/update deck layers when urls, opacity, or z-order change.
   useEffect(() => {
