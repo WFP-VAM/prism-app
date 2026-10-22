@@ -18,6 +18,7 @@ import {
   LayerKey,
   LayersMap,
   LayerType,
+  PmtilesVectorLayerProps,
   PointDataLayerProps,
   ReportType,
   StaticRasterLayerProps,
@@ -115,9 +116,17 @@ export const getLayerByKey = (layerKey: LayerKey): LayerType => {
       if (!checkRequiredKeys(CogLayerProps, definition, true)) {
         return throwInvalidLayer();
       }
-      if (!definition.serverLayerName === !definition.stacApiUrl) {
+      // Direct public COG (`path`), or STAC lookup (`collection` + exactly one
+      // of `serverLayerName` / `stacApiUrl`).
+      if (
+        !definition.path &&
+        !(
+          definition.collection &&
+          !definition.serverLayerName !== !definition.stacApiUrl
+        )
+      ) {
         console.error(
-          `COG layer '${layerKey}' must set exactly one of 'server_layer_name' or 'stac_api_url'.`,
+          `COG layer ${definition.id} needs path, or collection + exactly one of server_layer_name / stac_api_url.`,
         );
         return throwInvalidLayer();
       }
@@ -180,6 +189,11 @@ export const getLayerByKey = (layerKey: LayerKey): LayerType => {
       return throwInvalidLayer();
     case 'geojson_polygon':
       if (!checkRequiredKeys(GeojsonDataLayerProps, definition, true)) {
+        return throwInvalidLayer();
+      }
+      return definition;
+    case 'pmtiles_vector':
+      if (!checkRequiredKeys(PmtilesVectorLayerProps, definition, true)) {
         return throwInvalidLayer();
       }
       return definition;

@@ -114,6 +114,7 @@ def test_normalize_export_map_s3_object_prefix(raw: str | None, want: str) -> No
         ("prism-wfp/batch/more", "prism-wfp", "batch/more"),
         ("s3://prism-wfp", "prism-wfp", ""),
         ("s3://prism-wfp/batch-maps", "prism-wfp", "batch-maps"),
+        ("s3://prism-wfp/batch-maps-staging", "prism-wfp", "batch-maps-staging"),
         ("s3://prism-wfp/a/b", "prism-wfp", "a/b"),
         ("  s3://b/p  ", "b", "p"),
     ],

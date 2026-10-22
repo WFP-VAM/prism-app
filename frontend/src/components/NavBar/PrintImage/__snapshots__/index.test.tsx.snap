@@ -553,6 +553,24 @@ exports[`renders as expected 1`] = `
             </div>
             <div>
               <div
+                class="makeStyles-collapsibleWrapper-11 "
+              >
+                <mock-switch
+                  class="makeStyles-switch-38"
+                  classes="[object Object]"
+                  color="primary"
+                  inputprops="[object Object]"
+                />
+                <mock-typography
+                  style="padding-left: 0.5rem;"
+                  variant="h4"
+                >
+                  Phase Labels
+                </mock-typography>
+              </div>
+            </div>
+            <div>
+              <div
                 class="makeStyles-collapsibleWrapper-11 makeStyles-collapsibleWrapperExpanded-12"
               >
                 <mock-switch

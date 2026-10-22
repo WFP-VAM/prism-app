@@ -83,6 +83,10 @@ export function isDateCompatibleLayer(
     // some point_data layers might not have a date URL (i.e. static data)
     return Boolean(layer.dateUrl);
   }
+  if (layer.type === 'cog' && layer.path) {
+    // Direct public COG — no timeline.
+    return false;
+  }
   if (layer.type === 'wms' || layer.type === 'cog') {
     // some WMS/COG layers might not have a date dimension (i.e. static data)
     return layer.id in serverAvailableDates;

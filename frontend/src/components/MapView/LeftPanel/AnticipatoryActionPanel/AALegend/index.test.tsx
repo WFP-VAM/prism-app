@@ -12,6 +12,9 @@ test('renders as expected', () => {
     leftPanelState: {
       tabValue: Panel.AnticipatoryActionDrought,
     },
+    anticipatoryActionDroughtState: {
+      showPhaseLabels: true,
+    },
   });
 
   const { container } = render(

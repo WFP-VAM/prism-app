@@ -5,6 +5,7 @@ import { TFunction } from 'i18next';
 import { every, map } from 'lodash';
 import {
   FillLayerSpecification,
+  FilterSpecification,
   LineLayerSpecification,
   MapLayerMouseEvent,
 } from 'maplibre-gl';
@@ -32,7 +33,8 @@ export type LayerType =
   | CompositeLayerProps
   | StaticRasterLayerProps
   | AnticipatoryActionLayerProps
-  | GeojsonDataLayerProps;
+  | GeojsonDataLayerProps
+  | PmtilesVectorLayerProps;
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   k: infer I,
@@ -538,17 +540,27 @@ export class CogLayerProps extends CommonLayerProps {
   type: 'cog' = 'cog';
 
   /**
+   * Direct public COG URL (CORS-open). When set, skips STAC/presign/proxy and
+   * renders this file with deck.gl. Mutually exclusive with collection-based lookup.
+   */
+  @optional
+  path?: string;
+
+  /**
    * STAC collection ID used to look up COG assets via the /cog_presigned_url
    * endpoint. Matches the server_layer_name of the equivalent WMS layer.
+   * Required when `path` is not set.
    */
-  collection: string;
+  @optional
+  collection?: string;
 
   /**
    * The WMS server_layer_name for the equivalent layer — used solely so that
    * the existing date-availability machinery (GetCapabilities) can discover
    * which dates are available in the timeline. Set to the same value as
    * `collection` unless the WMS name differs from the STAC collection ID.
-   * Exactly one of `serverLayerName` or `stacApiUrl` must be set.
+   * Required (exactly one of `serverLayerName` or `stacApiUrl`) when `path`
+   * is not set.
    */
   @optional
   serverLayerName?: string;
@@ -589,7 +601,34 @@ export class CogLayerProps extends CommonLayerProps {
   startDate?: string;
 
   @optional
-  wcsConfig?: { scale?: number; offset?: number };
+  wcsConfig?: {
+    scale?: number;
+    offset?: number;
+    noData?: number | number[];
+    /** Linear blend between legend colors (continuous ramps like FTW density). */
+    interpolate?: boolean;
+    /**
+     * Optional same-grid mask COG (e.g. FTW confidence). Pixels where the mask
+     * value is nodata (255) or below the threshold are treated as transparent.
+     */
+    maskPath?: string;
+    /**
+     * FTW Explorer confidence percent (0–100). Converted to the uint8 mask
+     * cutoff via `ftwConfidenceMaskMin`.
+     */
+    confidenceThreshold?: number;
+  };
+
+  /** Hide deck.gl tiles above this zoom (e.g. hand off to vector at z11). */
+  @optional
+  maxZoom?: number;
+
+  @optional
+  minZoom?: number;
+
+  /** When true, mask pixels outside the deployment country outline. */
+  @optional
+  clipToDeployment?: boolean;
 }
 
 enum AggregationOptions {
@@ -842,6 +881,45 @@ export class PointDataLayerProps extends CommonLayerProps {
 
   @optional
   iconShape?: 'point' | 'square' | 'triangle' | 'diamond';
+}
+
+export type PmtilesVectorSourceLayerStyle = {
+  name: string;
+  fill?: FillLayerSpecification['paint'];
+  line?: LineLayerSpecification['paint'];
+};
+
+export class PmtilesVectorLayerProps extends CommonLayerProps {
+  type: 'pmtiles_vector' = 'pmtiles_vector';
+  path: FilePath;
+  sourceLayers: PmtilesVectorSourceLayerStyle[];
+
+  @optional
+  minZoom?: number;
+
+  /** When true, hide features outside the deployment country (MapLibre within filter). */
+  @optional
+  clipToDeployment?: boolean;
+
+  /** Optional MapLibre feature filter applied to every source layer. */
+  @optional
+  filter?: FilterSpecification;
+
+  /**
+   * FTW Explorer confidence percent (0–100). When set, builds the vector
+   * filter via `ftwConfidenceFilter` (overrides `filter`).
+   */
+  @optional
+  confidenceThreshold?: number;
+
+  @makeRequired
+  declare title: string;
+
+  @makeRequired
+  declare legend: LegendDefinition;
+
+  @makeRequired
+  declare legendText: string;
 }
 
 export class GeojsonDataLayerProps extends CommonLayerProps {
