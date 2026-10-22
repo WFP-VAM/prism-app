@@ -620,8 +620,8 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
     dateString,
     dispatch,
     layer.title,
+    path,
   ]);
-  }, [id, collection, band, dateString, dispatch, layer.title, path]);
 
   // end the loading bar instead of spinning forever
   useEffect(() => {
@@ -656,9 +656,10 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
       deckLayerIds.push(deckLayerId);
       // Public path COGs (e.g. Source Cooperative) already send CORS; HDC
       // STAC assets still need the API proxy until bucket CORS is fixed.
-      const geotiff = path || isPublic
-        ? url
-        : `${COG_PROXY_API}?url=${encodeURIComponent(url)}`;
+      const geotiff =
+        path || isPublic
+          ? url
+          : `${COG_PROXY_API}?url=${encodeURIComponent(url)}`;
 
       registerRef.current(
         deckLayerId,
