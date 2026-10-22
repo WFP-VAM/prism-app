@@ -10,8 +10,8 @@ import { createGetMapUrl } from 'prism-common';
 import { Dispatch } from 'redux';
 import {
   COG_PRESIGNED_URL_API,
+  HDC_STAC_API_URL,
   RASTER_API_URL,
-  STAC_API_URL,
 } from 'utils/constants';
 import { LocalError } from 'utils/error-utils';
 import {
@@ -328,10 +328,13 @@ export async function getPublicCogUrls(
     params.set('bbox', bbox.join(','));
   }
 
-  const response = await fetch(`${STAC_API_URL}/search?${params.toString()}`, {
-    method: 'GET',
-    headers: { Accept: 'application/geo+json' },
-  });
+  const response = await fetch(
+    `${HDC_STAC_API_URL}/search?${params.toString()}`,
+    {
+      method: 'GET',
+      headers: { Accept: 'application/geo+json' },
+    },
+  );
   if (!response.ok) {
     throw new Error(
       `STAC search failed for collection '${collection}': ${response.status}`,

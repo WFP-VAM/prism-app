@@ -44,7 +44,7 @@ import {
 import { LayerDefinitions } from '../config/utils';
 import { addNotification } from '../context/notificationStateSlice';
 import { fetchACLEDDates } from './acled-utils';
-import { STAC_API_URL } from './constants';
+import { HDC_STAC_API_URL } from './constants';
 import {
   datesAreEqualWithoutTime,
   generateDateItemsRange,
@@ -726,7 +726,7 @@ const fetchStacCollectionDates = async (
     sortby: 'datetime',
     fields: 'properties.datetime,-assets,-geometry,-links,-bbox',
   });
-  const url = `${STAC_API_URL}/search?${params.toString()}`;
+  const url = `${HDC_STAC_API_URL}/search?${params.toString()}`;
   try {
     const response = await fetchWithTimeout(url);
     const { features } = await response.json();
