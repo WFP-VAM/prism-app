@@ -559,10 +559,20 @@ export class CogLayerProps extends CommonLayerProps {
    * the existing date-availability machinery (GetCapabilities) can discover
    * which dates are available in the timeline. Set to the same value as
    * `collection` unless the WMS name differs from the STAC collection ID.
-   * Required when `path` is not set.
+   * Required (exactly one of `serverLayerName` or `stacApiUrl`) when `path`
+   * is not set.
    */
   @optional
   serverLayerName?: string;
+
+  /**
+   * Base URL of a STAC API (with a /search endpoint) to read available dates
+   * from, for collections with no WMS equivalent (e.g. public source.coop
+   * datasets). Also used to look up items when `publicAssets` is set.
+   * Exactly one of `serverLayerName` or `stacApiUrl` must be set.
+   */
+  @optional
+  stacApiUrl?: string;
 
   @makeRequired
   declare title: string;
@@ -575,6 +585,14 @@ export class CogLayerProps extends CommonLayerProps {
 
   @optional
   band?: string; // STAC asset key / band name to fetch
+
+  /**
+   * Set when the collection's assets are public and CORS-enabled (e.g.
+   * source.coop). Items are then looked up directly in `stacApiUrl` and
+   * fetched by the browser, skipping the /cog_presigned_url endpoint.
+   */
+  @optional
+  publicAssets?: boolean;
 
   @optional
   chartData?: DatasetProps;

@@ -116,13 +116,23 @@ export const getLayerByKey = (layerKey: LayerKey): LayerType => {
       if (!checkRequiredKeys(CogLayerProps, definition, true)) {
         return throwInvalidLayer();
       }
-      // Direct public COG (`path`) or STAC lookup (`collection` + `serverLayerName`).
+      // Direct public COG (`path`), or STAC lookup (`collection` + exactly one
+      // of `serverLayerName` / `stacApiUrl`).
       if (
         !definition.path &&
-        !(definition.collection && definition.serverLayerName)
+        !(
+          definition.collection &&
+          !definition.serverLayerName !== !definition.stacApiUrl
+        )
       ) {
         console.error(
-          `COG layer ${definition.id} needs path or collection+server_layer_name.`,
+          `COG layer ${definition.id} needs path, or collection + exactly one of server_layer_name / stac_api_url.`,
+        );
+        return throwInvalidLayer();
+      }
+      if (definition.publicAssets && !definition.stacApiUrl) {
+        console.error(
+          `COG layer '${layerKey}' sets 'public_assets' and must also set 'stac_api_url'.`,
         );
         return throwInvalidLayer();
       }

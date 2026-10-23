@@ -30,7 +30,10 @@ import {
   geotiffTileBbox3857,
 } from 'components/MapView/Layers/COGLayer/deploymentClip';
 import type { PresignedCogUrl } from 'components/MapView/Layers/raster-utils';
-import { getPresignedCogUrls } from 'components/MapView/Layers/raster-utils';
+import {
+  getPresignedCogUrls,
+  getPublicCogUrls,
+} from 'components/MapView/Layers/raster-utils';
 import { appConfig } from 'config';
 import type { CogLayerProps, LegendDefinition } from 'config/types';
 import {
@@ -40,6 +43,7 @@ import {
 import { addNotification } from 'context/notificationStateSlice';
 import { opacitySelector } from 'context/opacityStateSlice';
 import { availableDatesSelector } from 'context/serverStateSlice';
+import proj4 from 'proj4';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
@@ -47,6 +51,15 @@ import { COG_PROXY_API } from 'utils/constants';
 import { getRequestDate } from 'utils/server-utils';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { useDeploymentClipPolygon } from 'utils/useDeploymentClipPolygon';
+
+// Disable proj4's longitude wrapping when projecting COGs to web mercator.
+// Global COGs with float32 pixel sizes can end a hair past 180° (CHIRPS-GEFS
+// ends at 180.0000054°), which proj4 wraps to -180°, stretching the last tile
+// column across the whole map. deck.gl-geotiff targets "EPSG:3857" by name.
+proj4.defs(
+  'EPSG:3857',
+  '+proj=merc +a=6378137 +b=6378137 +lat_ts=0 +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null +over +no_defs',
+);
 
 export interface COGLayerComponentProps {
   layer: CogLayerProps;
@@ -364,6 +377,8 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
     opacity,
     legend,
     wcsConfig,
+    publicAssets,
+    stacApiUrl,
     path,
     maxZoom,
     minZoom,
@@ -554,7 +569,17 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
       | [number, number, number, number]
       | undefined;
 
-    getPresignedCogUrls(collection, dateString, band, deploymentBbox)
+    const urlsPromise =
+      publicAssets && stacApiUrl
+        ? getPublicCogUrls(
+            stacApiUrl,
+            collection,
+            dateString,
+            band,
+            deploymentBbox,
+          )
+        : getPresignedCogUrls(collection, dateString, band, deploymentBbox);
+    urlsPromise
       .then((urls: PresignedCogUrl[]) => {
         if (!cancelled) {
           setFetchedData({ dateString, urls });
@@ -586,7 +611,17 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
       dispatch(finishLayerLoading(id));
       setFetchedData(null);
     };
-  }, [id, collection, band, dateString, dispatch, layer.title, path]);
+  }, [
+    id,
+    collection,
+    band,
+    publicAssets,
+    stacApiUrl,
+    dateString,
+    dispatch,
+    layer.title,
+    path,
+  ]);
 
   // end the loading bar instead of spinning forever
   useEffect(() => {
@@ -616,15 +651,16 @@ const COGLayerComponent = memo(({ layer, before }: COGLayerComponentProps) => {
       pendingItemsRef.current = new Set(presignedUrls.map(u => u.item_id));
     }
 
-    presignedUrls.forEach(({ item_id, url }) => {
+    presignedUrls.forEach(({ item_id, url, public: isPublic }) => {
       const deckLayerId = `cog-${id}-${item_id}`;
       deckLayerIds.push(deckLayerId);
-
-      // Public path COGs (e.g. Source Cooperative) already send CORS; HDC
-      // STAC assets still need the API proxy until bucket CORS is fixed.
-      const geotiff = path
-        ? url
-        : `${COG_PROXY_API}?url=${encodeURIComponent(url)}`;
+      // Direct `path` COGs and public STAC assets (e.g. Source Cooperative)
+      // already send CORS; HDC STAC assets still need the API proxy until
+      // bucket CORS is fixed.
+      const geotiff =
+        path || isPublic
+          ? url
+          : `${COG_PROXY_API}?url=${encodeURIComponent(url)}`;
 
       registerRef.current(
         deckLayerId,
