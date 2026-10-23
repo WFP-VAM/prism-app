@@ -831,7 +831,8 @@ export async function preloadLayerDatesForWMS(
     const serverDates = await localFetchCoverageLayerDays(url, dispatch);
     return mapServerDatesToLayerIds(serverDates, WCSWMSLayers);
   });
-  const stacCogLayers = WCSWMSLayers.filter(
+  // STAC-dated COG layers have no serverLayerName, so WCSWMSLayers excludes them.
+  const stacCogLayers = Object.values(LayerDefinitions).filter(
     (
       layer,
     ): layer is CogLayerProps & { stacApiUrl: string; collection: string } =>
