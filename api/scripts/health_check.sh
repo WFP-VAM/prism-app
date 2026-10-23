@@ -18,9 +18,18 @@ if [[ -z "${INFO_EMAIL:-}" && -f "${ROOT}/set_envs.sh" ]]; then
   source "${ROOT}/set_envs.sh"
 fi
 
-COMPOSE="docker compose -f docker-compose.yml -f docker-compose.deploy.yml"
+if [[ "${PRISM_STAGING:-}" == "1" ]]; then
+  # Staging shares the prod Traefik container and does not publish host port 80.
+  COMPOSE="docker compose -p ${COMPOSE_PROJECT_NAME:-prism-staging} -f docker-compose.yml -f docker-compose.staging.yml"
+  HEALTHCHECK_IN_CONTAINER="${HEALTHCHECK_IN_CONTAINER:-1}"
+  HEALTHCHECK_SKIP_TRAEFIK="${HEALTHCHECK_SKIP_TRAEFIK:-1}"
+  WORKER_REPLICAS="${WORKER_REPLICAS:-1}"
+  HEALTHCHECK_PUBLIC_HOST="${HEALTHCHECK_PUBLIC_HOST:-prism-api-staging.ovio.org}"
+else
+  COMPOSE="docker compose -f docker-compose.yml -f docker-compose.deploy.yml"
+  WORKER_REPLICAS="${WORKER_REPLICAS:-2}"
+fi
 LOG_FILE="${ROOT}/logs/health.log"
-WORKER_REPLICAS="${WORKER_REPLICAS:-2}"
 API_URL="${HEALTHCHECK_API_URL:-http://localhost:80/}"
 API_RETRIES="${HEALTHCHECK_API_RETRIES:-5}"
 API_RETRY_INTERVAL="${HEALTHCHECK_API_RETRY_INTERVAL:-3}"
@@ -53,7 +62,12 @@ record_fail() {
 check_api_local() {
   local attempt body
   for attempt in $(seq 1 "$API_RETRIES"); do
-    if body="$(curl -sf --max-time 5 "$API_URL" 2>/dev/null)" && [[ "$body" == *"All good!"* ]]; then
+    if [[ "${HEALTHCHECK_IN_CONTAINER:-}" == "1" ]]; then
+      body="$($COMPOSE exec -T api curl -sf --max-time 5 http://127.0.0.1:80/ 2>/dev/null || true)"
+    else
+      body="$(curl -sf --max-time 5 "$API_URL" 2>/dev/null || true)"
+    fi
+    if [[ "$body" == *"All good!"* ]]; then
       log "✅ [api] OK (http 200, attempt ${attempt}/${API_RETRIES})"
       record_pass
       return 0
@@ -62,7 +76,11 @@ check_api_local() {
       sleep "$API_RETRY_INTERVAL"
     fi
   done
-  log "❌ [api] FAIL (no response from ${API_URL} after ${API_RETRIES} attempts)"
+  local target="$API_URL"
+  if [[ "${HEALTHCHECK_IN_CONTAINER:-}" == "1" ]]; then
+    target="container http://127.0.0.1:80/"
+  fi
+  log "❌ [api] FAIL (no response from ${target} after ${API_RETRIES} attempts)"
   record_fail
   return 1
 }
@@ -115,7 +133,11 @@ main() {
 
   check_api_local || true
   check_api_public || true
-  check_traefik || true
+  if [[ "${HEALTHCHECK_SKIP_TRAEFIK:-}" == "1" ]]; then
+    log "⏭️  [traefik] SKIP (shared prod proxy)"
+  else
+    check_traefik || true
+  fi
   check_export_map_worker || true
 
   if [[ "$failed" -eq 0 ]]; then

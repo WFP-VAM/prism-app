@@ -243,6 +243,29 @@ def test_send_email_uses_ssl_when_creds_set(
     inst.send_message.assert_called_once()
 
 
+@patch("prism_app.alert_workers.smtp_mailer.smtplib.SMTP_SSL")
+def test_send_email_prepends_mail_subject_prefix(
+    mock_ssl: MagicMock, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("PRISM_ALERTS_EMAIL_USER", "u")
+    monkeypatch.setenv("PRISM_ALERTS_EMAIL_PASSWORD", "p")
+    monkeypatch.setenv("PRISM_ALERTS_EMAIL_HOST", "smtp.example.com")
+    monkeypatch.setenv("PRISM_ALERTS_EMAIL_STARTTLS", "false")
+    monkeypatch.setenv("PRISM_ALERTS_EMAIL_PORT", "465")
+    monkeypatch.delenv("PRISM_ALERTS_USE_ETHEREAL", raising=False)
+    monkeypatch.setenv("MAIL_SUBJECT_PREFIX", "[STAGING] ")
+
+    inst = mock_ssl.return_value.__enter__.return_value
+    smtp_mailer.send_email(
+        from_addr="from@x.org",
+        to_addrs="to@x.org",
+        subject="PRISM Alert Triggered",
+        text_body="text",
+    )
+    sent = inst.send_message.call_args[0][0]
+    assert sent["Subject"] == "[STAGING] PRISM Alert Triggered"
+
+
 def test_parse_ethereal_msgid_from_smtp_reply() -> None:
     token = "YpXX5N-8J14cOJVHYpXjvw93heVfMHMGAAAAA4okSTkzId5ci.tBPvM2244"
     # smtplib ``getreply`` drops the ``250 `` prefix; Ethereal sends ``Accepted`` before bracket.

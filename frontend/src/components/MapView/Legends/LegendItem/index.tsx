@@ -69,6 +69,7 @@ const LegendItem = memo(
     forPrinting = false,
     showDescription = true,
     dateCoverage,
+    interpolate = false,
   }: LegendItemProps) => {
     const classes = useStyles();
     const dispatch = useDispatch();
@@ -232,6 +233,34 @@ const LegendItem = memo(
       [],
     );
 
+    const renderedGradientLegend = useMemo(() => {
+      if (!interpolate || !legend || legend.length < 2) {
+        return null;
+      }
+      const first = legend[0]!;
+      const last = legend[legend.length - 1]!;
+      const gradient = legend.map(item => item.color).join(', ');
+      return (
+        <Box className={classes.gradientLegend}>
+          <Box
+            className={classes.gradientBar}
+            style={{
+              opacity: opacity as number,
+              backgroundImage: `linear-gradient(to right, ${gradient})`,
+            }}
+          />
+          <Box className={classes.gradientLabels}>
+            <Typography variant="caption" color="textSecondary">
+              {getLegendItemLabel(t, first)}
+            </Typography>
+            <Typography variant="caption" color="textSecondary">
+              {getLegendItemLabel(t, last)}
+            </Typography>
+          </Box>
+        </Box>
+      );
+    }, [classes, interpolate, legend, opacity, t]);
+
     const renderedLegendDefinitionItems = useMemo(
       () =>
         legend?.map((item: LegendDefinitionItem) => (
@@ -255,8 +284,16 @@ const LegendItem = memo(
       if (legendUrl) {
         return <img src={legendUrl} alt={title} />;
       }
+      if (renderedGradientLegend) {
+        return renderedGradientLegend;
+      }
       return renderedLegendDefinitionItems;
-    }, [legendUrl, renderedLegendDefinitionItems, title]);
+    }, [
+      legendUrl,
+      renderedGradientLegend,
+      renderedLegendDefinitionItems,
+      title,
+    ]);
 
     const renderedLegend = useMemo(() => {
       if (!legend) {
@@ -393,6 +430,21 @@ const useStyles = makeStyles(() =>
       width: 180,
       borderRadius: '8px',
     },
+    gradientLegend: {
+      width: '100%',
+      paddingTop: 2,
+      paddingBottom: 2,
+    },
+    gradientBar: {
+      height: 12,
+      width: '100%',
+      borderRadius: 2,
+    },
+    gradientLabels: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      marginTop: 2,
+    },
     slider: {
       padding: '0 5px',
     },
@@ -435,6 +487,8 @@ interface LegendItemProps extends PropsWithChildren<{}> {
   forPrinting?: boolean;
   showDescription?: boolean;
   dateCoverage?: DateCoverage;
+  /** Continuous color ramp (end labels + gradient bar) instead of discrete swatches. */
+  interpolate?: boolean;
 }
 
 export default LegendItem;

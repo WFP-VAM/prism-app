@@ -44,7 +44,6 @@ import {
 import { LayerDefinitions } from '../config/utils';
 import { addNotification } from '../context/notificationStateSlice';
 import { fetchACLEDDates } from './acled-utils';
-import { STAC_API_URL } from './constants';
 import {
   datesAreEqualWithoutTime,
   generateDateItemsRange,
@@ -717,6 +716,7 @@ const localWMSGetLayerDates = async (
  * no WMS equivalent. Timestamps are set to noon UTC to match WMS dates.
  */
 const fetchStacCollectionDates = async (
+  stacApiUrl: string,
   collection: string,
   dispatch: AppDispatch,
 ): Promise<{ [collection: string]: number[] }> => {
@@ -726,7 +726,7 @@ const fetchStacCollectionDates = async (
     sortby: 'datetime',
     fields: 'properties.datetime,-assets,-geometry,-links,-bbox',
   });
-  const url = `${STAC_API_URL}/search?${params.toString()}`;
+  const url = `${stacApiUrl}/search?${params.toString()}`;
   try {
     const response = await fetchWithTimeout(url);
     const { features } = await response.json();
@@ -765,8 +765,10 @@ const mapServerDatesToLayerIds = (
         ? (LayerDefinitions[layer.dateLayer] as WMSLayerProps).serverLayerName
         : (layer.serverLayerName ??
           (layer.type === 'cog' ? layer.collection : undefined));
-    const layerDates = (serverLayerName &&
-      serverDates[serverLayerName]) as ReferenceDateTimestamp[];
+    if (!serverLayerName) {
+      return acc;
+    }
+    const layerDates = serverDates[serverLayerName] as ReferenceDateTimestamp[];
     if (layerDates) {
       // Filter WMS layers by startDate, used for forecast layers in particular.
       if (layer.startDate) {
@@ -818,7 +820,7 @@ export async function preloadLayerDatesForWMS(
   const WCSWMSLayers = Object.values(LayerDefinitions).filter(
     (layer): layer is WMSLayerProps | CogLayerProps | CompositeLayerProps =>
       layer.type === 'wms' ||
-      layer.type === 'cog' ||
+      (layer.type === 'cog' && Boolean(layer.serverLayerName)) ||
       compositeLayersWithDateLayerTypeMap[layer.id] === 'wms',
   );
   const allWMSDates = wmsServerUrls.map(async url => {
@@ -830,11 +832,14 @@ export async function preloadLayerDatesForWMS(
     return mapServerDatesToLayerIds(serverDates, WCSWMSLayers);
   });
   const stacCogLayers = WCSWMSLayers.filter(
-    (layer): layer is CogLayerProps =>
-      layer.type === 'cog' && !layer.serverLayerName,
+    (
+      layer,
+    ): layer is CogLayerProps & { stacApiUrl: string; collection: string } =>
+      layer.type === 'cog' && Boolean(layer.stacApiUrl && layer.collection),
   );
   const allStacDates = stacCogLayers.map(async layer => {
     const serverDates = await fetchStacCollectionDates(
+      layer.stacApiUrl,
       layer.collection,
       dispatch,
     );
@@ -921,6 +926,9 @@ export const getLayerType = (
       LayerDefinitions[l.dateLayer].type === 'static_raster')
   ) {
     return 'staticRasterLayer';
+  }
+  if (l.type === 'cog' && l.path) {
+    return 'invalidType';
   }
   if (l.type === 'wms' || l.type === 'cog') {
     return 'WMSLayer';

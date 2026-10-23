@@ -18,6 +18,7 @@ import {
   LayerKey,
   LayersMap,
   LayerType,
+  PmtilesVectorLayerProps,
   PointDataLayerProps,
   ReportType,
   StaticRasterLayerProps,
@@ -112,10 +113,30 @@ export const getLayerByKey = (layerKey: LayerKey): LayerType => {
       }
       return throwInvalidLayer();
     case 'cog':
-      if (checkRequiredKeys(CogLayerProps, definition, true)) {
-        return definition;
+      if (!checkRequiredKeys(CogLayerProps, definition, true)) {
+        return throwInvalidLayer();
       }
-      return throwInvalidLayer();
+      // Direct public COG (`path`), or STAC lookup (`collection` + exactly one
+      // of `serverLayerName` / `stacApiUrl`).
+      if (
+        !definition.path &&
+        !(
+          definition.collection &&
+          !definition.serverLayerName !== !definition.stacApiUrl
+        )
+      ) {
+        console.error(
+          `COG layer ${definition.id} needs path, or collection + exactly one of server_layer_name / stac_api_url.`,
+        );
+        return throwInvalidLayer();
+      }
+      if (definition.publicAssets && !definition.stacApiUrl) {
+        console.error(
+          `COG layer '${layerKey}' sets 'public_assets' and must also set 'stac_api_url'.`,
+        );
+        return throwInvalidLayer();
+      }
+      return definition;
     case 'admin_level_data':
       if (checkRequiredKeys(AdminLevelDataLayerProps, definition, true)) {
         if (typeof (definition.adminLevel as unknown) !== 'number') {
@@ -168,6 +189,11 @@ export const getLayerByKey = (layerKey: LayerKey): LayerType => {
       return throwInvalidLayer();
     case 'geojson_polygon':
       if (!checkRequiredKeys(GeojsonDataLayerProps, definition, true)) {
+        return throwInvalidLayer();
+      }
+      return definition;
+    case 'pmtiles_vector':
+      if (!checkRequiredKeys(PmtilesVectorLayerProps, definition, true)) {
         return throwInvalidLayer();
       }
       return definition;

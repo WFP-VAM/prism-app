@@ -3,6 +3,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        GIT_SHA: ${GIT_SHA:-unknown}
+        GIT_BRANCH: ${GIT_BRANCH:-}
     shm_size: "2gb"
     volumes:
       - "./cache:/cache:rw"
@@ -19,6 +22,8 @@ services:
       - HDC_TOKEN
       # Alerts database
       - PRISM_ALERTS_DATABASE_URL
+      - GIT_SHA=${GIT_SHA:-}
+      - GIT_BRANCH=${GIT_BRANCH:-}
     ports:
       - "80:80"
 
