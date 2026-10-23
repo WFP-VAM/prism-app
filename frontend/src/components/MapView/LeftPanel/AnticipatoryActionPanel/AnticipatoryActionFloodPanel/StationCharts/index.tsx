@@ -25,6 +25,7 @@ import {
 } from 'context/anticipatoryAction/AAFloodStateSlice';
 import { FloodStation } from 'context/anticipatoryAction/AAFloodStateSlice/types';
 import {
+  floodStationKey,
   forecastLeadDay,
   isForecastDateInWindow,
   parseFloodStatus,
@@ -193,9 +194,10 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     return null;
   }
 
-  const probs = floodState.probabilitiesData[station.station_name];
+  const stationKey = floodStationKey(station.station_id, station.station_name);
+  const probs = floodState.probabilitiesData[stationKey];
   const stationSummary = floodState.stationSummaryData
-    ? floodState.stationSummaryData[station.station_name]
+    ? floodState.stationSummaryData[stationKey]
     : undefined;
   const parsedStatus = parseFloodStatus(
     stationSummary?.floodStatus || stationSummary?.trigger_status,
@@ -206,7 +208,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
 
   // Prepare hydrograph data using fetched forecast (discharge) data
   const hydrographData = useMemo(() => {
-    const forecast = floodState.forecastData[station.station_name] || [];
+    const forecast = floodState.forecastData[stationKey] || [];
     if (!forecast.length) {
       return null;
     }
@@ -309,13 +311,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         ...ensembleDatasets,
       ],
     };
-  }, [
-    activeCombination,
-    floodState.forecastData,
-    station.station_name,
-    probs,
-    t,
-  ]);
+  }, [activeCombination, floodState.forecastData, stationKey, probs, t]);
 
   // Prepare trigger probability data from fetched probabilities
   const sortedData = sortBy(probs, p => new Date(p.time).getTime());
@@ -635,9 +631,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
               return [] as string[];
             }
             const idx = items[0].index as number;
-            const p = (floodState.forecastData[station.station_name] || [])[
-              idx
-            ];
+            const p = (floodState.forecastData[stationKey] || [])[idx];
             const arr: number[] = p?.ensemble_members || [];
             if (!arr.length) {
               return [] as string[];
@@ -689,7 +683,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         ],
       },
     }),
-    [t, floodState.forecastData, station.station_name],
+    [t, floodState.forecastData, stationKey],
   );
 
   const probabilityOptions = useMemo(() => {
@@ -871,7 +865,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   };
 
   const hydrographTableData = useMemo(() => {
-    const fc = floodState.forecastData[station.station_name] ?? [];
+    const fc = floodState.forecastData[stationKey] ?? [];
     const hd = hydrographData;
 
     if (!hd?.datasets?.length || !fc.length) {
@@ -919,7 +913,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     ]);
 
     return { columnNames: columns, tableValues: rows };
-  }, [hydrographData, floodState.forecastData, station.station_name, t]);
+  }, [hydrographData, floodState.forecastData, stationKey, t]);
 
   const triggerProbabilityTableData = useMemo(() => {
     if (!triggerProbabilityData || !triggerProbabilityData.datasets) {
@@ -949,7 +943,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     };
   }, [triggerProbabilityData, t]);
 
-  if (!floodState.probabilitiesData[station.station_name]) {
+  if (!floodState.probabilitiesData[stationKey]) {
     return (
       <div className={classes.container}>
         <Paper className={classes.paper}>

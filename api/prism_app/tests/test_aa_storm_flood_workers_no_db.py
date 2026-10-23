@@ -605,6 +605,7 @@ def test_station_summary_url_replaces_dates_json() -> None:
 
 def test_transform_station_name() -> None:
     assert transform_station_name("beira_port") == "Beira Port"
+    assert transform_station_name("Limpopo__Combomune") == "Limpopo Combomune"
 
 
 def test_flood_format_date() -> None:
@@ -630,6 +631,27 @@ def test_fetch_station_summary_keeps_highest_status() -> None:
         "Beira Port": "activation_moderate",
         "Gurue": "readiness_bankfull",
     }
+
+
+def test_fetch_station_summary_joins_on_station_id() -> None:
+    csv_text = (
+        "station_name,station_id,river_name,phase,severity,status\n"
+        "Limpopo__Combomune,33,Limpopo,readiness,moderate,activation_severe\n"
+        "limpopo_combomune,33,Limpopo,activation,severe,activation_severe\n"
+        "goonda,,Buzi,readiness,severe,readiness_severe\n"
+    )
+    client = MagicMock(spec=httpx.Client)
+    response = MagicMock()
+    response.text = csv_text
+    response.raise_for_status = MagicMock()
+    client.get.return_value = response
+    rows = fetch_station_summary(client, "http://example/stations.csv")
+    by_name = {row["station_name"]: row["trigger_status"] for row in rows}
+    assert by_name == {
+        "Limpopo Combomune": "activation_severe",
+        "Goonda": "readiness_severe",
+    }
+    assert len(rows) == 2
 
 
 def test_flood_prism_url() -> None:

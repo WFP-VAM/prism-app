@@ -1,6 +1,7 @@
 import { Tooltip } from '@material-ui/core';
 import { FloodStation } from 'context/anticipatoryAction/AAFloodStateSlice/types';
 import {
+  floodStationKey,
   getCircleBorderColor,
   getFloodRiskColor,
 } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
@@ -59,7 +60,7 @@ export function FloodStationMarker({
         onClick={event => {
           event.stopPropagation();
           event.preventDefault();
-          onClick?.(station.station_name);
+          onClick?.(floodStationKey(station.station_id, station.station_name));
         }}
       />
     </Tooltip>

@@ -90,14 +90,14 @@ describe('station summary parsing', () => {
       '2025-12-27',
     );
 
-    expect(stations['Beira Port']).toMatchObject({
+    expect(stations['id:1']).toMatchObject({
       trigger_status: 'Moderate',
       floodStatus: 'moderate',
       phase: null,
       avg_moderate_percentage: 42,
       trigger_moderate: 30,
     });
-    expect(stations['Beira Port'].combinations).toBeUndefined();
+    expect(stations['id:1'].combinations).toBeUndefined();
   });
 
   test('aggregates the long format and trusts the status column', () => {
@@ -149,7 +149,7 @@ describe('station summary parsing', () => {
       '2025-12-27',
     );
 
-    const station = stations.Gurue;
+    const station = stations['id:2'];
     expect(station.floodStatus).toBe('activation_moderate');
     expect(station.phase).toBe('activation');
     expect(station.trigger_status).toBe('Moderate');
@@ -208,8 +208,8 @@ describe('station summary parsing', () => {
       '2025-12-27',
     );
 
-    expect(stations.Franca.floodStatus).toBe('readiness_bankfull');
-    expect(stations.Franca.phase).toBe('readiness');
+    expect(stations['id:3'].floodStatus).toBe('readiness_bankfull');
+    expect(stations['id:3'].phase).toBe('readiness');
   });
 
   test('schema_version 2 reads the long file and 1 keeps the wide file', () => {
@@ -230,10 +230,8 @@ describe('station summary parsing', () => {
       window_end: '2026-01-01',
     };
     const versionTwo = parseStationSummaryRows([longRow], '2025-12-27', 2);
-    expect(versionTwo['Beira Port'].floodStatus).toBe('activation_severe');
-    expect(versionTwo['Beira Port'].combinations?.[0].dischargeThreshold).toBe(
-      900,
-    );
+    expect(versionTwo['id:1'].floodStatus).toBe('activation_severe');
+    expect(versionTwo['id:1'].combinations?.[0].dischargeThreshold).toBe(900);
 
     const versionOne = parseStationSummaryRows(
       [
@@ -247,7 +245,63 @@ describe('station summary parsing', () => {
       '2025-12-27',
       1,
     );
-    expect(versionOne['Beira Port'].floodStatus).toBe('moderate');
-    expect(versionOne['Beira Port'].combinations).toBeUndefined();
+    expect(versionOne['id:1'].floodStatus).toBe('moderate');
+    expect(versionOne['id:1'].combinations).toBeUndefined();
+  });
+
+  test('joins on station_id when the name spelling differs', () => {
+    const stations = parseStationSummaryRows(
+      [
+        {
+          station_name: 'Limpopo__Combomune',
+          station_id: 33,
+          river_name: 'Limpopo',
+          longitude: 32.4,
+          latitude: -23.4,
+          phase: 'readiness',
+          severity: 'moderate',
+          trigger: 0.3,
+          exceeded: false,
+          status: 'activation_severe',
+        },
+        {
+          station_name: 'limpopo_combomune',
+          station_id: '33',
+          river_name: 'Limpopo',
+          longitude: 32.4,
+          latitude: -23.4,
+          phase: 'activation',
+          severity: 'severe',
+          trigger: 0.5,
+          exceeded: true,
+          status: 'activation_severe',
+        },
+      ],
+      '2025-12-27',
+      2,
+    );
+
+    expect(Object.keys(stations)).toEqual(['id:33']);
+    expect(stations['id:33'].station_name).toBe('Limpopo Combomune');
+    expect(stations['id:33'].combinations).toHaveLength(2);
+  });
+
+  test('falls back to the station name when station_id is missing', () => {
+    const stations = parseStationSummaryRows(
+      [
+        {
+          station_name: 'goonda',
+          river_name: 'Buzi',
+          longitude: 33.8,
+          latitude: -19.8,
+          trigger_status: 'severe',
+        },
+      ],
+      '2025-12-27',
+      1,
+    );
+
+    expect(stations.Goonda.floodStatus).toBe('severe');
+    expect(stations.Goonda.station_id).toBe(0);
   });
 });

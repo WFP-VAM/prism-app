@@ -128,7 +128,17 @@ def latest_flood_date(dates: dict[str, Any]) -> str | None:
 
 
 def transform_station_name(name: str) -> str:
-    return " ".join(w.capitalize() for w in name.split("_"))
+    return " ".join(w.capitalize() for w in name.split("_") if w)
+
+
+def station_join_key(station_id: Any, station_name: str) -> str:
+    """Positive station_id wins. Missing ids fall back to the display name."""
+    text = str(station_id or "").strip()
+    if re.fullmatch(r"\d+\.0+", text):
+        text = str(int(float(text)))
+    if text.isdigit() and int(text) > 0:
+        return f"id:{text}"
+    return f"name:{transform_station_name(station_name)}"
 
 
 def fetch_station_summary(client: httpx.Client, url: str) -> list[dict[str, Any]]:
@@ -146,14 +156,18 @@ def fetch_station_summary(client: httpx.Client, url: str) -> list[dict[str, Any]
                 headers[i]: vals[i] if i < len(vals) else ""
                 for i in range(len(headers))
             }
-            if not row.get("station_name"):
+            if (
+                not row.get("station_name")
+                and not str(row.get("station_id") or "").strip()
+            ):
                 continue
-            name = transform_station_name(row["station_name"])
+            name = transform_station_name(row.get("station_name") or "")
             raw_status = row.get("status") or row.get("trigger_status") or ""
             status = normalize_flood_status(raw_status)
             if not status:
                 status = str(raw_status).strip().lower()
             window = _window_for_status(row, status)
+            join_key = station_join_key(row.get("station_id"), name)
             candidate = {
                 "station_name": name,
                 "station_id": row.get("station_id", ""),
@@ -161,14 +175,17 @@ def fetch_station_summary(client: httpx.Client, url: str) -> list[dict[str, Any]
                 "trigger_status": status,
                 "window_begin": window[0] if window else "",
                 "window_end": window[1] if window else "",
+                "_join_key": join_key,
             }
-            prev = next((item for item in out if item["station_name"] == name), None)
+            prev = next((item for item in out if item["_join_key"] == join_key), None)
             if prev is None:
                 out.append(candidate)
             elif flood_status_rank(status) > flood_status_rank(prev["trigger_status"]):
                 prev.update(candidate)
             elif window and prev.get("trigger_status") == status:
                 prev["window_begin"], prev["window_end"] = window
+        for item in out:
+            item.pop("_join_key", None)
         return out
     except Exception as exc:
         logger.error("station summary: %s", exc)

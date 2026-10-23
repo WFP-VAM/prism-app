@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { appConfig } from 'config';
-import { startCase } from 'lodash';
 import Papa from 'papaparse';
 
 import type { CreateAsyncThunkTypes, RootState } from '../../store';
@@ -14,6 +13,7 @@ import {
 } from './types';
 import {
   buildAvailableFloodDatesFromDatesJson,
+  floodStationKey,
   parseStationSummaryRows,
 } from './utils';
 
@@ -110,9 +110,7 @@ export const loadAAFloodDateData = createAsyncThunk<
   const probabilities: Record<string, FloodProbabilityPoint[]> =
     probRows.reduce(
       (acc: Record<string, FloodProbabilityPoint[]>, row: any) => {
-        const key: string = startCase(
-          String(row.station_name || row.station_id || '').trim(),
-        );
+        const key = floodStationKey(row.station_id, row.station_name);
         if (!key) {
           return acc;
         }
@@ -152,9 +150,7 @@ export const loadAAFloodDateData = createAsyncThunk<
       >,
       row: any,
     ) => {
-      const key: string = startCase(
-        String(row.station_name || row.station_id || '').trim(),
-      );
+      const key = floodStationKey(row.station_id, row.station_name);
       if (!key) {
         return acc;
       }

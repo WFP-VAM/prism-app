@@ -142,7 +142,32 @@ const SEVERITIES = new Set<AAFloodSeverityKey>([
   'bankfull',
 ]);
 
+function wholeStationId(value: unknown): string {
+  const text = String(value ?? '').trim();
+  if (!/^\d+(?:\.0+)?$/.test(text)) {
+    return '';
+  }
+  const id = String(Number(text));
+  return id === '0' ? '' : id;
+}
+
+/** Join key. A positive station_id wins. Missing ids fall back to the display name. */
+export function floodStationKey(
+  stationId: unknown,
+  stationName: unknown,
+): string {
+  const id = wholeStationId(stationId);
+  if (id) {
+    return `id:${id}`;
+  }
+  return startCase(String(stationName || '').trim());
+}
+
 function stationKey(row: Record<string, unknown>): string {
+  return floodStationKey(row.station_id, row.station_name);
+}
+
+function stationLabel(row: Record<string, unknown>): string {
   return startCase(String(row.station_name || '').trim());
 }
 
@@ -156,7 +181,7 @@ function parseWideSummaryRow(
   }
   const parsed = parseFloodStatus(String(row.trigger_status ?? ''));
   return {
-    station_name: key,
+    station_name: stationLabel(row),
     station_id: Number(row.station_id || 0),
     river_name: String(row.river_name || ''),
     longitude: Number(row.longitude ?? 0),
@@ -237,7 +262,7 @@ function parseLongSummary(
       explicitStationStatus(groupRows) || statusFromCombinations(combinations);
     const parsed = parseFloodStatus(statusId);
     stations[key] = {
-      station_name: key,
+      station_name: stationLabel(head),
       station_id: Number(head.station_id || 0),
       river_name: String(head.river_name || ''),
       longitude: Number(head.longitude ?? 0),
@@ -272,6 +297,6 @@ export function parseStationSummaryRows(
     if (!station) {
       return acc;
     }
-    return { ...acc, [station.station_name]: station };
+    return { ...acc, [stationKey(row)]: station };
   }, {});
 }
