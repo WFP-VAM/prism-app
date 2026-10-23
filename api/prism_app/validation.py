@@ -1,9 +1,43 @@
 """A set of functions to validate and parse API request parameters."""
 
 import operator as op
+import re
 from typing import Any, Tuple
 
 from fastapi import HTTPException
+
+# GDAL --calc is evaluated by Python. Keep this to band arithmetic so a value
+# cannot escape into the shell or into attribute/call syntax inside that eval.
+# Production expressions: "A*(B==1)" (default) and "A*(B>=3)" (exposure layers).
+_MAX_MASK_CALC_EXPR_LEN = 256
+_MASK_CALC_EXPR = re.compile(
+    r"(?:"
+    r"[A-Z]"
+    r"|\d+(?:\.\d+)?(?:[eE][+-]?\d+)?"
+    r"|\*\*|//|==|!=|<=|>=|[+\-*/%<>=!()]"
+    r"| "
+    r")+"
+)
+
+
+class InvalidMaskCalcExpr(ValueError):
+    """mask_calc_expr is not a plain GDAL band expression."""
+
+
+def validate_mask_calc_expr(expr: str) -> str:
+    """Accept a GDAL calc expression made of bands, numbers, and operators."""
+    if (
+        not isinstance(expr, str)
+        or len(expr) > _MAX_MASK_CALC_EXPR_LEN
+        or not _MASK_CALC_EXPR.fullmatch(expr)
+        or not re.search(r"[A-Z0-9]", expr)
+    ):
+        raise InvalidMaskCalcExpr(
+            "mask_calc_expr must be a GDAL calc expression using bands A-Z, "
+            "numbers, and arithmetic or comparison operators"
+        )
+    return expr
+
 
 VALID_OPERATORS = {
     "<=": op.le,
