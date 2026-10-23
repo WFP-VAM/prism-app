@@ -14,6 +14,32 @@ export const AAFloodRiskLevels = [
 ] as const;
 export type AAFloodRiskLevelType = (typeof AAFloodRiskLevels)[number];
 
+export const AAFloodPhases = ['activation', 'readiness'] as const;
+export type AAFloodPhase = (typeof AAFloodPhases)[number];
+
+export const AAFloodSeverityKeys = ['severe', 'moderate', 'bankfull'] as const;
+export type AAFloodSeverityKey = (typeof AAFloodSeverityKeys)[number];
+
+/**
+ * One readiness/activation window for a station.
+ * Schema 2 station_summary.csv is long: one row per configured combination.
+ * A combination that does not apply is omitted. `trigger` is a fraction (0–1).
+ * `threshold` is the discharge threshold in the same units as discharge.csv.
+ * `status` is the station status, repeated on every row, e.g. `activation_moderate`.
+ */
+export interface FloodTriggerCombination {
+  phase: AAFloodPhase;
+  severity: AAFloodSeverityKey;
+  windowBegin: string;
+  windowEnd: string;
+  avgProbability: number;
+  /** Probability trigger, percent (file value × 100). */
+  trigger: number | null;
+  /** Discharge threshold. Null when the file has no `threshold` column. */
+  dischargeThreshold: number | null;
+  exceeded: boolean;
+}
+
 // Flood station data structure for the flood panel table
 export interface FloodStationData {
   station_name: string;
@@ -41,6 +67,10 @@ export interface FloodStation {
   trigger_moderate?: number | null;
   trigger_severe?: number | null;
   trigger_status?: AAFloodRiskLevelType | null;
+  /** Canonical status: `activation_severe` … `not_exceeded`, or legacy `severe`. */
+  floodStatus?: string;
+  phase?: AAFloodPhase | null;
+  combinations?: FloodTriggerCombination[];
 }
 
 export interface FloodForecastData {
