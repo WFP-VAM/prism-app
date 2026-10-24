@@ -50,6 +50,10 @@ def test_validate_mask_calc_expr_rejects_non_band_math(expr):
         validate_mask_calc_expr(expr)
 
 
+def test_validate_mask_calc_expr_strips_surrounding_whitespace():
+    assert validate_mask_calc_expr(" \tA*(B>=3) ") == "A*(B>=3)"
+
+
 def test_validate_mask_calc_expr_rejects_long_numeric_prefix_quickly():
     """A rejected suffix after a long number must not backtrack."""
     expr = ("9" * 40) + ";"

@@ -53,6 +53,9 @@ def validate_mask_calc_expr(expr: str) -> str:
     """Accept a GDAL calc expression made of bands, numbers, and operators."""
     if not isinstance(expr, str) or len(expr) > _MAX_MASK_CALC_EXPR_LEN:
         raise _invalid_mask_calc_expr()
+    # ast.parse(..., mode="eval") raises IndentationError on leading spaces or
+    # tabs. GDAL eval() accepts them, so strip before parsing.
+    expr = expr.strip()
     try:
         tree = ast.parse(expr, mode="eval")
     except SyntaxError:
