@@ -1,4 +1,5 @@
 import type { Dashboard } from 'config/types';
+import { fetchJsonOrNull, JsonFetchError } from 'utils/fetchJsonOrNull';
 
 import {
   formatDashboardValidationError,
@@ -32,46 +33,35 @@ function parseValidatedDashboardBody(parsed: unknown): Dashboard[] {
  * parses the body, and validates it against the dashboard schema.
  */
 export async function fetchDashboardConfig(url: string): Promise<Dashboard[]> {
-  let response: Response;
+  let parsed: unknown;
   try {
-    response = await fetch(url);
+    parsed = await fetchJsonOrNull(url);
   } catch (e) {
-    const message =
-      e instanceof Error ? e.message : 'Network error loading dashboard config';
-    throw new DashboardConfigFetchError(
-      `Could not load dashboard configuration: ${message}`,
-      'network',
-    );
+    if (e instanceof JsonFetchError) {
+      if (e.causeType === 'json') {
+        throw new DashboardConfigFetchError(
+          'Dashboard configuration is not valid JSON',
+          'json',
+        );
+      }
+      throw new DashboardConfigFetchError(
+        e.causeType === 'network'
+          ? `Could not load dashboard configuration: ${e.message}`
+          : `Dashboard configuration request failed (${e.status})`,
+        e.causeType,
+        e.status,
+      );
+    }
+    throw e;
   }
 
-  if (!response.ok) {
-    throw new DashboardConfigFetchError(
-      `Dashboard configuration request failed (${response.status} ${response.statusText})`,
-      'http',
-      response.status,
-    );
-  }
-
-  // Static hosts (e.g. Firebase Hosting, see frontend/firebase.json) rewrite unknown paths
-  // to `/index.html` and return it with status 200, so a missing dashboard.json arrives as
-  // HTML — not a 404 — and JSON.parse below would throw. Treat a non-JSON content-type as
-  // "not found" so the UI stays silent, matching the 404 path.
-  const contentType = response.headers.get('content-type') ?? '';
-  if (!contentType.toLowerCase().includes('json')) {
+  // Missing file: a real 404, or the SPA-fallback HTML served with status 200
+  // (see fetchJsonOrNull). Surface both as a 404 so the UI stays silent.
+  if (parsed === null) {
     throw new DashboardConfigFetchError(
       'Dashboard configuration not found',
       'http',
       404,
-    );
-  }
-
-  let parsed: unknown;
-  try {
-    parsed = await response.json();
-  } catch {
-    throw new DashboardConfigFetchError(
-      'Dashboard configuration is not valid JSON',
-      'json',
     );
   }
 
