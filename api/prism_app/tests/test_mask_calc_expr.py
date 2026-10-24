@@ -1,5 +1,6 @@
 """mask_calc_expr must stay a GDAL band expression and must not reach a shell."""
 
+import time
 from unittest.mock import patch
 
 import pytest
@@ -37,11 +38,23 @@ def test_validate_mask_calc_expr_accepts_band_math(expr):
         "logical_and(A,B)",
         " ",
         "A" * 300,
+        "A+",
+        "A*(B=1)",
+        "A(B)",
     ],
 )
 def test_validate_mask_calc_expr_rejects_non_band_math(expr):
     with pytest.raises(InvalidMaskCalcExpr):
         validate_mask_calc_expr(expr)
+
+
+def test_validate_mask_calc_expr_rejects_long_numeric_prefix_quickly():
+    """A rejected suffix after a long number must not backtrack."""
+    expr = ("9" * 40) + ";"
+    started = time.perf_counter()
+    with pytest.raises(InvalidMaskCalcExpr):
+        validate_mask_calc_expr(expr)
+    assert time.perf_counter() - started < 0.2
 
 
 def _stats(**overrides):
