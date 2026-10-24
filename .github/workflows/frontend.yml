@@ -205,6 +205,9 @@ jobs:
           entryPoint: "frontend"
           channelId: ${{ env.firebase_channel }}
           expires: 30d
+          # 15.34.1 calls serviceusage.services.get and fails closed. The CI
+          # service account does not have that permission. See firebase-tools#11335.
+          firebaseToolsVersion: "15.34.0"
 
   master_frontend_build_and_deploy:
     needs: frontend_tests
@@ -264,3 +267,5 @@ jobs:
           entryPoint: "frontend"
           channelId: ${{ env.firebase_channel }}
           expires: 30d
+          # Same pin as the preview deploy. See firebase-tools#11335.
+          firebaseToolsVersion: "15.34.0"

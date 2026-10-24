@@ -16,7 +16,7 @@ jobs:
         with:
           node-version-file: frontend/.nvmrc
       - name: Install Firebase CLI
-        run: npm i -g firebase-tools
+        run: npm i -g firebase-tools@15.34.0
       - name: Delete Firebase preview channel
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_PRISM_FRONTEND }}
