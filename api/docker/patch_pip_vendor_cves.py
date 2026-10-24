@@ -27,7 +27,8 @@ def patch_vendor_dir(pip_vendor: Path) -> None:
         vendor_txt.write_text(
             vendor_txt.read_text()
             .replace("msgpack==1.1.2", "msgpack==1.2.1")
-            .replace("setuptools==70.3.0", "setuptools==83.0.0")
+            .replace("setuptools==70.3.0", "setuptools==84.2.1")
+            .replace("setuptools==83.0.0", "setuptools==84.2.1")
         )
 
     # CycloneDX SBOM is what Trivy indexes for these pins.
