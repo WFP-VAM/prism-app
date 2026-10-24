@@ -41,6 +41,8 @@ def test_validate_mask_calc_expr_accepts_band_math(expr):
         "A+",
         "A*(B=1)",
         "A(B)",
+        "A*(9**9**9)",
+        "A*(Ω>0)",
     ],
 )
 def test_validate_mask_calc_expr_rejects_non_band_math(expr):

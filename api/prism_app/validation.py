@@ -10,7 +10,8 @@ from fastapi import HTTPException
 # Allow only band arithmetic. Calls and attribute access stay rejected because
 # that eval would run them. Production expressions: "A*(B==1)" and "A*(B>=3)".
 _MAX_MASK_CALC_EXPR_LEN = 256
-_BINOPS = (ast.Add, ast.Sub, ast.Mult, ast.Div, ast.FloorDiv, ast.Mod, ast.Pow)
+# Exponentiation is omitted: 9**9**9 is valid Python and unbounded to eval.
+_BINOPS = (ast.Add, ast.Sub, ast.Mult, ast.Div, ast.FloorDiv, ast.Mod)
 _CMPOPS = (ast.Eq, ast.NotEq, ast.Lt, ast.LtE, ast.Gt, ast.GtE)
 _UNARYOPS = (ast.UAdd, ast.USub)
 
@@ -40,7 +41,7 @@ def _check_mask_calc_node(node: ast.AST) -> None:
         _check_mask_calc_node(node.left)
         for comparator in node.comparators:
             _check_mask_calc_node(comparator)
-    elif isinstance(node, ast.Name) and len(node.id) == 1 and node.id.isupper():
+    elif isinstance(node, ast.Name) and len(node.id) == 1 and "A" <= node.id <= "Z":
         return
     elif isinstance(node, ast.Constant) and type(node.value) in (int, float):
         return
