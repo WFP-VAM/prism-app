@@ -9,6 +9,7 @@ import {
 } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 import {
+  AAFiltersSelector,
   AAShowPhaseLabelsSelector,
   setAAShowPhaseLabels,
 } from 'context/anticipatoryAction/AADroughtStateSlice';
@@ -33,7 +34,9 @@ function AADroughtLegend({
   const commonClasses = useAACommonStyles();
   const { t } = useSafeTranslation();
 
-  const phases = getLegendPhases();
+  // print/export legends share the store, so they follow the filters too
+  const { categories } = useSelector(AAFiltersSelector);
+  const phases = getLegendPhases(categories);
   const descriptionText = getDescriptionText();
   const phaseLabelsActionLabel = showPhaseLabels
     ? 'Hide phase labels'
