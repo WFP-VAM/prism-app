@@ -712,6 +712,42 @@ const localWMSGetLayerDates = async (
 };
 
 /**
+ * Fetch available dates for a STAC collection, used for COG layers that have
+ * no WMS equivalent. Timestamps are set to noon UTC to match WMS dates.
+ */
+const fetchStacCollectionDates = async (
+  stacApiUrl: string,
+  collection: string,
+  dispatch: AppDispatch,
+): Promise<{ [collection: string]: number[] }> => {
+  const params = new URLSearchParams({
+    collections: collection,
+    limit: '10000',
+    sortby: 'datetime',
+    fields: 'properties.datetime,-assets,-geometry,-links,-bbox',
+  });
+  const url = `${stacApiUrl}/search?${params.toString()}`;
+  try {
+    const response = await fetchWithTimeout(url);
+    const { features } = await response.json();
+    const dates: number[] = features
+      .map((f: { properties: { datetime?: string } }) => f.properties.datetime)
+      .filter(Boolean)
+      .map((d: string) => new Date(`${d.split('T')[0]}T12:00:00Z`).getTime());
+    return { [collection]: [...new Set(dates)].sort((a, b) => a - b) };
+  } catch (error) {
+    console.error(error);
+    dispatch(
+      addNotification({
+        message: `STAC dates request failed for collection ${collection}`,
+        type: 'warning',
+      }),
+    );
+    return {};
+  }
+};
+
+/**
  * Function to map server dates to layer IDs
  *
  * @param serverDates - The dates fetched from the server
@@ -723,10 +759,12 @@ const mapServerDatesToLayerIds = (
   layers: (WMSLayerProps | CogLayerProps | CompositeLayerProps)[],
 ): Record<LayerKey, ReferenceDateTimestamp[]> =>
   layers.reduce((acc: Record<string, ReferenceDateTimestamp[]>, layer) => {
+    // COG layers without a WMS equivalent have their dates keyed by collection.
     const serverLayerName =
       layer.type === 'composite'
         ? (LayerDefinitions[layer.dateLayer] as WMSLayerProps).serverLayerName
-        : layer.serverLayerName;
+        : (layer.serverLayerName ??
+          (layer.type === 'cog' ? layer.collection : undefined));
     if (!serverLayerName) {
       return acc;
     }
@@ -793,8 +831,27 @@ export async function preloadLayerDatesForWMS(
     const serverDates = await localFetchCoverageLayerDays(url, dispatch);
     return mapServerDatesToLayerIds(serverDates, WCSWMSLayers);
   });
+  // STAC-dated COG layers have no serverLayerName, so WCSWMSLayers excludes them.
+  const stacCogLayers = Object.values(LayerDefinitions).filter(
+    (
+      layer,
+    ): layer is CogLayerProps & { stacApiUrl: string; collection: string } =>
+      layer.type === 'cog' && Boolean(layer.stacApiUrl && layer.collection),
+  );
+  const allStacDates = stacCogLayers.map(async layer => {
+    const serverDates = await fetchStacCollectionDates(
+      layer.stacApiUrl,
+      layer.collection,
+      dispatch,
+    );
+    return mapServerDatesToLayerIds(serverDates, [layer]);
+  });
 
-  const r = await Promise.all([...allWMSDates, ...allWCSDates]);
+  const r = await Promise.all([
+    ...allWMSDates,
+    ...allWCSDates,
+    ...allStacDates,
+  ]);
   return r.reduce((acc, item) => ({ ...acc, ...item }), {});
 }
 
