@@ -12,5 +12,5 @@ export default {
   rawTables,
   rawReports,
   translation,
-  defaultBoundariesFile: 'zmb_admbnda_adm2_dmmu_20201124_dv.json',
+  defaultBoundariesFile: 'zmb_adm2_2026.geojson',
 };
