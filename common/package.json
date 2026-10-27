@@ -40,8 +40,8 @@
   "devDependencies": {
     "@types/eslint": "^8.4.6",
     "@types/eslint-scope": "^3.7.4",
-    "@types/estree": "^1.0.0",
-    "@types/lodash": "^4.14.149",
+    "@types/estree": "^1.0.9",
+    "@types/lodash": "^4.17.27",
     "@types/node": "^18.7.20",
     "@types/webpack": "^5.28.0",
     "audit-ci": "^7.1.0",
@@ -49,9 +49,9 @@
     "cross-fetch": "^3.1.5",
     "find-and-read": "^1.2.0",
     "flug": "^2.3.1",
-    "rimraf": "^6.1.2",
-    "srvd": "^0.4.0",
-    "tsx": "^4.19.2",
+    "rimraf": "^6.1.3",
+    "srvd": "^0.6.0",
+    "tsx": "^4.23.15",
     "typescript": "5.9.3"
   },
   "dependencies": {
