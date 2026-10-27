@@ -1,0 +1,36 @@
+# Version updates stay off. open-pull-requests-limit: 0 does not affect security PRs.
+# Groups apply to version updates unless applies-to is set.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /frontend
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+    groups:
+      frontend-security:
+        applies-to: security-updates
+        patterns:
+          - "*"
+
+  - package-ecosystem: npm
+    directory: /common
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+    groups:
+      common-security:
+        applies-to: security-updates
+        patterns:
+          - "*"
+
+  - package-ecosystem: pip
+    directory: /api
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+    groups:
+      api-security:
+        applies-to: security-updates
+        patterns:
+          - "*"

@@ -1,24 +1,31 @@
 # for comment on PR, follow instruction for: https://github.com/marketplace/actions/sticky-pull-request-comment
 name: PRISM CI - Frontend
 on:
-  # Run on all pull requests and on pushes to master.
-  # Note - pull_request_target runs the workflow from the main branch, not the PR branch.
+  # Run when frontend or shared JS changes. API-only pushes skip this workflow.
   pull_request:
+    paths:
+      - "frontend/**"
+      - "common/**"
+      - ".github/workflows/frontend.yml"
   push:
     branches:
       - master
+    paths:
+      - "frontend/**"
+      - "common/**"
+      - ".github/workflows/frontend.yml"
+
+# Cancel a PR run when a newer commit is pushed. Master deploys queue instead,
+# so a Firebase publish is not killed mid-flight.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   frontend_tests:
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-          - windows-latest
-      max-parallel: 2
-
     name: frontend_tests
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -27,6 +34,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version-file: frontend/.nvmrc
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        shell: bash
+        run: echo "dir=$(yarn cache dir)" >> "$GITHUB_OUTPUT"
 
       - uses: actions/cache@v4
         id: yarn-cache
@@ -55,11 +67,9 @@ jobs:
           yarn test
 
       - name: JSON check
-        if: matrix.os == 'ubuntu-latest'
         run: cd frontend && yarn prettier:json-check
 
       - name: Layer availability check
-        if: matrix.os == 'ubuntu-latest'
         run: |
           cd frontend && yarn preprocess-layers
           cd frontend && yarn generate-schedule-layer-manifest
@@ -72,12 +82,65 @@ jobs:
           fi
 
       - name: PMTiles layer validation
-        if: matrix.os == 'ubuntu-latest'
         run: cd frontend && yarn validate-pmtiles
 
       - name: Check boundary keys
-        if: matrix.os == 'ubuntu-latest'
         run: cd frontend && yarn check-boundary-keys
+
+      - name: Security audit
+        run: |
+          cd frontend && yarn run audit
+          cd ../common && yarn run audit
+
+      - name: Build
+        run: cd frontend && yarn build
+
+  # Windows minutes cost ~1.6x Linux and this job does not gate deploy.
+  # PRs stay on Ubuntu. Master still runs Windows so OS regressions show up.
+  frontend_tests_windows:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    name: frontend_tests_windows
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: frontend/.nvmrc
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        shell: bash
+        run: echo "dir=$(yarn cache dir)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v4
+        id: yarn-cache
+        with:
+          path: |
+            **/node_modules
+            **/.eslintcache
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-2026-1-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-2026-1
+
+      - name: Install dependencies if needed.
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: |
+          cd frontend
+          yarn install --frozen-lockfile --network-timeout 100000
+      - name: setup 'common' package
+        run: cd frontend && yarn run setup:common
+      - name: Lint
+        run: cd frontend && yarn lint:ci
+
+      - name: Test
+        run: |
+          cd frontend
+          yarn test
 
       - name: Security audit
         run: |
@@ -90,6 +153,7 @@ jobs:
   # TEMPORARY: per-country Cypress e2e (matrix + all_countries) disabled — re-enable when stable.
   frontend_end_to_end_tests:
     if: false
+    timeout-minutes: 30
     strategy:
       matrix:
         country: [mozambique, rbd, cambodia]
@@ -149,6 +213,7 @@ jobs:
     if: github.event_name != 'push'
     name: frontend_build_and_deploy
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     env:
       GIT_HASH: ${{ github.event.pull_request.head.sha }}
       firebase_channel: ${{ github.event.pull_request.number }}
@@ -162,6 +227,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version-file: frontend/.nvmrc
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        shell: bash
+        run: echo "dir=$(yarn cache dir)" >> "$GITHUB_OUTPUT"
 
       - uses: actions/cache@v4
         id: yarn-cache
@@ -205,12 +275,16 @@ jobs:
           entryPoint: "frontend"
           channelId: ${{ env.firebase_channel }}
           expires: 30d
+          # 15.34.1 calls serviceusage.services.get and fails closed. The CI
+          # service account does not have that permission. See firebase-tools#11335.
+          firebaseToolsVersion: "15.34.0"
 
   master_frontend_build_and_deploy:
     needs: frontend_tests
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     name: master_frontend_build_and_deploy
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     strategy:
       matrix:
         country: [mozambique, cambodia, rbd]
@@ -264,3 +338,5 @@ jobs:
           entryPoint: "frontend"
           channelId: ${{ env.firebase_channel }}
           expires: 30d
+          # Same pin as the preview deploy. See firebase-tools#11335.
+          firebaseToolsVersion: "15.34.0"

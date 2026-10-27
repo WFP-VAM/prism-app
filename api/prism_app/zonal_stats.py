@@ -24,7 +24,11 @@ from prism_app.models import (
 )
 from prism_app.raster_utils import calculate_pixel_area, gdal_calc, reproj_match
 from prism_app.timer import timed
-from prism_app.validation import VALID_OPERATORS
+from prism_app.validation import (
+    VALID_OPERATORS,
+    InvalidMaskCalcExpr,
+    validate_mask_calc_expr,
+)
 from rasterio.warp import Resampling
 from rasterstats import zonal_stats  # type: ignore
 from shapely.errors import GEOSException  # type: ignore
@@ -418,6 +422,8 @@ def calculate_stats(
 
     # Add mask option for flood exposure analysis
     if mask_geotiff:
+        if mask_calc_expr:
+            validate_mask_calc_expr(mask_calc_expr)
         # Extract readable layer identifiers
         geotiff_layer = _extract_layer_identifier(geotiff)
         mask_layer = _extract_layer_identifier(mask_geotiff)
@@ -452,6 +458,8 @@ def calculate_stats(
                     output_file_path=masked_pop_geotiff,
                     calc_expr=mask_calc_expr,
                 )
+            except InvalidMaskCalcExpr:
+                raise
             # catch errors in gdal_calc, try a reproj
             except Exception:
                 logger.warning(
