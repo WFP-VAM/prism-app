@@ -1,43 +1,36 @@
-# Groups minor and patch updates so Dependabot opens one PR per ecosystem
-# instead of one PR per package. Security updates use these groups too.
-# Major bumps stay as their own PRs.
+# Version updates stay off. open-pull-requests-limit: 0 does not affect security PRs.
+# Groups apply to version updates unless applies-to is set.
 version: 2
 updates:
   - package-ecosystem: npm
     directory: /frontend
     schedule:
       interval: weekly
-      day: monday
+    open-pull-requests-limit: 0
     groups:
-      frontend-minor-and-patch:
+      frontend-security:
+        applies-to: security-updates
         patterns:
           - "*"
-        update-types:
-          - minor
-          - patch
 
   - package-ecosystem: npm
     directory: /common
     schedule:
       interval: weekly
-      day: monday
+    open-pull-requests-limit: 0
     groups:
-      common-minor-and-patch:
+      common-security:
+        applies-to: security-updates
         patterns:
           - "*"
-        update-types:
-          - minor
-          - patch
 
   - package-ecosystem: pip
     directory: /api
     schedule:
       interval: weekly
-      day: monday
+    open-pull-requests-limit: 0
     groups:
-      api-minor-and-patch:
+      api-security:
+        applies-to: security-updates
         patterns:
           - "*"
-        update-types:
-          - minor
-          - patch
