@@ -1,15 +1,36 @@
 # for comment on PR, follow instruction for: https://github.com/marketplace/actions/sticky-pull-request-comment
 name: PRISM CI - API
 on:
-  # Run on all pull requests and on pushes to master.
+  # Frontend-only pushes skip this workflow.
   pull_request:
+    paths:
+      - "api/**"
+      - ".github/workflows/api.yml"
+      # make api-test builds this image and mounts common/.
+      - "frontend/Dockerfile"
+      - "frontend/package.json"
+      - "frontend/yarn.lock"
+      - "common/**"
   push:
     branches:
       - master
+    paths:
+      - "api/**"
+      - ".github/workflows/api.yml"
+      - "frontend/Dockerfile"
+      - "frontend/package.json"
+      - "frontend/yarn.lock"
+      - "common/**"
+
+# Cancel a PR run when a newer commit is pushed. Master runs queue.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   api_lint:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     strategy:
       matrix:
         python-version: ["3.14"]
@@ -38,6 +59,12 @@ jobs:
           version: 2.3.3
           virtualenvs-create: true
           virtualenvs-in-project: true
+      - name: Cache Poetry venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v4
+        with:
+          path: api/.venv
+          key: venv-${{ runner.os }}-py3.14-poetry2.3.3-${{ hashFiles('api/poetry.lock') }}
       - name: Install dependencies
         run: |
           cd api
@@ -60,6 +87,7 @@ jobs:
   # Pure unit tests: SMTP + templates + threshold helpers (no PRISM_ALERTS_DATABASE_URL).
   alert_workers_unit_no_db:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -70,7 +98,14 @@ jobs:
           version: 2.3.3
           virtualenvs-create: true
           virtualenvs-in-project: true
+      - name: Cache Poetry venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v4
+        with:
+          path: api/.venv
+          key: venv-${{ runner.os }}-py3.14-poetry2.3.3-${{ hashFiles('api/poetry.lock') }}
       - name: Install API dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: |
           cd api
           poetry install
@@ -86,7 +121,7 @@ jobs:
   docker_image_cve_scan:
     name: Docker CVE scan (${{ matrix.image_label }})
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
@@ -120,6 +155,7 @@ jobs:
   api_build:
     name: build and test api
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -139,6 +175,7 @@ jobs:
   # (alerts CRUD, /stats fixture, admin list routes, alembic_version).
   alerts_db_alembic_and_alerting:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     services:
       postgres:
         image: postgres:16.13-alpine
@@ -168,7 +205,14 @@ jobs:
           version: 2.3.3
           virtualenvs-create: true
           virtualenvs-in-project: true
+      - name: Cache Poetry venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v4
+        with:
+          path: api/.venv
+          key: venv-${{ runner.os }}-py3.14-poetry2.3.3-${{ hashFiles('api/poetry.lock') }}
       - name: Install API dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: |
           cd api
           poetry install
