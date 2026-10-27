@@ -23,6 +23,7 @@ import { jsPDF } from 'jspdf';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
+import { fetchJsonOrNull } from 'utils/fetchJsonOrNull';
 
 import DashboardExportContext, {
   ExportToggles,
@@ -136,10 +137,17 @@ function DashboardExportDialog({
 
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
     if (selectedBoundaries.length === 0) {
-      fetch(`data/${safeCountry}/admin-boundary-unified-polygon.json`)
-        .then(response => response.json())
+      fetchJsonOrNull<any>(
+        `data/${safeCountry}/admin-boundary-unified-polygon.json`,
+      )
         .then(polygonData => {
-          const maskedPolygon = mask(polygonData as any);
+          if (polygonData === null) {
+            console.warn(
+              `Missing admin-boundary-unified-polygon.json for ${safeCountry}`,
+            );
+            return;
+          }
+          const maskedPolygon = mask(polygonData);
           setAdminBoundaryPolygon(maskedPolygon as any);
         })
         .catch(error =>
@@ -166,12 +174,22 @@ function DashboardExportDialog({
 
     if (filteredData.features.length === 0) {
       // Fall back to full country mask if no features match
-      fetch(`data/${safeCountry}/admin-boundary-unified-polygon.json`)
-        .then(response => response.json())
+      fetchJsonOrNull<any>(
+        `data/${safeCountry}/admin-boundary-unified-polygon.json`,
+      )
         .then(polygonData => {
-          const maskedPolygon = mask(polygonData as any);
+          if (polygonData === null) {
+            console.warn(
+              `Missing admin-boundary-unified-polygon.json for ${safeCountry}`,
+            );
+            return;
+          }
+          const maskedPolygon = mask(polygonData);
           setAdminBoundaryPolygon(maskedPolygon as any);
-        });
+        })
+        .catch(error =>
+          console.error('Error loading admin boundary polygon:', error),
+        );
       return;
     }
 
