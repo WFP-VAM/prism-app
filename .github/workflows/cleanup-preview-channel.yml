@@ -3,6 +3,11 @@ name: Cleanup Firebase Preview Channel
 on:
   pull_request:
     types: [closed]
+    paths:
+      - "frontend/**"
+      - "common/**"
+      - ".github/workflows/frontend.yml"
+      - ".github/workflows/cleanup-preview-channel.yml"
 
 jobs:
   cleanup_preview_channel:
