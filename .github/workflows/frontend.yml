@@ -151,7 +151,6 @@ jobs:
         run: cd frontend && yarn build
 
   # TEMPORARY: per-country Cypress e2e (matrix + all_countries) disabled — re-enable when stable.
-  # timeout-minutes: on 8 May 2026 two country jobs sat on Cypress until the 6h default.
   frontend_end_to_end_tests:
     if: false
     timeout-minutes: 30
