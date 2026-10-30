@@ -42,29 +42,14 @@
         "server_layer_name": "mxd13a2_viq_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_agg_2month",
@@ -344,29 +329,14 @@
         "server_layer_name": "mxd13a2_viq_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_agg_2month",
@@ -756,29 +726,14 @@
         "server_layer_name": "myd11a2_txd_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_agg_2month",
@@ -1058,29 +1013,14 @@
         "server_layer_name": "myd11a2_txd_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_agg_2month",
@@ -1250,29 +1190,14 @@
         "server_layer_name": "mxd13a2_viq_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_agg_2month",
@@ -1667,29 +1592,14 @@
         "server_layer_name": "myd11a2_txd_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_agg_2month",
@@ -1969,29 +1879,14 @@
         "server_layer_name": "myd11a2_txd_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_agg_2month",
@@ -2156,29 +2051,14 @@
         "server_layer_name": "mxd13a2_viq_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_agg_2month",
@@ -2598,29 +2478,14 @@
         "server_layer_name": "myd11a2_txd_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_agg_7month",
@@ -2760,29 +2625,14 @@
         "server_layer_name": "mxd13a2_viq_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_agg_2month",
@@ -3177,29 +3027,14 @@
         "server_layer_name": "myd11a2_txd_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_agg_2month",
@@ -3364,29 +3199,14 @@
         "server_layer_name": "mxd13a2_viq_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_agg_2month",
@@ -3666,24 +3486,9 @@
         "server_layer_name": "mxd13a2_viq_dekad"
       },
       {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
-      },
-      {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
-      },
-      {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
       },
       {
         "id": "dekad_rainfall_forecast",
@@ -3968,29 +3773,14 @@
         "server_layer_name": "mxd13a2_viq_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_agg_2month",
@@ -4230,29 +4020,14 @@
     ],
     "mongolia": [
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_dekad",
@@ -4767,29 +4542,14 @@
         "server_layer_name": "rxs_blended_moz_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_agg_2month",
@@ -5149,29 +4909,14 @@
         "server_layer_name": "myd11a2_txd_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_agg_2month",
@@ -5461,29 +5206,14 @@
         "server_layer_name": "myd11a2_txd_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rain_anomaly_2month",
@@ -5753,29 +5483,14 @@
         "server_layer_name": "myd11a2_txd_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_agg_2month",
@@ -6055,29 +5770,14 @@
         "server_layer_name": "myd11a2_txd_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_agg_2month",
@@ -6362,29 +6062,14 @@
         "server_layer_name": "myd11a2_txd_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_agg_2month",
@@ -6664,29 +6349,14 @@
         "server_layer_name": "myd11a2_txd_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_agg_2month",
@@ -6851,29 +6521,14 @@
         "server_layer_name": "mxd13a2_viq_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_agg_2month",
@@ -7268,29 +6923,14 @@
         "server_layer_name": "myd11a2_txd_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_agg_2month",
@@ -7630,29 +7270,14 @@
         "server_layer_name": "myd11a2_txd_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_agg_2month",
@@ -7822,29 +7447,14 @@
         "server_layer_name": "mxd13a2_viq_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_agg_2month",
@@ -8239,29 +7849,14 @@
         "server_layer_name": "myd11a2_txd_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_agg_2month",
@@ -8566,29 +8161,14 @@
         "server_layer_name": "myd11a2_txd_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_agg_7month",
@@ -8688,29 +8268,14 @@
     ],
     "uganda": [
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_dekad",
@@ -9130,29 +8695,14 @@
         "server_layer_name": "rys_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_agg_1month",
@@ -9292,29 +8842,14 @@
     ],
     "universal": [
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_dekad",
@@ -9634,29 +9169,14 @@
         "server_layer_name": "mxd13a2_viq_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_agg_2month",
@@ -10176,29 +9696,14 @@
         "server_layer_name": "myd11a2_txd_dekad"
       },
       {
-        "id": "chirps_gefs_v2_daily_rainfall_forecast",
-        "title": "Rolling daily rainfall forecast",
-        "server_layer_name": "rfh_daily_forecast"
-      },
-      {
         "id": "daily_rainfall_forecast",
         "title": "Rolling daily rainfall forecast",
         "server_layer_name": "chirps_daily_forecast"
       },
       {
-        "id": "chirps_gefs_v2_dekad_rainfall_forecast",
-        "title": "10-day rainfall forecast",
-        "server_layer_name": "rfh_dekad_forecast"
-      },
-      {
         "id": "dekad_rainfall_forecast",
         "title": "10-day rainfall forecast",
         "server_layer_name": "chirps_dekad_forecast"
-      },
-      {
-        "id": "dekad_rainfall_anomaly_forecast",
-        "title": "10-day rainfall forecast anomaly",
-        "server_layer_name": "rfq_dekad"
       },
       {
         "id": "rainfall_agg_7month",
