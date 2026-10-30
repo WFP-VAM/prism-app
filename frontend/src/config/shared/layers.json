@@ -1,9 +1,9 @@
 {
-  "daily_rainfall_forecast": {
+    "daily_rainfall_forecast": {
     "title": "Rolling daily rainfall forecast",
     "type": "wms",
     "start_date": "today",
-    "server_layer_name": "rfh_daily_forecast",
+    "server_layer_name": "chirps_daily_forecast",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "validity": {
@@ -17,10 +17,10 @@
       "styles": "rfh_16_0_300"
     }
   },
-  "dekad_rainfall_forecast": {
+ "dekad_rainfall_forecast": {
     "title": "10-day rainfall forecast",
     "type": "wms",
-    "server_layer_name": "rfh_dekad_forecast",
+    "server_layer_name": "chirps_dekad_forecast",
     "start_date": "today",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -33,24 +33,6 @@
     "legend": "rfh_16_0_300",
     "additional_query_params": {
       "styles": "rfh_16_0_300"
-    }
-  },
-  "dekad_rainfall_anomaly_forecast": {
-    "title": "10-day rainfall forecast anomaly",
-    "type": "wms",
-    "server_layer_name": "rfq_dekad",
-    "start_date": "today",
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
-    },
-    "opacity": 0.7,
-    "legend_text": "10-day forecast anomaly compared to the long term average. Derived from CHIRPS and GEFS",
-    "legend": "rfq_14_20_400",
-    "additional_query_params": {
-      "styles": "rfq_14_20_400"
     }
   },
   "rainfall_daily": {

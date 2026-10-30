@@ -11,6 +11,10 @@
   },
   "categories": {
     "rainfall": {
+      "forecasts": [
+        "daily_rainfall_forecast",
+        "dekad_rainfall_forecast"
+      ],
       "Met_Dept_rainfall_data": [
         {
           "group_title": "Rainfall aggregate",

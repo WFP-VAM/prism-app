@@ -11,6 +11,10 @@
   },
   "categories": {
     "rainfall": {
+      "forecasts": [
+        "daily_rainfall_forecast",
+        "dekad_rainfall_forecast"
+      ],
       "INSMET_rainfall_data": [
         {
           "group_title": "Rainfall aggregate",
