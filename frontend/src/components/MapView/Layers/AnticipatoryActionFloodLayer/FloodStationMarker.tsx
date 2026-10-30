@@ -1,6 +1,7 @@
 import { Tooltip } from '@material-ui/core';
 import { FloodStation } from 'context/anticipatoryAction/AAFloodStateSlice/types';
 import {
+  floodStationKey,
   getCircleBorderColor,
   getFloodRiskColor,
 } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
@@ -35,8 +36,11 @@ export function FloodStationMarker({
   onClick,
 }: FloodStationMarkerProps) {
   const riskLevel = stationSummary.trigger_status || 'Not exceeded';
+  const phase = stationSummary.phase;
   const circleColor = getFloodRiskColor(riskLevel);
   const borderColor = getCircleBorderColor(riskLevel);
+  const borderStyle = phase === 'activation' ? 'dashed' : 'solid';
+  const statusLabel = phase ? `${phase} ${riskLevel}` : riskLevel;
 
   const markerContent = interactive ? (
     <Tooltip title={station.station_name} arrow>
@@ -48,15 +52,15 @@ export function FloodStationMarker({
           padding: 0,
           borderRadius: '50%',
           backgroundColor: circleColor,
-          border: `2px solid ${borderColor}`,
+          border: `2px ${borderStyle} ${borderColor}`,
           cursor: 'pointer',
         }}
         type="button"
-        aria-label={`${station.station_name} flood station - ${riskLevel} risk level`}
+        aria-label={`${station.station_name} flood station - ${statusLabel} risk level`}
         onClick={event => {
           event.stopPropagation();
           event.preventDefault();
-          onClick?.(station.station_name);
+          onClick?.(floodStationKey(station.station_id, station.station_name));
         }}
       />
     </Tooltip>
@@ -69,9 +73,9 @@ export function FloodStationMarker({
         padding: 0,
         borderRadius: '50%',
         backgroundColor: circleColor,
-        border: `2px solid ${borderColor}`,
+        border: `2px ${borderStyle} ${borderColor}`,
       }}
-      aria-label={`${station.station_name} flood station - ${riskLevel} risk level`}
+      aria-label={`${station.station_name} flood station - ${statusLabel} risk level`}
     />
   );
 
