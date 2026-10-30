@@ -10,7 +10,6 @@ import {
   Extent,
   getDownloadGeotiffURL,
 } from 'components/MapView/Layers/raster-utils';
-import { defaultBoundariesPath } from 'config';
 import {
   AdminLevelDataLayerProps,
   AdminLevelType,
@@ -69,10 +68,12 @@ import {
   scaleAndFilterAggregateData,
   scaleFeatureStat,
 } from 'utils/analysis-utils';
+import { resolveAnalysisZones } from 'utils/analysis-zones';
 import { boundaryCache } from 'utils/boundary-cache';
 import { ANALYSIS_API_URL } from 'utils/constants';
 import { getRoundedData } from 'utils/data-utils';
 import { getFormattedDate } from 'utils/date-utils';
+import { fetchWithTimeout } from 'utils/fetch-with-timeout';
 import { getFullLocationName } from 'utils/name-utils';
 import {
   fetchWMSLayerAsGeoJSON,
@@ -150,25 +151,23 @@ const initialState: AnalysisResultState = {
   currentCacheKey: undefined,
 };
 
-/* Gets a public URL for the admin boundaries used by this application.
- *
- * If the application is in development, localhost is not accessible publicly.
- * Therefore, we will return a pre-set constant to be used for development.
- *
- * If the application is in production, we will attempt to construct a public URL that the backend should be able to access.
- */
+/* Public URL for admin boundaries the API can fetch in a deployed app. */
 function getAdminBoundariesURL(adminBoundariesPath: string) {
-  // already a remote location, so return it.
   if (adminBoundariesPath.startsWith('http')) {
     return adminBoundariesPath;
   }
-  // do not send a local path to the API, use a fixed boundary file instead.
-  if (isLocalhost) {
-    return defaultBoundariesPath;
-  }
-  // Use the configured PUBLIC_URL (base path from router config) to construct the full URL
   const publicUrl = import.meta.PUBLIC_URL || '';
   return window.location.origin + publicUrl + adminBoundariesPath;
+}
+
+async function loadLocalZones(path: string, dispatch: Dispatch) {
+  const response = await fetchWithTimeout(
+    path,
+    dispatch,
+    {},
+    `Request failed loading local analysis zones at ${path}`,
+  );
+  return response.json();
 }
 
 export const generateTableColumnsFromApiData = (
@@ -501,9 +500,13 @@ async function createAPIRequestParams(
   const simplifyTolerance =
     boundaryParams?.simplifyTolerance ?? boundaryLayer.simplifyTolerance;
 
-  // Note - This may not work when running locally as the function
-  // will default to the boundary layer hosted in S3.
-  const zonesUrl = zonesPath ?? getAdminBoundariesURL(adminBoundariesPath);
+  const zonesPayload = await resolveAnalysisZones({
+    zonesPath,
+    adminBoundariesPath,
+    isLocal: isLocalhost,
+    loadLocalZones: path => loadLocalZones(path, dispatch),
+    publicZonesUrl: getAdminBoundariesURL,
+  });
 
   const wfsParams = (params as WfsRequestParams)?.layer_name
     ? { wfs_params: params as WfsRequestParams }
@@ -543,7 +546,7 @@ async function createAPIRequestParams(
 
   const apiRequest: ApiData = {
     geotiff_url: geotiffUrl,
-    zones_url: zonesUrl,
+    ...zonesPayload,
     group_by: groupBy,
     ...wfsParams,
     ...maskParams,
