@@ -10,6 +10,12 @@
     "maxBounds": [16.64, 39.9, 45.81, 55.47]
   },
   "categories": {
+    "rainfall": {
+      "forecasts": [
+        "daily_rainfall_forecast",
+        "dekad_rainfall_forecast"
+      ]
+    },
     "vegetation": {
       "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
     },
