@@ -9,7 +9,10 @@ import requests
 from fastapi import HTTPException
 from requests.adapters import Retry
 
-from prism_app.amplify_apps import AMPLIFY_APP_DOMAIN_PATTERNS
+from prism_app.amplify_apps import (
+    AMPLIFY_APP_DOMAIN_PATTERNS,
+    CUSTOM_COUNTRY_SITE_DOMAINS,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -117,6 +120,7 @@ def make_request_with_retries(
 EXPORT_ALLOWED_DOMAINS: Final[list[str]] = [
     "*.wfp.org",
     *AMPLIFY_APP_DOMAIN_PATTERNS,
+    *CUSTOM_COUNTRY_SITE_DOMAINS,
     "*prism-frontend--*.web.app",  # Firebase preview builds
 ]
 
