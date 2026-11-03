@@ -7,12 +7,11 @@ from urllib.parse import parse_qs, urlparse
 
 import requests
 from fastapi import HTTPException
-from requests.adapters import Retry
-
 from prism_app.amplify_apps import (
     AMPLIFY_APP_DOMAIN_PATTERNS,
     CUSTOM_COUNTRY_SITE_DOMAINS,
 )
+from requests.adapters import Retry
 
 logger = logging.getLogger(__name__)
 
