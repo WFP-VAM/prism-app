@@ -26,7 +26,8 @@ def patch_vendor_dir(pip_vendor: Path) -> None:
     if vendor_txt.exists():
         vendor_txt.write_text(
             vendor_txt.read_text()
-            .replace("msgpack==1.1.2", "msgpack==1.2.1")
+            .replace("msgpack==1.1.2", "msgpack==1.2.4")
+            .replace("msgpack==1.2.1", "msgpack==1.2.4")
             .replace("setuptools==70.3.0", "setuptools==84.2.1")
             .replace("setuptools==83.0.0", "setuptools==84.2.1")
         )
