@@ -4,9 +4,15 @@
     "path": "data/mozambique/moz_bnd_adm1_WFP.json",
     "opacity": 0.8,
     "admin_code": "adm1_source_id",
-    "admin_level_codes": ["adm1_source_id"],
-    "admin_level_names": ["adm1_name"],
-    "admin_level_local_names": ["adm1_name"],
+    "admin_level_codes": [
+      "adm1_source_id"
+    ],
+    "admin_level_names": [
+      "adm1_name"
+    ],
+    "admin_level_local_names": [
+      "adm1_name"
+    ],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -23,9 +29,18 @@
     "path": "data/mozambique/moz_bnd_adm2_WFP.json",
     "opacity": 0.8,
     "admin_code": "adm2_source_id",
-    "admin_level_codes": ["adm1_source_id", "adm2_source_id"],
-    "admin_level_names": ["adm1_name", "adm2_name"],
-    "admin_level_local_names": ["adm1_name", "adm2_name"],
+    "admin_level_codes": [
+      "adm1_source_id",
+      "adm2_source_id"
+    ],
+    "admin_level_names": [
+      "adm1_name",
+      "adm2_name"
+    ],
+    "admin_level_local_names": [
+      "adm1_name",
+      "adm2_name"
+    ],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -42,9 +57,21 @@
     "path": "data/mozambique/moz_bnd_adm3_WFP.json",
     "opacity": 0.8,
     "admin_code": "adm3_source_id",
-    "admin_level_codes": ["adm1_source_id", "adm2_source_id", "adm3_source_id"],
-    "admin_level_names": ["adm1_name", "adm2_name", "adm3_name"],
-    "admin_level_local_names": ["adm1_name", "adm2_name", "adm3_name"],
+    "admin_level_codes": [
+      "adm1_source_id",
+      "adm2_source_id",
+      "adm3_source_id"
+    ],
+    "admin_level_names": [
+      "adm1_name",
+      "adm2_name",
+      "adm3_name"
+    ],
+    "admin_level_local_names": [
+      "adm1_name",
+      "adm2_name",
+      "adm3_name"
+    ],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -61,9 +88,15 @@
     "path": "data/mozambique/moz_hyd_basins_gov_2023.json",
     "opacity": 0.8,
     "admin_code": "ID",
-    "admin_level_codes": ["ID"],
-    "admin_level_names": ["Basins"],
-    "admin_level_local_names": ["Basins"],
+    "admin_level_codes": [
+      "ID"
+    ],
+    "admin_level_names": [
+      "Basins"
+    ],
+    "admin_level_local_names": [
+      "Basins"
+    ],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -3221,19 +3254,28 @@
       {
         "id": "spi_1m",
         "importance": 0.4,
-        "key": ["CHIRPS", "R1S_DEKAD"],
+        "key": [
+          "CHIRPS",
+          "R1S_DEKAD"
+        ],
         "aggregation": "last_dekad"
       },
       {
         "id": "et0",
         "importance": 0.3,
-        "key": ["FAO", "WAPOR_ET0_DEKAD"],
+        "key": [
+          "FAO",
+          "WAPOR_ET0_DEKAD"
+        ],
         "aggregation": "last_dekad"
       },
       {
         "id": "rzsm",
         "importance": 0.3,
-        "key": ["AGERA5", "SOIL_MOIST"],
+        "key": [
+          "AGERA5",
+          "SOIL_MOIST"
+        ],
         "aggregation": "last_dekad"
       }
     ],
@@ -3314,19 +3356,28 @@
       {
         "id": "spi_1m",
         "importance": 0.5,
-        "key": ["CHIRPS", "R1S_DEKAD"],
+        "key": [
+          "CHIRPS",
+          "R1S_DEKAD"
+        ],
         "aggregation": "last_dekad"
       },
       {
         "id": "lst_anomaly",
         "importance": 0.25,
-        "key": ["MODIS", "MYD11C2_TDD_DEKAD"],
+        "key": [
+          "MODIS",
+          "MYD11C2_TDD_DEKAD"
+        ],
         "aggregation": "last_dekad"
       },
       {
         "id": "ndvi_dekad",
         "importance": 0.25,
-        "key": ["MODIS", "NDVI_smoothed_5KM"],
+        "key": [
+          "MODIS",
+          "NDVI_smoothed_5KM"
+        ],
         "aggregation": "average",
         "invert": "True"
       }
@@ -3389,5 +3440,140 @@
     "start_date": "2020-12-01",
     "end_date": "2021-07-31",
     "opacity": 0.7
-  }
+  },
+  "spi_1m": {
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r1s",
+          "label": "SPI 1-month",
+          "minValue": -3,
+          "maxValue": 3,
+          "color": "#375692"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "spi_2m": {
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r2s",
+          "label": "SPI 2-month",
+          "minValue": -3,
+          "maxValue": 3,
+          "color": "#375692"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "spi_3m": {
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r3s",
+          "label": "SPI 3-month",
+          "minValue": -3,
+          "maxValue": 3,
+          "color": "#375692"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "spi_6m": {
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r6s",
+          "label": "SPI 6-month",
+          "minValue": -3,
+          "maxValue": 3,
+          "color": "#375692"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "spi_1y": {
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "rys",
+          "label": "SPI 1-year",
+          "minValue": -3,
+          "maxValue": 3,
+          "color": "#375692"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "line"
+    }
+  }       
 }
