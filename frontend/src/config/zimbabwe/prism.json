@@ -11,6 +11,10 @@
   "map": {
     "boundingBox": [25.26, -22.27, 32.85, -15.51]
   },
+  "header": {
+    "title": "PRISM Monitor",
+    "logo": "/images/msd-logo.png"
+  },
   "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "categories": {
     "rainfall": {
@@ -271,6 +275,7 @@
     "temperature": {
       "land_surface_temperature": [
         "lst_daytime",
+        "lst_nighttime",
         "lst_anomaly",
         "lst_amplitude"
       ]
