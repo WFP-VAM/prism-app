@@ -324,14 +324,14 @@ const useStyles = makeStyles(() =>
       textTransform: 'none',
       borderRadius: 20,
       minWidth: 110,
-      border: '1px solid var(--phase-color, #D4D4D4)',
-      color: 'var(--phase-color, #555)',
+      border: '1px solid var(--phase-ink, #D4D4D4)',
+      color: 'var(--phase-ink, #555)',
       backgroundColor: '#fff',
       fontSize: 13,
       '&&:hover': {
         backgroundColor: '#fff',
-        color: 'var(--phase-color, #555)',
-        borderColor: 'var(--phase-color, #D4D4D4)',
+        color: 'var(--phase-ink, #555)',
+        borderColor: 'var(--phase-ink, #D4D4D4)',
       },
     },
     phaseReadiness: {
@@ -381,8 +381,11 @@ function phaseButtonVars(
     ? getFloodRiskColor(level)
     : AAFloodColors.riskLevels.noData;
   const darkText = level === 'Bankfull' || level === 'Not exceeded';
+  // Bankfull yellow disappears on white. Outline uses a darker gold.
+  const ink = level === 'Bankfull' ? '#6F5600' : fill;
   return {
     '--phase-color': fill,
+    '--phase-ink': ink,
     '--phase-text': darkText ? '#1a1a1a' : '#fff',
   } as CSSProperties;
 }
