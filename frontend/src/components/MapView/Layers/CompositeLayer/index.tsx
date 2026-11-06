@@ -16,6 +16,7 @@ import { FillLayerSpecification, MapLayerMouseEvent } from 'maplibre-gl';
 import { memo, useEffect, useMemo, useState } from 'react';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { useDispatch, useSelector } from 'react-redux';
+import { fetchJsonOrNull } from 'utils/fetchJsonOrNull';
 import {
   findFeature,
   getEvtCoords,
@@ -75,9 +76,18 @@ const CompositeLayer = memo(({ layer, before }: Props) => {
   useEffect(() => {
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
     // which runs ./src/scripts/preprocess-layers.js
-    fetch(`/data/${safeCountry}/admin-boundary-unified-polygon.json`)
-      .then(response => response.json())
-      .then(polygonData => setAdminBoundaryPolygon(polygonData))
+    fetchJsonOrNull<any>(
+      `/data/${safeCountry}/admin-boundary-unified-polygon.json`,
+    )
+      .then(polygonData => {
+        if (polygonData === null) {
+          console.warn(
+            `Missing admin-boundary-unified-polygon.json for ${safeCountry}`,
+          );
+          return;
+        }
+        setAdminBoundaryPolygon(polygonData);
+      })
       .catch(error => console.error('Error:', error));
   }, []);
 
