@@ -12,6 +12,10 @@
   "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "categories": {
     "rainfall": {
+      "forecasts": [
+        "daily_rainfall_forecast",
+        "dekad_rainfall_forecast"
+      ],
       "global_rainfall_products": [
         {
           "group_title": "Rainfall aggregate",

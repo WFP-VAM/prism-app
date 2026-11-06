@@ -178,8 +178,7 @@
       ],
       "forecasts": [
         "daily_rainfall_forecast",
-        "dekad_rainfall_forecast",
-        "dekad_rainfall_anomaly_forecast"
+        "dekad_rainfall_forecast"
       ],
       "global_rainfall_products": [
         {
