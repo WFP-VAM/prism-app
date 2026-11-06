@@ -333,12 +333,20 @@ const useStyles = makeStyles(() =>
       color: '#1565C0',
       background: '#E3F2FD',
       fontWeight: 600,
+      '&&:hover': {
+        backgroundColor: '#D0E7FB',
+        color: '#1565C0',
+      },
     },
     phaseActivationSelected: {
       background: '#FF8C21',
       color: '#fff',
       border: '1px solid #FF8C21',
       fontWeight: 600,
+      '&&:hover': {
+        backgroundColor: '#E67E1C',
+        color: '#fff',
+      },
     },
     comboTable: {
       marginTop: '0.5rem',
