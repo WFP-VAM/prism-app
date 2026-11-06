@@ -138,7 +138,8 @@ export const checkBaselineDataLayer = (
 
 export type ApiData = {
   geotiff_url: ReturnType<typeof createGetCoverageUrl>; // helps developers get an understanding of what might go here, despite the type eventually being a string.
-  zones_url: string;
+  zones_url?: string;
+  zones?: FeatureCollection;
   group_by: string;
   geojson_out?: boolean;
   wfs_params?: WfsRequestParams;
