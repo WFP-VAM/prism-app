@@ -28,6 +28,7 @@ import {
   combinationRank,
   defaultChartPhase,
   focusCombination,
+  phaseStatusLevel,
 } from 'context/anticipatoryAction/AAFloodStateSlice/floodStatus';
 import {
   AAFloodPhase,
@@ -44,7 +45,7 @@ import {
 } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
 import { useSafeTranslation } from 'i18n';
 import sortBy from 'lodash/sortBy';
-import type { MouseEvent as ReactMouseEvent } from 'react';
+import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
 import { useMemo, useRef, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import { useDispatch, useSelector } from 'react-redux';
@@ -323,29 +324,28 @@ const useStyles = makeStyles(() =>
       textTransform: 'none',
       borderRadius: 20,
       minWidth: 110,
-      border: '1px solid #D4D4D4',
-      color: '#555',
-      background: '#fff',
+      border: '1px solid var(--phase-color, #D4D4D4)',
+      color: 'var(--phase-color, #555)',
+      backgroundColor: '#fff',
       fontSize: 13,
-    },
-    phaseReadinessSelected: {
-      border: '1px dashed #1565C0',
-      color: '#1565C0',
-      background: '#E3F2FD',
-      fontWeight: 600,
       '&&:hover': {
-        backgroundColor: '#D0E7FB',
-        color: '#1565C0',
+        backgroundColor: '#fff',
+        color: 'var(--phase-color, #555)',
+        borderColor: 'var(--phase-color, #D4D4D4)',
       },
     },
-    phaseActivationSelected: {
-      background: '#FF8C21',
-      color: '#fff',
-      border: '1px solid #FF8C21',
+    phaseReadiness: {
+      borderStyle: 'dashed',
+    },
+    phaseSelected: {
+      backgroundColor: 'var(--phase-color, #FF8C21)',
+      color: 'var(--phase-text, #fff)',
+      borderColor: 'var(--phase-color, #FF8C21)',
       fontWeight: 600,
       '&&:hover': {
-        backgroundColor: '#E67E1C',
-        color: '#fff',
+        backgroundColor: 'var(--phase-color, #FF8C21)',
+        color: 'var(--phase-text, #fff)',
+        filter: 'brightness(0.92)',
       },
     },
     comboTable: {
@@ -370,6 +370,21 @@ const useStyles = makeStyles(() =>
 interface StationChartsProps {
   station: FloodStation;
   onClose?: () => void;
+}
+
+function phaseButtonVars(
+  combinations: FloodTriggerCombination[] | undefined,
+  phase: AAFloodPhase,
+): CSSProperties {
+  const level = phaseStatusLevel(combinations, phase);
+  const fill = level
+    ? getFloodRiskColor(level)
+    : AAFloodColors.riskLevels.noData;
+  const darkText = level === 'Bankfull' || level === 'Not exceeded';
+  return {
+    '--phase-color': fill,
+    '--phase-text': darkText ? '#1a1a1a' : '#fff',
+  } as CSSProperties;
 }
 
 function StationCharts({ station, onClose }: StationChartsProps) {
@@ -1270,9 +1285,10 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           >
             <Button
               type="button"
-              className={`${classes.phaseButton} ${
-                viewPhase === 'readiness' ? classes.phaseReadinessSelected : ''
+              className={`${classes.phaseButton} ${classes.phaseReadiness} ${
+                viewPhase === 'readiness' ? classes.phaseSelected : ''
               }`}
+              style={phaseButtonVars(stationSummary?.combinations, 'readiness')}
               aria-pressed={viewPhase === 'readiness'}
               onClick={() => selectPhase('readiness')}
             >
@@ -1281,10 +1297,12 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             <Button
               type="button"
               className={`${classes.phaseButton} ${
-                viewPhase === 'activation'
-                  ? classes.phaseActivationSelected
-                  : ''
+                viewPhase === 'activation' ? classes.phaseSelected : ''
               }`}
+              style={phaseButtonVars(
+                stationSummary?.combinations,
+                'activation',
+              )}
               aria-pressed={viewPhase === 'activation'}
               onClick={() => selectPhase('activation')}
             >

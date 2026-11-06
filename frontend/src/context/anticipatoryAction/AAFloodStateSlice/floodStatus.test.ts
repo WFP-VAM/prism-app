@@ -5,6 +5,7 @@ import {
   getFloodRiskSeverity,
   isForecastDateInWindow,
   parseFloodStatus,
+  phaseStatusLevel,
 } from './floodStatus';
 import { FloodTriggerCombination } from './types';
 import { parseStationSummaryRows } from './utils';
@@ -114,6 +115,32 @@ describe('flood status order', () => {
       exceeded: false,
     });
     expect(focusCombination([], 'activation')).toBeNull();
+  });
+
+  test('colors a phase from its own exceeded status', () => {
+    const combo = (
+      phase: FloodTriggerCombination['phase'],
+      severity: FloodTriggerCombination['severity'],
+      exceeded: boolean,
+    ): FloodTriggerCombination => ({
+      phase,
+      severity,
+      windowBegin: '2026-03-13',
+      windowEnd: '2026-03-15',
+      avgProbability: 10,
+      trigger: 30,
+      dischargeThreshold: null,
+      exceeded,
+    });
+    const combinations = [
+      combo('readiness', 'moderate', true),
+      combo('readiness', 'severe', false),
+      combo('activation', 'severe', false),
+    ];
+
+    expect(phaseStatusLevel(combinations, 'readiness')).toBe('Moderate');
+    expect(phaseStatusLevel(combinations, 'activation')).toBe('Not exceeded');
+    expect(phaseStatusLevel([], 'activation')).toBeNull();
   });
 });
 

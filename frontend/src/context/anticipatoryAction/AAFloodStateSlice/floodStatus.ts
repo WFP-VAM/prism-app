@@ -118,6 +118,28 @@ export function defaultChartPhase(status: ParsedFloodStatus): AAFloodPhase {
   return status.phase ?? 'activation';
 }
 
+/**
+ * Status color for one phase. Highest exceeded severity in that phase,
+ * or Not exceeded when the phase exists but nothing tripped.
+ * Null when the phase has no combinations.
+ */
+export function phaseStatusLevel(
+  combinations: FloodTriggerCombination[] | undefined,
+  phase: AAFloodPhase,
+): AAFloodRiskLevelType | null {
+  const inPhase = (combinations ?? []).filter(combo => combo.phase === phase);
+  if (!inPhase.length) {
+    return null;
+  }
+  const exceeded = inPhase
+    .filter(combo => combo.exceeded)
+    .sort((a, b) => combinationRank(b) - combinationRank(a))[0];
+  if (!exceeded) {
+    return 'Not exceeded';
+  }
+  return parseFloodStatus(`${exceeded.phase}_${exceeded.severity}`).severity;
+}
+
 /** Highest exceeded combination in the phase, else the highest one defined. */
 export function focusCombination(
   combinations: FloodTriggerCombination[] | undefined,
