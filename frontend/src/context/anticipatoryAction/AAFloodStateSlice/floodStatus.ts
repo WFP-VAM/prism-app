@@ -105,6 +105,34 @@ export function getFloodRiskSeverity(
   return parseFloodStatus(riskLevel).rank;
 }
 
+export function combinationRank(combo: FloodTriggerCombination): number {
+  return parseFloodStatus(`${combo.phase}_${combo.severity}`).rank;
+}
+
+/**
+ * Chart opens on the station's resolved phase. Activation is the fallback
+ * when nothing is exceeded, and it wins when both phases are exceeded
+ * because that status ranks higher.
+ */
+export function defaultChartPhase(status: ParsedFloodStatus): AAFloodPhase {
+  return status.phase ?? 'activation';
+}
+
+/** Highest exceeded combination in the phase, else the highest one defined. */
+export function focusCombination(
+  combinations: FloodTriggerCombination[] | undefined,
+  phase: AAFloodPhase,
+): FloodTriggerCombination | null {
+  const inPhase = (combinations ?? []).filter(combo => combo.phase === phase);
+  if (!inPhase.length) {
+    return null;
+  }
+  const byRank = [...inPhase].sort(
+    (a, b) => combinationRank(b) - combinationRank(a),
+  );
+  return byRank.find(combo => combo.exceeded) ?? byRank[0];
+}
+
 export function statusFromCombinations(
   combinations: FloodTriggerCombination[],
 ): string {

@@ -1,9 +1,12 @@
 import {
+  defaultChartPhase,
+  focusCombination,
   forecastLeadDay,
   getFloodRiskSeverity,
   isForecastDateInWindow,
   parseFloodStatus,
 } from './floodStatus';
+import { FloodTriggerCombination } from './types';
 import { parseStationSummaryRows } from './utils';
 
 describe('flood status order', () => {
@@ -66,6 +69,51 @@ describe('flood status order', () => {
     expect(forecastLeadDay(times, '2025-12-28')).toBe(1);
     expect(forecastLeadDay(times, '2025-12-30')).toBe(3);
     expect(forecastLeadDay(times, '2026-01-01')).toBe(5);
+  });
+
+  test('opens the chart on the resolved phase, else activation', () => {
+    expect(defaultChartPhase(parseFloodStatus('activation_bankfull'))).toBe(
+      'activation',
+    );
+    expect(defaultChartPhase(parseFloodStatus('readiness_moderate'))).toBe(
+      'readiness',
+    );
+    expect(defaultChartPhase(parseFloodStatus('not exceeded'))).toBe(
+      'activation',
+    );
+    expect(defaultChartPhase(parseFloodStatus('severe'))).toBe('activation');
+  });
+
+  test('focuses the highest exceeded combination in one phase', () => {
+    const combo = (
+      phase: FloodTriggerCombination['phase'],
+      severity: FloodTriggerCombination['severity'],
+      exceeded: boolean,
+    ): FloodTriggerCombination => ({
+      phase,
+      severity,
+      windowBegin: '2026-03-13',
+      windowEnd: '2026-03-15',
+      avgProbability: exceeded ? 40 : 5,
+      trigger: 30,
+      dischargeThreshold: 1000,
+      exceeded,
+    });
+    const combinations = [
+      combo('readiness', 'severe', false),
+      combo('readiness', 'moderate', true),
+      combo('activation', 'moderate', false),
+      combo('activation', 'severe', false),
+    ];
+
+    expect(focusCombination(combinations, 'readiness')?.severity).toBe(
+      'moderate',
+    );
+    expect(focusCombination(combinations, 'activation')).toMatchObject({
+      severity: 'severe',
+      exceeded: false,
+    });
+    expect(focusCombination([], 'activation')).toBeNull();
   });
 });
 

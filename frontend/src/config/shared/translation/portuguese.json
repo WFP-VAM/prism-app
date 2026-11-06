@@ -708,5 +708,15 @@
   "Yes": "Sim",
   "Normal": "Normal",
   "No Action": "Sem Ação",
-  "Below Normal": "Abaixo do Normal"
+  "Below Normal": "Abaixo do Normal",
+  "Day {{start}}–{{end}}": "Dia {{start}}–{{end}}",
+  "Window avg": "Média da janela",
+  "Gap to trigger": "Diferença para o limiar",
+  "{{gap}} to go": "faltam {{gap}}",
+  "active": "activo",
+  "exceeded": "excedido",
+  "Trigger": "Accionador",
+  "Probability (%)": "Probabilidade (%)",
+  "No combinations for this phase": "Sem combinações para esta fase",
+  "Severity": "Severidade"
 }
