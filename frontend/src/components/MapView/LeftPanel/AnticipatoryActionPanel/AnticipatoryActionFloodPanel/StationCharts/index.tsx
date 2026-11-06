@@ -422,7 +422,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     phaseCombinations.find(combo => combo.severity === severity),
   ).filter(
     (combo): combo is FloodTriggerCombination =>
-      Boolean(combo) && visibleSeverities.includes(combo.severity),
+      combo != null && visibleSeverities.includes(combo.severity),
   );
   const highlighted =
     [...visibleCombinations].sort(
