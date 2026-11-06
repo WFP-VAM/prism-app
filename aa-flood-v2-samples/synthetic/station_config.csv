@@ -1,0 +1,5 @@
+Station ID,Station Name,River Name,lisflood_x,lisflood_y,glofas_bankfull,glofas_moderate,glofas_severe,readiness_bankfull_trigger,readiness_bankfull_window_begin,readiness_bankfull_window_end,readiness_moderate_trigger,readiness_moderate_window_begin,readiness_moderate_window_end,readiness_severe_trigger,readiness_severe_window_begin,readiness_severe_window_end,activation_bankfull_trigger,activation_bankfull_window_begin,activation_bankfull_window_end,activation_moderate_trigger,activation_moderate_window_begin,activation_moderate_window_end,activation_severe_trigger,activation_severe_window_begin,activation_severe_window_end
+456,goonda,Buzi,33.875,-19.875,1937,2620,3687,,,,0.3,4,8,0.2,4,8,,,,0.5,2,4,0.4,2,4
+246,dombe,Lucite,33.425,-19.975,374,1188,1488,0.4,4,8,,,,,,,0.6,2,4,,,,,,
+84,espungabera,Buzi,32.825,-20.475,265,299,467,,,,,,,0.25,4,8,,,,,,,0.5,2,4
+12,unconfigured,Buzi,33.0,-20.0,100,200,300,,,,,,,,,,,,,,,,,,

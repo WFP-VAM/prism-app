@@ -277,5 +277,15 @@
   "Exporting...": "Exporting...",
   "Unknown error": "Unknown error",
   "Create dashboard": "Create dashboard",
-  "Dashboard": "Dashboard"
+  "Dashboard": "Dashboard",
+  "Day {{start}}–{{end}}": "Day {{start}}–{{end}}",
+  "Window avg": "Window avg",
+  "Gap to trigger": "Gap to trigger",
+  "{{gap}} to go": "{{gap}} to go",
+  "active": "active",
+  "exceeded": "exceeded",
+  "Trigger": "Trigger",
+  "Probability (%)": "Probability (%)",
+  "No combinations for this phase": "No combinations for this phase",
+  "Severity": "Severity"
 }

@@ -2,6 +2,7 @@ import 'chartjs-plugin-annotation';
 
 import {
   Button,
+  Checkbox,
   CircularProgress,
   createStyles,
   IconButton,
@@ -23,10 +24,28 @@ import {
   setAAFloodStationDetailActiveTab,
   setAAFloodStationDetailViewMode,
 } from 'context/anticipatoryAction/AAFloodStateSlice';
-import { FloodStation } from 'context/anticipatoryAction/AAFloodStateSlice/types';
+import {
+  combinationRank,
+  defaultChartPhase,
+  focusCombination,
+  phaseStatusLevel,
+} from 'context/anticipatoryAction/AAFloodStateSlice/floodStatus';
+import {
+  AAFloodPhase,
+  AAFloodSeverityKey,
+  FloodStation,
+  FloodTriggerCombination,
+} from 'context/anticipatoryAction/AAFloodStateSlice/types';
+import {
+  floodStationKey,
+  forecastLeadDay,
+  getFloodRiskColor,
+  isForecastDateInWindow,
+  parseFloodStatus,
+} from 'context/anticipatoryAction/AAFloodStateSlice/utils';
 import { useSafeTranslation } from 'i18n';
 import sortBy from 'lodash/sortBy';
-import type { MouseEvent as ReactMouseEvent } from 'react';
+import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
 import { useMemo, useRef, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import { useDispatch, useSelector } from 'react-redux';
@@ -40,6 +59,127 @@ import {
 } from '../constants';
 
 const forecastWindow = ForecastWindowPerCountry.mozambique;
+const SEVERITY_ORDER: AAFloodSeverityKey[] = ['bankfull', 'moderate', 'severe'];
+const SEVERITY_NAME: Record<AAFloodSeverityKey, string> = {
+  bankfull: 'Bankfull',
+  moderate: 'Moderate',
+  severe: 'Severe',
+};
+
+type ProbabilityPoint = {
+  time: string;
+  bankfullPercentage: number;
+  moderatePercentage: number;
+  severePercentage: number;
+};
+
+function windowIndexBounds(
+  points: { time: string }[],
+  combo: FloodTriggerCombination | null,
+): { beginIdx: number; endIdx: number } {
+  let beginIdx = -1;
+  let endIdx = -1;
+  if (!combo) {
+    return { beginIdx, endIdx };
+  }
+  points.forEach((point, idx) => {
+    if (
+      isForecastDateInWindow(point.time, combo.windowBegin, combo.windowEnd)
+    ) {
+      if (beginIdx < 0) {
+        beginIdx = idx;
+      }
+      endIdx = idx;
+    }
+  });
+  return { beginIdx, endIdx };
+}
+
+function combinationProbabilityData(
+  sorted: ProbabilityPoint[],
+  labels: string[],
+  visible: FloodTriggerCombination[],
+  translate: (key: string) => string,
+) {
+  const percentage: Record<AAFloodSeverityKey, number[]> = {
+    bankfull: sorted.map(point => point.bankfullPercentage),
+    moderate: sorted.map(point => point.moderatePercentage),
+    severe: sorted.map(point => point.severePercentage),
+  };
+  const flatWindow = (combo: FloodTriggerCombination, value: number | null) => {
+    const { beginIdx, endIdx } = windowIndexBounds(sorted, combo);
+    return percentage.bankfull.map((_value, idx) =>
+      beginIdx >= 0 && idx >= beginIdx && idx <= endIdx ? (value ?? NaN) : NaN,
+    );
+  };
+  const thresholdName: Record<AAFloodSeverityKey, string> = {
+    bankfull: 'Bankfull threshold',
+    moderate: 'Moderate threshold',
+    severe: 'Severe threshold',
+  };
+  const meanName: Record<AAFloodSeverityKey, string> = {
+    bankfull: 'Bankfull mean (window)',
+    moderate: 'Moderate mean (window)',
+    severe: 'Severe mean (window)',
+  };
+  const datasets: any[] = [];
+  const thresholdIndex: Partial<Record<AAFloodSeverityKey, number>> = {};
+  visible.forEach(combo => {
+    thresholdIndex[combo.severity] = datasets.length;
+    const color = AAFloodColors.chart[combo.severity];
+    datasets.push({
+      label: translate(thresholdName[combo.severity]),
+      data: Array.from({ length: labels.length }, () => combo.trigger),
+      borderColor: color.solid,
+      backgroundColor: 'transparent',
+      borderWidth: 2,
+      borderDash: [6, 6],
+      pointRadius: 0,
+      fill: false,
+    });
+  });
+  visible.forEach(combo => {
+    const color = AAFloodColors.chart[combo.severity];
+    datasets.push({
+      label: translate(SEVERITY_NAME[combo.severity]),
+      data: percentage[combo.severity],
+      borderColor: color.solid,
+      backgroundColor: color.solid,
+      borderWidth: 2,
+      showLine: false,
+      pointRadius: 3,
+      fill: false,
+    });
+  });
+  visible.forEach(combo => {
+    const color = AAFloodColors.chart[combo.severity];
+    datasets.push({
+      label: translate(meanName[combo.severity]),
+      data: flatWindow(combo, combo.avgProbability),
+      borderColor: color.solid,
+      backgroundColor: 'transparent',
+      borderWidth: 2,
+      pointRadius: 0,
+      fill: false,
+    });
+  });
+  const fillCombo = [...visible]
+    .filter(combo => combo.exceeded)
+    .sort((a, b) => combinationRank(b) - combinationRank(a))[0];
+  if (fillCombo && thresholdIndex[fillCombo.severity] !== undefined) {
+    datasets.push({
+      label: translate(`${SEVERITY_NAME[fillCombo.severity]} mean fill`),
+      excludeFromTable: true,
+      data: flatWindow(fillCombo, fillCombo.avgProbability),
+      borderColor: 'rgba(0,0,0,0)',
+      backgroundColor: AAFloodColors.chart[fillCombo.severity].fill,
+      borderWidth: 0,
+      pointRadius: 0,
+      fill: thresholdIndex[fillCombo.severity],
+    });
+  }
+  return { labels, datasets };
+}
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -49,9 +189,10 @@ const useStyles = makeStyles(() =>
       left: TABLE_WIDTH + 16,
       width: CHART_WIDTH,
       marginLeft: '2rem',
-      maxHeight: '70vh',
+      maxHeight: 'calc(100vh - 130px)',
       zIndex: 1000,
       boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+      overflow: 'auto',
     },
     paper: {
       height: '100%',
@@ -161,6 +302,66 @@ const useStyles = makeStyles(() =>
       flexDirection: 'column',
       gap: '1rem',
     },
+    titleRow: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.75rem',
+    },
+    statusChip: {
+      fontSize: '0.75rem',
+      fontWeight: 600,
+      borderRadius: 16,
+      padding: '4px 10px',
+      lineHeight: 1.4,
+      whiteSpace: 'nowrap',
+    },
+    phaseToggle: {
+      display: 'flex',
+      gap: 8,
+      padding: '0 1rem 0.75rem',
+    },
+    phaseButton: {
+      textTransform: 'none',
+      borderRadius: 20,
+      minWidth: 110,
+      border: '1px solid var(--phase-ink, #D4D4D4)',
+      color: 'var(--phase-ink, #555)',
+      backgroundColor: '#fff',
+      fontSize: 13,
+      '&&:hover': {
+        backgroundColor: '#fff',
+        color: 'var(--phase-ink, #555)',
+        borderColor: 'var(--phase-ink, #D4D4D4)',
+      },
+    },
+    phaseReadiness: {
+      borderStyle: 'dashed',
+    },
+    phaseSelected: {
+      backgroundColor: 'var(--phase-color, #FF8C21)',
+      color: 'var(--phase-text, #fff)',
+      borderColor: 'var(--phase-color, #FF8C21)',
+      fontWeight: 600,
+      '&&:hover': {
+        backgroundColor: 'var(--phase-color, #FF8C21)',
+        color: 'var(--phase-text, #fff)',
+        filter: 'brightness(0.92)',
+      },
+    },
+    comboTable: {
+      marginTop: '0.5rem',
+    },
+    comboHeader: {
+      fontWeight: 600,
+      fontSize: '0.75rem',
+      color: '#333',
+      padding: '6px 8px',
+    },
+    comboCell: {
+      fontSize: '0.8rem',
+      padding: '4px 8px',
+      color: '#111',
+    },
   }),
 );
 
@@ -169,6 +370,24 @@ const useStyles = makeStyles(() =>
 interface StationChartsProps {
   station: FloodStation;
   onClose?: () => void;
+}
+
+function phaseButtonVars(
+  combinations: FloodTriggerCombination[] | undefined,
+  phase: AAFloodPhase,
+): CSSProperties {
+  const level = phaseStatusLevel(combinations, phase);
+  const fill = level
+    ? getFloodRiskColor(level)
+    : AAFloodColors.riskLevels.noData;
+  const darkText = level === 'Bankfull' || level === 'Not exceeded';
+  // Bankfull yellow disappears on white. Outline uses a darker gold.
+  const ink = level === 'Bankfull' ? '#6F5600' : fill;
+  return {
+    '--phase-color': fill,
+    '--phase-ink': ink,
+    '--phase-text': darkText ? '#1a1a1a' : '#fff',
+  } as CSSProperties;
 }
 
 function StationCharts({ station, onClose }: StationChartsProps) {
@@ -181,6 +400,11 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadMenuAnchor, setDownloadMenuAnchor] =
     useState<null | HTMLElement>(null);
+  const [phaseSelection, setPhaseSelection] = useState<{
+    statusKey: string;
+    phase: AAFloodPhase;
+    severities: AAFloodSeverityKey[];
+  }>({ statusKey: '', phase: 'activation', severities: [] });
   const hydrographChartRef = useRef<Line>(null);
   const probabilityChartRef = useRef<Line>(null);
 
@@ -188,14 +412,63 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     return null;
   }
 
-  const probs = floodState.probabilitiesData[station.station_name];
+  const stationKey = floodStationKey(station.station_id, station.station_name);
+  const probs = floodState.probabilitiesData[stationKey];
   const stationSummary = floodState.stationSummaryData
-    ? floodState.stationSummaryData[station.station_name]
+    ? floodState.stationSummaryData[stationKey]
     : undefined;
+  const parsedStatus = parseFloodStatus(
+    stationSummary?.floodStatus || stationSummary?.trigger_status,
+  );
+  const activeCombination = stationSummary?.combinations?.find(
+    combo => `${combo.phase}_${combo.severity}` === parsedStatus.id,
+  );
+  const statusKey = `${stationKey}|${floodState.selectedDate ?? ''}|${parsedStatus.id}`;
+  const selectionReady = phaseSelection.statusKey === statusKey;
+  const viewPhase = selectionReady
+    ? phaseSelection.phase
+    : defaultChartPhase(parsedStatus);
+  const phaseCombinations = (stationSummary?.combinations ?? []).filter(
+    combo => combo.phase === viewPhase,
+  );
+  const visibleSeverities = selectionReady
+    ? phaseSelection.severities
+    : [
+        focusCombination(stationSummary?.combinations, viewPhase)?.severity,
+      ].filter((severity): severity is AAFloodSeverityKey => Boolean(severity));
+  const visibleCombinations = SEVERITY_ORDER.map(severity =>
+    phaseCombinations.find(combo => combo.severity === severity),
+  ).filter(
+    (combo): combo is FloodTriggerCombination =>
+      combo != null && visibleSeverities.includes(combo.severity),
+  );
+  const highlighted =
+    [...visibleCombinations].sort(
+      (a, b) => combinationRank(b) - combinationRank(a),
+    )[0] ?? null;
+  const usesCombinationWindows = Boolean(stationSummary?.combinations?.length);
+
+  const selectPhase = (phase: AAFloodPhase) => {
+    const focus = focusCombination(stationSummary?.combinations, phase);
+    setPhaseSelection({
+      statusKey,
+      phase,
+      severities: focus ? [focus.severity] : [],
+    });
+  };
+  const toggleSeverity = (severity: AAFloodSeverityKey) => {
+    setPhaseSelection({
+      statusKey,
+      phase: viewPhase,
+      severities: visibleSeverities.includes(severity)
+        ? visibleSeverities.filter(item => item !== severity)
+        : [...visibleSeverities, severity],
+    });
+  };
 
   // Prepare hydrograph data using fetched forecast (discharge) data
   const hydrographData = useMemo(() => {
-    const forecast = floodState.forecastData[station.station_name] || [];
+    const forecast = floodState.forecastData[stationKey] || [];
     if (!forecast.length) {
       return null;
     }
@@ -209,6 +482,23 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       return null;
     }
     const { thresholdBankfull, thresholdModerate, thresholdSevere } = probs[0];
+    const dischargeFallback: Record<AAFloodSeverityKey, number> = {
+      bankfull: thresholdBankfull,
+      moderate: thresholdModerate,
+      severe: thresholdSevere,
+    };
+    const shownSeverities = usesCombinationWindows
+      ? SEVERITY_ORDER.filter(
+          severity =>
+            visibleSeverities.includes(severity) &&
+            phaseCombinations.some(combo => combo.severity === severity),
+        )
+      : SEVERITY_ORDER;
+    const thresholdLabel: Record<AAFloodSeverityKey, string> = {
+      bankfull: t('Bankfull threshold'),
+      moderate: t('Moderate threshold'),
+      severe: t('Severe threshold'),
+    };
 
     const membersCount = forecast[0]?.ensemble_members?.length || 0;
     const ensembleDatasets = Array.from(
@@ -251,43 +541,38 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           fill: false,
           tension: 0.4,
         },
-        {
-          label: `${t('Bankfull threshold')}`,
-          data: Array.from({ length: labels.length }, () => thresholdBankfull),
-          borderColor: AAFloodColors.chart.bankfull.solid,
-          backgroundColor: 'transparent',
-          borderWidth: 2,
-          borderDash: [6, 6],
-          pointRadius: 0,
-          pointStyle: 'line' as const,
-        },
-        {
-          label: `${t('Moderate threshold')}`,
-          data: Array.from({ length: labels.length }, () => thresholdModerate),
-          borderColor: AAFloodColors.chart.moderate.solid,
-          backgroundColor: 'transparent',
-          borderWidth: 2,
-          borderDash: [6, 6],
-          pointRadius: 0,
-          pointStyle: 'line' as const,
-        },
-        {
-          label: `${t('Severe threshold')}`,
-          data: Array.from({ length: labels.length }, () => thresholdSevere),
-          borderColor: AAFloodColors.chart.severe.solid,
-          backgroundColor: 'transparent',
-          borderWidth: 2,
-          borderDash: [6, 6],
-          pointRadius: 0,
-          pointStyle: 'line' as const,
-        },
+        ...shownSeverities.map(severity => {
+          const combo = phaseCombinations.find(
+            item => item.severity === severity,
+          );
+          const value =
+            combo?.dischargeThreshold != null
+              ? combo.dischargeThreshold
+              : dischargeFallback[severity];
+          return {
+            label: thresholdLabel[severity],
+            severity,
+            data: Array.from({ length: labels.length }, () => value),
+            borderColor: AAFloodColors.chart[severity].solid,
+            backgroundColor: 'transparent',
+            borderWidth: 2,
+            borderDash: [6, 6],
+            pointRadius: 0,
+            pointStyle: 'line' as const,
+          };
+        }),
         ...ensembleDatasets,
       ],
     };
-  }, [floodState.forecastData, station.station_name, probs, t]);
-
-  const beginIdx = forecastWindow.start - 1;
-  const endIdx = forecastWindow.end - 1;
+  }, [
+    floodState.forecastData,
+    stationKey,
+    probs,
+    t,
+    usesCombinationWindows,
+    visibleSeverities,
+    phaseCombinations,
+  ]);
 
   // Prepare trigger probability data from fetched probabilities
   const sortedData = sortBy(probs, p => new Date(p.time).getTime());
@@ -295,19 +580,60 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     d => getFormattedDate(d.time, 'shortDayFirst') as string,
   );
 
+  const legacyWindow = usesCombinationWindows
+    ? windowIndexBounds(sortedData, highlighted)
+    : { beginIdx: forecastWindow.start - 1, endIdx: forecastWindow.end - 1 };
+  const { beginIdx } = legacyWindow;
+  const { endIdx } = legacyWindow;
+  const leadTimes = sortedData.map(point => point.time);
+  const windowStartDay =
+    beginIdx >= 0
+      ? forecastLeadDay(leadTimes, sortedData[beginIdx].time)
+      : undefined;
+  const windowEndDay =
+    endIdx >= 0
+      ? forecastLeadDay(leadTimes, sortedData[endIdx].time)
+      : undefined;
+
   const triggerProbabilityData = useMemo(() => {
     if (!probs || probs.length === 0) {
       return null;
+    }
+    if (usesCombinationWindows) {
+      return combinationProbabilityData(
+        sortedData,
+        labels,
+        visibleCombinations,
+        key => String(t(key)),
+      );
     }
 
     const bankfullSeries = sortedData.map(d => d.bankfullPercentage);
     const moderateSeries = sortedData.map(d => d.moderatePercentage);
     const severeSeries = sortedData.map(d => d.severePercentage);
 
-    // Use averaged window means and triggers from station_summary_file.csv
-    const bankfullMean = stationSummary?.avg_bankfull_percentage ?? 0;
-    const moderateMean = stationSummary?.avg_moderate_percentage ?? 0;
-    const severeMean = stationSummary?.avg_severe_percentage ?? 0;
+    // Legacy files: means from the single window. New files: the active combination only.
+    const meanFor = (
+      severity: 'bankfull' | 'moderate' | 'severe',
+      legacy: number | undefined,
+    ): number | null => {
+      if (!usesCombinationWindows) {
+        return legacy ?? 0;
+      }
+      if (activeCombination?.severity !== severity) {
+        return null;
+      }
+      return activeCombination.avgProbability;
+    };
+    const bankfullMean = meanFor(
+      'bankfull',
+      stationSummary?.avg_bankfull_percentage,
+    );
+    const moderateMean = meanFor(
+      'moderate',
+      stationSummary?.avg_moderate_percentage,
+    );
+    const severeMean = meanFor('severe', stationSummary?.avg_severe_percentage);
 
     // Build flat series over the window only (NaN elsewhere)
     const flatWindowSeries = (value: number | null) =>
@@ -317,16 +643,30 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           : NaN,
       );
 
-    // Only show mean fill for the highest severity exceeded
-    const bankfullExceeded =
-      typeof stationSummary?.trigger_bankfull === 'number' &&
-      bankfullMean > stationSummary.trigger_bankfull;
-    const moderateExceeded =
-      typeof stationSummary?.trigger_moderate === 'number' &&
-      moderateMean > stationSummary.trigger_moderate;
-    const severeExceeded =
-      typeof stationSummary?.trigger_severe === 'number' &&
-      severeMean > stationSummary.trigger_severe;
+    // New files trust the pipeline status. Legacy files still compare mean > trigger.
+    const bankfullExceeded = usesCombinationWindows
+      ? activeCombination?.severity === 'bankfull'
+      : typeof stationSummary?.trigger_bankfull === 'number' &&
+        (bankfullMean ?? 0) > stationSummary.trigger_bankfull;
+    const moderateExceeded = usesCombinationWindows
+      ? activeCombination?.severity === 'moderate'
+      : typeof stationSummary?.trigger_moderate === 'number' &&
+        (moderateMean ?? 0) > stationSummary.trigger_moderate;
+    const severeExceeded = usesCombinationWindows
+      ? activeCombination?.severity === 'severe'
+      : typeof stationSummary?.trigger_severe === 'number' &&
+        (severeMean ?? 0) > stationSummary.trigger_severe;
+    const thresholdFillIndex = usesCombinationWindows
+      ? 0
+      : (() => {
+          if (severeExceeded) {
+            return 2;
+          }
+          if (moderateExceeded) {
+            return 1;
+          }
+          return 0;
+        })();
 
     const fillDatasets: any[] = (() => {
       if (severeExceeded) {
@@ -338,7 +678,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             backgroundColor: 'rgba(230, 55, 1, 0.25)',
             borderWidth: 0,
             pointRadius: 0,
-            fill: 2, // fill to Severe threshold dataset
+            fill: thresholdFillIndex,
             tension: 0,
             lineTension: 0,
           },
@@ -353,7 +693,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             backgroundColor: 'rgba(255, 140, 33, 0.25)',
             borderWidth: 0,
             pointRadius: 0,
-            fill: 1, // fill to Moderate threshold dataset
+            fill: thresholdFillIndex,
             tension: 0,
             lineTension: 0,
           },
@@ -368,7 +708,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             backgroundColor: 'rgba(255, 204, 0, 0.25)',
             borderWidth: 0,
             pointRadius: 0,
-            fill: 0, // fill to Bankfull threshold dataset
+            fill: thresholdFillIndex,
             tension: 0,
             lineTension: 0,
           },
@@ -377,47 +717,55 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       return [];
     })();
 
-    const thresholdDatasets = [
+    const thresholdColor = {
+      bankfull: 'rgba(255, 204, 0, 0.8)',
+      moderate: 'rgba(255, 140, 33, 0.8)',
+      severe: 'rgba(230, 55, 1, 0.8)',
+    };
+    const thresholdLabel = {
+      bankfull: t('Bankfull'),
+      moderate: t('Moderate'),
+      severe: t('Severe'),
+    };
+    const legacyThresholds = [
       stationSummary?.trigger_bankfull !== undefined && {
-        label: `${t('Bankfull')} ${t('threshold')}`,
-        data: Array.from(
-          { length: labels.length },
-          () => stationSummary!.trigger_bankfull as number,
-        ),
-        borderColor: 'rgba(255, 204, 0, 0.8)',
-        backgroundColor: 'transparent',
-        borderWidth: 2,
-        borderDash: [6, 6],
-        pointRadius: 0,
-        fill: false,
+        severity: 'bankfull' as const,
+        value: stationSummary!.trigger_bankfull as number,
       },
       stationSummary?.trigger_moderate !== undefined && {
-        label: `${t('Moderate')} ${t('threshold')}`,
-        data: Array.from(
-          { length: labels.length },
-          () => stationSummary!.trigger_moderate as number,
-        ),
-        borderColor: 'rgba(255, 140, 33, 0.8)',
-        backgroundColor: 'transparent',
-        borderWidth: 2,
-        borderDash: [6, 6],
-        pointRadius: 0,
-        fill: false,
+        severity: 'moderate' as const,
+        value: stationSummary!.trigger_moderate as number,
       },
       stationSummary?.trigger_severe !== undefined && {
-        label: `${t('Severe')} ${t('threshold')}`,
-        data: Array.from(
-          { length: labels.length },
-          () => stationSummary!.trigger_severe as number,
-        ),
-        borderColor: 'rgba(230, 55, 1, 0.8)',
-        backgroundColor: 'transparent',
-        borderWidth: 2,
-        borderDash: [6, 6],
-        pointRadius: 0,
-        fill: false,
+        severity: 'severe' as const,
+        value: stationSummary!.trigger_severe as number,
       },
-    ].filter(Boolean) as any[];
+    ].filter(Boolean) as {
+      severity: 'bankfull' | 'moderate' | 'severe';
+      value: number;
+    }[];
+    const activeThresholds =
+      usesCombinationWindows && typeof activeCombination?.trigger === 'number'
+        ? [
+            {
+              severity: activeCombination.severity,
+              value: activeCombination.trigger,
+            },
+          ]
+        : legacyThresholds;
+    const shownThresholds = usesCombinationWindows
+      ? activeThresholds
+      : legacyThresholds;
+    const thresholdDatasets = shownThresholds.map(item => ({
+      label: `${thresholdLabel[item.severity]} ${t('threshold')}`,
+      data: Array.from({ length: labels.length }, () => item.value),
+      borderColor: thresholdColor[item.severity],
+      backgroundColor: 'transparent',
+      borderWidth: 2,
+      borderDash: [6, 6],
+      pointRadius: 0,
+      fill: false,
+    }));
 
     return {
       labels,
@@ -498,7 +846,18 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         ...fillDatasets,
       ],
     };
-  }, [probs, stationSummary, sortedData, t, labels, beginIdx, endIdx]);
+  }, [
+    probs,
+    stationSummary,
+    sortedData,
+    t,
+    labels,
+    beginIdx,
+    endIdx,
+    usesCombinationWindows,
+    activeCombination,
+    visibleCombinations,
+  ]);
 
   const hydrographOptions = useMemo(
     () => ({
@@ -527,9 +886,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
               return [] as string[];
             }
             const idx = items[0].index as number;
-            const p = (floodState.forecastData[station.station_name] || [])[
-              idx
-            ];
+            const p = (floodState.forecastData[stationKey] || [])[idx];
             const arr: number[] = p?.ensemble_members || [];
             if (!arr.length) {
               return [] as string[];
@@ -581,7 +938,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         ],
       },
     }),
-    [t, floodState.forecastData, station.station_name],
+    [t, floodState.forecastData, stationKey],
   );
 
   const probabilityOptions = useMemo(() => {
@@ -594,6 +951,11 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       stationSummary?.trigger_bankfull,
       stationSummary?.trigger_moderate,
       stationSummary?.trigger_severe,
+      activeCombination?.trigger,
+      ...(stationSummary?.combinations ?? []).flatMap(combo => [
+        combo.trigger,
+        combo.avgProbability,
+      ]),
     ].filter((v): v is number => typeof v === 'number');
     const maxPct = Math.max(
       50,
@@ -624,12 +986,17 @@ function StationCharts({ station, onClose }: StationChartsProps) {
               label: {
                 enabled: true,
                 position: 'top',
-                content: t('{{day}}-day forecast', {
-                  day: forecastWindow.start,
-                }),
+                content: usesCombinationWindows
+                  ? t('Day {{start}}–{{end}}', {
+                      start: windowStartDay,
+                      end: windowEndDay,
+                    })
+                  : t('{{day}}-day forecast', {
+                      day: windowStartDay,
+                    }),
                 backgroundColor: 'rgba(0,0,0,0)',
                 fontColor: AAFloodColors.annotation.forecastStart,
-                xAdjust: -50,
+                xAdjust: usesCombinationWindows ? 28 : -50,
               },
             },
           ]
@@ -645,9 +1012,9 @@ function StationCharts({ station, onClose }: StationChartsProps) {
               borderDash: [4, 4],
               borderWidth: 1,
               label: {
-                enabled: true,
+                enabled: !usesCombinationWindows,
                 position: 'top',
-                content: t('{{day}}-day forecast', { day: forecastWindow.end }),
+                content: t('{{day}}-day forecast', { day: windowEndDay }),
                 backgroundColor: 'rgba(0,0,0,0)',
                 fontColor: AAFloodColors.annotation.forecastEnd,
                 xAdjust: -50,
@@ -677,7 +1044,10 @@ function StationCharts({ station, onClose }: StationChartsProps) {
               beginAtZero: true,
               max: maxTick,
             },
-            scaleLabel: { display: false },
+            scaleLabel: {
+              display: usesCombinationWindows,
+              labelString: t('Probability (%)'),
+            },
           },
         ],
       },
@@ -686,7 +1056,20 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         annotations,
       },
     } as any;
-  }, [probs, stationSummary, labels, beginIdx, endIdx, t, hydrographOptions]);
+  }, [
+    probs,
+    stationSummary,
+    labels,
+    beginIdx,
+    endIdx,
+    t,
+    hydrographOptions,
+    windowStartDay,
+    windowEndDay,
+    activeCombination,
+    usesCombinationWindows,
+    viewPhase,
+  ]);
 
   const handleTabChange = (newValue: number) => {
     dispatch(setAAFloodStationDetailActiveTab(newValue));
@@ -751,18 +1134,18 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   };
 
   const hydrographTableData = useMemo(() => {
-    const fc = floodState.forecastData[station.station_name] ?? [];
+    const fc = floodState.forecastData[stationKey] ?? [];
     const hd = hydrographData;
 
     if (!hd?.datasets?.length || !fc.length) {
       return null;
     }
-    const [
-      ensembleMean,
-      bankfullThreshold,
-      moderateThreshold,
-      severeThreshold,
-    ] = hd.datasets;
+    const ensembleMean = hd.datasets.find(
+      dataset => dataset.label === t('Ensemble Mean'),
+    );
+    const thresholds = hd.datasets.filter(
+      dataset => 'severity' in dataset && dataset.severity,
+    );
     // get minimum and maximum ensemble member values
     const ensembleMin = fc.map(p =>
       p?.ensemble_members?.length
@@ -780,9 +1163,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       ensembleMean?.label || t('Ensemble Mean'),
       t('Min'),
       t('Max'),
-      bankfullThreshold?.label || t('Bankfull threshold'),
-      moderateThreshold?.label || t('Moderate threshold'),
-      severeThreshold?.label || t('Severe threshold'),
+      ...thresholds.map(dataset => dataset.label),
     ];
 
     const cell = (v: number | null | undefined) =>
@@ -793,13 +1174,11 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       cell(ensembleMean?.data?.[i]),
       cell(ensembleMin[i]),
       cell(ensembleMax[i]),
-      cell(bankfullThreshold?.data?.[i]),
-      cell(moderateThreshold?.data?.[i]),
-      cell(severeThreshold?.data?.[i]),
+      ...thresholds.map(dataset => cell(dataset.data?.[i])),
     ]);
 
     return { columnNames: columns, tableValues: rows };
-  }, [hydrographData, floodState.forecastData, station.station_name, t]);
+  }, [hydrographData, floodState.forecastData, stationKey, t]);
 
   const triggerProbabilityTableData = useMemo(() => {
     if (!triggerProbabilityData || !triggerProbabilityData.datasets) {
@@ -808,7 +1187,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
 
     // Filter out mean fill datasets from table view
     const tableDatasets = triggerProbabilityData.datasets.filter(
-      dataset => !dataset.label?.includes('mean fill'),
+      dataset =>
+        !dataset.excludeFromTable && !dataset.label?.includes('mean fill'),
     );
 
     const columnNames = [t('Date'), ...tableDatasets.map(d => d.label || '')];
@@ -829,7 +1209,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     };
   }, [triggerProbabilityData, t]);
 
-  if (!floodState.probabilitiesData[station.station_name]) {
+  if (!floodState.probabilitiesData[stationKey]) {
     return (
       <div className={classes.container}>
         <Paper className={classes.paper}>
@@ -863,9 +1243,32 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     <div className={classes.container}>
       <Paper className={classes.paper}>
         <div className={classes.header}>
-          <Typography className={classes.title}>
-            {station.station_name}
-          </Typography>
+          <div className={classes.titleRow}>
+            <Typography className={classes.title}>
+              {station.station_name}
+            </Typography>
+            {parsedStatus.id && (
+              <span
+                className={classes.statusChip}
+                style={{
+                  backgroundColor: getFloodRiskColor(parsedStatus.severity),
+                  color:
+                    parsedStatus.severity === 'Bankfull' ||
+                    parsedStatus.severity === 'Not exceeded'
+                      ? '#1a1a1a'
+                      : '#fff',
+                }}
+              >
+                {parsedStatus.phase
+                  ? `${t(
+                      parsedStatus.phase === 'activation'
+                        ? 'Activation'
+                        : 'Readiness',
+                    )} · ${t(parsedStatus.severity)}`
+                  : t(parsedStatus.severity)}
+              </span>
+            )}
+          </div>
           {onClose && (
             <IconButton
               className={classes.closeButton}
@@ -876,6 +1279,40 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             </IconButton>
           )}
         </div>
+
+        {usesCombinationWindows && (
+          <div
+            className={classes.phaseToggle}
+            role="group"
+            aria-label={t('Phase')}
+          >
+            <Button
+              type="button"
+              className={`${classes.phaseButton} ${classes.phaseReadiness} ${
+                viewPhase === 'readiness' ? classes.phaseSelected : ''
+              }`}
+              style={phaseButtonVars(stationSummary?.combinations, 'readiness')}
+              aria-pressed={viewPhase === 'readiness'}
+              onClick={() => selectPhase('readiness')}
+            >
+              {t('Readiness')}
+            </Button>
+            <Button
+              type="button"
+              className={`${classes.phaseButton} ${
+                viewPhase === 'activation' ? classes.phaseSelected : ''
+              }`}
+              style={phaseButtonVars(
+                stationSummary?.combinations,
+                'activation',
+              )}
+              aria-pressed={viewPhase === 'activation'}
+              onClick={() => selectPhase('activation')}
+            >
+              {t('Activation')}
+            </Button>
+          </div>
+        )}
 
         <div className={classes.tabs}>
           <Button
@@ -958,7 +1395,10 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             <>
               <div
                 className={classes.chartContainer}
-                style={{ display: viewMode === 'chart' ? 'block' : 'none' }}
+                style={{
+                  display: viewMode === 'chart' ? 'block' : 'none',
+                  height: usesCombinationWindows ? 280 : undefined,
+                }}
               >
                 {triggerProbabilityData && (
                   <Line
@@ -1016,6 +1456,121 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                   </TableBody>
                 </Table>
               </TableContainer>
+              {usesCombinationWindows &&
+                viewMode === 'chart' &&
+                (phaseCombinations.length === 0 ? (
+                  <Typography className={classes.noDataMessage}>
+                    {t('No combinations for this phase')}
+                  </Typography>
+                ) : (
+                  <TableContainer className={classes.comboTable}>
+                    <Table size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell className={classes.comboHeader}>
+                            {t('Severity')}
+                          </TableCell>
+                          <TableCell className={classes.comboHeader}>
+                            {t('Window')}
+                          </TableCell>
+                          <TableCell className={classes.comboHeader}>
+                            {t('Trigger')}
+                          </TableCell>
+                          <TableCell className={classes.comboHeader}>
+                            {t('Window avg')}
+                          </TableCell>
+                          <TableCell className={classes.comboHeader}>
+                            {t('Gap to trigger')}
+                          </TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {SEVERITY_ORDER.map(severity => {
+                          const combo = phaseCombinations.find(
+                            item => item.severity === severity,
+                          );
+                          if (!combo) {
+                            return null;
+                          }
+                          const checked = visibleSeverities.includes(severity);
+                          const windowStart = forecastLeadDay(
+                            leadTimes,
+                            combo.windowBegin,
+                          );
+                          const windowEnd = forecastLeadDay(
+                            leadTimes,
+                            combo.windowEnd,
+                          );
+                          const official =
+                            `${combo.phase}_${combo.severity}` ===
+                            parsedStatus.id;
+                          const gap =
+                            combo.trigger == null
+                              ? null
+                              : combo.trigger - combo.avgProbability;
+                          let gapText = '-';
+                          if (official && combo.exceeded) {
+                            gapText = t('active');
+                          } else if (
+                            combo.exceeded ||
+                            (gap != null && gap <= 0)
+                          ) {
+                            gapText = t('exceeded');
+                          } else if (gap != null) {
+                            gapText = t('{{gap}} to go', {
+                              gap: gap.toFixed(1),
+                            });
+                          }
+                          return (
+                            <TableRow
+                              key={`${combo.phase}-${severity}`}
+                              style={{
+                                backgroundColor: checked
+                                  ? AAFloodColors.chart[severity].fill
+                                  : undefined,
+                              }}
+                            >
+                              <TableCell className={classes.comboCell}>
+                                <Checkbox
+                                  size="small"
+                                  checked={checked}
+                                  onChange={() => toggleSeverity(severity)}
+                                  style={{
+                                    color: AAFloodColors.chart[severity].solid,
+                                    padding: 4,
+                                  }}
+                                  inputProps={{
+                                    'aria-label': t(SEVERITY_NAME[severity]),
+                                  }}
+                                />
+                                {t(SEVERITY_NAME[severity])}
+                              </TableCell>
+                              <TableCell className={classes.comboCell}>
+                                {windowStart && windowEnd
+                                  ? t('Day {{start}}–{{end}}', {
+                                      start: windowStart,
+                                      end: windowEnd,
+                                    })
+                                  : '-'}
+                              </TableCell>
+                              <TableCell className={classes.comboCell}>
+                                {combo.trigger == null
+                                  ? '-'
+                                  : `${combo.trigger.toFixed(1)}%`}
+                              </TableCell>
+                              <TableCell className={classes.comboCell}>
+                                {`${combo.avgProbability.toFixed(1)}%`}
+                              </TableCell>
+                              <TableCell className={classes.comboCell}>
+                                {gapText}
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                ))}
             </>
           )}
         </div>

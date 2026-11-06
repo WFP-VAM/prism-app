@@ -18,6 +18,7 @@ import SimpleDropdown from 'components/Common/SimpleDropdown';
 import { AnticipatoryAction } from 'config/types';
 import { setAAFloodSelectedStation } from 'context/anticipatoryAction/AAFloodStateSlice';
 import {
+  floodStationKey,
   getFloodRiskColor,
   getFloodRiskSeverity,
 } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
@@ -170,8 +171,11 @@ function AnticipatoryActionFloodPanel() {
       return stations;
     }
     const selectedDateKey = new Date(startDate).toISOString().split('T')[0];
-    return stations.filter((station: { station_name: string }) => {
-      const avg = stationSummaryData?.[station.station_name];
+    return stations.filter(station => {
+      const avg =
+        stationSummaryData?.[
+          floodStationKey(station.station_id, station.station_name)
+        ];
       const issueDate = avg?.forecast_issue_date
         ? new Date(avg.forecast_issue_date).toISOString().split('T')[0]
         : null;
@@ -181,13 +185,18 @@ function AnticipatoryActionFloodPanel() {
 
   // Get station data for selected date
   const getStationDataForDate = (station: any) => {
-    const avg = stationSummaryData?.[station.station_name];
+    const avg =
+      stationSummaryData?.[
+        floodStationKey(station.station_id, station.station_name)
+      ];
     if (!avg) {
       return null;
     }
     return {
       time: avg.forecast_issue_date,
       risk_level: avg.trigger_status || 'Not exceeded',
+      floodStatus: avg.floodStatus,
+      phase: avg.phase,
     } as any;
   };
 
@@ -202,7 +211,7 @@ function AnticipatoryActionFloodPanel() {
         case 'date':
           return aData?.time || '';
         case 'risk_level':
-          return getFloodRiskSeverity(aData?.risk_level);
+          return getFloodRiskSeverity(aData?.floodStatus || aData?.risk_level);
         default:
           return '';
       }
@@ -215,7 +224,7 @@ function AnticipatoryActionFloodPanel() {
         case 'date':
           return bData?.time || '';
         case 'risk_level':
-          return getFloodRiskSeverity(bData?.risk_level);
+          return getFloodRiskSeverity(bData?.floodStatus || bData?.risk_level);
         default:
           return '';
       }
@@ -246,7 +255,9 @@ function AnticipatoryActionFloodPanel() {
 
   const selectedStationData = selectedStation
     ? stations.find(
-        (s: { station_name: string }) => s.station_name === selectedStation,
+        station =>
+          floodStationKey(station.station_id, station.station_name) ===
+          selectedStation,
       )
     : undefined;
 
@@ -318,13 +329,21 @@ function AnticipatoryActionFloodPanel() {
               const stationData = getStationDataForDate(station);
               return (
                 <TableRow
-                  key={station.station_name}
+                  key={floodStationKey(
+                    station.station_id,
+                    station.station_name,
+                  )}
                   className={`${classes.row} ${
-                    selectedStation === station.station_name
+                    selectedStation ===
+                    floodStationKey(station.station_id, station.station_name)
                       ? classes.selectedRow
                       : ''
                   }`}
-                  onClick={() => handleRowClick(station.station_name)}
+                  onClick={() =>
+                    handleRowClick(
+                      floodStationKey(station.station_id, station.station_name),
+                    )
+                  }
                 >
                   <TableCell className={classes.firstCell}>
                     {station.station_name || '-'}
@@ -341,7 +360,15 @@ function AnticipatoryActionFloodPanel() {
                           gap: 8,
                         }}
                       >
-                        <Typography>{t(stationData.risk_level)}</Typography>
+                        <Typography>
+                          {stationData.phase
+                            ? `${t(
+                                stationData.phase === 'activation'
+                                  ? 'Activation'
+                                  : 'Readiness',
+                              )} · ${t(stationData.risk_level)}`
+                            : t(stationData.risk_level)}
+                        </Typography>
                         <span
                           style={{
                             display: 'inline-block',

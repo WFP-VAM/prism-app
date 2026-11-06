@@ -84,12 +84,13 @@ WHERE NOT EXISTS (
     AND a.type = 'storm'::anticipatory_action_alerts_type_enum
 );
 
-INSERT INTO anticipatory_action_alerts (country, emails, prism_url, type)
+INSERT INTO anticipatory_action_alerts (country, emails, prism_url, type, metadata)
 SELECT
   'Mozambique',
   ARRAY['email1@example.com']::varchar[],
   'https://prism.moz.wfp.org',
-  'flood'::anticipatory_action_alerts_type_enum
+  'flood'::anticipatory_action_alerts_type_enum,
+  '{"floodDatesUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/flood/moz/dates.json"}'::jsonb
 WHERE NOT EXISTS (
   SELECT 1
   FROM anticipatory_action_alerts a

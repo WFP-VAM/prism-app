@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { appConfig } from 'config';
-import { startCase } from 'lodash';
 import Papa from 'papaparse';
 
 import type { CreateAsyncThunkTypes, RootState } from '../../store';
@@ -14,7 +13,8 @@ import {
 } from './types';
 import {
   buildAvailableFloodDatesFromDatesJson,
-  normalizeFloodTriggerStatus,
+  floodStationKey,
+  parseStationSummaryRows,
 } from './utils';
 
 const initialState: AnticipatoryActionFloodState = {
@@ -50,6 +50,7 @@ export const loadAAFloodData = createAsyncThunk<
     string,
     {
       trigger_status?: string;
+      schema_version?: number;
       probabilities_file?: string;
       discharge_file?: string;
       station_summary_file?: string;
@@ -109,9 +110,7 @@ export const loadAAFloodDateData = createAsyncThunk<
   const probabilities: Record<string, FloodProbabilityPoint[]> =
     probRows.reduce(
       (acc: Record<string, FloodProbabilityPoint[]>, row: any) => {
-        const key: string = startCase(
-          String(row.station_name || row.station_id || '').trim(),
-        );
+        const key = floodStationKey(row.station_id, row.station_name);
         if (!key) {
           return acc;
         }
@@ -151,9 +150,7 @@ export const loadAAFloodDateData = createAsyncThunk<
       >,
       row: any,
     ) => {
-      const key: string = startCase(
-        String(row.station_name || row.station_id || '').trim(),
-      );
+      const key = floodStationKey(row.station_id, row.station_name);
       if (!key) {
         return acc;
       }
@@ -204,55 +201,17 @@ export const loadAAFloodDateData = createAsyncThunk<
     return { ...acc, [station]: data };
   }, {});
 
-  // Build stations with summary data
-  const stationSummary = summaryRows.reduce(
-    (acc: Record<string, FloodStation>, row: any) => {
-      const key: string = startCase(String(row.station_name || '').trim());
-      if (!key || !row.longitude || !row.latitude) {
-        return acc;
-      }
-      return {
-        ...acc,
-        [key]: {
-          station_name: key,
-          station_id: Number(row.station_id || 0),
-          river_name: String(row.river_name || ''),
-          longitude: Number(row.longitude ?? 0),
-          latitude: Number(row.latitude ?? 0),
-          forecast_issue_date: String(row.forecast_issue_date || date),
-          window_begin: String(row.window_begin || ''),
-          window_end: String(row.window_end || ''),
-          avg_bankfull_percentage:
-            typeof row.avg_bankfull_percentage === 'number'
-              ? Number(row.avg_bankfull_percentage) * 100
-              : undefined,
-          avg_moderate_percentage:
-            typeof row.avg_moderate_percentage === 'number'
-              ? Number(row.avg_moderate_percentage) * 100
-              : undefined,
-          avg_severe_percentage:
-            typeof row.avg_severe_percentage === 'number'
-              ? Number(row.avg_severe_percentage) * 100
-              : undefined,
-          trigger_bankfull:
-            typeof row.trigger_bankfull === 'number'
-              ? Number(row.trigger_bankfull) * 100
-              : undefined,
-          trigger_moderate:
-            typeof row.trigger_moderate === 'number'
-              ? Number(row.trigger_moderate) * 100
-              : undefined,
-          trigger_severe:
-            typeof row.trigger_severe === 'number'
-              ? Number(row.trigger_severe) * 100
-              : undefined,
-          trigger_status: normalizeFloodTriggerStatus(
-            String(row.trigger_status ?? ''),
-          ),
-        },
-      };
-    },
-    {},
+  const rawSchemaVersion = dateData.schema_version;
+  const schemaVersion =
+    rawSchemaVersion === undefined || rawSchemaVersion === null
+      ? undefined
+      : Number(rawSchemaVersion);
+  const stationSummary = parseStationSummaryRows(
+    summaryRows as Record<string, unknown>[],
+    date,
+    schemaVersion !== undefined && Number.isFinite(schemaVersion)
+      ? schemaVersion
+      : undefined,
   );
 
   // Extract basic station info for the stations array
