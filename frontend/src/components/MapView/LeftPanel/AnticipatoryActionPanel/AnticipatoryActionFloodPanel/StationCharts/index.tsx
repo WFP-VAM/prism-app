@@ -2055,14 +2055,6 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                             return null;
                           }
                           const checked = visibleSeverities.includes(severity);
-                          const windowStart = forecastLeadDay(
-                            leadTimes,
-                            combo.windowBegin,
-                          );
-                          const windowEnd = forecastLeadDay(
-                            leadTimes,
-                            combo.windowEnd,
-                          );
                           const official =
                             `${combo.phase}_${combo.severity}` ===
                             parsedStatus.id;
@@ -2108,11 +2100,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                                 {t(SEVERITY_NAME[severity])}
                               </TableCell>
                               <TableCell className={classes.comboCell}>
-                                {windowStart && windowEnd
-                                  ? t('Day {{start}}–{{end}}', {
-                                      start: windowStart,
-                                      end: windowEnd,
-                                    })
+                                {combo.windowBegin && combo.windowEnd
+                                  ? `${dayMon(combo.windowBegin)} – ${dayMon(combo.windowEnd)}`
                                   : '-'}
                               </TableCell>
                               <TableCell className={classes.comboCell}>
