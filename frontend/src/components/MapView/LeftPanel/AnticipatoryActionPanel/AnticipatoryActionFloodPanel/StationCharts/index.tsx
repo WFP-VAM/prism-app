@@ -2,7 +2,6 @@ import 'chartjs-plugin-annotation';
 
 import {
   Button,
-  Checkbox,
   CircularProgress,
   createStyles,
   IconButton,
@@ -10,15 +9,18 @@ import {
   Menu,
   MenuItem,
   Paper,
+  Radio,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
+  Theme,
   Typography,
 } from '@material-ui/core';
 import { Close, GetApp, TableChart } from '@material-ui/icons';
+import { cyanBlue } from 'muiTheme';
 import {
   AAFloodDataSelector,
   setAAFloodStationDetailActiveTab,
@@ -43,10 +45,12 @@ import {
   isForecastDateInWindow,
   parseFloodStatus,
 } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
+import Chart from 'chart.js';
 import { useSafeTranslation } from 'i18n';
 import sortBy from 'lodash/sortBy';
-import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
+import type { CSSProperties, MouseEvent as ReactMouseEvent, ReactElement } from 'react';
 import { useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Line } from 'react-chartjs-2';
 import { useDispatch, useSelector } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
@@ -57,6 +61,184 @@ import {
   ForecastWindowPerCountry,
   TABLE_WIDTH,
 } from '../constants';
+
+const MONTHS = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
+
+function dayMon(iso: string): string {
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso);
+  if (!match) {
+    return iso;
+  }
+  return `${Number(match[3])}-${MONTHS[Number(match[2]) - 1]}`;
+}
+
+// ColorBrewer Reds, 5 classes. Equal 20-point bins of the daily exceedance.
+const PROBABILITY_QUINTILES = [
+  '#fee5d9',
+  '#fcae91',
+  '#fb6a4a',
+  '#de2d26',
+  '#a50f15',
+] as const;
+
+function probabilityQuintile(value: number): { fill: string; text: string } {
+  const bin = Math.min(4, Math.max(0, Math.floor(value / 20)));
+  return {
+    fill: PROBABILITY_QUINTILES[bin],
+    text: bin >= 3 ? '#fff' : '#1a1a1a',
+  };
+}
+
+type DailyExceedance = {
+  values: (number | null)[];
+  dates: string[];
+  beginIdx: number;
+  endIdx: number;
+  color: string;
+  pill: string;
+  pillFill: string;
+  pillText: string;
+  pillDash: boolean;
+};
+
+function daySlots(
+  xs: number[],
+  leftLimit: number,
+  rightLimit: number,
+): { left: number; right: number; cx: number }[] {
+  return xs.map((x, i) => {
+    const prev = i > 0 ? xs[i - 1] : x - (xs[1] - xs[0] || 36);
+    const next = i < xs.length - 1 ? xs[i + 1] : x + (x - xs[i - 1] || 36);
+    const left = Math.max((prev + x) / 2 + 1.5, leftLimit);
+    const right = Math.min((x + next) / 2 - 1.5, rightLimit);
+    return { left, right: Math.max(right, left + 8), cx: x };
+  });
+}
+
+const dailyExceedancePlugin = {
+  beforeDatasetsDraw(chart: any) {
+    const spec = chart.options?.dailyExceedance as DailyExceedance | undefined;
+    if (!spec || spec.beginIdx < 0 || spec.endIdx < spec.beginIdx) {
+      return;
+    }
+    const xScale = chart.scales?.['x-axis-0'];
+    const area = chart.chartArea;
+    if (!xScale || !area) {
+      return;
+    }
+    const n = spec.values.length;
+    const xs = Array.from({ length: n }, (_v, i) => xScale.getPixelForTick(i));
+    const slots = daySlots(xs, area.left, area.right);
+    const start = slots[spec.beginIdx];
+    const end = slots[spec.endIdx];
+    if (!start || !end) {
+      return;
+    }
+    const { ctx } = chart;
+    ctx.save();
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+    ctx.fillRect(
+      start.left,
+      area.top,
+      end.right - start.left,
+      area.bottom - area.top,
+    );
+    ctx.restore();
+  },
+  afterDraw(chart: any) {
+    const spec = chart.options?.dailyExceedance as DailyExceedance | undefined;
+    if (!spec?.values.length) {
+      return;
+    }
+    const xScale = chart.scales?.['x-axis-0'];
+    const area = chart.chartArea;
+    if (!xScale || !area) {
+      return;
+    }
+    const { ctx } = chart;
+    const n = spec.values.length;
+    const xs = Array.from({ length: n }, (_v, i) => xScale.getPixelForTick(i));
+    const rightLimit = Math.min(area.right, chart.width - 2);
+    const slots = daySlots(xs, area.left, rightLimit);
+    const boxH = 20;
+    const boxTop = area.bottom + 8;
+    ctx.save();
+    spec.values.forEach((value, i) => {
+      const slot = slots[i];
+      const shade = value == null ? null : probabilityQuintile(value);
+      ctx.fillStyle = shade?.fill ?? '#f3f3f3';
+      ctx.fillRect(slot.left, boxTop, slot.right - slot.left, boxH);
+      ctx.fillStyle = shade?.text ?? '#1a1a1a';
+      ctx.font = '10px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      const cx = (slot.left + slot.right) / 2;
+      if (value != null) {
+        ctx.fillText(`${Math.round(value)}%`, cx, boxTop + boxH / 2);
+      }
+      ctx.fillStyle = '#333';
+      ctx.font = '9px sans-serif';
+      ctx.textBaseline = 'top';
+      const date = spec.dates[i] ?? '';
+      const dateW = ctx.measureText(date).width;
+      const dateX = Math.min(
+        Math.max(cx, area.left + dateW / 2),
+        rightLimit - dateW / 2,
+      );
+      ctx.fillText(date, dateX, boxTop + boxH + 3);
+    });
+    if (spec.beginIdx >= 0 && spec.endIdx >= spec.beginIdx) {
+      const start = slots[spec.beginIdx];
+      const end = slots[spec.endIdx];
+      const x0 = start.left - 1;
+      const x1 = end.right + 1;
+      ctx.strokeStyle = spec.color;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash(spec.pillDash ? [3, 3] : []);
+      ctx.strokeRect(x0, boxTop - 2, x1 - x0, boxH + 4);
+      ctx.font = '10px sans-serif';
+      const textW = Math.min(ctx.measureText(spec.pill).width + 14, chart.width - 8);
+      const py = boxTop + boxH + 18;
+      const px = Math.min(
+        Math.max((x0 + x1) / 2 - textW / 2, 4),
+        chart.width - textW - 4,
+      );
+      ctx.beginPath();
+      const radius = 8;
+      ctx.moveTo(px + radius, py);
+      ctx.arcTo(px + textW, py, px + textW, py + 16, radius);
+      ctx.arcTo(px + textW, py + 16, px, py + 16, radius);
+      ctx.arcTo(px, py + 16, px, py, radius);
+      ctx.arcTo(px, py, px + textW, py, radius);
+      ctx.closePath();
+      ctx.fillStyle = spec.pillFill;
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = spec.pillText;
+      ctx.textBaseline = 'middle';
+      ctx.fillText(spec.pill, px + textW / 2, py + 8);
+    }
+    ctx.restore();
+  },
+};
+
+if (!(Chart as any).__prismDailyExceedance) {
+  Chart.plugins.register(dailyExceedancePlugin);
+  (Chart as any).__prismDailyExceedance = true;
+}
 
 const forecastWindow = ForecastWindowPerCountry.mozambique;
 const SEVERITY_ORDER: AAFloodSeverityKey[] = ['bankfull', 'moderate', 'severe'];
@@ -181,7 +363,7 @@ function combinationProbabilityData(
   return { labels, datasets };
 }
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       position: 'fixed',
@@ -189,15 +371,21 @@ const useStyles = makeStyles(() =>
       left: TABLE_WIDTH + 16,
       width: CHART_WIDTH,
       marginLeft: '2rem',
+      height: 'calc(100vh - 130px)',
       maxHeight: 'calc(100vh - 130px)',
-      zIndex: 1000,
+      // Above the app bar, so the map legend (rendered inside it) sits behind this panel.
+      zIndex: theme.zIndex.modal,
       boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
-      overflow: 'auto',
+      overflow: 'hidden',
+      display: 'flex',
+      flexDirection: 'column',
     },
     paper: {
       height: '100%',
+      minHeight: 0,
       display: 'flex',
       flexDirection: 'column',
+      overflow: 'hidden',
     },
     header: {
       display: 'flex',
@@ -239,6 +427,7 @@ const useStyles = makeStyles(() =>
     },
     tabPanel: {
       flex: 1,
+      minHeight: 0,
       margin: '0 1rem',
       border: '1px solid #D4D4D4',
       borderTop: 'none',
@@ -246,7 +435,7 @@ const useStyles = makeStyles(() =>
       overflow: 'auto',
     },
     chartContainer: {
-      height: '400px',
+      height: '260px',
       position: 'relative',
     },
     chartTitle: {
@@ -261,15 +450,23 @@ const useStyles = makeStyles(() =>
       padding: '2rem',
     },
     actionButtons: {
+      flexShrink: 0,
       display: 'flex',
-      justifyContent: 'flex-start',
+      justifyContent: 'center',
+      alignItems: 'center',
+      gap: '1.5rem',
+      marginTop: 'auto',
+      backgroundColor: cyanBlue,
     },
     actionButton: {
       textTransform: 'none',
       fontSize: '0.9rem',
-      color: '#333',
+      color: '#fff',
       '&:hover': {
-        backgroundColor: 'rgba(0, 0, 0, 0.04)',
+        backgroundColor: 'rgba(255, 255, 255, 0.16)',
+      },
+      '&.Mui-disabled': {
+        color: 'rgba(255, 255, 255, 0.7)',
       },
     },
     tableContainer: {
@@ -361,6 +558,30 @@ const useStyles = makeStyles(() =>
       fontSize: '0.8rem',
       padding: '4px 8px',
       color: '#111',
+    },
+    chartSentence: {
+      fontSize: '0.85rem',
+      color: '#222',
+      margin: '0.25rem 0 0.5rem',
+    },
+    chartWindow: {
+      fontSize: '0.8rem',
+      fontWeight: 600,
+      textAlign: 'center',
+      marginBottom: '0.25rem',
+    },
+    chartLegend: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      gap: '10px 14px',
+      fontSize: '0.7rem',
+      color: '#333',
+      margin: '0.35rem 0 0.5rem',
+    },
+    legendItem: {
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 4,
     },
   }),
 );
@@ -456,13 +677,13 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       severities: focus ? [focus.severity] : [],
     });
   };
-  const toggleSeverity = (severity: AAFloodSeverityKey) => {
+  const selectSeverity = (severity: AAFloodSeverityKey) => {
+    const already =
+      visibleSeverities.length === 1 && visibleSeverities[0] === severity;
     setPhaseSelection({
       statusKey,
       phase: viewPhase,
-      severities: visibleSeverities.includes(severity)
-        ? visibleSeverities.filter(item => item !== severity)
-        : [...visibleSeverities, severity],
+      severities: already ? [] : [severity],
     });
   };
 
@@ -526,22 +747,18 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       // round to 2 decimal places
       return Math.round(avg * 100) / 100;
     });
-
-    return {
-      labels,
-      datasets: [
-        {
-          label: t('Ensemble Mean'),
-          data: meanSeries,
-          borderColor: AAFloodColors.chart.ensemble.mean,
-          backgroundColor: 'transparent',
-          borderWidth: 2,
-          pointRadius: 0,
-          pointStyle: 'line' as const,
-          fill: false,
-          tension: 0.4,
-        },
-        ...shownSeverities.map(severity => {
+    const meanDataset = {
+      label: t('Ensemble Mean'),
+      data: meanSeries,
+      borderColor: AAFloodColors.chart.ensemble.mean,
+      backgroundColor: 'transparent',
+      borderWidth: 2,
+      pointRadius: 0,
+      pointStyle: 'line' as const,
+      fill: false,
+      tension: 0.4,
+    };
+    const thresholdDatasets = shownSeverities.map(severity => {
           const combo = phaseCombinations.find(
             item => item.severity === severity,
           );
@@ -560,9 +777,13 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             pointRadius: 0,
             pointStyle: 'line' as const,
           };
-        }),
-        ...ensembleDatasets,
-      ],
+    });
+
+    return {
+      labels,
+      datasets: usesCombinationWindows
+        ? [...ensembleDatasets, meanDataset, ...thresholdDatasets]
+        : [meanDataset, ...thresholdDatasets, ...ensembleDatasets],
     };
   }, [
     floodState.forecastData,
@@ -941,6 +1162,130 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     [t, floodState.forecastData, stationKey],
   );
 
+  const forecastSeries = floodState.forecastData[stationKey] || [];
+  const selectedWindow = windowIndexBounds(forecastSeries, highlighted);
+  const probabilityByDay = new Map(
+    (probs ?? []).map(point => [point.time.slice(0, 10), point]),
+  );
+  const selectedSeverity = highlighted?.severity;
+  const dailyValues = forecastSeries.map(point => {
+    const match = probabilityByDay.get(point.time.slice(0, 10));
+    if (!match || !selectedSeverity) {
+      return null;
+    }
+    const field = {
+      bankfull: match.bankfullPercentage,
+      moderate: match.moderatePercentage,
+      severe: match.severePercentage,
+    }[selectedSeverity];
+    return field;
+  });
+  const phaseExceeded = phaseCombinations.some(combo => combo.exceeded);
+  const chartSentence = (() => {
+    if (!highlighted || highlighted.trigger == null) {
+      return phaseExceeded
+        ? t('Select a severity to see its threshold and daily exceedance.')
+        : t('No scored window reaches its trigger.');
+    }
+    const above = highlighted.exceeded || highlighted.avgProbability >= highlighted.trigger;
+    return t(
+      above
+        ? '{{percent}}% of the ensemble exceeds the {{severity}} threshold on average across {{start}} – {{end}}, above the {{trigger}}% trigger.'
+        : '{{percent}}% of the ensemble exceeds the {{severity}} threshold on average across {{start}} – {{end}}, below the {{trigger}}% trigger.',
+      {
+        percent: highlighted.avgProbability.toFixed(1),
+        severity: t(SEVERITY_NAME[highlighted.severity]),
+        start: dayMon(highlighted.windowBegin),
+        end: dayMon(highlighted.windowEnd),
+        trigger: highlighted.trigger.toFixed(1),
+      },
+    );
+  })();
+  const chartWindowTitle = highlighted
+    ? t('{{phase}} window {{start}} – {{end}}', {
+        phase: t(highlighted.phase === 'activation' ? 'Activation' : 'Readiness'),
+        start: dayMon(highlighted.windowBegin),
+        end: dayMon(highlighted.windowEnd),
+      })
+    : '';
+
+  const combinedOptions = useMemo(() => {
+    const severityColor = selectedSeverity
+      ? AAFloodColors.chart[selectedSeverity].solid
+      : '#888';
+    const darkPill = selectedSeverity === 'bankfull';
+    const gap =
+      highlighted?.trigger == null
+        ? null
+        : highlighted.trigger - highlighted.avgProbability;
+    const met = Boolean(highlighted?.exceeded);
+    const pill = highlighted
+      ? [
+          met ? t('Met') : gap != null ? t('{{gap}} to go', { gap: gap.toFixed(1) }) : '',
+          t('Avg. {{percent}}%', {
+            percent: highlighted.avgProbability.toFixed(1),
+          }),
+          highlighted.trigger == null
+            ? ''
+            : t('trigger {{percent}}%', {
+                percent: highlighted.trigger.toFixed(1),
+              }),
+        ]
+          .filter(Boolean)
+          .join('   ')
+      : '';
+    const dailyExceedance: DailyExceedance | undefined =
+      selectedSeverity && highlighted
+        ? {
+            values: dailyValues,
+            dates: forecastSeries.map(point => dayMon(point.time)),
+            beginIdx: selectedWindow.beginIdx,
+            endIdx: selectedWindow.endIdx,
+            color: severityColor,
+            pill,
+            pillFill: met ? severityColor : '#fff',
+            pillText: met && !darkPill ? '#fff' : '#1a1a1a',
+            pillDash: !met,
+          }
+        : undefined;
+
+    return {
+      ...hydrographOptions,
+      legend: { display: false },
+      layout: { padding: { bottom: 68, right: 18, left: 4 } },
+      dailyExceedance,
+      scales: {
+        xAxes: [
+          {
+            display: true,
+            offset: true,
+            gridLines: { display: false },
+            ticks: { display: false },
+          },
+        ],
+        yAxes: [
+          {
+            display: true,
+            ticks: { beginAtZero: true },
+            scaleLabel: {
+              display: true,
+              labelString: t('Discharge (m³/s)'),
+            },
+          },
+        ],
+      },
+    };
+  }, [
+    hydrographOptions,
+    selectedWindow.beginIdx,
+    selectedWindow.endIdx,
+    selectedSeverity,
+    highlighted,
+    dailyValues,
+    forecastSeries,
+    t,
+  ]);
+
   const probabilityOptions = useMemo(() => {
     if (!probs || probs.length === 0) {
       return hydrographOptions;
@@ -1089,8 +1434,15 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   const closeDownloadMenu = () => setDownloadMenuAnchor(null);
 
   const downloadChart = () => {
-    const chartRef = activeTab === 1 ? hydrographChartRef : probabilityChartRef;
-    const chartName = activeTab === 1 ? 'Hydrograph' : 'Trigger Probability';
+    const chartRef =
+      usesCombinationWindows || activeTab === 1
+        ? hydrographChartRef
+        : probabilityChartRef;
+    const chartName = usesCombinationWindows
+      ? 'Forecast'
+      : activeTab === 1
+        ? 'Hydrograph'
+        : 'Trigger Probability';
     const { chartInstance } = chartRef.current ?? ({} as any);
 
     if (chartInstance && chartInstance.ctx) {
@@ -1104,10 +1456,94 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     }
   };
 
+  const combinedTableData = useMemo(() => {
+    if (!usesCombinationWindows || !forecastSeries.length) {
+      return null;
+    }
+    const cell = (value: number | null | undefined, digits = 2) =>
+      value == null || Number.isNaN(Number(value)) ? '-' : Number(value).toFixed(digits);
+    const percent = (value: number | null | undefined) =>
+      value == null || Number.isNaN(Number(value)) ? '-' : `${Number(value).toFixed(1)}%`;
+    const comboFor = (severity: AAFloodSeverityKey) =>
+      phaseCombinations.find(combo => combo.severity === severity);
+    const thresholdFor = (severity: AAFloodSeverityKey) => {
+      const combo = comboFor(severity);
+      if (combo?.dischargeThreshold != null) {
+        return combo.dischargeThreshold;
+      }
+      const point = probs?.[0];
+      if (!point) {
+        return null;
+      }
+      return {
+        bankfull: point.thresholdBankfull,
+        moderate: point.thresholdModerate,
+        severe: point.thresholdSevere,
+      }[severity];
+    };
+    const columnNames = [
+      t('Date'),
+      t('Ensemble Mean'),
+      t('Min'),
+      t('Max'),
+      ...SEVERITY_ORDER.map(severity => t(`${SEVERITY_NAME[severity]} threshold`)),
+      ...SEVERITY_ORDER.map(severity => t(SEVERITY_NAME[severity])),
+      ...SEVERITY_ORDER.map(
+        severity => t(`${SEVERITY_NAME[severity]} mean (window)`),
+      ),
+    ];
+    const tableValues = forecastSeries.map(point => {
+      const members = point.ensemble_members || [];
+      const mean = members.length
+        ? members.reduce((sum, value) => sum + value, 0) / members.length
+        : null;
+      const day = point.time.slice(0, 10);
+      const probability = probabilityByDay.get(day);
+      const daily = {
+        bankfull: probability?.bankfullPercentage,
+        moderate: probability?.moderatePercentage,
+        severe: probability?.severePercentage,
+      };
+      return [
+        dayMon(point.time),
+        cell(mean),
+        cell(members.length ? Math.min(...members) : null),
+        cell(members.length ? Math.max(...members) : null),
+        ...SEVERITY_ORDER.map(severity => cell(thresholdFor(severity))),
+        ...SEVERITY_ORDER.map(severity => percent(daily[severity])),
+        ...SEVERITY_ORDER.map(severity => {
+          const combo = comboFor(severity);
+          if (
+            !combo ||
+            !isForecastDateInWindow(point.time, combo.windowBegin, combo.windowEnd)
+          ) {
+            return '-';
+          }
+          return percent(combo.avgProbability);
+        }),
+      ];
+    });
+    return { columnNames, tableValues };
+  }, [
+    usesCombinationWindows,
+    forecastSeries,
+    phaseCombinations,
+    probabilityByDay,
+    probs,
+    t,
+  ]);
+
   const downloadTable = () => {
-    const tableName = activeTab === 1 ? 'Hydrograph' : 'Trigger_Probability';
-    const tableData =
-      activeTab === 1 ? hydrographTableData : triggerProbabilityTableData;
+    const tableName = usesCombinationWindows
+      ? 'Forecast'
+      : activeTab === 1
+        ? 'Hydrograph'
+        : 'Trigger_Probability';
+    const tableData = usesCombinationWindows
+      ? combinedTableData
+      : activeTab === 1
+        ? hydrographTableData
+        : triggerProbabilityTableData;
 
     if (tableData) {
       const csvContent = [
@@ -1209,8 +1645,10 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     };
   }, [triggerProbabilityData, t]);
 
+  const mount = (node: ReactElement) => createPortal(node, document.body);
+
   if (!floodState.probabilitiesData[stationKey]) {
-    return (
+    return mount(
       <div className={classes.container}>
         <Paper className={classes.paper}>
           <div className={classes.header}>
@@ -1235,11 +1673,11 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             </Typography>
           </div>
         </Paper>
-      </div>
+      </div>,
     );
   }
 
-  return (
+  return mount(
     <div className={classes.container}>
       <Paper className={classes.paper}>
         <div className={classes.header}>
@@ -1314,6 +1752,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           </div>
         )}
 
+        {!usesCombinationWindows && (
         <div className={classes.tabs}>
           <Button
             disableRipple
@@ -1330,9 +1769,130 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             {t('Hydrograph')}
           </Button>
         </div>
+        )}
 
-        <div className={classes.tabPanel}>
-          {activeTab === 1 && (
+        <div
+          className={classes.tabPanel}
+          style={
+            usesCombinationWindows ? { borderTop: '1px solid #D4D4D4' } : undefined
+          }
+        >
+          {usesCombinationWindows && (
+            <>
+              {viewMode === 'chart' && (
+                <>
+                  <Typography className={classes.chartSentence}>
+                    {chartSentence}
+                  </Typography>
+                  {chartWindowTitle && (
+                    <Typography className={classes.chartWindow}>
+                      {chartWindowTitle}
+                    </Typography>
+                  )}
+                  <div className={classes.chartContainer}>
+                    {hydrographData && (
+                      <Line
+                        ref={hydrographChartRef}
+                        data={hydrographData}
+                        options={combinedOptions as any}
+                      />
+                    )}
+                  </div>
+                  <div className={classes.chartLegend}>
+                    <span className={classes.legendItem}>
+                      <span
+                        style={{
+                          width: 14,
+                          height: 10,
+                          background: 'rgba(0,0,0,0.08)',
+                          display: 'inline-block',
+                        }}
+                      />
+                      {t('Window')}
+                    </span>
+                    <span className={classes.legendItem}>
+                      <span
+                        style={{
+                          width: 16,
+                          borderTop: `2px dashed ${
+                            selectedSeverity
+                              ? AAFloodColors.chart[selectedSeverity].solid
+                              : '#888'
+                          }`,
+                          display: 'inline-block',
+                        }}
+                      />
+                      {t('Threshold')}
+                    </span>
+                    <span className={classes.legendItem}>
+                      <span
+                        style={{
+                          width: 16,
+                          borderTop: '2px solid rgba(0,0,0,0.25)',
+                          display: 'inline-block',
+                        }}
+                      />
+                      {t('Members')}
+                    </span>
+                    <span className={classes.legendItem}>
+                      <span
+                        style={{
+                          width: 16,
+                          borderTop: '2px solid #212121',
+                          display: 'inline-block',
+                        }}
+                      />
+                      {t('Ensemble Mean')}
+                    </span>
+                    <span className={classes.legendItem}>
+                      <span
+                        style={{
+                          width: 14,
+                          height: 10,
+                          background: '#fb6a4a',
+                          display: 'inline-block',
+                        }}
+                      />
+                      {t('% above threshold')}
+                    </span>
+                  </div>
+                </>
+              )}
+              {viewMode === 'table' && (
+                <TableContainer className={classes.tableContainer}>
+                  <Table size="small">
+                    <TableHead>
+                      <TableRow>
+                        {combinedTableData?.columnNames.map(columnName => (
+                          <TableCell
+                            key={columnName}
+                            className={`${classes.tableCell} ${classes.tableHeader}`}
+                          >
+                            {columnName}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {combinedTableData?.tableValues.map((row, rowIndex) => (
+                        <TableRow key={`combined-row-${row[0] || rowIndex}`}>
+                          {row.map((cellValue, cellIndex) => (
+                            <TableCell
+                              key={`combined-cell-${rowIndex}-${cellIndex}`}
+                              className={classes.tableCell}
+                            >
+                              {cellValue}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              )}
+            </>
+          )}
+          {!usesCombinationWindows && activeTab === 1 && (
             <>
               <div
                 className={classes.chartContainer}
@@ -1391,7 +1951,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             </>
           )}
 
-          {activeTab === 0 && (
+          {!usesCombinationWindows && activeTab === 0 && (
             <>
               <div
                 className={classes.chartContainer}
@@ -1456,8 +2016,10 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                   </TableBody>
                 </Table>
               </TableContainer>
-              {usesCombinationWindows &&
-                viewMode === 'chart' &&
+            </>
+          )}
+          {usesCombinationWindows &&
+            viewMode === 'chart' &&
                 (phaseCombinations.length === 0 ? (
                   <Typography className={classes.noDataMessage}>
                     {t('No combinations for this phase')}
@@ -1531,10 +2093,10 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                               }}
                             >
                               <TableCell className={classes.comboCell}>
-                                <Checkbox
+                                <Radio
                                   size="small"
                                   checked={checked}
-                                  onChange={() => toggleSeverity(severity)}
+                                  onClick={() => selectSeverity(severity)}
                                   style={{
                                     color: AAFloodColors.chart[severity].solid,
                                     padding: 4,
@@ -1571,8 +2133,6 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                     </Table>
                   </TableContainer>
                 ))}
-            </>
-          )}
         </div>
 
         <div className={classes.actionButtons}>
@@ -1630,7 +2190,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           </Menu>
         </div>
       </Paper>
-    </div>
+    </div>,
   );
 }
 
