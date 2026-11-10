@@ -334,12 +334,14 @@ function DownloadImage({ open, handleClose }: DownloadImageProps) {
   useEffect(() => {
     if (!toggles.batchMapsVisibility) {
       batchDateRangeSeededForLayerRef.current = null;
+      setDateRangeForBatchMaps({ startDate: null, endDate: null });
     }
   }, [toggles.batchMapsVisibility]);
 
   useEffect(() => {
     if (!open) {
       batchDateRangeSeededForLayerRef.current = null;
+      setDateRangeForBatchMaps({ startDate: null, endDate: null });
     }
   }, [open]);
 

@@ -44,6 +44,7 @@ import { useSafeTranslation } from '../../../i18n';
 import MapExportLayout from '../../MapExport/MapExportLayout';
 import type { ExportMapBounds } from '../../MapExport/types';
 import PrintConfigContext from './printConfig.context';
+import { getPrintPreviewDate } from './printPreviewDate';
 import { getPrintSelectedLayers } from './printSelectedLayers';
 
 function lngLatBoundsToExport(b: LngLatBounds): ExportMapBounds {
@@ -171,11 +172,7 @@ function PrintPreview() {
       (layer.fillPattern || layer.legend.some(legend => legend.fillPattern)),
   ) as AdminLevelDataLayerProps[];
 
-  const { shouldEnableBatchMaps, filteredBatchDates } = printConfig ?? {};
-  const previewDate =
-    shouldEnableBatchMaps && filteredBatchDates && filteredBatchDates.length > 0
-      ? filteredBatchDates[filteredBatchDates.length - 1]
-      : dateRange.startDate;
+  const previewDate = getPrintPreviewDate(printConfig, dateRange.startDate);
 
   const layersForCoverage = useMemo(() => {
     if (
