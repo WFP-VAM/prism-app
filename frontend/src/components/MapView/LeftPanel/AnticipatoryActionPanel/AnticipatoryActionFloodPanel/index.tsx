@@ -15,11 +15,11 @@ import {
 } from '@material-ui/core';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import SimpleDropdown from 'components/Common/SimpleDropdown';
+import { FloodStatusIcon } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/FloodStatusIcon';
 import { AnticipatoryAction } from 'config/types';
 import { setAAFloodSelectedStation } from 'context/anticipatoryAction/AAFloodStateSlice';
 import {
   floodStationKey,
-  getFloodRiskColor,
   getFloodRiskSeverity,
 } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
@@ -360,6 +360,11 @@ function AnticipatoryActionFloodPanel() {
                           gap: 8,
                         }}
                       >
+                        <FloodStatusIcon
+                          phase={stationData.phase}
+                          riskLevel={stationData.risk_level}
+                          size={16}
+                        />
                         <Typography>
                           {stationData.phase
                             ? `${t(
@@ -369,20 +374,18 @@ function AnticipatoryActionFloodPanel() {
                               )} · ${t(stationData.risk_level)}`
                             : t(stationData.risk_level)}
                         </Typography>
-                        <span
-                          style={{
-                            display: 'inline-block',
-                            width: 10,
-                            height: 10,
-                            borderRadius: '50%',
-                            backgroundColor: getFloodRiskColor(
-                              stationData.risk_level,
-                            ),
-                          }}
-                        />
                       </div>
                     ) : (
-                      <Typography>{t('No data')}</Typography>
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 8,
+                        }}
+                      >
+                        <FloodStatusIcon riskLevel="No data" size={16} />
+                        <Typography>{t('No data')}</Typography>
+                      </div>
                     )}
                   </TableCell>
                 </TableRow>

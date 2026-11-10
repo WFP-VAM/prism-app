@@ -1,13 +1,10 @@
 import { Tooltip } from '@material-ui/core';
+import { FloodStatusIcon } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/FloodStatusIcon';
 import { FloodStation } from 'context/anticipatoryAction/AAFloodStateSlice/types';
-import {
-  floodStationKey,
-  getCircleBorderColor,
-  getFloodRiskColor,
-} from 'context/anticipatoryAction/AAFloodStateSlice/utils';
+import { floodStationKey } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
 import { Marker } from 'react-map-gl/maplibre';
 
-const CIRCLE_SIZE = 16;
+const MARKER_SIZE = 20;
 
 interface FloodStationMarkerProps {
   station: FloodStation;
@@ -37,23 +34,21 @@ export function FloodStationMarker({
 }: FloodStationMarkerProps) {
   const riskLevel = stationSummary.trigger_status || 'Not exceeded';
   const phase = stationSummary.phase;
-  const circleColor = getFloodRiskColor(riskLevel);
-  const borderColor = getCircleBorderColor(riskLevel);
-  const borderStyle = phase === 'activation' ? 'dashed' : 'solid';
   const statusLabel = phase ? `${phase} ${riskLevel}` : riskLevel;
+  const icon = (
+    <FloodStatusIcon phase={phase} riskLevel={riskLevel} size={MARKER_SIZE} />
+  );
 
   const markerContent = interactive ? (
     <Tooltip title={station.station_name} arrow>
       <button
         style={{
-          width: CIRCLE_SIZE,
-          height: CIRCLE_SIZE,
-          boxSizing: 'content-box',
           padding: 0,
-          borderRadius: '50%',
-          backgroundColor: circleColor,
-          border: `2px ${borderStyle} ${borderColor}`,
+          border: 'none',
+          background: 'transparent',
           cursor: 'pointer',
+          display: 'flex',
+          lineHeight: 0,
         }}
         type="button"
         aria-label={`${station.station_name} flood station - ${statusLabel} risk level`}
@@ -62,21 +57,16 @@ export function FloodStationMarker({
           event.preventDefault();
           onClick?.(floodStationKey(station.station_id, station.station_name));
         }}
-      />
+      >
+        {icon}
+      </button>
     </Tooltip>
   ) : (
     <div
-      style={{
-        width: CIRCLE_SIZE,
-        height: CIRCLE_SIZE,
-        boxSizing: 'content-box',
-        padding: 0,
-        borderRadius: '50%',
-        backgroundColor: circleColor,
-        border: `2px ${borderStyle} ${borderColor}`,
-      }}
       aria-label={`${station.station_name} flood station - ${statusLabel} risk level`}
-    />
+    >
+      {icon}
+    </div>
   );
 
   return (
