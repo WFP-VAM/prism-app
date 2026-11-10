@@ -166,7 +166,9 @@ function AAFloodLegend() {
 
       <div className={classes.itemWrapper} style={{ marginTop: '0.65rem' }}>
         <FloodStatusIcon riskLevel="Not exceeded" size={12} />
-        <Typography className={classes.itemText}>{t('Not exceeded')}</Typography>
+        <Typography className={classes.itemText}>
+          {t('Not exceeded')}
+        </Typography>
       </div>
       <div className={classes.itemWrapper}>
         <FloodStatusIcon riskLevel="No data" size={12} />
