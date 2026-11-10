@@ -48,6 +48,32 @@ const initialState: AnticipatoryActionState = {
   error: null,
 };
 
+const AA_DROUGHT_LOAD_RETRIES = 1;
+const AA_DROUGHT_RETRY_DELAY_MS = 1000;
+
+const downloadCsv = (url: string) =>
+  new Promise<any[]>((resolve, reject) => {
+    Papa.parse(url, {
+      header: true,
+      download: true,
+      complete: results => resolve(results.data as any[]),
+      error: error => reject(error),
+    });
+  });
+
+/**
+ * Papa.parse passes the raw XHR ProgressEvent on network failures, which
+ * stringifies to "[object ProgressEvent]". Convert it to a readable Error.
+ */
+export const toReadableLoadError = (error: unknown): Error => {
+  if (error instanceof Error && error.message) {
+    return error;
+  }
+  return new Error(
+    'Unable to load anticipatory action drought data. Please check your connection and try again.',
+  );
+};
+
 export const loadAAData = createAsyncThunk<
   {
     windowData: {
@@ -60,22 +86,41 @@ export const loadAAData = createAsyncThunk<
   },
   undefined,
   CreateAsyncThunkTypes
->('anticipatoryActionDroughtState/loadAAData', async () => {
-  const url = getAADroughtUrl(appConfig, safeCountry);
-
-  return new Promise<any>((resolve, reject) => {
+>(
+  'anticipatoryActionDroughtState/loadAAData',
+  async () => {
+    const url = getAADroughtUrl(appConfig, safeCountry);
     if (!url) {
-      reject(new Error('No anticipatory action drought URL configured'));
-      return;
+      throw new Error('No anticipatory action drought URL configured');
     }
-    Papa.parse(url, {
-      header: true,
-      download: true,
-      complete: results => resolve(parseAndTransformAA(results.data)),
-      error: error => reject(error),
-    });
-  });
-});
+
+    let lastError: unknown;
+    for (let attempt = 0; attempt <= AA_DROUGHT_LOAD_RETRIES; attempt += 1) {
+      if (attempt > 0) {
+        await new Promise(r => {
+          setTimeout(r, AA_DROUGHT_RETRY_DELAY_MS);
+        });
+      }
+      try {
+        const rows = await downloadCsv(url);
+        // parseAndTransformAA is loosely typed (previously hidden behind Promise<any>)
+        return parseAndTransformAA(rows) as any;
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    throw toReadableLoadError(lastError);
+  },
+  {
+    // Skip re-downloading when data is already loaded or a load is in flight
+    // (e.g. when switching back to the drought module).
+    condition: (_arg, { getState }) => {
+      const { availableDates, loading } = (getState() as RootState)
+        .anticipatoryActionDroughtState;
+      return !loading && availableDates === undefined;
+    },
+  },
+);
 
 export const anticipatoryActionDroughtStateSlice = createSlice({
   name: 'anticipatoryActionDroughtState',
