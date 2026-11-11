@@ -48,10 +48,16 @@ test-services:
 # Use exec (not run) so commands share the long-running api container's network — one-off
 # `docker compose run api` containers often cannot reach testdb by hostname.
 # testdb readiness is enforced by docker-compose.test.yml (depends_on + healthcheck); no wait-for-it needed.
+# GitHub sets CI=true on the runner. Pytest runs inside the api container, which
+# does not inherit that variable, so pass it through when present.
+ifneq ($(CI),)
+API_TEST_EXEC_ENV := -e CI
+endif
+
 api-test: test-services
 	docker compose -f docker-compose.yml -f docker-compose.test.yml exec -T api bash -c "cd / && poetry run alembic -c /alembic.ini upgrade head"
 	docker compose -f docker-compose.yml -f docker-compose.test.yml exec -T api bash -c "/wait-for-it.sh frontend:3300 -t 180"
-	docker compose -f docker-compose.yml -f docker-compose.test.yml exec -T api bash -c "cd / && PYTHONPATH=. poetry run pytest -s prism_app/tests -v --tb=long"
+	docker compose -f docker-compose.yml -f docker-compose.test.yml exec -T $(API_TEST_EXEC_ENV) api bash -c "cd / && PYTHONPATH=. poetry run pytest -s prism_app/tests -v --tb=long"
 	docker compose -f docker-compose.yml -f docker-compose.test.yml down
 
 DEV_COMPOSE=docker compose -f docker-compose.yml -f docker-compose.develop.yml

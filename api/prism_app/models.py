@@ -14,6 +14,7 @@ from pydantic import (
 )
 
 from .sample_requests import alert_data, alert_data_zones, stats_data
+from .validation import validate_mask_calc_expr
 
 FilePath = NewType("FilePath", str)
 
@@ -79,6 +80,13 @@ class StatsModel(BaseModel):
     filter_by: Optional[FilterProperty] = None
     simplify_tolerance: Optional[float] = None
     iso3_filter: Optional[str] = None
+
+    @field_validator("mask_calc_expr")
+    @classmethod
+    def val_mask_calc_expr(cls, v: Optional[str]) -> Optional[str]:
+        if v is None or v == "":
+            return v
+        return validate_mask_calc_expr(v)
 
     @model_validator(mode="after")
     def check_zones_or_zones_url(self):

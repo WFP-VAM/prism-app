@@ -11,6 +11,7 @@ from prism_app.timer import timed
 from rasterio.warp import CRS, Resampling, calculate_default_transform, reproject
 
 from .models import FilePath
+from .validation import validate_mask_calc_expr
 
 logger = logging.getLogger(__name__)
 
@@ -31,24 +32,25 @@ def gdal_calc(
         )
 
     # Add a proper default for the calculation expression
-    calc_expr = calc_expr or "A*(B==1)"
+    calc_expr = validate_mask_calc_expr(calc_expr or "A*(B==1)")
 
-    # Generate string of process.
-    gdal_calc_str = '{0} -A {1} -B {2} --outfile={3} --calc="{4}" --NoDataValue={5} --extent=intersect --overwrite > /dev/null'
-    gdal_calc_process = gdal_calc_str.format(
+    # argv, not a shell string. "=" form so a leading "-" in the expression
+    # stays a value. stdout matches the previous "> /dev/null".
+    cmd = [
         gdal_calc_path,
-        input_file_path,
-        mask_file_path,
-        output_file_path,
-        calc_expr,
-        nodata,
-    )
+        "-A",
+        str(input_file_path),
+        "-B",
+        str(mask_file_path),
+        f"--outfile={output_file_path}",
+        f"--calc={calc_expr}",
+        f"--NoDataValue={nodata}",
+        "--extent=intersect",
+        "--overwrite",
+    ]
 
-    logger.debug("Calling gdal_calc.py...")
-    logger.debug(gdal_calc_process)
-
-    # TODO - secure call input or remove shell=True
-    subprocess.check_call(str(gdal_calc_process), shell=True)
+    logger.debug("Calling gdal_calc.py: %s", cmd)
+    subprocess.check_call(cmd, shell=False, stdout=subprocess.DEVNULL)
 
 
 @timed
