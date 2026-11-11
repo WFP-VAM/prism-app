@@ -32,6 +32,77 @@ const initialState: AnticipatoryActionFloodState = {
   error: null,
 };
 
+// TEMP demo hack, do not merge.
+// Production dates before the cutoff (legacy wide files) plus the v2 synthetic
+// samples, moved forward so they land after the cutoff. Each entry keeps its
+// own folder; synthetic rows get every ISO date shifted by the same offset.
+const DEMO_LEGACY_CUTOFF = '2026-09-01';
+const DEMO_SYNTHETIC_DATES_URL = '/aa-flood-v2-samples/synthetic/dates.json';
+const DEMO_SYNTHETIC_SHIFT_DAYS = 244; // 2026-03-10 -> 2026-11-09
+
+type DemoDateEntry = {
+  trigger_status?: string;
+  schema_version?: number;
+  probabilities_file?: string;
+  discharge_file?: string;
+  station_summary_file?: string;
+  baseDir: string;
+  shiftDays: number;
+};
+
+function demoShiftIsoDate(value: string, days: number): string {
+  const date = new Date(`${value}T00:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+
+function demoShiftRows<T>(rows: T[], days: number): T[] {
+  if (!days) {
+    return rows;
+  }
+  return rows.map(row =>
+    Object.fromEntries(
+      Object.entries(row as Record<string, unknown>).map(([key, value]) => [
+        key,
+        typeof value === 'string'
+          ? value.replace(/\d{4}-\d{2}-\d{2}/g, iso =>
+              demoShiftIsoDate(iso, days),
+            )
+          : value,
+      ]),
+    ),
+  ) as T[];
+}
+
+async function fetchDemoFloodDates(
+  url: string,
+): Promise<Record<string, DemoDateEntry>> {
+  const baseOf = (datesUrl: string) => datesUrl.replace(/dates\.json$/i, '');
+  const [legacy, synthetic] = await Promise.all(
+    [url, DEMO_SYNTHETIC_DATES_URL].map(datesUrl =>
+      fetch(datesUrl).then(resp => resp.json()),
+    ),
+  );
+  const merged: Record<string, DemoDateEntry> = {};
+  Object.entries(legacy).forEach(([date, entry]) => {
+    if (date < DEMO_LEGACY_CUTOFF) {
+      merged[date] = {
+        ...(entry as object),
+        baseDir: baseOf(url),
+        shiftDays: 0,
+      };
+    }
+  });
+  Object.entries(synthetic).forEach(([date, entry]) => {
+    merged[demoShiftIsoDate(date, DEMO_SYNTHETIC_SHIFT_DAYS)] = {
+      ...(entry as object),
+      baseDir: baseOf(DEMO_SYNTHETIC_DATES_URL),
+      shiftDays: DEMO_SYNTHETIC_SHIFT_DAYS,
+    };
+  });
+  return merged;
+}
+
 export const loadAAFloodData = createAsyncThunk<
   {
     stations: FloodStation[];
@@ -45,17 +116,7 @@ export const loadAAFloodData = createAsyncThunk<
     throw new Error('Flood data URL not configured');
   }
   // dates.json schema: { "YYYY-MM-DD": { trigger_status: string, probabilities_file: string, discharge_file: string, ... } }
-  const resp = await fetch(url);
-  const datesData: Record<
-    string,
-    {
-      trigger_status?: string;
-      schema_version?: number;
-      probabilities_file?: string;
-      discharge_file?: string;
-      station_summary_file?: string;
-    }
-  > = await resp.json();
+  const datesData = await fetchDemoFloodDates(url);
 
   const availableDates: FloodDateItem[] =
     buildAvailableFloodDatesFromDatesJson(datesData);
@@ -79,8 +140,6 @@ export const loadAAFloodDateData = createAsyncThunk<
   if (!datesUrl) {
     throw new Error('Flood probabilities URL not configured');
   }
-  // Build base path from dates.json URL
-  const baseDir = datesUrl.replace(/dates\.json$/i, '');
 
   const parseCsv = <T>(url: string) =>
     new Promise<T[]>((resolve, reject) => {
@@ -93,18 +152,20 @@ export const loadAAFloodDateData = createAsyncThunk<
       });
     });
 
-  const datesResponse = await fetch(datesUrl);
-  const datesData = await datesResponse.json();
+  const datesData = await fetchDemoFloodDates(datesUrl);
   const dateData = datesData[date];
   if (!dateData) {
     throw new Error(`No data entry found for date ${date}`);
   }
+  const { baseDir, shiftDays } = dateData;
 
-  const [probRows, dischargeRows, summaryRows] = await Promise.all([
-    parseCsv<any>(`${baseDir}${dateData.probabilities_file}`),
-    parseCsv<any>(`${baseDir}${dateData.discharge_file}`),
-    parseCsv<any>(`${baseDir}${dateData.station_summary_file}`),
-  ]);
+  const [probRows, dischargeRows, summaryRows] = (
+    await Promise.all([
+      parseCsv<any>(`${baseDir}${dateData.probabilities_file}`),
+      parseCsv<any>(`${baseDir}${dateData.discharge_file}`),
+      parseCsv<any>(`${baseDir}${dateData.station_summary_file}`),
+    ])
+  ).map(rows => demoShiftRows(rows, shiftDays));
 
   // probabilities.csv schema: station_id,station_name,river_name,longitude,latitude,forecast_issue_date,valid_time,bankfull_percentage,moderate_percentage,severe_percentage
   const probabilities: Record<string, FloodProbabilityPoint[]> =
