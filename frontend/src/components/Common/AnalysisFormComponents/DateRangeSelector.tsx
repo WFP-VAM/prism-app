@@ -22,6 +22,11 @@ function DateRangeSelector({
   const classes = useStyles();
   const { t } = useSafeTranslation();
 
+  // Allow future dates for layers that have them (e.g. forecasts).
+  const maxDate = new Date(
+    Math.max(Date.now(), ...availableDates.map(d => d.getTime())),
+  );
+
   const handleStartDateChange = (date: Date | null) => {
     onStartDateChange(date?.getTime() || startDate);
   };
@@ -42,7 +47,7 @@ function DateRangeSelector({
         <DatePicker
           selected={startDate ? new Date(startDate) : null}
           onChange={handleStartDateChange}
-          maxDate={new Date()}
+          maxDate={maxDate}
           todayButton={t('Today')}
           peekNextMonth
           showMonthDropdown
@@ -61,7 +66,7 @@ function DateRangeSelector({
         <DatePicker
           selected={endDate ? new Date(endDate) : null}
           onChange={handleEndDateChange}
-          maxDate={new Date()}
+          maxDate={maxDate}
           todayButton={t('Today')}
           peekNextMonth
           showMonthDropdown
