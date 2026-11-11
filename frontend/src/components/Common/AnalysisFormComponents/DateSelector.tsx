@@ -26,6 +26,11 @@ function DateSelector({
   const classes = useStyles();
   const { t } = useSafeTranslation();
 
+  // Allow future dates for layers that have them (e.g. forecasts).
+  const maxDate = new Date(
+    Math.max(Date.now(), ...availableDates.map(d => d.getTime())),
+  );
+
   const handleDateChange = (date: Date | null) => {
     onDateChange(date?.getTime() || selectedDate);
   };
@@ -40,7 +45,7 @@ function DateSelector({
         dateFormat="PP"
         selected={selectedDate ? new Date(selectedDate) : null}
         onChange={handleDateChange}
-        maxDate={new Date()}
+        maxDate={maxDate}
         todayButton={t('Today')}
         peekNextMonth
         showMonthDropdown
