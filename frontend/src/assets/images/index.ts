@@ -24,6 +24,7 @@ import iconTropicalStorm from './icons/categories/icon_tropical_storm.png';
 import iconVeg from './icons/categories/icon_veg.png';
 import iconVulnerable from './icons/categories/icon_vulnerable.png';
 import mozFlagInamLogo from './logos/moz-flag-inam-logo.png';
+import logoDngrh from './logos/moz-inam-dngrh-logo.png';
 import mwiMet from './logos/mwi-met.png';
 import somaliaBottomLogo from './logos/somalia-bottom-logo.png';
 import somaliaHeader from './logos/somalia-header.png';
@@ -34,6 +35,7 @@ const IMAGE_REGISTRY: Record<string, string> = {
   // Logos
   'wfp_logo.png': wfpLogo,
   'moz-flag-inam-logo.png': mozFlagInamLogo,
+  'moz-inam-dngrh-logo.png': logoDngrh,
   'somalia-header.png': somaliaHeader,
   'mwi-met.png': mwiMet,
   'somalia-bottom-logo.png': somaliaBottomLogo,
