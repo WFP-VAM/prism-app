@@ -7,6 +7,10 @@ from urllib.parse import parse_qs, urlparse
 
 import requests
 from fastapi import HTTPException
+from prism_app.amplify_apps import (
+    AMPLIFY_APP_DOMAIN_PATTERNS,
+    CUSTOM_COUNTRY_SITE_DOMAINS,
+)
 from requests.adapters import Retry
 
 logger = logging.getLogger(__name__)
@@ -114,9 +118,8 @@ def make_request_with_retries(
 # Add domains to this list to allow them for map exports
 EXPORT_ALLOWED_DOMAINS: Final[list[str]] = [
     "*.wfp.org",
-    "staging.*.amplifyapp.com",
-    "demo.*.amplifyapp.com",
-    "training.*.amplifyapp.com",
+    *AMPLIFY_APP_DOMAIN_PATTERNS,
+    *CUSTOM_COUNTRY_SITE_DOMAINS,
     "*prism-frontend--*.web.app",  # Firebase preview builds
 ]
 
