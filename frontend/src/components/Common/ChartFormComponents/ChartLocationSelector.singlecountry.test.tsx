@@ -56,6 +56,11 @@ jest.mock('config/utils', () => ({
   getBoundaryLayersByAdminLevel: () => BOUNDARY_LAYER,
 }));
 
+jest.mock('utils/universal-country-admin', () => ({
+  ...jest.requireActual('utils/universal-country-admin'),
+  useEffectiveCountryAdmin0Id: () => undefined,
+}));
+
 jest.mock('hooks/useAdminNameTranslations', () => ({
   useAdminNameTranslations: () => ({
     language: 'en',

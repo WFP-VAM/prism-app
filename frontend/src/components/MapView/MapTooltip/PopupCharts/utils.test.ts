@@ -54,6 +54,28 @@ describe('hasChartAdminId', () => {
     ).toBe(true);
   });
 
+  it('returns false for a subnational level with a null dv_adm id even when a country fallback exists', () => {
+    expect(
+      hasChartAdminId(
+        chartLayer,
+        { dv_adm1_id: 900848, dv_adm2_id: null, adm2_name: 'Chongwe' },
+        2,
+        270,
+      ),
+    ).toBe(false);
+  });
+
+  it('returns true for the parent level when only the subnational id is null', () => {
+    expect(
+      hasChartAdminId(
+        chartLayer,
+        { dv_adm1_id: 900848, dv_adm2_id: null, adm2_name: 'Chongwe' },
+        1,
+        270,
+      ),
+    ).toBe(true);
+  });
+
   it('returns true when properties are undefined to preserve the legacy popup path', () => {
     expect(hasChartAdminId(chartLayer, undefined, 0, undefined)).toBe(true);
   });
