@@ -370,26 +370,36 @@ export function AADataSeverityOrder(
   return catIndex * 10 + phaseBonus;
 }
 
-export const getLegendPhases = () => {
+// Legend entries for the country; categories unticked in the filters are left out
+export const getLegendPhases = (
+  categories?: Partial<Record<AACategoryType, boolean>>,
+) => {
   const config = getAADroughtCountryConfig();
 
-  return config.legendPhases.map(phase => {
-    let icon: ReactElement;
+  return config.legendPhases
+    .filter(phase => {
+      const category = config.categories.find(
+        cat => cat.label === phase.severity,
+      )?.id;
+      return !category || categories?.[category] !== false;
+    })
+    .map(phase => {
+      let icon: ReactElement;
 
-    const category = config.categories.find(
-      cat => cat.label === phase.severity,
-    )?.id;
+      const category = config.categories.find(
+        cat => cat.label === phase.severity,
+      )?.id;
 
-    if (category) {
-      icon = getAAIcon(category, phase.phase as 'Ready' | 'Set', true);
-    } else if (phase.phase === 'No Action') {
-      icon = getAAIcon('na', 'na', true);
-    } else {
-      icon = getAAIcon('ny', 'ny', true);
-    }
+      if (category) {
+        icon = getAAIcon(category, phase.phase as 'Ready' | 'Set', true);
+      } else if (phase.phase === 'No Action') {
+        icon = getAAIcon('na', 'na', true);
+      } else {
+        icon = getAAIcon('ny', 'ny', true);
+      }
 
-    return { ...phase, icon };
-  });
+      return { ...phase, icon };
+    });
 };
 
 type AAWindowKey = (typeof AAWindowKeys)[number];
