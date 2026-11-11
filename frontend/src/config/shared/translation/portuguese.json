@@ -717,6 +717,7 @@
   "Gap to trigger": "Diferença para o limiar",
   "{{percent}}% of the ensemble exceeds the {{severity}} threshold on average across {{start}} – {{end}}, above the {{trigger}}% trigger.": "{{percent}}% do conjunto excede o limiar de {{severity}} em média entre {{start}} e {{end}}, acima do accionador de {{trigger}}%.",
   "{{percent}}% of the ensemble exceeds the {{severity}} threshold on average across {{start}} – {{end}}, below the {{trigger}}% trigger.": "{{percent}}% do conjunto excede o limiar de {{severity}} em média entre {{start}} e {{end}}, abaixo do accionador de {{trigger}}%.",
+  "Window {{start}} – {{end}}": "Janela {{start}} – {{end}}",
   "{{phase}} window {{start}} – {{end}}": "Janela de {{phase}} {{start}} – {{end}}",
   "No scored window reaches its trigger.": "Nenhuma janela avaliada atinge o accionador.",
   "Select a severity to see its threshold and daily exceedance.": "Selecione uma severidade para ver o limiar e a excedência diária.",

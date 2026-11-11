@@ -172,7 +172,19 @@ describe('station summary parsing', () => {
       avg_moderate_percentage: 42,
       trigger_moderate: 30,
     });
-    expect(stations['id:1'].combinations).toBeUndefined();
+    expect(stations['id:1'].legacy).toBe(true);
+    expect(stations['id:1'].combinations).toEqual([
+      {
+        phase: 'activation',
+        severity: 'moderate',
+        windowBegin: '2025-12-30',
+        windowEnd: '2026-01-01',
+        avgProbability: 42,
+        trigger: 30,
+        dischargeThreshold: null,
+        exceeded: true,
+      },
+    ]);
   });
 
   test('aggregates the long format and trusts the status column', () => {
@@ -321,7 +333,7 @@ describe('station summary parsing', () => {
       1,
     );
     expect(versionOne['id:1'].floodStatus).toBe('moderate');
-    expect(versionOne['id:1'].combinations).toBeUndefined();
+    expect(versionOne['id:1'].legacy).toBe(true);
   });
 
   test('joins on station_id when the name spelling differs', () => {

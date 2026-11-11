@@ -286,6 +286,7 @@
   "(readiness trigger)": "(readiness trigger)",
   "{{percent}}% of the ensemble exceeds the {{severity}} threshold on average across {{start}} – {{end}}, above the {{trigger}}% trigger.": "{{percent}}% of the ensemble exceeds the {{severity}} threshold on average across {{start}} – {{end}}, above the {{trigger}}% trigger.",
   "{{percent}}% of the ensemble exceeds the {{severity}} threshold on average across {{start}} – {{end}}, below the {{trigger}}% trigger.": "{{percent}}% of the ensemble exceeds the {{severity}} threshold on average across {{start}} – {{end}}, below the {{trigger}}% trigger.",
+  "Window {{start}} – {{end}}": "Window {{start}} – {{end}}",
   "{{phase}} window {{start}} – {{end}}": "{{phase}} window {{start}} – {{end}}",
   "No scored window reaches its trigger.": "No scored window reaches its trigger.",
   "Select a severity to see its threshold and daily exceedance.": "Select a severity to see its threshold and daily exceedance.",

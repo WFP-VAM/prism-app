@@ -198,7 +198,40 @@ function parseWideSummaryRow(
     trigger_status: parsed.id ? parsed.severity : 'Not exceeded',
     floodStatus: parsed.id || 'not_exceeded',
     phase: parsed.phase,
+    combinations: legacyCombinations(row),
+    legacy: true,
   };
+}
+
+/**
+ * One combination per severity with a trigger, so legacy dates can use the
+ * merged chart. Legacy files have no phase. They are tagged `activation`,
+ * the chart's default phase, and the chart hides the phase for them.
+ * `exceeded` is window average >= trigger, as the old pipeline computed it.
+ */
+export function legacyCombinations(
+  row: Record<string, unknown>,
+): FloodTriggerCombination[] {
+  return [...SEVERITIES].flatMap(severity => {
+    const trigger = fractionToPercent(row[`trigger_${severity}`]);
+    if (trigger === undefined) {
+      return [];
+    }
+    const avgProbability =
+      fractionToPercent(row[`avg_${severity}_percentage`]) ?? 0;
+    return [
+      {
+        phase: 'activation' as const,
+        severity,
+        windowBegin: String(row.window_begin || ''),
+        windowEnd: String(row.window_end || ''),
+        avgProbability,
+        trigger,
+        dischargeThreshold: rawNumber(row[`threshold_${severity}`]),
+        exceeded: avgProbability >= trigger,
+      },
+    ];
+  });
 }
 
 function parseCombination(

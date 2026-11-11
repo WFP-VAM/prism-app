@@ -675,6 +675,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       (a, b) => combinationRank(b) - combinationRank(a),
     )[0] ?? null;
   const usesCombinationWindows = Boolean(stationSummary?.combinations?.length);
+  // Legacy dates have no phase: no toggle, no phase name in the window title.
+  const isLegacySummary = Boolean(stationSummary?.legacy);
 
   const selectPhase = (phase: AAFloodPhase) => {
     const focus = focusCombination(stationSummary?.combinations, phase);
@@ -1207,15 +1209,20 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       },
     );
   })();
-  const chartWindowTitle = highlighted
-    ? t('{{phase}} window {{start}} – {{end}}', {
-        phase: t(
-          highlighted.phase === 'activation' ? 'Activation' : 'Readiness',
-        ),
-        start: dayMon(highlighted.windowBegin),
-        end: dayMon(highlighted.windowEnd),
-      })
-    : '';
+  const chartWindowTitle = !highlighted
+    ? ''
+    : isLegacySummary
+      ? t('Window {{start}} – {{end}}', {
+          start: dayMon(highlighted.windowBegin),
+          end: dayMon(highlighted.windowEnd),
+        })
+      : t('{{phase}} window {{start}} – {{end}}', {
+          phase: t(
+            highlighted.phase === 'activation' ? 'Activation' : 'Readiness',
+          ),
+          start: dayMon(highlighted.windowBegin),
+          end: dayMon(highlighted.windowEnd),
+        });
 
   const combinedOptions = useMemo(() => {
     const severityColor = selectedSeverity
@@ -1740,7 +1747,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           )}
         </div>
 
-        {usesCombinationWindows && (
+        {usesCombinationWindows && !isLegacySummary && (
           <div
             className={classes.phaseToggle}
             role="group"

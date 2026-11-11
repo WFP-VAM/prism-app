@@ -71,6 +71,8 @@ export interface FloodStation {
   floodStatus?: string;
   phase?: AAFloodPhase | null;
   combinations?: FloodTriggerCombination[];
+  /** Built from a pre-v2 wide summary row. No real phase. */
+  legacy?: boolean;
 }
 
 export interface FloodForecastData {
