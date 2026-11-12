@@ -28,7 +28,7 @@
     "boundingBox": [31, -25, 40, -11]
   },
   "categories": {
-    "rainfall": {
+    "test": {
       "INAM_rainfall_data": [
         {
           "group_title": "Rainfall aggregate",
