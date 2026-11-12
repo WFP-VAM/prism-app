@@ -111,11 +111,10 @@ type DailyExceedance = {
   dates: string[];
   beginIdx: number;
   endIdx: number;
-  color: string;
-  pill: string;
-  pillFill: string;
-  pillText: string;
-  pillDash: boolean;
+  met: boolean;
+  status: string;
+  avg: string;
+  trigger: string;
 };
 
 function daySlots(
@@ -209,34 +208,75 @@ const dailyExceedancePlugin = {
       const end = slots[spec.endIdx];
       const x0 = start.left - 1;
       const x1 = end.right + 1;
-      ctx.strokeStyle = spec.color;
+      const frameBottom = boxTop + boxH + 16;
+      ctx.strokeStyle = '#8A8A8A';
       ctx.lineWidth = 1.5;
-      ctx.setLineDash(spec.pillDash ? [3, 3] : []);
-      ctx.strokeRect(x0, boxTop - 2, x1 - x0, boxH + 4);
+      ctx.setLineDash([]);
+      ctx.strokeRect(x0, boxTop - 2, x1 - x0, frameBottom - (boxTop - 2));
+
       ctx.font = '10px sans-serif';
-      const textW = Math.min(
-        ctx.measureText(spec.pill).width + 14,
-        chart.width - 8,
+      const checkW = spec.met ? 11 : 0;
+      const statusW = ctx.measureText(spec.status).width + 14 + checkW;
+      ctx.font = 'bold 10px sans-serif';
+      const avgW = spec.avg ? ctx.measureText(spec.avg).width : 0;
+      ctx.font = '10px sans-serif';
+      const triggerW = spec.trigger ? ctx.measureText(spec.trigger).width : 0;
+      const partGap = 8;
+      const total =
+        statusW +
+        (spec.avg ? partGap + avgW : 0) +
+        (spec.trigger ? partGap + triggerW : 0);
+      let x = Math.min(
+        Math.max((x0 + x1) / 2 - total / 2, 4),
+        chart.width - total - 4,
       );
-      const py = boxTop + boxH + 18;
-      const px = Math.min(
-        Math.max((x0 + x1) / 2 - textW / 2, 4),
-        chart.width - textW - 4,
-      );
-      ctx.beginPath();
+      const y = frameBottom + 6;
+      const chipH = 16;
       const radius = 8;
-      ctx.moveTo(px + radius, py);
-      ctx.arcTo(px + textW, py, px + textW, py + 16, radius);
-      ctx.arcTo(px + textW, py + 16, px, py + 16, radius);
-      ctx.arcTo(px, py + 16, px, py, radius);
-      ctx.arcTo(px, py, px + textW, py, radius);
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.arcTo(x + statusW, y, x + statusW, y + chipH, radius);
+      ctx.arcTo(x + statusW, y + chipH, x, y + chipH, radius);
+      ctx.arcTo(x, y + chipH, x, y, radius);
+      ctx.arcTo(x, y, x + statusW, y, radius);
       ctx.closePath();
-      ctx.fillStyle = spec.pillFill;
+      ctx.fillStyle = spec.met ? '#6E6E6E' : '#fff';
       ctx.fill();
+      ctx.strokeStyle = spec.met ? '#6E6E6E' : '#8A8A8A';
       ctx.stroke();
-      ctx.fillStyle = spec.pillText;
       ctx.textBaseline = 'middle';
-      ctx.fillText(spec.pill, px + textW / 2, py + 8);
+      if (spec.met) {
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(x + 6, y + 8);
+        ctx.lineTo(x + 9, y + 11);
+        ctx.lineTo(x + 14, y + 5);
+        ctx.stroke();
+        ctx.fillStyle = '#fff';
+        ctx.font = '10px sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText(spec.status, x + 6 + checkW, y + chipH / 2);
+      } else {
+        ctx.fillStyle = '#1a1a1a';
+        ctx.font = '10px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(spec.status, x + statusW / 2, y + chipH / 2);
+      }
+      x += statusW + partGap;
+      if (spec.avg) {
+        ctx.font = 'bold 10px sans-serif';
+        ctx.fillStyle = '#1a1a1a';
+        ctx.textAlign = 'left';
+        ctx.fillText(spec.avg, x, y + chipH / 2);
+        x += avgW + partGap;
+      }
+      if (spec.trigger) {
+        ctx.font = '10px sans-serif';
+        ctx.fillStyle = '#333';
+        ctx.textAlign = 'left';
+        ctx.fillText(spec.trigger, x, y + chipH / 2);
+      }
     }
     ctx.restore();
   },
@@ -442,7 +482,7 @@ const useStyles = makeStyles((theme: Theme) =>
       overflow: 'auto',
     },
     chartContainer: {
-      height: '260px',
+      height: '278px',
       position: 'relative',
     },
     chartTitle: {
@@ -1225,34 +1265,11 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         });
 
   const combinedOptions = useMemo(() => {
-    const severityColor = selectedSeverity
-      ? AAFloodColors.chart[selectedSeverity].solid
-      : '#888';
-    const darkPill = selectedSeverity === 'bankfull';
     const gap =
       highlighted?.trigger == null
         ? null
         : highlighted.trigger - highlighted.avgProbability;
     const met = Boolean(highlighted?.exceeded);
-    const pill = highlighted
-      ? [
-          met
-            ? t('Met')
-            : gap != null
-              ? t('{{gap}} to go', { gap: gap.toFixed(1) })
-              : '',
-          t('Avg. {{percent}}%', {
-            percent: highlighted.avgProbability.toFixed(1),
-          }),
-          highlighted.trigger == null
-            ? ''
-            : t('trigger {{percent}}%', {
-                percent: highlighted.trigger.toFixed(1),
-              }),
-        ]
-          .filter(Boolean)
-          .join('   ')
-      : '';
     const dailyExceedance: DailyExceedance | undefined =
       selectedSeverity && highlighted
         ? {
@@ -1260,18 +1277,28 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             dates: forecastSeries.map(point => dayMon(point.time)),
             beginIdx: selectedWindow.beginIdx,
             endIdx: selectedWindow.endIdx,
-            color: severityColor,
-            pill,
-            pillFill: met ? severityColor : '#fff',
-            pillText: met && !darkPill ? '#fff' : '#1a1a1a',
-            pillDash: !met,
+            met,
+            status: met
+              ? t('Met')
+              : gap != null
+                ? t('{{gap}} to go', { gap: gap.toFixed(1) })
+                : '',
+            avg: t('Avg. {{percent}}%', {
+              percent: highlighted.avgProbability.toFixed(1),
+            }),
+            trigger:
+              highlighted.trigger == null
+                ? ''
+                : t('trigger {{percent}}%', {
+                    percent: highlighted.trigger.toFixed(1),
+                  }),
           }
         : undefined;
 
     return {
       ...hydrographOptions,
       legend: { display: false },
-      layout: { padding: { bottom: 68, right: 18, left: 4 } },
+      layout: { padding: { bottom: 86, right: 18, left: 4 } },
       dailyExceedance,
       scales: {
         xAxes: [
@@ -2086,16 +2113,12 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                         return null;
                       }
                       const checked = visibleSeverities.includes(severity);
-                      const official =
-                        `${combo.phase}_${combo.severity}` === parsedStatus.id;
                       const gap =
                         combo.trigger == null
                           ? null
                           : combo.trigger - combo.avgProbability;
                       let gapText = '-';
-                      if (official && combo.exceeded) {
-                        gapText = t('active');
-                      } else if (combo.exceeded || (gap != null && gap <= 0)) {
+                      if (combo.exceeded || (gap != null && gap <= 0)) {
                         gapText = t('exceeded');
                       } else if (gap != null) {
                         gapText = t('{{gap}} to go', {
