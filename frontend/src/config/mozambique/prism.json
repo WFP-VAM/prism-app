@@ -356,6 +356,7 @@
       ],
       "land_surface_temperature": [
         "lst_daytime",
+        "lst_nighttime",
         "lst_day_anomaly",
         "lst_amplitude"
       ]
