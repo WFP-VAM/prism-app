@@ -115,6 +115,8 @@ type DailyExceedance = {
   status: string;
   avg: string;
   trigger: string;
+  chipFill?: string;
+  chipInk?: string;
 };
 
 function daySlots(
@@ -240,20 +242,26 @@ const dailyExceedancePlugin = {
       ctx.arcTo(x, y + chipH, x, y, radius);
       ctx.arcTo(x, y, x + statusW, y, radius);
       ctx.closePath();
-      ctx.fillStyle = spec.met ? '#6E6E6E' : '#fff';
+      const chipFill = spec.met ? (spec.chipFill ?? '#6E6E6E') : '#fff';
+      const chipInk = spec.met ? (spec.chipInk ?? '#fff') : '#1a1a1a';
+      ctx.fillStyle = chipFill;
       ctx.fill();
-      ctx.strokeStyle = spec.met ? '#6E6E6E' : '#8A8A8A';
+      ctx.strokeStyle = spec.met
+        ? chipInk === '#1a1a1a'
+          ? '#6F5600'
+          : chipFill
+        : '#8A8A8A';
       ctx.stroke();
       ctx.textBaseline = 'middle';
       if (spec.met) {
-        ctx.strokeStyle = '#fff';
+        ctx.strokeStyle = chipInk;
         ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.moveTo(x + 6, y + 8);
         ctx.lineTo(x + 9, y + 11);
         ctx.lineTo(x + 14, y + 5);
         ctx.stroke();
-        ctx.fillStyle = '#fff';
+        ctx.fillStyle = chipInk;
         ctx.font = '10px sans-serif';
         ctx.textAlign = 'left';
         ctx.fillText(spec.status, x + 6 + checkW, y + chipH / 2);
@@ -482,7 +490,7 @@ const useStyles = makeStyles((theme: Theme) =>
       overflow: 'auto',
     },
     chartContainer: {
-      height: '278px',
+      height: '254px',
       position: 'relative',
     },
     chartTitle: {
@@ -623,7 +631,7 @@ const useStyles = makeStyles((theme: Theme) =>
       gap: '10px 14px',
       fontSize: '0.7rem',
       color: '#333',
-      margin: '0.35rem 0 0.5rem',
+      margin: '6px 0 0.35rem',
     },
     legendItem: {
       display: 'inline-flex',
@@ -1278,6 +1286,10 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             beginIdx: selectedWindow.beginIdx,
             endIdx: selectedWindow.endIdx,
             met,
+            chipFill: selectedSeverity
+              ? AAFloodColors.chart[selectedSeverity].solid
+              : undefined,
+            chipInk: selectedSeverity === 'bankfull' ? '#1a1a1a' : '#fff',
             status: met
               ? t('Met')
               : gap != null
@@ -1298,7 +1310,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     return {
       ...hydrographOptions,
       legend: { display: false },
-      layout: { padding: { bottom: 86, right: 18, left: 4 } },
+      layout: { padding: { bottom: 62, right: 18, left: 4 } },
       dailyExceedance,
       scales: {
         xAxes: [
