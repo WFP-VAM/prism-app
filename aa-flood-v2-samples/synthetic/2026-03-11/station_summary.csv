@@ -1,0 +1,9 @@
+station_id,station_name,river_name,latitude,longitude,forecast_issue_date,phase,severity,threshold,trigger,window_begin,window_end,avg_probability,exceeded,status
+84,espungabera,Buzi,-20.475,32.825,2026-03-11,activation,severe,467.0,0.5,2026-03-13,2026-03-15,0.0,false,not_exceeded
+84,espungabera,Buzi,-20.475,32.825,2026-03-11,readiness,severe,467.0,0.25,2026-03-15,2026-03-19,0.0,false,not_exceeded
+246,dombe,Lucite,-19.975,33.425,2026-03-11,activation,bankfull,374.0,0.6,2026-03-13,2026-03-15,1.0,true,activation_bankfull
+246,dombe,Lucite,-19.975,33.425,2026-03-11,readiness,bankfull,374.0,0.4,2026-03-15,2026-03-19,0.924,true,activation_bankfull
+456,goonda,Buzi,-19.875,33.875,2026-03-11,activation,severe,3687.0,0.4,2026-03-13,2026-03-15,0.013333333333333334,false,readiness_moderate
+456,goonda,Buzi,-19.875,33.875,2026-03-11,activation,moderate,2620.0,0.5,2026-03-13,2026-03-15,0.4666666666666666,false,readiness_moderate
+456,goonda,Buzi,-19.875,33.875,2026-03-11,readiness,severe,3687.0,0.2,2026-03-15,2026-03-19,0.11200000000000002,false,readiness_moderate
+456,goonda,Buzi,-19.875,33.875,2026-03-11,readiness,moderate,2620.0,0.3,2026-03-15,2026-03-19,0.8160000000000001,true,readiness_moderate

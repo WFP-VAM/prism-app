@@ -31,6 +31,7 @@ AA_COLUMNS = {
     "last_triggered_at": ("timestamp with time zone", "timestamptz"),
     "last_ran_at": ("timestamp with time zone", "timestamptz"),
     "last_states": ("jsonb", "jsonb"),
+    "metadata": ("jsonb", "jsonb"),
 }
 
 
