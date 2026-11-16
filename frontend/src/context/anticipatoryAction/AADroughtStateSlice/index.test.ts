@@ -73,11 +73,40 @@ describe('Anticipatory Action', () => {
     ]);
 
     const hidden = renderWithCategories({ Moderate: false, Mild: false });
-    expect(hidden['Window 1'].Changara).toEqual([]);
+    expect(hidden['Window 1'].Changara).toEqual([
+      { category: 'filtered', phase: 'filtered', isNew: false },
+    ]);
     // districts without data are unaffected
     expect(hidden['Window 1'].Caia).toEqual([
       { category: 'ny', phase: 'ny', isNew: false },
     ]);
+  });
+
+  it('ranks filtered districts above ny and na when combining windows', () => {
+    const filtered = {
+      category: 'filtered',
+      phase: 'filtered',
+      isNew: false,
+    } as const;
+    const ny = { category: 'ny', phase: 'ny', isNew: false } as const;
+    const na = { category: 'na', phase: 'na', isNew: false } as const;
+    const mild = { category: 'Mild', phase: 'Ready', isNew: false } as const;
+    const data: any = {
+      'Window 1': { A: [filtered], B: [filtered], C: [filtered] },
+      'Window 2': { A: [ny], B: [na], C: [mild] },
+    };
+    expect(getAAMapData(data, 'All')).toEqual({
+      A: filtered,
+      B: filtered,
+      C: mild,
+    });
+    expect(
+      calculateAAMarkers({
+        renderedDistricts: data,
+        selectedWindow: 'Window 1',
+        districtCentroids: {},
+      }),
+    ).toEqual([]);
   });
 
   describe('getAAMapData', () => {

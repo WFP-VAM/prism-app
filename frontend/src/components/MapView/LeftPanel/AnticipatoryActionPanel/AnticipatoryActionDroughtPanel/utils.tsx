@@ -30,6 +30,7 @@ import {
   AADroughtColorOverrides,
   AADroughtPalette,
   AAPhaseColor,
+  FILTERED_LABEL,
   getAADisplayLabel,
   getAADroughtCountryConfig,
 } from './utils/countryConfig';
@@ -39,6 +40,7 @@ import {
 export const DEFAULT_AA_DROUGHT_COLORS: AADroughtPalette = {
   na: { background: '#F1F1F1', text: 'black' },
   ny: { background: '#F1F1F1', text: 'black' },
+  filtered: { background: '#9E9E9E', text: 'black' },
   severe: {
     set: { background: '#831F00', text: 'white' },
     ready: { background: '#E63701', text: 'white' },
@@ -78,6 +80,10 @@ export const mergeAADroughtColors = (
   return {
     na: mergePhaseColor(DEFAULT_AA_DROUGHT_COLORS.na, overrides.na),
     ny: mergePhaseColor(DEFAULT_AA_DROUGHT_COLORS.ny, overrides.ny),
+    filtered: mergePhaseColor(
+      DEFAULT_AA_DROUGHT_COLORS.filtered,
+      overrides.filtered,
+    ),
     severe: mergeCategory('severe'),
     moderate: mergeCategory('moderate'),
     mild: mergeCategory('mild'),
@@ -189,6 +195,14 @@ const buildAACategoryPhaseMap = (
       topText: 'ny',
       bottomText: '-',
       color: colors.ny.text,
+    },
+  },
+  filtered: {
+    color: colors.filtered.background,
+    iconProps: {
+      topText: 'x',
+      bottomText: '-',
+      color: colors.filtered.text,
     },
   },
   Severe: {
@@ -376,7 +390,7 @@ export const getLegendPhases = (
 ) => {
   const config = getAADroughtCountryConfig();
 
-  return config.legendPhases
+  const phases = config.legendPhases
     .filter(phase => {
       const category = config.categories.find(
         cat => cat.label === phase.severity,
@@ -400,6 +414,21 @@ export const getLegendPhases = (
 
       return { ...phase, icon };
     });
+
+  // grey districts only appear once a category is unticked
+  const isFiltered = config.categories.some(
+    cat => categories?.[cat.id] === false,
+  );
+  return isFiltered
+    ? [
+        ...phases,
+        {
+          icon: getAAIcon('filtered', 'filtered', true),
+          phase: FILTERED_LABEL,
+          severity: undefined,
+        },
+      ]
+    : phases;
 };
 
 type AAWindowKey = (typeof AAWindowKeys)[number];
@@ -428,8 +457,16 @@ export function getAASummaryRows({
   renderedDistricts,
 }: GetAASummaryRowsParams): AASummaryRow[] {
   const windows = selectedWindow === 'All' ? AAWindowKeys : [selectedWindow];
+  // only severity categories produce 'filtered' districts
+  const isFiltered = rowCategories.some(
+    x =>
+      !['na', 'ny', 'filtered'].includes(x.category) &&
+      categories[x.category] === false,
+  );
   return rowCategories
-    .filter(x => categories[x.category])
+    .filter(x =>
+      x.category === 'filtered' ? isFiltered : categories[x.category],
+    )
     .map(({ category, phase }) => ({
       category,
       phase,

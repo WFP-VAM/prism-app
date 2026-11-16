@@ -26,6 +26,7 @@ const renderLegend = (categories: Record<string, boolean> = {}) =>
 
 test('renders as expected', () => {
   const { container } = renderLegend();
+  expect(screen.queryByText('Not Selected')).toBeNull();
   expect(container).toMatchSnapshot();
 });
 
@@ -35,4 +36,5 @@ test('leaves out unticked categories', () => {
   expect(screen.getAllByText('Moderate')).toHaveLength(2);
   expect(screen.getByText('No Action')).toBeTruthy();
   expect(screen.getByText('Not Yet Monitored')).toBeTruthy();
+  expect(screen.getByText('Not Selected')).toBeTruthy();
 });

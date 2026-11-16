@@ -48,6 +48,7 @@ type AACategoryColors = { set: AAPhaseColor; ready: AAPhaseColor };
 export type AADroughtPalette = {
   na: AAPhaseColor;
   ny: AAPhaseColor;
+  filtered: AAPhaseColor;
   severe: AACategoryColors;
   moderate: AACategoryColors;
   mild: AACategoryColors;
@@ -63,6 +64,7 @@ type AACategoryColorOverrides = Partial<{
 export type AADroughtColorOverrides = Partial<{
   na: Partial<AAPhaseColor>;
   ny: Partial<AAPhaseColor>;
+  filtered: Partial<AAPhaseColor>;
   severe: AACategoryColorOverrides;
   moderate: AACategoryColorOverrides;
   mild: AACategoryColorOverrides;
@@ -73,7 +75,7 @@ export interface AADroughtCountryConfig {
   // Basic configuration
   categories: {
     label: string;
-    id: Exclude<AACategoryType, 'na' | 'ny'>;
+    id: Exclude<AACategoryType, 'na' | 'ny' | 'filtered'>;
   }[];
 
   // Season configuration
@@ -106,7 +108,7 @@ export interface AADroughtCountryConfig {
 const createCountryConfig = (options: {
   categories: Array<{
     label: string;
-    id: Exclude<AACategoryType, 'na' | 'ny'>;
+    id: Exclude<AACategoryType, 'na' | 'ny' | 'filtered'>;
   }>;
   seasonStartMonth: number;
   forecastSource?: string;
@@ -134,6 +136,7 @@ const createCountryConfig = (options: {
   });
   rowCategories.push({ category: 'na', phase: 'na' });
   rowCategories.push({ category: 'ny', phase: 'ny' });
+  rowCategories.push({ category: 'filtered', phase: 'filtered' });
 
   // Generate legend phases from available categories
   const legendPhases: Array<{
@@ -298,9 +301,12 @@ export const getRowCategories = (): {
   return config.rowCategories;
 };
 
+export const FILTERED_LABEL = 'Not Selected';
+
 const specialLabels: Record<string, string> = {
   na: 'No Action',
   ny: 'Not Yet Monitored',
+  filtered: FILTERED_LABEL,
 };
 
 // Display label (untranslated) for a category or phase, e.g. Normal -> Below Normal

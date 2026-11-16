@@ -36,6 +36,7 @@ const initialState: AnticipatoryActionState = {
       Normal: true,
       na: true,
       ny: true,
+      filtered: true,
     },
   },
   markers: [],

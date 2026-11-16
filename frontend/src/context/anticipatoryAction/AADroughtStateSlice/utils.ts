@@ -296,8 +296,14 @@ export function calculateMapRenderedDistricts({
             ];
           }
 
-          // districts whose categories are all filtered out are hidden (empty list)
           const validData = allValidData.filter(x => categories[x.category]);
+          // active, but only in categories unticked in the filters: don't claim "No Action"
+          if (validData.length === 0) {
+            return [
+              districtName,
+              [{ category: 'filtered', phase: 'filtered', isNew: false }],
+            ];
+          }
 
           const sorted = validData.sort(sortFn);
           return [
@@ -411,18 +417,21 @@ export function calculateAAMarkers({
 }: CalculateAAMarkersParams) {
   const AADistricts = getAAMapData(renderedDistricts, selectedWindow);
 
-  return Object.entries(AADistricts).map(([district, { category, phase }]) => {
-    const centroid = districtCentroids[district] || {
-      geometry: { coordinates: [0, 0] },
-    };
-    const icon = getAAIcon(category, phase, true);
+  // filtered-out districts are greyed out on the map, without a phase label
+  return Object.entries(AADistricts)
+    .filter(([, { category }]) => category !== 'filtered')
+    .map(([district, { category, phase }]) => {
+      const centroid = districtCentroids[district] || {
+        geometry: { coordinates: [0, 0] },
+      };
+      const icon = getAAIcon(category, phase, true);
 
-    return {
-      district,
-      longitude: centroid?.geometry.coordinates[0],
-      latitude: centroid?.geometry.coordinates[1],
-      icon,
-      centroid,
-    };
-  });
+      return {
+        district,
+        longitude: centroid?.geometry.coordinates[0],
+        latitude: centroid?.geometry.coordinates[1],
+        icon,
+        centroid,
+      };
+    });
 }
