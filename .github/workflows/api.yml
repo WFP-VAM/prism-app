@@ -49,6 +49,7 @@ jobs:
             fi
           done
       - name: Set up Python ${{ matrix.python-version }}
+        id: setup-python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
@@ -64,7 +65,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: api/.venv
-          key: venv-${{ runner.os }}-py3.14-poetry2.3.3-${{ hashFiles('api/poetry.lock') }}
+          # Patch must be in the key. Poetry deletes .venv when it does not match the runner.
+          key: venv-${{ runner.os }}-py${{ steps.setup-python.outputs.python-version }}-poetry2.3.3-${{ hashFiles('api/poetry.lock') }}
       - name: Install dependencies
         run: |
           cd api
@@ -91,6 +93,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
+        id: setup-python
         with:
           python-version: "3.14"
       - uses: snok/install-poetry@v1
@@ -103,7 +106,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: api/.venv
-          key: venv-${{ runner.os }}-py3.14-poetry2.3.3-${{ hashFiles('api/poetry.lock') }}
+          # Patch must be in the key. Poetry deletes .venv when it does not match the runner.
+          key: venv-${{ runner.os }}-py${{ steps.setup-python.outputs.python-version }}-poetry2.3.3-${{ hashFiles('api/poetry.lock') }}
       - name: Install API dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: |
@@ -198,6 +202,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
+        id: setup-python
         with:
           python-version: "3.14"
       - uses: snok/install-poetry@v1
@@ -210,7 +215,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: api/.venv
-          key: venv-${{ runner.os }}-py3.14-poetry2.3.3-${{ hashFiles('api/poetry.lock') }}
+          # Patch must be in the key. Poetry deletes .venv when it does not match the runner.
+          key: venv-${{ runner.os }}-py${{ steps.setup-python.outputs.python-version }}-poetry2.3.3-${{ hashFiles('api/poetry.lock') }}
       - name: Install API dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: |

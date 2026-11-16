@@ -115,6 +115,8 @@ def make_request_with_retries(
 EXPORT_ALLOWED_DOMAINS: Final[list[str]] = [
     "*.wfp.org",
     "staging.*.amplifyapp.com",
+    "demo.*.amplifyapp.com",
+    "training.*.amplifyapp.com",
     "*prism-frontend--*.web.app",  # Firebase preview builds
 ]
 

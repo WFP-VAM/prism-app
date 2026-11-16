@@ -15,6 +15,10 @@
       "flood_events": ["flood_events"]
     },
     "rainfall": {
+      "forecasts": [
+        "daily_rainfall_forecast",
+        "dekad_rainfall_forecast"
+      ],
       "rainfall_amount": [
         {
           "group_title": "Rainfall Aggregate",

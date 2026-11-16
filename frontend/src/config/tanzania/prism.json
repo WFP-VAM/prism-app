@@ -107,8 +107,7 @@
       ],
       "forecasts": [
         "daily_rainfall_forecast",
-        "dekad_rainfall_forecast",
-        "dekad_rainfall_anomaly_forecast"
+        "dekad_rainfall_forecast"
       ],
       "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
