@@ -18,6 +18,7 @@ import kyrgyzstan from './kyrgyzstan';
 import malawi from './malawi';
 import mongolia from './mongolia';
 import mozambique from './mozambique';
+import mozambique_basins from './mozambique_basins';
 import myanmar from './myanmar';
 import namibia from './namibia';
 import nepal from './nepal';
@@ -60,6 +61,7 @@ export const configMap = {
   malawi,
   mongolia,
   mozambique,
+  mozambique_basins,
   myanmar,
   namibia,
   nepal,
