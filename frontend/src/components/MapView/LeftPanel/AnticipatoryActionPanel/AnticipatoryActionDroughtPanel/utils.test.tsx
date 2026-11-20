@@ -18,12 +18,14 @@ describe('getAASummaryRows + buildAASummaryCsv', () => {
     Normal: true,
     na: true,
     ny: true,
+    filtered: true,
   };
   const rowCategories = [
     { category: 'Moderate', phase: 'Ready' },
     { category: 'Normal', phase: 'Set' },
     { category: 'na', phase: 'na' },
     { category: 'ny', phase: 'ny' },
+    { category: 'filtered', phase: 'filtered' },
   ] as CsvParams['rowCategories'];
   const renderedDistricts = {
     'Window 1': {
@@ -68,6 +70,28 @@ describe('getAASummaryRows + buildAASummaryCsv', () => {
     const csv = build({ categories: { ...allCategories, Moderate: false } });
     expect(csv).not.toContain('Alpha');
     expect(csv.split('\n')).toHaveLength(4);
+  });
+
+  it('lists filtered districts only when a category is unticked', () => {
+    const filteredDistricts = {
+      'Window 1': {
+        Alpha: [{ category: 'filtered', phase: 'filtered', isNew: false }],
+      },
+      'Window 2': {},
+    } as CsvParams['renderedDistricts'];
+    expect(
+      build({
+        renderedDistricts: filteredDistricts,
+        selectedWindow: 'Window 1',
+      }),
+    ).not.toContain('Alpha');
+    expect(
+      build({
+        renderedDistricts: filteredDistricts,
+        selectedWindow: 'Window 1',
+        categories: { ...allCategories, Moderate: false },
+      }).split('\n')[1],
+    ).toBe('Window 1,Not Selected,Not Selected,Alpha,');
   });
 
   it('translates header and values', () => {
