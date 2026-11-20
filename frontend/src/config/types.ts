@@ -70,14 +70,22 @@ export const isLayerKey = (layerKey: string | MenuGroup) => {
 };
 
 /**
- * Check if a layer is without group, or is the main layer in the group
+ * Check if a layer is without group, or is the main layer in the group. Non-main
+ * layers also count towards dates
  * @param layerId
  * @param layers
  */
 export const isMainLayer = (layerId: string, layers: LayerType[]) =>
-  !layers
-    .filter(sl => sl.group)
-    .some(sl => sl.group?.layers?.find(l => l.id === layerId && !l.main));
+  !layers.some(sl =>
+    sl.group?.layers?.some(
+      l =>
+        l.id === layerId &&
+        !l.main &&
+        sl.group?.layers?.some(
+          gl => gl.main && layers.some(selected => selected.id === gl.id),
+        ),
+    ),
+  );
 
 /**
  * Decorator to mark a property on a class type as optional. This allows us to get a list of all required keys at
