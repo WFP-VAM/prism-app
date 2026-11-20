@@ -38,6 +38,31 @@
     }
   },
   "spi_1m": {
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r1s",
+          "label": "SPI 1-month",
+          "minValue": -3,
+          "maxValue": 3,
+          "color": "#375692"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "ocha_ADM1_FR"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "ocha_ADM2_FR"
+        }
+      ],
+      "type": "line"
+    },
     "title": "SPI - 1-month",
     "type": "wms",
     "server_layer_name": "r1s_dekad",
@@ -109,6 +134,31 @@
     ]
   },
   "spi_3m": {
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r3s",
+          "label": "SPI 3-month",
+          "minValue": -3,
+          "maxValue": 3,
+          "color": "#375692"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "ocha_ADM1_FR"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "ocha_ADM2_FR"
+        }
+      ],
+      "type": "line"
+    },
     "title": "SPI - 3-month",
     "type": "wms",
     "server_layer_name": "r3s_dekad",
@@ -180,6 +230,31 @@
     ]
   },
   "spi_6m": {
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r6s",
+          "label": "SPI 6-month",
+          "minValue": -3,
+          "maxValue": 3,
+          "color": "#375692"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "ocha_ADM1_FR"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "ocha_ADM2_FR"
+        }
+      ],
+      "type": "line"
+    },
     "title": "SPI - 6-month",
     "type": "wms",
     "server_layer_name": "r6s_dekad",
@@ -311,6 +386,31 @@
     ]
   },
   "spi_1y": {
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "rys",
+          "label": "SPI 1-year",
+          "minValue": -3,
+          "maxValue": 3,
+          "color": "#375692"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "ocha_ADM1_FR"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "ocha_ADM2_FR"
+        }
+      ],
+      "type": "line"
+    },
     "title": "SPI - 1-year",
     "type": "wms",
     "server_layer_name": "rys_dekad",
@@ -4532,5 +4632,32 @@
       }
     ],
     "legend_text": "Urban areas - population in phase 3 to 5"
+  },
+  "spi_2m": {
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r2s",
+          "label": "SPI 2-month",
+          "minValue": -3,
+          "maxValue": 3,
+          "color": "#375692"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "ocha_ADM1_FR"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "ocha_ADM2_FR"
+        }
+      ],
+      "type": "line"
+    }
   }
 }

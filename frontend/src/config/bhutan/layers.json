@@ -785,5 +785,140 @@
       }
     ],
     "legend_text": "Source: Population and Housing Census of Bhutan, 2017"
+  },
+  "spi_1m": {
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r1s",
+          "label": "SPI 1-month",
+          "minValue": -3,
+          "maxValue": 3,
+          "color": "#375692"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "Adm1_En"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "Adm2_En"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "spi_2m": {
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r2s",
+          "label": "SPI 2-month",
+          "minValue": -3,
+          "maxValue": 3,
+          "color": "#375692"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "Adm1_En"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "Adm2_En"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "spi_3m": {
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r3s",
+          "label": "SPI 3-month",
+          "minValue": -3,
+          "maxValue": 3,
+          "color": "#375692"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "Adm1_En"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "Adm2_En"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "spi_6m": {
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r6s",
+          "label": "SPI 6-month",
+          "minValue": -3,
+          "maxValue": 3,
+          "color": "#375692"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "Adm1_En"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "Adm2_En"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "spi_1y": {
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "rys",
+          "label": "SPI 1-year",
+          "minValue": -3,
+          "maxValue": 3,
+          "color": "#375692"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "Adm1_En"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "Adm2_En"
+        }
+      ],
+      "type": "line"
+    }
   }
 }
