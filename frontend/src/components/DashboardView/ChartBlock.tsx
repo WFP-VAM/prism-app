@@ -135,6 +135,7 @@ function ChartBlock({
     chartDataset,
     isLoading,
     error,
+    isUnavailable,
     chartConfig,
     chartTitle,
     chartSubtitle,
@@ -360,11 +361,13 @@ function ChartBlock({
             {!isLoading && !error && !chartDataset && (
               <Box className={classes.emptyState}>
                 <Typography variant="body1" color="textSecondary">
-                  {formState.selectedChartLayer?.chartData
-                    ? t('No chart data available')
-                    : t(
-                        'This layer is not configured for charts. Please select a layer with chart data.',
-                      )}
+                  {isUnavailable
+                    ? t('Chart data is not available for this area')
+                    : formState.selectedChartLayer?.chartData
+                      ? t('No chart data available')
+                      : t(
+                          'This layer is not configured for charts. Please select a layer with chart data.',
+                        )}
                 </Typography>
               </Box>
             )}
@@ -397,6 +400,16 @@ function ChartBlock({
         <Box className={classes.smallErrorContainer}>
           <Typography color="error" variant="body2">
             {error}
+          </Typography>
+        </Box>
+      );
+    }
+
+    if (isUnavailable) {
+      return (
+        <Box className={classes.smallEmptyState}>
+          <Typography variant="body2" color="textSecondary">
+            {t('Chart data is not available for this area')}
           </Typography>
         </Box>
       );
@@ -492,6 +505,11 @@ function ChartBlock({
           <ChartLocationSelector
             boundaryLayerData={formState.boundaryLayerData?.data}
             boundaryLayer={formState.boundaryLayer}
+            chartLayers={
+              formState.selectedChartLayer
+                ? [formState.selectedChartLayer]
+                : undefined
+            }
             admin0Key={formState.admin0Key}
             admin1Key={formState.admin1Key}
             admin2Key={formState.admin2Key}
