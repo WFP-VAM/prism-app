@@ -160,12 +160,22 @@ def test_validate_export_url_support():
     validate_export_url(
         f"https://staging-prism-frontend--1622-38oautsx.web.app/?test=1&date={TEST_DATE}"
     )
+    validate_export_url(
+        f"https://training.dsqr7eefkaq21.amplifyapp.com/?test=1&date={TEST_DATE}"
+    )
+    validate_export_url(
+        f"https://staging.dkr9o3t8h8nvn.amplifyapp.com/?test=1&date={TEST_DATE}"
+    )
 
     # These should not be allowed
     with pytest.raises(ValueError, match="not allowed"):
         validate_export_url(f"http://evil.com/?test=1&date={TEST_DATE}")
     with pytest.raises(ValueError, match="not allowed"):
         validate_export_url(f"http://wfp.org.evil.com/?test=1&date={TEST_DATE}")
+    with pytest.raises(ValueError, match="not allowed"):
+        validate_export_url(
+            f"https://training.dnotourappid.amplifyapp.com/?test=1&date={TEST_DATE}"
+        )
 
 
 # API endpoint tests - focus on HTTP layer, not re-testing all business logic
