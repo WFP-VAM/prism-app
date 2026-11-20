@@ -110,6 +110,24 @@ def test_render_flood_mail_contains_title_and_link() -> None:
     assert "Test flood title" in text
 
 
+def test_render_flood_mail_equal_lead_window_is_singular_phrase() -> None:
+    _html, text = render_flood_mail(
+        title="Equal window",
+        trigger_phase="Activation",
+        trigger_severity="severe",
+        station_groups=[
+            {
+                "status_label": "activation severe",
+                "stations": ["Dombe"],
+                "lead_days": (2, 2),
+            },
+        ],
+        redirect_url="https://prism.example/map",
+    )
+    assert "within the next 2 days." in text
+    assert "2 to 2" not in text
+
+
 def test_render_flood_mail_text_not_html_escaped() -> None:
     html, text = render_flood_mail(
         title="A & B",

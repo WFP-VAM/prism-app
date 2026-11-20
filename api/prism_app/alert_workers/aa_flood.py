@@ -286,21 +286,32 @@ def _window_for_status(row: dict[str, Any], status: str) -> tuple[str, str] | No
     return begin, end
 
 
-def station_lead_days(station: dict[str, Any]) -> tuple[int, int] | None:
-    """Days from forecast issue date to the window bounds, e.g. (2, 4)."""
-    issued = str(station.get("forecast_issue_date") or "").strip()
-    begin = str(station.get("window_begin") or "").strip()
-    end = str(station.get("window_end") or "").strip()
-    if not issued or not begin or not end:
+def _calendar_date(value: str):
+    text = str(value or "").strip()
+    if not text:
         return None
     try:
-        base = datetime.fromisoformat(issued)
-        lead = (
-            (datetime.fromisoformat(begin) - base).days,
-            (datetime.fromisoformat(end) - base).days,
-        )
+        # Date-only values are naive; timestamps may be UTC. Compare calendars.
+        return datetime.fromisoformat(text.replace("Z", "+00:00")).date()
     except ValueError:
         return None
+
+
+def station_lead_days(
+    station: dict[str, Any],
+    *,
+    issue_iso: str = "",
+) -> tuple[int, int] | None:
+    """Days from forecast issue date to the window bounds, e.g. (2, 4)."""
+    issued = str(station.get("forecast_issue_date") or issue_iso or "").strip()
+    begin = str(station.get("window_begin") or "").strip()
+    end = str(station.get("window_end") or "").strip()
+    base = _calendar_date(issued)
+    start = _calendar_date(begin)
+    stop = _calendar_date(end)
+    if base is None or start is None or stop is None:
+        return None
+    lead = ((start - base).days, (stop - base).days)
     if lead[0] < 0 or lead[1] < lead[0]:
         return None
     return lead
@@ -326,6 +337,8 @@ def status_severity(raw: str | None) -> str:
 def group_station_alerts(
     stations: list[dict[str, Any]],
     allowed: set[str],
+    *,
+    issue_iso: str = "",
 ) -> list[dict[str, Any]]:
     """One entry per (status, lead window), highest status first."""
     groups: dict[tuple[str, tuple[int, int] | None], dict[str, Any]] = {}
@@ -333,7 +346,7 @@ def group_station_alerts(
         st = normalize_flood_status(s.get("trigger_status"))
         if not should_send_flood_email(st, allowed):
             continue
-        lead = station_lead_days(s)
+        lead = station_lead_days(s, issue_iso=issue_iso)
         group = groups.setdefault(
             (st, lead),
             {
@@ -374,6 +387,7 @@ def build_flood_payload(
         station_groups = group_station_alerts(
             fetch_station_summary(client, station_summary_url),
             allowed,
+            issue_iso=date_iso,
         )
     effective_status = station_groups[0]["status"] if station_groups else trigger_status
     if not is_test and not should_send_flood_email(effective_status, allowed):

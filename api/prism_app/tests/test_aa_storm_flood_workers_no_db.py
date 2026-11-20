@@ -766,6 +766,17 @@ def test_station_lead_days() -> None:
             "window_end": "2026-03-15",
         },
     ) == (2, 4)
+    assert station_lead_days(
+        {
+            "forecast_issue_date": "2026-03-11T00:00:00Z",
+            "window_begin": "2026-03-13",
+            "window_end": "2026-03-13",
+        },
+    ) == (2, 2)
+    assert station_lead_days(
+        {"window_begin": "2026-03-13", "window_end": "2026-03-15"},
+        issue_iso="2026-03-11T00:00:00Z",
+    ) == (2, 4)
     assert station_lead_days({"window_begin": "2026-03-13"}) is None
 
 
