@@ -175,6 +175,9 @@ def fetch_station_summary(client: httpx.Client, url: str) -> list[dict[str, Any]
                 "trigger_status": status,
                 "window_begin": window[0] if window else "",
                 "window_end": window[1] if window else "",
+                "forecast_issue_date": str(
+                    row.get("forecast_issue_date") or ""
+                ).strip(),
                 "_join_key": join_key,
             }
             prev = next((item for item in out if item["_join_key"] == join_key), None)
@@ -283,13 +286,68 @@ def _window_for_status(row: dict[str, Any], status: str) -> tuple[str, str] | No
     return begin, end
 
 
-def station_email_label(station: dict[str, Any]) -> str:
-    name = str(station.get("station_name") or "")
+def station_lead_days(station: dict[str, Any]) -> tuple[int, int] | None:
+    """Days from forecast issue date to the window bounds, e.g. (2, 4)."""
+    issued = str(station.get("forecast_issue_date") or "").strip()
     begin = str(station.get("window_begin") or "").strip()
     end = str(station.get("window_end") or "").strip()
-    if begin and end:
-        return f"{name} ({begin} to {end})"
-    return name
+    if not issued or not begin or not end:
+        return None
+    try:
+        base = datetime.fromisoformat(issued)
+        lead = (
+            (datetime.fromisoformat(begin) - base).days,
+            (datetime.fromisoformat(end) - base).days,
+        )
+    except ValueError:
+        return None
+    if lead[0] < 0 or lead[1] < lead[0]:
+        return None
+    return lead
+
+
+def status_phase(raw: str | None) -> str:
+    """``Readiness`` / ``Activation``. Legacy severity-only values return ``""``."""
+    status = normalize_flood_status(raw)
+    if "_" in status and status.split("_", 1)[0] in ("activation", "readiness"):
+        return status.split("_", 1)[0].capitalize()
+    return ""
+
+
+def status_severity(raw: str | None) -> str:
+    status = normalize_flood_status(raw)
+    if not status or status == "not_exceeded":
+        return ""
+    if status_phase(status):
+        return status.split("_", 1)[1]
+    return status
+
+
+def group_station_alerts(
+    stations: list[dict[str, Any]],
+    allowed: set[str],
+) -> list[dict[str, Any]]:
+    """One entry per (status, lead window), highest status first."""
+    groups: dict[tuple[str, tuple[int, int] | None], dict[str, Any]] = {}
+    for s in stations:
+        st = normalize_flood_status(s.get("trigger_status"))
+        if not should_send_flood_email(st, allowed):
+            continue
+        lead = station_lead_days(s)
+        group = groups.setdefault(
+            (st, lead),
+            {
+                "status": st,
+                "status_label": email_status_label(st),
+                "lead_days": lead,
+                "stations": [],
+            },
+        )
+        group["stations"].append(s.get("station_name") or "")
+    return sorted(
+        groups.values(),
+        key=lambda g: (-flood_status_rank(g["status"]), g["lead_days"] or ()),
+    )
 
 
 def build_flood_payload(
@@ -309,9 +367,18 @@ def build_flood_payload(
         if allowed_statuses is not None
         else set(DEFAULT_EMAIL_STATUSES)
     )
-    if not is_test and not should_send_flood_email(trigger_status, allowed):
+    # dates.json trigger_status may be a filtered-out status (e.g. bankfull)
+    # that hides allowed stations, so prefer the highest allowed station status.
+    station_groups: list[dict[str, Any]] = []
+    if station_summary_url and flood_status_rank(trigger_status) > 1:
+        station_groups = group_station_alerts(
+            fetch_station_summary(client, station_summary_url),
+            allowed,
+        )
+    effective_status = station_groups[0]["status"] if station_groups else trigger_status
+    if not is_test and not should_send_flood_email(effective_status, allowed):
         return None
-    if is_test and not should_send_flood_email(trigger_status, allowed):
+    if is_test and not should_send_flood_email(effective_status, allowed):
         logger.info(
             "Test email: sending despite trigger_status=%r (no live alert)",
             trigger_status,
@@ -325,27 +392,18 @@ def build_flood_payload(
     )
     title_date = _format_date(date_iso, "DD-Month-YYYY")
     country = copy["country_display_name"]
-    title = f"Flood Anticipatory Actions Trigger detected in {country} ({title_date})"
-
-    by_status: dict[str, list[str]] = {}
-    if station_summary_url:
-        for s in fetch_station_summary(client, station_summary_url):
-            st = s.get("trigger_status")
-            label = email_status_label(str(st) if st else None)
-            if label and should_send_flood_email(str(st) if st else None, allowed):
-                by_status.setdefault(label, []).append(station_email_label(s))
-        by_status = dict(
-            sorted(
-                by_status.items(),
-                key=lambda item: flood_status_rank(item[0]),
-                reverse=True,
-            ),
-        )
+    phase = status_phase(effective_status)
+    phase_prefix = f"{phase} " if phase else ""
+    title = (
+        f"Flood Anticipatory Actions {phase_prefix}Trigger detected in "
+        f"{country} ({title_date})"
+    )
 
     html, text = render_flood_mail(
         title=title,
-        trigger_status=email_status_label(trigger_status) or trigger_status,
-        stations_by_status=by_status,
+        trigger_phase=phase,
+        trigger_severity=status_severity(effective_status) or effective_status,
+        station_groups=station_groups,
         redirect_url=redirect,
         country_display_name=copy["country_display_name"],
         forecast_attribution_line=copy["forecast_attribution_line"],

@@ -2,18 +2,15 @@ PRISM FLOOD ALERT - {{ title }}
 
 Flood Anticipatory Action Alert for {{ country_display_name }} – {{ forecast_attribution_line }}
 
-Highest status: {{ trigger_status }}. This message is not an official Anticipatory Action decision.
-
-{% if stations_by_status %}
-{% for status, station_list in stations_by_status.items() %}
-River discharge levels may exceed the {{ status }} threshold at {{ station_list | join(' , ') }} in {{ country_display_name }}.
+{% if trigger_phase %}{{ trigger_phase }} trigger{% else %}Trigger{% endif %} detection: {{ trigger_severity }}. This is not an official activation.
+{% for g in station_groups %}
+River discharge levels may exceed the {{ g.status_label }} threshold at {{ g.stations | join(', ') }} in {{ country_display_name }}{% if g.lead_days %} within the next {{ g.lead_days[0] }} to {{ g.lead_days[1] }} days{% endif %}.
 {% endfor %}
-{% endif %}
 
 Access PRISM Flood Dashboard: {{ redirect_url }}
 
 Map: (image unavailable in plain text format)
 
-Disclaimer: This alert is automatically generated from the latest forecast.
-A status named Activation in this message is not an official decision to start Anticipatory Action.
-That decision is made and communicated by {{ disclaimer_authority_plain }}.
+We will continue to closely monitor the situation and provide timely updates as more information becomes available.
+
+Disclaimer: This alert is automatically generated based on an evaluation of the latest forecast. It does not represent an official activation. The official decision regarding Anticipatory Action activation will be made and communicated by {{ disclaimer_authority_plain }}.
