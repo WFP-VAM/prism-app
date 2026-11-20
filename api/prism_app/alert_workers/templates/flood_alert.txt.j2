@@ -4,7 +4,7 @@ Flood Anticipatory Action Alert for {{ country_display_name }} – {{ forecast_a
 
 {% if trigger_phase %}{{ trigger_phase }} trigger{% else %}Trigger{% endif %} detection: {{ trigger_severity }}. This is not an official activation.
 {% for g in station_groups %}
-River discharge levels may exceed the {{ g.status_label }} threshold at {{ g.stations | join(', ') }} in {{ country_display_name }}{% if g.lead_days %} {% if g.lead_days[0] == g.lead_days[1] %}within the next {{ g.lead_days[0] }} day{% if g.lead_days[0] != 1 %}s{% endif %}{% else %}within the next {{ g.lead_days[0] }} to {{ g.lead_days[1] }} days{% endif %}{% endif %}.
+River discharge levels may exceed the {{ g.status_label }} threshold at {{ g.stations | join(', ') }} in {{ country_display_name }}{% if g.lead_days %} {% if g.lead_days[0] == g.lead_days[1] %}in {{ g.lead_days[0] }} day{% if g.lead_days[0] != 1 %}s{% endif %}{% else %}within the next {{ g.lead_days[0] }} to {{ g.lead_days[1] }} days{% endif %}{% endif %}.
 {% endfor %}
 
 Access PRISM Flood Dashboard: {{ redirect_url }}

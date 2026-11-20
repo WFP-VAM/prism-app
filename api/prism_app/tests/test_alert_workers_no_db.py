@@ -124,7 +124,8 @@ def test_render_flood_mail_equal_lead_window_is_singular_phrase() -> None:
         ],
         redirect_url="https://prism.example/map",
     )
-    assert "within the next 2 days." in text
+    assert "in 2 days." in text
+    assert "within the next 2 days" not in text
     assert "2 to 2" not in text
 
 

@@ -35,7 +35,7 @@
                     <p style="margin: 0 0 10px; line-height: 1.6;">
                         River discharge levels may exceed the {{ g.status_label }} threshold at
                         {{ g.stations | join(', ') }} in {{ country_display_name }}{% if g.lead_days %}
-                        {% if g.lead_days[0] == g.lead_days[1] %}within the next {{ g.lead_days[0] }} day{% if g.lead_days[0] != 1 %}s{% endif %}{% else %}within the next {{ g.lead_days[0] }} to {{ g.lead_days[1] }} days{% endif %}{% endif %}.
+                        {% if g.lead_days[0] == g.lead_days[1] %}in {{ g.lead_days[0] }} day{% if g.lead_days[0] != 1 %}s{% endif %}{% else %}within the next {{ g.lead_days[0] }} to {{ g.lead_days[1] }} days{% endif %}{% endif %}.
                     </p>
                 {% endfor %}
                 <div class="button-container" style="text-align: center; margin: 20px 0;">
