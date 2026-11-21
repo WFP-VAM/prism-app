@@ -32,6 +32,7 @@ import {
   type ReactNode,
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -78,6 +79,13 @@ const DatePickerPopperPortal: FC<{ children?: ReactNode }> = ({ children }) =>
 const TIMELINE_ID = 'dateTimelineSelector';
 const POINTER_ID = 'datePointerSelector';
 
+// Months of ruler kept after the selected day. A late-year date then shows
+// the next January instead of stopping on 31 Dec with an empty track.
+const TIMELINE_LOOKAHEAD_MONTHS = 3;
+
+const endOfMonth = (date: Date) =>
+  new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
 const calculateStartAndEndDates = (startDate: Date, selectedTab: string) => {
   let year = startDate.getFullYear();
   let startMonth = 0;
@@ -93,9 +101,17 @@ const calculateStartAndEndDates = (startDate: Date, selectedTab: string) => {
   }
 
   const start = new Date(year, startMonth, 1);
-  const end = new Date(year, startMonth + 11, 31);
+  const yearEnd = new Date(year, startMonth + 11, 31);
 
-  return { start, end };
+  if (selectedTab === Panel.AnticipatoryActionDrought) {
+    return { start, end: yearEnd };
+  }
+
+  const lookahead = new Date(startDate.getTime());
+  lookahead.setMonth(lookahead.getMonth() + TIMELINE_LOOKAHEAD_MONTHS);
+  const lookaheadEnd = endOfMonth(lookahead);
+
+  return { start, end: lookaheadEnd > yearEnd ? lookaheadEnd : yearEnd };
 };
 
 const DateSelector = memo(() => {
@@ -134,7 +150,8 @@ const DateSelector = memo(() => {
   const today = new Date();
   today.setUTCHours(12, 0, 0, 0); // Normalize today's date
 
-  const timeLine = useRef(null);
+  const timeLine = useRef<HTMLDivElement>(null);
+  const [timeLineWidth, setTimeLineWidth] = useState(0);
 
   const { t } = useSafeTranslation();
   const { updateHistory } = useUrlHistory();
@@ -280,34 +297,52 @@ const DateSelector = memo(() => {
     [orderedLayers, truncatedLayers, dateSelector.startDate],
   );
 
-  useEffect(() => {
-    const timeLineWidth = get(timeLine.current, 'offsetWidth', 0);
+  useLayoutEffect(() => {
+    const node = timeLine.current;
+    if (!node) {
+      return undefined;
+    }
+    const update = () => setTimeLineWidth(node.offsetWidth);
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [dateRange.length, areLayerDatesLoading]);
 
-    if (
-      -timelinePosition.x <= pointerPosition.x &&
-      -timelinePosition.x + timeLineWidth >= pointerPosition.x
-    ) {
-      // skip timeline shifting because the cursor is visible
+  useLayoutEffect(() => {
+    // Width is 0 before the bar is laid out. Shifting then parks the cursor
+    // on the left and leaves the rest of the track blank.
+    if (timeLineWidth <= 0 || dateRange.length <= 1) {
       return;
     }
 
-    let timelineXOffset = 0;
+    const timelineWidth = dateRange.length * TIMELINE_ITEM_WIDTH;
+    const endPinnedOffset = timeLineWidth - timelineWidth;
+    const pointerInTail = pointerPosition.x >= timelineWidth - timeLineWidth;
+    const visibleStart = -timelinePosition.x;
+    const pointerVisible =
+      pointerPosition.x >= visibleStart &&
+      pointerPosition.x <= visibleStart + timeLineWidth;
 
-    if (
-      pointerPosition.x >=
-      dateRange.length * TIMELINE_ITEM_WIDTH - timeLineWidth
-    ) {
-      // compute the maximum timeline offset necessary so that the 31/12 is visible. Consequently the cursor will be visible as well (it moves together with the timeline)
-
-      timelineXOffset = timeLineWidth - dateRange.length * TIMELINE_ITEM_WIDTH;
-    } else if (pointerPosition.x > timeLineWidth) {
-      // shift the timeline to the left by an arbitrary value to make sure the cursor is visible
-
-      timelineXOffset = -pointerPosition.x + timeLineWidth / 2;
+    // A date near the end stays pinned to the right edge, even when the
+    // cursor is already on screen. Otherwise a late-year month sits on the left.
+    if (!pointerInTail && pointerVisible) {
+      return;
     }
 
-    setTimelinePosition({ x: timelineXOffset, y: 0 });
-  }, [pointerPosition.x, dateRange.length]);
+    const timelineXOffset = pointerInTail
+      ? endPinnedOffset
+      : Math.max(
+          endPinnedOffset,
+          Math.min(0, -pointerPosition.x + timeLineWidth / 2),
+        );
+
+    setTimelinePosition(current =>
+      current.x === timelineXOffset ? current : { x: timelineXOffset, y: 0 },
+    );
+    // timelinePosition is read only to skip a shift when the cursor is already
+    // visible. Dragging the ruler updates it and must not re-run this effect.
+  }, [pointerPosition.x, dateRange.length, timeLineWidth]);
 
   const locale = useMemo(
     () => (t('date_locale') ? t('date_locale') : 'en'),
