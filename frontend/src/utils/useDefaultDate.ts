@@ -1,4 +1,8 @@
-import { isMainLayer, LayerKey, SelectedDateTimestamp } from 'config/types';
+import {
+  LayerKey,
+  SelectedDateTimestamp,
+  shouldIncludeLayerDates,
+} from 'config/types';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
@@ -16,8 +20,8 @@ export function useDefaultDate(
   layerId: LayerKey,
 ): SelectedDateTimestamp | undefined {
   const { dateRange, layers, ...mapState } = useMapState();
-  // check layer without group or main layer in group
-  const mainLayer = isMainLayer(layerId as string, layers);
+  // Ungrouped, group main, or a non-main layer while its main layer is off.
+  const includeLayerDates = shouldIncludeLayerDates(layerId as string, layers);
   const { startDate: selectedDate } = dateRange;
 
   const { urlParams, updateHistory } = useUrlHistory();
@@ -33,7 +37,7 @@ export function useDefaultDate(
   // React doesn't allow updating other components within another component
   // useEffect removes this error and updates DateSelector correctly in the lifecycle.
   useEffect(() => {
-    if (urlDate || selectedDate || !defaultDate || !mainLayer) {
+    if (urlDate || selectedDate || !defaultDate || !includeLayerDates) {
       return;
     }
     // Update both URL and Redux state to ensure DateSelector re-renders properly
@@ -45,7 +49,7 @@ export function useDefaultDate(
     defaultDate,
     selectedDate,
     updateHistory,
-    mainLayer,
+    includeLayerDates,
     mapState.isGlobalMap,
     mapState.actions,
     urlDate,
