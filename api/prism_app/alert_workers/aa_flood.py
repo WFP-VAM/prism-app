@@ -297,6 +297,11 @@ def _calendar_date(value: str):
         return None
 
 
+# Wide legacy summaries have no window columns. The chart uses the same
+# Mozambique forecast window, days 3 to 5.
+LEGACY_LEAD_DAYS = (3, 5)
+
+
 def station_lead_days(
     station: dict[str, Any],
     *,
@@ -306,6 +311,8 @@ def station_lead_days(
     issued = str(station.get("forecast_issue_date") or issue_iso or "").strip()
     begin = str(station.get("window_begin") or "").strip()
     end = str(station.get("window_end") or "").strip()
+    if not begin and not end:
+        return LEGACY_LEAD_DAYS
     base = _calendar_date(issued)
     start = _calendar_date(begin)
     stop = _calendar_date(end)

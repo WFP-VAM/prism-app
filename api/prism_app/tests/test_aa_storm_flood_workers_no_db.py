@@ -778,6 +778,9 @@ def test_station_lead_days() -> None:
         issue_iso="2026-03-11T00:00:00Z",
     ) == (2, 4)
     assert station_lead_days({"window_begin": "2026-03-13"}) is None
+    assert station_lead_days(
+        {"station_name": "Buzi", "trigger_status": "severe"},
+    ) == (3, 5)
 
 
 def test_group_station_alerts_by_status_and_lead() -> None:
