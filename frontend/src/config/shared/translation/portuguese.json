@@ -566,6 +566,7 @@
   "Severe threshold": "Limiar de cheia severa",
   "Moderate threshold": "Limiar de cheia moderada",
   "Bankfull threshold": "Limiar de nível de alerta",
+  "A {{threshold}} is not established for this station": "Não foi estabelecido um {{threshold}} para esta estação",
   "Bankfull mean (window)": "Média do nível de alerta (janela)",
   "Moderate mean (window)": "Média da cheia moderada (janela)",
   "Severe mean (window)": "Média da cheia severa (janela)",

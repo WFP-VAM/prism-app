@@ -298,6 +298,7 @@
   "Severe threshold": "Severe threshold",
   "Moderate threshold": "Moderate threshold",
   "Bankfull threshold": "Bankfull threshold",
+  "A {{threshold}} is not established for this station": "A {{threshold}} is not established for this station",
   "Met": "Met",
   "Avg. {{percent}}%": "Avg. {{percent}}%",
   "trigger {{percent}}%": "trigger {{percent}}%",

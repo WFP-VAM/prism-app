@@ -6,8 +6,11 @@ import {
   Typography,
 } from '@material-ui/core';
 import { Visibility } from '@material-ui/icons';
+import { AAFloodDataSelector } from 'context/anticipatoryAction/AAFloodStateSlice';
+import { FloodStation } from 'context/anticipatoryAction/AAFloodStateSlice/types';
 import { useSafeTranslation } from 'i18n';
 import { black } from 'muiTheme';
+import { useSelector } from 'react-redux';
 
 import { FloodStatusIcon } from '../FloodStatusIcon';
 
@@ -110,6 +113,13 @@ const PHASE_SEVERITIES = ['Severe', 'Moderate', 'Bankfull'] as const;
 function AAFloodLegend() {
   const classes = useStyles();
   const { t } = useSafeTranslation();
+  const { stationSummaryData } = useSelector(AAFloodDataSelector);
+  const summaries = Object.values(stationSummaryData).filter(
+    (station): station is FloodStation => Boolean(station),
+  );
+  // Wide legacy files have a severity only. Active and Readiness do not apply.
+  const isLegacy =
+    summaries.length > 0 && summaries.every(station => station.legacy);
 
   const phases = [
     {
@@ -143,26 +153,38 @@ function AAFloodLegend() {
         {t('Riverine flood forecast')}
       </Typography>
 
-      {phases.map(({ label, hint, variant }) => (
-        <div key={label}>
-          <Typography className={classes.groupTitle}>
-            {`${t(label)} `}
-            <span className={classes.groupHint}>{t(hint)}</span>
-          </Typography>
-          {PHASE_SEVERITIES.map(severity => (
-            <div key={`${label}-${severity}`} className={classes.itemWrapper}>
-              <FloodStatusIcon
-                phase={variant === 'alert' ? 'activation' : 'readiness'}
-                riskLevel={severity}
-                size={18}
-              />
+      {isLegacy
+        ? PHASE_SEVERITIES.map(severity => (
+            <div key={severity} className={classes.itemWrapper}>
+              <FloodStatusIcon riskLevel={severity} size={12} />
               <Typography className={classes.itemText}>
-                {`${t(label)} — ${t(severity)}`}
+                {t(severity)}
               </Typography>
             </div>
+          ))
+        : phases.map(({ label, hint, variant }) => (
+            <div key={label}>
+              <Typography className={classes.groupTitle}>
+                {`${t(label)} `}
+                <span className={classes.groupHint}>{t(hint)}</span>
+              </Typography>
+              {PHASE_SEVERITIES.map(severity => (
+                <div
+                  key={`${label}-${severity}`}
+                  className={classes.itemWrapper}
+                >
+                  <FloodStatusIcon
+                    phase={variant === 'alert' ? 'activation' : 'readiness'}
+                    riskLevel={severity}
+                    size={18}
+                  />
+                  <Typography className={classes.itemText}>
+                    {`${t(label)} — ${t(severity)}`}
+                  </Typography>
+                </div>
+              ))}
+            </div>
           ))}
-        </div>
-      ))}
 
       <div className={classes.itemWrapper} style={{ marginTop: '0.65rem' }}>
         <FloodStatusIcon riskLevel="Not exceeded" size={12} />

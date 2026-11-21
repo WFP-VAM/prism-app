@@ -16,6 +16,7 @@ import {
   TableHead,
   TableRow,
   Theme,
+  Tooltip,
   Typography,
 } from '@material-ui/core';
 import { Close, GetApp, TableChart } from '@material-ui/icons';
@@ -331,6 +332,73 @@ if (!(Chart as any).__prismDailyExceedance) {
   Chart.plugins.register(dailyExceedancePlugin);
   (Chart as any).__prismDailyExceedance = true;
 }
+
+// A near-black series line disappears on the dark tooltip. Use white then.
+function tooltipLineColor(color: string): string {
+  const channels = color.match(/\d+/g);
+  if (!channels || channels.length < 3) {
+    return color;
+  }
+  const [red, green, blue] = channels.map(Number);
+  const luminance = (0.299 * red + 0.587 * green + 0.114 * blue) / 255;
+  return luminance < 0.45 ? '#fff' : color;
+}
+
+// Chart.js 2 tooltip legend marks are squares. Draw a line in the line color instead.
+function installTooltipLineSwatch() {
+  const proto = (Chart as any).Tooltip?.prototype;
+  if (!proto) {
+    return;
+  }
+  if (!proto.__prismLineSwatchOriginal) {
+    proto.__prismLineSwatchOriginal = proto.drawBody;
+  }
+  const original = proto.__prismLineSwatchOriginal;
+  proto.drawBody = function drawLineSwatchBody(
+    this: {
+      _chart?: { options?: { tooltips?: { lineSwatch?: boolean } } };
+    },
+    pt: unknown,
+    vm: unknown,
+    ctx: CanvasRenderingContext2D,
+  ) {
+    if (!this._chart?.options?.tooltips?.lineSwatch) {
+      return original.call(this, pt, vm, ctx);
+    }
+    const fillRect = ctx.fillRect;
+    const strokeRect = ctx.strokeRect;
+    const fillText = ctx.fillText;
+    let line: { x: number; y: number; w: number; color: string } | null = null;
+    ctx.fillRect = () => undefined;
+    ctx.strokeRect = (x, y, w, h) => {
+      line = { x, y: y + h / 2, w, color: String(ctx.strokeStyle) };
+    };
+    ctx.fillText = (text, x, y, maxWidth) => {
+      if (line) {
+        ctx.save();
+        ctx.strokeStyle = tooltipLineColor(line.color);
+        ctx.lineWidth = 2;
+        ctx.setLineDash([]);
+        ctx.beginPath();
+        ctx.moveTo(line.x, line.y);
+        ctx.lineTo(line.x + line.w, line.y);
+        ctx.stroke();
+        ctx.restore();
+        line = null;
+      }
+      fillText.call(ctx, text, x, y, maxWidth);
+    };
+    try {
+      return original.call(this, pt, vm, ctx);
+    } finally {
+      ctx.fillRect = fillRect;
+      ctx.strokeRect = strokeRect;
+      ctx.fillText = fillText;
+    }
+  };
+}
+
+installTooltipLineSwatch();
 
 const forecastWindow = ForecastWindowPerCountry.mozambique;
 const SEVERITY_ORDER: AAFloodSeverityKey[] = ['bankfull', 'moderate', 'severe'];
@@ -1191,6 +1259,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       tooltips: {
         mode: 'index' as const,
         intersect: false,
+        lineSwatch: true,
         // Hide ensemble members from tooltips
         filter: (tooltipItem: any, data: any) => {
           const datasetLabel = String(
@@ -2208,7 +2277,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                       severity === 'bankfull'
                         ? BANKFULL_RADIO
                         : AAFloodColors.chart[severity].solid;
-                    return (
+                    const row = (
                       <TableRow
                         key={`${viewPhase}-${severity}`}
                         hover
@@ -2267,6 +2336,26 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                           {gapText}
                         </TableCell>
                       </TableRow>
+                    );
+                    if (combo) {
+                      return row;
+                    }
+                    return (
+                      <Tooltip
+                        key={`${viewPhase}-${severity}`}
+                        title={t(
+                          'A {{threshold}} is not established for this station',
+                          {
+                            threshold: String(
+                              t(`${SEVERITY_NAME[severity]} threshold`),
+                            ).toLocaleLowerCase(),
+                          },
+                        )}
+                        placement="top"
+                        arrow
+                      >
+                        {row}
+                      </Tooltip>
                     );
                   })}
                 </TableBody>
