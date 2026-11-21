@@ -7,6 +7,28 @@ import {
 import { TimelineRow } from '../Timeline/utils';
 import { AADataSeverityOrder } from '../utils';
 
+// True when the district has rows for this season and index, but every one
+// sits in a category the user unticked. The map draws those districts grey.
+export function isDistrictActivityHiddenByFilters(
+  data: AnticipatoryActionDataRow[] | undefined,
+  filters: AnticipatoryActionState['filters'],
+) {
+  if (!data?.length) {
+    return false;
+  }
+  const { categories: categoryFilters, selectedIndex, selectedDate } = filters;
+  const season = calculateSeason(selectedDate);
+  const inScope = data.filter(
+    x =>
+      season === x.season &&
+      (selectedIndex === '' || x.index === selectedIndex),
+  );
+  if (inScope.length === 0) {
+    return false;
+  }
+  return inScope.every(x => !categoryFilters[x.category]);
+}
+
 export function districtViewTransform(
   data: AnticipatoryActionDataRow[] | undefined,
   filters: AnticipatoryActionState['filters'],

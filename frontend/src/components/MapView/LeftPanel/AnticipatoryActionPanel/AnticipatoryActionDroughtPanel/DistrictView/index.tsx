@@ -30,11 +30,16 @@ import {
   Action,
   getActionsByPhaseCategoryAndWindow,
 } from './ActionsModal/actions';
-import { dateSorter, districtViewTransform } from './utils';
+import {
+  dateSorter,
+  districtViewTransform,
+  isDistrictActivityHiddenByFilters,
+} from './utils';
 
 interface WindowColumnProps {
   win: (typeof AAWindowKeys)[number];
   transformed: ReturnType<typeof districtViewTransform>;
+  activityHidden: boolean;
   rowKeys: string[];
   openActionsDialog: () => void;
   setModalActions: React.Dispatch<React.SetStateAction<Action[]>>;
@@ -43,6 +48,7 @@ interface WindowColumnProps {
 function WindowColumn({
   win,
   transformed,
+  activityHidden,
   rowKeys,
   openActionsDialog,
   setModalActions,
@@ -71,7 +77,12 @@ function WindowColumn({
           {t(win)}
         </Typography>
       </div>
-      {!hasWindowData && (
+      {!hasWindowData && activityHidden && (
+        <Typography variant="h3" className={classes.noDataText}>
+          {t('Activity hidden by the current filters')}
+        </Typography>
+      )}
+      {!hasWindowData && !activityHidden && (
         <Typography variant="h3" className={classes.noDataText}>
           {t('No data')}
         </Typography>
@@ -247,6 +258,9 @@ const useWindowColumnStyles = makeStyles(() =>
     },
     noDataText: {
       margin: 'auto',
+      textAlign: 'center',
+      padding: '0.5rem 0.75rem',
+      maxWidth: '14rem',
     },
   }),
 );
@@ -291,8 +305,12 @@ function DistrictView({ dialogs }: DistrictViewProps) {
   ];
 
   const windows = selectedWindow === 'All' ? AAWindowKeys : [selectedWindow];
-  const transformed = windows.map(x =>
-    districtViewTransform(rawAAData[x][selectedDistrict], aaFilters),
+  const districtRows = windows.map(x => rawAAData[x][selectedDistrict]);
+  const transformed = districtRows.map(rows =>
+    districtViewTransform(rows, aaFilters),
+  );
+  const activityHidden = districtRows.map(rows =>
+    isDistrictActivityHiddenByFilters(rows, aaFilters),
   );
   const rowKeys = transformed
     .map(x => Object.keys(x?.transformed || {}))
@@ -312,6 +330,7 @@ function DistrictView({ dialogs }: DistrictViewProps) {
               key={win}
               win={win}
               transformed={transformed[index]}
+              activityHidden={activityHidden[index]}
               rowKeys={rowKeys}
               openActionsDialog={() => setActionsModalOpen(true)}
               setModalActions={setModalActions}

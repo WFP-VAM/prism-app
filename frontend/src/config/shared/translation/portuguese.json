@@ -555,6 +555,7 @@
   "Bankfull": "Nível de alerta",
   "Not exceeded": "Não excedido",
   "No data": "Sem dados",
+  "Activity hidden by the current filters": "Atividade oculta pelos filtros actuais",
   "Trigger probability": "Probabilidade do accionador",
   "Hydrograph": "Hidrograma",
   "{{day}}-day forecast": "Previsão para {{day}} dias",
