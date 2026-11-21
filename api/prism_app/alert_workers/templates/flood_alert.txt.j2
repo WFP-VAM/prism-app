@@ -1,19 +1,16 @@
 PRISM FLOOD ALERT - {{ title }}
 
-Flood Anticipatory Action Alert for Mozambique – forecast by GloFAS with data processing by WFP
+Flood Anticipatory Action Alert for {{ country_display_name }} – {{ forecast_attribution_line }}
 
-Trigger detection: {{ trigger_status }}. This is not an official activation.
-
-{% if stations_by_status %}
-{% for status, station_list in stations_by_status.items() %}
-River discharge levels may exceed the {{ status }} threshold at {{ station_list | join(' , ') }} in Mozambique within the next 3 to 5 days.
+{% if trigger_phase %}{{ trigger_phase }} trigger{% else %}Trigger{% endif %} detection: {{ trigger_severity }}. This is not an official activation.
+{% for g in station_groups %}
+River discharge levels may exceed the {{ g.status_label }} threshold at {{ g.stations | join(', ') }} in {{ country_display_name }}{% if g.lead_days %} {% if g.lead_days[0] == g.lead_days[1] %}in {{ g.lead_days[0] }} day{% if g.lead_days[0] != 1 %}s{% endif %}{% else %}within the next {{ g.lead_days[0] }} to {{ g.lead_days[1] }} days{% endif %}{% endif %}.
 {% endfor %}
-{% endif %}
 
 Access PRISM Flood Dashboard: {{ redirect_url }}
 
 Map: (image unavailable in plain text format)
 
-Disclaimer: This alert is automatically generated based on an evaluation of the latest forecast.
-It does not represent an official activation. The official decision regarding Anticipatory Action
-activation will be made and communicated by INGD (Instituto Nacional de Gestão e Redução do Risco de Desastres).
+We will continue to closely monitor the situation and provide timely updates as more information becomes available.
+
+Disclaimer: This alert is automatically generated based on an evaluation of the latest forecast. It does not represent an official activation. The official decision regarding Anticipatory Action activation will be made and communicated by {{ disclaimer_authority_plain }}.

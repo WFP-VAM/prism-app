@@ -10,14 +10,21 @@ from unittest.mock import MagicMock, patch
 
 import httpx
 import pytest
+from prism_app.alert_workers.aa_flood import DEFAULT_EMAIL_STATUSES
 from prism_app.alert_workers.aa_flood import _format_date as flood_format_date
 from prism_app.alert_workers.aa_flood import (
     build_flood_payload,
+    email_status_allow_list,
     fetch_station_summary,
     flood_prism_url,
+    group_station_alerts,
     latest_flood_date,
     should_send_flood_email,
-    transform_last_flood,
+    station_lead_days,
+    station_summary_url,
+    status_phase,
+    status_severity,
+    transform_last_processed_flood,
     transform_station_name,
 )
 from prism_app.alert_workers.aa_storm import (
@@ -549,10 +556,14 @@ def test_build_email_payloads_skips_after_landfall(mock_shot: MagicMock) -> None
 @pytest.mark.parametrize(
     ("trigger", "expected"),
     [
-        ("bankfull", True),
+        ("bankfull", False),
         ("moderate", True),
         ("severe", True),
         ("not exceeded", False),
+        ("not_exceeded", False),
+        ("activation_moderate", True),
+        ("readiness_bankfull", False),
+        ("activation_bankfull", False),
         (None, False),
         ("", False),
     ],
@@ -570,18 +581,82 @@ def test_latest_flood_date() -> None:
 
 
 def test_transform_last_flood() -> None:
-    assert transform_last_flood("2025-01-15T00:00:00Z", "moderate") == {
-        "moz_flood": {"status": "moderate", "refTime": "2025-01-15T00:00:00Z"},
+    assert transform_last_processed_flood(
+        "2025-01-15T00:00:00Z",
+        "moderate",
+        "flood_alert_4",
+    ) == {
+        "flood_alert_4": {"status": "moderate", "refTime": "2025-01-15T00:00:00Z"},
     }
+
+
+def test_email_status_allow_list_override() -> None:
+    allowed = email_status_allow_list(
+        {"emailStatuses": ["bankfull", "activation_severe"]}
+    )
+    assert should_send_flood_email("bankfull", allowed) is True
+    assert should_send_flood_email("moderate", allowed) is False
+
+
+def test_station_summary_url_replaces_dates_json() -> None:
+    assert (
+        station_summary_url(
+            "https://data.example/aa/flood/moz/dates.json",
+            "station_summary.csv",
+        )
+        == "https://data.example/aa/flood/moz/station_summary.csv"
+    )
 
 
 def test_transform_station_name() -> None:
     assert transform_station_name("beira_port") == "Beira Port"
+    assert transform_station_name("Limpopo__Combomune") == "Limpopo Combomune"
 
 
 def test_flood_format_date() -> None:
     assert flood_format_date("2025-03-05T12:00:00Z", "YYYY-MM-DD") == "2025-03-05"
     assert flood_format_date("2025-03-05T12:00:00Z", "DD-Month-YYYY") == "5-March-2025"
+
+
+def test_fetch_station_summary_keeps_highest_status() -> None:
+    csv_text = (
+        "station_name,station_id,river_name,phase,severity,status\n"
+        "beira_port,1,zambezi,readiness,severe,readiness_severe\n"
+        "beira_port,1,zambezi,activation,moderate,activation_moderate\n"
+        "gurue,2,licungo,readiness,bankfull,readiness_bankfull\n"
+    )
+    client = MagicMock(spec=httpx.Client)
+    response = MagicMock()
+    response.text = csv_text
+    response.raise_for_status = MagicMock()
+    client.get.return_value = response
+    rows = fetch_station_summary(client, "http://example/stations.csv")
+    by_name = {row["station_name"]: row["trigger_status"] for row in rows}
+    assert by_name == {
+        "Beira Port": "activation_moderate",
+        "Gurue": "readiness_bankfull",
+    }
+
+
+def test_fetch_station_summary_joins_on_station_id() -> None:
+    csv_text = (
+        "station_name,station_id,river_name,phase,severity,status\n"
+        "Limpopo__Combomune,33,Limpopo,readiness,moderate,activation_severe\n"
+        "limpopo_combomune,33,Limpopo,activation,severe,activation_severe\n"
+        "goonda,,Buzi,readiness,severe,readiness_severe\n"
+    )
+    client = MagicMock(spec=httpx.Client)
+    response = MagicMock()
+    response.text = csv_text
+    response.raise_for_status = MagicMock()
+    client.get.return_value = response
+    rows = fetch_station_summary(client, "http://example/stations.csv")
+    by_name = {row["station_name"]: row["trigger_status"] for row in rows}
+    assert by_name == {
+        "Limpopo Combomune": "activation_severe",
+        "Goonda": "readiness_severe",
+    }
+    assert len(rows) == 2
 
 
 def test_flood_prism_url() -> None:
@@ -607,6 +682,9 @@ def test_fetch_station_summary_parses_csv() -> None:
             "station_id": "1",
             "river_name": "zambezi",
             "trigger_status": "moderate",
+            "window_begin": "",
+            "window_end": "",
+            "forecast_issue_date": "",
         },
     ]
 
@@ -678,3 +756,133 @@ def test_build_flood_payload_moderate(mock_shot: MagicMock) -> None:
     assert payload["bcc"] == ["a@x.com"]
     assert "moderate" in payload["html"].lower()
     mock_shot.assert_called_once()
+
+
+def test_station_lead_days() -> None:
+    assert station_lead_days(
+        {
+            "forecast_issue_date": "2026-03-11",
+            "window_begin": "2026-03-13",
+            "window_end": "2026-03-15",
+        },
+    ) == (2, 4)
+    assert station_lead_days(
+        {
+            "forecast_issue_date": "2026-03-11T00:00:00Z",
+            "window_begin": "2026-03-13",
+            "window_end": "2026-03-13",
+        },
+    ) == (2, 2)
+    assert station_lead_days(
+        {"window_begin": "2026-03-13", "window_end": "2026-03-15"},
+        issue_iso="2026-03-11T00:00:00Z",
+    ) == (2, 4)
+    assert station_lead_days({"window_begin": "2026-03-13"}) is None
+    assert station_lead_days(
+        {"station_name": "Buzi", "trigger_status": "severe"},
+    ) == (3, 5)
+
+
+def test_group_station_alerts_by_status_and_lead() -> None:
+    def st(name: str, status: str, begin: str, end: str) -> dict:
+        return {
+            "station_name": name,
+            "trigger_status": status,
+            "forecast_issue_date": "2026-03-11",
+            "window_begin": begin,
+            "window_end": end,
+        }
+
+    groups = group_station_alerts(
+        [
+            st("Goonda", "readiness_moderate", "2026-03-15", "2026-03-19"),
+            st("Dombe", "activation_severe", "2026-03-13", "2026-03-15"),
+            st("Buzi", "readiness_moderate", "2026-03-15", "2026-03-19"),
+            st("Other", "readiness_moderate", "2026-03-14", "2026-03-16"),
+            st("Bank", "readiness_bankfull", "2026-03-15", "2026-03-19"),
+        ],
+        set(DEFAULT_EMAIL_STATUSES),
+    )
+    assert [(g["status_label"], g["stations"], g["lead_days"]) for g in groups] == [
+        ("activation severe", ["Dombe"], (2, 4)),
+        ("readiness moderate", ["Other"], (3, 5)),
+        ("readiness moderate", ["Goonda", "Buzi"], (4, 8)),
+    ]
+
+
+def test_status_phase_and_severity() -> None:
+    assert status_phase("activation_severe") == "Activation"
+    assert status_severity("readiness_bankfull") == "bankfull"
+    assert status_phase("moderate") == ""
+    assert status_severity("moderate") == "moderate"
+
+
+@patch(
+    "prism_app.alert_workers.aa_flood.capture_screenshot_from_url",
+    return_value="",
+)
+def test_build_flood_payload_headline_uses_highest_allowed_station(
+    mock_shot: MagicMock,
+) -> None:
+    # Overall status is activation_bankfull (filtered by default), but a
+    # readiness_moderate station should still produce a Readiness email.
+    csv_text = (
+        "station_id,station_name,forecast_issue_date,phase,severity,"
+        "window_begin,window_end,status\n"
+        "246,dombe,2026-03-11,activation,bankfull,2026-03-13,2026-03-15,"
+        "activation_bankfull\n"
+        "456,goonda,2026-03-11,readiness,moderate,2026-03-15,2026-03-19,"
+        "readiness_moderate\n"
+    )
+    client = MagicMock(spec=httpx.Client)
+    response = MagicMock()
+    response.text = csv_text
+    response.raise_for_status = MagicMock()
+    client.get.return_value = response
+
+    payload = build_flood_payload(
+        client,
+        date_iso="2026-03-11T00:00:00Z",
+        trigger_status="activation_bankfull",
+        prism_url="https://prism.moz.wfp.org/",
+        emails=["a@x.com"],
+        station_summary_url="http://example/stations.csv",
+    )
+    assert payload is not None
+    assert payload["subject"].startswith(
+        "Flood Anticipatory Actions Readiness Trigger detected",
+    )
+    assert "Readiness trigger detection: moderate." in payload["text"]
+    assert "readiness moderate threshold at Goonda" in payload["text"]
+    assert "within the next 4 to 8 days" in payload["text"]
+    assert "Dombe" not in payload["text"]
+
+
+@patch(
+    "prism_app.alert_workers.aa_flood.capture_screenshot_from_url",
+    return_value="",
+)
+def test_build_flood_payload_skips_when_only_filtered_stations(
+    mock_shot: MagicMock,
+) -> None:
+    csv_text = (
+        "station_id,station_name,phase,severity,window_begin,window_end,status\n"
+        "246,dombe,activation,bankfull,2026-03-13,2026-03-15,activation_bankfull\n"
+    )
+    client = MagicMock(spec=httpx.Client)
+    response = MagicMock()
+    response.text = csv_text
+    response.raise_for_status = MagicMock()
+    client.get.return_value = response
+    assert (
+        build_flood_payload(
+            client,
+            date_iso="2026-03-11T00:00:00Z",
+            trigger_status="activation_bankfull",
+            prism_url="https://prism.moz.wfp.org/",
+            emails=["a@x.com"],
+            station_summary_url="http://example/stations.csv",
+        )
+        is None
+    )
+    mock_shot.assert_not_called()

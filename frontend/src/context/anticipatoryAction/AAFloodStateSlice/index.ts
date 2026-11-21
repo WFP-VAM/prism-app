@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { appConfig } from 'config';
-import { startCase } from 'lodash';
 import Papa from 'papaparse';
 
 import type { CreateAsyncThunkTypes, RootState } from '../../store';
@@ -14,7 +13,8 @@ import {
 } from './types';
 import {
   buildAvailableFloodDatesFromDatesJson,
-  normalizeFloodTriggerStatus,
+  floodStationKey,
+  parseStationSummaryRows,
 } from './utils';
 
 const initialState: AnticipatoryActionFloodState = {
@@ -32,6 +32,77 @@ const initialState: AnticipatoryActionFloodState = {
   error: null,
 };
 
+// TEMP demo hack, do not merge.
+// Production dates before the cutoff (legacy wide files) plus the v2 synthetic
+// samples, moved forward so they land after the cutoff. Each entry keeps its
+// own folder; synthetic rows get every ISO date shifted by the same offset.
+const DEMO_LEGACY_CUTOFF = '2026-09-01';
+const DEMO_SYNTHETIC_DATES_URL = '/aa-flood-v2-samples/synthetic/dates.json';
+const DEMO_SYNTHETIC_SHIFT_DAYS = 244; // 2026-03-10 -> 2026-11-09
+
+type DemoDateEntry = {
+  trigger_status?: string;
+  schema_version?: number;
+  probabilities_file?: string;
+  discharge_file?: string;
+  station_summary_file?: string;
+  baseDir: string;
+  shiftDays: number;
+};
+
+function demoShiftIsoDate(value: string, days: number): string {
+  const date = new Date(`${value}T00:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+
+function demoShiftRows<T>(rows: T[], days: number): T[] {
+  if (!days) {
+    return rows;
+  }
+  return rows.map(row =>
+    Object.fromEntries(
+      Object.entries(row as Record<string, unknown>).map(([key, value]) => [
+        key,
+        typeof value === 'string'
+          ? value.replace(/\d{4}-\d{2}-\d{2}/g, iso =>
+              demoShiftIsoDate(iso, days),
+            )
+          : value,
+      ]),
+    ),
+  ) as T[];
+}
+
+async function fetchDemoFloodDates(
+  url: string,
+): Promise<Record<string, DemoDateEntry>> {
+  const baseOf = (datesUrl: string) => datesUrl.replace(/dates\.json$/i, '');
+  const [legacy, synthetic] = await Promise.all(
+    [url, DEMO_SYNTHETIC_DATES_URL].map(datesUrl =>
+      fetch(datesUrl).then(resp => resp.json()),
+    ),
+  );
+  const merged: Record<string, DemoDateEntry> = {};
+  Object.entries(legacy).forEach(([date, entry]) => {
+    if (date < DEMO_LEGACY_CUTOFF) {
+      merged[date] = {
+        ...(entry as object),
+        baseDir: baseOf(url),
+        shiftDays: 0,
+      };
+    }
+  });
+  Object.entries(synthetic).forEach(([date, entry]) => {
+    merged[demoShiftIsoDate(date, DEMO_SYNTHETIC_SHIFT_DAYS)] = {
+      ...(entry as object),
+      baseDir: baseOf(DEMO_SYNTHETIC_DATES_URL),
+      shiftDays: DEMO_SYNTHETIC_SHIFT_DAYS,
+    };
+  });
+  return merged;
+}
+
 export const loadAAFloodData = createAsyncThunk<
   {
     stations: FloodStation[];
@@ -45,16 +116,7 @@ export const loadAAFloodData = createAsyncThunk<
     throw new Error('Flood data URL not configured');
   }
   // dates.json schema: { "YYYY-MM-DD": { trigger_status: string, probabilities_file: string, discharge_file: string, ... } }
-  const resp = await fetch(url);
-  const datesData: Record<
-    string,
-    {
-      trigger_status?: string;
-      probabilities_file?: string;
-      discharge_file?: string;
-      station_summary_file?: string;
-    }
-  > = await resp.json();
+  const datesData = await fetchDemoFloodDates(url);
 
   const availableDates: FloodDateItem[] =
     buildAvailableFloodDatesFromDatesJson(datesData);
@@ -78,8 +140,6 @@ export const loadAAFloodDateData = createAsyncThunk<
   if (!datesUrl) {
     throw new Error('Flood probabilities URL not configured');
   }
-  // Build base path from dates.json URL
-  const baseDir = datesUrl.replace(/dates\.json$/i, '');
 
   const parseCsv = <T>(url: string) =>
     new Promise<T[]>((resolve, reject) => {
@@ -92,26 +152,26 @@ export const loadAAFloodDateData = createAsyncThunk<
       });
     });
 
-  const datesResponse = await fetch(datesUrl);
-  const datesData = await datesResponse.json();
+  const datesData = await fetchDemoFloodDates(datesUrl);
   const dateData = datesData[date];
   if (!dateData) {
     throw new Error(`No data entry found for date ${date}`);
   }
+  const { baseDir, shiftDays } = dateData;
 
-  const [probRows, dischargeRows, summaryRows] = await Promise.all([
-    parseCsv<any>(`${baseDir}${dateData.probabilities_file}`),
-    parseCsv<any>(`${baseDir}${dateData.discharge_file}`),
-    parseCsv<any>(`${baseDir}${dateData.station_summary_file}`),
-  ]);
+  const [probRows, dischargeRows, summaryRows] = (
+    await Promise.all([
+      parseCsv<any>(`${baseDir}${dateData.probabilities_file}`),
+      parseCsv<any>(`${baseDir}${dateData.discharge_file}`),
+      parseCsv<any>(`${baseDir}${dateData.station_summary_file}`),
+    ])
+  ).map(rows => demoShiftRows(rows, shiftDays));
 
   // probabilities.csv schema: station_id,station_name,river_name,longitude,latitude,forecast_issue_date,valid_time,bankfull_percentage,moderate_percentage,severe_percentage
   const probabilities: Record<string, FloodProbabilityPoint[]> =
     probRows.reduce(
       (acc: Record<string, FloodProbabilityPoint[]>, row: any) => {
-        const key: string = startCase(
-          String(row.station_name || row.station_id || '').trim(),
-        );
+        const key = floodStationKey(row.station_id, row.station_name);
         if (!key) {
           return acc;
         }
@@ -151,9 +211,7 @@ export const loadAAFloodDateData = createAsyncThunk<
       >,
       row: any,
     ) => {
-      const key: string = startCase(
-        String(row.station_name || row.station_id || '').trim(),
-      );
+      const key = floodStationKey(row.station_id, row.station_name);
       if (!key) {
         return acc;
       }
@@ -204,55 +262,17 @@ export const loadAAFloodDateData = createAsyncThunk<
     return { ...acc, [station]: data };
   }, {});
 
-  // Build stations with summary data
-  const stationSummary = summaryRows.reduce(
-    (acc: Record<string, FloodStation>, row: any) => {
-      const key: string = startCase(String(row.station_name || '').trim());
-      if (!key || !row.longitude || !row.latitude) {
-        return acc;
-      }
-      return {
-        ...acc,
-        [key]: {
-          station_name: key,
-          station_id: Number(row.station_id || 0),
-          river_name: String(row.river_name || ''),
-          longitude: Number(row.longitude ?? 0),
-          latitude: Number(row.latitude ?? 0),
-          forecast_issue_date: String(row.forecast_issue_date || date),
-          window_begin: String(row.window_begin || ''),
-          window_end: String(row.window_end || ''),
-          avg_bankfull_percentage:
-            typeof row.avg_bankfull_percentage === 'number'
-              ? Number(row.avg_bankfull_percentage) * 100
-              : undefined,
-          avg_moderate_percentage:
-            typeof row.avg_moderate_percentage === 'number'
-              ? Number(row.avg_moderate_percentage) * 100
-              : undefined,
-          avg_severe_percentage:
-            typeof row.avg_severe_percentage === 'number'
-              ? Number(row.avg_severe_percentage) * 100
-              : undefined,
-          trigger_bankfull:
-            typeof row.trigger_bankfull === 'number'
-              ? Number(row.trigger_bankfull) * 100
-              : undefined,
-          trigger_moderate:
-            typeof row.trigger_moderate === 'number'
-              ? Number(row.trigger_moderate) * 100
-              : undefined,
-          trigger_severe:
-            typeof row.trigger_severe === 'number'
-              ? Number(row.trigger_severe) * 100
-              : undefined,
-          trigger_status: normalizeFloodTriggerStatus(
-            String(row.trigger_status ?? ''),
-          ),
-        },
-      };
-    },
-    {},
+  const rawSchemaVersion = dateData.schema_version;
+  const schemaVersion =
+    rawSchemaVersion === undefined || rawSchemaVersion === null
+      ? undefined
+      : Number(rawSchemaVersion);
+  const stationSummary = parseStationSummaryRows(
+    summaryRows as Record<string, unknown>[],
+    date,
+    schemaVersion !== undefined && Number.isFinite(schemaVersion)
+      ? schemaVersion
+      : undefined,
   );
 
   // Extract basic station info for the stations array

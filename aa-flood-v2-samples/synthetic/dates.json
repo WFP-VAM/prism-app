@@ -1,0 +1,16 @@
+{
+  "2026-03-10": {
+    "schema_version": 2,
+    "trigger_status": "activation_severe",
+    "probabilities_file": "2026-03-10/probabilities.csv",
+    "discharge_file": "2026-03-10/discharge.csv",
+    "station_summary_file": "2026-03-10/station_summary.csv"
+  },
+  "2026-03-11": {
+    "schema_version": 2,
+    "trigger_status": "activation_bankfull",
+    "probabilities_file": "2026-03-11/probabilities.csv",
+    "discharge_file": "2026-03-11/discharge.csv",
+    "station_summary_file": "2026-03-11/station_summary.csv"
+  }
+}

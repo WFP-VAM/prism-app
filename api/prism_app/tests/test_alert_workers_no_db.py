@@ -84,10 +84,23 @@ def test_geojson_bbox_feature_collection() -> None:
 def test_render_flood_mail_contains_title_and_link() -> None:
     html, text = render_flood_mail(
         title="Test flood title",
-        trigger_status="moderate",
-        stations_by_status={"moderate": ["Station A"]},
+        trigger_phase="Readiness",
+        trigger_severity="moderate",
+        station_groups=[
+            {
+                "status_label": "readiness moderate",
+                "stations": ["Station A", "Station B"],
+                "lead_days": (4, 8),
+            },
+        ],
         redirect_url="https://prism.example/map",
     )
+    assert "Readiness trigger detection: moderate." in text
+    assert (
+        "readiness moderate threshold at Station A, Station B in Mozambique "
+        "within the next 4 to 8 days." in text
+    )
+    assert "within the next 4 to 8 days" in html
     assert "Test flood title" in html
     assert "moderate" in html.lower()
     assert "River discharge levels may exceed" in html
@@ -95,6 +108,38 @@ def test_render_flood_mail_contains_title_and_link() -> None:
     assert "https://prism.example/map" in html
     assert "GloFAS with data processing" in html
     assert "Test flood title" in text
+
+
+def test_render_flood_mail_equal_lead_window_is_singular_phrase() -> None:
+    _html, text = render_flood_mail(
+        title="Equal window",
+        trigger_phase="Activation",
+        trigger_severity="severe",
+        station_groups=[
+            {
+                "status_label": "activation severe",
+                "stations": ["Dombe"],
+                "lead_days": (2, 2),
+            },
+        ],
+        redirect_url="https://prism.example/map",
+    )
+    assert "in 2 days." in text
+    assert "within the next 2 days" not in text
+    assert "2 to 2" not in text
+
+
+def test_render_flood_mail_text_not_html_escaped() -> None:
+    html, text = render_flood_mail(
+        title="A & B",
+        trigger_phase="",
+        trigger_severity="moderate",
+        station_groups=[],
+        redirect_url="https://prism.example/?a=1&b=2",
+    )
+    assert "https://prism.example/?a=1&b=2" in text
+    assert "&amp;" not in text
+    assert "A &amp; B" in html
 
 
 def test_render_storm_mail() -> None:
@@ -370,10 +415,15 @@ def test_ethereal_live_preview_url_works(
     title = f"Flood AA integration preview ({token})"
     html, text = render_flood_mail(
         title=title,
-        trigger_status="moderate",
-        stations_by_status={
-            "moderate": ["Station Alpha", "Station Beta"],
-        },
+        trigger_phase="",
+        trigger_severity="moderate",
+        station_groups=[
+            {
+                "status_label": "moderate",
+                "stations": ["Station Alpha", "Station Beta"],
+                "lead_days": None,
+            },
+        ],
         redirect_url=f"https://prism.example.org/?ethereal-test={token}",
     )
     attachments = [
